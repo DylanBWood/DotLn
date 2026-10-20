@@ -225,6 +225,7 @@ export const machinerySources = {
     "scripts/harness.mjs",
     "scripts/lib/evidence-preparation.mjs",
     "scripts/lib/gate-evidence.mjs",
+    "scripts/lib/harness-runtime.mjs",
     "scripts/lib/terms.mjs",
     "scripts/lib/validation.mjs",
     "scripts/release.mjs",
@@ -293,7 +294,10 @@ export const machinerySources = {
   ],
   // The suite scans every non-test script for a literal document root, so
   // any changed script selects it (WO-169 item 5, WO-085 D014).
-  "configuration-root": ["scripts/"],
+  "configuration-root": [
+    "scripts/",
+    "packages/skeleton/src/runtime-inputs.mjs",
+  ],
   "harness-context": [
     "scripts/lib/process-budget.mjs",
     "scripts/lib/harness.mjs",
@@ -465,6 +469,8 @@ export const machinerySources = {
     "packages/skeleton/fixtures/wo188-role-baseline.json",
     "packages/skeleton/fixtures/wo073-role-baseline.json",
     "packages/skeleton/fixtures/wo191-role-baseline.json",
+    "packages/skeleton/fixtures/wo215-role-baseline.json",
+    "packages/skeleton/fixtures/wo218-role-baseline.json",
     "scripts/test-helper-reuse.mjs",
     "scripts/lib/helpers.mjs",
     "scripts/lib/git.mjs",

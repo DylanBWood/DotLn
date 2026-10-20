@@ -42,6 +42,7 @@ import {
   HOST_GIT_READ,
 } from "./lib/github-repository.mjs";
 import {
+  gitlinkPaths,
   ensureClean,
   shellQuote,
   mainWorktree,
@@ -92,6 +93,7 @@ import {
   removeOrderHostRules,
   targetWorktreeForOrder,
   writeOrderHostRules,
+  validateOrderHostRules,
 } from "./lib/target-worktrees.mjs";
 
 // Scratch repositories leave once every preserved byte is proven and just
@@ -108,12 +110,12 @@ const removeScratch = (path, receipt) => {
 // which would discard the submodule's unpushed commits. Refuse before any
 // scratch repository leaves, so that "source retained" is the whole truth.
 const refuseSubmoduleWorktree = (subject) => {
-  const submodules = runGitPathList(subject, ["ls-files", "-z", "--stage"])
-    .filter((entry) => entry.startsWith("160000 "))
-    .map((entry) => entry.slice(entry.indexOf("\t") + 1));
+  const submodules = gitlinkPaths(
+    runGitPathList(subject, ["ls-files", "-z", "--stage"]),
+  );
   if (submodules.length)
     throw new Error(
-      `Worktree holds a submodule (${submodules.join(", ")}); Git removes it only with --force, which would discard its unpushed commits; source retained. Push the submodule's commits, then remove this worktree from an operator terminal with git worktree remove --force ${JSON.stringify(subject)} and retry`,
+      `Worktree holds a submodule (${submodules.join(", ")}); Git removes it only with --force, which would discard its unpushed commits; source retained. Push the submodule's commits, then remove this worktree from an operator terminal with git worktree remove --force ${shellQuote(subject)} and retry`,
     );
 };
 
@@ -590,6 +592,11 @@ const startTargetWorktree = async (mainPath, entry) => {
     } else runGit(root, ["worktree", "add", "-b", branch, directory, base]);
   };
   try {
+    if (
+      loadConfig(mainPath).repositories[entry.repositoryId]?.hostRules ===
+      "literal"
+    )
+      validateOrderHostRules(mainPath, workOrderId, { creating: true });
     ensureWorktree(clone, target, baseCommit);
     ensureWorktree(mainPath, launchpad, launchpadBase);
     const source = readFileSync(
@@ -650,10 +657,11 @@ const startTargetWorktree = async (mainPath, entry) => {
     checkTargetHarness(target, options);
     recordTargetWorktree(mainPath, entry);
     recordTargetWorktree(launchpad, entry);
-    forgetTargetStart(mainPath, workOrderId);
     const repository = loadConfig(mainPath).repositories[entry.repositoryId];
+    const launchLines = hostLaunchLines(mainPath, entry, repository);
+    forgetTargetStart(mainPath, workOrderId);
     process.stdout.write(
-      `Target worktree ${target} on ${branch}.\nAuthority profile: ${JSON.stringify(repository.authorityProfile)}\nTarget status: ${launchpadInvocation(launchpad, "resume")} status\nCreated ${launchpad} on ${branch}.\nActivated ${workOrderId}.\nPhase: active.\n${hostLaunchLines(mainPath, entry, repository)}Next (run manually):\n  cd ${shellQuote(target)}\n  codex\n  enter: resume: next\n`,
+      `Target worktree ${target} on ${branch}.\nAuthority profile: ${JSON.stringify(repository.authorityProfile)}\nTarget status: ${launchpadInvocation(launchpad, "resume")} status\nCreated ${launchpad} on ${branch}.\nActivated ${workOrderId}.\nPhase: active.\n${launchLines}Next (run manually):\n  cd ${shellQuote(target)}\n  codex\n  enter: resume: next\n`,
     );
   } catch (error) {
     throw new Error(
@@ -738,8 +746,17 @@ const main = async () => {
       throw new Error(
         "host-rule rewrite target differs from its registration; no host rules changed",
       );
-    const selector = parseGitHubTarget(pushUrl(entry.clone)).selector;
+    const forge = parseGitHubTarget(pushUrl(entry.clone));
+    if (!entry.origin || forge.identity !== entry.origin)
+      throw new Error(
+        "host-rule rewrite origin differs from the origin recorded at start; no host rules changed",
+      );
+    const selector = forge.selector;
     pushUrl(entry.target, { selector });
+    if (validateOrderHostRules(main, order)?.removal)
+      throw new Error(
+        `host-rule removal is incomplete; run node ${shellQuote(join(main, "scripts/worktree.mjs"))} host-rules --remove ${order}, then retry the rewrite`,
+      );
     removeOrderHostRules(main, order);
     const written = writeOrderHostRules(main, entry, selector);
     process.stdout.write(
@@ -962,13 +979,27 @@ const main = async () => {
     const targetPlan = readStartAuthority();
     const siblingReceipts = capturePendingReceipts(mainPath);
     if (targetPlan) {
+      if (
+        loadConfig(mainPath).repositories[targetPlan.repositoryId]
+          ?.hostRules === "literal"
+      )
+        validateOrderHostRules(mainPath, workOrderId, { creating: true });
       // The clone's forge identity at start binds the hook's admission to
       // this origin for the order's lifetime; a non-GitHub origin records
       // null and the admission then binds nothing extra.
       let origin = null;
       try {
         origin = parseGitHubTarget(pushUrl(targetPlan.clone)).identity;
-      } catch {
+      } catch (error) {
+        const remote = runGit(
+          targetPlan.clone,
+          ["config", "--get", "remote.origin.url"],
+          { onFailure: () => "" },
+        );
+        if (/^(?:https?:|ssh:|git@)/u.test(remote))
+          throw new Error(
+            `target origin cannot be bound to a GitHub repository; correct the origin before starting: ${error.message}`,
+          );
         origin = null;
       }
       const entry = {
@@ -1006,7 +1037,7 @@ const main = async () => {
     try {
       activatedOutput = await completeSelfStart(...bindings);
     } catch (error) {
-      const program = `import {completeSelfStart} from ${JSON.stringify(pathToFileURL(join(mainPath, "scripts/worktree.mjs")).href)}; await completeSelfStart(...${JSON.stringify(bindings)});`;
+      const program = `import {completeSelfStart} from ${JSON.stringify(pathToFileURL(join(mainPath, "scripts/worktree.mjs")).href)}; process.stdout.write(await completeSelfStart(...${JSON.stringify(bindings)})); console.log(${JSON.stringify(`Phase: active.\nNext: cd ${shellQuote(target)}; start codex and enter resume: next`)});`;
       throw new Error(
         `worktree created and preserved at ${target}; ${error.message}. Correct the reported condition and retry: node --input-type=module -e ${shellQuote(program)}`,
       );
@@ -1054,6 +1085,27 @@ const main = async () => {
     const body = draft
       ? readFileSync(bodyPath, "utf8")
       : readTrackedTextAtHead(subject, relative(subject, bodyPath), bodyFile);
+    if (draft) {
+      const intake = docPath(subject, "intake");
+      const physical = realpathSync(bodyPath);
+      if (
+        [bodyPath, physical].some(
+          (file) => file === intake || file.startsWith(`${intake}${sep}`),
+        ) ||
+        runGit(
+          subject,
+          [
+            "check-ignore",
+            "--no-index",
+            "--",
+            relative(subject, bodyPath),
+            relative(subject, physical),
+          ],
+          { onFailure: () => "" },
+        )
+      )
+        throw new Error("draft body must not be ignored or intake material");
+    }
     const { publishTargetWorktree, publishTargetDraft } =
       await import("./lib/target-publish.mjs");
     (draft ? publishTargetDraft : publishTargetWorktree)({

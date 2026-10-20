@@ -22,8 +22,9 @@ test "$("$node_bin" -e 'process.stdout.write(Buffer.from(process.argv[1], "utf8"
 git init --bare "$test_root/origin.git" >/dev/null
 git clone "$test_root/origin.git" "$test_root/project" >/dev/null 2>&1
 main="$test_root/project"
-git -C "$main" config user.email dylanwoodconsulting@gmail.com
-git -C "$main" config user.name "Dylan Wood"
+git -C "$main" config user.email operator@example.invalid
+git -C "$main" config user.name "Fixture Operator"
+printf '%s\n' '{"version":1,"contributions":{"operatorAuthor":"Fixture Operator <operator@example.invalid>"}}' >"$main/dotln.config.json"
 git -C "$main" config core.quotePath true
 github_repo="dotln-fixture/worktree"
 github_origin="https://github.com/$github_repo.git"

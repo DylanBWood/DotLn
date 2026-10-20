@@ -1,11 +1,14 @@
 import { createHash } from "node:crypto";
 import {
   existsSync,
+  accessSync,
+  constants,
   lstatSync,
   mkdirSync,
   mkdtempSync,
   readFileSync,
   readdirSync,
+  realpathSync,
   rmSync,
   rmdirSync,
   unlinkSync,
@@ -20,12 +23,13 @@ import {
   isFinderMetadata,
 } from "./finder-metadata.mjs";
 import { readGateChecks } from "./gate-evidence.mjs";
-import { HOST_GIT_READ } from "./github-repository.mjs";
+import { HOST_GIT_READ, fetchRemoteBranch } from "./github-repository.mjs";
 import {
   parseWorktrees,
   redactPaths,
   runGit,
   runGitPathList,
+  selectGitPaths,
   releaseCloseCommand,
   spawnGit,
   worktreeHasCheckout,
@@ -35,6 +39,7 @@ import {
   physicalDirectory,
   removeOrderHostRules,
   targetWorktreeForOrder,
+  validateOrderHostRules,
 } from "./target-worktrees.mjs";
 import {
   withWriterReservationLock,
@@ -107,13 +112,11 @@ const underDisposable = (disposable, file) =>
 // the pre-fast-forward working copy's rules never decide.
 const ignoredByTree = (clone, commit, paths) => {
   if (!paths.length) return new Set();
-  const rules = gitPaths(clone, [
-    "ls-tree",
-    "-r",
-    "--name-only",
-    "-z",
-    commit,
-  ]).filter((file) => file === ".gitignore" || file.endsWith("/.gitignore"));
+  const rules = selectGitPaths(
+    clone,
+    [...HOST_GIT_READ, "ls-tree", "-r", "--name-only", "-z", commit],
+    (file) => file === ".gitignore" || file.endsWith("/.gitignore"),
+  );
   const scratch = mkdtempSync(join(tmpdir(), "dotln-target-ignore-"));
   try {
     // Only committed ignore blobs supply policy: neither an init template's
@@ -186,6 +189,52 @@ const disposableRows = (files, disposable) =>
     }))
     .filter((row) => row.files);
 
+const inspectDisposable = (root, disposable, label, rerun, writable = true) => {
+  const inspect = (directory) => {
+    const info = lstatSync(directory, { throwIfNoEntry: false });
+    if (!info?.isDirectory() || info.isSymbolicLink()) return;
+    try {
+      accessSync(
+        directory,
+        constants.R_OK | constants.X_OK | (writable ? constants.W_OK : 0),
+      );
+    } catch {
+      throw new Error(
+        `${label} cannot close: declared directory ${directory.slice(root.length + 1) || "."} needs ${writable ? "write, read and search" : "read and search"} access; source retained. Restore access, then rerun ${rerun()}`,
+      );
+    }
+    for (const name of readdirSync(directory)) inspect(join(directory, name));
+  };
+  for (const declared of disposable) {
+    let directory = root;
+    for (const segment of declared.split("/")) {
+      directory = join(directory, segment);
+      const info = lstatSync(directory, { throwIfNoEntry: false });
+      if (!info) break;
+      if (
+        info.isSymbolicLink() ||
+        !realpathSync(directory).startsWith(`${root}/`)
+      )
+        throw new Error(
+          `${label} cannot close: declared root ${declared} has a symlinked component; source retained. Correct the registration or path, then rerun ${rerun()}`,
+        );
+    }
+    inspect(join(root, declared));
+    if (writable && existsSync(join(root, declared))) {
+      try {
+        accessSync(
+          dirname(join(root, declared)),
+          constants.W_OK | constants.X_OK,
+        );
+      } catch {
+        throw new Error(
+          `${label} cannot close: parent of declared root ${declared} needs write and search access; source retained. Restore access, then rerun ${rerun()}`,
+        );
+      }
+    }
+  }
+};
+
 const removeFinderMetadata = (root, files) => {
   for (const file of files)
     if (isFinderMetadata(root, file)) unlinkSync(join(root, file));
@@ -213,16 +262,24 @@ const checkoutExists = (directory, branch, commonDirectory, rerun) => {
 
 /** Target teardown has no release ladder. Keep its receipt separate from the
  * launchpad cleanup, whose recovery paths belong to a different repository. */
-export const closeTargetWorktree = async (root, state, dryRun, record) => {
+export const closeTargetWorktree = async (
+  root,
+  state,
+  dryRun,
+  record,
+  { retryMode = dryRun ? "--dry-run" : "--publish" } = {},
+) => {
+  validateOrderHostRules(root, state.workOrderId);
   const entry = targetWorktreeForOrder(root, state.workOrderId);
   if (!entry) {
-    const prior = [...record.previousAttempts]
+    const prior = [...(record.recoveryAttempts ?? record.previousAttempts)]
       .reverse()
       .find(
         (attempt) => attempt.targetCleanup?.outcome === "removed",
       )?.targetCleanup;
     if (!prior) throw new Error("target worktree registry entry is missing");
     record.targetCleanup = prior;
+    if (!dryRun) removeOrderHostRules(root, state.workOrderId);
     return;
   }
   if (
@@ -233,25 +290,38 @@ export const closeTargetWorktree = async (root, state, dryRun, record) => {
   physicalDirectory(entry.clone);
   // The registration's disposable paths (class first, never removed) and the
   // gate's advisory of what commands wrote into the clone's base checkout.
-  const disposable =
-    loadConfig(root).repositories[state.repositoryId]?.disposable ?? [];
+  const registration = loadConfig(root).repositories[state.repositoryId];
+  const disposable = registration?.disposable ?? [];
+  const baseDisposablePolicy = registration?.baseDisposablePolicy ?? "delete";
   // The order's launchpad worktree holds the gate index until the launchpad
   // cleanup that follows this close; main's copy is the fallback.
   let baseCheckoutWrites;
   try {
-    baseCheckoutWrites = [
-      ...new Set(
-        readGateChecks(existsSync(entry.launchpad) ? entry.launchpad : root)
-          .filter(
-            (gateRow) =>
-              gateRow.repositoryId === state.repositoryId &&
-              typeof gateRow.checkId === "string" &&
-              gateRow.checkId.startsWith(`target:${state.repositoryId}:`) &&
-              Array.isArray(gateRow.baseCheckoutWrites),
-          )
-          .flatMap((gateRow) => gateRow.baseCheckoutWrites),
-      ),
-    ].sort();
+    const gateRows = readGateChecks(
+      existsSync(entry.launchpad) ? entry.launchpad : root,
+    ).filter(
+      (gateRow) =>
+        gateRow.repositoryId === state.repositoryId &&
+        typeof gateRow.checkId === "string" &&
+        gateRow.checkId.startsWith(`target:${state.repositoryId}:`),
+    );
+    baseCheckoutWrites = gateRows.some(
+      (gateRow) => gateRow.baseCheckoutWrites === null,
+    )
+      ? null
+      : [
+          ...new Set(
+            gateRows
+              .filter(
+                (gateRow) =>
+                  gateRow.repositoryId === state.repositoryId &&
+                  typeof gateRow.checkId === "string" &&
+                  gateRow.checkId.startsWith(`target:${state.repositoryId}:`) &&
+                  Array.isArray(gateRow.baseCheckoutWrites),
+              )
+              .flatMap((gateRow) => gateRow.baseCheckoutWrites),
+          ),
+        ].sort();
   } catch {
     // This observation is advisory. An unreadable record says nothing about
     // base writes; the actual checkout still undergoes every close judgment.
@@ -264,6 +334,7 @@ export const closeTargetWorktree = async (root, state, dryRun, record) => {
     finderMetadata: {},
     disposable: { target: [], base: [] },
     baseCheckoutWrites,
+    baseDisposablePolicy,
   });
   const manifestPath = ".claude/target-worker-manifest.json";
   const targetId = createHash("sha256").update(entry.target).digest("hex");
@@ -299,18 +370,13 @@ export const closeTargetWorktree = async (root, state, dryRun, record) => {
     }
     if (existsSync(join(lane, "installation.json")) || member)
       throw new Error(
-        `target bundle manifest is missing while installation ownership remains; source retained. Restore the installed ${manifestPath} and its bundle files before rerunning ${releaseCloseCommand(root, state.workOrderId, dryRun ? "--dry-run" : "--publish")}`,
+        `target bundle manifest is missing while installation ownership remains; source retained. Restore the installed ${manifestPath} and its bundle files before rerunning ${releaseCloseCommand(root, state.workOrderId, retryMode)}`,
       );
   };
   if (!existsSync(entry.target)) requireReleasedBundleOwnership();
   const { checkTargetHarness, removeTargetHarness } =
     await import("./harness.mjs");
-  const rerun = () =>
-    releaseCloseCommand(
-      root,
-      state.workOrderId,
-      dryRun ? "--dry-run" : "--publish",
-    );
+  const rerun = () => releaseCloseCommand(root, state.workOrderId, retryMode);
   const holders = parseWorktrees(entry.clone).filter(
     (item) => item.branch === `refs/heads/${entry.baseBranch}`,
   );
@@ -328,7 +394,22 @@ export const closeTargetWorktree = async (root, state, dryRun, record) => {
   // close then completes only when the base needs no move.
   const staleHolder = baseCheckout ? undefined : holders[0];
   const mutationRoot = baseCheckout ?? entry.clone;
-  withWriterReservationLock(mutationRoot, () => {
+  const locked = (directory, label, operation) => {
+    try {
+      return withWriterReservationLock(directory, operation);
+    } catch (error) {
+      if (
+        /writer registration.*(?:in progress|requires inspection)/u.test(
+          error.message,
+        )
+      )
+        throw new Error(
+          `${label}: writer transition lock requires inspection; source retained. Confirm no registration or teardown is running, inspect the named lock through the writer diagnostics and remove only a proven abandoned lock, then rerun ${rerun()}`,
+        );
+      throw error;
+    }
+  };
+  locked(mutationRoot, `target clone base ${entry.baseBranch}`, () => {
     const blocker = writerTeardownBlocker(mutationRoot);
     if (blocker)
       throw new Error(
@@ -338,14 +419,16 @@ export const closeTargetWorktree = async (root, state, dryRun, record) => {
     // local base cannot partially change the clone's references. The base
     // checkout is judged by the fetched tree's ignore rules, so the fetch
     // comes first; no ref moves until the judgment passes.
+    let fetched;
     try {
-      git(entry.clone, [
-        "fetch",
-        "--no-tags",
-        "--refmap=",
-        "origin",
-        entry.baseBranch,
-      ]);
+      const urls = git(entry.clone, [
+        "config",
+        "--get-all",
+        "remote.origin.url",
+      ]).split("\n");
+      if (urls.length !== 1 || !urls[0])
+        throw new Error("origin must have one fetch URL");
+      fetched = fetchRemoteBranch(entry.clone, urls[0], entry.baseBranch);
     } catch (error) {
       // A local-path origin is named by role too; it may share the clone's
       // path as a prefix, so it is listed as well and the longer one wins.
@@ -364,7 +447,6 @@ export const closeTargetWorktree = async (root, state, dryRun, record) => {
         )}; source retained. Fix the fetch, then rerun ${rerun()}`,
       );
     }
-    const fetched = git(entry.clone, ["rev-parse", "FETCH_HEAD^{commit}"]);
     let baseMetadata = [];
     let baseDisposable = [];
     if (baseCheckout) {
@@ -395,21 +477,14 @@ export const closeTargetWorktree = async (root, state, dryRun, record) => {
           `${base} cannot close: ${quoteGitFailure(error, baseCheckout, base)}; source retained. Fix what Git reports, then rerun ${rerun()}`,
         );
       }
-      // Each undeclared path is named once by its top-level directory, and a
-      // long list is cut with its count kept.
+      // Name the actual ignored file; a tracked ancestor is never a remedy.
       const undeclared = [
         ...new Set(
-          [...ignored]
-            .filter(
-              (file) =>
-                !underDisposable(disposable, file) &&
-                !isFinderMetadata(baseCheckout, file),
-            )
-            .map((file) =>
-              file.includes("/")
-                ? `${file.slice(0, file.indexOf("/"))}/`
-                : file,
-            ),
+          [...ignored].filter(
+            (file) =>
+              !underDisposable(disposable, file) &&
+              !isFinderMetadata(baseCheckout, file),
+          ),
         ),
       ].sort();
       if (undeclared.length)
@@ -424,6 +499,41 @@ export const closeTargetWorktree = async (root, state, dryRun, record) => {
         underDisposable(disposable, file),
       );
       row.disposable.base = disposableRows(baseDisposable, disposable);
+      if (baseDisposablePolicy === "judge-only" && candidates.length) {
+        const originals = new Set(candidates),
+          prefixes = new Set(candidates);
+        for (const file of candidates) {
+          const parts = file.split("/");
+          while (parts.length > 1) {
+            parts.pop();
+            prefixes.add(parts.join("/"));
+          }
+        }
+        const collisions = selectGitPaths(
+          entry.clone,
+          [...HOST_GIT_READ, "ls-tree", "-r", "--name-only", "-z", fetched],
+          (file) => {
+            if (prefixes.has(file)) return true;
+            const parts = file.split("/");
+            while (parts.length > 1) {
+              parts.pop();
+              if (originals.has(parts.join("/"))) return true;
+            }
+            return false;
+          },
+        );
+        if (collisions.length)
+          throw new Error(
+            `${base} judge-only output collides with fetched tracked paths: ${collisions.slice(0, 20).join(", ")}; source retained. Preserve that output outside those paths, then rerun ${rerun()}`,
+          );
+      }
+      inspectDisposable(
+        baseCheckout,
+        disposable,
+        base,
+        rerun,
+        baseDisposablePolicy === "delete",
+      );
     }
     const localBase = runGit(
       entry.clone,
@@ -493,29 +603,42 @@ export const closeTargetWorktree = async (root, state, dryRun, record) => {
     // target leaves the base checkout, its output and its branch untouched.
     const moveBase = () => {
       if (baseCheckout) {
-        removeFinderMetadata(baseCheckout, baseMetadata);
-        deleteDisposable(baseCheckout, baseDisposable, disposable);
+        if (baseDisposablePolicy === "delete") {
+          removeFinderMetadata(baseCheckout, baseMetadata);
+          deleteDisposable(baseCheckout, baseDisposable, disposable);
+        }
         moveRef(baseCheckout, [
           "merge",
           "--ff-only",
+          ...(baseDisposablePolicy === "judge-only"
+            ? ["--no-overwrite-ignore"]
+            : []),
           `origin/${entry.baseBranch}`,
         ]);
-      } else
+      } else if (localBase !== fetched)
         moveRef(entry.clone, [
-          "update-ref",
-          `refs/heads/${entry.baseBranch}`,
-          fetched,
-          localBase ?? "",
+          "fetch",
+          "--no-tags",
+          ".",
+          `${fetched}:refs/heads/${entry.baseBranch}`,
         ]);
     };
     const containsBranch = () => {
       if (git(entry.clone, ["branch", "--list", entry.branch]))
-        git(entry.clone, [
-          "merge-base",
-          "--is-ancestor",
-          entry.branch,
-          `origin/${entry.baseBranch}`,
-        ]);
+        if (
+          spawnGit([
+            "-C",
+            entry.clone,
+            ...HOST_GIT_READ,
+            "merge-base",
+            "--is-ancestor",
+            entry.branch,
+            `origin/${entry.baseBranch}`,
+          ]).status !== 0
+        )
+          throw new Error(
+            `target branch ${entry.branch} is not merged into origin/${entry.baseBranch}; source retained. Merge the reviewed branch, then rerun ${rerun()}`,
+          );
     };
     containsBranch();
     const registered = parseWorktrees(entry.clone).find(
@@ -527,7 +650,7 @@ export const closeTargetWorktree = async (root, state, dryRun, record) => {
         throw new Error(
           `target worktree registration differs; source retained. Inspect git worktree list in the clone, then rerun ${rerun()}`,
         );
-      withWriterReservationLock(entry.target, () => {
+      locked(entry.target, "target worktree", () => {
         const blocker = writerTeardownBlocker(entry.target);
         if (blocker)
           throw new Error(
@@ -620,8 +743,9 @@ export const closeTargetWorktree = async (root, state, dryRun, record) => {
           .sort();
         if (other.length)
           throw new Error(
-            `target has undeclared ignored material; source retained: ${other.join(", ")}. Declare it disposable in the registration or remove it; regenerable build output is deleted at close, never moved to scratch. Then rerun ${releaseCloseCommand(root, state.workOrderId, dryRun ? "--dry-run" : "--publish")}`,
+            `target has undeclared ignored material; source retained: ${other.join(", ")}. Declare it disposable in the registration or remove it; regenerable build output is deleted at close, never moved to scratch. Then rerun ${releaseCloseCommand(root, state.workOrderId, retryMode)}`,
           );
+        inspectDisposable(entry.target, disposable, "target worktree", rerun);
         if (dryRun) return;
         // Declared output goes before the bundle, so a failure there retains
         // the bundle and a retry judges the same tree.
@@ -658,13 +782,13 @@ export const closeTargetWorktree = async (root, state, dryRun, record) => {
     // branch deletion checks HEAD, which may be detached at an older commit.
     if (git(entry.clone, ["branch", "--list", entry.branch]))
       git(entry.clone, ["branch", "-D", entry.branch]);
-    if (existsSync(entry.launchpad))
-      forgetTargetWorktree(entry.launchpad, entry.target);
-    forgetTargetWorktree(root, entry.target);
     // The literal-rule fallback's rules never outlive the order (WO-221).
     row.hostRules = removeOrderHostRules(root, state.workOrderId)
       ? "removed"
       : "none";
+    if (existsSync(entry.launchpad))
+      forgetTargetWorktree(entry.launchpad, entry.target);
+    forgetTargetWorktree(root, entry.target);
     row.outcome = "removed";
   });
 };

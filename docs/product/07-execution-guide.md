@@ -672,10 +672,18 @@ decisions and filed reports into the target's `documentationRoot`, retaining
 control state, raw evidence and links in the launchpad.
 
 `dotln.config.json` at the launchpad root declares schema `version: 1` and the
-optional sections `roots`, `classes`, `repositories`, `build`, `release`, `kit`, `derivedOrders` and `portfolios` (§Declaring a portfolio). **Its absence
-means today's layout, byte for byte**, so this repository ships no such file and
-`status --json`, `current.md`, the generated index, `times`, `usage` and a
-release manifest derived over the real log are unchanged by its introduction.
+optional sections `roots`, `classes`, `repositories`, `build`, `release`, `kit`, `derivedOrders`, `portfolios` (§Declaring a portfolio), `historicalWorkOrders` and `contributions`. **Its absence
+means today's layout, byte for byte**, with no pre-control historical order and no
+contributor sign-off exemption, so `status --json`, `current.md`, the generated
+index, `times`, `usage` and a release manifest derived over the real log are
+unchanged by its introduction. This repository ships the file with
+`historicalWorkOrders` naming `WO-001` and `WO-002` and `contributions.operatorAuthor`
+naming the operator's public author identity, and no other section (WO-218); an
+exported instance declares its own pre-control ids and exemption or neither, because
+the kit supplies none. `historicalWorkOrders` lists distinct `WO-NNN` ids that the
+index shows as historical and that no typed dependency may name as hard or
+satisfied; `contributions.operatorAuthor` is one `Name <email>` identity the
+contribution check exempts from sign-off, never read from Git configuration.
 `kit.applyInstanceActions` defaults to false; true permits `launchpad export --update <dir> --apply` to perform the kit's declared instance actions.
 
 `roots` maps a root name to a relative POSIX path inside the launchpad. The
@@ -805,7 +813,14 @@ The command lists authored conflicts and exits nonzero while work remains.
 Resolve those paths explicitly, stage those resolutions, then use
 `npm run worktree -- integrate WO-NNN --continue`. The ignored integration
 receipt keeps the original bases, checkpoint and stash across this boundary;
-the stash is never popped or dropped. A clean-tree continuation adopts only
+the stash is never popped or dropped. If application was interrupted at stage
+`applying`, inspect and complete the application, stage resolved content, and
+use `worktree integrate WO-NNN --continue --stash-applied`; this attestation
+still checks conflicts, restored untracked files and upstream ancestry. The
+stash-drop helper publishes a whole recovery snapshot atomically before changing
+the ref and reflog. A stopped helper retains its locks and snapshot; its named
+remedy requires checking for a live Git process before removing stale locks,
+and restoring both the ref and reflog when they disagree. A clean-tree continuation adopts only
 the stash named for this integration and its original base; ambiguous matches
 require explicit inspection. The helper commits a resolved divergent merge
 before applying the stash, retaining uncommitted work for the current role. An authored
@@ -1586,8 +1601,11 @@ the tag and Release exist, no worktree for the order appears in
 empty, and no starter-refresh blocker remains. The lower-version no-release
 outcome remains explicit. Diagnose and
 finish cleanup blockers in the dispatched session; re-running the same command
-re-checks an existing Release and never publishes twice. A retry after main
-moves can refuse and remains a blocker. Retry a host denial of the exact
+re-checks an existing Release and never publishes twice. A retry after main moves validates the original annotated tag's commit,
+manifest and order binding; later main commits do not retarget publication.
+One close per order runs at a time. The latest receipt keeps eight inline
+attempts and hash-named immutable archives; retries verify those archives
+before using older publication or cleanup bindings. Retry a host denial of the exact
 command once through the host permission flow before handing the operator the
 printed command for `!`. A scratch repository, a nested repository outside
 the intake lane that the tracked tree does not declare as a submodule, is
@@ -1622,16 +1640,22 @@ clone map. The helper checks the published head, checkout identity, branch,
 cleanliness, remote binding and ancestry, then updates a disposable worktree
 (or exports the kit for the first time). The export’s own emit, predicted
 bundle comparison, harness check, kit verify and exact staged-file check run
-before the hookless push. After the push, core's release tag name is pushed
+before the hookless push. Before the branch push, an existing sibling tag must name the proposed
+refresh commit or a proven prior refresh of the same core release. GitHub
+availability and authentication precede the tag push. After the branch push,
+core's release tag name is pushed
 as an annotated tag onto the refresh commit through the same isolated lane
 and the sibling's GitHub Release is created pointing at it, with a one-line
 body naming core's Release, so a fork previews `--from vX.Y.Z`; a retry
-finds both and reports current. The tag's name is core's, so a fork whose
-`git fetch upstream` follows tags takes it into its clone, where
-`check-surfaces --local` and `release prepare --local` read every tag
-merged into HEAD as the instance's own baseline; until WO-218's row lands,
-a fork sets `remote.upstream.tagOpt` to `--no-tags` and removes the tag
-(the fork's observation, the 2026-10-19 fork-requests pass §5). A tag at another commit refuses unless it is
+finds both and reports current. The tag's name is core's. A fork configures
+`remote.upstream.tagOpt=--no-tags`, fetches with `--no-tags`, and previews a
+named starter release through a non-tag ref. Local instance release checks
+exclude annotated tags whose message begins `Starter <tag>` and binds a
+`Core commit:`; ordinary tags reachable from the current `HEAD` still count.
+Both `check-surfaces --local` and `release prepare --local` use that ancestry
+boundary: worktrees share tag refs, so an unintegrated sibling release must
+not retime this worktree. Integrating its history makes its ordinary tags
+eligible; publication still checks origin. A tag at another commit refuses unless it is
 an ancestor whose committed kit manifest names this exact core commit and
 release tag, preserving the first tag through a seed-only refresh; ancestry
 alone does not establish that provenance (WO-221). Direct template seeds are refreshed only when each
@@ -1678,19 +1702,26 @@ name a relative path and the read-access remedy. Refresh and target-close
 receipts record metadata-scan durations and skipped ignored directories.
 An ignored ownership record retains disposable
 worktree and branch cleanup across failures; retries finish that cleanup before
-reporting current or skipped. If the clone map has changed, inspect the ignored
+reporting current or skipped. Cleanup uses the recorded temporary parent and
+filesystem identity, so changing TMPDIR alone does not strand it. If the clone map has changed, inspect the ignored
 `<control-root>/local/starter-refresh/<sibling-id>.json`, restore its `checkout`
 with `worktree clone <sibling-id> <absolute-path>`, retry close to finish cleanup,
 then record the replacement checkout. Cleanup never adopts that replacement's
-objects. The checkout fast-forwards after success.
+objects. If the physical checkout moved or disappeared, changing the mapping
+alone cannot recover it: restore the checkout at its recorded path or perform
+explicit manual ownership recovery. The checkout fast-forwards after success.
 The five-field sibling receipt waits in main’s ignored pending lane; the next
 `worktree start` carries it into the new order’s reviewed change and regenerates
-its registry before consuming the pending file. `release-close.json` and the
+its registry before consuming the pending file. Duplicate receipts for one
+manifest collapse to one registry entry. A resumed start skips a missing
+captured receipt only after finding the same hash in another worktree;
+otherwise it refuses and names restoring the evidence. `release-close.json` and the
 summary record each refresh without the local path. A refusal is a close
 blocker with the same retry command and leaves publication unchanged. Target
 orders, older-version closes and non-publishing closes refresh nothing;
 dry runs judge the head main would fast-forward to and preview the checks
-without changing checkout files or publishing. Pending refresh or validated
+without changing checkout files or publishing, including the proposed sibling
+tag and Release. Pending refresh or validated
 cleanup work reports `preview`; an already current starter reports `current`,
 and a cleanup ownership mismatch refuses with the same recovery guidance.
 
@@ -1707,8 +1738,8 @@ refuses naming the entry and the remedy; a checkout it cannot inspect
 refuses. A close refusal that names a path names it relative to its tree, by
 the tree's role, never as an absolute path; the rerun command it prints is
 the one exception, carrying the launchpad's real path so it runs as pasted. An
-ignored-material refusal lists each foreign path
-once, collapsing a directory only when it contains no bundle-owned path, and
+ignored-material refusal lists each foreign path once, retaining nested path
+names in the base checkout, and
 prints the exact close command to rerun after moving or removing the listed
 paths. Regular untracked `.DS_Store` files at any depth are disposable Finder
 metadata, whether Git ignores them or not: they do not make the target or its
@@ -1729,13 +1760,20 @@ ignored path under a declared path is deleted from the target worktree before
 the ignored-material judgment, and the base checkout's untracked files are
 judged by the fetched base's `.gitignore` blobs, never the pre-merge working
 copy's rules, global excludes or init templates. The ignore judgment supports
-the same 16 MiB path list as its candidate scan. Unreadable ignored base
-directories and unreadable declared target output refuse before deletion,
-naming the directory and the read/search-access remedy. The scan includes already-ignored files and files the fetched
+a streaming tracked-tree scan that retains only ignore blobs; a candidate
+path list exceeding 16 MiB refuses with a named reduce-tree remedy and never
+echoes the captured path list. Unreadable ignored base directories, unwritable declared output and symlink
+components under disposable paths refuse before deletion, naming the tree,
+path and access or preservation remedy. The scan includes already-ignored files and files the fetched
 tree stops ignoring: one the fetched tree ignores under a declared path is deleted,
 one it ignores outside every declaration refuses naming the path and the
 registration remedy, and one it does not ignore keeps the ordinary refusal.
-Regenerable output is deleted, never moved to scratch or offered back;
+The registration's optional `baseDisposablePolicy: "judge-only"` retains the
+base checkout's output while keeping every material judgment and refusing
+collisions with fetched tracked paths; the default `"delete"` also deletes
+its declared output. Both policies delete the target worktree's declared output.
+Preview, receipt and role text name the policy. Regenerable output selected
+for deletion is deleted, never moved to scratch or offered back;
 preservation is for operator material, evidence and intake. The receipt lists
 the deleted roots with their file counts and repeats the gate's
 `baseCheckoutWrites` advisory, the untracked files a gate command left in the
@@ -1750,8 +1788,13 @@ proven, the next `v*` tag above the tags the merged base reaches (none means
 with that attempt's recorded commit, even if the base later advances) is
 created as an annotated tag on the merged base through the
 isolated lane and the target's GitHub Release is created from the order's
-title and objective; `--dry-run` previews the tag, an equal tag on the merged
-commit is an idempotent retry, and a tag at another commit refuses by name.
+title and objective. The registration's optional `release.displayName` uses the launchpad name
+shape and 64-character limit, defaults to the registration id, and makes the
+Release title and tag message's first line `<displayName> <tag>`; the order title
+and close line follow. Existing Releases keep their titles. `--dry-run` previews
+the tag and title. Only a recorded real attempt owns an idempotent tag retry;
+a different order's same-commit tag remains a baseline, and a tag at another
+commit refuses by name. All publication prerequisites precede target deletion.
 A retry never adopts a moved tag; if the remote tag disappeared, it can only
 recreate the tag at the recorded commit
 (WO-221).
@@ -1849,7 +1892,12 @@ is legal at `verified` with a passing verification: it reads the body's
 working bytes, writes a commit object from the target worktree's working tree
 through a temporary index (HEAD and the index unchanged), pushes it to the
 declared branch from the isolated lane, opens a draft pull request and records
-`PullRequestOpened` with `draft`, `branch` and `headSha`; a draft at `active`
+`DraftPrepared` before remote effects, then `PullRequestOpened` with `draft`,
+`branch` and `headSha`. Retries reuse the prepared commit, bind the repository,
+and refuse an unexpected remote head with the branch, recorded head, PR and
+recovery direction; an attempt that never created its branch may create it
+under an empty lease. Ignored and intake body paths, including symlinks into
+those paths, refuse. A draft at `active`
 or `ready-to-verify` refuses naming the phase, a second draft at the same tree
 reports already published, and one at a new tree updates the same pull
 request. The closed-phase publish of the same order reuses that branch and
@@ -1858,10 +1906,11 @@ the recorded draft head, updates the title and body, marks the pull request
 ready and records the reuse; another `--branch` refuses. One pull request per
 order; core names no draft step and no actor, the instance's order does
 (WO-221). Trust for these commands comes from the registration and the kit:
-the emitted hook admits the recorded target worktree's push, `gh pr` and
-helper forms at the phases the lifecycle makes them legal, under main's
-committed registration and operator grant, with host deny rules still
-applying; `worktree start` prints the Codex `--add-dir` and Copilot
+the emitted hook admits only the node spelling of the controlled publish
+helper at the phases the lifecycle makes them legal, under main's
+committed registration, authority profile, operator grant and clone map, with
+host deny rules still applying. Raw Git, gh and npm receive no automatic
+registered-target admission; `worktree start` prints the Codex `--add-dir` and Copilot
 `--allow-tool` lines; and a registration's `hostRules: "literal"` writes that
 order's exact rules to the main checkout's untracked local settings and
 `.codex/rules/dotln-WO-NNN.rules` until the close removes them, `harness check`
@@ -1878,6 +1927,14 @@ operator already held; JSON settings contain no comment markers and Codex's
 TOML configuration contains no prefix-rule table. A `host-rules --rewrite`
 requires the committed literal opt-in and matching target registration before
 changing any rules; `--remove` remains available after opt-out for recovery.
+Settings and sidecars are checked before start or close mutations. The Codex
+file hash and path are owned by that sidecar and its exact ignore line is
+removed at teardown. Rewrite removes retired owned prefixes; removal journals
+the before/after allow lists by hash before replacing settings atomically, so
+a retry removes one owned occurrence and preserves duplicates. Intervening
+allow-list edits refuse for inspection, and an incomplete removal must finish
+before a rewrite. A removed and identically re-added
+sole operator rule is unobservable and remains an ownership limitation.
 Its latest passing final
 review must bind `targetSubject` and `targetGate`, and `TargetRecordsCommitted`
 must bind the target's current clean HEAD as a records-only child of the
@@ -1913,7 +1970,11 @@ the launchpad document gate still judges its documents. Passing final review
 records `targetGate` at the clean reviewed commit. `npm run resume --
 target-records` copies the order and moves decisions and every filed report
 into that root as one records-only commit, recording paths and hashes in
-`TargetRecordsCommitted`. An ignored pending receipt lets the same command
+`TargetRecordsCommitted`. Metadata, follow-up indexes and status resolve moved
+records through the recorded repository, commit, root, path and hash, reading
+regular blobs without replacement refs; current registration paths and working
+copies cannot replace that evidence. Run `npm run meta` and `npm run plan --
+followups --sync` after moving records. An ignored pending receipt lets the same command
 resume an interrupted commit or source removal after verifying the exact bytes.
 Records-only and planning commits use the host's signing policy, as starter
 refresh does; hooks and filesystem monitors stay disabled. A signing failure
@@ -1921,7 +1982,8 @@ retains the pending work for retry.
 Changed inputs refuse with the work retained. Raw evidence and the body stay in the instance.
 `npm run plan -- target-publish <repository-id> --base <commit> --from
 <directory> --branch docs/<slug> --title <title> --body-file <path>` publishes
-only product and planning documents under the same root from the planner's
+only product and planning documents under the same root, refusing hidden files,
+Finder metadata, editor backups and unsupported file extensions from the planner's
 read commit. The title becomes the commit subject and must use the conventional
 `docs:` or `docs(scope):` type; other types refuse before remote access.
 Its operator-grant registry must match committed authority bytes; unrelated

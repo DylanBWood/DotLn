@@ -27,5 +27,10 @@
   "export update preserves ownership, validates actions and keeps the exported resident",
   "starter refresh publishes one verified commit and preserves every refusal boundary",
   "starter seed floor rule agrees with the harness emit's composition",
-  "starter staged tree refuses clean-filter changes to verified bytes"
+  "starter staged tree refuses clean-filter changes to verified bytes",
+  "export refuses a replaced blob hidden by assume-unchanged before destination creation",
+  "describeTag names original objects: a replacement ref cannot redirect the exact or nearest tag",
+  "historical starter floors retain provenance through navigation migration",
+  "seed preflight and runtime emit share dependency-free harness composition",
+  "follow-up exports refuse reserved local names regardless of case"
 ]

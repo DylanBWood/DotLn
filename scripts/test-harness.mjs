@@ -109,6 +109,7 @@ import {
   emitHarness,
   harnessInstallation,
   harnessInstructionBlock,
+  composeHarnessInstruction,
   preserveHarnessRuntime,
   readBuildOverlay,
   runtimePackageInventory,
@@ -2038,7 +2039,7 @@ test("WO-178 exact close helper admission requires the recorded dispatch, main a
   }
 });
 
-test("WO-221 registered-target admission admits the recorded worktree's publication commands at verified and closed and nothing outside the registration", () => {
+test("WO-221 registered-target admission admits only the bound publication helper at verified and closed and nothing outside the registration", () => {
   const root = fixture();
   const base = realpathSync(mkdtempSync(join(tmpdir(), "dotln-wo221-target-")));
   const identity = [
@@ -2086,6 +2087,7 @@ test("WO-221 registered-target admission admits the recorded worktree's publicat
       }),
     );
     write(root, "packages/skeleton/loadouts/grants.json", json([]));
+    write(root, "b.md", "Public draft body.\n");
     commitAll(root, "Register the target without a grant");
     runGit(root, ["branch", "main"], fixtureGitOptions);
     const mainCheckout = join(base, "main-checkout");
@@ -2133,6 +2135,20 @@ test("WO-221 registered-target admission admits the recorded worktree's publicat
         },
       }),
     );
+    write(
+      mainCheckout,
+      "docs/control/local/target-worktrees.json",
+      readFileSync(
+        join(root, "docs/control/local/target-worktrees.json"),
+        "utf8",
+      ),
+    );
+    write(
+      mainCheckout,
+      "docs/control/local/repository-clones.json",
+      json({ target: clone }),
+    );
+    const helper = `node ${join(root, "scripts/worktree.mjs")} publish WO-999 --target-worktree --draft --branch feat/x --title "feat: x" --body-file b.md`;
     const status = (phase, latestVerdict = null) =>
       write(
         root,
@@ -2169,6 +2185,7 @@ test("WO-221 registered-target admission admits the recorded worktree's publicat
     const draftCreate = `gh pr create --draft --repo ${selector} --head wo-999 --base main --title "feat: draft" --body-file body.md`;
     status("verified", "pass");
     withheld(push);
+    withheld(helper);
     write(
       mainCheckout,
       "packages/skeleton/loadouts/grants.json",
@@ -2185,11 +2202,108 @@ test("WO-221 registered-target admission admits the recorded worktree's publicat
       ]),
     );
     commitAll(mainCheckout, "Grant repo.push and pr.open for the target");
-    allowed(push);
-    allowed(`git -C ${target} push origin wo-999`);
-    allowed(draftCreate);
-    allowed(`gh pr view 7 --repo ${selector}`);
-    allowed(push, {}, { COPILOT_PROJECT_DIR: root });
+    write(
+      root,
+      "packages/skeleton/loadouts/grants.json",
+      readFileSync(
+        join(mainCheckout, "packages/skeleton/loadouts/grants.json"),
+        "utf8",
+      ),
+    );
+    allowed(helper);
+    withheld(
+      helper.replace(
+        `node ${join(root, "scripts/worktree.mjs")}`,
+        "npm run worktree --",
+      ),
+    );
+    const registryFile = "docs/control/local/target-worktrees.json";
+    const registryBytes = readFileSync(join(root, registryFile), "utf8");
+    const registry = JSON.parse(registryBytes);
+    for (const mutate of [
+      (row) => {
+        row.origin = null;
+      },
+      (row) => {
+        row.clone = target;
+      },
+    ]) {
+      const changed = structuredClone(registry);
+      mutate(changed[target]);
+      write(root, registryFile, json(changed));
+      withheld(helper);
+      write(mainCheckout, registryFile, json(changed));
+      withheld(helper);
+      write(root, registryFile, registryBytes);
+      write(mainCheckout, registryFile, registryBytes);
+    }
+    const configBytes = readFileSync(
+      join(mainCheckout, "dotln.config.json"),
+      "utf8",
+    );
+    for (const mutate of [
+      (profile) => {
+        profile.expiresAt = 0;
+      },
+      (profile) => {
+        profile.deniedEffects = ["repo.push"];
+      },
+      (profile) => {
+        profile.revocationConditions = [{ registryId: "unknown", version: 1 }];
+      },
+    ]) {
+      const changed = JSON.parse(configBytes);
+      mutate(changed.repositories.target.authorityProfile);
+      write(mainCheckout, "dotln.config.json", json(changed));
+      write(root, "dotln.config.json", json(changed));
+      commitAll(mainCheckout, "Change registered authority for refusal");
+      withheld(helper);
+    }
+    write(mainCheckout, "dotln.config.json", configBytes);
+    write(root, "dotln.config.json", configBytes);
+    commitAll(mainCheckout, "Restore registered authority");
+    allowed(helper);
+    const closureFile = "packages/skeleton/src/admission-extra.mjs";
+    write(mainCheckout, closureFile, "export const pinned = 1;\n");
+    commitAll(mainCheckout, "Pin helper source dependency");
+    write(root, closureFile, "export const pinned = 2;\n");
+    withheld(helper);
+    write(root, closureFile, "export const pinned = 1;\n");
+    runGit(root, ["add", closureFile]);
+    allowed(helper);
+    for (const flag of ["assume-unchanged", "skip-worktree"]) {
+      runGit(root, ["update-index", `--${flag}`, closureFile]);
+      write(root, closureFile, "export const pinned = 9;\n");
+      withheld(helper);
+      write(root, closureFile, "export const pinned = 1;\n");
+      runGit(root, ["update-index", `--no-${flag}`, closureFile]);
+      allowed(helper);
+    }
+    write(root, "docs/intake/private.md", "private fixture body");
+    withheld(helper.replace("b.md", "docs/intake/private.md"));
+    symlinkSync(
+      join(root, "docs/intake/private.md"),
+      join(root, "linked-body.md"),
+    );
+    withheld(helper.replace("b.md", "linked-body.md"));
+    rmSync(join(root, "linked-body.md"));
+    // A link outside both checkouts to an ignored body: Git cannot judge
+    // the lexical path, and that answer withholds rather than admits.
+    write(root, "docs/control/local/private-body.md", "ignored fixture body\n");
+    symlinkSync(
+      join(root, "docs/control/local/private-body.md"),
+      join(base, "outside-body.md"),
+    );
+    withheld(helper.replace("b.md", join(base, "outside-body.md")));
+    rmSync(join(base, "outside-body.md"));
+    withheld(push);
+    withheld(`git -C ${target} push origin wo-999`);
+    withheld(draftCreate);
+    withheld(`gh pr view 7 --repo ${selector}`);
+    withheld("gh pr view 7", {
+      tool_input: { command: "gh pr view 7", cwd: target },
+    });
+    withheld(push, {}, { COPILOT_PROJECT_DIR: root });
     for (const command of [
       `git -C ${join(base, "elsewhere")} push -u origin wo-999`,
       `git -C ${target} push -u origin feature`,
@@ -2244,11 +2358,11 @@ test("WO-221 registered-target admission admits the recorded worktree's publicat
     withheld(push);
     withheld(draftCreate);
     status("closed", "pass");
-    allowed(push);
+    withheld(push);
     // Without a draft record no pull request is the order's to ready or edit,
     // and a body outside the launchpad and the target admits nothing.
     withheld(`gh pr ready 7 --repo ${selector}`);
-    allowed(
+    withheld(
       `gh pr create --repo ${selector} --head wo-999 --base main --title "feat: final" --body-file b.md`,
     );
     withheld(
@@ -2265,10 +2379,10 @@ test("WO-221 registered-target admission admits the recorded worktree's publicat
       "docs/control/local/target-publications/WO-999/events.jsonl",
       `${JSON.stringify({ type: "PullRequestOpened", payload: { repositoryId: selector, number: 7, headSha: draftHead, draft: true, branch: "feat/draft" } })}\n`,
     );
-    allowed(
+    withheld(
       `git -C ${target} push --force-with-lease=feat/draft:${draftHead} origin feat/draft`,
     );
-    allowed(`git -C ${target} push origin feat/draft`);
+    withheld(`git -C ${target} push origin feat/draft`);
     withheld(
       `git -C ${target} push --force-with-lease=feat/draft:${"0".repeat(40)} origin feat/draft`,
     );
@@ -2279,8 +2393,8 @@ test("WO-221 registered-target admission admits the recorded worktree's publicat
     // Ready and edit name the recorded pull request, keep the registered base
     // and a body inside the checkouts; the base branch is never a push target;
     // another executable spelled as the helper's node admits nothing.
-    allowed(`gh pr ready 7 --repo ${selector}`);
-    allowed(
+    withheld(`gh pr ready 7 --repo ${selector}`);
+    withheld(
       `gh pr edit 7 --repo ${selector} --title "feat: final" --body-file b.md`,
     );
     withheld(`gh pr ready 1 --repo ${selector}`);
@@ -2296,7 +2410,7 @@ test("WO-221 registered-target admission admits the recorded worktree's publicat
     withheld(
       `git -C ${target} push --force-with-lease=feat/draft:${draftHead} origin feat/draft`,
     );
-    allowed(`git -C ${target} push origin feat/draft`);
+    withheld(`git -C ${target} push origin feat/draft`);
     status("closed", "pass");
     // A host deny rule in the emitted settings wins over the admission, in
     // the raw spelling and in a quoted or double-spaced one.
@@ -2320,7 +2434,7 @@ test("WO-221 registered-target admission admits the recorded worktree's publicat
       rows.some(
         (row) =>
           row.registeredTargetAdmission?.workOrder === "WO-999" &&
-          row.registeredTargetAdmission.kind === "push",
+          row.registeredTargetAdmission.kind === "helper",
       ),
     );
     assert.ok(
@@ -2328,6 +2442,27 @@ test("WO-221 registered-target admission admits the recorded worktree's publicat
         /Registered-target admission withheld/u.test(row.advisory ?? ""),
       ),
     );
+    const configured = JSON.parse(
+      readFileSync(join(mainCheckout, "dotln.config.json"), "utf8"),
+    );
+    configured.roots = { control: "records/control" };
+    write(mainCheckout, "dotln.config.json", json(configured));
+    commitAll(mainCheckout, "Move the instance control root");
+    write(root, "dotln.config.json", json(configured));
+    for (const checkout of [mainCheckout, root]) {
+      for (const name of [
+        "target-worktrees.json",
+        "repository-clones.json",
+        "target-publications.json",
+      ]) {
+        const prior = join(checkout, "docs/control/local", name);
+        if (!existsSync(prior)) continue;
+        write(checkout, `records/control/local/${name}`, readFileSync(prior));
+        rmSync(prior);
+      }
+    }
+    status("verified", "pass");
+    allowed(helper);
   } finally {
     rmSync(base, { recursive: true, force: true });
     rmSync(root, { recursive: true, force: true });
@@ -4832,6 +4967,9 @@ test("WO-076 build none removes owned surfaces, keeps the floor and checks witho
       readFileSync(join(root, ".claude/harness-manifest.json"), "utf8"),
     );
     const floor = "# Fixture locked floor\nKeep fixture source isolated.\n";
+    const disabled =
+      floor +
+      "\nNo compiled refusal, hook or verification governs this instance (build: none).\n";
     const options = overlayFixture(root, { version: 1, build: "none" });
     const original = readFileSync(join(root, "CLAUDE.md"), "utf8");
     write(root, "CLAUDE.md", harnessInstructionBlock(original));
@@ -4846,7 +4984,7 @@ test("WO-076 build none removes owned surfaces, keeps the floor and checks witho
     write(root, "CLAUDE.md", original);
     const result = overlayCommand(root, "emit");
     assert.equal(result.status, 0, result.stderr);
-    assert.equal(readFileSync(join(root, "CLAUDE.md"), "utf8"), floor);
+    assert.equal(readFileSync(join(root, "CLAUDE.md"), "utf8"), disabled);
     for (const file of previous.installed)
       if (file.path !== "CLAUDE.md")
         assert.equal(existsSync(join(root, file.path)), false, file.path);
@@ -4867,7 +5005,7 @@ test("WO-076 build none removes owned surfaces, keeps the floor and checks witho
     );
     assert.throws(() => checkHarness(root, options), /floor alone/);
     emitHarness(root, options);
-    assert.equal(readFileSync(join(root, "CLAUDE.md"), "utf8"), floor);
+    assert.equal(readFileSync(join(root, "CLAUDE.md"), "utf8"), disabled);
     const restored = overlayFixture(root, { version: 1 });
     emitHarness(root, restored);
     assert.ok(checkHarness(root, restored).files > 1);
@@ -4881,7 +5019,13 @@ test("WO-076 ungranted widening refuses; grants retain provenance and the envelo
   try {
     const value = {
       version: 1,
-      narrow: { allowedEffects: ["repo.read", "network.request"] },
+      narrow: {
+        allowedEffects: [
+          "repo.read",
+          "network.request",
+          ...contributorOutsideAuthority.flatMap((grant) => grant.effects),
+        ],
+      },
     };
     overlayFixture(root, value);
     const before = installedOverlayBytes(root);
@@ -4900,7 +5044,17 @@ test("WO-076 ungranted widening refuses; grants retain provenance and the envelo
         repo: "project",
         reason: "Fixture owner posture",
       };
-      const options = overlayFixture(root, { ...value, grants: [grant] });
+      const options = overlayFixture(root, {
+        ...value,
+        narrow: {
+          allowedEffects: [
+            ...value.narrow.allowedEffects,
+            "transport.ssh",
+            "package.publish",
+          ],
+        },
+        grants: [grant],
+      });
       emitHarness(root, options);
       checkHarness(root, options);
       const installation = harnessInstallation(options);
@@ -5035,12 +5189,9 @@ test("WO-076 closed overlay schema rejects nested keys, malformed grants and swi
       }),
     /AUTHORITY WIDENING/,
   );
-  const noRead = contributorProgram(undefined, {
-    narrow: { allowedEffects: [] },
-  });
-  assert.deepEqual(
-    noRead.loadout.presence[0].phases[0].envelope.allowedEffects,
-    [],
+  assert.throws(
+    () => contributorProgram(undefined, { narrow: { allowedEffects: [] } }),
+    /restored by grant contributor.outside-temporary/,
   );
 });
 
@@ -7331,6 +7482,8 @@ test("WO-168 a live gate admits four argument forms of listed reads and the seco
     ["wc -l <fixture.ts", read],
     ["wc -l 0< fixture.ts", read],
     ["wc -l < 'fixture one.ts'", read],
+    ["cat < /dev/tcp/localhost/9999", null],
+    ["cat < /dev/udp/localhost/9999", null],
     ["wc -l <> fixture.ts", null],
     ["wc -l <>fixture.ts", null],
     ["wc -l < fix*.ts", null],
@@ -7486,6 +7639,12 @@ test("WO-168 a live gate admits four argument forms of listed reads and the seco
       chmodSync(hook, 0o755);
       denied("git --no-pager diff");
       denied("git --no-pager log -1");
+      denied("git status --short");
+      denied("git diff --check");
+      denied("git --no-pager status --short");
+      denied("'git' --no-pager status --short");
+      denied("'git' --no-pager diff --no-ext-diff --no-textconv");
+      denied("git --no-pager diff --no-ext-diff --no-textconv");
       rmSync(hook);
       admitted("git --no-pager diff");
 
@@ -8623,6 +8782,29 @@ test("WO-168 a granted session root is a real directory: a linked root grants no
     // A root that does not exist yet admits the write that creates it.
     rmSync(scratch);
     judged(scratch, admitted);
+
+    // A real final directory does not legitimize a swapped named ancestor.
+    for (const ancestor of [dirname(scratch), dirname(dirname(scratch))]) {
+      const held = `${ancestor}.held`;
+      renameSync(ancestor, held);
+      const relativeRoot = relative(ancestor, scratch);
+      mkdirSync(join(target, relativeRoot), { recursive: true });
+      symlinkSync(target, ancestor);
+      try {
+        judged(scratch, (reply) => {
+          assert.equal(reply.hookSpecificOutput?.permissionDecision, "deny");
+          assert.ok(
+            reply.hookSpecificOutput.permissionDecisionReason.includes(
+              `ancestor ${ancestor}: it is a symbolic link`,
+            ),
+          );
+        });
+      } finally {
+        rmSync(ancestor);
+        renameSync(held, ancestor);
+        rmSync(join(target, relativeRoot.split("/")[0]), { recursive: true });
+      }
+    }
 
     mkdirSync(dirname(scratchpad), { recursive: true });
     symlinkSync(target, scratchpad);
@@ -12824,7 +13006,7 @@ test("WO-160 prune inventories only published integration stashes and resolves s
       writeFileSync(lock, "other writer lock");
       assert.throws(
         () => pruneHarness(root, { ...options, apply: true }),
-        /EEXIST/,
+        /stash drop lock remains: .*; after checking no Git process holds it, remove this named lock and retry; stash retained/,
       );
       assert.equal(readFileSync(lock, "utf8"), "other writer lock");
       assert.equal(runGit(root, ["stash", "list"], fixtureGitOptions), before);
@@ -14227,5 +14409,176 @@ test("spawn during a live gate is admitted with one advisory; no live gate gives
   } finally {
     active?.release();
     removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("overlay marker text and narrowing undone by grants refuse before writing", () => {
+  const root = fixture();
+  try {
+    const before = installedOverlayBytes(root);
+    const identity = {
+      identityId: "fixture.marker-screen",
+      version: 1,
+      name: "Fixture identity",
+      dispositions: ["Keep decisions inspectable"],
+      invariants: ["Preserve the hand-written floor"],
+      updateLaws: ["Review each build change"],
+      lineage: ["fixture-owned"],
+    };
+    overlayFixture(root, { version: 1 });
+    for (const [value, detail] of [
+      [
+        {
+          version: 1,
+          identity: { ...identity, name: "<!-- dotln-harness:start -->" },
+        },
+        /identity.name.*markers/,
+      ],
+      [
+        { version: 1, narrow: { allowedEffects: ["repo.read"] } },
+        /restored by grant contributor.outside-temporary/,
+      ],
+      [
+        { version: 1, narrow: { deniedEffects: ["outside.write:*"] } },
+        /outside.write.*restored by grant contributor.outside-temporary/,
+      ],
+      [
+        {
+          version: 1,
+          narrow: {
+            revocationConditions: [
+              {
+                registryId: "fixture",
+                version: 1,
+                params: { nested: { "<!-- dotln-harness:end -->": true } },
+              },
+            ],
+          },
+        },
+        /property name.*markers/,
+      ],
+    ]) {
+      write(root, "build/overlay.json", json(value));
+      const result = overlayCommand(root, "emit", ["--out", "refused-overlay"]);
+      assert.equal(result.status, 1, result.stderr);
+      assert.match(result.stderr, /build\/overlay.json/);
+      assert.match(result.stderr, detail);
+      assert.equal(existsSync(join(root, "refused-overlay")), false);
+      assert.deepEqual(installedOverlayBytes(root), before);
+    }
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("every scratchpad component below the temporary prefix is inspected", async () => {
+  const { grantedSessionRoot } =
+    await import("../packages/skeleton/dist/src/harness-host.js");
+  const root = mkdtempSync(join(tmpdir(), "dotln-scratch-ancestors-"));
+  try {
+    const prefix = join(root, "temporary"),
+      target = join(root, "outside");
+    const scratch = join(
+      prefix,
+      "claude-fixture",
+      "project",
+      "session",
+      "scratchpad",
+    );
+    mkdirSync(scratch, { recursive: true });
+    mkdirSync(target);
+    for (const relativePath of [
+      "claude-fixture",
+      "claude-fixture/project",
+      "claude-fixture/project/session",
+      "claude-fixture/project/session/scratchpad",
+    ]) {
+      const ancestor = join(prefix, relativePath),
+        held = `${ancestor}.held`;
+      renameSync(ancestor, held);
+      symlinkSync(target, ancestor);
+      try {
+        assert.match(
+          grantedSessionRoot(scratch, prefix).cause,
+          /symbolic link/,
+        );
+      } finally {
+        rmSync(ancestor);
+        renameSync(held, ancestor);
+      }
+    }
+    assert.equal(grantedSessionRoot(scratch, prefix).cause, undefined);
+    // Normalized comparison: a doubled slash or a relative spelling of the
+    // prefix and root resolve to the same walk, and a root outside its
+    // prefix withholds that grant instead of throwing past the guard.
+    assert.equal(
+      grantedSessionRoot(
+        scratch.replace("/claude-fixture/", "//claude-fixture/"),
+        `${prefix}/`,
+      ).cause,
+      undefined,
+    );
+    assert.equal(
+      grantedSessionRoot(
+        relative(process.cwd(), scratch),
+        relative(process.cwd(), prefix),
+      ).cause,
+      undefined,
+    );
+    assert.match(
+      grantedSessionRoot(join(root, "outside", "scratchpad"), prefix).cause,
+      /outside temporary prefix/,
+    );
+    assert.match(
+      grantedSessionRoot(target, prefix).cause,
+      /outside temporary prefix/,
+    );
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("the generated block is inserted literally, so replacement patterns in an identity cannot corrupt the contract", () => {
+  const floor =
+    "# Floor\n\nKeep the hand-written floor.\n\n<!-- dotln-harness:start -->\nold block\n<!-- dotln-harness:end -->\n";
+  const block =
+    "<!-- dotln-harness:start -->\nIdentity: Acme $& Corp $` $' $$ $1\n<!-- dotln-harness:end -->\n";
+  const composed = composeHarnessInstruction(floor, block);
+  assert.ok(composed.includes("Identity: Acme $& Corp $` $' $$ $1"));
+  assert.equal(composed.split("<!-- dotln-harness:start -->").length, 2);
+  assert.equal(composed.split("<!-- dotln-harness:end -->").length, 2);
+  assert.equal(composeHarnessInstruction(composed, block), composed);
+});
+
+test("disabled harness keeps core and kit floors while removing built navigation and runtime warnings", async () => {
+  const { harnessRuntimeCause } = await import("./lib/harness-runtime.mjs");
+  for (const path of ["CLAUDE.md", "scripts/kit/CLAUDE.template.md"]) {
+    const root = fixture();
+    try {
+      const floor = readFileSync(join(sourceRoot, path), "utf8");
+      write(
+        root,
+        "CLAUDE.md",
+        floor +
+          "\nRead[executor]: `@skills/dotln-executor/SKILL.md` — next, fix, status, times.\nCustom operator instruction.\n",
+      );
+      const options = overlayFixture(root, { version: 1, build: "none" });
+      emitHarness(root, options);
+      const disabled = readFileSync(join(root, "CLAUDE.md"), "utf8");
+      assert.doesNotMatch(
+        disabled,
+        /Read\[(?:executor|verifier|reviewer|release-close|planner)\]:/,
+      );
+      assert.match(disabled, /Custom operator instruction/);
+      assert.match(disabled, /No compiled refusal, hook or verification/);
+      assert.equal(harnessRuntimeCause(root), null);
+      const manifest = join(root, ".claude/harness-manifest.json");
+      const invalid = JSON.parse(readFileSync(manifest));
+      delete invalid.build;
+      writeFileSync(manifest, JSON.stringify(invalid));
+      assert.equal(harnessRuntimeCause(root), "runtime-unavailable");
+    } finally {
+      removeFixture(root, { recursive: true, force: true });
+    }
   }
 });

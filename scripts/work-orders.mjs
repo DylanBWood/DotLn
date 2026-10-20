@@ -67,7 +67,6 @@ const DEFAULT_INDEX_PATHS = {
   legacyRelease: defaultDocRelative("releases", "v0.2.0.md"),
 };
 const snapshotPrefix = "<!-- dotln-work-order-tags: ";
-const historicalIds = historicalDependencyIds;
 const compare = (left, right) => (left < right ? -1 : left > right ? 1 : 0);
 const INDEX_SECTIONS = ["Active", "Open"];
 const HISTORY_SECTIONS = ["Closed", "Withdrawn", "Superseded", "Historical"];
@@ -349,7 +348,7 @@ export const readIndex = (root, releases = localReleaseRecords(root)) => {
         throw new Error(
           `${id}: control repository identity differs from ${path}`,
         );
-      const historical = !state && historicalIds.has(id);
+      const historical = !state && historicalDependencyIds(root).has(id);
       if (
         state?.allocation &&
         JSON.stringify(state.provenance) !== JSON.stringify(header.provenance)
@@ -722,7 +721,7 @@ const renderSources = (releases, paths) => {
     `- **Local release evidence:** the earliest numeric annotated DotLn tag whose manifest names the order or a changed final-review path. The manifest-free v0.2.0 exception uses \`${paths.legacyRelease}\`. Other tags are not release evidence. Remote publication is not checked.`,
     "- **Derived dependency status:** the authority's typed block is projected by scripts/lib/dependencies.mjs, also used by status --json and activation. Hard and satisfied-by-close entries require control closure with a passing final-review verdict; an entry over a withdrawn order reads unmet: withdrawn. Satisfied-by-release requires the named local annotated DotLn release in HEAD's ancestry. Planning-deferral waits for its named order's closure or remains unmet for a candidate label; a dated waiver replaces it. Historical evidence, references, waivers and supersessions never block. Without a typed block, distinct Depends on tokens retain a labeled conservative view and never block activation. Closed and historical rows do not imply reactivation work.",
     "- **Inferred no-release close:** only an unmatched closed order with a strict H1 version below a local release whose per-segment tagged control prefix precedes its close and whose tag time is no later than the close observation. That observation is recordedAt, or the first committed close prefix for legacy events (second precision, not recovered append time). Absent evidence stays unreleased. Release inclusion can follow a no-release close; local tags do not prove their remote publication time.",
-    "- **Time-indexed history:** WO-001 and WO-002 are explicit pre-control cases, never completed merely because events are absent. They do not enter the control-closed dependency set.",
+    "- **Time-indexed history:** historicalWorkOrders in the instance configuration declares its pre-control cases, never completed merely because events are absent. They do not enter the control-closed dependency set; an undeclared set is empty.",
     "",
     `Local annotated release tags used: ${releases.map(({ name }) => `\`${name}\``).join(", ") || "none"}.`,
     "",

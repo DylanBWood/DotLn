@@ -758,6 +758,28 @@ const renderElapsed = (elapsed) =>
     )
     .join("");
 
+const reportReference = (state, path, kind) => {
+  const binding = state.targetRecords;
+  const row = binding?.records.find(
+    (row) =>
+      row.kind === kind &&
+      row.path.split("/").at(-1) === path?.split("/").at(-1),
+  );
+  return row
+    ? {
+        repositoryId: binding.repositoryId,
+        commit: binding.commit,
+        path: row.path,
+        sha256: row.sha256,
+      }
+    : undefined;
+};
+const reportLocation = (state, path, kind) => {
+  const record = reportReference(state, path, kind);
+  return record
+    ? `${record.repositoryId}@${record.commit}:${record.path}`
+    : path;
+};
 const renderOrder = (
   state,
   timing,
@@ -765,10 +787,10 @@ const renderOrder = (
 - Work-order path: ${state.workOrderPath ?? "none"}
 ${state.provenance ? `- Provenance: ${JSON.stringify(state.provenance)}\n` : ""}${state.repositoryId ? `- Repository: ${state.repositoryId} @ ${state.baseCommit}\n` : ""}- Phase: ${state.phase}
 - Latest verification: ${state.latestVerificationId ?? "none"}
-- Verification path: ${state.latestVerificationPath ?? "none"}
+- Verification path: ${reportLocation(state, state.latestVerificationPath, "verification") ?? "none"}
 - Latest verdict: ${state.latestVerdict ?? "none"}
 - Final review: ${state.finalReviewId ?? "none"}
-- Final-review path: ${state.finalReviewPath ?? "none"}
+- Final-review path: ${reportLocation(state, state.finalReviewPath, "final-review") ?? "none"}
 - Latest attestation: ${renderAttestation(state.latestAttestation)}
 - Effort drift: ${renderDrift(state.effortPairs)}
 - Latest recordedAt: ${timing.recordedAt ?? "unknown"}
@@ -821,10 +843,31 @@ const projectOrder = (state, events) => {
     ...(state.provenance ? { provenance: state.provenance } : {}),
     phase: state.phase,
     latestVerification: state.latestVerificationId ?? null,
-    verificationPath: state.latestVerificationPath ?? null,
+    verificationPath:
+      reportLocation(state, state.latestVerificationPath, "verification") ??
+      null,
+    ...(reportReference(state, state.latestVerificationPath, "verification")
+      ? {
+          verificationRecord: reportReference(
+            state,
+            state.latestVerificationPath,
+            "verification",
+          ),
+        }
+      : {}),
     latestVerdict: state.latestVerdict ?? null,
     finalReview: state.finalReviewId ?? null,
-    finalReviewPath: state.finalReviewPath ?? null,
+    finalReviewPath:
+      reportLocation(state, state.finalReviewPath, "final-review") ?? null,
+    ...(reportReference(state, state.finalReviewPath, "final-review")
+      ? {
+          finalReviewRecord: reportReference(
+            state,
+            state.finalReviewPath,
+            "final-review",
+          ),
+        }
+      : {}),
     latestAttestation: projectActor(state.latestAttestation),
     effortDrift: state.effortPairs.map(({ effort, raw, mode }) => ({
       effort,
@@ -1705,6 +1748,10 @@ const run = async (argv) => {
               state,
             )
           : undefined;
+      if (targetSubject)
+        (
+          await import("./lib/target-commit-lint.mjs")
+        ).lintReviewedTargetCommits(repoRoot, state, targetSubject);
       const targetGate = targetSubject
         ? (await import("./lib/target-gate.mjs")).targetGateEvidence(
             repoRoot,
@@ -1822,7 +1869,7 @@ const run = async (argv) => {
         });
       }
       removeMovedTargetRecords(repoRoot, result.moved, state.workOrderId);
-      message = `${result.already ? "Already recorded" : "Recorded"} target records for ${state.repositoryId} at ${result.payload.commit}: ${result.payload.records.map((row) => row.path).join(", ")}. Commit the instance's control segment and record removals before publishing both branches.`;
+      message = `${result.already ? "Already recorded" : "Recorded"} target records for ${state.repositoryId} at ${result.payload.commit}: ${result.payload.records.map((row) => row.path).join(", ")}. Run npm run meta and npm run plan -- followups --sync to refresh moved-decision indexes, then commit the instance's control segment, indexes and record removals before publishing both branches.`;
       break;
     }
     case "waive": {

@@ -68,6 +68,11 @@ const makeRepo = (name) => {
     recursive: true,
   });
   write(repo, "docs/control/resume.jsonl", "");
+  write(
+    repo,
+    "dotln.config.json",
+    JSON.stringify({ version: 1, historicalWorkOrders: ["WO-001", "WO-002"] }),
+  );
   write(repo, planningPath, sequenceSource());
   mkdirSync(join(repo, "docs/work-orders"));
   return repo;
@@ -224,6 +229,35 @@ const historyFile = join(repo, "docs/work-orders/HISTORY.md");
 const rows = () => new Map(readIndex(repo).rows.map((row) => [row.id, row]));
 const cardIds = (page) =>
   [...page.matchAll(/^### (WO-\d{3})$/gm)].map((match) => match[1]);
+
+await check(
+  "historical dependency ids belong to the instance configuration",
+  () => {
+    const instance = makeRepo("own-historical-orders");
+    write(instance, "dotln.config.json", JSON.stringify({ version: 1 }));
+    write(instance, authorityPath("WO-020"), header("WO-020", "unassigned"));
+    write(
+      instance,
+      planningPath,
+      sequenceSource([["WO-020", "Own open order"]]),
+    );
+    commit(instance, "instance with no core historical orders");
+    let view = readIndex(instance);
+    assert.deepEqual(
+      view.rows.map((row) => row.id),
+      ["WO-020"],
+    );
+    assert.notEqual(view.rows[0].section, "Historical");
+    write(
+      instance,
+      "dotln.config.json",
+      JSON.stringify({ version: 1, historicalWorkOrders: ["WO-020"] }),
+    );
+    view = readIndex(instance);
+    assert.equal(view.rows[0].section, "Historical");
+    assert.doesNotMatch(renderHistory(view), /WO-001|WO-002/u);
+  },
+);
 
 await check(
   "index derives release membership, no-release, unreleased, active, blocked, ready, malformed and unknown",
@@ -1312,17 +1346,26 @@ await check(
     const parse = (value) =>
       parseDependencies(typedHeader("WO-099", value), path);
     assert.deepEqual(parse(entries), { source: "typed", entries });
+    const instanceEntries = [
+      dependency("WO-001", "hard"),
+      dependency("WO-002", "satisfied-by-close"),
+    ];
+    assert.deepEqual(parse(instanceEntries).entries, instanceEntries);
+    assert.equal(
+      projectDependencies(
+        parse(instanceEntries),
+        new Map([
+          ["WO-001", "pass"],
+          ["WO-002", "pass"],
+        ]),
+      ).blocking.length,
+      0,
+    );
     for (const [entry, pattern] of [
       [dependency("WO-010", "unknown"), /unknown relation/],
       [dependency("WO-010", "hard", { reason: "" }), /reason/],
       [dependency("WO-010", "hard", { reason: "two\nlines" }), /reason/],
       [dependency("WO-099", "reference-only"), /self-reference/],
-      [dependency("WO-001", "hard"), /historical id/],
-      [dependency("WO-002", "satisfied-by-close"), /historical id/],
-      [
-        dependency("WO-001", "satisfied-by-release", { release: "v1.0.0" }),
-        /historical id/,
-      ],
       [dependency("WO-010", "waived", { date: "2026-02-30" }), /valid date/],
       [
         dependency("WO-010", "satisfied-by-release", { release: "v1.0" }),

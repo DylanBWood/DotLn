@@ -45,9 +45,39 @@ if (expectStale && printLocks) {
   process.exit(2);
 }
 
-if (editionPaths.every((file) => !existsSync(file))) {
+const declarations = [
+  indexPath,
+  baseOutlinePath,
+  dualVoicePath,
+  ...editionPaths,
+];
+if (declarations.every((file) => !existsSync(file))) {
+  if (expectStale) {
+    console.error(
+      "publication: no editions declared; --expect-stale requires a declared publication",
+    );
+    process.exit(1);
+  }
   console.log("publication: no editions declared");
   process.exit(0);
+}
+const missingEditions = editionPaths.filter((file) => !existsSync(file));
+if (missingEditions.length) {
+  console.error(
+    `publication: declared editions missing: ${missingEditions.map((file) => path.relative(root, file)).join(", ")}`,
+  );
+  process.exit(1);
+}
+// A declared publication names every declaration file; a missing index,
+// outline or dual-voice sample is a named refusal, never a read failure.
+const missingDeclarations = [indexPath, baseOutlinePath, dualVoicePath].filter(
+  (file) => !existsSync(file),
+);
+if (missingDeclarations.length) {
+  console.error(
+    `publication: declared publication missing: ${missingDeclarations.map((file) => path.relative(root, file)).join(", ")}`,
+  );
+  process.exit(1);
 }
 
 function relative(filePath) {

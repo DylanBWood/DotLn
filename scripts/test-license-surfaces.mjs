@@ -12,10 +12,8 @@ import {
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { licenseSurfaceRules, publishRefusal } from "./license-surfaces.mjs";
-import {
-  contributionSignoffRules,
-  operatorAuthor,
-} from "./lib/contributions.mjs";
+import { contributionSignoffRules } from "./lib/contributions.mjs";
+const operatorAuthor = "Fixture Operator <operator@example.invalid>";
 import { runGit } from "./lib/git.mjs";
 import { installLicenseFixture } from "./test-license-fixture.mjs";
 
@@ -347,6 +345,10 @@ test("committed checks read Git blobs for metadata, hashes, and npm snapshots", 
 
 test("DCO checks every new commit's author and trailer, exempts only the operator, and leaves old history alone", () =>
   withFixture((root) => {
+    writeFileSync(
+      join(root, "dotln.config.json"),
+      JSON.stringify({ version: 1, contributions: { operatorAuthor } }),
+    );
     runGit(root, ["init", "-b", "main"]);
     const base = commit(
       root,
@@ -375,7 +377,7 @@ test("DCO checks every new commit's author and trailer, exempts only the operato
         "body example\n\nSigned-off-by: Outside Contributor <outside@example.invalid>\n\nThis is ordinary prose after the example.\n",
       ],
       [
-        "Dylan Wood <different@example.invalid>",
+        "Fixture Operator <different@example.invalid>",
         "same name is not the operator identity",
       ],
     ])
@@ -391,6 +393,10 @@ test("DCO checks every new commit's author and trailer, exempts only the operato
 
 test("operator merge commits do not hide unsigned outside commits on a merged branch", () =>
   withFixture((root) => {
+    writeFileSync(
+      join(root, "dotln.config.json"),
+      JSON.stringify({ version: 1, contributions: { operatorAuthor } }),
+    );
     runGit(root, ["init", "-b", "main"]);
     const base = commit(root, operatorAuthor, "baseline");
     runGit(root, ["update-ref", "refs/remotes/origin/main", base]);
@@ -403,9 +409,9 @@ test("operator merge commits do not hide unsigned outside commits on a merged br
     runGit(root, ["switch", "main"]);
     runGit(root, [
       "-c",
-      "user.name=Dylan Wood",
+      "user.name=Fixture Operator",
       "-c",
-      "user.email=dylanwoodconsulting@gmail.com",
+      "user.email=operator@example.invalid",
       "-c",
       "commit.gpgsign=false",
       "merge",
@@ -418,4 +424,34 @@ test("operator merge commits do not hide unsigned outside commits on a merged br
     assert.equal(rules.length, 2);
     assert.ok(failures(rules).includes(outside.slice(0, 12)));
     assert.equal(rules.at(-1).pass, true);
+  }));
+
+test("contribution exemption follows instance data and never mutable Git identity", () =>
+  withFixture((root) => {
+    runGit(root, ["init", "-b", "main"]);
+    const base = commit(
+      root,
+      "Prior Author <prior@example.invalid>",
+      "baseline",
+    );
+    runGit(root, ["update-ref", "refs/remotes/origin/main", base]);
+    commit(root, operatorAuthor, "instance operator without sign-off");
+    runGit(root, ["config", "user.name", "Fixture Operator"]);
+    runGit(root, ["config", "user.email", "operator@example.invalid"]);
+    assert.equal(contributionSignoffRules(root)[0].pass, false);
+    writeFileSync(
+      join(root, "dotln.config.json"),
+      JSON.stringify({ version: 1, contributions: { operatorAuthor } }),
+    );
+    assert.equal(contributionSignoffRules(root)[0].pass, true);
+    writeFileSync(
+      join(root, "dotln.config.json"),
+      JSON.stringify({
+        version: 1,
+        contributions: {
+          operatorAuthor: "Other Operator <other@example.invalid>",
+        },
+      }),
+    );
+    assert.equal(contributionSignoffRules(root)[0].pass, false);
   }));

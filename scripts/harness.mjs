@@ -348,12 +348,13 @@ try {
           const { staleOrderHostRules } =
             await import("./lib/target-worktrees.mjs");
           const { mainWorktree } = await import("./lib/git.mjs");
-          let stale = [];
+          let main;
           try {
-            stale = staleOrderHostRules(mainWorktree(realpathSync(out)));
+            main = mainWorktree(realpathSync(out));
           } catch {
-            stale = [];
+            /* A new export may not be a Git worktree yet. */
           }
+          const stale = main ? staleOrderHostRules(main) : [];
           for (const entry of stale)
             console.log(
               `harness ${action}: stale host rules for ${entry.workOrderId}: ${entry.reason}; run ${entry.remedy}`,

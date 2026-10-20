@@ -104,15 +104,7 @@ const priorReleaseRefresh = (checkout, existing, commit, tag, head) => {
 // Core's release tag name lands on the sibling's refresh commit. A retry
 // finds its tag and Release, while a tag without matching release provenance
 // refuses. The Release body names core's Release, not its changes.
-const ensureSiblingRelease = ({
-  checkout,
-  url,
-  commit,
-  tag,
-  head,
-  origin,
-  row,
-}) => {
+const checkSiblingTag = ({ checkout, url, commit, tag, head, origin, row }) => {
   const existing = remoteTagTarget(url, tag);
   if (
     existing &&
@@ -122,6 +114,13 @@ const ensureSiblingRelease = ({
     throw new Error(
       `starter tag ${tag} exists at ${existing}, not the refresh commit ${commit} or a proven prior refresh of the same core release; move nothing and inspect the starter's tags`,
     );
+  return existing;
+};
+const ensureSiblingRelease = (options) => {
+  const { checkout, url, commit, tag, head, origin, row } = options;
+  const forge = parseGitHubTarget(url);
+  ensureGhFor(checkout, forge);
+  const existing = checkSiblingTag(options);
   if (!existing)
     pushAnnotatedTag(checkout, url, {
       sourceRef: "refs/remotes/origin/main",
@@ -130,8 +129,6 @@ const ensureSiblingRelease = ({
       message: `Starter ${tag}\n\nCore commit: ${head}`,
       tagger: git(checkout, ["var", "GIT_COMMITTER_IDENT"]),
     });
-  const forge = parseGitHubTarget(url);
-  ensureGhFor(checkout, forge);
   const displayName = loadConfig(checkout).release.displayName;
   const release = ensureRelease(
     checkout,
@@ -146,10 +143,12 @@ const ensureSiblingRelease = ({
   row.siblingTag = { tag, outcome: existing ? "current" : "published" };
   row.siblingRelease = release === "existing" ? "current" : "created";
 };
-const redact = (error, privatePaths) =>
+// Each private path carries its own label as an explicit pair; a position in
+// a filtered list would mislabel the remaining paths (WO-218 FINAL-001).
+const redact = (error, pairs) =>
   redactPaths(
     String(error.message ?? error),
-    privatePaths.map((path) => [path, "<checkout>"]),
+    pairs.filter(([path]) => typeof path === "string" && path),
   );
 const ownCommand = (root, script, action) => {
   const env = { ...process.env };
@@ -379,7 +378,8 @@ const removeOwnedCleanup = (
     !Number.isInteger(inode) ||
     typeof checkout !== "string" ||
     typeof scratch !== "string" ||
-    dirname(scratch) !== realpathSync(tmpdir()) ||
+    dirname(scratch) !== (record.temporaryBase ?? dirname(scratch)) ||
+    realpathSync(dirname(scratch)) !== dirname(scratch) ||
     !/^dotln-starter-refresh-[A-Za-z0-9]+$/u.test(basename(scratch)) ||
     worktree !== join(scratch, "worktree") ||
     (branch !== null &&
@@ -452,17 +452,14 @@ const finishCleanup = (main, sibling, { dryRun = false } = {}) => {
     // Recovery knows its retained checkout before the caller admits a new
     // one. Keep those owned paths out of every cleanup refusal.
     throw new Error(
-      redact(
-        error,
-        [
-          main,
-          state.file,
-          tmpdir(),
-          state.record.checkout,
-          state.record.scratch,
-          state.record.worktree,
-        ].filter((value) => typeof value === "string"),
-      ),
+      redact(error, [
+        [main, "<core main>"],
+        [state.file, "<cleanup record>"],
+        [tmpdir(), "<temporary base>"],
+        [state.record.checkout, "<recorded checkout>"],
+        [state.record.scratch, "<refresh scratch>"],
+        [state.record.worktree, "<refresh worktree>"],
+      ]),
     );
   }
 };
@@ -590,6 +587,9 @@ const refreshOne = async ({ main, head, tag, dryRun }, sibling) => {
       : [];
     if (dryRun) {
       row.seedChanges = seedPlan.map(({ path }) => path);
+      row.siblingTag = { tag, outcome: "preview" };
+      row.siblingRelease = "preview";
+      row.siblingReleaseTitle = `${loadConfig(checkout).release.displayName} ${tag}`;
       row.outcome =
         prior?.commit === head && !seedPlan.length ? "current" : "preview";
       row.reason =
@@ -643,6 +643,7 @@ const refreshOne = async ({ main, head, tag, dryRun }, sibling) => {
       schemaVersion: 1,
       checkout,
       scratch,
+      temporaryBase: dirname(scratch),
       worktree,
       base: remote,
       tree: null,
@@ -708,6 +709,18 @@ const refreshOne = async ({ main, head, tag, dryRun }, sibling) => {
       if (JSON.stringify(planned.manifest, null, 2) + "\n" !== manifestBytes)
         required.add(manifestFile);
       for (const seed of seedPlan) required.add(seed.path);
+      for (const entry of planned.plan) {
+        if (entry.kind !== "add" && entry.kind !== "replace") continue;
+        const write = planned.candidates.get(entry.path);
+        const stat = lstatSync(join(worktree, write.path), {
+          throwIfNoEntry: false,
+        });
+        if (
+          stat?.isFile() &&
+          Boolean(stat.mode & 0o111) !== Boolean(write.mode & 0o111)
+        )
+          required.add(write.path);
+      }
       allowed = new Set([...required, "CLAUDE.md"]);
       // Only committed, proven seed paths are admitted. The worktree starts at
       // the observed remote, so none of these writes can follow a local link.
@@ -849,6 +862,8 @@ const refreshOne = async ({ main, head, tag, dryRun }, sibling) => {
     branch = `dotln-starter-refresh-${randomUUID()}`;
     saveCleanup(main, sibling.id, { ...ownership, branch, commit });
     git(checkout, ["branch", branch, commit]);
+    checkSiblingTag({ checkout, url, commit, tag, head, origin, row });
+    ensureGhFor(checkout, parseGitHubTarget(url));
     await timed("push", () =>
       pushObservedCommit(checkout, url, branch, commit, "main"),
     );
@@ -864,16 +879,36 @@ const refreshOne = async ({ main, head, tag, dryRun }, sibling) => {
     row.reason = "verified starter commit published";
   } catch (error) {
     row.outcome = "refused";
-    row.reason = redact(error, [main, checkout, scratch]);
+    row.reason = redact(error, [
+      [main, "<core main>"],
+      [checkout, "<recorded checkout>"],
+      [scratch, "<refresh scratch>"],
+      [tmpdir(), "<temporary base>"],
+    ]);
   } finally {
     try {
       if (cleanupOwned) finishCleanup(main, sibling.id);
       else if (scratch) rmSync(scratch, { recursive: true, force: true });
     } catch (error) {
       row.outcome = "refused";
-      row.reason = `${row.reason ?? ""}; disposable refresh cleanup failed: ${redact(error, [main, checkout, scratch])}`;
+      row.reason = `${row.reason ?? ""}; disposable refresh cleanup failed: ${redact(
+        error,
+        [
+          [main, "<core main>"],
+          [checkout, "<recorded checkout>"],
+          [scratch, "<refresh scratch>"],
+          [tmpdir(), "<temporary base>"],
+        ],
+      )}`;
     }
   }
+  if (
+    row.outcome === "refused" &&
+    row.after &&
+    row.before &&
+    row.after !== row.before
+  )
+    row.reason += `; push landed: ${row.before} -> ${row.after}`;
   return row;
 };
 

@@ -1,3 +1,10 @@
+import {
+  HARNESS_START as start,
+  HARNESS_END as end,
+  harnessInstructionBlock,
+  composeHarnessInstruction,
+  migrateHarnessFloor,
+} from "./harness-instruction.mjs";
 import { runGit } from "./git.mjs";
 import { HOST_GIT_READ } from "./github-repository.mjs";
 import { sha256Hex } from "./helpers.mjs";
@@ -50,12 +57,14 @@ export const namedStarterSeed = (path, source, name) =>
 // 120000 a symbolic link; null when the path is absent from the tree.
 const entryMode = (root, ref, path) =>
   git(root, ["ls-tree", ref, "--", path]).split(" ")[0] || null;
-const start = "<!-- dotln-harness:start -->",
-  end = "<!-- dotln-harness:end -->";
-const markerPair = (text) =>
-  text.split(start).length === 2 &&
-  text.split(end).length === 2 &&
-  text.indexOf(end) > text.indexOf(start);
+const markerPair = (text) => {
+  try {
+    harnessInstructionBlock(text);
+    return true;
+  } catch {
+    return false;
+  }
+};
 // The refresh's own harness emit composes its block onto CLAUDE.md. It
 // refuses markers that are not one ordered pair, and a text with no
 // hand-written words outside that pair. Each fault has its own remedy.
@@ -67,7 +76,7 @@ export const floorFault = (text) => {
     ? text.slice(0, text.indexOf(start)) +
       text.slice(text.indexOf(end) + end.length)
     : text;
-  return outside.trim() ? null : "floor";
+  return migrateHarnessFloor(outside).trim() ? null : "floor";
 };
 // The refresh's own verification reads these two seeds: CLAUDE.md is the
 // emit's floor and .gitignore keeps verification's links out of the commit.
@@ -76,12 +85,19 @@ const matches = (path, actual, template) => {
   if (path !== "CLAUDE.md") return actual === template;
   if (actual === null || template === null) return false;
   if (!markerPair(actual)) return false;
-  const block =
-    actual.slice(actual.indexOf(start), actual.indexOf(end) + end.length) +
-    "\n";
+  const block = harnessInstructionBlock(actual);
+  const normalized = (text) => {
+    const composed = composeHarnessInstruction(text, block);
+    const at = composed.indexOf(start);
+    return composed.slice(0, at).trimEnd() + "\n\n" + composed.slice(at);
+  };
   // Emit appends one generated block to the template floor. Compare the whole
   // exported contract, so instructions after the block cannot be discarded.
-  return actual === template.trimEnd() + "\n\n" + block;
+  try {
+    return normalized(actual) === normalized(template);
+  } catch {
+    return false;
+  }
 };
 
 /** Plan all seed replacements from committed trees before any checkout write.

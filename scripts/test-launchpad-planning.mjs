@@ -260,6 +260,15 @@ test("planning and release-close reads run in a fresh exported instance", () => 
       "export",
     );
     configure(kit);
+    const historical = ok(
+      run(kit, process.execPath, [
+        "--input-type=module",
+        "-e",
+        "import { historicalDependencyIds } from './scripts/lib/dependencies.mjs'; console.log(JSON.stringify([...historicalDependencyIds(process.cwd())]));",
+      ]),
+      "instance historical ids",
+    );
+    assert.deepEqual(JSON.parse(historical.stdout), []);
     commit(kit, "exported instance");
     ok(
       run(kit, "npm", [
@@ -736,11 +745,49 @@ test("planning and release-close reads run in a fresh exported instance", () => 
       });
       return result;
     };
+    const starterHead = ok(
+      run(kit, "git", ["rev-parse", "HEAD"]),
+      "starter baseline head",
+    ).stdout.trim();
+    ok(
+      run(kit, "git", [
+        "tag",
+        "-a",
+        "v99.0.0",
+        "-m",
+        `Starter v99.0.0\n\nCore commit: ${starterHead}`,
+      ]),
+      "starter baseline tag",
+    );
     ok(
       releaseObserve(["scripts/release.mjs", "prepare", "--local"]),
       "prepare release probe",
     );
+    assert.match(
+      readFileSync(join(kit, orderPath), "utf8"),
+      /^# .+ \(v0\.1\.0\)$/mu,
+      "a Starter provenance tag does not retime the instance release",
+    );
     releaseObserve(["scripts/release.mjs", "check-surfaces", "--local"]);
+    assert.doesNotMatch(readFileSync(join(kit, "README.md"), "utf8"), /v99\./u);
+    ok(
+      run(kit, "git", [
+        "tag",
+        "-a",
+        "v100.0.0",
+        "-m",
+        "Ordinary instance release",
+      ]),
+      "ordinary baseline tag",
+    );
+    const ordinaryBaseline = run(kit, process.execPath, [
+      "scripts/release.mjs",
+      "check-surfaces",
+      "--local",
+    ]);
+    assert.notEqual(ordinaryBaseline.status, 0);
+    assert.match(ordinaryBaseline.stdout, /v100\.0\.0/u);
+    ok(run(kit, "git", ["tag", "-d", "v100.0.0"]), "remove ordinary test tag");
     write(
       kit,
       "docs/evidence/WO-001/handoff.md",
@@ -1289,8 +1336,8 @@ test("planning and release-close reads run in a fresh exported instance", () => 
     assert.doesNotMatch(close.stdout, /Cleanup: blocked/u);
     assert.equal(existsSync(kit), false);
     assert.equal(existsSync(target), false);
-    for (const root of [kitMain, targetClone])
-      assert.equal(git(root, ["tag", "--list"]), "");
+    assert.equal(git(kitMain, ["tag", "--list"]), "v99.0.0");
+    assert.equal(git(targetClone, ["tag", "--list"]), "");
     const card = readFileSync(
       join(kitMain, "docs/work-orders/HISTORY.md"),
       "utf8",
@@ -1492,6 +1539,7 @@ test("an instance exported at v0.81.0 takes this release by its README's procedu
     )[0];
     assert.equal(refreshRow.outcome, "refreshed", JSON.stringify(refreshRow));
     assert.deepEqual(refreshRow.rewrittenSeeds, [
+      "CLAUDE.md",
       "docs/control/budgets.json",
       "docs/work-orders/WO-001-environment-truth.md",
       "README.md",
@@ -1545,6 +1593,16 @@ test("an instance exported at v0.81.0 takes this release by its README's procedu
     );
     const readme = lgit(fork, ["show", "upstream/main:README.md"]);
     const prose = readme.replace(/\s+/gu, " ");
+    const recovery = prose.slice(
+      prose.indexOf("The session in `main` first stops competing writers"),
+      prose.indexOf("The operator then opens a session in `wo-001`"),
+    );
+    const restoredAt = recovery.indexOf("apply <stash hash>");
+    const statusAt = recovery.indexOf("`npm run resume -- status`");
+    assert.ok(
+      restoredAt >= 0 && statusAt > restoredAt,
+      "the recorded phase is checked after restoring the saved stash",
+    );
     // The worktree's files belong to the session opened there.
     assert.ok(
       prose.includes(

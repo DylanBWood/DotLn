@@ -125,7 +125,9 @@ test("WO-164 console collection spawns a constant number of processes and Git re
       subcommands: gits
         .map((line) => {
           const words = line.split(" ");
-          return words[0] === "-C" ? words[2]! : words[0]!;
+          const commandWords = words[0] === "-C" ? words.slice(2) : words;
+          if (commandWords[0] === "--no-replace-objects") commandWords.shift();
+          return commandWords[0]!;
         })
         .sort(),
     };

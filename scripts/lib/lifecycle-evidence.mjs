@@ -12,14 +12,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { inventoryMaterial } from "./worktree-material.mjs";
 
-export async function requireLifecycleEvidence(
-  root,
-  action,
-  verdict,
-  workOrder,
-  { targetGate, reviewGate } = {},
-) {
-  const started = Date.now();
+export function checkLifecycleWhitespace(root) {
   // Untracked files are read too: they join the diff as intent-to-add entries
   // of a temporary index copy, so Git's own whitespace and attribute rules
   // apply and the real index is never written. A nested repository is listed
@@ -70,9 +63,19 @@ export async function requireLifecycleEvidence(
   } finally {
     if (scratch) rmSync(scratch, { recursive: true, force: true });
   }
+}
+
+export async function requireLifecycleEvidence(
+  root,
+  action,
+  verdict,
+  workOrder,
+  { targetGate, reviewGate } = {},
+) {
+  const started = Date.now();
+  checkLifecycleWhitespace(root);
   const { gateTreeHash, findGateCheck, recordGateChecks } =
     await import("./gate-evidence.mjs");
-  const treeHash = gateTreeHash(root);
   const executor = ["implementation-ready", "repair-complete"].includes(action);
   const checksClaims = executor || action === "verification-result";
   const advisories = [];
@@ -96,6 +99,7 @@ export async function requireLifecycleEvidence(
         `Scratch repositories present: ${scratch.map((row) => JSON.stringify(row.path)).join(", ")}; remove each from the worktree root before handoff (${scratch.map((row) => `rm -rf -- ${shellQuote(row.path)}`).join("; ")}); release close removes any left and records its head commit.`,
       );
   }
+  const treeHash = gateTreeHash(root);
   // The whitespace check refuses; its row is bookkeeping. A gate index that
   // cannot be read or written never refuses a completion and is left as it
   // is. An executor completion reports it once, with the gate claims it

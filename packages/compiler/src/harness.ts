@@ -1234,7 +1234,7 @@ export function mergeHarnessFragments(
       ),
     ),
   ];
-  return `${HARNESS_START}\nCapabilities and residue: .claude/harness-manifest.json; planning: refute[ full] selects dotln-refuter.\n${HARNESS_BOUNDARIES}\n${lines.join("\n")}${lines.length ? "\n" : ""}${HARNESS_END}\n`;
+  return `${HARNESS_START}\nRead[executor]: \`@skills/dotln-executor/SKILL.md\` — next, fix, status, times.\nRead[verifier]: \`@skills/dotln-verifier/SKILL.md\` — verify.\nRead[reviewer]: \`@skills/dotln-reviewer/SKILL.md\` — final review.\nRead[release-close]: \`@skills/dotln-release-close/SKILL.md\` — release close.\nRead[planner]: \`@skills/dotln-planner/SKILL.md\` — planning or ideation.\nCapabilities and residue: .claude/harness-manifest.json; planning: refute[ full] selects dotln-refuter.\n${HARNESS_BOUNDARIES}\n${lines.join("\n")}${lines.length ? "\n" : ""}${HARNESS_END}\n`;
 }
 
 /** Reduced worker projection. Contributor generation above remains independent. */

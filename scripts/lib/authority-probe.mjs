@@ -524,10 +524,12 @@ export async function runAuthorityProcess(
     stdio: ["ignore", "pipe", "pipe"],
     detached: true,
   });
+  let groupSignalSent = false;
   const kill = () => {
-    if (child.pid) {
+    if (child.pid && !groupSignalSent) {
       try {
         process.kill(-child.pid, "SIGKILL");
+        groupSignalSent = true;
       } catch (error) {
         if (error.code !== "ESRCH") throw error;
       }

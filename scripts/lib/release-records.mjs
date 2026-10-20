@@ -22,6 +22,7 @@ export {
   historicalWorkOrders,
   humanLayerFromTag,
   isDotLnRelease,
+  isStarterTag,
   localReleaseTags,
   localTags,
   manifestFromTag,

@@ -384,7 +384,7 @@ const contentUnits = (text) => {
   while (at < text.length) {
     const block = blocks.get(at);
     if (block && !block.raw) {
-      units.push(...characterUnits(text, at, block.end));
+      for (const unit of characterUnits(text, at, block.end)) units.push(unit);
       at = block.end;
       continue;
     }
@@ -401,11 +401,13 @@ const contentUnits = (text) => {
         close = runs.exec(text);
       if (close && close.index < limit) {
         hide(at, at + length);
-        units.push(...characterUnits(text, at + length, close.index));
+        for (const unit of characterUnits(text, at + length, close.index))
+          units.push(unit);
         hide(close.index, close.index + length);
         at = close.index + length;
       } else {
-        units.push(...characterUnits(text, at, at + length));
+        for (const unit of characterUnits(text, at, at + length))
+          units.push(unit);
         at += length;
       }
       continue;
@@ -568,13 +570,19 @@ export function lintOutwardArtifact({
   const subject = lines[0];
 
   if (kind === "commit" || kind === "pr-title") {
+    // One leading gitmoji, in its Unicode form or its `:shortcode:` form as
+    // core's own titles spell it, precedes the conventional type.
+    const emoji =
+      /^(?:\p{Extended_Pictographic}(?:\uFE0F|\p{Emoji_Modifier})?(?:\u200D\p{Extended_Pictographic}(?:\uFE0F|\p{Emoji_Modifier})?)*|:[a-z0-9_+-]+:) /u.exec(
+        subject,
+      )?.[0] ?? "";
     const match =
       /^([a-z]+)(?:\(([a-z0-9][a-z0-9._/-]*)\))?(!)?: (\S(?:.*\S)?)$/u.exec(
-        subject,
+        subject.slice(emoji.length),
       );
     if (!match) add("subject.shape", 0, subject.length);
     else if (!vocabulary.types.includes(match[1]))
-      add("subject.type", 0, match[1].length);
+      add("subject.type", emoji.length, emoji.length + match[1].length);
     if ([...subject].length > subjectLengthLimit)
       add("subject.length", 0, subject.length, { limit: subjectLengthLimit });
     if (kind === "commit" && lines.length > 1 && lines[1] !== "")

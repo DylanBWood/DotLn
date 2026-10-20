@@ -20,7 +20,7 @@ import {
 import { firstDifferingLine } from "./lib/validation.mjs";
 import { findLaunchpad } from "./lib/config.mjs";
 import { readControl } from "./lib/control-store.mjs";
-import { describeTag, runGit } from "./lib/git.mjs";
+import { describeTag, parseWorktrees, runGit } from "./lib/git.mjs";
 import { exact, json, sha256Hex } from "./lib/helpers.mjs";
 import { containedRegularFile, isMainModule, parseJson } from "./lib/paths.mjs";
 import {
@@ -318,19 +318,43 @@ export function carryPendingReceipts(
       throw new Error(`carried receipt collision or changed source: ${path}`);
     return bytes;
   };
-  const copies = rows.map((row) => {
-    const { path: recordedPath, sha256: recordedHash, ...receipt } = row;
-    decodeReceipt(json(receipt), "captured receipt");
-    const source = pendingReceiptPath(main, row.sibling, row.date);
-    const path = receiptPath(target, row.sibling, row.date);
-    if (recordedPath !== source || !/^[0-9a-f]{64}$/.test(recordedHash))
-      throw new Error("invalid captured receipt binding");
-    const incoming = readBound(main, source, row.sha256);
-    const existing = readBound(target, path, row.sha256);
-    if (!incoming && !existing)
-      throw new Error(`captured receipt is missing: ${source}`);
-    return { source, path, hash: row.sha256, bytes: incoming ?? existing };
-  });
+  const copies = rows
+    .map((row) => {
+      const { path: recordedPath, sha256: recordedHash, ...receipt } = row;
+      decodeReceipt(json(receipt), "captured receipt");
+      const source = pendingReceiptPath(main, row.sibling, row.date);
+      const path = receiptPath(target, row.sibling, row.date);
+      if (recordedPath !== source || !/^[0-9a-f]{64}$/.test(recordedHash))
+        throw new Error("invalid captured receipt binding");
+      const incoming = readBound(main, source, row.sha256);
+      const existing = readBound(target, path, row.sha256);
+      if (!incoming && !existing) {
+        const proven = parseWorktrees(main).some(({ worktree }) => {
+          if (worktree === target) return false;
+          try {
+            return (
+              readBound(
+                worktree,
+                receiptPath(worktree, row.sibling, row.date),
+                row.sha256,
+              ) !== null
+            );
+          } catch {
+            return false;
+          }
+        });
+        if (!proven)
+          throw new Error(
+            `captured pending receipt is missing from source and destination: ${source}; restore the captured receipt before retrying`,
+          );
+        process.stdout.write(
+          `Captured receipt ${source} is present with its bound hash in another worktree; this start carries no duplicate.\n`,
+        );
+        return null;
+      }
+      return { source, path, hash: row.sha256, bytes: incoming ?? existing };
+    })
+    .filter(Boolean);
   for (const { path, bytes, hash } of copies) {
     assertReceiptParents(target, path);
     const destination = join(target, path);

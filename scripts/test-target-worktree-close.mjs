@@ -18,13 +18,19 @@ import {
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { docPath } from "./lib/config.mjs";
-import { redactPaths, releaseCloseCommand } from "./lib/git.mjs";
+import {
+  redactPaths,
+  releaseCloseCommand,
+  shellQuote,
+  spawnGit,
+} from "./lib/git.mjs";
 import { assertFinderMetadataTypes } from "./lib/finder-metadata.mjs";
 import { write } from "./lib/helpers.mjs";
 import { checkTargetHarness } from "./lib/harness.mjs";
 import { targetRegistryPath } from "./lib/target-worktrees.mjs";
 import { createHash } from "node:crypto";
 import { checksPath } from "./lib/gate-evidence.mjs";
+import { withWriterReservationLock } from "../packages/skeleton/src/writer-teardown.mjs";
 import {
   git,
   fixture,
@@ -81,7 +87,7 @@ test("WO-072 criterion 4: target close requires containment, removes both worktr
       ".claude/settings.local.json\n.claude/hooks/local-cache/\ndeps/\n",
     );
     git(f.target, "add", "-A");
-    git(f.target, "commit", "-qm", "Target change");
+    git(f.target, "commit", "-qm", "test: target change");
     closeOrder(f);
     git(f.orderRoot, "add", "-A");
     git(f.orderRoot, "commit", "-qm", "Closed target order");
@@ -97,7 +103,10 @@ test("WO-072 criterion 4: target close requires containment, removes both worktr
     git(f.main, "push", "-q", "origin", "main");
     const unmerged = f.close("--publish");
     assert.notEqual(unmerged.status, 0);
-    assert.match(unmerged.stderr, /merge-base --is-ancestor/);
+    assert.match(
+      unmerged.stderr,
+      /target branch wo-999 is not merged into origin\/main; source retained/,
+    );
     assert.ok(
       existsSync(join(f.target, ".claude/target-worker-manifest.json")),
     );
@@ -262,6 +271,13 @@ test("refusal masking names passed paths by label and masks other absolute paths
     ),
     "under <local> and '<local>' (src/tmp/cache.txt, web/home/index.html, https://example.invalid/a, <label>/index)",
   );
+  assert.equal(
+    redactPaths(
+      `file://${clone}/private.txt; error:${clone}/private.txt; file:///tmp/elsewhere; error:/tmp/elsewhere; https://example.invalid/tmp/public`,
+      [[clone, "<target clone>"]],
+    ),
+    "file://<local>; error:<local>; file://<local>; error:<local>; https://example.invalid/tmp/public",
+  );
 });
 
 for (const ignored of [false, true])
@@ -421,7 +437,7 @@ test("target close judges large NUL-framed base path lists before deleting decla
       // undeclared output gets the ordinary remedy, never a buffer failure.
       refuseCloseBoth(
         f,
-        /undeclared ignored material; source retained: large-cache\/\. Declare it disposable/u,
+        /undeclared ignored material; source retained: large-cache\/[\s\S]*and \d+ more\. Declare it disposable/u,
         before,
       );
       assert.equal(
@@ -607,6 +623,53 @@ test("target close isolates fetched ignore rules, retains unreadable output and 
     { baseIgnore: "node_modules/\n" },
   ));
 
+test("target close preserves unavailable gate-write observations in mixed valid rows", () =>
+  withFixture((f) => {
+    f.mapClone();
+    f.start();
+    mergedCloseFixture(f);
+    const index = checksPath(f.orderRoot);
+    const original = readFileSync(index);
+    const row = (name, writes, repositoryId = "target") => ({
+      checkId: `target:${repositoryId}:${name}`,
+      repositoryId,
+      baseCheckoutWrites: writes,
+      recordedAt: "2026-10-20T00:00:00.000Z",
+      treeHash: "a".repeat(64),
+      exitCode: 0,
+    });
+    try {
+      for (const [rows, expected] of [
+        [[row("known", ["dist/b", "dist/a", "dist/a"])], ["dist/a", "dist/b"]],
+        [[row("empty", []), row("foreign", null, "other")], []],
+        [[row("unavailable", null)], null],
+        [[row("known", ["dist/a"]), row("unavailable", null)], null],
+        [[row("unavailable", null), row("known", ["dist/a"])], null],
+      ]) {
+        writeFileSync(index, JSON.stringify(rows));
+        const output = f.ok(f.close("--dry-run"));
+        const receipt = JSON.parse(
+          readFileSync(
+            docPath(
+              f.main,
+              "control",
+              "local/retained/WO-999/release-close.json",
+            ),
+            "utf8",
+          ),
+        );
+        assert.deepEqual(receipt.targetCleanup.baseCheckoutWrites, expected);
+        assert.equal(
+          output.includes("advisory: gate base-checkout writes unavailable"),
+          expected === null,
+        );
+        assert.ok(existsSync(f.target));
+      }
+    } finally {
+      writeFileSync(index, original);
+    }
+  }));
+
 // Every file under a tree by path with its bytes' digest, and links by target.
 const treeDigest = (root, { skipGit = false } = {}) => {
   const digest = {};
@@ -646,7 +709,7 @@ for (const [stale, locked, remains, flavors] of [
         f.start();
         write(f.target, "change.txt", "changed\n");
         git(f.target, "add", "-A");
-        git(f.target, "commit", "-qm", "Target change");
+        git(f.target, "commit", "-qm", "test: target change");
         mergedCloseFixture(f);
         // The forge merges the target change; the clone has not fetched it.
         const upstream = join(f.base, "upstream");
@@ -838,7 +901,7 @@ test("target close refuses an unreadable, dirty or broken base and a dirty or br
     renameSync(origin, `${origin}.away`);
     refuseCloseBoth(
       f,
-      /target clone base main cannot close: fetch failed: fatal: '<target origin>' does not appear to be a git repository.*; source retained\. Fix the fetch, then rerun /su,
+      /target clone base main cannot close: fetch failed: target publish refused: git fetch failed in the publish lane: fatal: '<target origin>' does not appear to be a git repository.*; source retained\. Fix the fetch, then rerun /su,
       before,
     );
     renameSync(`${origin}.away`, origin);
@@ -972,9 +1035,75 @@ test("target close refuses a linked base checkout it cannot reach without naming
   });
 });
 
+test("target close names a stale writer transition by role and gives its recovery", () =>
+  withFixture((f) => {
+    f.mapClone();
+    f.start();
+    mergedCloseFixture(f);
+    for (const [directory, role] of [
+      [f.clone, "target clone base main"],
+      [f.target, "target worktree"],
+    ]) {
+      withWriterReservationLock(directory, () => {
+        refuseCloseBoth(
+          f,
+          new RegExp(
+            `${role}: writer transition lock requires inspection; source retained\\. Confirm no registration or teardown is running.*then rerun`,
+            "u",
+          ),
+          cloneRefMap(f),
+        );
+      });
+    }
+  }));
+
+test("target close keeps Git's guard for an unchecked-out base being rebased", () =>
+  withFixture((f) => {
+    f.mapClone();
+    f.start();
+    write(f.target, "new-target.txt", "merged target change\n");
+    git(f.target, "add", "new-target.txt");
+    git(f.target, "commit", "-qm", "test: target change");
+    git(
+      f.target,
+      "merge",
+      "-q",
+      "-m",
+      "test: incorporate fixture base",
+      "main",
+    );
+    git(f.target, "push", "-q", "origin", "HEAD:main");
+    mergedCloseFixture(f);
+    const before = git(f.clone, "rev-parse", "main");
+    const editor = join(f.base, "edit-rebase.cjs");
+    writeFileSync(
+      editor,
+      "const fs = require('node:fs'); const file = process.argv[2]; fs.writeFileSync(file, fs.readFileSync(file, 'utf8').replace(/^pick /m, 'edit '));\n",
+    );
+    const started = spawnGit(["-C", f.clone, "rebase", "-i", "--root"], {
+      env: {
+        ...f.env,
+        GIT_SEQUENCE_EDITOR: `${shellQuote(process.execPath)} ${shellQuote(editor)}`,
+      },
+      encoding: "utf8",
+    });
+    assert.equal(started.status, 0, started.stderr);
+    assert.match(started.stdout + started.stderr, /Stopped at/);
+    try {
+      assert.match(f.ok(f.close("--dry-run")), /would-remove/);
+      const refused = f.close("--publish");
+      assert.notEqual(refused.status, 0);
+      assert.match(refused.stderr, /refusing to fetch into branch.*main/);
+      assert.equal(git(f.clone, "rev-parse", "main"), before);
+    } finally {
+      git(f.clone, "rebase", "--abort");
+    }
+  }));
+
 for (const kind of [
   "absent-target",
   "clone-hook",
+  "clone-urlrewrite",
   "clone-writer",
   "missing-base",
 ])
@@ -1014,9 +1143,18 @@ for (const kind of [
         writeFileSync(hook, `#!/bin/sh\n: > '${sentinel}'\n`);
         chmodSync(hook, 0o755);
       }
+      if (kind === "clone-urlrewrite") {
+        const origin = git(f.clone, "config", "--get", "remote.origin.url");
+        git(
+          f.clone,
+          "config",
+          `url.${join(f.base, "missing-remote")}.insteadOf`,
+          origin,
+        );
+      }
       const result = f.close("--publish");
 
-      if (["clone-hook", "missing-base"].includes(kind)) {
+      if (["clone-hook", "clone-urlrewrite", "missing-base"].includes(kind)) {
         assert.equal(result.status, 0, result.stderr);
         assert.equal(git(f.clone, "rev-parse", "main"), mergedTarget);
         assert.equal(
@@ -1044,3 +1182,152 @@ for (const kind of [
         );
       }
     }));
+
+for (const policy of ["delete", "judge-only"])
+  test(`target close keeps the base judgment and applies ${policy} only to base output`, () =>
+    withFixture(
+      (f) => {
+        f.config.repositories.target.disposable = ["node_modules", "dist"];
+        f.config.repositories.target.baseDisposablePolicy = policy;
+        write(f.main, "dotln.config.json", JSON.stringify(f.config));
+        git(f.main, "add", "-A");
+        git(f.main, "commit", "-qm", "test: declare cleanup policy");
+        git(f.main, "push", "-q", "origin", "main");
+        f.mapClone();
+        f.start();
+        mergedCloseFixture(f);
+        write(f.clone, "node_modules/base.txt", "base output\n");
+        write(f.target, "dist/target.txt", "target output\n");
+        write(f.clone, "nested/.env", "operator material\n");
+        const refused = f.close("--publish");
+        assert.notEqual(refused.status, 0);
+        assert.match(refused.stderr, /nested\/\.env/u);
+        assert.ok(existsSync(join(f.target, "dist/target.txt")));
+        rmSync(join(f.clone, "nested"), { recursive: true });
+        const preview = f.ok(f.close("--dry-run"));
+        assert.ok(preview.includes(`base disposable policy ${policy}`));
+        assert.ok(existsSync(join(f.clone, "node_modules/base.txt")));
+        const closed = f.ok(f.close("--publish"));
+        assert.ok(closed.includes(`base disposable policy ${policy}`));
+        assert.equal(existsSync(f.target), false);
+        assert.equal(
+          existsSync(join(f.clone, "node_modules/base.txt")),
+          policy === "judge-only",
+        );
+        const record = JSON.parse(
+          readFileSync(
+            docPath(
+              f.main,
+              "control",
+              "local/retained/WO-999/release-close.json",
+            ),
+            "utf8",
+          ),
+        );
+        assert.equal(record.targetCleanup.baseDisposablePolicy, policy);
+      },
+      { baseIgnore: "node_modules/\ndist/\n.env\n" },
+    ));
+
+for (const side of ["base", "target"])
+  test(`target close judges ${side} disposable directory write access before deleting either checkout`, () =>
+    withFixture(
+      (f) => {
+        f.config.repositories.target.disposable = ["node_modules"];
+        write(f.main, "dotln.config.json", JSON.stringify(f.config));
+        git(f.main, "add", "-A");
+        git(f.main, "commit", "-qm", "test: declare disposable output");
+        git(f.main, "push", "-q", "origin", "main");
+        f.mapClone();
+        f.start();
+        mergedCloseFixture(f);
+        for (const root of [f.clone, f.target])
+          write(root, "node_modules/deep/keep.txt", "output\n");
+        const directory = join(
+          side === "base" ? f.clone : f.target,
+          "node_modules/deep",
+        );
+        try {
+          chmodSync(directory, 0o555);
+          const result = f.close("--publish");
+          assert.notEqual(result.status, 0);
+          assert.match(
+            result.stderr,
+            /node_modules\/deep needs write, read and search access/u,
+          );
+          for (const root of [f.clone, f.target])
+            assert.ok(existsSync(join(root, "node_modules/deep/keep.txt")));
+        } finally {
+          chmodSync(directory, 0o755);
+        }
+        const root = side === "base" ? f.clone : f.target;
+        renameSync(join(root, "node_modules"), join(f.base, "outside-output"));
+        symlinkSync(join(f.base, "outside-output"), join(root, "node_modules"));
+        const linked = f.close("--publish");
+        assert.notEqual(linked.status, 0);
+        assert.match(linked.stderr, /symlinked component/u);
+        assert.ok(existsSync(join(f.base, "outside-output/deep/keep.txt")));
+      },
+      { baseIgnore: "node_modules\n" },
+    ));
+
+test("path-list overflow is bounded while the tree selector streams beyond the same ceiling", async (t) => {
+  const root = mkdtempSync(join(tmpdir(), "dotln-path-list-limit-"));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  const { spawnSync } = await import("node:child_process");
+  const fake = join(root, "git");
+  writeFileSync(
+    fake,
+    `#!${process.execPath}\nfor(let i=0;i<19000;i++)process.stdout.write('a'.repeat(1000)+'/'+i+'\\0');process.stdout.write('.gitignore\\0');\n`,
+  );
+  chmodSync(fake, 0o755);
+  const script = `import {runGitPathList,selectGitPaths} from ${JSON.stringify(new URL("./lib/git.mjs", import.meta.url).href)};
+    try{runGitPathList(${JSON.stringify(root)},['ls-files','-z']);process.exitCode=1;}catch(error){if(error.message.length>500||!error.message.includes('16 MiB'))throw error;console.log(error.message);}
+    const selected=selectGitPaths(${JSON.stringify(root)},['ls-tree','-z'],p=>p==='.gitignore');if(JSON.stringify(selected)!=='[".gitignore"]')throw Error('stream selection differs');`;
+  const run = spawnSync(
+    process.execPath,
+    ["--input-type=module", "-e", script],
+    {
+      env: { ...process.env, PATH: `${root}:${process.env.PATH}` },
+      encoding: "utf8",
+    },
+  );
+  assert.equal(run.status, 0, run.stderr);
+  assert.match(run.stdout, /16 MiB/u);
+  assert.ok(run.stdout.length < 500);
+});
+
+test("judge-only refuses fetched tracked paths that would overwrite retained ignored output", () =>
+  withFixture(
+    (f) => {
+      f.config.repositories.target.disposable = ["dist"];
+      f.config.repositories.target.baseDisposablePolicy = "judge-only";
+      write(f.main, "dotln.config.json", JSON.stringify(f.config));
+      git(f.main, "add", "-A");
+      git(f.main, "commit", "-qm", "test: keep base output");
+      git(f.main, "push", "-q", "origin", "main");
+      f.mapClone();
+      f.start();
+      git(f.target, "merge", "-q", "main");
+      write(f.target, "dist/tracked.txt", "new tracked content\n");
+      git(f.target, "add", "-f", "dist/tracked.txt");
+      git(f.target, "commit", "-qm", "test: add a tracked output path");
+      mergedCloseFixture(f);
+      git(f.target, "push", "-q", "origin", "HEAD:refs/heads/main");
+      write(f.clone, "dist/tracked.txt", "retained local output\n");
+      for (const mode of ["--dry-run", "--publish"]) {
+        const result = f.close(mode);
+        assert.notEqual(result.status, 0);
+        assert.match(
+          result.stderr,
+          /judge-only output collides.*dist\/tracked.txt/u,
+        );
+        assert.equal(
+          readFileSync(join(f.clone, "dist/tracked.txt"), "utf8"),
+          "retained local output\n",
+        );
+        assert.ok(existsSync(f.target));
+      }
+    },
+    { baseIgnore: "dist/\n" },
+  ));

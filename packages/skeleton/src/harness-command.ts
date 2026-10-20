@@ -1559,7 +1559,6 @@ function readCommand(program: string, args: readonly string[]): boolean {
     if (args[0] !== "--no-pager") return false;
     const words = args.slice(1);
     // Add an explicitly effect-reduced spelling without changing legacy forms.
-    // Gate metadata exceptions still need the separately boarded N7 repair.
     if (
       words[0] === "--no-optional-locks" &&
       words[1] === "-c" &&
@@ -1993,6 +1992,7 @@ export function liveGateReads(
             !literalRedirectOperand(operand) ||
             operand.expands ||
             operand.redirects ||
+            /^\/dev\/(?:tcp|udp)(?:\/|$)/.test(operand.value) ||
             (!redirect[1]!.endsWith("<") && operand.value !== "/dev/null")
           )
             return null;
@@ -2597,7 +2597,7 @@ export function invocationEffects(source: string): string[] {
       program === "npm" &&
       args[0] === "run" &&
       ["resume", "worktree", "release", "plan", "discover"].includes(
-        args[1] ?? "",
+        args[args[1] === "--silent" ? 2 : 1] ?? "",
       )
     )
       return ["lifecycle.run"];

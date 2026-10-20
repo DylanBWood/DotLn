@@ -871,6 +871,23 @@ for (const stop of ["timeout", "SIGINT", "SIGTERM", "abort"]) {
     const f = fixture(t, 2);
     const control = new AbortController();
     const listenerCount = process.listenerCount("SIGTERM");
+    const originalKill = process.kill;
+    let groupSignals = 0;
+    process.kill = (pid, signal) => {
+      const groupFile = join(f.target, "group.txt");
+      if (
+        signal === "SIGKILL" &&
+        existsSync(groupFile) &&
+        pid === -Number(readFileSync(groupFile, "utf8"))
+      ) {
+        groupSignals += 1;
+        if (groupSignals > 1)
+          throw Object.assign(new Error("process group was already signaled"), {
+            code: "EPERM",
+          });
+      }
+      return originalKill.call(process, pid, signal);
+    };
     const source = `
       const {spawn}=require('node:child_process');
       const {writeFileSync}=require('node:fs');
@@ -897,8 +914,10 @@ for (const stop of ["timeout", "SIGINT", "SIGTERM", "abort"]) {
       );
     } finally {
       clearInterval(timer);
+      process.kill = originalKill;
     }
     assert.ok(ready, "descendant must initialize before cleanup is judged");
+    assert.equal(groupSignals, 1, "cleanup signals the owned group once");
     assert.equal(observed.timedOut, stop === "timeout");
     assert.equal(observed.interrupted, stop !== "timeout");
     assert.equal(process.listenerCount("SIGTERM"), listenerCount);

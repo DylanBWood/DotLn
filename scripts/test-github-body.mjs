@@ -44,6 +44,50 @@ await test("GitHub prose profile case 1", () => {
 
 const longParagraph =
   "This ordinary paragraph is intentionally longer than eighty characters so the reader, not the source author, owns its viewport wrapping.";
+
+test("publication links decode escaped paths before containment and encode them once", () => {
+  const options = {
+    from: "docs/PR.md",
+    repository: { selector: "github.com/fixture/project" },
+    revision: "reviewed",
+  };
+  const body = absoluteBodyLinks(
+    "[a](file%281%29.md) [b](%2e%2e%2f%2e%2e%2fsecret.md) [c](dir%2ffile.md) [d](percent%25.md)",
+    options,
+  );
+  assert.ok(body.includes("/docs/file%281%29.md"), body);
+  assert.ok(body.includes("/docs/dir/file.md"), body);
+  assert.ok(body.includes("/docs/percent%25.md"), body);
+  assert.doesNotMatch(body, /secret\.md|%2528|%2525/);
+  assert.deepEqual(relativeLinkFailures(body), []);
+  const queried = absoluteBodyLinks(
+    "[read](README.md?plain=1#section) ![image](pic.png?size=2)",
+    options,
+  );
+  assert.ok(queried.includes("README.md?plain=1#section"));
+  assert.ok(queried.includes("pic.png?size=2&raw=true"));
+});
+
+test("publication normalizes nested images and links exposed by inner removal", () => {
+  const options = {
+    from: "docs/PR.md",
+    repository: { selector: "github.com/fixture/project" },
+    revision: "reviewed",
+  };
+  for (const inner of ["[b]()", "[b](#here)", "[b](../../outside)", "![b]()"])
+    for (const ending of ["\n", "\r\n", "\r"]) {
+      const source = `Outer [a ${inner} d](e.md).${ending}\`[code]()\`${ending}`;
+      const body = absoluteBodyLinks(source, options);
+      assert.deepEqual(relativeLinkFailures(body), [], body);
+      assert.ok(body.includes("/docs/e.md"), body);
+      assert.ok(body.endsWith(`\`[code]()\`${ending}`));
+      assert.equal(absoluteBodyLinks(body, options), body);
+      assert.deepEqual(
+        relativeLinkFailures(absoluteBodyLinks(source, { from: "docs/PR.md" })),
+        [],
+      );
+    }
+});
 const longListItem =
   "- This list-item paragraph is intentionally longer than eighty characters and remains one physical source line for responsive rendering.";
 
@@ -414,7 +458,7 @@ await test("a destination is the one the parser renders: backslash escapes and c
   assert.equal(
     published,
     [
-      `An [escaped](${at}/file%281%29.md) name, a [reference](${at}/file%281%29.md) name and an [ampersand](${at}/a&b.md) name address the files they spell.`,
+      `An [escaped](${at}/file%281%29.md) name, a [reference](${at}/file%281%29.md) name and an [ampersand](${at}/a%26b.md) name address the files they spell.`,
       "",
       `An [underscore](${at}/file_1.md) and a [scheme](&#104;ttps://example.invalid/x) spelled by reference.`,
       "",
@@ -432,7 +476,7 @@ await test("a destination is the one the parser renders: backslash escapes and c
       repository: null,
       revision: "abc",
     }),
-    "Outer [a b d](e.md) brackets.\n",
+    "Outer a b d brackets.\n",
   );
 });
 

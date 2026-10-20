@@ -6488,11 +6488,11 @@ test("WO-145 optional economy support preserves historical snapshots through the
   // WO-221's release-close deletion sentence preserves WO-216's snapshot.
   const baseline = JSON.parse(
     readFileSync(
-      join(source, "packages/skeleton/fixtures/wo221-role-baseline.json"),
+      join(source, "packages/skeleton/fixtures/wo218-role-baseline.json"),
       "utf8",
     ),
   );
-  assert.equal(baseline.historicalBaseline, "wo216-role-baseline.json");
+  assert.equal(baseline.historicalBaseline, "wo221-role-baseline.json");
   assert.equal(baseline.upstreamBaseline, "wo185-role-baseline.json");
   const chains = [
     baseline,
@@ -11593,7 +11593,7 @@ test("a linked worktree of another repository is never scratch: its commits live
   const linked = describeIgnoredMaterial(from, "scratch-material/linked/");
   assert.equal(linked.disposable, false);
   assert.match(linked.classification, /linked worktree of another repository/);
-  assert.match(linked.remedy, /git worktree remove --force/);
+  assert.match(linked.remedy, /preserve it with git worktree move/);
   assert.deepEqual(
     inventoryMaterial(from).map((row) => [row.path, row.disposition]),
     [
@@ -11931,8 +11931,8 @@ test("the completion whitespace check reads untracked files and exempts byte-exa
   ])
     write(root, path, "a byte-exact line with trailing space \n");
   // Git lists an untracked nested repository as a directory entry, which the
-  // check leaves out of the intent-to-add list; the gate tree hash refuses
-  // such an entry later, so it is removed before the completion runs.
+  // check leaves out of the intent-to-add list. Judge whitespace while the
+  // repository remains; the later gate tree judgment retains its refusal.
   mkdirSync(join(root, "nested"));
   runGit(join(root, "nested"), ["init", "-q"], fixtureGitOptions);
   write(root, "nested/inner.txt", "inner trailing space \n");
@@ -11943,6 +11943,14 @@ test("the completion whitespace check reads untracked files and exempts byte-exa
       "--exclude-standard",
       "-z",
     ]).includes("nested/"),
+  );
+  const { checkLifecycleWhitespace } =
+    await import("./lib/lifecycle-evidence.mjs");
+  checkLifecycleWhitespace(root);
+  assert.ok(existsSync(join(root, "nested/.git")));
+  await assert.rejects(
+    requireLifecycleEvidence(root, "implementation-ready", undefined, "WO-999"),
+    /candidate|regular|nested/u,
   );
   rmSync(join(root, "nested"), { recursive: true, force: true });
   await requireLifecycleEvidence(

@@ -64,6 +64,7 @@ const commonSources = [
   "packages/skeleton/src/review.ts",
   "packages/skeleton/src/repair-host.ts",
   "packages/skeleton/src/resident-state.ts",
+  "packages/skeleton/src/target-publication-policy.ts",
   "packages/skeleton/src/vertical.ts",
   "packages/skeleton/src/presence-signals.ts",
   "packages/skeleton/src/presence-heartbeat.ts",
@@ -120,6 +121,7 @@ const commonSources = [
   "scripts/lib/evidence-sources.mjs",
   // WO-162: evidence tools consume the shared byte serializers and Git/JSON IO.
   "scripts/lib/helpers.mjs",
+  "scripts/lib/harness-instruction.mjs",
   "scripts/lib/git.mjs",
   "scripts/lib/paths.mjs",
   "packages/skeleton/src/runtime-inputs.mjs",

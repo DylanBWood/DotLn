@@ -84,6 +84,7 @@ const REPOSITORY_KEYS = [
   "disposable",
   "release",
   "hostRules",
+  "baseDisposablePolicy",
 ];
 const AUTHORITY_PROFILE_KEYS = [
   "authorityEnvelopeId",
@@ -106,6 +107,8 @@ const SECTION_KEYS = [
   "kit",
   "derivedOrders",
   "portfolios",
+  "contributions",
+  "historicalWorkOrders",
 ];
 // The reviewed text of a preauthorized portfolio (WO-100). The skeleton's
 // `decodePortfolio` re-validates the same shape and admits it under the floor.
@@ -406,7 +409,7 @@ const validateDisposablePaths = (path, value, label) => {
             !segment ||
             segment === "." ||
             segment === ".." ||
-            segment === ".git",
+            segment.toLowerCase() === ".git",
         )
     )
       throw refuse(
@@ -459,10 +462,53 @@ const validateClasses = (path, declared) => {
 const validateRepositoryRelease = (path, value, label) => {
   if (value === undefined) return undefined;
   requireObject(path, value, label);
-  requireKnownKeys(path, value, ["policy"], label);
+  requireKnownKeys(path, value, ["policy", "displayName"], label);
   if (value.policy !== "declared")
     throw refuse(path, `${label}.policy must be "declared" when supplied`);
-  return { policy: "declared" };
+  if (
+    value.displayName !== undefined &&
+    (!validReleaseDisplayName(value.displayName) ||
+      value.displayName.length > RELEASE_DISPLAY_NAME_LIMIT)
+  )
+    throw refuse(
+      path,
+      `${label}.displayName must be a non-empty trimmed single-line name of at most ${RELEASE_DISPLAY_NAME_LIMIT} characters without control or format characters, backticks or release version tokens; use well-formed Unicode`,
+    );
+  return {
+    policy: "declared",
+    ...(value.displayName === undefined
+      ? {}
+      : { displayName: value.displayName }),
+  };
+};
+const validateContributions = (path, value) => {
+  requireObject(path, value, "contributions");
+  requireKnownKeys(path, value, ["operatorAuthor"], "contributions");
+  if (
+    typeof value.operatorAuthor !== "string" ||
+    !/^[^<>\r\n]+ <[^<>\s]+@[^<>\s]+>$/u.test(value.operatorAuthor) ||
+    /[\p{Cc}\p{Cf}]/u.test(value.operatorAuthor)
+  )
+    throw refuse(
+      path,
+      "contributions.operatorAuthor must be a single author identity: Name <email>",
+    );
+  return { operatorAuthor: value.operatorAuthor };
+};
+// Match the source-bundle observer's DNS screen, including its ASCII case fold.
+const validateLinkHosts = (path, value, label) => {
+  const hosts = validateStringSet(path, value, label);
+  const hostname =
+    /^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z](?:[a-z0-9-]{0,61}[a-z0-9])?$/u;
+  for (const [index, host] of hosts.entries())
+    if (
+      !hostname.test(host.replace(/[A-Z]/gu, (letter) => letter.toLowerCase()))
+    )
+      throw refuse(
+        path,
+        `${label}[${index}] is not a multi-label DNS host name with a non-numeric top-level label`,
+      );
+  return hosts;
 };
 // The literal-rule fallback for a host whose classifier still runs after the
 // hook's admission; off until a qualification turns it on (WO-221).
@@ -585,6 +631,14 @@ const validateRepositories = (path, declared, classes) => {
         );
     }
     const documentationRoot = value.documentationRoot ?? DEFAULT_DOCUMENT_BASE;
+    if (
+      value.baseDisposablePolicy !== undefined &&
+      !["delete", "judge-only"].includes(value.baseDisposablePolicy)
+    )
+      throw refuse(
+        path,
+        `repositories.${id}.baseDisposablePolicy must be "delete" or "judge-only"`,
+      );
     requireText(
       path,
       documentationRoot,
@@ -608,6 +662,9 @@ const validateRepositories = (path, declared, classes) => {
       worktreeParent,
       repositoryClass,
       documentationRoot,
+      ...(value.baseDisposablePolicy === undefined
+        ? {}
+        : { baseDisposablePolicy: value.baseDisposablePolicy }),
       ...(value.gate === undefined
         ? {}
         : {
@@ -623,7 +680,7 @@ const validateRepositories = (path, declared, classes) => {
         value.automationLogins === undefined ? [] : value.automationLogins,
         `repositories.${id}.automationLogins`,
       ),
-      linkHosts: validateStringSet(
+      linkHosts: validateLinkHosts(
         path,
         value.linkHosts === undefined ? [] : value.linkHosts,
         `repositories.${id}.linkHosts`,
@@ -869,6 +926,19 @@ const validatePortfolios = (path, declared, repositories) => {
   return portfolios;
 };
 
+const validateHistoricalWorkOrders = (path, value = []) => {
+  if (
+    !Array.isArray(value) ||
+    !value.every((id) => typeof id === "string" && /^WO-\d{3}$/u.test(id)) ||
+    new Set(value).size !== value.length
+  )
+    throw refuse(
+      path,
+      "historicalWorkOrders must be a list of distinct WO-NNN identifiers",
+    );
+  return [...value].sort();
+};
+
 export const validateConfig = (path, source) => {
   let parsed;
   try {
@@ -901,6 +971,10 @@ export const validateConfig = (path, source) => {
     derivedOrders: validateDerivedOrders(path, declared.derivedOrders),
     repositories,
     classes,
+    historicalWorkOrders: validateHistoricalWorkOrders(
+      path,
+      declared.historicalWorkOrders,
+    ),
     portfolios:
       declared.portfolios === undefined
         ? {}
@@ -914,6 +988,9 @@ export const validateConfig = (path, source) => {
         ? validateRelease(path, {})
         : validateRelease(path, declared.release),
     kit: validateKit(path, declared.kit === undefined ? {} : declared.kit),
+    ...(declared.contributions === undefined
+      ? {}
+      : { contributions: validateContributions(path, declared.contributions) }),
   };
 };
 
@@ -928,6 +1005,7 @@ const absentConfig = () => ({
   roots: defaultRoots(),
   repositories: {},
   classes: {},
+  historicalWorkOrders: [],
   portfolios: {},
   derivedOrders: { first: "WO-900", last: "WO-999" },
   build: { loadout: null, profile: null, overlay: null },

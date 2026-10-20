@@ -51,12 +51,6 @@ Whole `resume:` phrases select their skill through canonical status.
 `@skills`: `.claude/skills` in Claude, `.agents/skills` in Codex.
 `AGENTS.md` symlinks here.
 
-Read[executor]: `@skills/dotln-executor/SKILL.md` — next, fix, status, times.
-Read[verifier]: `@skills/dotln-verifier/SKILL.md` — verify.
-Read[reviewer]: `@skills/dotln-reviewer/SKILL.md` — final review.
-Read[release-close]: `@skills/dotln-release-close/SKILL.md` — release close.
-Read[planner]: `@skills/dotln-planner/SKILL.md` — planning or ideation.
-
 Expand skill read/review selectors from order/report paths. Read cited sections;
 name new inputs.
 
@@ -67,6 +61,11 @@ Codex: `node scripts/operator-control.mjs analysis|override|off|status`.
 Host permissions apply.
 
 <!-- dotln-harness:start -->
+Read[executor]: `@skills/dotln-executor/SKILL.md` — next, fix, status, times.
+Read[verifier]: `@skills/dotln-verifier/SKILL.md` — verify.
+Read[reviewer]: `@skills/dotln-reviewer/SKILL.md` — final review.
+Read[release-close]: `@skills/dotln-release-close/SKILL.md` — release close.
+Read[planner]: `@skills/dotln-planner/SKILL.md` — planning or ideation.
 Capabilities and residue: .claude/harness-manifest.json; planning: refute[ full] selects dotln-refuter.
 DotLn has five refusals (WO-135, WO-139, WO-144): it reserves one writer per worktree on any branch, including main; refuses writes to gate inputs or the success record during a live gate, admitting only the active order's own evidence, verification and final-review directories at the default document roots during a product gate; on planning/ branches refuses repository writes outside docs/ and root Markdown; refuses observable subagent admissions beyond docs/control/budgets.json subagentCap (default 20; null disables); and refuses known outside-project write destinations without a containing root granted by the active role or equipped support. Product tasks fail on observed reads of the admitted record paths; document and mixed review gates retain the full refusal. Literal redirects are judged on any program; expansions such as $PWD and a program's own effects remain unobserved under host permissions; grant failures admit with one advisory and preserve the other refusals. Descendants count at their first attributable tool call; unresolved direct/child overlap is a reported minimum, and unobserved agents remain unknown. Inspect the writer with node scripts/harness.mjs writer --show; stop this session's gate with node scripts/harness.mjs evidence --stop; use operator override: for authorized recovery. Claude hooks enforce these five refusals at observed boundaries; under Codex a lifecycle dispatch reserves the writer and refuses a foreign holder, and the other duties and grants are role text because Codex tool calls are unhooked. Copilot reuses the Claude registration: scripted denials hold with allow-all; missing tool-call and child identity leave subagent accounting advisory; WO-146 evidence records interactive qualification. Other tool and completion judgments are advisory and host permissions decide. The separate Codex compaction adapter restores an owned unfinished task and permits one continuation after premature stopping; it never dispatches a role or changes writer ownership.
 claude-code-2.1.263: clean-room: Source provenance needs operator judgment; the hand-written Clean Room floor stays locked.

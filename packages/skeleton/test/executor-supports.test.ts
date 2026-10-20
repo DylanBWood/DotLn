@@ -139,7 +139,7 @@ test("WO-179 and WO-195 emitted roles carry their assigned corrections across su
           );
           assert.match(
             role.contents,
-            /The close is done when the tag and Release exist, git worktree list shows no worktree for the order, its directory is gone and git branch --list wo-NNN is empty/,
+            /The close is done when the tag and Release exist, git worktree list shows no worktree for the order, its directory is gone, git branch --list wo-NNN is empty and no starter-refresh blocker remains/,
             subject,
           );
           assert.match(

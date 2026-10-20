@@ -118,7 +118,7 @@ const fixture = (base, { baseIgnore } = {}) => {
   const baseCommit = git(clone, "rev-parse", "HEAD");
   write(clone, "later.txt", "not in declared base\n");
   git(clone, "add", "-A");
-  git(clone, "commit", "-qm", "Later base change");
+  git(clone, "commit", "-qm", "test: later base change");
   git(clone, "push", "-qu", "origin", "main");
   const main = repository("launchpad");
   const parent = join(base, "Targets");
@@ -154,6 +154,11 @@ const fixture = (base, { baseIgnore } = {}) => {
     },
   };
   write(main, "dotln.config.json", JSON.stringify(config));
+  write(
+    main,
+    "records/state/outward-vocabulary.json",
+    JSON.stringify(publicationVocabulary),
+  );
   write(
     main,
     order,

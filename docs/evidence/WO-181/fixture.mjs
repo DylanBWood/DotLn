@@ -322,6 +322,8 @@ export async function composeRepairDouble(fixture, review) {
     for (const input of route.repairs) {
       assert.equal(input.derivation.kind, "derived");
       const host = new RepairHost({
+        // This process double replays the historical grant at a valid time.
+        now: () => fixture.original.authorityEnvelope.expiresAt - 60_000,
         store: new WorkerStore(
           join(fixture.root, `repair-${input.reviewItem.finding.findingId}`),
         ),

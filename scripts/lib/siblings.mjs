@@ -320,6 +320,7 @@ function readReceiptLane(root, declaration, lane) {
     const entry = lane(root, name);
     if (!lstatSync(join(directory, name)).isDirectory())
       throw refuse(entry, "expected a sibling's receipt directory");
+    if (!readdirSync(join(directory, name)).length) continue;
     if (!bySibling.has(name))
       throw refuse(
         entry,
@@ -353,7 +354,12 @@ function readReceiptLane(root, declaration, lane) {
           path,
           `the receipt is dated ${receipt.date}, which names ${receiptFileName(receipt.date)}`,
         );
-      bySibling.get(name).push({ path, ...receipt });
+      if (
+        !bySibling
+          .get(name)
+          .some((row) => row.manifestHash === receipt.manifestHash)
+      )
+        bySibling.get(name).push({ path, ...receipt });
     }
   }
   return bySibling;

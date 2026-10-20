@@ -1,3 +1,15 @@
+import {
+  HARNESS_START,
+  HARNESS_END,
+  NO_COMPILED_HARNESS,
+  migrateHarnessFloor,
+  harnessInstructionBlock,
+  composeHarnessInstruction,
+} from "./harness-instruction.mjs";
+export {
+  harnessInstructionBlock,
+  composeHarnessInstruction,
+} from "./harness-instruction.mjs";
 import { spawnGit, runGit } from "./git.mjs";
 import {
   json as targetJson,
@@ -33,8 +45,6 @@ import {
   canonicalStringify,
   COMPILER_PACKAGE_VERSION,
   fnv1a64,
-  HARNESS_START,
-  HARNESS_END,
   lowerToHarness,
   mergeHarnessFragments,
 } from "../../packages/compiler/dist/src/index.js";
@@ -87,6 +97,8 @@ export function decodeBuildOverlay(path, text) {
       /[\u0000-\u001f\u007f\u2028\u2029]/u.test(value)
     )
       fail(`${label} must be a non-empty string without control characters`);
+    if (/<!--\s*dotln-harness:(?:start|end)\s*-->/u.test(value))
+      fail(`${label} must not contain harness block markers`);
   };
   const integer = (value, label, min = 0) => {
     if (!Number.isSafeInteger(value) || value < min)
@@ -109,6 +121,19 @@ export function decodeBuildOverlay(path, text) {
   } catch {
     fail("root must be JSON");
   }
+  const screenMarkers = (node, key) => {
+    if (
+      typeof node === "string" &&
+      /<!--\s*dotln-harness:(?:start|end)\s*-->/u.test(node)
+    )
+      fail(`${key} must not contain harness block markers`);
+    if (node && typeof node === "object")
+      for (const [name, child] of Object.entries(node)) {
+        screenMarkers(name, `${key} property name`);
+        screenMarkers(child, `${key}.${name}`);
+      }
+  };
+  screenMarkers(value, "overlay");
   object(value, OVERLAY_KEYS, "overlay");
   if (value.version !== 1) fail("version must be 1");
   if (
@@ -278,38 +303,6 @@ const contained = (root, path) => {
     throw new Error("harness output must be a regular file");
   return absolute;
 };
-export function harnessInstructionBlock(text) {
-  const starts = text.split(HARNESS_START).length - 1;
-  const ends = text.split(HARNESS_END).length - 1;
-  if (
-    starts !== 1 ||
-    ends !== 1 ||
-    text.indexOf(HARNESS_END) < text.indexOf(HARNESS_START)
-  )
-    throw new Error("harness instruction requires one ordered marker pair");
-  return (
-    text.slice(
-      text.indexOf(HARNESS_START),
-      text.indexOf(HARNESS_END) + HARNESS_END.length,
-    ) + "\n"
-  );
-}
-/** The operating contract an emit writes: a floor that holds the marker pair
- * gets its block replaced; a floor without one gets the block after a blank
- * line. One rule for emitHarness and for a prediction of its output. */
-export function composeHarnessInstruction(floor, block) {
-  if (typeof floor !== "string" || !floor.trim())
-    throw new Error("harness emit requires the hand-written clean-room floor");
-  if (floor.includes(HARNESS_START) || floor.includes(HARNESS_END)) {
-    const prior = harnessInstructionBlock(floor).trimEnd();
-    if (!floor.replace(prior, "").trim())
-      throw new Error(
-        "harness emit requires the hand-written clean-room floor outside the generated block",
-      );
-    return floor.replace(prior, block.trimEnd());
-  }
-  return floor.trimEnd() + "\n\n" + block;
-}
 export function harnessInstallation(options = {}) {
   if (options.loadout && options.loadout !== "contributor")
     throw new Error("unknown harness loadout");
@@ -525,9 +518,26 @@ export function emitHarness(
     instruction = { path: contained(root, "CLAUDE.md"), contents: "" };
     writes.push(instruction);
   }
-  const floor = existsSync(instruction.path)
+  const originalFloor = existsSync(instruction.path)
     ? readFileSync(instruction.path, "utf8")
     : options.instructionFloor;
+  // Only the known legacy lines outside the generated block are migrated.
+  const priorBlock =
+    typeof originalFloor === "string" &&
+    (originalFloor.includes(HARNESS_START) ||
+      originalFloor.includes(HARNESS_END))
+      ? harnessInstructionBlock(originalFloor).trimEnd()
+      : null;
+  const floor =
+    typeof originalFloor !== "string"
+      ? originalFloor
+      : priorBlock
+        ? originalFloor
+            .replace(priorBlock, "\u0000")
+            .split("\u0000")
+            .map(migrateHarnessFloor)
+            .join(priorBlock)
+        : migrateHarnessFloor(originalFloor);
   if (installation.manifest.build === "none") {
     if (typeof floor !== "string" || !floor.trim())
       throw new Error(
@@ -542,9 +552,12 @@ export function emitHarness(
       throw new Error(
         "harness emit requires the hand-written clean-room floor outside the generated block",
       );
+    if (!instruction.contents.includes(NO_COMPILED_HARNESS))
+      instruction.contents =
+        instruction.contents.trimEnd() + "\n\n" + NO_COMPILED_HARNESS + "\n";
   } else
     instruction.contents = composeHarnessInstruction(
-      floor,
+      floor?.replace(NO_COMPILED_HARNESS + "\n", ""),
       instruction.contents,
     );
   const expected = new Set(installation.files.map((file) => file.path));
@@ -873,7 +886,8 @@ export function checkHarness(root, options = {}) {
     if (
       !text.trim() ||
       text.includes(HARNESS_START) ||
-      text.includes(HARNESS_END)
+      text.includes(HARNESS_END) ||
+      !text.includes(NO_COMPILED_HARNESS)
     )
       throw new Error(
         "harness drift: build none requires the hand-written floor alone",

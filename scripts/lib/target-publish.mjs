@@ -45,6 +45,7 @@ import {
 import { repairContract } from "../../packages/skeleton/dist/src/repair.js";
 import { hasAiAttribution } from "../../packages/compiler/src/attribution.mjs";
 import { checkOutwardArtifact } from "../outward-lint.mjs";
+import { targetCommits } from "./target-commit-lint.mjs";
 import {
   acceptanceStatuses,
   deliverableReady,
@@ -720,18 +721,7 @@ export function targetChanges(repo, baseCommit, commit) {
       deleted: deleted === "-" ? null : Number(deleted),
     };
   });
-  const commits = gitText(
-    repo,
-    "rev-list",
-    "--reverse",
-    `${baseCommit}..${commit}`,
-  )
-    .split("\n")
-    .filter(Boolean)
-    .map((sha) => ({
-      sha,
-      message: gitText(repo, "log", "-1", "--format=%B", sha).trimEnd(),
-    }));
+  const commits = targetCommits(repo, baseCommit, commit);
   return { files, commits };
 }
 
@@ -937,7 +927,37 @@ export function publishTargetDraft({
     docPath(main, "control", "local/target-publications", workOrderId),
   );
   const previous = draftRecord(publication);
+  const prepared = decodeLog(publication.read())
+    .filter((event) => event.type === "DraftPrepared")
+    .at(-1)?.payload;
+  for (const recorded of [previous, prepared].filter(Boolean)) {
+    if (
+      recorded.repositoryId.toLowerCase() !== forge.identity ||
+      (entry.origin && entry.origin !== forge.identity)
+    )
+      throw refuse(
+        "origin differs from the recorded draft repository; restore the recorded origin before retrying",
+      );
+    if (recorded.branch !== branch)
+      throw refuse(
+        `one pull request per order: the draft is on ${recorded.branch}; use --branch ${recorded.branch}`,
+      );
+  }
+  if (entry.origin && entry.origin !== forge.identity)
+    throw refuse("origin differs from the registered target repository");
   if (previous && read(["rev-parse", `${previous.headSha}^{tree}`]) === tree) {
+    pushObservedCommit(
+      entry.target,
+      boundUrl,
+      entry.branch,
+      previous.headSha,
+      branch,
+      {
+        sourceRef: previous.headSha,
+        lease: previous.headSha,
+        pullRequest: previous.number,
+      },
+    );
     log(
       `Already published draft at tree ${tree}: pull request #${previous.number} on ${previous.repositoryId} from ${previous.branch}; nothing pushed.`,
     );
@@ -947,20 +967,28 @@ export function publishTargetDraft({
     throw refuse(
       `one pull request per order: the draft is on ${previous.branch}; use --branch ${previous.branch}`,
     );
-  const commit = spawnGit(
-    [
-      "-C",
-      entry.target,
-      ...HOST_GIT_READ,
-      "commit-tree",
-      tree,
-      "-p",
-      headBefore,
-      "-m",
-      title,
-    ],
-    { encoding: "utf8" },
-  );
+  const retainedCommit =
+    prepared?.tree === tree &&
+    prepared.parent === headBefore &&
+    prepared.title === title
+      ? prepared.headSha
+      : null;
+  const commit = retainedCommit
+    ? { status: 0, stdout: retainedCommit }
+    : spawnGit(
+        [
+          "-C",
+          entry.target,
+          ...HOST_GIT_READ,
+          "commit-tree",
+          tree,
+          "-p",
+          headBefore,
+          "-m",
+          title,
+        ],
+        { encoding: "utf8" },
+      );
   if (commit.status !== 0)
     throw refuse(
       `git commit-tree failed: ${redactPaths(String(commit.stderr ?? "").trim(), [[entry.target, "<target>"]])}`,
@@ -983,6 +1011,25 @@ export function publishTargetDraft({
   read(["update-ref", sourceRef, draftCommit]);
   publication.acquire();
   try {
+    if (!retainedCommit) {
+      const { event } = appendEvent(publication.read(), {
+        schemaVersion: 1,
+        type: "DraftPrepared",
+        occurredAt: now,
+        actorId: TARGET_PUBLISH_HOST,
+        workstreamId: workOrderId,
+        correlationId: workOrderId,
+        payload: {
+          repositoryId: forge.selector,
+          branch,
+          headSha: draftCommit,
+          tree,
+          parent: headBefore,
+          title,
+        },
+      });
+      publication.append(event);
+    }
     const resolved = ensureGh(entry.target);
     if (resolved.selector.toLowerCase() !== forge.identity)
       throw refuse("origin differs from the bound target repository");
@@ -994,7 +1041,11 @@ export function publishTargetDraft({
       branch,
       {
         sourceRef,
-        ...(previous ? { lease: previous.headSha } : {}),
+        ...(previous
+          ? { lease: previous.headSha, pullRequest: previous.number }
+          : prepared
+            ? { lease: prepared.headSha, allowAbsent: true }
+            : {}),
       },
     );
     let payload;
@@ -1025,14 +1076,38 @@ export function publishTargetDraft({
           bodyPath,
         ]),
       );
-      if (created.status !== 0)
-        throw refuse(
-          `branch pushed but draft pull-request creation failed (exit ${created.status ?? "unavailable"})`,
-        );
-      const number = parsePullRequestUrl(created.stdout, forge);
+      let number =
+        created.status === 0
+          ? parsePullRequestUrl(created.stdout, forge)
+          : null;
+      if (number === null) {
+        const found = executeGh(entry.target, [
+          "pr",
+          "view",
+          branch,
+          "--repo",
+          forge.selector,
+          "--json",
+          "number,headRefOid,headRefName,baseRefName,isDraft",
+        ]);
+        try {
+          const observed = JSON.parse(found.stdout);
+          if (
+            found.status === 0 &&
+            observed.isDraft === true &&
+            observed.headRefOid === draftCommit &&
+            observed.headRefName === branch &&
+            observed.baseRefName === repository.baseBranch &&
+            Number.isInteger(observed.number)
+          )
+            number = observed.number;
+        } catch {
+          /* A missing or ambiguous pull request cannot be adopted. */
+        }
+      }
       if (number === null)
         throw refuse(
-          "draft pull request created but its number could not be read; inspect the repository before retrying",
+          "branch pushed but draft pull-request creation or lookup failed; its prepared commit is retained, so rerun the same command after inspecting the repository",
         );
       payload = {
         repositoryId: forge.selector,
@@ -1123,6 +1198,8 @@ export function publishTargetWorktree({
   );
   const boundUrl = pushUrl(entry.target);
   const forge = parseGitHubTarget(boundUrl);
+  if (entry.origin && entry.origin !== forge.identity)
+    throw refuse("origin differs from the registered target repository");
   const changes = targetChanges(
     entry.target,
     subject.baseCommit,
@@ -1202,6 +1279,10 @@ export function publishBoundTargetCommit({
 }) {
   const prior = () => readPublication(publication, commit)?.payload;
   const already = (recorded) => {
+    if (recorded.repositoryId.toLowerCase() !== forge.identity)
+      throw refuse(
+        "origin differs from the recorded publication repository; restore the recorded origin before retrying",
+      );
     log(
       `Already published commit ${commit}: pull request #${recorded.number} on ${recorded.repositoryId}; nothing pushed.`,
     );
@@ -1220,6 +1301,10 @@ export function publishBoundTargetCommit({
     // draft head under a lease, the title and body are updated and the pull
     // request is marked ready. One pull request per order (WO-221).
     const draft = draftRecord(publication);
+    if (draft && draft.repositoryId.toLowerCase() !== forge.identity)
+      throw refuse(
+        "origin differs from the recorded draft repository; restore the recorded origin before retrying",
+      );
     if (draft && draft.branch !== branch)
       throw refuse(
         `one pull request per order: the draft is on ${draft.branch}; publish with --branch ${draft.branch}`,
@@ -1230,7 +1315,7 @@ export function publishBoundTargetCommit({
       sourceBranch,
       commit,
       branch,
-      draft ? { lease: draft.headSha } : {},
+      draft ? { lease: draft.headSha, pullRequest: draft.number } : {},
     );
     if (draft) {
       editPullRequest(target, forge, draft.number, title, body);

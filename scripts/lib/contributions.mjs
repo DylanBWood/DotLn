@@ -1,10 +1,11 @@
 import { runGit } from "./git.mjs";
+import { loadConfig } from "./config.mjs";
 
-// Public author identity on the commit that landed the license decision.
-// This exemption never follows the publishing user's mutable Git config.
-export const operatorAuthor = "Dylan Wood <dylanwoodconsulting@gmail.com>";
+// An instance declares its exemption in repository data. Missing data grants
+// no exemption; the publishing user's mutable Git identity never decides it.
 
 export const contributionSignoffRules = (root) => {
+  const operatorAuthor = loadConfig(root).contributions?.operatorAuthor;
   const base = runGit(root, [
     "rev-parse",
     "--verify",

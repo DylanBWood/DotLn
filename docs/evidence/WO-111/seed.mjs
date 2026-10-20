@@ -213,6 +213,7 @@ export function prepare(returnProof = false) {
   };
   const config = {
     version: 1,
+    classes: { scratch: { checks: [], supports: [] } },
     repositories: {
       scratch: {
         baseBranch: "main",

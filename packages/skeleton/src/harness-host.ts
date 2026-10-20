@@ -39,10 +39,15 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { text as streamText } from "node:stream/consumers";
 import type { DecodeResult } from "@dotln/kernel";
 import {
+  TARGET_PUBLICATION_EFFECTS,
+  targetPublicationRefusal,
+} from "./target-publication-policy.js";
+import {
   applyFeedbackCorrection,
   compileFeedbackUnits,
   COMPILER_PACKAGE_VERSION,
   fnv1a64,
+  canonicalStringify,
   showHarnessAdvisory,
   harnessPromptIntent,
   assertOutsideWriteGrants,
@@ -68,6 +73,7 @@ import {
   shellWriteTargets,
   commitMessageInputs,
   shellDiagnostics,
+  shellInvocations,
   shellGuidance,
 } from "./harness-command.js";
 import {
@@ -1526,7 +1532,17 @@ function gitHubIdentity(remote: string): string | null {
   } else {
     try {
       const parsed = new URL(remote);
-      if (!["https:", "ssh:"].includes(parsed.protocol) || parsed.port)
+      if (
+        !["https:", "ssh:"].includes(parsed.protocol) ||
+        parsed.port ||
+        parsed.password ||
+        parsed.search ||
+        parsed.hash ||
+        (parsed.protocol === "https:" && parsed.username) ||
+        (parsed.protocol === "ssh:" &&
+          parsed.username &&
+          parsed.username !== "git")
+      )
         return null;
       host = parsed.hostname.toLowerCase();
       pathname = parsed.pathname.replace(/^\//, "");
@@ -1581,52 +1597,107 @@ function registeredTargetAdmission(
   const words = plainShellWords(command);
   if (!words) return null;
   const shape = registeredTargetCommand(words, root);
-  if (!shape) return null;
-  if (emittedDenyMatches(root, command, words)) return null;
+  if (!shape || emittedDenyMatches(root, command, words)) return null;
   const withheld = (fact: string) => ({
     advisory: `Registered-target admission withheld: ${fact}; host permissions decide.`,
   });
+  // The helper owns a controlled push lane. Raw git and gh commands run the
+  // clone's mutable configuration; npm additionally runs lifecycle scripts.
+  if (shape.kind !== "helper" || words[0] === "npm")
+    return withheld(
+      "use the node spelling of worktree publish; raw git, gh and npm receive no registered-target admission",
+    );
   if (session.correction)
     return withheld("typed correction freezes destructive effects");
   try {
     const control = harnessControl(root);
     const order = control.workOrder;
-    if (!order || !/^WO-\d{3}$/.test(order))
-      return withheld("no dispatched order in canonical status");
-    if (shape.kind === "helper" && shape.workOrder !== order)
-      return withheld("helper names an order other than the dispatched one");
+    if (!order || !/^WO-\d{3}$/.test(order) || shape.workOrder !== order)
+      return withheld("helper does not name the dispatched order");
+    const mainRef = "refs/heads/main";
+    const main = git(root, ["worktree", "list", "--porcelain"])
+      .split("\n\n")
+      .find((row) => row.split("\n").includes(`branch ${mainRef}`))
+      ?.split("\n")[0]
+      ?.replace(/^worktree /, "");
+    if (!main) return withheld("main's checkout is unavailable");
+    const committed = (file: string) => {
+      const bytes = git(main, ["--no-replace-objects", "show", `HEAD:${file}`]);
+      for (const checkout of [main, root]) {
+        const path = contained(checkout, file);
+        if (!lstatSync(path).isFile() || readFileSync(path, "utf8") !== bytes)
+          throw new Error(
+            `publication authority differs from main's committed ${file}`,
+          );
+      }
+      if (
+        !/^100(?:644|755) blob /u.test(
+          git(main, ["--no-replace-objects", "ls-tree", "HEAD", "--", file]),
+        )
+      )
+        throw new Error(
+          `publication authority is not a committed regular file: ${file}`,
+        );
+      return bytes;
+    };
+    const configuration = JSON.parse(committed("dotln.config.json")) as {
+      roots?: { docs?: string; control?: string; intake?: string };
+      repositories?: Record<
+        string,
+        { baseBranch?: string; authorityProfile: AuthorityEnvelope }
+      >;
+    };
+    const controlRoot =
+      configuration.roots?.control ??
+      `${configuration.roots?.docs ?? "docs"}/control`;
+    const localFile = (checkout: string, file: string) =>
+      contained(checkout, `${controlRoot}/local/${file}`);
+    const registryName = "target-worktrees.json";
     const registry = readJson<Record<string, RegisteredTargetEntry>>(
-      join(root, "docs/control/local/target-worktrees.json"),
+      localFile(main, registryName),
       {},
     );
     const entries = Object.values(registry).filter(
       (entry) => entry?.workOrderId === order,
     );
     if (entries.length !== 1)
-      return withheld(`no single recorded target worktree for ${order}`);
-    const entry = entries[0]!;
-    if (entry.branch !== `wo-${order.slice(3)}`)
-      return withheld("recorded target worktree is not on the order's branch");
-    const mainRef = "refs/heads/main";
-    const committed = (file: string) =>
-      git(root, ["show", `${mainRef}:${file}`]);
-    const configuration = JSON.parse(committed("dotln.config.json")) as {
-      repositories?: Record<string, { baseBranch?: string }>;
-    };
-    const registration = configuration.repositories?.[entry.repositoryId];
-    if (!registration)
       return withheld(
-        `main's committed configuration does not register ${entry.repositoryId}`,
+        `no single recorded target worktree for ${order} in main's registry`,
+      );
+    const entry = entries[0]!;
+    const rootEntries = Object.values(
+      readJson<Record<string, RegisteredTargetEntry>>(
+        localFile(root, registryName),
+        {},
+      ),
+    ).filter((row) => row?.workOrderId === order);
+    if (
+      rootEntries.length !== 1 ||
+      canonicalStringify(rootEntries[0]) !== canonicalStringify(entry)
+    )
+      return withheld("the worktree's registry differs from main's registry");
+    const clones = readJson<Record<string, string>>(
+      localFile(main, "repository-clones.json"),
+      {},
+    );
+    if (
+      typeof clones[entry.repositoryId] !== "string" ||
+      realpathSync(clones[entry.repositoryId]!) !== realpathSync(entry.clone)
+    )
+      return withheld("the registered entry differs from main's clone map");
+    if (entry.branch !== `wo-${order.slice(3)}` || !entry.origin)
+      return withheld(
+        "recorded target has no origin or is not on the order's branch",
+      );
+    const registration = configuration.repositories?.[entry.repositoryId];
+    if (!registration || entry.baseBranch !== registration.baseBranch)
+      return withheld(
+        `main's committed registration differs for ${entry.repositoryId}`,
       );
     const grants = JSON.parse(
       committed("packages/skeleton/loadouts/grants.json"),
-    ) as readonly {
-      grantedBy?: string;
-      repo?: string;
-      effects?: readonly string[];
-      operations?: readonly string[];
-    }[];
-    const effects = ["repo.push", "pr.open"];
+    ) as readonly AuthorityGrant[];
+    const effects = TARGET_PUBLICATION_EFFECTS;
     if (
       !Array.isArray(grants) ||
       !grants.some(
@@ -1643,206 +1714,138 @@ function registeredTargetAdmission(
       return withheld(
         `main's committed grants admit no operator repo.push and pr.open for ${entry.repositoryId}`,
       );
+    const profileRefusal = targetPublicationRefusal(
+      registration.authorityProfile,
+      order,
+      Date.now(),
+    );
+    if (profileRefusal) return withheld(profileRefusal);
     const target = realpathSync(entry.target);
     if (
+      realpathSync(git(target, ["rev-parse", "--show-toplevel"]).trim()) !==
+        target ||
+      git(target, ["symbolic-ref", "--short", "HEAD"]).trim() !==
+        entry.branch ||
       realpathSync(
-        git(entry.target, ["rev-parse", "--show-toplevel"]).trim(),
-      ) !== target ||
-      git(entry.target, ["symbolic-ref", "--short", "HEAD"]).trim() !==
-        entry.branch
+        resolve(target, git(target, ["rev-parse", "--git-common-dir"]).trim()),
+      ) !==
+        realpathSync(
+          resolve(
+            entry.clone,
+            git(entry.clone, ["rev-parse", "--git-common-dir"]).trim(),
+          ),
+        )
     )
-      return withheld("recorded target worktree is not on its order branch");
-    const commonDirectory = realpathSync(
-      resolve(
-        entry.target,
-        git(entry.target, ["rev-parse", "--git-common-dir"]).trim(),
-      ),
-    );
-    const cloneDirectory = realpathSync(
-      resolve(
-        entry.clone,
-        git(entry.clone, ["rev-parse", "--git-common-dir"]).trim(),
-      ),
-    );
-    if (commonDirectory !== cloneDirectory)
-      return withheld("recorded target worktree is not the registered clone's");
+      return withheld(
+        "recorded target worktree is not the registered clone's order branch",
+      );
     const urls = (key: string) =>
-      git(entry.target, ["config", "--get-all", key], true)
+      git(target, ["config", "--get-all", key], true)
         .split("\n")
         .filter(Boolean);
     const pushed = urls("remote.origin.pushurl");
     const remotes = pushed.length ? pushed : urls("remote.origin.url");
     const identity = remotes.length === 1 ? gitHubIdentity(remotes[0]!) : null;
-    if (!identity) return withheld("target origin is not one GitHub push URL");
-    if (entry.origin && identity !== entry.origin)
+    if (!identity || identity !== entry.origin)
       return withheld(
-        `target origin ${identity} is not the origin recorded at start, ${entry.origin}`,
+        "target origin is not the one GitHub origin recorded at start",
       );
-    // The helper spellings run the kit's scripts: they are admitted only
-    // while the launchpad's scripts equal main's committed scripts, as the
-    // first admission binds its helper byte-exact.
-    if (
-      shape.kind === "helper" &&
-      spawnSync("git", ["diff", "--quiet", mainRef, "--", "scripts/"], {
-        cwd: root,
-        encoding: "utf8",
-        timeout: 10_000,
-      }).status !== 0
-    )
-      return withheld(
-        "the launchpad's scripts differ from main's committed scripts",
-      );
+    const closurePaths = [
+      "scripts/",
+      "packages/",
+      "package.json",
+      "package-lock.json",
+      ".npmrc",
+    ];
+    const closureEntries = git(root, [
+      "--no-replace-objects",
+      "ls-tree",
+      "-r",
+      "-z",
+      mainRef,
+      "--",
+      ...closurePaths,
+    ])
+      .split("\0")
+      .filter(Boolean);
+    const objectFormat = git(root, [
+      "rev-parse",
+      "--show-object-format",
+    ]).trim();
+    for (const line of closureEntries) {
+      const entry = /^(100(?:644|755)) blob ([0-9a-f]+)\t(.+)$/su.exec(line);
+      if (!entry)
+        return withheld("the helper's source closure has a non-regular input");
+      const file = join(root, entry[3]!);
+      const stat = lstatSync(file, { throwIfNoEntry: false });
+      if (
+        !stat?.isFile() ||
+        realpathSync(file) !== file ||
+        Boolean(stat.mode & 0o111) !== (entry[1] === "100755")
+      )
+        return withheld(
+          "the helper's source closure differs from main's committed source",
+        );
+      const bytes = readFileSync(file);
+      const hash = createHash(objectFormat)
+        .update(`blob ${bytes.length}\0`)
+        .update(bytes)
+        .digest("hex");
+      if (hash !== entry[2])
+        return withheld(
+          "the helper's source closure differs from main's committed source",
+        );
+    }
     const toolCwd = input.tool_input?.cwd ?? input.tool_input?.workdir;
     const cwd = realpathSync(
       typeof toolCwd === "string" ? resolve(root, toolCwd) : input.cwd,
     );
-    let draft: { head: string; branch: string; number: number } | undefined;
-    const main = git(root, ["worktree", "list", "--porcelain"])
-      .split("\n\n")
-      .find((row) => row.split("\n").includes(`branch ${mainRef}`))
-      ?.split("\n")[0]
-      ?.replace(/^worktree /, "");
-    if (main) {
-      const log = join(
-        main,
-        "docs/control/local/target-publications",
-        order,
-        "events.jsonl",
+    if (cwd !== realpathSync(root))
+      return withheld("helper runs outside the launchpad root");
+    const bodyAt = words.indexOf("--body-file");
+    if (bodyAt >= 0) {
+      const named = resolve(cwd, words[bodyAt + 1]!);
+      const physical = realpathSync(named);
+      const parent = [root, target].find((checkout) =>
+        physical.startsWith(`${realpathSync(checkout)}/`),
       );
-      if (existsSync(log))
-        for (const line of readFileSync(log, "utf8").split("\n")) {
-          if (!line.trim()) continue;
-          const event = JSON.parse(line) as {
-            type?: string;
-            payload?: {
-              draft?: boolean;
-              headSha?: string;
-              branch?: string;
-              number?: number;
-            };
-          };
-          if (
-            event.type === "PullRequestOpened" &&
-            event.payload?.draft === true &&
-            COMMIT_SHA.test(event.payload.headSha ?? "") &&
-            BRANCH_NAME.test(event.payload.branch ?? "") &&
-            Number.isInteger(event.payload.number) &&
-            event.payload.branch !== registration.baseBranch
-          )
-            draft = {
-              head: event.payload.headSha!,
-              branch: event.payload.branch!,
-              number: event.payload.number!,
-            };
-        }
-    }
-    // The base branch is never an admitted push target.
-    const branches = new Set(
-      [entry.branch, ...(draft ? [draft.branch] : [])].filter(
-        (name) => name !== registration.baseBranch,
-      ),
-    );
-    const within = (file: string) => {
-      const path = resolve(cwd, file);
-      return [realpathSync(root), target].some(
-        (parent) => path === parent || path.startsWith(`${parent}/`),
-      );
-    };
-    const verified = control.phase === "verified";
-    const closed =
-      control.phase === "closed" && control.latestVerdict === "pass";
-    const anyPhase = verified
-      ? "verified"
-      : closed
-        ? "closed with a passing final review"
-        : null;
-    const phaseFor = (draftForm: boolean) =>
-      draftForm
-        ? verified
-          ? "verified"
-          : null
-        : closed
-          ? "closed with a passing final review"
-          : null;
-    let legal: string | null;
-    let described: string;
-    if (shape.kind === "push") {
-      const at = shape.path ? realpathSync(resolve(cwd, shape.path)) : cwd;
-      if (at !== target)
-        return withheld("push is not bound to the recorded target worktree");
-      if (!branches.has(shape.branch))
+      if (!parent || !lstatSync(physical).isFile())
         return withheld(
-          `branch ${shape.branch} is neither ${entry.branch} nor the recorded draft branch`,
+          "--body-file is outside the launchpad and target or is not regular",
         );
+      const intake =
+        configuration.roots?.intake ??
+        `${configuration.roots?.docs ?? "docs"}/intake`;
+      const local = relative(parent, physical);
+      const lexical = relative(parent, named);
       if (
-        shape.lease &&
-        !(
-          draft &&
-          shape.lease.branch === draft.branch &&
-          shape.lease.head === draft.head
+        local === intake ||
+        local.startsWith(`${intake}/`) ||
+        local === "docs/intake" ||
+        local.startsWith("docs/intake/") ||
+        lexical === intake ||
+        lexical.startsWith(`${intake}/`) ||
+        lexical === "docs/intake" ||
+        lexical.startsWith("docs/intake/") ||
+        // One status per path: 1 is the only "not ignored" answer, and a
+        // path Git cannot judge (outside the checkout) withholds too.
+        [local, lexical].some(
+          (candidate) =>
+            spawnSync(
+              "git",
+              ["check-ignore", "--no-index", "--quiet", "--", candidate],
+              { cwd: parent, encoding: "utf8", timeout: 10_000 },
+            ).status !== 1,
         )
       )
-        return withheld(
-          "force-with-lease does not name the recorded draft branch and head",
-        );
-      // A lease is the closed-phase publish's form; a plain push is legal
-      // at either phase.
-      legal = shape.lease ? phaseFor(false) : anyPhase;
-      described = `push of ${shape.branch} to the registered origin`;
-    } else if (shape.kind === "helper") {
-      if (cwd !== realpathSync(root))
-        return withheld("helper runs outside the launchpad root");
-      legal = phaseFor(shape.draft);
-      described = shape.draft
-        ? "the draft form of worktree publish"
-        : "the closed-phase worktree publish";
-    } else {
-      if (shape.repo) {
-        if (shape.repo.toLowerCase() !== identity)
-          return withheld(
-            `--repo ${shape.repo} is not the registered origin ${identity}`,
-          );
-      } else if (cwd !== target)
-        return withheld("gh runs outside the recorded target worktree");
-      if (shape.kind === "pr-create") {
-        if (shape.head !== undefined && !branches.has(shape.head))
-          return withheld(`--head ${shape.head} is not an admitted branch`);
-        if (shape.base !== undefined && shape.base !== registration.baseBranch)
-          return withheld(`--base ${shape.base} is not the registered base`);
-        if (shape.bodyFile !== undefined && !within(shape.bodyFile))
-          return withheld(
-            "--body-file is outside the launchpad and the target",
-          );
-        legal = phaseFor(shape.draft);
-        described = shape.draft
-          ? "draft pull-request creation"
-          : "pull-request creation";
-      } else if (shape.kind === "pr-view") {
-        legal = anyPhase;
-        described = "pull-request inspection";
-      } else {
-        // Ready and edit name the pull request the order's draft record
-        // holds, keep the registered base and a body inside the checkouts.
-        if (draft === undefined || shape.selector !== String(draft.number))
-          return withheld(
-            "the pull request is not the one the order's draft record names",
-          );
-        if (shape.base !== undefined && shape.base !== registration.baseBranch)
-          return withheld(`--base ${shape.base} is not the registered base`);
-        if (shape.bodyFile !== undefined && !within(shape.bodyFile))
-          return withheld(
-            "--body-file is outside the launchpad and the target",
-          );
-        legal = phaseFor(false);
-        described =
-          shape.kind === "pr-ready"
-            ? "marking the pull request ready"
-            : "pull-request edit";
-      }
+        return withheld("--body-file is ignored or intake material");
     }
+    const legal = shape.draft
+      ? control.phase === "verified"
+      : control.phase === "closed" && control.latestVerdict === "pass";
     if (!legal)
       return withheld(
-        `${control.phase} does not make ${described} legal for ${order}`,
+        `${control.phase} does not make this publication form legal for ${order}`,
       );
     return {
       journal: {
@@ -1854,7 +1857,7 @@ function registeredTargetAdmission(
         hookSpecificOutput: {
           hookEventName: "PreToolUse",
           permissionDecision: "allow",
-          permissionDecisionReason: `DotLn's registered-target admission: repository ${entry.repositoryId} (${identity}); recorded target worktree of ${order} on ${entry.branch}; main's committed operator grant admits repo.push and pr.open; ${legal} makes ${described} legal. Host deny and ask rules still apply.`,
+          permissionDecisionReason: `DotLn's registered-target admission: repository ${entry.repositoryId} (${identity}); recorded target worktree of ${order} on ${entry.branch}; main's committed profile and operator grant admit repo.push and pr.open. Host deny and ask rules still apply.`,
         },
       },
     };
@@ -3710,7 +3713,7 @@ function metadataCommand(command: string, repositoryCommands = true): boolean {
             : []),
         ].includes(part) ||
         (repositoryCommands &&
-          /^(?:node scripts\/resume\.mjs|npm run resume(?: --silent)? --) (?:status(?: --json)?|times|usage(?: --json)?|briefing|next|release-close)$/.test(
+          /^(?:node scripts\/resume\.mjs|npm run (?:--silent resume|resume(?: --silent)?) --) (?:status(?: --json)?|times|usage(?: --json)?|briefing|next|release-close)$/.test(
             part,
           )),
     )
@@ -4439,22 +4442,56 @@ export function claudeHostScratchpad(
   );
 }
 
-/**
- * WO-168 (WO-158-D028 a): a session root is granted as the directory it
- * names. Ancestors resolve physically, so the system temporary directory's
- * own symlinked prefix keeps working; a final component that is a link, a
- * file or another user's directory grants nothing. An absent root is judged
- * as before, so the write that creates it is admitted. A root that cannot be
- * inspected throws as its resolution always did, which is the guard's one
- * advisory and an admission, never a refusal.
- */
-function grantedSessionRoot(path: string): {
+/** Inspect every named component below the trusted temporary prefix.
+ * The system temporary prefix may itself be an alias. Missing components
+ * still admit creation; inspection failures retain the guard's advisory.
+ * The outer shared directory need not belong to the session user. */
+export function grantedSessionRoot(
+  path: string,
+  prefix: string,
+): {
   readonly physical: string;
   readonly cause?: string;
 } {
-  const info = lstatSync(path, { throwIfNoEntry: false });
-  const cause = info ? notOwnDirectory(info) : null;
-  return { physical: prospectiveRealpath(path), ...(cause ? { cause } : {}) };
+  // Compare normalized forms: a relative or doubled-slash temporary prefix
+  // must not make the walk climb past it, and a root outside its prefix
+  // withholds this grant instead of disabling the guard (WO-218 FINAL-001).
+  const normalizedPrefix = resolve(prefix);
+  const normalizedPath = resolve(path);
+  if (
+    normalizedPath !== normalizedPrefix &&
+    !normalizedPath.startsWith(`${normalizedPrefix}/`)
+  )
+    return {
+      physical: prospectiveRealpath(normalizedPath),
+      cause: "session root outside temporary prefix",
+    };
+  let cause: string | null = null;
+  for (
+    let component = normalizedPath;
+    component !== normalizedPrefix;
+    component = dirname(component)
+  ) {
+    const info = lstatSync(component, { throwIfNoEntry: false });
+    const fault = info
+      ? dirname(component) === normalizedPrefix &&
+        info.isDirectory() &&
+        !info.isSymbolicLink()
+        ? null
+        : notOwnDirectory(info)
+      : null;
+    if (fault) {
+      cause =
+        component === normalizedPath
+          ? fault
+          : `ancestor ${component}: ${fault}`;
+      break;
+    }
+  }
+  return {
+    physical: prospectiveRealpath(normalizedPath),
+    ...(cause ? { cause } : {}),
+  };
 }
 
 function outsideWriteResponse(
@@ -4574,7 +4611,10 @@ function outsideWriteResponse(
           grant.kind !== "host-scratchpad"
         )
           return [{ ...grant, physical: prospectiveRealpath(path) }];
-        const { physical, cause } = grantedSessionRoot(path);
+        const { physical, cause } = grantedSessionRoot(
+          path,
+          grant.kind === "host-scratchpad" ? "/tmp" : tmpdir(),
+        );
         if (cause === undefined) return [{ ...grant, physical }];
         ungranted.push({ path, physical, cause });
         return [];
@@ -4755,6 +4795,13 @@ function activeGateWriteRefusal(
       if (
         directory &&
         permissionEffect(input, root, tools) === "repo.read" &&
+        !(
+          typeof command === "string" &&
+          shellInvocations(command).some((words) =>
+            words.some((word) => basename(word) === "git"),
+          ) &&
+          configuredGitPrograms(directory)
+        ) &&
         (directory === root ||
           (typeof command === "string" && metadataCommand(command, false)))
       )
@@ -4772,6 +4819,13 @@ function activeGateWriteRefusal(
     if (
       directory &&
       paths &&
+      !(
+        typeof command === "string" &&
+        shellInvocations(command).some((words) =>
+          words.some((word) => basename(word) === "git"),
+        ) &&
+        configuredGitPrograms(directory)
+      ) &&
       paths.every(
         (path) =>
           !protectedPath(isAbsolute(path) ? path : `${directory}/${path}`),
