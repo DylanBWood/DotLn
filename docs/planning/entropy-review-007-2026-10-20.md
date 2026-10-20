@@ -539,4 +539,88 @@ No order carries a byte bound.
 
 ## 10. Validation and independent judgment
 
-«fill-validation»
+The product write-backs passed `npm run publication:check` with both
+edition locks current, `node scripts/docs-check.mjs` passed with 15
+product documents and zero failures after them, and `npm run entropy --
+check` runs inside the document gate over the two new filed pairs. The plan
+check refuses until a pass's receipt exists, as the mechanism requires, and
+passes after it.
+
+[Receipt 050](refutations/2026-10-20-planning-2724062b2c7ada0d-050.md)
+binds committed subject `e15b8afa…` (the dispatch was generated at
+`09d9d230` and filed at `ad0ab69f`, which changed only this document).
+Its scope is this pass: WO-217, WO-219 and WO-220 plus the sequence, with
+11 unchanged order verdicts carried by hash. One fresh background
+`dotln-worker` received only the canonical prompt (the dispatch JSON
+written to the ignored control lane: the theses, the goal card, the three
+orders, the scope, the sequence, the deferrals, the cost table, the output
+instructions and the closed schema) and read it with read-only shell
+commands. It returned `aligned-with-findings`, twenty known issues (seven
+on WO-217, seven on WO-219, six on WO-220) and no hold; every order is
+`aligned-with-findings`. Dispatch to filing took 1,136.3 s; the worker
+reported 248,678 tokens over 55 tool uses in 998 s, Opus 5.5 by the host's
+readback, with the effort not read back. The helper committed the pair and
+ran the plan check: judged, committed and workspace subject hashes were
+equal, with no continuation update. Every known issue is carried on its
+order's catalog row in the map, as product 07 places a receipt's known
+issue for an order the receipt finds frozen; the planner's readings of the
+material ones:
+
+- **The Cost lines still say the order removes its rows from a register
+  of 281 pending at the base**, in all three batches, where the objective
+  this pass wrote says the count does not fall. This planner changed 44 to
+  50 in WO-219's line and left the wording standing in all three; the
+  orders are frozen by the receipt, so the next pass that touches a batch
+  corrects the line to rows reaching a terminal disposition, and no README
+  or pull request claims a fall meanwhile (criterion 5 as the batches now
+  read it).
+- **Criterion 2's suite clause.** The control must run under a suite the
+  Preflight line names; WO-217's line names neither `mutation` nor
+  `sync-fixtures`, and WO-219's names no `kernel`, `compiler` or
+  `comment-labels-fixtures`, although rows there edit `core.ts`,
+  `store.ts`, `source-bundle.ts` and `comment-labels.mjs`. The
+  executor cannot amend the line; the operator's execution-amendment route
+  adds the tokens when the executor meets the gap, or the next pass adds
+  them first. This planner should have resolved every step's suite against
+  the Preflight line when it rewrote criterion 2.
+- **Criterion 4's original form in WO-217 and WO-220**: the 2026-10-19
+  pass rewrote WO-218's and WO-219's, and this pass left the other two;
+  the next pass aligns them.
+- **WO-219's cold-start known issue** (a breach answered by removing text)
+  contradicts the standing 2026-09-17 route in `docs/control/budgets.json`;
+  the route governs, and the executor measures the reviewer root too (85
+  bytes of headroom beside the executor's 33).
+- **Replay compatibility** (FUP-75563edf56be23b5 in WO-219;
+  FUP-c1d4be019802be0d in WO-220): a change that makes a stored log fold
+  or decode differently is declined, not settled; the rows' own text asks
+  for replay fixtures.
+- **WO-220 holds two prerequisites of WO-083's resident route and of
+  WO-183** (FUP-2b9a8e696b38fb97, FUP-eeb25ea9315438ad); the serial order
+  keeps WO-220 ahead of both, and an interleave that moves WO-083 ahead of
+  WO-220 reads this first.
+- **Operator packets are uncapped** across the batches; WO-218 produced
+  none, and a batch that produces more than five is the reopening
+  observation on each row.
+
+The worker made no repository or Git write and spawned no agent; its
+statement names an incidental sight of one planning-pass candidate summary
+and one disposition reason while searching the register, on which it says
+it based no judgment. Three workers ran in this pass, as planned: the
+external reviewer, the blinded entropy refuter and this planning refuter.
+Completion uses `npm run test:docs` over this branch after the receipt
+and these map and document updates; the handoff and the pull request
+report its executed verdict. Process cost at this point, before the gate:
+25,423,871 total tokens by the transcript counter (24,705,705 cached
+input, 500,631 cache writes, 2,252 uncached input, 215,283 output;
+reasoning tokens and dollars unavailable), 169 steps and 167 commands, one
+subagent admission observed against the cap of 20; the two CLI episodes
+cost USD 7.21 by their result envelopes, outside that counter. Final
+counters stay in the ignored session receipt and the handoff.
+
+New inputs beyond the entry set: REVIEW-007 and REFUTATION-008 in full;
+the gate index rows of WO-218's window; the five boarding decisions of
+WO-218 in full, with FINAL-001's and VER-001's opening sections; the
+Sustain and evidence rows' histories; WO-188-D015 and the four records
+ER7-002 names; `freezeSubject`, the Claude launch arguments and the
+episode limits; the three batches' texts whole; receipt 050's twenty
+findings.
