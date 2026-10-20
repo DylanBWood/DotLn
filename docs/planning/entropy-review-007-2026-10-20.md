@@ -46,7 +46,7 @@ untriaged and the fired conditions unread.
 (2026-10-19T23:25:08Z): 1 failed verification (WO-218 VER-001, criterion
 2), 0 failed final reviews, 1 repair, 1 order made ready, 1 failed first
 verification, 0 corrections, 0 off-ramps and 1 execution amendment (WO-218
-D053, the release classification bound at activation). FINAL-001 recorded
+D053, the release classification assigned to the order). FINAL-001 recorded
 23 escapes, eleven of them repaired inside the review and the rest boarded
 (§6); the sixteen measured final reviews of the ten most recent orders
 recorded 184, 11.5 per review (161 and 10.1 at the 2026-10-19 pass). The
@@ -71,7 +71,7 @@ tokens 316,976,199; first verification failed in 6 of the last 8 closed
 orders; 0 reopen candidates. WO-218's phases from the control events:
 implementation 257 minutes against the record's 75-minute median,
 verification 50 against 17, repair 159 against 45 and final review 116
-against 25; the order closed about 20 hours after receipt 049 and about
+against 25; the order closed about 19 hours after receipt 049 and about
 17 hours after its activation. The register held 163 pending rows at
 entry (1 open, 5 untriaged, 157 deferred) of 1,214, at revision
 `b0a0522b…`; the five untriaged rows are WO-218's own boarding decisions
@@ -193,6 +193,7 @@ unchanged reading). **The harness re-probe row** (FUP-ec75a4295bf36696):
 this session and WO-218's final review ran Claude Code 2.1.304 against the
 manifest's 2.1.263; no capability or role-text mismatch is observed and
 no integration contract changed; re-deferred unchanged.
+
 ## 4. Review and blinded refutation
 
 [REVIEW-007](../instance/entropy-reducer/runs/REVIEW-007.md) ran 1,322 s
@@ -313,6 +314,7 @@ Prose records in the `NoOpIntent` shape: `kind: NoOp`, a `reason`, cited
 - **The 2026-10-10 pass's gate-time NoOp** named a reversal clause (gates
   above a quarter of phase time) without saying which gate; §3 measures the
   clause for WO-218 and §5.3 restates it with the complete runs named.
+
 ## 6. WO-218's close and its rows
 
 WO-218 closed on 2026-10-20 as v0.87.0, a minor: 39 of its 45 rows
@@ -351,8 +353,9 @@ WO-218's:
   README step writes the control record as rows are settled. The reason is
   WO-218's own record: the sentence "a case that fails without the fix"
   cost one failed verification, a repair of 91 controls and a second
-  verification, about seven hours of the order's seventeen, and the
-  control is what the second verifier replayed to pass it. Writing it into
+  verification, about three and a half of the order's 9.7 phase hours
+  (verification 50 minutes, repair 159), and the control is what the
+  second verifier replayed to pass it. Writing it into
   the criterion lets the executor file it the first time and the verifier
   replay it rather than discover its absence. Rejected: leaving the
   sentence and relying on the known-issue carry-in that each batch already
@@ -415,6 +418,7 @@ WO-217 is now first, WO-219 second and WO-220 third; each order's
 placement line, dependency text and operator-review assumption 3 say so.
 No typed edge changes: WO-217's and WO-219's references to WO-218 remain
 reference-only and now read "closed".
+
 ## 7. Sequence, map, orders, write-backs and the register
 
 WO-218 leaves the sequence; fourteen entries remain, serial: WO-217,
