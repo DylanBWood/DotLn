@@ -8,12 +8,7 @@ followed by two pasted blocks: the answers and observations the operator's
 instance (the fork, checked out as `DotLn-Instance`) wrote for core in its
 planning pass of 2026-10-20 (its §12, eight items), and the operator's own
 request for a way to run the Entropy Reducer against a workstream's
-repositories. Three mid-turn messages followed: that the three
-host-settings removals the fork's pass asked for were already done; that
-they were done at the end of that planning session, so nothing has run
-without them except the fork's pull request being updated; and a request
-to say at the end when work in the fork can resume and whether that needs
-starter v0.87.0 or later. Every message is captured verbatim in ignored
+repositories. Three mid-turn messages followed: that the three host-settings removals the fork's pass asked for were already done; that they were done at the end of that planning session, so nothing has run without them except the fork's pull request being updated; and a request to say at the end when work in the fork can resume and whether that needs starter v0.87.0 or later. A fifth message, the operator's question about WO-223's title while the first refuter ran, is captured in a sibling file (`docs/intake/notes/planning-fork-answers-and-entropy-targets-2026-10-20-corrections.md`, SHA-256 `b46b7fc4807ba9f74d03fbf0e7ea7572d777342584a381c0eb7a98f5d467eb84`), because the two orders cite the dispatch capture's digest. Every message is captured verbatim in ignored
 intake
 (`docs/intake/notes/planning-fork-answers-and-entropy-targets-2026-10-20.md`,
 SHA-256
@@ -48,9 +43,7 @@ Aim, as read: file, decline or defer each of the fork's eight items with
 its reopening condition and name the owning surface; decide the Entropy
 Reducer request the same way; answer the operator's question about
 resuming work in the fork. Traps named before the material choices:
-reading the fork's items as operator direction (they are evidence the
-operator carried; the direction is the dispatch's "file, decline or
-defer"); adding the fork's five code-level observations to WO-219 because
+reading the fork's items as operator direction (they are evidence the operator carried; the direction is the dispatch's own words, file, decline or defer, in the capture above); adding the fork's five code-level observations to WO-219 because
 it owns role text and hooks (its size row, FUP-524a82332e21e127, names the
 cost, and the fork would wait two batches for a gate repair it is blocked
 on today); filing one order per observation (the fixed cycle is the cost;
@@ -131,8 +124,7 @@ document gate at v0.87.0 fails on `docs-check`'s read of a moved decisions
 record (§4, item 4). The condition is consumed by WO-223.
 
 **Rows read and left.** FUP-da505c82f2262b8e (a second sign-off-exempt
-author identity) reopens on "the operator's answer, or the next refused
-publish": the fork pre-empted its refusal by declaring the identity in its
+author identity) reopens on the operator's answer or the next refused publish: the fork pre-empted its refusal by declaring the identity in its
 WO-012, so no publish was refused and the row stays deferred.
 FUP-524a82332e21e127 (WO-219's size) is the reason this pass adds no row to
 WO-219 (§4). FUP-c7f181269a96c4c5 (the reviewer on a cadence) is
@@ -374,8 +366,7 @@ freeze path taking the repository to clone, a subject record carrying the
 registration id, the explicit-commit binding the launchpad review already
 has for a named commit, receipts and candidate headings naming the
 repository and commit), and the register already allocates any row to any
-order of the launchpad, so "rows that can target the workstream's orders"
-needs the receipt to name the target and nothing new. A workstream review
+order of the launchpad, so rows that can target the workstream's orders need the receipt to name the target and nothing new. A workstream review
 is one episode per distinct member repository in sequence (the launchpad
 when a member names `self`), one receipt each carrying the workstream id;
 a composite frozen root was rejected because the compiled census runs in
@@ -566,8 +557,7 @@ taking v0.87.0, and the Entropy Reducer stopping at the control plane.
 Process cost for this pass: `harness usage` at entry read 96,540 total
 tokens (§2); at the end of drafting, 5,871,512 (5,288,776 cached, 452,007
 cache-write, 130,045 output; 98 steps; 0 subagents, 20 remaining;
-observed 2026-10-20T21:26:48Z; cost unknown, counter unavailable). The
-counters at the receipt and the final figures are in §13 and the response.
+observed 2026-10-20T21:26:48Z; cost unknown, counter unavailable); at the receipt, 14,864,309 (14,158,562 cached, 523,438 cache-write, 181,105 output; 122 steps; two subagents observed, 18 remaining; observed 2026-10-20T22:04:56Z). The final figures are in the response.
 
 ## 13. Validation and independent judgment
 
@@ -577,9 +567,11 @@ Checks run on the working tree after the last write of the subject:
 `npm run plan -- followups --sync` and `--apply` (§8); `npm run work-orders
 -- index` and `--check` (both pages current); `node scripts/docs-check.mjs`
 (product 07 at 233,673 bytes; the operator-word advisories unchanged from
-the entropy pass's 28, none from this pass's documents). The refutation,
-the cost table (`npm run meta -- --plan-cost`, which needs the committed
-orders) and the final `npm run test:docs` are recorded below once run.
+the entropy pass's 28, none from this pass's documents). The cost table was refreshed after each subject commit (`npm run meta -- --plan-cost` needs the committed orders).
+
+**The rename.** After the subject was first committed and a refuter dispatched (21:38Z, against commit `1733e5c8`), the operator asked for the naming rationale of WO-223's title, which read as an instance taking starter v0.87.0, observing that an instance only ever takes the release that carries the repair (captured verbatim in the sibling intake file of §1, SHA-256 `b46b7fc4807ba9f74d03fbf0e7ea7572d777342584a381c0eb7a98f5d467eb84`). The rationale was the fork's story (the release where the gap was observed), which breaks the rule that a title states its outcome. The worker was stopped at 21:47Z before returning anything, the order was renamed to state its outcome without a version (the file became `WO-223-an-instance-takes-a-starter-update.md`, with v0.87.0 kept as the dated place the gap was observed in the order, the map, the sequence and this document), the subject was recommitted (`732fdc0e`, then the cost table at `41757a1a`) and a fresh worker was dispatched against it. The stopped worker's judgment does not exist.
+
+**The refutation.** One fresh background `dotln-worker` was given only the canonical prompt of `npm run plan -- refute` for commit `41757a1a` (claude-opus-5-5 by its definition and as its own context stated; effort not read back; the receipt's episode record reads unknown for harness, model and effort, because no readback exists) and judged it in 792,963 ms over 71 tool uses and 217,531 tokens, with no formatting repair needed; it wrote its result and statement into the session scratch, the parent copied them into the ignored control lane, and the helper filed them. Receipt `2026-10-20-planning-4da1c641b31de35c-051`: scope pass, the two orders this pass filed (WO-223, WO-224) and the sequence; verdict `aligned-with-findings` for each order and for the plan; no hold; fourteen carried identities; 914,719 ms from dispatch to file; the judged, committed and workspace subjects agree. Eight known issues, four per order, each with a reopening observation, are carried on the two catalog rows in the map until a later pass amends the orders (the orders stay as judged). Four corrections of fact this pass accepts from the receipt, recorded on those rows: `readDecisions` already attaches a moved row's verified text as `recordSource`, so WO-223's step 2 reads it rather than calling `readTargetRecord` again; the default lens briefs name launchpad paths and `beginEntropyReview` passes none, so a target review passes briefs fit to the target through the loadout's existing `lensBriefs` option, and WO-224's non-goal is read as the compiled program and the pinned actor; `review` never files a receipt and one dispatch may be pending per launchpad, so WO-224's workstream form is a sequence of dispatches each filed and disposed in the pass, not one invocation filing several receipts; and the workstream reader resolves the configured `workstreams` document root, not a literal `docs/workstreams/`. The receipt's other observations (the release-close advisory names the spelling and leaves the withholding to host permissions; the start advisory repeats for an instance that signs every commit; the target publish and the final-review lint still need a worktree on `main`; no critical-path gate consumes WO-224 before the fork does) are recorded with their reopening observations. The final `npm run test:docs` ran after these records; its counts are in the pull request.
 
 ## Appendix A. The answer for the fork's next planning pass
 
