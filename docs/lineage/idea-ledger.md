@@ -40,6 +40,16 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
+## 2026-10-19 — Planning pass on the fork's requests: registration only; the record is the planning document
+
+Dispatch: `planning: standard planning pass + got this message from
+dotln-instance (my fork):` followed by the fork's pasted request block,
+captured in `docs/intake/notes/planning-fork-requests-2026-10-19.md`
+(ignored; the planning document §1 records its SHA-256). The record is
+[the planning document](../planning/fork-requests-2026-10-19.md); this
+heading registers the pass for the plan tooling (WO-088 moves registration
+out of the ledger).
+
 ## 2026-10-19 — Planning pass: registration only; the record is the planning document
 
 Dispatch: `planning:` with no further operator text, captured in

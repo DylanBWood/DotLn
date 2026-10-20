@@ -1,4 +1,4 @@
-# WO-219 — Boarded follow-ups, batch 3: lifecycle records, attestation, role text, hooks, the harness and planning machinery: every one of the 43 register rows listed below is fixed with a fixture case or declined with its recorded reason, the register shows it, and a row only the operator can decide leaves as an operator packet (version assigned at activation)
+# WO-219 — Boarded follow-ups, batch 3: lifecycle records, attestation, role text, hooks, the harness and planning machinery: every one of the 44 register rows listed below is fixed with a fixture case or declined with its recorded reason, the register shows it, and a row only the operator can decide leaves as an operator packet (version assigned at activation)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
@@ -8,8 +8,8 @@
 unless a fix changes a command, flag, schema or refusal, which the decisions
 name; then minor). A declined row changes no behavior.
 **Cost:** adds the fixes and fixture cases the listed rows need, across
-`scripts/resume.mjs`, `scripts/lib/handoff-ledger.mjs`, `scripts/lib/verification-briefing.mjs`, `scripts/lib/review-findings.mjs`, `scripts/lib/comment-labels.mjs`, `scripts/lib/plan-receipts.mjs`, `scripts/lib/planning-followups.mjs`, `scripts/lib/planning-conditions.mjs`, `packages/skeleton/src/loadouts/contributor.ts`, `packages/skeleton/src/harness-host.ts`, `packages/kernel/src/core.ts`, `packages/kernel/src/store.ts`, `packages/compiler/src/source-bundle.ts`, the hooks under `.claude/hooks/` and the fixtures the rows name; unknown until each row is triaged, and the README records
-the per-row command and case. Removes 43 pending rows from the
+`scripts/resume.mjs`, `scripts/lib/handoff-ledger.mjs`, `scripts/lib/verification-briefing.mjs`, `scripts/lib/review-findings.mjs`, `scripts/lib/comment-labels.mjs`, `scripts/lib/plan-receipts.mjs`, `scripts/lib/planning-followups.mjs`, `scripts/lib/planning-conditions.mjs`, `packages/skeleton/src/loadouts/contributor.ts`, `packages/skeleton/src/harness-host.ts`, `packages/kernel/src/core.ts`, `packages/kernel/src/store.ts`, `packages/compiler/src/source-bundle.ts`, the hooks under `.claude/hooks/`, for the row the 2026-10-19 fork-requests pass added `scripts/work-orders.mjs` (`index --check`) and `scripts/test-runner.mjs` (`--list`), and the fixtures the rows name; unknown until each row is triaged, and the README records
+the per-row command and case. Removes 44 pending rows from the
 register, which at the base holds 281 pending rows, 130 of them decision
 rows boarded by closed orders across 53 orders (the oldest from WO-054,
 2026-09-18), 88 of them follow-ups boarded in the week of 2026-10-13 to
@@ -17,7 +17,7 @@ rows boarded by closed orders across 53 orders (the oldest from WO-054,
 takes a row delivered none of these 41 (each still pending at
 `7b8206f4`). Wall-clock: one triage per row plus the fixes; unknown until
 run. Context bytes: this order's row list is read once. Commands: none
-added. Tokens: unknown until run. Steps: 20. Re-mints: the
+added. Tokens: unknown until run. Steps: 21. Re-mints: the
 executor checks each edited file against `scripts/lib/evidence-sources.mjs`
 (a registered source owes its edition's deterministic re-mint) and
 `FEEDBACK_SOURCE_PATHS` in `packages/skeleton/src/feedback-audit.ts` (an
@@ -36,11 +36,14 @@ one of four cut by subsystem from the register's 130 pending decision rows
 the register's own excerpts. Amended by the 2026-10-19 standard pass
 ([planning document](../planning/standard-pass-2026-10-19.md) §6): two
 planning-machinery defects the operator's instance recorded in its
-2026-10-18 planning document. Planner-synthesized. Opaque identifier, not a
+2026-10-18 planning document. Amended again by the 2026-10-19
+fork-requests pass ([planning document](../planning/fork-requests-2026-10-19.md)
+§5): the Preflight-token check the fork's 2026-10-19 document asks for.
+Planner-synthesized. Opaque identifier, not a
 priority. Clean-room screen: repository records and the fork's committed
 planning document only.
 **Depends on:** WO-218 placed before it (reference only; no hard edge).
-**Recommended placement:** position 4 of the serial queue, after WO-218; the operator may interleave the four batches with the focus orders by one sequence edit.
+**Recommended placement:** position 3 of the serial queue, after WO-218 and WO-217 (the 2026-10-19 fork-requests pass §8); the operator may interleave the four batches with the focus orders by one sequence edit.
 
 <!-- dotln-dependencies:start -->
 [
@@ -125,6 +128,12 @@ document, §10, read on the operator's machine), both planning machinery:
 - FUP-10996fedecfde047 (untriaged): plan conditions decidable in an exported instance. ([source](../planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-10-19))
 - FUP-dadc66e1f81f83a5 (untriaged): followups --apply and the host scratchpad. ([source](../planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-10-19))
 
+**Added by the 2026-10-19 fork-requests pass (main at `f0c3f5f6`):** one
+row from the operator's instance's requests of 2026-10-19 (its §10 item
+3), planning machinery:
+
+- FUP-2304d46e6feb711b (untriaged): Preflight tokens checked against the runner's declared suites. ([source](../planning/work-order-map.md#candidates--returns-from-the-forks-requests-recorded-2026-10-19-second-pass))
+
 **Design (scope discipline):** one batch per subsystem, so verification
 judges one set of surfaces and one Preflight line, and each batch's
 executor holds one context. Each row is read at its source, reproduced or
@@ -169,7 +178,7 @@ product statement.
 5. The README holds the before and after tables of step 1 and the
    after-table step, with the register's pending count before and after.
 6. Write-backs land in place where a fix changed a product statement
-   (step 19); `npm run meta -- --check` passes.
+   (step 20); `npm run meta -- --check` passes.
 7. `npm test -- --review` and `npm run test:docs` green; `git diff
    --check` clean; no new dependency; each re-mint and, where a judged
    source changed, the live feedback episode recorded.
@@ -179,6 +188,7 @@ product statement.
 `npm test -- --only process-debt` for the host-guard steps;
 `npm test -- --only plan-refutation` and `npm test -- --only launchpad-planning` for the planning-machinery steps;
 `npm test -- --only skeleton` for the loadout step;
+`npm test -- --only work-orders-fixtures` and `npm test -- --only runner-fixtures` for the Preflight-token step;
 `npm test -- --only configuration-root` for every script step;
 `npm run test:docs` when a document changes; each under
 `node scripts/harness.mjs bounded --` for the steps that edit their
@@ -203,10 +213,11 @@ the base (explicit tokens added by the 2026-10-18 pass, FUP-17266e5072d4a25a).
 14. `docs/product/02-domain-model.md` (rows FUP-fd05316b6030ef73): read each row's source decision in full, reproduce the recorded defect or restate the recorded question against the current source, then fix it with a fixture case that fails without the fix, or decline it with the recorded reason, and dispose the row with `npm run plan -- followups --apply` naming the case or the reason. Check: the suite that declares the file (`npm test -- --review --list` names it), under `node scripts/harness.mjs bounded --`.
 15. `scripts/resume.mjs` (`override-record`, `openPhases`) and `scripts/worktree.mjs` (`start`; rows FUP-b0418fa8b09362be): admit `override-record` at a closed order by writing the record into an ignored pending lane under the control root, and have the next `worktree start` carry the lane's records into the new order worktree's control segment and regenerate the projection there, as the sibling receipt is carried; a case that records an override after a fixture close and finds the event in the next order's segment. Check: `npm test -- --only resume` and `npm test -- --only worktree`.
 16. `scripts/lib/planning-conditions.mjs` and `scripts/lib/planning-followups.mjs` (the `--apply` destination rule; rows FUP-10996fedecfde047, FUP-dadc66e1f81f83a5): in an exported instance the conditions table leaves out rows whose source is core-only or reads instance-scoped sources, and a gate-task hold needs at least three samples before it holds; `--apply` accepts a request file from the session's granted scratchpad when the session identity is known, or names the control-lane path in its refusal; each with a kit fixture. Check: `npm test -- --only plan-refutation` and `npm test -- --only launchpad-planning`, under `node scripts/harness.mjs bounded --`.
-17. `docs/evidence/WO-219/decisions.md`: one decision per disposed row or per cluster of rows fixed together, each naming the row ids, the chosen option, the rejected option, the fixture case or the decline reason, and the reversal condition; an operator packet for each row only the operator can decide, with its reopening condition naming this order's pull request. Then `npm run meta`. Check: `npm run meta -- --check`.
-18. `docs/evidence/WO-219/README.md`: the after table (each row's final status, the case or reason, the command) and the register's pending count before and after (`npm run plan -- followups`). Check: the README holds both tables.
-19. Write-backs, in place, only where a row's fix changes what a product document states (the row's source decision names the document and section; re-read the heading at the base). Check: `npm run test:docs`.
-20. Handoff: `npm run format`; `npm run test:docs`; the gate the executor's role text names at the base (the order's Preflight suites, then the handoff gate; `npm test -- --review` where a declared machinery source changed); complete `docs/evidence/WO-219/handoff.md`; `npm run resume -- implementation-ready <flags>`.
+17. `scripts/work-orders.mjs` (`index --check`) and `scripts/test-runner.mjs` (`--list`; row FUP-2304d46e6feb711b): the check reads each open order's `**Preflight:**` field (`readPreflightSuites` in `scripts/lib/handoff-ledger.mjs`) and resolves every `npm test -- --only <suite>` token against the runner's declared `suites` of the same checkout, product and machinery alike, failing with the order id and the token for a name the runner would refuse (closed orders exempt); `--list --review` prints the machinery suites so an instance can read the set it declares; a kit fixture whose instance order names a core-only suite fails the check in the instance and the same order passes in core. Core's fifteen open orders name no undeclared token at `f0c3f5f6` (the 2026-10-19 fork-requests pass §5), so the failing case is the fixture's. Check: `npm test -- --only work-orders-fixtures`, `npm test -- --only runner-fixtures` and `npm test -- --only launchpad-planning`, under `node scripts/harness.mjs bounded --`.
+18. `docs/evidence/WO-219/decisions.md`: one decision per disposed row or per cluster of rows fixed together, each naming the row ids, the chosen option, the rejected option, the fixture case or the decline reason, and the reversal condition; an operator packet for each row only the operator can decide, with its reopening condition naming this order's pull request. Then `npm run meta`. Check: `npm run meta -- --check`.
+19. `docs/evidence/WO-219/README.md`: the after table (each row's final status, the case or reason, the command) and the register's pending count before and after (`npm run plan -- followups`). Check: the README holds both tables.
+20. Write-backs, in place, only where a row's fix changes what a product document states (the row's source decision names the document and section; re-read the heading at the base). Check: `npm run test:docs`.
+21. Handoff: `npm run format`; `npm run test:docs`; the gate the executor's role text names at the base (the order's Preflight suites, then the handoff gate; `npm test -- --review` where a declared machinery source changed); complete `docs/evidence/WO-219/handoff.md`; `npm run resume -- implementation-ready <flags>`.
 
 **Evidence gate:** the Preflight suites; the register dispositions
 (`followups --show` per row); `npm run test:docs`; the handoff gate.
@@ -245,6 +256,11 @@ No model run.
 - The two fork rows are the operator's instance's reports, read from its
   committed planning document; a row the base does not reproduce is declined
   with the output that shows it.
+- The Preflight-token row (the 2026-10-19 fork-requests pass): `--list`
+  prints the plain selection only (34 product suites in core) and the
+  machinery suites are reachable by `--only` alone, so the check resolves
+  against the `suites` export, never against `--list`'s text; the kit
+  drops 39 core-only suites, which is where a stale token bites.
 
 **Non-goals:** candidate rows of the register (ideas with reopening
 conditions, 151 at the base), which planning disposes; rows of the other
@@ -256,5 +272,5 @@ report.
 1. At most one third of a batch's rows may be declined.
 2. A row only the operator can decide leaves as an operator packet rather
    than blocking the batch.
-3. The four batches sit after WO-222 and before WO-080; the operator may
-   interleave them with the focus orders.
+3. The four batches sit after WO-222 and before WO-080, WO-218 first; the
+   operator may interleave them with the focus orders.

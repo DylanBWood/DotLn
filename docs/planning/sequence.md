@@ -36,7 +36,9 @@ retired the seven orders of that route that had closed, and the
 it filed or placed first that have since closed: WO-215 (v0.81.0), WO-210
 (v0.82.0) and WO-213 (v0.83.0); the
 [2026-10-18 pass](fork-observations-2026-10-18.md) retires WO-216 (v0.84.0);
-the [2026-10-19 pass](standard-pass-2026-10-19.md) retires WO-221 (v0.85.0).
+the [2026-10-19 pass](standard-pass-2026-10-19.md) retires WO-221 (v0.85.0);
+the [2026-10-19 fork-requests pass](fork-requests-2026-10-19.md) retires
+WO-222 (v0.86.0).
 
 **One focus: the starter, the operator's fork of it and DotLn-Angular,
 with a DotLn UI** (operator direction, 2026-10-13). The win condition is
@@ -48,20 +50,23 @@ can run and publish them (operator correction 3, 2026-10-11); WO-210
 (closed) is the point at which it can. WO-083's run then measures one
 bounded Angular order, not necessarily the repository's first change.
 
-**One order first: the complete run fits the machine** (the 2026-10-19
-pass). WO-221 closed on 2026-10-19 as v0.85.0 and paid fifteen complete
-runs in its window, the three passing ones at 37 to 46 minutes on four
-lanes of a sixteen-processor machine with 1.76 lanes busy on average; its
-D019 measured the levers and deferred them to a planned order. WO-222
-takes the lanes from the host under a memory budget per lane, lets light
-suites run beside the three exclusive suites, splits the `target-worktree`
-suite into file lanes, and keeps each lever only on before-and-after
-timelines ([the planning document](standard-pass-2026-10-19.md), §4). It
-runs first because every later order pays the complete run several times.
-The fork's next target order, which WO-221 was filed to make cost the
-operator its phrases and one merge, has not run yet: the fork's 2026-10-18
-pass waits for the upgrade order that takes the starter at v0.85.0, and the
-count is reread when it runs.
+**The complete run fits the machine** (the 2026-10-19 pass): WO-222
+closed on 2026-10-19 as v0.86.0, its three levers kept on the series (the
+after median 1,668.5 s against 2,538.4 s before, a third sooner) and its
+four boarded rows placed in WO-217 ([the fork-requests
+pass](fork-requests-2026-10-19.md), §4). The fork's next target order,
+which WO-221 was filed to make cost the operator its phrases and one
+merge, has not run yet: the fork's 2026-10-19 pass sequences WO-010 and
+WO-011 (the starter at v0.85.0 into its registration) before WO-005, and
+the count is reread when WO-005 runs.
+
+**The fork's blocker first** (the 2026-10-19 fork-requests pass, §8). The
+fork keeps DotLn-Angular's releases undeclared until the kit can title a
+target Release with a display name (its D4), and its requests of
+2026-10-19 all land on the surfaces WO-218 owns (the target release, the
+starter refresh and the close); WO-218 therefore runs before WO-217,
+whose gate rows no longer carry the gate's cost after WO-222. The operator
+may move it back by one sequence edit.
 
 **Then the boarded follow-ups, in four batches** (the 2026-10-17 pass, on
 the operator's direction that every boarded, follow-up and reopened row is
@@ -71,23 +76,21 @@ of them boarded in one week; the rule that the next order editing a surface
 takes its rows delivered none. WO-217 to WO-220 cut them by subsystem (the
 gate; the instance and publication; records, roles and the harness; the
 resident and the vertical), each row fixed with a case or declined with its
-reason, the register showing it; the 2026-10-18 pass added five rows and
-the 2026-10-19 pass twelve (WO-221's seven boarded rows and five of the
-fork's requests). The operator may interleave them with the
-focus orders by one sequence edit.
+reason, the register showing it; the 2026-10-18 pass added five rows, the
+2026-10-19 pass twelve (WO-221's seven boarded rows and five of the
+fork's requests) and the 2026-10-19 fork-requests pass eight (WO-222's
+four boarded rows and four of the fork's requests). The operator may
+interleave them with the focus orders by one sequence edit.
 
 The order, serial:
-- WO-222: the complete run fits the machine: lanes from the host under a
-  memory budget per lane, light suites beside the exclusive three, the
-  `target-worktree` suite as file lanes, each kept on before-and-after
-  timelines.
-- WO-217: boarded follow-ups, batch 1: the gate, the runner, the host guard,
-  gate evidence and the fixtures (35 rows).
 - WO-218: boarded follow-ups, batch 2: the instance lifecycle, export and
   kit, publication, release close, the starter, worktrees and the
-  target-order lifecycle (42 rows).
+  target-order lifecycle (45 rows, three of them the fork's requests of
+  2026-10-19).
+- WO-217: boarded follow-ups, batch 1: the gate, the runner, the host guard,
+  gate evidence and the fixtures (39 rows, four of them WO-222's).
 - WO-219: boarded follow-ups, batch 3: lifecycle records, attestation, role
-  text, hooks, the harness and planning machinery (43 rows).
+  text, hooks, the harness and planning machinery (44 rows).
 - WO-220: boarded follow-ups, batch 4: the resident, the vertical, the
   console, intake and triage, audit, the corpus lanes and the kernel's
   admission (20 rows).
@@ -119,9 +122,8 @@ The period below `v1.0.0` is early access (operator direction, 2026-09-30).
 The order of everything the operator did not place is the planner's.
 
 <!-- dotln-work-order-sequence:start -->
-- WO-222 — The complete run fits the machine
-- WO-217 — Boarded follow-ups, batch 1: the gate
 - WO-218 — Boarded follow-ups, batch 2: the instance and publication
+- WO-217 — Boarded follow-ups, batch 1: the gate
 - WO-219 — Boarded follow-ups, batch 3: records, roles and the harness
 - WO-220 — Boarded follow-ups, batch 4: the resident and the vertical
 - WO-080 — Workstreams: document, index, board section and synthetic pilot

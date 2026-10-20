@@ -1,4 +1,4 @@
-# WO-218 — Boarded follow-ups, batch 2: the instance lifecycle, export and kit, publication, release close, the starter, worktrees and the target-order lifecycle: every one of the 42 register rows listed below is fixed with a fixture case or declined with its recorded reason, the register shows it, and a row only the operator can decide leaves as an operator packet (version assigned at activation)
+# WO-218 — Boarded follow-ups, batch 2: the instance lifecycle, export and kit, publication, release close, the starter, worktrees and the target-order lifecycle: every one of the 45 register rows listed below is fixed with a fixture case or declined with its recorded reason, the register shows it, and a row only the operator can decide leaves as an operator packet (version assigned at activation)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
@@ -8,8 +8,8 @@
 unless a fix changes a command, flag, schema or refusal, which the decisions
 name; then minor). A declined row changes no behavior.
 **Cost:** adds the fixes and fixture cases the listed rows need, across
-`scripts/launchpad.mjs`, `scripts/lib/target-worktree-close.mjs`, `scripts/lib/target-worktrees.mjs`, `scripts/lib/starter-refresh.mjs`, `scripts/release.mjs`, `scripts/check-publication.mjs`, `scripts/lib/harness.mjs`, `scripts/lib/harness-runtime.mjs`, `scripts/lib/config.mjs`, `scripts/lib/stash-drop.mjs`, `scripts/worktree.mjs`, `scripts/kit/README.client.md`, and for the rows the 2026-10-19 pass added `packages/skeleton/src/harness-host.ts` (`registeredTargetAdmission` only), `scripts/lib/target-publish.mjs`, `scripts/lib/git.mjs`, `scripts/lib/gate-reuse.mjs`, `scripts/test-verifier-gate-claims.mjs`, `scripts/lib/dependencies.mjs`, `scripts/resume.mjs` (the status projection) and `scripts/lib/outward-lint.mjs`, and the fixtures the rows name; unknown until each row is triaged, and the README records
-the per-row command and case. Removes 42 pending rows from the
+`scripts/launchpad.mjs`, `scripts/lib/target-worktree-close.mjs`, `scripts/lib/target-worktrees.mjs`, `scripts/lib/starter-refresh.mjs`, `scripts/release.mjs`, `scripts/check-publication.mjs`, `scripts/lib/harness.mjs`, `scripts/lib/harness-runtime.mjs`, `scripts/lib/config.mjs`, `scripts/lib/stash-drop.mjs`, `scripts/worktree.mjs`, `scripts/kit/README.client.md`, and for the rows the 2026-10-19 pass added `packages/skeleton/src/harness-host.ts` (`registeredTargetAdmission` only), `scripts/lib/target-publish.mjs`, `scripts/lib/git.mjs`, `scripts/lib/gate-reuse.mjs`, `scripts/test-verifier-gate-claims.mjs`, `scripts/lib/dependencies.mjs`, `scripts/resume.mjs` (the status projection) and `scripts/lib/outward-lint.mjs`, for the rows the 2026-10-19 fork-requests pass added `scripts/lib/release-preparation.mjs` (`planReleasePreparation`'s local observation) beside `scripts/release.mjs` (`ancestralLocalTags`, `releaseBlockRule`, `publishTargetRelease`), `scripts/lib/config.mjs` (`validateRepositoryRelease`, the disposable declaration) and the base judgment of `scripts/lib/target-worktree-close.mjs`, and the fixtures the rows name; unknown until each row is triaged, and the README records
+the per-row command and case. Removes 45 pending rows from the
 register, which at the base holds 281 pending rows, 130 of them decision
 rows boarded by closed orders across 53 orders (the oldest from WO-054,
 2026-09-18), 88 of them follow-ups boarded in the week of 2026-10-13 to
@@ -17,7 +17,7 @@ rows boarded by closed orders across 53 orders (the oldest from WO-054,
 takes a row delivered none of these 32 (each still pending at
 `7b8206f4`). Wall-clock: one triage per row plus the fixes; unknown until
 run. Context bytes: this order's row list is read once. Commands: none
-added. Tokens: unknown until run. Steps: 28. Re-mints: the
+added. Tokens: unknown until run. Steps: 31. Re-mints: the
 executor checks each edited file against `scripts/lib/evidence-sources.mjs`
 (a registered source owes its edition's deterministic re-mint) and
 `FEEDBACK_SOURCE_PATHS` in `packages/skeleton/src/feedback-audit.ts` (an
@@ -37,18 +37,21 @@ the register's own excerpts. Amended by the 2026-10-19 standard pass
 ([planning document](../planning/standard-pass-2026-10-19.md) §5 and §6):
 WO-221's seven boarded rows, holding 33 findings on the target-order
 lifecycle this batch owns, and three kit defects the operator's instance
-recorded in its 2026-10-18 planning document. Planner-synthesized. Opaque
+recorded in its 2026-10-18 planning document. Amended again by the
+2026-10-19 fork-requests pass ([planning document](../planning/fork-requests-2026-10-19.md)
+§5): three kit needs from the fork's 2026-10-19 planning document,
+carried by the operator. Planner-synthesized. Opaque
 identifier, not a priority. Clean-room screen: repository records and the
 fork's committed planning document only.
-**Depends on:** WO-217 placed before it (reference only; no hard edge).
-**Recommended placement:** position 3 of the serial queue, after WO-217; the operator may interleave the four batches with the focus orders by one sequence edit.
+**Depends on:** WO-222 closed, v0.86.0 (reference only: its scheduler is the gate this batch's handoff runs under; no hard edge); moved to the head of the batches by the 2026-10-19 fork-requests pass (§8).
+**Recommended placement:** position 1 of the serial queue, before WO-217 (the 2026-10-19 fork-requests pass §8: the fork's blocker and the surfaces its next orders cross); the operator may interleave the four batches with the focus orders by one sequence edit.
 
 <!-- dotln-dependencies:start -->
 [
   {
-    "workOrderId": "WO-217",
+    "workOrderId": "WO-222",
     "relation": "reference-only",
-    "reason": "placed before this batch in the serial queue; no hard edge"
+    "reason": "closed before this batch; its scheduler is the gate this batch's handoff runs under; no hard edge"
   }
 ]
 <!-- dotln-dependencies:end -->
@@ -139,6 +142,16 @@ F12 in `scripts/test-verifier-gate-claims.mjs`). The ten rows:
 - FUP-47eb4d9bdf4cbfa1 (untriaged): Core's historical order ids hard-coded in the kit. ([source](../planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-10-19))
 - FUP-98aeb43c543dfbaf (untriaged): The outward lint's title shape and a leading gitmoji in an instance. ([source](../planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-10-19))
 
+**Added by the 2026-10-19 fork-requests pass (main at `f0c3f5f6`):** three
+kit needs the operator's instance recorded in its 2026-10-19 planning
+document (§10, carried by the operator into core's dispatch), each a
+candidate of the map's fork-requests section with the code it names read
+by that pass:
+
+- FUP-806a8fccc51377b7 (untriaged): A display name for a declared target release. ([source](../planning/work-order-map.md#candidates--returns-from-the-forks-requests-recorded-2026-10-19-second-pass))
+- FUP-a9fdacb0bbcdb97a (untriaged): The starter's core-named tags in an instance's local baseline. ([source](../planning/work-order-map.md#candidates--returns-from-the-forks-requests-recorded-2026-10-19-second-pass))
+- FUP-4c243998cedd4597 (untriaged): A judge-only option for the base checkout at close. ([source](../planning/work-order-map.md#candidates--returns-from-the-forks-requests-recorded-2026-10-19-second-pass))
+
 **Design (scope discipline):** one batch per subsystem, so verification
 judges one set of surfaces and one Preflight line, and each batch's
 executor holds one context. Each row is read at its source, reproduced or
@@ -185,7 +198,7 @@ product statement.
 5. The README holds the before and after tables of step 1 and the
    after-table step, with the register's pending count before and after.
 6. Write-backs land in place where a fix changed a product statement
-   (step 27); `npm run meta -- --check` passes.
+   (step 30); `npm run meta -- --check` passes.
 7. `npm test -- --review` and `npm run test:docs` green; `git diff
    --check` clean; no new dependency; each re-mint and, where a judged
    source changed, the live feedback episode recorded.
@@ -199,6 +212,7 @@ product statement.
 `npm test -- --only runner-fixtures` and `npm test -- --only resume` for the gate-claim and status-projection steps;
 `npm test -- --only work-orders-fixtures` for the dependencies step;
 `npm test -- --only outward-lint` for the lint step;
+`npm test -- --only release-preparation` for the starter-tag step (with `release`, `siblings-fixtures` and `launchpad-planning` above);
 `npm test -- --only configuration-root` for every script step;
 `npm run test:docs` when a document changes; each under
 `node scripts/harness.mjs bounded --` for the steps that edit their
@@ -230,11 +244,14 @@ the base (explicit tokens added by the 2026-10-18 pass, FUP-17266e5072d4a25a).
 21. `scripts/lib/dependencies.mjs` (`historicalDependencyIds`) and `scripts/work-orders.mjs` (rows FUP-47eb4d9bdf4cbfa1): the historical set read from the instance's configuration or its own closed orders, with a kit fixture whose instance holds neither WO-001 nor WO-002. Check: `npm test -- --only work-orders-fixtures` and `npm test -- --only launchpad-planning`, under `node scripts/harness.mjs bounded --`.
 22. `scripts/resume.mjs` (the status projection and `target-records`; rows FUP-3c5f5a2bdbe06c07): a moved report resolved through the target record in `status --json` and `docs/control/current.md`, with a case that moves a fixture target order's reports and reads both. Check: `npm test -- --only resume` and `npm test -- --only launchpad-planning`, under `node scripts/harness.mjs bounded --`.
 23. `scripts/lib/outward-lint.mjs` (rows FUP-98aeb43c543dfbaf): reproduce the fork's refusal of a title that opens with a gitmoji in a kit fixture; align the rule with core's own titles, or decline with the output that shows the fork's reading. Check: `npm test -- --only outward-lint`, under `node scripts/harness.mjs bounded --`.
-24. `docs/evidence/WO-218/README.md`: the per-finding table for the two WO-221 review rows (each finding, its surface, its case or its decline), kept beside the per-row tables of steps 1 and 26. Check: the README lists all 33 findings.
-25. `docs/evidence/WO-218/decisions.md`: one decision per disposed row or per cluster of rows fixed together, each naming the row ids, the chosen option, the rejected option, the fixture case or the decline reason, and the reversal condition; an operator packet for each row only the operator can decide, with its reopening condition naming this order's pull request. Then `npm run meta`. Check: `npm run meta -- --check`.
-26. `docs/evidence/WO-218/README.md`: the after table (each row's final status, the case or reason, the command) and the register's pending count before and after (`npm run plan -- followups`). Check: the README holds both tables.
-27. Write-backs, in place, only where a row's fix changes what a product document states (the row's source decision names the document and section; re-read the heading at the base). Check: `npm run test:docs`.
-28. Handoff: `npm run format`; `npm run test:docs`; the gate the executor's role text names at the base (the order's Preflight suites, then the handoff gate; `npm test -- --review` where a declared machinery source changed); complete `docs/evidence/WO-218/handoff.md`; `npm run resume -- implementation-ready <flags>`.
+24. `scripts/lib/config.mjs` (`validateRepositoryRelease`) and `scripts/release.mjs` (`publishTargetRelease`; row FUP-806a8fccc51377b7): admit `repositories.<id>.release.displayName` with the launchpad's shape and limit (`validReleaseDisplayName`, 64 characters, the same refusal text), defaulting to the registration id; the Release title becomes `<displayName> <tag>` and the tag message's first line the same, the order's title and the close line following as today; the `--dry-run` preview and the receipt print the title; a case in the split target-worktree release file for the configured and the default name, and a configuration case for the limit. Check: `npm test -- --only target-worktree`, `npm test -- --only release` and `npm test -- --only configuration-root`, under `node scripts/harness.mjs bounded --`.
+25. `scripts/release.mjs` (`ancestralLocalTags`, the local form of `releaseBlockRule`), `scripts/lib/release-preparation.mjs` (the `local tags` observation) and `scripts/kit/README.client.md` §Taking upstream updates (row FUP-a9fdacb0bbcdb97a): a tag the starter refresh wrote (the annotated tag object whose message opens `Starter <tag>` with a `Core commit:` line, `ensureSiblingRelease` in `scripts/lib/starter-refresh.mjs`) is never an instance's local baseline, in `check-surfaces --local`, the instance's document gate and `release prepare --local`; the README's update route fetches with `--no-tags`, says to set `remote.upstream.tagOpt` once, and previews a named starter release through a non-tag ref; a kit fixture whose instance holds a starter tag reachable from HEAD above its own latest tag passes both commands at its own tag, and a case that a tag with another message still counts. Check: `npm test -- --only release`, `npm test -- --only release-preparation`, `npm test -- --only siblings-fixtures` and `npm test -- --only launchpad-planning`, under `node scripts/harness.mjs bounded --`.
+26. `scripts/lib/target-worktree-close.mjs` (the base judgment, lines 369 to 426 and 497 at `f0c3f5f6`) and `scripts/lib/config.mjs` (the disposable declaration; row FUP-4c243998cedd4597): a registration option that keeps the base checkout's judgment (undeclared ignored material still refuses with the registration remedy) and deletes nothing there, the default unchanged; `release close --dry-run`, the receipt and the role text say which policy applied; a case per policy, both showing the target worktree's declared output deleted. Check: `npm test -- --only target-worktree` and `npm test -- --only configuration-root`, under `node scripts/harness.mjs bounded --`.
+27. `docs/evidence/WO-218/README.md`: the per-finding table for the two WO-221 review rows (each finding, its surface, its case or its decline), kept beside the per-row tables of steps 1 and 29. Check: the README lists all 33 findings.
+28. `docs/evidence/WO-218/decisions.md`: one decision per disposed row or per cluster of rows fixed together, each naming the row ids, the chosen option, the rejected option, the fixture case or the decline reason, and the reversal condition; an operator packet for each row only the operator can decide, with its reopening condition naming this order's pull request. Then `npm run meta`. Check: `npm run meta -- --check`.
+29. `docs/evidence/WO-218/README.md`: the after table (each row's final status, the case or reason, the command) and the register's pending count before and after (`npm run plan -- followups`). Check: the README holds both tables.
+30. Write-backs, in place, only where a row's fix changes what a product document states (the row's source decision names the document and section; re-read the heading at the base). Check: `npm run test:docs`.
+31. Handoff: `npm run format`; `npm run test:docs`; the gate the executor's role text names at the base (the order's Preflight suites, then the handoff gate; `npm test -- --review` where a declared machinery source changed); complete `docs/evidence/WO-218/handoff.md`; `npm run resume -- implementation-ready <flags>`.
 
 **Evidence gate:** the Preflight suites; the register dispositions
 (`followups --show` per row); `npm run test:docs`; the handoff gate.
@@ -273,6 +290,18 @@ No model run.
   FUP-98aeb43c543dfbaf) are the operator's instance's reports, read from
   its committed planning document; a row the base does not reproduce is
   declined with the output that shows it.
+- The three rows of the 2026-10-19 fork-requests pass: the display name
+  names a Release title and a tag message, never a tag name, and a Release
+  published before the key keeps its title (the kit never edits a
+  published Release); the starter-tag rule reads the tag object the kit
+  wrote, so a tag renamed or re-tagged by hand is outside it, and the
+  instance's document gate runs `check-surfaces --local` on every run
+  (`scripts/test-runner.mjs`), so the fixture runs that gate; the
+  judge-only option keeps every refusal of the base judgment (the monotone
+  envelope, WO-042) and changes only the deletion. The fork deleted the
+  starter's v0.85.0 tag by hand on 2026-10-19 and the starter now also
+  carries v0.86.0; the fork's next `git fetch upstream` without the remote
+  option takes it again (an inference from the code).
 
 **Non-goals:** candidate rows of the register (ideas with reopening
 conditions, 151 at the base), which planning disposes; rows of the other
@@ -289,3 +318,9 @@ report.
 4. WO-221's follow-ups are this batch's rows because the target-order
    lifecycle is its subsystem; the admission findings edit
    `registeredTargetAdmission` in `harness-host.ts` before WO-219 runs.
+5. The three rows of the 2026-10-19 fork-requests pass are the operator's
+   instance's requests of 2026-10-19, read from the operator's paste and
+   the fork's committed document; the display name reaches the fork
+   through the starter refresh at this batch's close and the fork's own
+   update pull request, and the fork declares DotLn-Angular's releases
+   only then (its D4).

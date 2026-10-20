@@ -34752,6 +34752,14 @@
           "reopenWhen": "the next order that edits docs/control/budgets.json records the reopens observation",
           "targets": [],
           "at": "2026-10-11T00:22:28.899Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "The condition occurred: WO-222 edited docs/control/budgets.json and its D021 records the reopens observation of WO-150-D003 (the 24,576 predicate against 29,214 executor bytes), which npm run meta -- --check reads as the discharge (0 reopen candidates at f0c3f5f6); the ceiling question stays with the open row FUP-f1c7a256bec46737, the operator's reserved efficiency pass. [2026-10-19 fork-requests planning pass (docs/planning/fork-requests-2026-10-19.md)]",
+          "reopenWhen": "A later order edits docs/control/budgets.json without a reopens record and the listing shows the predicate again.",
+          "targets": [],
+          "at": "2026-10-19T22:59:39.320Z"
         }
       ]
     },
@@ -37976,6 +37984,14 @@
           "reopenWhen": "Each planning pass after a close reads the three statistics until the fifth close after WO-216 (WO-221 was the first); at the fifth, any statistic not below its baseline reopens WO-216's design.",
           "targets": [],
           "at": "2026-10-19T13:47:56.312Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Close two of five after WO-216 (WO-222, v0.86.0): the gate index rows of this checkout between receipt 048 (2026-10-19T14:18Z) and the close (22:27Z) read fourteen complete runs (three stopped under the operator's contention guard, six failed, five passed) against the baseline of eleven per closed order; no structural-class failure inside a run longer than two minutes against 1.3; and 684 gate task minutes against 545. Two of three are not below their baseline at close two, as at close one (15, 0 and 691); the window held the order's own measured series (three forced-fresh after runs) and the first-run failures of a new scheduler. [2026-10-19 fork-requests planning pass (docs/planning/fork-requests-2026-10-19.md)]",
+          "reopenWhen": "Each planning pass after a close reads the three statistics until the fifth close after WO-216 (WO-221 and WO-222 were the first two); at the fifth, any statistic not below its baseline reopens WO-216's design.",
+          "targets": [],
+          "at": "2026-10-19T22:59:39.473Z"
         }
       ]
     },
@@ -40180,7 +40196,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "WO-222 D009's fair admission across independent gates (with the fixed-four compatibility path, preserved nested reservations and a regression bounding a short document gate's wait) is a scheduler change on the surfaces WO-217 owns; the batch fixes it with a case or declines it naming the measured cost (its step 15). [2026-10-19 fork-requests planning pass (docs/planning/fork-requests-2026-10-19.md)]",
+          "reopenWhen": "WO-217 closes without a case that bounds a short document gate's wait while a complete gate admits work or a recorded decline naming the cost, or the operator changes the execution priority.",
+          "targets": [
+            "WO-217"
+          ],
+          "at": "2026-10-19T22:59:39.089Z"
+        }
+      ]
     },
     {
       "id": "FUP-66085a13c95d0f34",
@@ -40195,7 +40222,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "WO-222 D018's capacity record refusal (one message naming the record, what is wrong and the remedy; fixtures for malformed JSON and an out-of-range capacity) edits scripts/lib/host-resources.mjs and scripts/lib/host-lanes.mjs, WO-217's surfaces (its step 15); host-resources.mjs is a feedback source path, so the fix owes the live episode the batch's Cost line names. [2026-10-19 fork-requests planning pass (docs/planning/fork-requests-2026-10-19.md)]",
+          "reopenWhen": "WO-217 closes without the two fixtures asserting one message naming the record and the remedy, or a gate, bounded probe or session registration refuses on the record before it.",
+          "targets": [
+            "WO-217"
+          ],
+          "at": "2026-10-19T22:59:39.166Z"
+        }
+      ]
     },
     {
       "id": "FUP-86d6b525c49adce8",
@@ -40210,7 +40248,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "WO-222 D019's light rule (every baseline sample under both bounds, or a declared row property) edits lightSuiteNames and the scheduling baseline, WO-217's surfaces (its step 15); a change is kept only on a fresh complete run's median at or below WO-222's 1,668.518 s (D015). [2026-10-19 fork-requests planning pass (docs/planning/fork-requests-2026-10-19.md)]",
+          "reopenWhen": "WO-217 closes without a fixture whose task is light on its latest sample and heavy on an earlier one asserting it waits beside an exclusive row, or a light peer beside an exclusive row reaches a deadline or its budget before it.",
+          "targets": [
+            "WO-217"
+          ],
+          "at": "2026-10-19T22:59:39.243Z"
+        }
+      ]
     },
     {
       "id": "FUP-7870c0378fa69818",
@@ -40225,7 +40274,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "duplicate",
+          "reason": "The collector re-nominated WO-150-D003 when WO-222 D021 recorded its reopens observation; the decision's text is the 2026-09-21 measurement (24,327 bytes within the 24,576 ceiling), and the open row FUP-f1c7a256bec46737 already carries the ceiling question as the operator's reserved efficiency pass. [2026-10-19 fork-requests planning pass (docs/planning/fork-requests-2026-10-19.md)]",
+          "reopenWhen": "FUP-f1c7a256bec46737 closes without the ceiling question settled.",
+          "targets": [
+            "FUP-f1c7a256bec46737"
+          ],
+          "at": "2026-10-19T22:59:39.397Z"
+        }
+      ]
     },
     {
       "id": "FUP-16ba63c02aa91dfa",
@@ -40240,7 +40300,146 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "WO-222 closed (v0.86.0) and FINAL-001 boarded three repairs on the scheduler and the host guard with their rules (the cross-gate overlap lease, the bare-group and session budget, the per-lane refusal's lever); WO-217 owns the runner, the host guard and the structural checks and takes them as rows fixed with a case or declined with the reason (its step 15). [2026-10-19 fork-requests planning pass (docs/planning/fork-requests-2026-10-19.md)]",
+          "reopenWhen": "WO-217 closes without a case for each of the three repairs or a recorded decline, or a second gate's heavy task is observed beside an exclusive row before it.",
+          "targets": [
+            "WO-217"
+          ],
+          "at": "2026-10-19T22:59:39.009Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-806a8fccc51377b7",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-requests-recorded-2026-10-19-second-pass::5c0dd3e322b7a3a972a658657568723349a8f10a9279802aacea84b2b2851058",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "5f175a9178c090ad24abe7914b8bb2e207cd892f07848baca136f9cecbcee581",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-requests-recorded-2026-10-19-second-pass",
+          "title": "A display name for a declared target release.",
+          "summary": "1. **A display name for a declared target release.** `publishTargetRelease` (`scripts/release.mjs`) titles a declared target's GitHub Release `<registration id> <tag>` and writes the order's title into the tag message, and `validateRepositoryRelease` (`scripts/lib/config.mjs`) admits only `policy` under `repositories.<id>.release`; the fork's DotLn-Angular would publish `dotln-angular v0.1.0` and keeps its releases undeclared until the kit can title one `DotLn Angular` (its D4). Shape: admit `repositories.<id>.release.displayName` with the launchpad's shape and limit (`validReleaseDisplayName`, 64 characters), defaulting to the registration id, used in the Release title and the tag message's",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "The fork's request 1 of 2026-10-19, read against scripts/release.mjs publishTargetRelease (title `<registration id> <tag>`, the order's title in the tag message) and scripts/lib/config.mjs validateRepositoryRelease (policy only): admit repositories.<id>.release.displayName with the launchpad's shape and limit, used in the Release title and the tag message's first line; WO-218 owns the target release (its step 24). The fork keeps DotLn-Angular's releases undeclared until it lands (its D4). [2026-10-19 fork-requests planning pass (docs/planning/fork-requests-2026-10-19.md)]",
+          "reopenWhen": "WO-218 closes without a case in which a declared target release is titled and tag-messaged from repositories.<id>.release.displayName and defaults to the registration id, or the fork declares a release before it and the title reads the id.",
+          "targets": [
+            "WO-218"
+          ],
+          "at": "2026-10-19T22:59:39.549Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-2304d46e6feb711b",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-requests-recorded-2026-10-19-second-pass::865963a1ac3ec67447e5e181f227d6a93691260ec5146cdb6b25bc3d577e25b4",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "fc9ea2f7ea3246a524e8ccded3e829e3f79ec6084acd374959803f71764522d5",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-requests-recorded-2026-10-19-second-pass",
+          "title": "Preflight tokens checked against the runner's declared suites.",
+          "summary": "3. **Preflight tokens checked against the runner's declared suites.** `npm test -- --list` prints the plain selection only (34 product suites in core) and never the machinery suites; `--only` resolves against the runner's `suites` (77 in core, 39 of them core-only and absent from the kit); no check reads an order's `**Preflight:**` field against that set before activation (`readPreflightSuites` in `scripts/lib/handoff-ledger.mjs` reads it at handoff). The fork reports that an instance order written under an earlier rule names `harness`, which its runner refuses. Core's fifteen open orders name no undeclared token at `f0c3f5f6`. Shape: `work-orders index --check` resolves each open order's `-",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "The fork's request 3 of 2026-10-19: no check reads an order's Preflight tokens against the runner's declared suites before activation, `--list` prints the plain selection only and the kit drops 39 core-only suites, so an instance order can name a suite its runner refuses; core's fifteen open orders name no undeclared token at f0c3f5f6. WO-219 owns the planning and document machinery (its step 17). [2026-10-19 fork-requests planning pass (docs/planning/fork-requests-2026-10-19.md)]",
+          "reopenWhen": "WO-219 closes without a kit fixture in which an order naming a suite the checkout does not declare fails work-orders index --check naming the order and the token, or an instance activates an order whose Preflight the runner refuses after WO-219.",
+          "targets": [
+            "WO-219"
+          ],
+          "at": "2026-10-19T22:59:39.705Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-a9fdacb0bbcdb97a",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-requests-recorded-2026-10-19-second-pass::86fdd27f781c3c8e91c6b78f5e4309ad28699fdc25c4588dbc3e744f00cdc08e",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "57b2d58bc3bc3e17b19701c5a9668b564f7c3d3d756dc849148b4ff03d14b86c",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-requests-recorded-2026-10-19-second-pass",
+          "title": "The starter's core-named tags in an instance's local baseline.",
+          "summary": "2. **The starter's core-named tags in an instance's local baseline.** `ensureSiblingRelease` (`scripts/lib/starter-refresh.mjs`) pushes core's tag name onto the starter's refresh commit (message `Starter <tag>`, `Core commit: <head>`); the kit README's update route says `git fetch upstream`, which follows that tag into a fork's clone; `ancestralLocalTags` (`scripts/release.mjs`) takes every tag merged into HEAD as the baseline of `check-surfaces --local`, which the instance's document gate runs (`scripts/test-runner.mjs`), and of `release prepare --local`. The fork observed `FAIL release-block: observed v0.2.0; expected one strict version at or above v0.85.0` after taking v0.85.0, deleted th",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "The fork's request 2 of 2026-10-19, read against ensureSiblingRelease (core's tag name on the refresh commit), the kit README's `git fetch upstream` route and ancestralLocalTags (every tag merged into HEAD is the local baseline of check-surfaces --local, which the instance's document gate runs, and of release prepare --local); the fork observed the failure after taking v0.85.0 and deleted the tag by hand. WO-218 owns the starter refresh and release close (its step 25): the kit recognizes the starter tags it wrote and the README's route fetches without tags. [2026-10-19 fork-requests planning pass (docs/planning/fork-requests-2026-10-19.md)]",
+          "reopenWhen": "WO-218 closes without a kit fixture in which a starter tag reachable from HEAD leaves check-surfaces --local and release prepare --local at the instance's own latest tag and the README's route fetches without tags, or an instance reports the failure after WO-218.",
+          "targets": [
+            "WO-218"
+          ],
+          "at": "2026-10-19T22:59:39.627Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-4c243998cedd4597",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-requests-recorded-2026-10-19-second-pass::87606865a54e90b8039a343942485595c3027d3364651e632fd2bbbe616bf13a",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "89103dfc25aa1038339f0ffb29191846cfdec2ecff4a697ed61434ddd9b7ce79",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-requests-recorded-2026-10-19-second-pass",
+          "title": "A judge-only option for the base checkout at close.",
+          "summary": "4. **A judge-only option for the base checkout at close.** The close judges the clone's base checkout by the fetched tree's ignore rules, refuses undeclared ignored material and deletes declared disposable output there as in the target worktree (`scripts/lib/target-worktree-close.mjs`, the base judgment and `deleteDisposable`), so an operator who works in that clone reinstalls `node_modules` after every target close (the fork's §8.2 and §10 item 5). Shape: a registration option that keeps the judgment and the refusal and deletes nothing in the base checkout, default unchanged, stated by the dry run and the receipt; a case per policy. Allocated to WO-218.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "The fork's request 5 of 2026-10-19 (its committed §10): the close judges the clone's base checkout by the fetched tree's ignore rules and deletes declared disposable output there as in the target worktree (scripts/lib/target-worktree-close.mjs), so an operator working in that clone reinstalls after every target close; WO-218 owns the close (its step 26): an option that keeps the judgment and the refusal and deletes nothing in the base, default unchanged. [2026-10-19 fork-requests planning pass (docs/planning/fork-requests-2026-10-19.md)]",
+          "reopenWhen": "WO-218 closes without a case per policy (the default deleting declared output in the base checkout; the option deleting nothing there while undeclared material still refuses), or the fork reports a base-checkout deletion it did not want after WO-218.",
+          "targets": [
+            "WO-218"
+          ],
+          "at": "2026-10-19T22:59:39.783Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-4fed41f1fd11a505",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-requests-recorded-2026-10-19-second-pass::886094b43125fd5d77d26b255d066ec01bcc31c0bd421075e33471ac642104f6",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "ea4fe2882b6c28d1e58f3eb0564ad0f85f672fe134a0ca52b5ac809647ad16d0",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-requests-recorded-2026-10-19-second-pass",
+          "title": "A redaction route for the register's committed history.",
+          "summary": "5. **A redaction route for the register's committed history.** The fork asked for a route that rewrites one historical summary under a recorded operator direction, because its no-quotes rule met the register's refusal (`retained` in `scripts/lib/planning-followups.mjs`: `committed source or disposition history was removed or rewritten`). The fork withdrew the request in the same pass (its commit `bc5c1ac`: the one historical summary is a requirement list, not a quotation), and the refusal is the register's contract. Declined. Reopen: an instance records a quotation in committed register history that its operator directs removed; then a route under a recorded operator direction that keeps the",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "The fork withdrew the request in its own pass (its commit bc5c1ac: the one historical summary is a requirement list, not a quotation, under the operator's boundary of 2026-10-19), and the register's refusal of rewritten committed history (retained in scripts/lib/planning-followups.mjs) is its contract: a summary that must not be read is answered by paraphrase at the source before the row is minted, never by rewriting history. [2026-10-19 fork-requests planning pass (docs/planning/fork-requests-2026-10-19.md)]",
+          "reopenWhen": "An instance records a quotation in committed register history that its operator directs removed; then a route under a recorded operator direction that keeps the revision chain, never a rewrite by hand.",
+          "targets": [],
+          "at": "2026-10-19T22:59:39.860Z"
+        }
+      ]
     }
   ]
 }

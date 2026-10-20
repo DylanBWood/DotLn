@@ -1,4 +1,4 @@
-# WO-217 — Boarded follow-ups, batch 1: the gate, the runner, the host guard, gate evidence and the fixtures: every one of the 35 register rows listed below is fixed with a fixture case or declined with its recorded reason, the register shows it, and a row only the operator can decide leaves as an operator packet (version assigned at activation)
+# WO-217 — Boarded follow-ups, batch 1: the gate, the runner, the host guard, gate evidence and the fixtures: every one of the 39 register rows listed below is fixed with a fixture case or declined with its recorded reason, the register shows it, and a row only the operator can decide leaves as an operator packet (version assigned at activation)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
@@ -8,16 +8,17 @@
 unless a fix changes a command, flag, schema or refusal, which the decisions
 name; then minor). A declined row changes no behavior.
 **Cost:** adds the fixes and fixture cases the listed rows need, across
-`scripts/test-runner.mjs`, `scripts/lib/gate-reuse.mjs`, `scripts/lib/host-guard-state.mjs`, `scripts/host-guard.mjs`, `scripts/lib/machinery-coverage.mjs`, `packages/skeleton/src/observed-facts.ts`, `packages/skeleton/src/gate-evidence.mjs`, `scripts/lib/product-read-guard.mjs` and the fixtures the rows name; unknown until each row is triaged, and the README records
-the per-row command and case. Removes 35 pending rows from the
+`scripts/test-runner.mjs`, `scripts/lib/gate-reuse.mjs`, `scripts/lib/host-guard-state.mjs`, `scripts/host-guard.mjs`, `scripts/lib/host-lanes.mjs`, `scripts/lib/host-resources.mjs`, `scripts/structural-checks.mjs`, `scripts/lib/gate-scheduling-baseline.json` (the four rows the 2026-10-19 fork-requests pass added), `scripts/lib/machinery-coverage.mjs`, `packages/skeleton/src/observed-facts.ts`, `packages/skeleton/src/gate-evidence.mjs`, `scripts/lib/product-read-guard.mjs` and the fixtures the rows name; unknown until each row is triaged, and the README records
+the per-row command and case. Removes 39 pending rows from the
 register, which at the base holds 281 pending rows, 130 of them decision
 rows boarded by closed orders across 53 orders (the oldest from WO-054,
 2026-09-18), 88 of them follow-ups boarded in the week of 2026-10-13 to
 2026-10-17 alone; the rule that "the next order that edits the surface"
 takes a row delivered none of these 35 (each still pending at
-`7b8206f4`). Wall-clock: one triage per row plus the fixes; unknown until
+`7b8206f4`), and the four rows WO-222 boarded on 2026-10-19 would wait
+the same way. Wall-clock: one triage per row plus the fixes; unknown until
 run. Context bytes: this order's row list is read once. Commands: none
-added. Tokens: unknown until run. Steps: 15. Re-mints: the
+added. Tokens: unknown until run. Steps: 19. Re-mints: the
 executor checks each edited file against `scripts/lib/evidence-sources.mjs`
 (a registered source owes its edition's deterministic re-mint) and
 `FEEDBACK_SOURCE_PATHS` in `packages/skeleton/src/feedback-audit.ts` (an
@@ -33,10 +34,13 @@ work orders that resolve every boarded, follow-up and reopened row rather
 than leaving them to the next order that edits the surface. This order is
 one of four cut by subsystem from the register's 130 pending decision rows
 (`npm run plan -- followups --export`, revision `d6462e4d…`); the rows are
-the register's own excerpts. Planner-synthesized. Opaque identifier, not a
+the register's own excerpts. Amended by the 2026-10-19 fork-requests pass
+([planning document](../planning/fork-requests-2026-10-19.md) §4): the
+four rows WO-222's close boarded on the scheduler, the host guard and the
+light classification. Planner-synthesized. Opaque identifier, not a
 priority. Clean-room screen: repository records only.
-**Depends on:** WO-216 merged (reference only: its structural phase and handoff rule are the gate this order's own handoff runs under; no hard edge).
-**Recommended placement:** position 2 of the serial queue, after WO-216; the operator may interleave the four batches with the focus orders by one sequence edit.
+**Depends on:** WO-216 merged (reference only: its structural phase and handoff rule are the gate this order's own handoff runs under; no hard edge); WO-218 placed before it (reference only; no hard edge).
+**Recommended placement:** position 2 of the serial queue, after WO-218 (the 2026-10-19 fork-requests pass §8); the operator may interleave the four batches with the focus orders by one sequence edit.
 
 <!-- dotln-dependencies:start -->
 [
@@ -44,6 +48,11 @@ priority. Clean-room screen: repository records only.
     "workOrderId": "WO-216",
     "relation": "reference-only",
     "reason": "placed before this batch in the serial queue; no hard edge"
+  },
+  {
+    "workOrderId": "WO-218",
+    "relation": "reference-only",
+    "reason": "placed before this batch in the serial queue by the 2026-10-19 fork-requests pass; no hard edge"
   }
 ]
 <!-- dotln-dependencies:end -->
@@ -108,6 +117,18 @@ batch name the gate, the runner, the host guard, gate evidence and the fixtures:
 - FUP-fb8cbeabbddef397 (open): ER4-005: the cost of a recurring gate grows with closed history: docs-check parses every tracked Markdown file under the document roots on every run; returned to open by FINAL-001 (D027) when the resume suite passed 120 s in a fresh document gate; added by the 2026-10-18 pass ([source](../product/07-execution-guide.md#discipline))
 - FUP-211986cdaa9f8c4f (open): the document gate's run count (125 runs in four days over three orders); returned to open by FINAL-001 (D027) when the gate's median exceeded 120 s at WO-216's rows; added by the 2026-10-18 pass ([source](../planning/work-order-map.md#candidates--returns-from-the-standard-pass-with-the-operators-comments-recorded-2026-10-17))
 
+**Added by the 2026-10-19 fork-requests pass (main at `f0c3f5f6`):** WO-222
+closed on 2026-10-19 (v0.86.0) and boarded four rows on the scheduler, the
+host guard and the light classification, the subsystem this batch owns
+(FINAL-001's three findings on one row; one verification follow-up each
+for the capacity record and the light rule; the fair-admission follow-up of
+its D009). The four rows:
+
+- FUP-16ba63c02aa91dfa (untriaged): WO-222-D021: Three repairs for the next order editing the scheduler or the host guard. F1, next order editing scripts/test-runner.mjs or scripts/lib/host-lanes.mjs: keep an exclusive row's host lease at the full capacity and lend its overlap lanes to its light peers, or carry a light-only marker the registry honors… ([source](../evidence/WO-222/decisions.md#wo-222-d021--final-review-pass-final-001-at-the-integrated-subject-the-cross-gate-overlap-lease-leads-three-boarded-follow-ups))
+- FUP-464d273fa299e979 (untriaged): WO-222-D009: Add fair host admission across independent gates, with an explicit compatibility path for fixed-four clients, preserved nested reservations, and a regression that bounds a short document gate's wait while a complete gate continues admitting work. ([source](../evidence/WO-222/decisions.md#wo-222-d009))
+- FUP-66085a13c95d0f34 (untriaged): WO-222-D018: Next order editing scripts/lib/host-resources.mjs or scripts/lib/host-lanes.mjs: an unreadable or invalid host lane capacity record refuses with one message naming the record by label, what is wrong with it and the remedy; fixtures for malformed JSON and an out-of-range capacity. ([source](../evidence/WO-222/decisions.md#wo-222-d018))
+- FUP-86d6b525c49adce8 (untriaged): WO-222-D019: Next order editing the light classification (scripts/test-runner.mjs lightSuiteNames and scripts/lib/gate-scheduling-baseline.json): classify a task light only when every sample the baseline holds for it is under both bounds, or move the rule to a declared row property; a fixture whose task is light on its latest sample and heavy on an earlier one. ([source](../evidence/WO-222/decisions.md#wo-222-d019))
+
 **Design (scope discipline):** one batch per subsystem, so verification
 judges one set of surfaces and one Preflight line, and each batch's
 executor holds one context. Each row is read at its source, reproduced or
@@ -150,14 +171,14 @@ product statement.
 5. The README holds the before and after tables of step 1 and the
    after-table step, with the register's pending count before and after.
 6. Write-backs land in place where a fix changed a product statement
-   (step 14); `npm run meta -- --check` passes.
+   (step 18); `npm run meta -- --check` passes.
 7. `npm test -- --review` and `npm run test:docs` green; `git diff
    --check` clean; no new dependency; each re-mint and, where a judged
    source changed, the live feedback episode recorded.
 
-**Preflight:** `npm test -- --only runner-fixtures` for steps 2, 6, 12, 13 and 14;
+**Preflight:** `npm test -- --only runner-fixtures` for steps 2, 6, 12, 13, 14 and 15;
 `npm test -- --only harness-fixtures` for step 3;
-`npm test -- --only process-debt` for steps 9 and 11;
+`npm test -- --only process-debt` for steps 9, 11 and 15;
 `npm test -- --only configuration-root` for every script step;
 `npm test -- --only resume` for step 10;
 `npm test -- --only docs-check-fixtures` for step 14;
@@ -182,10 +203,11 @@ the base (explicit tokens added by the 2026-10-18 pass, FUP-17266e5072d4a25a).
 12. `scripts/worktree.mjs` (`finish`, the `recordGateChecks` copy; rows FUP-851cba3a914ab359): copy each row with `failedOutputOnly` applied to its `cases` and `taskTimeline` at every depth (WO-216-D031's rule at the copy), with a case that copies a passing row holding output and reads none in main's index; then the row's F2 cases in `scripts/test-verifier-gate-claims.mjs` and its F3 fix in `scripts/sync.mjs` (a writer only on a stale report; an orphan revision removed or named). Check: `npm test -- --only runner-fixtures` and the suites that declare the two files, under `node scripts/harness.mjs bounded --`.
 13. `scripts/test-runner.mjs` (the copied-fixture closure declarations; rows FUP-9de14a69403e2b32): declare the five hand-kept copy sites so the structural phase checks them, with the case that fails when a copy drifts. Check: `npm test -- --only runner-fixtures`.
 14. `scripts/docs-check.mjs` and the document selection in `scripts/test-runner.mjs` (rows FUP-fb8cbeabbddef397, FUP-211986cdaa9f8c4f): the parse cost that grows with closed history and the document gate's run count per order; fix each with a measured case (the three-gate medians before and after) or decline it with the measured reason. Check: `npm test -- --only docs-check-fixtures` and `npm run test:docs`.
-15. `docs/evidence/WO-217/decisions.md`: one decision per disposed row or per cluster of rows fixed together, each naming the row ids, the chosen option, the rejected option, the fixture case or the decline reason, and the reversal condition; an operator packet for each row only the operator can decide, with its reopening condition naming this order's pull request. Then `npm run meta`. Check: `npm run meta -- --check`.
-16. `docs/evidence/WO-217/README.md`: the after table (each row's final status, the case or reason, the command) and the register's pending count before and after (`npm run plan -- followups`). Check: the README holds both tables.
-17. Write-backs, in place, only where a row's fix changes what a product document states (the row's source decision names the document and section; re-read the heading at the base). Check: `npm run test:docs`.
-18. Handoff: `npm run format`; `npm run test:docs`; the gate the executor's role text names at the base (the order's Preflight suites, then the handoff gate; `npm test -- --review` where a declared machinery source changed); complete `docs/evidence/WO-217/handoff.md`; `npm run resume -- implementation-ready <flags>`.
+15. `scripts/lib/host-lanes.mjs` (`acquireHostLanes`), `scripts/test-runner.mjs` (`reservedSlots`, `executeTask`, `lightSuiteNames`), `scripts/lib/gate-scheduling-baseline.json`, `scripts/lib/host-resources.mjs` (`recordedHostLaneCapacity`, `DEFAULT_MEMORY`), `scripts/host-guard.mjs` (the bare-group budget) and `scripts/structural-checks.mjs` (`checkHost`; rows FUP-16ba63c02aa91dfa, FUP-464d273fa299e979, FUP-66085a13c95d0f34, FUP-86d6b525c49adce8): read each row's source decision in full and take its repair rule as written there (the exclusive lease kept at full capacity with the overlap lanes lent as nested leases, or a light-only marker the registry honors for other gates' requests; the bare-group and session budget tied to the host or gate share, or product 07 stating the per-lane figure and why; the per-lane refusal naming `memory.gateShare` and the value that would admit, in the message and in product 07 §Preflight before the full gate; fair admission across gates with the fixed-four compatibility path; the capacity record's one message naming the record and the remedy; the light rule over every baseline sample or a declared row property), each with a fixture case that fails without the fix, or decline it with the recorded reason, and dispose the row with `npm run plan -- followups --apply`. A change to the overlap lease, the light rule or the lane derivation is kept only when a fresh complete run's median stays at or below WO-222's after median of 1,668.518 s (its D015 reversal rule), recorded in the decision. `host-resources.mjs` is a feedback source path (`FEEDBACK_SOURCE_PATHS`), so its edit owes the live feedback episode the Cost line names. Check: `npm test -- --only runner-fixtures` and `npm test -- --only process-debt`, under `node scripts/harness.mjs bounded --`.
+16. `docs/evidence/WO-217/decisions.md`: one decision per disposed row or per cluster of rows fixed together, each naming the row ids, the chosen option, the rejected option, the fixture case or the decline reason, and the reversal condition; an operator packet for each row only the operator can decide, with its reopening condition naming this order's pull request. Then `npm run meta`. Check: `npm run meta -- --check`.
+17. `docs/evidence/WO-217/README.md`: the after table (each row's final status, the case or reason, the command) and the register's pending count before and after (`npm run plan -- followups`). Check: the README holds both tables.
+18. Write-backs, in place, only where a row's fix changes what a product document states (the row's source decision names the document and section; re-read the heading at the base). Check: `npm run test:docs`.
+19. Handoff: `npm run format`; `npm run test:docs`; the gate the executor's role text names at the base (the order's Preflight suites, then the handoff gate; `npm test -- --review` where a declared machinery source changed); complete `docs/evidence/WO-217/handoff.md`; `npm run resume -- implementation-ready <flags>`.
 
 **Evidence gate:** the Preflight suites; the register dispositions
 (`followups --show` per row); `npm run test:docs`; the handoff gate.
@@ -201,6 +223,18 @@ No model run.
   reference to that batch's decision, with the command that shows it.
 - Line numbers and paths in the rows are observed at their own dates; the
   executor re-reads at its base.
+- The four WO-222 rows edit the scheduler WO-222's after series measured
+  (three fresh complete runs, median 1,668.518 s against 2,538.373 s
+  before); a fix that reschedules the exclusive rows or the light peers is
+  judged on a fresh complete run against that median (D015's reversal
+  rule), never on the fixture alone, and `scripts/structural-checks.mjs`'s
+  host screen refuses on an eight-processor, eight-gigabyte host at the
+  base (FINAL-001's host-budget probe), which the F3 repair's message
+  names rather than changes.
+- `scripts/lib/host-resources.mjs` is a feedback source path and
+  `scripts/host-guard.mjs` a process-debt machinery source: the WO-222
+  rows' fixes owe the re-mint, the live episode and `npm test -- --review`
+  the Cost line names.
 
 **Non-goals:** candidate rows of the register (ideas with reopening
 conditions, 151 at the base), which planning disposes; rows of the other
@@ -212,5 +246,5 @@ report.
 1. At most one third of a batch's rows may be declined.
 2. A row only the operator can decide leaves as an operator packet rather
    than blocking the batch.
-3. The four batches sit after WO-216 and before WO-080; the operator may
-   interleave them with the focus orders.
+3. The four batches sit after WO-222 and before WO-080, WO-218 first; the
+   operator may interleave them with the focus orders.
