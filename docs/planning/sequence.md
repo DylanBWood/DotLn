@@ -103,9 +103,10 @@ pass adds WO-218's own four boarded rows to WO-219. The operator may
 interleave them with the focus orders by one sequence edit.
 
 The order, serial:
-- WO-223: an instance takes starter v0.87.0: the document gate on moved
-  records, the reader's lookup, the sign-off advisory, the advisories'
-  spelling, the commit lint's limit and the kit README.
+- WO-223: an instance with moved target records takes a starter update
+  without a step the kit did not name: the document gate on moved records,
+  the reader's lookup, the sign-off advisory, the advisories' spelling, the
+  commit lint's limit and the kit README (the gap observed at v0.87.0).
 - WO-217: boarded follow-ups, batch 1: the gate, the runner, the host guard,
   gate evidence and the fixtures (39 rows, four of them WO-222's).
 - WO-219: boarded follow-ups, batch 3: lifecycle records, attestation, role
@@ -145,7 +146,7 @@ The period below `v1.0.0` is early access (operator direction, 2026-09-30).
 The order of everything the operator did not place is the planner's.
 
 <!-- dotln-work-order-sequence:start -->
-- WO-223 — An instance takes starter v0.87.0
+- WO-223 — An instance takes a starter update without a step the kit did not name
 - WO-217 — Boarded follow-ups, batch 1: the gate
 - WO-219 — Boarded follow-ups, batch 3: records, roles and the harness
 - WO-220 — Boarded follow-ups, batch 4: the resident and the vertical

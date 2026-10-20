@@ -325,9 +325,7 @@ commit lint), which is WO-218's closed subsystem. The entropy pass placed
 WO-218's own boarded rows in WO-219 as a named exception and recorded
 WO-219's size as a row with a reopening condition; adding five more and
 making the fork wait behind WO-217 and WO-219 for a gate repair it is
-blocked on today was weighed and rejected. One order, WO-223, takes the
-five as one outcome (an instance takes v0.87.0 without a step the kit did
-not name), runs first, and the fork takes the starter release it produces
+blocked on today was weighed and rejected. One order, WO-223, takes the five as one outcome (an instance with moved records takes a starter update without a step the kit did not name; the gap was observed at v0.87.0 and the repair ships in the next release), runs first, and the fork takes the starter release it produces
 into its existing draft pull request (its D1). The 2026-10-13 sizing rule
 is applied as written: a chain on one subsystem as one order; unrelated
 subsystems not bundled.
@@ -420,7 +418,7 @@ non-goals and operator-review assumptions:
 
 | Order | Outcome | Hard edges | Placement |
 | --- | --- | --- | --- |
-| [WO-223](../work-orders/WO-223-an-instance-takes-v0.87.0.md) | an instance takes starter v0.87.0 and publishes under it: `checkDocs` reads a moved decisions record through its binding; the moved-record reader finds the clone mapping from any worktree; `worktree start` and the sign-off FAIL line name the declaration; the release-close advisory prints the expected spelling and the mismatch class; the commit lint names its limit; the kit README spells the admitted helper | WO-218 and WO-221 (closed) | position 1, before WO-217 |
+| [WO-223](../work-orders/WO-223-an-instance-takes-a-starter-update.md) | an instance with moved target records takes a starter update and publishes under it without a step the kit did not name (the gap observed at v0.87.0; the repair ships in the next release): `checkDocs` reads a moved decisions record through its binding; the moved-record reader finds the clone mapping from any worktree; `worktree start` and the sign-off FAIL line name the declaration; the release-close advisory prints the expected spelling and the mismatch class; the commit lint names its limit; the kit README spells the admitted helper | WO-218 and WO-221 (closed) | position 1, before WO-217 |
 | [WO-224](../work-orders/WO-224-entropy-reducer-on-a-registered-target.md) | the Entropy Reducer reviews a registered target repository at a recorded commit or a workstream's repositories, frozen as the launchpad is, with the pinned reviewer, the blinded refutation, immutable receipts in the launchpad and dispositions into its register, one episode per member, in the kit | WO-151, WO-165, WO-071 (closed); WO-219 and WO-080 reference-only | after WO-080 |
 
 The screens of product 07: both orders ship code and say so, and no cited
