@@ -457,8 +457,11 @@ target change on its `wo-NNN` branch before recording the passing result,
 records the order's records in the target's documentation root as one
 records-only commit after it, and may push that commit to one conventional
 branch on the target's origin and open its pull request with `worktree publish
-WO-NNN --target-worktree` under an admitted operator grant; it never merges
-either. An instance order may name an actor and the phrase for the opt-in
+WO-NNN --target-worktree` under an admitted operator grant, spelled
+`node scripts/worktree.mjs publish WO-NNN --target-worktree …` from the
+launchpad root (since v0.87.0 the hook admits only that spelling and
+withholds the `npm run worktree -- publish` form with an advisory naming
+it, WO-218 D062); it never merges either. An instance order may name an actor and the phrase for the opt-in
 `--draft` form at `verified`, which pushes the target worktree's working tree
 to that branch under a draft pull request the closed-phase publish reuses;
 core declares no draft step and no actor (WO-221). Release close of a target
@@ -1148,7 +1151,11 @@ happen. The phrase is itself the operator request that authorizes the external
 CLI launch of the pinned reviewer and its refuter, and it adds no scheduler:
 nothing runs a review unless the operator opens a pass this way. A pass opened
 any other way may still consume an earlier review's surviving findings as one
-input among others. Consumptions: [[REVIEW-002 pass](../planning/entropy-review-002-2026-09-22.md),
+input among others. The subject is the launchpad; a review of a registered
+target repository at a recorded commit, or of a workstream's repositories,
+is WO-224's (`--repository <id>` and `--workstream WS-NNN`, filed by the
+2026-10-20 fork-answers pass), with the same pinned reviewer, refutation,
+receipts and disposition, paid once per repository. Consumptions: [[REVIEW-002 pass](../planning/entropy-review-002-2026-09-22.md),
 2026-09-22]; [[off-ramps pass](../planning/off-ramps-5s-entropy-2026-09-25.md)
 §9, 2026-09-25]; [[REVIEW-006 pass](../planning/entropy-review-006-2026-10-10.md),
 2026-10-10: one order from one finding, one product sentence from the other];
@@ -1930,7 +1937,12 @@ host observation log, `docs/control/local/harness/<session digest>.jsonl`
 under the launchpad root (the digest is the SHA-256 of the session id),
 which a session reads as a file; a host denial after the hook's allow is
 journaled as a `HostPermissionDenied` row, and a prompt the operator
-answers leaves no row (the 2026-10-19 fork-requests pass §6). Claude ownership is held in an ignored per-order sidecar
+answers leaves no row (the 2026-10-19 fork-requests pass §6). A session that
+ran the npm spelling reads, at v0.85.0, the ordinary PreToolUse row with
+`effect: "lifecycle.run"` and `allowed: true` and no
+`registeredTargetAdmission` row, which is what the operator's instance
+observed for its WO-005 draft on 2026-10-20; since v0.87.0 it reads an
+`advisory` row naming the node spelling (the 2026-10-20 fork-answers pass §4). Claude ownership is held in an ignored per-order sidecar
 under the configured control root's `local/host-rules/`, preserving rules the
 operator already held; JSON settings contain no comment markers and Codex's
 TOML configuration contains no prefix-rule table. A `host-rules --rewrite`

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "subjectSourceHash": "sha256:468761d590a3e40225d7218d0437415cc24c1275a08ce7d7726a560b2be9e163",
+  "subjectSourceHash": "sha256:9c7df29bc88bd2f14e6bc393d6c481ccf43decfd61c21c0928c235f45185d3aa",
   "acceptances": [
     {
       "date": "2026-10-05",
@@ -115,77 +115,87 @@
       "reason": "WO-140 measured 21,299 bytes in both generated roots (installed CLAUDE.md 5,788 plus the reviewer skill 15,511) against 20,480, from 20,434 before it, after adding two reviewed rules of 865 bytes together: the product gate runs outside the harness sandbox from the start in an attended session and a resident-launched verification records a partial result, and the receipt's Process cost line carries counters with their source or one cause code. During resume: next on 2026-09-19 the operator authorized raising the limit; raise by one 4 KB step under that authorization and the standing direction of 2026-09-17, preserving every reviewed rule; the verifier measures 20,081 against 20,480 with the same two rules and stays unchanged. Reassess when another reviewed rule needs more. Decision: docs/evidence/WO-140/decisions.md#wo-140-d005."
     }
   ],
-  "observedAt": "2026-10-20T20:21:13.921Z",
-  "subjectRevision": "e4c46109d19c98b37c6cd4c4f0923b8282f09c18",
+  "observedAt": "2026-10-20T21:48:44.922Z",
+  "subjectRevision": "732fdc0e6f51b1ea009a01c0b6395a47d123a4de",
   "rows": [
     {
+      "workOrder": "WO-223",
+      "observedAt": "2026-10-20T21:48:44.922Z",
+      "metrics": null
+    },
+    {
       "workOrder": "WO-217",
-      "observedAt": "2026-10-20T20:21:13.921Z",
+      "observedAt": "2026-10-20T21:48:44.922Z",
       "metrics": null
     },
     {
       "workOrder": "WO-219",
-      "observedAt": "2026-10-20T20:21:13.921Z",
+      "observedAt": "2026-10-20T21:48:44.922Z",
       "metrics": null
     },
     {
       "workOrder": "WO-220",
-      "observedAt": "2026-10-20T20:21:13.921Z",
+      "observedAt": "2026-10-20T21:48:44.922Z",
       "metrics": null
     },
     {
       "workOrder": "WO-080",
-      "observedAt": "2026-10-20T20:21:13.921Z",
+      "observedAt": "2026-10-20T21:48:44.922Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-224",
+      "observedAt": "2026-10-20T21:48:44.922Z",
       "metrics": null
     },
     {
       "workOrder": "WO-204",
-      "observedAt": "2026-10-20T20:21:13.921Z",
+      "observedAt": "2026-10-20T21:48:44.922Z",
       "metrics": null
     },
     {
       "workOrder": "WO-192",
-      "observedAt": "2026-10-20T20:21:13.921Z",
+      "observedAt": "2026-10-20T21:48:44.922Z",
       "metrics": null
     },
     {
       "workOrder": "WO-083",
-      "observedAt": "2026-10-20T20:21:13.921Z",
+      "observedAt": "2026-10-20T21:48:44.922Z",
       "metrics": null
     },
     {
       "workOrder": "WO-207",
-      "observedAt": "2026-10-20T20:21:13.921Z",
+      "observedAt": "2026-10-20T21:48:44.922Z",
       "metrics": null
     },
     {
       "workOrder": "WO-193",
-      "observedAt": "2026-10-20T20:21:13.921Z",
+      "observedAt": "2026-10-20T21:48:44.922Z",
       "metrics": null
     },
     {
       "workOrder": "WO-183",
-      "observedAt": "2026-10-20T20:21:13.921Z",
+      "observedAt": "2026-10-20T21:48:44.922Z",
       "metrics": null
     },
     {
       "workOrder": "WO-088",
-      "observedAt": "2026-10-20T20:21:13.921Z",
+      "observedAt": "2026-10-20T21:48:44.922Z",
       "metrics": null
     },
     {
       "workOrder": "WO-091",
-      "observedAt": "2026-10-20T20:21:13.921Z",
+      "observedAt": "2026-10-20T21:48:44.922Z",
       "metrics": null
     },
     {
       "workOrder": "WO-096",
-      "observedAt": "2026-10-20T20:21:13.921Z",
+      "observedAt": "2026-10-20T21:48:44.922Z",
       "metrics": null
     },
     {
       "workOrder": "WO-014",
-      "observedAt": "2026-10-20T20:21:13.921Z",
+      "observedAt": "2026-10-20T21:48:44.922Z",
       "metrics": null
     }
   ],
@@ -778,6 +788,11 @@
       "reopenCandidate": false,
       "planningCaptures": [
         {
+          "pass": "planning-4da1c641b31de35c",
+          "date": "2026-10-20",
+          "captures": 1
+        },
+        {
           "pass": "planning-2724062b2c7ada0d",
           "date": "2026-10-20",
           "captures": 1
@@ -1076,8 +1091,8 @@
             },
             {
               "workOrder": "WO-218",
-              "value": 133,
-              "delta": -17
+              "value": 175,
+              "delta": 25
             }
           ]
         },

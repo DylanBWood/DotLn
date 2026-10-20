@@ -41632,6 +41632,162 @@
           "at": "2026-10-20T20:18:31.359Z"
         }
       ]
+    },
+    {
+      "id": "FUP-d46ad41337290ed2",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-answers-and-the-entropy-reducer-request-recorded-2026-10-20-second-pass::069185f2bc7e264819d16f9d3c0ceb82b8dbb0142c474ac78caaa3aead3b5eb3",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "f03bb2ae05f65ed2ff7dc862b2b6bbc29b76e1cd0bb7d739731b6fb846654d78",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-answers-and-the-entropy-reducer-request-recorded-2026-10-20-second-pass",
+          "title": "The admission advisories and the kit README spell the admitted helpers.",
+          "summary": "4. **The admission advisories and the kit README spell the admitted helpers.** `releaseCloseAdmission` withholds any helper spelling that is not `releaseCloseCommand`'s byte for byte, after the node path, the script path and the order have already matched, and its advisory names neither the expected spelling nor what differed (this checkout's host observation logs hold 38 admitted and 50 such withheld rows; the fork's three closes were all withheld); the kit README's session form for the target publish is the npm spelling the hook has withheld since v0.87.0. Shape: the advisory prints the expected `--publish` and `--dry-run` forms for the dispatched order and the mismatch class, the admitted",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-223 (steps 4 and 6, criteria 4 and 6): the release-close advisory prints the expected --publish and --dry-run spellings for the dispatched order and the mismatch class, the admitted forms unchanged (38 admitted and 50 withheld rows in this checkout's host observation logs; the fork's three closes all withheld); the kit README's session form becomes the node spelling the hook admits. [2026-10-20 fork-answers planning pass (docs/planning/fork-answers-and-entropy-targets-2026-10-20.md section 4)]",
+          "reopenWhen": "WO-223 is withdrawn, or a release close after the release that carries it is still journaled as withheld without the expected spelling in the advisory",
+          "targets": [
+            "WO-223"
+          ],
+          "at": "2026-10-20T21:26:49.809Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-56008da3fb2468ac",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-answers-and-the-entropy-reducer-request-recorded-2026-10-20-second-pass::12e1a2311c85b57b55a40a7b320f1aa29fad9a26ee7e16761ea8f11dba9d8ed1",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "d68f2a05765973d3201952c1a87aeffe08c5f71e8a2688886a9a36ad69852c99",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-answers-and-the-entropy-reducer-request-recorded-2026-10-20-second-pass",
+          "title": "The commit lint names its limit.",
+          "summary": "5. **The commit lint names its limit.** The pre-review and publish-time refusals on `subject.length` name the rule and not the 72-character limit, which lives in `scripts/lib/outward-lint.mjs` and in no product document or role text (the fork's final publish was refused on a 90-character subject). Shape: the refusal prints the length and the limit from the one constant; naming the limit in the reviewer role text is declined (cold-start headroom; the refusal arrives when the subject is written). Allocated to WO-223.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-223 (step 7, criterion 5): the pre-review and publish-time refusals on subject.length print the length and the 72-character limit from scripts/lib/outward-lint.mjs; naming the limit in the reviewer role text is declined (the reviewer root had 85 bytes of headroom at receipt 050; the refusal arrives when the subject is written). [2026-10-20 fork-answers planning pass (docs/planning/fork-answers-and-entropy-targets-2026-10-20.md section 4)]",
+          "reopenWhen": "WO-223 is withdrawn, or a reviewer is refused on subject.length twice in one order after the release that carries it",
+          "targets": [
+            "WO-223"
+          ],
+          "at": "2026-10-20T21:26:49.912Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-c944c20ce5477b28",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-answers-and-the-entropy-reducer-request-recorded-2026-10-20-second-pass::4a33ee1da47d3c34bcdc46be003aec87a7e59c87d61c23152f835ae028dab369",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "c43cc12f822dfcd38641c778ef80d3cbbd0935865068b82843434f17bee82b8a",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-answers-and-the-entropy-reducer-request-recorded-2026-10-20-second-pass",
+          "title": "docs-check reads a moved decisions record through its binding.",
+          "summary": "1. **docs-check reads a moved decisions record through its binding.** `readDecisions` (`scripts/lib/meta.mjs`) returns a moved decisions row with its launchpad path and its text read through `readTargetRecord`; `checkDocs` (`scripts/docs-check.mjs`, the decisions loop) then calls `readListed(root, row.path)` on that path, which is not a regular file, so an instance with moved records fails its document gate at v0.87.0 before any instance change (the fork's update branch: `document is not a readable regular file (ENOENT)`, with the plan, reader and entropy checks skipped after it). Core holds no moved record, and the moved-records fixture never runs `checkDocs`. Shape: the loop reads a moved ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-223 (step 2, criterion 1): checkDocs reads a moved decisions row through its immutable binding, with a fixture instance that has moved records and the control failing at the base; the fork's update branch at v0.87.0 failed docs-check on exactly this read before any instance change (WO-218-D041's reopening condition occurred). [2026-10-20 fork-answers planning pass (docs/planning/fork-answers-and-entropy-targets-2026-10-20.md section 4)]",
+          "reopenWhen": "WO-223 is withdrawn or re-sequenced behind the batches, or a starter release carrying it still fails an instance's document gate on a moved record",
+          "targets": [
+            "WO-223"
+          ],
+          "at": "2026-10-20T21:26:49.495Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-3687a15aef2b62f4",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-answers-and-the-entropy-reducer-request-recorded-2026-10-20-second-pass::5f5ac6cfa645dfa02f1bbdc2f90db7985f31b0d6a85bb7c0cbba328703329a80",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "8f926f25ed0a5c0d9c9a59231ed2cbf93e69dd5d31140fd02624db3c5ecddc24",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-answers-and-the-entropy-reducer-request-recorded-2026-10-20-second-pass",
+          "title": "The Entropy Reducer reviews a registered target repository or a workstream's repositories.",
+          "summary": "6. **The Entropy Reducer reviews a registered target repository or a workstream's repositories.** `freezeSubject` clones the launchpad only and the compiled program is a census of the frozen copy, so an instance reviews its control plane and never the repositories where its product code lives; no order or register row planned the target or workstream subject. Shape: `review --repository <id> [<commit>]` and `--workstream WS-NNN` freeze the registered clone at a recorded commit as the launchpad is frozen, with the pinned reviewer, the blinded refutation, the immutable receipts in the launchpad and dispositions into its register whose rows a pass allocates to the workstream's orders, one episo",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-224 on the operator's request of 2026-10-20: review --repository <id> [<commit>] and --workstream WS-NNN freeze the registered clone at a recorded commit as the launchpad is frozen, with the pinned reviewer, the blinded refutation, immutable receipts in the launchpad and dispositions into its register that a pass allocates to the workstream's orders, one episode per member repository, in the kit; placed after WO-080 and WO-219. [2026-10-20 fork-answers planning pass (docs/planning/fork-answers-and-entropy-targets-2026-10-20.md section 5)]",
+          "reopenWhen": "WO-224 is withdrawn, or the operator wants the target review before WO-080 and WO-219 close (then the sequence moves it and its workstream step reads the kit template's block as it stands)",
+          "targets": [
+            "WO-224"
+          ],
+          "at": "2026-10-20T21:26:50.016Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-24c8306abf8c5db3",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-answers-and-the-entropy-reducer-request-recorded-2026-10-20-second-pass::73685a2e08201d1fdf953b3dcc59a5d912cd85446eb35ac18cdd47222263f698",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "f3025b6262c5cefed680297849f0a7d540b5808fa337de84aa2fee63f0e8a161",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-answers-and-the-entropy-reducer-request-recorded-2026-10-20-second-pass",
+          "title": "The moved-record reader finds the clone mapping from any worktree of the launchpad.",
+          "summary": "2. **The moved-record reader finds the clone mapping from any worktree of the launchpad.** `readTargetRecord` reads the ignored clone mapping from the running checkout and then from `mainWorktree(root)`, which refuses when no worktree has `main` checked out; a secondary worktree never holds the mapping, so an instance whose primary checkout is on a planning branch cannot run `npm run sync` or its document gate from a scratch worktree (the fork ran its gates with the primary checkout on `main` beside the branch's worktree). Shape: running checkout, then the primary checkout found through `git rev-parse --git-common-dir`, then the main worktree, with the refusal naming the three and the arrang",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-223 (step 3, criterion 2): readTargetRecord reads the clone mapping from the running checkout, the primary checkout found through the common Git directory, then the main worktree, and the refusal names the three and the arrangement, which the kit README states (step 4); the fork could run its gates only with the primary checkout on main beside the branch's worktree. [2026-10-20 fork-answers planning pass (docs/planning/fork-answers-and-entropy-targets-2026-10-20.md section 4)]",
+          "reopenWhen": "WO-223 is withdrawn or re-sequenced behind the batches, or an instance's gate still cannot run from a secondary worktree after the release that carries it",
+          "targets": [
+            "WO-223"
+          ],
+          "at": "2026-10-20T21:26:49.601Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-78a266a47859fdf1",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-answers-and-the-entropy-reducer-request-recorded-2026-10-20-second-pass::c5994403c57745c5c62a6aac2151029eef692e6ded8930d19b74ea7bcce5f9ff",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "812b603eb35280d2ea3cd36e72db5d654d5802bcf3907484b6a32a030130afc0",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-answers-and-the-entropy-reducer-request-recorded-2026-10-20-second-pass",
+          "title": "The sign-off rule names its declaration before the first commit.",
+          "summary": "3. **The sign-off rule names its declaration before the first commit.** `contributionSignoffRules` runs at the launchpad publish and fails every commit by an author other than `contributions.operatorAuthor` without a matching trailer; nothing names the declaration earlier (`worktree start` prints no advisory, the kit declares no action, the notes name the key in prose), so an instance's first publish under v0.87.0 is the first time it hears of the rule. Shape: one `worktree start` advisory when the key is undeclared, and the FAIL line names the key beside the trailer route; a kit action was weighed and declined because no admitted action kind carries an identity the kit does not know. Alloca",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-223 (step 5, criterion 3): one worktree start advisory when contributions.operatorAuthor is undeclared and the FAIL line naming the key beside the trailer route; a kit action was declined because no admitted action kind carries an identity the kit does not know, and role text was declined for cold-start headroom. [2026-10-20 fork-answers planning pass (docs/planning/fork-answers-and-entropy-targets-2026-10-20.md section 4)]",
+          "reopenWhen": "WO-223 is withdrawn, or an instance's first publish under the release that carries it is still refused on the sign-off rule without an earlier advisory",
+          "targets": [
+            "WO-223"
+          ],
+          "at": "2026-10-20T21:26:49.706Z"
+        }
+      ]
     }
   ]
 }

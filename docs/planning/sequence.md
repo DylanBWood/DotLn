@@ -39,7 +39,9 @@ it filed or placed first that have since closed: WO-215 (v0.81.0), WO-210
 the [2026-10-19 pass](standard-pass-2026-10-19.md) retires WO-221 (v0.85.0);
 the [2026-10-19 fork-requests pass](fork-requests-2026-10-19.md) retires
 WO-222 (v0.86.0); the [2026-10-20 entropy pass](entropy-review-007-2026-10-20.md)
-retires WO-218 (v0.87.0).
+retires WO-218 (v0.87.0); the [2026-10-20 fork-answers
+pass](fork-answers-and-entropy-targets-2026-10-20.md) retires nothing and
+files WO-223 and WO-224.
 
 **One focus: the starter, the operator's fork of it and DotLn-Angular,
 with a DotLn UI** (operator direction, 2026-10-13). The win condition is
@@ -72,6 +74,19 @@ its first verification's finding on criterion 2 (three named cases passed
 at the base) is written into the three remaining batches' criterion 2 as
 the paired-control evidence class.
 
+**An instance taking v0.87.0 meets a red document gate** (the 2026-10-20
+fork-answers pass, §4). The fork holds v0.87.0 as a draft update pull
+request because `docs-check` reads a moved decisions record by its
+launchpad path; WO-223 repairs that read and the moved-record reader's
+lookup from a secondary worktree, makes `worktree start` and the sign-off
+refusal name `contributions.operatorAuthor`, makes the release-close
+advisory print the expected helper spelling and the commit lint its limit,
+and spells the admitted publish helper in the kit README. It runs first, so
+the fork leaves its draft after one core release. The operator's request
+of the same day, the Entropy Reducer on a registered target repository or a
+workstream's repositories, is WO-224, placed after WO-080 (the workstream
+convention) and WO-219 (the frozen copy's guard).
+
 **Then the boarded follow-ups, in the three remaining batches** (the 2026-10-17 pass, on
 the operator's direction that every boarded, follow-up and reopened row is
 resolved by a work order). The register held 130 pending decision rows
@@ -88,6 +103,10 @@ pass adds WO-218's own four boarded rows to WO-219. The operator may
 interleave them with the focus orders by one sequence edit.
 
 The order, serial:
+- WO-223: an instance with moved target records takes a starter update
+  without a step the kit did not name: the document gate on moved records,
+  the reader's lookup, the sign-off advisory, the advisories' spelling, the
+  commit lint's limit and the kit README (the gap observed at v0.87.0).
 - WO-217: boarded follow-ups, batch 1: the gate, the runner, the host guard,
   gate evidence and the fixtures (39 rows, four of them WO-222's).
 - WO-219: boarded follow-ups, batch 3: lifecycle records, attestation, role
@@ -99,6 +118,8 @@ The order, serial:
   admission (20 rows).
 - WO-080: the workstream document the run holds, the board's Workstreams
   section and the synthetic pilot. It absorbed WO-081 and WO-082.
+- WO-224: the Entropy Reducer on a registered target repository or a
+  workstream's repositories, one episode per member, in the kit.
 - WO-204: the source writer is made safe before WO-083. It absorbed WO-205,
   WO-206 and WO-212.
 - WO-192: the router, before WO-083, so the measured run is driven the way
@@ -125,10 +146,12 @@ The period below `v1.0.0` is early access (operator direction, 2026-09-30).
 The order of everything the operator did not place is the planner's.
 
 <!-- dotln-work-order-sequence:start -->
+- WO-223 — An instance takes a starter update without a step the kit did not name
 - WO-217 — Boarded follow-ups, batch 1: the gate
 - WO-219 — Boarded follow-ups, batch 3: records, roles and the harness
 - WO-220 — Boarded follow-ups, batch 4: the resident and the vertical
 - WO-080 — Workstreams: document, index, board section and synthetic pilot
+- WO-224 — The Entropy Reducer on a registered target or a workstream
 - WO-204 — The source writer cannot damage the operator's repository
 - WO-192 — A router drives an order through its lifecycle
 - WO-083 — The real run from the operator's instance
