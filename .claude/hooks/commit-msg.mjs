@@ -1,19 +1,19 @@
 // Origin: {"ids":["no-attribution"],"loadoutId":"contributor","semanticHash":"fnv1a64:c0a496bda5f362de"}
-const { runCommitMessageHook } = await import("../../.runtime/harness/174006996c1b9bc6/packages/skeleton/dist/src/harness-host.js");
-const { feedbackBoundary } = await import("../../.runtime/harness/174006996c1b9bc6/packages/skeleton/dist/src/feedback-boundary.js");
+const { runCommitMessageHook } = await import("../../.runtime/harness/63578eec59936f27/packages/skeleton/dist/src/harness-host.js");
+const { feedbackBoundary } = await import("../../.runtime/harness/63578eec59936f27/packages/skeleton/dist/src/feedback-boundary.js");
 await runCommitMessageHook({
-  "compilerPackageVersion": "0.28.0",
+  "compilerPackageVersion": "0.29.0",
   "runtime": {
     "skeletonVersion": "0.37.0",
     "boundaryContract": "feedback-v1",
     "files": [
       {
         "path": "packages/compiler/dist/src/artifact-identity.js",
-        "hash": "fnv1a64:0dd3aa9df21f8c4d"
+        "hash": "fnv1a64:6c59db96e1c7153c"
       },
       {
         "path": "packages/compiler/dist/src/harness.js",
-        "hash": "fnv1a64:2107a9ec813853e8"
+        "hash": "fnv1a64:2511a4feea98f67f"
       },
       {
         "path": "packages/compiler/dist/src/codex-continuation.mjs",
@@ -37,7 +37,7 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/harness-host.js",
-        "hash": "fnv1a64:1bd4dfb1794b37f7"
+        "hash": "fnv1a64:b81798f4b9c3996d"
       },
       {
         "path": "packages/skeleton/dist/src/subagent-budget.js",
@@ -45,7 +45,7 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/observed-facts.js",
-        "hash": "fnv1a64:42f51218f3c3a4e6"
+        "hash": "fnv1a64:0563bc867fed5fe9"
       },
       {
         "path": "packages/skeleton/dist/src/correction-observation.mjs",
@@ -69,7 +69,7 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/gate-evidence.mjs",
-        "hash": "fnv1a64:99795efd529c5a74"
+        "hash": "fnv1a64:3c57ca60a271b250"
       },
       {
         "path": "packages/skeleton/dist/src/gate-deadlines.mjs",
@@ -172,11 +172,11 @@ await runCommitMessageHook({
         "hash": "fnv1a64:5ad495017c40b9b2"
       }
     ],
-    "snapshot": ".runtime/harness/174006996c1b9bc6"
+    "snapshot": ".runtime/harness/63578eec59936f27"
   },
   "policy": {
     "contractVersion": "feedback-v1",
-    "compilerPackageVersion": "0.28.0",
+    "compilerPackageVersion": "0.29.0",
     "units": [
       {
         "unitId": "no-attribution",
@@ -229,6 +229,6 @@ await runCommitMessageHook({
         "enforcement": "hard"
       }
     ],
-    "policyHash": "fnv1a64:f6971c05e868769f"
+    "policyHash": "fnv1a64:5a7aa152573bd090"
   }
 }, feedbackBoundary);

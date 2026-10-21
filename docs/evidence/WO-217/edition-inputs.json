@@ -1,0 +1,79 @@
+{
+  "observedAt": "2026-10-21T03:43:56.337Z",
+  "method": "Changed tracked source paths against HEAD intersect the registered edition sources and feedback judged list. New regression-only files are separately declared by the machinery suite. Component release-label changes are listed as judged paths but the deterministic carry verifies normalized behavior.",
+  "editions": {
+    "authority": [
+      "package-lock.json",
+      "packages/compiler/package.json",
+      "packages/compiler/src/artifact-identity.ts",
+      "packages/compiler/src/harness.ts",
+      "packages/skeleton/package.json",
+      "packages/skeleton/src/evidence-editions.mjs",
+      "packages/skeleton/src/gate-evidence.mjs",
+      "packages/skeleton/src/harness-host.ts",
+      "packages/skeleton/src/loadouts/contributor.ts",
+      "packages/skeleton/src/observed-facts.ts",
+      "scripts/authority-evidence.mjs",
+      "scripts/lib/gate-reuse.mjs",
+      "scripts/lib/host-resources.mjs"
+    ],
+    "artifact-identity": [
+      "package-lock.json",
+      "packages/compiler/package.json",
+      "packages/compiler/src/artifact-identity.ts",
+      "packages/compiler/src/harness.ts",
+      "packages/skeleton/package.json",
+      "packages/skeleton/src/evidence-editions.mjs",
+      "packages/skeleton/src/gate-evidence.mjs",
+      "scripts/lib/gate-reuse.mjs",
+      "scripts/lib/host-resources.mjs"
+    ],
+    "verification": [
+      "package-lock.json",
+      "packages/compiler/package.json",
+      "packages/compiler/src/artifact-identity.ts",
+      "packages/compiler/src/harness.ts",
+      "packages/skeleton/package.json",
+      "packages/skeleton/src/evidence-editions.mjs",
+      "packages/skeleton/src/gate-evidence.mjs",
+      "scripts/lib/gate-reuse.mjs",
+      "scripts/lib/host-resources.mjs"
+    ],
+    "feedback": [
+      "package-lock.json",
+      "packages/compiler/package.json",
+      "packages/compiler/src/artifact-identity.ts",
+      "packages/compiler/src/harness.ts",
+      "packages/skeleton/package.json",
+      "packages/skeleton/src/evidence-editions.mjs",
+      "packages/skeleton/src/gate-evidence.mjs",
+      "packages/skeleton/src/harness-host.ts",
+      "packages/skeleton/src/loadouts/contributor.ts",
+      "packages/skeleton/src/observed-facts.ts",
+      "packages/skeleton/test/feedback-fixtures.test.ts",
+      "scripts/lib/gate-reuse.mjs",
+      "scripts/lib/host-resources.mjs"
+    ],
+    "harness": [
+      "package-lock.json",
+      "packages/compiler/package.json",
+      "packages/compiler/src/artifact-identity.ts",
+      "packages/compiler/src/harness.ts",
+      "packages/skeleton/package.json",
+      "packages/skeleton/src/evidence-editions.mjs",
+      "packages/skeleton/src/gate-evidence.mjs",
+      "packages/skeleton/src/harness-host.ts",
+      "packages/skeleton/src/loadouts/contributor.ts",
+      "packages/skeleton/src/observed-facts.ts",
+      "scripts/lib/gate-reuse.mjs",
+      "scripts/lib/host-resources.mjs"
+    ]
+  },
+  "feedbackJudged": [
+    "package-lock.json",
+    "packages/skeleton/package.json",
+    "packages/compiler/src/artifact-identity.ts",
+    "scripts/lib/host-resources.mjs",
+    "packages/skeleton/test/feedback-fixtures.test.ts"
+  ]
+}
