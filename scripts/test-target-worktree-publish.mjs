@@ -2,6 +2,8 @@ import { absoluteBodyLinks, relativeLinkFailures } from "./lib/github-body.mjs";
 import { readDecisions, writeDecisionsIndex } from "./lib/meta.mjs";
 import { syncFollowups } from "./lib/planning-followups.mjs";
 import { readTargetRecord } from "./lib/target-record-reader.mjs";
+import { checkDocs } from "./docs-check.mjs";
+import { cloneMapPath } from "./lib/target-worktrees.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
@@ -1617,7 +1619,7 @@ test("moved decisions and reports resolve from the bound immutable target commit
       id: "WO-999-D001",
       date: "2026-10-19",
       dispatch: "resume: next",
-      decision: "Keep the fixture behavior.",
+      decision: 'The operator said "keep the fixture behavior".',
       evidence: ["Fixture commit."],
       rejected: [],
       followup: "Recheck the fixture when its contract changes.",
@@ -1634,6 +1636,25 @@ test("moved decisions and reports resolve from the bound immutable target commit
       readDecisions(f.orderRoot).find((row) => row.id === decision.id)
         .targetRecord.commit,
       state.targetRecords.commit,
+    );
+    mkdirSync(docPath(f.orderRoot, "product"), { recursive: true });
+    const documents = checkDocs(f.orderRoot, {
+      ceilings: { schemaVersion: 1, documents: {} },
+      baseline: { schemaVersion: 1, products: {}, dispatches: {}, links: [] },
+      files: [],
+      records: [],
+    });
+    assert.deepEqual(documents.failures, []);
+    assert.ok(
+      documents.operatorWords.rows.some((row) => row.record === decision.id),
+    );
+    const moved = readDecisions(f.orderRoot).find(
+      (row) => row.id === decision.id,
+    );
+    assert.equal(
+      moved.recordSource,
+      readTargetRecord(f.orderRoot, state, moved.targetRecord),
+      "the carried text and a repeated immutable read have identical bytes",
     );
     writeDecisionsIndex(f.orderRoot);
     writeDecisionsIndex(f.orderRoot, { check: true });
@@ -1697,6 +1718,68 @@ test("moved decisions and reports resolve from the bound immutable target commit
         .targetRecord.path,
       record.path,
     );
+  }));
+
+test("moved record lookup uses the running, primary and main checkouts in order", () =>
+  withFixture((f) => {
+    publicationSetup(f);
+    f.mapClone();
+    f.start();
+    closeOrder(f);
+    const decision = {
+      id: "WO-999-D001",
+      date: "2026-10-20",
+      dispatch: "resume: next",
+      decision: "Keep the fixture behavior.",
+      evidence: ["Fixture commit."],
+      rejected: [],
+      reopenWhen: "The fixture contract changes.",
+    };
+    write(
+      f.orderRoot,
+      "records/evidence/WO-999/decisions.md",
+      `# Decisions\n\n## WO-999-D001\n\n\`\`\`json\n${JSON.stringify(decision)}\n\`\`\`\n`,
+    );
+    f.ok(f.resume(["target-records", ...actorArgs]));
+    const state = readControl(f.orderRoot).orders.get("WO-999").state;
+    const record = readDecisions(f.orderRoot)[0].targetRecord;
+    const mapping = readFileSync(cloneMapPath(f.main));
+    git(f.main, "switch", "-c", "planning/fixture");
+    const read = () => readTargetRecord(f.orderRoot, state, record);
+    assert.ok(read().includes(decision.id));
+    // This is the meta artifact's writer used by npm run sync, executed
+    // from the secondary checkout while no checkout holds main.
+    f.ok(f.call(f.orderRoot, f.orderRoot, "meta", []));
+    f.ok(f.call(f.orderRoot, f.orderRoot, "meta", ["--check"]));
+
+    // A running-checkout mapping wins without reading another checkout's lane.
+    mkdirSync(dirname(cloneMapPath(f.orderRoot)), { recursive: true });
+    writeFileSync(cloneMapPath(f.orderRoot), mapping);
+    writeFileSync(cloneMapPath(f.main), "malformed mapping");
+    assert.ok(read().includes(decision.id));
+    rmSync(cloneMapPath(f.orderRoot));
+    rmSync(cloneMapPath(f.main));
+    assert.throws(
+      read,
+      /checked the running checkout, the primary checkout .* and the main-branch worktree.*primary checkout may be on any branch/u,
+    );
+    assert.throws(
+      () => readDecisions(f.orderRoot),
+      (error) =>
+        error.message.startsWith(
+          `target@${record.commit}:${record.path}: WO-999: recorded`,
+        ),
+    );
+
+    // A separate checkout on main remains a valid final fallback.
+    const main = join(f.base, "launchpad-main");
+    git(f.main, "worktree", "add", main, "main");
+    mkdirSync(dirname(cloneMapPath(main)), { recursive: true });
+    writeFileSync(cloneMapPath(main), mapping);
+    assert.ok(read().includes(decision.id));
+    writeFileSync(cloneMapPath(f.main), mapping);
+    writeFileSync(cloneMapPath(main), "malformed mapping");
+    assert.ok(read().includes(decision.id));
   }));
 
 test("target publication normalizes nested links and preserves encoded paths and queries", () => {

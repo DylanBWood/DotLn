@@ -311,14 +311,17 @@ export function readDecisions(root, { workOrder } = {}) {
     const local = documentEntry(root, path);
     if (!local && !moved.has(name)) continue;
     const remote = moved.get(name);
-    const source = local
-      ? readDocumentInput(root, path)
-      : readTargetRecord(root, remote.state, remote.record);
-    if (
-      local &&
-      remote &&
-      source !== readTargetRecord(root, remote.state, remote.record)
-    )
+    const readRemote = () => {
+      try {
+        return readTargetRecord(root, remote.state, remote.record);
+      } catch (error) {
+        throw new Error(
+          `${formatTargetRecord(remote.record)}: ${error.message}`,
+        );
+      }
+    };
+    const source = local ? readDocumentInput(root, path) : readRemote();
+    if (local && remote && source !== readRemote())
       throw new Error(`${path}: retained source differs from its moved record`);
     const headings = markdownHeadings(source);
     const entries = [...source.matchAll(/^```json\n([\s\S]*?)^```/gm)];

@@ -1,5 +1,6 @@
 import { hasAiAttribution } from "../../packages/compiler/src/attribution.mjs";
 import { checkOutwardArtifact } from "../outward-lint.mjs";
+import { outwardFindingText } from "./outward-lint.mjs";
 import { mainWorktree, runGit } from "./git.mjs";
 import { HOST_GIT_READ } from "./github-repository.mjs";
 import { targetWorktreeForOrder } from "./target-worktrees.mjs";
@@ -43,7 +44,7 @@ export function lintReviewedTargetCommits(launchpad, state, subject) {
       throw refuse(
         `commit message format refused before final review: ${result.findings
           .filter((finding) => /^(?:subject|commit|text)\./u.test(finding.rule))
-          .map((finding) => finding.rule)
+          .map((finding) => outwardFindingText(finding, message))
           .join(", ")}`,
       );
   }

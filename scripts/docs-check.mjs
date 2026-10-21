@@ -447,7 +447,15 @@ export function operatorWordFindings(root, files) {
   const sections = new Map();
   for (const row of readDecisions(root)) {
     if (!sections.has(row.path))
-      sections.set(row.path, readListed(root, row.path).split(/(?=^##\s)/mu));
+      sections.set(
+        row.path,
+        // Moved rows already carry the text verified against their immutable
+        // binding by readDecisions; their former local path need not exist.
+        (row.targetRecord
+          ? row.recordSource
+          : readListed(root, row.path)
+        ).split(/(?=^##\s)/mu),
+      );
     const section =
       sections
         .get(row.path)

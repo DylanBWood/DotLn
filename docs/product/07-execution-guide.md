@@ -673,6 +673,12 @@ review binds the clean target commit and its review gate. Reports are drafted
 in the launchpad; `resume target-records` copies the order and moves its
 decisions and filed reports into the target's `documentationRoot`, retaining
 control state, raw evidence and links in the launchpad.
+The moved-record readers check the ignored clone mapping in the running
+launchpad checkout, then the primary checkout whose Git directory is the
+common Git directory, then a worktree on `main`. The primary checkout may
+hold any branch; keeping the mapping there lets secondary update worktrees
+run their gates and regenerate meta artifacts. With no mapping in those
+places, the refusal names all three and the required arrangement.
 
 `dotln.config.json` at the launchpad root declares schema `version: 1` and the
 optional sections `roots`, `classes`, `repositories`, `build`, `release`, `kit`, `derivedOrders`, `portfolios` (§Declaring a portfolio), `historicalWorkOrders` and `contributions`. **Its absence
@@ -1610,7 +1616,11 @@ Run main's helper with main as the working directory; retries use the same
 updated main after the subject is removed.
 
 Run the printed helper exactly as printed, with no redirect, prefix, `cd` or
-pipe. Its stdout is a summary; the full output is retained beside
+pipe. For a matching dispatched order whose helper suffix differs, the
+advisory names the expected `--publish` and `--dry-run` spellings and the
+mismatch class: extra words or whitespace, a shell operator or redirect, or
+non-canonical material flag quoting or value. The admitted forms stay the
+same. Its stdout is a summary; the full output is retained beside
 `release-close.json` and the summary names that report. A close is done when
 the tag and Release exist, no worktree for the order appears in
 `git worktree list`, its directory is gone and `git branch --list wo-NNN` is

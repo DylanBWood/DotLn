@@ -1268,7 +1268,23 @@ function releaseCloseAdmission(
         rest,
       );
   }
-  if (!exact) return missing("byte-exact helper spelling missing");
+  if (!exact) {
+    const suffix = command.slice(helper.length);
+    // Classify only the diagnostic. The exact admission grammar above stays
+    // authoritative; quoted path characters are not shell operators.
+    const unquoted = suffix.replace(
+      /'(?:[^']|'\\'')*'|"(?:\\.|[^"\\])*"|\\[\s\S]/gu,
+      "",
+    );
+    const mismatch = /[;&|<>\r\n]/u.test(unquoted)
+      ? "shell operator or redirect"
+      : /(?:^|\s)--material(?:\s|$)/u.test(suffix)
+        ? "non-canonical material flag quoting or value"
+        : "extra or non-canonical words or whitespace after the helper";
+    return missing(
+      `byte-exact helper spelling missing (${mismatch}); expected ${helper} --publish OR ${helper} --dry-run; material arguments use --publish --material '<path>=disposable|preserve'`,
+    );
+  }
   try {
     const main = git(root, ["worktree", "list", "--porcelain"])
       .split("\n\n")

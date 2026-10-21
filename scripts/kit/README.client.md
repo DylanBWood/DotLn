@@ -144,9 +144,11 @@ operator sandbox settings.
    among them) that an instance order never names, and the publication
    commands apply the instance vocabulary and the local-terms list to the
    outward body themselves.
-   The session form is `npm run worktree -- publish
+   The session form is `node scripts/worktree.mjs publish
    WO-NNN --target-worktree --branch <type>/<slug> --title <title> --body-file
-   <committed-reviewed-body-path>`; its opt-in `--draft` form at `verified`
+   <committed-reviewed-body-path>` from the launchpad root. The hook withholds
+   the `npm run worktree -- publish` form, naming the admitted node spelling.
+   Its opt-in `--draft` form at `verified`
    pushes the target's working tree under a draft pull request that the final
    publish reuses, and this instance's order names the actor and the phrase
    for it (core declares neither). Trust for the target's publication commands
@@ -701,6 +703,13 @@ the tracked lineage index on main. A `.runtime/upstream-preview` left by an inte
 preview holds only a detached checkout: the session removes it with `git
 worktree remove --force .runtime/upstream-preview`, or `git worktree prune`
 when its directory is already gone, before previewing again.
+
+For gates and `npm run sync` after records have moved into a target, the
+moved-record readers find the ignored clone mapping in the running launchpad
+checkout, then its primary checkout (the common Git directory's owner,
+whatever branch it holds), then a worktree on `main`. Keep the mapping in one
+of those checkouts; an update's secondary worktree can use the primary
+checkout's mapping while that primary checkout holds a planning branch.
 
 The manifest records the new source commit; refused files can still come
 from an older revision. `UPSTREAM.md` takes the new provenance when it is

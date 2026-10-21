@@ -1397,6 +1397,20 @@ test("target final review refuses a nonconventional commit before binding the su
     assert.deepEqual(readFileSync(segment), before);
   }));
 
+test("target final review names a 90-character subject and its limit", () =>
+  withFixture((f) => {
+    f.mapClone();
+    f.start();
+    git(f.target, "commit", "--allow-empty", "-qm", `fix: ${"x".repeat(85)}`);
+    prepareFinalReview(f);
+    const segment = docPath(f.orderRoot, "orders", "WO-999.jsonl");
+    const before = readFileSync(segment);
+    const refused = f.resume(["final-review-result", "pass", ...actorArgs]);
+    assert.notEqual(refused.status, 0);
+    assert.match(refused.stderr, /subject.length: 90 of 72 characters/u);
+    assert.deepEqual(readFileSync(segment), before);
+  }));
+
 test("a target registered to another launchpad names that launchpad without selecting it", () =>
   withFixture((f) => {
     f.mapClone();

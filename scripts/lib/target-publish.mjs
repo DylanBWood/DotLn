@@ -45,6 +45,7 @@ import {
 import { repairContract } from "../../packages/skeleton/dist/src/repair.js";
 import { hasAiAttribution } from "../../packages/compiler/src/attribution.mjs";
 import { checkOutwardArtifact } from "../outward-lint.mjs";
+import { outwardFindingText } from "./outward-lint.mjs";
 import { targetCommits } from "./target-commit-lint.mjs";
 import {
   acceptanceStatuses,
@@ -1676,8 +1677,8 @@ export function lintArtifacts(launchpad, artifacts) {
       ...new Set(
         result.findings.map((finding) =>
           finding.span
-            ? `${finding.rule} (line ${finding.span.line})`
-            : finding.rule,
+            ? `${outwardFindingText(finding, text)} (line ${finding.span.line})`
+            : outwardFindingText(finding, text),
         ),
       ),
     ];

@@ -1998,6 +1998,47 @@ test("WO-178 exact close helper admission requires the recorded dispatch, main a
         "allow",
         command,
       );
+    for (const [suffix, mismatch] of [
+      ["--publish > close.log", "shell operator or redirect"],
+      ["--publish | cat", "shell operator or redirect"],
+      ["--publish --force", "words or whitespace after the helper"],
+      [
+        '--publish --material "fixture=preserve"',
+        "non-canonical material flag quoting or value",
+      ],
+      [
+        '--publish --material "fixture>name=preserve"',
+        "non-canonical material flag quoting or value",
+      ],
+      [
+        "--publish --material fixture\\>name=preserve",
+        "non-canonical material flag quoting or value",
+      ],
+      [
+        "--publish --material fixture\\|name=preserve",
+        "non-canonical material flag quoting or value",
+      ],
+    ]) {
+      const response = invoke(
+        root,
+        "permissions",
+        input(root, "PreToolUse", {
+          tool_name: "Bash",
+          tool_input: { command: `${helper} ${suffix}` },
+        }),
+      );
+      assert.notEqual(response.hookSpecificOutput?.permissionDecision, "allow");
+      // Repeated text is displayed once per session; every occurrence is
+      // journaled, including a later command with the same mismatch class.
+      const advisory = journalRows(root, {
+        sessionKey: sha256("synthetic-session"),
+        workOrder: "WO-999",
+        phase: "closed",
+      }).at(-1).advisory;
+      assert.ok(advisory.includes(mismatch), advisory);
+      assert.ok(advisory.includes(`${helper} --publish`));
+      assert.ok(advisory.includes(`${helper} --dry-run`));
+    }
     assert.notEqual(
       permission(`${helper} --publish`, { session_id: "no-recorded-dispatch" })
         ?.permissionDecision,

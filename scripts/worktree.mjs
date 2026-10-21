@@ -1019,6 +1019,10 @@ const main = async () => {
       return;
     }
     runGit(mainPath, ["worktree", "add", target, "-b", branch, "origin/main"]);
+    if (!loadConfig(target).contributions?.operatorAuthor)
+      process.stdout.write(
+        "Advisory: every commit on this branch needs a Signed-off-by trailer matching its author (DCO 1.1), or declare that identity as contributions.operatorAuthor in dotln.config.json through a reviewed change.\n",
+      );
     const base = runGit(target, ["rev-parse", "HEAD"]);
     const authorityHash = createHash("sha256")
       .update(readFileSync(join(target, workOrderPath)))

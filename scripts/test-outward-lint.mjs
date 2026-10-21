@@ -9,6 +9,8 @@ import { fileURLToPath } from "node:url";
 import {
   lintOutwardArtifact,
   runtimeIdentifierForms,
+  outwardFindingText,
+  subjectLengthLimit,
 } from "./lib/outward-lint.mjs";
 import { checkOutwardArtifact } from "./outward-lint.mjs";
 
@@ -27,6 +29,23 @@ const lint = (kind, text) =>
     localTerms: { status: "present" },
   });
 const rules = (result) => result.findings.map((finding) => finding.rule);
+
+test("subject-length diagnostics count characters and name the shared limit", () => {
+  for (const subject of [
+    `fix: ${"x".repeat(85)}`,
+    `🐛 fix: ${"x".repeat(83)}`,
+  ]) {
+    const text = `${subject}\r\n\r\nA separate body.\n`;
+    const finding = lint("commit", text).findings.find(
+      (row) => row.rule === "subject.length",
+    );
+    assert.ok(finding);
+    assert.equal(
+      outwardFindingText(finding, text),
+      `subject.length: 90 of ${subjectLengthLimit} characters`,
+    );
+  }
+});
 const fixture = (t, control = "docs/control") => {
   const root = mkdtempSync(join(tmpdir(), "outward-lint-"));
   t.after(() => rmSync(root, { recursive: true, force: true }));

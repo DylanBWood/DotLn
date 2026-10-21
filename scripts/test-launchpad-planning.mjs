@@ -689,7 +689,7 @@ test("planning and release-close reads run in a fresh exported instance", () => 
     git(kit, ["fetch", starterOrigin, "main"]);
     git(kit, ["merge", "--ff-only", "FETCH_HEAD"]);
     git(kit, ["push", "-q", "origin", "main"]);
-    ok(
+    const firstStart = ok(
       run(kit, process.execPath, [
         "scripts/worktree.mjs",
         "start",
@@ -697,6 +697,17 @@ test("planning and release-close reads run in a fresh exported instance", () => 
         orderPath,
       ]),
       "start the seeded first instance order in its own worktree",
+    );
+    assert.equal(
+      (
+        firstStart.stdout.match(/Advisory: every commit on this branch/gmu) ??
+        []
+      ).length,
+      1,
+    );
+    assert.match(
+      firstStart.stdout,
+      /Signed-off-by trailer matching its author.*contributions.operatorAuthor.*reviewed change/u,
     );
     const instanceMain = kit;
     kit = `${kit}-wo001`;
@@ -1171,9 +1182,31 @@ test("planning and release-close reads run in a fresh exported instance", () => 
     write(
       kit,
       "docs/evidence/WO-002/decisions.md",
-      "# Decisions\n\nPreserve the reviewed target behavior.\n",
+      `# Decisions\n\n## WO-002-D001\n\n\`\`\`json\n${JSON.stringify({
+        id: "WO-002-D001",
+        date: "2026-10-20",
+        dispatch: "resume: next",
+        decision: "Preserve the reviewed target behavior.",
+        evidence: ["The synthetic target review passed."],
+        rejected: [],
+        reopenWhen: "The fixture contract changes.",
+      })}\n\`\`\`\n`,
     );
     resume("target-records", ...actorArgs);
+    // The document gate must read the moved decisions and continue to its
+    // later checks in a real export, not just in the isolated reader fixture.
+    ok(observe(["meta"]), "moved-record meta in export");
+    ok(nodeObserve(["scripts/lineage.mjs", "index"]), "moved-record lineage");
+    ok(observe(["format"]), "format moved-record export");
+    const movedGate = ok(observe(["test:docs"]), "moved-record document gate");
+    for (const name of [
+      "docs-check",
+      "entropy",
+      "reader-profiles",
+      "plan",
+      "plan-refutation-current",
+    ])
+      assert.match(movedGate.stdout, new RegExp(`PASS ${name} `, "u"));
     const targetEvents = readFileSync(
       join(kit, "docs/control/orders/WO-002.jsonl"),
       "utf8",

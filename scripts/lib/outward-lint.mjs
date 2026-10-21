@@ -5,6 +5,10 @@ export const outwardArtifactKinds = Object.freeze([
   "pr-body",
 ]);
 export const subjectLengthLimit = 72;
+export const outwardFindingText = (finding, text) =>
+  finding.rule === "subject.length"
+    ? `${finding.rule}: ${[...text.split(/\r\n|\n|\r/u)[0]].length} of ${subjectLengthLimit} characters`
+    : finding.rule;
 export const runtimeIdentifierForms = Object.freeze([
   "source-event:",
   "baseline-event:",

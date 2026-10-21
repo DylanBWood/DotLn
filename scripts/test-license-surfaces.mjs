@@ -439,6 +439,10 @@ test("contribution exemption follows instance data and never mutable Git identit
     runGit(root, ["config", "user.name", "Fixture Operator"]);
     runGit(root, ["config", "user.email", "operator@example.invalid"]);
     assert.equal(contributionSignoffRules(root)[0].pass, false);
+    assert.match(
+      contributionSignoffRules(root)[0].line,
+      /Signed-off-by trailer.*contributions.operatorAuthor.*reviewed change/u,
+    );
     writeFileSync(
       join(root, "dotln.config.json"),
       JSON.stringify({ version: 1, contributions: { operatorAuthor } }),
