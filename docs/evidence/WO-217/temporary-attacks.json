@@ -1,0 +1,1177 @@
+{
+  "schemaVersion": 1,
+  "decision": "WO-217-D062",
+  "method": "The same independent temporary script ran three serial bounded modes before and after the four repairs. Twelve counterexample cases represent four distinct findings. Root regression fixtures and scoped controls make the repairs durable. Temporary paths are normalized, not asserted as reproducible repository paths. The worker observed a later source-formatting change after its replay cutoff; current checks judge those later bytes.",
+  "scriptSha256": "67e7e7d6b86b51cfa66eff02e74d6bfb239635f5fb8ad9f6efdc4e3dc7781300",
+  "before": {
+    "gate": {
+      "mode": "gate",
+      "startedAt": "2026-10-21T03:12:57.846Z",
+      "finishedAt": "2026-10-21T03:12:58.306Z",
+      "durationMs": 459,
+      "cases": [
+        {
+          "name": "standing complete pass",
+          "expected": {
+            "lookup": true,
+            "completion": true
+          },
+          "actual": {
+            "lookup": true,
+            "completion": true
+          },
+          "ok": true
+        },
+        {
+          "name": "later executed failure displaces old pass",
+          "expected": {
+            "lookup": false,
+            "completion": false
+          },
+          "actual": {
+            "lookup": false,
+            "completion": false
+          },
+          "ok": true
+        },
+        {
+          "name": "failure under a focused check also displaces",
+          "expected": {
+            "lookup": false,
+            "completion": false
+          },
+          "actual": {
+            "lookup": false,
+            "completion": false
+          },
+          "ok": true
+        },
+        {
+          "name": "document failure does not displace product pass",
+          "expected": {
+            "lookup": true,
+            "completion": true
+          },
+          "actual": {
+            "lookup": true,
+            "completion": true
+          },
+          "ok": true
+        },
+        {
+          "name": "later actual repair restores standing pass",
+          "expected": {
+            "lookup": true,
+            "completion": true
+          },
+          "actual": {
+            "lookup": true,
+            "completion": true
+          },
+          "ok": true
+        },
+        {
+          "name": "passing partial cannot repair a displaced pass",
+          "expected": {
+            "lookup": false,
+            "completion": false
+          },
+          "actual": {
+            "lookup": false,
+            "completion": false
+          },
+          "ok": true
+        },
+        {
+          "name": "unexecuted observation does not erase pass",
+          "expected": {
+            "lookup": true,
+            "completion": true
+          },
+          "actual": {
+            "lookup": true,
+            "completion": true
+          },
+          "ok": true
+        },
+        {
+          "name": "self row with failed task",
+          "expected": {
+            "lookup": false,
+            "completion": false
+          },
+          "actual": {
+            "lookup": false,
+            "completion": true
+          },
+          "ok": false
+        },
+        {
+          "name": "self row with negative duration",
+          "expected": {
+            "lookup": false,
+            "completion": false
+          },
+          "actual": {
+            "lookup": false,
+            "completion": true
+          },
+          "ok": false
+        },
+        {
+          "name": "self row with missing duration",
+          "expected": {
+            "lookup": false,
+            "completion": false
+          },
+          "actual": {
+            "lookup": false,
+            "completion": true
+          },
+          "ok": false
+        },
+        {
+          "name": "self row with invalid finish",
+          "expected": {
+            "lookup": false,
+            "completion": false
+          },
+          "actual": {
+            "lookup": false,
+            "completion": true
+          },
+          "ok": false
+        },
+        {
+          "name": "self row with future finish",
+          "expected": {
+            "lookup": false,
+            "completion": false
+          },
+          "actual": {
+            "lookup": false,
+            "completion": false
+          },
+          "ok": true
+        },
+        {
+          "name": "duplicate task names cannot certify complete execution",
+          "expected": {
+            "lookup": false,
+            "completion": false
+          },
+          "actual": {
+            "lookup": false,
+            "completion": true
+          },
+          "ok": false
+        },
+        {
+          "name": "invalid recorded time cannot certify complete execution",
+          "expected": {
+            "lookup": false,
+            "completion": false
+          },
+          "actual": {
+            "lookup": false,
+            "completion": true
+          },
+          "ok": false
+        },
+        {
+          "name": "unattested build row cannot certify complete execution",
+          "expected": {
+            "lookup": false,
+            "completion": false
+          },
+          "actual": {
+            "lookup": false,
+            "completion": true
+          },
+          "ok": false
+        },
+        {
+          "name": "declared required suite missing from timeline",
+          "expected": {
+            "lookup": false,
+            "completion": false
+          },
+          "actual": {
+            "lookup": true,
+            "completion": true
+          },
+          "ok": false
+        },
+        {
+          "name": "empty timeline with nonempty required suites",
+          "expected": {
+            "lookup": false,
+            "completion": false
+          },
+          "actual": {
+            "lookup": true,
+            "completion": true
+          },
+          "ok": false
+        },
+        {
+          "name": "wrong identity cannot certify current execution",
+          "expected": {
+            "lookup": false,
+            "completion": false
+          },
+          "actual": {
+            "lookup": false,
+            "completion": false
+          },
+          "ok": true
+        },
+        {
+          "name": "failed addressed diagnostic copies by exact hash",
+          "expected": "synthetic failed command diagnostic\n",
+          "actual": "synthetic failed command diagnostic\n",
+          "ok": true
+        },
+        {
+          "name": "wrong-hash diagnostic is not hydrated",
+          "expected": false,
+          "actual": false,
+          "ok": true
+        },
+        {
+          "name": "symlink diagnostic is not hydrated",
+          "expected": false,
+          "actual": false,
+          "ok": true
+        }
+      ],
+      "findings": 9
+    },
+    "hedges": {
+      "mode": "hedges",
+      "startedAt": "2026-10-21T03:13:18.229Z",
+      "finishedAt": "2026-10-21T03:13:18.241Z",
+      "durationMs": 11,
+      "cases": [
+        {
+          "name": "exact command gets its duration",
+          "expected": [
+            "1200 ms"
+          ],
+          "actual": [
+            "1200 ms"
+          ],
+          "ok": true
+        },
+        {
+          "name": "The npm test -w packages/kernel gate took about 3 minutes",
+          "expected": [
+            "unmeasured"
+          ],
+          "actual": [
+            "unmeasured"
+          ],
+          "ok": true
+        },
+        {
+          "name": "The npm test -- --unknown gate took about 3 minutes",
+          "expected": [
+            "unmeasured"
+          ],
+          "actual": [
+            "unmeasured"
+          ],
+          "ok": true
+        },
+        {
+          "name": "The npm testing gate took about 3 minutes",
+          "expected": [
+            "unmeasured"
+          ],
+          "actual": [
+            "unmeasured"
+          ],
+          "ok": true
+        },
+        {
+          "name": "The pnpm test gate took about 3 minutes",
+          "expected": [
+            "unmeasured"
+          ],
+          "actual": [
+            "1200 ms"
+          ],
+          "ok": false
+        },
+        {
+          "name": "The xnpm test gate took about 3 minutes",
+          "expected": [
+            "unmeasured"
+          ],
+          "actual": [
+            "1200 ms"
+          ],
+          "ok": false
+        },
+        {
+          "name": "separate shorter and longer identities stay ambiguous",
+          "expected": [
+            "unmeasured",
+            "unmeasured"
+          ],
+          "actual": [
+            "unmeasured",
+            "unmeasured"
+          ],
+          "ok": true
+        },
+        {
+          "name": "only longer identity selects longer duration",
+          "expected": [
+            "450 ms"
+          ],
+          "actual": [
+            "450 ms"
+          ],
+          "ok": true
+        },
+        {
+          "name": "duplicate identity durations remain ambiguous",
+          "expected": [
+            "unmeasured"
+          ],
+          "actual": [
+            "unmeasured"
+          ],
+          "ok": true
+        },
+        {
+          "name": "malformed IDs do not hang or steal duration",
+          "expected": [
+            "1200 ms"
+          ],
+          "actual": [
+            "1200 ms"
+          ],
+          "ok": true
+        },
+        {
+          "name": "invalid duration -1 stays unmeasured",
+          "expected": [
+            "unmeasured"
+          ],
+          "actual": [
+            "-1 ms"
+          ],
+          "ok": false
+        },
+        {
+          "name": "invalid duration null stays unmeasured",
+          "expected": [
+            "unmeasured"
+          ],
+          "actual": [
+            "unmeasured"
+          ],
+          "ok": true
+        },
+        {
+          "name": "invalid duration Infinity stays unmeasured",
+          "expected": [
+            "unmeasured"
+          ],
+          "actual": [
+            "unmeasured"
+          ],
+          "ok": true
+        }
+      ],
+      "findings": 3
+    },
+    "leases": {
+      "mode": "leases",
+      "startedAt": "2026-10-21T03:13:20.848Z",
+      "finishedAt": "2026-10-21T03:13:21.903Z",
+      "durationMs": 1054,
+      "cases": [
+        {
+          "name": "first capacity records two lanes",
+          "expected": 2,
+          "actual": 2,
+          "ok": true
+        },
+        {
+          "name": "later client inherits recorded capacity",
+          "expected": 2,
+          "actual": 2,
+          "ok": true
+        },
+        {
+          "name": "over-capacity refuses",
+          "expected": true,
+          "actual": true,
+          "ok": true
+        },
+        {
+          "name": "valid inherited lease validates parent",
+          "expected": "<temporary-probe>/host-FDwveY/lanes/7ee67947-9612-4596-b104-908cdd06af0a.json",
+          "actual": "<temporary-probe>/host-FDwveY/lanes/7ee67947-9612-4596-b104-908cdd06af0a.json",
+          "ok": true
+        },
+        {
+          "name": "malformed inherited token not-json",
+          "expected": null,
+          "actual": null,
+          "ok": true
+        },
+        {
+          "name": "malformed inherited token null",
+          "expected": null,
+          "actual": null,
+          "ok": true
+        },
+        {
+          "name": "malformed inherited token {\"directory\":\"<temporary-probe>/host-FDwveY\",\"file\":17}",
+          "expected": null,
+          "actual": null,
+          "ok": true
+        },
+        {
+          "name": "malformed inherited token {\"directory\":\"<temporary-probe>/host-FDwveY-other\",\"file\":\"<temporary-probe>/host-FDwveY/lanes/7ee67947-9612-4596-b104-908cdd06af0a.json\"}",
+          "expected": null,
+          "actual": null,
+          "ok": true
+        },
+        {
+          "name": "unrelated gate cannot consume full reservation",
+          "expected": "Host lane wait stopped",
+          "actual": "Host lane wait stopped",
+          "ok": true
+        },
+        {
+          "name": "nested child stays within parent",
+          "expected": "<temporary-probe>/host-FDwveY/lanes/7ee67947-9612-4596-b104-908cdd06af0a.json",
+          "actual": "<temporary-probe>/host-FDwveY/lanes/7ee67947-9612-4596-b104-908cdd06af0a.json",
+          "ok": true
+        },
+        {
+          "name": "released parent remains reserved while child is live",
+          "expected": "Host lane wait stopped",
+          "actual": "Host lane wait stopped",
+          "ok": true
+        },
+        {
+          "name": "capacity becomes available after last child releases",
+          "expected": 2,
+          "actual": 2,
+          "ok": true
+        },
+        {
+          "name": "invalid capacity null refuses with label/remedy",
+          "expected": true,
+          "actual": true,
+          "ok": true
+        },
+        {
+          "name": "invalid capacity null reaches admission refusal",
+          "expected": true,
+          "actual": true,
+          "ok": true
+        },
+        {
+          "name": "invalid capacity array refuses with label/remedy",
+          "expected": true,
+          "actual": true,
+          "ok": true
+        },
+        {
+          "name": "invalid capacity array reaches admission refusal",
+          "expected": true,
+          "actual": true,
+          "ok": true
+        },
+        {
+          "name": "invalid capacity string refuses with label/remedy",
+          "expected": true,
+          "actual": true,
+          "ok": true
+        },
+        {
+          "name": "invalid capacity string reaches admission refusal",
+          "expected": true,
+          "actual": true,
+          "ok": true
+        },
+        {
+          "name": "invalid capacity missing refuses with label/remedy",
+          "expected": true,
+          "actual": true,
+          "ok": true
+        },
+        {
+          "name": "invalid capacity missing reaches admission refusal",
+          "expected": true,
+          "actual": true,
+          "ok": true
+        },
+        {
+          "name": "invalid capacity zero refuses with label/remedy",
+          "expected": true,
+          "actual": true,
+          "ok": true
+        },
+        {
+          "name": "invalid capacity zero reaches admission refusal",
+          "expected": true,
+          "actual": true,
+          "ok": true
+        },
+        {
+          "name": "invalid capacity fraction refuses with label/remedy",
+          "expected": true,
+          "actual": true,
+          "ok": true
+        },
+        {
+          "name": "invalid capacity fraction reaches admission refusal",
+          "expected": true,
+          "actual": true,
+          "ok": true
+        },
+        {
+          "name": "invalid capacity string-number refuses with label/remedy",
+          "expected": true,
+          "actual": true,
+          "ok": true
+        },
+        {
+          "name": "invalid capacity string-number reaches admission refusal",
+          "expected": true,
+          "actual": true,
+          "ok": true
+        },
+        {
+          "name": "invalid capacity nine refuses with label/remedy",
+          "expected": true,
+          "actual": true,
+          "ok": true
+        },
+        {
+          "name": "invalid capacity nine reaches admission refusal",
+          "expected": true,
+          "actual": true,
+          "ok": true
+        },
+        {
+          "name": "invalid capacity malformed refuses with label/remedy",
+          "expected": true,
+          "actual": true,
+          "ok": true
+        },
+        {
+          "name": "invalid capacity malformed reaches admission refusal",
+          "expected": true,
+          "actual": true,
+          "ok": true
+        }
+      ],
+      "findings": 0
+    }
+  },
+  "after": {
+    "gate": {
+      "mode": "gate",
+      "startedAt": "2026-10-21T03:15:38.596Z",
+      "finishedAt": "2026-10-21T03:15:38.995Z",
+      "durationMs": 398,
+      "cases": [
+        {
+          "name": "standing complete pass",
+          "expected": {
+            "lookup": true,
+            "completion": true
+          },
+          "actual": {
+            "lookup": true,
+            "completion": true
+          },
+          "ok": true
+        },
+        {
+          "name": "later executed failure displaces old pass",
+          "expected": {
+            "lookup": false,
+            "completion": false
+          },
+          "actual": {
+            "lookup": false,
+            "completion": false
+          },
+          "ok": true
+        },
+        {
+          "name": "failure under a focused check also displaces",
+          "expected": {
+            "lookup": false,
+            "completion": false
+          },
+          "actual": {
+            "lookup": false,
+            "completion": false
+          },
+          "ok": true
+        },
+        {
+          "name": "document failure does not displace product pass",
+          "expected": {
+            "lookup": true,
+            "completion": true
+          },
+          "actual": {
+            "lookup": true,
+            "completion": true
+          },
+          "ok": true
+        },
+        {
+          "name": "later actual repair restores standing pass",
+          "expected": {
+            "lookup": true,
+            "completion": true
+          },
+          "actual": {
+            "lookup": true,
+            "completion": true
+          },
+          "ok": true
+        },
+        {
+          "name": "passing partial cannot repair a displaced pass",
+          "expected": {
+            "lookup": false,
+            "completion": false
+          },
+          "actual": {
+            "lookup": false,
+            "completion": false
+          },
+          "ok": true
+        },
+        {
+          "name": "unexecuted observation does not erase pass",
+          "expected": {
+            "lookup": true,
+            "completion": true
+          },
+          "actual": {
+            "lookup": true,
+            "completion": true
+          },
+          "ok": true
+        },
+        {
+          "name": "self row with failed task",
+          "expected": {
+            "lookup": false,
+            "completion": false
+          },
+          "actual": {
+            "lookup": false,
+            "completion": false
+          },
+          "ok": true
+        },
+        {
+          "name": "self row with negative duration",
+          "expected": {
+            "lookup": false,
+            "completion": false
+          },
+          "actual": {
+            "lookup": false,
+            "completion": false
+          },
+          "ok": true
+        },
+        {
+          "name": "self row with missing duration",
+          "expected": {
+            "lookup": false,
+            "completion": false
+          },
+          "actual": {
+            "lookup": false,
+            "completion": false
+          },
+          "ok": true
+        },
+        {
+          "name": "self row with invalid finish",
+          "expected": {
+            "lookup": false,
+            "completion": false
+          },
+          "actual": {
+            "lookup": false,
+            "completion": false
+          },
+          "ok": true
+        },
+        {
+          "name": "self row with future finish",
+          "expected": {
+            "lookup": false,
+            "completion": false
+          },
+          "actual": {
+            "lookup": false,
+            "completion": false
+          },
+          "ok": true
+        },
+        {
+          "name": "duplicate task names cannot certify complete execution",
+          "expected": {
+            "lookup": false,
+            "completion": false
+          },
+          "actual": {
+            "lookup": false,
+            "completion": false
+          },
+          "ok": true
+        },
+        {
+          "name": "invalid recorded time cannot certify complete execution",
+          "expected": {
+            "lookup": false,
+            "completion": false
+          },
+          "actual": {
+            "lookup": false,
+            "completion": false
+          },
+          "ok": true
+        },
+        {
+          "name": "unattested build row cannot certify complete execution",
+          "expected": {
+            "lookup": false,
+            "completion": false
+          },
+          "actual": {
+            "lookup": false,
+            "completion": false
+          },
+          "ok": true
+        },
+        {
+          "name": "declared required suite missing from timeline",
+          "expected": {
+            "lookup": false,
+            "completion": false
+          },
+          "actual": {
+            "lookup": false,
+            "completion": false
+          },
+          "ok": true
+        },
+        {
+          "name": "empty timeline with nonempty required suites",
+          "expected": {
+            "lookup": false,
+            "completion": false
+          },
+          "actual": {
+            "lookup": false,
+            "completion": false
+          },
+          "ok": true
+        },
+        {
+          "name": "wrong identity cannot certify current execution",
+          "expected": {
+            "lookup": false,
+            "completion": false
+          },
+          "actual": {
+            "lookup": false,
+            "completion": false
+          },
+          "ok": true
+        },
+        {
+          "name": "failed addressed diagnostic copies by exact hash",
+          "expected": "synthetic failed command diagnostic\n",
+          "actual": "synthetic failed command diagnostic\n",
+          "ok": true
+        },
+        {
+          "name": "wrong-hash diagnostic is not hydrated",
+          "expected": false,
+          "actual": false,
+          "ok": true
+        },
+        {
+          "name": "symlink diagnostic is not hydrated",
+          "expected": false,
+          "actual": false,
+          "ok": true
+        }
+      ],
+      "findings": 0
+    },
+    "hedges": {
+      "mode": "hedges",
+      "startedAt": "2026-10-21T03:15:41.803Z",
+      "finishedAt": "2026-10-21T03:15:41.809Z",
+      "durationMs": 5,
+      "cases": [
+        {
+          "name": "exact command gets its duration",
+          "expected": [
+            "1200 ms"
+          ],
+          "actual": [
+            "1200 ms"
+          ],
+          "ok": true
+        },
+        {
+          "name": "The npm test -w packages/kernel gate took about 3 minutes",
+          "expected": [
+            "unmeasured"
+          ],
+          "actual": [
+            "unmeasured"
+          ],
+          "ok": true
+        },
+        {
+          "name": "The npm test -- --unknown gate took about 3 minutes",
+          "expected": [
+            "unmeasured"
+          ],
+          "actual": [
+            "unmeasured"
+          ],
+          "ok": true
+        },
+        {
+          "name": "The npm testing gate took about 3 minutes",
+          "expected": [
+            "unmeasured"
+          ],
+          "actual": [
+            "unmeasured"
+          ],
+          "ok": true
+        },
+        {
+          "name": "The pnpm test gate took about 3 minutes",
+          "expected": [
+            "unmeasured"
+          ],
+          "actual": [
+            "unmeasured"
+          ],
+          "ok": true
+        },
+        {
+          "name": "The xnpm test gate took about 3 minutes",
+          "expected": [
+            "unmeasured"
+          ],
+          "actual": [
+            "unmeasured"
+          ],
+          "ok": true
+        },
+        {
+          "name": "separate shorter and longer identities stay ambiguous",
+          "expected": [
+            "unmeasured",
+            "unmeasured"
+          ],
+          "actual": [
+            "unmeasured",
+            "unmeasured"
+          ],
+          "ok": true
+        },
+        {
+          "name": "only longer identity selects longer duration",
+          "expected": [
+            "450 ms"
+          ],
+          "actual": [
+            "450 ms"
+          ],
+          "ok": true
+        },
+        {
+          "name": "duplicate identity durations remain ambiguous",
+          "expected": [
+            "unmeasured"
+          ],
+          "actual": [
+            "unmeasured"
+          ],
+          "ok": true
+        },
+        {
+          "name": "malformed IDs do not hang or steal duration",
+          "expected": [
+            "1200 ms"
+          ],
+          "actual": [
+            "1200 ms"
+          ],
+          "ok": true
+        },
+        {
+          "name": "invalid duration -1 stays unmeasured",
+          "expected": [
+            "unmeasured"
+          ],
+          "actual": [
+            "unmeasured"
+          ],
+          "ok": true
+        },
+        {
+          "name": "invalid duration null stays unmeasured",
+          "expected": [
+            "unmeasured"
+          ],
+          "actual": [
+            "unmeasured"
+          ],
+          "ok": true
+        },
+        {
+          "name": "invalid duration Infinity stays unmeasured",
+          "expected": [
+            "unmeasured"
+          ],
+          "actual": [
+            "unmeasured"
+          ],
+          "ok": true
+        }
+      ],
+      "findings": 0
+    },
+    "leases": {
+      "mode": "leases",
+      "startedAt": "2026-10-21T03:15:44.783Z",
+      "finishedAt": "2026-10-21T03:15:45.803Z",
+      "durationMs": 1019,
+      "cases": [
+        {
+          "name": "first capacity records two lanes",
+          "expected": 2,
+          "actual": 2,
+          "ok": true
+        },
+        {
+          "name": "later client inherits recorded capacity",
+          "expected": 2,
+          "actual": 2,
+          "ok": true
+        },
+        {
+          "name": "over-capacity refuses",
+          "expected": true,
+          "actual": true,
+          "ok": true
+        },
+        {
+          "name": "valid inherited lease validates parent",
+          "expected": "<temporary-probe>/host-qctNOR/lanes/6a71cd39-5b03-434b-a3d3-4fe3c9770689.json",
+          "actual": "<temporary-probe>/host-qctNOR/lanes/6a71cd39-5b03-434b-a3d3-4fe3c9770689.json",
+          "ok": true
+        },
+        {
+          "name": "malformed inherited token not-json",
+          "expected": null,
+          "actual": null,
+          "ok": true
+        },
+        {
+          "name": "malformed inherited token null",
+          "expected": null,
+          "actual": null,
+          "ok": true
+        },
+        {
+          "name": "malformed inherited token {\"directory\":\"<temporary-probe>/host-qctNOR\",\"file\":17}",
+          "expected": null,
+          "actual": null,
+          "ok": true
+        },
+        {
+          "name": "malformed inherited token {\"directory\":\"<temporary-probe>/host-qctNOR-other\",\"file\":\"<temporary-probe>/host-qctNOR/lanes/6a71cd39-5b03-434b-a3d3-4fe3c9770689.json\"}",
+          "expected": null,
+          "actual": null,
+          "ok": true
+        },
+        {
+          "name": "unrelated gate cannot consume full reservation",
+          "expected": "Host lane wait stopped",
+          "actual": "Host lane wait stopped",
+          "ok": true
+        },
+        {
+          "name": "nested child stays within parent",
+          "expected": "<temporary-probe>/host-qctNOR/lanes/6a71cd39-5b03-434b-a3d3-4fe3c9770689.json",
+          "actual": "<temporary-probe>/host-qctNOR/lanes/6a71cd39-5b03-434b-a3d3-4fe3c9770689.json",
+          "ok": true
+        },
+        {
+          "name": "released parent remains reserved while child is live",
+          "expected": "Host lane wait stopped",
+          "actual": "Host lane wait stopped",
+          "ok": true
+        },
+        {
+          "name": "capacity becomes available after last child releases",
+          "expected": 2,
+          "actual": 2,
+          "ok": true
+        },
+        {
+          "name": "invalid capacity null refuses with label/remedy",
+          "expected": true,
+          "actual": true,
+          "ok": true
+        },
+        {
+          "name": "invalid capacity null reaches admission refusal",
+          "expected": true,
+          "actual": true,
+          "ok": true
+        },
+        {
+          "name": "invalid capacity array refuses with label/remedy",
+          "expected": true,
+          "actual": true,
+          "ok": true
+        },
+        {
+          "name": "invalid capacity array reaches admission refusal",
+          "expected": true,
+          "actual": true,
+          "ok": true
+        },
+        {
+          "name": "invalid capacity string refuses with label/remedy",
+          "expected": true,
+          "actual": true,
+          "ok": true
+        },
+        {
+          "name": "invalid capacity string reaches admission refusal",
+          "expected": true,
+          "actual": true,
+          "ok": true
+        },
+        {
+          "name": "invalid capacity missing refuses with label/remedy",
+          "expected": true,
+          "actual": true,
+          "ok": true
+        },
+        {
+          "name": "invalid capacity missing reaches admission refusal",
+          "expected": true,
+          "actual": true,
+          "ok": true
+        },
+        {
+          "name": "invalid capacity zero refuses with label/remedy",
+          "expected": true,
+          "actual": true,
+          "ok": true
+        },
+        {
+          "name": "invalid capacity zero reaches admission refusal",
+          "expected": true,
+          "actual": true,
+          "ok": true
+        },
+        {
+          "name": "invalid capacity fraction refuses with label/remedy",
+          "expected": true,
+          "actual": true,
+          "ok": true
+        },
+        {
+          "name": "invalid capacity fraction reaches admission refusal",
+          "expected": true,
+          "actual": true,
+          "ok": true
+        },
+        {
+          "name": "invalid capacity string-number refuses with label/remedy",
+          "expected": true,
+          "actual": true,
+          "ok": true
+        },
+        {
+          "name": "invalid capacity string-number reaches admission refusal",
+          "expected": true,
+          "actual": true,
+          "ok": true
+        },
+        {
+          "name": "invalid capacity nine refuses with label/remedy",
+          "expected": true,
+          "actual": true,
+          "ok": true
+        },
+        {
+          "name": "invalid capacity nine reaches admission refusal",
+          "expected": true,
+          "actual": true,
+          "ok": true
+        },
+        {
+          "name": "invalid capacity malformed refuses with label/remedy",
+          "expected": true,
+          "actual": true,
+          "ok": true
+        },
+        {
+          "name": "invalid capacity malformed reaches admission refusal",
+          "expected": true,
+          "actual": true,
+          "ok": true
+        }
+      ],
+      "findings": 0
+    }
+  },
+  "subject": {
+    "observedAt": "2026-10-21T03:15:36.016075+00:00",
+    "files": {
+      "scripts/lib/gate-reuse.mjs": "b51b7b8bbfe331d86bd6f3bc8d3b4e1c55c46692e801b2cbf23973d08db5b2d5",
+      "packages/skeleton/src/gate-evidence.mjs": "ec61da9f1b8fc8ab223845179451f90cc9f8b346c0f9e3f7af4f529cc9260b89",
+      "packages/skeleton/src/observed-facts.ts": "5fa88fee3e5ee9280dfee8a49d452dabfaea1be6b4dfed572a3140b77a7320c6",
+      "packages/skeleton/dist/src/observed-facts.js": "e768a0d39271714f71bbfc617c657764cd4a5e324dfb4d9400c58591d41f1dc2",
+      "scripts/lib/host-lanes.mjs": "0c65f74f5cfd883948727202f2336d0d9ee18703e40e29941abbb9cb331dfb4d",
+      "scripts/lib/host-resources.mjs": "1908c8c13071450c35aa14a289a0f983df5a35966875acd25cc8ec07aa627d18"
+    },
+    "readbackAt": "2026-10-21T03:16:22.637279+00:00",
+    "sameAtReadback": {
+      "scripts/lib/gate-reuse.mjs": false,
+      "packages/skeleton/src/gate-evidence.mjs": false,
+      "packages/skeleton/src/observed-facts.ts": false,
+      "packages/skeleton/dist/src/observed-facts.js": true,
+      "scripts/lib/host-lanes.mjs": false,
+      "scripts/lib/host-resources.mjs": true
+    },
+    "probeScriptUnchanged": true
+  }
+}

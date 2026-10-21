@@ -1,12 +1,12 @@
-# WO-217 — Boarded follow-ups, batch 1: the gate, the runner, the host guard, gate evidence and the fixtures: every one of the 39 register rows listed below is fixed with a fixture case or declined with its recorded reason, the register shows it, and a row only the operator can decide leaves as an operator packet (version assigned at activation)
+# WO-217 — Boarded follow-ups, batch 1: the gate, the runner, the host guard, gate evidence and the fixtures: every one of the 58 register rows listed below is fixed with a fixture case or declined with its recorded reason, the register shows it, and a row only the operator can decide leaves as an operator packet (v0.89.0)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh; verifier xhigh; reviewer xhigh.
 **Track:** machinery
-**Release classification:** assigned at activation from the fixes made (patch
-unless a fix changes a command, flag, schema or refusal, which the decisions
-name; then minor). A declined row changes no behavior.
+**Release classification:** minor. The batch changes gate evidence and host
+admission refusals; its decisions record the individual compatibility impacts.
+A declined row changes no behavior.
 **Cost:** adds the fixes and fixture cases the listed rows need, across
 `scripts/test-runner.mjs`, `scripts/lib/gate-reuse.mjs`, `scripts/lib/host-guard-state.mjs`, `scripts/host-guard.mjs`, `scripts/lib/host-lanes.mjs`, `scripts/lib/host-resources.mjs`, `scripts/structural-checks.mjs`, `scripts/lib/gate-scheduling-baseline.json` (the four rows the 2026-10-19 fork-requests pass added), `scripts/lib/machinery-coverage.mjs`, `packages/skeleton/src/observed-facts.ts`, `packages/skeleton/src/gate-evidence.mjs`, `scripts/lib/product-read-guard.mjs` and the fixtures the rows name; unknown until each row is triaged, and the README records
 the per-row command and case. Removes 39 pending rows from the
@@ -61,7 +61,8 @@ priority. Clean-room screen: repository records only.
 Adjacent Repair boundary and the boarded-defect rule), §Verification review
 and attack (routes), §Operator-opened planning pass (Retained planning
 follow-ups); `docs/planning/followups.md` (dispositions and `--apply`);
-each listed row's source decision, in full; the fixtures the rows name.
+each listed row's source decision, in full; the fixtures the rows name;
+`docs/architecture/gate-execution.md` (implemented boundaries and mixed-version admission); product 03 §Agent enablement skills; `docs/repositories/README.md`; the [Agent Skills specification](https://agentskills.io/specification) for the generated native format.
 
 **Objective:** Every row listed below ends in a terminal register
 disposition recorded by this order: `settled` with a fixture case that
@@ -152,6 +153,40 @@ and reversal condition).
 dispositions; the decisions and README; write-backs where a fix changes a
 product statement.
 
+**Added by operator direction on 2026-10-21 (WO-217-D002):** the ten pending rows reported by `followups --touching` join this batch under the same acceptance criteria. The instruction was: "just do the extra work. the whole point is to not kick the can". This expansion supersedes the candidate non-goal only for these rows.
+
+- FUP-fa028783f3f6b17f: Meter and closeout residue. ([source](../planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-09-21))
+- FUP-3d6a8147368bdf1c: A gate marker with no birth observation never expires. ([source](../planning/work-order-map.md#candidates--returns-from-the-onesie-twosie-pass-recorded-2026-09-27))
+- FUP-2518166a22767f47: Gate suites inherit DOTLN_LAUNCHPAD from the invoking environment. ([source](../planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-10-13))
+- FUP-b202062fc3cbbbd7: A copied gate record carries an absolute read-log path. ([source](../planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-10-13))
+- FUP-d40313eade76b8af: A stale gate marker revived by a reused process id. ([source](../planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-10-13))
+- FUP-182984d482ca59ca: Measured claims: a judge-owned instrument, a symmetric baseline, per-component movement and the cold first-call row. ([source](../planning/work-order-map.md#candidates--returns-from-ideation-on-2026-10-16-recorded-2026-10-16))
+- FUP-a8cba0428eaf01a9: A final-review packet never names an override as an option. ([source](../planning/work-order-map.md#candidates--returns-from-the-fork-observations-pass-recorded-2026-10-18))
+- FUP-9cfc2253779e6c92: A retained log for a failed complete run. ([source](../planning/work-order-map.md#candidates--returns-from-the-entropy-pass-recorded-2026-10-20))
+- FUP-5f948dcc52e03082: WO-223-D018: The next order that edits scripts/lib/contributions.mjs. Name the declaration route in the FAIL line only when the instance declares no contributions.operatorAuthor, as the start… ([source](../evidence/WO-223/decisions.md#wo-223-d018))
+- FUP-e2152db6dd056b4a: WO-223-D020: The next order that edits start or startTargetWorktree in scripts/worktree.mjs. Print the same one-line sign-off advisory after startTargetWorktree creates the launchpad worktree when… ([source](../evidence/WO-223/decisions.md#wo-223-d020))
+
+**Additional matches under the same operator direction (WO-217-D060):** the final changed-file scan names four more pending rows. They join the batch with the same criteria.
+
+- FUP-f1c7a256bec46737: WO-054-D006: Raise the executor cold-start ceiling from 20,480 to 24,576 bytes and release-close from 12,288 to 16,384 bytes; record the measured rule growth and leave efficiency redesign for the oper ([source](../evidence/WO-054/decisions.md#wo-054-d006))
+- FUP-da505c82f2262b8e: A second sign-off-exempt author identity. ([source](../planning/work-order-map.md#candidates--returns-from-the-cleanup-pass-recorded-2026-09-19))
+- FUP-ec72b2ea596bdc75: The planner's sentence on repairs after a judgment. ([source](../planning/work-order-map.md#candidates--returns-from-the-standard-pass-with-5s-and-the-operators-notes-recorded-2026-10-02))
+- FUP-6c4cc63ae71d02ad: WO-223-D017: The next order that edits releaseCloseAdmission in packages/skeleton/src/harness-host.ts (WO-219 edits that file at its step 19). Classify a withheld suffix after removing the canonical… ([source](../evidence/WO-223/decisions.md#wo-223-d017))
+
+**Evidence and register matches under the same operator direction (WO-217-D063):** two rows became visible when this order filed its control evidence and register dispositions. They receive the same terminal-disposition duties.
+
+- FUP-4b70089b028849f0: ER5-002, fired lifecycle reopening conditions and the bounded prose-parser proposal. ([source](../planning/entropy-reviews/REVIEW-005.md#candidates--accepted-entropy-reducer-findings-review-review-005-recorded-2026-10-02))
+- FUP-8a4e201d861208ad: Evidence-edition retention and the Codex session-identity join. ([source](../planning/work-order-map.md#candidates--returns-from-the-cleanup-pass-recorded-2026-09-19))
+
+**Generated-skill match under the same operator direction (WO-217-D065):**
+
+- FUP-ea83176e777dd32f: A target’s own agent skills as convention input, and the open skills format declared.
+
+**Final evidence and product matches under the same operator direction (WO-217-D067):**
+
+- FUP-441469088613e52a: The full rising and descending operator-absence experiment. ([source](../planning/full-absence-curve-experiment-2026-09-24.md))
+- FUP-adf6621e7f958dd8: ER4-006, authority revisions reference unchanged canonical transcripts. ([source](../planning/entropy-reviews/REVIEW-004.md))
+
 **Acceptance criteria (all required)**
 
 1. For every row id listed above, `npm run plan -- followups --show <id>`
@@ -193,6 +228,9 @@ product statement.
 `npm test -- --only configuration-root` for every script step;
 `npm test -- --only resume` for step 10;
 `npm test -- --only docs-check-fixtures` for step 14;
+`npm test -- --only sync-fixtures` and `npm test -- --only worktree` for step 12;
+`npm test -- --only target-worktree` and `npm test -- --only license-fixtures` for the operator-added sign-off rows;
+`npm test -- --only release` for the operator-added PR draft ownership row;
 `npm run test:docs` when a document changes; each under
 `node scripts/harness.mjs bounded --` for the steps that edit their
 declared sources; then the handoff gate the executor's role text names at
@@ -247,7 +285,7 @@ No model run.
   rows' fixes owe the re-mint, the live episode and `npm test -- --review`
   the Cost line names.
 
-**Non-goals:** candidate rows of the register (ideas with reopening
+**Non-goals:** candidate rows of the register other than the nineteen explicitly added by WO-217-D002, WO-217-D060, WO-217-D063, WO-217-D065 and WO-217-D067 (ideas with reopening
 conditions, 151 at the base), which planning disposes; rows of the other
 three batches; new features beyond what a row asks; rewriting any filed
 report.

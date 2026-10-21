@@ -1,0 +1,1198 @@
+{
+  "observedAt": "2026-10-21T03:45:51.035862+00:00",
+  "beforeRevision": "a9564365d8dd4cfcdb65f1fc0d1a15bda242c0598b19c44ad75b00a5cde4819c",
+  "afterRevision": "1e22651d2fdb346797120d8ea9ef73e338e3090ed2fc447e9adf44c4d4178e4d",
+  "pendingBefore": 166,
+  "pendingAfter": 148,
+  "method": "Every listed row was read through its canonical --show command after application. The original 39 were allocated; 19 added rows were pending. The one original allocated row now operator-deferred contributes one pending item. Net pending change is -18, not -58.",
+  "rows": [
+    {
+      "id": "FUP-04ec9fa011f39d93",
+      "decision": "WO-217-D004",
+      "beforeStatus": "allocated",
+      "status": "declined",
+      "at": "2026-10-21T03:18:22.146Z",
+      "sourceRevision": 1,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-04ec9fa011f39d93"
+      ],
+      "exitCode": 0,
+      "logSha256": "893f932197917e6045996e65a2c23eda4710ce907ec29ed41215f624b9fc29ca"
+    },
+    {
+      "id": "FUP-079f827e1b11eb1e",
+      "decision": "WO-217-D005",
+      "beforeStatus": "allocated",
+      "status": "declined",
+      "at": "2026-10-21T03:18:22.275Z",
+      "sourceRevision": 2,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-079f827e1b11eb1e"
+      ],
+      "exitCode": 0,
+      "logSha256": "3b05cd96c5d957bd0050d48af8250297f111ca75202f3da50aace5f11d77d59e"
+    },
+    {
+      "id": "FUP-0c10689747f83675",
+      "decision": "WO-217-D006",
+      "beforeStatus": "allocated",
+      "status": "settled",
+      "at": "2026-10-21T03:18:22.387Z",
+      "sourceRevision": 2,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-0c10689747f83675"
+      ],
+      "exitCode": 0,
+      "logSha256": "faa89f6c9def60d0e87d3d679cdab3da78c17f267bf942a09a923917ba7fd496"
+    },
+    {
+      "id": "FUP-0e424834e4030880",
+      "decision": "WO-217-D007",
+      "beforeStatus": "allocated",
+      "status": "declined",
+      "at": "2026-10-21T03:18:22.500Z",
+      "sourceRevision": 1,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-0e424834e4030880"
+      ],
+      "exitCode": 0,
+      "logSha256": "1bb8e618d6ce78989e5535f5e9911558d68b9fff24e167f3362cb793a312dbbc"
+    },
+    {
+      "id": "FUP-4475529d727a4d25",
+      "decision": "WO-217-D008",
+      "beforeStatus": "allocated",
+      "status": "settled",
+      "at": "2026-10-21T03:18:22.610Z",
+      "sourceRevision": 1,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-4475529d727a4d25"
+      ],
+      "exitCode": 0,
+      "logSha256": "e286eaee6db40c0432633d55de28f93a453443365c71522ed788e239ae08a9be"
+    },
+    {
+      "id": "FUP-5094b24d6d68d2e4",
+      "decision": "WO-217-D009",
+      "beforeStatus": "allocated",
+      "status": "settled",
+      "at": "2026-10-21T03:18:22.725Z",
+      "sourceRevision": 1,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-5094b24d6d68d2e4"
+      ],
+      "exitCode": 0,
+      "logSha256": "8774e8a376b905abe8ea9fb01f88cc742bec56549086605bafed7feca5dc44b8"
+    },
+    {
+      "id": "FUP-511b5a41d831fe83",
+      "decision": "WO-217-D010",
+      "beforeStatus": "allocated",
+      "status": "declined",
+      "at": "2026-10-21T03:18:22.843Z",
+      "sourceRevision": 2,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-511b5a41d831fe83"
+      ],
+      "exitCode": 0,
+      "logSha256": "21dd97270870071e66b8963dc26d6c6f0b8fdd29098af173840d1457cc3df46f"
+    },
+    {
+      "id": "FUP-51c310284c2fea17",
+      "decision": "WO-217-D011",
+      "beforeStatus": "allocated",
+      "status": "settled",
+      "at": "2026-10-21T03:18:22.953Z",
+      "sourceRevision": 1,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-51c310284c2fea17"
+      ],
+      "exitCode": 0,
+      "logSha256": "a779a889f95d7d8045c7e5b3d8a434ca98e37f472b616c87b5a6d1da77ce5d9a"
+    },
+    {
+      "id": "FUP-5e52eb500e395237",
+      "decision": "WO-217-D012",
+      "beforeStatus": "allocated",
+      "status": "settled",
+      "at": "2026-10-21T03:18:23.063Z",
+      "sourceRevision": 1,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-5e52eb500e395237"
+      ],
+      "exitCode": 0,
+      "logSha256": "a334215c1bb95ce35a866d3b05b4a66376f21583d4e117ee418144c767b4b4d1"
+    },
+    {
+      "id": "FUP-6125f53234c75af3",
+      "decision": "WO-217-D013",
+      "beforeStatus": "allocated",
+      "status": "declined",
+      "at": "2026-10-21T03:18:23.174Z",
+      "sourceRevision": 2,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-6125f53234c75af3"
+      ],
+      "exitCode": 0,
+      "logSha256": "1e460677e33d902357949919ca6a48a6483a7d237d7af229053484d4446ac413"
+    },
+    {
+      "id": "FUP-642d7a4beaed2272",
+      "decision": "WO-217-D014",
+      "beforeStatus": "allocated",
+      "status": "settled",
+      "at": "2026-10-21T03:18:23.286Z",
+      "sourceRevision": 1,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-642d7a4beaed2272"
+      ],
+      "exitCode": 0,
+      "logSha256": "56708ff642cba369ca8638c1d54a21f81b092cffc5626ee4aaa328adfbac625c"
+    },
+    {
+      "id": "FUP-8bac5e3bddd12494",
+      "decision": "WO-217-D015",
+      "beforeStatus": "allocated",
+      "status": "declined",
+      "at": "2026-10-21T03:18:23.394Z",
+      "sourceRevision": 1,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-8bac5e3bddd12494"
+      ],
+      "exitCode": 0,
+      "logSha256": "172184416465c4900fc9ccfd4f293670c355814bd45564eaaca5ab64b41c4f42"
+    },
+    {
+      "id": "FUP-92711a92e1d05874",
+      "decision": "WO-217-D016",
+      "beforeStatus": "allocated",
+      "status": "declined",
+      "at": "2026-10-21T03:18:23.502Z",
+      "sourceRevision": 1,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-92711a92e1d05874"
+      ],
+      "exitCode": 0,
+      "logSha256": "66be39ddd5e2d42b262881b3370424e602193b507de9a637b998a9cf39303d7d"
+    },
+    {
+      "id": "FUP-94bff00e748a26af",
+      "decision": "WO-217-D017",
+      "beforeStatus": "allocated",
+      "status": "settled",
+      "at": "2026-10-21T03:18:23.611Z",
+      "sourceRevision": 1,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-94bff00e748a26af"
+      ],
+      "exitCode": 0,
+      "logSha256": "4cea7941f903d522d322ef12124c5d3d16e34ed7886954bdb54ef29491801f27"
+    },
+    {
+      "id": "FUP-984094128fe71900",
+      "decision": "WO-217-D018",
+      "beforeStatus": "allocated",
+      "status": "settled",
+      "at": "2026-10-21T03:18:23.721Z",
+      "sourceRevision": 1,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-984094128fe71900"
+      ],
+      "exitCode": 0,
+      "logSha256": "49ea5441c2019d011f1a82fd54160833d64860e89bcb5d2bef0f1f99b7a12303"
+    },
+    {
+      "id": "FUP-a566ba26ee9f909a",
+      "decision": "WO-217-D019",
+      "beforeStatus": "allocated",
+      "status": "settled",
+      "at": "2026-10-21T03:18:23.827Z",
+      "sourceRevision": 1,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-a566ba26ee9f909a"
+      ],
+      "exitCode": 0,
+      "logSha256": "99760a0afa298b24d8a326d3eeef6819bc9fce9ca9f34e6526749c98c9fe1e55"
+    },
+    {
+      "id": "FUP-b28b870422a74166",
+      "decision": "WO-217-D020",
+      "beforeStatus": "allocated",
+      "status": "declined",
+      "at": "2026-10-21T03:18:23.929Z",
+      "sourceRevision": 1,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-b28b870422a74166"
+      ],
+      "exitCode": 0,
+      "logSha256": "7f334c814745932d7f9f1896721f7ddc39e243fbd2b380f5395c25f429fee062"
+    },
+    {
+      "id": "FUP-bf51ac5cd8143d98",
+      "decision": "WO-217-D021",
+      "beforeStatus": "allocated",
+      "status": "settled",
+      "at": "2026-10-21T03:18:24.030Z",
+      "sourceRevision": 1,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-bf51ac5cd8143d98"
+      ],
+      "exitCode": 0,
+      "logSha256": "1963dcc534ceca16f8ad29453cdd4348ceb584dbbd457ac980ccd462cc1d0c20"
+    },
+    {
+      "id": "FUP-c1a89d52cc314af9",
+      "decision": "WO-217-D022",
+      "beforeStatus": "allocated",
+      "status": "declined",
+      "at": "2026-10-21T03:18:24.131Z",
+      "sourceRevision": 2,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-c1a89d52cc314af9"
+      ],
+      "exitCode": 0,
+      "logSha256": "57e891463257415648fadb442110a36d037c96868d03632cc6d65219db4f76af"
+    },
+    {
+      "id": "FUP-cb5c3b3e7d0b0c0d",
+      "decision": "WO-217-D023",
+      "beforeStatus": "allocated",
+      "status": "declined",
+      "at": "2026-10-21T03:18:24.237Z",
+      "sourceRevision": 1,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-cb5c3b3e7d0b0c0d"
+      ],
+      "exitCode": 0,
+      "logSha256": "c19d8435244a9a99efa2857f7d81e086c155d4bd488dd955c7b28042f418ce8a"
+    },
+    {
+      "id": "FUP-cb922b59e013dbf1",
+      "decision": "WO-217-D024",
+      "beforeStatus": "allocated",
+      "status": "settled",
+      "at": "2026-10-21T03:18:24.341Z",
+      "sourceRevision": 1,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-cb922b59e013dbf1"
+      ],
+      "exitCode": 0,
+      "logSha256": "deb2dac2cdc22306da10050b56f0fc064cc0c65383f400125026821b621f0523"
+    },
+    {
+      "id": "FUP-cde72b7860c03c18",
+      "decision": "WO-217-D025",
+      "beforeStatus": "allocated",
+      "status": "settled",
+      "at": "2026-10-21T03:18:24.445Z",
+      "sourceRevision": 1,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-cde72b7860c03c18"
+      ],
+      "exitCode": 0,
+      "logSha256": "0dc07b411d081bf2aa31049e584ee82c576a6fe35aa814e8c15ae237ea6dc9fb"
+    },
+    {
+      "id": "FUP-d0a9719cc2e4ec55",
+      "decision": "WO-217-D026",
+      "beforeStatus": "allocated",
+      "status": "deferred",
+      "at": "2026-10-21T03:18:24.548Z",
+      "sourceRevision": 3,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-d0a9719cc2e4ec55"
+      ],
+      "exitCode": 0,
+      "logSha256": "9f2a9d47f0e0a64468d9ff111d8811c7b451808987ac687ddc8dc68be80a9579"
+    },
+    {
+      "id": "FUP-d5605723a86254eb",
+      "decision": "WO-217-D027",
+      "beforeStatus": "allocated",
+      "status": "settled",
+      "at": "2026-10-21T03:18:24.653Z",
+      "sourceRevision": 1,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-d5605723a86254eb"
+      ],
+      "exitCode": 0,
+      "logSha256": "ee548d9877b6834bd4e576090211caea97ce84fabdc3717fe782d635ef9a7938"
+    },
+    {
+      "id": "FUP-de6162b279f66709",
+      "decision": "WO-217-D028",
+      "beforeStatus": "allocated",
+      "status": "settled",
+      "at": "2026-10-21T03:18:24.754Z",
+      "sourceRevision": 1,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-de6162b279f66709"
+      ],
+      "exitCode": 0,
+      "logSha256": "a5559641557ffac7734c4f5c593c85f10702e883ad3e00aa64a9f39b82a269e3"
+    },
+    {
+      "id": "FUP-e18e6a5422109bfb",
+      "decision": "WO-217-D029",
+      "beforeStatus": "allocated",
+      "status": "settled",
+      "at": "2026-10-21T03:18:24.857Z",
+      "sourceRevision": 2,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-e18e6a5422109bfb"
+      ],
+      "exitCode": 0,
+      "logSha256": "9a72dd2e44f5e0d28d2c11c615849762113a3d045dd0dbbe9d5a4b755cf47650"
+    },
+    {
+      "id": "FUP-e821aa2ced3aa111",
+      "decision": "WO-217-D030",
+      "beforeStatus": "allocated",
+      "status": "declined",
+      "at": "2026-10-21T03:18:24.959Z",
+      "sourceRevision": 1,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-e821aa2ced3aa111"
+      ],
+      "exitCode": 0,
+      "logSha256": "f073dd2166bf337a918e05b9c912c6363465b524c1093f350c2501f162a3798d"
+    },
+    {
+      "id": "FUP-e86366edbc1d5289",
+      "decision": "WO-217-D031",
+      "beforeStatus": "allocated",
+      "status": "settled",
+      "at": "2026-10-21T03:18:25.062Z",
+      "sourceRevision": 1,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-e86366edbc1d5289"
+      ],
+      "exitCode": 0,
+      "logSha256": "d38b8780c4f979cdfddd9233fadd57756be696be073399fd6af5e51fac903cbd"
+    },
+    {
+      "id": "FUP-e8f5399db33d0b5a",
+      "decision": "WO-217-D032",
+      "beforeStatus": "allocated",
+      "status": "settled",
+      "at": "2026-10-21T03:18:25.165Z",
+      "sourceRevision": 1,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-e8f5399db33d0b5a"
+      ],
+      "exitCode": 0,
+      "logSha256": "32c40c2d9667932dfb04ce205dfaf6cb00a31e5856d8fc904ccf726e276621eb"
+    },
+    {
+      "id": "FUP-eafff4f96686f67d",
+      "decision": "WO-217-D033",
+      "beforeStatus": "allocated",
+      "status": "declined",
+      "at": "2026-10-21T03:18:25.268Z",
+      "sourceRevision": 1,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-eafff4f96686f67d"
+      ],
+      "exitCode": 0,
+      "logSha256": "38ed8be225fa30e46433facdbfb7cb71f846dbbe5b550704082a5a13cdaae4f7"
+    },
+    {
+      "id": "FUP-f5f10101e717d59b",
+      "decision": "WO-217-D034",
+      "beforeStatus": "allocated",
+      "status": "settled",
+      "at": "2026-10-21T03:18:25.368Z",
+      "sourceRevision": 4,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-f5f10101e717d59b"
+      ],
+      "exitCode": 0,
+      "logSha256": "33f16751ea7e92cc7cae5a56c85aee50bec0bc0751eb0e4118230fa40f71f4d3"
+    },
+    {
+      "id": "FUP-851cba3a914ab359",
+      "decision": "WO-217-D035",
+      "beforeStatus": "allocated",
+      "status": "settled",
+      "at": "2026-10-21T03:18:25.465Z",
+      "sourceRevision": 1,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-851cba3a914ab359"
+      ],
+      "exitCode": 0,
+      "logSha256": "5162862a64f36d70158aa91e19803b5e0a96c718b430a69fa63d273cf71dbbeb"
+    },
+    {
+      "id": "FUP-9de14a69403e2b32",
+      "decision": "WO-217-D036",
+      "beforeStatus": "allocated",
+      "status": "settled",
+      "at": "2026-10-21T03:18:25.564Z",
+      "sourceRevision": 1,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-9de14a69403e2b32"
+      ],
+      "exitCode": 0,
+      "logSha256": "b7e849f75125aae5a98a570861d06207baf42ad7444089695a4845acef8dfec4"
+    },
+    {
+      "id": "FUP-fb8cbeabbddef397",
+      "decision": "WO-217-D037",
+      "beforeStatus": "allocated",
+      "status": "declined",
+      "at": "2026-10-21T03:18:25.661Z",
+      "sourceRevision": 1,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-fb8cbeabbddef397"
+      ],
+      "exitCode": 0,
+      "logSha256": "3746acbc58f4a7fadbdd018fadf0709915545ad35141e028e1c8648a66d1cccd"
+    },
+    {
+      "id": "FUP-211986cdaa9f8c4f",
+      "decision": "WO-217-D038",
+      "beforeStatus": "allocated",
+      "status": "settled",
+      "at": "2026-10-21T03:18:25.759Z",
+      "sourceRevision": 1,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-211986cdaa9f8c4f"
+      ],
+      "exitCode": 0,
+      "logSha256": "586a86501d8461585a61095fc7c33407569b87bb036718fcdbbd39979de3c9b6"
+    },
+    {
+      "id": "FUP-16ba63c02aa91dfa",
+      "decision": "WO-217-D039",
+      "beforeStatus": "allocated",
+      "status": "settled",
+      "at": "2026-10-21T03:18:25.856Z",
+      "sourceRevision": 1,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-16ba63c02aa91dfa"
+      ],
+      "exitCode": 0,
+      "logSha256": "561b45b08d75c372ece2e6cd038dfcb214f58c1179e80e11b897f4067dcf6466"
+    },
+    {
+      "id": "FUP-464d273fa299e979",
+      "decision": "WO-217-D040",
+      "beforeStatus": "allocated",
+      "status": "declined",
+      "at": "2026-10-21T03:18:25.952Z",
+      "sourceRevision": 2,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-464d273fa299e979"
+      ],
+      "exitCode": 0,
+      "logSha256": "24bfa634d0bba914d854afbd79f929639afdc62fe9cb08b1e3d02419489186a2"
+    },
+    {
+      "id": "FUP-66085a13c95d0f34",
+      "decision": "WO-217-D041",
+      "beforeStatus": "allocated",
+      "status": "settled",
+      "at": "2026-10-21T03:18:26.050Z",
+      "sourceRevision": 1,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-66085a13c95d0f34"
+      ],
+      "exitCode": 0,
+      "logSha256": "83ec61f0e665df73dca187c7673589d3a7ce159dc773b050ef29ce4ac48edc3d"
+    },
+    {
+      "id": "FUP-86d6b525c49adce8",
+      "decision": "WO-217-D042",
+      "beforeStatus": "allocated",
+      "status": "settled",
+      "at": "2026-10-21T03:18:26.147Z",
+      "sourceRevision": 1,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-86d6b525c49adce8"
+      ],
+      "exitCode": 0,
+      "logSha256": "9cd18831f63ffcb903a42ae749e82f0b7b9a75d85df2fe29f0bc73c70e19e8a2"
+    },
+    {
+      "id": "FUP-fa028783f3f6b17f",
+      "decision": "WO-217-D043",
+      "beforeStatus": "deferred",
+      "status": "settled",
+      "at": "2026-10-21T03:18:26.244Z",
+      "sourceRevision": 1,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-fa028783f3f6b17f"
+      ],
+      "exitCode": 0,
+      "logSha256": "b4fbedf6200427cd59a794c181e58bf649a9cb2fc866697146953d436a9cddad"
+    },
+    {
+      "id": "FUP-3d6a8147368bdf1c",
+      "decision": "WO-217-D044",
+      "beforeStatus": "deferred",
+      "status": "settled",
+      "at": "2026-10-21T03:18:26.342Z",
+      "sourceRevision": 1,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-3d6a8147368bdf1c"
+      ],
+      "exitCode": 0,
+      "logSha256": "3ce97d0bcbe18979d8542d201b1e390f97612d154b7fc3fb6ae2b4a82ef201e8"
+    },
+    {
+      "id": "FUP-2518166a22767f47",
+      "decision": "WO-217-D045",
+      "beforeStatus": "deferred",
+      "status": "settled",
+      "at": "2026-10-21T03:18:26.443Z",
+      "sourceRevision": 2,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-2518166a22767f47"
+      ],
+      "exitCode": 0,
+      "logSha256": "1afab626cee0b945d2711caf91ed9681df983e284ddb0e69502a46bd2408d94b"
+    },
+    {
+      "id": "FUP-b202062fc3cbbbd7",
+      "decision": "WO-217-D046",
+      "beforeStatus": "deferred",
+      "status": "settled",
+      "at": "2026-10-21T03:18:26.543Z",
+      "sourceRevision": 1,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-b202062fc3cbbbd7"
+      ],
+      "exitCode": 0,
+      "logSha256": "80934571c19168eb8b82f9ef6187feee5773333160c23c8482a03393fcc25070"
+    },
+    {
+      "id": "FUP-d40313eade76b8af",
+      "decision": "WO-217-D047",
+      "beforeStatus": "deferred",
+      "status": "settled",
+      "at": "2026-10-21T03:18:26.643Z",
+      "sourceRevision": 1,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-d40313eade76b8af"
+      ],
+      "exitCode": 0,
+      "logSha256": "1185203b14b306db3aedbf816268c9189bb54103d1f5f95db5c0fd40f5f2b7d2"
+    },
+    {
+      "id": "FUP-182984d482ca59ca",
+      "decision": "WO-217-D048",
+      "beforeStatus": "deferred",
+      "status": "declined",
+      "at": "2026-10-21T03:18:26.742Z",
+      "sourceRevision": 1,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-182984d482ca59ca"
+      ],
+      "exitCode": 0,
+      "logSha256": "f8e38115f900f96f8cacf21e49d959ba899fd9133654009873e99bf612ad4a09"
+    },
+    {
+      "id": "FUP-a8cba0428eaf01a9",
+      "decision": "WO-217-D049",
+      "beforeStatus": "deferred",
+      "status": "settled",
+      "at": "2026-10-21T03:18:26.842Z",
+      "sourceRevision": 1,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-a8cba0428eaf01a9"
+      ],
+      "exitCode": 0,
+      "logSha256": "dfccfeeb7e921f6d9c891e55610459875d53e8fb86b573bb57ddc6f6c4a67d73"
+    },
+    {
+      "id": "FUP-9cfc2253779e6c92",
+      "decision": "WO-217-D050",
+      "beforeStatus": "deferred",
+      "status": "settled",
+      "at": "2026-10-21T03:18:26.942Z",
+      "sourceRevision": 1,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-9cfc2253779e6c92"
+      ],
+      "exitCode": 0,
+      "logSha256": "21bc56862792298a1d9d8fe9fadfe05c1e94e21f835e2156ca70d3efcf387954"
+    },
+    {
+      "id": "FUP-5f948dcc52e03082",
+      "decision": "WO-217-D051",
+      "beforeStatus": "untriaged",
+      "status": "settled",
+      "at": "2026-10-21T03:18:27.042Z",
+      "sourceRevision": 1,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-5f948dcc52e03082"
+      ],
+      "exitCode": 0,
+      "logSha256": "17e4c6fad1699cfce4e3bc60ccd9eda16520174a7d1a1964b8f840910962abf0"
+    },
+    {
+      "id": "FUP-e2152db6dd056b4a",
+      "decision": "WO-217-D052",
+      "beforeStatus": "untriaged",
+      "status": "settled",
+      "at": "2026-10-21T03:18:27.141Z",
+      "sourceRevision": 1,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-e2152db6dd056b4a"
+      ],
+      "exitCode": 0,
+      "logSha256": "7cf157f009ff9f61d0a4a3f18c8bc1b24079f97e08defb298cc0f18a4f8e15c2"
+    },
+    {
+      "id": "FUP-f1c7a256bec46737",
+      "decision": "WO-217-D053",
+      "beforeStatus": "open",
+      "status": "settled",
+      "at": "2026-10-21T03:18:27.239Z",
+      "sourceRevision": 1,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-f1c7a256bec46737"
+      ],
+      "exitCode": 0,
+      "logSha256": "c580d9d5bf5ce91583864d2b0c236e2cc1b35e29342cd5048862eb613213cd72"
+    },
+    {
+      "id": "FUP-da505c82f2262b8e",
+      "decision": "WO-217-D054",
+      "beforeStatus": "deferred",
+      "status": "declined",
+      "at": "2026-10-21T03:18:27.337Z",
+      "sourceRevision": 1,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-da505c82f2262b8e"
+      ],
+      "exitCode": 0,
+      "logSha256": "40020419afa8dac224bcf5c4b294fa934f2cefef82aeab4284e271d4be13c044"
+    },
+    {
+      "id": "FUP-ec72b2ea596bdc75",
+      "decision": "WO-217-D055",
+      "beforeStatus": "deferred",
+      "status": "settled",
+      "at": "2026-10-21T03:18:27.434Z",
+      "sourceRevision": 1,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-ec72b2ea596bdc75"
+      ],
+      "exitCode": 0,
+      "logSha256": "8008fbc862fdac16bcade92ee878d1832ebc847c87e75f70f71bd849cccbbf76"
+    },
+    {
+      "id": "FUP-6c4cc63ae71d02ad",
+      "decision": "WO-217-D056",
+      "beforeStatus": "untriaged",
+      "status": "settled",
+      "at": "2026-10-21T03:18:27.532Z",
+      "sourceRevision": 2,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-6c4cc63ae71d02ad"
+      ],
+      "exitCode": 0,
+      "logSha256": "374541e984fdb37fc88fe542ea2f5c86569424ceed32f329d39be2c64afe6350"
+    },
+    {
+      "id": "FUP-4b70089b028849f0",
+      "decision": "WO-217-D057",
+      "beforeStatus": "deferred",
+      "status": "declined",
+      "at": "2026-10-21T03:21:45.914Z",
+      "sourceRevision": 1,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-4b70089b028849f0"
+      ],
+      "exitCode": 0,
+      "logSha256": "4645768ebeebeb39d3779760719d12d5e67b12951a79d79e7956840cf7e6e235"
+    },
+    {
+      "id": "FUP-8a4e201d861208ad",
+      "decision": "WO-217-D058",
+      "beforeStatus": "deferred",
+      "status": "declined",
+      "at": "2026-10-21T03:21:46.025Z",
+      "sourceRevision": 1,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-8a4e201d861208ad"
+      ],
+      "exitCode": 0,
+      "logSha256": "30d16b34a4abf1f5c77970a215f015b3eca237c1ca1e856287e2b3b1d9fe0bda"
+    },
+    {
+      "id": "FUP-ea83176e777dd32f",
+      "decision": "WO-217-D066",
+      "beforeStatus": "deferred",
+      "status": "settled",
+      "at": "2026-10-21T03:30:48.020Z",
+      "sourceRevision": 1,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-ea83176e777dd32f"
+      ],
+      "exitCode": 0,
+      "logSha256": "4c6c09ac62b805bd53f2359eae4dc14b91ef59770302ab66e3d2e128b0367d7d"
+    },
+    {
+      "id": "FUP-441469088613e52a",
+      "decision": "WO-217-D068",
+      "beforeStatus": "deferred",
+      "status": "declined",
+      "at": "2026-10-21T03:44:29.797Z",
+      "sourceRevision": 4,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-441469088613e52a"
+      ],
+      "exitCode": 0,
+      "logSha256": "6ffb79aafb468c64f8c30d938966552fbb5fea1c3234c99fc87640009e428576"
+    },
+    {
+      "id": "FUP-adf6621e7f958dd8",
+      "decision": "WO-217-D069",
+      "beforeStatus": "deferred",
+      "status": "settled",
+      "at": "2026-10-21T03:44:29.908Z",
+      "sourceRevision": 1,
+      "command": [
+        "npm",
+        "run",
+        "--silent",
+        "plan",
+        "--",
+        "followups",
+        "--show",
+        "FUP-adf6621e7f958dd8"
+      ],
+      "exitCode": 0,
+      "logSha256": "23483885c909a08a76cf20a356f60d7f1531f31a9b2ec94fc0678d83f36baf81"
+    }
+  ],
+  "touchingReadback": {
+    "observedAt": "2026-10-21T10:16:53.517478+00:00",
+    "command": [
+      "npm",
+      "run",
+      "--silent",
+      "plan",
+      "--",
+      "followups",
+      "--touching"
+    ],
+    "exitCode": 0,
+    "outputSha256": "9b3ccaf12af8c4153995ab0a636d6032e93755e640c0ad7dc4e0914fe9a97109",
+    "registerRevision": "1e22651d2fdb346797120d8ea9ef73e338e3090ed2fc447e9adf44c4d4178e4d",
+    "changedPathCount": 211,
+    "pendingCount": 148,
+    "matched": [
+      {
+        "id": "FUP-d0a9719cc2e4ec55",
+        "currentStatus": "deferred",
+        "activationStatus": "allocated",
+        "source": "docs/evidence/WO-185/decisions.md#wo-185-d006--recorded-survivor-guarantee-limitation",
+        "reopenWhen": "WO-217 pull request review: the operator chooses continued documented observational protection or explicitly authorizes a separately scoped OS ownership mechanism."
+      }
+    ],
+    "matchedPendingAtActivation": 0,
+    "limit": "Textual match, a pointer for judgment and never a verdict: a pending row is listed when its source title or summary, its decision's followup or reopenWhen, or its latest disposition names a given path, a trailing part of it such as its base name, or a given order. A false match costs one row read; a row that names its seam in other words is not listed."
+  }
+}

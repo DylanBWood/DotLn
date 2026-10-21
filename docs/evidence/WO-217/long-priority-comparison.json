@@ -1,0 +1,369 @@
+{
+  "observedAt": "2026-10-21T18:48:29.871Z",
+  "source": "Current production scheduler and task expansion, with each recorded complete review supplying all 109 task durations unchanged. Only the explicitly listed ordinary suite base priorities differ.",
+  "limits": "A fixed-work model omits host-lane waits and process overhead and assumes duration invariance under overlap. It is no replacement for complete fresh gate observations. All commands, slots, groups, dependencies, deadlines, failed/recent/branch leads and exclusive reservation behavior are retained.",
+  "samples": [
+    {
+      "sample": "repair-economy-review-1",
+      "recordedAt": "2026-10-21T15:44:05.511Z",
+      "recordedDurationMs": 1819602,
+      "priorityHints": {
+        "configuration-root": 2000,
+        "registrations": 2000,
+        "sync-fixtures": 2000,
+        "evidence-sources": 100,
+        "harness-fixtures": 100,
+        "harness-probe": 100,
+        "launchpad-planning": 100,
+        "mutation": 100,
+        "plan-refutation": 100,
+        "process-debt": 100,
+        "runner-fixtures": 100,
+        "wo107-schema": 100
+      },
+      "arms": [
+        {
+          "name": "current",
+          "priorities": {},
+          "durationMs": 1817656,
+          "deltaFromCurrentMs": 0
+        },
+        {
+          "name": "vertical150",
+          "priorities": {
+            "vertical": 150
+          },
+          "durationMs": 2035703,
+          "deltaFromCurrentMs": 218047
+        },
+        {
+          "name": "launchpad150",
+          "priorities": {
+            "launchpad": 150
+          },
+          "durationMs": 1885151,
+          "deltaFromCurrentMs": 67495
+        },
+        {
+          "name": "vertical150-launchpad140",
+          "priorities": {
+            "vertical": 150,
+            "launchpad": 140
+          },
+          "durationMs": 2146797,
+          "deltaFromCurrentMs": 329141
+        },
+        {
+          "name": "long-groups150-140-130",
+          "priorities": {
+            "vertical": 150,
+            "launchpad": 140,
+            "target-worktree": 130
+          },
+          "durationMs": 2012060,
+          "deltaFromCurrentMs": 194404
+        },
+        {
+          "name": "long-groups180-160-140",
+          "priorities": {
+            "vertical": 180,
+            "launchpad": 160,
+            "target-worktree": 140
+          },
+          "durationMs": 2012060,
+          "deltaFromCurrentMs": 194404
+        }
+      ]
+    },
+    {
+      "sample": "repair-economy-review-2",
+      "recordedAt": "2026-10-21T16:12:13.033Z",
+      "recordedDurationMs": 1658259,
+      "priorityHints": {
+        "registrations": 2000,
+        "configuration-root": 100,
+        "evidence-sources": 100,
+        "harness-fixtures": 100,
+        "harness-probe": 100,
+        "launchpad-planning": 100,
+        "mutation": 100,
+        "plan-refutation": 100,
+        "process-debt": 100,
+        "runner-fixtures": 100,
+        "sync-fixtures": 100,
+        "wo107-schema": 100
+      },
+      "arms": [
+        {
+          "name": "current",
+          "priorities": {},
+          "durationMs": 1656278,
+          "deltaFromCurrentMs": 0
+        },
+        {
+          "name": "vertical150",
+          "priorities": {
+            "vertical": 150
+          },
+          "durationMs": 1823463,
+          "deltaFromCurrentMs": 167185
+        },
+        {
+          "name": "launchpad150",
+          "priorities": {
+            "launchpad": 150
+          },
+          "durationMs": 1689910,
+          "deltaFromCurrentMs": 33632
+        },
+        {
+          "name": "vertical150-launchpad140",
+          "priorities": {
+            "vertical": 150,
+            "launchpad": 140
+          },
+          "durationMs": 1937553,
+          "deltaFromCurrentMs": 281275
+        },
+        {
+          "name": "long-groups150-140-130",
+          "priorities": {
+            "vertical": 150,
+            "launchpad": 140,
+            "target-worktree": 130
+          },
+          "durationMs": 1798024,
+          "deltaFromCurrentMs": 141746
+        },
+        {
+          "name": "long-groups180-160-140",
+          "priorities": {
+            "vertical": 180,
+            "launchpad": 160,
+            "target-worktree": 140
+          },
+          "durationMs": 1798024,
+          "deltaFromCurrentMs": 141746
+        }
+      ]
+    },
+    {
+      "sample": "repair-economy-review-3",
+      "recordedAt": "2026-10-21T16:41:57.353Z",
+      "recordedDurationMs": 1750028,
+      "priorityHints": {
+        "registrations": 2000,
+        "configuration-root": 100,
+        "evidence-sources": 100,
+        "harness-fixtures": 100,
+        "harness-probe": 100,
+        "launchpad-planning": 100,
+        "mutation": 100,
+        "plan-refutation": 100,
+        "process-debt": 100,
+        "runner-fixtures": 100,
+        "sync-fixtures": 100,
+        "wo107-schema": 100
+      },
+      "arms": [
+        {
+          "name": "current",
+          "priorities": {},
+          "durationMs": 1736632,
+          "deltaFromCurrentMs": 0
+        },
+        {
+          "name": "vertical150",
+          "priorities": {
+            "vertical": 150
+          },
+          "durationMs": 1926158,
+          "deltaFromCurrentMs": 189526
+        },
+        {
+          "name": "launchpad150",
+          "priorities": {
+            "launchpad": 150
+          },
+          "durationMs": 1768044,
+          "deltaFromCurrentMs": 31412
+        },
+        {
+          "name": "vertical150-launchpad140",
+          "priorities": {
+            "vertical": 150,
+            "launchpad": 140
+          },
+          "durationMs": 2048650,
+          "deltaFromCurrentMs": 312018
+        },
+        {
+          "name": "long-groups150-140-130",
+          "priorities": {
+            "vertical": 150,
+            "launchpad": 140,
+            "target-worktree": 130
+          },
+          "durationMs": 1904914,
+          "deltaFromCurrentMs": 168282
+        },
+        {
+          "name": "long-groups180-160-140",
+          "priorities": {
+            "vertical": 180,
+            "launchpad": 160,
+            "target-worktree": 140
+          },
+          "durationMs": 1904914,
+          "deltaFromCurrentMs": 168282
+        }
+      ]
+    },
+    {
+      "sample": "forge-compatible-review-1",
+      "recordedAt": "2026-10-21T18:17:54.671Z",
+      "recordedDurationMs": 1904218,
+      "priorityHints": {
+        "target-worktree": 3000,
+        "configuration-root": 2000,
+        "launchpad-planning": 2000,
+        "registrations": 2000,
+        "runner-fixtures": 2000,
+        "evidence-sources": 100,
+        "harness-fixtures": 100,
+        "harness-probe": 100,
+        "mutation": 100,
+        "plan-refutation": 100,
+        "process-debt": 100,
+        "sync-fixtures": 100,
+        "wo107-schema": 100
+      },
+      "arms": [
+        {
+          "name": "current",
+          "priorities": {},
+          "durationMs": 1902284,
+          "deltaFromCurrentMs": 0
+        },
+        {
+          "name": "vertical150",
+          "priorities": {
+            "vertical": 150
+          },
+          "durationMs": 1948167,
+          "deltaFromCurrentMs": 45883
+        },
+        {
+          "name": "launchpad150",
+          "priorities": {
+            "launchpad": 150
+          },
+          "durationMs": 1925770,
+          "deltaFromCurrentMs": 23486
+        },
+        {
+          "name": "vertical150-launchpad140",
+          "priorities": {
+            "vertical": 150,
+            "launchpad": 140
+          },
+          "durationMs": 1981294,
+          "deltaFromCurrentMs": 79010
+        },
+        {
+          "name": "long-groups150-140-130",
+          "priorities": {
+            "vertical": 150,
+            "launchpad": 140,
+            "target-worktree": 130
+          },
+          "durationMs": 1981294,
+          "deltaFromCurrentMs": 79010
+        },
+        {
+          "name": "long-groups180-160-140",
+          "priorities": {
+            "vertical": 180,
+            "launchpad": 160,
+            "target-worktree": 140
+          },
+          "durationMs": 1981294,
+          "deltaFromCurrentMs": 79010
+        }
+      ]
+    },
+    {
+      "sample": "forge-compatible-review-2",
+      "recordedAt": "2026-10-21T18:46:50.336Z",
+      "recordedDurationMs": 1674694,
+      "priorityHints": {
+        "registrations": 2000,
+        "configuration-root": 100,
+        "evidence-sources": 100,
+        "harness-fixtures": 100,
+        "harness-probe": 100,
+        "launchpad-planning": 100,
+        "mutation": 100,
+        "plan-refutation": 100,
+        "process-debt": 100,
+        "runner-fixtures": 100,
+        "sync-fixtures": 100,
+        "wo107-schema": 100
+      },
+      "arms": [
+        {
+          "name": "current",
+          "priorities": {},
+          "durationMs": 1672752,
+          "deltaFromCurrentMs": 0
+        },
+        {
+          "name": "vertical150",
+          "priorities": {
+            "vertical": 150
+          },
+          "durationMs": 1807055,
+          "deltaFromCurrentMs": 134303
+        },
+        {
+          "name": "launchpad150",
+          "priorities": {
+            "launchpad": 150
+          },
+          "durationMs": 1679842,
+          "deltaFromCurrentMs": 7090
+        },
+        {
+          "name": "vertical150-launchpad140",
+          "priorities": {
+            "vertical": 150,
+            "launchpad": 140
+          },
+          "durationMs": 1919276,
+          "deltaFromCurrentMs": 246524
+        },
+        {
+          "name": "long-groups150-140-130",
+          "priorities": {
+            "vertical": 150,
+            "launchpad": 140,
+            "target-worktree": 130
+          },
+          "durationMs": 1772532,
+          "deltaFromCurrentMs": 99780
+        },
+        {
+          "name": "long-groups180-160-140",
+          "priorities": {
+            "vertical": 180,
+            "launchpad": 160,
+            "target-worktree": 140
+          },
+          "durationMs": 1772532,
+          "deltaFromCurrentMs": 99780
+        }
+      ]
+    }
+  ],
+  "modelSha256": "47f902c061e6bbed8f0b5ea594635644c9142edb117c419895a53ec4936ff583"
+}

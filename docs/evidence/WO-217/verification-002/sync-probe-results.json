@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "kind": "VER-002 end-to-end sync probe",
+  "rows": [
+    {
+      "scenario": "siblings tag observation names a tag not at its commit",
+      "checkExit": 1,
+      "checkOutput": "error: docs/siblings/tag-observations.json: 32f9653f1d1de9ec007924916f0ffb5dbd6a5546 records tag \"v0.83.0\", which is not a Git tag at its receipt commit; run node scripts/siblings.mjs index",
+      "classifiedStale": true,
+      "syncAction": "regenerated",
+      "syncBeforeAfter": "stale -> current",
+      "syncReason": "",
+      "syncExit": 0,
+      "bytesRegenerated": true,
+      "expected": "regenerated",
+      "asExpected": true
+    },
+    {
+      "scenario": "siblings page line 3 edited (VER-001 F1 reproduction)",
+      "checkExit": 1,
+      "checkOutput": "error: docs/siblings/README.md is stale at line 3; run node scripts/siblings.mjs index",
+      "classifiedStale": true,
+      "syncAction": "regenerated",
+      "syncBeforeAfter": "stale -> current",
+      "syncReason": "",
+      "syncExit": 0,
+      "bytesRegenerated": true,
+      "expected": "regenerated",
+      "asExpected": true
+    },
+    {
+      "scenario": "work-order index page deleted",
+      "checkExit": 1,
+      "checkOutput": "error: docs/work-orders/README.md is stale at line 1; run npm run work-orders -- index",
+      "classifiedStale": true,
+      "syncAction": "regenerated",
+      "syncBeforeAfter": "stale -> current",
+      "syncReason": "",
+      "syncExit": 0,
+      "bytesRegenerated": true,
+      "expected": "regenerated",
+      "asExpected": true
+    },
+    {
+      "scenario": "work-order HISTORY snapshot JSON malformed inside its marker",
+      "checkExit": 1,
+      "checkOutput": "error: invalid JSON in docs/work-orders/HISTORY.md tag snapshot: Expected property name or '}' in JSON at position 2 (line 1 column 3)",
+      "classifiedStale": false,
+      "syncAction": "refused",
+      "syncBeforeAfter": "unknown -> unknown",
+      "syncReason": "check did not report stale; repair the check before regenerating",
+      "syncExit": 1,
+      "bytesRegenerated": false,
+      "expected": "refused",
+      "asExpected": true
+    },
+    {
+      "scenario": "sibling receipt corrupted",
+      "checkExit": 1,
+      "checkOutput": "error: invalid JSON in docs/evidence/siblings/DotLn-Enterprise-Starter/2026-10-21T01-46-55-650Z.json: Expected property name or '}' in JSON at position 2 (line 1 column 3)",
+      "classifiedStale": false,
+      "syncAction": "refused",
+      "syncBeforeAfter": "unknown -> unknown",
+      "syncReason": "check did not report stale; repair the check before regenerating",
+      "syncExit": 1,
+      "bytesRegenerated": false,
+      "expected": "refused",
+      "asExpected": true
+    },
+    {
+      "scenario": "npm run sync over a stale siblings page",
+      "cliExit": 0,
+      "cliOutput": "siblings | stale | current | regenerated",
+      "bytesRegenerated": true,
+      "expected": "regenerated",
+      "asExpected": true
+    }
+  ]
+}

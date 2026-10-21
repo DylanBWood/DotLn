@@ -12242,6 +12242,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-10-20T20:18:30.609Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-217-D053 in docs/evidence/WO-217/decisions.md: Shorten repeated role wording while preserving every duty, command, exception, authority limit and ceiling. WO-217-D061 records the operator choice. Fourteen reviewed wording changes reduce the executor, verifier and reviewer profiles by 402 UTF-8 bytes each, with smaller reductions in the other roles. The executor has 435 bytes of headroom and reviewer 281 under unchanged ceilings. Both independent workers found no lost obligation. This measures startup bytes only, not total tokens or elapsed time. Evidence: role-wording.json; role-efficiency.json; scripts/test-gate-followups.mjs bounded role wording case and its scoped fourteen-string reversal; WO-217-D061; repair-controls.json controls bounded-role-efficiency",
+          "reopenWhen": "A wording change loses a duty, a profile grows beyond its measured baseline, or executor/reviewer headroom falls below 256 bytes.",
+          "targets": [],
+          "at": "2026-10-21T03:18:27.239Z"
         }
       ]
     },
@@ -12935,6 +12943,14 @@
           "reopenWhen": "the operator's answer, or the next refused publish",
           "targets": [],
           "at": "2026-09-19T01:20:05.548Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "WO-217-D054 in docs/evidence/WO-217/decisions.md: Keep one instance-declared sign-off-exempt author and decline adding a second identity, as the operator chose. GitHub Update branch commits without the required sign-off can still refuse publication. The operator explicitly selected the recommended option to retain one exempt author in WO-217-D061. Conditional guidance now explains the existing policy without expanding it. This NoOp preserves the known publication restriction. Evidence: WO-217-D061 operator response; work-order-map cleanup-pass candidate 7; scripts/lib/contributions.mjs contributionSignoffRules and its declared-author fixture",
+          "reopenWhen": "The operator explicitly chooses a second exemption and its identity, or a refused publication supplies a concrete alternative preserving the existing sign-off policy.",
+          "targets": [],
+          "at": "2026-10-21T03:18:27.337Z"
         }
       ]
     },
@@ -13128,6 +13144,14 @@
           "reopenWhen": "a week adds more than 10 MB of tracked evidence, two consecutive orders each commit more than 1 MB of distinct evidence blobs that no criterion of theirs required (captures, logs, superseded attempts), or measured reading or storage harm occurs",
           "targets": [],
           "at": "2026-10-20T20:18:30.292Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "WO-217-D058 in docs/evidence/WO-217/decisions.md: Retain immutable evidence and decline pruning or a new retention ceiling; retain the current explicit Codex thread-to-session readback. Evidence volume remains a reading/storage cost. The latest source review distinguishes criterion-required measured runs and paired controls from disposable diagnostics and retains the earlier planning decision against pruning under operator delegation. This order keeps temporary attack scripts and raw logs outside tracked evidence, files discriminating controls required by criterion 2, and preserves every historical edition. The old session-identity clause is now examined: the current implementation joins the supplied thread through usageSessionKey, refuses another thread, and tests latest-turn selection without projecting private transcript material. No new identity mechanism or storage gain is claimed. Evidence: work-order-map cleanup-pass candidate 15 and its complete disposition history through 2026-10-20; packages/skeleton/src/usage-observation.mjs; scripts/test-codex-session.mjs explicit-thread and latest-turn fixtures; temporary-attacks.json and repair-controls.json",
+          "reopenWhen": "The operator authorizes a concrete retention policy preserving immutable references; a week adds more than 10 MB of tracked evidence; two consecutive orders each commit more than 1 MB of distinct evidence blobs that no criterion required; measured reading or storage harm occurs regardless of whether criteria required the evidence; or a supplied Codex thread resolves another session.",
+          "targets": [],
+          "at": "2026-10-21T03:21:46.025Z"
         }
       ]
     },
@@ -13382,6 +13406,14 @@
             "WO-217"
           ],
           "at": "2026-10-17T19:34:07.782Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-217-D008 in docs/evidence/WO-217/decisions.md: Use the shared physical module-entry guard for both corpus entry points. Direct symlink invocation now executes the entry and processes invalid arguments. Evidence: corpus/mutation/mutate.mjs; corpus/harness/generator-runtime.mjs; repair-controls.json controls symlink-entry",
+          "reopenWhen": "A supported entry spelling fails the physical identity check.",
+          "targets": [],
+          "at": "2026-10-21T03:18:22.610Z"
         }
       ]
     },
@@ -13545,6 +13577,14 @@
             "WO-217"
           ],
           "at": "2026-10-17T19:34:09.135Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "WO-217-D030 in docs/evidence/WO-217/decisions.md: Retain working aliases, bounded Git batches and strict effort spelling; decline speculative parser and transport rewrites. The grouped source records presentation gaps, deprecated compatible aliases, bounded aggregate capacity and whitespace aliases, without a supported-input failure. Current Node test tasks already install TAP and case reporting. NoOp avoids changing behavior or raising limits without measured demand; the real nested diagnostic defect is repaired separately. Evidence: WO-142-D017 full five-part remainder; scripts/lib/git.mjs bounded transport; scripts/test-runner.mjs executeSuite reporters",
+          "reopenWhen": "A supported input reaches the batch bound, a compatibility alias is removed, or a real workload isolates parser/progress cost.",
+          "targets": [],
+          "at": "2026-10-21T03:18:24.959Z"
         }
       ]
     },
@@ -13920,6 +13960,14 @@
             "WO-217"
           ],
           "at": "2026-10-17T19:34:07.539Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "WO-217-D004 in docs/evidence/WO-217/decisions.md: Keep complete-first executor handoff and decline expanding the shell redirect extractor into a partial shell interpreter. The procedure now requires a complete review; mixed opaque redirects can still hide literal destinations from the advisory extractor. Host permissions remain the boundary. Naming only fragments while leaving expansions unobserved would suggest coverage it cannot enforce. NoOp retains the explicitly limited extractor, not a claim that the width gap is fixed. Evidence: packages/skeleton/src/harness-host.ts shell redirect accessors; docs/AI-HARNESS-SECURITY.md known-destination width; current executor procedure",
+          "reopenWhen": "A concrete supported command requires narrower per-invocation extraction with an executable refusal model; never infer full shell mediation.",
+          "targets": [],
+          "at": "2026-10-21T03:18:22.146Z"
         }
       ]
     },
@@ -13986,6 +14034,14 @@
             "WO-217"
           ],
           "at": "2026-10-17T19:34:07.721Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "WO-217-D007 in docs/evidence/WO-217/decisions.md: Keep native sandbox cases visible as outside-sandbox work and preserve the closed WO-140 text with its existing correction. The source decision proves the hooks denial was a command denial, not the suite failure. Silently skipping the native tests on a refused probe would turn unavailable coverage into a pass. NoOp keeps the explicit declaration; WO-140-D001 remains the correction to historical attribution. Evidence: WO-140-D001 full receipt comparison; scripts/test-runner.mjs skeleton needs declaration",
+          "reopenWhen": "A supported native adapter runs those cases inside the sandbox, or a repeatable new suite-specific environmental failure supports changing the declaration.",
+          "targets": [],
+          "at": "2026-10-21T03:18:22.500Z"
         }
       ]
     },
@@ -15668,6 +15724,14 @@
           "reopenWhen": "another repair meets a changed reviewer draft it did not write, or the next order that edits release preparation",
           "targets": [],
           "at": "2026-10-16T02:47:35.603Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-217-D043 in docs/evidence/WO-217/decisions.md: Leave PR draft creation with the reviewer; release preparation updates a meter only in an existing draft and retains its separate snapshot. Preparation previously created a meter-only PR draft before review. The fixture now proves no draft is created, existing reviewer text survives, and publication renders a missing meter block without changing the stored draft. Evidence: scripts/test-release.sh prepare_independent; scripts/release.mjs prepare and regeneratedPullRequestBody; repair-controls.json controls pr-draft-owner",
+          "reopenWhen": "Preparation creates an unreviewed draft or loses authored text or publication metering.",
+          "targets": [],
+          "at": "2026-10-21T03:18:26.244Z"
         }
       ]
     },
@@ -18539,6 +18603,14 @@
           "reopenWhen": "a resident binds its portfolio actor to execution hosts over two or more eligible orders while presence is away, a resident receipt contradicts the curve product 03 states, or the operator asks for the experiment",
           "targets": [],
           "at": "2026-10-13T16:53:35.979Z"
+        },
+        {
+          "sourceRevision": 4,
+          "status": "declined",
+          "reason": "WO-217-D068 in docs/evidence/WO-217/decisions.md: Decline adding or claiming a measured absence-curve allocator from the present starter; preserve the comparative experiment and its concrete reopening conditions. The present harm is the unmeasured product ambition: no comparison establishes accepted useful work, risk, review burden or mission drift across absence lengths, so no net-benefit or positive-downswing claim is supported. The full candidate demands a common candidate pool, pre-registered separate cost axes, return interruptions, budget and unavailable-adapter evidence, and operator benefit left unknown. The current actor catalog still constructs portfolioAdapter() without execution hosts; ResidentHost supplies a bound portfolio only when options.portfolio is supplied. WO-118 proves its bounded away loop, not automatic selection across eligible orders. Synthetic stage names would not settle that experiment. The NoOp avoids unmeasured scheduling policy while retaining these unknowns; no new live host binding or automatic policy is claimed. Evidence: Full candidate docs/planning/full-absence-curve-experiment-2026-09-24.md and FUP register history; packages/skeleton/src/actor-catalog.ts default portfolio; packages/skeleton/src/resident-host.ts constructor; docs/evidence/WO-118/handoff.md; product 03 absence curve.",
+          "reopenWhen": "A resident binds its portfolio actor to execution hosts over two or more eligible orders while presence is away, a resident receipt contradicts the curve product 03 states, the operator asks for the experiment, or comparative measurements select or rule out a profile.",
+          "targets": [],
+          "at": "2026-10-21T03:44:29.797Z"
         }
       ]
     },
@@ -21611,6 +21683,14 @@
           "reopenWhen": "A session is refused for a live gate while no gate runs, or an order edits gate-run liveness in gate-evidence.mjs (activeGateRuns, gateProcessStart or marker removal).",
           "targets": [],
           "at": "2026-10-05T21:05:23.328Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-217-D044 in docs/evidence/WO-217/decisions.md: Reject a legacy active marker when the observed process was born after the marker. Unavailable birth evidence stays conservative; read-only lookup never deletes another run’s marker. The current process with an old marker is a deterministic reused-PID counterexample. Evidence: packages/skeleton/src/gate-evidence.mjs gateOwnerAlive; repair-controls.json controls legacy-marker",
+          "reopenWhen": "A later-born process revives a stale marker or unavailable observation is treated as proof of death.",
+          "targets": [],
+          "at": "2026-10-21T03:18:26.342Z"
         }
       ]
     },
@@ -22287,6 +22367,14 @@
             "WO-217"
           ],
           "at": "2026-10-17T19:34:08.329Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-217-D017 in docs/evidence/WO-217/decisions.md: Do not attribute a suffixed unknown command to a shorter known gate. The same occurrence-based matcher fixes the contained-identity defect and the unknown partial-command duration. The unknown-suffix case covers single-dash flags as well as double-dash flags. The independent temporary attack additionally proves whole-command prefix boundaries and nonnegative duration validation through observedFacts; D062 records those repairs. Evidence: scripts/test-observed-facts.mjs longest-gate fixture; repair-controls.json controls hedge-occurrences, malformed-gate-identity, single-flag-identity, command-prefix-identity, nonnegative-gate-duration",
+          "reopenWhen": "A supported unknown suffix is assigned a shorter gate duration.",
+          "targets": [],
+          "at": "2026-10-21T03:18:23.611Z"
         }
       ]
     },
@@ -22413,6 +22501,14 @@
             "WO-217"
           ],
           "at": "2026-10-17T19:34:07.962Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-217-D011 in docs/evidence/WO-217/decisions.md: Match gate identity occurrences individually and retain writer ownership when append wrote its event before throwing. Keep the existing linked-root fixture. A separate shorter identity remains ambiguous, and an unknown longer command does not borrow its duration. A committed dispatch retains its writer even when the write reports a later error. The base root fixture already exercises a linked temporary prefix and linked ancestors. Malformed empty or non-string gate identities are filtered before occurrence enumeration; the bounded child fixture detects the previous hang. Evidence: scripts/test-observed-facts.mjs; scripts/test-harness.mjs WO-139 and WO-168 root cases; repair-controls.json controls hedge-occurrences, append-after-write, base-linked-session-root, malformed-gate-identity",
+          "reopenWhen": "A separately named gate is misattributed, a recorded dispatch loses its writer, or physical root resolution changes.",
+          "targets": [],
+          "at": "2026-10-21T03:18:22.953Z"
         }
       ]
     },
@@ -26475,6 +26571,14 @@
           "reopenWhen": "the next order that edits scripts/authority-evidence.mjs, or repeated authority.json copies exceed 10% of tracked docs/evidence bytes",
           "targets": [],
           "at": "2026-09-30T14:01:27.072Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-217-D069 in docs/evidence/WO-217/decisions.md: New authority revisions reference an unchanged canonical transcript by path, Git blob identity and byte count; checks resolve the transcript while historical full editions remain immutable. The current repeated copies consume working-tree bytes; identical Git blobs already deduplicate in Git and no clone/fetch reduction is claimed. The new writer emits a small authority.ref.json for a transcript equal to the selected predecessor, flattens references, and preserves full bodies when they change. The reader checks schema, relative paths, regular-file containment and byte/blob identity, with exact Git blob fallback. Existing full records remain readable. Destination ancestors are checked before a full body or reference is written, and the sync stale-output fixture damages bundle metadata rather than a malformed reference. Evidence: Full ER4-006 source and FUP history; packages/skeleton/src/evidence-editions.mjs readAuthorityEvidence/writeAuthorityEvidence; scripts/authority-evidence.mjs; scripts/test-gate-followups.mjs authority transcript references, authority evidence CLI writes a reference, and authority evidence refuses symlinked destination ancestors cases; scripts/test-sync.mjs stale bundle fixture. Paired controls authority-reference-encoding, authority-cli-reference and authority-destination each passed with exit 0 and failed with exit 1 when its named repair was removed.",
+          "reopenWhen": "A new identical authority transcript is copied rather than referenced, a historical full record no longer resolves, a reference resolves bytes with a different identity, or a destination can escape its repository through a symlink.",
+          "targets": [],
+          "at": "2026-10-21T03:44:29.908Z"
         }
       ]
     },
@@ -26683,6 +26787,22 @@
             "WO-217"
           ],
           "at": "2026-10-18T16:14:45.516Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "WO-217-D037 in docs/evidence/WO-217/decisions.md: Retain per-run Markdown parsing; decline a persistent parse cache without a demonstrated end-to-end saving. The document gate is slower than the historical thresholds, but its wall time includes resume, host waiting and other suites. Three before and three after observations retain that cost. NoOp keeps exact current-document parsing and avoids cache invalidation machinery on an unisolated bottleneck; no parse-speed improvement is claimed. Evidence: scripts/docs-check.mjs parseMarkdown callers; document-measurements.json before/after task and critical-path data",
+          "reopenWhen": "An instrumented same-input comparison shows parsing on the critical path and a cache with complete invalidation wins the whole document gate.",
+          "targets": [],
+          "at": "2026-10-21T03:18:25.661Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "WO-217-D037 in docs/evidence/WO-217/decisions.md: Retain per-run Markdown parsing; decline a persistent parse cache without a demonstrated end-to-end saving. The document gate is slower than the historical thresholds, but its wall time includes resume, host waiting and other suites. Three before and three after observations retain that cost. NoOp keeps exact current-document parsing and avoids cache invalidation machinery on an unisolated bottleneck; no parse-speed improvement is claimed. Evidence: scripts/docs-check.mjs parseMarkdown callers; document-measurements.json before/after task and critical-path data WO-217-D089 corrects the reopening condition: the measured 141.659 s exceeds 120 s and was reconsidered here; parsing remains an unproved end-to-end bottleneck, so the measured NoOp remains in force.",
+          "reopenWhen": "The document gate's fresh passing three-run median exceeds 120 s after WO-217, or an instrumented same-input comparison shows parsing on the critical path and a cache with complete invalidation wins the whole document gate.",
+          "targets": [],
+          "at": "2026-10-21T13:29:15.611Z"
         }
       ]
     },
@@ -26976,6 +27096,14 @@
             "WO-217"
           ],
           "at": "2026-10-17T19:34:08.513Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "WO-217-D020 in docs/evidence/WO-217/decisions.md: Keep document checks responsible for document inputs and product identity responsible for code and declared vocabulary; decline an unbounded admitted-input-list redesign. WO-174 observed excluded reads; docs/LEGAL.md was already independently rejected by release-surfaces in the document gate. The current runner routes document-sensitive suites and includes outward vocabulary in code identity. A copied-input product check alone is not a claim about changed documents. NoOp retains the paired complete/document completion contract and its broad Node guard. Evidence: WO-174-D013 source observation; scripts/test-runner.mjs suite document declarations; gate-evidence.mjs document path selection",
+          "reopenWhen": "A current complete-plus-document handoff accepts changed named inputs without an executed check, or a measured narrower admission scheme proves equivalent coverage.",
+          "targets": [],
+          "at": "2026-10-21T03:18:23.929Z"
         }
       ]
     },
@@ -27433,6 +27561,14 @@
             "WO-217"
           ],
           "at": "2026-10-17T19:34:08.575Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-217-D021 in docs/evidence/WO-217/decisions.md: Exclude only untracked directory entries under protected docs/intake from the candidate tree. Ignored nested intake stays private and unmodified. Ordinary untracked source still changes identity; tracked gitlinks still refuse. The fixture runs an actual gate and consumes its row. Evidence: packages/skeleton/src/gate-evidence.mjs untracked candidate inventory; repair-controls.json controls private-intake",
+          "reopenWhen": "Protected intake changes gate identity or ordinary source stops participating.",
+          "targets": [],
+          "at": "2026-10-21T03:18:24.030Z"
         }
       ]
     },
@@ -28813,6 +28949,14 @@
           "reopenWhen": "a subsequent planning or close pass again leaves a named fired lifecycle trigger unchanged; compare a typed condition with anchored prose using that example",
           "targets": [],
           "at": "2026-10-02T04:08:21.839Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "WO-217-D057 in docs/evidence/WO-217/decisions.md: Decline a partial natural-language lifecycle-trigger parser; retain explicit re-disposition by the observer and state that unexamined conditions remain unknown. The accepted ER5-002 record identified three missed triggers and the 2026-10-02 pass re-disposed all three. Its proposed anchored parser covered four rows and omitted the observed live-smoke trigger and wording variants. The harm remains: arbitrary prose conditions are not automatically evaluated, so later observers can miss a fired condition. NoOp avoids presenting four-row parsing as complete coverage; this order actually re-disposes every pending changed-file match it observes. Evidence: docs/planning/entropy-reviews/REVIEW-005.md ER5-002; its complete disposition history; scripts/lib/planning-conditions.mjs typed condition table and scripts/lib/planning-followups.mjs textual touching boundary",
+          "reopenWhen": "A subsequent planning or close pass leaves a named fired lifecycle trigger unchanged; compare an explicit typed condition with the anchored prose parser on that concrete example.",
+          "targets": [],
+          "at": "2026-10-21T03:21:45.914Z"
         }
       ]
     },
@@ -29155,6 +29299,14 @@
           "reopenWhen": "an order edits the planner's sentence on repairs after a judgment, or a second pass edits judged text after its judgment",
           "targets": [],
           "at": "2026-10-03T16:13:47.243Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-217-D055 in docs/evidence/WO-217/decisions.md: Say explicitly that judgment reuse grants no authority to edit judged planning text. The procedure now requires a hold disposition or an operator-authorized amendment before edits and limits reuse to a still-valid subject. The new linked role oracle retains every historical baseline. Evidence: scripts/test-gate-followups.mjs planner judgment reuse never authorizes edits to judged text; packages/skeleton/src/loadouts/contributor.ts; repair-controls.json controls planner-repair-authority",
+          "reopenWhen": "A planner reads the sentence as permission to change judged text, or a valid hold/amendment route is lost.",
+          "targets": [],
+          "at": "2026-10-21T03:18:27.434Z"
         }
       ]
     },
@@ -29342,6 +29494,20 @@
           "title": "WO-185-D006: Establish complete ownership for descendants through unobserved intermediate exits, including ignored-wrapper bare commands; compare an inheritable ownership mechanism with an authorized ",
           "summary": "{ \"id\": \"WO-185-D006\", \"date\": \"2026-10-02\", \"dispatch\": \"resume: next\", \"decision\": \"Record criterion 3 as unmet for the broader detached-descendant guarantee. Do not narrow the order, waive it, or present a polling guard as absolute containment. Preserve the implemented controls and board the missing ownership mechanism for explicit planning.\", \"evidence\": [ \"lineage-limit.c is a zero-allocation native double-fork fixture with a two-second self exit. lineage-limit.txt records a successful root task while its detached grandchild survived; the probe identified and killed that owned fixture afterward.\", \"The child's original-parent unique ID identifies the unobserved intermediate, not the reg",
           "missing": false
+        },
+        {
+          "hash": "48263862ab3d4bde31c79c02ad1137a0c1b66dc3389df8c5efd266dcc5d77ecd",
+          "ref": "docs/evidence/WO-185/decisions.md#wo-185-d006--recorded-survivor-guarantee-limitation",
+          "title": "WO-185-D006: Establish complete ownership for descendants through unobserved intermediate exits, including ignored-wrapper bare commands; compare an inheritable ownership mechanism with an authorized…",
+          "summary": "{ \"id\": \"WO-185-D006\", \"date\": \"2026-10-02\", \"dispatch\": \"resume: next\", \"decision\": \"Record criterion 3 as unmet for the broader detached-descendant guarantee. Do not narrow the order, waive it, or present a polling guard as absolute containment. Preserve the implemented controls and board the missing ownership mechanism for explicit planning.\", \"evidence\": [ \"lineage-limit.c is a zero-allocation native double-fork fixture with a two-second self exit. lineage-limit.txt records a successful root task while its detached grandchild survived; the probe identified and killed that owned fixture afterward.\", \"The child's original-parent unique ID identifies the unobserved intermediate, not the reg",
+          "missing": false
+        },
+        {
+          "hash": "070bf04ac1ac1983d6b1eb2058dbd1798c9ede4980d8009a6c0dafc658e8bbc3",
+          "ref": "docs/evidence/WO-185/decisions.md#wo-185-d006--recorded-survivor-guarantee-limitation",
+          "title": "WO-185-D006: Establish complete ownership for descendants through unobserved intermediate exits, including ignored-wrapper bare commands; compare an inheritable ownership mechanism with an authorized…",
+          "summary": "{ \"id\": \"WO-185-D006\", \"date\": \"2026-10-02\", \"dispatch\": \"resume: next\", \"decision\": \"Record criterion 3 as unmet for the broader detached-descendant guarantee. Do not narrow the order, waive it, or present a polling guard as absolute containment. Preserve the implemented controls and board the missing ownership mechanism for explicit planning.\", \"evidence\": [ \"lineage-limit.c is a zero-allocation native double-fork fixture with a two-second self exit. lineage-limit.txt records a successful root task while its detached grandchild survived; the probe identified and killed that owned fixture afterward.\", \"The child's original-parent unique ID identifies the unobserved intermediate, not the reg",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -29370,6 +29536,22 @@
             "WO-217"
           ],
           "at": "2026-10-17T19:34:08.884Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "deferred",
+          "reason": "WO-217-D026 in docs/evidence/WO-217/decisions.md: Retain the polling and descriptor ownership guard without claiming absolute descendant containment; present the operator-owned host mechanism choice on this order’s pull request. A descendant that closes every inherited mark before any observed ancestry edge can escape polling. No finite poll rate proves otherwise. Installing or authorizing a privileged OS event mechanism changes host settings outside this execution authority. The packet preserves the fixture and presents ordinary-authority choices. Evidence: WO-185-D006 native double-fork counterexample and SDK constraint; docs/product/07-execution-guide.md Discipline; handoff.md packet FUP-d0a9719cc2e4ec55",
+          "reopenWhen": "WO-217 pull request review: the operator chooses continued documented observational protection or explicitly authorizes a separately scoped OS ownership mechanism.",
+          "targets": [],
+          "at": "2026-10-21T03:18:24.548Z"
+        },
+        {
+          "sourceRevision": 4,
+          "status": "deferred",
+          "reason": "WO-217-D026 in docs/evidence/WO-217/decisions.md: Retain the polling and descriptor ownership guard without claiming absolute descendant containment; present the operator-owned host mechanism choice on this order’s pull request. A descendant that closes every inherited mark before any observed ancestry edge can escape polling. No finite poll rate proves otherwise. Installing or authorizing a privileged OS event mechanism changes host settings outside this execution authority. The packet preserves the fixture and presents ordinary-authority choices. Evidence: WO-185-D006 native double-fork counterexample and SDK constraint; docs/product/07-execution-guide.md Discipline; handoff.md packet FUP-d0a9719cc2e4ec55 WO-217-D090 rebinds this unchanged packet after the D026 dispatch-label correction changed the aggregate reopening-observation source.",
+          "reopenWhen": "WO-217 pull request review: the operator chooses continued documented observational protection or explicitly authorizes a separately scoped OS ownership mechanism.",
+          "targets": [],
+          "at": "2026-10-21T13:36:03.857Z"
         }
       ]
     },
@@ -29464,6 +29646,14 @@
             "WO-217"
           ],
           "at": "2026-10-17T19:34:08.636Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "declined",
+          "reason": "WO-217-D022 in docs/evidence/WO-217/decisions.md: Do not hot-swap a live guard merely because another checkout has different code. A reused live guard can retain older rules until it exits. Automatic replacement would lose in-memory ownership history and let concurrently used versions replace one another. NoOp keeps one live owner; an idle guard can exit through the existing idle stop route. No shared guard is forcibly stopped by this order. Evidence: scripts/lib/host-guard-state.mjs live owner reuse; WO-185-D014 version and ownership-history evidence",
+          "reopenWhen": "A versioned migration protocol preserves ownership history and defines compatible old/new clients, or an operator explicitly authorizes a coordinated idle upgrade.",
+          "targets": [],
+          "at": "2026-10-21T03:18:24.131Z"
         }
       ]
     },
@@ -29721,6 +29911,14 @@
             "WO-217"
           ],
           "at": "2026-10-17T19:34:09.261Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-217-D032 in docs/evidence/WO-217/decisions.md: Retain one handled set for stopped members, preserve in-memory resource-stop classification, report cleanup signal errors and distinguish registration withdrawal. Retain validated inherited leases. Each changed behavior has a deterministic control; the base nested-lease case already proves lookup is not repeated after validation. A transient first inherited-lease read receives one retry; validated leases remain cached. The new control independently removes that retry. Evidence: scripts/host-guard.mjs; scripts/lib/process-monitor.mjs; scripts/test-runner.mjs; base nested lease fixture; repair-controls.json controls handled-members, signal-in-memory, withdrawal-kind, cleanup-signals, base-inherited-lease, inherited-entry-retry",
+          "reopenWhen": "Duplicate incidents, resource stops recorded as operator stops, lost kill errors, or a nested gate waits on its parent.",
+          "targets": [],
+          "at": "2026-10-21T03:18:25.165Z"
         }
       ]
     },
@@ -29985,6 +30183,14 @@
             "WO-217"
           ],
           "at": "2026-10-17T19:34:07.902Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "declined",
+          "reason": "WO-217-D010 in docs/evidence/WO-217/decisions.md: Retain document-sensitive routing and the current lock-matrix concurrency; do not infer a new reservation from historical correlated timings. Document wall time has grown. WO-186 measured an unequal-sample 66.690-second document median and a 73.577-second plain-gate reduction, and attributed lock-matrix interference only as an inference. Current before/after document observations are recorded separately. NoOp preserves coverage and avoids rescheduling on an unisolated causal claim; no net whole-order saving is claimed. Evidence: WO-186-D036 full before/after and overlap evidence; WO-217 document-measurements.json",
+          "reopenWhen": "A controlled same-selection comparison isolates a lock-matrix reservation change and improves end-to-end time without losing cases.",
+          "targets": [],
+          "at": "2026-10-21T03:18:22.843Z"
         }
       ]
     },
@@ -30019,6 +30225,14 @@
             "WO-217"
           ],
           "at": "2026-10-17T19:34:08.023Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-217-D012 in docs/evidence/WO-217/decisions.md: Share the task-execution precedence policy between the runner, findGateCheck and typed product-gate correction. Retain the already complete runtime snapshot inventory. Later executed failures displace an older complete pass; later repair can restore it. Reused and unexecuted observations do not invent executions. Snapshot byte, mode and inventory coverage is already implemented at the base. A candidate does not bypass its own task validation: failed, absent/negative duration, invalid finish and future finish records refuse. The operator-requested temporary attack also found completion’s own-row shortcut and explicit missing-suite acceptance. Both selectors now validate own results and declared suite coverage while preserving legacy empty-claim compatibility; D062 records the counterexamples. Evidence: scripts/lib/gate-reuse.mjs; packages/skeleton/src/gate-evidence.mjs; scripts/resume.mjs; base runtime inventory case; repair-controls.json controls gate-standing, correct-standing, base-runtime-inventory, gate-self-validity, completion-self-validity, declared-suite-coverage",
+          "reopenWhen": "A lookup disagrees with runner precedence or an undeclared runtime file escapes snapshot identity.",
+          "targets": [],
+          "at": "2026-10-21T03:18:23.063Z"
         }
       ]
     },
@@ -30188,6 +30402,14 @@
             "WO-217"
           ],
           "at": "2026-10-17T19:34:07.661Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-217-D006 in docs/evidence/WO-217/decisions.md: Retain the already implemented recursive read, watch, copy, blob and link observation boundaries. The base regression exercises those forms. Shell children and a fixture copy deliberately outside the guarded candidate remain outside Node read interception; no broader containment claim is made. Evidence: scripts/test-runner.test.mjs recursive root/ancestor guard fixture; repair-controls.json controls base-recursive-guard",
+          "reopenWhen": "A supported read form bypasses the declared Node guard or the copy boundary changes.",
+          "targets": [],
+          "at": "2026-10-21T03:18:22.387Z"
         }
       ]
     },
@@ -30246,6 +30468,14 @@
             "WO-217"
           ],
           "at": "2026-10-17T19:34:07.842Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-217-D009 in docs/evidence/WO-217/decisions.md: Normalize TAP-quoted progress, read the hot index before archive enumeration, and observe glob reads. Keep parent tests in the five slowest observations. A parent reports inclusive duration, so it remains useful even when a child is also listed; those durations are observations, never a disjoint sum. The old assertion comment is corrected to distinguish an identity-invalid row from reusable task passes. WO-186 VER-003 did not observe forwarding of TAP-comment case-ended lines at its subject; the new quoted-progress control proves the current behavior. Evidence: scripts/lib/case-reporter.mjs retains parent and child names; scripts/test-runner.test.mjs identityUnchanged fixture comment; repair-controls.json controls archive-rotation, tap-progress, glob-observation",
+          "reopenWhen": "A glob form bypasses observation, a row disappears during eviction, or the inclusive parent list prevents identifying a demonstrated slow leaf.",
+          "targets": [],
+          "at": "2026-10-21T03:18:22.725Z"
         }
       ]
     },
@@ -30344,6 +30574,14 @@
             "WO-217"
           ],
           "at": "2026-10-17T19:34:08.760Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-217-D024 in docs/evidence/WO-217/decisions.md: Retain full runtime-package inventory snapshots already implemented at the base. The base fixture observes additional and changed runtime files within the declared product-read boundary. No new inventory implementation is needed. Evidence: scripts/lib/harness.mjs runtimePackageInventory and base declared-runtime-package fixture; repair-controls.json controls base-runtime-inventory",
+          "reopenWhen": "A runtime import executes bytes absent from the snapshot identity.",
+          "targets": [],
+          "at": "2026-10-21T03:18:24.341Z"
         }
       ]
     },
@@ -30911,6 +31149,14 @@
             "WO-217"
           ],
           "at": "2026-10-17T19:34:08.822Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-217-D025 in docs/evidence/WO-217/decisions.md: Use recorded checkpoint references rather than assuming event ordinals equal checkpoint numbers. A deterministic blocked first checkpoint leaves event two owning checkpoint one; the wrong-SHA refusal and valid correction now use actual recorded refs. The earlier attempted tree-change repair failed its paired control and was replaced. The original environmental cause remains unknown; the fragile assumption is removed. Evidence: scripts/test-off-ramps.mjs checkpoint block and correction cases; scripts/lib/checkpoint.mjs allocates from existing refs; repair-controls.json controls checkpoint-subject",
+          "reopenWhen": "The case fails with a recorded checkpoint despite ordinal-independent selection.",
+          "targets": [],
+          "at": "2026-10-21T03:18:24.445Z"
         }
       ]
     },
@@ -30953,6 +31199,14 @@
             "WO-217"
           ],
           "at": "2026-10-17T19:34:08.946Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-217-D027 in docs/evidence/WO-217/decisions.md: Disable automatic Git maintenance on fixture commit and clone entry points. The sweep preserves test behavior and prevents detached maintenance escaping fixture teardown; a planted-loose-object trace proves the representative fixture starts no maintenance child. Evidence: Maintenance sweep inventory and scripts/test-gate-followups.mjs Git trace fixture; repair-controls.json controls fixture-maintenance",
+          "reopenWhen": "A fixture Git operation starts automatic maintenance or a new helper omits the setting.",
+          "targets": [],
+          "at": "2026-10-21T03:18:24.653Z"
         }
       ]
     },
@@ -31305,6 +31559,14 @@
             "WO-217"
           ],
           "at": "2026-10-17T19:34:09.009Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-217-D028 in docs/evidence/WO-217/decisions.md: Retain completion’s already implemented consumption of document evidence without an inline gate. The base CLI fixture makes any gate execution throw and proves completion consumes current rows. This removes the old host-lane wait at the transition itself; required explicit gates still wait normally. Evidence: scripts/lib/handoff-ledger.mjs and base scripts/test-verifier-gate-claims.mjs fixture; repair-controls.json controls base-completion-claims",
+          "reopenWhen": "A completion command starts a document gate or consumes a stale row.",
+          "targets": [],
+          "at": "2026-10-21T03:18:24.754Z"
         }
       ]
     },
@@ -32181,6 +32443,14 @@
             "WO-217"
           ],
           "at": "2026-10-17T19:34:09.198Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-217-D031 in docs/evidence/WO-217/decisions.md: Preserve sanitized command and nested error codes for console fetch failures without private token or argument material. A nested TypeError/AggregateError/ECONNREFUSED fixture proves the diagnostic path. The original intermittent loopback cause remains unknown; no retries or effect replay are introduced. The complete/document runs judge ordinary shared execution. Evidence: packages/console/src/console-client.ts sanitized nested diagnostic traversal; scripts/test-gate-followups.mjs private-material exclusion case; repair-controls.json controls nested-fetch-cause",
+          "reopenWhen": "A real loopback failure recurs; use the retained sanitized cause before proposing a runtime repair.",
+          "targets": [],
+          "at": "2026-10-21T03:18:25.062Z"
         }
       ]
     },
@@ -33339,6 +33609,14 @@
             "WO-217"
           ],
           "at": "2026-10-17T19:34:07.600Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "declined",
+          "reason": "WO-217-D005 in docs/evidence/WO-217/decisions.md: Keep the explicit refusal for a committed submodule; do not add a partial gitlink adapter. A subject with a gitlink cannot obtain a gate tree hash. The executor explicitly forbids introducing submodules, and hashing only the pointer would not attest dirty nested content or unpushed nested history. NoOp preserves an honest refusal and the separate removal protection. Evidence: packages/skeleton/src/gate-evidence.mjs gateTreeHash refuses mode 160000; gateCodeIdentity covers the pointer only; executor step 5 forbids declaring submodules",
+          "reopenWhen": "An authorized repository actually requires a submodule and declares the nested-content, availability and retention semantics to judge.",
+          "targets": [],
+          "at": "2026-10-21T03:18:22.275Z"
         }
       ]
     },
@@ -33649,6 +33927,14 @@
             "WO-217"
           ],
           "at": "2026-10-17T19:34:08.146Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-217-D014 in docs/evidence/WO-217/decisions.md: Make an empty nested format result report its task timeline before the output assertion. The original intermittent loss is not reproduced or assigned a cause. A planted empty result now names the executed task and its state, making a recurrence diagnosable; normal and complete-run coverage remain required. Evidence: scripts/test-runner.test.mjs format preflight output helper; repair-controls.json controls empty-format-diagnostic",
+          "reopenWhen": "The complete gate reproduces empty output and the new timeline identifies a concrete runtime failure.",
+          "targets": [],
+          "at": "2026-10-21T03:18:23.286Z"
         }
       ]
     },
@@ -34306,6 +34592,14 @@
             "WO-217"
           ],
           "at": "2026-10-17T19:34:09.388Z"
+        },
+        {
+          "sourceRevision": 4,
+          "status": "settled",
+          "reason": "WO-217-D034 in docs/evidence/WO-217/decisions.md: Choose the latest comparable shared-ref snapshot rather than the latest wrapper row. A newer host row without snapshots no longer erases the runner’s prior comparison; the actual linked-worktree fixture reports origin/main movement once. The malformed-shape and incomplete-earlier-snapshot commands also pass against the exact base implementation, preserving the original defensive behavior. Evidence: scripts/test-runner.mjs completeSharedRefs predecessor filter; repair-controls.json controls shared-ref-predecessor, base-malformed-snapshots",
+          "reopenWhen": "A wrapper row hides a known shared-ref change or an unreadable field is invented.",
+          "targets": [],
+          "at": "2026-10-21T03:18:25.368Z"
         }
       ]
     },
@@ -34427,6 +34721,14 @@
             "WO-217"
           ],
           "at": "2026-10-17T19:34:08.207Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "WO-217-D015 in docs/evidence/WO-217/decisions.md: Keep the historical runner-fixtures threshold as a warning; do not rebase it to make growth disappear. The old 27.192-second threshold predates suite growth; WO-198 recorded 126.537 seconds while main was already 72–94 seconds and its added cases cost 13.16 seconds alone. NoOp preserves the historical evidence and all cases. The current complete-row task measurement is descriptive, not a substitute benchmark. Evidence: WO-198-D021 measured case and main-row comparisons; scripts/test-runner.test.mjs retained case inventory",
+          "reopenWhen": "A same-case before/after profile identifies a concrete avoidable cost, or an operator-approved new baseline records the changed selection alongside the historical one.",
+          "targets": [],
+          "at": "2026-10-21T03:18:23.394Z"
         }
       ]
     },
@@ -35233,6 +35535,14 @@
             "WO-217"
           ],
           "at": "2026-10-17T19:34:08.452Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-217-D019 in docs/evidence/WO-217/decisions.md: Compute critical-path work from recorded task duration and leave lane waiting in wait time. The deterministic fixture holds a host lane before the format preflight and checks that its span outside execution is waiting. Historical rows lacking a duration retain their legacy span interpretation. Evidence: scripts/lib/gate-timeline.mjs; scripts/test-gate-followups.mjs held-lane critical path case; repair-controls.json controls timeline-wait",
+          "reopenWhen": "A measured wait is attributed to task work, or an impossible duration is accepted.",
+          "targets": [],
+          "at": "2026-10-21T03:18:23.827Z"
         }
       ]
     },
@@ -35981,6 +36291,14 @@
             "WO-217"
           ],
           "at": "2026-10-17T19:34:08.390Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-217-D018 in docs/evidence/WO-217/decisions.md: Check Prettier effective ignore behavior in both collector declarations. A later negation is now detected even while the positive ignore lines remain present. Evidence: scripts/test-comment-labels.mjs and corpus/harness/wo107-schema.test.mjs; repair-controls.json controls effective-ignore-comment, effective-ignore-corpus",
+          "reopenWhen": "A formatter ignore rule admits a pinned collector without either declaration test failing.",
+          "targets": [],
+          "at": "2026-10-21T03:18:23.721Z"
         }
       ]
     },
@@ -36117,6 +36435,14 @@
             "WO-217"
           ],
           "at": "2026-10-17T19:34:08.698Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "WO-217-D023 in docs/evidence/WO-217/decisions.md: Retain the qualified colocated default export and decline claiming relocated build-free local-lane support. The build-free gate, teardown and continuation readers still use the default local lane; separate tool and launchpad roots remain a known unsupported composition. Moving only one reader would split control state. NoOp preserves the qualified export without falsely extending it. Evidence: WO-202-D005 default-export qualification and named unresolved readers; packages/skeleton/src/gate-evidence.mjs gateRunsDirectory",
+          "reopenWhen": "A declared instance requires relocated local roots and a coordinated reader/probe migration is specified and tested.",
+          "targets": [],
+          "at": "2026-10-21T03:18:24.237Z"
         }
       ]
     },
@@ -36668,6 +36994,14 @@
             "WO-217"
           ],
           "at": "2026-10-17T19:34:09.071Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-217-D029 in docs/evidence/WO-217/decisions.md: Republish a missing live guard record under its held lock and retire unadopted startup children. A registration reuses the restored owner; the owner keeps observation history. The start path cleans a child that was not adopted on reuse, failure or timeout. Evidence: scripts/host-guard.mjs; scripts/lib/host-guard-state.mjs; missing-record fixture; repair-controls.json controls guard-record",
+          "reopenWhen": "A removed guard record strands registrations, or a startup failure leaves its own waiter alive.",
+          "targets": [],
+          "at": "2026-10-21T03:18:24.857Z"
         }
       ]
     },
@@ -36992,6 +37326,14 @@
           "reopenWhen": "a gate run with DOTLN_LAUNCHPAD exported acts outside its fixture repository, or WO-192's probe or WO-210's fixture records a phase worker's gate running with it set",
           "targets": [],
           "at": "2026-10-13T19:07:14.219Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-217-D045 in docs/evidence/WO-217/decisions.md: Remove invoking DOTLN_LAUNCHPAD from fixture suite environments. Fixture scripts resolve their own launchpad; the verified inherited host lease remains intact. Evidence: scripts/lib/suite-evidence.mjs suiteEnvironment; repair-controls.json controls launchpad-environment",
+          "reopenWhen": "A fixture uses an invoking target’s launchpad or loses its legitimate lane lease.",
+          "targets": [],
+          "at": "2026-10-21T03:18:26.443Z"
         }
       ]
     },
@@ -37056,6 +37398,14 @@
           "reopenWhen": "An order edits the runner's task record, or the record rule stops refusing a copied record that holds the absolute path.",
           "targets": [],
           "at": "2026-10-18T15:13:00.702Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-217-D046 in docs/evidence/WO-217/decisions.md: Store product read logs relative to the gate repository. Consumers resolve the relative record locally; copied rows no longer contain a machine-specific absolute read-log location. Evidence: scripts/test-runner.mjs productReadLog and guard fixture; repair-controls.json controls relative-read-log",
+          "reopenWhen": "A new row stores an absolute read-log path or a local consumer cannot resolve it.",
+          "targets": [],
+          "at": "2026-10-21T03:18:26.543Z"
         }
       ]
     },
@@ -37281,6 +37631,14 @@
           "reopenWhen": "a gate refusal names a run whose marker is older than the gate's longest deadline, or an order edits packages/skeleton/src/gate-evidence.mjs",
           "targets": [],
           "at": "2026-10-16T02:47:35.546Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-217-D047 in docs/evidence/WO-217/decisions.md: Apply the same legacy marker birth comparison to the reused-PID candidate. This is the same concrete defect as the no-birth-marker row; both rows share one discriminating control. Evidence: packages/skeleton/src/gate-evidence.mjs gateOwnerAlive; repair-controls.json controls legacy-marker",
+          "reopenWhen": "A process born after a marker makes that marker live.",
+          "targets": [],
+          "at": "2026-10-21T03:18:26.643Z"
         }
       ]
     },
@@ -37588,6 +37946,14 @@
             "WO-217"
           ],
           "at": "2026-10-17T19:34:08.268Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "WO-217-D016 in docs/evidence/WO-217/decisions.md: Retain the expanded launchpad and target-worktree case inventory and its bounded file scheduling. The cited 10-test target baseline is not equivalent to the present expanded suite. WO-222 already measured two-file concurrency and independent deadlines. NoOp preserves those witnesses; deleting cases or comparing unequal inventories would manufacture a gain. Evidence: WO-210-D013 figures; WO-222-D014 through D016; scripts/fixtures/target-worktree-cases.json preserves every old name and adds one sign-off case",
+          "reopenWhen": "An equivalent-case measurement identifies avoidable work and a complete-run comparison retains the gain.",
+          "targets": [],
+          "at": "2026-10-21T03:18:23.502Z"
         }
       ]
     },
@@ -38505,6 +38871,14 @@
           "reopenWhen": "A target order runs under a client that discovers the target's skills, or a profile adds a skill format.",
           "targets": [],
           "at": "2026-10-17T19:34:07.300Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-217-D066 in docs/evidence/WO-217/decisions.md: Declare the open Agent Skills format in runtime profiles, validate the generated native frontmatter, and name pinned target skills as convention inputs without effect authority. scripts/test-gate-followups.mjs: native Agent Skills profiles declare their format and validate generated frontmatter. repair-controls.json skills-format and skills-frontmatter independently remove each guard; both positive exit 0 and reverted exit 1.",
+          "reopenWhen": "A generated skill fails native format constraints, an observed target skill is missing from its pinned profile inputs, or skill metadata is treated as effect authority.",
+          "targets": [],
+          "at": "2026-10-21T03:30:48.020Z"
         }
       ]
     },
@@ -38603,6 +38977,14 @@
           "reopenWhen": "reread at each of the next two closes (WO-217 and WO-219); after the fifth, two of three measures not below their baseline reopens WO-216's claim as a planning question",
           "targets": [],
           "at": "2026-10-20T20:18:30.397Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "WO-217-D048 in docs/evidence/WO-217/decisions.md: Decline calling an unfinished five-close study complete or imposing a universal benchmark recipe from it. Retain its three observed closes and current executor cutoff. The three recorded closes read complete-run/task-minute pairs 15/691, 14/684 and 13/229; their late structural/bookkeeping counts are 0, 0 and 2. Those are not five closes. WO-217 and WO-219 have not closed in this execution. NoOp retains the existing dated reopening rule in product 07 rather than inventing future measurements; this batch makes no universal gain claim. Evidence: Candidate disposition history from the three dated planning passes; product 07 Preflight retains the five-close rule",
+          "reopenWhen": "At the fifth actual close, judge the recorded three measures against 11 runs, 1.3 late failures and 545 task minutes; new observed evidence may reopen this declined candidate.",
+          "targets": [],
+          "at": "2026-10-21T03:18:26.742Z"
         }
       ]
     },
@@ -38794,6 +39176,14 @@
             "WO-217"
           ],
           "at": "2026-10-17T19:34:08.084Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "declined",
+          "reason": "WO-217-D013 in docs/evidence/WO-217/decisions.md: Keep strict supplemental-journal parsing, instance-declared operator identity, and the current documented path and reader-profile widths. This grouped row includes optional public-fixture identity cleanup, a new recovery signal, lenient supplemental parsing, ANSI/escaped-solidus path boundaries, dangling-link profile declarations and nondefault Stop selection. The source found no newly matching committed path lines and no observed default-selection failure. NoOp retains strict evidence and existing compatibility; it does not claim those width edges repaired. A recovery signal cannot be inferred merely from checkout location. Evidence: WO-213-D024 full seven-part remainder and zero-new-match observation; scripts/lib/control-store.mjs strict parsing; scripts/lib/contributions.mjs instance identity",
+          "reopenWhen": "A concrete current record leaks a forbidden path spelling, a dangling profile is used, an explicit alternate Stop order is misjudged, or an authorized recovery signal is specified with executable evidence.",
+          "targets": [],
+          "at": "2026-10-21T03:18:23.174Z"
         }
       ]
     },
@@ -38852,6 +39242,14 @@
             "WO-217"
           ],
           "at": "2026-10-17T19:34:09.325Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "WO-217-D033 in docs/evidence/WO-217/decisions.md: Keep instance plain and review gates document-kind. The instance harness check must read instruction and harness surfaces the product guard excludes. NoOp preserves the refusal of active-record writes while those gates run. Narrowing the exclusion set solely to permit concurrent report writing weakens the established read boundary without an observed need. Evidence: WO-213-D025 and scripts/kit/README.client.md; scripts/test-runner.mjs instance classification",
+          "reopenWhen": "A declared instance selection can be guarded with an equivalently demonstrated exclusion set and a measured benefit.",
+          "targets": [],
+          "at": "2026-10-21T03:18:25.268Z"
         }
       ]
     },
@@ -39751,6 +40149,22 @@
             "WO-217"
           ],
           "at": "2026-10-18T16:14:45.602Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-217-D038 in docs/evidence/WO-217/decisions.md: Retain the already implemented one explicit final document check and no inline completion check. Base transition fixtures prove current rows are consumed without running a gate. The three before/after samples are measurement overhead required by this order, not a new lifecycle rule or a claimed reduction in total runs. Evidence: Base completion CLI fixture and document-measurements.json; repair-controls.json controls base-completion-claims",
+          "reopenWhen": "A lifecycle command starts a duplicate gate or future measured close windows show the intended run-count improvement is absent.",
+          "targets": [],
+          "at": "2026-10-21T03:18:25.759Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-217-D038 in docs/evidence/WO-217/decisions.md: Retain the already implemented one explicit final document check and no inline completion check. Base transition fixtures prove current rows are consumed without running a gate. The three before/after samples are measurement overhead required by this order, not a new lifecycle rule or a claimed reduction in total runs. Evidence: Base completion CLI fixture and document-measurements.json; repair-controls.json controls base-completion-claims WO-217-D089 restores the numeric count condition; the base-completion-claims control still establishes no inline completion gate.",
+          "reopenWhen": "A lifecycle command starts a duplicate gate, or a closed order records more than twenty document-gate runs after WO-217.",
+          "targets": [],
+          "at": "2026-10-21T13:29:15.709Z"
         }
       ]
     },
@@ -39987,6 +40401,14 @@
             "WO-217"
           ],
           "at": "2026-10-18T16:14:45.431Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-217-D036 in docs/evidence/WO-217/decisions.md: Make every named hand-copied control entry use a checked fixture-input declaration. Six declarations cover the five historical sites and the additional configured target-effects site. Registrations check the same closures and absent imports refuse before execution. Missing and stale compiled registration runtimes now name npm run sync; both diagnostic branches have a paired control. Evidence: scripts/test-control-copy-sites.fixture-inputs.json; scripts/check-registrations.mjs; copy-drift fixture; repair-controls.json controls copy-closure, registration-remedies",
+          "reopenWhen": "A copied entry is edited without its declared transitive closure or a declaration supplies absent files.",
+          "targets": [],
+          "at": "2026-10-21T03:18:25.564Z"
         }
       ]
     },
@@ -40013,6 +40435,14 @@
             "WO-217"
           ],
           "at": "2026-10-18T16:14:45.344Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-217-D035 in docs/evidence/WO-217/decisions.md: Sanitize copied evidence at every depth, classify sync failures before writing, retain named orphan revisions, and cover completion row states and the remaining bookkeeping clauses. The copy boundary strips passing output and retains failed diagnostics; F2 cases cover missing/stale/failed focused rows, stopped/failed complete reviews, an intervening review request, changed documents and prose-only claims, with the target contract’s existing fixture. Stop lookup, kit predecessor and skipped base-build decisions are repaired; local-terms/clone-declaration behavior is already exercised; release preparation inputs are registered for sync; the playbook states the current sequence. Evidence: scripts/test-worktree.sh actual finish copy; scripts/test-verifier-gate-claims.mjs; scripts/test-runner.test.mjs target claims; scripts/test-sync.mjs; scripts/test-target-worktree-start.mjs local terms/clone declarations; repair-controls.json controls copy-output, sync-classification, kit-predecessor, doc-base-build, base-completion-claims, base-target-claims, base-terms-and-clone, sync-declarations, finish-copy-output, stopped-lookup",
+          "reopenWhen": "Any source clause regresses, an unknown sync failure runs a writer, or a close copies passing output.",
+          "targets": [],
+          "at": "2026-10-21T03:18:25.465Z"
         }
       ]
     },
@@ -40037,6 +40467,14 @@
           "reopenWhen": "A second final-review packet offers an override as an option.",
           "targets": [],
           "at": "2026-10-18T16:14:46.114Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-217-D049 in docs/evidence/WO-217/decisions.md: Make all reviewer packet options viable under ordinary authority and state a safe default. WO-217-D003 authorizes the profile sentence and a new linked role oracle. Historical snapshots are unchanged. Evidence: packages/skeleton/src/loadouts/contributor.ts; packages/skeleton/fixtures/wo217-role-baseline.json; repair-controls.json controls reviewer-packet",
+          "reopenWhen": "A generated reviewer packet requires override to be viable or loses its safe default.",
+          "targets": [],
+          "at": "2026-10-21T03:18:26.842Z"
         }
       ]
     },
@@ -40998,6 +41436,14 @@
             "WO-217"
           ],
           "at": "2026-10-19T22:59:39.089Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "declined",
+          "reason": "WO-217-D040 in docs/evidence/WO-217/decisions.md: Decline a new-client-only fair queue while fixed-four clients publish no waiting intent. Cross-gate waiting remains unbounded under contention. A queue cannot order a request that the older client never registers; shipping it as mixed-client fairness would be false. NoOp preserves compatibility and uninterrupted work without killing peers. A real migration must cover every admission path and preserve nested reservations. Evidence: scripts/lib/host-lanes.mjs holder-only registry and retry admission; WO-222-D009 fixed-four observation; docs/architecture/gate-execution.md mixed-version boundary",
+          "reopenWhen": "A coordinated compatible client migration or intercepting adapter is authorized and demonstrates a bounded short-gate wait while complete work continues.",
+          "targets": [],
+          "at": "2026-10-21T03:18:25.952Z"
         }
       ]
     },
@@ -41024,6 +41470,14 @@
             "WO-217"
           ],
           "at": "2026-10-19T22:59:39.166Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-217-D041 in docs/evidence/WO-217/decisions.md: Report malformed or invalid host capacity by record label, observed problem and a concrete repair route. Malformed JSON and out-of-range numbers refuse with one message; missing records retain the established fallback. Private host paths are omitted. The same diagnostic is exercised through both acquireHostLanes and memoryBudgets, not only the capacity parser. Evidence: scripts/lib/host-resources.mjs recordedHostLaneCapacity; repair-controls.json controls capacity-diagnostic",
+          "reopenWhen": "An invalid record lacks the label/remedy or a valid inherited capacity is rejected.",
+          "targets": [],
+          "at": "2026-10-21T03:18:26.050Z"
         }
       ]
     },
@@ -41050,6 +41504,14 @@
             "WO-217"
           ],
           "at": "2026-10-19T22:59:39.243Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-217-D042 in docs/evidence/WO-217/decisions.md: Classify a task light only when every held sample meets both bounds. An earlier heavy observation cannot be erased by a light latest sample. The current baseline’s one-sample-per-task shape is preserved; no historical samples are silently discarded. Retention follows the complete-run threshold. Evidence: scripts/test-runner.mjs lightSuiteNames and all-sample fixture; repair-controls.json controls light-all-samples",
+          "reopenWhen": "Any held heavy sample is admitted as light or the fresh complete-run threshold fails.",
+          "targets": [],
+          "at": "2026-10-21T03:18:26.147Z"
         }
       ]
     },
@@ -41102,6 +41564,14 @@
             "WO-217"
           ],
           "at": "2026-10-19T22:59:39.009Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-217-D039 in docs/evidence/WO-217/decisions.md: Hold full exclusive host capacity while lending overlap to nested light peers, state the conservative per-lane bare/session budget, and give the gate-share refusal remedy. The independent-gate fixture cannot acquire the reserved gap while exclusive work runs. The budget policy treats unwrapped work as one task, not a whole parallel gate. The host refusal names the share and when host capacity makes it infeasible. Retention is conditional on the fresh complete-run threshold specified by the order. The actual guard loop on a synthetic sixteen-processor, sixteen-GiB host enforces a one-GiB bare-group budget against a two-GiB group; that behavior is demonstrated at the exact base. Evidence: scripts/test-runner.test.mjs independent gate reservation; scripts/test-gate-followups.mjs host remedy; product 07 Preflight; repair-controls.json controls exclusive-reservation, host-remedy, base-bare-group-budget",
+          "reopenWhen": "A fresh complete run exceeds 1668.518 seconds, another gate occupies the reserved overlap, or budget guidance admits an infeasible share.",
+          "targets": [],
+          "at": "2026-10-21T03:18:25.856Z"
         }
       ]
     },
@@ -41582,6 +42052,14 @@
           "reopenWhen": "a pass needs the cause of more than two late complete-run failures in one order, or a WO-217 row touches the gate index's row shape",
           "targets": [],
           "at": "2026-10-20T20:18:31.146Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-217-D050 in docs/evidence/WO-217/decisions.md: Retain an addressed diagnostic for failed complete runs and carry its verified content when worktree finish copies evidence. Failed executed tasks and gate-level failure reasons produce the top-level log. Copying hydrates only a contained regular file whose content matches its addressed hash. Passing output is discarded. Evidence: scripts/test-runner.mjs failed check output; packages/skeleton/src/gate-evidence.mjs sourceRoot hydration; scripts/worktree.mjs finish; repair-controls.json controls complete-failure-log, copied-failure-log",
+          "reopenWhen": "A failed complete row lacks its diagnostic, a copied known log disappears, or an untrusted reference is followed.",
+          "targets": [],
+          "at": "2026-10-21T03:18:26.942Z"
         }
       ]
     },
@@ -41809,7 +42287,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-217-D056 in docs/evidence/WO-217/decisions.md: Classify the remainder after canonical publish material arguments, identify dry-run material use, and display the host-permission boundary once. All four admitted forms and existing mismatch cases remain. Added cases distinguish a valid material argument followed by an extra flag and a material argument after dry-run. Two scoped controls independently prove classification and duplicate-text repairs. Evidence: scripts/test-harness.mjs WO-178 exact close helper admission requires the recorded dispatch, main and legal order; packages/skeleton/src/harness-host.ts; repair-controls.json controls release-close-classification, release-close-single-advisory",
+          "reopenWhen": "A withheld suffix is misclassified or the same boundary phrase is displayed twice.",
+          "targets": [],
+          "at": "2026-10-21T03:18:27.532Z"
+        }
+      ]
     },
     {
       "id": "FUP-5f948dcc52e03082",
@@ -41824,7 +42311,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-217-D051 in docs/evidence/WO-217/decisions.md: Offer the operatorAuthor declaration remedy only when no author is declared. With an existing declaration, the failure names the already-exempt identity policy and the required sign-off instead of suggesting another exemption. Evidence: scripts/lib/contributions.mjs contributionSignoffRules; both fixture arms; repair-controls.json controls signoff-remedy",
+          "reopenWhen": "A configured instance is told to redeclare the exemption to bypass another author’s sign-off.",
+          "targets": [],
+          "at": "2026-10-21T03:18:27.042Z"
+        }
+      ]
     },
     {
       "id": "FUP-e2152db6dd056b4a",
@@ -41839,7 +42335,112 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-217-D052 in docs/evidence/WO-217/decisions.md: Print the same conditional sign-off advisory after target start creates its launchpad worktree. The target route and self route use one helper; the fixture runs both absent and declared operator-author cases. Evidence: scripts/worktree.mjs startTargetWorktree and signoffAdvisory; repair-controls.json controls target-signoff",
+          "reopenWhen": "Target start omits needed guidance or warns after the instance already declares its author.",
+          "targets": [],
+          "at": "2026-10-21T03:18:27.141Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-cfa28abbf01b6260",
+      "key": "decision:docs/evidence/WO-217/decisions.md#wo-217-d083",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "121b018fb85b8c55e8101a24a9a6bcf1254102317054fe6b197cf44c34e84744",
+          "ref": "docs/evidence/WO-217/decisions.md#wo-217-d083",
+          "title": "WO-217-D083: WO-217's repair, inside its declared surfaces (step 12: scripts/sync.mjs and its classifier in scripts/lib/generated-artifacts.mjs). Rule a repair must hold: every stale report that a…",
+          "summary": "{ \"id\": \"WO-217-D083\", \"date\": \"2026-10-21\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Fail VER-001 at code identity 2cd81e4c8286ba58ba899a3eafc38ee59945749cfb68f20f5c8c759ef275c9f8. All seven criteria are met as written. All 70 controls of repair-controls.json reproduce in disposable copies. F1 (blocking; the change breaks behavior main had): FUP-851cba3a914ab359's F3 repair lets npm run sync run a writer only when reportedStale in scripts/lib/generated-artifacts.mjs recognizes the check's output. Three stale reports that the inventory's own checkers print are not recognized, and each names its artifact's regeneration route. (1) The siblings pattern expects 'run",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-217-D087 repairs VER-001 F1: real checker diagnostics classify stale while crashes, timeouts, unreadable inputs and unrelated failures refuse writers. Evidence: scripts/test-sync.mjs real stale-report case; repair-controls.json sync-real-checker-reports positive 0 / isolated negative 1; real inventory regeneration case passed.",
+          "reopenWhen": "A regenerable inventory checker reports stale but sync refuses its writer, or an unrelated failure authorizes regeneration.",
+          "targets": [],
+          "at": "2026-10-21T13:29:15.210Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-6ed81e30e71d5696",
+      "key": "decision:docs/evidence/WO-217/decisions.md#wo-217-d084",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "9ae78864dd47b060a31e3fa4dfd6338f6d687ab5b19ff1392fe3fc6cf95ca86a",
+          "ref": "docs/evidence/WO-217/decisions.md#wo-217-d084",
+          "title": "WO-217-D084: WO-217's repair, which re-records controls under D083 in any case; low priority. Rule a repair must hold: each control's suite names the runner suite that executes its command's file, as…",
+          "summary": "{ \"id\": \"WO-217-D084\", \"date\": \"2026-10-21\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Board F2 (follow-up; the control record's accuracy; breaks no criterion). Eleven controls in repair-controls.json name a suite that does not run their file. Two literal reversions no longer apply to the subject, because npm run format reformatted the replaced text after the controls ran. Every file does run under a suite the Preflight line names, and both controls reproduce with the formatted text, so criterion 2 holds.\", \"evidence\": [ \"Recorded process-debt; the file runs in harness-fixtures: hedge-occurrences, single-flag-identity, command-prefix-identity and nonnegative-gate",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-217-D088 corrects all eleven suite labels and two formatted literal reversions in repair-controls.json. Evidence: current runner declarations, scripts/test-harness.mjs imports, and verification-001/formatted-reversions.json independently replayed by VER-001; each replacement matches the current source exactly once.",
+          "reopenWhen": "A control names a suite that does not execute its command file, or a literal reversion fails to apply to its recorded subject.",
+          "targets": [],
+          "at": "2026-10-21T13:29:15.312Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-1661b2a01d5960fc",
+      "key": "decision:docs/evidence/WO-217/decisions.md#wo-217-d085",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "23612050c02baf8bfd6f566eda1a10f4affb6cef7cee888016a8bc0e5d34d4d2",
+          "ref": "docs/evidence/WO-217/decisions.md#wo-217-d085",
+          "title": "WO-217-D085: The next planning pass, or WO-217's repair; low priority. Rule a repair must hold: one pending or declined register row keeps a measured trigger on the document gate's median. It is…",
+          "summary": "{ \"id\": \"WO-217-D085\", \"date\": \"2026-10-21\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Board F3 (follow-up; register reopening conditions; breaks no criterion). D037 declines FUP-fb8cbeabbddef397 with a reopening condition that drops the clause its allocation set: 'the document gate's median exceeds 120 s after it'. That clause holds now: this order's own after-median is 141.659 s. D038 settles FUP-211986cdaa9f8c4f as already met, and replaces its allocation's 'a closed order records more than twenty document-gate runs' with an unquantified 'run-count improvement is absent'. After WO-217, no register row watches the document gate's median.\", \"evidence\": [ \"npm ru",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-217-D089 restores the 120 s fresh three-run document median on FUP-fb8cbeabbddef397 and more than twenty document-gate runs per closed order on FUP-211986cdaa9f8c4f. The observed 141.659 s already triggers reconsideration; measured component costs retain the documented NoOp without raising the threshold.",
+          "reopenWhen": "Either underlying row loses its numeric trigger, or a trigger fires without a measured reconsideration.",
+          "targets": [],
+          "at": "2026-10-21T13:29:15.413Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-f5a8a6f689fc0aff",
+      "key": "decision:docs/evidence/WO-217/decisions.md#wo-217-d086",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "82f7fe45157dfefdc028456c5a3931a2357933b7bab4e76d003dc7cfa50d11a8",
+          "ref": "docs/evidence/WO-217/decisions.md#wo-217-d086",
+          "title": "WO-217-D086: WO-217's repair; low priority. Rule a repair must hold: a decision's dispatch names the dispatch that recorded it. An operator label appears only where the decision records an operator…",
+          "summary": "{ \"id\": \"WO-217-D086\", \"date\": \"2026-10-21\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Board F4 (follow-up; process-meter accuracy; breaks no criterion). The 58 row-disposition decisions D004 to D058, D066, D068 and D069 carry the dispatch label 'resume: next; operator-expanded WO-217'. scripts/lib/meta.mjs operatorDirections counts each of them as an operator scope expansion. WO-217's recorded operator directions therefore read 65 (npm run meta -- --check), and its PR.md meter row reads 60. The decisions themselves record three operator instructions: D002, D061 and D062. D003, D060, D063, D065 and D067 apply D002's standing instruction.\", \"evidence\": [ \"node wit",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-217-D090 corrects 58 disposition labels and five standing-authorization applications. Only D002, D061 and D062 mark operator instructions. Evidence: npm run meta at 2026-10-21T13:22:42.013Z reports three operator directions, matching those instruction records.",
+          "reopenWhen": "The meter counts inherited authorization as a new operator direction, or an actual recorded instruction is omitted.",
+          "targets": [],
+          "at": "2026-10-21T13:29:15.512Z"
+        }
+      ]
     }
   ]
 }

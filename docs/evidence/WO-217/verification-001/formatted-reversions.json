@@ -1,0 +1,20 @@
+{
+  "checkpoint-subject": [
+    {
+      "path": "scripts/test-off-ramps.mjs",
+      "old": "const checkpoint = (ordinal) => events()[ordinal - 1];\nconst recordedCheckpoint = checkpoint(2);\nconst replacementCheckpoint = events().find(\n  (event) =>\n    event.checkpointRef &&\n    event.checkpointRef !== recordedCheckpoint.checkpointRef,\n);\nassert.ok(\n  replacementCheckpoint,\n  JSON.stringify(\n    events().map(({ type, checkpointRef, checkpointUnavailable }) => ({\n      type,\n      checkpointRef,\n      checkpointUnavailable,\n    })),\n  ),\n);\nassert.equal(\n  recordedCheckpoint.checkpointRef,\n  \"refs/dotln/checkpoint/WO-099/1\",\n  \"event and checkpoint ordinals are deliberately different\",\n);\nrefuse(\n  new RegExp(\n    `checkpoint ${recordedCheckpoint.checkpointRef} resolves to [0-9a-f]+, not 0{40}`,\n  ),\n  [\n    \"correct\",\n    \"2\",\n    \"--set\",\n    `checkpointSha=${\"0\".repeat(40)}`,\n    \"--reason\",\n    \"wrong sha\",\n    ...operator,\n  ],\n);\npass([\n  \"correct\",\n  \"2\",\n  \"--set\",\n  `checkpointRef=${replacementCheckpoint.checkpointRef}`,\n  \"--set\",\n  `checkpointSha=${replacementCheckpoint.checkpointSha}`,\n  \"--reason\",\n  \"the recovery point was another recorded checkpoint\",\n  ...operator,\n]);\nassert.deepEqual(last().previous, {\n  checkpointRef: recordedCheckpoint.checkpointRef,\n  checkpointSha: recordedCheckpoint.checkpointSha,\n});\n",
+      "new": "const checkpoint = (ordinal) => events()[ordinal - 1];\nrefuse(\n  /checkpoint refs\\/dotln\\/checkpoint\\/WO-099\\/1 resolves to [0-9a-f]+, not 0{40}/,\n  [\n    \"correct\",\n    \"2\",\n    \"--set\",\n    \"checkpointRef=refs/dotln/checkpoint/WO-099/1\",\n    \"--set\",\n    `checkpointSha=${\"0\".repeat(40)}`,\n    \"--reason\",\n    \"wrong sha\",\n    ...operator,\n  ],\n);\npass([\n  \"correct\",\n  \"2\",\n  \"--set\",\n  `checkpointRef=${checkpoint(1).checkpointRef}`,\n  \"--set\",\n  `checkpointSha=${checkpoint(1).checkpointSha}`,\n  \"--reason\",\n  \"the override's recovery point was the activation checkpoint\",\n  ...operator,\n]);\nassert.deepEqual(last().previous, {\n  checkpointRef: checkpoint(2).checkpointRef,\n  checkpointSha: checkpoint(2).checkpointSha,\n});\n",
+      "count": 1,
+      "synthesized": "recorded old text after prettier formatting; recorded new text unchanged"
+    }
+  ],
+  "release-close-classification": [
+    {
+      "path": "packages/skeleton/src/harness-host.ts",
+      "old": "    // Consume only complete canonical publish material arguments before\n    // classifying the remainder. A later extra flag is not a quoting error.\n    const remainder = suffix.startsWith(\" --publish\")\n      ? suffix\n          .slice(\" --publish\".length)\n          .replace(\n            /^(?: --material '(?:[^'\\r\\n\\u0000]|'\\\\'')+=(?:disposable|preserve)')+/u,\n            \"\",\n          )\n      : suffix;\n    const mismatch = /[;&|<>\\r\\n]/u.test(unquoted)\n      ? \"shell operator or redirect\"\n      : suffix.startsWith(\" --dry-run\") &&\n          /(?:^|\\s)--material(?:\\s|$)/u.test(suffix)\n        ? \"material arguments require --publish\"\n        : /(?:^|\\s)--material(?:\\s|$)/u.test(remainder)\n          ? \"non-canonical material flag quoting or value\"\n          : \"extra or non-canonical words or whitespace after the helper\";\n",
+      "new": "    const mismatch = /[;&|<>\\r\\n]/u.test(unquoted)\n      ? \"shell operator or redirect\"\n      : /(?:^|\\s)--material(?:\\s|$)/u.test(suffix)\n        ? \"non-canonical material flag quoting or value\"\n        : \"extra or non-canonical words or whitespace after the helper\";\n",
+      "count": 1,
+      "synthesized": "recorded old text after prettier formatting; recorded new text unchanged"
+    }
+  ]
+}

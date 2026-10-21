@@ -1,0 +1,99 @@
+{
+  "observedAt": "2026-10-21T17:05:12.479Z",
+  "decision": "WO-217-D094",
+  "sourcePath": "scripts/test-target-publication-fixture.mjs",
+  "baselineSourceSha256": "b6907043e1e8190c099024b8bd1b0ebeed08a52e0e7067899eb63831488c5d41",
+  "selectedSourceSha256": "147e5a41c955f82ba2e14c0321b760602d1426b2edfe6de75b3758362639e159",
+  "comparison": {
+    "observedAt": "2026-10-21T17:01:35.791Z",
+    "case": "target close isolates fetched ignore rules, retains unreadable output and tolerates unavailable gate advisories",
+    "arms": [
+      {
+        "label": "original",
+        "exitCode": 0,
+        "durationMs": 38108,
+        "outputSha256": "87c616a77fcdd5a31e820bb39652916660e5ad105a413e07249b5332eb83d472"
+      },
+      {
+        "label": "native-dispatch",
+        "exitCode": 0,
+        "durationMs": 17712,
+        "outputSha256": "69824a6480013d41787bb777bec514b06a67725bf17b6677ab94cf1b2f052041"
+      }
+    ],
+    "limits": "One serial paired case; not a complete-gate speedup claim. Both arms retain the existing real lifecycle assertions."
+  },
+  "parity": {
+    "observedAt": "2026-10-21T17:03:25.224Z",
+    "commandCount": 15,
+    "allStatusesAndOutputEqual": true,
+    "quotedPathsAndArguments": true,
+    "localRemoteTransport": true,
+    "logSha256": "b7d6d7ab5f24c691f91100cff25db0d0bb95fc79e125d2feb11accb6c1ec5a88"
+  },
+  "selectedCase": {
+    "command": "node scripts/harness.mjs bounded -- node --test --test-reporter=tap '--test-name-pattern=^target close isolates fetched ignore rules' scripts/test-target-worktree-close.mjs",
+    "finishedAt": "2026-10-21T17:04:07.244Z",
+    "exitCode": 0,
+    "durationMs": 15248,
+    "passed": 1,
+    "skipped": 0,
+    "logSha256": "c2f7c81adf7e6725c11e615210fded6a75a8888a67a72daf7661d2cce374b4b7"
+  },
+  "registeredEvidenceEditions": [],
+  "feedbackJudgedSource": false,
+  "compatibilityRepair": {
+    "decision": "WO-217-D095",
+    "observedAt": "2026-10-21T17:42:42.034Z",
+    "sourceSha256": {
+      "scripts/test-target-publication-fixture.mjs": "7e9404df809cb4456a9fe0a44d8aa60b08723e2d692cf0bdbe2f7ccab3aa8e53",
+      "scripts/test-target-worktree-publish.mjs": "c89f0769e455fb49ac26f02a900d447a2a6f7618d9d57fc8e5afd19eee06eead",
+      "scripts/test-target-worktree-release.mjs": "e119d04563b1f47e7172e22b6b2b1e4f759ca183287ffb03cda9e5c12c666d75"
+    },
+    "currentCodeIdentity": "0184557ece4a14b702f6f93e98338fdd2bea6660714502768b777ab4c1906884",
+    "failedCompleteAttempt": {
+      "attempt": 21,
+      "recordedAt": "2026-10-21T17:37:53.421Z",
+      "durationMs": 1811320,
+      "exitCode": 1,
+      "taskFailures": [
+        {
+          "name": "target-worktree:file:test-target-worktree-publish.mjs",
+          "exitCode": 1
+        },
+        {
+          "name": "target-worktree:file:test-target-worktree-release.mjs",
+          "exitCode": 1
+        }
+      ],
+      "limits": "A correctness failure is not an admissible retention sample."
+    },
+    "focusedCases": [
+      {
+        "command": "node scripts/harness.mjs bounded -- node --test --test-reporter=tap '--test-name-pattern=^target records preserve reviewed reports' scripts/test-target-worktree-publish.mjs",
+        "finishedAt": "2026-10-21T17:39:12.461Z",
+        "exitCode": 0,
+        "durationMs": 34423,
+        "passed": 1,
+        "skipped": 0,
+        "logSha256": "6542f0202bd50bafe56dd133d04ddf67be9638ad8ecdf436ea172df5b0910291"
+      },
+      {
+        "command": "node scripts/harness.mjs bounded -- node --test --test-reporter=tap '--test-name-pattern=^WO-221 a target close deletes declared disposable output' scripts/test-target-worktree-release.mjs",
+        "finishedAt": "2026-10-21T17:39:37.775Z",
+        "exitCode": 0,
+        "durationMs": 25228,
+        "passed": 1,
+        "skipped": 0,
+        "logSha256": "5527c0b10e99cb27f08f379ef8172b48c60da1da1f94494adc9125c2773577a2"
+      }
+    ],
+    "ordinaryCommandParity": {
+      "observedAt": "2026-10-21T17:40:29.346Z",
+      "commandCount": 15,
+      "allStatusesAndOutputEqual": true,
+      "baselineSourceSha256": "b6907043e1e8190c099024b8bd1b0ebeed08a52e0e7067899eb63831488c5d41",
+      "logSha256": "d124946999dd999b3cc2e43dde89a4b18da0673fddf3ce45e12a1aea0548851a"
+    }
+  }
+}
