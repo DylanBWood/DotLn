@@ -53,7 +53,8 @@
     "\"target close preserves unavailable gate-write observations in mixed valid rows\"",
     "\"target close names a stale writer transition by role and gives its recovery\"",
     "\"target close keeps Git's guard for an unchecked-out base being rebased\"",
-    "\"literal host rules keep main clean and preserve another in-flight order\""
+    "\"literal host rules keep main clean and preserve another in-flight order\"",
+    "\"target start gives sign-off guidance only without a declared operator author\""
   ],
   "names": [
     "target release preparation is a read-only no-release outcome",
@@ -133,6 +134,7 @@
     "target close preserves unavailable gate-write observations in mixed valid rows",
     "target close names a stale writer transition by role and gives its recovery",
     "target close keeps Git's guard for an unchecked-out base being rebased",
-    "literal host rules keep main clean and preserve another in-flight order"
+    "literal host rules keep main clean and preserve another in-flight order",
+    "target start gives sign-off guidance only without a declared operator author"
   ]
 }

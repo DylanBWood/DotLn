@@ -81,7 +81,15 @@ const configure = (root) => {
 };
 const commit = (root, message) => {
   git(root, ["add", "."]);
-  git(root, ["commit", "--allow-empty", "--signoff", "-qm", message]);
+  git(root, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "--allow-empty",
+    "--signoff",
+    "-qm",
+    message,
+  ]);
 };
 const parse = (result) => {
   try {
@@ -213,6 +221,7 @@ test("planning and release-close reads run in a fresh exported instance", () => 
   const source = join(scratch, "source");
   let kit = join(scratch, "kit");
   const rows = [];
+  const baseEnvironment = { ...env };
   try {
     mkdirSync(source);
     copyCoreSource(source);
@@ -622,16 +631,39 @@ test("planning and release-close reads run in a fresh exported instance", () => 
     // v0.81.0 case below recovers a verified fork through such a refresh.
     const starterOrigin = join(scratch, "starter.git"),
       starter = join(scratch, "starter");
-    git(scratch, ["clone", "-q", "--bare", origin, starterOrigin]);
-    git(scratch, ["clone", "-q", starterOrigin, starter]);
+    git(scratch, [
+      "-c",
+      "maintenance.auto=false",
+      "clone",
+      "-q",
+      "--bare",
+      origin,
+      starterOrigin,
+    ]);
+    git(scratch, [
+      "-c",
+      "maintenance.auto=false",
+      "clone",
+      "-q",
+      starterOrigin,
+      starter,
+    ]);
     configure(starter);
     const instanceUrl = "https://github.com/dotln-fixture/instance.git",
       starterUrl = "https://github.com/dotln-fixture/starter-fixture.git";
     const refreshForge = join(scratch, "refresh-forge");
     mkdirSync(refreshForge);
-    installTargetPublicationFixture(refreshForge, env, [
+    const refreshEnvironment = { ...env };
+    installTargetPublicationFixture(refreshForge, refreshEnvironment, [
       { url: starterUrl, origin: starterOrigin },
     ]);
+    assert.ok(
+      Object.keys(env).length === Object.keys(baseEnvironment).length &&
+        Object.entries(baseEnvironment).every(
+          ([key, value]) => env[key] === value,
+        ),
+      "forge setup preserves local gate environment",
+    );
     git(starter, ["remote", "set-url", "origin", starterUrl]);
     git(source, [
       "remote",
@@ -667,11 +699,16 @@ test("planning and release-close reads run in a fresh exported instance", () => 
     git(source, ["tag", "v10.1.0"]);
     const sourceHead = git(source, ["rev-parse", "HEAD"]);
     const refreshed = ok(
-      run(source, process.execPath, [
-        "--input-type=module",
-        "-e",
-        `import {refreshStarters} from './scripts/lib/starter-refresh.mjs'; console.log('REFRESH '+JSON.stringify(await refreshStarters({main:process.cwd(),head:${JSON.stringify(sourceHead)},tag:'v10.1.0'})));`,
-      ]),
+      run(
+        source,
+        process.execPath,
+        [
+          "--input-type=module",
+          "-e",
+          `import {refreshStarters} from './scripts/lib/starter-refresh.mjs'; console.log('REFRESH '+JSON.stringify(await refreshStarters({main:process.cwd(),head:${JSON.stringify(sourceHead)},tag:'v10.1.0'})));`,
+        ],
+        refreshEnvironment,
+      ),
       "refresh legacy starter",
     );
     const refreshRow = JSON.parse(
@@ -740,9 +777,9 @@ test("planning and release-close reads run in a fresh exported instance", () => 
     );
     commit(kit, "fixture release surfaces");
     const releaseRows = [];
-    const releaseObserve = (args) => {
+    const releaseObserve = (args, environment = env) => {
       const started = Date.now();
-      const result = run(kit, process.execPath, args);
+      const result = run(kit, process.execPath, args, environment);
       ok(result, args.join(" "));
       assert.doesNotMatch(`${result.stdout}${result.stderr}`, /^FAIL /mu);
       releaseRows.push({
@@ -818,8 +855,23 @@ test("planning and release-close reads run in a fresh exported instance", () => 
     // Its origin is a disposable local bare repository, never the live forge.
     const releaseOrigin = join(scratch, "release-instance.git");
     const releaseMain = join(scratch, "release-main");
-    git(scratch, ["clone", "-q", "--bare", origin, releaseOrigin]);
-    git(scratch, ["clone", "-q", releaseOrigin, releaseMain]);
+    git(scratch, [
+      "-c",
+      "maintenance.auto=false",
+      "clone",
+      "-q",
+      "--bare",
+      origin,
+      releaseOrigin,
+    ]);
+    git(scratch, [
+      "-c",
+      "maintenance.auto=false",
+      "clone",
+      "-q",
+      releaseOrigin,
+      releaseMain,
+    ]);
     configure(releaseMain);
     linkDependencies(releaseMain);
     ok(
@@ -1059,20 +1111,55 @@ test("planning and release-close reads run in a fresh exported instance", () => 
     const targetOrigin = join(scratch, "target.git"),
       targetClone = join(scratch, "target");
     git(scratch, ["init", "--bare", "-q", "-b", "main", targetOrigin]);
-    git(scratch, ["clone", "-q", targetOrigin, targetClone]);
+    git(scratch, [
+      "-c",
+      "maintenance.auto=false",
+      "clone",
+      "-q",
+      targetOrigin,
+      targetClone,
+    ]);
     configure(targetClone);
     write(targetClone, "source.txt", "Base target text.\n");
     commit(targetClone, "test: base target");
     git(targetClone, ["push", "-qu", "origin", "main"]);
     const targetBase = git(targetClone, ["rev-parse", "HEAD"]);
     const targetUrl = "https://github.com/dotln-fixture/target.git";
-    const forge = installTargetPublicationFixture(scratch, env, [
-      { url: instanceUrl, origin },
-      { url: targetUrl, origin: targetOrigin },
-    ]);
-    git(kitMain, ["remote", "set-url", "origin", instanceUrl]);
-    git(targetClone, ["remote", "set-url", "origin", targetUrl]);
-    const noNotes = run(kitMain, process.execPath, [
+    const publicationEnvironment = { ...env };
+    const forge = installTargetPublicationFixture(
+      scratch,
+      publicationEnvironment,
+      [
+        { url: instanceUrl, origin },
+        { url: targetUrl, origin: targetOrigin },
+      ],
+    );
+    assert.ok(
+      Object.keys(env).length === Object.keys(baseEnvironment).length &&
+        Object.entries(baseEnvironment).every(
+          ([key, value]) => env[key] === value,
+        ),
+      "publication setup preserves local gate environment",
+    );
+    // Remote operations use the synthetic transport; local document gates
+    // retain the base environment and avoid a Node wrapper for every Git call.
+    const publicationRun = (cwd, file, args) =>
+      run(cwd, file, args, publicationEnvironment);
+    const publicationGit = (cwd, args) =>
+      ok(
+        publicationRun(cwd, "git", args),
+        `git ${args.join(" ")}`,
+      ).stdout.trim();
+    const publicationResume = (...args) =>
+      ok(
+        publicationRun(kit, process.execPath, ["scripts/resume.mjs", ...args]),
+        `resume ${args[0]}`,
+      );
+    const publicationReleaseObserve = (args) =>
+      releaseObserve(args, publicationEnvironment);
+    publicationGit(kitMain, ["remote", "set-url", "origin", instanceUrl]);
+    publicationGit(targetClone, ["remote", "set-url", "origin", targetUrl]);
+    const noNotes = publicationRun(kitMain, process.execPath, [
       "scripts/worktree.mjs",
       "publish",
       "WO-001",
@@ -1140,9 +1227,9 @@ test("planning and release-close reads run in a fresh exported instance", () => 
       `# WO-002 — reviewed target fixture\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n**Repository:** target @ ${targetBase}\n`,
     );
     commit(kit, "docs: declare target order and publication authority");
-    git(kit, ["push", "-q", "origin", "main"]);
+    publicationGit(kit, ["push", "-q", "origin", "main"]);
     ok(
-      run(kit, process.execPath, [
+      publicationRun(kit, process.execPath, [
         "scripts/worktree.mjs",
         "clone",
         "target",
@@ -1151,7 +1238,7 @@ test("planning and release-close reads run in a fresh exported instance", () => 
       "register target clone",
     );
     ok(
-      run(kit, process.execPath, [
+      publicationRun(kit, process.execPath, [
         "scripts/worktree.mjs",
         "start",
         "WO-002",
@@ -1163,22 +1250,22 @@ test("planning and release-close reads run in a fresh exported instance", () => 
     const target = join(scratch, "Targets/target-wo002");
     write(target, "source.txt", "Reviewed target text.\n");
     commit(target, "fix: preserve reviewed target text");
-    const reviewed = git(target, ["rev-parse", "HEAD"]);
+    const reviewed = publicationGit(target, ["rev-parse", "HEAD"]);
     ok(
-      run(kit, process.execPath, [
+      publicationRun(kit, process.execPath, [
         "scripts/target-gate.mjs",
         "WO-002",
         "--review",
       ]),
       "review target gate in export",
     );
-    resume("implementation-ready", ...actorArgs);
-    resume("verify");
+    publicationResume("implementation-ready", ...actorArgs);
+    publicationResume("verify");
     write(kit, "docs/verifications/WO-002/VER-001.md", report);
-    resume("verification-result", "pass", ...actorArgs);
-    resume("final-review");
+    publicationResume("verification-result", "pass", ...actorArgs);
+    publicationResume("final-review");
     write(kit, "docs/final-reviews/WO-002/FINAL-001.md", report);
-    resume("final-review-result", "pass", ...actorArgs);
+    publicationResume("final-review-result", "pass", ...actorArgs);
     write(
       kit,
       "docs/evidence/WO-002/decisions.md",
@@ -1192,7 +1279,7 @@ test("planning and release-close reads run in a fresh exported instance", () => 
         reopenWhen: "The fixture contract changes.",
       })}\n\`\`\`\n`,
     );
-    resume("target-records", ...actorArgs);
+    publicationResume("target-records", ...actorArgs);
     // The document gate must read the moved decisions and continue to its
     // later checks in a real export, not just in the isolated reader fixture.
     ok(observe(["meta"]), "moved-record meta in export");
@@ -1229,11 +1316,14 @@ test("planning and release-close reads run in a fresh exported instance", () => 
       "## Result\n\nPreserve the reviewed target text and its validation.\n",
     );
     ok(
-      run(kit, process.execPath, ["scripts/work-orders.mjs", "index"]),
+      publicationRun(kit, process.execPath, [
+        "scripts/work-orders.mjs",
+        "index",
+      ]),
       "target records index",
     );
     commit(kit, "docs: record target validation links");
-    const targetSurfaces = releaseObserve([
+    const targetSurfaces = publicationReleaseObserve([
       "scripts/release.mjs",
       "check-surfaces",
       "--committed",
@@ -1251,7 +1341,7 @@ test("planning and release-close reads run in a fresh exported instance", () => 
     );
     commit(kit, "test: extra release line");
     assert.notEqual(
-      run(kit, process.execPath, [
+      publicationRun(kit, process.execPath, [
         "scripts/release.mjs",
         "check-surfaces",
         "--committed",
@@ -1261,8 +1351,8 @@ test("planning and release-close reads run in a fresh exported instance", () => 
     );
     write(kit, "README.md", targetReadme);
     commit(kit, "docs: restore single release line");
-    git(origin, ["tag", "v0.2.0", "main"]);
-    const olderClaim = run(kit, process.execPath, [
+    publicationGit(origin, ["tag", "v0.2.0", "main"]);
+    const olderClaim = publicationRun(kit, process.execPath, [
       "scripts/release.mjs",
       "check-surfaces",
       "--committed",
@@ -1270,11 +1360,11 @@ test("planning and release-close reads run in a fresh exported instance", () => 
     ]);
     assert.notEqual(olderClaim.status, 0);
     assert.match(`${olderClaim.stdout}${olderClaim.stderr}`, /release-block/u);
-    git(origin, ["tag", "-d", "v0.2.0"]);
+    publicationGit(origin, ["tag", "-d", "v0.2.0"]);
     const targetSegment = "docs/control/orders/WO-002.jsonl",
       segmentBytes = readFileSync(join(kit, targetSegment), "utf8");
     const selfPublish = () =>
-      run(kitMain, process.execPath, [
+      publicationRun(kitMain, process.execPath, [
         "scripts/worktree.mjs",
         "publish",
         "WO-002",
@@ -1307,7 +1397,7 @@ test("planning and release-close reads run in a fresh exported instance", () => 
     rmSync(join(kit, "docs/evidence/WO-002/decisions.md"));
     commit(kit, "docs: retain target record links");
     const targetPublication = ok(
-      run(kitMain, process.execPath, [
+      publicationRun(kitMain, process.execPath, [
         "scripts/worktree.mjs",
         "publish",
         "WO-002",
@@ -1323,11 +1413,11 @@ test("planning and release-close reads run in a fresh exported instance", () => 
     );
     assert.ok(targetPublication.stdout.includes(records.commit));
     assert.equal(
-      git(targetOrigin, ["rev-parse", "fix/reviewed-target-text"]),
+      publicationGit(targetOrigin, ["rev-parse", "fix/reviewed-target-text"]),
       records.commit,
     );
     const recordPublication = ok(
-      run(kitMain, process.execPath, [
+      publicationRun(kitMain, process.execPath, [
         "scripts/worktree.mjs",
         "publish",
         "WO-002",
@@ -1343,21 +1433,34 @@ test("planning and release-close reads run in a fresh exported instance", () => 
       readFileSync(forge.body, "utf8"),
       /No launchpad code changed/u,
     );
-    git(kitMain, ["merge", "--no-ff", "-qm", "Merge target records", "wo-002"]);
-    git(kitMain, ["push", "-q", "origin", "main"]);
+    publicationGit(kitMain, [
+      "merge",
+      "--no-ff",
+      "-qm",
+      "Merge target records",
+      "wo-002",
+    ]);
+    publicationGit(kitMain, ["push", "-q", "origin", "main"]);
     const forgeCheckout = join(scratch, "forge-merge");
-    git(scratch, ["clone", "-q", targetOrigin, forgeCheckout]);
+    publicationGit(scratch, [
+      "-c",
+      "maintenance.auto=false",
+      "clone",
+      "-q",
+      targetOrigin,
+      forgeCheckout,
+    ]);
     configure(forgeCheckout);
-    git(forgeCheckout, [
+    publicationGit(forgeCheckout, [
       "merge",
       "--no-ff",
       "-qm",
       "Merge target change",
       "origin/fix/reviewed-target-text",
     ]);
-    git(forgeCheckout, ["push", "-q", "origin", "main"]);
+    publicationGit(forgeCheckout, ["push", "-q", "origin", "main"]);
     const close = ok(
-      run(kitMain, process.execPath, [
+      publicationRun(kitMain, process.execPath, [
         "scripts/release.mjs",
         "close",
         "WO-002",
@@ -1369,8 +1472,8 @@ test("planning and release-close reads run in a fresh exported instance", () => 
     assert.doesNotMatch(close.stdout, /Cleanup: blocked/u);
     assert.equal(existsSync(kit), false);
     assert.equal(existsSync(target), false);
-    assert.equal(git(kitMain, ["tag", "--list"]), "v99.0.0");
-    assert.equal(git(targetClone, ["tag", "--list"]), "");
+    assert.equal(publicationGit(kitMain, ["tag", "--list"]), "v99.0.0");
+    assert.equal(publicationGit(targetClone, ["tag", "--list"]), "");
     const card = readFileSync(
       join(kitMain, "docs/work-orders/HISTORY.md"),
       "utf8",
@@ -1445,7 +1548,14 @@ test("an instance exported at v0.81.0 takes this release by its README's procedu
     };
     const record = (root, message) => {
       lgit(root, ["add", "."]);
-      lgit(root, ["commit", "--signoff", "-qm", message]);
+      lgit(root, [
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "--signoff",
+        "-qm",
+        message,
+      ]);
     };
 
     // Core's history holds v0.81.0's tree, whose own launchpad exports the
@@ -1494,16 +1604,46 @@ test("an instance exported at v0.81.0 takes this release by its README's procedu
     node(core, ["scripts/launchpad.mjs", "export", exported], "v0.81.0 export");
     setup(exported);
     record(exported, "exported instance");
-    lgit(scratch, ["clone", "-q", "--bare", exported, starterOrigin]);
-    lgit(scratch, ["clone", "-q", "--bare", starterOrigin, forkOrigin]);
+    lgit(scratch, [
+      "-c",
+      "maintenance.auto=false",
+      "clone",
+      "-q",
+      "--bare",
+      exported,
+      starterOrigin,
+    ]);
+    lgit(scratch, [
+      "-c",
+      "maintenance.auto=false",
+      "clone",
+      "-q",
+      "--bare",
+      starterOrigin,
+      forkOrigin,
+    ]);
     const starter = join(scratch, "starter");
-    lgit(scratch, ["clone", "-q", starterUrl, starter]);
+    lgit(scratch, [
+      "-c",
+      "maintenance.auto=false",
+      "clone",
+      "-q",
+      starterUrl,
+      starter,
+    ]);
     setup(starter);
 
     // The fork verifies WO-001 on main with v0.81.0's own scripts and leaves
     // every record uncommitted.
     const fork = join(scratch, "fork");
-    lgit(scratch, ["clone", "-q", forkUrl, fork]);
+    lgit(scratch, [
+      "-c",
+      "maintenance.auto=false",
+      "clone",
+      "-q",
+      forkUrl,
+      fork,
+    ]);
     setup(fork);
     lgit(fork, ["remote", "add", "upstream", starterUrl]);
     linkDependencies(fork);
@@ -1581,7 +1721,14 @@ test("an instance exported at v0.81.0 takes this release by its README's procedu
     // fresh export seeds; its README's first step generates that index
     // before the first document gate, whose check names the remedy.
     const newFork = join(scratch, "new-fork");
-    lgit(scratch, ["clone", "-q", starterUrl, newFork]);
+    lgit(scratch, [
+      "-c",
+      "maintenance.auto=false",
+      "clone",
+      "-q",
+      starterUrl,
+      newFork,
+    ]);
     assert.ok(
       readFileSync(join(newFork, "README.md"), "utf8")
         .replace(/\s+/gu, " ")
@@ -1750,7 +1897,14 @@ test("an instance exported at v0.81.0 takes this release by its README's procedu
       "open the update pull request",
     );
     const forgeMerge = join(scratch, "forge-merge");
-    lgit(scratch, ["clone", "-q", forkOrigin, forgeMerge]);
+    lgit(scratch, [
+      "-c",
+      "maintenance.auto=false",
+      "clone",
+      "-q",
+      forkOrigin,
+      forgeMerge,
+    ]);
     setup(forgeMerge);
     lgit(forgeMerge, [
       "merge",

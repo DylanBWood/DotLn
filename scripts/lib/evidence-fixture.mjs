@@ -32,7 +32,15 @@ export function editionCopy(t, { workspace = false } = {}) {
   );
   t.after(() => rmSync(parent, { recursive: true, force: true }));
   const copy = join(parent, "repository");
-  execGit(["clone", "--quiet", "--shared", TOOL_ROOT, copy]);
+  execGit([
+    "-c",
+    "maintenance.auto=false",
+    "clone",
+    "--quiet",
+    "--shared",
+    TOOL_ROOT,
+    copy,
+  ]);
   for (const path of [
     ...paths("diff", "-z", "--name-only", "HEAD"),
     ...paths("ls-files", "-z", "--others", "--exclude-standard"),

@@ -126,7 +126,7 @@ export function missionFixture(
       `${options.ignored.rules.join("\n")}\n`,
     );
   git("add", "-A");
-  git("commit", "-m", "fixture baseline");
+  git("-c", "maintenance.auto=false", "commit", "-m", "fixture baseline");
   const baseCommit = git("rev-parse", "HEAD");
   // The work under judgment: inside the declared surface unless asked otherwise.
   writeFileSync(
@@ -139,7 +139,13 @@ export function missionFixture(
       `${VISION}\n## Added by the session\n\nOutside the declared surface.\n`,
     );
   git("add", "-A");
-  git("commit", "-m", "fixture work in progress");
+  git(
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-m",
+    "fixture work in progress",
+  );
   // The excluded trees exist before the capsule is pinned, as they do in a
   // worktree that has already been built once. The rules themselves are part
   // of the base commit, so they are not work this session changed.

@@ -120,7 +120,14 @@ function scratch() {
     "import assert from 'node:assert/strict'; import {readFileSync} from 'node:fs'; assert.equal(readFileSync('fixture.txt','utf8'), 'changed by synthetic worker\\n');\n",
   );
   git(launchpad, "add", "-A");
-  git(launchpad, "commit", "-m", "fixture baseline");
+  git(
+    launchpad,
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-m",
+    "fixture baseline",
+  );
   git(launchpad, "worktree", "add", "-b", "writer", cwd);
   mkdirSync(join(cwd, ".dotln"));
   writeFileSync(join(launchpad, ".git/info/exclude"), "/.dotln/\n");

@@ -169,7 +169,61 @@ export function runArtifactCommand(command, root, timeoutMs = 30_000) {
     durationMs: Date.now() - started,
     output: `${run.stdout ?? ""}${run.stderr ?? ""}${run.error ? `\n${run.error.message}` : ""}`,
     ...(run.error?.code === "ETIMEDOUT" ? { timedOut: true } : {}),
+    ...(run.error || run.signal ? { unavailable: true } : {}),
   };
+}
+
+/** Only a check's known difference report authorizes its writer. A crash,
+ * unreadable input, failed assertion unrelated to freshness, or empty failure
+ * is an unknown artifact, even though all of them have a nonzero exit code. */
+function reportedStale(row, result) {
+  if (result.exitCode !== 1 || result.timedOut || result.unavailable)
+    return false;
+  if (result.stale === true) return true;
+  const output = result.output ?? "";
+  if (output.split("\n").includes(`DOTLN_ARTIFACT_STALE ${row.name}`))
+    return true;
+  const patterns = {
+    format: /^\[warn\] Code style issues found/m,
+    meta: /^(?:Decisions index is stale; run npm run meta|.*register is stale; run npm run meta or npm run plan -- followups --sync)$/m,
+    lineage:
+      /^(?:Stale|Missing) [^\n]+; run node scripts\/lineage\.mjs index$/m,
+    index:
+      /^[^\n]+(?: is stale at line \d+|: missing or malformed tag snapshot); run npm run work-orders -- index$/m,
+    siblings:
+      /^[^\n]+(?: is stale at line \d+|: the [^\n]+ entry records manifest hash [^\n]+|: (?:missing|invalid) tag observations|: observations do not match receipt commits|: [a-f0-9]+ records (?:tag|nearest) [^\n]+, which is not a Git tag (?:at|at or below) its receipt commit); run node scripts\/siblings\.mjs index$/m,
+    harness: /^harness drift:/m,
+    "authority-evidence":
+      /stale [^\n]+ evidence: [^\n]+; select a new edition or revision to preserve existing evidence/,
+    "artifact-evidence":
+      /stale artifact evidence: [^\n]+; select a new edition to preserve the historical evidence/,
+    "verification-evidence": /stale verification evidence:/,
+    "feedback-evidence":
+      /feedback evidence is stale(?:\n|: a compiler release moved the policy hash)|^StaleFeedbackEdition \[Error\]: feedback evidence is stale:/m,
+    "console-fixtures":
+      /console selfhost fixture must follow the selected feedback edition; run npm run sync|console fixture changed: [^\n]+/,
+  };
+  if (row.name === "publication") {
+    const failures = output
+      .split("\n")
+      .filter((line) => line.startsWith("FAIL "));
+    return (
+      failures.length === 1 &&
+      /^FAIL \d+ edition\(s\) are stale$/.test(failures[0])
+    );
+  }
+  if (row.name === "release-surfaces") {
+    const failures = output
+      .split("\n")
+      .filter((line) => line.startsWith("FAIL "));
+    return (
+      failures.length > 0 &&
+      failures.every((line) =>
+        /^FAIL (?:release-block|workspace-pin)[: ]/.test(line),
+      )
+    );
+  }
+  return patterns[row.name]?.test(output) ?? false;
 }
 
 export function checkArtifact(row, root, run = runArtifactCommand) {
@@ -183,6 +237,7 @@ export function checkArtifact(row, root, run = runArtifactCommand) {
         exitCode: observation.current ? 0 : 1,
         durationMs: Date.now() - started,
         output: observation.reason ?? "",
+        stale: observation.current === false,
       };
     } else result = run(row.check, root, row.timeoutMs);
   } catch (error) {
@@ -194,6 +249,7 @@ export function checkArtifact(row, root, run = runArtifactCommand) {
   }
   return {
     ...result,
+    stale: reportedStale(row, result),
     name: row.name,
     executed: true,
     startedAt,
@@ -214,7 +270,7 @@ export function compileStaleRuntime(root, { run = runArtifactCommand } = {}) {
   const runtime = generatedArtifacts(root).find(
     (row) => row.name === "runtime" && Array.isArray(row.write),
   );
-  if (!runtime || checkArtifact(runtime, root, run).exitCode === 0) return [];
+  if (!runtime || !checkArtifact(runtime, root, run).stale) return [];
   const built = run(runtime.write, root, runtime.timeoutMs ?? 120_000);
   return [{ name: "runtime", exitCode: built.exitCode }];
 }

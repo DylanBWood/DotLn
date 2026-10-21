@@ -58,7 +58,7 @@ const env = {
 for (const args of [
   ["init", "-q"],
   ["add", "-A"],
-  ["commit", "-q", "-m", "fixture"],
+  ["-c", "maintenance.auto=false", "commit", "-q", "-m", "fixture"],
   ["checkout", "-q", "-b", "wo-179"],
 ])
   assert.equal(spawnGit(["-C", root, ...args], { env }).status, 0);
@@ -155,6 +155,18 @@ refuse(/Handoff document row missing or failed at the current code identity/u);
 recordGateChecks(root, [{ ...documentRow, exitCode: 1 }]);
 refuse(/Handoff document row missing or failed at the current code identity/u);
 recordGateChecks(root, [documentRow]);
+writeFileSync(
+  join(root, "docs/changed-after-row.md"),
+  "changed after document judgment\n",
+);
+refuse(/a document changed after it/u);
+recordGateChecks(root, [
+  {
+    ...documentRow,
+    treeHash: gateTreeHash(root),
+    recordedAt: new Date().toISOString(),
+  },
+]);
 const completion = pass(["verification-result", "pass", ...flags]);
 assert.doesNotMatch(completion.stdout, /Running npm run test:docs/u);
 assert.ok(
@@ -185,7 +197,7 @@ for (const briefing of [verify, finalReview])
   for (const sentence of expected)
     assert.ok(briefing.includes(sentence), sentence);
 console.log(
-  "WO-179 verifier gate claims: missing, failed, partial and stale rows refuse without events; current passing row is consumed, document gate runs inline; both briefings carry the three rules",
+  "WO-179 verifier gate claims: missing, failed, partial and stale rows refuse without events; current passing rows are consumed without an inline gate; both briefings carry the three rules",
 );
 
 // Focused handoffs and the fresh final review use different evidence rules.
@@ -278,6 +290,7 @@ for (const extra of [
   },
   { gateSelection: "plain", reusedSuites: 0 },
   { gateSelection: "review", reusedSuites: 0, codeIdentity: "wrong-identity" },
+  { gateSelection: "review", stopped: true, exitCode: 1 },
 ]) {
   recordGateChecks(root, [
     gateRow("npm test", [...structural, "alpha", "beta", "gamma"], extra),
@@ -343,6 +356,29 @@ recordGateChecks(root, [
     gateSelection: "review",
     excludedSuites: ["alpha", "beta", "gamma"],
   }),
+]);
+// The complete row lies between two actual review requests. The second
+// request does not invalidate source-identical product evidence.
+pass(["final-review-result", "fail", ...flags]);
+pass(["fix"]);
+writeFileSync(
+  join(root, "docs/evidence/WO-179/handoff.md"),
+  judged + "\nself-review: found 0; fixed 0; recorded 0\n",
+);
+recordGateChecks(root, [
+  gateRow("npm run test:docs", [...structural, "docs-check"]),
+]);
+pass(["repair-complete", ...flags]);
+pass(["verify"]);
+report(join(root, "docs/verifications/WO-179/VER-002.md"), judged);
+recordGateChecks(root, [
+  gateRow("npm run test:docs", [...structural, "docs-check"]),
+]);
+pass(["verification-result", "pass", ...flags]);
+pass(["final-review"]);
+report(join(root, "docs/final-reviews/WO-179/FINAL-002.md"), judged);
+recordGateChecks(root, [
+  gateRow("npm run test:docs", [...structural, "docs-check"]),
 ]);
 pass(["final-review-result", "pass", ...flags]);
 assert.equal(
@@ -442,6 +478,19 @@ const focusedBriefing = pass(["verify"]).stdout;
 assert.match(focusedBriefing, /suite:alpha, suite:beta/u);
 report(join(root, "docs/verifications/WO-216/VER-001.md"), judged);
 for (const name of ["structural", "alpha", "beta", "document"]) {
+  const checks = join(root, "docs/control/local/harness/checks.json");
+  const checkId = focusedRows.get(name).checkId;
+  writeFileSync(
+    checks,
+    JSON.stringify(
+      JSON.parse(readFileSync(checks, "utf8")).filter(
+        (row) => row.checkId !== checkId,
+      ),
+    ),
+  );
+  refuseFocused("verification-result", name);
+  recordFocused(name, { codeIdentity: "another-identity" });
+  refuseFocused("verification-result", name);
   recordFocused(name, { exitCode: 1 });
   refuseFocused("verification-result", name);
   recordFocused(name);
@@ -451,6 +500,19 @@ pass(["verification-result", "fail", ...flags]);
 assertFocusedEvent("VerificationCompleted");
 pass(["fix"]);
 for (const name of ["structural", "alpha", "beta", "document"]) {
+  const checks = join(root, "docs/control/local/harness/checks.json");
+  const checkId = focusedRows.get(name).checkId;
+  writeFileSync(
+    checks,
+    JSON.stringify(
+      JSON.parse(readFileSync(checks, "utf8")).filter(
+        (row) => row.checkId !== checkId,
+      ),
+    ),
+  );
+  refuseFocused("repair-complete", name);
+  recordFocused(name, { codeIdentity: "another-identity" });
+  refuseFocused("repair-complete", name);
   recordFocused(name, { exitCode: 1 });
   refuseFocused("repair-complete", name);
   recordFocused(name);
@@ -458,5 +520,30 @@ for (const name of ["structural", "alpha", "beta", "document"]) {
 pass(["repair-complete", ...flags]);
 assertFocusedEvent("RepairCompleted");
 console.log(
-  "Focused handoffs: implementation, verification and repair consume structural, every declared suite and document refs; missing, stale and failed rows refuse. Final review requires a fresh complete review after dispatch.",
+  "Focused handoffs: implementation, verification and repair consume structural, every declared suite and document refs; missing, stale and failed rows refuse. Final review consumes the newest standing complete review at its identity.",
+);
+
+// A report with no met gate criterion claims no product or document row.
+const { readReportGateClaims, requireGateClaims } =
+  await import("./lib/handoff-ledger.mjs");
+const prosePath = "docs/verifications/WO-216/no-gate-claims.md";
+report(
+  join(root, prosePath),
+  "**Criterion 1:** unmet. No claim.\n**Criterion 2:** unmet. No claim.\n**Criterion 3:** met. Read.",
+);
+const proseLedger = readReportGateClaims(
+  root,
+  {
+    workOrderId: "WO-216",
+    workOrderPath: "docs/work-orders/WO-216-fixture.md",
+  },
+  prosePath,
+);
+assert.deepEqual(proseLedger.claims, { document: [], review: [], plain: [] });
+assert.equal(
+  (await requireGateClaims(root, proseLedger)).productGate,
+  undefined,
+);
+console.log(
+  "Row-state witnesses: changed document refuses; failed and stopped review rows refuse; a standing row between two actual review requests is consumed; prose-only report claims no gate.",
 );

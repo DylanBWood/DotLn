@@ -105,6 +105,8 @@ const commit = (root, author, message) => {
       "user.email=committer@example.invalid",
       "-c",
       "commit.gpgsign=false",
+      "-c",
+      "maintenance.auto=false",
       "commit",
       "--allow-empty",
       `--author=${author}`,
@@ -457,5 +459,8 @@ test("contribution exemption follows instance data and never mutable Git identit
         },
       }),
     );
-    assert.equal(contributionSignoffRules(root)[0].pass, false);
+    const refused = contributionSignoffRules(root)[0];
+    assert.equal(refused.pass, false);
+    assert.match(refused.line, /already exempts its single identity/);
+    assert.doesNotMatch(refused.line, /or declare that identity/);
   }));

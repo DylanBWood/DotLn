@@ -73,6 +73,8 @@ function fixture(unrelated = false) {
       "user.name=Fixture",
       "-c",
       "user.email=fixture@example.invalid",
+      "-c",
+      "maintenance.auto=false",
       "commit",
       "-qm",
       "Fixture base",

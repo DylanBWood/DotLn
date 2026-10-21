@@ -214,7 +214,9 @@ ancestry even when release attribution retains its recorded tag snapshot.
 
 **Current gate contract (WO-132, 2026-09-15).** `npm test` is the product
 and lifecycle gate. `npm test -- --list` names the behavior each suite protects.
-The final reviewer runs `npm test -- --review` after the last source edit;
+The executor starts one complete `npm test -- --review` after its last source
+edit. The verifier and final reviewer consume that evidence at the unchanged
+identity; source changes require a complete run at the new identity.
 `--review` includes machinery suites only when their declared sources changed
 and composes the latest passing task results at the unchanged code identity,
 with their source rows retained. `--again` forces every task fresh. Formatting
@@ -222,15 +224,18 @@ runs freshly before the build and other tasks, including when product results
 can be reused.
 `npm run test:machinery` runs that inventory on demand; document-sensitive checks
 stay in `npm run test:docs`. There are no replica executions or 120-second
-fast-gate budget. The handoff sequence is `npm run format`, then
-`npm run test:docs`, then the product gate with no repository writes or new
-agents while it runs, then records and the completion command.
+fast-gate budget. The executor handoff sequence is `npm run format`,
+`npm run sync`, the complete review gate with no repository writes or new
+agents while it runs, then handoff records, `npm run test:docs` after the last
+document edit, and the completion command. A focused probe reproduces a named
+failure; it does not substitute for the complete gate.
 
 The success row records code identity beside the exact reviewed tree. Reports,
 control events, generated projections and release prose do not invalidate the
 code key. The passing final-review event retains that row for PR publication and
 release close. Executor and verifier checks follow the claims they need to
-establish; a transition never requires the product gate. Completion runs
+establish; completion consumes the required current rows and starts no gate.
+Completion runs
 `git diff --check`, checks the report and actor fields, and appends the legal
 event. Missing session reads, authorship, usage or planning handoff observations
 are advisory. Decisions and corrections go to the order's decisions file;
@@ -345,11 +350,14 @@ resume: verify
 The phrase allocates the immutable `VER-NNN` path and prints the authoritative
 work-order path, its `Known issues and carry-ins`, and the latest filed
 planning receipt's known issues for that order. Following product 07
-§Verification review and attack, the verifier attacks the change, reviews
-the whole implementation and uses one fresh pinned adversary, choosing and
-naming relevant lenses. The verifier runs the acceptance evidence, writes only that
-report, and records `pass` or `fail`; it does not repair its own findings.
-It runs the product gate when useful, not as a prerequisite to `verification-result`.
+§Verification review and attack, the verifier attacks the change and reviews
+the whole implementation, including the executor's two independent worker
+reports. It reproduces claims directly and may use a pinned worker for a named
+claim it cannot reproduce itself; it never delegates the verdict. The verifier
+writes only its allocated report and records `pass` or `fail`; it does not
+repair its own findings. Completion consumes standing structural, declared
+suite and document rows at the judged subject. A changed identity requires the
+affected evidence again; the transition itself runs no gate.
 Its report remains immutable even when later bookkeeping changes the exact tree.
 
 **4. Repair or final review.** Each state transition attempts to mint a local

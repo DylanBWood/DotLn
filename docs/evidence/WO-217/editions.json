@@ -1,0 +1,135 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-21T07:15:10.184661+00:00",
+  "changedRegisteredSources": {
+    "authority": [
+      "package-lock.json",
+      "packages/compiler/package.json",
+      "packages/compiler/src/artifact-identity.ts",
+      "packages/compiler/src/harness.ts",
+      "packages/skeleton/package.json",
+      "packages/skeleton/src/evidence-editions.mjs",
+      "packages/skeleton/src/gate-evidence.mjs",
+      "packages/skeleton/src/harness-host.ts",
+      "packages/skeleton/src/loadouts/contributor.ts",
+      "packages/skeleton/src/observed-facts.ts",
+      "scripts/authority-evidence.mjs",
+      "scripts/lib/gate-reuse.mjs",
+      "scripts/lib/host-resources.mjs"
+    ],
+    "artifact-identity": [
+      "package-lock.json",
+      "packages/compiler/package.json",
+      "packages/compiler/src/artifact-identity.ts",
+      "packages/compiler/src/harness.ts",
+      "packages/skeleton/package.json",
+      "packages/skeleton/src/evidence-editions.mjs",
+      "packages/skeleton/src/gate-evidence.mjs",
+      "scripts/lib/gate-reuse.mjs",
+      "scripts/lib/host-resources.mjs"
+    ],
+    "verification": [
+      "package-lock.json",
+      "packages/compiler/package.json",
+      "packages/compiler/src/artifact-identity.ts",
+      "packages/compiler/src/harness.ts",
+      "packages/skeleton/package.json",
+      "packages/skeleton/src/evidence-editions.mjs",
+      "packages/skeleton/src/gate-evidence.mjs",
+      "scripts/lib/gate-reuse.mjs",
+      "scripts/lib/host-resources.mjs"
+    ],
+    "feedback": [
+      "package-lock.json",
+      "packages/compiler/package.json",
+      "packages/compiler/src/artifact-identity.ts",
+      "packages/compiler/src/harness.ts",
+      "packages/skeleton/package.json",
+      "packages/skeleton/src/evidence-editions.mjs",
+      "packages/skeleton/src/gate-evidence.mjs",
+      "packages/skeleton/src/harness-host.ts",
+      "packages/skeleton/src/loadouts/contributor.ts",
+      "packages/skeleton/src/observed-facts.ts",
+      "packages/skeleton/test/feedback-fixtures.test.ts",
+      "scripts/lib/gate-reuse.mjs",
+      "scripts/lib/host-resources.mjs"
+    ],
+    "harness": [
+      "package-lock.json",
+      "packages/compiler/package.json",
+      "packages/compiler/src/artifact-identity.ts",
+      "packages/compiler/src/harness.ts",
+      "packages/skeleton/package.json",
+      "packages/skeleton/src/evidence-editions.mjs",
+      "packages/skeleton/src/gate-evidence.mjs",
+      "packages/skeleton/src/harness-host.ts",
+      "packages/skeleton/src/loadouts/contributor.ts",
+      "packages/skeleton/src/observed-facts.ts",
+      "scripts/lib/gate-reuse.mjs",
+      "scripts/lib/host-resources.mjs"
+    ]
+  },
+  "changedJudgedFeedbackSources": [
+    "package-lock.json",
+    "packages/skeleton/package.json",
+    "packages/compiler/src/artifact-identity.ts",
+    "scripts/lib/host-resources.mjs",
+    "packages/skeleton/test/feedback-fixtures.test.ts"
+  ],
+  "selectedEditions": {
+    "authority": {
+      "workOrder": "WO-217",
+      "revision": "006"
+    },
+    "artifact-identity": {
+      "workOrder": "WO-217",
+      "revision": "002"
+    },
+    "verification": {
+      "workOrder": "WO-217",
+      "revision": "002"
+    },
+    "feedback": {
+      "workOrder": "WO-217",
+      "revision": "002"
+    }
+  },
+  "deterministicCommands": [
+    {
+      "kind": "artifact-identity",
+      "command": "node scripts/artifact-identity-evidence.mjs --write --edition WO-217 --revision 001",
+      "exitCode": 0,
+      "wallSeconds": 0.218,
+      "outputSha256": "3b43be4d4c268b1134a094b1ca613c7f33a2eb0bae102ac1bfa5586c0e467f6f"
+    },
+    {
+      "kind": "artifact-identity",
+      "command": "node scripts/artifact-identity-evidence.mjs --check --edition WO-217 --revision 001",
+      "exitCode": 0,
+      "wallSeconds": 0.208,
+      "outputSha256": "a706cd239e43d8e12f767d4b01ba0fde5230bac88dc7224725958dc06c515e69"
+    },
+    {
+      "kind": "verification",
+      "command": "node scripts/verification-evidence.mjs --write --edition WO-217 --revision 001",
+      "exitCode": 0,
+      "wallSeconds": 1.105,
+      "outputSha256": "c627f05643a39462325cbc6eb8afe3a7b3bc1200ba916e24176df3994fde8969"
+    },
+    {
+      "kind": "verification",
+      "command": "node scripts/verification-evidence.mjs --check --edition WO-217 --revision 001",
+      "exitCode": 0,
+      "wallSeconds": 1.085,
+      "outputSha256": "dbe424c9f141fa67721418ab9998e9bbf62104c7ee1beb38ee07481d7967c562"
+    }
+  ],
+  "otherEvidence": [
+    "npm run sync (wo217-authority-sync-2) exited 0 in 58.006 seconds; regenerated runtime, installed harness, authority 004, artifact-identity 002, verification 002, feedback 002 and console fixtures. Every generated check finished current; output SHA-256 b4a989381be70b68908edabc3bb85415b90030a71883e696deb33f8ec9ac205e.",
+    "The harness inventory has no mint writer: current installed output and four historical role plus two writer smokes are checked by scripts/harness-evidence.mjs; historical observations remain immutable.",
+    "feedback-001 records the live Codex gpt-6.1-sol/max episode from 2026-10-21T03:20:30.269Z to 03:21:21.204Z. All ten fixtures passed. feedback-002 is a deterministic pin carry with the same behavior identity and explicit references to that live audit; no second live episode is claimed.",
+    "npm run sync (wo217-seventh-sync) exited 0 in 26.345 seconds after the executor-supports compiled-test repair changed the complete runtime inventory. It regenerated the installed harness and authority 005; every generated after-check was current, including unchanged feedback 002. Output SHA-256 aca1fd9d676dda013d6213dd81a14d8ebc7596e4f96f62d26ab55aff6484f54f; D076 records the indirect dependency.",
+    "npm run sync (wo217-ninth-sync) exited 0 in 30.196 seconds after D077-D079. It regenerated the decisions index; every generated after-check was current. Installed harness, authority 005, artifact-identity 002, verification 002 and feedback 002 were already current. Output SHA-256 1309ac720503588f2d755eabac66cab1fc1dc232a9f66e40a1669be906f809fd.",
+    "D080 priority wording changed the role source and compiled regression. First sync regenerated runtime, installed harness and authority 006 but refused the outdated current role oracle (output SHA-256 3a44c44f1e2c783abf04574c8296e924b8d589e2da6b52eb07169d3af06bda7d). After refreshing the new WO-217 oracle while preserving its historical chain, npm run sync (wo217-retention-sync-2) passed every generated check in 23.664 seconds; output SHA-256 8834ea7bea8966b38c279a8f3f159ccee8fb2bc22dd6b7e11a1aa510c8388334. Authority 006 is selected; artifact-identity 002, verification 002 and feedback 002 remain unchanged/current."
+  ]
+}

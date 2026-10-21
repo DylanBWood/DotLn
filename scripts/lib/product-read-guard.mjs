@@ -182,7 +182,9 @@ if (manifestPath && !installations.has(installationKey)) {
   const observe = (method, value, recordsOnly = false, options) => {
     const input = filePath(value);
     if (input === undefined) return;
-    const enumerates = /readdir|opendir|^(?:promises\.)?watch$/.test(method);
+    const enumerates = /readdir|opendir|glob|^(?:promises\.)?watch$/.test(
+      method,
+    );
     const copies = /^(?:promises\.)?cp(?:Sync)?$/.test(method);
     // A copy from the root or an ancestor is judged as a walk whatever its
     // options; a listing or watch only when it asks to descend.
@@ -268,6 +270,34 @@ if (manifestPath && !installations.has(installationKey)) {
       ? input
       : `${process.cwd()}${sep}${input}`;
   };
+  const observeGlob = (method, patterns, options) => {
+    const cwd = filePath(options?.cwd) ?? process.cwd();
+    for (const pattern of Array.isArray(patterns) ? patterns : [patterns]) {
+      if (typeof pattern !== "string") continue;
+      const wildcard = pattern.search(/[?*\[\]{}()!]/u);
+      const prefix =
+        wildcard < 0
+          ? pattern
+          : pattern.slice(0, pattern.lastIndexOf("/", wildcard) + 1) || ".";
+      observe(method, resolve(cwd, prefix), true, {
+        recursive:
+          wildcard >= 0 &&
+          (pattern.slice(wildcard).includes("/") || pattern.includes("**")),
+      });
+    }
+  };
+  for (const [owner, method, label] of [
+    [fs, "globSync", "globSync"],
+    [fs, "glob", "glob"],
+    [promises, "glob", "promises.glob"],
+  ]) {
+    const original = owner[method];
+    if (typeof original !== "function") continue;
+    owner[method] = function (patterns, ...args) {
+      observeGlob(label, patterns, args[0]);
+      return original.call(this, patterns, ...args);
+    };
+  }
   for (const method of ["readFileSync", "readdirSync"]) {
     const original = fs[method];
     fs[method] = function (value, ...args) {

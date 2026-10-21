@@ -48,7 +48,14 @@ export function repairTransport(
         `changed by synthetic worker\n${wrong ? `wrong-${prompt.repair.round}` : "contract-satisfied"}\n`,
       );
       fixtureGit(request.cwd, "add", "fixture.txt");
-      fixtureGit(request.cwd, "commit", "-F", request.commitMessagePath);
+      fixtureGit(
+        request.cwd,
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-F",
+        request.commitMessagePath,
+      );
       const commit = fixtureGit(request.cwd, "rev-parse", "HEAD");
       return {
         receipt: Promise.resolve({
@@ -94,7 +101,14 @@ export async function createRepairFixture() {
     "import assert from 'node:assert/strict'; import {readFileSync} from 'node:fs'; assert.match(readFileSync('fixture.txt','utf8'), /contract-satisfied/);\n",
   );
   fixtureGit(repo, "add", "-A");
-  fixtureGit(repo, "commit", "-m", "Repair contract fixture");
+  fixtureGit(
+    repo,
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-m",
+    "Repair contract fixture",
+  );
   const baseCommit = fixtureGit(repo, "rev-parse", "HEAD");
   writeFileSync(join(root, "base.txt"), baseCommit);
   const sourceOptions = sourceFixtureOptions(root, () => 10);

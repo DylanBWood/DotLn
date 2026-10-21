@@ -55,7 +55,7 @@ const baseEnv = {
 // read from the working tree or from a checkpoint (WO-115 D026).
 for (const args of [
   ["add", "-A"],
-  ["commit", "-q", "-m", "fixture"],
+  ["-c", "maintenance.auto=false", "commit", "-q", "-m", "fixture"],
   ["checkout", "-q", "-b", "wo-099"],
 ])
   assert.equal(spawnGit(["-C", root, ...args], { env: baseEnv }).status, 0);
@@ -201,7 +201,17 @@ const hash = (path) =>
     .digest("hex");
 
 // Active: withdraw, correct and override-record are legal; waive is not.
-pass(["activate", "WO-099", authority]);
+// A failed recovery checkpoint must not make an event ordinal stand in for
+// its checkpoint number. Block only this disposable fixture's first ref.
+const checkpointBlock = join(root, ".git/refs/dotln/checkpoint");
+mkdirSync(dirname(checkpointBlock), { recursive: true });
+writeFileSync(checkpointBlock, "fixture blocks a checkpoint directory\n");
+try {
+  pass(["activate", "WO-099", authority]);
+} finally {
+  rmSync(checkpointBlock);
+}
+assert.equal(events()[0].checkpointUnavailable, true);
 let state = status();
 assert.deepEqual(state.legalOffRamps, [
   "withdraw",
@@ -790,13 +800,34 @@ const restoredOrdinal = events().length;
 assert.equal(status().verificationPath, second);
 assert.equal(hash(second), before);
 const checkpoint = (ordinal) => events()[ordinal - 1];
+const recordedCheckpoint = checkpoint(2);
+const replacementCheckpoint = events().find(
+  (event) =>
+    event.checkpointRef &&
+    event.checkpointRef !== recordedCheckpoint.checkpointRef,
+);
+assert.ok(
+  replacementCheckpoint,
+  JSON.stringify(
+    events().map(({ type, checkpointRef, checkpointUnavailable }) => ({
+      type,
+      checkpointRef,
+      checkpointUnavailable,
+    })),
+  ),
+);
+assert.equal(
+  recordedCheckpoint.checkpointRef,
+  "refs/dotln/checkpoint/WO-099/1",
+  "event and checkpoint ordinals are deliberately different",
+);
 refuse(
-  /checkpoint refs\/dotln\/checkpoint\/WO-099\/1 resolves to [0-9a-f]+, not 0{40}/,
+  new RegExp(
+    `checkpoint ${recordedCheckpoint.checkpointRef} resolves to [0-9a-f]+, not 0{40}`,
+  ),
   [
     "correct",
     "2",
-    "--set",
-    "checkpointRef=refs/dotln/checkpoint/WO-099/1",
     "--set",
     `checkpointSha=${"0".repeat(40)}`,
     "--reason",
@@ -808,16 +839,16 @@ pass([
   "correct",
   "2",
   "--set",
-  `checkpointRef=${checkpoint(1).checkpointRef}`,
+  `checkpointRef=${replacementCheckpoint.checkpointRef}`,
   "--set",
-  `checkpointSha=${checkpoint(1).checkpointSha}`,
+  `checkpointSha=${replacementCheckpoint.checkpointSha}`,
   "--reason",
-  "the override's recovery point was the activation checkpoint",
+  "the recovery point was another recorded checkpoint",
   ...operator,
 ]);
 assert.deepEqual(last().previous, {
-  checkpointRef: checkpoint(2).checkpointRef,
-  checkpointSha: checkpoint(2).checkpointSha,
+  checkpointRef: recordedCheckpoint.checkpointRef,
+  checkpointSha: recordedCheckpoint.checkpointSha,
 });
 pass([
   "correct",
@@ -1207,6 +1238,62 @@ refuse(
 );
 writeFileSync(join(root, ".gitignore"), ignoreBytes);
 assert.equal(events("WO-101").length, before101);
+// A complete pass cannot be rebound after a later failed execution of one
+// of its tasks. Repairing that task makes the original complete row stand.
+const boundIdentity = gateCodeIdentity(root);
+const taskTime = new Date().toISOString();
+recordGateChecks(root, [
+  {
+    ...gateRow("host-gate:displaced:npm test", boundIdentity),
+    requiredSuites: ["fixture-task"],
+    taskTimeline: [
+      {
+        name: "fixture-task",
+        executed: true,
+        durationMs: 1,
+        exitCode: 0,
+        finishedAt: taskTime,
+      },
+    ],
+  },
+]);
+recordGateChecks(root, [
+  {
+    ...gateRow("host-gate:failed-task:npm test", boundIdentity),
+    exitCode: 1,
+    recordedAt: new Date(Date.parse(taskTime) + 1).toISOString(),
+    requiredSuites: ["fixture-task"],
+    taskTimeline: [
+      {
+        name: "fixture-task",
+        executed: true,
+        durationMs: 1,
+        exitCode: 1,
+        finishedAt: new Date(Date.parse(taskTime) + 1).toISOString(),
+      },
+    ],
+  },
+]);
+refuse(
+  /no complete passing npm test row records host-gate:displaced:npm test/,
+  bindGate(reviewOrdinal, "host-gate:displaced:npm test"),
+);
+recordGateChecks(root, [
+  {
+    ...gateRow("host-gate:repaired-task:npm test", boundIdentity),
+    recordedAt: new Date(Date.parse(taskTime) + 2).toISOString(),
+    requiredSuites: ["fixture-task"],
+    taskTimeline: [
+      {
+        name: "fixture-task",
+        executed: true,
+        durationMs: 1,
+        exitCode: 0,
+        finishedAt: new Date(Date.parse(taskTime) + 2).toISOString(),
+      },
+    ],
+  },
+]);
 pass(bindGate(reviewOrdinal, "host-gate:current:npm test"));
 const boundGate = events("WO-101").at(-1);
 assert.equal(boundGate.type, "RecordCorrected");
@@ -1332,9 +1419,9 @@ for (const [label, subject, evidence, pattern] of [
 // (WO-173 criterion 2). `npm test` and `npm test -- --review` need a passing
 // complete row at the current code identity, the review form one whose
 // required suites cover the review selection the runner lists (an untracked
-// script a suite declares selects it); `npm run test:docs` runs inline, last,
-// and a failure refuses with the failing tasks. The same criteria recorded
-// unmet record with no row and a failing document gate, and a gate that
+// script a suite declares selects it); `npm run test:docs` consumes a current
+// passing row without running a gate. The same criteria recorded unmet
+// record with no row and a failing document gate, and a gate that
 // cannot start or a gate index that cannot be read each advise once and
 // record.
 const gateAuthority = (id) => `docs/work-orders/${id}-gates.md`;
@@ -1386,11 +1473,24 @@ const readGateChecksAt = (codeIdentity) =>
   readGateChecks(root).filter(
     (row) => row.checkId === "npm test" && row.codeIdentity === codeIdentity,
   );
-const claimRow = (evidenceRef, extra = {}) => ({
-  ...gateRow(evidenceRef, gateCodeIdentity(root)),
-  requiredSuites: ["build", "alpha"],
-  ...extra,
-});
+const claimRow = (evidenceRef, extra = {}) => {
+  const row = {
+    ...gateRow(evidenceRef, gateCodeIdentity(root)),
+    requiredSuites: ["build", "alpha"],
+    ...extra,
+  };
+  return {
+    ...row,
+    cases: row.requiredSuites.map((name) => ({
+      name,
+      executed: true,
+      exitCode: 0,
+      durationMs: 0,
+      startedAt: row.recordedAt,
+      finishedAt: row.recordedAt,
+    })),
+  };
+};
 const allMet = [
   "**Criterion 1:** met. The document gate ran.",
   "**Criterion 2:** met. The gate ran.",
@@ -1467,12 +1567,12 @@ recordGateChecks(root, [
 // Completion consumes the document row and runs no gate: without a passing
 // row at the current code identity the claim refuses, a failed row refuses,
 // and a passing row records.
-const documentRow = (evidenceRef, extra = {}) => ({
-  ...gateRow(evidenceRef, gateCodeIdentity(root)),
-  checkId: "npm run test:docs",
-  requiredSuites: ["docs-check"],
-  ...extra,
-});
+const documentRow = (evidenceRef, extra = {}) =>
+  claimRow(evidenceRef, {
+    checkId: "npm run test:docs",
+    requiredSuites: ["docs-check"],
+    ...extra,
+  });
 refuseOn(
   "WO-102",
   /^error: Handoff document row missing or failed at the current code identity \S+; run npm run test:docs once after the last document edit, then complete again, or record the criterion unmet with the reason instead/m,

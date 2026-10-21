@@ -1,0 +1,325 @@
+{
+  "decision": "WO-217-D097",
+  "observedAt": "2026-10-21T19:59:49.657Z",
+  "sourcePath": "scripts/fixtures/vertical/fixture.mjs",
+  "baselineSourceSha256": "7ac180aa0e17d4d6827767df138e4202189888017c23fed312198a63160a0cfb",
+  "candidateSourceSha256": "1825e5f4963041a593dadac3082b9484c2c40ed7f5df02675a6fc3d629674ca1",
+  "currentCodeIdentity": "8d059c13c38513e0a55b4d3e931b086a13e76ef465f05389750af8d82623604a",
+  "comparison": {
+    "observedAt": "2026-10-21T19:55:24.509Z",
+    "case": "WO-123 healthy negative wording completes the composed loop without a false baseline hold: The endpoint is returning 500 rows per page",
+    "caseBlockSha256": "fc7d3b83b9b731fd6620f1658f124b4146fdcf1646493961e863ce0c6d7295aa",
+    "instrument": "compare-vertical-dispatch-corrected.mjs in session scratch",
+    "instrumentSha256": "96c50cb6ba5d899a4fc2962772041797e196fd21e9c26b663d62e42f2eeb5f1f",
+    "results": [
+      {
+        "label": "original",
+        "exitCode": 0,
+        "signal": null,
+        "durationMs": 12239,
+        "outputSha256": "e14ee93d78f35595af4266e1815e15d36e12f914e21357883d0fed2cc914a031"
+      },
+      {
+        "label": "native-dispatch",
+        "exitCode": 0,
+        "signal": null,
+        "durationMs": 7231,
+        "outputSha256": "9e567d2d8b7d4e1e19549e2d5cb66ad7978bdaac7eed3ff89e9bc8fc6e8fda1e"
+      }
+    ],
+    "limits": "One serial pair of the same existing end-to-end healthy-wording case, preserving its exact case block and assertions. The candidate copies its real fixture helper and relocates only module headers. Whole-gate retention remains unmeasured.",
+    "initialProbeError": "The first scratch driver used require resolution for import-only workspace packages and failed before either arm. The corrected driver reads their declared import export from the package manifests."
+  },
+  "parity": {
+    "observedAt": "2026-10-21T19:57:27.285Z",
+    "sourceSha256": "7ac180aa0e17d4d6827767df138e4202189888017c23fed312198a63160a0cfb",
+    "candidateSha256": "1825e5f4963041a593dadac3082b9484c2c40ed7f5df02675a6fc3d629674ca1",
+    "caseCount": 17,
+    "records": [
+      {
+        "label": "original",
+        "rows": [
+          {
+            "name": "ordinary status",
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "name": "quoted multiline argument",
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "name": "quoted multiline value",
+            "exitCode": 0,
+            "stdout": "two 'quotes'\nsecond line\n",
+            "stderr": ""
+          },
+          {
+            "name": "repeated configuration options",
+            "exitCode": 0,
+            "stdout": "two\n",
+            "stderr": ""
+          },
+          {
+            "name": "literal push argument",
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "name": "invalid Git command",
+            "exitCode": 1,
+            "stdout": "",
+            "stderr": "git: 'not-a-fixture-git-command' is not a git command. See 'git --help'.\n"
+          },
+          {
+            "name": "local push mapping",
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "To <fixture>/origin.git\n * [new branch]      HEAD -> parity\n"
+          },
+          {
+            "name": "remote mapped result",
+            "exitCode": 0,
+            "stdout": "<object>\trefs/heads/parity\n",
+            "stderr": ""
+          },
+          {
+            "name": "changed configuration custom Git",
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "proxy\n"
+          },
+          {
+            "name": "self recursion refusal",
+            "exitCode": 70,
+            "stdout": "",
+            "stderr": "vertical git double refuses to invoke itself\n"
+          },
+          {
+            "name": "malformed configuration",
+            "exitCode": 1,
+            "stdout": "",
+            "stderr": "SyntaxError"
+          },
+          {
+            "name": "missing configured executable",
+            "exitCode": 1,
+            "stdout": "",
+            "stderr": "ENOENT"
+          },
+          {
+            "name": "missing configuration",
+            "exitCode": 1,
+            "stdout": "",
+            "stderr": "ENOENT"
+          },
+          {
+            "name": "missing configuration environment",
+            "exitCode": 1,
+            "stdout": "",
+            "stderr": "ERR_INVALID_ARG_TYPE"
+          },
+          {
+            "name": "nested configuration uses current fixture",
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "name": "nested changed configuration uses adapter",
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "proxy\n"
+          },
+          {
+            "name": "custom initial configuration",
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "proxy\n"
+          }
+        ],
+        "pushCalls": [
+          {
+            "actor": "git-push",
+            "args": [
+              "config",
+              "fixture.value",
+              "push"
+            ]
+          },
+          {
+            "actor": "git-push",
+            "args": [
+              "push",
+              "https://github.com/dotln-fixture/target.git",
+              "HEAD:refs/heads/parity"
+            ]
+          }
+        ]
+      },
+      {
+        "label": "native-dispatch",
+        "rows": [
+          {
+            "name": "ordinary status",
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "name": "quoted multiline argument",
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "name": "quoted multiline value",
+            "exitCode": 0,
+            "stdout": "two 'quotes'\nsecond line\n",
+            "stderr": ""
+          },
+          {
+            "name": "repeated configuration options",
+            "exitCode": 0,
+            "stdout": "two\n",
+            "stderr": ""
+          },
+          {
+            "name": "literal push argument",
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "name": "invalid Git command",
+            "exitCode": 1,
+            "stdout": "",
+            "stderr": "git: 'not-a-fixture-git-command' is not a git command. See 'git --help'.\n"
+          },
+          {
+            "name": "local push mapping",
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "To <fixture>/origin.git\n * [new branch]      HEAD -> parity\n"
+          },
+          {
+            "name": "remote mapped result",
+            "exitCode": 0,
+            "stdout": "<object>\trefs/heads/parity\n",
+            "stderr": ""
+          },
+          {
+            "name": "changed configuration custom Git",
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "proxy\n"
+          },
+          {
+            "name": "self recursion refusal",
+            "exitCode": 70,
+            "stdout": "",
+            "stderr": "vertical git double refuses to invoke itself\n"
+          },
+          {
+            "name": "malformed configuration",
+            "exitCode": 1,
+            "stdout": "",
+            "stderr": "SyntaxError"
+          },
+          {
+            "name": "missing configured executable",
+            "exitCode": 1,
+            "stdout": "",
+            "stderr": "ENOENT"
+          },
+          {
+            "name": "missing configuration",
+            "exitCode": 1,
+            "stdout": "",
+            "stderr": "ENOENT"
+          },
+          {
+            "name": "missing configuration environment",
+            "exitCode": 1,
+            "stdout": "",
+            "stderr": "ERR_INVALID_ARG_TYPE"
+          },
+          {
+            "name": "nested configuration uses current fixture",
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "name": "nested changed configuration uses adapter",
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "proxy\n"
+          },
+          {
+            "name": "custom initial configuration",
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "proxy\n"
+          }
+        ],
+        "pushCalls": [
+          {
+            "actor": "git-push",
+            "args": [
+              "config",
+              "fixture.value",
+              "push"
+            ]
+          },
+          {
+            "actor": "git-push",
+            "args": [
+              "push",
+              "https://github.com/dotln-fixture/target.git",
+              "HEAD:refs/heads/parity"
+            ]
+          }
+        ]
+      }
+    ],
+    "limits": "Serial actual-fixture comparison. Exact statuses/stdout/stderr are compared after fixture path and Git object normalization, except malformed/missing configuration errors compare their stable error class because adapter stack paths differ. Both push calls and the actual local remote ref are checked. All created fixture roots are removed.",
+    "instrument": "check-vertical-dispatch-parity.mjs in session scratch",
+    "instrumentSha256": "5392173473448eb6487b8db12da2712864d063c5adb9e185ee0943f6f0a74941",
+    "logSha256": "ddc3857917ee68ee00dc92619bc5744af5489bd1c8a12b86da09b104b0f18e63"
+  },
+  "rejectedCleanupAlternative": {
+    "observedAt": "2026-10-21T18:57:02.291Z",
+    "sourcePath": "scripts/test-launchpad-update.mjs",
+    "sourceSha256": "11f70220e9026c3e0894a1b4d17c9e05404cd364030bdc7b34ad5b331f5bf12a",
+    "candidateSha256": "93839517f1ec12b245773cef975dce88580f4e1873927d08e565a8022f2ba363",
+    "results": [
+      {
+        "label": "original",
+        "exitCode": 0,
+        "signal": null,
+        "durationMs": 105157,
+        "outputSha256": "60035b6265bb602b486b5731dde7043773c1ad8a1d6b1f2b11c0b043998eff64"
+      },
+      {
+        "label": "native-dispatch-corrected",
+        "exitCode": 0,
+        "signal": null,
+        "durationMs": 102158,
+        "outputSha256": "e49902088ca3b66e8b57aed24899aa9a7fdff07e911d4267282020f0819c71e4"
+      }
+    ],
+    "probeCorrection": "Relocation regex rewrote an import inside generated fixture code. The corrected driver relocates only the static header and the one actual dynamic import; generated code remains literal. The original passing arm is retained without rerun.",
+    "failedProbe": {
+      "exitCode": 1,
+      "durationMs": 4774,
+      "outputSha256": "9cf86d6607d5447069f2eb6bdfbd67e6b60660f368967257c99fd368e33499ae"
+    },
+    "reason": "The one corrected pair saves only 2999 ms on a 105157 ms case, insufficient evidence to justify this additional source change while the wider vertical fixture has a larger measured saving. No whole-gate claim is made."
+  },
+  "limits": "One serial case comparison and seventeen command/configuration checks demonstrate bounded cost and parity, not whole-gate retention. Three fresh complete passing reviews at one identity still decide retention under the unchanged 1668518 ms median limit."
+}

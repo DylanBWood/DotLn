@@ -1,4 +1,5 @@
 import { pathToFileURL } from "node:url";
+import { isMainModule } from "../../scripts/lib/paths.mjs";
 import { buildIdCorpus } from "./id-corpus-lib.mjs";
 import { buildManifest } from "./manifest-lib.mjs";
 import { buildProgramCorpus } from "./program-corpus-lib.mjs";
@@ -41,8 +42,5 @@ export async function runGenerator(lane, argv) {
 }
 
 export function isMain(metaUrl) {
-  return (
-    process.argv[1] !== undefined &&
-    metaUrl === pathToFileURL(process.argv[1]).href
-  );
+  return isMainModule(metaUrl);
 }

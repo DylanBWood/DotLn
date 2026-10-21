@@ -19,7 +19,7 @@ import {
   symlinkSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
-import { dirname, join, resolve } from "node:path";
+import { dirname, isAbsolute, join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { measurementGateForRun } from "./measure-gates.mjs";
 import {
@@ -35,6 +35,7 @@ import {
   changedMachinery,
   changedSinceLastGate,
   lastFailedSuites,
+  suitePriorityLeads,
   lightSuiteNames,
   completeSharedRefs,
   sharedRefChanges,
@@ -118,7 +119,13 @@ test("target claims use only current target selection rows and consume the docum
     runGit(path, ["config", "user.email", "fixture@example.invalid"]);
     writeFileSync(join(path, ".gitignore"), "/docs/control/local/\n");
     runGit(path, ["add", ".gitignore"]);
-    runGit(path, ["commit", "-qm", "test: base"]);
+    runGit(path, [
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "test: base",
+    ]);
   }
   const commit = runGit(target, ["rev-parse", "HEAD"]);
   const state = {
@@ -335,6 +342,16 @@ test("target claims use only current target selection rows and consume the docum
     treeHash: gateTreeHash(repo),
     subject: gateTreeHash(repo),
     requiredSuites: ["docs-check"],
+    cases: [
+      {
+        name: "docs-check",
+        executed: true,
+        exitCode: 0,
+        durationMs: 1,
+        startedAt: "2026-10-14T10:00:03.900Z",
+        finishedAt: "2026-10-14T10:00:03.901Z",
+      },
+    ],
     executed: true,
     exitCode: 0,
     durationMs: 1,
@@ -367,12 +384,24 @@ test("records publication proves unchanged launchpad identity or requires the re
   runGit(repo, ["config", "user.email", "fixture@example.invalid"]);
   writeFileSync(join(repo, "source.txt"), "source\n");
   runGit(repo, ["add", "-A"]);
-  runGit(repo, ["commit", "-qm", "test: source"]);
+  runGit(repo, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "test: source",
+  ]);
   runGit(repo, ["update-ref", "refs/remotes/origin/main", "HEAD"]);
   mkdirSync(join(repo, "docs"));
   writeFileSync(join(repo, "docs/record.md"), "record\n");
   runGit(repo, ["add", "-A"]);
-  runGit(repo, ["commit", "-qm", "docs: records"]);
+  runGit(repo, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "docs: records",
+  ]);
   const { reviewedLaunchpadIdentity } =
     await import("./lib/release-records.mjs");
   const { assertGitHubBodyProfile } = await import("./lib/github-body.mjs");
@@ -383,7 +412,13 @@ test("records publication proves unchanged launchpad identity or requires the re
   assertGitHubBodyProfile(proof.body, "records publication proof");
   writeFileSync(join(repo, "source.txt"), "changed\n");
   runGit(repo, ["add", "-A"]);
-  runGit(repo, ["commit", "-qm", "fix: source"]);
+  runGit(repo, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "fix: source",
+  ]);
   assert.throws(
     () => reviewedLaunchpadIdentity(repo, "WO-999"),
     /no recorded passing reviewer npm test row/u,
@@ -746,6 +781,8 @@ test("kit checks execute fresh against ignored runtime and document inputs under
       "user.name=Fixture",
       "-c",
       "user.email=fixture@example.invalid",
+      "-c",
+      "maintenance.auto=false",
       "commit",
       "-qm",
       "Kit current inputs",
@@ -865,6 +902,8 @@ test("kit checks execute fresh against ignored runtime and document inputs under
           "user.name=Fixture",
           "-c",
           "user.email=fixture@example.invalid",
+          "-c",
+          "maintenance.auto=false",
           "commit",
           "-qm",
           "Bind instance reviewer observation",
@@ -925,6 +964,8 @@ test("kit checks execute fresh against ignored runtime and document inputs under
             "user.name=Fixture",
             "-c",
             "user.email=fixture@example.invalid",
+            "-c",
+            "maintenance.auto=false",
             "commit",
             "-qam",
             message,
@@ -1112,7 +1153,8 @@ test("named async read case", async t => {
   assert.match(guarded.output, /reads generated\.json/u);
   for (const path of ["NOTE.md", ".agents/fixture.txt", ".claude/fixture.txt"])
     assert.ok(guarded.output.includes(`reads ${path}`), path);
-  const events = readFileSync(guarded.productReadLog, "utf8")
+  assert.equal(isAbsolute(guarded.productReadLog), false);
+  const events = readFileSync(join(repo, guarded.productReadLog), "utf8")
     .trim()
     .split("\n")
     .map(JSON.parse);
@@ -1237,6 +1279,8 @@ test("release shell changes select their inventory guard during review", async (
       "user.name=Fixture",
       "-c",
       "user.email=fixture@example.invalid",
+      "-c",
+      "maintenance.auto=false",
       "commit",
       "-m",
       "fixture baseline",
@@ -1319,7 +1363,11 @@ test("npm test composes plain and review task rows; explicit fresh, changed code
       `import fs from "node:fs";\nfs.appendFileSync("observed.jsonl", ${JSON.stringify(`${name}\n`)});\n`,
     );
   runGit(repo, ["add", "."], fixtureGitOptions);
-  runGit(repo, ["commit", "-qm", "Gate reuse fixture"], fixtureGitOptions);
+  runGit(
+    repo,
+    ["-c", "maintenance.auto=false", "commit", "-qm", "Gate reuse fixture"],
+    fixtureGitOptions,
+  );
   // The order's branch: main stays behind, so a machinery source changed
   // here is selected under --review while the code identity stays put.
   runGit(repo, ["checkout", "-q", "-b", "work"], fixtureGitOptions);
@@ -1329,7 +1377,13 @@ test("npm test composes plain and review task rows; explicit fresh, changed code
   );
   runGit(
     repo,
-    ["commit", "-qam", "Change the machinery source"],
+    [
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qam",
+      "Change the machinery source",
+    ],
     fixtureGitOptions,
   );
   const row = (name, options = {}) => ({
@@ -1573,6 +1627,8 @@ test("WO-169 a changed script outside the former eight sources selects the confi
       "user.name=Fixture",
       "-c",
       "user.email=fixture@example.invalid",
+      "-c",
+      "maintenance.auto=false",
       "commit",
       "-m",
       "fixture baseline",
@@ -1643,6 +1699,8 @@ test("WO-133 review selection ignores release-only changes and retains host beha
         "user.name=Fixture",
         "-c",
         "user.email=fixture@example.invalid",
+        "-c",
+        "maintenance.auto=false",
         "commit",
         "-m",
         "fixture baseline",
@@ -1926,11 +1984,9 @@ test("a kit formats before verifying carried code and refuses every later task o
         [],
       );
     if (!failure)
-      assert.ok(
-        result
-          .find((row) => row.name === "test")
-          .predecessors.includes("format"),
-      );
+      assert.deepEqual(result.find((row) => row.name === "test").predecessors, [
+        "kit-verify",
+      ]);
   }
 });
 
@@ -2281,6 +2337,96 @@ test("exclusive suites without an overlap declaration run alone and shared suite
     );
   }
 });
+for (const blockedBy of ["group", "dependency"])
+  test(`priority-regression: a ${blockedBy}-blocked row cannot hide a ready exclusive`, async () => {
+    const signal = () => {
+      let resolve;
+      const promise = new Promise((done) => {
+        resolve = done;
+      });
+      return { promise, resolve };
+    };
+    const names = ["first", "second", "next", "heavy"];
+    const entered = Object.fromEntries(names.map((name) => [name, signal()]));
+    const released = Object.fromEntries(names.map((name) => [name, signal()]));
+    const events = [];
+    const group =
+      blockedBy === "group" ? { group: "shared", groupLimit: 2 } : {};
+    const waitFor = async (promise, label) => {
+      let timer;
+      try {
+        return await Promise.race([
+          promise,
+          new Promise((_, reject) => {
+            timer = setTimeout(
+              () => reject(new Error(`Timed out waiting for ${label}`)),
+              5_000,
+            );
+          }),
+        ]);
+      } finally {
+        clearTimeout(timer);
+      }
+    };
+    const run = scheduleSuites(
+      [
+        barrier,
+        { name: "first", command: ["fixture"], priority: 3000, ...group },
+        { name: "second", command: ["fixture"], priority: 3000, ...group },
+        {
+          name: "next",
+          command: ["fixture"],
+          priority: 3000,
+          ...group,
+          ...(blockedBy === "dependency" ? { after: ["first"] } : {}),
+        },
+        {
+          name: "exclusive",
+          command: ["fixture"],
+          exclusive: true,
+          priority: 1200,
+        },
+        { name: "heavy", command: ["fixture"], loadSlots: 2 },
+      ],
+      {
+        parallelism: 16,
+        concurrency: 4,
+        keepGoing: true,
+        lightTasks: new Set(),
+        execute: async (row) => {
+          events.push(`start:${row.name}`);
+          entered[row.name]?.resolve();
+          if (released[row.name]) await released[row.name].promise;
+          events.push(`end:${row.name}`);
+          return { name: row.name, exitCode: 0, executed: true };
+        },
+      },
+    );
+    try {
+      await waitFor(
+        Promise.all([entered.first.promise, entered.second.promise]),
+        "both leading tasks",
+      );
+      released.first.resolve();
+      await waitFor(entered.next.promise, "the newly eligible priority task");
+      for (const name of names) released[name].resolve();
+      const rows = await waitFor(run, "scheduler completion");
+      assert.equal(rows.length, 6);
+      assert.ok(rows.every((row) => row.exitCode === 0));
+      assert.ok(
+        events.indexOf("start:next") < events.indexOf("start:exclusive"),
+        events.join(", "),
+      );
+      assert.ok(
+        events.indexOf("end:exclusive") < events.indexOf("start:heavy"),
+        events.join(", "),
+      );
+    } finally {
+      for (const name of names) released[name].resolve();
+      await waitFor(run, "released scheduler completion");
+    }
+  });
+
 test("test discovery refuses missing compiled cases instead of silently succeeding", () => {
   const repo = mkdtempSync(join(tmpdir(), "dotln-runner-"));
   try {
@@ -2378,7 +2524,11 @@ test("only and document CLI selection execute their declared checks with the pro
       }),
     );
     runGit(repo, ["add", "."], fixtureGitOptions);
-    runGit(repo, ["commit", "-qm", "Runner fixture"], fixtureGitOptions);
+    runGit(
+      repo,
+      ["-c", "maintenance.auto=false", "commit", "-qm", "Runner fixture"],
+      fixtureGitOptions,
+    );
     assert.equal(
       (await runGate(["--only", "format", "--serial"], repo)).exitCode,
       0,
@@ -2435,7 +2585,15 @@ test("WO-157 the document gate refuses an unregistered docs JSONL and an unstubb
   );
   t.after(() => rmSync(parent, { recursive: true, force: true }));
   const copy = join(parent, "repository");
-  execGit(["clone", "--quiet", "--shared", root, copy]);
+  execGit([
+    "-c",
+    "maintenance.auto=false",
+    "clone",
+    "--quiet",
+    "--shared",
+    root,
+    copy,
+  ]);
   const listed = (...args) =>
     execGit(["-C", root, ...args], { encoding: "utf8" })
       .split("\0")
@@ -2452,6 +2610,13 @@ test("WO-157 the document gate refuses an unregistered docs JSONL and an unstubb
   const env = Object.fromEntries(
     Object.entries(process.env).filter(([key]) => key !== "DOTLN_LAUNCHPAD"),
   );
+  const bootstrap = spawnSync(process.execPath, ["scripts/build.mjs"], {
+    cwd: copy,
+    encoding: "utf8",
+    env,
+    timeout: 60_000,
+  });
+  assert.equal(bootstrap.status, 0, bootstrap.stdout + bootstrap.stderr);
   const check = () =>
     spawnSync(process.execPath, [row.command[1]], {
       cwd: copy,
@@ -2697,7 +2862,11 @@ test("WO-044 the runner honours a stop request at its next boundary, ends runnin
       }),
     );
     runGit(repo, ["add", "."], fixtureGitOptions);
-    runGit(repo, ["commit", "-qm", "Runner stop fixture"], fixtureGitOptions);
+    runGit(
+      repo,
+      ["-c", "maintenance.auto=false", "commit", "-qm", "Runner stop fixture"],
+      fixtureGitOptions,
+    );
     // A request already present ends the gate before its first suite.
     await assert.rejects(
       runGate(["--only", "format", "--serial"], repo, {
@@ -3018,6 +3187,40 @@ test("planning task dispatch delivers each selection flag to the executable", as
   }
 });
 
+test("product glob reads observe recursive records through sync, callback and promise APIs", async (t) => {
+  const repo = realpathSync(mkdtempSync(join(tmpdir(), "dotln-glob-guard-")));
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
+  runGit(repo, ["init", "-q"]);
+  mkdirSync(join(repo, "docs/evidence/WO-999"), { recursive: true });
+  writeFileSync(
+    join(repo, "docs/evidence/WO-999/report.md"),
+    "private fixture report\n",
+  );
+  writeFileSync(join(repo, ".gitignore"), "docs/control/local/\n");
+  writeFileSync(
+    join(repo, "probe.mjs"),
+    `
+import fs from 'node:fs';
+fs.globSync('**/*');
+await new Promise((resolve, reject) => fs.glob('**/*', (error, files) => error ? reject(error) : resolve(files)));
+for await (const file of fs.promises.glob('**/*')) void file;
+`,
+  );
+  runGit(repo, ["add", "."]);
+  const result = await executeSuite(
+    {
+      name: "glob",
+      product: true,
+      activeOrder: "WO-999",
+      command: [process.execPath, "probe.mjs"],
+    },
+    repo,
+  );
+  assert.equal(result.exitCode, 1, result.output);
+  for (const method of ["globSync", "glob", "promises.glob"])
+    assert.ok(result.output.includes(`(${method})`), result.output);
+});
+
 test("live progress arrives before a running process completes and remains bounded", async () => {
   const observed = [];
   let finished = false;
@@ -3031,7 +3234,7 @@ test("live progress arrives before a running process completes and remains bound
       command: [
         process.execPath,
         "-e",
-        'console.log("PROGRESS fixture begun   "); setTimeout(() => console.log("done"), 100);',
+        'console.log("# PROGRESS fixture begun   "); setTimeout(() => console.log("done"), 100);',
       ],
     },
     root,
@@ -3101,7 +3304,10 @@ test("code identity follows tracked source and dependency bytes across processes
       '{"private":true,"dependencies":{"fixture":"1.0.0"}}\n',
     );
     execGit(["-C", repo, "add", "."], fixtureGitOptions);
-    execGit(["-C", repo, "commit", "-qm", "fixture"], fixtureGitOptions);
+    execGit(
+      ["-C", repo, "-c", "maintenance.auto=false", "commit", "-qm", "fixture"],
+      fixtureGitOptions,
+    );
     const code = gateCodeIdentity(repo),
       tree = gateTreeHash(repo);
     assert.equal(gateCodeIdentity(repo, "HEAD"), code);
@@ -3159,7 +3365,15 @@ test("code identity follows tracked source and dependency bytes across processes
     assert.notEqual(gateCodeIdentity(repo), code);
     execGit(["-C", repo, "add", "."], fixtureGitOptions);
     execGit(
-      ["-C", repo, "commit", "-qm", "dependency update"],
+      [
+        "-C",
+        repo,
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-qm",
+        "dependency update",
+      ],
       fixtureGitOptions,
     );
     assert.equal(gateCodeIdentity(repo, "HEAD"), gateCodeIdentity(repo));
@@ -3219,7 +3433,13 @@ const confinementFixture = (t) => {
   runGit(repo, ["add", "."], fixtureGitOptions);
   runGit(
     repo,
-    ["commit", "-qm", "Host-confinement fixture"],
+    [
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "Host-confinement fixture",
+    ],
     fixtureGitOptions,
   );
   const row = (name, options = {}) => ({
@@ -3459,7 +3679,11 @@ test("WO-140 a confined partial row is rejected by every product-gate consumer a
         .join("\n") + "\n",
     );
     runGit(repo, ["add", "docs/control/orders"], fixtureGitOptions);
-    runGit(repo, ["commit", "-qm", "Reviewer observation"], fixtureGitOptions);
+    runGit(
+      repo,
+      ["-c", "maintenance.auto=false", "commit", "-qm", "Reviewer observation"],
+      fixtureGitOptions,
+    );
   };
   for (const row of [
     recorded[0],
@@ -3531,7 +3755,13 @@ test("WO-140 a confined partial row is rejected by every product-gate consumer a
     runGit(repo, ["add", "docs/control/orders"], fixtureGitOptions);
     runGit(
       repo,
-      ["commit", "-qm", "Bind the reviewer gate"],
+      [
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-qm",
+        "Bind the reviewer gate",
+      ],
       fixtureGitOptions,
     );
   };
@@ -3803,12 +4033,16 @@ test("WO-157 the host-confinement fixture's commits start no background Git main
   t.after(() => rmSync(traces, { recursive: true, force: true }));
   writeFileSync(join(repo, "teardown.txt"), "teardown probe\n");
   runGit(repo, ["add", "teardown.txt"], fixtureGitOptions);
-  runGit(repo, ["commit", "-qm", "Teardown probe"], {
-    ...fixtureGitOptions,
-    ...{
-      env: { ...process.env, GIT_TRACE2_EVENT: join(traces, "commit.jsonl") },
+  runGit(
+    repo,
+    ["-c", "maintenance.auto=false", "commit", "-qm", "Teardown probe"],
+    {
+      ...fixtureGitOptions,
+      ...{
+        env: { ...process.env, GIT_TRACE2_EVENT: join(traces, "commit.jsonl") },
+      },
     },
-  });
+  );
   const started = readFileSync(join(traces, "commit.jsonl"), "utf8")
     .trim()
     .split("\n")
@@ -3897,7 +4131,11 @@ test("WO-160 document failures rerun at the base, retain red status and record i
     "process.exitCode = 0;\n",
   );
   runGit(repo, ["add", "."], fixtureGitOptions);
-  runGit(repo, ["commit", "-qm", "base checks"], fixtureGitOptions);
+  runGit(
+    repo,
+    ["-c", "maintenance.auto=false", "commit", "-qm", "base checks"],
+    fixtureGitOptions,
+  );
   const base = runGit(repo, ["rev-parse", "HEAD"], fixtureGitOptions);
   writeFileSync(
     join(repo, "scripts/introduced.mjs"),
@@ -3994,7 +4232,13 @@ function taskReuseFixture(t) {
           : ""),
     );
   runGit(repo, ["add", "."]);
-  runGit(repo, ["commit", "-qm", "task reuse fixture"]);
+  runGit(repo, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "task reuse fixture",
+  ]);
   const table = [
     {
       name: "build",
@@ -4034,7 +4278,13 @@ function sharedRefsFixture(t) {
     'import fs from "node:fs"; if(fs.readFileSync("scripts/branch-value", "utf8") !== "base\\n") process.exit(1);\n',
   );
   runGit(repo, ["add", "."]);
-  runGit(repo, ["commit", "-qm", "branch-local gate input"]);
+  runGit(repo, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "branch-local gate input",
+  ]);
   const origin = mkdtempSync(join(tmpdir(), "dotln-shared-origin-"));
   const worktree = `${repo}-worktree`;
   t.after(() => {
@@ -4057,7 +4307,13 @@ function sharedRefsFixture(t) {
   );
   const advance = () => {
     writeFileSync(join(repo, "scripts/branch-value"), "sibling\n");
-    runGit(repo, ["commit", "-qam", "sibling lands on main"]);
+    runGit(repo, [
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qam",
+      "sibling lands on main",
+    ]);
     runGit(repo, ["tag", "-a", "v9000.0.1", "-m", "sibling release"]);
     runGit(repo, ["update-ref", "refs/dotln/checkpoint/WO-901/1", "HEAD"]);
     runGit(repo, ["push", "-q", "origin", "main", "refs/tags/v9000.0.1"]);
@@ -4157,11 +4413,38 @@ test("WO-198 origin/main created between failed linked-worktree gates is named e
   const first = await captureGate(["--serial", "--again"], worktree, options);
   assert.equal(first.row.exitCode, 1);
   assert.equal(first.row.sharedRefs.end.originMain, "absent");
+  const retained = readGateChecks(worktree).find(
+    (row) => row.recordedAt === first.row.recordedAt,
+  );
+  assert.equal(
+    typeof retained.outputRef,
+    "string",
+    "failed complete run retains a log reference",
+  );
+  assert.match(
+    readFileSync(join(worktree, retained.outputRef), "utf8"),
+    /beta: failed/,
+  );
   assert.ok(
     first.lines.every((line) => !line.startsWith("shared refs moved:")),
   );
   const commit = runGit(repo, ["rev-parse", "HEAD"]);
   runGit(repo, ["update-ref", "refs/remotes/origin/main", commit]);
+  // A host wrapper can record the same check without the runner's snapshots.
+  // That observation must not erase the previous comparable baseline.
+  recordGateChecks(worktree, [
+    {
+      checkId: first.row.checkId,
+      codeIdentity: first.row.codeIdentity,
+      treeHash: first.row.treeHash,
+      subject: first.row.subject,
+      durationMs: 1,
+      executed: true,
+      exitCode: 1,
+      evidenceRef: "fixture:host-wrapper-without-refs",
+      recordedAt: new Date().toISOString(),
+    },
+  ]);
   const second = await captureGate(["--serial", "--again"], worktree, options);
   assert.equal(second.row.exitCode, 1);
   assert.equal(second.row.sharedRefs.start.originMain, commit);
@@ -4177,7 +4460,7 @@ test("WO-198 origin/main created between failed linked-worktree gates is named e
       "utf8",
     ),
   );
-  assert.equal(stored.length, 2);
+  assert.equal(stored.length, 3);
   assert.ok(stored.every((row) => row.exitCode === 1));
   assert.deepEqual(stored.at(-1).sharedRefs, second.row.sharedRefs);
   assert.equal(
@@ -5611,7 +5894,13 @@ test("WO-186 VER-001 an attested output is carried in another session, and a wor
   const { repo, table, observed, value, task } = builtOutputFixture(t);
   value("good");
   runGit(repo, ["add", "."]);
-  runGit(repo, ["commit", "-qm", "built output fixture"]);
+  runGit(repo, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "built output fixture",
+  ]);
   writeFileSync(join(repo, "fail-beta"), "fail\n");
   const first = await runGate(["--serial"], repo, { table });
   assert.equal(first.exitCode, 1);
@@ -6070,7 +6359,13 @@ test("WO-186 symbolic source aliases cannot reuse a key that omits ignored targe
   );
   runGit(repo, ["add", "scripts/new.mjs"]);
   assert.throws(() => gateCodeIdentity(repo), /symbolic source aliases/);
-  runGit(repo, ["commit", "-qm", "unsupported symbolic fixture"]);
+  runGit(repo, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "unsupported symbolic fixture",
+  ]);
   assert.throws(
     () => gateCodeIdentity(repo, "HEAD"),
     /symbolic source aliases/,
@@ -6098,7 +6393,13 @@ test("WO-186 sibling advancement leaves merge-base selection and the review clai
   const before = changedMachinery(worktree, table).map((row) => row.name);
   const { coveringGateCheck } = await import("./lib/gate-reuse.mjs");
   writeFileSync(join(repo, "scripts/machine.mjs"), "// sibling machinery\n");
-  runGit(repo, ["commit", "-qam", "sibling machinery"]);
+  runGit(repo, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qam",
+    "sibling machinery",
+  ]);
   runGit(repo, ["update-ref", "refs/remotes/origin/main", "HEAD"]);
   assert.deepEqual(
     changedMachinery(worktree, table).map((row) => row.name),
@@ -6213,7 +6514,10 @@ console.log("duplicate observer retains one installation");\n`,
   assert.equal(duplicate.exitCode, 1, duplicate.output);
   assert.match(duplicate.output, /duplicate observer retains one installation/);
   assert.equal(duplicate.excludedReads, 1, duplicate.output);
-  const duplicateEvents = readFileSync(duplicate.productReadLog, "utf8")
+  const duplicateEvents = readFileSync(
+    join(repo, duplicate.productReadLog),
+    "utf8",
+  )
     .trim()
     .split("\n")
     .map(JSON.parse);
@@ -6953,7 +7257,13 @@ fi
 `,
   );
   runGit(repo, ["add", "."]);
-  runGit(repo, ["commit", "-qm", "release reuse fixture"]);
+  runGit(repo, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "release reuse fixture",
+  ]);
   const selection = [
     table[0],
     {
@@ -7282,7 +7592,13 @@ test("WO-186 FINAL-001 machinery selection preserves removed, quoted and unlista
     const filename = "scripts/odd\nname.mjs";
     writeFileSync(join(repo, filename), "export const value=1;\n");
     runGit(repo, ["add", filename]);
-    runGit(repo, ["commit", "-qm", "quoted source fixture"]);
+    runGit(repo, [
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "quoted source fixture",
+    ]);
     runGit(repo, ["checkout", "-q", "-b", "work"]);
     writeFileSync(join(repo, filename), "export const value=2;\n");
     assert.deepEqual(
@@ -7423,8 +7739,14 @@ test("format preflight stops plain and review before product tasks, and stays fr
     assert.ok(Date.now() - started < 60_000);
     assert.deepEqual(observed(), []);
     const failure = failed.taskTimeline.find((row) => row.name === "format");
-    const output = (row, check = failed) =>
-      check.cases.find((item) => item.name === row.name).output;
+    const output = (row, check = failed) => {
+      const value = check.cases.find((item) => item.name === row.name)?.output;
+      assert.ok(
+        value,
+        `Nested gate has no output for ${row.name}: ${JSON.stringify(check.taskTimeline)}`,
+      );
+      return value;
+    };
     assert.match(output(failure), /scripts\/format-subject\.mjs/);
     for (const task of failed.taskTimeline.filter(
       (row) => row.name !== "format",
@@ -7977,8 +8299,8 @@ test("launchpad files retain all 34 cases and run at most two independent deadli
   assert.deepEqual(
     tasks.map((row) => row.name),
     [
-      "launchpad:file:test-launchpad-export.mjs",
       "launchpad:file:test-launchpad-update.mjs",
+      "launchpad:file:test-launchpad-export.mjs",
       "launchpad:file:test-launchpad-seeds.mjs",
     ],
   );
@@ -8200,8 +8522,9 @@ test("copied fixtures use the checked declaration and directory coverage never s
   assert.deepEqual(uncoveredFixtureInputs(repo), []);
 });
 
-test("a complete selection leads with suites whose inputs changed since the newest gate row", () => {
+test("priority-regression: a complete selection leads with suites whose inputs changed since the newest gate row", (t) => {
   const repo = mkdtempSync(join(tmpdir(), "dotln-changed-first-"));
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
   const git = (...args) => {
     const run = runGit(
       repo,
@@ -8223,7 +8546,7 @@ test("a complete selection leads with suites whose inputs changed since the newe
   writeFileSync(join(repo, "scripts/test-epsilon.sh"), "exit 0\n");
   writeFileSync(join(repo, "packages/delta/src/a.ts"), "export {};\n");
   git("add", "-A");
-  git("commit", "-q", "-m", "fixture");
+  git("-c", "maintenance.auto=false", "commit", "-q", "-m", "fixture");
   const table = [
     { name: "alpha", sources: ["scripts/alpha"] },
     { name: "beta", sources: ["scripts/beta.mjs"] },
@@ -8269,7 +8592,73 @@ test("a complete selection leads with suites whose inputs changed since the newe
     ]).suites,
     [],
   );
-  rmSync(repo, { recursive: true, force: true });
+  // A structural failure never exercised these source changes. A legacy row
+  // without execution detail still supplies its timestamp, as above.
+  const aborted = {
+    recordedAt: hourAhead,
+    exitCode: 1,
+    unrunSuites: ["alpha", "beta"],
+    taskTimeline: [
+      { name: "format", exitCode: 0, executed: true },
+      { name: "generated", exitCode: 1, executed: true },
+      { name: "alpha", exitCode: 1, executed: false },
+    ],
+  };
+  const structuralCompanion = {
+    recordedAt: hourAhead,
+    checkId: "structural",
+    exitCode: 1,
+    unrunSuites: [],
+    taskTimeline: STRUCTURAL_TASKS.map((name) => ({
+      name,
+      executed: true,
+      exitCode: name === "host" ? 1 : 0,
+    })),
+  };
+  for (const ignored of [
+    [
+      { recordedAt: hourAhead, checkId: "npm run test:docs" },
+      {
+        ...structuralCompanion,
+        exitCode: 0,
+        taskTimeline: structuralCompanion.taskTimeline.map((task) => ({
+          ...task,
+          exitCode: 0,
+        })),
+      },
+    ],
+    [aborted],
+    [
+      { ...aborted, taskTimeline: structuralCompanion.taskTimeline },
+      structuralCompanion,
+    ],
+    [
+      {
+        ...aborted,
+        taskTimeline: [{ name: "build", exitCode: 1, executed: true }],
+      },
+    ],
+  ]) {
+    const retained = changedSinceLastGate(repo, table, [
+      { recordedAt: hourAgo },
+      ...ignored,
+    ]);
+    assert.equal(retained.since, hourAgo);
+    assert.deepEqual(retained.suites, changed.suites);
+  }
+  // A failed row that did execute a product task still advances the mark.
+  const productFailure = {
+    ...aborted,
+    taskTimeline: [
+      ...aborted.taskTimeline,
+      { name: "beta", exitCode: 1, executed: true },
+    ],
+  };
+  assert.equal(
+    changedSinceLastGate(repo, table, [{ recordedAt: hourAgo }, productFailure])
+      .since,
+    hourAhead,
+  );
 });
 
 test("a suite whose latest recorded execution did not pass leads the next run", () => {
@@ -8306,6 +8695,117 @@ test("a suite whose latest recorded execution did not pass leads the next run", 
     ]),
     ["beta", "epsilon", "vertical"],
   );
+});
+
+test("priority-regression: branch history preserves exclusive priority while fresh changes lead", async () => {
+  const names = [
+    "build",
+    "target-publish",
+    "runner-fixtures",
+    "harness-fixtures",
+    "worktree-integration",
+    "launchpad-planning",
+    "worktree",
+  ];
+  const selected = suites.filter((row) => names.includes(row.name));
+  const first = suitePriorityLeads({
+    branch: [
+      "launchpad-planning",
+      "harness-fixtures",
+      "runner-fixtures",
+      "target-publish",
+    ],
+    changed: ["runner-fixtures", "target-publish"],
+    failed: ["target-publish"],
+  });
+  const tasks = expandSuiteTasks(selected, root, "<gate-template>", { first });
+  const priority = (name) => tasks.find((row) => row.name === name).priority;
+  for (const [higher, lower] of [
+    ["target-publish", "runner-fixtures"],
+    ["runner-fixtures", "harness-fixtures"],
+    ["harness-fixtures", "worktree-integration"],
+    ["worktree-integration", "launchpad-planning"],
+    ["launchpad-planning", "worktree"],
+  ])
+    assert.ok(
+      priority(higher) > priority(lower),
+      `${higher} must lead ${lower}`,
+    );
+  const started = [];
+  const result = await scheduleSuites(tasks, {
+    concurrency: 8,
+    parallelism: 16,
+    lightTasks: new Set(),
+    execute: async (row) => {
+      started.push(row.name);
+      return { name: row.name, executed: true, exitCode: 0 };
+    },
+  });
+  assert.equal(result.length, tasks.length);
+  assert.ok(
+    started.indexOf("target-publish") < started.indexOf("harness-fixtures"),
+  );
+  assert.ok(
+    started.indexOf("runner-fixtures") < started.indexOf("harness-fixtures"),
+  );
+  assert.ok(
+    started.indexOf("worktree-integration") <
+      started.indexOf("launchpad-planning"),
+  );
+});
+
+test("priority-regression: launchpad admits update first when only one file fits", async () => {
+  const launchpad = suites.find((row) => row.name === "launchpad");
+  const busy = {
+    name: "busy",
+    command: ["fixture"],
+    loadSlots: 2,
+    priority: 100,
+  };
+  const tasks = expandSuiteTasks(
+    [barrier, busy, launchpad],
+    root,
+    "<gate-template>",
+  );
+  const files = tasks.filter((row) => row.name.startsWith("launchpad:file:"));
+  assert.deepEqual(files.map((row) => row.command.at(-1)).sort(), [
+    "scripts/test-launchpad-export.mjs",
+    "scripts/test-launchpad-seeds.mjs",
+    "scripts/test-launchpad-update.mjs",
+  ]);
+  assert.ok(files.every((row) => row.loadSlots === 2 && row.groupLimit === 2));
+  const release = Promise.withResolvers(),
+    firstFile = Promise.withResolvers();
+  let deadline;
+  const result = scheduleSuites(tasks, {
+    concurrency: 4,
+    parallelism: 8,
+    execute: async (row) => {
+      if (row.name !== "build") {
+        if (row.name.startsWith("launchpad:file:")) firstFile.resolve(row.name);
+        await release.promise;
+      }
+      return { name: row.name, executed: true, exitCode: 0 };
+    },
+  });
+  try {
+    const first = await Promise.race([
+      firstFile.promise,
+      new Promise((_, reject) => {
+        deadline = setTimeout(
+          () => reject(new Error("launchpad admission did not begin")),
+          5000,
+        );
+      }),
+    ]);
+    assert.equal(first, "launchpad:file:test-launchpad-update.mjs");
+  } finally {
+    clearTimeout(deadline);
+    release.resolve();
+    const completed = await result;
+    assert.equal(completed.length, tasks.length);
+    assert.ok(completed.every((row) => row.executed && row.exitCode === 0));
+  }
 });
 
 test("a lead raises a suite's tasks above every other priority while their own order holds", () => {
@@ -8429,6 +8929,29 @@ test("exclusive overlap uses only measured light peers and preserves its nested 
   const active = new Set(),
     events = [];
   let peakPeers = 0;
+  let releaseExclusive, releasePeers;
+  const exclusiveEntered = new Promise((resolve) => {
+    releaseExclusive = resolve;
+  });
+  const peersEntered = new Promise((resolve) => {
+    releasePeers = resolve;
+  });
+  const waitFor = async (promise, label) => {
+    let timer;
+    try {
+      await Promise.race([
+        promise,
+        new Promise((_, reject) => {
+          timer = setTimeout(
+            () => reject(new Error(`Timed out waiting for ${label}`)),
+            5_000,
+          );
+        }),
+      ]);
+    } finally {
+      clearTimeout(timer);
+    }
+  };
   const rows = await scheduleSuites(
     [
       barrier,
@@ -8447,7 +8970,15 @@ test("exclusive overlap uses only measured light peers and preserves its nested 
       parallelism: 16,
       lightTasks,
       hostLanes: { directory: dir, capacity: 8, parentLease: null },
+      acquireLanes: async (options) => {
+        // Delay admission so entry signals, rather than host timing, prove overlap.
+        if (lightTasks.has(options.task))
+          await new Promise((done) => setTimeout(done, 150));
+        return acquireHostLanes(options);
+      },
       execute: async (row) => {
+        if (lightTasks.has(row.name))
+          await waitFor(exclusiveEntered, "exclusive nested lease");
         events.push(`start:${row.name}`);
         active.add(row.name);
         if (row.name === "exclusive") {
@@ -8472,7 +9003,8 @@ test("exclusive overlap uses only measured light peers and preserves its nested 
               }),
               /inherited lane reservation/,
             );
-            await new Promise((done) => setTimeout(done, 80));
+            releaseExclusive();
+            await waitFor(peersEntered, "both light entries");
           } finally {
             await nested.release();
           }
@@ -8480,8 +9012,10 @@ test("exclusive overlap uses only measured light peers and preserves its nested 
           if (active.has("exclusive")) {
             assert.ok(lightTasks.has(row.name));
             peakPeers = Math.max(peakPeers, active.size - 1);
+            if (peakPeers === 2) releasePeers();
           }
-          await new Promise((done) => setTimeout(done, 25));
+          if (lightTasks.has(row.name))
+            await waitFor(peersEntered, "both light entries");
         }
         active.delete(row.name);
         events.push(`end:${row.name}`);
@@ -8489,10 +9023,113 @@ test("exclusive overlap uses only measured light peers and preserves its nested 
       },
     },
   );
-  assert.ok(rows.every((row) => row.exitCode === 0));
-  assert.equal(peakPeers, 2);
+  assert.ok(
+    rows.every((row) => row.exitCode === 0),
+    JSON.stringify(rows),
+  );
+  assert.equal(peakPeers, 2, JSON.stringify(events));
   assert.ok(events.indexOf("start:heavy") > events.indexOf("end:exclusive"));
   assert.equal(rows.find((row) => row.name === "exclusive").hostLaneSlots, 6);
+});
+
+test("an exclusive gate reserves unused overlap slots against an independent gate", async (t) => {
+  const { acquireHostLaneCapacity, acquireHostLanes } =
+    await import("./lib/host-lanes.mjs");
+  const directory = mkdtempSync(join(tmpdir(), "dotln-exclusive-host-"));
+  t.after(() => rmSync(directory, { recursive: true, force: true }));
+  await acquireHostLaneCapacity({ directory, capacity: 8 });
+  const rows = await scheduleSuites(
+    [
+      barrier,
+      { name: "exclusive", command: ["fixture"], exclusive: true, overlap: 2 },
+    ],
+    {
+      hostLanes: { directory, capacity: 8, parentLease: null },
+      execute: async (row) => {
+        if (row.name === "exclusive") {
+          assert.equal(row.hostLease.record.slots, 6);
+          const stop = new AbortController();
+          let acquired = false;
+          const other = acquireHostLanes({
+            directory,
+            slots: 1,
+            parentLease: null,
+            task: "independent heavy task",
+            signal: stop.signal,
+            onWait: () => {},
+          }).then(
+            async (lease) => {
+              acquired = true;
+              await lease.release();
+            },
+            (error) => {
+              assert.match(error.message, /wait stopped/);
+            },
+          );
+          await new Promise((done) => setTimeout(done, 150));
+          stop.abort();
+          await other;
+          assert.equal(
+            acquired,
+            false,
+            "unused overlap slots remain reserved for light peers of this gate",
+          );
+        }
+        return { name: row.name, exitCode: 0, executed: true, durationMs: 1 };
+      },
+    },
+  );
+  assert.ok(
+    rows.every((row) => row.exitCode === 0),
+    JSON.stringify(rows),
+  );
+});
+
+test("a light latest sample never erases an earlier heavy sample", () => {
+  const sample = {
+    name: "task",
+    loadClass: "shared",
+    durationMs: 1,
+    peakRssBytes: 1,
+  };
+  for (const earlier of [
+    { ...sample, durationMs: 60_000 },
+    { ...sample, peakRssBytes: 512 * 2 ** 20 },
+    { ...sample, loadClass: "isolated" },
+  ])
+    assert.equal(lightSuiteNames([earlier, sample]).has("task"), false);
+  assert.equal(lightSuiteNames([sample, sample]).has("task"), true);
+});
+
+test("each hand-copied control entry is declared and copy drift is refused", async () => {
+  const { copiedFixtureClosures, uncoveredFixtureInputs } =
+    await import("./lib/machinery-coverage.mjs");
+  const labels = [
+    "configured publication check",
+    "configured profile activation",
+    "configured target effects",
+    "concurrent work-order projection",
+    "harness completion ownership",
+    "harness control observation",
+  ];
+  const rows = copiedFixtureClosures(root);
+  for (const label of labels) {
+    const row = rows.find((entry) => entry.fixture === label);
+    assert.ok(row, label);
+    assert.deepEqual(uncoveredFixtureInputs(root, [row]), [], label);
+    for (const entry of row.entries) {
+      const drift = {
+        ...row,
+        files: row.files.filter((file) => file !== entry),
+      };
+      assert.ok(
+        uncoveredFixtureInputs(root, [drift]).some(
+          (finding) => finding.path === entry,
+        ),
+        `${label}: ${entry}`,
+      );
+    }
+  }
 });
 
 test("target-worktree file tasks keep all declared cases and two independent deadlines at eight lanes", async () => {
@@ -8517,7 +9154,7 @@ test("target-worktree file tasks keep all declared cases and two independent dea
       "utf8",
     ),
   );
-  assert.equal(declarations.length, 54);
+  assert.equal(declarations.length, 55);
   assert.deepEqual(declarations.sort(), expected.declarations.sort());
   const names = [];
   for (const task of tasks) {
@@ -8539,8 +9176,8 @@ test("target-worktree file tasks keep all declared cases and two independent dea
     );
     names.push(...collected.registeredNames);
   }
-  assert.equal(names.length, 78);
-  assert.equal(new Set(names).size, 78);
+  assert.equal(names.length, 79);
+  assert.equal(new Set(names).size, 79);
   assert.deepEqual(names.sort(), expected.names.sort());
   let active = 0,
     peak = 0;

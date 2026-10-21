@@ -1276,11 +1276,24 @@ function releaseCloseAdmission(
       /'(?:[^']|'\\'')*'|"(?:\\.|[^"\\])*"|\\[\s\S]/gu,
       "",
     );
+    // Consume only complete canonical publish material arguments before
+    // classifying the remainder. A later extra flag is not a quoting error.
+    const remainder = suffix.startsWith(" --publish")
+      ? suffix
+          .slice(" --publish".length)
+          .replace(
+            /^(?: --material '(?:[^'\r\n\u0000]|'\\'')+=(?:disposable|preserve)')+/u,
+            "",
+          )
+      : suffix;
     const mismatch = /[;&|<>\r\n]/u.test(unquoted)
       ? "shell operator or redirect"
-      : /(?:^|\s)--material(?:\s|$)/u.test(suffix)
-        ? "non-canonical material flag quoting or value"
-        : "extra or non-canonical words or whitespace after the helper";
+      : suffix.startsWith(" --dry-run") &&
+          /(?:^|\s)--material(?:\s|$)/u.test(suffix)
+        ? "material arguments require --publish"
+        : /(?:^|\s)--material(?:\s|$)/u.test(remainder)
+          ? "non-canonical material flag quoting or value"
+          : "extra or non-canonical words or whitespace after the helper";
     return missing(
       `byte-exact helper spelling missing (${mismatch}); expected ${helper} --publish OR ${helper} --dry-run; material arguments use --publish --material '<path>=disposable|preserve'`,
     );
@@ -3612,13 +3625,15 @@ function runHarnessEvidenceChecks(
   // is neither a pass nor a recorded failure. The nested runner may have
   // recorded its completed tasks as a stopped row, which supplies no pass;
   // the message names that row when it exists.
-  const honourStop = (checkId: string) => {
+  const honourStop = (checkId: string, startedAt?: number) => {
     if (!stopRequested()) return;
     const stopped = [...readGateChecks(root, treeHash)]
       .reverse()
       .find(
         (row: ReturnType<typeof readGateChecks>[number]) =>
           row.checkId === checkId &&
+          startedAt !== undefined &&
+          Date.parse(row.recordedAt) >= startedAt &&
           (row as { stopped?: boolean }).stopped === true,
       );
     throw new Error(
@@ -3657,7 +3672,7 @@ function runHarnessEvidenceChecks(
     });
     process.stdout.write(run.stdout ?? "");
     process.stderr.write(run.stderr ?? "");
-    honourStop(checkId);
+    honourStop(checkId, started);
     const durationMs = Date.now() - started;
     if (run.error)
       process.stderr.write(
@@ -4226,7 +4241,7 @@ export function permissionEffect(
 const stopReentry = (input: HarnessInput) =>
   input.hook_event_name === "Stop" && input.stop_hook_active === true;
 const protocolAdvisory = (reason: string) => ({
-  systemMessage: `DotLn advisory: ${reason.replace(/\s+/g, " ")}; host permissions decide.`,
+  systemMessage: `DotLn advisory: ${reason.replace(/\s+/g, " ").replace(/(?:; )?host permissions decide\.$/u, "")}; host permissions decide.`,
 });
 // Preserve budget provenance without adding fields to the host protocol.
 // Classification messages can also mention subagents; wording is not origin.

@@ -151,6 +151,32 @@ export async function verticalFixture(options = {}) {
     );
     chmodSync(join(bin, name), 0o755);
   }
+  // Keep pushes and changed or nested fixture configurations on the adapter.
+  // Unchanged local Git calls can avoid starting Node and parsing the same JSON.
+  const gitWrapper = join(bin, "git");
+  const gitAdapter = join(bin, "git-adapter.mjs");
+  const gitSnapshot = join(bin, "git-config.json");
+  writeFileSync(gitSnapshot, readFileSync(fixturePath));
+  put(
+    gitAdapter,
+    `#!${process.execPath}\nprocess.argv[1] = ${JSON.stringify(gitWrapper)};\nawait import(${JSON.stringify(join(TOOL_ROOT, "scripts/fixtures/vertical/git.mjs"))});\n`,
+  );
+  const shellQuote = (value) => "'" + value.replaceAll("'", "'\\''") + "'";
+  const adapterCommand = `${shellQuote(process.execPath)} ${shellQuote(gitAdapter)}`;
+  put(
+    gitWrapper,
+    `#!/bin/sh
+for arg do
+  if [ "$arg" = push ]; then exec ${adapterCommand} "$@"; fi
+done
+if [ "$DOTLN_VERTICAL_FIXTURE" = ${shellQuote(fixturePath)} ] &&
+   [ ${json(fixturePath).git === REAL_GIT ? "yes" : "no"} = yes ] &&
+   cmp -s ${shellQuote(fixturePath)} ${shellQuote(gitSnapshot)}; then
+  exec ${shellQuote(REAL_GIT)} "$@"
+fi
+exec ${adapterCommand} "$@"
+`,
+  );
   process.env.PATH = `${bin}:${process.env.PATH}`;
   process.env.DOTLN_VERTICAL_FIXTURE = fixturePath;
   let at = 100;

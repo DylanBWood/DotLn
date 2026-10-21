@@ -38,7 +38,7 @@ import {
   rmSync,
   writeFileSync,
 } from "node:fs";
-import { basename, dirname, join, resolve } from "node:path";
+import { basename, dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { startDeadline } from "../packages/skeleton/src/gate-deadlines.mjs";
 import { evidenceSourceContent } from "../packages/skeleton/src/evidence-editions.mjs";
@@ -127,6 +127,8 @@ const shell = (name, file) => ({
 // Machinery declarations select optional review checks by their own source paths.
 export const machinerySources = {
   "sync-fixtures": [
+    "scripts/release.mjs",
+    "scripts/lib/release-preparation.mjs",
     "scripts/check-role-oracle.mjs",
     "scripts/test-process-debt.mjs",
     "scripts/test-runner.mjs",
@@ -213,6 +215,7 @@ export const machinerySources = {
     "packages/skeleton/src/worker-transport.ts",
   ],
   "harness-fixtures": [
+    "scripts/lib/fixture-inputs.mjs",
     // Direct entry imports and literal first-party script inputs (WO-174).
     "scripts/lib/bounded-command.mjs",
     "packages/kernel/src/index.ts",
@@ -420,6 +423,7 @@ export const machinerySources = {
     "scripts/lib/target-worktree-fixture.mjs",
   ],
   "process-debt": [
+    "scripts/test-gate-followups.mjs",
     "scripts/lib/fixture-inputs.mjs",
     // Direct entry imports and literal first-party script inputs (WO-174).
     "packages/compiler/src/feedback.ts",
@@ -471,6 +475,8 @@ export const machinerySources = {
     "packages/skeleton/fixtures/wo191-role-baseline.json",
     "packages/skeleton/fixtures/wo215-role-baseline.json",
     "packages/skeleton/fixtures/wo218-role-baseline.json",
+    "packages/skeleton/fixtures/wo217-role-baseline.json",
+    "packages/skeleton/fixtures/wo217-role-efficiency-baseline.json",
     "scripts/test-helper-reuse.mjs",
     "scripts/lib/helpers.mjs",
     "scripts/lib/git.mjs",
@@ -514,6 +520,7 @@ export const machinerySources = {
   // Any changed docs path, stub list or registry re-runs the registration
   // check under --review, not only under test:docs (WO-157 item 13).
   registrations: [
+    "scripts/lib/build-freshness.mjs",
     // Direct entry imports and literal first-party script inputs (WO-174).
     "packages/kernel/src/index.ts",
     "docs/",
@@ -796,6 +803,15 @@ export function lastFailedSuites(rows) {
   ].sort();
 }
 
+export function suitePriorityLeads({ branch = [], changed = [], failed = [] }) {
+  // Branch history raises ordinary work above unchanged shared tasks without
+  // delaying exclusive work. Recent changes and unresolved failures lead both.
+  const first = new Map(branch.map((name) => [name, 100]));
+  for (const name of changed) first.set(name, 2000);
+  for (const name of failed) first.set(name, 3000);
+  return first;
+}
+
 /** Suites whose inputs changed after the newest gate row was recorded,
  * judged by file modification time: the row's tree hash is a content digest
  * rather than a Git object, so the row's time is the only comparison point.
@@ -807,9 +823,28 @@ export function changedSinceLastGate(
   rows = readGateChecks(repo),
 ) {
   const since = rows
-    // Document runs exercise no product suite, so they do not move the mark.
+    .filter((row) => {
+      const tasks = row?.taskTimeline ?? row?.cases;
+      const executed = Array.isArray(tasks)
+        ? tasks.filter((task) => task?.executed === true && !task.reused)
+        : [];
+      // An explicit abort before product execution did not test source changes.
+      // Preserve the timestamp behavior of legacy rows without task evidence.
+      return !(
+        Number.isInteger(row?.exitCode) &&
+        row.exitCode !== 0 &&
+        Array.isArray(row.unrunSuites) &&
+        row.unrunSuites.length > 0 &&
+        executed.length > 0 &&
+        executed.every((task) =>
+          [...STRUCTURAL_TASKS, "build", "kit-verify"].includes(task.name),
+        )
+      );
+    })
+    // Document runs and structural companion rows exercise no product suite.
     .map((row) =>
-      typeof row?.recordedAt === "string" && row.checkId !== "npm run test:docs"
+      typeof row?.recordedAt === "string" &&
+      !["npm run test:docs", "structural"].includes(row.checkId)
         ? Date.parse(row.recordedAt)
         : NaN,
     )
@@ -968,9 +1003,9 @@ export const suites = [
     kit: "core-only: core legacy lifecycle and timing observations WO-030",
     document: true,
   },
-  nodeTests("launchpad", "scripts/test-launchpad-export.mjs", {
+  nodeTests("launchpad", "scripts/test-launchpad-update.mjs", {
     args: [
-      "scripts/test-launchpad-update.mjs",
+      "scripts/test-launchpad-export.mjs",
       "scripts/test-launchpad-seeds.mjs",
     ],
     fileConcurrency: 2,
@@ -1382,19 +1417,22 @@ const reservedSlots = (row, concurrency) =>
     : Math.min(row.loadSlots ?? 1, concurrency);
 
 export function lightSuiteNames(samples = schedulingBaseline.taskSamples) {
+  const byName = Map.groupBy(samples, (row) => row.name);
   return new Set(
-    samples
-      .filter(
-        (row) =>
-          row.loadClass === "shared" &&
-          Number.isFinite(row.durationMs) &&
-          row.durationMs >= 0 &&
-          row.durationMs < 60_000 &&
-          Number.isFinite(row.peakRssBytes) &&
-          row.peakRssBytes >= 0 &&
-          row.peakRssBytes < 512 * 2 ** 20,
+    [...byName]
+      .filter(([, rows]) =>
+        rows.every(
+          (row) =>
+            row.loadClass === "shared" &&
+            Number.isFinite(row.durationMs) &&
+            row.durationMs >= 0 &&
+            row.durationMs < 60_000 &&
+            Number.isFinite(row.peakRssBytes) &&
+            row.peakRssBytes >= 0 &&
+            row.peakRssBytes < 512 * 2 ** 20,
+        ),
       )
-      .map((row) => row.name),
+      .map(([name]) => name),
   );
 }
 
@@ -1713,7 +1751,9 @@ export function executeSuite(
         partial += chunk.toString();
         const lines = partial.split("\n");
         partial = lines.pop().slice(-1024);
-        for (const line of lines) {
+        for (const raw of lines) {
+          // Node's TAP reporter quotes test-owned stdout as a comment.
+          const line = raw.replace(/^\s*# (?=PROGRESS )/, "");
           if (line.startsWith("PROGRESS CASE ")) {
             try {
               const report = JSON.parse(line.slice("PROGRESS CASE ".length));
@@ -1810,6 +1850,7 @@ export function executeSuite(
         withdrawn = true;
       } catch (error) {
         failure ??= `Task registration cleanup unavailable: ${error.message}`;
+        resourceFailure ??= "registration-cleanup";
       }
       child.stdout.destroy();
       child.stderr.destroy();
@@ -1884,7 +1925,7 @@ export function executeSuite(
             : (code ?? 1),
         ...(readGuard
           ? {
-              productReadLog: readGuard.log,
+              productReadLog: relative(repo, readGuard.log),
               excludedReads: readFailures.length,
             }
           : {}),
@@ -2046,7 +2087,7 @@ export async function scheduleSuites(
       concurrentAtStart: [...active.keys()],
     },
   ) => {
-    const { startedAt, concurrentAtStart } = observation;
+    const { startedAt, concurrentAtStart, reservation } = observation;
     const isolated = explicitlyIsolated(row);
     const occupiedSlots = laneIndexes.length;
     const peerConcurrency = isolated
@@ -2063,6 +2104,7 @@ export async function scheduleSuites(
       hostCapacity: capacity,
     };
     let lease,
+      hostLaneWaitMs,
       executionStarted = false;
     const observed = (result) => {
       const finishedAt = new Date().toISOString();
@@ -2083,7 +2125,7 @@ export async function scheduleSuites(
         lanes: laneIndexes,
         ...(lease
           ? {
-              hostLaneWaitMs: lease.waitedMs,
+              hostLaneWaitMs,
               hostLaneSlots: lease.record.slots,
               ...(lease.waitObservations.length
                 ? { hostLaneWaitObservations: lease.waitObservations }
@@ -2093,17 +2135,20 @@ export async function scheduleSuites(
       };
     };
     try {
-      if (hostLanes && row.command.length)
+      if (hostLanes && row.command.length) {
+        const outer = reservation ? await reservation.promise : parentLease;
         lease = await acquireLanes({
           ...hostLanes,
           signal: hostLanes.signal
             ? AbortSignal.any([hostLanes.signal, launchStop.signal])
             : launchStop.signal,
-          parentLease,
+          parentLease: outer,
           slots: occupiedSlots,
           worktree: repo,
           task: row.name,
         });
+        hostLaneWaitMs = Date.now() - Date.parse(startedAt);
+      }
       if (stopRequested() || (!keepGoing && failedFirst))
         return {
           name: row.name,
@@ -2154,6 +2199,10 @@ export async function scheduleSuites(
       };
     } finally {
       await lease?.release();
+      if (reservation && --reservation.users === 0) {
+        const outer = await reservation.promise.catch(() => undefined);
+        await outer?.release();
+      }
     }
   };
   const finish = (result) => {
@@ -2209,7 +2258,6 @@ export async function scheduleSuites(
     onActiveChange([]);
     if (results.at(-1).exitCode !== 0) return results;
   }
-  const format = structural.find((row) => row.name === "format");
   for (const row of table)
     if (
       !structural.includes(row) &&
@@ -2229,12 +2277,7 @@ export async function scheduleSuites(
   }
   onActiveChange([]);
   for (const lane of lanes)
-    lane.previous =
-      verifiedKit && format
-        ? format.name
-        : reused.has(build.name)
-          ? null
-          : build.name;
+    lane.previous = reused.has(build.name) ? null : build.name;
   if (results.find((row) => row.name === build.name)?.exitCode !== 0)
     return results;
   const pending = table.filter(
@@ -2248,9 +2291,15 @@ export async function scheduleSuites(
   if (concurrency > 1)
     pending.sort((a, b) => (b.priority ?? 0) - (a.priority ?? 0));
   const groups = new Map();
-  let exclusive = null;
+  let exclusive = null,
+    exclusiveReservation;
   const groupAvailable = (row) =>
     !row.group || (groups.get(row.group) ?? 0) < (row.groupLimit ?? 1);
+  const unblocked = (row) =>
+    groupAvailable(row) &&
+    (row.after ?? []).every((name) =>
+      results.some((result) => result.name === name && result.exitCode === 0),
+    );
   const isLight = (row) => !explicitlyIsolated(row) && lightTasks.has(row.name);
   const canJoin = (row) => {
     if (exclusive) return isLight(row);
@@ -2299,38 +2348,47 @@ export async function scheduleSuites(
         .map((lane, index) => ({ lane, index }))
         .filter(({ lane }) => lane.active === null)
         .map(({ index }) => index);
-      // A waiting exclusive row drains heavy peers before lower-priority work.
-      // Once it starts, only measured light tasks may fill its overlap lanes.
-      const head = pending[0];
+      // A group or dependency block cannot hide a ready exclusive row.
+      // It drains heavy peers before lower-priority work; once it starts,
+      // only measured light tasks may fill its overlap lanes.
+      const head = pending.find(unblocked);
       if (
         head &&
         explicitlyIsolated(head) &&
         !exclusive &&
-        (!canJoin(head) ||
-          reservedSlots(head, concurrency) > freeLanes.length) &&
-        groupAvailable(head) &&
-        (head.after ?? []).every((name) =>
-          results.some(
-            (result) => result.name === name && result.exitCode === 0,
-          ),
-        )
+        (!canJoin(head) || reservedSlots(head, concurrency) > freeLanes.length)
       )
         break;
       const index = pending.findIndex(
         (row) =>
           reservedSlots(row, concurrency) <= freeLanes.length &&
-          groupAvailable(row) &&
-          canJoin(row) &&
-          (row.after ?? []).every((name) =>
-            results.some(
-              (result) => result.name === name && result.exitCode === 0,
-            ),
-          ),
+          unblocked(row) &&
+          canJoin(row),
       );
       if (index < 0) break;
       const [row] = pending.splice(index, 1);
       const isolated = explicitlyIsolated(row);
-      if (isolated) exclusive = row;
+      if (isolated) {
+        exclusive = row;
+        // One full host reservation contains both the exclusive task and its
+        // admitted light peers. Unrelated gates cannot borrow overlap slots.
+        exclusiveReservation =
+          hostLanes && overlapSlots(row, concurrency) > 0
+            ? {
+                users: 0,
+                promise: acquireLanes({
+                  ...hostLanes,
+                  parentLease,
+                  slots: concurrency,
+                  worktree: repo,
+                  task: `${row.name}:overlap`,
+                  signal: hostLanes.signal
+                    ? AbortSignal.any([hostLanes.signal, launchStop.signal])
+                    : launchStop.signal,
+                }),
+              }
+            : undefined;
+      }
       if (row.group) groups.set(row.group, (groups.get(row.group) ?? 0) + 1);
       const laneIndexes = freeLanes.slice(0, reservedSlots(row, concurrency));
       const predecessors = [
@@ -2356,7 +2414,9 @@ export async function scheduleSuites(
       const observation = {
         startedAt: new Date().toISOString(),
         concurrentAtStart: [...active.keys()],
+        reservation: exclusiveReservation,
       };
+      if (observation.reservation) observation.reservation.users++;
       const task = Promise.resolve()
         .then(() => executeTask(row, laneIndexes, predecessors, observation))
         .then((result) => {
@@ -2367,7 +2427,10 @@ export async function scheduleSuites(
             lanes[index].previous = row.name;
           }
           onActiveChange([...active.keys()]);
-          if (isolated) exclusive = null;
+          if (isolated) {
+            exclusive = null;
+            exclusiveReservation = undefined;
+          }
           if (row.group) groups.set(row.group, groups.get(row.group) - 1);
         });
       active.set(row.name, task);
@@ -2963,13 +3026,12 @@ async function runGateChecks(
         1,
         Math.min(inheritedLease?.record.slots ?? hostCapacity, hostCapacity),
       );
-  // A complete selection leads with the suites most likely to fail: those
-  // whose sources changed after the newest gate row, then those this branch
-  // changed. A stale assertion then fails within minutes, not at the end of
-  // the run, and a focused rerun of the same suites is never needed first.
+  // A complete selection leads with unresolved failures and sources changed
+  // after the newest product gate. Older branch changes receive a smaller
+  // lead so unchanged exclusive work can precede shared branch work.
   // The order is an optimization: a failure to compute it never fails the
   // selection, and its line never carries the summary's "npm test:" prefix.
-  const first = new Map();
+  let first = new Map();
   if (!instance && !only && !document && !machinery && !confinedPartial)
     try {
       let rows = [];
@@ -2978,18 +3040,18 @@ async function runGateChecks(
       } catch {
         rows = [];
       }
-      for (const row of changedMachinery(repo, table))
-        first.set(row.name, 1000);
-      for (const name of changedSinceLastGate(repo, table, rows).suites)
-        first.set(name, 2000);
-      for (const name of lastFailedSuites(rows)) first.set(name, 3000);
+      first = suitePriorityLeads({
+        branch: changedMachinery(repo, table).map((row) => row.name),
+        changed: changedSinceLastGate(repo, table, rows).suites,
+        failed: lastFailedSuites(rows),
+      });
       const selectedNames = new Set(selected.map((row) => row.name));
       for (const name of [...first.keys()])
         if (!selectedNames.has(name)) first.delete(name);
       const reason = {
         3000: "last execution failed",
         2000: "changed since the last gate row",
-        1000: "changed on this branch",
+        100: "changed on this branch",
       };
       if (first.size)
         console.log(
@@ -3070,7 +3132,9 @@ async function runGateChecks(
   });
   let interrupted;
   const terminateGate = (signal) => {
-    const incident = incidentForProcess(hostDirectory, process.pid, started);
+    const incident =
+      resourceGateFailure ??
+      incidentForProcess(hostDirectory, process.pid, started);
     if (
       ["memory-budget", "monitor-unavailable"].includes(incident?.failureKind)
     ) {
@@ -3405,6 +3469,20 @@ async function runGateChecks(
         : [],
     };
     check.criticalPath = gateCriticalPath(check);
+    if (check.exitCode !== 0)
+      check.output = taskRows
+        .filter((row) => row.executed && row.exitCode !== 0)
+        .map(
+          (row) =>
+            `${row.name}: ${row.failureKind ?? "failed"}\n${row.output ?? ""}`,
+        )
+        .concat(
+          !unchanged ? ["Gate input identity changed"] : [],
+          !outputUnchanged ? ["Build output changed"] : [],
+          abandoned.length ? ["Fixture roots remain after teardown"] : [],
+          resourceGateFailure ? [JSON.stringify(resourceGateFailure)] : [],
+        )
+        .join("\n");
     try {
       const { readControl } = await import("./lib/control-store.mjs");
       const active = [...readControl(repo).orders].filter(
@@ -3427,6 +3505,7 @@ async function runGateChecks(
           .filter(
             (row) =>
               row.checkId === checkId &&
+              completeSharedRefs(row.sharedRefs?.end) &&
               Date.parse(row.recordedAt) <= refsStartedAt,
           )
           .at(-1);

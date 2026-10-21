@@ -5,11 +5,14 @@ import { docRelative, findLaunchpad } from "./lib/config.mjs";
 import assert from "node:assert/strict";
 
 import { createHash } from "node:crypto";
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { pathToFileURL } from "node:url";
+import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import {
   evidenceArgs,
+  currentEvidence,
+  readAuthorityEvidence,
+  writeAuthorityEvidence,
+  writeEvidenceFile,
   sameEvidenceSourceContent,
 } from "../packages/skeleton/src/evidence-editions.mjs";
 import {
@@ -68,7 +71,6 @@ assert.ok(
 );
 checkEvidenceImports(root, "authority");
 const editionLabel = selection.label;
-const directory = pathToFileURL(`${join(root, selection.directory)}/`);
 const read = (path) => readFileSync(join(root, path), "utf8");
 const baseline = JSON.parse(
   read(docRelative(root, "evidence", "WO-042/authority-baseline.json")),
@@ -1076,33 +1078,41 @@ const bundleDiff = {
     files: overlayFiles,
   },
 };
-const files = new Map([
-  ["authority.json", json(transcript)],
-  ["bundle-diff.json", json(bundleDiff)],
-]);
+const transcriptContents = json(transcript);
+const bundlePath = `${selection.directory}/bundle-diff.json`;
+if (mode === "--write") {
+  writeAuthorityEvidence(
+    root,
+    selection.directory,
+    transcriptContents,
+    currentEvidence(root, "authority").directory,
+  );
+  writeEvidenceFile(join(root, bundlePath), json(bundleDiff));
+}
+const authorityRecord = readAuthorityEvidence(root, selection.directory);
+const recordedBundle = readFileSync(join(root, bundlePath), "utf8");
 const preserved =
   mode === "--check" &&
-  [...files].some(
-    ([name, contents]) =>
-      readFileSync(new URL(name, directory), "utf8") !== contents,
-  ) &&
+  (authorityRecord.contents !== transcriptContents ||
+    recordedBundle !== json(bundleDiff)) &&
   sameEvidenceSourceContent(
     root,
-    [...files.keys()].map((name) => `${selection.directory}/${name}`),
+    [authorityRecord.recordPath, bundlePath],
     evidenceSources(root).authority,
   );
-for (const [name, contents] of files) {
-  const path = new URL(name, directory);
-  if (mode === "--write" && !existsSync(path)) {
-    mkdirSync(directory, { recursive: true });
-    writeFileSync(path, contents, { flag: "wx" });
-  } else if (!preserved)
-    assert.equal(
-      readFileSync(path, "utf8"),
-      contents,
-      `stale ${editionLabel} evidence: ${name}; select a new edition or revision to preserve existing evidence`,
-    );
+if (!preserved) {
+  assert.equal(
+    authorityRecord.contents,
+    transcriptContents,
+    `stale ${editionLabel} evidence: authority transcript; select a new edition or revision to preserve existing evidence`,
+  );
+  assert.equal(
+    recordedBundle,
+    json(bundleDiff),
+    `stale ${editionLabel} evidence: bundle-diff.json; select a new edition or revision to preserve existing evidence`,
+  );
 }
+
 if (preserved)
   console.log(
     "Retained immutable authority evidence: behavior source is unchanged apart from component release labels.",

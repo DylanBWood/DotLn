@@ -63,7 +63,13 @@ test("sealed fixture copies share no mutable refs or files and refuse a changed 
   );
   runGit(
     undefined,
-    ["clone", join(fixture, "origin.git"), join(fixture, "project")],
+    [
+      "-c",
+      "maintenance.auto=false",
+      "clone",
+      join(fixture, "origin.git"),
+      join(fixture, "project"),
+    ],
     fixtureGitOptions,
   );
   const project = join(fixture, "project");
@@ -81,7 +87,7 @@ test("sealed fixture copies share no mutable refs or files and refuse a changed 
   runGit(undefined, ["-C", project, "add", "."], fixtureGitOptions);
   runGit(
     undefined,
-    ["-C", project, "commit", "-qm", "Fixture"],
+    ["-C", project, "-c", "maintenance.auto=false", "commit", "-qm", "Fixture"],
     fixtureGitOptions,
   );
   runGit(

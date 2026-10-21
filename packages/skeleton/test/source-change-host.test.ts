@@ -654,6 +654,8 @@ test("WO-052 wrong branch and outside-surface commits refuse without redispatch 
             git(host.tree.path, "add", "unexpected.txt");
             git(
               host.tree.path,
+              "-c",
+              "maintenance.auto=false",
               "commit",
               "-m",
               "Synthetic out-of-scope effect",
@@ -746,6 +748,8 @@ test("WO-112 a result that is not one commit with the host message refuses for a
           if (change === "message")
             git(
               host.tree.path,
+              "-c",
+              "maintenance.auto=false",
               "commit",
               "--amend",
               "-m",
@@ -753,7 +757,14 @@ test("WO-112 a result that is not one commit with the host message refuses for a
             );
           else {
             writeFileSync(join(host.tree.path, "fixture.txt"), "second\n");
-            git(host.tree.path, "commit", "-am", "Synthetic source change");
+            git(
+              host.tree.path,
+              "-c",
+              "maintenance.auto=false",
+              "commit",
+              "-am",
+              "Synthetic source change",
+            );
           }
         },
       });
@@ -798,7 +809,14 @@ test("WO-112 a replace ref cannot hide a change outside the surfaces from the ho
         const inSurface = git(tree, "rev-parse", "HEAD^{tree}");
         writeFileSync(join(tree, "outside.txt"), "hidden\n");
         git(tree, "add", "outside.txt");
-        git(tree, "commit", "--amend", "--no-edit");
+        git(
+          tree,
+          "-c",
+          "maintenance.auto=false",
+          "commit",
+          "--amend",
+          "--no-edit",
+        );
         const head = git(tree, "rev-parse", "HEAD");
         const disguise = git(
           tree,

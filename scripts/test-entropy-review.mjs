@@ -59,7 +59,11 @@ const fixtureGitOptions = {
 };
 const commit = (repo, message) => {
   runGit(repo, ["add", "-A"], fixtureGitOptions);
-  runGit(repo, ["commit", "--quiet", "-m", message], fixtureGitOptions);
+  runGit(
+    repo,
+    ["-c", "maintenance.auto=false", "commit", "--quiet", "-m", message],
+    fixtureGitOptions,
+  );
 };
 
 /** A launchpad with this repository's document layout and its own Git history.

@@ -20,7 +20,7 @@ assert_u202f() {
 test "$("$node_bin" -e 'process.stdout.write(Buffer.from(process.argv[1], "utf8").toString("hex"))' "$u202f")" = e280af
 
 git init --bare "$test_root/origin.git" >/dev/null
-git clone "$test_root/origin.git" "$test_root/project" >/dev/null 2>&1
+git -c maintenance.auto=false clone -c maintenance.auto=false "$test_root/origin.git" "$test_root/project" >/dev/null 2>&1
 main="$test_root/project"
 git -C "$main" config user.email operator@example.invalid
 git -C "$main" config user.name "Fixture Operator"
@@ -62,7 +62,7 @@ printf '%s\n' 'import {mkdirSync,writeFileSync} from "node:fs"; mkdirSync(".runt
 mkdir -p "$main/docs/siblings"
 printf '%s\n' '{"schemaVersion":1,"siblings":[{"id":"starter-fixture","purpose":"Fixture export","relation":{"kind":"export","coreCommit":null},"capabilityRows":[]}]}' >"$main/docs/siblings/siblings.json"
 git -C "$main" add .
-git -C "$main" commit -m initial >/dev/null
+git -C "$main" -c maintenance.auto=false commit -m initial >/dev/null
 git -C "$main" push -u origin main >/dev/null 2>&1
 finish_worktree() {
   (cd "$main" && node "$main/scripts/worktree.mjs" finish "$@")
@@ -134,7 +134,7 @@ grep -Fq "run finish from the main control-plane checkout: $main" <<<"$wrong_roo
 if finish_worktree WO-099 >/dev/null 2>&1; then printf 'error: unfinished worktree merged\n' >&2; exit 1; fi
 
 git -C "$subject" add docs/control
-git -C "$subject" commit -m 'active control fixture' >/dev/null
+git -C "$subject" -c maintenance.auto=false commit -m 'active control fixture' >/dev/null
 cp "$subject/docs/control/orders/WO-099.jsonl" "$test_root/committed-active-resume.jsonl"
 cp "$subject/docs/control/current.md" "$test_root/committed-active-current.md"
 git -C "$subject" update-index --assume-unchanged docs/control/orders/WO-099.jsonl docs/control/current.md
@@ -193,7 +193,7 @@ printf '%s\n' '- A code example `` [sample](file.md) ` literal `` keeps its byte
 git -C "$subject" add .
 "$node_bin" "$script_dir/test-release-composition.mjs" record "$subject" WO-099
 git -C "$subject" add docs/control
-git -C "$subject" commit -m complete >/dev/null
+git -C "$subject" -c maintenance.auto=false commit -m complete >/dev/null
 
 if bad_title="$(node "$subject/scripts/worktree.mjs" publish WO-099 --title unquoted multiple words --body-file pr-body.md 2>&1)"; then
   printf 'error: surplus publish positionals accepted\n' >&2; exit 1
@@ -222,7 +222,7 @@ assert_notes_refusal() {
 set_release_notes() {
   printf '%s' "$1" >"$subject/$notes_path"
   git -C "$subject" add "$notes_path"
-  git -C "$subject" commit --amend --no-edit >/dev/null
+  git -C "$subject" -c maintenance.auto=false commit --amend --no-edit >/dev/null
 }
 
 printf '%s\n' \
@@ -233,7 +233,7 @@ printf '%s\n' \
   'This source prepares DotLn `v0.2.0`.' \
   '<!-- DOTLN-RELEASE-END -->' >"$subject/README.md"
 git -C "$subject" add README.md
-git -C "$subject" commit --amend --no-edit >/dev/null
+git -C "$subject" -c maintenance.auto=false commit --amend --no-edit >/dev/null
 if surface_output="$(PATH="$test_root/no-gh-bin" "$node_bin" "$subject/scripts/worktree.mjs" publish WO-099 --title ':sparkles: fixture' --body-file pr-body.md 2>&1)"; then
   printf 'error: publish accepted a stale release block\n' >&2
   exit 1
@@ -249,7 +249,7 @@ printf '%s\n' \
   'This source prepares DotLn `v0.2.1`.' \
   '<!-- DOTLN-RELEASE-END -->' >"$subject/README.md"
 git -C "$subject" add README.md
-git -C "$subject" commit --amend --no-edit >/dev/null
+git -C "$subject" -c maintenance.auto=false commit --amend --no-edit >/dev/null
 printf 'worktree surface refusal preserved the checker report and mutated no remote\n'
 
 assert_notes_refusal 'release-notes file is missing'
@@ -340,7 +340,7 @@ printf '%s\n' \
   'This reviewed PR body was accidentally wrapped at a fixed source column even though it is one logical' \
   'paragraph that the reader should wrap for its own viewport.' >"$subject/pr-body.md"
 git -C "$subject" add pr-body.md
-git -C "$subject" commit --amend --no-edit >/dev/null
+git -C "$subject" -c maintenance.auto=false commit --amend --no-edit >/dev/null
 if wrapped_pr_output="$(PATH="$test_root/no-gh-bin" "$node_bin" "$subject/scripts/worktree.mjs" publish WO-099 --title ':sparkles: fixture' --body-file pr-body.md 2>&1)"; then
   printf 'error: publish accepted a wrapped PR body\n' >&2
   exit 1
@@ -354,7 +354,7 @@ printf '%s\n' '- A code example `` [sample](file.md) ` literal `` keeps its byte
 # line, and writes the link on such a line absolute like any other.
 printf '\nIntro\r\r`` [crsample](cr-file.md) ` literal ``\r\rA carriage-return line links to [the notes](notes.md).\r\n' >>"$subject/pr-body.md"
 git -C "$subject" add pr-body.md
-git -C "$subject" commit --amend --no-edit >/dev/null
+git -C "$subject" -c maintenance.auto=false commit --amend --no-edit >/dev/null
 printf 'GitHub body profile refused wrapped PR and release-note prose before publication\n'
 
 clean_attribution_body="$test_root/clean-attribution-body.md"
@@ -363,12 +363,12 @@ for attribution in 'Claude-Session: fixture' 'SomeAgent-Session: fixture' 'https
   cp "$clean_attribution_body" "$subject/pr-body.md"
   printf '\n%s\n' "$attribution" >>"$subject/pr-body.md"
   git -C "$subject" add pr-body.md
-  git -C "$subject" commit --amend --no-edit >/dev/null
+  git -C "$subject" -c maintenance.auto=false commit --amend --no-edit >/dev/null
   if attribution_output="$(PATH="$test_root/no-gh-bin" "$node_bin" "$subject/scripts/worktree.mjs" publish WO-099 --title ':sparkles: fixture' --body-file pr-body.md 2>&1)"; then printf 'error: attributed PR body accepted\n' >&2; exit 1; fi
   grep -Fq 'AI attribution' <<<"$attribution_output"
   cp "$clean_attribution_body" "$subject/pr-body.md"
   git -C "$subject" add pr-body.md
-  git -C "$subject" commit --amend --no-edit >/dev/null
+  git -C "$subject" -c maintenance.auto=false commit --amend --no-edit >/dev/null
   if attribution_output="$(PATH="$test_root/no-gh-bin" "$node_bin" "$subject/scripts/worktree.mjs" publish WO-099 --title "$attribution" --body-file pr-body.md 2>&1)"; then printf 'error: attributed PR title accepted\n' >&2; exit 1; fi
   grep -Fq 'AI attribution' <<<"$attribution_output"
   if git --git-dir="$test_root/origin.git" show-ref --verify --quiet refs/heads/wo-099; then printf 'error: attribution reached origin\n' >&2; exit 1; fi
@@ -387,14 +387,14 @@ grep -Fq '.env.*: file is not tracked' <<<"$pathspec_body_output"
 test -f "$subject/.env.*"
 rm -- "$subject/.env.*"
 
-git -C "$subject" commit --allow-empty --author='Outside Contributor <outside@example.invalid>' -m 'unsigned outside fixture' >/dev/null
+git -C "$subject" -c maintenance.auto=false commit --allow-empty --author='Outside Contributor <outside@example.invalid>' -m 'unsigned outside fixture' >/dev/null
 if unsigned_output="$(PATH="$test_root/no-gh-bin" "$node_bin" "$subject/scripts/worktree.mjs" publish WO-099 --title ':sparkles: fixture' --body-file pr-body.md 2>&1)"; then printf 'error: publish accepted an unsigned outside commit\n' >&2; exit 1; fi
 grep -Fq 'outside author without matching sign-off; expected Signed-off-by trailer matching the commit author (DCO 1.1)' <<<"$unsigned_output"
 if grep -Fq 'gh is required' <<<"$unsigned_output"; then printf 'error: unsigned outside commit reached gh preflight\n' >&2; exit 1; fi
 if git --git-dir="$test_root/origin.git" show-ref --verify --quiet refs/heads/wo-099; then printf 'error: unsigned outside commit reached origin\n' >&2; exit 1; fi
 printf '%s\n' "$unsigned_output" | sed -n '/FAIL contribution-signoff/p'
-git -C "$subject" commit --amend --allow-empty -m 'signed outside fixture' -m 'Signed-off-by: Outside Contributor <outside@example.invalid>' >/dev/null
-git -C "$subject" commit --allow-empty -m 'operator fixture without sign-off' >/dev/null
+git -C "$subject" -c maintenance.auto=false commit --amend --allow-empty -m 'signed outside fixture' -m 'Signed-off-by: Outside Contributor <outside@example.invalid>' >/dev/null
+git -C "$subject" -c maintenance.auto=false commit --allow-empty -m 'operator fixture without sign-off' >/dev/null
 
 if missing_gh_output="$(PATH="$test_root/no-gh-bin" "$node_bin" "$subject/scripts/worktree.mjs" publish WO-099 --title ':sparkles: fixture' --body-file pr-body.md 2>&1)"; then printf 'error: publish accepted a missing gh executable\n' >&2; exit 1; fi
 grep -Fq 'observed matching author sign-off' <<<"$missing_gh_output"
@@ -648,7 +648,7 @@ mkdir -p "$subject/docs/control/local/prototypes/repo" "$subject/docs/control/lo
 git -C "$subject/docs/control/local/prototypes/repo" init -q
 printf 'kept nested content\n' >"$subject/docs/control/local/prototypes/repo/file.txt"
 git -C "$subject/docs/control/local/prototypes/repo" -c user.name=Fixture -c user.email=fixture@example.invalid add file.txt
-git -C "$subject/docs/control/local/prototypes/repo" -c user.name=Fixture -c user.email=fixture@example.invalid commit -qm kept
+git -C "$subject/docs/control/local/prototypes/repo" -c user.name=Fixture -c user.email=fixture@example.invalid -c maintenance.auto=false commit -qm kept
 git -C "$subject/docs/control/local/feedback/verifier/mount" init -q
 printf 'subject terms\n' >"$subject/docs/control/local/terms.txt"
 printf 'main active terms\n' >"$main/docs/control/local/terms.txt"
@@ -657,10 +657,17 @@ cp "$subject/docs/control/local/adjacent-work.jsonl" "$test_root/retained-expect
 node --input-type=module - "$subject" "$main" <<'NODE'
 import { pathToFileURL } from "node:url";
 import { join } from "node:path";
+import { readFileSync, writeFileSync } from "node:fs";
 for (const [index, root] of process.argv.slice(2).entries()) {
   const { gateTreeHash, recordGateChecks } = await import(pathToFileURL(join(root, "scripts/lib/gate-evidence.mjs")));
   const treeHash = gateTreeHash(root);
   recordGateChecks(root, [{ checkId: `fixture-closeout-${index}`, treeHash, subject: treeHash, durationMs: 1, exitCode: 0, executed: true, evidenceRef: "synthetic-closeout-handoff", recordedAt: new Date().toISOString() }]);
+  if (index === 0) {
+    const file = join(root, 'docs/control/local/harness/checks.json');
+    const rows = JSON.parse(readFileSync(file, 'utf8'));
+    rows.at(-1).taskTimeline = [{ name: 'passing-copy', exitCode: 0, output: 'passing-copy-output-must-disappear', cases: [{ exitCode: 0, output: 'passing-copy-output-must-disappear' }] }];
+    writeFileSync(file, JSON.stringify(rows));
+  }
 }
 NODE
 # Derived detached worktrees of the closing order are pruned,
@@ -760,6 +767,7 @@ import { join } from "node:path";
 const root = process.argv[2];
 const { readGateChecks } = await import(pathToFileURL(join(root, "scripts/lib/gate-evidence.mjs")));
 const ids = readGateChecks(root).map(row => row.checkId);
+assert.equal(JSON.stringify(readGateChecks(root)).includes('passing-copy-output-must-disappear'), false);
 assert.ok(ids.includes("fixture-closeout-0"), "subject gate evidence must survive teardown");
 assert.ok(ids.includes("fixture-closeout-1"), "main gate evidence must remain intact");
 NODE
@@ -785,7 +793,7 @@ printf '%s\n' \
   '- Work-order path: docs/work-orders/WO-098-fixture.md' \
   '- Phase: active' >"$hidden_subject/docs/control/current.md"
 git -C "$hidden_subject" add .
-git -C "$hidden_subject" commit -m 'active committed finish fixture' >/dev/null
+git -C "$hidden_subject" -c maintenance.auto=false commit -m 'active committed finish fixture' >/dev/null
 git -C "$hidden_subject" push -u origin wo-098 >/dev/null 2>&1
 git -C "$main" fetch origin wo-098 >/dev/null 2>&1
 git -C "$main" merge --ff-only origin/wo-098 >/dev/null
@@ -821,11 +829,11 @@ node "$reopened_subject/scripts/resume.mjs" activate WO-097 docs/work-orders/WO-
 printf '%s\n' '{"schemaVersion":1,"type":"FinalReviewCompleted","workOrderId":"WO-097","finalReviewId":"FINAL-001","reportPath":"docs/final-reviews/WO-097/FINAL-001.md","verdict":"pass"}' >>"$reopened_subject/docs/control/orders/WO-097.jsonl"
 node "$reopened_subject/scripts/resume.mjs" next >/dev/null
 git -C "$reopened_subject" add .
-git -C "$reopened_subject" commit -m 'closed subject integration fixture' >/dev/null
+git -C "$reopened_subject" -c maintenance.auto=false commit -m 'closed subject integration fixture' >/dev/null
 git -C "$main" merge --ff-only wo-097 >/dev/null
 node "$main/scripts/resume.mjs" activate WO-097 docs/work-orders/WO-097-fixture.md >/dev/null
 git -C "$main" add .
-git -C "$main" commit -m 'reopened integrated order' >/dev/null
+git -C "$main" -c maintenance.auto=false commit -m 'reopened integrated order' >/dev/null
 git -C "$main" push origin main >/dev/null 2>&1
 if reopened_output="$(finish_worktree WO-097 2>&1)"; then printf 'error: reopened merged order was removed\n' >&2; exit 1; fi
 grep -Fq 'WO-097 is not closed in merged control state' <<<"$reopened_output"

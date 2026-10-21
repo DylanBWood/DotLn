@@ -16,15 +16,15 @@ Without a session readback, keep the operator-selected model and effort with `--
 After an authorized product-document edit, run `npm run publication:check`; this grants no editing authority to a read-only role.
 Under Codex, lifecycle dispatch reserves the writer and completion releases it; inspect with `node scripts/harness.mjs writer --show`, never a hand-built hook payload. Await a gate or background task through `node scripts/harness.mjs evidence --wait [--timeout <seconds>]` in the background or the host's completion signal, then do bounded listed work or stay quiet; never poll or narrate the wait.
 Launch all adversaries, reviewers, refuters and research workers as Claude `dotln-worker` (claude-opus-5-5, xhigh) without a model override, or Codex spawn_agent with fork_turns none, model gpt-6.1-sol and reasoning_effort max; product 07 §Model-specific notes records the pin and readback limits.
-Run a probe outside a gate under `node scripts/harness.mjs bounded -- <command>`, one process at a time; the host guard also watches attributable session descendants.
-Settle routine version, waiver-route, live-episode, regeneration and reinstall questions within existing authority; ask when the answer changes scope or authority.
-Before acting on an operator message, state its aim in one line and act on that reading; ask one focused question if the reading is doubtful.
-A claim of cause, blocker, unreachable service or finished work names the command and output it rests on; a partial search names its boundary.
-Request needed authority in this session through the host permission flow; never hand the operator a command to run in your place unless the order or role names that fallback.
-A command given to the operator is copy-paste runnable with real paths and no placeholders; a question says what it decides and why in plain words.
-Answer a stale gate row by running the gate at the current identity, never by restoring bytes to match it; never remove a reviewed fix to pass a check.
+Run probes outside gates, one process at a time, under `node scripts/harness.mjs bounded -- <command>`; the host guard also watches attributable session descendants.
+Resolve routine version, waiver-route, live-episode, regeneration and reinstall questions within existing authority; ask if an answer changes scope or authority.
+Before acting on an operator message, state its aim in one line and act on that reading; ask one focused question if that reading is doubtful.
+Claims of cause, blockers, unreachable services or completion name their supporting command and output; partial searches name their boundary.
+Request needed authority here through the host permission flow; give the operator a command to run in your place only when the order or role names that fallback.
+Operator commands must be copy-paste runnable with real paths and no placeholders; questions plainly state what they decide and why.
+For stale gate rows, run the gate at the current identity; never restore bytes to match a row or remove a reviewed fix to pass a check.
 Stop the background monitors you started before recording your result.
-After a second consecutive provider safeguard refusal, stop retrying, record the stop as a decision naming phase and model, and resume in a fresh session.
+After two consecutive provider safeguard refusals, stop retrying, record a decision naming the stop, phase and model, and resume in a fresh session.
 Never guess: an unobserved value is `unknown`, `untested` or `blocked`; name the readable source tried before writing `unknown`, and correct an unfiled report in place instead of appending a correction.
 Read: `@work-order`
 Read: `@citations`

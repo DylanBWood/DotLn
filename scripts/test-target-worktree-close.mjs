@@ -57,7 +57,14 @@ test("WO-072 criterion 4: target close requires containment, removes both worktr
       }),
     );
     git(f.main, "add", "records/siblings/siblings.json");
-    git(f.main, "commit", "-qm", "Declare export sibling");
+    git(
+      f.main,
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "Declare export sibling",
+    );
     git(f.main, "push", "-q", "origin", "main");
     f.mapClone();
     const pending =
@@ -87,10 +94,24 @@ test("WO-072 criterion 4: target close requires containment, removes both worktr
       ".claude/settings.local.json\n.claude/hooks/local-cache/\ndeps/\n",
     );
     git(f.target, "add", "-A");
-    git(f.target, "commit", "-qm", "test: target change");
+    git(
+      f.target,
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "test: target change",
+    );
     closeOrder(f);
     git(f.orderRoot, "add", "-A");
-    git(f.orderRoot, "commit", "-qm", "Closed target order");
+    git(
+      f.orderRoot,
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "Closed target order",
+    );
     git(
       f.main,
       "merge",
@@ -293,14 +314,28 @@ for (const ignored of [false, true])
       write(f.clone, "tracked/.DS_Store", "tracked metadata\n");
       git(f.clone, "add", ".gitignore");
       git(f.clone, "add", "-f", "tracked/.DS_Store");
-      git(f.clone, "commit", "-qm", "test: declare metadata policy");
+      git(
+        f.clone,
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-qm",
+        "test: declare metadata policy",
+      );
       git(f.clone, "push", "-q", "origin", "main");
       f.mapClone();
       f.start();
       git(f.target, "merge", "-q", "main");
       closeOrder(f);
       git(f.orderRoot, "add", "-A");
-      git(f.orderRoot, "commit", "-qm", "test: close target order");
+      git(
+        f.orderRoot,
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-qm",
+        "test: close target order",
+      );
       git(f.main, "merge", "-q", "--no-ff", "-m", "Merge records", "wo-999");
       git(f.main, "push", "-q", "origin", "main");
       const metadata = [
@@ -378,7 +413,14 @@ for (const ignored of [false, true])
 const mergedCloseFixture = (f) => {
   closeOrder(f);
   git(f.orderRoot, "add", "-A");
-  git(f.orderRoot, "commit", "-qm", "test: close target order");
+  git(
+    f.orderRoot,
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "test: close target order",
+  );
   git(f.main, "merge", "-q", "--no-ff", "-m", "Merge records", "wo-999");
   git(f.main, "push", "-q", "origin", "main");
 };
@@ -420,7 +462,14 @@ test("target close judges large NUL-framed base path lists before deleting decla
       f.config.classes.fixture.disposable = ["node_modules"];
       write(f.main, "dotln.config.json", JSON.stringify(f.config));
       git(f.main, "add", "-A");
-      git(f.main, "commit", "-qm", "test: declare output cleanup");
+      git(
+        f.main,
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-qm",
+        "test: declare output cleanup",
+      );
       git(f.main, "push", "-q", "origin", "main");
       f.mapClone();
       f.start();
@@ -493,7 +542,14 @@ test("target close isolates fetched ignore rules, retains unreadable output and 
       ];
       write(f.main, "dotln.config.json", JSON.stringify(f.config));
       git(f.main, "add", "-A");
-      git(f.main, "commit", "-qm", "test: declare cleanup roots");
+      git(
+        f.main,
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-qm",
+        "test: declare cleanup roots",
+      );
       git(f.main, "push", "-q", "origin", "main");
       f.mapClone();
       f.start();
@@ -709,11 +765,26 @@ for (const [stale, locked, remains, flavors] of [
         f.start();
         write(f.target, "change.txt", "changed\n");
         git(f.target, "add", "-A");
-        git(f.target, "commit", "-qm", "test: target change");
+        git(
+          f.target,
+          "-c",
+          "maintenance.auto=false",
+          "commit",
+          "-qm",
+          "test: target change",
+        );
         mergedCloseFixture(f);
         // The forge merges the target change; the clone has not fetched it.
         const upstream = join(f.base, "upstream");
-        git(f.base, "clone", "-q", join(f.base, "target.git"), upstream);
+        git(
+          f.base,
+          "-c",
+          "maintenance.auto=false",
+          "clone",
+          "-q",
+          join(f.base, "target.git"),
+          upstream,
+        );
         git(upstream, "config", "user.email", "fixture@example.invalid");
         git(upstream, "config", "user.name", "Fixture");
         git(upstream, "fetch", "-q", f.clone, "wo-999");
@@ -750,7 +821,15 @@ for (const [stale, locked, remains, flavors] of [
         const other = join(f.base, "other-repository");
         if (remains === "clone" || remains === "worktree") {
           const repository = remains === "clone" ? held : other;
-          git(f.base, "clone", "-q", join(f.base, "target.git"), repository);
+          git(
+            f.base,
+            "-c",
+            "maintenance.auto=false",
+            "clone",
+            "-q",
+            join(f.base, "target.git"),
+            repository,
+          );
           git(repository, "reset", "-q", "--hard", "HEAD~1");
           if (remains === "worktree") {
             git(other, "branch", "side");
@@ -865,7 +944,14 @@ test("target close refuses an unreadable, dirty or broken base and a dirty or br
     // Tracked content keeps the base checkout clean once read access returns.
     write(f.clone, "assets/private/keep.txt", "tracked base material\n");
     git(f.clone, "add", "-A");
-    git(f.clone, "commit", "-qm", "test: track nested base material");
+    git(
+      f.clone,
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "test: track nested base material",
+    );
     git(f.clone, "push", "-q", "origin", "main");
     f.mapClone();
     f.start();
@@ -960,7 +1046,14 @@ for (const side of ["base", "target"])
     return withFixture((f) => {
       write(f.clone, "assets/private/keep.txt", "tracked material\n");
       git(f.clone, "add", "-A");
-      git(f.clone, "commit", "-qm", "test: track nested material");
+      git(
+        f.clone,
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-qm",
+        "test: track nested material",
+      );
       git(f.clone, "push", "-q", "origin", "main");
       f.mapClone();
       f.start();
@@ -1063,7 +1156,14 @@ test("target close keeps Git's guard for an unchecked-out base being rebased", (
     f.start();
     write(f.target, "new-target.txt", "merged target change\n");
     git(f.target, "add", "new-target.txt");
-    git(f.target, "commit", "-qm", "test: target change");
+    git(
+      f.target,
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "test: target change",
+    );
     git(
       f.target,
       "merge",
@@ -1111,17 +1211,38 @@ for (const kind of [
     withFixture((f) => {
       write(f.clone, ".gitignore", ".DS_Store\n/docs/control/local/\n");
       git(f.clone, "add", ".gitignore");
-      git(f.clone, "commit", "-qm", "test: ignore metadata and writer state");
+      git(
+        f.clone,
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-qm",
+        "test: ignore metadata and writer state",
+      );
       git(f.clone, "push", "-q", "origin", "main");
       f.mapClone();
       f.start();
       git(f.target, "merge", "-q", "main");
       write(f.target, "change.txt", "target change\n");
       git(f.target, "add", "change.txt");
-      git(f.target, "commit", "-qm", "test: target change");
+      git(
+        f.target,
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-qm",
+        "test: target change",
+      );
       closeOrder(f);
       git(f.orderRoot, "add", "-A");
-      git(f.orderRoot, "commit", "-qm", "test: close records");
+      git(
+        f.orderRoot,
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-qm",
+        "test: close records",
+      );
       git(f.main, "merge", "-q", "--no-ff", "-m", "Merge records", "wo-999");
       git(f.main, "push", "-q", "origin", "main");
       git(f.target, "push", "-q", "origin", "HEAD:refs/heads/main");
@@ -1191,7 +1312,14 @@ for (const policy of ["delete", "judge-only"])
         f.config.repositories.target.baseDisposablePolicy = policy;
         write(f.main, "dotln.config.json", JSON.stringify(f.config));
         git(f.main, "add", "-A");
-        git(f.main, "commit", "-qm", "test: declare cleanup policy");
+        git(
+          f.main,
+          "-c",
+          "maintenance.auto=false",
+          "commit",
+          "-qm",
+          "test: declare cleanup policy",
+        );
         git(f.main, "push", "-q", "origin", "main");
         f.mapClone();
         f.start();
@@ -1236,7 +1364,14 @@ for (const side of ["base", "target"])
         f.config.repositories.target.disposable = ["node_modules"];
         write(f.main, "dotln.config.json", JSON.stringify(f.config));
         git(f.main, "add", "-A");
-        git(f.main, "commit", "-qm", "test: declare disposable output");
+        git(
+          f.main,
+          "-c",
+          "maintenance.auto=false",
+          "commit",
+          "-qm",
+          "test: declare disposable output",
+        );
         git(f.main, "push", "-q", "origin", "main");
         f.mapClone();
         f.start();
@@ -1304,14 +1439,28 @@ test("judge-only refuses fetched tracked paths that would overwrite retained ign
       f.config.repositories.target.baseDisposablePolicy = "judge-only";
       write(f.main, "dotln.config.json", JSON.stringify(f.config));
       git(f.main, "add", "-A");
-      git(f.main, "commit", "-qm", "test: keep base output");
+      git(
+        f.main,
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-qm",
+        "test: keep base output",
+      );
       git(f.main, "push", "-q", "origin", "main");
       f.mapClone();
       f.start();
       git(f.target, "merge", "-q", "main");
       write(f.target, "dist/tracked.txt", "new tracked content\n");
       git(f.target, "add", "-f", "dist/tracked.txt");
-      git(f.target, "commit", "-qm", "test: add a tracked output path");
+      git(
+        f.target,
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-qm",
+        "test: add a tracked output path",
+      );
       mergedCloseFixture(f);
       git(f.target, "push", "-q", "origin", "HEAD:refs/heads/main");
       write(f.clone, "dist/tracked.txt", "retained local output\n");

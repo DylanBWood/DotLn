@@ -54,7 +54,7 @@ export function laneHolderAlive(record, table) {
   );
 }
 
-export function inheritedHostLease(directory, env = process.env) {
+function readInheritedHostLease(directory, env) {
   try {
     const token = JSON.parse(env.DOTLN_HOST_LANE_LEASE ?? "null");
     if (
@@ -81,6 +81,16 @@ export function inheritedHostLease(directory, env = process.env) {
   } catch {
     return null;
   }
+}
+
+export function inheritedHostLease(directory, env = process.env) {
+  const lease = readInheritedHostLease(directory, env);
+  // A transient entry census must not strand a nested gate behind its own
+  // parent. Retry once; a successful validated lease remains cached by callers.
+  return (
+    lease ??
+    (env.DOTLN_HOST_LANE_LEASE ? readInheritedHostLease(directory, env) : null)
+  );
 }
 
 function liveHolders(directory) {

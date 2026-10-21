@@ -57,7 +57,7 @@ git -C "$fixture_repo" init -q
 git -C "$fixture_repo" config user.email test@example.invalid
 git -C "$fixture_repo" config user.name "DotLn Publication Test"
 git -C "$fixture_repo" add docs/product/00-fixture.md
-git -C "$fixture_repo" commit -qm 'fixture source'
+git -C "$fixture_repo" -c maintenance.auto=false commit -qm 'fixture source'
 revision="$(git -C "$fixture_repo" rev-parse HEAD)"
 
 (cd "$fixture_repo" && "$node_bin" scripts/check-publication.mjs) >"$test_root/undeclared.txt"

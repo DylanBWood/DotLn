@@ -162,7 +162,10 @@ export interface HarnessProfile {
   readonly codexContinuation?: HarnessObservation & {
     readonly observedVersion: string;
   };
-  readonly skills: HarnessObservation & { readonly root: string };
+  readonly skills: HarnessObservation & {
+    readonly root: string;
+    readonly format: "agent-skills";
+  };
   readonly settings: HarnessObservation & {
     readonly path: string;
     readonly deny: boolean;
@@ -440,6 +443,10 @@ export function assertHarnessProfile(profile: HarnessProfile): void {
     );
   }
   ensure(
+    profile.skills.format === "agent-skills",
+    "declared Agent Skills format",
+  );
+  ensure(
     repositoryPath(profile.skills.root) &&
       repositoryPath(profile.settings.path) &&
       repositoryPath(profile.instruction.path),
@@ -631,6 +638,14 @@ export function lowerToHarness(
         role.intents.length > 0,
       "role contract",
     );
+    if (profile.skills.available)
+      ensure(
+        /^dotln-[a-z0-9]+(?:-[a-z0-9]+)*$/.test(`dotln-${role.name}`) &&
+          `dotln-${role.name}`.length <= 64 &&
+          role.description.trim().length > 0 &&
+          [...role.description].length <= 1024,
+        "native Agent Skills frontmatter",
+      );
     for (const intent of role.intents) {
       ensure(
         verificationLine(intent) && !seenIntents.has(intent),

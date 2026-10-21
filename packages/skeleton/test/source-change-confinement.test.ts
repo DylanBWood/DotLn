@@ -181,7 +181,14 @@ test(
         }),
       );
       fixtureGit(target, "add", "-A");
-      fixtureGit(target, "commit", "-m", "Synthetic npm check");
+      fixtureGit(
+        target,
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-m",
+        "Synthetic npm check",
+      );
       fixtureGit(target, "worktree", "add", "-b", "npm-check", tree);
       const host = runFocusedTest(tree, "npm test");
       assert.equal(host.exitCode, 0, JSON.stringify(host));

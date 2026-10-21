@@ -87,7 +87,7 @@ test("WO-154 a reference rebuilds its body from the working tree before commit a
 
   // Committed, then the working tree moves on: Git supplies the body.
   git("add", "a.txt");
-  git("commit", "--quiet", "-m", "fixture");
+  git("-c", "maintenance.auto=false", "commit", "--quiet", "-m", "fixture");
   write("a.txt", "beta\n");
   assert.equal(hasObject(reference.blobHash), true);
   assert.deepEqual(bodies.resolve([reference]), ["alpha\n"]);

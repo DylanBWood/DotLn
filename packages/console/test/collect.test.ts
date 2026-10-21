@@ -108,7 +108,7 @@ test("WO-164 console collection spawns a constant number of processes and Git re
     write(`docs/control/orders/${id}.jsonl`, activation(id));
     write(`docs/final-reviews/${id}/RELEASE-NOTES.md`, `# ${id}\n`);
     git("add", "-A");
-    git("commit", "-q", "-m", `${id} merged`);
+    git("-c", "maintenance.auto=false", "commit", "-q", "-m", `${id} merged`);
     tagRelease(`v0.1.${index}`, manifest);
   };
   const lines = (path: string) =>
@@ -162,7 +162,7 @@ test("WO-164 console collection spawns a constant number of processes and Git re
     order("WO-900", false);
     write("docs/control/resume.jsonl", activation("WO-900"));
     git("add", "-A");
-    git("commit", "-q", "-m", "fixture");
+    git("-c", "maintenance.auto=false", "commit", "-q", "-m", "fixture");
     for (let index = 1; index <= 4; index += 1)
       release(
         index,
@@ -370,18 +370,25 @@ test("WO-164 console collection spawns a constant number of processes and Git re
     git("checkout", "-q", "-b", "side");
     write("docs/final-reviews/WO-980/RELEASE-NOTES.md", "Side notes\n");
     git("add", "-A");
-    git("commit", "-q", "-m", "side notes");
+    git("-c", "maintenance.auto=false", "commit", "-q", "-m", "side notes");
     git("tag", "side-boundary");
     git("checkout", "-q", "main");
     for (let index = 0; index < 18; index += 1) {
       write("unrelated.txt", `${index}\n`);
       git("add", "-A");
-      git("commit", "-q", "-m", "unrelated change");
+      git(
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-q",
+        "-m",
+        "unrelated change",
+      );
     }
     write("docs/final-reviews/WO-979/RELEASE-NOTES.md", "Main notes\n");
     write("docs/final-reviews/odd\n\tünicode.md", "Not release membership\n");
     git("add", "-A");
-    git("commit", "-q", "-m", "main notes");
+    git("-c", "maintenance.auto=false", "commit", "-q", "-m", "main notes");
     git("merge", "-q", "--no-ff", "side", "-m", "merge side notes");
     tagRelease("v0.1.9", { release: { previousRelease: "side-boundary" } });
     const many = await census();
@@ -472,7 +479,14 @@ test("WO-164 console collection spawns a constant number of processes and Git re
       activation("WO-911").replace('"schemaVersion":1', '"schemaVersion": 1'),
     );
     git("add", "-A");
-    git("commit", "-q", "-m", "invalid control rewrite");
+    git(
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-q",
+      "-m",
+      "invalid control rewrite",
+    );
     tagRelease("v0.1.10");
     assert.throws(listCold, /control log is not append-only/);
     git("tag", "-d", "v0.1.10");

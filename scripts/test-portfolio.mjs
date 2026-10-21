@@ -140,7 +140,14 @@ async function fixture(fn) {
     runGit(launchpad, [...fixtureGitFlags, "add", "."], fixtureGitOptions);
     runGit(
       launchpad,
-      [...fixtureGitFlags, "commit", "-qm", "Fixture launchpad"],
+      [
+        ...fixtureGitFlags,
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-qm",
+        "Fixture launchpad",
+      ],
       fixtureGitOptions,
     );
     // The registered scratch target, seeded with WO-119's six candidates.
@@ -168,7 +175,14 @@ async function fixture(fn) {
     runGit(target, [...fixtureGitFlags, "add", "-A"], fixtureGitOptions);
     runGit(
       target,
-      [...fixtureGitFlags, "commit", "-qm", "Scratch target"],
+      [
+        ...fixtureGitFlags,
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-qm",
+        "Scratch target",
+      ],
       fixtureGitOptions,
     );
     mkdirSync(join(root, "trees"));
@@ -225,7 +239,15 @@ function writer(log, edit) {
       edit(request.cwd, request);
       runGit(
         request.cwd,
-        [...fixtureGitFlags, "commit", "-q", "-F", request.commitMessagePath],
+        [
+          ...fixtureGitFlags,
+          "-c",
+          "maintenance.auto=false",
+          "commit",
+          "-q",
+          "-F",
+          request.commitMessagePath,
+        ],
         fixtureGitOptions,
       );
       appendFileSync(log, `${request.workOrder.workOrderId}\n`);
@@ -666,7 +688,14 @@ test("a Sort move passes only when the host sees the exact relocation and its na
     );
     runGit(
       target,
-      [...fixtureGitFlags, "commit", "-qm", "Placement check"],
+      [
+        ...fixtureGitFlags,
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-qm",
+        "Placement check",
+      ],
       fixtureGitOptions,
     );
     const sortChecked = (command) =>
@@ -763,6 +792,8 @@ test("a Sort move passes only when the host sees the exact relocation and its na
       target,
       [
         ...fixtureGitFlags,
+        "-c",
+        "maintenance.auto=false",
         "commit",
         "-q",
         "--allow-empty",
@@ -818,7 +849,14 @@ test("a Sort move passes only when the host sees the exact relocation and its na
       );
       runGit(
         target,
-        [...fixtureGitFlags, "commit", "-qam", `npm test runs ${script}`],
+        [
+          ...fixtureGitFlags,
+          "-c",
+          "maintenance.auto=false",
+          "commit",
+          "-qam",
+          `npm test runs ${script}`,
+        ],
         fixtureGitOptions,
       );
       derive();

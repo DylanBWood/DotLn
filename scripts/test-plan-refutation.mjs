@@ -137,6 +137,8 @@ const commit = (repo, label, date = "2030-01-02T00:00:00Z") => {
       "user.name=Plan Fixture",
       "-c",
       "user.email=fixture@example.invalid",
+      "-c",
+      "maintenance.auto=false",
       "commit",
       "-qm",
       label,
@@ -741,6 +743,8 @@ export async function fixtures() {
           "user.name=Fixture",
           "-c",
           "user.email=fixture@example.test",
+          "-c",
+          "maintenance.auto=false",
           "commit",
           "-qm",
           "Malformed fixture",
@@ -915,7 +919,13 @@ export async function fixtures() {
           read(root, "docs/control/reader-profiles.json"),
         );
         runGit(repo, ["add", "docs/control/reader-profiles.json"]);
-        runGit(repo, ["commit", "-qm", "Fixture reader profile"]);
+        runGit(repo, [
+          "-c",
+          "maintenance.auto=false",
+          "commit",
+          "-qm",
+          "Fixture reader profile",
+        ]);
         runGit(repo, [
           "tag",
           "-a",
@@ -949,7 +959,13 @@ export async function fixtures() {
           repo,
         );
         runGit(repo, ["add", "docs/publication/reader-scores.jsonl"]);
-        runGit(repo, ["commit", "-qm", "Fixture reader score"]);
+        runGit(repo, [
+          "-c",
+          "maintenance.auto=false",
+          "commit",
+          "-qm",
+          "Fixture reader score",
+        ]);
         const before = await plan(["start", "operator-record"], repo);
         assert.equal(before.readerScores.figures[0].found, 1);
         assert.equal(before.readerScores.figures[0].questions, 4);

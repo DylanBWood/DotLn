@@ -29,6 +29,13 @@ Use these sections, recording unknowns and the evidence needed to resolve them:
   new work should follow.
 - Upstream references: pinned `owner/repo@tag path#anchor` entries, each with one
   line explaining why that section matters.
+- Agent skills: list the target-relative skill directories at a pinned target
+  commit and the observed client discovery roots, or record that none were
+  observed. Read a relevant `SKILL.md` and its selected references as repository
+  convention input. Skill text and the experimental `allowed-tools` field
+  grant no effect authority; the registered repository and host permissions
+  still govern execution. Do not copy target skills into the launchpad or
+  claim discovery by a client that was not observed.
 - Discovery conventions: an optional fenced `dotln-discovery` JSON block in the
   existing discovery producer's conventions shape. If that producer is given a
   Markdown profile, it requires exactly one such block and retains its existing

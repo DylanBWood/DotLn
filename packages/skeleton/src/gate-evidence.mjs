@@ -497,8 +497,13 @@ function gateOwnerAlive(run) {
     if (/** @type {NodeJS.ErrnoException} */ (error).code === "ESRCH")
       return false;
   }
-  const started = run.processStartedAt && gateProcessStart(run.pid);
-  return !started || started === run.processStartedAt;
+  const started = gateProcessStart(run.pid);
+  if (!started) return true;
+  if (run.processStartedAt) return started === run.processStartedAt;
+  // A legacy marker without a birth observation cannot belong to a process
+  // born after that marker. Keep the fence when the observation is unavailable.
+  const birth = Date.parse(started);
+  return !Number.isFinite(birth) || birth <= Date.parse(run.startedAt);
 }
 /** Read only: dead markers never lock the tree and never let a stale observer
  * delete a newer run. Each run owns a unique, atomically published marker.
@@ -602,9 +607,9 @@ export function beginGateRun(root, command, { kind } = {}) {
   };
 }
 
-/** @typedef {{exitCode: number, executed: boolean, output?: string, outputRef?: string, cases?: GateDiagnostic[]}} GateDiagnostic */
+/** @typedef {{exitCode: number, executed: boolean, name?: string, durationMs?: number, finishedAt?: string, reused?: boolean, sourceRow?: {location?: string, task?: string, codeIdentity?: string}, failureKind?: string, timedOut?: boolean, stopped?: boolean, partial?: unknown, excludedSuites?: unknown, output?: string, outputRef?: string, cases?: GateDiagnostic[], taskTimeline?: GateDiagnostic[]}} GateDiagnostic */
 /** @typedef {{originMain: string, main: string, tags: {count: number|"unreadable", newest: string}, dotlnRefs: number|"unreadable"}} SharedRefs */
-/** @typedef {GateDiagnostic & {checkId: string, treeHash: string, codeIdentity?: string, instanceInputDigest?: string, subject: string, durationMs: number, evidenceRef: string, recordedAt: string, sharedRefs?: {start: SharedRefs, end: SharedRefs}}} GateCheck */
+/** @typedef {GateDiagnostic & {checkId: string, treeHash: string, codeIdentity?: string, instanceInputDigest?: string, subject: string, durationMs: number, evidenceRef: string, recordedAt: string, requiredSuites?: string[], identityUnchanged?: boolean, buildOutputUnchanged?: boolean, buildOutputAttested?: boolean, memory?: {failure?: unknown}, abandonedRoots?: unknown[], sharedRefs?: {start: SharedRefs, end: SharedRefs}}} GateCheck */
 /** @param {string} root @param {string[]} args */
 function git(root, args) {
   const run = spawnSync("git", args, {
@@ -679,8 +684,10 @@ const objectHash = (type, bytes, algorithm) =>
     .digest("hex");
 
 /** Exact candidate Git tree identity, including uncommitted and untracked files.
- * Ignored host evidence stays outside the tree. No evidence or control paths are
- * excluded specially. Git filters are applied by hash-object; this never writes
+ * Ignored host evidence stays outside the tree. A re-included untracked intake
+ * directory is private source material, not a candidate Git entry; tracked
+ * intake files and ordinary untracked source still participate. Git filters
+ * are applied by hash-object; this never writes
  * the shared object database or the user's index.
  * @param {string} root
  */
@@ -704,8 +711,15 @@ export function gateTreeHash(root) {
     "-z",
   ])
     .split("\0")
-    .filter(Boolean))
+    .filter(Boolean)) {
+    if (
+      path.startsWith("docs/intake/") &&
+      path.endsWith("/") &&
+      lstatSync(join(root, path)).isDirectory()
+    )
+      continue;
     modes.set(path, "100644");
+  }
   const attributes = spawnSync(
     "git",
     [
@@ -1042,6 +1056,9 @@ function readChecksFile(path) {
 /** @param {string} root @param {string} [treeHash] @returns {GateCheck[]} */
 export function readGateChecks(root, treeHash) {
   const path = checksPath(root);
+  // Writers archive evictions before replacing the hot index. Reading the
+  // hot rows first therefore cannot miss a row moved during this observation.
+  const hot = readChecksFile(path);
   const directory = archiveDirectory(root);
   const archives = treeHash
     ? /^[a-f0-9]{40,64}$/.test(treeHash)
@@ -1054,14 +1071,15 @@ export function readGateChecks(root, treeHash) {
       : [];
   const rows = uniqueChecks([
     ...archives.flatMap((name) => readChecksFile(join(directory, name))),
-    ...readChecksFile(path),
+    ...hot,
   ]);
   return (
     treeHash ? rows.filter((row) => row.treeHash === treeHash) : rows
   ).sort((a, b) => (a.recordedAt ?? "").localeCompare(b.recordedAt ?? ""));
 }
-/** @param {string} root @param {GateCheck[]} additions */
-export function recordGateChecks(root, additions) {
+/** @param {string} root @param {GateCheck[]} additions
+ * @param {{sourceRoot?: string}} [options] */
+export function recordGateChecks(root, additions, { sourceRoot } = {}) {
   const path = checksPath(root);
   mkdirSync(dirname(path), { recursive: true });
   // Concurrent suites and sessions share this cache. Serialize the short
@@ -1085,8 +1103,36 @@ export function recordGateChecks(root, additions) {
   try {
     /** @template {GateDiagnostic} T @param {T} row @returns {Omit<T, "output">} */
     const retainDiagnostic = (row) => {
-      const { output, ...metadata } = row;
+      let { output, ...metadata } = row;
+      if (
+        sourceRoot &&
+        !output &&
+        row.outputRef &&
+        (row.exitCode !== 0 || !row.executed)
+      ) {
+        const expected =
+          /^docs\/control\/local\/harness\/check-output\/([a-f0-9]{64})\.log$/.exec(
+            row.outputRef,
+          );
+        if (expected) {
+          const source = join(realpathSync(sourceRoot), row.outputRef);
+          if (
+            existsSync(source) &&
+            realpathSync(source) === source &&
+            lstatSync(source).isFile()
+          ) {
+            const bytes = readFileSync(source, "utf8");
+            if (
+              createHash("sha256").update(bytes).digest("hex") === expected[1]
+            )
+              output = bytes;
+          }
+        }
+      }
       if (row.cases) metadata.cases = row.cases.map(retainDiagnostic);
+      if (row.taskTimeline)
+        metadata.taskTimeline = row.taskTimeline.map(retainDiagnostic);
+      if (row.exitCode === 0 && row.executed) delete metadata.outputRef;
       // Passing stdout was only a transient diagnostic. Failed suite and case
       // output share addressed logs; evidence lookup parses metadata alone.
       if (output && (row.exitCode !== 0 || !row.executed)) {
@@ -1139,7 +1185,7 @@ export function recordGateChecks(root, additions) {
 /** A row that left suites out is a partial result under any identity, never a
  * complete check (WO-140).
  * Any other shape of either field is read as partial, never as complete.
- * @param {GateCheck & {partial?: unknown, excludedSuites?: unknown}} row
+ * @param {{partial?: unknown, excludedSuites?: unknown}} row
  */
 export const partialGateCheck = (row) =>
   (row.partial !== undefined && row.partial !== false) ||
@@ -1156,7 +1202,234 @@ export const instanceDigestMismatch = (row, current) =>
     : row.instanceInputDigest === undefined
       ? "missing"
       : "different";
-/** A failed attempt does not erase a later or earlier successful run at identical bytes.
+/** Row integrity applies to executions under every check, including runs
+ * that supply no pass to the product gate.
+ * @param {GateCheck} row */
+export const intactGateExecutionRow = (row) =>
+  row.identityUnchanged !== false &&
+  row.buildOutputUnchanged !== false &&
+  row.buildOutputAttested !== false &&
+  !row.stopped &&
+  !row.failureKind &&
+  !row.timedOut &&
+  !row.memory?.failure &&
+  !row.abandonedRoots?.length &&
+  (row.exitCode === 0 || row.identityUnchanged === true) &&
+  Number.isFinite(row.durationMs) &&
+  row.durationMs >= 0 &&
+  Boolean(row.evidenceRef) &&
+  Number.isFinite(Date.parse(row.recordedAt)) &&
+  Array.isArray(row.requiredSuites);
+
+/** @param {GateDiagnostic} result */
+export const passingGateResult = (result) =>
+  result.exitCode === 0 &&
+  !result.failureKind &&
+  !result.stopped &&
+  !partialGateCheck(result) &&
+  !result.timedOut &&
+  Number.isFinite(result.durationMs) &&
+  typeof result.durationMs === "number" &&
+  result.durationMs >= 0;
+
+/** Declared suites need a named execution or carried result in the row.
+ * A legacy row without a declaration covers only an empty claim.
+ * @param {GateCheck} row */
+export function missingGateSuites(row) {
+  const observed = row.taskTimeline ?? row.cases;
+  const tasks = Array.isArray(observed) ? observed : [];
+  return (Array.isArray(row.requiredSuites) ? row.requiredSuites : []).filter(
+    (name) =>
+      typeof name !== "string" ||
+      !tasks.some(
+        (task) =>
+          typeof task?.name === "string" &&
+          (task.name === name || task.name.startsWith(`${name}:`)),
+      ),
+  );
+}
+
+/** The execution of `name` that finished last among these rows. A result
+ * carried from another row and a task that never started are not executions:
+ * they neither supply a pass nor displace one. A run recorded under another
+ * check answers no claim and supplies nothing. When the task's latest run
+ * there did not pass, and no gate execution finished after it, that failure
+ * is the task's latest run; when it passed, the latest gate execution
+ * decides as if the other runs had not happened. Overlapping gates are
+ * ordered by when the task finished, then by when its row was recorded.
+ * `citesMain` reports a carried result this worktree took from main.
+ * @param {GateCheck[]} rows @param {GateCheck[]} other
+ * @param {string} name @param {string|undefined} identity */
+export function latestGateExecution(rows, other, name, identity) {
+  /** @type {{row: GateCheck, result?: GateDiagnostic|undefined, at: number}|undefined} */
+  let latest;
+  /** @type {{row: GateCheck, at: number, passed: boolean}|undefined} */
+  let elsewhere;
+  let citesMain = false;
+  /** @type {[GateCheck, boolean][]} */
+  const pairs = [
+    ...rows.map((row) => /** @type {[GateCheck,boolean]} */ ([row, true])),
+    ...other.map((row) => /** @type {[GateCheck,boolean]} */ ([row, false])),
+  ];
+  const ordered = pairs.sort(([a], [b]) =>
+    String(a.recordedAt ?? "").localeCompare(String(b.recordedAt ?? "")),
+  );
+  for (const [row, supplies] of ordered) {
+    if (row.executed !== true) continue;
+    const observed = row.taskTimeline ?? row.cases;
+    if (!Array.isArray(observed)) continue;
+    const named = observed.filter((result) => result?.name === name);
+    if (!named.length) continue;
+    // A row that repeats a name cannot say which result ran: it counts as an
+    // execution of every task it names and supplies nothing.
+    const [result] =
+      new Set(observed.map((entry) => entry?.name)).size === observed.length
+        ? named
+        : [];
+    if (result?.reused) {
+      citesMain ||=
+        supplies &&
+        result.sourceRow?.location === "main" &&
+        result.sourceRow.task === name &&
+        result.sourceRow.codeIdentity === identity;
+      continue;
+    }
+    if (result && result.executed !== true) continue;
+    // A passing partial observation neither supplies nor revokes a complete
+    // pass. A failing partial still displaces it and names the failed task.
+    if (
+      partialGateCheck(row) &&
+      row.exitCode === 0 &&
+      intactGateExecutionRow(row) &&
+      result &&
+      passingGateResult(result)
+    )
+      continue;
+    if (!supplies && !result) continue;
+    const recorded = Date.parse(row.recordedAt);
+    const finished = Date.parse(result?.finishedAt ?? "");
+    const future = Number.isFinite(finished) && finished > recorded;
+    const at = Number.isFinite(finished) && !future ? finished : recorded;
+    // Rows arrive in recorded order, so an equal finish keeps the later row.
+    if (!supplies) {
+      if (!elsewhere || !(at < elsewhere.at))
+        elsewhere = {
+          row,
+          at,
+          passed:
+            !future &&
+            intactGateExecutionRow(row) &&
+            Boolean(result && passingGateResult(result)),
+        };
+    } else if (!latest || !(at < latest.at)) latest = { row, result, at };
+  }
+  if (
+    elsewhere &&
+    !elsewhere.passed &&
+    !(elsewhere.at < (latest?.at ?? -Infinity))
+  )
+    return { row: elsewhere.row, at: elsewhere.at, citesMain };
+  return { ...latest, citesMain };
+}
+
+/** A complete row stands on the same execution decision used by the runner.
+ * A carried main result is revalidated against main only when local history
+ * supplies no execution of that task.
+ * @param {GateCheck} candidate @param {GateCheck[]} rows @param {string} [root]
+ */
+export function gateCheckStands(candidate, rows, root) {
+  if (
+    !intactGateExecutionRow(
+      candidate.requiredSuites === undefined
+        ? { ...candidate, requiredSuites: [] }
+        : candidate,
+    ) ||
+    missingGateSuites(candidate).length
+  )
+    return false;
+  /** @param {GateCheck[]} entries */
+  const partition = (entries) => {
+    const at = entries.filter(
+      (row) =>
+        !row.stopped &&
+        row.codeIdentity === candidate.codeIdentity &&
+        (candidate.instanceInputDigest === undefined ||
+          row.instanceInputDigest === candidate.instanceInputDigest),
+    );
+    return {
+      rows: at.filter((row) => row.checkId === candidate.checkId),
+      other: at.filter(
+        (row) =>
+          row.checkId !== candidate.checkId &&
+          row.checkId !== "npm run test:docs",
+      ),
+    };
+  };
+  const local = partition(rows);
+  /** @type {ReturnType<typeof partition>|null|undefined} */
+  let main;
+  const consultMain = () => {
+    if (main !== undefined) return main;
+    main = null;
+    if (!root) return main;
+    try {
+      const record = git(root, ["worktree", "list", "--porcelain"])
+        .split("\n\n")
+        .find((record) =>
+          record.split("\n").includes("branch refs/heads/main"),
+        );
+      const directory = record
+        ?.split("\n")
+        .find((line) => line.startsWith("worktree "))
+        ?.slice(9);
+      if (directory && realpathSync(directory) !== realpathSync(root))
+        main = partition(readGateChecks(directory));
+    } catch {
+      /* Unreadable main cannot supply a pass. */
+    }
+    return main;
+  };
+  return (candidate.taskTimeline ?? candidate.cases ?? []).every((task) => {
+    if (
+      typeof task.name !== "string" ||
+      Date.parse(task.finishedAt ?? "") > Date.parse(candidate.recordedAt)
+    )
+      return false;
+    let latest = latestGateExecution(
+      local.rows,
+      local.other,
+      task.name,
+      candidate.codeIdentity,
+    );
+    if (!latest.row && (!local.rows.length || latest.citesMain)) {
+      const main = consultMain();
+      if (main)
+        latest = latestGateExecution(
+          main.rows,
+          main.other,
+          task.name,
+          candidate.codeIdentity,
+        );
+    }
+    return Boolean(
+      latest.row &&
+      latest.result &&
+      !partialGateCheck(latest.row) &&
+      intactGateExecutionRow(
+        latest.row === candidate && candidate.requiredSuites === undefined
+          ? { ...latest.row, requiredSuites: [] }
+          : latest.row,
+      ) &&
+      passingGateResult(latest.result) &&
+      Number.isFinite(Date.parse(latest.result.finishedAt ?? "")) &&
+      Date.parse(latest.result.finishedAt ?? "") <=
+        Date.parse(latest.row.recordedAt),
+    );
+  });
+}
+
+/** Generic tree checks retain successful evidence; product checks also
+ * reject complete rows displaced by a task's later failing execution.
  * @param {string} root @param {string} checkId @param {string} treeHash
  */
 export const findGateCheck = (root, checkId, treeHash) => {
@@ -1164,7 +1437,11 @@ export const findGateCheck = (root, checkId, treeHash) => {
     checkId === "npm test" ? gateCodeIdentity(root) : undefined;
   const instanceInputDigest =
     checkId === "npm test" ? gateInstanceInputDigest(root) : undefined;
-  return readGateChecks(root, checkId === "npm test" ? undefined : treeHash)
+  const rows = readGateChecks(
+    root,
+    checkId === "npm test" ? undefined : treeHash,
+  );
+  return [...rows]
     .reverse()
     .find(
       (row) =>
@@ -1177,6 +1454,7 @@ export const findGateCheck = (root, checkId, treeHash) => {
         !partialGateCheck(row) &&
         row.executed === true &&
         row.exitCode === 0 &&
+        (checkId !== "npm test" || gateCheckStands(row, rows, root)) &&
         Number.isFinite(row.durationMs) &&
         row.durationMs >= 0 &&
         Boolean(row.evidenceRef),

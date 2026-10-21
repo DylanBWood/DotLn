@@ -1,0 +1,1060 @@
+{
+  "schemaVersion": 1,
+  "kind": "VER-002 replay of the 62 isolated-reversion controls",
+  "rows": [
+    {
+      "id": "symlink-entry",
+      "suite": "process-debt",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 0.278,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 0.219,
+        "failure": "AssertionError [ERR_ASSERTION]: the main entry must process the invalid option at TestContext.<anonymous> (file://<temp> at",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "archive-rotation",
+      "suite": "process-debt",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 0.191,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 0.193,
+        "failure": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value: assert.ok( ",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "tap-progress",
+      "suite": "process-debt",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 0.241,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 0.244,
+        "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal: + actual - expected + 'tap-quoted'",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "glob-observation",
+      "suite": "runner-fixtures",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 0.295,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 0.288,
+        "failure": "AssertionError [ERR_ASSERTION]: Product read guard: 6 excluded-input observations (<temp> Product read guard: <module setup> read",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "hedge-occurrences",
+      "suite": "harness-fixtures",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 0.19,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 0.196,
+        "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal: + actual - expected [",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "append-after-write",
+      "suite": "harness-fixtures",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 8.722,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 6.118,
+        "failure": "AssertionError [ERR_ASSERTION]: a committed dispatch retains its writer even if append reports failure false !== true ",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "gate-standing",
+      "suite": "process-debt",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 0.629,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 0.299,
+        "failure": "AssertionError [ERR_ASSERTION]: completion and direct lookup must agree false !== true ",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "correct-standing",
+      "suite": "resume",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 23.886,
+        "tests": "0/0/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 11.644,
+        "failure": "AssertionError [ERR_ASSERTION]: refusal expected: correct 7 --set productGate=host-gate:displaced:npm test --reason bind the gate the transition could not find --harness human --harness-version not-applicable --model human --effort unknown --source operator-attested --work-order WO-101 at refuse (fi",
+        "tests": "0/0/0"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "empty-format-diagnostic",
+      "suite": "process-debt",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 0.845,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 0.853,
+        "failure": "AssertionError [ERR_ASSERTION]: The input did not match the regular expression /Nested gate has no output for format:/. Input: '(node:89649) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.\\n' + '(Use `node --trace-deprecation ...` to show where ",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "effective-ignore-comment",
+      "suite": "process-debt",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 0.702,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 0.416,
+        "failure": "AssertionError [ERR_ASSERTION]: scripts/test-comment-labels.mjs must detect effective inclusion: ✔ WO-200 every path with dotln-pinned-bytes set is listed in .prettierignore (13.032292ms) ℹ tests 1 ℹ suites 0 ℹ pass 1",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "effective-ignore-corpus",
+      "suite": "process-debt",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 0.708,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 0.676,
+        "failure": "AssertionError [ERR_ASSERTION]: corpus/harness/wo107-schema.test.mjs must detect effective inclusion: ✔ corpus the hashed collector files are exactly the pinned-bytes files (14.292667ms) ℹ tests 1 ℹ suites 0 ℹ pass 1",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "private-intake",
+      "suite": "process-debt",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 0.648,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 0.311,
+        "failure": "Error: Unsupported candidate tree entry",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "checkpoint-subject",
+      "suite": "resume",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 22.038,
+        "tests": "0/0/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 5.966,
+        "failure": "AssertionError [ERR_ASSERTION]: correct 2 --set checkpointRef=refs/dotln/checkpoint/WO-099/1 --set checkpointSha=0000000000000000000000000000000000000000 --reason wrong sha --harness human --harness-version not-applicable --model human --effort unknown --source operator-attested at refuse (file:///p",
+        "tests": "0/0/0"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "fixture-maintenance",
+      "suite": "process-debt",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 2.947,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 0.502,
+        "failure": "AssertionError [ERR_ASSERTION]: ✖ a live guard restores its missing record and a concurrent start reuses it (227.62225ms) ℹ tests 1 ℹ suites 0 ℹ pass 0",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "guard-record",
+      "suite": "runner-fixtures",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 2.718,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 5.73,
+        "failure": "Error: Host guard startup observation unavailable; inspect its private guard.log",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "nested-fetch-cause",
+      "suite": "process-debt",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 0.192,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 0.202,
+        "failure": "AssertionError [ERR_ASSERTION]: The input did not match the regular expression /resume\\.status.*TypeError.*AggregateError.*ECONNREFUSED/. Input: 'console request failed (error: private-request-material)' ",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "handled-members",
+      "suite": "runner-fixtures",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 0.213,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 0.235,
+        "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal: + actual - expected [",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "signal-in-memory",
+      "suite": "process-debt",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 1.665,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 1.632,
+        "failure": "AssertionError [ERR_ASSERTION]: PROGRESS [build] 0.0 s started PASS build 0.04 s PROGRESS [wait] 0.0 s started PROGRESS [wait] 0.2 s stopped by gate request",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "withdrawal-kind",
+      "suite": "process-debt",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 0.519,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 0.507,
+        "failure": "AssertionError [ERR_ASSERTION]: node:internal/modules/run_main:107 triggerUncaughtException( ^ ",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "cleanup-signals",
+      "suite": "runner-fixtures",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 0.227,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 0.226,
+        "failure": "TypeError [Error]: Cannot read properties of undefined (reading 'length')",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "shared-ref-predecessor",
+      "suite": "runner-fixtures",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 1.043,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 1.015,
+        "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal: + actual - expected + []",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "copy-output",
+      "suite": "process-debt",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 0.195,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 0.202,
+        "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal: true !== false ",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "sync-classification",
+      "suite": "sync-fixtures",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 0.233,
+        "tests": "2/2/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 0.215,
+        "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal: 'stale' !== 'unknown' ",
+        "tests": "2/0/2"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "timeline-wait",
+      "suite": "process-debt",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 0.762,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 0.192,
+        "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal: + actual - expected {",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "kit-predecessor",
+      "suite": "runner-fixtures",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 0.188,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 0.2,
+        "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal: + actual - expected [",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "doc-base-build",
+      "suite": "process-debt",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 0.268,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 0.274,
+        "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal: + actual - expected + [",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "copy-closure",
+      "suite": "runner-fixtures",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 0.284,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 0.228,
+        "failure": "AssertionError [ERR_ASSERTION]: configured publication check + actual - expected + [",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "exclusive-reservation",
+      "suite": "runner-fixtures",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 0.762,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 0.668,
+        "failure": "AssertionError [ERR_ASSERTION]: [{\"name\":\"build\",\"exitCode\":0,\"executed\":true,\"durationMs\":1,\"startedAt\":\"2026-10-21T21:32:48.530Z\",\"finishedAt\":\"2026-10-21T21:32:48.681Z\",\"concurrentAtStart\":[],\"predecessors\":[],\"schedulerDurationMs\":151,\"loadClass\":\"isolated\",\"loadFactor\":2,\"peerCap\":0,\"reservedSl",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "host-remedy",
+      "suite": "process-debt",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 0.205,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 0.198,
+        "failure": "AssertionError [ERR_ASSERTION]: The input did not match the regular expression /memory\\.gateShare must be at least 0\\.55/. Input: 'Host memory: normal; pressure=1; swapBytes=0; physicalBytes=8589934592; source=fixture\\n' + 'Per-lane memory budget 1073741824 bytes is below measured task peak RSS 1181",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "light-all-samples",
+      "suite": "runner-fixtures",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 0.22,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 0.21,
+        "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal: true !== false ",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "legacy-marker",
+      "suite": "process-debt",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 0.198,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 0.219,
+        "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal: + actual - expected + [",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "launchpad-environment",
+      "suite": "process-debt",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 0.243,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 0.212,
+        "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal: + actual - expected + '/invoking/launchpad'",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "relative-read-log",
+      "suite": "runner-fixtures",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 0.635,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 0.621,
+        "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal: true !== false ",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "complete-failure-log",
+      "suite": "runner-fixtures",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 1.11,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 0.77,
+        "failure": "AssertionError [ERR_ASSERTION]: failed complete run retains a log reference + actual - expected + 'undefined'",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "copied-failure-log",
+      "suite": "process-debt",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 0.214,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 0.201,
+        "failure": "Error: ENOENT: no such file or directory, open '<temp>'",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "signoff-remedy",
+      "suite": "license-fixtures",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 0.381,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 0.361,
+        "failure": "AssertionError [ERR_ASSERTION]: The input did not match the regular expression /already exempts its single identity/. Input: 'FAIL contribution-signoff 645f260c65ad: observed outside author without matching sign-off; expected Signed-off-by trailer matching the commit author (DCO 1.1); add it with gi",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "target-signoff",
+      "suite": "target-worktree",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 4.084,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 2.231,
+        "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal: 0 !== 1 ",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "sync-declarations",
+      "suite": "process-debt",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 0.198,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 0.207,
+        "failure": "AssertionError [ERR_ASSERTION]: scripts/release.mjs at TestContext.<anonymous> (file://<temp> at async Test.run (node:inter",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "pr-draft-owner",
+      "suite": "release",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 4.205,
+        "tests": "0/0/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 2.015,
+        "failure": "",
+        "tests": "0/0/0"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "planner-repair-authority",
+      "suite": "process-debt",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 0.212,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 0.207,
+        "failure": "AssertionError [ERR_ASSERTION]: The input did not match the regular expression /Before editing judged text, resolve its refutation hold or record the operator-authorized amendment/. Input: 'After committing the planning subject locally, load dotln-refuter for one independent goal review per pass. Re",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "release-close-classification",
+      "suite": "harness-fixtures",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 4.034,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 2.516,
+        "failure": "AssertionError [ERR_ASSERTION]: DotLn advisory: Release-close admission withheld: byte-exact helper spelling missing (non-canonical material flag quoting or value); expected '<home>/.local/share/fnm/node-versions/v26.9.0/installation/bin/node' '<temp>",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "release-close-single-advisory",
+      "suite": "harness-fixtures",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 4.083,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 2.735,
+        "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal: 2 !== 1 ",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "finish-copy-output",
+      "suite": "worktree",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 94.138,
+        "tests": "6/6/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 88.117,
+        "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal: true !== false ",
+        "tests": "0/0/0"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "stopped-lookup",
+      "suite": "process-debt",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 0.372,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 0.362,
+        "failure": "AssertionError [ERR_ASSERTION]: node:internal/modules/run_main:107 triggerUncaughtException( ^ ",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "reviewer-packet",
+      "suite": "process-debt",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 0.218,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 0.205,
+        "failure": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value: assert.ok( ",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "capacity-diagnostic",
+      "suite": "process-debt",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 0.284,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 0.179,
+        "failure": "AssertionError [ERR_ASSERTION]: The input did not match the regular expression /Host lane capacity record \\(lane-capacity\\.json\\)/. Input: \"Expected property name or '}' in JSON at position 1 (line 1 column 2)\" ",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "gate-self-validity",
+      "suite": "process-debt",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 0.524,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 0.263,
+        "failure": "AssertionError [ERR_ASSERTION]: completion and direct lookup must agree false !== true ",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "malformed-gate-identity",
+      "suite": "process-debt",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 0.229,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 0.212,
+        "failure": "AssertionError [ERR_ASSERTION]: file://<temp> if (search === '' && from > this.length) throw new Error('nonadvancing empty gate identity'); ^ ",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "single-flag-identity",
+      "suite": "harness-fixtures",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 0.218,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 0.199,
+        "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal: + actual - expected [",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "inherited-entry-retry",
+      "suite": "process-debt",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 0.478,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 0.447,
+        "failure": "AssertionError [ERR_ASSERTION]: node:internal/modules/run_main:107 triggerUncaughtException( ^ ",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "registration-remedies",
+      "suite": "process-debt",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 0.311,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 0.244,
+        "failure": "AssertionError [ERR_ASSERTION]: node:internal/modules/run_main:107 triggerUncaughtException( ^ ",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "bounded-role-efficiency",
+      "suite": "process-debt",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 0.268,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 0.248,
+        "failure": "AssertionError [ERR_ASSERTION]: .agents/skills/dotln-executor/SKILL.md: 29224 exceeds before 29213 at TestContext.<anonymous> (file://<temp>",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "completion-self-validity",
+      "suite": "process-debt",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 0.558,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 0.266,
+        "failure": "AssertionError [ERR_ASSERTION]: completion and direct lookup must agree true !== false ",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "declared-suite-coverage",
+      "suite": "process-debt",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 0.553,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 0.353,
+        "failure": "AssertionError [ERR_ASSERTION]: {\"checkId\":\"npm test\",\"treeHash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"codeIdentity\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"subject\":\"fixture\",\"executed\":true,\"exitCode\":0,\"durationMs\":100,\"recordedAt\":\"2026-01-01T00:00:01.000Z\",\"evi",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "command-prefix-identity",
+      "suite": "harness-fixtures",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 0.192,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 0.197,
+        "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal: + actual - expected [",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "nonnegative-gate-duration",
+      "suite": "harness-fixtures",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 0.191,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 0.187,
+        "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal: + actual - expected [",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "skills-format",
+      "suite": "process-debt",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 0.254,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 0.188,
+        "failure": "AssertionError [ERR_ASSERTION]: The input did not match the regular expression /declared Agent Skills format/. Input: 'Error: harness contract: observed hooks require all pinned runtime artifacts' ",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "skills-frontmatter",
+      "suite": "process-debt",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 0.257,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 0.259,
+        "failure": "AssertionError [ERR_ASSERTION]: Missing expected exception. at TestContext.<anonymous> (file://<temp> at async Test.run (n",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "authority-reference-encoding",
+      "suite": "process-debt",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 0.423,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 0.225,
+        "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal: + actual - expected + 'docs/evidence/WO-990/authority/002/authority.json'",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "authority-cli-reference",
+      "suite": "process-debt",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 5.859,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 4.646,
+        "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal: true !== false ",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "authority-destination",
+      "suite": "process-debt",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 0.194,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 0.218,
+        "failure": "AssertionError [ERR_ASSERTION]: Missing expected exception. at TestContext.<anonymous> (file://<temp> at async Test.run (n",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    },
+    {
+      "id": "sync-real-checker-reports",
+      "suite": "sync-fixtures",
+      "mode": "isolated-reversion",
+      "pos": {
+        "exit": 0,
+        "seconds": 0.175,
+        "tests": "1/1/0"
+      },
+      "neg": {
+        "exit": 1,
+        "seconds": 0.177,
+        "failure": "AssertionError' expected: true actual: false operator: 'strictEqual'",
+        "tests": "1/0/1"
+      },
+      "reproduced": true
+    }
+  ]
+}

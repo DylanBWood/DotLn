@@ -323,19 +323,39 @@ export function scanHedges(
         /\b(?:took|duration|ran|lasted)\b/i.test(part) &&
         !/\b(?:ago|since)\b/i.test(part)
       ) {
-        // WO-168 (WO-140-D007): `npm test -- --inside-sandbox` contains
-        // `npm test`, so a named identity yields to a longer one that holds
-        // it. Two unrelated identities in one phrase stay ambiguous.
-        const named = facts.gates.filter((gate) => part.includes(gate.checkId));
-        const matching = named.filter(
-          (gate) =>
-            !named.some(
-              (other) =>
-                other.checkId !== gate.checkId &&
-                other.checkId.includes(gate.checkId),
-            ),
+        // Suppress a short identity only at occurrences inside a longer
+        // identity. A separate mention remains ambiguous, and an unknown
+        // command suffix never borrows the shorter command's duration.
+        const gates = facts.gates.filter(
+          (gate) => typeof gate.checkId === "string" && gate.checkId.length > 0,
         );
-        if (matching.length === 1 && Number.isFinite(matching[0]?.durationMs)) {
+        const occurrences = gates.flatMap((gate) => {
+          const found = [];
+          for (let start = part.indexOf(gate.checkId); start !== -1;) {
+            found.push({ gate, start, end: start + gate.checkId.length });
+            start = part.indexOf(gate.checkId, start + 1);
+          }
+          return found;
+        });
+        const matching = gates.filter((gate) =>
+          occurrences.some(
+            (own) =>
+              own.gate === gate &&
+              !/[\w-]$/.test(part.slice(0, own.start)) &&
+              !/^(?:\s+-(?:\s|[\w-]|$)|[\w-])/.test(part.slice(own.end)) &&
+              !occurrences.some(
+                (other) =>
+                  other.gate.checkId !== gate.checkId &&
+                  other.start <= own.start &&
+                  other.end >= own.end,
+              ),
+          ),
+        );
+        if (
+          matching.length === 1 &&
+          Number.isFinite(matching[0]?.durationMs) &&
+          matching[0]!.durationMs >= 0
+        ) {
           observed = `${matching[0]!.durationMs} ms`;
           source = "gate-row";
         }

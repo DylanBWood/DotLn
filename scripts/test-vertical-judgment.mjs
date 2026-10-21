@@ -380,7 +380,7 @@ test("WO-112 a resolution checkout clears a killed run's leftover, always remove
     fixtureGit(target, "init", "--initial-branch=main");
     writeFileSync(join(target, "a.txt"), "a\n");
     fixtureGit(target, "add", "a.txt");
-    fixtureGit(target, "commit", "-m", "Seed");
+    fixtureGit(target, "-c", "maintenance.auto=false", "commit", "-m", "Seed");
     const head = fixtureGit(target, "rev-parse", "HEAD");
     const directory = join(root, "run");
     const child = join(directory, "resolution-1");
@@ -1529,7 +1529,7 @@ test("WO-112 D047 checkout recovery clears only its own registration and leaves 
     fixtureGit(target, "init", "--initial-branch=main");
     writeFileSync(join(target, "a.txt"), "a\n");
     fixtureGit(target, "add", "a.txt");
-    fixtureGit(target, "commit", "-m", "Seed");
+    fixtureGit(target, "-c", "maintenance.auto=false", "commit", "-m", "Seed");
     const head = fixtureGit(target, "rev-parse", "HEAD");
     // A moved worktree with staged work, as the verification report quoted it.
     const side = join(root, "side");

@@ -33,7 +33,14 @@ test("WO-124 criterion 3: a host-produced snapshot indexes every file's actual b
     writeFileSync(join(worktree, "unicode.txt"), "π\n");
     writeFileSync(join(worktree, "contract-test.mjs"), "process.exit(0);\n");
     fixtureGit(worktree, "add", "unicode.txt", "contract-test.mjs");
-    fixtureGit(worktree, "commit", "-m", "Add synthetic snapshot inputs");
+    fixtureGit(
+      worktree,
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-m",
+      "Add synthetic snapshot inputs",
+    );
     const commit = fixtureGit(worktree, "rev-parse", "HEAD");
     const prepared = prepareWorktreeVerification({
       worktree,

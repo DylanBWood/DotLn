@@ -116,9 +116,11 @@ test("publication declarations under a configured root require both editions", (
     cpSync(join(scriptRoot, "lib"), join(root, "scripts/lib"), {
       recursive: true,
     });
-    cpSync(
-      join(scriptRoot, "check-publication.mjs"),
-      join(root, "scripts/check-publication.mjs"),
+    copyFixtureFiles(
+      join(scriptRoot, ".."),
+      root,
+      "scripts/test-control-copy-sites.fixture-inputs.json",
+      "configured publication check",
     );
     installBeaconFixture(root);
     declared({
@@ -502,9 +504,11 @@ await test("configuration root", async (t) => {
         temporary(`profile-${kind}`, (root) => {
           const launchpad = join(root, "launchpad");
           mkdirSync(join(launchpad, "scripts"), { recursive: true });
-          cpSync(
-            join(scriptRoot, "resume.mjs"),
-            join(launchpad, "scripts/resume.mjs"),
+          copyFixtureFiles(
+            join(scriptRoot, ".."),
+            launchpad,
+            "scripts/test-control-copy-sites.fixture-inputs.json",
+            "configured profile activation",
           );
           cpSync(join(scriptRoot, "lib"), join(launchpad, "scripts/lib"), {
             recursive: true,
@@ -948,7 +952,16 @@ await test("configuration root", async (t) => {
         // Date the introduction on the ledger heading's day, not the wall
         // clock: planningPassScope admits passes from the introduction on.
         const committed = spawnGit(
-          ["-C", root, "commit", "-q", "-m", "configured planning fixture"],
+          [
+            "-C",
+            root,
+            "-c",
+            "maintenance.auto=false",
+            "commit",
+            "-q",
+            "-m",
+            "configured planning fixture",
+          ],
           {
             encoding: "utf8",
             env: {
@@ -1089,6 +1102,8 @@ await test("configuration root", async (t) => {
             "user.email=fixture@example.invalid",
             "-c",
             "user.name=Fixture",
+            "-c",
+            "maintenance.auto=false",
             "commit",
             "--allow-empty",
             "-qm",
@@ -1110,13 +1125,11 @@ await test("configuration root", async (t) => {
           },
         });
         mkdirSync(join(root, "scripts"), { recursive: true });
-        cpSync(
-          join(scriptRoot, "resume.mjs"),
-          join(root, "scripts/resume.mjs"),
-        );
-        cpSync(
-          join(scriptRoot, "outward-lint.mjs"),
-          join(root, "scripts/outward-lint.mjs"),
+        copyFixtureFiles(
+          join(scriptRoot, ".."),
+          root,
+          "scripts/test-control-copy-sites.fixture-inputs.json",
+          "configured target effects",
         );
         cpSync(join(scriptRoot, "lib"), join(root, "scripts/lib"), {
           recursive: true,
@@ -1374,7 +1387,17 @@ await test("configuration root", async (t) => {
           spawnGit(["init", "--bare", "-b", "main", origin]).status,
           0,
         );
-        assert.equal(spawnGit(["clone", "-q", origin, main]).status, 0);
+        assert.equal(
+          spawnGit([
+            "-c",
+            "maintenance.auto=false",
+            "clone",
+            "-q",
+            origin,
+            main,
+          ]).status,
+          0,
+        );
         runGit(
           main,
           ["config", "user.email", "fixture@example.invalid"],
@@ -1411,7 +1434,11 @@ await test("configuration root", async (t) => {
         write(main, "package.json", '{"private":true}\n');
         write(main, ".gitignore", `${roots.control}/local/\n`);
         runGit(main, ["add", "."], fixtureGitOptions);
-        runGit(main, ["commit", "-q", "-m", "fixture"], fixtureGitOptions);
+        runGit(
+          main,
+          ["-c", "maintenance.auto=false", "commit", "-q", "-m", "fixture"],
+          fixtureGitOptions,
+        );
         runGit(main, ["push", "-q", "-u", "origin", "main"], fixtureGitOptions);
 
         const worktree = (cwd, ...args) => {
@@ -1486,7 +1513,14 @@ await test("configuration root", async (t) => {
         runGit(subject, ["add", "."], fixtureGitOptions);
         runGit(
           subject,
-          ["commit", "-q", "-m", "WO-999 closed"],
+          [
+            "-c",
+            "maintenance.auto=false",
+            "commit",
+            "-q",
+            "-m",
+            "WO-999 closed",
+          ],
           fixtureGitOptions,
         );
         runGit(
@@ -1614,9 +1648,23 @@ test("instance contribution identity controls sign-off independently of Git iden
         ...args,
       ]);
     git(["init", "-q", "-b", "main"]);
-    git(["commit", "--allow-empty", "-qm", "test: base"]);
+    git([
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "--allow-empty",
+      "-qm",
+      "test: base",
+    ]);
     git(["update-ref", "refs/remotes/origin/main", git(["rev-parse", "HEAD"])]);
-    git(["commit", "--allow-empty", "-qm", "test: instance operator"]);
+    git([
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "--allow-empty",
+      "-qm",
+      "test: instance operator",
+    ]);
     git(["config", "user.name", "Fixture Operator"]);
     git(["config", "user.email", "operator@example.invalid"]);
     assert.equal(contributionSignoffRules(root)[0].pass, false);

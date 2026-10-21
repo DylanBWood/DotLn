@@ -92,7 +92,7 @@ const env = {
 for (const args of [
   ["init", "-q"],
   ["add", "-A"],
-  ["commit", "-q", "-m", "fixture"],
+  ["-c", "maintenance.auto=false", "commit", "-q", "-m", "fixture"],
   ["checkout", "-q", "-b", "wo-187"],
 ])
   assert.equal(spawnGit(["-C", root, ...args], { env }).status, 0);
@@ -1128,7 +1128,7 @@ for (const [n, eol] of [
 // committed before any completion that follows.
 for (const args of [
   ["add", "--", "docs/work-orders"],
-  ["commit", "-q", "-m", "layout fixtures"],
+  ["-c", "maintenance.auto=false", "commit", "-q", "-m", "layout fixtures"],
 ])
   assert.equal(spawnGit(["-C", root, ...args], { env }).status, 0);
 // The handoff's self-review line, one row per form: [the handoff's text after

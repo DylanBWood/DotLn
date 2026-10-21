@@ -6,6 +6,7 @@ import { join } from "node:path";
 export function installTargetPublicationFixture(base, env, repositories) {
   const bin = join(base, "forge-bin");
   mkdirSync(bin);
+  const gitAdapter = join(bin, "git-remote-url.mjs");
   const realGit = spawnSync("sh", ["-c", "command -v git"], {
     encoding: "utf8",
   }).stdout.trim();
@@ -20,7 +21,7 @@ export function installTargetPublicationFixture(base, env, repositories) {
       .join(""),
   );
   writeFileSync(
-    join(bin, "git"),
+    gitAdapter,
     `#!${process.execPath}
 import { spawnSync } from 'node:child_process';
 const original = process.argv.slice(2), args = [...original];
@@ -34,6 +35,24 @@ if (root && args[0] === 'remote' && args[1] === 'get-url') {
   process.stdout.write(result.stdout); process.exit(result.status ?? 1);
 }
 const result = spawnSync(${JSON.stringify(realGit)}, original, { stdio: 'inherit' }); process.exit(result.status ?? 1);
+`,
+  );
+  // Local Git commands use the native process; only canonical remote-URL
+  // observations need the fixture's transport adapter.
+  const shellQuote = (value) => "'" + value.replaceAll("'", "'\\''") + "'";
+  writeFileSync(
+    join(bin, "git"),
+    `#!/bin/sh
+is_remote_url() {
+  [ "$#" -ge 2 ] && [ "$1" = '-C' ] || return 1
+  shift 2
+  while [ "$#" -ge 2 ] && [ "$1" = '-c' ]; do shift 2; done
+  [ "$#" -ge 2 ] && [ "$1" = 'remote' ] && [ "$2" = 'get-url' ]
+}
+if is_remote_url "$@"; then
+  exec ${shellQuote(process.execPath)} ${shellQuote(gitAdapter)} "$@"
+fi
+exec ${shellQuote(realGit)} "$@"
 `,
   );
   writeFileSync(
@@ -89,7 +108,7 @@ process.exit(64);
     GIT_CONFIG_GLOBAL: global,
     GIT_CONFIG_NOSYSTEM: "1",
   });
-  return { log, body, bin, state };
+  return { log, body, bin, state, gitAdapter };
 }
 
 export const publicationVocabulary = {

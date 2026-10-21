@@ -43,6 +43,35 @@ import {
   launchpadCommands,
 } from "./lib/target-worktree-fixture.mjs";
 
+test("target start gives sign-off guidance only without a declared operator author", () => {
+  for (const declared of [false, true])
+    withFixture((f) => {
+      if (declared)
+        f.config.contributions = {
+          operatorAuthor: "Fixture Operator <operator@example.invalid>",
+        };
+      else delete f.config.contributions;
+      write(f.main, "dotln.config.json", JSON.stringify(f.config));
+      git(f.main, "add", "dotln.config.json");
+      git(
+        f.main,
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "--allow-empty",
+        "-qm",
+        "test: sign-off guidance",
+      );
+      git(f.main, "push", "-q", "origin", "main");
+      f.mapClone();
+      const output = f.start();
+      assert.equal(
+        (output.match(/Advisory: every commit on this branch/g) ?? []).length,
+        declared ? 0 : 1,
+      );
+    });
+});
+
 test("target gate runs selected commands with failures, deadlines and tree mutation evidence", () =>
   withFixture((f) => {
     f.config.repositories.target.gate = {
@@ -94,6 +123,8 @@ test("target gate runs selected commands with failures, deadlines and tree mutat
         "move-head": {
           argv: [
             "git",
+            "-c",
+            "maintenance.auto=false",
             "commit",
             "--allow-empty",
             "-qm",
@@ -121,7 +152,14 @@ test("target gate runs selected commands with failures, deadlines and tree mutat
     };
     write(f.main, "dotln.config.json", JSON.stringify(f.config));
     git(f.main, "add", "-A");
-    git(f.main, "commit", "-qm", "test: declare gates");
+    git(
+      f.main,
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "test: declare gates",
+    );
     git(f.main, "push", "-q", "origin", "main");
     f.mapClone();
     f.start();
@@ -168,11 +206,18 @@ test("target gate runs selected commands with failures, deadlines and tree mutat
       rows.filter((row) => row.checkId.startsWith("target:target:")).length,
       10,
     );
-    const output = rows.find((row) => row.outputRef).outputRef;
+    const output = rows.find(
+      (row) => row.checkId === "target:target:fail",
+    ).outputRef;
+    assert.ok(output);
     assert.match(
       readFileSync(join(f.orderRoot, output), "utf8"),
-      /synthetic output/u,
+      /synthetic failure/u,
     );
+    for (const row of rows.filter((row) => row.exitCode === 0)) {
+      assert.equal(row.output, undefined);
+      assert.equal(row.outputRef, undefined);
+    }
     assert.equal(git(f.orderRoot, "check-ignore", output), output);
     const recorded = readFileSync(checksPath(f.orderRoot));
     delete f.config.repositories.target.gate;
@@ -199,7 +244,14 @@ test("target briefings name a missing repository throughout dispatch and print l
       `# WO-999 — target lifecycle fixture\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n**Repository:** target @ ${f.baseCommit}\n\n**Acceptance criteria (all required)**\n\n1. Prose only.\n`,
     );
     git(f.main, "add", "-A");
-    git(f.main, "commit", "-qm", "Order with one criterion");
+    git(
+      f.main,
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "Order with one criterion",
+    );
     git(f.main, "push", "-q", "origin", "main");
     f.mapClone();
     f.start();
@@ -366,7 +418,14 @@ test("target briefings name a missing repository throughout dispatch and print l
       "# WO-999 — self fixture\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n",
     );
     git(f.main, "add", "-A");
-    git(f.main, "commit", "-qm", "Self order fixture");
+    git(
+      f.main,
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "Self order fixture",
+    );
     git(f.main, "push", "-q", "origin", "main");
     f.start();
     const briefing = f.ok(f.resume(["briefing"], {}, f.orderRoot));
@@ -401,7 +460,14 @@ test("WO-210 target final review binds clean commits through both launchpad rout
       };
       write(f.target, "reviewed.txt", "Reviewed target change.\n");
       git(f.target, "add", "reviewed.txt");
-      git(f.target, "commit", "-qm", "fix: preserve reviewed source");
+      git(
+        f.target,
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-qm",
+        "fix: preserve reviewed source",
+      );
       const commit = git(f.target, "rev-parse", "HEAD");
       prepareFinalReview(routed);
       const segment = docPath(f.orderRoot, "orders", "WO-999.jsonl");
@@ -636,7 +702,14 @@ test("self-order launchpad spellings select the branch with repository declarati
       "# WO-999 — self fixture\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n",
     );
     git(f.main, "add", "-A");
-    git(f.main, "commit", "-qm", "Self order fixture");
+    git(
+      f.main,
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "Self order fixture",
+    );
     git(f.main, "push", "-q", "origin", "main");
     f.start();
     const spellings = launchpadSpellings(f, t);
@@ -686,7 +759,14 @@ test("WO-072 criterion 1: declared target base, governed ignored bundle and conv
     ]) {
       write(f.target, file, "target code\n");
       git(f.target, ...args);
-      git(f.target, "commit", "-qm", "test: target source change");
+      git(
+        f.target,
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-qm",
+        "test: target source change",
+      );
       assert.doesNotMatch(
         git(f.target, "ls-tree", "-r", "--name-only", "HEAD"),
         /(?:CLAUDE|AGENTS|\.claude|\.codex|\.dotln|docs\/|records\/)/,
@@ -806,7 +886,14 @@ test("WO-072 criterion 3: unreadable start inputs refuse without worktree, branc
         JSON.stringify(f.config),
       );
       git(f.main, "add", "dotln.config.json");
-      git(f.main, "commit", "-qm", "Variant parent fixture");
+      git(
+        f.main,
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-qm",
+        "Variant parent fixture",
+      );
       git(f.main, "push", "-q", "origin", "main");
       refuse(/repository target: spelling differs from filesystem identity/);
     } else
@@ -839,7 +926,14 @@ test("host-rule rewrite requires a committed opt-in and preserves operator rules
     for (const file of [settings, codex, sidecar])
       assert.equal(existsSync(file), false);
     git(f.main, "add", "dotln.config.json");
-    git(f.main, "commit", "-qm", "test: opt into host-rule recovery");
+    git(
+      f.main,
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "test: opt into host-rule recovery",
+    );
 
     const operatorRules = [
       "Bash(npm test)",
@@ -1006,7 +1100,14 @@ syncBuiltinESMExports();\n`,
     delete f.config.repositories.target.hostRules;
     write(f.main, "dotln.config.json", JSON.stringify(f.config));
     git(f.main, "add", "dotln.config.json");
-    git(f.main, "commit", "-qm", "test: withdraw literal opt-in");
+    git(
+      f.main,
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "test: withdraw literal opt-in",
+    );
     assert.notEqual(rewrite().status, 0);
     assert.deepEqual(
       [settings, codex, sidecar].map((file) => readFileSync(file, "utf8")),
@@ -1042,7 +1143,14 @@ test("literal host rules keep main clean and preserve another in-flight order", 
         "/.claude/settings.local.json\n",
     );
     git(f.main, "add", "-A");
-    git(f.main, "commit", "-qm", "test: prepare concurrent literal orders");
+    git(
+      f.main,
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "test: prepare concurrent literal orders",
+    );
     git(f.main, "push", "-q", "origin", "main");
     f.mapClone();
     f.start();
@@ -1102,7 +1210,14 @@ test("umbrella start refuses before creating the launchpad or target worktree", 
       `# WO-999 — umbrella fixture\n\n**Umbrella record:** superseded whole.\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n**Repository:** target @ ${f.baseCommit}\n\n<!-- dotln-dependencies:start -->\n[{"workOrderId":"WO-998","relation":"superseded","by":"WO-998","reason":"bounded successor"}]\n<!-- dotln-dependencies:end -->\n`,
     );
     git(f.main, "add", "-A");
-    git(f.main, "commit", "-qm", "Umbrella fixture");
+    git(
+      f.main,
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "Umbrella fixture",
+    );
     git(f.main, "push", "-q", "origin", "main");
     const result = f.worktree("start", "WO-999", f.order);
     assert.notEqual(result.status, 0);
@@ -1127,7 +1242,14 @@ for (const cloneName of ["launchpad", "Launchpad"])
         JSON.stringify(f.config),
       );
       git(f.main, "add", "-A");
-      git(f.main, "commit", "-qm", "Collision fixture");
+      git(
+        f.main,
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-qm",
+        "Collision fixture",
+      );
       git(f.main, "push", "-q", "origin", "main");
       f.ok(f.worktree("clone", "target", sameName));
       const result = f.worktree("start", "WO-999", f.order);
@@ -1172,7 +1294,14 @@ test("preparation retry resumes the recorded pair after bootstrap or harness fai
       const launchpadHead = git(f.orderRoot, "rev-parse", "HEAD");
       write(f.target, "preserved.txt", "work after interruption\n");
       git(f.target, "add", "-A");
-      git(f.target, "commit", "-qm", "test: preserved target work");
+      git(
+        f.target,
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-qm",
+        "test: preserved target work",
+      );
       const targetHead = git(f.target, "rev-parse", "HEAD");
       if (phase === "harness") renameSync(retainedRuntime, runtime);
       f.start();
@@ -1266,7 +1395,14 @@ test("self start preserves a failed receipt carry and its printed retry complete
     );
     write(f.main, f.order, authority);
     git(f.main, "add", "-A");
-    git(f.main, "commit", "-qm", "Self carry failure fixture");
+    git(
+      f.main,
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "Self carry failure fixture",
+    );
     git(f.main, "push", "-q", "origin", "main");
     const pending =
       "records/state/local/sibling-receipts/starter-fixture/2026-10-13T12-00-00-000Z.json";
@@ -1384,7 +1520,14 @@ test("target final review refuses a nonconventional commit before binding the su
     f.start();
     write(f.target, "reviewed.txt", "reviewed\n");
     git(f.target, "add", "reviewed.txt");
-    git(f.target, "commit", "-qm", "A nonconventional target message");
+    git(
+      f.target,
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "A nonconventional target message",
+    );
     prepareFinalReview(f);
     const segment = docPath(f.orderRoot, "orders", "WO-999.jsonl"),
       before = readFileSync(segment);
@@ -1401,7 +1544,15 @@ test("target final review names a 90-character subject and its limit", () =>
   withFixture((f) => {
     f.mapClone();
     f.start();
-    git(f.target, "commit", "--allow-empty", "-qm", `fix: ${"x".repeat(85)}`);
+    git(
+      f.target,
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "--allow-empty",
+      "-qm",
+      `fix: ${"x".repeat(85)}`,
+    );
     prepareFinalReview(f);
     const segment = docPath(f.orderRoot, "orders", "WO-999.jsonl");
     const before = readFileSync(segment);
@@ -1435,7 +1586,14 @@ test("malformed literal settings refuse target start before either worktree is c
     f.config.repositories.target.hostRules = "literal";
     write(f.main, "dotln.config.json", JSON.stringify(f.config));
     git(f.main, "add", "-A");
-    git(f.main, "commit", "-qm", "test: literal rules");
+    git(
+      f.main,
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "test: literal rules",
+    );
     git(f.main, "push", "-q", "origin", "main");
     f.mapClone();
     write(f.main, ".claude/settings.local.json", "{broken");

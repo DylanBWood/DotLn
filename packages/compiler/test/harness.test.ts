@@ -85,7 +85,7 @@ const profile: HarnessProfile = {
     Stop: available,
     UserPromptSubmit: available,
   },
-  skills: { ...available, root: ".claude/skills" },
+  skills: { ...available, format: "agent-skills", root: ".claude/skills" },
   settings: {
     ...available,
     path: ".claude/settings.json",
@@ -143,7 +143,7 @@ test("WO-146 Copilot shares the observed Claude hook bytes, not a second registr
     profileId: "copilot-cli-1.0.86",
     harness: "copilot-cli",
     observedVersion: "1.0.86",
-    skills: { ...available, root: ".agents/skills" },
+    skills: { ...available, format: "agent-skills", root: ".agents/skills" },
     instruction: { ...available, path: "AGENTS.md" },
     settings: { ...profile.settings, deny: false },
   };
@@ -587,7 +587,7 @@ test("WO-049 target lowering is explicit, omits importRoot from metadata and emi
     kind: "target-worker-v1",
     profileId: "target-worker-fixture",
     instruction: { ...available, path: "CLAUDE.local.md" },
-    skills: { ...unavailable, root: ".claude/skills" },
+    skills: { ...unavailable, format: "agent-skills", root: ".claude/skills" },
     events: {
       PreToolUse: available,
       PostToolUse: unavailable,

@@ -427,7 +427,7 @@ test("WO-099 an unavailable verifier holds, and only a passing judgment over cha
     "export const a = 3;\n",
   );
   fixture.git("add", "-A");
-  fixture.git("commit", "-m", "fixture repair");
+  fixture.git("-c", "maintenance.auto=false", "commit", "-m", "fixture repair");
   const repaired = observeMissionSubject(fixture.source, fixture.pin);
   assert.notEqual(repaired.hash, held!.subjectHash);
   const passing = validateMissionCheckResult(
@@ -546,7 +546,7 @@ test("WO-099 VER-001 F1: the cadence judges changed work, and its fresh pass cle
   // The repair: the work returns inside its declared surfaces.
   fixture.restoreVision();
   fixture.git("add", "-A");
-  fixture.git("commit", "-m", "fixture repair");
+  fixture.git("-c", "maintenance.auto=false", "commit", "-m", "fixture repair");
   at = 40;
   await host.tick();
   assert.equal(judged.length, 2, "the held cadence judged the repair");
@@ -719,7 +719,13 @@ test("WO-099 VER-004 F1: ignored work is redacted, bounded and judged beside an 
   mkdirSync(join(hidden.work, "node_modules"), { recursive: true });
   writeFileSync(join(hidden.work, "node_modules/baseline.txt"), "generated\n");
   hidden.git("add", ".gitignore");
-  hidden.git("commit", "-m", "fixture ignore rules");
+  hidden.git(
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-m",
+    "fixture ignore rules",
+  );
   const hiddenSource: MissionSource = {
     ...hidden.source,
     baseCommit: hidden.git("rev-parse", "HEAD"),
@@ -815,7 +821,13 @@ test("WO-099 VER-005 F1: ordinary build residue under a baselined ignored root l
   writeFileSync(join(fixture.work, "local/operator-notes.md"), "PRIVATE\n");
   writeFileSync(join(fixture.work, ".env"), "TOKEN=baseline\n");
   fixture.git("add", ".gitignore");
-  fixture.git("commit", "-m", "fixture ignore rules");
+  fixture.git(
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-m",
+    "fixture ignore rules",
+  );
   const source: MissionSource = {
     ...fixture.source,
     baseCommit: fixture.git("rev-parse", "HEAD"),
@@ -1449,7 +1461,13 @@ test("WO-099 VER-003 F2: a decision history that exists but cannot be carried is
     `# Decisions\n\n${"p".repeat(200_000)}\n\n## WO-999-D002\n\n\`\`\`json\n{ "id": "WO-999-D002", "decision": "Change the goal beyond the declared objective." }\n\`\`\`\n`,
   );
   fixture.git("add", "-A");
-  fixture.git("commit", "-m", "oversized history");
+  fixture.git(
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-m",
+    "oversized history",
+  );
   const committed: MissionSource = {
     ...fixture.source,
     baseCommit: fixture.git("rev-parse", "HEAD"),
@@ -1514,7 +1532,7 @@ test("WO-099 VER-003 F2: a decision history that exists but cannot be carried is
   unlinkSync(decisionsPath);
   symlinkSync(outside, decisionsPath);
   fixture.git("add", "-A");
-  fixture.git("commit", "-m", "linked history");
+  fixture.git("-c", "maintenance.auto=false", "commit", "-m", "linked history");
   const linked = observeMissionSubject(
     { ...committed, baseCommit: fixture.git("rev-parse", "HEAD") },
     fixture.pin,

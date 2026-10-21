@@ -9,6 +9,7 @@ import {
 import "./test-fixture-temporary.mjs";
 import "./test-codex-session.mjs";
 import "./test-helper-reuse.mjs";
+import "./test-gate-followups.mjs";
 import test from "node:test";
 import { fnv1a64 } from "../packages/compiler/dist/src/index.js";
 import {
@@ -1915,7 +1916,11 @@ function repo(t, { runtime = false } = {}) {
     );
   }
   runGit(root, ["add", "."], fixtureGitOptions);
-  runGit(root, ["commit", "-qm", "Fixture base"], fixtureGitOptions);
+  runGit(
+    root,
+    ["-c", "maintenance.auto=false", "commit", "-qm", "Fixture base"],
+    fixtureGitOptions,
+  );
   return root;
 }
 
@@ -3089,7 +3094,13 @@ test("session outputs include only two observed edits; generated and oversized f
   runGit(root, ["add", "."], fixtureGitOptions);
   runGit(
     root,
-    ["commit", "-qm", "Authored files survive a commit"],
+    [
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "Authored files survive a commit",
+    ],
     fixtureGitOptions,
   );
   assert.deepEqual(harnessOutputObligations(root, state(root)), owed);
@@ -5312,7 +5323,7 @@ test("closeout classifies nested repositories: outside intake they are scratch, 
   runGit(join(from, kept), [...author, "add", "file.txt"], fixtureGitOptions);
   runGit(
     join(from, kept),
-    [...author, "commit", "-qm", "kept"],
+    [...author, "-c", "maintenance.auto=false", "commit", "-qm", "kept"],
     fixtureGitOptions,
   );
   write(from, `${local}/terms.txt`, "subject terms\n");
@@ -5431,6 +5442,8 @@ test("unborn repositories with refs, staged-only bytes, dangling objects or unre
           "user.name=Fixture",
           "-c",
           "user.email=f@example.invalid",
+          "-c",
+          "maintenance.auto=false",
           "commit",
           "--allow-empty",
           "-qm",
@@ -5719,7 +5732,13 @@ test("closeout refuses source and destination symlinks and unignored archive pat
   );
   runGit(
     literalMain,
-    ["commit", "-qm", "Tracked archive collision fixture"],
+    [
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "Tracked archive collision fixture",
+    ],
     fixtureGitOptions,
   );
   assert.throws(
@@ -5748,7 +5767,11 @@ test("WO-155 cold-start trends share edition and acceptance evidence across the 
   );
   for (const path of paths) write(root, path, "Règle\n");
   runGit(root, ["add", "."], fixtureGitOptions);
-  runGit(root, ["commit", "-qm", "First release fixture"], fixtureGitOptions);
+  runGit(
+    root,
+    ["-c", "maintenance.auto=false", "commit", "-qm", "First release fixture"],
+    fixtureGitOptions,
+  );
   runGit(root, ["tag", "v1.0.0"], fixtureGitOptions);
   const first = measureColdStarts(root);
   assert.equal(first.comparisonEdition, "v1.0.0");
@@ -5771,7 +5794,17 @@ test("WO-155 cold-start trends share edition and acceptance evidence across the 
     readFileSync(join(root, "CLAUDE.md"), "utf8") + "accepted\n",
   );
   runGit(root, ["add", "."], fixtureGitOptions);
-  runGit(root, ["commit", "-qm", "Accept executor fixture"], fixtureGitOptions);
+  runGit(
+    root,
+    [
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "Accept executor fixture",
+    ],
+    fixtureGitOptions,
+  );
   const acceptedRevision = runGit(
     root,
     ["rev-parse", "HEAD"],
@@ -5789,13 +5822,24 @@ test("WO-155 cold-start trends share edition and acceptance evidence across the 
   write(root, budgetPath, json(budgets));
   for (const path of paths) write(root, path, "Règle\nmore\n");
   runGit(root, ["add", "."], fixtureGitOptions);
-  runGit(root, ["commit", "-qm", "Next release fixture"], fixtureGitOptions);
+  runGit(
+    root,
+    ["-c", "maintenance.auto=false", "commit", "-qm", "Next release fixture"],
+    fixtureGitOptions,
+  );
   runGit(root, ["tag", "v1.1.0"], fixtureGitOptions);
   // A sibling worktree can publish a greater version without changing HEAD.
   runGit(root, ["checkout", "-qb", "sibling"], fixtureGitOptions);
   runGit(
     root,
-    ["commit", "--allow-empty", "-qm", "Sibling release fixture"],
+    [
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "--allow-empty",
+      "-qm",
+      "Sibling release fixture",
+    ],
     fixtureGitOptions,
   );
   runGit(root, ["tag", "v9.0.0"], fixtureGitOptions);
@@ -6488,11 +6532,11 @@ test("WO-145 optional economy support preserves historical snapshots through the
   // WO-221's release-close deletion sentence preserves WO-216's snapshot.
   const baseline = JSON.parse(
     readFileSync(
-      join(source, "packages/skeleton/fixtures/wo218-role-baseline.json"),
+      join(source, "packages/skeleton/fixtures/wo217-role-baseline.json"),
       "utf8",
     ),
   );
-  assert.equal(baseline.historicalBaseline, "wo221-role-baseline.json");
+  assert.equal(baseline.historicalBaseline, "wo218-role-baseline.json");
   assert.equal(baseline.upstreamBaseline, "wo185-role-baseline.json");
   const chains = [
     baseline,
@@ -6782,7 +6826,9 @@ test("WO-210 follow-up titles end at a word boundary with a visible omission", (
   synced.entries[0].revisions[0].title = title.slice(0, 200);
   write(root, "docs/planning/followups.json", json(synced));
   execGit(["add", "."], { cwd: root });
-  execGit(["commit", "-qm", "Legacy excerpt"], { cwd: root });
+  execGit(["-c", "maintenance.auto=false", "commit", "-qm", "Legacy excerpt"], {
+    cwd: root,
+  });
   dispose(root, synced.entries[0], "deferred");
   assert.equal(syncFollowups(root).entries[0].revisions.length, 1);
   assert.equal(planningFollowups(root).rows[0].status, "deferred");
@@ -6840,7 +6886,13 @@ test("follow-up home placeholders correct only display history without reopening
   runGit(root, ["add", "."], fixtureGitOptions);
   runGit(
     root,
-    ["commit", "-qm", "test: legacy home excerpts"],
+    [
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "test: legacy home excerpts",
+    ],
     fixtureGitOptions,
   );
   const legacy = structuredClone(state.entries[0]);
@@ -6930,7 +6982,13 @@ test("follow-up home placeholders converge for an adjacent chained home path and
   runGit(root, ["add", "."], fixtureGitOptions);
   runGit(
     root,
-    ["commit", "-qm", "test: single-pass residue"],
+    [
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "test: single-pass residue",
+    ],
     fixtureGitOptions,
   );
   assert.throws(
@@ -6976,7 +7034,11 @@ test("follow-ups retain changed, removed and overlapping public sources without 
   assert.equal(planningFollowups(root).pending, 3);
   assert.equal(planningFollowups(root).rows[0].id, entry.id);
   runGit(root, ["add", "."], fixtureGitOptions);
-  runGit(root, ["commit", "-qm", "fixture follow-ups"], fixtureGitOptions);
+  runGit(
+    root,
+    ["-c", "maintenance.auto=false", "commit", "-qm", "fixture follow-ups"],
+    fixtureGitOptions,
+  );
   write(
     root,
     path,
@@ -7063,7 +7125,13 @@ test("only named actions and observed reopenings enter the decision feed; histor
   runGit(root, ["add", "."], fixtureGitOptions);
   runGit(
     root,
-    ["commit", "-qm", "retain historical decision"],
+    [
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "retain historical decision",
+    ],
     fixtureGitOptions,
   );
   const bytes = readFileSync(join(root, FOLLOWUPS), "utf8");
@@ -7204,7 +7272,11 @@ test("follow-up planning entry pages reach every pending record within the byte 
   dispose(root, readFollowups(root).entries[0], "settled");
   assert.throws(() => planningFollowups(root, { cursor: oldCursor }), /stale/);
   runGit(root, ["add", "."], fixtureGitOptions);
-  runGit(root, ["commit", "-qm", "fixture feed"], fixtureGitOptions);
+  runGit(
+    root,
+    ["-c", "maintenance.auto=false", "commit", "-qm", "fixture feed"],
+    fixtureGitOptions,
+  );
   runGit(root, ["branch", "-m", "main"], fixtureGitOptions);
   const started = await planMain(["start", "followups"], root);
   assert.equal(started.followups.pending, 40);
@@ -7458,7 +7530,11 @@ test("WO-169 the change is read from the merge base with main: committed, rename
   for (const name of ["old-name.txt", "gone.txt", "committed.txt"])
     write(root, name, `${name}\n`);
   runGit(root, ["add", "."], fixtureGitOptions);
-  runGit(root, ["commit", "-qm", "seam files"], fixtureGitOptions);
+  runGit(
+    root,
+    ["-c", "maintenance.auto=false", "commit", "-qm", "seam files"],
+    fixtureGitOptions,
+  );
   runGit(root, ["branch", "main"], fixtureGitOptions);
   const titles = {
     Renamed: "Waits for the next order that edits old-name.txt.",
@@ -7488,12 +7564,20 @@ test("WO-169 the change is read from the merge base with main: committed, rename
   runGit(root, ["rm", "-q", "gone.txt"], fixtureGitOptions);
   write(root, "committed.txt", "changed\n");
   runGit(root, ["add", "."], fixtureGitOptions);
-  runGit(root, ["commit", "-qm", "branch work"], fixtureGitOptions);
+  runGit(
+    root,
+    ["-c", "maintenance.auto=false", "commit", "-qm", "branch work"],
+    fixtureGitOptions,
+  );
   // Main moves on after the branch point; its tip is not the base either.
   runGit(root, ["checkout", "-q", "main"], fixtureGitOptions);
   write(root, "main-only.txt", "merged sibling\n");
   runGit(root, ["add", "."], fixtureGitOptions);
-  runGit(root, ["commit", "-qm", "merged sibling"], fixtureGitOptions);
+  runGit(
+    root,
+    ["-c", "maintenance.auto=false", "commit", "-qm", "merged sibling"],
+    fixtureGitOptions,
+  );
   runGit(root, ["checkout", "-q", "wo-999"], fixtureGitOptions);
   write(root, "fresh.txt", "new\n");
   write(root, "-dash.txt", "a name Git reports is never refused as a term\n");
@@ -10014,7 +10098,13 @@ if (action === "status") {
   runGit(root, ["add", "."], fixtureGitOptions);
   runGit(
     root,
-    ["commit", "-qm", "Lifecycle stub with legal actions"],
+    [
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "Lifecycle stub with legal actions",
+    ],
     fixtureGitOptions,
   );
   emitHarness(root);
@@ -10195,7 +10285,11 @@ test("WO-131 prompt submission stays open while dispatches retain the ordinary c
     "# WO-999 fixture\n\n**Model:** any capable model.\n**Effort:** executor any; verifier any; reviewer any.\n",
   );
   runGit(root, ["add", "."], fixtureGitOptions);
-  runGit(root, ["commit", "-qm", "Real lifecycle"], fixtureGitOptions);
+  runGit(
+    root,
+    ["-c", "maintenance.auto=false", "commit", "-qm", "Real lifecycle"],
+    fixtureGitOptions,
+  );
   emitHarness(root);
   const hook = (name, payload) => {
     const run = spawnSync(
@@ -11383,6 +11477,8 @@ function materialRepository(root, path, bytes = "nested fixture\n") {
       "user.name=Fixture",
       "-c",
       "user.email=f@example.invalid",
+      "-c",
+      "maintenance.auto=false",
       "commit",
       "-qm",
       "nested fixture",
@@ -11456,7 +11552,11 @@ test("a nested repository outside intake that the tracked tree does not declare 
     ],
     fixtureGitOptions,
   );
-  runGit(from, ["commit", "-qm", "submodule"], fixtureGitOptions);
+  runGit(
+    from,
+    ["-c", "maintenance.auto=false", "commit", "-qm", "submodule"],
+    fixtureGitOptions,
+  );
   assert.ok(
     !inventoryMaterial(from).some((row) => row.path === "vendor/sub"),
     "a populated tracked submodule is not ignored material",
@@ -11865,7 +11965,11 @@ test("an executor completion records lane material and advises once for scratch 
   // its record, and no declaration from the earlier completion is read.
   rmSync(join(root, "private-fixture/unknown"), { recursive: true });
   runGit(root, ["add", "."], fixtureGitOptions);
-  runGit(root, ["commit", "-qm", "file handoff"], fixtureGitOptions);
+  runGit(
+    root,
+    ["-c", "maintenance.auto=false", "commit", "-qm", "file handoff"],
+    fixtureGitOptions,
+  );
   const appended =
     [
       {
@@ -11922,7 +12026,11 @@ test("the completion whitespace check reads untracked files and exempts byte-exa
     readFileSync(new URL("../.gitattributes", import.meta.url), "utf8"),
   );
   runGit(root, ["add", ".gitattributes"], fixtureGitOptions);
-  runGit(root, ["commit", "-qm", "attributes"], fixtureGitOptions);
+  runGit(
+    root,
+    ["-c", "maintenance.auto=false", "commit", "-qm", "attributes"],
+    fixtureGitOptions,
+  );
   for (const path of [
     "docs/evidence/WO-999/capture.txt",
     "docs/evidence/WO-999/run.tap",

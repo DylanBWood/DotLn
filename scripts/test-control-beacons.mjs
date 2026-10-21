@@ -117,10 +117,14 @@ await test("test-control-beacons", async (t) => {
           `# ${id} fixture\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n`,
         );
       runGit(root, ["add", "."], { ...fixtureGitOptions, cwd: root });
-      runGit(root, ["commit", "-qm", "fixture"], {
-        ...fixtureGitOptions,
-        cwd: root,
-      });
+      runGit(
+        root,
+        ["-c", "maintenance.auto=false", "commit", "-qm", "fixture"],
+        {
+          ...fixtureGitOptions,
+          cwd: root,
+        },
+      );
       left = join(owned, "constellation left");
 
       right = join(owned, "constellation right");

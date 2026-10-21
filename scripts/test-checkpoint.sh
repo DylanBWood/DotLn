@@ -29,7 +29,7 @@ printf '%s\n' \
 printf '%s\n' \
   '{"effortReadbackProbe":{"harnesses":{"codex-cli":{"versions":[{"classification":"observed","value":"fixture"}],"persistedEffortSelector":{"classification":"observed","value":"xhigh"}}}}}' >"$fixture_repo/docs/discovery/environment.json"
 git -C "$fixture_repo" add .
-git -C "$fixture_repo" commit -m initial >/dev/null
+git -C "$fixture_repo" -c maintenance.auto=false commit -m initial >/dev/null
 
 node "$fixture_repo/scripts/resume.mjs" activate WO-099 docs/work-orders/WO-099-fixture.md >/dev/null
 refs_before_refusal="$(git -C "$fixture_repo" for-each-ref --format='%(refname)' refs/dotln/checkpoint/WO-099/)"
@@ -101,7 +101,7 @@ git init "$stale_repo" >/dev/null
 git -C "$stale_repo" config user.email test@example.invalid
 git -C "$stale_repo" config user.name "DotLn Test"
 git -C "$stale_repo" add .
-git -C "$stale_repo" commit -m initial >/dev/null
+git -C "$stale_repo" -c maintenance.auto=false commit -m initial >/dev/null
 node "$stale_repo/scripts/resume.mjs" activate WO-098 docs/work-orders/WO-098-fixture.md >/dev/null
 prior_checkpoint="$(git -C "$stale_repo" for-each-ref --format='%(refname)' refs/dotln/checkpoint/WO-098/)"
 test -n "$prior_checkpoint"
@@ -235,7 +235,7 @@ git -C "$lifecycle_repo" init -q
 git -C "$lifecycle_repo" config user.name 'Checkpoint Fixture'
 git -C "$lifecycle_repo" config user.email fixture@example.invalid
 git -C "$lifecycle_repo" add .
-git -C "$lifecycle_repo" commit -qm initial
+git -C "$lifecycle_repo" -c maintenance.auto=false commit -qm initial
 printf 'uncommitted recovery sentinel\n' >"$lifecycle_repo/recovery-sentinel.txt"
 actor_flags=(--harness human --harness-version not-applicable --model human --effort unknown --source operator-attested)
 lifecycle() { node "$lifecycle_repo/scripts/resume.mjs" "$@" >/dev/null; }

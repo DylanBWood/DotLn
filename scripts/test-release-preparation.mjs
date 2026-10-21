@@ -274,13 +274,27 @@ test("a conflicted decisions record refuses with its path and writes nothing", (
       mkdirSync(dirname(path), { recursive: true });
       writeFileSync(path, "# WO-099 decisions\n\nbase\n");
       git(merged.root, "add", "-A");
-      git(merged.root, "commit", "-qm", "base");
+      git(merged.root, "-c", "maintenance.auto=false", "commit", "-qm", "base");
       git(merged.root, "switch", "-qc", "upstream");
       writeFileSync(path, "# WO-099 decisions\n\nupstream\n");
-      git(merged.root, "commit", "-qam", "upstream");
+      git(
+        merged.root,
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-qam",
+        "upstream",
+      );
       git(merged.root, "switch", "-q", "wo-099");
       writeFileSync(path, "# WO-099 decisions\n\nsubject\n");
-      git(merged.root, "commit", "-qam", "subject");
+      git(
+        merged.root,
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-qam",
+        "subject",
+      );
       assert.throws(() => git(merged.root, "merge", "-q", "upstream"));
       writeFileSync(path, "# WO-099 decisions\n\nhand-resolved, not staged\n");
       const before = merged.snapshot();

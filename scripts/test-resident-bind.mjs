@@ -144,7 +144,14 @@ function fixture(options = {}) {
   runGit(launchpad, [...fixtureGitFlags, "add", "-A"], fixtureGitOptions);
   runGit(
     launchpad,
-    [...fixtureGitFlags, "commit", "-m", "fixture baseline"],
+    [
+      ...fixtureGitFlags,
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-m",
+      "fixture baseline",
+    ],
     fixtureGitOptions,
   );
   const baseCommit = runGit(
@@ -745,7 +752,14 @@ test("--base takes the operator's commit and is checked against the worktree", (
     );
     runGit(
       context.worktree,
-      [...fixtureGitFlags, "commit", "-m", "an integrated sibling's commit"],
+      [
+        ...fixtureGitFlags,
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-m",
+        "an integrated sibling's commit",
+      ],
       fixtureGitOptions,
     );
     const sibling = runGit(
@@ -1021,7 +1035,14 @@ test("a merge base moved by integrating main is named before any launch line", (
     );
     runGit(
       context.launchpad,
-      [...fixtureGitFlags, "commit", "-m", "main advances"],
+      [
+        ...fixtureGitFlags,
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-m",
+        "main advances",
+      ],
       fixtureGitOptions,
     );
     runGit(
@@ -1213,7 +1234,14 @@ function portfolioFixture() {
   runGit(launchpad, [...fixtureGitFlags, "add", "-A"], fixtureGitOptions);
   runGit(
     launchpad,
-    [...fixtureGitFlags, "commit", "-m", "fixture launchpad"],
+    [
+      ...fixtureGitFlags,
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-m",
+      "fixture launchpad",
+    ],
     fixtureGitOptions,
   );
   const presence = JSON.parse(

@@ -63,10 +63,13 @@ export function recordedHostLaneCapacity(
       readFileSync(join(directory, "lane-capacity.json"), "utf8"),
     );
     if (!Number.isSafeInteger(capacity) || capacity < 1 || capacity > 8)
-      throw new Error("Invalid recorded host lane capacity");
+      throw new Error("capacity must be an integer from one through eight");
     return capacity;
   } catch (error) {
-    if (error.code !== "ENOENT") throw error;
+    if (error.code !== "ENOENT")
+      throw new Error(
+        `Host lane capacity record (lane-capacity.json) is ${error instanceof SyntaxError ? "malformed JSON" : error.code ? `unreadable (${error.code})` : error.message}; stop all host lane holders, repair the record to {\"capacity\": N} with an integer N from one through eight, then retry`,
+      );
     return fallback;
   }
 }
