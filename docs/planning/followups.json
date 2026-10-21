@@ -41788,6 +41788,58 @@
           "at": "2026-10-20T21:26:49.706Z"
         }
       ]
+    },
+    {
+      "id": "FUP-6c4cc63ae71d02ad",
+      "key": "decision:docs/evidence/WO-223/decisions.md#wo-223-d017",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "427e54e3b871f2e7afe8da393a1f8f51432d10166ac01eecaf16c080352f5822",
+          "ref": "docs/evidence/WO-223/decisions.md#wo-223-d017",
+          "title": "WO-223-D017: The next order that edits releaseCloseAdmission in packages/skeleton/src/harness-host.ts (WO-219 edits that file at its step 19). Classify a withheld suffix after removing the canonical…",
+          "summary": "{ \"id\": \"WO-223-D017\", \"date\": \"2026-10-20\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-001 boards a follow-up for the release-close advisory's mismatch class. When a withheld suffix holds a --material word and no unquoted shell operator, the classifier names 'non-canonical material flag quoting or value', whatever else differs. Two withheld helpers are misclassified. In '--publish --material '<path>=preserve' --force' the material word is canonical and the mismatch is the extra word. In '--dry-run --material '<path>=preserve'' the material word is canonical; the hook admits material words only after --publish. No criterion breaks. Every withheld helper still prints both expected spellin",
+          "missing": false
+        },
+        {
+          "hash": "843a982ce8af7894226048b0dbf273c6e0bfc6842bb083e74831e55cfe7707ce",
+          "ref": "docs/evidence/WO-223/decisions.md#wo-223-d017",
+          "title": "WO-223-D017: The next order that edits releaseCloseAdmission in packages/skeleton/src/harness-host.ts (WO-219 edits that file at its step 19). Classify a withheld suffix after removing the canonical…",
+          "summary": "{ \"id\": \"WO-223-D017\", \"date\": \"2026-10-20\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-001 boards a follow-up for the release-close advisory's mismatch class. When a withheld suffix holds a --material word and no unquoted shell operator, the classifier names 'non-canonical material flag quoting or value', whatever else differs. Two withheld helpers are misclassified. In '--publish --material '<path>=preserve' --force' the material word is canonical and the mismatch is the extra word. In '--dry-run --material '<path>=preserve'' the material word is canonical; the hook admits material words only after --publish. No criterion breaks. Every withheld helper still prints both expected spellin",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-5f948dcc52e03082",
+      "key": "decision:docs/evidence/WO-223/decisions.md#wo-223-d018",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "06d39bac138c5ccc83c66a5fe0e5bae5749b1ab1076f7e9fdc7da3378ed47a53",
+          "ref": "docs/evidence/WO-223/decisions.md#wo-223-d018",
+          "title": "WO-223-D018: The next order that edits scripts/lib/contributions.mjs. Name the declaration route in the FAIL line only when the instance declares no contributions.operatorAuthor, as the start…",
+          "summary": "{ \"id\": \"WO-223-D018\", \"date\": \"2026-10-20\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-001 boards a follow-up for the contribution sign-off FAIL line. The line now offers two routes for an unsigned commit: the Signed-off-by trailer, or 'declare that identity as contributions.operatorAuthor in dotln.config.json through a reviewed change'. It offers the second route even when the instance already declares a different operatorAuthor. The key holds a single identity, so following that route there replaces the operator's own exemption. For an outside contributor, or the GitHub identity FUP-da505c82f2262b8e defers, the trailer is the route. The worktree start advisory prints only when no oper",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-e2152db6dd056b4a",
+      "key": "decision:docs/evidence/WO-223/decisions.md#wo-223-d020",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "dd472707ad40c9a6dcbfc1186c8c5bc433d61508c86b42454aaa8131bc809f3a",
+          "ref": "docs/evidence/WO-223/decisions.md#wo-223-d020",
+          "title": "WO-223-D020: The next order that edits start or startTargetWorktree in scripts/worktree.mjs. Print the same one-line sign-off advisory after startTargetWorktree creates the launchpad worktree when…",
+          "summary": "{ \"id\": \"WO-223-D020\", \"date\": \"2026-10-21\", \"dispatch\": \"resume: final review\", \"decision\": \"FINAL-001 boards a follow-up for the sign-off advisory's reach. worktree start prints the advisory only on the launchpad-order path, after its own worktree add. startTargetWorktree, which creates a target order's launchpad worktree and branch through ensureWorktree, prints none. Every launchpad publish, a target order's records publish included, runs contributionSignoffRules over origin/main..HEAD, so an instance whose first order is a target order still meets the sign-off rule at its records publish without an earlier advisory. No criterion breaks: criterion 3 names a launchpad order, and the expor",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }
