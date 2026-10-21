@@ -1,4 +1,4 @@
-# WO-223 — An instance with moved target records takes a starter update and publishes under it without a step the kit did not name: docs-check reads a moved decisions record through its binding, the moved-record reader finds the clone mapping from any worktree of the launchpad, the sign-off rule names its declaration before the first commit, the two admission advisories and the kit README spell the admitted helpers, and the commit lint names its limit (version assigned at activation)
+# WO-223 — An instance with moved target records takes a starter update and publishes under it without a step the kit did not name: docs-check reads a moved decisions record through its binding, the moved-record reader finds the clone mapping from any worktree of the launchpad, the sign-off rule names its declaration before the first commit, the two admission advisories and the kit README spell the admitted helpers, and the commit lint names its limit (v0.88.0)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

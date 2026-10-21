@@ -2,13 +2,12 @@ import { createHash } from "node:crypto";
 import { posix } from "node:path";
 import { docRelative } from "./config.mjs";
 import { readControl, eventsForOrder } from "./control-store.mjs";
-import { mainWorktree, runGit } from "./git.mjs";
+import { mainWorktree, primaryWorktree, runGit } from "./git.mjs";
 import { HOST_GIT_READ } from "./github-repository.mjs";
 import {
   physicalDirectory,
   recordedRepositoryClone,
   targetRecordSources,
-  targetWorktreeForOrder,
 } from "./target-worktrees.mjs";
 
 /** Location metadata is available even after the local report is moved. */
@@ -55,16 +54,24 @@ export function readTargetRecord(root, state, record) {
     record.path.includes("\\")
   )
     throw new Error("target record binding differs from its reviewed subject");
-  let owner = root;
-  let clone = recordedRepositoryClone(owner, state.repositoryId);
+  let clone = recordedRepositoryClone(root, state.repositoryId);
   if (!clone) {
-    owner = mainWorktree(root);
-    clone = recordedRepositoryClone(owner, state.repositoryId);
+    const primary = primaryWorktree(root);
+    if (primary) clone = recordedRepositoryClone(primary, state.repositoryId);
   }
-  clone ??= targetWorktreeForOrder(root, state.workOrderId)?.clone;
+  if (!clone) {
+    let main;
+    try {
+      main = mainWorktree(root);
+    } catch (error) {
+      if (error.message !== "no main-branch control-plane worktree found")
+        throw error;
+    }
+    if (main) clone = recordedRepositoryClone(main, state.repositoryId);
+  }
   if (!clone)
     throw new Error(
-      `${state.workOrderId}: recorded target clone unavailable; restore its local clone mapping to read moved records`,
+      `${state.workOrderId}: recorded target clone unavailable; checked the running checkout, the primary checkout (common Git directory owner), and the main-branch worktree when present. Keep the ignored local clone mapping in one of those launchpad checkouts; the primary checkout may be on any branch`,
     );
   physicalDirectory(clone);
   const git = (args, options) =>

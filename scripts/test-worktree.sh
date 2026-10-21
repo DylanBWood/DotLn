@@ -119,6 +119,9 @@ grep -Fq "cd '$subject'" <<<"$start_output"
 grep -Fq '  codex' <<<"$start_output"
 grep -Fq 'resume: next' <<<"$start_output"
 grep -Fq 'Carried sibling receipts:' <<<"$start_output"
+if grep -Fq 'contributions.operatorAuthor' <<<"$start_output"; then
+  printf 'error: declared sign-off exemption still printed an advisory\n' >&2; exit 1
+fi
 test -f "$subject/docs/evidence/siblings/starter-fixture/2026-10-13T12-00-00-000Z.json"
 test ! -f "$pending_lane/2026-10-13T12-00-00-000Z.json"
 (cd "$subject" && node scripts/siblings.mjs index --check)

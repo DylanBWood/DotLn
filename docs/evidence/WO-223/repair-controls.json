@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "baselineCommit": "6df0ec37cc21143871217bade638e5ec28bc5959",
+  "method": "Serial bounded probes run identical synthetic fixture tests in an isolated scripts snapshot. The negative arm replaces only the listed implementation files with the baseline bytes; package runtime and test bytes are identical. Logs remain in session scratch; fixtures and snapshot are removed.",
+  "results": [
+    {
+      "id": "moved-document",
+      "suite": "target-worktree",
+      "command": [
+        "node",
+        "--test",
+        "--test-name-pattern",
+        "moved decisions and reports resolve",
+        "scripts/test-target-worktree-publish.mjs"
+      ],
+      "mode": "isolated-reversion",
+      "testSource": {
+        "path": "scripts/test-target-worktree-publish.mjs",
+        "sha256": "e9a4a65f51a3b8e7f32c50477782c1819d2031c0eb5a59d623662995e5eadef8"
+      },
+      "reversion": [
+        {
+          "path": "scripts/docs-check.mjs",
+          "source": "baselineCommit",
+          "before": "6dceffb4f640814e8e1b12ec71a0806a34bcd0fd97920ccd1c71b7e08a44e631",
+          "after": "e7128202c8b2d965cc7efd7dd220bf2c6a8921f705d3fc7f3e15677e6934a5cc"
+        }
+      ],
+      "positive": {
+        "exitCode": 0,
+        "seconds": 12.433,
+        "logSha256": "d143c113184f557295631513623acc198535b08d93526fe9d92377facae99f64"
+      },
+      "negative": {
+        "exitCode": 1,
+        "seconds": 12.107,
+        "logSha256": "c71ef462edc0f05845bf42c48250b9ae1fcffa2f4e2e294ec873f4388bf46762",
+        "expectedFailureObserved": true
+      },
+      "verdict": "demonstrated",
+      "observation": "records/evidence/WO-999/decisions.md: document is not a readable regular file (ENOENT)"
+    },
+    {
+      "id": "primary-mapping",
+      "suite": "target-worktree",
+      "command": [
+        "node",
+        "--test",
+        "--test-name-pattern",
+        "moved record lookup uses",
+        "scripts/test-target-worktree-publish.mjs"
+      ],
+      "mode": "isolated-reversion",
+      "testSource": {
+        "path": "scripts/test-target-worktree-publish.mjs",
+        "sha256": "e9a4a65f51a3b8e7f32c50477782c1819d2031c0eb5a59d623662995e5eadef8"
+      },
+      "reversion": [
+        {
+          "path": "scripts/lib/target-record-reader.mjs",
+          "source": "baselineCommit",
+          "before": "9c41de85de5410db253daf90b0d8624b8735e1f30f6a6974c46bb6dc48619b76",
+          "after": "8969be6c0e61e638fe199206feb6b32a3f3c501b74cdf5751e4f3e99174a7d5a"
+        },
+        {
+          "path": "scripts/lib/git.mjs",
+          "source": "baselineCommit",
+          "before": "3fa0b29e2044dbb19a2cef652c7379a5158a42cfd0a2259d66bfcbed81b3f114",
+          "after": "18632d02e2faf28fbf8d9713fb4712a1d372801624e99bd2dfa9cb381dcab03b"
+        }
+      ],
+      "positive": {
+        "exitCode": 0,
+        "seconds": 14.322,
+        "logSha256": "10e3123a4d98dc380f9cda588aaac64da5422c06f86c72ab105b5cbae4bbb71b"
+      },
+      "negative": {
+        "exitCode": 1,
+        "seconds": 12.17,
+        "logSha256": "b316174edbfd15018e9a97fa4e6294e47cf8039c5828488b998f87cb0bf5489a",
+        "expectedFailureObserved": true
+      },
+      "verdict": "demonstrated",
+      "observation": "no main-branch control-plane worktree found"
+    }
+  ]
+}

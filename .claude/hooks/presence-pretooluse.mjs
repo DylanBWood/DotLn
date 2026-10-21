@@ -2,7 +2,7 @@
 try {
 const { text } = await import("node:stream/consumers");
 const input = JSON.parse(await text(process.stdin));
-const { recordHarnessHeartbeat } = await import("../../.runtime/harness/c07b58738dab544d/packages/skeleton/dist/src/presence-heartbeat.js");
+const { recordHarnessHeartbeat } = await import("../../.runtime/harness/174006996c1b9bc6/packages/skeleton/dist/src/presence-heartbeat.js");
 await recordHarnessHeartbeat("PreToolUse", input);
 } catch { process.stderr.write("DotLn advisory: presence heartbeat unavailable\n"); }
 process.stdout.write("{}");

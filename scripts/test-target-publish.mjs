@@ -57,6 +57,7 @@ import {
   disposeReviewThread,
   bindReviewRepairInput,
   TARGET_PUBLISH_HOST,
+  lintArtifacts,
 } from "./lib/target-publish.mjs";
 import {
   resolveReviewComments,
@@ -1226,6 +1227,13 @@ await test("WO-064 AC1/AC2: lint and target refusals name their rule; the grante
     /outward lint: branch unavailable: local-terms list absent; commit unavailable: local-terms list absent; pr-title unavailable: local-terms list absent; pr-body unavailable: local-terms list absent/u,
   );
   subject.terms("zephyrcanary\n");
+  assert.throws(
+    () =>
+      lintArtifacts(subject.launchpad, [
+        { kind: "commit", text: `fix: ${"x".repeat(85)}` },
+      ]),
+    /outward lint: commit refused: subject.length: 90 of 72 characters \(line 1\)/u,
+  );
 
   fixtureGit(target, "update-ref", `refs/heads/${BRANCH}`, baseCommit);
   refusedBeforeRemote(

@@ -4,7 +4,7 @@
 
 ## Proposed order
 
-- [ ] [WO-223] — An instance takes a starter update without a step the kit did not name · **queued**
+- [x] [WO-223] — An instance takes a starter update without a step the kit did not name · **final-reviewed**
 - [ ] [WO-217] — Boarded follow-ups, batch 1: the gate · **queued**
 - [ ] [WO-219] — Boarded follow-ups, batch 3: records, roles and the harness · **queued**
 - [ ] [WO-220] — Boarded follow-ups, batch 4: the resident and the vertical · **queued**
@@ -36,23 +36,6 @@ Full evidence for the active and sequenced orders follows; the Open cards are in
 None.
 
 ## Open
-
-### WO-223
-
-[WO-223 — An instance with moved target records takes a starter update and publishes under it without a step the kit did not name: docs-check reads a moved decisions record through its binding, the moved-record reader finds the clone mapping from any worktree of the launchpad, the sign-off rule names its declaration before the first commit, the two admission advisories and the kit README spell the admitted helpers, and the commit lint names its limit (version assigned at activation)](WO-223-an-instance-takes-a-starter-update.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-218: satisfied-by-close (met) — the moved-record readers, the helper-only admission, the sign-off declaration and the pre-review commit lint this order repairs or names; WO-221: satisfied-by-close (met) — the two hook admission classes whose advisories this order makes name the expected spelling.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer xhigh.
-- Track: delivery
-- Cost: adds the moved-row read in &#96;scripts/docs-check.mjs&#96; (&#96;checkDocs&#96;, the decisions loop) and &#96;scripts/lib/meta.mjs&#96; (&#96;readDecisions&#96;); the primary-checkout lookup in &#96;scripts/lib/target-record-reader.mjs&#96; (&#96;readTargetRecord&#96;) and the arrangement named by &#96;mainWorktree&#96;'s refusal in &#96;scripts/lib/git.mjs&#96;; the advisory in &#96;scripts/worktree.mjs&#96; (&#96;start&#96;) and the declaration named in &#96;scripts/lib/contributions.mjs&#96; (&#96;contributionSignoffRules&#96;); the expected spelling in &#96;packages/skeleton/src/harness-host.ts&#96; (&#96;releaseCloseAdmission&#96;); the limit in &#96;scripts/lib/target-commit-lint.mjs&#96; (&#96;lintReviewedTargetCommits&#96;) and the publish-time refusal in &#96;scripts/lib/target-publish.mjs&#96;; cases in the fixtures of the Preflight suites; the kit README and product 07 sentences the write-backs step names. Removes the states the gap records: an instance with moved target records whose document gate fails at v0.87.0 before any instance change (the operator's fork holds its update as a draft pull request for this reason); an instance whose gates run only from a worktree with &#96;main&#96; checked out that also holds the clone mapping; a launchpad publish refused on a sign-off rule no earlier surface named; a release-close helper withheld with no expected spelling (50 of 88 release-close attempts in this checkout's host observation logs, read by kind only); a commit-lint refusal that names a rule and not its limit; a kit README whose session form is the spelling the hook withholds. Re-mints: &#96;packages/skeleton/src/harness-host.ts&#96; is a registered source of the authority, harness and feedback editions (&#96;scripts/lib/evidence-sources.mjs&#96; lines 165, 263 and 334), re-minted deterministically; no path of this order is in &#96;FEEDBACK_SOURCE_PATHS&#96; (&#96;packages/skeleton/src/feedback-audit.ts&#96; lines 15 to 79), so no live feedback episode is owed. &#96;scripts/docs-check.mjs&#96;, &#96;scripts/lib/meta.mjs&#96;, &#96;scripts/worktree.mjs&#96;, &#96;scripts/launchpad.mjs&#96;, &#96;scripts/kit/&#96; and &#96;packages/skeleton/src/harness-host.ts&#96; are declared machinery sources (&#96;machinerySources&#96; in &#96;scripts/test-runner.mjs&#96;), so &#96;npm test -- --review&#96; runs before handoff. Live episodes: none; the host's behavior after a hook admission is the fork's WO-006 episode, outside this order. Wall-clock: the document gate gains one blob read per moved decisions row; the reader gains one &#96;git rev-parse --git-common-dir&#96; per miss; &#96;worktree start&#96; gains one configuration read. Commands: none added; one advisory line at &#96;worktree start&#96;. Context bytes: this file, about 28,000. Tokens: unknown until run. Steps: 10.
-- Authority: [docs/work-orders/WO-223-an-instance-takes-a-starter-update.md](WO-223-an-instance-takes-a-starter-update.md)
 
 ### WO-217
 

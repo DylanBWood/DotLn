@@ -10,7 +10,8 @@
     "scripts/target-gate.mjs",
     "scripts/test-runner.mjs",
     "scripts/refute-plan.mjs",
-    "scripts/work-orders.mjs"
+    "scripts/work-orders.mjs",
+    "scripts/meta.mjs"
   ],
   "files": [
     "scripts/worktree.mjs",
@@ -23,6 +24,7 @@
     "scripts/test-runner.mjs",
     "scripts/refute-plan.mjs",
     "scripts/work-orders.mjs",
+    "scripts/meta.mjs",
     "packages/skeleton/src/evidence-editions.mjs"
   ],
   "directories": [

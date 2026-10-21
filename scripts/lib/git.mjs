@@ -237,6 +237,26 @@ export const mainWorktree = (root) => {
   return resolve(main.worktree);
 };
 
+/** The primary checkout owns the common Git directory, whatever its branch. */
+export const primaryWorktree = (root) => {
+  const common = realpathSync(
+    resolve(root, runGit(root, ["rev-parse", "--git-common-dir"])),
+  );
+  for (const item of parseWorktrees(root)) {
+    if (item.bare) continue;
+    const directory = runGit(
+      item.worktree,
+      ["rev-parse", "--absolute-git-dir"],
+      {
+        onFailure: () => undefined,
+      },
+    );
+    if (directory && realpathSync(directory) === common)
+      return resolve(item.worktree);
+  }
+  return undefined;
+};
+
 export const removeMergedBranch = (root, branch) => {
   const upstream = spawnSync(
     "git",
