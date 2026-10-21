@@ -14,6 +14,7 @@ export function createProcessMonitor({
   repo,
   directory = hostStateRoot(),
   sample = readHostSnapshot,
+  kill = killOwned,
   onGateFailure = () => {},
   report = (text) => console.error(text),
 } = {}) {
@@ -103,7 +104,7 @@ export function createProcessMonitor({
           source: snapshot.source,
         };
         try {
-          gateFailure.killedProcesses = killOwned(gateMembers, {
+          gateFailure.killedProcesses = kill(gateMembers, {
             protectedPids: [gatePid],
             directory,
             onError: (error) => (gateFailure.killErrors ??= []).push(error),
@@ -230,7 +231,7 @@ export function createProcessMonitor({
           task.failed = { kind, details };
           fail(kind, details);
           try {
-            const killed = killOwned(task.members, {
+            const killed = kill(task.members, {
               protectedPids: gatePid ? [gatePid] : [],
               directory,
               onError: (error) => {
@@ -282,11 +283,16 @@ export function createProcessMonitor({
       const survivors = task.members.filter((row) => row.pid !== task.pid);
       if (survivors.length) {
         try {
-          killOwned(survivors, {
+          kill(survivors, {
             protectedPids: gatePid ? [gatePid] : [],
             directory,
+            onError: (error) => (task.killErrors ??= []).push(error),
           });
         } catch (error) {
+          (task.killErrors ??= []).push({
+            code: error.code,
+            message: error.message,
+          });
           report(`DotLn survivor cleanup unavailable: ${error.message}`);
           task.failed ??= {
             kind: "monitor-unavailable",
@@ -295,6 +301,7 @@ export function createProcessMonitor({
         }
       }
       return {
+        ...(task.killErrors?.length ? { killErrors: task.killErrors } : {}),
         peakFootprintBytes: task.peakFootprintBytes,
         peakRssBytes: task.peakRssBytes,
         memoryBudgetBytes: task.budgetBytes,
@@ -317,11 +324,16 @@ export function createProcessMonitor({
       observe(false);
       for (const task of tasks.values()) {
         try {
-          killOwned(task.members, {
+          kill(task.members, {
             protectedPids: gatePid ? [gatePid] : [],
             directory,
+            onError: (error) => (task.killErrors ??= []).push(error),
           });
         } catch (error) {
+          (task.killErrors ??= []).push({
+            code: error.code,
+            message: error.message,
+          });
           report(`DotLn cleanup unavailable: ${error.message}`);
           task.fail("monitor-unavailable", { reason: error.message });
         }

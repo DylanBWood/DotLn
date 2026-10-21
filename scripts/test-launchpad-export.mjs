@@ -469,7 +469,7 @@ test("WO-075 criterion 1: the exported runtime is byte-identical to a rebuild at
     assert.ok(listed.has(file.path), `${file.path} is a pinned runtime file`);
   // The rebuild: a clone at the commit, the same install, the same build.
   const clone = join(scratch, "rebuild");
-  git(scratch, ["clone", "-q", source, clone]);
+  git(scratch, ["-c", "maintenance.auto=false", "clone", "-q", source, clone]);
   git(clone, ["checkout", "-q", commit]);
   assert.ok(!existsSync(join(clone, "packages/kernel/dist")));
   linkInstall(clone);
@@ -1148,7 +1148,13 @@ test("WO-074 criteria 1, 2 and 5: without package source the export activates it
   );
   configureRepository(kit);
   git(kit, ["add", "."]);
-  git(kit, ["commit", "-qm", "exported launchpad"]);
+  git(kit, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "exported launchpad",
+  ]);
   assert.equal(
     git(kit, ["ls-files", "--", ".runtime", "node_modules"]).stdout,
     "",
@@ -1204,7 +1210,13 @@ test("WO-074 criteria 1, 2 and 5: without package source the export activates it
     "# WO-001 handoff (fixture)\n\n**Criterion 1:** unmet — fixture.\n**Criterion 2:** unmet — fixture.\n**Criterion 3:** unmet — fixture.\n**Criterion 4:** unmet — fixture.\n**Criterion 5:** unmet — fixture.\n\nself-review: found 0; fixed 0; recorded 0\n",
   );
   git(kit, ["add", "."]);
-  git(kit, ["commit", "-qm", "fixture handoff"]);
+  git(kit, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "fixture handoff",
+  ]);
   const ready = ok(
     resume([
       "implementation-ready",
@@ -1593,11 +1605,38 @@ test("describeTag names original objects: a replacement ref cannot redirect the 
     return result.stdout.trim();
   };
   run(["init", "-q", "-b", "main"]);
-  run([...identity, "commit", "-q", "--allow-empty", "-m", "one"]);
+  run([
+    ...identity,
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-q",
+    "--allow-empty",
+    "-m",
+    "one",
+  ]);
   run([...identity, "tag", "-a", "-m", "v1.0.0", "v1.0.0"]);
-  run([...identity, "commit", "-q", "--allow-empty", "-m", "two"]);
+  run([
+    ...identity,
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-q",
+    "--allow-empty",
+    "-m",
+    "two",
+  ]);
   const two = run(["rev-parse", "HEAD"]);
-  run([...identity, "commit", "-q", "--allow-empty", "-m", "three"]);
+  run([
+    ...identity,
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-q",
+    "--allow-empty",
+    "-m",
+    "three",
+  ]);
   run([...identity, "tag", "-a", "-m", "v2.0.0", "v2.0.0"]);
   const three = run(["rev-parse", "HEAD"]);
   run(["replace", two, three]);
@@ -1761,7 +1800,13 @@ test("WO-075 design: a TypeScript module under a runtime package's sources trave
     `export const plantedTerm = "${synthetic.trim()}";\n`,
   );
   git(source, ["add", module]);
-  git(source, ["commit", "-qm", "plant a compiled module"]);
+  git(source, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "plant a compiled module",
+  ]);
   try {
     const target = join(scratch, "kit-compiled-plant");
     const refused = runExport(target);
@@ -1821,7 +1866,14 @@ test("WO-075 design: a host Git configuration that would ignore a kit file refus
 test("WO-075 design: a fresh clone of the committed export lacks the ignored snapshot, its hooks report snapshot-missing and delegate to host permissions, and one emit restores the check", () => {
   const committed = commitExport(join(scratch, "kit-committed"));
   const clone = join(scratch, "kit-clone");
-  git(scratch, ["clone", "-q", committed, clone]);
+  git(scratch, [
+    "-c",
+    "maintenance.auto=false",
+    "clone",
+    "-q",
+    committed,
+    clone,
+  ]);
   const snapshot =
     harnessManifestOf(clone).profiles[0].profile.runtime.snapshot;
   assert.ok(!existsSync(join(clone, snapshot)));
@@ -1875,7 +1927,13 @@ test("WO-075 design: a fresh clone of the committed export lacks the ignored sna
   // the documented update branch supplies that index in its reviewed commit.
   ok(git(clone, ["rm", "docs/lineage/README.md"]), "remove the later seed");
   ok(
-    git(clone, ["commit", "-qm", "test: model an older export"]),
+    git(clone, [
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "test: model an older export",
+    ]),
     "record the older seed set",
   );
   const bootstrap = ok(
@@ -1931,7 +1989,13 @@ test("WO-074 design: a kit file absent at the commit refuses by name, and a dest
     "--cached",
     "scripts/kit/pending-license.template.md",
   ]);
-  git(source, ["commit", "-qm", "drop a template"]);
+  git(source, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "drop a template",
+  ]);
   try {
     const target = join(scratch, "kit-absent");
     const refused = runExport(target);

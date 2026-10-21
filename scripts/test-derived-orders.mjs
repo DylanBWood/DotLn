@@ -124,7 +124,14 @@ async function fixture(fn, config) {
     runGit(root, [...fixtureGitFlags, "add", "."], fixtureGitOptions);
     runGit(
       root,
-      [...fixtureGitFlags, "commit", "-qm", "Fixture base"],
+      [
+        ...fixtureGitFlags,
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-qm",
+        "Fixture base",
+      ],
       fixtureGitOptions,
     );
     return await fn(root);

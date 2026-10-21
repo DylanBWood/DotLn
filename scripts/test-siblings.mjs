@@ -218,14 +218,14 @@ git(["config", "user.email", "fixture@example.invalid"]);
 write(declarationPath, json(declaration));
 write("README.md", "fixture launchpad\n");
 git(["add", "."]);
-git(["commit", "-qm", "declaration"]);
+git(["-c", "maintenance.auto=false", "commit", "-qm", "declaration"]);
 const first = git(["rev-parse", "HEAD"]);
 git(["tag", "-a", "v1.0.0", "-m", "first"]);
 // The closed order's segment lands between the two commits the baseline
 // receipts name.
 write("docs/control/orders/WO-901.jsonl", closedOrderSegment("WO-901"));
 git(["add", "."]);
-git(["commit", "-qm", "an order closes"]);
+git(["-c", "maintenance.auto=false", "commit", "-qm", "an order closes"]);
 const second = git(["rev-parse", "HEAD"]);
 const unknown = "f".repeat(40);
 // Two receipts of the starter, one per commit; every case starts from them.
@@ -1074,7 +1074,7 @@ test("captured pending receipts survive registry failure and resume only their b
     await import("./siblings.mjs");
   const target = join(scratch, "carry-target");
   rmSync(target, { recursive: true, force: true });
-  git(["clone", "--quiet", launchpad, target]);
+  git(["-c", "maintenance.auto=false", "clone", "--quiet", launchpad, target]);
   mkdirSync(dirname(join(target, declarationPath)), { recursive: true });
   cpSync(join(launchpad, declarationPath), join(target, declarationPath));
   const fields = {

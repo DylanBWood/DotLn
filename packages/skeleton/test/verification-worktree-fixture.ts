@@ -101,7 +101,14 @@ export async function sourceSnapshotFixture() {
     "import assert from 'node:assert/strict'; import {readFileSync} from 'node:fs'; assert.match(readFileSync('fixture.txt','utf8'), /contract-satisfied/);\n",
   );
   fixtureGit(repo, "add", "contract-test.mjs");
-  fixtureGit(repo, "commit", "-m", "Name the contract-focused check");
+  fixtureGit(
+    repo,
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-m",
+    "Name the contract-focused check",
+  );
   const baseCommit = fixtureGit(repo, "rev-parse", "HEAD");
   writeFileSync(join(root, "base.txt"), baseCommit);
   const baseline = prepareWorktreeVerification({

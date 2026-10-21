@@ -30,7 +30,14 @@ test("target release preparation is a read-only no-release outcome", () =>
       "# Fixture\n\n<!-- DOTLN-RELEASE-BEGIN -->\nThis source prepares DotLn `v1.0.0`.\n<!-- DOTLN-RELEASE-END -->\n",
     );
     git(f.main, "add", "README.md");
-    git(f.main, "commit", "-qm", "docs: instance release claim");
+    git(
+      f.main,
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "docs: instance release claim",
+    );
     git(f.main, "push", "-q", "origin", "main");
     f.mapClone();
     f.start();
@@ -117,6 +124,8 @@ test("WO-221 a target close deletes declared disposable output, judges the base 
       git(f.main, "add", "-A");
       git(
         f.main,
+        "-c",
+        "maintenance.auto=false",
         "commit",
         "-qm",
         "test: declare disposable output and a target release",
@@ -131,7 +140,14 @@ test("WO-221 a target close deletes declared disposable output, judges the base 
       );
       write(f.target, "change.txt", "changed\n");
       git(f.target, "add", "-A");
-      git(f.target, "commit", "-qm", "feat: ignore build output");
+      git(
+        f.target,
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-qm",
+        "feat: ignore build output",
+      );
       closeOrder(f);
       // The gate recorded what its commands wrote into the clone's base checkout.
       const rowsFor = (name) =>
@@ -143,7 +159,14 @@ test("WO-221 a target close deletes declared disposable output, judges the base 
         ".angular/cache/stray.tsbuildinfo",
       ]);
       git(f.orderRoot, "add", "-A");
-      git(f.orderRoot, "commit", "-qm", "Closed target order");
+      git(
+        f.orderRoot,
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-qm",
+        "Closed target order",
+      );
       git(
         f.main,
         "merge",
@@ -158,7 +181,15 @@ test("WO-221 a target close deletes declared disposable output, judges the base 
       // checkout stays behind the fetched base and its working copy's rules
       // predate the merged .gitignore.
       const merger = join(f.base, "merger");
-      git(f.base, "clone", "-q", join(f.base, "target.git"), merger);
+      git(
+        f.base,
+        "-c",
+        "maintenance.auto=false",
+        "clone",
+        "-q",
+        join(f.base, "target.git"),
+        merger,
+      );
       git(merger, "config", "user.email", "fixture@example.invalid");
       git(merger, "config", "user.name", "Fixture");
       git(merger, "fetch", "-q", f.clone, "wo-999");
@@ -244,7 +275,14 @@ test("WO-221 a target close deletes declared disposable output, judges the base 
       f.config.repositories.target.release.displayName = "Fixture Product";
       write(f.main, "dotln.config.json", JSON.stringify(f.config));
       git(f.main, "add", "dotln.config.json");
-      git(f.main, "commit", "-qm", "Name the registered target release");
+      git(
+        f.main,
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-qm",
+        "Name the registered target release",
+      );
       git(f.main, "push", "-q", "origin", "main");
       assert.match(f.ok(close("--dry-run")), /title Fixture Product v0\.1\.0/u);
       // A stray .env in the target refuses once before either checkout's
@@ -274,7 +312,16 @@ test("WO-221 a target close deletes declared disposable output, judges the base 
       // not reach refuses by name; the operator moves nothing by hand here but
       // the fixture removes the stray tag.
       git(merger, "switch", "-qc", "side");
-      git(merger, "commit", "-q", "--allow-empty", "-m", "Side commit");
+      git(
+        merger,
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-q",
+        "--allow-empty",
+        "-m",
+        "Side commit",
+      );
       git(merger, "tag", "v0.1.0");
       git(merger, "push", "-q", "origin", "refs/tags/v0.1.0");
       const taken = close("--publish");
@@ -295,13 +342,15 @@ test("WO-221 a target close deletes declared disposable output, judges the base 
       // The retained attempt must still own that name and commit.
       const gitFile = join(forge.bin, "git");
       const gitOriginal = readFileSync(gitFile, "utf8");
-      writeFileSync(
-        gitFile,
-        gitOriginal.replaceAll(
-          "process.exit(result.status ?? 1);",
-          "if (result.status === 0 && original.includes('push') && original.some(word => word.includes('refs/tags/'))) { console.error('fixture tag push accepted then disconnected'); process.exit(78); } process.exit(result.status ?? 1);",
-        ),
+      const gitAdapter = readFileSync(forge.gitAdapter, "utf8");
+      const disconnectedGit = gitAdapter.replaceAll(
+        "process.exit(result.status ?? 1);",
+        "if (result.status === 0 && original.includes('push') && original.some(word => word.includes('refs/tags/'))) { console.error('fixture tag push accepted then disconnected'); process.exit(78); } process.exit(result.status ?? 1);",
       );
+      assert.notEqual(disconnectedGit, gitAdapter, "push fault is installed");
+      // This one fault needs the adapter's post-Git branch; restore the native
+      // dispatcher before exercising the remaining release and retry paths.
+      writeFileSync(gitFile, disconnectedGit);
       const disconnected = close("--publish");
       writeFileSync(gitFile, gitOriginal);
       assert.notEqual(disconnected.status, 0);
@@ -379,7 +428,16 @@ test("WO-221 a target close deletes declared disposable output, judges the base 
       // Advancing the base and removing the tag cannot retarget the retry:
       // restore the recorded commit, then finish the one pending Release.
       git(merger, "switch", "-q", "main");
-      git(merger, "commit", "-q", "--allow-empty", "-m", "Later target change");
+      git(
+        merger,
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-q",
+        "--allow-empty",
+        "-m",
+        "Later target change",
+      );
       git(merger, "push", "-q", "origin", "main");
       git(f.clone, "fetch", "-q", "--no-tags", "--refmap=", remote, "main");
       git(
@@ -492,7 +550,14 @@ test("WO-221 a registration without a release policy closes with no-release and 
     f.config.repositories.target.hostRules = "literal";
     write(f.main, "dotln.config.json", JSON.stringify(f.config));
     git(f.main, "add", "-A");
-    git(f.main, "commit", "-qm", "test: opt into the literal fallback");
+    git(
+      f.main,
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "test: opt into the literal fallback",
+    );
     git(f.main, "push", "-q", "origin", "main");
     write(
       f.main,
@@ -535,10 +600,24 @@ test("WO-221 a registration without a release policy closes with no-release and 
     assert.deepEqual(staleOrderHostRules(f.main), []);
     write(f.target, "change.txt", "changed\n");
     git(f.target, "add", "-A");
-    git(f.target, "commit", "-qm", "test: target change");
+    git(
+      f.target,
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "test: target change",
+    );
     closeOrder(f);
     git(f.orderRoot, "add", "-A");
-    git(f.orderRoot, "commit", "-qm", "Closed target order");
+    git(
+      f.orderRoot,
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "Closed target order",
+    );
     git(
       f.main,
       "merge",

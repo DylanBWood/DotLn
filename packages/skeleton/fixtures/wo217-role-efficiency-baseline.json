@@ -1,0 +1,91 @@
+{
+  "observedAt": "2026-10-21T03:08:09.634Z",
+  "method": "Generated CLAUDE.md harness block in the unchanged hand-written floor plus each generated role SKILL.md, UTF-8 bytes. No token or elapsed-time inference.",
+  "sourceSha256": "dda93507ba980b411f83b50dd688d20b208fc0c938cc3041b42f99bd8971866a",
+  "profiles": [
+    {
+      "path": ".agents/skills/dotln-executor/SKILL.md",
+      "instructionBytes": 6872,
+      "skillBytes": 22341,
+      "bytes": 29213,
+      "sha256": "0f21552937acec0f4f70efc2378aa76c334a4ca34738245f72f56d79b0120742"
+    },
+    {
+      "path": ".agents/skills/dotln-planner/SKILL.md",
+      "instructionBytes": 6872,
+      "skillBytes": 11776,
+      "bytes": 18648,
+      "sha256": "28790c57ff1042c940bad6c8ed42e3b7c7544528f152f77f9b1da962061fecb2"
+    },
+    {
+      "path": ".agents/skills/dotln-refuter/SKILL.md",
+      "instructionBytes": 6872,
+      "skillBytes": 10590,
+      "bytes": 17462,
+      "sha256": "06aead3e320a5799d92f980a1cb2b13aa6728601dac1b652d3985c95bca7db23"
+    },
+    {
+      "path": ".agents/skills/dotln-release-close/SKILL.md",
+      "instructionBytes": 6872,
+      "skillBytes": 10867,
+      "bytes": 17739,
+      "sha256": "80124c6503af1061efc6f050e4db2cbe8e9523317950894a343e8a811e5eca70"
+    },
+    {
+      "path": ".agents/skills/dotln-reviewer/SKILL.md",
+      "instructionBytes": 6872,
+      "skillBytes": 22133,
+      "bytes": 29005,
+      "sha256": "cd1d7e94e4e72e1805c6f44bcb57ed344f99068e79d44334fc9ebe3511a09cd5"
+    },
+    {
+      "path": ".agents/skills/dotln-verifier/SKILL.md",
+      "instructionBytes": 6872,
+      "skillBytes": 19104,
+      "bytes": 25976,
+      "sha256": "820af4cd368447b6d0442e763bf1bbc7b1dd36657ef5f2669aa98a390d085648"
+    },
+    {
+      "path": ".claude/skills/dotln-executor/SKILL.md",
+      "instructionBytes": 6872,
+      "skillBytes": 22341,
+      "bytes": 29213,
+      "sha256": "0f21552937acec0f4f70efc2378aa76c334a4ca34738245f72f56d79b0120742"
+    },
+    {
+      "path": ".claude/skills/dotln-planner/SKILL.md",
+      "instructionBytes": 6872,
+      "skillBytes": 11776,
+      "bytes": 18648,
+      "sha256": "28790c57ff1042c940bad6c8ed42e3b7c7544528f152f77f9b1da962061fecb2"
+    },
+    {
+      "path": ".claude/skills/dotln-refuter/SKILL.md",
+      "instructionBytes": 6872,
+      "skillBytes": 10590,
+      "bytes": 17462,
+      "sha256": "06aead3e320a5799d92f980a1cb2b13aa6728601dac1b652d3985c95bca7db23"
+    },
+    {
+      "path": ".claude/skills/dotln-release-close/SKILL.md",
+      "instructionBytes": 6872,
+      "skillBytes": 10867,
+      "bytes": 17739,
+      "sha256": "80124c6503af1061efc6f050e4db2cbe8e9523317950894a343e8a811e5eca70"
+    },
+    {
+      "path": ".claude/skills/dotln-reviewer/SKILL.md",
+      "instructionBytes": 6872,
+      "skillBytes": 22133,
+      "bytes": 29005,
+      "sha256": "cd1d7e94e4e72e1805c6f44bcb57ed344f99068e79d44334fc9ebe3511a09cd5"
+    },
+    {
+      "path": ".claude/skills/dotln-verifier/SKILL.md",
+      "instructionBytes": 6872,
+      "skillBytes": 19104,
+      "bytes": 25976,
+      "sha256": "820af4cd368447b6d0442e763bf1bbc7b1dd36657ef5f2669aa98a390d085648"
+    }
+  ]
+}

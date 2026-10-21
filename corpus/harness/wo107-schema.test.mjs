@@ -439,7 +439,7 @@ test("corpus generated comparison is byte identical and check never appends or r
   assert.deepEqual(readFileSync(observations), original);
 });
 
-test("corpus the hashed collector files are exactly the pinned-bytes files", () => {
+test("corpus the hashed collector files are exactly the pinned-bytes files", async () => {
   const declaration = /const names = (\[[^\]]+\]);/u.exec(
     protocolLineage.toString(),
   );
@@ -495,6 +495,13 @@ test("corpus the hashed collector files are exactly the pinned-bytes files", () 
     inputs,
     "formatter ignores follow the hashed inputs",
   );
+  const { getFileInfo } = await import("prettier");
+  for (const input of inputs)
+    assert.equal(
+      (await getFileInfo(input, { ignorePath: ".prettierignore" })).ignored,
+      true,
+      `Formatter must effectively ignore ${input}`,
+    );
   const row = suites.find((entry) => entry.name === "wo107-schema");
   assert.ok(row?.machinery && !row.product && !row.document);
   assert.deepEqual(

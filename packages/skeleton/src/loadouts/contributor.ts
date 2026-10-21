@@ -62,15 +62,15 @@ const sessionBoundaries =
   "Under Codex, lifecycle dispatch reserves the writer and completion releases it; inspect with `node scripts/harness.mjs writer --show`, never a hand-built hook payload. Await a gate or background task through `node scripts/harness.mjs evidence --wait [--timeout <seconds>]` in the background or the host's completion signal, then do bounded listed work or stay quiet; never poll or narrate the wait.";
 const sharedCorrections = [
   "Launch all adversaries, reviewers, refuters and research workers as Claude `dotln-worker` (claude-opus-5-5, xhigh) without a model override, or Codex spawn_agent with fork_turns none, model gpt-6.1-sol and reasoning_effort max; product 07 §Model-specific notes records the pin and readback limits.",
-  "Run a probe outside a gate under `node scripts/harness.mjs bounded -- <command>`, one process at a time; the host guard also watches attributable session descendants.",
-  "Settle routine version, waiver-route, live-episode, regeneration and reinstall questions within existing authority; ask when the answer changes scope or authority.",
-  "Before acting on an operator message, state its aim in one line and act on that reading; ask one focused question if the reading is doubtful.",
-  "A claim of cause, blocker, unreachable service or finished work names the command and output it rests on; a partial search names its boundary.",
-  "Request needed authority in this session through the host permission flow; never hand the operator a command to run in your place unless the order or role names that fallback.",
-  "A command given to the operator is copy-paste runnable with real paths and no placeholders; a question says what it decides and why in plain words.",
-  "Answer a stale gate row by running the gate at the current identity, never by restoring bytes to match it; never remove a reviewed fix to pass a check.",
+  "Run probes outside gates, one process at a time, under `node scripts/harness.mjs bounded -- <command>`; the host guard also watches attributable session descendants.",
+  "Resolve routine version, waiver-route, live-episode, regeneration and reinstall questions within existing authority; ask if an answer changes scope or authority.",
+  "Before acting on an operator message, state its aim in one line and act on that reading; ask one focused question if that reading is doubtful.",
+  "Claims of cause, blockers, unreachable services or completion name their supporting command and output; partial searches name their boundary.",
+  "Request needed authority here through the host permission flow; give the operator a command to run in your place only when the order or role names that fallback.",
+  "Operator commands must be copy-paste runnable with real paths and no placeholders; questions plainly state what they decide and why.",
+  "For stale gate rows, run the gate at the current identity; never restore bytes to match a row or remove a reviewed fix to pass a check.",
   "Stop the background monitors you started before recording your result.",
-  "After a second consecutive provider safeguard refusal, stop retrying, record the stop as a decision naming phase and model, and resume in a fresh session.",
+  "After two consecutive provider safeguard refusals, stop retrying, record a decision naming the stop, phase and model, and resume in a fresh session.",
 ];
 const releaseCloseRemedy =
   "Run the printed helper command exactly as printed, with no redirect, prefix, cd or pipe. The close is done when the tag and Release exist, git worktree list shows no worktree for the order, its directory is gone, git branch --list wo-NNN is empty and no starter-refresh blocker remains. Diagnose and finish a cleanup blocker in this session; retry by re-running the same command, which re-checks an existing Release and never publishes twice. A retry validates the original immutable tag even after main advances; a foreign tag remains a blocker. Retry a host denial of the exact command once through the host permission flow before handing the operator the printed command for !. The close removes any scratch repository still present and records its path, head commit and whether a remote held it; intake and declared submodules stay, and an operator word through --material preserves a scratch repository; never force teardown.";
@@ -83,15 +83,15 @@ const disposableOutput =
 const noGuessing =
   "Never guess: an unobserved value is `unknown`, `untested` or `blocked`; name the readable source tried before writing `unknown`, and correct an unfiled report in place instead of appending a correction.";
 const common = [
-  "Resolve physical cwd and Git root before changing files or running Git commands. Work only in the selected worktree; one writable coding agent owns it.",
+  "Before file changes or Git commands, resolve physical cwd and Git root. Stay in the selected worktree with one writable coding agent.",
   "Run `npm run resume --silent -- status --json`; use its canonical selected order, phase, report paths, and legal actions. A stale Markdown projection is repaired only by the next legal transition.",
   "Status may name artifacts for other roles. Load a report only when this role's Read directives or the active order's citations select it; a path in status is metadata, not a read directive.",
   "Skills supply procedure, never authority or phase state. Preserve the operator's intent; work-order model and effort are recommendations, and attestations record actual supplied values. Never invent effective-session readback.",
   noGuessing,
   "Read: `@work-order`",
   "Read: `@citations`",
-  "Read source and existing tests relevant to the order before changes. Scope those reads to `@subject-files`; unresolved paths remain a named input requirement.",
-  "Host permission settings decide execution; inspect the exact command, package mapping, and lifecycle-script diff before a state-changing resume command. In Claude Code the session hook records the dispatch named by the operator's phrase (`next`, `fix`, `verify`, `final-review`) before this procedure loads, delivers that command's briefing, passes a phrase whose dispatch is already recorded with the same briefing and receipt projected read-only by `npm run resume -- briefing` (a resumed Codex session runs that command itself), and reports a dispatch that is not legal in the current phase without rejecting the prompt. Prompt submission always remains open: setup, runtime and state failures are advisory, never a reason to deny access to Claude or Codex. It admits the dispatch exactly as the ordinary command: a live evidence gate or another session's writer reservation refuses it before any lifecycle change, and the terminal shows a one-line receipt naming the recorded dispatch and the equipped supports. Run no dispatch the harness recorded. Never repeat a recorded transition to repair a checkpoint warning.",
+  "Before changes, read relevant source and existing tests within `@subject-files`; name unresolved paths as required inputs.",
+  "Host permissions decide execution; inspect the exact command, package mapping and lifecycle-script diff before any state-changing resume command. Before this procedure loads, Claude Code's session hook records the operator phrase's dispatch (`next`, `fix`, `verify`, `final-review`) and delivers its briefing. It passes an already-recorded phrase with the same briefing and receipt projected read-only by `npm run resume -- briefing`; resumed Codex runs that command itself. It reports an illegal dispatch without rejecting the prompt. Prompt submission stays open: setup, runtime and state failures are advisory, never grounds to deny access to Claude or Codex. Dispatch admission matches the ordinary command: a live evidence gate or another session's writer reservation refuses it before any lifecycle change. The terminal prints one receipt line naming the recorded dispatch and equipped supports. Never rerun a harness-recorded dispatch or repeat a recorded transition to repair a checkpoint warning.",
   "No branch commits before final review. Never reset, restore, clean, drop a stash, or discard intake. Preserve work through the canonical checkpoint and named recovery procedure if rollback is needed.",
   "Read: `@subject-files`",
   "Read: `package.json`",
@@ -99,10 +99,10 @@ const common = [
   "Write durable product decisions to the cited product docs and `docs/evidence/WO-NNN/decisions.md`, naming the operator dispatch, evidence, alternatives and reopening condition. Run `npm run meta` to refresh the decisions index. The ledger is for operator ideation and planning synthesis only. For an order filed before 2026-09-09, a ledger-entry duty is discharged by its decisions file and index row; the work-order index marks this substitution. Record a correction the same day: what was misread, what was meant and what changed. Decided means sourced, not frozen; an order's non-goal fences that order alone.",
 ];
 const actor =
-  "Completion flags: `--harness <harness> --harness-version <version> --model <model> --effort <level> --source <source>`. Supply each field; unknown is admitted. Versions, models and effort are logged, never refused, except that while Claude Code's `CLAUDE_EFFORT` is readable a claude-code attestation must be `--effort <that value> --source claude-session-readback`, and that source is refused anywhere else. `ultra` and `ultra code` record xhigh, mode subagents and raw spelling. Never invent effective-session readback. Codex briefings report current-session model, effort and CLI version from the active thread; use that readback when available. Claude Code exports the root session's selected effort as `CLAUDE_EFFORT`: the root session reads it and records that effort with `--source claude-session-readback` (selected, not effective); a subagent's shell carries the root's value, so the root session records lifecycle completions. Copilot readback reports CLI-selected values, not effective effort; retain supplied operator attestations and never derive the harness from the model.";
+  "Completion flags: `--harness <harness> --harness-version <version> --model <model> --effort <level> --source <source>`. Supply each field; unknown is admitted. Versions, models and effort are logged, never refused, except for the Claude Code rule below. `ultra` and `ultra code` record xhigh, mode subagents and raw spelling. Never invent effective-session readback. Use available Codex briefing readback of current-session model, effort and CLI version from the active thread. Claude Code exports the root's selected effort as `CLAUDE_EFFORT`: when readable, the root must read and record it with `--effort <that value> --source claude-session-readback` in a claude-code attestation; that source is refused elsewhere. This is selected, not effective, effort; subagent shells carry the root's value, so the root records lifecycle completions. Copilot readback reports CLI-selected values, not effective effort; retain supplied operator attestations and never derive the harness from the model.";
 const evidence = [
-  "Run checks that establish the work order's claims. Completion runs git diff --check inline, validates report/attestation presence and reads one judgment per declared criterion. An unmet criterion records and is shown at the next dispatch. A met npm test claim at executor or verifier handoff consumes the passing structural row, every --only suite named in the order's Preflight field and the document row when a document changed, all at the current code identity; a passing complete row also covers them. Final-review-result pass for a launchpad order with a met npm test claim consumes the newest passing complete review row at the integrated code identity, whichever role recorded it; a complete run is owed only when that identity has none. A met npm run test:docs claim consumes the newest passing document row recorded for the working tree as it stands; completion runs no gate itself. Target orders keep their target gate.",
-  "Output reads, usage and planning handoffs advise. Review current authored outputs and record evidence with source and cutoff. Reports, indexes and release text may be completed after a passing gate without invalidating code identity. One registered writer owns a worktree on any branch. While its product gate runs, a role may write the active order’s own evidence, verification and final-review directories at the default document roots; product tasks reject observed reads of these paths. Every other gate input and the success record stay protected; document and mixed review gates admit no record writes; stop your own gate with `node scripts/harness.mjs evidence --stop` when necessary. Every other permission judgment delegates to the host. Read current authored outputs; generated or oversized outputs use their generation/check evidence. Codex lifecycle dispatches begin their harness session automatically before usage is read; Codex and Copilot can use explicit observe/delivered and `node scripts/harness.mjs read-output <path> --offset 0 --length 8192`, without claiming automatic read receipts. Copilot: inspect canonical status, run `npm run resume -- briefing` after an already-recorded dispatch, otherwise run the legal dispatch once; prompt-context delivery is unobserved. Completion releases its writer; explicit `scripts/operator-control.mjs` recovery remains available. Usage is recorded when available and unknown otherwise; it never blocks handoff.",
+  "Run checks establishing the work order's claims. Completion runs git diff --check inline, validates report/attestation presence, and reads one judgment per declared criterion. Unmet criteria are recorded and shown at the next dispatch. A met npm test claim at executor/verifier handoff consumes the passing structural row, every --only suite named in the order's Preflight field, and the document row if a document changed, all at the current code identity; a passing complete row covers them too. Final-review-result pass for a launchpad order's met npm test claim consumes the newest passing complete review row at the integrated code identity, whichever role recorded it; a complete run is owed only if that identity has none. A met npm run test:docs claim consumes the newest passing document row recorded for the working tree as it stands. Completion runs no gate. Target orders keep their target gate.",
+  "Output reads, usage and planning handoffs advise. Read and review current authored outputs; use generation/check evidence for generated or oversized outputs. Record evidence with source and cutoff. Reports, indexes and release text may be completed after a passing gate without invalidating code identity. One registered writer owns a worktree on any branch. During its product gate, a role may write the active order's own evidence, verification and final-review directories at the default document roots; product tasks reject observed reads there. Every other gate input and the success record stay protected; document and mixed review gates admit no record writes. Stop your own gate with `node scripts/harness.mjs evidence --stop` when necessary. Other permission judgments delegate to the host. Codex lifecycle dispatches automatically begin the harness session before usage is read. Codex and Copilot may use explicit observe/delivered and `node scripts/harness.mjs read-output <path> --offset 0 --length 8192`, without claiming automatic read receipts. Copilot: inspect canonical status; run `npm run resume -- briefing` after an already-recorded dispatch, otherwise run the legal dispatch once; prompt-context delivery is unobserved. Completion releases its writer; explicit `scripts/operator-control.mjs` recovery remains available. Record available usage, otherwise unknown; it never blocks handoff.",
 ];
 const productGate =
   "After integration, the last source edit and `npm run format`, reuse the passing complete review row at the integrated code identity when one exists (the identity, not the dispatch time, says what was tested); only when none exists start `npm test -- --review` in the background, never under the bounded probe wrapper, and await it with `node scripts/harness.mjs evidence --wait`; read the subject meanwhile, write no gate input and start no agent. A confined or partial run never supplies the complete review row; use the printed outside command under host permissions and existing authority.";
@@ -167,6 +167,7 @@ export const contributorRoles: readonly HarnessRole[] = [
       "Read: `@verification-reports`",
       "Read: `docs/product/08-publication-compiler.md#PRs and commits`",
       "A finding outside the criteria that breaks no behavior `main` had is a follow-up by rule, never blocking.",
+      "Every option in an operator packet must be safe within ordinary authority, without operator override. Record the safe default; override is an operator recovery control, never a proposed way to pass review.",
       ...evidence,
       productGate,
       costLine,
@@ -216,7 +217,7 @@ export const contributorRoles: readonly HarnessRole[] = [
       "Read: `docs/planning/sequence.md`",
       "Open a planning branch with `npm run plan -- start <slug>` from clean main. Follow the selected section's source/capture instructions and source each decision with its reopening condition. Planning satisfies independent refutation; ideation follows its pipeline or explicit capture-only boundary. Run `npm run test:docs` (plan, index, publication and format only). Leave implementation, activation and releases to their authorized dispatches.",
       "Use `npm run reader -- score` with one fresh pinned reader outside the repository and record its result only when plan start reports a changed profile with three unscored releases or the operator asks; record surface corrections only through `score --correction <surface> --capture-hash sha256:<digest>`.",
-      "After committing the planning subject locally, load dotln-refuter for one independent goal review per pass. Reuse that judgment after repairs unless observed evidence changed; for a new judgment dispatch one fresh background refuter with no inherited conversation. Use the canonical direct prompt and receipt helper; keep the parent as the sole repository writer. Do not launch an external refutation CLI unless the operator explicitly requests that transport.",
+      "After committing the planning subject locally, load dotln-refuter for one independent goal review per pass. Before editing judged text, resolve its refutation hold or record the operator-authorized amendment; judgment reuse never authorizes a repair. Reuse the judgment only while its observed evidence and judged subject remain valid; for a new judgment dispatch one fresh background refuter with no inherited conversation. Use the canonical direct prompt and receipt helper; keep the parent as the sole repository writer. Do not launch an external refutation CLI unless the operator explicitly requests that transport.",
       "After the refutation receipt is filed with its holds answered and npm run test:docs is green, a planning or ideation pass on a planning branch pushes that branch and opens its :memo: pull request; the dispatch phrase is the operator's authorization for those two effects, and the pass never merges.",
     ],
   },
@@ -591,7 +592,7 @@ const roleSteps: Readonly<Record<string, readonly string[]>> = {
     "Remove scratch repositories, nested repositories outside intake that the tracked tree does not declare as submodules; never declare one. The close removes any left and records its head commit.",
     "Finish decisions, indexes and other authored outputs; apply the worker review rule below before implementation-ready.",
     "Run `npm run format`; `npm run sync` regenerates stale publication, bookkeeping and installed-harness artifacts, while a gate compiles a stale runtime itself.",
-    "Start one complete run, `npm test -- --review`, in the background, never under the bounded probe wrapper. Await it with `node scripts/harness.mjs evidence --wait`. The runner schedules failed and changed suites first, so a stale assertion fails within minutes; a complete run composes nothing from `--only` rows, so a focused run reproduces one failure and never precedes it. While it runs, write nothing under the repository and start no agent; on failure repair with the named remedy, format and start a fresh complete run.",
+    "Start one complete run, `npm test -- --review`, in the background, never under the bounded probe wrapper. Await it with `node scripts/harness.mjs evidence --wait`. The runner schedules failed and newly changed suites first; older branch changes may follow exclusive work. A complete run composes nothing from `--only` rows, so a focused run reproduces one failure and never precedes it. While it runs, write nothing under the repository and start no agent; on failure repair with the named remedy, format and start a fresh complete run.",
     "After the complete run passes, complete the active order's handoff.md (criterion judgments with their evidence, review counts, attestation, usage) and read current outputs.",
     "Run `npm run test:docs` once after the last document edit, until green; its row stands only while the working tree is the one it judged.",
     "Record `npm run resume -- implementation-ready <actor-flags>` or, for a repair, `npm run resume -- repair-complete <actor-flags>`; completion consumes the complete and document rows and runs no gate; read resulting projections without another write.",
@@ -974,6 +975,7 @@ export const contributorProfiles: readonly HarnessProfile[] = [
       UserPromptSubmit: { available: true, evidence: `${record}#C4` },
     },
     skills: {
+      format: "agent-skills",
       available: true,
       evidence: `${record}#C5`,
       root: ".claude/skills",
@@ -1017,6 +1019,7 @@ export const contributorProfiles: readonly HarnessProfile[] = [
       ]),
     ) as HarnessProfile["events"],
     skills: {
+      format: "agent-skills",
       available: true,
       evidence: `${record}#X1`,
       root: ".agents/skills",
@@ -1060,6 +1063,7 @@ export const contributorProfiles: readonly HarnessProfile[] = [
       },
     },
     skills: {
+      format: "agent-skills",
       available: true,
       evidence: `${copilotRecord}#H10`,
       root: ".agents/skills",
@@ -1132,7 +1136,11 @@ export const targetWorkerProfiles: readonly HarnessProfile[] =
               ? lifecycle
               : { ...unavailable, evidence: `${evidence}#X-W10` },
         },
-        skills: { ...skills, root: profile.skills.root },
+        skills: {
+          ...skills,
+          root: profile.skills.root,
+          format: profile.skills.format,
+        },
         settings: {
           ...profile.settings,
           evidence: `${evidence}#${profile.harness === "claude-code" ? "C-W3" : "X-W3"}`,

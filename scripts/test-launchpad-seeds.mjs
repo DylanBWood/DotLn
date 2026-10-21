@@ -202,7 +202,13 @@ test("starter staged tree refuses clean-filter changes to verified bytes", async
   rmSync(join(root, ".git/info/attributes"));
   git(root, ["add", "--renormalize", "--", "KIT-MANIFEST.json"]);
   assert.doesNotThrow(() => assertStagedTree(root, ["KIT-MANIFEST.json"]));
-  git(root, ["commit", "-qm", "prior verified bytes"]);
+  git(root, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "prior verified bytes",
+  ]);
   writeFileSync(join(root, "KIT-MANIFEST.json"), "new verified bytes\n");
   writeFileSync(
     join(root, ".git/info/attributes"),
@@ -264,7 +270,13 @@ test("historical starter floors retain provenance through navigation migration",
     }
   }
   git(main, ["add", "."]);
-  git(main, ["commit", "-qm", "historical seed"]);
+  git(main, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "historical seed",
+  ]);
   const prior = git(main, ["rev-parse", "HEAD"]).stdout.trim();
   writeFileSync(
     join(checkout, "KIT-MANIFEST.json"),
@@ -277,10 +289,22 @@ test("historical starter floors retain provenance through navigation migration",
     }),
   );
   git(checkout, ["add", "."]);
-  git(checkout, ["commit", "-qm", "historical export"]);
+  git(checkout, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "historical export",
+  ]);
   const incoming = "# Personal floor\n\nCurrent personal instructions.\n";
   writeFileSync(join(main, "scripts/kit/CLAUDE.template.md"), incoming);
-  git(main, ["commit", "-qam", "migrate navigation and update floor"]);
+  git(main, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qam",
+    "migrate navigation and update floor",
+  ]);
   const plans = planStarterSeeds({
     main,
     head: "HEAD",

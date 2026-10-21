@@ -548,6 +548,13 @@ const hostLaunchLines = (mainPath, entry, repository) => {
 
 // A retained start receipt owns only the exact pair it preflighted. Retrying
 // resumes preparation; it never adopts a different directory or resets a branch.
+const signoffAdvisory = (root) => {
+  if (!loadConfig(root).contributions?.operatorAuthor)
+    process.stdout.write(
+      "Advisory: every commit on this branch needs a Signed-off-by trailer matching its author (DCO 1.1), or declare that identity as contributions.operatorAuthor in dotln.config.json through a reviewed change.\n",
+    );
+};
+
 const startTargetWorktree = async (mainPath, entry) => {
   const {
     target,
@@ -599,6 +606,7 @@ const startTargetWorktree = async (mainPath, entry) => {
       validateOrderHostRules(mainPath, workOrderId, { creating: true });
     ensureWorktree(clone, target, baseCommit);
     ensureWorktree(mainPath, launchpad, launchpadBase);
+    signoffAdvisory(launchpad);
     const source = readFileSync(
       workOrderAuthorityPath(launchpad, workOrderId, workOrderPath),
       "utf8",
@@ -1019,10 +1027,7 @@ const main = async () => {
       return;
     }
     runGit(mainPath, ["worktree", "add", target, "-b", branch, "origin/main"]);
-    if (!loadConfig(target).contributions?.operatorAuthor)
-      process.stdout.write(
-        "Advisory: every commit on this branch needs a Signed-off-by trailer matching its author (DCO 1.1), or declare that identity as contributions.operatorAuthor in dotln.config.json through a reviewed change.\n",
-      );
+    signoffAdvisory(target);
     const base = runGit(target, ["rev-parse", "HEAD"]);
     const authorityHash = createHash("sha256")
       .update(readFileSync(join(target, workOrderPath)))
@@ -1399,7 +1404,8 @@ const main = async () => {
       );
       process.stdout.write(renderIntakeReconciliation(reconciliation));
       const checks = readGateChecks(subject);
-      if (checks.length) recordGateChecks(mainPath, checks);
+      if (checks.length)
+        recordGateChecks(mainPath, checks, { sourceRoot: subject });
       ensureNoIgnoredMaterial(subject, reconciliation);
       verifyPreservedMaterial(subject, mainPath, reconciliation);
       refuseSubmoduleWorktree(subject);

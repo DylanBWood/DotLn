@@ -110,7 +110,13 @@ test("WO-070 copied control plane emits a decoded Beacon without skeleton source
   );
   assert.ok(!existsSync(join(root, "packages/skeleton/src")));
   run("git", ["add", "."]);
-  run("git", ["commit", "-qm", "portable fixture"]);
+  run("git", [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "portable fixture",
+  ]);
   run(process.execPath, [
     join(root, "scripts/resume.mjs"),
     "activate",

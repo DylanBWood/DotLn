@@ -86,6 +86,7 @@ export async function classifyDocumentFailures(
       }
     }
     const needed = failed
+      .filter((row) => row.executed && !row.failureKind)
       .map((row) => tasks.find((task) => task.name === row.name))
       .filter(Boolean);
     const build = tasks.find((task) => task.build && task.command.length);

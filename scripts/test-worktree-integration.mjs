@@ -48,7 +48,7 @@ const repairedCaseMs = new Map([
     4400,
   ],
   [
-    "WO-086 a blocked PR directory preserves collision inputs for continuation",
+    "WO-086 an unowned blocked PR directory is preserved while integration retimes",
     4600,
   ],
   [
@@ -166,7 +166,7 @@ test("nested material keeps linked-worktree remedies and shares Git inspection p
   git(main, "init", "-q", "-b", "main");
   put(main, ".gitignore", ".runtime/\ndocs/control/local/\n");
   git(main, "add", ".");
-  git(main, "commit", "-qm", "test: fixture");
+  git(main, "-c", "maintenance.auto=false", "commit", "-qm", "test: fixture");
   const subject = join(root, "subject");
   git(main, "worktree", "add", "-q", "-b", "wo-999", subject);
   const linked = join(subject, ".runtime/probe");
@@ -226,13 +226,20 @@ test("completion names unignored scratch before tree refusal and checks whitespa
   git(root, "init", "-q");
   put(root, "tracked.txt", "fixture\n");
   git(root, "add", ".");
-  git(root, "commit", "-qm", "test: fixture");
+  git(root, "-c", "maintenance.auto=false", "commit", "-qm", "test: fixture");
   const nested = join(root, "unignored/scratch");
   mkdirSync(nested, { recursive: true });
   git(nested, "init", "-q");
   put(nested, "inner.txt", "inner whitespace \n");
   git(nested, "add", ".");
-  git(nested, "commit", "-qm", "test: nested fixture");
+  git(
+    nested,
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "test: nested fixture",
+  );
   const { checkLifecycleWhitespace, requireLifecycleEvidence } =
     await import("./lib/lifecycle-evidence.mjs");
   checkLifecycleWhitespace(root);
@@ -501,7 +508,13 @@ function focusedSource() {
     runGit(root, ["add", "-A"], fixtureGitOptions);
     runGit(
       root,
-      ["commit", "-qm", "focused integration seed"],
+      [
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-qm",
+        "focused integration seed",
+      ],
       fixtureGitOptions,
     );
     focusedSeed = { root, state: seedState(root) };
@@ -660,7 +673,13 @@ function fixture(
   runGit(main, ["add", "-A"], fixtureGitOptions);
   runGit(
     main,
-    ["commit", "-qm", "integration fixture base"],
+    [
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "integration fixture base",
+    ],
     fixtureGitOptions,
   );
   runGit(main, ["push", "-q", "origin", "main"], fixtureGitOptions);
@@ -714,7 +733,13 @@ function fixture(
     runGit(subject, ["add", "-A"], fixtureGitOptions);
     runGit(
       subject,
-      ["commit", "-qm", "reviewed fixture work"],
+      [
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-qm",
+        "reviewed fixture work",
+      ],
       fixtureGitOptions,
     );
   }
@@ -750,7 +775,11 @@ function fixture(
       "\n// fixture machinery change\n",
   );
   runGit(main, ["add", "-A"], fixtureGitOptions);
-  runGit(main, ["commit", "-qm", "merged sibling fixture"], fixtureGitOptions);
+  runGit(
+    main,
+    ["-c", "maintenance.auto=false", "commit", "-qm", "merged sibling fixture"],
+    fixtureGitOptions,
+  );
   runGit(main, ["tag", "v9000.0.1"], fixtureGitOptions);
   runGit(
     main,
@@ -1554,7 +1583,13 @@ for (const interrupted of [false, true])
     runGit(f.main, ["add", "untracked-fixture.md"], fixtureGitOptions);
     runGit(
       f.main,
-      ["commit", "-qm", "upstream untracked collision"],
+      [
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-qm",
+        "upstream untracked collision",
+      ],
       fixtureGitOptions,
     );
     runGit(f.main, ["push", "-q", "origin", "main"], fixtureGitOptions);
@@ -1615,7 +1650,13 @@ test("WO-167 --continue judges the recorded phase while the uncommitted control 
   runGit(f.subject, ["rm", "-q", "--cached", log], fixtureGitOptions);
   runGit(
     f.subject,
-    ["commit", "-qm", "the control log stays uncommitted"],
+    [
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "the control log stays uncommitted",
+    ],
     fixtureGitOptions,
   );
   assert.equal(text(f.subject, log), bytes);
@@ -1786,78 +1827,102 @@ test("WO-086 a retime that lands on a continuation is recorded once, in the stub
 });
 
 for (const blocker of ["PR directory", "PR file"])
-  test(`WO-086 a blocked ${blocker} preserves collision inputs for continuation`, (t) => {
-    const f = fixture(t, { authored: false, generators: "focused" });
-    const directory = join(f.subject, "docs/final-reviews/WO-998");
-    const blocked =
-      blocker === "PR directory" ? directory : join(directory, "PR.md");
-    if (blocker === "PR directory")
-      put(f.subject, "docs/final-reviews/WO-998", "blocked\n");
-    else {
-      mkdirSync(blocked, { recursive: true });
-      // Git preserves files, not empty directories, through the stash.
-      writeFileSync(join(blocked, "blocker"), "blocked\n");
-    }
-    const authority = "docs/work-orders/WO-998-fixture.md";
-    const decisions = "docs/evidence/WO-998/decisions.md";
-    const headingBefore = text(f.subject, authority);
-    const readmeBefore = text(f.subject, "README.md");
-    const first = f.invoke();
-    assert.equal(first.status, 1, first.stdout + first.stderr);
-    assert.match(first.stdout, /Pending: release preparation: /);
-    assert.match(
-      first.stdout,
-      blocker === "PR directory" ? /EEXIST/ : /EISDIR/,
-    );
-    assert.match(
-      first.stdout,
-      /Pending: integration decision stub: awaits release preparation/,
-    );
-    assert.equal(text(f.subject, authority), headingBefore);
-    assert.equal(text(f.subject, "README.md"), readmeBefore);
-    assert.equal(existsSync(join(f.subject, decisions)), false);
-    assert.equal(
-      runGit(
-        f.subject,
-        ["diff", "--name-only", f.upstream, "--", "docs/product"],
-        fixtureGitOptions,
-      ),
-      "",
-    );
-    rmSync(blocked, { recursive: true });
-    const continued = f.invoke("--continue");
-    assert.equal(continued.status, 0, continued.stdout + continued.stderr);
-    assert.match(text(f.subject, authority).split("\n")[0], /\(v9000\.0\.2\)$/);
-    const rows = [
-      ...text(f.subject, decisions).matchAll(/```json\n([\s\S]*?)\n```/g),
-    ].map((match) => JSON.parse(match[1]));
-    assert.equal(rows.length, 1, JSON.stringify(rows));
-    assert.ok(
-      rows[0].evidence.some((item) =>
-        item.startsWith(
-          "release preparation: Retimed WO-998: v9000.0.1 → v9000.0.2 above the observed release baseline v9000.0.1.",
+  test(
+    blocker === "PR directory"
+      ? "WO-086 an unowned blocked PR directory is preserved while integration retimes"
+      : "WO-086 a blocked PR file preserves collision inputs for continuation",
+    (t) => {
+      const f = fixture(t, { authored: false, generators: "focused" });
+      const directory = join(f.subject, "docs/final-reviews/WO-998");
+      const blocked =
+        blocker === "PR directory" ? directory : join(directory, "PR.md");
+      if (blocker === "PR directory")
+        put(f.subject, "docs/final-reviews/WO-998", "blocked\n");
+      else {
+        mkdirSync(blocked, { recursive: true });
+        // Git preserves files, not empty directories, through the stash.
+        writeFileSync(join(blocked, "blocker"), "blocked\n");
+      }
+      const authority = "docs/work-orders/WO-998-fixture.md";
+      const decisions = "docs/evidence/WO-998/decisions.md";
+      const headingBefore = text(f.subject, authority);
+      const readmeBefore = text(f.subject, "README.md");
+      const first = f.invoke();
+      if (blocker === "PR directory") {
+        assert.equal(first.status, 0, first.stdout + first.stderr);
+        assert.equal(text(f.subject, "docs/final-reviews/WO-998"), "blocked\n");
+        assert.equal(existsSync(join(directory, "PR.md")), false);
+        assert.match(
+          text(f.subject, authority).split("\n")[0],
+          /\(v9000\.0\.2\)$/,
+        );
+        assert.equal(
+          text(f.subject, "README.md"),
+          readmeBefore.replace("v9000.0.1", "v9000.0.2"),
+        );
+        assert.equal(
+          JSON.parse(text(f.subject, "docs/control/local/integration.json"))
+            .complete,
+          true,
+        );
+        return;
+      }
+      assert.equal(first.status, 1, first.stdout + first.stderr);
+      assert.match(first.stdout, /Pending: release preparation: /);
+      assert.match(first.stdout, /EISDIR/);
+      assert.match(
+        first.stdout,
+        /Pending: integration decision stub: awaits release preparation/,
+      );
+      assert.equal(text(f.subject, authority), headingBefore);
+      assert.equal(text(f.subject, "README.md"), readmeBefore);
+      assert.equal(existsSync(join(f.subject, decisions)), false);
+      assert.equal(
+        runGit(
+          f.subject,
+          ["diff", "--name-only", f.upstream, "--", "docs/product"],
+          fixtureGitOptions,
         ),
-      ),
-      JSON.stringify(rows[0].evidence),
-    );
-    assert.equal(
-      runGit(
-        f.subject,
-        ["diff", "--name-only", f.upstream, "--", "docs/product"],
-        fixtureGitOptions,
-      ),
-      "",
-    );
-    assert.equal(
-      text(f.subject, "README.md"),
-      readmeBefore.replace("v9000.0.1", "v9000.0.2"),
-    );
-    assert.equal(
-      JSON.parse(text(f.subject, "docs/control/local/integration.json"))
-        .complete,
-      true,
-    );
-  });
+        "",
+      );
+      rmSync(blocked, { recursive: true });
+      const continued = f.invoke("--continue");
+      assert.equal(continued.status, 0, continued.stdout + continued.stderr);
+      assert.match(
+        text(f.subject, authority).split("\n")[0],
+        /\(v9000\.0\.2\)$/,
+      );
+      const rows = [
+        ...text(f.subject, decisions).matchAll(/```json\n([\s\S]*?)\n```/g),
+      ].map((match) => JSON.parse(match[1]));
+      assert.equal(rows.length, 1, JSON.stringify(rows));
+      assert.ok(
+        rows[0].evidence.some((item) =>
+          item.startsWith(
+            "release preparation: Retimed WO-998: v9000.0.1 → v9000.0.2 above the observed release baseline v9000.0.1.",
+          ),
+        ),
+        JSON.stringify(rows[0].evidence),
+      );
+      assert.equal(
+        runGit(
+          f.subject,
+          ["diff", "--name-only", f.upstream, "--", "docs/product"],
+          fixtureGitOptions,
+        ),
+        "",
+      );
+      assert.equal(
+        text(f.subject, "README.md"),
+        readmeBefore.replace("v9000.0.1", "v9000.0.2"),
+      );
+      assert.equal(
+        JSON.parse(text(f.subject, "docs/control/local/integration.json"))
+          .complete,
+        true,
+      );
+    },
+  );
 
 test("integration refuses a blocked evidence ancestor before retiming and recovers on continuation", (t) => {
   const f = fixture(t, { authored: false, generators: "focused" });
@@ -1958,8 +2023,12 @@ for (const [blocker, newerTag] of [
       // Filing the saved stub can succeed before the next prepare fails.
       // The marker then owns the first outcome on every further continuation.
       const pr = join(f.subject, "docs/final-reviews/WO-998/PR.md");
-      rmSync(pr);
-      mkdirSync(pr);
+      assert.equal(
+        existsSync(pr),
+        false,
+        "preparation did not create a PR draft",
+      );
+      mkdirSync(pr, { recursive: true });
       writeFileSync(join(pr, "blocker"), "blocked\n");
       const failedPrepare = f.continueWithStub();
       assert.equal(
@@ -2216,7 +2285,11 @@ test("printed checks use the runner's declared machinery sources, including pack
   );
   put(root, "packages/compiler/src/verification.ts", "// baseline\n");
   runGit(root, ["add", "-A"], fixtureGitOptions);
-  runGit(root, ["commit", "-qm", "baseline"], fixtureGitOptions);
+  runGit(
+    root,
+    ["-c", "maintenance.auto=false", "commit", "-qm", "baseline"],
+    fixtureGitOptions,
+  );
   assert.equal(await integrationTestCommand(root, "HEAD"), "npm test");
   put(
     root,
@@ -2283,7 +2356,7 @@ for (const stop of [
     git(["config", "user.email", "fixture@example.invalid"]);
     put(root, "file.txt", "base\n");
     git(["add", "."]);
-    git(["commit", "-qm", "test: base"]);
+    git(["-c", "maintenance.auto=false", "commit", "-qm", "test: base"]);
     for (const value of ["first", "second"]) {
       put(root, "file.txt", `${value}\n`);
       git(["stash", "push", "-m", value]);

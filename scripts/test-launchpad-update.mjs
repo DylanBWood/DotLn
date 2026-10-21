@@ -104,7 +104,13 @@ test("WO-078 criterion 1: an export to a declared sibling writes its receipt ins
     ) + "\n",
   );
   git(source, ["add", siblings]);
-  git(source, ["commit", "-qm", "fixture sibling declaration"]);
+  git(source, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "fixture sibling declaration",
+  ]);
   const head = git(source, ["rev-parse", "HEAD"]).stdout.trim();
   const generator = (args) =>
     run(process.execPath, [join(source, "scripts/siblings.mjs"), ...args], {
@@ -209,7 +215,13 @@ test("WO-078 criterion 1: an export to a declared sibling writes its receipt ins
   // the page regenerates with the new commit and the retained manifest's hash.
   write("scripts/sibling-fixture.txt", "a kit change after the export\n");
   git(source, ["add", "scripts/sibling-fixture.txt"]);
-  git(source, ["commit", "-qm", "fixture kit change for the sibling update"]);
+  git(source, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "fixture kit change for the sibling update",
+  ]);
   const next = git(source, ["rev-parse", "HEAD"]).stdout.trim();
   const worktree = join(scratch, "Starter-Fixture-wo001");
   cpSync(destination, worktree, { recursive: true, verbatimSymlinks: true });
@@ -293,7 +305,13 @@ test("export update preserves ownership, validates actions and keeps the exporte
   ])
     write(path, "revision A\n");
   git(source, ["add", "scripts"]);
-  git(source, ["commit", "-qm", "fixture kit revision A"]);
+  git(source, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "fixture kit revision A",
+  ]);
   const revisionA = git(source, ["rev-parse", "HEAD"]).stdout.trim();
   const base = join(scratch, "update-base");
   ok(runExport(base), "export revision A");
@@ -363,7 +381,13 @@ test("export update preserves ownership, validates actions and keeps the exporte
   rmSync(join(source, droppedModified));
   write(kitActions, JSON.stringify({ schemaVersion: 1, actions }) + "\n");
   git(source, ["add", "scripts"]);
-  git(source, ["commit", "-qm", "fixture kit revision B"]);
+  git(source, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "fixture kit revision B",
+  ]);
   const revisionB = git(source, ["rev-parse", "HEAD"]).stdout.trim();
   assert.notEqual(revisionA, revisionB);
 
@@ -524,11 +548,24 @@ test("export update preserves ownership, validates actions and keeps the exporte
       cpSync(base, starter, { recursive: true, verbatimSymlinks: true });
       configureRepository(starter);
       git(starter, ["add", "."]);
-      git(starter, ["commit", "-qm", "starter revision A"]);
+      git(starter, [
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-qm",
+        "starter revision A",
+      ]);
       const remote = join(scratch, "preview-starter.git");
-      git(scratch, ["clone", "--bare", starter, remote]);
+      git(scratch, [
+        "-c",
+        "maintenance.auto=false",
+        "clone",
+        "--bare",
+        starter,
+        remote,
+      ]);
       const fork = join(scratch, "preview-fork");
-      git(scratch, ["clone", remote, fork]);
+      git(scratch, ["-c", "maintenance.auto=false", "clone", remote, fork]);
       configureRepository(fork);
       const invoke = (ref, cwd = fork) =>
         run(
@@ -569,7 +606,13 @@ test("export update preserves ownership, validates actions and keeps the exporte
           manifestOf(starter).files.find((entry) => entry.path === path).sha256,
         );
       git(starter, ["add", "."]);
-      git(starter, ["commit", "-qm", "starter revision B"]);
+      git(starter, [
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-qm",
+        "starter revision B",
+      ]);
       git(starter, ["push", remote, "main"]);
       git(fork, ["fetch", "origin"]);
       writeFileSync(join(fork, modified), "local kit edit\n");
@@ -699,6 +742,8 @@ test("export update preserves ownership, validates actions and keeps the exporte
       );
       git(starter, ["add", kitActions]);
       git(starter, [
+        "-c",
+        "maintenance.auto=false",
         "commit",
         "-qm",
         "starter actions needing manual resolution",
@@ -750,7 +795,13 @@ test("export update preserves ownership, validates actions and keeps the exporte
       const noRevision = invoke("absent-revision");
       assert.equal(noRevision.status, 1);
       git(starter, ["rm", "KIT-MANIFEST.json"]);
-      git(starter, ["commit", "-qm", "starter with no manifest"]);
+      git(starter, [
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-qm",
+        "starter with no manifest",
+      ]);
       git(starter, ["push", remote, "main"]);
       git(fork, ["fetch", "origin"]);
       const noManifestBefore = treeSnapshot(fork);
@@ -766,7 +817,13 @@ test("export update preserves ownership, validates actions and keeps the exporte
         }),
       );
       git(starter, ["add", "KIT-MANIFEST.json"]);
-      git(starter, ["commit", "-qm", "malformed starter manifest"]);
+      git(starter, [
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-qm",
+        "malformed starter manifest",
+      ]);
       git(starter, ["push", remote, "main"]);
       git(fork, ["fetch", "origin"]);
       const malformedBefore = treeSnapshot(fork);
@@ -1101,7 +1158,13 @@ test("export update preserves ownership, validates actions and keeps the exporte
         }),
       );
       git(source, ["add", kitActions]);
-      git(source, ["commit", "-qm", "fixture unknown action"]);
+      git(source, [
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-qm",
+        "fixture unknown action",
+      ]);
       const rejected = runUpdate(unknown, ["--apply"]);
       assert.equal(rejected.status, 1);
       assert.match(
@@ -1111,7 +1174,13 @@ test("export update preserves ownership, validates actions and keeps the exporte
       assert.deepEqual(snapshot(unknown), unknownBefore);
       write(kitActions, JSON.stringify({ schemaVersion: 1, actions }) + "\n");
       git(source, ["add", kitActions]);
-      git(source, ["commit", "-qm", "fixture restore declared actions"]);
+      git(source, [
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-qm",
+        "fixture restore declared actions",
+      ]);
       const intoKit = instance("into-kit", true);
       const intoKitBefore = snapshot(intoKit);
       write(
@@ -1131,7 +1200,13 @@ test("export update preserves ownership, validates actions and keeps the exporte
         }) + "\n",
       );
       git(source, ["add", kitActions]);
-      git(source, ["commit", "-qm", "fixture rename into a kit tree"]);
+      git(source, [
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-qm",
+        "fixture rename into a kit tree",
+      ]);
       const kitOwned = runUpdate(intoKit, ["--apply"]);
       assert.equal(kitOwned.status, 1, kitOwned.stdout);
       assert.match(
@@ -1141,7 +1216,13 @@ test("export update preserves ownership, validates actions and keeps the exporte
       assert.deepEqual(snapshot(intoKit), intoKitBefore);
       write(kitActions, JSON.stringify({ schemaVersion: 1, actions }) + "\n");
       git(source, ["add", kitActions]);
-      git(source, ["commit", "-qm", "fixture restore declared actions again"]);
+      git(source, [
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-qm",
+        "fixture restore declared actions again",
+      ]);
     },
   );
 
@@ -1180,7 +1261,13 @@ test("export update preserves ownership, validates actions and keeps the exporte
       write(changed, "revision C\n");
       write(dropped, "back in C\n");
       git(source, ["add", "scripts"]);
-      git(source, ["commit", "-qm", "fixture kit revision C"]);
+      git(source, [
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-qm",
+        "fixture kit revision C",
+      ]);
       const revisionC = git(source, ["rev-parse", "HEAD"]).stdout.trim();
       try {
         const retried = ok(
@@ -1215,7 +1302,13 @@ test("export update preserves ownership, validates actions and keeps the exporte
         write(changed, "revision B\n");
         rmSync(join(source, dropped));
         git(source, ["add", "scripts"]);
-        git(source, ["commit", "-qm", "fixture kit revision B restored"]);
+        git(source, [
+          "-c",
+          "maintenance.auto=false",
+          "commit",
+          "-qm",
+          "fixture kit revision B restored",
+        ]);
       }
     },
   );
@@ -1245,7 +1338,13 @@ test("export update preserves ownership, validates actions and keeps the exporte
         }) + "\n",
       );
       git(source, ["add", kitActions]);
-      git(source, ["commit", "-qm", "fixture second rename"]);
+      git(source, [
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-qm",
+        "fixture second rename",
+      ]);
       try {
         mkdirSync(join(target, "locked"));
         chmodSync(join(target, "locked"), 0o500);
@@ -1280,6 +1379,8 @@ test("export update preserves ownership, validates actions and keeps the exporte
         write(kitActions, JSON.stringify({ schemaVersion: 1, actions }) + "\n");
         git(source, ["add", kitActions]);
         git(source, [
+          "-c",
+          "maintenance.auto=false",
           "commit",
           "-qm",
           "fixture restore declared actions after the second rename",
@@ -1370,7 +1471,13 @@ test("export update preserves ownership, validates actions and keeps the exporte
       const target = instance("resident", true);
       configureRepository(target);
       git(target, ["add", "."]);
-      git(target, ["commit", "-qm", "fixture resident instance"]);
+      git(target, [
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-qm",
+        "fixture resident instance",
+      ]);
       const graph = readFileSync(
         join(repository, "packages/skeleton/fixtures/wo067-presence.json"),
         "utf8",
@@ -1512,7 +1619,14 @@ test("starter refresh publishes one verified commit and preserves every refusal 
   const root = join(scratch, "starter-refresh-fixture");
   mkdirSync(root);
   const core = join(root, "core");
-  git(scratch, ["clone", "--quiet", source, core]);
+  git(scratch, [
+    "-c",
+    "maintenance.auto=false",
+    "clone",
+    "--quiet",
+    source,
+    core,
+  ]);
   configureRepository(core);
   linkInstall(core);
   for (const name of RUNTIME_PACKAGES)
@@ -1540,10 +1654,31 @@ test("starter refresh publishes one verified commit and preserves every refusal 
     ) + "\n";
   writeFileSync(join(seed, "dotln.config.json"), initialConfiguration);
   git(seed, ["add", "."]);
-  git(seed, ["commit", "-qm", "initial starter"]);
+  git(seed, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "initial starter",
+  ]);
   const initial = git(seed, ["rev-parse", "HEAD"]).stdout.trim();
-  git(root, ["clone", "--quiet", "--bare", seed, remote]);
-  git(root, ["clone", "--quiet", remote, checkout]);
+  git(root, [
+    "-c",
+    "maintenance.auto=false",
+    "clone",
+    "--quiet",
+    "--bare",
+    seed,
+    remote,
+  ]);
+  git(root, [
+    "-c",
+    "maintenance.auto=false",
+    "clone",
+    "--quiet",
+    remote,
+    checkout,
+  ]);
   configureRepository(checkout);
   const coreUrl = "https://github.com/refresh-fixture/core.git",
     starterUrl = "https://github.com/refresh-fixture/starter-fixture.git";
@@ -1621,7 +1756,13 @@ process.exit(64);
     }),
   );
   git(core, ["add", "."]);
-  git(core, ["commit", "-qm", "declare starter refresh"]);
+  git(core, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "declare starter refresh",
+  ]);
   const map = join(core, "docs/control/local/repository-clones.json");
   mkdirSync(dirname(map), { recursive: true });
   const mapCheckout = (value = checkout) =>
@@ -1830,7 +1971,14 @@ process.exit(64);
   assert.equal(cleanWorktrees.match(/^worktree /gm).length, 1);
   const verifyFresh = (name) => {
     const clone = join(root, name);
-    git(root, ["clone", "--quiet", remote, clone]);
+    git(root, [
+      "-c",
+      "maintenance.auto=false",
+      "clone",
+      "--quiet",
+      remote,
+      clone,
+    ]);
     ok(
       run(process.execPath, ["scripts/launchpad.mjs", "verify"], {
         cwd: clone,
@@ -1864,7 +2012,14 @@ process.exit(64);
   // A fork names the release it takes: the preview resolves the starter's tag.
   {
     const fork = join(root, "preview-from-tag");
-    git(root, ["clone", "--quiet", remote, fork]);
+    git(root, [
+      "-c",
+      "maintenance.auto=false",
+      "clone",
+      "--quiet",
+      remote,
+      fork,
+    ]);
     const preview = ok(
       run(
         process.execPath,
@@ -1888,8 +2043,23 @@ process.exit(64);
   // Initial-commit refusals share a second local remote and perform no kit preparation.
   const other = join(root, "initial-checkout"),
     otherRemote = join(root, "initial.git");
-  git(root, ["clone", "--quiet", "--bare", seed, otherRemote]);
-  git(root, ["clone", "--quiet", otherRemote, other]);
+  git(root, [
+    "-c",
+    "maintenance.auto=false",
+    "clone",
+    "--quiet",
+    "--bare",
+    seed,
+    otherRemote,
+  ]);
+  git(root, [
+    "-c",
+    "maintenance.auto=false",
+    "clone",
+    "--quiet",
+    otherRemote,
+    other,
+  ]);
   configureRepository(other);
   git(other, ["remote", "set-url", "origin", starterUrl]);
   const setRemote = (file) =>
@@ -1909,7 +2079,14 @@ process.exit(64);
     /changes/,
   );
   rmSync(join(other, "dirty"));
-  git(other, ["commit", "--allow-empty", "-qm", "ahead"]);
+  git(other, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "--allow-empty",
+    "-qm",
+    "ahead",
+  ]);
   assert.match(
     measured("k initial ahead", () => refresh(tag, head)[0]).reason,
     /ahead.*diverged/,
@@ -1927,7 +2104,13 @@ process.exit(64);
   );
   git(other, ["remote", "set-url", "origin", starterUrl]);
   git(other, ["rm", "dotln.config.json"]);
-  git(other, ["commit", "-qm", "fixture without declared configuration"]);
+  git(other, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "fixture without declared configuration",
+  ]);
   git(other, ["push", otherRemote, "main"]);
   const withoutConfiguration = git(otherRemote, ["rev-parse", "main"]).stdout;
   writeFileSync(join(other, ".git/info/exclude"), "dotln.config.json\n");
@@ -1949,12 +2132,24 @@ process.exit(64);
     );
   }
   git(other, ["add", "-f", "dotln.config.json"]);
-  git(other, ["commit", "-qm", "restore declared configuration"]);
+  git(other, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "restore declared configuration",
+  ]);
   git(other, ["push", otherRemote, "main"]);
   mkdirSync(join(other, "KIT-MANIFEST.json"));
   writeFileSync(join(other, "KIT-MANIFEST.json", "child"), "collision");
   git(other, ["add", "."]);
-  git(other, ["commit", "-qm", "initial type collision"]);
+  git(other, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "initial type collision",
+  ]);
   git(other, ["push", otherRemote, "main"]);
   const collided = git(otherRemote, ["rev-parse", "main"]).stdout;
   assert.match(
@@ -1985,7 +2180,7 @@ process.exit(64);
   chmodSync(join(core, "scripts/lib/github-body.mjs"), 0o755);
   git(core, ["add", "scripts/lib/github-body.mjs"]);
   git(core, ["add", "scripts/kit/README.client.md"]);
-  git(core, ["commit", "-qm", "advance kit"]);
+  git(core, ["-c", "maintenance.auto=false", "commit", "-qm", "advance kit"]);
   tag = "v10.1.0";
   head = git(core, ["rev-parse", "HEAD"]).stdout.trim();
   git(core, ["tag", tag]);
@@ -2076,7 +2271,13 @@ process.exit(64);
       );
     }
     git(checkout, ["add", "-A"]);
-    git(checkout, ["commit", "-qm", `test: seed ${kind}`]);
+    git(checkout, [
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      `test: seed ${kind}`,
+    ]);
     git(checkout, ["push", remote, "main"]);
     const protectedRefs = refs(),
       protectedHead = remoteHead();
@@ -2217,7 +2418,14 @@ const result=spawnSync(real,args,{stdio:'inherit'});process.exit(result.status??
   // Remapping a clone cannot adopt another checkout's cleanup objects. Both
   // preview and retry explain how to restore the original cleanup binding.
   const replacement = join(root, "replacement-checkout");
-  git(root, ["clone", "--quiet", remote, replacement]);
+  git(root, [
+    "-c",
+    "maintenance.auto=false",
+    "clone",
+    "--quiet",
+    remote,
+    replacement,
+  ]);
   configureRepository(replacement);
   git(replacement, ["remote", "set-url", "origin", starterUrl]);
   const replacementHead = git(replacement, ["rev-parse", "HEAD"]).stdout,
@@ -2420,7 +2628,15 @@ const result=spawnSync(real,args,{stdio:'inherit'});process.exit(result.status??
   }
   git(remote, ["update-ref", `refs/tags/${tag}`, taggedObject]);
   git(checkout, ["switch", "-q", "--detach"]);
-  git(checkout, ["commit", "-q", "--allow-empty", "-m", "stray side commit"]);
+  git(checkout, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-q",
+    "--allow-empty",
+    "-m",
+    "stray side commit",
+  ]);
   const strayCommit = git(checkout, ["rev-parse", "HEAD"]).stdout.trim();
   git(checkout, ["push", "-q", remote, `${strayCommit}:refs/heads/stray`]);
   git(checkout, ["switch", "-q", "main"]);
@@ -2463,12 +2679,26 @@ const result=spawnSync(real,args,{stdio:'inherit'});process.exit(result.status??
   writeFileSync(join(checkout, "untracked"), "untracked");
   refuseUnchanged("d untracked", /changes/);
   rmSync(join(checkout, "untracked"));
-  git(checkout, ["commit", "--allow-empty", "-qm", "local ahead"]);
+  git(checkout, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "--allow-empty",
+    "-qm",
+    "local ahead",
+  ]);
   refuseUnchanged("e ahead", /ahead.*diverged/);
   const peer = join(root, "peer");
-  git(root, ["clone", "--quiet", remote, peer]);
+  git(root, ["-c", "maintenance.auto=false", "clone", "--quiet", remote, peer]);
   configureRepository(peer);
-  git(peer, ["commit", "--allow-empty", "-qm", "remote advances"]);
+  git(peer, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "--allow-empty",
+    "-qm",
+    "remote advances",
+  ]);
   git(peer, ["push", "origin", "main"]);
   refuseUnchanged("e diverged", /ahead.*diverged/);
   git(checkout, [
@@ -2502,7 +2732,14 @@ const result=spawnSync(real,args,{stdio:'inherit'});process.exit(result.status??
   setRemote(remote);
   const futureHead = head,
     futureTag = tag;
-  git(core, ["commit", "--allow-empty", "-qm", "main moved beyond tag"]);
+  git(core, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "--allow-empty",
+    "-qm",
+    "main moved beyond tag",
+  ]);
   assert.equal(
     measured("i main past tag", () => refresh(tag, head)[0]).outcome,
     "skipped",
@@ -2540,7 +2777,13 @@ const result=spawnSync(real,args,{stdio:'inherit'});process.exit(result.status??
   // but its seed still matches an older export reachable in starter history.
   writeFileSync(join(checkout, "README.md"), seedReadme);
   git(checkout, ["add", "README.md"]);
-  git(checkout, ["commit", "-qm", "test: historical kit-only refresh"]);
+  git(checkout, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "test: historical kit-only refresh",
+  ]);
   git(checkout, ["push", remote, "main"]);
   const seedOnlyRefs = refs();
   const seedPreview = refresh(tag, head, true)[0];
@@ -2577,7 +2820,13 @@ const result=spawnSync(real,args,{stdio:'inherit'});process.exit(result.status??
       : null;
     writeFileSync(join(checkout, "README.md"), seedReadme);
     git(checkout, ["add", "-A"]);
-    git(checkout, ["commit", "-qm", "test: instance-owned release identity"]);
+    git(checkout, [
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "test: instance-owned release identity",
+    ]);
     git(checkout, ["push", remote, "main"]);
     const renamed = refresh(tag, head)[0];
     assert.equal(renamed.outcome, "refreshed", JSON.stringify(renamed));
@@ -2615,7 +2864,13 @@ const result=spawnSync(real,args,{stdio:'inherit'});process.exit(result.status??
     if (kind === "symlink")
       symlinkSync("scripts/kit/README.client.md", join(checkout, "README.md"));
     git(checkout, ["add", "-A"]);
-    git(checkout, ["commit", "-qm", `test: preserve unchanged ${kind} seed`]);
+    git(checkout, [
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      `test: preserve unchanged ${kind} seed`,
+    ]);
     const planned = ok(
       runCore(
         `import {planStarterSeeds} from './scripts/lib/starter-seeds.mjs'; console.log(JSON.stringify(planStarterSeeds({main:process.cwd(),head:${JSON.stringify(head)},checkout:${JSON.stringify(checkout)},remote:'HEAD'})));`,
@@ -2633,7 +2888,14 @@ const result=spawnSync(real,args,{stdio:'inherit'});process.exit(result.status??
   // modes. Broken markers are repaired, keeping the operator's text.
   const keptTag = tag,
     keptCoreHead = head;
-  git(core, ["commit", "--allow-empty", "-qm", "kit-only release"]);
+  git(core, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "--allow-empty",
+    "-qm",
+    "kit-only release",
+  ]);
   tag = "v10.1.1";
   head = git(core, ["rev-parse", "HEAD"]).stdout.trim();
   git(core, ["tag", tag]);
@@ -2673,7 +2935,13 @@ const result=spawnSync(real,args,{stdio:'inherit'});process.exit(result.status??
     if (kind === "markers")
       writeFileSync(target, bytes + "\n<!-- dotln-harness:start -->\n");
     git(checkout, ["add", "-A"]);
-    git(checkout, ["commit", "-qm", `test: unchanged ${path} ${kind}`]);
+    git(checkout, [
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      `test: unchanged ${path} ${kind}`,
+    ]);
     git(checkout, ["push", remote, "main"]);
     const keptRefs = refs(),
       keptHead = remoteHead(),
@@ -2733,7 +3001,13 @@ const result=spawnSync(real,args,{stdio:'inherit'});process.exit(result.status??
     contract.slice(contract.indexOf("<!-- dotln-harness:start -->")),
   );
   git(checkout, ["add", "CLAUDE.md"]);
-  git(checkout, ["commit", "-qm", "fixture missing floor"]);
+  git(checkout, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "fixture missing floor",
+  ]);
   git(checkout, ["push", remote, "main"]);
   writeFileSync(
     join(core, "scripts/kit/CLAUDE.template.md"),
@@ -2741,7 +3015,7 @@ const result=spawnSync(real,args,{stdio:'inherit'});process.exit(result.status??
       "\nChanged contract template.\n",
   );
   git(core, ["add", "scripts/kit/CLAUDE.template.md"]);
-  git(core, ["commit", "-qm", "next release"]);
+  git(core, ["-c", "maintenance.auto=false", "commit", "-qm", "next release"]);
   head = git(core, ["rev-parse", "HEAD"]).stdout.trim();
   tag = "v10.2.0";
   git(core, ["tag", tag]);
@@ -2769,7 +3043,13 @@ const result=spawnSync(real,args,{stdio:'inherit'});process.exit(result.status??
     ignoreRules.replace(/^node_modules\/\n/mu, ""),
   );
   git(checkout, ["add", ".gitignore"]);
-  git(checkout, ["commit", "-qm", "test: starter stops ignoring dependencies"]);
+  git(checkout, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "test: starter stops ignoring dependencies",
+  ]);
   git(checkout, ["push", remote, "main"]);
   const writtenRefs = refs(),
     writtenHead = git(checkout, ["rev-parse", "HEAD"]).stdout,
@@ -2832,7 +3112,13 @@ const result=spawnSync(real,args,{stdio:'inherit'});process.exit(result.status??
       "// operator hook\n",
     );
     git(checkout, ["add", "-A"]);
-    git(checkout, ["commit", "-qm", "test: starter adds an unowned hook"]);
+    git(checkout, [
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "test: starter adds an unowned hook",
+    ]);
     git(checkout, ["push", remote, "main"]);
   });
   assert.match(
@@ -2849,7 +3135,13 @@ const result=spawnSync(real,args,{stdio:'inherit'});process.exit(result.status??
   rewindRemoteMain();
   chmodSync(join(core, "scripts/lineage.mjs"), 0o755);
   git(core, ["add", "scripts/lineage.mjs"]);
-  git(core, ["commit", "-qm", "test: mode-only kit change"]);
+  git(core, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "test: mode-only kit change",
+  ]);
   head = git(core, ["rev-parse", "HEAD"]).stdout.trim();
   tag = "v10.2.1";
   git(core, ["tag", tag]);

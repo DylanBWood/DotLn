@@ -81,16 +81,23 @@ async function remint(row, root, run) {
     return {
       ...written,
       output:
-        row.kind === "feedback"
+        (row.kind === "feedback"
           ? `Feedback carry refused. Changed judged sources require the authorized live feedback episode and a new edition.\n${written.output}`
-          : written.output,
+          : written.output) +
+        (existsSync(join(root, selection.directory))
+          ? `\nUnselected orphan evidence revision retained: ${selection.directory}`
+          : ""),
     };
   const checked = run(
     [process.execPath, row.file, "--check", ...flags],
     root,
     120_000,
   );
-  if (checked.exitCode !== 0) return checked;
+  if (checked.exitCode !== 0)
+    return {
+      ...checked,
+      output: `${checked.output}\nUnselected orphan evidence revision retained: ${selection.directory}`,
+    };
   const manifestPath = docPath(root, "evidence", "current.json");
   const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
   manifest.editions[row.kind] = { workOrder, revision: selection.revision };
@@ -141,6 +148,17 @@ export async function syncArtifacts(
         before: "current",
         after: "current",
         action: "none",
+      });
+      continue;
+    }
+    if (!before.stale) {
+      rows.push({
+        artifact: artifact.name,
+        before: "unknown",
+        after: "unknown",
+        action: "refused",
+        reason:
+          `check did not report stale; repair the check before regenerating\n${artifact.route ?? ""}\n${before.output ?? ""}`.trim(),
       });
       continue;
     }

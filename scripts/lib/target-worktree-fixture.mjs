@@ -105,7 +105,7 @@ const fixture = (base, { baseIgnore } = {}) => {
     const root = join(base, name);
     mkdirSync(origin);
     git(origin, "init", "--bare", "-q", "-b", "main");
-    git(base, "clone", "-q", origin, root);
+    git(base, "-c", "maintenance.auto=false", "clone", "-q", origin, root);
     git(root, "config", "user.email", "fixture@example.invalid");
     git(root, "config", "user.name", "Fixture");
     return root;
@@ -114,11 +114,18 @@ const fixture = (base, { baseIgnore } = {}) => {
   write(clone, "source.txt", "declared base\n");
   if (baseIgnore) write(clone, ".gitignore", baseIgnore);
   git(clone, "add", "-A");
-  git(clone, "commit", "-qm", "Target base");
+  git(clone, "-c", "maintenance.auto=false", "commit", "-qm", "Target base");
   const baseCommit = git(clone, "rev-parse", "HEAD");
   write(clone, "later.txt", "not in declared base\n");
   git(clone, "add", "-A");
-  git(clone, "commit", "-qm", "test: later base change");
+  git(
+    clone,
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "test: later base change",
+  );
   git(clone, "push", "-qu", "origin", "main");
   const main = repository("launchpad");
   const parent = join(base, "Targets");
@@ -214,7 +221,14 @@ for (const name of ${JSON.stringify(runtimePackages)}) {
       });
   }
   git(main, "add", "-A");
-  git(main, "commit", "-qm", "Launchpad fixture");
+  git(
+    main,
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "Launchpad fixture",
+  );
   git(main, "push", "-qu", "origin", "main");
   const call = (root, scriptRoot, script, args, override = {}) =>
     spawnSync(
@@ -330,7 +344,14 @@ const publicationSetup = (f) => {
     JSON.stringify([publicationGrant]),
   );
   git(f.main, "add", "-A");
-  git(f.main, "commit", "-qm", "test: declare publication policy");
+  git(
+    f.main,
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "test: declare publication policy",
+  );
   git(f.main, "push", "-q", "origin", "main");
   const url = "https://github.com/dotln-fixture/target.git";
   const forge = installTargetPublicationFixture(f.base, f.env, [

@@ -418,6 +418,17 @@ controls, and available transports. Missing capabilities remain explicit; a
 skill must never claim that prompt instructions substitute for an unavailable
 permission, schema validator, background lifecycle, or transport.
 
+The installed Contributor profiles declare `agent-skills` and their observed
+discovery root. The emitter validates the required name and description
+against the [Agent Skills specification](https://agentskills.io/specification):
+name length and syntax, matching directory name, nonempty one-line description
+and its length. It emits YAML frontmatter followed by Markdown. This is
+conformance of DotLn’s generated two-field subset, not a validator for arbitrary
+external YAML. Target profiles record their own skills as pinned convention
+inputs under the [repository profile convention](../repositories/README.md);
+these inputs and `allowed-tools` add no authority. The bounded target-worker
+profiles still omit DotLn lifecycle skills.
+
 Base skills may cover:
 
 - orient to one current WorkOrder and its permitted operations;
@@ -2448,6 +2459,15 @@ entries leave the sequence at each planning pass (operator direction,
 page (`docs/work-orders/HISTORY.md`, WO-190) is their record. A withdrawn
 entry (WO-158) leaves the same way and is listed on that page under Withdrawn
 with its disposition.
+
+Authority revisions also retain canonical transcripts by reference. When a new
+revision has the same authority transcript as the selected predecessor, it
+records the transcript’s repository path, Git blob identity and byte count.
+Checks resolve the contained regular file or that exact Git blob and verify
+its identity; a changed transcript gets a new full record. Historical full
+editions remain immutable. This reduces repeated working-tree copies; Git
+already deduplicates identical blobs
+([WO-217 D069](../evidence/WO-217/decisions.md#wo-217-d069)).
 
 **Evidence growth, measured 2026-09-22.** The REVIEW-002 Entropy Reducer
 review, re-measured by the planning pass that consumed it, found the tracked

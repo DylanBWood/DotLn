@@ -1,4 +1,5 @@
 import { write as writeFixture } from "./lib/helpers.mjs";
+import { copyFixtureFiles } from "./lib/fixture-inputs.mjs";
 import { runGit } from "./lib/git.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
@@ -112,10 +113,14 @@ await test("test-concurrent-control", async (t) => {
 
       commit = (root, message) => {
         runGit(root, ["add", "."], { ...fixtureGitOptions, cwd: root });
-        runGit(root, ["commit", "-qm", message], {
-          ...fixtureGitOptions,
-          cwd: root,
-        });
+        runGit(
+          root,
+          ["-c", "maintenance.auto=false", "commit", "-qm", message],
+          {
+            ...fixtureGitOptions,
+            cwd: root,
+          },
+        );
       };
 
       resume = (root, args) => command(root, "resume", args);
@@ -252,9 +257,11 @@ await test("test-concurrent-control", async (t) => {
         cwd: main,
       });
       assert.ok(baselineTag);
-      cpSync(
-        join(scriptRoot, "work-orders.mjs"),
-        join(main, "scripts/work-orders.mjs"),
+      copyFixtureFiles(
+        join(scriptRoot, ".."),
+        main,
+        "scripts/test-control-copy-sites.fixture-inputs.json",
+        "concurrent work-order projection",
       );
       for (const [id, version] of [
         ["WO-901", "v0.2.1"],

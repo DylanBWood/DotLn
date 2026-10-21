@@ -29,11 +29,20 @@ export function gateCriticalPath(check) {
       (a, b) => Date.parse(b.finishedAt) - Date.parse(a.finishedAt),
     )[0];
     const prefix = prior ? pathTo(prior) : { tasks: [], workMs: 0, waitMs: 0 };
+    const span = end - start;
+    const work = task.durationMs === undefined ? span : task.durationMs;
+    if (!Number.isFinite(work) || work < 0 || work > span + 1)
+      throw new Error("Invalid task work duration");
+    const measuredWork = Math.min(work, span);
     const result = {
       tasks: [...prefix.tasks, task.name],
-      workMs: prefix.workMs + end - start,
+      workMs: prefix.workMs + measuredWork,
       waitMs:
-        prefix.waitMs + start - (prior ? Date.parse(prior.finishedAt) : origin),
+        prefix.waitMs +
+        span -
+        measuredWork +
+        start -
+        (prior ? Date.parse(prior.finishedAt) : origin),
       durationMs: end - origin,
     };
     visiting.delete(task.name);

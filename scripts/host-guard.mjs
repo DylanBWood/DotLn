@@ -108,6 +108,15 @@ export function transferDuplicateOwnership(
   return retired;
 }
 
+export function handledStopMembers(members, incident, protectedPids, current) {
+  return members.filter(
+    (member) =>
+      protectedPids.has(member.pid) ||
+      !processAlive(member, current) ||
+      incident.killedProcesses.some((row) => row.pid === member.pid),
+  );
+}
+
 export async function runHostGuard(directory = hostStateRoot()) {
   ensureHostRoot(directory);
   return withHostLock(directory, "guard", async () => {
@@ -116,12 +125,13 @@ export async function runHostGuard(directory = hostStateRoot()) {
     const file = join(directory, "guard.json"),
       stopFile = join(directory, "guard.stop");
     rmSync(stopFile, { force: true });
-    atomicJson(file, {
+    const guardRecord = {
       pid: owner.pid,
       birth: owner.birth,
       startedAt: new Date().toISOString(),
       contract: "host-guard-v1",
-    });
+    };
+    atomicJson(file, guardRecord);
     const known = new Map(),
       previous = new Map(),
       warned = new Set(),
@@ -145,6 +155,9 @@ export async function runHostGuard(directory = hostStateRoot()) {
       process.on(signal, stop);
     try {
       while (!stopping) {
+        // The lock is the authority. Re-publish its owner's record if a
+        // temporary-directory sweep removed the discoverable observation.
+        if (!existsSync(file)) atomicJson(file, guardRecord);
         const started = performance.now();
         let sample,
           full = false,
@@ -404,6 +417,19 @@ export async function runHostGuard(directory = hostStateRoot()) {
                 aggregateBytes: total,
               });
             const killed = new Set();
+            const markHandled = (candidate, incident) => {
+              const current = readHostSnapshot({
+                footprint: false,
+                directory,
+              }).processes;
+              for (const member of handledStopMembers(
+                candidate.members,
+                incident,
+                protectedSet,
+                current,
+              ))
+                killed.add(member.pid);
+            };
             const stopCandidate = (candidate) => {
               const killErrors = [];
               let killedProcesses = [];
@@ -451,6 +477,8 @@ export async function runHostGuard(directory = hostStateRoot()) {
               }
             };
             for (const candidate of candidates) {
+              if (candidate.members.every((row) => killed.has(row.pid)))
+                continue;
               const unreadable = candidate.members.filter(
                 (row) => row.footprintBytes < 0,
               );
@@ -477,8 +505,7 @@ export async function runHostGuard(directory = hostStateRoot()) {
                     `monitor-unavailable ${JSON.stringify(incident)}`,
                   );
                   requestRunnerStop(candidate);
-                  for (const row of incident.killedProcesses)
-                    killed.add(row.pid);
+                  markHandled(candidate, incident);
                   continue;
                 }
               }
@@ -522,7 +549,7 @@ export async function runHostGuard(directory = hostStateRoot()) {
               stats.incidents++;
               console.error(`memory-budget ${JSON.stringify(incident)}`);
               requestRunnerStop(candidate);
-              for (const row of incident.killedProcesses) killed.add(row.pid);
+              markHandled(candidate, incident);
             }
             // Peak history is only needed while its process identity is live.
             const liveIdentities = new Set(

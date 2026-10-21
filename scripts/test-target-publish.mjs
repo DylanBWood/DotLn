@@ -493,7 +493,14 @@ async function buildScenario(
         );
     }
     fixtureGit(target, "add", "-A");
-    fixtureGit(target, "commit", "-m", "Name the synthetic repair contract");
+    fixtureGit(
+      target,
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-m",
+      "Name the synthetic repair contract",
+    );
     writeFileSync(
       join(root, "base.txt"),
       fixtureGit(target, "rev-parse", "HEAD"),
@@ -515,7 +522,16 @@ async function buildScenario(
   const launchpad = join(root, "launchpad");
   mkdirSync(launchpad);
   fixtureGit(launchpad, "init", "--quiet", "--initial-branch=main");
-  fixtureGit(launchpad, "commit", "--quiet", "--allow-empty", "-m", "fixture");
+  fixtureGit(
+    launchpad,
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "--quiet",
+    "--allow-empty",
+    "-m",
+    "fixture",
+  );
   write(
     join(launchpad, "docs/control/outward-vocabulary.json"),
     JSON.stringify(vocabulary),

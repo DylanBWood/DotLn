@@ -446,6 +446,41 @@ test("WO-168 a hedge names the longest gate identity that holds the one it spell
     "1200 ms",
     "gate-row",
   ]);
+  assert.deepEqual(
+    hedge(
+      "The npm test gate took about 9 minutes and npm test -- --inside-sandbox about 2",
+    ),
+    ["unmeasured", "quantity-unresolved"],
+  );
+  assert.deepEqual(
+    scanHedges("The npm test -- --inside-sandbox gate took about 3 minutes", {
+      ...facts,
+      gates: facts.gates.filter((gate) => gate.checkId === "npm test"),
+    }).map((found) => [found.observed, found.source]),
+    [["unmeasured", "quantity-unresolved"]],
+  );
+  assert.deepEqual(
+    hedge("The npm test -w packages/kernel gate took about 3 minutes"),
+    ["unmeasured", "quantity-unresolved"],
+  );
+  for (const command of ["pnpm test", "xnpm test", "not-npm test"]) {
+    assert.deepEqual(hedge(`The ${command} gate took about 3 minutes`), [
+      "unmeasured",
+      "quantity-unresolved",
+    ]);
+  }
+  write(
+    root,
+    "docs/control/local/harness/checks.json",
+    JSON.stringify([row("npm test", -1)]),
+  );
+  assert.deepEqual(
+    scanHedges(
+      "The npm test gate took about 3 minutes",
+      observedFacts(root, scope, now),
+    ).map((found) => [found.observed, found.source]),
+    [["unmeasured", "quantity-unresolved"]],
+  );
   // Two unrelated identities, or one identity with two rows, stay ambiguous.
   assert.deepEqual(
     hedge("The npm test and suite:fixture gate took about 3 minutes"),

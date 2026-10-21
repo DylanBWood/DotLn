@@ -1,6 +1,14 @@
 import { execFileSync } from "node:child_process";
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { dirname, join } from "node:path";
+import { createHash } from "node:crypto";
+import {
+  existsSync,
+  lstatSync,
+  mkdirSync,
+  readFileSync,
+  realpathSync,
+  writeFileSync,
+} from "node:fs";
+import { dirname, isAbsolute, join, posix, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 /** @typedef {"authority" | "artifact-identity" | "verification" | "feedback"} EvidenceKind */
@@ -217,4 +225,188 @@ export function writeEvidenceFile(path, contents) {
     recursive: true,
   });
   writeFileSync(path, contents, { flag: "wx" });
+}
+
+/** @param {string} directory
+ * @param {string} name */
+const authorityPath = (directory, name) => {
+  if (typeof directory !== "string" || !directory.length)
+    throw new Error("Invalid authority evidence path");
+  const path = `${directory}/${name}`;
+  if (
+    isAbsolute(path) ||
+    posix.normalize(path) !== path ||
+    path.startsWith("../") ||
+    /[\u0000-\u001f\u007f]/u.test(path)
+  )
+    throw new Error("Invalid authority evidence path");
+  return path;
+};
+/** @param {string} root
+ * @param {string} path */
+const authorityBytes = (root, path) => {
+  const absolute = resolve(realpathSync(root), path);
+  if (!lstatSync(absolute).isFile() || realpathSync(absolute) !== absolute)
+    throw new Error("Authority evidence must be a contained regular file");
+  return readFileSync(absolute);
+};
+/** @param {string} root */
+const authorityFormat = (root) => {
+  const format = execFileSync("git", ["rev-parse", "--show-object-format"], {
+    cwd: root,
+    encoding: "utf8",
+    stdio: ["ignore", "pipe", "pipe"],
+    timeout: 5000,
+  }).trim();
+  if (!["sha1", "sha256"].includes(format))
+    throw new Error("Unsupported Git object format");
+  return format;
+};
+/** @param {Buffer} bytes
+ * @param {string} format */
+const authorityBlob = (bytes, format) =>
+  createHash(format)
+    .update(`blob ${bytes.length}\0`)
+    .update(bytes)
+    .digest("hex");
+
+/** @param {string} root
+ * @param {string} directory */
+const authorityDestination = (root, directory) => {
+  let current = realpathSync(root);
+  for (const part of directory.split("/")) {
+    current = join(current, part);
+    let entry;
+    try {
+      entry = lstatSync(current);
+    } catch (error) {
+      if (error instanceof Error && "code" in error && error.code === "ENOENT")
+        break;
+      throw error;
+    }
+    if (!entry.isDirectory() || realpathSync(current) !== current)
+      throw new Error(
+        "Authority evidence destination must have contained directory ancestors",
+      );
+  }
+};
+
+/** A new revision may pin the unchanged transcript's canonical blob. Historical
+ * full records remain readable; references resolve by identity, never by a
+ * mutable pathname alone, and never form a reference chain.
+ * @param {string} root
+ * @param {string} directory */
+export function readAuthorityEvidence(root, directory) {
+  const full = authorityPath(directory, "authority.json");
+  const pointer = authorityPath(directory, "authority.ref.json");
+  const format = authorityFormat(root);
+  if (existsSync(join(root, full))) {
+    if (existsSync(join(root, pointer)))
+      throw new Error("Ambiguous authority evidence records");
+    const bytes = authorityBytes(root, full);
+    return {
+      contents: bytes.toString("utf8"),
+      recordPath: full,
+      reference: {
+        path: full,
+        blobHash: authorityBlob(bytes, format),
+        bytes: bytes.length,
+      },
+    };
+  }
+  const record = JSON.parse(authorityBytes(root, pointer).toString("utf8"));
+  const reference = record?.source;
+  if (
+    record?.schemaVersion !== 1 ||
+    record?.kind !== "authority-transcript-reference" ||
+    !reference ||
+    typeof reference.path !== "string" ||
+    !reference.path.endsWith("/authority.json") ||
+    authorityPath(dirname(reference.path), "authority.json") !==
+      reference.path ||
+    typeof reference.blobHash !== "string" ||
+    !(format === "sha1" ? /^[a-f0-9]{40}$/u : /^[a-f0-9]{64}$/u).test(
+      reference.blobHash,
+    ) ||
+    !Number.isSafeInteger(reference.bytes) ||
+    reference.bytes < 0
+  )
+    throw new Error("Invalid authority evidence reference");
+  let bytes;
+  try {
+    bytes = authorityBytes(root, reference.path);
+  } catch (error) {
+    if (!(error instanceof Error && "code" in error && error.code === "ENOENT"))
+      throw error;
+  }
+  if (
+    !bytes ||
+    bytes.length !== reference.bytes ||
+    authorityBlob(bytes, format) !== reference.blobHash
+  ) {
+    try {
+      bytes = execFileSync("git", ["cat-file", "blob", reference.blobHash], {
+        cwd: root,
+        stdio: ["ignore", "pipe", "pipe"],
+        timeout: 5000,
+        maxBuffer: 16 * 1024 * 1024,
+      });
+    } catch {
+      throw new Error("Unresolvable authority evidence reference");
+    }
+  }
+  if (
+    bytes.length !== reference.bytes ||
+    authorityBlob(bytes, format) !== reference.blobHash
+  )
+    throw new Error("Authority evidence reference identity mismatch");
+  return { contents: bytes.toString("utf8"), recordPath: pointer, reference };
+}
+
+/** Keep only a reference when the selected predecessor has identical bytes;
+ * an absent or damaged predecessor cannot supply a reference.
+ * @param {string} root
+ * @param {string} directory
+ * @param {string} contents
+ * @param {string} [previousDirectory] */
+export function writeAuthorityEvidence(
+  root,
+  directory,
+  contents,
+  previousDirectory,
+) {
+  const full = authorityPath(directory, "authority.json");
+  const pointer = authorityPath(directory, "authority.ref.json");
+  authorityDestination(root, directory);
+  if (existsSync(join(root, full)) || existsSync(join(root, pointer))) {
+    const existing = readAuthorityEvidence(root, directory);
+    if (existing.contents !== contents)
+      throw new Error("evidence edition is immutable; select a new edition");
+    return existing.recordPath;
+  }
+  let previous;
+  if (previousDirectory && previousDirectory !== directory) {
+    try {
+      previous = readAuthorityEvidence(root, previousDirectory);
+    } catch {
+      /* A new full transcript repairs unavailable predecessor evidence. */
+    }
+  }
+  if (previous && previous.contents === contents) {
+    writeEvidenceFile(
+      join(root, pointer),
+      JSON.stringify(
+        {
+          schemaVersion: 1,
+          kind: "authority-transcript-reference",
+          source: previous.reference,
+        },
+        null,
+        2,
+      ) + "\n",
+    );
+    return pointer;
+  }
+  writeEvidenceFile(join(root, full), contents);
+  return full;
 }

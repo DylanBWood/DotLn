@@ -24,13 +24,21 @@ export function checkHost(
   } = {},
 ) {
   const underBudget = limits.taskBytes < requiredPeakBytes;
+  const minimumGateShare =
+    Math.ceil(
+      ((requiredPeakBytes * limits.hostLanes) / sample.physicalBytes) *
+        1_000_000,
+    ) / 1_000_000;
+  const remedy = underBudget
+    ? `; memory.gateShare must be at least ${minimumGateShare} to admit this peak at ${limits.hostLanes} lanes${minimumGateShare > limits.hostShare ? "; that exceeds memory.hostShare, so use a host with more memory or reduce the task's measured peak" : "; set it in docs/control/budgets.json after judging the shared host budget, then retry"}`
+    : "";
   return {
     exitCode:
       ["warning", "critical"].includes(sample.level) || underBudget ? 1 : 0,
     sample,
     taskBudgetBytes: limits.taskBytes,
     requiredPeakBytes,
-    output: `Host memory: ${sample.level}; pressure=${sample.pressure}; swapBytes=${sample.swapBytes}; physicalBytes=${sample.physicalBytes}; source=${sample.source}\nPer-lane memory budget ${limits.taskBytes} bytes ${underBudget ? "is below" : "covers"} measured task peak RSS ${requiredPeakBytes} bytes (${limits.hostLanes} host lanes)`,
+    output: `Host memory: ${sample.level}; pressure=${sample.pressure}; swapBytes=${sample.swapBytes}; physicalBytes=${sample.physicalBytes}; source=${sample.source}\nPer-lane memory budget ${limits.taskBytes} bytes ${underBudget ? "is below" : "covers"} measured task peak RSS ${requiredPeakBytes} bytes (${limits.hostLanes} host lanes)${remedy}`,
   };
 }
 

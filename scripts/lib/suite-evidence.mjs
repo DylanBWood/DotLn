@@ -43,6 +43,9 @@ export function suiteEnvironment(env = process.env, gateContext) {
   // on a stop request, and its run ids change every run, so the lineage is
   // not inherited by independently requested fixture gates.
   delete child.DOTLN_GATE_RUNS;
+  // Fixture commands select their own launchpad. An invoking target session's
+  // override must not redirect them into that session's live checkout.
+  delete child.DOTLN_LAUNCHPAD;
   // Nested npm scripts prepend the same tool directories again. Keep the first
   // occurrence of each exact entry: executable precedence, relative entries,
   // the current-directory entry and paths that may be created later all remain.

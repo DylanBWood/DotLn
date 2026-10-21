@@ -247,7 +247,7 @@ test("WO-200 a file whose dotln-pinned-bytes attribute is set is left out of the
   assert.equal(f.check(["collector.mjs"]).findings[0].kind, "decision-number");
 });
 
-test("WO-200 every path with dotln-pinned-bytes set is listed in .prettierignore", () => {
+test("WO-200 every path with dotln-pinned-bytes set is listed in .prettierignore", async () => {
   const declaration = /const names = (\[[^\]]+\]);/u.exec(
     protocolLineage.toString(),
   );
@@ -278,4 +278,11 @@ test("WO-200 every path with dotln-pinned-bytes set is listed in .prettierignore
     .map((line) => line.trim())
     .filter((line) => line.startsWith("corpus/harness/"));
   assert.deepEqual(ignored.sort(), inputs);
+  const { getFileInfo } = await import("prettier");
+  for (const input of inputs)
+    assert.equal(
+      (await getFileInfo(input, { ignorePath: ".prettierignore" })).ignored,
+      true,
+      `Formatter must effectively ignore ${input}`,
+    );
 });

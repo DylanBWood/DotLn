@@ -216,7 +216,7 @@ make_repo() {
   printf '# WO-003 — fixture release, v0.2.0\n\n**Objective:** Establish the fixture baseline.\n\n**Non-goals:** No distribution.\n' >"$main/docs/work-orders/WO-003-fixture.md"
   write_control_events "$main/docs/control/resume.jsonl" WO-003 docs/work-orders/WO-003-fixture.md
   git -C "$main" add .
-  git -C "$main" commit -m 'fixture v0.2.0' >/dev/null
+  git -C "$main" -c maintenance.auto=false commit -m 'fixture v0.2.0' >/dev/null
   printf '%s\n' \
     'DotLn v0.2.0 — fixture baseline' \
     '' \
@@ -382,7 +382,7 @@ commit_candidate() {
   fi
   "$node_bin" "$script_dir/test-release-composition.mjs" record "$repository" "$id"
   git -C "$repository" add docs/control
-  git -C "$repository" commit -m "$id candidate $version" >/dev/null
+  git -C "$repository" -c maintenance.auto=false commit -m "$id candidate $version" >/dev/null
 }
 
 commit_legacy_multicommit_candidate() {
@@ -394,10 +394,10 @@ commit_legacy_multicommit_candidate() {
     "{\"schemaVersion\":1,\"type\":\"WorkOrderActivated\",\"workOrderId\":\"$id\",\"workOrderPath\":\"$authority\"}" \
     "{\"schemaVersion\":1,\"type\":\"ImplementationReady\",\"workOrderId\":\"$id\"}" >>"$repository/docs/control/resume.jsonl"
   git -C "$repository" add .
-  git -C "$repository" commit -m "$id implementation part one" >/dev/null
+  git -C "$repository" -c maintenance.auto=false commit -m "$id implementation part one" >/dev/null
   printf 'second legacy implementation step\n' >"$repository/legacy-step.txt"
   git -C "$repository" add .
-  git -C "$repository" commit -m "$id implementation part two" >/dev/null
+  git -C "$repository" -c maintenance.auto=false commit -m "$id implementation part two" >/dev/null
   mkdir -p "$repository/docs/verifications/$id" "$repository/docs/final-reviews/$id"
   printf '# verification pass\n' >"$repository/docs/verifications/$id/VER-001.md"
   printf '# final review pass\n' >"$repository/docs/final-reviews/$id/FINAL-001.md"
@@ -409,7 +409,7 @@ commit_legacy_multicommit_candidate() {
   git -C "$repository" add .
   "$node_bin" "$script_dir/test-release-composition.mjs" record "$repository" "$id"
   git -C "$repository" add docs/control
-  git -C "$repository" commit -m "$id final review pass" >/dev/null
+  git -C "$repository" -c maintenance.auto=false commit -m "$id final review pass" >/dev/null
 }
 
 commit_reviewed_candidate() {
@@ -452,7 +452,7 @@ commit_reviewed_candidate() {
   git -C "$repository" add .
   "$node_bin" "$script_dir/test-release-composition.mjs" record "$repository" "$id"
   git -C "$repository" add docs/control
-  git -C "$repository" commit -m "$id reviewed candidate $version" >/dev/null
+  git -C "$repository" -c maintenance.auto=false commit -m "$id reviewed candidate $version" >/dev/null
 }
 
 assert_no_candidate_tag() {
@@ -650,7 +650,7 @@ JS
 write_release_block "$main" v0.2.0
 release_command check-surfaces | grep -Fq 'target order records no release'
 git -C "$main" add .
-git -C "$main" commit -qm 'fixture: target records'
+git -C "$main" -c maintenance.auto=false commit -qm 'fixture: target records'
 release_command check-surfaces --committed WO-099 | grep -Fq 'target order records no release'
 write_release_block "$main" v0.1.0
 assert_surface_failure 'expected one strict version at or above v0.2.0'
@@ -665,7 +665,7 @@ commit_candidate "$main" WO-099 v0.2.1
 git -C "$main" switch -c unrelated-release >/dev/null 2>&1
 printf 'unrelated sibling source\n' >"$main/unrelated.txt"
 git -C "$main" add unrelated.txt
-git -C "$main" commit -m 'unrelated sibling release' >/dev/null
+git -C "$main" -c maintenance.auto=false commit -m 'unrelated sibling release' >/dev/null
 git -C "$main" tag -a v0.2.2 -m 'unrelated sibling tag'
 git -C "$main" switch main >/dev/null 2>&1
 git -C "$main" remote remove origin
@@ -686,7 +686,7 @@ release_case_prepare_independent() {
 make_repo prepare_independent
 "$node_bin" "$script_dir/test-reader-fixture.mjs" "$main"
 git -C "$main" switch -qc unrelated-preparation
-git -C "$main" commit --allow-empty -qm 'Unintegrated ordinary release'
+git -C "$main" -c maintenance.auto=false commit --allow-empty -qm 'Unintegrated ordinary release'
 git -C "$main" tag -a v9.0.0 -m 'Ordinary unrelated release'
 git -C "$main" switch -q main
 git -C "$main" switch -c wo-099 >/dev/null 2>&1
@@ -737,9 +737,25 @@ prepared_again="$(release_command prepare --local)"
 grep -Fq 'no files changed' <<<"$prepared_again"
 # An unchanged version can still change the process meter (WO-160).
 cp "$script_dir/../docs/control/budgets.json" "$main/docs/control/budgets.json"
+# Preparation keeps the reviewer's draft creation with the reviewer.
+unowned="$(release_command prepare --local)"
+test ! -e "$main/docs/final-reviews/WO-099/PR.md"
+mkdir -p "$main/docs/final-reviews/WO-099"
+printf '# Reviewed fixture body\n\nReviewer-authored explanation.\n' >"$main/docs/final-reviews/WO-099/PR.md"
+"$node_bin" --input-type=module - "$main" <<'JS'
+import assert from 'node:assert/strict';
+import {pathToFileURL} from 'node:url';
+import {join} from 'node:path';
+const root=process.argv[2];
+const {regeneratedPullRequestBody}=await import(pathToFileURL(join(root,'scripts/release.mjs')));
+const body=await regeneratedPullRequestBody(root,'WO-099','HEAD');
+assert.match(body,/Reviewer-authored explanation\./);
+assert.match(body,/<!-- dotln-process-meter:start -->/);
+JS
 pr_only="$(release_command prepare --local)"
 grep -Fq 'target v0.2.1 remains current' <<<"$pr_only"
 grep -Fxq '  docs/final-reviews/WO-099/PR.md' <<<"$pr_only"
+grep -Fxq 'Reviewer-authored explanation.' "$main/docs/final-reviews/WO-099/PR.md"
 if grep -Fq 'no files changed' <<<"$pr_only"; then exit 1; fi
 # No session journal of the order here: no snapshot, and it says why (WO-170).
 grep -Fxq 'Meter snapshot not written: this checkout holds no session journal of WO-099.' <<<"$pr_only"
@@ -804,7 +820,7 @@ make_repo surfaces_committed_readme
 commit_candidate "$main" WO-099 v0.2.1
 write_release_block "$main" v0.2.0
 git -C "$main" add README.md
-git -C "$main" commit --amend --no-edit >/dev/null
+git -C "$main" -c maintenance.auto=false commit --amend --no-edit >/dev/null
 git -C "$main" push origin main >/dev/null 2>&1
 git -C "$main" update-index --assume-unchanged README.md
 write_release_block "$main" v0.2.1
@@ -891,7 +907,7 @@ git -C "$fixture/integrator" switch main >/dev/null 2>&1
 commit_candidate "$fixture/integrator" WO-099 v0.2.1
 write_release_block "$fixture/integrator" v0.2.0
 git -C "$fixture/integrator" add README.md
-git -C "$fixture/integrator" commit --amend --no-edit >/dev/null
+git -C "$fixture/integrator" -c maintenance.auto=false commit --amend --no-edit >/dev/null
 git -C "$fixture/integrator" push origin main >/dev/null 2>&1
 test "$(git -C "$main" rev-parse HEAD)" != "$(git --git-dir="$origin" rev-parse refs/heads/main)"
 seed_release_close_writer
@@ -948,7 +964,7 @@ git -C "$main" worktree add "$linked_subject" -b wo-099 main >/dev/null
 commit_candidate "$linked_subject" WO-099 v0.2.1
 write_release_block "$linked_subject" v0.2.0
 git -C "$linked_subject" add README.md
-git -C "$linked_subject" commit --amend --no-edit >/dev/null
+git -C "$linked_subject" -c maintenance.auto=false commit --amend --no-edit >/dev/null
 git -C "$linked_subject" push origin HEAD:main >/dev/null 2>&1
 if linked_close_surface_output="$(release_close WO-099 --publish 2>&1)"; then
   printf 'error: linked-worktree release close accepted a stale release block\n' >&2
@@ -974,7 +990,7 @@ commit_reviewed_candidate "$main" WO-024 v0.2.1
   ));
 ' "$main/docs/final-reviews/WO-024/RELEASE-NOTES.md"
 git -C "$main" add .
-git -C "$main" commit --amend --no-edit >/dev/null
+git -C "$main" -c maintenance.auto=false commit --amend --no-edit >/dev/null
 git -C "$main" push origin main >/dev/null 2>&1
 if body_close_output="$(release_close WO-024 --publish 2>&1)"; then
   printf 'error: release close accepted wrapped current release notes\n' >&2
@@ -1090,7 +1106,7 @@ commit_candidate "$main" WO-099 v0.2.1
 git -C "$main" push origin main >/dev/null 2>&1
 printf 'local divergence\n' >"$main/local.txt"
 git -C "$main" add local.txt
-git -C "$main" commit -m 'local-only commit' >/dev/null
+git -C "$main" -c maintenance.auto=false commit -m 'local-only commit' >/dev/null
 if release_close WO-099 --publish >/dev/null 2>&1; then printf 'error: divergent main release close succeeded\n' >&2; exit 1; fi
 assert_no_candidate_tag "$main" "$origin"
 }
@@ -1184,7 +1200,7 @@ assert_no_candidate_tag "$main" "$origin"
 # A source change after the reviewed row is not covered by that observation.
 printf 'changed source\n' >>"$main/scripts/release.fixture.mjs"
 git -C "$main" add .
-git -C "$main" commit -m 'fixture source after review' >/dev/null
+git -C "$main" -c maintenance.auto=false commit -m 'fixture source after review' >/dev/null
 git -C "$main" push origin main >/dev/null 2>&1
 if mismatch="$(release_close WO-099 --publish 2>&1)"; then printf 'error: mismatched reviewer code published\n' >&2; exit 1; fi
 grep -Fq 'reviewed code identity differs' <<<"$mismatch"
@@ -1393,31 +1409,31 @@ seed="$fixture/sub-seed"
 git init -q -b main "$seed"
 printf 'seed\n' >"$seed/seed.txt"
 git -C "$seed" add seed.txt
-git -C "$seed" -c user.name=Fixture -c user.email=fixture@example.invalid commit -qm seed
+git -C "$seed" -c user.name=Fixture -c user.email=fixture@example.invalid -c maintenance.auto=false commit -qm seed
 git -C "$seed" push -q "$fixture/sub-origin.git" main
 derived="$fixture/project-wo099-measure-001"
 git -C "$main" worktree add --detach "$derived" >/dev/null 2>&1
 git -C "$derived" -c protocol.file.allow=always submodule add -q "$fixture/sub-origin.git" vendor/sub
-git -C "$derived" -c user.name=Fixture -c user.email=fixture@example.invalid commit -qm 'submodule' >/dev/null
+git -C "$derived" -c user.name=Fixture -c user.email=fixture@example.invalid -c maintenance.auto=false commit -qm 'submodule' >/dev/null
 printf 'unpushed\n' >"$derived/vendor/sub/unpushed.txt"
 git -C "$derived/vendor/sub" add unpushed.txt
-git -C "$derived/vendor/sub" -c user.name=Fixture -c user.email=fixture@example.invalid commit -qm unpushed
+git -C "$derived/vendor/sub" -c user.name=Fixture -c user.email=fixture@example.invalid -c maintenance.auto=false commit -qm unpushed
 unpushed="$(git -C "$derived/vendor/sub" rev-parse HEAD)"
 git -C "$derived" add vendor/sub
-git -C "$derived" -c user.name=Fixture -c user.email=fixture@example.invalid commit -qm 'submodule pointer' >/dev/null
+git -C "$derived" -c user.name=Fixture -c user.email=fixture@example.invalid -c maintenance.auto=false commit -qm 'submodule pointer' >/dev/null
 # An intake unit makes the removal a forced one, which is what the old code
 # passed through; the refusal must come before that force.
 mkdir -p "$derived/docs/intake/x"
 git init -q "$derived/docs/intake/x"
 printf 'raw\n' >"$derived/docs/intake/x/raw.txt"
 git -C "$derived/docs/intake/x" add raw.txt
-git -C "$derived/docs/intake/x" -c user.name=Fixture -c user.email=fixture@example.invalid commit -qm raw
+git -C "$derived/docs/intake/x" -c user.name=Fixture -c user.email=fixture@example.invalid -c maintenance.auto=false commit -qm raw
 # A scratch repository beside the submodule stays, because the refusal comes
 # before any scratch removal, and the blocker gets no material command.
 git init -q "$derived/.runtime/scratch-tool"
 printf 'tool\n' >"$derived/.runtime/scratch-tool/tool.txt"
 git -C "$derived/.runtime/scratch-tool" add tool.txt
-git -C "$derived/.runtime/scratch-tool" -c user.name=Fixture -c user.email=fixture@example.invalid commit -qm tool
+git -C "$derived/.runtime/scratch-tool" -c user.name=Fixture -c user.email=fixture@example.invalid -c maintenance.auto=false commit -qm tool
 seed_release_close_writer
 output="$(CODEX_THREAD_ID=fixture-close-session release_close WO-099 --publish)"
 grep -Fq 'Published annotated v0.2.1' <<<"$output"
@@ -1477,7 +1493,7 @@ printf '%s\n' \
   'writeFileSync(process.env.DOTLN_STALE_WORKTREE_MARKER, "stale main worktree helper executed\n");' \
   'throw new Error("stale main worktree helper executed");' >"$main/scripts/worktree.mjs"
 git -C "$main" add scripts/release.mjs scripts/worktree.mjs
-git -C "$main" commit -m 'fixture stale main lifecycle helpers' >/dev/null
+git -C "$main" -c maintenance.auto=false commit -m 'fixture stale main lifecycle helpers' >/dev/null
 git -C "$main" push origin main >/dev/null 2>&1
 stale_subject="$fixture/project-wo099"
 git -C "$main" worktree add "$stale_subject" -b wo-099 >/dev/null
@@ -1553,7 +1569,7 @@ NODE
   mkdir -p "$main/packages/kernel/dist/src"
   cp "$main/packages/kernel/test-fixtures/runtime-valid.mjs" "$main/packages/kernel/dist/src/index.js"
   git -C "$main" add .claude/harness-manifest.json
-  git -C "$main" commit -m 'fixture installed old runtime pins' >/dev/null
+  git -C "$main" -c maintenance.auto=false commit -m 'fixture installed old runtime pins' >/dev/null
   git -C "$main" push origin main >/dev/null 2>&1
   subject="$fixture/project-wo099"
   git -C "$main" worktree add "$subject" -b wo-099 >/dev/null
@@ -1640,7 +1656,7 @@ make_repo success
   fs.writeFileSync(path, changed);
 ' "$main/scripts/lib/control.mjs"
 git -C "$main" add scripts/lib/control.mjs
-git -C "$main" commit -m 'fixture distinct control schema export' >/dev/null
+git -C "$main" -c maintenance.auto=false commit -m 'fixture distinct control schema export' >/dev/null
 git -C "$main" push origin main >/dev/null 2>&1
 subject="$fixture/project-wo099"
 git -C "$main" worktree add "$subject" -b wo-099 >/dev/null
@@ -1795,7 +1811,7 @@ const fs = require("node:fs"), file = process.argv[2];
 fs.writeFileSync(file, fs.readFileSync(file, "utf8").replace("This source prepares DotLn ", "This source prepares Example Starter "));
 JS
 git -C "$main" add README.md
-git -C "$main" commit -qm 'test: configured release claim'
+git -C "$main" -c maintenance.auto=false commit -qm 'test: configured release claim'
 git -C "$main" push origin main >/dev/null 2>&1
 release_close WO-024 --publish >/dev/null
 test "$(cat "$gh_state/v0.2.1.body.title")" = 'Example Starter v0.2.1'
@@ -1809,7 +1825,7 @@ test "$(git -C "$main" rev-parse refs/tags/v0.2.1)" = "$custom_tag"
 test "$(grep -c '^release create v0.2.1 ' "$gh_log")" = 1
 printf '{"version":1,"release":{"displayName":"Renamed Starter"}}\n' >"$main/dotln.config.json"
 git -C "$main" add dotln.config.json
-git -C "$main" commit -qm 'test: later instance rename'
+git -C "$main" -c maintenance.auto=false commit -qm 'test: later instance rename'
 PATH="$bin:$PATH" "$node_bin" --input-type=module - "$main" "$fixture/custom-notes.md" <<'JS'
 import assert from "node:assert/strict";
 import fs from "node:fs";
@@ -2050,7 +2066,7 @@ git -C "$main" config user.email operator@example.invalid
 git -C "$main" config user.name 'Fixture Operator'
 printf '%s\n' '{"version":1,"contributions":{"operatorAuthor":"Fixture Operator <operator@example.invalid>"}}' >"$main/dotln.config.json"
 git -C "$main" add dotln.config.json docs/control/reader-profiles.json docs/publication/examples
-git -C "$main" commit -m 'Fixture publication profiles' >/dev/null
+git -C "$main" -c maintenance.auto=false commit -m 'Fixture publication profiles' >/dev/null
 subject="$fixture/project-wo099"
 git -C "$main" worktree add -b wo-099 "$subject" main >/dev/null 2>&1
 write_release_block "$subject" v0.2.1
@@ -2063,7 +2079,7 @@ grep -Fq 'Reader profile (prBody):' "$fixture/publish.log"
 grep -Fq 'Nearest example: docs/publication/examples/prTitle/' "$fixture/publish.log"
 printf 'Main-only documentation after review.\n' >"$main/docs/merge-note.md"
 git -C "$main" add docs/merge-note.md
-git -C "$main" commit -m 'Synthetic main-only document' >/dev/null
+git -C "$main" -c maintenance.auto=false commit -m 'Synthetic main-only document' >/dev/null
 git -C "$main" merge --no-edit wo-099 >/dev/null
 git -C "$main" push origin main >/dev/null 2>&1
 test ! -f "$main/docs/control/local/harness/checks.json"
@@ -2184,7 +2200,7 @@ for mode in lane scratch kept preserve intake untracked; do
   git -C "$nested" init -q
   printf 'nested repository fixture\n' >"$nested/saved.txt"
   git -C "$nested" add saved.txt
-  git -C "$nested" -c user.name=Fixture -c user.email=fixture@example.invalid commit -qm 'nested fixture'
+  git -C "$nested" -c user.name=Fixture -c user.email=fixture@example.invalid -c maintenance.auto=false commit -qm 'nested fixture'
   if [[ "$mode" == scratch ]]; then
     # One repository whose head a remote holds, one whose head no remote holds.
     git init -q --bare "$fixture/nested-origin.git"
@@ -2196,7 +2212,7 @@ for mode in lane scratch kept preserve intake untracked; do
     git -C "$second" init -q
     printf 'second repository fixture\n' >"$second/saved.txt"
     git -C "$second" add saved.txt
-    git -C "$second" -c user.name=Fixture -c user.email=fixture@example.invalid commit -qm 'second nested fixture'
+    git -C "$second" -c user.name=Fixture -c user.email=fixture@example.invalid -c maintenance.auto=false commit -qm 'second nested fixture'
   fi
   if [[ "$mode" == kept ]]; then
     # A keep row an earlier completion recorded is history, not preservation.
@@ -2302,14 +2318,14 @@ mkdir -p "$nested"
 git -C "$nested" init -q
 printf 'saved before completion\n' >"$nested/saved.txt"
 git -C "$nested" add saved.txt
-git -C "$nested" -c user.name=Fixture -c user.email=fixture@example.invalid commit -qm 'nested fixture'
+git -C "$nested" -c user.name=Fixture -c user.email=fixture@example.invalid -c maintenance.auto=false commit -qm 'nested fixture'
 DOTLN_FIXTURE_MATERIAL_SOURCE="$subject" commit_candidate "$subject" WO-099 v0.2.1
 git -C "$main" worktree add --detach "$derived" wo-099 >/dev/null
 mkdir -p "$derived/$material_path"
 git -C "$derived/$material_path" init -q
 printf 'different derived work\n' >"$derived/$material_path/foreign.txt"
 git -C "$derived/$material_path" add foreign.txt
-git -C "$derived/$material_path" -c user.name=Fixture -c user.email=fixture@example.invalid commit -qm 'foreign derived commit'
+git -C "$derived/$material_path" -c user.name=Fixture -c user.email=fixture@example.invalid -c maintenance.auto=false commit -qm 'foreign derived commit'
 derived_head="$(git -C "$derived/$material_path" rev-parse HEAD)"
 mkdir -p "$derived/docs/intake/protected"
 git -C "$derived/docs/intake/protected" init -q
@@ -2361,13 +2377,13 @@ for derived in "$misnamed" "$listed"; do
   git -C "$derived/scratch-material/x" init -q
   printf 'derived scratch\n' >"$derived/scratch-material/x/saved.txt"
   git -C "$derived/scratch-material/x" add saved.txt
-  git -C "$derived/scratch-material/x" -c user.name=Fixture -c user.email=fixture@example.invalid commit -qm 'derived scratch'
+  git -C "$derived/scratch-material/x" -c user.name=Fixture -c user.email=fixture@example.invalid -c maintenance.auto=false commit -qm 'derived scratch'
 done
 mkdir -p "$misnamed/docs/intake/protected"
 git -C "$misnamed/docs/intake/protected" init -q
 printf 'synthetic intake\n' >"$misnamed/docs/intake/protected/source.txt"
 git -C "$misnamed/docs/intake/protected" add source.txt
-git -C "$misnamed/docs/intake/protected" -c user.name=Fixture -c user.email=fixture@example.invalid commit -qm 'synthetic intake'
+git -C "$misnamed/docs/intake/protected" -c user.name=Fixture -c user.email=fixture@example.invalid -c maintenance.auto=false commit -qm 'synthetic intake'
 printf 'SECRET=fixture-only\n' >"$listed/.env"
 git -C "$subject" push origin HEAD:main >/dev/null 2>&1
 # The operator's word names a repository the worktree does not hold.
@@ -2451,7 +2467,7 @@ mkdir -p "$subject/.runtime/kept" "$subject/.runtime/snapshots/deep" "$fixture/o
 printf 'preserved fixture bytes\n' >"$subject/.runtime/kept/saved.txt"
 git -C "$subject/.runtime/kept" init -q
 git -C "$subject/.runtime/kept" add .
-git -C "$subject/.runtime/kept" -c user.name=Fixture -c user.email=fixture@example.invalid commit -qm 'preserved fixture'
+git -C "$subject/.runtime/kept" -c user.name=Fixture -c user.email=fixture@example.invalid -c maintenance.auto=false commit -qm 'preserved fixture'
 printf 'sealed disposable snapshot\n' >"$subject/.runtime/snapshots/deep/snapshot.txt"
 ln -s "$fixture/outside" "$subject/.runtime/outside-link"
 DOTLN_FIXTURE_MATERIAL_SOURCE="$subject" commit_candidate "$subject" WO-099 v0.2.1
@@ -2481,7 +2497,7 @@ if [[ "${1:-}" == close_real_writer ]]; then
   test -d "$main/docs/control/local/harness/writer"
   test -d "$subject"
   grep -Fq 'tag published; GitHub Release not created' <<<"$failed"
-  git -C "$main" -c user.name=Fixture -c user.email=fixture@example.invalid commit --allow-empty -qm 'Unrelated later main commit'
+  git -C "$main" -c user.name=Fixture -c user.email=fixture@example.invalid -c maintenance.auto=false commit --allow-empty -qm 'Unrelated later main commit'
   git -C "$main" push -q origin main
 fi
 output="$(release_close_summary WO-099 --publish --material .runtime/kept=preserve)"
@@ -2774,9 +2790,9 @@ release_case_starter_refresh() {
   git -C "$main" add scripts/kit
   printf '%s\n' '{"schemaVersion":1,"siblings":[{"id":"starter-fixture","purpose":"Fixture starter","relation":{"kind":"export","coreCommit":null},"capabilityRows":[]}]}' >"$main/docs/siblings/siblings.json"
   git -C "$main" add docs/siblings
-  git -C "$main" commit -qm 'declare fixture starter'
+  git -C "$main" -c maintenance.auto=false commit -qm 'declare fixture starter'
   git -C "$main" push origin main >/dev/null 2>&1
-  git clone -q "$origin" "$fixture/integrator"
+  git -c maintenance.auto=false clone -c maintenance.auto=false -q "$origin" "$fixture/integrator"
   git -C "$fixture/integrator" config user.email fixture@example.invalid
   git -C "$fixture/integrator" config user.name 'DotLn Fixture Integrator'
   git -C "$fixture/integrator" switch main >/dev/null 2>&1
@@ -2796,8 +2812,8 @@ release_case_starter_refresh() {
   git -C "$preview_starter" config user.email fixture@example.invalid
   printf '%s\n' '!.DS_Store' >"$preview_starter/.gitignore"
   git -C "$preview_starter" add .gitignore
-  git -C "$preview_starter" commit -qm 'initial fixture starter'
-  git clone -q --bare "$preview_starter" "$preview_remote"
+  git -C "$preview_starter" -c maintenance.auto=false commit -qm 'initial fixture starter'
+  git -c maintenance.auto=false clone -c maintenance.auto=false -q --bare "$preview_starter" "$preview_remote"
   git -C "$preview_starter" remote add origin https://github.com/dotln-fixture/starter-fixture.git
   printf '[url "%s"]\n insteadOf = https://github.com/dotln-fixture/starter-fixture.git\n' "$preview_remote" >"$preview_config"
   mkdir -p "$main/docs/control/local"
@@ -2856,8 +2872,8 @@ const readme=p.join(process.argv[3],"README.md");
 fs.writeFileSync(readme,fs.readFileSync(readme,"utf8").replace("This source prepares DotLn-Enterprise-Starter ","This source prepares DotLn "));
 JS
   git -C "$starter" add .
-  git -C "$starter" commit -qm 'current fixture kit'
-  git clone -q --bare "$starter" "$starter_remote"
+  git -C "$starter" -c maintenance.auto=false commit -qm 'current fixture kit'
+  git -c maintenance.auto=false clone -c maintenance.auto=false -q --bare "$starter" "$starter_remote"
   git -C "$starter" remote add origin https://github.com/wrong-owner/starter-fixture.git
   mkdir -p "$main/docs/control/local"
   "$node_bin" -e 'require("node:fs").writeFileSync(process.argv[1],JSON.stringify({"starter-fixture":process.argv[2]}))' "$main/docs/control/local/repository-clones.json" "$starter"

@@ -74,19 +74,38 @@ export async function ensureHostGuard(directory = hostStateRoot()) {
     } finally {
       closeSync(log);
     }
-    const deadline = Date.now() + 5000;
-    while (Date.now() < deadline) {
-      const record = live();
-      if (record) return { ...record, reused: false };
-      if (child.exitCode !== null)
-        throw new Error(
-          "Host guard exited during startup; inspect its private guard.log",
-        );
-      await delay(50);
+    let adopted = false;
+    try {
+      const deadline = Date.now() + 5000;
+      while (Date.now() < deadline) {
+        const record = live();
+        if (record) {
+          adopted = record.pid === child.pid;
+          return { ...record, reused: !adopted };
+        }
+        if (child.exitCode !== null || child.signalCode !== null)
+          throw new Error(
+            "Host guard exited during startup; inspect its private guard.log",
+          );
+        await delay(50);
+      }
+      throw new Error(
+        "Host guard startup observation unavailable; inspect its private guard.log",
+      );
+    } finally {
+      // A restored owner can win observation while our child waits on its
+      // lock. Retire that child on reuse or failure, before releasing startup.
+      if (!adopted && child.exitCode === null && child.signalCode === null) {
+        await new Promise((done) => {
+          const timer = setTimeout(() => child.kill("SIGKILL"), 1000);
+          child.once("exit", () => {
+            clearTimeout(timer);
+            done();
+          });
+          child.kill("SIGTERM");
+        });
+      }
     }
-    throw new Error(
-      "Host guard startup observation unavailable; inspect its private guard.log",
-    );
   });
 }
 

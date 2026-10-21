@@ -38,10 +38,13 @@ export const contributionSignoffRules = (root) => {
             ) === `${name} <${email.toLowerCase()}>`,
       );
     const pass = exempt || signed;
+    const remedy = operatorAuthor
+      ? "the declared contributions.operatorAuthor already exempts its single identity; other authors need the matching trailer"
+      : "or declare that identity as contributions.operatorAuthor in dotln.config.json through a reviewed change";
     // Commit IDs identify findings without repeating contributors' identities.
     return {
       pass,
-      line: `${pass ? "PASS" : "FAIL"} contribution-signoff ${commit.slice(0, 12)}: observed ${exempt ? "operator author" : signed ? "matching author sign-off" : "outside author without matching sign-off"}; expected ${exempt ? "operator exemption (no sign-off required)" : "Signed-off-by trailer matching the commit author (DCO 1.1); add it with git commit --amend --signoff after reviewing the DCO, or declare that identity as contributions.operatorAuthor in dotln.config.json through a reviewed change"}`,
+      line: `${pass ? "PASS" : "FAIL"} contribution-signoff ${commit.slice(0, 12)}: observed ${exempt ? "operator author" : signed ? "matching author sign-off" : "outside author without matching sign-off"}; expected ${exempt ? "operator exemption (no sign-off required)" : `Signed-off-by trailer matching the commit author (DCO 1.1); add it with git commit --amend --signoff after reviewing the DCO; ${remedy}`}`,
     };
   });
 };

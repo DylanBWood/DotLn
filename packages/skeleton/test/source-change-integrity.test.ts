@@ -711,7 +711,14 @@ test("WO-112 F1 preserves independent commits, tags, deleted refs and symbolic r
               "independent work\n",
             );
             git(sibling, "add", "independent.txt");
-            git(sibling, "commit", "-m", "Independent synthetic change");
+            git(
+              sibling,
+              "-c",
+              "maintenance.auto=false",
+              "commit",
+              "-m",
+              "Independent synthetic change",
+            );
             expected = git(sibling, "rev-parse", "HEAD");
           } else if (change === "tag") git(sibling, "tag", "independent-tag");
           else if (change === "delete-ref")

@@ -84,14 +84,14 @@ test("WO-133 every generated role preserves supplied actor values and checks edi
 
 test("WO-179 and WO-195 emitted roles carry their assigned corrections across support settings", () => {
   const sharedRules = [
-    "Settle routine version, waiver-route, live-episode, regeneration and reinstall questions within existing authority; ask when the answer changes scope or authority.",
-    "Before acting on an operator message, state its aim in one line and act on that reading; ask one focused question if the reading is doubtful.",
-    "A claim of cause, blocker, unreachable service or finished work names the command and output it rests on; a partial search names its boundary.",
-    "Request needed authority in this session through the host permission flow; never hand the operator a command to run in your place unless the order or role names that fallback.",
-    "A command given to the operator is copy-paste runnable with real paths and no placeholders; a question says what it decides and why in plain words.",
-    "Answer a stale gate row by running the gate at the current identity, never by restoring bytes to match it; never remove a reviewed fix to pass a check.",
+    "Resolve routine version, waiver-route, live-episode, regeneration and reinstall questions within existing authority; ask if an answer changes scope or authority.",
+    "Before acting on an operator message, state its aim in one line and act on that reading; ask one focused question if that reading is doubtful.",
+    "Claims of cause, blockers, unreachable services or completion name their supporting command and output; partial searches name their boundary.",
+    "Request needed authority here through the host permission flow; give the operator a command to run in your place only when the order or role names that fallback.",
+    "Operator commands must be copy-paste runnable with real paths and no placeholders; questions plainly state what they decide and why.",
+    "For stale gate rows, run the gate at the current identity; never restore bytes to match a row or remove a reviewed fix to pass a check.",
     "Stop the background monitors you started before recording your result.",
-    "After a second consecutive provider safeguard refusal, stop retrying, record the stop as a decision naming phase and model, and resume in a fresh session.",
+    "After two consecutive provider safeguard refusals, stop retrying, record a decision naming the stop, phase and model, and resume in a fresh session.",
     "Await a gate or background task through `node scripts/harness.mjs evidence --wait [--timeout <seconds>]` in the background or the host's completion signal, then do bounded listed work or stay quiet; never poll or narrate the wait.",
     "Never guess: an unobserved value is `unknown`, `untested` or `blocked`; name the readable source tried before writing `unknown`, and correct an unfiled report in place instead of appending a correction.",
   ];
@@ -764,7 +764,11 @@ test("execution roles open with an ordered handoff and keep shared rules below i
     if (name === "executor") {
       assert.match(steps[format]!, /npm run sync/);
       assert.match(steps[run]!, /`npm test -- --review`/);
-      assert.match(steps[run]!, /failed and changed suites first/);
+      assert.match(steps[run]!, /failed and newly changed suites first/);
+      assert.match(
+        steps[run]!,
+        /older branch changes may follow exclusive work/,
+      );
       assert.match(steps[run]!, /composes nothing from `--only` rows/);
       assert.doesNotMatch(steps.join("\n"), /--only format/);
       assert.match(steps[run + 1]!, /After the complete run passes/);

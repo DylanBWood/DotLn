@@ -54,9 +54,6 @@
     "packages/skeleton/src/loadouts/contributor.ts": {
       "d1b7fd7f1b2ac05671be65bc4dc9eda552a7f014476f3a7f9a726e384f89a857": 1
     },
-    "packages/skeleton/src/observed-facts.ts": {
-      "42372b10bc5890c6b006f302a7d0b021e171787e9abd767a4e39867677c2892f": 1
-    },
     "packages/skeleton/src/portfolio-actor.ts": {
       "50436501278c754648f513690421e99d2fef9c0ba2a340883e786699c7fc0690": 1,
       "7b6ed98775fde76a7e72716a4360067279c24c69cf8a842a9769822d0eaf4b43": 1,

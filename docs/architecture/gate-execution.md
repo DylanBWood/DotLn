@@ -2,9 +2,9 @@
 
 Maintained architecture decision record. Established by the operator's
 2026-10-19 scope expansion in [WO-222 D011](../evidence/WO-222/decisions.md).
-The implementation description names the WO-222 working version; proposals
-below are not implemented contracts. The measured disposition of that version
-belongs in [WO-222 evidence](../evidence/WO-222/README.md).
+The implementation description includes WO-217's follow-up repairs to the
+WO-222 working version; proposals below are not implemented contracts.
+Measurements remain in each order's evidence.
 
 Future work orders changing selection, scheduling, resource admission, reuse or
 gate completion should cite this record and update the affected sections with
@@ -26,8 +26,10 @@ gates, accurate requests for short structural work and protected progress for
 nested children. Evaluate that candidate before replacing the runner with a new
 build system or installing a resident scheduling service. This is a research
 recommendation, not a shipped queue: WO-222 implements capacity, overlap and file
-lanes, and [D009](../evidence/WO-222/decisions.md) retains cross-gate admission as
-follow-up FUP-464d273fa299e979.
+lanes. WO-217 declines a partial fairness implementation: fixed-four clients
+publish no waiting intent, so a new-client queue alone cannot bound their
+waiting. Reopen only with an explicit migration or adapter covering those
+clients and the comparisons below.
 
 Four outcomes need separate measurements:
 
@@ -54,7 +56,7 @@ priority changes are recorded in [D009](../evidence/WO-222/decisions.md).
 | Layer | Current responsibility | Boundary to preserve |
 | --- | --- | --- |
 | Selection and evidence | Choose required suites; bind observations to source and produced inputs; consume valid rows at completion. | Admission never changes the required set or manufactures a pass. |
-| Prerequisites and local scheduler | Finish structural work and build dependencies; prioritize failures and changed suites; schedule weighted tasks and bounded file groups. | Ready work and dependency correctness remain local to the gate. |
+| Prerequisites and local scheduler | Finish structural work and build dependencies; prioritize failures and newly changed suites, with a smaller lead for older branch changes; schedule weighted tasks and bounded file groups. | Unchanged exclusive work can precede shared branch work. Ready work and dependency correctness remain local to the gate. |
 | Host admission | Coordinate slot leases across clones under one per-user host registry and lock. | All cooperating clients use one capacity; nested leases consume their parent's reservation. |
 | Execution and ownership | Start attributable process trees and retain ownership of surviving descendants. | Releasing a parent cannot make a live child disappear from accounting. |
 | Memory and deadlines | Observe host pressure and owned footprint; apply finite task and command deadlines with declared peer load. | A capacity heuristic is not a proof of safe memory use or a diagnosis of a timeout. |
@@ -76,9 +78,12 @@ capacity. The structural check screens this against the largest recorded task
 RSS in the selected baseline. RSS and the guard's owned footprint are different
 observations; this screen does not establish a worst-case footprint bound.
 
-Harness fixtures, process-debt and worktree-integration reserve every local lane
-except up to two lanes for measured light tasks. A qualifying light task is
-shared and its latest baseline observation is below 60 seconds and 512 MiB RSS.
+Harness fixtures, process-debt and worktree-integration hold the full host
+capacity and lend nested leases to the exclusive task and up to two local
+light peers. The parent reservation remains until every child releases it.
+A qualifying light task is shared and every held baseline observation is
+below 60 seconds and 512 MiB RSS. Host-lane waiting is recorded separately
+from task work in the critical-path summary.
 The exclusive task's declared peer concurrency is at most three; the deadline
 factor is twice that declaration. Target-worktree is four file tasks, at most two
 concurrent, each with a 900-second task bound. The base actually registered 60

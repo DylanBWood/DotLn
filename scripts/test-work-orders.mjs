@@ -125,7 +125,7 @@ const writeLog = (repo, events) =>
   );
 const commit = (repo, label) => {
   runGit(repo, ["add", "."]);
-  runGit(repo, ["commit", "-qm", label], {
+  runGit(repo, ["-c", "maintenance.auto=false", "commit", "-qm", label], {
     env: {
       ...process.env,
       GIT_AUTHOR_DATE: "2020-01-02T00:00:00Z",

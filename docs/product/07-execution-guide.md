@@ -2197,7 +2197,8 @@ usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-
   publication, bookkeeping and installed-harness artifacts (a gate compiles a
   stale runtime itself). The executor and every repair start one complete
   run, `npm test -- --review`, in the background and never under the bounded
-  probe wrapper; it leads with failed and changed suites. After it passes
+  probe wrapper; it leads with failed and newly changed suites, while older
+  branch changes may follow exclusive work. After it passes
   they write the report with its evidence, run `npm run test:docs` once
   after the last document edit, and record. Verification consumes the
   executor's complete row at the current identity and uses focused probes.
@@ -2289,12 +2290,11 @@ usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-
   or an unwrapped bare tree with such an edge missing, can still escape polling.
   WO-185 records this limit; supervision is not absolute containment. Test
   commands attribute incidents to disposable fixture repositories. A guard
-  that loses its `guard.json` record while it still holds `guard.flock` makes
-  each later registration start another waiter that fails after five
-  seconds, so the bounded wrapper and every gate fail on the host; stop the
-  stale guard and the waiters queued behind it, and the next registration
-  starts a fresh guard (WO-118 D011; the repair is FUP-e18e6a5422109bfb)
-  [2026-10-13 pass].
+  that loses its `guard.json` record while still holding `guard.flock`
+  republishes its own identity on the next census. A registration reuses that
+  owner and retires any startup child that was never adopted, including on
+  timeout; it does not leave a waiter behind. This recovery preserves the
+  live guard's observation history (WO-217).
 
 - **Outward artifacts (WO-063).** The [pure lint and stdin CLI](../evidence/WO-063/implementation.md) check conventional commit subjects, PR titles and branch names plus the configured public vocabulary and redacted local-term check, report absent local coverage as `unavailable`, and leave publication integration to WO-064.
 
@@ -3004,7 +3004,11 @@ Every selection begins with six structural tasks, in order: `format`,
 check machinery inputs and declared copied-fixture closures. Generated
 checks retain their own short deadlines and name all stale artifacts in the
 row; `npm run sync` regenerates them in dependency order and changes nothing
-on a second current run. A selection first compiles a stale runtime with
+on a second current run. Only a recognized stale report authorizes a writer;
+crashes, timeouts, unreadable inputs and unrelated failures refuse regeneration.
+Sibling pages and tag observations, and a missing work-order tag snapshot,
+are regenerated through their declared index writers.
+A selection first compiles a stale runtime with
 the build, whose output lies outside the code identity, so an ordinary
 package edit reaches the suites; a stale installed harness is reported and
 never installed by a gate, since live hooks change only through the explicit
@@ -3066,24 +3070,46 @@ new identity; report and generated-document edits do not. Target orders
 retain their repository's declared target gate and the launchpad document
 gate.
 
-Scheduling orders the queue by priority: changed suites lead, exclusive
-suites follow, then the rest. It stops starting tasks after the first
+Scheduling adds priority leads to each task's declared priority: unresolved
+failures receive 3000, sources changed since the last product gate receive
+2000, and older branch changes receive 100. Failed and newly changed suites
+lead; the smaller branch lead lets unchanged exclusive work precede shared
+branch work, while preserving branch work's priority over ordinary unchanged
+shared work. The scheduler stops starting tasks after the first
 failure, lets running tasks finish, and records the first failure and unrun
 tasks. `--keep-going`
 continues independent work without bypassing failed prerequisites. A stop
 request or SIGINT, SIGTERM or SIGHUP records only tasks already finished,
 with `stopped: true`; a stop before any completion records nothing. A stopped
 row supplies no passing claim. An execution finishing after its row was
-recorded also supplies no pass. Launchpad's export/verify, update/refresh and
-seeds/staging files run two at a time, each with its own 900-second deadline.
+recorded also supplies no pass. Launchpad declares its files in
+update/refresh, export/verify and seeds/staging order, at most two at a time,
+each with its own 900-second deadline and two host slots. Measured light
+files can still run first beside an exclusive task. Declaring the longer
+update file first aims to reduce the tail when only one heavy file fits;
+the required tasks, assertions and admission limits are unchanged.
 
 The host-lane registry records the first acquirer's capacity, the lesser of
 eight and half the logical processors, at least one; later clones inherit
 it. A task's budget is the gate share divided by that capacity, and the host
 structural task compares it with the maximum task RSS in the three baseline
-passing rows. The three exclusive suites reserve every scheduler lane but
-at most two. Only shared tasks whose latest baseline sample is below 60
-seconds and 512 MiB RSS may use those spare lanes. The exclusive task's
+passing rows. A refusal names `memory.gateShare` and the minimum share that
+would admit that observed peak at the recorded capacity; it also says when
+that value exceeds `memory.hostShare`. The operator can increase the gate
+share only within the host share, or use a host with enough memory. The screen
+retains its observed-peak limit; it does not assert a future worst case.
+
+Session registrations and unwrapped bare work use the per-lane task budget,
+not the whole gate share. They represent one task without a measured parallel
+gate reservation; granting each a full gate share would multiply permitted
+memory outside admission. The bare-group limit is the least live registered
+task limit, capped at the default physical-memory task share.
+
+The three exclusive suites keep a full host reservation and lend nested
+leases to their own task and up to two local light peers. Another gate cannot
+fill the reserved overlap with heavy work. Only shared tasks whose every
+held baseline sample is below 60 seconds and 512 MiB RSS may use those spare
+lanes. The exclusive task's
 shared deadline declaration has at most three concurrent tasks and a factor
 twice that declaration, up to six; nested gates remain inside its inherited
 reservation. Target-worktree's

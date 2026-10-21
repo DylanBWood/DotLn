@@ -97,11 +97,13 @@ export const completePassingRow = (row) =>
   !row.failureKind &&
   row.identityUnchanged !== false &&
   row.buildOutputUnchanged !== false &&
+  row.buildOutputAttested !== false &&
   !row.memory?.failure &&
   !row.abandonedRoots?.length &&
   !partialRow(row) &&
   Number.isFinite(row.durationMs) &&
   row.durationMs >= 0 &&
+  Number.isFinite(Date.parse(row.recordedAt)) &&
   typeof row.evidenceRef === "string" &&
   row.evidenceRef.length > 0;
 
@@ -128,8 +130,15 @@ const DOCUMENT_GATE = "npm run test:docs";
  * a task last ran. Main's index is read at most once, and only when a caller
  * asks; reads never modify main or copy its index here. */
 async function identityRows(root, checkId, codeIdentity) {
-  const { gateCodeIdentity, readGateChecks, gateInstanceInputDigest } =
-    await import("./gate-evidence.mjs");
+  const {
+    gateCodeIdentity,
+    readGateChecks,
+    gateInstanceInputDigest,
+    latestGateExecution,
+    intactGateExecutionRow,
+    passingGateResult,
+    missingGateSuites,
+  } = await import("./gate-evidence.mjs");
   const identity = codeIdentity ?? gateCodeIdentity(root);
   const instanceInputDigest = gateInstanceInputDigest(root);
   const at = (path) => {
@@ -151,6 +160,10 @@ async function identityRows(root, checkId, codeIdentity) {
   let main;
   return {
     identity,
+    latestExecution: latestGateExecution,
+    intactExecutionRow: intactGateExecutionRow,
+    passingResult: passingGateResult,
+    missingSuites: missingGateSuites,
     local: here.rows,
     localOther: here.other,
     main() {
@@ -173,115 +186,13 @@ export async function gateCandidates(root, checkId, codeIdentity) {
     : { codeIdentity: index.identity, rows: index.local, location: "worktree" };
 }
 
-/** Row integrity applies to executions under every check, including runs
- * that supply no pass to the product gate. */
-const intactExecutionRow = (row) =>
-  row.identityUnchanged !== false &&
-  row.buildOutputUnchanged !== false &&
-  row.buildOutputAttested !== false &&
-  !row.stopped &&
-  !row.failureKind &&
-  !row.timedOut &&
-  !row.memory?.failure &&
-  !row.abandonedRoots?.length &&
-  (row.exitCode === 0 || row.identityUnchanged === true) &&
-  Number.isFinite(row.durationMs) &&
-  row.durationMs >= 0 &&
-  Boolean(row.evidenceRef) &&
-  Number.isFinite(Date.parse(row.recordedAt)) &&
-  Array.isArray(row.requiredSuites);
-
-/** Passing tasks from a failed attempt are usable only when that attempt
- * ended at the code identity it started with and retained its attested build
- * output. Partial attempts supply no pass even when their execution is intact. */
-const carriableRow = (row) => !partialRow(row) && intactExecutionRow(row);
-
-const passingResult = (result) =>
-  result.exitCode === 0 &&
-  !result.failureKind &&
-  !result.stopped &&
-  !partialRow(result) &&
-  !result.timedOut &&
-  Number.isFinite(result.durationMs) &&
-  result.durationMs >= 0;
-
-/** The execution of `name` that finished last among these rows. A result
- * carried from another row and a task that never started are not executions:
- * they neither supply a pass nor displace one. A run recorded under another
- * check answers no claim and supplies nothing. When the task's latest run
- * there did not pass, and no gate execution finished after it, that failure
- * is the task's latest run; when it passed, the latest gate execution
- * decides as if the other runs had not happened. Overlapping gates are
- * ordered by when the task finished, then by when its row was recorded.
- * `citesMain` reports a carried result this worktree took from main. */
-function latestExecution(rows, other, name, identity) {
-  let latest,
-    elsewhere,
-    citesMain = false;
-  const ordered = [
-    ...rows.map((row) => [row, true]),
-    ...other.map((row) => [row, false]),
-  ].sort(([a], [b]) =>
-    String(a.recordedAt ?? "").localeCompare(String(b.recordedAt ?? "")),
-  );
-  for (const [row, supplies] of ordered) {
-    if (row.executed !== true) continue;
-    const observed = row.taskTimeline ?? row.cases;
-    if (!Array.isArray(observed)) continue;
-    const named = observed.filter((result) => result?.name === name);
-    if (!named.length) continue;
-    // A row that repeats a name cannot say which result ran: it counts as an
-    // execution of every task it names and supplies nothing.
-    const [result] =
-      new Set(observed.map((entry) => entry?.name)).size === observed.length
-        ? named
-        : [];
-    if (result?.reused) {
-      citesMain ||=
-        supplies &&
-        result.sourceRow?.location === "main" &&
-        result.sourceRow.task === name &&
-        result.sourceRow.codeIdentity === identity;
-      continue;
-    }
-    if (result && result.executed !== true) continue;
-    // A passing partial observation neither supplies nor revokes a complete
-    // pass. A failing partial still displaces it and names the failed task.
-    if (
-      partialRow(row) &&
-      row.exitCode === 0 &&
-      intactExecutionRow(row) &&
-      result &&
-      passingResult(result)
-    )
-      continue;
-    if (!supplies && !result) continue;
-    const recorded = Date.parse(row.recordedAt);
-    const finished = Date.parse(result?.finishedAt);
-    const future = Number.isFinite(finished) && finished > recorded;
-    const at = Number.isFinite(finished) && !future ? finished : recorded;
-    // Rows arrive in recorded order, so an equal finish keeps the later row.
-    if (!supplies) {
-      if (!elsewhere || !(at < elsewhere.at))
-        elsewhere = {
-          row,
-          at,
-          passed: !future && intactExecutionRow(row) && passingResult(result),
-        };
-    } else if (!latest || !(at < latest.at)) latest = { row, result, at };
-  }
-  if (elsewhere && !elsewhere.passed && !(elsewhere.at < latest?.at))
-    return { row: elsewhere.row, at: elsewhere.at, citesMain };
-  return { ...latest, citesMain };
-}
-
 /** One execution decision for the runner and the completion claim. The
  * worktree's own executions decide first. Main's decide for a worktree
  * with no row at the identity, and re-validate a pass an earlier row here
  * carried from main; while main cannot be consulted, such a pass has no
  * execution to stand on. */
 function decidingExecution(index, name) {
-  let latest = latestExecution(
+  let latest = index.latestExecution(
       index.local,
       index.localOther,
       name,
@@ -291,7 +202,7 @@ function decidingExecution(index, name) {
   if (!latest.row && (!index.local.length || latest.citesMain)) {
     const main = index.main();
     if (!main) return undefined;
-    latest = latestExecution(main.rows, main.other, name, index.identity);
+    latest = index.latestExecution(main.rows, main.other, name, index.identity);
     location = "main";
   }
   return { ...latest, location };
@@ -299,13 +210,21 @@ function decidingExecution(index, name) {
 
 /** A deciding execution may be carried only when it finished at a known
  * time in a carriable row. */
-function decidingPass(index, name, latest = decidingExecution(index, name)) {
+function decidingPass(
+  index,
+  name,
+  latest = decidingExecution(index, name),
+  legacyOwn = false,
+) {
   if (!latest) return undefined;
   const { row, result } = latest;
   return row &&
     result &&
-    carriableRow(row) &&
-    passingResult(result) &&
+    !partialRow(row) &&
+    index.intactExecutionRow(
+      legacyOwn ? { ...row, requiredSuites: [] } : row,
+    ) &&
+    index.passingResult(result) &&
     Number.isFinite(Date.parse(result.finishedAt)) &&
     Date.parse(result.finishedAt) <= Date.parse(row.recordedAt)
     ? { row, result, location: latest.location }
@@ -393,22 +312,28 @@ export async function coveringGateCheck(
   const decided = new Map();
   const displacedTasks = (row) => {
     const observed = row.taskTimeline ?? row.cases;
-    return (Array.isArray(observed) ? observed : [])
+    const invalid = (Array.isArray(observed) ? observed : [])
       .map((result) => result?.name)
       .filter((name) => {
         const result = observed.find((entry) => entry?.name === name);
-        if (Date.parse(result?.finishedAt) > Date.parse(row.recordedAt))
+        if (
+          typeof name !== "string" ||
+          Date.parse(result?.finishedAt) > Date.parse(row.recordedAt)
+        )
           return true;
         if (!decided.has(name)) {
           const latest = decidingExecution(index, name);
-          decided.set(name, {
-            own: latest?.row,
-            pass: decidingPass(index, name, latest),
-          });
+          decided.set(name, latest);
         }
-        const { own, pass } = decided.get(name);
-        return own !== row && !pass;
+        const latest = decided.get(name);
+        return !decidingPass(
+          index,
+          name,
+          latest,
+          latest?.row === row && row.requiredSuites === undefined,
+        );
       });
+    return [...new Set([...index.missingSuites(row), ...invalid])];
   };
   const complete = rows.filter(completePassingRow);
   const candidates = complete.filter((row) => !displacedTasks(row).length);

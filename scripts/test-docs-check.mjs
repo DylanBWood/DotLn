@@ -739,6 +739,8 @@ test("planning owns ceiling increases without a gate enforcing the raise rule", 
       "user.name=Fixture",
       "-c",
       "user.email=fixture@example.invalid",
+      "-c",
+      "maintenance.auto=false",
       "commit",
       "-qm",
       "fixture controls",
@@ -1051,7 +1053,7 @@ function taggedFixture(t) {
   const release = (name, entry, date) => {
     f.write(`release-${name}.txt`, `${name}\n`);
     git(["add", "-A"]);
-    git(["commit", "-qm", name], {
+    git(["-c", "maintenance.auto=false", "commit", "-qm", name], {
       GIT_COMMITTER_DATE: date,
       GIT_AUTHOR_DATE: date,
     });
@@ -1065,7 +1067,7 @@ function taggedFixture(t) {
   );
   f.write("release-v0.2.0.txt", "v0.2.0\n");
   git(["add", "-A"]);
-  git(["commit", "-qm", "v0.2.0"], {
+  git(["-c", "maintenance.auto=false", "commit", "-qm", "v0.2.0"], {
     GIT_COMMITTER_DATE: "2026-01-01T00:00:00Z",
     GIT_AUTHOR_DATE: "2026-01-01T00:00:00Z",
   });
@@ -1257,12 +1259,18 @@ test("document gate prints each ceiling advisory once and refuses invalid metada
         nonExemptBytesAtLanding: Buffer.byteLength(second),
         ceiling: Buffer.byteLength(second) - 4,
       };
+      const binding = "select-launchpad.mjs";
+      f.write(binding, "process.env.DOTLN_LAUNCHPAD = process.cwd();\n");
       const table = [
         {
           ...suites.find((row) => row.name === "docs-check"),
-          command: [process.execPath, script],
+          command: [
+            process.execPath,
+            "--import",
+            pathToFileURL(join(f.root, binding)).href,
+            script,
+          ],
           needsBuild: false,
-          executionEnvironment: { ...process.env, DOTLN_LAUNCHPAD: f.root },
         },
       ];
       const run = async () => {
@@ -2061,7 +2069,7 @@ function frontPageFixture(
   f.controls();
   git("checkout", "-q", "-b", baseBranch);
   git("add", "-A");
-  git("commit", "-qm", "base");
+  git("-c", "maintenance.auto=false", "commit", "-qm", "base");
   git("checkout", "-q", "-b", "wo-999");
   const frontPage = () =>
     f
@@ -2688,7 +2696,13 @@ test("the page GitHub shows is the record's page, read through main's configurat
     "docs/work-orders/WO-999-fixture.md",
     malformed.order("**Front page:** README.md (the map only)"),
   );
-  malformed.git("commit", "-qam", "malformed field");
+  malformed.git(
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qam",
+    "malformed field",
+  );
   malformed.git("checkout", "-q", "wo-999");
   malformed.git("merge", "-q", "main");
   malformed.write(

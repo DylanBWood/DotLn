@@ -9,11 +9,20 @@ import { isMainModule } from "./lib/paths.mjs";
 
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { decodeLog, encodeLog } from "@dotln/kernel";
+import { buildFreshness } from "./lib/build-freshness.mjs";
 import { DOCUMENT_GATE_STUBS } from "./lib/document-gate-stubs.mjs";
 import { expandSuiteTasks, suites } from "./test-runner.mjs";
 
 import { evidenceJsonlDeclarations } from "./lib/evidence-jsonl.mjs";
+
+let decodeLog, encodeLog;
+try {
+  ({ decodeLog, encodeLog } = await import("@dotln/kernel"));
+} catch {
+  throw new Error(
+    "Registrations runtime unavailable; run npm run sync to rebuild the compiled kernel, then retry registrations",
+  );
+}
 
 const REGISTRY = "packages/kernel/test/fixtures/jsonl-protocols.json";
 const STUBS = "scripts/lib/document-gate-stubs.mjs";
@@ -23,6 +32,11 @@ const STUBS = "scripts/lib/document-gate-stubs.mjs";
  * kernel's registry classifies; and every script a document-gate task runs
  * has a stub in the runner's CLI-selection fixture. */
 export function registrationFindings(root = findLaunchpad()) {
+  const runtime = buildFreshness(TOOL_ROOT);
+  if (!runtime.current)
+    throw new Error(
+      `Registrations runtime is stale: ${runtime.reason}; run npm run sync, then retry registrations`,
+    );
   const registry = JSON.parse(readFileSync(join(TOOL_ROOT, REGISTRY), "utf8"));
   const segment = new RegExp(registry.controlSegmentPattern, "u");
   const files = execGit(

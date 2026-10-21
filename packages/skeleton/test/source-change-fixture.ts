@@ -57,7 +57,14 @@ export function createSourceFixture(): string {
     "import assert from 'node:assert/strict'; import {readFileSync} from 'node:fs'; assert.equal(readFileSync('fixture.txt','utf8'), 'changed by synthetic worker\\n');\n",
   );
   fixtureGit(repo, "add", "-A");
-  fixtureGit(repo, "commit", "-m", "Synthetic target baseline");
+  fixtureGit(
+    repo,
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-m",
+    "Synthetic target baseline",
+  );
   writeFileSync(join(root, "base.txt"), fixtureGit(repo, "rev-parse", "HEAD"));
   writeFileSync(join(root, "launches.txt"), "");
   return root;

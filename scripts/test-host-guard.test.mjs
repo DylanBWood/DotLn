@@ -26,7 +26,11 @@ import { join, resolve } from "node:path";
 import { once } from "node:events";
 import { executeSuite, runGate, suites } from "./test-runner.mjs";
 import { readGateChecks } from "./lib/gate-evidence.mjs";
-import { guardCensus, transferDuplicateOwnership } from "./host-guard.mjs";
+import {
+  guardCensus,
+  transferDuplicateOwnership,
+  handledStopMembers,
+} from "./host-guard.mjs";
 import { agentAncestor, ensureHostGuard } from "./lib/host-guard-state.mjs";
 import {
   acquireHostLaneCapacity,
@@ -68,6 +72,16 @@ const host = {
 const transcript = (label, value) =>
   console.log(`WO-185 ${label} ${JSON.stringify({ host, ...value })}`);
 
+test("a live guard restores its missing record and a concurrent start reuses it", async (t) => {
+  const f = await fixture(t);
+  const first = await ensureHostGuard(f.directory);
+  rmSync(join(f.directory, "guard.json"));
+  const second = await ensureHostGuard(f.directory);
+  assert.equal(second.pid, first.pid);
+  assert.equal(second.birth, first.birth);
+  assert.equal(second.reused, true);
+});
+
 async function fixture(t) {
   const base = realpathSync(mkdtempSync(join(tmpdir(), "dotln-wo185-"))),
     directory = join(base, "host"),
@@ -98,6 +112,8 @@ async function fixture(t) {
     "user.email=fixture@example.invalid",
     "-c",
     "commit.gpgsign=false",
+    "-c",
+    "maintenance.auto=false",
     "commit",
     "-qm",
     "Fixture",
@@ -881,6 +897,8 @@ test("WO-185 document base comparisons pass their four-lane lease to nested gate
     "user.email=fixture@example.invalid",
     "-c",
     "commit.gpgsign=false",
+    "-c",
+    "maintenance.auto=false",
     "commit",
     "-qm",
     "Nested base fixture",
@@ -1042,7 +1060,15 @@ test("WO-185 independent worktrees and separate clones share lanes, wait, reclai
   const worktree = join(f.base, "worktree"),
     clone = join(f.base, "clone");
   execGit(["-C", f.repo, "worktree", "add", "-q", "--detach", worktree]);
-  execGit(["clone", "-q", "--local", f.repo, clone]);
+  execGit([
+    "-c",
+    "maintenance.auto=false",
+    "clone",
+    "-q",
+    "--local",
+    f.repo,
+    clone,
+  ]);
   for (const [other, cpuCount] of [worktree, clone].flatMap((repo) =>
     [availableParallelism(), 4, 2].map((count) => [repo, count]),
   )) {
@@ -2142,6 +2168,89 @@ test("WO-185 membership publication cannot prevent a task or gate budget stop", 
       stats.unavailable.some((reason) => reason.includes("publication")),
     );
   }
+});
+
+test("task cleanup records denied signals from both stop and finish", () => {
+  const pid = 999999990;
+  const members = [
+    {
+      pid,
+      ppid: 1,
+      pgid: pid,
+      birth: "root",
+      name: "root",
+      footprintBytes: 0,
+      rssBytes: 0,
+    },
+    {
+      pid: pid + 1,
+      ppid: pid,
+      pgid: pid,
+      birth: "child",
+      name: "child",
+      footprintBytes: 0,
+      rssBytes: 0,
+    },
+  ];
+  for (const stopFirst of [false, true]) {
+    const monitor = createProcessMonitor({
+      limits: memoryBudgets(root),
+      sample: () => ({
+        processes: members,
+        source: "fixture",
+        pressure: 1,
+        swapBytes: 0,
+      }),
+      kill(rows, { onError }) {
+        onError({
+          pid: rows.at(-1).pid,
+          code: "EPERM",
+          message: "planted denial",
+        });
+        return [];
+      },
+    });
+    try {
+      const task = monitor.add(pid, "cleanup", () => {}, Infinity, "root");
+      if (stopFirst) monitor.stopTasks();
+      const result = monitor.finish(task);
+      assert.equal(result.killErrors.length, stopFirst ? 2 : 1);
+      assert.ok(result.killErrors.every((row) => row.code === "EPERM"));
+      assert.equal(result.survivingProcesses[0].pid, pid + 1);
+    } finally {
+      monitor.close();
+    }
+  }
+});
+
+test("a stopped candidate handles protected and already departed members once", () => {
+  const members = Array.from({ length: 4 }, (_, index) => ({
+    pid: 900000 + index,
+    birth: "original",
+    name: "fixture",
+  }));
+  const current = [members[0], members[2], members[3]];
+  const incident = { killedProcesses: [{ pid: members[2].pid }] };
+  const handled = handledStopMembers(
+    members,
+    incident,
+    new Set([members[0].pid]),
+    current,
+  );
+  assert.deepEqual(
+    handled.map((row) => row.pid),
+    members.slice(0, 3).map((row) => row.pid),
+  );
+  assert.equal(
+    handled.some((row) => row.pid === members[3].pid),
+    false,
+    "a live denied survivor remains eligible for cleanup",
+  );
+  const laterCandidate = members.slice(0, 3);
+  assert.equal(
+    laterCandidate.every((row) => handled.some((done) => done.pid === row.pid)),
+    true,
+  );
 });
 
 test(

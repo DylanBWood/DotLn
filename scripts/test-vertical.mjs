@@ -878,6 +878,8 @@ for (const mode of ["baseline", "capsule", "lint", "observation"])
         fixtureGit(f.target, "add", "fixture.txt");
         fixtureGit(
           f.target,
+          "-c",
+          "maintenance.auto=false",
           "commit",
           "-m",
           "Already satisfies the named behavior",

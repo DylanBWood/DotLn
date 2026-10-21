@@ -347,6 +347,8 @@ test("immutable evidence admits a component-only bump while source, external dep
       "user.name=Fixture",
       "-c",
       "user.email=fixture@example.invalid",
+      "-c",
+      "maintenance.auto=false",
       "commit",
       "--quiet",
       "-m",

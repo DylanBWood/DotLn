@@ -19,6 +19,7 @@ import {
 } from "node:fs";
 import { execFileSync, spawn } from "node:child_process";
 import { startDeadline } from "../../packages/skeleton/src/gate-deadlines.mjs";
+import { isMainModule } from "../../scripts/lib/paths.mjs";
 import { randomUUID } from "node:crypto";
 import { tmpdir } from "node:os";
 import {
@@ -963,10 +964,7 @@ async function main(args) {
   console.log(JSON.stringify(summarize(rows, sites.length)));
 }
 
-if (
-  process.argv[1] &&
-  resolve(process.argv[1]) === fileURLToPath(import.meta.url)
-)
+if (isMainModule(import.meta.url))
   main(process.argv.slice(2)).catch((error) => {
     console.error(`mutation probe refused: ${error.message}`);
     process.exitCode = 1;

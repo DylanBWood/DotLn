@@ -45,7 +45,14 @@ test("target records preserve reviewed reports, refuse changed inputs and publis
     write(f.target, "reviewed.txt", "Reviewed change.\n");
     write(f.target, ".gitignore", "deps/\n");
     git(f.target, "add", "reviewed.txt", ".gitignore");
-    git(f.target, "commit", "-qm", "fix: preserve reviewed text");
+    git(
+      f.target,
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "fix: preserve reviewed text",
+    );
     const reviewed = git(f.target, "rev-parse", "HEAD");
     const reports = closeOrder(f);
     const decisions = "records/evidence/WO-999/decisions.md";
@@ -146,7 +153,14 @@ test("target records preserve reviewed reports, refuse changed inputs and publis
       "## Result\n\nPreserve reviewed text and its validation.\n",
     );
     git(f.orderRoot, "add", "-A");
-    git(f.orderRoot, "commit", "-qm", "docs: preserve validation links");
+    git(
+      f.orderRoot,
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "docs: preserve validation links",
+    );
     const launchpadHead = git(f.orderRoot, "rev-parse", "HEAD");
     const publish = (...args) =>
       f.worktree(
@@ -190,11 +204,25 @@ test("target records preserve reviewed reports, refuse changed inputs and publis
       const original = readFileSync(join(root, path));
       write(root, path, bytes);
       git(root, "add", "-A");
-      git(root, "commit", "-qm", "test: invalid publication input");
+      git(
+        root,
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-qm",
+        "test: invalid publication input",
+      );
       noPublish(pattern);
       write(root, path, original);
       git(root, "add", "-A");
-      git(root, "commit", "-qm", "test: restore publication input");
+      git(
+        root,
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-qm",
+        "test: restore publication input",
+      );
     };
     for (const [root, path] of [
       [f.target, "reviewed.txt"],
@@ -362,7 +390,14 @@ test("target records preserve reviewed reports, refuse changed inputs and publis
       for (const bytes of [lacking, granted]) {
         write(f.orderRoot, path, bytes);
         git(f.orderRoot, "add", "-A");
-        git(f.orderRoot, "commit", "-qm", "test: order branch authority");
+        git(
+          f.orderRoot,
+          "-c",
+          "maintenance.auto=false",
+          "commit",
+          "-qm",
+          "test: order branch authority",
+        );
       }
       committedMutation(path, lacking, pattern, f.main);
       assert.equal(readFileSync(join(f.orderRoot, path), "utf8"), granted);
@@ -446,22 +481,33 @@ test("target records preserve reviewed reports, refuse changed inputs and publis
     rmSync(join(f.orderRoot, "records/state/local/body.md"));
     symlinkSync("reviewed-body.md", join(f.orderRoot, "body-link.md"));
     git(f.orderRoot, "add", "body-link.md");
-    git(f.orderRoot, "commit", "-qm", "test: symbolic body");
+    git(
+      f.orderRoot,
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "test: symbolic body",
+    );
     noPublish(/contained regular file/u, { body: "body-link.md" });
     rmSync(join(f.orderRoot, "body-link.md"));
     git(f.orderRoot, "add", "-A");
-    git(f.orderRoot, "commit", "-qm", "test: remove symbolic body");
-    const gitWrapper = join(forge.bin, "git"),
-      gitWrapperBytes = readFileSync(gitWrapper);
-    writeFileSync(
-      gitWrapper,
-      gitWrapperBytes
-        .toString("utf8")
-        .replace(
-          "process.stdout.write(result.stdout); process.exit(result.status ?? 1);",
-          "process.stdout.write('https://github.com/dotln-fixture/other.git\\n'); process.exit(0);",
-        ),
+    git(
+      f.orderRoot,
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "test: remove symbolic body",
     );
+    const gitWrapper = forge.gitAdapter,
+      gitWrapperBytes = readFileSync(gitWrapper, "utf8");
+    const wrongRemote = gitWrapperBytes.replace(
+      "process.stdout.write(result.stdout); process.exit(result.status ?? 1);",
+      "process.stdout.write('https://github.com/dotln-fixture/other.git\\n'); process.exit(0);",
+    );
+    assert.notEqual(wrongRemote, gitWrapperBytes, "remote fault is installed");
+    writeFileSync(gitWrapper, wrongRemote);
     const wrongForge = publish();
     assert.notEqual(wrongForge.status, 0);
     assert.match(
@@ -518,7 +564,15 @@ test("target records preserve reviewed reports, refuse changed inputs and publis
     rmSync(join(f.orderRoot, "docs/control/local/harness/unrelated.json"));
     const cloneBase = git(f.clone, "rev-parse", "main");
     const merged = join(f.base, "forge-merge");
-    git(f.base, "clone", "-q", join(f.base, "target.git"), merged);
+    git(
+      f.base,
+      "-c",
+      "maintenance.auto=false",
+      "clone",
+      "-q",
+      join(f.base, "target.git"),
+      merged,
+    );
     git(merged, "config", "user.name", "Fixture");
     git(merged, "config", "user.email", "fixture@example.invalid");
     git(
@@ -632,7 +686,14 @@ test("target records refuse missing review, dirty targets and destination collis
       "Existing target history.\n",
     );
     git(f.target, "add", "docs");
-    git(f.target, "commit", "-qm", "docs: existing target history");
+    git(
+      f.target,
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "docs: existing target history",
+    );
     const reports = closeOrder(f);
     write(
       f.orderRoot,
@@ -720,7 +781,14 @@ test("target records resume interrupted commits and removals with literal docume
     f.start();
     write(f.target, "reviewed.txt", "Reviewed change.\n");
     git(f.target, "add", "reviewed.txt");
-    git(f.target, "commit", "-qm", "fix: reviewed change");
+    git(
+      f.target,
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "fix: reviewed change",
+    );
     const reports = closeOrder(f);
     write(
       f.orderRoot,
@@ -910,7 +978,14 @@ test("records publication validates parent, paths, modes and every recorded blob
   withFixture((f) => {
     write(f.clone, "docs/record.md", "Old record.\n");
     git(f.clone, "add", "docs");
-    git(f.clone, "commit", "-qm", "docs: original record");
+    git(
+      f.clone,
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "docs: original record",
+    );
     const parent = git(f.clone, "rev-parse", "HEAD"),
       bytes = "Reviewed record.\n",
       sha256 = createHash("sha256").update(bytes).digest("hex");
@@ -1136,11 +1211,25 @@ test("target planning publishes only product and planning documents under the re
     writeFileSync(grants, "[]");
     refuse(/operator grant/u);
     git(f.main, "add", "packages/skeleton/loadouts/grants.json");
-    git(f.main, "commit", "-qm", "test: revoke committed grant");
+    git(
+      f.main,
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "test: revoke committed grant",
+    );
     writeFileSync(grants, grantBytes);
     refuse(/grant registry differs from committed authority/u);
     git(f.main, "add", "packages/skeleton/loadouts/grants.json");
-    git(f.main, "commit", "-qm", "test: restore committed grant");
+    git(
+      f.main,
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "test: restore committed grant",
+    );
     const monitor = join(f.base, "monitor-fired"),
       hook = join(f.base, "monitor.sh");
     writeFileSync(
@@ -1153,7 +1242,14 @@ test("target planning publishes only product and planning documents under the re
     git(f.clone, "switch", "-qc", "divergent-planning-base");
     write(f.clone, "divergent.txt", "unmerged\n");
     git(f.clone, "add", "-A");
-    git(f.clone, "commit", "-qm", "test: divergent base");
+    git(
+      f.clone,
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "test: divergent base",
+    );
     const divergent = git(f.clone, "rev-parse", "HEAD");
     git(f.clone, "switch", "-q", "main");
     refuse(/not an ancestor/u, { base: divergent });
@@ -1463,7 +1559,14 @@ test("WO-221 the draft form at verified pushes the working tree under a draft pu
     assert.equal(calls().filter((args) => args[0] === "pr").length, 1);
     // The reviewed commit on wo-999, the final review and the records.
     git(f.target, "add", "reviewed.txt");
-    git(f.target, "commit", "-qm", "feat: preserve reviewed behavior");
+    git(
+      f.target,
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "feat: preserve reviewed behavior",
+    );
     f.ok(
       f.call(f.orderRoot, f.orderRoot, "target-gate", ["WO-999", "--review"]),
     );
@@ -1486,7 +1589,14 @@ test("WO-221 the draft form at verified pushes the working tree under a draft pu
       "## Result\n\nPreserve reviewed behavior.\n",
     );
     git(f.orderRoot, "add", "-A");
-    git(f.orderRoot, "commit", "-qm", "docs: record validation");
+    git(
+      f.orderRoot,
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "docs: record validation",
+    );
     const publishArgs = (branch) => [
       "publish",
       "WO-999",
@@ -1572,7 +1682,14 @@ test("target publication retains installation ownership when its live manifest d
     write(f.target, "reviewed.txt", "Reviewed change.\n");
     git(f.target, "add", "reviewed.txt");
     git(f.target, "add", "-f", ".claude/settings.json");
-    git(f.target, "commit", "-qm", "fix: preserve reviewed behavior");
+    git(
+      f.target,
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "fix: preserve reviewed behavior",
+    );
     closeOrder(f);
     write(
       f.orderRoot,
@@ -1586,7 +1703,14 @@ test("target publication retains installation ownership when its live manifest d
       "## Result\n\nPreserve reviewed behavior.\n",
     );
     git(f.orderRoot, "add", "-A");
-    git(f.orderRoot, "commit", "-qm", "docs: record validation");
+    git(
+      f.orderRoot,
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "docs: record validation",
+    );
     const before = git(join(f.base, "target.git"), "show-ref");
     for (const missing of [false, true]) {
       if (missing) rmSync(manifest);

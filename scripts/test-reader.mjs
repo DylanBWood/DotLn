@@ -63,7 +63,14 @@ function fixture(t) {
   runGit(root, ["config", "user.email", "fixture@example.invalid"]);
   write(root, "README.md", "Reader fixture.\n");
   runGit(root, ["add", "."]);
-  runGit(root, ["commit", "--quiet", "-m", "Fixture"]);
+  runGit(root, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "--quiet",
+    "-m",
+    "Fixture",
+  ]);
   return root;
 }
 function tag(
@@ -85,6 +92,8 @@ function chooseProfile(root, value = profiles) {
   write(root, "docs/control/reader-profiles.json", JSON.stringify(value));
   runGit(root, ["add", "."]);
   runGit(root, [
+    "-c",
+    "maintenance.auto=false",
     "commit",
     "--quiet",
     "--allow-empty",

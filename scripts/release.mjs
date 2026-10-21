@@ -1812,7 +1812,7 @@ export async function regeneratedPullRequestBody(root, workOrderId, revision) {
         /<!-- dotln-process-meter:start -->[\s\S]*?<!-- dotln-process-meter:end -->/,
         block,
       )
-    : source;
+    : `${source.trimEnd()}\n\n${block}\n`;
   let repository = null;
   try {
     repository = resolveGitHubPushTarget(root);
@@ -3636,22 +3636,23 @@ const main = async () => {
         state.workOrderId,
         "PR.md",
       );
-      const begin = "<!-- dotln-process-meter:start -->",
-        end = "<!-- dotln-process-meter:end -->";
-      const block = `${begin}\n${renderMetaTable(meta)}\n${end}`;
-      const source = existsSync(path)
-        ? readFileSync(path, "utf8")
-        : `# ${state.workOrderId}\n`;
-      const next = source.includes(begin)
-        ? source.replace(
-            /<!-- dotln-process-meter:start -->[\s\S]*?<!-- dotln-process-meter:end -->/,
-            block,
-          )
-        : `${source.trimEnd()}\n\n${block}\n`;
-      if (!existsSync(path) || next !== source) {
-        mkdirSync(dirname(path), { recursive: true });
-        writeFileSync(path, next);
-        ancillary.push(path);
+      // Release preparation owns the meter, while the reviewer owns creation
+      // of the PR draft. A meter snapshot never manufactures review prose.
+      if (existsSync(path)) {
+        const begin = "<!-- dotln-process-meter:start -->",
+          end = "<!-- dotln-process-meter:end -->";
+        const block = `${begin}\n${renderMetaTable(meta)}\n${end}`;
+        const source = readFileSync(path, "utf8");
+        const next = source.includes(begin)
+          ? source.replace(
+              /<!-- dotln-process-meter:start -->[\s\S]*?<!-- dotln-process-meter:end -->/,
+              block,
+            )
+          : `${source.trimEnd()}\n\n${block}\n`;
+        if (next !== source) {
+          writeFileSync(path, next);
+          ancillary.push(path);
+        }
       }
     }
     // Ancillary filesystem outputs must succeed before the target changes.
