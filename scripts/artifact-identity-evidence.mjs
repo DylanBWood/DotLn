@@ -47,7 +47,7 @@ const { args: mode, selection } = evidenceArgs(
 );
 if (mode.length !== 1 || !["--write", "--check"].includes(mode[0])) {
   console.error(
-    "usage: artifact-identity-evidence.mjs --write|--check [--edition WO-NNN] [--revision NNN] (run npm run build first)",
+    "usage: artifact-identity-evidence.mjs --write|--check [--edition WO-NNN] [--revision NNN] (run node scripts/bootstrap.mjs first)",
   );
   process.exit(2);
 }

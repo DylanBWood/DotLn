@@ -6532,11 +6532,11 @@ test("WO-145 optional economy support preserves historical snapshots through the
   // WO-221's release-close deletion sentence preserves WO-216's snapshot.
   const baseline = JSON.parse(
     readFileSync(
-      join(source, "packages/skeleton/fixtures/wo217-role-baseline.json"),
+      join(source, "packages/skeleton/fixtures/wo226-role-baseline.json"),
       "utf8",
     ),
   );
-  assert.equal(baseline.historicalBaseline, "wo218-role-baseline.json");
+  assert.equal(baseline.historicalBaseline, "wo217-role-baseline.json");
   assert.equal(baseline.upstreamBaseline, "wo185-role-baseline.json");
   const chains = [
     baseline,
@@ -10724,6 +10724,61 @@ test("WO-133 source-only runtime diagnosis never builds and refresh verifies the
   assert.deepEqual(transcript, [
     "Refreshing pinned runtime (pins-differ); npm run build.\n",
   ]);
+});
+
+test("WO-226 runtime refresh selects the kit restore and never calls a source build", (t) => {
+  const root = repo(t);
+  const file = "packages/skeleton/dist/src/fixture.js";
+  const bytes = "export const fixture = true;\n";
+  const snapshot = ".runtime/harness/0000000000000226";
+  write(root, "KIT-MANIFEST.json", "{}\n");
+  write(root, file, bytes);
+  write(
+    root,
+    ".claude/harness-manifest.json",
+    json({
+      profiles: [
+        {
+          profile: {
+            runtime: {
+              snapshot,
+              files: [{ path: file, hash: `fnv1a64:${fnv1a64(bytes)}` }],
+            },
+          },
+        },
+      ],
+    }),
+  );
+  write(
+    root,
+    "scripts/lib/release-kit-runtime.mjs",
+    `import {mkdirSync, copyFileSync} from 'node:fs'; import {dirname} from 'node:path'; const destination=${JSON.stringify(`${snapshot}/${file}`)}; mkdirSync(dirname(destination),{recursive:true}); copyFileSync(${JSON.stringify(file)},destination);`,
+  );
+  const lines = [];
+  const build = () => assert.fail("an export must not call the source build");
+  assert.equal(
+    refreshHarnessRuntime(root, build, (line) => lines.push(line)),
+    true,
+  );
+  assert.equal(harnessRuntimeCause(root), null);
+  assert.deepEqual(lines, [
+    "Refreshing pinned runtime (snapshot-missing); carried-runtime restore.\n",
+  ]);
+  assert.equal(refreshHarnessRuntime(root, build), false);
+  write(root, file, "changed runtime\n");
+  assert.throws(
+    () => refreshHarnessRuntime(root, build, () => {}),
+    /Prepared runtime still pins-differ/,
+  );
+  write(
+    root,
+    "scripts/lib/release-kit-runtime.mjs",
+    "console.error('kit verification failed'); process.exitCode=1;",
+  );
+  assert.throws(
+    () => refreshHarnessRuntime(root, build, () => {}),
+    /Carried-runtime restore failed: kit verification failed.*checkout preserved/,
+  );
 });
 
 test("process table names the observed cutoff and evidence sources", () => {

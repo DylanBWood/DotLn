@@ -147,6 +147,11 @@ Packaging and the update path exist (WO-074 to WO-078); the license posture
 is decided below; an update shows its plan before writing (WO-203).
 Release close refreshes the starter after each release (WO-215); an instance
 takes a starter update through its own planning pass (WO-207).
+After the operator merges that update, its route ends on clean `main` with
+`node scripts/launchpad.mjs update --finish`: fetch origin, check the
+fast-forward before checkout writes, advance main and bootstrap the carried
+runtime (WO-226). A dirty tree, another branch or a non-fast-forward refuses
+with the fact named.
 Instance orders and session-driven target orders have publication and close
 routes (WO-210); rollback, channel selection and the first task remain queued
 (WO-207, WO-083).

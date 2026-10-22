@@ -406,10 +406,14 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
   }
   if (command === "receipt") {
     const [result, ...flags] = rest;
-    const opt = options(flags, ["--statement", "--dispositions"]);
+    const opt = options(flags, [
+      "--statement",
+      "--dispositions",
+      "--worker-type",
+    ]);
     if (!result || !opt["--statement"])
       throw new Error(
-        "usage: plan receipt <result.json> --statement <statement.txt> [--dispositions <file>]",
+        "usage: plan receipt <result.json> --statement <statement.txt> [--dispositions <file>] [--worker-type dotln-worker|dotln-worker-fable|codex-spawn-agent]",
       );
     let dispositions = [];
     if (opt["--dispositions"]) {
@@ -420,6 +424,7 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
     }
     return fileDirectRefutation(root, result, opt["--statement"], {
       dispositions,
+      ...(opt["--worker-type"] ? { workerType: opt["--worker-type"] } : {}),
     });
   }
   if (command === "subject" && !rest.length)

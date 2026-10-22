@@ -1,0 +1,116 @@
+{
+  "schemaVersion": 1,
+  "decision": "WO-226-D018",
+  "followup": "FUP-957602bc42e32e1d",
+  "method": "Installed CLAUDE.md plus generated role SKILL.md UTF-8 bytes, compared with the worktree HEAD before this order. No token or elapsed-time inference.",
+  "profiles": [
+    {
+      "role": "executor",
+      "path": ".claude/skills/dotln-executor/SKILL.md",
+      "beforeBytes": 28822,
+      "bytes": 29132,
+      "deltaBytes": 310,
+      "ceiling": 29246,
+      "headroomBytes": 114
+    },
+    {
+      "role": "verifier",
+      "path": ".claude/skills/dotln-verifier/SKILL.md",
+      "beforeBytes": 25574,
+      "bytes": 25884,
+      "deltaBytes": 310,
+      "ceiling": 29831,
+      "headroomBytes": 3947
+    },
+    {
+      "role": "reviewer",
+      "path": ".claude/skills/dotln-reviewer/SKILL.md",
+      "beforeBytes": 28603,
+      "bytes": 28913,
+      "deltaBytes": 310,
+      "ceiling": 28884,
+      "headroomBytes": -29
+    },
+    {
+      "role": "release-close",
+      "path": ".claude/skills/dotln-release-close/SKILL.md",
+      "beforeBytes": 17685,
+      "bytes": 17995,
+      "deltaBytes": 310,
+      "ceiling": 21266,
+      "headroomBytes": 3271
+    },
+    {
+      "role": "planner",
+      "path": ".claude/skills/dotln-planner/SKILL.md",
+      "beforeBytes": 18594,
+      "bytes": 18904,
+      "deltaBytes": 310,
+      "ceiling": 24576,
+      "headroomBytes": 5672
+    },
+    {
+      "role": "refuter",
+      "path": ".claude/skills/dotln-refuter/SKILL.md",
+      "beforeBytes": 17408,
+      "bytes": 17718,
+      "deltaBytes": 310,
+      "ceiling": null,
+      "headroomBytes": null
+    },
+    {
+      "role": "executor",
+      "path": ".agents/skills/dotln-executor/SKILL.md",
+      "beforeBytes": 28822,
+      "bytes": 29132,
+      "deltaBytes": 310,
+      "ceiling": 29246,
+      "headroomBytes": 114
+    },
+    {
+      "role": "verifier",
+      "path": ".agents/skills/dotln-verifier/SKILL.md",
+      "beforeBytes": 25574,
+      "bytes": 25884,
+      "deltaBytes": 310,
+      "ceiling": 29831,
+      "headroomBytes": 3947
+    },
+    {
+      "role": "reviewer",
+      "path": ".agents/skills/dotln-reviewer/SKILL.md",
+      "beforeBytes": 28603,
+      "bytes": 28913,
+      "deltaBytes": 310,
+      "ceiling": 28884,
+      "headroomBytes": -29
+    },
+    {
+      "role": "release-close",
+      "path": ".agents/skills/dotln-release-close/SKILL.md",
+      "beforeBytes": 17685,
+      "bytes": 17995,
+      "deltaBytes": 310,
+      "ceiling": 21266,
+      "headroomBytes": 3271
+    },
+    {
+      "role": "planner",
+      "path": ".agents/skills/dotln-planner/SKILL.md",
+      "beforeBytes": 18594,
+      "bytes": 18904,
+      "deltaBytes": 310,
+      "ceiling": 24576,
+      "headroomBytes": 5672
+    },
+    {
+      "role": "refuter",
+      "path": ".agents/skills/dotln-refuter/SKILL.md",
+      "beforeBytes": 17408,
+      "bytes": 17718,
+      "deltaBytes": 310,
+      "ceiling": null,
+      "headroomBytes": null
+    }
+  ]
+}

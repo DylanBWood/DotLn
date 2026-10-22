@@ -1971,6 +1971,271 @@ test("WO-075 design: a fresh clone of the committed export lacks the ignored sna
   assert.doesNotMatch(again.stdout, /snapshot-missing/u);
 });
 
+test("WO-226 a fast-forwarded export restores its selected runtime for recovery, harness entry and finish", () => {
+  const destination = commitExport(join(scratch, "runtime-update"));
+  const upstream = join(scratch, "runtime-update.git");
+  const subject = join(scratch, "runtime-update-wo999");
+  git(scratch, ["init", "--bare", "-q", "-b", "main", upstream]);
+  git(destination, ["remote", "add", "origin", upstream]);
+  git(destination, ["push", "-q", "origin", "main"]);
+  git(destination, ["worktree", "add", "-q", "-b", "wo-999", subject]);
+  const priorSnapshot =
+    harnessManifestOf(destination).profiles[0].profile.runtime.snapshot;
+  const hostPath = "packages/skeleton/src/harness-host.ts";
+  const originalHost = readFileSync(join(source, hostPath), "utf8");
+  try {
+    write(
+      hostPath,
+      originalHost + "\nexport const fixtureUpdateMarker = true;\n",
+    );
+    git(source, ["add", hostPath]);
+    git(source, [
+      "-c",
+      "commit.gpgsign=false",
+      "commit",
+      "-qm",
+      "Fixture changed runtime pins",
+    ]);
+    ok(
+      run(process.execPath, [
+        join(source, "scripts/launchpad.mjs"),
+        "export",
+        "--update",
+        subject,
+      ]),
+      "update the instance branch",
+    );
+    mkdirSync(join(subject, "docs/work-orders"), { recursive: true });
+    mkdirSync(join(subject, "docs/control/orders"), { recursive: true });
+    writeFileSync(
+      join(subject, "docs/work-orders/WO-999-fixture.md"),
+      "# WO-999 fixture\n\n**Model:** fixture\n**Effort:** xhigh\n",
+    );
+    const events = [
+      {
+        type: "WorkOrderActivated",
+        workOrderPath: "docs/work-orders/WO-999-fixture.md",
+      },
+      { type: "ImplementationReady" },
+      { type: "VerificationRequested", verificationId: "VER-001" },
+      {
+        type: "VerificationCompleted",
+        verificationId: "VER-001",
+        verdict: "pass",
+      },
+      { type: "FinalReviewRequested", finalReviewId: "FINAL-001" },
+      {
+        type: "FinalReviewCompleted",
+        finalReviewId: "FINAL-001",
+        verdict: "pass",
+      },
+    ].map((event) => ({
+      schemaVersion: 1,
+      recordedAt: "2026-10-21T00:00:00.000Z",
+      workOrderId: "WO-999",
+      ...event,
+    }));
+    writeFileSync(
+      join(subject, "docs/control/orders/WO-999.jsonl"),
+      events.map((event) => JSON.stringify(event)).join("\n") + "\n",
+    );
+    ok(
+      run(process.execPath, ["scripts/resume.mjs", "next"], { cwd: subject }),
+      "project the closed synthetic order before merge",
+    );
+    git(subject, ["add", "."]);
+    git(subject, [
+      "-c",
+      "commit.gpgsign=false",
+      "commit",
+      "-qm",
+      "Fixture merged update and closed order",
+    ]);
+    git(subject, ["push", "-q", "origin", "HEAD:main"]);
+    git(destination, ["fetch", "origin", "main"]);
+    git(destination, ["merge", "--ff-only", "origin/main"]);
+    const snapshot =
+      harnessManifestOf(destination).profiles[0].profile.runtime.snapshot;
+    assert.notEqual(snapshot, priorSnapshot);
+    assert.equal(existsSync(join(destination, snapshot)), false);
+    const hookPath = join(destination, ".claude/hooks/session.mjs");
+    const hook = readFileSync(hookPath, "utf8");
+    assert.match(hook, /preparation,/);
+    const controlHook = join(
+      destination,
+      ".claude/hooks/fixture-build-control.mjs",
+    );
+    writeFileSync(
+      controlHook,
+      hook.replace("preparation,", '["npm", ["run", "build", "--silent"]],'),
+    );
+    const input = {
+      cwd: destination,
+      session_id: "export-update-recovery",
+      hook_event_name: "UserPromptSubmit",
+      prompt: "resume: release close",
+    };
+    const hookOptions = {
+      cwd: destination,
+      input: JSON.stringify(input),
+      env: { ...env, CLAUDE_PID: String(process.pid), COPILOT_PROJECT_DIR: "" },
+    };
+    const controlResult = ok(
+      run(process.execPath, [controlHook], hookOptions),
+      "base build control",
+    );
+    assert.match(
+      controlResult.stdout,
+      /Release-close preparation withheld.*npm run build.*tsconfig\.json/s,
+    );
+    assert.equal(existsSync(join(destination, snapshot)), false);
+    rmSync(controlHook);
+    const recovered = ok(
+      run(process.execPath, [hookPath], hookOptions),
+      "export release-close recovery",
+    );
+    assert.match(recovered.stdout, /Dispatch recorded by the harness/);
+    assert.doesNotMatch(recovered.stdout + recovered.stderr, /npm run build/);
+    assert.equal(existsSync(join(destination, snapshot)), true);
+    const codexEnv = { ...env, CODEX_THREAD_ID: "export-update-recovery" };
+    ok(
+      run(process.execPath, ["scripts/resume.mjs", "release-close"], {
+        cwd: destination,
+        env: codexEnv,
+      }),
+      "reserve the synthetic Codex release-close writer",
+    );
+    assert.equal(
+      existsSync(join(destination, "docs/control/local/harness/writer")),
+      true,
+    );
+    const host = join(
+      destination,
+      "packages/skeleton/dist/src/harness-host.js",
+    );
+    const hostBytes = readFileSync(host);
+    rmSync(host);
+    try {
+      const reservation = run(
+        process.execPath,
+        ["scripts/resume.mjs", "release-close"],
+        { cwd: destination, env: codexEnv },
+      );
+      assert.equal(reservation.status, 1);
+      assert.match(
+        reservation.stderr,
+        /writer reservation unavailable.*node scripts\/bootstrap\.mjs/,
+      );
+      const entryAdvisory = ok(
+        run(process.execPath, ["scripts/resume.mjs", "next"], {
+          cwd: destination,
+          env: codexEnv,
+        }),
+        "closed-phase session-entry advisory",
+      );
+      assert.match(
+        entryAdvisory.stderr,
+        /session entry unavailable.*node scripts\/bootstrap\.mjs/,
+      );
+      const close = run(
+        process.execPath,
+        ["scripts/release.mjs", "close", "WO-999", "--publish"],
+        { cwd: destination, env: codexEnv },
+      );
+      assert.equal(close.status, 1);
+      assert.match(
+        close.stderr,
+        /Release-close runtime is not built.*node scripts\/bootstrap\.mjs/,
+      );
+      for (const result of [reservation, entryAdvisory, close])
+        assert.doesNotMatch(result.stdout + result.stderr, /npm run build/);
+    } finally {
+      writeFileSync(host, hostBytes);
+    }
+    ok(
+      run(
+        process.execPath,
+        [
+          "--input-type=module",
+          "-e",
+          "import {releaseHarnessWriter} from './packages/skeleton/dist/src/harness-host.js'; releaseHarnessWriter(process.cwd(), {session_id:'export-update-recovery'});",
+        ],
+        { cwd: destination },
+      ),
+      "release synthetic session writer",
+    );
+    rmSync(join(destination, snapshot), { recursive: true });
+    const entry = ok(
+      run("npm", ["run", "harness", "--", "check"], { cwd: destination }),
+      "export harness entry",
+    );
+    assert.match(entry.stdout, /carried-runtime restore/);
+    assert.doesNotMatch(entry.stdout + entry.stderr, /npm run build/);
+    assert.equal(existsSync(join(destination, snapshot)), true);
+    rmSync(join(destination, snapshot), { recursive: true });
+    const finished = ok(
+      run(process.execPath, ["scripts/worktree.mjs", "finish", "WO-999"], {
+        cwd: destination,
+      }),
+      "finish the export's merged worktree",
+    );
+    assert.match(finished.stdout, /carried-runtime restore/);
+    assert.doesNotMatch(finished.stdout + finished.stderr, /npm run build/);
+    assert.equal(existsSync(subject), false);
+    assert.equal(existsSync(join(destination, snapshot)), true);
+    ok(harness(destination, "check"), "restored export remains current");
+    const buildAdvice = files(destination)
+      .filter(
+        (path) =>
+          path.startsWith("scripts/") &&
+          !/^scripts\/(?:test-|fixtures\/)/u.test(path) &&
+          /\.(?:mjs|md)$/u.test(path),
+      )
+      .flatMap((path) =>
+        readFileSync(join(destination, path), "utf8")
+          .split("\n")
+          .filter((line) => line.includes("npm run build"))
+          .map((line) => ({ path, line })),
+      );
+    assert.deepEqual([...new Set(buildAdvice.map((row) => row.path))].sort(), [
+      "scripts/lib/harness-runtime.mjs",
+      "scripts/release.mjs",
+      "scripts/resume.mjs",
+    ]);
+    for (const row of buildAdvice.filter(
+      (row) => row.path !== "scripts/lib/harness-runtime.mjs",
+    ))
+      assert.match(
+        row.line,
+        /isKit(?:Root|Worktree).*node scripts\/bootstrap\.mjs.*npm run build/,
+      );
+    assert.match(
+      readFileSync(
+        join(destination, "scripts/lib/harness-runtime.mjs"),
+        "utf8",
+      ),
+      /else \{\s*write\(`Refreshing pinned runtime \(\$\{cause\}\); npm run build/,
+    );
+    for (const path of files(destination).filter((path) =>
+      /^\.(?:claude|codex)\/hooks\/.*\.mjs$/u.test(path),
+    ))
+      assert.doesNotMatch(
+        readFileSync(join(destination, path), "utf8"),
+        /run npm run build/,
+      );
+  } finally {
+    write(hostPath, originalHost);
+    git(source, ["add", hostPath]);
+    git(source, [
+      "-c",
+      "commit.gpgsign=false",
+      "commit",
+      "-qm",
+      "Restore fixture runtime source",
+    ]);
+  }
+});
+
 test("WO-074 design: a kit file absent at the commit refuses by name, and a destination inside a Git work tree becomes its own repository", () => {
   const inside = join(source, "nested-export");
   const nested = ok(runExport(inside), "export inside a work tree");

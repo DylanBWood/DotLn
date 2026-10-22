@@ -413,7 +413,7 @@ export const machinerySources = {
     "packages/skeleton/src/gate-evidence.mjs",
     "packages/skeleton/src/runtime-inputs.mjs",
     "packages/skeleton/src/gate-deadlines.mjs",
-    // The 29-case check reads the split launchpad files and their case list.
+    // The case inventory check reads the split launchpad files and their list.
     "scripts/test-launchpad-export.mjs",
     "scripts/test-launchpad-update.mjs",
     "scripts/test-launchpad-seeds.mjs",
@@ -442,6 +442,7 @@ export const machinerySources = {
     "scripts/lib/gate-evidence.mjs",
     "scripts/lib/harness.mjs",
     "scripts/lib/plan-receipts.mjs",
+    "scripts/lib/release-kit-runtime.mjs",
     "scripts/meta.mjs",
     "scripts/operator-control.mjs",
     "scripts/refute-plan.mjs",
@@ -476,6 +477,7 @@ export const machinerySources = {
     "packages/skeleton/fixtures/wo215-role-baseline.json",
     "packages/skeleton/fixtures/wo218-role-baseline.json",
     "packages/skeleton/fixtures/wo217-role-baseline.json",
+    "packages/skeleton/fixtures/wo226-role-baseline.json",
     "packages/skeleton/fixtures/wo217-role-efficiency-baseline.json",
     "scripts/test-helper-reuse.mjs",
     "scripts/lib/helpers.mjs",

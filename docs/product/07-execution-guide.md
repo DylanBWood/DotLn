@@ -1132,6 +1132,12 @@ and non-authoritative suggestions, goes through blinded refutation, and stops at
 operator disposition without planning or fixing; the Repo Gardener is the
 walking skeleton's founding identity, not a session.
 
+The prompt hook reads a dispatch from the first non-blank content line,
+skipping one leading triple-backtick fence and surrounding blank lines. It
+records that line's zero-based `prefixLine`, prefix, class and resolved role;
+a prefix on a later content line is not a dispatch. Quoted examples remain
+prose, and one message records at most one prefix (WO-226).
+
 **`planning: entropy reducer`.** This exact phrase makes the pass's subject an
 Entropy Reducer review rather than the register's existing rows. The pass opens
 with `npm run entropy -- subject`, which names one of three things: a review to
@@ -1219,6 +1225,9 @@ Preconditions and inputs:
    working route today, so the instance continues; a release's Read before
    upgrading says what an instance must read, and nothing else obliges an
    instance to take it (operator question, 2026-10-22).
+   When dispatching with a pasted block, put the dispatch on its first
+   content line; one opening fence and blank lines are admitted, while a
+   later quoted dispatch does not select a role.
 
 **`planning: refute` and `planning: refute full`.** These exact phrases load
 the dedicated refuter skill in either harness. The parent runs
@@ -1229,14 +1238,19 @@ spawns one fresh background worker without inherited conversation, supplying
 only that prompt and the shared goal card. In Codex this uses `spawn_agent`
 with `fork_turns: none`; in Claude it uses the generated `dotln-worker`
 type pinned to `claude-opus-5-5` at `xhigh`, without a model override
-(§Model-specific notes). The worker
+(or `dotln-worker-fable` only on the operator's dispatch, §Model-specific
+notes). The worker
 judges the supplied prompt directly, returns its frozen JSON and a truthful
 single-line statement of at most 4000 characters, and makes no repository or
 Git writes. The parent remains the sole writer and can finish independent
 closeout work while waiting without changing the frozen subject. Save the
 worker's judgment and statement in ignored local files,
 then run `npm run plan -- receipt <result.json> --statement <statement.txt>`
-with any required `--dispositions <file>`. The helper validates, screens,
+with any required `--dispositions <file>` and `--worker-type
+dotln-worker-fable` when that type ran (the default is `dotln-worker`);
+Codex uses `--worker-type codex-spawn-agent`.
+The response and receipt record the worker type as the parent's launch
+attestation, separately from unavailable effective model/effort. The helper validates, screens,
 files and commits the immutable pair with a plain subject and runs the plan
 check. No ad hoc receipt code is needed.
 
@@ -1949,7 +1963,15 @@ order; core names no draft step and no actor, the instance's order does
 the emitted hook admits only the node spelling of the controlled publish
 helper at the phases the lifecycle makes them legal, under main's
 committed registration, authority profile, operator grant and clone map, with
-host deny rules still applying. Raw Git, gh and npm receive no automatic
+host deny rules still applying. The comparison with both checkouts projects
+the configured roots and the selected registration's `baseBranch`,
+`authorityProfile` and `release`; gate commands and other operational fields
+may differ. A differing publication field is named, while the grants file
+still requires byte equality with main's committed file. A recognizable
+node publish or release-close helper hidden by a pipe, redirect or prefix
+gets a `registeredTargetAdmission` row with `kind: "near-miss"` and its
+`syntax`, plus an advisory to run the plain spelling; it gets no permission
+decision. Raw Git, gh and npm receive no automatic
 registered-target admission; `worktree start` prints the Codex `--add-dir` and Copilot
 `--allow-tool` lines; and a registration's `hostRules: "literal"` writes that
 order's exact rules to the main checkout's untracked local settings and
@@ -3075,6 +3097,10 @@ never installed by a gate, since live hooks change only through the explicit
 generated artifacts, publication and bookkeeping being inputs of the
 complete and document selections, and its structural row is partial: it
 never stands in for a complete or document selection's structural pass.
+In an export, `launchpad update --finish` fetches and fast-forwards clean
+main before bootstrap, and release-close recovery, `worktree finish` and
+`npm run harness` restore the verified carried runtime instead of building
+omitted sources; bootstrap is the named manual recovery command (WO-226).
 Sync refuses a role oracle without its authorizing
 update, a feedback edition whose judged sources require a live episode,
 and manual baseline fingerprints. Host admission refuses measured warning
@@ -3244,6 +3270,18 @@ Report the host's readback or that it reports none; a root's own selection
 does not decide the worker's. A script that regenerates a dated record keeps the
 model that record names and says so beside it; the attestation records what
 ran.
+
+The opt-in Claude type `.claude/agents/dotln-worker-fable.md` selects
+`claude-fable-5-1` at `xhigh` only when the operator's `planning:` or
+`resume:` dispatch line names `fable` or `fable 5.1`. Use that type without
+a per-call model override. `dotln-worker` remains the default and the Codex
+pin above is unchanged. The parent records the type that ran in its response
+and the direct refutation receipt's `workerType`, passing `--worker-type
+dotln-worker-fable` to `plan receipt` for the opt-in; an omitted option
+records `dotln-worker`; Codex passes `--worker-type codex-spawn-agent`
+to record its actual launcher. This field attests to the launch type, never to
+effective model or effort. Older receipts lacking it retain their original
+bytes and do not acquire invented readback (WO-226).
 
 - Required attestation fields, `unknown`, Codex thread readback, the
   `--account-label` grammar, the Codex 0.154.0 effort probes and the WO-126

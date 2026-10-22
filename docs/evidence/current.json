@@ -2,20 +2,20 @@
   "schemaVersion": 1,
   "editions": {
     "authority": {
-      "workOrder": "WO-217",
-      "revision": "006"
+      "workOrder": "WO-226",
+      "revision": "003"
     },
     "artifact-identity": {
-      "workOrder": "WO-217",
-      "revision": "002"
+      "workOrder": "WO-226",
+      "revision": "001"
     },
     "verification": {
-      "workOrder": "WO-217",
-      "revision": "002"
+      "workOrder": "WO-226",
+      "revision": "001"
     },
     "feedback": {
-      "workOrder": "WO-217",
-      "revision": "002"
+      "workOrder": "WO-226",
+      "revision": "001"
     }
   }
 }

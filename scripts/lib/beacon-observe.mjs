@@ -31,7 +31,7 @@ export const agentConstellation = async (root, requestFile, logFile) => {
     );
   } catch {
     throw new Error(
-      "agent constellation needs the current skeleton build; run npm run build first",
+      "agent constellation needs the current skeleton runtime; run node scripts/bootstrap.mjs first",
     );
   }
   const request = readJsonFile(resolve(root, requestFile));

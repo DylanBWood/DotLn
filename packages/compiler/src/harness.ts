@@ -33,12 +33,28 @@ export function showHarnessAdvisory(
   }
 }
 
-/** A dispatch may lead a longer message, separated from its direction by a
- * newline or semicolon. Quoted phrases and word continuations are prose. */
+/** Read only the first content line, allowing blanks and one opening paste
+ * fence. A later quoted dispatch never becomes the operator's instruction. */
+export function harnessPromptLine(prompt: string | undefined): {
+  text: string;
+  index: number;
+} {
+  const lines = (prompt ?? "").split(/\r?\n/u);
+  let index = 0;
+  while (index < lines.length && !lines[index]!.trim()) index++;
+  if (/^\s*```[^`]*$/u.test(lines[index] ?? "")) {
+    index++;
+    while (index < lines.length && !lines[index]!.trim()) index++;
+  }
+  return { text: (lines[index] ?? "").trim(), index };
+}
+
+/** A dispatch may lead following direction after a semicolon or newline.
+ * The worker opt-in is a selection, not part of the lifecycle action. */
 export function harnessPromptIntent(prompt: string | undefined): string {
-  const text = prompt?.trim() ?? "";
+  const text = harnessPromptLine(prompt).text;
   return (
-    /^(resume: (?:next|fix|verify|final review|release close|status|times))(?=$|[ \t]*(?:;|\r?\n))/u.exec(
+    /^((?:resume: (?:next|fix|verify|final review|release close|status|times)|planning: refute(?: full)?))(?:[ \t]+fable(?:[ \t]+5\.1)?)?(?=$|[ \t]*;)/u.exec(
       text,
     )?.[1] ?? text
   );
@@ -47,6 +63,7 @@ export function harnessPromptIntent(prompt: string | undefined): string {
 /** Source for the emitted stale-main recovery hook. Generated hook text is
  * data; the compiler never loads Node built-ins or executes this recovery. */
 const releaseCloseRecovery = `async function recoverReleaseClose(root, hook, input, event) {
+    const harnessPromptLine = (${harnessPromptLine.toString()});
     if (event !== "UserPromptSubmit" ||
         (${harnessPromptIntent.toString()})(input?.prompt) !== "resume: release close" ||
         process.env.COPILOT_PROJECT_DIR ||
@@ -99,6 +116,10 @@ const releaseCloseRecovery = `async function recoverReleaseClose(root, hook, inp
         const { withWriterReservationLock, writerTeardownBlocker } = await import(pathToFileURL(join(root, "packages/skeleton/src/writer-teardown.mjs"))
             .href);
         const { activeGateRuns } = await import(pathToFileURL(join(root, "packages/skeleton/src/gate-evidence.mjs")).href);
+        const { isKitRoot } = await import(pathToFileURL(join(root, "packages/skeleton/src/runtime-inputs.mjs")).href);
+        const preparation = isKitRoot(root)
+            ? [process.execPath, [join(root, "scripts/lib/release-kit-runtime.mjs"), root]]
+            : ["npm", ["run", "build", "--silent"]];
         withWriterReservationLock(root, () => {
             const writer = writerTeardownBlocker(root);
             if (writer)
@@ -106,7 +127,7 @@ const releaseCloseRecovery = `async function recoverReleaseClose(root, hook, inp
             if (activeGateRuns(root).length)
                 throw new Error("active gate; runtime preparation withheld");
             for (const [command, args] of [
-                ["npm", ["run", "build", "--silent"]],
+                preparation,
                 [process.execPath, [join(root, "scripts/harness.mjs"), "emit"]],
             ]) {
                 const prepared = run(command, [...args]);
@@ -244,6 +265,12 @@ const procedureRoles = (
     : typeof facet.roleName === "string"
       ? [facet.roleName]
       : [];
+export interface HarnessWorker {
+  readonly name: string;
+  readonly model: string;
+  readonly effort: "low" | "medium" | "high" | "xhigh" | "max";
+  readonly optIn?: boolean;
+}
 /** Separate target input. It never extends or changes the loadout-v1 preimage. */
 export interface HarnessProgram {
   readonly contractVersion: "harness-v1";
@@ -251,11 +278,9 @@ export interface HarnessProgram {
   readonly roles: readonly HarnessRole[];
   readonly facets: readonly HarnessFacet[];
   readonly correctionToken: string | null;
-  readonly worker?: {
-    readonly name: string;
-    readonly model: string;
-    readonly effort: "low" | "medium" | "high" | "xhigh" | "max";
-  };
+  /** Compatibility for programs declaring one default worker. */
+  readonly worker?: HarnessWorker;
+  readonly workers?: readonly HarnessWorker[];
 }
 export interface HarnessOrigin {
   readonly ids: readonly string[];
@@ -978,8 +1003,12 @@ process.stdout.write(JSON.stringify(response)); }`;
     );
     hookPaths.set(event, [...(hookPaths.get(event) ?? []), path]);
   }
-  if (program.worker && profile.harness === "claude-code") {
-    const worker = program.worker;
+  const workers = program.workers ?? (program.worker ? [program.worker] : []);
+  ensure(
+    new Set(workers.map((worker) => worker.name)).size === workers.length,
+    "unique worker names",
+  );
+  for (const worker of profile.harness === "claude-code" ? workers : []) {
     ensure(/^[a-z][a-z0-9-]*$/.test(worker.name), "worker name");
     ensure(/^[a-z][a-z0-9.-]*$/.test(worker.model), "worker model");
     ensure(
@@ -999,6 +1028,12 @@ process.stdout.write(JSON.stringify(response)); }`;
         `<!-- Origin: ${canonicalStringify(origin(program.roles.map((role) => role.facetId)))} -->`,
         "",
         "Perform only the parent's assigned review, refutation or research. The parent owns repository writes; return findings with evidence and improvements, never edit the subject or spawn descendants unless explicitly assigned. Read only the assigned inputs. Preserve the Clean Room floor. Report model and effort only from host readback; a configured pin is not effective-session evidence.",
+        ...(worker.optIn
+          ? [
+              "",
+              "Use this worker only when the operator's planning: or resume: dispatch line names Fable (fable or fable 5.1). Record the worker type in the receipt and response.",
+            ]
+          : []),
         "",
       ].join("\n"),
       program.roles.map((role) => role.facetId),

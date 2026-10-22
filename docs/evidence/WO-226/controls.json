@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-226",
+  "command": "npm test -- --review",
+  "status": "pass",
+  "base": "55699291a324265da49667dc90d5809d50f1fbfc",
+  "pairedControls": [
+    {
+      "step": 3,
+      "criteria": [
+        1,
+        2
+      ],
+      "source": "scripts/test-launchpad-export.mjs",
+      "case": "WO-226 a fast-forwarded export restores its selected runtime for recovery, harness entry and finish",
+      "control": "The same changed-pin, missing-snapshot fixture uses the base npm-run-build preparation and withholds on missing tsconfig.json.",
+      "changed": "The emitted hook restores the carried runtime and dispatches; missing-snapshot harness entry and worktree finish also restore.",
+      "baseline": "README.md records the independent pre-edit export probe; its direct missing-snapshot setup did not perform the later fixture's fast-forward.",
+      "result": "pass",
+      "suite": "launchpad"
+    },
+    {
+      "step": 5,
+      "criteria": [
+        3
+      ],
+      "source": "scripts/test-launchpad-update.mjs",
+      "case": "WO-226 update finish fast-forwards clean main and preserves every refused checkout",
+      "control": "Dirty tree, non-main branch, divergent history and missing origin refuse with the cause and unchanged working files, Git metadata and runtime bytes.",
+      "changed": "Clean main fast-forwards through absolute and checkout-relative origins, runs one export bootstrap preparation step and passes harness check.",
+      "result": "pass",
+      "suite": "launchpad"
+    },
+    {
+      "step": 7,
+      "criteria": [
+        4
+      ],
+      "source": "scripts/test-harness.mjs",
+      "case": "WO-221 registered-target admission admits only the bound publication helper at verified and closed and nothing outside the registration",
+      "control": "Changes to baseBranch, authorityProfile, release, roots.docs or grants withhold and identify the differing field; the existing grant, registry, clone, phase and source-closure controls remain.",
+      "changed": "A gate-only registration edit in either checkout remains admitted with the unchanged permission response.",
+      "baseline": "The pre-edit harness probe withheld a gate-only registration edit.",
+      "result": "pass",
+      "suite": "harness-fixtures"
+    },
+    {
+      "step": 8,
+      "criteria": [
+        5
+      ],
+      "source": "scripts/test-harness.mjs",
+      "case": "WO-226 helper shell syntax is journaled as a near miss without a decision",
+      "control": "Plain helper, raw git/gh/npm and quoted prose receive no near-miss classification; existing plain-helper admission tests remain.",
+      "changed": "Pipes, redirects and prefixes around each recognizable node helper journal a near-miss syntax and emit no permission decision.",
+      "baseline": "The pre-edit piped helper produced no registered-target admission or advisory row.",
+      "result": "pass",
+      "suite": "harness-fixtures"
+    },
+    {
+      "step": 10,
+      "criteria": [
+        6
+      ],
+      "source": "scripts/test-harness.mjs",
+      "case": "WO-226 pasted prefixes select one role and retain the first content line",
+      "control": "Later content-line prefixes, ordinary prose and a second opening fence do not dispatch.",
+      "changed": "Blank/fenced first content lines record one prefix, class, role and original zero-based prefixLine; a Fable refute suffix retains the refuter route.",
+      "baseline": "The pre-edit fenced planning prompt recorded prefix null, class unclassified and role unknown.",
+      "result": "pass",
+      "suite": "harness-fixtures"
+    }
+  ],
+  "gate": {
+    "checkId": "npm test",
+    "gateSelection": "review",
+    "codeIdentity": "3054312198bbe46571a9bac7da6441678812d40879c25eec468fb5f16cff3241",
+    "treeHash": "6f32a6b23cee540800677efa042927164f50e6b5",
+    "recordedAt": "2026-10-22T04:47:12.952Z",
+    "durationMs": 1581147,
+    "exitCode": 0,
+    "identityUnchanged": true,
+    "executionMode": "fresh",
+    "freshSuites": 106,
+    "reusedSuites": 0,
+    "executedSuites": 41,
+    "unrunSuites": 0,
+    "source": "Completed node scripts/harness.mjs evidence --wait result for npm test -- --review"
+  }
+}

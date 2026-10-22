@@ -42722,6 +42722,14 @@
           "reopenWhen": "WO-226's evidence README measures the carried-runtime restore under 10 s in the fixture export, or an operator decision asks for session-start preparation",
           "targets": [],
           "at": "2026-10-22T01:19:49.512Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Reopened by WO-226 final review (WO-226-D025): the row reopening condition occurred. The executor baseline measured the carried-runtime restore at 501.788 ms in the fixture export (docs/evidence/WO-226/README.md), under the 10 s the candidate named; WO-226-D002 records that the measurement reopens the planning candidate, not the order scope, and a SessionStart preparation stays a non-goal of WO-226. The next planning pass decides the candidate with the measurement, the 15 s SessionStart timeout and the tracked-surface question in hand.",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-10-22T11:47:01.611Z"
         }
       ]
     },
@@ -43120,6 +43128,75 @@
           "at": "2026-10-22T01:19:51.365Z"
         }
       ]
+    },
+    {
+      "id": "FUP-957602bc42e32e1d",
+      "key": "decision:docs/evidence/WO-217/decisions.md#wo-217-d053",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "ea86c8783e28a7a706c1bb44ebc79e198f107eaaefe5845a5323094b692a4893",
+          "ref": "docs/evidence/WO-217/decisions.md#wo-217-d053",
+          "title": "WO-217-D053: Shorten repeated role wording while preserving every duty, command, exception, authority limit and ceiling.",
+          "summary": "{ \"id\": \"WO-217-D053\", \"date\": \"2026-10-21\", \"dispatch\": \"resume: next; row disposition\", \"rows\": [ \"FUP-f1c7a256bec46737\" ], \"decision\": \"Shorten repeated role wording while preserving every duty, command, exception, authority limit and ceiling.\", \"evidence\": [ \"docs/evidence/WO-054/decisions.md#wo-054-d006\", \"role-wording.json; role-efficiency.json; scripts/test-gate-followups.mjs bounded role wording case and its scoped fourteen-string reversal; WO-217-D061\", \"WO-217-D061 records the operator choice. Fourteen reviewed wording changes reduce the verifier and reviewer profiles by 402 UTF-8 bytes each. After D080 clarifies the scheduling priority contract, the executor saves 391 bytes, with ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-226-D018 preserves the required worker guidance and boards its measured cost for the next planning pass: executor 114 bytes headroom; reviewer 29 bytes over the unchanged ceiling. Optimize repeated wording with equivalent usefulness.",
+          "reopenWhen": "The next planning pass evaluates instruction-byte optimization, or another role edit changes the recorded measurements.",
+          "targets": [],
+          "at": "2026-10-22T03:17:34.692Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-589642d0e0c714c8",
+      "key": "decision:docs/evidence/WO-226/decisions.md#wo-226-d021",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "0f4280cd7fdce93dfcae9b0101d1c31f8dfe8ac2e1ae4a9c599d9e4c6540de1c",
+          "ref": "docs/evidence/WO-226/decisions.md#wo-226-d021",
+          "title": "WO-226-D021: The next order that edits registeredTargetNearMiss or releaseCloseAdmission in packages/skeleton/src/harness-host.ts. When the hidden helper is the release-close helper of a recorded…",
+          "summary": "{ \"id\": \"WO-226-D021\", \"date\": \"2026-10-22\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-001 boards a follow-up for the near-miss advisory of a hidden release-close helper. A piped, redirected or prefixed spelling of the release-close helper now receives 'Registered-target admission not judged: shell syntax (<syntax>) hides the helper; run the plain spelling; host permissions decide.' At the base, releaseCloseAdmission answered the same pipe or redirect with its 'shell operator or redirect' class and both expected spellings, <helper> --publish and <helper> --dry-run, for the dispatched order. The near-miss branch runs before releaseCloseAdmission in the permission handler, so that spellin",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-eed385be08e5bdd9",
+      "key": "decision:docs/evidence/WO-226/decisions.md#wo-226-d022",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c3ed8d505a4c1b9240731eb57dcb1cefc2b8f88ebbe8f90126c166d986febd09",
+          "ref": "docs/evidence/WO-226/decisions.md#wo-226-d022",
+          "title": "WO-226-D022: The next order that touches scripts/test-gate-followups.mjs or re-mints the role oracle, which the FUP-957602bc42e32e1d optimization will. Replace the historical inequality with an…",
+          "summary": "{ \"id\": \"WO-226-D022\", \"date\": \"2026-10-22\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-001 boards a follow-up for the role-wording regression's headroom assertion. scripts/test-gate-followups.mjs now asserts measured.ceiling - measured.beforeBytes >= 256 for the executor and reviewer, where beforeBytes is the pre-order measurement pinned in packages/skeleton/fixtures/wo226-role-baseline.json. That inequality cannot change while the oracle stands, so no test compares the installed bytes with a ceiling any more; the installed bytes are held only by the exact pin (executor 29,132; reviewer 28,913 against a 28,884 ceiling), and the reviewer breach is visible only as advisory lines of npm ru",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-848fd8e2ac941bc3",
+      "key": "decision:docs/evidence/WO-226/decisions.md#wo-226-d023",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e4c14ff53a3462289ea50d0e47dbe26bfc2709b62458698ec931280965c6f3e6",
+          "ref": "docs/evidence/WO-226/decisions.md#wo-226-d023",
+          "title": "WO-226-D023: The next planning pass that revisits the first-line rule or the next live pasted dispatch: read the prompt's first bytes in a live episode under this release; if the host delivers a…",
+          "summary": "{ \"id\": \"WO-226-D023\", \"date\": \"2026-10-22\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-001 judges criterion 6 on the framing the order pins, one leading three-backtick fence and blank lines, and records that the host's actual paste framing is unqualified. The 2026-10-21 dispatch is in the main checkout's session journal whose file name begins 8fe3a6e1: a 21,641-byte prompt at 23:09:46Z and a 21,679-byte retry at 23:10:14Z recorded prefix null and role unknown, and the bare 9-byte planning: at 23:42:36Z recorded the prefix. The journal keeps a digest and byte count, not the text, so whether that paste began with a fence, a <pasted_content> tag or something else cannot be read back. The c",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

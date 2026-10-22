@@ -32,7 +32,11 @@ const runGit = (root, args, options) =>
   ordinaryRunGit(root, ["--no-replace-objects", ...args], options);
 const runGitPathList = (root, args, options) =>
   ordinaryRunGitPathList(root, ["--no-replace-objects", ...args], options);
-import { parseGitHubTarget } from "./lib/github-repository.mjs";
+import {
+  fetchRemoteBranch,
+  parseGitHubTarget,
+} from "./lib/github-repository.mjs";
+import { bootstrapWorktree } from "./bootstrap.mjs";
 import { json, sha256Hex } from "./lib/helpers.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 import {
@@ -64,6 +68,7 @@ import {
   openSync,
   readdirSync,
   readFileSync,
+  realpathSync,
   renameSync,
   symlinkSync,
   unlinkSync,
@@ -2065,6 +2070,71 @@ export async function previewFromRevision(root, ref) {
   };
 }
 
+/** Finish an operator-merged update without changing a refused checkout. */
+export function finishUpdate(
+  root,
+  write = (text) => process.stdout.write(text),
+) {
+  root = realpathSync(root);
+  const read = (args) => runGit(root, ["--no-optional-locks", ...args]);
+  const ready = () => {
+    if (realpathSync(read(["rev-parse", "--show-toplevel"])) !== root)
+      throw new Error("update --finish requires the physical Git root");
+    const branch = read(["rev-parse", "--abbrev-ref", "HEAD"]);
+    if (branch !== "main")
+      throw new Error(
+        `update --finish requires main; current checkout is ${branch}`,
+      );
+    if (read(["status", "--porcelain", "--untracked-files=all"]))
+      throw new Error(
+        "update --finish requires a clean tree; checkout is dirty",
+      );
+  };
+  ready();
+  const origins = read(["remote", "get-url", "--all", "origin"])
+    .split("\n")
+    .filter(Boolean);
+  if (origins.length !== 1)
+    throw new Error("update --finish requires exactly one origin fetch URL");
+  // Local paths are relative to this checkout, while URLs, scp spellings
+  // and explicit transport helpers retain their transport interpretation.
+  const origin = /^[^/]+:/u.test(origins[0])
+    ? origins[0]
+    : resolve(root, origins[0]);
+  const before = read(["rev-parse", "HEAD"]);
+  const commit = fetchRemoteBranch(root, origin, "main", {
+    beforeImport(inLane) {
+      inLane(["fetch", "--quiet", "--no-tags", root, "HEAD:refs/heads/local"]);
+      // rev-list returns a count, so a divergence is an ordinary named
+      // refusal, not an opaque failing merge command.
+      if (
+        inLane([
+          "rev-list",
+          "--count",
+          "refs/heads/local",
+          "--not",
+          "refs/heads/fetched",
+        ]) !== "0"
+      )
+        throw new Error(
+          "update --finish refused: main is not a fast-forward to origin/main; checkout preserved",
+        );
+      ready();
+      if (read(["rev-parse", "HEAD"]) !== before)
+        throw new Error(
+          "update --finish refused: main changed during fetch; retry from the current checkout",
+        );
+    },
+  });
+  write("Fetched origin main; fast-forward checked before checkout writes.\n");
+  runGit(root, ["update-ref", "refs/remotes/origin/main", commit]);
+  runGit(root, ["merge", "--ff-only", "origin/main"]);
+  write("Fast-forwarded main to origin/main.\n");
+  const steps = bootstrapWorktree(root);
+  write(`Prepared main with bootstrap (${steps} preparation steps).\n`);
+  return { before, commit, steps };
+}
+
 /** The preview and completed update share every plan row. Metadata says
  * whether these judgments are proposed or have been applied. */
 export function renderUpdatePlan(planned, { preview = false } = {}) {
@@ -2129,8 +2199,16 @@ if (isMainModule(import.meta.url)) {
     const updating = args[0] === "--update";
     const [destination, ...rest] = updating ? args.slice(1) : args;
     const usage =
-      "usage: launchpad export <dir> [--license none] | launchpad export --update <dir> [--apply] [--preview] | launchpad preview --from <ref> | launchpad verify [<dir>]";
-    if (action === "preview") {
+      "usage: launchpad export <dir> [--license none] | launchpad export --update <dir> [--apply] [--preview] | launchpad update --finish [<dir>] | launchpad preview --from <ref> | launchpad verify [<dir>]";
+    if (action === "update") {
+      if (
+        args[0] !== "--finish" ||
+        args.length > 2 ||
+        args[1]?.startsWith("--")
+      )
+        throw new Error(usage);
+      finishUpdate(args[1] ?? process.cwd());
+    } else if (action === "preview") {
       if (args.length !== 2 || args[0] !== "--from") throw new Error(usage);
       console.log(
         renderUpdatePlan(await previewFromRevision(process.cwd(), args[1]), {

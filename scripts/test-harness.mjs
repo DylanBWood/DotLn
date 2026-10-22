@@ -1988,6 +1988,125 @@ test("WO-178 Stop names only journaled dispatches without terminal observations"
   }
 });
 
+test("WO-226 pasted prefixes select one role and retain the first content line", () => {
+  const root = fixture();
+  try {
+    for (const [prompt, prefix, role, prefixLine, classification] of [
+      [
+        "\n```text\n\nplanning: fixture\n```",
+        "planning:",
+        "planner",
+        3,
+        "direction",
+      ],
+      [
+        "\n\nresume: next\nLater direction",
+        "resume:",
+        "executor",
+        2,
+        "direction",
+      ],
+      ["planning: refute fable 5.1", "planning:", "refuter", 0, "direction"],
+      ["Example follows\nresume: next", null, "unknown", null, "unclassified"],
+      ["No dispatch", null, "unknown", null, "unclassified"],
+      ["```\n```\nplanning: fixture", null, "unknown", null, "unclassified"],
+    ]) {
+      const session_id = `prefix-${sha256(prompt).slice(0, 12)}`;
+      invoke(
+        root,
+        "session",
+        input(root, "UserPromptSubmit", { prompt, session_id }),
+      );
+      const rows = wo178Rows(root, session_id).filter(
+        (row) => row.typedEvent === "OperatorMessageObserved",
+      );
+      assert.equal(rows.length, 1, prompt);
+      assert.deepEqual(
+        {
+          prefix: rows[0].prefix,
+          role: rows[0].role,
+          prefixLine: rows[0].prefixLine,
+          class: rows[0].class,
+        },
+        { prefix, role, prefixLine, class: classification },
+      );
+      releaseHarnessWriter(root, input(root, "Stop", { session_id }));
+    }
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-226 helper shell syntax is journaled as a near miss without a decision", () => {
+  const root = fixture();
+  try {
+    const helpers = [
+      `node ${join(root, "scripts/worktree.mjs")} publish WO-999 --target-worktree --draft --branch feat/x --title 'pipe | literal' --body-file b.md`,
+      releaseCloseCommand(root, "WO-999"),
+    ];
+    for (const helper of helpers) {
+      for (const [command, syntax] of [
+        [helper + " | cat", "pipe"],
+        [helper + " > captured.log", "redirect"],
+        ["MODE=fixture " + helper, "prefix"],
+        [`cd ${shellQuote(root)} && ${helper}`, "prefix"],
+      ]) {
+        const response = invoke(
+          root,
+          "permissions",
+          input(root, "PreToolUse", {
+            tool_name: "Bash",
+            tool_input: { command },
+          }),
+        );
+        assert.equal(
+          response.hookSpecificOutput?.permissionDecision,
+          undefined,
+        );
+        const row = wo178Rows(root).findLast(
+          (row) => row.registeredTargetAdmission,
+        );
+        assert.deepEqual(row.registeredTargetAdmission, {
+          kind: "near-miss",
+          syntax,
+        });
+        assert.match(
+          row.advisory,
+          /Registered-target admission not judged: shell syntax .*run the plain spelling; host permissions decide/,
+        );
+        if (response.systemMessage)
+          assert.match(response.systemMessage, /not judged/);
+      }
+    }
+    for (const command of [
+      "git push origin main | cat",
+      "gh pr create > captured.log",
+      "npm run worktree -- publish WO-999 | cat",
+      helpers[0],
+      "echo 'node scripts/worktree.mjs publish WO-999' | cat",
+    ]) {
+      const before = wo178Rows(root).length;
+      invoke(
+        root,
+        "permissions",
+        input(root, "PreToolUse", {
+          tool_name: "Bash",
+          tool_input: { command },
+        }),
+      );
+      assert.equal(
+        wo178Rows(root)
+          .slice(before)
+          .some((row) => row.registeredTargetAdmission?.kind === "near-miss"),
+        false,
+        command,
+      );
+    }
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
 test("WO-178 exact close helper admission requires the recorded dispatch, main and legal order", () => {
   const root = fixture();
   try {
@@ -2057,8 +2176,8 @@ test("WO-178 exact close helper admission requires the recorded dispatch, main a
         "--dry-run --material 'fixture=preserve'",
         "material arguments require --publish",
       ],
-      ["--publish > close.log", "shell operator or redirect"],
-      ["--publish | cat", "shell operator or redirect"],
+      ["--publish > close.log", "shell syntax (redirect)"],
+      ["--publish | cat", "shell syntax (pipe)"],
       ["--publish --force", "words or whitespace after the helper"],
       [
         '--publish --material "fixture=preserve"',
@@ -2099,8 +2218,12 @@ test("WO-178 exact close helper admission requires the recorded dispatch, main a
         phase: "closed",
       }).at(-1).advisory;
       assert.ok(advisory.includes(mismatch), advisory);
-      assert.ok(advisory.includes(`${helper} --publish`));
-      assert.ok(advisory.includes(`${helper} --dry-run`));
+      if (mismatch.startsWith("shell syntax"))
+        assert.ok(advisory.includes("run the plain spelling"));
+      else {
+        assert.ok(advisory.includes(`${helper} --publish`));
+        assert.ok(advisory.includes(`${helper} --dry-run`));
+      }
     }
     assert.notEqual(
       permission(`${helper} --publish`, { session_id: "no-recorded-dispatch" })
@@ -2353,6 +2476,60 @@ test("WO-221 registered-target admission admits only the bound publication helpe
       join(mainCheckout, "dotln.config.json"),
       "utf8",
     );
+    for (const checkout of [root, mainCheckout]) {
+      const operational = JSON.parse(configBytes);
+      operational.repositories.target.gate = { command: "npm test" };
+      write(checkout, "dotln.config.json", json(operational));
+      allowed(helper);
+      for (const [field, mutate] of [
+        [
+          "repositories.target.baseBranch",
+          (value) => {
+            value.repositories.target.baseBranch = "other";
+          },
+        ],
+        [
+          "repositories.target.authorityProfile",
+          (value) => {
+            value.repositories.target.authorityProfile.expiresAt = 0;
+          },
+        ],
+        [
+          "repositories.target.release",
+          (value) => {
+            value.repositories.target.release = { policy: "declared" };
+          },
+        ],
+        [
+          "roots.docs",
+          (value) => {
+            value.roots = { docs: "records" };
+          },
+        ],
+      ]) {
+        const changed = structuredClone(operational);
+        mutate(changed);
+        write(checkout, "dotln.config.json", json(changed));
+        withheld(helper);
+        const row = wo178Rows(root).findLast((row) =>
+          row.advisory?.includes("Registered-target admission withheld"),
+        );
+        assert.ok(row.advisory.includes(field), row.advisory);
+      }
+      write(checkout, "dotln.config.json", configBytes);
+      const grantsPath = "packages/skeleton/loadouts/grants.json";
+      const grantsBytes = readFileSync(join(checkout, grantsPath), "utf8");
+      write(checkout, grantsPath, grantsBytes + "\n");
+      withheld(helper);
+      assert.match(
+        wo178Rows(root).findLast((row) =>
+          row.advisory?.includes("Registered-target admission withheld"),
+        ).advisory,
+        /grants\.json/,
+      );
+      write(checkout, grantsPath, grantsBytes);
+      allowed(helper);
+    }
     for (const mutate of [
       (profile) => {
         profile.expiresAt = 0;
@@ -3190,7 +3367,7 @@ test("WO-139 cap-module-only changes refresh the runtime and snapshot damage is 
       readFileSync(join(root, previous.snapshot, modulePath), "utf8"),
       original,
     );
-    assert.equal(checkHarness(root, options).files, 34);
+    assert.equal(checkHarness(root, options).files, 35);
     assert.match(
       invoke(root, "finish", input(root, "Stop")).systemMessage,
       /^Subagents: 0\/21/,
@@ -5571,19 +5748,24 @@ test("WO-187 harness check covers the spawned-worker model and effort pins", () 
   const root = fixture();
   try {
     emitHarness(root);
-    const agent = join(root, ".claude/agents/dotln-worker.md");
-    const original = readFileSync(agent, "utf8");
-    checkHarness(root);
-    for (const [before, after] of [
-      ["model: claude-opus-5-5", "model: inherit"],
-      ["effort: xhigh", "effort: low"],
+    for (const [name, model] of [
+      ["dotln-worker", "claude-opus-5-5"],
+      ["dotln-worker-fable", "claude-fable-5-1"],
     ]) {
-      writeFileSync(agent, original.replace(before, after));
-      assert.throws(
-        () => checkHarness(root),
-        /harness drift: \.claude\/agents\/dotln-worker\.md/,
-      );
-      writeFileSync(agent, original);
+      const agent = join(root, `.claude/agents/${name}.md`);
+      const original = readFileSync(agent, "utf8");
+      checkHarness(root);
+      for (const [before, after] of [
+        [`model: ${model}`, "model: inherit"],
+        ["effort: xhigh", "effort: low"],
+      ]) {
+        writeFileSync(agent, original.replace(before, after));
+        assert.throws(
+          () => checkHarness(root),
+          /harness drift: \.claude\/agents\/dotln-worker(?:-fable)?\.md/,
+        );
+        writeFileSync(agent, original);
+      }
     }
     checkHarness(root);
   } finally {

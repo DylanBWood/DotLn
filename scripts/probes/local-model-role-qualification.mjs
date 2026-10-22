@@ -199,7 +199,7 @@ export async function t2Input() {
   const built = join(ROOT, "packages/skeleton/dist/src/discovery.js");
   if (!existsSync(built))
     throw new Error(
-      "T2 preparation needs the current build; run npm run build --silent",
+      "T2 preparation needs the current runtime; run node scripts/bootstrap.mjs",
     );
   const scratch = realpathSync(
     mkdtempSync(join(tmpdir(), "dotln-wo138-discovery-")),

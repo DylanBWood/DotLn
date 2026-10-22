@@ -558,6 +558,8 @@ test("instance runtime digests reject aliases before selection and frame arbitra
   for (const path of [
     ".claude/hooks/finish.mjs",
     ".claude/settings.json",
+    ".claude/agents/dotln-worker.md",
+    ".claude/agents/dotln-worker-fable.md",
     ".agents/skills/dotln-executor/SKILL.md",
     ".codex/hooks/continuation.mjs",
     "CLAUDE.md",
@@ -571,6 +573,8 @@ test("instance runtime digests reject aliases before selection and frame arbitra
       installed: [
         ".claude/hooks/finish.mjs",
         ".claude/settings.json",
+        ".claude/agents/dotln-worker.md",
+        ".claude/agents/dotln-worker-fable.md",
         ".agents/skills/dotln-executor/SKILL.md",
         ".codex/hooks/continuation.mjs",
         "CLAUDE.md",
@@ -581,6 +585,8 @@ test("instance runtime digests reject aliases before selection and frame arbitra
   for (const path of [
     ".claude/hooks/finish.mjs",
     ".claude/settings.json",
+    ".claude/agents/dotln-worker.md",
+    ".claude/agents/dotln-worker-fable.md",
     ".agents/skills/dotln-executor/SKILL.md",
     ".codex/hooks/continuation.mjs",
     "CLAUDE.md",
@@ -598,6 +604,16 @@ test("instance runtime digests reject aliases before selection and frame arbitra
     rmSync(join(repo, path));
     writeFileSync(join(repo, path), "valid\n");
   }
+  const manifestPath = join(repo, ".claude/harness-manifest.json");
+  const manifest = readFileSync(manifestPath, "utf8");
+  const invalid = JSON.parse(manifest);
+  invalid.installed.push({ path: ".claude/agents/dotln-worker-custom.md" });
+  writeFileSync(manifestPath, JSON.stringify(invalid));
+  assert.throws(
+    () => gateInstanceInputDigest(repo),
+    /not a generated surface/u,
+  );
+  writeFileSync(manifestPath, manifest);
   writeFileSync(join(repo, ".claude/hooks/unexpected.mjs"), "export {};\n");
   assert.notEqual(gateInstanceInputDigest(repo), surfaces);
   rmSync(join(repo, ".claude/hooks/unexpected.mjs"));
@@ -8293,7 +8309,7 @@ finally { clearInterval(poll); }
     }
 });
 
-test("launchpad files retain all 34 cases and run at most two independent deadline tasks", async () => {
+test("launchpad files retain all 36 cases and run at most two independent deadline tasks", async () => {
   const suite = suites.find((row) => row.name === "launchpad");
   const tasks = expandSuiteTasks([suite], root);
   assert.deepEqual(
@@ -8314,7 +8330,7 @@ test("launchpad files retain all 34 cases and run at most two independent deadli
   const baseline = JSON.parse(
     readFileSync(join(root, "scripts/fixtures/launchpad-cases.json"), "utf8"),
   );
-  assert.equal(names.length, 34);
+  assert.equal(names.length, 36);
   assert.deepEqual(names.sort(), baseline.sort());
   for (const task of tasks) {
     assert.equal(task.timeoutMs, 900_000);

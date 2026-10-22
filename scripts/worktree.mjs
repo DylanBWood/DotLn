@@ -5,6 +5,7 @@ import {
   readPendingReceipts,
 } from "./lib/siblings.mjs";
 import { refreshHarnessRuntime } from "./lib/harness-runtime.mjs";
+import { isKitRoot } from "../packages/skeleton/src/runtime-inputs.mjs";
 import { checksPath } from "./lib/gate-evidence.mjs";
 import {
   CONFIG_FILENAME,
@@ -1372,16 +1373,21 @@ const main = async () => {
     );
     if (integrated.phase !== "closed")
       throw new Error(`${workOrderId} is not closed in merged control state`);
-    refreshHarnessRuntime(mainPath, () => {
-      const built = spawnSync("npm", ["run", "build"], {
-        cwd: mainPath,
-        stdio: "inherit",
-      });
-      if (built.status !== 0)
-        throw new Error(
-          "Pinned runtime build failed; worktree preserved; run node scripts/bootstrap.mjs",
-        );
-    });
+    refreshHarnessRuntime(
+      mainPath,
+      isKitRoot(mainPath)
+        ? undefined
+        : () => {
+            const built = spawnSync("npm", ["run", "build"], {
+              cwd: mainPath,
+              stdio: "inherit",
+            });
+            if (built.status !== 0)
+              throw new Error(
+                "Pinned runtime build failed; worktree preserved; run node scripts/bootstrap.mjs",
+              );
+          },
+    );
     const { readGateChecks, recordGateChecks } =
       await import("./lib/gate-evidence.mjs");
     writerTeardown.withWriterReservationLock(subject, () => {

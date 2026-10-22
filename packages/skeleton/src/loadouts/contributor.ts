@@ -61,7 +61,7 @@ const operatorControls =
 const sessionBoundaries =
   "Under Codex, lifecycle dispatch reserves the writer and completion releases it; inspect with `node scripts/harness.mjs writer --show`, never a hand-built hook payload. Await a gate or background task through `node scripts/harness.mjs evidence --wait [--timeout <seconds>]` in the background or the host's completion signal, then do bounded listed work or stay quiet; never poll or narrate the wait.";
 const sharedCorrections = [
-  "Launch all adversaries, reviewers, refuters and research workers as Claude `dotln-worker` (claude-opus-5-5, xhigh) without a model override, or Codex spawn_agent with fork_turns none, model gpt-6.1-sol and reasoning_effort max; product 07 §Model-specific notes records the pin and readback limits.",
+  "Launch all adversaries, reviewers, refuters and research workers as Claude `dotln-worker` (claude-opus-5-5, xhigh) without a model override, or Codex spawn_agent with fork_turns none, model gpt-6.1-sol and reasoning_effort max. Only when the operator's planning: or resume: dispatch line names fable or fable 5.1, use Claude `dotln-worker-fable` (claude-fable-5-1, xhigh); record the actual worker type in the response and direct refutation receipt via --worker-type (Codex: codex-spawn-agent). The default and Codex pin stay unchanged; product 07 §Model-specific notes records the pins and readback limits.",
   "Run probes outside gates, one process at a time, under `node scripts/harness.mjs bounded -- <command>`; the host guard also watches attributable session descendants.",
   "Resolve routine version, waiver-route, live-episode, regeneration and reinstall questions within existing authority; ask if an answer changes scope or authority.",
   "Before acting on an operator message, state its aim in one line and act on that reading; ask one focused question if that reading is doubtful.",
@@ -878,7 +878,15 @@ export const contributorProgram = (
   return {
     contractVersion: "harness-v1",
     loadout,
-    worker: { name: "dotln-worker", model: "claude-opus-5-5", effort: "xhigh" },
+    workers: [
+      { name: "dotln-worker", model: "claude-opus-5-5", effort: "xhigh" },
+      {
+        name: "dotln-worker-fable",
+        model: "claude-fable-5-1",
+        effort: "xhigh",
+        optIn: true,
+      },
+    ],
     roles: contributorRolesFor(loadout),
     facets: [
       ...((): HarnessFacet[] => {
