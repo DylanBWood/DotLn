@@ -5,32 +5,27 @@
 **Effort:** executor max; verifier xhigh; reviewer xhigh.
 **Track:** delivery
 **Release classification:** minor. A new role and operator phrase, a
-lifecycle identity per spawned worker, a sub-agent budget per phase
-worker, generated agent definitions per role, the executor role's
-preflight discipline, and a target-order branch in the executor, verifier
+lifecycle identity per spawned worker, a sub-agent budget per phase worker, generated agent definitions per role, and
+a target-order branch in the executor, verifier
 and reviewer roles; the four existing phrases keep their behavior. Assigned at activation under the standing
 opt-out default.
 **Cost:** adds a `router` role and the phrase `drive: WO-NNN` to the
-Contributor build (`packages/skeleton/src/loadouts/contributor.ts`), one
-generated agent definition per lifecycle role and effort an open order
-names, from the generator and check rule WO-187 adds for spawned workers
+Contributor build (`packages/skeleton/src/loadouts/contributor.ts`), one generated agent definition per lifecycle role (executor, verifier,
+reviewer, release-close) at the pinned model and effort, from the generator and check rule WO-187 adds for spawned workers
 (`packages/compiler/src/harness.ts`), a session record, role and
 writer reservation keyed by session and agent
 (`packages/skeleton/src/harness-host.ts`), a sub-agent count kept per
 spawning worker (`packages/skeleton/src/subagent-budget.ts`), a refusal
 of any router spawn whose prompt is not a lifecycle phrase, a worktree
 root grant for the worker whose order owns that worktree, and a
-`route` reading of the canonical status (`scripts/resume.mjs`), and, in
-`contributor.ts` (step 9), the preflight discipline in the executor's
-ordered procedure and the target-order branch of the executor, verifier and
-reviewer procedures. Removes:
+`route` reading of the canonical status (`scripts/resume.mjs`), and, in `contributor.ts` (step 9), the target-order branch of the executor,
+verifier and reviewer procedures and (step 6) the shared fan-out sentence. Removes:
 the operator typing one phrase per phase into a separate terminal and
 carrying each handoff by hand (at least four sessions for an order that
 passes first time: execute, verify, final review and release close; more
-for each repair), and on a host that meters only the main thread, the
-phase work itself, which then runs in workers; by step 9, full gate runs
-an executor would otherwise repeat with no relevant change or diagnosed
-invalidation of their evidence; and, for a target order, the launchpad
+for each repair), and, on a host that meters only the main thread, the main thread's share of
+the phase work, which relocates into workers and is counted there rather than
+removed (receipt 039); and, for a target order, the launchpad
 `npm test` the role text still names, which WO-210's claims no longer
 accept for that order.
 The router's own context holds statuses, not work. Re-mints: `harness-host.ts`,
@@ -39,14 +34,14 @@ evidence sources, so the editions they stale are re-minted
 deterministically; none is a file the feedback verifier judges, so no
 live feedback episode; all are declared machinery sources, so
 `npm test -- --review` runs before handoff. One live driven order is
-paid in worker tokens (criterion 9). Cold-start bytes: a new root for
-the router, and the executor, verifier and reviewer roots grow by step 9's
-text; the other roots are unchanged. Commands: one operator phrase, `drive: WO-NNN`, and the
+paid in worker tokens (criterion 9). Cold-start bytes: a new root for the router; every role's cold start grows by
+step 3's `CLAUDE.md` line and by step 6's fan-out sentence; the executor,
+verifier and reviewer roots also grow by step 9's text (corrected by the
+2026-10-21 pass). Commands: one operator phrase, `drive: WO-NNN`, and the
 probe mode `--agent-identity` of `scripts/harness-probe.mjs` (step 1); the
 four existing phrases stay. Steps: the operator's per-phase phrases and
-handoffs become one phrase per drive and one after the merge; an executor
-runs the order's **Preflight:** line before the first full gate and after
-each repair (step 9); a target order's roles run the target gate in place
+handoffs become one phrase per drive and one after the merge; a target order's
+roles run the target gate in place
 of `npm test` and its reviewer runs the records action (step 9). Wall-clock, tokens and context bytes are unknown
 until run.
 **Nomination provenance:** the operator's notes of 2026-10-02, items 1,
@@ -106,8 +101,9 @@ target order's publication from its worktree, which final review's
 authority carries for a driven target order, and the target gate,
 documentation root and records action step 9's role text names). WO-072
 closed at v0.75.0.
-**Recommended placement:** position 6 of the serial queue (planning
-document §12), after WO-204 and before WO-083: it comes directly before
+**Recommended placement:** after WO-204 and before WO-083 in the serial queue
+(position 10 after the 2026-10-21 pass placed four fork-unblocking orders
+first; planning document §12): it comes directly before
 WO-083 at the operator's direction of 2026-10-11, so the measured run is
 driven the way the operator will drive orders, and after WO-210, through
 which its target orders publish. It has no dependency on the export
@@ -253,8 +249,10 @@ instance, so the operator never opens a session in a target repository.
   working directory: the order's worktree, or for a target order the target
   worktree, whose order WO-072's registry selects by branch (the 2026-10-07
   decision; step 4). A hook refuses a spawn from the router role whose
-  prompt is anything else. The worker's definition preloads its role skill and pins the
-  model and effort the order names for that role; the worker runs the
+  prompt is anything else. The worker's definition preloads its role skill and pins the model and
+  effort product 07 §Model-specific notes gives spawned workers; there is one
+  definition per lifecycle role, and an order's **Effort:** line stays
+  advisory text; the worker runs the
   lifecycle command and `briefing` itself, as a Codex session does
   today, and records its own completion.
 - **Identity per worker.** The session record, the role, the effort
@@ -317,8 +315,12 @@ instance, so the operator never opens a session in a target repository.
   run the target gate (`node scripts/target-gate.mjs WO-NNN`, `--review`
   where the order's final criterion names the review gate) for the order's
   own checks, never the launchpad's `npm test`, beside the launchpad's `npm
-  run test:docs`; and skip `release prepare`, since a target order records no
-  release (WO-210). The reviewer commits the reviewed target change before
+  run test:docs`; and run `release prepare` as the briefing says (for a target order it
+  assigns no launchpad version and changes no file; a target release is tagged
+  at release close only under a registration declaring `release.policy:
+  "declared"`, with the order's `**Target release classification:**` header
+  and `release.close` granted, product 07 §Workflow closeout and releases;
+  corrected by the 2026-10-21 pass). The reviewer commits the reviewed target change before
   the passing result, then runs `npm run resume -- target-records`, which
   writes the order's file, decisions and reports into the documentation root
   as the records-only commit, and then the session publish and the records
@@ -354,15 +356,16 @@ instance, so the operator never opens a session in a target repository.
   a fixture launchpad: exists (WO-072's fixture,
   `scripts/test-target-worktree.mjs`); WO-072's evidence records fixture
   runs and no live session working one. `drive:` and the router root:
-  absent (this order). A target order's passing final review recording
-  `targetSubject`: absent at the base (no source names it); WO-210 builds
-  it first. Target publication and release close: not traversed by
-  criterion 9 (criterion 8's fixtures cover them). The executor root's
-  preflight discipline: absent (step 9); criterion 9's executor phase runs
-  under it. The target gate, the documentation root, a target order's gate
-  claims and the records action: absent at the base (WO-210 builds them,
-  placed before this order); criterion 9's executor, verifier and reviewer
-  phases run the target gate under step 9's target-order text.
+  absent (this order). A target order's passing final review recording `targetSubject`: exists
+  (`scripts/resume.mjs`, WO-210, v0.82.0). Target publication and release close: not traversed by
+  criterion 9 (criterion 8's fixtures cover them). The target gate (`scripts/target-gate.mjs`), the documentation root, a
+  target order's gate claims and the `target-records` action: exist (WO-210,
+  v0.82.0), and every target-order briefing names them (`targetBriefing`);
+  criterion 9's executor, verifier and reviewer phases run the target gate
+  under step 9's target-order text. Still absent at `926b8234`: `drive:` and
+  the router root. Unknown until step 1's probe: nested-spawn attribution,
+  writes under a late directory, the pinned effort and which hooks govern a
+  worker in a target worktree (restated by the 2026-10-21 pass).
 
 **Execution plan (the executor follows these steps in order; observed at `bd437eb2`, 2026-10-07; steps 1 to 3, 5, 7 and 8 re-observed at `6dbd8771`, 2026-10-13, and step 9 written there the same day):**
 
@@ -414,7 +417,11 @@ instance, so the operator never opens a session in a target repository.
    names. Check: `npm test -- --only harness-fixtures`.
 6. Budget: `Counter.direct` entries (`subagent-budget.ts` lines 24 to 29) gain `spawner`;
    `fits()` checks the spawner against `subagentCap` and the root total against a new
-   `budgets.json` `drivenSessionCeiling` (default four times the cap). Check:
+   `budgets.json` `drivenSessionCeiling` (default four times the cap). The shared fan-out sentence every role carries (`contributor.ts`
+   `targetRoles`) is rewritten to say the cap counts a spawn against the agent
+   whose tool call made it, a driven session's total is bounded by
+   `drivenSessionCeiling`, and `harness usage <session>` reports both; the
+   role oracle fixture pins it (the 2026-10-21 pass). Check:
    `npm run build && node --test packages/skeleton/dist/test/subagent-budget.test.js`.
 7. Grant: `OutsideWriteGrant` (`harness.ts` lines 176 to 183) and its validator (300 to 316)
    gain `order-worktree`; `harness-host.ts` line 3636 resolves it from `git worktree list --porcelain` for the order's
@@ -434,21 +441,20 @@ instance, so the operator never opens a session in a target repository.
    order's outcome at line 2304, the record written at line 2817). Re-entry and stop cases in
    `scripts/test-control-segments.mjs` (run by `scripts/test-resume.sh` line 1062). Check:
    `npm test -- --only resume`.
-9. Role text in `packages/skeleton/src/loadouts/contributor.ts`. (a) The executor's preflight
-   discipline: in `roleSteps.executor` (lines 576 to 588) the step that runs the full gate (line
-   585) gains product 07 §Preflight before the full gate as that section words it: run the order's
-   **Preflight:** line before the first full gate and after each repair, finish every code edit
-   before the last full run, and repeat a full run only after a relevant change or a diagnosed
-   invalidation of its evidence (a stopped run, an environment fault), with the reason recorded.
-   (b) The target-order branch of the Design's "Role text for target orders": the executor's
+9. Role text in `packages/skeleton/src/loadouts/contributor.ts`. (a) Struck by the 2026-10-21 pass: the executor's preflight discipline is
+   product 07 §Preflight before the full gate as revised on 2026-10-19
+   (focused runs never precede the complete run), which the executor root
+   (`roleSteps.executor`, the full-gate step) already states; no preflight
+   text is added here. (b) The target-order branch of the Design's "Role text for target orders": the executor's
    target-order profile sentence (line 120) and the verifier's and reviewer's procedures gain the
    documentation root as repo-native authority and the write-backs made under it; the executor's
    prepare step (line 580), the reviewer's surface step (line 602) and the full-gate steps of the
    executor (line 585), verifier (line 595) and reviewer (line 605) gain the target-order clause
-   (no `release prepare`; the target gate in place of `npm test`, beside the launchpad's `npm run
-   test:docs`); the reviewer's last step (line 607) gains the commit-first step,
-   `npm run resume -- target-records` and both publications for a target order. No other role's
-   procedure changes, and a self order's text is unchanged. Then `npm run build && node
+   (run `release prepare` as the briefing says, since for a target order it
+   assigns no launchpad version and changes no file; the target gate in place
+   of `npm test`, beside the launchpad's `npm run test:docs`); the reviewer's last step (line 607) gains the commit-first step,
+   `npm run resume -- target-records` and both publications for a target order. No other role's procedure changes except the shared fan-out sentence of
+   step 6, and a self order's text is unchanged. Then `npm run build && node
    scripts/harness.mjs emit`; step 3's role oracle fixture
    (`packages/skeleton/fixtures/wo192-role-baseline.json`) pins the executor, verifier and reviewer
    roots as this step leaves them, so the order's role edits share one fixture; the decisions
@@ -460,15 +466,21 @@ instance, so the operator never opens a session in a target repository.
     the operator uses, the fixture's registered repository declaring a gate of synthetic commands
     and the default documentation root (WO-210), each phase running under step 9's roots; the
     launchpad-order route is covered by criterion 8's table tests.
-11. Write-backs: product 07 §"## Operator resume phrases" (the `drive:` phrase and the router,
-    in place); product 05 §"### Orchestration and quality policies" (one sentence);
-    `docs/AI-HARNESS-SECURITY.md` §"## DotLn hook boundary" (the spawn refusal and the
-    worktree grant); `docs/PLAYBOOK.md` §"## Who does what" (the router);
+11. Write-backs: product 07 §"## Operator resume phrases — how you get dispatched" (the
+    `drive:` phrase and the router, in place); product 05 §"### Orchestration and quality policies" (one sentence);
+    `docs/AI-HARNESS-SECURITY.md` §"## DotLn hook boundary — WO-144,
+    2026-09-19" (the spawn refusal and the worktree grant); `docs/PLAYBOOK.md` §"## Who does what" (the router);
     `packages/compiler/src/harness.ts` line 1196 unchanged (the shared paragraph grows no
     root); `docs/evidence/WO-192/decisions.md`; `npm run meta`; `node scripts/lineage.mjs index --check`;
     `node scripts/check-publication.mjs --print-locks`; `npm run publication:check`.
-12. Handoff sequence: `npm run format`; `npm run test:docs`; `npm test -- --review`;
-    complete `docs/evidence/WO-192/handoff.md`; `npm run resume -- implementation-ready <flags>`.
+12. Handoff: finish source edits; `npm run format` and `npm run sync` for
+    stale generated artifacts; start one `npm test -- --review` in the
+    background, never under the bounded wrapper, and await it with `node
+    scripts/harness.mjs evidence --wait`; after it passes, complete
+    `docs/evidence/WO-192/handoff.md`; run `npm run test:docs` once after the
+    last document edit; then `npm run resume -- implementation-ready <flags>`
+    (product 07 §Discipline, revised 2026-10-19; corrected by the 2026-10-21
+    pass).
 
 **Deliverables:** the probe rows; the router role, phrase and generated
 root; the per-role agent definitions; the identity, reservation, budget
@@ -516,7 +528,8 @@ the write-backs below.
    cap is refused while the router and another worker are not; the
    root-wide total is reported and refused at the driven-session
    ceiling; the unattributable case is counted as a stated minimum, as
-   today.
+   today. The generated roots' fan-out sentence states the per-spawner cap and the
+   driven-session ceiling.
 7. A worker for an order with a recorded worktree may write under that
    worktree's root and is refused under another order's; for a target order
    the roots are the target worktree and the order's launchpad worktree
@@ -544,18 +557,17 @@ the write-backs below.
     and the authority sentence; product 05's orchestration policies name
     the router as their first host binding; `docs/AI-HARNESS-SECURITY.md`
     states the per-agent identity and what stays root-wide; `docs/PLAYBOOK.md`
-    states the independence reading; the decisions file and index; the
-    harness manifest's refusal list; the publication locks refreshed.
-11. The executor root the Contributor build emits states the discipline
-    of product 07 §Preflight before the full gate as that section words it:
-    run the order's **Preflight:** line before the first full gate and after
-    each repair, finish every code edit before the last full run, and repeat
-    a full run only after a relevant change or a diagnosed invalidation of
-    its evidence, with the reason recorded. No other role's procedure changes
-    for it; `npm run harness -- check` is green; the role oracle fixture pins
-    the new executor root with its chain intact; the decisions record the
-    executor root's cold-start bytes before and after; criterion 9's executor
-    phase runs under that root.
+    states the independence reading; the decisions file and index; the router root states the spawn refusal (step 3) and
+    `docs/AI-HARNESS-SECURITY.md` §DotLn hook boundary — WO-144, 2026-09-19
+    states it (step 11), with the decisions recording why the shared
+    paragraph's five refusals stay accurate (the spawn refusal applies only
+    under the router role) or step 11 extending that paragraph in
+    `packages/compiler/src/harness.ts`; the publication locks refreshed.
+11. Struck by the 2026-10-21 pass and not judged: product 07 §Preflight
+    before the full gate, revised on 2026-10-19, says focused runs never
+    precede the complete run, the opposite of what this criterion required,
+    and the executor root already states the current sequence; the role oracle
+    fixture and the cold-start record of criterion 12 cover step 9's edits.
 12. The executor, verifier and reviewer roots the Contributor build emits
     state, for a target order: read its documentation root as repo-native
     authority beside its profile; make the order's write-backs to the
@@ -563,8 +575,8 @@ the write-backs below.
     run the target gate (`node scripts/target-gate.mjs WO-NNN`, with
     `--review` where the final criterion names the review gate) for the
     order's own checks, never the launchpad's `npm test`, beside the
-    launchpad's `npm run test:docs`; skip `release prepare`; and, for the
-    reviewer, commit the reviewed target change before the passing result,
+    launchpad's `npm run test:docs`; run `release prepare` as the briefing
+    says (no launchpad version for a target order); and, for the reviewer, commit the reviewed target change before the passing result,
     then run `npm run resume -- target-records` and both publications. A self
     order's text in the three roots is unchanged; `npm run harness -- check`
     is green; the role oracle fixture pins the three roots with their chain
@@ -592,18 +604,21 @@ written (every edition registers `packages/compiler/src/harness.ts`), and
 **Evidence gate:** the probe record; the fixtures and table tests of
 criteria 2 to 8; the live run of criterion 9 with its usage record; the
 generated executor, verifier and reviewer roots and role oracle fixture of
-criteria 11 and 12; the
-deterministic re-mints; `npm test -- --review` before
-`implementation-ready` and again at final review.
+criterion 12; the deterministic re-mints; `npm test -- --review` before
+`implementation-ready`, final review reusing the passing complete row at the
+integrated code identity when one exists.
 
 **Write-back duty:** as listed in criterion 10.
 
 **Known issues and carry-ins:**
 - 2026-10-13 reshape (the operator's sizing direction, planning document
   §12): the publication edge names WO-210, the carrier the provenance
-  records; the executor root gains the preflight discipline here (step 9,
-  criterion 11) because this order already edits `contributor.ts` and owes
-  its re-mints and role oracle fixture. `contributor.ts` is a registered
+  records; the executor root was given the preflight discipline here (step 9, criterion
+  11) because this order already edits `contributor.ts`; product 07 §Preflight
+  before the full gate reversed that discipline on 2026-10-19 (focused runs
+  never precede the complete run), and the 2026-10-21 pass struck step 9(a)
+  and criterion 11 as contradicting it, the executor root already stating the
+  current sequence. `contributor.ts` is a registered
   evidence source but not a file the feedback verifier judges
   (`FEEDBACK_SOURCE_PATHS`, `packages/skeleton/src/feedback-audit.ts` line
   15), so step 9 owes no live feedback episode; the live run its text meets
@@ -616,13 +631,10 @@ deterministic re-mints; `npm test -- --review` before
   launchpad's records only, so step 9 gives the three lifecycle roles a
   target-order branch (criterion 12) in the same edit and fixture as the
   preflight discipline, and closes WO-210's known issue on the generated
-  reviewer skill. The executor's preflight text follows product 07's
-  current wording (repeat a full run only after a relevant change or a
-  diagnosed invalidation of its evidence, with the reason recorded), not the
-  earlier "only after the code identity changes", which the alignment review
-  found exceeds the operator's direction. "Skip `release prepare` for a
-  target order" is the planner's reading of WO-210's no-release rule; the
-  executor confirms it against WO-210's landed prepare and records it.
+  reviewer skill. The executor's preflight text is no longer this order's (see the reshape
+  bullet). WO-210's landed `release prepare` validates a target order's
+  authority and reports no release, so the role text says to run it (corrected
+  by the 2026-10-21 pass).
 - 2026-10-13 standard pass: the Design and criterion 4 said the worker is
   handed the phrase and the order identifier while step 4 and the
   2026-10-07 decision said no phrase carries one (the criterion-plan
@@ -635,12 +647,8 @@ deterministic re-mints; `npm test -- --review` before
   source-change episode. Step 3 seeds the router's budget keys in the kit
   and reads an absent entry as null, so an instance exported before this
   order keeps `npm run meta`; its `CLAUDE.md` line goes in the generated
-  block. Watched, not taken: a target order's worker runs the order
-  launchpad's commands with `DOTLN_LAUNCHPAD` exported (WO-072's handoff),
-  and the fixture suites WO-201-D002 names inherit it
-  (FUP-2518166a22767f47); FUP-d72bf62d3c82ca3f's trigger (an order that edits
-  harness emit) matches step 2's emitter loop, but its build-none disclosure
-  is outside this order's objective and stays deferred.
+  block. FUP-2518166a22767f47 (settled by WO-217-D045, v0.89.0) and
+  FUP-d72bf62d3c82ca3f (settled by WO-218-D023, v0.87.0) need nothing here.
 - 2026-10-11 route pass (operator direction, item (k)): target orders are
   in scope; each phase's worker runs in the target worktree under WO-049's
   bundle, launched from the instance; the probe gains the target-worktree
@@ -663,9 +671,9 @@ deterministic re-mints; `npm test -- --review` before
   root-wide total stays reported (criterion 6), after criterion 1's probe
   of what the host exposes; it reopens if this order is withdrawn or closes
   with the item returned to the register.
-- Stale on 2026-10-07 and corrected above: the Cost line's "the other roots
-  are unchanged" (the router's refusal now lives in its own root, so it
-  holds; the 2026-10-13 reshape adds step 9's text to the executor root,
+- Stale on 2026-10-07 and corrected: the Cost line's "the other roots are
+  unchanged" (false, since every role's cold start counts `CLAUDE.md` and step
+  3's phrase line grows all of them; corrected by the 2026-10-21 pass; the 2026-10-13 reshape adds step 9's text to the executor root,
   which the Cost line now names); the gap's "none of this has been probed" (WO-139's probe
   observed three of the fields); WO-187 is closed and the worker
   definition is emitted and manifest-hashed.
@@ -702,6 +710,31 @@ deterministic re-mints; `npm test -- --review` before
 - Receipt 038: WO-187 and this order both generate agent definitions in
   one source file; criterion 3 requires one generator and one check
   rule. Reopen if the bundle holds definitions from two generators.
+- Receipt 039 (2026-10-02), written in by the 2026-10-21 pass: moving phase
+  work into workers relocates metering and removes no work (reopen when the
+  live drive's record shows router plus worker usage at or above the same
+  phases run as separate sessions, or a decision cites worker-side usage as
+  saved); the router is a second lifecycle driver beside the resident (reopen
+  when a later order implements the same re-entry, repair-bound or next-action
+  rule in both, or the two disagree about an order both can see); the router
+  root needs a cold-start ceiling (reopen when it is generated with none in
+  `budgets.json`).
+- Receipt 044 (2026-10-11), written in by the 2026-10-21 pass: criterion 9
+  records usage only as far as the host exposes it (reopen when the driven
+  order's router-plus-worker total exceeds a comparable order run through
+  per-phase sessions, or the host exposes no worker usage); criterion 3's
+  router root ceiling is stated in step 3 (reopen when the meter reports it
+  null or above the smallest existing role ceiling); publication and release
+  close rest on fixtures (reopen when the first live driven order that reaches
+  them, for example WO-083's run, records a manual handoff, an unhandled stop
+  or a failure there).
+- Receipt 045 (2026-10-13), written in by the 2026-10-21 pass: step 9 and step
+  3's `CLAUDE.md` line have no byte bound; at `926b8234` the executor root is
+  424 bytes and the reviewer root 281 bytes below their advisory ceilings
+  (`docs/control/budgets.json`); the decisions record each root's bytes before
+  and after and any acceptance under the standing 2026-09-17 route; product 07
+  forbids trimming reviewed text to a number. Reopen when a role's measured
+  bytes exceed its ceiling with no recorded acceptance.
 
 **Non-goals:** merging a pull request; driving more than one order per
 phrase; any scheduler or queue; observing or naming what a particular
@@ -727,9 +760,9 @@ for release close.
 5. This order is placed after WO-204 and directly before WO-083 at the
    operator's direction of 2026-10-11, so the measured run is driven the way
    the operator drives orders; nothing in it depends on the export.
-6. The executor's preflight discipline belongs in this order's edit of the
-   Contributor build rather than in an order of its own (the operator's
-   2026-10-13 sizing direction, planning document §12).
+6. Struck by the 2026-10-21 pass: the executor's preflight discipline is
+   product 07 §Preflight before the full gate as revised on 2026-10-19, and
+   the executor root already states it; this order adds no preflight text.
 7. The target-order branch of the executor, verifier and reviewer text
    belongs in this order too: it edits the same procedures, fixture and
    re-mints, and WO-210 leaves role text to it (planning document §12.7).

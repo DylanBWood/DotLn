@@ -72,7 +72,7 @@ workflow pilot) are carried. Amended by the 2026-10-13 standard pass at
 line, reversing the 2026-10-07 decision because the board reads them there
 (the consumer FUP-7d1f987c4cfbb93f's reopening names); the two-page index
 (WO-190) and WO-074's kit template named; the board's return list keeps
-`history` and its version starts from 0.4.2; the pilot's title, Objective,
+`history` and its version starts from the base's (0.4.4 at `926b8234`); the pilot's title, Objective,
 Design and criterion name the four demonstrations its plan kept, and its
 suite row declares the kit exclusion every exporting suite declares since
 WO-201. Merged by the 2026-10-13 standard planning pass under the operator's
@@ -86,9 +86,11 @@ pilot runs; closed, v0.75.0); WO-167 merged (closed, v0.53.1); WO-071 merged
 merged (a fixture launchpad exported with its build; closed, v0.72.0);
 WO-032 merged (the board this order extends; closed, `v0.14.0`). No queued
 order.
-**Recommended placement:** position 4 of the serial queue (the operator
-keeps core's next thirty orders serial; planning document §12.4), after
-WO-213 and before WO-204, because WO-083 (after WO-192, before WO-207)
+**Recommended placement:** after WO-219 and WO-220 in the serial queue
+(position 7 after the 2026-10-21 pass placed four fork-unblocking orders
+first; the operator keeps core's next thirty orders serial, planning document
+§12.4) and before WO-224, which reads this order's `dotln-workstream` block
+for `entropy review --workstream` (reference-only), and WO-204, because WO-083 (after WO-192, before WO-207)
 depends hard on its workstream convention, which the run's `WS-001` copy
 follows, and on its synthetic pilot, which precedes the witnessed run.
 The merge also advances the board's Workstreams section, with the
@@ -100,7 +102,11 @@ order cycle of its own, one of the two cycles the merge saves overall
 `scripts/lib/work-order-workstream.mjs`, their fixtures, the generated
 index, `scripts/kit/workstream.template.md`, `docs/workstreams/`,
 `packages/console`, a new `scripts/test-workstream-pilot.mjs` with its
-runner row, products 12, 07 and 04 and the decisions file. WO-088 (after
+runner row, products 12, 07 and 04 and the decisions file. WO-219 (queued before this order) edits `parseHeader` (the historical-id
+dependency refusal), `index --check` (the Preflight-token check),
+`scripts/test-work-orders.mjs` and `scripts/test-runner.mjs` (`--list
+--review`); this order rebases on it and re-reads those functions at its base
+(the 2026-10-21 pass). WO-088 (after
 WO-183, before WO-091) also edits `scripts/work-orders.mjs` and product 07 for its
 allowed-section check and lists `Workstream` in its allowed set; the Design
 states how the two meet in either order. A recommendation, not a dependency
@@ -264,6 +270,15 @@ observed 2026-09-08 at `33e2c25`; the last bullet observed 2026-10-13 at
 **Design (scope discipline):**
 
 - Staleness follows the source-revision guard's shape as a projection.
+  - A member with no `**Repository:**` line is `self` and reads the
+  launchpad's own Git state; a block entry whose order lacks `**Workstream:**`
+  is refused naming the order and the field. A block carrying `"track":
+  "separate"` names a stream the operator keeps out of the serial queue: its
+  members are rendered under `## Workstreams` and not in `## Proposed order`,
+  and `checkSequenceCoverage` accepts such a member whether or not the marked
+  sequence names it, so an order that depends on the operator's work instance
+  never reads as queued core work (operator direction, 2026-10-21, note 8 and
+  its clarification; `WS-002` is the first such stream).
 - The generator resolves the `workstreams` root through
   `scripts/lib/config.mjs`; no literal document root enters a script.
 - The grouping keeps every `### WO-NNN` row of the index whole, because the
@@ -346,15 +361,28 @@ name, field names and fixture bytes come from steps 4 and 7):**
    base, phase, verdict, integration, stale and the observed target commit) and `edges`, so
    the board (step 10) and the pilot (step 18) parse JSON and never the rendered Markdown
    (prose-parsing screen); `renderSources` (line 703, on `HISTORY.md`) "Header observation"
-   names the field and the record. Check: `npm test -- --only work-orders-fixtures`;
-   `npm test -- --only index`.
+   names the field and the record. Check: `npm test -- --only
+   work-orders-fixtures`; `npm run work-orders -- index`, then `npm test --
+   --only index` (the committed pages must be regenerated before the `index`
+   row passes).
 5. Same file, `--check`: the grouping regenerates from the recorded facts; no target is
-   re-read, judged or refused. Check: `npm test -- --only index`.
-6. `docs/workstreams/README.md` (new; creates the directory): the convention plus a fenced
+   re-read, judged or refused. `checkSequenceCoverage` accepts an open order
+   whose `**Workstream:**` names a block with `"track": "separate"` as placed
+   by its workstream, and `renderIndex` leaves it out of `## Proposed order`
+   and the Open cards' sequence order. Check: `npm run work-orders -- index`,
+   then `npm test -- --only index`.
+6. `docs/workstreams/README.md` (new; the directory exists since the 2026-10-21 pass filed `WS-002-predecessor-track.md` under the kit template's interim text, which this step's convention must read): the convention plus a fenced
    template; the document carries a JSON block between `<!-- dotln-workstream:start -->` and
    `<!-- dotln-workstream:end -->`:
    `{ "id", "members": [{ "workOrderId", "repositoryId" }], "edges": [{ "from", "to", "relation" }] }`;
-   membership stays sourced from `**Workstream:**` and the generator refuses a differing block.
+   membership stays sourced from `**Workstream:**` and the generator refuses a
+   differing block, naming the order and the field to add; a member with no
+   `**Repository:**` line is `self` (its repository cell `self`, its base the
+   launchpad's own, integration and stale read from the launchpad's Git state
+   or `unknown`); a block may carry `"track": "separate"` for a stream the
+   operator keeps out of the serial queue (operator direction, 2026-10-21:
+   work that depends on the operator's work instance), whose members the index
+   renders under their workstream heading only.
    "Integration state" is the enum `current`, `behind` (the base is an ancestor of the tip),
    `diverged`, `unknown`; stale means not `current`. Resolve the root through
    `docPath(root, "workstreams")` (configuration-root refuses `docs/...` literals); the README
@@ -372,10 +400,14 @@ name, field names and fixture bytes come from steps 4 and 7):**
    target repositories, three members; each cell equals the header, the segment or
    `rev-parse`; no fixture path in the render) and `await check("WO-080 moved base stays stale
    beside a green sibling; unreadable target is unknown; --check passes with targets absent")`,
-   which also reads the committed `dotln-workstreams` line's per-member fields (criterion 2).
+   which also reads the committed `dotln-workstreams` line's per-member fields (criterion 2). and `await check("WO-080 a self member, a refused block entry and a
+   separate track")` (a member with no `**Repository:**` line reads `self`; a
+   block entry whose order lacks `**Workstream:**` is refused naming the
+   order; a `track: separate` member renders only under its workstream and
+   passes `index --check` while absent from the sequence).
    Check: `npm test -- --only work-orders-fixtures`.
 8. If WO-088's allowed-section check is on `main` at the base, add `Workstream` to its allowed
-   set. Check: `npm test -- --only work-orders-fixtures`; `npm test -- --only index`.
+   set. Check: `npm test -- --only work-orders-fixtures`; `npm run work-orders -- index`, then `npm test -- --only index`.
 9. `npm run work-orders -- index`; check `npm run work-orders -- index --check` (the `index`
    row).
 10. `packages/console/src/text-sources.ts`: add
@@ -424,7 +456,7 @@ name, field names and fixture bytes come from steps 4 and 7):**
     Check: `npm run test:console`; `npm test -- --only console`;
     `npm test -- --only console-docs`.
 16. `packages/console/package.json` and the `packages/console` entry in `package-lock.json`
-    (line 486): 0.4.2 to 0.5.0. Check: `npm test -- --only release-surfaces`.
+    (line 486): the version at the base (0.4.4 at `926b8234`) to the next minor, 0.5.0. Check: `npm test -- --only release-surfaces`.
 17. `scripts/test-workstream-pilot.mjs` (new). Import `./test-fixture-temporary.mjs` first.
     Build the service, client and docs target repositories with `runGit`
     (`scripts/lib/git.mjs`); export a launchpad with `node scripts/launchpad.mjs export <dir>`
@@ -478,8 +510,14 @@ name, field names and fixture bytes come from steps 4 and 7):**
     with step 11's shared-ref decision); `npm run meta`;
     `node scripts/check-publication.mjs --print-locks`; `npm run publication:check`. Check:
     `npm run test:docs`.
-21. Handoff sequence: `npm run format`; `npm run test:docs`; `npm test -- --review`;
-    complete `docs/evidence/WO-080/handoff.md`; `npm run resume -- implementation-ready <flags>`.
+21. Handoff: finish source edits; `npm run format` and `npm run sync` for
+    stale generated artifacts; start one `npm test -- --review` in the
+    background, never under the bounded wrapper, and await it with `node
+    scripts/harness.mjs evidence --wait`; after it passes, complete
+    `docs/evidence/WO-080/handoff.md`; run `npm run test:docs` once after the
+    last document edit; then `npm run resume -- implementation-ready <flags>`
+    (product 07 §Discipline, revised 2026-10-19; corrected by the 2026-10-21
+    pass).
 
 **Acceptance criteria (all required)**
 
@@ -488,7 +526,12 @@ name, field names and fixture bytes come from steps 4 and 7):**
    under it. Each column equals the value the fixture sets in the member's
    header, its control segment or its target repository's Git history, and
    the render holds none of the fixture's physical paths (the launchpad
-   root, the target checkouts and the worktree parent).
+   root, the target checkouts and the worktree parent). A member with no `**Repository:**` line reads `self`; a block entry whose
+   order lacks `**Workstream:**` is refused naming the order; a member of a
+   workstream whose block carries `"track": "separate"` appears under its
+   workstream heading and not in the Proposed order list, and `index --check`
+   accepts it absent from the marked sequence (a fixture asserts each; the
+   2026-10-21 pass).
 2. In the fixture, a member whose declared base differs from its target's
    integration base shows stale, and a green sibling leaves it stale; a
    member whose target cannot be read shows `unknown`; `index --check`
@@ -559,15 +602,15 @@ declared source of the `launchpad-planning`, `harness-fixtures`,
 (`scripts/test-runner.mjs` lines 128, 208, 258 and 381) and of
 `configuration-root` by prefix (line 242), `scripts/test-runner.mjs` of
 `runner-fixtures` and `registrations` (lines 321 and 441), and every `docs/`
-path, product 04 among them, of `registrations` (line 436); and again at
-final review. No live row.
+path, product 04 among them, of `registrations` (line 436); final review reuses the passing complete row at the integrated code identity
+when one exists (product 07 §Preflight before the full gate). No live row.
 
 **Write-back duty:** as listed in criterion 6.
 
 **Known issues and carry-ins:**
 
-- Register rows carried: FUP-0126 (the workstream application, allocated to
-  this order and WO-083), FUP-7d1f987c4cfbb93f (the target facts on the
+- Register rows carried: FUP-0126 (the workstream application, allocated to this order alone since
+  the 2026-10-17 standard pass), FUP-7d1f987c4cfbb93f (the target facts on the
   committed line; its reopening's consumer is step 10), FUP-0050 (the
   synthetic pilot) and FUP-0070 (the sibling workflow pilot, among the
   WO-069 to WO-083 run). FUP-b28d36edaa8630b1 (the other four
@@ -610,7 +653,10 @@ final review. No live row.
   none, and with NoOp the same data stays in the index. Since the merge it
   rides in WO-083's typed prerequisite, though WO-083's text names no use of
   the board. Reopen when WO-083's receipt records an intervention or
-  restatement caused by workstream state the board did not show.
+  restatement caused by workstream state the board did not show. Since 2026-10-21 the operator's instance names a consumer: DotLn-Angular's
+  `board` feature renders `uifa-board-v1` from a recorded fixture that a later
+  fork order refreshes when this section lands (the fork's WO-006 known
+  issues); the reopening condition stands.
 - Receipts 041 to 044, recorded against WO-082 before its merge here (its
   criterion 1, now criterion 5): the three-repository suite enters the
   product gate with its wall-clock recorded but not bounded, so every later
@@ -618,6 +664,24 @@ final review. No live row.
   Reopen when the suite's recorded wall-clock pushes a fresh plain
   `npm test` above six minutes on the operator's host (the stand-down
   reversal condition).
+- The operator's instance holds `WS-001` under the kit template's interim
+  text; its `dotln-workstream` block lists WO-011 and WO-012 with
+  `repositoryId` `self`, and those orders declare no `**Workstream:**` field
+  (observed 2026-10-21 in its committed
+  `docs/workstreams/WS-001-dotln-angular.md`), so the generator must read
+  `self` and refuse a block entry whose order lacks the field by naming it,
+  never by failing the instance's gate on a silent mismatch; the kit
+  template's replacement text (step 6) states both rules.
+- Operator direction of 2026-10-21 (the planning dispatch, note 8 and its
+  clarification): work that mines or depends on the predecessor on the
+  operator's work machine is a separate stream, never in the serial queue. The
+  2026-10-21 pass filed `docs/workstreams/WS-002-predecessor-track.md` with
+  WO-228 as its member under the kit template's interim text and left WO-228
+  in the marked sequence as a last labelled group, because
+  `checkSequenceCoverage` admits no other place today; this order's `track:
+  separate` reading moves such members out of the Proposed order list and lets
+  the sequence drop them. Reopen if the operator wants a separate stream shown
+  differently.
 
 **Non-goals:** events; re-reading a target repository at `index --check`;
 console v1; drag-equip authoring; any other panel; a new schema field; the

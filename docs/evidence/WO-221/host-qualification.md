@@ -33,24 +33,50 @@ one-criterion target order `docs/work-orders/WO-001-*.md` with
 
 | Host | Version | Mode | Outcome | Commands and what carried them | Denials |
 | --- | --- | --- | --- | --- | --- |
-| Claude Code | 2.1.304 (the fork's attestation of every WO-005 phase and `claude --version` on 2026-10-20) | auto mode on, with the operator's two interim `autoMode.environment` entries of 2026-10-18 present and the fork launchpad's untracked `.claude/settings.local.json` allowing `Bash(node *)` and `Bash(gh pr create:*)` among others; `hostRules` absent from the registration | run on 2026-10-20 in the operator's instance (its WO-005 against DotLn-Angular, starter v0.85.0), rewritten from the fork's planning document of 2026-10-20 §11 by the 2026-10-20 fork-answers pass: the hook's own decision observed; the host's behavior without the entries unobserved; the kit's final publish refused by its own lint; the close carried by the host | Draft at `verified`, 15:44:58Z: `npm run worktree -- publish WO-005 --target-worktree --draft --branch feat/foundation-libraries --title <the order's title> --body-file <the committed body>`, run by the session that recorded VER-001 pass. The journal's PreToolUse row classed the effect `lifecycle.run` and allowed it; no `registeredTargetAdmission` row exists in any journal of the instance (at v0.85.0 the npm spelling matched no helper shape; since v0.87.0 it is withheld with the node spelling named). No prompt observed: printed and finished within eight seconds. Draft pull request DylanBWood/DotLn-Angular#3 at 15:45:04Z. Closed-phase publish: the kit's `worktree publish WO-005 --target-worktree` refused at the outward lint before any push (a 90-character commit subject against the 72-character limit), so the second publish did not run through the kit; the operator chose the hand route (the pull-request edit and the ready step succeeded; the session pushed the reviewed series from the target worktree under the lease); #3 merged at 16:55:22Z. Close: `resume: release close` at 16:57Z, outcome no-release; the journal at 16:57:11Z: `Release-close admission withheld: byte-exact helper spelling missing; host permissions decide.`, so the host carried the command, as at WO-011's close (13:50:33Z) and WO-001's (2026-10-15). The base checkout lost nothing (it held no ignored file); the target worktree lost `.nx` (119 files), `dist` (10) and `node_modules` (37,877). | none: no `HostPermissionDenied` row in the episode. Standing after the episode: the operator removed the two user-settings entries and the launchpad's `Bash(node *)` allow on 2026-10-20 at the end of the fork's planning pass (absent when the 2026-10-20 fork-answers pass read the two files, patterns only); no lifecycle command has run since; the fork's WO-006 draft publish under v0.87.0's node spelling is the first observation of the host after a hook admission alone, and this row is rewritten from it. |
+| Claude Code | 2.1.304 (the fork's WO-005, 2026-10-20) and 2.1.306 (the fork's WO-006, 2026-10-21), both from the fork's attestations | auto mode on. WO-005: the operator's two interim `autoMode.environment` entries of 2026-10-18 and the fork launchpad's untracked `.claude/settings.local.json` allows for `Bash(node *)` and `Bash(gh pr create:*)` present. WO-006: all three removed on 2026-10-20 (both settings files read by pattern on 2026-10-20 and 2026-10-21, zero matches). `hostRules` absent from the registration both times | WO-005 (starter v0.85.0): the hook made no decision at all (at v0.85.0 an `effect: lifecycle.run, allowed: true` row means the hook returned `{}`, `packages/skeleton/src/harness-host.ts` at that tag, lines 5412 to 5417), so the host's own permission flow carried the draft under the interim entries; the 2026-10-20 rewrite's phrase "the hook's own decision observed" overstated it (corrected by the 2026-10-21 pass). WO-006 (starter v0.88.0, kit `a54f8d65`), rewritten by the 2026-10-21 pass from the fork's `docs/evidence/WO-006/host-qualification.md`: no registered-target admission was granted at any publish, so whether a hook `allow` pre-empts the classifier is still unobserved. What was observed is the classifier with no hook decision: two denials at `verified`, one allow at `closed`, cause of the difference unobserved | Draft at `verified` (VER-001 session, `claude-opus-5-5` xhigh): first attempt at 14:49:53Z ran `node scripts/worktree.mjs publish WO-006 --target-worktree --draft …` with a `2>&1 \| tail -20` suffix; the hook's plain-word parser declines a piped command, so no admission row and no advisory were written, and the classifier denied without a prompt (`HostPermissionDenied`, rule `[Unrequested Commit in a Connected App]`). Second attempt at 14:53:09Z, the plain spelling: the admission evaluated and was withheld, `publication authority differs from main's committed dotln.config.json` (the order worktree's registration adds the `visual` gate command, a plugin flag and a diagnostic path, and the admission compares whole-file bytes); the classifier denied without a prompt, rule `[Create Public Surface]`; a following read-only journal check was denied, rule `[Out-of-Place Publication]`. The operator then ran the same command with the `!` prefix: the kit's outward lint refused it (`vocabulary.launchpad` on the generated Change table, which names a fixture `launchpad-board-2026-10-21.json`); after the operator set the instance's `terms` to one placeholder in `main`'s working copy, the `!` run pushed the draft and opened DylanBWood/DotLn-Angular#4 at `a9e58af4` (a `!` run bypasses the hook and the classifier alike). Publish at `closed` (FINAL-001 session, `claude-fable-5-1` xhigh, 16:50:57Z): `cd <order worktree> && DOTLN_LAUNCHPAD=… node … publish WO-006 --target-worktree …`, the directory change and the variable in front of the node spelling, so the parser did not read the helper form and no admission row exists; the classifier allowed without a prompt; #4 marked ready at `5eee5951`. Close of the instance's WO-012 (04:03Z to 04:07Z): the printed helper form ran three times (dry run, publish, idempotent retry); the session's first `resume: release close` prompt was withheld at `snapshot-missing` because `node scripts/bootstrap.mjs` had not run on the fast-forwarded `main` (WO-226). | `HostPermissionDenied` rows in WO-006: two at the draft (`[Unrequested Commit in a Connected App]`, `[Create Public Surface]`) and one on a read-only journal check (`[Out-of-Place Publication]`); none at the closed-phase publish; one after WO-012's close at 04:08:15Z on a 212-byte Bash input whose command the fork's record does not hold. |
 | Codex | not run (blocked) | Auto (workspace-write, on-request approvals, network off) | blocked: launch not run by handoff | Launch: `codex --add-dir <target worktree>` in the order worktree (the printed line); same phrases and publish forms as above. With the project `.codex/` layer trusted, the generated `.codex/rules/dotln-WO-001.rules` (written only under `hostRules: "literal"`) carries the push and `gh pr` forms; without it, record each approval prompt. | none observed yet |
 | Copilot CLI | not run (blocked) | default | blocked: launch not run by handoff | Launch: `copilot` with the printed `--allow-tool` lines from `worktree start` in the order worktree; same phrases. The shared hook admits the commands through the registration; record each approval prompt. | none observed yet |
 
 ## Known issues
 
-- The Claude Code row's episode (the fork's WO-005, 2026-10-20) observed the
-  hook's decision only: the operator's interim trust entries and a
-  `Bash(node *)` allow admitted the same commands regardless of the hook.
-  They were removed afterwards, so the fork's WO-006 draft publish is the
-  episode that decides whether the classifier still asks after the hook's
-  `allow`; the fallback exists for a `no`.
+- The removal of the operator's interim entries and the launchpad-local
+  allows before the fork's WO-006 was core's framing of the qualification
+  test (the 2026-10-19 fork-requests pass: with the entries present a
+  prompt that does not appear proves nothing about the hook). That framing
+  rested on WO-178's 2026-09-30 reading of the host documentation, which no
+  current page supports (a research pass of 2026-10-21 over the hooks,
+  permissions, permission-modes and auto-mode pages found no sentence on a
+  hook `allow` against the classifier), and on a WO-005 observation that
+  was a hook no-decision. With the entries gone the publish stopped: the
+  admission withheld and the classifier denied, and the operator carried
+  the publish by hand. Until a live episode records the admission's `allow`
+  and the classifier's verdict together, the kit's own route is the
+  registration's `hostRules: "literal"` fallback (WO-221 criterion 2),
+  which writes the order's exact rules into the launchpad's
+  `.claude/settings.local.json` at `worktree start` and removes them at
+  release close; whether auto mode keeps a rule that begins with the node
+  path is undocumented and is that order's first observation.
+- The Claude Code row's first episode (the fork's WO-005, 2026-10-20)
+  observed the hook's decision only: the operator's interim trust entries
+  and a `Bash(node *)` allow admitted the same commands regardless of the
+  hook. The second episode (the fork's WO-006, 2026-10-21, entries absent)
+  did not decide whether the classifier yields to a hook `allow`, because
+  no admission was granted: one spelling was piped and went unparsed, the
+  plain spelling was withheld on whole-file equality of `dotln.config.json`
+  with `main`, and the closed-phase spelling carried a directory change and
+  a variable in front of the helper. WO-226 narrows the equality to the
+  registration's publication fields and makes a near-miss spelling print an
+  advisory; the next admitted publish in the fork with the entries absent
+  decides the question, and the fallback exists for a `no`.
 - Whether a hook's `allow` pre-empts the Claude Code auto-mode classifier is
   unstated in the published documentation (planning document §3); this
   branch's own execution observed the classifier deny this executor's edits
   and build of the hook host as self-modification before auto mode was
   exited, which is a different judgment from the target push the episode
-  tests. The episode decides it; the fallback exists for a `no`.
+  tests. The WO-006 episode adds the classifier's own record with no hook
+  decision: two denials at `verified` without a prompt and one allow at
+  `closed` without a prompt, for the same helper on the same host and
+  settings; the fallback exists for a `no`.
 - The fallback's Codex rules live in `.codex/rules/dotln-WO-NNN.rules`
   (Starlark `prefix_rule`), not in `config.toml`: the public Codex rules
   page describes prefix rules as Starlark in `.rules` files under a trusted

@@ -4173,6 +4173,13 @@
           "title": "Workstream application — end-user workflow candidate",
           "summary": "# Workstream application — end-user workflow candidate **Status:** operator-opened product exploration, 2026-09-04. This describes a candidate application of DotLn for everyday software work. It is not an implemented interface, a deployment claim, a new release rung, or a replacement for the separately named `προτείνω` thesis. The application identity and first deployment remain unannounced; this public design uses synthetic work only. The product question is what a person does when they sit down to work: start an outcome, make the decisions that need their judgment, inspect the result, and return later without reconstructing the process. DotLn should carry the coordination that currently li",
           "missing": false
+        },
+        {
+          "hash": "7d6061b9fac7a6e913237b01de088c1230252f8fc9c4f5cd796f6f7e96657a20",
+          "ref": "docs/product/12-workstream-application.md#workstream-application--end-user-workflow-candidate",
+          "title": "Workstream application — end-user workflow candidate",
+          "summary": "# Workstream application — end-user workflow candidate **Status:** operator-opened product exploration, 2026-09-04. This describes a candidate application of DotLn for everyday software work. It is not an implemented interface, a deployment claim, a new release rung, or a replacement for the separately named `προτείνω` thesis. The application identity and first deployment remain unannounced; this public design uses synthetic work only. The product question is what a person does when they sit down to work: start an outcome, make the decisions that need their judgment, inspect the result, and return later without reconstructing the process. DotLn should carry the coordination that currently li",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -4274,6 +4281,14 @@
             "WO-080"
           ],
           "at": "2026-10-17T19:34:05.856Z"
+        },
+        {
+          "sourceRevision": 20,
+          "status": "deferred",
+          "reason": "Re-deferred by the 2026-10-21 pass after product 12's edit (the predecessor census and the replacement route): the candidate's section changed only in that paragraph; WO-080 still carries the workstream application rows its Known issues name. [2026-10-21 planning pass on the fork's notes and the operator's questions (docs/planning/fork-notes-and-operator-questions-2026-10-21.md section 10)]",
+          "reopenWhen": "WO-080 closes without the workstream application rows its Known issues carry, or product 12's candidate section changes its demonstrations",
+          "targets": [],
+          "at": "2026-10-22T01:19:51.771Z"
         }
       ]
     },
@@ -29552,6 +29567,14 @@
           "reopenWhen": "WO-217 pull request review: the operator chooses continued documented observational protection or explicitly authorizes a separately scoped OS ownership mechanism.",
           "targets": [],
           "at": "2026-10-21T13:36:03.857Z"
+        },
+        {
+          "sourceRevision": 4,
+          "status": "deferred",
+          "reason": "Deferred again by the 2026-10-21 pass: the operator's note 9 of 2026-10-21 defers the WO-217 packet, whose D026 re-boarded this row (complete descendant ownership through unobserved intermediate exits); no order on the horizon takes it. [2026-10-21 planning pass on the fork's notes and the operator's questions (docs/planning/fork-notes-and-operator-questions-2026-10-21.md section 10)]",
+          "reopenWhen": "The operator returns to the WO-217 packet, or a probe records a detached descendant surviving a bounded command after the guard",
+          "targets": [],
+          "at": "2026-10-22T01:19:51.467Z"
         }
       ]
     },
@@ -35433,6 +35456,14 @@
           "reopenWhen": "a pass needs the measurement and no fresh gate rows exist, or an order edits the listing's budget",
           "targets": [],
           "at": "2026-10-11T01:26:26.292Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by the 2026-10-21 pass: the --slow wall budget stays 300 s; WO-229 marks a contended sample and records the contention when the row exists, which the fork's two timed-out-shaped gates (304.86 s and 1,520.76 s of lane wait) show is the usual cause; a retry is not added. [2026-10-21 planning pass on the fork's notes and the operator's questions (docs/planning/fork-notes-and-operator-questions-2026-10-21.md section 10)]",
+          "reopenWhen": "A pass's document condition is unavailable three passes running with contended samples, or WO-229 closes without marking contention",
+          "targets": [],
+          "at": "2026-10-22T01:19:51.871Z"
         }
       ]
     },
@@ -35773,6 +35804,14 @@
           "reopenWhen": "the operator opens the instance's first planning pass and asks for a seed, or a WO-193 request asks core for one",
           "targets": [],
           "at": "2026-10-11T20:18:59.826Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-10-21 pass: the fork's UI planning pass of 2026-10-21 cut its own console orders (WO-006 closed as DotLn-Angular v0.1.0, WO-007 and WO-008 queued) without seeding from core's ideation; the three routes the operator named were not needed. [2026-10-21 planning pass on the fork's notes and the operator's questions (docs/planning/fork-notes-and-operator-questions-2026-10-21.md section 10)]",
+          "reopenWhen": "The operator asks core to seed an instance's planning pass",
+          "targets": [],
+          "at": "2026-10-22T01:19:51.670Z"
         }
       ]
     },
@@ -41219,6 +41258,16 @@
           "reopenWhen": "WO-193 lands, or the fork files its console order.",
           "targets": [],
           "at": "2026-10-19T13:47:57.543Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-225 for its read half (criterion 4, step 7): the status file and a resident-written board snapshot over the loopback's two read routes for a local browser origin; the direction channel is the parity contract's command route as it stands, and a request channel from the shell to core is WO-193's; the fork's D17 row, reworded in the platform's names. [2026-10-21 planning pass on the fork's notes and the operator's questions (docs/planning/fork-notes-and-operator-questions-2026-10-21.md section 10)]",
+          "reopenWhen": "WO-225 is withdrawn, or the fork's console order asks for a direction channel the command route does not carry",
+          "targets": [
+            "WO-225"
+          ],
+          "at": "2026-10-22T01:19:51.568Z"
         }
       ]
     },
@@ -42439,6 +42488,636 @@
           "reopenWhen": "The meter counts inherited authorization as a new operator direction, or an actual recorded instruction is omitted.",
           "targets": [],
           "at": "2026-10-21T13:29:15.512Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-bcfcbd2728a8f202",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-notes-and-the-operators-questions-recorded-2026-10-21::0b235f778a65e30ac2100f95ffe7087a5d58b7ec56ac0c34fa3e83ab9f22ec6a",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "bb85bf906dc9777c33bfcbcd92d9e93697c92465e8499eb63d7dcbc1c3a2dc0a",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-notes-and-the-operators-questions-recorded-2026-10-21",
+          "title": "How often the fork reports back, and when it proceeds.",
+          "summary": "22. **How often the fork reports back, and when it proceeds.** Answered, no order: the fork writes a request block only when it has items; a core pass that reads one ends with a one-line fork disposition (proceed, or wait for a named release); an instance takes a starter update only when a release's Read before upgrading names something it needs (product 07 §Operator-opened planning pass, written by the pass).",
+          "missing": false
+        },
+        {
+          "hash": "46385380762954ad03b548c74e3f923b0884b27d58f49cff6f6a005b9efbe8ae",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-notes-and-the-operators-questions-recorded-2026-10-21",
+          "title": "How often the fork reports back, and when it proceeds.",
+          "summary": "22. **How often the fork reports back, and when it proceeds.** Answered, no order: the fork writes a request block only when it has items; when a core pass files an order for an item, its answer says whether the item blocks the fork's next order or is a convenience with a working route, so the fork reads blockers apart from conveniences; a release's Read before upgrading says what must be read, and nothing else obliges the fork to take it (product 07 §Operator-opened planning pass; the operator's clarification of 2026-10-22).",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-10-21 pass with no order: the fork writes a request block only when it has items; a core pass that reads one ends with a one-line fork disposition (proceed, or wait for a named release); an instance takes a starter update only when a release's Read before upgrading names something it needs (product 07 §Operator-opened planning pass, preconditions item 5, as the pass wrote it on the operator's question of 2026-10-22). [2026-10-21 planning pass on the fork's notes and the operator's questions (docs/planning/fork-notes-and-operator-questions-2026-10-21.md section 10)]",
+          "reopenWhen": "A core pass ends without the fork line while a fork block was read, or the fork asks after a pass whether to proceed",
+          "targets": [],
+          "at": "2026-10-22T01:19:51.261Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Settled by the 2026-10-21 pass with no order, corrected on the operator's clarification of 2026-10-22: the fork writes a request block only when it has items; when a core pass files an order for an item, its answer says whether the item blocks the fork's next order (wait for the carrying release) or is a convenience with a working route (continue), so the fork reads blockers apart from conveniences; a release's Read before upgrading says what must be read, and nothing else obliges the fork to take it (product 07 §Operator-opened planning pass, preconditions item 5). [2026-10-21 planning pass on the fork's notes and the operator's questions (docs/planning/fork-notes-and-operator-questions-2026-10-21.md section 10)]",
+          "reopenWhen": "A core pass files an order for a fork item without saying whether it blocks the fork's next order, or the fork asks after a pass whether to proceed",
+          "targets": [],
+          "at": "2026-10-22T01:26:24.380Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-27931c7dc233d157",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-notes-and-the-operators-questions-recorded-2026-10-21::143c87292cae9773425d3aba32c98daf62adfcdbe00c9ccc987b614000e32d79",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "b846471d1f573a216b302154acb845f7dc43b0dd4f4eccea2e910728621cadb5",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-notes-and-the-operators-questions-recorded-2026-10-21",
+          "title": "A UI-state store in the kit.",
+          "summary": "15. **A UI-state store in the kit.** Declined for now: the store is the host's; reopen when a consumer asks for one shape.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined for now by the 2026-10-21 pass: UI state an operator makes while using a console persists in a store the host owns, apart from control records (product 04); no consumer has asked core for one shape. [2026-10-21 planning pass on the fork's notes and the operator's questions (docs/planning/fork-notes-and-operator-questions-2026-10-21.md section 10)]",
+          "reopenWhen": "A console host asks core for a kit directory or schema for UI state",
+          "targets": [],
+          "at": "2026-10-22T01:19:50.544Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-5d18c0d847c0f432",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-notes-and-the-operators-questions-recorded-2026-10-21::2057a2ccae7877e3920d0f2e15c4d9237584a6a252fbad7813194aa6e179c627",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "9f98bb33d2bafad232a12e9e4cde6a7b3e8257b2e1d98fe13fc8340ff0f729bc",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-notes-and-the-operators-questions-recorded-2026-10-21",
+          "title": "The registered-target admission judges authority, not bytes.",
+          "summary": "2. **The registered-target admission judges authority, not bytes.** `registeredTargetAdmission` withholds when a worktree's `dotln.config.json` differs from main's committed file by a byte, so an order that edits its own registration's gate command cannot publish until its records merge, and a piped spelling writes no row and no advisory (`plainShellWords` returns null). Shape: compare the publication fields (`baseBranch`, `authorityProfile`, `release`, the roots) and the grants file; a near-miss advisory names the shell syntax that hid the helper. Whether a hook `allow` prevails over the host's auto-mode classifier stays unknown (no published page states it; no live episode has seen the adm",
+          "missing": false
+        },
+        {
+          "hash": "116e09bea889227a4b41dd4f2ca55daa350454abf717612304300d792e1cdeb5",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-notes-and-the-operators-questions-recorded-2026-10-21",
+          "title": "The registered-target admission judges authority, not bytes.",
+          "summary": "2. **The registered-target admission judges authority, not bytes.** `registeredTargetAdmission` withholds when a worktree's `dotln.config.json` differs from main's committed file by a byte, so an order that edits its own registration's gate command cannot publish until its records merge, and a piped spelling writes no row and no advisory (`plainShellWords` returns null). Shape: compare the publication fields (`baseBranch`, `authorityProfile`, `release`, the roots) and the grants file; a near-miss advisory names the shell syntax that hid the helper. Whether a hook `allow` prevails over the host's auto-mode classifier stays unknown (no published page states it; no live episode has seen the adm",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-226 (steps 7 and 8, criteria 4 and 5): the registered-target admission compares the publication fields (baseBranch, authorityProfile, release, the roots) and the grants file instead of whole-file bytes, and a piped or redirected helper spelling writes a near-miss advisory naming the syntax; whether a hook allow prevails over the host's auto-mode classifier stays unknown and is recorded in WO-221's row. [2026-10-21 planning pass on the fork's notes and the operator's questions (docs/planning/fork-notes-and-operator-questions-2026-10-21.md section 10)]",
+          "reopenWhen": "WO-226 is withdrawn, or a live publish observes the admission's allow and the classifier's verdict in the same call",
+          "targets": [
+            "WO-226"
+          ],
+          "at": "2026-10-22T01:19:49.101Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Allocated to WO-226 (steps 7 and 8, criteria 4 and 5): the registered-target admission compares the publication fields (baseBranch, authorityProfile, release, the roots) and the grants file instead of whole-file bytes, and a piped or redirected helper spelling writes a near-miss advisory naming the syntax; whether a hook allow prevails over the host's auto-mode classifier stays unknown and is recorded in WO-221's row. [2026-10-21 planning pass on the fork's notes and the operator's questions (docs/planning/fork-notes-and-operator-questions-2026-10-21.md section 10)]",
+          "reopenWhen": "WO-226 is withdrawn, or a live publish observes the admission's allow and the classifier's verdict in the same call",
+          "targets": [
+            "WO-226"
+          ],
+          "at": "2026-10-22T01:27:14.210Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-ddb3ab194a2d5577",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-notes-and-the-operators-questions-recorded-2026-10-21::227cebde15098d3a041f71af4cf79f073ebab88eb7a1bdbf253130b1ce38c763",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "67fea4f40d04e2644c6d1a0aab092bba902040c73847b0cf9218777eb8c10e21",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-notes-and-the-operators-questions-recorded-2026-10-21",
+          "title": "A dispatch prefix inside pasted content is a prefix.",
+          "summary": "3. **A dispatch prefix inside pasted content is a prefix.** `recordOperatorMessage` matches a prefix only at the prompt's start; the 2026-10-21 dispatch, pasted as one block whose first line was `planning: …`, was recorded `prefix: null`, `role: unknown`, leaving the pass without its role's grants for thirty minutes. Shape: the first non-blank line after any fence the host adds. Allocated to WO-226.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-226 (step 10, criterion 6): recordOperatorMessage reads the dispatch prefix from the first non-blank line after any fence the host adds and records prefixLine; the 2026-10-21 dispatch, pasted as one block, was recorded prefix null and left the pass without its role for thirty minutes. [2026-10-21 planning pass on the fork's notes and the operator's questions (docs/planning/fork-notes-and-operator-questions-2026-10-21.md section 10)]",
+          "reopenWhen": "WO-226 is withdrawn, or a pasted dispatch is again recorded prefix null after the carrying release",
+          "targets": [
+            "WO-226"
+          ],
+          "at": "2026-10-22T01:19:49.204Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-ef5eda8516b67327",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-notes-and-the-operators-questions-recorded-2026-10-21::40432c590d990a294037232f8ccd2f7546bcbf3c928509f9c3e069b897780340",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "8093bf8eda682a977154ff75a068b9fa5f8ca9c358d26b3478e63eda865c8f9c",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-notes-and-the-operators-questions-recorded-2026-10-21",
+          "title": "The outward lint does what the operator meant.",
+          "summary": "7. **The outward lint does what the operator meant.** WO-063 built a token ban over two word lists; the operator's intent (2026-10-21 and 2026-10-22, paraphrased) was three checks: launchpad identifiers in a target's commits and pull requests, the private list applied to commit and pull-request text, and DotLn-specific terms in a context where they would mislead, never a ban on ordinary words. Shape: an identifier rule, the public list and each private term as review items the reviewer confirms in context with a recorded confirmation, an empty list admitted, the generated Change-table path named apart from the reviewed prose. Allocated to WO-227 (product 07's Outward artifacts bullet rewritt",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-227 (steps 1 to 8, criteria 1 to 5): the outward lint as the operator intended it on 2026-10-21 and 2026-10-22: launchpad identifiers refused in a target's commits and pull requests (identifier.launchpad), the public list as reviewTerms (alias terms) and each private term with a refuse or review mode, review items confirmed in context with a recorded --confirm-terms digest, empty lists admitted; product 07's Outward artifacts bullet was rewritten by the pass. [2026-10-21 planning pass on the fork's notes and the operator's questions (docs/planning/fork-notes-and-operator-questions-2026-10-21.md section 10)]",
+          "reopenWhen": "WO-227 is withdrawn or re-sequenced behind the batches, or a target's publish after the carrying release is refused on an ordinary English word",
+          "targets": [
+            "WO-227"
+          ],
+          "at": "2026-10-22T01:19:49.718Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-a3fed3091c5508be",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-notes-and-the-operators-questions-recorded-2026-10-21::5457ec7efa0ab9cd24dcdf74fb847fe365c3dcae54ba04a9408becc3ad2bbbe1",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "3792f32ed2ac088d5293eab221c41611ed5e7cf9449a1f37717ae2a6943e6ff6",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-notes-and-the-operators-questions-recorded-2026-10-21",
+          "title": "The predecessor track.",
+          "summary": "18. **The predecessor track.** The operator's note 8: any order relying on the work instance is a completely separate stream, the way the Codex downtime series was. Shape: `docs/workstreams/WS-002-predecessor-track.md` with WO-228 (the private predecessor map, cut out of WO-193) as its first member and candidates C1 to C4 (the census, the plan, the carriers, the lifecycle off the main thread at work) deferred inside it; WO-080's index grouping takes a separate track out of the serial list. Allocated to WO-228 and WS-002.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-228 and WS-002 (docs/workstreams/WS-002-predecessor-track.md): work that mines or works with the predecessor, launchpad v1, which exists only on the operator's work machine, is a separate stream apart from the serial queue, the way the Codex downtime series was (operator note 8, 2026-10-21); WO-228, the private predecessor map cut out of WO-193, is its first member, with candidates C1 to C4 deferred inside the workstream document. [2026-10-21 planning pass on the fork's notes and the operator's questions (docs/planning/fork-notes-and-operator-questions-2026-10-21.md section 10)]",
+          "reopenWhen": "The operator can run an instance where the predecessor is, or WO-080's index grouping lands and the track leaves the serial list",
+          "targets": [
+            "WO-228"
+          ],
+          "at": "2026-10-22T01:19:50.850Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-181b9c7e491ee976",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-notes-and-the-operators-questions-recorded-2026-10-21::5844becce6db2e7c43c557db3ee1bafab9ae96705a8c8d6cb077296e11751995",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "bf49e9f477aab5586ad981de698e0079a961936625a6d20c751bdf01a98c7bd8",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-notes-and-the-operators-questions-recorded-2026-10-21",
+          "title": "A gate says who it waited for.",
+          "summary": "16. **A gate says who it waited for.** The fork's document gate ran 304.86 s and 1,520.76 s with every task under 6 s: cross-checkout contention in the per-user lane registry (the holders were core product tasks its selection cannot schedule), not a first-run build nor the gate's own serialization. Shape: a relation label per holder, the gate's lane wait in the summary and the recorded row, an execution-only median beside the wall median in the planning condition, `harness lanes` read-only, and the structural tasks' full-capacity requests measured against their need. Allocated to WO-229.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-229 (steps 2 to 9, criteria 1 to 5): each WAIT line labels its holders this checkout, another checkout or unknown without a path, the gate summary and the recorded row carry the gate's lane wait apart from its work, the document-gate condition reports an execution-only median beside the wall median and marks a contended sample, node scripts/harness.mjs lanes lists live holders read-only, and the structural tasks' full-capacity requests are measured against their need; the fork's 304.86 s and 1,520.76 s document gates were cross-checkout lane waits behind core product tasks. [2026-10-21 planning pass on the fork's notes and the operator's questions (docs/planning/fork-notes-and-operator-questions-2026-10-21.md section 10)]",
+          "reopenWhen": "WO-229 is withdrawn or re-sequenced behind the batches, or an instance's document gate after the carrying release still prints a long wall-clock with no attributed wait",
+          "targets": [
+            "WO-229"
+          ],
+          "at": "2026-10-22T01:19:50.646Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-c95ee836d6dcea16",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-notes-and-the-operators-questions-recorded-2026-10-21::61d2dad4024ceb7ae545f2b38acd74b4fe5637540d15978d2a6a0fc7afc6dc44",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "d7b161eb44eec1268805e7d8282ef812387aff6119fc69f13369f37c08924ec2",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-notes-and-the-operators-questions-recorded-2026-10-21",
+          "title": "The SessionStart hook prepares an export's runtime itself.",
+          "summary": "5. **The SessionStart hook prepares an export's runtime itself.** The carried restore writes only the ignored `.runtime`, but the SessionStart hook's timeout is 15 s and the restore is unmeasured. Deferred: WO-226's step 1 measures the restore; reopen when it measures under 10 s in the fixture export.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-10-21 pass: the SessionStart hook could run the carried-runtime restore itself (ignored .runtime only), but its timeout is 15 s and the restore is unmeasured; WO-226's step 1 measures the restore in the fixture export. [2026-10-21 planning pass on the fork's notes and the operator's questions (docs/planning/fork-notes-and-operator-questions-2026-10-21.md section 10)]",
+          "reopenWhen": "WO-226's evidence README measures the carried-runtime restore under 10 s in the fixture export, or an operator decision asks for session-start preparation",
+          "targets": [],
+          "at": "2026-10-22T01:19:49.512Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-afed3bdbcd79fbfa",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-notes-and-the-operators-questions-recorded-2026-10-21::6abe7dd5e14e88b424ec080073780e904db09ed1b6c9772a62f33c02ec955feb",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "7a5b533b40ed97b3ee88929d8cafa9922afdcb79b251b77d4dd58df361e1c52c",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-notes-and-the-operators-questions-recorded-2026-10-21",
+          "title": "A runtime-status-v1 version bump for the new field.",
+          "summary": "13. **A `runtime-status-v1` version bump for the new field.** Declined: the console README's label rule keeps the label for additive growth; WO-225 restates it beside the read routes.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined by the 2026-10-21 pass: the console README's label rule keeps runtime-status-v1 for additive growth and strict earlier decoders reject new unavailable views by design; WO-225 restates the rule beside the read routes and changes no label. [2026-10-21 planning pass on the fork's notes and the operator's questions (docs/planning/fork-notes-and-operator-questions-2026-10-21.md section 10)]",
+          "reopenWhen": "A consumer needs a field removed or renamed under the runtime-status-v1 label",
+          "targets": [],
+          "at": "2026-10-22T01:19:50.339Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-f47632ee7dda4b2a",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-notes-and-the-operators-questions-recorded-2026-10-21::89a6fecc843b008815252ce8b9c0207c5615f4981028464df93337d6f94ba5e7",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "47a24a6028d387bd2e40ebacc5307a4a03b795537a671eb0856dcdd1a039ffe8",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-notes-and-the-operators-questions-recorded-2026-10-21",
+          "title": "The reviewed release notes on a target Release.",
+          "summary": "10. **The reviewed release notes on a target Release.** A target Release's body is the order's title and objective plus the close line (`scripts/release.mjs` 2667), never the reviewed `RELEASE-NOTES.md` (the fork's WO-006 close). Shape: a `**Target release notes:**` header choosing reviewed or objective, the rendered notes body, a `release-body` lint kind and a bound digest. Allocated to WO-227.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-227 (steps 10 to 12, criteria 7 and 8): a target Release's text comes from the reviewed RELEASE-NOTES.md by a typed **Target release notes:** header (reviewed or objective), with a release-body lint kind and a bound digest; today the body is the order's title, a blank line, the objective and the close line (scripts/release.mjs 2662 to 2674), which the fork's DotLn-Angular v0.1.0 Release shows. [2026-10-21 planning pass on the fork's notes and the operator's questions (docs/planning/fork-notes-and-operator-questions-2026-10-21.md section 10)]",
+          "reopenWhen": "WO-227 is withdrawn, or a target Release after the carrying release still carries the objective when the order chose reviewed notes",
+          "targets": [
+            "WO-227"
+          ],
+          "at": "2026-10-22T01:19:50.029Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-bd907a5552b36f51",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-notes-and-the-operators-questions-recorded-2026-10-21::8df5f8b561340b7dd3463dc1cec64842de6e62bd3d3f4564b0ecfbdcc555427b",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "2b5d09e29623d3ea25432747edb50d1d16c48337469ea55d7943a4879bbdf2f7",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-notes-and-the-operators-questions-recorded-2026-10-21",
+          "title": "One order per fork item.",
+          "summary": "21. **One order per fork item.** Declined: the eighteen items group by subsystem into four core orders, so their cycles are paid once.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined by the 2026-10-21 pass: the eighteen fork items group by subsystem into four core orders (WO-225, WO-226, WO-227, WO-229), so their order cycles and full gate runs are paid once. [2026-10-21 planning pass on the fork's notes and the operator's questions (docs/planning/fork-notes-and-operator-questions-2026-10-21.md section 10)]",
+          "reopenWhen": "An item's shape cannot share a release with its subsystem's order",
+          "targets": [],
+          "at": "2026-10-22T01:19:51.158Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-9d769a76722eecb3",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-notes-and-the-operators-questions-recorded-2026-10-21::97569209b52d72475f1b384a880010723c9463a5db708221cee16b3d33a31d2d",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "983263eb79362f1e49ac56066a853ec239c9abe66aa59735e563a5f34f5f256c",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-notes-and-the-operators-questions-recorded-2026-10-21",
+          "title": "Exempt Change-table paths from the vocabulary rule.",
+          "summary": "8. **Exempt Change-table paths from the vocabulary rule.** Declined as an exemption: a path is a publication surface too; WO-227 names it apart (`vocabulary.path`) with base-existing paths exempt, so a path the order itself prescribed is reviewed once, not refused.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined as an exemption by the 2026-10-21 pass: a path in the generated Change table is a publication surface too; WO-227 lints it apart from the reviewed prose (vocabulary.path, paths that exist at the base exempt) so a fixture the order itself named is reviewed once and not refused. [2026-10-21 planning pass on the fork's notes and the operator's questions (docs/planning/fork-notes-and-operator-questions-2026-10-21.md section 10)]",
+          "reopenWhen": "WO-227's split lint still refuses a path the order prescribed and the base holds",
+          "targets": [],
+          "at": "2026-10-22T01:19:49.822Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-2c78c535c3b48d78",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-notes-and-the-operators-questions-recorded-2026-10-21::a0e6abba7559701d03a4c266d7596dcf1e3ca25a2dd76e2fbebc24aaf075b35b",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "6912f09f0583e6292ccf12e9fb7389bf0e0638f6803ae21b2ffccebf6cdac4f6",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-notes-and-the-operators-questions-recorded-2026-10-21",
+          "title": "An export's kit prepares its own runtime where a build was tried.",
+          "summary": "1. **An export's kit prepares its own runtime where a build was tried.** The emitted `recoverReleaseClose` (`packages/compiler/src/harness.ts` 49 to 140), `worktree finish`'s refresh (`scripts/worktree.mjs` 1375 to 1384) and `npm run harness` (`scripts/harness-entry.mjs`) run `npm run build --silent` without asking whether the checkout is an export, so an instance's release close is withheld on `ENOENT tsconfig.json` until a hand bootstrap; the README's update route ends with that bootstrap (`scripts/kit/README.client.md` 697 to 700). Shape: `isKitRoot` selects the carried-runtime restore (`scripts/lib/release-kit-runtime.mjs`) at the three sites; `launchpad update --finish` fast-forwards `m",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-226 (steps 2 to 6, criteria 1 to 3): the emitted release-close recovery, worktree finish's refresh and npm run harness prepare an export's carried runtime through scripts/lib/release-kit-runtime.mjs instead of npm run build, launchpad update --finish fast-forwards main and bootstraps it, and every text that tells an export to build names node scripts/bootstrap.mjs; the fork's release close of 2026-10-21 was withheld on ENOENT tsconfig.json until a hand bootstrap. [2026-10-21 planning pass on the fork's notes and the operator's questions (docs/planning/fork-notes-and-operator-questions-2026-10-21.md section 10)]",
+          "reopenWhen": "WO-226 is withdrawn or re-sequenced behind the batches, or an instance's release close after the carrying release is still withheld on a source build",
+          "targets": [
+            "WO-226"
+          ],
+          "at": "2026-10-22T01:19:48.994Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-1352f54cf999d41e",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-notes-and-the-operators-questions-recorded-2026-10-21::a3014fba296e57d7b281c461cf6a931114bfeae6a9465cb67ee697bb5cbc4b50",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "fc76b7d592fc5ede5fdc9dba3b65f1e02e6a0edd9c670f8f39322187fa1de8f9",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-notes-and-the-operators-questions-recorded-2026-10-21",
+          "title": "The console's information architecture.",
+          "summary": "14. **The console's information architecture.** The operator's note 5: the UI serves operator flow and knowledge, not a skin over data; the Eye Dr method (what does not work is said first); UI state persisted apart from control records; playing in the UI never disturbs a gate; the shell used from one checkout while changed from another. Product 04 §Later console hosts now states the principle; the design is the fork's console orders'. Deferred: reopen when the fork's console order asks core for a contract the shell needs.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-10-21 pass: the console's information architecture is the fork's console orders' design work under the operator's principle, now stated in product 04 §Later console hosts (the console serves operator flow and knowledge; what does not work is said first; UI state host-owned apart from control records; using the console never writes a control record); core owes the contracts (WO-225). [2026-10-21 planning pass on the fork's notes and the operator's questions (docs/planning/fork-notes-and-operator-questions-2026-10-21.md section 10)]",
+          "reopenWhen": "The fork's console order asks core for a contract the shell needs, or the operator records a design decision for core's own console",
+          "targets": [],
+          "at": "2026-10-22T01:19:50.441Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-8633adee1d36d76d",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-notes-and-the-operators-questions-recorded-2026-10-21::b7293c1156ca286828ffbced8a603a292edaa543e486678ddcf98513ba0cf541",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "a2e5577b916c7ef0aae1980fbe6b91c8b73bd9ff899c3359b92c8beb82d35f51",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-notes-and-the-operators-questions-recorded-2026-10-21",
+          "title": "File the predecessor orders (C1 to C4) now.",
+          "summary": "20. **File the predecessor orders (C1 to C4) now.** Deferred: the operator will plan the work setup in later passes; WS-002 carries them with their reopening conditions.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-10-21 pass: the operator will plan the work setup in later passes; WS-002 carries the census, the plan, the carriers and the lifecycle off the main thread as candidates C1 to C4 with their reopening conditions. [2026-10-21 planning pass on the fork's notes and the operator's questions (docs/planning/fork-notes-and-operator-questions-2026-10-21.md section 10)]",
+          "reopenWhen": "The operator opens a planning pass on the work setup, or WO-228 closes and a work instance holds a filled map",
+          "targets": [],
+          "at": "2026-10-22T01:19:51.054Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-f9dd0789c5d28ad7",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-notes-and-the-operators-questions-recorded-2026-10-21::b8327ab3e33ee753913b71d3ab83e7608142d2fc6f7c9856288164051f48ebdf",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "9095671806bbd1884f6899ed45a14f478f74d3453d7e915e0613859b459d4918",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-notes-and-the-operators-questions-recorded-2026-10-21",
+          "title": "A fair admission queue across gates.",
+          "summary": "17. **A fair admission queue across gates.** Declined again: WO-217-D040 stands (fixed-four clients publish no waiting intent); WO-229's measurement is evidence toward its reopening, not the queue.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined again by the 2026-10-21 pass: WO-217-D040 declined a new-client-only fair queue because fixed-four clients publish no waiting intent; WO-229's measurement of the structural requests is evidence toward D040's reopening, not the queue. [2026-10-21 planning pass on the fork's notes and the operator's questions (docs/planning/fork-notes-and-operator-questions-2026-10-21.md section 10)]",
+          "reopenWhen": "An authorized compatible client migration or adapter shows a bounded short-gate wait (WO-217-D040's reopening)",
+          "targets": [],
+          "at": "2026-10-22T01:19:50.748Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-4818a1c3622db6b5",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-notes-and-the-operators-questions-recorded-2026-10-21::c85cb581970576b93aa9b3a9b14b39cb1d6440c54898c3cd6f7ec4196a6a5fe6",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "faf55788b9777ab8d7e98ec91c9e12c192a782489534de65e23e4417164bf005",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-notes-and-the-operators-questions-recorded-2026-10-21",
+          "title": "A Git post-merge hook runs bootstrap.",
+          "summary": "6. **A Git `post-merge` hook runs bootstrap.** Declined: the recorded no-Git-hook stance (`docs/LEGAL.md`, WO-038, WO-063, the skeleton README), writes outside the hook-observed boundary, and duplication with `worktree start`; reopen only on an operator decision that reverses the stance.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined by the 2026-10-21 pass: a Git post-merge hook reverses the recorded no-Git-hook stance (docs/LEGAL.md, WO-038, WO-063, the skeleton README), writes outside the hook-observed gate and writer refusals, and fires on DotLn's own worktree add and fast-forwards, duplicating worktree start's bootstrap; WO-226's update --finish is the one-command route instead. [2026-10-21 planning pass on the fork's notes and the operator's questions (docs/planning/fork-notes-and-operator-questions-2026-10-21.md section 10)]",
+          "reopenWhen": "An operator decision reverses the no-Git-hook stance",
+          "targets": [],
+          "at": "2026-10-22T01:19:49.615Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-6ae20dac8ad30908",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-notes-and-the-operators-questions-recorded-2026-10-21::d03893e2528149f83759d57129951659cf7bfa77c2563eec8ccbc2ec6d8d4b37",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "25d889088a45b7bcc362c87a45da8b18ccda019369a2af4463d091f5f8fccb17",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-notes-and-the-operators-questions-recorded-2026-10-21",
+          "title": "--tags overrides tagOpt --no-tags.",
+          "summary": "23. **`--tags` overrides `tagOpt --no-tags`.** Allocated to WO-226 (one README sentence).",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-226 (step 6): one client README sentence that an explicit git fetch upstream --tags overrides remote.upstream.tagOpt --no-tags, so a session fetches the starter's tags by ref as the example does; the fork received four annotated tags that way on 2026-10-21 and deleted them before any push. [2026-10-21 planning pass on the fork's notes and the operator's questions (docs/planning/fork-notes-and-operator-questions-2026-10-21.md section 10)]",
+          "reopenWhen": "WO-226 is withdrawn",
+          "targets": [
+            "WO-226"
+          ],
+          "at": "2026-10-22T01:19:49.409Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-4aa3dd0ccd604a10",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-notes-and-the-operators-questions-recorded-2026-10-21::d231bc54ad5f315a63a25408c2ce80e6031813f4f8be14e01a96861f2aec310b",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "a0fea7d03f4da76e2bfbbbebb38adfc05908dec286d6334a67e4bf492c8a6876",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-notes-and-the-operators-questions-recorded-2026-10-21",
+          "title": "A Fable 5.1 worker by operator request.",
+          "summary": "4. **A Fable 5.1 worker by operator request.** One worker definition is generated (`dotln-worker`, `claude-opus-5-5` at `xhigh`) and the role text pins every spawned worker to it. Shape: a second generated definition (`dotln-worker-fable`, `claude-fable-5-1` at `xhigh`) the planner, refuter and reviewer launch only when the operator's dispatch names it, the default pin unchanged, the receipt recording the type. Allocated to WO-226 (the operator's request of 2026-10-22).",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-226 (step 11, criterion 7): a second generated worker definition dotln-worker-fable (claude-fable-5-1 at xhigh) that the planner, refuter and reviewer launch only when the operator's dispatch names it, the pinned worker unchanged as the default, the direct refutation receipt recording workerType; the operator's request of 2026-10-22. [2026-10-21 planning pass on the fork's notes and the operator's questions (docs/planning/fork-notes-and-operator-questions-2026-10-21.md section 10)]",
+          "reopenWhen": "WO-226 is withdrawn, or the operator changes the default pin",
+          "targets": [
+            "WO-226"
+          ],
+          "at": "2026-10-22T01:19:49.306Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-d8f92eea7a55aaeb",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-notes-and-the-operators-questions-recorded-2026-10-21::d4b0e21abf4129dd755986e45a1569e76c0d4270a5af89ce2d6c83c94f420edb",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "4de302506b9ac702967b9c4a381f9fceb7140e4938895b6417d8caacd45a6867",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-notes-and-the-operators-questions-recorded-2026-10-21",
+          "title": "Move WO-083 and the DotLn-Angular test orders to the track.",
+          "summary": "19. **Move WO-083 and the DotLn-Angular test orders to the track.** Declined: the operator's clarification of 2026-10-21 keeps orders that test with the personal instance or DotLn-Angular in the queue.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined by the 2026-10-21 pass: the operator's clarification of 2026-10-21 keeps orders that test with the personal instance or with DotLn-Angular in the queue; only predecessor work is the track's. [2026-10-21 planning pass on the fork's notes and the operator's questions (docs/planning/fork-notes-and-operator-questions-2026-10-21.md section 10)]",
+          "reopenWhen": "The operator redefines the track's membership",
+          "targets": [],
+          "at": "2026-10-22T01:19:50.952Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-82e873a618bcac08",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-notes-and-the-operators-questions-recorded-2026-10-21::f09b5da5021f789e77e115dd1422bb72b798dfe09a81940808a51ddf3a8c4aad",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "f5a95f9b4af677c3401661937766561ddc23b89c935171b77dac006232c7eba0",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-notes-and-the-operators-questions-recorded-2026-10-21",
+          "title": "The template is the source; the previous instance is context.",
+          "summary": "9. **The template is the source; the previous instance is context.** Four pull-request bodies from 2026-10-19 on appended prose under the meter block because each session copied the previous body (the operator's note 4). Shape: the body's shape is checked (the meter block last, `pullRequestBodyShapeFailures`) and product 07's No-ratchet-creep bullet states the rule. Allocated to WO-227; the product 07 sentence landed in the pass.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-227 (step 9, criterion 6): pullRequestBodyShapeFailures keeps the meter block last and the reviewed prose above it, the check that would have refused the drift from pull request #225 on; product 07's No-ratchet-creep bullet now states that the template or the check is the source and a previous instance is additional context, never the source (operator note 4, 2026-10-21). [2026-10-21 planning pass on the fork's notes and the operator's questions (docs/planning/fork-notes-and-operator-questions-2026-10-21.md section 10)]",
+          "reopenWhen": "WO-227 is withdrawn, or a pull-request body after the carrying release again appends prose under the meter block",
+          "targets": [
+            "WO-227"
+          ],
+          "at": "2026-10-22T01:19:49.926Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-c3e2d27792ca3c94",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-notes-and-the-operators-questions-recorded-2026-10-21::f6492de8ed62659d45873b7faf53eba29d81990a120a19d20ef5f2d562948d02",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "7a3c27bca9831e7b34dd23cc0d45fb92e78ddeb14c66fd94b08a459a8e4a9c63",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-notes-and-the-operators-questions-recorded-2026-10-21",
+          "title": "The console's host contracts for an instance's browser shell.",
+          "summary": "12. **The console's host contracts for an instance's browser shell.** The board carries absolute paths in its reasons, the kit ships neither schema, `npm run console` fails in an export on the missing `tsconfig.json`, the collector reads only the legacy control log, and a local browser origin cannot read the board or the status file. Shape: coded reasons, the two schemas in `KIT_FILES`, a build that is a no-op in a kit root, a collector that reads an instance's segments, and `GET /runtime-status-v1` and `GET /uifa-board-v1` on the loopback outside the command lane. Allocated to WO-225 (FUP-280abd447f789958's read half).",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-225 (steps 2 to 9, criteria 1 to 5): coded failure reasons so board --json carries no absolute path, the two schemas as kit files, scripts/build.mjs a no-op in a kit root, a collector that reads an instance's per-order segments, and GET /runtime-status-v1 and GET /uifa-board-v1 on the resident's loopback for a local origin outside the command lane without receipts; the fork's UI planning pass items 2 to 5 and 7 and the operator's note 5 of 2026-10-21. [2026-10-21 planning pass on the fork's notes and the operator's questions (docs/planning/fork-notes-and-operator-questions-2026-10-21.md section 10)]",
+          "reopenWhen": "WO-225 is withdrawn or re-sequenced behind the batches, or the fork's shell after the carrying release still mocks the board",
+          "targets": [
+            "WO-225"
+          ],
+          "at": "2026-10-22T01:19:50.235Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-0bbaaa68c925023c",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-notes-and-the-operators-questions-recorded-2026-10-21::fc26a69105bbca257f183f8d655f851fe9f67395f1d2dcbea1f423a47af24fb4",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "e4e8c83c229be47fc5e103e8d2159ff0d349d1ee64886bf48ea2a1a65f0905c8",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-notes-and-the-operators-questions-recorded-2026-10-21",
+          "title": "Rewrite pull request #230's body in the earlier shape.",
+          "summary": "11. **Rewrite pull request #230's body in the earlier shape.** Declined: a merged pull request's body is a record; the rule forward is WO-227's.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined by the 2026-10-21 pass: a merged pull request's body is a record; the rule forward is WO-227's shape check and product 07's sentence. [2026-10-21 planning pass on the fork's notes and the operator's questions (docs/planning/fork-notes-and-operator-questions-2026-10-21.md section 10)]",
+          "reopenWhen": "The operator asks for the rewrite",
+          "targets": [],
+          "at": "2026-10-22T01:19:50.133Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-c99b1d05783d8eea",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-notes-and-the-operators-questions-recorded-2026-10-21::ff6e61ecd4f4ba5b63ffa8b811a821c0140899a0dadcb00ff5f61e35d3887a39",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "aa16e32a0e97b32648366e8546ef8bd154c71ebf249541cfffbed39ef4ccf63e",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-notes-and-the-operators-questions-recorded-2026-10-21",
+          "title": "The WO-217 packet.",
+          "summary": "24. **The WO-217 packet.** Deferred by the operator's note 9; reopen when the operator returns to it.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the operator's note 9 of 2026-10-21: the WO-217 packet is revisited later. [2026-10-21 planning pass on the fork's notes and the operator's questions (docs/planning/fork-notes-and-operator-questions-2026-10-21.md section 10)]",
+          "reopenWhen": "The operator returns to the WO-217 packet",
+          "targets": [],
+          "at": "2026-10-22T01:19:51.365Z"
         }
       ]
     }

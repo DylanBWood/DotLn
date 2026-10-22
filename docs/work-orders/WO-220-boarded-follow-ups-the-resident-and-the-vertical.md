@@ -8,14 +8,15 @@
 unless a fix changes a command, flag, schema or refusal, which the decisions
 name; then minor). A declined row changes no behavior.
 **Cost:** adds the fixes and fixture cases the listed rows need, across
-`packages/skeleton/src/vertical.ts`, `packages/skeleton/src/resident-state.ts`, `packages/skeleton/src/resident-host.ts`, `packages/console`, `packages/kernel/src/core.ts`, `corpus/` and the fixtures the rows name; unknown until each row is triaged, and the README records
-the per-row command and case. Removes 20 pending rows from the
-register, which at the base holds 281 pending rows, 130 of them decision
-rows boarded by closed orders across 53 orders (the oldest from WO-054,
-2026-09-18), 88 of them follow-ups boarded in the week of 2026-10-13 to
-2026-10-17 alone; the rule that "the next order that edits the surface"
-takes a row delivered none of these 20 (each still pending at
-`7b8206f4`). Wall-clock: one triage per row plus the fixes; unknown until
+`packages/skeleton/src/vertical.ts`, `packages/skeleton/src/resident-state.ts`, `packages/skeleton/src/resident-host.ts`, `packages/skeleton/src/mission-check-source.ts`, `packages/skeleton/src/audit.ts`, `packages/skeleton/src/vertical-judgment-host.ts`, `packages/skeleton/src/source-change-host.ts` (`run`'s recovery observation, row FUP-49c4a5f7176252e7; a registered evidence source and a `FEEDBACK_SOURCE_PATHS` file, so its edit owes the re-mint and one live feedback episode), `packages/console/src/`, `packages/kernel/src/core.ts`, `scripts/docs-check.mjs`, the WO-103, WO-105 and WO-107 lanes under `corpus/harness/` and the fixtures the rows name; unknown until each row is triaged, and the README records
+the per-row command and case. Removes no pending rows: the 20 rows were allocated at filing and already
+count as closed (WO-218 D056), and the README records the register's pending
+count before and after; at `7b8206f4` the register held 281 pending rows, 130
+of them decision rows boarded by closed orders across 53 orders (the oldest
+from WO-054, 2026-09-18), 88 of them follow-ups boarded in the week of
+2026-10-13 to 2026-10-17 alone, and the rule that "the next order that edits
+the surface" takes a row had delivered none of these 20 (corrected by the
+2026-10-21 pass). Wall-clock: one triage per row plus the fixes; unknown until
 run. Context bytes: this order's row list is read once. Commands: none
 added. Tokens: unknown until run. Steps: 7. Re-mints: the
 executor checks each edited file against `scripts/lib/evidence-sources.mjs`
@@ -36,7 +37,7 @@ one of four cut by subsystem from the register's 130 pending decision rows
 the register's own excerpts. Planner-synthesized. Opaque identifier, not a
 priority. Clean-room screen: repository records only.
 **Depends on:** WO-219 placed before it (reference only; no hard edge).
-**Recommended placement:** position 3 of the serial queue, after WO-217 and WO-219 (the 2026-10-20 entropy pass §7); the operator may interleave the three remaining batches with the focus orders by one sequence edit.
+**Recommended placement:** after WO-219 in the serial queue (position 6, after the four orders the 2026-10-21 pass filed for the fork's return to a working state); WO-217 closed as v0.89.0 on 2026-10-21; the operator may interleave the two remaining batches with the focus orders by one sequence edit.
 
 <!-- dotln-dependencies:start -->
 [
@@ -133,7 +134,11 @@ product statement.
    reversion by path, both arms' exit codes and the verdict), that case
    running under a suite the Preflight line names; or, for a row the
    current source already meets, names the command run at the base and
-   its output. A case that also passes at the base, or with the row's fix
+   its output. A case under a `node --test` lane command the Preflight line names counts
+   as running under a named suite (the WO-103 and WO-105 lanes); a row whose
+   recorded ask is only a document sentence is settled by a decision naming
+   the changed file, its section heading at the base and the change, checked
+   by `npm run test:docs` (receipt 050; the 2026-10-21 pass). A case that also passes at the base, or with the row's fix
    reverted, settles nothing (WO-218 VER-001 F1: three of five named cases
    passed at the base; D055's 91 paired controls were the repair, which
    VER-002 replayed whole).
@@ -141,8 +146,13 @@ product statement.
    the evidence read and the reversal condition; the declined rows are at
    most one third of the rows listed.
 4. `npm run plan -- followups --touching` over this order's changed files
-   (its default, from the worktree) lists no row that was pending at this
-   order's activation.
+   (its default, from the worktree) lists no row of this order's list that is
+   still pending other than a row deferred under criterion 1, which the README
+   names with its operator packet; a row of another batch or a candidate row
+   it lists is left as it is and named in the README (rewritten by the
+   2026-10-21 pass from receipts 046 and 050: the original form could not be
+   met, because deferred and candidate rows naming these surfaces are pending
+   and listed).
 5. The README holds the before and after tables of step 1 and the
    after-table step, with the register's pending count before and after.
 6. Write-backs land in place where a fix changed a product statement
@@ -156,7 +166,7 @@ product statement.
 `npm test -- --only console` for the console steps;
 `npm test -- --only wo107-schema` for the schema steps;
 `npm test -- --only harness-probe` for the probe steps;
-the corpus lanes the rows name, each as its own `npm test -- --only <lane>`;
+`npm test -- --only kernel` for the kernel admission step (3); `npm test -- --only wo107-schema` for the WO-107 lane; the WO-103 and WO-105 lane files under `corpus/harness/` (`wo103-*.test.mjs`, `wo105-*.test.mjs`), each as `node --test <file>` after `npm run build`, because no runner suite declares them; `npm test -- --only docs-check-fixtures` for the front-page guard row (rewritten by the 2026-10-21 pass from receipt 046);
 `npm test -- --only configuration-root` for every script step;
 `npm run test:docs` when a document changes; each under
 `node scripts/harness.mjs bounded --` for the steps that edit their
@@ -166,12 +176,12 @@ the base (explicit tokens added by the 2026-10-18 pass, FUP-17266e5072d4a25a).
 **Execution plan (the executor follows these steps in order; observed at `7b8206f4`, 2026-10-17):**
 
 1. `docs/evidence/WO-220/README.md` (new): at the base, each listed row's id, its latest disposition and date, the surfaces it names and the commands the executor ran to reproduce it, written before any fix. Check: the README lists every row of this order.
-2. the surfaces the row's decision names (rows FUP-06abc143a1c52367, FUP-165f9860f8f32a67, FUP-2341c85c58331f3e, FUP-2b9a8e696b38fb97, FUP-349058ac0342247d, FUP-3d4b39cd4b2c4a08, FUP-49c4a5f7176252e7, FUP-4f8cd7989607ad3f, FUP-5d48c4f3c2a3730d, FUP-7c269a184f75e742, FUP-88c339c51cfc1933, FUP-89e29438bd71c524, FUP-8f0561e50754114f, FUP-b8440605da5a4eb2, FUP-bcd4724fca7bff7a, FUP-d093f77bd927f9dc, FUP-d22dc57e754ba35c, FUP-e62d0d2771185a38, FUP-eeb25ea9315438ad): read each row's source decision in full, reproduce the recorded defect or restate the recorded question against the current source, then fix it with a fixture case that fails without the fix, or decline it with the recorded reason, and dispose the row with `npm run plan -- followups --apply` naming the case or the reason. Check: the suite that declares the file (`npm test -- --review --list` names it), under `node scripts/harness.mjs bounded --`.
-3. `packages/kernel/src/core.ts` (rows FUP-c1d4be019802be0d): read each row's source decision in full, reproduce the recorded defect or restate the recorded question against the current source, then fix it with a fixture case that fails without the fix, or decline it with the recorded reason, and dispose the row with `npm run plan -- followups --apply` naming the case or the reason. Check: the suite that declares the file (`npm test -- --review --list` names it), under `node scripts/harness.mjs bounded --`.
+2. The file each row's source decision names, among `packages/skeleton/src/vertical.ts`, `resident-state.ts`, `resident-host.ts`, `mission-check-source.ts`, `audit.ts`, `vertical-judgment-host.ts`, `source-change-host.ts`, `packages/console/src/`, `scripts/docs-check.mjs` and the WO-103, WO-105 and WO-107 lanes under `corpus/harness/`, taken one file at a time, each naming its function or export and its Preflight suite in the decisions; a row whose source names no file (a planning or operator question) goes to step 4's decisions as a decline to planning with its reason or as an operator packet (rows FUP-06abc143a1c52367, FUP-165f9860f8f32a67, FUP-2341c85c58331f3e, FUP-2b9a8e696b38fb97, FUP-349058ac0342247d, FUP-3d4b39cd4b2c4a08, FUP-49c4a5f7176252e7, FUP-4f8cd7989607ad3f, FUP-5d48c4f3c2a3730d, FUP-7c269a184f75e742, FUP-88c339c51cfc1933, FUP-89e29438bd71c524, FUP-8f0561e50754114f, FUP-b8440605da5a4eb2, FUP-bcd4724fca7bff7a, FUP-d093f77bd927f9dc, FUP-d22dc57e754ba35c, FUP-e62d0d2771185a38, FUP-eeb25ea9315438ad): read each row's source decision in full, reproduce the recorded defect or restate the recorded question against the current source, then fix it with a fixture case that fails without the fix, or decline it with the recorded reason, and dispose the row with `npm run plan -- followups --apply` naming the case or the reason. Check: the suite that runs the step's cases, named for that step in the Preflight line (`vertical`, `skeleton`, `console`, `docs-check-fixtures`, `wo107-schema`, `kernel` for step 3, or the `node --test` lane command), under `node scripts/harness.mjs bounded --`; `npm test -- --review --list` prints suite names and protects only and is not a file-to-suite map.
+3. `packages/kernel/src/core.ts` (rows FUP-c1d4be019802be0d): read each row's source decision in full, reproduce the recorded defect or restate the recorded question against the current source, then fix it with a fixture case that fails without the fix, or decline it with the recorded reason, and dispose the row with `npm run plan -- followups --apply` naming the case or the reason. Check: the suite that runs the step's cases, named for that step in the Preflight line (`vertical`, `skeleton`, `console`, `docs-check-fixtures`, `wo107-schema`, `kernel` for step 3, or the `node --test` lane command), under `node scripts/harness.mjs bounded --`; `npm test -- --review --list` prints suite names and protects only and is not a file-to-suite map.
 4. `docs/evidence/WO-220/decisions.md`: one decision per disposed row or per cluster of rows fixed together, each naming the row ids, the chosen option, the rejected option, the fixture case or the decline reason, and the reversal condition; an operator packet for each row only the operator can decide, with its reopening condition naming this order's pull request. Then `npm run meta`. Check: `npm run meta -- --check`.
 5. `docs/evidence/WO-220/README.md`: the after table (each row's final status, the case or reason, the command, the control) and the register's pending count before and after (`npm run plan -- followups`), with `docs/evidence/WO-220/repair-controls.json` written as each row is settled (criterion 2). Check: the README holds both tables and every settled row has a control.
 6. Write-backs, in place, only where a row's fix changes what a product document states (the row's source decision names the document and section; re-read the heading at the base). Check: `npm run test:docs`.
-7. Handoff: `npm run format`; `npm run test:docs`; the gate the executor's role text names at the base (the order's Preflight suites, then the handoff gate; `npm test -- --review` where a declared machinery source changed); complete `docs/evidence/WO-220/handoff.md`; `npm run resume -- implementation-ready <flags>`.
+7. Handoff: finish source edits; `npm run format` and `npm run sync` for stale generated artifacts; start one `npm test -- --review` in the background, never under the bounded wrapper, and await it with `node scripts/harness.mjs evidence --wait`; after it passes, complete `docs/evidence/WO-220/handoff.md`; run `npm run test:docs` once after the last document edit; then `npm run resume -- implementation-ready <flags>` (the sequence product 07 §Discipline revised on 2026-10-19; corrected by the 2026-10-21 pass).
 
 **Evidence gate:** the Preflight suites; the register dispositions
 (`followups --show` per row); `npm run test:docs`; the handoff gate.
@@ -187,10 +197,45 @@ No model run.
   reference to that batch's decision, with the command that shows it.
 - Line numbers and paths in the rows are observed at their own dates; the
   executor re-reads at its base.
+- Receipt 046 (2026-10-17), written in by the 2026-10-21 pass: a `core.ts`
+  admission fix keeps every replay-identity and scenario-oracle output
+  unchanged or records the change beside the dependable-capability rows
+  (criterion 2); the README names at activation which listed rows WO-083's run
+  and WO-183 would hit (criterion 1); the compiled subject carries no row ids
+  and the register's inflow continues, so the README's before and after counts
+  are dated (criterion 1); criterion 4's original form could not be met, and
+  the 2026-10-21 pass rewrote it (FUP-7f9a27e6ed6c44b3 names
+  `packages/console/src/collect.ts` and FUP-069dff5d52d98e0d the WO-107 lane,
+  both deferred candidates `--touching` lists).
+- Receipt 050 (2026-10-20), written in by the 2026-10-21 pass: this batch
+  enables WO-083's resident intent route and WO-183 through
+  FUP-2b9a8e696b38fb97 and FUP-eeb25ea9315438ad, with no typed edge keeping
+  them ahead if the queue is interleaved; each is settled by fixture or
+  deferred with WO-083 and WO-183 named, and the decision reconciles WO-083's
+  deferral of D013 and D018 (criterion 1). FUP-c1d4be019802be0d's
+  CommandPersisted admission judges only new appends, never replayed events,
+  with an old-log replay case (criterion 2). FUP-e62d0d2771185a38 is
+  feature-sized and is declined to planning with its reason if it exceeds a
+  fixture-backed fix (criterion 1).
+- WO-219 runs first and edits `packages/kernel/src/core.ts` (its step 4) and
+  `scripts/docs-check.mjs` (its step 23); this batch rebases on it and
+  re-reads both at its base. FUP-89e29438bd71c524's generated-block listing is
+  WO-088's carry-in (WO-088 Known issues, 2026-10-10 entropy pass), and WO-088
+  is queued after this order: the executor settles or declines the row's other
+  guard limits here and records in the decision that the generated-block part
+  is WO-088's, naming that order as the reversal condition (the 2026-10-21
+  pass).
+- FUP-49c4a5f7176252e7 edits `SourceChangeHost.run` after `recoverTermination`
+  in `packages/skeleton/src/source-change-host.ts`, which WO-204 (queued after
+  this order) rewrites in its steps 5, 6, 14 and 22; WO-204 rebases on this
+  order's change, and its recovery cases keep the typed
+  `host-admission-<check>` refusal (the 2026-10-21 pass). The file is a
+  registered evidence source and a `FEEDBACK_SOURCE_PATHS` file, so its edit
+  owes the re-mint and the live feedback episode the Cost line names.
 
-**Non-goals:** candidate rows of the register (ideas with reopening
-conditions, 151 at the base), which planning disposes; rows of the other
-three batches; new features beyond what a row asks; rewriting any filed
+**Non-goals:** candidate rows of the register not listed above (ideas with
+reopening conditions, 151 at the base), which planning disposes; rows of the
+other batch (WO-219); new features beyond what a row asks; rewriting any filed
 report.
 
 **Operator-review assumptions**
@@ -198,5 +243,5 @@ report.
 1. At most one third of a batch's rows may be declined.
 2. A row only the operator can decide leaves as an operator packet rather
    than blocking the batch.
-3. The three remaining batches sit after WO-218's close and before WO-080,
-   WO-217 first; the operator may interleave them with the focus orders.
+3. The two remaining batches (WO-219, then WO-220) sit before WO-080; the
+   operator may interleave them with the focus orders.

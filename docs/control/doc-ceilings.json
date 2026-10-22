@@ -21,16 +21,16 @@
       "decision": "docs/planning/entropy-review-007-2026-10-20.md#9-document-ceilings"
     },
     "03-architecture.md": {
-      "nonExemptBytesAtLanding": 184022,
-      "ceiling": 202425,
-      "date": "2026-10-20",
-      "decision": "docs/planning/entropy-review-007-2026-10-20.md#9-document-ceilings"
+      "nonExemptBytesAtLanding": 185493,
+      "ceiling": 204043,
+      "date": "2026-10-21",
+      "decision": "docs/planning/fork-notes-and-operator-questions-2026-10-21.md#11-write-backs-and-document-ceilings"
     },
     "04-interfaces.md": {
-      "nonExemptBytesAtLanding": 60705,
-      "ceiling": 66776,
-      "date": "2026-10-20",
-      "decision": "docs/planning/entropy-review-007-2026-10-20.md#9-document-ceilings"
+      "nonExemptBytesAtLanding": 63647,
+      "ceiling": 70012,
+      "date": "2026-10-21",
+      "decision": "docs/planning/fork-notes-and-operator-questions-2026-10-21.md#11-write-backs-and-document-ceilings"
     },
     "05-pattern-library.md": {
       "nonExemptBytesAtLanding": 135946,
@@ -45,10 +45,10 @@
       "decision": "docs/planning/entropy-review-007-2026-10-20.md#9-document-ceilings"
     },
     "07-execution-guide.md": {
-      "nonExemptBytesAtLanding": 233673,
-      "ceiling": 257041,
-      "date": "2026-10-20",
-      "decision": "docs/planning/fork-answers-and-entropy-targets-2026-10-20.md#11-document-ceilings"
+      "nonExemptBytesAtLanding": 240430,
+      "ceiling": 264473,
+      "date": "2026-10-21",
+      "decision": "docs/planning/fork-notes-and-operator-questions-2026-10-21.md#11-write-backs-and-document-ceilings"
     },
     "08-publication-compiler.md": {
       "nonExemptBytesAtLanding": 24867,
@@ -81,16 +81,16 @@
       "decision": "docs/planning/entropy-review-007-2026-10-20.md#9-document-ceilings"
     },
     "12-workstream-application.md": {
-      "nonExemptBytesAtLanding": 23572,
-      "ceiling": 25930,
-      "date": "2026-10-20",
-      "decision": "docs/planning/entropy-review-007-2026-10-20.md#9-document-ceilings"
+      "nonExemptBytesAtLanding": 24966,
+      "ceiling": 27463,
+      "date": "2026-10-21",
+      "decision": "docs/planning/fork-notes-and-operator-questions-2026-10-21.md#11-write-backs-and-document-ceilings"
     },
     "13-uifa-roles.md": {
-      "nonExemptBytesAtLanding": 27015,
-      "ceiling": 29717,
-      "date": "2026-10-20",
-      "decision": "docs/planning/entropy-review-007-2026-10-20.md#9-document-ceilings"
+      "nonExemptBytesAtLanding": 27084,
+      "ceiling": 29793,
+      "date": "2026-10-21",
+      "decision": "docs/planning/fork-notes-and-operator-questions-2026-10-21.md#11-write-backs-and-document-ceilings"
     }
   }
 }

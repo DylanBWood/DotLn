@@ -102,6 +102,26 @@ task until the corresponding slice has passed its acceptance demonstration.
 Reusing an established working environment as a temporary execution edge is a
 future adapter choice, not permission to bring its implementation here.
 
+**The predecessor census and the replacement route.** Operator direction of
+2026-10-21 (the planning dispatch's sibling capture;
+`docs/workstreams/WS-002-predecessor-track.md`): the predecessor works and
+is messy, its knowledge lives in configuration and in rules spread across
+rule files and arbitrary files of large repositories, and the question is
+how to replace it effectively and efficiently without writing massive
+planning text. The route this document already implies, made concrete: the
+inventory above is kept as typed rows in the instance (WO-228's private map,
+status per row, a carrier the emitted build actually supplies); a bounded,
+resumable census run inside the instance proposes rows per cluster of
+rule-like or configuration-like statements, never copying a source's bytes
+and never running in core; and every unmapped row becomes a request to core
+or an instance order draft, so "how to incorporate" is a list of drafts the
+operator reads. The lifecycle itself must run off the main thread at work,
+through spawned workers and the host's dynamic workflows (WO-192's router),
+with token budgets tracked later. Core ships the mechanisms with synthetic
+fixtures; the clean-room floor keeps every real row in the instance. The
+census, the plan and the lifecycle transport are candidates of the track's
+document and the planning map, filed as orders when the track activates.
+
 ## One workstream across repositories
 
 One operator-proposed pilot (2026-09-06) starts by using DotLn to help create

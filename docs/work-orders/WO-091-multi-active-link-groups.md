@@ -64,7 +64,7 @@ in one order instead of 44 across five, with one handoff, one Preflight
 line and one full gate run before handoff.
 **Nomination provenance:** WO-037's design items, each cut into a bounded
 child at the operator's 2026-09-08 correction: multi-active link groups
-(its first item; the ledger's "Shared supports across multiple actives"),
+(its first item; the ledger entry on shared supports across multiple actives),
 the set definitions, the 5S set as data (product 05 §5S / 6S — the
 maintenance organism), the bonuses, and the scenario and tooltip items.
 Planner-synthesized drafts. Opaque identifier, not a priority. Clean-room
@@ -141,9 +141,10 @@ final review on 2026-09-18 (closed, `v0.29.3`). No queued order.
 ]
 <!-- dotln-dependencies:end -->
 
-**Recommended placement:** position 12 of the serial queue (the operator
-keeps core's next thirty orders serial; planning document §12.4), after
-WO-088 and before WO-096: §12.4 puts the full 5S set, among the earliest
+**Recommended placement:** after WO-088 and before WO-096 in the serial queue
+(position 16 after the 2026-10-21 pass placed four fork-unblocking orders
+first; the operator keeps core's next thirty orders serial, planning document
+§12.4): §12.4 puts the full 5S set, among the earliest
 ideas still unbuilt, ahead of the rule migration. WO-096, after it, edits
 the compiler package, products 02 and 10, the console's pins and self-host
 fixtures and the harness bundle that this order's releases move, and
@@ -316,7 +317,8 @@ the three view hashes.
   `packages/skeleton/src/loadouts/` (`packages/console/src/collect.ts`), so a
   new loadout needs no console source edit. But
   `packages/console/package.json` pins the compiler and the skeleton
-  exactly (0.19.4 and 0.44.3 at `5f3849ec`; re-checked: 0.27.0 and 0.58.1),
+  exactly (0.19.4 and 0.44.3 at `5f3849ec`; re-checked at `6dbd8771`: 0.27.0
+  and 0.58.1; at `926b8234`: compiler 0.29.0, skeleton 0.64.0, console 0.4.4),
   the release check requires each pin to equal the workspace version and a
   changed `src` to carry a new component version (`scripts/release.mjs`),
   and four console self-host fixtures follow a compiler release (WO-162
@@ -504,12 +506,17 @@ the three view hashes.
     `(expiresAt: number) => LoadoutGraph`, and no other export whose name ends in `Loadout`
     except step 14's (the console calls every such export with one number and lists it live,
     `packages/console/src/builds.ts` lines 51 to 54); `FIVE_S_DIVERGENCES` as a typed array
-    `{ piece, field, entropyReducer, fiveS }`. Supports (decided 2026-10-07): each piece links
-    the Entropy Reducer's support of the same name where one exists and the six share
-    `standardize` plus the support Shine already links; the executor records the mapping as a
-    JSON decision block per term `{ piece, field, value, source | "executor-chosen" }`. A 5S
-    Shine field that differs from `seiso-shine` v3 takes a new version under the same id. The
-    six-piece container's `socketBudget` admits its links. Check: the `skeleton` row.
+    `{ piece, field, entropyReducer, fiveS }`. Supports (decided 2026-10-07; restated 2026-10-21): each piece links the
+    Entropy Reducer's support of the same name where one exists, and all six
+    share exactly two supports: `entropy-reducer.seiketsu-standardize` and one
+    more the executor names by its `supportFacetId` from
+    `entropyReducerSupports` (`entropy-reducer.ts` holds eight; `seiso-shine`
+    links every one of them, so "the support Shine already links" named none),
+    recording both in the mapping's JSON decision block per term `{ piece,
+    field, value, source | "executor-chosen" }`; the six-piece group then
+    holds twelve links, and the six-piece container's `socketBudget` is set to
+    that link count. A 5S Shine field that differs from `seiso-shine` v3 takes
+    a new version under the same id. Check: the `skeleton` row.
 13. `packages/skeleton/test/five-s.test.ts` (new): "WO-091 Seiton compiles alone with its
     pinned tooltip" and the same for Seisō, Seiketsu, Shitsuke and Safety, each asserting the
     exact `renderCompiledDiff(undefined, program)` lines (term, translation, kanji, title,
@@ -537,10 +544,15 @@ the three view hashes.
     one piece short and armed at its count" (its `setBonuses` state and the presence or
     absence of each emission id in the lowered arrays; two ids for the 4- and 6-piece
     bonuses); "WO-091 the Safety gate compiles and refuses the destructive change"
-    (`authorize` from `@dotln/kernel` on the compiled `authorityEnvelope`, asserting
-    `authorized === false` and that the reason names the predicate); one test per absent or
-    undecodable input, each granting base authority for the effect so only the predicate can
-    refuse. Check: `node scripts/build.mjs && node --test packages/skeleton/dist/test/five-s-bonuses.test.js`
+    (`authorize` from `@dotln/kernel` on the compiled `authorityEnvelope`,
+    asserting `authorized === false`, the reason `authority revoked` (or
+    `cannot evaluate revocation` where the predicate cannot evaluate an
+    undecodable input), and that the compiled envelope's
+    `revocationConditions` holds `five-s.safety.preconditions` v1); one test
+    per absent or undecodable input, each supplying `state`, a `predicateEnv`
+    registering the predicate and one `revokedBy` event whose type is not in
+    the envelope's `revocationEventTypes`, so the predicate is evaluated
+    before the bonus's denial and only it can refuse. Check: `node scripts/build.mjs && node --test packages/skeleton/dist/test/five-s-bonuses.test.js`
     (the `skeleton` row).
 16. `packages/skeleton/src/reactor.ts`: accept the full-set program and fold the four bonus
     behaviors (the reactor binds `seiriLoadout` at line 395 and compiles under
@@ -589,8 +601,9 @@ the three view hashes.
     `reactor.ts`) imports `five-s.ts` or `full-set-scenario.ts`: register that module or
     record its exclusion with a reason in `evidenceImportExclusions`, as the import check
     requires. Check: the `evidence-sources` row.
-23. Labels, one compiler minor and one skeleton minor (re-checked at `6dbd8771`: compiler
-    0.27.0, skeleton 0.58.1, console 0.4.2): `packages/compiler/package.json` line 3,
+23. Labels, one compiler minor and one skeleton minor (at `926b8234`:
+    compiler 0.29.0, skeleton 0.64.0, console 0.4.4; the executor reads the
+    labels at its base): `packages/compiler/package.json` line 3,
     `COMPILER_PACKAGE_VERSION` (`packages/compiler/src/artifact-identity.ts` line 15),
     `packages/skeleton/package.json` line 3 and its compiler pin at line 18,
     `packages/console/package.json` lines 28 and 30, `package-lock.json` lines 480, 491, 493,
@@ -609,10 +622,13 @@ the three view hashes.
     then one live feedback self-host episode on the harness the executor runs in (Claude Code
     `claude-opus-5-5` at `xhigh` or Codex `gpt-6.1-sol` at `max`), then
     `node scripts/feedback-evidence.mjs --record-selfhost <store> --edition WO-091 --revision 001`,
-    and select it in `docs/evidence/current.json`. If `reactor.ts` is unchanged, only release
-    labels move in judged files:
-    `node scripts/feedback-evidence.mjs --carry <the edition selected at the base>`. Check:
-    the `feedback-evidence` row.
+    and select it in `docs/evidence/current.json`. If `reactor.ts` is unchanged, only release labels move in judged files:
+    `node scripts/feedback-evidence.mjs --carry <the feedback edition
+    directory selected at the base> --edition WO-091 --revision 001`, then
+    `node scripts/feedback-evidence.mjs --check --edition WO-091 --revision
+    001`, and select feedback WO-091 revision 001 in
+    `docs/evidence/current.json` before step 26. Check: the
+    `feedback-evidence` row.
 26. Console: `node scripts/console-fixtures.mjs --record-current-selfhost`, then `--check`;
     only the four console fixture files change, nothing under `packages/console/src/`.
     Check: the `console` row.
@@ -633,13 +649,20 @@ the three view hashes.
 30. Product 06 §"## Application version pending — Pattern workshop v1" (found by name at the
     base): its second paragraph names the compiled slice instead of the "wave 4" clause, in
     place. Check: `npm run test:docs`.
-31. Product 10 §"## Separate version axes": one sentence on the additive lowering fields and
-    the `sets` collection under schema 1 and the compiler version, in place. Check:
-    `npm run test:docs`.
-32. `README.md` §"What runs today" (this order's `**Front page:**` field; WO-189's rules): one
-    sentence inside the marked section, rewriting the Repo Gardener line in place and adding no
-    line (the 2026-10-10 pass's headroom decision; the line budget in
-    `docs/control/front-page.json`). Check: `npm run test:docs`.
+31. Product 10 §"## Separate version axes": one sentence on the additive
+    lowering fields and the `sets` collection under schema 1 and the compiler
+    version, in place. Product 13 §"## Assistance the platform owes each
+    role": the Engineer row moves "the 5S set as a multi-active link group
+    with set bonuses" from Next planned rungs to Today, in place (read the row
+    at the base; WO-096 also writes 13). Check: `npm run test:docs`.
+32. `README.md` §"What runs today" (this order's `**Front page:**` field;
+    WO-189's rules): one sentence inside the marked section, rewriting the
+    Repo Gardener line in place and adding no line (the 2026-10-10 pass's
+    headroom decision; the line budget in `docs/control/front-page.json`);
+    and, in place in the Not-yet-built line, "composition beyond the Seiri
+    subset" narrowed to what still does not compile (more than one
+    participating link group, or an explicit pipeline per group), adding no
+    line. Check: `npm run test:docs`.
 33. `packages/compiler/README.md` lines 113 to 114: drop "multi-active lowering" and "set
     bonuses" from the deferred list. This path is outside `docs/` and root Markdown, so it is
     a code edit made before the handoff's full run. Check: `npm run test:docs`.
@@ -755,13 +778,17 @@ the three view hashes.
     bonuses planned and that say the remaining pieces join the portfolio
     vocabulary as they compile); 06 §Application version pending — Pattern
     workshop v1 (its second paragraph names the compiled slice instead of
-    wave 4); 10 §Separate version axes (the additive lowering, the additive
-    collection and the compiler version). WO-096 also writes 02, 06 and 10;
-    WO-080 and WO-083 also write 04; WO-192 also writes 05; WO-083 and
-    WO-183 also write 06; WO-193 also writes 10. One sentence folded into
+    wave 4); 10 §Separate version axes (the additive lowering, the additive collection
+    and the compiler version); 13 §Assistance the platform owes each role (the
+    Engineer row's 5S set moved from Next planned rungs to Today). WO-096 also
+    writes 02, 06, 10 and 13; WO-080 and WO-083 also write 04; WO-192 and
+    WO-224 also write 05 (WO-224 the Entropy Reducer paragraph inside §5S /
+    6S; read at the base); WO-083 and WO-183 also write 06; WO-193 also writes
+    10. One sentence folded into
     README §What runs today, rewriting the Repo Gardener line in place and
     adding no line (WO-189's line budget in `docs/control/front-page.json`;
-    the 2026-10-10 pass's headroom decision); the compiler README's deferred
+    the 2026-10-10 pass's headroom decision); the README's Not-yet-built line with "composition beyond the Seiri subset"
+    narrowed to what still does not compile; the compiler README's deferred
     list without multi-active lowering and set bonuses; an appended
     `## WO-091 dated addition (YYYY-MM-DD)` section in the capability table
     assessing `compiler.five-s-set` at the level its evidence supports
@@ -829,11 +856,10 @@ for WO-147 D010 on 2026-09-21) and `--record-selfhost`.
   Seiri's literal also sits at `wo051-inspection-baseline.json` line 329;
   the root README no longer names set bonuses (WO-189, closed `v0.74.1`),
   so of the README corrections the bonuses part deferred only the compiler
-  README's remains; `renderSetSummary` needs no index edit; WO-188
-  (`v0.71.0`), WO-189 and WO-190 (`v0.71.1`), named as co-writers or
-  blockers, are closed. The capability fold, now carried by WO-088, runs at
-  position 11, before this order, so this order's appended section waits
-  for a later fold.
+  README's remains; `renderSetSummary` needs no index edit; WO-188 (`v0.71.0`), WO-190 (`v0.71.1`) and WO-189 (`v0.74.1`), named as
+  co-writers or blockers, are closed. The capability fold, now carried by
+  WO-088, runs before this order, so this order's appended section waits for a
+  later fold.
 - 2026-10-11 standard pass (receipt 042's known issue): criterion 13
   records the re-mint cascade's elapsed share apart from the code work; the
   scenario stays out of `reactor.ts` where criterion 14 allows it.
@@ -905,6 +931,15 @@ for WO-147 D010 on 2026-09-21) and `--record-selfhost`.
   cascade item).
 - Register row FUP-0024 (the critical-path plan's deferred pattern-workshop
   entry) is carried here.
+- Receipt 045 known issues (2026-10-13), criterion 7: (a) the canonical
+  six-piece set (twelve links) always carries the budget signal, so the
+  reference composition ships with a standing decomposition question; reopen
+  when the full-set scenario's compiled program carries the signal and the
+  decisions record no answer to that question. (b) criterion 7 lets the
+  executor choose a term, translation, kanji or RPG title product 05 does not
+  give, against product 13's hand-crafted engineer compositions; reopen when
+  the decisions file records an executor-chosen term, kanji or RPG title the
+  operator has not confirmed.
 
 **Non-goals:** more than one participating link group or explicit pipeline
 per group; the budget as a cap; arming state outside the semantic hash; a

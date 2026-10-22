@@ -41,7 +41,11 @@ the [2026-10-19 fork-requests pass](fork-requests-2026-10-19.md) retires
 WO-222 (v0.86.0); the [2026-10-20 entropy pass](entropy-review-007-2026-10-20.md)
 retires WO-218 (v0.87.0); the [2026-10-20 fork-answers
 pass](fork-answers-and-entropy-targets-2026-10-20.md) retires nothing and
-files WO-223 and WO-224.
+files WO-223 and WO-224; the [2026-10-21
+pass](fork-notes-and-operator-questions-2026-10-21.md) retires WO-223
+(v0.88.0) and WO-217 (v0.89.0), files WO-225 to WO-229, cuts WO-228 out of
+WO-193 into the separate predecessor track (WS-002) and places the four
+orders that unblock the operator's fork first.
 
 **One focus: the starter, the operator's fork of it and DotLn-Angular,
 with a DotLn UI** (operator direction, 2026-10-13). The win condition is
@@ -74,18 +78,41 @@ its first verification's finding on criterion 2 (three named cases passed
 at the base) is written into the three remaining batches' criterion 2 as
 the paired-control evidence class.
 
-**An instance taking v0.87.0 meets a red document gate** (the 2026-10-20
-fork-answers pass, §4). The fork holds v0.87.0 as a draft update pull
-request because `docs-check` reads a moved decisions record by its
-launchpad path; WO-223 repairs that read and the moved-record reader's
-lookup from a secondary worktree, makes `worktree start` and the sign-off
-refusal name `contributions.operatorAuthor`, makes the release-close
-advisory print the expected helper spelling and the commit lint its limit,
-and spells the admitted publish helper in the kit README. It runs first, so
-the fork leaves its draft after one core release. The operator's request
-of the same day, the Entropy Reducer on a registered target repository or a
-workstream's repositories, is WO-224, placed after WO-080 (the workstream
-convention) and WO-219 (the frozen copy's guard).
+**The fork is running; four orders take its workarounds away** (the
+2026-10-21 pass, §4 to §9). WO-223 landed (v0.88.0) and the fork took it as
+its update #16 and closed its WO-012 the same day; its own sequence shows
+WO-007 next and nothing waiting on core, so the fork proceeds: nothing filed
+today blocks its next orders, and the pass labels each item a blocker or a
+convenience with its working route (product 07 §Operator-opened planning
+pass). What it
+works around today goes first in core: WO-226 (an export's release close,
+`worktree finish` and `npm run harness` prepare the carried runtime
+instead of a build the export cannot run; one `update --finish`; the
+registered-target admission judges the committed grant and the publication
+fields, not whole-file bytes, and names a piped near miss; a dispatch
+prefix inside a paste is read; a Fable 5.1 worker by operator request),
+WO-227 (the outward lint as the operator intended it: launchpad identifiers
+refused in a target's commits and pull requests, the word lists as review
+items the reviewer confirms in context, an empty list admitted, the
+generated Change-table path named apart from the prose, the pull-request
+body's meter block kept last, the reviewed release notes on a target
+Release), WO-225 (the console's host contracts: a path-free board, the two
+schemas in the kit, a build-free console in an export, a collector that
+reads an instance's segments, and the loopback's read routes for the
+instance's browser shell) and WO-229 (a gate says who it waited for, with
+the structural tasks' full-capacity requests measured). The operator's
+request of 2026-10-20, the Entropy Reducer on a registered target
+repository or a workstream's repositories, is WO-224, still after WO-080
+(the workstream convention) and WO-219 (the frozen copy's guard).
+
+**The predecessor track is apart** (the 2026-10-21 pass, §5; operator note
+8). Work that mines or works with the predecessor, launchpad v1, which
+exists only on the operator's work machine, is WS-002
+(`docs/workstreams/WS-002-predecessor-track.md`): WO-228, the private
+predecessor map cut out of WO-193, is its first member and the last group
+below, labelled, until WO-080's index grouping takes a separate track out
+of the serial list. Orders that test with the personal instance or
+DotLn-Angular stay in the queue.
 
 **Then the boarded follow-ups, in the three remaining batches** (the 2026-10-17 pass, on
 the operator's direction that every boarded, follow-up and reopened row is
@@ -99,16 +126,16 @@ reason, the register showing it; the 2026-10-18 pass added five rows, the
 2026-10-19 pass twelve (WO-221's seven boarded rows and five of the
 fork's requests) and the 2026-10-19 fork-requests pass eight (WO-222's
 four boarded rows and four of the fork's requests); the 2026-10-20 entropy
-pass adds WO-218's own four boarded rows to WO-219. The operator may
-interleave them with the focus orders by one sequence edit.
+pass adds WO-218's own four boarded rows to WO-219; WO-217 closed on
+2026-10-21 (v0.89.0). The operator may interleave them with the focus
+orders by one sequence edit.
 
 The order, serial:
-- WO-223: an instance with moved target records takes a starter update
-  without a step the kit did not name: the document gate on moved records,
-  the reader's lookup, the sign-off advisory, the advisories' spelling, the
-  commit lint's limit and the kit README (the gap observed at v0.87.0).
-- WO-217: boarded follow-ups, batch 1: the gate, the runner, the host guard,
-  gate evidence and the fixtures (39 rows, four of them WO-222's).
+- WO-226: the kit works after an update without a hand step; the admission
+  judges authority, not bytes; a pasted prefix is read; Fable by request.
+- WO-227: outward publication as the operator intended it.
+- WO-225: the console's host contracts for the instance's browser shell.
+- WO-229: a gate says who it waited for.
 - WO-219: boarded follow-ups, batch 3: lifecycle records, attestation, role
   text, hooks, the harness and planning machinery (50 rows, four of them
   boarded by WO-218's own verification and final review and two the
@@ -129,14 +156,17 @@ The order, serial:
   supports, and the build channel (the 2026-10-11 order). It absorbed WO-208
   and WO-209.
 - WO-193: the fork's requests reach core's intake, carrying the holes and
-  bugs the operator finds. It also builds the private predecessor map a work
-  fork starts from, the delta between the starter and v1. It absorbed
-  WO-194.
+  bugs the operator finds. It absorbed WO-194; the private predecessor map
+  is WO-228's, in the predecessor track.
 - WO-183: an intent enters the resident's loop, with less babysitting.
 - WO-088: planning documents as checked contracts, with pass registration
   moved out of the idea ledger. It absorbed WO-089 and WO-113.
 - Then WO-091 (the full 5S set; it absorbed WO-092 to WO-095), WO-096 (rule
   migration; it absorbed WO-097 and WO-098) and WO-014.
+- The predecessor track (WS-002), apart from the serial queue and blocked by
+  nothing in it: WO-228, the private predecessor map, which waits on WO-193's
+  request route and on the operator running an instance where the
+  predecessor is.
 
 Each merge joins orders on one subsystem that would have run one after
 another, so their order cycles and full gate runs are paid once
@@ -146,8 +176,10 @@ The period below `v1.0.0` is early access (operator direction, 2026-09-30).
 The order of everything the operator did not place is the planner's.
 
 <!-- dotln-work-order-sequence:start -->
-- WO-223 — An instance takes a starter update without a step the kit did not name
-- WO-217 — Boarded follow-ups, batch 1: the gate
+- WO-226 — An instance's kit works after its update without a hand step
+- WO-227 — Outward publication as the operator intended
+- WO-225 — The console's host contracts for an instance's browser shell
+- WO-229 — A gate says who it waited for
 - WO-219 — Boarded follow-ups, batch 3: records, roles and the harness
 - WO-220 — Boarded follow-ups, batch 4: the resident and the vertical
 - WO-080 — Workstreams: document, index, board section and synthetic pilot
@@ -156,11 +188,13 @@ The order of everything the operator did not place is the planner's.
 - WO-192 — A router drives an order through its lifecycle
 - WO-083 — The real run from the operator's instance
 - WO-207 — An instance's kit updates: rollback, extension point and build channel
-- WO-193 — An instance's requests to core and its predecessor map
+- WO-193 — An instance's capability requests to core
 - WO-183 — Intent declaration and the stranger test
 - WO-088 — Planning documents as checked contracts
 - WO-091 — The full 5S set on the Repo Gardener
 - WO-096 — Feedback rule migration
 - WO-014 — Approval-burden baseline
+
+- WO-228 — The private predecessor map (WS-002, the predecessor track)
 
 <!-- dotln-work-order-sequence:end -->

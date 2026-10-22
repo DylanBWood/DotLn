@@ -16,8 +16,9 @@ renderer and check (`scripts/feedback.mjs`, fixtures in
 feedback units with incidents, fixtures, maturity stats and lowering; the
 `feedback-v1` extension; the regenerated harness bundle; the pinned
 retirements and the reverse-mapping fixture; the measurement and the
-template; one role oracle fixture; at most 200 bytes each in products 02,
-06, 10 and 13, one rewritten README sentence, a capability-table row and a
+template; one role oracle fixture; in-place write-backs to products 02, 06, 10 and 13
+(ceilings are planning's, `docs/control/doc-ceilings.json`), one rewritten
+README sentence, a capability-table row and a
 `corpus/README.md` line. Removes each always-on sentence a new unit covers
 and, against the three merged orders, two order cycles (two activations,
 verifications, final reviews and release closes, each with its full gate
@@ -39,9 +40,9 @@ are registered (`scripts/lib/evidence-sources.mjs`), so each authority,
 artifact-identity and verification edition they stale is re-minted
 deterministically, once; the compiler release moves the policy hash the
 console binds, so its self-host fixtures are re-pinned (WO-154 D011;
-WO-162 D012). `scripts/feedback-evidence.mjs` and `scripts/lib/terms.mjs`
-are read; an edit to either (step 15 may touch the former) owes a re-mint
-of each edition it stales, in the same round. Wall-clock: one longer
+WO-162 D012). step 15 edits `scripts/feedback-evidence.mjs` (a registered feedback-edition
+source), so the editions it stales are re-minted in step 22's round;
+`scripts/lib/terms.mjs` is read only. Wall-clock: one longer
 implementation plus the Preflight line's single-suite runs before one full
 gate; unknown until run. Context bytes: one order file in place of three,
 smaller than their sum; generated unit lines add to each equipping role
@@ -70,9 +71,10 @@ closed, `v0.13.0`); WO-039 merged (the harness target and the local-terms
 check; closed, `v0.15.0`). The dated planning deferral on WO-053 is met:
 WO-053 closed at `v0.29.3`. The index reports the order dependency-ready at
 `6dbd8771`.
-**Recommended placement:** position 13 of the serial queue (the operator
-keeps core's next thirty orders serial; planning document §12.4), after
-WO-091 and before WO-014: §12.4 puts the full 5S set ahead of the rule
+**Recommended placement:** after WO-091 and before WO-014 in the serial queue
+(position 17 after the 2026-10-21 pass placed four fork-unblocking orders
+first; the operator keeps core's next thirty orders serial, planning document
+§12.4): §12.4 puts the full 5S set ahead of the rule
 migration. WO-091's compiler and skeleton releases, console re-pin and
 harness bundle land first, so this order reads them at its base and
 rebases its `feedback-v1` extension and compiler minor release on them. A
@@ -168,8 +170,9 @@ batch two's candidates.
   advisory. Compiled no longer means governed by mechanism.
 - Each role skill carries one generated line per unit (ten lines, 1,899
   bytes in the executor skill, about 190 each), and the instruction file a
-  Codex residue line per hook-lowered unit; the reviewer's cold start is
-  24,171 bytes against 24,576. A role reads only the product 07 sections
+  Codex residue line per hook-lowered unit; the reviewer's cold start was 24,171 bytes against 24,576 (historical;
+  WO-217-D061 records reviewer headroom of 281 bytes under unchanged ceilings
+  on 2026-10-21, and the executor re-measures at its base). A role reads only the product 07 sections
   its `Read` directives name, so "the guide's always-on portion" is
   undefined in the repository.
 - The only public count of shapes is the vision's "roughly 140 accumulated
@@ -204,11 +207,12 @@ batch two's candidates.
   handlers that list holds (`packages/compiler/src/harness.ts` lines 991 to
   993).
 - The export (WO-201, `v0.77.0`) carries a fixed list of corpus files
-  (`scripts/launchpad.mjs` lines 95–103), not `corpus/feedback/`; the
-  `launchpad` suite runs the three gate selections in an export, requires
+  (`scripts/launchpad.mjs` lines 95–103), not `corpus/feedback/`; the `launchpad` suite runs the three gate selections in an export, requires
   every suite not declared `kit: "core-only: …"` to run there and each
-  declared one to have a client-README row (`scripts/test-launchpad.mjs`
-  lines 781–896).
+  declared one to have a client-README row
+  (`scripts/test-launchpad-export.mjs`, the kit-row and client-README
+  assertions near lines 616 and 844 at `926b8234`;
+  `scripts/test-launchpad.mjs` is now a barrel).
 
 **Design (scope discipline):**
 
@@ -321,10 +325,14 @@ batch two's candidates.
    `{ schemaVersion: 1, capture: { sha256 | null, count | "unknown" }, categories: { <name>: { lowerable: bool, reason } }, alwaysOnSet: [...], excluded: { "employer-specific": N }, rows: [{ shapeId, category, rung, status, unitId?, enforcedBy?, batch?, reason?, note, restatementSearch, retired? }] }`.
    `alwaysOnSet` is computed: CLAUDE.md above the harness start marker, the
    role `procedure:` arrays in `packages/skeleton/src/loadouts/contributor.ts`
-   (lines 115, 136, 158, 184, 202, 222) and their support imports, and the
-   product 07 anchors `readDirectives` resolves. `restatementSearch` is
-   `{ set: [{ path, anchor, sha256 }], found: [{ path, text, sha256 }] }`;
-   the check refuses when a `set[].sha256` differs from the current file.
+   (named by role, not line) and the shared prefix every role carries
+   (`operatorControls`, `sessionBoundaries`, `sharedCorrections`, composed in
+   the role map), with their support imports, and the product 07 anchors
+   `readDirectives` resolves. `restatementSearch` is `{ set: [{ path, anchor, sha256 }], found: [{ path,
+   text, sha256 }] }`; each `set[].sha256` hashes its anchor's section bytes,
+   not the whole file, and the check refuses, naming the row, the anchor and
+   the duty to redo the search, when a `set[].sha256` differs from the current
+   section.
    `retired` is `{ path, text, sha256 }`: the check verifies `sha256(text)`
    and a whitespace-normalized substring test, never sentence
    segmentation. `lowerable` is the executor's judgment per category with
@@ -332,15 +340,20 @@ batch two's candidates.
 2. `scripts/feedback.mjs` (new): `renderMigration(root)`,
    `checkMigration(root)`, CLI `migration [--check]`. Reads equipped units
    from `packages/skeleton/dist/src/loadouts/feedback.js`, the lineage root
-   through `docPath(root, "lineage", "feedback-migration.md")`, and the
-   verifier input `docs/evidence/WO-096/restatements.json`
-   `[{ shapeId, path, sha256, text }]` when present (each entry reverts its
-   row to `prose`); runs `checkLocalTerms(root, surfaces)`, one surface per
+   through `docPath(root, "lineage", "feedback-migration.md")`, and `docs/evidence/WO-096/restatements.json` `[{ shapeId, path, sha256,
+   text }]` when present (each entry reverts its row to `prose`; it holds only
+   restatements a verifier found, the executor's own search staying in each
+   row's `restatementSearch`; a verifier records each as a finding against
+   criterion 7 in its VER report, which routes to repair, and the repair
+   executor writes the entry, re-renders with `npm run feedback -- migration`
+   and re-reports the counts at the repair's handoff); runs `checkLocalTerms(root, surfaces)`, one surface per
    row field (`unavailable` prints and exits non-zero; a throw refuses).
-   Reverse mapping: a `retired` record whose `unitId` is not compiled or
-   whose text is present refuses, and every line
-   `git diff <activation base> -- <always-on files>` removes must lie in a
-   record's text. No literal `docs/` path. Check: step 3.
+   Reverse mapping: a `retired` record whose `unitId` is not compiled or whose
+   text is present refuses; while WO-096 is the active order, every line `git
+   diff <activation base> -- <always-on files>` removes must lie in a record's
+   text, the activation base read from this order's `WorkOrderActivated`
+   event; after close the check verifies only the `retired` records (hash and
+   absence). No literal `docs/` path. Check: step 3.
 3. `scripts/test-feedback.mjs` (new, `node:test`): refusals for a stale
    render, a missing equipped unit, a present retired text, a removed
    sentence with no covering unit, and a synthetic local term (a temporary
@@ -424,8 +437,9 @@ batch two's candidates.
     `npm test -- --only harness-fixtures`.
 17. Retirements: remove each covered sentence from CLAUDE.md above the
     harness marker (never the Clean Room floor), the `contributor.ts`
-    procedure arrays or the 07 sections step 1 pins; add the `retired`
-    records. Check: `npm run feedback -- migration --check`;
+    procedure arrays or shared prefix (`operatorControls`,
+    `sessionBoundaries`, `sharedCorrections`) or the 07 sections step 1 pins;
+    add the `retired` records. Check: `npm run feedback -- migration --check`;
     `npm test -- --only feedback-migration-fixtures`.
 18. Regenerate: `npm run build && npm run harness -- emit`;
     `npm run harness -- check`; `node scripts/harness-context.mjs --check`;
@@ -452,12 +466,8 @@ batch two's candidates.
     with the operator's list present; the output goes in the decisions.
     Where the list is absent, criterion 10's route applies: no step waits
     on the operator's hands.
-22. After the last judged edit (version bumps included):
-    `npm run evidence:feedback -- --write --edition WO-096 --revision 001`,
-    the self-host on the pinned transport, `--record-selfhost`; re-mint
-    authority, artifact-identity and verification (`--write`) once; re-pin
-    the console fixtures through `scripts/console-fixtures.mjs` as WO-162
-    D012 directs. Check: `npm test -- --only feedback-evidence`;
+21a. Labels, one compiler minor and the skeleton version its `src` edits require: `packages/compiler/package.json`, `COMPILER_PACKAGE_VERSION` (`packages/compiler/src/artifact-identity.ts`), `packages/skeleton/package.json` and its compiler pin, the `packages/console/package.json` pins and the matching `package-lock.json` entries. Check: `npm run release -- check-surfaces --local` (the `release-surfaces` row).
+22. After the last judged edit (version bumps included): `npm run evidence:feedback -- --write --edition WO-096 --revision 001`; the self-host on the pinned transport; `node scripts/feedback-evidence.mjs --record-selfhost <store> --edition WO-096 --revision 001`; select WO-096 revision 001 for the feedback, authority, artifact-identity and verification kinds in `docs/evidence/current.json`; `node scripts/authority-evidence.mjs --write --edition WO-096 --revision 001`; `node scripts/artifact-identity-evidence.mjs --write`; `node scripts/verification-evidence.mjs --write`; then each `--check`, and `node scripts/console-fixtures.mjs --record-current-selfhost` followed by `--check` (WO-162 D012). Check: `npm test -- --only feedback-evidence`;
     `npm test -- --only authority-evidence`;
     `npm test -- --only artifact-evidence`;
     `npm test -- --only verification-evidence`;
@@ -545,20 +555,22 @@ write-backs below.
    every role's directed-load total by WO-039's criterion 6 method is
    reported at the activation base and after, with the bytes generated
    lines add and retirements remove, and no role's total is higher after
-   than at the base (a higher total leaves this criterion unmet); the
-   verifier searches the always-on set for a restatement of each
-   `mechanism` row, records the search, and a restatement found reverts
-   that row to `prose` before the counts are reported; the remaining
+   than at the base (a higher total leaves this criterion unmet); the verifier searches the always-on set for a restatement of each
+   `mechanism` row and records each one found as a finding in its VER report,
+   which routes to repair; the repair executor writes it into
+   `docs/evidence/WO-096/restatements.json`, reverting that row to `prose`,
+   re-renders and re-reports the counts at the repair's handoff; the remaining
    sentences are listed with reasons. The criterion is judged against the
    declared set; a case outside it is a follow-up, not a failure.
 8. The batch template is recorded in the result and the rows name batch
    two's candidates.
 9. Write-backs land, each in place with no dated paragraph (ceilings are
    planning's: the 2026-10-07 pass set every product document's ceiling at
-   measured bytes plus one tenth): 02 §Feedback compiler v1 ("the other
-   three DotLn refusals" corrected to the five; the unit bound, the
-   per-unit handler rule, the batch and the extension; WO-091 also writes
-   02); 06 §Application version pending — Harness lowering and rule
+   measured bytes plus one tenth): 02 §Feedback compiler v1 ("the other three DotLn refusals" corrected to the
+   five; the unit bound, the per-unit handler rule, the batch and the
+   extension; WO-219, step 14, row FUP-fd05316b6030ef73, may write the same
+   paragraph and WO-091 writes §LoadoutGraph v1 payload contract; read at the
+   base); 06 §Application version pending — Harness lowering and rule
    migration (one sentence that the ledger is generated at
    `docs/lineage/feedback-migration.md` with counts by status and
    governance mode; the rung's status; "four roles" corrected to six;
@@ -616,6 +628,7 @@ document changes (steps 8, 17, 20 and 23; it also runs the two new
 document suites), each under `node scripts/harness.mjs bounded --`; then
 one `npm test -- --review` (07-execution-guide.md §Preflight before the
 full gate).
+`npm test -- --only release-surfaces` for step 21a.
 
 **Evidence gate:** the fixture transcripts; the rows and render; the pinned
 retirements and the reverse-mapping fixture; the per-unit byte comparison;
@@ -667,9 +680,10 @@ episode (criterion 11).
   counts a hook-lowered unit, whose hook does not fire under a supported
   profile); `unavailable` never fails a gate (criterion 2; reopen when a
   gate fails on that alone, or a receipt cites a green gate as the screen
-  of the rows); about
-  2,280 generated bytes for the twelve against the executor's 1,134 bytes
-  of headroom (28,112 of 29,246) are boarded, never raised (criterion 6;
+  of the rows); about 2,280 generated bytes for the twelve against the executor's headroom
+  (1,134 bytes, 28,112 of 29,246, on 2026-10-10; 435 bytes by WO-217-D053 and 424 after D080 by D061, under unchanged
+  ceilings, on 2026-10-21; the executor re-measures at its base)
+  are boarded, never raised (criterion 6;
   reopen when a role's load is above the activation base or a ceiling is
   raised for the generated lines).
 - Receipt 043 (2026-10-11): an undercount passes the sum by construction
@@ -712,12 +726,25 @@ episode (criterion 11).
   2026-10-13 and corrected: the anchors that moved since `bd437eb2` and the
   export's carried corpus list. WO-167, WO-189, WO-190 and WO-196, which the
   constituents waited on, are closed.
-- FUP-f1c7a256bec46737 (open; the operator's reserved efficiency pass on
-  the executor cold start) is why an overrun is boarded. Rows whose
+- FUP-f1c7a256bec46737 was settled by WO-217-D053 and D061 on 2026-10-21
+  (executor headroom 435 bytes by D053's measure and 424 after D080 by D061's,
+  reviewer 281, under unchanged ceilings). It
+  reopens when a profile grows beyond its measured baseline or executor or
+  reviewer headroom falls below 256 bytes, so a role this batch leaves above
+  its activation base reopens it as well as failing criterion 7. Rows whose
   reopening fires when this order names batch candidates or closes, for
-  planning: FUP-0069 (batches two onward), FUP-0115, FUP-ebaa803e38670545,
-  FUP-e835d826e9af5417 (also when an order edits the verifier role text,
-  which step 17 may) and FUP-7c909f0880237fba.
+  planning: FUP-0069 (batches two onward) and FUP-0115. FUP-ebaa803e38670545,
+  FUP-e835d826e9af5417 and FUP-7c909f0880237fba were allocated to WO-219 on
+  2026-10-17; step 1 reads their dispositions at the base. - Receipt 045
+  (2026-10-13), criterion 6: retiring a sentence removes the prose fallback
+  wherever its unit is hook-lowered; the fixtures prove the mechanism exists
+  and fails when removed, not that the host fires it at runtime. Reopen when a
+  harness probe or a live run records a retired unit's hook not firing under a
+  profile where that unit is counted as `mechanism`. - A later order that
+  edits an anchored always-on section redoes the restatement search for the
+  affected rows before its document gate passes (step 1's per-section hashes).
+  Reopen when a document gate fails on `feedback-migration` for an edit that
+  touches no retired sentence.
 
 **Non-goals:** batch two onward (its candidates are named; one batch per
 wave); a sixth refusal; any kernel change; a restatement outside the

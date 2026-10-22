@@ -14,9 +14,8 @@ under the standing opt-out default.
 `scripts/lib/entropy-review.mjs` (`resolveSubject`, `freezeSubject`,
 `subjectRecord`, `beginEntropyReview`, `fileEntropyReview`,
 `beginEntropyRefutation`, `fileEntropyRefutation`, `disposeEntropyFinding`,
-`entropySubject`) and their flags in `scripts/entropy.mjs`; the workstream
-block reader (the `dotln-workstream` JSON block of
-`docs/workstreams/WS-NNN-*.md`); fixture cases in
+`entropySubject`) and their flags in `scripts/entropy.mjs`; the workstream block reader (the `dotln-workstream` JSON block of
+`WS-NNN-*.md` under the configured `workstreams` document root); fixture cases in
 `scripts/test-entropy-review.mjs` over a fixture launchpad with a registered
 fixture target; the review guide and the product 07, 05 and 12 sentences
 the write-backs step names. Removes the state the gap records: an
@@ -62,15 +61,17 @@ by the [2026-10-20 fork-answers pass](../planning/fork-answers-and-entropy-targe
 Opaque identifier, not a priority. Clean-room screen: the subject is the
 operator's own public repository, the reviewer's clean-room stop screen is
 unchanged, and the fixtures are the kit's.
-**Depends on:** WO-151 (closed, v0.42.0: the command family); WO-165
-(closed, v0.52.1: the route agreement); WO-071 (closed: registered target
-repositories and the clone mapping). WO-219 (step 22: the frozen copy's
+**Depends on:** WO-151 (closed, v0.42.0: the command family); WO-165 (closed,
+v0.52.1: the route agreement); WO-071 (closed, v0.38.0: registered target
+repositories); WO-072 (closed, v0.75.0: the id-to-clone mapping `cloneMapPath`
+and `worktree clone`); WO-223 (closed, v0.88.0: the moved-record clone lookup
+order). WO-219 (step 22: the frozen copy's
 route home and the refs digest) and WO-080 (the workstream convention's
 final text) are referenced with no typed edge: this order places the
 workstream reader on the kit template's JSON block as it reads today, and
 whichever of WO-219 and this order runs second rebases on the first.
-**Recommended placement:** after WO-080 in the serial queue: the three
-batches run first, WO-080 settles the workstream document the `--workstream`
+**Recommended placement:** after WO-080 in the serial queue: the two remaining boarded batches (WO-219
+and WO-220; WO-217 closed as v0.89.0) run first, WO-080 settles the workstream document the `--workstream`
 form reads, and WO-219's confinement guard on the frozen copy lands before
 a copy of a target is frozen. The operator may move it by one sequence
 edit; the fork gains the capability at the first starter release after
@@ -91,7 +92,7 @@ this order's close. A recommendation, not a dependency token.
   {
     "workOrderId": "WO-071",
     "relation": "satisfied-by-close",
-    "reason": "the registered target repository and its recorded clone this order freezes"
+    "reason": "the registered target repository this order freezes (its clone mapping is WO-072's, v0.75.0, and the lookup order WO-223's, v0.88.0)"
   },
   {
     "workOrderId": "WO-219",
@@ -157,13 +158,14 @@ workstream's repositories with the discipline the launchpad review has:
   collector's row names the target and a planning pass allocates it with
   `--apply` to any order of the launchpad, the workstream's members
   included; proposal packets file under `docs/proposals/` as today.
-- **A workstream is its member repositories.** `review --workstream WS-NNN`
-  reads the distinct `repositoryId`s of the workstream document's
-  `dotln-workstream` JSON block, runs one episode per repository in
-  sequence (the launchpad itself when a member names `self`), files one
-  receipt per repository carrying the workstream id, and `subject
-  --workstream WS-NNN` reports consume, pending or review per repository,
-  consuming before producing as today.
+- **A workstream is its member repositories.** `review --workstream WS-NNN` reads the distinct `repositoryId`s of the
+  workstream document's `dotln-workstream` JSON block and dispatches the next
+  member repository that has no filed review in the sequence (the launchpad
+  itself when a member names `self`), returning as `review` does today; each
+  receipt is filed by `entropy receipt` and carries the workstream id;
+  `subject --workstream WS-NNN` names the next member to review, the pending
+  dispatch or the receipt to consume, consuming before producing as today;
+  each receipt's survivors are disposed in the pass (receipt 051).
 - **The kit carries it.** The commands are kit files already; a kit fixture
   instance with a registered fixture target runs the subject and the review
   under the `fake` transport, and the review guide states the subjects.
@@ -183,9 +185,11 @@ workstream's repositories with the discipline the launchpad review has:
   paths `git ls-files` names in the frozen copy
   (`packages/skeleton/src/entropy-review-protocol.ts`, line 438), and the
   loadout compiles against whatever `repo` path it is given
-  (`compileReviewerWorkOrder`, line 1251). A registered target repository
-  is a separate clone under the registration's `worktreeParent`
-  (`scripts/lib/target-worktrees.mjs`), so it is never in the subject.
+  (`compileReviewerWorkOrder`, line 1251). A registered target repository is a separate clone the operator records with
+  `worktree clone <id> <path>` in the launchpad's ignored clone map
+  (`cloneMapPath` in `scripts/lib/target-worktrees.mjs`); its order worktrees
+  are created under the registration's `worktreeParent`; neither is in the
+  subject.
 - `assertEntropySubject` (protocol line 149) requires `repository` to be a
   string and nothing more; the fixture asserts `"."`
   (`scripts/test-entropy-review.mjs` line 264). `entropySubject` (line
@@ -228,9 +232,11 @@ workstream's repositories with the discipline the launchpad review has:
   candidates heading name `<id>@<commit>`. Rejected: filing receipts into
   the target repository (axis: the receipt chain's immutability and the
   launchpad's register; a target's records commit may link them later).
-- *A workstream is a sequence of episodes.* One episode per distinct member
-  repository, one receipt each with the workstream id; the launchpad
-  joins only when a member names `self`. Rejected: one composite frozen
+- *A workstream is a sequence of dispatches.* One dispatch per distinct
+  member repository, each filed by `entropy receipt` and carrying the
+  workstream id, because `review` never files a receipt and one dispatch may
+  be pending per launchpad (receipt 051); the launchpad joins only when a
+  member names `self`. Rejected: one composite frozen
   root holding every member (axis: the compiled census runs in one
   repository, and a composite copy is no repository anyone can name later).
 - *No change to the protocol or the loadout unless forced.* The subject
@@ -255,7 +261,9 @@ review guide and product write-backs; decisions and README.
    the frozen copy's path, with `repository` equal to the registration id
    and the launchpad's own tracked status recorded rather than refused; a
    case asserts each, and the launchpad review's receipt still records
-   `repository: "."`.
+   `repository: "."`. A target's compiled program carries none of the default lens briefs'
+   launchpad paths (`docs/product/`, `packages/`, `corpus/`,
+   `docs/planning/`); a case asserts it.
 2. `entropy refute REVIEW-NNN --transport fake` on that receipt freezes the
    same repository at the same commit, the filed pair passes `entropy
    check`, and the clone's refs and tracked status are byte-identical
@@ -267,13 +275,16 @@ review guide and product write-backs; decisions and README.
    repository; `--apply` allocates it to a fixture order that is a member
    of the fixture workstream; a case asserts the heading, the row and the
    allocation.
-4. `entropy review --workstream WS-NNN --transport fake` over a fixture
-   workstream whose block names two repositories files two receipts, each
-   carrying the workstream id, and `entropy subject --workstream WS-NNN`
-   reports one line per repository (consume, finish the pending dispatch,
-   or review); a second `review` while one is pending is refused as today;
-   a workstream block that names an unregistered repository refuses before
-   any clone.
+4. Over a fixture workstream whose block names two repositories, two
+   successive `entropy review --workstream WS-NNN --transport fake`
+   dispatches, each followed by `entropy receipt`, file two receipts that each
+   carry the workstream id; a second `review --workstream` while the first is
+   pending is refused as today; `entropy subject --workstream WS-NNN` names
+   the member to review next, the pending dispatch or the receipt to consume;
+   a block that names an unregistered repository refuses before any clone; a
+   fixture with a non-default `workstreams` document root resolves the block
+   through the configured root (rewritten by the 2026-10-21 pass from receipt
+   051).
 5. The frozen copy of a target has no route to its clone (no `origin`, or
    a refusing push URL, as WO-219 step 22 gives the launchpad copy) and a
    push attempt from the copy fails in a fixture; a missing clone mapping
@@ -303,8 +314,9 @@ the base.
 
 1. `docs/evidence/WO-224/README.md` (new): at the base, what `entropy
    review` freezes (the launchpad only), the subject record's fields, and
-   the fixture target the cases will register (the fixture helper of
-   `scripts/test-target-worktree-publish.mjs`), written before any change.
+   the fixture target the cases will register (the `fixture` and `withFixture` helpers of
+   `scripts/lib/target-worktree-fixture.mjs`, which
+   `scripts/test-target-worktree-publish.mjs` uses), written before any change.
    Check: the README names the base behavior with the commands run.
 2. `scripts/lib/entropy-review.mjs` (`freezeSubject`, `resolveSubject`,
    `subjectRecord`): `freezeSubject(source, commit)` clones the given
@@ -318,7 +330,10 @@ the base.
    `node scripts/harness.mjs bounded --`.
 3. Same file (`beginEntropyReview`, `fileEntropyReview`): the review
    dispatch takes the subject from step 2, compiles the reviewer against
-   the frozen target path, and the filing binds the named commit to the
+   the frozen target path, passing lens briefs fit to the target through `compileReviewerWorkOrder`'s
+   existing `lensBriefs` option (no loadout edit, no re-mint; a case asserts
+   that a target's compiled program carries none of the default briefs'
+   launchpad paths; receipt 051), and the filing binds the named commit to the
    reviewed tree in the clone, records the launchpad's tracked status
    without refusing on it, and witnesses the clone's refs and tracked
    status before and after; the receipt's subject names the repository
@@ -328,18 +343,22 @@ the base.
    refutation freezes the review's repository at its commit with the same
    witnesses and files as today. Check: as step 3.
 5. Same file (`disposeEntropyFinding`, the candidates heading;
-   `entropySubject`, `unconsumedReview`): the heading names the review,
-   the repository and the commit; the subject report takes an optional
+   `entropySubject`, `unconsumedReview`): the heading and the item's bold title name the review, the repository and
+   the commit (`appendCandidate` writes `<id>@<commit>` into the bold text
+   too, because the collector takes the row title from it); the subject report takes an optional
    repository or workstream and answers per subject. Check: as step 3.
-6. `scripts/lib/entropy-review.mjs` (a `workstreamRepositories(root,
-   id)` reader) and `scripts/entropy.mjs` (the usage block, `review
-   --repository <id> [<commit>]`, `review --workstream WS-NNN`, `subject
-   [--repository <id> | --workstream WS-NNN]`): the reader parses the
-   `dotln-workstream` JSON block of `docs/workstreams/WS-NNN-*.md`, refuses
-   an unregistered member repository before any clone, and the workstream
-   review runs one episode per distinct repository in sequence, each
-   receipt carrying the workstream id; the launchpad joins when a member
-   names `self`. Check: `npm test -- --only plan-refutation`, under `node
+6. `scripts/lib/entropy-review.mjs` (a `workstreamRepositories(root, id)`
+   reader) and `scripts/entropy.mjs` (the usage block, `review --repository
+   <id> [<commit>]`, `review --workstream WS-NNN`, `subject [--repository <id>
+   | --workstream WS-NNN]`): the reader resolves the configured `workstreams`
+   document root (`docPath(root, "workstreams")` in `scripts/lib/config.mjs`,
+   never a literal path) and parses the `dotln-workstream` JSON block of
+   `WS-NNN-*.md` under it, refuses an unregistered member repository before
+   any clone, and the workstream review dispatches the next member that has no
+   filed review and returns, each receipt filed by `entropy receipt` carrying
+   the workstream id; `subject --workstream` names the next member, the
+   pending dispatch or the receipt to consume; the launchpad joins when a
+   member names `self`. Check: `npm test -- --only plan-refutation`, under `node
    scripts/harness.mjs bounded --`.
 7. `scripts/test-entropy-review.mjs`: the cases of criteria 1 to 5 over a
    fixture launchpad with a registered fixture target and a fixture
@@ -370,11 +389,14 @@ the base.
     repositories (the paragraph beginning "A workstream owns an outcome":
     a workstream's repositories can be reviewed as one subject set). Check:
     `npm run test:docs`.
-11. Handoff: `npm run format`; `npm run test:docs`; the gate the
-    executor's role text names at the base (the order's Preflight suites,
-    then the handoff gate; `npm test -- --review`, because declared
-    machinery sources changed); complete `docs/evidence/WO-224/handoff.md`;
-    `npm run resume -- implementation-ready <flags>`.
+11. Handoff: finish source edits; `npm run format` and `npm run sync` for
+    stale generated artifacts; start one `npm test -- --review` in the
+    background, never under the bounded wrapper (declared machinery sources
+    changed), and await it with `node scripts/harness.mjs evidence --wait`;
+    after it passes, complete `docs/evidence/WO-224/handoff.md`; run `npm run
+    test:docs` once after the last document edit; then `npm run resume --
+    implementation-ready <flags>` (product 07 §Discipline, revised 2026-10-19;
+    corrected by the 2026-10-21 pass).
 
 **Evidence gate:** the Preflight suites; `entropy check`; `npm run
 test:docs`; the handoff gate. No live model run: the fixtures use the
@@ -404,11 +426,28 @@ test:docs`; the handoff gate. No live model run: the fixtures use the
   the operator's dispatch.
 - FUP-c7f181269a96c4c5 (the reviewer on a cadence) stays deferred; nothing
   here runs a review unless the operator opens a pass.
+- Receipt 051 (2026-10-20), written in by the 2026-10-21 pass: the default
+  lens briefs name launchpad paths and `beginEntropyReview` passes none, so a
+  target subject passes target-fit briefs through `lensBriefs` (step 3,
+  criterion 1; reopen when the first live target review cites paths absent
+  from the target, or the operator declines most of its survivors as
+  launchpad-shaped); the workstream form is a sequence of dispatches, `subject
+  --workstream` naming the next member (objective, step 6, criterion 4; reopen
+  when the implementation files inside `review` or keeps two pending pointers,
+  or a two-repository workstream's survivors cannot be disposed in one pass);
+  no critical-path gate is unblocked and core holds no registered repository
+  or workstream document, so the first live consumer is the fork after a
+  starter release while this order sits ahead of WO-083 and WO-183 (reopen
+  when no subject-bearing entropy pass runs within two planning passes after
+  the carrying release, or when WO-083's prerequisites are all closed while
+  this order is the selected order); step 6 resolves the configured
+  `workstreams` root rather than a literal path (criterion 4).
 
 **Non-goals:** a review cadence; fixes in the target repository; filing
 receipts into the target; registering core as a target of an instance (the
-route is the same once product 12's later step registers it); any change to
-the compiled program, the lens briefs or the pinned actor; a composite
+route is the same once product 12's later step registers it); any change to the compiled program or the pinned actor (a target subject
+passes target-fit lens briefs through the loadout's existing option, receipt
+051); a composite
 multi-repository frozen root.
 
 **Operator-review assumptions**

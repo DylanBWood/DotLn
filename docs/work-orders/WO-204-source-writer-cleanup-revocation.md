@@ -514,7 +514,16 @@ Object store (WO-112 D033):
   importing again. Concurrent `gc` or `repack` cannot remove the candidate's
   objects (not in the shared store until import) or lose existing ones to
   the writer; after import the host re-verifies the admitted commit's
-  objects before success.
+  objects before success. Every host Git read before the import (`verify`, `cleanAgainstCommit`, the
+  effect and the observed-commit check) runs `HOST_GIT` with
+  `GIT_OBJECT_DIRECTORY` set to the private store and
+  `GIT_ALTERNATE_OBJECT_DIRECTORIES` to the shared objects, because the
+  candidate exists only in the private store until import; the import's
+  reading side sees the private store and its writing side writes the shared
+  store without those variables (for example `git pack-objects --revs` under
+  the private environment piped to `git index-pack --stdin` in the shared
+  repository); steps 12 and 14 name the environment of each read and a case
+  asserts each read and the import (the 2026-10-21 pass).
 - **Inventory stays bounded.** No repository-size object scan (D033's first
   rejected option); `sharedState()` keeps recording the common path, refs
   and alternates.
@@ -762,7 +771,11 @@ steps moved):**
    `node scripts/harness.mjs bounded -- node docs/evidence/WO-112/shared-object-counterexample.mjs`,
    and record its result in the decisions; then the file gains the same
    scenario as a case (an independent sibling commit, a writer episode that
-   deletes the sibling's unique blob after the candidate completes,
+   deletes the sibling's unique blob after the candidate completes, the deletion running inside the writer double's own process, never in
+   `afterResult`, under the access step 13 gives that transport (for Codex, a
+   `/usr/bin/sandbox-exec` profile emulating `codexWriterAccess`'s grants,
+   darwin only, the case skipping elsewhere and saying so; for Claude, the
+   mechanism step 13 names), with the emulation recorded in the decisions,
    assertion that the blob survives and the episode does not report
    `observed`); it fails until step 14. Check: `npm run build && node --test
    packages/skeleton/dist/test/source-change-integrity.test.js` (suite
@@ -856,7 +869,10 @@ steps moved):**
     checked-out branch; `sharedState()` unchanged. Check: a case that
     commits in the worktree with the two variables set and finds the
     objects in the private store and not in the shared one, and no shared
-    ref moved (suites `skeleton`, `vertical`).
+    ref moved (suites `skeleton`, `vertical`). The host's own reads of the worktree before import (`verify()` and the
+    callers of `sharedState()`) run with the two variables set to the private
+    store and the shared objects, and the case asserts the environment of each
+    read.
 13. `packages/skeleton/src/worker-transport.ts`: the writer's launch
     environment for each transport carries `GIT_OBJECT_DIRECTORY` and
     `GIT_ALTERNATE_OBJECT_DIRECTORIES` (for Codex, in the
@@ -875,9 +891,13 @@ steps moved):**
     packages/skeleton/dist/test/source-change-confinement.test.js
     packages/skeleton/dist/test/writer.test.js` (suites `skeleton`,
     `harness-probe`, `harness-fixtures`, `plan-refutation`).
-14. `packages/skeleton/src/source-change-host.ts`, after admission: import
-    with `git fetch <private-store-worktree> <candidate>` under the
-    writer-resistant argument set, verify the imported tree equals the
+14. `packages/skeleton/src/source-change-host.ts`, after admission: import the candidate from the private store into the shared store with a
+    reader that sees the private store (`GIT_OBJECT_DIRECTORY`,
+    `GIT_ALTERNATE_OBJECT_DIRECTORIES`) and a writer that does not (for
+    example `git pack-objects --revs` piped to `git index-pack --stdin` in the
+    shared repository), under the writer-resistant argument set, the
+    pre-import reads (`verify`, `cleanAgainstCommit`, the effect and the
+    observed-commit check) running with those variables set, verify the imported tree equals the
     admitted tree, record `CandidateImported { commit, objects }`, create
     the episode branch at the admitted commit, then the existing ref
     update; a failed import is a typed stop with reason `import` naming the
@@ -1079,9 +1099,14 @@ steps moved):**
     (`docs/evidence/current.json`); `node scripts/lineage.mjs index
     --check`; `node scripts/check-publication.mjs --print-locks`; `npm run
     publication:check`.
-34. Handoff sequence: `npm run format`; `npm run test:docs`; `npm test --
-    --review`; complete `docs/evidence/WO-204/handoff.md`; `npm run resume
-    -- implementation-ready <flags>`.
+34. Handoff: finish source edits; `npm run format` and `npm run sync` for
+    stale generated artifacts; start one `npm test -- --review` in the
+    background, never under the bounded wrapper (declared machinery sources
+    change), and await it with `node scripts/harness.mjs evidence --wait`;
+    after it passes, complete `docs/evidence/WO-204/handoff.md`; run `npm run
+    test:docs` once after the last document edit; then `npm run resume --
+    implementation-ready <flags>` (product 07 §Discipline, revised 2026-10-19;
+    corrected by the 2026-10-21 pass).
 
 **Acceptance criteria (all required)**
 
@@ -1116,7 +1141,8 @@ steps moved):**
    check (fixture).
 10. The D033 counterexample, committed as a case, fails at the base and
     passes at the repaired subject: the independent sibling blob survives
-    the writer's deletion attempt, which is refused by the writer's access,
+    the writer's deletion attempt, which is refused by the writer's access attempted inside the writer double's own process under the transport's
+    emulated access (step 1), never from the host's `afterResult`,,
     and the episode does not report `observed`.
 11. A writer's commits land in the private object store and not in the
     shared one; a write to the shared `objects/` directory from the writer
@@ -1229,8 +1255,10 @@ steps moved):**
     `SourceChangeObserved`; the record carries the CLI version, model,
     effort, wall-clock and token usage, and no home-directory path.
 24. Write-backs land as step 33 lists them, each in place with no dated
-    paragraph: product 03 §Session lifecycle & resilience (two sentences)
-    and §Ports (the clause, the Codex writer sentence, the Claude writer
+    paragraph: product 03 §Session lifecycle & resilience (the settlement
+    order with the surviving-grant refusal and the writer's object authority,
+    a private store and a host-owned import after admission, replacing the
+    narrowed shared-state sentence; no sentence count binds it) and §Ports (the clause, the Codex writer sentence, the Claude writer
     clause and the writer-request sentence); the skeleton README sentence;
     the decisions file with every record step 33 names; FUP-6c444dbf9a4d92bb
     disposed onto the Codex qualification's decision and
@@ -1277,8 +1305,10 @@ write-backs below.
 and vertical cases; the recovery probe; the two probes' helper tests; the
 Codex probe's `sandbox` and `live` records and the Claude probe's record;
 the feedback edition's check and the other editions' checks; `npm run
-test:docs`; `npm test -- --review` before `implementation-ready` (declared
-machinery sources change) and again at final review. The live rows: the
+test:docs`; `npm test -- --review` before `implementation-ready` (declared machinery
+sources change); final review reuses the passing complete row at the
+integrated code identity when one exists (product 07 §Preflight before the
+full gate). The live rows: the
 Codex writer episode or episodes, the Claude writer episode or episodes and
 the one feedback self-host episode.
 
@@ -1413,8 +1443,10 @@ the one feedback self-host episode.
   alternative, recorded in the decisions with its trigger: the import proves
   unsound in a case this order cannot make pass.
 - The probes' records must carry no home-directory path (WO-188 assumption
-  7); WO-213, ahead of this order in the serial queue, screens non-Markdown
-  records once it lands.
+  7); since WO-213 (closed, v0.83.0) the document check fails a new absolute
+  home path in a JSON, JSONL, log or text record under the document roots, so
+  `npm run test:docs` screens both probe records (corrected by the 2026-10-21
+  pass).
 
 **Non-goals:** the resident's triage retry (a different boundary, D043);
 changing host permissions in any fixture; a new command, or a new state in
