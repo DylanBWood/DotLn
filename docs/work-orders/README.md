@@ -4,7 +4,7 @@
 
 ## Proposed order
 
-- [ ] [WO-226] — An instance's kit works after its update without a hand step · **queued**
+- [x] [WO-226] — An instance's kit works after its update without a hand step · **final-reviewed**
 - [ ] [WO-227] — Outward publication as the operator intended · **queued**
 - [ ] [WO-225] — The console's host contracts for an instance's browser shell · **queued**
 - [ ] [WO-229] — A gate says who it waited for · **queued**
@@ -39,23 +39,6 @@ Full evidence for the active and sequenced orders follows; the Open cards are in
 None.
 
 ## Open
-
-### WO-226
-
-[WO-226 — An instance's kit works after its update without a hand step: the emitted release-close recovery, &#96;worktree finish&#96; and &#96;npm run harness&#96; prepare an export's carried runtime instead of a source build, one &#96;update --finish&#96; fast-forwards main and prepares it, every bootstrap advisory names the command an export can run, the registered-target admission judges the committed grant and the publication fields instead of whole-file equality and names a near miss, a dispatch prefix is read from the first line of pasted content, and a Fable 5.1 worker is available by operator request beside the pinned worker (version assigned at activation)](WO-226-kit-runtime-after-an-update.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-195: satisfied-by-close (met) — the emitted stale-main recovery this order makes export-aware; WO-215: satisfied-by-close (met) — the carried-runtime preparation the recovery and the finish reuse; WO-221: satisfied-by-close (met) — the registered-target admission this order narrows; WO-223: satisfied-by-close (met) — the advisory spelling the near-miss advisory follows; WO-227: reference-only (non-blocking) — it edits the publication helpers' lint, not the admission; whichever runs second rebases; WO-207: reference-only (non-blocking) — it edits the README's update route after this order's finish sentence lands; whichever runs second rebases.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer xhigh.
-- Track: machinery
-- Cost: adds, in &#96;packages/compiler/src/harness.ts&#96;, an export branch to the emitted &#96;recoverReleaseClose&#96; (the carried-runtime restore in place of &#96;npm run build --silent&#96;) and the same words in the fallback advisory; in &#96;scripts/lib/harness-runtime.mjs&#96;, an export-aware &#96;refreshHarnessRuntime&#96; whose callers in &#96;scripts/worktree.mjs&#96; (finish) and &#96;scripts/harness-entry.mjs&#96; pass no source build in a kit root; in &#96;scripts/launchpad.mjs&#96;, &#96;update --finish&#96;; in &#96;packages/skeleton/src/harness-host.ts&#96;, the admission's field comparison, the &#96;near-miss&#96; advisory and the first-line prefix rule; in &#96;packages/skeleton/src/loadouts/contributor.ts&#96;, a second worker definition and one sentence of role text; in &#96;scripts/lib/harness.mjs&#96;, the second agent file; cases in &#96;scripts/test-harness.mjs&#96;, &#96;scripts/test-process-debt.mjs&#96;, &#96;scripts/test-launchpad-update.mjs&#96;, &#96;scripts/test-launchpad-export.mjs&#96;, &#96;packages/skeleton/test/harness-host.test.ts&#96; and &#96;scripts/test-plan-refutation.mjs&#96;; the client README's update route; product 07 and the kit README sentences the steps name. Removes the states the fork met on 2026-10-21: a release close withheld on &#96;ENOENT tsconfig.json&#96; in an export, a route that ends with a bootstrap the session must remember, three user-facing texts telling an export to run a build it cannot run, an admission withheld because an order's own registration edit changed a byte of &#96;dotln.config.json&#96;, a piped spelling that left no row and no advisory, a dispatch prefix inside a paste that left a whole planning pass without its role, and a worker model the operator cannot select. Re-mints: &#96;packages/compiler/src/harness.ts&#96; and &#96;contributor.ts&#96; are registered sources of every edition, so each is re-minted deterministically through &#96;npm run sync&#96; after the compiler minor, the feedback edition by carry; &#96;scripts/lib/harness.mjs&#96; is a registered authority source. No &#96;FEEDBACK_SOURCE_PATHS&#96; file changes, so no live feedback episode is owed. &#96;scripts/launchpad.mjs&#96;, &#96;scripts/kit/&#96; and &#96;scripts/lib/harness.mjs&#96; are declared machinery sources, so &#96;npm test -- --review&#96; runs before handoff. Wall-clock: an export's recovery and finish now run the carried-runtime restore (&#96;prepareKitReleaseRuntime&#96;: &#96;verifyKit&#96;, the input digest and the snapshot copy; unmeasured, under the recovery's 120 s child bound) instead of a build that fails; &#96;update --finish&#96; costs one fetch, one fast-forward and one bootstrap. Context bytes: this file, about 30,000. Steps: 14.
-- Authority: [docs/work-orders/WO-226-kit-runtime-after-an-update.md](WO-226-kit-runtime-after-an-update.md)
 
 ### WO-227
 
