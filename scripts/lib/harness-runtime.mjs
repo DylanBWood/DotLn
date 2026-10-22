@@ -2,6 +2,18 @@ import { docPath } from "./config.mjs";
 import { existsSync, lstatSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { containedRegularFile } from "./paths.mjs";
+import { spawnSync } from "node:child_process";
+import { createRequire } from "node:module";
+
+/** The portable control plane can run with no skeleton package. A kit
+ * marker selects the shared runtime-input check only when it is needed. */
+export function isKitRoot(root) {
+  if (!lstatSync(join(root, "KIT-MANIFEST.json"), { throwIfNoEntry: false }))
+    return false;
+  return createRequire(import.meta.url)(
+    "../../packages/skeleton/src/runtime-inputs.mjs",
+  ).isKitRoot(root);
+}
 
 // Source-only: startup and close must diagnose a missing build before importing it.
 const hash = (text) => {
@@ -207,12 +219,25 @@ export function refreshHarnessRuntime(
 ) {
   const cause = harnessRuntimeCause(root);
   if (!cause) return false;
-  write(`Refreshing pinned runtime (${cause}); npm run build.\n`);
-  build();
+  if (isKitRoot(root)) {
+    write(`Refreshing pinned runtime (${cause}); carried-runtime restore.\n`);
+    const restored = spawnSync(
+      process.execPath,
+      [join(root, "scripts/lib/release-kit-runtime.mjs"), root],
+      { cwd: root, encoding: "utf8" },
+    );
+    if (restored.status !== 0)
+      throw new Error(
+        `Carried-runtime restore failed: ${String(restored.stderr || restored.stdout || restored.error?.message || "unavailable").trim()}; checkout preserved; run node scripts/bootstrap.mjs`,
+      );
+  } else {
+    write(`Refreshing pinned runtime (${cause}); npm run build.\n`);
+    build();
+  }
   const remaining = harnessRuntimeCause(root);
   if (remaining)
     throw new Error(
-      `Built runtime still ${remaining}; checkout preserved; run node scripts/bootstrap.mjs`,
+      `Prepared runtime still ${remaining}; checkout preserved; run node scripts/bootstrap.mjs`,
     );
   return true;
 }

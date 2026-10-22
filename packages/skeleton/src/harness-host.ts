@@ -50,6 +50,7 @@ import {
   canonicalStringify,
   showHarnessAdvisory,
   harnessPromptIntent,
+  harnessPromptLine,
   assertOutsideWriteGrants,
   outsideWriteEffect,
   type AuthorityEnvelope,
@@ -1171,9 +1172,10 @@ export function recordOperatorMessage(
   )
     return;
   const session = readJson(statePath(root, input), initialSession(), true);
+  const firstLine = harnessPromptLine(input.prompt);
   const prefix =
     Object.keys(operatorPrefixes).find((prefix) =>
-      input.prompt!.trimStart().startsWith(prefix),
+      firstLine.text.startsWith(prefix),
     ) ?? null;
   const route =
     source === "codex-dispatch-phrase"
@@ -1194,6 +1196,7 @@ export function recordOperatorMessage(
         : source,
     ...route,
     prefix,
+    prefixLine: prefix ? firstLine.index : null,
     class: prefix ? operatorPrefixes[prefix] : "unclassified",
     digest: textDigest(input.prompt),
     bytes: Buffer.byteLength(input.prompt),
@@ -1381,7 +1384,7 @@ type RegisteredTargetCommand =
   | { kind: "helper"; workOrder: string; draft: boolean; branch?: string };
 /** Split one plain command into words: single and double quotes group, no
  * expansion, operator or redirect is admitted, and anything else is `null`. */
-function plainShellWords(command: string): string[] | null {
+function plainShellWords(command: string, limit = Infinity): string[] | null {
   const words: string[] = [];
   let current = "";
   let quoted = false;
@@ -1400,6 +1403,7 @@ function plainShellWords(command: string): string[] | null {
     }
     if (char === " " || char === "\t") {
       if (current || quoted) words.push(current);
+      if (words.length === limit) return words;
       current = "";
       quoted = false;
       index += 1;
@@ -1411,6 +1415,52 @@ function plainShellWords(command: string): string[] | null {
   }
   if (current || quoted) words.push(current);
   return words.length && !words[0]!.includes("=") ? words : null;
+}
+/** Diagnose a recognizable helper without interpreting or admitting its shell.
+ * Only this advisory strips prefixes; the permission parsers never do. */
+function registeredTargetNearMiss(root: string, input: HarnessInput) {
+  if (
+    input.tool_name !== "Bash" ||
+    typeof input.tool_input?.command !== "string"
+  )
+    return null;
+  const command = input.tool_input.command.trimStart();
+  let helper = command;
+  helper = helper
+    .replace(/^![ \t]*/u, "")
+    .replace(/^cd[ \t]+(?:'[^']*'|"[^"]*"|[^ \t;&|<>]+)[ \t]*&&[ \t]*/u, "")
+    .replace(/^env[ \t]+/u, "")
+    .replace(
+      /^(?:[A-Za-z_][A-Za-z0-9_]*=(?:'[^']*'|"[^"]*"|[^ \t;&|<>]+)[ \t]+)+/u,
+      "",
+    );
+  const prefixed = helper !== command;
+  if (!prefixed && plainShellWords(command)) return null;
+  const words = plainShellWords(helper, 3);
+  if (!words || !["node", process.execPath].includes(words[0] ?? ""))
+    return null;
+  const script = words[1] && resolve(root, words[1]);
+  if (!(
+    (script === join(root, "scripts/worktree.mjs") && words[2] === "publish") ||
+    (script === join(root, "scripts/release.mjs") && words[2] === "close")
+  ))
+    return null;
+  const unquoted = helper.replace(
+    /'(?:[^']|'\\'')*'|"(?:\\.|[^"\\])*"|\\[\s\S]/gu,
+    "",
+  );
+  const syntax = prefixed
+    ? "prefix"
+    : /\|/u.test(unquoted)
+      ? "pipe"
+      : /[<>]/u.test(unquoted)
+        ? "redirect"
+        : null;
+  if (!syntax) return null;
+  return {
+    journal: { kind: "near-miss", syntax },
+    advisory: `Registered-target admission not judged: shell syntax (${syntax}) hides the helper; run the plain spelling; host permissions decide.`,
+  };
 }
 const BRANCH_NAME = /^[A-Za-z0-9][A-Za-z0-9._/-]*$/;
 const COMMIT_SHA = /^[0-9a-f]{40}$/;
@@ -1611,6 +1661,43 @@ function emittedDenyMatches(
     );
   });
 }
+interface PublicationConfiguration {
+  roots?: Record<string, string>;
+  repositories?: Record<
+    string,
+    {
+      baseBranch?: string;
+      authorityProfile: AuthorityEnvelope;
+      release?: unknown;
+    }
+  >;
+}
+function publicationView(
+  configuration: PublicationConfiguration,
+  repositoryId?: string,
+): Record<string, unknown> {
+  const fields: Record<string, unknown> = {};
+  if (
+    configuration.roots !== undefined &&
+    (!configuration.roots ||
+      typeof configuration.roots !== "object" ||
+      Array.isArray(configuration.roots))
+  )
+    throw new Error(
+      "publication authority dotln.config.json roots must be an object",
+    );
+  for (const [name, value] of Object.entries(configuration.roots ?? {}))
+    fields[`roots.${name}`] = value;
+  if (repositoryId) {
+    const registration = configuration.repositories?.[repositoryId];
+    for (const name of ["baseBranch", "authorityProfile", "release"] as const)
+      fields[`repositories.${repositoryId}.${name}`] = {
+        present: Object.hasOwn(registration ?? {}, name),
+        value: registration?.[name] ?? null,
+      };
+  }
+  return fields;
+}
 function registeredTargetAdmission(
   root: string,
   input: HarnessInput,
@@ -1650,11 +1737,14 @@ function registeredTargetAdmission(
       ?.split("\n")[0]
       ?.replace(/^worktree /, "");
     if (!main) return withheld("main's checkout is unavailable");
-    const committed = (file: string) => {
+    const committed = (file: string, compareBytes = true) => {
       const bytes = git(main, ["--no-replace-objects", "show", `HEAD:${file}`]);
       for (const checkout of [main, root]) {
         const path = contained(checkout, file);
-        if (!lstatSync(path).isFile() || readFileSync(path, "utf8") !== bytes)
+        if (
+          !lstatSync(path).isFile() ||
+          (compareBytes && readFileSync(path, "utf8") !== bytes)
+        )
           throw new Error(
             `publication authority differs from main's committed ${file}`,
           );
@@ -1669,13 +1759,37 @@ function registeredTargetAdmission(
         );
       return bytes;
     };
-    const configuration = JSON.parse(committed("dotln.config.json")) as {
-      roots?: { docs?: string; control?: string; intake?: string };
-      repositories?: Record<
-        string,
-        { baseBranch?: string; authorityProfile: AuthorityEnvelope }
-      >;
+    const configuration = JSON.parse(
+      committed("dotln.config.json", false),
+    ) as PublicationConfiguration;
+    const workingConfigurations = [main, root].map(
+      (checkout) =>
+        JSON.parse(
+          readFileSync(contained(checkout, "dotln.config.json"), "utf8"),
+        ) as PublicationConfiguration,
+    );
+    const comparePublication = (repositoryId?: string) => {
+      const expected = publicationView(configuration, repositoryId);
+      for (const working of workingConfigurations) {
+        const actual = publicationView(working, repositoryId);
+        for (const field of [
+          ...new Set([...Object.keys(expected), ...Object.keys(actual)]),
+        ].sort()) {
+          if (
+            Object.hasOwn(expected, field) !== Object.hasOwn(actual, field) ||
+            canonicalStringify(expected[field] ?? null) !==
+              canonicalStringify(actual[field] ?? null)
+          )
+            throw new Error(
+              `publication authority differs from main's committed dotln.config.json at ${field}`,
+            );
+        }
+      }
     };
+    // Judge roots before using one to locate the registry, then the single
+    // registration that registry binds. Other operational settings are not
+    // publication authority; grants below still require identical bytes.
+    comparePublication();
     const controlRoot =
       configuration.roots?.control ??
       `${configuration.roots?.docs ?? "docs"}/control`;
@@ -1694,6 +1808,7 @@ function registeredTargetAdmission(
         `no single recorded target worktree for ${order} in main's registry`,
       );
     const entry = entries[0]!;
+    comparePublication(entry.repositoryId);
     const rootEntries = Object.values(
       readJson<Record<string, RegisteredTargetEntry>>(
         localFile(root, registryName),
@@ -5464,6 +5579,14 @@ async function evaluateExistingHarnessHook(
       });
     }
     if (scopeResult) return protocolAdvisory(scopeResult.reason);
+    const nearMiss = registeredTargetNearMiss(root, input);
+    if (nearMiss) {
+      record(root, input, {
+        registeredTargetAdmission: nearMiss.journal,
+        advisory: nearMiss.advisory,
+      });
+      return protocolAdvisory(nearMiss.advisory);
+    }
     const close = releaseCloseAdmission(root, input, session);
     if (close) {
       if (close.advisory) {

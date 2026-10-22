@@ -1986,6 +1986,68 @@ export async function fixtures() {
       },
     );
     await check(
+      "WO-226 direct receipts record the selected worker type without inventing effective settings",
+      async () => {
+        for (const workerType of [
+          "dotln-worker",
+          "dotln-worker-fable",
+          "codex-spawn-agent",
+        ]) {
+          const repo = makeRepo(parent, `worker-type-${workerType}`);
+          await beginDirectRefutation(repo, { scope: "full" });
+          const subject = buildPlanSubject(repo, "HEAD", { goalReview: true });
+          const resultPath = "docs/control/local/result.json";
+          const statementPath = "docs/control/local/statement.txt";
+          write(repo, resultPath, JSON.stringify(cannedGoalReview(subject)));
+          write(
+            repo,
+            statementPath,
+            "Synthetic canonical subject review; worker type is parent-attested.",
+          );
+          await assert.rejects(
+            fileDirectRefutation(repo, resultPath, statementPath, {
+              commit: false,
+              workerType: "unregistered-worker",
+            }),
+            /worker type must be/,
+          );
+          const filed = await fileDirectRefutation(
+            repo,
+            resultPath,
+            statementPath,
+            {
+              commit: false,
+              ...(workerType !== "dotln-worker" ? { workerType } : {}),
+            },
+          );
+          assert.equal(filed.workerType, workerType);
+          const receipt = (await readReceipts(repo)).at(-1);
+          assert.equal(receipt.episode.workerType, workerType);
+          assert.equal(receipt.episode.model, "unknown");
+          assert.equal(receipt.episode.effort, "unknown");
+          assert.ok(
+            read(repo, filed.receipt).includes(
+              `Worker type: \`${workerType}\``,
+            ),
+          );
+          assert.match(
+            read(repo, filed.receipt),
+            /parent-attested launch type/,
+          );
+          await assert.rejects(
+            validateReceipt(
+              repo,
+              rehash({
+                ...receipt,
+                episode: { ...receipt.episode, workerType: "invented" },
+              }),
+            ),
+            /provenance/,
+          );
+        }
+      },
+    );
+    await check(
       "direct-session frozen result round-trips and gates without invented launch provenance",
       async () => {
         const repo = makeRepo(parent, "direct-pass");
@@ -2035,6 +2097,7 @@ export async function fixtures() {
         const receipt = await writeDirectReceipt(repo);
         for (const change of [
           { kind: "other" },
+          { workerType: "other" },
           { harness: "other" },
           { harnessVersion: "claimed-version" },
           { model: "claimed-model" },

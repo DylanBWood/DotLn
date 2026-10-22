@@ -65,8 +65,12 @@ one-criterion target order `docs/work-orders/WO-001-*.md` with
   plain spelling was withheld on whole-file equality of `dotln.config.json`
   with `main`, and the closed-phase spelling carried a directory change and
   a variable in front of the helper. WO-226 narrows the equality to the
-  registration's publication fields and makes a near-miss spelling print an
-  advisory; the next admitted publish in the fork with the entries absent
+  registration's publication fields and configured roots, retaining the
+  committed grants' byte equality. A helper hidden by a pipe, redirect or
+  prefix now journals `registeredTargetAdmission: { kind: "near-miss",
+  syntax }` and prints an advisory without making a permission decision.
+  These kit-side changes leave the classifier unqualified.
+  The next admitted publish in the fork with the entries absent
   decides the question, and the fallback exists for a `no`.
 - Whether a hook's `allow` pre-empts the Claude Code auto-mode classifier is
   unstated in the published documentation (planning document §3); this

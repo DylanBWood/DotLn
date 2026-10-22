@@ -21,6 +21,7 @@ import {
   reportHarnessRuntime,
   currentHarnessSessionReport,
   observedFactsReport,
+  isKitRoot,
 } from "./lib/harness-runtime.mjs";
 import {
   mainWorktree,
@@ -1277,7 +1278,7 @@ const run = async (argv) => {
     if (!thread) return;
     if (!existsSync(harnessHostPath)) {
       throw new Error(
-        "Codex writer reservation unavailable; harness runtime is not built. Run npm run build before retrying this dispatch.",
+        `Codex writer reservation unavailable; harness runtime is not built. Run ${isKitRoot(repoRoot) ? "node scripts/bootstrap.mjs" : "npm run build"} before retrying this dispatch.`,
       );
     }
     const {
@@ -2440,7 +2441,7 @@ const run = async (argv) => {
         }
       } else {
         process.stderr.write(
-          "DotLn advisory: Codex session entry unavailable; harness runtime is not built. Run npm run build before the next dispatch; process cost remains unknown; cause no-session.\n",
+          `DotLn advisory: Codex session entry unavailable; harness runtime is not built. Run ${isKitRoot(repoRoot) ? "node scripts/bootstrap.mjs" : "npm run build"} before the next dispatch; process cost remains unknown; cause no-session.\n`,
         );
       }
     }

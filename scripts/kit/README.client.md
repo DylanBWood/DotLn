@@ -160,7 +160,10 @@ operator sandbox settings.
    `hostRules: "literal"` writes that order's exact rules to the main
    checkout's untracked `.claude/settings.local.json` and `.codex/rules/`
    until release close removes them (`node scripts/harness.mjs check` names a
-   stale one). Declare the class's or registration's `disposable` paths for the
+   stale one). While the host's auto-mode classifier remains unqualified,
+   use the registration's `hostRules: "literal"` route; it writes these
+   order-specific local rules at start and removes them at release close.
+   Declare the class's or registration's `disposable` paths for the
    regenerable build output the close deletes, never moves to scratch, and
    `baseDisposablePolicy: "judge-only"` when the base checkout must retain that
    output while keeping its material checks (the default is `"delete"`). Use
@@ -485,8 +488,8 @@ is derived from core's WO-052 verification report and does not travel.
 
 Lifecycle commands run on the carried runtime, including Codex dispatches
 that reserve a writer. `node scripts/harness.mjs check` and `emit` verify and
-regenerate the bundle. `npm run build` and the build-first `npm run harness`
-need the omitted TypeScript source. Open the shipped console without building:
+regenerate the bundle. `npm run harness -- check` restores the carried runtime
+before checking it; the export has no source-build step. Open the shipped console without building:
 `node packages/console/dist/src/cli.js live --store .runtime/resident`.
 The status view labels resident-owned continuation steps as logical
 `vertical-host` episodes and displays intent decision holds. Those rows do not
@@ -647,6 +650,10 @@ git worktree remove .runtime/upstream-preview
 ```
 
 Set `remote.upstream.tagOpt` once so later ordinary fetches also omit tags.
+An explicit `git fetch upstream --tags` overrides `remote.upstream.tagOpt
+--no-tags`; fetch plain unless you intend to bring in all starter tags. To
+select one starter tag without adding it to the instance's tags, use the
+ref-specific example below.
 Starter tags identify the starter's export, not this instance's release baseline;
 the local release commands exclude annotated tags with the starter's recorded
 message. To preview a named starter release, fetch it into a non-tag ref and
@@ -695,9 +702,11 @@ missing from an older export. It pushes the
 branch to `origin` and opens a pull request against `main`, which the operator
 reviews and merges with a merge commit, so `main` keeps the starter's history
 and the next update does not apply this one again. The session then switches
-back to `main`, fetches `origin`, fast-forwards it to `origin/main` and runs
-`node scripts/bootstrap.mjs`; main stays clean and ready for the next
-worktree.
+back to clean `main` and runs `node scripts/launchpad.mjs update --finish`.
+That command fetches `origin`, checks the fast-forward before changing the
+checkout, advances `main` to `origin/main` and runs bootstrap; main stays
+ready for the next worktree. It refuses a dirty tree, a non-fast-forward or
+a checkout other than `main`, naming the fact.
 Bootstrap prepares local dependencies and harness files without generating
 the tracked lineage index on main. A `.runtime/upstream-preview` left by an interrupted
 preview holds only a detached checkout: the session removes it with `git

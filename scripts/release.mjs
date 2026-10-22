@@ -1,6 +1,9 @@
 #!/usr/bin/env node
 import { isMainModule } from "./lib/paths.mjs";
-import { hasPackageSources } from "../packages/skeleton/src/runtime-inputs.mjs";
+import {
+  hasPackageSources,
+  isKitRoot as isKitWorktree,
+} from "../packages/skeleton/src/runtime-inputs.mjs";
 import { json as prettyJson, sha256Hex as sha256 } from "./lib/helpers.mjs";
 import {
   harnessRuntimeCause,
@@ -3472,7 +3475,7 @@ const main = async () => {
                 )
               )
                 throw new Error(
-                  `Release-close runtime is not built in ${writerRoot}; writer reservation retained. Run npm run build in the main checkout, then retry release close.`,
+                  `Release-close runtime is not built in ${writerRoot}; writer reservation retained. Run ${isKitWorktree(writerRoot) ? "node scripts/bootstrap.mjs" : "npm run build"} in the main checkout, then retry release close.`,
                   { cause: error },
                 );
               throw error;

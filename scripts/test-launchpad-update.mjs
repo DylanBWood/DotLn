@@ -83,6 +83,90 @@ import {
   root,
 } from "./lib/launchpad-fixture.mjs";
 
+test("WO-226 update finish fast-forwards clean main and preserves every refused checkout", () => {
+  const destination = commitExport(join(scratch, "finish-update"));
+  const origin = join(scratch, "finish-update.git");
+  const writer = join(scratch, "finish-update-writer");
+  git(scratch, ["init", "--bare", "-q", "-b", "main", origin]);
+  git(destination, ["remote", "add", "origin", origin]);
+  git(destination, ["push", "-q", "origin", "main"]);
+  git(scratch, ["clone", "-q", origin, writer]);
+  configureRepository(writer);
+  const commitFile = (checkout, file, text) => {
+    writeFileSync(join(checkout, file), text);
+    git(checkout, ["add", file]);
+    git(checkout, [
+      "-c",
+      "commit.gpgsign=false",
+      "commit",
+      "-qm",
+      "Fixture update",
+    ]);
+  };
+  commitFile(writer, "update.txt", "merged update\n");
+  git(writer, ["push", "-q", "origin", "main"]);
+  const incoming = git(writer, ["rev-parse", "HEAD"]).stdout.trim();
+  if (!existsSync(join(destination, "node_modules/typescript")))
+    symlinkSync(
+      join(repository, "node_modules/typescript"),
+      join(destination, "node_modules/typescript"),
+    );
+  const finish = () =>
+    run(
+      process.execPath,
+      [
+        join(destination, "scripts/launchpad.mjs"),
+        "update",
+        "--finish",
+        destination,
+      ],
+      { cwd: scratch },
+    );
+  const finished = ok(finish(), "finish the merged update");
+  assert.match(finished.stdout, /Fetched origin main/);
+  assert.match(finished.stdout, /Fast-forwarded main to origin\/main/);
+  assert.match(
+    finished.stdout,
+    /Prepared main with bootstrap \(1 preparation steps\)/,
+  );
+  assert.doesNotMatch(finished.stdout + finished.stderr, /npm run build/);
+  assert.equal(git(destination, ["rev-parse", "HEAD"]).stdout.trim(), incoming);
+  assert.equal(git(destination, ["status", "--porcelain"]).stdout, "");
+  ok(harness(destination, "check"), "finished instance runtime");
+  commitFile(writer, "relative-origin.txt", "another merged update\n");
+  git(writer, ["push", "-q", "origin", "main"]);
+  git(destination, ["remote", "set-url", "origin", "../finish-update.git"]);
+  ok(finish(), "finish an update from a checkout-relative origin");
+  assert.equal(
+    git(destination, ["rev-parse", "HEAD"]).stdout,
+    git(writer, ["rev-parse", "HEAD"]).stdout,
+  );
+  assert.equal(git(destination, ["status", "--porcelain"]).stdout, "");
+  const refused = (pattern) => {
+    const before = treeSnapshot(destination);
+    const result = finish();
+    assert.equal(result.status, 1, result.stdout);
+    assert.match(result.stderr, pattern);
+    assert.deepEqual(
+      treeSnapshot(destination),
+      before,
+      "refusal changes no working file, Git metadata or runtime byte",
+    );
+  };
+  writeFileSync(join(destination, "dirty.txt"), "operator work\n");
+  refused(/dirty/);
+  rmSync(join(destination, "dirty.txt"));
+  git(destination, ["switch", "-q", "-c", "fixture-update"]);
+  refused(/requires main.*fixture-update/);
+  git(destination, ["switch", "-q", "main"]);
+  commitFile(destination, "local.txt", "unmerged local commit\n");
+  commitFile(writer, "remote.txt", "new remote commit\n");
+  git(writer, ["push", "-q", "origin", "main"]);
+  refused(/not a fast-forward/);
+  git(destination, ["remote", "remove", "origin"]);
+  refused(/origin/);
+});
+
 test("WO-078 criterion 1: an export to a declared sibling writes its receipt inside the manifest step and regenerates the entry, and an update records the sibling by its repository name", (t) => {
   const siblings = "docs/siblings/siblings.json";
   write(

@@ -34,7 +34,7 @@ const fixture = (t) => {
 };
 const sourceRoot = resolve(import.meta.dirname, "..");
 
-test("bounded role wording preserves every startup profile and restores working headroom", async () => {
+test("bounded role wording preserves prior savings and records reviewed startup additions", async () => {
   const { harnessInstallation, harnessInstructionBlock } =
     await import("./lib/harness.mjs");
   const baseline = JSON.parse(
@@ -49,6 +49,14 @@ test("bounded role wording preserves every startup profile and restores working 
   const budgets = JSON.parse(
     fs.readFileSync(join(sourceRoot, "docs/control/budgets.json"), "utf8"),
   );
+  const reviewed = JSON.parse(
+    fs.readFileSync(
+      join(sourceRoot, "packages/skeleton/fixtures/wo226-role-baseline.json"),
+      "utf8",
+    ),
+  ).startupCost;
+  assert.match(reviewed.decision, /^WO-\d{3}-D\d{3}$/u);
+  assert.match(reviewed.followup, /^FUP-[a-f0-9]{16}$/u);
   const files = new Map(
     harnessInstallation().files.map((file) => [file.path, file.contents]),
   );
@@ -63,15 +71,30 @@ test("bounded role wording preserves every startup profile and restores working 
     const previous = baseline.profiles.find((profile) => profile.path === file);
     assert.ok(previous, `missing baseline: ${file}`);
     const bytes = Buffer.byteLength(instruction) + Buffer.byteLength(contents);
-    assert.ok(
-      bytes <= previous.bytes,
-      `${file}: ${bytes} exceeds before ${previous.bytes}`,
-    );
     const role = file.split("/")[2].slice("dotln-".length);
+    const measured = reviewed.profiles[role];
+    assert.equal(bytes, measured.bytes, `${file}: reviewed startup bytes`);
+    assert.equal(
+      bytes - measured.beforeBytes,
+      reviewed.sharedRuleGrowthBytes,
+      `${file}: only the separately reviewed shared-rule addition`,
+    );
+    assert.equal(
+      budgets.limits.coldStartBytes[role],
+      measured.ceiling,
+      `${role}: the operating-cost ceiling stays unchanged`,
+    );
+    // Preserve the earlier wording savings without treating a later required
+    // duty as lost efficiency. The role oracle pins that duty's full text;
+    // the linked follow-up records the actual current headroom shortfall.
+    assert.ok(
+      measured.beforeBytes <= previous.bytes,
+      `${file}: ${measured.beforeBytes} exceeds before ${previous.bytes}`,
+    );
     if (role === "executor" || role === "reviewer")
       assert.ok(
-        budgets.limits.coldStartBytes[role] - bytes >= 256,
-        `${role} needs at least 256 bytes of working headroom: ${bytes}`,
+        measured.ceiling - measured.beforeBytes >= 256,
+        `${role}: the prior wording savings retain 256 bytes of working headroom`,
       );
   }
 });

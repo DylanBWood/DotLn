@@ -1,0 +1,74 @@
+{
+  "workOrder": "WO-226",
+  "historicalBaseline": "wo217-role-baseline.json",
+  "historicalSha256": "c1186aa671a02e7835b026e13e5426137cd3d7bc36afef848c9f4f5e3d5e5c6c",
+  "upstreamBaseline": "wo185-role-baseline.json",
+  "upstreamSha256": "f67e48b79873202b56c069902f2338d54b1fef42d3c9eb29706d3d2cd7a72ef9",
+  "method": "The authorized optional Fable worker and worker-type receipt instruction preserve the default and Codex pins. Pin both support settings and preserve all previous snapshots.",
+  "decision": "docs/evidence/WO-226/decisions.md#wo-226-d011",
+  "roles": {
+    ".agents/skills/dotln-executor/SKILL.md": "c0093903bd2e39a8ee5cb6ffa366dc24c5a78cd035b037da099466cefa3a876f",
+    ".agents/skills/dotln-planner/SKILL.md": "a53b3673e9ded606e6f5d01be97c07c141559c56182198b78f1b5576976c5801",
+    ".agents/skills/dotln-refuter/SKILL.md": "dc1f52f018669c665ad657c98ad9919e02861c2b7cf745998a905756bb759e9f",
+    ".agents/skills/dotln-release-close/SKILL.md": "69f28bebd8f192373f7eb504a61e77fe15e09dc01db751d27c82e967643f19c9",
+    ".agents/skills/dotln-reviewer/SKILL.md": "68a8f430dca84d822182f7b80444d5a9523dff4123fc99a56e2098371f2c9504",
+    ".agents/skills/dotln-verifier/SKILL.md": "8dae42602020123870ed31bde55762a0fcdd4486aa9e9c5705fc2993e8caf750",
+    ".claude/skills/dotln-executor/SKILL.md": "c0093903bd2e39a8ee5cb6ffa366dc24c5a78cd035b037da099466cefa3a876f",
+    ".claude/skills/dotln-planner/SKILL.md": "a53b3673e9ded606e6f5d01be97c07c141559c56182198b78f1b5576976c5801",
+    ".claude/skills/dotln-refuter/SKILL.md": "dc1f52f018669c665ad657c98ad9919e02861c2b7cf745998a905756bb759e9f",
+    ".claude/skills/dotln-release-close/SKILL.md": "69f28bebd8f192373f7eb504a61e77fe15e09dc01db751d27c82e967643f19c9",
+    ".claude/skills/dotln-reviewer/SKILL.md": "68a8f430dca84d822182f7b80444d5a9523dff4123fc99a56e2098371f2c9504",
+    ".claude/skills/dotln-verifier/SKILL.md": "8dae42602020123870ed31bde55762a0fcdd4486aa9e9c5705fc2993e8caf750"
+  },
+  "optOutRoles": {
+    ".agents/skills/dotln-executor/SKILL.md": "8fbb09d02fe57366b7949451991c5c273f2dfb11b9eb41e92edb6211294a74ac",
+    ".agents/skills/dotln-planner/SKILL.md": "0cea8605aea0b37b5f2827f4ba50d6096cab227637c614d689dd19717f5ae003",
+    ".agents/skills/dotln-refuter/SKILL.md": "64e474c241d41937b4baed7706dad0ab00a265f549f15eb5805ad2da12120f05",
+    ".agents/skills/dotln-release-close/SKILL.md": "52786602c8e516e45779c93bb338f42f945c1dcf0e62a3fb7a7111d5275a83e7",
+    ".agents/skills/dotln-reviewer/SKILL.md": "86c429a901b590e4daf90ecab47300f861ab52bdd89b2afa47cf4598bbcd91cf",
+    ".agents/skills/dotln-verifier/SKILL.md": "607c5f3adb55e9a51192b56a2027e904cb9cda1e88ea04c588630d01e4d86cba",
+    ".claude/skills/dotln-executor/SKILL.md": "8fbb09d02fe57366b7949451991c5c273f2dfb11b9eb41e92edb6211294a74ac",
+    ".claude/skills/dotln-planner/SKILL.md": "0cea8605aea0b37b5f2827f4ba50d6096cab227637c614d689dd19717f5ae003",
+    ".claude/skills/dotln-refuter/SKILL.md": "64e474c241d41937b4baed7706dad0ab00a265f549f15eb5805ad2da12120f05",
+    ".claude/skills/dotln-release-close/SKILL.md": "52786602c8e516e45779c93bb338f42f945c1dcf0e62a3fb7a7111d5275a83e7",
+    ".claude/skills/dotln-reviewer/SKILL.md": "86c429a901b590e4daf90ecab47300f861ab52bdd89b2afa47cf4598bbcd91cf",
+    ".claude/skills/dotln-verifier/SKILL.md": "607c5f3adb55e9a51192b56a2027e904cb9cda1e88ea04c588630d01e4d86cba"
+  },
+  "startupCost": {
+    "decision": "WO-226-D018",
+    "followup": "FUP-957602bc42e32e1d",
+    "sharedRuleGrowthBytes": 310,
+    "profiles": {
+      "executor": {
+        "beforeBytes": 28822,
+        "bytes": 29132,
+        "ceiling": 29246
+      },
+      "verifier": {
+        "beforeBytes": 25574,
+        "bytes": 25884,
+        "ceiling": 29831
+      },
+      "reviewer": {
+        "beforeBytes": 28603,
+        "bytes": 28913,
+        "ceiling": 28884
+      },
+      "release-close": {
+        "beforeBytes": 17685,
+        "bytes": 17995,
+        "ceiling": 21266
+      },
+      "planner": {
+        "beforeBytes": 18594,
+        "bytes": 18904,
+        "ceiling": 24576
+      },
+      "refuter": {
+        "beforeBytes": 17408,
+        "bytes": 17718,
+        "ceiling": null
+      }
+    }
+  }
+}

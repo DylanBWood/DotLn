@@ -257,7 +257,7 @@ function withPublishLane(run) {
 }
 /** Fetch through a host-owned lane, then import its bundle without consulting
  * the clone's transport configuration or moving any branch in the clone. */
-export function fetchRemoteBranch(repo, url, branch) {
+export function fetchRemoteBranch(repo, url, branch, { beforeImport } = {}) {
   return withPublishLane((inLane) => {
     inLane([
       "fetch",
@@ -267,6 +267,9 @@ export function fetchRemoteBranch(repo, url, branch) {
       `refs/heads/${branch}:refs/heads/fetched`,
     ]);
     const commit = inLane(["rev-parse", "refs/heads/fetched^{commit}"]);
+    // A caller can judge the fetched history before any object or reference
+    // is written to its checkout. The lane is removed on refusal as well.
+    beforeImport?.(inLane, commit);
     const scratch = mkdtempSync(join(tmpdir(), "dotln-target-fetch-"));
     try {
       const bundle = join(scratch, "fetched.bundle");

@@ -260,10 +260,19 @@ export async function fileDirectRefutation(
   statementPath,
   {
     dispositions = [],
+    workerType = "dotln-worker",
     now = () => new Date().toISOString(),
     commit = true,
   } = {},
 ) {
+  if (
+    !["dotln-worker", "dotln-worker-fable", "codex-spawn-agent"].includes(
+      workerType,
+    )
+  )
+    throw new Error(
+      "direct refutation worker type must be dotln-worker, dotln-worker-fable or codex-spawn-agent",
+    );
   for (const path of [resultPath, statementPath])
     if (!containedRegularFile(join(root, path), root))
       throw new Error(
@@ -302,6 +311,7 @@ export async function fileDirectRefutation(
   const statement = readFileSync(join(root, statementPath), "utf8").trim();
   const episode = {
     kind: "direct-session",
+    workerType,
     harness: "unknown",
     harnessVersion: "unknown",
     model: "unknown",
@@ -348,6 +358,7 @@ export async function fileDirectRefutation(
   const gate = await checkPlanGate(root);
   return {
     receipt: `${receipts}/${receipt.receiptId}.md`,
+    workerType,
     scope: pending.review.scope,
     durationMs,
     verdict: receipt.result.planVerdict,

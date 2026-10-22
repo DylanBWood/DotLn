@@ -126,6 +126,12 @@ export const renderPlanReceipt = (receipt) =>
     receipt.episode.kind === "direct-session"
       ? `Review source: direct ${receipt.episode.review ? "harness" : "Codex"} session. Harness version, model and effort: unknown; settings verification: unverified. No CLI launch or transport acceptance is claimed.`
       : `Transport: \`${receipt.episode.transport}\`; harness version: \`${receipt.episode.harnessVersion}\`; model: \`${receipt.episode.model}\`; effort: \`${receipt.episode.effort}\`. Selection source: host-launch; effective model and effort: unknown.`,
+    ...(receipt.episode.kind === "direct-session" && receipt.episode.workerType
+      ? [
+          "",
+          `Worker type: \`${receipt.episode.workerType}\` (parent-attested launch type; effective model and effort remain unknown).`,
+        ]
+      : []),
     "",
     receipt.episode.kind === "direct-session"
       ? `Judgment frozen: ${receipt.episode.completedAt}. Frozen result hash: \`${receipt.episode.resultHash}\`. Local-terms list: **${receipt.localTerms.status}**.`
@@ -257,6 +263,7 @@ export async function validateReceipt(root, receipt) {
     check(
       exact(e, [
         "kind",
+        ...(e.workerType !== undefined ? ["workerType"] : []),
         "harness",
         "harnessVersion",
         "model",
@@ -275,6 +282,10 @@ export async function validateReceipt(root, receipt) {
         (e.review
           ? ["codex", "claude-code", "unknown"].includes(e.harness)
           : e.harness === "codex") &&
+        (e.workerType === undefined ||
+          ["dotln-worker", "dotln-worker-fable", "codex-spawn-agent"].includes(
+            e.workerType,
+          )) &&
         e.harnessVersion === "unknown" &&
         e.model === "unknown" &&
         e.effort === "unknown" &&

@@ -1,4 +1,6 @@
 [
+  "WO-226 update finish fast-forwards clean main and preserves every refused checkout",
+  "WO-226 a fast-forwarded export restores its selected runtime for recovery, harness entry and finish",
   "WO-074 criterion 1: a destination that is not an empty directory is refused before any write",
   "WO-074 criterion 1: a destination that cannot be read is refused before any write",
   "WO-074 criterion 1: the scripts are byte-identical to UPSTREAM.md's commit, the manifest hashes verify, and the manifest lists every kit file and no seed",
