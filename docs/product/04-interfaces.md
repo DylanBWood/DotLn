@@ -1,10 +1,13 @@
 # Interfaces — the isomorphic views
 
-**Status:** target interface contract with implemented slices. WO-008 ships
-three equivalent editable views. WO-032 prepares `v0.14.0` with the read-only
-actor board, saved-build inspector, terminal render, and zero-asset HTML page
-over `uifa-board-v1`. The complete console command surface, spatial views,
-replay UI, and richer authoring remain planned. Each section names its scope.
+**Status:** target interface contract with implemented slices. WO-008 shipped
+three equivalent editable views; WO-032 shipped (`v0.14.0`) the read-only
+actor board, saved-build inspector, terminal render and zero-asset HTML page
+over `uifa-board-v1`; the console's text host and live view followed
+(`packages/console`, component 0.4.4 at `v0.89.0`), and the Angular shell's
+first screen is the operator's instance's (§Later console hosts). The complete
+console command surface, spatial views, replay UI and richer authoring remain
+planned. Each section names its scope.
 
 The future interface direction is **Actor UI**. Its proposed spoken name is
 **UIFA**, pronounced **“wee-fuh”** to rhyme with **FIFA**, expanded as
@@ -546,15 +549,53 @@ the independent role-question review boundary.
 `console live --store <dir>` combines refreshing status, orders and an audit
 preview; `audit` shows the full view. Commands use the existing parity client.
 
-Console v1 is the planned Angular shell in the operator's example
-consumer, built as the cross-repository pilot's first target change (WO-034)
-rendering that view model's actor panels; the framework decision above is
-taken with that evidence, not before it. Command invocation from a console
+Console v1 is the Angular shell in the operator's instance's consumer
+repository, DotLn-Angular. Its first screen shipped as DotLn-Angular v0.1.0 on
+2026-10-21 (the instance's WO-006): the actor board rendered read-only from a
+recorded, scrubbed `uifa-board-v1` board through a house component library
+whose behavior comes from `@angular/aria` and the CDK behind wrappers, with
+neither PrimeNG nor Material; the instance's workstream document records the
+later screens, each with the core contract it needs, and that order's evidence
+carries the bundle, type, maintenance and interoperability readings the
+framework paragraph above asks for. The names, for the record: UIFA v0 is the
+actor board, whose view model is exported as `uifa-board-v1` (the contract's
+version, not the UIFA generation); console v1 and the UIFA v1 shell both name
+this Angular shell. Command invocation from a console
 goes through §Console parity contract v1, and drag-equip authoring stays in the
 fork's shell over that contract, so no host grows a second workflow state
 machine. The plain-workspace default and the Nx caution above
 govern this repository; a consumer repository's stack is its owner's exemplar
 choice, judged here only for compatibility with the shared contracts.
+
+**The console serves operator flow, not a skin over data** (operator
+direction, 2026-10-21; planning dispatch, ignored capture SHA-256
+`4db8e10536b76209745538e6f54f2563dc7d1b34645a2cba438fd14a7812bab6`),
+synthesized: the actor board's HTML page and the instance's first Angular
+screen share one defect, they show data with no regard for how an operator
+uses it; the console's only purpose is operator flow and knowledge, working at
+a higher level than the records while keeping every datum reachable on
+demand; and the operator asks for help designing that experience, able to say
+which of two screens works worse before they can say what would work. The
+method is therefore [the Eye Dr Test](05-pattern-library.md#the-eye-dr-test--pairwise-preference):
+console work advances by pairwise comparison of candidate screens the
+operator judges, not by a specification written first, and the question each
+candidate must answer is how someone would use it so that their changes
+filter back to the platform and improve it. Three operating requirements
+follow. State the operator makes while using the console (filters, notes,
+layouts, drafts, the comparisons themselves) persists in an instance-local
+store the host owns, apart from control records, whether the console runs
+from a worktree or from `main`. Using the console never writes a control
+record, moves a lifecycle phase or disturbs a worktree or a gate: the parity
+contract's command route is the one admitted path for an effect, under the
+same hooked permission layer a terminal has. The operator uses the console in
+one checkout while changing it through the fork's orders in another, so a
+running shell reads the projections of the checkout it points at, and the
+kit's host contracts (the board's view model, the status file, the parity
+contract, a local-origin read route) stay versioned so a newer shell keeps
+reading an older instance. The platform half, the contracts and the read
+route, is core's (WO-225); the screens are the instance's, judged by the
+operator's comparisons; the first information architecture offered for that
+test is a candidate in the planning map (the 2026-10-21 pass).
 
 ## RPG / Path-of-Exile view
 

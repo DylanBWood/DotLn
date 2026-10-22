@@ -1,9 +1,9 @@
 # WO-014 — Approval-burden baseline, remediation, and fresh-session acceptance (version assigned at activation)
 
-**Model:** any capable model per harness for the executor; the independent
-verifier must reproduce in genuinely fresh sessions; the operator must
-witness at least one final interactive run (criterion 15 states its
-fallback). State the model and effort actually run for every session that
+**Model:** any capable model per harness for the executor; the operator must
+witness at least one final interactive run (criterion 15 states its fallback;
+the verifier's fresh-session reproduction left the scope with phases 2 and 3,
+step 1). State the model and effort actually run for every session that
 produces evidence (07-execution-guide.md §Model-specific notes). Harness
 authority stays with the operator: this order authorizes no change to
 personal settings, and any setting change it finds necessary returns to
@@ -13,37 +13,35 @@ the operator as a decision packet.
 **Release classification:** patch. Documentation, process and test
 infrastructure; no exported runtime capability. Assigned at activation
 under the standing opt-out default.
-**Cost:** adds the phase-1 reconciliation (the runbook's recorded-posture
-row and post-correction paragraph as dated observations with a drift
-rule; forward-pointing Amendments entries in ADR-0003 and ADR-0004),
-baseline and final approval-surface matrices per harness under
-`docs/discovery/` with the sanitized transcripts they cite, a synthetic
-approval-surface fixture under `scripts/`, the script, path or invocation
-fixes the baseline names with a test each, the runbook's
-observed-behaviour section with an approval budget per scenario, the
-verifier's reproduction and the operator-witnessed run record. Removes the
-unnecessary boundary crossings the baseline finds, unknown until it runs.
+**Cost:** phase 1 only: adds the runbook's recorded-posture row and
+post-correction paragraph as dated observations with a drift rule,
+forward-pointing Amendments entries in ADR-0003 and ADR-0004, the readback
+observations and the decisions file with the operator-witnessed run record
+(typed, `unknown` where no run exists) and one gate row per harness. The
+baseline and final approval-surface matrices, transcripts, synthetic fixture,
+invocation fixes, observed-behaviour section and verifier reproduction are
+phases 2 and 3, the planning map's boarded candidate (step 1). Removes
+nothing; the boundary crossings a baseline would find stay unmeasured until a
+host channel reports approval requests.
 Re-mints: none planned; a fix to a registered evidence source (among them
 `scripts/build.mjs`, `scripts/lib/helpers.mjs`, `git.mjs` and `paths.mjs`)
 would owe a deterministic re-mint of each edition it stales, and a fix to
 a file the feedback verifier judges one live feedback self-host episode,
 which the executor runs on a configuration the operator's 2026-09-28
-direction accepts; the baseline decides whether either happens. The
-fresh sessions per harness, the verifier's reproduction and the witnessed
-run are live sessions of unmeasured cost. Commands: none added; phase 1
+direction accepts; the baseline decides whether either happens. The witnessed run is a live session of unmeasured cost; the fresh sessions per
+harness and the verifier's reproduction belong to the boarded phases. Commands: none added; phase 1
 runs the existing `npm run discover -- harness <name>` readback (step 4).
-Steps: phase 1 is documents and readback (steps 1 to 5); the fresh
-sessions and the verifier's reproduction belong to the scope step 1
-boards, and the witnessed run is a typed record, `unknown` where no run
-exists (criterion 15). Wall-clock, tokens and context bytes are
+Steps: phase 1 is documents and readback (steps 1 to 5); the fresh sessions
+and the verifier's reproduction belong to the scope step 1 boards, and the
+witnessed run is a typed record, `unknown` where no run exists (criterion 15);
+criteria 3 to 11, 13 and 14 are marked out of scope in place. Wall-clock, tokens and context bytes are
 unknown until run.
 **Nomination provenance:** nominated by the operator during the WO-006 final
 review and created under operator direction; see
 `docs/final-reviews/WO-006/FINAL-001.md` §Follow-up work-order nominations.
 The identifier is an opaque stable reference assigned at creation, not a
 priority or an activation decision. It is the separately activated
-dedicated work order that WO-006's operator deferral (the paragraph
-"Operator deferral for the VER-002 repair" in
+dedicated work order that WO-006's operator deferral (its paragraph on the operator deferral for the VER-002 repair, in
 `docs/work-orders/WO-006-publication-bootstrap.md`) and
 `docs/verifications/WO-006/VER-003.md` §Operator-deferred axes — recorded,
 not scored call for; its first phase reconciles the personal posture
@@ -68,18 +66,16 @@ artificial sandbox escape, so the baseline is not dominated by an
 already-understood defect; closed, `v0.3.1`); WO-006 merged (the runbook,
 ADR-0003 through ADR-0005 and the deferral this order discharges; closed,
 `v0.2.3`).
-**Recommended placement:** position 14 of the serial queue (the operator
-keeps core's next thirty orders serial; planning document §12.4), after
-WO-096 and last, because no pass has yet found approval friction recorded
+**Recommended placement:** after WO-096 and last in the serial queue (position
+18 after the 2026-10-21 pass placed four fork-unblocking orders first; the
+operator keeps core's next thirty orders serial, planning document §12.4), because no pass has yet found approval friction recorded
 as a constraint under the posture recorded on 2026-09-17 and reaffirmed on
 2026-09-25, no host sandbox in Claude Code, Codex or Copilot, the one
 finding that moves it up (operator-review assumption 1). It has been last
 since the 2026-10-02 planning pass placed it there, so that every open
 order has a position and none floats beside the list; the pass that
-reaches it re-observes that gap and withdraws the order if it is absent. It edits
-`docs/AI-HARNESS-SECURITY.md`, the Amendments of ADR-0003 and ADR-0004,
-`docs/discovery/`, a synthetic fixture under `scripts/` and the scripts
-its baseline names. A recommendation, not a dependency token.
+reaches it re-observes that gap and withdraws the order if it is absent. It edits `docs/AI-HARNESS-SECURITY.md`, the Amendments of ADR-0003 and
+ADR-0004 and its evidence directory. A recommendation, not a dependency token.
 
 <!-- dotln-dependencies:start -->
 [
@@ -133,15 +129,17 @@ force); the
 [2026-09-28 planning document](../planning/failures-across-phases-2026-09-28.md)
 §10.1.
 
-**Objective:** Make approval behavior an observable, executable acceptance
-contract for each harness the runbook records with a qualified role —
-Claude Code, Codex CLI and Copilot CLI at `5f3849ec` — at recorded
-versions and in its recorded mode, measured by the prompts actually
-encountered during representative work in fresh sessions, not by settings
-readback or interface labels. Reduce unnecessary boundary crossings by
-fixing scripts, paths, and invocation structure, never by disabling a
-sandbox, enabling unsandboxed fallback, or adding a broad or persistent
-allow rule.
+**Objective:** Phase 1: reconcile the runbook's recorded posture, the startup
+evidence and the ADR claims for each harness the runbook records with a
+qualified role (Claude Code, Codex CLI and Copilot CLI) at recorded versions,
+as dated observations with a drift rule, with settings readback treated as
+configuration evidence and never as proof of reduced approval burden. Phases 2
+and 3, the planning map's boarded candidate, would make approval behavior an
+observable, executable acceptance contract measured by the prompts actually
+encountered in fresh sessions and reduce unnecessary boundary crossings by
+fixing scripts, paths and invocation structure, never by disabling a sandbox,
+enabling unsandboxed fallback or adding a broad or persistent allow rule; they
+reopen when a host channel reports approval requests.
 
 **Observed gap (dated 2026-09-28, `main` at `5f3849ec`; first observed
 2026-09-01 and filed at `039788a7`):**
@@ -268,9 +266,10 @@ allow rule.
 1. Scope decided by the 2026-10-07 pass: this order is phase 1, documents only. Criteria 3
    to 11, 13 and 14 count approval requests that nothing in the tree observes (the WO-136
    matrix, `docs/discovery/authority-boundary-2026-09-17.md` line 109, says prompt counts
-   remain unknown without a host channel; the hooks registered are PreToolUse, PostToolUse,
-   PermissionDenied, UserPromptSubmit, SessionStart and Stop), so they are out of this
-   order's scope and recorded as a candidate in the planning map (reopen when a host channel
+   remain unknown without a host channel; the hooks registered are PreToolUse, PostToolUse, PermissionDenied,
+   PostToolUseFailure, UserPromptSubmit, SessionStart and Stop
+   (`.claude/settings.json`); none reports an approval request), so they are
+   out of this order's scope and recorded as a candidate in the planning map (reopen when a host channel
    reports approval requests). Criteria 1, 2, 12, 17 and 18 remain; 15 and 16 are judged
    on typed records (`predictable` and `bounded` booleans with a note; the gate rows per
    harness) and recorded `unknown` where no run exists.
@@ -286,34 +285,38 @@ allow rule.
    ADR-0004 Decision 4 to ADR-0005 Decision 1). Check: `git diff` shows appends only.
 4. Readback: `npm run discover -- harness claude-code`, then `codex-cli` and `copilot-cli`,
    for versions. The pinned axes live in personal settings: the executor reads them, the
-   pinned axes alone and sanitized, only on the operator's word granting that read, records
-   the word, and writes the result as a dated observation; without the word it records
-   `unknown`.
-5. `docs/evidence/WO-014/decisions.md` (new): the scope decision, the observations, the
-   three later partial observations the gap did not name
-   (`docs/discovery/copilot-cli-2026-09-20.json` line 9451;
-   `writing-worker-smoke-2026-09-14.md` rows C-U2 and X-U2; Claude's typed
-   `HostPermissionDenied` events since `09fe5d88`); `npm run meta`;
+   pinned axes alone and sanitized, only on the operator's word granting that
+   read, records the word, and writes the result as a dated observation in
+   `docs/evidence/WO-014/decisions.md` (step 5); without the word it records
+   `unknown` with that reason. Check: the decisions file holds one row per
+   pinned axis, or `unknown` with the reason.
+5. `docs/evidence/WO-014/decisions.md` (new): the scope decision, the
+   observations, the witnessed-run record `{ predictable, bounded, note }`
+   (criterion 15; both booleans `unknown` until a role records the run), one
+   typed gate row per harness (criterion 16), the later partial observations
+   the gap did not name (`docs/discovery/copilot-cli-2026-09-20.json` line
+   9451; `docs/discovery/writing-worker-smoke-2026-09-14.md` rows C-U2 and
+   X-U2; Claude's typed `HostPermissionDenied` events since `09fe5d88`;
+   `docs/evidence/WO-221/host-qualification.md`: the Claude Code row's "No
+   prompt observed", its known issue recording an auto-mode classifier denial
+   of an executor's edits, and the Codex row's recorded launch mode `Auto
+   (workspace-write, on-request approvals, network off)`, which differs from
+   the runbook's 2026-09-17 Codex mode); `npm run meta`;
    `docs/planning/work-order-map.md` row at close.
 6. Handoff sequence: `npm run format`; `npm run test:docs`; `npm test -- --review`;
    complete `docs/evidence/WO-014/handoff.md`; `npm run resume -- implementation-ready <flags>`.
 
-**Deliverables:** the phase-1 reconciliation edits (runbook, two ADR
-amendments); baseline and final approval-surface matrices per harness under
-`docs/discovery/`; the sanitized fresh-session transcripts those matrices
-cite; script, path or invocation fixes that remove unnecessary crossings,
-each with its own test; the runbook's observed-behavior section and
-approval budget per scenario; a repeatable synthetic approval-surface
-fixture that observes, from inside a harness session, the boundary its
-recorded mode enforces, using synthetic paths and reporting refusal
-classes without touching real credentials or external hosts; the
-verifier's fresh-session reproduction; the operator-witnessed final run
-record.
+**Deliverables:** the phase-1 reconciliation edits (the runbook row and
+paragraph, two ADR amendments), the readback observations and the decisions
+file with the witnessed-run record and the per-harness gate rows; the rest
+(matrices, transcripts, fixes, the observed-behaviour section, the synthetic
+fixture, the verifier's reproduction) is out of scope (step 1).
 
 **Acceptance criteria (all required)**
 
-1. Phase 1 is complete: readback matches ADR-0005 on every pinned axis or
-   the divergence is recorded as a dated observation; a fresh,
+1. Phase 1 is complete: readback matches ADR-0005 on every pinned axis, the
+   divergence is recorded as a dated observation, or, without the operator's
+   word granting the read, `unknown` is recorded with that reason (step 4); a fresh,
    unoverridden session was witnessed by the operator and a role records
    its displayed mode on the operator's word; the runbook's "Remembered
    command rules" row is a dated observation with the drift rule; ADR-0003 and ADR-0004 carry
@@ -327,59 +330,27 @@ record.
    operator's word.
 2. Settings readback is treated as configuration evidence, not proof of
    reduced approval burden, in every document this order writes.
-3. A fresh-session baseline and a final run exist for each harness the
-   runbook records with a qualified role at the order's base (three at
-   `5f3849ec`), with harness versions, the recorded mode and sanitized
-   effective settings.
-4. Every observed approval is classified; `unknown` remains allowed and
-   visible.
-5. Scenario A completes with zero approvals on each harness.
-6. Scenario B completes with zero approvals on each harness.
-7. Scenario C completes without approval in each harness's recorded mode
-   while its effects stay within the boundary that mode documents; any
-   remaining prompt is recorded as an accepted exception with its boundary
-   named, or as a defect with a fix.
-8. In each mode that raises approval requests, each scenario-D crossing
-   produces no more than one narrowly scoped, decision-ready request; a
-   mode that raises none is recorded with its mode and not scored.
-9. Repeated commands arising from one known boundary are batched where the
-   harness safely permits it, and the batching is shown in the matrices.
-10. In each mode that raises approval requests, denying a scenario-D
-    request leaves the workstream recoverable, with no repeated request
-    for the same operation, no silent fallback to a broader mode and no
-    authority wider than before the denial; reproduced and recorded. The
-    criterion is judged against the declared set; a case outside it is a
-    follow-up, not a failure.
-11. Each scenario-E fixture (the declared denied directory, the unrelated
-    filesystem location, the `.invalid` name) is refused by the boundary
-    the recorded mode documents, or is recorded as not refused, with the
-    mode, and returned to the operator as a decision packet; none is
-    transformed into an approval request. The criterion is judged against
-    the declared set; a case outside it is a follow-up, not a failure.
+3. Out of scope (step 1, 2026-10-07 pass): approval requests have no observing channel in the tree; recorded as the planning map's candidate 7 (WO-014 phases 2 and 3); not judged.
+4. Out of scope (step 1): as criterion 3; not judged.
+5. Out of scope (step 1): as criterion 3; not judged.
+6. Out of scope (step 1): as criterion 3; not judged.
+7. Out of scope (step 1): as criterion 3; not judged.
+8. Out of scope (step 1): as criterion 3; not judged.
+9. Out of scope (step 1): as criterion 3; not judged.
+10. Out of scope (step 1): as criterion 3; not judged.
+11. Out of scope (step 1): as criterion 3; not judged.
 12. This order disables no sandbox, enables no unsandboxed fallback and
     adds no broad or persistent allow rule in any harness; personal
     settings are unchanged by this order unless the operator separately
     decides otherwise, a decision a role records on the operator's word.
-13. The final evidence reports approval counts by scenario and compares
-    them with the baseline.
-14. An independent verifier reproduces the representative workflow in
-    genuinely fresh sessions and records its own counts.
-15. The operator witnesses at least one final interactive run, and a role
-    records, on the operator's word, whether the remaining interruptions
-    are predictable and materially bounded. If that run has not happened
-    by handoff, the executor records this criterion unmet with the run the
-    operator would witness; the other criteria are judged; the criterion
-    closes when a role records the witnessed run on the operator's word, or
-    by a waiver a role records on the operator's word.
-16. The full, unchanged `npm test` passes in each harness's recorded mode;
-    where a host sandbox is in force the runner refuses the full selection,
-    because the skeleton and portfolio suites need the outside, so the
-    full gate runs outside it. The synthetic fixture passes in each
-    harness session where automation can observe it.
+13. Out of scope (step 1): as criterion 3; not judged.
+14. Out of scope (step 1): as criterion 3; not judged.
+15. A role records, on the operator's word, `{ predictable, bounded, note }` for the witnessed final run in `docs/evidence/WO-014/decisions.md`. If that run has not happened by handoff, both booleans are `unknown` and the executor records this criterion unmet with the run the operator would witness; the other criteria are judged; the criterion closes when a role records the witnessed run on the operator's word, or by a waiver a role records on the operator's word.
+16. The decisions file records one typed gate row per harness the runbook records with a qualified role: harness, version, recorded mode, the gate command run and its result, or `unknown` where no run exists in that harness. The executor's own handoff run stands as its harness's row. The synthetic fixture is out of scope (step 1).
 17. Write-backs land: `docs/AI-HARNESS-SECURITY.md` §Recorded host posture
     (2026-09-01, with dated amendments), its row and paragraph as dated
-    observations, and the observed-behavior section with the approval
-    budget per scenario; the ADR-0003 and ADR-0004 Amendments entries; the
+    observations, and no observed-behaviour section (out of scope, step 1;
+    reopen when a host channel reports approval requests); the ADR-0003 and ADR-0004 Amendments entries; the
     planning map's row for this order at close; one line in
     `docs/README.md` §Config log only if a `.claude/` or `CLAUDE.md` change
     occurs, which this order does not expect; the decisions file, which
@@ -396,17 +367,10 @@ record.
 documents only; a script, path or invocation fix the remaining scope would
 add names its own suite when that scope is reopened.
 
-**Evidence gate:** baseline and final approval-surface matrices; sanitized
-fresh-session transcripts; exact harness versions, modes and sanitized
-effective settings; the denial-and-recovery reproduction; the full
-unchanged `npm test` result; the independent verifier's result; the
-operator-witnessed count and disposition, or the unmet criteria and the
-runs the operator would witness; `npm run test:docs`; `npm test -- --review` before
-`implementation-ready`, because the fixture and the fixes land under
-`scripts/`, every file of which is a declared source of the
-configuration-root suite, and again at final review. The live rows are the
-fresh sessions per harness, the verifier's reproduction and the
-operator-witnessed run.
+**Evidence gate:** the phase-1 reconciliation edits and readback observations;
+the witnessed-run record or its `unknown`; the per-harness gate rows; `npm run
+test:docs`; `npm test -- --review` before `implementation-ready` and again at
+final review. The one live row is the operator-witnessed run.
 
 **Write-back duty:** as listed in criterion 17.
 
@@ -420,8 +384,19 @@ operator-witnessed run.
   as a dated observation (count only); criteria 15 and 16 are typed
   records (prose-parsing screen). Reopen: a host channel reports approval
   requests, which unboards phases 2 and 3.
-- WO-188 and WO-192 write `docs/AI-HARNESS-SECURITY.md` before this order;
-  the executor re-measures the lines at the base.
+- WO-219 (step 5, row FUP-33173b7f87004a9c) may write and WO-192 writes
+  `docs/AI-HARNESS-SECURITY.md` before this order (WO-188 did, closed
+  `v0.71.0`); the executor re-measures the lines at the base. - Receipt 045
+  (2026-10-13), criterion 3: whether approval friction is still a constraint
+  under the current posture is undecided, yet the criteria committed to
+  baseline and final runs on three harnesses, a verifier reproduction and a
+  witnessed run, and the Cost line named no removal; the observed gap is dated
+  2026-09-28 at `5f3849ec` and was not restated at `6dbd8771`. The 2026-10-21
+  pass marked criteria 3 to 11, 13 and 14 out of scope in place and narrowed
+  the Objective, Cost, Deliverables and Evidence gate to phase 1. Reopen when
+  phase 1's fresh sessions on the current posture record zero approvals in
+  scenarios A to C on every harness, or the operator records approval friction
+  as a current constraint.
 
 - Receipt 038: the order commits to baselines, final runs on three
   harnesses, a verifier reproduction and two witnessed runs before any

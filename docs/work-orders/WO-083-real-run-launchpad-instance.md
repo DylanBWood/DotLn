@@ -39,10 +39,10 @@ re-observed the order on `main` at `5f3849ec`: the umbrella's counting and
 baseline rules are stated here, a run not made by handoff has a fallback, a
 failed measure is a failed run, the sibling entry changes through WO-078's
 generator and WO-078 is typed, the write-backs are bounded, the final
-criterion names both gates, and register rows FUP-0049 (the operator's
-Angular run recorded as this order's receipt), FUP-0070 (the sibling
-workflow pilot) and FUP-0126 (the workstream application), each allocated
-to this order among others, are carried here
+criterion names both gates, and register rows FUP-0049 (the operator's Angular run recorded as this order's
+receipt) and FUP-0070 (the sibling workflow pilot), each allocated to this
+order among others, are carried here, and FUP-0126 (the workstream
+application) is WO-080's alone since the 2026-10-17 pass
 ([planning document](../planning/failures-across-phases-2026-09-28.md)
 §10). Amended by the 2026-10-11 route pass at the operator's corrections 1
 to 3 and item (k) (captured verbatim in ignored intake, SHA-256
@@ -110,8 +110,9 @@ pass, which cut and verify the order this run drives); WO-073 merged (the
 profile convention the instance's profile follows; closed, v0.73.0); WO-078
 merged (the sibling registry, generated from receipts, whose Angular
 consumer entry this run changes; closed, v0.74.3).
-**Recommended placement:** position 7 of the serial queue (planning
-document §12), after WO-192 and before WO-207: directly after WO-192, its
+**Recommended placement:** after WO-192 and before WO-207 in the serial queue
+(position 11 after the 2026-10-21 pass placed four fork-unblocking orders
+first; planning document §12): directly after WO-192, its
 own recommended place since 2026-09-28, to which the operator's direction
 of 2026-10-11 returned it with WO-192 before it so the measured run is
 driven the way the operator drives orders. The Angular orders are
@@ -238,16 +239,23 @@ baseline.
 **Observed gap (restated 2026-10-13 at `main` `6dbd8771`; restated 2026-10-11 at `82b7fdb7`; dated 2026-09-28 at `5f3849ec`; first observed 2026-09-08 at `33e2c25`):**
 
 - Product 12 records the instance route and no receipt for this order
-  exists; the two public repositories held one empty initial commit each on
-  2026-10-11 (the conversation-only session observed it), and their state
-  since is not observed from this repository.
+  exists. Restated 2026-10-21 at `926b8234` (receipt 043 requires this
+  restatement at every amendment): the personal instance exists and core's
+  2026-10-18 fork-observations pass records its first target order; the
+  instance has closed WO-003 (DotLn-Angular's registration, gate,
+  `documentationRoot: docs/dotln`, grant and outward vocabulary; v0.2.0) and
+  the target orders WO-004 to WO-006, whose records sit in DotLn-Angular's
+  documentation root, with DotLn-Angular v0.1.0 released on 2026-10-21 under
+  the declared release policy; those orders ran without the router, since
+  `drive:` does not exist at core HEAD; no receipt for this order and no
+  driven run exists.
 - The loop is proven from core against a scratch target (WO-112, v0.68.0)
   and from a fresh starter instance (WO-118, v0.80.0, 2026-10-13: criterion
   1 met by the witnessed run, no waiver); an export runs core's three gates
   (WO-201, v0.77.0) and its own planning pass on seeded records (WO-202,
   v0.78.0); target worktrees (WO-072, v0.75.0), the overlay (WO-076,
-  v0.76.0) and the update preview (WO-203, v0.79.0) have closed. No run
-  against an operator repository exists.
+  v0.76.0) and the update preview (WO-203, v0.79.0) have closed. The runs against the operator's repository are the instance's own WO-004 to
+  WO-006 (above); none is this order's measured run.
 - The publication this order's plan named does not exist for its route.
   `worktree publish WO-NNN --target <request.json>` (WO-064) publishes a
   source-change episode: its request requires an episode `store`
@@ -259,7 +267,10 @@ baseline.
   `release.mjs check-surfaces --committed` (`scripts/worktree.mjs` lines 727
   to 760), whose rules always read core's license pins in
   `docs/LEGAL.md` (`scripts/release.mjs` lines 759 to 798), a file the kit
-  does not carry. WO-210 supplies both.
+  does not carry. WO-210 supplied both (closed, v0.82.0): `worktree publish WO-NNN
+  --target-worktree [--draft]` and the records branch's publication exist, and
+  release surfaces judge core's license pins only where the instance declares
+  `docs/LEGAL.md` (`scripts/license-surfaces.mjs`).
 - A target order is gated on the launchpad and its records stay in the
   instance (planning document §12.7 and §12.8). A criterion naming `npm
   test` needs a launchpad `npm test` row at the launchpad's code identity
@@ -270,8 +281,11 @@ baseline.
   target. The operator directed on 2026-10-13 that DotLn-Angular keep its
   own product documents, planning passes and order records, with the
   instance linking them, and that Angular orders pay DotLn-Angular's own
-  tests, never core's gate. WO-210 supplies the gate, the documentation
-  root, the records-only commit, the links and the planning publication.
+  tests, never core's gate. WO-210 supplied the gate (`node scripts/target-gate.mjs`), gate claims on
+  target rows (`requireGateClaims`), the documentation root, the records-only
+  commit (`resume target-records`), the links and `plan target-publish`
+  (closed, v0.82.0); the instance's WO-004 to WO-006 recorded their records in
+  DotLn-Angular's documentation root this way.
 - The sibling registry exists (WO-078, v0.74.3): `docs/siblings/README.md`
   is generated from the declaration and the receipts, its check refuses a
   hand-edited entry, and the Angular consumer's entry reads "not evidenced"
@@ -349,7 +363,7 @@ baseline.
 - The Angular consumer's registry entry changes only through WO-078's
   generator (its once-per-sibling declaration or a receipt), never by hand.
 - A run fails when its pull request is not opened through the workflow,
-  when a measure is not lower than its observed baseline, or when the
+  when a measure is not lower than its attested baseline, or when the
   priming claim is recorded failed; its receipt is still recorded
   (assumption 1).
 - The third replan checkpoint (R3) follows a close whose criteria 1 to 3 are
@@ -362,18 +376,16 @@ baseline.
   registered target and the lifecycle through both launchpad routes: exist
   and run in `scripts/test-target-worktree.mjs` (WO-072's criteria 1 to 4)
   on fixture launchpads and targets; no run in an export or against an
-  operator repository is recorded. `drive:`: absent (WO-192).
-  Session-route target publication and the records branch's no-release
-  publication: absent (WO-210). Release surfaces without core's license
-  pins: absent (WO-210). A target gate, a documentation root, the
-  records-only commit with its link, and a target-scoped planning
-  publication: absent (WO-210). The instance's outward vocabulary, its
-  local-terms list and an operator grant for the Angular repository in
-  `packages/skeleton/loadouts/grants.json`: not carried (the kit's suite
-  table names the outward vocabulary core-only control data,
-  `scripts/kit/README.client.md`, and the export seeds `grants.json` as
-  `[]`, `scripts/launchpad.mjs` line 1007); an instance order's executor
-  commits them on the values the operator states (step 5). A target order's `release close` with `no-release`: exists and
+  operator repository is recorded. `drive:`: absent (WO-192). Session-route target publication, the records
+  branch's publication, release surfaces without core's license pins, the
+  target gate, the documentation root, the records-only commit with its link
+  and the target-scoped planning publication: exist (WO-210, v0.82.0) and have
+  run in the operator's instance (its WO-004 to WO-006, records in
+  DotLn-Angular's documentation root; restated by the 2026-10-21 pass). The instance's outward vocabulary, its local-terms list and the operator
+  grant for the Angular repository: committed by the instance's WO-003
+  (v0.2.0) and WO-012 (v0.3.3, the target release policy and `release.close`);
+  the kit carries neither a vocabulary nor a grant, so an instance order
+  commits them, and step 5 re-reads them at activation. A target order's `release close` with `no-release`: exists and
   is fixture-run (WO-072's criterion 4 case). The sibling generator and the
   capability table's appended dated section: exist and have run (WO-078;
   WO-118's criterion 6).
@@ -390,13 +402,12 @@ baseline.
 1. This order needs the operator's personal instance on the operator's own
    machine, where core is installed. WO-072, WO-076, WO-201, WO-202 and
    WO-203 have closed (v0.75.0 to v0.79.0), the point the route pass named.
-   The instance exists once the starter is exported and pushed (WO-215,
-   placed first in the serial queue, makes core's release close push each
-   release into the starter, `docs/planning/sequence.md`) and forked as the
-   operator's instance, a forge account action a role takes only on the
-   operator's explicit word. It takes later core releases (WO-210, WO-213,
-   WO-204 and WO-192 among them) by a merge of the starter after `preview
-   --from`, which an instance order's executor makes on the operator's word.
+   The instance exists (core's 2026-10-18 fork-observations pass records its
+   first target order) and took starter v0.88.0 through its WO-012 (closed,
+   v0.3.3); WO-215 (closed, v0.81.0) pushes each core release into the
+   starter. Later core releases (WO-204 and WO-192 among them) reach it by the
+   README's in-instance update route on the operator's word (restated by the
+   2026-10-21 pass).
    Its Angular orders before this one, the foundational work and the UI
    among them, are its own (planning document §12.4). If the run has not
    happened by handoff, criteria 1 to 4 are recorded unmet with the steps
@@ -421,15 +432,15 @@ baseline.
 4. Activate through `resume: next` (`npm run worktree -- start WO-083
    docs/work-orders/WO-083-real-run-launchpad-instance.md`).
 5. The run, outside this repository, in the instance, dispatched by the
-   operator's phrases and witnessed by the operator. Before it, an earlier
-   instance order's executor, on the operator's word and recording it,
-   commits DotLn-Angular's registration in the instance's `dotln.config.json`
-   with its `gate` and `documentationRoot` (WO-210), the instance's own
-   outward vocabulary, and an operator grant naming `repo.push` and
-   `pr.open` for the registered Angular repository id in the instance's
-   `packages/skeleton/loadouts/grants.json`, the registered authority profile
-   admitting both, and writes the ignored local-terms list from the terms the
-   operator states; the operator merges that order's pull request. The run:
+   operator's phrases and witnessed by the operator. The instance's WO-003 (closed, v0.2.0) committed DotLn-Angular's
+   registration with its gate and `documentationRoot: docs/dotln`, the
+   instance's outward vocabulary and the operator grant (`repo.push`,
+   `pr.open`, `pr.thread.resolve`), and its WO-012 (closed, v0.3.3) the target
+   release policy with `release.close`; the activation decision re-reads them
+   at the instance's then-current commit and records any later change. The
+   ignored local-terms list is confirmed present by `npm run terms -- check`
+   reporting other than `unavailable`, and is otherwise written by an instance
+   order on the operator's word (restated by the 2026-10-21 pass). The run:
    the planning pass of step 2 (`npm run plan -- start <slug>` and the kit
    README's planning section); `npm run worktree -- start WO-NNN` for the
    registered Angular target (WO-072); then `drive: WO-NNN` from the
@@ -446,20 +457,28 @@ baseline.
    <title> --body-file <path>`) and the order's launchpad records branch,
    which carries the control segment, raw evidence and the links, by
    `worktree publish WO-NNN --title <title> --body-file <path>`, which needs
-   no release notes for a target order; after the operator merges both pull
-   requests on the forge, `resume: release close` fetches DotLn-Angular's base
-   branch, fast-forwards the clone's (WO-210) and records no release.
+   no release notes for a target order; after the operator merges both pull requests on the forge, `resume: release
+   close` fetches DotLn-Angular's base branch, fast-forwards the clone's base
+   and records no launchpad release; when the measured order carries a
+   `**Target release classification:**` header under the registration's
+   declared release policy, with `release.close` granted, release close tags
+   DotLn-Angular's next version and creates its Release, and the receipt names
+   that tag (corrected by the 2026-10-21 pass).
 6. `docs/evidence/WO-083/transcripts/*.md`, `WS-001.md` and a profile copy
    (new), each with the instance commit and its `shasum -a 256`, and
    `sanitization.json` listing every removal made. Checks:
    `npm run terms -- check docs/evidence/WO-083` over every committed file
    of the receipt (`unavailable` without the local list, then that part is
-   recorded unmet with the command); `node scripts/outward-lint.mjs branch <
-   <file>` and likewise `commit`, `pr-title`, `pr-body`; the PR's changed
+   recorded unmet with the command); `node scripts/outward-lint.mjs branch < <file>` and likewise `commit`,
+   `pr-title`, `pr-body`, run in the instance against its own vocabulary, with
+   the outputs and the vocabulary copy's SHA-256 in the receipt; the PR's changed
    files against the instance's `.claude/harness-manifest.json` installed
    list; `node scripts/check-registrations.mjs` if any JSONL is committed;
-   WO-080's JSON-block validator on the `WS-001` copy and WO-073's profile
-   decoder on the profile copy (never a judgment of Markdown shape); "every
+   WO-080's JSON-block validator on the `WS-001` copy; the profile copy is the
+   file the instance's registration names (`repositories.<id>.profile`), a
+   contained regular file read at the instance commit the receipt names, with
+   its SHA-256, its shape not judged (WO-073 delivered no decoder; never a
+   judgment of Markdown shape); "every
    member order cites both" judged by the header fields `**Workstream:**
    WS-001` and `**Repository:** <id> @ <sha>`. The receipt's README names
    the run's planning document, its product-document edits and the order's
@@ -482,9 +501,14 @@ baseline.
    12, 04, 13 and 06 as criterion 4 names them; `docs/evidence/WO-083/decisions.md`;
    `npm run meta`; `node scripts/check-publication.mjs --print-locks`;
    `npm run publication:check`.
-9. Handoff sequence: `npm run format`; `npm run test:docs`; `npm test --
-   --review`; complete `docs/evidence/WO-083/handoff.md`; `npm run resume --
-   implementation-ready <flags>`.
+9. Handoff: finish source edits; `npm run format` and `npm run sync` for
+   stale generated artifacts; start one `npm test -- --review` in the
+   background, never under the bounded wrapper, and await it with `node
+   scripts/harness.mjs evidence --wait`; after it passes, complete
+   `docs/evidence/WO-083/handoff.md`; run `npm run test:docs` once after the
+   last document edit; then `npm run resume -- implementation-ready <flags>`
+   (product 07 §Discipline, revised 2026-10-19; corrected by the 2026-10-21
+   pass).
 
 **Deliverables:** the receipt with sanitized transcripts, the two copies,
 the sanitization list and fired-unit counts; the write-backs below.
@@ -504,9 +528,11 @@ the sanitization list and fired-unit counts; the write-backs below.
    control log and the transcripts record, the route used (the router's
    dispatches or sessions the operator opened), the fired units and refusals from
    the instance's hook logs, the pre-run baseline block and the activation
-   event that follows it, and the operator's witness line. The pull
-   request's branch name, commit messages, title and body pass
-   `scripts/outward-lint.mjs` against `docs/control/outward-vocabulary.json`,
+   event that follows it, and the operator's witness line. The pull request's branch name, commit messages, title and body pass `node
+   scripts/outward-lint.mjs` run in the instance at the commit the receipt
+   names, against the instance's own `docs/control/outward-vocabulary.json`
+   (never core's; the receipt carries that file's copy with its SHA-256 and
+   each lint output),
    and its changed files include no path the instance's harness manifest
    lists as installed. Every file committed under `docs/evidence/WO-083/`
    (the transcripts, the `WS-001` and profile copies, the fired-unit counts)
@@ -520,15 +546,18 @@ the sanitization list and fired-unit counts; the write-backs below.
    recorded observed (a waived or unmet criterion 1 leaves the dependency
    unmet; met at WO-118's close); the three WO-112 source-writer boundaries
    (cleanup revocation, writer-resistant Git interpretation and
-   shared-object protection) are closed by WO-204; WO-210 and WO-213 are
-   closed; and the
-   route is observed once before this run touches the operator's
+   shared-object protection) are closed by WO-204; WO-210 and WO-213 are closed; the instance's `main` carries a starter merge
+   at or after the starter release that carries WO-204 and, when the router is
+   the route, WO-192, taken by the instance's update route on the operator's
+   word and recorded with its starter version (WO-210 and WO-213 arrived with
+   starter v0.88.0, the instance's WO-012; receipt 045); and the route is
+   observed once before this run touches the operator's
    repository: WO-192's criterion 9 records a phase worker completing its
    phrase in a target worktree, or, for sessions the operator opens, a
    recorded `resume: next` completes in a target-worktree session. A receipt whose
    route uses the resident's intent route also needs register rows
    FUP-2b9a8e696b38fb97 and FUP-eeb25ea9315438ad settled, or allocated to
-   an order that has closed (both are deferred at `6dbd8771`); WO-204,
+   an order that has closed (both allocated to WO-220 by the 2026-10-17 standard pass); WO-204,
    which carries that route's source-writer items, is already required
    above.
 2. This repository's verifier counts four measures (context restatements,
@@ -536,15 +565,16 @@ the sanitization list and fired-unit counts; the write-backs below.
    state; outcome quality, product 12's fifth comparison item, is not
    counted here) under the Design's counting rule, restatements and
    handoffs at least, from the committed material alone, and labels the
-   baseline half an operator attestation. Each measure whose baseline was
-   observed is lower than it; a measure that is not is recorded failed,
-   which leaves this criterion unmet (assumption 1). A measure with an
+   baseline half an operator attestation. Each measure whose baseline value the operator attested (a value, not
+   `unknown`) is lower than that attested value; a measure that is not is
+   recorded failed, which leaves this criterion unmet (assumption 1). A measure with an
    `unknown` baseline, or a count the verifier cannot reproduce from the
    committed material (a sanitization that removed or merged a counted
    event among the causes), is recorded `unverified` and never reported as
    passed.
 3. The receipt's copies show `WS-001` in the workstream-document shape
-   WO-080 defines and the profile in the convention WO-073 defines, and
+   WO-080 defines and the profile copy is the file the instance's registration names, read at
+   the receipt's instance commit with its SHA-256 (its shape is not judged), and
    every member order the run used cites both. Each vision restatement the
    executor needed by hand is listed with the file or build element that
    should have carried it; zero is the pass condition for the claim that
@@ -579,8 +609,8 @@ document changes (steps 3, 6, 7 and 8), each under
 **Evidence gate:** the receipt, its sanitized transcripts and copies; the
 verifier's counts; `npm run test:docs`; `npm test -- --review` before
 `implementation-ready`, because the receipt and the product write-backs
-under `docs/` are declared sources of registrations, and again at final
-review. The live row is the operator-witnessed run from the instance, which
+under `docs/` are declared sources of registrations, and final review reuses the passing complete row at the integrated code
+identity when one exists. The live row is the operator-witnessed run from the instance, which
 the receipt records (criterion 1).
 
 **Write-back duty:** as listed in criterion 4.
@@ -617,9 +647,7 @@ the receipt records (criterion 1).
   the appended dated section the gate admits; the rows WO-118's final
   review addressed to this run are placed by the route each names, because
   this route does not use the resident: D010's target-facing identifiers go
-  to WO-210, D019's source-writer items to WO-204, and D013 and D018 are
-  deferred to the first resident-owned run on a repository the operator
-  keeps and to WO-183; the non-goal's cross-reference to WO-192 is
+  to WO-210, D019's source-writer items to WO-204, and D013 and D018 are allocated to WO-220 (the 2026-10-17 standard pass); the non-goal's cross-reference to WO-192 is
   corrected (receipt 044).
 - 2026-10-11 route pass (operator corrections 1 to 3, item (k); receipt
   043's three known issues): the order is the operator's personal run on
@@ -654,21 +682,29 @@ the receipt records (criterion 1).
   which that pass attributed to an operator direction the 2026-10-07
   capture does not contain. The constraint that core may not be installed
   belongs to the work instance and to WO-193 only.
-- Blocked on WO-210, WO-213, WO-080 and WO-204 (hard edges, each placed
-  before this order); WO-192 is placed directly before it; WO-118 closed at
+- Blocked on WO-080 and WO-204 (hard edges, each placed before this order);
+  WO-210 (v0.82.0) and WO-213 (v0.83.0) are closed; WO-192 is placed directly
+  before it; WO-118 closed at
   v0.80.0 with criterion 1 met and no waiver; WO-072, WO-201 and WO-202
   closed; the activation preflight requires WO-204, WO-210 and WO-213 closed
   and the session route observed once.
 - Forking the starter on the forge is an account action, not a repository
   change; a role takes it only on the operator's explicit word (product
-  12's route; the operator's standing instruction on account changes). The
-  instance's existence is not observed from this repository. Reopen: the
-  run cannot start because the fork does not exist.
+  12's route; the operator's standing instruction on account changes). The instance's existence is observed from this repository since the
+  2026-10-18 fork-observations pass, so the former reopening condition (the
+  fork does not exist) no longer applies; the starter-merge condition of the
+  receipt 045 bullet stands.
 - The instance takes core releases by a starter merge an instance order's
   executor makes on the operator's word until WO-207 (placed after this
   order) gives the instance's planning pass that route; if the instance has
   not taken WO-210, WO-213, WO-204 and WO-192's releases when the run is
   due, the run waits for that merge.
+- Receipt 045 (2026-10-13), written in by the 2026-10-21 pass: the personal
+  instance needs the starter releases carrying WO-204 and, for the router
+  route, WO-192 before its run, and WO-207's update route comes after this
+  order, so criterion 1's activation preflight names the starter-merge
+  condition. Reopen when the run is activated with the instance on a starter
+  release older than WO-204's or, for the router route, WO-192's.
 
 **Non-goals:** the foundational Angular work the instance does before this
 order, the DotLn UI included (the instance's own planning passes' subject,
@@ -688,7 +724,7 @@ by a non-author).
    does not close the order; dependents wait for an observed success. No
    capability promotion follows a partial or failed run. A failed run is
    one the Design names: its pull request not opened through the workflow,
-   a measure not lower than its observed baseline, or the priming claim
+   a measure not lower than its attested baseline, or the priming claim
    recorded failed.
 2. The receipt carries sanitized copies of `WS-001` and the profile so the
    verifier judges them here.

@@ -78,14 +78,14 @@ write-backs follow; WO-043 merged (closed, v0.17.1: supersession and
 deferral are typed entries); WO-026 merged (the index; satisfied at
 `v0.5.2`). The dated planning deferral until WO-053 is met: WO-053 passed
 final review on 2026-09-18 (closed, `v0.29.3`).
-**Recommended placement:** position 11 of the serial queue (the operator
-keeps core's next thirty orders serial; planning document §12.4), after
-WO-183 and before WO-091: the queued orders whose output it reads land
-first. WO-080 (position 4) adds the `**Workstream:**` field the allowlist
-admits, WO-192 (position 6) adds the `drive:` row the phrase check leaves
-unjudged, WO-083 (position 7) appends a capability section the fold takes,
-and WO-207 (position 8) ships the upgrade-order template through which an
-instance takes this order's move. A recommendation, not a dependency
+**Recommended placement:** after WO-183 and before WO-091 in the serial queue
+(position 15 after the 2026-10-21 pass placed four fork-unblocking orders
+first; the operator keeps core's next thirty orders serial, planning document
+§12.4): the queued orders whose output it reads land first. WO-080 (position
+7) adds the `**Workstream:**` field the allowlist admits, WO-192 (position 10)
+adds the `drive:` row the phrase check leaves unjudged, WO-083 (position 11)
+appends a capability section the fold takes, and WO-207 (position 12) ships
+the upgrade-order template through which an instance takes this order's move. A recommendation, not a dependency
 token.
 
 <!-- dotln-dependencies:start -->
@@ -338,8 +338,10 @@ at `5f3849ec`; first observed 2026-09-08 at `33e2c25`):**
   `scripts/refute-plan.mjs`'s introduction (history); `latestPlanningPass`
   falls back to the markers; `planJudgmentScope` dates a pass by the first
   commit that added its marker, else by the first that added its ledger
-  heading, as today; `planningCaptures` reads a pass's record from its
-  marker to the next marker or the file's end.
+  heading, as today; `planningCaptures` counts, per pass, the distinct intake paths in its record
+  section (from its marker to the next marker or the file's end) plus those in
+  the pass's `## <date> — Operator entries kept from pass <id>` section in the
+  ledger, so the count equals the base's after the move.
 - **The move.** `plan passes --move` moves every ledger section whose
   heading matches the rule into `docs/planning/planning-pass-sections.md`
   (new), newest first: the heading byte-identical, so ids and anchors hold
@@ -422,14 +424,12 @@ at `5f3849ec`; first observed 2026-09-08 at `33e2c25`):**
    `orderContractFindings(markdown, path, { sectionRule })` returning
    `{ path, line, reason }`; skip authorities where `parseDerivedProvenance`
    is non-null; do not copy `checkGeneratedSections`'s date pattern
-   (`scripts/lib/derived-contract.mjs` line 127). In `main`'s `--check`
-   (line 834), after `readIndex` (line 861), run it over the index rows: the
-   date rule for Active, Open and Superseded, the section rule too for
-   orders filed after the cutoff (filing date: the earliest
-   `git log --diff-filter=A --format=%cI -- <path>`). Throw
-   `<path>:<line>: <reason>` for every finding. Check:
-   `node scripts/work-orders.mjs index --check` names WO-035's redirect note
-   until step 6.
+   (`scripts/lib/derived-contract.mjs` line 127). The export alone lands here; `main`'s `--check` calls it in step 6a, after
+   the migration, so `node scripts/work-orders.mjs index --check` keeps
+   passing through steps 2 to 6. A finding in an order the sequence binds is
+   an advisory naming path and line, printed and listed in the decisions file,
+   never thrown; a finding in an unbound order throws `<path>:<line>:
+   <reason>`. Check: `npm test -- --only work-orders-fixtures` (step 4).
 3. `scripts/work-orders.mjs` `renderSources` (line 703): an "Order contract"
    bullet (cutoff, both rules, the three date-bearing leads), rendered on
    `docs/work-orders/HISTORY.md`. Check: `npm run work-orders -- index`.
@@ -460,6 +460,7 @@ at `5f3849ec`; first observed 2026-09-08 at `33e2c25`):**
    `npm test -- --only index`; `npm test -- --only docs-check`
    (`linkFailures`); `git diff --stat <base> -- docs/work-orders/` lists only
    the migrated orders and the two generated pages.
+6a. `scripts/work-orders.mjs` `main`'s `--check`, after `readIndex`: run `orderContractFindings` over the index rows (the date rule for Active, Open and Superseded, the section rule too for orders filed after the cutoff; filing date: the earliest `git log --diff-filter=A --format=%cI -- <path>`), throwing `<path>:<line>: <reason>` for an unbound order's finding and printing a sequence-bound order's as an advisory. Check: `node scripts/work-orders.mjs index --check` passes at this step, the migration having landed in step 6.
 7. `scripts/lib/phrase-list.mjs` (new): `PHRASE_MARKER =
    "dotln-resume-phrases"`, `phraseStart`, `phraseEnd`, `PHRASE_FILES`
    (`README.md`, `docs/PLAYBOOK.md`, `docs/product/07-execution-guide.md`),
@@ -534,36 +535,46 @@ at `5f3849ec`; first observed 2026-09-08 at `33e2c25`):**
     or the file's end; `movePassSections(root)` per the Design. Check:
     `plan-refutation`.
 17. The readers, per the Design: `scripts/lib/plan-receipts.mjs`
-    `planningPassScope` (line 1520); `scripts/lib/plan-direct.mjs`
-    `latestPlanningPass` (line 24) and `planJudgmentScope` (line 54);
-    `scripts/lib/meta.mjs` `planningCaptures` (line 843). Check:
+    `planningPassScope`; `scripts/lib/plan-direct.mjs` `latestPlanningPass`
+    and `planJudgmentScope`; `scripts/lib/meta.mjs` `planningCaptures`,
+    counting per pass the distinct intake paths in the record section plus
+    those in the pass's kept-entry section of the ledger. Check:
     `plan-refutation`, `process-debt`, `meta`.
 18. `scripts/refute-plan.mjs`: `plan passes` prints each registered pass
     (id, date, heading, record path); `plan passes --move` runs
-    `movePassSections`, refusing on a dirty tree or on a destination whose
-    content differs from what the move would write; a second run, with no
-    pass heading left in the ledger, changes nothing. Check:
-    `plan-refutation`.
-19. `scripts/lineage.mjs` `inspectLedger` (line 26): a dated heading
-    holding the words "planning pass" is an error naming its line ("a
-    planning pass registers in its planning record"); the kept-entry heading
-    passes. Check: `lineage-fixtures`.
+    `movePassSections`. When the ledger holds no pass heading it exits 0 and
+    changes nothing, before any other check. Otherwise it refuses only when
+    (a) the ledger, the destination or a file whose links it would rewrite has
+    uncommitted changes, or (b) the destination's content differs from what
+    the move would write; unrelated working-tree edits (steps 2 to 20's) never
+    stop it. Check: `plan-refutation`.
+19. (Moved into step 21, after the move here, so `node scripts/lineage.mjs
+    index --check` keeps passing until the ledger holds no pass heading.)
+    `scripts/lineage.mjs` `inspectLedger`: a dated heading holding the words
+    "planning pass" is an error naming its line ("a planning pass registers in
+    its planning record; run npm run plan -- passes --move"); the kept-entry
+    heading passes. Its `scripts/test-lineage.mjs` cases land with it. Check:
+    `lineage-fixtures`.
 20. Fixtures. `scripts/test-plan-refutation.mjs`: the cases that append a
     ledger pass heading (from line 190) register by marker in a planning
     document instead; new cases: a fixture ledger with receipted passes,
     moved, keeps every id, every receipt valid and `latestPlanningPass`
     unchanged; a doubled marker refuses; a planning document's `## `
-    heading holding a date and "planning pass" registers nothing; a second
-    `--move` changes nothing. `scripts/test-process-debt.mjs`: the
-    `planningCaptures` fixture (lines 6264 to 6298) reads a record.
+    heading holding a date and "planning pass" registers nothing; a second `--move` changes nothing; a move on a tree with an unrelated
+    uncommitted edit succeeds, and a second `--move` then exits 0 with no
+    change. `scripts/test-process-debt.mjs`: the `planningCaptures` fixture
+    reads a record, includes an intake path that appears only in a kept
+    operator entry and expects the same count before and after the move.
     `scripts/test-lineage.mjs`: the new refusal and the kept-entry heading.
-    `scripts/test-launchpad-planning.mjs` (line 222): an instance's pass
-    registers by marker in its planning document, and an instance whose
-    ledger holds a pass heading runs `plan passes --move` and keeps its
-    receipt chain. Check: `plan-refutation`, `process-debt`,
+    `scripts/test-launchpad-planning.mjs`: an instance's pass registers by
+    marker in its planning document; an exported instance whose ledger holds a
+    receipted pass heading gets a `lineage index --check` refusal naming the
+    heading's line and `npm run plan -- passes --move`, and after the move
+    `npm run plan -- passes` lists the same id and its receipt validates. Check: `plan-refutation`, `process-debt`,
     `lineage-fixtures`, `launchpad-planning`.
-21. The move here: `npm run plan -- passes --move`;
-    `node scripts/lineage.mjs index`; then each anchorless link step 1(d)
+21. The move here: `npm run plan -- passes --move`; then step 19's
+    `inspectLedger` refusal and its lineage-fixtures cases; `node
+    scripts/lineage.mjs index`; then each anchorless link step 1(d)
     listed, in a planning document, the map, a product document or an open
     order the sequence does not bind, points at the record; every other
     record keeps its bytes. The decisions file lists each rewritten and
@@ -611,6 +622,12 @@ at `5f3849ec`; first observed 2026-09-08 at `33e2c25`):**
 27. Handoff sequence: `npm run format`; `npm run test:docs`;
     `npm test -- --review`; complete `docs/evidence/WO-088/handoff.md`;
     `npm run resume -- implementation-ready <flags>`.
+- Receipt 045 (2026-10-13), criterion 4: criterion 4 is recorded unmet
+  whenever step 1 finds no differing phrase copy, and criterion 2 whenever a
+  sequence-bound order holds a dated note; either needs a waiver on the
+  operator's word to close, and for the phrase list the evidence supports
+  NoOp. Reopen when step 1 finds no differing copy and the order needs a
+  waiver to close, or a phrase copy is observed to differ.
 
 **Deliverables:** the order-contract check and fixtures; the migrated
 notes and pointers; the phrase emitter, markers and check when step 1
@@ -630,9 +647,11 @@ sentence when step 1 routes to it; the write-backs below.
    included; a required field missing, `**Preflight:**` among them; the
    fields out of order, `**Preflight:**` anywhere but directly before
    `**Evidence gate:**` among them; a dated umbrella label without a typed
-   `superseded` entry. For an Open order filed before the cutoff it refuses
-   a dated lead outside the three and passes an older-form order without
-   one. It passes a fixture in the allowed set whose observed-gap lead wraps
+   `superseded` entry. For an Open order filed before the cutoff it refuses a dated lead outside
+   the three and passes an older-form order without one. For an order the
+   sequence binds, a finding is an advisory naming path and line, listed in
+   the decisions file, and does not fail `index --check`; unbound orders still
+   throw. It passes a fixture in the allowed set whose observed-gap lead wraps
    over two lines with two dated observations, whose plan lead holds its
    date, and which ends in one `## Execution record`, and an umbrella record
    holding `**Umbrella record (YYYY-MM-DD):**` with typed `superseded`
@@ -664,8 +683,12 @@ sentence when step 1 routes to it; the write-backs below.
    declared set; a case outside it is a follow-up, not a failure.
 5. `docs/evidence/WO-088/capability-table-folded.md` holds one row per
    capability id and scope present at the base, each with the level,
-   citation and `Last change` of that id's latest dated assessment, and the
-   prior text under a migration note naming the base commit; the
+   citation and `Last change` of that id's latest dated assessment (a cell the
+   latest dated assessment does not state reads `unknown`, decided 2026-10-07;
+   a level cell that states no level 0 to 3, for example
+   `harness.codex-continuation`'s **Unchanged**, is recorded as `level: null`
+   with its verbatim `levelCell` in `fold-map.json` and judged by that
+   record), and the prior text under a migration note naming the base commit; the
    `runtime.independent-verification` row carries the WO-056 assessment. No
    folded level differs from the latest dated assessment of its id and
    scope.
@@ -682,8 +705,11 @@ sentence when step 1 routes to it; the write-backs below.
    and `plan-refutation-current` pass. In fixtures, a ledger with receipted
    passes, moved, keeps every id, every receipt valid and the latest pass
    unchanged; a doubled marker refuses; a planning document's `## `
-   heading holding a date and "planning pass" registers nothing; a pass
-   registered only by its marker is found, judged and dated.
+   heading holding a date and "planning pass" registers nothing; a pass registered only by its marker is found, judged and dated. In
+   `scripts/test-launchpad-planning.mjs`, an exported instance whose ledger
+   holds a receipted pass heading gets a `lineage index --check` refusal that
+   names the heading's line and `npm run plan -- passes --move`; after the
+   move, `npm run plan -- passes` lists the same id and its receipt validates.
 9. The ledger holds the operator's own ideas. It holds no heading with a
    date and the words "planning pass", and `inspectLedger` refuses one;
    each moved section stands in `docs/planning/planning-pass-sections.md`,
@@ -693,8 +719,9 @@ sentence when step 1 routes to it; the write-backs below.
    `operator-authorized` stays in the ledger byte-identical under a dated
    kept-entry heading at its section's place, linking the moved section;
    the ledger header records the migration; `lineage index --check`
-   passes; `meta` reports the same planning captures per pass as at the
-   base; a second `--move` changes nothing.
+   passes; `meta` reports the same planning captures per pass as at the base, kept
+   operator entries counted; a move on a tree with an unrelated uncommitted
+   edit succeeds, and a second `--move` exits 0 and changes nothing.
 10. Links. No Markdown link docs-check judges fails (`linkFailures`); every
     link whose fragment resolved into a moved section resolves into the
     record; each anchorless link step 1(d) listed is pointed at the record
@@ -713,7 +740,8 @@ sentence when step 1 routes to it; the write-backs below.
     markers and list (WO-192 writes that section earlier in the queue);
     when step 1(e) found it, the role-text sentence; the decisions file
     with `npm run meta`; the publication locks refreshed.
-12. `npm test -- --review` and `npm run test:docs` green; `git diff --check`
+12. `npm test -- --review` and `npm run test:docs` green; an advisory for
+    a sequence-bound order does not fail `index --check`; `git diff --check`
     clean; no new dependency. No live feedback episode is owed; the
     authority, feedback and harness re-mints are owed only when step 22
     ran, and are then recorded.
@@ -787,9 +815,10 @@ row.
   observed cost; the copies agree, so it adds a refusing check against a
   risk unseen since 2026-09-19 (criterion 4). Reopen when a copy disagrees
   with the Contributor's intents, for example after WO-192 edits the same
-  section. The 2026-10-07 pass recommended withdrawal and
-  FUP-9b0632b0ec72d168 deferred it (reopen: a copy diverges, or the
-  operator withdraws it); step 1 routes it.
+  section. The 2026-10-07 pass recommended withdrawal; FUP-9b0632b0ec72d168 was settled
+  on 2026-10-13 by the merge (the phrase part runs only if a copy diverges;
+  criterion 4 is waived otherwise) and reopens if a phrase copy diverges
+  before WO-088 activates or the operator withdraws WO-088; step 1 routes it.
 - Receipt 041, check: it fails closed in the document gate while the
   dependency refusal advises "a dated reviewed note" (left as a follow-up),
   so one guard's advice can trip the other (criterion 1). Reopen when a
@@ -804,21 +833,23 @@ row.
   persisted judgment checked for structure; one row per id and scope;
   `unknown` cells; the console's five-header constraint (reopen: the parser
   accepts a new header).
-- 2026-10-10 entropy pass: the front-page `generatedBlocks` entry (WO-189
-  D021, D023; FUP-89e29438bd71c524, FUP-5de3c35ef3d05142); the umbrella
-  label and typed entries stay in the header, or the six records become
-  open work that fails coverage and activates (WO-190 D003;
-  FUP-1a12e83d22825ee3).
+- 2026-10-10 entropy pass: FUP-89e29438bd71c524 (WO-189 D021, the front-page
+  `generatedBlocks` entry) is allocated to WO-220, queued before this order;
+  step 1 records its disposition at the base, and step 10 follows what WO-220
+  decided for `generatedBlocks`. FUP-5de3c35ef3d05142 (WO-189 D023) and
+  FUP-1a12e83d22825ee3 (the umbrella label and typed entries stay in the
+  header, WO-190 D003) were settled on 2026-10-11.
 - 2026-09-22: WO-157 criterion 14 versions the `WorkOrderIdentityAllocated`
   authority check ahead of this contract (WO-120 D007;
   FUP-a4ae3aeac59d5f9d, FUP-b727e87dbb0cf56e).
 - Register: FUP-0023; FUP-0025 (WO-190 delivered the typed entries; the
-  labelled paragraphs stay, assumption 6). Deferred until this order's
-  activation: FUP-0109 and FUP-5d31b4cd52b01f51 (whole or split orders under
-  one umbrella), FUP-0132 (WO-126 D005, change-range review).
-  FUP-dc58e92c5cafc732 (WO-087 D011): the capability rows' introduction and
-  the frozen historical prefix are hidden from the planning worker; the
-  installing pass reviews them.
+  labelled paragraphs stay, assumption 6). Deferred until this order's activation: FUP-5d31b4cd52b01f51 (whole or split
+  orders under one umbrella; FUP-0109 is its duplicate since 2026-09-30, and
+  its reopening, WO-113's activation, is now this order's). FUP-0132 (WO-126
+  D005) and FUP-dc58e92c5cafc732 (WO-087 D011) have been allocated to WO-219,
+  queued before this order, since 2026-10-17; step 1 records each row's
+  disposition at the base, a row WO-219 settles leaves this order, and a row
+  it declines or re-boards is carried here with its new reason.
 - Queue, 2026-10-13: WO-189 and WO-073 closed (2026-10-10, 2026-10-09);
   WO-075 and WO-118 closed with their sections present at `6dbd8771`;
   WO-096 and WO-091 append capability sections later, which the installing
@@ -827,14 +858,12 @@ row.
 - Holds the merged orders carried, and how this order honours them:
   - The phrase part (filed as WO-088) was held by the 2026-09-19 cleanup
     pass with its gap to be re-observed (that document's §4, and §5
-    decision 3: reopen when a phrase copy is observed to differ) and
-    deferred since 2026-10-10 by FUP-9b0632b0ec72d168 (reopen: a copy
-    diverges, or the operator withdraws WO-088). Steps 7–12 run only when
-    step 1 observes a differing copy; otherwise criterion 4 is recorded
-    unmet for a waiver (assumption 3), so dropping the phrase part is a
-    waiver of criterion 4, not a withdrawal of the merged order. The row's
-    reopening condition now names a withdrawal that would take all four
-    parts; its re-disposition is planning's.
+    decision 3: reopen when a phrase copy is observed to differ) and deferred from 2026-10-10 by FUP-9b0632b0ec72d168, settled on
+    2026-10-13 by the merge (reopen: a phrase copy diverges before WO-088
+    activates, or the operator withdraws WO-088). Steps 7–12 run only when
+    step 1 observes a differing copy; otherwise criterion 4 is recorded unmet
+    for a waiver (assumption 3), so dropping the phrase part is a waiver of
+    criterion 4, not a withdrawal of the merged order.
   - The fold part (filed as WO-089) was held to be rewritten as a planning
     act, since the refutation subject reads the capability rows and a fold
     is a subject change at a planning boundary (the 2026-09-19 document's

@@ -1,6 +1,6 @@
 # Architecture
 
-**Status:** implemented slices within a target architecture. This source prepares `v0.11.0`: the pure kernel and compiler, pinned composition, deterministic walking skeleton, audit/Beacon projections, bounded real CLI inspection episodes, and compiled metadata senses with weak keyed v3 provenance. Native model verification, general write-capable workers, and the console remain planned unless a section explicitly says otherwise. See the roadmap and work-order evidence for each boundary.
+**Status:** implemented slices within a target architecture. This source has prepared every release from `v0.11.0` onward (the [roadmap's release history](06-roadmap.md) names the current one): the pure kernel and compiler, pinned composition, deterministic walking skeleton, audit/Beacon projections, bounded real CLI inspection episodes, compiled metadata senses with weak keyed v3 provenance, and the console's actor board and text host ([Interfaces](04-interfaces.md#actor-board-v0)). Native model verification and general write-capable workers remain planned unless a section explicitly says otherwise. See the roadmap and work-order evidence for each boundary.
 
 The diagram below is the author's reference topology. Platform contracts make
 its modules composable; an implementation that omits durable history, replay,

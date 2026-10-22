@@ -9,8 +9,8 @@ harnesses as the loop's actors. State the model and effort actually run
 the parity contract, one receipt shape, one witnessed run; no change to
 the loop's primitives. Assigned at activation under the standing opt-out
 default.
-**Cost:** adds `dotln intent "<prose>" [--target <registered repository>]`
-in `packages/skeleton/src/dotln.ts` (and the parity contract's loopback
+**Cost:** extends `dotln intent "<prose>"` (WO-120) with `--target <registered
+repository>`, `--help` and the receipt in `packages/skeleton/src/dotln.ts` (and the parity contract's loopback
 form, product 04 §Console parity contract v1) that admits the intent
 under the portfolio's `intent` class (WO-123), interprets it into a
 StoryContract with a labeled inference episode (WO-061), materializes the
@@ -18,13 +18,15 @@ durable derived order (WO-120) and returns a receipt naming the order,
 where its progress can be watched (the live console, WO-117) and the one
 question the loop may ask; one `IntentDeclared` event; fixtures with
 doubles; one witnessed run by a non-author on the starter instance WO-118
-exports, recorded with shapes and the person's own words paraphrased; at
-most 300 bytes in product 06 §v1.0.0 and 200 in product 04 in place.
+exports, recorded with shapes and the person's own words paraphrased; about 300 bytes in product 06 §v1.0.0 and 200 in product 04 in place (the
+planner's estimates, never bounds).
 Removes: the hand-written work order as the only way an intent enters
 this repository (the map's candidate since 2026-09-06), and the absence
-of any order for the `v1.0.0` exit. Re-mints: `dotln.ts` and the parity
-contract's sources are registered evidence sources (deterministic
-re-mint); the executor checks `FEEDBACK_SOURCE_PATHS`. Commands: no new
+of any order for the `v1.0.0` exit. Re-mints: none unless step 2's `intent-source.ts` is registered or enters a
+registered import closure (then each edition whose check it stales, through
+`npm run sync`); `dotln.ts` and `console-commands.ts` are not registered
+evidence sources, and the executor checks `FEEDBACK_SOURCE_PATHS` (corrected
+by the 2026-10-21 pass). Commands: no new
 command name; `dotln intent` gains `--target`, `--help` and the receipt
 (step 1: the command exists). Steps: one witnessed run by a non-author, or
 the substitute run (step 9). Wall-clock, tokens and context bytes are
@@ -49,9 +51,10 @@ reopening names this order's activation are carried below.
 **Depends on:** WO-118 merged (the resident-owned loop the intent enters
 and the exported starter instance; closed, v0.80.0); WO-115 merged (the
 parity contract; closed); WO-120 merged (derived work identity; closed).
-**Recommended placement:** position 10 of the serial queue (the operator
-keeps core's next thirty orders serial; planning document §12.4), after
-WO-193 and before WO-088, because it keeps the place the 2026-10-11 route
+**Recommended placement:** after WO-193 and before WO-088 in the serial queue
+(position 14 after the 2026-10-21 pass placed four fork-unblocking orders
+first; the operator keeps core's next thirty orders serial, planning document
+§12.4), because it keeps the place the 2026-10-11 route
 pass gave it in the one-at-a-time tail, after the instance's request
 orders and ahead of WO-113, now part of WO-088
 ([route pass](../planning/three-repository-route-2026-10-11.md) §6); with
@@ -145,9 +148,13 @@ a new contract vocabulary (the StoryContract's).
    `scripts/lib/vertical-judgment.mjs` line 68; the live labeled episode is the vertical's
    intake, `intakeSubject` and `admitIntake` in `vertical-judgment-protocol.ts` lines 233 and
    265, run by `runVerticalJudgment`); compiles via `admitIntake`, then
-   `materializeOrder(compiled, { kind: "intent", sourceId })`; returns
-   `{ workOrderId, workOrderPath, watch, decision }`, `decision` from the typed
-   `contract.openDecisions` or an `IntentAdmission` `NeedsHuman` (`vertical.ts` line 118).
+   `materializeOrder(compiled, { kind: "intent", sourceId })`; reads the portfolio the configuration declares
+   (`loadConfig(root).portfolios`, decoded by `decodePortfolio`,
+   `packages/skeleton/src/portfolio.ts`) before admission and, when its class
+   is not `intent`, takes the draft path receipt 036 keeps (the receipt names
+   that decision); returns `{ workOrderId, workOrderPath, watch, decision }`,
+   `decision` from the typed `contract.openDecisions` or an admitted intent's
+   `IntentAdmission` `NeedsHuman` (`vertical.ts` line 118).
    The target binds by `--target` into the compiled `repo` (validated by `validateCompiled`,
    `derived-contract.mjs` line 42), never by scraping URLs from the prose
    (`referencesIssue`, `vertical-runtime.mjs` line 143).
@@ -155,29 +162,39 @@ a new contract vocabulary (the StoryContract's).
    `intent --help` with help text before line 35 takes prose (today `--help` would file a
    draft); print the receipt: order id and path, the watch command
    (`console status --store <dir> --watch`, `packages/console/src/cli.ts` line 16), and the
-   decision or `none`. A refusal is typed `{ code: "unregistered-target" | "no-intent-class", message }`;
+   decision or `none`. A refusal is typed `{ code: "unregistered-target", message }` (a portfolio without the intent class takes the draft path, never a refusal; receipt 036);
    fixtures assert the code and the absence of an event, never the wording.
 5. `IntentDeclared`: appended in the order's control segment, with a `case "IntentDeclared"`
    added to `scanControl` (`scripts/lib/control.mjs` line 239 onward; the fold throws on
    unknown types at 450 to 453).
 6. `scripts/test-derived-orders.mjs` (`derived-orders`, product): cases: an intent with a
-   registered target returns a receipt and `IntentDeclared`; an unregistered target refuses
-   with the code and no event; a portfolio without the intent class refuses with the code and
-   no event. Check: `npm test -- --only derived-orders`.
+   registered target returns a receipt and `IntentDeclared`; an unregistered target refuses with the code and no event; a portfolio
+   without the intent class files the draft and the receipt names that
+   decision (the draft-path case, receipt 036). Check: `npm test -- --only derived-orders`.
 7. `packages/console/test/console-commands.test.ts`: extend the WO-115 contract-command case
    (line 979) with the receipt bytes. Check: `npm test -- --only console-docs`.
-8. `npm run resume -- status --all --json` lists the derived id; record whether a
-   never-activated draft appears (unknown at the base).
+8. `npm run resume -- status --all --json` lists the derived id: its
+   control segment opens with `WorkOrderIdentityAllocated`, which
+   `scripts/lib/control.mjs` admits as a location (`materializeOrder`,
+   `scripts/lib/derived-orders.mjs`), so a never-activated draft appears; a
+   case in `scripts/test-derived-orders.mjs` asserts it. Check: `npm test --
+   --only derived-orders`.
 9. The witnessed run on WO-118's exported starter, or the substitute run given only the help
    text; write `docs/evidence/WO-183/witness.json`
    `{ run: "witnessed" | "substitute", readDocs: false, typedShape, neededBeyondScreen, understood: { order, watch, decision } }`
    and `witness.md` rendering it with the paraphrase.
-10. Write-backs: product 06 §"## v1.0.0: Teammate-ready" (the command and the run, in place);
+10. Write-backs: product 06 §"## v1.0.0 — Teammate-ready" (the command and the run, in place);
     product 04 §"### Console parity contract v1" (the receipt and `--target` on the
     `dotln.intent` row); `docs/evidence/WO-183/decisions.md`; `node scripts/meta.mjs`;
     `node scripts/check-publication.mjs --print-locks`; `npm run publication:check`.
-11. Handoff sequence: `npm run format`; `npm run test:docs`; `npm test -- --review`;
-    complete `docs/evidence/WO-183/handoff.md`; `npm run resume -- implementation-ready <flags>`.
+11. Handoff: finish source edits; `npm run format` and `npm run sync` for
+    stale generated artifacts; start one `npm test -- --review` in the
+    background, never under the bounded wrapper, and await it with `node
+    scripts/harness.mjs evidence --wait`; after it passes, complete
+    `docs/evidence/WO-183/handoff.md`; run `npm run test:docs` once after the
+    last document edit; then `npm run resume -- implementation-ready <flags>`
+    (product 07 §Discipline, revised 2026-10-19; corrected by the 2026-10-21
+    pass).
 
 **Deliverables:** the command and its loopback form, the event, the
 receipt, fixtures with doubles; the witnessed run's record; the two
@@ -190,17 +207,28 @@ product write-backs; the decisions.
    order that `resume status` lists, the console command to watch it, and
    the pending decision or its absence; a fixture with doubles asserts the
    receipt's fields and the `IntentDeclared` event.
-2. An intent for an unregistered target, or under a portfolio without
-   the `intent` class, is refused with the reason in plain words and no
-   event; a fixture asserts both.
+2. An intent for an unregistered target is refused with a typed code
+   (`unregistered-target`) and a message and appends no event; an intent under
+   a portfolio without the `intent` class files the draft for human review, as
+   `dotln intent` does today (`fileIntent`, `scripts/lib/derived-orders.mjs`),
+   and its receipt names that decision (receipt 036: an intent outside
+   intent-class coverage degrades to a draft, never a refusal); a fixture
+   asserts the code, the absence of the event and the draft path (rewritten by
+   the 2026-10-21 pass).
 3. The same intent through the console's loopback command surface yields
    the same receipt (parity), asserted by the console's fixtures.
 4. One witnessed run by a non-author on the exported instance, recorded
    in `docs/evidence/WO-183/witness.md` with shapes and the person's
    paraphrased reading, or the fallback substitute run with the pending
-   observation named.
-5. Write-backs: product 06 §v1.0.0 and product 04, in place, within the
-   stated bytes; `docs/evidence/WO-183/decisions.md`; the decisions index.
+   observation named. A substitute run (`witness.json` `run: "substitute"`) leaves the v1.0.0
+   exit and FUP-0073 open (receipts 036 and 045).
+5. Write-backs: product 06 §v1.0.0 — Teammate-ready states the command and
+   the run's kind, and states the exit met only when `witness.json` records
+   `run: "witnessed"` (after a substitute run no product section, capability
+   row or release claims it); product 04 §Console parity contract v1 states
+   the receipt and `--target` on the `dotln.intent` row; both in place, with
+   no byte figure binding them; `docs/evidence/WO-183/decisions.md`; the
+   decisions index.
 6. `npm test -- --review` and `npm run test:docs` green; `git diff
    --check` clean; no new dependency.
 
@@ -214,8 +242,8 @@ gate).
 
 **Evidence gate:** the fixtures of criteria 1 to 3; the witnessed or
 substitute run; `npm test -- --review` before `implementation-ready`;
-the editions re-minted deterministically; a live feedback episode only if
-a judged feedback source changes.
+the editions re-minted only if step 2 registers a source; a live feedback
+episode only if a judged feedback source changes.
 
 **Write-back duty:** products 04 and 06, in place; the order's decisions.
 
@@ -230,15 +258,22 @@ a judged feedback source changes.
   WO-118's run or the substitute record (typed, prose-parsing screen).
   Reopen: a fork needs the intent filed as a forge issue.
 - Blocked on WO-118 for the starter and the admission path without an
-  issue binding (met: WO-118 closed at v0.80.0 on 2026-10-13); WO-190 may
-  reorder 06 rungs (the heading is re-checked at the base).
+  issue binding (met: WO-118 closed at v0.80.0 on 2026-10-13); WO-190 closed (v0.71.1); the heading reads `## v1.0.0 — Teammate-ready`.
 - FUP-0073 (the stranger test) is allocated here by the 2026-09-30 pass;
   this order is its exit's shape.
-- FUP-eeb25ea9315438ad and FUP-2b9a8e696b38fb97 (WO-118 D013 and D018:
-  live status of resident-owned work) are deferred with this order's
-  activation among their reopening conditions, because its stranger watches
-  the console those rows describe (planning document §4); the activation
-  decision reads them.
+- FUP-eeb25ea9315438ad and FUP-2b9a8e696b38fb97 (WO-118 D013 and D018: live
+  status of resident-owned work) are allocated to WO-220 (the 2026-10-17
+  standard pass), because its stranger watches the console those rows describe
+  (planning document §4); the activation decision reads WO-220's disposition
+  of each, and if either is still open the receipt records that the console
+  the stranger watches lacks that live status.
+- Receipts 036 (2026-09-30) and 045 (2026-10-13), written in by the 2026-10-21
+  pass: `dotln intent` keeps its draft path, so an intent outside intent-class
+  coverage degrades to a draft, never a refusal (criterion 2, steps 3, 4 and
+  6); a substitute run can meet criterion 4 but never claims the exit
+  (criteria 4 and 5). Reopen when a product 06 section, a capability row or a
+  release claims the exit while the witness records a substitute run, or when
+  the operator reverses the draft-path rule with its source recorded.
 
 **Non-goals:** the loop's primitives and the resident (WO-118); a chat
 interface; the Angular shell (WO-083's fork); teaching the taxonomy (the

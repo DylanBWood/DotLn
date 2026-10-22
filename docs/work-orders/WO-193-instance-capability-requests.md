@@ -1,29 +1,32 @@
-# WO-193 — Capability requests and the private predecessor map: an instance asks core for a capability in one standard way, answered through either update route, and keeps a private map from what its predecessors did to what carries it now that says when a row needs a request (version assigned at activation)
+# WO-193 — Capability requests: an instance asks core for a capability in one standard way, answered through either update route, with a planning intake of labelled issues, a typed `UPSTREAM.md` answered list and a deployment-record template; the private predecessor map is WO-228's (version assigned at activation)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh; verifier xhigh; reviewer high.
 **Track:** delivery
-**Release classification:** minor. Two kit commands with their keys,
-schema and seed, a typed `UPSTREAM.md` block, a planning intake of
+**Release classification:** minor. One kit command with its keys, a typed
+`UPSTREAM.md` block, a planning intake of
 labelled issues, a requests block on orders, and request numbers in the
 receipt and update note. Assigned at activation under the standing opt-out
 default.
-**Cost:** commands: adds `npm run request -- draft|check|ready|file`,
-`npm run parity -- init|add|check|report|request` and
-`npm run plan -- requests`, the suites `request` and `parity`, and the
-surfaces the Release line names. Removes: the only route a need found in an
-instance has today, the operator remembering it until a planning pass at
-home; and the absence of any place where an instance records what its
-predecessors did and whether its build does it yet, so "at least as
-capable" becomes a count. The merge removes one order cycle (activation,
+**Cost:** commands: adds `npm run request -- draft|check|ready|file` and `npm
+run plan -- requests`, the suite `request`, and the surfaces the Release line
+names (the parity map and `npm run parity` are WO-228's since the 2026-10-21
+pass). Removes: the interim route a need found in an instance has today, a
+dated requests-to-core prompt in the instance's planning document that the
+operator carries into a core `planning:` dispatch (core's 2026-10-18
+fork-observations pass §4.3 and 2026-10-19 fork-requests pass; the fork's
+standing preference, each reopening when this order lands), replaced by
+`request file` and `plan -- requests` (restated by the 2026-10-21 pass). The merge removes one order cycle (activation,
 verification, final review, release close) and the full gate a closed order
 paid in the window, 2.29 runs and 61 minutes, beside phase medians of 16.9
 minutes for verification and 24.8 for final review (planning document
 §12); one re-mint covers both `package.json` entries; neither constituent
-owed a live feedback episode. Re-mints: `package.json` is a common source
-of the evidence inventories (`scripts/lib/evidence-sources.mjs`), so each
-edition whose check the two entries stale is re-minted deterministically,
+owed a live feedback episode. The 2026-10-21 pass cut the map back out as WO-228 (workstream WS-002, the
+predecessor track), on the operator's direction that predecessor work stays
+out of the serial queue, so this order pays its cycle for the request route
+alone. Re-mints: `package.json` is a common source
+of the evidence inventories (`scripts/lib/evidence-sources.mjs`), so each edition whose check the entry stales is re-minted deterministically,
 the feedback edition by carry (`package.json` is not in
 `FEEDBACK_SOURCE_PATHS`); no live episode. Declared machinery sources
 change, so `npm test -- --review` runs before handoff. One live issue is
@@ -32,7 +35,7 @@ tokens: unknown until run, one implementation phase, not two. Context
 bytes: about 39 KB against the constituents' 36,107 (the preflight,
 live-run surfaces, re-mint and merge route are new, and the second round
 added `request ready`, the role steps and the `manual` known issue).
-Steps: 17 against the constituents' 19.
+Steps: 12 (17 before the 2026-10-21 split).
 **Nomination provenance:** for both constituents, the operator's notes of
 2026-10-02, items 15 and 16 (captured in ignored intake; SHA-256 in the
 ledger section of that date), and the 2026-10-02 pass's search, which found
@@ -51,15 +54,19 @@ bullet is the floor it must hold. Merged by the 2026-10-13 standard
 planning pass under the operator's sizing direction (planning document
 §12). The pass's second round gave every step that left the operator a
 file edit to a role acting on the operator's recorded word (planning
-document §12.1).
+document §12.1). Split by the 2026-10-21 pass: the private predecessor map (the former WO-194
+constituent) is WO-228 in workstream WS-002, on the operator's direction of
+that day that work depending on the predecessor on the work machine stays out
+of the serial queue.
 **Depends on:** WO-074 (the kit manifest and file set); WO-076
 (instance-owned files; the emitted build a carrier is checked against);
 WO-077 (the update and its note); WO-078 (the sibling receipt); WO-062 (the
 screened issue reader), WO-063 (the outward lint) and WO-060 (the declared
 screen) merged. All are closed at `6dbd8771`.
-**Recommended placement:** position 9 of the serial queue (the operator
-keeps core's next thirty orders serial; planning document §12.4), after
-WO-207 and before WO-183, because this order extends what WO-207 changes
+**Recommended placement:** after WO-207 and before WO-183 in the serial queue
+(position 13 after the 2026-10-21 pass placed four fork-unblocking orders
+first; the operator keeps core's next thirty orders serial, planning document
+§12.4), because this order extends what WO-207 changes
 first and reads it as landed: `SECTION_KEYS` in `scripts/lib/config.mjs`
 (step 1), the kit's
 `dotln.config.example.json` and `gitignore.template` (step 2), the
@@ -131,12 +138,10 @@ by item in core) and WO-096 (core's shape rows and what it declines);
 something can ask for it in a few minutes without anything leaving the
 instance except the sentences the operator approved; the request is read at
 the next planning pass here; and when a release answers it, the instance's
-next update, from core or by merge, says so. An operator moving a team from
-an earlier workflow can have the instance's roles list privately, on the
-operator's guidance, each thing the earlier generations did, where it
-lives, what in the instance now carries it and how faithfully, and can read
-one summary of what is still missing. What is
-missing and belongs in core becomes a generic request; nothing else leaves.
+next update, from core or by merge, says so. The private map of what an instance's predecessors did, and the request a
+missing row becomes, is WO-228's (workstream WS-002), cut out of this order by
+the 2026-10-21 pass; what is missing and belongs in core becomes a generic
+request through this order's route, and nothing else leaves.
 
 **Observed gap (dated 2026-10-02, `main` at `08845c71`):**
 
@@ -232,16 +237,12 @@ missing and belongs in core becomes a generic request; nothing else leaves.
   record ADR-0001 says a work deployment owes: host and harness as observed
   by the instance's first order, what may leave the instance and by which
   route, and who decides. It is instance-owned once filled.
-- **The map.** Core ships the command, the row schema (step 9), templates
-  and a seed of rows this repository already states in public generic
-  terms, each `unverified`. Rows are instance-owned at a configured path
-  and the source registry is ignored local state; neither is in the
-  manifest, no export, update or receipt command reads either, and no
-  command copies a source's bytes. `parity report` says per generation
-  whether it is at least as capable: no `unmapped`, `blocked` or
-  `unverified` row. A missing row becomes a request draft holding its
-  generic statement and nothing else, which passes the screens and is
-  marked ready on the operator's word like any other.
+- **The map.** Cut out by the 2026-10-21 pass into WO-228 (workstream
+  WS-002, the predecessor track): the command, the row schema, the seed and
+  `parity request`, which calls this order's `draftRequest`. A missing row
+  becomes a request draft holding its generic statement and nothing else,
+  which passes the screens and is marked ready on the operator's word like any
+  other.
 - **Live-run surfaces, at `6dbd8771`** (criterion 14). A scratch export:
   exists and has run. The route, `request file`, the labelled listing and
   `plan -- requests`: absent (steps 1, 3, 5, 6). Issue creation: no command
@@ -259,13 +260,9 @@ missing and belongs in core becomes a generic request; nothing else leaves.
   instance never writes into core); automation that comments on or closes
   issues (a new outward effect; the closing reference needs none); a
   channel other than the forge's issues (the reader exists for this one;
-  an instance that cannot reach it uses `manual`); rows in core for a real
-  predecessor (the floor); an importer that reads predecessor rule files and
-  proposes rows (product 10's candidate; it needs an observed source and an
-  instance's authority, and reopens as an instance order after that
-  instance's first order observes its host); a map shared across instances
-  (instances are not tracked); reusing WO-096's renderer (queued later,
-  over a different source; the vocabulary is shared when it lands).
+  an instance that cannot reach it uses `manual`); the map's declined alternatives (rows in core for a real predecessor, an
+  importer of predecessor rule files, a map shared across instances, WO-096's
+  renderer) are recorded in WO-228.
 
 **Execution plan (the executor follows these steps in order; observed at
 `bd437eb2`, 2026-10-07; re-observed at `6dbd8771`, 2026-10-13):**
@@ -297,8 +294,10 @@ missing and belongs in core becomes a generic request; nothing else leaves.
    `lintOutwardArtifact` (`scripts/lib/outward-lint.mjs` line 55) and
    `screenSourceBundle` (`packages/compiler/src/source-bundle.ts` line
    694); an absent terms list reports `unavailable`. `file` refuses `REQUEST_ROUTE_NONE`,
-   `REQUEST_NOT_READY` and `REQUEST_SCREEN_FAILED`; `manual` prints and
-   records the reference reported back; `direct` refuses a
+   `REQUEST_NOT_READY` and `REQUEST_SCREEN_FAILED`; `manual` prints the title and body, and a later `request file <id>
+   --reference <issue>`, run by a role on the operator's report, records the
+   reported reference in the ledger row's `issue` without a network call and
+   refuses a malformed reference (the 2026-10-21 pass); `direct` refuses a
    `null` `repository` with a typed reason, else runs `executeGh`
    (`scripts/lib/github-repository.mjs` line 99) with
    `issue create --repo <repository> --title … --body-file … --label dotln-request`.
@@ -318,8 +317,9 @@ missing and belongs in core becomes a generic request; nothing else leaves.
    `requireCompleteIssueBundle` (line 750; refusal `incomplete`, line 94).
    Cases in `packages/skeleton/test/github-issue-source.test.ts`. Check:
    `npm test -- --only skeleton`.
-6. `scripts/refute-plan.mjs` `main` (line 231): a `requests` command writes
-   `docs/planning/requests.json` rows `{ issue, bundleHash, revisionId }`,
+6. `scripts/refute-plan.mjs` `main` (line 231): a `requests` command writes the planning root's `requests.json`
+   (`docRelative(root, "planning", "requests.json")`, never a literal path,
+   which `npm test -- --only configuration-root` checks) rows `{ issue, bundleHash, revisionId }`,
    skipping registered issues; `scripts/lib/planning-followups.mjs`
    `collectFollowupSources` (lines 91 to 207) adds kind `request` read from
    that file, never from headings; `plan start` (lines 347 to 374) returns
@@ -345,91 +345,52 @@ missing and belongs in core becomes a generic request; nothing else leaves.
    1842) and marks the ledger; `previewFromRevision` (line 1893) reads the
    incoming `UPSTREAM.md` as it reads `KIT_ACTIONS` (line 1915).
    `scripts/lib/siblings.mjs` `writeReceipt` (line 233) and the receipt
-   decoder gain an optional `requests` list of issue numbers. Cases in
-   `scripts/test-launchpad.mjs` and `scripts/test-siblings.mjs`. Check:
+   decoder gain an optional `requests` list of issue numbers. Cases in `scripts/test-launchpad-update.mjs` (the `launchpad` suite runs
+   the split files; `scripts/test-launchpad.mjs` is a barrel since 2026-10-18)
+   and `scripts/test-siblings.mjs`; each new top-level `test(` case is added
+   to `scripts/fixtures/launchpad-cases.json` with the runner fixture's count
+   raised, or written as a subtest of an existing case, and the step also
+   checks `npm test -- --only runner-fixtures`. Check:
    `npm test -- --only launchpad`; `npm test -- --only siblings-fixtures`;
    `npm test -- --only siblings`.
-9. `scripts/parity.mjs` (new): export `decodeParityRow`. Fields: `id`;
-   `generation` (the instance's label; seed rows carry `v1`); `kind` in
-   `capability`, `rule`; `statement` (generic, public terms); `source`
-   `{ registryKey, locator }`, or on a seed row `{ document, quote }`;
-   `status` in `exact`, `adapted`, `lossy`, `unmapped`, `blocked`,
-   `unverified` (product 10 §Candidate — external rule-source import
-   plans); `carrier` `{ kind: "unit" | "support" | "profile" | "order", id }`
-   for exact, adapted and lossy; `lost` for lossy; `request` or `decision`
-   for unmapped; `blocker` for blocked; optional `evidence` path; fixture
-   rows carry `synthetic: true`. A refusal names the field as
-   `PARITY_FIELD_<NAME>`. Check: step 12.
-10. The seed, a JSON file in `scripts/kit/`: the five rows of the table in
-    product 12 §Replacing a successful but costly workflow and the eight
-    items of the critical path's parity bullet (as WO-112 criterion 3
-    enumerates them), each `unverified`, each `source.quote` copied
-    verbatim from product 12 or the critical path document (whose generic
-    terms are the ones CLAUDE.md prescribes), written out by the executor;
-    nothing parses the table. Check: step 12.
-11. Commands in `scripts/parity.mjs`; `package.json` gains
-    `"parity": "node scripts/parity.mjs"`. `init` writes rows from the seed
-    when absent and the ignored registry; a second run changes no byte.
-    `add` decodes then appends. `check` decodes all; looks each carrier up
-    (a `unit` or `support` in the emitted manifest's `origin.ids`, re-read
-    after WO-207, under whose build pin `origin` carries the pinned
-    semantic hash; a
-    `profile` document path, an `order` id in the control log); under
-    `build: "none"` refuses a `unit` or `support` carrier naming the build;
-    and searches each row's `source.locator`, `lost` and `blocker` as
-    substrings in kit files and request drafts. `report` counts by
-    generation, kind and status and marks a generation
-    `at-least-as-capable: false` while any unmapped, blocked or unverified
-    row remains, listing those ids. `request <row>` calls `draftRequest`
-    with `statement` as the body only. Check: step 12.
-12. `scripts/test-parity.mjs` (new) over synthetic rows: each status
-    (criterion 8), the five refusals (criterion 9), a two-generation report
-    (criterion 10), a statement-only draft (criterion 11), and the quote
-    test (each `source.quote` is a substring of its `document`; criterion
-    13); `nodeTests("parity", "scripts/test-parity.mjs", { protects })`
-    joins `suites`. Check: `npm test -- --only parity`;
-    `npm test -- --only runner-fixtures`.
-13. Export and update fixtures in `scripts/test-launchpad.mjs` for criteria
-    1 and 12. Check: `npm test -- --only launchpad`.
-14. Re-mints: point `docs/evidence/current.json` at WO-193 revision 001 for
-    each kind the `package.json` entries stale; `npm run build`;
-    `node scripts/authority-evidence.mjs --write`,
-    `node scripts/artifact-identity-evidence.mjs --write`,
-    `node scripts/verification-evidence.mjs --write`;
-    `node scripts/feedback-evidence.mjs --carry <the feedback edition selected at the base>`.
+9. Re-mints: `npm run sync` re-mints each edition the `package.json` entry
+   stales (authority, artifact-identity, verification; feedback by carry) and
+   updates `docs/evidence/current.json` (the route since WO-216, v0.84.0).
     Check: `npm test -- --only` each of `authority-evidence`,
     `artifact-evidence`, `verification-evidence`, `feedback-evidence`,
     `harness-evidence` and `evidence-sources`.
-15. Live request (criterion 14) under the operator's explicit grant: from a
+10. Live request (criterion 8) under the operator's explicit grant: from a
     scratch export with `requests.route` set to `direct`, the executor
     drafts one generic request from the operator's guidance, the operator
     reads it, the executor runs `request ready` on the operator's word,
     `request file` creates it here, and `npm run plan -- requests`
     registers it. With no grant by handoff, record the criterion unmet with
     the command. Check: `npm run test:docs`.
-16. Write-backs of criterion 15, in place, each heading re-read at the
+11. Write-backs of criterion 9, in place, each heading re-read at the
     base: product 03 §"### Channel-plural intake, PR-backed registration";
-    product 07 §"## Operator-opened planning pass" (one sentence); product
-    12 §"## Replacing a successful but costly workflow" (beside the request
-    row) and §"## Open product choices"; product 10 §"## Candidate —
-    external rule-source import plans"; `scripts/kit/README.client.md`
+    product 07 §"## Operator-opened planning pass" (one sentence); product 12 §"## Replacing a successful but costly workflow" (beside the
+    request row; the map's sentences are WO-228's); product 07 §"##
+    Operator-opened planning pass" (item 5 of its preconditions: the
+    pasted-block route ends when this order lands); `scripts/kit/README.client.md`
     (§Kit files and instance files also names the lane, ledger, rows file
     and registry); `docs/evidence/WO-193/decisions.md`; `npm run meta`;
     `node scripts/lineage.mjs index --check`;
     `node scripts/check-publication.mjs --print-locks`;
     `npm run publication:check`. Check: `npm run test:docs`.
-17. Handoff sequence: `npm run format`; `npm run test:docs`;
-    `npm test -- --review`; complete `docs/evidence/WO-193/handoff.md`;
-    `npm run resume -- implementation-ready <flags>`.
+12. Handoff: finish source edits; `npm run format` and `npm run sync` for
+    stale generated artifacts; start one `npm test -- --review` in the
+    background, never under the bounded wrapper, and await it with `node
+    scripts/harness.mjs evidence --wait`; after it passes, complete
+    `docs/evidence/WO-193/handoff.md`; run `npm run test:docs` once after the
+    last document edit; then `npm run resume -- implementation-ready <flags>`
+    (product 07 §Discipline, revised 2026-10-19; corrected by the 2026-10-21
+    pass).
 
 **Acceptance criteria (all required)**
 
 1. In an exported instance, `request draft` writes a typed draft in the
-   ignored lane and leaves no tracked change in `git status`; `parity init`
-   writes the rows file from the seed at the configured path and creates
-   the ignored registry, and a second `init` changes nothing; the kit
-   manifest lists both commands, the templates, the schema and the seed,
-   and none of the drafts lane, ledger, rows file or registry.
+   ignored lane and leaves no tracked change in `git status`; the kit manifest lists the command, its templates and the
+   deployment-record template, and none of the drafts lane or ledger.
 2. `request check` reports each screen's result on fixture drafts: one
    clean; one with a term from a synthetic local-terms list; one with an
    off-host address; one with no terms list, reported as unavailable and
@@ -441,7 +402,9 @@ missing and belongs in core becomes a generic request; nothing else leaves.
    draft while `requests.route` is `none`, and a `direct` filing when the
    `UPSTREAM.md` block names no repository; under `manual` it prints the
    title and body and makes no network call, shown by a fixture that fails
-   on any spawned forge command; under `direct` a fixture forge command
+   on any spawned forge command; under `manual`, `request file <id> --reference <issue>` records the
+   reported reference in the ledger without a network call and a later
+   answered list marks the row delivered; under `direct` a fixture forge command
    receives exactly the title, body and label and the ledger records the
    returned reference.
 4. `npm run plan -- requests` over a fixture forge listing writes one
@@ -462,80 +425,55 @@ missing and belongs in core becomes a generic request; nothing else leaves.
 7. The kit carries the deployment-record template; the instance's
    pre-drafted first order names filling it; `requests.route` is documented
    there with its default.
-8. `parity add` writes a row and refuses one whose fields do not fit its
-   status, naming the field; a table test covers every status.
-9. `parity check` refuses, naming the row: a carrier absent from a fixture
-   build and order set; a `unit` or `support` carrier under a fixture
-   `build: none` manifest, naming the build; a `lossy` row that says
-   nothing is lost; an `unmapped` row with neither a request nor a
-   decision; and a private field's text found in a kit file or a request
-   draft.
-10. `parity report` over a synthetic set of two generations prints the
-    counts and, per generation, whether it is at least as capable, with
-    the rows that prevent it.
-11. `parity request <row>` writes a request draft whose body is the row's
-    generic statement; a test shows that no other field of the row appears
-    in the draft.
-12. An update fixture leaves the rows file and the registry byte for byte
-    unchanged, and an export from a core checkout that holds a synthetic
-    rows file writes none of it into the kit.
-13. Every row, fixture and example committed by this order is synthetic or
-    quoted from product 12 or the critical path document; the final review
-    records the check that found it so.
-14. One live request: from a scratch export with `requests.route` set to
+8. One live request: from a scratch export with `requests.route` set to
     `direct` under the operator's grant, one generic request, drafted by
     the executor from the operator's guidance and marked ready on the
     operator's recorded word, is filed to this repository, read by
     `plan -- requests` and registered; its evidence records the issue
     reference, the bundle hash and the register row, and no text beyond
     the request itself.
-15. The write-backs of step 16 state: in 03, the request route as
+9. The write-backs of step 11 state: in 03, the request route as
     implemented for issues; in 07, `plan -- requests` among the entry
-    reads; in 12, the route and its floor beside the request row, the
-    answer to where an instance keeps this private state, and the report as
-    an instance's parity measure; in 10, the mapping statuses in use by the
-    instance map; in the client README, both commands. The decisions file
+    reads; in 12, the route and its floor beside the request row (the map's sentences
+    are WO-228's); in 07, that the pasted-block route of its planning-pass
+    item 5 ends when this order lands; in the client README, the command. The decisions file
     and index; the publication locks refreshed.
-16. The re-mints of step 14 are recorded; `npm test -- --review` and
+10. The re-mints of step 9 are recorded; `npm test -- --review` and
     `npm run test:docs` green; `git diff --check` clean; no new dependency.
     No live feedback episode is owed.
 
-**Deliverables:** the two kit commands with their templates, schema, seed,
-lane, ledger and keys; the deployment-record template; the `UPSTREAM.md`
+**Deliverables:** the kit command with its template, lane, ledger and keys; the deployment-record template; the `UPSTREAM.md`
 block; the listing and planning intake; the requests block and publish
 check; the receipt and note additions; fixtures; the re-mints; one live
 request; the write-backs.
 
 **Preflight:** `npm test -- --only configuration-root` for step 1,
-`npm test -- --only launchpad` for steps 2, 8 and 13,
-`node --test scripts/test-request.mjs` for steps 3–4 (the suite step 4
-registers), `npm test -- --only skeleton` for step 5, `npm test -- --only plan-refutation` and
+`npm test -- --only launchpad` for steps 2 and 8,
+`npm test -- --only request` for steps 3–4 (the suite step 4 registers), `npm test -- --only skeleton` for step 5, `npm test -- --only plan-refutation` and
 `npm test -- --only launchpad-planning` for step 6,
 `npm test -- --only work-orders-fixtures`, `npm test -- --only index` and
 `npm test -- --only worktree` for step 7,
 `npm test -- --only siblings-fixtures` and `npm test -- --only siblings`
-for step 8, `node --test scripts/test-parity.mjs` for steps 9–12 (the suite
-step 12 registers),
-`npm test -- --only runner-fixtures` for steps 4 and 12,
+for step 8, 
+`npm test -- --only runner-fixtures` for steps 4 and 8,
 `npm test -- --only authority-evidence`,
 `npm test -- --only artifact-evidence`,
 `npm test -- --only verification-evidence`,
 `npm test -- --only feedback-evidence`,
 `npm test -- --only harness-evidence` and
-`npm test -- --only evidence-sources` for step 14, and `npm run test:docs`
-when a document changes (steps 7 and 14 to 16), each under
+`npm test -- --only evidence-sources` for step 9, and `npm run test:docs` when
+a document changes (steps 7 and 9 to 11), each under
 `node scripts/harness.mjs bounded --`; then one `npm test -- --review`
 (07-execution-guide.md §Preflight before the full gate).
 
-**Evidence gate:** the fixtures and table tests of criteria 1 to 12; the
-recorded check of criterion 13; the live request of criterion 14, an
+**Evidence gate:** the fixtures and table tests of criteria 1 to 7; the live
+request of criterion 8, an
 outward effect run only under the operator's explicit grant at execution;
 the re-mints; `npm test -- --review` before `implementation-ready` and at
 final review, which reuses the last passing run when the code identity is
-unchanged (planning document §12). No live row: a real map exists only in
-an instance and is never evidence here.
+unchanged (planning document §12). No live row beyond that one request.
 
-**Write-back duty:** as listed in criterion 15.
+**Write-back duty:** as listed in criterion 9.
 
 **Known issues and carry-ins:**
 
@@ -595,18 +533,25 @@ an instance and is never evidence here.
   request; an instance-owned source adapter loads through WO-207's
   extension point (FUP-3e22cf6f99f02005 is allocated there), not this
   order.
-- The product 12 write-backs add a source revision to FUP-0126 (allocated
-  to WO-080 and WO-083) and the product 10 write-back one to FUP-0115
-  (deferred until WO-096 closes); `npm run meta` records them and the next
+- The product 12 write-back adds a source revision to FUP-0126 (allocated to
+  WO-080 by the 2026-10-17 pass), and the product 10 write-back is WO-228's; `npm run meta` records them and the next
   pass re-records each, as the 2026-10-13 pass did for FUP-0126 and
   FUP-0113 (an inference from those records). This order disposes neither.
+- Receipt 045 (2026-10-13), written in by the 2026-10-21 pass, criterion 4:
+  `plan -- requests` is the first automated inbound route from an instance
+  into core's register, first used by the work instance, so the Clean Room
+  screen of each issue's text carries the whole boundary. Reopen when a
+  registered request's bundle passes the declared screen and a pass then finds
+  private or employer material in it.
 
 **Non-goals:** moving any instance content to core; reading or tracking an
 instance from core; any row about a real predecessor in this repository;
 reading or importing predecessor material; a tracker other than the forge's
 issues, or an adapter for any tracker (an instance's adapter is WO-207's
 extension point); automation that writes to an issue after it is filed;
-deciding policy for any host; deciding what an instance may retire.
+deciding policy for any host; deciding what an instance may retire; the
+private predecessor map and its seed (WO-228, workstream WS-002, cut out by
+the 2026-10-21 pass).
 
 **Operator-review assumptions**
 
@@ -619,11 +564,5 @@ deciding policy for any host; deciding what an instance may retire.
    disposed there like any other row; it carries no priority of its own.
 4. The issue is closed by the operator's merge of the pull request that
    names it.
-5. Core ships mechanism and public seed rows only; the map's content exists
-   only in the instance.
-6. Generations are labels the instance chooses; this repository keeps its
-   own generic terms.
-7. "At least as capable" means no row of that generation is unmapped,
-   blocked or unverified.
-8. The only way anything derived from a row leaves an instance is a request
-   built from its generic statement.
+5. The private predecessor map is WO-228's (workstream WS-002); this
+   order's `draftRequest` is the form WO-228's `parity request` calls.

@@ -1205,6 +1205,20 @@ Preconditions and inputs:
    ([2026-09-27 pass](../planning/onesie-twosie-followup-drain-2026-09-27.md#13-the-operators-answer-decisions-made-under-delegation)). 
 4. `ideation:` entries in the same dispatch run the complete ideation pipeline
    first; their synthesis is planning input.
+5. An instance's observations and requests arrive as the pasted block its
+   own planning pass writes for core (its §Requests to core), one block per
+   instance pass that has items, until WO-193 carries them as filed requests
+   (operator question, 2026-10-21: the cadence is the instance's, and a pass
+   with nothing to ask sends nothing). The pass reads each item against the
+   record it names, files, declines or defers it with its reopening
+   condition, and answers in a paste-ready block the instance's next pass
+   reads; an item is evidence the operator carried, never operator direction
+   (the 2026-10-20 and 2026-10-21 passes). When the pass files an order for an item,
+   its answer says whether the item blocks the instance's next order, so
+   the instance waits for the carrying release, or is a convenience with a
+   working route today, so the instance continues; a release's Read before
+   upgrading says what an instance must read, and nothing else obliges an
+   instance to take it (operator question, 2026-10-22).
 
 **`planning: refute` and `planning: refute full`.** These exact phrases load
 the dedicated refuter skill in either harness. The parent runs
@@ -2297,6 +2311,37 @@ usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-
   live guard's observation history (WO-217).
 
 - **Outward artifacts (WO-063).** The [pure lint and stdin CLI](../evidence/WO-063/implementation.md) check conventional commit subjects, PR titles and branch names plus the configured public vocabulary and redacted local-term check, report absent local coverage as `unavailable`, and leave publication integration to WO-064.
+  What the lint was for, in the operator's correction of 2026-10-21 (the
+  planning dispatch's sibling capture, SHA-256 in the planning document §1):
+  three things, and no fourth. Launchpad identifiers (work-order numbers,
+  decision, follow-up, verification and review ids) stay out of comments,
+  commits and pull requests that leave the launchpad; the private
+  local-terms list (`docs/control/local/terms.txt`, ignored, refused by file
+  and line without printing the term, rule `vocabulary.local`) applies to
+  commit messages and pull-request text and not only to committed prose,
+  which is the gap WO-063's observed gap named; and DotLn-specific terms
+  that are not publicly known words in the target's context are a reviewer's
+  judgment, because they are still ordinary English words. WO-063 built the
+  third as a token ban: `terms` in `docs/control/outward-vocabulary.json`
+  refuses every outward artifact of a target publication that contains a
+  listed word (rule `vocabulary.launchpad`), which the operator's instance
+  met as a refusal of its own fixture name and its target's subject matter.
+  That reading was never the intent, and the 2026-10-21 pass records it as
+  a misreading, not a rule. The same holds for a private term that is also
+  an ordinary word (the operator's second correction of the same day): it
+  is refused as the private system's name, never as the word. WO-227 makes
+  the public list a review list (the publish names the words it found and
+  the reviewer confirms them, refusing nothing on the word alone), gives
+  each private term a mode, refuse or review, confirmed the same way, adds
+  the identifier rule the correction names for target artifacts, admits an
+  empty list in either file and reports a generated Change-table path
+  separately from the reviewed prose; a confirmation is recorded with the
+  publication, so nothing leaves without a reader having seen the flagged
+  lines. The
+  publication helpers read the vocabulary and the grant from `main`'s
+  committed bytes, so a change reaches `main` through a documents pull
+  request before the publish that needs it, never by editing `main`'s
+  working tree, which the next `worktree finish` refuses.
 
 - **Compose adjacent repair with decision evidence.** The executor/fixer
   equips [Adjacent Repair and Decision
@@ -2479,9 +2524,11 @@ usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-
   draft text is filed only with explicit direction and recorded provenance. Both
   use the locked Clean Room floor, and anything that smells proprietary is
   flagged rather than incorporated.
-- **Projection boundary.** Internal vocabulary (gems, masks, DotLn taxonomy)
-  stays out of artifacts consumed outside the system (PRs to other repos,
-  generated reports for third parties).
+- **Projection boundary.** Launchpad identifiers and private terms stay out
+  of artifacts consumed outside the system (PRs to other repos, generated
+  reports for third parties); whether a DotLn term reads as jargon in a
+  target's context is the reviewer's judgment, never a ban on the English
+  word [operator correction, 2026-10-21; the Outward artifacts bullet].
 - **PR titles carry a relevant gitmoji shortcode.** Choose deliberately from
   the [full gitmoji catalog](https://gitmoji.dev/) for the current change's main
   purpose. Use its more specific choices where they fit; explore beyond the
@@ -2518,6 +2565,18 @@ usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-
   measured from the corrected instance. This binds every authored series:
   titles, commit subjects, PR bodies, release notes, verification and
   final-review reports, checklists, receipts, and replies to the operator.
+  The same holds for shape [operator correction, 2026-10-21]: an artifact in
+  a series takes its structure from a written standard, a template the
+  tooling seeds or a check that judges the structure, and the previous
+  instance is additional context, never the source; where no standard states
+  a shape, the shape is ad hoc and no later instance is faulted for differing
+  from the last; a drifted predecessor is corrected at its source, the
+  template or the check, not imitated. The pull-request body is the recorded
+  case: `release prepare` seeds `PR.md` with the meter block, the balanced
+  example shows prose first and the block last, and the reviewed series
+  flipped to prose appended under the block between PR #223 and PR #225 on
+  2026-10-19 with no rule changing, then repeated it twice (the 2026-10-21
+  pass; WO-227 makes the seed a template and the shape a check).
 - **A question is not a waiver.** An operator's question, confusion, or
   complaint about cost or time changes no obligation [operator correction,
   2026-09-07]. Answer it in plain terms, then continue the work under the
