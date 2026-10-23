@@ -1,7 +1,8 @@
 # Actor board and live console
 
-Component `0.4.0` prepares application `v0.56.0` with the combined live host
-and coded resident index-source failures.
+Component `0.4.6` prepares application `v0.92.0` with path-free board
+failures, segmented instance control reads, carried schemas and authenticated
+loopback reads for the board and runtime status.
 
 Component `0.3.1` prepares application `v0.52.7`: host collection folds every
 order's status in one process and reads release history through a per-tag
@@ -12,8 +13,10 @@ application `v0.47.0`: the console added a live
 fixtures. The board's historical selfhost fixture records the WO-132 writer-v2
 evidence.
 
-UIFA v0 is a read-only board over recorded actors, builds, mechanisms, work,
-and blueprint evidence. It shipped in application `v0.14.0` as console
+UIFA v0 is the read-only actor board over recorded actors, builds, mechanisms,
+work and blueprint evidence, exported as `uifa-board-v1`. Console v1 and the
+UIFA v1 shell name the Angular shell in the operator's instance; the contract
+version names the data format. UIFA v0 shipped in application `v0.14.0` as console
 component `0.1.0`; component `0.1.1` moves its default self-hosted evidence
 edition to WO-039 for application `v0.15.0`. The package uses the existing
 kernel, compiler and skeleton workspaces; it adds no external dependency,
@@ -166,11 +169,13 @@ without rerunning effects. The resident replaces a descriptor that an exited
 resident left behind and removes its own on orderly shutdown. Do not copy the
 token into a repository, URL or public status view.
 
-`invokeConsoleCommand(connection, request)` and
-`readConsoleContract(connection)` import no Node API. A browser shell imports
+`invokeConsoleCommand(connection, request)`, `readConsoleContract(connection)`,
+`readRuntimeStatus(connection)` and `readBoard(connection)` import no Node API. A browser shell imports
 them from `@dotln/console/client` and receives the connection from its local
 host. The Node text host obtains it with `readConsoleConnection(store)`,
-exported from `@dotln/console` with both client functions. The endpoint binds
+exported from `@dotln/console` with the client functions. At that package root,
+the network status reader is named `readConsoleRuntimeStatus`; the existing
+`readRuntimeStatus(directory)` continues to read a local file. The endpoint binds
 to `127.0.0.1`, requires the token, refuses a non-local browser `Origin` and
 admits a caller that sends none. The contract covers existing terminal
 commands, including derived-order activation, the release-close publish helper,
@@ -183,6 +188,24 @@ command list, classification and refusal shapes are in product 04 §Console
 parity contract v1.
 
 ## Live runtime status
+
+A browser host reads `GET /runtime-status-v1` and `GET /uifa-board-v1` on
+the resident's existing loopback server. Both require the matching
+`127.0.0.1:<port>` Host and bearer token and accept local browser Origins
+(`http` or `https` on `localhost` or `127.0.0.1`) or no Origin. They return
+JSON file bytes outside the command lane and append no receipt or event.
+Missing projections or a failed refresh return HTTP 503 with the usual
+console refusal body; the caller/authentication refusals remain HTTP 403.
+
+The status route reads the status file below. The board route reads
+`console/uifa-board-v1.json` in the same resident store. When absent or at
+least 30 seconds old, the resident refreshes it through one asynchronous
+`console board --json` child; simultaneous readers share that run. It uses
+the resident's Node executable, a 60-second timeout and a 16 MiB output
+limit, then replaces the snapshot atomically with mode 0600. Fresh reads
+reuse the file. A failed refresh preserves the previous file and returns
+unavailable; shutdown terminates a pending collector. These projections are
+read-only host inputs and grant no action.
 
 The resident writes `runtime-status-v1.json` inside its `--store` directory by
 atomic replacement after each event and tick. The text console reads that
@@ -243,6 +266,19 @@ const board: BoardView = projectBoard(recordedSources as BoardSources);
 network, input mutation, or lifecycle fold. Host I/O lives in `collectSources`.
 The [types](src/types.ts) and [JSON Schema](uifa-board-v1.schema.json) define
 `viewModelVersion: "uifa-board-v1"` and `fidelity: "lossy-read-only"`.
+The kit carries both schemas at `packages/console/uifa-board-v1.schema.json`
+and `packages/console/runtime-status-v1.schema.json`; their version labels
+remain unchanged for these additive host contracts. In a kit, `npm run build`
+reports that the carried runtime is the build and writes nothing, so
+`npm run console -- board --json` uses the shipped CLI.
+
+Host read failures expose coded reasons: `not found`, `not readable`,
+`invalid format`, `timed out` or `command failed (exit N)`. Raw exceptions,
+child stderr and refused Beacon directories never enter board output. The
+collector reads an optional legacy control log and the order segments under
+the configured `roots.docs`, `roots.control` and `roots.orders`; its status
+fold still cross-checks the orders against those records. Unavailable sources
+stay unavailable, and ordinary source references remain repository-relative.
 The five fixed panel ids are `actors`, `builds`, `mechanisms`, `work`, and
 `blueprint`. Every panel names its roles and question and contains sections,
 rows and cells. Hosts render `cell.label` but address facts through `cell.key`.

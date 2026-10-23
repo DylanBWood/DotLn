@@ -9,6 +9,7 @@ import {
   mkdtempSync,
   readFileSync,
   rmSync,
+  symlinkSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
@@ -508,4 +509,130 @@ test("WO-164 console collection spawns a constant number of processes and Git re
       else process.env[key] = value;
     rmSync(base, { recursive: true, force: true });
   }
+});
+
+test("WO-225 segmented instances and configured roots preserve orders and control actors", async (t) => {
+  const savedLaunchpad = process.env["DOTLN_LAUNCHPAD"];
+  t.after(() => {
+    if (savedLaunchpad === undefined) delete process.env["DOTLN_LAUNCHPAD"];
+    else process.env["DOTLN_LAUNCHPAD"] = savedLaunchpad;
+  });
+  for (const roots of [
+    {},
+    { control: "records/control" },
+    { docs: "records", control: "control-plane", orders: "segments" },
+  ]) {
+    const repo = mkdtempSync(join(tmpdir(), "dotln-control-segments-"));
+    try {
+      cpSync(join(root, "scripts"), join(repo, "scripts"), { recursive: true });
+      installBeaconFixture(repo);
+      process.env["DOTLN_LAUNCHPAD"] = repo;
+      writeFileSync(
+        join(repo, "dotln.config.json"),
+        JSON.stringify({ version: 1, roots }),
+      );
+      const docs = "docs" in roots ? roots.docs : "docs";
+      const control = "control" in roots ? roots.control : `${docs}/control`;
+      const orders = "orders" in roots ? roots.orders : `${control}/orders`;
+      mkdirSync(join(repo, orders!), { recursive: true });
+      mkdirSync(join(repo, `${docs}/work-orders`), { recursive: true });
+      for (const id of ["WO-901", "WO-902"]) {
+        const workOrderPath = `${docs}/work-orders/${id}-fixture.md`;
+        writeFileSync(
+          join(repo, orders!, `${id}.jsonl`),
+          JSON.stringify({
+            schemaVersion: 1,
+            type: "WorkOrderActivated",
+            workOrderId: id,
+            workOrderPath,
+          }) + "\n",
+        );
+        writeFileSync(
+          join(repo, workOrderPath),
+          `# ${id} — fixture\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n**Objective:** fixture.\n`,
+        );
+      }
+      assert.equal(existsSync(join(repo, control!, "resume.jsonl")), false);
+      const sources = await collectSources(repo);
+      assert.equal(sources.controlLog?.status, "available");
+      assert.equal(
+        sources.controlStatus?.status,
+        "available",
+        JSON.stringify(sources.controlStatus),
+      );
+      assert.equal(sources.controlStatus?.ref, "resume:status--json");
+      const sections = projectBoard(sources).panels.flatMap(
+        (panel) => panel.sections,
+      );
+      assert.deepEqual(
+        sections
+          .find((section) => section.id === "orders")!
+          .rows.map((row) => row.title),
+        ["WO-901", "WO-902"],
+      );
+      assert.ok(
+        sections.find((section) => section.id === "control-actors")!.rows
+          .length > 0,
+      );
+      if (sources.controlLog?.status === "available")
+        assert.deepEqual(
+          sources.controlLog.value.map((source) => source.ref),
+          [`${orders}/WO-901.jsonl`, `${orders}/WO-902.jsonl`],
+        );
+
+      // A legacy log remains optional, but when present it participates in the
+      // same order census. A lying aggregate cannot bypass that cross-check.
+      mkdirSync(join(repo, control!), { recursive: true });
+      writeFileSync(join(repo, control!, "resume.jsonl"), "");
+      writeFileSync(
+        join(repo, "scripts/resume.mjs"),
+        `if (process.argv.includes('--all')) console.log(JSON.stringify([{workOrder:'WO-999'}])); else process.exit(9);`,
+      );
+      const wrong = await collectSources(repo);
+      assert.equal(wrong.controlLog?.status, "available");
+      assert.equal(wrong.controlStatus?.status, "unavailable");
+    } finally {
+      rmSync(repo, { recursive: true, force: true });
+    }
+  }
+});
+
+test("WO-225 configured control refuses an escaped parent symlink like the canonical reader", async (t) => {
+  const base = mkdtempSync(join(tmpdir(), "dotln-control-escape-"));
+  t.after(() => rmSync(base, { recursive: true, force: true }));
+  const repo = join(base, "repo");
+  const outside = join(base, "outside");
+  mkdirSync(repo);
+  mkdirSync(join(outside, "control/orders"), { recursive: true });
+  writeFileSync(
+    join(repo, "dotln.config.json"),
+    JSON.stringify({
+      version: 1,
+      roots: { control: "records/control" },
+    }),
+  );
+  writeFileSync(
+    join(outside, "control/orders/WO-901.jsonl"),
+    JSON.stringify({
+      schemaVersion: 1,
+      type: "WorkOrderActivated",
+      workOrderId: "WO-901",
+      workOrderPath: "docs/work-orders/WO-901-fixture.md",
+    }) + "\n",
+  );
+  symlinkSync(outside, join(repo, "records"), "dir");
+  const { readControl } = await import(
+    pathToFileURL(join(root, "scripts/lib/control-store.mjs")).href
+  );
+  assert.throws(() => readControl(repo), /contained regular control segment/u);
+  const sources = await collectSources(repo);
+  assert.deepEqual(sources.controlLog, {
+    ref: "control:canonical-segments",
+    status: "unavailable",
+    reason: "not readable",
+  });
+  assert.equal(sources.controlStatus?.status, "unavailable");
+  const board = JSON.stringify(projectBoard(sources));
+  assert.equal(board.includes(outside), false);
+  assert.equal(board.includes("WO-901"), false);
 });

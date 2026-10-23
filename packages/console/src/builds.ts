@@ -29,6 +29,7 @@ import {
   number,
   object,
   optionalString,
+  readFailureReason,
   string,
   unknown,
 } from "./values.js";
@@ -53,10 +54,7 @@ export function exportedLoadouts(
           ? (item as (expiresAt: number) => unknown)(INSPECTION_EXPIRES_AT)
           : item;
     } catch (error) {
-      onError(
-        `${ref}#${name}`,
-        error instanceof Error ? error.message : String(error),
-      );
+      onError(`${ref}#${name}`, readFailureReason(error));
       continue;
     }
     if (

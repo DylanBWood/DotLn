@@ -34,5 +34,6 @@
   "describeTag names original objects: a replacement ref cannot redirect the exact or nearest tag",
   "historical starter floors retain provenance through navigation migration",
   "seed preflight and runtime emit share dependency-free harness composition",
-  "follow-up exports refuse reserved local names regardless of case"
+  "follow-up exports refuse reserved local names regardless of case",
+  "WO-225 kit carries the console schemas and npm console uses the carried build without writes"
 ]

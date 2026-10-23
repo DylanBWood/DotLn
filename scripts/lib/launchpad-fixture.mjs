@@ -244,6 +244,8 @@ for (const path of [
   "package.json",
   "package-lock.json",
   ...TEST_SUPPORT_FILES,
+  "packages/console/uifa-board-v1.schema.json",
+  "packages/console/runtime-status-v1.schema.json",
   "tsconfig.json",
   "LICENSE",
   "LICENSE-docs",

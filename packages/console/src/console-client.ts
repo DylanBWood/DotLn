@@ -131,3 +131,31 @@ export async function readConsoleContract(
     throw new Error(`console contract refused (${response.status})`);
   return response.json();
 }
+
+async function readProjection(
+  connection: ConsoleConnection,
+  name: "runtime-status-v1" | "uifa-board-v1",
+  signal?: AbortSignal,
+): Promise<unknown> {
+  const response = await transport(
+    endpoint(connection, `/${name}`),
+    {
+      headers: { authorization: `Bearer ${connection.token}` },
+      ...(signal ? { signal } : {}),
+    },
+    name,
+  );
+  if (!response.ok)
+    throw new Error(`console ${name} refused (${response.status})`);
+  return response.json();
+}
+
+/** Read-only projections; the consumer applies the kit's versioned schema. */
+export const readRuntimeStatus = (
+  connection: ConsoleConnection,
+  signal?: AbortSignal,
+): Promise<unknown> => readProjection(connection, "runtime-status-v1", signal);
+export const readBoard = (
+  connection: ConsoleConnection,
+  signal?: AbortSignal,
+): Promise<unknown> => readProjection(connection, "uifa-board-v1", signal);

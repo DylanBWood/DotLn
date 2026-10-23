@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { TOOL_ROOT } from "./lib/config.mjs";
+import { isKitRoot } from "../packages/skeleton/src/runtime-inputs.mjs";
 import { recordBuildFreshness } from "./lib/build-freshness.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 import { spawnSync } from "node:child_process";
@@ -152,27 +153,31 @@ export function atomicBuild(repo = root, observe = () => {}) {
 }
 if (isMainModule(import.meta.url)) {
   try {
-    console.log(
-      `Built ${atomicBuild().join(", ")} with atomic file replacement; installed harness snapshots remain immutable`,
-    );
-    const manifestPath = join(root, ".claude/harness-manifest.json");
-    if (existsSync(manifestPath)) {
-      const installed = JSON.parse(readFileSync(manifestPath, "utf8"));
-      if (
-        installed.profiles?.some(
-          (profile) => profile.profile?.runtime?.snapshot,
-        )
-      ) {
-        const { harnessInstallation, preserveHarnessRuntime } =
-          await import("./lib/harness.mjs");
-        const expected = harnessInstallation();
+    if (isKitRoot(root)) {
+      console.log("carried runtime is the build; nothing to compile");
+    } else {
+      console.log(
+        `Built ${atomicBuild().join(", ")} with atomic file replacement; installed harness snapshots remain immutable`,
+      );
+      const manifestPath = join(root, ".claude/harness-manifest.json");
+      if (existsSync(manifestPath)) {
+        const installed = JSON.parse(readFileSync(manifestPath, "utf8"));
         if (
-          installed.profiles.every(
-            (profile) =>
-              profile.profile.runtime.snapshot === expected.runtimeSnapshot,
+          installed.profiles?.some(
+            (profile) => profile.profile?.runtime?.snapshot,
           )
-        )
-          preserveHarnessRuntime(root, expected);
+        ) {
+          const { harnessInstallation, preserveHarnessRuntime } =
+            await import("./lib/harness.mjs");
+          const expected = harnessInstallation();
+          if (
+            installed.profiles.every(
+              (profile) =>
+                profile.profile.runtime.snapshot === expected.runtimeSnapshot,
+            )
+          )
+            preserveHarnessRuntime(root, expected);
+        }
       }
     }
   } catch (error) {

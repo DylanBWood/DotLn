@@ -6,13 +6,14 @@ import { appendEvent } from "@dotln/kernel";
 import {
   existsSync,
   mkdtempSync,
+  mkdirSync,
   readFileSync,
   readdirSync,
   rmSync,
   writeFileSync,
 } from "node:fs";
 import { dirname, join } from "node:path";
-import { tmpdir } from "node:os";
+import { homedir, tmpdir } from "node:os";
 import {
   compileFeedbackUnits,
   feedbackMaturity,
@@ -72,112 +73,7 @@ function freeze(value: unknown): void {
   for (const item of Object.values(value)) freeze(item);
 }
 
-// A bounded, dependency-free JSON Schema checker for this schema's declared
-// vocabulary. It tests the interchange, including serialized null/array values,
-// independently from the TypeScript interfaces used by the implementation.
-function schemaMatches(
-  value: unknown,
-  raw: unknown,
-  rootSchema: Record<string, unknown>,
-): boolean {
-  const schema = object(raw);
-  if (schema["$ref"])
-    return schemaMatches(
-      value,
-      object(rootSchema["$defs"])[String(schema["$ref"]).split("/").at(-1)!],
-      rootSchema,
-    );
-  if (
-    Object.hasOwn(schema, "const") &&
-    JSON.stringify(value) !== JSON.stringify(schema["const"])
-  )
-    return false;
-  if (
-    Array.isArray(schema["enum"]) &&
-    !schema["enum"].some(
-      (entry) => JSON.stringify(entry) === JSON.stringify(value),
-    )
-  )
-    return false;
-  if (
-    Array.isArray(schema["anyOf"]) &&
-    !schema["anyOf"].some((entry) => schemaMatches(value, entry, rootSchema))
-  )
-    return false;
-  if (
-    Array.isArray(schema["allOf"]) &&
-    !schema["allOf"].every((entry) => schemaMatches(value, entry, rootSchema))
-  )
-    return false;
-  if (
-    schema["if"] &&
-    !schemaMatches(
-      value,
-      schemaMatches(value, schema["if"], rootSchema)
-        ? schema["then"]
-        : schema["else"],
-      rootSchema,
-    )
-  )
-    return false;
-  const kind =
-    value === null ? "null" : Array.isArray(value) ? "array" : typeof value;
-  if (
-    schema["type"] &&
-    !(
-      Array.isArray(schema["type"]) ? schema["type"] : [schema["type"]]
-    ).includes(kind)
-  )
-    return false;
-  if (typeof value === "string") {
-    if (
-      typeof schema["minLength"] === "number" &&
-      value.length < schema["minLength"]
-    )
-      return false;
-    if (
-      typeof schema["pattern"] === "string" &&
-      !new RegExp(schema["pattern"], "u").test(value)
-    )
-      return false;
-  }
-  if (Array.isArray(value)) {
-    if (
-      (typeof schema["minItems"] === "number" &&
-        value.length < schema["minItems"]) ||
-      (typeof schema["maxItems"] === "number" &&
-        value.length > schema["maxItems"])
-    )
-      return false;
-    if (
-      schema["uniqueItems"] &&
-      new Set(value.map((entry) => JSON.stringify(entry))).size !== value.length
-    )
-      return false;
-    if (
-      schema["items"] &&
-      !value.every((entry) => schemaMatches(entry, schema["items"], rootSchema))
-    )
-      return false;
-  }
-  if (value !== null && typeof value === "object" && !Array.isArray(value)) {
-    const record = value as Record<string, unknown>;
-    if (
-      Array.isArray(schema["required"]) &&
-      !schema["required"].every(
-        (key) => typeof key === "string" && Object.hasOwn(record, key),
-      )
-    )
-      return false;
-    const properties = schema["properties"] ? object(schema["properties"]) : {};
-    for (const [key, item] of Object.entries(record)) {
-      if (Object.hasOwn(properties, key)) {
-        if (!schemaMatches(item, properties[key], rootSchema)) return false;
-      } else if (schema["additionalProperties"] === false) return false;
-    }
-  }
-  return true;
-}
+import { schemaMatches } from "./schema.js";
 
 const schema = JSON.parse(
   readFileSync(
@@ -1337,12 +1233,12 @@ test("WO-142 one throwing loadout factory preserves healthy builds and names its
       (source) =>
         source.ref === "fixture:exports#brokenLoadout" &&
         source.status === "unavailable" &&
-        source.explanation === "fixture factory cause",
+        source.explanation === "invalid format",
     ),
   );
 });
 
-test("WO-142 store projection preserves the underlying parse cause", () => {
+test("Store projection codes parse failures without exposing source content", () => {
   const store = storeFromLog(
     "bad",
     "Bad fixture",
@@ -1350,8 +1246,71 @@ test("WO-142 store projection preserves the underlying parse cause", () => {
   );
   assert.equal(store.audit.status, "unavailable");
   if (store.audit.status !== "unavailable") assert.fail("bad JSON projected");
-  assert.match(
-    store.audit.reason,
-    /Source could not be read or its declared format was refused: .+/u,
-  );
+  assert.equal(store.audit.reason, "invalid format");
+});
+
+test("WO-225 board failure strings contain no fixture root, Node binary or home directory", async () => {
+  const directory = mkdtempSync(join(tmpdir(), "dotln-console-failures-"));
+  try {
+    mkdirSync(join(directory, "scripts"));
+    writeFileSync(
+      join(directory, "scripts/worktree.mjs"),
+      `console.log(${JSON.stringify(`Beacon fixture:refused | refused | directory cannot be read: ${directory}/refused\nGroup Beacon | active=0 closed=0 | group-v1 | 8 bytes`)});`,
+    );
+    const sources = await collectSources(directory, [
+      join(directory, "missing-store"),
+    ]);
+    const board = projectBoard(sources);
+    assert.ok(schemaMatches(board, schema, schema));
+    const json = JSON.stringify(board);
+    for (const forbidden of [directory, process.execPath, homedir()])
+      assert.ok(!json.includes(forbidden), "board leaked a private path");
+    assert.equal(
+      cells(section(board, "worktrees").rows[0]!)["age"]!.value,
+      "directory cannot be read",
+    );
+    assert.equal(sources.stores?.at(-1)?.status.status, "unavailable");
+    assert.equal(sources.maturity?.status, "unavailable");
+    const reasons = new Set([
+      "not found",
+      "not readable",
+      "invalid format",
+      "timed out",
+      "command failed (exit 1)",
+    ]);
+    for (const source of Object.values(sources))
+      if (source && !Array.isArray(source) && source.status === "unavailable")
+        assert.ok(reasons.has(source.reason), `${source.ref}: uncoded reason`);
+    const cli = spawnSync(
+      process.execPath,
+      [
+        join(root, "packages/console/dist/src/cli.js"),
+        "board",
+        "--json",
+        "--sources",
+        join(directory, "sources.json"),
+      ],
+      { encoding: "utf8" },
+    );
+    assert.notEqual(cli.status, 0, "a missing sources file is refused");
+    writeFileSync(join(directory, "sources.json"), JSON.stringify(sources));
+    const rendered = execFileSync(
+      process.execPath,
+      [
+        join(root, "packages/console/dist/src/cli.js"),
+        "board",
+        "--json",
+        "--sources",
+        join(directory, "sources.json"),
+      ],
+      { encoding: "utf8" },
+    );
+    assert.deepEqual(JSON.parse(rendered), board);
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
+});
+
+test("WO-225 carried board schema admits the empty-source projection", () => {
+  assert.ok(schemaMatches(projectBoard({}), schema, schema));
 });
