@@ -1,6 +1,7 @@
 {
   "fixture": "packages/console/test/collect copied scripts",
   "entries": [
+    "scripts/resume.mjs",
     "scripts/release.mjs"
   ],
   "files": [],

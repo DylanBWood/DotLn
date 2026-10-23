@@ -2076,9 +2076,19 @@ test("WO-226 a fast-forwarded export restores its selected runtime for recovery,
       destination,
       ".claude/hooks/fixture-build-control.mjs",
     );
+    // A kit's ordinary build is now a no-op. Force the source-build path to
+    // keep this control about an unavailable source build, not hook ownership.
+    const sourceBuild = [
+      process.execPath,
+      [
+        "--input-type=module",
+        "--eval",
+        "import { atomicBuild } from './scripts/build.mjs'; atomicBuild();",
+      ],
+    ];
     writeFileSync(
       controlHook,
-      hook.replace("preparation,", '["npm", ["run", "build", "--silent"]],'),
+      hook.replace("preparation,", `${JSON.stringify(sourceBuild)},`),
     );
     const input = {
       cwd: destination,
@@ -2093,11 +2103,11 @@ test("WO-226 a fast-forwarded export restores its selected runtime for recovery,
     };
     const controlResult = ok(
       run(process.execPath, [controlHook], hookOptions),
-      "base build control",
+      "source-build control",
     );
     assert.match(
       controlResult.stdout,
-      /Release-close preparation withheld.*npm run build.*tsconfig\.json/s,
+      /Release-close preparation withheld.*atomicBuild.*tsconfig\.json/s,
     );
     assert.equal(existsSync(join(destination, snapshot)), false);
     rmSync(controlHook);
@@ -2209,17 +2219,26 @@ test("WO-226 a fast-forwarded export restores its selected runtime for recovery,
           .map((line) => ({ path, line })),
       );
     assert.deepEqual([...new Set(buildAdvice.map((row) => row.path))].sort(), [
+      "scripts/kit/README.client.md",
       "scripts/lib/harness-runtime.mjs",
       "scripts/release.mjs",
       "scripts/resume.mjs",
     ]);
     for (const row of buildAdvice.filter(
-      (row) => row.path !== "scripts/lib/harness-runtime.mjs",
+      (row) =>
+        ![
+          "scripts/kit/README.client.md",
+          "scripts/lib/harness-runtime.mjs",
+        ].includes(row.path),
     ))
       assert.match(
         row.line,
         /isKit(?:Root|Worktree).*node scripts\/bootstrap\.mjs.*npm run build/,
       );
+    assert.match(
+      readFileSync(join(destination, "scripts/kit/README.client.md"), "utf8"),
+      /npm run build[\s\S]*carried runtime is the build; nothing to compile[\s\S]*writes nothing/u,
+    );
     assert.match(
       readFileSync(
         join(destination, "scripts/lib/harness-runtime.mjs"),
@@ -2291,3 +2310,50 @@ test("WO-074 design: a kit file absent at the commit refuses by name, and a dest
 // copy and leaves the receipts it writes under the copy's evidence root; the
 // update case after it commits its own revisions on top and reads none of
 // them.
+
+test("WO-225 kit carries the console schemas and npm console uses the carried build without writes", () => {
+  const listed = new Set(manifestOf(kit).files.map((file) => file.path));
+  for (const file of [
+    "uifa-board-v1.schema.json",
+    "runtime-status-v1.schema.json",
+  ])
+    assert.ok(
+      listed.has(`packages/console/${file}`),
+      `missing contract ${file}`,
+    );
+  const before = git(kit, [
+    "status",
+    "--porcelain=v1",
+    "--untracked-files=all",
+  ]).stdout;
+  const tree = treeSnapshot(kit);
+  const built = ok(run("npm", ["run", "build"], { cwd: kit }), "kit build");
+  assert.match(
+    built.stdout,
+    /carried runtime is the build; nothing to compile/u,
+  );
+  assert.equal(
+    git(kit, ["status", "--porcelain=v1", "--untracked-files=all"]).stdout,
+    before,
+  );
+  assert.deepEqual(treeSnapshot(kit), tree, "no-op build writes no file");
+  ok(
+    run(
+      process.execPath,
+      [
+        "--test",
+        "--test-name-pattern=WO-225 carried board schema|WO-114 shared schema",
+        "packages/console/dist/test/board.test.js",
+        "packages/console/dist/test/runtime-status.test.js",
+      ],
+      { cwd: kit },
+    ),
+    "carried schema tests",
+  );
+  const console = ok(
+    run("npm", ["run", "console", "--", "board", "--json"], { cwd: kit }),
+    "kit npm console",
+  );
+  const json = console.stdout.slice(console.stdout.indexOf("{\n"));
+  assert.equal(JSON.parse(json).viewModelVersion, "uifa-board-v1");
+});

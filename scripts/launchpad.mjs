@@ -205,6 +205,8 @@ export const KIT_FILES = Object.freeze({
     ...TEST_SUPPORT_FILES,
     ...BUILD_FREE_MODULES,
     ...RUNTIME_PACKAGES.map((name) => `packages/${name}/package.json`),
+    "packages/console/uifa-board-v1.schema.json",
+    "packages/console/runtime-status-v1.schema.json",
   ]),
   excluded: Object.freeze([
     "scripts/fixtures/wo138-local-role-qualification.json",
@@ -608,6 +610,14 @@ const upstreamDocument = (
   // [label, prefixes, what the group is]; a file outside every group is listed
   // on its own line.
   const groups = [
+    [
+      "`packages/console/*.schema.json`",
+      [
+        "packages/console/uifa-board-v1.schema.json",
+        "packages/console/runtime-status-v1.schema.json",
+      ],
+      "the versioned actor-board and runtime-status contracts, byte-identical to the commit",
+    ],
     [
       "`scripts/**`",
       ["scripts/"],

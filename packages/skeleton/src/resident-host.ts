@@ -1,5 +1,13 @@
-import { readFileSync } from "node:fs";
-import { join, resolve } from "node:path";
+import { spawn, type ChildProcess } from "node:child_process";
+import { randomUUID } from "node:crypto";
+import {
+  lstatSync,
+  readFileSync,
+  renameSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
+import { dirname, join, resolve } from "node:path";
 import { setTimeout as delay } from "node:timers/promises";
 import { canonicalStringify } from "@dotln/compiler";
 import { type PredicateRegistry } from "@dotln/kernel";
@@ -29,7 +37,126 @@ import {
   type ResidentState,
 } from "./resident-state.js";
 import { ResidentStore } from "./resident-store.js";
-import { ConsoleLoopback } from "./console-loopback.js";
+import { ConsoleLoopback, consoleDirectory } from "./console-loopback.js";
+import { consoleChildEnvironment } from "./console-commands.js";
+
+export const BOARD_FRESHNESS_MS = 30_000;
+export const BOARD_TIMEOUT_MS = 60_000;
+export const BOARD_SNAPSHOT_FILE = "uifa-board-v1.json";
+
+/** The console depends on skeleton, so the resident collects through its CLI.
+ * Concurrent reads share one bounded child, outside the command lane. */
+export class ResidentBoardSnapshot {
+  private pending: Promise<Buffer> | undefined;
+  private child: ChildProcess | undefined;
+  private stopped = false;
+  readonly file: string;
+
+  constructor(
+    private readonly root: string,
+    directory: string,
+    private readonly now: () => number = Date.now,
+    private readonly timeoutMs = BOARD_TIMEOUT_MS,
+  ) {
+    this.file = join(consoleDirectory(directory), BOARD_SNAPSHOT_FILE);
+  }
+
+  async read(): Promise<Buffer> {
+    if (this.stopped)
+      return Promise.reject(new Error("board snapshot unavailable"));
+    if (this.pending) return this.pending;
+    const info = lstatSync(this.file, { throwIfNoEntry: false });
+    if (info && !info.isFile())
+      return Promise.reject(new Error("board snapshot unavailable"));
+    if (info && this.now() - info.mtimeMs < BOARD_FRESHNESS_MS)
+      return Promise.resolve(readFileSync(this.file));
+    this.pending = this.collect().finally(() => {
+      this.pending = undefined;
+    });
+    return this.pending;
+  }
+
+  private kill(): void {
+    if (this.child?.pid === undefined) return;
+    try {
+      process.kill(-this.child.pid, "SIGKILL");
+    } catch {
+      this.child.kill("SIGKILL");
+    }
+  }
+
+  async close(): Promise<void> {
+    this.stopped = true;
+    this.kill();
+    await this.pending?.catch(() => undefined);
+  }
+
+  private collect(): Promise<Buffer> {
+    return new Promise((done, fail) => {
+      const child = spawn(
+        process.execPath,
+        [
+          join(this.root, "packages/console/dist/src/cli.js"),
+          "board",
+          "--json",
+        ],
+        {
+          cwd: this.root,
+          env: consoleChildEnvironment(process.env),
+          stdio: ["ignore", "pipe", "ignore"],
+          detached: true,
+        },
+      );
+      this.child = child;
+      const chunks: Buffer[] = [];
+      let size = 0;
+      let refused = false;
+      const timer = setTimeout(() => {
+        refused = true;
+        this.kill();
+      }, this.timeoutMs);
+      const reject = () => {
+        clearTimeout(timer);
+        this.child = undefined;
+        fail(new Error("board snapshot unavailable"));
+      };
+      child.stdout!.on("data", (chunk: Buffer) => {
+        size += chunk.length;
+        if (size > 16 * 1024 * 1024) {
+          refused = true;
+          this.kill();
+        } else chunks.push(chunk);
+      });
+      child.once("error", reject);
+      child.once("close", (code) => {
+        clearTimeout(timer);
+        this.child = undefined;
+        if (code !== 0 || refused || this.stopped) return reject();
+        const temporary = join(
+          dirname(this.file),
+          `.board-${randomUUID()}.tmp`,
+        );
+        try {
+          const bytes = Buffer.concat(chunks);
+          const view = JSON.parse(bytes.toString("utf8"));
+          if (
+            view?.viewModelVersion !== "uifa-board-v1" ||
+            view?.fidelity !== "lossy-read-only" ||
+            !Array.isArray(view?.panels)
+          )
+            throw new Error("invalid board");
+          writeFileSync(temporary, bytes, { flag: "wx", mode: 0o600 });
+          renameSync(temporary, this.file);
+          done(bytes);
+        } catch {
+          reject();
+        } finally {
+          rmSync(temporary, { force: true });
+        }
+      });
+    });
+  }
+}
 
 /** A CLI observation the actor contract refuses is recorded as the failed
  * episode it is — `invalid-result`, with its launch and the capsule the episode
@@ -372,18 +499,26 @@ export class ResidentHost {
     if (!Number.isSafeInteger(tickMs) || tickMs < 1 || tickMs > 3600000)
       throw new Error("resident tick must be 1..3600000 ms");
     await this.start();
+    const board = new ResidentBoardSnapshot(
+      this.options.commandRoot ?? process.cwd(),
+      this.options.directory,
+    );
     try {
       this.console = new ConsoleLoopback(
         this.store,
         this.options.commandRoot ?? process.cwd(),
         this.now,
+        () => board.read(),
       );
       await this.console.start();
       // A stop request ends console admission at once; a running tick finishes.
       const loopback = this.console;
       options.signal?.addEventListener(
         "abort",
-        () => void loopback.close().catch(() => undefined),
+        () => {
+          void board.close();
+          void loopback.close().catch(() => undefined);
+        },
         { once: true },
       );
       for (let cycle = 0; !options.signal?.aborted; cycle++) {
@@ -401,6 +536,7 @@ export class ResidentHost {
       }
     } finally {
       try {
+        await board.close();
         await this.console?.close();
       } finally {
         this.console = undefined;

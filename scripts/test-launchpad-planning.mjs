@@ -107,6 +107,8 @@ const copyCoreSource = (source) => {
   for (const path of [
     "scripts",
     "packages/beacons",
+    "packages/console/uifa-board-v1.schema.json",
+    "packages/console/runtime-status-v1.schema.json",
     ...TEST_FIXTURE_TREES,
     ...TEST_SUPPORT_FILES,
     "package.json",

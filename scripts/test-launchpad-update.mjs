@@ -133,6 +133,19 @@ test("WO-226 update finish fast-forwards clean main and preserves every refused 
   assert.equal(git(destination, ["rev-parse", "HEAD"]).stdout.trim(), incoming);
   assert.equal(git(destination, ["status", "--porcelain"]).stdout, "");
   ok(harness(destination, "check"), "finished instance runtime");
+  for (const file of [
+    "uifa-board-v1.schema.json",
+    "runtime-status-v1.schema.json",
+  ]) {
+    const entry = manifestOf(destination).files.find(
+      (row) => row.path === `packages/console/${file}`,
+    );
+    assert.ok(entry, `updated kit carries ${file}`);
+    assert.equal(
+      sha256(readFileSync(join(destination, entry.path))),
+      entry.sha256,
+    );
+  }
   commitFile(writer, "relative-origin.txt", "another merged update\n");
   git(writer, ["push", "-q", "origin", "main"]);
   git(destination, ["remote", "set-url", "origin", "../finish-update.git"]);

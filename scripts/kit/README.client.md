@@ -514,8 +514,14 @@ is derived from core's WO-052 verification report and does not travel.
 Lifecycle commands run on the carried runtime, including Codex dispatches
 that reserve a writer. `node scripts/harness.mjs check` and `emit` verify and
 regenerate the bundle. `npm run harness -- check` restores the carried runtime
-before checking it; the export has no source-build step. Open the shipped console without building:
-`node packages/console/dist/src/cli.js live --store .runtime/resident`.
+before checking it. `npm run build` in a kit reports
+`carried runtime is the build; nothing to compile` and writes nothing.
+The build-first `npm run console`, `npm run dotln` and `npm run skeleton`
+commands therefore run the carried runtime. Open the shipped console with
+`npm run console -- live --store .runtime/resident` or read its board with
+`npm run console -- board --json`. The kit carries both contracts at
+`packages/console/uifa-board-v1.schema.json` and
+`packages/console/runtime-status-v1.schema.json`.
 The status view labels resident-owned continuation steps as logical
 `vertical-host` episodes and displays intent decision holds. Those rows do not
 claim a native model launch; the child stores retain native-worker evidence.

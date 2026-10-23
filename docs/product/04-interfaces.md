@@ -170,7 +170,12 @@ array. Each ID fixes a Node entrypoint and its leading arguments; the remaining
 arguments go to that terminal parser, which owns every usage refusal. The
 response carries the terminal's exit code and exact stdout and stderr bytes as
 base64. The text console's `commands` and `invoke` actions and the
-browser-capable client use this one route.
+browser-capable client use this command route. Beside it, authenticated
+`GET /runtime-status-v1` and `GET /uifa-board-v1` return the resident's
+status file and actor-board snapshot as JSON. The two read routes share the
+socket, matching Host, local Origin and token checks, run outside the command
+lane and write no receipt or event. An unavailable projection returns HTTP
+503 in the console refusal shape; it never becomes an empty success.
 
 | Command IDs | Terminal command, from the kit root |
 | --- | --- |
@@ -268,6 +273,8 @@ off-ramps (`implementation-ready`, `verification-result`, `repair-complete`, `fi
 `withdraw`, `correct`, `override-record`), `briefing` and `usage`, `worktree
 constellation`, `resident-bind WO-NNN` and `--check`, `dotln resident`,
 `demo`, `verify-demo`, `feedback-audit` and `handoff`, and `console board`.
+The board and runtime status are available to a browser through the two
+read routes above without adding a command ID.
 Adding a command ID requires a named order and a terminal implementation first.
 
 ### Candidate — workstream application
@@ -566,6 +573,17 @@ fork's shell over that contract, so no host grows a second workflow state
 machine. The plain-workspace default and the Nx caution above
 govern this repository; a consumer repository's stack is its owner's exemplar
 choice, judged here only for compatibility with the shared contracts.
+
+The shell can read the resident's atomic `runtime-status-v1.json` and its
+`console/uifa-board-v1.json` snapshot through the two authenticated loopback
+read routes. A missing board or one at least 30 seconds old triggers one
+shared, asynchronous console CLI child, bounded at 60 seconds and 16 MiB;
+successful collection atomically replaces the snapshot, and a failed refresh
+returns unavailable while preserving the previous file. These reads never
+wait for the command lane or append control or resident events. The kit
+carries both versioned schemas; coded board failures and refused Beacon
+reasons omit machine paths. Host-owned UI state remains separate from these
+disposable projections.
 
 **The console serves operator flow, not a skin over data** (operator
 direction, 2026-10-21; planning dispatch, ignored capture SHA-256

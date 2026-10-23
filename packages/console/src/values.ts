@@ -40,6 +40,27 @@ export const unavailable = (
   reason = "Source not supplied",
 ): Source<never> => ({ ref, status: "unavailable", reason });
 
+/** Host failures carry codes only: messages and child stderr can name private
+ * paths even when the source reference itself is relative. */
+export function readFailureReason(error: unknown): string {
+  const row = optionalObject(error);
+  if (row["code"] === "ETIMEDOUT" || row["name"] === "TimeoutError")
+    return "timed out";
+  if (Number.isSafeInteger(row["status"]) && row["status"] !== 0)
+    return `command failed (exit ${String(row["status"])})`;
+  if (
+    ["ENOENT", "ENOTDIR", "ERR_MODULE_NOT_FOUND"].includes(String(row["code"]))
+  )
+    return "not found";
+  if (
+    ["EACCES", "EPERM", "ELOOP", "EISDIR", "ENOTFILE"].includes(
+      String(row["code"]),
+    )
+  )
+    return "not readable";
+  return "invalid format";
+}
+
 export const known = (
   key: string,
   label: string,

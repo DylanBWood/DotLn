@@ -43392,6 +43392,36 @@
           "at": "2026-10-23T01:13:46.178Z"
         }
       ]
+    },
+    {
+      "id": "FUP-268c774fd159addb",
+      "key": "decision:docs/evidence/WO-225/decisions.md#wo-225-d021",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "088918b18794a04fe81db75ec6d8bdb3ba1ad01e1fd9421c88c3df27f584c304",
+          "ref": "docs/evidence/WO-225/decisions.md#wo-225-d021",
+          "title": "WO-225-D021: Next order or repair editing scripts/test-launchpad-export.mjs or scripts/lib/launchpad-fixture.mjs: run the WO-225 case's carried node --test child with NODE_TEST_CONTEXT removed from…",
+          "summary": "{ \"id\": \"WO-225-D021\", \"date\": \"2026-10-23\", \"dispatch\": \"resume: verify\", \"decision\": \"Route VER-001 F1 as a follow-up, not a blocker: the WO-225 export case in scripts/test-launchpad-export.mjs runs the carried schema tests through a nested node --test whose environment keeps the outer runner's NODE_TEST_CONTEXT, so the nested runner skips every file and exits 0 and the assertion cannot fail. Criterion 3 stays met on independent evidence: with that variable removed, the carried board and runtime-status cases pass in an export (2 of 2), and each fails when its kit schema is moved aside.\", \"evidence\": [ \"VER-001 probe under node --test using the fixture's run() and env: the nested carried ru",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-ce1f662a6b966a2a",
+      "key": "decision:docs/evidence/WO-225/decisions.md#wo-225-d022",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "1e2ad4a6fed68e19c4a27ebf47dedff75ab2d7c50e24e5705d14df58b3f5ccb5",
+          "ref": "docs/evidence/WO-225/decisions.md#wo-225-d022",
+          "title": "WO-225-D022: Next order editing packages/console/src/values.ts readFailureReason: give a child ended by a signal or by its output limit (ENOBUFS, or status null with a signal) a command-failure code…",
+          "summary": "{ \"id\": \"WO-225-D022\", \"date\": \"2026-10-23\", \"dispatch\": \"resume: verify\", \"decision\": \"Route VER-001 F2 as a follow-up: readFailureReason in packages/console/src/values.ts labels a child ended by a signal, or killed for exceeding its output limit, as 'invalid format', although the child produced no judged output. The reason stays coded and path-free, so criterion 1 holds; the label misdirects an operator reading an unavailable source.\", \"evidence\": [ \"VER-001 probe through the compiled readFailureReason: execFileSync with maxBuffer exceeded gave code ENOBUFS, status null, signal SIGTERM and reason 'invalid format'; a child that sent itself SIGKILL gave status null, signal SIGKILL and reason",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }
