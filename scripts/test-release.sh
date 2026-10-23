@@ -796,6 +796,59 @@ release_command check-surfaces --local >/dev/null
 printf 'release preparation CLI recorded its collision and assignment as decisions, preserved three independent control segments, all Git refs and the roadmap\n'
 }
 
+release_case_meter_shape() {
+make_repo meter_shape
+"$node_bin" "$script_dir/test-reader-fixture.mjs" "$main"
+git -C "$main" switch -c wo-099 >/dev/null 2>&1
+mkdir -p "$main/docs/control/orders" "$main/docs/product" "$main/docs/final-reviews/WO-099"
+printf '# WO-099 — fixture (v0.2.0)\n\n**Release classification:** patch. Existing scope.\n\n**Objective:** Fixture retiming.\n' >"$main/docs/work-orders/WO-099-fixture.md"
+printf '# Roadmap\n\n## Release boundary\n\nPreserve the existing boundary.\n' >"$main/docs/product/06-roadmap.md"
+printf '%s\n' '{"schemaVersion":1,"type":"WorkOrderActivated","workOrderId":"WO-099","workOrderPath":"docs/work-orders/WO-099-fixture.md"}' >"$main/docs/control/orders/WO-099.jsonl"
+cp "$script_dir/../docs/control/budgets.json" "$main/docs/control/budgets.json"
+# A stored body whose meter block drifted between the heading and the prose.
+printf '# WO-099\n\n<!-- dotln-process-meter:start -->\n\nstale meter\n\n<!-- dotln-process-meter:end -->\n\nFirst reviewed paragraph.\n\nSecond reviewed paragraph.\n' >"$main/docs/final-reviews/WO-099/PR.md"
+moved="$(release_command prepare --local)"
+grep -Fxq '  docs/final-reviews/WO-099/PR.md' <<<"$moved"
+"$node_bin" - "$main/docs/final-reviews/WO-099/PR.md" <<'JS'
+const assert = require("node:assert/strict"), fs = require("node:fs");
+const body = fs.readFileSync(process.argv[2], "utf8");
+const block = /<!-- dotln-process-meter:start -->[\s\S]*?<!-- dotln-process-meter:end -->/u.exec(body);
+assert.ok(block, "meter block present");
+assert.equal(body.slice(0, block.index), "# WO-099\n\nFirst reviewed paragraph.\n\nSecond reviewed paragraph.\n\n", "the prose keeps its bytes and precedes the block");
+assert.equal(body.slice(block.index + block[0].length), "\n", "the block is last");
+assert.doesNotMatch(body, /stale meter/u);
+JS
+"$node_bin" --input-type=module - "$main" <<'JS'
+import assert from 'node:assert/strict';
+import {pathToFileURL} from 'node:url';
+import {join} from 'node:path';
+import {readFileSync, writeFileSync} from 'node:fs';
+const root=process.argv[2];
+const path=join(root,'docs/final-reviews/WO-099/PR.md');
+const stored=readFileSync(path,'utf8');
+// A body whose block drifted back before the prose regenerates with the block last.
+writeFileSync(path, '# WO-099\n\n<!-- dotln-process-meter:start -->\n\nold\n\n<!-- dotln-process-meter:end -->\n\nFirst reviewed paragraph.\n\nSecond reviewed paragraph.\n');
+const {regeneratedPullRequestBody}=await import(pathToFileURL(join(root,'scripts/release.mjs')));
+const body=await regeneratedPullRequestBody(root,'WO-099','HEAD');
+assert.match(body,/^# WO-099\n\nFirst reviewed paragraph\.\n\nSecond reviewed paragraph\.\n\n<!-- dotln-process-meter:start -->/u);
+assert.match(body,/<!-- dotln-process-meter:end -->\n$/u);
+assert.doesNotMatch(body,/old/u);
+writeFileSync(path, stored);
+JS
+# The shape check judges the current order's stored body at check-surfaces.
+release_command check-surfaces --local >/dev/null
+printf 'Prose before the heading.\n\n# WO-099\n\nParagraph.\n' >"$main/docs/final-reviews/WO-099/PR.md"
+assert_surface_failure 'FAIL github-body-profile: observed docs/final-reviews/WO-099/PR.md:1: pull-request body shape: the first non-blank line must be a level-one heading' --local
+printf '# WO-099\n\n<!-- dotln-process-meter:start -->\n\nmeter\n\n<!-- dotln-process-meter:end -->\n\nParagraph after the block.\n' >"$main/docs/final-reviews/WO-099/PR.md"
+assert_surface_failure 'FAIL github-body-profile: observed docs/final-reviews/WO-099/PR.md:3: pull-request body shape: a prose paragraph must stand between the heading and the process-meter block' --local
+printf '# WO-099\n\nParagraph.\n\n<!-- dotln-process-meter:start -->\n\nmeter\n\n<!-- dotln-process-meter:end -->\n\nTrailing paragraph.\n' >"$main/docs/final-reviews/WO-099/PR.md"
+assert_surface_failure 'FAIL github-body-profile: observed docs/final-reviews/WO-099/PR.md:10: pull-request body shape: the process-meter block must be the last block' --local
+printf '# WO-099\n\nParagraph.\n\n<!-- dotln-process-meter:start -->\n\nmeter\n\n<!-- dotln-process-meter:end -->\n' >"$main/docs/final-reviews/WO-099/PR.md"
+shaped="$(release_command check-surfaces --local)"
+grep -Fq 'PASS github-body-profile: observed docs/final-reviews/WO-099/PR.md' <<<"$shaped"
+printf 'release prepare keeps the meter block last and check-surfaces judges the stored body shape of the current order only\n'
+}
+
 release_case_license_surfaces() {
 make_repo license_surfaces
 commit_candidate "$main" WO-099 v0.2.1

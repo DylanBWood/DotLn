@@ -38,6 +38,7 @@
     "\"worktree start carries the main checkout's local-terms list and a clone record accepts an id the order checkout declares\"",
     "\"worktree start names the local-terms registration step when the main checkout has no list\"",
     "`target close protects ownership and disables hooks: ${kind}`",
+    "\"a private match spanning three Change rows refuses before draft publication and records review confirmation\"",
     "\"target publication retains installation ownership when its live manifest disappears\"",
     "\"target final review refuses a nonconventional commit before binding the subject\"",
     "\"target final review names a 90-character subject and its limit\"",
@@ -54,7 +55,11 @@
     "\"target close names a stale writer transition by role and gives its recovery\"",
     "\"target close keeps Git's guard for an unchecked-out base being rebased\"",
     "\"literal host rules keep main clean and preserve another in-flight order\"",
-    "\"target start gives sign-off guidance only without a declared operator author\""
+    "\"target start gives sign-off guidance only without a declared operator author\"",
+    "\"WO-227 criteria 2 to 4: a target publication checks private terms on kit paths, reviews listed words under a recorded confirmation, and preserves base-path and kit-identifier exemptions\"",
+    "\"WO-227 criterion 7: the objective header keeps the legacy Release text byte for byte, and a Release published with it stays current once the order names the reviewed notes\"",
+    "\"WO-227 criterion 7: the reviewed header refuses an absent or invalid notes file before any tag push, carries the rendered notes with a confirmed review, binds the body's digest and refuses changed notes on retry\"",
+    "\"WO-227 criterion 7: only the bytes the renderer writes for a moved record are the Release's kit frame; a target URL or a link fragment the notes' author wrote is judged like the rest of the notes, whatever its commit or bytes\""
   ],
   "names": [
     "target release preparation is a read-only no-release outcome",
@@ -116,6 +121,7 @@
     "target close protects ownership and disables hooks: clone-hook",
     "target close protects ownership and disables hooks: clone-writer",
     "target close protects ownership and disables hooks: missing-base",
+    "a private match spanning three Change rows refuses before draft publication and records review confirmation",
     "target publication retains installation ownership when its live manifest disappears",
     "target final review refuses a nonconventional commit before binding the subject",
     "target final review names a 90-character subject and its limit",
@@ -135,6 +141,10 @@
     "target close names a stale writer transition by role and gives its recovery",
     "target close keeps Git's guard for an unchecked-out base being rebased",
     "literal host rules keep main clean and preserve another in-flight order",
-    "target start gives sign-off guidance only without a declared operator author"
+    "target start gives sign-off guidance only without a declared operator author",
+    "WO-227 criteria 2 to 4: a target publication checks private terms on kit paths, reviews listed words under a recorded confirmation, and preserves base-path and kit-identifier exemptions",
+    "WO-227 criterion 7: the objective header keeps the legacy Release text byte for byte, and a Release published with it stays current once the order names the reviewed notes",
+    "WO-227 criterion 7: the reviewed header refuses an absent or invalid notes file before any tag push, carries the rendered notes with a confirmed review, binds the body's digest and refuses changed notes on retry",
+    "WO-227 criterion 7: only the bytes the renderer writes for a moved record are the Release's kit frame; a target URL or a link fragment the notes' author wrote is judged like the rest of the notes, whatever its commit or bytes"
   ]
 }

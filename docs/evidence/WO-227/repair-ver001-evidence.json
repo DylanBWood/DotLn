@@ -1,0 +1,667 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-227",
+  "failureReport": "docs/verifications/WO-227/VER-001.md",
+  "recordedAt": "2026-10-22T18:12:55.481Z",
+  "completeReview": {
+    "command": "npm test -- --review",
+    "exitCode": 0,
+    "requiredSuites": [
+      "build",
+      "format",
+      "configuration-root",
+      "registrations",
+      "declarations",
+      "generated",
+      "host",
+      "release-preparation",
+      "github-body",
+      "outward-lint",
+      "target-publish",
+      "target-worktree",
+      "vertical",
+      "license-fixtures",
+      "publication-fixtures",
+      "backup-intake",
+      "launchpad",
+      "beacon-portability",
+      "checkpoint",
+      "worktree",
+      "worktree-integration",
+      "release",
+      "work-orders-fixtures",
+      "siblings-fixtures",
+      "kernel",
+      "compiler",
+      "skeleton",
+      "console",
+      "browser-evidence",
+      "adjacent-queue",
+      "derived-orders",
+      "portfolio",
+      "codex-continuation",
+      "authority-grants",
+      "launchpad-planning",
+      "harness-fixtures",
+      "plan-refutation",
+      "runner-fixtures",
+      "sync-fixtures",
+      "process-debt"
+    ],
+    "freshTasks": 106,
+    "reusedTasks": 0,
+    "unrunTasks": 0,
+    "checkId": "npm test",
+    "codeIdentity": "6b55cfdb48dc1fd3d50f9f3c7b30e0f9a5211726d8c726944bec976e2f628052",
+    "recordedAt": "2026-10-22T18:11:18.152Z",
+    "durationMs": 1582008,
+    "evidenceRef": "host-gate:6b55cfdb48dc1fd3d50f9f3c7b30e0f9a5211726d8c726944bec976e2f628052:npm test"
+  },
+  "probes": {
+    "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-227/verification-001-probes.mjs",
+    "exitCode": 0,
+    "observations": [
+      {
+        "name": "C1 repeated identifiers across four kinds",
+        "meets": true,
+        "observed": [
+          {
+            "form": "WO-006",
+            "kind": "branch",
+            "matches": 1,
+            "spansValid": true
+          },
+          {
+            "form": "WO-006",
+            "kind": "commit",
+            "matches": 1,
+            "spansValid": true
+          },
+          {
+            "form": "WO-006",
+            "kind": "pr-title",
+            "matches": 1,
+            "spansValid": true
+          },
+          {
+            "form": "WO-006",
+            "kind": "pr-body",
+            "matches": 2,
+            "spansValid": true
+          },
+          {
+            "form": "WO-006-D018",
+            "kind": "branch",
+            "matches": 1,
+            "spansValid": true
+          },
+          {
+            "form": "WO-006-D018",
+            "kind": "commit",
+            "matches": 1,
+            "spansValid": true
+          },
+          {
+            "form": "WO-006-D018",
+            "kind": "pr-title",
+            "matches": 1,
+            "spansValid": true
+          },
+          {
+            "form": "WO-006-D018",
+            "kind": "pr-body",
+            "matches": 2,
+            "spansValid": true
+          },
+          {
+            "form": "FUP-280abd447f789958",
+            "kind": "branch",
+            "matches": 1,
+            "spansValid": true
+          },
+          {
+            "form": "FUP-280abd447f789958",
+            "kind": "commit",
+            "matches": 1,
+            "spansValid": true
+          },
+          {
+            "form": "FUP-280abd447f789958",
+            "kind": "pr-title",
+            "matches": 1,
+            "spansValid": true
+          },
+          {
+            "form": "FUP-280abd447f789958",
+            "kind": "pr-body",
+            "matches": 2,
+            "spansValid": true
+          },
+          {
+            "form": "VER-001",
+            "kind": "branch",
+            "matches": 1,
+            "spansValid": true
+          },
+          {
+            "form": "VER-001",
+            "kind": "commit",
+            "matches": 1,
+            "spansValid": true
+          },
+          {
+            "form": "VER-001",
+            "kind": "pr-title",
+            "matches": 1,
+            "spansValid": true
+          },
+          {
+            "form": "VER-001",
+            "kind": "pr-body",
+            "matches": 2,
+            "spansValid": true
+          },
+          {
+            "form": "FINAL-001",
+            "kind": "branch",
+            "matches": 1,
+            "spansValid": true
+          },
+          {
+            "form": "FINAL-001",
+            "kind": "commit",
+            "matches": 1,
+            "spansValid": true
+          },
+          {
+            "form": "FINAL-001",
+            "kind": "pr-title",
+            "matches": 1,
+            "spansValid": true
+          },
+          {
+            "form": "FINAL-001",
+            "kind": "pr-body",
+            "matches": 2,
+            "spansValid": true
+          },
+          {
+            "form": "REVIEW-007",
+            "kind": "branch",
+            "matches": 1,
+            "spansValid": true
+          },
+          {
+            "form": "REVIEW-007",
+            "kind": "commit",
+            "matches": 1,
+            "spansValid": true
+          },
+          {
+            "form": "REVIEW-007",
+            "kind": "pr-title",
+            "matches": 1,
+            "spansValid": true
+          },
+          {
+            "form": "REVIEW-007",
+            "kind": "pr-body",
+            "matches": 2,
+            "spansValid": true
+          },
+          {
+            "form": "WS-001",
+            "kind": "branch",
+            "matches": 1,
+            "spansValid": true
+          },
+          {
+            "form": "WS-001",
+            "kind": "commit",
+            "matches": 1,
+            "spansValid": true
+          },
+          {
+            "form": "WS-001",
+            "kind": "pr-title",
+            "matches": 1,
+            "spansValid": true
+          },
+          {
+            "form": "WS-001",
+            "kind": "pr-body",
+            "matches": 2,
+            "spansValid": true
+          }
+        ]
+      },
+      {
+        "name": "C1 admitted controls",
+        "meets": true,
+        "observed": [
+          "pass",
+          "pass",
+          "pass"
+        ]
+      },
+      {
+        "name": "C1 compatibility characters and rendered markup",
+        "meets": true,
+        "observed": [
+          {
+            "rule": "identifier.launchpad",
+            "span": {
+              "start": 10,
+              "end": 16,
+              "line": 3,
+              "column": 1,
+              "precision": "exact"
+            }
+          },
+          {
+            "rule": "identifier.launchpad",
+            "span": {
+              "start": 21,
+              "end": 30,
+              "line": 3,
+              "column": 12,
+              "precision": "exact"
+            }
+          }
+        ]
+      },
+      {
+        "name": "C2 repeated public review words",
+        "meets": true,
+        "observed": {
+          "kind": "pr-body",
+          "target": true,
+          "status": "review",
+          "checks": {
+            "format": {
+              "status": "pass"
+            },
+            "runtime": {
+              "status": "pass"
+            },
+            "launchpadIdentifiers": {
+              "status": "pass"
+            },
+            "review": {
+              "status": "review",
+              "matches": 2
+            },
+            "localTerms": {
+              "status": "pass"
+            }
+          },
+          "findings": [
+            {
+              "rule": "vocabulary.review",
+              "span": {
+                "start": 12,
+                "end": 21,
+                "line": 3,
+                "column": 3,
+                "precision": "exact"
+              },
+              "term": "launchpad",
+              "section": "reviewed prose"
+            },
+            {
+              "rule": "vocabulary.review",
+              "span": {
+                "start": 34,
+                "end": 43,
+                "line": 3,
+                "column": 25,
+                "precision": "exact"
+              },
+              "term": "launchpad",
+              "section": "reviewed prose"
+            }
+          ],
+          "advisories": []
+        }
+      },
+      {
+        "name": "C2 empty and alias vocabulary",
+        "meets": true,
+        "observed": {
+          "alias": {
+            "types": [
+              "fix"
+            ],
+            "reviewTerms": [],
+            "advisories": [
+              "outward-vocabulary: terms is read as reviewTerms for this kit release; rename the key"
+            ]
+          },
+          "both": {
+            "error": "invalid outward vocabulary: terms and reviewTerms are both present; keep reviewTerms"
+          },
+          "empty": {
+            "types": [
+              "fix"
+            ],
+            "reviewTerms": [],
+            "advisories": []
+          }
+        }
+      },
+      {
+        "name": "C2/C4 body confirmation and base-path exclusion",
+        "meets": true,
+        "observed": {
+          "pending": {
+            "error": "target publish refused: outward lint: 2 review items wait for the reviewer: pr-body: vocabulary.review: launchpad (line 3, reviewed prose); pr-body: vocabulary.review: launchpad (line 9, Change table, path fixtures/launchpad-board.json). Read them in the composed body, then rerun with --confirm-terms sha256:a450bc5e5bd4ba15a206bad307365182702af4e20a202b69f0215d4bdd9304a6"
+          },
+          "stale": {
+            "error": "target publish refused: outward lint: 2 review items wait for the reviewer: pr-body: vocabulary.review: launchpad (line 3, reviewed prose); pr-body: vocabulary.review: launchpad (line 9, Change table, path fixtures/launchpad-board.json). --confirm-terms names another body; the composed body is sha256:a450bc5e5bd4ba15a206bad307365182702af4e20a202b69f0215d4bdd9304a6"
+          },
+          "confirmed": {
+            "review": {
+              "confirmedDigest": "sha256:a450bc5e5bd4ba15a206bad307365182702af4e20a202b69f0215d4bdd9304a6",
+              "matches": 2
+            }
+          }
+        }
+      },
+      {
+        "name": "C4 added identifier path",
+        "meets": true,
+        "observed": {
+          "error": "target publish refused: outward lint: pr-body refused: identifier.launchpad: WO-006 (line 9, Change table, path docs/WO-006-notes.md)"
+        }
+      },
+      {
+        "name": "C3 private prose diagnostics redact the synthetic term",
+        "meets": true,
+        "observed": {
+          "error": "target publish refused: outward lint: pr-body refused: vocabulary.local: refuse (line 3)"
+        }
+      },
+      {
+        "name": "F1 C3 private added-path diagnostics must redact the synthetic term",
+        "meets": true,
+        "observed": {
+          "error": "target publish refused: outward lint: pr-body refused: vocabulary.local: refuse (line 9, Change table)"
+        }
+      },
+      {
+        "name": "F1 C3 private review-path diagnostics must redact the synthetic term",
+        "meets": true,
+        "observed": {
+          "error": "target publish refused: outward lint: 1 review item waits for the reviewer: pr-body: vocabulary.local: review (line 9, Change table). Read them in the composed body, then rerun with --confirm-terms sha256:6a8115aaec512349d4bac9dca4af7408a35ce330c6c8f93ec703ba7320ee0457"
+        }
+      },
+      {
+        "name": "private repeated-term count observation",
+        "meets": null,
+        "observed": {
+          "localFindings": [
+            {
+              "rule": "vocabulary.local",
+              "span": {
+                "start": 10,
+                "end": 50,
+                "line": 3,
+                "column": 1,
+                "precision": "line"
+              },
+              "count": 2,
+              "mode": "review"
+            }
+          ],
+          "confirmation": {
+            "review": {
+              "confirmedDigest": "sha256:dc2bf3f14bd99acd6a0e670e070c0fc36c0b68aa7477defd379769805c13deff",
+              "matches": 1
+            }
+          }
+        }
+      },
+      {
+        "name": "C3 present empty list",
+        "meets": true,
+        "observed": {
+          "kind": "pr-body",
+          "target": true,
+          "status": "pass",
+          "checks": {
+            "format": {
+              "status": "pass"
+            },
+            "runtime": {
+              "status": "pass"
+            },
+            "launchpadIdentifiers": {
+              "status": "pass"
+            },
+            "review": {
+              "status": "pass",
+              "matches": 0
+            },
+            "localTerms": {
+              "status": "pass",
+              "terms": 0
+            }
+          },
+          "findings": [],
+          "advisories": []
+        }
+      },
+      {
+        "name": "C3 malformed marker refuses",
+        "meets": true,
+        "observed": {
+          "kind": "pr-body",
+          "target": true,
+          "status": "refused",
+          "checks": {
+            "format": {
+              "status": "pass"
+            },
+            "runtime": {
+              "status": "pass"
+            },
+            "launchpadIdentifiers": {
+              "status": "pass"
+            },
+            "review": {
+              "status": "pass",
+              "matches": 0
+            },
+            "localTerms": {
+              "status": "error"
+            }
+          },
+          "findings": [
+            {
+              "rule": "local-terms.configuration",
+              "span": null
+            }
+          ],
+          "advisories": []
+        }
+      },
+      {
+        "name": "C3 absent list refuses",
+        "meets": true,
+        "observed": {
+          "error": "target publish refused: outward lint: pr-body unavailable: local-terms list absent"
+        }
+      },
+      {
+        "name": "C5 target-only deduplicated path advisory",
+        "meets": true,
+        "observed": {
+          "targetAdvisories": [
+            "advisory: WO-999 names fixtures/gem-board.json in its execution plan, which carries the review word gem; rename the file or list the word deliberately before a draft publish meets it"
+          ],
+          "launchpadAdvisories": []
+        }
+      },
+      {
+        "name": "C6 ordinary structural controls",
+        "meets": true,
+        "observed": {
+          "good": [],
+          "noProse": [
+            {
+              "kind": "shape",
+              "rule": "prose-before-meter",
+              "line": 3
+            }
+          ]
+        }
+      },
+      {
+        "name": "F2 C6 HTML comment is not a prose paragraph",
+        "meets": true,
+        "observed": [
+          {
+            "kind": "shape",
+            "rule": "prose-before-meter",
+            "line": 5
+          }
+        ]
+      },
+      {
+        "name": "F2 C6 empty code fence is not a prose paragraph",
+        "meets": true,
+        "observed": [
+          {
+            "kind": "shape",
+            "rule": "prose-before-meter",
+            "line": 6
+          }
+        ]
+      },
+      {
+        "name": "F2 C6 horizontal rule is not a prose paragraph",
+        "meets": true,
+        "observed": [
+          {
+            "kind": "shape",
+            "rule": "prose-before-meter",
+            "line": 5
+          }
+        ]
+      },
+      {
+        "name": "F2 C6 table only is not a prose paragraph",
+        "meets": true,
+        "observed": [
+          {
+            "kind": "shape",
+            "rule": "prose-before-meter",
+            "line": 7
+          }
+        ]
+      },
+      {
+        "name": "C6 relocation preserves prose hard breaks",
+        "meets": true,
+        "observed": "# Result\n\nFirst.\n\nLast.  \n\n<!-- dotln-process-meter:start -->\nMeter.\n<!-- dotln-process-meter:end -->\n"
+      },
+      {
+        "name": "C7 release source controls",
+        "meets": true,
+        "observed": null
+      },
+      {
+        "name": "C9 complete review evidence at current identity",
+        "meets": true,
+        "observed": {
+          "codeIdentity": "6b55cfdb48dc1fd3d50f9f3c7b30e0f9a5211726d8c726944bec976e2f628052",
+          "location": "worktree",
+          "missing": [],
+          "row": {
+            "checkId": "npm test",
+            "codeIdentity": "6b55cfdb48dc1fd3d50f9f3c7b30e0f9a5211726d8c726944bec976e2f628052",
+            "recordedAt": "2026-10-22T18:11:18.152Z",
+            "durationMs": 1582008,
+            "exitCode": 0,
+            "requiredSuites": [
+              "build",
+              "format",
+              "configuration-root",
+              "registrations",
+              "declarations",
+              "generated",
+              "host",
+              "release-preparation",
+              "github-body",
+              "outward-lint",
+              "target-publish",
+              "target-worktree",
+              "vertical",
+              "license-fixtures",
+              "publication-fixtures",
+              "backup-intake",
+              "launchpad",
+              "beacon-portability",
+              "checkpoint",
+              "worktree",
+              "worktree-integration",
+              "release",
+              "work-orders-fixtures",
+              "siblings-fixtures",
+              "kernel",
+              "compiler",
+              "skeleton",
+              "console",
+              "browser-evidence",
+              "adjacent-queue",
+              "derived-orders",
+              "portfolio",
+              "codex-continuation",
+              "authority-grants",
+              "launchpad-planning",
+              "harness-fixtures",
+              "plan-refutation",
+              "runner-fixtures",
+              "sync-fixtures",
+              "process-debt"
+            ],
+            "evidenceRef": "host-gate:6b55cfdb48dc1fd3d50f9f3c7b30e0f9a5211726d8c726944bec976e2f628052:npm test"
+          }
+        }
+      }
+    ]
+  },
+  "releaseRecheck": {
+    "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-227/verification-001-release.mjs",
+    "exitCode": 0,
+    "status": 0,
+    "signal": null,
+    "stdout": "{\"probe\":\"repeated-completed-release-recheck\",\"originalDigest\":\"sha256:4b2af7be447215bf8edf40366e53ae388e8f645000eb3e81353c7d11f2b2930e\",\"firstStatus\":0,\"firstRecordedDigest\":\"sha256:4b2af7be447215bf8edf40366e53ae388e8f645000eb3e81353c7d11f2b2930e\",\"secondStatus\":0,\"secondError\":\"\",\"remoteBodyUnchanged\":true}\n✔ verifier repeated completed Release recheck preserves the published digest (8642.902458ms)\nℹ tests 1\nℹ suites 0\nℹ pass 1\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 8703.613625\n",
+    "stderr": ""
+  },
+  "focusedChecks": [
+    {
+      "command": "node scripts/harness.mjs bounded -- node --test --test-name-pattern='WO-227 criterion 2' scripts/test-target-publish.mjs",
+      "exitCode": 0,
+      "tests": 1,
+      "durationMs": 3161,
+      "recordedAt": "2026-10-22T17:43:20.227Z"
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node --test --test-name-pattern='WO-227 criterion 7' scripts/test-target-worktree-release.mjs",
+      "exitCode": 0,
+      "tests": 2,
+      "durationMs": 25433,
+      "recordedAt": "2026-10-22T17:44:38.303Z"
+    }
+  ],
+  "earlierReview": {
+    "exitCode": 1,
+    "stopped": true,
+    "durationMs": 641063,
+    "recordedAt": "2026-10-22T17:42:50.219Z",
+    "decision": "WO-227-D023",
+    "reason": "New assertion incorrectly expected a review-only item in a hard-refusal diagnostic; the identifier was redacted. Corrected the assertion and stopped the failed run; no passing claim is supplied."
+  },
+  "completionObservation": "Host process completion reports 40 passing suites and 106 fresh tasks. coveringGateCheck independently binds that row to the current identity. The second evidence --wait invocation started before registration and returned run:null; it is not completion evidence."
+}

@@ -274,7 +274,8 @@ const sourceLines = (markdown) => {
 // or indented code block or a raw HTML tag or block is never read as a link
 // and keeps its bytes, and a link is rewritten only where the parser renders
 // one. The parser's line and column address the same lines as the inventory,
-// whichever line ending each line uses.
+// whichever line ending each line uses. The visitor also receives the offsets
+// at which the line starts in the input and in the output.
 const proseLines = (markdown, visit) => {
   const { bom, lines } = sourceLines(markdown);
   const masked = lines.map((line) => line.text);
@@ -301,16 +302,17 @@ const proseLines = (markdown, visit) => {
           text.slice(0, from) + " ".repeat(to - from) + text.slice(to);
       }
   }
-  return (
-    bom +
-    lines
-      .map(
-        (line, index) =>
-          (visit(line.text, masked[index], rendered[index]) ?? line.text) +
-          line.ending,
-      )
-      .join("")
-  );
+  let input = bom.length;
+  let output = bom;
+  lines.forEach((line, index) => {
+    output +=
+      (visit(line.text, masked[index], rendered[index], {
+        input,
+        output: output.length,
+      }) ?? line.text) + line.ending;
+    input += line.text.length + line.ending.length;
+  });
+  return output;
 };
 /** Every link the parser renders with a relative destination, in document
  * order, each with the line it starts on. */
@@ -327,8 +329,14 @@ export const relativeLinkFailures = (markdown) =>
  * and the rewritten path encodes parentheses too, so the destination reads the
  * same to a renderer that balances them and to one that does not. A rendered
  * relative link this line scanner cannot see is left as it is for the profile
- * check to refuse. */
-export const absoluteBodyLinks = (markdown, { from, repository, revision }) => {
+ * check to refuse. A caller that passes a `written` array receives the
+ * [start, end) offsets, in the returned text, of each destination this call
+ * wrote; a destination already absolute in the source is never among them,
+ * whatever its bytes. */
+export const absoluteBodyLinks = (
+  markdown,
+  { from, repository, revision, map, written },
+) => {
   const base = from.includes("/") ? from.slice(0, from.lastIndexOf("/")) : "";
   const resolved = (destination, image) => {
     if (!repository?.selector || !revision) return null;
@@ -358,7 +366,12 @@ export const absoluteBodyLinks = (markdown, { from, repository, revision }) => {
         parts.pop();
       } else parts.push(part);
     }
-    const encoded = parts
+    // A caller may map the resolved repository path onto another tree (a
+    // record moved into a target); null says the destination resolves nowhere.
+    const mapped = map ? map(parts.join("/")) : parts.join("/");
+    if (mapped === null) return null;
+    const encoded = mapped
+      .split("/")
       .map((part) => encodeURIComponent(part))
       .join("/")
       .replace(
@@ -370,56 +383,97 @@ export const absoluteBodyLinks = (markdown, { from, repository, revision }) => {
     const renderedQuery = parameters ? parameters.toString() : query;
     return `https://${repository.selector}/blob/${revision}/${encoded}${renderedQuery ? `?${renderedQuery}` : ""}${fragment}`;
   };
-  const pass = (source) =>
-    proseLines(source, (line, masked, rendered) => {
-      const definition = rendered.definition && definitionPattern.exec(masked);
-      if (definition) {
-        const destination = rendered.definition.url ?? "";
-        if (!schemeless(destination)) return line;
-        const target = resolved(destination, false);
-        return target === null
-          ? ""
-          : `${definition[1]}${target}${definition[3]}`;
+  // One line's output as pieces, each copied from the line (`copy`) or
+  // written here (`add`, flagged when it is a destination).
+  const visitLine = (line, masked, rendered, copy, add) => {
+    const definition = rendered.definition && definitionPattern.exec(masked);
+    if (definition) {
+      const destination = rendered.definition.url ?? "";
+      if (!schemeless(destination)) return copy(0, line.length);
+      const target = resolved(destination, false);
+      if (target !== null) {
+        add(definition[1]);
+        add(target, true);
+        add(definition[3]);
       }
-      let output = "";
-      let cursor = 0;
-      const relative = [...inlineLinks(masked, line, rendered.links)].filter(
-        (link) => schemeless(link.destination),
+      return;
+    }
+    let cursor = 0;
+    const relative = [...inlineLinks(masked, line, rendered.links)].filter(
+      (link) => schemeless(link.destination),
+    );
+    // Rewrite inner rendered links first. Reparse after removal because an
+    // outer pair that was literal text can become a rendered link.
+    const leaves = relative.filter(
+      (link) =>
+        !relative.some(
+          (inner) =>
+            inner.index > link.index && inner.index < link.index + link.length,
+        ),
+    );
+    for (const link of leaves) {
+      copy(cursor, link.index);
+      const { image, text, destination, title } = link;
+      const label = link.index + image.length + 1;
+      const target = resolved(destination, image === "!");
+      if (target === null) copy(label, label + text.length);
+      else {
+        add(`${image}[`);
+        copy(label, label + text.length);
+        add("](");
+        add(target, true);
+        add(`${title})`);
+      }
+      cursor = link.index + link.length;
+    }
+    copy(cursor, line.length);
+  };
+  // A destination an earlier pass wrote moves with the copied piece that
+  // holds it, such as the label of an image a later pass rewrites; one
+  // outside every copied piece is dropped, which can only withhold what the
+  // caller grants a written destination, never extend it.
+  const pass = (source, carried) => {
+    const spans = [];
+    const text = proseLines(source, (line, masked, rendered, place) => {
+      const pieces = [];
+      visitLine(
+        line,
+        masked,
+        rendered,
+        (start, end) =>
+          pieces.push({ from: start, text: line.slice(start, end) }),
+        (text, destination = false) => pieces.push({ text, destination }),
       );
-      // Rewrite inner rendered links first. Reparse after removal because an
-      // outer pair that was literal text can become a rendered link.
-      const leaves = relative.filter(
-        (link) =>
-          !relative.some(
-            (inner) =>
-              inner.index > link.index &&
-              inner.index < link.index + link.length,
-          ),
-      );
-      for (const link of leaves) {
-        output += line.slice(cursor, link.index);
-        const { image, text, destination, title } = link;
-        const original = line.slice(link.index, link.index + link.length);
-        if (!schemeless(destination)) output += original;
-        else {
-          const target = resolved(destination, image === "!");
-          output +=
-            target === null ? text : `${image}[${text}](${target}${title})`;
+      let offset = place.output;
+      for (const piece of pieces) {
+        if (piece.destination)
+          spans.push({ start: offset, end: offset + piece.text.length });
+        if (piece.from !== undefined) {
+          const start = place.input + piece.from;
+          for (const span of carried)
+            if (start <= span.start && span.end <= start + piece.text.length)
+              spans.push({
+                start: offset + span.start - start,
+                end: offset + span.end - start,
+              });
         }
-        cursor = link.index + link.length;
+        offset += piece.text.length;
       }
-      return output + line.slice(cursor);
+      return pieces.map((piece) => piece.text).join("");
     });
+    return { text, spans };
+  };
   // A changing pass resolves or removes at least one original bracket pair.
   // Unsupported multiline forms remain for the publication profile to refuse.
   const limit = (markdown.match(/\[/gu) ?? []).length + 1;
-  let output = markdown;
+  let output = { text: markdown, spans: [] };
   for (let count = 0; count < limit; count++) {
-    const next = pass(output);
-    if (next === output) return output;
+    const next = pass(output.text, output.spans);
+    if (next.text === output.text) break;
     output = next;
   }
-  return output;
+  written?.push(...output.spans);
+  return output.text;
 };
 export const githubBodyProfileFailures = (markdown, { links = false } = {}) => {
   const failures = [];
@@ -1028,20 +1082,86 @@ export function targetGateSection(gate) {
   return `## Target checks\n\nReviewed commit: \`${gate.commit}\`.\n\n| Command | Outcome |\n| --- | --- |\n${gate.names.map((name) => `| ${name} | Passed |`).join("\n")}\n\nTotal duration: ${gate.durationMs} ms (${gate.selection} selection).`;
 }
 
+const changeCount = (value) => (value === null ? "binary" : String(value));
+// One Change-table row; composeTargetBody finds each row in the composed text
+// by this exact string.
+const changeRow = (file) =>
+  `| ${literal(file.path)} | ${changeCount(file.added)} | ${changeCount(file.deleted)} |`;
 export const targetChangeSection = ({ baseCommit, headCommit, files }) => {
-  const count = (value) => (value === null ? "binary" : String(value));
   return [
     "## Change",
     "",
     "| Path | Added | Removed |",
     "| --- | ---: | ---: |",
-    ...files.map(
-      (file) =>
-        `| ${literal(file.path)} | ${count(file.added)} | ${count(file.deleted)} |`,
-    ),
+    ...files.map(changeRow),
     "",
     `${files.length} ${files.length === 1 ? "file" : "files"} changed from base ${baseCommit} to head ${headCommit}.`,
   ].join("\n");
+};
+/** Text built from labelled parts: each named part's offsets become a lint
+ * section (with the rules exempt inside it, when given); an unnamed part is a
+ * joiner. */
+export const labelledParts = (parts) => {
+  let text = "";
+  const sections = [];
+  for (const [name, part, exempt] of parts) {
+    if (name)
+      sections.push({
+        name,
+        start: text.length,
+        end: text.length + part.length,
+        ...(exempt ? { exempt } : {}),
+      });
+    text += part;
+  }
+  return { text, sections };
+};
+/** The published body of a target publication: the reviewed prose, the
+ * generated Change table and, when the reviewed publish supplies one, the
+ * target-checks section. Returns the composed text with the offsets of each
+ * part, so a lint finding names the part it sits in, and one row per changed
+ * file with its offsets in the composed text, its path, whether the target's
+ * base tree already held it (an existing path is the target's own vocabulary)
+ * and whether the kit's records commit wrote it. The lint exempts existing
+ * paths from vocabulary checks and kit records from launchpad identifiers;
+ * a new kit record's path still receives the vocabulary checks. */
+export const composeTargetBody = ({
+  body,
+  baseCommit,
+  headCommit,
+  files,
+  baseTree = new Set(),
+  kitPaths = new Set(),
+  gate,
+}) => {
+  const composed = labelledParts([
+    ["reviewed prose", body.trimEnd()],
+    ["", "\n\n"],
+    ["Change table", targetChangeSection({ baseCommit, headCommit, files })],
+    ...(gate
+      ? [
+          ["", "\n\n"],
+          ["Target checks", gate],
+        ]
+      : []),
+  ]);
+  const text = `${composed.text}\n`;
+  // The rows stand in file order after the table's header, so each is found
+  // from where the previous one ended.
+  let cursor = composed.sections[1].start;
+  const rows = files.map((file) => {
+    const row = changeRow(file);
+    const start = text.indexOf(row, cursor);
+    cursor = start + row.length;
+    return {
+      start,
+      end: cursor,
+      path: file.path,
+      existed: baseTree.has(file.path),
+      kit: kitPaths.has(file.path),
+    };
+  });
+  return { text, sections: composed.sections, rows };
 };
 
 /** Pure over artifacts: the host commit message, the WorkOrder contract, the
@@ -1227,6 +1347,103 @@ export const generateTargetPullRequest = ({
       : []),
   ].join("\n");
   return { title, body };
+};
+
+/** The marker lines around the meter table that release prepare owns. */
+export const METER_MARKERS = Object.freeze({
+  begin: "<!-- dotln-process-meter:start -->",
+  end: "<!-- dotln-process-meter:end -->",
+});
+const METER_BLOCK = new RegExp(
+  `${METER_MARKERS.begin}[\\s\\S]*?${METER_MARKERS.end}`,
+  "u",
+);
+const GATE_BLOCK =
+  /<!-- dotln-product-gate:start -->[\s\S]*?<!-- dotln-product-gate:end -->/u;
+/** The stored body with the meter table as its last block: an existing block
+ * is lifted from wherever it stood, the blank lines around its old place
+ * collapse to one, and the block follows the last prose paragraph. No other
+ * byte changes. */
+export const withMeterBlockLast = (source, table) => {
+  const block = `${METER_MARKERS.begin}\n${table}\n${METER_MARKERS.end}`;
+  const meter = METER_BLOCK.exec(source);
+  let rest = source;
+  if (meter) {
+    const before = source.slice(0, meter.index).replace(/\n*$/u, "");
+    const after = source
+      .slice(meter.index + meter[0].length)
+      .replace(/^\n*/u, "");
+    rest = before && after ? `${before}\n\n${after}` : before || after;
+  }
+  // Only line endings are normalized before the block; a prose line's
+  // trailing spaces are its own (a Markdown hard break).
+  return `${rest.replace(/\n+$/u, "")}\n\n${block}\n`;
+};
+// Use the same Markdown tree as the link checks: comments, headings, tables
+// and code blocks are not paragraphs. Lists and quotations can contain prose;
+// definitions and image-only paragraphs do not supply visible prose text.
+const hasProseParagraph = (node) => {
+  const hasText = (part) =>
+    ["text", "inlineCode"].includes(part.type)
+      ? part.value.trim() !== ""
+      : (part.children ?? []).some(hasText);
+  if (node.type === "paragraph") return hasText(node);
+  return (
+    ["root", "blockquote", "list", "listItem"].includes(node.type) &&
+    (node.children ?? []).some(hasProseParagraph)
+  );
+};
+/** The structural shape of a stored pull-request body: its first
+ * non-blank line is a level-one heading, a prose paragraph stands before the
+ * process-meter block, and that block is the last block; the published body
+ * (`published`) admits the product-gate block after it. A body with no meter
+ * block is judged on its heading alone. Style is never judged here. */
+export const pullRequestBodyShapeFailures = (
+  markdown,
+  { published = false } = {},
+) => {
+  const failures = [];
+  const lines = markdown.split(/\r\n|\n|\r/u);
+  const firstIndex = lines.findIndex((line) => line.trim() !== "");
+  if (!/^# \S/u.test(lines[firstIndex] ?? ""))
+    failures.push({
+      kind: "shape",
+      rule: "heading-first",
+      line: Math.max(firstIndex, 0) + 1,
+    });
+  const meter = METER_BLOCK.exec(markdown);
+  if (!meter) return failures;
+  const before = markdown.slice(0, meter.index);
+  const beforeLines = before.split(/\r\n|\n|\r/u);
+  const prose = parsedNodes(before, ["root"]).some(hasProseParagraph);
+  if (!prose)
+    failures.push({
+      kind: "shape",
+      rule: "prose-before-meter",
+      line: beforeLines.length,
+    });
+  let after = markdown.slice(meter.index + meter[0].length);
+  if (published) after = after.replace(GATE_BLOCK, "");
+  if (after.trim() !== "")
+    failures.push({
+      kind: "shape",
+      rule: "meter-last",
+      line: beforeLines.length + meter[0].split(/\r\n|\n|\r/u).length,
+    });
+  return failures;
+};
+const shapeReasons = {
+  "heading-first": "the first non-blank line must be a level-one heading (# …)",
+  "prose-before-meter":
+    "a prose paragraph must stand between the heading and the process-meter block",
+  "meter-last": "the process-meter block must be the last block",
+};
+export const assertPullRequestBodyShape = (markdown, displayPath, options) => {
+  const [first] = pullRequestBodyShapeFailures(markdown, options);
+  if (!first) return;
+  throw new Error(
+    `${displayPath}:${first.line}: pull-request body shape: ${shapeReasons[first.rule]}${first.rule === "meter-last" && options?.published ? ", followed only by the product-gate block" : ""}`,
+  );
 };
 
 export const assertGitHubBodyProfile = (markdown, displayPath, options) => {

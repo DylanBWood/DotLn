@@ -188,7 +188,7 @@ node "$subject/scripts/resume.mjs" final-review-result pass \
   --effort unknown \
   --source operator-attested >/dev/null
 printf 'done\n' >"$subject/result.txt"
-printf '%s\n' 'This reviewed PR body stays on one physical source line even though it is longer than eighty characters, leaving visual wrapping to the reader.' >"$subject/pr-body.md"
+printf '%s\n' '# WO-099' '' 'This reviewed PR body stays on one physical source line even though it is longer than eighty characters, leaving visual wrapping to the reader.' >"$subject/pr-body.md"
 printf '%s\n' '- A code example `` [sample](file.md) ` literal `` keeps its bytes and an [empty]() link becomes its text.' >>"$subject/pr-body.md"
 git -C "$subject" add .
 "$node_bin" "$script_dir/test-release-composition.mjs" record "$subject" WO-099
@@ -347,7 +347,7 @@ if wrapped_pr_output="$(PATH="$test_root/no-gh-bin" "$node_bin" "$subject/script
 fi
 grep -Fq 'pr-body.md: accidental GitHub prose soft wrap between lines 1 and 2' <<<"$wrapped_pr_output"
 if git --git-dir="$test_root/origin.git" show-ref --verify --quiet refs/heads/wo-099; then printf 'error: wrapped PR body reached remote\n' >&2; exit 1; fi
-printf '%s\n' 'This reviewed PR body stays on one physical source line even though it is longer than eighty characters, leaving visual wrapping to the reader.' >"$subject/pr-body.md"
+printf '%s\n' '# WO-099' '' 'This reviewed PR body stays on one physical source line even though it is longer than eighty characters, leaving visual wrapping to the reader.' >"$subject/pr-body.md"
 printf '%s\n' '- A code example `` [sample](file.md) ` literal `` keeps its bytes and an [empty]() link becomes its text.' >>"$subject/pr-body.md"
 # Markdown ends a line at a lone carriage return or at a carriage return and
 # newline as well; the published body keeps those bytes and the code on such a

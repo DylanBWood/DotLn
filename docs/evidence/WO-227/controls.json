@@ -1,0 +1,302 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-227",
+  "base": "4dfb8052d670d0d9c363f9cf110cd9b8e73395fc",
+  "method": "Each new case ran twice under node scripts/harness.mjs bounded: first with the named source file at its HEAD bytes (the control arm) and then with the working-tree bytes (the changed arm); a pass is a non-zero control exit and a zero changed exit. The runner swapped one file at a time and restored it before the changed arm. Node cases ran as node --test --test-name-pattern=<case> <source>; the shell case ran as bash scripts/test-release.sh --case meter_shape. The record was taken after the self-review fixes, on the bytes the complete run judges.",
+  "recordedAt": "2026-10-22T14:50:42.634Z",
+  "status": "pass",
+  "pairedControls": [
+    {
+      "step": 2,
+      "criteria": [
+        1
+      ],
+      "suite": "outward-lint",
+      "source": "scripts/test-outward-lint.mjs",
+      "case": "WO-227 criterion 1",
+      "reverted": [
+        "scripts/lib/outward-lint.mjs"
+      ],
+      "control": "At the base no rule judges WO-006, WO-006-D018, FUP-280abd447f789958, VER-001, FINAL-001, REVIEW-007 or WS-001 in a target's artifacts.",
+      "changed": "identifier.launchpad refuses each form in each kind for a target and passes for a launchpad artifact, the records commit message and Closes #4.",
+      "controlExit": 1,
+      "changedExit": 0,
+      "result": "pass"
+    },
+    {
+      "step": 2,
+      "criteria": [
+        2
+      ],
+      "suite": "outward-lint",
+      "source": "scripts/test-outward-lint.mjs",
+      "case": "WO-227 criterion 2: public review words",
+      "reverted": [
+        "scripts/lib/outward-lint.mjs"
+      ],
+      "control": "At the base a listed word refuses under vocabulary.launchpad with no section.",
+      "changed": "A listed word is a vocabulary.review finding with its word, line and part, and the status is review.",
+      "controlExit": 1,
+      "changedExit": 0,
+      "result": "pass"
+    },
+    {
+      "step": 2,
+      "criteria": [
+        2
+      ],
+      "suite": "outward-lint",
+      "source": "scripts/test-outward-lint.mjs",
+      "case": "WO-227 criterion 2: the vocabulary file",
+      "reverted": [
+        "scripts/lib/outward-lint.mjs"
+      ],
+      "control": "At the base an empty terms array and the reviewTerms key are invalid.",
+      "changed": "reviewTerms may be empty, terms is read as an alias with an advisory, both keys refuse.",
+      "controlExit": 1,
+      "changedExit": 0,
+      "result": "pass"
+    },
+    {
+      "step": 3,
+      "criteria": [
+        3
+      ],
+      "suite": "outward-lint",
+      "source": "scripts/test-outward-lint.mjs",
+      "case": "WO-227 criterion 3: a refuse-mode",
+      "reverted": [
+        "scripts/lib/terms.mjs"
+      ],
+      "control": "At the base every private term refuses and a marker is part of the term.",
+      "changed": "refuse: refuses by line and mode, an unmarked term is a review item, a malformed marker refuses naming the line.",
+      "controlExit": 1,
+      "changedExit": 0,
+      "result": "pass"
+    },
+    {
+      "step": 3,
+      "criteria": [
+        3
+      ],
+      "suite": "outward-lint",
+      "source": "scripts/test-outward-lint.mjs",
+      "case": "WO-227 criterion 3: a present list",
+      "reverted": [
+        "scripts/lib/terms.mjs"
+      ],
+      "control": "At the base a present list with no terms throws present but empty or malformed.",
+      "changed": "A present list with no terms is present with a count of zero and refuses nothing.",
+      "controlExit": 1,
+      "changedExit": 0,
+      "result": "pass"
+    },
+    {
+      "step": 2,
+      "criteria": [
+        1,
+        2,
+        3
+      ],
+      "suite": "outward-lint",
+      "source": "scripts/test-outward-lint.mjs",
+      "case": "CLI stdin, redacted JSON",
+      "reverted": [
+        "scripts/outward-lint.mjs"
+      ],
+      "control": "At the base the CLI has no --target flag and a review match exits 1.",
+      "changed": "A review match exits 4, --target refuses an identifier with exit 1, and the lint never prints the term.",
+      "controlExit": 1,
+      "changedExit": 0,
+      "result": "pass"
+    },
+    {
+      "step": 4,
+      "criteria": [
+        4
+      ],
+      "suite": "github-body",
+      "source": "scripts/test-github-body.mjs",
+      "case": "WO-227 criterion 4",
+      "reverted": [
+        "scripts/lib/github-body.mjs"
+      ],
+      "control": "At the base there is no composed body with sections and rows.",
+      "changed": "composeTargetBody names the parts and the Change rows by path with existing and kit paths marked.",
+      "controlExit": 1,
+      "changedExit": 0,
+      "result": "pass"
+    },
+    {
+      "step": 6,
+      "criteria": [
+        6
+      ],
+      "suite": "github-body",
+      "source": "scripts/test-github-body.mjs",
+      "case": "WO-227 criterion 6",
+      "reverted": [
+        "scripts/lib/github-body.mjs"
+      ],
+      "control": "At the base no check judges the stored body's heading, prose or meter position.",
+      "changed": "pullRequestBodyShapeFailures reports heading-first, prose-before-meter and meter-last, admitting the product-gate block in a published body.",
+      "controlExit": 1,
+      "changedExit": 0,
+      "result": "pass"
+    },
+    {
+      "step": 7,
+      "criteria": [
+        7
+      ],
+      "suite": "github-body",
+      "source": "scripts/test-github-body.mjs",
+      "case": "WO-227 criterion 7",
+      "reverted": [
+        "scripts/lib/github-body.mjs"
+      ],
+      "control": "At the base absoluteBodyLinks cannot map a resolved path onto the target's tree.",
+      "changed": "A moved record's link is written absolute to the target and other relative links become text.",
+      "controlExit": 1,
+      "changedExit": 0,
+      "result": "pass"
+    },
+    {
+      "step": 4,
+      "criteria": [
+        2
+      ],
+      "suite": "target-publish",
+      "source": "scripts/test-target-publish.mjs",
+      "case": "WO-227 criterion 2",
+      "reverted": [
+        "scripts/lib/target-publish.mjs"
+      ],
+      "control": "At the base a review-mode private term refuses the loadout-route publish as vocabulary.local.",
+      "changed": "The publish names the review items and the digest, refuses a stale or malformed confirmation, publishes under the digest and records the confirmation.",
+      "controlExit": 1,
+      "changedExit": 0,
+      "result": "pass"
+    },
+    {
+      "step": 4,
+      "criteria": [
+        2,
+        4
+      ],
+      "suite": "target-worktree",
+      "source": "scripts/test-target-worktree-publish.mjs",
+      "case": "WO-227 criteria 2 and 4",
+      "reverted": [
+        "scripts/lib/target-publish.mjs"
+      ],
+      "control": "At the base the draft refuses every listed word by line with no path or part, and the target's own mask.ts row is reported.",
+      "changed": "An identifier in an added path refuses by path and part, review words wait for the confirmation, existing and kit paths are not reported, and the prepared commit holds across refusals.",
+      "controlExit": 1,
+      "changedExit": 0,
+      "result": "pass"
+    },
+    {
+      "step": 4,
+      "criteria": [
+        2
+      ],
+      "suite": "target-worktree",
+      "source": "scripts/test-target-worktree-publish.mjs",
+      "case": "WO-227 criteria 2 and 4",
+      "reverted": [
+        "scripts/worktree.mjs"
+      ],
+      "control": "At the base worktree publish refuses --confirm-terms as a usage error.",
+      "changed": "worktree publish reads --confirm-terms out before each target route's argument check.",
+      "controlExit": 1,
+      "changedExit": 0,
+      "result": "pass"
+    },
+    {
+      "step": 7,
+      "criteria": [
+        7
+      ],
+      "suite": "target-worktree",
+      "source": "scripts/test-target-worktree-release.mjs",
+      "case": "WO-227 criterion 7: the objective header",
+      "reverted": [
+        "scripts/release.mjs"
+      ],
+      "control": "At the base the close record binds no body and a changed header is not read.",
+      "changed": "The legacy body is byte for byte, the record binds its source and digest, and a Release published with the legacy body stays current under the reviewed header.",
+      "controlExit": 1,
+      "changedExit": 0,
+      "result": "pass"
+    },
+    {
+      "step": 7,
+      "criteria": [
+        7
+      ],
+      "suite": "target-worktree",
+      "source": "scripts/test-target-worktree-release.mjs",
+      "case": "WO-227 criterion 7: the reviewed header",
+      "reverted": [
+        "scripts/release.mjs"
+      ],
+      "control": "At the base the Release body is the title and objective whatever the header says and no notes file is read.",
+      "changed": "Absent or invalid notes refuse before any tag push, the rendered notes publish under a confirmed review, the digest binds a retry and changed notes refuse.",
+      "controlExit": 1,
+      "changedExit": 0,
+      "result": "pass"
+    },
+    {
+      "step": 5,
+      "criteria": [
+        5
+      ],
+      "suite": "plan-refutation",
+      "source": "scripts/test-plan-refutation.mjs",
+      "case": "WO-227 criterion 5",
+      "reverted": [
+        "scripts/lib/plan-receipts.mjs"
+      ],
+      "control": "At the base plan check returns no advisories.",
+      "changed": "plan check names the target order's paths that carry a review word or an identifier and none for the launchpad order.",
+      "controlExit": 1,
+      "changedExit": 0,
+      "result": "pass"
+    },
+    {
+      "step": 3,
+      "criteria": [
+        3
+      ],
+      "suite": "plan-refutation",
+      "source": "scripts/test-plan-refutation.mjs",
+      "case": "AC3 local-terms phrases",
+      "reverted": [
+        "scripts/lib/terms.mjs"
+      ],
+      "control": "At the base the redacted findings carry no mode and a present list reports no count.",
+      "changed": "Findings carry mode review and a present list reports its term count.",
+      "controlExit": 1,
+      "changedExit": 0,
+      "result": "pass"
+    },
+    {
+      "step": 6,
+      "criteria": [
+        6
+      ],
+      "suite": "release",
+      "source": "scripts/test-release.sh",
+      "case": "release_case_meter_shape",
+      "reverted": [
+        "scripts/release.mjs"
+      ],
+      "control": "At the base release prepare replaces the meter block in place and check-surfaces judges no body shape.",
+      "changed": "release prepare and the regenerated body move the block after the prose and check-surfaces refuses a stored body that breaks the shape.",
+      "controlExit": 1,
+      "changedExit": 0,
+      "result": "pass"
+    }
+  ]
+}

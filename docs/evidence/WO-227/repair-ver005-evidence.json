@@ -1,0 +1,72 @@
+{
+  "workOrder": "WO-227",
+  "failure": "VER-005 F1",
+  "rule": "Private findings retain every contributing line; an existing row exempts only a finding wholly contained in that row, and diagnostics redact every contributing row.",
+  "probes": [
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-227/verification-005-probes.mjs",
+      "before": { "exitCode": 1, "durationMs": 108, "privateModesMet": 0 },
+      "after": { "exitCode": 0, "durationMs": 105, "privateModesMet": 3, "sectionOracleCases": 506 },
+      "change": "The private span expands from [90,107) to [90,126); refusal and confirmation now survive the existing-row exemption."
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-227/verification-005-publish.mjs",
+      "before": { "exitCode": 1, "durationMs": 5317, "publishStatus": 0, "remoteBranch": true, "pullCreated": true },
+      "after": { "exitCode": 0, "durationMs": 4514, "publishStatus": 1, "remoteBranch": false, "pullCreated": false },
+      "change": "The same synthetic draft now refuses before push and fake-forge effects."
+    }
+  ],
+  "initialCompleteRun": {
+    "command": "npm test -- --review",
+    "exitCode": 1,
+    "durationMs": 361400,
+    "recordedAt": "2026-10-22T23:35:58.919Z",
+    "codeIdentity": "b9360461f6a37bf74b5c9002ec6a0d0ccb6c7c37b0eee67088f05ec5db219034",
+    "failure": "The WO-039 local-terms harness assertion expected line directly followed by count; the diagnostic now includes endLine between them. 179 of 180 harness cases passed, and the gate stopped later suites.",
+    "remedy": "Update the expected redacted diagnostic to include endLine, retaining the no-private-text assertion, then run a fresh complete review."
+  },
+  "repairAssertions": [
+    {
+      "command": "node scripts/harness.mjs bounded -- node --test --test-name-pattern='^WO-039 local terms are unavailable' scripts/test-harness.mjs",
+      "exitCode": 0,
+      "durationMs": 658,
+      "result": "The updated expected range passes and the no-private-text assertion remains."
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node --test --test-concurrency=1 --test-name-pattern='^(private matches crossing|a private match spanning)' scripts/test-target-publish.mjs scripts/test-target-worktree-publish.mjs",
+      "exitCode": 1,
+      "durationMs": 6935,
+      "result": "The helper matrix passed; the draft case reached confirmed publication, then failed because its new assertion incorrectly expected the plural '1 matches' instead of the actual '1 match'."
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node --test --test-concurrency=1 --test-name-pattern='^a private match spanning' scripts/test-target-worktree-publish.mjs",
+      "exitCode": 0,
+      "durationMs": 6687,
+      "result": "After correcting the assertion, all three private modes refuse before publication, stale confirmation refuses, and a matching confirmation publishes and records its digest, count and attestation."
+    }
+  ],
+  "completeRun": {
+    "command": "npm test -- --review",
+    "exitCode": 0,
+    "durationMs": 1774218,
+    "recordedAt": "2026-10-23T00:07:19.005Z",
+    "codeIdentity": "fb8927c9ee2a173f56cbd05a2a647eda6437f9c2d6c9adc60036bd01a895026d",
+    "treeHash": "f542888ce475f3648f7894294311e52c71ba9e33",
+    "evidenceRef": "host-gate:fb8927c9ee2a173f56cbd05a2a647eda6437f9c2d6c9adc60036bd01a895026d:npm test",
+    "gateSelection": "review",
+    "requiredSuites": 40,
+    "passedSuites": 40,
+    "freshTasks": 106,
+    "reusedTasks": 0,
+    "unrunSuites": [],
+    "stale": [],
+    "identityUnchanged": true,
+    "buildOutputUnchanged": true,
+    "sharedRefsUnchanged": true,
+    "waiterExitCode": 0
+  },
+  "limits": [
+    "All publication effects in the probes use disposable local Git repositories and a fake forge.",
+    "Private ranges are whole-line bounds, intentionally coarser than exact match positions."
+  ]
+}

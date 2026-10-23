@@ -40,6 +40,7 @@ import {
   parseReleaseNotes,
   releaseNoteHeadings,
   releaseNotesPathFor,
+  targetReleaseNotesSource,
 } from "./lib/release-notes.mjs";
 import {
   HOST_GIT_READ,
@@ -55,8 +56,12 @@ import {
 import {
   absoluteBodyLinks,
   assertGitHubBodyProfile,
+  assertPullRequestBodyShape,
+  labelledParts,
+  withMeterBlockLast,
   withTemporaryBody,
 } from "./lib/github-body.mjs";
+import { digestOf, takeConfirmTerms } from "./lib/confirm-terms.mjs";
 import {
   applyReleasePreparation,
   integrationPreparationRefusal,
@@ -86,6 +91,7 @@ import {
   readControls,
   controlFromSources,
   addedSegmentEvents,
+  eventsForOrder,
   latestClosedOrder,
   openOrders,
   branchWorkOrder,
@@ -100,6 +106,7 @@ import { withHostLock } from "./lib/host-resources.mjs";
 import { releaseListCache } from "./lib/release-list-cache.mjs";
 import {
   recordedRepositoryClone,
+  targetRecordSources,
   targetWorktreeForOrder,
 } from "./lib/target-worktrees.mjs";
 import {
@@ -272,6 +279,20 @@ export function releaseCloseSummary(record) {
     lines.push(
       `Target release ${publication.target.repositoryId}: ${publication.target.outcome}; tag ${publication.target.tag ?? "unknown"}; GitHub Release ${publication.target.release ?? (record.dryRun ? "would create" : "not verified")}${publication.target.title ? `; title ${publication.target.title}` : ""}.`,
     );
+  // The Release text's source and what the reviewer owes or confirmed.
+  if (publication.target?.body) {
+    const { source, digest, review, confirmation } = publication.target.body;
+    const items = (count) => `${count} review item${count === 1 ? "" : "s"}`;
+    lines.push(
+      `Target release body: ${source}; ${
+        review?.pending
+          ? `${items(review.pending.length)} ${review.pending.length === 1 ? "waits" : "wait"} for --confirm-terms ${digest}: ${line(review.pending.join("; "))}`
+          : review?.matches
+            ? `${items(review.matches)} confirmed under ${digest}${confirmation ? `; journal row ${confirmation.journal}` : ""}`
+            : `no review items; digest ${digest}`
+      }.`,
+    );
+  }
   if (record.targetCleanup) {
     const cleanup = record.targetCleanup;
     const deleted = [
@@ -822,16 +843,20 @@ const githubBodyRule = (root, state, revision) => {
     for (const { path, source } of bodies) {
       if (path === releaseNotesPathFor(state.workOrderId, root))
         parseReleaseNotes(source, path);
+      // The current order's stored pull-request body has a shape: a
+      // level-one heading first, prose, the meter block last. This rule reads
+      // the current order's file only, so no historical body is judged.
+      else assertPullRequestBodyShape(source, path);
       assertGitHubBodyProfile(source, path);
     }
     return {
       pass: true,
-      line: `PASS github-body-profile: observed ${bodies.length === 0 ? "no current final-review bodies yet" : bodies.map(({ path }) => path).join(", ")}; expected one physical line per prose paragraph or list-item paragraph`,
+      line: `PASS github-body-profile: observed ${bodies.length === 0 ? "no current final-review bodies yet" : bodies.map(({ path }) => path).join(", ")}; expected one physical line per prose paragraph or list-item paragraph, and a stored pull-request body with its heading first, prose and the meter block last`,
     };
   } catch (error) {
     return {
       pass: false,
-      line: `FAIL github-body-profile: observed ${error instanceof Error ? error.message : String(error)}; expected one physical line per prose paragraph or list-item paragraph`,
+      line: `FAIL github-body-profile: observed ${error instanceof Error ? error.message : String(error)}; expected one physical line per prose paragraph or list-item paragraph, and a stored pull-request body with its heading first, prose and the meter block last`,
     };
   }
 };
@@ -1807,15 +1832,10 @@ export async function regeneratedPullRequestBody(root, workOrderId, revision) {
   const { collectMeta, renderMetaTable } = await import("./lib/meta.mjs");
   const path = docRelative(root, "finalReviews", `${workOrderId}/PR.md`);
   const source = readFileSync(join(root, path), "utf8");
-  const begin = "<!-- dotln-process-meter:start -->",
-    end = "<!-- dotln-process-meter:end -->";
-  const block = `${begin}\n${renderMetaTable(await collectMeta(root))}\n${end}`;
-  const body = source.includes(begin)
-    ? source.replace(
-        /<!-- dotln-process-meter:start -->[\s\S]*?<!-- dotln-process-meter:end -->/,
-        block,
-      )
-    : `${source.trimEnd()}\n\n${block}\n`;
+  const body = withMeterBlockLast(
+    source,
+    renderMetaTable(await collectMeta(root)),
+  );
   let repository = null;
   try {
     repository = resolveGitHubPushTarget(root);
@@ -2516,6 +2536,107 @@ const targetReleaseClassification = (root, state, revision) => {
     );
   return headers[0][1];
 };
+// The order title and the close line of a target Release text name the
+// closing order on purpose: that is the text WO-221-D006 chose, and the legacy
+// body keeps it byte for byte. The identifier rule is lifted inside that frame
+// alone; the reviewed text is judged for identifiers and every part for words.
+const KIT_FRAME_EXEMPT = ["identifier.launchpad"];
+// The Release body of a target order whose header names the reviewed notes:
+// the five sections of its RELEASE-NOTES.md at the merged revision,
+// the order title once under the overview and the close line last. The notes
+// link launchpad-relative, which resolves nowhere on the target's Release
+// page: a link to a record the records commit moved into the target is
+// written absolute to the target at the tagged commit; any other link becomes
+// its text. Absent or invalid notes refuse before any tag push.
+//
+// Only the bytes this renderer writes for a moved record (the target's
+// address, the tagged commit and the record's path) are the kit's frame. A
+// URL the notes' author wrote stays authored text under every check, even at
+// the same address, commit and bytes as a record link, and so does a query
+// or fragment the author's relative link carried, except that a fragment may
+// name the closing order's own identifiers: the close line and the moved
+// records already publish them, as a decision's anchor does.
+const targetReleaseNotesBody = (
+  root,
+  state,
+  revision,
+  { title, closeLine, forge, tagged, repository, matchLaunchpadIdentifiers },
+) => {
+  const path = releaseNotesPathFor(state.workOrderId, root);
+  const source = optionalGitFile(root, revision, path);
+  if (source === undefined)
+    throw new Error(
+      `${path}: **Target release notes:** reviewed needs the reviewed notes at the merged revision, and the file is absent; source retained`,
+    );
+  const { sections } = parseReleaseNotes(source, path);
+  const moved = new Map(
+    targetRecordSources(
+      root,
+      state,
+      eventsForOrder(readControl(root, revision), state.workOrderId),
+      repository,
+    ).map((row) => [row.source, row.path]),
+  );
+  const ownIdentifier = new RegExp(
+    `^${state.workOrderId}(?:-d[0-9]{3})?$`,
+    "iu",
+  );
+  const parts = [];
+  const recordLinks = [];
+  // A section's rendered text with each destination the rewrite wrote, at
+  // its offset in the body once the section lands after the parts before it.
+  // Every written destination is a moved record's, since an unmapped link
+  // becomes its text.
+  const links = (text) => {
+    const written = [];
+    const rendered = absoluteBodyLinks(text, {
+      from: path,
+      repository: forge,
+      revision: tagged,
+      map: (resolved) => moved.get(resolved) ?? null,
+      written,
+    });
+    const at = parts.reduce((length, [, part]) => length + part.length, 0);
+    for (const { start, end } of written) {
+      // The written path percent-encodes `?` and `#`, so the first of them
+      // starts the query or fragment the author's link carried.
+      const kitEnd = start + rendered.slice(start, end).search(/[?#]|$/u);
+      recordLinks.push({
+        name: "record link",
+        start: at + start,
+        end: at + kitEnd,
+        // A moved record's address and order path are the target's own
+        // records (WO-221), read like a path its base already holds.
+        exempt: [...KIT_FRAME_EXEMPT, "vocabulary.review"],
+      });
+      const fragment = rendered.slice(start, end).indexOf("#");
+      const fragmentStart = fragment < 0 ? end : start + fragment;
+      for (const match of matchLaunchpadIdentifiers(
+        rendered.slice(fragmentStart, end),
+      ))
+        if (ownIdentifier.test(match.identifier))
+          recordLinks.push({
+            name: "record link",
+            start: at + fragmentStart + match.start,
+            end: at + fragmentStart + match.end,
+            exempt: KIT_FRAME_EXEMPT,
+          });
+    }
+    return rendered;
+  };
+  for (const heading of releaseNoteHeadings) {
+    parts.push(["reviewed notes", `## ${heading}\n\n`]);
+    if (heading === releaseNoteHeadings[0])
+      parts.push(
+        ["order title", `**${title}**`, KIT_FRAME_EXEMPT],
+        ["", "\n\n"],
+      );
+    parts.push(["reviewed notes", `${links(sections[heading])}\n\n`]);
+  }
+  parts.push(["close line", closeLine, KIT_FRAME_EXEMPT], ["", "\n"]);
+  const body = labelledParts(parts);
+  return { text: body.text, sections: [...recordLinks, ...body.sections] };
+};
 const nextTargetVersion = (latest, classification) => {
   const parts = semver(latest);
   const axis = { major: 0, minor: 1, patch: 2 }[classification];
@@ -2527,7 +2648,7 @@ const prepareTargetRelease = async (
   root,
   state,
   revision,
-  { dryRun, publish, record, entry },
+  { dryRun, publish, record, entry, confirmTerms },
 ) => {
   const repository = loadConfig(root).repositories[state.repositoryId];
   const target = (record.publication.target = {
@@ -2571,17 +2692,29 @@ const prepareTargetRelease = async (
   // the merged commit, and the candidate name held by a
   // commit the base does not reach refuses by name.
   const tags = remoteTagsAt(url);
-  const earlier = [
+  const attempts = [
     ...(record.recoveryAttempts ?? record.previousAttempts ?? []),
   ]
     .reverse()
-    .find(
+    .filter(
       (attempt) =>
         !attempt.dryRun &&
         ["attempting", "published", "already-published"].includes(
           attempt.publication?.target?.tagOutcome,
         ),
-    )?.publication.target;
+    )
+    .map((attempt) => attempt.publication.target);
+  const earlier = attempts[0];
+  // A failed recheck can follow a completed publication. Retain that known
+  // completion while its body, tag and commit binding remain the same.
+  const completed = attempts.find(
+    (attempt) =>
+      attempt.release &&
+      attempt.body?.digest &&
+      attempt.body.digest === earlier?.body?.digest &&
+      attempt.tag === earlier.tag &&
+      attempt.commit === earlier.commit,
+  );
   const origin = entry?.origin ?? earlier?.origin;
   if (
     !origin ||
@@ -2633,9 +2766,102 @@ const prepareTargetRelease = async (
   const authority = readWorkOrderAuthority(root, state, revision, {
     versioned: false,
   });
+  // The Release text: the order names its body source; the legacy
+  // body stays byte for byte, and both pass the outward lint under the
+  // instance vocabulary and local list with the display name read as a name.
+  const displayName = repository.release.displayName ?? state.repositoryId;
+  const closeLine = `Closed by ${state.workOrderId}; merged ${repository.baseBranch} at ${tagged}.`;
+  const legacyBody = `${authority.title}\n\n${authority.objective}\n\n${closeLine}\n`;
+  const notesSource = targetReleaseNotesSource(
+    repositoryFile(root, state.workOrderPath, revision),
+    state.workOrderPath,
+  );
+  const { text: body, sections: bodySections } =
+    notesSource === "reviewed"
+      ? targetReleaseNotesBody(root, state, revision, {
+          title: authority.title,
+          closeLine,
+          forge,
+          tagged,
+          repository,
+          matchLaunchpadIdentifiers: (await import("./lib/outward-lint.mjs"))
+            .matchLaunchpadIdentifiers,
+        })
+      : labelledParts([
+          ["order title", authority.title, KIT_FRAME_EXEMPT],
+          ["", "\n\n"],
+          ["objective", authority.objective],
+          ["", "\n\n"],
+          ["close line", closeLine, KIT_FRAME_EXEMPT],
+          ["", "\n"],
+        ]);
+  const tagMessage = labelledParts([
+    ["release title", target.title],
+    ["", "\n\n"],
+    ["order title", authority.title, KIT_FRAME_EXEMPT],
+    ["", "\n\n"],
+    ["close line", closeLine, KIT_FRAME_EXEMPT],
+  ]);
+  const { lintArtifacts, reviewConfirmation } =
+    await import("./lib/target-publish.mjs");
+  const say = (line) => writeOutput(`${line}\n`);
+  const digest = digestOf(body);
+  // An attempt that pushed the tag and still owes the Release publishes the
+  // bytes it bound; changed notes or order text refuse, like a moved tag,
+  // before any review question is asked of the new bytes. A completed Release
+  // is immutable and is rechecked below against its recorded digest.
+  if (earlier?.body?.digest && !completed && earlier.body.digest !== digest)
+    throw new Error(
+      `target release body (${notesSource}) differs from the bytes the recorded attempt bound; the reviewed notes or the order text changed after the tag attempt; source retained. Restore them before retrying`,
+    );
+  // The confirmation a recorded attempt holds stands for the same digest.
+  const recordedConfirmation = earlier?.body?.confirmation?.confirmedDigest;
+  const lint = lintArtifacts(
+    root,
+    [
+      {
+        kind: "release-body",
+        text: tagMessage.text,
+        sections: tagMessage.sections,
+        exemptText: [displayName],
+      },
+      {
+        kind: "release-body",
+        text: body,
+        sections: bodySections,
+        exemptText: [displayName],
+        confirms: true,
+      },
+    ],
+    {
+      confirmTerms:
+        confirmTerms ??
+        (recordedConfirmation === digest ? recordedConfirmation : undefined),
+      preview: dryRun,
+      prefix: "target release refused: ",
+      log: say,
+    },
+  );
+  const candidateBody = {
+    source: notesSource,
+    digest,
+    review: lint.pending
+      ? { pending: lint.pending.items }
+      : lint.review
+        ? { matches: lint.review.matches }
+        : null,
+  };
+  target.body = completed ? { ...completed.body } : candidateBody;
+  if (lint.pending)
+    say(
+      `Target release body review items, confirmed at publication with --confirm-terms ${lint.pending.digest}: ${lint.pending.items.join("; ")}`,
+    );
   if (publish) ensureGhFor(clone, forge);
   target.outcome = dryRun ? "preview" : "prepared";
   if (dryRun || !publish) return;
+  candidateBody.confirmation =
+    reviewConfirmation(root, state.workOrderId, lint.review, Date.now(), say) ??
+    null;
   // The caller judges all cleanup and publication prerequisites before any
   // deletion. This closure keeps the tag, commit and origin fixed afterward.
   return () => {
@@ -2646,7 +2872,7 @@ const prepareTargetRelease = async (
           sourceRef: tagged,
           commit: tagged,
           tag,
-          message: `${target.title}\n\n${authority.title}\n\nClosed by ${state.workOrderId}; merged ${repository.baseBranch} at ${tagged}.`,
+          message: tagMessage.text,
           tagger: runGit(clone, ["var", "GIT_COMMITTER_IDENT"]),
         });
       } catch (error) {
@@ -2667,13 +2893,31 @@ const prepareTargetRelease = async (
       forge,
       tag,
       target.title,
-      `${authority.title}\n\n${authority.objective}\n\nClosed by ${state.workOrderId}; merged ${repository.baseBranch} at ${tagged}.\n`,
+      body,
       // A Release published before the display name keeps its default
-      // title; any other title still refuses, as before the name.
+      // title, and one published with the legacy body before the order
+      // named the reviewed notes keeps that body; any other title or body
+      // still refuses.
       {
         admittedTitles: [
           ...new Set([target.title, `${state.repositoryId} ${tag}`]),
         ],
+        admittedBodies: [...new Set([body, legacyBody])],
+        admittedBodyDigests: earlier?.body?.digest ? [earlier.body.digest] : [],
+        bindBody: (publishedBody) => {
+          const publishedDigest = digestOf(publishedBody);
+          target.body =
+            publishedDigest === earlier?.body?.digest
+              ? { ...earlier.body }
+              : publishedDigest === digest
+                ? candidateBody
+                : {
+                    source: "objective",
+                    digest: publishedDigest,
+                    review: null,
+                    confirmation: null,
+                  };
+        },
       },
     );
     target.outcome = target.release === "existing" ? "current" : "published";
@@ -2681,7 +2925,7 @@ const prepareTargetRelease = async (
 };
 
 const close = async (workOrderId, parsed, record) => {
-  const { flags, material: overrides } = parsed;
+  const { flags, material: overrides, confirmTerms } = parsed;
   const publish = flags.includes("--publish");
   const root = findMainWorktree(toolRoot);
   if (resolve(process.cwd()) !== root)
@@ -2743,6 +2987,7 @@ const close = async (workOrderId, parsed, record) => {
           publish,
           record,
           entry,
+          confirmTerms,
         },
       );
       try {
@@ -3297,19 +3542,25 @@ const main = async () => {
     const workOrderId = args[0];
     if (!/^WO-\d{3}$/u.test(workOrderId ?? ""))
       throw new Error(
-        "usage: release close WO-NNN [--publish] [--dry-run] [--material <path>=disposable|preserve]",
+        "usage: release close WO-NNN [--publish] [--dry-run] [--material <path>=disposable|preserve] [--confirm-terms sha256:<digest>]",
       );
     // The record exists before the flags are judged: a malformed word is
-    // recorded as a refusal, never a silent exit.
+    // recorded as a refusal, never a silent exit. `--confirm-terms`, which
+    // confirms the target Release text's review items, is read out first.
+    const closeArgs = args.slice(1);
     let parsed, parseError;
     try {
-      parsed = parseMaterialFlags(args.slice(1), ["--publish", "--dry-run"]);
+      const confirmTerms = takeConfirmTerms(closeArgs);
+      parsed = {
+        ...parseMaterialFlags(closeArgs, ["--publish", "--dry-run"]),
+        confirmTerms,
+      };
     } catch (error) {
       parseError = error;
       parsed = {
-        flags: args
-          .slice(1)
-          .filter((arg) => ["--publish", "--dry-run"].includes(arg)),
+        flags: closeArgs.filter((arg) =>
+          ["--publish", "--dry-run"].includes(arg),
+        ),
         material: [],
       };
     }
@@ -3642,16 +3893,8 @@ const main = async () => {
       // Release preparation owns the meter, while the reviewer owns creation
       // of the PR draft. A meter snapshot never manufactures review prose.
       if (existsSync(path)) {
-        const begin = "<!-- dotln-process-meter:start -->",
-          end = "<!-- dotln-process-meter:end -->";
-        const block = `${begin}\n${renderMetaTable(meta)}\n${end}`;
         const source = readFileSync(path, "utf8");
-        const next = source.includes(begin)
-          ? source.replace(
-              /<!-- dotln-process-meter:start -->[\s\S]*?<!-- dotln-process-meter:end -->/,
-              block,
-            )
-          : `${source.trimEnd()}\n\n${block}\n`;
+        const next = withMeterBlockLast(source, renderMetaTable(meta));
         if (next !== source) {
           writeFileSync(path, next);
           ancillary.push(path);

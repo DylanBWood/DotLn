@@ -1,0 +1,269 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-227",
+  "verification": "VER-002",
+  "subject": {
+    "base": "4dfb8052d670d0d9c363f9cf110cd9b8e73395fc",
+    "codeIdentity": "6b55cfdb48dc1fd3d50f9f3c7b30e0f9a5211726d8c726944bec976e2f628052"
+  },
+  "consumedGateRow": {
+    "checkId": "npm test",
+    "gateSelection": "review",
+    "requiredSuites": 40,
+    "exitCode": 0,
+    "recordedAt": "2026-10-22T18:11:18.152Z",
+    "durationMs": 1582008,
+    "missingPreflightSuites": [],
+    "displaced": null,
+    "source": "coveringGateCheck at the current identity"
+  },
+  "ver001Reproductions": {
+    "probes": {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-227/verification-001-probes.mjs",
+      "exitCode": 0,
+      "observations": [
+        {
+          "name": "C1 repeated identifiers across four kinds",
+          "meets": true
+        },
+        {
+          "name": "C1 admitted controls",
+          "meets": true
+        },
+        {
+          "name": "C1 compatibility characters and rendered markup",
+          "meets": true
+        },
+        {
+          "name": "C2 repeated public review words",
+          "meets": true
+        },
+        {
+          "name": "C2 empty and alias vocabulary",
+          "meets": true
+        },
+        {
+          "name": "C2/C4 body confirmation and base-path exclusion",
+          "meets": true
+        },
+        {
+          "name": "C4 added identifier path",
+          "meets": true
+        },
+        {
+          "name": "C3 private prose diagnostics redact the synthetic term",
+          "meets": true
+        },
+        {
+          "name": "F1 C3 private added-path diagnostics must redact the synthetic term",
+          "meets": true
+        },
+        {
+          "name": "F1 C3 private review-path diagnostics must redact the synthetic term",
+          "meets": true
+        },
+        {
+          "name": "private repeated-term count observation",
+          "meets": null
+        },
+        {
+          "name": "C3 present empty list",
+          "meets": true
+        },
+        {
+          "name": "C3 malformed marker refuses",
+          "meets": true
+        },
+        {
+          "name": "C3 absent list refuses",
+          "meets": true
+        },
+        {
+          "name": "C5 target-only deduplicated path advisory",
+          "meets": true
+        },
+        {
+          "name": "C6 ordinary structural controls",
+          "meets": true
+        },
+        {
+          "name": "F2 C6 HTML comment is not a prose paragraph",
+          "meets": true
+        },
+        {
+          "name": "F2 C6 empty code fence is not a prose paragraph",
+          "meets": true
+        },
+        {
+          "name": "F2 C6 horizontal rule is not a prose paragraph",
+          "meets": true
+        },
+        {
+          "name": "F2 C6 table only is not a prose paragraph",
+          "meets": true
+        },
+        {
+          "name": "C6 relocation preserves prose hard breaks",
+          "meets": true
+        },
+        {
+          "name": "C7 release source controls",
+          "meets": true
+        },
+        {
+          "name": "C9 complete review evidence at current identity",
+          "meets": true
+        }
+      ]
+    },
+    "releaseRecheck": {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-227/verification-001-release.mjs",
+      "exitCode": 0,
+      "observation": {
+        "probe": "repeated-completed-release-recheck",
+        "originalDigest": "sha256:a5cb834a027321152f7e08fceeaa3ff9901785d70baed0e62b63b09f2ff5e898",
+        "firstStatus": 0,
+        "firstRecordedDigest": "sha256:a5cb834a027321152f7e08fceeaa3ff9901785d70baed0e62b63b09f2ff5e898",
+        "secondStatus": 0,
+        "secondError": "",
+        "remoteBodyUnchanged": true
+      }
+    }
+  },
+  "probes": {
+    "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-227/verification-002-probes.mjs",
+    "exitCode": 0,
+    "observations": [
+      {
+        "name": "N1 refuse-mode private term in a kit record path refuses",
+        "meets": false,
+        "observed": {
+          "kitRow": {
+            "returned": {
+              "review": null
+            }
+          },
+          "addedRowControl": {
+            "error": "target publish refused: outward lint: pr-body refused: identifier.launchpad: [redacted] (line 9, Change table), vocabulary.local: refuse (line 9, Change table)"
+          },
+          "wholeBodyLint": {
+            "status": "refused",
+            "rules": [
+              "identifier.launchpad:",
+              "vocabulary.local:refuse"
+            ]
+          },
+          "termInComposedBody": true
+        }
+      },
+      {
+        "name": "N1b existing base path with the same term is not reported",
+        "meets": null,
+        "observed": {
+          "existing": {
+            "returned": {
+              "review": null
+            }
+          }
+        }
+      },
+      {
+        "name": "N2 malformed marker refuses naming the line (checker)",
+        "meets": true,
+        "observed": {
+          "checker": {
+            "error": "local-terms list line 2: a mode marker with no term"
+          }
+        }
+      },
+      {
+        "name": "N2b malformed marker at the publish surface",
+        "meets": null,
+        "observed": {
+          "publish": {
+            "error": "target publish refused: outward lint: branch refused: local-terms.configuration; pr-title refused: local-terms.configuration; pr-body refused: local-terms.configuration"
+          }
+        }
+      },
+      {
+        "name": "N3 marker spellings",
+        "meets": null,
+        "observed": {
+          "cobaltwidget": "refuse",
+          "alphabeta": "review",
+          "host8080": "review",
+          "refusegamma": "review"
+        }
+      },
+      {
+        "name": "N4 meter moves after the last prose block",
+        "meets": true,
+        "observed": {
+          "moved": "# WO-999\n\nThe prose paragraph.  \nIts hard break.\n\n- a list item\n\n<!-- dotln-process-meter:start -->\n| new |\n<!-- dotln-process-meter:end -->\n",
+          "shapeAfter": [],
+          "idempotent": true
+        }
+      },
+      {
+        "name": "N5 shape variations",
+        "meets": true,
+        "observed": {
+          "footnoteOnly": [
+            "prose-before-meter"
+          ],
+          "emptyLinkOnly": [
+            "prose-before-meter"
+          ],
+          "htmlBreakOnly": [
+            "prose-before-meter"
+          ],
+          "linkTextProse": [],
+          "publishedGate": [],
+          "gateBeforeMeter": []
+        }
+      },
+      {
+        "name": "N6 release-notes link rewriting",
+        "meets": true,
+        "observed": {
+          "rendered": "See the decisions.\nSee [the reference][ref].\n\n\n\ndiagram\nKept: [the record](https://github.com/example/target/blob/cccccccccccccccccccccccccccccccccccccccc/records/work-orders/WO-006-moved.md)."
+        }
+      },
+      {
+        "name": "N7 target planning publish names an unaccepted flag",
+        "meets": null,
+        "observed": {
+          "planning": {
+            "error": "target publish refused: outward lint: 3 review items wait for the reviewer: commit: vocabulary.review: gem (line 1); pr-title: vocabulary.review: gem (line 1); pr-body: vocabulary.review: gem (line 3). Read them in the composed body, then rerun with --confirm-terms sha256:172d81200c5c8fb2f1427db4b15d861d0e660778610afbdb0732e28e3daab338"
+          }
+        }
+      }
+    ]
+  },
+  "kitRowReproduction": {
+    "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-227/verification-002-kit-row.mjs",
+    "exitCode": 1,
+    "expected": "the reviewed publish refuses with vocabulary.local: refuse and no term",
+    "observed": {
+      "probe": "kit-row-refuse-term",
+      "recordsStatus": 0,
+      "recordsStderr": "Advisory: attestation recorded as supplied; human not-applicable effort unknown has no matching discovery observation.\n",
+      "publishStatus": 0,
+      "publishStdout": "Pushed feat/board at e5b197fbbf760efe206758a2059313505d661097 and opened pull request #7 on github.com/dotln-fixture/target.\n",
+      "publishStderr": "",
+      "publishedRow": "| docs/work-orders/WO-999-fixture.md | 5 | 0 |"
+    }
+  },
+  "checks": {
+    "npm run format:check": 0,
+    "git diff --check": 0,
+    "package.json, package-lock.json, packages, .claude/skills, .agents/skills unchanged": true
+  },
+  "historicalBodies": {
+    "method": "pullRequestBodyShapeFailures over every docs/final-reviews/*/PR.md at the current tree; observation only, no gate reads these",
+    "stored": 183,
+    "wouldFail": 51,
+    "includesWO226": true,
+    "currentOrderCheckSurfaces": "node scripts/release.mjs check-surfaces --local: PASS github-body-profile: observed no current final-review bodies yet"
+  }
+}

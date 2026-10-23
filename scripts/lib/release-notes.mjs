@@ -256,3 +256,24 @@ export const parseReleaseNotes = (markdown, displayPath) => {
 
   return { sections };
 };
+
+/** The body source a target order names for its Release (WO-227): the header
+ * `**Target release notes:** reviewed` makes the Release body the order's
+ * rendered RELEASE-NOTES.md; `objective`, or no header, keeps the title,
+ * objective and close line. More than one header, or another word, refuses. */
+export const targetReleaseNotesSource = (markdown, displayPath) => {
+  const headers = [
+    ...markdown.matchAll(/^\*\*Target release notes:\*\*[ \t]*(\S+)/gmu),
+  ];
+  if (!headers.length) return "objective";
+  if (headers.length > 1)
+    throw new Error(
+      `${displayPath}: carries ${headers.length} **Target release notes:** headers; at most one is read`,
+    );
+  const value = headers[0][1].replace(/[.,;]$/u, "");
+  if (!["reviewed", "objective"].includes(value))
+    throw new Error(
+      `${displayPath}: **Target release notes:** must be reviewed or objective, not ${value}`,
+    );
+  return value;
+};

@@ -43197,6 +43197,201 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-ca1f0cdb7c785d6a",
+      "key": "decision:docs/evidence/WO-227/decisions.md#wo-227-d017",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "b16b7cee2bdc82f8b68fb1449e6024f2f787583d840a5b9012758c881dcd456f",
+          "ref": "docs/evidence/WO-227/decisions.md#wo-227-d017--verification-routes-three-reproduced-defects-to-repair",
+          "title": "WO-227-D017: WO-227 repair: preserve private-term redaction when a finding names a generated path, recognize a real prose paragraph before the meter, and retain the digest of the body actually…",
+          "summary": "{ \"id\": \"WO-227-D017\", \"date\": \"2026-10-22\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-001 fails criteria 3, 6 and 7. F1: lintArtifacts appends the raw generated path to private-term diagnostics, exposing a synthetic refuse-mode or review-mode term in src/cobaltwidget.ts. F2: pullRequestBodyShapeFailures treats any nonempty non-heading line as prose, so an HTML comment, empty code fence, thematic break or table alone satisfies prose-before-meter. F3: a completed reviewed Release recheck after edited notes succeeds but replaces the recorded body digest with the unpublished candidate's digest; a second identical recheck then refuses the unchanged Release. These are reproduced failures of ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-227 repair implements VER-001 F1-F3 in D020-D022. The current-identity complete review row passes 40 suites and 106 fresh tasks; saved verifier probes reproduce redaction, prose and repeated-release corrections. See docs/evidence/WO-227/repair-ver001-evidence.json and handoff.md. Independent re-verification remains the next lifecycle dispatch.",
+          "reopenWhen": "Independent re-verification or an observed publication shows a private diagnostic disclosure, a non-prose body admitted as prose, or a lost published Release binding.",
+          "targets": [],
+          "at": "2026-10-22T18:15:57.229Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-841dca0ce87623e2",
+      "key": "decision:docs/evidence/WO-227/decisions.md#wo-227-d018",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "22ea8400738e79e54168ab44a0cafed00ca2cc34f17ddb6d16fad9aa781f3941",
+          "ref": "docs/evidence/WO-227/decisions.md#wo-227-d018--board-the-domain-model-write-back-gap",
+          "title": "WO-227-D018: Planner or next authorized product-document writer: reconcile product 02's private exclusion list paragraph with the publication review/refuse modes and present-empty behavior while…",
+          "summary": "{ \"id\": \"WO-227-D018\", \"date\": \"2026-10-22\", \"dispatch\": \"resume: verify\", \"decision\": \"Keep criterion 8 met on its named write-back surfaces, and board the planning carry-in about product 02. Its Harness compiler v1 paragraph still says a present private exclusion list must pass and does not explain review-mode publication confirmation or a present empty list. The named product 07, product 08, kit README and docs map updates are present; product 02 is outside that criterion's named write-backs.\", \"evidence\": [ \"docs/product/02-domain-model.md, Harness compiler v1, private exclusion list paragraph\", \"The verify dispatch's planning receipt 052 carry-in for criterion 8\", \"docs/product/07-execu",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-b499375b96131fba",
+      "key": "decision:docs/evidence/WO-227/decisions.md#wo-227-d019",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "fdd94cf9491277b16f092683fe266fd850e5982d7f76c9c40909fa25a55c31dc",
+          "ref": "docs/evidence/WO-227/decisions.md#wo-227-d019--retain-the-identifier-normalization-limitation-as-a-follow-up",
+          "title": "WO-227-D019: Next outward-identifier normalization work: decide and test handling of invisible format characters consistently across subjects, titles and rendered bodies, using the U+200B probe…",
+          "summary": "{ \"id\": \"WO-227-D019\", \"date\": \"2026-10-22\", \"dispatch\": \"resume: verify\", \"decision\": \"Reproduce the executor adversary's zero-width-character limitation and record its actual boundary: inserting U+200B between the hyphen and digits of WO-006 produces no identifier finding in a commit subject, pull-request title or pull-request body. The body result broadens the earlier report's subject/title observation. Criterion 1's seven literal forms, repeated forms, compatibility-width spellings and rendered HTML-split body controls pass; the invisible-character variant is a nonblocking normalization follow-up.\", \"evidence\": [ \"docs/evidence/WO-227/self-review.md adversary item 7 and WO-227-D014\", \"do",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-182e789079d09c25",
+      "key": "decision:docs/evidence/WO-227/decisions.md#wo-227-d024",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "b441a1cbd2bc19038305152ec216a693ae7e081fb373311c174970b2ffdbfdf9",
+          "ref": "docs/evidence/WO-227/decisions.md#wo-227-d024--verification-routes-the-kit-row-private-term-exemption-to-repair",
+          "title": "WO-227-D024: WO-227 repair: a kit-written Change row is exempt from identifier.launchpad only; private-list findings in either mode keep applying on it (refuse refuses; review joins the review list),…",
+          "summary": "{ \"id\": \"WO-227-D024\", \"date\": \"2026-10-22\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-002 fails criterion 3. lintArtifacts drops every finding but text.control-character on a Change row the kit's records commit wrote, so a refuse-mode private term carried by a moved record's path (the order file's basename) neither refuses nor joins the review list, and the reviewed target publish pushes it. main linted the whole composed body and refused that row; product 07's Outward artifacts bullet and the kit README say kit records are exempt from identifier.launchpad alone and that refuse-mode terms refuse in an added path. VER-001's F1 to F3 repairs hold. The verifier leaves the implementation u",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-227-D027 narrows kit-record-path exemption to identifier.launchpad only. The complete review passes all 40 suites, the original N1 probe now refuses with redacted diagnostics, and repair-ver002-kit-row.mjs proves refusal before forge or push effects. Independent re-verification remains the next lifecycle dispatch.",
+          "reopenWhen": "Independent verification reproduces a private-term bypass or diagnostic leak on a new kit record path.",
+          "targets": [],
+          "at": "2026-10-22T19:17:15.923Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-5bf0550d188b227b",
+      "key": "decision:docs/evidence/WO-227/decisions.md#wo-227-d025",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "8d26a8b88444cc424b1544c533fe6c22aa7aee65eac27284dc72c905173e1829",
+          "ref": "docs/evidence/WO-227/decisions.md#wo-227-d025--board-the-target-planning-publications-confirmation-gap",
+          "title": "WO-227-D025: Next outward-lint or target-planning work: give plan target-publish the --confirm-terms route the other target publishes have, or print a remedy that route accepts, and use its own…",
+          "summary": "{ \"id\": \"WO-227-D025\", \"date\": \"2026-10-22\", \"dispatch\": \"resume: verify\", \"decision\": \"Board, not block: `plan target-publish` calls lintArtifacts with no confirmation option, so a review word in its branch, title or body now refuses with `rerun with --confirm-terms sha256:…`, a flag its command rejects as usage. main refused the same text under vocabulary.launchpad, so nothing main published is now refused; the route is outside the order's criteria and declared surfaces, which name publishTargetDraft, publishTargetWorktree and the Release close.\", \"evidence\": [ \"docs/evidence/WO-227/verification-002-probes.mjs N7: the refusal names --confirm-terms and carries the default `target publish re",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-1b94e79e02e54e70",
+      "key": "decision:docs/evidence/WO-227/decisions.md#wo-227-d026",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "1b62da1b0d2472341ad296c244f00c3f602e1e7fb9a0cce40a6e085eb39f6e70",
+          "ref": "docs/evidence/WO-227/decisions.md#wo-227-d026--board-the-publish-surface-wording-of-a-malformed-private-list-marker",
+          "title": "WO-227-D026: Next outward-lint work: let the publish refusal for a malformed private list name the list line (never a term), or point at npm run terms -- check.",
+          "summary": "{ \"id\": \"WO-227-D026\", \"date\": \"2026-10-22\", \"dispatch\": \"resume: verify\", \"decision\": \"Board, not block: a mode marker with no term makes checkLocalTerms throw `local-terms list line N: a mode marker with no term`, which step 3 requires and the kit README documents, but the outward adapter turns that exception into status error, so a target publish refuses with `local-terms.configuration` on every artifact and no line. main gave the same unlocated refusal for a malformed list, and the terms check names the line.\", \"evidence\": [ \"docs/evidence/WO-227/verification-002-probes.mjs N2 and N2b\", \"scripts/outward-lint.mjs observeLocalTerms returns { status: \\\"error\\\" } for any exception other than",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-92ba1ed0802639ce",
+      "key": "decision:docs/evidence/WO-227/decisions.md#wo-227-d028",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "32994bf672bea4a1b75e31ae0b43f161d43691a78e99cfb53b9cc67aed97b948",
+          "ref": "docs/evidence/WO-227/decisions.md#wo-227-d028--board-the-crlf-byte-change-of-the-meter-relocation",
+          "title": "WO-227-D028: Next github-body or release-prepare work: make withMeterBlockLast preserve the body's own line ending (trim CR LF pairs around the lifted block and join with the body's ending), with a…",
+          "summary": "{ \"id\": \"WO-227-D028\", \"date\": \"2026-10-22\", \"dispatch\": \"resume: verify\", \"decision\": \"Board, not block: withMeterBlockLast trims only LF around the lifted meter block and joins with LF, so a CRLF stored body whose meter sits between the heading and the prose comes back with mixed line endings (`# T\\\\r\\\\n\\\\r\\\\n\\\\n\\\\r\\\\n\\\\r\\\\nProse.\\\\r\\\\n\\\\n<meter>`), changing bytes outside the block. The shape check still passes and the rendered Markdown only gains blank lines. The input is not reachable through the lifecycle: git diff --check, which every completion runs, reports each CRLF line as trailing whitespace under this repository's default core.whitespace, and none of the 183 tracked stored PR.md ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-1d0c6e7432372b1a",
+      "key": "decision:docs/evidence/WO-227/decisions.md#wo-227-d030",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "a3f5164c83214d875dbc2733d63ee0ea429e15a77545972d857e331d8e83a27b",
+          "ref": "docs/evidence/WO-227/decisions.md#wo-227-d030--final-review-routes-the-authored-release-link-exemption-to-repair",
+          "title": "WO-227-D030: WO-227 repair: bind the Release-link exemption to destinations actually generated from the moved-record mapping, with source spans preserved; an author-written target URL must retain…",
+          "summary": "{ \"id\": \"WO-227-D030\", \"date\": \"2026-10-22\", \"dispatch\": \"resume: final review\", \"decision\": \"Fail criterion 7: targetReleaseNotesBody identifies generated record links by a regex over the completed body that accepts every URL under the target repository's blob path at the tagged commit. An author-written absolute URL to docs/WO-006-notes.md, a path absent from the target and from the moved-record mapping, therefore receives the identifier.launchpad exemption. The synthetic close exits 0 and publishes the identifier in the Release; the otherwise identical link at another revision refuses before any tag push. This is an escape present at VER-003's code identity, not an integration defect. Kee",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-227-D031 binds the Release record-link exemption to the destinations absoluteBodyLinks itself wrote, carried as offsets; every byte the notes' author wrote is judged, including a target URL at the tagged commit and a record link's query or fragment, while a fragment may name the closing order's own identifiers. FINAL-001's saved probe docs/evidence/WO-227/final-review-release.mjs refuses both arms before any tag push; VER-004 confirmed the authored-URL class repaired across five variants, VER-005 and VER-006 reran it, and FINAL-002 reran it with repair-final001-links.mjs and repair-final001-release.mjs at the integrated identity fb8927c9ee2a173f56cbd05a2a647eda6437f9c2d6c9adc60036bd01a895026d, each exit 0.",
+          "reopenWhen": "An author-written target URL, or the query or fragment of a record link, receives the record-link exemption in a target Release body, or a record link the renderer wrote for a moved record is reported as a finding.",
+          "targets": [],
+          "at": "2026-10-23T01:13:45.964Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-5df244acdc3b9eb7",
+      "key": "decision:docs/evidence/WO-227/decisions.md#wo-227-d032",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c8d738906b49727ea319e684c3275286fdfd83ba9d61c84fef00c065100a8f35",
+          "ref": "docs/evidence/WO-227/decisions.md#wo-227-d032--require-the-whole-match-to-fit-a-generated-link-exemption",
+          "title": "WO-227-D032: WO-227 repair: apply a rule exemption only when the complete matched span is inside the authorized exempt region. Keep section labeling separate if necessary. Cover compound review terms…",
+          "summary": "{ \"id\": \"WO-227-D032\", \"date\": \"2026-10-22\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-004 fails criterion 7. FINAL-001’s authored-URL reproduction is repaired, but a public review-term match crossing from a generated record path into an authored fragment or query is still suppressed. With reviewTerms [\\\"md launchpad\\\"], the renderer’s decisions.md#launchpad contains the match md#launchpad. The generated span ends before #, while lintOutwardArtifact selects an exempt section from the match’s start alone and drops the whole finding. The synthetic release close publishes without --confirm-terms, with review and confirmation both null. This violates criterion 7’s required review confirmati",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-227-D033 lifts a rule only from a finding whose every byte lies in a part or row that exempts it: lintOutwardArtifact checks the span's start and each part edge inside it, and lintArtifacts lifts the base-held and kit-record row exemptions only when the finding ends inside its row. VER-005 confirmed VER-004's saved probe verification-004-probes.mjs refuses the compound term before any tag or Release, VER-006 reran it, and FINAL-002 reran it with repair-ver004-spans.mjs at the integrated identity, each exit 0; the in-memory boundary probe stays filed as VER-004 wrote it and fails only at its pre-repair precondition.",
+          "reopenWhen": "A finding whose span runs out of an exempting part, Change row or display name into other text is dropped, shown by a probe or a published artifact; or a new exemption decides by a single offset.",
+          "targets": [],
+          "at": "2026-10-23T01:13:46.072Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-f106e6391fd5dd16",
+      "key": "decision:docs/evidence/WO-227/decisions.md#wo-227-d034",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c98f0eab96483c5a472f9425533a13ea356ab2ba3ede27b7f0b43b6e3418eba6",
+          "ref": "docs/evidence/WO-227/decisions.md#wo-227-d034--preserve-the-extent-of-a-private-match-across-change-rows",
+          "title": "WO-227-D034: WO-227 repair: retain the full contributing extent of private-term matches through the redacted checker and outward adapter so an existing Change row exempts only a match wholly inside…",
+          "summary": "{ \"id\": \"WO-227-D034\", \"date\": \"2026-10-22\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-005 fails criterion 3. D033 repairs exact public match spans, but private findings retain only the match's starting line. A synthetic private term 0day starts in the removed-count 0 of a base-held a.txt row and ends in the added day.md row. checkOutwardArtifact detects it in refuse or review mode; lintArtifacts drops it because the reported first-line span lies wholly in the base-held row. The draft publication fixture exits 0, pushes its local fixture branch and creates its fake pull request despite refuse mode, with no confirmation. Explicit review and unmarked modes also return review null in the s",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-227-D035 carries each private match's starting line, ending line and mode through the redacted checker and the outward adapter, so a base-held Change row exempts only a match wholly inside it; crossing refuse matches refuse before publication, crossing review matches wait for confirmation, and every contributing row stays redacted. VER-006 judged criterion 3 met with its range probe over header, summary, three-row, CR and CRLF variants, and FINAL-002 reran verification-005-probes.mjs, verification-005-publish.mjs and verification-006-probes.mjs at the integrated identity, each exit 0.",
+          "reopenWhen": "A private match that crosses out of a base-held or kit-record Change row publishes without refusal or confirmation, a diagnostic names a private term or its columns, or a caller needs finer-than-line private exemptions and the privacy contract D035 names is not yet written.",
+          "targets": [],
+          "at": "2026-10-23T01:13:46.178Z"
+        }
+      ]
     }
   ]
 }

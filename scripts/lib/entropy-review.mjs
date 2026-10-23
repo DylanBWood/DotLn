@@ -827,7 +827,8 @@ async function fileReceipt(root, { payload, kind }) {
       ordinal: filings.length + 1,
       previousReceiptHash: previous?.receiptHash ?? null,
       ...payload,
-      localTerms,
+      // The receipt records the list's presence alone, never its term count.
+      localTerms: { status: localTerms.status },
     };
     const receipt = { ...body, receiptHash: sha256(JSON.stringify(body)) };
     const rendered = renderReceipt(receipt);

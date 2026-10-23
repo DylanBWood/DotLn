@@ -12,6 +12,7 @@ import {
 import { readControl, eventsForOrder } from "./control-store.mjs";
 import {
   reviewedTargetSubject,
+  targetRecordSources,
   targetWorktreeForOrder,
 } from "./target-worktrees.mjs";
 import { containedRegularFile } from "./paths.mjs";
@@ -21,6 +22,7 @@ import { checkTargetHarness } from "./harness.mjs";
 
 import { createHash } from "node:crypto";
 import {
+  appendFileSync,
   existsSync,
   mkdtempSync,
   readFileSync,
@@ -45,19 +47,26 @@ import {
 import { repairContract } from "../../packages/skeleton/dist/src/repair.js";
 import { hasAiAttribution } from "../../packages/compiler/src/attribution.mjs";
 import { checkOutwardArtifact } from "../outward-lint.mjs";
-import { outwardFindingText } from "./outward-lint.mjs";
+import { isReviewFinding, outwardFindingText } from "./outward-lint.mjs";
 import { targetCommits } from "./target-commit-lint.mjs";
 import {
   acceptanceStatuses,
   deliverableReady,
   deliveryContractHash,
   assertGitHubBodyProfile,
+  composeTargetBody,
   generateTargetPullRequest,
   targetNativeReference,
-  targetChangeSection,
   targetGateSection,
   withTemporaryBody,
 } from "./github-body.mjs";
+import { claudeSessionReport } from "./harness-runtime.mjs";
+import {
+  recordingSession,
+  sessionHarness,
+  sessionJournalKey,
+} from "./off-ramps.mjs";
+import { CONFIRM_TERMS, digestOf } from "./confirm-terms.mjs";
 import {
   ensureGh,
   executeGh,
@@ -80,6 +89,97 @@ export const PUBLICATION_EFFECTS = Object.freeze([
 export const TARGET_PUBLISH_HOST = "target-publish-host";
 
 const refuse = (reason) => new Error(`target publish refused: ${reason}`);
+/** Which of the changed paths the target's base tree already holds: a Change
+ * row of such a path is the target's own vocabulary and is not reported. */
+const baseTreePaths = (repo, baseCommit, paths) =>
+  new Set(
+    runGit(
+      repo,
+      [
+        ...HOST_GIT_READ,
+        "ls-tree",
+        "-r",
+        "--name-only",
+        "-z",
+        baseCommit,
+        "--",
+        ...paths,
+      ],
+      { trim: false },
+    )
+      .split("\0")
+      .filter(Boolean),
+  );
+/** What the confirming session reports of itself: the harness its session
+ * variable names, the selected effort Claude Code exports and the role its
+ * journal recorded; `unknown` where the host reports nothing, never an
+ * invented readback. No harness reads a model back, so the model stays
+ * unknown; the field keeps the attestation's shape. */
+const confirmationAttestation = (launchpad, env = process.env) => {
+  const claude = claudeSessionReport(env);
+  return {
+    harness: sessionHarness(env),
+    model: "unknown",
+    effort: claude?.session.effort ?? "unknown",
+    source: claude ? "claude-session-readback" : "unavailable",
+    role: recordingSession(launchpad, env).role,
+  };
+};
+/** Append the confirmation to the running session's harness journal, the
+ * `.jsonl` the hooks opened under the session id's digest. Without an
+ * observable journal the row is unobserved and nothing is written elsewhere. */
+const recordConfirmationRow = (
+  launchpad,
+  workOrderId,
+  confirmation,
+  env = process.env,
+) => {
+  const key = sessionJournalKey(env);
+  if (!key) return "unobserved";
+  const path = docPath(launchpad, "control", `local/harness/${key}.jsonl`);
+  if (!existsSync(path) || !lstatSync(path).isFile()) return "unobserved";
+  appendFileSync(
+    path,
+    `${JSON.stringify({
+      recordedAt: confirmation.recordedAt,
+      typedEvent: "ReviewTermsConfirmed",
+      eventId: `review-terms:${confirmation.confirmedDigest}`,
+      workOrder: workOrderId,
+      confirmedDigest: confirmation.confirmedDigest,
+      matches: confirmation.matches,
+      attestation: confirmation.attestation,
+    })}\n`,
+    { mode: 0o600 },
+  );
+  return "recorded";
+};
+/** The recorded confirmation of a publication's review items: the confirmed
+ * digest, the match count and the confirming session's attestation, written
+ * to the publication record by the caller and to the session journal here. */
+export const reviewConfirmation = (
+  launchpad,
+  workOrderId,
+  review,
+  now,
+  log,
+) => {
+  if (!review) return undefined;
+  const confirmation = {
+    confirmedDigest: review.confirmedDigest,
+    matches: review.matches,
+    attestation: confirmationAttestation(launchpad),
+    recordedAt: new Date(now).toISOString(),
+  };
+  confirmation.journal = recordConfirmationRow(
+    launchpad,
+    workOrderId,
+    confirmation,
+  );
+  log(
+    `Review items confirmed: ${review.matches} match${review.matches === 1 ? "" : "es"} under ${review.confirmedDigest}; journal row ${confirmation.journal}.`,
+  );
+  return confirmation;
+};
 const same = (left, right) =>
   canonicalStringify(left) === canonicalStringify(right);
 const matches = (pattern, effect) =>
@@ -877,6 +977,7 @@ export function publishTargetDraft({
   branch,
   title,
   body,
+  confirmTerms,
   now = Date.now(),
   log = (line) => process.stdout.write(`${line}\n`),
 }) {
@@ -996,18 +1097,26 @@ export function publishTargetDraft({
     );
   const draftCommit = commit.stdout.trim();
   const changes = targetChanges(entry.target, state.baseCommit, draftCommit);
-  const publishedBody = `${body.trimEnd()}\n\n${targetChangeSection({ baseCommit: state.baseCommit, headCommit: draftCommit, files: changes.files })}\n`;
-  lintArtifacts(main, [
-    { kind: "branch", text: branch },
-    { kind: "commit", text: title },
-    { kind: "pr-title", text: title },
-    { kind: "pr-body", text: publishedBody },
-  ]);
-  assertGitHubBodyProfile(publishedBody, "draft target body");
-  if (hasAiAttribution(title) || hasAiAttribution(publishedBody))
-    throw refuse("target publication contains AI attribution");
+  const {
+    text: publishedBody,
+    sections,
+    rows,
+  } = composeTargetBody({
+    body,
+    baseCommit: state.baseCommit,
+    headCommit: draftCommit,
+    files: changes.files,
+    baseTree: baseTreePaths(
+      entry.target,
+      state.baseCommit,
+      changes.files.map((file) => file.path),
+    ),
+  });
   // The lane fetches a ref, so the draft commit gets one under refs/dotln;
-  // no branch moves and the index is untouched.
+  // no branch moves and the index is untouched. The prepared commit is
+  // recorded before the body is judged: a refusal the reviewer answers by
+  // rereading or confirming the body must meet the same commit again, so the
+  // composed body and the digest the refusal printed stay what they were.
   const sourceRef = `refs/dotln/draft/${workOrderId}`;
   read(["update-ref", sourceRef, draftCommit]);
   publication.acquire();
@@ -1031,6 +1140,26 @@ export function publishTargetDraft({
       });
       publication.append(event);
     }
+    const { review } = lintArtifacts(
+      main,
+      [
+        { kind: "branch", text: branch },
+        { kind: "commit", text: title },
+        { kind: "pr-title", text: title },
+        { kind: "pr-body", text: publishedBody, sections, rows },
+      ],
+      { confirmTerms, log },
+    );
+    assertGitHubBodyProfile(publishedBody, "draft target body");
+    if (hasAiAttribution(title) || hasAiAttribution(publishedBody))
+      throw refuse("target publication contains AI attribution");
+    const confirmation = reviewConfirmation(
+      launchpad,
+      workOrderId,
+      review,
+      now,
+      log,
+    );
     const resolved = ensureGh(entry.target);
     if (resolved.selector.toLowerCase() !== forge.identity)
       throw refuse("origin differs from the bound target repository");
@@ -1058,7 +1187,11 @@ export function publishTargetDraft({
         title,
         publishedBody,
       );
-      payload = { ...previous, headSha: draftCommit };
+      payload = {
+        ...previous,
+        headSha: draftCommit,
+        ...(confirmation ? { confirmation } : {}),
+      };
     } else {
       const created = withTemporaryBody(publishedBody, (bodyPath) =>
         executeGh(entry.target, [
@@ -1116,6 +1249,7 @@ export function publishTargetDraft({
         headSha: draftCommit,
         draft: true,
         branch,
+        ...(confirmation ? { confirmation } : {}),
       };
     }
     const { event } = appendEvent(publication.read(), {
@@ -1151,6 +1285,7 @@ export function publishTargetWorktree({
   branch,
   title,
   body,
+  confirmTerms,
   now = Date.now(),
   log = (line) => process.stdout.write(`${line}\n`),
 }) {
@@ -1225,16 +1360,43 @@ export function publishTargetWorktree({
     throw refuse(
       `target changes include installed bundle files: ${bundleChanges.map((file) => file.path).join(", ")}`,
     );
-  const publishedBody = `${body.trimEnd()}\n\n${targetChangeSection({ baseCommit: subject.baseCommit, headCommit: records.commit, files: changes.files })}\n\n${targetGateSection(gate)}\n`;
-  lintArtifacts(main, [
-    { kind: "branch", text: branch },
-    ...changes.commits.map(({ message }) => ({
-      kind: "commit",
-      text: message,
-    })),
-    { kind: "pr-title", text: title },
-    { kind: "pr-body", text: publishedBody },
-  ]);
+  const {
+    text: publishedBody,
+    sections,
+    rows,
+  } = composeTargetBody({
+    body,
+    baseCommit: subject.baseCommit,
+    headCommit: records.commit,
+    files: changes.files,
+    baseTree: baseTreePaths(
+      entry.target,
+      subject.baseCommit,
+      changes.files.map((file) => file.path),
+    ),
+    kitPaths: new Set(
+      targetRecordSources(
+        launchpad,
+        state,
+        eventsForOrder(control, workOrderId),
+        repository,
+      ).map((row) => row.path),
+    ),
+    gate: targetGateSection(gate),
+  });
+  const { review: confirmedReview } = lintArtifacts(
+    main,
+    [
+      { kind: "branch", text: branch },
+      ...changes.commits.map(({ message }) => ({
+        kind: "commit",
+        text: message,
+      })),
+      { kind: "pr-title", text: title },
+      { kind: "pr-body", text: publishedBody, sections, rows },
+    ],
+    { confirmTerms, log },
+  );
   assertGitHubBodyProfile(publishedBody, "reviewed target body");
   if (
     hasAiAttribution(title) ||
@@ -1257,6 +1419,13 @@ export function publishTargetWorktree({
     boundUrl,
     publication,
     workstreamId: workOrderId,
+    confirmation: reviewConfirmation(
+      launchpad,
+      workOrderId,
+      confirmedReview,
+      now,
+      log,
+    ),
     now,
     log,
   });
@@ -1275,6 +1444,7 @@ export function publishBoundTargetCommit({
   boundUrl,
   publication,
   workstreamId,
+  confirmation,
   now,
   log,
 }) {
@@ -1336,6 +1506,7 @@ export function publishBoundTargetCommit({
         number: draft.number,
         headSha: commit,
         reusedDraft: draft.headSha,
+        ...(confirmation ? { confirmation } : {}),
       };
       const { event } = appendEvent(publication.read(), {
         schemaVersion: 1,
@@ -1381,6 +1552,7 @@ export function publishBoundTargetCommit({
       repositoryId: forge.selector,
       number,
       headSha: commit,
+      ...(confirmation ? { confirmation } : {}),
     };
     const { event } = appendEvent(publication.read(), {
       schemaVersion: 1,
@@ -1668,27 +1840,127 @@ function readinessArtifacts(request, episode, target, workOrder, bodyInputs) {
   };
 }
 
-export function lintArtifacts(launchpad, artifacts) {
+/** Lint one target publication's artifacts: its branch, commits, title and
+ * composed body. Launchpad identifiers refuse in each. A `pr-body` artifact
+ * may carry the composed body's `sections` and the Change table's `rows`, so
+ * a finding names the part it sits in and, in a Change row, the added path,
+ * while a row whose path the target's base already held is not reported.
+ * Review items (listed review words, review-mode private terms) refuse until
+ * `confirmTerms` names the composed body's digest; the confirmed review is
+ * returned for the publication record. */
+export function lintArtifacts(
+  launchpad,
+  artifacts,
+  {
+    confirmTerms,
+    log,
+    prefix = "target publish refused: ",
+    preview = false,
+  } = {},
+) {
+  const fail = (reason) => new Error(`${prefix}${reason}`);
+  if (confirmTerms !== undefined && !CONFIRM_TERMS.test(confirmTerms))
+    throw fail(
+      "--confirm-terms takes sha256:<64 hex digits>, the composed body's digest a refusal prints",
+    );
   const failures = [];
-  for (const { kind, text } of artifacts) {
-    const result = checkOutwardArtifact(launchpad, { kind, text });
-    if (result.status === "pass") continue;
-    const rules = [
+  const items = [];
+  const advisories = new Set();
+  let digest;
+  for (const {
+    kind,
+    text,
+    sections,
+    rows,
+    exemptText,
+    confirms = kind === "pr-body",
+  } of artifacts) {
+    const result = checkOutwardArtifact(launchpad, {
+      kind,
+      text,
+      target: true,
+      sections,
+      exemptText,
+    });
+    for (const advisory of result.advisories) advisories.add(advisory);
+    // Local observations cover every line of a match, not its exact text.
+    // Every diagnostic on those lines must avoid quoting their source, even
+    // when a public word or identifier shares the private term's Change row.
+    const privateSpans = result.findings
+      .filter((finding) => finding.rule === "vocabulary.local")
+      .map((finding) => finding.span);
+    const overlapsPrivate = (span) =>
+      span &&
+      privateSpans.some(
+        (local) => local.start < span.end && span.start < local.end,
+      );
+    const findings = [];
+    for (const finding of result.findings) {
+      const row = rows?.find(
+        (candidate) =>
+          finding.span &&
+          candidate.start <= finding.span.start &&
+          finding.span.start < candidate.end,
+      );
+      // A row lifts a rule only over its own bytes: a match that runs on into
+      // the next row or the table's summary line is still reported.
+      const inRow = row && finding.span.end <= row.end;
+      if (inRow && row.existed && finding.rule !== "text.control-character")
+        continue;
+      // Moved records keep their launchpad identifiers by design. Their
+      // paths still receive every other check, including private terms.
+      if (inRow && row.kit && finding.rule === "identifier.launchpad") continue;
+      const redacted = overlapsPrivate(finding.span) || overlapsPrivate(row);
+      findings.push({
+        ...finding,
+        redacted,
+        ...(row && !redacted ? { path: row.path } : {}),
+      });
+    }
+    const describe = (finding) => {
+      const detail =
+        finding.redacted && finding.rule !== "vocabulary.local"
+          ? `${finding.rule}: [redacted]`
+          : outwardFindingText(finding, text);
+      return finding.span
+        ? `${detail} (line ${finding.span.line}${finding.section ? `, ${finding.section}` : ""}${finding.path ? `, path ${finding.path}` : ""})`
+        : detail;
+    };
+    const refusing = [
       ...new Set(
-        result.findings.map((finding) =>
-          finding.span
-            ? `${outwardFindingText(finding, text)} (line ${finding.span.line})`
-            : outwardFindingText(finding, text),
-        ),
+        findings.filter((finding) => !isReviewFinding(finding)).map(describe),
       ),
     ];
-    failures.push(
-      result.status === "unavailable"
-        ? `${kind} unavailable: local-terms list absent`
-        : `${kind} refused: ${rules.join(", ")}`,
-    );
+    if (result.status === "unavailable")
+      failures.push(`${kind} unavailable: local-terms list absent`);
+    else if (refusing.length)
+      failures.push(`${kind} refused: ${refusing.join(", ")}`);
+    for (const finding of findings.filter(isReviewFinding))
+      items.push(`${kind}: ${describe(finding)}`);
+    if (confirms) digest = digestOf(text);
   }
-  if (failures.length) throw refuse(`outward lint: ${failures.join("; ")}`);
+  // The vocabulary's advisories print whatever the lint decides, so a refusal
+  // on another rule still tells the operator about the key to rename.
+  for (const advisory of advisories) log?.(`Advisory: ${advisory}`);
+  if (failures.length) throw fail(`outward lint: ${failures.join("; ")}`);
+  if (!items.length) return { review: null };
+  const count = `${items.length} review item${items.length === 1 ? "" : "s"}`;
+  if (digest === undefined)
+    throw fail(
+      `outward lint: ${count} with no composed body to confirm: ${items.join("; ")}`,
+    );
+  // A preview (a dry run) reports the items and the digest without refusing.
+  if (confirmTerms !== digest && preview)
+    return { review: null, pending: { digest, items } };
+  if (confirmTerms !== digest)
+    throw fail(
+      `outward lint: ${count} ${items.length === 1 ? "waits" : "wait"} for the reviewer: ${items.join("; ")}. ${
+        confirmTerms
+          ? `--confirm-terms names another body; the composed body is ${digest}`
+          : `Read them in the composed body, then rerun with --confirm-terms ${digest}`
+      }`,
+    );
+  return { review: { confirmedDigest: digest, matches: items.length } };
 }
 
 function readPublication(publication, commit) {
@@ -1706,6 +1978,7 @@ export function publishTargetOrder({
   registry,
   requireDeliverableReady = false,
   preview = false,
+  confirmTerms,
   now = Date.now(),
   log = (line) => process.stdout.write(`${line}\n`),
 }) {
@@ -1792,12 +2065,19 @@ export function publishTargetOrder({
     matrix: readiness.matrix,
     readinessArtifacts: readiness.artifacts,
   });
-  lintArtifacts(launchpad, [
-    { kind: "branch", text: branch },
-    ...target.commits.map(({ message }) => ({ kind: "commit", text: message })),
-    { kind: "pr-title", text: title },
-    { kind: "pr-body", text: body },
-  ]);
+  const { review } = lintArtifacts(
+    launchpad,
+    [
+      { kind: "branch", text: branch },
+      ...target.commits.map(({ message }) => ({
+        kind: "commit",
+        text: message,
+      })),
+      { kind: "pr-title", text: title },
+      { kind: "pr-body", text: body },
+    ],
+    { confirmTerms, log },
+  );
   assertGitHubBodyProfile(body, "generated pull-request body");
   if (hasAiAttribution(title) || hasAiAttribution(body))
     throw refuse("the title or body contains AI attribution");
@@ -1852,10 +2132,18 @@ export function publishTargetOrder({
       throw new Error(
         `pull request created but its number could not be read for ${repository.selector}; inspect the repository before retrying`,
       );
+    const confirmation = reviewConfirmation(
+      launchpad,
+      workOrderId,
+      review,
+      now,
+      log,
+    );
     const recorded = {
       repositoryId: repository.selector,
       number: Number(url[4]),
       headSha: commit,
+      ...(confirmation ? { confirmation } : {}),
     };
     const { event } = appendEvent(publication.read(), {
       schemaVersion: 1,

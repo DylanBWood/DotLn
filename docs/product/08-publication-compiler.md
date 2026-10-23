@@ -307,7 +307,23 @@ absence. The same matcher screens committed PR title and body before the first
 push. `release prepare` supplies the current meter table in the reviewed PR
 body; it reports previous-order deltas without inventing limits, leaves an
 unavailable observation as a blank cell or an omitted dispatch row, and says
-in one line how many it omitted.
+in one line how many it omitted. The stored body has a shape (WO-227): its
+first non-blank line is the level-one heading, prose follows, and the meter
+block is the last block. Prose means a Markdown paragraph with visible text,
+including a list-item or quoted paragraph; comments, code blocks, headings,
+tables, definitions and images alone do not satisfy it.
+`release prepare` and the regenerated body move an
+existing block there; `worktree publish` and `check-surfaces` refuse the
+current order's stored body that breaks it, and the published body admits
+the product-gate block after the meter. The check is structural, never
+editorial, and judges no historical body; the balanced `prBody` example
+predates the meter block and stays a historical sample. A target
+publication's words are reviewed, not banned: the public `reviewTerms` and
+review-mode private terms are review items the reviewer confirms with
+`--confirm-terms sha256:<digest of the composed body>`, launchpad
+identifiers and refuse-mode private terms refuse, and a generated
+Change-table path is judged apart from the reviewed prose, with a path the
+target's base already held left alone.
 The pre-tool attribution check extracts messages from actual parsed commit
 invocations, including supported wrappers. A search or quoted example naming
 `git commit` is data; an actual commit without available literal message bytes
@@ -384,6 +400,13 @@ items, fenced or indented code, tables, and explicit hard breaks retain their
 semantic lines. Publication validates the current committed body and preserves
 its bytes. Historical reviewed artifacts are immutable and exempt from this
 forward authoring profile.
+
+A target order's Release carries this edition when its header says
+`**Target release notes:** reviewed`: the five sections of its
+`RELEASE-NOTES.md` at the merged revision, the order title once under the
+overview, record links written to the target at the tagged commit, other
+relative links as their text and the close line last; `objective`, or no
+header, keeps the title, objective and close line (WO-227).
 
 ## Tag evidence after WO-132 (2026-09-15)
 

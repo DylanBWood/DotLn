@@ -1396,16 +1396,27 @@ test("WO-074 criterion 3: the local-terms check runs over every exported text an
       /^local-terms list: unavailable; no text was checked against a local-terms list$/mu,
     );
     assert.doesNotMatch(absent.stdout, /texts checked/u);
-    // Empty: the list is present but holds no term.
+    // Empty: a present list with no term is present with a count of zero
+    // (WO-227); the export proceeds and the summary prints no count.
     writeFileSync(termsPath, "# only a comment\n\n");
     const emptyTarget = join(scratch, "kit-empty-list");
-    const empty = runExport(emptyTarget);
-    assert.equal(empty.status, 1);
+    const empty = ok(runExport(emptyTarget), "export with an empty list");
     assert.match(
-      empty.stderr,
-      /local-terms list is present but empty or malformed/u,
+      empty.stdout,
+      /^local-terms list: present \(\d+ texts checked\)$/mu,
     );
-    assert.ok(!existsSync(emptyTarget), "a refused export writes nothing");
+    assert.ok(existsSync(emptyTarget), "an empty list refuses nothing");
+    // Malformed: a mode marker with no term refuses naming the line, before
+    // any write.
+    writeFileSync(termsPath, "refuse:\n");
+    const malformedTarget = join(scratch, "kit-malformed-list");
+    const malformed = runExport(malformedTarget);
+    assert.equal(malformed.status, 1);
+    assert.match(
+      malformed.stderr,
+      /local-terms list line 1: a mode marker with no term/u,
+    );
+    assert.ok(!existsSync(malformedTarget), "a refused export writes nothing");
     // A match: refused by file and line, the term never printed.
     writeFileSync(termsPath, "attestations\n");
     const matchTarget = join(scratch, "kit-match");

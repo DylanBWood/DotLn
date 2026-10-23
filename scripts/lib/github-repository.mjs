@@ -1,4 +1,5 @@
 import { spawnGit, runGit } from "./git.mjs";
+import { createHash } from "node:crypto";
 import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -323,14 +324,25 @@ export function parsePullRequestUrl(stdout, forge) {
   return Number(url[4]);
 }
 /** The repository's GitHub Release for `tag`: current when one exists with
- * this title and body, created otherwise, refused when it differs. */
+ * this title and body, created otherwise, refused when it differs. A Release
+ * published under an earlier title or body shape stays current through
+ * `admittedTitles`, `admittedBodies` and `admittedBodyDigests` (sha256:<hex>
+ * of bodies an earlier attempt bound); a published Release is never edited.
+ * `bindBody` receives the admitted existing bytes or the bytes about to be
+ * created, so a caller's retry record binds the actual publication. */
 export function ensureRelease(
   cwd,
   repository,
   tag,
   title,
   body,
-  { matchTitle = true, admittedTitles = [title] } = {},
+  {
+    matchTitle = true,
+    admittedTitles = [title],
+    admittedBodies = [body],
+    admittedBodyDigests = [],
+    bindBody = () => {},
+  } = {},
 ) {
   const viewed = executeGh(cwd, [
     "release",
@@ -358,11 +370,17 @@ export function ensureRelease(
       );
     if (
       (matchTitle && !admittedTitles.includes(release.name)) ||
-      release.body !== body
+      !(
+        admittedBodies.includes(release.body) ||
+        admittedBodyDigests.includes(
+          `sha256:${createHash("sha256").update(release.body).digest("hex")}`,
+        )
+      )
     )
       throw publishRefusal(
         `${tag} GitHub Release on ${repository.selector} differs from the expected ${matchTitle ? "title and body" : "body"}`,
       );
+    bindBody(release.body);
     return "existing";
   }
   if (!/\brelease not found\b/iu.test(`${viewed.stderr}${viewed.stdout}`))
@@ -375,6 +393,7 @@ export function ensureRelease(
   );
   try {
     writeFileSync(notes, body);
+    bindBody(body);
     const created = executeGh(cwd, [
       "release",
       "create",

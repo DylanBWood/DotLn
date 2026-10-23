@@ -2679,6 +2679,40 @@ export async function fixtures() {
       },
     );
     await check(
+      "WO-227 criterion 5: plan check names, as an advisory, the execution-plan paths of a target order that carry a review word or a launchpad identifier, and none for a launchpad order",
+      async () => {
+        const repo = makeRepo(parent, "target-paths");
+        const executionPlan =
+          "\n**Execution plan (observed at the base):**\n\n1. `fixtures/gem-board.json` (new) and `docs/WO-006-notes.md`, checked with `npm test -- --only fixture` and `validateOutwardVocabulary`.\n2. `src/parser.ts`: the change.\n";
+        write(
+          repo,
+          orderPath("WO-901"),
+          order("WO-901").replace(
+            "**Effort:** executor any; verifier any; reviewer any.\n",
+            `**Effort:** executor any; verifier any; reviewer any.\n**Repository:** target @ ${"a".repeat(40)}\n`,
+          ) + executionPlan,
+        );
+        write(repo, orderPath("WO-902"), order("WO-902") + executionPlan);
+        write(
+          repo,
+          "docs/control/outward-vocabulary.json",
+          JSON.stringify({ types: ["fix"], reviewTerms: ["gem", "mask"] }),
+        );
+        commit(repo, "a target order naming paths");
+        await writeDirectReceipt(repo);
+        commit(repo, "record reviewed plan");
+        const result = await plan(["check"], repo);
+        assert.deepEqual(result.advisories, [
+          "advisory: WO-901 names fixtures/gem-board.json in its execution plan, which carries the review word gem; rename the file or list the word deliberately before a draft publish meets it",
+          "advisory: WO-901 names docs/WO-006-notes.md in its execution plan, which carries the launchpad identifier WO-006; rename the file before a draft publish meets it",
+        ]);
+        assert.doesNotMatch(
+          JSON.stringify(result.advisories),
+          /WO-902|parser/u,
+        );
+      },
+    );
+    await check(
       "AC3 local-terms phrases across separators and lines, private diagnostics, and atomic receipt refusal",
       async () => {
         const repo = makeRepo(parent, "terms");
@@ -2698,23 +2732,23 @@ export async function fixtures() {
             { name: "first", text: "Wibble" },
             { name: "second", text: "Sprocket Cloud" },
           ]),
-          { status: "present" },
+          { status: "present", terms: 3 },
         );
-        for (const [text, line] of [
-          ["Synthetic-Forbidden", 1],
-          ["Synthetic\nForbidden", 1],
-          ["Synthetic For bid den", 1],
-          ["Wibble Sprocket Cloud", 1],
-          ["wibbleSprocketCloud", 1],
-          ["ＷＩＢＢＬＥ－ＳＰＲＯＣＫＥＴ　ＣＬＯＵＤ", 1],
-          ["prefix\nWibble\r\nSprocket Cloud", 2],
-          ["Big Fizzle Widget Cloud", 1],
-          ["Big Fizzle-\nWidget\tCloud", 1],
+        for (const [text, line, endLine] of [
+          ["Synthetic-Forbidden", 1, 1],
+          ["Synthetic\nForbidden", 1, 2],
+          ["Synthetic For bid den", 1, 1],
+          ["Wibble Sprocket Cloud", 1, 1],
+          ["wibbleSprocketCloud", 1, 1],
+          ["ＷＩＢＢＬＥ－ＳＰＲＯＣＫＥＴ　ＣＬＯＵＤ", 1, 1],
+          ["prefix\nWibble\r\nSprocket Cloud", 2, 3],
+          ["Big Fizzle Widget Cloud", 1, 1],
+          ["Big Fizzle-\nWidget\tCloud", 1, 2],
         ]) {
           assert.throws(
             () => checkLocalTerms(repo, [{ name: "fixture", text }]),
             {
-              message: `local-terms list present; refused ${JSON.stringify([{ file: "fixture", line, count: 1 }])}`,
+              message: `local-terms list present; refused ${JSON.stringify([{ file: "fixture", line, endLine, count: 1, mode: "review" }])}`,
             },
           );
         }
@@ -2728,7 +2762,7 @@ export async function fixtures() {
             ]),
           {
             message:
-              'local-terms list present; refused [{"file":"fixture","line":2,"count":2},{"file":"fixture","line":4,"count":1}]',
+              'local-terms list present; refused [{"file":"fixture","line":2,"endLine":2,"count":2,"mode":"review"},{"file":"fixture","line":4,"endLine":4,"count":1,"mode":"review"}]',
           },
         );
         for (const reason of [
@@ -2747,7 +2781,7 @@ export async function fixtures() {
             }),
             {
               message:
-                'local-terms list present; refused [{"file":"validated-result","line":1,"count":1}]',
+                'local-terms list present; refused [{"file":"validated-result","line":1,"endLine":1,"count":1,"mode":"review"}]',
             },
           );
           assert.deepEqual(await readReceipts(repo), []);

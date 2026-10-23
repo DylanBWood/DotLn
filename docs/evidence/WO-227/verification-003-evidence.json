@@ -1,0 +1,399 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-227",
+  "verification": "VER-003",
+  "subject": {
+    "base": "4dfb8052d670d0d9c363f9cf110cd9b8e73395fc",
+    "checkpoint": "refs/dotln/checkpoint/WO-227/11 fa38df4c75f461850e257d1da46a1b0820889b19",
+    "codeIdentity": "84acede72027d5592a2b6de4d4acebaebe1efb4508ca74e06e560f376ca32ed9",
+    "driftSinceCheckpoint": [
+      "docs/control/current.md",
+      "docs/control/orders/WO-227.jsonl",
+      "docs/work-orders/README.md"
+    ],
+    "repairDiff": "checkpoint 9 to 11: scripts/lib/target-publish.mjs lintArtifacts (kit rows exempt identifier.launchpad only), a github-body.mjs comment, two fixture names, tests in test-target-publish.mjs and test-target-worktree-publish.mjs"
+  },
+  "consumedRows": {
+    "complete": {
+      "checkId": "npm test",
+      "selection": "review",
+      "recordedAt": "2026-10-22T19:13:50.790Z",
+      "durationMs": 1781842,
+      "requiredSuites": 40,
+      "exitCode": 0,
+      "evidenceRef": "host-gate:84acede72027d5592a2b6de4d4acebaebe1efb4508ca74e06e560f376ca32ed9:npm test",
+      "displaced": []
+    },
+    "structural": {
+      "recordedAt": "2026-10-22T19:22:38.461Z",
+      "durationMs": 31800,
+      "suites": 6
+    },
+    "preflightNote": "No single-suite rows exist at this identity; the complete review row covers every Preflight suite (coveringGateCheck, no missing or displaced task)."
+  },
+  "checks": [
+    {
+      "command": "npm run format:check",
+      "exitCode": 0
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0
+    },
+    {
+      "command": "git diff --quiet HEAD -- package.json package-lock.json packages .claude/skills .agents/skills",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run meta -- --check",
+      "exitCode": 0,
+      "note": "exit 0 before D028 and again after D028 and npm run meta"
+    }
+  ],
+  "reruns": {
+    "verification-001-probes": {
+      "exitCode": 0,
+      "durationMs": 261,
+      "finishedAt": "2026-10-22T19:26:59.170Z",
+      "evidence": [
+        {
+          "name": "C1 repeated identifiers across four kinds",
+          "meets": true
+        },
+        {
+          "name": "C1 admitted controls",
+          "meets": true
+        },
+        {
+          "name": "C1 compatibility characters and rendered markup",
+          "meets": true
+        },
+        {
+          "name": "C2 repeated public review words",
+          "meets": true
+        },
+        {
+          "name": "C2 empty and alias vocabulary",
+          "meets": true
+        },
+        {
+          "name": "C2/C4 body confirmation and base-path exclusion",
+          "meets": true
+        },
+        {
+          "name": "C4 added identifier path",
+          "meets": true
+        },
+        {
+          "name": "C3 private prose diagnostics redact the synthetic term",
+          "meets": true
+        },
+        {
+          "name": "F1 C3 private added-path diagnostics must redact the synthetic term",
+          "meets": true
+        },
+        {
+          "name": "F1 C3 private review-path diagnostics must redact the synthetic term",
+          "meets": true
+        },
+        {
+          "name": "private repeated-term count observation",
+          "meets": null
+        },
+        {
+          "name": "C3 present empty list",
+          "meets": true
+        },
+        {
+          "name": "C3 malformed marker refuses",
+          "meets": true
+        },
+        {
+          "name": "C3 absent list refuses",
+          "meets": true
+        },
+        {
+          "name": "C5 target-only deduplicated path advisory",
+          "meets": true
+        },
+        {
+          "name": "C6 ordinary structural controls",
+          "meets": true
+        },
+        {
+          "name": "F2 C6 HTML comment is not a prose paragraph",
+          "meets": true
+        },
+        {
+          "name": "F2 C6 empty code fence is not a prose paragraph",
+          "meets": true
+        },
+        {
+          "name": "F2 C6 horizontal rule is not a prose paragraph",
+          "meets": true
+        },
+        {
+          "name": "F2 C6 table only is not a prose paragraph",
+          "meets": true
+        },
+        {
+          "name": "C6 relocation preserves prose hard breaks",
+          "meets": true
+        },
+        {
+          "name": "C7 release source controls",
+          "meets": true
+        },
+        {
+          "name": "C9 complete review evidence at current identity",
+          "meets": true
+        }
+      ]
+    },
+    "verification-001-release": {
+      "exitCode": 0,
+      "durationMs": 8911,
+      "finishedAt": "2026-10-22T19:27:08.171Z",
+      "child": {
+        "status": 0,
+        "stdout": [
+          "{\"probe\":\"repeated-completed-release-recheck\",\"originalDigest\":\"sha256:648437af0c80ff166bf41fffa8687dde2031edf358385ab63485abb946480e0d\",\"firstStatus\":0,\"firstRecordedDigest\":\"sha256:648437af0c80ff166bf41fffa8687dde2031edf358385ab63485abb946480e0d\",\"secondStatus\":0,\"secondError\":\"\",\"remoteBodyUnchanged\":true}",
+          "✔ verifier repeated completed Release recheck preserves the published digest (8771.431583ms)"
+        ]
+      }
+    },
+    "verification-002-probes": {
+      "exitCode": 0,
+      "durationMs": 111,
+      "finishedAt": "2026-10-22T19:27:08.373Z",
+      "evidence": [
+        {
+          "name": "N1 refuse-mode private term in a kit record path refuses",
+          "meets": true
+        },
+        {
+          "name": "N1b existing base path with the same term is not reported",
+          "meets": null
+        },
+        {
+          "name": "N2 malformed marker refuses naming the line (checker)",
+          "meets": true
+        },
+        {
+          "name": "N2b malformed marker at the publish surface",
+          "meets": null
+        },
+        {
+          "name": "N3 marker spellings",
+          "meets": null
+        },
+        {
+          "name": "N4 meter moves after the last prose block",
+          "meets": true
+        },
+        {
+          "name": "N5 shape variations",
+          "meets": true
+        },
+        {
+          "name": "N6 release-notes link rewriting",
+          "meets": true
+        },
+        {
+          "name": "N7 target planning publish names an unaccepted flag",
+          "meets": null
+        }
+      ]
+    },
+    "verification-002-kit-row": {
+      "exitCode": 1,
+      "durationMs": 6079,
+      "finishedAt": "2026-10-22T19:27:14.544Z",
+      "child": {
+        "status": 1,
+        "stdout": [
+          "✖ verifier refuse-mode term carried only by a kit record path (5913.941542ms)",
+          "✖ failing tests:",
+          "✖ verifier refuse-mode term carried only by a kit record path (5913.941542ms)",
+          "  Error: ENOENT: no such file or directory, open '<tmp>/dotln-target-worktree-s2EU7y/forge-state.json'"
+        ]
+      },
+      "reading": "exit 1 is the filed probe reading forge-state.json, which a refused publication never creates; the repair's absence-aware copy below asserts the refusal"
+    },
+    "repair-ver002-kit-row": {
+      "exitCode": 0,
+      "durationMs": 6037,
+      "finishedAt": "2026-10-22T19:27:20.670Z",
+      "child": {
+        "status": 0,
+        "stdout": [
+          "VERIFIER {\"probe\":\"kit-row-refuse-term\",\"recordsStatus\":0,\"recordsStderr\":\"Advisory: attestation recorded as supplied; human not-applicable effort unknown has no matching discovery observation.\\n\",\"publishStatus\":1,\"publishStdout\":\"\",\"publishStderr\":\"error: target publish refused: outward lint: pr-body refused: vocabulary.local: refuse (line 12, Change table)\\n\",\"publishedRow\":null}",
+          "✔ verifier refuse-mode term carried only by a kit record path (5877.149833ms)"
+        ]
+      }
+    }
+  },
+  "probes": {
+    "verification-003-probes": {
+      "exitCode": 0,
+      "durationMs": 104,
+      "finishedAt": "2026-10-22T19:34:44.005Z",
+      "schemaVersion": 1,
+      "workOrder": "WO-227",
+      "recordedAt": "2026-10-22T19:34:43.997Z",
+      "evidence": [
+        {
+          "name": "K1 unmarked private term on a kit record path is a redacted review item",
+          "meets": true,
+          "observed": {
+            "bare": {
+              "error": "target publish refused: outward lint: 1 review item waits for the reviewer: pr-body: vocabulary.local: review (line 9, Change table). Read them in the composed body, then rerun with --confirm-terms sha256:604c8ab5572dad915d2dd3a82f1062d2fd200c67d2ab86676efdaac7ab36a9fb"
+            },
+            "stale": {
+              "error": "target publish refused: outward lint: 1 review item waits for the reviewer: pr-body: vocabulary.local: review (line 9, Change table). --confirm-terms names another body; the composed body is sha256:604c8ab5572dad915d2dd3a82f1062d2fd200c67d2ab86676efdaac7ab36a9fb"
+            },
+            "confirmed": {
+              "returned": {
+                "review": {
+                  "confirmedDigest": "sha256:604c8ab5572dad915d2dd3a82f1062d2fd200c67d2ab86676efdaac7ab36a9fb",
+                  "matches": 1
+                }
+              }
+            },
+            "preview": {
+              "returned": {
+                "review": null,
+                "pending": {
+                  "digest": "sha256:604c8ab5572dad915d2dd3a82f1062d2fd200c67d2ab86676efdaac7ab36a9fb",
+                  "items": [
+                    "pr-body: vocabulary.local: review (line 9, Change table)"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "K2 review: private term on a kit record path is a redacted review item",
+          "meets": true,
+          "observed": {
+            "bare": {
+              "error": "target publish refused: outward lint: 1 review item waits for the reviewer: pr-body: vocabulary.local: review (line 9, Change table). Read them in the composed body, then rerun with --confirm-terms sha256:604c8ab5572dad915d2dd3a82f1062d2fd200c67d2ab86676efdaac7ab36a9fb"
+            },
+            "stale": {
+              "error": "target publish refused: outward lint: 1 review item waits for the reviewer: pr-body: vocabulary.local: review (line 9, Change table). --confirm-terms names another body; the composed body is sha256:604c8ab5572dad915d2dd3a82f1062d2fd200c67d2ab86676efdaac7ab36a9fb"
+            },
+            "confirmed": {
+              "returned": {
+                "review": {
+                  "confirmedDigest": "sha256:604c8ab5572dad915d2dd3a82f1062d2fd200c67d2ab86676efdaac7ab36a9fb",
+                  "matches": 1
+                }
+              }
+            },
+            "preview": {
+              "returned": {
+                "review": null,
+                "pending": {
+                  "digest": "sha256:604c8ab5572dad915d2dd3a82f1062d2fd200c67d2ab86676efdaac7ab36a9fb",
+                  "items": [
+                    "pr-body: vocabulary.local: review (line 9, Change table)"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "K3 public review word on a kit record path is a review item with its path",
+          "meets": true,
+          "observed": {
+            "error": "target publish refused: outward lint: 1 review item waits for the reviewer: pr-body: vocabulary.review: gem (line 9, Change table, path docs/work-orders/WO-006-gem-board.md). Read them in the composed body, then rerun with --confirm-terms sha256:f4da10330ba0ae3854884e6574e02d3169c5a569052a286ecb3a647511fce855"
+          }
+        },
+        {
+          "name": "K4 identifier on a kit record path is exempt; the same added path refuses",
+          "meets": true,
+          "observed": {
+            "kit": {
+              "returned": {
+                "review": null
+              }
+            },
+            "added": {
+              "error": "target publish refused: outward lint: pr-body refused: identifier.launchpad: WO-006 (line 9, Change table, path docs/evidence/WO-006/decisions.md)"
+            }
+          }
+        },
+        {
+          "name": "K5 refuse term with a public word and identifier on a kit path refuses redacted",
+          "meets": true,
+          "observed": {
+            "error": "target publish refused: outward lint: pr-body refused: vocabulary.local: refuse (line 9, Change table)"
+          }
+        },
+        {
+          "name": "K6 folded refuse term on a kit path refuses",
+          "meets": true,
+          "observed": {
+            "error": "target publish refused: outward lint: pr-body refused: vocabulary.local: refuse (line 9, Change table)"
+          }
+        },
+        {
+          "name": "K7 runtime-identifier spelling after a hyphen on a kit path (observation)",
+          "meets": null,
+          "observed": {
+            "returned": {
+              "review": null
+            }
+          }
+        },
+        {
+          "name": "K8 kit path the base held is not reported (observation)",
+          "meets": null,
+          "observed": {
+            "returned": {
+              "review": null
+            }
+          }
+        },
+        {
+          "name": "I1 identifiers inside link text, URL, code span and emphasis refuse",
+          "meets": true,
+          "observed": {
+            "error": "target publish refused: outward lint: pr-body refused: identifier.launchpad: WO-006 (line 3, reviewed prose), identifier.launchpad: wo-006 (line 3, reviewed prose), identifier.launchpad: VER-001 (line 3, reviewed prose), identifier.launchpad: FINAL-001 (line 3, reviewed prose)"
+          }
+        },
+        {
+          "name": "M1 meter already last is unchanged; top, unterminated and between bodies move it last",
+          "meets": true,
+          "observed": {
+            "last": "# T\n\nProse.\n\n<!-- dotln-process-meter:start -->\n| t |\n<!-- dotln-process-meter:end -->\n",
+            "top": "# T\n\nProse one.\n\nProse two.\n\n<!-- dotln-process-meter:start -->\n| t |\n<!-- dotln-process-meter:end -->\n",
+            "noNewline": "# T\n\nProse without newline.\n\n<!-- dotln-process-meter:start -->\n| t |\n<!-- dotln-process-meter:end -->\n",
+            "between": "# T\n\nFirst.\n\nSecond.\n\n<!-- dotln-process-meter:start -->\n| t |\n<!-- dotln-process-meter:end -->\n",
+            "crlf": "# T\r\n\r\n\n\r\n\r\nProse.\r\n\n<!-- dotln-process-meter:start -->\n| t |\n<!-- dotln-process-meter:end -->\n"
+          }
+        },
+        {
+          "name": "M2 CRLF body relocation (observation)",
+          "meets": null,
+          "observed": {
+            "output": "\"# T\\r\\n\\r\\n\\n\\r\\n\\r\\nProse.\\r\\n\\n<!-- dotln-process-meter:start -->\\n| t |\\n<!-- dotln-process-meter:end -->\\n\"",
+            "shape": []
+          }
+        }
+      ]
+    }
+  },
+  "observations": [
+    {
+      "name": "K7 boundary",
+      "reading": "checkOutwardArtifact over `docs/work-orders/WO-006-evt_123.md` passes and over `docs/work-orders/evt_123.md` refuses identifier.runtime: the runtime form's hyphen lookbehind, unchanged by this order, not the kit exemption"
+    },
+    {
+      "name": "CRLF reachability",
+      "reading": "a temporary repository's CRLF PR.md: git diff --check exits 2 with trailing whitespace on every line; 0 of 183 tracked docs/final-reviews/*/PR.md hold a CR; boarded as D028, FUP-92ba1ed0802639ce"
+    }
+  ]
+}

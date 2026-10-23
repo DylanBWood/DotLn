@@ -8168,7 +8168,7 @@ test("WO-169 followups --apply takes a batch under one revision, all or none", a
           reason: "Waits for the zebracorn service",
         },
       ]),
-    /local-terms list present; refused \[\{"file":"request index 1","line":1,"count":1\}\] \(request index 1; nothing was written\)/,
+    /local-terms list present; refused \[\{"file":"request index 1","line":1,"endLine":1,"count":1,"mode":"review"\}\] \(request index 1; nothing was written\)/,
   );
   assert.deepEqual(readFileSync(register), original);
   assert.ok(!existsSync(`${register}.lock`), "the lock is released");

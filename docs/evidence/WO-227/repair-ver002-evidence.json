@@ -1,0 +1,233 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-227",
+  "failureReport": "docs/verifications/WO-227/VER-002.md",
+  "recordedAt": "2026-10-22T19:16:45.065287+00:00",
+  "completeReview": {
+    "command": "npm test -- --review",
+    "codeIdentity": "84acede72027d5592a2b6de4d4acebaebe1efb4508ca74e06e560f376ca32ed9",
+    "location": "worktree",
+    "missing": [],
+    "row": {
+      "checkId": "npm test",
+      "gateSelection": "review",
+      "codeIdentity": "84acede72027d5592a2b6de4d4acebaebe1efb4508ca74e06e560f376ca32ed9",
+      "recordedAt": "2026-10-22T19:13:50.790Z",
+      "durationMs": 1781842,
+      "exitCode": 0,
+      "requiredSuites": [
+        "build",
+        "format",
+        "configuration-root",
+        "registrations",
+        "declarations",
+        "generated",
+        "host",
+        "release-preparation",
+        "github-body",
+        "outward-lint",
+        "target-publish",
+        "target-worktree",
+        "vertical",
+        "license-fixtures",
+        "publication-fixtures",
+        "backup-intake",
+        "launchpad",
+        "beacon-portability",
+        "checkpoint",
+        "worktree",
+        "worktree-integration",
+        "release",
+        "work-orders-fixtures",
+        "siblings-fixtures",
+        "kernel",
+        "compiler",
+        "skeleton",
+        "console",
+        "browser-evidence",
+        "adjacent-queue",
+        "derived-orders",
+        "portfolio",
+        "codex-continuation",
+        "authority-grants",
+        "launchpad-planning",
+        "harness-fixtures",
+        "plan-refutation",
+        "runner-fixtures",
+        "sync-fixtures",
+        "process-debt"
+      ],
+      "evidenceRef": "host-gate:84acede72027d5592a2b6de4d4acebaebe1efb4508ca74e06e560f376ca32ed9:npm test"
+    },
+    "freshTasks": 106,
+    "source": "runner process completed with exit 0; coveringGateCheck selects the matching current-identity review row"
+  },
+  "completionWait": {
+    "command": "node scripts/harness.mjs evidence --wait",
+    "exitCode": 2,
+    "run": null,
+    "claim": "No completion evidence from this waiter; the runner process and current-identity gate row above establish completion."
+  },
+  "beforeRepair": {
+    "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-227/verification-002-kit-row.mjs",
+    "exitCode": 1,
+    "durationMs": 6038,
+    "recordedAt": "2026-10-22T18:40:41.189Z",
+    "observed": {
+      "recordsStatus": 0,
+      "publishStatus": 0,
+      "publishedRow": "| docs/work-orders/WO-999-fixture.md | 5 | 0 |"
+    },
+    "meaning": "The expected-refusal assertion failed because the fixture published the private-term path."
+  },
+  "originalProbeAfterRepair": {
+    "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-227/verification-002-kit-row.mjs",
+    "exitCode": 1,
+    "durationMs": 6508,
+    "failure": "ENOENT reading the absent synthetic forge-state.json before the outcome assertion. The filed probe is unchanged; its readback assumed a forge call."
+  },
+  "adaptedReproduction": {
+    "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-227/repair-ver002-kit-row.mjs",
+    "exitCode": 0,
+    "durationMs": 6307,
+    "recordedAt": "2026-10-22T19:15:28.896Z",
+    "observed": {
+      "probe": "kit-row-refuse-term",
+      "recordsStatus": 0,
+      "recordsStderr": "Advisory: attestation recorded as supplied; human not-applicable effort unknown has no matching discovery observation.\n",
+      "publishStatus": 1,
+      "publishStdout": "",
+      "publishStderr": "error: target publish refused: outward lint: pr-body refused: vocabulary.local: refuse (line 12, Change table)\n",
+      "publishedRow": null
+    },
+    "additionalPassingAssertions": [
+      "No forge state file",
+      "No forge command log",
+      "No remote publication branch",
+      "Private path and term absent from the refusal"
+    ],
+    "adaptation": "Same filed scenario with an absence-aware forge-state read and stronger refusal/side-effect assertions."
+  },
+  "verifierMatrix": {
+    "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-227/verification-002-probes.mjs",
+    "exitCode": 0,
+    "recordedAt": "2026-10-22T19:14:26.934Z",
+    "durationMs": 117,
+    "observations": [
+      {
+        "name": "N1 refuse-mode private term in a kit record path refuses",
+        "meets": true,
+        "observed": {
+          "kitRow": {
+            "error": "target publish refused: outward lint: pr-body refused: vocabulary.local: refuse (line 9, Change table)"
+          },
+          "addedRowControl": {
+            "error": "target publish refused: outward lint: pr-body refused: identifier.launchpad: [redacted] (line 9, Change table), vocabulary.local: refuse (line 9, Change table)"
+          },
+          "wholeBodyLint": {
+            "status": "refused",
+            "rules": [
+              "identifier.launchpad:",
+              "vocabulary.local:refuse"
+            ]
+          },
+          "termInComposedBody": true
+        }
+      },
+      {
+        "name": "N1b existing base path with the same term is not reported",
+        "meets": null,
+        "observed": {
+          "existing": {
+            "returned": {
+              "review": null
+            }
+          }
+        }
+      },
+      {
+        "name": "N2 malformed marker refuses naming the line (checker)",
+        "meets": true,
+        "observed": {
+          "checker": {
+            "error": "local-terms list line 2: a mode marker with no term"
+          }
+        }
+      },
+      {
+        "name": "N2b malformed marker at the publish surface",
+        "meets": null,
+        "observed": {
+          "publish": {
+            "error": "target publish refused: outward lint: branch refused: local-terms.configuration; pr-title refused: local-terms.configuration; pr-body refused: local-terms.configuration"
+          }
+        }
+      },
+      {
+        "name": "N3 marker spellings",
+        "meets": null,
+        "observed": {
+          "cobaltwidget": "refuse",
+          "alphabeta": "review",
+          "host8080": "review",
+          "refusegamma": "review"
+        }
+      },
+      {
+        "name": "N4 meter moves after the last prose block",
+        "meets": true,
+        "observed": {
+          "moved": "# WO-999\n\nThe prose paragraph.  \nIts hard break.\n\n- a list item\n\n<!-- dotln-process-meter:start -->\n| new |\n<!-- dotln-process-meter:end -->\n",
+          "shapeAfter": [],
+          "idempotent": true
+        }
+      },
+      {
+        "name": "N5 shape variations",
+        "meets": true,
+        "observed": {
+          "footnoteOnly": [
+            "prose-before-meter"
+          ],
+          "emptyLinkOnly": [
+            "prose-before-meter"
+          ],
+          "htmlBreakOnly": [
+            "prose-before-meter"
+          ],
+          "linkTextProse": [],
+          "publishedGate": [],
+          "gateBeforeMeter": []
+        }
+      },
+      {
+        "name": "N6 release-notes link rewriting",
+        "meets": true,
+        "observed": {
+          "rendered": "See the decisions.\nSee [the reference][ref].\n\n\n\ndiagram\nKept: [the record](https://github.com/example/target/blob/cccccccccccccccccccccccccccccccccccccccc/records/work-orders/WO-006-moved.md)."
+        }
+      },
+      {
+        "name": "N7 target planning publish names an unaccepted flag",
+        "meets": null,
+        "observed": {
+          "planning": {
+            "error": "target publish refused: outward lint: 3 review items wait for the reviewer: commit: vocabulary.review: gem (line 1); pr-title: vocabulary.review: gem (line 1); pr-body: vocabulary.review: gem (line 3). Read them in the composed body, then rerun with --confirm-terms sha256:172d81200c5c8fb2f1427db4b15d861d0e660778610afbdb0732e28e3daab338"
+          }
+        }
+      }
+    ]
+  },
+  "permanentRegressions": [
+    {
+      "file": "scripts/test-target-publish.mjs",
+      "case": "kit record paths exempt only launchpad identifiers and retain redacted vocabulary checks",
+      "result": "passed in complete review"
+    },
+    {
+      "file": "scripts/test-target-worktree-publish.mjs",
+      "case": "WO-227 criteria 2 to 4: a target publication checks private terms on kit paths, reviews listed words under a recorded confirmation, and preserves base-path and kit-identifier exemptions",
+      "result": "passed in complete review"
+    }
+  ]
+}

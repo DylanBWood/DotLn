@@ -1672,6 +1672,360 @@ test("WO-221 the draft form at verified pushes the working tree under a draft pu
     assert.equal(calls().filter((args) => args[0] === "pr").length, 3);
   }));
 
+test("WO-227 criteria 2 to 4: a target publication checks private terms on kit paths, reviews listed words under a recorded confirmation, and preserves base-path and kit-identifier exemptions", () =>
+  withFixture((f) => {
+    // A base that already holds a path named with a review word, pushed
+    // before the publication fixture points the clone's origin at the forge.
+    write(f.clone, "src/mask.ts", "export const mask = 1;\n");
+    git(f.clone, "add", "-A");
+    git(f.clone, "-c", "maintenance.auto=false", "commit", "-qm", "feat: mask");
+    git(f.clone, "push", "-q", "origin", "main");
+    const base = git(f.clone, "rev-parse", "HEAD");
+    const forge = publicationSetup(f);
+    write(
+      f.main,
+      f.order,
+      `# WO-999 — target lifecycle fixture\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n**Repository:** target @ ${base}\n`,
+    );
+    git(f.main, "add", "-A");
+    git(
+      f.main,
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "test: declare the base that holds the mask",
+    );
+    git(f.main, "push", "-q", "origin", "main");
+    f.mapClone();
+    f.start();
+    write(f.target, "fixtures/launchpad-board.json", "{}\n");
+    write(f.target, "docs/WO-006-notes.md", "Notes.\n");
+    write(f.target, "src/mask.ts", "export const mask = 2;\n");
+    write(
+      f.orderRoot,
+      "draft-body.md",
+      "## Draft\n\nPreserve the launchpad board.\n",
+    );
+    f.ok(
+      f.call(f.orderRoot, f.orderRoot, "target-gate", ["WO-999", "--review"]),
+    );
+    f.ok(f.resume(["implementation-ready", ...actorArgs]));
+    f.ok(f.resume(["verify"]));
+    write(
+      f.orderRoot,
+      "records/verifications/WO-999/VER-001.md",
+      `# Verification fixture\n\n**Actor attestation:** ${JSON.stringify(actor)}\n\n**Process cost:** unknown; cause no-session\n`,
+    );
+    f.ok(f.resume(["verification-result", "pass", ...actorArgs]));
+    const draft = (...extra) =>
+      f.worktree(
+        "publish",
+        "WO-999",
+        "--target-worktree",
+        "--draft",
+        "--branch",
+        "feat/board",
+        "--title",
+        "feat: add the board",
+        "--body-file",
+        "draft-body.md",
+        ...extra,
+      );
+    const remote = join(f.base, "target.git");
+    const refused = (result, pattern) => {
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, pattern);
+      assert.equal(existsSync(forge.log), false, "a lint refusal precedes gh");
+      assert.equal(git(remote, "branch", "--list", "feat/board"), "");
+      return result;
+    };
+    const store = join(
+      docPath(f.main, "control", "local/target-publications", "WO-999"),
+      "events.jsonl",
+    );
+    const events = () =>
+      readFileSync(store, "utf8").trim().split("\n").map(JSON.parse);
+    const prepared = () =>
+      events().filter((event) => event.type === "DraftPrepared").length;
+    // An identifier in an added path refuses by path and section, while the
+    // target's own path that carries a review word is not reported.
+    const identifier = refused(
+      draft(),
+      /pr-body refused: identifier\.launchpad: WO-006 \(line \d+, Change table, path docs\/WO-006-notes\.md\)/u,
+    );
+    assert.doesNotMatch(identifier.stderr, /mask/u);
+    assert.equal(prepared(), 1);
+    rmSync(join(f.target, "docs"), { recursive: true });
+    // Review words in the reviewed prose and in an added path wait for the
+    // reviewer, who confirms the composed body by its digest.
+    const unconfirmed = refused(
+      draft(),
+      /2 review items wait for the reviewer: pr-body: vocabulary\.review: launchpad \(line 3, reviewed prose\); pr-body: vocabulary\.review: launchpad \(line \d+, Change table, path fixtures\/launchpad-board\.json\)/u,
+    );
+    assert.doesNotMatch(unconfirmed.stderr, /mask/u);
+    const digest = /sha256:[0-9a-f]{64}/u.exec(unconfirmed.stderr)[0];
+    refused(
+      draft("--confirm-terms", `sha256:${"0".repeat(64)}`),
+      /--confirm-terms names another body; the composed body is sha256:[0-9a-f]{64}/u,
+    );
+    // The changed tree prepared a second commit; the refusals since reuse it,
+    // so the digest the refusal named is the digest of the body that publishes.
+    assert.equal(prepared(), 2);
+    const drafted = f.ok(draft("--confirm-terms", digest));
+    assert.match(
+      drafted,
+      /Review items confirmed: 2 matches under sha256:[0-9a-f]{64}; journal row (?:recorded|unobserved)\./u,
+    );
+    assert.match(drafted, /opened draft pull request #7/u);
+    assert.equal(prepared(), 2);
+    const opened = events().findLast(
+      (event) => event.type === "PullRequestOpened",
+    );
+    assert.equal(opened.payload.confirmation.confirmedDigest, digest);
+    assert.equal(opened.payload.confirmation.matches, 2);
+    assert.deepEqual(
+      Object.keys(opened.payload.confirmation.attestation).sort(),
+      ["effort", "harness", "model", "role", "source"],
+    );
+    const body = JSON.parse(readFileSync(forge.state, "utf8")).pulls[7].body;
+    assert.match(body, /\| fixtures\/launchpad-board\.json \| 1 \| 0 \|/u);
+    assert.match(body, /\| src\/mask\.ts \| 1 \| 1 \|/u);
+    // Moved records retain their launchpad identifiers, while private terms
+    // on their paths still refuse or require the reviewer's confirmation.
+    git(f.target, "add", "-A");
+    git(
+      f.target,
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "feat: add the board",
+    );
+    f.ok(
+      f.call(f.orderRoot, f.orderRoot, "target-gate", ["WO-999", "--review"]),
+    );
+    f.ok(f.resume(["final-review"]));
+    write(
+      f.orderRoot,
+      "records/final-reviews/WO-999/FINAL-001.md",
+      `# Final fixture\n\n**Actor attestation:** ${JSON.stringify(actor)}\n\n**Process cost:** unknown; cause no-session\n`,
+    );
+    f.ok(f.resume(["final-review-result", "pass", ...actorArgs]));
+    write(
+      f.orderRoot,
+      "records/evidence/WO-999/decisions.md",
+      "# Decisions\n\nAdd the board.\n",
+    );
+    // Only the moved order's basename carries this term, so checking record
+    // contents alone cannot protect the generated Change-table row.
+    const termsFile = docPath(f.main, "control", "local/terms.txt");
+    const originalTerms = readFileSync(termsFile, "utf8");
+    writeFileSync(termsFile, `${originalTerms}\nrefuse: fixture md\n`);
+    f.ok(f.resume(["target-records", ...actorArgs]));
+    write(
+      f.orderRoot,
+      "reviewed-body.md",
+      "## Result\n\nThe launchpad board lands.\n",
+    );
+    git(f.orderRoot, "add", "-A");
+    git(
+      f.orderRoot,
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "docs: record validation",
+    );
+    const publish = (...extra) =>
+      f.worktree(
+        "publish",
+        "WO-999",
+        "--target-worktree",
+        "--branch",
+        "feat/board",
+        "--title",
+        "feat: add the board",
+        "--body-file",
+        "reviewed-body.md",
+        ...extra,
+      );
+    const beforeRefusal = {
+      calls: readFileSync(forge.log, "utf8"),
+      state: readFileSync(forge.state, "utf8"),
+      head: git(remote, "rev-parse", "refs/heads/feat/board"),
+      events: readFileSync(store, "utf8"),
+    };
+    const privateRefusal = publish();
+    assert.notEqual(privateRefusal.status, 0);
+    assert.match(
+      privateRefusal.stderr,
+      /vocabulary\.local: refuse \(line \d+, Change table\)/u,
+    );
+    assert.doesNotMatch(privateRefusal.stderr, /fixture|WO-999|work-orders/u);
+    assert.deepEqual(
+      {
+        calls: readFileSync(forge.log, "utf8"),
+        state: readFileSync(forge.state, "utf8"),
+        head: git(remote, "rev-parse", "refs/heads/feat/board"),
+        events: readFileSync(store, "utf8"),
+      },
+      beforeRefusal,
+      "private-term refusal precedes forge, push and publication-record effects",
+    );
+    writeFileSync(termsFile, `${originalTerms}\nfixture md\n`);
+    const pending = publish();
+    assert.notEqual(pending.status, 0);
+    assert.match(
+      pending.stderr,
+      /3 review items wait for the reviewer: pr-body: vocabulary\.review: launchpad \(line 3, reviewed prose\)/u,
+    );
+    assert.match(
+      pending.stderr,
+      /vocabulary\.local: review \(line \d+, Change table\)/u,
+    );
+    assert.match(pending.stderr, /path fixtures\/launchpad-board\.json/u);
+    assert.doesNotMatch(
+      pending.stderr,
+      /fixture md|WO-999|work-orders|decisions\.md/u,
+    );
+    const reviewedDigest = /sha256:[0-9a-f]{64}/u.exec(pending.stderr)[0];
+    assert.notEqual(reviewedDigest, digest);
+    const published = f.ok(publish("--confirm-terms", reviewedDigest));
+    assert.match(published, /Review items confirmed: 3 matches under/u);
+    assert.match(
+      published,
+      /marked pull request #7 on github\.com\/dotln-fixture\/target ready/u,
+    );
+    const last = events().at(-1).payload;
+    assert.equal(last.confirmation.confirmedDigest, reviewedDigest);
+    assert.equal(last.confirmation.matches, 3);
+    assert.match(
+      JSON.parse(readFileSync(forge.state, "utf8")).pulls[7].body,
+      /\| docs\/work-orders\/WO-999-fixture\.md \|/u,
+    );
+  }));
+
+test("a private match spanning three Change rows refuses before draft publication and records review confirmation", () =>
+  withFixture((f) => {
+    for (const path of ["a.txt", "bridge.md"])
+      write(f.clone, path, "Before.\n");
+    git(f.clone, "add", "-A");
+    git(
+      f.clone,
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "feat: add base files",
+    );
+    git(f.clone, "push", "-q", "origin", "main");
+    const base = git(f.clone, "rev-parse", "HEAD");
+    const forge = publicationSetup(f);
+    write(
+      f.main,
+      f.order,
+      `# WO-999 — target lifecycle fixture\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n**Repository:** target @ ${base}\n`,
+    );
+    git(f.main, "add", "-A");
+    git(
+      f.main,
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "test: declare base files",
+    );
+    git(f.main, "push", "-q", "origin", "main");
+    f.mapClone();
+    f.start();
+    for (const path of ["a.txt", "bridge.md"])
+      write(f.target, path, "Before.\nAfter.\n");
+    write(f.target, "day.md", "A day.\n");
+    write(f.orderRoot, "draft-body.md", "## Draft\n\nThe board changes.\n");
+    f.ok(
+      f.call(f.orderRoot, f.orderRoot, "target-gate", ["WO-999", "--review"]),
+    );
+    f.ok(f.resume(["implementation-ready", ...actorArgs]));
+    f.ok(f.resume(["verify"]));
+    write(
+      f.orderRoot,
+      "records/verifications/WO-999/VER-001.md",
+      `# Verification fixture\n\n**Actor attestation:** ${JSON.stringify(actor)}\n\n**Process cost:** unknown; cause no-session\n`,
+    );
+    f.ok(f.resume(["verification-result", "pass", ...actorArgs]));
+    const draft = (...extra) =>
+      f.worktree(
+        "publish",
+        "WO-999",
+        "--target-worktree",
+        "--draft",
+        "--branch",
+        "feat/board",
+        "--title",
+        "feat: add the board",
+        "--body-file",
+        "draft-body.md",
+        ...extra,
+      );
+    const termsFile = docPath(f.main, "control", "local/terms.txt");
+    const original = readFileSync(termsFile, "utf8");
+    const store = join(
+      docPath(f.main, "control", "local/target-publications", "WO-999"),
+      "events.jsonl",
+    );
+    const events = () =>
+      readFileSync(store, "utf8").trim().split("\n").map(JSON.parse);
+    const refused = (result, pattern) => {
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, pattern);
+      assert.doesNotMatch(result.stderr, /a\.txt|bridge|day/u);
+      assert.equal(existsSync(forge.log), false);
+      assert.equal(
+        git(join(f.base, "target.git"), "branch", "--list", "feat/board"),
+        "",
+      );
+      assert.ok(events().every((event) => event.type !== "PullRequestOpened"));
+      return result;
+    };
+    let digest;
+    for (const marker of ["refuse: ", "review: ", ""]) {
+      writeFileSync(termsFile, `${original}\n${marker}0 bridge md 1 0 day\n`);
+      const result = refused(
+        draft(),
+        marker.startsWith("refuse")
+          ? /vocabulary\.local: refuse/u
+          : /1 review item waits for the reviewer/u,
+      );
+      if (!marker.startsWith("refuse")) {
+        digest = /sha256:[0-9a-f]{64}/u.exec(result.stderr)[0];
+        refused(
+          draft("--confirm-terms", `sha256:${"0".repeat(64)}`),
+          /--confirm-terms names another body/u,
+        );
+      }
+    }
+    const published = f.ok(draft("--confirm-terms", digest));
+    assert.match(published, /Review items confirmed: 1 match under/u);
+    const confirmation = events().findLast(
+      (event) => event.type === "PullRequestOpened",
+    ).payload.confirmation;
+    assert.equal(confirmation.confirmedDigest, digest);
+    assert.equal(confirmation.matches, 1);
+    assert.deepEqual(Object.keys(confirmation.attestation).sort(), [
+      "effort",
+      "harness",
+      "model",
+      "role",
+      "source",
+    ]);
+    const body = JSON.parse(readFileSync(forge.state, "utf8")).pulls[7].body;
+    assert.match(
+      body,
+      /\| a\.txt \| 1 \| 0 \|\n\| bridge\.md \| 1 \| 0 \|\n\| day\.md \| 1 \| 0 \|/u,
+    );
+  }));
+
 test("target publication retains installation ownership when its live manifest disappears", () =>
   withFixture((f) => {
     const forge = publicationSetup(f);

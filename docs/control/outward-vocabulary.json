@@ -12,5 +12,12 @@
     "style",
     "test"
   ],
-  "terms": ["DotLn", "launchpad", "gem", "gems", "mask", "masks"]
+  "reviewTerms": [
+    "DotLn",
+    "launchpad",
+    "gem",
+    "gems",
+    "mask",
+    "masks"
+  ]
 }

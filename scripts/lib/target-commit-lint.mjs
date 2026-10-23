@@ -39,11 +39,22 @@ export function lintReviewedTargetCommits(launchpad, state, subject) {
     const result = checkOutwardArtifact(mainWorktree(launchpad), {
       kind: "commit",
       text: message,
+      target: true,
     });
     if (result.checks.format.status !== "pass")
       throw refuse(
         `commit message format refused before final review: ${result.findings
           .filter((finding) => /^(?:subject|commit|text)\./u.test(finding.rule))
+          .map((finding) => outwardFindingText(finding, message))
+          .join(", ")}`,
+      );
+    // A commit carrying a launchpad identifier cannot be repaired after the
+    // review without a new commit; review words wait for the publish, where
+    // the reviewer confirms them.
+    if (result.checks.launchpadIdentifiers.status !== "pass")
+      throw refuse(
+        `commit message carries a launchpad identifier; repair it before recording final review pass: ${result.findings
+          .filter((finding) => finding.rule === "identifier.launchpad")
           .map((finding) => outwardFindingText(finding, message))
           .join(", ")}`,
       );

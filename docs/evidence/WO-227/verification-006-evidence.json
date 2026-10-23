@@ -1,0 +1,352 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-227",
+  "report": "docs/verifications/WO-227/VER-006.md",
+  "recordedAt": "2026-10-23T00:45:08.546Z",
+  "subject": {
+    "base": "4dfb8052d670d0d9c363f9cf110cd9b8e73395fc",
+    "repairCheckpoint": "refs/dotln/checkpoint/WO-227/25",
+    "dispatchCheckpoint": "refs/dotln/checkpoint/WO-227/26",
+    "codeIdentity": "fb8927c9ee2a173f56cbd05a2a647eda6437f9c2d6c9adc60036bd01a895026d",
+    "location": "worktree",
+    "repairDiff": "refs/dotln/checkpoint/WO-227/23..26: scripts/lib/terms.mjs, scripts/outward-lint.mjs, scripts/lib/outward-lint.mjs, scripts/lib/target-publish.mjs (comment), tests, product 07 and kit README sentences",
+    "consumedRows": {
+      "complete": {
+        "checkId": "npm test",
+        "gateSelection": "review",
+        "recordedAt": "2026-10-23T00:07:19.005Z",
+        "durationMs": 1774218,
+        "exitCode": 0,
+        "requiredSuites": 40,
+        "displaced": null,
+        "evidenceRef": "host-gate:fb8927c9ee2a173f56cbd05a2a647eda6437f9c2d6c9adc60036bd01a895026d:npm test"
+      },
+      "structural": {
+        "recordedAt": "2026-10-23T00:12:46.158Z"
+      },
+      "singleSuiteRows": "none at this identity; the complete row covers every Preflight suite",
+      "lookup": "coveringGateCheck and preflightRows from scripts/lib/gate-reuse.mjs, read-only, before and after this verification's probe file was added; identity unchanged"
+    }
+  },
+  "method": "Read-only verification. Every probe ran serially under node scripts/harness.mjs bounded in temporary synthetic fixtures with local fake forges; no live publication, target or private list was used.",
+  "reruns": [
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-227/verification-001-probes.mjs",
+      "exitCode": 0,
+      "durationMs": 404,
+      "judgments": {
+        "met": 22,
+        "failed": 0,
+        "observations": 1
+      }
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-227/verification-001-workers.mjs",
+      "exitCode": 0,
+      "durationMs": 206,
+      "judgments": {
+        "met": 0,
+        "failed": 0,
+        "observations": 0
+      }
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-227/verification-001-release.mjs",
+      "exitCode": 0,
+      "durationMs": 9084,
+      "judgments": {
+        "met": 0,
+        "failed": 0,
+        "observations": 0
+      }
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-227/verification-002-probes.mjs",
+      "exitCode": 0,
+      "durationMs": 228,
+      "judgments": {
+        "met": 5,
+        "failed": 0,
+        "observations": 4
+      }
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-227/repair-ver002-kit-row.mjs",
+      "exitCode": 0,
+      "durationMs": 6046,
+      "judgments": {
+        "met": 0,
+        "failed": 0,
+        "observations": 0
+      }
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-227/verification-003-probes.mjs",
+      "exitCode": 0,
+      "durationMs": 226,
+      "judgments": {
+        "met": 8,
+        "failed": 0,
+        "observations": 3
+      }
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-227/final-review-release.mjs",
+      "exitCode": 0,
+      "durationMs": 6772,
+      "judgments": {
+        "met": 0,
+        "failed": 0,
+        "observations": 0
+      }
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-227/repair-final001-links.mjs",
+      "exitCode": 0,
+      "durationMs": 6412,
+      "judgments": {
+        "met": 0,
+        "failed": 0,
+        "observations": 0
+      }
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-227/repair-final001-release.mjs",
+      "exitCode": 0,
+      "durationMs": 44066,
+      "judgments": {
+        "met": 0,
+        "failed": 0,
+        "observations": 0
+      }
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-227/verification-004-probes.mjs",
+      "exitCode": 0,
+      "durationMs": 15337,
+      "judgments": {
+        "met": 0,
+        "failed": 0,
+        "observations": 0
+      }
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-227/repair-ver004-spans.mjs",
+      "exitCode": 0,
+      "durationMs": 200,
+      "judgments": {
+        "met": 0,
+        "failed": 0,
+        "observations": 0
+      }
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-227/verification-005-probes.mjs",
+      "exitCode": 0,
+      "durationMs": 216,
+      "judgments": {
+        "met": 5,
+        "failed": 0,
+        "observations": 0
+      }
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-227/verification-005-publish.mjs",
+      "exitCode": 0,
+      "durationMs": 4825,
+      "judgments": {
+        "met": 0,
+        "failed": 0,
+        "observations": 0
+      }
+    }
+  ],
+  "rerunsNotRepeated": [
+    "verification-002-kit-row.mjs exits 1 at its forge-state read on any repaired tree (VER-003); repair-ver002-kit-row.mjs, rerun above, is its absence-aware form.",
+    "verification-004-boundary.mjs exits 1 at its precondition naming the pre-repair predicate text (D033); repair-ver004-spans.mjs, rerun above, covers its cases."
+  ],
+  "rangeProbe": {
+    "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-227/verification-006-probes.mjs",
+    "exitCode": 0,
+    "observations": [
+      {
+        "name": "R1 header-to-existing-row private match refuses; row-only control stays exempt",
+        "meets": true,
+        "crossing": {
+          "error": "target publish refused: outward lint: pr-body refused: vocabulary.local: refuse (line 7, Change table)"
+        },
+        "control": {
+          "returned": {
+            "review": null
+          }
+        }
+      },
+      {
+        "name": "R2 existing-row-to-summary private match refuses",
+        "meets": true,
+        "crossing": {
+          "error": "target publish refused: outward lint: pr-body refused: vocabulary.local: refuse (line 9, Change table)"
+        }
+      },
+      {
+        "name": "R3 observation: a join across two base-held rows is reported",
+        "meets": null,
+        "outcome": {
+          "error": "target publish refused: outward lint: pr-body refused: vocabulary.local: refuse (line 9, Change table)"
+        }
+      },
+      {
+        "name": "R4 three-row review match with a public word on the middle row",
+        "meets": true,
+        "without": {
+          "error": "target publish refused: outward lint: 2 review items wait for the reviewer: pr-body: vocabulary.review: [redacted] (line 10, Change table); pr-body: vocabulary.local: review (line 9, Change table). Read them in the composed body, then rerun with --confirm-terms sha256:1e9d12b4f7b46ae235d96439a2e6fd225c1cd1c6e4151bf793032af6f952bf4c"
+        },
+        "preview": {
+          "returned": {
+            "review": null,
+            "pending": {
+              "digest": "sha256:1e9d12b4f7b46ae235d96439a2e6fd225c1cd1c6e4151bf793032af6f952bf4c",
+              "items": [
+                "pr-body: vocabulary.review: [redacted] (line 10, Change table)",
+                "pr-body: vocabulary.local: review (line 9, Change table)"
+              ]
+            }
+          }
+        },
+        "confirmed": {
+          "returned": {
+            "review": {
+              "confirmedDigest": "sha256:1e9d12b4f7b46ae235d96439a2e6fd225c1cd1c6e4151bf793032af6f952bf4c",
+              "matches": 2
+            }
+          }
+        }
+      },
+      {
+        "name": "R4 three-row review match with an identifier on the middle row",
+        "meets": true,
+        "without": {
+          "error": "target publish refused: outward lint: pr-body refused: identifier.launchpad: [redacted] (line 10, Change table)"
+        },
+        "preview": {
+          "error": "target publish refused: outward lint: pr-body refused: identifier.launchpad: [redacted] (line 10, Change table)"
+        },
+        "confirmed": {
+          "error": "target publish refused: outward lint: pr-body refused: identifier.launchpad: [redacted] (line 10, Change table)"
+        }
+      },
+      {
+        "name": "R5 lone CR prose: existing-row match exempt, crossing match refuses",
+        "meets": true,
+        "exempt": {
+          "returned": {
+            "review": null
+          }
+        },
+        "crossing": {
+          "error": "target publish refused: outward lint: pr-body refused: vocabulary.local: refuse (line 10, Change table)"
+        }
+      },
+      {
+        "name": "R5 CRLF prose: existing-row match exempt, crossing match refuses",
+        "meets": true,
+        "exempt": {
+          "returned": {
+            "review": null
+          }
+        },
+        "crossing": {
+          "error": "target publish refused: outward lint: pr-body refused: vocabulary.local: refuse (line 10, Change table)"
+        }
+      },
+      {
+        "name": "R6 release-body two-line private match spans both lines",
+        "meets": true,
+        "result": {
+          "kind": "release-body",
+          "target": true,
+          "status": "refused",
+          "checks": {
+            "format": {
+              "status": "pass"
+            },
+            "runtime": {
+              "status": "pass"
+            },
+            "launchpadIdentifiers": {
+              "status": "pass"
+            },
+            "review": {
+              "status": "pass",
+              "matches": 0
+            },
+            "localTerms": {
+              "status": "refused"
+            }
+          },
+          "findings": [
+            {
+              "rule": "vocabulary.local",
+              "span": {
+                "start": 13,
+                "end": 37,
+                "line": 3,
+                "column": 1,
+                "precision": "line"
+              },
+              "count": 1,
+              "mode": "refuse"
+            }
+          ],
+          "advisories": []
+        }
+      },
+      {
+        "name": "R7 exempt refuse match and crossing review match sharing a start",
+        "meets": true,
+        "without": {
+          "error": "target publish refused: outward lint: 1 review item waits for the reviewer: pr-body: vocabulary.local: review (line 9, Change table). Read them in the composed body, then rerun with --confirm-terms sha256:0451f83dabdd67543f96fbaece9884c86a8f3b118549454c59d3db90e12da63f"
+        },
+        "confirmed": {
+          "returned": {
+            "review": {
+              "confirmedDigest": "sha256:0451f83dabdd67543f96fbaece9884c86a8f3b118549454c59d3db90e12da63f",
+              "matches": 1
+            }
+          }
+        }
+      }
+    ]
+  },
+  "supportingChecks": [
+    {
+      "command": "npm run format:check",
+      "exitCode": 0,
+      "output": "All matched files use Prettier code style!"
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0
+    },
+    {
+      "command": "git diff --name-only HEAD -- package.json package-lock.json packages .agents/skills .claude/skills; git ls-files --others --exclude-standard -- (same paths)",
+      "exitCode": 0,
+      "output": ""
+    },
+    {
+      "command": "npm run meta --silent -- --check",
+      "exitCode": 0,
+      "output": "two cold-start budget advisories (coldStartBytes.reviewer=28913 exceeds 28884); no failure"
+    },
+    {
+      "command": "grep -n 'terms.mjs' scripts/lib/evidence-sources.mjs packages/skeleton/src/feedback-audit.ts",
+      "exitCode": 0,
+      "output": "evidence-sources.mjs lines 184 and 352 register scripts/lib/terms.mjs; feedback-audit.ts does not list it (D036's corrected inventory)"
+    }
+  ],
+  "limits": [
+    "R3 is an observation: a private match joining two base-held rows is reported. That is conservative, matches main (which linted the whole composed body) and follows D033's per-row rule; it is not judged a defect.",
+    "The range probe exercises the shared lintArtifacts helper; the production draft route is covered by the rerun verification-005-publish.mjs and the executor's three-row draft case in the consumed complete row.",
+    "The complete review row is consumed, not rerun. The final document gate is recorded by lifecycle completion after this evidence and report are final."
+  ]
+}

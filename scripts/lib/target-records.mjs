@@ -277,9 +277,16 @@ export function commitTargetRecords(root, state, control) {
         `${row.path}:${line}: private absolute path; write a repository-relative path or a placeholder such as <home>/, <worktree>/ or <tmp>/`,
       );
   }
+  // The kit's own fixed message is a target commit: identifiers would refuse,
+  // and a review word an instance happens to list is the kit's word, not a
+  // review item for the publish.
   const message = "docs: record reviewed change and validation";
-  const lint = checkOutwardArtifact(main, { kind: "commit", text: message });
-  if (lint.status !== "pass")
+  const lint = checkOutwardArtifact(main, {
+    kind: "commit",
+    text: message,
+    target: true,
+  });
+  if (!["pass", "review"].includes(lint.status))
     throw refuse(
       `record commit outward lint ${lint.status}: ${lint.findings.map((row) => row.rule).join(", ")}`,
     );

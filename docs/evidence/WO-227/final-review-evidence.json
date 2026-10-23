@@ -1,0 +1,232 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-227",
+  "review": "FINAL-001",
+  "codeIdentity": "84acede72027d5592a2b6de4d4acebaebe1efb4508ca74e06e560f376ca32ed9",
+  "recordedAt": "2026-10-22T19:47:06.619Z",
+  "integration": {
+    "base": "4dfb8052d670d0d9c363f9cf110cd9b8e73395fc",
+    "upstream": "4dfb8052d670d0d9c363f9cf110cd9b8e73395fc",
+    "checkpoint": "refs/dotln/checkpoint/WO-227/14",
+    "authoredConflicts": [],
+    "codeChanged": false
+  },
+  "existingCompleteRow": {
+    "codeIdentity": "84acede72027d5592a2b6de4d4acebaebe1efb4508ca74e06e560f376ca32ed9",
+    "location": "worktree",
+    "missing": [],
+    "row": {
+      "checkId": "npm test",
+      "codeIdentity": "84acede72027d5592a2b6de4d4acebaebe1efb4508ca74e06e560f376ca32ed9",
+      "recordedAt": "2026-10-22T19:13:50.790Z",
+      "durationMs": 1781842,
+      "exitCode": 0,
+      "requiredSuites": [
+        "build",
+        "format",
+        "configuration-root",
+        "registrations",
+        "declarations",
+        "generated",
+        "host",
+        "release-preparation",
+        "github-body",
+        "outward-lint",
+        "target-publish",
+        "target-worktree",
+        "vertical",
+        "license-fixtures",
+        "publication-fixtures",
+        "backup-intake",
+        "launchpad",
+        "beacon-portability",
+        "checkpoint",
+        "worktree",
+        "worktree-integration",
+        "release",
+        "work-orders-fixtures",
+        "siblings-fixtures",
+        "kernel",
+        "compiler",
+        "skeleton",
+        "console",
+        "browser-evidence",
+        "adjacent-queue",
+        "derived-orders",
+        "portfolio",
+        "codex-continuation",
+        "authority-grants",
+        "launchpad-planning",
+        "harness-fixtures",
+        "plan-refutation",
+        "runner-fixtures",
+        "sync-fixtures",
+        "process-debt"
+      ],
+      "evidenceRef": "host-gate:84acede72027d5592a2b6de4d4acebaebe1efb4508ca74e06e560f376ca32ed9:npm test"
+    }
+  },
+  "commands": [
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-227/verification-001-probes.mjs",
+      "exitCode": 0,
+      "durationMs": 282,
+      "finishedAt": "2026-10-22T19:43:48.900Z",
+      "observations": [
+        {
+          "name": "C1 repeated identifiers across four kinds",
+          "meets": true
+        },
+        {
+          "name": "C1 admitted controls",
+          "meets": true
+        },
+        {
+          "name": "C1 compatibility characters and rendered markup",
+          "meets": true
+        },
+        {
+          "name": "C2 repeated public review words",
+          "meets": true
+        },
+        {
+          "name": "C2 empty and alias vocabulary",
+          "meets": true
+        },
+        {
+          "name": "C2/C4 body confirmation and base-path exclusion",
+          "meets": true
+        },
+        {
+          "name": "C4 added identifier path",
+          "meets": true
+        },
+        {
+          "name": "C3 private prose diagnostics redact the synthetic term",
+          "meets": true
+        },
+        {
+          "name": "F1 C3 private added-path diagnostics must redact the synthetic term",
+          "meets": true
+        },
+        {
+          "name": "F1 C3 private review-path diagnostics must redact the synthetic term",
+          "meets": true
+        },
+        {
+          "name": "private repeated-term count observation",
+          "meets": null
+        },
+        {
+          "name": "C3 present empty list",
+          "meets": true
+        },
+        {
+          "name": "C3 malformed marker refuses",
+          "meets": true
+        },
+        {
+          "name": "C3 absent list refuses",
+          "meets": true
+        },
+        {
+          "name": "C5 target-only deduplicated path advisory",
+          "meets": true
+        },
+        {
+          "name": "C6 ordinary structural controls",
+          "meets": true
+        },
+        {
+          "name": "F2 C6 HTML comment is not a prose paragraph",
+          "meets": true
+        },
+        {
+          "name": "F2 C6 empty code fence is not a prose paragraph",
+          "meets": true
+        },
+        {
+          "name": "F2 C6 horizontal rule is not a prose paragraph",
+          "meets": true
+        },
+        {
+          "name": "F2 C6 table only is not a prose paragraph",
+          "meets": true
+        },
+        {
+          "name": "C6 relocation preserves prose hard breaks",
+          "meets": true
+        },
+        {
+          "name": "C7 release source controls",
+          "meets": true
+        }
+      ]
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-227/verification-001-release.mjs",
+      "exitCode": 0,
+      "durationMs": 8526,
+      "finishedAt": "2026-10-22T19:44:03.791Z",
+      "observation": {
+        "originalDigest": "sha256:eed56b0ec39e3aa95a750e3ad6ceef4cb1e1b40862e51349281ef478a3156b12",
+        "firstStatus": 0,
+        "firstRecordedDigest": "sha256:eed56b0ec39e3aa95a750e3ad6ceef4cb1e1b40862e51349281ef478a3156b12",
+        "secondStatus": 0,
+        "remoteBodyUnchanged": true
+      }
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-227/repair-ver002-kit-row.mjs",
+      "exitCode": 0,
+      "durationMs": 5576,
+      "finishedAt": "2026-10-22T19:44:16.181Z",
+      "observation": {
+        "recordsStatus": 0,
+        "publishStatus": 1,
+        "publishStderr": "error: target publish refused: outward lint: pr-body refused: vocabulary.local: refuse (line 12, Change table)",
+        "publishedRow": null,
+        "assertions": "No forge state, forge log or remote publication branch; private term and path absent from diagnostic."
+      }
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-227/final-review-release.mjs",
+      "exitCode": 1,
+      "durationMs": 7998,
+      "finishedAt": "2026-10-22T19:46:04.556Z",
+      "observation": {
+        "probe": "author-written-target-url-exemption",
+        "controlStatus": 1,
+        "controlError": "error: target release refused: outward lint: release-body refused: identifier.launchpad: WO-006 (line 5, reviewed notes)",
+        "candidateStatus": 0,
+        "candidateError": "",
+        "publishedIdentifier": true,
+        "tagPublished": true,
+        "releaseCreated": true,
+        "namedPathExists": false
+      },
+      "assertion": "An author-written URL is not a record link generated by the kit and must retain identifier.launchpad."
+    },
+    {
+      "command": "npm run publication:check",
+      "exitCode": 0,
+      "observation": "255/255 product headings indexed; both edition locks current"
+    },
+    {
+      "command": "node scripts/harness.mjs check",
+      "exitCode": 0,
+      "observation": "35 generated surfaces; local-terms list present"
+    },
+    {
+      "command": "npm run release -- check-surfaces --local",
+      "exitCode": 0,
+      "observation": "v0.91.0 above local v0.90.0; every component unchanged and no bump required; no current publication bodies yet"
+    },
+    {
+      "command": "git diff --name-only HEAD -- package.json package-lock.json packages .agents/skills .claude/skills",
+      "exitCode": 0,
+      "observation": "No changed paths"
+    }
+  ],
+  "limits": "All publication effects in the probes use synthetic disposable repositories and fake local forges. No live target publication. The standing complete row does not cover the new counterexample. No fresh complete run started after the reproduced blocker."
+}

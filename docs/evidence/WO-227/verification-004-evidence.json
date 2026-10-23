@@ -1,0 +1,629 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-227",
+  "report": "VER-004",
+  "verdict": "fail",
+  "unmetCriteria": [
+    "7"
+  ],
+  "subject": {
+    "baseCommit": "4dfb8052d670d0d9c363f9cf110cd9b8e73395fc",
+    "implementationCheckpoint": "refs/dotln/checkpoint/WO-227/17",
+    "codeIdentity": "6a74fc3bd8a985cb5d89ab0667f61b9774f18bb04ed07c2174f18f67be15802b",
+    "consumedCompleteRow": {
+      "checkId": "npm test",
+      "codeIdentity": "6a74fc3bd8a985cb5d89ab0667f61b9774f18bb04ed07c2174f18f67be15802b",
+      "recordedAt": "2026-10-22T21:15:33.338Z",
+      "durationMs": 1687974,
+      "exitCode": 0,
+      "requiredSuites": [
+        "build",
+        "format",
+        "configuration-root",
+        "registrations",
+        "declarations",
+        "generated",
+        "host",
+        "release-preparation",
+        "github-body",
+        "outward-lint",
+        "target-publish",
+        "target-worktree",
+        "vertical",
+        "license-fixtures",
+        "publication-fixtures",
+        "backup-intake",
+        "launchpad",
+        "beacon-portability",
+        "checkpoint",
+        "worktree",
+        "worktree-integration",
+        "release",
+        "work-orders-fixtures",
+        "siblings-fixtures",
+        "kernel",
+        "compiler",
+        "skeleton",
+        "console",
+        "browser-evidence",
+        "adjacent-queue",
+        "derived-orders",
+        "portfolio",
+        "codex-continuation",
+        "authority-grants",
+        "launchpad-planning",
+        "harness-fixtures",
+        "plan-refutation",
+        "runner-fixtures",
+        "sync-fixtures",
+        "process-debt"
+      ],
+      "evidenceRef": "host-gate:6a74fc3bd8a985cb5d89ab0667f61b9774f18bb04ed07c2174f18f67be15802b:npm test"
+    },
+    "missingSuites": [],
+    "documentGate": "Run npm run test:docs after the final authored edit; VerificationCompleted consumes the current-tree document row."
+  },
+  "runs": [
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-227/verification-001-probes.mjs",
+      "exitCode": 0,
+      "startedAt": "2026-10-22T21:33:45.588Z",
+      "finishedAt": "2026-10-22T21:33:45.848Z",
+      "durationMs": 260,
+      "observations": [
+        {
+          "name": "C1 repeated identifiers across four kinds",
+          "meets": true
+        },
+        {
+          "name": "C1 admitted controls",
+          "meets": true
+        },
+        {
+          "name": "C1 compatibility characters and rendered markup",
+          "meets": true
+        },
+        {
+          "name": "C2 repeated public review words",
+          "meets": true
+        },
+        {
+          "name": "C2 empty and alias vocabulary",
+          "meets": true
+        },
+        {
+          "name": "C2/C4 body confirmation and base-path exclusion",
+          "meets": true
+        },
+        {
+          "name": "C4 added identifier path",
+          "meets": true
+        },
+        {
+          "name": "C3 private prose diagnostics redact the synthetic term",
+          "meets": true
+        },
+        {
+          "name": "F1 C3 private added-path diagnostics must redact the synthetic term",
+          "meets": true
+        },
+        {
+          "name": "F1 C3 private review-path diagnostics must redact the synthetic term",
+          "meets": true
+        },
+        {
+          "name": "private repeated-term count observation",
+          "meets": null
+        },
+        {
+          "name": "C3 present empty list",
+          "meets": true
+        },
+        {
+          "name": "C3 malformed marker refuses",
+          "meets": true
+        },
+        {
+          "name": "C3 absent list refuses",
+          "meets": true
+        },
+        {
+          "name": "C5 target-only deduplicated path advisory",
+          "meets": true
+        },
+        {
+          "name": "C6 ordinary structural controls",
+          "meets": true
+        },
+        {
+          "name": "F2 C6 HTML comment is not a prose paragraph",
+          "meets": true
+        },
+        {
+          "name": "F2 C6 empty code fence is not a prose paragraph",
+          "meets": true
+        },
+        {
+          "name": "F2 C6 horizontal rule is not a prose paragraph",
+          "meets": true
+        },
+        {
+          "name": "F2 C6 table only is not a prose paragraph",
+          "meets": true
+        },
+        {
+          "name": "C6 relocation preserves prose hard breaks",
+          "meets": true
+        },
+        {
+          "name": "C7 release source controls",
+          "meets": true
+        }
+      ]
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-227/final-review-release.mjs",
+      "exitCode": 0,
+      "startedAt": "2026-10-22T21:33:51.628Z",
+      "finishedAt": "2026-10-22T21:33:58.628Z",
+      "durationMs": 7000,
+      "observations": {
+        "probe": "author-written-target-url-exemption",
+        "controlStatus": 1,
+        "controlError": "error: target release refused: outward lint: release-body refused: identifier.launchpad: WO-006 (line 5, reviewed notes)",
+        "candidateStatus": 1,
+        "candidateError": "error: target release refused: outward lint: release-body refused: identifier.launchpad: WO-006 (line 5, reviewed notes)",
+        "publishedIdentifier": false,
+        "tagPublished": false,
+        "releaseCreated": false,
+        "namedPathExists": false
+      }
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-227/verification-001-release.mjs",
+      "exitCode": 0,
+      "startedAt": "2026-10-22T21:34:36.380Z",
+      "finishedAt": "2026-10-22T21:34:44.944Z",
+      "durationMs": 8564,
+      "observations": {
+        "probe": "repeated-completed-release-recheck",
+        "originalDigest": "sha256:f84f5d5231b7efb968fc7a3173bf5f4cf24c1741cd1c556c321ecff2b5a07587",
+        "firstStatus": 0,
+        "firstRecordedDigest": "sha256:f84f5d5231b7efb968fc7a3173bf5f4cf24c1741cd1c556c321ecff2b5a07587",
+        "secondStatus": 0,
+        "secondError": "",
+        "remoteBodyUnchanged": true
+      }
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-227/repair-ver002-kit-row.mjs",
+      "exitCode": 0,
+      "startedAt": "2026-10-22T21:35:13.210Z",
+      "finishedAt": "2026-10-22T21:35:18.881Z",
+      "durationMs": 5671,
+      "observations": {
+        "probe": "kit-row-refuse-term",
+        "recordsStatus": 0,
+        "recordsStderr": "Advisory: attestation recorded as supplied; human not-applicable effort unknown has no matching discovery observation.\n",
+        "publishStatus": 1,
+        "publishStdout": "",
+        "publishStderr": "error: target publish refused: outward lint: pr-body refused: vocabulary.local: refuse (line 12, Change table)\n",
+        "publishedRow": null
+      }
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-227/verification-001-workers.mjs",
+      "exitCode": 0,
+      "startedAt": "2026-10-22T21:38:57.998Z",
+      "finishedAt": "2026-10-22T21:38:58.096Z",
+      "durationMs": 98,
+      "observations": [
+        {
+          "name": "adversary 1 private term spanning exempt display name still refuses",
+          "observed": {
+            "kind": "release-body",
+            "target": true,
+            "status": "refused",
+            "checks": {
+              "format": {
+                "status": "pass"
+              },
+              "runtime": {
+                "status": "pass"
+              },
+              "launchpadIdentifiers": {
+                "status": "pass"
+              },
+              "review": {
+                "status": "pass",
+                "matches": 0
+              },
+              "localTerms": {
+                "status": "refused"
+              }
+            },
+            "findings": [
+              {
+                "rule": "vocabulary.local",
+                "span": {
+                  "start": 0,
+                  "end": 19,
+                  "line": 1,
+                  "column": 1,
+                  "precision": "line"
+                },
+                "count": 1,
+                "mode": "refuse"
+              }
+            ],
+            "advisories": []
+          }
+        },
+        {
+          "name": "adversary 2 lone-CR prose retains generated row attribution",
+          "observed": {
+            "review": null,
+            "pending": {
+              "digest": "sha256:a4b10790f9be0f68f8a68c529ec4ea3fabad4402defc7e6eb0f3b2f7a267f93c",
+              "items": [
+                "pr-body: vocabulary.review: launchpad (line 10, Change table, path fixtures/launchpad-board.json)"
+              ]
+            }
+          }
+        },
+        {
+          "name": "adversary 3 three-digit boundary and longer controls",
+          "observed": [
+            {
+              "text": "final-100-percent.png",
+              "findings": [
+                {
+                  "rule": "identifier.launchpad",
+                  "span": {
+                    "start": 0,
+                    "end": 9,
+                    "line": 1,
+                    "column": 1,
+                    "precision": "exact"
+                  }
+                }
+              ]
+            },
+            {
+              "text": "review-2026-10-21.md",
+              "findings": []
+            },
+            {
+              "text": "ws-2024",
+              "findings": []
+            },
+            {
+              "text": "WO-1000",
+              "findings": []
+            }
+          ]
+        },
+        {
+          "name": "adversary 7 zero-width identifier limitation",
+          "observed": [
+            {
+              "kind": "commit",
+              "findings": []
+            },
+            {
+              "kind": "pr-title",
+              "findings": []
+            },
+            {
+              "kind": "pr-body",
+              "findings": []
+            }
+          ]
+        },
+        {
+          "name": "adversary 9 title review uses composed-body digest by contract",
+          "observed": [
+            {
+              "review": {
+                "confirmedDigest": "sha256:877c943cdf7a3ddcf51897c14a78f5c752c85a871a5cf28e8c45e38b89f2f4c7",
+                "matches": 1
+              }
+            },
+            {
+              "review": {
+                "confirmedDigest": "sha256:877c943cdf7a3ddcf51897c14a78f5c752c85a871a5cf28e8c45e38b89f2f4c7",
+                "matches": 1
+              }
+            }
+          ]
+        },
+        {
+          "name": "C2 confirmation actually appends a matching journal row",
+          "observed": {
+            "confirmation": {
+              "confirmedDigest": "sha256:877c943cdf7a3ddcf51897c14a78f5c752c85a871a5cf28e8c45e38b89f2f4c7",
+              "matches": 2,
+              "attestation": {
+                "harness": "codex-cli",
+                "model": "unknown",
+                "effort": "unknown",
+                "source": "unavailable",
+                "role": "reviewer"
+              },
+              "recordedAt": "2026-10-22T00:00:00.000Z",
+              "journal": "recorded"
+            },
+            "journal": {
+              "recordedAt": "2026-10-22T00:00:00.000Z",
+              "typedEvent": "ReviewTermsConfirmed",
+              "eventId": "review-terms:sha256:877c943cdf7a3ddcf51897c14a78f5c752c85a871a5cf28e8c45e38b89f2f4c7",
+              "workOrder": "WO-999",
+              "confirmedDigest": "sha256:877c943cdf7a3ddcf51897c14a78f5c752c85a871a5cf28e8c45e38b89f2f4c7",
+              "matches": 2,
+              "attestation": {
+                "harness": "codex-cli",
+                "model": "unknown",
+                "effort": "unknown",
+                "source": "unavailable",
+                "role": "reviewer"
+              }
+            },
+            "agrees": true
+          }
+        },
+        {
+          "name": "C1 each form paired with only identifier.launchpad removed",
+          "all28Hold": true
+        }
+      ]
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-227/verification-003-probes.mjs",
+      "exitCode": 0,
+      "startedAt": "2026-10-22T21:40:02.999Z",
+      "finishedAt": "2026-10-22T21:40:03.110Z",
+      "durationMs": 111,
+      "observations": [
+        {
+          "name": "K1 unmarked private term on a kit record path is a redacted review item",
+          "meets": true
+        },
+        {
+          "name": "K2 review: private term on a kit record path is a redacted review item",
+          "meets": true
+        },
+        {
+          "name": "K3 public review word on a kit record path is a review item with its path",
+          "meets": true
+        },
+        {
+          "name": "K4 identifier on a kit record path is exempt; the same added path refuses",
+          "meets": true
+        },
+        {
+          "name": "K5 refuse term with a public word and identifier on a kit path refuses redacted",
+          "meets": true
+        },
+        {
+          "name": "K6 folded refuse term on a kit path refuses",
+          "meets": true
+        },
+        {
+          "name": "K7 runtime-identifier spelling after a hyphen on a kit path (observation)",
+          "meets": null
+        },
+        {
+          "name": "K8 kit path the base held is not reported (observation)",
+          "meets": null
+        },
+        {
+          "name": "I1 identifiers inside link text, URL, code span and emphasis refuse",
+          "meets": true
+        },
+        {
+          "name": "M1 meter already last is unchanged; top, unterminated and between bodies move it last",
+          "meets": true
+        },
+        {
+          "name": "M2 CRLF body relocation (observation)",
+          "meets": null
+        }
+      ]
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-227/verification-004-probes.mjs",
+      "exitCode": 1,
+      "startedAt": "2026-10-22T21:38:11.436Z",
+      "finishedAt": "2026-10-22T21:38:29.867Z",
+      "durationMs": 18431,
+      "observations": {
+        "provenance": [
+          {
+            "name": "inline authored copy after a rewrite and emoji",
+            "status": 1,
+            "diagnostic": "error: target release refused: outward lint: release-body refused: identifier.launchpad: WO-999 (line 5, reviewed notes)",
+            "tagPublished": false,
+            "releaseCreated": false
+          },
+          {
+            "name": "absolute reference definition after a rewrite",
+            "status": 1,
+            "diagnostic": "error: target release refused: outward lint: release-body refused: identifier.launchpad: WO-999 (line 7, reviewed notes)",
+            "tagPublished": false,
+            "releaseCreated": false
+          },
+          {
+            "name": "foreign identifier in a generated image fragment",
+            "status": 1,
+            "diagnostic": "error: target release refused: outward lint: release-body refused: identifier.launchpad: wo-006-d001 (line 5, reviewed notes)",
+            "tagPublished": false,
+            "releaseCreated": false
+          },
+          {
+            "name": "foreign identifier in a reference-style generated fragment",
+            "status": 1,
+            "diagnostic": "error: target release refused: outward lint: release-body refused: identifier.launchpad: wo-006-d001 (line 7, reviewed notes)",
+            "tagPublished": false,
+            "releaseCreated": false
+          },
+          {
+            "name": "two repeated authored copies",
+            "status": 1,
+            "diagnostic": "error: target release refused: outward lint: release-body refused: identifier.launchpad: WO-999 (line 5, reviewed notes)",
+            "tagPublished": false,
+            "releaseCreated": false
+          }
+        ],
+        "finding": {
+          "status": 0,
+          "diagnostic": "",
+          "controlReview": {
+            "term": "md launchpad",
+            "text": "md#launchpad"
+          },
+          "tagPublished": true,
+          "releaseCreated": true,
+          "authoredFragmentPublished": true,
+          "recordedBody": {
+            "source": "reviewed",
+            "digest": "sha256:e650364eb710871340c448de85b7ea0c7af5cb4cfbd3692af45df8b5c5eef02c",
+            "review": null,
+            "confirmation": null
+          }
+        },
+        "failingAssertion": "the match includes authored fragment bytes and must wait for confirmation",
+        "interpretation": "One test passes, one fails: five authored-link variants refuse before effects; the compound public review match incorrectly publishes without confirmation."
+      }
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-227/verification-004-boundary.mjs",
+      "exitCode": 1,
+      "startedAt": "2026-10-22T21:39:27.612Z",
+      "finishedAt": "2026-10-22T21:39:27.687Z",
+      "durationMs": 75,
+      "observations": [
+        {
+          "name": "compound term crosses into fragment",
+          "expected": "review",
+          "actual": "pass",
+          "fullSpanControl": "review",
+          "match": {
+            "text": "md#launchpad",
+            "start": 124,
+            "end": 136,
+            "line": 1,
+            "column": 125,
+            "precision": "exact"
+          },
+          "generatedSpan": {
+            "start": 13,
+            "end": 126
+          },
+          "met": false
+        },
+        {
+          "name": "compound term crosses into query",
+          "expected": "review",
+          "actual": "pass",
+          "fullSpanControl": "review",
+          "match": {
+            "text": "md?launchpad",
+            "start": 124,
+            "end": 136,
+            "line": 1,
+            "column": 125,
+            "precision": "exact"
+          },
+          "generatedSpan": {
+            "start": 13,
+            "end": 126
+          },
+          "met": false
+        },
+        {
+          "name": "term wholly in authored fragment",
+          "expected": "review",
+          "actual": "review",
+          "fullSpanControl": "review",
+          "match": {
+            "text": "launchpad",
+            "start": 127,
+            "end": 136,
+            "line": 1,
+            "column": 128,
+            "precision": "exact"
+          },
+          "generatedSpan": {
+            "start": 13,
+            "end": 126
+          },
+          "met": true
+        },
+        {
+          "name": "term wholly in generated path",
+          "expected": "pass",
+          "actual": "pass",
+          "fullSpanControl": "pass",
+          "match": {
+            "text": "decisions",
+            "start": 114,
+            "end": 123,
+            "line": 1,
+            "column": 115,
+            "precision": "exact"
+          },
+          "generatedSpan": {
+            "start": 13,
+            "end": 126
+          },
+          "met": true
+        }
+      ]
+    }
+  ],
+  "checks": {
+    "format": {
+      "command": "node scripts/harness.mjs bounded -- npm run format:check",
+      "exitCode": 0,
+      "finishedAt": "2026-10-22T21:39:53.922Z",
+      "durationMs": 7029,
+      "output": "All matched files use Prettier code style!",
+      "scope": "Implementation and evidence present at this cutoff; subsequent report/evidence formatting targets only authored files."
+    },
+    "diffCheck": {
+      "command": "git diff --check",
+      "exitCode": 0
+    },
+    "dependenciesAndRoles": {
+      "command": "git diff --quiet HEAD -- package.json package-lock.json packages .claude/skills .agents/skills",
+      "exitCode": 0
+    },
+    "subjectPreserved": "No implementation file was changed by this verification. The untracked confirm-terms.mjs bytes matched implementation checkpoint 17; all other script bytes matched.",
+    "meta": {
+      "command": "node scripts/harness.mjs bounded -- npm run meta -- --check",
+      "exitCode": 0,
+      "cutoff": "2026-10-22T21:46:47.467Z",
+      "followup": "FUP-5df244acdc3b9eb7"
+    }
+  },
+  "finding": {
+    "id": "F1",
+    "criterion": "7",
+    "severity": "medium",
+    "class": "Partial-span exemption suppresses a required public review match",
+    "expected": "A compound review term crossing the generated-path boundary requires confirmation, and close without that confirmation has no tag or Release effect.",
+    "observed": "The fragment fixture closes with status 0, creates the tag and Release, and records null review and confirmation. Pure query and fragment cases return pass.",
+    "cause": "scripts/lib/outward-lint.mjs:795-813 selects an exempt section using the finding start alone. scripts/release.mjs:2603-2610 intentionally ends generated coverage before the authored query or fragment.",
+    "repairRule": "Exempt a finding only when its complete matched span is contained within the authorized exemption. Preserve legitimate wholly generated matches, authored review findings, and private redaction.",
+    "decision": "WO-227-D032"
+  },
+  "probeCorrection": "The first VER-004 fixture attempt passed an absolute vocabulary path to a helper that expects a relative path. Its configured-term control failed before the release case. The probe now passes the relative path; only the corrected run above establishes F1.",
+  "limits": [
+    "All remote effects observed here belong to temporary synthetic fixture repositories and a local fake forge; no live service was contacted.",
+    "The end-to-end failing case uses a fragment. The query variant is established by the pure renderer/linter probe.",
+    "The full-span control imports a changed source string in memory; it does not edit or qualify an implementation repair.",
+    "No private term disclosure is established by F1; the demonstrated bypass concerns a configured public compound review term.",
+    "Earlier follow-ups D018, D019, D025, D026 and D028 remain unchanged; the operator-accepted planning carry-in is not rejudged.",
+    "The complete passing review row is reused at the current subject identity; independent probes expose an untested boundary despite that row."
+  ]
+}
