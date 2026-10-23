@@ -6,7 +6,7 @@
 
 - [x] [WO-226] — An instance's kit works after its update without a hand step · **final-reviewed**
 - [x] [WO-227] — Outward publication as the operator intended · **final-reviewed**
-- [ ] [WO-225] — The console's host contracts for an instance's browser shell · **queued**
+- [x] [WO-225] — The console's host contracts for an instance's browser shell · **final-reviewed**
 - [ ] [WO-229] — A gate says who it waited for · **queued**
 - [ ] [WO-219] — Boarded follow-ups, batch 3: records, roles and the harness · **queued**
 - [ ] [WO-220] — Boarded follow-ups, batch 4: the resident and the vertical · **queued**
@@ -39,23 +39,6 @@ Full evidence for the active and sequenced orders follows; the Open cards are in
 None.
 
 ## Open
-
-### WO-225
-
-[WO-225 — The console's host contracts for an instance's browser shell: &#96;board --json&#96; carries no absolute path, the kit ships the two schemas and runs the console without a build, the collector reads an instance's control segments, and the resident's loopback serves the status file and a board snapshot read-only to a local origin (version assigned at activation)](WO-225-console-host-contracts.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-032: satisfied-by-close (met) — the actor board, its view model and the console package this order extends; WO-114: satisfied-by-close (met) — the resident's loopback server the read routes join; WO-115: satisfied-by-close (met) — the parity contract whose one-route sentence this order amends; WO-213: satisfied-by-close (met) — the private-path rule the board's reasons now meet; WO-220: reference-only (non-blocking) — its console rows edit the same package; whichever runs second rebases; WO-080: reference-only (non-blocking) — the board's Workstreams section is an additive view-model extension beside this order's additive changes.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer xhigh.
-- Track: delivery
-- Cost: adds, in &#96;packages/console/src/collect.ts&#96;, coded failure reasons in &#96;attempt()&#96; and the store readers, an optional legacy control log and configured roots in &#96;controlLog&#96;, and a path-free &#96;age&#96; cell for a refused Beacon row; in &#96;packages/skeleton/src/console-loopback.ts&#96;, &#96;GET /runtime-status-v1&#96; and &#96;GET /uifa-board-v1&#96;; in &#96;packages/skeleton/src/resident-host.ts&#96;, the board snapshot written atomically beside &#96;runtime-status-v1.json&#96; by a bounded child run of the console CLI; in &#96;packages/console/src/console-client.ts&#96;, the two read functions; in &#96;scripts/launchpad.mjs&#96;, the two schema files in &#96;KIT_FILES&#96;; in &#96;scripts/build.mjs&#96;, the kit-root no-op; fixture cases in &#96;packages/console/test/board.test.ts&#96;, &#96;collect.test.ts&#96;, &#96;packages/skeleton/test/console-loopback.test.ts&#96;, &#96;scripts/test-launchpad-export.mjs&#96; and &#96;scripts/test-launchpad-update.mjs&#96;; the console README's header, version and names; product 04's sentences step 11 names. Removes the state the fork's UI pass met: a board whose failure reasons name the home directory (scrubbed by hand before a fixture could be committed), an export whose &#96;npm run console&#96; fails on a missing &#96;tsconfig.json&#96;, a board whose Work panel is empty in an instance with eight closed orders, a contract an instance pins by reaching into core, and a browser shell with no platform route to the board or the status. Re-mints: &#96;scripts/build.mjs&#96; is a registered evidence source (&#96;scripts/lib/evidence-sources.mjs&#96; line 118), so each edition whose check it stales is re-minted deterministically, the feedback edition by carry (&#96;build.mjs&#96; is not in &#96;FEEDBACK_SOURCE_PATHS&#96;); &#96;packages/console/src/index.ts&#96;, &#96;scripts/launchpad.mjs&#96; and &#96;scripts/build.mjs&#96; are declared machinery sources, so &#96;npm test -- --review&#96; runs before handoff; no live feedback episode is owed unless a step edits a &#96;FEEDBACK_SOURCE_PATHS&#96; file, in which case the executor runs one on Codex &#96;gpt-6.1-sol&#96; at &#96;max&#96; or Claude Code &#96;claude-opus-5-5&#96; at &#96;xhigh&#96;, no authorization needed. Wall-clock: a board snapshot costs one console collection per refresh (the fork measured 261 ms for &#96;board --json&#96; in a bounded probe; core's &#96;collectSources&#96; median is 0.9 s); the loopback read is a file read. Context bytes: this file, about 24,000. Steps: 12.
-- Authority: [docs/work-orders/WO-225-console-host-contracts.md](WO-225-console-host-contracts.md)
 
 ### WO-229
 

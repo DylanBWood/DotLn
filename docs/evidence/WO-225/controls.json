@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-225",
+  "observedAt": "2026-10-23T01:57:23Z",
+  "controls": [
+    {
+      "criterion": 1,
+      "command": "node scripts/harness.mjs bounded -- node <session-scratch>/wo225-error-control.mjs",
+      "change": "Only attempt() changed back to its baseline raw exception formatting in an isolated compiled-module copy. Repository source stayed current.",
+      "settled": {
+        "fixtureRoot": false,
+        "nodeBinary": false,
+        "home": false,
+        "collectionMs": 127
+      },
+      "control": {
+        "fixtureRoot": true,
+        "nodeBinary": true,
+        "home": true,
+        "collectionMs": 125
+      },
+      "result": "pass: the no-path assertion rejects the single-change control"
+    },
+    {
+      "criterion": 2,
+      "settled": "WO-225 segmented instances test passes with default roots, custom control, and explicit docs/control/orders roots; Work and Actors contain the two fixture orders.",
+      "control": "Baseline segments-only fixture made control and status unavailable. Settled test also injects an aggregate containing WO-999 and failing per-order reads; cross-check refuses it.",
+      "result": "pass",
+      "containment": "Parent-symlink escape: canonical reader throws; console source is unavailable/not readable and external order/path are absent. Bounded compiled test passed 2026-10-23T02:08:22Z."
+    },
+    {
+      "criterion": 3,
+      "settled": "Export manifest carries both schemas; shipped schema tests run; npm build changes neither any file nor Git status; npm console emits uifa-board-v1.",
+      "control": "Baseline export listed neither schema and npm console exited 1 on missing tsconfig.json.",
+      "result": "pass"
+    },
+    {
+      "criterion": 4,
+      "settled": "Authenticated real-resident reads return status/snapshot file bytes and a schema-valid board without events; reads complete while an invoke is blocked. Three concurrent absent reads collect once; fresh reads reuse bytes; two stale reads refresh once.",
+      "control": "Missing/wrong tokens, foreign Origin, wrong Host name/port and a non-loopback socket are refused before reads. Invalid JSON/wrong version/nonzero child exit preserve the prior file. Timeout and shutdown publish no partial file.",
+      "result": "pass",
+      "fixtureCorrection": "fetch replaced the attempted Host header; corrected fixture uses node:http to send the exact forged Host."
+    }
+  ]
+}
