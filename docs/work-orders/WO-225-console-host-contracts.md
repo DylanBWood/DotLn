@@ -1,4 +1,4 @@
-# WO-225 — The console's host contracts for an instance's browser shell: `board --json` carries no absolute path, the kit ships the two schemas and runs the console without a build, the collector reads an instance's control segments, and the resident's loopback serves the status file and a board snapshot read-only to a local origin (version assigned at activation)
+# WO-225 — The console's host contracts for an instance's browser shell: `board --json` carries no absolute path, the kit ships the two schemas and runs the console without a build, the collector reads an instance's control segments, and the resident's loopback serves the status file and a board snapshot read-only to a local origin (v0.92.0)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

@@ -1,6 +1,6 @@
 {
   "name": "@dotln/console",
-  "version": "0.4.5",
+  "version": "0.4.6",
   "private": true,
   "license": "Apache-2.0",
   "type": "module",
@@ -27,6 +27,6 @@
   "dependencies": {
     "@dotln/compiler": "0.30.0",
     "@dotln/kernel": "0.6.0",
-    "@dotln/skeleton": "0.65.0"
+    "@dotln/skeleton": "0.66.0"
   }
 }
