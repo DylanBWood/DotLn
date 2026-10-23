@@ -1,4 +1,8 @@
 import { sha256Hex } from "./helpers.mjs";
+import {
+  historicalDependencyIds,
+  historicalDependencyIdsAt,
+} from "./dependencies.mjs";
 export { sha256Hex } from "./helpers.mjs";
 import { lstatSync, readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -250,9 +254,9 @@ export const parsePlanOrder = (
   source,
   path,
   workOrderId,
-  { includeCost = false } = {},
+  { includeCost = false, historicalIds = new Set() } = {},
 ) => {
-  const { title } = parseHeader(source, path);
+  const { title } = parseHeader(source, path, { historicalIds });
   if (!title.startsWith(`${workOrderId} — `))
     throw new Error(`order title/id mismatch: ${path}`);
   const criteriaSource = field(source, "Acceptance criteria");
@@ -351,11 +355,14 @@ export function buildPlanSubject(
         ? [docRelative(root, "planning", "cost-table.json")]
         : []),
     ]);
+  const historicalIds = workspace
+    ? historicalDependencyIds(root)
+    : historicalDependencyIdsAt(committed);
   const orders = sequence.map(({ id }, index) => {
     const path = orderPaths[index];
     const source = read(path);
     parts.push([path, source]);
-    return parsePlanOrder(source, path, id, { includeCost });
+    return parsePlanOrder(source, path, id, { includeCost, historicalIds });
   });
   const vision = optionalRead(standardPaths[0]);
   if (vision === null) parts.push(["vision:unavailable", standardPaths[0]]);
@@ -683,6 +690,9 @@ function buildGoalSubject(root, revision, { workspace }) {
     orders: subject.orders.map((order) =>
       parsePlanOrder(read(order.path), order.path, order.workOrderId, {
         includeCost: true,
+        historicalIds: workspace
+          ? historicalDependencyIds(root)
+          : historicalDependencyIdsAt(committed),
       }),
     ),
     hash: hashParts([subject.hash, ...extra]),

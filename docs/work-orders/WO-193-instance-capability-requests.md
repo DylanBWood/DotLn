@@ -449,7 +449,7 @@ request; the write-backs.
 
 **Preflight:** `npm test -- --only configuration-root` for step 1,
 `npm test -- --only launchpad` for steps 2 and 8,
-`npm test -- --only request` for steps 3–4 (the suite step 4 registers), `npm test -- --only skeleton` for step 5, `npm test -- --only plan-refutation` and
+`npm test -- --only skeleton` for step 5, `npm test -- --only plan-refutation` and
 `npm test -- --only launchpad-planning` for step 6,
 `npm test -- --only work-orders-fixtures`, `npm test -- --only index` and
 `npm test -- --only worktree` for step 7,
@@ -464,7 +464,9 @@ for step 8,
 `npm test -- --only evidence-sources` for step 9, and `npm run test:docs` when
 a document changes (steps 7 and 9 to 11), each under
 `node scripts/harness.mjs bounded --`; then one `npm test -- --review`
-(07-execution-guide.md §Preflight before the full gate).
+(07-execution-guide.md §Preflight before the full gate). Step 4 must add the
+new `request` suite's explicit single-suite command to this field when it
+registers that suite; both checks required by step 4 remain required.
 
 **Evidence gate:** the fixtures and table tests of criteria 1 to 7; the live
 request of criterion 8, an

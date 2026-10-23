@@ -1,0 +1,92 @@
+{
+  "dispatch": "resume: fix",
+  "report": "docs/verifications/WO-219/VER-001.md",
+  "method": "Root-owned sequential bounded probes; the live implementation was never reverted. The routing negative arm ran the new fixture before adding only the main-checkout refusal; the positive arm ran the same fixture after the refusal. The initial pair used zsh for the printed remedy, then the fixture changed only that executable to portable sh for the final gates. Advisory arms import the original HEAD source and the repaired source separately; temporary synthetic session records are deleted in finally.",
+  "controls": [
+    {
+      "id": "closed-override-linked-routing",
+      "findings": [
+        "F2"
+      ],
+      "suite": "resume",
+      "command": "node scripts/harness.mjs bounded -- bash scripts/test-resume.sh",
+      "fixture": "scripts/test-off-ramps.mjs",
+      "cases": [
+        "closed override from branch worktree refuses without writes and reruns from main",
+        "closed override from detached worktree refuses without writes and reruns from main"
+      ],
+      "rule": "Only the main control-plane checkout may record a pending closed-order override; linked refusals preserve capture/control bytes and print a shell-quoted main command selecting the original order.",
+      "negative": {
+        "exitCode": 1,
+        "durationMs": 21462,
+        "startedAt": "2026-10-23T21:34:01.574Z",
+        "finishedAt": "2026-10-23T21:34:23.036Z",
+        "droppedOutputBytes": 0,
+        "logSha256": "cfcf706601ea0fe299f43bf8dae0123cdc7a121022a03a9b1c2ed04cfbd7a046",
+        "witness": "branch checkout must refuse: actual exit 0, expected 1"
+      },
+      "positive": {
+        "exitCode": 0,
+        "durationMs": 88326,
+        "startedAt": "2026-10-23T21:34:52.598Z",
+        "finishedAt": "2026-10-23T21:36:20.924Z",
+        "droppedOutputBytes": 0,
+        "logSha256": "ab42a6ce1d6f61d69104249001309a3a49c95829c8b03ba5fd6d746693c8249e",
+        "witness": "Both branch and detached cases pass; resume tests passed."
+      },
+      "implementation": {
+        "path": "scripts/resume.mjs",
+        "beforeSha256": "ac35d9640d50e712246b558dbc73ab5e75cef7f3c057f8e4913c5e238f93116a",
+        "afterSha256": "c19d20548e93019879347a567612d247b471cc337cafbd01c33f3be6a123f006",
+        "reversion": "Remove only the mainWorktree/directoryIdentity refusal block immediately before recordPendingOverride in the closed override-record branch."
+      }
+    },
+    {
+      "id": "override-advice-closed-route",
+      "findings": [
+        "F1"
+      ],
+      "suite": "harness-fixtures",
+      "fixture": "scripts/test-harness.mjs",
+      "case": "WO-158 operator override: off appends OperatorOverrideRecorded with the operator's words, and prints the exact command when the runtime cannot",
+      "rule": "Runtime-unavailable advice names the closed-order main pending route and capture prerequisite; only withdrawn or unselected orders receive the decisions route.",
+      "negative": {
+        "exitCode": 1,
+        "durationMs": 53,
+        "startedAt": "2026-10-23T21:36:45.807Z",
+        "finishedAt": "2026-10-23T21:36:45.860Z",
+        "droppedOutputBytes": 0,
+        "logSha256": "dbd198e734121311a256eea6b6acec2ab91fde1f822881883e679e09b16edfb8",
+        "witness": "Original advice lacks the closed-order main route and sends closed orders to decisions."
+      },
+      "positive": {
+        "exitCode": 0,
+        "durationMs": 51,
+        "startedAt": "2026-10-23T21:36:49.717Z",
+        "finishedAt": "2026-10-23T21:36:49.768Z",
+        "droppedOutputBytes": 0,
+        "logSha256": "8d4eb3f6c44af4878d4ef45107ba5139a85cb4229ac7f97d0c19895707253432",
+        "witness": "override exit advice covers main pending, capture and decisions routes"
+      },
+      "implementation": {
+        "path": "packages/compiler/src/operator-control.mjs",
+        "beforeSha256": "3e53139de3a62ace3d7e151e5359f28d9a619e7a6b7b4c09819a0a17cf3f3932",
+        "afterSha256": "9d01ba4dad786db60a063c4fc5804f9160debb52940a36ee786f97e14f380738",
+        "reversion": "Restore only the advisory template to its HEAD value."
+      },
+      "limit": "The direct source comparison establishes the shared advisory. The complete review separately exercises the emitted missing-runtime hook case.",
+      "commands": {
+        "negative": "node scripts/harness.mjs bounded -- node docs/control/local/wo219-advice-probe.mjs docs/control/local/wo219-operator-control-before.mjs",
+        "positive": "node scripts/harness.mjs bounded -- node docs/control/local/wo219-advice-probe.mjs packages/compiler/src/operator-control.mjs"
+      }
+    }
+  ],
+  "completeGate": "docs/evidence/WO-219/repair-ver001-gate.json",
+  "completeGateSourceHashes": {
+    "scripts/resume.mjs": "c19d20548e93019879347a567612d247b471cc337cafbd01c33f3be6a123f006",
+    "scripts/test-off-ramps.mjs": "35e48245710c686d964f87fb2397ef2120a60ef7ace32569468c96eb05484eb7",
+    "packages/compiler/src/operator-control.mjs": "9d01ba4dad786db60a063c4fc5804f9160debb52940a36ee786f97e14f380738",
+    "scripts/test-harness.mjs": "5b54240f0dce39fb2841908c6a48bb9ac47be9bbe9bffa47e23713e3e0c38ff7"
+  },
+  "hashBoundary": "The arm hashes describe source at the bounded comparison. completeGateSourceHashes describe the final formatted source, including the portable sh fixture, judged by the complete review."
+}

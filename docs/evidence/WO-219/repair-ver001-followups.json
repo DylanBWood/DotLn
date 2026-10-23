@@ -1,0 +1,1004 @@
+{
+  "observedAt": "2026-10-23T22:08:25.534Z",
+  "activation": "2026-10-23T13:49:39.138Z",
+  "rows": [
+    {
+      "id": "FUP-0132",
+      "command": "npm run plan -- followups --show FUP-0132",
+      "exitCode": 0,
+      "status": "declined",
+      "sourceRevision": 1,
+      "at": "2026-10-23T16:09:32.526Z",
+      "outputSha256": "a15ec929936294489848d63343ff776f7d93a77e3edb24833a9aa3988aacd7c6"
+    },
+    {
+      "id": "FUP-06da3d34e379e3c1",
+      "command": "npm run plan -- followups --show FUP-06da3d34e379e3c1",
+      "exitCode": 0,
+      "status": "declined",
+      "sourceRevision": 1,
+      "at": "2026-10-23T16:09:32.642Z",
+      "outputSha256": "ed97f1a11a0b857316396a9d56d65ab60229d5f7c957fde087b006dad3919d37"
+    },
+    {
+      "id": "FUP-1315c82ef74fb832",
+      "command": "npm run plan -- followups --show FUP-1315c82ef74fb832",
+      "exitCode": 0,
+      "status": "settled",
+      "sourceRevision": 1,
+      "at": "2026-10-23T16:09:32.754Z",
+      "outputSha256": "4e1e2da8262a5462c4bf585a0c45a62e430028519dd3394e1f1632100afa040b"
+    },
+    {
+      "id": "FUP-151541120435fd15",
+      "command": "npm run plan -- followups --show FUP-151541120435fd15",
+      "exitCode": 0,
+      "status": "settled",
+      "sourceRevision": 1,
+      "at": "2026-10-23T16:09:32.865Z",
+      "outputSha256": "3784d1ec0e7d7058cad1dcc7e6b01db7abcbfdba9331999982faeb7be0dab3f0"
+    },
+    {
+      "id": "FUP-16a4af39c710459b",
+      "command": "npm run plan -- followups --show FUP-16a4af39c710459b",
+      "exitCode": 0,
+      "status": "deferred",
+      "sourceRevision": 2,
+      "at": "2026-10-23T16:09:32.976Z",
+      "outputSha256": "29845c4bc40545aa41912acc9d3351c16914440fc78923654ab8e16c60ac40fa"
+    },
+    {
+      "id": "FUP-2f0974e3d5d5063a",
+      "command": "npm run plan -- followups --show FUP-2f0974e3d5d5063a",
+      "exitCode": 0,
+      "status": "settled",
+      "sourceRevision": 2,
+      "at": "2026-10-23T16:09:33.086Z",
+      "outputSha256": "2a32d6feed086106d9469e4656c89515b24d8519758f32e231a7584662a3eb3e"
+    },
+    {
+      "id": "FUP-2f1b441dc2c37776",
+      "command": "npm run plan -- followups --show FUP-2f1b441dc2c37776",
+      "exitCode": 0,
+      "status": "settled",
+      "sourceRevision": 1,
+      "at": "2026-10-23T16:09:33.194Z",
+      "outputSha256": "6fb7e9864a2d4842f7e5de314d7d552f3b21df3706af614e8ec988d5956ff01e"
+    },
+    {
+      "id": "FUP-33173b7f87004a9c",
+      "command": "npm run plan -- followups --show FUP-33173b7f87004a9c",
+      "exitCode": 0,
+      "status": "settled",
+      "sourceRevision": 1,
+      "at": "2026-10-23T16:09:33.305Z",
+      "outputSha256": "10d7c023bfecd5803d1414f93ab763c80184c21fa963346a14ed6202b6b3e181"
+    },
+    {
+      "id": "FUP-3f9d788f4d8c89ac",
+      "command": "npm run plan -- followups --show FUP-3f9d788f4d8c89ac",
+      "exitCode": 0,
+      "status": "settled",
+      "sourceRevision": 1,
+      "at": "2026-10-23T16:09:33.414Z",
+      "outputSha256": "6ba9ff6a8a280f0a3192abd6b2e980f35b84eb84c4c8185af3a0afe94b259da2"
+    },
+    {
+      "id": "FUP-4c4ad5ef3c88547f",
+      "command": "npm run plan -- followups --show FUP-4c4ad5ef3c88547f",
+      "exitCode": 0,
+      "status": "settled",
+      "sourceRevision": 1,
+      "at": "2026-10-23T16:09:33.524Z",
+      "outputSha256": "9b7414a580fe7aa0a51657c014cf7c77a5810f68f27ab7f2f35b895c3d62033f"
+    },
+    {
+      "id": "FUP-50a41e39f51a3e01",
+      "command": "npm run plan -- followups --show FUP-50a41e39f51a3e01",
+      "exitCode": 0,
+      "status": "declined",
+      "sourceRevision": 3,
+      "at": "2026-10-23T16:09:33.632Z",
+      "outputSha256": "596779d2dd0a1088bb87b471a2b9803b9acadeebc67da61bfaa9ac6528b87683"
+    },
+    {
+      "id": "FUP-5d191eb1b77b3431",
+      "command": "npm run plan -- followups --show FUP-5d191eb1b77b3431",
+      "exitCode": 0,
+      "status": "declined",
+      "sourceRevision": 2,
+      "at": "2026-10-23T16:09:33.742Z",
+      "outputSha256": "1601b9f5f0e4d6a263bc249a3bce81eb8643aa4551d6d0c1f7385608eec79218"
+    },
+    {
+      "id": "FUP-6004455b998fa646",
+      "command": "npm run plan -- followups --show FUP-6004455b998fa646",
+      "exitCode": 0,
+      "status": "declined",
+      "sourceRevision": 1,
+      "at": "2026-10-23T16:09:33.850Z",
+      "outputSha256": "b3691a7acec628d092209a3d440c285a9fb9caf33119601b2deb94cfeead4bf2"
+    },
+    {
+      "id": "FUP-64a7f9adb355d94e",
+      "command": "npm run plan -- followups --show FUP-64a7f9adb355d94e",
+      "exitCode": 0,
+      "status": "declined",
+      "sourceRevision": 2,
+      "at": "2026-10-23T16:09:33.960Z",
+      "outputSha256": "873e91115471a5eb59ee81cd9a8cd5183b9c5633a894f7226fd26d9388b6883e"
+    },
+    {
+      "id": "FUP-67a07b670440cf5a",
+      "command": "npm run plan -- followups --show FUP-67a07b670440cf5a",
+      "exitCode": 0,
+      "status": "settled",
+      "sourceRevision": 2,
+      "at": "2026-10-23T16:09:34.068Z",
+      "outputSha256": "ec53785e6d0146c20b192e632818998b588676b3921ca5976ad28406e7ccc0e9"
+    },
+    {
+      "id": "FUP-71a27b368d93f135",
+      "command": "npm run plan -- followups --show FUP-71a27b368d93f135",
+      "exitCode": 0,
+      "status": "settled",
+      "sourceRevision": 1,
+      "at": "2026-10-23T16:09:34.176Z",
+      "outputSha256": "68b64528a8a4240fe57546c9caf1c875c205943a9044185cbb4015de889c7aa5"
+    },
+    {
+      "id": "FUP-75563edf56be23b5",
+      "command": "npm run plan -- followups --show FUP-75563edf56be23b5",
+      "exitCode": 0,
+      "status": "settled",
+      "sourceRevision": 1,
+      "at": "2026-10-23T16:09:34.282Z",
+      "outputSha256": "9098ff9ae1cf065b0adea5558363d3ec56036352ed7fd171eb2a8ad678792a32"
+    },
+    {
+      "id": "FUP-76e02136ac324240",
+      "command": "npm run plan -- followups --show FUP-76e02136ac324240",
+      "exitCode": 0,
+      "status": "declined",
+      "sourceRevision": 1,
+      "at": "2026-10-23T16:09:34.389Z",
+      "outputSha256": "cf5c0b645f993befb514743f16f80a7cdcbbd0f3f38fa362be1f07046310c90f"
+    },
+    {
+      "id": "FUP-7c909f0880237fba",
+      "command": "npm run plan -- followups --show FUP-7c909f0880237fba",
+      "exitCode": 0,
+      "status": "declined",
+      "sourceRevision": 2,
+      "at": "2026-10-23T16:09:34.496Z",
+      "outputSha256": "416eb24266e496519b94db9b0016586ecaab7bf7e771c817e52226c1f7887b3b"
+    },
+    {
+      "id": "FUP-7fd69f3bda6fa326",
+      "command": "npm run plan -- followups --show FUP-7fd69f3bda6fa326",
+      "exitCode": 0,
+      "status": "settled",
+      "sourceRevision": 2,
+      "at": "2026-10-23T16:09:34.606Z",
+      "outputSha256": "8537697940fe9accfad562763fb79dcc4f0b2c833041d49a60a3267ce31f959c"
+    },
+    {
+      "id": "FUP-9625ca888d7d08f5",
+      "command": "npm run plan -- followups --show FUP-9625ca888d7d08f5",
+      "exitCode": 0,
+      "status": "settled",
+      "sourceRevision": 1,
+      "at": "2026-10-23T16:09:34.714Z",
+      "outputSha256": "41186f3f84f38b051fa0944a215ce95f1dba260aa42aeb582fdd660c1585441c"
+    },
+    {
+      "id": "FUP-a6cf30a8b7bc4a83",
+      "command": "npm run plan -- followups --show FUP-a6cf30a8b7bc4a83",
+      "exitCode": 0,
+      "status": "deferred",
+      "sourceRevision": 2,
+      "at": "2026-10-23T16:09:34.820Z",
+      "outputSha256": "6d40dfbb3a76afade2ff2a034b0f3c4290228973b1719bae3be39b68c0d35ab1"
+    },
+    {
+      "id": "FUP-a91115fda9b70272",
+      "command": "npm run plan -- followups --show FUP-a91115fda9b70272",
+      "exitCode": 0,
+      "status": "declined",
+      "sourceRevision": 1,
+      "at": "2026-10-23T16:09:34.927Z",
+      "outputSha256": "5d029f8a46681d2e1754d344308819de7ecba410f2bb402dda58a0c09b6415d1"
+    },
+    {
+      "id": "FUP-acfe4bfda716d8fb",
+      "command": "npm run plan -- followups --show FUP-acfe4bfda716d8fb",
+      "exitCode": 0,
+      "status": "settled",
+      "sourceRevision": 4,
+      "at": "2026-10-23T16:09:35.034Z",
+      "outputSha256": "a5c7f2473bc5d77495dfc5c30e3c546134cd6b3c50755d3d57a4ee95e27fa27c"
+    },
+    {
+      "id": "FUP-afc1bd32fa034417",
+      "command": "npm run plan -- followups --show FUP-afc1bd32fa034417",
+      "exitCode": 0,
+      "status": "settled",
+      "sourceRevision": 1,
+      "at": "2026-10-23T16:09:35.140Z",
+      "outputSha256": "ea9890027a1d766387e34ea8fd66ad02f84b98d7d223ad65115fdf1cef80af66"
+    },
+    {
+      "id": "FUP-b3454d6ce3594ef3",
+      "command": "npm run plan -- followups --show FUP-b3454d6ce3594ef3",
+      "exitCode": 0,
+      "status": "deferred",
+      "sourceRevision": 1,
+      "at": "2026-10-23T16:09:35.247Z",
+      "outputSha256": "d169aa8e93d65f21cd0504a837d16f75e68443365f57da530238db07b6fdaa70"
+    },
+    {
+      "id": "FUP-b789b81160c008ea",
+      "command": "npm run plan -- followups --show FUP-b789b81160c008ea",
+      "exitCode": 0,
+      "status": "declined",
+      "sourceRevision": 3,
+      "at": "2026-10-23T16:09:35.352Z",
+      "outputSha256": "af4c8e82c70e4af2ebd91da3fa61b505fb0db3ac1eb1691f25d13e405d2888bd"
+    },
+    {
+      "id": "FUP-beb13d8d099d2917",
+      "command": "npm run plan -- followups --show FUP-beb13d8d099d2917",
+      "exitCode": 0,
+      "status": "declined",
+      "sourceRevision": 1,
+      "at": "2026-10-23T16:09:35.457Z",
+      "outputSha256": "2e90277b42140086a357a674d35571f030dc4c89c3c5873e89ab679b0b834127"
+    },
+    {
+      "id": "FUP-c5438ef80c397cf0",
+      "command": "npm run plan -- followups --show FUP-c5438ef80c397cf0",
+      "exitCode": 0,
+      "status": "settled",
+      "sourceRevision": 1,
+      "at": "2026-10-23T16:09:35.562Z",
+      "outputSha256": "1fda34295648909f671930a0ba453673bd2b9ad08863a81903b2c3fdf0f66803"
+    },
+    {
+      "id": "FUP-c8ec65f056105759",
+      "command": "npm run plan -- followups --show FUP-c8ec65f056105759",
+      "exitCode": 0,
+      "status": "settled",
+      "sourceRevision": 1,
+      "at": "2026-10-23T16:09:35.667Z",
+      "outputSha256": "918b630b3170ddabfaed3a8f5d9b095d38ffa6385ae19c45984aa8e654447050"
+    },
+    {
+      "id": "FUP-c95ffe4a84e49cbb",
+      "command": "npm run plan -- followups --show FUP-c95ffe4a84e49cbb",
+      "exitCode": 0,
+      "status": "settled",
+      "sourceRevision": 1,
+      "at": "2026-10-23T16:09:35.771Z",
+      "outputSha256": "d80d5aabc55f126dd6014bf34b7007bcf91ea8d365e907f6493d9d57f3f6a3f6"
+    },
+    {
+      "id": "FUP-ca628adcc713c0b8",
+      "command": "npm run plan -- followups --show FUP-ca628adcc713c0b8",
+      "exitCode": 0,
+      "status": "settled",
+      "sourceRevision": 1,
+      "at": "2026-10-23T16:09:35.875Z",
+      "outputSha256": "bd91bcd0d5df228a13997630818bad0c0f80b034ecd89b07e03f52fdc17c54c7"
+    },
+    {
+      "id": "FUP-d4493f4251e69c87",
+      "command": "npm run plan -- followups --show FUP-d4493f4251e69c87",
+      "exitCode": 0,
+      "status": "settled",
+      "sourceRevision": 1,
+      "at": "2026-10-23T16:09:35.980Z",
+      "outputSha256": "03dae1a9cea11fba0aadee97bd8dd55c5184d7371dc49572cc27659ad29e6275"
+    },
+    {
+      "id": "FUP-dc58e92c5cafc732",
+      "command": "npm run plan -- followups --show FUP-dc58e92c5cafc732",
+      "exitCode": 0,
+      "status": "declined",
+      "sourceRevision": 1,
+      "at": "2026-10-23T16:09:36.084Z",
+      "outputSha256": "bc9891024f5b3c5dce8a878f2dabd8cac7607505d7170595acec659b5d0be2ed"
+    },
+    {
+      "id": "FUP-dc6c139003bd4b89",
+      "command": "npm run plan -- followups --show FUP-dc6c139003bd4b89",
+      "exitCode": 0,
+      "status": "settled",
+      "sourceRevision": 1,
+      "at": "2026-10-23T16:09:36.187Z",
+      "outputSha256": "332f78ccba502862039c5bb032b2b107f611327fe00d16c14340bd3ce11b8f32"
+    },
+    {
+      "id": "FUP-e835d826e9af5417",
+      "command": "npm run plan -- followups --show FUP-e835d826e9af5417",
+      "exitCode": 0,
+      "status": "settled",
+      "sourceRevision": 1,
+      "at": "2026-10-23T16:09:36.290Z",
+      "outputSha256": "6aeb6e06e12c57dabf23232eb4ca7eee170dcf5051c263d5782f37259f8d90f1"
+    },
+    {
+      "id": "FUP-e96e0676a5c34f98",
+      "command": "npm run plan -- followups --show FUP-e96e0676a5c34f98",
+      "exitCode": 0,
+      "status": "declined",
+      "sourceRevision": 3,
+      "at": "2026-10-23T16:09:36.395Z",
+      "outputSha256": "afa963ec7dfc4a9d63aa0df3201d73eb49db3c31a0af3387399e4c76759e579c"
+    },
+    {
+      "id": "FUP-ebaa803e38670545",
+      "command": "npm run plan -- followups --show FUP-ebaa803e38670545",
+      "exitCode": 0,
+      "status": "settled",
+      "sourceRevision": 2,
+      "at": "2026-10-23T16:09:36.498Z",
+      "outputSha256": "fcc85befc88d29a0e5cf89abe6804057c9d241923b5ead81a6a8acf28de53048"
+    },
+    {
+      "id": "FUP-fd05316b6030ef73",
+      "command": "npm run plan -- followups --show FUP-fd05316b6030ef73",
+      "exitCode": 0,
+      "status": "settled",
+      "sourceRevision": 1,
+      "at": "2026-10-23T16:09:36.601Z",
+      "outputSha256": "55de8f7ba6297f0999eede571025f19dc95bc0502c73ad8dc6384a7021bdefef"
+    },
+    {
+      "id": "FUP-b3c1a8260bca40b7",
+      "command": "npm run plan -- followups --show FUP-b3c1a8260bca40b7",
+      "exitCode": 0,
+      "status": "settled",
+      "sourceRevision": 1,
+      "at": "2026-10-23T16:09:36.705Z",
+      "outputSha256": "9c1c0ea9ef4094ac0bb603ec423e159ed6b36e5c516dc17a4788894bf2ff2322"
+    },
+    {
+      "id": "FUP-b0418fa8b09362be",
+      "command": "npm run plan -- followups --show FUP-b0418fa8b09362be",
+      "exitCode": 0,
+      "status": "settled",
+      "sourceRevision": 1,
+      "at": "2026-10-23T16:09:36.811Z",
+      "outputSha256": "33ad9713dffc9bbc20e29228ee4772758233d9106fc1f51324bcff7113993009"
+    },
+    {
+      "id": "FUP-10996fedecfde047",
+      "command": "npm run plan -- followups --show FUP-10996fedecfde047",
+      "exitCode": 0,
+      "status": "settled",
+      "sourceRevision": 1,
+      "at": "2026-10-23T16:09:36.914Z",
+      "outputSha256": "cf933816b3cc503b5bc76f1b5385d61e711264f77a2959e20f5ce442912bce24"
+    },
+    {
+      "id": "FUP-dadc66e1f81f83a5",
+      "command": "npm run plan -- followups --show FUP-dadc66e1f81f83a5",
+      "exitCode": 0,
+      "status": "settled",
+      "sourceRevision": 1,
+      "at": "2026-10-23T16:09:37.019Z",
+      "outputSha256": "a1074eb8ac6cf4fa8e87f57d818eeeac3a577636a0f049070688069c87f40d26"
+    },
+    {
+      "id": "FUP-2304d46e6feb711b",
+      "command": "npm run plan -- followups --show FUP-2304d46e6feb711b",
+      "exitCode": 0,
+      "status": "settled",
+      "sourceRevision": 1,
+      "at": "2026-10-23T16:09:37.121Z",
+      "outputSha256": "29f425f25fccff9c58808e434a6b7fb3ec532124d67b8d1498775a486a4856a5"
+    },
+    {
+      "id": "FUP-27e0c0fff9cedb75",
+      "command": "npm run plan -- followups --show FUP-27e0c0fff9cedb75",
+      "exitCode": 0,
+      "status": "settled",
+      "sourceRevision": 2,
+      "at": "2026-10-23T16:09:37.222Z",
+      "outputSha256": "2ff6778a8216df4b99266b71c95edec2f9ae795d7abc20a499f24bb2ed6a9325"
+    },
+    {
+      "id": "FUP-eacf4e6eb0b39fbe",
+      "command": "npm run plan -- followups --show FUP-eacf4e6eb0b39fbe",
+      "exitCode": 0,
+      "status": "settled",
+      "sourceRevision": 2,
+      "at": "2026-10-23T16:09:37.323Z",
+      "outputSha256": "92fb0b7bcd092688be01c66838e3243f0b8785a0b2f59c925e5f1cd314605cc7"
+    },
+    {
+      "id": "FUP-4018cf3118ea113e",
+      "command": "npm run plan -- followups --show FUP-4018cf3118ea113e",
+      "exitCode": 0,
+      "status": "settled",
+      "sourceRevision": 2,
+      "at": "2026-10-23T16:09:37.425Z",
+      "outputSha256": "45b2474df0e4e07078bb975934e5809c75b0f18eaa6a117d2c4eba59dfca3cc1"
+    },
+    {
+      "id": "FUP-4fe22d2e0c8d843d",
+      "command": "npm run plan -- followups --show FUP-4fe22d2e0c8d843d",
+      "exitCode": 0,
+      "status": "settled",
+      "sourceRevision": 2,
+      "at": "2026-10-23T16:09:37.526Z",
+      "outputSha256": "e039f9968c7df89d64577336b2fdd383b1b9f8062135eba72bff8296a1bcec7a"
+    },
+    {
+      "id": "FUP-568da2f2b62ee478",
+      "command": "npm run plan -- followups --show FUP-568da2f2b62ee478",
+      "exitCode": 0,
+      "status": "settled",
+      "sourceRevision": 1,
+      "at": "2026-10-23T16:09:37.627Z",
+      "outputSha256": "03ffab55c154bd1c05b766048a221c733a2dfd38e1bab96e1ab8187a7a369d44"
+    },
+    {
+      "id": "FUP-46deeb2483a9c28d",
+      "command": "npm run plan -- followups --show FUP-46deeb2483a9c28d",
+      "exitCode": 0,
+      "status": "settled",
+      "sourceRevision": 1,
+      "at": "2026-10-23T16:09:37.729Z",
+      "outputSha256": "2d1ae2e2b73a5a8464c662ac6de1432f2eb72b9f17d0356f0e554f4b9061ef34"
+    }
+  ],
+  "counts": {
+    "settled": 34,
+    "declined": 13,
+    "deferred": 3
+  },
+  "register": {
+    "revision": "b533b37c9a575bf78011bf68c9fcde62f11ff545bc7b104f1cd5ae5446913437",
+    "pending": 168,
+    "counts": {
+      "duplicate": 62,
+      "declined": 121,
+      "allocated": 202,
+      "deferred": 155,
+      "settled": 728,
+      "needs-review": 1,
+      "open": 1,
+      "untriaged": 11
+    }
+  },
+  "touching": [
+    {
+      "revision": "b533b37c9a575bf78011bf68c9fcde62f11ff545bc7b104f1cd5ae5446913437",
+      "match": "Textual match, a pointer for judgment and never a verdict: a pending row is listed when its source title or summary, its decision's followup or reopenWhen, or its latest disposition names a given path, a trailing part of it such as its base name, or a given order. A false match costs one row read; a row that names its seam in other words is not listed.",
+      "touching": {
+        "paths": 214,
+        "orders": [
+          "WO-219"
+        ]
+      },
+      "pending": 168,
+      "matched": 17,
+      "rows": [
+        {
+          "id": "FUP-00af89947ed9099f",
+          "status": "deferred",
+          "sourceRevision": 1,
+          "title": "The one-time WO-043 dependency-migration path.",
+          "source": "docs/planning/work-order-map.md#candidates--returns-from-the-cleanup-pass-recorded-2026-09-19",
+          "sourceMissing": false,
+          "reason": "Deferred again by WO-167's final review: a textual match on scripts/lib/plan-continuation.mjs, where WO-167-D013 lets releaseAssignment admit one replacement of a judged release label and report it as release-retiming. m",
+          "reopenWhen": "a planning pass confirms no receipt subject depends on the path",
+          "matched": [
+            "scripts/lib/plan-continuation.mjs",
+            "scripts/lib/plan-dependency-migration.mjs"
+          ]
+        },
+        {
+          "id": "FUP-06744dc23242d044",
+          "status": "deferred",
+          "sourceRevision": 1,
+          "title": "The conditions table reads only the five slowest gate tasks.",
+          "source": "docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-10-13",
+          "sourceMissing": false,
+          "reason": "Recorded by this pass as map candidate 2: gatePerformanceConditions keeps the five slowest latest tasks, so runner-fixtures (89.5 s against about 24.9 s) is never evaluated; no phase is recorded as lost to such a task. [",
+          "reopenWhen": "a task outside the five crosses 1.5 times its median in a phase a pass records as lost to it, or a pass needs a task's reading the table omits",
+          "matched": [
+            "scripts/lib/planning-conditions.mjs"
+          ]
+        },
+        {
+          "id": "FUP-16a4af39c710459b",
+          "status": "deferred",
+          "sourceRevision": 2,
+          "title": "WO-186-D039: Planning, with the operator, decides how a Claude Code role records that Ultracode was on, now that it is a mode beside effort there: whether scripts/resume.mjs parseActor still accepts t",
+          "source": "docs/evidence/WO-186/decisions.md#wo-186-d039--attest-the-selected-effort-ultracode-is-a-mode-beside-it",
+          "sourceMissing": false,
+          "reason": "WO-219-D014 in docs/evidence/WO-219/decisions.md: Use selected effort readback for this execution and keep Ultracode mode distinct from effort. Leave the unresolved Claude mode representation/readback and any canonical c",
+          "reopenWhen": "At review of the WO-219 pull request, the operator chooses the Claude representation/readback policy and whether an authorized canonical historical correction is due; a host-provided mode readback also reopens this packe",
+          "matched": [
+            "docs/evidence/WO-219/decisions.md",
+            "packages/skeleton/src/loadouts/contributor.ts",
+            "scripts/resume.mjs",
+            "WO-219"
+          ]
+        },
+        {
+          "id": "FUP-524a82332e21e127",
+          "status": "deferred",
+          "sourceRevision": 1,
+          "title": "WO-219's size.",
+          "source": "docs/planning/work-order-map.md#candidates--returns-from-the-entropy-pass-recorded-2026-10-20",
+          "sourceMissing": false,
+          "reason": "Recorded by the pass that grew WO-219 to 50 rows and 27 steps with two named exceptions to one subsystem per batch; splitting it pays a second cycle and its Preflight runs the suites its steps name. [2026-10-20 entropy p",
+          "reopenWhen": "WO-219's first verification fails on more than a third of its rows, or its implementation passes 20 hours",
+          "matched": [
+            "WO-219"
+          ]
+        },
+        {
+          "id": "FUP-7f9a27e6ed6c44b3",
+          "status": "deferred",
+          "sourceRevision": 1,
+          "title": "Unmeasured growth costs.",
+          "source": "docs/planning/work-order-map.md#candidates--returns-from-the-cleanup-pass-recorded-2026-09-19",
+          "sourceMissing": false,
+          "reason": "Deferred again by WO-162's final review: a textual match on scripts/work-orders.mjs, where WO-162 removes one unused import. The work-order index's per-tag reads are untouched. [WO-162 final review (docs/final-reviews/WO",
+          "reopenWhen": "collectSources reaches three seconds cold or warm on the operator's host (WO-164-D009, D014), a cold release list exceeds ten seconds (D004), status --all --json output exceeds 32 MB (D003), or work-orders index exceeds ",
+          "matched": [
+            "scripts/work-orders.mjs"
+          ]
+        },
+        {
+          "id": "FUP-957602bc42e32e1d",
+          "status": "deferred",
+          "sourceRevision": 1,
+          "title": "WO-217-D053: Shorten repeated role wording while preserving every duty, command, exception, authority limit and ceiling.",
+          "source": "docs/evidence/WO-217/decisions.md#wo-217-d053",
+          "sourceMissing": false,
+          "reason": "WO-226-D018 preserves the required worker guidance and boards its measured cost for the next planning pass: executor 114 bytes headroom; reviewer 29 bytes over the unchanged ceiling. Optimize repeated wording with equiva",
+          "reopenWhen": "The next planning pass evaluates instruction-byte optimization, or another role edit changes the recorded measurements.",
+          "matched": [
+            "scripts/test-gate-followups.mjs"
+          ]
+        },
+        {
+          "id": "FUP-a6cf30a8b7bc4a83",
+          "status": "deferred",
+          "sourceRevision": 2,
+          "title": "WO-172-D014: Decide how an attestation records ultracode now that it no longer implies an effort: a supplied ultra, ultra code or ultracode spelling maps to xhigh with mode subagents in scripts/resume",
+          "source": "docs/evidence/WO-172/decisions.md#wo-172-d014--release-v0541-and-the-attestation-with-ultracode-independent-of-effort",
+          "sourceMissing": false,
+          "reason": "WO-219-D031 in docs/evidence/WO-219/decisions.md: Keep selected effort readback and unchanged historical normalization while the WO-219 pull request carries an operator packet for the Claude mode representation and its i",
+          "reopenWhen": "Review of the WO-219 pull request chooses the cross-harness record policy, a host exposes a mode readback, or an actual spaced-spelling mismatch is captured at a named matcher.",
+          "matched": [
+            "docs/evidence/WO-219/decisions.md",
+            "scripts/lib/plan-receipts.mjs",
+            "scripts/resume.mjs",
+            "WO-219"
+          ]
+        },
+        {
+          "id": "FUP-b3454d6ce3594ef3",
+          "status": "deferred",
+          "sourceRevision": 1,
+          "title": "WO-172-D006: Decide whether the reader's count stands or the structured operator-step field returns: the reader agrees with the hand classification on 238 of 241 fields at the base but with an indepen",
+          "source": "docs/evidence/WO-172/decisions.md#wo-172-d006--the-direction-reader-judged-against-a-hand-classification-filed-first",
+          "sourceMissing": false,
+          "reason": "WO-219-D035 in docs/evidence/WO-219/decisions.md: Preserve the reader and both historical batteries. Carry the acceptance/structured-field choice as an operator packet in the WO-219 pull request; the 70-of-80 held-out ag",
+          "reopenWhen": "At review of the WO-219 pull request the operator decides whether the count remains an advisory estimate under its stated limit or a structured field returns; any later new measure uses a fresh battery.",
+          "matched": [
+            "docs/evidence/WO-219/decisions.md",
+            "scripts/lib/meta.mjs",
+            "scripts/test-process-debt.mjs",
+            "WO-219"
+          ]
+        }
+      ],
+      "next": "npm run plan -- followups --touching --cursor b533b37c9a575bf78011bf68c9fcde62f11ff545bc7b104f1cd5ae5446913437:touching-8d890e6fa93d2a4f:8"
+    },
+    {
+      "revision": "b533b37c9a575bf78011bf68c9fcde62f11ff545bc7b104f1cd5ae5446913437",
+      "match": "Textual match, a pointer for judgment and never a verdict: a pending row is listed when its source title or summary, its decision's followup or reopenWhen, or its latest disposition names a given path, a trailing part of it such as its base name, or a given order. A false match costs one row read; a row that names its seam in other words is not listed.",
+      "touching": {
+        "paths": 214,
+        "orders": [
+          "WO-219"
+        ]
+      },
+      "pending": 168,
+      "matched": 17,
+      "rows": [
+        {
+          "id": "FUP-bfab19adc5e5eac1",
+          "status": "deferred",
+          "sourceRevision": 1,
+          "title": "ER5-001 — A launched worker's time limit keeps recorded headroom over its observed runs, and a limit about to be crossed is reported before an episode fails on it (packag",
+          "source": "docs/planning/entropy-reviews/REVIEW-005.md#candidates--accepted-entropy-reducer-findings-review-review-005-recorded-2026-10-02",
+          "sourceMissing": false,
+          "reason": "ER5-001 is accepted as measured after blinded REFUTATION-006. No new order or timeout change: REVIEW-004 used 92.3% and REVIEW-005 58.5% of the review limit; REFUTATION-006 used 6.4% of its limit. No deadline loss is obs",
+          "reopenWhen": "an observed deadline loss, or two successive episodes of one kind above 80% of their respective timeout; review each entropy pass",
+          "matched": [
+            "scripts/lib/planning-conditions.mjs"
+          ]
+        },
+        {
+          "id": "FUP-d0a9719cc2e4ec55",
+          "status": "deferred",
+          "sourceRevision": 4,
+          "title": "WO-185-D006: Establish complete ownership for descendants through unobserved intermediate exits, including ignored-wrapper bare commands; compare an inheritable ownership mechanism with an authorized…",
+          "source": "docs/evidence/WO-185/decisions.md#wo-185-d006--recorded-survivor-guarantee-limitation",
+          "sourceMissing": false,
+          "reason": "Deferred again by the 2026-10-21 pass: the operator's note 9 of 2026-10-21 defers the WO-217 packet, whose D026 re-boarded this row (complete descendant ownership through unobserved intermediate exits); no order on the h",
+          "reopenWhen": "The operator returns to the WO-217 packet, or a probe records a detached descendant surviving a bounded command after the guard",
+          "matched": [
+            "scripts/test-runner.mjs"
+          ]
+        },
+        {
+          "id": "FUP-d2646e66a2dfdb40",
+          "status": "deferred",
+          "sourceRevision": 1,
+          "title": "WO-219-D008: Low priority: bind the historical WO-105 canonical-demo sweep to its filed input (or give the modern-runtime comparison an explicitly current manifest) in…",
+          "source": "docs/evidence/WO-219/decisions.md#wo-219-d008--keep-the-historical-sweep-mismatch-separate-from-append-proof",
+          "sourceMissing": false,
+          "reason": "WO-219-D008 in docs/evidence/WO-219/decisions.md: Defer repair of the historical store-sweep test input binding. Its live canonical-demo output differs from the WO-105 pinned manifest identically at this order's base and",
+          "reopenWhen": "The historical sweep is promoted into a current gate or its intended input binding is repaired under a separately recorded bounded change.",
+          "matched": [
+            "docs/evidence/WO-219/decisions.md",
+            "WO-219"
+          ]
+        },
+        {
+          "id": "FUP-e08668268dea62b1",
+          "status": "deferred",
+          "sourceRevision": 1,
+          "title": "WO-219-D009: Optimize the executor and reviewer cold-start text without losing the decision ownership, review inputs, defensive approach, repair authority or output duties. Use WO-219 cold-start.json…",
+          "source": "docs/evidence/WO-219/decisions.md#wo-219-d009--preserve-useful-rules-and-board-measured-cost",
+          "sourceMissing": false,
+          "reason": "WO-219-D009 in docs/evidence/WO-219/decisions.md: Preserve the authorized shared decision-ownership rules, reviewer input/defensive duties and verifier repair/output duties. Mint a new role oracle linked to the byte-exac",
+          "reopenWhen": "A bounded comparison demonstrates a shorter equivalent instruction set, or another required rule changes the measured overrun.",
+          "matched": [
+            "docs/evidence/WO-219/cold-start.json",
+            "docs/evidence/WO-219/decisions.md",
+            "packages/skeleton/fixtures/wo219-role-baseline.json",
+            "WO-219"
+          ]
+        },
+        {
+          "id": "FUP-268c774fd159addb",
+          "status": "untriaged",
+          "sourceRevision": 1,
+          "title": "WO-225-D021: Next order or repair editing scripts/test-launchpad-export.mjs or scripts/lib/launchpad-fixture.mjs: run the WO-225 case's carried node --test child with NODE_TEST_CONTEXT removed from…",
+          "source": "docs/evidence/WO-225/decisions.md#wo-225-d021",
+          "sourceMissing": false,
+          "reason": null,
+          "reopenWhen": null,
+          "matched": [
+            "scripts/test-launchpad-export.mjs"
+          ]
+        },
+        {
+          "id": "FUP-589642d0e0c714c8",
+          "status": "untriaged",
+          "sourceRevision": 1,
+          "title": "WO-226-D021: The next order that edits registeredTargetNearMiss or releaseCloseAdmission in packages/skeleton/src/harness-host.ts. When the hidden helper is the release-close helper of a recorded…",
+          "source": "docs/evidence/WO-226/decisions.md#wo-226-d021",
+          "sourceMissing": false,
+          "reason": null,
+          "reopenWhen": null,
+          "matched": [
+            "packages/skeleton/src/harness-host.ts"
+          ]
+        },
+        {
+          "id": "FUP-841dca0ce87623e2",
+          "status": "untriaged",
+          "sourceRevision": 1,
+          "title": "WO-227-D018: Planner or next authorized product-document writer: reconcile product 02's private exclusion list paragraph with the publication review/refuse modes and present-empty behavior while…",
+          "source": "docs/evidence/WO-227/decisions.md#wo-227-d018--board-the-domain-model-write-back-gap",
+          "sourceMissing": false,
+          "reason": null,
+          "reopenWhen": null,
+          "matched": [
+            "docs/product/02-domain-model.md"
+          ]
+        },
+        {
+          "id": "FUP-938f66ad9b65e086",
+          "status": "untriaged",
+          "sourceRevision": 1,
+          "title": "WO-219-D075: Next planning pass: reopen receipt 052's criterion:2 known issue for WO-219 (docs/planning/cost-table.json, trap seeking-the-wrong-goal). The first verification failed on one product…",
+          "source": "docs/evidence/WO-219/decisions.md#wo-219-d075--ver-001-planning-receipt-052s-criterion2-reopening-condition-for-wo-219-has-occurred",
+          "sourceMissing": false,
+          "reason": null,
+          "reopenWhen": null,
+          "matched": [
+            "WO-219"
+          ]
+        }
+      ],
+      "next": "npm run plan -- followups --touching --cursor b533b37c9a575bf78011bf68c9fcde62f11ff545bc7b104f1cd5ae5446913437:touching-8d890e6fa93d2a4f:16"
+    },
+    {
+      "revision": "b533b37c9a575bf78011bf68c9fcde62f11ff545bc7b104f1cd5ae5446913437",
+      "match": "Textual match, a pointer for judgment and never a verdict: a pending row is listed when its source title or summary, its decision's followup or reopenWhen, or its latest disposition names a given path, a trailing part of it such as its base name, or a given order. A false match costs one row read; a row that names its seam in other words is not listed.",
+      "touching": {
+        "paths": 214,
+        "orders": [
+          "WO-219"
+        ]
+      },
+      "pending": 168,
+      "matched": 17,
+      "rows": [
+        {
+          "id": "FUP-eed385be08e5bdd9",
+          "status": "untriaged",
+          "sourceRevision": 1,
+          "title": "WO-226-D022: The next order that touches scripts/test-gate-followups.mjs or re-mints the role oracle, which the FUP-957602bc42e32e1d optimization will. Replace the historical inequality with an…",
+          "source": "docs/evidence/WO-226/decisions.md#wo-226-d022",
+          "sourceMissing": false,
+          "reason": null,
+          "reopenWhen": null,
+          "matched": [
+            "scripts/test-gate-followups.mjs"
+          ]
+        }
+      ],
+      "next": null
+    }
+  ],
+  "touchingObservedAt": "2026-10-23T22:09:48.033Z",
+  "baselineComparison": {
+    "observedAt": "2026-10-23T22:09:48.034Z",
+    "baselineCommit": "c670e6288ecb221ef2416cef06f920006866bc5d",
+    "command": "node scripts/harness.mjs bounded -- node docs/control/local/wo219-touching-compare.mjs",
+    "method": "The complete baseline module uses current shared dependency imports. Its matching/status functions and status sets are byte-equal. Every continuation page equals both the current reader and the recorded CLI page on the same current register and changed-file inputs.",
+    "unchangedFunctions": {
+      "followupStatus": "2e900dee2c27335282f720d7655135d2860888848daad5184ff50a63063f7981",
+      "touchingFollowups": "a69339eab913fd0e50eed9cd505a74ab106f536614a4c527f5e5eaebd3b7c9bd",
+      "statusSets": "478450ec2f4df79aeb57db76118abdf8a172f5c29b64db7608c35d0d5c99ffb0"
+    },
+    "changedFiles": [
+      ".agents/skills/dotln-executor/SKILL.md",
+      ".agents/skills/dotln-planner/SKILL.md",
+      ".agents/skills/dotln-refuter/SKILL.md",
+      ".agents/skills/dotln-release-close/SKILL.md",
+      ".agents/skills/dotln-reviewer/SKILL.md",
+      ".agents/skills/dotln-verifier/SKILL.md",
+      ".claude/harness-manifest.json",
+      ".claude/hooks/commit-msg.mjs",
+      ".claude/hooks/concurrent-work-requires-worktrees.mjs",
+      ".claude/hooks/failure-observer.mjs",
+      ".claude/hooks/finish.mjs",
+      ".claude/hooks/no-attribution.mjs",
+      ".claude/hooks/no-lint-type-disables-as-fixes.mjs",
+      ".claude/hooks/permission-denied.mjs",
+      ".claude/hooks/permissions.mjs",
+      ".claude/hooks/presence-posttooluse.mjs",
+      ".claude/hooks/presence-pretooluse.mjs",
+      ".claude/hooks/presence-stop.mjs",
+      ".claude/hooks/presence-userpromptsubmit.mjs",
+      ".claude/hooks/read-observer.mjs",
+      ".claude/hooks/session.mjs",
+      ".claude/hooks/write-observer.mjs",
+      ".claude/skills/dotln-executor/SKILL.md",
+      ".claude/skills/dotln-planner/SKILL.md",
+      ".claude/skills/dotln-refuter/SKILL.md",
+      ".claude/skills/dotln-release-close/SKILL.md",
+      ".claude/skills/dotln-reviewer/SKILL.md",
+      ".claude/skills/dotln-verifier/SKILL.md",
+      ".codex/hooks/continuation.mjs",
+      "README.md",
+      "docs/AI-HARNESS-SECURITY.md",
+      "docs/control/current.md",
+      "docs/control/doc-baseline.json",
+      "docs/control/orders/WO-219.jsonl",
+      "docs/control/plan-refutations.jsonl",
+      "docs/evidence/WO-193/decisions.md",
+      "docs/evidence/WO-219/README.md",
+      "docs/evidence/WO-219/artifact-identity/001/audit.json",
+      "docs/evidence/WO-219/artifact-identity/001/negative-transcripts.json",
+      "docs/evidence/WO-219/artifact-identity/001/scenario.jsonl",
+      "docs/evidence/WO-219/artifact-identity/001/semantic-hash-inventory.json",
+      "docs/evidence/WO-219/authority/001/authority.ref.json",
+      "docs/evidence/WO-219/authority/001/bundle-diff.json",
+      "docs/evidence/WO-219/authority/002/authority.ref.json",
+      "docs/evidence/WO-219/authority/002/bundle-diff.json",
+      "docs/evidence/WO-219/authority/003/authority.json",
+      "docs/evidence/WO-219/authority/003/bundle-diff.json",
+      "docs/evidence/WO-219/authority/004/authority.ref.json",
+      "docs/evidence/WO-219/authority/004/bundle-diff.json",
+      "docs/evidence/WO-219/authority/005/authority.ref.json",
+      "docs/evidence/WO-219/authority/005/bundle-diff.json",
+      "docs/evidence/WO-219/base-controls.json",
+      "docs/evidence/WO-219/cleanup.json",
+      "docs/evidence/WO-219/cold-start.json",
+      "docs/evidence/WO-219/compatibility-comparison.json",
+      "docs/evidence/WO-219/control-audit.json",
+      "docs/evidence/WO-219/control-drivers/base-policy.mjs",
+      "docs/evidence/WO-219/control-drivers/dependency-activation.sh",
+      "docs/evidence/WO-219/control-drivers/history-sizes.mjs",
+      "docs/evidence/WO-219/control-drivers/lane-fixtures.mjs",
+      "docs/evidence/WO-219/control-drivers/moved-amendment.mjs",
+      "docs/evidence/WO-219/control-drivers/plan-fixtures.mjs",
+      "docs/evidence/WO-219/control-drivers/review-counts.mjs",
+      "docs/evidence/WO-219/control-drivers/root-fixture.mjs",
+      "docs/evidence/WO-219/decisions.md",
+      "docs/evidence/WO-219/export-selection-recheck.json",
+      "docs/evidence/WO-219/feedback-001/edition.json",
+      "docs/evidence/WO-219/feedback-001/feedback.json",
+      "docs/evidence/WO-219/followups-after.json",
+      "docs/evidence/WO-219/followups-before.json",
+      "docs/evidence/WO-219/followups-show.json",
+      "docs/evidence/WO-219/followups-touching.json",
+      "docs/evidence/WO-219/gate-runs.json",
+      "docs/evidence/WO-219/handoff.md",
+      "docs/evidence/WO-219/integration-fixtures-recheck.json",
+      "docs/evidence/WO-219/integration-read-guard-recheck.json",
+      "docs/evidence/WO-219/meta.json",
+      "docs/evidence/WO-219/moved-amendment-controls.json",
+      "docs/evidence/WO-219/operator-packets.json",
+      "docs/evidence/WO-219/process-fixtures-recheck.json",
+      "docs/evidence/WO-219/regeneration.json",
+      "docs/evidence/WO-219/repair-controls.json",
+      "docs/evidence/WO-219/repair-ver001-controls.json",
+      "docs/evidence/WO-219/repair-ver001-followups.json",
+      "docs/evidence/WO-219/repair-ver001-gate.json",
+      "docs/evidence/WO-219/role-wording-recheck.json",
+      "docs/evidence/WO-219/row-dispositions.json",
+      "docs/evidence/WO-219/runner-fixtures-recheck.json",
+      "docs/evidence/WO-219/runner-integration-audit.json",
+      "docs/evidence/WO-219/self-review-controls.json",
+      "docs/evidence/WO-219/self-review/criteria-repair.md",
+      "docs/evidence/WO-219/self-review/criteria.json",
+      "docs/evidence/WO-219/self-review/criteria.md",
+      "docs/evidence/WO-219/self-review/design.json",
+      "docs/evidence/WO-219/self-review/design.md",
+      "docs/evidence/WO-219/touching-audit.json",
+      "docs/evidence/WO-219/verification/001/events.jsonl",
+      "docs/evidence/WO-219/verification/001/matrix.json",
+      "docs/evidence/WO-219/verification/001/stale-status.json",
+      "docs/evidence/WO-219/verification/001/stale-status.txt",
+      "docs/evidence/current.json",
+      "docs/evidence/siblings/DotLn-Enterprise-Starter/2026-10-23T13-48-19-720Z.json",
+      "docs/instance/entropy-reducer/README.md",
+      "docs/lineage/decisions-index.md",
+      "docs/planning/followups.json",
+      "docs/planning/followups.md",
+      "docs/product/02-domain-model.md",
+      "docs/product/03-architecture.md",
+      "docs/product/06-roadmap.md",
+      "docs/product/07-execution-guide.md",
+      "docs/product/08-publication-compiler.md",
+      "docs/product/09-audit-resilience-privacy.md",
+      "docs/publication/everyday-ai-user-toc.md",
+      "docs/publication/software-engineer-toc.md",
+      "docs/siblings/README.md",
+      "docs/siblings/tag-observations.json",
+      "docs/verifications/WO-219/VER-001.md",
+      "docs/work-orders/HISTORY.md",
+      "docs/work-orders/README.md",
+      "docs/work-orders/WO-193-instance-capability-requests.md",
+      "docs/work-orders/WO-219-boarded-follow-ups-records-roles-and-the-harness.md",
+      "package-lock.json",
+      "packages/browser-evidence/package.json",
+      "packages/compiler/fixtures/wo060-source-bundles.json",
+      "packages/compiler/package.json",
+      "packages/compiler/src/artifact-identity.ts",
+      "packages/compiler/src/operator-control.mjs",
+      "packages/compiler/src/source-bundle.ts",
+      "packages/compiler/test/source-bundle.test.ts",
+      "packages/console/fixtures/expected/selfhost.html",
+      "packages/console/fixtures/expected/selfhost.json",
+      "packages/console/fixtures/expected/selfhost.txt",
+      "packages/console/fixtures/manifest.json",
+      "packages/console/package.json",
+      "packages/console/src/actors.ts",
+      "packages/console/test/board.test.ts",
+      "packages/kernel/package.json",
+      "packages/kernel/src/store.ts",
+      "packages/kernel/test/ac2-replay-store.test.ts",
+      "packages/skeleton/fixtures/wo219-role-baseline.json",
+      "packages/skeleton/package.json",
+      "packages/skeleton/src/harness-host.ts",
+      "packages/skeleton/src/loadouts/contributor.ts",
+      "packages/skeleton/test/executor-supports.test.ts",
+      "packages/skeleton/test/github-issue-source.test.ts",
+      "scripts/docs-check.mjs",
+      "scripts/fixtures/target-worktree-cases.json",
+      "scripts/fixtures/worktree-integration/wo193-preflight-bridge.json",
+      "scripts/lib/comment-labels.mjs",
+      "scripts/lib/config.mjs",
+      "scripts/lib/control-actor.mjs",
+      "scripts/lib/control-store.mjs",
+      "scripts/lib/control-usage.mjs",
+      "scripts/lib/control.mjs",
+      "scripts/lib/dependencies.mjs",
+      "scripts/lib/derived-contract.mjs",
+      "scripts/lib/derived-orders.mjs",
+      "scripts/lib/entropy-review.mjs",
+      "scripts/lib/executor-readiness.mjs",
+      "scripts/lib/gate-reuse.mjs",
+      "scripts/lib/github-body.mjs",
+      "scripts/lib/github-repository.mjs",
+      "scripts/lib/handoff-ledger.mjs",
+      "scripts/lib/harness-instruction.mjs",
+      "scripts/lib/harness-prune.mjs",
+      "scripts/lib/harness.mjs",
+      "scripts/lib/meta.mjs",
+      "scripts/lib/pending-overrides.mjs",
+      "scripts/lib/plan-continuation.mjs",
+      "scripts/lib/plan-dependency-migration.mjs",
+      "scripts/lib/plan-failures.mjs",
+      "scripts/lib/plan-receipts.mjs",
+      "scripts/lib/plan-subject.mjs",
+      "scripts/lib/planning-conditions.mjs",
+      "scripts/lib/planning-followups.mjs",
+      "scripts/lib/private-paths.mjs",
+      "scripts/lib/release-tags.mjs",
+      "scripts/lib/starter-refresh.mjs",
+      "scripts/lib/target-publish.mjs",
+      "scripts/lib/target-worktree-close.mjs",
+      "scripts/lib/verification-briefing.mjs",
+      "scripts/lib/worktree-integration.mjs",
+      "scripts/refute-plan.mjs",
+      "scripts/release.mjs",
+      "scripts/resume.mjs",
+      "scripts/test-comment-labels.mjs",
+      "scripts/test-configuration-root.mjs",
+      "scripts/test-dependency-resume.mjs",
+      "scripts/test-docs-check.mjs",
+      "scripts/test-entropy-review.mjs",
+      "scripts/test-gate-followups.mjs",
+      "scripts/test-harness.mjs",
+      "scripts/test-launchpad-export.mjs",
+      "scripts/test-launchpad-planning.mjs",
+      "scripts/test-launchpad-update.mjs",
+      "scripts/test-off-ramps.mjs",
+      "scripts/test-plan-refutation.mjs",
+      "scripts/test-process-debt.mjs",
+      "scripts/test-release-preparation.mjs",
+      "scripts/test-release.sh",
+      "scripts/test-resume.sh",
+      "scripts/test-retained-records.mjs",
+      "scripts/test-runner.mjs",
+      "scripts/test-runner.test.mjs",
+      "scripts/test-target-publish.mjs",
+      "scripts/test-target-worktree-close.mjs",
+      "scripts/test-target-worktree-publish.mjs",
+      "scripts/test-target-worktree-release.mjs",
+      "scripts/test-verification-review.mjs",
+      "scripts/test-work-orders.mjs",
+      "scripts/test-worktree-integration.mjs",
+      "scripts/test-worktree.sh",
+      "scripts/work-orders.mjs",
+      "scripts/worktree.mjs"
+    ],
+    "pages": [
+      {
+        "page": 1,
+        "sha256": "e5bcedf8e913339fa1149ca97697c28beead17170c02e759b7dfce9437580073",
+        "rows": 8
+      },
+      {
+        "page": 2,
+        "sha256": "6a653356043feec72c9a8317bbad3110c03e03d3f955528e97cc9da29809c30b",
+        "rows": 8
+      },
+      {
+        "page": 3,
+        "sha256": "ee9840e21e6265cfc51cd6c3630077db28f4df66fe81322d379680fbf42ab950",
+        "rows": 1
+      }
+    ],
+    "equal": true,
+    "priorAttempt": "The first comparison used the CLI snapshot taken before this report file existed: its 213-path cursor differed from the current 214-path cursor. Baseline/current reader equality passed and all 17 matched rows were unchanged. This run refreshed each CLI page at the same current inputs."
+  }
+}

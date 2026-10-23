@@ -1548,7 +1548,7 @@ test("WO-221 the draft form at verified pushes the working tree under a draft pu
       );
       assert.ok(
         changedRemote.stderr.includes(
-          `moved from the recorded head ${draftHead} to ${replacement ?? "absent"}; preserve the remote change, integrate and review it, then explicitly rebind publication before retrying`,
+          `moved from the recorded head ${draftHead} to ${replacement ?? "absent"}; ${replacement ? "preserve it with git -C" : "recreate the absent recorded branch with git -C"}`,
         ),
         changedRemote.stderr,
       );
@@ -1557,6 +1557,49 @@ test("WO-221 the draft form at verified pushes the working tree under a draft pu
       git(remote, "update-ref", "refs/heads/feat/reviewed-behavior", draftHead);
     }
     assert.equal(calls().filter((args) => args[0] === "pr").length, 1);
+    write(
+      f.target,
+      "title-retry.txt",
+      "The same draft tree survives a failed edit.\n",
+    );
+    writeFileSync(
+      ghFile,
+      `#!/bin/sh\nif [ "$1" = pr ] && [ "$2" = edit ]; then exit 73; fi\nexec '${ghFile}.original.mjs' "$@"\n`,
+    );
+    const editFailed = f.worktree(...draftArgs);
+    assert.notEqual(editFailed.status, 0);
+    const pushedPreparation = git(
+      remote,
+      "rev-parse",
+      "refs/heads/feat/reviewed-behavior",
+    );
+    assert.notEqual(pushedPreparation, draftHead);
+    writeFileSync(ghFile, originalGh);
+    const correctedTitle = draftArgs.map((arg) =>
+      arg === "feat: preserve reviewed behavior"
+        ? "feat: preserve corrected draft behavior"
+        : arg,
+    );
+    const retried = f.ok(f.worktree(...correctedTitle));
+    assert.match(retried, /updated draft pull request #7/u);
+    assert.equal(
+      git(remote, "show", "refs/heads/feat/reviewed-behavior:title-retry.txt"),
+      "The same draft tree survives a failed edit.",
+    );
+    assert.equal(
+      calls().filter((args) => args[0] === "pr" && args[1] === "create").length,
+      1,
+    );
+    // Restore the scenario's earlier draft binding for its final-publish controls.
+    rmSync(join(f.target, "title-retry.txt"));
+    writeFileSync(
+      store,
+      events()
+        .slice(0, 2)
+        .map((event) => JSON.stringify(event))
+        .join("\n") + "\n",
+    );
+    git(remote, "update-ref", "refs/heads/feat/reviewed-behavior", draftHead);
     // The reviewed commit on wo-999, the final review and the records.
     git(f.target, "add", "reviewed.txt");
     git(
@@ -1629,7 +1672,7 @@ test("WO-221 the draft form at verified pushes the working tree under a draft pu
     );
     assert.ok(
       movedDraft.stderr.includes(
-        `moved from the recorded head ${draftHead} to ${f.baseCommit}; preserve the remote change, integrate and review it, then explicitly rebind publication before retrying`,
+        `moved from the recorded head ${draftHead} to ${f.baseCommit}; preserve it with git -C`,
       ),
       movedDraft.stderr,
     );
@@ -1653,6 +1696,7 @@ test("WO-221 the draft form at verified pushes the working tree under a draft pu
       [
         ["pr", "create", "--draft"],
         ["pr", "edit", "7"],
+        ["pr", "edit", "7"],
         ["pr", "ready", "7"],
       ],
     );
@@ -1669,7 +1713,7 @@ test("WO-221 the draft form at verified pushes the working tree under a draft pu
       f.ok(f.worktree(...publishArgs("feat/reviewed-behavior"))),
       /Already published commit/u,
     );
-    assert.equal(calls().filter((args) => args[0] === "pr").length, 3);
+    assert.equal(calls().filter((args) => args[0] === "pr").length, 4);
   }));
 
 test("WO-227 criteria 2 to 4: a target publication checks private terms on kit paths, reviews listed words under a recorded confirmation, and preserves base-path and kit-identifier exemptions", () =>

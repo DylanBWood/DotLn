@@ -1029,6 +1029,17 @@ export function publishTargetDraft({
     docPath(main, "control", "local/target-publications", workOrderId),
   );
   const previous = draftRecord(publication);
+  const publicationHeads = decodeLog(publication.read())
+    .filter((event) =>
+      ["DraftPrepared", "PullRequestOpened"].includes(event.type),
+    )
+    .map((event) => event.payload)
+    .filter(
+      (recorded) =>
+        recorded.repositoryId?.toLowerCase() === forge.identity &&
+        recorded.branch === branch,
+    )
+    .map((recorded) => recorded.headSha);
   const prepared = decodeLog(publication.read())
     .filter((event) => event.type === "DraftPrepared")
     .at(-1)?.payload;
@@ -1057,6 +1068,7 @@ export function publishTargetDraft({
       {
         sourceRef: previous.headSha,
         lease: previous.headSha,
+        leases: publicationHeads,
         pullRequest: previous.number,
       },
     );
@@ -1171,6 +1183,7 @@ export function publishTargetDraft({
       branch,
       {
         sourceRef,
+        leases: publicationHeads,
         ...(previous
           ? { lease: previous.headSha, pullRequest: previous.number }
           : prepared

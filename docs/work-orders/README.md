@@ -8,7 +8,7 @@
 - [x] [WO-227] — Outward publication as the operator intended · **final-reviewed**
 - [x] [WO-225] — The console's host contracts for an instance's browser shell · **final-reviewed**
 - [x] [WO-229] — A gate says who it waited for · **final-reviewed**
-- [ ] [WO-219] — Boarded follow-ups, batch 3: records, roles and the harness · **queued**
+- [x] [WO-219] — Boarded follow-ups, batch 3: records, roles and the harness · **final-reviewed**
 - [ ] [WO-220] — Boarded follow-ups, batch 4: the resident and the vertical · **queued**
 - [ ] [WO-080] — Workstreams: document, index, board section and synthetic pilot · **queued**
 - [ ] [WO-224] — The Entropy Reducer on a registered target or a workstream · **queued**
@@ -39,24 +39,6 @@ Full evidence for the active and sequenced orders follows; the Open cards are in
 None.
 
 ## Open
-
-### WO-219
-
-[WO-219 — Boarded follow-ups, batch 3: lifecycle records, attestation, role text, hooks, the harness and planning machinery: every one of the 50 register rows listed below is fixed with a fixture case or declined with its recorded reason, the register shows it, and a row only the operator can decide leaves as an operator packet (version assigned at activation)](WO-219-boarded-follow-ups-records-roles-and-the-harness.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-218: reference-only (non-blocking) — closed before this batch (v0.87.0, 2026-10-20); no hard edge.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer xhigh.
-- Track: machinery
-- Cost: adds the fixes and fixture cases the listed rows need, across &#96;scripts/resume.mjs&#96;, &#96;scripts/lib/handoff-ledger.mjs&#96;, &#96;scripts/lib/verification-briefing.mjs&#96;, &#96;scripts/lib/review-findings.mjs&#96;, &#96;scripts/lib/comment-labels.mjs&#96;, &#96;scripts/lib/plan-receipts.mjs&#96;, &#96;scripts/lib/planning-followups.mjs&#96;, &#96;scripts/lib/planning-conditions.mjs&#96;, &#96;packages/skeleton/src/loadouts/contributor.ts&#96;, &#96;packages/skeleton/src/harness-host.ts&#96;, &#96;packages/kernel/src/core.ts&#96;, &#96;packages/kernel/src/store.ts&#96;, &#96;packages/compiler/src/source-bundle.ts&#96;, the hooks under &#96;.claude/hooks/&#96;, for the row the 2026-10-19 fork-requests pass added &#96;scripts/work-orders.mjs&#96; (&#96;index --check&#96;) and &#96;scripts/test-runner.mjs&#96; (&#96;--list&#96;), for the four rows the 2026-10-20 entropy pass added from WO-218's close &#96;scripts/lib/dependencies.mjs&#96;, &#96;scripts/test-work-orders.mjs&#96;, &#96;scripts/lib/target-publish.mjs&#96;, &#96;scripts/lib/target-worktree-close.mjs&#96;, &#96;scripts/lib/gate-reuse.mjs&#96;, &#96;scripts/lib/starter-refresh.mjs&#96;, &#96;scripts/lib/release-tags.mjs&#96;, &#96;scripts/release.mjs&#96;, &#96;scripts/lib/config.mjs&#96;, &#96;scripts/lib/worktree-integration.mjs&#96;, &#96;scripts/lib/harness.mjs&#96; and the kit floor template under &#96;scripts/kit/&#96;, for its two REVIEW-007 rows &#96;scripts/lib/entropy-review.mjs&#96;, &#96;scripts/test-entropy-review.mjs&#96;, &#96;docs/instance/entropy-reducer/README.md&#96;, &#96;scripts/docs-check.mjs&#96; and &#96;scripts/test-docs-check.mjs&#96;, and the fixtures the rows name; unknown until each row is triaged, and the README records the per-row command and case. Removes no pending rows: the listed rows were allocated at filing and already count as closed (WO-218 D056), and the README records the register's pending count before and after; at &#96;7b8206f4&#96; the register held 281 pending rows, 130 of them decision rows boarded by closed orders across 53 orders (the oldest from WO-054, 2026-09-18), 88 of them follow-ups boarded in the week of 2026-10-13 to 2026-10-17 alone, and the rule that "the next order that edits the surface" takes a row had delivered none of the 40 rows listed at filing (corrected by the 2026-10-21 pass). Wall-clock: one triage per row plus the fixes; unknown until run. Context bytes: this order's row list is read once. Commands: none added. Tokens: unknown until run. Steps: 27. Re-mints: the executor checks each edited file against &#96;scripts/lib/evidence-sources.mjs&#96; (a registered source owes its edition's deterministic re-mint) and &#96;FEEDBACK_SOURCE_PATHS&#96; in &#96;packages/skeleton/src/feedback-audit.ts&#96; (an edited judged source owes one live feedback self-host episode on Codex &#96;gpt-6.1-sol&#96; at &#96;max&#96; or Claude Code &#96;claude-opus-5-5&#96; at &#96;xhigh&#96;, no authorization needed, cost accepted); any edited declared machinery source (&#96;machinerySources&#96; in &#96;scripts/test-runner.mjs&#96;) puts &#96;npm test -- --review&#96; in the final criterion, which names it already.
-- Inherited ledger duty: discharge with this order's decisions file when recorded and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
-- Authority: [docs/work-orders/WO-219-boarded-follow-ups-records-roles-and-the-harness.md](WO-219-boarded-follow-ups-records-roles-and-the-harness.md)
 
 ### WO-220
 
@@ -192,7 +174,7 @@ None.
 - Effort: executor xhigh; verifier xhigh; reviewer high.
 - Track: delivery
 - Cost: commands: adds &#96;npm run request -- draft&#124;check&#124;ready&#124;file&#96; and &#96;npm run plan -- requests&#96;, the suite &#96;request&#96;, and the surfaces the Release line names (the parity map and &#96;npm run parity&#96; are WO-228's since the 2026-10-21 pass). Removes: the interim route a need found in an instance has today, a dated requests-to-core prompt in the instance's planning document that the operator carries into a core &#96;planning:&#96; dispatch (core's 2026-10-18 fork-observations pass §4.3 and 2026-10-19 fork-requests pass; the fork's standing preference, each reopening when this order lands), replaced by &#96;request file&#96; and &#96;plan -- requests&#96; (restated by the 2026-10-21 pass). The merge removes one order cycle (activation, verification, final review, release close) and the full gate a closed order paid in the window, 2.29 runs and 61 minutes, beside phase medians of 16.9 minutes for verification and 24.8 for final review (planning document §12); one re-mint covers both &#96;package.json&#96; entries; neither constituent owed a live feedback episode. The 2026-10-21 pass cut the map back out as WO-228 (workstream WS-002, the predecessor track), on the operator's direction that predecessor work stays out of the serial queue, so this order pays its cycle for the request route alone. Re-mints: &#96;package.json&#96; is a common source of the evidence inventories (&#96;scripts/lib/evidence-sources.mjs&#96;), so each edition whose check the entry stales is re-minted deterministically, the feedback edition by carry (&#96;package.json&#96; is not in &#96;FEEDBACK_SOURCE_PATHS&#96;); no live episode. Declared machinery sources change, so &#96;npm test -- --review&#96; runs before handoff. One live issue is created here under the operator's grant (criterion 14). Wall-clock and tokens: unknown until run, one implementation phase, not two. Context bytes: about 39 KB against the constituents' 36,107 (the preflight, live-run surfaces, re-mint and merge route are new, and the second round added &#96;request ready&#96;, the role steps and the &#96;manual&#96; known issue). Steps: 12 (17 before the 2026-10-21 split).
-- Inherited ledger duty: discharge with this order's decisions file when recorded and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
+- Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-193/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
 - Authority: [docs/work-orders/WO-193-instance-capability-requests.md](WO-193-instance-capability-requests.md)
 
 ### WO-183

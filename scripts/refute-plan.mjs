@@ -51,6 +51,7 @@ import {
   changedAgainstMain,
   touchingFollowups,
   exportFollowups,
+  readFollowupRequest,
 } from "./lib/planning-followups.mjs";
 import {
   exportFailures,
@@ -238,10 +239,7 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
       return planningFollowups(root);
     }
     if (rest.length === 2 && rest[0] === "--apply") {
-      const path = resolve(root, rest[1]);
-      if (!containedRegularFile(path, root))
-        throw new Error("Follow-up request must be a contained regular file");
-      const request = JSON.parse(readFileSync(path, "utf8"));
+      const request = await readFollowupRequest(root, rest[1]);
       return Array.isArray(request)
         ? disposeFollowups(root, request)
         : disposeFollowup(root, request);
@@ -283,12 +281,30 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
         });
       }
       const order = (term) => /^WO-\d{3}$/.test(term);
-      return touchingFollowups(root, {
-        paths: terms.filter((term) => !order(term)),
-        orders: terms.filter(order),
-        cursor,
-        continuation: terms.map(shellQuote).join(" "),
-      });
+      const continuation = terms.map(shellQuote).join(" ");
+      const continuationBytes = Buffer.byteLength(continuation);
+      const limit = () =>
+        new Error(
+          `Planning follow-ups: explicit --touching query needs ${continuationBytes} UTF-8 bytes of continuation arguments; the limit is 2048 bytes when another page is needed. Split the explicit paths or WO-NNN identifiers into smaller queries.`,
+        );
+      let page;
+      try {
+        page = touchingFollowups(root, {
+          paths: terms.filter((term) => !order(term)),
+          orders: terms.filter(order),
+          cursor,
+          continuation,
+        });
+      } catch (error) {
+        if (
+          continuationBytes > 2048 &&
+          /exceeds the planning page budget/u.test(error.message)
+        )
+          throw limit();
+        throw error;
+      }
+      if (page.next && continuationBytes > 2048) throw limit();
+      return page;
     }
     if (
       rest[0] === "--export" &&

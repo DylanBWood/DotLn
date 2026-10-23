@@ -20,6 +20,7 @@ import {
   resolveSourceSpan,
   SOURCE_SECRET_SHAPES,
   SOURCE_URL_FORMS,
+  SOURCE_URL_CREDENTIAL_SHAPES,
 } from "@dotln/compiler";
 import {
   fetchIssueBundle,
@@ -232,13 +233,14 @@ test("WO-062 criterion 2: every declared shape/form is omitted from current text
     corpus.screened.map((s: { case: string }) => s.case).sort(),
     [
       ...SOURCE_SECRET_SHAPES.map((s) => s.shapeId),
+      ...SOURCE_URL_CREDENTIAL_SHAPES.map((s) => s.shapeId),
       ...SOURCE_URL_FORMS.map((f) => f.formId),
     ].sort(),
   );
   for (const sample of corpus.screened)
     for (const location of ["body", "comment", "history"]) {
       h.reset();
-      const content = `Before 🙂 ${sample.matched} after`;
+      const content = `Before 🙂 ${sample.planted} after`;
       if (location === "body") {
         h.issue().body = content;
         h.issue().userContentEdits.nodes[0].diff = content;

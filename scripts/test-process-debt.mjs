@@ -576,12 +576,17 @@ test("WO-170 a closed order's snapshot stands for its journals, and with neither
     renderMeta(recovered),
     /^WO-999: promised removal: .*; observed: unknown; outcome unknown$/m,
   );
-  // The snapshot is written only while the order is open.
+  // This checkout cannot refresh a closed snapshot. Explicit retained-usage
+  // refresh needs a linked checkout with registered main.
+  const snapshotFile = join(root, `docs/evidence/${workOrder}/meta.json`);
+  const snapshotBefore = readFileSync(snapshotFile, "utf8");
   assert.deepEqual(writeOrderSnapshot(root, recovered, workOrder), {
     path: "docs/evidence/WO-999/meta.json",
     written: false,
-    reason: "WO-999 is closed; its committed snapshot is its record",
+    reason:
+      "WO-999 is closed; refresh retained usage from a linked worktree with registered main using npm run meta -- --write docs/evidence/WO-999/meta.json",
   });
+  assert.equal(readFileSync(snapshotFile, "utf8"), snapshotBefore);
 });
 
 test("WO-170 a retained usage copy supplies the order's tokens by role and names its source", async (t) => {
@@ -1596,7 +1601,7 @@ test("WO-170 the order's snapshot is its own bounded row, written only where its
   };
   await assert.rejects(
     quiet(["--write", path]),
-    /^Error: Meter snapshot not written: WO-999 is closed; its committed snapshot is its record$/,
+    /^Error: Meter snapshot not written: WO-999 is closed; refresh retained usage from a linked worktree with registered main using npm run meta -- --write docs\/evidence\/WO-999\/meta\.json$/,
   );
   const segment = join(root, "docs/control/orders/WO-999.jsonl");
   writeFileSync(
@@ -6532,11 +6537,11 @@ test("WO-145 optional economy support preserves historical snapshots through the
   // WO-221's release-close deletion sentence preserves WO-216's snapshot.
   const baseline = JSON.parse(
     readFileSync(
-      join(source, "packages/skeleton/fixtures/wo226-role-baseline.json"),
+      join(source, "packages/skeleton/fixtures/wo219-role-baseline.json"),
       "utf8",
     ),
   );
-  assert.equal(baseline.historicalBaseline, "wo217-role-baseline.json");
+  assert.equal(baseline.historicalBaseline, "wo226-role-baseline.json");
   assert.equal(baseline.upstreamBaseline, "wo185-role-baseline.json");
   const chains = [
     baseline,
@@ -8701,6 +8706,10 @@ test("bare executor next/fix project installed defaults and completion advises a
   assert.match(
     call("briefing").stdout,
     /\*\*Experiment:\*\* Compare the two fixture alternatives\./,
+  );
+  assert.match(
+    call("briefing").stdout,
+    /Tinkerer — Economy is equipped for this declared experiment/,
   );
 
   assert.match(next.stdout, /running none; next none/);
@@ -12147,4 +12156,380 @@ test("the completion whitespace check reads untracked files and exempts byte-exa
     undefined,
     "WO-999",
   );
+});
+
+test("WO-219 corrected completion actors agree in usage and meta without rewriting history", async (t) => {
+  const root = repo(t),
+    workOrder = "WO-999";
+  const path = "docs/control/orders/WO-999.jsonl";
+  const actor = {
+    harness: "codex-cli",
+    harnessVersion: "fixture",
+    model: "before",
+    effort: "high",
+    source: "unknown",
+    raw: "ultra",
+    mode: "subagents",
+  };
+  const initial = readFileSync(join(root, path), "utf8");
+  const additions = [
+    {
+      type: "ImplementationReady",
+      recordedAt: "2026-09-09T00:01:00.000Z",
+      actor,
+    },
+    {
+      type: "RecordCorrected",
+      subject: { ordinal: 2, type: "ImplementationReady" },
+      fields: { model: "corrected", harnessVersion: "corrected-version" },
+      previous: { model: "before", harnessVersion: "fixture" },
+      reason: "Correct recorded model",
+      actor,
+    },
+    {
+      type: "RecordCorrected",
+      subject: { ordinal: 2, type: "ImplementationReady" },
+      fields: { effort: "xhigh", source: "operator-attested" },
+      previous: { effort: "high", source: "unknown" },
+      reason: "Correct recorded effort",
+      actor,
+    },
+  ].map((event) => ({ schemaVersion: 1, workOrderId: workOrder, ...event }));
+  const raw = initial + jsonLines(additions);
+  write(root, path, raw);
+  const { readControl } = await import("./lib/control-store.mjs");
+  const { controlUsageProjection } = await import("./lib/control-usage.mjs");
+  const usage = controlUsageProjection(readControl(root));
+  assert.equal(usage.byActor.length, 1);
+  assert.equal(usage.byActor[0].model, "corrected");
+  assert.equal(usage.byActor[0].effort, "xhigh");
+  assert.equal(usage.byActor[0].harnessVersion, "corrected-version");
+  assert.equal(usage.byActor[0].attempts, 1);
+  const phase = (await metaRow(root)).phases[0];
+  assert.equal(phase.actor.model, "corrected");
+  assert.equal(phase.actor.effort, "xhigh");
+  assert.equal(phase.actor.harnessVersion, "corrected-version");
+  assert.equal(phase.actor.source, "operator-attested");
+  assert.deepEqual(phase.actor.correctedBy, [3, 4]);
+  assert.equal(phase.actor.raw, undefined);
+  assert.equal(phase.actor.mode, undefined);
+  assert.equal(readFileSync(join(root, path), "utf8"), raw);
+  assert.equal(JSON.parse(raw.split("\n")[1]).actor.model, "before");
+});
+
+test("WO-219 actor corrections retain segment ordinals and do not cross activations", async () => {
+  const { correctedActorEvents } = await import("./lib/control-actor.mjs");
+  const actor = { model: "before", effort: "high" };
+  const events = [
+    { type: "WorkOrderActivated", workOrderId: "WO-998" },
+    { type: "WorkOrderActivated", workOrderId: "WO-999" },
+    { type: "ImplementationReady", workOrderId: "WO-999", actor },
+    {
+      type: "RecordCorrected",
+      workOrderId: "WO-999",
+      subject: { ordinal: 3, type: "ImplementationReady" },
+      fields: { model: "corrected" },
+    },
+    { type: "WorkOrderActivated", workOrderId: "WO-999" },
+    {
+      type: "RecordCorrected",
+      workOrderId: "WO-999",
+      subject: { ordinal: 3, type: "ImplementationReady" },
+      fields: { model: "wrong activation" },
+    },
+  ];
+  const before = JSON.stringify(events),
+    projected = correctedActorEvents(events);
+  assert.equal(projected[2].actor.model, "corrected");
+  assert.deepEqual(projected[2].actor.correctedBy, [4]);
+  assert.equal(JSON.stringify(events), before);
+});
+
+test("WO-219 normal snapshots digest only retained copies represented in their usage", async (t) => {
+  const root = repo(t),
+    workOrder = "WO-999",
+    path = "docs/evidence/WO-999/meta.json";
+  writeJournal(root, "retained-proof", [
+    { workOrder, role: "executor", event: "SessionStart" },
+  ]);
+  const carried = jsonLines([
+    usageRow(workOrder, "reviewer", "2026-09-20T00:00:00.000Z", 7),
+  ]);
+  const mixed = jsonLines([
+    usageRow(workOrder, "verifier", "2026-09-20T01:00:00.000Z", 2),
+    usageRow("WO-998", "verifier", "2026-09-20T02:00:00.000Z", 9),
+  ]);
+  write(
+    root,
+    `docs/control/local/retained/${workOrder}/process/usage.jsonl`,
+    carried,
+  );
+  write(
+    root,
+    `docs/control/local/retained/${workOrder}/process.from-WO-998/usage.jsonl`,
+    mixed,
+  );
+  const result = writeOrderSnapshot(root, await collectMeta(root), workOrder);
+  assert.equal(result.written, true, result.reason);
+  const snapshot = JSON.parse(readFileSync(join(root, path), "utf8"));
+  assert.deepEqual(snapshot.usageCopies, [
+    { path: "process/usage.jsonl", sha256: digest(carried), rows: 1 },
+  ]);
+  assert.equal(snapshot.uncarriedCopies.length, 1);
+  assert.equal(
+    snapshot.uncarriedCopies[0].path,
+    "process.from-WO-998/usage.jsonl",
+  );
+});
+
+test("WO-219 a linked worktree refreshes closed usage after late rows without writing main or losing historical metrics", async (t) => {
+  const main = repo(t),
+    workOrder = "WO-999",
+    path = "docs/evidence/WO-999/meta.json";
+  closeFixtureOrder(main);
+  const prior = {
+    schemaVersion: 1,
+    kind: "order-meter-snapshot",
+    observedAt: "2026-09-20T00:00:00.000Z",
+    revision: "a".repeat(40),
+    source: "the original order's journal snapshot",
+    orders: [
+      {
+        workOrder,
+        phase: "final-review",
+        metrics: { gateMs: 7, tokens: 11 },
+        directions: { total: 2 },
+        dispatches: [{ role: "executor", commandsRun: 3 }],
+        usageByRole: {},
+      },
+    ],
+  };
+  write(main, path, json(prior));
+  runGit(main, ["branch", "-m", "main"], fixtureGitOptions);
+  runGit(main, ["add", "."], fixtureGitOptions);
+  runGit(main, ["commit", "-qm", "closed usage fixture"], fixtureGitOptions);
+  const checkout = `${main}-usage-refresh`;
+  t.after(() =>
+    rmSync(checkout, {
+      recursive: true,
+      force: true,
+      maxRetries: 10,
+      retryDelay: 100,
+    }),
+  );
+  runGit(
+    main,
+    ["worktree", "add", "-b", "wo-998", checkout, "HEAD"],
+    fixtureGitOptions,
+  );
+  const copy = `docs/control/local/retained/${workOrder}/process/usage.jsonl`;
+  const early = jsonLines([
+    usageRow(workOrder, "executor", "2026-09-20T01:00:00.000Z", 10),
+  ]);
+  const late = jsonLines([
+    usageRow(workOrder, "release-close", "2026-09-20T02:00:00.000Z", 3),
+  ]);
+  write(main, copy, early);
+  const currentUsagePath = "docs/control/local/process/usage.jsonl";
+  const currentUsageBytes =
+    late +
+    jsonLines([
+      usageRow("WO-998", "release-close", "2026-09-20T02:00:00.000Z", 99),
+    ]);
+  write(main, currentUsagePath, currentUsageBytes);
+  const mainSnapshot = readFileSync(join(main, path), "utf8");
+  const observedAt = "2026-09-21T00:00:00.000Z";
+  const result = writeOrderSnapshot(
+    checkout,
+    { orders: [], observedAt },
+    workOrder,
+  );
+  assert.equal(result.written, true, result.reason);
+  let refreshed = JSON.parse(readFileSync(join(checkout, path), "utf8"));
+  assert.deepEqual(refreshed.orders[0].metrics, prior.orders[0].metrics);
+  assert.deepEqual(refreshed.orders[0].directions, prior.orders[0].directions);
+  assert.equal(refreshed.observedAt, prior.observedAt);
+  assert.equal(refreshed.revision, prior.revision);
+  assert.equal(refreshed.source, prior.source);
+  assert.equal(refreshed.usageRecovered.observedAt, observedAt);
+  assert.ok(
+    refreshed.orders[0].usageByRole["release-close"],
+    "late current-main release-close usage is carried",
+  );
+  assert.equal(refreshed.orders[0].usageByRole["release-close"].totalTokens, 3);
+  assert.equal(refreshed.usageCopies[0].sha256, digest(early));
+  assert.match(
+    refreshed.usageRecovered.source,
+    /current main-checkout usage observations/,
+  );
+  assert.equal(
+    readFileSync(join(main, currentUsagePath), "utf8"),
+    currentUsageBytes,
+  );
+  assert.equal(readFileSync(join(main, path), "utf8"), mainSnapshot);
+  assert.equal(readFileSync(join(main, copy), "utf8"), early);
+  assert.equal(
+    writeOrderSnapshot(main, { orders: [], observedAt }, workOrder).written,
+    false,
+    "main is never the refresh destination",
+  );
+  const { pruneHarness } = await import("./lib/harness-prune.mjs");
+  const listing = () =>
+    pruneHarness(main, { publishedRelease: () => "v1.0.0" });
+  const retained = () =>
+    listing().retained.find((row) => row.path.endsWith("/WO-999"))?.reason;
+  const candidate = () =>
+    listing().candidates.some((row) => row.workOrder === workOrder);
+  assert.equal(
+    retained(),
+    "usage copy is not in the committed snapshot",
+    "an uncommitted refresh does not release the lane",
+  );
+  assert.equal(
+    runGit(checkout, ["show", `HEAD:${path}`], fixtureGitOptions),
+    json(prior).trimEnd(),
+    "refresh commits nothing",
+  );
+  const acceptSnapshot = () => {
+    runGit(checkout, ["add", path], fixtureGitOptions);
+    runGit(
+      checkout,
+      ["commit", "-qm", "reviewed retained usage snapshot"],
+      fixtureGitOptions,
+    );
+    runGit(main, ["merge", "--ff-only", "wo-998"], fixtureGitOptions);
+  };
+  acceptSnapshot();
+  assert.equal(
+    candidate(),
+    true,
+    "the reviewed committed digest covers the lane",
+  );
+  const later = jsonLines([
+    usageRow(workOrder, "reviewer", "2026-09-20T03:00:00.000Z", 4),
+  ]);
+  write(main, copy, early + later);
+  assert.notEqual(
+    refreshed.usageCopies[0].sha256,
+    digest(early + later),
+    "a later row invalidates the earlier retention proof",
+  );
+  assert.equal(
+    retained(),
+    "usage copy is not in the committed snapshot",
+    "another late row reopens retention",
+  );
+  const second = writeOrderSnapshot(
+    checkout,
+    { orders: [], observedAt: "2026-09-22T00:00:00.000Z" },
+    workOrder,
+  );
+  assert.equal(second.written, true, second.reason);
+  assert.equal(retained(), "usage copy is not in the committed snapshot");
+  acceptSnapshot();
+  assert.equal(
+    candidate(),
+    true,
+    "a second reviewed refresh covers the late row",
+  );
+  const publishedSnapshot = readFileSync(join(main, path), "utf8");
+  const mixedCopy = `docs/control/local/retained/${workOrder}/process.from-WO-998/usage.jsonl`;
+  const tornCopy = `docs/control/local/retained/${workOrder}/process.from-WO-997/usage.jsonl`;
+  write(
+    main,
+    mixedCopy,
+    jsonLines([usageRow("WO-998", "executor", "2026-09-20T04:00:00.000Z", 9)]),
+  );
+  write(main, tornCopy, '{"workOrder":"WO-999","broken"');
+  const again = writeOrderSnapshot(
+    checkout,
+    { orders: [], observedAt: "2026-09-22T00:00:00.000Z" },
+    workOrder,
+  );
+  assert.equal(again.written, true, again.reason);
+  refreshed = JSON.parse(readFileSync(join(checkout, path), "utf8"));
+  assert.equal(refreshed.orders[0].usageByRole.reviewer.totalTokens, 4);
+  assert.equal(refreshed.usageCopies[0].sha256, digest(early + later));
+  assert.ok(
+    refreshed.orders[0].usageByRole["release-close"],
+    "late current-main release-close usage is carried",
+  );
+  assert.equal(refreshed.orders[0].usageByRole["release-close"].totalTokens, 3);
+  assert.equal(refreshed.usageCopies.length, 1);
+  assert.equal(refreshed.uncarriedCopies.length, 2);
+  assert.deepEqual(refreshed.orders[0].metrics, prior.orders[0].metrics);
+  assert.equal(refreshed.source, prior.source);
+  assert.equal(readFileSync(join(main, path), "utf8"), publishedSnapshot);
+  assert.equal(readFileSync(join(main, copy), "utf8"), early + later);
+  assert.equal(
+    readFileSync(join(main, currentUsagePath), "utf8"),
+    currentUsageBytes,
+  );
+  assert.equal(
+    retained(),
+    "usage copy is not in the committed snapshot",
+    "mixed and unreadable copies remain retained",
+  );
+  assert.equal(
+    runGit(checkout, ["show", `HEAD:${path}`], fixtureGitOptions),
+    publishedSnapshot.trimEnd(),
+    "the third refresh commits nothing",
+  );
+});
+
+test("large explicit touching continuations name their input limit while smaller pages and changed-file queries keep their bindings", async (t) => {
+  const root = repo(t);
+  const orders = Array.from(
+    { length: 500 },
+    (_, index) => `WO-${String(index).padStart(3, "0")}`,
+  );
+  write(
+    root,
+    "docs/product/candidates.md",
+    Array.from(
+      { length: 24 },
+      (_, index) =>
+        `## Candidate — continued ${index}\nWaits for WO-001 and source.txt ${"目".repeat(120)}.`,
+    ).join("\n\n") + "\n",
+  );
+  syncFollowups(root);
+  const before = readFileSync(join(root, "docs/planning/followups.json"));
+  await assert.rejects(
+    planMain(["followups", "--touching", ...orders], root),
+    /explicit --touching query needs 4499 UTF-8 bytes.*limit is 2048 bytes.*Split/u,
+  );
+  assert.deepEqual(
+    readFileSync(join(root, "docs/planning/followups.json")),
+    before,
+  );
+  await assert.rejects(
+    planMain(["followups", "--touching", ...orders.slice(0, 400)], root),
+    /explicit --touching query needs 3599 UTF-8 bytes.*limit is 2048 bytes.*Split/u,
+  );
+  const terms = orders.slice(0, 200);
+  const page = await planMain(["followups", "--touching", ...terms], root);
+  assert.ok(page.next);
+  assert.ok(Buffer.byteLength(json(page)) <= 8192);
+  const cursor = page.next.split(" --cursor ")[1];
+  const next = await planMain(
+    ["followups", "--touching", ...terms, "--cursor", cursor],
+    root,
+  );
+  assert.ok(next.rows.length);
+  assert.notDeepEqual(
+    next.rows.map((row) => row.id),
+    page.rows.map((row) => row.id),
+  );
+  await assert.rejects(
+    planMain(
+      ["followups", "--touching", ...terms.slice(0, -1), "--cursor", cursor],
+      root,
+    ),
+    /stale or invalid page cursor/u,
+  );
+  runGit(root, ["branch", "main"], fixtureGitOptions);
+  write(root, "source.txt", "fixture\n");
+  const changed = await planMain(["followups", "--touching"], root);
+  assert.equal(changed.matched, 24);
+  assert.ok(Buffer.byteLength(json(changed)) <= 8192);
 });

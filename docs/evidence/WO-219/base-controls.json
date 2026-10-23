@@ -1,0 +1,356 @@
+{
+  "baselineCommit": "c670e6288ecb221ef2416cef06f920006866bc5d",
+  "method": "Commands ran in the isolated built base before overlay, except the final text-policy check which reads that exact committed revision with git show. Public drivers preserve the executed entry contract. Exit zero alone is not claimed for a filtered-out test; named cases/manual completion markers are retained.",
+  "results": [
+    {
+      "id": "base-existing-fulfillment",
+      "rows": [
+        3,
+        16,
+        21,
+        31
+      ],
+      "mode": "already-met-at-base",
+      "baselineCommit": "c670e6288ecb221ef2416cef06f920006866bc5d",
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern",
+        "byte overages advise independently|source-bound execution amendments|canonical writer shapes",
+        "scripts/test-docs-check.mjs",
+        "scripts/test-plan-refutation.mjs",
+        "packages/skeleton/dist/test/writer.test.js"
+      ],
+      "exitCode": 0,
+      "logSha256": "615de4dc6819a30e478b768f099eca817cce0037821ecb89d7b025d50107a303",
+      "output": [
+        "\u2714 WO-051 C-W2/C-W3/C-W8/C-W9 and X-W1/X-W2/X-W8 canonical writer shapes (218.384417ms)",
+        "\u2714 byte overages advise independently of decision and follow-up disposition (1384.912708ms)",
+        "\u2714 WO-139 source-bound execution amendments admit only authorized bytes and preserve receipt/hold semantics (849.57575ms)",
+        "\u2139 tests 3",
+        "\u2139 pass 3",
+        "\u2139 fail 0"
+      ]
+    },
+    {
+      "id": "base-observation-policy",
+      "rows": [
+        7
+      ],
+      "mode": "already-met-at-base",
+      "baselineCommit": "c670e6288ecb221ef2416cef06f920006866bc5d",
+      "command": [
+        "node",
+        "--test",
+        "--test-name-pattern",
+        "^WO-178 (prompt rows retain|PermissionDenied journals)",
+        "scripts/test-harness.mjs"
+      ],
+      "exitCode": 0,
+      "logSha256": "b6ab8bece4ff35656bb1c6c412ebc5d16bccd97a7b92a6c87a9918c224a47fbc",
+      "output": [
+        "\u2714 WO-178 PermissionDenied journals bounded metadata and offers both operator routes without retry (879.906292ms)",
+        "\u2714 WO-178 prompt rows retain digest, prefix class and witnessed route, including recovery prompts (891.222875ms)",
+        "\u2139 tests 2",
+        "\u2139 pass 2",
+        "\u2139 fail 0"
+      ]
+    },
+    {
+      "id": "base-local-observation-counts",
+      "rows": [
+        7
+      ],
+      "mode": "already-met-at-base",
+      "baselineCommit": "c670e6288ecb221ef2416cef06f920006866bc5d",
+      "command": [
+        "node",
+        "--test",
+        "--test-name-pattern",
+        "^WO-178 local counts and track split",
+        "docs/evidence/WO-219/control-drivers/plan-fixtures.mjs"
+      ],
+      "exitCode": 0,
+      "logSha256": "da76c9326bc19b30600f3153d5bde76e2e27e4710ed91e8fc56fa207c9883672",
+      "output": [
+        "\u2714 WO-178 local counts and track split reach failures, its export and plan start (317.13625ms)",
+        "\u2139 tests 1",
+        "\u2139 pass 1",
+        "\u2139 fail 0"
+      ]
+    },
+    {
+      "id": "base-review-reader-fulfillment",
+      "rows": [
+        3,
+        9
+      ],
+      "mode": "already-met-at-base",
+      "baselineCommit": "c670e6288ecb221ef2416cef06f920006866bc5d",
+      "command": [
+        "node",
+        "docs/evidence/WO-219/control-drivers/root-fixture.mjs",
+        "scripts/test-verification-review.mjs"
+      ],
+      "exitCode": 0,
+      "logSha256": "f2d831ff05dd18ac2484c0983536552f2c422a8743b33cc0407aa7b44f37eb34",
+      "output": [
+        "WO-187 verification briefing, completion advisories, finding classes and planning counts passed"
+      ]
+    },
+    {
+      "id": "base-nested-publication",
+      "rows": [
+        10
+      ],
+      "mode": "already-met-at-base",
+      "baselineCommit": "c670e6288ecb221ef2416cef06f920006866bc5d",
+      "command": [
+        "node",
+        "--test",
+        "--test-name-pattern",
+        "^publication normalizes nested images and links exposed by inner removal",
+        "scripts/test-github-body.mjs"
+      ],
+      "exitCode": 0,
+      "logSha256": "42bb2ef50809d2bb911453b36c67642e0a9f5a26c5bc55831d2137209e3653f5",
+      "output": [
+        "\u2714 publication normalizes nested images and links exposed by inner removal (29.742459ms)",
+        "\u2139 tests 1",
+        "\u2139 pass 1",
+        "\u2139 fail 0"
+      ]
+    },
+    {
+      "id": "strict-counts-decision",
+      "rows": [
+        15
+      ],
+      "mode": "already-met-at-base",
+      "baselineCommit": "c670e6288ecb221ef2416cef06f920006866bc5d",
+      "command": [
+        "node",
+        "docs/evidence/WO-219/control-drivers/review-counts.mjs",
+        "."
+      ],
+      "exitCode": 0,
+      "logSha256": "c26e5411cb4f2cb63926de88135a363f6f41cee7c79f06fc285c62bd2387a8f3",
+      "output": [
+        "43 final reviews since D045: none unmeasured; latest ten orders:13 reviews, all13 measured. Both malformed-field controls remain unmeasured."
+      ],
+      "window": {
+        "sinceD045": {
+          "reviews": 43,
+          "unmeasured": 0
+        },
+        "recent": {
+          "orders": 10,
+          "reviews": 13,
+          "measured": 13,
+          "escapes": 92,
+          "unclassed": 0,
+          "escapesPerFinalReview": 7.076923076923077
+        },
+        "orders": [
+          "WO-229",
+          "WO-225",
+          "WO-227",
+          "WO-226",
+          "WO-217",
+          "WO-223",
+          "WO-218",
+          "WO-222",
+          "WO-221",
+          "WO-216"
+        ],
+        "records": [
+          {
+            "order": "WO-229",
+            "verdict": "pass",
+            "findingCounts": {
+              "escape": 0,
+              "integration": 0,
+              "new-scope": 0,
+              "unclassed": 0
+            },
+            "path": "docs/control/orders/WO-229.jsonl",
+            "ordinal": 10
+          },
+          {
+            "order": "WO-225",
+            "verdict": "pass",
+            "findingCounts": {
+              "escape": 0,
+              "integration": 0,
+              "new-scope": 0,
+              "unclassed": 0
+            },
+            "path": "docs/control/orders/WO-225.jsonl",
+            "ordinal": 6
+          },
+          {
+            "order": "WO-227",
+            "verdict": "pass",
+            "findingCounts": {
+              "escape": 0,
+              "integration": 0,
+              "new-scope": 0,
+              "unclassed": 0
+            },
+            "path": "docs/control/orders/WO-227.jsonl",
+            "ordinal": 28
+          },
+          {
+            "order": "WO-227",
+            "verdict": "fail",
+            "findingCounts": {
+              "escape": 1,
+              "integration": 0,
+              "new-scope": 0,
+              "unclassed": 0
+            },
+            "path": "docs/control/orders/WO-227.jsonl",
+            "ordinal": 14
+          },
+          {
+            "order": "WO-226",
+            "verdict": "pass",
+            "findingCounts": {
+              "escape": 0,
+              "integration": 0,
+              "new-scope": 0,
+              "unclassed": 0
+            },
+            "path": "docs/control/orders/WO-226.jsonl",
+            "ordinal": 6
+          },
+          {
+            "order": "WO-217",
+            "verdict": "pass",
+            "findingCounts": {
+              "escape": 0,
+              "integration": 0,
+              "new-scope": 1,
+              "unclassed": 0
+            },
+            "path": "docs/control/orders/WO-217.jsonl",
+            "ordinal": 10
+          },
+          {
+            "order": "WO-223",
+            "verdict": "pass",
+            "findingCounts": {
+              "escape": 1,
+              "integration": 0,
+              "new-scope": 0,
+              "unclassed": 0
+            },
+            "path": "docs/control/orders/WO-223.jsonl",
+            "ordinal": 6
+          },
+          {
+            "order": "WO-218",
+            "verdict": "pass",
+            "findingCounts": {
+              "escape": 23,
+              "integration": 0,
+              "new-scope": 0,
+              "unclassed": 0
+            },
+            "path": "docs/control/orders/WO-218.jsonl",
+            "ordinal": 10
+          },
+          {
+            "order": "WO-222",
+            "verdict": "pass",
+            "findingCounts": {
+              "escape": 3,
+              "integration": 0,
+              "new-scope": 0,
+              "unclassed": 0
+            },
+            "path": "docs/control/orders/WO-222.jsonl",
+            "ordinal": 6
+          },
+          {
+            "order": "WO-221",
+            "verdict": "pass",
+            "findingCounts": {
+              "escape": 13,
+              "integration": 0,
+              "new-scope": 0,
+              "unclassed": 0
+            },
+            "path": "docs/control/orders/WO-221.jsonl",
+            "ordinal": 16
+          },
+          {
+            "order": "WO-221",
+            "verdict": "fail",
+            "findingCounts": {
+              "escape": 20,
+              "integration": 0,
+              "new-scope": 0,
+              "unclassed": 0
+            },
+            "path": "docs/control/orders/WO-221.jsonl",
+            "ordinal": 10
+          },
+          {
+            "order": "WO-216",
+            "verdict": "pass",
+            "findingCounts": {
+              "escape": 11,
+              "integration": 0,
+              "new-scope": 0,
+              "unclassed": 0
+            },
+            "path": "docs/control/orders/WO-216.jsonl",
+            "ordinal": 16
+          },
+          {
+            "order": "WO-216",
+            "verdict": "fail",
+            "findingCounts": {
+              "escape": 20,
+              "integration": 0,
+              "new-scope": 0,
+              "unclassed": 0
+            },
+            "path": "docs/control/orders/WO-216.jsonl",
+            "ordinal": 10
+          }
+        ],
+        "strictControls": {
+          "route": "entry 1 of the findings block needs a route blocking, follow-up, operator: {\"id\":\"F1\",\"route\":\"Blocking\",\"class\":\"escape\",\"summary\":\"A bounded finding.\"}",
+          "mixed": "entry 2 of the findings block needs a one-line summary: {\"id\":\"F2\",\"route\":\"follow-up\",\"class\":\"escape\",\"summary\":\"\"}"
+        },
+        "checks": {
+          "noRecordedUnmeasuredReviewSinceD045": true,
+          "recentWindowFullyMeasured": true,
+          "malformedRouteRemainsUnmeasured": true,
+          "malformedSummaryDoesNotCreateAPartialCount": true
+        }
+      }
+    },
+    {
+      "id": "base-text-policy",
+      "rows": [
+        3,
+        39
+      ],
+      "mode": "already-met-at-base",
+      "baselineCommit": "c670e6288ecb221ef2416cef06f920006866bc5d",
+      "command": [
+        "node",
+        "docs/evidence/WO-219/control-drivers/base-policy.mjs"
+      ],
+      "exitCode": 0,
+      "logSha256": "27282e653c3af254e6ee1466f3928eade5b9b8dc95bf2f8606f533f08f3a0aee",
+      "output": [
+        "{\"baseline\":\"c670e6288ecb221ef2416cef06f920006866bc5d\",\"sparseCopyPolicy\":\"present with beacon exclusion and per-file guard\",\"obsoleteReadmeCodexSentence\":\"absent\"}"
+      ]
+    }
+  ]
+}

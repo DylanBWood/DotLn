@@ -4477,6 +4477,14 @@
             "WO-219"
           ],
           "at": "2026-10-17T19:34:11.296Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "WO-219-D010 in docs/evidence/WO-219/decisions.md: Retain the current file-level authored-output witness. Decline the nomination of a new exact unchanged-byte/change-range review mechanism to planning, preserving the residual migration cost rather than classifying authored work orders as generated. Present limitation: A substantive change to an authored file still owes delivery of its current file bytes; the residual read cost is real, while equivalence and stale-byte coverage for a range alternative have not been established. Evidence read: docs/evidence/WO-126/decisions.md#wo-126-d005; packages/skeleton/src/harness-host.ts; scripts/lib/legacy-cost.mjs.",
+          "reopenWhen": "A planning comparison supplies exact unchanged-byte proof, current-source/substantive-edit refusal and measured context/command/wall-clock costs.",
+          "targets": [],
+          "at": "2026-10-23T16:09:32.526Z"
         }
       ]
     },
@@ -10783,6 +10791,13 @@
           "title": "Candidate — DotLn-owned authority with minimal native harness restrictions",
           "summary": "## Candidate — DotLn-owned authority with minimal native harness restrictions Operator direction during WO-119 (2026-09-16): reach an operating mode as soon as evidence supports it in which native Claude and Codex harness sandboxes can be disabled and Claude's settings have nearly empty allow/deny lists. The source of permissions, security and authority is the equipped DotLn supports, build and role. The operator clarified the assurance requirement: faithful runtime enforcement plus adversarial tests, including attempts to bypass the declared authority. See the [ideation receipt](../evidence/WO-119/ideation-authority.md). This candidate asks planning to identify the earliest justified route ",
           "missing": false
+        },
+        {
+          "hash": "7b8403f4661040be5fb358c16242fac2707763db21935b8815b6905fb4ce8cc9",
+          "ref": "docs/product/03-architecture.md#candidate--dotln-owned-authority-with-minimal-native-harness-restrictions",
+          "title": "Candidate — DotLn-owned authority with minimal native harness restrictions",
+          "summary": "## Candidate — DotLn-owned authority with minimal native harness restrictions Operator direction during WO-119 (2026-09-16): reach an operating mode as soon as evidence supports it in which native Claude and Codex harness sandboxes can be disabled and Claude's settings have nearly empty allow/deny lists. The source of permissions, security and authority is the equipped DotLn supports, build and role. The operator clarified the assurance requirement: faithful runtime enforcement plus adversarial tests, including attempts to bypass the declared authority. See the [ideation receipt](../evidence/WO-119/ideation-authority.md). This candidate asks planning to identify the earliest justified route ",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -13275,6 +13290,14 @@
             "WO-219"
           ],
           "at": "2026-10-17T19:34:12.408Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-219-D026 in docs/evidence/WO-219/decisions.md: Choose canonical decoded return values for append so live consumers receive the same JSON values as replay. Preserve assigned-envelope validation and acceptance of supported JSON payloads; replay every stored-log fixture identically before settling this row.",
+          "reopenWhen": "Any supported payload produces different live/stored/replayed values or any existing stored-log decision/projection differs.",
+          "targets": [],
+          "at": "2026-10-23T16:09:34.282Z"
         }
       ]
     },
@@ -13502,6 +13525,14 @@
             "WO-219"
           ],
           "at": "2026-10-17T19:34:11.501Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-219-D013 in docs/evidence/WO-219/decisions.md: Extend the existing reserved-state coupling tripwire to optional-chained reads through casts, preserving the positive legal-core case and the existing alias/computed/destructure refusals.",
+          "reopenWhen": "Any new reserved-state spelling evades the tripwire or legal kernel state access is refused.",
+          "targets": [],
+          "at": "2026-10-23T16:09:32.865Z"
         }
       ]
     },
@@ -13842,6 +13873,14 @@
             "WO-219"
           ],
           "at": "2026-10-17T19:34:12.480Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "WO-219-D027 in docs/evidence/WO-219/decisions.md: Decline the nomination of a broader shared-root-cwd enforcement order to planning. Retain the later repair's journaled stand-down and generated-hook subdirectory coverage; those minimum observations do not answer whether all four older refusals should enforce off-root. Present limitation: The shared-root precondition still limits the four older refusals. Its silent-journal part was repaired, but its wider policy question remains open. Evidence read: docs/evidence/WO-144/decisions.md#wo-144-d007--fail-final-review-on-a-live-admitted-outside-write-board-the-shared-root-cwd-precondition; packages/skeleton/src/harness-host.ts; scripts/test-harness.mjs.",
+          "reopenWhen": "A planning order chooses and proves broader off-root state/Git/path behavior, or any generated hook again silently admits a call that root evaluation would refuse.",
+          "targets": [],
+          "at": "2026-10-23T16:09:34.389Z"
         }
       ]
     },
@@ -13883,6 +13922,14 @@
             "WO-219"
           ],
           "at": "2026-10-17T19:34:12.195Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "declined",
+          "reason": "WO-219-D023 in docs/evidence/WO-219/decisions.md: Retain off-root outside-write judgment and explicit stand-down journal rows for the other four refusals. Decline choosing broader writer/live-gate/planning/subagent behavior until the shared-root planning item defines its state and relative-path semantics. Present limitation: The other four refusals still stand down away from the verified worktree root, now observably; journaling is not enforcement. Evidence read: docs/evidence/WO-144/decisions.md#wo-144-d008--judge-outside-writes-from-any-working-directory-keep-hook-rows-in-the-hooks-own-project; packages/skeleton/src/harness-host.ts; scripts/test-harness.mjs.",
+          "reopenWhen": "A planning design chooses off-root behavior and supplies descendant/outside-root, role-inheritance and relative-destination controls, or a required denial is admitted without a journal row.",
+          "targets": [],
+          "at": "2026-10-23T16:09:33.960Z"
         }
       ]
     },
@@ -13917,6 +13964,14 @@
             "WO-219"
           ],
           "at": "2026-10-17T19:34:12.125Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "WO-219-D022 in docs/evidence/WO-219/decisions.md: Keep literal redirects judged by the existing separate adapter and expansions opaque under host permissions. Decline a new expansion-spelled adapter to planning. Use the already recorded standing cold-start ceiling route when an actual reviewed rule requires bytes, rather than preserve the obsolete historical 46-byte figure as a current measurement. Present limitation: Expansion-spelled destinations remain unobserved, so the historical incident-class language must not be generalized into a present enforcement guarantee. The old ceiling observation is dated, not a current budget result. Evidence read: docs/evidence/WO-144/decisions.md#wo-144-d009--judge-a-literal-redirect-on-any-program-state-what-stays-unjudged; packages/skeleton/src/harness-command.ts; scripts/test-harness.mjs.",
+          "reopenWhen": "An expansion adapter is explicitly chosen and proved, a literal known outside write is admitted, a legitimate granted write is refused, or a current reviewed rule exceeds its measured cold-start ceiling.",
+          "targets": [],
+          "at": "2026-10-23T16:09:33.850Z"
         }
       ]
     },
@@ -14125,6 +14180,14 @@
             "WO-219"
           ],
           "at": "2026-10-17T19:34:12.834Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "WO-219-D032 in docs/evidence/WO-219/decisions.md: Keep complete stored events and per-decision serialization comparison. Decline coalescing recorded heartbeats or replacing embedded capsule values with references to planning; do not re-record a short episode or weaken equality to fit a helper. Present limitation: Repeated full capsules retain a serialization/time cost. The helper avoids one engine-sized string but does not remove that repeated work. Evidence read: docs/evidence/WO-140/decisions.md#wo-140-d008--repair-the-stored-stream-test-that-a-long-live-verifier-episode-pushed-past-the-engines-string-limit; packages/skeleton/src/reactor.ts; packages/skeleton/test/scenario.test.ts.",
+          "reopenWhen": "A stored stream again fails or dominates the suite, or a bounded design proves lower cost with identical replay and immutable evidence.",
+          "targets": [],
+          "at": "2026-10-23T16:09:34.927Z"
         }
       ]
     },
@@ -14159,6 +14222,14 @@
             "WO-219"
           ],
           "at": "2026-10-17T19:34:12.336Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-219-D025 in docs/evidence/WO-219/decisions.md: Use the already implemented Codex writer PATH/toolchain grants and bare named-test command. This is prior concrete fulfillment of the requested route, with no new writer design, no absolute private path in a capsule and no rewritten hashed log.",
+          "reopenWhen": "A supported writer can no longer resolve its declared bare named test, a required grant becomes unreasonably broad, or a capsule/log exposes private physical command paths.",
+          "targets": [],
+          "at": "2026-10-23T16:09:34.176Z"
         }
       ]
     },
@@ -14208,6 +14279,14 @@
             "WO-219"
           ],
           "at": "2026-10-17T19:34:12.055Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "declined",
+          "reason": "WO-219-D021 in docs/evidence/WO-219/decisions.md: Send the path-free RepairSnapshotPrepared event, revocation actor-ordering and reported implementer SourceChangeObserved behavior together to the bounded host-planning work the source nominates. Preserve the raw positional logs and do not publish sanitized hashed evidence. Present limitation: The path-bearing event remains in source and revocation handling precedes the host actor filter. The SourceChangeObserved item was originally reported but not reproduced by its executor; it remains an attributed concern, not a new observed failure here. Evidence read: docs/evidence/WO-056/decisions.md#wo-056-d005--adversarial-pass-bind-facts-to-the-log-make-the-replay-guard-sensitive-always-file; packages/skeleton/src/repair-host.ts; packages/skeleton/src/reactor.ts.",
+          "reopenWhen": "A planning order authorizes all three named host changes with actor, episode, path-free-log and replay controls, especially before nonempty revocation types are relied on.",
+          "targets": [],
+          "at": "2026-10-23T16:09:33.742Z"
         }
       ]
     },
@@ -14290,6 +14369,14 @@
             "WO-219"
           ],
           "at": "2026-10-17T19:34:11.364Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "WO-219-D011 in docs/evidence/WO-219/decisions.md: Keep diagnosis in the existing bounded envelope summary and the already implemented typed host-refusal detail. Decline the still-open choice between a richer finding field and a contract-bound repair note to planning; do not treat the later host-detail fix as settlement of that separate choice. Present limitation: The finding contract still carries observed/expected witnesses and no durable diagnosis field for repair. A bounded envelope summary is not the proposed richer finding or repair-note channel. Evidence read: docs/evidence/WO-056/decisions.md#wo-056-d008--operator-scope-expansion-repair-both-runtime-defects-in-this-order; packages/compiler/src/verification.ts; packages/skeleton/src/verification-protocol.ts.",
+          "reopenWhen": "A bounded planning design chooses the channel and its consumers, preserves witness binding and blinding, and supplies a live refusal/repair reproduction.",
+          "targets": [],
+          "at": "2026-10-23T16:09:32.642Z"
         }
       ]
     },
@@ -14463,6 +14550,14 @@
             "WO-219"
           ],
           "at": "2026-10-17T19:34:11.984Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "declined",
+          "reason": "WO-219-D020 in docs/evidence/WO-219/decisions.md: Keep exact goal-standard binding and independent immutable-subject judgment. Decline the new executor snapshot/local-subject-commit route to planning; this batch grants no blanket early-commit exception. Present limitation: A future execution edit to the bound goal standard still meets the committed-subject versus no-early-commit conflict recorded by the source. Evidence read: docs/evidence/WO-090/decisions.md#wo-090-d006--operator-authorized-local-commits-refresh-the-planning-judgment; scripts/lib/plan-direct.mjs; scripts/lib/plan-continuation.mjs.",
+          "reopenWhen": "A bounded planning design preserves independent judgment, committed/snapshot identity, stale-byte refusal and publication refusal, or another execution order must edit that section.",
+          "targets": [],
+          "at": "2026-10-23T16:09:33.632Z"
         }
       ]
     },
@@ -14781,6 +14876,14 @@
             "WO-219"
           ],
           "at": "2026-10-17T19:34:11.638Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-219-D015 in docs/evidence/WO-219/decisions.md: State equipped Tinkerer support in the actual dispatch/briefing receipt when equipped, retain opt-out behavior and preserve the current conditional comparison sentence. Do not invent a past operator decision to omit the support or count generic default installation as the old trial's missing briefing.",
+          "reopenWhen": "An equipped trial dispatch again omits its explicit support receipt, or opt-out/ordinary dispatch behavior changes.",
+          "targets": [],
+          "at": "2026-10-23T16:09:33.086Z"
         }
       ]
     },
@@ -18228,6 +18331,14 @@
             "WO-219"
           ],
           "at": "2026-10-17T19:34:13.200Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "WO-219-D037 in docs/evidence/WO-219/decisions.md: Send by-reference receipt subjects and hydration-cost judgment to the separate patch order the source explicitly nominates. Keep historical self-contained receipts and their hashes byte-identical. Present limitation: Receipts still carry subjects by value and rebuilding/hydrating consumers has a separate performance and schema tradeoff. Evidence read: docs/evidence/WO-154/decisions.md#wo-154-d003--the-receipt-subject-group-becomes-its-own-patch-order; scripts/lib/plan-receipts.mjs; scripts/lib/plan-subject.mjs.",
+          "reopenWhen": "Planning chooses a bounded receipt representation with unchanged historical bytes and subject hashes, including the interacting subject-build cost, or receipts overtake the named storage share.",
+          "targets": [],
+          "at": "2026-10-23T16:09:35.457Z"
         }
       ]
     },
@@ -19761,6 +19872,14 @@
             "WO-219"
           ],
           "at": "2026-10-17T19:34:12.907Z"
+        },
+        {
+          "sourceRevision": 4,
+          "status": "settled",
+          "reason": "WO-219-D033 in docs/evidence/WO-219/decisions.md: Apply the same four correctable actor fields to usage/meta/console read projections before per-order filtering of full segments. Preserve raw event bytes and correction-recorder actors, chain correction ordinals, and clear replaced effort raw/mode metadata. Expose correction evidence in the console and actual actor attribution in meta phases.",
+          "reopenWhen": "A projection disagrees with a valid correction chain, a correction crosses an activation/order, raw history mutates, or a console field loses its correction evidence.",
+          "targets": [],
+          "at": "2026-10-23T16:09:35.034Z"
         }
       ]
     },
@@ -20976,6 +21095,14 @@
             "WO-219"
           ],
           "at": "2026-10-17T19:34:13.489Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-219-D041 in docs/evidence/WO-219/decisions.md: Require the event at the subject ordinal to be a passing FinalReviewCompleted before the fold accepts a productGate correction, and refuse a second binding of the same review. Preserve the complete passing gate/identity checks and committed-history consumers.",
+          "reopenWhen": "A non-passing actual subject or second binding folds, or a legitimate once-only current-identity binding is refused.",
+          "targets": [],
+          "at": "2026-10-23T16:09:35.875Z"
         }
       ]
     },
@@ -22053,6 +22180,14 @@
             "WO-219"
           ],
           "at": "2026-10-17T19:34:13.271Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-219-D038 in docs/evidence/WO-219/decisions.md: Refuse an explicit shell-quoted continuation payload over 2048 UTF-8 bytes when another page is actually required, naming that input limit. Preserve touchingFollowups matching/status semantics, one-page requests, smaller cursor revision binding and the no-argument changed-file query.",
+          "reopenWhen": "A supported default query reaches the bound, a smaller cursor loses its revision/query binding, or an oversized continuation receives an inaccurate row-size diagnosis.",
+          "targets": [],
+          "at": "2026-10-23T16:09:35.562Z"
         }
       ]
     },
@@ -22340,6 +22475,14 @@
             "WO-219"
           ],
           "at": "2026-10-17T19:34:14.006Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-219-D048 in docs/evidence/WO-219/decisions.md: Update the matching standing sentences in products 02/03/07 and the security document for Codex writer reservation, remaining role-text duties, live-gate Git conditions and printed scratch/default grants. The obsolete README sentence is absent at the base, so that part is an evidenced no-op; the separate README release label is ordinary preparation.",
+          "reopenWhen": "A named standing sentence again directs behavior inconsistent with the implementation or a current cold-start verdict changes.",
+          "targets": [],
+          "at": "2026-10-23T16:09:36.601Z"
         }
       ]
     },
@@ -22474,6 +22617,14 @@
             "WO-219"
           ],
           "at": "2026-10-17T19:34:11.776Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-219-D017 in docs/evidence/WO-219/decisions.md: State in the existing destination-adapter paragraphs that a command word after an &> operand makes the invocation opaque, and that the applicable unquoted zsh equals word is an expansion. Preserve the literal discard and current refusal widths.",
+          "reopenWhen": "A supported shell gives a form declared literal a different command/expansion, or the standing sentence again differs from the shipped adapter.",
+          "targets": [],
+          "at": "2026-10-23T16:09:33.305Z"
         }
       ]
     },
@@ -22582,6 +22733,14 @@
             "WO-219"
           ],
           "at": "2026-10-17T19:34:13.708Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-219-D044 in docs/evidence/WO-219/decisions.md: Record carried retained-copy digests in ordinary snapshots when the selected usage represents them. Extend the existing explicit meta --write route so a linked checkout refreshes a closed order from registered main's retained copies plus that order's current main usage. Preserve original metrics/cutoff/revision/source, update usage provenance separately, leave mixed/torn copies uncarried and refuse a missing previously carried copy. The refreshed snapshot is reviewed/committed in that worktree before normal integration; the helper writes neither main nor a commit and deletes no retained material.",
+          "reopenWhen": "Any later usage observation arrives after the recorded refresh, a current digest no longer matches the retained copy, a prior carried copy is absent, or refresh drops historical metrics/provenance.",
+          "targets": [],
+          "at": "2026-10-23T16:09:36.187Z"
         }
       ]
     },
@@ -23330,6 +23489,14 @@
             "WO-219"
           ],
           "at": "2026-10-17T19:34:13.856Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "declined",
+          "reason": "WO-219-D046 in docs/evidence/WO-219/decisions.md: Apply WO-163-D021: the operator half of D020 was void and the original hash-matched waiver stands; do not ask again. Decline the remaining Codex helper-ancestry enforcement design to planning, preserving the current journal/live-reservation guard and operator-capture requirement. Present limitation: Once the parent reservation was released, current host observations did not identify the executor helper. That is a known role-text enforcement limit, not absence of the existing waiver's authority. Evidence read: docs/evidence/WO-163/decisions.md#wo-163-d020--the-criterion-4-waiver-stands-its-recorder-was-the-executor-sessions-helper; docs/evidence/WO-163/decisions.md#wo-163-d021--correction-the-final-reviewer-asked-the-operator-to-confirm-a-waiver-they-had-already-given; scripts/lib/off-ramps.mjs.",
+          "reopenWhen": "A descendant records an off-ramp without an authorizing capture, the operator disputes an actual distinct route, or reliable descendant identity supports a bounded enforcement design.",
+          "targets": [],
+          "at": "2026-10-23T16:09:36.395Z"
         }
       ]
     },
@@ -23451,6 +23618,14 @@
             "WO-219"
           ],
           "at": "2026-10-17T19:34:13.126Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "declined",
+          "reason": "WO-219-D036 in docs/evidence/WO-219/decisions.md: Choose NoOp on acceptance semantics and decline contract unification until a real handoff-to-mission transfer is introduced or an accepted value is refused late. Keep the C1/Unicode-separator mismatch explicit. Present limitation: The validators accept different control/separator classes, but the source demonstrated an interface mismatch without a production transfer or late production refusal. Evidence read: docs/evidence/WO-162/decisions.md#wo-162-d006; packages/skeleton/src/handoff-contract.ts; packages/skeleton/src/mission-check-protocol.ts.",
+          "reopenWhen": "An order introduces that text transfer or a real accepted handoff value is refused by its mission consumer.",
+          "targets": [],
+          "at": "2026-10-23T16:09:35.352Z"
         }
       ]
     },
@@ -23582,6 +23757,14 @@
             "WO-219"
           ],
           "at": "2026-10-17T19:34:12.692Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-219-D030 in docs/evidence/WO-219/decisions.md: Adopt the already chosen WO-112-D023 re-binding route: a later amendment of the same order/decision carries its current decision hash, earlier receipt/source-order bindings remain checked, and an edit without re-binding still refuses. No historical control row is removed.",
+          "reopenWhen": "The gate admits an unbound edit, a same-decision re-bind remains stuck, or earlier receipt/source checks are skipped.",
+          "targets": [],
+          "at": "2026-10-23T16:09:34.714Z"
         }
       ]
     },
@@ -24255,6 +24438,14 @@
             "WO-219"
           ],
           "at": "2026-10-17T19:34:12.979Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-219-D034 in docs/evidence/WO-219/decisions.md: Add a declared JWT credential matcher and URL-reader-owned userinfo-password refusal independent of allowed host. Promote the two old limits into refusal fixtures, update affected consumers/kinds and product 03, and retain incomplete/ordinary-value controls.",
+          "reopenWhen": "A declared shape is missed, a legitimate incomplete/ordinary value is refused, or a consumer persists refused text instead of its location-only outcome.",
+          "targets": [],
+          "at": "2026-10-23T16:09:35.140Z"
         }
       ]
     },
@@ -25541,6 +25732,14 @@
             "WO-219"
           ],
           "at": "2026-10-17T19:34:12.762Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-219-D031 in docs/evidence/WO-219/decisions.md: Keep selected effort readback and unchanged historical normalization while the WO-219 pull request carries an operator packet for the Claude mode representation and its interaction with the worker protocol. Record the old spaced-spelling mismatch as unlocated; do not invent a current failed matcher or effective readback.",
+          "reopenWhen": "Review of the WO-219 pull request chooses the cross-harness record policy, a host exposes a mode readback, or an actual spaced-spelling mismatch is captured at a named matcher.",
+          "targets": [],
+          "at": "2026-10-23T16:09:34.820Z"
         }
       ]
     },
@@ -25607,6 +25806,14 @@
             "WO-219"
           ],
           "at": "2026-10-17T19:34:13.052Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-219-D035 in docs/evidence/WO-219/decisions.md: Preserve the reader and both historical batteries. Carry the acceptance/structured-field choice as an operator packet in the WO-219 pull request; the 70-of-80 held-out agreement stays below the stated 95-in-100 bound and is not relabelled as a successful validation.",
+          "reopenWhen": "At review of the WO-219 pull request the operator decides whether the count remains an advisory estimate under its stated limit or a structured field returns; any later new measure uses a fresh battery.",
+          "targets": [],
+          "at": "2026-10-23T16:09:35.247Z"
         }
       ]
     },
@@ -26324,6 +26531,14 @@
             "WO-219"
           ],
           "at": "2026-10-17T19:34:13.635Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "WO-219-D043 in docs/evidence/WO-219/decisions.md: Preserve historical receipt hashing and the current canonical prompt. Decline choosing how to expose or inventory omitted footer/introduction dependencies until a bounded planning design chooses its representation and affected-source review duty. Present limitation: Full exclusions and historical capability source constraints extend beyond the worker's current bullet/id-level projection. Existing relocation checks do not establish worker visibility. Evidence read: docs/evidence/WO-087/decisions.md#wo-087-d011; scripts/lib/plan-subject.mjs; scripts/lib/plan-direct.mjs.",
+          "reopenWhen": "Another continuation dependency is hidden from its reviewer, a relocation order needs affected-source review, or planning chooses and tests a bounded dependency inventory.",
+          "targets": [],
+          "at": "2026-10-23T16:09:36.084Z"
         }
       ]
     },
@@ -28265,6 +28480,14 @@
             "WO-219"
           ],
           "at": "2026-10-17T19:34:12.622Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-219-D029 in docs/evidence/WO-219/decisions.md: Persist a hash-only cache for failed uses with no classified diagnostic, bound to input and actual classifier bytes. Independently inventory dead nonce-owned shell claims/preparations for pruning, rechecking the same owner before removal. Keep live, replaced, malformed or unowned claims when liveness cannot be established.",
+          "reopenWhen": "A repeated unclassified failure is needlessly reclassified, a stale claim blocks delivery, classifier changes fail to invalidate cache, or pruning removes a live/replaced/unknown owner.",
+          "targets": [],
+          "at": "2026-10-23T16:09:34.606Z"
         }
       ]
     },
@@ -28449,6 +28672,14 @@
             "WO-219"
           ],
           "at": "2026-10-17T19:34:11.707Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-219-D016 in docs/evidence/WO-219/decisions.md: Retain digest/byte-count/prefix/scope observations, latest-native-message route correlation, unknown routes when metadata is absent, and Codex dispatch-only observations. Keep the documented host-delivery and lexical-screen limits; no richer semantic or coverage guarantee is claimed.",
+          "reopenWhen": "Native host evidence supplies a reliable route field, a current operator-word record lacks required provenance, or a prompt/denial observation persists message text.",
+          "targets": [],
+          "at": "2026-10-23T16:09:33.194Z"
         }
       ]
     },
@@ -29488,6 +29719,14 @@
             "WO-219"
           ],
           "at": "2026-10-17T19:34:13.931Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-219-D047 in docs/evidence/WO-219/decisions.md: Add the recorded-rule/defensive-repair instruction to reviewer and verifier roles, and require changing approach after the first refusal while preserving the existing second-consecutive-refusal stop and durable record rule.",
+          "reopenWhen": "A reviewer/verifier repeats a refused line or fails to record the stop/disposition.",
+          "targets": [],
+          "at": "2026-10-23T16:09:36.498Z"
         }
       ]
     },
@@ -30297,6 +30536,14 @@
             "WO-219"
           ],
           "at": "2026-10-17T19:34:11.570Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-219-D014 in docs/evidence/WO-219/decisions.md: Use selected effort readback for this execution and keep Ultracode mode distinct from effort. Leave the unresolved Claude mode representation/readback and any canonical correction of the historical VER-001 actor as an operator packet for the WO-219 pull request; preserve Codex ultra handling and filed reports.",
+          "reopenWhen": "At review of the WO-219 pull request, the operator chooses the Claude representation/readback policy and whether an authorized canonical historical correction is due; a host-provided mode readback also reopens this packet.",
+          "targets": [],
+          "at": "2026-10-23T16:09:32.976Z"
         }
       ]
     },
@@ -31394,6 +31641,14 @@
             "WO-219"
           ],
           "at": "2026-10-17T19:34:11.846Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-219-D018 in docs/evidence/WO-219/decisions.md: Tolerate emphasized/code-formatted/parenthetical-worker self-review forms; preserve structured findings-block authority so prose quotes, recaps and examples do not become this report's findings. Keep the already implemented singular-label advisory, name a missing receipt identity, show passing integration/new-scope findings as counts rather than failure items, and align owned-agent paths with accepted worker-name digits.",
+          "reopenWhen": "A real supported self-review is falsely advised, quoted/example prose changes a block count, receipt identity is lost, a passing review becomes a failure item, or an accepted worker name cannot be installed.",
+          "targets": [],
+          "at": "2026-10-23T16:09:33.414Z"
         }
       ]
     },
@@ -31540,6 +31795,14 @@
             "WO-219"
           ],
           "at": "2026-10-17T19:34:13.782Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-219-D045 in docs/evidence/WO-219/decisions.md: State in verifier role text and product 07 that a design-level defect within the order's criteria/declared surfaces is blocking and receives a repair rule without another operator authorization. Reserve operator routing for choices outside that authority.",
+          "reopenWhen": "A verifier again asks the operator to authorize an in-surface repair rule or silently narrows it after a process complaint.",
+          "targets": [],
+          "at": "2026-10-23T16:09:36.290Z"
         }
       ]
     },
@@ -31639,6 +31902,14 @@
             "WO-219"
           ],
           "at": "2026-10-17T19:34:12.266Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-219-D024 in docs/evidence/WO-219/decisions.md: Choose NoOp on the strict block reader: an invalid id, route or one-line summary leaves the whole count unmeasured with its named advisory; it never means zero escapes. Keep the result-time advisory and add no standing read-only pre-record check now. Judge this against the actual ten-order receipt window and preserve both malformed-field examples as named limits.",
+          "reopenWhen": "A real final review is unmeasured because of id/route/summary despite enumerable entries, especially when that masks a classless blocking finding, or a fresh ten-order window demonstrates that pre-record reading would prevent repeated loss.",
+          "targets": [],
+          "at": "2026-10-23T16:09:34.068Z"
         }
       ]
     },
@@ -31673,6 +31944,14 @@
             "WO-219"
           ],
           "at": "2026-10-17T19:34:13.415Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-219-D040 in docs/evidence/WO-219/decisions.md: Advise when a newer matching receipt has missing/non-array findings, without treating malformed evidence as an explicit empty list or presenting stale issues as current. Preserve explicit-empty clearing and canonical filing validation. Retain current unconditional byte advisories across follow-up dispositions, so allocation neither grants an exemption nor restores a hard ceiling failure.",
+          "reopenWhen": "A valid receipt loses issues, a corrupt one reaches briefing without an advisory, explicit clearing regresses, or allocating an unfinished optimization unexpectedly changes advisory enforcement.",
+          "targets": [],
+          "at": "2026-10-23T16:09:35.771Z"
         }
       ]
     },
@@ -31789,6 +32068,14 @@
             "WO-219"
           ],
           "at": "2026-10-17T19:34:11.432Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-219-D012 in docs/evidence/WO-219/decisions.md: Prepare the verify briefing before appending VerificationRequested. Give reviewers the product 07 Read directive. For a passing review self-fix, retain the existing follow-up route and state in prose that the defect was fixed, rather than add a fourth route. Keep the briefing to the order and latest receipt; map citations remain explicit reads, and an empty issue list is printed as none. Retain unconditional byte advisories, whose current behavior no longer depends on advisoryDecision allocation. Preserve the existing sparse-copy exclusion and per-file size guidance.",
+          "reopenWhen": "A real verify records before a failed briefing, an existing self-fix cannot be represented truthfully, a valid carry-in is lost under the declared source contract, or a repository copy again expands a sparse Beacon group.",
+          "targets": [],
+          "at": "2026-10-23T16:09:32.754Z"
         }
       ]
     },
@@ -33521,6 +33808,14 @@
             "WO-219"
           ],
           "at": "2026-10-17T19:34:12.551Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "declined",
+          "reason": "WO-219-D028 in docs/evidence/WO-219/decisions.md: Retain the existing conditional prompt support and its declared prompt-only cost. Decline the proposed phase rewrite/evidence requirement/extra-episode redesign and ten-order outcome policy to planning; do not claim that prompt presence proves linked phase modification. Present limitation: Tinkerer still uses empty semanticsModified/evidence requirements and no extra episode, unlike the proposed typed modifier. Its actual comparison frequency is a separate measured outcome. Evidence read: docs/evidence/WO-188/decisions.md#wo-188-d001--note-for-planning-the-tinkerer-support-does-not-modify-the-phase-it-is-linked-to; packages/skeleton/src/loadouts/prompt-support.ts; packages/skeleton/src/loadouts/executor-supports.ts.",
+          "reopenWhen": "Planning chooses one bounded modifier with declared cost and a prospective comparison measure, or the recorded trigger/outcome condition makes the current prompt-only form unacceptable.",
+          "targets": [],
+          "at": "2026-10-23T16:09:34.496Z"
         }
       ]
     },
@@ -33674,6 +33969,14 @@
             "WO-219"
           ],
           "at": "2026-10-17T19:34:13.562Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-219-D042 in docs/evidence/WO-219/decisions.md: An enqueue match without a recorded command mode is unattributed, retaining its witnessed mid-turn route and digest. Preserve marked host notifications and explicit operator transcript attribution.",
+          "reopenWhen": "A host notice counts as an operator intervention or an explicit operator transcript row is relabelled a notification.",
+          "targets": [],
+          "at": "2026-10-23T16:09:35.980Z"
         }
       ]
     },
@@ -34049,6 +34352,14 @@
             "WO-219"
           ],
           "at": "2026-10-17T19:34:11.916Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-219-D019 in docs/evidence/WO-219/decisions.md: Narrow bare comment labels to report contexts; validate relative links after every Release section rewrite; recognize only a validated terminal task-notification envelope when transcript attribution is unavailable; carry image identity into reference definitions so raw=true is preserved with query/fragment; allow exact shared/template scratch paths and add a shrink-only home-path baseline writer with stale-entry notices.",
+          "reopenWhen": "A public ordinary token/template is falsely refused, a Release retains relative links, an operator prompt is relabelled as a notice, a reference image loses raw semantics, or shrinking the baseline loses a real historical private-path match.",
+          "targets": [],
+          "at": "2026-10-23T16:09:33.524Z"
         }
       ]
     },
@@ -37326,6 +37637,14 @@
             "WO-219"
           ],
           "at": "2026-10-17T19:34:13.343Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-219-D039 in docs/evidence/WO-219/decisions.md: For relocation proof only, restore the already hash-authorized story section to its judged bytes. Then apply the unchanged complete-file citation relocation proof to every other byte. Preserve current amendment, criterion and accepted-story binding and historic receipt bytes.",
+          "reopenWhen": "A valid committed writeback plus relocation refuses, an unauthorized neighboring change passes, or any historical receipt byte/hash changes.",
+          "targets": [],
+          "at": "2026-10-23T16:09:35.667Z"
         }
       ]
     },
@@ -38576,6 +38895,14 @@
             "WO-219"
           ],
           "at": "2026-10-17T19:34:06.453Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-219-D049 in docs/evidence/WO-219/decisions.md: Specify pre-emission bounded audit projections and aggregate read/output budgets, including nested gate logs and truncated batches. Require acknowledgment of a process failure to name its durable record and disposition in the same response. Preserve the distinction between process error and product acceptance failure.",
+          "reopenWhen": "A verifier repeats oversized emission or acknowledges a process failure without naming its durable logging disposition.",
+          "targets": [],
+          "at": "2026-10-23T16:09:36.705Z"
         }
       ]
     },
@@ -40564,6 +40891,14 @@
             "WO-219"
           ],
           "at": "2026-10-18T16:14:45.860Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-219-D050 in docs/evidence/WO-219/decisions.md: Queue closed-order overrides in an ignored control pending lane. The next start copies validated records into their original order's control segment and regenerates the projection in the new worktree; remove only unchanged carried pending records. Malformed/unreadable lanes advise and remain in place while start proceeds.",
+          "reopenWhen": "An override record is lost, duplicated, moved to the wrong order or blocks start on malformed retained input.",
+          "targets": [],
+          "at": "2026-10-23T16:09:36.811Z"
         }
       ]
     },
@@ -41402,6 +41737,14 @@
             "WO-219"
           ],
           "at": "2026-10-19T13:47:57.311Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-219-D052 in docs/evidence/WO-219/decisions.md: Keep contained requests and admit outside followup request files only from scratch roots actually granted to the known active session/role, respecting correction/unequip state and link containment. Unknown/narrowed/unrelated roots refuse with the configured control-lane alternative.",
+          "reopenWhen": "A valid current-session granted scratch request is refused, an unrelated/narrowed/linked path is admitted, or the alternative path is missing from a refusal.",
+          "targets": [],
+          "at": "2026-10-23T16:09:37.019Z"
         }
       ]
     },
@@ -41452,6 +41795,14 @@
             "WO-219"
           ],
           "at": "2026-10-19T13:47:57.230Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-219-D051 in docs/evidence/WO-219/decisions.md: In an exported instance omit rows whose declared condition sources are absent/core-only before probing them, while keeping local sources. A gate-task hold requires at least three prior fresh samples; missing evidence remains unknown with its observed sample count.",
+          "reopenWhen": "An exported instance probes unavailable core sources or a hold is asserted before three baseline observations.",
+          "targets": [],
+          "at": "2026-10-23T16:09:36.914Z"
         }
       ]
     },
@@ -41689,6 +42040,14 @@
             "WO-219"
           ],
           "at": "2026-10-19T22:59:39.705Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-219-D053 in docs/evidence/WO-219/decisions.md: Check every open order's only-suite token against the runner's declared product and machinery suites in that checkout, exempt closed orders and name invalid order/token pairs. List machinery declarations under list --review without changing ordinary review execution selection.",
+          "reopenWhen": "An open order names a runner-refused token that index --check admits or an available machinery declaration disappears from the review listing.",
+          "targets": [],
+          "at": "2026-10-23T16:09:37.121Z"
         }
       ]
     },
@@ -41878,6 +42237,14 @@
             "WO-219"
           ],
           "at": "2026-10-20T20:18:29.846Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-219-D054 in docs/evidence/WO-219/decisions.md: Move the configured historical-id refusal into the common parser and carry the correct configuration through current and revision-bound readers. Retain and extend the existing index refusal assertion and prove actual activation through the same guard; an instance declaring none refuses none on that basis.",
+          "reopenWhen": "Any named reader admits a configured historical hard/satisfied edge, an empty configuration falsely refuses one, or a later change silently narrows refusal reach.",
+          "targets": [],
+          "at": "2026-10-23T16:09:37.222Z"
         }
       ]
     },
@@ -41911,6 +42278,14 @@
             "WO-219"
           ],
           "at": "2026-10-20T20:18:29.955Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-219-D055 in docs/evidence/WO-219/decisions.md: Bind helper execution to main's committed/configured checkout and the modules actually loaded; accept every retained publication head as a same-tree retry lease with a runnable remedy; stop deletion after the first failure and name checkout/relative path/remedy/rerun; make all listing-limit messages accurate; keep a passing partial structural row from replacing or revoking complete Preflight evidence.",
+          "reopenWhen": "Any planted module/dist/ref vector is admitted, a same-tree retained retry sticks, deletion proceeds after failure, limit messages omit role/rerun, or focused execution revokes valid complete Preflight evidence.",
+          "targets": [],
+          "at": "2026-10-23T16:09:37.323Z"
         }
       ]
     },
@@ -41944,6 +42319,14 @@
             "WO-219"
           ],
           "at": "2026-10-20T20:18:30.078Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-219-D056 in docs/evidence/WO-219/decisions.md: Anchor an already-current starter tag at the earliest manifest-proven refresh commit. Separate history parsing from archive writes, preserve parsed attempts and bounded refusal history, and print a relative completable re-anchor remedy. Record a declared publication target before judgment can refuse. Batch tag annotations without altering starter exclusion, pass the ancestral observation and report original linkHosts indexes.",
+          "reopenWhen": "A tag lands above the refresh commit, history grows recursively/loses parsed binding, an early publication refusal omits its target, annotations are rescanned individually, or host errors name deduplicated indexes.",
+          "targets": [],
+          "at": "2026-10-23T16:09:37.425Z"
         }
       ]
     },
@@ -41977,6 +42360,14 @@
             "WO-219"
           ],
           "at": "2026-10-20T20:18:30.186Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-219-D057 in docs/evidence/WO-219/decisions.md: On stash-applied continuation refuse or list tracked stash paths with no tree trace and record collisions before explicit acknowledgment, with runnable commands. On build:none emit remove exact generated navigation/runtime guidance from both core and kit floors, preserve custom/clean-room text, and name the missing disclosure in drift messages.",
+          "reopenWhen": "An interrupted integration completes without its stashed work/acknowledgment, or either disabled floor names a removed generated surface or loses custom/clean-room text.",
+          "targets": [],
+          "at": "2026-10-23T16:09:37.526Z"
         }
       ]
     },
@@ -42003,6 +42394,14 @@
             "WO-219"
           ],
           "at": "2026-10-20T20:18:30.717Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-219-D058 in docs/evidence/WO-219/decisions.md: Remove the frozen copy's origin immediately and refuse handoff if any remote remains. Digest source refs before/after both episodes; refuse changed refs on the HEAD route, record changes on explicit-commit routes, and update the checked confinement claim. Test only disposable sources/absent remotes.",
+          "reopenWhen": "A frozen route retains a remote, a source-ref change escapes its witness, or named-commit concurrency is falsely refused.",
+          "targets": [],
+          "at": "2026-10-23T16:09:37.627Z"
         }
       ]
     },
@@ -42029,6 +42428,14 @@
             "WO-219"
           ],
           "at": "2026-10-20T20:18:30.825Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-219-D059 in docs/evidence/WO-219/decisions.md: Classify current operator-word candidates into attributed speech and incidental JSON/code/document-term quotes, report current counts by class and retain positive unbound-reply detection. Keep the advisory advisory, typed operatorQuote refusal unchanged and existing baseline keys/fingerprints unchanged.",
+          "reopenWhen": "The attributed-speech count crosses its recorded threshold after WO-219, a record misstates words, or an incidental class is again counted as speech.",
+          "targets": [],
+          "at": "2026-10-23T16:09:37.729Z"
         }
       ]
     },
@@ -43494,6 +43901,108 @@
           "at": "2026-10-23T12:14:20.869Z"
         }
       ]
+    },
+    {
+      "id": "FUP-d2646e66a2dfdb40",
+      "key": "decision:docs/evidence/WO-219/decisions.md#wo-219-d008",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "5641e87af828876867c51f61cef91673db9d34e887b9e43a26f00095c86a8559",
+          "ref": "docs/evidence/WO-219/decisions.md#wo-219-d008--keep-the-historical-sweep-mismatch-separate-from-append-proof",
+          "title": "WO-219-D008: Low priority: bind the historical WO-105 canonical-demo sweep to its filed input (or give the modern-runtime comparison an explicitly current manifest) in…",
+          "summary": "{ \"id\": \"WO-219-D008\", \"date\": \"2026-10-23\", \"dispatch\": \"resume: next\", \"decision\": \"Defer repair of the historical store-sweep test input binding. Its live canonical-demo output differs from the WO-105 pinned manifest identically at this order's base and changed source. Preserve the immutable manifest and use the passing actual stored-stream round-trip and canonical-return controls for this order's append claim; do not call the broader historical assertion green.\", \"evidence\": [ \"corpus/harness/truncation-sweep.mjs: canonical-demo is regenerated with the current runScenario(demoTree()) while corpus/harness/wo105-store.test.mjs compares all sweeps to corpus/manifests/WO-105.json.\", \"docs/ev",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-219-D008 in docs/evidence/WO-219/decisions.md: Defer repair of the historical store-sweep test input binding. Its live canonical-demo output differs from the WO-105 pinned manifest identically at this order's base and changed source. Preserve the immutable manifest and use the passing actual stored-stream round-trip and canonical-return controls for this order's append claim; do not call the broader historical assertion green.",
+          "reopenWhen": "The historical sweep is promoted into a current gate or its intended input binding is repaired under a separately recorded bounded change.",
+          "targets": [],
+          "at": "2026-10-23T16:09:37.831Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-e08668268dea62b1",
+      "key": "decision:docs/evidence/WO-219/decisions.md#wo-219-d009",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "f1faed03eff1165674a6c3ecf070e5a71f9b4222b9d1049fab98408b5afa540c",
+          "ref": "docs/evidence/WO-219/decisions.md#wo-219-d009--preserve-useful-rules-and-board-measured-cost",
+          "title": "WO-219-D009: Optimize the executor and reviewer cold-start text without losing the decision ownership, review inputs, defensive approach, repair authority or output duties. Use WO-219 cold-start.json…",
+          "summary": "{ \"id\": \"WO-219-D009\", \"date\": \"2026-10-23\", \"dispatch\": \"resume: next\", \"decision\": \"Preserve the authorized shared decision-ownership rules, reviewer input/defensive duties and verifier repair/output duties. Mint a new role oracle linked to the byte-exact WO-226 snapshot and its upstream history. Keep every cold-start ceiling unchanged and board measured overrun for optimization with equivalent usefulness; do not cut needed instructions, raise a ceiling, record an acceptance or ask the operator to decide a byte budget.\", \"evidence\": [ \"docs/evidence/WO-219/cold-start.json: measured installed CLAUDE.md plus each role skill before/after.\", \"packages/skeleton/fixtures/wo219-role-baseline.json",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-219-D009 in docs/evidence/WO-219/decisions.md: Preserve the authorized shared decision-ownership rules, reviewer input/defensive duties and verifier repair/output duties. Mint a new role oracle linked to the byte-exact WO-226 snapshot and its upstream history. Keep every cold-start ceiling unchanged and board measured overrun for optimization with equivalent usefulness; do not cut needed instructions, raise a ceiling, record an acceptance or ask the operator to decide a byte budget.",
+          "reopenWhen": "A bounded comparison demonstrates a shorter equivalent instruction set, or another required rule changes the measured overrun.",
+          "targets": [],
+          "at": "2026-10-23T16:09:37.933Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-d0af6cc30bccf70d",
+      "key": "decision:docs/evidence/WO-219/decisions.md#wo-219-d074",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "2775ed1200c8cb451127fc885e34c80008fffe207ff0d1892a483c568743e6e2",
+          "ref": "docs/evidence/WO-219/decisions.md#wo-219-d074--ver-001-fail-criterion-6-is-unmet-because-the-closed-order-override-route-has-no-product-write-back",
+          "title": "WO-219-D074: WO-219's repair, inside its declared surfaces. F1 (blocking): write back product 07 §Operator recovery controls in place. The override-record bullet states that a closed order's record…",
+          "summary": "{ \"id\": \"WO-219-D074\", \"date\": \"2026-10-23\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Fail VER-001 at code identity 1e40476b807fa965dfd33c6a917dd9cef7920a6b35505e29bf59bed84a957409. Criteria 1 to 5, 7 and 8 are met; criterion 6 is unmet. F1 (blocking; class documentation write-back; criterion 6): row 41's fix (WO-219-D050, FUP-b0418fa8b09362be) admits override-record at a closed order (scripts/resume.mjs OFF_RAMP_PHASES, line 302), records the event in the ignored lane docs/control/local/pending-overrides, and has the next worktree start append it to the closed order's control segment (scripts/worktree.mjs lines 514 and 656). Because legalOffRamps now include ov",
+          "missing": false
+        },
+        {
+          "hash": "3e48e613cce2e5c33310dde1844b45ebca08e793972e263da6bcebaa965b6e45",
+          "ref": "docs/evidence/WO-219/decisions.md#wo-219-d074--ver-001-fail-criterion-6-is-unmet-because-the-closed-order-override-route-has-no-product-write-back",
+          "title": "WO-219-D074: WO-219's repair, inside its declared surfaces. F1 (blocking): write back product 07 §Operator recovery controls in place. The override-record bullet states that a closed order's record…",
+          "summary": "{ \"id\": \"WO-219-D074\", \"date\": \"2026-10-23\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Fail VER-001 at code identity 1e40476b807fa965dfd33c6a917dd9cef7920a6b35505e29bf59bed84a957409. Criteria 1 to 5, 7 and 8 are met; criterion 6 is unmet. F1 (blocking; class documentation write-back; criterion 6): row 41's fix (WO-219-D050, FUP-b0418fa8b09362be) admits override-record at a closed order (scripts/resume.mjs OFF_RAMP_PHASES, line 302), records the event in the ignored lane docs/control/local/pending-overrides, and has the next worktree start append it to the closed order's control segment (scripts/worktree.mjs lines 514 and 656). Because legalOffRamps now include ov",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-219-D076 and D077 in docs/evidence/WO-219/decisions.md repair both VER-001 findings in D074. Product 07 Operator recovery controls and product 03 Corpus policy now describe main's pending lane and its carry. The closed override command refuses linked checkouts before writes with a quoted main rerun and capture prerequisite; branch and detached fixtures pass. The shared runtime-unavailable advice now names the same route. repair-ver001-controls.json records negative/positive controls and repair-ver001-gate.json records the complete passing review.",
+          "reopenWhen": "Verification reproduces missing or contradictory post-close override guidance, or a closed override record can again be stranded outside the pending lane that start reads.",
+          "targets": [],
+          "at": "2026-10-23T22:07:09.454Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-219-D081 in docs/evidence/WO-219/decisions.md repairs VER-002 F4, the reopening observation WO-219-D079 put on this row: at a closed selected order the session hook's receipt now names the pending record and that the next worktree start carries it, and its effects instruction names a further override-record from main's checkout and never the closed order's tracked decisions file; open orders keep their decisions instruction. The harness-fixtures case 'a closed selected order's override exit names its pending record and main's effects route, never the closed order's decisions' fails with only the hook source reverted and passes with it (docs/evidence/WO-219/final-review-controls.json), and the complete review passed at the repaired identity. D076 and D077 remain the record of VER-001 F1 and F2.",
+          "reopenWhen": "Verification or a later review reproduces missing or contradictory post-close override guidance in the session hook, the shared advisory or product 07, or a closed override record can again be stranded outside the pending lane that start reads.",
+          "targets": [],
+          "at": "2026-10-23T23:27:31.884Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-938f66ad9b65e086",
+      "key": "decision:docs/evidence/WO-219/decisions.md#wo-219-d075",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "1f45610f2451d645fe871c2c4644713c980f580bf7982dbccd5641b2f39340cd",
+          "ref": "docs/evidence/WO-219/decisions.md#wo-219-d075--ver-001-planning-receipt-052s-criterion2-reopening-condition-for-wo-219-has-occurred",
+          "title": "WO-219-D075: Next planning pass: reopen receipt 052's criterion:2 known issue for WO-219 (docs/planning/cost-table.json, trap seeking-the-wrong-goal). The first verification failed on one product…",
+          "summary": "{ \"id\": \"WO-219-D075\", \"date\": \"2026-10-23\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Record that the reopening condition of planning receipt 2026-10-22-planning-5bb6c2ac729c3e47-052's criterion:2 known issue for WO-219 has occurred, independently of the repair: WO-219's first verification failed (WO-219-D074). The condition's other branch has not occurred: npm run meta -- --check reads elapsedPerCodeByte 47.999 against WO-217's 102.9. The failure is one missing product write-back under criterion 6. The paired controls the known issue credits held: this verification replayed 20 of the 109 recorded controls at their recorded exits. Route: planning.\", \"evidence\": ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

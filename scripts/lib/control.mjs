@@ -500,6 +500,26 @@ const scanControl = (events, visit) => {
             `invalid RecordCorrected subject ordinal at line ${index + 1}`,
           );
         const fields = event.fields;
+        if (fields.productGate !== undefined) {
+          if (
+            subject.type !== "FinalReviewCompleted" ||
+            subject.verdict !== "pass"
+          )
+            throw new Error(
+              `invalid RecordCorrected productGate subject at line ${index + 1}: expected the actual passing final review`,
+            );
+          if (
+            subject.evidence?.productGate ||
+            state.corrections?.some(
+              (prior) =>
+                prior.subject.ordinal === event.subject.ordinal &&
+                prior.fields.productGate !== undefined,
+            )
+          )
+            throw new Error(
+              `invalid RecordCorrected productGate already bound at line ${index + 1}`,
+            );
+        }
         const rows = attested.get(event.workOrderId) ?? [];
         const row = rows.find(
           (entry) => entry.ordinal === event.subject.ordinal,

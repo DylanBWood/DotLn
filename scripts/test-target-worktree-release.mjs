@@ -230,6 +230,24 @@ test("WO-221 a target close deletes declared disposable output, judges the base 
       write(f.clone, ".env", "SECRET=1\n");
       const refusedBase = close("--publish");
       assert.notEqual(refusedBase.status, 0);
+      assert.doesNotMatch(
+        refusedBase.stdout.split("\n")[0],
+        /no-release|no tag or GitHub Release is due/u,
+      );
+      const refusedRecord = JSON.parse(
+        readFileSync(
+          docPath(
+            f.main,
+            "control",
+            "local/retained/WO-999/release-close.json",
+          ),
+          "utf8",
+        ),
+      );
+      assert.equal(refusedRecord.publication.target.policy, "declared");
+      assert.equal(refusedRecord.publication.target.outcome, "refused");
+      assert.equal(refusedRecord.blockers.at(-1).action, "publication");
+      assert.equal(git(join(f.base, "target.git"), "tag", "--list"), "");
       assert.match(
         refusedBase.stderr,
         /target clone base main has undeclared ignored material; source retained: \.env\. Declare it disposable in the registration or remove it/u,

@@ -13,6 +13,8 @@ import {
   readdirSync,
   realpathSync,
   rmSync,
+  rmdirSync,
+  unlinkSync,
   writeFileSync,
 } from "node:fs";
 import {
@@ -517,6 +519,64 @@ function judgeAdvisory(context, name) {
   );
 }
 
+function judgeShellClaim(context, name) {
+  const path = join(context.directory, name);
+  const prepared = /^[a-f0-9]{64}\.shell-claim\.prepare-([a-f0-9]{32})$/u.exec(
+    name,
+  );
+  let reason = null,
+    ownerFile;
+  try {
+    const info = stat(path);
+    if (!info?.isDirectory() || info.isSymbolicLink())
+      throw new Error("claim is not a regular directory");
+    const names = readdirSync(path);
+    if (
+      names.length !== 1 ||
+      !/^claim-[a-f0-9]{32}\.json$/u.test(names[0]) ||
+      (prepared && names[0] !== `claim-${prepared[1]}.json`)
+    )
+      throw new Error("claim owner is missing or ambiguous");
+    ownerFile = names[0];
+    const ownerPath = join(path, ownerFile);
+    if (!stat(ownerPath)?.isFile() || stat(ownerPath).isSymbolicLink())
+      throw new Error("claim owner is not a regular file");
+    const owner = json(ownerPath);
+    if (
+      !Number.isSafeInteger(owner?.pid) ||
+      owner.pid <= 1 ||
+      (owner.startedAt !== undefined &&
+        (typeof owner.startedAt !== "string" || !owner.startedAt))
+    )
+      throw new Error("claim owner liveness is unknown");
+    if (harnessProcessAlive(owner)) reason = "claim owner is still live";
+  } catch {
+    reason = "claim owner liveness is unknown or material is not regular";
+  }
+  return assess(
+    "shell-claim",
+    path,
+    docRelative(context.root, "control", `local/harness/${name}`),
+    reason,
+    { ownerFile },
+  );
+}
+// Remove only the observed owner's immutable nonce. A new holder may replace
+// the slot after the pre-delete check; an absent old name leaves it untouched.
+function retireShellClaim(row) {
+  try {
+    unlinkSync(join(row.absolute, row.ownerFile));
+  } catch (error) {
+    if (error.code === "ENOENT") return;
+    throw error;
+  }
+  try {
+    rmdirSync(row.absolute);
+  } catch (error) {
+    if (!["ENOENT", "ENOTEMPTY", "EEXIST"].includes(error.code)) throw error;
+  }
+}
+
 function judgeCache(context) {
   const common = realpathSync(
     resolve(
@@ -727,6 +787,13 @@ export function planHarnessPrune(root, options = {}) {
       .filter((name) => name.endsWith(".advisory"))
       .sort())
       record(judgeAdvisory(context, name));
+  if (stat(context.directory)?.isDirectory())
+    for (const name of readdirSync(context.directory)
+      .filter((name) =>
+        /^[a-f0-9]{64}\.shell-claim(?:\.prepare-[a-f0-9]{32})?$/u.test(name),
+      )
+      .sort())
+      record(judgeShellClaim(context, name));
   record(judgeCache(context));
   record(judgeListingCache(context));
   const lanes = safeChild(root, docRelative(root, "control", "local/retained"));
@@ -756,6 +823,8 @@ function recheckCandidate(plan, row, options) {
   else if (row.kind === "advisory")
     judged = judgeAdvisory(context, basename(row.absolute));
   else if (row.kind === "dead-cache") judged = judgeCache(context);
+  else if (row.kind === "shell-claim")
+    judged = judgeShellClaim(context, basename(row.absolute));
   else if (row.kind === "retained-lane")
     judged = judgeLane(context, row.workOrder);
   else {
@@ -864,7 +933,8 @@ export function pruneHarness(root, { apply = false, ...options } = {}) {
           throw error;
         }
         row.recoveryProof = relative(plan.root, recoveryPath);
-      } else rmSync(row.absolute, { recursive: true });
+      } else if (row.kind === "shell-claim") retireShellClaim(row);
+      else rmSync(row.absolute, { recursive: true });
     }
   }
   return {

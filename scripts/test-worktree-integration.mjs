@@ -1,5 +1,9 @@
 import { runGit, spawnGit } from "./lib/git.mjs";
-import { json as prettyJson, write as put } from "./lib/helpers.mjs";
+import {
+  json as prettyJson,
+  write as put,
+  sha256Hex as digest,
+} from "./lib/helpers.mjs";
 import nodeTest, { after } from "node:test";
 import { performance } from "node:perf_hooks";
 import assert from "node:assert/strict";
@@ -23,6 +27,7 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { unionFollowups } from "./lib/planning-followups.mjs";
 import { readControl } from "./lib/control-store.mjs";
+import { executionAmendmentSource } from "./lib/plan-continuation.mjs";
 import {
   integrationTestCommand,
   releaseLine,
@@ -600,7 +605,76 @@ function fixture(
     ["maintenance.auto", "false"],
   ])
     runGit(main, ["config", key, value], fixtureGitOptions);
-  if (generators === "real") overlayImplementation(main);
+  if (generators === "real") {
+    overlayImplementation(main);
+    // Frozen product data bridges the old clone to the reviewed declaration
+    // check without reading current coordination records from the source tree.
+    const bridge = JSON.parse(
+      text(
+        source,
+        "scripts/fixtures/worktree-integration/wo193-preflight-bridge.json",
+      ),
+    );
+    assert.equal(bridge.schemaVersion, 1);
+    const priorLog = text(main, bridge.planningLogPath);
+    const amendment = JSON.parse(bridge.amendmentLine);
+    assert.ok(
+      bridge.amendmentLine.endsWith("\n") &&
+        !bridge.amendmentLine.slice(0, -1).includes("\n"),
+      "the bridge carries one exact canonical amendment line",
+    );
+    if (!priorLog.split("\n").includes(bridge.amendmentLine.slice(0, -1))) {
+      assert.equal(
+        digest(priorLog),
+        bridge.priorLogSha256,
+        "the amendment follows the fixture's byte-exact planning history",
+      );
+      const filedOrder = text(main, bridge.orderPath);
+      assert.equal(
+        filedOrder.split(bridge.oldPreflight).length - 1,
+        1,
+        "the cloned order has exactly one frozen old Preflight field",
+      );
+      const repairedOrder = filedOrder.replace(
+        bridge.oldPreflight,
+        bridge.newPreflight,
+      );
+      assert.equal(
+        filedOrder.replace(bridge.oldPreflight, ""),
+        repairedOrder.replace(bridge.newPreflight, ""),
+        "the bridge changes no order bytes outside Preflight",
+      );
+      assert.equal(
+        `sha256:${digest(executionAmendmentSource(filedOrder))}`,
+        amendment.sourceOrderHash,
+      );
+      const repairedSource = executionAmendmentSource(
+        repairedOrder,
+        filedOrder,
+      );
+      assert.equal(`sha256:${digest(repairedSource)}`, amendment.orderHash);
+      assert.equal(repairedSource.length, amendment.orderLength);
+      const decisions = [
+        ...bridge.decisionText.matchAll(/^```json\n([\s\S]*?)^```/gmu),
+      ];
+      assert.equal(decisions.length, 1);
+      const decision = JSON.parse(decisions[0][1]);
+      assert.equal(decision.id, amendment.decisionId);
+      const stableDecision = JSON.stringify(decision, (_key, value) =>
+        value && typeof value === "object" && !Array.isArray(value)
+          ? Object.fromEntries(
+              Object.keys(value)
+                .sort()
+                .map((key) => [key, value[key]]),
+            )
+          : value,
+      );
+      assert.equal(`sha256:${digest(stableDecision)}`, amendment.decisionHash);
+      put(main, bridge.orderPath, repairedOrder);
+      put(main, bridge.decisionPath, bridge.decisionText);
+      put(main, bridge.planningLogPath, priorLog + bridge.amendmentLine);
+    }
+  }
   if (kit) {
     rmSync(join(main, "tsconfig.json"), { force: true });
     for (const name of readdirSync(join(main, "packages")))
@@ -858,6 +932,7 @@ function fixture(
     control,
     invoke,
     invokeStages,
+    generatorStages: stages,
     continueWithStub: (...args) =>
       invokeStages(stages, ["--continue", ...args], ["prepare", "--local"]),
     invokeWithoutRelease: (...args) =>
@@ -1727,6 +1802,127 @@ test("interrupted stash application has an explicit resolution continuation that
   assert.match(after.stashApplication, /actor-attested/);
 });
 
+test("interrupted stash continuation refuses tracked work reverted to HEAD and retains recovery", (t) => {
+  const f = fixture(t, { authored: false, generators: "focused" });
+  const local = "preserved-local.txt";
+  put(f.subject, local, "baseline local bytes\n");
+  runGit(f.subject, ["add", local], fixtureGitOptions);
+  runGit(
+    f.subject,
+    ["-c", "maintenance.auto=false", "commit", "-qm", "local tracked base"],
+    fixtureGitOptions,
+  );
+  put(f.subject, local, "retained tracked work\n");
+  const first = f.invoke();
+  assert.equal(first.status, 0, first.stdout + first.stderr);
+  const receiptFile = "docs/control/local/integration.json";
+  const receipt = JSON.parse(text(f.subject, receiptFile));
+  put(
+    f.subject,
+    receiptFile,
+    JSON.stringify({ ...receipt, stage: "applying", complete: false }),
+  );
+  put(f.subject, local, "baseline local bytes\n");
+  runGit(f.subject, ["add", "--", local], fixtureGitOptions);
+  const refused = f.invokeStages([], ["--continue", "--stash-applied"]);
+  assert.equal(refused.status, 1, refused.stdout + refused.stderr);
+  assert.match(
+    refused.stderr,
+    /retained stash paths have no trace in the tree: 'preserved-local.txt'/u,
+  );
+  assert.match(
+    refused.stderr,
+    /git restore --source=[0-9a-f]+ --worktree -- 'preserved-local.txt'/u,
+  );
+  assert.match(refused.stderr, /git add -- 'preserved-local.txt'/u);
+  const pending = JSON.parse(text(f.subject, receiptFile));
+  assert.equal(pending.stage, "applying");
+  assert.equal(pending.complete, false);
+  assert.deepEqual(pending.unrestoredTrackedPaths, [local]);
+  assert.equal(pending.stash, receipt.stash);
+  assert.equal(pending.checkpointRef, receipt.checkpointRef);
+  assert.equal(
+    runGit(f.subject, ["show", `${receipt.stash}:${local}`], fixtureGitOptions),
+    "retained tracked work",
+  );
+  put(f.subject, local, "retained tracked work\n");
+  runGit(f.subject, ["add", "--", local], fixtureGitOptions);
+  const recovered = f.continueWithStub("--stash-applied");
+  assert.equal(recovered.status, 0, recovered.stdout + recovered.stderr);
+  assert.equal(text(f.subject, local), "retained tracked work\n");
+  const after = JSON.parse(text(f.subject, receiptFile));
+  assert.equal(after.complete, true);
+  assert.equal(after.stash, receipt.stash);
+  assert.equal(after.checkpointRef, receipt.checkpointRef);
+});
+
+test("an interrupted stash collision is recorded before its resolution can be acknowledged", (t) => {
+  const f = fixture(t, { authored: false, generators: "focused" });
+  const local = "untracked-fixture.md";
+  put(f.main, local, "upstream authored addition\n");
+  runGit(f.main, ["add", "--", local], fixtureGitOptions);
+  runGit(
+    f.main,
+    [
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "upstream untracked collision",
+    ],
+    fixtureGitOptions,
+  );
+  runGit(f.main, ["push", "-q", "origin", "main"], fixtureGitOptions);
+  const first = f.invokeStages([], []);
+  assert.equal(first.status, 1, first.stdout + first.stderr);
+  const receiptFile = "docs/control/local/integration.json";
+  const receipt = JSON.parse(text(f.subject, receiptFile));
+  // An interruption before the first collision record was written.
+  put(
+    f.subject,
+    receiptFile,
+    JSON.stringify({
+      ...receipt,
+      stage: "applying",
+      complete: false,
+      untrackedConflicts: [],
+    }),
+  );
+  const refused = f.invokeStages([], ["--continue", "--stash-applied"]);
+  assert.equal(refused.status, 1, refused.stdout + refused.stderr);
+  assert.match(
+    refused.stderr,
+    /untracked stash collisions need explicit acknowledgement: 'untracked-fixture.md'/u,
+  );
+  assert.match(refused.stderr, /git stash show --include-untracked --patch/u);
+  assert.match(refused.stderr, /git add -- 'untracked-fixture.md'/u);
+  const pending = JSON.parse(text(f.subject, receiptFile));
+  assert.deepEqual(pending.untrackedConflicts, [local]);
+  assert.equal(pending.stage, "applying");
+  assert.equal(pending.complete, false);
+  assert.equal(text(f.subject, local), "upstream authored addition\n");
+  assert.equal(
+    runGit(
+      f.subject,
+      ["show", `${receipt.stash}^3:${local}`],
+      fixtureGitOptions,
+    ),
+    "retained untracked bytes",
+  );
+  put(f.subject, local, "explicitly combined upstream and local addition\n");
+  runGit(f.subject, ["add", "--", local], fixtureGitOptions);
+  const done = f.invokeStages(f.generatorStages, [
+    "--continue",
+    "--stash-applied",
+  ]);
+  assert.equal(done.status, 0, done.stdout + done.stderr);
+  const after = JSON.parse(text(f.subject, receiptFile));
+  assert.equal(after.complete, true);
+  assert.deepEqual(after.untrackedCollisionAcknowledgements, [local]);
+  assert.equal(after.stash, receipt.stash);
+  assert.equal(after.checkpointRef, receipt.checkpointRef);
+});
+
 test("WO-169 a pass whose generator fails keeps its checks and names the pending step, not a conflict", (t) => {
   const f = fixture(t, { authored: false, generators: "focused" });
   // Release preparation reads the decisions record; one with no entry fails it.
@@ -2077,7 +2273,7 @@ for (const [blocker, newerTag] of [
     );
     if (newerTag) {
       assert.deepEqual(rows[1].evidence, [
-        "release baseline v9000.0.2 (local tags)",
+        "release baseline v9000.0.2 (ancestral local release tags, excluding annotated starter refresh tags)",
         "superseded target v9000.0.2",
         "new target v9000.0.3",
       ]);
@@ -2234,7 +2430,7 @@ test("WO-086 a tag that lands after the stub is written is recorded once, by rel
   // The stub keeps its first-pass line; the collision is its own decision.
   assert.equal(rows.length, 2, JSON.stringify(rows));
   assert.deepEqual(rows[1].evidence, [
-    "release baseline v9000.0.5 (local tags)",
+    "release baseline v9000.0.5 (ancestral local release tags, excluding annotated starter refresh tags)",
     "superseded target v9000.0.5",
     "new target v9000.0.6",
   ]);

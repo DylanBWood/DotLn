@@ -338,6 +338,9 @@ export const absoluteBodyLinks = (
   { from, repository, revision, map, written },
 ) => {
   const base = from.includes("/") ? from.slice(0, from.lastIndexOf("/")) : "";
+  const imageDefinitions = new Set(
+    parsedNodes(markdown, ["imageReference"]).map((node) => node.identifier),
+  );
   const resolved = (destination, image) => {
     if (!repository?.selector || !revision) return null;
     const at = destination.indexOf("#");
@@ -390,7 +393,10 @@ export const absoluteBodyLinks = (
     if (definition) {
       const destination = rendered.definition.url ?? "";
       if (!schemeless(destination)) return copy(0, line.length);
-      const target = resolved(destination, false);
+      const target = resolved(
+        destination,
+        imageDefinitions.has(rendered.definition.identifier),
+      );
       if (target !== null) {
         add(definition[1]);
         add(target, true);

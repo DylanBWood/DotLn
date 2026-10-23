@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 import { firstDifferingLine } from "./lib/validation.mjs";
+import { spawnSync } from "node:child_process";
+import { pathToFileURL } from "node:url";
+import { readPreflightSuites } from "./lib/handoff-ledger.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 import {
   defaultDocRelative,
@@ -73,7 +76,7 @@ const HISTORY_SECTIONS = ["Closed", "Withdrawn", "Superseded", "Historical"];
 
 // This is a tolerant view of existing prose, not another activation validator.
 // Unknown fields are named alongside their source path in the rendered details.
-export const parseHeader = (markdown, path) => {
+export const parseHeader = (markdown, path, { historicalIds } = {}) => {
   const { lines, first, end } = dependencyHeader(markdown);
   const title = /^#\s+(.+?)\s*$/.exec(
     (lines[first] ?? "").replace(/[ \t]+#+[ \t]*$/, ""),
@@ -105,7 +108,12 @@ export const parseHeader = (markdown, path) => {
         : versions.length || /\bv\d/.test(title)
           ? "malformed"
           : "unassigned";
-  const dependencies = parseDependencies(markdown, path);
+  const dependencies = parseDependencies(
+    markdown,
+    path,
+    undefined,
+    historicalIds,
+  );
   return {
     path,
     title: title ?? "unknown",
@@ -324,7 +332,9 @@ export const readIndex = (root, releases = localReleaseRecords(root)) => {
         throw new Error(`duplicate work-order id ${id}: ${path}`);
       ids.add(id);
       const source = readContained(root, path);
-      const header = parseHeader(source, path);
+      const header = parseHeader(source, path, {
+        historicalIds: historicalDependencyIds(root),
+      });
       const evidence = orders.get(id);
       // A derived authority is judged by the section set its allocation was
       // written under (WO-157 item 14).
@@ -335,6 +345,7 @@ export const readIndex = (root, releases = localReleaseRecords(root)) => {
           evidence?.state.allocation
             ? allocationSections(evidence.state.allocation)
             : undefined,
+          { historicalIds: historicalDependencyIds(root) },
         );
       if (evidence && evidence.state.workOrderPath !== path)
         throw new Error(`${id}: control authority path differs from ${path}`);
@@ -814,6 +825,67 @@ export const checkPartition = ({ rows }, pages) => {
     );
 };
 
+// Resolve the checkout's own declarations once. A source-only control-plane
+// fixture without Preflight tokens needs no runner or compiled runtime.
+export function checkPreflightSuites(root, index) {
+  const requests = index.rows
+    .filter((row) => INDEX_SECTIONS.includes(row.section))
+    .flatMap((row) =>
+      readPreflightSuites(readContained(root, row.path)).map((suite) => ({
+        id: row.id,
+        suite,
+      })),
+    );
+  if (!requests.length) return;
+  const runner = pathToFileURL(join(root, "scripts/test-runner.mjs")).href;
+  const result = spawnSync(
+    process.execPath,
+    [
+      "--input-type=module",
+      "-e",
+      `const {suites}=await import(${JSON.stringify(runner)}); console.log(JSON.stringify(suites.map(({name,kit})=>({name,kit}))));`,
+    ],
+    {
+      cwd: root,
+      encoding: "utf8",
+      timeout: 30_000,
+      maxBuffer: 4 * 1024 * 1024,
+    },
+  );
+  const unreadable = () =>
+    new Error(
+      `Preflight suites cannot be read from scripts/test-runner.mjs (${result.error?.code ?? result.status ?? "unreadable"}); restore this checkout's runner and rerun npm run work-orders -- index --check`,
+    );
+  if (result.error || result.status !== 0) throw unreadable();
+  let declared;
+  try {
+    declared = JSON.parse(result.stdout);
+    if (
+      !Array.isArray(declared) ||
+      declared.some((row) => typeof row.name !== "string")
+    )
+      throw unreadable();
+  } catch {
+    throw unreadable();
+  }
+  const kit = existsSync(join(root, "KIT-MANIFEST.json"));
+  const names = new Set(
+    declared
+      .filter((row) => !kit || !row.kit?.startsWith("core-only: "))
+      .map((row) => row.name),
+  );
+  const missing = requests.filter(({ suite }) => !names.has(suite));
+  if (missing.length)
+    throw new Error(
+      missing
+        .map(
+          ({ id, suite }) =>
+            `${id}: Preflight suite ${suite} is not declared for this checkout; read npm test -- --list --review and correct its Preflight field`,
+        )
+        .join("; "),
+    );
+}
+
 export const main = (args = process.argv.slice(2), root = toolRoot) => {
   if (
     args[0] !== "index" ||
@@ -868,6 +940,7 @@ export const main = (args = process.argv.slice(2), root = toolRoot) => {
       );
     }
     const index = readIndex(root, releases);
+    checkPreflightSuites(root, index);
     checkSequenceTopology(index, planningSource);
     checkSequenceCoverage(index, planningSource);
     for (const [key, page] of Object.entries(pages))

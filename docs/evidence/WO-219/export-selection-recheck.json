@@ -1,0 +1,28 @@
+{
+  "workOrder": "WO-219",
+  "decision": "WO-219-D071",
+  "command": [
+    "node",
+    "scripts/harness.mjs",
+    "bounded",
+    "--",
+    "node",
+    "--test",
+    "--test-name-pattern=^the exported instance checks runtime, coordination records and explicit diagnostics separately$",
+    "scripts/test-launchpad-export.mjs"
+  ],
+  "exitCode": 0,
+  "finishedAt": "2026-10-23T19:05:12.401Z",
+  "testsPassed": 1,
+  "testsFailed": 0,
+  "observedAt": "2026-10-23T19:06:01.996498Z",
+  "change": "Only the fixture listing argv gains --selected. All execution, runtime, diagnostics, README and evidence-consumer assertions remain unchanged.",
+  "preparatoryFailure": {
+    "command": "the same focused case before formatting the edited fixture",
+    "exitCode": 1,
+    "durationMs": 13650,
+    "finishedAt": "2026-10-23T19:02:08.257Z",
+    "reason": "The exported kit format preflight refused the unformatted argv edit before selection execution. npm run format then passed."
+  },
+  "limit": "Focused fixture success supplies no complete gate pass."
+}

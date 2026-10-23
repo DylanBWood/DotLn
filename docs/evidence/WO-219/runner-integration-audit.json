@@ -1,0 +1,110 @@
+{
+  "schemaVersion": 1,
+  "scope": "Read-only audit of exactly the two final runner integration controls. No tests, probes, lifecycle commands or project writes were performed by this auditor.",
+  "input": {
+    "file": "controls-runner-integration-results.json",
+    "sha256": "0e99854fe94ef6f8c775cfa3fe62e4c725b6e8d9b501dfc482af1d3ddd7e46d8",
+    "snapshotIdentity": "ab0b876c1d9826ff3e0ce37f2b4ae5edfb806ba7178ac5ebf207899fb80296ac",
+    "baselineCommit": "c670e6288ecb221ef2416cef06f920006866bc5d"
+  },
+  "result": {
+    "behaviorallyVerifiedPairs": 2,
+    "positive0Negative1": true,
+    "rawLogHashesResolved": 4,
+    "namedTestsExecutedPerArm": 1,
+    "nonsemanticFailures": []
+  },
+  "controls": [
+    {
+      "id": "r44-review-list-inventory-final",
+      "verdict": "behaviorally-verified",
+      "case": "^review listing includes every available machinery declaration without a change selection$",
+      "suite": "runner-fixtures",
+      "fixture": "scripts/test-runner.test.mjs",
+      "command": [
+        "node",
+        "--test",
+        "--test-name-pattern=^review listing includes every available machinery declaration without a change selection$",
+        "scripts/test-runner.test.mjs"
+      ],
+      "mutation": [
+        {
+          "path": "scripts/test-runner.mjs",
+          "old": "  const inventory = list && review && !selectedOnly;",
+          "new": "  const inventory = false;",
+          "count": 1
+        }
+      ],
+      "failure": "AssertionError: fixture-temp-root; expected true, actual false at scripts/test-runner.test.mjs:9278. Default listing ran and returned 0 before its names.has(suite.name) assertion failed.",
+      "mutationMeaning": "Only inventory = list && review && !selectedOnly becomes false in scripts/test-runner.mjs:2885. The declaration inventory still loads; imports, exports and selected mode remain present.",
+      "positiveCoverage": "The one named case passes for core and kit inventories, excludes core-only kit suites, and verifies --selected omits unselected nonstructural machinery.",
+      "notSetup": "The fixture initializes origin/main, successfully calls runGate, parses listing rows, and fails on a named available declaration. It is neither missing origin/main nor an absent test/zero-selection error.",
+      "logs": {
+        "positive": {
+          "file": "control-logs/controls-runner-integration-results-r44-review-list-inventory-final-positive.log",
+          "sha256": "a6f0f87217b794cde54fe749bcfda0fd1e9389f7d4c40d36f29767f6ee35bab3",
+          "exitCode": 0,
+          "tests": 1,
+          "cancelled": 0,
+          "skipped": 0
+        },
+        "negative": {
+          "file": "control-logs/controls-runner-integration-results-r44-review-list-inventory-final-negative.log",
+          "sha256": "438c0afb570f1a2f56e2fa88dc716675ab04d5dfc0be97367e613e9cb8061f5e",
+          "exitCode": 1,
+          "tests": 1,
+          "cancelled": 0,
+          "skipped": 0
+        }
+      }
+    },
+    {
+      "id": "r44-handoff-selected-view",
+      "verdict": "behaviorally-verified",
+      "case": "^WO-186 sibling advancement leaves merge-base selection and the review claim unchanged; own machinery still selects$",
+      "suite": "runner-fixtures",
+      "fixture": "scripts/test-runner.test.mjs",
+      "command": [
+        "node",
+        "--test",
+        "--test-name-pattern=^WO-186 sibling advancement leaves merge-base selection and the review claim unchanged; own machinery still selects$",
+        "scripts/test-runner.test.mjs"
+      ],
+      "mutation": [
+        {
+          "path": "scripts/lib/handoff-ledger.mjs",
+          "old": "[runner, \"--review\", \"--list\", \"--selected\"]",
+          "new": "[runner, \"--review\", \"--list\"]",
+          "count": 1
+        }
+      ],
+      "failure": "The initial requireGateClaims call at scripts/test-runner.test.mjs:6425 throws through handoff-ledger.mjs:401 because current review selection lacks machine.",
+      "mutationMeaning": "Only --selected is removed from reviewSelection’s runner argv at scripts/lib/handoff-ledger.mjs:222. The otherwise valid full inventory is wrongly used as the completed review subject. Imports, exports, parser and claim checks remain intact.",
+      "positiveCoverage": "The one named case records a passing selected review, accepts its initial claim, preserves selection/claim across sibling main advancement, then requires own machinery to select and invalidate the earlier claim.",
+      "notSetup": "The same initialized worktree and initial review pass in the positive arm. The negative names the extra unselected machine from a nonempty inventory; its missing structural fallback row is a consequence of the wrong subject, not failed fixture setup or zero selection.",
+      "logs": {
+        "positive": {
+          "file": "control-logs/controls-runner-integration-results-r44-handoff-selected-view-positive.log",
+          "sha256": "6b0ec04c015e26d7d5007d03129b67a0a5d7b1391fcee4e2ca88206c42dfee4d",
+          "exitCode": 0,
+          "tests": 1,
+          "cancelled": 0,
+          "skipped": 0
+        },
+        "negative": {
+          "file": "control-logs/controls-runner-integration-results-r44-handoff-selected-view-negative.log",
+          "sha256": "1f33998b87faf8b0302cf84a32dae0d91c486fa180358ca81062d32143ecadc5",
+          "exitCode": 1,
+          "tests": 1,
+          "cancelled": 0,
+          "skipped": 0
+        }
+      }
+    }
+  ],
+  "integrationAccounting": "Retain the initial 107 historical observations and explicitly supersede old r44-review-list-inventory with r44-review-list-inventory-final for current listing behavior. r44-handoff-selected-view additionally demonstrates that completion still consumes the selected review view. Do not silently rewrite the earlier audit or present its pre-integration listing source as current.",
+  "limits": [
+    "These are two bounded fixture controls, not a new complete self-review or complete gate.",
+    "The audit stores only relative log names and safe assertion summaries; raw stack paths stay in scratch."
+  ]
+}

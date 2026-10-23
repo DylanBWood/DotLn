@@ -1,0 +1,24 @@
+{
+  "durationMs": 34677,
+  "startedAt": "2026-10-23T18:09:46.200Z",
+  "finishedAt": "2026-10-23T18:10:20.877Z",
+  "exitCode": 0,
+  "executed": true,
+  "command": [
+    "node",
+    "scripts/harness.mjs",
+    "bounded",
+    "--",
+    "node",
+    "--test",
+    "--test-name-pattern=^(real Git (fast-forward|reviewed merge) preserves recovery, histories and authored conflicts with real generators|WO-086 a stub blocked by a regular file with a newer tag during retry retains its saved collision through continuation|WO-086 a tag that lands after the stub is written is recorded once, by release prepare)$",
+    "scripts/test-worktree-integration.mjs"
+  ],
+  "tests": 4,
+  "passed": 4,
+  "failed": 0,
+  "skipped": 0,
+  "cancelled": 0,
+  "decision": "WO-219-D069",
+  "completePassSupplied": false
+}

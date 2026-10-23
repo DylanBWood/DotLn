@@ -1271,11 +1271,6 @@ export async function disposePlanHold(
 
 const amendmentDecision = (root, decisionId) => {
   const workOrderId = decisionId.slice(0, 6);
-  const path = docRelative(root, "evidence", `${workOrderId}/decisions.md`);
-  check(
-    containedRegularFile(join(root, path), root),
-    "execution amendment decision must be a contained regular file",
-  );
   const decision = readDecisions(root, { workOrder: workOrderId }).find(
     (row) => row.id === decisionId,
   );

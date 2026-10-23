@@ -3,6 +3,7 @@ import {
   HARNESS_END,
   NO_COMPILED_HARNESS,
   migrateHarnessFloor,
+  withoutCompiledHarnessFloor,
   harnessInstructionBlock,
   composeHarnessInstruction,
 } from "./harness-instruction.mjs";
@@ -287,7 +288,7 @@ const allowed = (path) =>
   path === ".codex/config.toml" ||
   path === ".codex/hooks.json" ||
   path === manifestPath ||
-  /^\.claude\/agents\/dotln-[a-z-]+\.md$/.test(path) ||
+  /^\.claude\/agents\/dotln-[a-z0-9-]+\.md$/.test(path) ||
   /^\.(?:claude|agents)\/skills\/dotln-[a-z-]+\/SKILL\.md$/.test(path) ||
   /^\.(?:claude|codex)\/hooks\/[a-z0-9.-]+\.mjs$/.test(path);
 const contained = (root, path) => {
@@ -544,9 +545,10 @@ export function emitHarness(
         "harness emit requires the hand-written clean-room floor",
       );
     instruction.contents =
-      (floor.includes(HARNESS_START) || floor.includes(HARNESS_END)
-        ? floor.replace(harnessInstructionBlock(floor).trimEnd(), "")
-        : floor
+      withoutCompiledHarnessFloor(
+        floor.includes(HARNESS_START) || floor.includes(HARNESS_END)
+          ? floor.replace(harnessInstructionBlock(floor).trimEnd(), "")
+          : floor,
       ).trimEnd() + "\n";
     if (!instruction.contents.trim())
       throw new Error(
@@ -886,11 +888,18 @@ export function checkHarness(root, options = {}) {
     if (
       !text.trim() ||
       text.includes(HARNESS_START) ||
-      text.includes(HARNESS_END) ||
-      !text.includes(NO_COMPILED_HARNESS)
+      text.includes(HARNESS_END)
     )
       throw new Error(
-        "harness drift: build none requires the hand-written floor alone",
+        "harness drift: build none requires the hand-written floor alone; run node scripts/harness.mjs emit to remove the generated block",
+      );
+    if (!text.includes(NO_COMPILED_HARNESS))
+      throw new Error(
+        `harness drift: build none needs the disclosure: ${NO_COMPILED_HARNESS}; run node scripts/harness.mjs emit to add it`,
+      );
+    if (withoutCompiledHarnessFloor(text) !== text)
+      throw new Error(
+        "harness drift: build none retains navigation or runtime text for removed generated surfaces; run node scripts/harness.mjs emit",
       );
   }
   for (const file of expected.runtimeFiles) {

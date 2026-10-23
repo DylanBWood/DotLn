@@ -1,0 +1,24 @@
+{
+  "durationMs": 136,
+  "startedAt": "2026-10-23T17:45:53.319Z",
+  "finishedAt": "2026-10-23T17:45:53.455Z",
+  "exitCode": 0,
+  "executed": true,
+  "command": [
+    "node",
+    "scripts/harness.mjs",
+    "bounded",
+    "--",
+    "node",
+    "--test",
+    "--test-name-pattern=^WO-179 and WO-195 emitted roles carry their assigned corrections across support settings$",
+    "packages/skeleton/dist/test/executor-supports.test.js"
+  ],
+  "tests": 1,
+  "passed": 1,
+  "failed": 0,
+  "skipped": 0,
+  "cancelled": 0,
+  "decision": "WO-219-D068",
+  "completePassSupplied": false
+}

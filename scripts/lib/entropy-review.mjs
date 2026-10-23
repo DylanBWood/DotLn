@@ -126,6 +126,28 @@ const namedInput = (root, lane, path) => {
 const trackedStatus = (root) =>
   runGit(root, ["status", "--porcelain", "--untracked-files=no"]);
 
+const sourceRefs = (root) => {
+  const refs = runGit(root, [
+    "for-each-ref",
+    "--sort=refname",
+    "--format=%(refname)%00%(objectname)",
+  ]);
+  return { count: refs ? refs.split("\n").length : 0, sha256: hex(refs) };
+};
+// Only dispatches that captured refs gain the witness; earlier receipts keep
+// their original rendering and hash.
+const sourceRefsWitness = (root, pending) => {
+  if (!pending.sourceRefsBefore) return {};
+  const after = sourceRefs(root);
+  return {
+    sourceRefs: {
+      before: pending.sourceRefsBefore,
+      after,
+      identical: after.sha256 === pending.sourceRefsBefore.sha256,
+    },
+  };
+};
+
 /** Paths and sizes under the frozen copy, excluding the Git directory and
  * installed dependencies, as REVIEW-001 recorded its manifest. */
 export function scratchInventory(directory, { temporary = false } = {}) {
@@ -249,7 +271,11 @@ const CLAUDE_WIDENED_EXECUTION =
  * earlier receipts render their original line byte for byte. */
 const witnessSentence = (confinement) => {
   const { untrackedListing: listing, scratchDelta: delta } = confinement;
-  return `Source repository: tracked-path status unchanged across the episode: **${confinement.trackedStatusByteIdentical}**; untracked, non-ignored path listing unchanged: **${listing.identical}** (${listing.before.count} before, ${listing.after.count} after; recorded, never a refusal condition). Ignored paths and file contents are not observed. Frozen copy path-and-size inventory: ${delta.counts.added} path(s) added, ${delta.counts.removed} removed, ${delta.counts.resized} resized${delta.observed ? "" : " (not observed)"}.${confinement.temporaryDirectory ? ` Episode temporary directory: ${confinement.temporaryDirectory.count ?? "unknown"} path(s), ${confinement.temporaryDirectory.bytes ?? "unknown"} bytes${confinement.temporaryDirectory.observed ? "" : " (not observed)"}.` : ""}`;
+  const refs = confinement.sourceRefs;
+  const refsSentence = refs
+    ? ` Source refs unchanged: **${refs.identical}** (${refs.before.count} before, ${refs.after.count} after; refused for a HEAD subject, recorded for a named commit).`
+    : "";
+  return `Source repository: tracked-path status unchanged across the episode: **${confinement.trackedStatusByteIdentical}**; untracked, non-ignored path listing unchanged: **${listing.identical}** (${listing.before.count} before, ${listing.after.count} after; recorded, never a refusal condition).${refsSentence} Ignored paths and file contents are not observed. Frozen copy path-and-size inventory: ${delta.counts.added} path(s) added, ${delta.counts.removed} removed, ${delta.counts.resized} resized${delta.observed ? "" : " (not observed)"}.${confinement.temporaryDirectory ? ` Episode temporary directory: ${confinement.temporaryDirectory.count ?? "unknown"} path(s), ${confinement.temporaryDirectory.bytes ?? "unknown"} bytes${confinement.temporaryDirectory.observed ? "" : " (not observed)"}.` : ""}`;
 };
 // Only episodes with this observation get the new sentence; earlier receipts
 // keep their exact witness and hashes.
@@ -342,6 +368,11 @@ function freezeSubject(root, baseCommit) {
     root,
     repository,
   ]);
+  runGit(repository, ["remote", "remove", "origin"]);
+  check(
+    !runGit(repository, ["remote"]),
+    "the frozen subject must have no configured remote before handoff",
+  );
   runGit(repository, ["checkout", "--quiet", "--detach", baseCommit]);
   let dependencies = "absent";
   if (existsSync(join(root, "node_modules")))
@@ -1108,6 +1139,7 @@ export async function beginEntropyReview(
   );
   requireNoPending(root, "review");
   const untrackedAtDispatch = untrackedListing(root);
+  const refsAtDispatch = sourceRefs(root);
   const { parent, repository, dependencies, temporaryDirectory } =
     freezeSubject(root, state.baseCommit);
   let retained = false;
@@ -1172,6 +1204,7 @@ export async function beginEntropyReview(
       subject,
       workingTreeDirtyAtDispatch: state.workingTreeDirty,
       untrackedListingBefore: untrackedAtDispatch,
+      sourceRefsBefore: refsAtDispatch,
       scratchInventoryBeforeEntries: inventory.entries,
       namedRevision: revision,
       scratchParent: parent,
@@ -1279,12 +1312,17 @@ export async function fileEntropyReview(
   // commit, which the working tree cannot move; the binding there is that the
   // commit still resolves to the tree the frozen copy was reviewed from, and
   // the working tree's own drift is recorded rather than refused.
-  if (pending.namedRevision === "HEAD" || !pending.namedRevision)
+  const refs = sourceRefsWitness(root, pending);
+  if (pending.namedRevision === "HEAD" || !pending.namedRevision) {
     check(
       trackedStatusByteIdentical,
       "tracked status changed during the review episode; the receipt would name a subject that moved. Restore the subject or dispatch a fresh review.",
     );
-  else {
+    check(
+      refs.sourceRefs?.identical !== false,
+      "source refs changed during the review episode; dispatch a fresh review, or explicitly name the committed subject when concurrent ref changes are intended.",
+    );
+  } else {
     let sourceTree = null;
     let frozenTree = null;
     try {
@@ -1365,6 +1403,7 @@ export async function fileEntropyReview(
             ? "HEAD of a clean tree; any tracked change refuses the receipt"
             : "an explicitly named commit; bound by its tree object, with the working tree's own drift recorded rather than refused",
         ...temporaryWitness(pending),
+        ...refs,
         trackedStatusBeforeSha256: pending.subject.trackedStatusSha256,
         trackedStatusAfterSha256,
         trackedStatusByteIdentical,
@@ -1487,6 +1526,7 @@ export async function beginEntropyRefutation(
   // and the frozen copy's inventory on either side of the episode.
   const statusAtDispatch = trackedStatus(root);
   const untrackedAtDispatch = untrackedListing(root);
+  const refsAtDispatch = sourceRefs(root);
   const { parent, repository, dependencies, temporaryDirectory } =
     freezeSubject(root, review.subject.baseCommit);
   let retained = false;
@@ -1559,6 +1599,7 @@ export async function beginEntropyRefutation(
       subject,
       trackedStatusBeforeSha256: hex(statusAtDispatch),
       untrackedListingBefore: untrackedAtDispatch,
+      sourceRefsBefore: refsAtDispatch,
       scratchInventoryBeforeEntries: inventory.entries,
       reviewReceiptId,
       reviewReceiptHash: review.receiptHash,
@@ -1719,6 +1760,7 @@ export async function fileEntropyRefutation(
         subjectBinding:
           "the commit the challenged review receipt names, re-frozen for this episode; the working tree's own drift is recorded rather than refused",
         ...temporaryWitness(pending),
+        ...sourceRefsWitness(root, pending),
         trackedStatusBeforeSha256,
         trackedStatusAfterSha256,
         trackedStatusByteIdentical,

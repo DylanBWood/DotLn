@@ -500,7 +500,7 @@ const validateLinkHosts = (path, value, label) => {
   const hosts = validateStringSet(path, value, label);
   const hostname =
     /^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z](?:[a-z0-9-]{0,61}[a-z0-9])?$/u;
-  for (const [index, host] of hosts.entries())
+  for (const [index, host] of value.entries())
     if (
       !hostname.test(host.replace(/[A-Z]/gu, (letter) => letter.toLowerCase()))
     )

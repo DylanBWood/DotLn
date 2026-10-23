@@ -1576,6 +1576,8 @@ test("registration hosts and target release names refuse invalid instance data a
     };
     for (const host of [
       "localhost",
+      "*",
+      "example.com:443",
       "https://example.com",
       "127.0.0.1",
       "-bad.example",
@@ -1590,6 +1592,12 @@ test("registration hosts and target release names refuse invalid instance data a
         /repositories.target.linkHosts\[0\].*DNS host/,
       );
     }
+    body.repositories.target.linkHosts = ["example.com", "example.com", "*"];
+    declared({ root, body });
+    assert.throws(
+      () => loadConfig(root),
+      /repositories.target.linkHosts\[2\].*DNS host/,
+    );
     body.repositories.target.linkHosts = ["EXAMPLE.COM", "review.example"];
     body.repositories.target.release = {
       policy: "declared",

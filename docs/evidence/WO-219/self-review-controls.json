@@ -1,0 +1,141 @@
+{
+  "method": "Same named docs-check-fixtures case in both arms; only the specified classifier repair is reverted in a root-owned isolated copy. The fixture assertions, exports and input selection are unchanged. No active-worktree source is reverted.",
+  "results": [
+    {
+      "id": "r50-mixed-quoted-request",
+      "rows": [
+        50
+      ],
+      "findings": [
+        "criteria-adversary-1"
+      ],
+      "rule": "A quoted operator request mentioning a document field remains attributed speech; a document-term-only record remains incidental. The reverted classifier suppresses the mixed request as document-term.",
+      "suite": "docs-check-fixtures",
+      "command": [
+        "node",
+        "--test",
+        "--test-name-pattern=^operator-word advisories classify incidental JSON, code and document terms apart from quoted replies$",
+        "scripts/test-docs-check.mjs"
+      ],
+      "mode": "isolated-reversion",
+      "revertScope": [
+        {
+          "path": "scripts/docs-check.mjs",
+          "old": "const operatorWordClass = (text, dispatch = \"\", syntax = text) => {\n  let code = false;\n  let json = false;\n  const ast = parseMarkdown(`${syntax}\\n${dispatch}`);\n  const prose = [...nodes(ast)]\n    .filter((node) => node.type === \"paragraph\")\n    .map((node) =>\n      renderedText(node, \" \", {\n        code: () => {\n          code = true;\n          return \" \";\n        },\n      }),\n    )\n    .join(\" \");\n  for (const node of nodes(ast))\n    if (node.type === \"code\") {\n      if (node.lang?.toLowerCase() === \"json\") json = true;\n      else code = true;\n    }\n  const withoutJson = prose.replace(/\\{[^{}]*\\}/gu, (value) => {\n    try {\n      JSON.parse(value);\n      json = true;\n      return \" \";\n    } catch {\n      return value;\n    }\n  });\n  const speechCue =\n    /\\boperator\\b[^.!?]*\\b(?:said|says|replied|responded|answered|wrote|message|words|told|stated)\\b/iu;\n  if (speechCue.test(withoutJson) && quotedDispatch(`${text} ${dispatch}`))\n    return \"attributed-speech\";\n  if (!attributedWords(withoutJson) && !quotedDispatch(withoutJson)) {\n    if (json) return \"incidental-json\";\n    if (code) return \"incidental-code\";\n  }\n  // Named document tokens account only for their own quote characters.\n  // Any remaining quote keeps mixed or uncertain prose attributed, including\n  // speech verbs that the positive cue list does not happen to enumerate.\n  const documentTerm =\n    /\\b(?:term|label|field|heading|section|command|flag|key|property|column|path|category)\\s*(?:named|called|is|was|:)?\\s*[\"\u201c\u2018'][^\"\u201d\u2018\u2019']+[\"\u201d\u2018\u2019']|[\"\u201c\u2018'][^\"\u201d\u2018\u2019']+[\"\u201d\u2018\u2019']\\s+(?:term|label|field|heading|section|command|flag|key|property|column|path)\\b/giu;\n  const withoutTerms = withoutJson.replace(documentTerm, \" \");\n  if (withoutTerms !== withoutJson && !quotedDispatch(withoutTerms))\n    return \"document-term\";\n  // Operator-named fields attribute even an unquoted value by their key.\n  return \"attributed-speech\";\n};",
+          "new": "const operatorWordClass = (text, dispatch = \"\", syntax = text) => {\n  let code = false;\n  let json = false;\n  const ast = parseMarkdown(`${syntax}\\n${dispatch}`);\n  const prose = [...nodes(ast)]\n    .filter((node) => node.type === \"paragraph\")\n    .map((node) =>\n      renderedText(node, \" \", {\n        code: () => {\n          code = true;\n          return \" \";\n        },\n      }),\n    )\n    .join(\" \");\n  for (const node of nodes(ast))\n    if (node.type === \"code\") {\n      if (node.lang?.toLowerCase() === \"json\") json = true;\n      else code = true;\n    }\n  const withoutJson = prose.replace(/\\{[^{}]*\\}/gu, (value) => {\n    try {\n      JSON.parse(value);\n      json = true;\n      return \" \";\n    } catch {\n      return value;\n    }\n  });\n  const speechCue =\n    /\\boperator\\b[^.!?]*\\b(?:said|says|replied|responded|answered|wrote|message|words|told|stated)\\b/iu;\n  if (speechCue.test(withoutJson) && quotedDispatch(`${text} ${dispatch}`))\n    return \"attributed-speech\";\n  if (!attributedWords(withoutJson) && !quotedDispatch(withoutJson)) {\n    if (json) return \"incidental-json\";\n    if (code) return \"incidental-code\";\n  }\n  // A named document token is not a quotation of what the operator said.\n  // Direct speech cues remain conservative when the same record also names\n  // a document term.\n  const directSpeech =\n    /\\boperator\\b[^.!?]*\\b(?:said|says|replied|responded|answered|wrote|message|words|told|stated)\\b[^.!?]*[\"\u201c\u2018']/iu;\n  const documentTerm =\n    /\\b(?:term|label|field|heading|section|command|flag|key|property|column|path|category)\\s*(?:named|called|is|was|:)?\\s*[\"\u201c\u2018'][^\"\u201d\u2018\u2019']+[\"\u201d\u2018\u2019']|[\"\u201c\u2018'][^\"\u201d\u2018\u2019']+[\"\u201d\u2018\u2019']\\s+(?:term|label|field|heading|section|command|flag|key|property|column|path)\\b/iu;\n  if (!directSpeech.test(withoutJson) && documentTerm.test(withoutJson))\n    return \"document-term\";\n  // Operator-named fields attribute even an unquoted value by their key.\n  return \"attributed-speech\";\n};",
+          "count": 1
+        }
+      ],
+      "minimumTests": 1,
+      "expectedAssertion": "actual document-term, expected attributed-speech, for the requested rename quote",
+      "snapshotIdentity": "b82bc6d1c0f7737568b882f25e5b2c35bfa40584ae0ae450fb49f2c49c6cce0d",
+      "startedAt": "2026-10-23T16:28:19.912Z",
+      "positive": {
+        "exitCode": 0,
+        "signal": null,
+        "startedAt": "2026-10-23T16:28:19.913Z",
+        "finishedAt": "2026-10-23T16:28:20.719Z",
+        "seconds": 0.806,
+        "logSha256": "4fdd45e85f885f16a5ff92db03cb16b11d82893975b3a3da5e037b50ed001780",
+        "tests": 1,
+        "caseSummary": [
+          "ok 1 - operator-word advisories classify incidental JSON, code and document terms apart from quoted replies"
+        ],
+        "invalidFailure": false
+      },
+      "mutatedFiles": [
+        {
+          "path": "scripts/docs-check.mjs",
+          "before": "76e63e8c86481b3a932688b7cffde16660a2ee6a2bc559c28091e727f95ba32b",
+          "after": "4a7f5e526099470e6038e10056081a43055af98643890e30ad3030f3bec5bb90"
+        }
+      ],
+      "postMutationFormatting": "Prettier from the admitted checkout, using the file configuration; dist runtime controls retain emitted formatting.",
+      "negative": {
+        "exitCode": 1,
+        "signal": null,
+        "startedAt": "2026-10-23T16:28:20.821Z",
+        "finishedAt": "2026-10-23T16:28:21.249Z",
+        "seconds": 0.428,
+        "logSha256": "850459b3f4f859df10956e0e3c6f8e04d369f421e2f3bb550b72a59b2c362da3",
+        "tests": 1,
+        "caseSummary": [
+          "not ok 1 - operator-word advisories classify incidental JSON, code and document terms apart from quoted replies"
+        ],
+        "invalidFailure": false,
+        "assertion": "error: |-\n    The operator requested: \u201cRename the field 'status' to 'state'.\u201d\n    + actual - expected\n    \n    + 'document-term'\n    - 'attributed-speech'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'attributed-speech'\n  actual: 'document-term'\n  operator: 'strictEqual'"
+      },
+      "verdict": "behavioral-failure-observed",
+      "finishedAt": "2026-10-23T16:28:21.249Z",
+      "fixture": "scripts/test-docs-check.mjs"
+    },
+    {
+      "id": "r50-inline-quoted-request",
+      "rows": [
+        50
+      ],
+      "findings": [
+        "criteria-adversary-2"
+      ],
+      "rule": "A whole quoted operator request formatted as inline code remains attributed speech; assignments and embedded document tokens remain incidental code. The reverted mapper erases the requested quote before the classifier sees it.",
+      "suite": "docs-check-fixtures",
+      "command": [
+        "node",
+        "--test",
+        "--test-name-pattern=^operator-word advisories classify incidental JSON, code and document terms apart from quoted replies$",
+        "scripts/test-docs-check.mjs"
+      ],
+      "mode": "isolated-reversion",
+      "revertScope": [
+        {
+          "path": "scripts/docs-check.mjs",
+          "old": "        code: (value) => {\n          code = true;\n          // A whole quoted response keeps its attribution even when formatted\n          // as inline code. Assignments and other embedded code stay incidental.\n          return /^(?:\"[\\s\\S]*\"|\u201c[\\s\\S]*\u201d|'[\\s\\S]*'|\u2018[\\s\\S]*\u2019)$/.test(value.trim())\n            ? value\n            : \" \";\n        },",
+          "new": "        code: () => {\n          code = true;\n          return \" \";\n        },",
+          "count": 1
+        }
+      ],
+      "minimumTests": 1,
+      "expectedAssertion": "actual incidental-code, expected attributed-speech, for the requested inline-code quote",
+      "snapshotIdentity": "b82bc6d1c0f7737568b882f25e5b2c35bfa40584ae0ae450fb49f2c49c6cce0d",
+      "startedAt": "2026-10-23T16:32:30.052Z",
+      "positive": {
+        "exitCode": 0,
+        "signal": null,
+        "startedAt": "2026-10-23T16:32:30.054Z",
+        "finishedAt": "2026-10-23T16:32:30.961Z",
+        "seconds": 0.907,
+        "logSha256": "8e60e7835f6a937be438da8ed80794ecb226f9215ed2bf5f0eb6eba6192218fc",
+        "tests": 1,
+        "caseSummary": [
+          "ok 1 - operator-word advisories classify incidental JSON, code and document terms apart from quoted replies"
+        ],
+        "invalidFailure": false
+      },
+      "mutatedFiles": [
+        {
+          "path": "scripts/docs-check.mjs",
+          "before": "7bfb806d7f4cacb039294a1b56305af37248033536e7aaadfc9cb97decba30ef",
+          "after": "76e63e8c86481b3a932688b7cffde16660a2ee6a2bc559c28091e727f95ba32b"
+        }
+      ],
+      "postMutationFormatting": "Prettier from the admitted checkout, using the file configuration; dist runtime controls retain emitted formatting.",
+      "negative": {
+        "exitCode": 1,
+        "signal": null,
+        "startedAt": "2026-10-23T16:32:31.060Z",
+        "finishedAt": "2026-10-23T16:32:31.744Z",
+        "seconds": 0.684,
+        "logSha256": "3909125cbfef08f7a60cb9f8d30e4df93f4e7730433d9b62dc0e51e70684c727",
+        "tests": 1,
+        "caseSummary": [
+          "not ok 1 - operator-word advisories classify incidental JSON, code and document terms apart from quoted replies"
+        ],
+        "invalidFailure": false,
+        "assertion": "error: |-\n    The operator requested `\"retain the original bytes\"`.\n    + actual - expected\n    \n    + 'incidental-code'\n    - 'attributed-speech'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'attributed-speech'\n  actual: 'incidental-code'\n  operator: 'strictEqual'"
+      },
+      "verdict": "behavioral-failure-observed",
+      "finishedAt": "2026-10-23T16:32:31.744Z",
+      "fixture": "scripts/test-docs-check.mjs"
+    }
+  ]
+}

@@ -129,16 +129,15 @@ tools to the frozen copy with `--restricted`, pre-approves only the named
 tools, and denies anything else without a prompt; Codex adds a real
 workspace-write sandbox rooted at the copy. **Claude does not path-confine a
 shell command**, so confinement there is instructed and then checked: the
-review and the refutation receipt alike record the tracked-path status hash and
-the untracked, non-ignored listing hash on either side of their episode, the
-frozen copy's inventory before and after with its added, removed and resized
-paths (WO-157), and the observed count of denied tool calls, and on the default
-`HEAD` route `receipt` refuses a return whose subject moved. The receipt names
-which of the two confinements applied. One channel is instruction-only
-until WO-219 lands: the frozen copy is a clone whose `origin` is the source
-checkout, so a push from the copy would move the source's refs without
-moving either witness (REVIEW-007 ER7-001, 2026-10-20); WO-219 removes
-the remote at freeze and adds a refs digest to the record. REVIEW-002 measured the difference this profile
+review and the refutation receipt alike record the tracked-path status hash,
+the untracked, non-ignored listing hash and the source refs digest on either
+side of their episode, the frozen copy's inventory before and after with its
+added, removed and resized paths (WO-157), and the observed count of denied
+tool calls. The frozen copy has no configured remote. On the default `HEAD`
+route, `receipt` refuses tracked-status or source-ref changes; an explicitly
+named commit and a refutation record source-ref changes without refusing the
+operator's concurrent work. The receipt names which confinement applied.
+REVIEW-002 measured the difference this profile
 buys: 0 denied tool calls and 4 of 4 findings measured, against REVIEW-001's
 7 denials and 1 measured of 7.
 

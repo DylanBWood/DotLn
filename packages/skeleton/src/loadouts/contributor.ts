@@ -63,8 +63,8 @@ const sessionBoundaries =
 const sharedCorrections = [
   "Launch all adversaries, reviewers, refuters and research workers as Claude `dotln-worker` (claude-opus-5-5, xhigh) without a model override, or Codex spawn_agent with fork_turns none, model gpt-6.1-sol and reasoning_effort max. Only when the operator's planning: or resume: dispatch line names fable or fable 5.1, use Claude `dotln-worker-fable` (claude-fable-5-1, xhigh); record the actual worker type in the response and direct refutation receipt via --worker-type (Codex: codex-spawn-agent). The default and Codex pin stay unchanged; product 07 §Model-specific notes records the pins and readback limits.",
   "Run probes outside gates, one process at a time, under `node scripts/harness.mjs bounded -- <command>`; the host guard also watches attributable session descendants.",
-  "Resolve routine version, waiver-route, live-episode, regeneration and reinstall questions within existing authority; ask if an answer changes scope or authority.",
-  "Before acting on an operator message, state its aim in one line and act on that reading; ask one focused question if that reading is doubtful.",
+  "Resolve routine version, waiver-route, live-episode, regeneration and reinstall questions within existing authority. Every phase owns decisions, including no-op or deferred outcomes and blockers: record evidence, tradeoffs and reopening conditions in the ADR or decision record; do not ask the operator to arbitrate implementation or change criteria. Preserve scope and authority, and record the safe default for any expressly permitted operator-only packet without demanding a response.",
+  "Before acting on an operator message, state its aim in one line and act on the evidence-backed reading; record any consequential assumption and its reopening condition.",
   "Claims of cause, blockers, unreachable services or completion name their supporting command and output; partial searches name their boundary.",
   "Request needed authority here through the host permission flow; give the operator a command to run in your place only when the order or role names that fallback.",
   "Operator commands must be copy-paste runnable with real paths and no placeholders; questions plainly state what they decide and why.",
@@ -72,6 +72,8 @@ const sharedCorrections = [
   "Stop the background monitors you started before recording your result.",
   "After two consecutive provider safeguard refusals, stop retrying, record a decision naming the stop, phase and model, and resume in a fresh session.",
 ];
+const defensiveReview =
+  "Judge confinement and security-boundary findings against the recorded rule and recommend defensive repairs; do not work out circumvention paths. After one provider safeguard refusal, change approach instead of retrying the refused line of work.";
 const releaseCloseRemedy =
   "Run the printed helper command exactly as printed, with no redirect, prefix, cd or pipe. The close is done when the tag and Release exist, git worktree list shows no worktree for the order, its directory is gone, git branch --list wo-NNN is empty and no starter-refresh blocker remains. Diagnose and finish a cleanup blocker in this session; retry by re-running the same command, which re-checks an existing Release and never publishes twice. A retry validates the original immutable tag even after main advances; a foreign tag remains a blocker. Retry a host denial of the exact command once through the host permission flow before handing the operator the printed command for !. The close removes any scratch repository still present and records its path, head commit and whether a remote held it; intake and declared submodules stay, and an operator word through --material preserves a scratch repository; never force teardown.";
 // Preservation at a target close is for operator material, evidence and
@@ -143,6 +145,9 @@ export const contributorRoles: readonly HarnessRole[] = [
       ...common,
       "The `verify` dispatch delivers the exact new VER path (Codex runs `npm run resume -- verify`); write only it. Judge the original criteria and earlier findings with your own probes and the executor's two worker reports: attack the change and review the whole implementation, as product 07 §Verification review and attack directs. Spawn a worker only to reproduce one named claim you cannot run yourself; never delegate the verdict. A finding that breaks no criterion and no behavior `main` had is a follow-up, never blocking.",
       "Read: `docs/product/07-execution-guide.md#Verification review and attack`",
+      "Route a blocking design defect in the declared surfaces with its repair rule, without asking the operator to authorize it; blocking still requires an unmet criterion or a reproduced regression. A choice outside the criteria and declared surfaces takes the operator route with its recorded safe default, not an authorization request for an in-scope repair.",
+      defensiveReview,
+      "Before emitting audit or repository output, select verdict-relevant fields and budget the aggregate read across the batch. Keep full results in scratch; check for nested gate logs and truncated batches before emission. When acknowledging a process failure, name its durable record and disposition in the same response.",
       "Read: `@verification-reports`",
       "Independent verifiers use `xhigh`, not `max`. A verifier launch may cap provider spend at USD 5 when its transport exposes a hard dollar-cap control; otherwise report the limit as unenforced rather than claiming a cap.",
       ...evidence,
@@ -166,6 +171,8 @@ export const contributorRoles: readonly HarnessRole[] = [
       "The `final-review` dispatch is recorded with the phrase and delivers the allocated FINAL path (Codex runs `npm run resume -- final-review` itself); use that path. Review the full subject diff and complete numbered verification sequence against the original order. Handle authorized integration with `npm run worktree -- integrate WO-NNN` (name an intake backup when present); resolve authored conflicts and use `--continue`, complete its draft decision's carried-forward claims, then run the printed affected checks.",
       "Read: `@verification-reports`",
       "Read: `docs/product/08-publication-compiler.md#PRs and commits`",
+      "Read: `docs/product/07-execution-guide.md#Verification review and attack`",
+      defensiveReview,
       "A finding outside the criteria that breaks no behavior `main` had is a follow-up by rule, never blocking.",
       "Every option in an operator packet must be safe within ordinary authority, without operator override. Record the safe default; override is an operator recovery control, never a proposed way to pass review.",
       ...evidence,

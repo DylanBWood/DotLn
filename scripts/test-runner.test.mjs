@@ -462,7 +462,7 @@ test("kit defaults separate runtime integrity from documents and explicit platfo
   const log = console.log;
   try {
     console.log = (line) => lines.push(String(line));
-    for (const args of [[], ["--review"], ["--full"], ["--document"]]) {
+    for (const args of [[], ["--document"]]) {
       lines.length = 0;
       assert.equal((await runGate([...args, "--list"], repo)).exitCode, 0);
       assert.deepEqual(
@@ -485,7 +485,12 @@ test("kit defaults separate runtime integrity from documents and explicit platfo
       );
       assert.ok(!lines.some((line) => line.startsWith("kit: ")));
     }
-    for (const args of [["--only", "target-worktree"], ["--machinery"]]) {
+    for (const args of [
+      ["--only", "target-worktree"],
+      ["--machinery"],
+      ["--review"],
+      ["--full"],
+    ]) {
       lines.length = 0;
       assert.equal((await runGate([...args, "--list"], repo)).exitCode, 0);
       const names = lines
@@ -1315,7 +1320,7 @@ test("release shell changes select their inventory guard during review", async (
   const saved = console.log;
   try {
     console.log = (line) => messages.push(line);
-    await runGate(["--review", "--list"], repo);
+    await runGate(["--review", "--list", "--selected"], repo);
   } finally {
     console.log = saved;
   }
@@ -1656,7 +1661,7 @@ test("WO-169 a changed script outside the former eight sources selects the confi
     const saved = console.log;
     try {
       console.log = (line) => messages.push(line);
-      await runGate(["--review", "--list"], repo);
+      await runGate(["--review", "--list", "--selected"], repo);
     } finally {
       console.log = saved;
     }
@@ -1676,7 +1681,7 @@ test("WO-169 a changed script outside the former eight sources selects the confi
   );
   assert.ok(
     (await listed()).some((line) => line.startsWith("configuration-root —")),
-    "npm test -- --review --list names the suite",
+    "npm test -- --review --list --selected names the suite",
   );
 });
 
@@ -1732,7 +1737,7 @@ test("WO-133 review selection ignores release-only changes and retains host beha
     const saved = console.log;
     try {
       console.log = (line) => messages.push(line);
-      await runGate(["--review", "--list"], repo);
+      await runGate(["--review", "--list", "--selected"], repo);
     } finally {
       console.log = saved;
     }
@@ -3786,6 +3791,9 @@ test("WO-140 a confined partial row is rejected by every product-gate consumer a
     reviewedProductGate(repo, "WO-999").evidenceRef,
     full.evidenceRef,
   );
+  // Use a separate unbound review so its first correction reaches the
+  // publication consumer's wrong-code-identity check.
+  review(undefined);
   bind(
     {
       ...accepted.productGate,
@@ -9180,7 +9188,7 @@ test("target-worktree file tasks keep all declared cases and two independent dea
       "utf8",
     ),
   );
-  assert.equal(declarations.length, 60);
+  assert.equal(declarations.length, 62);
   assert.deepEqual(declarations.sort(), expected.declarations.sort());
   const names = [];
   for (const task of tasks) {
@@ -9202,8 +9210,8 @@ test("target-worktree file tasks keep all declared cases and two independent dea
     );
     names.push(...collected.registeredNames);
   }
-  assert.equal(names.length, 84);
-  assert.equal(new Set(names).size, 84);
+  assert.equal(names.length, 89);
+  assert.equal(new Set(names).size, 89);
   assert.deepEqual(names.sort(), expected.names.sort());
   let active = 0,
     peak = 0;
@@ -9231,4 +9239,121 @@ test("target-worktree file tasks keep all declared cases and two independent dea
       )[0].exitCode,
       1,
     );
+});
+
+test("review listing includes every available machinery declaration without a change selection", async (t) => {
+  const repo = mkdtempSync(join(tmpdir(), "dotln-review-list-"));
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
+  runGit(repo, ["init", "-q", "-b", "main"]);
+  writeFileSync(join(repo, "README.md"), "Fixture\n");
+  runGit(repo, ["add", "."]);
+  runGit(repo, [
+    "-c",
+    "user.name=Fixture",
+    "-c",
+    "user.email=fixture@example.invalid",
+    "-c",
+    "commit.gpgsign=false",
+    "commit",
+    "-qm",
+    "Fixture",
+  ]);
+  runGit(repo, ["update-ref", "refs/remotes/origin/main", "HEAD"]);
+  const lines = [];
+  const log = console.log;
+  try {
+    console.log = (line) => lines.push(String(line));
+    for (const kit of [false, true]) {
+      if (kit) writeFileSync(join(repo, "KIT-MANIFEST.json"), "{}\n");
+      lines.length = 0;
+      assert.equal((await runGate(["--list", "--review"], repo)).exitCode, 0);
+      const names = new Set(
+        lines
+          .filter((line) => line.includes(" — protects:"))
+          .map((line) => line.split(" — ")[0]),
+      );
+      for (const suite of suites.filter((row) => row.machinery)) {
+        if (kit && suite.kit?.startsWith("core-only: "))
+          assert.ok(!names.has(suite.name), suite.name);
+        else assert.ok(names.has(suite.name), suite.name);
+      }
+      if (!kit) {
+        lines.length = 0;
+        assert.equal(
+          (await runGate(["--list", "--review", "--selected"], repo)).exitCode,
+          0,
+        );
+        const selected = new Set(
+          lines
+            .filter((line) => line.includes(" — protects:"))
+            .map((line) => line.split(" — ")[0]),
+        );
+        for (const suite of suites.filter(
+          (row) => row.machinery && !row.structural,
+        ))
+          assert.ok(!selected.has(suite.name), suite.name);
+      }
+    }
+  } finally {
+    console.log = log;
+  }
+});
+
+test("Preflight keeps a complete structural pass after a passing partial and refuses a failing partial", async (t) => {
+  const repo = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-partial-preflight-")),
+  );
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
+  execGit(["init", "-q", "-b", "main", repo]);
+  writeFileSync(join(repo, "fixture.mjs"), "export const value = 1;\n");
+  execGit(["add", "."], { cwd: repo });
+  execGit(
+    [
+      "-c",
+      "user.name=Fixture",
+      "-c",
+      "user.email=fixture@example.invalid",
+      "commit",
+      "-qm",
+      "Fixture",
+    ],
+    { cwd: repo },
+  );
+  const { preflightRows, STRUCTURAL_SUITES } =
+    await import("./lib/gate-reuse.mjs");
+  const codeIdentity = gateCodeIdentity(repo),
+    treeHash = gateTreeHash(repo);
+  const time = Date.now();
+  const row = (delta, partial = false, exitCode = 0) => ({
+    checkId: "structural",
+    gateSelection: "structural",
+    codeIdentity,
+    treeHash,
+    executed: true,
+    exitCode,
+    durationMs: 1,
+    recordedAt: new Date(time + delta).toISOString(),
+    evidenceRef: `fixture:structural:${delta}`,
+    requiredSuites: [...STRUCTURAL_SUITES],
+    ...(partial ? { partial: true } : {}),
+    taskTimeline: STRUCTURAL_SUITES.map((name) => ({
+      name,
+      executed: true,
+      exitCode: name === "generated" ? exitCode : 0,
+      durationMs: 1,
+      finishedAt: new Date(time + delta).toISOString(),
+    })),
+  });
+  recordGateChecks(repo, [row(0)]);
+  assert.deepEqual((await preflightRows(repo, codeIdentity, [])).missing, []);
+  recordGateChecks(repo, [row(1, true)]);
+  assert.deepEqual(
+    (await preflightRows(repo, codeIdentity, [])).missing,
+    [],
+    "a passing partial observes tasks without replacing or revoking their complete pass",
+  );
+  recordGateChecks(repo, [row(2, true, 1)]);
+  const refused = await preflightRows(repo, codeIdentity, []);
+  assert.equal(refused.missing[0].suite, "structural");
+  assert.ok(refused.missing[0].displaced.includes("generated"));
 });

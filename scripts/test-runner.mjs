@@ -174,6 +174,7 @@ export const machinerySources = {
     "scripts/lib/reader-profiles.mjs",
     "scripts/reader.mjs",
     "scripts/work-orders.mjs",
+    "scripts/test-runner.mjs",
     "scripts/lineage.mjs",
     "scripts/resume.mjs",
     "scripts/release.mjs",
@@ -222,6 +223,7 @@ export const machinerySources = {
   ],
   "harness-fixtures": [
     "scripts/lib/fixture-inputs.mjs",
+    "scripts/lib/plan-failures.mjs",
     // Direct entry imports and literal first-party script inputs (WO-174).
     "scripts/lib/bounded-command.mjs",
     "packages/kernel/src/index.ts",
@@ -490,6 +492,7 @@ export const machinerySources = {
     "packages/skeleton/fixtures/wo218-role-baseline.json",
     "packages/skeleton/fixtures/wo217-role-baseline.json",
     "packages/skeleton/fixtures/wo226-role-baseline.json",
+    "packages/skeleton/fixtures/wo219-role-baseline.json",
     "packages/skeleton/fixtures/wo217-role-efficiency-baseline.json",
     "scripts/test-helper-reuse.mjs",
     "scripts/lib/helpers.mjs",
@@ -506,6 +509,10 @@ export const machinerySources = {
     "packages/skeleton/src/subagent-budget.ts",
     "packages/skeleton/src/gate-evidence.mjs",
     "packages/skeleton/src/runtime-inputs.mjs",
+    "scripts/lib/control-actor.mjs",
+    "scripts/lib/control-store.mjs",
+    "scripts/lib/control-usage.mjs",
+    "scripts/lib/harness-prune.mjs",
   ],
   mutation: [
     // Direct entry imports and literal first-party script inputs (WO-174).
@@ -1084,6 +1091,9 @@ export const suites = [
     kit: "core-only: docs/LEGAL.md and core release inputs",
   },
   nodeTests("worktree-integration", "scripts/test-worktree-integration.mjs", {
+    sources: [
+      "scripts/fixtures/worktree-integration/wo193-preflight-bridge.json",
+    ],
     kit: "core-only: core source and publication inputs",
     // Its reservation admits only the measured light peers.
     exclusive: true,
@@ -2836,6 +2846,7 @@ async function runGateChecks(
     review = false,
     serial = false,
     list = false,
+    selectedOnly = false,
     confinedPartial = false,
     again = false,
     keepGoing = false,
@@ -2848,6 +2859,7 @@ async function runGateChecks(
     else if (arg === "--review" || arg === "--full") review = true;
     else if (arg === "--serial") serial = true;
     else if (arg === "--list") list = true;
+    else if (arg === "--selected") selectedOnly = true;
     else if (arg === "--keep-going") keepGoing = true;
     else if (arg === "--confined-partial") confinedPartial = true;
     // Both flags run the selection instead of reusing a covering row
@@ -2863,9 +2875,10 @@ async function runGateChecks(
     else if (arg === "--only" && !only) only = args[++index];
     else
       throw new Error(
-        "usage: test-runner [--document|--machinery|--review] [--only <suite>] [--against <rev>] [--confined-partial] [--again] [--keep-going] [--serial] [--list]",
+        "usage: test-runner [--document|--machinery|--review] [--only <suite>] [--against <rev>] [--confined-partial] [--again] [--keep-going] [--serial] [--list [--selected]]",
       );
   }
+  if (selectedOnly && !list) throw new Error("--selected requires --list");
   if (against && !document)
     throw new Error("--against requires --document (npm run test:docs)");
   if (only && !table.some((row) => row.name === only))
@@ -2873,9 +2886,10 @@ async function runGateChecks(
   // A consumer checks its installed runtime. Its separate document gate
   // checks coordination records; sibling product checks run in the target.
   // Shipping a fixture makes it available for an explicit diagnostic only.
-  const instance = instanceSelection(args, repo);
+  const inventory = list && review && !selectedOnly;
+  const instance = instanceSelection(args, repo) && !inventory;
   let selected = table.filter((row) =>
-    row.generated && !only
+    row.generated && !only && !inventory
       ? false
       : instance
         ? row.instance === "runtime" ||
@@ -2886,9 +2900,9 @@ async function runGateChecks(
             ? row.document
             : machinery
               ? row.machinery
-              : row.product,
+              : row.product || (inventory && row.machinery),
   );
-  if (review && !instance && !only && !document && !machinery)
+  if (review && !inventory && !instance && !only && !document && !machinery)
     selected = [
       ...new Set([
         ...selected,

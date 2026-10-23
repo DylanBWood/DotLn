@@ -55,6 +55,7 @@ import {
 } from "./lib/github-repository.mjs";
 import {
   absoluteBodyLinks,
+  relativeLinkFailures,
   assertGitHubBodyProfile,
   assertPullRequestBodyShape,
   labelledParts,
@@ -190,6 +191,201 @@ const templateShape = {
     knownLimitations: [],
   },
 };
+const retainedClosePath = (root, order) =>
+  docRelative(root, "control", `local/retained/${order}/release-close.json`);
+const closeAttemptsRoot = (root, order) =>
+  docRelative(root, "control", `local/retained/${order}/attempts/`);
+const readableCloseAttempt = (attempt, order) =>
+  attempt &&
+  attempt.schemaVersion === 1 &&
+  attempt.workOrderId === order &&
+  Array.isArray(attempt.previousAttempts ?? []);
+const flatCloseAttempt = ({
+  previousAttempts: _previous,
+  archivedAttempts: _archives,
+  historyFailure: _failure,
+  retainedHistoryAttempt: _retained,
+  ...attempt
+}) => attempt;
+const historyRecoveryCommand = (root, order) => {
+  const code =
+    "const {reanchorCloseHistory}=await import(process.argv[1]); await reanchorCloseHistory(process.argv[2],process.argv[3]);";
+  return `node --input-type=module -e ${shellQuote(code)} ${shellQuote(import.meta.url)} ${shellQuote(root)} ${shellQuote(order)}`;
+};
+const closeHistoryFailure = (root, order, archive, cause) =>
+  `Close history cannot be read safely: ${archive} (${cause}); publication stopped and parsed history retained. Restore that immutable archive, or, after proving it unrecoverable, re-anchor the retained record with ${historyRecoveryCommand(root, order)}, then rerun the release-close command`;
+
+// A retry never serializes a readable record inside an unreadableRecord string.
+// Failure retries carry the same flat history instead of archiving themselves.
+export function readCloseHistory(root, order) {
+  const file = retainedClosePath(root, order);
+  requireMaterialContainment(root, file);
+  if (!existsSync(join(root, file)))
+    return { previousAttempts: [], recoveryAttempts: [] };
+  const bytes = readFileSync(join(root, file), "utf8");
+  let parsed;
+  try {
+    parsed = JSON.parse(bytes);
+  } catch {
+    return {
+      previousAttempts: [{ unreadableRecord: bytes }],
+      recoveryAttempts: [],
+    };
+  }
+  if (!readableCloseAttempt(parsed, order))
+    return {
+      previousAttempts: Array.isArray(parsed?.previousAttempts)
+        ? parsed.previousAttempts
+        : [],
+      archivedAttempts: [],
+      invalidHistoryRecord: parsed,
+      historyFailure: closeHistoryFailure(
+        root,
+        order,
+        file,
+        "invalid parsed history record",
+      ),
+      recoveryAttempts: [],
+    };
+  const previousAttempts = parsed.historyFailure
+    ? parsed.previousAttempts
+    : [...(parsed.previousAttempts ?? []), flatCloseAttempt(parsed)].slice(-8);
+  const result = {
+    previousAttempts,
+    archivedAttempts: [...(parsed.archivedAttempts ?? [])],
+    recoveryAttempts: parsed.retainedHistoryAttempt
+      ? [parsed.retainedHistoryAttempt]
+      : [],
+  };
+  const retainFailure = () => {
+    result.previousAttempts = parsed.previousAttempts ?? [];
+    result.retainedHistoryAttempt =
+      parsed.retainedHistoryAttempt ?? flatCloseAttempt(parsed);
+    result.recoveryAttempts.push(result.retainedHistoryAttempt);
+  };
+  const archive = docRelative(
+    root,
+    "control",
+    `local/retained/${order}/attempts/${sha256(bytes)}.json`,
+  );
+  if (!parsed.historyFailure) {
+    result.archivedAttempts = [
+      ...new Set([...result.archivedAttempts, archive]),
+    ];
+    try {
+      requireMaterialContainment(root, archive);
+      mkdirSync(dirname(join(root, archive)), { recursive: true, mode: 0o700 });
+      if (!existsSync(join(root, archive)))
+        writeFileSync(join(root, archive), bytes, { flag: "wx", mode: 0o600 });
+    } catch (error) {
+      result.historyFailure = closeHistoryFailure(
+        root,
+        order,
+        archive,
+        error.code ?? "archive write failed",
+      );
+      retainFailure();
+      return result;
+    }
+  }
+  const prefix = closeAttemptsRoot(root, order).replace(/\/$/u, "") + "/";
+  for (const name of result.archivedAttempts) {
+    const namedArchive =
+      typeof name === "string" &&
+      name.startsWith(prefix) &&
+      /^[a-f0-9]{64}\.json$/u.test(name.slice(prefix.length));
+    try {
+      if (!namedArchive) throw new Error("outside order history");
+      requireMaterialContainment(root, name);
+      const content = readFileSync(join(root, name), "utf8");
+      if (!name.endsWith(`/${sha256(content)}.json`))
+        throw new Error("archive hash differs");
+      const attempt = JSON.parse(content);
+      if (!readableCloseAttempt(attempt, order))
+        throw new Error("archive belongs to another order");
+      result.recoveryAttempts.push(
+        ...(attempt.previousAttempts ?? []),
+        ...(attempt.retainedHistoryAttempt
+          ? [attempt.retainedHistoryAttempt]
+          : []),
+        flatCloseAttempt(attempt),
+      );
+    } catch (error) {
+      result.historyFailure = closeHistoryFailure(
+        root,
+        order,
+        namedArchive ? name : `${file}#archivedAttempts`,
+        error.code ?? "invalid immutable archive",
+      );
+      retainFailure();
+      return result;
+    }
+  }
+  if (
+    parsed.invalidHistoryRecord !== undefined ||
+    (parsed.historyFailure && !result.archivedAttempts.length)
+  ) {
+    result.invalidHistoryRecord = parsed.invalidHistoryRecord;
+    result.historyFailure = parsed.historyFailure;
+    retainFailure();
+  }
+  return result;
+}
+
+// Explicit recovery retains the parsed attempts and the unavailable archive
+// names, and starts a fresh content-addressed anchor without claiming recovery
+// of bytes no longer available. It performs no release or cleanup effect.
+export function reanchorCloseHistory(root, order) {
+  if (!/^WO-\d{3}$/u.test(order))
+    throw new Error("history recovery requires WO-NNN");
+  return withHostLock(
+    docPath(root, "control", "local/release-close-locks"),
+    order,
+    () => {
+      const file = retainedClosePath(root, order);
+      requireMaterialContainment(root, file);
+      const record = JSON.parse(readFileSync(join(root, file), "utf8"));
+      if (!readableCloseAttempt(record, order) || !record.historyFailure)
+        throw new Error(
+          "history recovery requires a retained record with a history failure",
+        );
+      const unavailableArchives = record.archivedAttempts ?? [];
+      const anchor = {
+        ...record,
+        previousAttempts: record.previousAttempts ?? [],
+        archivedAttempts: [],
+        historyFailure: undefined,
+        invalidHistoryRecord: undefined,
+        historyReanchored: {
+          source: file,
+          unavailableArchives,
+          ...(record.invalidHistoryRecord !== undefined
+            ? { uninterpretedRecord: record.invalidHistoryRecord }
+            : {}),
+          recordedAt: new Date().toISOString(),
+        },
+      };
+      const bytes = JSON.stringify(anchor, null, 2) + "\n";
+      const archive = docRelative(
+        root,
+        "control",
+        `local/retained/${order}/attempts/${sha256(bytes)}.json`,
+      );
+      requireMaterialContainment(root, archive);
+      mkdirSync(dirname(join(root, archive)), { recursive: true, mode: 0o700 });
+      if (!existsSync(join(root, archive)))
+        writeFileSync(join(root, archive), bytes, { flag: "wx", mode: 0o600 });
+      writeFileSync(
+        join(root, file),
+        JSON.stringify({ ...anchor, archivedAttempts: [archive] }, null, 2) +
+          "\n",
+        { mode: 0o600 },
+      );
+      return archive;
+    },
+  );
+}
+
 let closeTranscript = null;
 const writeOutput = (text) => {
   if (closeTranscript) closeTranscript.push(String(text));
@@ -450,9 +646,15 @@ const ancestralLocalTags = (root) => {
       "refs/tags",
     ]).split("\n"),
   );
+  const tags = [...localTags(root)];
+  const annotations = releaseAnnotations(
+    root,
+    tags.map(([, tag]) => tag),
+  );
   return new Map(
-    [...localTags(root)].filter(
-      ([name, tag]) => reachable.has(name) && !isStarterTag(root, name, tag),
+    tags.filter(
+      ([name, tag]) =>
+        reachable.has(name) && !isStarterTag(root, name, tag, annotations),
     ),
   );
 };
@@ -1767,12 +1969,20 @@ const releaseEdition = (root, manifest) => {
   } catch {
     repository = null;
   }
-  const absolute = (id, text) =>
-    absoluteBodyLinks(text, {
-      from: releaseNotesPathFor(id, root),
+  const absolute = (id, heading, text) => {
+    const path = releaseNotesPathFor(id, root);
+    const rewritten = absoluteBodyLinks(text, {
+      from: path,
       repository,
       revision: manifest.release.commit,
     });
+    const remaining = relativeLinkFailures(rewritten);
+    if (remaining.length)
+      throw new Error(
+        `${path} # ${heading}, section line ${remaining[0].line}: relative link remains after rewrite; write an absolute destination or remove the unsupported link layout before retrying release close`,
+      );
+    return rewritten;
+  };
   const lines = [
     `${releaseDisplayName(root, manifest.release.commit)} ${manifest.release.application}`,
   ];
@@ -1788,7 +1998,7 @@ const releaseEdition = (root, manifest) => {
           ? ["", `**${entry.title}**`]
           : []),
         "",
-        absolute(entry.id, entry.sections[heading]),
+        absolute(entry.id, heading, entry.sections[heading]),
       );
     }
     if (heading === "Read before upgrading") {
@@ -2971,6 +3181,18 @@ const close = async (workOrderId, parsed, record) => {
         `release close requires a closed work order; observed ${state.phase}`,
       );
     record.publication.outcome = "no-release";
+    const targetPolicy =
+      loadConfig(root).repositories[state.repositoryId]?.release?.policy ??
+      "no-release";
+    record.publication.target = {
+      repositoryId: state.repositoryId,
+      policy: targetPolicy,
+      outcome: targetPolicy === "declared" ? "not-attempted" : "no-release",
+      tag: null,
+      release: null,
+    };
+    if (targetPolicy === "declared")
+      record.publication.outcome = "not-attempted";
     if (publish || dryRun) {
       const { closeTargetWorktree } =
         await import("./lib/target-worktree-close.mjs");
@@ -3629,78 +3851,15 @@ const main = async () => {
           record.recordAdvisories.push(message);
           process.stderr.write(`Advisory: ${message}\n`);
         };
-        const priorFile = join(root, recordPath);
         try {
-          requireMaterialContainment(root, recordPath);
-          if (existsSync(priorFile)) {
-            const bytes = readFileSync(priorFile, "utf8");
-            try {
-              const { previousAttempts = [], ...prior } = JSON.parse(bytes);
-              if (!Array.isArray(previousAttempts))
-                throw new Error("Invalid close history");
-              const archive = docRelative(
-                root,
-                "control",
-                `local/retained/${workOrderId}/attempts/${sha256(bytes)}.json`,
-              );
-              requireMaterialContainment(root, archive);
-              mkdirSync(dirname(join(root, archive)), {
-                recursive: true,
-                mode: 0o700,
-              });
-              if (!existsSync(join(root, archive)))
-                writeFileSync(join(root, archive), bytes, {
-                  flag: "wx",
-                  mode: 0o600,
-                });
-              record.archivedAttempts = [
-                ...new Set([...(prior.archivedAttempts ?? []), archive]),
-              ];
-              const recoveryAttempts = [];
-              for (const archived of record.archivedAttempts) {
-                if (
-                  !archived.startsWith(
-                    docRelative(
-                      root,
-                      "control",
-                      `local/retained/${workOrderId}/attempts/`,
-                    ),
-                  )
-                )
-                  throw new Error(
-                    "close history archive is outside this order",
-                  );
-                requireMaterialContainment(root, archived);
-                const archivedBytes = readFileSync(
-                  join(root, archived),
-                  "utf8",
-                );
-                if (!archived.endsWith(`/${sha256(archivedBytes)}.json`))
-                  throw new Error("close history archive hash differs");
-                const attempt = JSON.parse(archivedBytes);
-                if (
-                  attempt.schemaVersion !== 1 ||
-                  attempt.workOrderId !== workOrderId
-                )
-                  throw new Error(
-                    "close history archive belongs to another order",
-                  );
-                recoveryAttempts.push(attempt);
-              }
-              Object.defineProperty(record, "recoveryAttempts", {
-                value: recoveryAttempts,
-              });
-              record.previousAttempts = [...previousAttempts, prior]
-                .slice(-8)
-                .map(({ archivedAttempts, ...attempt }) => attempt);
-            } catch (error) {
-              if (record.archivedAttempts)
-                record.historyFailure = `Close history cannot be read safely: ${error.message}; restore the named order's immutable attempt archives before retrying`;
-              // Preserve damaged earlier bytes in the ignored record without
-              // exposing them in diagnostics or making bookkeeping a gate.
-              record.previousAttempts = [{ unreadableRecord: bytes }];
-            }
-          }
+          const { recoveryAttempts, ...history } = readCloseHistory(
+            root,
+            workOrderId,
+          );
+          Object.assign(record, history);
+          Object.defineProperty(record, "recoveryAttempts", {
+            value: recoveryAttempts,
+          });
         } catch (error) {
           recordAdvisory(error);
         }
@@ -3865,7 +4024,9 @@ const main = async () => {
       new Date().toISOString().slice(0, 10),
       {
         integration: args.includes("--integration"),
-        observation: localOnly ? "local tags" : "origin tags",
+        observation: localOnly
+          ? "ancestral local release tags, excluding annotated starter refresh tags"
+          : "origin tags",
       },
     );
     // The meter reads every decisions record; read it before any edit, so an

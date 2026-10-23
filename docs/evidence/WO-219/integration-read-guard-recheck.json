@@ -1,0 +1,37 @@
+{
+  "checkId": "suite:worktree-integration",
+  "codeIdentity": "ce4c585a5ed0ef7ec3a5dc46baf393d86889ebd8e6b136f48654cef84d03e4dc",
+  "durationMs": 218632,
+  "exitCode": 0,
+  "executed": true,
+  "evidenceRef": "host-gate:ce4c585a5ed0ef7ec3a5dc46baf393d86889ebd8e6b136f48654cef84d03e4dc:worktree-integration",
+  "recordedAt": "2026-10-23T18:32:25.417Z",
+  "executionMode": "fresh",
+  "command": [
+    "node",
+    "scripts/harness.mjs",
+    "bounded",
+    "--",
+    "npm",
+    "test",
+    "--",
+    "--only",
+    "worktree-integration"
+  ],
+  "suite": {
+    "name": "worktree-integration",
+    "durationMs": 203486,
+    "exitCode": 0,
+    "productReadGuardInstrumented": true,
+    "excludedInputObservations": 0
+  },
+  "negativeObservation": {
+    "completeAttempt": 6,
+    "assertionFailures": 0,
+    "testsPassed": 40,
+    "guardExitCode": 1,
+    "excludedInputObservations": 18
+  },
+  "decision": "WO-219-D070",
+  "completePassSupplied": false
+}

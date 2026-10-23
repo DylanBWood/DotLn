@@ -38,7 +38,7 @@ export const controlUsageProjection = (control) => {
     const summary = { workOrder, ...counts() };
     const orderActors = new Map();
     for (const attempt of completedPhaseAttempts(
-      eventsForOrder(control, workOrder),
+      eventsForOrder(control, workOrder, { correctedActors: true }),
     )) {
       add(totals, attempt);
       add(summary, attempt);

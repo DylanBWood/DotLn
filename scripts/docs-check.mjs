@@ -1,7 +1,13 @@
 #!/usr/bin/env node
 import { sha256Hex as hash } from "./lib/helpers.mjs";
 
-import { existsSync, lstatSync, realpathSync, statSync } from "node:fs";
+import {
+  existsSync,
+  lstatSync,
+  realpathSync,
+  statSync,
+  writeFileSync,
+} from "node:fs";
 import { dirname, join, relative, resolve, sep } from "node:path";
 import {
   isMarkdownName,
@@ -376,6 +382,69 @@ const CAPTURE_DIGEST = /^sha256:[0-9a-f]{64}$/u;
 const attributedWords = (text) =>
   /\boperator\b[^.!?]*(?:["“]|(?:\s|:)['‘])/iu.test(normalized(text));
 const quotedDispatch = (text) => /["“]|(?:^|[\s:])['‘]/u.test(text);
+const OPERATOR_WORD_CLASSES = [
+  "attributed-speech",
+  "incidental-json",
+  "incidental-code",
+  "document-term",
+];
+/** Classification changes the advisory, never a historical record's key or
+ * fingerprint. Uncertain prose stays attributed speech rather than being
+ * hidden by a narrower lexical heuristic. */
+const operatorWordClass = (text, dispatch = "", syntax = text) => {
+  let code = false;
+  let json = false;
+  const ast = parseMarkdown(`${syntax}\n${dispatch}`);
+  const prose = [...nodes(ast)]
+    .filter((node) => node.type === "paragraph")
+    .map((node) =>
+      renderedText(node, " ", {
+        code: (value) => {
+          code = true;
+          // A whole quoted response keeps its attribution even when formatted
+          // as inline code. Assignments and other embedded code stay incidental.
+          return /^(?:"[\s\S]*"|“[\s\S]*”|'[\s\S]*'|‘[\s\S]*’)$/.test(
+            value.trim(),
+          )
+            ? value
+            : " ";
+        },
+      }),
+    )
+    .join(" ");
+  for (const node of nodes(ast))
+    if (node.type === "code") {
+      if (node.lang?.toLowerCase() === "json") json = true;
+      else code = true;
+    }
+  const withoutJson = prose.replace(/\{[^{}]*\}/gu, (value) => {
+    try {
+      JSON.parse(value);
+      json = true;
+      return " ";
+    } catch {
+      return value;
+    }
+  });
+  const speechCue =
+    /\boperator\b[^.!?]*\b(?:said|says|replied|responded|answered|wrote|message|words|told|stated)\b/iu;
+  if (speechCue.test(withoutJson) && quotedDispatch(`${text} ${dispatch}`))
+    return "attributed-speech";
+  if (!attributedWords(withoutJson) && !quotedDispatch(withoutJson)) {
+    if (json) return "incidental-json";
+    if (code) return "incidental-code";
+  }
+  // Named document tokens account only for their own quote characters.
+  // Any remaining quote keeps mixed or uncertain prose attributed, including
+  // speech verbs that the positive cue list does not happen to enumerate.
+  const documentTerm =
+    /\b(?:term|label|field|heading|section|command|flag|key|property|column|path|category)\s*(?:named|called|is|was|:)?\s*["“‘'][^"”‘’']+["”‘’']|["“‘'][^"”‘’']+["”‘’']\s+(?:term|label|field|heading|section|command|flag|key|property|column|path)\b/giu;
+  const withoutTerms = withoutJson.replace(documentTerm, " ");
+  if (withoutTerms !== withoutJson && !quotedDispatch(withoutTerms))
+    return "document-term";
+  // Operator-named fields attribute even an unquoted value by their key.
+  return "attributed-speech";
+};
 const captureCitation = (text) =>
   /(?:SHA-256[\s:()=-]*(?:sha256:)?|--capture-hash[\s=]+(?:sha256:)?)[a-f0-9]{64}\b/iu.test(
     text,
@@ -397,29 +466,54 @@ function* provenanceRecords(paragraph, source) {
       .map((child) => renderedText(child))
       .join("")
       .trimEnd();
+  const syntaxBetween = (from, to) =>
+    paragraph.children
+      .slice(from, to)
+      .map((child) => source.slice(start(child), end(child)))
+      .join("");
   // Preserve the original plain-label standalone paragraph form too.
   const leading = textBetween(0, fields[0]?.index);
-  if (/^(?:Nomination )?Provenance:/iu.test(leading)) yield leading;
+  if (/^(?:Nomination )?Provenance:/iu.test(leading))
+    yield { text: leading, syntax: syntaxBetween(0, fields[0]?.index) };
   for (let index = 0; index < fields.length; index++)
     if (/^(?:Nomination )?Provenance:$/iu.test(fields[index].label))
-      yield textBetween(fields[index].index, fields[index + 1]?.index);
+      yield {
+        text: textBetween(fields[index].index, fields[index + 1]?.index),
+        syntax: syntaxBetween(fields[index].index, fields[index + 1]?.index),
+      };
 }
 export function operatorWordFindings(root, files) {
   const findings = [];
-  const push = (file, record, text, dispatch = "", line) =>
+  const push = (
+    file,
+    record,
+    text,
+    dispatch = "",
+    line,
+    syntax = text,
+    wordClass,
+  ) =>
     findings.push({
       file,
       record,
       fingerprint: hash(normalized(JSON.stringify([text, dispatch]))),
+      wordClass: wordClass ?? operatorWordClass(text, dispatch, syntax),
       ...(line ? { line } : {}),
     });
-  const check = (file, record, text, dispatch = "", captureText = text) => {
+  const check = (
+    file,
+    record,
+    text,
+    dispatch = "",
+    captureText = text,
+    syntax = text,
+  ) => {
     if (
       (!attributedWords(text) && !quotedDispatch(dispatch)) ||
       captureCitation(captureText)
     )
       return;
-    push(file, record, text, dispatch);
+    push(file, record, text, dispatch, undefined, syntax);
   };
   if (documentEntry(root, docRelative(root, "workOrders")))
     for (const name of readDocumentDirectory(
@@ -435,11 +529,14 @@ export function operatorWordFindings(root, files) {
       let ordinal = 0;
       for (const node of nodes(parseMarkdown(source))) {
         if (node.type !== "paragraph") continue;
-        for (const text of provenanceRecords(node, source))
+        for (const { text, syntax } of provenanceRecords(node, source))
           check(
             file,
             ++ordinal === 1 ? "provenance" : `provenance-${ordinal}`,
             text,
+            "",
+            text,
+            syntax,
           );
       }
     }
@@ -502,6 +599,10 @@ export function operatorWordFindings(root, files) {
           row.path,
           `${row.id}/${key}${values.length > 1 ? `-${index + 1}` : ""}`,
           value,
+          "",
+          undefined,
+          value,
+          "attributed-speech",
         );
       });
     }
@@ -530,6 +631,7 @@ export function operatorWordFindings(root, files) {
         text,
         "",
         node.position?.start?.line,
+        source.slice(start(node), end(node)),
       );
     }
   }
@@ -558,6 +660,24 @@ export function operatorQuoteFailures(rows) {
   return failures;
 }
 
+const homePathBaseline = (baseline) => {
+  const homePaths = baseline.homePaths ?? {};
+  if (
+    homePaths === null ||
+    typeof homePaths !== "object" ||
+    Array.isArray(homePaths) ||
+    Object.values(homePaths).some(
+      (list) =>
+        !Array.isArray(list) ||
+        list.some((fingerprint) => !/^[0-9a-f]{64}$/u.test(fingerprint)),
+    )
+  )
+    throw new Error(
+      "Historical home-path exceptions require a file and SHA-256 line fingerprints",
+    );
+  return homePaths;
+};
+
 export function homePathFindings(root, files = markdownFiles(root)) {
   const findings = [];
   for (const file of files) {
@@ -575,6 +695,48 @@ export function homePathFindings(root, files = markdownFiles(root)) {
   return findings;
 }
 
+// Rewriting can consume only existing fingerprints. A new private-path line
+// is corrected at its source, never admitted by the maintenance command.
+export function shrinkHomePathBaseline(root) {
+  const path = docRelative(root, "control", "doc-baseline.json");
+  const baseline = readDocumentJson(root, path);
+  if (baseline.schemaVersion !== 1)
+    throw new Error("Unsupported document control schema");
+  const admitted = homePathBaseline(baseline);
+  const remaining = new Map(
+    Object.entries(admitted).map(([file, list]) => [file, [...list]]),
+  );
+  const lines = {};
+  for (const row of homePathFindings(root, [
+    ...markdownFiles(root),
+    ...recordFiles(root),
+  ])) {
+    const available = remaining.get(row.file) ?? [];
+    const at = available.indexOf(row.fingerprint);
+    if (at < 0)
+      throw new Error(
+        `${row.file}:${row.line}: a new private-path line is fixed, never baselined; replace it with a repository-relative path or placeholder`,
+      );
+    available.splice(at, 1);
+    (lines[row.file] ??= []).push(row.fingerprint);
+  }
+  const written = Object.fromEntries(
+    Object.entries(lines).sort(([a], [b]) => a.localeCompare(b)),
+  );
+  writeFileSync(
+    join(root, path),
+    JSON.stringify({ ...baseline, homePaths: written }, null, 2) + "\n",
+  );
+  const count = (rows) =>
+    Object.values(rows).reduce((total, list) => total + list.length, 0);
+  return {
+    path,
+    files: Object.keys(written).length,
+    lines: count(written),
+    removed: count(admitted) - count(written),
+  };
+}
+
 export function operatorWordAdvisories(root, baseline = {}, files) {
   const findings = operatorWordFindings(root, files);
   const current = findings.filter(
@@ -583,6 +745,12 @@ export function operatorWordAdvisories(root, baseline = {}, files) {
   return {
     current: current.length,
     historical: findings.length - current.length,
+    currentByClass: Object.fromEntries(
+      OPERATOR_WORD_CLASSES.map((wordClass) => [
+        wordClass,
+        current.filter((row) => row.wordClass === wordClass).length,
+      ]),
+    ),
     rows: current,
   };
 }
@@ -1517,20 +1685,7 @@ export function checkDocs(root, { ceilings, baseline, files, records } = {}) {
         "Historical link exceptions require a source, destination, reason and positive safe-integer count",
       );
   }
-  const homePaths = baseline.homePaths ?? {};
-  if (
-    homePaths === null ||
-    typeof homePaths !== "object" ||
-    Array.isArray(homePaths) ||
-    Object.values(homePaths).some(
-      (list) =>
-        !Array.isArray(list) ||
-        list.some((fingerprint) => !/^[0-9a-f]{64}$/u.test(fingerprint)),
-    )
-  )
-    throw new Error(
-      "Historical home-path exceptions require a file and SHA-256 line fingerprints",
-    );
+  const homePaths = homePathBaseline(baseline);
   files ??= markdownFiles(root);
   records ??= recordFiles(root);
   const failures = [],
@@ -1655,6 +1810,11 @@ export function checkDocs(root, { ceilings, baseline, files, records } = {}) {
           : `${row.file}:${row.line}: absolute home path in a record; write a repository-relative path or a placeholder such as <home>/ or <worktree>/`,
       );
   }
+  for (const [file, list] of remainingHomePaths)
+    if (list.length)
+      notices.push(
+        `STALE ${docRelative(root, "control", "doc-baseline.json")}: ${file} no longer holds ${list.length} baselined private-path line${list.length === 1 ? "" : "s"}; run node scripts/docs-check.mjs --write-home-path-baseline to shrink it`,
+      );
   const frontPage = frontPageFindings(root);
   failures.push(...frontPage.failures);
   notices.push(...frontPage.notices);
@@ -1675,27 +1835,43 @@ export function checkDocs(root, { ceilings, baseline, files, records } = {}) {
 
 if (isMainModule(import.meta.url)) {
   try {
-    if (process.argv.length > 2)
-      throw new Error("usage: node scripts/docs-check.mjs");
-    const result = checkDocs(findLaunchpad());
-    console.log("Document | Bytes | Exempt bytes | Ceiling | Headroom");
-    for (const row of result.rows)
-      console.log(
-        `${row.document} | ${row.bytes} | ${row.exemptBytes} | ${row.ceiling ?? "missing"} | ${row.headroom ?? "unknown"}`,
+    const args = process.argv.slice(2);
+    if (
+      args.length > 1 ||
+      (args.length === 1 && args[0] !== "--write-home-path-baseline")
+    )
+      throw new Error(
+        "usage: node scripts/docs-check.mjs [--write-home-path-baseline]",
       );
-    for (const notice of result.notices) console.log(notice);
-    for (const row of result.operatorWords.rows)
+    const root = findLaunchpad();
+    if (args[0] === "--write-home-path-baseline") {
+      const result = shrinkHomePathBaseline(root);
       console.log(
-        `ADVISORY ${row.file}#${row.record}: operator-attributed words need a capture digest (SHA-256 or --capture-hash), or a paraphrase`,
+        `Wrote ${result.path}: ${result.lines} historical private-path lines in ${result.files} files; removed ${result.removed} stale fingerprints.`,
       );
-    console.log(
-      `Operator-word advisories: ${result.operatorWords.current}; historical baseline: ${result.operatorWords.historical}.`,
-    );
-    for (const failure of result.failures) console.error(`FAIL ${failure}`);
-    console.log(
-      `${result.failures.length ? "FAIL" : "PASS"} docs check: ${result.rows.length} product documents; ${result.historicalLinks} declared historical link occurrences; ${result.historicalHomePaths} declared historical home-path lines; ${result.failures.length} failures`,
-    );
-    process.exitCode = result.failures.length ? 1 : 0;
+    } else {
+      const result = checkDocs(root);
+      console.log("Document | Bytes | Exempt bytes | Ceiling | Headroom");
+      for (const row of result.rows)
+        console.log(
+          `${row.document} | ${row.bytes} | ${row.exemptBytes} | ${row.ceiling ?? "missing"} | ${row.headroom ?? "unknown"}`,
+        );
+      for (const notice of result.notices) console.log(notice);
+      for (const row of result.operatorWords.rows)
+        console.log(
+          row.wordClass === "attributed-speech"
+            ? `ADVISORY ${row.file}#${row.record}: operator-attributed words need a capture digest (SHA-256 or --capture-hash), or a paraphrase`
+            : `NOTE ${row.file}#${row.record}: operator-word candidate classified as ${row.wordClass}; no attributed-speech advisory`,
+        );
+      console.log(
+        `Operator-word advisories: ${result.operatorWords.currentByClass["attributed-speech"]}; incidental JSON: ${result.operatorWords.currentByClass["incidental-json"]}; incidental code: ${result.operatorWords.currentByClass["incidental-code"]}; document terms: ${result.operatorWords.currentByClass["document-term"]}; current candidate records: ${result.operatorWords.current}; historical baseline: ${result.operatorWords.historical}.`,
+      );
+      for (const failure of result.failures) console.error(`FAIL ${failure}`);
+      console.log(
+        `${result.failures.length ? "FAIL" : "PASS"} docs check: ${result.rows.length} product documents; ${result.historicalLinks} declared historical link occurrences; ${result.historicalHomePaths} declared historical home-path lines; ${result.failures.length} failures`,
+      );
+      process.exitCode = result.failures.length ? 1 : 0;
+    }
   } catch (error) {
     console.error(`FAIL docs check: ${error.message}`);
     process.exitCode = 1;

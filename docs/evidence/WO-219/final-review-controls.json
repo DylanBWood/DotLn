@@ -1,0 +1,49 @@
+{
+  "dispatch": "resume: final review",
+  "report": "docs/final-reviews/WO-219/FINAL-001.md",
+  "finding": "VER-002 F4 (docs/verifications/WO-219/VER-002.md; WO-219-D079 reopening WO-219-D074)",
+  "method": "Root-owned sequential bounded probes outside any gate. The positive arm ran the new fixture case against the built fixed source; the reversion arm restored only packages/skeleton/src/harness-host.ts to its bytes at refs/dotln/checkpoint/WO-219/10 (the integration checkpoint, before this review's edit), rebuilt, and ran the same case; the source was then restored to the fixed bytes, rebuilt and rerun. The fixture file and the comment-baseline change were never reverted.",
+  "control": {
+    "id": "f4-closed-order-hook-receipt",
+    "suite": "harness-fixtures",
+    "fixture": "scripts/test-harness.mjs",
+    "case": "a closed selected order's override exit names its pending record and main's effects route, never the closed order's decisions",
+    "command": "node scripts/harness.mjs bounded -- node --test --test-name-pattern \"closed selected order's override exit\" scripts/test-harness.mjs",
+    "rule": "At a closed selected order the session hook's receipt names the pending record and that the next worktree start carries it, and its effects instruction names a further override-record from main's checkout; it never names the closed order's tracked decisions file. Open orders keep their decisions instruction.",
+    "positive": {
+      "exitCode": 0,
+      "startedAt": "2026-10-23T22:53:11.815Z",
+      "finishedAt": "2026-10-23T22:53:17.252Z",
+      "cases": 3,
+      "passed": 3,
+      "witness": "the new case and the two WO-158 open-order cases pass",
+      "logSha256": "ba70269197c30cb818027be1e158761a1222845a55f9777c549b166c4f4327ec"
+    },
+    "reversion": {
+      "exitCode": 1,
+      "cases": 1,
+      "failed": 1,
+      "witness": "AssertionError: the receipt read 'DotLn: recorded OperatorOverrideRecorded' instead of 'DotLn: Recorded pending OperatorOverrideRecorded for WO-999 in docs/control/local/pending-overrides/WO-999-<uuid>.json; the next worktree start carries it into the reviewed change'",
+      "logSha256": "2cd3415eb6616837a69ae3b0e10ea8c7b7f4fd71308b746e146ce8117439363f"
+    },
+    "restored": {
+      "exitCode": 0,
+      "cases": 1,
+      "passed": 1,
+      "logSha256": "449e562487e42e7f5c591d0720ad5f8144c814a0578e3a2cb4636854990967f6"
+    },
+    "implementation": {
+      "path": "packages/skeleton/src/harness-host.ts",
+      "beforeSha256": "bd67fece0a15ceecb98afc2af1d42e5917a36711b8dcfe54d7647b2a61010c4f",
+      "afterSha256": "6a0346d6970aa8f2b27fd6165a351b0a5c5a018900cbb4b90ca59192a4554f08",
+      "reversion": "Restore packages/skeleton/src/harness-host.ts to refs/dotln/checkpoint/WO-219/10 and rebuild; the fixture keeps its new case."
+    },
+    "finalSource": {
+      "note": "After the control, the function's doc comment was rephrased to lead with what the hook does (the comment-label check refuses a comment that leads with an order identifier), which changed the file's hash without changing behavior; the complete review judged the final bytes.",
+      "path": "packages/skeleton/src/harness-host.ts",
+      "sha256": "67735897e72588ca36f74bb37ab9f7f1f2c9f1e19f7c4725d6b2946a23fca3bf"
+    }
+  },
+  "completeGate": "the npm test -- --review row at code identity 4f4c7e501ef83c20ab4ea9b8e02efc5a64ae6f2a8946b6d458ea9a7dc347b9f0 recorded 2026-10-23T23:23:08.092Z",
+  "limit": "The arm hashes describe the source at the bounded comparison. The behavior under test is the emitted session hook's output at a closed selected order on main; a linked checkout's closed order is refused by scripts/resume.mjs before the hook's receipt is formed (VER-001 F2, repaired by D077) and is not exercised here."
+}

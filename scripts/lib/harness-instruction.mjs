@@ -20,6 +20,22 @@ export const migrateHarnessFloor = (text) =>
     .filter((line) => !legacyReads.has(line))
     .join("\n");
 
+const compiledFloorText = [
+  "Whole `resume:` phrases select their skill through canonical status.\n`@skills`: `.claude/skills` in Claude, `.agents/skills` in Codex.\n",
+  "Whole `resume:` phrases select their skill through canonical status\n(`npm run resume -- status --json` is the record). `@skills`: `.claude/skills`\nin Claude, `.agents/skills` in Codex. ",
+  "Expand skill read/review selectors from order/report paths. Read cited sections;\nname new inputs. A session that cannot load skills runs the\n`npm run resume -- <action>` commands itself.\n",
+  "Expand skill read/review selectors from order/report paths. Read cited sections;\nname new inputs.\n",
+  "The marked blocks\nat the end are generated: the kit block by the export (its provenance) and the\nharness block by `node scripts/harness.mjs emit`, which `harness check`\nverifies.",
+  "This export carries the compiled runtime under packages/<name>/dist/ (hashed in KIT-MANIFEST.json) and the Contributor harness bundle its own emit wrote from it; node scripts/harness.mjs check verifies the pinned runtime snapshot and every generated surface. The hooks import an ignored snapshot under .runtime/harness/: a fresh clone runs node scripts/bootstrap.mjs once (npm ci, then the emit that installs it); until then each hook reports snapshot-missing once per session and host permissions alone decide.\n",
+];
+/** Remove only known standing references to the harness surfaces a disabled
+ * build removes. The clean-room floor and custom operator instructions stay. */
+export const withoutCompiledHarnessFloor = (text) =>
+  compiledFloorText.reduce(
+    (floor, paragraph) => floor.replace(paragraph, ""),
+    text,
+  );
+
 export function harnessInstructionBlock(text) {
   const starts = text.split(HARNESS_START).length - 1;
   const ends = text.split(HARNESS_END).length - 1;

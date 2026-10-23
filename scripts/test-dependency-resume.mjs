@@ -64,6 +64,28 @@ const segment = join(root, "docs/control/orders/WO-099.jsonl");
 const projection = join(root, "docs/control/current.md");
 const snapshot = (file) =>
   existsSync(file) ? readFileSync(file, "utf8") : null;
+writeFileSync(
+  join(root, "dotln.config.json"),
+  JSON.stringify({ version: 1, historicalWorkOrders: ["WO-020"] }),
+);
+for (const relation of ["hard", "satisfied-by-close", "satisfied-by-release"]) {
+  authority([
+    entry(
+      "WO-020",
+      relation,
+      relation === "satisfied-by-release" ? { release: "v1.0.0" } : {},
+    ),
+  ]);
+  const before = [snapshot(segment), snapshot(projection)];
+  const refused = call("activate", "WO-099", path);
+  assert.equal(refused.status, 1);
+  assert.match(
+    refused.stderr,
+    /historical id cannot be a hard or satisfied dependency/,
+  );
+  assert.deepEqual([snapshot(segment), snapshot(projection)], before);
+}
+writeFileSync(join(root, "dotln.config.json"), JSON.stringify({ version: 1 }));
 for (const value of [
   entry("WO-098", "hard"),
   entry("WO-098", "satisfied-by-close"),

@@ -190,9 +190,12 @@ export function gatePerformanceConditions(
       threshold: baseline === null ? null : baseline * 1.5,
       recordedAt: latest.recordedAt,
       holds:
-        baseline === null ? null : latest.durationMs / 1000 > baseline * 1.5,
-      ...(baseline === null
-        ? { unavailable: "no earlier fresh task sample in thirty days" }
+        prior.length < 3 ? null : latest.durationMs / 1000 > baseline * 1.5,
+      ...(prior.length < 3
+        ? {
+            unavailable:
+              "fewer than three earlier fresh task samples in thirty days",
+          }
         : {}),
     });
   }
@@ -526,7 +529,10 @@ export async function planningConditions(
     })(),
   };
   const rows = [];
-  for (const row of table) {
+  const applicable = kit
+    ? table.filter((row) => row.sources.every((id) => knownSources.has(id)))
+    : table;
+  for (const row of applicable) {
     let measurement;
     try {
       if (row.slow && !slow) throw new Error("not measured; use --slow");
@@ -539,25 +545,16 @@ export async function planningConditions(
     const values = Array.isArray(measurement.value)
       ? measurement.value
       : [measurement.value];
-    let holds =
+    const holds =
       values.length === (row.consecutive ?? 1) && values.every(Number.isFinite)
         ? values.every((value) => value > row.threshold)
         : null;
-    if (kit) {
-      const missing = row.sources.filter((id) => !knownSources.has(id));
-      if (missing.length) {
-        holds = null;
-        measurement.unavailable = [
-          measurement.unavailable,
-          `core condition sources absent: ${missing.join(", ")}`,
-        ]
-          .filter(Boolean)
-          .join("; ");
-      }
-    }
     rows.push({ ...row, ...measurement, holds });
   }
-  if (table === CONDITION_TABLE) {
+  if (
+    table === CONDITION_TABLE &&
+    (!kit || knownSources.has("FUP-e96221b106cd136a"))
+  ) {
     try {
       let main;
       try {

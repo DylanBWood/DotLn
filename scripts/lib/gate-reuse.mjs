@@ -394,9 +394,9 @@ export async function preflightRows(root, codeIdentity, suites) {
       name === "structural" ? [...STRUCTURAL_SUITES] : [name],
       codeIdentity,
     );
-    const latest = (await gateCandidates(root, checkId, codeIdentity)).rows.at(
-      -1,
-    );
+    const latest = (await gateCandidates(root, checkId, codeIdentity)).rows
+      .filter((candidate) => !partialRow(candidate) || candidate.exitCode !== 0)
+      .at(-1);
     const row = found.row;
     if (
       !row ||

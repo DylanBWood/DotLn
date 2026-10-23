@@ -6,6 +6,7 @@ import {
   mkdirSync,
   readFileSync,
   realpathSync,
+  renameSync,
   rmSync,
   writeFileSync,
 } from "node:fs";
@@ -128,7 +129,40 @@ if (!subject)
     2,
     missing.stderr,
   );
+// A briefing read failure must not consume the next report identity.
+const refutations = join(root, "docs/planning/refutations");
+const beforeVerify = readFileSync(
+  join(root, "docs/control/orders/WO-187.jsonl"),
+  "utf8",
+);
+renameSync(refutations, `${refutations}.held`);
+writeFileSync(refutations, "not a directory\n");
+try {
+  const refused = spawnSync(
+    process.execPath,
+    [join(root, "scripts/resume.mjs"), "verify"],
+    { cwd: root, env, encoding: "utf8" },
+  );
+  assert.equal(refused.status, 1);
+  assert.match(refused.stderr, /ENOTDIR|not a directory/i);
+  assert.equal(
+    readFileSync(join(root, "docs/control/orders/WO-187.jsonl"), "utf8"),
+    beforeVerify,
+    "unreadable briefing allocated a verification identity",
+  );
+} finally {
+  rmSync(refutations);
+  renameSync(`${refutations}.held`, refutations);
+}
 const verify = call(["verify"]).stdout;
+assert.match(
+  verify,
+  /VER-001/,
+  "ordinary retry must retain the first report identity",
+);
+console.log(
+  "verification briefing failure preserves its phase and next report identity",
+);
 assert.ok(
   verify.includes("order-known-issue sentinel"),
   "verify must print the order's known issues",
@@ -1151,22 +1185,22 @@ for (const [text, advised] of [
   ["```md\nself-review: found 0; fixed 0; recorded 0\n```", false],
   ["", true],
   ["No review ran.", true],
-  ["**self-review:** found 1; fixed 1; recorded 0.", true],
-  ["**self-review**: found 1; fixed 1; recorded 0.", true],
-  ["- **Self-review:** found 1; fixed 1; recorded 0.", true],
+  ["**self-review:** found 1; fixed 1; recorded 0.", false],
+  ["**self-review**: found 1; fixed 1; recorded 0.", false],
+  ["- **Self-review:** found 1; fixed 1; recorded 0.", false],
   ["> self-review: found 1; fixed 1; recorded 0.", true],
   ["- > self-review: found 1; fixed 1; recorded 0.", true],
   ["  self-review: found 1; fixed 1; recorded 0", true],
   ["-self-review: found 1; fixed 1; recorded 0", true],
-  ["Self-review: found 1; fixed 1; recorded 0", true],
-  ["`self-review:` found 1; fixed 1; recorded 0", true],
+  ["Self-review: found 1; fixed 1; recorded 0", false],
+  ["`self-review:` found 1; fixed 1; recorded 0", false],
   ["The self-review: found 1; fixed 1; recorded 0", true],
-  ["self-review (dotln-worker): found 1; fixed 1; recorded 0", true],
+  ["self-review (dotln-worker): found 1; fixed 1; recorded 0", false],
   ["self-review:found 1; fixed 1; recorded 0", true],
   ["self-review:  found 1; fixed 1; recorded 0", true],
   ["self-review: found 1, fixed 1, recorded 0", true],
   ["self-review: found one; fixed one; recorded none", true],
-  ["self-review: found **1**; fixed 1; recorded 0", true],
+  ["self-review: found **1**; fixed 1; recorded 0", false],
   ["self-review: found 1; fixed 1", true],
   ["self-review: found 1; fixed 1; recorded", true],
   ["self-review: found 1; fixed 1; recorded 0x", true],

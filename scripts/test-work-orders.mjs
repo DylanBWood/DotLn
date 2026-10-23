@@ -21,6 +21,9 @@ import {
   projectDependencies,
   closedDependencySet,
   dependencyReleaseSet,
+  historicalDependencyIds,
+  historicalDependencyIdsAt,
+  readDependencies,
 } from "./lib/dependencies.mjs";
 import { fold, foldWorkOrders } from "./lib/control.mjs";
 import { runGit, failureOf, readGitObjects } from "./lib/git.mjs";
@@ -34,6 +37,7 @@ import {
   checkPartition,
   checkSequenceCoverage,
   checkSequenceTopology,
+  checkPreflightSuites,
   parseHeader,
   parseSequence,
   readIndex,
@@ -1350,10 +1354,23 @@ await check(
       dependency("WO-001", "hard"),
       dependency("WO-002", "satisfied-by-close"),
     ];
-    assert.deepEqual(parse(instanceEntries).entries, instanceEntries);
+    for (const entry of instanceEntries) {
+      assert.throws(() => parse([entry]), /historical id/);
+      assert.throws(
+        () => parseHeader(typedHeader("WO-099", [entry]), path),
+        /historical id/,
+      );
+    }
+    const withoutHistorical = parseDependencies(
+      typedHeader("WO-099", instanceEntries),
+      path,
+      undefined,
+      new Set(),
+    );
+    assert.deepEqual(withoutHistorical.entries, instanceEntries);
     assert.equal(
       projectDependencies(
-        parse(instanceEntries),
+        withoutHistorical,
         new Map([
           ["WO-001", "pass"],
           ["WO-002", "pass"],
@@ -2150,6 +2167,121 @@ await check(
       renderReports(6),
       [],
       "completed final review links its existing report",
+    );
+  },
+);
+
+await check(
+  "Preflight suites resolve product and machinery declarations and exempt settled orders",
+  () => {
+    const fixture = makeRepo("preflight-declarations");
+    const authority = authorityPath("WO-901");
+    write(
+      fixture,
+      authority,
+      header("WO-901", "unassigned") +
+        "\n**Preflight:** `npm test -- --only product-case`;\n`npm test -- --only machinery-case`.\n",
+    );
+    write(
+      fixture,
+      "scripts/test-runner.mjs",
+      'export const suites = [{name:"product-case",product:true},{name:"machinery-case",machinery:true}];\n',
+    );
+    const index = {
+      rows: [{ id: "WO-901", path: authority, section: "Open" }],
+    };
+    assert.doesNotThrow(() => checkPreflightSuites(fixture, index));
+    write(
+      fixture,
+      authority,
+      header("WO-901", "unassigned") +
+        "\n**Preflight:** `npm test -- --only absent-case`.\n",
+    );
+    assert.throws(
+      () => checkPreflightSuites(fixture, index),
+      /WO-901: Preflight suite absent-case.*not declared/u,
+    );
+    for (const section of ["Closed", "Withdrawn", "Historical", "Superseded"])
+      assert.doesNotThrow(() =>
+        checkPreflightSuites(fixture, {
+          rows: [{ ...index.rows[0], section }],
+        }),
+      );
+    unlinkSync(join(fixture, "scripts/test-runner.mjs"));
+    assert.throws(
+      () => checkPreflightSuites(fixture, index),
+      /Preflight suites cannot be read from scripts\/test-runner.mjs/u,
+    );
+  },
+);
+
+await check(
+  "configured historical dependencies refuse through parser, index and activation readers; an empty instance admits the same ids",
+  () => {
+    const repo = makeRepo("configured-history-readers");
+    const source = (relation) =>
+      typedHeader("WO-099", [
+        dependency(
+          "WO-020",
+          relation,
+          relation === "satisfied-by-release" ? { release: "v1.0.0" } : {},
+        ),
+      ]);
+    write(
+      repo,
+      "dotln.config.json",
+      JSON.stringify({ version: 1, historicalWorkOrders: ["WO-020"] }),
+    );
+    const path = authorityPath("WO-099");
+    for (const relation of [
+      "hard",
+      "satisfied-by-release",
+      "satisfied-by-close",
+    ]) {
+      write(repo, path, source(relation));
+      const historicalIds = historicalDependencyIds(repo);
+      assert.throws(
+        () =>
+          parseDependencies(source(relation), path, undefined, historicalIds),
+        /historical id/,
+      );
+      assert.throws(
+        () => parseHeader(source(relation), path, { historicalIds }),
+        /historical id/,
+      );
+      assert.throws(() => readIndex(repo), /historical id/);
+      assert.throws(
+        () =>
+          readDependencies(
+            repo,
+            { workOrderId: "WO-099", workOrderPath: path },
+            { orders: new Map() },
+            () => new Set(),
+          ),
+        /historical id/,
+      );
+    }
+    write(repo, "dotln.config.json", JSON.stringify({ version: 1 }));
+    const historicalIds = historicalDependencyIds(repo);
+    assert.equal(historicalIds.size, 0);
+    assert.equal(
+      parseHeader(source("hard"), path, { historicalIds }).dependencies
+        .entries[0].workOrderId,
+      "WO-020",
+    );
+    assert.equal(
+      readIndex(repo).rows.find((row) => row.id === "WO-099").dependencies
+        .entries[0].workOrderId,
+      "WO-020",
+    );
+    const historicalReader = {
+      paths: ["dotln.config.json"],
+      read: () => JSON.stringify({ version: 1 }),
+    };
+    assert.equal(
+      historicalDependencyIdsAt(historicalReader).size,
+      0,
+      "old receipts do not acquire today's configured historical ids",
     );
   },
 );

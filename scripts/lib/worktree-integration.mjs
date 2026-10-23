@@ -112,6 +112,32 @@ function unrestoredUntracked(root, stash) {
     }
   });
 }
+function unrestoredTracked(root, stash) {
+  return runGitPathList(root, [
+    "diff",
+    "--name-only",
+    "--no-renames",
+    "-z",
+    `${stash}^1`,
+    stash,
+    "--",
+  ]).filter((path) => {
+    if (pureProjection(root, path)) return false;
+    const mask = mixedProjectionMask(root, path);
+    if (mask) {
+      const before = blob(root, `${stash}^1`, path);
+      const saved = blob(root, stash, path);
+      if (before !== null && saved !== null && mask(before) === mask(saved))
+        return false;
+    }
+    // A resolution may differ from the stash, but an unchanged HEAD path
+    // that differs from the stashed value carries no trace of authored work.
+    return (
+      gitResult(root, ["diff", "--quiet", stash, "--", path]).status !== 0 &&
+      gitResult(root, ["diff", "--quiet", "HEAD", "--", path]).status === 0
+    );
+  });
+}
 const pureProjection = (root, path) =>
   [
     manifest,
@@ -129,34 +155,35 @@ const pureProjection = (root, path) =>
   /^\.(?:claude|agents)\/skills\/dotln-[a-z-]+\/SKILL\.md$/.test(path) ||
   /^packages\/console\/fixtures\/expected\//.test(path);
 
-// Re-merge mixed documents after masking only their generated fragment. The
-// authored text still goes through Git's three-way merge and may conflict.
-function mixedProjection(root, path, recordedPath) {
-  const mask =
-    path === "CLAUDE.md"
+// Mask only the known generated fragment in a mixed document. Authored
+// differences remain subject to preservation checks and three-way merging.
+const mixedProjectionMask = (root, path) =>
+  path === "CLAUDE.md"
+    ? (s) =>
+        s.replace(
+          /<!-- dotln-harness:start -->[\s\S]*?<!-- dotln-harness:end -->/g,
+          "<!-- dotln-harness:start -->\n<!-- dotln-harness:end -->",
+        )
+    : editionPages(root).includes(path)
       ? (s) =>
           s.replace(
-            /<!-- dotln-harness:start -->[\s\S]*?<!-- dotln-harness:end -->/g,
-            "<!-- dotln-harness:start -->\n<!-- dotln-harness:end -->",
+            /^Source lock:.*$/gm,
+            "Source lock: `sha256:" + "0".repeat(64) + "`",
           )
-      : editionPages(root).includes(path)
+      : path === "README.md"
         ? (s) =>
             s.replace(
-              /^Source lock:.*$/gm,
-              "Source lock: `sha256:" + "0".repeat(64) + "`",
+              /<!-- DOTLN-RELEASE-BEGIN -->[\s\S]*?<!-- DOTLN-RELEASE-END -->/g,
+              (block) => {
+                const versions = strictVersionsIn(block);
+                return versions.length === 1
+                  ? block.replace(versions[0], "v0.0.0")
+                  : block;
+              },
             )
-        : path === "README.md"
-          ? (s) =>
-              s.replace(
-                /<!-- DOTLN-RELEASE-BEGIN -->[\s\S]*?<!-- DOTLN-RELEASE-END -->/g,
-                (block) => {
-                  const versions = strictVersionsIn(block);
-                  return versions.length === 1
-                    ? block.replace(versions[0], "v0.0.0")
-                    : block;
-                },
-              )
-          : null;
+        : null;
+function mixedProjection(root, path, recordedPath) {
+  const mask = mixedProjectionMask(root, path);
   if (!mask) return false;
   const sources = [":2", ":1", ":3"].map((stage) => blob(root, stage, path));
   if (sources.some((s) => s === null)) return false;
@@ -689,6 +716,32 @@ export async function integrateWorktree(root, workOrder, args = []) {
     refuseIntentToAdd();
     receipt = previous;
     if (stashApplied) {
+      const missingTracked = receipt.stash
+        ? unrestoredTracked(root, receipt.stash)
+        : [];
+      receipt.unrestoredTrackedPaths = missingTracked;
+      if (missingTracked.length) {
+        save();
+        const paths = missingTracked.map(shellQuote).join(" ");
+        throw new Error(
+          `retained stash paths have no trace in the tree: ${missingTracked.map(shellQuote).join(", ")}; inspect git diff ${receipt.stash}^1 ${receipt.stash} -- ${paths}; restore the retained work with git restore --source=${receipt.stash} --worktree -- ${paths}, stage it with git add -- ${paths}, then run npm run worktree -- integrate ${workOrder} --continue --stash-applied; checkpoint and stash retained`,
+        );
+      }
+      const collisions = receipt.stash
+        ? unrestoredUntracked(root, receipt.stash)
+        : [];
+      const unseen = collisions.filter(
+        (path) => !receipt.untrackedConflicts?.includes(path),
+      );
+      if (unseen.length) {
+        receipt.untrackedConflicts = [
+          ...new Set([...(receipt.untrackedConflicts ?? []), ...unseen]),
+        ];
+        save();
+        throw new Error(
+          `untracked stash collisions need explicit acknowledgement: ${unseen.map(shellQuote).join(", ")}; inspect git stash show --include-untracked --patch ${receipt.stash}; choose the retained, upstream or combined content, stage it with git add -- ${unseen.map(shellQuote).join(" ")}, then run npm run worktree -- integrate ${workOrder} --continue --stash-applied to acknowledge these recorded paths; checkpoint and stash retained`,
+        );
+      }
       const unresolved = receipt.stash
         ? unrestoredUntracked(root, receipt.stash).filter(
             (path) =>
@@ -700,7 +753,7 @@ export async function integrateWorktree(root, workOrder, args = []) {
         : [];
       if (conflicts(root).length || unresolved.length)
         throw new Error(
-          "resolve and stage the retained stash's conflicts and restore its untracked files before --stash-applied",
+          `resolve and stage the retained stash's conflicts and restore its untracked files before --stash-applied; inspect git stash show --include-untracked --patch ${receipt.stash}, run git status --short, stage the listed resolutions with git add -- ${[...new Set([...conflicts(root), ...unresolved])].map(shellQuote).join(" ")}, then run npm run worktree -- integrate ${workOrder} --continue --stash-applied; checkpoint and stash retained`,
         );
       if (
         gitResult(root, [
@@ -727,9 +780,15 @@ export async function integrateWorktree(root, workOrder, args = []) {
             .status !== 0
         )
           throw new Error(
-            `stage the explicit untracked-file resolution before continuing: ${path}`,
+            `stage the explicit untracked-file resolution before continuing: ${shellQuote(path)}; inspect git show ${shellQuote(`${receipt.stash}^3:${path}`)}, choose the content, run git add -- ${shellQuote(path)}, then npm run worktree -- integrate ${workOrder} --continue${stashApplied ? " --stash-applied" : ""}`,
           );
       }
+      receipt.untrackedCollisionAcknowledgements = [
+        ...new Set([
+          ...(receipt.untrackedCollisionAcknowledgements ?? []),
+          ...receipt.untrackedConflicts,
+        ]),
+      ];
       receipt.untrackedConflicts = [];
     }
     // A receipt left at `preserved` resumes at the stash and merge step.
@@ -860,7 +919,7 @@ export async function integrateWorktree(root, workOrder, args = []) {
         !receipt.untrackedConflicts.length
       )
         throw new Error(
-          `stash apply failed; retained ${receipt.stash}; inspect git stash show --include-untracked ${receipt.stash}, finish its application and stage resolutions, then run npm run worktree -- integrate ${workOrder} --continue --stash-applied: ${applied.stderr || applied.stdout}`,
+          `stash apply failed; retained ${receipt.stash}; inspect git stash show --include-untracked --patch ${receipt.stash}; run git stash apply ${receipt.stash} if its application is incomplete, resolve the paths named by git status --short and stage tracked resolutions with git add -u, then run npm run worktree -- integrate ${workOrder} --continue --stash-applied: ${applied.stderr || applied.stdout}`,
         );
     }
     receipt.stage = "applied";
@@ -869,7 +928,7 @@ export async function integrateWorktree(root, workOrder, args = []) {
   }
   if (receipt.stage === "applying")
     throw new Error(
-      `interrupted stash application; inspect git stash show --include-untracked ${receipt.stash}, finish its application and stage resolutions, then run npm run worktree -- integrate ${workOrder} --continue --stash-applied; the checkpoint and stash stay retained`,
+      `interrupted stash application; inspect git stash show --include-untracked --patch ${receipt.stash}; run git stash apply ${receipt.stash} if its application is incomplete, resolve the paths named by git status --short and stage tracked resolutions with git add -u, then run npm run worktree -- integrate ${workOrder} --continue --stash-applied; the checkpoint and stash stay retained`,
     );
   receipt.authored = [
     ...new Set([

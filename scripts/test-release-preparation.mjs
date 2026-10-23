@@ -1,6 +1,7 @@
 import { execGit } from "./lib/git.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
+import { absoluteBodyLinks, relativeLinkFailures } from "./lib/github-body.mjs";
 import { writingGuidance } from "./lib/reader-profiles.mjs";
 import { seedReaderProfiles } from "./test-reader-fixture.mjs";
 
@@ -787,4 +788,203 @@ test("prepare --integration is refused once the stub is written or a saved outco
   } finally {
     f.dispose();
   }
+});
+
+test("close history retains parsed publication when archiving fails and bounds repeated missing-archive retries", async (t) => {
+  const { chmodSync } = await import("node:fs");
+  const { readCloseHistory, reanchorCloseHistory } =
+    await import("./release.mjs");
+  const root = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-close-history-")),
+  );
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  const order = "WO-999",
+    directory = join(root, "docs/control/local/retained", order);
+  const attempts = join(directory, "attempts"),
+    file = join(directory, "release-close.json");
+  mkdirSync(attempts, { recursive: true });
+  const prior = {
+    schemaVersion: 1,
+    workOrderId: order,
+    previousAttempts: [],
+    publication: {
+      target: { policy: "declared", tag: "v1.0.0", tagOutcome: "published" },
+    },
+  };
+  writeFileSync(file, JSON.stringify(prior));
+  if (process.getuid?.() !== 0) {
+    chmodSync(attempts, 0o500);
+    try {
+      const refused = readCloseHistory(root, order);
+      assert.match(
+        refused.historyFailure,
+        /attempts\/[^ ]+\.json.*archive|attempts\/[^ ]+\.json.*EACCES/u,
+      );
+      assert.deepEqual(refused.previousAttempts, prior.previousAttempts);
+      assert.equal(
+        refused.retainedHistoryAttempt.publication.target.tag,
+        "v1.0.0",
+      );
+      assert.ok(
+        refused.previousAttempts.every((attempt) => !attempt.unreadableRecord),
+      );
+    } finally {
+      chmodSync(attempts, 0o700);
+    }
+  } else
+    t.diagnostic(
+      "the archive write-permission arm requires a non-root process",
+    );
+  const first = readCloseHistory(root, order);
+  assert.equal(first.historyFailure, undefined);
+  const absent = first.archivedAttempts[0];
+  rmSync(join(root, absent));
+  let record = { ...prior, ...first };
+  delete record.recoveryAttempts;
+  writeFileSync(file, JSON.stringify(record));
+  const sizes = [];
+  for (let retry = 0; retry < 6; retry++) {
+    const history = readCloseHistory(root, order);
+    assert.match(
+      history.historyFailure,
+      new RegExp(absent.replace(/[.*+?^${}()|[\]\\]/gu, "\\$&")),
+    );
+    assert.match(history.historyFailure, /reanchorCloseHistory/u);
+    assert.ok(
+      !history.historyFailure
+        .split("; publication stopped")[0]
+        .includes(root + "/"),
+      "the archive diagnosis uses its relative path",
+    );
+    assert.deepEqual(
+      history.previousAttempts,
+      record.previousAttempts,
+      "a refused retry keeps its parsed flat history",
+    );
+    record = { ...prior, ...history };
+    delete record.recoveryAttempts;
+    writeFileSync(file, JSON.stringify(record));
+    sizes.push(readFileSync(file).length);
+    assert.ok(
+      !JSON.stringify(record.previousAttempts).includes("unreadableRecord"),
+    );
+  }
+  assert.equal(
+    new Set(sizes.slice(1)).size,
+    1,
+    "refused retries stop growing after the first failure record",
+  );
+  const anchor = await reanchorCloseHistory(root, order);
+  assert.ok(existsSync(join(root, anchor)));
+  const recovered = readCloseHistory(root, order);
+  assert.equal(recovered.historyFailure, undefined);
+  assert.ok(
+    recovered.recoveryAttempts.some(
+      (attempt) => attempt.publication?.target?.tag === "v1.0.0",
+    ),
+  );
+});
+
+test("starter tag classification consumes one batched annotation read", async (t) => {
+  const { spawnSync } = await import("node:child_process");
+  const f = fixture();
+  t.after(f.dispose);
+  git(f.root, "add", ".");
+  git(f.root, "commit", "-qm", "Tag annotation fixture");
+  const head = git(f.root, "rev-parse", "HEAD").toString("utf8").trim();
+  git(
+    f.root,
+    "tag",
+    "-a",
+    "v1.0.0",
+    "-m",
+    `Starter v1.0.0\n\nCore commit: ${head}`,
+  );
+  git(f.root, "tag", "-a", "v1.0.1", "-m", "Ordinary release");
+  git(f.root, "tag", "-a", "notes", "-m", "Unversioned annotation");
+  const bin = join(f.root, "bin");
+  mkdirSync(bin);
+  const realGit = spawnSync("/bin/sh", ["-c", "command -v git"], {
+    encoding: "utf8",
+  }).stdout.trim();
+  const calls = join(f.root, "git-calls.jsonl");
+  writeFileSync(
+    join(bin, "git"),
+    `#!${process.execPath}\nconst fs=require('node:fs'),cp=require('node:child_process'),args=process.argv.slice(2);fs.appendFileSync(${JSON.stringify(calls)},JSON.stringify(args)+'\\n');const r=cp.spawnSync(${JSON.stringify(realGit)},args,{stdio:'inherit'});process.exit(r.status??1);\n`,
+    { mode: 0o755 },
+  );
+  const moduleUrl = new URL("./lib/release-tags.mjs", import.meta.url).href;
+  const script = `const {localTags,releaseAnnotations,isStarterTag}=await import(${JSON.stringify(moduleUrl)});const root=process.argv[1],tags=localTags(root),annotations=releaseAnnotations(root,[...tags.values()]);console.log(JSON.stringify([...tags].map(([name,tag])=>[name,isStarterTag(root,name,tag,annotations)])));`;
+  const result = spawnSync(
+    process.execPath,
+    ["--input-type=module", "-e", script, f.root],
+    {
+      env: { ...process.env, PATH: `${bin}:${process.env.PATH}` },
+      encoding: "utf8",
+    },
+  );
+  assert.equal(result.status, 0, result.stderr);
+  assert.deepEqual(Object.fromEntries(JSON.parse(result.stdout)), {
+    notes: false,
+    "v1.0.0": true,
+    "v1.0.1": false,
+  });
+  const reads = readFileSync(calls, "utf8")
+    .trim()
+    .split("\n")
+    .map(JSON.parse)
+    .filter((args) => args.includes("cat-file"));
+  assert.equal(
+    reads.length,
+    1,
+    "immutable tag annotations are read in one batch",
+  );
+  assert.ok(reads[0].includes("--batch"));
+});
+
+test("reference images rewrite their definition with raw bytes and retain exact written-destination spans", () => {
+  const options = {
+    from: "docs/PR.md",
+    repository: { selector: "github.com/fixture/project" },
+    revision: "reviewed",
+  };
+  for (const [reference, definition] of [
+    ["![figure][Image]", "[image]: figures/a.png?size=2&raw=false#view"],
+    ["![figure][]", "[figure]: figures/a.png?size=2&raw=false#view"],
+    ["![figure]", "[figure]: figures/a.png?size=2&raw=false#view"],
+  ]) {
+    const written = [];
+    const result = absoluteBodyLinks(`${reference}\n\n${definition}\n`, {
+      ...options,
+      written,
+    });
+    const destination =
+      "https://github.com/fixture/project/blob/reviewed/docs/figures/a.png?size=2&raw=true#view";
+    assert.ok(result.includes(destination), result);
+    assert.deepEqual(
+      written.map(({ start, end }) => result.slice(start, end)),
+      [destination],
+    );
+    assert.deepEqual(relativeLinkFailures(result), []);
+  }
+  const nonImage = absoluteBodyLinks(
+    "[record][ref]\n\n[ref]: record.md?plain=1#top\n",
+    options,
+  );
+  assert.ok(nonImage.includes("record.md?plain=1#top"));
+  assert.ok(!nonImage.includes("raw=true"));
+  const shared = absoluteBodyLinks(
+    "[open][ref] and ![figure][ref]\n\n[ref]: a.png\n",
+    options,
+  );
+  assert.ok(shared.includes("a.png?raw=true"));
+  const absolute =
+    "![figure][ref]\n\n[ref]: https://example.com/a.png?raw=false#top\n";
+  const written = [];
+  assert.equal(absoluteBodyLinks(absolute, { ...options, written }), absolute);
+  assert.deepEqual(
+    written,
+    [],
+    "author-written absolute destinations never become renderer attribution",
+  );
 });

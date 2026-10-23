@@ -531,9 +531,39 @@ export function checkPlanContinuation(
     }
     return input;
   });
+  const relocationRead = (path) => {
+    const source = read(path);
+    if (!writebackUpdates.some((update) => update.path === path)) return source;
+    const before = original.read(path);
+    const range = (text) => {
+      const headings = citationHeadings(text);
+      const matches = headings.filter(
+        (heading) => heading.title === "The one-paragraph story",
+      );
+      requireSamePlan(
+        matches.length === 1,
+        "execution writeback story heading is ambiguous",
+      );
+      const heading = matches[0];
+      const next = headings.find(
+        (candidate) =>
+          candidate.index > heading.index && candidate.level <= heading.level,
+      );
+      return [heading.index, next?.index ?? text.length];
+    };
+    const [start, end] = range(source),
+      [oldStart, oldEnd] = range(before);
+    // acceptedHash was checked above. Restore exactly this authorized section;
+    // every other byte still has to pass the ordinary complete relocation proof.
+    return (
+      source.slice(0, start) +
+      before.slice(oldStart, oldEnd) +
+      source.slice(end)
+    );
+  };
   const relocation = same(fixedBefore, authorizedAfter)
     ? { updates: [] }
-    : relocatedLinks(root, original, read, {
+    : relocatedLinks(root, original, relocationRead, {
         workspace,
         path: docRelative(root, "product", "00-vision.md"),
       });

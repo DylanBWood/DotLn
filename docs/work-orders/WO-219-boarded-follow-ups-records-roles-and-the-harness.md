@@ -1,12 +1,13 @@
-# WO-219 — Boarded follow-ups, batch 3: lifecycle records, attestation, role text, hooks, the harness and planning machinery: every one of the 50 register rows listed below is fixed with a fixture case or declined with its recorded reason, the register shows it, and a row only the operator can decide leaves as an operator packet (version assigned at activation)
+# WO-219 — Boarded follow-ups, batch 3: lifecycle records, attestation, role text, hooks, the harness and planning machinery: every one of the 50 register rows listed below is fixed with a fixture case or declined with its recorded reason, the register shows it, and a row only the operator can decide leaves as an operator packet (v0.94.0)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh; verifier xhigh; reviewer xhigh.
 **Track:** machinery
-**Release classification:** assigned at activation from the fixes made (patch
-unless a fix changes a command, flag, schema or refusal, which the decisions
-name; then minor). A declined row changes no behavior.
+**Release classification:** minor. New SourceBundle refusals, the explicit
+follow-up continuation limit, post-close override admission and stricter
+correction/target admission change accepted command or input behavior.
+WO-219-D005 records component compatibility; a declined row changes no behavior.
 **Cost:** adds the fixes and fixture cases the listed rows need, across
 `scripts/resume.mjs`, `scripts/lib/handoff-ledger.mjs`, `scripts/lib/verification-briefing.mjs`, `scripts/lib/review-findings.mjs`, `scripts/lib/comment-labels.mjs`, `scripts/lib/plan-receipts.mjs`, `scripts/lib/planning-followups.mjs`, `scripts/lib/planning-conditions.mjs`, `packages/skeleton/src/loadouts/contributor.ts`, `packages/skeleton/src/harness-host.ts`, `packages/kernel/src/core.ts`, `packages/kernel/src/store.ts`, `packages/compiler/src/source-bundle.ts`, the hooks under `.claude/hooks/`, for the row the 2026-10-19 fork-requests pass added `scripts/work-orders.mjs` (`index --check`) and `scripts/test-runner.mjs` (`--list`), for the four rows the 2026-10-20 entropy pass added from WO-218's close `scripts/lib/dependencies.mjs`, `scripts/test-work-orders.mjs`, `scripts/lib/target-publish.mjs`, `scripts/lib/target-worktree-close.mjs`, `scripts/lib/gate-reuse.mjs`, `scripts/lib/starter-refresh.mjs`, `scripts/lib/release-tags.mjs`, `scripts/release.mjs`, `scripts/lib/config.mjs`, `scripts/lib/worktree-integration.mjs`, `scripts/lib/harness.mjs` and the kit floor template under `scripts/kit/`, for its two REVIEW-007 rows `scripts/lib/entropy-review.mjs`, `scripts/test-entropy-review.mjs`, `docs/instance/entropy-reducer/README.md`, `scripts/docs-check.mjs` and `scripts/test-docs-check.mjs`, and the fixtures the rows name; unknown until each row is triaged, and the README records
 the per-row command and case. Removes no pending rows: the listed rows were allocated at filing and already
@@ -233,6 +234,7 @@ product statement.
 7. `npm test -- --review` and `npm run test:docs` green; `git diff
    --check` clean; no new dependency; each re-mint and, where a judged
    source changed, the live feedback episode recorded.
+8. A closed target order with a `PlanExecutionAmended` event and a decisions record moved through its control-segment binding passes the plan gate without a launchpad decisions file. The same fixture fails with only the amendment-reader fix reverted; a contained-file control passes in both arms. A replayable evidence file records all four exit codes. `validateAmendment` retains its exact decision-hash comparison; any decisions-file containment check on its amendment/writeback path uses the same bound reader, while unrelated evidence-ref readers stay unchanged. The README has one **Read before upgrading** line saying an instance whose plan gate failed on a moved execution-amendment decision passes at this release.
 
 **Preflight:** `npm test -- --only resume` and `npm test -- --only worktree` for the lifecycle, off-ramp and record-lane steps;
 `npm test -- --only harness`, `npm test -- --only harness-context` and `npm test -- --only harness-fixtures` for the hook and harness steps;
@@ -281,6 +283,8 @@ the base (explicit tokens added by the 2026-10-18 pass, FUP-17266e5072d4a25a).
 25. `docs/evidence/WO-219/README.md`: the after table (each row's final status, the case or reason, the command, the control) and the register's pending count before and after (`npm run plan -- followups`), with `docs/evidence/WO-219/repair-controls.json` written as each row is settled (criterion 2). Check: the README holds both tables and every settled row has a control.
 26. Write-backs, in place, only where a row's fix changes what a product document states (the row's source decision names the document and section; re-read the heading at the base). Check: `npm run test:docs`.
 27. Handoff: finish source edits; `npm run format` and `npm run sync` for stale generated artifacts; start one `npm test -- --review` in the background, never under the bounded wrapper, and await it with `node scripts/harness.mjs evidence --wait`; after it passes, complete `docs/evidence/WO-219/handoff.md`; run `npm run test:docs` once after the last document edit; then `npm run resume -- implementation-ready <flags>` (the sequence product 07 §Discipline revised on 2026-10-19; corrected by the 2026-10-21 pass).
+
+**Authorized scope expansion (2026-10-23):** WO-219-D061 records the operator's explicit authorization to fix the kit's moved execution-amendment decision reader in `scripts/lib/plan-receipts.mjs`, using the existing target binding in `readDecisions`. Read those amendment/writeback paths, the shared reader and its docs-check consumer before editing. Add the fixture to the existing `plan-refutation` Preflight suite and record both isolated-reversion arms plus the contained-file control in `docs/evidence/WO-219/moved-amendment-controls.json`. Preserve the decision hash binding and the order's effect limits. No other item from the fork's 2026-10-23 pass is admitted; the next fork update takes the release carrying this bounded repair.
 
 **Evidence gate:** the Preflight suites; the register dispositions
 (`followups --show` per row); `npm run test:docs`; the handoff gate.

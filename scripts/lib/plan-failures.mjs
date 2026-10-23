@@ -17,6 +17,7 @@ import { bounded } from "./planning-followups.mjs";
 import { completedPhaseAttempts } from "./control-time.mjs";
 import { parseHeader } from "../work-orders.mjs";
 import { measuredFindingCounts } from "./review-findings.mjs";
+import { historicalDependencyIds } from "./dependencies.mjs";
 
 // What failed since the pass before, folded from the public record:
 // the control logs, the planning control log and the structured decisions.
@@ -166,11 +167,14 @@ export function failureRecord(root) {
           failed: event.verdict === "fail",
         });
       }
-      // A clean review is no failure item; its zero stays in
-      // finalReviewFindings.
+      // Passing integration and new-scope observations remain in the count
+      // projection; only an escape, an unclassed finding or failure is an item.
       if (
         event.type === "FinalReviewCompleted" &&
-        Object.values(measuredFindingCounts(event) ?? {}).some((n) => n > 0)
+        Object.values(measuredFindingCounts(event) ?? {}).some((n) => n > 0) &&
+        (event.verdict === "fail" ||
+          event.findingCounts.escape > 0 ||
+          event.findingCounts.unclassed > 0)
       )
         items.push({
           kind: "review-findings",
@@ -896,6 +900,7 @@ export function operationalFailures(root, control, includes) {
         track = parseHeader(
           readFileSync(file, "utf8"),
           row.state.workOrderPath,
+          { historicalIds: historicalDependencyIds(root) },
         ).track;
     } catch {
       /* Absent authority metadata never guesses a track. */

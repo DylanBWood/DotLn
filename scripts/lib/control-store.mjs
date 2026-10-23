@@ -7,6 +7,7 @@ import {
   parseControlEvents,
 } from "./control.mjs";
 import { readGitObjects, runGit } from "./git.mjs";
+import { correctedActorEvents } from "./control-actor.mjs";
 import { containedRegularFile, disposableBasename } from "./paths.mjs";
 
 export const controlFromSources = (
@@ -128,10 +129,16 @@ export const readControl = (root, revision) => {
   return controlFromSources(sortedSources(sources, storage.legacy), storage);
 };
 
-export const eventsForOrder = (control, id) =>
-  (control.eventSegments.get(control.locations.get(id)) ?? []).filter(
+export const eventsForOrder = (
+  control,
+  id,
+  { correctedActors = false } = {},
+) => {
+  const events = control.eventSegments.get(control.locations.get(id)) ?? [];
+  return (correctedActors ? correctedActorEvents(events) : events).filter(
     (event) => event.workOrderId === id,
   );
+};
 
 export const addedSegmentEvents = (before, after, context) => {
   for (const [path, source] of before.sources) {

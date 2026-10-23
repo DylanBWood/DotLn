@@ -511,8 +511,17 @@ writing, and records bound for a registered target's documentation root pass
 the same per-type screen before writing or committing;
 [existing filed records stay as written](../evidence/WO-213/README.md).
 Record suffixes are case-insensitive and include bare `.json`, `.jsonl`, `.log`
-and `.txt` names; Markdown selection and its pattern stay unchanged. Declared
-document readers refuse unreadable, dangling or non-file inputs with a relative
+and `.txt` names; Markdown keeps its `.md` suffix selection and also screens
+private temporary paths. The shared system directory `/Users/Shared` and the
+fully placeholder-written `/tmp/claude-<uid>/<project key>/<session id>/scratchpad`
+form, including its `/private/tmp` spelling, identify no private account and pass.
+Traversal outside either form remains screened; a conventional CI account name
+alone receives no exemption. Historical matches consume exact `homePaths`
+fingerprints in `docs/control/doc-baseline.json`. Stale entries advise;
+`node scripts/docs-check.mjs --write-home-path-baseline` shrinks that map to
+still-matching admitted fingerprints and preserves every other baseline field.
+A new or changed private-path line refuses without writing the baseline.
+Declared document readers refuse unreadable, dangling or non-file inputs with a relative
 path and error class, without system-path or parser-content excerpts. Descriptor
 checks and nonblocking opens prevent a FIFO from hanging these reads. Link
 diagnostics omit private destinations while baseline identity retains the raw

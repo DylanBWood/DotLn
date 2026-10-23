@@ -1,6 +1,6 @@
 {
   "name": "@dotln/skeleton",
-  "version": "0.66.0",
+  "version": "0.67.0",
   "private": true,
   "license": "Apache-2.0",
   "type": "module",
@@ -15,8 +15,8 @@
   },
   "dependencies": {
     "@dotln/beacons": "0.1.1",
-    "@dotln/compiler": "0.30.0",
-    "@dotln/kernel": "0.6.0",
+    "@dotln/compiler": "0.31.0",
+    "@dotln/kernel": "0.7.0",
     "typescript": "7.0.2"
   },
   "engines": {
