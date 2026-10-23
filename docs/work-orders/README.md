@@ -5,7 +5,7 @@
 ## Proposed order
 
 - [x] [WO-226] — An instance's kit works after its update without a hand step · **final-reviewed**
-- [ ] [WO-227] — Outward publication as the operator intended · **queued**
+- [x] [WO-227] — Outward publication as the operator intended · **final-reviewed**
 - [ ] [WO-225] — The console's host contracts for an instance's browser shell · **queued**
 - [ ] [WO-229] — A gate says who it waited for · **queued**
 - [ ] [WO-219] — Boarded follow-ups, batch 3: records, roles and the harness · **queued**
@@ -39,24 +39,6 @@ Full evidence for the active and sequenced orders follows; the Open cards are in
 None.
 
 ## Open
-
-### WO-227
-
-[WO-227 — Outward publication reads as the operator intended: launchpad identifiers are refused in a target's commits and pull requests, the public word list and each private term are review items the reviewer confirms in context rather than bans on English words, an empty list is admitted, a generated Change-table path is named apart from the reviewed prose, the pull-request body keeps the meter block last behind a structural check, and a target's Release carries the reviewed notes when its order names them (version assigned at activation)](WO-227-outward-publication-as-intended.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-063: satisfied-by-close (met) — the outward lint and the public and private lists this order re-reads; WO-064: satisfied-by-close (met) — the publication integration that runs the lint before a remote effect; WO-218: satisfied-by-close (met) — the display name and the pre-review commit lint the Release and shape checks sit beside; WO-221: satisfied-by-close (met) — prepareTargetRelease and D006, whose reopening condition this order answers; WO-219: reference-only (non-blocking) — role text stays unchanged here; WO-219 owns it.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer xhigh.
-- Track: delivery
-- Cost: adds, in &#96;scripts/lib/outward-lint.mjs&#96;, the rule &#96;identifier.launchpad&#96;, the &#96;review&#96; status with its matched words and the &#96;reviewTerms&#96; key (&#96;terms&#96; read as an alias for one kit release); in &#96;scripts/lib/terms.mjs&#96;, the per-term mode and the empty-list reading; in &#96;scripts/lib/target-publish.mjs&#96;, the split lint of reviewed prose and generated sections, the &#96;--confirm-terms sha256:&lt;digest&gt;&#96; flag and the recorded confirmation; in &#96;scripts/lib/plan-receipts.mjs&#96;, an advisory over a target order's named paths; in &#96;scripts/release.mjs&#96; and &#96;scripts/lib/github-body.mjs&#96;, the meter block kept last and &#96;pullRequestBodyShapeFailures&#96;; in &#96;scripts/release.mjs&#96;, the &#96;**Target release notes:**&#96; header, the rendered notes body, its lint and its bound digest; fixture cases in &#96;scripts/test-outward-lint.mjs&#96;, &#96;scripts/test-target-publish.mjs&#96;, &#96;scripts/test-github-body.mjs&#96;, &#96;scripts/test-release.sh&#96;, &#96;scripts/test-target-worktree-release.mjs&#96; and &#96;scripts/test-plan-refutation.mjs&#96;; and the product 08, product 07, kit README and &#96;docs/README.md&#96; sentences step 12 names. Removes: the refusal of ordinary English words in a target's pull request (the operator's instance met it as &#96;vocabulary.launchpad (line 147)&#96; on a fixture path and on its target's own subject matter); the unexplained line number of that refusal; the two non-empty-list requirements that made the operator write a placeholder term; the thin target Release body the fork's operator called unreadable; and the pull-request body shape that drifted across four reviews with no rule changing. Re-mints: &#96;scripts/release.mjs&#96; is a declared machinery source (&#96;machinerySources&#96;, &#96;scripts/test-runner.mjs&#96;), so &#96;npm test -- --review&#96; runs before handoff; none of the files this order edits is in &#96;FEEDBACK_SOURCE_PATHS&#96; (&#96;packages/skeleton/src/feedback-audit.ts&#96;, read 2026-10-21) or in &#96;scripts/lib/evidence-sources.mjs&#96;, so no edition re-mint and no live feedback episode is owed unless a step edits such a file, in which case the executor records the deterministic re-mint and runs the live episode on Codex &#96;gpt-6.1-sol&#96; at &#96;max&#96; or Claude Code &#96;claude-opus-5-5&#96; at &#96;xhigh&#96;, no authorization needed, cost accepted. Wall-clock and tokens: unknown until run. Context bytes: this file, about 27,000. Steps: 13.
-- Inherited ledger duty: discharge with this order's decisions file when recorded and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
-- Authority: [docs/work-orders/WO-227-outward-publication-as-intended.md](WO-227-outward-publication-as-intended.md)
 
 ### WO-225
 

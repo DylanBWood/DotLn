@@ -1,0 +1,129 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-227",
+  "failureReport": "docs/final-reviews/WO-227/FINAL-001.md",
+  "recordedAt": "2026-10-22T21:16:01.048Z",
+  "rule": "In a reviewed target Release body only the bytes the kit writes are its frame: the order title, the close line and, for each relative link the renderer resolves to a moved record, the target address, tagged commit and record path it writes. Every byte the notes' author wrote is judged for launchpad identifiers and review words, including an absolute target URL at any commit or with the exact bytes of a written record link and the query or fragment a record link carries; a fragment may name the closing order's own identifiers.",
+  "completeReview": {
+    "command": "npm test -- --review",
+    "codeIdentity": "6a74fc3bd8a985cb5d89ab0667f61b9774f18bb04ed07c2174f18f67be15802b",
+    "treeHash": "f44cdcc6baa26fe5fb7a7844948b7ef3b790c9f8",
+    "recordedAt": "2026-10-22T21:15:33.338Z",
+    "durationMs": 1687974,
+    "exitCode": 0,
+    "requiredSuites": 40,
+    "summary": "npm test: 40 passed; 0 failed; 1687.97 s; 106 fresh tasks",
+    "evidenceRef": "host-gate:6a74fc3bd8a985cb5d89ab0667f61b9774f18bb04ed07c2174f18f67be15802b:npm test",
+    "sharedRefsMoved": false,
+    "completionWait": {
+      "command": "node scripts/harness.mjs evidence --wait --timeout 3000",
+      "exitCode": 0
+    }
+  },
+  "earlierCompleteRun": {
+    "command": "npm test -- --review",
+    "recordedAt": "2026-10-22T20:45:04.545Z",
+    "durationMs": 1211701,
+    "summary": "npm test: 29 passed; 11 failed; 1211.70 s; 89 fresh tasks",
+    "cause": "runner-fixtures failed one case, 'target-worktree file tasks keep all declared cases and two independent deadlines at eight lanes' (59 !== 58), because the repair's new Release test was not yet in scripts/fixtures/target-worktree-cases.json; the ten other failures are suites the runner did not start after that failure.",
+    "remedy": "Added the new test's declaration and name to scripts/fixtures/target-worktree-cases.json and raised the counts in scripts/test-runner.test.mjs to 59 declarations and 83 names; the focused case then passed under the bounded wrapper and a fresh complete run was started.",
+    "reportingNote": "The background command wrapping this run ended with an echo, so its own exit status was 0; the gate's summary line and the waiter's exit 1 were the gate result."
+  },
+  "beforeRepair": {
+    "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-227/final-review-release.mjs",
+    "source": "docs/evidence/WO-227/final-review-evidence.json",
+    "exitCode": 1,
+    "observed": {
+      "controlStatus": 1,
+      "candidateStatus": 0,
+      "publishedIdentifier": true,
+      "tagPublished": true,
+      "releaseCreated": true
+    }
+  },
+  "finalReviewProbeAfterRepair": {
+    "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-227/final-review-release.mjs",
+    "exitCode": 0,
+    "observed": {
+      "controlStatus": 1,
+      "controlError": "error: target release refused: outward lint: release-body refused: identifier.launchpad: WO-006 (line 5, reviewed notes)",
+      "candidateStatus": 1,
+      "candidateError": "error: target release refused: outward lint: release-body refused: identifier.launchpad: WO-006 (line 5, reviewed notes)",
+      "publishedIdentifier": false,
+      "tagPublished": false,
+      "releaseCreated": false,
+      "namedPathExists": false
+    },
+    "note": "The filed probe is unchanged. One intermediate capture of it ran without the bounded wrapper; the result recorded here is from the bounded run on the final bytes."
+  },
+  "releaseCases": {
+    "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-227/repair-final001-release.mjs <tree>",
+    "baseArm": "a scratch copy of the current scripts with only scripts/release.mjs and scripts/lib/github-body.mjs replaced by refs/dotln/checkpoint/WO-227/16, removed after the run",
+    "cases": [
+      {
+        "case": "absent path at the tagged commit",
+        "baseMet": false,
+        "repairedMet": true
+      },
+      {
+        "case": "authored copy of a record link's bytes",
+        "baseMet": false,
+        "repairedMet": true
+      },
+      {
+        "case": "another order's identifier in a record link's fragment",
+        "baseMet": false,
+        "repairedMet": true
+      },
+      {
+        "case": "the closing order's identifier in a record link's query",
+        "baseMet": false,
+        "repairedMet": true
+      },
+      {
+        "case": "review word in a record link's fragment",
+        "baseMet": false,
+        "repairedMet": true
+      },
+      {
+        "case": "authored address with a review word",
+        "baseMet": false,
+        "repairedMet": true
+      },
+      {
+        "case": "written record links publish",
+        "baseMet": true,
+        "repairedMet": true,
+        "role": "control"
+      }
+    ],
+    "baseExit": 1,
+    "repairedExit": 0
+  },
+  "writtenOffsets": {
+    "case": "publication reports the offsets of each destination it wrote and none of an authored one",
+    "source": "scripts/test-github-body.mjs",
+    "baseExit": 1,
+    "repairedExit": 0
+  },
+  "linkRewriteDifferential": {
+    "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-227/repair-final001-links.mjs",
+    "exitCode": 0,
+    "observed": {
+      "ref": "refs/dotln/checkpoint/WO-227/16",
+      "cases": 50000,
+      "differences": 0,
+      "spanFailures": 0,
+      "spans": 754
+    }
+  },
+  "adjacent": {
+    "suspicion": "a code span in a reference-definition label rewritten from the code-masked line",
+    "outcome": "refuted by a bounded probe: the label keeps its bytes",
+    "queue": "empty"
+  },
+  "limits": [
+    "Local synthetic fixtures and fake forges only; no live target publication.",
+    "The fragment admission names the closing order's identifiers without resolving the moved record's heading anchors (D031)."
+  ]
+}

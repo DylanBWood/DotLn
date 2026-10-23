@@ -1,0 +1,158 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-227",
+  "failureReport": "docs/verifications/WO-227/VER-004.md",
+  "recordedAt": "2026-10-22T22:32:33.022Z",
+  "rule": "An exemption drops a finding only when every byte of the finding's span lies in a part or Change row that exempts its rule; a match that runs out of a kit-written part, a base-held or kit-record row, or a display name into other text is reported. A finding is still labelled with the part, and named with the row's path, where its span starts.",
+  "decision": "docs/evidence/WO-227/decisions.md WO-227-D033",
+  "completeReview": {
+    "command": "npm test -- --review",
+    "codeIdentity": "fec6177233b3e332f490dc1fa3468d31abba12a73cf8280c4d3418c4d53eef41",
+    "treeHash": "468323035f6f6f2056efea90df152df9c6e91131",
+    "recordedAt": "2026-10-22T22:32:11.337Z",
+    "durationMs": 1520736,
+    "exitCode": 0,
+    "requiredSuites": 40,
+    "unrunSuites": 0,
+    "summary": "npm test: 40 passed; 0 failed; 1520.74 s; 106 fresh tasks",
+    "evidenceRef": "host-gate:fec6177233b3e332f490dc1fa3468d31abba12a73cf8280c4d3418c4d53eef41:npm test",
+    "sharedRefsMoved": false,
+    "completionWait": {
+      "command": "node scripts/harness.mjs evidence --wait --timeout 3000",
+      "exitCode": 0
+    }
+  },
+  "focusedBeforeComplete": {
+    "command": "node scripts/harness.mjs bounded -- npm test -- --only outward-lint",
+    "firstAttempt": "the format preflight refused scripts/test-target-worktree-release.mjs before any suite ran; npm run format fixed it",
+    "summary": "suite:outward-lint: 8 passed; 0 failed; 16.34 s; 8 fresh tasks",
+    "exitCode": 0
+  },
+  "baseArm": "a scratch tree linking every top-level entry of the worktree except scripts, which is copied, with only scripts/lib/outward-lint.mjs and scripts/lib/target-publish.mjs replaced by refs/dotln/checkpoint/WO-227/20; diff -rq against the worktree's scripts lists only those two files; removed after the runs",
+  "failureProbe": {
+    "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-227/verification-004-probes.mjs [<tree>]",
+    "base": {
+      "exitCode": 1,
+      "observed": {
+        "closeStatus": 0,
+        "tagPublished": true,
+        "releaseCreated": true,
+        "authoredFragmentPublished": true,
+        "review": null,
+        "confirmation": null
+      }
+    },
+    "repaired": {
+      "exitCode": 0,
+      "observed": {
+        "closeStatus": 1,
+        "diagnostic": "error: target release refused: outward lint: 1 review item waits for the reviewer: release-body: vocabulary.review: md launchpad (line 5, record link). Read them in the composed body, then rerun with --confirm-terms sha256:<digest>",
+        "tagPublished": false,
+        "releaseCreated": false,
+        "authoredFragmentPublished": false
+      }
+    },
+    "note": "The filed probe is unchanged."
+  },
+  "boundaryProbe": {
+    "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-227/verification-004-boundary.mjs",
+    "repairedExit": 1,
+    "observed": "AssertionError at its line 9: 1 !== 2, its precondition that the pre-repair predicate text appears once in scripts/lib/outward-lint.mjs",
+    "coverage": "Its four cases (fragment and query crossings, a term wholly in an authored fragment, a term wholly in the generated path) run in both arms through repair-ver004-spans.mjs. The filed probe is unchanged."
+  },
+  "spanCases": {
+    "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-227/repair-ver004-spans.mjs [<tree>]",
+    "cases": [
+      {
+        "case": "compound term from a written record path into an authored fragment",
+        "baseMet": false,
+        "repairedMet": true
+      },
+      {
+        "case": "compound term from a written record path into an authored query",
+        "baseMet": false,
+        "repairedMet": true
+      },
+      {
+        "case": "compound term from a lifting part into an authored part nested in it",
+        "baseMet": false,
+        "repairedMet": true,
+        "quotedByReport": false
+      },
+      {
+        "case": "compound term from a base-held Change row into an added path",
+        "baseMet": false,
+        "repairedMet": true,
+        "quotedByReport": false
+      },
+      {
+        "case": "compound term running past a display name",
+        "baseMet": true,
+        "repairedMet": true,
+        "role": "control"
+      },
+      {
+        "case": "term wholly in a written record path",
+        "baseMet": true,
+        "repairedMet": true,
+        "role": "control"
+      },
+      {
+        "case": "term wholly in an authored fragment",
+        "baseMet": true,
+        "repairedMet": true,
+        "role": "control"
+      },
+      {
+        "case": "term wholly in a lifting part around a nested authored part",
+        "baseMet": true,
+        "repairedMet": true,
+        "role": "control"
+      },
+      {
+        "case": "base-held row's own word with no term joining the rows",
+        "baseMet": true,
+        "repairedMet": true,
+        "role": "control"
+      }
+    ],
+    "baseExit": 1,
+    "repairedExit": 0
+  },
+  "suiteCases": {
+    "command": "node scripts/harness.mjs bounded -- <scratch>/arm.sh <tree>, running node --test --test-concurrency=1 with a name pattern selecting the three cases",
+    "cases": [
+      {
+        "source": "scripts/test-outward-lint.mjs",
+        "case": "a part or an exempt span lifts a rule only over its own bytes",
+        "baseFailsAt": "line 447",
+        "repaired": "pass"
+      },
+      {
+        "source": "scripts/test-target-publish.mjs",
+        "case": "a Change row's exemption covers only its own bytes",
+        "baseFailsAt": "line 1197",
+        "repaired": "pass"
+      },
+      {
+        "source": "scripts/test-target-worktree-release.mjs",
+        "case": "the Release provenance case's fragment and query crossings",
+        "baseFailsAt": "line 1001",
+        "repaired": "pass"
+      }
+    ],
+    "baseExit": 1,
+    "repairedExit": 0
+  },
+  "release": "npm run release -- prepare --local changed only docs/evidence/WO-227/meta.json; the staged v0.91.0 is unchanged",
+  "sync": "npm run sync regenerated the stale software-engineer publication edition after the product 07 edit and reported every other artifact current",
+  "adjacent": {
+    "queue": "empty",
+    "nestedRepositories": "none outside docs/intake"
+  },
+  "limits": [
+    "Local synthetic fixtures and fake forges only; no live target publication.",
+    "A crossing match is named by the part, and in the Change table by the path, where it starts, which may be a base-held path (D033 reopening condition).",
+    "A match that crosses an unlabelled joiner between two kit-written parts is reported, deliberately conservative. Inference from the composers read for this repair: only record-link destinations lift review words and authored link text separates them, while the order title and close line lift only launchpad identifiers, which cannot span their blank-line joiner."
+  ]
+}
