@@ -1,0 +1,34 @@
+{
+  "method": "Bounded native test. Negative and delayed-positive copies hold the fixture lane lock for five seconds before admission. Only the allocation trigger differs. Copies and full outputs remain in ignored session scratch; no production source is reverted.",
+  "command": "node scripts/harness.mjs bounded -- node --test --test-name-pattern=\"a gate memory breach records\" scripts/test-host-guard.test.mjs",
+  "rows": [
+    {
+      "arm": "timer-control",
+      "forcedAdmissionDelayMs": 5000,
+      "testExitCode": 1,
+      "gateBudgetBytes": 536870912,
+      "missingGateResult": true,
+      "failure": "memory-budget before lane acquisition; original result assertion fails"
+    },
+    {
+      "arm": "task-signal",
+      "forcedAdmissionDelayMs": 0,
+      "testExitCode": 0,
+      "gateBudgetBytes": 536870912,
+      "failureKind": "memory-budget",
+      "scope": "gate",
+      "peakFootprintBytes": 606971840,
+      "localMemoryStops": 1
+    },
+    {
+      "arm": "task-signal-delayed",
+      "forcedAdmissionDelayMs": 5000,
+      "testExitCode": 0,
+      "gateBudgetBytes": 536870912,
+      "failureKind": "memory-budget",
+      "scope": "gate",
+      "peakFootprintBytes": 624160792,
+      "localMemoryStops": 1
+    }
+  ]
+}

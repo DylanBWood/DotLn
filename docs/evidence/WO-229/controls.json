@@ -1,0 +1,27 @@
+{
+  "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-229/controls.mjs",
+  "method": "Identical assertions against current source and isolated in-memory single-mutation modules; repository source is never reverted.",
+  "records": [
+    {
+      "name": "parallel wait union",
+      "source": "scripts/lib/gate-timeline.mjs",
+      "positiveExit": 0,
+      "negativeExit": 1,
+      "negativeReason": "ERR_ASSERTION"
+    },
+    {
+      "name": "execution cost excludes contention",
+      "source": "scripts/lib/planning-conditions.mjs",
+      "positiveExit": 0,
+      "negativeExit": 1,
+      "negativeReason": "ERR_ASSERTION"
+    },
+    {
+      "name": "inspection preserves stale records",
+      "source": "scripts/lib/host-lanes.mjs",
+      "positiveExit": 0,
+      "negativeExit": 1,
+      "negativeReason": "ERR_ASSERTION"
+    }
+  ]
+}

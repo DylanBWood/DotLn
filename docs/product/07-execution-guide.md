@@ -2321,8 +2321,13 @@ usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-
   a gate row. Every gate shares the host registry's weighted lanes: the first
   acquirer records the lesser of eight and half the logical processors, at
   least one, and later acquirers inherit that capacity. Nested gates
-  suballocate the parent reservation validated at gate entry and waits name
-  the holders. The structural host check refuses a per-lane budget below the
+  suballocate the parent reservation validated at gate entry. Waits label
+  each holder as this checkout, another checkout or checkout unknown, without
+  exposing a checkout path. The gate row and summary report the union of lane
+  waiting intervals separately from work; relation-specific unions can overlap.
+  `node scripts/harness.mjs lanes` reads capacity and live holders without
+  taking the lock or reclaiming records. The structural host check refuses
+  a per-lane budget below the
   largest measured task RSS of the baseline passing runs. A wait-notification failure rejects acquisition after cancelling and
   draining its lock helper; it leaves no reservation or heartbeat behind.
   Swap growth triggers a footprint census relative to the last such
@@ -3217,7 +3222,31 @@ the required tasks, assertions and admission limits are unchanged.
 
 The host-lane registry records the first acquirer's capacity, the lesser of
 eight and half the logical processors, at least one; later clones inherit
-it. A task's budget is the gate share divided by that capacity, and the host
+it. WAIT lines label each holder's relation to this checkout; the summary and
+recorded `hostLaneWait` report the union of wait intervals, with overlapping
+relation-specific unions. Compact relation changes retain attribution beyond
+the 32-entry detailed diagnostic cap. Unknown includes lock waiting and time
+before the first capacity observation; legacy rows have only their retained
+history. `node scripts/harness.mjs lanes` reads live
+holders and recorded capacity without taking the lock or changing records;
+its snapshot can be transient. The slow document condition shows wall-clock
+and execution-only medians, marks contended samples and judges execution cost
+on the latter (WO-229 D001); failed samples remain unavailable.
+
+At the measured eight-slot capacity, structural host requests are `format` 3,
+`configuration-root` 2, `registrations` 2, `declarations` 4, `generated` 2,
+`host` 2, `kit-verify` 2.
+These requests are capped by the available local reservation on smaller hosts;
+the local serial structural phase keeps every local lane. The
+[measurement and sizing decision](../evidence/WO-229/decisions.md#wo-229-d002)
+retains CPU, RSS and wall observations. The operator-authorized declarations
+exception in [D022](../evidence/WO-229/decisions.md#wo-229-d022--authorize-declarations-at-its-measured-four-slot-need)
+uses its measured four-slot need, including CPU headroom and the memory screen;
+other tasks retain the strict half-capacity criterion. The staggered sibling
+fixture bounds document waiting below the complete gate's longest task and
+asserts further complete-gate admissions after the last document admission. Admission still has no
+fairness guarantee. A task's memory budget is the gate share divided by that
+capacity, and the host
 structural task compares it with the maximum task RSS in the three baseline
 passing rows. A refusal names `memory.gateShare` and the minimum share that
 would admit that observed peak at the recorded capacity; it also says when

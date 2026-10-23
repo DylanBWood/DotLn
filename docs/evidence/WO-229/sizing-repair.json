@@ -1,0 +1,63 @@
+{
+  "capacity": 8,
+  "sources": [
+    "structural-need.json",
+    "structural-attempt001.json",
+    "structural-attempt002.json"
+  ],
+  "method": "Retain every prior measurement and integer need. Apply the authorized declarations exception at four; other requests retain the under-half rule.",
+  "tasks": {
+    "format": {
+      "successfulSamples": 15,
+      "completeSeriesNeed": 3,
+      "observedNeed": 3,
+      "qualifies": true,
+      "hostRequest": 3
+    },
+    "configuration-root": {
+      "successfulSamples": 15,
+      "completeSeriesNeed": 2,
+      "observedNeed": 2,
+      "qualifies": true,
+      "hostRequest": 2
+    },
+    "registrations": {
+      "successfulSamples": 15,
+      "completeSeriesNeed": 2,
+      "observedNeed": 2,
+      "qualifies": true,
+      "hostRequest": 2
+    },
+    "declarations": {
+      "successfulSamples": 12,
+      "completeSeriesNeed": 3,
+      "observedNeed": 4,
+      "qualifies": false,
+      "hostRequest": 4,
+      "authorizedException": true
+    },
+    "generated": {
+      "successfulSamples": 9,
+      "completeSeriesNeed": 2,
+      "observedNeed": 2,
+      "qualifies": true,
+      "hostRequest": 2
+    },
+    "host": {
+      "successfulSamples": 9,
+      "completeSeriesNeed": 2,
+      "observedNeed": 2,
+      "qualifies": true,
+      "hostRequest": 2
+    },
+    "kit-verify": {
+      "successfulSamples": 9,
+      "completeSeriesNeed": 2,
+      "observedNeed": 2,
+      "qualifies": true,
+      "hostRequest": 2
+    }
+  },
+  "sourceSizing": "sizing.json",
+  "authorization": "WO-229-D022; operator: fine make the change"
+}

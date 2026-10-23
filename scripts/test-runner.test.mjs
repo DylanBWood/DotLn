@@ -5276,7 +5276,13 @@ test("reused task evidence never carries historical host-wait observations", asy
       taskTimeline: pass.taskTimeline.map((row) => ({
         ...row,
         hostLaneWaitMs: 123,
+        hostLaneWait: { wallMs: 123 },
+        laneWaitMs: 123,
+        gapMs: 4,
         hostLaneWaitObservations: [{ waitedMs: 123, holders: [] }],
+        hostLaneWaitRelations: [
+          { observedAt: "fixture", relations: ["unknown"] },
+        ],
       })),
     },
   ]);
@@ -5288,7 +5294,11 @@ test("reused task evidence never carries historical host-wait observations", asy
   );
   for (const result of results.values()) {
     assert.equal(result.hostLaneWaitMs, undefined);
+    assert.equal(result.hostLaneWait, undefined);
+    assert.equal(result.laneWaitMs, undefined);
+    assert.equal(result.gapMs, undefined);
     assert.equal(result.hostLaneWaitObservations, undefined);
+    assert.equal(result.hostLaneWaitRelations, undefined);
   }
 });
 

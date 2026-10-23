@@ -1,5 +1,6 @@
 import { existsSync, readFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
+import { randomUUID } from "node:crypto";
 import { cpus, loadavg } from "node:os";
 import { join } from "node:path";
 import { performance } from "node:perf_hooks";
@@ -10,6 +11,7 @@ import { readGateChecks, partialGateCheck } from "./gate-evidence.mjs";
 import { readControl } from "./control-store.mjs";
 import { readDecisions, collectMeta } from "./meta.mjs";
 import { readFollowups } from "./planning-followups.mjs";
+import { readHolders } from "./host-lanes.mjs";
 import { checkReleaseHistory } from "./release-history.mjs";
 
 export const CONDITIONS_COMMAND = "npm run plan -- conditions";
@@ -86,7 +88,8 @@ export const CONDITION_TABLE = Object.freeze([
     threshold: 30,
     unit: "s",
     slow: true,
-    method: "median of three fresh document gates (--slow)",
+    method:
+      "execution-only median of three fresh document gates; wall median shown alongside (--slow)",
   },
   {
     id: "docs-check",
@@ -307,6 +310,123 @@ function timed(root, code, timeout) {
       .at(-1),
   );
 }
+// A unique marker binds the sample to its child, while the time window and
+// before-read exclude stale rows. Failed attempts retain matching contention
+// without turning it into a passing cost sample.
+export function measureDocumentGates(
+  root,
+  context,
+  {
+    run = child,
+    readChecks = readGateChecks,
+    now = Date.now,
+    clock = () => performance.now(),
+  } = {},
+) {
+  const runs = [];
+  for (let i = 0; i < 3; i++) {
+    const sampleId = randomUUID();
+    const before = new Set(readChecks(root).map((row) => JSON.stringify(row)));
+    const startedAt = now(),
+      start = clock();
+    let error;
+    if (context.remaining() <= 1) error = "listing wall budget exhausted";
+    else
+      try {
+        run(
+          root,
+          [
+            "--input-type=module",
+            "-e",
+            `try { const {runGate}=await import(${expression("scripts/test-runner.mjs")}); const row=await runGate(["--document"],process.cwd(),{planningSampleId:process.argv[1]}); process.exitCode=row.exitCode; } catch (error) { console.error(error.message); process.exitCode=1; }`,
+            sampleId,
+          ],
+          context.remaining(),
+        );
+      } catch (failure) {
+        error = oneLine(failure.message);
+      }
+    const finishedAt = now(),
+      wallMs = clock() - start;
+    const row = readChecks(root)
+      .filter(
+        (row) =>
+          row.checkId === "npm run test:docs" &&
+          row.planningSampleId === sampleId &&
+          Date.parse(row.recordedAt) >= startedAt &&
+          Date.parse(row.recordedAt) <= finishedAt &&
+          !before.has(JSON.stringify(row)),
+      )
+      .at(-1);
+    const wait = row?.hostLaneWait;
+    const validWait =
+      wait &&
+      Number.isFinite(wait.wallMs) &&
+      wait.wallMs >= 0 &&
+      wait.wallMs <= wallMs &&
+      wait.byRelation &&
+      Object.values(wait.byRelation).every(
+        (ms) => Number.isFinite(ms) && ms >= 0 && ms <= wait.wallMs,
+      );
+    const docs = row?.taskTimeline?.find((task) => task.name === "docs-check");
+    const unavailable =
+      error ??
+      (!row
+        ? "child did not record a document row"
+        : !completePassingRow(row)
+          ? "document gate did not pass"
+          : !validWait
+            ? "document row has no valid lane-wait measurement"
+            : undefined);
+    runs.push({
+      wallS: wallMs / 1000,
+      executionS: unavailable ? null : (wallMs - wait.wallMs) / 1000,
+      docsS:
+        !unavailable && docs?.exitCode === 0 && Number.isFinite(docs.durationMs)
+          ? docs.durationMs / 1000
+          : null,
+      contended: validWait
+        ? (wait.byRelation["another-checkout"] ?? 0) > 0
+        : null,
+      ...(validWait ? { hostLaneWait: wait, recordedAt: row.recordedAt } : {}),
+      ...(unavailable ? { unavailable } : {}),
+    });
+    if (unavailable) break;
+  }
+  return runs;
+}
+
+export function documentGateMeasurement(samples, id = "document-gate") {
+  const complete =
+    samples.length === 3 && samples.every((sample) => !sample.unavailable);
+  const wallMedianS =
+    samples.length === 3 ? median(samples.map((sample) => sample.wallS)) : null;
+  const executionMedianS =
+    complete && samples.every((sample) => Number.isFinite(sample.executionS))
+      ? median(samples.map((sample) => sample.executionS))
+      : null;
+  const value =
+    id === "document-gate"
+      ? executionMedianS
+      : complete && samples.every((sample) => Number.isFinite(sample.docsS))
+        ? median(samples.map((sample) => sample.docsS))
+        : null;
+  return {
+    value,
+    samples,
+    ...(id === "document-gate"
+      ? { wallMedianS, executionMedianS, judgedFigure: "executionMedianS" }
+      : {}),
+    ...(value === null
+      ? {
+          unavailable:
+            samples.find((sample) => sample.unavailable)?.unavailable ??
+            "three complete samples unavailable",
+        }
+      : {}),
+  };
+}
+
 async function measureCondition(root, row, context) {
   if (row.id === "release-tags") {
     const display = docRelative(root, "product", "06-roadmap.md");
@@ -343,31 +463,8 @@ async function measureCondition(root, row, context) {
       ),
     };
   if (row.slow) {
-    if (!context.gates) {
-      const runs = [];
-      for (let i = 0; i < 3; i++) {
-        const start = performance.now();
-        const output = child(
-          root,
-          [join(TOOL_ROOT, "scripts/test-runner.mjs"), "--document"],
-          context.remaining(),
-        );
-        const match = /^PASS docs-check ([\d.]+) s$/m.exec(output);
-        if (!match)
-          throw new Error(
-            "document gate did not report its docs-check duration",
-          );
-        runs.push({
-          gate: (performance.now() - start) / 1000,
-          docs: Number(match[1]),
-        });
-      }
-      context.gates = runs;
-    }
-    const samples = context.gates.map((run) =>
-      row.id === "document-gate" ? run.gate : run.docs,
-    );
-    return { value: median(samples), samples };
+    context.gates ??= measureDocumentGates(root, context);
+    return documentGateMeasurement(context.gates, row.id);
   }
   const codes = {
     "plan-check": `const {main}=await import(${expression("scripts/refute-plan.mjs")}); await main(["check"],process.cwd())`,
@@ -410,7 +507,23 @@ export async function planningConditions(
     loadAverage: loadavg(),
     logicalCpus: cpus().length,
     observedAt: now,
-    classification: "load measured; other host activity unknown",
+    classification: "load measured; live lane holders observed separately",
+    lanes: (() => {
+      try {
+        const { capacity, holders, byRelation, classification } = readHolders(
+          undefined,
+          { worktree: root },
+        );
+        return {
+          capacity,
+          holderCount: holders.length,
+          byRelation,
+          classification,
+        };
+      } catch {
+        return { unavailable: "host lane snapshot unavailable" };
+      }
+    })(),
   };
   const rows = [];
   for (const row of table) {
@@ -548,12 +661,12 @@ export function renderPlanningConditions(result) {
       .replace(/[\r\n]/g, " ");
   return [
     `Reopening conditions at ${result.observedAt}; ${(result.durationMs / 1000).toFixed(3)} s.`,
-    `Host load averages: ${result.host.loadAverage.join(", ")}; ${result.host.logicalCpus} logical CPUs; other activity unknown.`,
+    `Host load averages: ${result.host.loadAverage.join(", ")}; ${result.host.logicalCpus} logical CPUs; lanes: ${JSON.stringify(result.host.lanes)}.`,
     "| Source | Measurement | Value | Threshold | Holds |",
     "| --- | --- | --- | --- | --- |",
     ...result.rows.map(
       (row) =>
-        `| ${row.sources.join(", ")}${row.historicalSources ? ` (historical: ${row.historicalSources.join(", ")})` : ""} | ${cell(row.id + ": " + row.method + (row.median !== undefined ? "; median " + (row.median ?? "unknown") + " s (" + row.samples + " samples)" : ""))} | ${cell(row.value === null ? "unknown" : JSON.stringify(row.value))} ${row.unit} | ${row.operator ?? ">"} ${row.threshold}${row.consecutive ? ` in ${row.consecutive} consecutive orders` : ""} | ${row.holds === null ? `unknown (${cell(row.unavailable ?? "measurement unavailable")})` : row.holds}${row.reopened ? " (reopened)" : ""} |`,
+        `| ${row.sources.join(", ")}${row.historicalSources ? ` (historical: ${row.historicalSources.join(", ")})` : ""} | ${cell(row.id + ": " + row.method + (row.wallMedianS !== undefined ? `; wall median ${row.wallMedianS ?? "unknown"} s; execution-only median ${row.executionMedianS ?? "unknown"} s; contended samples ${row.samples.filter((sample) => sample.contended).length}/${row.samples.length}` : "") + (row.median !== undefined ? "; median " + (row.median ?? "unknown") + " s (" + row.samples + " samples)" : ""))} | ${cell(row.value === null ? "unknown" : JSON.stringify(row.value))} ${row.unit} | ${row.operator ?? ">"} ${row.threshold}${row.consecutive ? ` in ${row.consecutive} consecutive orders` : ""} | ${row.holds === null ? `unknown (${cell(row.unavailable ?? "measurement unavailable")})` : row.holds}${row.reopened ? " (reopened)" : ""} |`,
     ),
     `${result.holding} hold; ${result.unknown} unknown. Not evaluated: ${result.unevaluated.decisionConditions} decision conditions and ${result.unevaluated.registerRows} register rows.`,
   ].join("\n");

@@ -1,0 +1,61 @@
+{
+  "command": "node docs/evidence/WO-229/size-requests.mjs",
+  "capacity": 8,
+  "sources": [
+    "structural-need.json",
+    "structural-attempt001.json",
+    "structural-attempt002.json"
+  ],
+  "method": "Keep every successful observation from the retained attempts when sizing. A failure in another task does not erase a larger successful resource observation. Apply the strict half-capacity bound to the conservative integer need.",
+  "tasks": {
+    "format": {
+      "successfulSamples": 15,
+      "completeSeriesNeed": 3,
+      "observedNeed": 3,
+      "qualifies": true,
+      "hostRequest": 3
+    },
+    "configuration-root": {
+      "successfulSamples": 15,
+      "completeSeriesNeed": 2,
+      "observedNeed": 2,
+      "qualifies": true,
+      "hostRequest": 2
+    },
+    "registrations": {
+      "successfulSamples": 15,
+      "completeSeriesNeed": 2,
+      "observedNeed": 2,
+      "qualifies": true,
+      "hostRequest": 2
+    },
+    "declarations": {
+      "successfulSamples": 12,
+      "completeSeriesNeed": 3,
+      "observedNeed": 4,
+      "qualifies": false,
+      "hostRequest": 8
+    },
+    "generated": {
+      "successfulSamples": 9,
+      "completeSeriesNeed": 2,
+      "observedNeed": 2,
+      "qualifies": true,
+      "hostRequest": 2
+    },
+    "host": {
+      "successfulSamples": 9,
+      "completeSeriesNeed": 2,
+      "observedNeed": 2,
+      "qualifies": true,
+      "hostRequest": 2
+    },
+    "kit-verify": {
+      "successfulSamples": 9,
+      "completeSeriesNeed": 2,
+      "observedNeed": 2,
+      "qualifies": true,
+      "hostRequest": 2
+    }
+  }
+}

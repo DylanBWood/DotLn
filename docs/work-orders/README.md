@@ -7,7 +7,7 @@
 - [x] [WO-226] — An instance's kit works after its update without a hand step · **final-reviewed**
 - [x] [WO-227] — Outward publication as the operator intended · **final-reviewed**
 - [x] [WO-225] — The console's host contracts for an instance's browser shell · **final-reviewed**
-- [ ] [WO-229] — A gate says who it waited for · **queued**
+- [x] [WO-229] — A gate says who it waited for · **final-reviewed**
 - [ ] [WO-219] — Boarded follow-ups, batch 3: records, roles and the harness · **queued**
 - [ ] [WO-220] — Boarded follow-ups, batch 4: the resident and the vertical · **queued**
 - [ ] [WO-080] — Workstreams: document, index, board section and synthetic pilot · **queued**
@@ -39,23 +39,6 @@ Full evidence for the active and sequenced orders follows; the Open cards are in
 None.
 
 ## Open
-
-### WO-229
-
-[WO-229 — A gate says who it waited for: each WAIT line labels its holders as this checkout, another checkout or unknown without printing a path, the gate summary and the recorded row carry the gate's lane wait apart from its work, the planning condition reports an execution-only median beside the wall-clock one and marks a contended sample, &#96;node scripts/harness.mjs lanes&#96; lists live holders read-only, and the structural tasks' full-capacity requests are measured against their need (version assigned at activation)](WO-229-host-lane-visibility.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-185: satisfied-by-close (met) — the per-user host registry whose holders this order labels; WO-222: satisfied-by-close (met) — the recorded capacity and the scheduler whose waits this order attributes; WO-217: satisfied-by-close (met) — the :overlap reservation and D040, which this order measures against rather than reopens; WO-219: reference-only (non-blocking) — it edits the runner for other rows; whichever runs second rebases.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer high.
-- Track: machinery
-- Cost: adds, in &#96;scripts/lib/host-lanes.mjs&#96;, a &#96;relation&#96; per holder observation and the WAIT formatter's label; in &#96;scripts/test-runner.mjs&#96;, the gate-level &#96;hostLaneWait&#96; object on the recorded row and the summary line's wait figure; in &#96;scripts/lib/gate-timeline.mjs&#96;, &#96;laneWaitMs&#96; apart from &#96;gapMs&#96;; in &#96;scripts/lib/gate-reuse.mjs&#96;, the strip list; in &#96;scripts/lib/planning-conditions.mjs&#96;, the execution-only median, the &#96;contended&#96; flag and a lane snapshot in the host context; in &#96;scripts/harness.mjs&#96;, &#96;lanes&#96;; a non-mutating holder read in &#96;host-lanes.mjs&#96;; the measurement script and its record; cases in &#96;scripts/test-host-guard.test.mjs&#96;, &#96;scripts/test-runner.test.mjs&#96;, &#96;scripts/test-gate-deadlines.mjs&#96; and &#96;scripts/test-plan-refutation.mjs&#96;; product 07 and the architecture record's sentences. Removes the state the fork met twice: a document gate whose summary says 304.86 s or 1,520.76 s while every task's printed duration is under 6 s, WAIT lines that name holders the gate cannot schedule without saying whose they are, and a planning condition that reads another checkout's complete run as the document gate's own cost. Re-mints: &#96;scripts/lib/gate-reuse.mjs&#96; is a common source of every edition (since &#96;0623f3a3&#96;), so every minted edition is re-minted deterministically through &#96;npm run sync&#96;, the feedback edition by carry; &#96;scripts/test-runner.mjs&#96; and &#96;scripts/lib/host-lanes.mjs&#96; are &#96;runner-fixtures&#96; and host-guard sources, so &#96;npm test -- --review&#96; runs before handoff. No live feedback episode is owed. Wall-clock: the relation label is one &#96;realpath&#96; per holder per WAIT; the snapshot is one directory read; the measurement is one bounded series the executor runs outside a gate. Context bytes: this file, about 22,000. Steps: 11.
-- Authority: [docs/work-orders/WO-229-host-lane-visibility.md](WO-229-host-lane-visibility.md)
 
 ### WO-219
 

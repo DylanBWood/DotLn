@@ -1,0 +1,21 @@
+{
+  "command": "node scripts/harness.mjs bounded -- node --test --test-name-pattern='measured structural requests' scripts/test-gate-deadlines.mjs",
+  "scope": "Two actual fixture gates in sibling checkouts sharing an eight-slot registry; finite workload, not a universal fairness guarantee. Full-capacity and measured requests keep identical local reservations and task work.",
+  "arms": [
+    {
+      "sizing": "full-capacity",
+      "documentWallMs": 5244,
+      "documentLaneWaitMs": 3050,
+      "longestCompleteTaskMs": 3067,
+      "completeWallMs": 3282
+    },
+    {
+      "sizing": "measured",
+      "documentWallMs": 4302,
+      "documentLaneWaitMs": 2108,
+      "longestCompleteTaskMs": 3062,
+      "completeWallMs": 3232
+    }
+  ],
+  "testExitCode": 0
+}

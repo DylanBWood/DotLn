@@ -7,6 +7,8 @@ import { createProcessMonitor } from "./lib/process-monitor.mjs";
 import {
   acquireHostLaneCapacity,
   acquireHostLanes,
+  recordLaneWait,
+  formatLaneWait,
   inheritedHostLease,
 } from "./lib/host-lanes.mjs";
 import {
@@ -42,7 +44,11 @@ import { basename, dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { startDeadline } from "../packages/skeleton/src/gate-deadlines.mjs";
 import { evidenceSourceContent } from "../packages/skeleton/src/evidence-editions.mjs";
-import { gateCriticalPath } from "./lib/gate-timeline.mjs";
+import {
+  gateCriticalPath,
+  gateHostLaneWait,
+  formatHostLaneWait,
+} from "./lib/gate-timeline.mjs";
 import {
   beginGateRun,
   gateTreeHash,
@@ -274,6 +280,7 @@ export const machinerySources = {
     "packages/skeleton/src/loadouts/",
   ],
   harness: [
+    "scripts/lib/host-lanes.mjs",
     "scripts/lib/bounded-command.mjs",
     // The check action's stale host-rule report (WO-221), loaded on demand.
     "scripts/lib/target-worktrees.mjs",
@@ -309,6 +316,10 @@ export const machinerySources = {
   ],
   "harness-evidence": recordedSources["harness"],
   "plan-refutation": [
+    "scripts/lib/gate-evidence.mjs",
+    "scripts/lib/gate-reuse.mjs",
+    "scripts/lib/planning-conditions.mjs",
+    "scripts/lib/host-lanes.mjs",
     // Direct entry imports and literal first-party script inputs (WO-174).
     "packages/kernel/src/index.ts",
     "scripts/lib/control-store.mjs",
@@ -379,6 +390,7 @@ export const machinerySources = {
     "scripts/test-plan-refutation.mjs",
     "scripts/lib/gate-timeline.mjs",
     "scripts/measure-gates.mjs",
+    "scripts/measure-lanes.mjs",
     "scripts/lib/gate-evidence.mjs",
     // The passing-row lookup `npm test` reuses and completions read (WO-173).
     "scripts/lib/gate-reuse.mjs",
@@ -670,6 +682,9 @@ function classifySuite(row) {
     ...row,
     machinery,
     structural,
+    ...(structural && structuralHostSlots[row.name]
+      ? { hostSlots: structuralHostSlots[row.name] }
+      : {}),
     generated: [
       "release-surfaces",
       "authority-evidence",
@@ -890,10 +905,22 @@ export function changedSinceLastGate(
   };
 }
 
+// Independent CPU/RSS measurements separate host demand from local exclusion.
+export const structuralHostSlots = Object.freeze({
+  format: 3,
+  "configuration-root": 2,
+  registrations: 2,
+  declarations: 4,
+  generated: 2,
+  host: 2,
+  "kit-verify": 2,
+});
+
 const buildSuite = (repo) =>
   isKitRoot(repo)
     ? node("kit-verify", "scripts/launchpad.mjs", {
         args: ["verify"],
+        hostSlots: structuralHostSlots["kit-verify"],
         build: true,
         fast: true,
         outputs: [],
@@ -1375,6 +1402,13 @@ export function validateSuites(table) {
     )
       throw new Error(`Invalid scheduler lane reservation: ${row.name}`);
   for (const row of table) {
+    if (
+      row.hostSlots !== undefined &&
+      (!Number.isSafeInteger(row.hostSlots) ||
+        row.hostSlots < 1 ||
+        row.hostSlots > 8)
+    )
+      throw new Error(`Invalid host lane request: ${row.name}`);
     if (
       row.overlap !== undefined &&
       (!row.exclusive ||
@@ -2048,6 +2082,7 @@ export async function scheduleSuites(
     execute = executeSuite,
     onResult = () => {},
     onActiveChange = () => {},
+    admissionWaits = new Map(),
     diagnosticContext = {},
     stopRequested = () => false,
     hostLanes,
@@ -2080,6 +2115,12 @@ export async function scheduleSuites(
       ? inheritedHostLease(hostLanes.directory)
       : hostLanes.parentLease
     : null;
+  const observeWait =
+    (task, observations, segments) => (holders, observation) => {
+      recordLaneWait(observations, segments, observation);
+      if (hostLanes.onWait) hostLanes.onWait(holders, observation);
+      else console.log(formatLaneWait(task, observation));
+    };
   const executeTask = async (
     row,
     laneIndexes,
@@ -2105,7 +2146,29 @@ export async function scheduleSuites(
       slotCapacity: concurrency,
       hostCapacity: capacity,
     };
+    const waitingObservations = [];
+    const waitingRelations = [];
+    const admission = {
+      name: row.name,
+      startedAt,
+      get hostLaneWaitObservations() {
+        return [
+          ...(reservation?.waitObservations ?? []),
+          ...waitingObservations,
+        ];
+      },
+      get hostLaneWaitRelations() {
+        return [
+          ...(reservation?.waitRelations ?? []),
+          ...(reservation?.acquiredAt
+            ? [{ observedAt: reservation.acquiredAt, relations: ["unknown"] }]
+            : []),
+          ...waitingRelations,
+        ];
+      },
+    };
     let lease,
+      outerLease,
       hostLaneWaitMs,
       executionStarted = false;
     const observed = (result) => {
@@ -2128,9 +2191,16 @@ export async function scheduleSuites(
         ...(lease
           ? {
               hostLaneWaitMs,
+              hostLaneWaitRelations: admission.hostLaneWaitRelations,
               hostLaneSlots: lease.record.slots,
-              ...(lease.waitObservations.length
-                ? { hostLaneWaitObservations: lease.waitObservations }
+              ...(lease.waitObservations.length ||
+              outerLease?.waitObservations?.length
+                ? {
+                    hostLaneWaitObservations: [
+                      ...(outerLease?.waitObservations ?? []),
+                      ...lease.waitObservations,
+                    ],
+                  }
                 : {}),
             }
           : {}),
@@ -2138,18 +2208,22 @@ export async function scheduleSuites(
     };
     try {
       if (hostLanes && row.command.length) {
+        admissionWaits.set(row.name, admission);
         const outer = reservation ? await reservation.promise : parentLease;
+        outerLease = reservation ? outer : undefined;
         lease = await acquireLanes({
           ...hostLanes,
           signal: hostLanes.signal
             ? AbortSignal.any([hostLanes.signal, launchStop.signal])
             : launchStop.signal,
           parentLease: outer,
-          slots: occupiedSlots,
+          slots: Math.min(row.hostSlots ?? occupiedSlots, occupiedSlots),
           worktree: repo,
           task: row.name,
+          onWait: observeWait(row.name, waitingObservations, waitingRelations),
         });
         hostLaneWaitMs = Date.now() - Date.parse(startedAt);
+        admission.hostLaneWaitMs = hostLaneWaitMs;
       }
       if (stopRequested() || (!keepGoing && failedFirst))
         return {
@@ -2214,6 +2288,7 @@ export async function scheduleSuites(
       if (!keepGoing) launchStop.abort();
     }
     onResult(result);
+    admissionWaits.delete(result.name);
   };
   // Structural checks run serially before the build or any selected suite.
   // A failed structural prerequisite is never bypassed by --keep-going.
@@ -2374,22 +2449,33 @@ export async function scheduleSuites(
         exclusive = row;
         // One full host reservation contains both the exclusive task and its
         // admitted light peers. Unrelated gates cannot borrow overlap slots.
-        exclusiveReservation =
-          hostLanes && overlapSlots(row, concurrency) > 0
-            ? {
-                users: 0,
-                promise: acquireLanes({
-                  ...hostLanes,
-                  parentLease,
-                  slots: concurrency,
-                  worktree: repo,
-                  task: `${row.name}:overlap`,
-                  signal: hostLanes.signal
-                    ? AbortSignal.any([hostLanes.signal, launchStop.signal])
-                    : launchStop.signal,
-                }),
-              }
-            : undefined;
+        const waitObservations = [];
+        const waitRelations = [];
+        let reservation;
+        if (hostLanes && overlapSlots(row, concurrency) > 0) {
+          reservation = { users: 0, waitObservations, waitRelations };
+          reservation.promise = acquireLanes({
+            ...hostLanes,
+            parentLease,
+            slots: concurrency,
+            worktree: repo,
+            task: `${row.name}:overlap`,
+            onWait: observeWait(
+              `${row.name}:overlap`,
+              waitObservations,
+              waitRelations,
+            ),
+            signal: hostLanes.signal
+              ? AbortSignal.any([hostLanes.signal, launchStop.signal])
+              : launchStop.signal,
+          }).then((lease) => {
+            // Once the outer lease is held, later child admission time
+            // cannot inherit the blockers of the completed outer wait.
+            reservation.acquiredAt = new Date().toISOString();
+            return lease;
+          });
+        }
+        exclusiveReservation = reservation;
       }
       if (row.group) groups.set(row.group, (groups.get(row.group) ?? 0) + 1);
       const laneIndexes = freeLanes.slice(0, reservedSlots(row, concurrency));
@@ -2742,6 +2828,7 @@ async function runGateChecks(
       row.build ? classifySuite(buildSuite(repo)) : row,
     ),
     hostDirectory = hostStateRoot(),
+    planningSampleId,
   } = {},
 ) {
   let document = false,
@@ -3094,6 +3181,7 @@ async function runGateChecks(
   const stop = new AbortController();
   const limits = memoryBudgets(repo, { capacity: hostCapacity });
   const completedRows = [];
+  const admissionWaits = new Map();
   let stoppedCheck;
   const recordStopped = (stoppedBy) => {
     if (stoppedCheck || !completedRows.length) return stoppedCheck;
@@ -3114,6 +3202,16 @@ async function runGateChecks(
       requiredSuites: selected.map((row) => row.name),
       cases: completedRows.map(failedOutputOnly),
       taskTimeline: completedRows.map(withoutOutput),
+      hostLaneWait: gateHostLaneWait([
+        ...completedRows,
+        ...[...admissionWaits.values()].map((row) => ({
+          ...row,
+          hostLaneWaitMs:
+            row.hostLaneWaitMs ??
+            Date.parse(recordedAt) - Date.parse(row.startedAt),
+        })),
+      ]),
+      ...(planningSampleId ? { planningSampleId } : {}),
       unrunSuites: tasks
         .filter((task) => !completedRows.some((row) => row.name === task.name))
         .map((row) => row.name),
@@ -3181,6 +3279,7 @@ async function runGateChecks(
       repo,
       concurrency,
       stopRequested: stopping,
+      admissionWaits,
       diagnosticContext: { peerFile, deadlineLog, fixtureTag },
       hostLanes: {
         directory: hostDirectory,
@@ -3293,7 +3392,10 @@ async function runGateChecks(
           execute: async (row, cwd, signal) => {
             const lease = await acquireHostLanes({
               directory: hostDirectory,
-              slots: reservedSlots(row, concurrency),
+              slots: Math.min(
+                row.hostSlots ?? reservedSlots(row, concurrency),
+                reservedSlots(row, concurrency),
+              ),
               worktree: repo,
               task: `base:${row.name}`,
               signal,
@@ -3389,6 +3491,7 @@ async function runGateChecks(
       executed: true,
       evidenceRef: `host-gate:${codeIdentity}:${only ?? checkId}`,
       recordedAt: new Date().toISOString(),
+      ...(planningSampleId ? { planningSampleId } : {}),
       executionMode: again
         ? "forced-fresh"
         : reused.size
@@ -3446,6 +3549,7 @@ async function runGateChecks(
         scheduler: "light-overlap-v2",
       },
       taskTimeline: taskRows.map(withoutOutput),
+      hostLaneWait: gateHostLaneWait(taskRows),
       memory: {
         ...monitor.close(),
         budgets: limits,
@@ -3558,6 +3662,8 @@ async function runGateChecks(
             : 0,
           cases: structuralRows.map(failedOutputOnly),
           taskTimeline: structuralRows.map(withoutOutput),
+          hostLaneWait: gateHostLaneWait(structuralRows),
+          criticalPath: gateCriticalPath(structuralRows),
           freshSuites: structuralRows.filter((row) => row.executed).length,
           reusedSuites: 0,
           unrunSuites: structural
@@ -3575,7 +3681,7 @@ async function runGateChecks(
       ...(structuralCheck ? [structuralCheck] : []),
     ]);
     console.log(
-      `${checkId}: ${rows.filter((row) => row.exitCode === 0).length} passed; ${rows.filter((row) => row.exitCode !== 0).length} failed; ${(check.durationMs / 1000).toFixed(2)} s; ${check.freshSuites} fresh tasks${unchanged ? "" : "; code changed"}${outputUnchanged ? "" : "; build output changed during the gate"}${abandoned.length ? `; abandoned fixture roots: ${abandoned.join(", ")}` : ""}${confinedPartial ? `; partial, not product-gate evidence: excluded ${check.excludedSuites.join(", ") || "none"}` : ""}`,
+      `${checkId}: ${rows.filter((row) => row.exitCode === 0).length} passed; ${rows.filter((row) => row.exitCode !== 0).length} failed; ${(check.durationMs / 1000).toFixed(2)} s; ${check.freshSuites} fresh tasks${formatHostLaneWait(check.hostLaneWait)}${unchanged ? "" : "; code changed"}${outputUnchanged ? "" : "; build output changed during the gate"}${abandoned.length ? `; abandoned fixture roots: ${abandoned.join(", ")}` : ""}${confinedPartial ? `; partial, not product-gate evidence: excluded ${check.excludedSuites.join(", ") || "none"}` : ""}`,
     );
     return check;
   } finally {

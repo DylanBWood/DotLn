@@ -82,7 +82,7 @@ test("a live guard restores its missing record and a concurrent start reuses it"
   assert.equal(second.reused, true);
 });
 
-async function fixture(t) {
+async function fixture(t, { containmentBudget = true } = {}) {
   const base = realpathSync(mkdtempSync(join(tmpdir(), "dotln-wo185-"))),
     directory = join(base, "host"),
     repo = join(base, "repo");
@@ -92,7 +92,9 @@ async function fixture(t) {
     join(repo, "docs/control/budgets.json"),
     JSON.stringify({
       memory: {
-        gateShare: (4 * 64 * 2 ** 20) / totalmem(),
+        ...(containmentBudget
+          ? { gateShare: (4 * 64 * 2 ** 20) / totalmem() }
+          : {}),
         signalIntervalMs: 50,
         footprintIntervalMs: 100,
       },
@@ -439,11 +441,10 @@ test(
     writeFileSync(
       entry,
       `import {runGate} from ${JSON.stringify(join(root, "scripts/test-runner.mjs"))};
-    const allocation=setTimeout(()=>{globalThis.retained=Buffer.alloc(512*2**20,1)},500);
+    process.once('SIGUSR2',()=>{globalThis.retained=Buffer.alloc(512*2**20,1)});
     const result=await runGate(['--again'],${JSON.stringify(f.repo)},{hostDirectory:${JSON.stringify(f.directory)},table:[
       {name:'build',build:true,product:true,command:[process.execPath,'-e',"console.log('built')"]},
-      {name:'allocation',product:true,command:[process.execPath,'-e',"setTimeout(()=>{},10000)"]} ]});
-    clearTimeout(allocation);
+      {name:'allocation',product:true,command:[process.execPath,'-e',"process.kill("+process.pid+",'SIGUSR2');setTimeout(()=>{},10000)"]} ]});
     console.log('gate-budget-result '+JSON.stringify(result));`,
     );
     const row = await executeSuite(
@@ -456,12 +457,11 @@ test(
     );
     assert.equal(row.exitCode, 1, row.output);
     assert.equal(row.failureKind, "memory-budget");
-    const check = JSON.parse(
-      row.output
-        .split("\n")
-        .find((line) => line.startsWith("gate-budget-result "))
-        .slice(19),
-    );
+    const resultLine = row.output
+      .split("\n")
+      .find((line) => line.startsWith("gate-budget-result "));
+    assert.ok(resultLine, row.output);
+    const check = JSON.parse(resultLine.slice(19));
     assert.equal(check.exitCode, 1);
     assert.equal(check.memory.failure.failureKind, "memory-budget");
     assert.equal(check.memory.failure.scope, "gate");
@@ -2666,3 +2666,459 @@ test("the first host acquirer records capacity and later derivations inherit it"
     /request 3 exceeds recorded capacity 2/,
   );
 });
+
+test("lane diagnostics label other, nested own and legacy holders without paths", async (t) => {
+  const f = await fixture(t);
+  const other = join(f.base, "other-checkout");
+  mkdirSync(other);
+  const { formatLaneWait, checkoutRelation } =
+    await import("./lib/host-lanes.mjs");
+  const { symlinkSync } = await import("node:fs");
+  const alias = join(f.base, "alias");
+  symlinkSync(f.repo, alias);
+  assert.equal(checkoutRelation(alias, f.repo), "this-checkout");
+  assert.equal(checkoutRelation(join(f.base, "missing"), f.repo), "unknown");
+  for (const [worktree, relation, nested] of [
+    [other, "another-checkout", false],
+    [alias, "this-checkout", true],
+    [undefined, "unknown", false],
+  ]) {
+    const parent = nested
+      ? await acquireHostLanes({
+          directory: f.directory,
+          slots: 4,
+          worktree: f.repo,
+          task: "parent",
+          parentLease: null,
+        })
+      : null;
+    const holder = await acquireHostLanes({
+      directory: f.directory,
+      slots: 4,
+      worktree,
+      task: "holder",
+      parentLease: parent,
+    });
+    const observations = [],
+      lines = [];
+    const pending = acquireHostLanes({
+      directory: f.directory,
+      slots: 1,
+      worktree: f.repo,
+      task: "waiter",
+      parentLease: parent,
+      onWait: (_rows, observation) => {
+        observations.push(observation);
+        lines.push(formatLaneWait("waiter", observation));
+      },
+    });
+    await delay(150);
+    await holder.release();
+    const admitted = await pending;
+    try {
+      assert.ok(observations.length);
+      assert.equal(observations[0].holders[0].relation, relation);
+      assert.equal(observations[0].holders[0].nested, nested);
+      assert.match(
+        lines[0],
+        relation === "another-checkout"
+          ? /another checkout/
+          : relation === "this-checkout"
+            ? /this checkout/
+            : /checkout unknown/,
+      );
+      for (const path of [f.repo, other, alias, f.directory])
+        assert.ok(!JSON.stringify({ lines, observations }).includes(path));
+    } finally {
+      await admitted.release();
+      await parent?.release();
+    }
+  }
+});
+
+test("lanes CLI reads live holders and capacity without any registry mutation", async (t) => {
+  // Warm the process cache outside this fixture, as earlier suite cases do.
+  if (native) readHostSnapshot({ footprint: false });
+  const f = await fixture(t);
+  const { readHolders } = await import("./lib/host-lanes.mjs");
+  const { createHash } = await import("node:crypto");
+  // Acquisition can reuse a reader cached in another registry. Prepare this
+  // registry's reader in a fresh process before the read-only byte snapshot.
+  if (native)
+    execFileSync(
+      process.execPath,
+      [
+        "--input-type=module",
+        "-e",
+        `const {readHostSnapshot}=await import(${JSON.stringify(new URL("./lib/host-resources.mjs", import.meta.url).href)}); readHostSnapshot({footprint:false,directory:process.argv[1]});`,
+        f.directory,
+      ],
+      { cwd: root, encoding: "utf8" },
+    );
+  const lease = await acquireHostLanes({
+    directory: f.directory,
+    slots: 4,
+    worktree: f.repo,
+    task: "live-holder",
+    parentLease: null,
+  });
+  atomicJson(join(f.directory, "lanes/stale.json"), {
+    pid: 2147483647,
+    birth: "gone",
+    slots: 1,
+    task: "stale",
+    acquiredAt: new Date().toISOString(),
+  });
+  const snapshot = (folder) =>
+    Object.fromEntries(
+      readdirSync(folder, { withFileTypes: true }).map((entry) => [
+        entry.name,
+        entry.isDirectory()
+          ? snapshot(join(folder, entry.name))
+          : createHash("sha256")
+              .update(readFileSync(join(folder, entry.name)))
+              .digest("hex"),
+      ]),
+    );
+  // Only the OS rendezvous path is replaced in the CLI's isolated process.
+  const bootstrap = join(f.base, "read-only-cli.mjs");
+  writeFileSync(
+    bootstrap,
+    `import cp from 'node:child_process';import {syncBuiltinESMExports} from 'node:module'; const original=cp.execFileSync; cp.execFileSync=(file,args,...rest)=>file==='/usr/bin/getconf'&&args?.[0]==='DARWIN_USER_TEMP_DIR'?${JSON.stringify(f.base + "\n")}:original(file,args,...rest); syncBuiltinESMExports();`,
+  );
+  // A directory alias makes hostStateRoot resolve the same seeded registry.
+  const { symlinkSync } = await import("node:fs");
+  symlinkSync(
+    f.directory,
+    join(f.base, `dotln-host-v1-${process.getuid?.() ?? "user"}`),
+  );
+  const before = snapshot(f.directory);
+  try {
+    const view = readHolders(f.directory, { worktree: f.repo });
+    assert.equal(view.capacity, 4);
+    assert.deepEqual(
+      view.holders.map((row) => row.task),
+      ["live-holder"],
+    );
+    assert.equal(view.holders[0].relation, "this-checkout");
+    assert.equal(view.holders[0].ownerAlive, true);
+    assert.equal(view.holders[0].nested, false);
+    assert.ok(view.holders[0].ageMs >= 0);
+    if (native) {
+      const output = execFileSync(
+        process.execPath,
+        ["--import", bootstrap, join(root, "scripts/harness.mjs"), "lanes"],
+        { cwd: f.repo, encoding: "utf8" },
+      );
+      assert.equal(JSON.parse(output).holders[0].relation, "this-checkout");
+      assert.ok(!output.includes(f.base));
+    }
+    assert.deepEqual(snapshot(f.directory), before);
+    const absent = join(f.base, "absent-registry");
+    assert.deepEqual(readHolders(absent).holders, []);
+    assert.equal(readHolders(absent).capacity, null);
+    assert.equal(existsSync(absent), false);
+    if (native) {
+      const cold = join(f.base, "unprepared-reader");
+      mkdirSync(join(cold, "lanes"), { recursive: true });
+      writeFileSync(
+        join(cold, "lanes/stale.json"),
+        JSON.stringify({
+          pid: 2147483647,
+          birth: "gone",
+          task: "stale",
+          slots: 1,
+        }),
+      );
+      const coldBefore = snapshot(cold);
+      assert.throws(() => readHolders(cold), /Host process reader unavailable/);
+      assert.deepEqual(snapshot(cold), coldBefore);
+    }
+  } finally {
+    await lease.release();
+  }
+});
+
+test("a waiting fixture gate records and prints its lane union without checkout paths", async (t) => {
+  const f = await fixture(t, { containmentBudget: false }),
+    other = join(f.base, "sibling");
+  mkdirSync(other);
+  const holder = await acquireHostLanes({
+    directory: f.directory,
+    slots: 4,
+    worktree: other,
+    task: "sibling-task",
+    parentLease: null,
+  });
+  const original = console.log,
+    lines = [];
+  let release, releaseTimer;
+  const releaseHolder = () => (release ??= holder.release());
+  // A missing WAIT fails within the bound instead of leaving a held lease.
+  const failSafe = setTimeout(() => releaseHolder().catch(() => {}), 30_000);
+  console.log = (...args) => {
+    const line = args.join(" ");
+    lines.push(line);
+    if (!releaseTimer && line.startsWith("WAIT host lanes for "))
+      releaseTimer = setTimeout(() => releaseHolder().catch(() => {}), 250);
+  };
+  let row;
+  try {
+    // Startup taking longer than the former release timer must still wait.
+    await delay(1250);
+    row = await runGate(["--document", "--again"], f.repo, {
+      hostDirectory: f.directory,
+      table: [
+        {
+          name: "build",
+          build: true,
+          document: true,
+          command: [process.execPath, "-e", "setTimeout(()=>{},20)"],
+        },
+        {
+          name: "docs-check",
+          document: true,
+          command: [process.execPath, "-e", "setTimeout(()=>{},20)"],
+        },
+      ],
+    });
+  } finally {
+    console.log = original;
+    clearTimeout(failSafe);
+    clearTimeout(releaseTimer);
+    await releaseHolder();
+  }
+  assert.equal(row.exitCode, 0);
+  assert.ok(row.hostLaneWait.wallMs > 100, JSON.stringify(row.hostLaneWait));
+  assert.ok(row.hostLaneWait.byRelation["another-checkout"] > 100);
+  assert.match(
+    lines.find((line) => line.startsWith("WAIT")),
+    /another checkout/,
+  );
+  assert.match(
+    lines.find((line) => line.startsWith("npm run test:docs:")),
+    /waiting for host lanes.*behind another checkout/,
+  );
+  for (const path of [f.repo, other, f.directory])
+    assert.ok(!JSON.stringify({ row, lines }).includes(path));
+  const recorded = readGateChecks(f.repo).find(
+    (entry) => entry.checkId === "npm run test:docs",
+  );
+  assert.deepEqual(recorded.hostLaneWait, row.hostLaneWait);
+});
+
+test("a stopped document gate retains its active sibling admission wait", async (t) => {
+  const f = await fixture(t, { containmentBudget: false }),
+    other = join(f.base, "sibling");
+  mkdirSync(other);
+  const holder = await acquireHostLanes({
+    directory: f.directory,
+    slots: 3,
+    worktree: other,
+    task: "sibling-task",
+    parentLease: null,
+  });
+  const original = console.log;
+  let timer;
+  console.log = (...args) => {
+    if (!timer && args.join(" ").startsWith("WAIT host lanes for docs-check:"))
+      timer = setTimeout(() => process.emit("SIGTERM"), 120);
+  };
+  try {
+    await assert.rejects(
+      runGate(["--document", "--again"], f.repo, {
+        hostDirectory: f.directory,
+        planningSampleId: "stopped-sample",
+        table: [
+          {
+            name: "build",
+            build: true,
+            document: true,
+            hostSlots: 1,
+            command: [process.execPath, "-e", ""],
+          },
+          {
+            name: "docs-check",
+            document: true,
+            loadSlots: 4,
+            command: [process.execPath, "-e", ""],
+          },
+        ],
+      }),
+      /stopped row recorded/,
+    );
+  } finally {
+    console.log = original;
+    clearTimeout(timer);
+    await holder.release();
+  }
+  const row = readGateChecks(f.repo).find((entry) => entry.stopped);
+  assert.equal(row.planningSampleId, "stopped-sample");
+  assert.equal(row.exitCode, 1);
+  assert.deepEqual(
+    row.taskTimeline.map((task) => task.name),
+    ["build"],
+  );
+  assert.ok(row.unrunSuites.includes("docs-check"));
+  assert.ok(row.hostLaneWait.byRelation["another-checkout"] >= 100);
+  assert.ok(
+    row.hostLaneWait.wallMs >= row.hostLaneWait.byRelation["another-checkout"],
+  );
+  assert.ok(!JSON.stringify(row).includes(f.base));
+});
+
+test("lane attribution retains a static holder beyond the diagnostic heartbeat cap", async (t) => {
+  const { gateHostLaneWait } = await import("./lib/gate-timeline.mjs");
+  const f = await fixture(t, { containmentBudget: false });
+  const other = join(f.base, "sibling");
+  mkdirSync(other);
+  const holder = await acquireHostLanes({
+    directory: f.directory,
+    slots: 4,
+    worktree: other,
+    task: "unchanging",
+    parentLease: null,
+  });
+  let count = 0;
+  const startedAt = new Date().toISOString();
+  const pending = acquireHostLanes({
+    directory: f.directory,
+    slots: 1,
+    worktree: f.repo,
+    task: "waiter",
+    parentLease: null,
+    waitHeartbeatMs: 50,
+    onWait: () => count++,
+  });
+  try {
+    for (let i = 0; i < 1500 && count < 40; i++) await delay(10);
+    assert.ok(count >= 40, `observed ${count} heartbeats`);
+  } finally {
+    await holder.release();
+  }
+  const lease = await pending;
+  try {
+    assert.equal(lease.waitObservations.length, 32);
+    assert.equal(lease.waitRelations.length, 1);
+    const wait = gateHostLaneWait([
+      {
+        startedAt,
+        hostLaneWaitMs: Date.now() - Date.parse(startedAt),
+        hostLaneWaitObservations: lease.waitObservations,
+        hostLaneWaitRelations: lease.waitRelations,
+      },
+    ]);
+    assert.equal(
+      wait.byRelation.unknown,
+      Date.parse(lease.waitRelations[0].observedAt) - Date.parse(startedAt),
+    );
+    assert.equal(
+      wait.byRelation["another-checkout"],
+      wait.wallMs - wait.byRelation.unknown,
+    );
+    assert.ok(!JSON.stringify(wait).includes(f.base));
+  } finally {
+    await lease.release();
+  }
+});
+
+for (const stopped of [false, true])
+  test(`lane attribution retains rotating holders in a ${stopped ? "stopped" : "passed"} gate`, async (t) => {
+    const f = await fixture(t, { containmentBudget: false });
+    const other = join(f.base, "sibling");
+    mkdirSync(other);
+    const hold = (name) =>
+      acquireHostLanes({
+        directory: f.directory,
+        slots: 1,
+        worktree: other,
+        task: name,
+        parentLease: null,
+      });
+    const held = [await hold("a"), await hold("b"), await hold("c")];
+    const lines = [],
+      original = console.log;
+    let count = 0;
+    console.log = (...args) => {
+      const line = args.join(" ");
+      lines.push(line);
+      if (line.startsWith("WAIT host lanes for docs-check:")) count++;
+    };
+    const waitFor = async (expected) => {
+      for (let i = 0; i < 1500 && count < expected; i++) await delay(10);
+      assert.ok(
+        count >= expected,
+        `expected ${expected} observations, got ${count}`,
+      );
+    };
+    const releaseAll = async () => {
+      while (held.length) await held.shift().release();
+    };
+    const rotation = (async () => {
+      try {
+        await waitFor(1);
+        for (let i = 0; i < 40; i++) {
+          const before = count;
+          held.push(await hold(`rotating-${i}`));
+          await held.shift().release();
+          await waitFor(before + 1);
+        }
+        if (stopped) process.emit("SIGTERM");
+      } finally {
+        await releaseAll();
+      }
+    })();
+    rotation.catch(() => {});
+    let result;
+    try {
+      const gate = runGate(["--document", "--again"], f.repo, {
+        hostDirectory: f.directory,
+        table: [
+          {
+            name: "build",
+            build: true,
+            document: true,
+            hostSlots: 1,
+            command: [process.execPath, "-e", ""],
+          },
+          {
+            name: "docs-check",
+            document: true,
+            loadSlots: 4,
+            command: [process.execPath, "-e", ""],
+          },
+        ],
+      });
+      if (stopped) await assert.rejects(gate, /stopped row recorded/);
+      else result = await gate;
+      await rotation;
+    } finally {
+      await rotation.catch(() => {});
+      console.log = original;
+      await releaseAll();
+    }
+    const row = readGateChecks(f.repo).find(
+      (entry) => entry.checkId === "npm run test:docs",
+    );
+    assert.ok(count > 32);
+    assert.equal(row.exitCode, stopped ? 1 : 0);
+    assert.equal(row.hostLaneWait.byRelation["this-checkout"], 0);
+    assert.ok(
+      row.hostLaneWait.byRelation.unknown < row.hostLaneWait.wallMs / 3,
+      JSON.stringify(row.hostLaneWait),
+    );
+    assert.ok(!JSON.stringify({ row, lines }).includes(f.base));
+    if (stopped)
+      assert.deepEqual(
+        row.taskTimeline.map((task) => task.name),
+        ["build"],
+      );
+    else {
+      const task = row.taskTimeline.find(
+        (entry) => entry.name === "docs-check",
+      );
+      assert.equal(task.hostLaneWaitObservations.length, 32);
+      assert.equal(task.hostLaneWaitRelations.length, 1);
+      assert.deepEqual(result.hostLaneWait, row.hostLaneWait);
+    }
+  });

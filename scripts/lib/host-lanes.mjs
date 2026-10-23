@@ -1,12 +1,20 @@
-import { existsSync, readFileSync, rmSync } from "node:fs";
+import {
+  existsSync,
+  readFileSync,
+  readdirSync,
+  realpathSync,
+  rmSync,
+} from "node:fs";
 import { join } from "node:path";
-import { randomUUID } from "node:crypto";
+import { execFileSync } from "node:child_process";
+import { createHash, randomUUID } from "node:crypto";
 import {
   atomicJson,
   delay,
   hostLaneCapacity,
   hostStateRoot,
   ownedProcesses,
+  parseNativeSnapshot,
   processAlive,
   readHostSnapshot,
   readRecords,
@@ -93,9 +101,7 @@ export function inheritedHostLease(directory, env = process.env) {
   );
 }
 
-function liveHolders(directory) {
-  const table = readHostSnapshot({ footprint: false, directory }).processes;
-  const rows = readRecords(directory, "lanes");
+function retainedHolders(rows, table) {
   const keep = new Set(
     rows.filter((row) => laneHolderAlive(row, table)).map((row) => row.file),
   );
@@ -111,14 +117,169 @@ function liveHolders(directory) {
         changed = true;
       }
   }
+  return rows.filter((row) => keep.has(row.file));
+}
+
+function liveHolders(directory) {
+  const table = readHostSnapshot({ footprint: false, directory }).processes;
+  const rows = readRecords(directory, "lanes");
+  const holders = retainedHolders(rows, table);
+  const keep = new Set(holders.map((row) => row.file));
+  for (const row of rows)
+    if (!keep.has(row.file)) rmSync(row.file, { force: true });
+  return { table, holders };
+}
+
+export function checkoutRelation(holder, waiter) {
+  if (typeof holder !== "string" || typeof waiter !== "string")
+    return "unknown";
+  try {
+    return realpathSync(holder) === realpathSync(waiter)
+      ? "this-checkout"
+      : "another-checkout";
+  } catch {
+    return "unknown";
+  }
+}
+
+export const laneRelationLabel = (relation) =>
+  ({
+    "this-checkout": "this checkout",
+    "another-checkout": "another checkout",
+  })[relation] ?? "checkout unknown";
+
+function holderObservation(row, table, holders, worktree, now) {
+  const members = new Map(
+    (row.members ?? []).map((member) => [member.pid, member.birth]),
+  );
+  members.uniqueIds = new Set(
+    (row.members ?? []).map((member) => member.uniqueId).filter(Boolean),
+  );
+  const acquiredAt = Date.parse(row.acquiredAt);
   return {
-    table,
-    holders: rows.filter((row) => {
-      if (keep.has(row.file)) return true;
-      rmSync(row.file, { force: true });
-      return false;
-    }),
+    task: row.task,
+    slots: row.slots,
+    relation: checkoutRelation(row.worktree, worktree),
+    ageMs: Number.isFinite(acquiredAt) ? Math.max(0, now - acquiredAt) : null,
+    ownerAlive: processAlive(row, table),
+    survivingTasks: row.taskRoot
+      ? ownedProcesses(table, row.taskRoot.pid, members, {
+          birth: row.taskRoot.birth,
+          uniqueId: row.taskRoot.uniqueId,
+        }).length
+      : 0,
+    nested: Boolean(row.parent),
+    released: Boolean(row.released),
+    retainedSubleases: holders.filter((child) => child.parent === row.file)
+      .length,
   };
+}
+
+function readProcessTable(directory) {
+  if (process.platform !== "darwin")
+    return readHostSnapshot({ footprint: false, directory }).processes;
+  // Use the already prepared kernel reader. Unlike acquisition, inspection
+  // cannot create a directory or compile a missing binary as a side effect.
+  const digest = createHash("sha256")
+    .update(readFileSync(new URL("./host-footprint.c", import.meta.url)))
+    .digest("hex")
+    .slice(0, 16);
+  const binary = join(directory, `host-footprint-${digest}`);
+  try {
+    return parseNativeSnapshot(
+      execFileSync(binary, ["--light"], {
+        encoding: "utf8",
+        timeout: 2000,
+        maxBuffer: 4 * 1024 * 1024,
+      }),
+    ).processes;
+  } catch {
+    throw new Error(
+      "Host process reader unavailable; an ordinary gate prepares it",
+    );
+  }
+}
+
+// Inspection never creates the registry, compiles its reader, takes its lock,
+// or reclaims dead records. A concurrent rename/release may change this view.
+export function readHolders(
+  directory = hostStateRoot(),
+  { worktree = process.cwd(), now = Date.now() } = {},
+) {
+  let names;
+  try {
+    names = readdirSync(join(directory, "lanes"));
+  } catch (error) {
+    if (error.code !== "ENOENT")
+      throw new Error("Host lane records unreadable");
+    names = [];
+  }
+  const rows = names
+    .filter((name) => name.endsWith(".json"))
+    .flatMap((name) => {
+      const file = join(directory, "lanes", name);
+      try {
+        return [{ ...JSON.parse(readFileSync(file, "utf8")), file }];
+      } catch (error) {
+        if (error.code === "ENOENT") return [];
+        throw new Error("Host lane record unreadable or malformed");
+      }
+    });
+  const capacity = recordedHostLaneCapacity(directory, null);
+  const table = rows.length ? readProcessTable(directory) : [];
+  const live = retainedHolders(rows, table);
+  const holders = live.map((row) =>
+    holderObservation(row, table, live, worktree, now),
+  );
+  const byRelation = Object.fromEntries(
+    ["this-checkout", "another-checkout", "unknown"].map((relation) => {
+      const group = holders.filter((row) => row.relation === relation);
+      return [
+        relation,
+        {
+          holders: group.length,
+          slots: group
+            .filter((row) => !row.nested)
+            .reduce((sum, row) => sum + row.slots, 0),
+          nestedSlots: group
+            .filter((row) => row.nested)
+            .reduce((sum, row) => sum + row.slots, 0),
+        },
+      ];
+    }),
+  );
+  return {
+    capacity,
+    holders,
+    byRelation,
+    classification:
+      "Read-only transient snapshot; nested slots are contained in their parent reservation.",
+  };
+}
+
+export function formatLaneWait(task, observation) {
+  return `WAIT host lanes for ${task}: ${observation.waitedMs} ms; ${observation.phase === "lock" ? "waiting for the lane registry lock" : `held by ${observation.holders.map((row) => `${row.task} (${laneRelationLabel(row.relation)}, ${row.slots} slots, ${row.ageMs ?? "unknown"} ms old, owner ${row.ownerAlive ? "alive" : "exited"}, ${row.survivingTasks} task processes, ${row.retainedSubleases} retained subleases${row.nested ? ", nested" : ""}${row.released ? ", released" : ""})`).join("; ")}`}`;
+}
+
+// Detailed holder history is bounded; attribution retains every change of
+// relation, coalescing heartbeats and holder churn with the same relation set.
+export function recordLaneWait(observations, segments, observation) {
+  observations.push(observation);
+  if (observations.length > 32) observations.shift();
+  const relations =
+    observation.phase === "lock" || !observation.holders.length
+      ? ["unknown"]
+      : [
+          ...new Set(
+            observation.holders.map(({ relation }) =>
+              ["this-checkout", "another-checkout"].includes(relation)
+                ? relation
+                : "unknown",
+            ),
+          ),
+        ].sort();
+  if (segments.at(-1)?.relations.join(",") !== relations.join(","))
+    segments.push({ observedAt: observation.observedAt, relations });
 }
 
 export async function acquireHostLanes({
@@ -131,9 +292,7 @@ export async function acquireHostLanes({
   parentLease = inheritedHostLease(directory),
   waitHeartbeatMs = 30000,
   onWait = (_holders, observation) =>
-    console.log(
-      `WAIT host lanes for ${task}: ${observation.waitedMs} ms; ${observation.phase === "lock" ? "waiting for the lane registry lock" : `held by ${observation.holders.map((row) => `${row.task} (${row.slots} slots, ${row.ageMs ?? "unknown"} ms old, owner ${row.ownerAlive ? "alive" : "exited"}, ${row.survivingTasks} task processes, ${row.retainedSubleases} retained subleases${row.nested ? ", nested" : ""}${row.released ? ", released" : ""})`).join("; ")}`}`,
-    ),
+    console.log(formatLaneWait(task, observation)),
 } = {}) {
   if (!Number.isSafeInteger(slots) || slots < 1)
     throw new Error("Host lanes require a positive integer slot request");
@@ -145,9 +304,9 @@ export async function acquireHostLanes({
     announcedAt = -Infinity;
   const started = Date.now();
   const waitObservations = [];
+  const waitRelations = [];
   const publishWait = (holders, observation) => {
-    waitObservations.push(observation);
-    if (waitObservations.length > 32) waitObservations.shift();
+    recordLaneWait(waitObservations, waitRelations, observation);
     onWait(holders, observation);
   };
   for (;;) {
@@ -230,6 +389,7 @@ export async function acquireHostLanes({
         ...result,
         waitedMs: Date.now() - started,
         waitObservations,
+        waitRelations,
         update(details) {
           Object.assign(result.record, details);
           atomicJson(result.file, result.record);
@@ -254,36 +414,15 @@ export async function acquireHostLanes({
         observedAt: new Date(now).toISOString(),
         waitedMs: now - started,
         phase: "capacity",
-        holders: result.holders.map((row) => {
-          const members = new Map(
-            (row.members ?? []).map((member) => [member.pid, member.birth]),
-          );
-          members.uniqueIds = new Set(
-            (row.members ?? [])
-              .map((member) => member.uniqueId)
-              .filter(Boolean),
-          );
-          const acquiredAt = Date.parse(row.acquiredAt);
-          return {
-            task: row.task,
-            slots: row.slots,
-            ageMs: Number.isFinite(acquiredAt)
-              ? Math.max(0, now - acquiredAt)
-              : null,
-            ownerAlive: processAlive(row, result.table),
-            survivingTasks: row.taskRoot
-              ? ownedProcesses(result.table, row.taskRoot.pid, members, {
-                  birth: row.taskRoot.birth,
-                  uniqueId: row.taskRoot.uniqueId,
-                }).length
-              : 0,
-            nested: Boolean(row.parent),
-            released: Boolean(row.released),
-            retainedSubleases: result.allHolders.filter(
-              (child) => child.parent === row.file,
-            ).length,
-          };
-        }),
+        holders: result.holders.map((row) =>
+          holderObservation(
+            row,
+            result.table,
+            result.allHolders,
+            worktree,
+            now,
+          ),
+        ),
       };
       publishWait(result.holders, observation);
     }

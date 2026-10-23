@@ -1,0 +1,217 @@
+{
+  "verification": "VER-002",
+  "workOrder": "WO-229",
+  "subject": {
+    "base": "62fa26761eba698ee0f8dcf59116bc571de3042c",
+    "checkpoint": "refs/dotln/checkpoint/WO-229/7",
+    "codeIdentity": "8b8351e604dbfcd61436b9aea257adc9342e63e26bc36639611f3810ce288092"
+  },
+  "consumedRows": [
+    {
+      "checkId": "npm test",
+      "recordedAt": "2026-10-23T12:44:05.000Z",
+      "gateSelection": "review",
+      "executionMode": "fresh",
+      "exitCode": 0,
+      "requiredSuites": 40,
+      "freshSuites": 106,
+      "unrunSuites": [],
+      "covers": [
+        "structural",
+        "runner-fixtures (runs scripts/test-gate-deadlines.mjs and scripts/test-host-guard.test.mjs)",
+        "plan-refutation",
+        "configuration-root"
+      ],
+      "criticalPath": { "laneWaitMs": 264, "gapMs": 162, "waitMs": 426 }
+    },
+    {
+      "checkId": "suite:evidence-sources",
+      "recordedAt": "2026-10-23T12:46:00.775Z",
+      "exitCode": 0,
+      "freshSuites": 8,
+      "unrunSuites": []
+    }
+  ],
+  "probes": [
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-229/verification-001-attribution.mjs",
+      "exitCode": 1,
+      "rotatingGate": {
+        "waitLines": 65,
+        "waitLinesNamingAnotherCheckout": 65,
+        "wallMs": 7073,
+        "byRelation": {
+          "this-checkout": 0,
+          "another-checkout": 7063,
+          "unknown": 10
+        },
+        "retainedObservations": 32,
+        "summary": "npm run test:docs: 2 passed; 0 failed; 7.29 s; 2 fresh tasks; 7.1 s waiting for host lanes (7.1 s behind another checkout)",
+        "pathLeaks": 0,
+        "holds": true
+      },
+      "staticHolder": {
+        "publishedObservations": 64,
+        "retainedObservations": 32,
+        "wallMs": 7073,
+        "byRelation": {
+          "this-checkout": 0,
+          "another-checkout": 3528,
+          "unknown": 3545
+        },
+        "holds": false,
+        "reading": "The case builds its task row by hand from lease.waitObservations alone, the shape of a row recorded before the repair. The runner records hostLaneWaitRelations on every admitted row; the runner-path cases below replace this construction."
+      }
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-229/verification-001-bound.mjs",
+      "exitCode": 0,
+      "arms": [
+        {
+          "shape": "executor",
+          "sizing": "full-capacity",
+          "documentLaneWaitMs": 3047,
+          "longestCompleteTaskMs": 3081,
+          "boundHolds": true,
+          "admittedBeforeCompleteEnd": false
+        },
+        {
+          "shape": "executor",
+          "sizing": "measured",
+          "documentLaneWaitMs": 344,
+          "longestCompleteTaskMs": 3068,
+          "boundHolds": true,
+          "admittedBeforeCompleteEnd": true
+        },
+        {
+          "shape": "staggered",
+          "sizing": "full-capacity",
+          "documentLaneWaitMs": 6139,
+          "longestCompleteTaskMs": 3076,
+          "boundHolds": false,
+          "admittedBeforeCompleteEnd": false
+        },
+        {
+          "shape": "staggered",
+          "sizing": "measured",
+          "documentLaneWaitMs": 2424,
+          "longestCompleteTaskMs": 3074,
+          "boundHolds": true,
+          "admittedBeforeCompleteEnd": true,
+          "declarations": { "hostLaneSlots": 4, "waitMs": 9 },
+          "format": { "hostLaneSlots": 3, "waitMs": 2380 }
+        }
+      ]
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-229/verification-002-probes.mjs",
+      "exitCode": 0,
+      "runnerStatic": {
+        "waitLines": 60,
+        "waitLinesNamingAnotherCheckout": 60,
+        "retainedObservations": 32,
+        "relationSegments": 1,
+        "taskWaitMs": 6734,
+        "byRelation": {
+          "this-checkout": 0,
+          "another-checkout": 6725,
+          "unknown": 9
+        },
+        "summary": "; 6.7 s waiting for host lanes (6.7 s behind another checkout)",
+        "criticalPath": { "laneWaitMs": 6734, "gapMs": 52, "waitMs": 6786 },
+        "pathLeaks": 0
+      },
+      "runnerOverlap": {
+        "waitLines": 60,
+        "waitLinesNamingAnotherCheckout": 60,
+        "retainedObservations": 32,
+        "relationSegments": 2,
+        "exclusiveWaitMs": 6765,
+        "exclusiveByRelation": {
+          "this-checkout": 0,
+          "another-checkout": 6741,
+          "unknown": 24
+        },
+        "gateWallMs": 6766,
+        "criticalPath": { "laneWaitMs": 6765, "gapMs": 323, "waitMs": 7088 },
+        "pathLeaks": 0
+      },
+      "slowCondition": {
+        "samples": [
+          {
+            "wallS": 2.789,
+            "executionS": 0.397,
+            "contended": true,
+            "hostLaneWaitMs": 2392,
+            "anotherCheckoutMs": 2383
+          },
+          {
+            "wallS": 0.35,
+            "executionS": 0.339,
+            "contended": false,
+            "hostLaneWaitMs": 11
+          },
+          {
+            "wallS": 0.36,
+            "executionS": 0.35,
+            "contended": false,
+            "hostLaneWaitMs": 10
+          }
+        ],
+        "wallMedianS": 0.36,
+        "executionMedianS": 0.35,
+        "judgedFigure": "executionMedianS",
+        "uncontendedSummaries": "npm run test:docs: 2 passed; 0 failed; 0.23 s; 2 fresh tasks",
+        "pathLeaks": 0
+      }
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-229/verification-002-saturation.mjs",
+      "exitCode": 0,
+      "judgesCriterion": false,
+      "arms": [
+        {
+          "shape": "staggered",
+          "sizing": "measured",
+          "documentLaneWaitMs": 3072,
+          "longestCompleteTaskMs": 3070,
+          "boundHolds": false,
+          "admittedBeforeCompleteEnd": true,
+          "format": { "hostLaneSlots": 3, "waitMs": 3029 },
+          "reading": "Same shape as the passing staggered arm above. The document gate's first structural request arrived almost when the complete gate's long task started; format then waits for that task's whole run."
+        },
+        {
+          "shape": "saturating",
+          "sizing": "measured",
+          "documentLaneWaitMs": 5510,
+          "longestCompleteTaskMs": 3067,
+          "completeWallMs": 6338,
+          "boundHolds": false,
+          "admittedBeforeCompleteEnd": false,
+          "format": { "hostLaneSlots": 3, "waitMs": 5470 }
+        }
+      ]
+    },
+    {
+      "command": "node scripts/harness.mjs lanes",
+      "exitCode": 0,
+      "realRegistryHashBefore": "4a132e78e505007c71d81dbb1b2354c4a7bb8c400f58313dcdcf8e979c3807c7",
+      "realRegistryHashAfter": "4a132e78e505007c71d81dbb1b2354c4a7bb8c400f58313dcdcf8e979c3807c7",
+      "capacity": 8,
+      "holders": 0,
+      "pathPrinted": false,
+      "extraArgument": { "exitCode": 1, "message": "usage: harness lanes" }
+    },
+    { "command": "npm run format:check", "exitCode": 0 },
+    { "command": "git diff --check", "exitCode": 0 },
+    {
+      "command": "git diff 62fa2676 -- package.json package-lock.json 'packages/*/package.json'",
+      "diffLines": 0
+    }
+  ],
+  "limits": [
+    "The real registry held no lanes during the lanes probe; relation labels with live holders rest on VER-001's fixture registry and the consumed host-guard fixtures.",
+    "Fixture timings are finite workloads on one 16-CPU host.",
+    "npm run plan -- conditions --slow was not run against the real document gate; the condition probe drives measureDocumentGates over fixture gates."
+  ]
+}

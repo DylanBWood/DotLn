@@ -260,6 +260,12 @@ export async function coveringTaskResults(root, checkId, tasks, codeIdentity) {
       schedulerDurationMs,
       hostLaneWaitMs,
       hostLaneWaitObservations,
+      hostLaneWaitRelations,
+      hostLaneWait,
+      hostLaneSlots,
+      laneWaitMs,
+      gapMs,
+      criticalPath,
       ...retained
     } = pass.result;
     results.set(task.name, {

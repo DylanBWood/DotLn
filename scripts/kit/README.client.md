@@ -428,6 +428,10 @@ missing or nonregular compiled file by path before the selected suites. Other
 kit-file changes produce one advisory line. Run
 `node scripts/launchpad.mjs verify` directly for the manifest check.
 
+A long gate wall time with short task durations can be host-lane waiting:
+the summary attributes its wait by checkout relation, and
+`node scripts/harness.mjs lanes` reads the live holders and recorded capacity.
+
 The instance coordinates work in registered sibling repositories. Its
 ordinary `npm test` and review check the installed DotLn runtime; they do
 not test a sibling's implementation. `node scripts/target-gate.mjs WO-NNN

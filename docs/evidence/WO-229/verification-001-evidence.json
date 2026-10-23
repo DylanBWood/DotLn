@@ -1,0 +1,161 @@
+{
+  "schemaVersion": 1,
+  "report": "docs/verifications/WO-229/VER-001.md",
+  "subject": {
+    "base": "62fa26761eba698ee0f8dcf59116bc571de3042c",
+    "checkpoint": "refs/dotln/checkpoint/WO-229/3",
+    "checkpointSha": "04f12bd7fbe48143801009c9ef7355d2889d4685",
+    "codeIdentity": "0be6110d048a55400ab55fefff98d2eee6d421635ed37d92a1a4345a3fbe0e08"
+  },
+  "consumedRows": [
+    {
+      "checkId": "npm test",
+      "gateSelection": "review",
+      "recordedAt": "2026-10-23T07:18:59.781Z",
+      "exitCode": 0,
+      "durationMs": 1616918,
+      "requiredSuites": 40,
+      "freshSuites": 106,
+      "unrunSuites": 0,
+      "note": "Covers structural, runner-fixtures (which runs test-host-guard.test.mjs and test-gate-deadlines.mjs), plan-refutation and configuration-root at the current code identity."
+    }
+  ],
+  "verifierRows": [
+    {
+      "command": "node scripts/harness.mjs bounded -- npm test -- --only evidence-sources",
+      "checkId": "suite:evidence-sources",
+      "recordedAt": "2026-10-23T11:42:57.231Z",
+      "exitCode": 0,
+      "durationMs": 88442,
+      "reason": "The complete review selection does not include evidence-sources, which the order's Preflight names for the step 10 re-mints.",
+      "summaryLine": "suite:evidence-sources: 8 passed; 0 failed; 88.44 s; 8 fresh tasks; 0.0 s waiting for host lanes (0.0 s behind checkout unknown)"
+    }
+  ],
+  "probes": [
+    {
+      "finding": "F1",
+      "criterion": 2,
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-229/verification-001-attribution.mjs",
+      "exitCode": 1,
+      "rotatingGate": {
+        "waitLines": 64,
+        "waitLinesNamingAnotherCheckout": 64,
+        "waitLinesNamingOtherRelations": 0,
+        "summary": "npm run test:docs: 2 passed; 0 failed; 7.09 s; 2 fresh tasks; 6.9 s waiting for host lanes (3.4 s behind another checkout; 3.4 s behind checkout unknown)",
+        "wallMs": 6858,
+        "byRelation": {
+          "this-checkout": 0,
+          "another-checkout": 3436,
+          "unknown": 3422
+        },
+        "retainedObservations": 32,
+        "pathLeaks": 0
+      },
+      "staticHolder": {
+        "heartbeatMs": 50,
+        "publishedObservations": 64,
+        "retainedObservations": 32,
+        "observedRelations": ["another-checkout"],
+        "wallMs": 7064,
+        "byRelation": {
+          "this-checkout": 0,
+          "another-checkout": 3531,
+          "unknown": 3533
+        }
+      },
+      "expectation": "Every published observation names another checkout, so another-checkout must cover the wait except lock and pre-first-observation time (500 ms slack)."
+    },
+    {
+      "finding": "F1",
+      "criterion": 2,
+      "kind": "inference from the consumed complete row",
+      "method": "Sorted the complete row's 106 task admission and release instants. A sibling waiting through the whole run would see at most 212 holder changes; the last 32 span 837,057 ms of 1,616,143 ms.",
+      "result": "At least 48 percent of such a wait would be attributed to checkout unknown. Independently, the 30 s heartbeat alone exceeds 32 retained observations after about 960 s, so the order's 1,520.76 s example would lose at least about 560 s to unknown with an unchanging holder."
+    },
+    {
+      "finding": "F2",
+      "criterion": 5,
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-229/verification-001-bound.mjs",
+      "exitCode": 1,
+      "arms": [
+        {
+          "shape": "executor",
+          "sizing": "full-capacity",
+          "documentLaneWaitMs": 3027,
+          "longestCompleteTaskMs": 3070,
+          "boundHolds": true,
+          "declarations": { "hostLaneSlots": 8, "waitMs": 6, "admittedBeforeCompleteEndMs": -1016 }
+        },
+        {
+          "shape": "executor",
+          "sizing": "measured",
+          "documentLaneWaitMs": 2078,
+          "longestCompleteTaskMs": 3066,
+          "boundHolds": true,
+          "declarations": { "hostLaneSlots": 8, "waitMs": 1773, "admittedBeforeCompleteEndMs": -87 }
+        },
+        {
+          "shape": "staggered",
+          "sizing": "full-capacity",
+          "documentLaneWaitMs": 6122,
+          "longestCompleteTaskMs": 3067,
+          "boundHolds": false,
+          "declarations": { "hostLaneSlots": 8, "waitMs": 5, "admittedBeforeCompleteEndMs": -1031 }
+        },
+        {
+          "shape": "staggered",
+          "sizing": "measured",
+          "documentLaneWaitMs": 5522,
+          "longestCompleteTaskMs": 3066,
+          "completeWallMs": 6695,
+          "boundHolds": false,
+          "declarations": { "hostLaneSlots": 8, "waitMs": 4497, "admittedBeforeCompleteEndMs": -93 }
+        }
+      ],
+      "expectation": "With measured requests, a document gate's total lane wait stays under the complete gate's longest single task while the complete gate continues admitting work.",
+      "observation": "In both shapes the full-capacity declarations request is admitted only after the complete gate's last task finishes (negative admittedBeforeCompleteEndMs). The executor's shape meets the inequality because its complete gate's wall time (3,254 ms) is within 190 ms of its longest task (3,066 ms); its full-capacity arm meets it too."
+    },
+    {
+      "finding": "none",
+      "criteria": [3, 4, 5],
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-229/verification-001-checks.mjs",
+      "exitCode": 0,
+      "readOnlyListing": {
+        "readMsWhileLocked": 4,
+        "bytesUnchanged": true,
+        "relations": {
+          "gone-task": "unknown",
+          "other-task": "another-checkout",
+          "own-parent": "this-checkout",
+          "own-nested": "this-checkout",
+          "legacy": "unknown"
+        }
+      },
+      "documentCondition": {
+        "wallMedianS": 14,
+        "executionMedianS": 12,
+        "contended": [false, true, false],
+        "foreignRow": "unavailable",
+        "staleRow": "unavailable",
+        "waitAboveWall": "unavailable",
+        "timedOutContended": true
+      },
+      "sizing": "All seven recomputed requests equal structuralHostSlots; 14 context/task cells hold three successful runs each."
+    }
+  ],
+  "otherObservations": [
+    {
+      "command": "node scripts/harness.mjs lanes",
+      "result": "exit 0 on the real registry with no live holders: capacity 8; registry snapshot hash unchanged before and after; no path in output. An extra argument prints usage: harness lanes and exits 1."
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- npm run --silent plan -- conditions",
+      "result": "Host line renders the lane snapshot with capacity 8, holderCount 0 and byRelation; no path."
+    },
+    {
+      "command": "git diff --check; npm run format:check",
+      "result": "Both exit 0. Package manifests and the lockfile are unchanged."
+    }
+  ],
+  "limits": "No live npm run plan -- conditions --slow run: three real document gates exceed its 300 s budget on this host and would contend with other checkouts. Probes use temporary registries and fixture checkouts under the system temporary directory; the real registry was only read. Fixture timings are finite workloads."
+}
