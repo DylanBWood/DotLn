@@ -346,7 +346,9 @@ the repository at the reviewed revision, or as plain text where it would
 escape, so the forge resolves it, and refuses a body it could not rewrite. The
 Release text does the same with the reviewed notes at the release commit, names
 the order's title once under the overview, and carries the order identifier
-alone in its section headings. Optimize for accuracy, clarity, and useful substance.
+alone in its section headings. Inline and reference-style images that resolve
+to a repository path use `raw=true` in the rewritten destination. Optimize for
+accuracy, clarity, and useful substance.
 Scale detail to the change: complex behavior and consequential tradeoffs may
 need several paragraphs or grouped explanations. There is no sentence quota,
 and shortening the text must not remove what the reviewer needs. Remove repeated claims,

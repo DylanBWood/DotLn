@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
+import { createHash } from "node:crypto";
 import { syncBuiltinESMExports } from "node:module";
 import { spawnSync } from "node:child_process";
 import { pathToFileURL } from "node:url";
@@ -49,14 +50,30 @@ test("bounded role wording preserves prior savings and records reviewed startup 
   const budgets = JSON.parse(
     fs.readFileSync(join(sourceRoot, "docs/control/budgets.json"), "utf8"),
   );
-  const reviewed = JSON.parse(
+  const oracle = JSON.parse(
     fs.readFileSync(
-      join(sourceRoot, "packages/skeleton/fixtures/wo226-role-baseline.json"),
+      join(sourceRoot, "packages/skeleton/fixtures/wo219-role-baseline.json"),
       "utf8",
     ),
-  ).startupCost;
-  assert.match(reviewed.decision, /^WO-\d{3}-D\d{3}$/u);
-  assert.match(reviewed.followup, /^FUP-[a-f0-9]{16}$/u);
+  );
+  assert.equal(oracle.historicalBaseline, "wo226-role-baseline.json");
+  const historicalBytes = fs.readFileSync(
+    join(sourceRoot, "packages/skeleton/fixtures", oracle.historicalBaseline),
+  );
+  assert.equal(
+    createHash("sha256").update(historicalBytes).digest("hex"),
+    oracle.historicalSha256,
+    "the preceding role oracle remains byte-exact",
+  );
+  const historicalOracle = JSON.parse(historicalBytes);
+  assert.equal(oracle.upstreamBaseline, historicalOracle.upstreamBaseline);
+  assert.equal(oracle.upstreamSha256, historicalOracle.upstreamSha256);
+  const historical = historicalOracle.startupCost;
+  const reviewed = oracle.startupCost;
+  for (const cost of [historical, reviewed]) {
+    assert.match(cost.decision, /^WO-\d{3}-D\d{3}$/u);
+    assert.match(cost.followup, /^FUP-[a-f0-9]{16}$/u);
+  }
   const files = new Map(
     harnessInstallation().files.map((file) => [file.path, file.contents]),
   );
@@ -73,27 +90,47 @@ test("bounded role wording preserves prior savings and records reviewed startup 
     const bytes = Buffer.byteLength(instruction) + Buffer.byteLength(contents);
     const role = file.split("/")[2].slice("dotln-".length);
     const measured = reviewed.profiles[role];
+    const prior = historical.profiles[role];
     assert.equal(bytes, measured.bytes, `${file}: reviewed startup bytes`);
     assert.equal(
+      measured.beforeBytes,
+      prior.bytes,
+      `${file}: the current additions start at the preceding reviewed bytes`,
+    );
+    assert.equal(
       bytes - measured.beforeBytes,
-      reviewed.sharedRuleGrowthBytes,
-      `${file}: only the separately reviewed shared-rule addition`,
+      measured.growthBytes,
+      `${file}: only the separately reviewed role additions`,
+    );
+    assert.equal(
+      prior.bytes - prior.beforeBytes,
+      historical.sharedRuleGrowthBytes,
+      `${file}: the preceding shared-rule addition remains recorded`,
+    );
+    assert.equal(
+      measured.ceiling === null ? null : measured.ceiling - bytes,
+      measured.headroomBytes,
+      `${file}: installed headroom includes the recorded overrun`,
+    );
+    assert.equal(
+      measured.ceiling,
+      prior.ceiling,
+      `${role}: reviewed additions preserve the preceding ceiling`,
     );
     assert.equal(
       budgets.limits.coldStartBytes[role],
       measured.ceiling,
       `${role}: the operating-cost ceiling stays unchanged`,
     );
-    // Preserve the earlier wording savings without treating a later required
-    // duty as lost efficiency. The role oracle pins that duty's full text;
-    // the linked follow-up records the actual current headroom shortfall.
+    // Keep the earlier wording savings distinct from later required duties.
+    // Current headroom records the full cost of those reviewed additions.
     assert.ok(
-      measured.beforeBytes <= previous.bytes,
-      `${file}: ${measured.beforeBytes} exceeds before ${previous.bytes}`,
+      prior.beforeBytes <= previous.bytes,
+      `${file}: ${prior.beforeBytes} exceeds before ${previous.bytes}`,
     );
     if (role === "executor" || role === "reviewer")
       assert.ok(
-        measured.ceiling - measured.beforeBytes >= 256,
+        prior.ceiling - prior.beforeBytes >= 256,
         `${role}: the prior wording savings retain 256 bytes of working headroom`,
       );
   }

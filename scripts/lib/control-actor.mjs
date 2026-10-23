@@ -37,3 +37,48 @@ export const renderAttestation = (actor) => {
     : "";
   return `harness ${harness}; version ${harnessVersion}; model ${model}; effort ${effortText}; source ${source}; account ${accountLabel}${corrected}`;
 };
+
+// Corrections are a read projection over one intact segment. Apply them before
+// filtering a legacy segment by order: subject ordinals belong to that segment.
+export function correctedActorEvents(events) {
+  const projected = [...events];
+  const activations = new Map();
+  const completions = new Set([
+    "ImplementationReady",
+    "VerificationCompleted",
+    "RepairCompleted",
+    "FinalReviewCompleted",
+  ]);
+  for (const [index, event] of events.entries()) {
+    if (event.type === "WorkOrderActivated")
+      activations.set(event.workOrderId, index);
+    if (event.type !== "RecordCorrected") continue;
+    const ordinal = event.subject?.ordinal;
+    if (!Number.isSafeInteger(ordinal) || ordinal < 1 || ordinal > index)
+      continue;
+    const target = projected[ordinal - 1];
+    if (
+      !target?.actor ||
+      target.workOrderId !== event.workOrderId ||
+      !completions.has(target.type) ||
+      target.type !== event.subject.type ||
+      ordinal - 1 < (activations.get(event.workOrderId) ?? 0)
+    )
+      continue;
+    const fields = ["model", "effort", "source", "harnessVersion"].filter(
+      (key) => typeof event.fields?.[key] === "string",
+    );
+    if (!fields.length) continue;
+    const actor = {
+      ...target.actor,
+      correctedBy: [...(target.actor.correctedBy ?? []), index + 1],
+    };
+    for (const key of fields) actor[key] = event.fields[key];
+    if (fields.includes("effort")) {
+      delete actor.raw;
+      delete actor.mode;
+    }
+    projected[ordinal - 1] = { ...target, actor };
+  }
+  return projected;
+}

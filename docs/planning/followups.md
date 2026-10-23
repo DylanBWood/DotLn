@@ -25,7 +25,10 @@ a longer written path is another file. The match is textual and the page says
 so: a false match costs one row read, and a row that names its seam in other
 words is not listed. Rows keep the feed's shape and page bound, add the first
 four terms that `matched` with a `matchedCount` when there are more, and
-continue through `next`. It has three uses, and each ends in a record:
+continue through `next`. Explicit query arguments that need another page are
+limited to 2,048 UTF-8 bytes after shell quoting; a refusal names the limit and
+the split-query remedy. The full 8,192-byte page check still applies. A one-page query and the no-argument changed-file form
+keep their existing behavior. It has three uses, and each ends in a record:
 
 1. Before filing an order, the planner runs it with the files the order names
    and allocates or declines each row in that pass.
@@ -67,8 +70,13 @@ New nominations must use a formal candidate heading in the relevant product
 document or a sourced decision with `followup`, then sync in the same pass.
 Private intake and local queue text are never harvested by this collector.
 
-Use `npm run plan -- followups --apply <request.json>` with a contained JSON
-file carrying `expectedRevision` from the page, `id`, `sourceRevision`, `status`,
+Use `npm run plan -- followups --apply <request.json>` with a JSON file
+contained in the checkout or in the current session's granted scratchpad.
+Outside request paths need the session identity, its installed role grant and
+the shared ownership/symlink check; an unjudged path is refused with the
+`docs/control/local/followup-request.json` alternative (under the configured
+control root). The file carries `expectedRevision` from the page, `id`,
+`sourceRevision`, `status`,
 `reason`, `reopenWhen` and `targets`. Status is `open`, `deferred`, `allocated`,
 `declined`, `duplicate` or `settled`. `open` uses null for `reopenWhen`; every
 other disposition names a reopening condition, even when it is new operator

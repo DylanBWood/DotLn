@@ -286,3 +286,45 @@ test("WO-200 every path with dotln-pinned-bytes set is listed in .prettierignore
       `Formatter must effectively ignore ${input}`,
     );
 });
+
+test("ordinary short hardware, key, storage and paper tokens and hexadecimal colours are prose; contextual report labels still refuse", (t) => {
+  const f = fixture(t);
+  const ordinary = [
+    "On an Apple M1 host the timer resolution differs.",
+    "Press F5 in the browser to reload.",
+    "Upload to R2 storage.",
+    "Lay the page out as A4 paper.",
+    "The B2 bucket keeps old copies.",
+    "Each of N1 and N2 nodes holds one replica.",
+    "Colour #D100 is unused.",
+    "M1: use this host for local builds.",
+    "F5: press this key to reload.",
+  ];
+  f.write(
+    "scripts/ordinary.mjs",
+    ordinary.map((text) => `// ${text}`).join("\n") + "\n",
+  );
+  assert.deepEqual(f.check(["scripts/ordinary.mjs"]).failures, []);
+  f.write(
+    "scripts/reports.mjs",
+    [
+      "// Refuse the symlink (VER-001 F1).",
+      "// Fixes B3 from the review.",
+      "// Finding R2 needs a retry.",
+      "// F5 from the report requires restoring the recorded head.",
+      "// The rationale is D100.",
+    ].join("\n") + "\n",
+  );
+  assert.deepEqual(
+    f
+      .check(["scripts/reports.mjs"])
+      .findings.map((row) => [row.line, row.kind]),
+    [
+      [1, "finding-label"],
+      [2, "finding-label"],
+      [3, "finding-label"],
+      [4, "finding-label"],
+      [5, "decision-number"],
+    ],
+  );
+});

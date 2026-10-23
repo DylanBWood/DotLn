@@ -145,7 +145,7 @@ const legalIn = {
   "final-review": ["waive", "withdraw", "correct", "override-record"],
   // A correction changes no phase; a closed order's recorded pass may still
   // need its product gate bound before publication (WO-115 D026).
-  closed: ["correct"],
+  closed: ["correct", "override-record"],
   withdrawn: [],
 };
 const matrix = (id = "WO-099") => {
@@ -1079,7 +1079,7 @@ writeFileSync(
 pass(["activate", "WO-099", authority]);
 assert.equal(status().phase, "active");
 
-// A closed order takes no off-ramp.
+// A closed order can bind its product gate or queue an override record.
 const closedAuthority = "docs/work-orders/WO-101-closed.md";
 writeFileSync(
   join(root, closedAuthority),
@@ -1906,3 +1906,161 @@ assert.deepEqual(
   [{ criterionId: "2", ordinal: 2 }],
 );
 process.stdout.write("off-ramp fixtures passed\n");
+
+// A post-close record stays local until a new worktree can carry its change.
+{
+  assert.equal(
+    spawnGit(["-C", root, "checkout", "-q", "-B", "main"], {
+      env: baseEnv,
+    }).status,
+    0,
+  );
+  const segmentBefore = readFileSync(segmentPath("WO-101"));
+  const projectionBefore = readFileSync(join(root, "docs/control/current.md"));
+  const output = on101([
+    "override-record",
+    "--bypassed",
+    "release-close",
+    "--effects",
+    "fixture recovery",
+    "--reason",
+    "Record recovery after the order closed.",
+    ...operator,
+  ]);
+  assert.match(
+    output,
+    /pending OperatorOverrideRecorded.*local\/pending-overrides/u,
+  );
+  assert.deepEqual(readFileSync(segmentPath("WO-101")), segmentBefore);
+  assert.deepEqual(
+    readFileSync(join(root, "docs/control/current.md")),
+    projectionBefore,
+  );
+  const { readdirSync } = await import("node:fs");
+  const lane = join(root, "docs/control/local/pending-overrides");
+  const names = readdirSync(lane);
+  assert.equal(names.length, 1);
+  const pending = JSON.parse(readFileSync(join(lane, names[0]), "utf8"));
+  assert.equal(pending.type, "OperatorOverrideRecorded");
+  assert.equal(pending.workOrderId, "WO-101");
+  assert.deepEqual(pending.bypassed, ["release-close"]);
+  assert.equal(pending.actor.source, "operator-attested");
+  console.log("post-close override queues without changing tracked control");
+
+  // Only main's pending lane is consumed by the next worktree start.
+  // A refusal must preserve the capture and give a usable, quoted rerun.
+  for (const [index, kind] of ["branch", "detached"].entries()) {
+    const linked = join(parent, `override ${kind}'s checkout`);
+    assert.equal(
+      spawnGit(
+        [
+          "-C",
+          root,
+          "worktree",
+          "add",
+          ...(kind === "detached" ? ["--detach"] : ["-b", "wo-101"]),
+          linked,
+          "HEAD",
+        ],
+        { env: baseEnv },
+      ).status,
+      0,
+    );
+    cpSync(
+      join(root, "docs/control/orders"),
+      join(linked, "docs/control/orders"),
+      {
+        recursive: true,
+      },
+    );
+    cpSync(join(root, "docs/work-orders"), join(linked, "docs/work-orders"), {
+      recursive: true,
+    });
+    cpSync(
+      join(root, "docs/control/current.md"),
+      join(linked, "docs/control/current.md"),
+    );
+    const capture = `docs/intake/override-${kind}.md`;
+    const words = `Retain this ${kind} fixture's recovery words.\n`;
+    const captureHash = `sha256:${createHash("sha256").update(words).digest("hex")}`;
+    mkdirSync(join(linked, "docs/intake"), { recursive: true });
+    writeFileSync(join(linked, capture), words);
+    const reason = "Keep the operator's $HOME and $(literal) text.";
+    const args = [
+      "override-record",
+      "--bypassed",
+      "release-close",
+      "--effects",
+      `fixture ${kind} recovery`,
+      "--reason",
+      reason,
+      "--capture",
+      capture,
+      "--capture-hash",
+      captureHash,
+      ...operator,
+      ...(kind === "detached" ? ["--work-order", "WO-101"] : []),
+    ];
+    const run = spawnSync(
+      process.execPath,
+      [join(linked, "scripts/resume.mjs"), ...args],
+      {
+        cwd: linked,
+        encoding: "utf8",
+        env: baseEnv,
+      },
+    );
+    assert.equal(run.status, 1, `${kind} checkout must refuse: ${run.stderr}`);
+    assert.match(
+      run.stderr,
+      /closed-order override-record must run from main/u,
+    );
+    assert.match(run.stderr, /capture remains in this checkout/u);
+    assert.ok(
+      !existsSync(join(linked, "docs/control/local/pending-overrides")),
+    );
+    assert.equal(readFileSync(join(linked, capture), "utf8"), words);
+    assert.deepEqual(
+      readFileSync(join(linked, "docs/control/orders/WO-101.jsonl")),
+      segmentBefore,
+    );
+    assert.deepEqual(
+      readFileSync(join(linked, "docs/control/current.md")),
+      projectionBefore,
+    );
+    assert.equal(
+      readdirSync(lane).length,
+      index + 1,
+      "refusal writes neither lane",
+    );
+    assert.deepEqual(readFileSync(segmentPath("WO-101")), segmentBefore);
+    const remedy = /^Run from main: (.+)$/mu.exec(run.stderr)?.[1];
+    assert.ok(remedy, run.stderr);
+    // Supply the stated capture prerequisite using fixture bytes, then execute
+    // the printed command to prove both selection and shell quoting survive.
+    mkdirSync(join(root, "docs/intake"), { recursive: true });
+    writeFileSync(join(root, capture), words);
+    const rerun = spawnSync("sh", ["-c", remedy], {
+      cwd: linked,
+      encoding: "utf8",
+      env: baseEnv,
+    });
+    assert.equal(rerun.status, 0, rerun.stderr);
+    assert.equal(readdirSync(lane).length, index + 2);
+    const recorded = readdirSync(lane)
+      .map((name) => JSON.parse(readFileSync(join(lane, name), "utf8")))
+      .find((row) => row.effects.includes(`fixture ${kind} recovery`));
+    assert.equal(recorded.workOrderId, "WO-101");
+    assert.equal(recorded.reason, reason);
+    assert.equal(recorded.capture, capture);
+    assert.equal(recorded.captureHash, captureHash);
+    assert.deepEqual(readFileSync(segmentPath("WO-101")), segmentBefore);
+    assert.deepEqual(
+      readFileSync(join(root, "docs/control/current.md")),
+      projectionBefore,
+    );
+    console.log(
+      `closed override from ${kind} worktree refuses without writes and reruns from main`,
+    );
+  }
+}

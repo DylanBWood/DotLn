@@ -691,7 +691,9 @@ naming the operator's public author identity, and no other section (WO-218); an
 exported instance declares its own pre-control ids and exemption or neither, because
 the kit supplies none. `historicalWorkOrders` lists distinct `WO-NNN` ids that the
 index shows as historical and that no typed dependency may name as hard or
-satisfied; `contributions.operatorAuthor` is one `Name <email>` identity the
+satisfied. Historical planning judgments use that declaration at their recorded
+revision; an absent list remains empty. `contributions.operatorAuthor` is one
+`Name <email>` identity the
 contribution check exempts from sign-off, never read from Git configuration.
 `kit.applyInstanceActions` defaults to false; true permits `launchpad export --update <dir> --apply` to perform the kit's declared instance actions.
 
@@ -898,7 +900,8 @@ general helper is a preserved requirement, not a claim of implemented recovery
 for every corrupt repository. Source and review duties: [WO-131 ideation receipt](../evidence/WO-131/ideation.md).
 
 Each of the four routes below is a `resume` command that appends its typed
-event with the actor attestation and a recovery checkpoint, refuses outside its legal phases with
+event with the actor attestation and a recovery checkpoint (except the closed-order
+pending route below), refuses outside its legal phases with
 those phases and the lifecycle's legal commands, and projects in `status --json`
 (`legalOffRamps`, `waivedCriteria`, `withdrawal`, `corrections`,
 `overrideRecords`), `current.md` and the work-order index
@@ -958,22 +961,34 @@ fold validates each event's shape; the route judges its legality.
   ([WO-157-D027](../evidence/WO-157/decisions.md#wo-157-d027)); an absent
   readback refuses nothing.
 - `override-record --bypassed <items> --effects <items> --reason <text> [--capture <path> --capture-hash sha256:<digest>] <actor-flags>`
-  appends `OperatorOverrideRecorded` in any open phase. Claude's session hook
-  runs it at `operator override: off` with
+  appends `OperatorOverrideRecorded` in any open phase. For a closed order,
+  run it from the main control-plane checkout: it writes the event to the
+  ignored `local/pending-overrides/` directory under main's configured control
+  root, leaving tracked control and projections unchanged. A linked checkout
+  refuses before writing and prints the command to run from main; a supplied
+  capture must also exist at its ignored intake path in main with the same hash.
+  The next `worktree start` appends each validated record to its original closed
+  order's control segment in the new worktree and regenerates the projection
+  there. It removes only unchanged carried records after that refresh.
+  A malformed or unreadable pending lane stays in place with a named advisory,
+  and start proceeds ([WO-219-D050](../evidence/WO-219/decisions.md#wo-219-d050)).
+  Claude's session hook uses the same command for an open or closed selected
+  order at `operator override: off`, with
   `--bypassed dotln-hook-enforcement --effects unobserved` and a capture of
   the operator's own prompts during the override, retained in the
   session-local operator-control state. Each capture is created exclusively;
   a second exit in the same second takes the next numbered name, so every
-  record keeps naming the words whose digest it stored (VER-001 F3). When the pinned runtime cannot load,
+  record keeps naming the words whose digest it stored (VER-001 F3). At a closed selected order the hook's receipt names the pending record and that the next `worktree start` carries it, and it directs the role to record what the override changed with a further `override-record` from main, never in that order's decisions ([WO-219-D081](../evidence/WO-219/decisions.md#wo-219-d081--repair-the-closed-order-hook-receipt-and-effects-route-at-final-review)). When the pinned runtime cannot load,
   or a live gate or another writer refuses it, the hook prints the exact
-  command and the role's completion carries the duty; with no open order
-  (closed, withdrawn or none selected) the override and what it changed go to
-  the order's decisions instead. Codex's `node scripts/operator-control.mjs
-  off` prints the same advisory. The record is never a precondition for
+  command and the role's completion carries the duty; for a withdrawn or
+  unselected order the override and what it changed go to the order's decisions
+  instead. Codex's `node scripts/operator-control.mjs off` prints the same
+  route advice, including the main-checkout and capture prerequisites for a
+  closed order. The record is never a precondition for
   entering or leaving override.
 
 Declined: a verdict-changing correction, one generic exception event, an
-override record as a precondition, and retroactive events for closed orders.
+override record as a precondition, and rewriting a closed order's existing events.
 Whether the operator waives WO-111's criterion 2 or withdraws WO-111 is the
 operator's call. See [the WO-158 decisions](../evidence/WO-158/decisions.md).
 
@@ -1659,7 +1674,13 @@ re-checks an existing Release and never publishes twice. A retry after main move
 manifest and order binding; later main commits do not retarget publication.
 One close per order runs at a time. The latest receipt keeps eight inline
 attempts and hash-named immutable archives; retries verify those archives
-before using older publication or cleanup bindings. Retry a host denial of the exact
+before using older publication or cleanup bindings. Failure to archive a parsed
+attempt or read its referenced archives stops publication, retains the parsed
+history and publication bindings, and keeps refused retries bounded. Restore the
+named archive, or, after establishing it is unrecoverable, run the re-anchor
+command printed by the refusal. Re-anchoring preserves surviving history and
+records unavailable archive references without publishing or removing worktrees.
+Retry a host denial of the exact
 command once through the host permission flow before handing the operator the
 printed command for `!`. A scratch repository, a nested repository outside
 the intake lane that the tracked tree does not declare as a submodule, is
@@ -1701,7 +1722,9 @@ core's release tag name is pushed
 as an annotated tag onto the refresh commit through the same isolated lane
 and the sibling's GitHub Release is created pointing at it, with a one-line
 body naming core's Release, so a fork previews `--from vX.Y.Z`; a retry
-finds both and reports current. The tag's name is core's. A fork configures
+finds both and reports current. On an already-current sibling with a missing tag,
+the tag targets the earliest ancestor whose committed manifest names that exact
+core commit and release tag. The tag's name is core's. A fork configures
 `remote.upstream.tagOpt=--no-tags`, fetches with `--no-tags`, and previews a
 named starter release through a non-tag ref. Local instance release checks
 exclude annotated tags whose message begins `Starter <tag>` and binds a
@@ -1779,7 +1802,7 @@ tag and Release. Pending refresh or validated
 cleanup work reports `preview`; an already current starter reports `current`,
 and a cleanup ownership mismatch refuses with the same recovery guidance.
 
-A registered target closes with `no-release`: fetch the declared base,
+By default a registered target closes with `no-release`: fetch the declared base,
 fast-forward the clone's base, prove the target branch merged into it, remove
 its local bundle, worktree and branch, then close the launchpad worktree.
 A dirty base checkout, failed fetch or non-fast-forward base refuses before
@@ -1818,7 +1841,10 @@ a streaming tracked-tree scan that retains only ignore blobs; a candidate
 path list exceeding 16 MiB refuses with a named reduce-tree remedy and never
 echoes the captured path list. Unreadable ignored base directories, unwritable declared output and symlink
 components under disposable paths refuse before deletion, naming the tree,
-path and access or preservation remedy. The scan includes already-ignored files and files the fetched
+path and access or preservation remedy. A filesystem removal failure after
+deletion starts stops further deletion and names the checkout role, disposable
+directory, failed entry, error class, access or immutable-flag remedy, and exact
+close command to retry. The scan includes already-ignored files and files the fetched
 tree stops ignoring: one the fetched tree ignores under a declared path is deleted,
 one it ignores outside every declaration refuses naming the path and the
 registration remedy, and one it does not ignore keeps the ordinary refusal.
@@ -1873,8 +1899,10 @@ Release title and tag message's first line `<displayName> <tag>`; the order titl
 and close line follow. Existing Releases keep their titles. `--dry-run` previews
 the tag and title. Only a recorded real attempt owns an idempotent tag retry;
 a different order's same-commit tag remains a baseline, and a tag at another
-commit refuses by name. All publication prerequisites precede target deletion.
-A retry never adopts a moved tag; if the remote tag disappeared, it can only
+commit refuses by name. Declared target policy is recorded before cleanup
+preflight; a refusal before any tag exists is a publication failure. All
+publication prerequisites precede target deletion. A retry never adopts a moved
+tag; if the remote tag disappeared, it can only
 recreate the tag at the recorded commit
 (WO-221).
 
@@ -1896,7 +1924,7 @@ repository the close could not remove is a blocker that retains the source.
 `--material [<absolute-worktree>::]<path>=preserve` keeps a scratch repository
 and `=disposable` states the default; a word that names the intake lane, a
 declared submodule or no nested repository refuses. Attempts record
-`release-close.json` there; record I/O only advises.
+`release-close.json` there; failures writing the current attempt only advise.
 
 After preservation verifies, removal restores write permission on directories
 inside the subject that the current user owns, without following symbolic
@@ -1972,10 +2000,12 @@ working bytes, writes a commit object from the target worktree's working tree
 through a temporary index (HEAD and the index unchanged), pushes it to the
 declared branch from the isolated lane, opens a draft pull request and records
 `DraftPrepared` before remote effects, then `PullRequestOpened` with `draft`,
-`branch` and `headSha`. Retries reuse the prepared commit, bind the repository,
-and refuse an unexpected remote head with the branch, recorded head, PR and
-recovery direction; an attempt that never created its branch may create it
-under an empty lease. Ignored and intake body paths, including symlinks into
+`branch` and `headSha`. Retries reuse a prepared commit while its tree, parent
+and title match. A failed PR edit may retry with a corrected title against any
+recorded preparation or pull-request head for the same order, repository and
+branch. An unexpected remote head refuses with commands to preserve that head
+before a leased restore, or recreate an absent recorded branch; an attempt that
+never created its branch may create it under an empty lease. Ignored and intake body paths, including symlinks into
 those paths, refuse. A draft at `active`
 or `ready-to-verify` refuses naming the phase, a second draft at the same tree
 reports already published, and one at a new tree updates the same pull
@@ -1985,10 +2015,12 @@ the recorded draft head, updates the title and body, marks the pull request
 ready and records the reuse; another `--branch` refuses. One pull request per
 order; core names no draft step and no actor, the instance's order does
 (WO-221). Trust for these commands comes from the registration and the kit:
-the emitted hook admits only the node spelling of the controlled publish
-helper at the phases the lifecycle makes them legal, under main's
-committed registration, authority profile, operator grant and clone map, with
-host deny rules still applying. The comparison with both checkouts projects
+the emitted hook admits only the node spelling of the controlled publish helper
+in main at the phases the lifecycle makes it legal, under main's committed
+registration, authority profile, operator grant and clone map, with host deny
+rules still applying. The helper's tracked source files in main are compared
+with one pinned main commit. A helper in the order worktree receives an advisory
+with the command for main's copy. The comparison with both checkouts projects
 the configured roots and the selected registration's `baseBranch`,
 `authorityProfile` and `release`; gate commands and other operational fields
 may differ. A differing publication field is named, while the grants file
@@ -2167,6 +2199,22 @@ three duties in order; choose relevant lenses and state why in the report.
    delegate the verdict [2026-10-07 pass; the operator's direction of
    2026-10-02 as WO-187 D051 records it].
 
+The operator delegates decisions to each phase, including at blockers: make
+and explain the choice in the ADR or decision record, with evidence, tradeoffs
+and a reopening condition. No-op and deferred are valid outcomes when their
+evidence, consequences and reopening conditions are recorded. Do not ask the
+operator to arbitrate implementation
+or change criteria. Continue under the existing requirements and authority;
+a permitted operator-only packet records the safe default and consequence
+without demanding a response. This is a standing direction for every phase
+[[WO-219-D003](../evidence/WO-219/decisions.md#wo-219-d003--own-decisions-in-every-phase),
+2026-10-23].
+
+A finding fixed during a passing final review remains listed once with its
+original class and the `follow-up` route; the report prose records its fix and
+passing evidence. This retains the complete finding count without adding a
+fourth route or presenting an already fixed defect as an unmet criterion.
+
 Every finding takes a route: `blocking` when an acceptance criterion is
 unmet, or when the change breaks behavior `main` had and a probe or fixture
 shows it (fail the verdict); `follow-up` for every other defect, reproduced
@@ -2184,6 +2232,17 @@ next repair, if one happens, fixes boarded follow-ups in the declared
 surfaces within the Boy Scout bound. The verifier writes evidence and its
 immutable report, never the implementation it judges.
 
+For a design defect in the declared surfaces, the verifier names the repair
+rule itself; it is blocking only when a criterion is unmet or a regression
+is reproduced. Reviewers and verifiers judge confinement and security
+boundaries from the recorded rule and propose defensive repairs, without
+working out circumvention paths. After one provider safeguard refusal, change
+approach; the standing stop after two consecutive refusals remains. Before
+emitting an audit or repository read, select verdict-relevant fields, budget
+the aggregate batch and check for nested gate logs or truncation. Keep full
+results in scratch. An acknowledgement of a process failure names its durable
+record and disposition in the same response.
+
 On re-verification, re-derive every criterion whose surfaces the repair diff
 touches and reproduce the repaired findings. Carry untouched claims with
 their original evidence; an earlier passing fixture is not evidence for a
@@ -2197,7 +2256,12 @@ naming that order's known issues. The reader is
 `scripts/lib/verification-briefing.mjs`: a section starts at the field's
 label or a heading of that name and ends at the next heading or at an
 order-field label after a blank line; fenced lines are text; the briefing
-advises on an empty section or an unclosed fence.
+advises on an empty section or an unclosed fence. The latest planning receipt
+remains authoritative when its findings field is malformed: advise that its
+findings are unavailable, never resurrect an older receipt. A missing receipt
+id uses the filename; a valid empty findings list prints `known issues: none`.
+The work-order text and latest receipt are the briefing sources; map citations
+are read separately when the order names them.
 
 | Lens | Question | Suitable changes |
 | --- | --- | --- |
@@ -2215,7 +2279,9 @@ critiques design, simplicity and what a maintainer will not understand in
 six months. It fixes or records every finding and writes a line in
 `handoff.md` that starts `self-review: found N; fixed N; recorded N`, then
 names both workers or the separate-pass fallback and its evidence. A list
-marker may precede the line; no other form is the line. Absence advises once
+marker, balanced inline emphasis or code wrappers may decorate the line;
+case and a parenthetical worker label are tolerated. The three integer counts
+remain required; quoted or fenced examples are not the line. Absence advises once
 and never refuses completion. A line does not prove a review occurred. Until
 WO-196 regenerates the role text, this section governs where a role sentence
 differs from it.
@@ -2431,7 +2497,7 @@ usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-
   indefinitely for approval. The current queue is observed with
   `npm run adjacent -- list`; its chat and channel observations are actor-attested.
   Equipped duties run at entry, including the initial Intent to Act announcement.
-  Settle routine version, waiver-route, live-episode, regeneration and reinstall questions within existing authority; ask when the answer changes scope or authority [WO-179, 2026-10-01].
+  Settle routine version, waiver-route, live-episode, regeneration and reinstall questions within existing authority. Every phase owns its decision, including no-op or deferred: record the evidence, tradeoffs and reopening condition instead of asking the operator to arbitrate implementation or change criteria [WO-219-D003, 2026-10-23].
   Ordinary `next`/`fix` projects installed equipment and queue state without
   requiring a named-support prompt. Completion advises about queued/running items;
   complete them or record an explicit disposition, with a public FUP for deferrals.
@@ -2461,8 +2527,12 @@ usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-
   `unknown` with a cause. Within a dispatch, the earliest terminal observation
   fixes a task's state and elapsed time; later statusless reads, errors or stops
   cannot restart it. Claude's prompt hook reads native task notices directly
-  when the transcript has not yet flushed them. It uses the prompt boundary's
-  time until an earlier transcript timestamp is observed, which can shorten
+  when the transcript has not yet flushed them. Bounded terminal notice
+  envelopes also journal as host messages and are excluded from operator
+  intervention counts. Exact transcript authorship takes precedence; unmatched
+  prompts and queue-operation enqueues without a command mode remain
+  unattributed. It uses the prompt boundary's time until an earlier transcript
+  timestamp is observed, which can shorten
   the recorded terminal elapsed time. The same scoped parser handles both
   sources and retains only hashed task joins, status and time. A lexical estimate marker attached to a number,
   duration or clock time in final assistant text is journaled with the observed
@@ -2667,6 +2737,17 @@ usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-
   when available, never substituted from another session or invented as zero.
   Counters and final timings stay in ignored local observations and the
   response; reports may cite them without causing a product-gate rerun.
+  Usage, meta and console actor projections apply canonical `RecordCorrected`
+  fields while retaining the original events and correction evidence. A
+  per-order meter snapshot records the path and SHA-256 of each retained usage
+  copy fully represented in its totals. After later usage arrives for a closed
+  or withdrawn order, a linked worktree can explicitly refresh its snapshot
+  with `npm run meta -- --write docs/evidence/WO-NNN/meta.json`, reading retained
+  copies and current usage from its registered main checkout. The command writes
+  only the caller's snapshot and preserves historical metrics and cutoffs. It
+  refuses missing previously carried copies; mixed or unreadable copies remain
+  retained. Pruning still requires the final copy digest in a committed snapshot,
+  so a changed late copy cannot be pruned against an earlier proof.
   A verification or final-review receipt allocated under WO-140 carries
   exactly one physical `**Process cost:**` line: `entry <total> tokens;
   handoff <total> tokens; source <source>`, or `unknown; cause <code>` with
@@ -2754,6 +2835,13 @@ usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-
   Shell-special prefixes such as `!` (zsh's clobber override) and `=` remain
   opaque and are refused during a live gate (VER-004 F1); the adapter does
   not pass their ambiguous spelling to the path classifier.
+  A command word after an `&>` or `&>>` operand makes the invocation opaque,
+  because supported shells can interpret it as another command; a redirect
+  followed only by redirects keeps its literal destination. An unquoted zsh
+  `=` word is an expansion when it begins a word, including after empty
+  quotes, or follows `=` or `:`, with a following character. A lone `=` and
+  a quoted or escaped `=` remain literal. Opaque forms are refused beside a
+  live gate and delegated to host permissions elsewhere.
   Beside that adapter a live gate admits a fixed read-only list
   [WO-158, 2026-09-25], judged stage by stage across every pipeline and
   command list: `cat`, `head`, `tail`, `wc`, `ls`, `grep`, `sed -n` with a
@@ -2842,8 +2930,10 @@ usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-
   remainder; unresolved direct/child overlap is labeled a minimum. Plan the
   whole fan-out against the root's remaining budget before the first spawn,
   state it in the response, and batch review/refutation over item groups:
-  one agent judges several items, never one agent per item per pass. Codex carries
-  the same duties, grants and advisory cap as role text, without outside-write hook enforcement; other judgments delegate to host permissions; the default gate holds the suites that
+  one agent judges several items, never one agent per item per pass. A Codex
+  lifecycle dispatch reserves the writer and refuses a foreign holder; its
+  other duties, grants and advisory cap remain role text, without tool-call
+  or outside-write hook enforcement; other judgments delegate to host permissions; the default gate holds the suites that
   protect product and lifecycle behavior, each naming what it protects, and
   the machinery's own suites run on demand; the planning refuter judges goal
   alignment, system traps, constraint removal and antifragility, and a
@@ -3067,6 +3157,11 @@ usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-
   ([WO-127-D006](../evidence/WO-127/decisions.md#wo-127-d006)).
 - **Gate execution and reuse (WO-132).** `npm test -- --list` prints each
   product/lifecycle suite and the operator-visible behavior it protects.
+  `npm test -- --list --review` includes every available machinery declaration
+  for Preflight discovery. Add `--selected` to list only the suites that would
+  actually execute; handoff and final-review claim checks use that view so an
+  unselected machinery suite cannot invalidate a passing review. The modifier
+  requires `--list` and never starts a gate.
   Suites run fresh in the working tree, one task per suite except independent
   release cases, which share a prepared synthetic template and run in multiple
   lanes. Replica copies, declared-input keys, shared success cache, kernel-denial
@@ -3142,8 +3237,9 @@ never installed by a gate, since live hooks change only through the explicit
 `npm run sync` step. A focused product selection judges only those two
 generated artifacts, publication and bookkeeping being inputs of the
 complete and document selections, and its structural row is partial: it
-never stands in for a complete or document selection's structural pass.
-In an export, `launchpad update --finish` fetches and fast-forwards clean
+never stands in for a complete or document selection's structural pass. A
+later passing partial row preserves an earlier complete pass; a later failed
+partial task still displaces its prior pass. In an export, `launchpad update --finish` fetches and fast-forwards clean
 main before bootstrap, and release-close recovery, `worktree finish` and
 `npm run harness` restore the verified carried runtime instead of building
 omitted sources; bootstrap is the named manual recovery command (WO-226).

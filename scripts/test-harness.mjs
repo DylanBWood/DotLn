@@ -102,6 +102,7 @@ import {
   seedHarnessWriter,
   SHELL_DIAGNOSTICS,
   recordCodexDispatch,
+  recordOperatorMessage,
 } from "../packages/skeleton/dist/src/harness-host.js";
 import { operatorControl } from "../packages/compiler/src/operator-control.mjs";
 import {
@@ -2266,7 +2267,7 @@ test("WO-178 exact close helper admission requires the recorded dispatch, main a
   }
 });
 
-test("WO-221 registered-target admission admits only the bound publication helper at verified and closed and nothing outside the registration", () => {
+test("WO-221 registered-target admission admits only the bound publication helper at verified and closed and nothing outside the registration", async (t) => {
   const root = fixture();
   const base = realpathSync(mkdtempSync(join(tmpdir(), "dotln-wo221-target-")));
   const identity = [
@@ -2383,7 +2384,11 @@ test("WO-221 registered-target admission admits only the bound publication helpe
       "docs/control/local/repository-clones.json",
       json({ target: clone }),
     );
-    const helper = `node ${join(root, "scripts/worktree.mjs")} publish WO-999 --target-worktree --draft --branch feat/x --title "feat: x" --body-file b.md`;
+    const helper = `node ${join(mainCheckout, "scripts/worktree.mjs")} publish WO-999 --target-worktree --draft --branch feat/x --title "feat: x" --body-file b.md`;
+    const untrustedHelper = helper.replace(
+      join(mainCheckout, "scripts/worktree.mjs"),
+      join(root, "scripts/worktree.mjs"),
+    );
     const status = (phase, latestVerdict = null) =>
       write(
         root,
@@ -2445,10 +2450,103 @@ test("WO-221 registered-target admission admits only the bound publication helpe
         "utf8",
       ),
     );
+    for (const [vector, label] of [
+      [
+        "scripts/lib/node_modules/@dotln/kernel/index.js",
+        "planted node_modules package",
+      ],
+      ["packages/kernel/dist/src/index.js", "modified ignored dist"],
+    ])
+      await t.test(label, () => {
+        const previous = existsSync(join(root, vector))
+          ? readFileSync(join(root, vector))
+          : null;
+        write(
+          root,
+          vector,
+          "throw new Error('untrusted publication dependency');\n",
+        );
+        try {
+          withheld(untrustedHelper);
+          allowed(helper);
+        } finally {
+          if (previous) writeFileSync(join(root, vector), previous);
+          else rmSync(join(root, vector));
+        }
+      });
+    await t.test(
+      "moved main ref cannot substitute a worktree helper closure",
+      () => {
+        const refFile = "scripts/admission-ref-probe.mjs";
+        write(mainCheckout, refFile, "export const pinned = 1;\n");
+        commitAll(mainCheckout, "Pin ref movement probe");
+        const trustedCommit = runGit(
+          mainCheckout,
+          ["rev-parse", "HEAD"],
+          fixtureGitOptions,
+        );
+        const trustedBlob = runGit(
+          mainCheckout,
+          ["rev-parse", `HEAD:${refFile}`],
+          fixtureGitOptions,
+        );
+        write(root, refFile, "export const pinned = 77;\n");
+        const modifiedBlob = runGit(
+          root,
+          ["hash-object", "-w", refFile],
+          fixtureGitOptions,
+        );
+        runGit(
+          mainCheckout,
+          [
+            "update-index",
+            "--add",
+            "--cacheinfo",
+            `100644,${modifiedBlob},${refFile}`,
+          ],
+          fixtureGitOptions,
+        );
+        const tree = runGit(mainCheckout, ["write-tree"], fixtureGitOptions);
+        const moved = runGit(
+          mainCheckout,
+          [
+            ...identity,
+            "commit-tree",
+            tree,
+            "-p",
+            trustedCommit,
+            "-m",
+            "Moved helper closure",
+          ],
+          fixtureGitOptions,
+        );
+        runGit(
+          root,
+          ["update-ref", "refs/heads/main", moved],
+          fixtureGitOptions,
+        );
+        try {
+          withheld(untrustedHelper);
+          withheld(helper);
+        } finally {
+          runGit(
+            root,
+            ["update-ref", "refs/heads/main", trustedCommit],
+            fixtureGitOptions,
+          );
+          runGit(
+            mainCheckout,
+            ["update-index", "--cacheinfo", `100644,${trustedBlob},${refFile}`],
+            fixtureGitOptions,
+          );
+          write(root, refFile, "export const pinned = 1;\n");
+        }
+      },
+    );
     allowed(helper);
     withheld(
       helper.replace(
-        `node ${join(root, "scripts/worktree.mjs")}`,
+        `node ${join(mainCheckout, "scripts/worktree.mjs")}`,
         "npm run worktree --",
       ),
     );
@@ -2556,14 +2654,19 @@ test("WO-221 registered-target admission admits only the bound publication helpe
     write(mainCheckout, closureFile, "export const pinned = 1;\n");
     commitAll(mainCheckout, "Pin helper source dependency");
     write(root, closureFile, "export const pinned = 2;\n");
+    allowed(helper);
+    withheld(untrustedHelper);
+    write(mainCheckout, closureFile, "export const pinned = 9;\n");
     withheld(helper);
+    write(mainCheckout, closureFile, "export const pinned = 1;\n");
     write(root, closureFile, "export const pinned = 1;\n");
     runGit(root, ["add", closureFile]);
     allowed(helper);
     for (const flag of ["assume-unchanged", "skip-worktree"]) {
       runGit(root, ["update-index", `--${flag}`, closureFile]);
       write(root, closureFile, "export const pinned = 9;\n");
-      withheld(helper);
+      allowed(helper);
+      withheld(untrustedHelper);
       write(root, closureFile, "export const pinned = 1;\n");
       runGit(root, ["update-index", `--no-${flag}`, closureFile]);
       allowed(helper);
@@ -2611,9 +2714,7 @@ test("WO-221 registered-target admission admits only the bound publication helpe
       `node ${join(root, "scripts/worktree.mjs")} publish WO-998 --target-worktree --draft --branch feat/x --title t --body-file b.md`,
     ])
       withheld(command);
-    allowed(
-      `node ${join(root, "scripts/worktree.mjs")} publish WO-999 --target-worktree --draft --branch feat/x --title "feat: x" --body-file b.md`,
-    );
+    allowed(helper);
     withheld(
       `node ${join(root, "scripts/worktree.mjs")} publish WO-999 --target-worktree --branch feat/x --title "feat: x" --body-file b.md`,
     );
@@ -5019,7 +5120,7 @@ test("WO-039 installed bundle detects content, missing, unexpected and manifest 
       assert.throws(() => checkHarness(root), /harness drift: manifest/);
       writeFileSync(manifestPath, manifest);
     }
-    const obsolete = ".claude/hooks/obsolete.mjs";
+    const obsolete = ".claude/agents/dotln-worker2.md";
     write(root, obsolete, "// Previously owned output\n");
     const previous = JSON.parse(manifest);
     previous.installed.push({ path: obsolete });
@@ -8225,6 +8326,18 @@ test("WO-158 operator override: off appends OperatorOverrideRecorded with the op
       assert.match(
         advisory.hookSpecificOutput.additionalContext,
         /npm run resume -- override-record --bypassed dotln-hook-enforcement --effects <what the recovery changed, or none> --reason 'operator override from /,
+      );
+      assert.match(
+        advisory.hookSpecificOutput.additionalContext,
+        /For a closed order, run from the main control-plane checkout with --work-order naming that order; its ignored pending record is carried by the next worktree start/,
+      );
+      assert.match(
+        advisory.hookSpecificOutput.additionalContext,
+        /For a withdrawn or unselected order, record the override and what it changed in the order's decisions/,
+      );
+      assert.doesNotMatch(
+        advisory.hookSpecificOutput.additionalContext,
+        /no open order \(closed/,
       );
     } finally {
       writeFileSync(hook, original);
@@ -13017,6 +13130,46 @@ test("WO-142 VER-002 B3 preserves the activation read vocabulary and every outpu
       assert.equal(shellWriteTargets(program + args), null, program + args);
 });
 
+test("an enqueue with no recorded command mode retains unknown authorship", () => {
+  const root = mkdtempSync(join(tmpdir(), "dotln-prompt-attribution-"));
+  const transcript = join(root, "transcript.jsonl");
+  const prompt = "synthetic private queued words";
+  try {
+    for (const [mode, expected] of [
+      [undefined, "unattributed"],
+      [null, "unattributed"],
+      ["", "unattributed"],
+      ["prompt", "operator"],
+      ["task-notification", "host-task-notification"],
+    ]) {
+      writeFileSync(
+        transcript,
+        JSON.stringify({
+          type: "queue-operation",
+          operation: "enqueue",
+          content: prompt,
+          ...(mode === undefined ? {} : { commandMode: mode }),
+        }) + "\n",
+      );
+      recordOperatorMessage(root, {
+        hook_event_name: "UserPromptSubmit",
+        cwd: root,
+        session_id: "synthetic-session",
+        prompt,
+        transcript_path: transcript,
+      });
+      const observed = wo178Rows(root).at(-1);
+      assert.equal(observed.attribution, expected);
+      assert.equal(observed.route, "mid-turn");
+      assert.equal(observed.routeSource, "transcript-enqueue");
+      assert.equal(observed.digest, sha256(prompt));
+      assert.doesNotMatch(JSON.stringify(observed), /private queued words/);
+    }
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test("a queued prompt the host marks as a task notification journals a non-operator source, and a prompt with no transcript evidence is unattributed", () => {
   const root = fixture();
   try {
@@ -14926,6 +15079,32 @@ test("disabled harness keeps core and kit floors while removing built navigation
       );
       assert.match(disabled, /Custom operator instruction/);
       assert.match(disabled, /No compiled refusal, hook or verification/);
+      assert.doesNotMatch(
+        disabled,
+        /@skills|\.(?:claude|agents)\/skills|select their skill|Expand skill read\/review|\.runtime\/harness|snapshot-missing|Contributor harness bundle|harness block by/u,
+      );
+      const cleanRoom = floor.match(
+        /## Clean Room — locked floor\n[\s\S]*?(?=\n## )/u,
+      )?.[0];
+      assert.ok(
+        cleanRoom && disabled.includes(cleanRoom),
+        "the clean-room section is preserved byte for byte",
+      );
+      assert.ok(checkHarness(root, options).files >= 0);
+      write(
+        root,
+        "CLAUDE.md",
+        disabled.replace(
+          "No compiled refusal, hook or verification governs this instance (build: none).",
+          "",
+        ),
+      );
+      assert.throws(
+        () => checkHarness(root, options),
+        /needs the disclosure: No compiled refusal, hook or verification governs this instance \(build: none\)\.; run node scripts\/harness\.mjs emit/u,
+      );
+      emitHarness(root, options);
+      assert.equal(readFileSync(join(root, "CLAUDE.md"), "utf8"), disabled);
       assert.equal(harnessRuntimeCause(root), null);
       const manifest = join(root, ".claude/harness-manifest.json");
       const invalid = JSON.parse(readFileSync(manifest));
@@ -14935,5 +15114,501 @@ test("disabled harness keeps core and kit floors while removing built navigation
     } finally {
       removeFixture(root, { recursive: true, force: true });
     }
+  }
+});
+
+test("generated observer caches empty failed-use classifications without diagnostic rows and invalidates changed inputs or classifier", () => {
+  const root = fixture();
+  try {
+    beginHarnessSession(root, "synthetic-session", "executor");
+    const state = join(root, "docs/control/local/harness");
+    const transcript = join(root, "negative-cache-transcript.jsonl");
+    const log = join(state, "classification-count.txt");
+    const preload = join(state, "classification-observer.mjs");
+    writeFileSync(
+      preload,
+      `import fs from "node:fs";
+const original=RegExp.prototype.exec;
+RegExp.prototype.exec=function(value){
+  if(value === process.env.NEGATIVE_CLASSIFICATION_SENTINEL) fs.appendFileSync(process.env.NEGATIVE_CLASSIFICATION_LOG,"classified\\n");
+  return Reflect.apply(original,this,[value]);
+};
+`,
+    );
+    const use = createHash("sha256").update("negative-use").digest("hex");
+    const cache = join(state, `${use}.shell-negative.json`);
+    const setFailure = (command, output) =>
+      writeFileSync(
+        transcript,
+        [
+          {
+            message: {
+              content: [
+                {
+                  type: "tool_use",
+                  id: "negative-use",
+                  name: "Bash",
+                  input: { command },
+                },
+              ],
+            },
+          },
+          {
+            message: {
+              content: [
+                {
+                  type: "tool_result",
+                  tool_use_id: "negative-use",
+                  is_error: true,
+                  content: `Exit code 1\n${output}`,
+                },
+              ],
+            },
+          },
+        ]
+          .map(JSON.stringify)
+          .join("\n") + "\n",
+      );
+    const count = () =>
+      existsSync(log) ? readFileSync(log, "utf8").trim().split("\n").length : 0;
+    const observe = (sentinel) =>
+      invoke(
+        root,
+        "read-observer",
+        input(root, "PostToolUse", {
+          transcript_path: transcript,
+          tool_name: "Read",
+          tool_use_id: "observed-read",
+          tool_input: { file_path: join(root, "fixture.ts") },
+          tool_response: {
+            type: "text",
+            file: {
+              filePath: join(root, "fixture.ts"),
+              content: "fixture",
+              numLines: 1,
+              startLine: 1,
+              totalLines: 1,
+            },
+          },
+        }),
+        false,
+        {
+          NODE_OPTIONS:
+            `${process.env.NODE_OPTIONS ?? ""} --import=${pathToFileURL(preload).href}`.trim(),
+          NEGATIVE_CLASSIFICATION_SENTINEL: sentinel,
+          NEGATIVE_CLASSIFICATION_LOG: log,
+        },
+      );
+    const sentinel = "ordinary failed result without a shell diagnostic";
+    setFailure("print ordinary", sentinel);
+    assert.deepEqual(observe(sentinel), {});
+    assert.equal(count(), 1);
+    assert.equal(
+      existsSync(join(state, SHELL_DIAGNOSTICS)),
+      false,
+      "negative classification creates no diagnostic count",
+    );
+    const first = JSON.parse(readFileSync(cache, "utf8"));
+    assert.equal(first.version, 1);
+    assert.equal(first.use, use);
+    assert.match(first.inputHash, /^[a-f0-9]{64}$/u);
+    assert.match(first.classifierHash, /^[a-f0-9]{64}$/u);
+    assert.ok(!readFileSync(cache, "utf8").includes(sentinel));
+    assert.deepEqual(observe(sentinel), {});
+    assert.equal(
+      count(),
+      1,
+      "a later hook process uses the durable negative marker",
+    );
+    setFailure("print changed", sentinel);
+    assert.deepEqual(observe(sentinel), {});
+    assert.equal(count(), 2, "changed command bytes are classified again");
+    const changed = JSON.parse(readFileSync(cache, "utf8"));
+    assert.notEqual(changed.inputHash, first.inputHash);
+    writeFileSync(
+      cache,
+      JSON.stringify({ ...changed, classifierHash: "0".repeat(64) }),
+    );
+    assert.deepEqual(observe(sentinel), {});
+    assert.equal(
+      count(),
+      3,
+      "a marker bound to another classifier cannot suppress classification",
+    );
+    setFailure(
+      "ls *.dotln-negative-missing",
+      "(eval):1: no matches found: *.dotln-negative-missing",
+    );
+    const positive = observe(
+      "(eval):1: no matches found: *.dotln-negative-missing",
+    );
+    assert.match(
+      positive.hookSpecificOutput?.additionalContext,
+      /marked failed.*no file/u,
+    );
+    const rows = readFileSync(join(state, SHELL_DIAGNOSTICS), "utf8")
+      .trim()
+      .split("\n")
+      .map(JSON.parse);
+    assert.equal(rows.length, 1);
+    assert.equal(rows[0].use, use);
+  } finally {
+    removeFixture(root, { recursive: true });
+  }
+});
+
+test("prune independently retires dead shell claims and preparations while preserving live and unknown owners", () => {
+  const root = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-shell-claim-prune-")),
+  );
+  try {
+    runGit(root, ["init", "-q"], fixtureGitOptions);
+    const state = join(root, "docs/control/local/harness");
+    const dead = { pid: spawnSync(process.execPath, ["-e", ""]).pid };
+    assert.equal(harnessProcessAlive(dead), false);
+    const live = { pid: process.pid };
+    const claim = (digit, owner, prepared = false) => {
+      const nonce = digit.repeat(32);
+      const name = `${digit.repeat(64)}.shell-claim${prepared ? `.prepare-${nonce}` : ""}`;
+      const file = join(state, name, `claim-${nonce}.json`);
+      write(root, relative(root, file), JSON.stringify(owner));
+      return { name, file };
+    };
+    const stale = claim("a", dead);
+    const prepared = claim("b", dead, true);
+    const active = claim("c", live);
+    const unknown = claim("d", {});
+    const empty = join(
+      state,
+      `${"e".repeat(64)}.shell-claim.prepare-${"e".repeat(32)}`,
+    );
+    mkdirSync(empty, { recursive: true });
+    const options = {
+      publishedRelease: () => null,
+      codexHomeRoot: join(root, "codex-homes"),
+    };
+    const before = pruneInventory(state);
+    const preview = pruneHarness(root, options);
+    assert.deepEqual(pruneInventory(state), before, "preview changes no claim");
+    assert.deepEqual(
+      preview.candidates
+        .filter((row) => row.kind === "shell-claim")
+        .map((row) => row.path.split("/").at(-1))
+        .sort(),
+      [stale.name, prepared.name].sort(),
+    );
+    const applied = pruneHarness(root, { ...options, apply: true });
+    assert.equal(
+      applied.candidates.filter((row) => row.kind === "shell-claim").length,
+      2,
+    );
+    assert.equal(existsSync(dirname(stale.file)), false);
+    assert.equal(existsSync(dirname(prepared.file)), false);
+    for (const held of [active.file, unknown.file, empty])
+      assert.equal(existsSync(held), true, held);
+    assert.equal(
+      existsSync(join(state, SHELL_DIAGNOSTICS)),
+      false,
+      "no transcript revisit or diagnostic lane is required",
+    );
+  } finally {
+    removeFixture(root, { recursive: true });
+  }
+});
+
+test("prune cannot retire a replacement shell-claim owner after its final dead-owner observation", async () => {
+  const root = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-shell-claim-replaced-")),
+  );
+  const fs = (await import("node:fs")).default;
+  const { syncBuiltinESMExports } = await import("node:module");
+  const original = { unlinkSync: fs.unlinkSync, rmdirSync: fs.rmdirSync };
+  try {
+    runGit(root, ["init", "-q"], fixtureGitOptions);
+    const dead = { pid: spawnSync(process.execPath, ["-e", ""]).pid };
+    const directory = join(
+      root,
+      "docs/control/local/harness",
+      `${"a".repeat(64)}.shell-claim`,
+    );
+    const old = join(directory, `claim-${"b".repeat(32)}.json`);
+    const replacement = join(directory, `claim-${"c".repeat(32)}.json`);
+    write(root, relative(root, old), JSON.stringify(dead));
+    let swapped = false;
+    fs.unlinkSync = function (file, ...args) {
+      if (file === old && !swapped) {
+        swapped = true;
+        original.unlinkSync(old);
+        original.rmdirSync(directory);
+        mkdirSync(directory);
+        writeFileSync(replacement, JSON.stringify({ pid: process.pid }));
+      }
+      return original.unlinkSync(file, ...args);
+    };
+    syncBuiltinESMExports();
+    pruneHarness(root, {
+      apply: true,
+      publishedRelease: () => null,
+      codexHomeRoot: join(root, "codex-homes"),
+    });
+    assert.equal(swapped, true);
+    assert.equal(existsSync(replacement), true);
+    assert.deepEqual(readdirSync(directory), [replacement.split("/").at(-1)]);
+  } finally {
+    fs.unlinkSync = original.unlinkSync;
+    syncBuiltinESMExports();
+    removeFixture(root, { recursive: true });
+  }
+});
+
+test("terminal task notifications before transcript flush are host observations; malformed envelopes and explicit operator copies retain their attribution", async () => {
+  const root = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-preflush-notice-")),
+  );
+  const transcript = join(root, "transcript.jsonl");
+  const rows = () =>
+    wo178Rows(root).filter(
+      (row) => row.typedEvent === "OperatorMessageObserved",
+    );
+  const observe = (
+    prompt,
+    row = { sessionId: "synthetic-session", cwd: root },
+  ) => {
+    writeFileSync(transcript, JSON.stringify(row) + "\n");
+    recordOperatorMessage(root, {
+      hook_event_name: "UserPromptSubmit",
+      cwd: root,
+      session_id: "synthetic-session",
+      prompt,
+      transcript_path: transcript,
+    });
+    return rows().at(-1);
+  };
+  try {
+    const { operationalFailures } = await import("./lib/plan-failures.mjs");
+    const control = { orders: new Map(), eventSegments: new Map() };
+    const interventions = () =>
+      operationalFailures(root, control, () => true).interventions;
+    const notice = (status, identity = "<task-id>fixture-task</task-id>") =>
+      `<task-notification>${identity}<status>${status}</status><summary>synthetic private summary</summary></task-notification>`;
+    for (const status of ["completed", "failed", "stopped", "killed"]) {
+      const prompt = notice(
+        status,
+        status === "killed"
+          ? "<tool-use-id>fixture-tool</tool-use-id>"
+          : undefined,
+      );
+      const row = observe(prompt);
+      assert.equal(row.source, "host-task-notification");
+      assert.equal(row.attribution, "host-task-notification");
+      assert.equal(row.routeSource, "host-task-notification-envelope");
+      assert.equal(row.digest, sha256(prompt));
+      assert.equal(row.bytes, Buffer.byteLength(prompt));
+    }
+    assert.equal(
+      interventions().count,
+      0,
+      "preflush host envelopes do not enter the operator intervention count",
+    );
+    assert.equal(interventions().hostNotifications, 4);
+    for (const prompt of [
+      notice("running"),
+      notice("completed", ""),
+      notice("completed").replace("</task-notification>", ""),
+      notice("completed").replace(
+        "<status>completed</status>",
+        "<status>completed</status><status>failed</status>",
+      ),
+      notice("completed").replace("<summary>", "<status><summary>"),
+      notice(
+        "completed",
+        "<task-id></task-id><tool-use-id>fixture-tool</tool-use-id>",
+      ),
+      "<task-notification><task-id>x</task-id><summary><status>completed</status></summary></task-notification>",
+      notice("completed").replace(
+        "synthetic private summary",
+        "x".repeat(65536),
+      ),
+    ]) {
+      const row = observe(prompt);
+      assert.equal(row.attribution, "unattributed", prompt.slice(0, 100));
+      assert.equal(row.routeSource, "host-route-unavailable");
+    }
+    const prompt = notice("completed");
+    assert.equal(
+      observe(prompt, {
+        type: "user",
+        message: { role: "user", content: prompt },
+      }).attribution,
+      "operator",
+      "explicit transcript authorship wins over a copied envelope",
+    );
+    assert.equal(
+      observe(prompt, {
+        type: "queue-operation",
+        operation: "enqueue",
+        content: prompt,
+      }).attribution,
+      "unattributed",
+      "missing enqueue commandMode remains unknown",
+    );
+    assert.doesNotMatch(
+      JSON.stringify(rows()),
+      /synthetic private summary|fixture-task|fixture-tool/u,
+    );
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("a closed selected order's override exit names its pending record and main's effects route, never the closed order's decisions", () => {
+  const root = fixture();
+  const session = "wo219-override-closed";
+  try {
+    for (const path of [
+      "scripts/resume.mjs",
+      "scripts/work-orders.mjs",
+      "scripts/lib",
+      "packages/skeleton/src",
+    ])
+      cpSync(join(sourceRoot, path), join(root, path), { recursive: true });
+    write(
+      root,
+      "docs/work-orders/WO-999-fixture.md",
+      "# WO-999 — Fixture\n\n**Model:** fixture.\n**Effort:** executor any; verifier any; reviewer any.\n**Objective:** exercise the closed-order override record.\n",
+    );
+    write(
+      root,
+      "docs/planning/sequence.md",
+      "<!-- dotln-work-order-sequence:start -->\n- WO-999 — Fixture\n<!-- dotln-work-order-sequence:end -->\n",
+    );
+    const actor = {
+      harness: "human",
+      harnessVersion: "not-applicable",
+      model: "human",
+      effort: "unknown",
+      source: "operator-attested",
+    };
+    const segment = join(root, "docs/control/orders/WO-999.jsonl");
+    writeFileSync(
+      segment,
+      [
+        {
+          type: "WorkOrderActivated",
+          workOrderPath: "docs/work-orders/WO-999-fixture.md",
+          recordedAt: "2026-10-01T00:00:00.000Z",
+        },
+        {
+          type: "FinalReviewCompleted",
+          finalReviewId: "FINAL-001",
+          reportPath: "docs/final-reviews/WO-999/FINAL-001.md",
+          verdict: "pass",
+          recordedAt: "2026-10-02T00:00:00.000Z",
+          actor,
+        },
+      ]
+        .map((event) =>
+          JSON.stringify({ schemaVersion: 1, workOrderId: "WO-999", ...event }),
+        )
+        .join("\n") + "\n",
+    );
+    write(
+      root,
+      ".gitignore",
+      "node_modules/\n**/dist/\ndocs/control/local/\ndocs/intake/**\n",
+    );
+    const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
+    pkg.scripts["work-orders"] = "node scripts/work-orders.mjs";
+    write(root, "package.json", json(pkg));
+    // The closed route records only from main's checkout.
+    runGit(root, ["checkout", "-q", "-B", "main"], fixtureGitOptions);
+    runGit(root, ["add", "."], fixtureGitOptions);
+    runGit(
+      root,
+      [
+        "-c",
+        "user.name=Fixture",
+        "-c",
+        "user.email=fixture@example.invalid",
+        "-c",
+        "commit.gpgsign=false",
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-qm",
+        "Closed lifecycle",
+      ],
+      fixtureGitOptions,
+    );
+    const status = spawnSync(
+      process.execPath,
+      ["scripts/resume.mjs", "status", "--json"],
+      { cwd: root, encoding: "utf8" },
+    );
+    assert.equal(status.status, 0, status.stderr);
+    const selected = JSON.parse(status.stdout);
+    assert.equal(selected.workOrder, "WO-999");
+    assert.equal(selected.phase, "closed");
+    assert.ok(selected.legalOffRamps.includes("override-record"));
+    const segmentBefore = readFileSync(segment);
+    const prompt = (text) =>
+      invoke(
+        root,
+        "session",
+        input(root, "UserPromptSubmit", { session_id: session, prompt: text }),
+        false,
+        { CLAUDE_EFFORT: "high" },
+      );
+    assert.match(
+      prompt("operator override: finish the interrupted release close")
+        .systemMessage,
+      /operator-control override/,
+    );
+    prompt("rerun the printed release-close helper");
+    const exited = prompt("operator override: off");
+    assert.match(
+      exited.systemMessage,
+      /operator-control exited; ordinary workflow checks resume/,
+    );
+    assert.match(
+      exited.systemMessage,
+      /DotLn: Recorded pending OperatorOverrideRecorded for WO-999 in docs\/control\/local\/pending-overrides\/WO-999-[0-9a-f-]{36}\.json; the next worktree start carries it into the reviewed change/,
+    );
+    const context = exited.hookSpecificOutput.additionalContext;
+    assert.match(
+      context,
+      /Recorded pending OperatorOverrideRecorded for WO-999/,
+    );
+    assert.match(
+      context,
+      /npm run resume -- override-record --bypassed dotln-hook-enforcement --effects <what the recovery changed, or none> --reason <text> --work-order WO-999 <actor-flags>, run from main's checkout; the next worktree start carries both pending records/,
+    );
+    assert.doesNotMatch(context, /decisions/);
+    assert.deepEqual(
+      readFileSync(segment),
+      segmentBefore,
+      "a closed order's tracked segment is unchanged",
+    );
+    const lane = join(root, "docs/control/local/pending-overrides");
+    const names = readdirSync(lane);
+    assert.equal(names.length, 1);
+    const record = JSON.parse(readFileSync(join(lane, names[0]), "utf8"));
+    assert.equal(record.type, "OperatorOverrideRecorded");
+    assert.equal(record.workOrderId, "WO-999");
+    assert.deepEqual(record.bypassed, ["dotln-hook-enforcement"]);
+    assert.deepEqual(record.effects, ["unobserved"]);
+    assert.match(record.capture, /^docs\/intake\/operator-override\//);
+    const words = readFileSync(join(root, record.capture));
+    assert.equal(
+      record.captureHash,
+      `sha256:${createHash("sha256").update(words).digest("hex")}`,
+    );
+    assert.match(String(words), /finish the interrupted release close/);
+    assert.deepEqual(
+      [record.actor.harness, record.actor.effort, record.actor.source],
+      ["claude-code", "high", "claude-session-readback"],
+    );
+  } finally {
+    removeFixture(root, { recursive: true });
   }
 });

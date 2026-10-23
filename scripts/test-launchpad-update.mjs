@@ -2647,6 +2647,41 @@ const result=spawnSync(real,args,{stdio:'inherit'});process.exit(result.status??
   assert.equal(current.siblingRelease, "current");
   assert.equal(pending().length, 2);
   assert.equal(refs(), stableRefs);
+  const refreshCommit = remoteHead();
+  const tagObjectBeforeOperator = git(remote, [
+    "rev-parse",
+    `refs/tags/${tag}`,
+  ]).stdout.trim();
+  const operatorTree = git(checkout, [
+    "rev-parse",
+    "HEAD^{tree}",
+  ]).stdout.trim();
+  const operatorCommit = git(checkout, [
+    "commit-tree",
+    operatorTree,
+    "-p",
+    refreshCommit,
+    "-m",
+    "Operator note above a current refresh",
+  ]).stdout.trim();
+  git(checkout, ["update-ref", "refs/heads/main", operatorCommit]);
+  git(checkout, ["push", remote, "main"]);
+  git(remote, ["update-ref", "-d", `refs/tags/${tag}`]);
+  const currentAboveRefresh = refresh(tag, head)[0];
+  assert.equal(
+    currentAboveRefresh.outcome,
+    "current",
+    JSON.stringify(currentAboveRefresh),
+  );
+  assert.equal(
+    git(remote, ["rev-parse", `${tag}^{commit}`]).stdout.trim(),
+    refreshCommit,
+    "the tag names the earliest matching refresh, never the later operator commit",
+  );
+  // Restore only this fixture's synthetic history for its remaining cases.
+  git(remote, ["update-ref", "refs/heads/main", refreshCommit]);
+  git(remote, ["update-ref", `refs/tags/${tag}`, tagObjectBeforeOperator]);
+  git(checkout, ["update-ref", "refs/heads/main", refreshCommit]);
   const unreadableCache = join(checkout, ".runtime/finder-unreadable");
   mkdirSync(unreadableCache, { recursive: true });
   writeFileSync(

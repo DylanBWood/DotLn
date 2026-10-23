@@ -32,7 +32,10 @@ const env = {
   ...process.env,
   CODEX_THREAD_ID: "",
   COPILOT_AGENT_SESSION_ID: "",
+  COPILOT_PROJECT_DIR: "",
   CLAUDE_EFFORT: "",
+  CLAUDE_CODE_SESSION_ID: "",
+  CLAUDE_SESSION_ID: "",
   DOTLN_LAUNCHPAD: "",
   DOTLN_BEACON_KEY_FILE: "",
   DOTLN_ENTROPY_FIXTURE: "1",
@@ -216,7 +219,7 @@ const verifyFirstOrder = (root, resume) => {
   );
 };
 
-test("planning and release-close reads run in a fresh exported instance", () => {
+test("planning and release-close reads run in a fresh exported instance", async (t) => {
   const scratch = realpathSync(
     mkdtempSync(join(tmpdir(), "dotln-planning-kit-")),
   );
@@ -290,6 +293,88 @@ test("planning and release-close reads run in a fresh exported instance", () => 
         "--loglevel=error",
       ]),
       "offline install",
+    );
+    await t.test(
+      "instance Preflight refuses a core-only suite that the same core order admits",
+      () => {
+        const orderPath = "docs/work-orders/WO-901-preflight-fixture.md";
+        const order =
+          "# WO-901 — Preflight fixture (version assigned at activation)\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n\n**Preflight:** `npm test -- --only harness-fixtures`.\n\n**Objective:** Resolve this checkout's suite.\n";
+        const pages = [
+          "docs/work-orders/README.md",
+          "docs/work-orders/HISTORY.md",
+          "docs/planning/sequence.md",
+        ];
+        const previous = new Map(
+          pages.map((name) => [
+            name,
+            existsSync(join(kit, name)) ? readFileSync(join(kit, name)) : null,
+          ]),
+        );
+        try {
+          write(source, orderPath, order);
+          write(
+            source,
+            "docs/planning/sequence.md",
+            "# Sequence\n\n<!-- dotln-work-order-sequence:start -->\n- WO-901 — Preflight fixture\n<!-- dotln-work-order-sequence:end -->\n",
+          );
+          ok(
+            run(source, process.execPath, ["scripts/work-orders.mjs", "index"]),
+            "core Preflight index",
+          );
+          ok(
+            run(source, process.execPath, [
+              "scripts/work-orders.mjs",
+              "index",
+              "--check",
+            ]),
+            "core Preflight check",
+          );
+          write(kit, orderPath, order);
+          write(
+            kit,
+            "docs/planning/sequence.md",
+            "# Sequence\n\n<!-- dotln-work-order-sequence:start -->\n- WO-001 — First fixture order\n\n- WO-901 — Preflight fixture\n<!-- dotln-work-order-sequence:end -->\n",
+          );
+          ok(
+            run(kit, process.execPath, ["scripts/work-orders.mjs", "index"]),
+            "instance Preflight index",
+          );
+          const refused = run(kit, process.execPath, [
+            "scripts/work-orders.mjs",
+            "index",
+            "--check",
+          ]);
+          assert.notEqual(refused.status, 0);
+          assert.match(
+            refused.stderr,
+            /WO-901: Preflight suite harness-fixtures.*not declared/u,
+          );
+          const listed = ok(
+            run(kit, process.execPath, [
+              "scripts/test-runner.mjs",
+              "--list",
+              "--review",
+            ]),
+            "instance review list",
+          );
+          assert.match(listed.stdout, /^work-orders-fixtures — protects:/mu);
+          assert.doesNotMatch(listed.stdout, /^harness-fixtures — protects:/mu);
+        } finally {
+          rmSync(join(source, "docs/work-orders"), {
+            recursive: true,
+            force: true,
+          });
+          rmSync(join(source, "docs/planning"), {
+            recursive: true,
+            force: true,
+          });
+          rmSync(join(kit, orderPath), { force: true });
+          for (const [name, bytes] of previous)
+            if (bytes) writeFileSync(join(kit, name), bytes);
+            else rmSync(join(kit, name), { force: true });
+        }
+      },
     );
     const observe = (args, note = "") => {
       const started = Date.now();
@@ -388,6 +473,183 @@ test("planning and release-close reads run in a fresh exported instance", () => 
       "--apply",
       "docs/control/local/batch.json",
     ]);
+    await t.test(
+      "followups apply accepts only the current session's granted scratch roots",
+      () => {
+        const session = `planning-fixture-${createHash("sha256").update(scratch).digest("hex").slice(0, 16)}`;
+        const key = (id) => createHash("sha256").update(id).digest("hex");
+        const sessionFile = (id) =>
+          `docs/control/local/harness/${key(id)}.json`;
+        const request = () => {
+          const current = parse(
+            ok(
+              run(kit, "npm", [
+                "run",
+                "--silent",
+                "plan",
+                "--",
+                "followups",
+                "--all",
+              ]),
+              "scratch request revision",
+            ),
+          );
+          return {
+            expectedRevision: current.revision,
+            id: feed.rows[0].id,
+            sourceRevision: feed.rows[0].sourceRevision,
+            status: "declined",
+            reason:
+              "Synthetic request from the current session's granted scratchpad.",
+            reopenWhen: "The fixture changes.",
+            targets: [],
+          };
+        };
+        const apply = (file, environment = env) =>
+          run(
+            kit,
+            "npm",
+            ["run", "--silent", "plan", "--", "followups", "--apply", file],
+            environment,
+          );
+        const scratchResult = ok(
+          run(kit, process.execPath, [
+            "--input-type=module",
+            "-e",
+            "import {harnessSessionScratch} from './packages/skeleton/dist/src/harness-host.js'; console.log(harnessSessionScratch(process.argv[1]));",
+            session,
+          ]),
+          "session scratch path",
+        );
+        const sessionScratch = scratchResult.stdout.trim();
+        const scratchRequest = join(sessionScratch, "request.json");
+        const codexEnv = { ...env, CODEX_THREAD_ID: session };
+        const hostSession = `${session}-claude`;
+        const project = resolve(kit).replace(/[^a-zA-Z0-9]/gu, "-");
+        const claudeConfig = join(scratch, "claude-config");
+        const transcript = join(
+          claudeConfig,
+          "projects",
+          project,
+          `${hostSession}.jsonl`,
+        );
+        const hostPath = ok(
+          run(kit, process.execPath, [
+            "--input-type=module",
+            "-e",
+            "import {claudeHostScratchpad} from './packages/skeleton/dist/src/harness-host.js'; console.log(claudeHostScratchpad({cwd:process.cwd(),session_id:process.argv[1],transcript_path:process.argv[2]}));",
+            hostSession,
+            transcript,
+          ]),
+          "host scratchpad path",
+        ).stdout.trim();
+        const hostRequest = join(hostPath, "request.json");
+        try {
+          write(kit, sessionFile(session), {
+            role: "planner",
+            startedAt: "2030-01-02T00:00:00Z",
+          });
+          mkdirSync(sessionScratch, { recursive: true, mode: 0o700 });
+          writeFileSync(scratchRequest, JSON.stringify(request()));
+          for (const environment of [
+            env,
+            { ...env, CODEX_THREAD_ID: `${session}-other` },
+          ]) {
+            const refused = apply(scratchRequest, environment);
+            assert.notEqual(refused.status, 0);
+            assert.match(
+              refused.stderr,
+              /use docs\/control\/local\/followup-request.json/u,
+            );
+          }
+          ok(apply(scratchRequest, codexEnv), "current session scratch apply");
+          write(
+            kit,
+            `docs/control/local/harness/${key(session)}.correction.json`,
+            { allowedEffects: [] },
+          );
+          writeFileSync(scratchRequest, JSON.stringify(request()));
+          assert.notEqual(
+            apply(scratchRequest, codexEnv).status,
+            0,
+            "a correction withholds the scratch grant",
+          );
+          rmSync(
+            join(
+              kit,
+              `docs/control/local/harness/${key(session)}.correction.json`,
+            ),
+          );
+          const outside = join(scratch, "not-session-request.json");
+          writeFileSync(outside, JSON.stringify(request()));
+          assert.notEqual(
+            apply(outside, codexEnv).status,
+            0,
+            "the system temp grant alone does not admit a request",
+          );
+          symlinkSync(outside, join(sessionScratch, "linked.json"));
+          assert.notEqual(
+            apply(join(sessionScratch, "linked.json"), codexEnv).status,
+            0,
+            "a link does not become a scratch request",
+          );
+          write(kit, sessionFile(hostSession), {
+            role: "planner",
+            startedAt: "2030-01-02T00:00:00Z",
+          });
+          mkdirSync(dirname(transcript), { recursive: true });
+          writeFileSync(
+            transcript,
+            JSON.stringify({ sessionId: hostSession, cwd: kit }) + "\n",
+          );
+          mkdirSync(hostPath, { recursive: true, mode: 0o700 });
+          writeFileSync(hostRequest, JSON.stringify(request()));
+          ok(
+            apply(hostRequest, {
+              ...env,
+              CLAUDE_CODE_SESSION_ID: hostSession,
+              CLAUDE_CONFIG_DIR: claudeConfig,
+              CODEX_HOME: join(scratch, "no-codex-sessions"),
+            }),
+            "current host scratchpad apply",
+          );
+        } finally {
+          rmSync(dirname(sessionScratch), { recursive: true, force: true });
+          rmSync(dirname(hostPath), { recursive: true, force: true });
+          for (const id of [session, hostSession])
+            rmSync(join(kit, sessionFile(id)), { force: true });
+        }
+      },
+    );
+    await t.test(
+      "instance conditions omit absent core sources before probing and hold only with three baseline samples",
+      () => {
+        const result = nodeObserve([
+          "--input-type=module",
+          "-e",
+          `
+        import assert from "node:assert/strict";
+        import {planningConditions,gatePerformanceConditions,CONDITION_TABLE} from "./scripts/lib/planning-conditions.mjs";
+        const measured=[];
+        const table=[
+          {id:"local",sources:[${JSON.stringify(feed.rows[0].id)}],threshold:10,unit:"s",method:"fixture"},
+          {id:"core",sources:["FUP-core-only-absent"],threshold:10,unit:"s",method:"fixture"}
+        ];
+        const result=await planningConditions(process.cwd(),{table,measure:async(_root,row)=>{measured.push(row.id);return {value:1};}});
+        assert.deepEqual(measured,["local"]);
+        assert.deepEqual(result.rows.map(row=>row.id),["local"]);
+        const full=await planningConditions(process.cwd(),{measure:async()=>({value:1})});
+        assert.ok(!full.rows.some(row=>CONDITION_TABLE.some(core=>core.id===row.id)));
+        assert.ok(!full.rows.some(row=>row.unavailable?.includes("core condition sources absent")));
+        const checks=Array.from({length:4},(_,i)=>({checkId:"npm test",executed:true,exitCode:0,gateSelection:"plain",executionMode:"fresh",durationMs:1000,recordedAt:\`2030-01-0\${i+1}T00:00:00Z\`,evidenceRef:\`fixture:\${i}\`,taskTimeline:[{name:"fixture-task",executed:true,exitCode:0,durationMs:i===3?5000:1000}]}));
+        for(const count of [2,3]) assert.equal(gatePerformanceConditions(checks.slice(0,count),"2030-01-05T00:00:00Z").find(row=>row.id==="gate-task:fixture-task").holds,null);
+        assert.equal(gatePerformanceConditions(checks,"2030-01-05T00:00:00Z").find(row=>row.id==="gate-task:fixture-task").holds,true);
+        console.log("instance condition sources and sample minimum passed");
+      `,
+        ]);
+        ok(result, "instance condition sources");
+      },
+    );
     const conditions = observe(["plan", "--", "conditions"]);
     observe(["plan", "--", "failures"]);
     observe(["meta"]);
@@ -563,7 +825,8 @@ test("planning and release-close reads run in a fresh exported instance", () => 
         costs.stdout,
         /Planning cost input unavailable: docs\/product\/00-vision.md/u,
       );
-      assert.match(conditions.stdout, /collect-sources.*console/u);
+      assert.doesNotMatch(conditions.stdout, /core condition sources absent/u);
+      assert.doesNotMatch(conditions.stdout, /collect-sources.*console/u);
       assert.equal(parse(receipt)?.verdict, "aligned");
       for (const result of [receipt, entropyReceipt]) {
         const receiptPath = parse(result)?.receipt;

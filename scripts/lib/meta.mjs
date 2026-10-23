@@ -30,6 +30,7 @@ import {
   formatTargetRecord,
 } from "./target-record-reader.mjs";
 import { completedPhaseAttempts, orderJudgments } from "./control-time.mjs";
+import { projectActor } from "./control-actor.mjs";
 import { readGateChecks } from "./gate-evidence.mjs";
 import {
   readBudgets,
@@ -1065,36 +1066,124 @@ export function orderSnapshot(meta, workOrder, source) {
     ],
   };
 }
-/** Writes the order's snapshot only from a checkout holding its journals,
- * while the order is open: after the close the meter reads no journal of it. */
+/** Open orders snapshot their journals. A later explicit meta --write from a
+ * linked checkout refreshes only retained usage after close; it preserves the
+ * earlier metrics/cutoff and writes nothing in the registered main checkout. */
 export function writeOrderSnapshot(root, meta, workOrder) {
   const path = docRelative(root, "evidence", `${workOrder}/meta.json`);
-  const phase = meta.orders.find((row) => row.workOrder === workOrder)?.phase;
-  if (!phase || ["closed", "withdrawn"].includes(phase))
+  const phase =
+    meta.orders.find((row) => row.workOrder === workOrder)?.phase ??
+    readControl(root).orders.get(workOrder)?.state.phase;
+  let snapshot;
+  if (["closed", "withdrawn"].includes(phase)) {
+    const retainedRoot = observationRoots(root).find(
+      (source) => realpathSync(source) !== realpathSync(root),
+    );
+    if (!retainedRoot)
+      return {
+        path,
+        written: false,
+        reason: `${workOrder} is ${phase}; refresh retained usage from a linked worktree with registered main using npm run meta -- --write ${path}`,
+      };
+    let prior;
+    try {
+      if (
+        existsSync(join(root, path)) &&
+        !containedRegularFile(join(root, path), root)
+      )
+        throw new Error("not a contained regular snapshot");
+      prior = json(root, path);
+      if (
+        prior &&
+        (!Array.isArray(prior.orders) ||
+          !prior.orders.some((order) => order.workOrder === workOrder) ||
+          (prior.usageCopies !== undefined &&
+            !Array.isArray(prior.usageCopies)))
+      )
+        throw new Error("snapshot does not describe this order");
+    } catch {
+      return {
+        path,
+        written: false,
+        reason: `preserve unreadable meter snapshot ${path}; repair it before refreshing retained usage`,
+      };
+    }
+    const copies = retainedUsageCopies(retainedRoot, workOrder);
+    const missing = (prior?.usageCopies ?? []).find(
+      (held) => !copies.some((copy) => copy.path === held.path),
+    );
+    if (missing)
+      return {
+        path,
+        written: false,
+        reason: `previously carried usage copy ${missing.path} is missing; preserve ${path} and recover the copy before refreshing`,
+      };
+    let currentUsage;
+    try {
+      currentUsage = jsonl(
+        retainedRoot,
+        docRelative(retainedRoot, "control", "local/process/usage.jsonl"),
+      ).filter((row) => row?.workOrder === workOrder);
+      if (currentUsage.some((row) => !row.observation))
+        throw new Error("invalid usage observation");
+    } catch {
+      return {
+        path,
+        written: false,
+        reason: `registered main usage observations are unreadable; preserve ${path} and repair the local usage lane before refreshing`,
+      };
+    }
+    snapshot = recoveredUsageSnapshot(
+      retainedRoot,
+      workOrder,
+      prior,
+      meta.observedAt,
+      path,
+      currentUsage,
+    );
+    if (!snapshot)
+      return {
+        path,
+        written: false,
+        reason: `registered main has no retained usage copy of ${workOrder}; preserve ${path}`,
+      };
+  } else if (!phase) {
     return {
       path,
       written: false,
-      reason: phase
-        ? `${workOrder} is ${phase}; its committed snapshot is its record`
-        : `${workOrder} is not a row of this meter`,
+      reason: `${workOrder} is not a row of this meter`,
     };
+  }
   const roots = observationRoots(root);
-  const journals = new Set(
-    hookObservations(root, workOrder, roots).map((row) => row.journal),
-  ).size;
-  if (!journals)
+  const journals = snapshot
+    ? 0
+    : new Set(
+        hookObservations(root, workOrder, roots).map((row) => row.journal),
+      ).size;
+  if (!snapshot && !journals)
     return {
       path,
       written: false,
       reason: `this checkout holds no session journal of ${workOrder}`,
     };
-  const text = snapshotText(
-    orderSnapshot(
+  if (!snapshot) {
+    snapshot = orderSnapshot(
       meta,
       workOrder,
       `${roots.length > 1 ? "the order's checkout and its registered main checkout" : "the order's checkout"}: ${journals} session journal${journals === 1 ? "" : "s"}, their available usage observations, current-checkout gate rows and canonical control fold`,
-    ),
-  );
+    );
+    const copies = retainedUsageCopies(root, workOrder);
+    if (copies.length)
+      Object.assign(
+        snapshot,
+        usageCopyProofs(
+          copies,
+          workOrder,
+          meta.orders.find((order) => order.workOrder === workOrder).usage,
+        ),
+      );
+  }
+  const text = snapshotText(snapshot);
   const size = Buffer.byteLength(text);
   if (size > SNAPSHOT_BYTES)
     return {
@@ -1111,7 +1200,40 @@ export function writeOrderSnapshot(root, meta, workOrder) {
   }
   return { path, written: current !== text, bytes: size };
 }
-/** One-time recovery (WO-170): usage totals by role from the retained copies
+// A normal snapshot may claim only copies represented in its selected usage
+// rows. Recovery deliberately folds all readable retained rows together. Mixed
+// or torn copies keep their lane even when some of their rows can be counted.
+function usageCopyProofs(copies, workOrder, selected) {
+  const normalize = ({ retained, ...row }) => JSON.stringify(row);
+  const selectedRows = selected && new Set(selected.map(normalize));
+  const carries = (copy) =>
+    !copy.unreadable &&
+    copy.rows.every((row) => row.workOrder === workOrder) &&
+    (!selectedRows ||
+      latestUsage(copy.rows, workOrder).every((row) =>
+        selectedRows.has(normalize(row)),
+      ));
+  const count = (copy) => copy.rows.length + copy.unreadable;
+  const usageCopies = copies.filter(carries).map((copy) => ({
+    path: copy.path,
+    sha256: createHash("sha256").update(copy.bytes).digest("hex"),
+    rows: count(copy),
+  }));
+  const uncarriedCopies = copies
+    .filter((copy) => !carries(copy))
+    .map((copy) => ({
+      path: copy.path,
+      rows: count(copy),
+      carriedRows: copy.rows.filter((row) => row.workOrder === workOrder)
+        .length,
+    }));
+  return {
+    usageCopies,
+    ...(uncarriedCopies.length ? { uncarriedCopies } : {}),
+  };
+}
+
+/** Recovery and explicit later refresh: usage totals by role from the retained copies
  * in `retainedRoot` (the main checkout), with each copy's SHA-256 so that the
  * prune can release the lane. An existing snapshot keeps its own row. */
 export function recoveredUsageSnapshot(
@@ -1120,32 +1242,26 @@ export function recoveredUsageSnapshot(
   prior,
   now,
   priorPath = "the whole-meter snapshot",
+  additionalUsage = [],
 ) {
   const copies = retainedUsageCopies(retainedRoot, workOrder);
   if (!copies.length) return null;
-  const rows = retainedUsage(copies, workOrder);
+  const rows = latestUsage(
+    [...copies.flatMap((copy) => copy.rows), ...additionalUsage],
+    workOrder,
+  );
   // The prune releases a lane whose every copy is named here (WO-171), so a
   // copy holding a row this snapshot does not carry (another order's, or one
   // it cannot read) is listed without its digest and keeps its lane.
-  const carries = (copy) =>
-    !copy.unreadable && copy.rows.every((row) => row.workOrder === workOrder);
-  const count = (copy) => copy.rows.length + copy.unreadable;
-  const usageCopies = copies.filter(carries).map((copy) => ({
-    path: copy.path,
-    sha256: createHash("sha256").update(copy.bytes).digest("hex"),
-    rows: count(copy),
-  }));
-  const uncarried = copies
-    .filter((copy) => !carries(copy))
-    .map((copy) => ({
-      path: copy.path,
-      rows: count(copy),
-      carriedRows: copy.rows.filter((row) => row.workOrder === workOrder)
-        .length,
-    }));
+  const { usageCopies, uncarriedCopies: uncarried = [] } = usageCopyProofs(
+    copies,
+    workOrder,
+  );
   const recovered = {
     observedAt: now,
-    source: "retained usage copies in the main checkout's lane",
+    source: additionalUsage.length
+      ? "retained usage copies and this order's current main-checkout usage observations"
+      : "retained usage copies in the main checkout's lane",
   };
   const kept = prior?.orders?.find((row) => row.workOrder === workOrder);
   const usageByRole = usageTotals(rows);
@@ -1155,13 +1271,17 @@ export function recoveredUsageSnapshot(
       kind: "order-meter-snapshot",
       observedAt: prior.observedAt,
       revision: prior.revision ?? null,
-      source: `the order's row of ${priorPath} observed at ${prior.observedAt}`,
+      source:
+        prior.kind === "order-meter-snapshot" && prior.source
+          ? prior.source
+          : `the order's row of ${priorPath} observed at ${prior.observedAt}`,
       orders: [
         {
           workOrder,
           phase: kept.phase,
           metrics: kept.metrics,
           ...(kept.corrections ? { corrections: kept.corrections } : {}),
+          ...(kept.directions ? { directions: kept.directions } : {}),
           usageByRole,
           dispatches: observedDispatches(kept.dispatches ?? []),
           declared: kept.declared ?? null,
@@ -1515,9 +1635,14 @@ export async function collectMeta(
   const orders = selected.map(([workOrder, row]) => {
     const events = eventsForOrder(control, workOrder);
     const { firstVerification, ...judged } = judgments(workOrder, events);
-    const phases = [...completedPhaseAttempts(events)].map((attempt) => ({
+    const phases = [
+      ...completedPhaseAttempts(
+        eventsForOrder(control, workOrder, { correctedActors: true }),
+      ),
+    ].map((attempt) => ({
       phase: attempt.phase,
       role: roleForPhase[attempt.phase],
+      actor: projectActor(attempt.actor),
       elapsedMs: attempt.elapsedMs === "unknown" ? null : attempt.elapsedMs,
     }));
     const snapshotPath = ["meta.json", "meta-baseline.json"]

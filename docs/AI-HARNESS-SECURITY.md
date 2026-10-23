@@ -58,7 +58,8 @@ not a fresh enforcement probe. The WO-136 experiment remains inconclusive.
 host sandbox in Claude Code, Codex or Copilot. This standing choice is now
 recorded in the [ADR-0003 amendment](decisions/0003-personal-ai-harness-security.md#amendments).
 DotLn's five refusals plus the host permission mode are the boundary, with
-Codex carrying the duties as role text. The host-confinement detector creates
+Codex lifecycle dispatch reserving the writer and refusing a foreign holder;
+its remaining duties and grants are role text because tool calls are unhooked. The host-confinement detector creates
 no confinement and reports `inForce: false` in WO-161's executor session.
 DotLn's discovery `sandbox-exec` and the `--sandbox workspace-write` argument
 for spawned Codex workers remain separate, purpose-specific mechanisms.
@@ -275,6 +276,15 @@ host-registry-admitted authority grants and the effective envelope, with
 sources in the manifest. It resolves symlinks; unlinking judges the removed
 entry. It is not confinement of an arbitrary program's effects.
 
+The live-gate read list admits quoted `<` or `>` inside a word, listed Git
+revision suffixes, literal input redirection and output redirection to exactly
+`/dev/null`; descriptor duplication such as `2>&1` opens no file. A listed Git
+read carries `--no-pager` (or `-P`) and requires no configured fsmonitor,
+external diff or textconv driver, clean/smudge/process filter, signature
+program or `post-index-change` hook. It names no output file, `%G` signature
+placeholder or external-program option. Other redirects are judged by the
+destination adapter; an unlisted pipeline stage is refused.
+
 What the fifth refusal judges, after the FINAL-001 repair:
 
 - Recognized write tools, by their path.
@@ -286,6 +296,13 @@ What the fifth refusal judges, after the FINAL-001 repair:
   runtime and resolves relative destinations against the session's directory;
   a row judged away from the worktree root carries `workingDirectory: moved`,
   and journal rows and advisory markers stay in the hook's own project.
+
+A command word after an `&>` or `&>>` redirect operand makes the invocation
+opaque; an operand followed only by redirects retains its literal destination.
+An unquoted zsh `=` word expands at the start of a word (including after empty
+quotes) or after `=` or `:`, when another character follows. A lone, quoted or
+escaped `=` stays literal. These opaque forms refuse during a live gate and
+delegate to host permissions elsewhere.
 
 What it does not judge, all left to host permissions:
 
@@ -304,7 +321,9 @@ hook now journals that row; whether they should judge there is boarded in
 Literal shell redirects to the `/dev/null` character device are discards,
 not outside file mutations. This grants no other device path or removal.
 Use the DotLn scratch path printed at Claude role dispatch or returned by
-`node scripts/harness.mjs scratch` in Codex. Native scratch and `/tmp` require
+`node scripts/harness.mjs scratch` in Codex; it creates the session directory
+before printing it. All six default roles also carry the host-printed
+scratchpad grant. Native scratch and `/tmp` require
 a separate grant when outside the host's `os.tmpdir()` root. The permission
 hook records one judgment per destination; the other pre-tool hooks still
 enforce the same refusal. Historical duplicate rows remain preserved.
@@ -317,7 +336,8 @@ Stop and `harness usage` disclose the count/cap and unknown remainder. This is
 not a total creation cap: silent agents, unobserved paths and unresolved
 overlap remain open ([WO-139 evidence](evidence/WO-139/README.md)).
 All six default contributor roles grant the host `os.tmpdir()` root and DotLn
-session scratch below `<system-temp>/dotln/<session-key>/scratch`; no role
+session scratch below `<system-temp>/dotln/<session-key>/scratch` and the
+host-printed scratchpad; no role
 grants arbitrary home folders or main intake by default. Main's ignored intake
 and an operator-named absolute root are available declaration kinds, requiring
 explicit admitted authority. Missing active roles grant nothing. An opaque
@@ -338,8 +358,9 @@ observer cannot turn a completed read into a refused operation. This delegation
 grants no new network, filesystem, credential or publication authority. Any
 configured host denials for publication, SSH/SCP/SFTP and credential access
 remain in force; DotLn role text does not establish those host restrictions.
-Claude applies the generated hooks; Codex receives the same invariants and
-commands as role text without claiming automatic hook enforcement. Copilot
+Claude applies the generated hooks. Codex lifecycle dispatch reserves the
+writer and refuses a foreign holder; its remaining invariants, grants and
+commands are role text because tool calls are unhooked. Copilot
 reuses the Claude registration; its narrower, dated observations are below.
 
 Harness, version, model, effort and source are recorded as supplied. `unknown`

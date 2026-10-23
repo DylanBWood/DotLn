@@ -3,12 +3,20 @@ import { join } from "node:path";
 import { nextAdjacentItem, readAdjacentQueue } from "./adjacent-queue.mjs";
 
 /** Project installed equipment, never infer chat delivery or defect recognition. */
-export function executorEntryBriefing(root, workOrder) {
+export function executorEntryBriefing(
+  root,
+  workOrder,
+  { experiment = false } = {},
+) {
   const path = join(root, ".claude/harness-manifest.json");
   const ids = existsSync(path)
     ? (JSON.parse(readFileSync(path, "utf8")).origin?.ids ?? [])
     : [];
   const lines = [];
+  if (experiment && ids.includes("tinkerer-economy"))
+    lines.push(
+      "Tinkerer — Economy is equipped for this declared experiment: run the bounded comparison and record both arms and their measured cost.",
+    );
   if (ids.includes("adjacent-repair"))
     lines.push(
       "Adjacent Repair is equipped: diagnose encountered defects and prefer bounded repairs within the current authority; do not wait for the operator to name this support.",

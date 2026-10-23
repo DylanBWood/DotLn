@@ -615,7 +615,9 @@ branches to `docs/` and root Markdown, and bound observable subagent admissions
 by `docs/control/budgets.json` `subagentCap` (default 20; `null` disables).
 Descendants count at their first attributable tool call; unresolved direct/child
 overlap is a reported minimum and unobserved agents remain unknown. Claude hooks
-enforce these observed boundaries; Codex carries the same duties as role text. Unclassified
+enforce these observed boundaries. Under Codex, a lifecycle dispatch reserves
+the writer and refuses a foreign holder; the remaining duties and grants are
+role text because tool calls are unhooked. Unclassified
 commands/tools, unavailable adapters, outside-root reads, attribution pre-checks
 and observer failures are advisory and defer to host permissions. The generic
 feedback evaluator and historical unit definitions retain their typed contracts;

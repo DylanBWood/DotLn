@@ -1,4 +1,4 @@
-import { spawnGit, runGit } from "./git.mjs";
+import { spawnGit, runGit, shellQuote } from "./git.mjs";
 import { createHash } from "node:crypto";
 import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -176,6 +176,7 @@ export function pushObservedCommit(
   {
     sourceRef = `refs/heads/${branch}`,
     lease,
+    leases = [],
     allowAbsent = false,
     pullRequest,
   } = {},
@@ -205,13 +206,15 @@ export function pushObservedCommit(
         ]).split(/\s+/u)[0] || null;
       if (
         remote !== lease &&
+        !leases.includes(remote) &&
         remote !== commit &&
         !(allowAbsent && remote === null)
       )
         throw publishRefusal(
-          `remote draft branch ${destination}${pullRequest ? ` for pull request #${pullRequest}` : ""} moved from the recorded head ${lease} to ${remote ?? "absent"}; preserve the remote change, integrate and review it, then explicitly rebind publication before retrying`,
+          `remote draft branch ${destination}${pullRequest ? ` for pull request #${pullRequest}` : ""} moved from the recorded head ${lease} to ${remote ?? "absent"}; ${remote ? `preserve it with git -C ${shellQuote(repo)} fetch --no-tags origin ${shellQuote(`refs/heads/${destination}:refs/dotln/preserved-draft/${destination}/${remote}`)}, inspect that retained ref, then restore the recorded head with ` : "recreate the absent recorded branch with "}git -C ${shellQuote(repo)} push ${remote ? `--force-with-lease=${shellQuote(`refs/heads/${destination}:${remote}`)} ` : ""}origin ${shellQuote(`${lease}:refs/heads/${destination}`)} and rerun the publication command`,
         );
       if (remote === commit) return;
+      if (remote !== null && leases.includes(remote)) lease = remote;
       if (remote === null && allowAbsent) lease = "";
     }
     // A reuse of a draft branch moves it only from the recorded draft head;

@@ -1,11 +1,27 @@
 import { readFileSync } from "node:fs";
 import { runGit } from "./git.mjs";
 import { workOrderAuthorityPath } from "./paths.mjs";
-import { loadConfig } from "./config.mjs";
+import { CONFIG_FILENAME, findLaunchpad, loadConfig } from "./config.mjs";
 import { localReleaseTags, semver } from "./release-tags.mjs";
 
-export const historicalDependencyIds = (root) =>
+export const historicalDependencyIds = (root = findLaunchpad()) =>
   new Set(loadConfig(root).historicalWorkOrders);
+// Historical judgments read the declaration at their own revision. Its absence
+// means an empty set; later configuration must not reinterpret an old receipt.
+export const historicalDependencyIdsAt = (reader) => {
+  if (!reader.paths.includes(CONFIG_FILENAME)) return new Set();
+  const declared = JSON.parse(reader.read(CONFIG_FILENAME));
+  const ids = declared.historicalWorkOrders ?? [];
+  if (
+    !Array.isArray(ids) ||
+    ids.some((id) => !/^WO-\d{3}$/u.test(id)) ||
+    new Set(ids).size !== ids.length
+  )
+    throw new Error(
+      `${CONFIG_FILENAME}: historicalWorkOrders must be a list of distinct WO-NNN identifiers`,
+    );
+  return new Set(ids);
+};
 const startMarker = "<!-- dotln-dependencies:start -->";
 const endMarker = "<!-- dotln-dependencies:end -->";
 const idPattern = /^WO-\d{3}$/;
@@ -66,7 +82,12 @@ export function umbrellaSuccessors(markdown, dependencies) {
 export const umbrellaRecord = (markdown, path, workOrderId) =>
   umbrellaSuccessors(markdown, parseDependencies(markdown, path, workOrderId));
 
-export function parseDependencies(markdown, path, workOrderId) {
+export function parseDependencies(
+  markdown,
+  path,
+  workOrderId,
+  historical = historicalDependencyIds(),
+) {
   workOrderId ??= /(?:^|\/)(WO-\d{3})-/.exec(path)?.[1];
   const { lines, first, end } = dependencyHeader(markdown);
   const positions = (marker) =>
@@ -134,6 +155,11 @@ export function parseDependencies(markdown, path, workOrderId) {
       refuse("require a workOrderId WO-NNN", entry);
     if (!Object.hasOwn(fields, relation)) refuse("unknown relation", entry);
     if (!oneLine(reason)) refuse("require a one-line reason", entry);
+    if (
+      historical.has(id) &&
+      ["hard", "satisfied-by-release", "satisfied-by-close"].includes(relation)
+    )
+      refuse("historical id cannot be a hard or satisfied dependency", entry);
     if (id === workOrderId) refuse("self-reference", entry);
     if (seen.has(id)) refuse(`duplicate id ${id}`, entry);
     seen.add(id);
@@ -249,18 +275,8 @@ export function readDependencies(
     readFileSync(path, "utf8"),
     state.workOrderPath,
     state.workOrderId,
+    historicalDependencyIds(root),
   );
-  const historical = historicalDependencyIds(root);
-  for (const entry of order.entries)
-    if (
-      historical.has(entry.workOrderId) &&
-      ["hard", "satisfied-by-release", "satisfied-by-close"].includes(
-        entry.relation,
-      )
-    )
-      throw new Error(
-        `${state.workOrderPath}: historical id cannot be a hard or satisfied dependency; offending entry ${JSON.stringify(entry)}`,
-      );
   return projectDependencies(
     order,
     closedDependencySet(control),

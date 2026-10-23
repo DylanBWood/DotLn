@@ -18,12 +18,11 @@ export const baselineRelative = (root) =>
   docRelative(root, "control", "comment-baseline.json");
 const normalized = (text) => text.replace(/\s+/gu, " ").trim();
 const ORDER_LEAD = /^\(?WO-\d{3}\b/u;
-// A report's finding label after its report name, with or without a letter
-// before its number, or a bare letter-and-number label in the letters the
-// reports use.
+// A report-local finding needs its report name or finding/review context.
+// Hardware, key, paper and storage names that share a short token remain prose.
 const FINDING_LABEL =
-  /\b(?:VER|FINAL)-\d{3}(?:[\s,/-]+(?:finding\s+)?|-)(?:[A-Z]{1,2})?\d{1,2}\b|(?<![\w./-])[FNRBAM]\d{1,2}\b|\bfinding\s+\d{1,2}\s+(?:of|in|from)\s+(?:VER|FINAL)-\d{3}\b/u;
-const DECISION_NUMBER = /(?<!WO-\d{3}[\s-])(?<![\w/-])D\d{3}\b/gu;
+  /\b(?:VER|FINAL)-\d{3}(?:[\s,/-]+(?:finding\s+)?|-)(?:[A-Z]{1,2})?\d{1,2}\b|\b(?:[Ff]indings?\s+|(?:[Ff]ix(?:es|ed)?|[Aa]ddress(?:es|ed)?|[Rr]esolv(?:es|ed))\s+)[FNRBAM]\d{1,2}\b|(?<![\w./-])[FNRBAM]\d{1,2}(?=\s+(?:from|in|of)\s+(?:the\s+)?(?:review|report)\b)|\bfinding\s+\d{1,2}\s+(?:of|in|from)\s+(?:VER|FINAL)-\d{3}\b/u;
+const DECISION_NUMBER = /(?<!WO-\d{3}[\s-])(?<![\w/#-])D\d{3}\b/gu;
 const CODE = /\.(?:[cm]?js|[cm]?ts|tsx|jsx|sh)$/u;
 const SHELL = /\.sh$/u;
 const inside = (root, path) =>

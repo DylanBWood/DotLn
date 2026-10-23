@@ -10,7 +10,14 @@ import {
   rmdirSync,
   writeFileSync,
 } from "node:fs";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
+import { tmpdir } from "node:os";
+import { containedRegularFile } from "./paths.mjs";
+import {
+  recordingSession,
+  sessionHarness,
+  sessionJournalKey,
+} from "./off-ramps.mjs";
 import { createHash } from "node:crypto";
 
 import { readDecisions } from "./meta.mjs";
@@ -61,6 +68,91 @@ const anchor = (value) =>
     .toLowerCase()
     .replace(/[^\p{L}\p{N}_\s-]/gu, "")
     .replace(/\s/g, "-");
+
+// A request may also live in the running session's equipped scratch roots.
+// The installed role grants and any active correction decide authority; the
+// shared harness helper judges ownership and symlinks before a file is read.
+export async function readFollowupRequest(root, name, env = process.env) {
+  const path = resolve(root, name);
+  if (containedRegularFile(path, root))
+    return JSON.parse(readFileSync(path, "utf8"));
+  const refusal = `Follow-up request must be a contained regular file in this checkout or the current session's granted scratchpad; use ${docRelative(root, "control", "local/followup-request.json")}.`;
+  try {
+    const key = sessionJournalKey(env);
+    if (!key) throw new Error(refusal);
+    const sessionId = [
+      env.CODEX_THREAD_ID,
+      env.COPILOT_AGENT_SESSION_ID,
+      env.CLAUDE_CODE_SESSION_ID,
+      env.CLAUDE_SESSION_ID,
+    ].find((id) => typeof id === "string" && id.trim());
+    const manifestPath = join(root, ".claude/harness-manifest.json");
+    if (!containedRegularFile(manifestPath, root)) throw new Error(refusal);
+    const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
+    const profile = manifest.profiles.find(
+      (row) => row.profile?.harness === sessionHarness(env),
+    );
+    const role = recordingSession(root, env).role;
+    const grants =
+      profile?.outsideWriteGrants?.find((row) => row.role === role)?.grants ??
+      [];
+    const correctionPath = docRelative(
+      root,
+      "control",
+      `local/harness/${key}.correction.json`,
+    );
+    if (
+      existsSync(join(root, correctionPath)) &&
+      !containedRegularFile(join(root, correctionPath), root)
+    )
+      throw new Error(refusal);
+    const correction = existsSync(join(root, correctionPath))
+      ? JSON.parse(readFileSync(join(root, correctionPath), "utf8"))
+      : null;
+    const { claudeHostScratchpad, grantedSessionRoot, harnessSessionScratch } =
+      await import("../../packages/skeleton/dist/src/harness-host.js");
+    for (const grant of grants) {
+      if (!["session-scratch", "host-scratchpad"].includes(grant.kind))
+        continue;
+      const effect = `outside.write:${grant.kind}`;
+      if (
+        !profile.grants?.some(
+          (authority) =>
+            authority.grantId === grant.authorityGrantId &&
+            authority.effects?.includes(effect),
+        ) ||
+        (correction && !correction.allowedEffects?.includes(effect))
+      )
+        continue;
+      let scratch;
+      if (grant.kind === "session-scratch")
+        scratch = harnessSessionScratch(sessionId);
+      else if (sessionHarness(env) === "claude-code") {
+        const { sessionTranscript } =
+          await import("../../packages/skeleton/src/usage-observation.mjs");
+        scratch = claudeHostScratchpad({
+          cwd: root,
+          session_id: sessionId,
+          transcript_path: sessionTranscript(root, { sessionKey: key, env }),
+        });
+      }
+      if (!scratch) continue;
+      const granted = grantedSessionRoot(
+        scratch,
+        grant.kind === "host-scratchpad" ? "/tmp" : tmpdir(),
+      );
+      if (
+        !granted.cause &&
+        existsSync(granted.physical) &&
+        containedRegularFile(path, granted.physical)
+      )
+        return JSON.parse(readFileSync(path, "utf8"));
+    }
+  } catch {
+    // Unavailable session or grant evidence grants no outside request path.
+  }
+  throw new Error(refusal);
+}
 
 // Public sources only. Refuse links rather than traversing into private intake or
 // outside the checkout. The collector never reads local adjacent-item prose.

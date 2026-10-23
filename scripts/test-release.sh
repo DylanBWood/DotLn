@@ -725,6 +725,10 @@ grep -Fxq 'Retimed WO-099: v0.2.0 → v0.2.1 above the observed release baseline
 # The collision is the order's decision; no product document changes (WO-086).
 grep -Fxq 'Recorded WO-099-D001 in docs/evidence/WO-099/decisions.md.' <<<"$prepared"
 grep -Fq '"superseded target v0.2.0"' "$main/docs/evidence/WO-099/decisions.md"
+if ! grep -Fq 'ancestral local release tags, excluding annotated starter refresh tags' "$main/docs/evidence/WO-099/decisions.md"; then
+  printf 'error: local preparation did not record its ancestral, non-starter tag observation\n' >&2
+  exit 1
+fi
 cmp "$main/docs/product/06-roadmap.md" "$fixture/roadmap-before"
 diff -r "$main/docs/control" "$fixture/control-before"
 git -C "$main" for-each-ref >"$fixture/refs-after"
@@ -1908,6 +1912,39 @@ commit_reviewed_candidate "$main" WO-024 v0.2.1
 git -C "$main" switch main >/dev/null 2>&1
 git -C "$main" merge --no-ff fixture-reviewed -m 'WO-024 merged reviewed fixture' >/dev/null
 git -C "$main" push origin main >/dev/null 2>&1
+cp "$main/docs/final-reviews/WO-024/RELEASE-NOTES.md" "$fixture/edition-reviewed-notes.md"
+"$node_bin" - "$fixture/edition-reviewed-notes.md" <<'NODE'
+const fs = require("node:fs");
+const file = process.argv[2];
+fs.writeFileSync(file, fs.readFileSync(file, "utf8").replace(
+  "- Reviewer compatibility line.",
+  "- Reviewer compatibility line.\n- Outer [a [b]() d](../../evidence/WO-024/decisions.md).",
+));
+NODE
+for malformed in quoted-definition; do
+  "$node_bin" - "$fixture/edition-reviewed-notes.md" "$main/docs/final-reviews/WO-024/RELEASE-NOTES.md" "$malformed" <<'NODE'
+const fs = require("node:fs");
+const [saved, target] = process.argv.slice(2);
+const replacement = "- The fix is described in [the record][r].\n\n> [r]: ../../evidence/WO-024/decisions.md";
+fs.writeFileSync(target, fs.readFileSync(saved, "utf8").replace("- Reviewer evidence line.", replacement));
+NODE
+  git -C "$main" add docs/final-reviews/WO-024/RELEASE-NOTES.md
+  git -C "$main" -c maintenance.auto=false commit -qm "test: malformed $malformed release notes"
+  git -C "$main" push origin main >/dev/null 2>&1
+  if malformed_edition_output="$(release_close WO-024 --publish 2>&1)"; then
+    printf 'error: Release accepted %s relative link after rewriting\n' "$malformed" >&2; exit 1
+  fi
+  grep -Fq 'docs/final-reviews/WO-024/RELEASE-NOTES.md # Evidence and compatibility' <<<"$malformed_edition_output"
+  grep -Fq 'relative link remains after rewrite' <<<"$malformed_edition_output"
+  assert_no_candidate_tag "$main" "$origin"
+  if test -f "$gh_log" && grep -q '^release create ' "$gh_log"; then
+    printf 'error: relative-link refusal followed a Release creation\n' >&2; exit 1
+  fi
+  cp "$fixture/edition-reviewed-notes.md" "$main/docs/final-reviews/WO-024/RELEASE-NOTES.md"
+  git -C "$main" add docs/final-reviews/WO-024/RELEASE-NOTES.md
+  git -C "$main" -c maintenance.auto=false commit -qm 'test: restore reviewed release notes'
+  git -C "$main" push origin main >/dev/null 2>&1
+done
 edition_publish_output="$(GH_REPO=wrong/target GH_HOST=wrong.example release_close WO-024 --publish)"
 grep -Fq 'Published annotated v0.2.1' <<<"$edition_publish_output"
 test "$(grep -c '^release create v0.2.1 ' "$gh_log")" = 1
@@ -1921,10 +1958,12 @@ release_command list >"$fixture/release-list.txt"
 test "$(wc -l <"$gh_log" | tr -d ' ')" = "$gh_lines_before_offline"
 grep -Eq $'^v0\.2\.0\t[0-9a-f]{40}\tv0\.2\.0\tWO-003$' "$fixture/release-list.txt"
 grep -Eq $'^v0\.2\.1\t[0-9a-f]{40}\tv0\.2\.1\tWO-023,WO-024$' "$fixture/release-list.txt"
-"$node_bin" - "$fixture/edition-one.md" "$gh_state/v0.2.1.body" "$fixture/edition-manifest.json" "$fixture/edition-tag-object.txt" <<'NODE'
-const assert = require("node:assert/strict");
-const fs = require("node:fs");
-const [notesPath, bodyPath, manifestPath, tagObjectPath] = process.argv.slice(2);
+"$node_bin" --input-type=module - "$fixture/edition-one.md" "$gh_state/v0.2.1.body" "$fixture/edition-manifest.json" "$fixture/edition-tag-object.txt" "$script_dir/lib/github-body.mjs" <<'NODE'
+import assert from "node:assert/strict";
+import fs from "node:fs";
+import { pathToFileURL } from "node:url";
+const [notesPath, bodyPath, manifestPath, tagObjectPath, githubBodyPath] = process.argv.slice(2);
+const { relativeLinkFailures } = await import(pathToFileURL(githubBodyPath));
 const notesWithNewline = fs.readFileSync(notesPath, "utf8");
 const notes = notesWithNewline.replace(/\n$/, "");
 const body = fs.readFileSync(bodyPath, "utf8");
@@ -1961,6 +2000,8 @@ assert.ok(notes.includes("- Reviewer evidence line.\n- Reviewer compatibility li
 // A reviewed relative link is written absolute to the repository at the release commit.
 const releaseCommit = JSON.parse(manifest).release.commit;
 assert.ok(notes.includes(`- Evidence record: [the decisions](https://github.com/dotln-fixture/edition/blob/${releaseCommit}/docs/evidence/WO-024/decisions.md).`), notes);
+assert.ok(notes.includes(`- Outer [a b d](https://github.com/dotln-fixture/edition/blob/${releaseCommit}/docs/evidence/WO-024/decisions.md).`), notes);
+assert.deepEqual(relativeLinkFailures(notes), [], "every published destination is absolute after normalization");
 assert.ok(!notes.includes("](../../evidence/"));
 const readBefore = notes.slice(
   notes.indexOf("## Read before upgrading"),

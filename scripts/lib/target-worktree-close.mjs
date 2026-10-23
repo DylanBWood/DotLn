@@ -75,6 +75,17 @@ const quoteGitFailure = (error, root, label, extra = []) => {
 // A refusal names the tree by its role, never by its absolute path; the entry
 // it quotes is relative to that tree. A failing Git read names the tree too.
 // Each refusal ends with the close command to rerun.
+const closeReadFailure = (error, root, label, rerun) =>
+  new Error(
+    `${label} cannot close: ${/16 MiB/u.test(String(error.message)) ? "Git path listing exceeds the 16 MiB limit; reduce the listed output" : `${quoteGitFailure(error, root, label)}; fix what Git reports`}; source retained. Then rerun ${rerun()}`,
+  );
+const listedPaths = (root, args, label, rerun) => {
+  try {
+    return gitPaths(root, args);
+  } catch (error) {
+    throw closeReadFailure(error, root, label, rerun);
+  }
+};
 const closeClean = (
   root,
   label,
@@ -89,6 +100,8 @@ const closeClean = (
       candidates ??
       gitPaths(root, ["ls-files", "-z", "--others", "--exclude-standard"]);
   } catch (error) {
+    if (/16 MiB/u.test(String(error.message)))
+      throw closeReadFailure(error, root, label, rerun);
     throw new Error(
       `${label} cannot close: ${quoteGitFailure(error, root, label)}; source retained. Fix what Git reports, then rerun ${rerun()}`,
     );
@@ -163,24 +176,39 @@ const ignoredByTree = (clone, commit, paths) => {
 
 // Delete the listed files and prune the directories they leave empty under
 // each declared root; a root that still holds other files stays.
-const deleteDisposable = (root, files, disposable) => {
+const deleteDisposable = (root, files, disposable, label, rerun) => {
+  const removing = (path, remove) => {
+    try {
+      remove();
+    } catch (error) {
+      if (String(error.message).startsWith(`${label} cannot close:`))
+        throw error;
+      const relative = path.slice(root.length + 1) || ".";
+      const directory = dirname(relative);
+      throw new Error(
+        `${label} cannot close: disposable directory ${directory} could not remove ${relative} (${error.code ?? "filesystem-error"}); no further deletion attempted. Restore directory access or remove an immutable flag (chflags nouchg), then rerun ${rerun()}`,
+      );
+    }
+  };
   for (const file of files) {
     const path = join(root, file);
-    const info = lstatSync(path, { throwIfNoEntry: false });
-    if (!info) continue;
-    // Git lists a nested repository under a declared root as one directory
-    // entry; it is regenerable output like the rest and goes whole.
-    if (info.isDirectory()) rmSync(path, { recursive: true, force: true });
-    else unlinkSync(path);
+    removing(path, () => {
+      const info = lstatSync(path, { throwIfNoEntry: false });
+      if (!info) return;
+      if (info.isDirectory()) rmSync(path, { recursive: true, force: true });
+      else unlinkSync(path);
+    });
   }
-  const prune = (directory) => {
-    const info = lstatSync(directory, { throwIfNoEntry: false });
-    if (!info?.isDirectory() || info.isSymbolicLink()) return;
-    for (const name of readdirSync(directory)) prune(join(directory, name));
-    if (!readdirSync(directory).length) rmdirSync(directory);
-  };
+  const prune = (directory) =>
+    removing(directory, () => {
+      const info = lstatSync(directory, { throwIfNoEntry: false });
+      if (!info?.isDirectory() || info.isSymbolicLink()) return;
+      for (const name of readdirSync(directory)) prune(join(directory, name));
+      if (!readdirSync(directory).length) rmdirSync(directory);
+    });
   for (const declared of disposable) prune(join(root, declared));
 };
+
 const disposableRows = (files, disposable) =>
   disposable
     .map((path) => ({
@@ -473,6 +501,8 @@ export const closeTargetWorktree = async (
         candidates = gitPaths(baseCheckout, ["ls-files", "-z", "--others"]);
         ignored = ignoredByTree(entry.clone, fetched, candidates);
       } catch (error) {
+        if (/16 MiB/u.test(String(error.message)))
+          throw closeReadFailure(error, baseCheckout, base, rerun);
         throw new Error(
           `${base} cannot close: ${quoteGitFailure(error, baseCheckout, base)}; source retained. Fix what Git reports, then rerun ${rerun()}`,
         );
@@ -509,19 +539,24 @@ export const closeTargetWorktree = async (
             prefixes.add(parts.join("/"));
           }
         }
-        const collisions = selectGitPaths(
-          entry.clone,
-          [...HOST_GIT_READ, "ls-tree", "-r", "--name-only", "-z", fetched],
-          (file) => {
-            if (prefixes.has(file)) return true;
-            const parts = file.split("/");
-            while (parts.length > 1) {
-              parts.pop();
-              if (originals.has(parts.join("/"))) return true;
-            }
-            return false;
-          },
-        );
+        let collisions;
+        try {
+          collisions = selectGitPaths(
+            entry.clone,
+            [...HOST_GIT_READ, "ls-tree", "-r", "--name-only", "-z", fetched],
+            (file) => {
+              if (prefixes.has(file)) return true;
+              const parts = file.split("/");
+              while (parts.length > 1) {
+                parts.pop();
+                if (originals.has(parts.join("/"))) return true;
+              }
+              return false;
+            },
+          );
+        } catch (error) {
+          throw closeReadFailure(error, baseCheckout, base, rerun);
+        }
         if (collisions.length)
           throw new Error(
             `${base} judge-only output collides with fetched tracked paths: ${collisions.slice(0, 20).join(", ")}; source retained. Preserve that output outside those paths, then rerun ${rerun()}`,
@@ -605,7 +640,13 @@ export const closeTargetWorktree = async (
       if (baseCheckout) {
         if (baseDisposablePolicy === "delete") {
           removeFinderMetadata(baseCheckout, baseMetadata);
-          deleteDisposable(baseCheckout, baseDisposable, disposable);
+          deleteDisposable(
+            baseCheckout,
+            baseDisposable,
+            disposable,
+            `target clone base ${entry.baseBranch}`,
+            rerun,
+          );
         }
         moveRef(baseCheckout, [
           "merge",
@@ -694,13 +735,12 @@ export const closeTargetWorktree = async (
               ).installed.map((file) => file.path),
             ])
           : new Set();
-        const ignoredFiles = gitPaths(entry.target, [
-          "ls-files",
-          "-z",
-          "--others",
-          "--ignored",
-          "--exclude-standard",
-        ]);
+        const ignoredFiles = listedPaths(
+          entry.target,
+          ["ls-files", "-z", "--others", "--ignored", "--exclude-standard"],
+          "target worktree",
+          rerun,
+        );
         // Declared regenerable output is deleted before the judgment of what
         // remains; nothing bundle-owned is ever counted as disposable.
         const targetDisposable = ignoredFiles.filter(
@@ -718,14 +758,19 @@ export const closeTargetWorktree = async (
             .filter((directory) => !underDisposable(disposable, directory))
             .map((directory) => `${directory}/`),
         ];
-        const directories = gitPaths(entry.target, [
-          "ls-files",
-          "-z",
-          "--others",
-          "--ignored",
-          "--exclude-standard",
-          "--directory",
-        ]).filter(
+        const directories = listedPaths(
+          entry.target,
+          [
+            "ls-files",
+            "-z",
+            "--others",
+            "--ignored",
+            "--exclude-standard",
+            "--directory",
+          ],
+          "target worktree",
+          rerun,
+        ).filter(
           (directory) =>
             directory.endsWith("/") &&
             otherFiles.some((file) => file.startsWith(directory)) &&
@@ -750,7 +795,13 @@ export const closeTargetWorktree = async (
         // Declared output goes before the bundle, so a failure there retains
         // the bundle and a retry judges the same tree.
         removeFinderMetadata(entry.target, [...metadata, ...ignoredFiles]);
-        deleteDisposable(entry.target, targetDisposable, disposable);
+        deleteDisposable(
+          entry.target,
+          targetDisposable,
+          disposable,
+          "target worktree",
+          rerun,
+        );
         if (installed)
           removeTargetHarness(entry.target, { runtimeRoot: entry.runtimeRoot });
         git(entry.clone, ["worktree", "remove", entry.target]);

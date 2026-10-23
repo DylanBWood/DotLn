@@ -159,8 +159,10 @@ export function appendEvent(
   const line = `${JSON.stringify(assigned)}\n`;
   // Validate the bytes we are about to append through the same envelope
   // decoder used by readers; a malformed draft must never create a bad log.
-  decodeLog(`${log}${line}`);
-  return { log: `${log}${line}`, event: assigned };
+  const appended = `${log}${line}`;
+  const decoded = decodeLog(appended);
+  // Live consumers receive the same JSON value that replay will read.
+  return { log: appended, event: decoded[decoded.length - 1]! };
 }
 export function decodeLog(log: JsonlLog): readonly Event[] {
   const result = tryDecodeLog(log);

@@ -1,15 +1,15 @@
 // Origin: {"ids":["no-attribution"],"loadoutId":"contributor","semanticHash":"fnv1a64:c0a496bda5f362de"}
-const { runCommitMessageHook } = await import("../../.runtime/harness/be28a9b9b7bfb896/packages/skeleton/dist/src/harness-host.js");
-const { feedbackBoundary } = await import("../../.runtime/harness/be28a9b9b7bfb896/packages/skeleton/dist/src/feedback-boundary.js");
+const { runCommitMessageHook } = await import("../../.runtime/harness/645e7302959f5c05/packages/skeleton/dist/src/harness-host.js");
+const { feedbackBoundary } = await import("../../.runtime/harness/645e7302959f5c05/packages/skeleton/dist/src/feedback-boundary.js");
 await runCommitMessageHook({
-  "compilerPackageVersion": "0.30.0",
+  "compilerPackageVersion": "0.31.0",
   "runtime": {
     "skeletonVersion": "0.37.0",
     "boundaryContract": "feedback-v1",
     "files": [
       {
         "path": "packages/compiler/dist/src/artifact-identity.js",
-        "hash": "fnv1a64:417c9e3fd4157c56"
+        "hash": "fnv1a64:e92fd0a3ebe522e7"
       },
       {
         "path": "packages/compiler/dist/src/harness.js",
@@ -37,7 +37,7 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/harness-host.js",
-        "hash": "fnv1a64:cef5db2553192e06"
+        "hash": "fnv1a64:13934af435ed76a3"
       },
       {
         "path": "packages/skeleton/dist/src/subagent-budget.js",
@@ -172,11 +172,11 @@ await runCommitMessageHook({
         "hash": "fnv1a64:5ad495017c40b9b2"
       }
     ],
-    "snapshot": ".runtime/harness/be28a9b9b7bfb896"
+    "snapshot": ".runtime/harness/645e7302959f5c05"
   },
   "policy": {
     "contractVersion": "feedback-v1",
-    "compilerPackageVersion": "0.30.0",
+    "compilerPackageVersion": "0.31.0",
     "units": [
       {
         "unitId": "no-attribution",
@@ -229,6 +229,6 @@ await runCommitMessageHook({
         "enforcement": "hard"
       }
     ],
-    "policyHash": "fnv1a64:d028986b0c4fe656"
+    "policyHash": "fnv1a64:d9ef145f6b6acdad"
   }
 }, feedbackBoundary);

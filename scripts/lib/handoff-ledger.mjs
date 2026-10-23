@@ -15,11 +15,12 @@ import { runGitPathList } from "./git.mjs";
 import { containedRegularFile, workOrderAuthorityPath } from "./paths.mjs";
 import { criterionJudgments, criterionLineForms } from "./off-ramps.mjs";
 
-// The self-review line has one form: at the start of a line, after an optional
-// list marker, `self-review: found <n>; fixed <n>; recorded <n>`; text may
-// follow. No other spelling, emphasis or indentation is the line.
+// Presentation wrappers and an optional worker name do not change the three
+// counts. Quotes, prose prefixes and incomplete counts remain outside the form.
 const SELF_REVIEW =
-  /^(?:(?:[-*+]|\d{1,9}[.)])[ \t]+)?self-review: found \d+; fixed \d+; recorded \d+(?!\w)/u;
+  /^(?:(?:[-*+]|\d{1,9}[.)])[ \t]+)?self-review(?: \([^()\r\n]{1,100}\))?: found \d+; fixed \d+; recorded \d+(?!\w)/iu;
+const inlinePresentation = (line) =>
+  line.replace(/(\*\*|__|`|\*|_)(?=\S)(.+?\S|\S)\1/gu, "$2");
 
 /**
  * The numbered acceptance criteria an order's text declares, each with the
@@ -158,7 +159,9 @@ export function readHandoffLedger(root, state, { selfReview = true } = {}) {
   const text = readable ? readFileSync(join(root, path), "utf8") : "";
   const advisories =
     !selfReview ||
-    text.split(/\r\n?|\n/u).some((line) => SELF_REVIEW.test(line))
+    text
+      .split(/\r\n?|\n/u)
+      .some((line) => SELF_REVIEW.test(inlinePresentation(line)))
       ? []
       : [
           `${path} lacks a self-review: line; write a line that starts \`self-review: found <n>; fixed <n>; recorded <n>\` with the fresh review's counts, then the worker or the separate-pass fallback. Completion records all the same.`,
@@ -210,21 +213,25 @@ export function readHandoffLedger(root, state, { selfReview = true } = {}) {
   return { checked: true, path, declared, met, unmet, claims, advisories };
 }
 
-// The suites `npm test -- --review` would run now, read through the runner's
-// own listing so the completion and the gate agree on the selection, whether
-// or not the runner is this checkout's.
+// Read the execution selection through the checkout's own runner. Its ordinary
+// review listing is an inventory, so --selected keeps completion aligned with
+// the actual change-based gate.
 function reviewSelection(root, runner) {
   if (!existsSync(runner))
     return { error: `${relative(root, runner)} is absent` };
-  const run = spawnSync(process.execPath, [runner, "--review", "--list"], {
-    cwd: root,
-    encoding: "utf8",
-    maxBuffer: 16 * 1024 * 1024,
-  });
+  const run = spawnSync(
+    process.execPath,
+    [runner, "--review", "--list", "--selected"],
+    {
+      cwd: root,
+      encoding: "utf8",
+      maxBuffer: 16 * 1024 * 1024,
+    },
+  );
   if (run.error) return { error: run.error.message };
   if (run.status !== 0)
     return {
-      error: `npm test -- --review --list exited ${run.status ?? "on a signal"}: ${(run.stderr ?? "").trim().split("\n").at(-1) ?? ""}`,
+      error: `npm test -- --review --list --selected exited ${run.status ?? "on a signal"}: ${(run.stderr ?? "").trim().split("\n").at(-1) ?? ""}`,
     };
   const names = run.stdout
     .split("\n")
@@ -232,7 +239,7 @@ function reviewSelection(root, runner) {
     .filter(Boolean);
   return names.length
     ? { names }
-    : { error: "npm test -- --review --list named no suite" };
+    : { error: "npm test -- --review --list --selected named no suite" };
 }
 
 export const gateFields = (row) => ({

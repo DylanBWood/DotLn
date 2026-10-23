@@ -681,9 +681,13 @@ test("the exported instance checks runtime, coordination records and explicit di
   const ran = new Set();
   for (const { command, args } of selections) {
     const list = ok(
-      run(process.execPath, ["scripts/test-runner.mjs", ...args, "--list"], {
-        cwd: destination,
-      }),
+      run(
+        process.execPath,
+        ["scripts/test-runner.mjs", ...args, "--list", "--selected"],
+        {
+          cwd: destination,
+        },
+      ),
       "kit suite list",
     );
     assert.deepEqual(exclusions(list.stdout), []);

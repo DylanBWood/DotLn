@@ -55,7 +55,7 @@ control = recoveryInput ? await (async function operatorControl(input, event) {
         return kept;
     };
     /** @param {{ enteredAt: string, exitedAt: string }} exited */
-    const advisory = (exited) => `Record the override for the selected open work order: npm run resume -- override-record --bypassed dotln-hook-enforcement --effects <what the recovery changed, or none> --reason 'operator override from ${exited.enteredAt} to ${exited.exitedAt}' [--capture <ignored intake file holding the operator's override words> --capture-hash sha256:<digest>] --harness <harness> --harness-version <version> --model <model> --effort <level> --source <source>. With no open order (closed, withdrawn or none selected), record the override and what it changed in the order's decisions. The role's completion carries this duty; the record is never a precondition for entering or leaving override.`;
+    const advisory = (exited) => `Record the override for the selected work order: npm run resume -- override-record --bypassed dotln-hook-enforcement --effects <what the recovery changed, or none> --reason 'operator override from ${exited.enteredAt} to ${exited.exitedAt}' [--capture <ignored intake file holding the operator's override words> --capture-hash sha256:<digest>] --harness <harness> --harness-version <version> --model <model> --effort <level> --source <source>. For a closed order, run from the main control-plane checkout with --work-order naming that order; its ignored pending record is carried by the next worktree start. A supplied capture must exist in main at the same ignored intake path and hash. For a withdrawn or unselected order, record the override and what it changed in the order's decisions. The role's completion carries this duty; the record is never a precondition for entering or leaving override.`;
     if (!input.session_id)
         return entered ? message(requested ?? "unavailable") : null;
     try {
@@ -192,17 +192,17 @@ control = recoveryInput ? await (async function operatorControl(input, event) {
     }
 })({ ...input, session_id: typeof input.session_id === "string" ? input.session_id : undefined }, event) : null;
 if (control && !control.overrideExit) { process.stdout.write(JSON.stringify(control)); } else {
-const { feedbackBoundary } = await import("../../.runtime/harness/be28a9b9b7bfb896/packages/skeleton/dist/src/feedback-boundary.js");
-const { runHarnessHook } = await import("../../.runtime/harness/be28a9b9b7bfb896/packages/skeleton/dist/src/harness-host.js");
+const { feedbackBoundary } = await import("../../.runtime/harness/645e7302959f5c05/packages/skeleton/dist/src/feedback-boundary.js");
+const { runHarnessHook } = await import("../../.runtime/harness/645e7302959f5c05/packages/skeleton/dist/src/harness-host.js");
 await runHarnessHook({
-  "compilerPackageVersion": "0.30.0",
+  "compilerPackageVersion": "0.31.0",
   "runtime": {
     "skeletonVersion": "0.37.0",
     "boundaryContract": "feedback-v1",
     "files": [
       {
         "path": "packages/compiler/dist/src/artifact-identity.js",
-        "hash": "fnv1a64:417c9e3fd4157c56"
+        "hash": "fnv1a64:e92fd0a3ebe522e7"
       },
       {
         "path": "packages/compiler/dist/src/harness.js",
@@ -230,7 +230,7 @@ await runHarnessHook({
       },
       {
         "path": "packages/skeleton/dist/src/harness-host.js",
-        "hash": "fnv1a64:cef5db2553192e06"
+        "hash": "fnv1a64:13934af435ed76a3"
       },
       {
         "path": "packages/skeleton/dist/src/subagent-budget.js",
@@ -365,7 +365,7 @@ await runHarnessHook({
         "hash": "fnv1a64:5ad495017c40b9b2"
       }
     ],
-    "snapshot": ".runtime/harness/be28a9b9b7bfb896"
+    "snapshot": ".runtime/harness/645e7302959f5c05"
   },
   "event": "Stop",
   "tools": {
@@ -587,7 +587,7 @@ await runHarnessHook({
   "kind": "finish",
   "policy": {
     "contractVersion": "feedback-v1",
-    "compilerPackageVersion": "0.30.0",
+    "compilerPackageVersion": "0.31.0",
     "units": [
       {
         "unitId": "anti-oscillation",
@@ -1055,7 +1055,7 @@ await runHarnessHook({
         "enforcement": "advisory"
       }
     ],
-    "policyHash": "fnv1a64:57c75223de8472f2"
+    "policyHash": "fnv1a64:97c596acc07a0839"
   }
 }, feedbackBoundary, input, rawInput, control);
 }
@@ -1176,7 +1176,7 @@ const { join } = await import("node:path");
 const { createHash } = await import("node:crypto");
 const { fileURLToPath } = await import("node:url");
 const root = fileURLToPath(new URL("../../", import.meta.url));
-const snapshot = ".runtime/harness/be28a9b9b7bfb896";
+const snapshot = ".runtime/harness/645e7302959f5c05";
 let cause = snapshot && !fs.existsSync(join(root, snapshot)) ? "snapshot-missing" : "runtime-unavailable";
 try {
   const hash = (value) => {
@@ -1194,7 +1194,7 @@ try {
     }
     return high.toString(16).padStart(8, "0") + low.toString(16).padStart(8, "0");
 };
-  for (const file of [{"path":"packages/compiler/dist/src/artifact-identity.js","hash":"fnv1a64:417c9e3fd4157c56"},{"path":"packages/compiler/dist/src/harness.js","hash":"fnv1a64:6fe3630a635d3723"},{"path":"packages/compiler/dist/src/codex-continuation.mjs","hash":"fnv1a64:31bfebf311f308ea"},{"path":"packages/compiler/dist/src/feedback.js","hash":"fnv1a64:aa8277e768c71730"},{"path":"packages/compiler/dist/src/attribution.mjs","hash":"fnv1a64:962a971d8f8f42ac"},{"path":"packages/skeleton/dist/src/feedback-boundary.js","hash":"fnv1a64:d14b87587f87cd52"},{"path":"packages/skeleton/dist/src/feedback-source-comments.js","hash":"fnv1a64:f6ce0c206b559a27"},{"path":"packages/skeleton/dist/src/harness-host.js","hash":"fnv1a64:cef5db2553192e06"},{"path":"packages/skeleton/dist/src/subagent-budget.js","hash":"fnv1a64:760d2e9ed61981bd"},{"path":"packages/skeleton/dist/src/observed-facts.js","hash":"fnv1a64:0563bc867fed5fe9"},{"path":"packages/skeleton/dist/src/correction-observation.mjs","hash":"fnv1a64:9de0f1abc1c9c83b"},{"path":"packages/skeleton/dist/src/source-change-command.js","hash":"fnv1a64:823fe16591fa4dba"},{"path":"packages/skeleton/dist/src/source-change-state.js","hash":"fnv1a64:f0f512b07352a99d"},{"path":"packages/skeleton/dist/src/version.js","hash":"fnv1a64:5a3d246db57aefbd"},{"path":"packages/skeleton/dist/src/harness-command.js","hash":"fnv1a64:5fa4903dc42c59b0"},{"path":"packages/skeleton/dist/src/gate-evidence.mjs","hash":"fnv1a64:3d5f6b81edb75ef4"},{"path":"packages/skeleton/dist/src/gate-deadlines.mjs","hash":"fnv1a64:813c9c2b9c64ce27"},{"path":"packages/skeleton/dist/src/runtime-inputs.mjs","hash":"fnv1a64:de5fd0814cb82f8e"},{"path":"packages/skeleton/dist/src/usage-observation.mjs","hash":"fnv1a64:3577a13e2e834daf"},{"path":"packages/skeleton/dist/src/writer-teardown.mjs","hash":"fnv1a64:1b40a187193a47a0"},{"path":"packages/skeleton/dist/src/reactor.js","hash":"fnv1a64:646c107a37e632d7"},{"path":"packages/skeleton/dist/src/repair.js","hash":"fnv1a64:61d8ccfed3ce0e72"},{"path":"packages/skeleton/dist/src/resident-state.js","hash":"fnv1a64:06f93ae0311b6f5d"},{"path":"packages/skeleton/dist/src/presence-signals.js","hash":"fnv1a64:2c8021c360896c08"},{"path":"packages/skeleton/dist/src/presence-heartbeat.js","hash":"fnv1a64:d34990f3e67a6180"},{"path":"packages/skeleton/dist/src/resident-store.js","hash":"fnv1a64:339def7a267a6998"},{"path":"packages/skeleton/dist/src/worker-store.js","hash":"fnv1a64:b61e6b191747907a"},{"path":"packages/skeleton/dist/src/verification-protocol.js","hash":"fnv1a64:9c6da06a4376c6e2"},{"path":"packages/skeleton/dist/src/plan-refutation-protocol.js","hash":"fnv1a64:ded0b23c9969f6b5"},{"path":"packages/skeleton/dist/src/worker-protocol.js","hash":"fnv1a64:df68218642aede29"},{"path":"packages/skeleton/dist/src/presence-machine.js","hash":"fnv1a64:8c293a04a096332e"},{"path":"packages/skeleton/dist/src/actor-catalog.js","hash":"fnv1a64:50911f5ff72a4f8a"},{"path":"packages/skeleton/dist/src/actor-contract.js","hash":"fnv1a64:ca5ebec3f7b6fe43"},{"path":"packages/skeleton/dist/src/cli-actor-contract.js","hash":"fnv1a64:872502f1ee6a8e10"},{"path":"packages/skeleton/dist/src/handoff-contract.js","hash":"fnv1a64:91441a878612f03f"},{"path":"packages/skeleton/dist/src/work-candidate.js","hash":"fnv1a64:4d2eae3f98d79433"},{"path":"packages/skeleton/dist/src/script-episode.js","hash":"fnv1a64:968721357bd9e006"},{"path":"packages/skeleton/dist/src/discovery-sandbox.js","hash":"fnv1a64:7d830f99be355cb6"},{"path":"packages/skeleton/dist/src/discovery-actor.js","hash":"fnv1a64:22d10e334cd2edfc"},{"path":"packages/skeleton/dist/src/discovery-cli.js","hash":"fnv1a64:5206b2bb4f28940f"},{"path":"packages/skeleton/dist/src/discovery.js","hash":"fnv1a64:5ad495017c40b9b2"}]) {
+  for (const file of [{"path":"packages/compiler/dist/src/artifact-identity.js","hash":"fnv1a64:e92fd0a3ebe522e7"},{"path":"packages/compiler/dist/src/harness.js","hash":"fnv1a64:6fe3630a635d3723"},{"path":"packages/compiler/dist/src/codex-continuation.mjs","hash":"fnv1a64:31bfebf311f308ea"},{"path":"packages/compiler/dist/src/feedback.js","hash":"fnv1a64:aa8277e768c71730"},{"path":"packages/compiler/dist/src/attribution.mjs","hash":"fnv1a64:962a971d8f8f42ac"},{"path":"packages/skeleton/dist/src/feedback-boundary.js","hash":"fnv1a64:d14b87587f87cd52"},{"path":"packages/skeleton/dist/src/feedback-source-comments.js","hash":"fnv1a64:f6ce0c206b559a27"},{"path":"packages/skeleton/dist/src/harness-host.js","hash":"fnv1a64:13934af435ed76a3"},{"path":"packages/skeleton/dist/src/subagent-budget.js","hash":"fnv1a64:760d2e9ed61981bd"},{"path":"packages/skeleton/dist/src/observed-facts.js","hash":"fnv1a64:0563bc867fed5fe9"},{"path":"packages/skeleton/dist/src/correction-observation.mjs","hash":"fnv1a64:9de0f1abc1c9c83b"},{"path":"packages/skeleton/dist/src/source-change-command.js","hash":"fnv1a64:823fe16591fa4dba"},{"path":"packages/skeleton/dist/src/source-change-state.js","hash":"fnv1a64:f0f512b07352a99d"},{"path":"packages/skeleton/dist/src/version.js","hash":"fnv1a64:5a3d246db57aefbd"},{"path":"packages/skeleton/dist/src/harness-command.js","hash":"fnv1a64:5fa4903dc42c59b0"},{"path":"packages/skeleton/dist/src/gate-evidence.mjs","hash":"fnv1a64:3d5f6b81edb75ef4"},{"path":"packages/skeleton/dist/src/gate-deadlines.mjs","hash":"fnv1a64:813c9c2b9c64ce27"},{"path":"packages/skeleton/dist/src/runtime-inputs.mjs","hash":"fnv1a64:de5fd0814cb82f8e"},{"path":"packages/skeleton/dist/src/usage-observation.mjs","hash":"fnv1a64:3577a13e2e834daf"},{"path":"packages/skeleton/dist/src/writer-teardown.mjs","hash":"fnv1a64:1b40a187193a47a0"},{"path":"packages/skeleton/dist/src/reactor.js","hash":"fnv1a64:646c107a37e632d7"},{"path":"packages/skeleton/dist/src/repair.js","hash":"fnv1a64:61d8ccfed3ce0e72"},{"path":"packages/skeleton/dist/src/resident-state.js","hash":"fnv1a64:06f93ae0311b6f5d"},{"path":"packages/skeleton/dist/src/presence-signals.js","hash":"fnv1a64:2c8021c360896c08"},{"path":"packages/skeleton/dist/src/presence-heartbeat.js","hash":"fnv1a64:d34990f3e67a6180"},{"path":"packages/skeleton/dist/src/resident-store.js","hash":"fnv1a64:339def7a267a6998"},{"path":"packages/skeleton/dist/src/worker-store.js","hash":"fnv1a64:b61e6b191747907a"},{"path":"packages/skeleton/dist/src/verification-protocol.js","hash":"fnv1a64:9c6da06a4376c6e2"},{"path":"packages/skeleton/dist/src/plan-refutation-protocol.js","hash":"fnv1a64:ded0b23c9969f6b5"},{"path":"packages/skeleton/dist/src/worker-protocol.js","hash":"fnv1a64:df68218642aede29"},{"path":"packages/skeleton/dist/src/presence-machine.js","hash":"fnv1a64:8c293a04a096332e"},{"path":"packages/skeleton/dist/src/actor-catalog.js","hash":"fnv1a64:50911f5ff72a4f8a"},{"path":"packages/skeleton/dist/src/actor-contract.js","hash":"fnv1a64:ca5ebec3f7b6fe43"},{"path":"packages/skeleton/dist/src/cli-actor-contract.js","hash":"fnv1a64:872502f1ee6a8e10"},{"path":"packages/skeleton/dist/src/handoff-contract.js","hash":"fnv1a64:91441a878612f03f"},{"path":"packages/skeleton/dist/src/work-candidate.js","hash":"fnv1a64:4d2eae3f98d79433"},{"path":"packages/skeleton/dist/src/script-episode.js","hash":"fnv1a64:968721357bd9e006"},{"path":"packages/skeleton/dist/src/discovery-sandbox.js","hash":"fnv1a64:7d830f99be355cb6"},{"path":"packages/skeleton/dist/src/discovery-actor.js","hash":"fnv1a64:22d10e334cd2edfc"},{"path":"packages/skeleton/dist/src/discovery-cli.js","hash":"fnv1a64:5206b2bb4f28940f"},{"path":"packages/skeleton/dist/src/discovery.js","hash":"fnv1a64:5ad495017c40b9b2"}]) {
     if (fs.existsSync(join(root, file.path)) && "fnv1a64:" + hash(fs.readFileSync(join(root, file.path), "utf8")) !== file.hash) {
       cause = "pins-differ";
       break;

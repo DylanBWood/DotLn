@@ -104,6 +104,18 @@ const priorReleaseRefresh = (checkout, existing, commit, tag, head) => {
 // Core's release tag name lands on the sibling's refresh commit. A retry
 // finds its tag and Release, while a tag without matching release provenance
 // refuses. The Release body names core's Release, not its changes.
+const firstReleaseRefresh = (checkout, tip, tag, head) => {
+  for (const commit of git(checkout, [
+    "rev-list",
+    "--reverse",
+    "--topo-order",
+    tip,
+  ]).split("\n"))
+    if (priorReleaseRefresh(checkout, commit, tip, tag, head)) return commit;
+  throw new Error(
+    `starter has no committed refresh manifest for ${tag}; move nothing and inspect KIT-MANIFEST.json history`,
+  );
+};
 const checkSiblingTag = ({ checkout, url, commit, tag, head, origin, row }) => {
   const existing = remoteTagTarget(url, tag);
   if (
@@ -123,7 +135,7 @@ const ensureSiblingRelease = (options) => {
   const existing = checkSiblingTag(options);
   if (!existing)
     pushAnnotatedTag(checkout, url, {
-      sourceRef: "refs/remotes/origin/main",
+      sourceRef: commit,
       commit,
       tag,
       message: `Starter ${tag}\n\nCore commit: ${head}`,
@@ -624,7 +636,7 @@ const refreshOne = async ({ main, head, tag, dryRun }, sibling) => {
       ensureSiblingRelease({
         checkout,
         url,
-        commit: remote,
+        commit: firstReleaseRefresh(checkout, remote, tag, head),
         tag,
         head,
         origin,

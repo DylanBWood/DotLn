@@ -32,6 +32,7 @@ import {
   operatorWordAdvisories,
   operatorWordFindings,
   homePathFindings,
+  shrinkHomePathBaseline,
   recordFiles,
   frontPageFindings,
   frontPageShapeFindings,
@@ -81,6 +82,98 @@ test("WO-178 attributed operator words advise by record, with capture and finger
   assert.deepEqual(f.check().failures, []);
   f.record("resume: next; operator requested the fixture change");
   assert.equal(operatorWordAdvisories(f.root).current, 0);
+});
+
+test("operator-word advisories classify incidental JSON, code and document terms apart from quoted replies", (t) => {
+  const f = fixture(t);
+  const cases = [
+    [
+      'The operator inspected:\n\n```json\n{"status":"ready"}\n```',
+      "incidental-json",
+    ],
+    ['The operator inspected `output = "ready"`.', "incidental-code"],
+    ['The operator requested the document term "handoff".', "document-term"],
+    [
+      "The operator requested: “Rename the field 'status' to 'state'.”",
+      "attributed-speech",
+    ],
+    ["The operator instructed “Keep the column ‘name’.”", "attributed-speech"],
+    [
+      'The operator reviewed the field "status" and the column "owner".',
+      "document-term",
+    ],
+    ["The operator replied “retain the original bytes”.", "attributed-speech"],
+    [
+      'The operator replied `"retain the original bytes"`.',
+      "attributed-speech",
+    ],
+    [
+      'The operator requested `"retain the original bytes"`.',
+      "attributed-speech",
+    ],
+    [
+      'The operator instructed `‘preserve the field "status"’`.',
+      "attributed-speech",
+    ],
+    ['The operator inspected `field "status"`.', "incidental-code"],
+  ];
+  for (const [decision, wordClass] of cases) {
+    f.record("resume: next", { decision });
+    const findings = operatorWordFindings(f.root);
+    assert.equal(findings.length, 1, decision);
+    assert.equal(findings[0].wordClass, wordClass, decision);
+    const result = f.check();
+    assert.deepEqual(
+      result.failures,
+      [],
+      "lexical attribution remains advisory",
+    );
+    assert.equal(result.operatorWords.currentByClass[wordClass], 1);
+    assert.equal(
+      result.operatorWords.currentByClass["attributed-speech"],
+      wordClass === "attributed-speech" ? 1 : 0,
+    );
+    const key = `${findings[0].file}#${findings[0].record}`;
+    f.baseline.operatorWords = { [key]: findings[0].fingerprint };
+    const savedBaseline = JSON.stringify(f.baseline.operatorWords);
+    const historical = f.check().operatorWords;
+    assert.equal(historical.current, 0);
+    assert.equal(historical.historical, 1);
+    assert.equal(JSON.stringify(f.baseline.operatorWords), savedBaseline);
+    assert.equal(
+      operatorWordFindings(f.root)[0].fingerprint,
+      findings[0].fingerprint,
+    );
+    f.baseline.operatorWords = {};
+  }
+  f.record("resume: next", {
+    decision: cases.find(
+      ([, wordClass]) => wordClass === "attributed-speech",
+    )[0],
+  });
+  f.controls();
+  const cli = spawnSync(process.execPath, [script], {
+    cwd: f.root,
+    env: { ...process.env, DOTLN_LAUNCHPAD: f.root },
+    encoding: "utf8",
+  });
+  assert.equal(cli.status, 0, cli.stdout + cli.stderr);
+  assert.match(
+    cli.stdout,
+    /Operator-word advisories: 1; incidental JSON: 0; incidental code: 0; document terms: 0; current candidate records: 1/u,
+  );
+  assert.match(
+    cli.stdout,
+    /ADVISORY docs\/evidence\/WO-999\/decisions\.md#WO-999-D001:/u,
+  );
+  f.record("resume: next", {
+    operatorQuote: { text: "a typed quotation without a digest" },
+  });
+  assert.equal(f.check().failures.length, 1);
+  assert.match(
+    f.check().failures[0],
+    /operatorQuote 1 needs text and captureSha256/u,
+  );
 });
 
 test("WO-178 provenance findings and fingerprints survive grouped header layouts", (t) => {
@@ -2919,4 +3012,105 @@ test("the refusal is new: the document check at 08845c71 admits the same undecla
     [],
     "the historical check judged nothing about the front page",
   );
+});
+
+test("public Shared and explicit scratchpad templates contain no private account; concrete homes and session paths still refuse", (t) => {
+  const f = fixture(t),
+    file = "docs/evidence/WO-999/templates.md";
+  f.write(
+    file,
+    [
+      "/Users/Shared/public/example.txt",
+      "/tmp/claude-<uid>/<project key>/<session id>/scratchpad",
+      "/private/tmp/claude-<uid>/<project key>/<session id>/scratchpad/notes.md",
+    ].join("\n") + "\n",
+  );
+  assert.deepEqual(
+    homePathFindings(f.root).filter((row) => row.file === file),
+    [],
+  );
+  const record = "docs/evidence/WO-999/shared.json";
+  f.write(
+    record,
+    JSON.stringify({ output: "line\n/Users/Shared/public/example.txt" }) + "\n",
+  );
+  assert.deepEqual(homePathFindings(f.root, [record]), []);
+  for (const source of [
+    "/home/runner/work/private-project",
+    "/Users/SharedPrivate/note.txt",
+    "/tmp/claude-501/project/session/scratchpad",
+    "/Users/Shared/../private-user/note.txt",
+    "/tmp/claude-<uid>/<project key>/<session id>/scratchpad/../private.txt",
+  ]) {
+    f.write(file, source + "\n");
+    assert.equal(
+      homePathFindings(f.root).filter((row) => row.file === file).length,
+      1,
+      source,
+    );
+  }
+});
+
+test("home-path baseline maintenance reports stale entries, shrinks only existing fingerprints and refuses laundering a new line", (t) => {
+  for (const roots of [
+    {},
+    { docs: "manual", control: "state", evidence: "proof" },
+  ]) {
+    const f = fixture(t, roots),
+      evidence = roots.evidence ?? `${roots.docs ?? "docs"}/evidence`,
+      control = roots.control ?? `${roots.docs ?? "docs"}/control`;
+    const file = `${evidence}/WO-999/README.md`,
+      baselineFile = `${control}/doc-baseline.json`;
+    const first = "Ran in /Users/fixture-user/one.\n",
+      second = "Ran in /Users/fixture-user/two.\n";
+    f.write(file, first + second);
+    f.baseline.homePaths = {
+      [file]: homePathFindings(f.root)
+        .filter((row) => row.file === file)
+        .map((row) => row.fingerprint),
+    };
+    const retainedFingerprint = f.baseline.homePaths[file][0];
+    f.baseline.operatorWords = {
+      "docs/evidence/WO-999/decisions.md#WO-999-D001": "a".repeat(64),
+    };
+    const operatorWords = structuredClone(f.baseline.operatorWords);
+    f.write(file, first);
+    f.controls();
+    assert.match(
+      f.check().notices.join("\n"),
+      /STALE .*no longer holds 1 baselined private-path line.*--write-home-path-baseline/u,
+    );
+    const result = shrinkHomePathBaseline(f.root);
+    assert.equal(result.removed, 1);
+    let baseline = JSON.parse(readFileSync(join(f.root, baselineFile), "utf8"));
+    assert.deepEqual(baseline.homePaths, { [file]: [retainedFingerprint] });
+    assert.deepEqual(
+      baseline.operatorWords,
+      operatorWords,
+      "operator-word keys and fingerprints are not rewritten",
+    );
+    const before = readFileSync(join(f.root, baselineFile));
+    f.write(file, first + "New /Users/fixture-other/secret.\n");
+    assert.throws(
+      () => shrinkHomePathBaseline(f.root),
+      /new private-path line is fixed, never baselined/u,
+    );
+    assert.deepEqual(readFileSync(join(f.root, baselineFile)), before);
+    f.write(file, "Use <home>/ or /Users/Shared/public.\n");
+    const cli = spawnSync(
+      process.execPath,
+      [script, "--write-home-path-baseline"],
+      {
+        cwd: f.root,
+        env: { ...process.env, DOTLN_LAUNCHPAD: f.root },
+        encoding: "utf8",
+      },
+    );
+    assert.equal(cli.status, 0, cli.stdout + cli.stderr);
+    assert.match(cli.stdout, /removed 1 stale fingerprint/u);
+    baseline = JSON.parse(readFileSync(join(f.root, baselineFile), "utf8"));
+    assert.deepEqual(baseline.homePaths, {});
+    assert.deepEqual(baseline.operatorWords, operatorWords);
+    assert.doesNotMatch(cli.stdout + cli.stderr, /fixture-user|fixture-other/u);
+  }
 });

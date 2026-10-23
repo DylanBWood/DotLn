@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { runGit } from "./lib/git.mjs";
+import { runGit, spawnGit } from "./lib/git.mjs";
 import { write, json as prettyJson, sha256Hex } from "./lib/helpers.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 import test from "node:test";
@@ -775,6 +775,136 @@ export async function entropyFixtures() {
         0,
         "nothing is filed when the subject moved",
       );
+    });
+
+    await test("frozen review and refutation copies have no remote route to their fixture source", async () => {
+      const repo = fixtureRepository(parent);
+      await entropy(["review", "--transport", "fake"], repo);
+      for (const kind of ["review", "refutation"]) {
+        if (kind === "refutation")
+          await entropy(["refute", "REVIEW-001", "--transport", "fake"], repo);
+        const pending = currentDispatch(repo, kind);
+        const copy = pending.subject.scratchRepository;
+        const before = runGit(repo, ["for-each-ref"], fixtureGitOptions);
+        assert.equal(runGit(copy, ["remote"], fixtureGitOptions), "");
+        // There is no remote, and this source is itself a disposable fixture.
+        const pushed = spawnGit(
+          ["-C", copy, "push", "origin", "HEAD:refs/heads/from-frozen-copy"],
+          { encoding: "utf8" },
+        );
+        assert.notEqual(pushed.status, 0);
+        assert.equal(runGit(repo, ["for-each-ref"], fixtureGitOptions), before);
+        const filed = await entropy(
+          [
+            kind === "review" ? "receipt" : "refutation-receipt",
+            join(pending.capture, "result.json"),
+            "--statement",
+            join(pending.capture, "statement.txt"),
+          ],
+          repo,
+        );
+        const receipt = JSON.parse(
+          readFileSync(
+            join(repo, runsRoot(repo), `${filed.receiptId}.json`),
+            "utf8",
+          ),
+        );
+        assert.equal(receipt.confinement.sourceRefs.identical, true);
+        assert.equal(
+          receipt.confinement.sourceRefs.before.sha256,
+          receipt.confinement.sourceRefs.after.sha256,
+        );
+        const historical = structuredClone(receipt);
+        delete historical.confinement.sourceRefs;
+        const oldRendering = renderReceipt(historical);
+        assert.doesNotMatch(oldRendering, /Source refs unchanged:/u);
+        const refs = receipt.confinement.sourceRefs;
+        const sentence = ` Source refs unchanged: **true** (${refs.before.count} before, ${refs.after.count} after; refused for a HEAD subject, recorded for a named commit).`;
+        assert.equal(
+          renderReceipt(receipt),
+          oldRendering.replace(
+            " Ignored paths and file contents",
+            sentence + " Ignored paths and file contents",
+          ),
+        );
+      }
+      assert.equal(checkEntropyReceipts(repo).status, "ok");
+    });
+
+    await test("a HEAD review refuses a source-ref move even when tracked status stays identical", async () => {
+      const repo = fixtureRepository(parent);
+      await entropy(["review", "--transport", "fake"], repo);
+      const pending = currentDispatch(repo, "review");
+      runGit(
+        repo,
+        ["branch", "concurrent-source-ref", "HEAD"],
+        fixtureGitOptions,
+      );
+      await assert.rejects(
+        entropy(
+          [
+            "receipt",
+            join(pending.capture, "result.json"),
+            "--statement",
+            join(pending.capture, "statement.txt"),
+          ],
+          repo,
+        ),
+        /source refs changed during the review episode/u,
+      );
+      assert.equal(
+        existsSync(join(repo, runsRoot(repo), "REVIEW-001.json")),
+        false,
+      );
+      assert.ok(
+        currentDispatch(repo, "review"),
+        "the rejected pending episode remains available",
+      );
+    });
+
+    await test("named-commit reviews and refutations record concurrent source-ref moves without refusing", async () => {
+      const repo = fixtureRepository(parent);
+      const head = runGit(repo, ["rev-parse", "HEAD"], fixtureGitOptions);
+      await entropy(["review", head, "--transport", "fake"], repo);
+      for (const kind of ["review", "refutation"]) {
+        if (kind === "refutation")
+          await entropy(["refute", "REVIEW-001", "--transport", "fake"], repo);
+        const pending = currentDispatch(repo, kind);
+        runGit(
+          repo,
+          ["branch", `concurrent-${kind}-ref`, "HEAD"],
+          fixtureGitOptions,
+        );
+        const filed = await entropy(
+          [
+            kind === "review" ? "receipt" : "refutation-receipt",
+            join(pending.capture, "result.json"),
+            "--statement",
+            join(pending.capture, "statement.txt"),
+          ],
+          repo,
+        );
+        const receipt = JSON.parse(
+          readFileSync(
+            join(repo, runsRoot(repo), `${filed.receiptId}.json`),
+            "utf8",
+          ),
+        );
+        const witness = receipt.confinement.sourceRefs;
+        assert.ok(
+          witness,
+          "each explicit-commit episode records its source-ref witness",
+        );
+        assert.equal(witness.identical, false);
+        assert.notEqual(witness.before.sha256, witness.after.sha256);
+        assert.equal(witness.after.count, witness.before.count + 1);
+        assert.equal(receipt.confinement.trackedStatusByteIdentical, true);
+        assert.match(
+          renderReceipt(receipt),
+          /Source refs unchanged: \*\*false\*\*/u,
+        );
+      }
+      assert.equal(checkEntropyReceipts(repo).status, "ok");
     });
 
     await test("the explicit route binds the named commit, not the working tree", async () => {

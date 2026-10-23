@@ -188,16 +188,26 @@ export function verificationKnownIssues(root, state) {
           )
         : null;
       if (result && (!latest || receipt.ordinal > latest.receipt.ordinal))
-        latest = { receipt, result };
+        latest = { receipt, result, name };
     }
   const issues = Array.isArray(latest?.result.findings)
     ? latest.result.findings.filter(
         (finding) => finding?.kind === "known-issue",
       )
     : [];
-  if (issues.length)
+  const receiptId =
+    latest?.receipt.receiptId ?? latest?.name.replace(/\.json$/u, "");
+  if (latest && !Array.isArray(latest.result.findings))
     sections.push(
-      `Planning receipt ${latest.receipt.receiptId} known issues for ${state.workOrderId}:\n${issues.map((finding) => `- ${finding.criterionId}: ${finding.reason} Reopen when: ${finding.reopenWhen}`).join("\n")}`,
+      `Planning known issues unavailable: ${docRelative(root, "refutations", latest.name)} has missing or non-array findings for ${state.workOrderId}; an earlier receipt is not its current judgment.`,
+    );
+  else if (issues.length)
+    sections.push(
+      `Planning receipt ${receiptId} known issues for ${state.workOrderId}:\n${issues.map((finding) => `- ${finding.criterionId}: ${finding.reason} Reopen when: ${finding.reopenWhen}`).join("\n")}`,
+    );
+  else if (latest)
+    sections.push(
+      `Planning receipt ${receiptId} known issues for ${state.workOrderId}: none.`,
     );
   return sections.length ? `\n\n${sections.join("\n\n")}` : "";
 }

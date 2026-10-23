@@ -9,6 +9,7 @@ import {
   writeFileSync,
 } from "node:fs";
 import { createHash } from "node:crypto";
+import { recordPendingOverride } from "./lib/pending-overrides.mjs";
 import { createCheckpoint } from "./lib/checkpoint.mjs";
 import { findingsAdvisory, reviewFindings } from "./lib/review-findings.mjs";
 import { verificationKnownIssues } from "./lib/verification-briefing.mjs";
@@ -298,7 +299,7 @@ export const OFF_RAMP_PHASES = {
   // A correction changes no phase, and a recorded passing final review's
   // missing product gate is discovered by publication, after `closed`.
   correct: [...openPhases, "closed"],
-  "override-record": openPhases,
+  "override-record": [...openPhases, "closed"],
 };
 const legalOffRamps = (state) =>
   state.workOrderId
@@ -1222,7 +1223,7 @@ const executionBriefing = (state) => {
   const declaration = activeWorkOrderDeclaration(state);
   return briefingCommands(
     state,
-    `Execute ${state.workOrderPath}.\n${declaration.modelSource}\n${declaration.effortSource}${declaration.experimentSource ? `\n${declaration.experimentSource}` : ""}\nRead that authority and only its cited blueprint sections; when its deliverable and evidence exist, run ${commandFor("implementation-ready", state.workOrderId)}.${ledgerBriefing(state, "that command")}${executorEntryBriefing(repoRoot, state.workOrderId)}${targetBriefing(state)}`,
+    `Execute ${state.workOrderPath}.\n${declaration.modelSource}\n${declaration.effortSource}${declaration.experimentSource ? `\n${declaration.experimentSource}` : ""}\nRead that authority and only its cited blueprint sections; when its deliverable and evidence exist, run ${commandFor("implementation-ready", state.workOrderId)}.${ledgerBriefing(state, "that command")}${executorEntryBriefing(repoRoot, state.workOrderId, { experiment: Boolean(declaration.experimentSource) })}${targetBriefing(state)}`,
   );
 };
 const repairBriefing = (state) =>
@@ -1598,6 +1599,9 @@ const run = async (argv) => {
         "verifications",
         `${state.workOrderId}/${verificationId}.md`,
       );
+      // Refuse unreadable briefing inputs before allocating an irreversible
+      // report identity. Restoring the input then permits the ordinary retry.
+      message = verificationBriefing(state, reportPath);
       appendTransition(action, {
         type: "VerificationRequested",
         workOrderId: state.workOrderId,
@@ -1605,7 +1609,6 @@ const run = async (argv) => {
         reportPath,
         costLine: COST_LINE_REQUIRED,
       });
-      message = verificationBriefing(state, reportPath);
       break;
     }
     case "verification-result": {
@@ -2331,7 +2334,7 @@ const run = async (argv) => {
         values.has("--capture") || values.has("--capture-hash")
           ? routeCapture(action, values)
           : {};
-      const { ordinal } = appendTransition(action, {
+      const event = {
         type: "OperatorOverrideRecorded",
         workOrderId: state.workOrderId,
         bypassed,
@@ -2339,7 +2342,31 @@ const run = async (argv) => {
         reason: values.get("--reason"),
         ...captured,
         actor,
-      });
+      };
+      if (state.phase === "closed") {
+        // Start consumes only main's pending lane. Refuse before a local write
+        // rather than strand the record or mutate another checkout's state.
+        const mainPath = mainWorktree(repoRoot);
+        if (directoryIdentity(repoRoot) !== directoryIdentity(mainPath)) {
+          const rerun = `cd ${shellQuote(mainPath)} && node scripts/resume.mjs ${[
+            action,
+            ...args,
+            "--work-order",
+            state.workOrderId,
+          ]
+            .map(shellQuote)
+            .join(" ")}`;
+          throw new Error(
+            `closed-order override-record must run from main; no pending record was written.${captured.capture ? ` The capture remains in this checkout; ensure ${shellQuote(captured.capture)} exists at its ignored intake path in main with the same hash before rerunning.` : ""}\nRun from main: ${rerun}`,
+          );
+        }
+        const pending = recordPendingOverride(repoRoot, event);
+        process.stdout.write(
+          `Recorded pending OperatorOverrideRecorded for ${state.workOrderId} in ${pending}; the next worktree start carries it into the reviewed change. The record is never a precondition for entering or leaving override.\n`,
+        );
+        return;
+      }
+      const { ordinal } = appendTransition(action, event);
       message = `Recorded OperatorOverrideRecorded for ${state.workOrderId} at ordinal ${ordinal}. The record is never a precondition for entering or leaving override.`;
       break;
     }

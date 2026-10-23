@@ -1,3 +1,4 @@
+import { historicalDependencyIds } from "./dependencies.mjs";
 import {
   closeSync,
   existsSync,
@@ -238,7 +239,9 @@ export async function materializeOrder(
         compiled: workOrder,
         authority,
       };
-      validateAllocation(allocation);
+      validateAllocation(allocation, {
+        historicalIds: historicalDependencyIds(root),
+      });
       // The allocation is the durable recovery record. A crash here can leave
       // a missing authority, but never permits another caller to reuse this ID.
       durableCreate(

@@ -34,8 +34,25 @@ export function linesMatching(rule, text) {
     .flatMap((line, index) => (rule.test(line) ? [index + 1] : []));
 }
 
+const publicPrefix = (text, pattern, label) =>
+  text.replace(pattern, (match, offset) => {
+    const tail = text.slice(offset + match.length).split(/[\s"'<>]/u, 1)[0];
+    return tail.split("/").includes("..") ? match : label;
+  });
+const publicPathTemplates = (text) => {
+  const shared = publicPrefix(
+    text,
+    /(?:(?<![\w.~-])|(?<=\\(?:[bfnrt]|u[0-9A-Fa-f]{4})))\/Users\/Shared(?=\/|[^\w.-]|$)/gu,
+    "<shared-users>",
+  );
+  return publicPrefix(
+    shared,
+    /(?<![\w.~-])\/(?:private\/)?tmp\/claude-<uid>\/<project key>\/<session id>\/scratchpad(?=\/|[^\w.-]|$)/gu,
+    "<host-scratchpad>",
+  );
+};
 export const privatePathLines = (name, text) =>
-  linesMatching(privatePathRule(name), text);
+  linesMatching(privatePathRule(name), publicPathTemplates(text));
 
 // A global replacement judges each look-behind against the original text, so
 // a second home prefix written directly after an account name survives one

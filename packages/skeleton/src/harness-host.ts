@@ -1100,13 +1100,50 @@ const nativeText = (content: unknown): string | undefined =>
         )
       ? content.map((part) => part.text).join("\n")
       : undefined;
+function terminalTaskNotification(prompt: unknown): boolean {
+  if (typeof prompt !== "string" || Buffer.byteLength(prompt) > 65536)
+    return false;
+  const text = prompt.trim();
+  if (
+    !text.startsWith("<task-notification>") ||
+    !text.endsWith("</task-notification>") ||
+    text.indexOf("<task-notification>", 1) >= 0
+  )
+    return false;
+  const metadata = text.split("<summary>", 1)[0]!;
+  const values = (name: string) => {
+    const matches = [
+      ...metadata.matchAll(new RegExp(`<${name}>([^<>]+)</${name}>`, "gu")),
+    ];
+    const tags = [
+      ...metadata.matchAll(new RegExp(`</?${name}\\b[^>]*>`, "gu")),
+    ];
+    return tags.length === 2 * matches.length
+      ? matches.map((match) => match[1]!)
+      : null;
+  };
+  const statuses = values("status"),
+    tasks = values("task-id"),
+    tools = values("tool-use-id");
+  if (!statuses || !tasks || !tools) return false;
+  const identity = [...tasks, ...tools];
+  return (
+    statuses.length === 1 &&
+    ["completed", "failed", "stopped", "killed"].includes(statuses[0]!) &&
+    tasks.length <= 1 &&
+    tools.length <= 1 &&
+    identity.length > 0 &&
+    identity.every(
+      (value) => value.length <= 256 && !/[\s<>\p{Cc}]/u.test(value),
+    )
+  );
+}
 function promptRoute(input: HarnessInput) {
-  // UserPromptSubmit has no documented route field. Only the latest native
-  // message with the same bytes establishes a route; an unflushed transcript
-  // or an earlier repeated phrase does not. A queued command the host marks
-  // as a task notification is the host's own message, never the operator's;
-  // a prompt with no transcript evidence is unattributed. No transcript text
-  // leaves here.
+  // UserPromptSubmit has no documented route field. The latest native message
+  // with the same bytes establishes authorship ahead of envelope inference.
+  // A bounded terminal notification can arrive before its transcript row;
+  // other prompts without transcript evidence remain unattributed. No
+  // transcript text leaves here.
   const queued = (mode: unknown) =>
     mode === "task-notification" ? "host-task-notification" : "operator";
   try {
@@ -1121,7 +1158,11 @@ function promptRoute(input: HarnessInput) {
       return {
         route: "mid-turn",
         routeSource: "transcript-enqueue",
-        attribution: queued(row.commandMode),
+        // Enqueue metadata establishes delivery timing, not authorship.
+        attribution:
+          typeof row.commandMode === "string" && row.commandMode.trim()
+            ? queued(row.commandMode)
+            : "unattributed",
       };
     if (
       row?.type === "attachment" &&
@@ -1151,6 +1192,12 @@ function promptRoute(input: HarnessInput) {
   } catch {
     // Missing optional metadata never changes prompt admission.
   }
+  if (terminalTaskNotification(input.prompt))
+    return {
+      route: "mid-turn",
+      routeSource: "host-task-notification-envelope",
+      attribution: "host-task-notification",
+    };
   return {
     route: "unknown",
     routeSource: "host-route-unavailable",
@@ -1712,14 +1759,19 @@ function registeredTargetAdmission(
   if (typeof command !== "string") return null;
   const words = plainShellWords(command);
   if (!words) return null;
-  const shape = registeredTargetCommand(words, root);
-  if (!shape || emittedDenyMatches(root, command, words)) return null;
+  const script = words[1] ? resolve(root, words[1]) : "";
+  const requested =
+    registeredTargetCommand(words, root) ??
+    (/\/scripts\/worktree\.mjs$/u.test(script)
+      ? registeredTargetCommand(words, resolve(script, "../.."))
+      : null);
+  if (!requested || emittedDenyMatches(root, command, words)) return null;
   const withheld = (fact: string) => ({
     advisory: `Registered-target admission withheld: ${fact}; host permissions decide.`,
   });
   // The helper owns a controlled push lane. Raw git and gh commands run the
   // clone's mutable configuration; npm additionally runs lifecycle scripts.
-  if (shape.kind !== "helper" || words[0] === "npm")
+  if (requested && (requested.kind !== "helper" || words[0] === "npm"))
     return withheld(
       "use the node spelling of worktree publish; raw git, gh and npm receive no registered-target admission",
     );
@@ -1728,7 +1780,7 @@ function registeredTargetAdmission(
   try {
     const control = harnessControl(root);
     const order = control.workOrder;
-    if (!order || !/^WO-\d{3}$/.test(order) || shape.workOrder !== order)
+    if (!order || !/^WO-\d{3}$/.test(order))
       return withheld("helper does not name the dispatched order");
     const mainRef = "refs/heads/main";
     const main = git(root, ["worktree", "list", "--porcelain"])
@@ -1737,8 +1789,26 @@ function registeredTargetAdmission(
       ?.split("\n")[0]
       ?.replace(/^worktree /, "");
     if (!main) return withheld("main's checkout is unavailable");
+    const shape = registeredTargetCommand(words, main);
+    if (!shape || shape.kind !== "helper" || words[0] === "npm")
+      return requested?.kind === "helper"
+        ? withheld(
+            `run the trusted main-checkout helper: node ${shellQuote(join(main, "scripts/worktree.mjs"))} ${words.slice(2).map(shellQuote).join(" ")}`,
+          )
+        : null;
+    if (shape.workOrder !== order)
+      return withheld("helper does not name the dispatched order");
+    const mainCommit = git(main, [
+      "--no-replace-objects",
+      "rev-parse",
+      "HEAD^{commit}",
+    ]).trim();
     const committed = (file: string, compareBytes = true) => {
-      const bytes = git(main, ["--no-replace-objects", "show", `HEAD:${file}`]);
+      const bytes = git(main, [
+        "--no-replace-objects",
+        "show",
+        `${mainCommit}:${file}`,
+      ]);
       for (const checkout of [main, root]) {
         const path = contained(checkout, file);
         if (
@@ -1751,7 +1821,13 @@ function registeredTargetAdmission(
       }
       if (
         !/^100(?:644|755) blob /u.test(
-          git(main, ["--no-replace-objects", "ls-tree", "HEAD", "--", file]),
+          git(main, [
+            "--no-replace-objects",
+            "ls-tree",
+            mainCommit,
+            "--",
+            file,
+          ]),
         )
       )
         throw new Error(
@@ -1901,18 +1977,18 @@ function registeredTargetAdmission(
       "package-lock.json",
       ".npmrc",
     ];
-    const closureEntries = git(root, [
+    const closureEntries = git(main, [
       "--no-replace-objects",
       "ls-tree",
       "-r",
       "-z",
-      mainRef,
+      mainCommit,
       "--",
       ...closurePaths,
     ])
       .split("\0")
       .filter(Boolean);
-    const objectFormat = git(root, [
+    const objectFormat = git(main, [
       "rev-parse",
       "--show-object-format",
     ]).trim();
@@ -1920,7 +1996,7 @@ function registeredTargetAdmission(
       const entry = /^(100(?:644|755)) blob ([0-9a-f]+)\t(.+)$/su.exec(line);
       if (!entry)
         return withheld("the helper's source closure has a non-regular input");
-      const file = join(root, entry[3]!);
+      const file = join(main, entry[3]!);
       const stat = lstatSync(file, { throwIfNoEntry: false });
       if (
         !stat?.isFile() ||
@@ -2411,6 +2487,70 @@ function failedShellResults(transcript: string): FailedShellResult[] {
   }
   return failed.slice(-4);
 }
+let shellClassifierHash: string | undefined;
+/** Cache only an empty classification. The marker holds digests, never source
+ * or result text, and a changed input or classifier must be judged afresh. */
+function classifyFailedShellResult(root: string, result: FailedShellResult) {
+  if (result.command.length > 32768 || result.output.length > 65536)
+    return shellDiagnostics(result.command, result.output);
+  const inputHash = digest(JSON.stringify([result.command, result.output]));
+  let classifierHash: string | undefined;
+  const path = join(
+    harnessStateDirectory(root),
+    `${result.use}.shell-negative.json`,
+  );
+  try {
+    classifierHash = shellClassifierHash ??= digest(
+      readFileSync(new URL("./harness-command.js", import.meta.url), "utf8"),
+    );
+    if (lstatSync(path, { throwIfNoEntry: false })?.isFile()) {
+      const cached = JSON.parse(tailOf(path, 4096)) as {
+        version?: unknown;
+        use?: unknown;
+        inputHash?: unknown;
+        classifierHash?: unknown;
+      };
+      if (
+        cached.version === 1 &&
+        cached.use === result.use &&
+        cached.inputHash === inputHash &&
+        cached.classifierHash === classifierHash
+      )
+        return [];
+    }
+  } catch {
+    // An absent, partial or unreadable marker supplies no cached judgment.
+  }
+  const found = shellDiagnostics(result.command, result.output);
+  if (!found.length && classifierHash) {
+    let file: number | undefined;
+    try {
+      mkdirSync(dirname(path), { recursive: true, mode: 0o700 });
+      file = openSync(
+        path,
+        constants.O_WRONLY |
+          constants.O_CREAT |
+          constants.O_TRUNC |
+          constants.O_NOFOLLOW,
+        0o600,
+      );
+      writeSync(
+        file,
+        JSON.stringify({
+          version: 1,
+          use: result.use,
+          inputHash,
+          classifierHash,
+        }) + "\n",
+      );
+    } catch {
+      // Cache failure permits a later retry and changes no guidance or count.
+    } finally {
+      if (file !== undefined) closeSync(file);
+    }
+  }
+  return found;
+}
 /** Keep the identities of every currently eligible result, even when unrelated
  * activity moves its row outside the lane's tail. Read the intact lane in fixed
  * buffers, retaining only those identities, and stop when all are found. */
@@ -2572,7 +2712,13 @@ function observeShellDiagnostics(
       .filter((text): text is string => typeof text === "string")
       .join("\n");
     if (input.tool_name === "Bash" && typeof command === "string" && output) {
-      const found = shellDiagnostics(command, output);
+      const failedUse =
+        failedCall && typeof input.tool_use_id === "string"
+          ? digest(input.tool_use_id)
+          : null;
+      const found = failedUse
+        ? classifyFailedShellResult(root, { use: failedUse, command, output })
+        : shellDiagnostics(command, output);
       // A failed call the host identifies is marked with its use under the
       // claim the transcript route takes, so that route answers it no second
       // time; a host that sends no call identity gets an unmarked count.
@@ -2606,7 +2752,7 @@ function observeShellDiagnostics(
       const failed = (transcript ? failedShellResults(transcript) : [])
         .map((result) => ({
           ...result,
-          found: shellDiagnostics(result.command, result.output),
+          found: classifyFailedShellResult(root, result),
         }))
         .filter(({ found }) => found.length);
       const answered = failed.length
@@ -5781,12 +5927,15 @@ function hookActorFlags(
   ];
 }
 /**
- * WO-158 criterion 5: at `operator override: off` the session hook appends
- * OperatorOverrideRecorded for the selected open order, naming the operator's
- * retained override words as an ignored intake capture. It is admitted
- * exactly as the equivalent `npm run resume -- override-record` tool call.
- * Anything that stops it prints the exact command instead; nothing here can
- * withhold the exit.
+ * At `operator override: off` the session hook records
+ * OperatorOverrideRecorded for the selected order (WO-158 criterion 5),
+ * naming the operator's retained override words as an ignored intake
+ * capture: an open order's control segment takes the event, and a closed
+ * order's record waits in main's ignored pending lane until the next
+ * worktree start carries it (WO-219 row 41). It is admitted exactly as the
+ * equivalent `npm run resume -- override-record` tool call. Anything that
+ * stops it prints the exact command instead; nothing here can withhold the
+ * exit.
  */
 function recordOperatorOverride(
   config: HookConfig,
@@ -5916,15 +6065,23 @@ function recordOperatorOverride(
   }
   const failure = `${output.slice(0, 400) || run.error?.message || "lifecycle unavailable"}`;
   if (!appended) return overrideAdvisory(exit, `resume refused it: ${failure}`);
+  // A closed order's record is pending in main's lane until the next worktree
+  // start carries it (WO-219 row 41): the receipt says so, and its effects
+  // take a route a pull request can carry, never the closed order's tracked
+  // decisions file.
   const receipt =
     run.status === 0
-      ? `DotLn: ${output.split("\n").find((line) => line.startsWith("Recorded OperatorOverrideRecorded")) ?? "recorded OperatorOverrideRecorded"}`
+      ? `DotLn: ${output.split("\n").find((line) => /^Recorded (?:pending )?OperatorOverrideRecorded/.test(line)) ?? "recorded OperatorOverrideRecorded"}`
       : `DotLn: recorded OperatorOverrideRecorded for ${control.workOrder}; resume then failed: ${failure.replace(/\s+/g, " ")}.`;
+  const effects =
+    control.phase === "closed"
+      ? `Its effects read "unobserved": record what the override changed with a further npm run resume -- override-record --bypassed dotln-hook-enforcement --effects <what the recovery changed, or none> --reason <text> --work-order ${control.workOrder} <actor-flags>, run from main's checkout; the next worktree start carries both pending records into the reviewed change.`
+      : `Its effects read "unobserved": record what the override changed in the order's decisions.`;
   return {
     systemMessage: `${exit.systemMessage}\n${receipt}`,
     hookSpecificOutput: {
       hookEventName: "UserPromptSubmit",
-      additionalContext: `${receipt} Its effects read "unobserved": record what the override changed in the order's decisions.`,
+      additionalContext: `${receipt} ${effects}`,
     },
   };
 }

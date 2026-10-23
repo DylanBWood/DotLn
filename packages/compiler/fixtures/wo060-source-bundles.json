@@ -1562,15 +1562,129 @@
         "images": [],
         "revisions": []
       }
+    },
+    {
+      "case": "jwt-credential",
+      "kind": "secret-shape",
+      "planted": "eyJhbGciOiJub25lIn0.eyJzdWIiOiJzeW50aGV0aWMifQ.",
+      "matched": "eyJhbGciOiJub25lIn0.eyJzdWIiOiJzeW50aGV0aWMifQ.",
+      "finding": {
+        "kind": "secret-shape",
+        "id": "jwt-credential",
+        "path": "$.sections[0].text",
+        "start": 12,
+        "end": 59,
+        "span": {
+          "sectionId": "s-log",
+          "start": 12,
+          "end": 59
+        }
+      },
+      "bundle": {
+        "bundleId": "synthetic-screen-jwt-credential",
+        "sourceKind": "synthetic-issue",
+        "revisionId": "2026-09-27T12:00:00Z",
+        "sections": [
+          {
+            "id": "s-log",
+            "heading": "Log",
+            "text": "Before 🙂 eyJhbGciOiJub25lIn0.eyJzdWIiOiJzeW50aGV0aWMifQ. after.",
+            "span": {
+              "sectionId": "s-log",
+              "start": 0,
+              "end": 66
+            }
+          }
+        ],
+        "discussion": [],
+        "images": [],
+        "revisions": []
+      },
+      "without": {
+        "bundleId": "synthetic-screen-jwt-credential",
+        "sourceKind": "synthetic-issue",
+        "revisionId": "2026-09-27T12:00:00Z",
+        "sections": [
+          {
+            "id": "s-log",
+            "heading": "Log",
+            "text": "Before 🙂 Removed compact credential. after.",
+            "span": {
+              "sectionId": "s-log",
+              "start": 0,
+              "end": 46
+            }
+          }
+        ],
+        "discussion": [],
+        "images": [],
+        "revisions": []
+      }
+    },
+    {
+      "case": "url-userinfo-password",
+      "kind": "url-credential",
+      "planted": "https://synthetic:not-a-password@github.com/",
+      "matched": "not-a-password",
+      "finding": {
+        "kind": "url-credential",
+        "id": "url-userinfo-password",
+        "path": "$.sections[0].text",
+        "start": 30,
+        "end": 44,
+        "span": {
+          "sectionId": "s-log",
+          "start": 30,
+          "end": 44
+        }
+      },
+      "bundle": {
+        "bundleId": "synthetic-screen-url-userinfo-password",
+        "sourceKind": "synthetic-issue",
+        "revisionId": "2026-09-27T12:00:00Z",
+        "sections": [
+          {
+            "id": "s-log",
+            "heading": "Log",
+            "text": "Before 🙂 https://synthetic:not-a-password@github.com/ after.",
+            "span": {
+              "sectionId": "s-log",
+              "start": 0,
+              "end": 63
+            }
+          }
+        ],
+        "discussion": [],
+        "images": [],
+        "revisions": []
+      },
+      "without": {
+        "bundleId": "synthetic-screen-url-userinfo-password",
+        "sourceKind": "synthetic-issue",
+        "revisionId": "2026-09-27T12:00:00Z",
+        "sections": [
+          {
+            "id": "s-log",
+            "heading": "Log",
+            "text": "Before 🙂 https://synthetic@github.com/ after.",
+            "span": {
+              "sectionId": "s-log",
+              "start": 0,
+              "end": 48
+            }
+          }
+        ],
+        "discussion": [],
+        "images": [],
+        "revisions": []
+      }
     }
   ],
   "limits": {
     "strings": [
-      "token a1b2c3d4e5f60718293a4b5c6d7e8f9012345678",
-      "eyJhbGciOiJub25lIn0.eyJzdWIiOiJzeW50aGV0aWMifQ.",
-      "https://synthetic:not-a-password@github.com/"
+      "token a1b2c3d4e5f60718293a4b5c6d7e8f9012345678"
     ],
-    "hash": "fnv1a64:ef01f83f06d189ef",
+    "hash": "fnv1a64:4c1d3b06dc9c1d65",
     "bundle": {
       "bundleId": "synthetic-screen-limits",
       "sourceKind": "synthetic-issue",
@@ -1579,11 +1693,11 @@
         {
           "id": "s-limits",
           "heading": "Outside the declared set",
-          "text": "An unprefixed 40-hex token: token a1b2c3d4e5f60718293a4b5c6d7e8f9012345678\nA JWT without the scheme word: eyJhbGciOiJub25lIn0.eyJzdWIiOiJzeW50aGV0aWMifQ.\nA password in the userinfo of an allowed host: https://synthetic:not-a-password@github.com/",
+          "text": "An unprefixed 40-hex token: token a1b2c3d4e5f60718293a4b5c6d7e8f9012345678",
           "span": {
             "sectionId": "s-limits",
             "start": 0,
-            "end": 245
+            "end": 74
           }
         }
       ],

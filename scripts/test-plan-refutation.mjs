@@ -718,6 +718,7 @@ export async function fixtures() {
   const check = (label, run) => test(label, run);
   try {
     await laneConditionFixtures();
+    await movedAmendmentFixtures();
     await check(
       "WO-178 malformed decision errors name the record without parser excerpts",
       async () => {
@@ -3572,7 +3573,10 @@ else {
         writeFileSync(outside, decisionBytes);
         rmSync(join(repo, decisionPath));
         symlinkSync(outside, join(repo, decisionPath));
-        await assert.rejects(checkPlanGate(repo), /contained regular file/);
+        await assert.rejects(
+          checkPlanGate(repo),
+          /contained regular file|not a readable regular file \(OUTSIDE_ROOT\)/u,
+        );
         rmSync(join(repo, decisionPath));
         write(repo, decisionPath, decisionBytes);
         write(
@@ -3624,6 +3628,19 @@ else {
               "Record the observed status in The one-paragraph story of product 00.",
             ),
           );
+          write(
+            repo,
+            "docs/product/writeback-candidate.md",
+            "# Candidate\n\nKeep exactly this policy.\n",
+          );
+          write(
+            repo,
+            vision,
+            read(repo, vision).replace(
+              "## Other narrative",
+              "[Candidate](writeback-candidate.md#candidate)\n\n## Other narrative",
+            ),
+          );
           commit(repo, "declare status writeback");
           const receipt = await writeDirectReceipt(
             repo,
@@ -3639,7 +3656,7 @@ else {
           const beforeVision = read(repo, vision);
           const afterVision = beforeVision.replace(
             "Evidence describes the shape.",
-            "Evidence describes the shape. The bounded run was observed.",
+            "Evidence describes the shape. The bounded run was [observed](#the-core-bet).",
           );
           write(repo, vision, afterVision);
           const approvedOrder = read(repo, path).replace(
@@ -3730,8 +3747,8 @@ else {
             [
               vision,
               afterVision.replace(
-                "bounded run was observed.",
-                "bounded run was observed. ",
+                "bounded run was [observed](#the-core-bet).",
+                "bounded run was [observed](#the-core-bet). ",
               ),
             ],
             [
@@ -3843,6 +3860,46 @@ else {
               (row) => row.kind === "authorized-execution-writeback",
             ),
           );
+          // A separately committed authorized writeback composes with a later
+          // citation relocation, even when that writeback added an inline link.
+          write(
+            repo,
+            "docs/planning/writeback-candidate.md",
+            "# Candidate\n\nKeep exactly this policy.\n",
+          );
+          write(
+            repo,
+            "docs/product/writeback-candidate.md",
+            "# Retained source\n",
+          );
+          const relocatedVision = read(repo, vision).replace(
+            "writeback-candidate.md#candidate",
+            "../planning/writeback-candidate.md#candidate",
+          );
+          write(repo, vision, relocatedVision);
+          commit(repo, "relocate citation after authorized story writeback");
+          const composed = await checkPlanGate(repo);
+          for (const kind of [
+            "authorized-execution-writeback",
+            "relocated-planning-link",
+          ])
+            assert.ok(
+              composed.continuation.committedUpdates.some(
+                (row) => row.kind === kind,
+              ),
+              kind,
+            );
+          write(
+            repo,
+            vision,
+            relocatedVision.replace("Keep a", "Change a") +
+              "Unauthorized narrative change.\n",
+          );
+          await assert.rejects(
+            checkPlanGate(repo),
+            /matching the current subject/,
+          );
+          write(repo, vision, relocatedVision);
           assert.equal(
             read(repo, `${RECEIPTS}/${receipt.receiptId}.json`),
             receiptBytes,
@@ -6739,6 +6796,49 @@ if (isMainModule(import.meta.url)) {
 }
 
 export async function laneConditionFixtures() {
+  await test("gate-task hold waits for three earlier fresh samples", async () => {
+    const { gatePerformanceConditions } =
+      await import("./lib/planning-conditions.mjs");
+    const checks = Array.from({ length: 4 }, (_, i) => ({
+      checkId: "npm test",
+      executed: true,
+      exitCode: 0,
+      gateSelection: "plain",
+      executionMode: "fresh",
+      durationMs: 1000,
+      recordedAt: `2030-01-0${i + 1}T00:00:00Z`,
+      evidenceRef: `fixture:${i}`,
+      taskTimeline: [
+        {
+          name: "fixture-task",
+          executed: true,
+          exitCode: 0,
+          durationMs: i === 3 ? 2000 : 1000,
+        },
+      ],
+    }));
+    for (const count of [1, 2, 3]) {
+      const sample = checks.slice(0, count).map((row, index) =>
+        index === count - 1
+          ? {
+              ...row,
+              taskTimeline: [{ ...row.taskTimeline[0], durationMs: 10000 }],
+            }
+          : row,
+      );
+      const task = gatePerformanceConditions(
+        sample,
+        "2030-01-05T00:00:00Z",
+      ).find((row) => row.id === "gate-task:fixture-task");
+      assert.equal(task.holds, null, `${count - 1} earlier samples`);
+      assert.match(task.unavailable, /three earlier fresh task samples/u);
+    }
+    const task = gatePerformanceConditions(checks, "2030-01-05T00:00:00Z").find(
+      (row) => row.id === "gate-task:fixture-task",
+    );
+    assert.equal(task.samples, 3);
+    assert.equal(task.holds, true);
+  });
   await test("document conditions read each child row, exclude lane wait and keep failed contention", async () => {
     const {
       measureDocumentGates,
@@ -6890,4 +6990,170 @@ export async function laneConditionFixtures() {
     ])
       assert.equal(results.get("alpha")[key], undefined);
   });
+}
+
+export async function movedAmendmentFixtures({
+  locations = ["contained", "moved"],
+} = {}) {
+  const parent = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-moved-amendment-")),
+  );
+  try {
+    for (const location of locations)
+      await test(`execution amendment keeps its decision binding for a closed target with ${location} decisions`, async () => {
+        const repo = makeRepo(parent, `${location}-launchpad`);
+        const target = join(parent, `${location}-target`);
+        mkdirSync(target);
+        runGit(target, ["init", "-q"]);
+        write(target, "source.txt", "Synthetic reviewed target.\n");
+        commit(target, "reviewed target");
+        const reviewed = runGit(target, ["rev-parse", "HEAD"]);
+        const path = orderPath("WO-901");
+        write(
+          repo,
+          path,
+          read(repo, path).replace(
+            "**Model:** fixture",
+            `**Repository:** target @ ${reviewed}\n**Model:** fixture`,
+          ),
+        );
+        commit(repo, "declare the reviewed target");
+        const receipt = await writeDirectReceipt(repo);
+        commit(repo, "record the reviewed plan");
+        const decision = {
+          id: "WO-901-D001",
+          date: "2030-01-02",
+          dispatch: "scope expand: synthetic authorized repair",
+          decision: "Preserve the bounded target repair.",
+          evidence: ["Synthetic reviewed target commit."],
+          rejected: [],
+          reopenWhen: "The target contract changes.",
+        };
+        const decisionPath = "docs/evidence/WO-901/decisions.md";
+        const decisionText = `# Decisions\n\n## WO-901-D001\n\n\`\`\`json\n${JSON.stringify(decision)}\n\`\`\`\n`;
+        write(repo, decisionPath, decisionText);
+        write(
+          repo,
+          path,
+          read(repo, path).replace("useful shape", "repaired useful shape"),
+        );
+        const event = await amendPlanOrder(repo, {
+          workOrderId: "WO-901",
+          decisionId: decision.id,
+          reason: "Synthetic authorization of the bounded target repair",
+          now: () => "2030-01-02T13:00:00.000Z",
+        });
+        assert.equal(event.type, "PlanExecutionAmended");
+        assert.equal(event.receiptHash, receipt.receiptHash);
+        const log = read(repo, OVERRIDES);
+        write(target, path, read(repo, path));
+        write(target, decisionPath, decisionText);
+        const reportPath = "docs/final-reviews/WO-901/FINAL-001.md";
+        write(target, reportPath, "# Synthetic final review\n\nPass.\n");
+        commit(target, "preserve immutable target records");
+        const recordsCommit = runGit(target, ["rev-parse", "HEAD"]);
+        const records = [
+          { kind: "order", path },
+          { kind: "decisions", path: decisionPath },
+          { kind: "final-review", path: reportPath },
+        ].map((record) => ({
+          ...record,
+          sha256: createHash("sha256")
+            .update(readFileSync(join(target, record.path)))
+            .digest("hex"),
+        }));
+        write(
+          repo,
+          "docs/control/local/repository-clones.json",
+          JSON.stringify({ target }),
+        );
+        const segment = [
+          {
+            type: "WorkOrderActivated",
+            workOrderPath: path,
+            repositoryId: "target",
+            baseCommit: reviewed,
+            documentationRoot: "docs",
+          },
+          {
+            type: "FinalReviewCompleted",
+            finalReviewId: "FINAL-001",
+            reportPath,
+            verdict: "pass",
+            targetSubject: {
+              repositoryId: "target",
+              branch: "wo-901",
+              baseCommit: reviewed,
+              commit: reviewed,
+            },
+          },
+          {
+            type: "TargetRecordsCommitted",
+            repositoryId: "target",
+            branch: "wo-901",
+            parent: reviewed,
+            commit: recordsCommit,
+            root: "docs",
+            records,
+          },
+        ].map((row, index) => ({
+          schemaVersion: 1,
+          workOrderId: "WO-901",
+          recordedAt: `2030-01-02T14:00:0${index}.000Z`,
+          ...row,
+        }));
+        write(
+          repo,
+          "docs/control/orders/WO-901.jsonl",
+          segment.map(JSON.stringify).join("\n") + "\n",
+        );
+        if (location === "moved") rmSync(join(repo, decisionPath));
+        assert.equal(
+          existsSync(join(repo, decisionPath)),
+          location === "contained",
+        );
+        const { readControl } = await import("./lib/control-store.mjs");
+        const { readDecisions } = await import("./lib/meta.mjs");
+        const state = readControl(repo).orders.get("WO-901").state;
+        assert.equal(state.phase, "closed");
+        assert.equal(state.targetRecords.commit, recordsCommit);
+        const bound = readDecisions(repo, { workOrder: "WO-901" }).find(
+          (row) => row.id === decision.id,
+        );
+        assert.equal(bound.targetRecord.commit, recordsCommit);
+        assert.equal(bound.recordSource, decisionText);
+        assert.equal(Object.keys(bound).includes("targetRecord"), false);
+        const checked = await checkPlanGate(repo);
+        assert.ok(
+          checked.continuation.workspaceUpdates.some(
+            (row) =>
+              row.kind === "authorized-execution-amendment" &&
+              row.workOrderId === "WO-901",
+          ),
+        );
+        write(
+          repo,
+          OVERRIDES,
+          JSON.stringify({ ...event, decisionHash: sha256("wrong decision") }) +
+            "\n",
+        );
+        await assert.rejects(
+          checkPlanGate(repo),
+          /execution amendment decision binding differs/u,
+          "immutable moved metadata cannot relax the bound decision hash",
+        );
+        const missingDecision =
+          JSON.stringify({ ...event, decisionId: "WO-901-D999" }) + "\n";
+        write(repo, OVERRIDES, missingDecision);
+        await assert.rejects(
+          checkPlanGate(repo),
+          /execution amendment needs recorded decision WO-901-D999/u,
+        );
+        assert.equal(read(repo, OVERRIDES), missingDecision);
+        write(repo, OVERRIDES, log);
+        assert.ok((await checkPlanGate(repo)).continuation);
+      });
+  } finally {
+    rmSync(parent, { recursive: true, force: true });
+  }
 }

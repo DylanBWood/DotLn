@@ -115,7 +115,12 @@ export function allocationSections(event) {
   return set;
 }
 /** Global migration belongs to WO-113; only generated authorities opt in here. */
-export function checkGeneratedSections(markdown, path, expected = sections) {
+export function checkGeneratedSections(
+  markdown,
+  path,
+  expected = sections,
+  { historicalIds = new Set() } = {},
+) {
   if (!parseDerivedProvenance(markdown, path))
     throw new Error(`${path}: missing derived provenance`);
   const visibleHeadings = [...markdown.matchAll(/^(#{1,6}) (.+)$/gm)];
@@ -129,12 +134,17 @@ export function checkGeneratedSections(markdown, path, expected = sections) {
     throw new Error(
       `${path}: generated authority requires stable sections: ${expected.join(", ")}`,
     );
-  const dependencies = parseDependencies(markdown, path);
+  const dependencies = parseDependencies(
+    markdown,
+    path,
+    undefined,
+    historicalIds,
+  );
   if (dependencies.source !== "typed")
     throw new Error(`${path}: generated authority requires typed dependencies`);
   return true;
 }
-export function validateAllocation(event) {
+export function validateAllocation(event, { historicalIds = new Set() } = {}) {
   if (
     event.type !== "WorkOrderIdentityAllocated" ||
     event.schemaVersion !== 1 ||
@@ -157,6 +167,7 @@ export function validateAllocation(event) {
     event.authority,
     event.workOrderPath,
     allocationSections(event),
+    { historicalIds },
   );
   if (
     canonical(parseDerivedProvenance(event.authority, event.workOrderPath)) !==

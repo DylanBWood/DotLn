@@ -62,7 +62,8 @@ import {
   workOrderAuthorityPath,
   isMainModule,
 } from "./lib/paths.mjs";
-import { statusProjection } from "./resume.mjs";
+import { statusProjection, refreshControlProjection } from "./resume.mjs";
+import { carryPendingOverrides } from "./lib/pending-overrides.mjs";
 import { readControl } from "./lib/control-store.mjs";
 import { constellation, prepareBeaconDisposal } from "./lib/beacons.mjs";
 import {
@@ -510,6 +511,7 @@ export async function completeSelfStart(
     throw new Error("preserved start authority differs");
   await carrySiblingReceipts(mainPath, target, siblingReceipts);
   carryLocalTerms(mainPath, target);
+  carryPendingOverrides(mainPath, target, refreshControlProjection);
   const state = readControl(target).orders.get(workOrderId)?.state;
   let output = "";
   if (!state || ["closed", "withdrawn"].includes(state.phase)) {
@@ -651,6 +653,7 @@ const startTargetWorktree = async (mainPath, entry) => {
       entry.siblingReceipts ?? capturePendingReceipts(mainPath),
     );
     carryLocalTerms(mainPath, launchpad);
+    carryPendingOverrides(mainPath, launchpad, refreshControlProjection);
     const state = readControl(launchpad).orders.get(workOrderId)?.state;
     if (!state || ["closed", "withdrawn"].includes(state.phase)) {
       const activated = spawnSync(

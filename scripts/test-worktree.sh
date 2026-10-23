@@ -61,6 +61,12 @@ printf 'EXAMPLE=tracked\n' >"$main/.env.example"
 printf '%s\n' 'import {mkdirSync,writeFileSync} from "node:fs"; mkdirSync(".runtime",{recursive:true}); writeFileSync(".runtime/bootstrap-ready", "prepared before launch");' >"$main/scripts/bootstrap.mjs"
 mkdir -p "$main/docs/siblings"
 printf '%s\n' '{"schemaVersion":1,"siblings":[{"id":"starter-fixture","purpose":"Fixture export","relation":{"kind":"export","coreCommit":null},"capabilityRows":[]}]}' >"$main/docs/siblings/siblings.json"
+printf '# WO-094 — prior closed fixture\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n' >"$main/docs/work-orders/WO-094-fixture.md"
+printf '# WO-093 — malformed lane fixture\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n' >"$main/docs/work-orders/WO-093-fixture.md"
+mkdir -p "$main/docs/control/orders"
+printf '%s\n' \
+  '{"schemaVersion":1,"type":"WorkOrderActivated","workOrderId":"WO-094","workOrderPath":"docs/work-orders/WO-094-fixture.md"}' \
+  '{"schemaVersion":1,"type":"FinalReviewCompleted","workOrderId":"WO-094","finalReviewId":"FINAL-001","reportPath":"docs/final-reviews/WO-094/FINAL-001.md","verdict":"pass"}' >"$main/docs/control/orders/WO-094.jsonl"
 git -C "$main" add .
 git -C "$main" -c maintenance.auto=false commit -m initial >/dev/null
 git -C "$main" push -u origin main >/dev/null 2>&1
@@ -110,10 +116,20 @@ test -z "$(git -C "$main" branch --list wo-099)"
 "$node_bin" - "$pending_lane/2026-10-13T12-00-00-000Z.json" "$(git -C "$main" rev-parse HEAD)" <<'JS'
 const fs=require('node:fs');fs.writeFileSync(process.argv[2],JSON.stringify({sibling:'starter-fixture',coreCommit:process.argv[3],manifestHash:`sha256:${'1'.repeat(64)}`,buildHash:'fnv1a64:1234567890abcdef',date:'2026-10-13T12:00:00.000Z'})+'\n');
 JS
+cp "$main/docs/control/orders/WO-094.jsonl" "$test_root/prior-control.before"
+node "$main/scripts/resume.mjs" override-record --work-order WO-094 \
+  --bypassed release-close --effects fixture-recovery --reason 'Record the fixture post-close recovery.' \
+  --harness human --harness-version not-applicable --model human --effort unknown --source operator-attested >/dev/null
+cmp "$main/docs/control/orders/WO-094.jsonl" "$test_root/prior-control.before"
 start_output="$(PATH="$test_root/bin:$PATH" node "$main/scripts/worktree.mjs" start WO-099 docs/work-orders/WO-099-fixture.md)"
 subject="$test_root/project-wo099"
 test -d "$subject"
 test -f "$subject/.runtime/bootstrap-ready"
+grep -Fq '"type":"OperatorOverrideRecorded"' "$subject/docs/control/orders/WO-094.jsonl"
+grep -Fq 'fixture-recovery' "$subject/docs/control/current.md"
+cmp "$main/docs/control/orders/WO-094.jsonl" "$test_root/prior-control.before"
+"$node_bin" -e 'const fs=require("node:fs"); if (fs.readdirSync(process.argv[1]).length) process.exit(1)' "$main/docs/control/local/pending-overrides"
+printf 'post-close override reached the next worktree control segment and projection\n'
 grep -q '"workOrderId":"WO-099"' "$subject/docs/control/orders/WO-099.jsonl"
 grep -Fq "cd '$subject'" <<<"$start_output"
 grep -Fq '  codex' <<<"$start_output"
@@ -126,6 +142,13 @@ test -f "$subject/docs/evidence/siblings/starter-fixture/2026-10-13T12-00-00-000
 test ! -f "$pending_lane/2026-10-13T12-00-00-000Z.json"
 (cd "$subject" && node scripts/siblings.mjs index --check)
 test -z "$(git -C "$main" status --porcelain --untracked-files=all)"
+malformed_overrides="$main/docs/control/local/pending-overrides/WO-094-00000000-0000-0000-0000-000000000000.json"
+printf '{malformed pending override\n' >"$malformed_overrides"
+malformed_override_start="$(PATH="$test_root/bin:$PATH" node "$main/scripts/worktree.mjs" start WO-093 docs/work-orders/WO-093-fixture.md 2>&1)"
+grep -Fq 'Advisory: pending override lane docs/control/local/pending-overrides retained' <<<"$malformed_override_start"
+test -d "$test_root/project-wo093"
+test "$(cat "$malformed_overrides")" = '{malformed pending override'
+printf 'malformed pending override lane advised and worktree start proceeded\n'
 # The carried files belong to this order's reviewed change, alongside control.
 git -C "$subject" add docs/evidence/siblings docs/siblings
 test ! -e "$test_root/codex-invoked"

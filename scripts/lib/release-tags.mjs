@@ -65,10 +65,13 @@ export const tagAnnotation = (root, tag) =>
 // A starter refresh tag describes core's export, not an instance release.
 // Judge the annotation the refresh writes; a lightweight or retagged object
 // remains an ordinary tag and cannot silently disappear from the baseline.
-export const isStarterTag = (root, name, tag) => {
+export const isStarterTag = (root, name, tag, annotations) => {
   if (tag.objectType !== "tag") return false;
-  const annotation = tagAnnotation(root, name);
+  const annotation = annotations
+    ? annotations.get(name)
+    : tagAnnotation(root, name);
   return (
+    typeof annotation === "string" &&
     annotation.startsWith(`Starter ${name}\n\n`) &&
     /^Core commit: (?:[a-f0-9]{40}|[a-f0-9]{64})$/mu.test(annotation)
   );

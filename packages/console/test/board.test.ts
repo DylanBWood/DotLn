@@ -1314,3 +1314,66 @@ test("WO-225 board failure strings contain no fixture root, Node binary or home 
 test("WO-225 carried board schema admits the empty-source projection", () => {
   assert.ok(schemaMatches(projectBoard({}), schema, schema));
 });
+
+test("WO-219 console projects chained actor corrections with segment evidence and keeps raw events", () => {
+  const actor = {
+    harness: "codex-cli",
+    harnessVersion: "fixture",
+    model: "before",
+    effort: "high",
+    source: "unknown",
+    raw: "ultra",
+    mode: "subagents",
+  };
+  const events = [
+    { type: "WorkOrderActivated", workOrderId: "WO-998" },
+    { type: "WorkOrderActivated", workOrderId: "WO-999" },
+    { type: "ImplementationReady", workOrderId: "WO-999", actor },
+    {
+      type: "RecordCorrected",
+      workOrderId: "WO-999",
+      subject: { ordinal: 3, type: "ImplementationReady" },
+      fields: { model: "corrected", harnessVersion: "corrected-version" },
+      actor,
+    },
+    {
+      type: "RecordCorrected",
+      workOrderId: "WO-999",
+      subject: { ordinal: 3, type: "ImplementationReady" },
+      fields: { effort: "xhigh", source: "operator-attested" },
+      actor,
+    },
+  ];
+  const sources: BoardSources = {
+    controlLog: available("control:canonical-segments", [
+      { ref: "docs/control/resume.jsonl", value: events },
+    ]),
+  };
+  const before = JSON.stringify(sources);
+  freeze(sources);
+  const board = projectBoard(sources);
+  const control = section(board, "control-actors");
+  assert.equal(
+    control.status,
+    "available",
+    control.explanation ?? "control actors should project",
+  );
+  const row = control.rows.find(
+    (entry) => cells(entry)["lastAction"]?.value === "ImplementationReady",
+  )!;
+  assert.ok(row);
+  assert.equal(cells(row)["model"]!.value, "corrected");
+  assert.equal(cells(row)["effort"]!.value, "xhigh");
+  assert.equal(cells(row)["harnessVersion"]!.value, "corrected-version");
+  assert.equal(cells(row)["source"]!.value, "operator-attested");
+  assert.deepEqual(cells(row)["correctedBy"]!.value, [4, 5]);
+  for (const ordinal of [4, 5])
+    assert.ok(
+      board.evidence.some(
+        (entry) =>
+          entry.record === `append:${ordinal} (RecordCorrected)` &&
+          cells(row)["model"]!.evidence.includes(entry.id),
+      ),
+    );
+  assert.equal(JSON.stringify(sources), before);
+});

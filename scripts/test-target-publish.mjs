@@ -29,7 +29,11 @@ import { appendEvent, decodeLog } from "@dotln/kernel";
 import { WorkerStore } from "../packages/skeleton/dist/src/worker-store.js";
 import { WorkerFailure } from "../packages/skeleton/dist/src/worker-protocol.js";
 import { RetryableTriageError } from "../packages/skeleton/dist/src/vertical-judgment-host.js";
-import { SOURCE_SECRET_SHAPES, SOURCE_URL_FORMS } from "@dotln/compiler";
+import {
+  SOURCE_SECRET_SHAPES,
+  SOURCE_URL_FORMS,
+  SOURCE_URL_CREDENTIAL_SHAPES,
+} from "@dotln/compiler";
 import { SourceChangeHost } from "../packages/skeleton/dist/src/source-change-host.js";
 import { SourceChangeWorktree } from "../packages/skeleton/dist/src/source-change-worktree.js";
 import {
@@ -2390,6 +2394,7 @@ await test("WO-065 AC2: every declared secret and URL form is refused without pe
     declared.screened.map((item) => item.case).sort(),
     [
       ...SOURCE_SECRET_SHAPES.map((item) => item.shapeId),
+      ...SOURCE_URL_CREDENTIAL_SHAPES.map((item) => item.shapeId),
       ...SOURCE_URL_FORMS.map((item) => item.formId),
     ].sort(),
   );
@@ -2397,7 +2402,7 @@ await test("WO-065 AC2: every declared secret and URL form is refused without pe
   const planted = declared.screened.map((item, index) => ({
     item,
     id: `IC_secret_${index}`,
-    body: `é ${item.matched} tail`,
+    body: `é ${item.planted} tail`,
   }));
   pullOf(fixture, "DotlnComments").comments.nodes.push(
     ...planted.map(({ id, body }) => fixtureComment(id, body)),
@@ -2413,8 +2418,10 @@ await test("WO-065 AC2: every declared secret and URL form is refused without pe
       path: `$.data.repository.pullRequest.comments.nodes[${planted.findIndex((entry) => entry.id === id) + 1}].body`,
       span: {
         entryId: "comment",
-        start: 3,
-        end: 3 + Buffer.byteLength(item.matched),
+        start: Buffer.byteLength(body.slice(0, body.indexOf(item.matched))),
+        end:
+          Buffer.byteLength(body.slice(0, body.indexOf(item.matched))) +
+          Buffer.byteLength(item.matched),
       },
     });
     assert.equal(

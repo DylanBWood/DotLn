@@ -1,5 +1,9 @@
 import { docRelative } from "./config.mjs";
-import { parseDependencies } from "./dependencies.mjs";
+import {
+  historicalDependencyIds,
+  historicalDependencyIdsAt,
+  parseDependencies,
+} from "./dependencies.mjs";
 
 const seedFile = (root) =>
   docRelative(root, "planning", "critical-path-2026-09-08.json");
@@ -57,8 +61,18 @@ export function dependencyMigration(root, judged, original, read) {
       );
   };
   return (before, after, path, workOrderId) => {
-    const old = parseDependencies(before, path, workOrderId);
-    const next = parseDependencies(after, path, workOrderId);
+    const old = parseDependencies(
+      before,
+      path,
+      workOrderId,
+      historicalDependencyIdsAt(original),
+    );
+    const next = parseDependencies(
+      after,
+      path,
+      workOrderId,
+      historicalDependencyIds(root),
+    );
     if (old.source === "typed" || next.source !== "typed")
       return { source: after, migrated: false };
     if (!seed) {

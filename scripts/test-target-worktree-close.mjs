@@ -1,3 +1,4 @@
+import { spawnSync } from "node:child_process";
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
@@ -1480,3 +1481,136 @@ test("judge-only refuses fetched tracked paths that would overwrite retained ign
     },
     { baseIgnore: "dist/\n" },
   ));
+
+for (const side of ["base", "target"])
+  test(`immutable ${side} disposable output stops deletion with the checkout role and retry command`, (t) => {
+    if (process.platform !== "darwin") {
+      t.skip("the filesystem immutable flag is unavailable on this platform");
+      return;
+    }
+    return withFixture(
+      (f) => {
+        f.config.repositories.target.disposable = ["node_modules"];
+        write(f.main, "dotln.config.json", JSON.stringify(f.config));
+        git(f.main, "add", "-A");
+        git(
+          f.main,
+          "-c",
+          "maintenance.auto=false",
+          "commit",
+          "-qm",
+          "Declare disposable output",
+        );
+        git(f.main, "push", "-q", "origin", "main");
+        f.mapClone();
+        f.start();
+        mergedCloseFixture(f);
+        const root = side === "base" ? f.clone : f.target;
+        for (const name of ["a-first.txt", "b-immutable.txt", "c-after.txt"])
+          write(root, `node_modules/${name}`, "regenerable output\n");
+        const locked = join(root, "node_modules/b-immutable.txt");
+        const set = spawnSync("chflags", ["uchg", locked], {
+          encoding: "utf8",
+        });
+        if (
+          set.status !== 0 &&
+          /not supported|unsupported|ENOTSUP/iu.test(set.stderr ?? "")
+        ) {
+          t.skip("this filesystem does not support immutable flags");
+          return;
+        }
+        assert.equal(set.status, 0, set.stderr);
+        try {
+          const refused = f.close("--publish");
+          assertCloseRefusal(
+            f,
+            refused,
+            "--publish",
+            new RegExp(
+              `${side === "base" ? "target clone base main" : "target worktree"} cannot close: disposable directory node_modules could not remove node_modules/b-immutable.txt`,
+            ),
+          );
+          assert.match(
+            refused.stderr,
+            /no further deletion attempted.*chflags nouchg/u,
+          );
+          assert.ok(
+            existsSync(join(root, "node_modules/c-after.txt")),
+            "nothing after the failing entry is deleted",
+          );
+        } finally {
+          assert.equal(
+            spawnSync("chflags", ["nouchg", locked], { encoding: "utf8" })
+              .status,
+            0,
+          );
+        }
+      },
+      { baseIgnore: "node_modules\n" },
+    );
+  });
+
+for (const vector of ["target-files", "target-directories", "judge-only"])
+  test(`oversized ${vector} listing names its checkout role and a runnable close retry`, () =>
+    withFixture(
+      (f) => {
+        f.config.repositories.target.disposable = ["dist"];
+        if (vector === "judge-only")
+          f.config.repositories.target.baseDisposablePolicy = "judge-only";
+        write(f.main, "dotln.config.json", JSON.stringify(f.config));
+        git(f.main, "add", "-A");
+        git(
+          f.main,
+          "-c",
+          "maintenance.auto=false",
+          "commit",
+          "-qm",
+          "Declare disposable listing fixture",
+        );
+        git(f.main, "push", "-q", "origin", "main");
+        f.mapClone();
+        f.start();
+        mergedCloseFixture(f);
+        if (vector === "judge-only")
+          write(f.clone, "dist/keep.txt", "retained ignored output\n");
+        const bin = join(f.base, "listing-bin");
+        mkdirSync(bin);
+        const realGit = spawnSync("/bin/sh", ["-c", "command -v git"], {
+          env: f.env,
+          encoding: "utf8",
+        }).stdout.trim();
+        const counter = join(bin, "tree-count");
+        const fakeGit = `#!${process.execPath}
+import {readFileSync,writeFileSync} from 'node:fs';
+import {spawnSync} from 'node:child_process';
+const args=process.argv.slice(2),cwd=args[args.indexOf('-C')+1],vector=${JSON.stringify(vector)},target=${JSON.stringify(f.target)},clone=${JSON.stringify(f.clone)};
+let overflow=cwd===target&&args.includes('ls-files')&&(vector==='target-directories'?args.includes('--directory'):vector==='target-files'&&args.includes('--ignored')&&!args.includes('--directory'));
+if(vector==='judge-only'&&cwd===clone&&args.includes('ls-files')&&args.includes('--others')) {process.stdout.write('dist\\0');process.exit(0);}
+if(vector==='judge-only'&&cwd===clone&&args.includes('ls-tree')&&args.includes('--name-only')) {let n=0;try{n=Number(readFileSync(${JSON.stringify(counter)},'utf8'));}catch{}writeFileSync(${JSON.stringify(counter)},String(++n));overflow=n===2;}
+if(overflow){for(let n=0;n<19000;n++)process.stdout.write('dist/'+('a'.repeat(1000))+'/'+n+'\\0');process.exit(0);}
+const result=spawnSync(${JSON.stringify(realGit)},args,{stdio:'inherit'});process.exit(result.status??1);
+`;
+        writeFileSync(join(bin, "git"), fakeGit, { mode: 0o755 });
+        const refused = f.call(
+          f.main,
+          f.main,
+          "release",
+          ["close", "WO-999", "--publish"],
+          { PATH: `${bin}:${f.env.PATH}` },
+        );
+        assertCloseRefusal(
+          f,
+          refused,
+          "--publish",
+          new RegExp(
+            `${vector === "judge-only" ? "target clone base main" : "target worktree"} cannot close: .*16 MiB`,
+          ),
+        );
+        assert.doesNotMatch(refused.stderr, /[Ff]ix what Git reports/u);
+        assert.ok(
+          existsSync(f.target),
+          "the listing refuses before worktree removal",
+        );
+      },
+      { baseIgnore: "dist\n" },
+    ));

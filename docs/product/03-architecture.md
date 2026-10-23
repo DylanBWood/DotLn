@@ -898,12 +898,14 @@ FINAL-001 repair below. Symlinks are resolved; removal judges the entry it
 unlinks. The planning restriction still governs
 in-project paths. An in-project write never consults the outside-grant table.
 
-All six contributor roles declare system temporary work and the operator's
-selected DotLn scratch convention, `<system-temp>/dotln/<session-key>/scratch`.
+All six contributor roles declare system temporary work, the operator's
+selected DotLn scratch convention, `<system-temp>/dotln/<session-key>/scratch`,
+and the host-printed scratchpad grant.
 The host temporary root comes from `os.tmpdir()`; it is not every directory
 named tmp. Main's ignored intake and other home roots are not default grants.
 Repair of VER-001 prints the concrete DotLn scratch path at Claude role
-dispatch; Codex retrieves it with `node scripts/harness.mjs scratch`. Use that
+dispatch; Codex retrieves it with `node scripts/harness.mjs scratch`. The
+command creates that session directory before printing it. Use that existing
 path for temporary work. Native scratch and `/tmp` still need a separate grant
 when outside `os.tmpdir()`. Literal redirects to the `/dev/null` character
 device discard output and need no file grant; removals, other device paths and
@@ -1723,9 +1725,10 @@ text, never the default channel for state you own in structured form.
   input refuses with a path, and the hash is an fnv1a64 equality receipt. The
   screen is a declared filter, not a detector of every secret: it refuses its
   declared shapes (a private-key header, a Bearer credential, GitHub token
-  prefixes) and each declared URL form whose host is off the allowlist supplied
-  at decode time, and passes an unprefixed 40-hex token, a JWT without the
-  Bearer word or a password in the userinfo of an allowed URL. A **StoryContract** is the typed
+  prefixes and compact JWTs beginning eyJ) and each declared URL form whose
+  host is off the allowlist supplied at decode time. Non-empty password data
+  after the first colon of a declared URL authority's userinfo refuses even
+  when the host is allowed; an unprefixed 40-hex token still passes. A **StoryContract** is the typed
   interpretation compiled from a SourceBundle (purpose, current/desired
   behavior, acceptance criteria, examples, constraints, non-goals, assumptions,
   open questions, pinned source revision); an **ImpactMap** is the structured
@@ -2438,7 +2441,14 @@ checkout. A refusal is reported through the helper; sessions write no closeout
 script.
 
 `docs/control/local/` is an ignored lane read and written by scripts: gate
-caches, usage observations, session state and the operator's terms list.
+caches, usage observations, session state, the operator's terms list and main's
+`pending-overrides/` records for closed orders. The next `worktree start`
+carries those records into their original orders' control segments in the new
+worktree and refreshes its projection before removing unchanged pending files;
+malformed or unreadable pending records remain with an advisory. Recording from
+a linked checkout refuses with main's rerun command
+([WO-219-D050](../evidence/WO-219/decisions.md#wo-219-d050),
+[operator recovery controls](07-execution-guide.md#operator-recovery-controls)).
 `release list` keeps its per-tag records in `cache/release-list.json`, keyed by
 tag object id and read only while Git reports that path ignored (WO-164). Only
 `harness/**` and `cache/**` are disposable at subject teardown; the rest is
