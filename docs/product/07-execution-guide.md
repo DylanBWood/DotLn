@@ -1841,8 +1841,33 @@ proven, the next `v*` tag above the tags the merged base reaches (none means
 `v0.1.0`; a tag an earlier attempt of the same close published is reused
 with that attempt's recorded commit, even if the base later advances) is
 created as an annotated tag on the merged base through the
-isolated lane and the target's GitHub Release is created from the order's
-title and objective. The registration's optional `release.displayName` uses the launchpad name
+isolated lane and the target's GitHub Release is created from the body the
+order names (WO-227): `**Target release notes:** reviewed` renders the order's
+five-section `RELEASE-NOTES.md` at the merged revision, the order title once
+under the overview, links to the records the kit moved into the target
+written absolute to the target at the tagged commit, other relative links
+as their text and the close line last, and refuses before any tag push when
+the file is absent or invalid; `objective`, or no header, keeps the title,
+objective and close line byte for byte. The tag message and the body pass
+the outward lint as a target's text: launchpad identifiers refuse outside
+the kit's frame (the order title, the close line and the address, tagged
+commit and record path the renderer itself writes for a moved record, whose
+words are not reviewed either; a target URL, query or fragment the notes'
+author writes is judged like the rest of the notes, whatever its commit or
+bytes, though a fragment may name the closing order's own identifiers; a
+match is exempt only when it lies wholly inside the frame, so a listed term
+running from a written record path into the author's fragment is reviewed),
+review words and review-mode private terms wait for `--confirm-terms
+sha256:<digest of the body>` on the close, and the registered display name
+reads as a name for the public review words (the private list is never
+masked). The body's source, digest and confirmation are bound in the close
+record: an attempt that pushed the tag and still owes the Release republishes
+the bytes it bound or refuses on changed notes, and a completed Release,
+legacy body or reviewed, stays current on a recheck by its recorded bytes.
+Repeated rechecks retain the source, digest and confirmation of the actual
+published body; later notes never replace that binding. A legacy Release
+without a body binding acquires one from its admitted existing body.
+The registration's optional `release.displayName` uses the launchpad name
 shape and 64-character limit, defaults to the registration id, and makes the
 Release title and tag message's first line `<displayName> <tag>`; the order title
 and close line follow. Existing Releases keep their titles. `--dry-run` previews
@@ -2351,15 +2376,31 @@ usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-
   That reading was never the intent, and the 2026-10-21 pass records it as
   a misreading, not a rule. The same holds for a private term that is also
   an ordinary word (the operator's second correction of the same day): it
-  is refused as the private system's name, never as the word. WO-227 makes
-  the public list a review list (the publish names the words it found and
-  the reviewer confirms them, refusing nothing on the word alone), gives
-  each private term a mode, refuse or review, confirmed the same way, adds
-  the identifier rule the correction names for target artifacts, admits an
-  empty list in either file and reports a generated Change-table path
-  separately from the reviewed prose; a confirmation is recorded with the
-  publication, so nothing leaves without a reader having seen the flagged
-  lines. The
+  is refused as the private system's name, never as the word. The public
+  list is a review list (`reviewTerms`; the older `terms` key is read as
+  the same list for one kit release): a target publish names the words it
+  found with their lines and the part of the composed body they sit in,
+  reviewed prose, Change table or target checks, and refuses until the
+  reviewer confirms them with `--confirm-terms sha256:<digest of the
+  composed body>`, never on the word alone. Each private term has a mode,
+  `refuse:` or review by default; a review-mode match is confirmed the same
+  way and a refuse-mode match refuses as before, while in committed text
+  every listed term still refuses. Launchpad identifiers (`WO-NNN`,
+  `WO-NNN-DNNN`, `FUP-<16 hex>`, `VER-NNN`, `FINAL-NNN`, `REVIEW-NNN`,
+  `WS-NNN`) refuse in a target's branch, commits, title and body under
+  `identifier.launchpad`; the kit's own frame, the records it moves into the
+  target and a Release's order title and close line, is exempt from that
+  rule alone. Either list may be empty. A Change-table row of a path the
+  target's base already held is the target's vocabulary and is not reported.
+  An exemption covers only a match lying wholly inside its frame part or
+  row; a match that runs out of it into authored or added text is reported.
+  Private findings retain the complete contributing line range without the
+  term or its columns. Every row in that range keeps its path and other
+  matched text redacted in diagnostics; the rule, starting line, section and
+  private mode still locate the review item.
+  The confirmation (digest, match count, actor attestation) is recorded in
+  the publication log and the session journal, so nothing leaves without a
+  reader having seen the flagged lines (WO-227). The
   publication helpers read the vocabulary and the grant from `main`'s
   committed bytes, so a change reaches `main` through a documents pull
   request before the publish that needs it, never by editing `main`'s

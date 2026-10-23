@@ -120,10 +120,20 @@ operator sandbox settings.
    workspace links) to install it again. Until then each hook reports
    `snapshot-missing` once per session and host permissions alone decide.
 4. Register the private local-terms list at `docs/control/local/terms.txt`,
-   one term per line; the directory is ignored by Git. `npm run terms -- check
-   <paths>` prints `local-terms list: present` or `unavailable`, and refuses on
-   a match by file and line without printing the term. Target publication also
-   needs the instance's own `docs/control/outward-vocabulary.json` and an
+   one term per line as `[refuse: | review: ]term`; the directory is ignored
+   by Git. A `refuse:` term refuses every outward artifact that carries it;
+   an unmarked or `review:` term is a review item of a target publication,
+   read and confirmed by the reviewer; only those two words before a colon
+   are markers, so a term holding a colon stays a term, and a marker with no
+   term after it refuses naming the line. A present list with no terms is
+   `present` with a count of zero and refuses nothing; an absent list is
+   `unavailable` and refuses publication. `npm run terms -- check <paths>`
+   prints `local-terms list: present` or `unavailable`, and in committed text
+   refuses a match of either mode by file, line and mode without printing the
+   term. Target publication also needs the instance's own
+   `docs/control/outward-vocabulary.json`, whose `reviewTerms` (an array of
+   words, possibly empty; the older `terms` key is read as the same list for
+   one kit release, with an advisory) are review items too, and an
    operator grant naming the registered repository in
    `packages/skeleton/loadouts/grants.json`; the kit carries neither an
    instance vocabulary nor such a grant. An instance order's executor commits
@@ -144,9 +154,24 @@ operator sandbox settings.
    among them) that an instance order never names, and the publication
    commands apply the instance vocabulary and the local-terms list to the
    outward body themselves.
+   The publish applies three checks to the branch, the commits, the title and
+   the composed body (the reviewed prose, the generated Change table and the
+   target checks): launchpad identifiers (`WO-NNN`, `WO-NNN-DNNN`, `FUP-<16
+   hex>`, `VER-NNN`, `FINAL-NNN`, `REVIEW-NNN`, `WS-NNN`) and `refuse:` terms
+   refuse, naming the line, the part of the body and, in a Change row, the
+   added path; review words and review-mode terms are listed the same way and
+   the publish refuses until the reviewer, having read them, passes
+   `--confirm-terms sha256:<digest>` with the digest the refusal printed; a
+   Change row of a path the target's base already held is not reported. The
+   path and other matched text on every row of a private match stay redacted
+   in diagnostics. A match spanning rows retains its full line range and
+   cannot use an existing-path exemption for only its starting row. Diagnostics
+   still name the rule, starting line, section and private mode. The
+   confirmation is recorded in the publication log and the session journal.
    The session form is `node scripts/worktree.mjs publish
    WO-NNN --target-worktree --branch <type>/<slug> --title <title> --body-file
-   <committed-reviewed-body-path>` from the launchpad root. The hook withholds
+   <committed-reviewed-body-path> [--confirm-terms sha256:<digest>]` from the
+   launchpad root. The hook withholds
    the `npm run worktree -- publish` form, naming the admitted node spelling.
    Its opt-in `--draft` form at `verified`
    pushes the target's working tree under a draft pull request that the final

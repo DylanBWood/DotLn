@@ -83,7 +83,7 @@ console.log(output);
   );
   write(
     `docs/final-reviews/${workOrder}/PR.md`,
-    "One product gate covers the code through publication.\n",
+    `# ${workOrder}\n\nOne product gate covers the code through publication.\n`,
   );
   write(
     `docs/final-reviews/${workOrder}/RELEASE-NOTES.md`,

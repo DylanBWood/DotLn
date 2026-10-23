@@ -2,14 +2,16 @@
 import { readFileSync } from "node:fs";
 import { docPath, findLaunchpad } from "./lib/config.mjs";
 import { containedRegularFile, isMainModule } from "./lib/paths.mjs";
-import { checkLocalTerms } from "./lib/terms.mjs";
+import { checkLocalTerms, localTermModes } from "./lib/terms.mjs";
 import {
   lintOutwardArtifact,
   outwardArtifactKinds,
 } from "./lib/outward-lint.mjs";
 
-// The existing checker throws redacted file/line/count diagnostics. Whitelist
-// that shape; filesystem/configuration exceptions never reach outward output.
+// The checker throws redacted file/line-range/count/mode diagnostics.
+// Whitelist that shape; filesystem/configuration exceptions never reach
+// outward output. Matches of review-mode terms are the publication's review
+// items; one refuse-mode match refuses.
 const observeLocalTerms = (root, text) => {
   try {
     return checkLocalTerms(root, [{ name: "artifact", text }]);
@@ -26,13 +28,23 @@ const observeLocalTerms = (root, text) => {
               row.file === "artifact" &&
               Number.isInteger(row.line) &&
               row.line > 0 &&
+              Number.isInteger(row.endLine) &&
+              row.endLine >= row.line &&
               Number.isInteger(row.count) &&
-              row.count > 0,
+              row.count > 0 &&
+              localTermModes.includes(row.mode),
           )
         )
           return {
-            status: "refused",
-            findings: rows.map(({ line, count }) => ({ line, count })),
+            status: rows.every((row) => row.mode === "review")
+              ? "review"
+              : "refused",
+            findings: rows.map(({ line, endLine, count, mode }) => ({
+              line,
+              endLine,
+              count,
+              mode,
+            })),
           };
       } catch {
         // An unexpected diagnostic is an error, never a successful check.
@@ -42,21 +54,57 @@ const observeLocalTerms = (root, text) => {
   }
 };
 
-export function checkOutwardArtifact(root, { kind, text }) {
+// Every occurrence of each exempt string as a span of the text: the lint
+// drops the public review words it contains, so a registered display name is
+// read as a name. The private list is never masked, because a private term
+// that merely contains the name would slip through the blank.
+const exemptSpans = (text, exemptText) => {
+  const spans = [];
+  for (const needle of exemptText) {
+    if (!needle) continue;
+    for (
+      let at = text.indexOf(needle);
+      at >= 0;
+      at = text.indexOf(needle, at + needle.length)
+    )
+      spans.push({ start: at, end: at + needle.length });
+  }
+  return spans.sort((left, right) => left.start - right.start);
+};
+
+/** The launchpad's committed vocabulary file, as written. */
+export function readOutwardVocabulary(root) {
   const path = docPath(root, "control", "outward-vocabulary.json");
   if (!containedRegularFile(path, root))
     throw new Error("outward vocabulary must be a contained regular file");
-  const vocabulary = JSON.parse(readFileSync(path, "utf8"));
+  return JSON.parse(readFileSync(path, "utf8"));
+}
+
+export function checkOutwardArtifact(
+  root,
+  { kind, text, target = false, sections, exemptText = [] },
+) {
+  const vocabulary = readOutwardVocabulary(root);
+  const exempt = exemptSpans(text, exemptText);
   // Align line endings with checkLocalTerms, which recognizes LF and CRLF.
   const localTerms = observeLocalTerms(root, text.replace(/\r\n?|\n/g, "\n"));
-  return lintOutwardArtifact({ kind, text, vocabulary, localTerms });
+  return lintOutwardArtifact({
+    kind,
+    text,
+    vocabulary,
+    localTerms,
+    target,
+    sections,
+    exempt,
+  });
 }
 
 if (isMainModule(import.meta.url)) {
   const [kind, ...extra] = process.argv.slice(2);
-  if (!outwardArtifactKinds.includes(kind) || extra.length) {
+  const target = extra[0] === "--target";
+  if (!outwardArtifactKinds.includes(kind) || extra.length > (target ? 1 : 0)) {
     console.error(
-      `usage: node scripts/outward-lint.mjs <${outwardArtifactKinds.join("|")}> < artifact`,
+      `usage: node scripts/outward-lint.mjs <${outwardArtifactKinds.join("|")}> [--target] < artifact`,
     );
     process.exitCode = 3;
   } else {
@@ -65,9 +113,15 @@ if (isMainModule(import.meta.url)) {
       // A pipe's final line terminator is transport framing for one-line kinds.
       if (kind === "branch" || kind === "pr-title")
         text = text.replace(/(?:\r\n|\n|\r)$/, "");
-      const result = checkOutwardArtifact(findLaunchpad(), { kind, text });
+      const result = checkOutwardArtifact(findLaunchpad(), {
+        kind,
+        text,
+        target,
+      });
       console.log(JSON.stringify(result));
-      process.exitCode = { pass: 0, refused: 1, unavailable: 2 }[result.status];
+      process.exitCode = { pass: 0, refused: 1, unavailable: 2, review: 4 }[
+        result.status
+      ];
     } catch {
       console.error(
         JSON.stringify({

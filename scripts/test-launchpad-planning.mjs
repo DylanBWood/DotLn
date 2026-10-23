@@ -1104,7 +1104,7 @@ test("planning and release-close reads run in a fresh exported instance", () => 
     write(
       kit,
       "publication-body.md",
-      "## Result\n\nRecord the reviewed environment.\n",
+      "# WO-001\n\n## Result\n\nRecord the reviewed environment.\n",
     );
     commit(kit, "docs: restore release declaration");
     const kitMain = join(scratch, "kit");
@@ -1313,7 +1313,7 @@ test("planning and release-close reads run in a fresh exported instance", () => 
     write(
       kit,
       "publication-body.md",
-      "## Result\n\nPreserve the reviewed target text and its validation.\n",
+      "# Reviewed target text\n\n## Result\n\nPreserve the reviewed target text and its validation.\n",
     );
     ok(
       publicationRun(kit, process.execPath, [
@@ -1984,7 +1984,7 @@ test("an instance exported at v0.81.0 takes this release by its README's procedu
     write(
       recovered,
       "publication-body.md",
-      "## Result\n\nRecord the recovered environment.\n",
+      "# WO-001\n\n## Result\n\nRecord the recovered environment.\n",
     );
     record(recovered, "docs: describe recovery");
     // wo-001's pull request carries only WO-001's own commits.

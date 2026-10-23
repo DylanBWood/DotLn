@@ -61,6 +61,23 @@ const SESSION_VARIABLES = [
   "CLAUDE_CODE_SESSION_ID",
   "CLAUDE_SESSION_ID",
 ];
+/** The key the hooks file the running session's journal under: the SHA-256
+ * of the first session variable the environment sets, or null when none is. */
+export const sessionJournalKey = (env = process.env) => {
+  const id = SESSION_VARIABLES.map((name) => env[name]).find(
+    (value) => typeof value === "string" && value.trim(),
+  );
+  return id ? digest(id) : null;
+};
+/** The harness the running session's variable names, or unknown. */
+export const sessionHarness = (env = process.env) =>
+  env.CODEX_THREAD_ID
+    ? "codex-cli"
+    : env.COPILOT_AGENT_SESSION_ID
+      ? "copilot-cli"
+      : env.CLAUDE_CODE_SESSION_ID || env.CLAUDE_SESSION_ID
+        ? "claude-code"
+        : "unknown";
 const harnessDirectory = (root) =>
   join(root, docRelative(root, "control", "local/harness"));
 const journalAt = (root, key) => {

@@ -125,7 +125,7 @@ export const publicationVocabulary = {
     "style",
     "test",
   ],
-  terms: ["DotLn", "launchpad", "gem", "gems", "mask", "masks"],
+  reviewTerms: ["DotLn", "launchpad", "gem", "gems", "mask", "masks"],
 };
 export const publicationGrant = {
   grantId: "operator.target-publish",

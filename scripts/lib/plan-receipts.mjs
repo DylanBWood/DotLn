@@ -28,6 +28,12 @@ import {
   sha256,
 } from "./plan-subject.mjs";
 import { checkLocalTerms } from "./terms.mjs";
+import {
+  matchLaunchpadIdentifiers,
+  matchReviewTerms,
+  validateOutwardVocabulary,
+} from "./outward-lint.mjs";
+import { parseRepositoryDeclaration } from "./work-order-repository.mjs";
 import { privatePathLines } from "./private-paths.mjs";
 import { containedRegularFile } from "./paths.mjs";
 import { runGit } from "./git.mjs";
@@ -832,7 +838,9 @@ export async function writePlanReceipt(
       result,
       holds: addressedHolds(result),
       dispositions,
-      localTerms,
+      // The receipt records the list's presence alone; its term count is the
+      // checker's own observation and not part of the receipt schema.
+      localTerms: { status: localTerms.status },
     };
     const receipt = {
       ...payload,
@@ -1595,8 +1603,96 @@ export function planningPassScope(root) {
   return { passes, enforcement: at.slice(0, 10) };
 }
 
+// The backticked paths an order's Execution plan names: a token with a
+// directory or a file extension and no space; a function or command in
+// backticks is not a path.
+const executionPlanPaths = (markdown) => {
+  const field =
+    /(?:^|\n)\*\*Execution plan[^*\n]*:\*\*([^]*?)(?=\n\*\*[A-Z][^*\n]*:\*\*|\n#|$)/u.exec(
+      markdown,
+    )?.[1] ?? "";
+  return [
+    ...new Set(
+      [...field.matchAll(/`([^`\n]+)`/gu)]
+        .map((match) => match[1])
+        .filter((token) => /^(?:[\w.@-]+\/)*[\w.@-]+\.[\w-]+$/u.test(token)),
+    ),
+  ];
+};
+/** One advisory per path an open target order's Execution plan names that
+ * carries a review word or a launchpad identifier, so the author renames the
+ * file or lists the word deliberately before a draft publish meets it in the
+ * Change table; nothing refuses. A launchpad order's paths are its own
+ * vocabulary (WO-227). */
+export function targetOrderPathAdvisories(root, rows) {
+  const advisories = [];
+  let reviewTerms = [];
+  const vocabularyPath = docRelative(
+    root,
+    "control",
+    "outward-vocabulary.json",
+  );
+  if (existsSync(join(root, vocabularyPath)))
+    try {
+      reviewTerms = validateOutwardVocabulary(
+        JSON.parse(readFileSync(join(root, vocabularyPath), "utf8")),
+      ).reviewTerms;
+    } catch (error) {
+      advisories.push(
+        `advisory: ${vocabularyPath} is not a valid outward vocabulary (${error.message}); the execution-plan paths are judged for identifiers only`,
+      );
+    }
+  for (const row of rows) {
+    if (!["Active", "Open"].includes(row.section)) continue;
+    const orderPath = `${docRelative(root, "workOrders")}/${row.authorityLink}`;
+    const markdown = readFileSync(join(root, orderPath), "utf8");
+    let repository;
+    try {
+      repository = parseRepositoryDeclaration(markdown, orderPath);
+    } catch (error) {
+      advisories.push(`advisory: ${error.message}`);
+      continue;
+    }
+    if (!repository) continue;
+    for (const named of executionPlanPaths(markdown)) {
+      const identifiers = [
+        ...new Set(
+          matchLaunchpadIdentifiers(named).map((match) => match.identifier),
+        ),
+      ];
+      const words = [
+        ...new Set(
+          matchReviewTerms(named, reviewTerms).map((match) => match.term),
+        ),
+      ];
+      if (!identifiers.length && !words.length) continue;
+      const carries = [
+        ...(identifiers.length
+          ? [
+              `the launchpad identifier${identifiers.length === 1 ? "" : "s"} ${identifiers.join(", ")}`,
+            ]
+          : []),
+        ...(words.length
+          ? [
+              `the review word${words.length === 1 ? "" : "s"} ${words.join(", ")}`,
+            ]
+          : []),
+      ].join(" and ");
+      const remedy = words.length
+        ? "rename the file or list the word deliberately"
+        : "rename the file";
+      advisories.push(
+        `advisory: ${row.id} names ${named} in its execution plan, which carries ${carries}; ${remedy} before a draft publish meets it`,
+      );
+    }
+  }
+  return advisories;
+}
+
 export async function checkPlanGate(root) {
-  checkSequenceTopology(readIndex(root, []));
+  const index = readIndex(root, []);
+  checkSequenceTopology(index);
+  const advisories = targetOrderPathAdvisories(root, index.rows);
   const localTerms = checkLocalTerms(root, []).status;
   const receipts = await readReceipts(root);
   const overrides = readOverrides(root);
@@ -1664,6 +1760,7 @@ export async function checkPlanGate(root) {
       passes: 0,
       enforcement: "pending introduction commit",
       localTerms,
+      advisories,
     };
   let continuation = null;
   if (passes.length) {
@@ -1729,5 +1826,6 @@ export async function checkPlanGate(root) {
     enforcement,
     localTerms,
     continuation,
+    advisories,
   };
 }

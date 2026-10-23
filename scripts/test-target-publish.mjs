@@ -90,7 +90,7 @@ import {
   compareBaseline,
 } from "../packages/skeleton/dist/src/verification-protocol.js";
 import { fixtureVerificationResult } from "../packages/skeleton/dist/src/verification-fake.js";
-import { deliveryContractHash } from "./lib/github-body.mjs";
+import { composeTargetBody, deliveryContractHash } from "./lib/github-body.mjs";
 import { lintOutwardArtifact } from "./lib/outward-lint.mjs";
 import { deadlineLimit } from "../packages/skeleton/src/gate-deadlines.mjs";
 
@@ -1065,6 +1065,370 @@ const refusedBeforeRemote = (subject, run, pattern) => {
   assert.equal(existsSync(subject.publication), false);
 };
 
+await test("kit record paths exempt only launchpad identifiers and retain redacted vocabulary checks", () => {
+  const root = mkdtempSync(join(tmpdir(), "dotln-kit-path-"));
+  try {
+    writeFixture(root, "dotln.config.json", JSON.stringify({ version: 1 }));
+    writeFixture(
+      root,
+      "docs/control/outward-vocabulary.json",
+      JSON.stringify({ types: ["fix"], reviewTerms: ["gem"] }),
+    );
+    const terms = (text) =>
+      writeFixture(root, "docs/control/local/terms.txt", text);
+    const kitPath = "docs/work-orders/WO-006-cobaltwidget-gem.md";
+    const publicPath = "docs/evidence/WO-006/gem-report.md";
+    const compose = (paths, baseTree = new Set()) => ({
+      kind: "pr-body",
+      ...composeTargetBody({
+        body: "# Result\n\nThe change is reviewed.\n",
+        baseCommit: "a".repeat(40),
+        headCommit: "b".repeat(40),
+        files: paths.map((path) => ({ path, added: 1, deleted: 0 })),
+        kitPaths: new Set(paths),
+        baseTree,
+      }),
+    });
+    const artifact = compose([kitPath, publicPath]);
+    for (const marker of ["refuse: ", "review: ", ""]) {
+      terms(`${marker}cobaltwidget\n`);
+      const mode = marker.startsWith("refuse") ? "refuse" : "review";
+      const redacted = (message) => {
+        assert.match(
+          message,
+          new RegExp(
+            `vocabulary\\.local: ${mode} \\(line \\d+, Change table\\)`,
+            "u",
+          ),
+        );
+        assert.doesNotMatch(message, /cobaltwidget|identifier\.launchpad/u);
+      };
+      assert.throws(
+        () => lintArtifacts(root, [artifact]),
+        (error) => {
+          redacted(error.message);
+          return true;
+        },
+      );
+      if (mode === "refuse") {
+        assert.throws(
+          () => lintArtifacts(root, [artifact], { preview: true }),
+          /vocabulary\.local: refuse/u,
+        );
+        continue;
+      }
+      const preview = lintArtifacts(root, [artifact], { preview: true });
+      const message = preview.pending.items.join("; ");
+      redacted(message);
+      assert.match(message, /vocabulary\.review: \[redacted\]/u);
+      assert.match(message, /path docs\/evidence\/WO-006\/gem-report\.md/u);
+      assert.equal(preview.pending.items.length, 3);
+      assert.throws(
+        () =>
+          lintArtifacts(root, [artifact], {
+            confirmTerms: `sha256:${"0".repeat(64)}`,
+          }),
+        /--confirm-terms names another body/u,
+      );
+      assert.deepEqual(
+        lintArtifacts(root, [artifact], {
+          confirmTerms: preview.pending.digest,
+        }),
+        { review: { confirmedDigest: preview.pending.digest, matches: 3 } },
+      );
+    }
+    // Base paths retain their exemption even when they are also kit records.
+    terms("refuse: cobaltwidget\n");
+    assert.deepEqual(
+      lintArtifacts(root, [compose([kitPath], new Set([kitPath]))]),
+      { review: null },
+    );
+    terms("");
+    assert.deepEqual(
+      lintArtifacts(root, [compose(["docs/work-orders/WO-006-notes.md"])]),
+      { review: null },
+    );
+    // The identifier exception does not hide unrelated machine identifiers.
+    assert.throws(
+      () => lintArtifacts(root, [compose(["docs/WO-006/evt_123.md"])]),
+      /identifier\.runtime/u,
+    );
+    for (const existed of [false, true]) {
+      const path = "docs/WO-006-\u0001.md";
+      assert.throws(
+        () =>
+          lintArtifacts(root, [
+            compose([path], new Set(existed ? [path] : [])),
+          ]),
+        /text\.control-character/u,
+      );
+    }
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+await test("WO-227 criterion 4: a Change row's exemption covers only its own bytes, so a review word that runs from a base-held row into an added path is still a review item", () => {
+  const root = mkdtempSync(join(tmpdir(), "dotln-row-span-"));
+  try {
+    writeFixture(root, "dotln.config.json", JSON.stringify({ version: 1 }));
+    writeFixture(
+      root,
+      "docs/control/outward-vocabulary.json",
+      JSON.stringify({ types: ["fix"], reviewTerms: ["0day", "mask"] }),
+    );
+    writeFixture(root, "docs/control/local/terms.txt", "");
+    const compose = (deleted) => ({
+      kind: "pr-body",
+      ...composeTargetBody({
+        body: "# Result\n\nThe change is reviewed.\n",
+        baseCommit: "a".repeat(40),
+        headCommit: "b".repeat(40),
+        files: [
+          { path: "src/mask.ts", added: 3, deleted },
+          { path: "day.md", added: 1, deleted: 0 },
+        ],
+        baseTree: new Set(["src/mask.ts"]),
+      }),
+    });
+    // The base-held row ends in its removed count and the added path below
+    // it begins with a word, so the listed term joins bytes of both rows.
+    const crossing = lintArtifacts(root, [compose(0)], { preview: true });
+    assert.deepEqual(crossing.pending.items, [
+      "pr-body: vocabulary.review: 0day (line 9, Change table, path src/mask.ts)",
+    ]);
+    assert.throws(
+      () => lintArtifacts(root, [compose(0)]),
+      /1 review item waits for the reviewer: pr-body: vocabulary\.review: 0day/u,
+    );
+    // Control: with no term joining the rows, the base-held path's own word
+    // is still not reported.
+    assert.deepEqual(lintArtifacts(root, [compose(1)]), { review: null });
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+await test("private matches crossing two or three Change rows retain refusal, confirmation and redaction over every contributing row", () => {
+  const root = mkdtempSync(join(tmpdir(), "dotln-private-range-"));
+  try {
+    writeFixture(root, "dotln.config.json", JSON.stringify({ version: 1 }));
+    const vocabulary = (reviewTerms) =>
+      writeFixture(
+        root,
+        "docs/control/outward-vocabulary.json",
+        JSON.stringify({ types: ["fix"], reviewTerms }),
+      );
+    const terms = (text) =>
+      writeFixture(root, "docs/control/local/terms.txt", text);
+    for (const middle of [[], [{ path: "bridge.md", added: 1, deleted: 0 }]]) {
+      for (const suffix of ["", "-WO-006"]) {
+        const artifact = {
+          kind: "pr-body",
+          ...composeTargetBody({
+            body: "# Result\n\nThe board changes.\n",
+            baseCommit: "a".repeat(40),
+            headCommit: "b".repeat(40),
+            files: [
+              { path: "a.txt", added: 1, deleted: 0 },
+              ...middle,
+              { path: `day${suffix}.md`, added: 1, deleted: 0 },
+              { path: "quiet.md", added: 1, deleted: 0 },
+            ],
+            baseTree: new Set(["a.txt", "bridge.md"]),
+          }),
+        };
+        const crossing = middle.length ? "0 bridge md 1 0 day" : "0day";
+        for (const marker of ["refuse: ", "review: ", ""]) {
+          vocabulary(["day", "quiet"]);
+          // Same starting line and mode, different ending lines: the first
+          // term stays exempt, while the crossing term must remain visible.
+          terms(`${marker}a txt\n${marker}${crossing}\n`);
+          const redacted = (message) => {
+            assert.doesNotMatch(message, /a\.txt|bridge|day|WO-006/u);
+            assert.match(
+              message,
+              /vocabulary\.(?:local|review)|identifier\.launchpad/u,
+            );
+          };
+          assert.throws(
+            () => lintArtifacts(root, [artifact]),
+            (error) => {
+              redacted(error.message);
+              return true;
+            },
+          );
+          if (marker.startsWith("refuse") || suffix) {
+            assert.throws(
+              () =>
+                lintArtifacts(root, [artifact], {
+                  confirmTerms: `sha256:${createHash("sha256").update(artifact.text).digest("hex")}`,
+                }),
+              (error) => {
+                redacted(error.message);
+                assert.match(
+                  error.message,
+                  marker.startsWith("refuse")
+                    ? /vocabulary\.local: refuse/u
+                    : /identifier\.launchpad: \[redacted\]/u,
+                );
+                return true;
+              },
+            );
+          } else {
+            const preview = lintArtifacts(root, [artifact], { preview: true });
+            const message = preview.pending.items.join("; ");
+            redacted(message);
+            assert.match(message, /vocabulary\.review: \[redacted\]/u);
+            assert.match(message, /path quiet\.md/u);
+            assert.match(message, /vocabulary\.local: review/u);
+            assert.equal(preview.pending.items.length, 3);
+            assert.throws(
+              () =>
+                lintArtifacts(root, [artifact], {
+                  confirmTerms: `sha256:${"0".repeat(64)}`,
+                }),
+              /--confirm-terms names another body/u,
+            );
+            assert.deepEqual(
+              lintArtifacts(root, [artifact], {
+                confirmTerms: preview.pending.digest,
+              }),
+              {
+                review: { confirmedDigest: preview.pending.digest, matches: 3 },
+              },
+            );
+          }
+        }
+        // Only the base-held path's own private term remains. Its exemption
+        // is still valid; a new path's identifier retains its separate rule.
+        vocabulary([]);
+        terms("refuse: a txt\n");
+        if (!suffix)
+          assert.deepEqual(lintArtifacts(root, [artifact]), { review: null });
+      }
+    }
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+await test("WO-227 criterion 2: a review-mode private term in the generated body is a review item the reviewer confirms with the composed body's digest, and the confirmation is recorded", async (t) => {
+  const root = mkdtempSync(join(tmpdir(), "dotln-private-path-"));
+  try {
+    writeFixture(root, "dotln.config.json", JSON.stringify({ version: 1 }));
+    writeFixture(
+      root,
+      "docs/control/outward-vocabulary.json",
+      JSON.stringify({
+        types: ["feat", "fix"],
+        reviewTerms: ["launchpad", "cobaltwidget"],
+      }),
+    );
+    for (const marker of ["refuse: ", "review: ", ""])
+      for (const suffix of ["", "-launchpad", "-WO-006"])
+        for (const ending of ["\n", "\r\n", "\r"]) {
+          writeFixture(
+            root,
+            "docs/control/local/terms.txt",
+            `${marker}cobaltwidget\n`,
+          );
+          const composed = composeTargetBody({
+            body: `# Result${ending}${ending}The change is reviewed.${ending}`,
+            baseCommit: "a".repeat(40),
+            headCommit: "b".repeat(40),
+            files: [
+              { path: `src/cobaltwidget${suffix}.ts`, added: 1, deleted: 0 },
+              { path: "src/launchpad-control.ts", added: 1, deleted: 0 },
+            ],
+          });
+          const artifact = { kind: "pr-body", ...composed };
+          const mode = marker.startsWith("refuse") ? "refuse" : "review";
+          const checkRedaction = (message) => {
+            assert.doesNotMatch(message, /cobaltwidget/u);
+            // Hard refusals are reported before review-only items. A private
+            // review match must still redact the identifier that refuses.
+            if (mode === "refuse" || suffix !== "-WO-006")
+              assert.match(
+                message,
+                new RegExp(
+                  `vocabulary\\.local: ${mode} \\(line \\d+, Change table\\)`,
+                  "u",
+                ),
+              );
+            if (suffix === "-WO-006")
+              assert.match(message, /identifier\.launchpad: \[redacted\]/u);
+          };
+          assert.throws(
+            () => lintArtifacts(root, [artifact]),
+            (error) => {
+              checkRedaction(error.message);
+              return true;
+            },
+          );
+          if (mode === "review" && suffix !== "-WO-006") {
+            const preview = lintArtifacts(root, [artifact], { preview: true });
+            checkRedaction(preview.pending.items.join("; "));
+            assert.match(
+              preview.pending.items.join("; "),
+              /path src\/launchpad-control\.ts/u,
+            );
+            const confirmed = lintArtifacts(root, [artifact], {
+              confirmTerms: preview.pending.digest,
+            });
+            assert.equal(
+              confirmed.review.matches,
+              preview.pending.items.length,
+            );
+            assert.doesNotMatch(JSON.stringify(confirmed), /cobaltwidget/u);
+          }
+        }
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+  const subject = await scenario(t, { harness: "process" });
+  subject.terms("baseline\n");
+  const unconfirmed = subject.publish();
+  // The generated body names the term twice: in the host body and in the
+  // readiness table; each line is one review item.
+  refusedBeforeRemote(
+    subject,
+    unconfirmed,
+    /target publish refused: outward lint: 2 review items wait for the reviewer: pr-body: vocabulary\.local: review \(line 3\); pr-body: vocabulary\.local: review \(line \d+\)/u,
+  );
+  assert.doesNotMatch(unconfirmed.stderr, /baseline/u);
+  const digest = /sha256:[0-9a-f]{64}/u.exec(unconfirmed.stderr)[0];
+  refusedBeforeRemote(
+    subject,
+    subject.publish("--confirm-terms", `sha256:${"0".repeat(64)}`),
+    /--confirm-terms names another body; the composed body is sha256:[0-9a-f]{64}/u,
+  );
+  refusedBeforeRemote(
+    subject,
+    subject.publish("--confirm-terms", "nonsense"),
+    /--confirm-terms sha256:<64 hex digits>/u,
+  );
+  const published = subject.publish("--confirm-terms", digest);
+  assert.equal(published.status, 0, published.stderr);
+  assert.match(
+    published.stdout,
+    /Review items confirmed: 2 matches under sha256:[0-9a-f]{64}; journal row (?:recorded|unobserved)\./u,
+  );
+  const opened = decodeLog(
+    readFileSync(join(subject.publication, "events.jsonl"), "utf8"),
+  ).find((event) => event.type === "PullRequestOpened");
+  assert.equal(opened.payload.confirmation.confirmedDigest, digest);
+  assert.equal(opened.payload.confirmation.matches, 2);
+  assert.deepEqual(
+    Object.keys(opened.payload.confirmation.attestation).sort(),
+    ["effort", "harness", "model", "role", "source"],
+  );
+  assert.ok(
+    ["recorded", "unobserved"].includes(opened.payload.confirmation.journal),
+  );
+  assert.doesNotMatch(JSON.stringify(opened), /baseline/u);
+});
+
 await test("WO-182 AC3: readiness refusal precedes every remote call; operator publication shows the same gaps", async (t) => {
   const subject = await scenario(t);
   refusedBeforeRemote(
@@ -1230,11 +1594,11 @@ await test("WO-064 AC1/AC2: lint and target refusals name their rule; the grante
   const subject = await scenario(t, { harness: "process" });
   const { target, observation, baseCommit } = subject;
 
-  subject.terms("baseline\n");
+  subject.terms("refuse: baseline\n");
   refusedBeforeRemote(
     subject,
     subject.publish(),
-    /target publish refused: outward lint: pr-body refused: vocabulary\.local \(line 3\)/mu,
+    /target publish refused: outward lint: pr-body refused: vocabulary\.local: refuse \(line 3\)/mu,
   );
   subject.terms(null);
   refusedBeforeRemote(

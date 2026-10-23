@@ -7,12 +7,17 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
+  launchpadIdentifierForms,
   lintOutwardArtifact,
+  matchLaunchpadIdentifiers,
+  matchReviewTerms,
   runtimeIdentifierForms,
   outwardFindingText,
   subjectLengthLimit,
+  validateOutwardVocabulary,
 } from "./lib/outward-lint.mjs";
 import { checkOutwardArtifact } from "./outward-lint.mjs";
+import { checkLocalTerms, parseLocalTerms } from "./lib/terms.mjs";
 
 const policy = JSON.parse(
   readFileSync(
@@ -21,12 +26,13 @@ const policy = JSON.parse(
   ),
 );
 const cli = fileURLToPath(new URL("./outward-lint.mjs", import.meta.url));
-const lint = (kind, text) =>
+const lint = (kind, text, options = {}) =>
   lintOutwardArtifact({
     kind,
     text,
     vocabulary: policy,
     localTerms: { status: "present" },
+    ...options,
   });
 const rules = (result) => result.findings.map((finding) => finding.rule);
 
@@ -156,7 +162,7 @@ for (const [name, kind, text, expected] of [
   });
 }
 
-test("public vocabulary reports named terms and exact original spans in every artifact", () => {
+test("WO-227 criterion 2: public review words are review items with exact original spans in every artifact and refuse nothing", () => {
   for (const [kind, text, term] of [
     ["branch", "fix/dotln-input", "DotLn"],
     ["commit", "fix: handle input\n\nUse launchpad output.", "launchpad"],
@@ -164,25 +170,316 @@ test("public vocabulary reports named terms and exact original spans in every ar
     ["pr-body", "ordinary\r\nUse Ｄｏｔ－Ｌｎ output.", "DotLn"],
     ["pr-body", "Use ⒹⓞⓣⓁⓝ output.", "DotLn"],
     ["pr-body", "Use Dot\nLn output.", "DotLn"],
+    ["release-body", "Fixture Product v0.1.0\n\nUses the mask layer.", "mask"],
   ]) {
     const result = lint(kind, text);
-    assert.equal(result.status, "refused");
+    assert.equal(result.status, "review", text);
+    assert.deepEqual(result.checks.review, { status: "review", matches: 1 });
     const finding = result.findings.find(
-      (row) => row.rule === "vocabulary.launchpad",
+      (row) => row.rule === "vocabulary.review",
     );
     assert.equal(finding.term, term);
     assert.equal(finding.span.precision, "exact");
     assert.ok(text.slice(finding.span.start, finding.span.end).length > 0);
+    assert.equal(
+      outwardFindingText(finding, text),
+      `vocabulary.review: ${term}`,
+    );
   }
   const finding = lint("pr-body", "ok\r\n  Ｄｏｔ－Ｌｎ!").findings[0];
   assert.deepEqual(finding, {
-    rule: "vocabulary.launchpad",
+    rule: "vocabulary.review",
     term: "DotLn",
     span: { start: 6, end: 12, line: 2, column: 3, precision: "exact" },
   });
   assert.equal(
     lint("pr-body", "gemstone; unmask; dotlnish; launchpads").status,
     "pass",
+  );
+  // The words with their lines, each in the part of the composed body it
+  // sits in when the caller names the parts.
+  const body =
+    "# Result\n\nApply the mask layer.\n\n## Change\n\n| Path |\n| --- |\n| fixtures/launchpad-board.json |\n";
+  const change = body.indexOf("## Change");
+  const labelled = lint("pr-body", body, {
+    sections: [
+      { name: "reviewed prose", start: 0, end: change },
+      { name: "Change table", start: change, end: body.length },
+    ],
+  });
+  assert.equal(labelled.status, "review");
+  assert.deepEqual(
+    labelled.findings.map((row) => [
+      row.rule,
+      row.term,
+      row.span.line,
+      row.section,
+    ]),
+    [
+      ["vocabulary.review", "mask", 3, "reviewed prose"],
+      ["vocabulary.review", "launchpad", 9, "Change table"],
+    ],
+  );
+  // An exempt span (a registered display name) reads as a name, not words.
+  const named = "DotLn Angular v0.1.0\n\nThe launchpad board.";
+  const exempt = lint("release-body", named, {
+    exempt: [{ start: 0, end: "DotLn Angular".length }],
+  });
+  assert.deepEqual(
+    exempt.findings.map((row) => row.term),
+    ["launchpad"],
+  );
+  assert.deepEqual(
+    matchReviewTerms("fixtures/gem-board.json", policy.reviewTerms),
+    [{ term: "gem", start: 9, end: 12 }],
+  );
+});
+
+test("WO-227 criterion 2: the vocabulary file names its review list, reads the old key with an advisory and admits an empty list", () => {
+  assert.deepEqual(
+    validateOutwardVocabulary({ types: ["fix"], reviewTerms: [] }),
+    { types: ["fix"], reviewTerms: [], advisories: [] },
+  );
+  assert.equal(
+    lintOutwardArtifact({
+      kind: "pr-body",
+      text: "DotLn launchpad gems",
+      vocabulary: { types: ["fix"], reviewTerms: [] },
+      localTerms: { status: "present", terms: 0 },
+    }).status,
+    "pass",
+  );
+  const alias = validateOutwardVocabulary({ types: ["fix"], terms: ["gem"] });
+  assert.deepEqual(alias.reviewTerms, ["gem"]);
+  assert.match(alias.advisories[0], /terms is read as reviewTerms/u);
+  assert.deepEqual(
+    lint("pr-body", "a gem", { vocabulary: { types: ["fix"], terms: ["gem"] } })
+      .advisories,
+    alias.advisories,
+  );
+  assert.throws(
+    () =>
+      validateOutwardVocabulary({
+        types: ["fix"],
+        terms: ["gem"],
+        reviewTerms: ["gem"],
+      }),
+    /terms and reviewTerms are both present/u,
+  );
+  assert.throws(
+    () => validateOutwardVocabulary({ types: ["fix"] }),
+    /require reviewTerms/u,
+  );
+  assert.throws(
+    () => validateOutwardVocabulary({ types: ["fix"], reviewTerms: ["", 3] }),
+    /reviewTerms must be an array of words/u,
+  );
+  assert.throws(
+    () => validateOutwardVocabulary({ types: [], reviewTerms: [] }),
+    /require nonempty types/u,
+  );
+});
+
+test("WO-227 criterion 1: launchpad identifiers refuse in a target's artifacts, pass in the launchpad's own, and spare the kit's fixed texts", () => {
+  assert.ok(Object.isFrozen(launchpadIdentifierForms));
+  const samples = [
+    "WO-006",
+    "WO-006-D018",
+    "FUP-280abd447f789958",
+    "VER-001",
+    "FINAL-001",
+    "REVIEW-007",
+    "WS-001",
+  ];
+  for (const sample of samples)
+    for (const kind of [
+      "branch",
+      "commit",
+      "pr-title",
+      "pr-body",
+      "release-body",
+    ]) {
+      const lower = kind === "branch";
+      const identifier = lower ? sample.toLowerCase() : sample;
+      const prefix = lower
+        ? "fix/notes-"
+        : kind === "commit" || kind === "pr-title"
+          ? "fix: note "
+          : "Evidence ";
+      const text = `${prefix}${identifier}${lower ? "" : "."}`;
+      const target = lint(kind, text, { target: true });
+      assert.equal(target.status, "refused", text);
+      assert.equal(target.checks.launchpadIdentifiers.status, "refused");
+      const finding = target.findings.find(
+        (row) => row.rule === "identifier.launchpad",
+      );
+      assert.deepEqual(finding.span, {
+        start: prefix.length,
+        end: prefix.length + identifier.length,
+        line: 1,
+        column: prefix.length + 1,
+        precision: "exact",
+      });
+      assert.equal(
+        outwardFindingText(finding, text),
+        `identifier.launchpad: ${identifier}`,
+      );
+      // The control: the same text as a launchpad artifact passes.
+      const launchpad = lint(kind, text);
+      assert.equal(launchpad.target, false);
+      assert.equal(
+        launchpad.checks.launchpadIdentifiers.status,
+        "not-applicable",
+      );
+      assert.ok(
+        !launchpad.findings.some((row) => row.rule === "identifier.launchpad"),
+        text,
+      );
+    }
+  for (const text of [
+    "docs: record reviewed change and validation",
+    "fix: handle input\n\nCloses #4",
+  ])
+    assert.equal(lint("commit", text, { target: true }).status, "pass", text);
+  assert.equal(lint("pr-body", "Closes #4", { target: true }).status, "pass");
+  const title = lint("pr-body", "# WO-006\n\nA launchpad title.");
+  assert.equal(title.checks.launchpadIdentifiers.status, "not-applicable");
+  assert.equal(title.status, "review");
+  assert.equal(
+    lint("pr-body", "# WO-006\n\nA launchpad title.", { target: true }).checks
+      .launchpadIdentifiers.status,
+    "refused",
+  );
+  for (const text of [
+    "prewo-006x",
+    "fup-280abd447f78995 is fifteen",
+    "WO-06",
+    "ws-001a",
+    "my_ver-001",
+    "review-2026-10-21.md",
+    "ws-2024",
+    "WO-1000",
+  ])
+    assert.equal(
+      lint("pr-body", text, { target: true }).checks.launchpadIdentifiers
+        .status,
+      "pass",
+      text,
+    );
+  for (const text of [
+    "docs/WO-006-notes.md",
+    "fix/handle-wo-006",
+    "ＷＯ－００６",
+    "WO<!-- -->-006",
+    "**WO**-006",
+  ])
+    assert.equal(
+      lint("pr-body", text, { target: true }).checks.launchpadIdentifiers
+        .status,
+      "refused",
+      text,
+    );
+  assert.deepEqual(
+    matchLaunchpadIdentifiers("docs/WO-006-notes.md and fix/wo-007"),
+    [
+      { identifier: "WO-006", start: 5, end: 11 },
+      { identifier: "wo-007", start: 29, end: 35 },
+    ],
+  );
+  // A part the kit itself writes may lift the rule; a review word there stays.
+  const orderTitle = "WO-999 — fixture";
+  const objectiveText = "The launchpad board.";
+  const closeText = "Closed by WO-999; merged main at abc.";
+  const framed = `${orderTitle}\n\n${objectiveText}\n\n${closeText}\n`;
+  const section = (name, part, exempt) => ({
+    name,
+    start: framed.indexOf(part),
+    end: framed.indexOf(part) + part.length,
+    ...(exempt ? { exempt } : {}),
+  });
+  const result = lint("release-body", framed, {
+    target: true,
+    // The enclosing part is listed first: the narrowest part wins, not the
+    // first listed.
+    sections: [
+      { name: "whole", start: 0, end: framed.length },
+      section("order title", orderTitle, ["identifier.launchpad"]),
+      section("objective", objectiveText),
+      section("close line", closeText, ["identifier.launchpad"]),
+    ],
+  });
+  assert.equal(result.status, "review");
+  assert.deepEqual(
+    result.findings.map((row) => [row.rule, row.section]),
+    [["vocabulary.review", "objective"]],
+  );
+});
+
+test("WO-227 criterion 7: a part or an exempt span lifts a rule only over its own bytes, so a match that runs out of it into authored text is still reported", () => {
+  const vocabulary = {
+    types: ["fix"],
+    reviewTerms: ["md launchpad", "decisions", "kit frame", "angular gems"],
+  };
+  const terms = (result) =>
+    result.findings.map((row) => [row.rule, row.term, row.section]);
+  // A record link's written address lifts identifiers and review words; the
+  // query or fragment the author wrote after it does not.
+  const address = `https://github.com/fixture/target/blob/${"a".repeat(40)}/docs/evidence/WO-999/decisions.md`;
+  const linked = (rest) => {
+    const text = `See [the record](${address}${rest}).`;
+    const start = text.indexOf(address);
+    return lint("release-body", text, {
+      vocabulary,
+      target: true,
+      sections: [
+        { name: "reviewed notes", start: 0, end: text.length },
+        {
+          name: "record link",
+          start,
+          end: start + address.length,
+          exempt: ["identifier.launchpad", "vocabulary.review"],
+        },
+      ],
+    });
+  };
+  for (const rest of ["#launchpad", "?launchpad"]) {
+    const result = linked(rest);
+    assert.equal(result.status, "review");
+    assert.deepEqual(terms(result), [
+      ["vocabulary.review", "md launchpad", "record link"],
+    ]);
+  }
+  // Wholly inside the address, the identifier and the review word stay lifted.
+  assert.equal(linked("#plain").status, "pass");
+  // A part nested in a lifting part keeps its own rules: a match that starts
+  // in the lifting part and ends in the nested one is reported, while one
+  // wholly in the lifting part is not.
+  const nested = "Kit frame md launchpad tail.";
+  const authored = nested.indexOf("launchpad");
+  const result = lint("release-body", nested, {
+    vocabulary,
+    sections: [
+      {
+        name: "kit frame",
+        start: 0,
+        end: nested.length,
+        exempt: ["vocabulary.review"],
+      },
+      { name: "authored", start: authored, end: authored + "launchpad".length },
+    ],
+  });
+  assert.deepEqual(terms(result), [
+    ["vocabulary.review", "md launchpad", "kit frame"],
+  ]);
+  // A display name lifts the review words it holds, not a match that runs on
+  // past it.
+  const named = lint("release-body", "DotLn Angular gems ship.", {
+    vocabulary: { types: ["fix"], reviewTerms: ["DotLn", "angular gems"] },
+    exempt: [{ start: 0, end: "DotLn Angular".length }],
+  });
+  assert.deepEqual(
+    named.findings.map((row) => row.term),
+    ["angular gems"],
   );
 });
 
@@ -447,16 +744,28 @@ test("pure calls are deterministic, leave inputs intact, and never imply local c
   assert.equal(first.status, "unavailable");
   assert.deepEqual(first.checks, {
     format: { status: "pass" },
-    launchpad: { status: "pass" },
     runtime: { status: "pass" },
+    launchpadIdentifiers: { status: "not-applicable" },
+    review: { status: "pass", matches: 0 },
     localTerms: { status: "unavailable" },
   });
+  assert.deepEqual(first.advisories, []);
   first.findings.push({ rule: "caller mutation" });
   assert.deepEqual(lintOutwardArtifact(input).findings, []);
+  // An absent local list refuses the publish whatever the review words say.
   assert.equal(
     lintOutwardArtifact({ kind: "pr-body", text: "DotLn", vocabulary: policy })
       .status,
-    "refused",
+    "unavailable",
+  );
+  assert.throws(() =>
+    lintOutwardArtifact({
+      ...input,
+      localTerms: {
+        status: "review",
+        findings: [{ line: 1, endLine: 1, count: 1, mode: "refuse" }],
+      },
+    }),
   );
   assert.throws(() => lintOutwardArtifact({ kind: "unknown", text: "text" }));
   assert.throws(() => lintOutwardArtifact({ kind: "pr-body", text: 42 }));
@@ -471,10 +780,10 @@ test("pure calls are deterministic, leave inputs intact, and never imply local c
   );
 });
 
-test("existing local checker refuses synthetic terms without exposing the term or matched text", (t) => {
+test("WO-227 criterion 3: a refuse-mode private term refuses by line and mode, an unmarked term is a review item, and neither exposes the term", (t) => {
   const { root, terms } = fixture(t);
   terms(
-    "# Synthetic fixture only\nSyntheticForbidden\nWibble Sprocket Cloud\n",
+    "# Synthetic fixture only\nrefuse: SyntheticForbidden\nREFUSE: Wibble Sprocket Cloud\nZorp Quux\nreview: Blorp\n",
   );
   for (const text of [
     "Synthetic-Forbidden",
@@ -485,26 +794,173 @@ test("existing local checker refuses synthetic terms without exposing the term o
     assert.equal(result.status, "refused");
     assert.deepEqual(rules(result), ["vocabulary.local"]);
     assert.equal(result.findings[0].count, 1);
+    assert.equal(result.findings[0].mode, "refuse");
     assert.equal(
       result.findings[0].span.line,
       text.startsWith("ordinary") ? 2 : 1,
     );
     assert.equal(result.findings[0].span.precision, "line");
+    assert.equal(result.findings[0].span.end, text.length);
+    assert.equal(
+      outwardFindingText(result.findings[0], text),
+      "vocabulary.local: refuse",
+    );
     assert.doesNotMatch(
       JSON.stringify(result),
-      /synthetic|forbidden|wibble|sprocket|cloud/i,
+      /synthetic|forbidden|wibble|sprocket|cloud|zorp|quux|blorp/i,
     );
   }
-  assert.equal(
+  for (const text of ["Zorp\nQuux here", "a blorp"]) {
+    const result = checkOutwardArtifact(root, { kind: "pr-body", text });
+    assert.equal(result.status, "review", text);
+    assert.deepEqual(result.checks.localTerms, { status: "review" });
+    assert.deepEqual(
+      result.findings.map((row) => [
+        row.rule,
+        row.mode,
+        row.count,
+        row.span.precision,
+      ]),
+      [["vocabulary.local", "review", 1, "line"]],
+    );
+    assert.doesNotMatch(JSON.stringify(result), /zorp|quux|blorp/i);
+  }
+  const mixed = checkOutwardArtifact(root, {
+    kind: "pr-body",
+    text: "a blorp\nSyntheticForbidden",
+  });
+  assert.equal(mixed.status, "refused");
+  assert.deepEqual(
+    mixed.findings.map((row) => [row.mode, row.span.line]),
+    [
+      ["review", 1],
+      ["refuse", 2],
+    ],
+  );
+  assert.deepEqual(
     checkOutwardArtifact(root, { kind: "pr-body", text: "ordinary text" })
-      .status,
-    "pass",
+      .checks.localTerms,
+    { status: "pass", terms: 4 },
   );
   const both = checkOutwardArtifact(root, {
     kind: "pr-body",
     text: "DotLn SyntheticForbidden",
   });
-  assert.deepEqual(rules(both), ["vocabulary.launchpad", "vocabulary.local"]);
+  assert.equal(both.status, "refused");
+  assert.deepEqual(rules(both), ["vocabulary.review", "vocabulary.local"]);
+  // The display-name exemption covers public review words only: a private
+  // term that merely contains the name is still refused.
+  terms("refuse: AcmeCorp\n");
+  assert.equal(
+    checkOutwardArtifact(root, {
+      kind: "release-body",
+      text: "AcmeCorp ships the update.",
+      target: true,
+      exemptText: ["Acme"],
+    }).status,
+    "refused",
+  );
+  // A mode marker with no term refuses by line; any other text is the term,
+  // a colon included, so an existing list keeps every term it had.
+  terms("Fine\nreview :\n");
+  assert.throws(
+    () => checkLocalTerms(root, []),
+    /line 2: a mode marker with no term/u,
+  );
+  terms("refuse:\n");
+  assert.throws(
+    () => checkLocalTerms(root, []),
+    /line 1: a mode marker with no term/u,
+  );
+  assert.deepEqual(
+    rules(checkOutwardArtifact(root, { kind: "pr-body", text: "x" })),
+    ["local-terms.configuration"],
+  );
+  assert.deepEqual(
+    [...parseLocalTerms("refuse: Same Term\nsame term\n# note\n\nOther\n")],
+    [
+      ["sameterm", "refuse"],
+      ["other", "review"],
+    ],
+  );
+  assert.deepEqual(
+    [
+      ...parseLocalTerms(
+        "REFUSE: Acme\nreview : Beta\nhttp://internal.example\nsvc:8080\nblock: Foo\n",
+      ),
+    ],
+    [
+      ["acme", "refuse"],
+      ["beta", "review"],
+      ["httpinternalexample", "review"],
+      ["svc8080", "review"],
+      ["blockfoo", "review"],
+    ],
+  );
+});
+
+test("private observations retain distinct complete line ranges and reject unknown extents", (t) => {
+  const { root, terms } = fixture(t);
+  terms("refuse: amber\nrefuse: amber quartz\nreview: amber quartz dawn\n");
+  for (const ending of ["\n", "\r\n", "\r"]) {
+    const text = ["header", "amber amber", "quartz", "", "dawn", "tail"].join(
+      ending,
+    );
+    const result = checkOutwardArtifact(root, { kind: "pr-body", text });
+    assert.deepEqual(
+      result.findings.map(({ span, count, mode }) => ({
+        text: text.slice(span.start, span.end),
+        count,
+        mode,
+      })),
+      [
+        { text: "amber amber", count: 2, mode: "refuse" },
+        {
+          text: ["amber amber", "quartz"].join(ending),
+          count: 1,
+          mode: "refuse",
+        },
+        {
+          text: ["amber amber", "quartz", "", "dawn"].join(ending),
+          count: 1,
+          mode: "review",
+        },
+      ],
+    );
+    assert.doesNotMatch(JSON.stringify(result), /amber|quartz|dawn/u);
+    // An exemption for the starting line lifts only the single-line match.
+    const exempt = checkOutwardArtifact(root, {
+      kind: "pr-body",
+      text,
+      sections: [
+        {
+          name: "existing",
+          start: text.indexOf("amber"),
+          end: text.indexOf("quartz") - ending.length,
+          exempt: ["vocabulary.local"],
+        },
+      ],
+    });
+    assert.deepEqual(
+      exempt.findings.map(({ count, mode }) => ({ count, mode })),
+      [
+        { count: 1, mode: "refuse" },
+        { count: 1, mode: "review" },
+      ],
+    );
+  }
+  for (const endLine of [undefined, null, 0, 1, 2.5, 4, "2"]) {
+    assert.throws(
+      () =>
+        lint("pr-body", "header\nbody\ntail", {
+          localTerms: {
+            status: "review",
+            findings: [{ line: 2, endLine, count: 1, mode: "review" }],
+          },
+        }),
+      /invalid local-terms findings/u,
+    );
+  }
 });
 
 test("missing local list is unavailable while committed vocabulary still runs", (t) => {
@@ -518,20 +974,26 @@ test("missing local list is unavailable while committed vocabulary still runs", 
     kind: "pr-body",
     text: "Launchpad text",
   });
-  assert.equal(denied.status, "refused");
+  assert.equal(denied.status, "unavailable");
   assert.equal(denied.checks.localTerms.status, "unavailable");
-  assert.deepEqual(rules(denied), ["vocabulary.launchpad"]);
+  assert.deepEqual(rules(denied), ["vocabulary.review"]);
 });
 
-test("empty and uncontained local lists refuse without raw errors, and public checks still run", (t) => {
+test("WO-227 criterion 3: a present list with no terms is present with a count of zero; an uncontained list refuses without raw errors, and public checks still run", (t) => {
   const { root, terms } = fixture(t);
   terms("# no terms\n");
+  assert.deepEqual(checkLocalTerms(root, [{ name: "a", text: "anything" }]), {
+    status: "present",
+    terms: 0,
+  });
   let result = checkOutwardArtifact(root, { kind: "pr-body", text: "DotLn" });
-  assert.deepEqual(rules(result), [
-    "vocabulary.launchpad",
-    "local-terms.configuration",
-  ]);
-  assert.equal(result.status, "refused");
+  assert.deepEqual(rules(result), ["vocabulary.review"]);
+  assert.equal(result.status, "review");
+  assert.deepEqual(result.checks.localTerms, { status: "pass", terms: 0 });
+  assert.equal(
+    checkOutwardArtifact(root, { kind: "pr-body", text: "ordinary" }).status,
+    "pass",
+  );
   const other = fixture(t);
   other.write("private.txt", "SyntheticForbidden\n");
   rmSync(join(root, "docs/control/local/terms.txt"));
@@ -554,9 +1016,9 @@ test("configured control root owns both lists and editable type set", (t) => {
   const { root, write, terms } = fixture(t, "records/control");
   write(
     "records/control/outward-vocabulary.json",
-    JSON.stringify({ types: ["fix"], terms: ["PublicFixtureTerm"] }),
+    JSON.stringify({ types: ["fix"], reviewTerms: ["PublicFixtureTerm"] }),
   );
-  terms("SyntheticForbidden\n");
+  terms("refuse: SyntheticForbidden\n");
   assert.equal(
     checkOutwardArtifact(root, { kind: "commit", text: "fix: handle input" })
       .status,
@@ -578,7 +1040,7 @@ test("configured control root owns both lists and editable type set", (t) => {
         text: "PublicFixtureTerm SyntheticForbidden",
       }),
     ),
-    ["vocabulary.launchpad", "vocabulary.local"],
+    ["vocabulary.review", "vocabulary.local"],
   );
 });
 
@@ -616,7 +1078,7 @@ test("CLI stdin, redacted JSON, framing, and distinct pass/refused/unavailable/e
     JSON.parse(result.stdout).checks.localTerms.status,
     "unavailable",
   );
-  terms("SyntheticForbidden\n");
+  terms("refuse: SyntheticForbidden\nZorp\n");
   for (const [kind, text] of [
     ["commit", "fix: handle input\n"],
     ["branch", "fix/handle-input\r\n"],
@@ -630,6 +1092,22 @@ test("CLI stdin, redacted JSON, framing, and distinct pass/refused/unavailable/e
   assert.equal(result.status, 1);
   assert.equal(JSON.parse(result.stdout).findings[0].rule, "vocabulary.local");
   assert.doesNotMatch(result.stdout + result.stderr, /SyntheticForbidden/);
+  // Review items exit 4; a launchpad identifier refuses only for a target.
+  result = run(root, "pr-body", "a zorp and a gem");
+  assert.equal(result.status, 4);
+  assert.equal(JSON.parse(result.stdout).status, "review");
+  assert.doesNotMatch(result.stdout + result.stderr, /zorp/i);
+  assert.equal(run(root, "pr-body", "Evidence WO-006").status, 0);
+  result = spawnSync(process.execPath, [cli, "pr-body", "--target"], {
+    input: "Evidence WO-006",
+    encoding: "utf8",
+    env: { ...process.env, DOTLN_LAUNCHPAD: root },
+  });
+  assert.equal(result.status, 1);
+  assert.equal(
+    JSON.parse(result.stdout).findings[0].rule,
+    "identifier.launchpad",
+  );
   assert.equal(run(root, "branch", "fix/handle-input\n\n").status, 1);
   assert.equal(run(root, "unknown", "ordinary text").status, 3);
   write("docs/control/outward-vocabulary.json", "malformed SyntheticForbidden");

@@ -51,7 +51,7 @@ docs/control/       legacy resume log, per-order segments, generated overview,
                     doc-ceilings.json and doc-baseline.json — the document
                     gate's ceilings and activation baseline;
                     outward-vocabulary.json — the outward lint's commit types
-                    and refused terms
+                    and review words (`reviewTerms`)
 docs/control/local/ ignored gate/session/usage observations, private terms and opaque account-label meanings
 docs/evidence/      per-order decisions, handoffs, evidence editions, bounded
                     comparisons and fixture transcripts; current.json — the

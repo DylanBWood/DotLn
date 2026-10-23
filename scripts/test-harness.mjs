@@ -5540,7 +5540,10 @@ test("WO-039 local terms are unavailable honestly or refuse without echoing the 
     assert.throws(
       () => termsCheck(root, ["public.md"]),
       (error) => {
-        assert.match(error.message, /"file":"public.md","line":2,"count":1/);
+        assert.match(
+          error.message,
+          /"file":"public.md","line":2,"endLine":2,"count":1/,
+        );
         assert.doesNotMatch(error.message, /synthetic|forbidden/i);
         return true;
       },

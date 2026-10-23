@@ -4,13 +4,17 @@ import { readFile } from "node:fs/promises";
 import {
   absoluteBodyLinks,
   assertGitHubBodyProfile,
+  assertPullRequestBodyShape,
+  composeTargetBody,
   githubBodyProfileFailures,
   deliverableReady,
+  pullRequestBodyShapeFailures,
   relativeLinkFailures,
   targetNativeReference,
   targetReadinessEvidence,
   targetChangeSection,
   targetGateSection,
+  withMeterBlockLast,
 } from "./lib/github-body.mjs";
 import { readinessFixture } from "./fixtures/target-publish/readiness.mjs";
 
@@ -87,6 +91,47 @@ test("publication normalizes nested images and links exposed by inner removal", 
         [],
       );
     }
+});
+test("publication reports the offsets of each destination it wrote and none of an authored one", () => {
+  const options = {
+    from: "docs/PR.md",
+    repository: { selector: "github.com/fixture/project" },
+    revision: "reviewed",
+  };
+  const url = (path) =>
+    `https://github.com/fixture/project/blob/reviewed/${path}`;
+  for (const ending of ["\n", "\r\n", "\r"]) {
+    // The authored link carries the same bytes as the first written one. The
+    // image's inner link is written by the first pass and moves when the
+    // second pass turns the image, whose path leaves the repository, into
+    // its text.
+    const source = `﻿[a](a.md) and [authored](${url("docs/a.md")}).${ending}![pic](p.png)${ending}![see [r](r.md)](../../../outside.png)${ending}${ending}[d]: d.md "title"${ending}`;
+    const written = [];
+    const body = absoluteBodyLinks(source, { ...options, written });
+    assert.equal(body, absoluteBodyLinks(source, options));
+    assert.deepEqual(
+      written.map(({ start, end }) => body.slice(start, end)),
+      [
+        url("docs/a.md"),
+        url("docs/p.png?raw=true"),
+        url("docs/r.md"),
+        url("docs/d.md"),
+      ],
+    );
+    assert.ok(body.includes(`see [r](${url("docs/r.md")})`), body);
+    const authored = body.indexOf(url("docs/a.md"), written[0].end);
+    assert.ok(authored > written[0].end, body);
+    assert.ok(
+      written.every(
+        ({ start, end }) =>
+          end <= authored || start >= authored + url("docs/a.md").length,
+      ),
+    );
+    // A body that is already absolute reports nothing written.
+    const again = [];
+    assert.equal(absoluteBodyLinks(body, { ...options, written: again }), body);
+    assert.deepEqual(again, []);
+  }
 });
 const longListItem =
   "- This list-item paragraph is intentionally longer than eighty characters and remains one physical source line for responsive rendering.";
@@ -1125,7 +1170,7 @@ await test("WO-064 target pull request: a same-head matrix speaks only for this 
   );
 });
 
-await test("WO-064 target pull request: contract text naming launchpad vocabulary is refused by the lint", () => {
+await test("WO-227 target pull request: contract text naming launchpad vocabulary is a review item for the reviewer, never a refusal", () => {
   const { body } = generateTargetPullRequest(
     artifacts({
       workOrder: {
@@ -1140,13 +1185,236 @@ await test("WO-064 target pull request: contract text naming launchpad vocabular
     vocabulary,
     localTerms: { status: "present" },
   });
-  assert.equal(result.status, "refused");
+  assert.equal(result.status, "review");
   assert.deepEqual(
     result.findings.map((finding) => [finding.rule, finding.term]),
     [
-      ["vocabulary.launchpad", "DotLn"],
-      ["vocabulary.launchpad", "launchpad"],
+      ["vocabulary.review", "DotLn"],
+      ["vocabulary.review", "launchpad"],
     ],
+  );
+});
+
+await test("WO-227 criterion 6: a stored pull-request body opens with a level-one heading, carries prose before the meter block and ends with it; the published body admits the product-gate block", () => {
+  const meter =
+    "<!-- dotln-process-meter:start -->\n\nObservation cutoff: x.\n\n<!-- dotln-process-meter:end -->";
+  const gate =
+    "<!-- dotln-product-gate:start -->\n## Product gate\n\nPassed.\n<!-- dotln-product-gate:end -->";
+  const good = `# WO-999\n\nThe change in one paragraph.\n\n${meter}\n`;
+  assert.deepEqual(pullRequestBodyShapeFailures(good), []);
+  assert.doesNotThrow(() => assertPullRequestBodyShape(good, "PR.md"));
+  for (const block of [
+    "<!-- reviewer placeholder -->",
+    "<!--\nA hidden paragraph.\n-->",
+    "```\n```",
+    "~~~text\nCode is not a prose paragraph.\n~~~",
+    "    An indented code block.",
+    "---",
+    "| Item | Value |\n| --- | --- |\n| One | Two |",
+    "A setext heading\n================",
+    "[reference]: https://example.invalid",
+    "[^note]: An unreferenced footnote.",
+    "<div>\nA raw HTML block.\n</div>",
+    "![An image alone](https://example.invalid/image.png)",
+  ])
+    for (const ending of ["\n", "\r\n", "\r"]) {
+      const body = `# Result\n\n${block}\n\n${meter}\n`.replaceAll(
+        "\n",
+        ending,
+      );
+      assert.deepEqual(
+        pullRequestBodyShapeFailures(body).map((row) => row.rule),
+        ["prose-before-meter"],
+        JSON.stringify({ block, ending }),
+      );
+    }
+  for (const prose of [
+    "An ordinary paragraph.",
+    "**Emphasis** and a [link](https://example.invalid) with `code`.",
+    "- A list-item paragraph.",
+    "> A quoted paragraph.",
+    "<!-- A comment. -->\n\nVisible prose follows.",
+  ])
+    assert.deepEqual(
+      pullRequestBodyShapeFailures(`# Result\n\n${prose}\n\n${meter}\n`),
+      [],
+      prose,
+    );
+  assert.deepEqual(
+    pullRequestBodyShapeFailures(`Prose first.\n\n# WO-999\n\n${meter}\n`).map(
+      (row) => row.rule,
+    ),
+    ["heading-first"],
+  );
+  assert.deepEqual(
+    pullRequestBodyShapeFailures(`## WO-999\n\nProse.\n\n${meter}\n`).map(
+      (row) => row.rule,
+    ),
+    ["heading-first"],
+  );
+  assert.deepEqual(
+    pullRequestBodyShapeFailures(`\n\n# WO-999\n\nProse.\n\n${meter}\n`),
+    [],
+  );
+  const meterFirst = `# WO-999\n\n${meter}\n\nThe prose came after the block.\n`;
+  assert.deepEqual(
+    pullRequestBodyShapeFailures(meterFirst).map((row) => row.rule),
+    ["prose-before-meter", "meter-last"],
+  );
+  assert.throws(
+    () => assertPullRequestBodyShape(meterFirst, "PR.md"),
+    /^Error: PR\.md:3: pull-request body shape: a prose paragraph must stand between the heading and the process-meter block$/u,
+  );
+  const trailing = `# WO-999\n\nProse.\n\n${meter}\n\nA paragraph after the block.\n`;
+  assert.deepEqual(
+    pullRequestBodyShapeFailures(trailing).map((row) => [row.rule, row.line]),
+    [["meter-last", 10]],
+  );
+  assert.throws(
+    () => assertPullRequestBodyShape(trailing, "PR.md"),
+    /PR\.md:10: pull-request body shape: the process-meter block must be the last block$/u,
+  );
+  const published = `# WO-999\n\nProse.\n\n${meter}\n\n${gate}\n`;
+  assert.deepEqual(
+    pullRequestBodyShapeFailures(published).map((row) => row.rule),
+    ["meter-last"],
+  );
+  assert.deepEqual(
+    pullRequestBodyShapeFailures(published, { published: true }),
+    [],
+  );
+  assert.throws(
+    () =>
+      assertPullRequestBodyShape(`${published}\nMore.\n`, "PR.md", {
+        published: true,
+      }),
+    /must be the last block, followed only by the product-gate block$/u,
+  );
+  // Without a meter block the shape is the heading alone.
+  assert.deepEqual(pullRequestBodyShapeFailures("# WO-999\n\nProse.\n"), []);
+  assert.deepEqual(pullRequestBodyShapeFailures("# WO-999\n"), []);
+});
+
+await test("WO-227 criterion 4: the composed target body names its parts and the Change rows by path, marking paths the base held and paths the kit's records wrote", () => {
+  const files = [
+    { path: "fixtures/launchpad-board.json", added: 12, deleted: 0 },
+    { path: "docs/WO-006-notes.md", added: 3, deleted: 0 },
+    { path: "src/mask.ts", added: 1, deleted: 1 },
+    { path: "docs/work-orders/WO-999-fixture.md", added: 9, deleted: 0 },
+  ];
+  const composed = composeTargetBody({
+    body: "## Draft\n\nPreserve the board.\n",
+    baseCommit: base,
+    headCommit: head,
+    files,
+    baseTree: new Set(["src/mask.ts"]),
+    kitPaths: new Set(["docs/work-orders/WO-999-fixture.md"]),
+    gate: "## Target checks\n\nReviewed commit: `x`.",
+  });
+  assert.equal(
+    composed.text,
+    `## Draft\n\nPreserve the board.\n\n${targetChangeSection({ baseCommit: base, headCommit: head, files })}\n\n## Target checks\n\nReviewed commit: \`x\`.\n`,
+  );
+  assert.deepEqual(
+    composed.sections.map((section) => [
+      section.name,
+      composed.text.slice(section.start, section.end).split("\n")[0],
+    ]),
+    [
+      ["reviewed prose", "## Draft"],
+      ["Change table", "## Change"],
+      ["Target checks", "## Target checks"],
+    ],
+  );
+  assert.deepEqual(
+    composed.rows.map((row) => [
+      composed.text.slice(row.start, row.end),
+      row.existed,
+      row.kit,
+    ]),
+    [
+      ["| fixtures/launchpad-board.json | 12 | 0 |", false, false],
+      ["| docs/WO-006-notes.md | 3 | 0 |", false, false],
+      ["| src/mask.ts | 1 | 1 |", true, false],
+      ["| docs/work-orders/WO-999-fixture.md | 9 | 0 |", false, true],
+    ],
+  );
+  // Each row's span is one table line of the Change part.
+  for (const row of composed.rows) {
+    assert.ok(row.start >= composed.sections[1].start);
+    assert.ok(row.end <= composed.sections[1].end);
+    assert.equal(composed.text[row.end], "\n");
+    assert.equal(composed.text[row.start - 1], "\n");
+  }
+  // Without a gate section the body ends with the Change table.
+  const draft = composeTargetBody({
+    body: "## Draft\n",
+    baseCommit: base,
+    headCommit: head,
+    files: files.slice(0, 1),
+  });
+  assert.equal(
+    draft.text,
+    `## Draft\n\n${targetChangeSection({ baseCommit: base, headCommit: head, files: files.slice(0, 1) })}\n`,
+  );
+  assert.deepEqual(
+    draft.sections.map((section) => section.name),
+    ["reviewed prose", "Change table"],
+  );
+  assert.equal(
+    draft.text.slice(draft.rows[0].start, draft.rows[0].end),
+    "| fixtures/launchpad-board.json | 12 | 0 |",
+  );
+});
+
+await test("WO-227 criterion 6: the meter block moves after the last prose paragraph and changes no other byte", () => {
+  const begin = "<!-- dotln-process-meter:start -->";
+  const end = "<!-- dotln-process-meter:end -->";
+  assert.equal(
+    withMeterBlockLast(
+      `# WO-999\n\n${begin}\n\nold table\n\n${end}\n\nFirst paragraph.\n\nSecond paragraph.\n`,
+      "new table",
+    ),
+    `# WO-999\n\nFirst paragraph.\n\nSecond paragraph.\n\n${begin}\nnew table\n${end}\n`,
+  );
+  assert.equal(
+    withMeterBlockLast(`# WO-999\n\nProse.\n`, "table"),
+    `# WO-999\n\nProse.\n\n${begin}\ntable\n${end}\n`,
+  );
+  assert.equal(
+    withMeterBlockLast(
+      `# WO-999\n\nProse.\n\n${begin}\nold\n${end}\n`,
+      "table",
+    ),
+    `# WO-999\n\nProse.\n\n${begin}\ntable\n${end}\n`,
+  );
+  // A prose line's trailing spaces are a Markdown hard break and stay.
+  assert.equal(
+    withMeterBlockLast(
+      `# WO-999\n\n${begin}\n\nold\n\n${end}\n\nLine one  \nline two.  \n`,
+      "table",
+    ),
+    `# WO-999\n\nLine one  \nline two.  \n\n${begin}\ntable\n${end}\n`,
+  );
+});
+
+await test("WO-227 criterion 7: a link map writes a moved record's target path absolute to the target and every other relative link as its text", () => {
+  const notes =
+    "See [D001](../../evidence/WO-999/decisions.md#wo-999-d001), [the plan](../../planning/plan.md) and [the site](https://example.invalid/x).";
+  const moved = new Map([
+    [
+      "docs/evidence/WO-999/decisions.md",
+      "records/evidence/WO-999/decisions.md",
+    ],
+  ]);
+  assert.equal(
+    absoluteBodyLinks(notes, {
+      from: "docs/final-reviews/WO-999/RELEASE-NOTES.md",
+      repository: { selector: "github.com/dotln-fixture/target" },
+      revision: "c".repeat(40),
+      map: (path) => moved.get(path) ?? null,
+    }),
+    `See [D001](https://github.com/dotln-fixture/target/blob/${"c".repeat(40)}/records/evidence/WO-999/decisions.md#wo-999-d001), the plan and [the site](https://example.invalid/x).`,
   );
 });
 
