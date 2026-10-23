@@ -1,0 +1,261 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Criterion 4 source/hunk audit for the eight unlisted existing touching rows. No register disposition, project file, test, probe or lifecycle action performed.",
+  "baselineCommit": "c670e6288ecb221ef2416cef06f920006866bc5d",
+  "touchingReport": {
+    "file": "docs/evidence/WO-219/followups-touching.json",
+    "sha256": "fc79e1f3a3d3a95e8183e4eec125f0237c5519ea6e70f7b16d6561fe81c7a254",
+    "observedAt": "2026-10-23T16:13:37.276Z",
+    "matched": 13,
+    "excludedOwnPackets": 3,
+    "excludedNewFollowups": 2,
+    "reviewedExistingRows": 8
+  },
+  "criterion 4": "Another batch or candidate row listed by --touching is left as it is and named in README; the comparison below does not enlarge WO-219.",
+  "result": {
+    "unchangedDeferred": 6,
+    "unchangedUntriaged": 2,
+    "dispositionChangesRecommended": 0,
+    "newRuntimeEvidenceClaimed": false
+  },
+  "rows": [
+    {
+      "id": "FUP-00af89947ed9099f",
+      "source": "docs/planning/work-order-map.md#candidates--returns-from-the-cleanup-pass-recorded-2026-09-19",
+      "sourceRead": {
+        "file": "docs/planning/work-order-map.md",
+        "firstLine": 1543,
+        "lastLine": 1547,
+        "sha256": "41b0946f1ff38a6eb6ca38b08381a877c7f96a641faf7360193f9b72a3e551b9"
+      },
+      "statusBefore": "deferred",
+      "statusAfter": "deferred",
+      "currentReopenWhen": "a planning pass confirms no receipt subject depends on the path",
+      "sourceAsk": "Remove the one-time WO-043 migration only after a planning pass confirms that no receipt subject depends on it.",
+      "changedHunks": "plan-dependency-migration.mjs:61 now passes historical ids from the committed original and current root into the existing before/after dependency parsers. plan-continuation.mjs:534 adds story-writeback relocation composition.",
+      "leaveUnchangedBecause": "Both changes preserve the migration route. Neither establishes that historical receipt subjects no longer depend on it; no removal or receipt migration is proposed. Retain deferred under the existing proof condition.",
+      "claimBoundary": "Do not reuse the old WO-167 rationale as a claim that this order leaves migration code untouched: this order changes its parser context, while preserving the route."
+    },
+    {
+      "id": "FUP-06744dc23242d044",
+      "source": "docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-10-13",
+      "sourceRead": {
+        "file": "docs/planning/work-order-map.md",
+        "firstLine": 2693,
+        "lastLine": 2700,
+        "sha256": "db18936193dec4b18b9d12dfcc9d1a4c3f04c83b4bf16dc0eb17cde76145ca3f"
+      },
+      "statusBefore": "deferred",
+      "statusAfter": "deferred",
+      "currentReopenWhen": "a task outside the five crosses 1.5 times its median in a phase a pass records as lost to it, or a pass needs a task's reading the table omits",
+      "sourceAsk": "Reconsider the five-slowest gate-task limit when an omitted task crosses 1.5 times its median in a recorded lost phase, or a pass needs an omitted reading.",
+      "changedHunks": "planning-conditions.mjs:190 requires three earlier fresh samples; :529 filters absent core sources in instances before probing. The sort and .slice(0,5) at :176\u2013178 remain.",
+      "leaveUnchangedBecause": "The changed behavior is minimum sample support and instance applicability, not task selection. No lost phase or needed omitted task reading is established by these hunks. Retain deferred with the exact existing condition.",
+      "claimBoundary": "An intentionally failing mutation control is not evidence of a real gate-task regression or a phase lost to it."
+    },
+    {
+      "id": "FUP-524a82332e21e127",
+      "source": "docs/planning/work-order-map.md#candidates--returns-from-the-entropy-pass-recorded-2026-10-20",
+      "sourceRead": {
+        "file": "docs/planning/work-order-map.md",
+        "firstLine": 3352,
+        "lastLine": 3355,
+        "sha256": "c7a73e1fbe4ccb75ed1dc59be2647d87071425bb80674e713ed34cb5f0ac5148"
+      },
+      "statusBefore": "deferred",
+      "statusAfter": "deferred",
+      "currentReopenWhen": "WO-219's first verification fails on more than a third of its rows, or its implementation passes 20 hours",
+      "sourceAsk": "Reconsider WO-219 size if its first verification fails on more than a third of rows or implementation exceeds 20 hours.",
+      "changedHunks": "The touching hit is the WO-219 identity. This change executes the declared 50-row batch and records its bounded controls; it does not split or resize the order.",
+      "leaveUnchangedBecause": "At the touching-report cutoff there is no Verification event in the canonical WO-219 segment, and elapsed time since activation is about 2 h 24 m. Neither stated trigger is established. Retain deferred.",
+      "claimBoundary": "The elapsed figure is a canonical activation-to-report span, not a claim about all unobserved work. Expected negative mutation exits are not this order\u2019s first verification verdict."
+    },
+    {
+      "id": "FUP-7f9a27e6ed6c44b3",
+      "source": "docs/planning/work-order-map.md#candidates--returns-from-the-cleanup-pass-recorded-2026-09-19",
+      "sourceRead": {
+        "file": "docs/planning/work-order-map.md",
+        "firstLine": 1524,
+        "lastLine": 1529,
+        "sha256": "f6e36aefaa8057bedc87ea873a29d89f11b00aa9501c977ac3a5a9008336f9a9"
+      },
+      "statusBefore": "deferred",
+      "statusAfter": "deferred",
+      "currentReopenWhen": "collectSources reaches three seconds cold or warm on the operator's host (WO-164-D009, D014), a cold release list exceeds ten seconds (D004), status --all --json output exceeds 32 MB (D003), or work-orders index exceeds ten seconds.",
+      "sourceAsk": "Reopen measured growth costs on the current register thresholds: collectSources 3 s cold/warm, cold release list 10 s, status JSON 32 MB, or work-orders index 10 s; the source candidate also identifies console/index cost.",
+      "changedHunks": "work-orders.mjs passes historical ids through header/index readers and adds checkPreflightSuites, which spawns the checkout\u2019s declaration reader once when Preflight tokens exist. The release-record/index collection path is retained.",
+      "leaveUnchangedBecause": "The new declaration check can add index work, so the old unused-import-only rationale is not the present rationale. The diff supplies no measured crossing of any recorded threshold and makes no performance-settlement claim. Retain deferred pending the named measurement.",
+      "claimBoundary": "No latency was measured by this audit. Aggregate fixture duration cannot substitute for timing the named operation; no claim is made that the added check is free."
+    },
+    {
+      "id": "FUP-bfab19adc5e5eac1",
+      "source": "docs/planning/entropy-reviews/REVIEW-005.md#candidates--accepted-entropy-reducer-findings-review-review-005-recorded-2026-10-02",
+      "sourceRead": {
+        "file": "docs/planning/entropy-reviews/REVIEW-005.md",
+        "firstLine": 7,
+        "lastLine": 13,
+        "sha256": "e8565fd4b93620425b10b5606506c45e75faf0247f72fcf2939b299b1f6baf32"
+      },
+      "statusBefore": "deferred",
+      "statusAfter": "deferred",
+      "currentReopenWhen": "an observed deadline loss, or two successive episodes of one kind above 80% of their respective timeout; review each entropy pass",
+      "sourceAsk": "Keep the accepted headroom NoOp until a deadline loss or two successive episodes of one kind above 80% of their timeouts; review each entropy pass.",
+      "changedHunks": "The textual hit is planning-conditions.mjs. Its changes concern fresh gate-task sample count and absent instance sources; worker timeout constants, runner deadline behavior and entropy headroom policy are not changed.",
+      "leaveUnchangedBecause": "These hunks neither adjust the entropy timeout nor supply a qualifying review/refutation episode observation. Retain the existing deferred headroom NoOp and its cadence/threshold.",
+      "claimBoundary": "This review did not inventory later entropy episodes and does not assert global absence of deadline losses; the present code change supplies no such trigger."
+    },
+    {
+      "id": "FUP-d0a9719cc2e4ec55",
+      "source": "docs/evidence/WO-185/decisions.md#wo-185-d006--recorded-survivor-guarantee-limitation",
+      "sourceRead": {
+        "file": "docs/evidence/WO-185/decisions.md",
+        "firstLine": 348,
+        "lastLine": 390,
+        "sha256": "121a5b0b48db1de239d186f8c481cb01b786f2725db19b802dc785e809b70197"
+      },
+      "statusBefore": "deferred",
+      "statusAfter": "deferred",
+      "currentReopenWhen": "The operator returns to the WO-217 packet, or a probe records a detached descendant surviving a bounded command after the guard",
+      "sourceAsk": "Establish ownership through unobserved intermediate exits, including ignored-wrapper bare commands. Current disposition waits for the WO-217 packet or a recorded detached survivor after the guard.",
+      "changedHunks": "test-runner.mjs changes machinery-source declarations and --list --review inventory selection. The changed-file report contains no host-resources.mjs or host-guard.mjs change, and no inheritable ownership/event-source mechanism.",
+      "leaveUnchangedBecause": "Test selection does not recover the missing ancestry edge or activate the deferred WO-217 packet. No new detached-survivor observation is supplied by this diff. Preserve deferred and the documented incomplete guarantee.",
+      "claimBoundary": "Do not infer complete descendant containment from shell-claim pruning, task-notification classification or passing ordinary-child controls."
+    },
+    {
+      "id": "FUP-589642d0e0c714c8",
+      "source": "docs/evidence/WO-226/decisions.md#wo-226-d021",
+      "sourceRead": {
+        "file": "docs/evidence/WO-226/decisions.md",
+        "firstLine": 435,
+        "lastLine": 454,
+        "sha256": "e4158555c18fff75f5f27567c4fd0cc890e6d7528a22903e62c00923179a6f5a"
+      },
+      "statusBefore": "untriaged",
+      "statusAfter": "untriaged",
+      "currentReopenWhen": null,
+      "sourceAsk": "The next edit of registeredTargetNearMiss or releaseCloseAdmission should restore both --publish and --dry-run hints for hidden release-close helpers, preserving near-miss syntax and no decision.",
+      "changedHunks": "harness-host.ts edits registeredTargetAdmission\u2019s trusted-main helper/source closure, prompt routing and failed-shell classification. registeredTargetNearMiss, releaseCloseAdmission and registeredTargetCommand are byte-identical to the baseline.",
+      "leaveUnchangedBecause": "The exact named edit seam is not opened. Near-miss routing/hints and the WO-178 pipe/redirect expectations remain unchanged; this fix does not restore the hint or record an operator choosing another spelling. Leave untriaged under criterion 4.",
+      "claimBoundary": "The row remains an open documented advisory defect. A change elsewhere in the same large file is not a repair or a disposition of it."
+    },
+    {
+      "id": "FUP-841dca0ce87623e2",
+      "source": "docs/evidence/WO-227/decisions.md#wo-227-d018--board-the-domain-model-write-back-gap",
+      "sourceRead": {
+        "file": "docs/evidence/WO-227/decisions.md",
+        "firstLine": 370,
+        "lastLine": 391,
+        "sha256": "f7830cb8f882275c3a681af73b456c7ef5dd856d636b5d541eea92c785253839"
+      },
+      "statusBefore": "untriaged",
+      "statusAfter": "untriaged",
+      "currentReopenWhen": null,
+      "sourceAsk": "An authorized product writer should reconcile product 02\u2019s private-list paragraph with review/refuse modes and present-empty behavior; reopens when that contract is next edited or the operator needs its publication explanation.",
+      "changedHunks": "The sole product 02 hunk at :615\u2013623 distinguishes Codex lifecycle writer ownership from other unhooked duties. The private-list paragraph at :960\u2013968 is byte-identical to baseline.",
+      "leaveUnchangedBecause": "This edits the Codex ownership contract, not the private-list contract. It adds no claim about publication confirmation or present-empty lists, and no operator need for that paragraph is supplied. Leave the write-back gap untriaged.",
+      "claimBoundary": "Product02 still says a present list must pass; that known gap is preserved, not judged resolved or made newly correct by this unrelated edit."
+    }
+  ],
+  "exactSeamChecks": {
+    "method": "Named function declaration through next top-level function/const/let/class boundary; the three identical regions include the complete named functions.",
+    "functions": [
+      {
+        "function": "registeredTargetNearMiss",
+        "currentLine": 1468,
+        "identical": true,
+        "baseSha256": "52bc08ce4f73ee440fe62f27df41a6fa25b152c252706a92edb6e8e3ead23b64",
+        "currentSha256": "52bc08ce4f73ee440fe62f27df41a6fa25b152c252706a92edb6e8e3ead23b64"
+      },
+      {
+        "function": "releaseCloseAdmission",
+        "currentLine": 1283,
+        "identical": true,
+        "baseSha256": "e23e1a7df4aafff42404559ed10c1bc9a45a38af22889f0b453e402152936794",
+        "currentSha256": "e23e1a7df4aafff42404559ed10c1bc9a45a38af22889f0b453e402152936794"
+      },
+      {
+        "function": "registeredTargetCommand",
+        "currentLine": 1514,
+        "identical": true,
+        "baseSha256": "d63c4acd9683a6edff4657b39e55a63345da585851a13cc4bfb1716646305d14",
+        "currentSha256": "d63c4acd9683a6edff4657b39e55a63345da585851a13cc4bfb1716646305d14"
+      },
+      {
+        "function": "registeredTargetAdmission",
+        "currentLine": 1748,
+        "identical": false,
+        "baseSha256": "f625a573ded22c26871033d8f2ba94e5cb78c43b30735e0a688937cf8aa6f54f",
+        "currentSha256": "e2752b717949db00c0d9d3f924f9e1d31d09adac3e1d4a0071143995ea7fe094"
+      }
+    ],
+    "product02PrivateListParagraph": {
+      "identical": true,
+      "baseSha256": "77c9bacb236c66d3a1bae16c77654671d6c1e93e2d3f5ddddb699dbb0fdb1255",
+      "currentSha256": "77c9bacb236c66d3a1bae16c77654671d6c1e93e2d3f5ddddb699dbb0fdb1255",
+      "currentStartLine": 960
+    }
+  },
+  "hunkComparison": {
+    "paths": [
+      "docs/product/02-domain-model.md",
+      "packages/skeleton/src/harness-host.ts",
+      "scripts/lib/plan-continuation.mjs",
+      "scripts/lib/plan-dependency-migration.mjs",
+      "scripts/lib/planning-conditions.mjs",
+      "scripts/work-orders.mjs",
+      "scripts/test-runner.mjs"
+    ],
+    "diffSha256": "073cc6678dc03bac1452f2f2465ef5b676784d8903bfd9d637b8040efacd66f8",
+    "method": "Read-only git diff --no-ext-diff --unified=3 against the report baseline after cwd/Git-root verification."
+  },
+  "sizeTriggerEvidence": {
+    "activationRecordedAt": "2026-10-23T13:49:39.138Z",
+    "touchingReportCutoff": "2026-10-23T16:13:37.276Z",
+    "elapsedSecondsSinceActivationAtCutoff": 8638.138,
+    "verificationEventCountInCurrentSegment": 0
+  },
+  "readmeD062Recommendation": "Name all eight with their unchanged states. Keep exact source reopening conditions. Explain that actual migration parser-context and index declaration-check changes do not prove route obsolescence or a latency crossing; do not repeat their historical untouched/unused-import reasons as current facts. WO226\u2019s named functions and WO227\u2019s private-list paragraph are unchanged.",
+  "limits": [
+    "This audit compares recorded source conditions with the present hunks; it does not execute or invent performance, ancestry, deadline or user-episode evidence.",
+    "Neither textual touching matches nor deliberately failing mutation controls settle an unlisted row. Existing reopening conditions remain in force."
+  ],
+  "finalTouchingAddendum": {
+    "observedAt": "2026-10-23T19:39:34.482478Z",
+    "decision": "WO-219-D072",
+    "matched": 16,
+    "originalAuditPreserved": true,
+    "method": "Read each complete source decision and inspect the exact current fixture and helper seams. Preserve every outside-batch register disposition under criterion 4. Source digests bind the exact JSON code-fence contents.",
+    "rows": [
+      {
+        "id": "FUP-957602bc42e32e1d",
+        "source": "docs/evidence/WO-217/decisions.md#wo-217-d053",
+        "sourceDecision": "WO-217-D053",
+        "status": "deferred",
+        "observedCondition": "The role-edit measurement condition has occurred. Current executor/reviewer headroom is -238/-700 bytes under unchanged ceilings.",
+        "decision": "Retain the existing deferred optimization. D009 and FUP-e08668268dea62b1 record the current measurements and equivalent-usefulness optimization duty; neither observation establishes an acceptable shortening of reviewed duties.",
+        "limit": "Do not claim the old reopening condition is unmet or the optimization is complete.",
+        "sourceBlockSha256": "57d3e9428ce1b7ed6c74f6b243b10a4d4b37e159986975cd2ea2f3d6879bc294"
+      },
+      {
+        "id": "FUP-268c774fd159addb",
+        "source": "docs/evidence/WO-225/decisions.md#wo-225-d021",
+        "sourceDecision": "WO-225-D021",
+        "status": "untriaged",
+        "observedCondition": "The named export fixture was edited by D071. The unrelated WO-225 schema-test child still inherits NODE_TEST_CONTEXT through the shared run helper and checks only its exit.",
+        "decision": "Leave this outside-batch row untriaged under criterion 4. D071 changes only the execution-selection listing; it does not claim to repair the carried schema-test assertion or provide its requested negative control.",
+        "limit": "The full gate pass is not independent evidence that those two nested schema cases executed. The source records separate WO-225 verification evidence; this order makes no new claim about it.",
+        "sourceBlockSha256": "77a9eec62ec4fc31ca240c25a4531525292bda5b763a041124a214924d92afce"
+      },
+      {
+        "id": "FUP-eed385be08e5bdd9",
+        "source": "docs/evidence/WO-226/decisions.md#wo-226-d022",
+        "sourceDecision": "WO-226-D022",
+        "status": "untriaged",
+        "observedCondition": "The named role-cost fixture was edited by D067. It now compares ceiling minus actual installed bytes with recorded headroomBytes, retains exact byte and ceiling pins, and preserves the old inequality only on historical measurements.",
+        "decision": "Leave the row untriaged under criterion 4 while naming the now-present assertion and the existing D067 passing evidence. This is an observation of the necessary integration repair, not a separately allocated disposition or a new claim of its dedicated paired control.",
+        "limit": "Do not present a current negative headroom as historical headroom or silently settle this unlisted row.",
+        "sourceBlockSha256": "e8666f3b72a557d6fcf791836dade3d9a83ab2cb4f796b84844d3de70430cab2"
+      }
+    ]
+  }
+}

@@ -1,0 +1,460 @@
+{
+  "schemaVersion": 1,
+  "scope": "Read-only semantic audit of parent-executed paired controls; no tests, probes, lifecycle commands or project writes executed by this auditor.",
+  "selection": "Input order shown below; later records with the same id supersede earlier records. Different insensitive ids remain visible and are not silently replaced.",
+  "inputFiles": [
+    {
+      "file": "controls-records-results.json",
+      "sha256": "a030c99377450c58a30f54cbd83956e8677f5e9b1356b6c87d7019ee5b56e002",
+      "results": 8,
+      "baselineCommit": "c670e6288ecb221ef2416cef06f920006866bc5d",
+      "snapshotIdentity": "b82bc6d1c0f7737568b882f25e5b2c35bfa40584ae0ae450fb49f2c49c6cce0d",
+      "privatePathPrefixOccurrences": 0
+    },
+    {
+      "file": "controls-records-repaired-results.json",
+      "sha256": "8068568d999b877168a91124b5c688f056edadc185f1e3261ed95faaf7cc7475",
+      "results": 3,
+      "baselineCommit": "c670e6288ecb221ef2416cef06f920006866bc5d",
+      "snapshotIdentity": "b82bc6d1c0f7737568b882f25e5b2c35bfa40584ae0ae450fb49f2c49c6cce0d",
+      "privatePathPrefixOccurrences": 0
+    },
+    {
+      "file": "controls-lifecycle-results.json",
+      "sha256": "54185582a666874916be1bf748a3a7bca6b16a8c1683d9152d580e9a3e73fa87",
+      "results": 61,
+      "baselineCommit": "c670e6288ecb221ef2416cef06f920006866bc5d",
+      "snapshotIdentity": "b82bc6d1c0f7737568b882f25e5b2c35bfa40584ae0ae450fb49f2c49c6cce0d",
+      "privatePathPrefixOccurrences": 0
+    },
+    {
+      "file": "controls-planning-results.json",
+      "sha256": "a3613bd0ad4a3203a5038b44a3b2d796a24db722170849a34dcf3717ccca6fd5",
+      "results": 14,
+      "baselineCommit": "c670e6288ecb221ef2416cef06f920006866bc5d",
+      "snapshotIdentity": "b82bc6d1c0f7737568b882f25e5b2c35bfa40584ae0ae450fb49f2c49c6cce0d",
+      "privatePathPrefixOccurrences": 4
+    },
+    {
+      "file": "controls-root-results.json",
+      "sha256": "2b86b4e9c71ab7e4cd926a12c9b28780975969833ffa48d14d9edb787f5c6abf",
+      "results": 25,
+      "baselineCommit": "c670e6288ecb221ef2416cef06f920006866bc5d",
+      "snapshotIdentity": "b82bc6d1c0f7737568b882f25e5b2c35bfa40584ae0ae450fb49f2c49c6cce0d",
+      "privatePathPrefixOccurrences": 0
+    },
+    {
+      "file": "controls-followup-results.json",
+      "sha256": "1388939941e7326b600e0fd75659a212d9b33b1c19e2a7c8b72923f60457b838",
+      "results": 5,
+      "baselineCommit": "c670e6288ecb221ef2416cef06f920006866bc5d",
+      "snapshotIdentity": "b82bc6d1c0f7737568b882f25e5b2c35bfa40584ae0ae450fb49f2c49c6cce0d",
+      "privatePathPrefixOccurrences": 0
+    },
+    {
+      "file": "controls-final-repairs-results.json",
+      "sha256": "85a65a28d53804ba21b49b9502f8b0b7564daae5111c043cf63621dbad8c3e09",
+      "results": 2,
+      "baselineCommit": "c670e6288ecb221ef2416cef06f920006866bc5d",
+      "snapshotIdentity": "b82bc6d1c0f7737568b882f25e5b2c35bfa40584ae0ae450fb49f2c49c6cce0d",
+      "privatePathPrefixOccurrences": 0
+    }
+  ],
+  "counts": {
+    "rawResults": 118,
+    "uniqueIds": 110,
+    "behaviorallyVerifiedPairs": 107,
+    "notDemonstrated": 3,
+    "supersededSameIdResults": 8
+  },
+  "verifiedGroups": [
+    {
+      "group": "Corrected actor projections",
+      "ids": [
+        "row24-usage-consumes-raw-actors",
+        "row24-meta-consumes-raw-actors",
+        "row24-console-consumes-raw-actors",
+        "row24-effort-keeps-obsolete-mode"
+      ],
+      "reason": "Usage and meta return the pre-correction actor instead of the corrected actor; console reaches the model-cell equality after its section and row existence assertions; the effort mutation retains ultra instead of the required absent obsolete raw value. All fail named value assertions, with imports/build and fixture setup intact. The effort arm is an additional preservation mutation.",
+      "count": 4
+    },
+    {
+      "group": "Story writeback composition",
+      "ids": [
+        "row30-do-not-restore-authorized-story"
+      ],
+      "reason": "Both ordinary and goal-review modes reach the final composed writeback/relocation check and refuse changed sequence, vision, roles or order inventory. The preceding ordinary relocation controls pass. This is the intended compound composition failure, not a fixture-setup failure.",
+      "count": 1
+    },
+    {
+      "group": "Carried usage snapshots",
+      "ids": [
+        "row35-normal-snapshot-omits-carried-proofs",
+        "row35-refresh-drops-current-main-usage",
+        "row35-closed-refresh-refused"
+      ],
+      "reason": "Normal snapshot writing succeeds before usageCopies lacks the expected digest; current-main refresh reaches the named late release-close usage assertion; the old closed-order refusal makes result.written false where the fixture requires true. The repaired current-main control ends in the explicit presence assertion, not a TypeError.",
+      "count": 3
+    },
+    {
+      "group": "Historical dependency enforcement",
+      "ids": [
+        "history-hard",
+        "history-satisfied-by-release",
+        "history-satisfied-by-close",
+        "history-header-context",
+        "history-index-context",
+        "history-committed-reader",
+        "history-activation-shared-parser"
+      ],
+      "reason": "The first five mutations miss the expected historical-id exception in parser/header/index consumers. Committed-reader mutation falsely acquires two current historical ids instead of zero from the old receipt. Corrected activation control reaches the real activation route but returns the ordinary unmet-dependency diagnostic rather than the required historical-id diagnostic. The earlier activation-context 0/0 arm is excluded.",
+      "count": 7
+    },
+    {
+      "group": "Registered publication helper closure",
+      "ids": [
+        "f13-planted-node-modules",
+        "f13-ignored-dist",
+        "f13-moved-main-ref"
+      ],
+      "reason": "The planted node_modules, modified ignored dist, and moved-main-ref subcases each reach withheld() and unexpectedly return allow. The failing child matches each mutated vector; the other child vectors continue to run. This is permission admission failure, not registration or fixture setup.",
+      "count": 3
+    },
+    {
+      "group": "Preparation leases and recovery",
+      "ids": [
+        "f14-recorded-preparation-lease",
+        "f14-present-head-recovery",
+        "f14-absent-head-recovery"
+      ],
+      "reason": "The same-tree corrected-title retry is wrongly refused by the moved-remote check; present and absent head recovery arms each reach the concrete-remedy assertion and omit their respectively required fetch/preserve or recreate instruction.",
+      "count": 3
+    },
+    {
+      "group": "Close refusal diagnoses",
+      "ids": [
+        "f15-immutable-base",
+        "f15-immutable-target",
+        "f15-listing-target-files",
+        "f15-listing-target-directories",
+        "f15-listing-judge-only-collision-wrapper"
+      ],
+      "reason": "Immutable base/target arms expose planted EPERM without checkout role, relative node_modules path and chflags remedy. File/directory overflow arms expose the actual 16 MiB selected-tree refusal without the role wrapper. The corrected judge-only control targets the second collision-scan handler and fails the target-clone-base-main/16-MiB regex on its raw overflow message. The initial wrong-handler 0/0 arm is excluded.",
+      "count": 5
+    },
+    {
+      "group": "Release tag subject",
+      "ids": [
+        "f16-current-tip-tag",
+        "f16-source-ref-ancestor"
+      ],
+      "reason": "The tag points to the operator commit instead of the staged refresh commit; the source-ref ancestor mutation rejects the intended current subject with a no-longer-names-commit diagnostic. Each failure occurs in the release subject assertions.",
+      "count": 2
+    },
+    {
+      "group": "Close history archive and recovery",
+      "ids": [
+        "f17-archive-write-reserialization",
+        "f17-missing-archive-flat-history",
+        "f17-six-retry-growth",
+        "f17-relative-archive-diagnosis",
+        "f17-reanchor-reference-reset",
+        "f17-recovered-publication"
+      ],
+      "reason": "The first two arms expose unreadableRecord/nested bytes instead of flattened history; the six-retry driver completes all six reads then sees five later sizes instead of one; the relative-path diagnosis assertion fails; reanchor retains historyFailure; recovered history lacks the expected v1.0.0 publication target. These are value/presence assertions after actual archive operations.",
+      "count": 6
+    },
+    {
+      "group": "Pretag policy binding",
+      "ids": [
+        "f18-pretag-policy-binding"
+      ],
+      "reason": "The target release result includes no-release/no-tag despite the admitted release policy; the intended doesNotMatch assertion fails after policy/target execution.",
+      "count": 1
+    },
+    {
+      "group": "Preparation observation and host policy",
+      "ids": [
+        "f19-per-tag-process",
+        "f19-original-host-index",
+        "f19-host-wildcard",
+        "f19-host-host-port",
+        "f19-preparation-observation"
+      ],
+      "reason": "Preparation performs four tag reads instead of one; duplicate-host diagnosis reports index1 instead of original index2; wildcard and host-port controls miss expected validation exceptions. The repaired shell observation arm prints the exact named ancestral/non-starter observation error before exit1. Wildcard and host-port arms preserve existing conservative validation rather than establish newly historical defects.",
+      "count": 5
+    },
+    {
+      "group": "Passing partial-check displacement",
+      "ids": [
+        "f20-passing-partial-displaces"
+      ],
+      "reason": "The passing partial row incorrectly displaces the complete passing row, producing the structural latest-row-failed-or-no-longer-stands result where none is expected. The independent failing-partial 0/0 arm remains excluded.",
+      "count": 1
+    },
+    {
+      "group": "Finding label boundaries",
+      "ids": [
+        "b1-finding-tokens",
+        "b1-colour-boundary"
+      ],
+      "reason": "Ordinary contextual hardware tokens create unwanted finding labels, and #D100 creates an unwanted decision-number label. Both fail the expected-empty result assertion.",
+      "count": 2
+    },
+    {
+      "group": "Release relative-link coverage",
+      "ids": [
+        "b2-quoted-definition",
+        "b2-nested-empty"
+      ],
+      "reason": "Quoted-definition integration control prints its explicit Release-accepted-relative-link assertion error. The nested-empty preservation mutation reduces normalization passes and exposes a relative e.md destination instead of an empty relative-failure list. Nested normalization was already implemented; only quoted-definition refusal is the newly repaired historical leak.",
+      "count": 2
+    },
+    {
+      "group": "Terminal notification and authorship boundaries",
+      "ids": [
+        "b3-preflush-completed",
+        "b3-preflush-failed",
+        "b3-preflush-stopped",
+        "b3-preflush-killed",
+        "b3-malformed-nonterminal",
+        "b3-malformed-missing-id",
+        "b3-malformed-outer-close",
+        "b3-malformed-duplicate-status",
+        "b3-malformed-metadata-pairs",
+        "b3-malformed-summary-status",
+        "b3-malformed-byte-bound",
+        "b3-authorship-precedence",
+        "b3-enqueue-unknown-authorship"
+      ],
+      "reason": "Four terminal statuses return prompt-hook instead of host-task-notification. Seven malformed/boundary inputs return host-task-notification instead of unattributed. Explicit operator copy is overwritten with host-task-notification, and unknown enqueue authorship becomes operator instead of unattributed. All failures are the route equality assertions in the intended harness case.",
+      "count": 13
+    },
+    {
+      "group": "Reference-image definition identity",
+      "ids": [
+        "b4-reference-definition-image-flag"
+      ],
+      "reason": "The first full reference-image definition retains raw=false where raw=true is required, failing the destination assertion in scripts/test-release-preparation.mjs:963. The superseding run is in the declared release-preparation Preflight suite; collapsed/shortcut/shared-reference and written-span controls are exercised by the positive case.",
+      "count": 1
+    },
+    {
+      "group": "Public path templates and shrinking baseline",
+      "ids": [
+        "b5-template-shared",
+        "b5-template-scratchpad",
+        "b5-traversal-boundary",
+        "b5-runner-policy",
+        "b5-stale-notice",
+        "b5-writer-command",
+        "b5-writer-no-growth",
+        "b5-retained-fingerprint",
+        "b5-other-baseline-fields"
+      ],
+      "reason": "Shared and placeholder templates produce unwanted fingerprints; traversal and concrete runner mutations remove required fingerprints. Stale diagnosis is empty. The new maintenance CLI is refused instead of returning0; new matches no longer throw; retained fingerprints become zeros; other baseline fields disappear. Each mutation reaches its intended typed assertion. Runner refusal is preservation of the chosen bounded policy; the CLI arm measures the new command behavior, not a missing module/export.",
+      "count": 9
+    },
+    {
+      "group": "Pending override admission and carry",
+      "ids": [
+        "r41-closed-admission",
+        "r41-carry",
+        "r41-malformed-advisory"
+      ],
+      "reason": "Closed-phase route matrix loses override-record. In the carry shell trace WO-099 creation/activation and segment/projection existence checks pass, then the exact OperatorOverrideRecorded grep is the last command before EXIT1. In the malformed-lane arm the earlier valid carry success marker appears, then WO-093 start emits malformed-pending-override failure and exits1 instead of proceeding with its advisory. The earlier expected malformed sibling-receipt diagnostic is not used as the failure site.",
+      "count": 3
+    },
+    {
+      "group": "Planning condition boundaries",
+      "ids": [
+        "r42-sample-minimum",
+        "r42-source-omission"
+      ],
+      "reason": "The repaired one-case lane driver fails 1-earlier-sample equality with true instead of null. The exported-instance omission arm measures [local, core] instead of [local], surfaced by the instance-condition child assertion. The earlier r42 positive setup failure is superseded, not evidence.",
+      "count": 2
+    },
+    {
+      "group": "Granted request-file reads",
+      "ids": [
+        "r43-outside-admission",
+        "r43-host-scratch-fallback"
+      ],
+      "reason": "The current-session scratch apply and current-host scratchpad apply respectively reach ok() and return1 instead of0 with the contained-or-granted-file refusal. The second arm passes the current-session and negative grant/symlink controls before the host fallback assertion.",
+      "count": 2
+    },
+    {
+      "group": "Declared Preflight and review inventory",
+      "ids": [
+        "r44-preflight-call",
+        "r44-review-list-inventory"
+      ],
+      "reason": "The exported-instance kit index --check accepts the undeclared harness-fixtures token, failing notEqual(status,0). Review listing lacks the available fixture-temp-root machinery declaration, failing names.has; origin/main resolution succeeds.",
+      "count": 2
+    },
+    {
+      "group": "Durable negative cache and independent pruning",
+      "ids": [
+        "r20-negative-cache-hit",
+        "r20-independent-prune"
+      ],
+      "reason": "The second hook process increments the classifier sentinel to2 instead of1 after the cache exists. Prune preview yields no candidates instead of the two proven-dead claim/preparation paths. The named runtime cases reach these assertions, with live/unknown preservation controls retained.",
+      "count": 2
+    },
+    {
+      "group": "Source credential refusal",
+      "ids": [
+        "r25-jwt-match",
+        "r25-userinfo-match"
+      ],
+      "reason": "Compiled source-bundle tests reach screened()/refused() and report expected a refusal for respectively compact JWT and password-bearing allowed-host URL inputs. Both builds/imports succeeded; these are admitted-source behavior failures.",
+      "count": 2
+    },
+    {
+      "group": "Bounded touching continuation",
+      "ids": [
+        "r29-cli-input-policy"
+      ],
+      "reason": "The 500-term explicit query reaches parser/matcher but returns the generic planning-page-budget error, failing the required 4499-byte query/2048-byte limit/split-remedy regex. Smaller and changed-file routes remain executable in the positive case.",
+      "count": 1
+    },
+    {
+      "group": "Verification allocation and briefing",
+      "ids": [
+        "r03-verification-allocation",
+        "r03-reviewer-input",
+        "r03-explicit-empty-issues"
+      ],
+      "reason": "Unreadable briefing appends VerificationRequested/VER-001 and fails the unchanged-record assertion. Generated reviewer inputs omit the required product07 authority. A valid empty receipt returns an empty string instead of known issues: none. These measure the stated lifecycle and emitted-text obligations.",
+      "count": 3
+    },
+    {
+      "group": "Coupling and canonical append",
+      "ids": [
+        "r04-optional-receivers",
+        "r17-canonical-appended-return"
+      ],
+      "reason": "Optional nested context.state policy access misses the expected detector exception. Live append returns nested NaN where replay returns null, failing deep equality. These are intended detector/store behavior assertions.",
+      "count": 2
+    },
+    {
+      "group": "Installed experiment equipment",
+      "ids": [
+        "r06-experiment-equipment"
+      ],
+      "reason": "Declared installed Tinkerer equipment briefing is empty instead of containing its required equipped line; the named experiment case fails the briefing regex.",
+      "count": 1
+    },
+    {
+      "group": "Measured counts and latest receipt",
+      "ids": [
+        "r09-presentation-wrappers",
+        "r09-label-and-worker",
+        "r09-receipt-filename",
+        "r09-passing-counts",
+        "r09-numeric-owned-agent",
+        "r31-malformed-latest-advisory"
+      ],
+      "reason": "Emphasized/capitalized-worker self-review forms become unmeasured; a receipt filename becomes undefined; passing counts produce one failure item instead of zero; an owned numeric worker filename is refused as unowned; malformed latest findings silently print none instead of the named unavailable advisory. Each reaches the corresponding intended assertion or owned-output refusal.",
+      "count": 6
+    },
+    {
+      "group": "Actual passing gate binding",
+      "ids": [
+        "r32-actual-passing-subject",
+        "r32-single-binding"
+      ],
+      "reason": "The wrong/failed actual gate subject and repeated binding each miss their expected exception. The named tests reach the binding calls; no import/setup failure substitutes for them.",
+      "count": 2
+    },
+    {
+      "group": "Emitted role responsibilities",
+      "ids": [
+        "r36-repair-authority",
+        "r40-output-duty",
+        "r38-defensive-review"
+      ],
+      "reason": "The generated role text respectively lacks the in-scope repair routing sentence, aggregate-output/durable-disposition duty, and recorded-rule defensive judgment. Each fails its specific content regex. This proves emitted policy text, not future model compliance.",
+      "count": 3
+    },
+    {
+      "group": "Interrupted integration preservation",
+      "ids": [
+        "r48-f21-tracked-preservation",
+        "r48-f21-collision-receipt"
+      ],
+      "reason": "Both reach invokeStages at scripts/test-worktree-integration.mjs:834 through :1753 and :1817, respectively. All seven regeneration stages run instead of expected [] before the required refusal. This is the intended no-side-effects-before-refusal invariant; regeneration output is the assertion message, not setup or formatting failure.",
+      "count": 2
+    },
+    {
+      "group": "Disabled-harness floor and remedy",
+      "ids": [
+        "r48-f22-floor-navigation",
+        "r48-f22-disclosure-remedy"
+      ],
+      "reason": "Disabled floor retains forbidden generated navigation/runtime text, failing doesNotMatch; missing disabled-harness disclosure no longer throws, failing the expected-exception assertion. Clean-room text remains in the positive control.",
+      "count": 2
+    },
+    {
+      "group": "Frozen copy isolation and HEAD movement",
+      "ids": [
+        "r49-no-remote",
+        "r49-head-ref-move"
+      ],
+      "reason": "Frozen copies retain origin instead of an empty remote list. Concurrent source-ref movement under HEAD no longer rejects. Both reach the named real copy/review assertions.",
+      "count": 2
+    },
+    {
+      "group": "Operator-word attribution",
+      "ids": [
+        "r50-operator-word-classes"
+      ],
+      "reason": "The incidental JSON example is classified attributed-speech instead of incidental-json. This is the exact intended attribution equality failure, after parsing the supplied document.",
+      "count": 1
+    },
+    {
+      "group": "Named-ref source witness",
+      "ids": [
+        "r49-named-ref-witness"
+      ],
+      "reason": "The repaired negative reaches the explicit source-witness existence assertion and fails because the concurrent source-ref witness is absent. The named-ref route completes far enough to inspect the witness; this supersedes the earlier TypeError run.",
+      "count": 1
+    }
+  ],
+  "notDemonstrated": [
+    {
+      "id": "history-activation-context",
+      "reason": "Positive0/negative0: eager umbrellaRecord shared-parser rejection masks this context-only mutation. This arm proves no sensitivity.",
+      "replacedCoverage": "history-activation-shared-parser"
+    },
+    {
+      "id": "f15-listing-judge-only",
+      "reason": "Positive0/negative0: mutation targeted the earlier ignore-scan catch, while the fixture overflows the later collision scan. This arm proves no sensitivity.",
+      "replacedCoverage": "f15-listing-judge-only-collision-wrapper"
+    },
+    {
+      "id": "f20-failing-partial-ignored",
+      "reason": "Positive0/negative0: coveringGateCheck independently enforces failed-row displacement. This preservation mutation is insensitive; no product defect or extra fixture is inferred."
+    }
+  ],
+  "artifactChecks": {
+    "selectedNegativeLogsHashMatched": 110,
+    "selectedPositiveLogHashesResolved": 110,
+    "unresolvedRawPositiveLogIds": [],
+    "positiveRetention": "All selected positive hashes now resolve. The final row35 closed-refresh repair has separately prefixed positive/negative logs and supersedes the earlier pair whose reused positive raw log was lost to filename reuse. The lost earlier log is not claimed as audited.",
+    "verifiedPairsAllRecordedPositive0Negative1": true,
+    "verifiedLogsModuleSyntaxTypeOrFormatterFailureHits": [],
+    "rawLogFilesContainingPrivatePathPrefixesBySelectedReference": {
+      "positive": 6,
+      "negative": 105
+    },
+    "publicationBoundary": "Raw logs retain actual host path details and must remain scratch-only. Four planning-result observation fields initially retained an absolute Node executable under the operator home; sanitize those structured excerpts before filing. This audit copies no raw excerpts or actual host paths."
+  },
+  "supersededAttempts": "Three record controls with mutation-anchor/setup failures, the r42 positive setup failure, the old b4 suite mapping and the unnamed f19 shell observation are superseded by later same-id runs. They are not behavioral proof. If repaired named-ref witness is present, its prior TypeError is likewise not proof.",
+  "limits": [
+    "Behavioral sensitivity demonstrates the chosen assertions for bounded fixtures; it is not proof of unbounded host, filesystem or model behavior.",
+    "Role/equipment briefing controls establish emitted policy text; they do not establish future agent compliance.",
+    "Nested-empty normalization, host-shape rejection, concrete runner policy and obsolete effort-mode cleanup include preservation mutations and must not all be described as new historical repairs.",
+    "An exit1 alone is never accepted: shell arms were checked at their explicit assertion or traced terminal command, and each accepted typed test was checked at its intended value/presence/refusal assertion."
+  ]
+}

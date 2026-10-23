@@ -1,0 +1,155 @@
+{
+  "baselineCommit": "c670e6288ecb221ef2416cef06f920006866bc5d",
+  "observedAt": "2026-10-23T19:37:02.494Z",
+  "sync": {
+    "command": "npm run sync",
+    "exitCode": 0,
+    "finishedAt": "2026-10-23T19:06:46.184Z"
+  },
+  "publication": {
+    "command": "npm run publication:check",
+    "exitCode": 0,
+    "finishedAt": "2026-10-23T17:07:44.328Z"
+  },
+  "editions": {
+    "authority": {
+      "workOrder": "WO-219",
+      "revision": "004"
+    },
+    "artifact-identity": {
+      "workOrder": "WO-219",
+      "revision": "001"
+    },
+    "verification": {
+      "workOrder": "WO-219",
+      "revision": "001"
+    },
+    "feedback": {
+      "workOrder": "WO-219",
+      "revision": "001"
+    }
+  },
+  "registeredChangedSources": {
+    "authority": [
+      "package-lock.json",
+      "packages/compiler/package.json",
+      "packages/compiler/src/artifact-identity.ts",
+      "packages/compiler/src/source-bundle.ts",
+      "packages/kernel/package.json",
+      "packages/kernel/src/store.ts",
+      "packages/skeleton/package.json",
+      "scripts/lib/gate-reuse.mjs",
+      "scripts/lib/harness-instruction.mjs",
+      "packages/kernel/src/store.ts",
+      "packages/skeleton/src/harness-host.ts",
+      "packages/skeleton/src/loadouts/contributor.ts",
+      "scripts/lib/harness.mjs"
+    ],
+    "artifact-identity": [
+      "package-lock.json",
+      "packages/compiler/package.json",
+      "packages/compiler/src/artifact-identity.ts",
+      "packages/compiler/src/source-bundle.ts",
+      "packages/kernel/package.json",
+      "packages/kernel/src/store.ts",
+      "packages/skeleton/package.json",
+      "scripts/lib/gate-reuse.mjs",
+      "scripts/lib/harness-instruction.mjs",
+      "packages/kernel/src/store.ts"
+    ],
+    "verification": [
+      "package-lock.json",
+      "packages/compiler/package.json",
+      "packages/compiler/src/artifact-identity.ts",
+      "packages/compiler/src/source-bundle.ts",
+      "packages/kernel/package.json",
+      "packages/kernel/src/store.ts",
+      "packages/skeleton/package.json",
+      "scripts/lib/gate-reuse.mjs",
+      "scripts/lib/harness-instruction.mjs",
+      "packages/kernel/src/store.ts"
+    ],
+    "feedback": [
+      "package-lock.json",
+      "packages/compiler/package.json",
+      "packages/compiler/src/artifact-identity.ts",
+      "packages/compiler/src/source-bundle.ts",
+      "packages/kernel/package.json",
+      "packages/kernel/src/store.ts",
+      "packages/skeleton/package.json",
+      "scripts/lib/gate-reuse.mjs",
+      "scripts/lib/harness-instruction.mjs",
+      "packages/kernel/src/store.ts",
+      "packages/skeleton/src/harness-host.ts",
+      "packages/skeleton/src/loadouts/contributor.ts"
+    ],
+    "harness": [
+      "package-lock.json",
+      "packages/compiler/package.json",
+      "packages/compiler/src/artifact-identity.ts",
+      "packages/compiler/src/source-bundle.ts",
+      "packages/kernel/package.json",
+      "packages/kernel/src/store.ts",
+      "packages/skeleton/package.json",
+      "scripts/lib/gate-reuse.mjs",
+      "scripts/lib/harness-instruction.mjs",
+      "packages/skeleton/src/harness-host.ts",
+      "packages/skeleton/src/loadouts/contributor.ts",
+      "scripts/lib/harness.mjs"
+    ]
+  },
+  "feedback": {
+    "method": "Compared each edited FEEDBACK_SOURCE_PATHS entry through feedbackSourceFile and judgedBehavior at the baseline and current source. Internal component labels are normalized by the existing behavior projection; the deterministic edition checks in sync also pass.",
+    "sources": [
+      {
+        "path": "package-lock.json",
+        "rawBytesChanged": true,
+        "judgedBehaviorChanged": false,
+        "baselineJudgedHash": "e0bbee078c12b5d74d0a632adf80ef2ab17c65932b8f22c0bd3ec8ccec27c215",
+        "currentJudgedHash": "e0bbee078c12b5d74d0a632adf80ef2ab17c65932b8f22c0bd3ec8ccec27c215"
+      },
+      {
+        "path": "packages/skeleton/package.json",
+        "rawBytesChanged": true,
+        "judgedBehaviorChanged": false,
+        "baselineJudgedHash": "2c0307f319a6f496beb31ffbc4e5028f4553a4dbf3b018510d87c5baf220c784",
+        "currentJudgedHash": "2c0307f319a6f496beb31ffbc4e5028f4553a4dbf3b018510d87c5baf220c784"
+      },
+      {
+        "path": "packages/compiler/src/artifact-identity.ts",
+        "rawBytesChanged": true,
+        "judgedBehaviorChanged": false,
+        "baselineJudgedHash": "8828ff214355d6a96c94e968e9e09f3790951febefd2ee9ff131a34a4a831776",
+        "currentJudgedHash": "8828ff214355d6a96c94e968e9e09f3790951febefd2ee9ff131a34a4a831776"
+      }
+    ],
+    "changedJudgedSources": 0,
+    "liveEpisodeRequired": false
+  },
+  "dependencies": {
+    "addedPackages": 0,
+    "externalPackageEntries": 26,
+    "changedExternalEntries": 0,
+    "internalComponentLabels": "kernel 0.7.0; compiler 0.31.0; skeleton 0.67.0; console 0.4.7"
+  },
+  "register": {
+    "rows": 50,
+    "settled": 34,
+    "declined": 13,
+    "deferred": 3,
+    "countedAgainstCap": 16,
+    "cap": 16,
+    "pendingBefore": 162,
+    "pendingAfter": 167,
+    "afterActivation": true
+  },
+  "pairedControls": {
+    "auditedPairs": 109,
+    "activeProofs": 108,
+    "preflightControls": 107,
+    "supplemental": 2,
+    "allPositiveExit0": true,
+    "allReversionExit1": true,
+    "preflightMapped": true
+  }
+}

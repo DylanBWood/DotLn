@@ -1,0 +1,70 @@
+{
+  "worker": "criteria adversary",
+  "workOrder": "WO-219",
+  "inputDiffSha256": "bc2eecf948aa73379428bffa1f0d572d88468e625c2c250003479ccdf99ef689",
+  "found": 1,
+  "findings": [
+    {
+      "id": "CA-001",
+      "severity": "low",
+      "path": "scripts/docs-check.mjs",
+      "line": 434,
+      "hunk": "operatorWordClass, speechCue/directSpeech and documentTerm classification (new lines 423-439)",
+      "criterion": "Criterion 2 / step 23 / FUP-46deeb2483a9c28d; regression of the existing operator-attributed-word advisory",
+      "title": "A genuine quoted request containing a document term loses its attribution advisory",
+      "observed": "Both speech-cue expressions enumerate said/says/replied/responded/answered/wrote/message/words/told/stated. The later documentTerm expression exempts the entire candidate whenever it contains a quoted field/term/etc. The new fixture covers replied and a document-term-only requested sentence, but no mixed request.",
+      "staticCase": "The operator requested: “Rename the field 'status' to 'state'.”",
+      "reason": "By static inspection this remains an operator-word candidate, but neither speech-cue expression recognizes requested; the inner field quote matches documentTerm, so the new classification is document-term and the CLI emits NOTE instead of the prior ADVISORY. This is an actual quoted operator instruction, not an incidental document-token-only record. The control therefore does not cover the mixed shape despite step 23 requiring attributed speech to remain distinguished from incidental quotes.",
+      "certainty": "Statically inferred from the supplied hunk; no probe or test was run by this worker.",
+      "remedy": "Keep uncertain/mixed attributed records in attributed-speech. Constrain the document-term exemption to the incidental quote occurrence rather than exempting a whole record merely because it contains one, and add a docs-check-fixtures case for the quoted requested instruction (plus a mixed speech/document-term case). Preserve historical keys/fingerprints and the advisory/typed-refusal boundary."
+    }
+  ],
+  "criteria": [
+    {
+      "criterion": 1,
+      "assessment": "Static records align: exact same 50 ids in order, summary, before and after; all latest statuses match and are newer than activation; three packet reopening conditions name the WO-219 pull request. Final handoff placement remains later authorized work."
+    },
+    {
+      "criterion": 2,
+      "assessment": "All referenced control ids resolve, include the assigned row, run under a declared Preflight suite and record positive 0/reversion 1. There are 107 substantive pairs and three explicitly excluded insensitive mutants; already-met and document-only exceptions are separated. CA-001 identifies uncovered behavior within the settled row 50 claim. Raw log truth and replay were not independently verified."
+    },
+    {
+      "criterion": 3,
+      "assessment": "13 declines plus three operator packets = 16/50, within the floor one-third cap. Decline reasons name present harm/limits, evidence and reopening conditions; no static quota/accounting mismatch found."
+    },
+    {
+      "criterion": 4,
+      "assessment": "The retained touching report and README account for 13 pending matches, including three original packets, two new observations and eight unlisted retained rows. The protected matching/status functions have no changed hunks; baseline/current page equality is recorded, not rerun."
+    },
+    {
+      "criterion": 5,
+      "assessment": "README holds 50-row before/after tables and records 162 to 167 pending without claiming a reduction."
+    },
+    {
+      "criterion": 6,
+      "assessment": "Product write-back hunks cover changed behavior in the reviewed surfaces. Final meta check and document gate remain execution evidence to finish; this review does not treat their pending state as a defect."
+    },
+    {
+      "criterion": 7,
+      "assessment": "Package and lockfile hunks add no external dependency; changes are formatting and workspace versions/pins. Complete review gate, last document gate, diff check, deterministic editions and required feedback episode are not independently verified at this pre-handoff stage."
+    },
+    {
+      "criterion": 8,
+      "assessment": "The runtime change removes only the local decisions-file precheck. The added fixture models a closed target binding, asserts moved-file absence, checks continuation, and refuses a changed decision hash/missing id. Evidence records contained fixed/reverted 0/0 and moved fixed/reverted 0/1 with a replay driver. README has the required upgrade statement. No additional defect found by static review."
+    }
+  ],
+  "coverage": {
+    "inputs": [
+      "order.md",
+      "input.diff"
+    ],
+    "changedPathsIndexed": 165,
+    "method": "Read-only static review. Parsed oversized JSON evidence and cross-checked all row/control references rather than emitting full register/control artifacts. Read substantive source and test hunks for lifecycle/control/attribution, kernel append/coupling, compiler credential screen, planning readers/continuations/request grants/conditions, target close/publication, release-tag/starter changes, entropy isolation, integration and docs advisory behavior.",
+    "limits": [
+      "Only the supplied order and diff were read; no other subject files, project writes, Git commands/mutations, tests, probes, lifecycle calls or network access.",
+      "Not an exhaustive regression proof of all 165 changed files. Generated hook/skill/manifest copies were indexed; semantic review focused on source hunks and relevant tests/evidence.",
+      "All 107 control references were parsed for row, suite and exit-code consistency, but retained raw logs and execution claims were not independently replayed.",
+      "The complete gate and final handoff are intentionally later than this review; their absence is not reported as a source defect."
+    ]
+  }
+}

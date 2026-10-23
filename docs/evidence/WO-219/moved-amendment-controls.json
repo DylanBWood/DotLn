@@ -1,0 +1,129 @@
+{
+  "schemaVersion": 1,
+  "control": "moved amendment decision local precheck",
+  "runtimeOnlyReversion": "Insert only the five-line contained-file precheck in amendmentDecision; restore fixed bytes in finally.",
+  "fixedRuntimeRestored": true,
+  "fixtureSha256": "be791848212d34b423179e2872f47aa24b313182cd19c4bdc5617025163a23a1",
+  "results": [
+    {
+      "arm": "fixed",
+      "location": "contained",
+      "assertedCase": "execution amendment keeps its decision binding for a closed target with contained decisions",
+      "argv": [
+        "node",
+        "--input-type=module",
+        "-e",
+        "const {movedAmendmentFixtures}=await import('./scripts/test-plan-refutation.mjs'); await movedAmendmentFixtures({locations:[\"contained\"]});"
+      ],
+      "expected": {
+        "exitCode": 0,
+        "case": "pass"
+      },
+      "actual": {
+        "exitCode": 0,
+        "case": "pass"
+      },
+      "signal": null,
+      "errorCode": null,
+      "durationMs": 643,
+      "fixtureSha256": "be791848212d34b423179e2872f47aa24b313182cd19c4bdc5617025163a23a1",
+      "runtimeSha256": "2a981e9c579bec13e3224e2163d027cc16fb518b734b06c897f93c3bcd499e1d",
+      "expectedBehavior": true,
+      "matched": true,
+      "logSha256": "951c589df87136151934b7b4394be226203d1e6f59cc771cbfce8a9e4cf26a66"
+    },
+    {
+      "arm": "reverted",
+      "location": "contained",
+      "assertedCase": "execution amendment keeps its decision binding for a closed target with contained decisions",
+      "argv": [
+        "node",
+        "--input-type=module",
+        "-e",
+        "const {movedAmendmentFixtures}=await import('./scripts/test-plan-refutation.mjs'); await movedAmendmentFixtures({locations:[\"contained\"]});"
+      ],
+      "expected": {
+        "exitCode": 0,
+        "case": "pass"
+      },
+      "actual": {
+        "exitCode": 0,
+        "case": "pass"
+      },
+      "signal": null,
+      "errorCode": null,
+      "durationMs": 655,
+      "fixtureSha256": "be791848212d34b423179e2872f47aa24b313182cd19c4bdc5617025163a23a1",
+      "runtimeSha256": "d2e59a0d6f8476ed9f9ab8fa8ccec1132eafe5365aa6eb421512fbd5e7f71469",
+      "expectedBehavior": true,
+      "matched": true,
+      "logSha256": "79cce3856e3596482432ce15e4042644b55b31dfee3d3050163eb610e7a5f87c"
+    },
+    {
+      "arm": "fixed",
+      "location": "moved",
+      "assertedCase": "execution amendment keeps its decision binding for a closed target with moved decisions",
+      "argv": [
+        "node",
+        "--input-type=module",
+        "-e",
+        "const {movedAmendmentFixtures}=await import('./scripts/test-plan-refutation.mjs'); await movedAmendmentFixtures({locations:[\"moved\"]});"
+      ],
+      "expected": {
+        "exitCode": 0,
+        "case": "pass"
+      },
+      "actual": {
+        "exitCode": 0,
+        "case": "pass"
+      },
+      "signal": null,
+      "errorCode": null,
+      "durationMs": 635,
+      "fixtureSha256": "be791848212d34b423179e2872f47aa24b313182cd19c4bdc5617025163a23a1",
+      "runtimeSha256": "2a981e9c579bec13e3224e2163d027cc16fb518b734b06c897f93c3bcd499e1d",
+      "expectedBehavior": true,
+      "matched": true,
+      "logSha256": "2373a6607c3bf9b9eb6c880ca035be60160705a4e9202f63ca877c04cbafdfbb"
+    },
+    {
+      "arm": "reverted",
+      "location": "moved",
+      "assertedCase": "execution amendment keeps its decision binding for a closed target with moved decisions",
+      "argv": [
+        "node",
+        "--input-type=module",
+        "-e",
+        "const {movedAmendmentFixtures}=await import('./scripts/test-plan-refutation.mjs'); await movedAmendmentFixtures({locations:[\"moved\"]});"
+      ],
+      "expected": {
+        "exitCode": 1,
+        "case": "fail"
+      },
+      "actual": {
+        "exitCode": 1,
+        "case": "fail"
+      },
+      "signal": null,
+      "errorCode": null,
+      "durationMs": 420,
+      "fixtureSha256": "be791848212d34b423179e2872f47aa24b313182cd19c4bdc5617025163a23a1",
+      "runtimeSha256": "d2e59a0d6f8476ed9f9ab8fa8ccec1132eafe5365aa6eb421512fbd5e7f71469",
+      "expectedBehavior": true,
+      "matched": true,
+      "logSha256": "20140c9afba4d605d286d701c269b915b56736e2c9841cdef70f47d903320146"
+    }
+  ],
+  "matched": true,
+  "workOrder": "WO-219",
+  "criterion": 8,
+  "authorization": "WO-219-D061",
+  "suite": "plan-refutation",
+  "fixture": "scripts/test-plan-refutation.mjs",
+  "driver": "docs/evidence/WO-219/control-drivers/moved-amendment.mjs",
+  "baselineCommit": "c670e6288ecb221ef2416cef06f920006866bc5d",
+  "replay": "Overlay the current scripts/lib/plan-receipts.mjs and scripts/test-plan-refutation.mjs on an independently built, remote-free copy of this checkout. From the active checkout run the driver under node scripts/harness.mjs bounded with --repo naming that copy and --output naming a new scratch directory. It refuses the active root and linked worktrees, runs each case in both arms, changes only the five-line local precheck, and restores fixed bytes.",
+  "reversion": "diff --git a/scripts/lib/plan-receipts.mjs b/scripts/lib/plan-receipts.mjs\n--- a/scripts/lib/plan-receipts.mjs\n+++ b/scripts/lib/plan-receipts.mjs\n@@ -1271,6 +1271,11 @@\n \n const amendmentDecision = (root, decisionId) => {\n   const workOrderId = decisionId.slice(0, 6);\n+  const path = docRelative(root, \"evidence\", `${workOrderId}/decisions.md`);\n+  check(\n+    containedRegularFile(join(root, path), root),\n+    \"execution amendment decision must be a contained regular file\",\n+  );\n   const decision = readDecisions(root, { workOrder: workOrderId }).find(\n     (row) => row.id === decisionId,\n   );\n",
+  "readBoundary": "readDecisions supplies a contained regular input or validates the immutable target binding, parent, blob mode and hash. It excludes its non-enumerable projection metadata from the unchanged amendment decision hash. The shared reader permits contained internal aliases; outside-root aliases still refuse.",
+  "failure": "Only the reverted moved-record arm fails, at execution amendment decision must be a contained regular file. Both contained arms pass. Both fixed cases also refuse a changed decisionHash and an absent decision id, preserving the overrides log."
+}

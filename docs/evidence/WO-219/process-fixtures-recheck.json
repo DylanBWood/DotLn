@@ -1,0 +1,24 @@
+{
+  "durationMs": 528,
+  "startedAt": "2026-10-23T17:28:55.129Z",
+  "finishedAt": "2026-10-23T17:28:55.657Z",
+  "exitCode": 0,
+  "executed": true,
+  "command": [
+    "node",
+    "scripts/harness.mjs",
+    "bounded",
+    "--",
+    "node",
+    "--test",
+    "--test-name-pattern=^(bounded role wording preserves prior savings and records reviewed startup additions|WO-170 a closed order's snapshot stands for its journals, and with neither they read unavailable)$",
+    "scripts/test-process-debt.mjs"
+  ],
+  "tests": 2,
+  "passed": 2,
+  "failed": 0,
+  "skipped": 0,
+  "cancelled": 0,
+  "decision": "WO-219-D067",
+  "completePassSupplied": false
+}

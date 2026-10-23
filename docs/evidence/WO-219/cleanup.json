@@ -1,0 +1,18 @@
+{
+  "observedAt": "2026-10-23T16:33:55.056632+00:00",
+  "ownedControlClone": {
+    "location": "granted session scratch/control-copy",
+    "head": "c670e6288ecb221ef2416cef06f920006866bc5d",
+    "remoteFree": true,
+    "removed": true,
+    "logsAndControlEvidenceRetained": true
+  },
+  "nestedRepositoriesOutsideIntake": [],
+  "mainWorkingTreePreserved": true,
+  "runnerRepairControlClone": {
+    "head": "c670e6288ecb221ef2416cef06f920006866bc5d",
+    "removed": true,
+    "removedAt": "2026-10-23T17:05:36.023110+00:00",
+    "controlLogsAndSourceDigestsRetained": true
+  }
+}

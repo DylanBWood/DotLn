@@ -1,0 +1,105 @@
+{
+  "safeDefaultsSelected": true,
+  "noResponseRequested": true,
+  "packets": [
+    {
+      "id": "FUP-16a4af39c710459b",
+      "handoffLocation": "docs/evidence/WO-219/handoff.md",
+      "choice": "Use selected effort readback for this execution and keep Ultracode mode distinct from effort. Leave the unresolved Claude mode representation/readback and any canonical correction of the historical VER-001 actor as an operator packet for the WO-219 pull request; preserve Codex ultra handling and filed reports.",
+      "evidence": [
+        "docs/evidence/WO-186/decisions.md#wo-186-d039--attest-the-selected-effort-ultracode-is-a-mode-beside-it",
+        "scripts/resume.mjs",
+        "packages/skeleton/src/loadouts/contributor.ts",
+        "docs/evidence/WO-186/decisions.md"
+      ],
+      "consequence": "The generic legacy aliases can conflate a Claude mode with effort when no selected-effort readback is present. The source separately makes a historical recorded-attestation correction the operator's choice.",
+      "reopenWhen": "At review of the WO-219 pull request, the operator chooses the Claude representation/readback policy and whether an authorized canonical historical correction is due; a host-provided mode readback also reopens this packet.",
+      "authorizationAudit": "This execution selected the documented safe NoOp under WO-219-D003 and the source-specific row decision. No response or approval is requested. The reserved policy or historical-record change remains a conditional reopening route under criterion 1; ordinary implementation decisions are owned by the phase.",
+      "owner": "Operator, at review of the WO-219 pull request; final reviewer records the resulting choice without asking routine reconfirmation.",
+      "boundedFollowupTarget": "A Claude-only attestation-mode representation/readback decision plus the separately authorized canonical correction, if any, of WO-186 VER-001. Preserve Codex effort handling and never rewrite the filed report.",
+      "safeNoOp": "For this order use actual selected CLAUDE_EFFORT when available, keep unavailable mode unknown, leave historical VER-001 unchanged and perform no unsolicited correction.",
+      "rejectedAlternatives": [
+        {
+          "option": "Use Ultracode mode as selected Claude effort",
+          "reason": "D039 records mode independent of selected effort."
+        },
+        {
+          "option": "Invent mode readback or rewrite the filed VER",
+          "reason": "Neither the readback evidence nor report-rewrite authority exists."
+        },
+        {
+          "option": "Change Codex ultra handling as part of a Claude correction",
+          "reason": "The source explicitly preserves the distinct Codex interpretation."
+        }
+      ],
+      "safeDefaultIsSelectedNow": true,
+      "requestForOperatorResponse": false
+    },
+    {
+      "id": "FUP-a6cf30a8b7bc4a83",
+      "handoffLocation": "docs/evidence/WO-219/handoff.md",
+      "choice": "Keep selected effort readback and unchanged historical normalization while the WO-219 pull request carries an operator packet for the Claude mode representation and its interaction with the worker protocol. Record the old spaced-spelling mismatch as unlocated; do not invent a current failed matcher or effective readback.",
+      "evidence": [
+        "docs/evidence/WO-172/decisions.md#wo-172-d014--release-v0541-and-the-attestation-with-ultracode-independent-of-effort",
+        "scripts/resume.mjs",
+        "packages/skeleton/src/worker-protocol.ts",
+        "docs/evidence/WO-172/decisions.md"
+      ],
+      "consequence": "Claude mode and legacy effort aliases can describe different facts. The historical spaced-trigger report supplies no current reproducible failing location.",
+      "reopenWhen": "Review of the WO-219 pull request chooses the cross-harness record policy, a host exposes a mode readback, or an actual spaced-spelling mismatch is captured at a named matcher.",
+      "authorizationAudit": "This execution selected the documented safe NoOp under WO-219-D003 and the source-specific row decision. No response or approval is requested. The reserved policy or historical-record change remains a conditional reopening route under criterion 1; ordinary implementation decisions are owned by the phase.",
+      "owner": "Operator, at review of the WO-219 pull request, for the cross-harness attestation policy; a later executor owns any concrete matcher reproduction.",
+      "boundedFollowupTarget": "Choose one Claude mode-versus-effort representation spanning parseActor, normalizeWorkerEffort and generated role wording. Investigate a spaced-spelling mismatch only when a named current matcher/input is available; the old unlocated cause stays unknown.",
+      "safeNoOp": "Record explicit selected effort for new Claude completions, keep legacy historical values untouched and mode unknown without a supported readback. Do not invent a matching failure or tune shared normalization from an unlocated report.",
+      "rejectedAlternatives": [
+        {
+          "option": "Treat all ultra aliases as evidence of a selected xhigh level",
+          "reason": "Mode and selected effort can be independent in Claude."
+        },
+        {
+          "option": "Declare the historical spaced-trigger failure fixed or located",
+          "reason": "No current failing matcher/input was identified."
+        },
+        {
+          "option": "Rewrite historical actor/report bytes",
+          "reason": "Historical records and their consumer semantics are preserved."
+        }
+      ],
+      "safeDefaultIsSelectedNow": true,
+      "requestForOperatorResponse": false
+    },
+    {
+      "id": "FUP-b3454d6ce3594ef3",
+      "handoffLocation": "docs/evidence/WO-219/handoff.md",
+      "choice": "Preserve the reader and both historical batteries. Carry the acceptance/structured-field choice as an operator packet in the WO-219 pull request; the 70-of-80 held-out agreement stays below the stated 95-in-100 bound and is not relabelled as a successful validation.",
+      "evidence": [
+        "docs/evidence/WO-172/decisions.md#wo-172-d006--the-direction-reader-judged-against-a-hand-classification-filed-first",
+        "scripts/lib/meta.mjs",
+        "docs/evidence/WO-172/direction-agreement.json",
+        "docs/evidence/WO-172/reader-battery-2.json"
+      ],
+      "consequence": "The held-out result did not meet the source's generalization target. Existing development cases cannot establish a new accuracy figure.",
+      "reopenWhen": "At review of the WO-219 pull request the operator decides whether the count remains an advisory estimate under its stated limit or a structured field returns; any later new measure uses a fresh battery.",
+      "authorizationAudit": "This execution selected the documented safe NoOp under WO-219-D003 and the source-specific row decision. No response or approval is requested. The reserved policy or historical-record change remains a conditional reopening route under criterion 1; ordinary implementation decisions are owned by the phase.",
+      "owner": "Operator, at review of the WO-219 pull request, for accepting the metric or restoring a structured field; a future bounded implementation owns any approved change.",
+      "boundedFollowupTarget": "Choose retained lexical observations with the stated agreement limit, or a prospective structured operator-step field. Any changed reader gets a fresh independently labelled battery; preserve both earlier batteries and historical counts.",
+      "safeNoOp": "Keep the current reader and openly retain 70/80 held-out agreement below 95/100; treat the count as a bounded rule-derived observation, preserve the held-out set untuned and change no acceptance threshold.",
+      "rejectedAlternatives": [
+        {
+          "option": "Tune on the second held-out battery",
+          "reason": "It would destroy the only held-out measurement."
+        },
+        {
+          "option": "Silently lower the95/100 target or call87.5% a pass",
+          "reason": "That would change the acceptance standard or misstate the result."
+        },
+        {
+          "option": "Backfill a structured field from model-inferred intent",
+          "reason": "A model inference is not operator-authored structured evidence."
+        }
+      ],
+      "safeDefaultIsSelectedNow": true,
+      "requestForOperatorResponse": false
+    }
+  ]
+}

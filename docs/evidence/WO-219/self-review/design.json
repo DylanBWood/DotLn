@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "workOrderId": "WO-219",
+  "role": "design-simplicity-maintainability-improver",
+  "workerType": "codex-spawn-agent",
+  "found": 0,
+  "findings": [],
+  "subjectInputs": [
+    "order.md",
+    "input.diff"
+  ],
+  "inputDiffSha256": "bc2eecf948aa73379428bffa1f0d572d88468e625c2c250003479ccdf99ef689",
+  "inputDiffBytes": 3005283,
+  "coverage": [
+    "Substantive production hunks in compiler SourceBundle screening, kernel append serialization, console actor correction projection and Contributor/harness-host behavior.",
+    "Lifecycle and control projections, pending override capture/carry, briefing allocation, handoff presentation, verification known-issue projection and retained usage snapshots/prune proofs.",
+    "Dependency admission and historical bindings across order, planning and derived-authority readers; Preflight token validation and runner selection; planning continuation, conditions, scratch request admission and entropy confinement witnesses.",
+    "Target draft publication leases, trusted main-checkout helper admission, target-close failure handling, release history recovery, starter tag placement, batched annotations, relative release-body link handling and stash-preservation continuation.",
+    "Added/changed fixture hunks for those boundaries, with focused full reads of moved-amendment fixtures and controls, retained-records tests, SourceBundle/store tests, actor/usage refresh cases and release history cases.",
+    "Generated hook changes sampled as snapshot/hash churn; package manifest dependency changes inspected; README moved-amendment upgrade statement and the four-arm control record inspected."
+  ],
+  "movedAmendment": {
+    "productionHunk": "scripts/lib/plan-receipts.mjs @@ -1271,11 +1271,6: amendmentDecision",
+    "assessment": "The five-line local-file precheck removal delegates the decision lookup to the existing shared readDecisions call rather than adding another moved-record resolver. No concrete design or regression finding is supported by the supplied hunks.",
+    "fixture": "scripts/test-plan-refutation.mjs: movedAmendmentFixtures (called by fixtures)",
+    "reportedControlExitCodes": {
+      "fixed-contained": 0,
+      "reverted-contained": 0,
+      "fixed-moved": 0,
+      "reverted-moved": 1
+    },
+    "negativeControlsInspected": [
+      "changed decisionHash refuses",
+      "missing decision id refuses while override log is preserved"
+    ],
+    "controlExecutionByThisWorker": false
+  },
+  "limits": [
+    "Review subject was limited to the supplied order and diff. Unchanged implementation bodies and broader call graphs were not read.",
+    "No tests, probes, lifecycle commands, network calls or Git mutations were run. Executable results in evidence are records inspected, not independently replayed results.",
+    "Large generated/history/register/evidence artifacts were indexed and selectively inspected, not exhaustively re-derived or audited.",
+    "This is an executor self-review before complete gates/handoff. Their future receipts were not treated as missing-deliverable defects.",
+    "No project files were written; only design.md and design.json in the designated scratch directory were created."
+  ]
+}

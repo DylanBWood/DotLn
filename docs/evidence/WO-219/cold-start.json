@@ -1,0 +1,50 @@
+{
+  "baseline": "c670e6288ecb221ef2416cef06f920006866bc5d",
+  "measure": "installed CLAUDE.md plus role skill; .agents and .claude role bytes agree",
+  "profiles": {
+    "executor": {
+      "beforeBytes": 29132,
+      "bytes": 29484,
+      "ceiling": 29246
+    },
+    "verifier": {
+      "beforeBytes": 25884,
+      "bytes": 27156,
+      "ceiling": 29831
+    },
+    "reviewer": {
+      "beforeBytes": 28913,
+      "bytes": 29584,
+      "ceiling": 28884
+    },
+    "release-close": {
+      "beforeBytes": 17995,
+      "bytes": 18347,
+      "ceiling": 21266
+    },
+    "planner": {
+      "beforeBytes": 18904,
+      "bytes": 19256,
+      "ceiling": 24576
+    },
+    "refuter": {
+      "beforeBytes": 17718,
+      "bytes": 18070,
+      "ceiling": null
+    }
+  },
+  "overruns": [
+    {
+      "role": "executor",
+      "bytes": 29484,
+      "ceiling": 29246,
+      "overrun": 238
+    },
+    {
+      "role": "reviewer",
+      "bytes": 29584,
+      "ceiling": 28884,
+      "overrun": 700
+    }
+  ]
+}

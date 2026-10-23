@@ -1,0 +1,14 @@
+{
+  "command": "node scripts/harness.mjs bounded -- node --test scripts/test-runner.test.mjs",
+  "exitCode": 0,
+  "startedAt": "2026-10-23T17:07:44.468Z",
+  "finishedAt": "2026-10-23T17:09:23.128Z",
+  "durationMs": 98659,
+  "testSummary": [
+    "\u2139 tests 165",
+    "\u2139 pass 165",
+    "\u2139 fail 0",
+    "\u2139 cancelled 0",
+    "\u2139 skipped 0"
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "workOrder": "WO-219",
+  "axis": "compatibility with previously serializable drafts",
+  "executed": true,
+  "exitCode": 0,
+  "startedAt": "2026-10-23T14:45:30.695Z",
+  "finishedAt": "2026-10-23T14:45:30.741Z",
+  "arms": [
+    {
+      "arm": "canonical-return",
+      "axis": "compatibility with previously serializable drafts",
+      "cases": [
+        {
+          "id": "nested-nonfinite",
+          "admitted": true,
+          "replayEqual": true
+        },
+        {
+          "id": "array-nonfinite",
+          "admitted": true,
+          "replayEqual": true
+        },
+        {
+          "id": "object-undefined",
+          "admitted": true,
+          "replayEqual": true
+        },
+        {
+          "id": "ordinary-json",
+          "admitted": true,
+          "replayEqual": true
+        }
+      ]
+    },
+    {
+      "arm": "strict-admission",
+      "axis": "compatibility with previously serializable drafts",
+      "cases": [
+        {
+          "id": "nested-nonfinite",
+          "admitted": false,
+          "replayEqual": null
+        },
+        {
+          "id": "array-nonfinite",
+          "admitted": false,
+          "replayEqual": null
+        },
+        {
+          "id": "object-undefined",
+          "admitted": false,
+          "replayEqual": null
+        },
+        {
+          "id": "ordinary-json",
+          "admitted": true,
+          "replayEqual": true
+        }
+      ]
+    }
+  ],
+  "logSha256": "a1c943338c7d1acec529776a1b75740d15037bac42e56339d665ce260b08ca6c",
+  "storedReplay": {
+    "streams": 533,
+    "events": 25019,
+    "result": "byte-identical round trips",
+    "fixture": "packages/kernel/test/store-history.test.ts"
+  },
+  "historicalSweepComparison": {
+    "fixture": "corpus/harness/wo105-store.test.mjs: every declared store cut",
+    "baseline": "c670e6288ecb221ef2416cef06f920006866bc5d",
+    "baselineExitCode": 1,
+    "currentExitCode": 1,
+    "sameGeneratedDemoLogSha256": "de23994c90b416a6c73c5ac4f07b8ac2fae7ba2131836be01fb9838f65c9aa2e",
+    "filedExpectedDemoLogSha256": "9e8189597856ee30dac7701c603e2b2433bd23f0f9b5b62db8780db450a38964",
+    "verdict": "not new append divergence; the historical dynamic-demo comparison is not a passing compatibility claim"
+  }
+}
