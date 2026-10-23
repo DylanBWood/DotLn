@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "source": "Canonical worktree gate rows after the repair complete review and the order-required evidence-source check; local paths and process identities omitted.",
+  "attempts": [
+    {
+      "attempt": "001",
+      "command": "npm test -- --review",
+      "checkId": "npm test",
+      "recordedAt": "2026-10-23T12:15:55.142Z",
+      "codeIdentity": "8b8351e604dbfcd61436b9aea257adc9342e63e26bc36639611f3810ce288092",
+      "exitCode": 1,
+      "stopped": true,
+      "durationMs": 11657,
+      "identityUnchanged": null,
+      "buildOutputUnchanged": null,
+      "requiredSuites": 40,
+      "freshTasks": null,
+      "completedTasks": 1,
+      "reusedTasks": null,
+      "unrunTasks": 105,
+      "hostLaneWait": {
+        "wallMs": 15,
+        "byRelation": {
+          "this-checkout": 0,
+          "another-checkout": 0,
+          "unknown": 15
+        },
+        "holders": []
+      },
+      "criticalPath": null,
+      "judgment": "Stopped canonically after the executor noticed sync was still running; not passing evidence. D024 records the sequencing correction."
+    },
+    {
+      "attempt": "002",
+      "command": "npm test -- --review",
+      "checkId": "npm test",
+      "recordedAt": "2026-10-23T12:44:05.000Z",
+      "codeIdentity": "8b8351e604dbfcd61436b9aea257adc9342e63e26bc36639611f3810ce288092",
+      "exitCode": 0,
+      "stopped": false,
+      "durationMs": 1666586,
+      "identityUnchanged": true,
+      "buildOutputUnchanged": true,
+      "requiredSuites": 40,
+      "freshTasks": 106,
+      "completedTasks": 106,
+      "reusedTasks": 0,
+      "unrunTasks": 0,
+      "hostLaneWait": {
+        "wallMs": 1157,
+        "byRelation": {
+          "this-checkout": 0,
+          "another-checkout": 0,
+          "unknown": 1157
+        },
+        "holders": []
+      },
+      "criticalPath": {
+        "laneWaitMs": 264,
+        "gapMs": 162,
+        "tasks": [
+          "format",
+          "configuration-root",
+          "registrations",
+          "declarations",
+          "generated",
+          "host",
+          "build",
+          "harness-fixtures",
+          "sync-fixtures",
+          "process-debt",
+          "worktree-integration",
+          "skeleton",
+          "vertical:file:test-vertical-judgment.mjs",
+          "launchpad:file:test-launchpad-export.mjs"
+        ],
+        "workMs": 1665275,
+        "waitMs": 426,
+        "durationMs": 1665701
+      },
+      "judgment": "Fresh complete review passed after sync completed; no unrun tasks."
+    }
+  ],
+  "additionalChecks": [
+    {
+      "command": "node scripts/harness.mjs bounded -- npm test -- --only evidence-sources",
+      "checkId": "suite:evidence-sources",
+      "recordedAt": "2026-10-23T12:46:00.775Z",
+      "codeIdentity": "8b8351e604dbfcd61436b9aea257adc9342e63e26bc36639611f3810ce288092",
+      "exitCode": 0,
+      "stopped": false,
+      "durationMs": 90859,
+      "identityUnchanged": true,
+      "buildOutputUnchanged": true,
+      "requiredSuites": 8,
+      "freshTasks": 8,
+      "completedTasks": 8,
+      "reusedTasks": 0,
+      "unrunTasks": 0,
+      "hostLaneWait": {
+        "wallMs": 47,
+        "byRelation": {
+          "this-checkout": 0,
+          "another-checkout": 0,
+          "unknown": 47
+        },
+        "holders": []
+      },
+      "criticalPath": {
+        "laneWaitMs": 47,
+        "gapMs": 60,
+        "tasks": [
+          "format",
+          "configuration-root",
+          "registrations",
+          "declarations",
+          "generated",
+          "host",
+          "build",
+          "evidence-sources"
+        ],
+        "workMs": 90524,
+        "waitMs": 107,
+        "durationMs": 90631
+      }
+    }
+  ]
+}

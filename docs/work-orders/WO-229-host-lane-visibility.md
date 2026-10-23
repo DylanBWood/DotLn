@@ -1,4 +1,4 @@
-# WO-229 — A gate says who it waited for: each WAIT line labels its holders as this checkout, another checkout or unknown without printing a path, the gate summary and the recorded row carry the gate's lane wait apart from its work, the planning condition reports an execution-only median beside the wall-clock one and marks a contended sample, `node scripts/harness.mjs lanes` lists live holders read-only, and the structural tasks' full-capacity requests are measured against their need (version assigned at activation)
+# WO-229 — A gate says who it waited for: each WAIT line labels its holders as this checkout, another checkout or unknown without printing a path, the gate summary and the recorded row carry the gate's lane wait apart from its work, the planning condition reports an execution-only median beside the wall-clock one and marks a contended sample, `node scripts/harness.mjs lanes` lists live holders read-only, and the structural tasks' full-capacity requests are measured against their need (v0.93.0)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
@@ -146,7 +146,9 @@ is measured so the next pass can decide it:
   request is sized to the measurement and the admission regression
   (criterion 5) proves a short document gate's wait is bounded while a
   complete gate runs; otherwise the order records the measurement and
-  changes no request.
+  changes no request. Operator-authorized exception (2026-10-23,
+  WO-229-D022): declarations uses its measured four-slot need at capacity
+  eight; the wait bound and local exclusivity remain required.
 
 **Observed gap (dated 2026-10-21 at `main` `926b8234`):**
 
@@ -289,7 +291,11 @@ sentences.
    and a fixture shows a document gate's total lane wait bounded (under the
    complete gate's longest single task) while a complete gate runs in a
    sibling fixture checkout; otherwise the requests are unchanged and the
-   decision says why.
+   decision says why. Operator-authorized exception (2026-10-23,
+   WO-229-D022): declarations requests its measured four slots at capacity
+   eight. The fixture must assert that the complete gate admits another peer
+   after the document gate's last admission; the existing total-wait bound
+   remains required.
 6. `npm test -- --review` and `npm run test:docs` green; `git diff --check`
    clean; no new dependency; the re-mints of step 10 recorded; product 07
    and the architecture record's sentences updated in place.

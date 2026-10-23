@@ -1,0 +1,176 @@
+{
+  "schemaVersion": 1,
+  "command": "node scripts/harness.mjs bounded -- node scripts/measure-lanes.mjs --kit <fixture-export> --out <evidence-file>",
+  "observedAt": "2026-10-23T05:19:16.135Z",
+  "platform": "darwin",
+  "node": "v26.9.0",
+  "capacity": 8,
+  "physicalBytes": 51539607552,
+  "logicalCpus": 16,
+  "taskBudgetBytes": 3221225472,
+  "exportCommit": "62fa26761eba698ee0f8dcf59116bc571de3042c",
+  "method": "Three sequential runs per task and context using /usr/bin/time -lp. CPU is user plus system time of the command and waited-for children; RSS is the OS maximum resident set, not physical footprint. Request is ceiling of maximum CPU/wall times 1.25 or RSS/per-lane budget, at least one, capped at recorded capacity. This is measured sizing, not a worst-case CPU guarantee. Core kit-verify invokes core's verifier against the same fixture export because core has no kit manifest.",
+  "runs": [
+    {
+      "context": "core",
+      "task": "format",
+      "run": 1,
+      "wallMs": 6860,
+      "cpuMs": 11530,
+      "rssPeakBytes": 564314112,
+      "capacity": 8,
+      "exitCode": 0,
+      "loadAverage": [
+        3.52978515625,
+        3.779296875,
+        3.9521484375
+      ],
+      "outputSha256": "8117e9dfdb8c4c2c2b1bf5af4055fdc3d86325230808d9346ba621a04c7e1b9c"
+    },
+    {
+      "context": "core",
+      "task": "format",
+      "run": 2,
+      "wallMs": 7140,
+      "cpuMs": 11510,
+      "rssPeakBytes": 561758208,
+      "capacity": 8,
+      "exitCode": 0,
+      "loadAverage": [
+        3.541015625,
+        3.7705078125,
+        3.9462890625
+      ],
+      "outputSha256": "25bd2b95992572eb926763529ca95d19a449e23452251712f149a763689afde2"
+    },
+    {
+      "context": "core",
+      "task": "format",
+      "run": 3,
+      "wallMs": 7400,
+      "cpuMs": 12180,
+      "rssPeakBytes": 561463296,
+      "capacity": 8,
+      "exitCode": 0,
+      "loadAverage": [
+        3.57763671875,
+        3.77392578125,
+        3.9462890625
+      ],
+      "outputSha256": "fbfd9d0aa7e5f7c66bf9f55fd9ca6e9ee69bb1ac296b3daf29dff66201cfedd2"
+    },
+    {
+      "context": "core",
+      "task": "configuration-root",
+      "run": 1,
+      "wallMs": 6230,
+      "cpuMs": 6200,
+      "rssPeakBytes": 90259456,
+      "capacity": 8,
+      "exitCode": 0,
+      "loadAverage": [
+        4.09716796875,
+        3.87939453125,
+        3.9814453125
+      ],
+      "outputSha256": "741664371632eb9a02317bb6feb9d34c610d976661824d565d49422987418597"
+    },
+    {
+      "context": "core",
+      "task": "configuration-root",
+      "run": 2,
+      "wallMs": 6200,
+      "cpuMs": 6160,
+      "rssPeakBytes": 90243072,
+      "capacity": 8,
+      "exitCode": 0,
+      "loadAverage": [
+        4.00927734375,
+        3.86474609375,
+        3.9755859375
+      ],
+      "outputSha256": "d6cbe86ea378ff0d84b12b9806af396bb5c73d20ebe371e96d8a9c26e3c55eda"
+    },
+    {
+      "context": "core",
+      "task": "configuration-root",
+      "run": 3,
+      "wallMs": 6250,
+      "cpuMs": 6220.000000000001,
+      "rssPeakBytes": 89882624,
+      "capacity": 8,
+      "exitCode": 0,
+      "loadAverage": [
+        4.08837890625,
+        3.88330078125,
+        3.9814453125
+      ],
+      "outputSha256": "244c910606b16a0e0341d4b31f7633f8e13dd3ce2f123793fe877541bacb8ecf"
+    },
+    {
+      "context": "core",
+      "task": "registrations",
+      "run": 1,
+      "wallMs": 600,
+      "cpuMs": 650,
+      "rssPeakBytes": 297517056,
+      "capacity": 8,
+      "exitCode": 0,
+      "loadAverage": [
+        4.0810546875,
+        3.884765625,
+        3.9814453125
+      ],
+      "outputSha256": "0ccd52c7455b6da51147a93812eebabcbf1bf16b915549d49ee6592bd409f05c"
+    },
+    {
+      "context": "core",
+      "task": "registrations",
+      "run": 2,
+      "wallMs": 570,
+      "cpuMs": 640,
+      "rssPeakBytes": 310149120,
+      "capacity": 8,
+      "exitCode": 0,
+      "loadAverage": [
+        4.07421875,
+        3.88623046875,
+        3.9814453125
+      ],
+      "outputSha256": "6d99b2d475497387fc63e7b9d14fc92687f6bdce35b3305498212e9ea05cf861"
+    },
+    {
+      "context": "core",
+      "task": "registrations",
+      "run": 3,
+      "wallMs": 580,
+      "cpuMs": 640,
+      "rssPeakBytes": 313032704,
+      "capacity": 8,
+      "exitCode": 0,
+      "loadAverage": [
+        4.07421875,
+        3.88623046875,
+        3.9814453125
+      ],
+      "outputSha256": "afee4fdbc1267d6acd17b43772d3e96afce61ee1977a82896417d1fe6b248edb"
+    },
+    {
+      "context": "core",
+      "task": "declarations",
+      "run": 1,
+      "wallMs": 260,
+      "cpuMs": 620,
+      "rssPeakBytes": 154402816,
+      "capacity": 8,
+      "exitCode": 1,
+      "loadAverage": [
+        4.07421875,
+        3.88623046875,
+        3.9814453125
+      ],
+      "outputSha256": "f7bc40e47953b3bd1e885dd60edc9f0130e98dae734b2adf85dba8ffb2b297b0"
+    }
+  ],
+  "requests": {}
+}

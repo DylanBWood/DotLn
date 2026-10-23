@@ -1,0 +1,696 @@
+{
+  "schemaVersion": 1,
+  "command": "node scripts/harness.mjs bounded -- node scripts/measure-lanes.mjs --kit <fixture-export> --out <evidence-file>",
+  "observedAt": "2026-10-23T05:27:11.156Z",
+  "platform": "darwin",
+  "node": "v26.9.0",
+  "capacity": 8,
+  "physicalBytes": 51539607552,
+  "logicalCpus": 16,
+  "taskBudgetBytes": 3221225472,
+  "exportCommit": "62fa26761eba698ee0f8dcf59116bc571de3042c",
+  "method": "Three sequential runs per task and context using /usr/bin/time -lp. CPU is user plus system time of the command and waited-for children; RSS is the OS maximum resident set, not physical footprint. Request is ceiling of maximum CPU/wall times 1.25 or RSS/per-lane budget, at least one, capped at recorded capacity. This is measured sizing, not a worst-case CPU guarantee. Core kit-verify invokes core's verifier against the same fixture export because core has no kit manifest.",
+  "runs": [
+    {
+      "context": "core",
+      "task": "format",
+      "run": 1,
+      "wallMs": 7010,
+      "cpuMs": 11970,
+      "rssPeakBytes": 747290624,
+      "capacity": 8,
+      "exitCode": 0,
+      "loadAverage": [
+        2.02734375,
+        3.43310546875,
+        3.82275390625
+      ],
+      "outputSha256": "9be3481c213de70571dc5be5162f4331cdb9373edb0fabbe37a6dddc7fba409f"
+    },
+    {
+      "context": "core",
+      "task": "format",
+      "run": 2,
+      "wallMs": 6870,
+      "cpuMs": 11510,
+      "rssPeakBytes": 638517248,
+      "capacity": 8,
+      "exitCode": 0,
+      "loadAverage": [
+        2.2626953125,
+        3.435546875,
+        3.81884765625
+      ],
+      "outputSha256": "236249bdb199d326a7d1eed3464730d9c64063d3735091c9c98754498d763b28"
+    },
+    {
+      "context": "core",
+      "task": "format",
+      "run": 3,
+      "wallMs": 6870,
+      "cpuMs": 11500,
+      "rssPeakBytes": 600604672,
+      "capacity": 8,
+      "exitCode": 0,
+      "loadAverage": [
+        2.3212890625,
+        3.42822265625,
+        3.81396484375
+      ],
+      "outputSha256": "75a474dce81e18e29316b2565227112f40723b62576cdc0626c50d19908bf483"
+    },
+    {
+      "context": "core",
+      "task": "configuration-root",
+      "run": 1,
+      "wallMs": 5710,
+      "cpuMs": 5720.000000000001,
+      "rssPeakBytes": 89833472,
+      "capacity": 8,
+      "exitCode": 0,
+      "loadAverage": [
+        2.37548828125,
+        3.4208984375,
+        3.80908203125
+      ],
+      "outputSha256": "d4370d648762965004ba48d40868c1af963fed445d68a2ab95eeada5cd83a2e2"
+    },
+    {
+      "context": "core",
+      "task": "configuration-root",
+      "run": 2,
+      "wallMs": 5730,
+      "cpuMs": 5720.000000000001,
+      "rssPeakBytes": 89800704,
+      "capacity": 8,
+      "exitCode": 0,
+      "loadAverage": [
+        2.685546875,
+        3.455078125,
+        3.81689453125
+      ],
+      "outputSha256": "0286389299171aba2081f387e28b4e9ed0b65e75ede02545939154d26f580610"
+    },
+    {
+      "context": "core",
+      "task": "configuration-root",
+      "run": 3,
+      "wallMs": 5740,
+      "cpuMs": 5730,
+      "rssPeakBytes": 89882624,
+      "capacity": 8,
+      "exitCode": 0,
+      "loadAverage": [
+        2.79052734375,
+        3.4638671875,
+        3.81787109375
+      ],
+      "outputSha256": "624e41da97acb43fc089473f8a14f147e8aa5ed8ea199b8fe7efc8819e371b5a"
+    },
+    {
+      "context": "core",
+      "task": "registrations",
+      "run": 1,
+      "wallMs": 550,
+      "cpuMs": 600,
+      "rssPeakBytes": 284884992,
+      "capacity": 8,
+      "exitCode": 0,
+      "loadAverage": [
+        2.72705078125,
+        3.439453125,
+        3.80712890625
+      ],
+      "outputSha256": "4c0da98a765f8b312603ec016d6347ebbf944724146acf7216863f71931e227a"
+    },
+    {
+      "context": "core",
+      "task": "registrations",
+      "run": 2,
+      "wallMs": 540,
+      "cpuMs": 580,
+      "rssPeakBytes": 287391744,
+      "capacity": 8,
+      "exitCode": 0,
+      "loadAverage": [
+        2.72705078125,
+        3.439453125,
+        3.80712890625
+      ],
+      "outputSha256": "14d54b61888b2d66cf32ca73fcaa816806ba48b90c351aa6ae801e488a8c9ad9"
+    },
+    {
+      "context": "core",
+      "task": "registrations",
+      "run": 3,
+      "wallMs": 540,
+      "cpuMs": 580,
+      "rssPeakBytes": 284246016,
+      "capacity": 8,
+      "exitCode": 0,
+      "loadAverage": [
+        2.72705078125,
+        3.439453125,
+        3.80712890625
+      ],
+      "outputSha256": "51fdb91f1246ac4ade35d515bb07e38410b28291c5a2fcc7a2aac1b10786eef3"
+    },
+    {
+      "context": "core",
+      "task": "declarations",
+      "run": 1,
+      "wallMs": 260,
+      "cpuMs": 620,
+      "rssPeakBytes": 158515200,
+      "capacity": 8,
+      "exitCode": 0,
+      "loadAverage": [
+        2.72705078125,
+        3.439453125,
+        3.80712890625
+      ],
+      "outputSha256": "da826373aba10933d65e5f4ea9e40393bc188214f43dc4d8da73e65e32788e09"
+    },
+    {
+      "context": "core",
+      "task": "declarations",
+      "run": 2,
+      "wallMs": 260,
+      "cpuMs": 610,
+      "rssPeakBytes": 156254208,
+      "capacity": 8,
+      "exitCode": 0,
+      "loadAverage": [
+        2.72705078125,
+        3.439453125,
+        3.80712890625
+      ],
+      "outputSha256": "c22a8802827e7f1867cba572735333ab9f8dfec853ea61c5d6c360d56f8fb193"
+    },
+    {
+      "context": "core",
+      "task": "declarations",
+      "run": 3,
+      "wallMs": 260,
+      "cpuMs": 610,
+      "rssPeakBytes": 153485312,
+      "capacity": 8,
+      "exitCode": 0,
+      "loadAverage": [
+        2.72705078125,
+        3.439453125,
+        3.80712890625
+      ],
+      "outputSha256": "2be9636521a4b92492007738a4d5f1ecf8345311e54aabb2834be48edd56feaa"
+    },
+    {
+      "context": "core",
+      "task": "generated",
+      "run": 1,
+      "wallMs": 17250,
+      "cpuMs": 20570,
+      "rssPeakBytes": 463323136,
+      "capacity": 8,
+      "exitCode": 0,
+      "loadAverage": [
+        2.72705078125,
+        3.439453125,
+        3.80712890625
+      ],
+      "outputSha256": "91fbdc5c05ed619825d5787b85909ef6e70c29859a95ddaa47fe4811d5a6f68e"
+    },
+    {
+      "context": "core",
+      "task": "generated",
+      "run": 2,
+      "wallMs": 17350,
+      "cpuMs": 20540,
+      "rssPeakBytes": 464306176,
+      "capacity": 8,
+      "exitCode": 0,
+      "loadAverage": [
+        2.5478515625,
+        3.35986328125,
+        3.77001953125
+      ],
+      "outputSha256": "f5b262bd1b3837b62614011d871a96ef86ce43ee04bd7171898ba711fda196bb"
+    },
+    {
+      "context": "core",
+      "task": "generated",
+      "run": 3,
+      "wallMs": 17340,
+      "cpuMs": 20480,
+      "rssPeakBytes": 486408192,
+      "capacity": 8,
+      "exitCode": 0,
+      "loadAverage": [
+        2.58056640625,
+        3.3251953125,
+        3.75
+      ],
+      "outputSha256": "1163562fba85fae63aaa51760dadc492b611cfccb8649d83027d4578462fde78"
+    },
+    {
+      "context": "core",
+      "task": "host",
+      "run": 1,
+      "wallMs": 40,
+      "cpuMs": 40,
+      "rssPeakBytes": 64438272,
+      "capacity": 8,
+      "exitCode": 0,
+      "loadAverage": [
+        3.6552734375,
+        3.50244140625,
+        3.80224609375
+      ],
+      "outputSha256": "5d6025e1d095e869045b787518563d35d07e930934d8ddafe6c2ecf5a5afffc8"
+    },
+    {
+      "context": "core",
+      "task": "host",
+      "run": 2,
+      "wallMs": 40,
+      "cpuMs": 40,
+      "rssPeakBytes": 64651264,
+      "capacity": 8,
+      "exitCode": 0,
+      "loadAverage": [
+        3.6552734375,
+        3.50244140625,
+        3.80224609375
+      ],
+      "outputSha256": "c651200d059a4b8a56dd3ff4856d9612caae4ad2bd5a16b1b95e09690080bb7a"
+    },
+    {
+      "context": "core",
+      "task": "host",
+      "run": 3,
+      "wallMs": 40,
+      "cpuMs": 30,
+      "rssPeakBytes": 64536576,
+      "capacity": 8,
+      "exitCode": 0,
+      "loadAverage": [
+        3.6552734375,
+        3.50244140625,
+        3.80224609375
+      ],
+      "outputSha256": "7c2643b737d4514398792238d10192bf19866c2fb417bf10487b2bc0ba3e1233"
+    },
+    {
+      "context": "core",
+      "task": "kit-verify",
+      "run": 1,
+      "wallMs": 100,
+      "cpuMs": 110.00000000000001,
+      "rssPeakBytes": 81297408,
+      "capacity": 8,
+      "exitCode": 0,
+      "loadAverage": [
+        3.6552734375,
+        3.50244140625,
+        3.80224609375
+      ],
+      "outputSha256": "7ae8bdce1ea109f5def69eb471caf9ed779d084715b55e21dc5b412e6493c1cd"
+    },
+    {
+      "context": "core",
+      "task": "kit-verify",
+      "run": 2,
+      "wallMs": 90,
+      "cpuMs": 100,
+      "rssPeakBytes": 81690624,
+      "capacity": 8,
+      "exitCode": 0,
+      "loadAverage": [
+        3.6552734375,
+        3.50244140625,
+        3.80224609375
+      ],
+      "outputSha256": "b7c427352b4bf5bccee3b25ba14d9c3c5d5f212bf57a45261e337a1edaf047c3"
+    },
+    {
+      "context": "core",
+      "task": "kit-verify",
+      "run": 3,
+      "wallMs": 90,
+      "cpuMs": 100,
+      "rssPeakBytes": 81543168,
+      "capacity": 8,
+      "exitCode": 0,
+      "loadAverage": [
+        3.6552734375,
+        3.50244140625,
+        3.80224609375
+      ],
+      "outputSha256": "ca9edae2dae2d5b9bbf72424ddb701fb646fcb44ab87b42c92f1a2dc0a523155"
+    },
+    {
+      "context": "export",
+      "task": "format",
+      "run": 1,
+      "wallMs": 3100,
+      "cpuMs": 4780,
+      "rssPeakBytes": 404291584,
+      "capacity": 8,
+      "exitCode": 0,
+      "loadAverage": [
+        3.6552734375,
+        3.50244140625,
+        3.80224609375
+      ],
+      "outputSha256": "78cbe00f5c32c167973b208b066fa345914e3cc629e07348e7afcf6e3253d659"
+    },
+    {
+      "context": "export",
+      "task": "format",
+      "run": 2,
+      "wallMs": 3130,
+      "cpuMs": 4840.000000000001,
+      "rssPeakBytes": 369917952,
+      "capacity": 8,
+      "exitCode": 0,
+      "loadAverage": [
+        3.6552734375,
+        3.50244140625,
+        3.80224609375
+      ],
+      "outputSha256": "551f0976f39a7d35de6730784ece3a3448f9b2a26ff02253c16fcbd540b99bcb"
+    },
+    {
+      "context": "export",
+      "task": "format",
+      "run": 3,
+      "wallMs": 3110,
+      "cpuMs": 4810.000000000001,
+      "rssPeakBytes": 392970240,
+      "capacity": 8,
+      "exitCode": 0,
+      "loadAverage": [
+        3.7626953125,
+        3.52685546875,
+        3.80908203125
+      ],
+      "outputSha256": "c84735e504c6a0bdd133093b77fb2f8da96c245f6506ac592c84fcacb3b26705"
+    },
+    {
+      "context": "export",
+      "task": "configuration-root",
+      "run": 1,
+      "wallMs": 5630,
+      "cpuMs": 5630.000000000001,
+      "rssPeakBytes": 89669632,
+      "capacity": 8,
+      "exitCode": 0,
+      "loadAverage": [
+        3.62109375,
+        3.50146484375,
+        3.79833984375
+      ],
+      "outputSha256": "336d7dfd1fd30454f024df6d576570a94726f78263ad63c41ee6127fbf92fb1f"
+    },
+    {
+      "context": "export",
+      "task": "configuration-root",
+      "run": 2,
+      "wallMs": 5610,
+      "cpuMs": 5600,
+      "rssPeakBytes": 89309184,
+      "capacity": 8,
+      "exitCode": 0,
+      "loadAverage": [
+        3.6513671875,
+        3.50927734375,
+        3.79931640625
+      ],
+      "outputSha256": "01a2e49e7b7eb2c4e8d0cfa1331c2e0e92ed0384a0fa35906341d8b5f6a0f2e5"
+    },
+    {
+      "context": "export",
+      "task": "configuration-root",
+      "run": 3,
+      "wallMs": 5600,
+      "cpuMs": 5600,
+      "rssPeakBytes": 89227264,
+      "capacity": 8,
+      "exitCode": 0,
+      "loadAverage": [
+        3.51904296875,
+        3.48388671875,
+        3.78857421875
+      ],
+      "outputSha256": "36d5f5f9f8c12b2fc9cce500bcecb7677db5dc7b6deedd8bdc04a2e25de1df65"
+    },
+    {
+      "context": "export",
+      "task": "registrations",
+      "run": 1,
+      "wallMs": 50,
+      "cpuMs": 50,
+      "rssPeakBytes": 70221824,
+      "capacity": 8,
+      "exitCode": 0,
+      "loadAverage": [
+        3.39697265625,
+        3.458984375,
+        3.77783203125
+      ],
+      "outputSha256": "84130676012267f876c66fd78043838a9f667a5f992612459513b8c146388a5c"
+    },
+    {
+      "context": "export",
+      "task": "registrations",
+      "run": 2,
+      "wallMs": 50,
+      "cpuMs": 50,
+      "rssPeakBytes": 70254592,
+      "capacity": 8,
+      "exitCode": 0,
+      "loadAverage": [
+        3.39697265625,
+        3.458984375,
+        3.77783203125
+      ],
+      "outputSha256": "f40facfca7bc6d5148f5d991407a072ab917869027bf105c2ae018bfc1ec0a0b"
+    },
+    {
+      "context": "export",
+      "task": "registrations",
+      "run": 3,
+      "wallMs": 50,
+      "cpuMs": 50,
+      "rssPeakBytes": 69959680,
+      "capacity": 8,
+      "exitCode": 0,
+      "loadAverage": [
+        3.39697265625,
+        3.458984375,
+        3.77783203125
+      ],
+      "outputSha256": "f4a7ead723789fb351a7ff91507599a28ac39b7485a94fa0d53e8b8d9031a9b6"
+    },
+    {
+      "context": "export",
+      "task": "declarations",
+      "run": 1,
+      "wallMs": 230,
+      "cpuMs": 540,
+      "rssPeakBytes": 134479872,
+      "capacity": 8,
+      "exitCode": 0,
+      "loadAverage": [
+        3.39697265625,
+        3.458984375,
+        3.77783203125
+      ],
+      "outputSha256": "e46a971c6663a2065b162d14b70fa65f63d2e7cc4219cbb5abf1e957420130a7"
+    },
+    {
+      "context": "export",
+      "task": "declarations",
+      "run": 2,
+      "wallMs": 240,
+      "cpuMs": 550,
+      "rssPeakBytes": 137281536,
+      "capacity": 8,
+      "exitCode": 0,
+      "loadAverage": [
+        3.39697265625,
+        3.458984375,
+        3.77783203125
+      ],
+      "outputSha256": "f1d9b01988ed3ed6a40f7445ae9e34d0488c8c3507cbdcad28238757fffa26eb"
+    },
+    {
+      "context": "export",
+      "task": "declarations",
+      "run": 3,
+      "wallMs": 240,
+      "cpuMs": 540,
+      "rssPeakBytes": 141164544,
+      "capacity": 8,
+      "exitCode": 0,
+      "loadAverage": [
+        3.39697265625,
+        3.458984375,
+        3.77783203125
+      ],
+      "outputSha256": "8b55dbdf19a97f1afdb3835bd730d8ef13bae6ce0b5b162ac316d107d0dcba1f"
+    },
+    {
+      "context": "export",
+      "task": "generated",
+      "run": 1,
+      "wallMs": 630,
+      "cpuMs": 690.0000000000001,
+      "rssPeakBytes": 101040128,
+      "capacity": 8,
+      "exitCode": 0,
+      "loadAverage": [
+        3.39697265625,
+        3.458984375,
+        3.77783203125
+      ],
+      "outputSha256": "99a11ff250502370a042003cd3e2d77bb569e30fd6d1c86531ae82e8d5129f58"
+    },
+    {
+      "context": "export",
+      "task": "generated",
+      "run": 2,
+      "wallMs": 610,
+      "cpuMs": 680,
+      "rssPeakBytes": 99237888,
+      "capacity": 8,
+      "exitCode": 0,
+      "loadAverage": [
+        3.39697265625,
+        3.458984375,
+        3.77783203125
+      ],
+      "outputSha256": "2d5d8ddf3efac4140a4ed307d4289884fbce56ca1d6a74b08ec21e2a95a1ee48"
+    },
+    {
+      "context": "export",
+      "task": "generated",
+      "run": 3,
+      "wallMs": 600,
+      "cpuMs": 660,
+      "rssPeakBytes": 99991552,
+      "capacity": 8,
+      "exitCode": 0,
+      "loadAverage": [
+        3.39697265625,
+        3.458984375,
+        3.77783203125
+      ],
+      "outputSha256": "16537b32059f0348d81b3b5cdbc10ea950576e766301bab55cf6f5bc6d4bee99"
+    },
+    {
+      "context": "export",
+      "task": "host",
+      "run": 1,
+      "wallMs": 40,
+      "cpuMs": 40,
+      "rssPeakBytes": 64749568,
+      "capacity": 8,
+      "exitCode": 0,
+      "loadAverage": [
+        3.20458984375,
+        3.41796875,
+        3.76123046875
+      ],
+      "outputSha256": "52bb2943458dd04f800186663b714ba1d32348ab7eef1a59108c557ebc777a47"
+    },
+    {
+      "context": "export",
+      "task": "host",
+      "run": 2,
+      "wallMs": 40,
+      "cpuMs": 30,
+      "rssPeakBytes": 64749568,
+      "capacity": 8,
+      "exitCode": 0,
+      "loadAverage": [
+        3.20458984375,
+        3.41796875,
+        3.76123046875
+      ],
+      "outputSha256": "a96ba00843f8041f9ed270a95c4945f6d910892dcefaf87826a97b3d374af5a5"
+    },
+    {
+      "context": "export",
+      "task": "host",
+      "run": 3,
+      "wallMs": 40,
+      "cpuMs": 40,
+      "rssPeakBytes": 64815104,
+      "capacity": 8,
+      "exitCode": 0,
+      "loadAverage": [
+        3.20458984375,
+        3.41796875,
+        3.76123046875
+      ],
+      "outputSha256": "1d2f870eb26e732bb638cc0552616711f63309a4e914658652bb8aa928a3f8c9"
+    },
+    {
+      "context": "export",
+      "task": "kit-verify",
+      "run": 1,
+      "wallMs": 90,
+      "cpuMs": 100,
+      "rssPeakBytes": 80330752,
+      "capacity": 8,
+      "exitCode": 0,
+      "loadAverage": [
+        3.20458984375,
+        3.41796875,
+        3.76123046875
+      ],
+      "outputSha256": "50ac4553d467b72d3eb46c99458d52b100132624c86564593f3cffb441c62660"
+    },
+    {
+      "context": "export",
+      "task": "kit-verify",
+      "run": 2,
+      "wallMs": 90,
+      "cpuMs": 110,
+      "rssPeakBytes": 80871424,
+      "capacity": 8,
+      "exitCode": 0,
+      "loadAverage": [
+        3.20458984375,
+        3.41796875,
+        3.76123046875
+      ],
+      "outputSha256": "4c3e490546dc73a3581c631c2d7c5dcff0ada1f9068c51107873e8556e175669"
+    },
+    {
+      "context": "export",
+      "task": "kit-verify",
+      "run": 3,
+      "wallMs": 90,
+      "cpuMs": 100,
+      "rssPeakBytes": 79101952,
+      "capacity": 8,
+      "exitCode": 0,
+      "loadAverage": [
+        3.20458984375,
+        3.41796875,
+        3.76123046875
+      ],
+      "outputSha256": "d9ed491de9ff4afd56f3cffeff12d4eea314a93709a0bc24f7d6cab1d98e3902"
+    }
+  ],
+  "requests": {
+    "format": 3,
+    "configuration-root": 2,
+    "registrations": 2,
+    "declarations": 3,
+    "generated": 2,
+    "host": 2,
+    "kit-verify": 2
+  }
+}

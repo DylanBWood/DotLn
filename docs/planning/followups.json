@@ -43422,6 +43422,78 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-1fcb24c8dc65eacc",
+      "key": "decision:docs/evidence/WO-229/decisions.md#wo-229-d018",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "911882d367eb3d75bde3b1004d742b0cbe640a146cebe7095828414e1c14b545",
+          "ref": "docs/evidence/WO-229/decisions.md#wo-229-d018--attribute-observed-waiting-beyond-the-retained-diagnostic-history",
+          "title": "WO-229-D018: WO-229 repair: attribute every lane-wait interval to the relations of the holders observed for it, independently of the 32-entry diagnostic cap, for example by a compact per-task…",
+          "summary": "{ \"id\": \"WO-229-D018\", \"date\": \"2026-10-23\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-001 fails criterion 2. gateHostLaneWait attributes a task's wait from its retained hostLaneWaitObservations, which acquisition and the runner cap at 32 entries, and labels all time before the first retained entry checkout unknown. A capacity observation is published on every holder change and every 30 s heartbeat, so any wait longer than about 960 s, or with more than 32 holder changes, attributes observed waiting to unknown even when every printed WAIT line names another checkout. The order's Design splits the union by the relation of the holders observed in each interval, and its known issues admit ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-229-D021: Compact relation changes retain long-wait attribution across the diagnostic cap; static, rotating, stopped, mixed and overlap probes pass. Evidence: docs/evidence/WO-229/repair-controls.json. Complete review remains required for repair handoff.",
+          "reopenWhen": "A wait loses observed attribution or an inherited completed reservation contaminates a later child.",
+          "targets": [],
+          "at": "2026-10-23T12:14:20.661Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-725da6a1751568ad",
+      "key": "decision:docs/evidence/WO-229/decisions.md#wo-229-d019",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "ee04b000753d046e668c9b9925059df8b1c15fe1cf0be80b5ca93799aeff8f09",
+          "ref": "docs/evidence/WO-229/decisions.md#wo-229-d019--the-bounded-document-wait-must-hold-while-the-complete-gate-still-runs",
+          "title": "WO-229-D019: WO-229 repair: the criterion 5 fixture must keep the sibling complete gate admitting work until after the document gate's last admission, assert that ordering, and show the document…",
+          "summary": "{ \"id\": \"WO-229-D019\", \"date\": \"2026-10-23\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-001 fails criterion 5. The measured requests leave declarations at full capacity (D002: need four, not under half of eight). A full-capacity request is admitted only when no other top-level holder remains, so a short document gate's wait is bounded by the sibling complete gate's next empty-registry moment, not by its longest task. The executor's sibling fixture meets the inequality only because its complete gate's wall time is within about 190 ms of its longest task; its declarations admission follows the complete gate's last task. Its full-capacity arm also meets the bound, so only the separate 500 m",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-229-D022: The operator authorized declarations at measured need four. The strengthened sibling comparison passes the bound and observes two later complete-gate admissions; its full-capacity control fails the bound. Evidence: docs/evidence/WO-229/repair-controls.json. Complete review remains required for repair handoff.",
+          "reopenWhen": "The strengthened admission regression fails or representative resource need exceeds four.",
+          "targets": [],
+          "at": "2026-10-23T12:14:20.765Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-2b72e7d7d29c9b87",
+      "key": "decision:docs/evidence/WO-229/decisions.md#wo-229-d020",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "2f3edb5f4c2ed868cc9c3458373fbc4375fa158d8323b5e69c812c17ce28ab20",
+          "ref": "docs/evidence/WO-229/decisions.md#wo-229-d020--an-uncontended-gate-prints-a-zero-lane-wait-clause",
+          "title": "WO-229-D020: WO-229 repair, within the Boy Scout bound in scripts/lib/gate-timeline.mjs: omit the summary clause, or a relation part, whose rounded figure is zero, so an uncontended gate prints no…",
+          "summary": "{ \"id\": \"WO-229-D020\", \"date\": \"2026-10-23\", \"dispatch\": \"resume: verify\", \"decision\": \"Follow-up, not blocking. formatHostLaneWait appends its clause whenever wallMs is above zero, and lock acquisition alone makes it positive. A gate with no contention therefore prints 0.0 s waiting for host lanes (0.0 s behind checkout unknown), or about 1 s behind checkout unknown across a complete run. This breaks no criterion; it is a rendering defect in a declared surface.\", \"evidence\": [ \"The verifier's suite:evidence-sources row at 2026-10-23T11:42:57.231Z: hostLaneWait.wallMs 45, all unknown, no holders; summary 8 passed; 0 failed; 88.44 s; 8 fresh tasks; 0.0 s waiting for host lanes (0.0 s behind c",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-229-D023: Summary rendering omits zero-rounded totals and relation parts without changing recorded milliseconds; the bounded regression passes. Evidence: docs/evidence/WO-229/repair-controls.json. Complete review remains required for repair handoff.",
+          "reopenWhen": "A summary prints a zero-rounded figure or mutates recorded timing.",
+          "targets": [],
+          "at": "2026-10-23T12:14:20.869Z"
+        }
+      ]
     }
   ]
 }

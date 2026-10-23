@@ -1,0 +1,489 @@
+{
+  "workOrder": "WO-229",
+  "failureReport": "docs/verifications/WO-229/VER-001.md",
+  "records": [
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-229/verification-001-attribution.mjs",
+      "role": "negative before repair",
+      "result": {
+        "rotatingGate": {
+          "exitCode": 0,
+          "waitLines": 64,
+          "waitLinesNamingAnotherCheckout": 64,
+          "waitLinesNamingOtherRelations": 0,
+          "summary": "npm run test:docs: 2 passed; 0 failed; 7.05 s; 2 fresh tasks; 6.8 s waiting for host lanes (3.4 s behind another checkout; 3.4 s behind checkout unknown)",
+          "wallMs": 6840,
+          "byRelation": {
+            "this-checkout": 0,
+            "another-checkout": 3412,
+            "unknown": 3428
+          },
+          "retainedObservations": 32,
+          "pathLeaks": 0,
+          "expectation": "another-checkout >= wallMs - 500",
+          "holds": false
+        },
+        "staticHolder": {
+          "publishedObservations": 65,
+          "retainedObservations": 32,
+          "observedRelations": [
+            "another-checkout"
+          ],
+          "wallMs": 7011,
+          "byRelation": {
+            "this-checkout": 0,
+            "another-checkout": 3448,
+            "unknown": 3563
+          },
+          "expectation": "another-checkout >= wallMs - 500",
+          "holds": false
+        }
+      },
+      "process": {
+        "name": "bounded-probe",
+        "durationMs": 14586,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 14586,
+            "exitCode": 1,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 80210192,
+        "peakRssBytes": 176750592,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-23T11:58:37.535Z",
+        "finishedAt": "2026-10-23T11:58:52.122Z",
+        "exitCode": 1,
+        "executed": true
+      }
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-229/repair-attribution.mjs",
+      "role": "positive; same assertions, acquisition adapter supplies the new compact relation field",
+      "result": {
+        "rotatingGate": {
+          "exitCode": 0,
+          "waitLines": 63,
+          "waitLinesNamingAnotherCheckout": 63,
+          "waitLinesNamingOtherRelations": 0,
+          "summary": "npm run test:docs: 2 passed; 0 failed; 7.01 s; 2 fresh tasks; 6.8 s waiting for host lanes (6.8 s behind another checkout)",
+          "wallMs": 6812,
+          "byRelation": {
+            "this-checkout": 0,
+            "another-checkout": 6802,
+            "unknown": 10
+          },
+          "retainedObservations": 32,
+          "pathLeaks": 0,
+          "expectation": "another-checkout >= wallMs - 500",
+          "holds": true
+        },
+        "staticHolder": {
+          "publishedObservations": 65,
+          "retainedObservations": 32,
+          "observedRelations": [
+            "another-checkout"
+          ],
+          "wallMs": 7063,
+          "byRelation": {
+            "this-checkout": 0,
+            "another-checkout": 7059,
+            "unknown": 4
+          },
+          "expectation": "another-checkout >= wallMs - 500",
+          "holds": true
+        }
+      },
+      "process": {
+        "name": "bounded-probe",
+        "durationMs": 14617,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 14617,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 75736712,
+        "peakRssBytes": 172736512,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-23T12:08:23.253Z",
+        "finishedAt": "2026-10-23T12:08:37.870Z",
+        "exitCode": 0,
+        "executed": true
+      }
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-229/verification-001-bound.mjs",
+      "role": "negative before repair",
+      "result": [
+        {
+          "shape": "executor",
+          "sizing": "full-capacity",
+          "documentExit": 0,
+          "completeExit": 0,
+          "documentLaneWaitMs": 3018,
+          "longestCompleteTaskMs": 3069,
+          "completeWallMs": 3248,
+          "boundHolds": true,
+          "completeRanThroughDocument": false,
+          "admissions": [
+            {
+              "task": "format",
+              "hostLaneSlots": 8,
+              "waitMs": 2983,
+              "admittedBeforeCompleteEndMs": -70
+            },
+            {
+              "task": "configuration-root",
+              "hostLaneSlots": 8,
+              "waitMs": 6,
+              "admittedBeforeCompleteEndMs": -375
+            },
+            {
+              "task": "registrations",
+              "hostLaneSlots": 8,
+              "waitMs": 5,
+              "admittedBeforeCompleteEndMs": -679
+            },
+            {
+              "task": "declarations",
+              "hostLaneSlots": 8,
+              "waitMs": 5,
+              "admittedBeforeCompleteEndMs": -985
+            },
+            {
+              "task": "generated",
+              "hostLaneSlots": 8,
+              "waitMs": 6,
+              "admittedBeforeCompleteEndMs": -1299
+            },
+            {
+              "task": "host",
+              "hostLaneSlots": 8,
+              "waitMs": 6,
+              "admittedBeforeCompleteEndMs": -1609
+            },
+            {
+              "task": "kit-verify",
+              "hostLaneSlots": 8,
+              "waitMs": 7,
+              "admittedBeforeCompleteEndMs": -1919
+            }
+          ]
+        },
+        {
+          "shape": "executor",
+          "sizing": "measured",
+          "documentExit": 0,
+          "completeExit": 0,
+          "documentLaneWaitMs": 2065,
+          "longestCompleteTaskMs": 3066,
+          "completeWallMs": 3288,
+          "boundHolds": true,
+          "completeRanThroughDocument": false,
+          "admissions": [
+            {
+              "task": "format",
+              "hostLaneSlots": 3,
+              "waitMs": 911,
+              "admittedBeforeCompleteEndMs": 1975
+            },
+            {
+              "task": "configuration-root",
+              "hostLaneSlots": 2,
+              "waitMs": 8,
+              "admittedBeforeCompleteEndMs": 1655
+            },
+            {
+              "task": "registrations",
+              "hostLaneSlots": 2,
+              "waitMs": 7,
+              "admittedBeforeCompleteEndMs": 1340
+            },
+            {
+              "task": "declarations",
+              "hostLaneSlots": 8,
+              "waitMs": 1112,
+              "admittedBeforeCompleteEndMs": -88
+            },
+            {
+              "task": "generated",
+              "hostLaneSlots": 2,
+              "waitMs": 8,
+              "admittedBeforeCompleteEndMs": -411
+            },
+            {
+              "task": "host",
+              "hostLaneSlots": 2,
+              "waitMs": 12,
+              "admittedBeforeCompleteEndMs": -734
+            },
+            {
+              "task": "kit-verify",
+              "hostLaneSlots": 2,
+              "waitMs": 7,
+              "admittedBeforeCompleteEndMs": -1063
+            }
+          ]
+        },
+        {
+          "shape": "staggered",
+          "sizing": "full-capacity",
+          "documentExit": 0,
+          "completeExit": 0,
+          "documentLaneWaitMs": 6122,
+          "longestCompleteTaskMs": 3066,
+          "completeWallMs": 6332,
+          "boundHolds": false,
+          "completeRanThroughDocument": false,
+          "admissions": [
+            {
+              "task": "format",
+              "hostLaneSlots": 8,
+              "waitMs": 6089,
+              "admittedBeforeCompleteEndMs": -115
+            },
+            {
+              "task": "configuration-root",
+              "hostLaneSlots": 8,
+              "waitMs": 5,
+              "admittedBeforeCompleteEndMs": -425
+            },
+            {
+              "task": "registrations",
+              "hostLaneSlots": 8,
+              "waitMs": 6,
+              "admittedBeforeCompleteEndMs": -736
+            },
+            {
+              "task": "declarations",
+              "hostLaneSlots": 8,
+              "waitMs": 7,
+              "admittedBeforeCompleteEndMs": -1050
+            },
+            {
+              "task": "generated",
+              "hostLaneSlots": 8,
+              "waitMs": 5,
+              "admittedBeforeCompleteEndMs": -1358
+            },
+            {
+              "task": "host",
+              "hostLaneSlots": 8,
+              "waitMs": 5,
+              "admittedBeforeCompleteEndMs": -1665
+            },
+            {
+              "task": "kit-verify",
+              "hostLaneSlots": 8,
+              "waitMs": 5,
+              "admittedBeforeCompleteEndMs": -1972
+            }
+          ]
+        },
+        {
+          "shape": "staggered",
+          "sizing": "measured",
+          "documentExit": 0,
+          "completeExit": 0,
+          "documentLaneWaitMs": 5158,
+          "longestCompleteTaskMs": 3064,
+          "completeWallMs": 6302,
+          "boundHolds": false,
+          "completeRanThroughDocument": false,
+          "admissions": [
+            {
+              "task": "format",
+              "hostLaneSlots": 3,
+              "waitMs": 3024,
+              "admittedBeforeCompleteEndMs": 2957
+            },
+            {
+              "task": "configuration-root",
+              "hostLaneSlots": 2,
+              "waitMs": 6,
+              "admittedBeforeCompleteEndMs": 2648
+            },
+            {
+              "task": "registrations",
+              "hostLaneSlots": 2,
+              "waitMs": 23,
+              "admittedBeforeCompleteEndMs": 2323
+            },
+            {
+              "task": "declarations",
+              "hostLaneSlots": 8,
+              "waitMs": 2088,
+              "admittedBeforeCompleteEndMs": -67
+            },
+            {
+              "task": "generated",
+              "hostLaneSlots": 2,
+              "waitMs": 5,
+              "admittedBeforeCompleteEndMs": -375
+            },
+            {
+              "task": "host",
+              "hostLaneSlots": 2,
+              "waitMs": 6,
+              "admittedBeforeCompleteEndMs": -681
+            },
+            {
+              "task": "kit-verify",
+              "hostLaneSlots": 2,
+              "waitMs": 6,
+              "admittedBeforeCompleteEndMs": -995
+            }
+          ]
+        }
+      ],
+      "process": {
+        "name": "bounded-probe",
+        "durationMs": 29669,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 29669,
+            "exitCode": 1,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 146197488,
+        "peakRssBytes": 367706112,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-23T11:57:28.752Z",
+        "finishedAt": "2026-10-23T11:57:58.421Z",
+        "exitCode": 1,
+        "executed": true
+      }
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node --test --test-name-pattern=\"measured structural requests\" scripts/test-gate-deadlines.mjs",
+      "role": "strengthened comparison; full-capacity control fails the property, measured requests pass it",
+      "result": [
+        {
+          "sizing": "full-capacity",
+          "documentWallMs": 9561,
+          "documentLaneWaitMs": 7353,
+          "longestCompleteTaskMs": 3068,
+          "completeWallMs": 8520,
+          "laterCompleteAdmissions": 0
+        },
+        {
+          "sizing": "measured",
+          "documentWallMs": 4284,
+          "documentLaneWaitMs": 2079,
+          "longestCompleteTaskMs": 3060,
+          "completeWallMs": 8491,
+          "laterCompleteAdmissions": 2
+        }
+      ],
+      "process": {
+        "name": "bounded-probe",
+        "durationMs": 20963,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 20963,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 163550664,
+        "peakRssBytes": 429096960,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-23T12:06:11.039Z",
+        "finishedAt": "2026-10-23T12:06:32.002Z",
+        "exitCode": 0,
+        "executed": true
+      }
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node --test --test-name-pattern=\"lane attribution\" scripts/test-host-guard.test.mjs scripts/test-gate-deadlines.mjs",
+      "role": "four attribution regressions including a stopped gate and 80 alternating relation changes",
+      "process": {
+        "name": "bounded-probe",
+        "durationMs": 14761,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 14761,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 122290088,
+        "peakRssBytes": 260767744,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-23T12:02:13.895Z",
+        "finishedAt": "2026-10-23T12:02:28.656Z",
+        "exitCode": 0,
+        "executed": true
+      }
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node --test --test-name-pattern=\"lane attribution ends an overlap\" scripts/test-gate-deadlines.mjs",
+      "role": "completed reservation boundaries and a later joining child",
+      "process": {
+        "name": "bounded-probe",
+        "durationMs": 403,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 403,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 39589288,
+        "peakRssBytes": 127533056,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-23T12:09:58.877Z",
+        "finishedAt": "2026-10-23T12:09:59.280Z",
+        "exitCode": 0,
+        "executed": true
+      }
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node --test --test-name-pattern=\"lane wait summary\" scripts/test-gate-deadlines.mjs",
+      "role": "rounded display with unmodified evidence",
+      "process": {
+        "name": "bounded-probe",
+        "durationMs": 98,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 98,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 1327464,
+        "peakRssBytes": 1802240,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-23T12:08:05.834Z",
+        "finishedAt": "2026-10-23T12:08:05.932Z",
+        "exitCode": 0,
+        "executed": true
+      }
+    }
+  ]
+}

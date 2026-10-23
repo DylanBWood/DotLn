@@ -1,0 +1,168 @@
+{
+  "schemaVersion": 1,
+  "source": "canonical worktree gate rows read after the fourth complete review; local paths and process identities omitted",
+  "attempts": [
+    {
+      "attempt": "001",
+      "command": "npm test -- --review",
+      "recordedAt": "2026-10-23T06:10:58.985Z",
+      "codeIdentity": "6bc96e9fe28b99c54824d9bd7a5bee10fe370e6bc07b32f2e6b107be7c03daed",
+      "exitCode": 1,
+      "stopped": false,
+      "durationMs": 960865,
+      "identityUnchanged": true,
+      "requiredSuites": 40,
+      "freshTasks": 97,
+      "reusedTasks": 0,
+      "unrunTasks": 9,
+      "failedFirst": "runner-fixtures",
+      "hostLaneWait": {
+        "wallMs": 920,
+        "byRelation": {
+          "this-checkout": 0,
+          "another-checkout": 0,
+          "unknown": 920
+        },
+        "holders": []
+      },
+      "criticalPath": {
+        "laneWaitMs": 120,
+        "gapMs": 119,
+        "tasks": [
+          "format",
+          "configuration-root",
+          "registrations",
+          "declarations",
+          "generated",
+          "host",
+          "build",
+          "harness-fixtures",
+          "process-debt",
+          "worktree-integration",
+          "plan-refutation",
+          "target-worktree:file:test-target-worktree-publish.mjs"
+        ],
+        "workMs": 960019,
+        "waitMs": 239,
+        "durationMs": 960258
+      },
+      "judgment": "Failed runner-fixtures; inspection fixture depended on process-local native-reader cache history. Repaired in D014."
+    },
+    {
+      "attempt": "002",
+      "command": "npm test -- --review",
+      "recordedAt": "2026-10-23T06:16:45.971Z",
+      "codeIdentity": "12d5e393f2b4619453a4fea873149b9dc7936fd9dd778424f31c27e0ec7269cb",
+      "exitCode": 1,
+      "stopped": false,
+      "durationMs": 137001,
+      "identityUnchanged": true,
+      "requiredSuites": 40,
+      "freshTasks": 8,
+      "reusedTasks": 0,
+      "unrunTasks": 98,
+      "failedFirst": "runner-fixtures",
+      "hostLaneWait": {
+        "wallMs": 47,
+        "byRelation": {
+          "this-checkout": 0,
+          "another-checkout": 0,
+          "unknown": 47
+        },
+        "holders": []
+      },
+      "criticalPath": {
+        "laneWaitMs": 47,
+        "gapMs": 62,
+        "tasks": [
+          "format",
+          "configuration-root",
+          "registrations",
+          "declarations",
+          "generated",
+          "host",
+          "build",
+          "runner-fixtures"
+        ],
+        "workMs": 136222,
+        "waitMs": 109,
+        "durationMs": 136331
+      },
+      "judgment": "Failed runner-fixtures; new visibility cases inherited a containment-only memory ceiling and the existing memory-breach case could allocate before startup. Repaired in D015 and D016."
+    },
+    {
+      "attempt": "003",
+      "command": "npm test -- --review",
+      "recordedAt": "2026-10-23T06:48:09.763Z",
+      "codeIdentity": "348dd4bf2f28744d8d24f56b8547317d141269f732ed42a7d03ae500d3d6a60b",
+      "exitCode": 1,
+      "stopped": true,
+      "durationMs": 934635,
+      "identityUnchanged": null,
+      "requiredSuites": 40,
+      "freshTasks": null,
+      "reusedTasks": null,
+      "unrunTasks": 11,
+      "failedFirst": null,
+      "hostLaneWait": {
+        "wallMs": 948,
+        "byRelation": {
+          "this-checkout": 0,
+          "another-checkout": 0,
+          "unknown": 948
+        },
+        "holders": []
+      },
+      "criticalPath": null,
+      "judgment": "Canonically stopped after the waiting fixture failed: its timer could release the sibling holder before admission. Repaired in D017. Aborted cases are not additional diagnosed defects."
+    },
+    {
+      "attempt": "004",
+      "command": "npm test -- --review",
+      "recordedAt": "2026-10-23T07:18:59.781Z",
+      "codeIdentity": "0be6110d048a55400ab55fefff98d2eee6d421635ed37d92a1a4345a3fbe0e08",
+      "exitCode": 0,
+      "stopped": false,
+      "durationMs": 1616918,
+      "identityUnchanged": true,
+      "requiredSuites": 40,
+      "freshTasks": 106,
+      "reusedTasks": 0,
+      "unrunTasks": 0,
+      "failedFirst": null,
+      "hostLaneWait": {
+        "wallMs": 1040,
+        "byRelation": {
+          "this-checkout": 0,
+          "another-checkout": 0,
+          "unknown": 1040
+        },
+        "holders": []
+      },
+      "criticalPath": {
+        "laneWaitMs": 146,
+        "gapMs": 157,
+        "tasks": [
+          "format",
+          "configuration-root",
+          "registrations",
+          "declarations",
+          "generated",
+          "host",
+          "build",
+          "runner-fixtures",
+          "harness-fixtures",
+          "process-debt",
+          "worktree-integration",
+          "worktree",
+          "vertical:file:test-vertical.mjs:statements",
+          "launchpad:file:test-launchpad-update.mjs"
+        ],
+        "workMs": 1615840,
+        "waitMs": 303,
+        "durationMs": 1616143
+      },
+      "judgment": "Complete fresh review passed at the final code identity."
+    }
+  ]
+}
