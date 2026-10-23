@@ -882,6 +882,8 @@ test("critical path separates host-lane waiting from task work", async (t) => {
     durationMs: 14000,
     workMs: 3000,
     waitMs: 11000,
+    laneWaitMs: 0,
+    gapMs: 11000,
   });
   const directory = fixture(t);
   const { acquireHostLaneCapacity, acquireHostLanes } =

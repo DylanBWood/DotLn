@@ -82,8 +82,13 @@ Harness fixtures, process-debt and worktree-integration hold the full host
 capacity and lend nested leases to the exclusive task and up to two local
 light peers. The parent reservation remains until every child releases it.
 A qualifying light task is shared and every held baseline observation is
-below 60 seconds and 512 MiB RSS. Host-lane waiting is recorded separately
-from task work in the critical-path summary.
+below 60 seconds and 512 MiB RSS. The critical-path summary splits `waitMs`
+into host admission `laneWaitMs` and scheduling `gapMs`; their sum preserves
+the prior wait total. The gate's separate `hostLaneWait.wallMs` is the union
+across all task wait intervals, so parallel waiting is counted once.
+Relation-specific unions can overlap when different holders block together.
+Compact relation changes retain attribution independently of the 32-entry
+detailed holder history, including interrupted admissions.
 The exclusive task's declared peer concurrency is at most three; the deadline
 factor is twice that declaration. Target-worktree is four file tasks, at most two
 concurrent, each with a 900-second task bound. The base actually registered 60
@@ -173,10 +178,20 @@ registry and lock instead of introducing a second owner of host capacity.
    and ancestry. Mutate intent and lease state atomically under the existing
    lock. Reclaim by verified process lifetime and owned descendants, not age
    alone. Observed holder diagnostics are not an intent queue.
-2. **Correct request sizes at their source.** Measure short structural commands
-   and give them requests appropriate to their actual work. Keep conflict
-   exclusion as a named property rather than disguising every conflict as all
-   host CPU slots. A low memory observation alone does not prove CPU cost.
+2. **Correct request sizes at their source.** WO-229 measured CPU time, peak RSS
+   and wall time three times per structural task and kit verification in core
+   and a fixture export. At capacity eight the effective host requests are
+   `format` 3, `configuration-root` 2, `registrations` 2, `declarations` 4,
+   `generated` 2, `host` 2, `kit-verify` 2. The
+   [sizing decision](../evidence/WO-229/decisions.md#wo-229-d002)
+   and [authorized exception](../evidence/WO-229/decisions.md#wo-229-d022--authorize-declarations-at-its-measured-four-slot-need)
+   use declarations' measured four-slot need; other tasks retain the strict
+   half-capacity rule. Local exclusion still holds all local lanes. The
+   staggered sibling fixture bounds the document gate's total lane wait below
+   the complete gate's longest task and asserts further peer admissions after
+   the last document admission. Its full-capacity control fails that bound.
+   This finite workload supplies no fairness guarantee for all arrivals or older clients. A low memory
+   observation alone does not establish CPU cost.
 3. **Schedule between gates before tasks.** Bound each gate's pending admission
    presence, account for resource service, and rotate eligible owners. Permit
    an explicit short-work class with a bounded burst. Age waiting large requests

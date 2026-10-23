@@ -497,3 +497,390 @@ test("three-run measurement requires capacity, task RSS, peers and successful ta
     /three attempts/,
   );
 });
+
+test("lane wait unions overlapping tasks, attributes relation changes and separates timeline gaps", async () => {
+  const { gateHostLaneWait, formatHostLaneWait } =
+    await import("./lib/gate-timeline.mjs");
+  const at = (ms) => new Date(ms).toISOString();
+  const holder = (relation) => ({
+    task: "fixture",
+    slots: 2,
+    relation,
+    nested: false,
+    worktree: "/private/fixture",
+    file: "/private/registry",
+  });
+  const rows = [
+    {
+      name: "a",
+      startedAt: at(0),
+      finishedAt: at(1200),
+      durationMs: 200,
+      hostLaneWaitMs: 1000,
+      hostLaneWaitObservations: [
+        { observedAt: at(0), holders: [holder("another-checkout")] },
+        { observedAt: at(700), phase: "lock", holders: [] },
+      ],
+    },
+    {
+      name: "b",
+      startedAt: at(500),
+      finishedAt: at(1700),
+      durationMs: 200,
+      hostLaneWaitMs: 1000,
+      hostLaneWaitObservations: [
+        { observedAt: at(500), holders: [holder("this-checkout")] },
+      ],
+    },
+    {
+      name: "join",
+      startedAt: at(1900),
+      finishedAt: at(2100),
+      durationMs: 100,
+      hostLaneWaitMs: 50,
+      predecessors: ["a", "b"],
+    },
+    { name: "reused", reused: true, startedAt: at(0), hostLaneWaitMs: 99999 },
+  ];
+  const wait = gateHostLaneWait(rows);
+  assert.equal(wait.wallMs, 1550);
+  assert.deepEqual(wait.byRelation, {
+    "this-checkout": 1000,
+    "another-checkout": 700,
+    unknown: 350,
+  });
+  assert.equal(wait.holders.length, 2);
+  assert.ok(!JSON.stringify(wait).includes("/private/"));
+  assert.match(
+    formatHostLaneWait(wait),
+    /1.6 s waiting for host lanes.*0.7 s behind another checkout/,
+  );
+  const critical = gateCriticalPath(rows);
+  assert.equal(critical.waitMs, critical.laneWaitMs + critical.gapMs);
+  assert.equal(critical.laneWaitMs, 1050);
+  assert.equal(critical.gapMs, 750);
+  assert.deepEqual(gateCriticalPath([]), {
+    tasks: [],
+    durationMs: 0,
+    workMs: 0,
+    waitMs: 0,
+    laneWaitMs: 0,
+    gapMs: 0,
+  });
+});
+
+test("measured structural requests let a sibling document gate progress beside complete work", async (t) => {
+  const { runGate, suites, STRUCTURAL_TASKS, structuralHostSlots } =
+    await import("./test-runner.mjs");
+  const { acquireHostLaneCapacity } = await import("./lib/host-lanes.mjs");
+  const { delay, processAlive, readHostSnapshot } =
+    await import("./lib/host-resources.mjs");
+  const { mkdirSync, existsSync } = await import("node:fs");
+  const { runGit } = await import("./lib/git.mjs");
+  const base = directory(t),
+    comparisons = [];
+  for (const sizing of ["full-capacity", "measured"]) {
+    const folder = join(base, sizing),
+      registry = join(folder, "host");
+    const completeRepo = join(folder, "complete"),
+      documentRepo = join(folder, "document");
+    for (const repo of [completeRepo, documentRepo]) {
+      mkdirSync(repo, { recursive: true });
+      runGit(repo, ["init", "-q", "-b", "main"]);
+      writeFileSync(join(repo, "README.md"), "Fixture\n");
+      runGit(repo, ["add", "."]);
+      runGit(repo, [
+        "-c",
+        "user.name=Fixture",
+        "-c",
+        "user.email=fixture@example.invalid",
+        "-c",
+        "commit.gpgsign=false",
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-qm",
+        "Fixture",
+      ]);
+    }
+    await acquireHostLaneCapacity({ directory: registry, capacity: 8 });
+    const marker = join(folder, "early-peer-finished");
+    const command = (ms, code = "", finish = "") => [
+      process.execPath,
+      "-e",
+      `${code};setTimeout(()=>{${finish}},${ms})`,
+    ];
+    const table = [
+      {
+        name: "build",
+        build: true,
+        product: true,
+        command: command(20),
+        outputs: [],
+      },
+      {
+        name: "long",
+        product: true,
+        loadSlots: 2,
+        command: command(3000),
+      },
+      ...Array.from({ length: 10 }, (_, index) => ({
+        name: `peer-${index}`,
+        product: true,
+        loadSlots: 2,
+        group: "peers",
+        groupLimit: 2,
+        command: command(
+          900 + 137 * index,
+          "",
+          index === 0
+            ? `require('node:fs').writeFileSync(${JSON.stringify(marker)},'ready')`
+            : "",
+        ),
+      })),
+    ];
+    const complete = runGate(["--review", "--again"], completeRepo, {
+      table,
+      hostDirectory: registry,
+    });
+    complete.catch(() => {});
+    let doc, full;
+    try {
+      for (let i = 0; i < 500 && !existsSync(marker); i++) await delay(10);
+      assert.ok(
+        existsSync(marker),
+        "complete gate has begun admitting its staggered peers",
+      );
+      const documentTable = [
+        {
+          name: "kit-verify",
+          build: true,
+          document: true,
+          command: command(250),
+          hostSlots:
+            sizing === "measured" ? structuralHostSlots["kit-verify"] : 8,
+        },
+        ...STRUCTURAL_TASKS.map((name) => ({
+          ...suites.find((row) => row.name === name),
+          args: [],
+          command: command(250),
+          needsBuild: false,
+          document: true,
+          hostSlots:
+            sizing === "measured"
+              ? suites.find((row) => row.name === name).hostSlots
+              : 8,
+        })),
+      ];
+      doc = await runGate(["--document", "--again"], documentRepo, {
+        table: documentTable,
+        hostDirectory: registry,
+      });
+      full = await complete;
+      assert.equal(doc.exitCode, 0, doc.output);
+      assert.equal(full.exitCode, 0, full.output);
+      assert.ok(full.taskTimeline.every((row) => row.executed));
+      const longest = Math.max(
+        ...full.taskTimeline.map((row) => row.durationMs),
+      );
+      const admittedAt = (row) =>
+        Date.parse(row.startedAt) + (row.hostLaneWaitMs ?? 0);
+      const lastDocumentAdmission = Math.max(
+        ...doc.taskTimeline.map(admittedAt),
+      );
+      const laterCompleteAdmissions = full.taskTimeline.filter(
+        (row) =>
+          row.name.startsWith("peer-") &&
+          admittedAt(row) > lastDocumentAdmission,
+      ).length;
+      comparisons.push({
+        sizing,
+        documentWallMs: doc.durationMs,
+        documentLaneWaitMs: doc.hostLaneWait.wallMs,
+        longestCompleteTaskMs: longest,
+        completeWallMs: full.durationMs,
+        laterCompleteAdmissions,
+      });
+      if (sizing === "measured") {
+        assert.ok(
+          doc.hostLaneWait.wallMs < longest,
+          JSON.stringify(comparisons),
+        );
+        assert.ok(
+          laterCompleteAdmissions > 0,
+          "complete gate admits more peers after the document gate's last admission",
+        );
+        for (const row of doc.taskTimeline) {
+          assert.equal(row.reservedSlots, 8);
+          assert.equal(row.hostLaneSlots, structuralHostSlots[row.name] ?? 8);
+        }
+      }
+    } finally {
+      await complete;
+      const guardFile = join(registry, "guard.json");
+      if (existsSync(guardFile)) {
+        const guard = JSON.parse(readFileSync(guardFile));
+        if (
+          processAlive(guard, readHostSnapshot({ footprint: false }).processes)
+        )
+          process.kill(guard.pid, "SIGTERM");
+        for (let i = 0; i < 100 && existsSync(guardFile); i++) await delay(20);
+      }
+    }
+  }
+  assert.ok(
+    comparisons[0].documentLaneWaitMs > comparisons[1].documentLaneWaitMs + 500,
+    JSON.stringify(comparisons),
+  );
+  assert.ok(
+    comparisons[0].documentLaneWaitMs >= comparisons[0].longestCompleteTaskMs,
+    "the full-capacity control fails the bounded-wait property",
+  );
+  console.log(`STRUCTURAL_LANE_COMPARISON ${JSON.stringify(comparisons)}`);
+});
+
+test("lane attribution keeps alternating and mixed relations beyond 32 changes and clips a late join", async () => {
+  const { recordLaneWait } = await import("./lib/host-lanes.mjs");
+  const { gateHostLaneWait } = await import("./lib/gate-timeline.mjs");
+  const at = (ms) => new Date(ms).toISOString();
+  const observations = [],
+    segments = [];
+  for (let i = 0; i < 80; i++) {
+    const relations =
+      i % 4 === 0
+        ? ["this-checkout"]
+        : i % 4 === 1
+          ? ["another-checkout"]
+          : i % 4 === 2
+            ? ["another-checkout", "this-checkout"]
+            : [];
+    recordLaneWait(observations, segments, {
+      observedAt: at(10 + i * 10),
+      phase: relations.length ? "capacity" : "lock",
+      holders: relations.map((relation) => ({
+        relation,
+        task: `holder-${i}`,
+        slots: 1,
+      })),
+    });
+  }
+  assert.equal(observations.length, 32);
+  assert.equal(segments.length, 80);
+  const task = {
+    startedAt: at(0),
+    hostLaneWaitMs: 810,
+    hostLaneWaitObservations: observations,
+    hostLaneWaitRelations: segments,
+  };
+  assert.deepEqual(gateHostLaneWait([task]).byRelation, {
+    "this-checkout": 400,
+    "another-checkout": 400,
+    unknown: 210,
+  });
+  // A peer can join an already waiting overlap reservation after its first
+  // relation observation. Only the portion inside the peer's wait counts.
+  assert.deepEqual(
+    gateHostLaneWait([
+      {
+        startedAt: at(25),
+        hostLaneWaitMs: 20,
+        hostLaneWaitRelations: segments,
+      },
+    ]).byRelation,
+    { "this-checkout": 10, "another-checkout": 15, unknown: 5 },
+  );
+});
+
+test("lane wait summary omits zero-rounded totals and relation parts without changing evidence", async () => {
+  const { formatHostLaneWait } = await import("./lib/gate-timeline.mjs");
+  const wait = {
+    wallMs: 45,
+    byRelation: { "this-checkout": 0, "another-checkout": 0, unknown: 45 },
+    holders: [],
+  };
+  const before = structuredClone(wait);
+  assert.equal(formatHostLaneWait(wait), "");
+  assert.deepEqual(wait, before);
+  assert.equal(
+    formatHostLaneWait({
+      wallMs: 1050,
+      byRelation: {
+        "this-checkout": 10,
+        "another-checkout": 1000,
+        unknown: 40,
+      },
+    }),
+    "; 1.1 s waiting for host lanes (1.0 s behind another checkout)",
+  );
+  assert.equal(
+    formatHostLaneWait({
+      wallMs: 60,
+      byRelation: { "this-checkout": 20, "another-checkout": 20, unknown: 20 },
+    }),
+    "; 0.1 s waiting for host lanes",
+  );
+});
+
+test("lane attribution ends an overlap reservation wait before later child admissions", async () => {
+  const { gateHostLaneWait } = await import("./lib/gate-timeline.mjs");
+  const delay = (ms) => new Promise((done) => setTimeout(done, ms));
+  const lightTasks = new Set(["light-a", "light-b", "light-c"]);
+  const rows = await scheduleSuites(
+    [
+      { name: "build", build: true, command: ["fixture"] },
+      {
+        name: "exclusive",
+        exclusive: true,
+        overlap: 2,
+        priority: 200,
+        command: ["fixture"],
+      },
+      ...[...lightTasks].map((name) => ({ name, command: ["fixture"] })),
+    ],
+    {
+      parallelism: 16,
+      lightTasks,
+      hostLanes: {
+        directory: "fixture",
+        capacity: 8,
+        parentLease: null,
+        onWait() {},
+      },
+      acquireLanes: async (options) => {
+        if (options.task.endsWith(":overlap")) {
+          for (let i = 0; i < 40; i++) {
+            options.onWait([], {
+              observedAt: new Date().toISOString(),
+              phase: "capacity",
+              holders: [
+                {
+                  task: `sibling-${i}`,
+                  slots: 8,
+                  relation: "another-checkout",
+                },
+              ],
+            });
+            await delay(2);
+          }
+        } else if (lightTasks.has(options.task)) await delay(25);
+        return {
+          record: { slots: options.slots },
+          waitObservations: [],
+          async release() {},
+        };
+      },
+      execute: async (row) => {
+        if (row.name === "exclusive") await delay(200);
+        else if (lightTasks.has(row.name)) await delay(20);
+        return { name: row.name, executed: true, exitCode: 0, durationMs: 0 };
+      },
+    },
+  );
+  assert.ok(rows.every((row) => row.exitCode === 0));
+  const first = rows.find((row) => row.name === "light-a");
+  const late = rows.find((row) => row.name === "light-c");
+  assert.ok(gateHostLaneWait([first]).byRelation["another-checkout"] > 0);
+  assert.ok(gateHostLaneWait([first]).byRelation.unknown >= 20);
+  assert.equal(gateHostLaneWait([late]).byRelation["another-checkout"], 0);
+  assert.ok(gateHostLaneWait([late]).byRelation.unknown >= 20);
+});
