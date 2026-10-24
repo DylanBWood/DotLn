@@ -3660,3 +3660,113 @@ test("WO-123 SIGKILL at every durable step preserves identities and repairs a mi
     f.close();
   }
 });
+
+test("intent-only residents skip an unbound portfolio actor but ordinary portfolios still report it", async () => {
+  const f = await verticalFixture();
+  try {
+    const cfg = readVerticalConfiguration(f.directory, f.launchpad);
+    for (const [intentOnly, missingCapability] of [
+      [true, false],
+      [false, false],
+      [true, true],
+    ]) {
+      const directory = join(
+        f.root,
+        `portfolio-${intentOnly}-${missingCapability}`,
+      );
+      const host = new ResidentHost({
+        directory,
+        configuration: cfg.resident,
+        policyId: cfg.resident.policyId,
+        now: f.now,
+        capabilities: () => (missingCapability ? [] : ["adapter.fixture"]),
+        ...(intentOnly ? { vertical: { tick: async () => false } } : {}),
+      });
+      await host.start();
+      try {
+        await recordPresence(directory, "away", f.now);
+        f.setTime(f.now() + 20);
+        await host.tick();
+        await host.tick();
+        const rows = decodeLog(host.store.read());
+        assert.equal(
+          rows.filter((e) => e.type === "ActorUnavailable").length,
+          intentOnly && !missingCapability ? 0 : 1,
+        );
+        if (missingCapability)
+          assert.match(
+            rows.find((event) => event.type === "ActorUnavailable").payload
+              .reason,
+            /runtime capability unavailable/,
+          );
+        assert.equal(
+          rows.filter((e) => e.type === "ScriptEpisodeDispatched").length,
+          0,
+        );
+      } finally {
+        host.close();
+      }
+    }
+  } finally {
+    f.close();
+  }
+});
+
+test("preparation retries cool down after short and slow failures, cap the delay and honor expiry", async () => {
+  const f = await verticalFixture();
+  try {
+    const { cfg } = await prepareFixture(f);
+    for (const duration of [50, 3000]) {
+      f.setTime(100);
+      const directory = join(f.root, `cooldown-${duration}`);
+      const store = await configureResident(directory, cfg.resident, f.now);
+      const starts = [];
+      const entry = verticalResident(
+        {
+          drafts: async () => [f.filed.workOrder],
+          grants: () => cfg.grants,
+          execution: () => purePorts(),
+          prepare: async () => {
+            starts.push(f.now());
+            f.setTime(f.now() + duration);
+            throw new IntentPreparationRefusal(
+              "bundle",
+              "source unavailable",
+              true,
+            );
+          },
+        },
+        join(directory, "vertical"),
+        { retry: { baseMs: 100, capMs: 200, unnamedAttempts: 3 } },
+      );
+      const tick = async (at) => {
+        f.setTime(at);
+        await entry.tick(store, f.now, () => ["adapter.fixture"]);
+      };
+      let next = f.now() + 20;
+      for (const delay of [100, 200, 200, 200]) {
+        const count = starts.length;
+        await tick(next);
+        assert.equal(starts.length, count + 1);
+        const returnedAt = f.now();
+        await tick(returnedAt);
+        await tick(returnedAt + delay - 1);
+        assert.equal(
+          starts.length,
+          count + 1,
+          "no retry until the full post-failure cooldown",
+        );
+        next = returnedAt + delay;
+      }
+      const count = starts.length;
+      await tick(2_000_000);
+      assert.equal(
+        starts.length,
+        count,
+        "expired authority never prepares another draft",
+      );
+    }
+  } finally {
+    f.close();
+  }
+});

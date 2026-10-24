@@ -58,7 +58,7 @@ export function renderRuntimeStatus(view: RuntimeStatusV1): string {
         )
       : ["  none"]),
     "",
-    "Budget",
+    "Budget (portfolio actors only; intent admissions excluded)",
     `  ${view.budget.status} · episodes ${amount(view.budget.episodes)} · wall ${amount(view.budget.wallMs)} ms · tokens ${amount(view.budget.tokens)}`,
     "",
     `Open work orders (${view.workOrders.status}${view.workOrders.reason ? `: ${view.workOrders.reason}` : ""})`,

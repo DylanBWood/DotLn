@@ -1,0 +1,259 @@
+{
+ "schemaVersion": 1,
+ "observedAt": "2026-10-24",
+ "criterion1": {
+  "command": "npm run plan -- followups --show <id> for each listed row",
+  "activation": "2026-10-24T05:19:10.126Z",
+  "rows": [
+   {
+    "id": "FUP-06abc143a1c52367",
+    "status": "declined",
+    "at": "2026-10-24T06:02:34.695Z",
+    "afterActivation": true,
+    "sourceRevision": "2/2",
+    "decision": "WO-220-D001"
+   },
+   {
+    "id": "FUP-165f9860f8f32a67",
+    "status": "declined",
+    "at": "2026-10-24T06:02:34.799Z",
+    "afterActivation": true,
+    "sourceRevision": "2/2",
+    "decision": "WO-220-D002"
+   },
+   {
+    "id": "FUP-2341c85c58331f3e",
+    "status": "settled",
+    "at": "2026-10-24T06:02:34.899Z",
+    "afterActivation": true,
+    "sourceRevision": "1/1",
+    "decision": "WO-220-D003"
+   },
+   {
+    "id": "FUP-2b9a8e696b38fb97",
+    "status": "settled",
+    "at": "2026-10-24T06:02:34.998Z",
+    "afterActivation": true,
+    "sourceRevision": "1/1",
+    "decision": "WO-220-D004"
+   },
+   {
+    "id": "FUP-349058ac0342247d",
+    "status": "settled",
+    "at": "2026-10-24T06:02:35.098Z",
+    "afterActivation": true,
+    "sourceRevision": "1/1",
+    "decision": "WO-220-D005"
+   },
+   {
+    "id": "FUP-3d4b39cd4b2c4a08",
+    "status": "declined",
+    "at": "2026-10-24T06:02:35.198Z",
+    "afterActivation": true,
+    "sourceRevision": "4/4",
+    "decision": "WO-220-D006"
+   },
+   {
+    "id": "FUP-49c4a5f7176252e7",
+    "status": "settled",
+    "at": "2026-10-24T06:02:35.297Z",
+    "afterActivation": true,
+    "sourceRevision": "1/1",
+    "decision": "WO-220-D007"
+   },
+   {
+    "id": "FUP-4f8cd7989607ad3f",
+    "status": "settled",
+    "at": "2026-10-24T06:02:35.396Z",
+    "afterActivation": true,
+    "sourceRevision": "1/1",
+    "decision": "WO-220-D008"
+   },
+   {
+    "id": "FUP-5d48c4f3c2a3730d",
+    "status": "declined",
+    "at": "2026-10-24T06:02:35.495Z",
+    "afterActivation": true,
+    "sourceRevision": "2/2",
+    "decision": "WO-220-D009"
+   },
+   {
+    "id": "FUP-7c269a184f75e742",
+    "status": "settled",
+    "at": "2026-10-24T06:02:35.593Z",
+    "afterActivation": true,
+    "sourceRevision": "1/1",
+    "decision": "WO-220-D010"
+   },
+   {
+    "id": "FUP-88c339c51cfc1933",
+    "status": "settled",
+    "at": "2026-10-24T06:02:35.692Z",
+    "afterActivation": true,
+    "sourceRevision": "1/1",
+    "decision": "WO-220-D011"
+   },
+   {
+    "id": "FUP-89e29438bd71c524",
+    "status": "declined",
+    "at": "2026-10-24T06:02:35.791Z",
+    "afterActivation": true,
+    "sourceRevision": "3/3",
+    "decision": "WO-220-D012"
+   },
+   {
+    "id": "FUP-8f0561e50754114f",
+    "status": "settled",
+    "at": "2026-10-24T06:02:35.890Z",
+    "afterActivation": true,
+    "sourceRevision": "2/2",
+    "decision": "WO-220-D013"
+   },
+   {
+    "id": "FUP-b8440605da5a4eb2",
+    "status": "settled",
+    "at": "2026-10-24T06:02:35.988Z",
+    "afterActivation": true,
+    "sourceRevision": "1/1",
+    "decision": "WO-220-D014"
+   },
+   {
+    "id": "FUP-bcd4724fca7bff7a",
+    "status": "settled",
+    "at": "2026-10-24T06:02:36.086Z",
+    "afterActivation": true,
+    "sourceRevision": "1/1",
+    "decision": "WO-220-D015"
+   },
+   {
+    "id": "FUP-c1d4be019802be0d",
+    "status": "settled",
+    "at": "2026-10-24T06:02:36.181Z",
+    "afterActivation": true,
+    "sourceRevision": "1/1",
+    "decision": "WO-220-D016"
+   },
+   {
+    "id": "FUP-d093f77bd927f9dc",
+    "status": "settled",
+    "at": "2026-10-24T06:02:36.275Z",
+    "afterActivation": true,
+    "sourceRevision": "1/1",
+    "decision": "WO-220-D017"
+   },
+   {
+    "id": "FUP-d22dc57e754ba35c",
+    "status": "settled",
+    "at": "2026-10-24T06:02:36.369Z",
+    "afterActivation": true,
+    "sourceRevision": "1/1",
+    "decision": "WO-220-D018"
+   },
+   {
+    "id": "FUP-e62d0d2771185a38",
+    "status": "declined",
+    "at": "2026-10-24T06:02:36.462Z",
+    "afterActivation": true,
+    "sourceRevision": "2/2",
+    "decision": "WO-220-D019"
+   },
+   {
+    "id": "FUP-eeb25ea9315438ad",
+    "status": "settled",
+    "at": "2026-10-24T06:02:36.558Z",
+    "afterActivation": true,
+    "sourceRevision": "2/2",
+    "decision": "WO-220-D020"
+   }
+  ],
+  "summary": {
+   "settled": 14,
+   "declined": 6,
+   "deferred": 0,
+   "allAfterActivation": true
+  }
+ },
+ "criterion4": {
+  "command": "node scripts/harness.mjs bounded -- npm run --silent plan -- followups --touching",
+  "exitCode": 0,
+  "revision": "2c0ee50fbbeffced34a02bd7fb6347f6446462322be8b974af8523c50c1aac69",
+  "pending": 178,
+  "matched": 5,
+  "rows": [
+   "FUP-268c774fd159addb",
+   "FUP-848fd8e2ac941bc3",
+   "FUP-ce1f662a6b966a2a",
+   "FUP-d0a9719cc2e4ec55",
+   "FUP-d2646e66a2dfdb40"
+  ],
+  "listedRowOfThisOrder": false
+ },
+ "lanes": {
+  "note": "Preflight: the WO-103 and WO-105 lane files, each as node --test <file> after npm run build",
+  "total": "27 cases, 27 pass",
+  "runs": [
+   {
+    "command": "node scripts/harness.mjs bounded -- node --test --test-concurrency=1 corpus/harness/wo103-authority.test.mjs",
+    "where": "isolated copy after npm run build",
+    "exitCode": 0,
+    "counts": "ℹ tests 8 ℹ pass 8 ℹ fail 0"
+   },
+   {
+    "command": "node scripts/harness.mjs bounded -- node --test --test-concurrency=1 corpus/harness/wo103-generators.test.mjs",
+    "where": "isolated copy after npm run build",
+    "exitCode": 0,
+    "counts": "ℹ tests 4 ℹ pass 4 ℹ fail 0"
+   },
+   {
+    "command": "node scripts/harness.mjs bounded -- node --test --test-concurrency=1 corpus/harness/wo103-outbox.test.mjs",
+    "where": "isolated copy after npm run build",
+    "exitCode": 0,
+    "counts": "ℹ tests 3 ℹ pass 3 ℹ fail 0"
+   },
+   {
+    "command": "node scripts/harness.mjs bounded -- node --test --test-concurrency=1 corpus/harness/wo105-skeleton.test.mjs",
+    "where": "isolated copy after npm run build",
+    "exitCode": 0,
+    "counts": "ℹ tests 7 ℹ pass 7 ℹ fail 0"
+   },
+   {
+    "command": "node scripts/harness.mjs bounded -- node --test --test-concurrency=1 corpus/harness/wo105-store.test.mjs",
+    "where": "isolated copy after npm run build",
+    "exitCode": 0,
+    "counts": "ℹ tests 5 ℹ pass 5 ℹ fail 0"
+   }
+  ]
+ },
+ "row18NamedCase": {
+  "why": "WO-220-D018 names the case as complete factorial while control authority-contest runs a different case; this probes the named case itself.",
+  "reversion": "remove the deny-without-allow entry from FACTORS.patterns in corpus/harness/wo103-authority-lib.mjs (the control's own needle), copy only",
+  "command": "node scripts/harness.mjs bounded -- node --test --test-concurrency=1 --test-name-pattern 'WO-103 complete authority factorial' corpus/harness/wo103-authority.test.mjs",
+  "positive": "passes in the wo103-authority lane run above",
+  "negative": {
+   "exitCode": 1,
+   "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+   "failed": [
+    "✖ WO-103 complete authority factorial: exact results, traces, IDs, limits, calls and never-throws"
+   ]
+  }
+ },
+ "d031FormattingProbe": {
+  "why": "WO-220-D031 recognizes a retained T1 schema by comparing the retained source text of taskSchema with the current function text; the base compared the computed schema value.",
+  "change": "insert one comment line, '// formatting-only probe: no schema value changes', after 'let result;' in taskSchema of scripts/probes/local-model-role-qualification.mjs, copy only",
+  "command": "node scripts/harness.mjs bounded -- node --test --test-concurrency=1 scripts/probes/local-model-role-qualification.test.mjs",
+  "unchanged": {
+   "exitCode": 0,
+   "counts": "ℹ tests 13 ℹ pass 13 ℹ fail 0"
+  },
+  "commentOnly": {
+   "exitCode": 1,
+   "counts": "ℹ tests 13 ℹ pass 12 ℹ fail 1",
+   "failed": [
+    "✖ WO-138 committed episodes bind their retained historical build; current and altered builds are rejected"
+   ],
+   "message": "episode input/prompt/schema/build binding differs: unsupported retained task schema"
+  },
+  "route": "follow-up, WO-220-D032"
+ },
+ "restoredCopyDiffSha256Prefix": "4f11a1e6755a96c3"
+}

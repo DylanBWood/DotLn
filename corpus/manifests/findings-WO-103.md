@@ -1,17 +1,17 @@
-# WO-103 quarantined findings
+# WO-103 findings and resolved carry-ins
 
-Observed shipped behavior; no runtime repair is made by this evidence-only order.
+Generated observations of the current runtime. Original evidence remains in Git history; resolved carry-ins retain their numbers and report reproduced false.
 
 ## WO-103-F001
 
-Missing semantic input refuses with the exact partial trace, but deriveAuditRecords omits the DecisionRecorded event from the denied record's eventIds. Carry-in: WO-017 FINAL-001 adjudication 8.
+Resolved: truthful partial semantic-input refusals now link their DecisionRecorded event without inventing missing inputs.
 
 ```json
 {
   "number": "WO-103-F001",
-  "kind": "unlinked-audit-refusal",
+  "kind": "linked-audit-refusal",
   "cellId": "audit-missing-state",
-  "reproduced": true,
+  "reproduced": false,
   "input": {
     "dimensions": {
       "effect": "string",
@@ -175,7 +175,8 @@ Missing semantic input refuses with the exact partial trace, but deriveAuditReco
       "workstreamId": "ws",
       "episodeId": "ep",
       "eventIds": [
-        "refusal-0"
+        "refusal-0",
+        "trace-0"
       ],
       "decision": "denied",
       "reason": "cannot evaluate revocation",
@@ -188,14 +189,14 @@ Missing semantic input refuses with the exact partial trace, but deriveAuditReco
 
 ## WO-103-F002
 
-Missing semantic input refuses with the exact partial trace, but deriveAuditRecords omits the DecisionRecorded event from the denied record's eventIds. Carry-in: WO-017 FINAL-001 adjudication 8.
+Resolved: truthful partial semantic-input refusals now link their DecisionRecorded event without inventing missing inputs.
 
 ```json
 {
   "number": "WO-103-F002",
-  "kind": "unlinked-audit-refusal",
+  "kind": "linked-audit-refusal",
   "cellId": "audit-missing-env",
-  "reproduced": true,
+  "reproduced": false,
   "input": {
     "dimensions": {
       "effect": "string",
@@ -356,7 +357,8 @@ Missing semantic input refuses with the exact partial trace, but deriveAuditReco
       "workstreamId": "ws",
       "episodeId": "ep",
       "eventIds": [
-        "refusal-1"
+        "refusal-1",
+        "trace-1"
       ],
       "decision": "denied",
       "reason": "cannot evaluate revocation",
@@ -369,7 +371,7 @@ Missing semantic input refuses with the exact partial trace, but deriveAuditReco
 
 ## WO-103-F003
 
-Replay admits a command with a non-empty string commandId but incomplete Command structure. It reaches pendingCommands; this is quarantined, not asserted valid.
+Historical replay admits a command with a non-empty string commandId but incomplete Command structure. New appends validate the structure separately; historical replay remains unchanged.
 
 ```json
 {

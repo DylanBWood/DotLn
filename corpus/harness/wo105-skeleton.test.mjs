@@ -12,6 +12,8 @@ import {
   readJson,
   SEED,
   sha256,
+  baseRead,
+  compareBase,
 } from "./wo105-common.mjs";
 import { buildGoldenFiles } from "./generate-golden-corpus.mjs";
 import {
@@ -33,20 +35,21 @@ import {
 } from "./skeleton-crash-sweep.mjs";
 
 test("WO-105 golden traces, event log and glyph scene match live/replay and recorded source/fixture bytes", () => {
-  exactFiles(buildGoldenFiles(), "check");
+  compareBase(buildGoldenFiles()[GOLDEN], read(GOLDEN), "golden regeneration");
   const golden = readJson(GOLDEN);
   const live = runScenario(demoTree());
   assertScenarioIdentity(live);
-  assert.deepEqual(
+  compareBase(
     live.decisions.map((decision) => decision.trace),
     golden.decisionTraces,
+    "golden traces",
   );
-  assert.equal(live.log, golden.eventLog);
-  assert.equal(live.glyphScene, golden.glyphScene);
+  compareBase(live.log, golden.eventLog, "golden event log");
+  compareBase(live.glyphScene, golden.glyphScene, "golden glyph scene");
   const manifest = readJson(MANIFEST);
   assert.equal(golden.baseCommit, manifest.baseCommit);
   for (const [path, expected] of Object.entries(manifest.oracles))
-    assert.equal(sha256(read(path)), expected, path);
+    assert.equal(sha256(baseRead(path)), expected, path);
   for (const [path, expected] of Object.entries(manifest.fixtures)) {
     assert.equal(sha256(read(path)), expected.sha256, path);
     assert.equal(Buffer.byteLength(read(path)), expected.bytes, path);
@@ -70,14 +73,19 @@ test("WO-105 golden traces, event log and glyph scene match live/replay and reco
 });
 
 test("WO-105 tree generator, structural truth and distinct live signatures regenerate from seed", () => {
-  exactFiles(buildTreeFiles(), "check");
+  for (const [name, bytes] of Object.entries(buildTreeFiles())) {
+    if (name.endsWith("/index.json"))
+      compareBase(bytes, read(name), "tree signatures");
+    else exactFiles({ [name]: bytes }, "check");
+  }
   assert.deepEqual(buildTreeFiles(), buildTreeFiles(SEED));
   assert.notDeepEqual(buildTreeFiles("alternate"), buildTreeFiles());
   const families = treeFamilies();
   assert.equal(families.length, 4);
-  assert.deepEqual(
+  compareBase(
     families.map(({ tree: _tree, truth: _truth, ...family }) => family),
     readJson(MANIFEST).treeFamilies,
+    "tree family runtime signatures",
   );
   assert.deepEqual(
     families.map((family) => family.disposition),
@@ -186,8 +194,62 @@ test("WO-105 recovery self-tests catch missing pending commands, duplicate effec
 
 test("WO-105 every declared skeleton cut and both retained families satisfy recovery invariants", () => {
   const result = skeletonSweep();
-  assert.deepEqual(result, readJson(MANIFEST).skeleton);
-  assert.equal(result.cutPoints, 16554);
-  assert.equal(result.sweeps[0].outcomes["recovered-prefix"], 12);
-  assert.equal(result.sweeps[0].outcomes["loud-failure"], 16542);
+  compareBase(result, readJson(MANIFEST).skeleton, "skeleton byte cuts");
+  assert.equal(
+    result.cutPoints,
+    result.sweeps.reduce((sum, sweep) => sum + sweep.bytes + 1, 0),
+  );
+  assert.equal(
+    result.sweeps[0].outcomes["recovered-prefix"],
+    decodeLog(crashOpening()).length + 1,
+  );
+  assert.equal(
+    result.sweeps[0].outcomes["loud-failure"],
+    result.sweeps[0].bytes - decodeLog(crashOpening()).length,
+  );
+});
+
+test("WO-105 after-base reports identity drift but still rejects changed crash-shape pins", () => {
+  const expected = {
+    artifactIdentity: { compilerPackageVersion: "0.21.0" },
+    count: 12,
+  };
+  const current = {
+    artifactIdentity: { compilerPackageVersion: "0.31.0" },
+    count: 12,
+  };
+  const drift = ["packages/compiler/package.json"];
+  assert.equal(
+    compareBase(current, expected, "fixture", drift).kind,
+    "base-source-drift",
+  );
+  assert.throws(
+    () => compareBase({ ...current, count: 13 }, expected, "fixture", drift),
+    /crash-shape drift/,
+  );
+  assert.throws(() => compareBase(current, expected, "fixture", []));
+  assert.equal(
+    compareBase(expected, expected, "fixture", []).kind,
+    "base-identical",
+  );
+  const lane = readJson(MANIFEST).skeleton;
+  const identity = structuredClone(lane);
+  identity.sweeps[0].logSha256 = "a".repeat(64);
+  assert.equal(
+    compareBase(identity, lane, "skeleton", drift).kind,
+    "base-source-drift",
+  );
+  for (const change of [
+    (copy) => copy.cutPoints++,
+    (copy) => (copy.sweeps[0].ranges[0].outcome = "changed"),
+    (copy) => copy.families[0].classification.adapterEffects++,
+    (copy) => (copy.families[0].outboxSha256 = "b".repeat(64)),
+  ]) {
+    const copy = structuredClone(identity);
+    change(copy);
+    assert.throws(
+      () => compareBase(copy, lane, "skeleton", drift),
+      /crash-shape drift/,
+    );
+  }
 });

@@ -31,6 +31,33 @@ import { subagentProbe } from "./lib/subagent-probe.mjs";
 
 const repository = resolve(import.meta.dirname, "..");
 
+test("T1 emitted minimum and maximum match every receipt field's host validation", async () => {
+  const { taskSchema, validateAnswer } =
+    await import("./probes/local-model-role-qualification.mjs");
+  const properties = taskSchema("T1", {}).properties.result.properties;
+  const answer = {
+    taskId: "T1",
+    status: "blocked",
+    requiresHuman: true,
+    result: Object.fromEntries(
+      Object.keys(properties).map((name) => [name, "x"]),
+    ),
+  };
+  assert.equal(Object.keys(properties).length, 11);
+  for (const [name, property] of Object.entries(properties)) {
+    assert.equal(property.minLength, 1);
+    const maximum = name === "summary" ? 320 : 40;
+    assert.equal(property.maxLength, maximum);
+    for (const size of [0, 1, maximum, maximum + 1]) {
+      const candidate = structuredClone(answer);
+      candidate.result[name] = "x".repeat(size);
+      if (size === 0 || size > maximum)
+        assert.throws(() => validateAnswer(candidate, "T1", {}), /invalid T1/);
+      else assert.doesNotThrow(() => validateAnswer(candidate, "T1", {}));
+    }
+  }
+});
+
 test("WO-146 Copilot probe refuses live work without opt-in and reduces payload values", async () => {
   const { runCopilotProbe } = await import("./lib/copilot-probe.mjs");
   const { copilotShape } = await import("./fixtures/copilot-probe-hook.mjs");

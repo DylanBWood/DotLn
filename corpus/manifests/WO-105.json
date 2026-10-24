@@ -2504,5 +2504,17 @@
     "nodeOldSpaceMiB": 512,
     "concurrentTestFiles": 1,
     "scope": "Canonical runner child processes; V8 old-space limit, not a total process RSS guarantee. Root gates use --serial."
+  },
+  "afterBasePolicy": {
+    "decidedBy": "WO-220-D017",
+    "retained": "Historical fixtures, oracle bytes at baseCommit, and append-only observations retain their exact hashes.",
+    "live": "Run every current byte cut, live/replay law and recovery invariant. On package source drift report base-source-drift and compare all fields except the explicit identity fields below. Changed crash-shape fields still fail.",
+    "identityFields": [
+      "artifactIdentity.compilerPackageVersion and its exact envInputs value",
+      "store canonical-demo.logSha256",
+      "skeleton canonical-crash-opening.logSha256 and recordsSha256; ranges.traceSha256",
+      "skeleton families.logSha256, replaySha256 and classification.traceSha256"
+    ],
+    "pinned": "Offsets, byte counts, cut counts, outcomes, pending/effect counts, outbox hashes, generated-store hashes, tree signatures and every other field remain exact. Identity byte-length changes that move crash geometry require a separately reviewed baseline; they are not silently accepted."
   }
 }

@@ -1,6 +1,6 @@
 // Origin: {"ids":["no-attribution"],"loadoutId":"contributor","semanticHash":"fnv1a64:c0a496bda5f362de"}
-const { runCommitMessageHook } = await import("../../.runtime/harness/645e7302959f5c05/packages/skeleton/dist/src/harness-host.js");
-const { feedbackBoundary } = await import("../../.runtime/harness/645e7302959f5c05/packages/skeleton/dist/src/feedback-boundary.js");
+const { runCommitMessageHook } = await import("../../.runtime/harness/d2f67c64958ddd88/packages/skeleton/dist/src/harness-host.js");
+const { feedbackBoundary } = await import("../../.runtime/harness/d2f67c64958ddd88/packages/skeleton/dist/src/feedback-boundary.js");
 await runCommitMessageHook({
   "compilerPackageVersion": "0.31.0",
   "runtime": {
@@ -97,7 +97,7 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/resident-state.js",
-        "hash": "fnv1a64:06f93ae0311b6f5d"
+        "hash": "fnv1a64:86c2368fe3bb2f70"
       },
       {
         "path": "packages/skeleton/dist/src/presence-signals.js",
@@ -172,7 +172,7 @@ await runCommitMessageHook({
         "hash": "fnv1a64:5ad495017c40b9b2"
       }
     ],
-    "snapshot": ".runtime/harness/645e7302959f5c05"
+    "snapshot": ".runtime/harness/d2f67c64958ddd88"
   },
   "policy": {
     "contractVersion": "feedback-v1",

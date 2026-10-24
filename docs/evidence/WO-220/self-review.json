@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "workerType": "codex-spawn-agent",
+  "model": "gpt-6.1-sol",
+  "effort": "max",
+  "method": "Two fresh read-only workers received the work order and diff. No tests or probes, no descendants. Root owns all repairs and executable validation.",
+  "initialReviews": [
+    {
+      "worker": "criteria_adversary",
+      "found": 6,
+      "items": [
+        "Inherited command fields can disappear during append serialization.",
+        "Outward exhaustion opens and triages the next item.",
+        "Browser crash before processes.json prevents recovery.",
+        "Three-push body allowance needs real integration.",
+        "After-base corpus comparison exempts too much.",
+        "WO-107 schema and WO-105 manifest must record the policy."
+      ]
+    },
+    {
+      "worker": "design_improver",
+      "found": 5,
+      "items": [
+        "Inherited/serialized command fields bypass admission.",
+        "Outward limit must precede next-item admission.",
+        "Browser pre-launch crash needs recovery.",
+        "Three accepted repairs need an integration regression.",
+        "Intent-only idle must preserve missing capability diagnostics."
+      ]
+    }
+  ],
+  "observations": 13,
+  "distinctFindings": 8,
+  "dispositionDecision": "WO-220-D024",
+  "followupReview": "Both workers judged all findings addressed by source; all 26 paired controls passed with current positive arms and sensitive negative arms.",
+  "followupReviews": [
+    {
+      "worker": "criteria_adversary",
+      "found": 1,
+      "finding": "Item-specific parent must preserve pre-existing source child layout.",
+      "finalRemaining": 0
+    },
+    {
+      "worker": "design_improver",
+      "found": 1,
+      "finding": "Item-specific parent must preserve pre-existing source child layout.",
+      "finalRemaining": 0
+    }
+  ],
+  "fixed": 13,
+  "recorded": 0,
+  "historicalSchemaFollowup": {
+    "worker": "design_improver",
+    "found": 0,
+    "remaining": 0,
+    "scope": "D031 actual non-executing schema adapter and historical/unknown-schema assertions",
+    "testsRunByWorker": false
+  }
+}

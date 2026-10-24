@@ -1,0 +1,50 @@
+// Verifier's own paired-control replay in an isolated copy; never touches the worktree.
+import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { spawnSync, execFileSync } from "node:child_process";
+import { join } from "node:path";
+const [iso, manifestPath, logs, ...only] = process.argv.slice(2);
+if (!iso.includes("/scratch/iso")) throw new Error("refusing: not the isolated copy");
+mkdirSync(logs, { recursive: true });
+const controls = JSON.parse(readFileSync(manifestPath, "utf8")).results.filter((r) => !only.length || only.includes(r.id));
+const run = (args, label, id) => {
+  const t = Date.now();
+  const p = spawnSync("node", ["scripts/harness.mjs", "bounded", "--", ...args], { cwd: iso, encoding: "utf8", maxBuffer: 256e6 });
+  const text = (p.stdout ?? "") + (p.stderr ?? "");
+  writeFileSync(join(logs, `${id}-${label}.log`), text);
+  const lines = text.split("\n");
+  return { exit: p.status, ms: Date.now() - t, pass: lines.filter((l) => /^\s*✔/.test(l)).map((l) => l.trim().slice(0, 120)), fail: lines.filter((l) => /^\s*✖/.test(l)).map((l) => l.trim().slice(0, 120)), counts: lines.filter((l) => /^ℹ (tests|pass|fail) /.test(l)).join(" ") };
+};
+const build = (label, id) => {
+  const p = spawnSync("npm", ["run", "build"], { cwd: iso, encoding: "utf8", maxBuffer: 64e6 });
+  writeFileSync(join(logs, `${id}-${label}.log`), (p.stdout ?? "") + (p.stderr ?? ""));
+  return p.status;
+};
+const out = [];
+for (const c of controls) {
+  const originals = Object.fromEntries(c.reversion.map((r) => [r.path, readFileSync(join(iso, r.path))]));
+  const ts = c.reversion.some((r) => r.path.endsWith(".ts"));
+  const row = { id: c.id, rows: c.rowIds };
+  try {
+    row.positive = run(c.command, "positive", c.id);
+    for (const r of c.reversion) {
+      const file = join(iso, r.path);
+      if (r.baseFile) writeFileSync(file, execFileSync("git", ["show", r.baseFile], { cwd: iso, maxBuffer: 64e6 }));
+      else {
+        const text = readFileSync(file, "utf8");
+        const n = text.split(r.old).length - 1;
+        if (n !== (r.count ?? 1)) throw new Error(`${c.id}: needle count ${n}`);
+        writeFileSync(file, text.split(r.old).join(r.new));
+      }
+    }
+    if (ts) row.negativeBuild = build("negative-build", c.id);
+    row.negative = run(c.command, "negative", c.id);
+  } catch (e) { row.error = String(e).slice(0, 300); }
+  finally {
+    for (const [p, b] of Object.entries(originals)) writeFileSync(join(iso, p), b);
+    if (ts) row.restoredBuild = build("restored-build", c.id);
+  }
+  row.verdict = row.positive?.exit === 0 && row.positive.fail.length === 0 && row.positive.pass.length > 0 && row.negative?.exit === 1 && row.negative.fail.length > 0 && (row.negativeBuild ?? 0) === 0 ? "demonstrated" : "NOT-DEMONSTRATED";
+  out.push(row);
+  console.log(JSON.stringify({ id: row.id, verdict: row.verdict, pos: row.positive && [row.positive.exit, row.positive.counts], neg: row.negative && [row.negative.exit, row.negative.counts, row.negative.fail[0]], nb: row.negativeBuild, err: row.error }));
+}
+writeFileSync(join(logs, "summary.json"), JSON.stringify(out, null, 1));

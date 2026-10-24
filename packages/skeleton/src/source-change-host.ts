@@ -827,14 +827,27 @@ export class SourceChangeHost {
         return this.closeCommand({ status: "observed", observation: saved });
       }
       const before = this.before();
-      if (
-        await interruptibleHostCall(this.options.signal, () =>
-          this.tree.effect(),
-        )
-      ) {
-        if (!before)
-          throw new Error("source-change commit lacks its pre-dispatch test");
-        return await this.observe(before);
+      let recoveryCheck = "effect";
+      try {
+        if (
+          await interruptibleHostCall(this.options.signal, () =>
+            this.tree.effect(),
+          )
+        ) {
+          recoveryCheck = "baseline";
+          if (!before)
+            throw new Error("source-change commit lacks its pre-dispatch test");
+          return await this.observe(before, (check) => {
+            recoveryCheck = check;
+          });
+        }
+      } catch (error) {
+        await deliverPendingSignal(this.options.signal);
+        throwIfInterrupted(this.options.signal);
+        // A recovered, unreceipted result needs the same typed admission as
+        // a fresh return. An accepted receipt remains replayable after a crash.
+        if (!prior || recoveryCheck === "receipt-persisted") throw error;
+        return this.refuse(`host-admission-${recoveryCheck}`);
       }
       if (this.attempts().length >= 2)
         return this.refuse("recovery-dispatch-exhausted");

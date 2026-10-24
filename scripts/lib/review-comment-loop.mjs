@@ -15,6 +15,7 @@ import {
 } from "../../packages/skeleton/dist/src/repair.js";
 import { prepareWorktreeVerification } from "../../packages/skeleton/dist/src/verification-worktree.js";
 import { sourceGit } from "../../packages/skeleton/dist/src/source-change-worktree.js";
+import { JudgmentReplayError } from "./vertical-judgment.mjs";
 import {
   observePullRequest,
   PULL_REQUEST_OBSERVER,
@@ -33,6 +34,8 @@ import {
 
 export const REVIEW_LOOP_HOST = "review-comment-loop";
 export const REVIEW_BODY_JUDGMENT_LIMIT = 8;
+export const REVIEW_TRIAGE_LIMIT = 16;
+export const REVIEW_OUTWARD_LIMIT = 16;
 const same = (a, b) => canonicalStringify(a) === canonicalStringify(b);
 const refuse = (reason) => new Error(`review loop refused: ${reason}`);
 const env = { now: 0, rngState: 0, predicates: {} };
@@ -148,6 +151,30 @@ const judgedReviewBodies = (events) =>
       )
       .map((event) => [event.payload.subjectKey, event.payload]),
   );
+export const ownPushBodyRekey = (
+  events,
+  candidate,
+  observation,
+  pushedHeads,
+) => {
+  if (!pushedHeads.has(observation.payload.headSha)) return false;
+  const judgment = events.findLast(
+    (event) =>
+      event.actorId === REVIEW_LOOP_HOST &&
+      event.type === "ReviewBodyJudged" &&
+      event.payload.itemId === candidate.id,
+  );
+  if (!judgment) return false;
+  const prior = events.find(
+    (row) => row.eventId === judgment?.payload.observationId,
+  );
+  return (
+    prior?.payload.headSha !== observation.payload.headSha &&
+    !!prior?.payload.comments.some(
+      (item) => item.id === candidate.id && same(item, candidate),
+    )
+  );
+};
 const citesEvidence = (judgment) =>
   Array.isArray(judgment?.evidenceRefs) &&
   judgment.evidenceRefs.length > 0 &&
@@ -238,8 +265,9 @@ function admittedTriage(item, judgment, observation, original, checkTests) {
  * that did not finish. A supplied judgment wins; otherwise `triage` may judge an
  * unblocked item, or a review body, with a recorded model episode. A triage
  * episode raises RetryableTriageError for an undecided launch/return; unmarked
- * preparation errors remain host failures. At most eight fresh review-body
- * judgments run per invocation. Doubles may replace triage/worker/verifier,
+ * preparation errors remain host failures. Invocation bounds cover combined
+ * triage and outward actions; the body allowance excludes unchanged text
+ * rebound after this loop's own pushes. Doubles may replace triage/worker/verifier,
  * never resolution provenance. The original and host selections are pinned
  * before effects. */
 export async function resolveReviewComments(options) {
@@ -319,6 +347,9 @@ export async function resolveReviewComments(options) {
   lease.acquire();
   try {
     let bodyJudgments = 0;
+    let triages = 0,
+      outward = 0;
+    const pushedHeads = new Set();
     let items = replayReviewItems(events());
     let active = [...items.values()].find((item) => !item.terminal);
     if (!active) {
@@ -355,14 +386,39 @@ export async function resolveReviewComments(options) {
             (isReviewBody(item) ||
               !items.has(repairHash([repositoryId, number, item.id]))),
         );
+        if (candidate && triages >= REVIEW_TRIAGE_LIMIT)
+          return stop(
+            "needs-human",
+            `review triage limit ${REVIEW_TRIAGE_LIMIT} reached before judging item ${candidate.id}`,
+            candidate.id,
+          );
+        if (
+          candidate &&
+          !isReviewBody(candidate) &&
+          outward >= REVIEW_OUTWARD_LIMIT
+        )
+          return stop(
+            "needs-human",
+            `review outward limit ${REVIEW_OUTWARD_LIMIT} reached before opening item ${candidate.id}`,
+            candidate.id,
+          );
         if (candidate && isReviewBody(candidate)) {
-          if (bodyJudgments >= REVIEW_BODY_JUDGMENT_LIMIT)
+          // An unchanged body must be rebound after our own repair push, but
+          // does not consume another body slot. Edited text and external heads do.
+          const ownPushRekey = ownPushBodyRekey(
+            events(),
+            candidate,
+            observation,
+            pushedHeads,
+          );
+          if (!ownPushRekey && bodyJudgments >= REVIEW_BODY_JUDGMENT_LIMIT)
             return stop(
               "needs-human",
               `review-body judgment limit ${REVIEW_BODY_JUDGMENT_LIMIT} reached before judging item ${candidate.id}`,
               candidate.id,
             );
           const subjectKey = bodyKey(candidate);
+          triages++;
           const changedSubject = events().some(
             (event) =>
               event.actorId === REVIEW_LOOP_HOST &&
@@ -388,8 +444,15 @@ export async function resolveReviewComments(options) {
             } catch (error) {
               // A failed attempt has made no decision. Leave the body open
               // for a fresh episode instead of sealing a transient outage.
-              if (judgmentRetryable(error)) throw error;
-              failure = `triage episode failed: ${judgmentFailure(error)}`;
+              if (
+                !(error instanceof JudgmentReplayError) &&
+                judgmentRetryable(error)
+              )
+                throw error;
+              failure =
+                error instanceof JudgmentReplayError
+                  ? error.message
+                  : `triage episode failed: ${judgmentFailure(error)}`;
             }
           append("ReviewBodyJudged", {
             itemId: candidate.id,
@@ -403,7 +466,7 @@ export async function resolveReviewComments(options) {
                 ? null
                 : (judgment?.reason ?? "review body requires human attention")),
           });
-          bodyJudgments++;
+          if (!ownPushRekey) bodyJudgments++;
           const unsettled = (await observe())?.unsettled ?? null;
           if (unsettled) return stop("needs-human", unsettled);
           continue;
@@ -475,9 +538,25 @@ export async function resolveReviewComments(options) {
         append("ReviewItemCommandPersisted", { key: active.key, command });
       }
       const stage = command.intent.payload.stage;
+      if (stage === "triage" && triages >= REVIEW_TRIAGE_LIMIT)
+        return stop(
+          "needs-human",
+          `review triage limit ${REVIEW_TRIAGE_LIMIT} reached before judging item ${active.item.id}`,
+          active.item.id,
+        );
+      if (
+        ["push", "dispose"].includes(stage) &&
+        outward >= REVIEW_OUTWARD_LIMIT
+      )
+        return stop(
+          "needs-human",
+          `review outward limit ${REVIEW_OUTWARD_LIMIT} reached before ${stage} of item ${active.item.id}`,
+          active.item.id,
+        );
       let result = "completed",
         value;
       if (stage === "triage") {
+        triages++;
         let judgment = active.judgment,
           failure = null;
         if (claimsModel(judgment))
@@ -493,8 +572,15 @@ export async function resolveReviewComments(options) {
           } catch (error) {
             // Keep this persisted triage command pending until an episode
             // returns a decision; recovery can safely launch a fresh one.
-            if (judgmentRetryable(error)) throw error;
-            failure = `triage episode failed: ${judgmentFailure(error)}`;
+            if (
+              !(error instanceof JudgmentReplayError) &&
+              judgmentRetryable(error)
+            )
+              throw error;
+            failure =
+              error instanceof JudgmentReplayError
+                ? error.message
+                : `triage episode failed: ${judgmentFailure(error)}`;
           }
         ({ result, value } = failure
           ? {
@@ -560,6 +646,8 @@ export async function resolveReviewComments(options) {
           verificationStore: active.results.repair.verificationStore,
           now: now(),
         }).payload;
+        outward++;
+        pushedHeads.add(value.headSha);
         options.afterPush?.();
       } else if (stage === "dispose") {
         value = disposeReviewThread({
@@ -569,6 +657,7 @@ export async function resolveReviewComments(options) {
           judgment: active.results.triage.judgment,
           now: now(),
         }).payload;
+        outward++;
       } else if (stage === "observe") {
         const receipt = events()
           .filter(

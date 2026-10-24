@@ -160,6 +160,58 @@ test("WO-068 recorded clock drives all phases; replay ignores ambient clock; ret
   );
 });
 
+test("resident NoOp identity survives replay and distinguishes phase and rearm", async (t) => {
+  const directory = mkdtempSync(join(tmpdir(), "dotln-noop-"));
+  t.after(() => rmSync(directory, { recursive: true, force: true }));
+  let at = 0;
+  const options = {
+    directory,
+    policyId: "fixture.progressive",
+    configuration: configuration(directory),
+    now: () => at,
+    catalog: fake(),
+    capabilities: () => [],
+  };
+  let host = new ResidentHost(options);
+  await host.start();
+  try {
+    await recordPresence(directory, "away", () => at);
+    at = 10;
+    await host.tick();
+    const original = events(host.store, "ActorUnavailable")[0]!;
+    assert.deepEqual(Object.keys(payload(original)).sort(), [
+      "phaseId",
+      "reason",
+    ]);
+    const replayed = state(host.store);
+    host.close();
+    host = new ResidentHost(options);
+    await host.start();
+    assert.deepEqual(state(host.store), replayed);
+    await host.tick();
+    assert.equal(events(host.store, "ActorUnavailable").length, 1);
+    await recordPresence(directory, "returned", () => ++at);
+    await recordPresence(directory, "away", () => ++at);
+    at += 10;
+    await host.tick();
+    assert.equal(events(host.store, "ActorUnavailable").length, 2);
+    // The legacy payload has no generation. Replay derives it from the log;
+    // a same-reason event for another phase is a different recorded refusal.
+    await host.store.transaction((tx) =>
+      tx.append("ActorUnavailable", {
+        reason: payload(original).reason as string,
+        phaseId: "widen",
+      }),
+    );
+    await host.tick();
+    assert.equal(events(host.store, "ActorUnavailable").length, 4);
+    await host.tick();
+    assert.equal(events(host.store, "ActorUnavailable").length, 4);
+  } finally {
+    host.close();
+  }
+});
+
 test("WO-068 in-flight kill and finish obey return precedence and reject stale advancement", async (t) => {
   for (const disposition of ["kill", "finish"] as const) {
     const directory = mkdtempSync(join(tmpdir(), "dotln-return-"));

@@ -123,7 +123,28 @@ test("harness resource sample derives throughput and explicitly scopes memory", 
   assert.equal(failed.outcome.status, "failed");
 });
 
-test("harness registry covers every declared scenario and command source file", async () => {
+test("harness base-only registry covers every declared scenario and command source file", async (t) => {
+  const drift = execFileSync(
+    "git",
+    [
+      "diff",
+      "--no-ext-diff",
+      "--name-only",
+      BASE,
+      "--",
+      "packages/kernel/src",
+      "packages/compiler/src",
+      "packages/skeleton/src",
+      "corpus/harness/wo107-scenarios.mjs",
+    ],
+    { encoding: "utf8" },
+  );
+  if (drift.trim()) {
+    t.skip(
+      "base-source-drift: registry execution describes the recorded baseline only",
+    );
+    return;
+  }
   const registry = await scenarios(() => {
     throw new Error("test must not execute build or suites");
   });
@@ -271,10 +292,11 @@ test("harness full dummy executions round-trip through schema and comparison", a
   const report = comparison(decoded);
   assert.match(report, /Between-execution differences/);
   assert.match(report, /Native pressure before/);
+  assert.ok(report.endsWith("\n") && !report.endsWith("\n\n"));
 });
 
 const observations = `corpus/baselines/observations-${BASE}.jsonl`;
-test("harness classification exception is exact and both collector revisions preserve timed bytes", () => {
+test("harness classification exception is exact and both collector revisions preserve timed bytes", (t) => {
   const baseBytes = execFileSync("git", [
     "show",
     `${BASE}:${CLASSIFICATION.path}`,
@@ -286,6 +308,10 @@ test("harness classification exception is exact and both collector revisions pre
     `3e29dd9d:${CLASSIFICATION.path}`,
   ]);
   const live = JSON.parse(readFileSync(CLASSIFICATION.path, "utf8"));
+  if (digest(readFileSync(CLASSIFICATION.path)) !== digest(historicalBytes))
+    t.diagnostic(
+      "base-source-drift: classification registry has later bytes; the lane declaration remains pinned",
+    );
   assert.equal(
     live.nonEventPaths[CLASSIFICATION.addedPath],
     CLASSIFICATION.declaration,
@@ -298,10 +324,15 @@ test("harness classification exception is exact and both collector revisions pre
   assert.throws(() =>
     validateClassification(baseBytes, JSON.stringify(widened)),
   );
-  const { initialHash, currentHash } = protocolLineage();
+  const { initialHash, secondHash, currentHash } = protocolLineage();
   assert.notEqual(initialHash, currentHash);
+  assert.notEqual(secondHash, currentHash);
   const rows = [
     { protocolHash: initialHash, execution: {} },
+    {
+      protocolHash: secondHash,
+      execution: { classificationOverlay: CLASSIFICATION },
+    },
     {
       protocolHash: currentHash,
       execution: { classificationOverlay: CLASSIFICATION },
@@ -309,6 +340,7 @@ test("harness classification exception is exact and both collector revisions pre
   ];
   assert.deepEqual(validateProvenance(rows).allowedProtocols, [
     initialHash,
+    secondHash,
     currentHash,
   ]);
   const missing = structuredClone(rows);

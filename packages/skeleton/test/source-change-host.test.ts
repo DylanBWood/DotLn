@@ -59,6 +59,90 @@ const events = (root: string) =>
 const dispose = (root: string) =>
   rmSync(root, { recursive: true, force: true });
 
+test("recovered unreceipted dirty commits close with a typed host admission refusal", async () => {
+  for (const interruption of ["signal", "crash"]) {
+    const root = createSourceFixture();
+    try {
+      if (interruption === "signal") {
+        const abort = new AbortController();
+        const host: SourceChangeHost = new SourceChangeHost({
+          ...sourceFixtureOptions(root, () => 10),
+          signal: abort.signal,
+          afterResult() {
+            writeFileSync(join(host.tree.path, "fixture.txt"), "dirty\n");
+            abort.abort("SIGINT");
+          },
+        });
+        await assert.rejects(host.run(), /interrupted/);
+      } else {
+        const script = `
+          import { writeFileSync } from 'node:fs';
+          import { join } from 'node:path';
+          import { SourceChangeHost } from ${JSON.stringify(new URL("../src/source-change-host.js", import.meta.url).href)};
+          import { sourceFixtureOptions } from ${JSON.stringify(new URL("./source-change-fixture.js", import.meta.url).href)};
+          const host = new SourceChangeHost({...sourceFixtureOptions(process.argv[1], () => 10), afterResult() {
+            writeFileSync(join(host.tree.path, 'fixture.txt'), 'dirty\\n');
+            process.kill(process.pid, 'SIGKILL');
+          }});
+          await host.run();`;
+        const killed = spawnSync(
+          process.execPath,
+          ["--input-type=module", "-e", script, root],
+          {
+            encoding: "utf8",
+            timeout: 30_000,
+          },
+        );
+        assert.equal(killed.signal, "SIGKILL", killed.stderr);
+      }
+      assert.equal(
+        events(root).filter((e) => e.type === "SourceChangeRefused").length,
+        0,
+      );
+      const abort = new AbortController();
+      const interrupted = new SourceChangeHost({
+        ...sourceFixtureOptions(root, () => 100),
+        signal: abort.signal,
+      });
+      const effect = interrupted.tree.effect.bind(interrupted.tree);
+      interrupted.tree.effect = (...args) => {
+        try {
+          return effect(...args);
+        } catch (error) {
+          abort.abort("SIGTERM");
+          throw error;
+        }
+      };
+      await assert.rejects(interrupted.run(), /interrupted/);
+      assert.equal(
+        events(root).filter((e) => e.type === "SourceChangeRefused").length,
+        0,
+      );
+      const recovered = await new SourceChangeHost(
+        sourceFixtureOptions(root, () => 100),
+      ).run();
+      assert.equal(recovered.status, "refused");
+      if (recovered.status === "refused")
+        assert.equal(recovered.refusal.reason, "host-admission-effect");
+      assert.equal(
+        events(root).filter((e) => e.type === "SourceChangeRefused").length,
+        1,
+      );
+      assert.equal(
+        events(root).filter((e) => e.type === "CommandResult").length,
+        1,
+      );
+      assert.deepEqual(
+        await new SourceChangeHost(sourceFixtureOptions(root, () => 100)).run(),
+        recovered,
+      );
+      assert.equal(launches(root), 1);
+    } finally {
+      dispose(root);
+    }
+  }
+});
+
 for (const transport of ["claude", "codex"] as const)
   test(`WO-052 AC1 ${transport}: governed foreign worktree, failing baseline, committed passing result, receipt and explicit finish`, async () => {
     const root = createSourceFixture();

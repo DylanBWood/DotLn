@@ -1,4 +1,5 @@
 import { join } from "node:path";
+import { decodeLog } from "@dotln/kernel";
 import type {
   AuthorityGrant,
   WorkOrder,
@@ -157,12 +158,18 @@ export function verticalResident(
           ...(options.afterStep ? { afterStep: options.afterStep } : {}),
         });
         const before = host.store.read();
+        const completedBefore = decodeLog(before).filter(
+          (event) => event.type === "VerticalStepCompleted",
+        ).length;
         let retried = false;
         try {
           const state = await host.run({
             ...(options.steps === undefined ? {} : { steps: options.steps }),
           });
-          continuations.delete(binding.key);
+          // A blocked tick can return without deciding a pending command.
+          // Only a new receipt resets the retry series.
+          if (state.receipts.length > completedBefore)
+            continuations.delete(binding.key);
           if (state.terminal) finished.add(binding.key);
         } catch (error) {
           if (error instanceof RetryableTriageError) {
@@ -230,7 +237,7 @@ export function verticalResident(
             deferred.set(draftId, {
               failures,
               faults,
-              notBefore: context.at + backoff(failures),
+              notBefore: now() + backoff(failures),
             });
             continue;
           }

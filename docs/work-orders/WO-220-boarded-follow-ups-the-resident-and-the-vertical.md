@@ -1,12 +1,11 @@
-# WO-220 — Boarded follow-ups, batch 4: the resident, the vertical, the console, intake and triage, audit, the corpus lanes and the kernel's admission: every one of the 20 register rows listed below is fixed with a fixture case or declined with its recorded reason, the register shows it, and a row only the operator can decide leaves as an operator packet (version assigned at activation)
+# WO-220 — Boarded follow-ups, batch 4: the resident, the vertical, the console, intake and triage, audit, the corpus lanes and the kernel's admission: every one of the 20 register rows listed below is fixed with a fixture case or declined with its recorded reason, the register shows it, and a row only the operator can decide leaves as an operator packet (v0.95.0)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh; verifier xhigh; reviewer xhigh.
 **Track:** delivery
-**Release classification:** assigned at activation from the fixes made (patch
-unless a fix changes a command, flag, schema or refusal, which the decisions
-name; then minor). A declined row changes no behavior.
+**Release classification:** minor. Kernel new-command admission and typed recovery refusals change acceptance; browser evidence adds an abort signal. Declines change no behavior; changed components and impacts are recorded in WO-220-D021.
+
 **Cost:** adds the fixes and fixture cases the listed rows need, across
 `packages/skeleton/src/vertical.ts`, `packages/skeleton/src/resident-state.ts`, `packages/skeleton/src/resident-host.ts`, `packages/skeleton/src/mission-check-source.ts`, `packages/skeleton/src/audit.ts`, `packages/skeleton/src/vertical-judgment-host.ts`, `packages/skeleton/src/source-change-host.ts` (`run`'s recovery observation, row FUP-49c4a5f7176252e7; a registered evidence source and a `FEEDBACK_SOURCE_PATHS` file, so its edit owes the re-mint and one live feedback episode), `packages/console/src/`, `packages/kernel/src/core.ts`, `scripts/docs-check.mjs`, the WO-103, WO-105 and WO-107 lanes under `corpus/harness/` and the fixtures the rows name; unknown until each row is triaged, and the README records
 the per-row command and case. Removes no pending rows: the 20 rows were allocated at filing and already

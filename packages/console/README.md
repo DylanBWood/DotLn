@@ -222,6 +222,9 @@ stops that read when the watcher closes or errors, so a delayed or missed
 notification cannot leave the text host stale (WO-115 D019, D023).
 
 The [versioned schema](runtime-status-v1.schema.json) is available by file path.
+Budget labels explicitly describe portfolio actors and exclude intent
+admissions. Resident intent outcomes accompany the indexed work-order phase;
+expiry between steps removes the actor and shows one needs-human hold.
 `@dotln/console` re-exports the `RuntimeStatusV1` type and `decodeRuntimeStatus`
 decoder defined in skeleton; these define the shared consumer contract.
 The view contains configured actors, live episodes, presence and next cadence

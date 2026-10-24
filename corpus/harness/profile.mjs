@@ -270,6 +270,9 @@ export function protocolLineage() {
       ),
     ]),
   );
+  const second = Object.fromEntries(
+    names.map((name) => [name, readFileSync(new URL(`wo107-second-protocol/${name}.txt`, import.meta.url), "utf8")]),
+  );
   const current = Object.fromEntries(
     names.map((name) => [
       name,
@@ -283,6 +286,8 @@ export function protocolLineage() {
     initialHash,
     "feada88b7313d88268cf944257b879acb3d1492dc1651b649a44c37fbe3d2ba4",
   );
+  const secondHash = digest(names.map((name) => `${name}\n${second[name]}`).join("\n"));
+  assert.equal(secondHash, "1d618f2f6e81f6dcb3b06aba2f9bb525ce50d854d1cf664155f1b75fafde34cd");
   for (const name of ["wo107-scenarios.mjs", "wo107-bounded.mjs"])
     assert.equal(current[name], initial[name], `${name} must remain unchanged`);
   const section = (source, start, end) => {
@@ -305,14 +310,14 @@ export function protocolLineage() {
       section(initial[name], start, end),
       `timed protocol unchanged: ${name}/${start}`,
     );
-  return { initialHash, currentHash: protocolHash() };
+  return { initialHash, secondHash, currentHash: protocolHash() };
 }
 
 export function validateProvenance(records) {
-  const { initialHash, currentHash } = protocolLineage();
+  const { initialHash, secondHash, currentHash } = protocolLineage();
   for (const row of records) {
     assert.ok(
-      [initialHash, currentHash].includes(row.protocolHash),
+      [initialHash, secondHash, currentHash].includes(row.protocolHash),
       "known collector revision",
     );
     assert.deepEqual(
@@ -321,7 +326,7 @@ export function validateProvenance(records) {
       "classification overlay must be disclosed exactly",
     );
   }
-  return { allowedProtocols: [initialHash, currentHash] };
+  return { allowedProtocols: [initialHash, secondHash, currentHash] };
 }
 
 async function main(argv) {

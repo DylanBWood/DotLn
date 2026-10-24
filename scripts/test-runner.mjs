@@ -218,6 +218,7 @@ export const machinerySources = {
     "scripts/lib/writing-worker-probe.mjs",
     "scripts/probe-worker-hosts.mjs",
     "scripts/test-harness-probe.mjs",
+    "scripts/probes/local-model-role-qualification.mjs",
     // The probes build their Codex argv and home through the launcher (WO-159).
     "packages/skeleton/src/worker-transport.ts",
   ],

@@ -244,7 +244,7 @@ export function taskSchema(taskId, inputs) {
   const text = { type: "string" };
   let result;
   if (taskId === "T1") {
-    const field = { ...text, maxLength: 40 };
+    const field = { ...text, minLength: 1, maxLength: 40 };
     result = {
       type: "object",
       additionalProperties: false,
@@ -272,7 +272,7 @@ export function taskSchema(taskId, inputs) {
         gateFailedSuites: field,
         gateDurationSeconds: field,
         newDependencies: field,
-        summary: { ...text, maxLength: 320 },
+        summary: { ...text, minLength: 1, maxLength: 320 },
       },
     };
   } else if (taskId === "T2") {
@@ -1698,6 +1698,26 @@ export function validateRecordInputs(
   harnessSource = readFileSync(fileURLToPath(import.meta.url)),
 ) {
   const build = sha256(harnessSource);
+  const currentSchema = `export ${taskSchema.toString()}`;
+  const priorSchema = currentSchema
+    .replace(
+      "const field = { ...text, minLength: 1, maxLength: 40 };",
+      "const field = { ...text, maxLength: 40 };",
+    )
+    .replace(
+      "summary: { ...text, minLength: 1, maxLength: 320 },",
+      "summary: { ...text, maxLength: 320 },",
+    );
+  // Recognize the exact retained schema definition without executing source.
+  // The only supported older contract omits the T1 minimum string lengths.
+  const definitions = harnessSource
+    .toString()
+    .match(/^export function taskSchema\([^\n]*\) \{\n[\s\S]*?^\}/gm);
+  const retainedSchema = definitions?.length === 1 ? definitions[0] : null;
+  if (retainedSchema !== currentSchema && retainedSchema !== priorSchema)
+    throw new Error(
+      "episode input/prompt/schema/build binding differs: unsupported retained task schema",
+    );
   for (const record of records) {
     const cell = record.cell;
     const baseInput = inputs[cell.taskId];
@@ -1706,13 +1726,16 @@ export function validateRecordInputs(
       : cell.variant === "t3-label-definitions"
         ? { ...baseInput, labelDefinitions: fixture().t3.definitions }
         : baseInput;
+    const schema = taskSchema(cell.taskId, inputs);
+    if (retainedSchema === priorSchema && cell.taskId === "T1")
+      for (const field of Object.values(schema.properties.result.properties))
+        delete field.minLength;
     if (
       record.harnessBuildHash !== build ||
       record.inputHash !== sha256(stableStringify(input)) ||
       record.promptHash !==
         sha256(promptFor(cell.taskId, input, cell.variant)) ||
-      record.schemaHash !==
-        sha256(stableStringify(taskSchema(cell.taskId, inputs)))
+      record.schemaHash !== sha256(stableStringify(schema))
     )
       throw new Error(
         `episode input/prompt/schema/build binding differs: ${record.episodeId}`,

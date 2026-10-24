@@ -11,6 +11,8 @@ import {
   jsonBytes,
   rng,
   SEED,
+  compareBase,
+  read,
 } from "./wo105-common.mjs";
 
 export const LABEL =
@@ -277,7 +279,11 @@ export function buildTreeFiles(seed = SEED) {
 if (isMain(import.meta.url)) {
   const { seed, mode } = args(process.argv.slice(2), ["write", "check"]);
   const files = buildTreeFiles(seed);
-  exactFiles(files, mode);
+  for (const [name, bytes] of Object.entries(files)) {
+    if (mode === "check" && name.endsWith("/index.json"))
+      compareBase(bytes, read(name), "tree signatures");
+    else exactFiles({ [name]: bytes }, mode);
+  }
   console.log(
     JSON.stringify({
       lane: "tree-generator",

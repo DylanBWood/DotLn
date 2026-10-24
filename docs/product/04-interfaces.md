@@ -432,7 +432,17 @@ claims, presence signal and armed cadences, coded hold reasons, portfolio budget
 consumption and remaining allowance, and every Active or Open order's phase,
 dependency state and latest verification verdict from the generated work-order
 index. Derived orders use their ordinary `WO-NNN` identity. The file is a
-disposable projection, never a command or authority source. It omits raw event
+disposable projection, never a command or authority source.
+Resident-owned intent actors show their step and transport while running. A
+completed continuation removes its actor and appends `intent-resolved`,
+`intent-refused` or `intent-needs-human` to the indexed phase; the indexed phase
+and verdict remain intact. Authority expiry between steps yields one coded
+needs-human hold even before a settlement exists. An absent indexed order is
+explicitly `index-unknown`. The budget is labeled portfolio-only: it excludes
+intent admissions. An intent scheduler with no runnable work does not report
+an unavailable legacy portfolio actor when that actor has no bound hosts.
+
+The projection omits raw event
 payloads, physical paths, endpoints, session identifiers and host details;
 missing launchpads, malformed regular-file configuration and missing, unreadable,
 nonregular or malformed index data leave orders unavailable with a coded cause.

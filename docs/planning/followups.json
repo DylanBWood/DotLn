@@ -13264,6 +13264,14 @@
             "WO-220"
           ],
           "at": "2026-10-17T19:34:14.610Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-220-D008 at docs/evidence/WO-220/decisions.md: FUP-4f8cd7989607ad3f: settled. Derive the resident NoOp key from reason, recorded phase and replayed arm generation. Old payloads need no migration; the derived key survives restart and permits a new receipt when phase or generation changes. Evidence read: docs/evidence/WO-142/decisions.md#wo-142-d002--preserve-replay-behavior-when-returning-resident-noop-identity. Fixture and sensitive paired controls: packages/skeleton/test/resident.test.ts: resident NoOp identity survives replay and distinguishes phase and rearm; control noop-identity; skeleton suite",
+          "reopenWhen": "Replay and restart diverge or a new arm is deduplicated against an earlier arm.",
+          "targets": [],
+          "at": "2026-10-24T06:02:35.396Z"
         }
       ]
     },
@@ -15074,6 +15082,13 @@
           "title": "WO-099-D016: Known limitation for planning, not repaired here: on a worktree whose untracked generated evidence exceeds the diff bound the cadence holds as unknown every pulse until a human answers. T",
           "summary": "{ \"id\": \"WO-099-D016\", \"date\": \"2026-09-20\", \"dispatch\": \"resume: fix\", \"decision\": \"Make the capsule complete or make it say so: every changed path, tracked or untracked, is named or the observation refuses; diff text is carried a whole path at a time with the unfitted paths listed in `omittedPaths`; and the host cannot record `on-mission` while any path is listed there.\", \"evidence\": [ \"docs/verifications/WO-099/VER-001.md\", \"packages/skeleton/src/mission-check-source.ts\", \"packages/skeleton/src/mission-check-protocol.ts\", \"packages/skeleton/test/mission-check.test.ts\" ], \"rejected\": [ { \"option\": \"Keep the silent first-100-paths and first-100,000-character caps\", \"reason\": \"The 101st path",
           "missing": false
+        },
+        {
+          "hash": "87822a5a98a0d0d7c873c99bdcc262ada2b4cb2ab947ba1d36710bb6d243bf81",
+          "ref": "docs/evidence/WO-099/decisions.md#wo-099-d016",
+          "title": "WO-099-D016: Known limitation for planning, not repaired here: on a worktree whose untracked generated evidence exceeds the diff bound the cadence holds as unknown every pulse until a human answers.…",
+          "summary": "{ \"id\": \"WO-099-D016\", \"date\": \"2026-09-20\", \"dispatch\": \"resume: fix\", \"decision\": \"Make the capsule complete or make it say so: every changed path, tracked or untracked, is named or the observation refuses; diff text is carried a whole path at a time with the unfitted paths listed in `omittedPaths`; and the host cannot record `on-mission` while any path is listed there.\", \"evidence\": [ \"docs/verifications/WO-099/VER-001.md\", \"packages/skeleton/src/mission-check-source.ts\", \"packages/skeleton/src/mission-check-protocol.ts\", \"packages/skeleton/test/mission-check.test.ts\" ], \"rejected\": [ { \"option\": \"Keep the silent first-100-paths and first-100,000-character caps\", \"reason\": \"The 101st path",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -15094,6 +15109,14 @@
             "WO-220"
           ],
           "at": "2026-10-17T19:34:14.081Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "declined",
+          "reason": "WO-220-D001 at docs/evidence/WO-220/decisions.md: FUP-06abc143a1c52367: declined. Keep complete mission observation with explicit omissions. Generated untracked evidence can still force unknown and human attention. Excluding generated files could certify an unreviewed change; a surface-first ranking cannot make an incomplete capsule complete. NoOp preserves this conservative hold rather than claiming that the harm disappeared. Evidence read: docs/evidence/WO-099/decisions.md#wo-099-d016. Reversal condition: A declared generated-evidence selection policy specifies evidence ownership and shows that no executable or out-of-surface change can evade the judge.",
+          "reopenWhen": "A declared generated-evidence selection policy specifies evidence ownership and shows that no executable or out-of-surface change can evade the judge.",
+          "targets": [],
+          "at": "2026-10-24T06:02:34.695Z"
         }
       ]
     },
@@ -15984,6 +16007,14 @@
             "WO-220"
           ],
           "at": "2026-10-17T19:34:14.384Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-220-D005 at docs/evidence/WO-220/decisions.md: FUP-349058ac0342247d: settled. Declare minLength 1 for all ten T1 receipt strings and the summary, preserving existing maxima including summary 320. The emitted contract now agrees with host validation. Historical blocked/out-of-contract matrix cells are not recollected or relabeled. Evidence read: docs/evidence/WO-138/decisions.md#wo-138-d012--board-up-the-undeclared-t1-minimum-bound-named-by-ver-002-a1. Fixture and sensitive paired controls: scripts/test-harness-probe.mjs: T1 emitted minimum and maximum match every receipt field's host validation; control t1-minimum; harness-probe suite",
+          "reopenWhen": "The host validator changes a field bound or a new T1 matrix requires fresh model observations.",
+          "targets": [],
+          "at": "2026-10-24T06:02:35.098Z"
         }
       ]
     },
@@ -24825,6 +24856,13 @@
           "title": "WO-116-D008: Planning: nominate audit action classes for the resident's own events (episode dispatch and outcome, handoffs, mission holds, portfolio activation and console invocations), so the L0 rece",
           "summary": "{ \"id\": \"WO-116-D008\", \"date\": \"2026-09-28\", \"dispatch\": \"resume: next\", \"decision\": \"Over a resident store the command projects without refusal, but none of the event types a resident host appends (ResidentConfigured, ClockSampled, OperatorPresenceObserved, ScriptEpisodeDispatched, ScriptEpisodeObserved, ScriptEpisodeLost, ScriptEpisodeRefused, CliWorkerObserved, PortfolioOrderActivated, PortfolioOrderObserved, ActorUnavailable, HandoffRequested, HandoffAnswered, MissionDriftObserved, MissionHoldCleared and the console receipts) is a consequential source for the fold, and a resident host appends no DecisionRecorded, which the fold reads only as supporting evidence beside a CommandPersisted ",
           "missing": false
+        },
+        {
+          "hash": "d9ba9068d7dbf2cf5ff003c5dfee3383b8b4e762577ff1e69afc10826981d7a5",
+          "ref": "docs/evidence/WO-116/decisions.md#wo-116-d008--observed-limit-a-resident-stores-own-events-are-context-to-the-fold",
+          "title": "WO-116-D008: Planning: nominate audit action classes for the resident's own events (episode dispatch and outcome, handoffs, mission holds, portfolio activation and console invocations), so the L0…",
+          "summary": "{ \"id\": \"WO-116-D008\", \"date\": \"2026-09-28\", \"dispatch\": \"resume: next\", \"decision\": \"Over a resident store the command projects without refusal, but none of the event types a resident host appends (ResidentConfigured, ClockSampled, OperatorPresenceObserved, ScriptEpisodeDispatched, ScriptEpisodeObserved, ScriptEpisodeLost, ScriptEpisodeRefused, CliWorkerObserved, PortfolioOrderActivated, PortfolioOrderObserved, ActorUnavailable, HandoffRequested, HandoffAnswered, MissionDriftObserved, MissionHoldCleared and the console receipts) is a consequential source for the fold, and a resident host appends no DecisionRecorded, which the fold reads only as supporting evidence beside a CommandPersisted ",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -24853,6 +24891,14 @@
             "WO-220"
           ],
           "at": "2026-10-17T19:34:14.458Z"
+        },
+        {
+          "sourceRevision": 4,
+          "status": "declined",
+          "reason": "WO-220-D006 at docs/evidence/WO-220/decisions.md: FUP-3d4b39cd4b2c4a08: declined. Decline adding resident audit action classes and relabeling the fold as part of this batch. Resident dispatch, outcome, holds and console events still appear in governed raw without L0/L1 action receipts, and fixture-oriented omission wording remains. Inventing causal action classes from event names would imply a consequence model that this source ask asks planning to nominate. NoOp preserves the raw evidence and makes no completeness claim. Evidence read: docs/evidence/WO-116/decisions.md#wo-116-d008--observed-limit-a-resident-stores-own-events-are-context-to-the-fold. Reversal condition: A nominated resident action/causation model specifies which events form receipts and omissions, with fixtures for restart, repeated events, holds and console effects.",
+          "reopenWhen": "A nominated resident action/causation model specifies which events form receipts and omissions, with fixtures for restart, repeated events, holds and console effects.",
+          "targets": [],
+          "at": "2026-10-24T06:02:35.198Z"
         }
       ]
     },
@@ -24967,6 +25013,13 @@
           "title": "WO-065-D008: Planning: implement the personal workflow delegation profile specified in product 05: bind Claude/Codex enabled-mode evidence, minimum three distinct meaningful subagent contributions per",
           "summary": "{ \"id\": \"WO-065-D008\", \"date\": \"2026-09-29\", \"dispatch\": \"ideation: during resume: next; operator requests minimum three subagents when each workflow mode is enabled and discretionary delegation when disabled\", \"decision\": \"Complete the document-only breakout: adopt the requested personal workflow policy in product 05, append its two specified ledger entries, and preserve the exact source in worktree-local ignored intake. Enabled means at least three distinct contributing agents over the active root workflow task; off means willing delegation with roughly zero to three as an expectation, not a cap. The counting scope is an explicit synthesis inference from the operator comparison against the",
           "missing": false
+        },
+        {
+          "hash": "b36c034c8b06959f63a120184861aae9f92b46f11c0cc6816816bd11161a3473",
+          "ref": "docs/evidence/WO-065/decisions.md#wo-065-d008",
+          "title": "WO-065-D008: Planning: implement the personal workflow delegation profile specified in product 05: bind Claude/Codex enabled-mode evidence, minimum three distinct meaningful subagent contributions…",
+          "summary": "{ \"id\": \"WO-065-D008\", \"date\": \"2026-09-29\", \"dispatch\": \"ideation: during resume: next; operator requests minimum three subagents when each workflow mode is enabled and discretionary delegation when disabled\", \"decision\": \"Complete the document-only breakout: adopt the requested personal workflow policy in product 05, append its two specified ledger entries, and preserve the exact source in worktree-local ignored intake. Enabled means at least three distinct contributing agents over the active root workflow task; off means willing delegation with roughly zero to three as an expectation, not a cap. The counting scope is an explicit synthesis inference from the operator comparison against the",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -25013,6 +25066,14 @@
             "WO-220"
           ],
           "at": "2026-10-17T19:34:15.443Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "declined",
+          "reason": "WO-220-D019 at docs/evidence/WO-220/decisions.md: FUP-e62d0d2771185a38: declined. Decline the cross-host personal delegation feature to planning. The product preference remains: meaningful distinct contributions when enabled, willing delegation when off. Current host-selected setting evidence and contribution enforcement do not establish that feature. A minimum-count gate without reliable mode/readback would launch unnecessary workers or falsely claim compliance. NoOp avoids changing account settings or weakening the requested floor. Evidence read: docs/evidence/WO-065/decisions.md#wo-065-d008. Reversal condition: A bounded host-binding order supplies truthful Claude/Codex mode readback and meaningful task-level contribution evidence for enabled and off modes, respecting cap, No Fan-Out and one writer.",
+          "reopenWhen": "A bounded host-binding order supplies truthful Claude/Codex mode readback and meaningful task-level contribution evidence for enabled and off modes, respecting cap, No Fan-Out and one writer.",
+          "targets": [],
+          "at": "2026-10-24T06:02:36.462Z"
         }
       ]
     },
@@ -25187,6 +25248,13 @@
           "title": "WO-117-D007: Planning, before WO-118 relies on the live host for unattended supervision (document items may instead be taken by the WO-117 final review within its Boy Scout bound). B2: bound the passi",
           "summary": "{ \"id\": \"WO-117-D007\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: verify\", \"decision\": \"Pass VER-001. Criteria 1 to 5 are met at code identity a4e5e0d8. Criterion 1 is read as follows: the live mode renders WO-116's audit view on demand through its audit control (byte parity tested), beside a bounded passive preview. On a resident store, the preview's L0 and L1 lines and the full L0 and L1 projections are empty, because WO-116 derives no records from resident event types. Criterion 2 is met by the operator-reported run on a live.ts earlier than the final one. The verifier's own PTY probe of the final build against a real resident reproduces the same sequence. Several defects fall outside the",
           "missing": false
+        },
+        {
+          "hash": "6daccbab576f5649077918b17c46ff1f684c4bc397efd264c7391a868395cac7",
+          "ref": "docs/evidence/WO-117/decisions.md#wo-117-d007",
+          "title": "WO-117-D007: Planning, before WO-118 relies on the live host for unattended supervision (document items may instead be taken by the WO-117 final review within its Boy Scout bound). B2: bound the…",
+          "summary": "{ \"id\": \"WO-117-D007\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: verify\", \"decision\": \"Pass VER-001. Criteria 1 to 5 are met at code identity a4e5e0d8. Criterion 1 is read as follows: the live mode renders WO-116's audit view on demand through its audit control (byte parity tested), beside a bounded passive preview. On a resident store, the preview's L0 and L1 lines and the full L0 and L1 projections are empty, because WO-116 derives no records from resident event types. Criterion 2 is met by the operator-reported run on a live.ts earlier than the final one. The verifier's own PTY probe of the final build against a real resident reproduces the same sequence. Several defects fall outside the",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -25223,6 +25291,14 @@
             "WO-220"
           ],
           "at": "2026-10-17T19:34:14.157Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "declined",
+          "reason": "WO-220-D002 at docs/evidence/WO-220/decisions.md: FUP-165f9860f8f32a67: declined. Decline the complete console supervision basket. Current full-log reads grow with history; failed decode can reset notice history; a dead resident can retain its last frame; generic failures and the historical witness/test/document limitations remain. Incremental audit projection needs causal checkpoint semantics, and historical witness provenance cannot be reconstructed by changing current code. The budget label change in D004 fixes none of those claims. NoOp retains known limits and avoids presenting a partial console patch as the whole basket. Evidence read: docs/evidence/WO-117/decisions.md#wo-117-d007. Reversal condition: A bounded console-supervision design supplies an event-log cursor/checkpoint, failure-preserving notification history, freshness behavior and a terminal/witness correction plan; historical reports remain immutable.",
+          "reopenWhen": "A bounded console-supervision design supplies an event-log cursor/checkpoint, failure-preserving notification history, freshness behavior and a terminal/witness correction plan; historical reports remain immutable.",
+          "targets": [],
+          "at": "2026-10-24T06:02:34.799Z"
         }
       ]
     },
@@ -28188,6 +28264,14 @@
             "WO-220"
           ],
           "at": "2026-10-17T19:34:14.233Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-220-D003 at docs/evidence/WO-220/decisions.md: FUP-2341c85c58331f3e: settled. Link truthful partial semantic inputs only for cannot-evaluate-revocation refusals. Accept state-only or the complete available environment suffix without a state; reject malformed order and invented partial environment fields. Complete authorization linkage stays strict. Evidence read: docs/evidence/WO-103/decisions.md#wo-103-d004. Fixture and sensitive paired controls: packages/skeleton/test/audit.test.ts: audit links truthful partial revocation inputs without inventing missing inputs; control audit-partial, skeleton suite",
+          "reopenWhen": "A canonical producer emits another truthful partial shape, or a forged suffix links to a refusal.",
+          "targets": [],
+          "at": "2026-10-24T06:02:34.899Z"
         }
       ]
     },
@@ -28222,6 +28306,14 @@
             "WO-220"
           ],
           "at": "2026-10-17T19:34:15.219Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-220-D016 at docs/evidence/WO-220/decisions.md: FUP-c1d4be019802be0d: settled. Validate required Command/Act fields and JSON payload structure before new pending insertion and before new CommandPersisted append. A typed admission error carries persist/malformed/field. Replay uses its historical ID-only insertion, so old incomplete commands and scenario identities remain readable without rewriting logs. Evidence read: docs/evidence/WO-103/decisions.md#wo-103-d005. Fixture and sensitive paired controls: packages/kernel/test/kernel.test.ts: new command admission rejects malformed structure while old logs replay unchanged; controls command-persist, command-append and command-serialization; kernel suite; WO-103 outbox replay and WO-105 current recovery invariants",
+          "reopenWhen": "A well-formed historical log changes replay output, or a new malformed command reaches pending state or appended bytes.",
+          "targets": [],
+          "at": "2026-10-24T06:02:36.181Z"
         }
       ]
     },
@@ -28256,6 +28348,14 @@
             "WO-220"
           ],
           "at": "2026-10-17T19:34:15.369Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-220-D018 at docs/evidence/WO-220/decisions.md: FUP-d22dc57e754ba35c: settled. Add deny-without-allow, with allowed other and denied act, to the complete authority factorial. Keep the seed and regenerate the expanded stream counts, winners, golden shards, manifest and precedence table. Audit carry-ins retain their finding identities while marking their linkage resolved; historical incomplete outbox replay remains explicit. Evidence read: docs/evidence/WO-103/decisions.md#wo-103-d012--final-review-one-precedence-pair-the-declared-factorial-never-contests. Fixture and sensitive paired controls: corpus/harness/wo103-authority.test.mjs complete factorial; wo103-generators.test.mjs axis coverage and seeded selection; control authority-contest; direct WO-103 lane commands",
+          "reopenWhen": "A precedence pair still has no joint contender or regeneration changes without its declared seed/factor change.",
+          "targets": [],
+          "at": "2026-10-24T06:02:36.369Z"
         }
       ]
     },
@@ -28463,6 +28563,14 @@
             "WO-220"
           ],
           "at": "2026-10-17T19:34:15.295Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-220-D017 at docs/evidence/WO-220/decisions.md: FUP-d093f77bd927f9dc: settled. Separate historical artifact-byte pins from current runtime invariants. Read retained oracle bytes at the recorded base; run every current cut and recovery law; report base-source-drift while separating only compiler version fields and the explicitly named version-bearing digests. Crash offsets, bytes, counts, classifications, pending/effect counts and outbox hashes remain pinned; changed byte geometry requires a reviewed baseline. Exact comparison including identity still applies at unchanged sources. Do not overwrite retained observations or pretend a drift report is an identical baseline. Evidence read: docs/evidence/WO-105/decisions.md#wo-105-d012--final-review-the-corpuss-byte-pins-are-keyed-to-its-base-and-fail-on-later-main. Fixture and sensitive paired controls: corpus/harness/wo105-skeleton.test.mjs: WO-105 after-base reports identity drift but still rejects changed crash-shape pins; full wo105-skeleton and wo105-store lane commands; corpus/manifests/WO-105.json afterBasePolicy; control corpus-after-base",
+          "reopenWhen": "The historical base becomes unavailable, a retained artifact hash changes, or current invariant coverage misses a behavioral regression.",
+          "targets": [],
+          "at": "2026-10-24T06:02:36.275Z"
         }
       ]
     },
@@ -29082,6 +29190,14 @@
             "WO-220"
           ],
           "at": "2026-10-17T19:34:14.985Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-220-D013 at docs/evidence/WO-220/decisions.md: FUP-8f0561e50754114f: settled. Archive the second collector before editing it and admit first, second and current protocol hashes. Retained measurement bytes remain immutable; the registry self-test is explicitly base-only and reports drift after source changes; retained schema checks still run, and new collection remains base-only. Keep the already-correct historical classification exception/current-entry check. Normalize generated comparison output to one final newline and regenerate only that derived Markdown. Coordinate this after-base rule with D017. Evidence read: docs/evidence/WO-107/decisions.md#wo-107-d010--final-review-the-lanes-own-checks-are-keyed-to-this-orders-bytes. Fixture and sensitive paired controls: corpus/harness/wo107-schema.test.mjs: harness classification exception is exact and both collector revisions preserve timed bytes; harness records schema/summary checks; corpus generated comparison is byte identical and check never appends or rewrites; corpus/baselines/SCHEMA-WO-107.md Commands and retention; controls collector-archive and comparison-newline; wo107-schema suite",
+          "reopenWhen": "A recorded protocol is unrecognized, timed-byte identity changes, or a newly collected baseline uses different source identity.",
+          "targets": [],
+          "at": "2026-10-24T06:02:35.890Z"
         }
       ]
     },
@@ -32575,6 +32691,14 @@
             "WO-220"
           ],
           "at": "2026-10-17T19:34:14.761Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-220-D010 at docs/evidence/WO-220/decisions.md: FUP-7c269a184f75e742: settled. Bound combined review triages and outward actions to sixteen each per invocation, stopping with the next item before effect. Keep the eight-body allowance for new/changed bodies and external heads, excluding unchanged body rekeys caused by this invocation's own push. Validate cached resolution head, contract and sealed snapshot. Reset continuation failure backoff only on a new step receipt. Stored invalid triage results use D014's record-refusal path. Independent review repairs use stable item-specific worktree parents while retaining their original contracts and source command identities. Evidence read: docs/evidence/WO-112/decisions.md#wo-112-d046--board-five-lower-review-loop-and-resident-items-from-the-ver-005-adversary. Fixture and sensitive paired controls: scripts/test-vertical-judgment.mjs: review invocation bounds combined inline and body triage before opening the next item; review invocation stops at its outward bound before disposing a further thread; three repair pushes rekey unchanged bodies without spending their eight-item allowance; cached resolution input rebinds its observed head, contract and snapshot before triage; WO-112 continuation backoff survives a no-progress return, caps repeated failures and never defers authority expiry; controls review-triage, review-outward, review-rekey, repair-worktrees, repair-legacy-parent, cached-resolution, continuation-backoff and judgment-replay; vertical suite",
+          "reopenWhen": "A legitimate loop cannot finish within the explicit invocation bound, a stale prepared subject reaches triage, or an undecided return resets retry history.",
+          "targets": [],
+          "at": "2026-10-24T06:02:35.593Z"
         }
       ]
     },
@@ -32617,6 +32741,14 @@
             "WO-220"
           ],
           "at": "2026-10-17T19:34:15.061Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-220-D014 at docs/evidence/WO-220/decisions.md: FUP-b8440605da5a4eb2: settled. Distinguish a stored result that parses and binds but fails result validation from an episode failure. Intake counts a bounded host record fault; triage records explicit human attention. Do not relaunch an unchanged invalid record or relabel its provenance as a new episode. Evidence read: docs/evidence/WO-112/decisions.md#wo-112-d047--close-the-ver-005-classes-at-their-origin-one-judgment-failure-rule-admission-gated-preparation-and-own-registration-recovery. Fixture and sensitive paired controls: scripts/test-vertical-judgment.mjs: stored intake result refusal is a bounded record fault with no new episode; stored triage result refusal ends needs-human and is never called an episode failure; control judgment-replay; vertical suite",
+          "reopenWhen": "Replay validation or binding rules change, or a corrupt record triggers a new paid episode.",
+          "targets": [],
+          "at": "2026-10-24T06:02:35.988Z"
         }
       ]
     },
@@ -32751,6 +32883,14 @@
             "WO-220"
           ],
           "at": "2026-10-17T19:34:15.139Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-220-D015 at docs/evidence/WO-220/decisions.md: FUP-bcd4724fca7bff7a: settled. Use a full post-failure cooldown for preparation, matching continuation retries: notBefore uses the clock after the awaited failure. Long calls no longer spend the delay while still running. Keep capped doubling, later-draft fairness and authority-expiry precedence. Evidence read: docs/evidence/WO-112/decisions.md#wo-112-d053--board-the-preparation-retry-clock-choice-with-its-observed-contrast. Fixture and sensitive paired controls: scripts/test-vertical.mjs: preparation retries cool down after short and slow failures, cap the delay and honor expiry; control preparation-clock; vertical suite",
+          "reopenWhen": "A provider retry contract requires attempt-start spacing, supported by measured load and expiry evidence.",
+          "targets": [],
+          "at": "2026-10-24T06:02:36.086Z"
         }
       ]
     },
@@ -32882,6 +33022,13 @@
           "title": "WO-112-D061: Count subject-tied judgment failures (budget exhausted, deadline exceeded) toward a per-subject-hash limit like host faults, so only launch or reachability failures retry without a count.",
           "summary": "{ \"id\": \"WO-112-D061\", \"date\": \"2026-10-07\", \"dispatch\": \"resume: verify\", \"decision\": \"Board, not block, the adversary's retry-cost item. judgmentRetryable (vertical-judgment-host.ts) treats every failure except invalid-result and profile-refused as retryable, so a subject whose episode always exhausts its budget or deadline is relaunched with capped backoff while the phase stays ready (intake) or until authority expires (triage). It costs money, not correctness, and needs a subject that fails identically every time.\", \"evidence\": [ \"Adversary report: decodeResult maps a Claude error_max_budget_usd result to transport-failed and the judgment timeout to deadline-exceeded; vertical-runtime.mj",
           "missing": false
+        },
+        {
+          "hash": "adb1b9406b88c90466dfd2c7e7318f792ed39fa03b46e6cb17a5e955d373185b",
+          "ref": "docs/evidence/WO-112/decisions.md#wo-112-d061--board-unbounded-retries-of-judgment-episodes-that-fail-identically",
+          "title": "WO-112-D061: Count subject-tied judgment failures (budget exhausted, deadline exceeded) toward a per-subject-hash limit like host faults, so only launch or reachability failures retry without a…",
+          "summary": "{ \"id\": \"WO-112-D061\", \"date\": \"2026-10-07\", \"dispatch\": \"resume: verify\", \"decision\": \"Board, not block, the adversary's retry-cost item. judgmentRetryable (vertical-judgment-host.ts) treats every failure except invalid-result and profile-refused as retryable, so a subject whose episode always exhausts its budget or deadline is relaunched with capped backoff while the phase stays ready (intake) or until authority expires (triage). It costs money, not correctness, and needs a subject that fails identically every time.\", \"evidence\": [ \"Adversary report: decodeResult maps a Claude error_max_budget_usd result to transport-failed and the judgment timeout to deadline-exceeded; vertical-runtime.mj",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -32910,6 +33057,14 @@
             "WO-220"
           ],
           "at": "2026-10-17T19:34:14.687Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "declined",
+          "reason": "WO-220-D009 at docs/evidence/WO-220/decisions.md: FUP-5d48c4f3c2a3730d: declined. Retain the current bounded-delay retry policy without a subject-failure counter. A repeatedly deadline- or budget-exhausted subject can buy further episodes until authority expiry; no paid spend was measured here. Budget exhaustion currently shares transport-failed with connectivity, so counting that code would also permanently hold transient outages. A durable subject counter requires a distinct cost-failure contract and recovery/concurrency rule. NoOp preserves availability and records the real cost risk; it does not assert a finite attempt count. Evidence read: docs/evidence/WO-112/decisions.md#wo-112-d061--board-unbounded-retries-of-judgment-episodes-that-fail-identically. Reversal condition: A typed budget-exhaustion outcome and durable per-subject counting policy distinguish cost failures from reachability, or a live run observes repeated paid failure for one subject.",
+          "reopenWhen": "A typed budget-exhaustion outcome and durable per-subject counting policy distinguish cost failures from reachability, or a live run observes repeated paid failure for one subject.",
+          "targets": [],
+          "at": "2026-10-24T06:02:35.495Z"
         }
       ]
     },
@@ -33535,6 +33690,14 @@
             "WO-220"
           ],
           "at": "2026-10-17T19:34:14.836Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-220-D011 at docs/evidence/WO-220/decisions.md: FUP-88c339c51cfc1933: settled. Pass the run signal into browser evidence; kill and await the owned BrowserServer on abort, and admit no cancelled result. Preserve each attempt directory, recover its process record into a fresh directory, and retry without refusing the old directory. Evidence read: docs/evidence/WO-199/decisions.md#wo-199-d011--board-the-witnesses-steps-browser-scenario-which-the-abort-does-not-reach-and-whose-rerun-refuses-its-own-directory. Fixture and sensitive paired controls: scripts/test-vertical.recovery.mjs: browser witness cancellation closes owned processes and resumes in a fresh attempt directory; controls browser-signal, browser-recovery and browser-startup; vertical suite; official Playwright BrowserServer kill documentation fetched through ctx7",
+          "reopenWhen": "A signaled witness leaks an owned process, admits a result, or cannot resume from retained process records.",
+          "targets": [],
+          "at": "2026-10-24T06:02:35.692Z"
         }
       ]
     },
@@ -33593,6 +33756,14 @@
             "WO-220"
           ],
           "at": "2026-10-17T19:34:14.534Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-220-D007 at docs/evidence/WO-220/decisions.md: FUP-49c4a5f7176252e7: settled. Catch recovery effect/observation failures after recoverTermination and close the command through the same host-admission-check refusal as dispatch admission. Deliver a pending signal first; an interruption admits neither refusal nor observation. Preserve saved-receipt recovery. WO-204 must retain this rule when rewriting the source host. Evidence read: docs/evidence/WO-199/decisions.md#wo-199-d015--verification-pass-ver-003-board-the-recovery-paths-untyped-host-refusal-which-a-refusal-coinciding-with-a-signal-now-reaches. Fixture and sensitive paired controls: packages/skeleton/test/source-change-host.test.ts: recovered unreceipted dirty commits close with a typed host admission refusal; control recovery-refusal; skeleton suite; current feedback edition and live episode required after final source edit",
+          "reopenWhen": "Recovery can return an untyped admission failure, a signal becomes a permanent refusal, or WO-204 changes this boundary.",
+          "targets": [],
+          "at": "2026-10-24T06:02:35.297Z"
         }
       ]
     },
@@ -35421,6 +35592,13 @@
           "title": "WO-189-D021: Front-page guard limits the corpus records: a generated block outside What runs today is judged only by its writer's check (WO-088 must list its block in the record and pin its content); ",
           "summary": "{ \"id\": \"WO-189-D021\", \"date\": \"2026-10-10\", \"dispatch\": \"resume: fix; repair VER-003 F1 (criterion 5), taking D020's follow-up within the bound, under the operator's steering recorded in D022\", \"decision\": \"The front-page guard closes the surfaces where GitHub's renderer and the check's parser disagree instead of modelling them, and judges what remains twice. Page-wide, outside code and the registered marker lines, the page holds no raw HTML (an autolink is a link, an escaped bracket is text), none of the parser's extensions GitHub does not share (front matter, math, template tags, wiki links), no bidirectional control typed or written as a reference, no control character other than tab and",
           "missing": false
+        },
+        {
+          "hash": "9a07e12899ef342435329398272effeeeb32eee2425faab308405e3062c2d502",
+          "ref": "docs/evidence/WO-189/decisions.md#wo-189-d021--repair-close-the-surfaces-where-github-and-the-parser-disagree-and-judge-each-line-twice",
+          "title": "WO-189-D021: Front-page guard limits the corpus records: a generated block outside What runs today is judged only by its writer's check (WO-088 must list its block in the record and pin its content);…",
+          "summary": "{ \"id\": \"WO-189-D021\", \"date\": \"2026-10-10\", \"dispatch\": \"resume: fix; repair VER-003 F1 (criterion 5), taking D020's follow-up within the bound, under the operator's steering recorded in D022\", \"decision\": \"The front-page guard closes the surfaces where GitHub's renderer and the check's parser disagree instead of modelling them, and judges what remains twice. Page-wide, outside code and the registered marker lines, the page holds no raw HTML (an autolink is a link, an escaped bracket is text), none of the parser's extensions GitHub does not share (front matter, math, template tags, wiki links), no bidirectional control typed or written as a reference, no control character other than tab and",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -35441,6 +35619,14 @@
             "WO-220"
           ],
           "at": "2026-10-17T19:34:14.911Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "declined",
+          "reason": "WO-220-D012 at docs/evidence/WO-220/decisions.md: FUP-89e29438bd71c524: declined. Keep the front-page parser's declared corpus limits: independently changing pictures, authority-file enumeration through working configuration, no-local-main comparison notice and the listed Unicode/name/receipt/sentence spellings. Closing those classes without observed renderer cases risks false refusals or a new parser. NoOp preserves the tested declared boundary. Generated blocks outside What runs today belong to WO-088's registration/content-pinning carry-in, not a silent settlement here. Evidence read: docs/evidence/WO-189/decisions.md#wo-189-d021--repair-close-the-surfaces-where-github-and-the-parser-disagree-and-judge-each-line-twice. Reversal condition: WO-088 registers and pins its generated block, or an observed GitHub rendering or corpus misclassification supplies a bounded new guard case.",
+          "reopenWhen": "WO-088 registers and pins its generated block, or an observed GitHub rendering or corpus misclassification supplies a bounded new guard case.",
+          "targets": [],
+          "at": "2026-10-24T06:02:35.791Z"
         }
       ]
     },
@@ -37433,6 +37619,14 @@
             "WO-220"
           ],
           "at": "2026-10-17T19:34:15.520Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-220-D020 at docs/evidence/WO-220/decisions.md: FUP-eeb25ea9315438ad: settled. When a resident has an explicit vertical scheduler and the legacy portfolio actor is unbound, an idle intent tick skips that actor. A normal portfolio-only resident still reports ActorUnavailable, and other capability or configuration failures remain diagnostic. Together with D004, this resolves WO-083/WO-183's resident carry-ins and the earlier WO-118 D013/D018 deferral. Evidence read: docs/evidence/WO-118/decisions.md#wo-118-d013--the-witnessed-run-carries-criteria-1-to-5. Fixture and sensitive paired controls: scripts/test-vertical.mjs: intent-only residents skip an unbound portfolio actor but ordinary portfolios still report it; control intent-only; vertical suite",
+          "reopenWhen": "An ordinary bound portfolio dispatch is suppressed or an intent-only idle tick again emits a spurious unavailable receipt.",
+          "targets": [],
+          "at": "2026-10-24T06:02:36.558Z"
         }
       ]
     },
@@ -37599,6 +37793,14 @@
             "WO-220"
           ],
           "at": "2026-10-17T19:34:14.308Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-220-D004 at docs/evidence/WO-220/decisions.md: FUP-2b9a8e696b38fb97: settled. Project expired between-step intents as one needs-human hold and retire their actor. Show terminal outcome beside the indexed phase, preserving the index and its verdict; label budget as portfolio-only. No lifecycle transition is fabricated. Product 04 now describes vertical actors, transport, expiry, holds and terminal visibility. This and D020 discharge WO-083/WO-183 carry-ins and supersede the earlier deferral of WO-118 D018/D013. Evidence read: docs/evidence/WO-118/decisions.md#wo-118-d018--final-review-follow-up-live-status-misses-how-a-resident-owned-continuation-ends. Fixture and sensitive paired controls: packages/skeleton/test/runtime-status.test.ts: resident expiry between steps shows one hold and terminal outcomes preserve the indexed phase; packages/console/test/runtime-status.test.ts: resident status labels the budget as portfolio-only beside an intent outcome; controls intent-status and budget-label; docs/product/04-interfaces.md section Plural UI hosts, one projection contract",
+          "reopenWhen": "A terminal result lacks a visible outcome, an expiry leaves a stale actor, or budget accounting is extended to include intent admissions.",
+          "targets": [],
+          "at": "2026-10-24T06:02:34.998Z"
         }
       ]
     },
@@ -44650,6 +44852,21 @@
           "at": "2026-10-24T04:18:35.912Z"
         }
       ]
+    },
+    {
+      "id": "FUP-1330ac1551dff7d1",
+      "key": "decision:docs/evidence/WO-220/decisions.md#wo-220-d032",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c76163655859a6fee99a7f668e38f77a6f5547a6519da62aa66374fd04146208",
+          "ref": "docs/evidence/WO-220/decisions.md#wo-220-d032--ver-001-pass-board-the-retained-schema-recognitions-dependence-on-the-current-functions-source-text",
+          "title": "WO-220-D032: A WO-220 repair, if one happens, or the next order that edits scripts/probes/local-model-role-qualification.mjs; low priority. Rule a repair must hold: retained-record schema recognition…",
+          "summary": "{ \"id\": \"WO-220-D032\", \"date\": \"2026-10-24\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Pass VER-001 at code identity 881d4a43ef351238cd74bc374006924fb5cf632521bd93561fb230b2f57b39e6; all seven criteria are met. Board F1 (follow-up). WO-220-D031's validateRecordInputs recognizes a retained T1 schema by comparing the retained harness source's taskSchema text with the current function's text (exactly, or with only the two T1 minLength declarations removed). The base compared each record's schemaHash with the hash of the current taskSchema value, so an edit that leaves the schema value unchanged left retained records valid. Now a comment-only or formatting-only edit ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

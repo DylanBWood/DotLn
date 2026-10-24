@@ -1272,7 +1272,7 @@ checks again before it prepares a draft. An unavailable forge, an issue edited
 during the read, an unavailable bundle store and an unclean or unreadable
 target are not
 decisions: the draft stays undecided and is retried after a delay that doubles
-from one second to five minutes, while later drafts are prepared. A failure
+from one second to five minutes measured after each failure returns, while later drafts are prepared. A failure
 outside those conditions is held after three attempts. The delay and the set
 of finished continuations are process memory; a restarted resident retries at
 once and replays each continuation once. An idle tick appends two clock
@@ -1313,9 +1313,9 @@ test within 30 seconds per test, and a forge read or push without a timeout.
 A rerun of an interrupted judgment or repair verifier waits out the stopped
 episode's lease, at most 5 seconds, before its one fresh attempt. A repeated
 signal never extends the wait, and 15 seconds after the command handles the
-first signal it exits regardless; that backstop also bounds the witnesses
-step's browser scenario, which the signal does not reach, and the next run
-recovers from the records. Two interrupted writer dispatches exhaust the
+first signal it exits regardless. The witnesses step passes the signal to its
+browser scenario, kills the owned browser server and retains process records;
+the next run recovers those records into a fresh attempt directory. Two interrupted writer dispatches exhaust the
 step's launch budget; interrupted host re-observation of a committed result
 uses no dispatch. Native writers wait at an exec gate
 until the host saves their process group and birth identity. The native launcher
@@ -1328,8 +1328,8 @@ record leaves the native gate unreleased and admits no writer. Recovery then
 checks repository integrity and reads or redispatches the bounded outcome. Host checks
 that refuse a returned result in the run that receives it record
 `SourceChangeRefused` with `host-admission-<check>`; they are never transport
-interruptions. A rerun that re-observes an unreceipted committed result does not
-yet record that refusal (WO-199 D015).
+interruptions. A rerun that re-observes an unreceipted committed result records
+the same typed refusal, unless a pending terminal signal leaves the command undecided.
 Blocking review routes through at
 most two bounded repairs and fresh verification; a failed review gets one
 fresh retry. Preparation cites host-run checks and declares unnamed build/lint

@@ -95,6 +95,7 @@ export interface ResidentState {
   episodeGenerations: Record<string, number>;
   revokedBy: Event[];
   lastNoOp: string | null;
+  lastNoOpKey?: string;
   lastHumanAt: number | null;
   actors: Record<
     string,
@@ -1042,6 +1043,13 @@ export function foldResidentEvent(
     )
       throw new Error("resident NoOp needs a reason and phase");
     state.lastNoOp = payload["reason"];
+    // Derive the identity from the recorded clock and presence history, so
+    // older logs and restarted hosts deduplicate the same refusal equally.
+    state.lastNoOpKey = JSON.stringify([
+      payload["reason"],
+      payload["phaseId"],
+      machine.generation,
+    ]);
   }
   state.machine = machine.snapshot();
   return state;

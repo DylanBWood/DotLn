@@ -187,7 +187,15 @@ test("WO-154 a verifier stream committed by reference rebuilds byte for byte and
     baseline: { revision: "b", files: files.slice(0, 1) },
   });
   draft("CommandPersisted", {
-    command: { intent: { payload: { capsule: { subject: { files } } } } },
+    command: {
+      commandId: "cmd_fixture",
+      workstreamId: "ws_fixture",
+      intent: {
+        kind: "Act",
+        effect: "verification.evaluate",
+        payload: { capsule: { subject: { files } } },
+      },
+    },
   });
   draft("WorkerHeartbeat", { files: [], note: "no bodies" });
   const bodies = editionBodies(directory);

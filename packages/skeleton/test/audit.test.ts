@@ -523,6 +523,60 @@ test("WO-017 audit: denied records attach only a complete matching v1 refusal tr
   }
 });
 
+test("audit links truthful partial revocation inputs without inventing missing inputs", () => {
+  const base = ["now", "authorityEnvelope", "evidence", "revocations"];
+  for (const suffix of [
+    ["state"],
+    ["rngState:17", "predicates"],
+    ["rngState:17", "predicates", "policy"],
+    ["state", "rngState:17", "predicates"],
+  ]) {
+    const refused = auditEvent("refusal", "CommandRefused", {
+      reason: "cannot evaluate revocation",
+      authorityEnvelopeId: "auth_test",
+    });
+    const make = (inputs: string[], reason = "cannot evaluate revocation") =>
+      auditEvent("trace", "DecisionRecorded", {
+        trace: {
+          reactorId: "authority-guard",
+          reactorVersion: "1",
+          branchPath: ["refused", reason],
+          envInputs: [...base, ...inputs],
+          cadenceEvaluations: [],
+        },
+      });
+    const trace = make(suffix);
+    const records = deriveAuditRecords([refused, trace]);
+    assert.deepEqual(records[0]!.eventIds, ["refusal", "trace"]);
+    assert.deepEqual(
+      (trace.payload as { trace: { envInputs: string[] } }).trace.envInputs,
+      [...base, ...suffix],
+    );
+    for (const malformed of [
+      ["rngState:17"],
+      ["predicates"],
+      ["policy"],
+      ["state", "state"],
+      ["rngState:NaN", "predicates"],
+      ["rngState:01", "predicates"],
+      ["predicates", "rngState:17"],
+    ])
+      assert.deepEqual(
+        deriveAuditRecords([refused, make(malformed)])[0]!.eventIds,
+        ["refusal"],
+      );
+    const other = auditEvent("refusal", "CommandRefused", {
+      reason: "effect denied",
+      authorityEnvelopeId: "auth_test",
+    });
+    if (!suffix.includes("state") || suffix.length === 1)
+      assert.deepEqual(
+        deriveAuditRecords([other, make(suffix, "effect denied")])[0]!.eventIds,
+        ["refusal"],
+      );
+  }
+});
+
 test("AC3 captures the L0 receipt, causal timeline, and governed raw JSON with fidelity links", () => {
   const events = liveEvents();
   const projections = projectAuditEvents(events);

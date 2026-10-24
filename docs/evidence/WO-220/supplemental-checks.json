@@ -1,0 +1,965 @@
+{
+  "schemaVersion": 1,
+  "checks": [
+    {
+      "name": "final-source-build",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "npm",
+        "run",
+        "build"
+      ],
+      "result": {
+        "name": "bounded-probe",
+        "durationMs": 794,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 794,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 27528744,
+        "peakRssBytes": 82149376,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-24T06:02:29.734Z",
+        "finishedAt": "2026-10-24T06:02:30.528Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "caseReports": [],
+      "logSha256": "d2c9c48533f1be309015787ce99b4cc8b707d93a71123cf3197368cc0af8899f"
+    },
+    {
+      "name": "authority-regenerate",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "corpus/harness/generate-authority-corpus.mjs",
+        "--seed",
+        "wo103-seed-20261001",
+        "--write"
+      ],
+      "result": {
+        "name": "bounded-probe",
+        "durationMs": 32672,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 32672,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 116898336,
+        "peakRssBytes": 157597696,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-24T06:02:32.721Z",
+        "finishedAt": "2026-10-24T06:03:05.393Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "caseReports": [],
+      "logSha256": "99ebd241c273289e4adb1193278abf020f2ae542ae5a4fe31c8e2f1cee0b96e3"
+    },
+    {
+      "name": "corpus-lanes",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "corpus/harness/wo103-authority.test.mjs",
+        "corpus/harness/wo103-generators.test.mjs",
+        "corpus/harness/wo103-outbox.test.mjs",
+        "corpus/harness/wo105-skeleton.test.mjs",
+        "corpus/harness/wo105-store.test.mjs"
+      ],
+      "result": {
+        "name": "bounded-probe",
+        "durationMs": 77767,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 77767,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 200399696,
+        "peakRssBytes": 281657344,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-24T06:03:13.255Z",
+        "finishedAt": "2026-10-24T06:04:31.022Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "caseReports": [
+        "\u2714 WO-103 complete authority factorial: exact results, traces, IDs, limits, calls and never-throws (27028.199167ms)",
+        "\u2714 WO-103 planted independent precedence winners and literal trace anchors (0.44125ms)",
+        "\u2714 WO-103 every condition sees every event; early true cannot mask late error; unknown preflight (0.347708ms)",
+        "\u2714 WO-103 forged runtime effects refuse structurally, terminal-star matching, namespace IDs (0.490209ms)",
+        "\u2714 WO-103 consumed envelope threading exhausts exactly at every declared limit/key (1.45075ms)",
+        "\u2714 WO-103 missing-input partial traces reproduce both numbered audit carry-ins (0.914459ms)",
+        "\u2714 WO-103 mixed-radix labels match independently traversed Cartesian prefixes and bounds (5.515583ms)",
+        "\u2714 authority factorial contests denial without allow and pins the expanded axes (0.155584ms)",
+        "\u2714 WO-103 manifest fixture census, full expected schema, budgets and generated table hashes (44.450667ms)",
+        "\u2714 WO-103 seeded golden selection and independent Cartesian enumeration self-tests (3.833084ms)",
+        "\u2714 WO-103 regeneration rejects wrong seed, argument ambiguity and planted byte corruption (1.311292ms)",
+        "\u2714 WO-103 planted faulty winners, traces and decrement are detected by cell comparator (0.391917ms)",
+        "\u2714 WO-103 exact capped outbox permutations, both projections and duplicate delivery (4400.021083ms)",
+        "\u2714 WO-103 outbox oracle planted accepted, dedup, unknown and retroactive orphan traces (0.358167ms)",
+        "\u2714 WO-103 permutation caps and declared factor product are exact, seeded and unique (1.389125ms)",
+        "\u2714 WO-105 golden traces, event log and glyph scene match live/replay and recorded source/fixture bytes (134.218208ms)",
+        "\u2714 WO-105 tree generator, structural truth and distinct live signatures regenerate from seed (409.218583ms)",
+        "\u2714 WO-105 validator rejects planted invalid inventories, graphs, classifications and ground truth (1.547875ms)",
+        "\u2714 WO-105 assert-tripping families retain explicit exclusion reasons (0.300042ms)",
+        "\u2714 WO-105 recovery self-tests catch missing pending commands, duplicate effects and false trace identity (131.02525ms)",
+        "\u2714 WO-105 every declared skeleton cut and both retained families satisfy recovery invariants (44332.385416ms)",
+        "\u2714 WO-105 after-base reports identity drift but still rejects changed crash-shape pins (2.252917ms)",
+        "\u2714 WO-105 store generator regenerates exact bytes; seed, sizes and duplicate results are material (99.677791ms)",
+        "\u2714 WO-105 round-trip laws, LF and CRLF append numbering, and 512 monotonic appends (222.756833ms)",
+        "\u2714 WO-105 retained CRLF and depth-12000 classifications and replay determinism (11.635ms)",
+        "\u2714 WO-105 classifier self-tests pin empty/full/LF/mid-line and planted silent divergence (0.917875ms)",
+        "\u2714 WO-105 every declared store cut pins its prefix, counts, raw digest and compact ranges (614.110167ms)",
+        "\u2139 tests 27",
+        "\u2139 pass 27",
+        "\u2139 fail 0"
+      ],
+      "logSha256": "768d67fbe435624fe7af42841de1f1ce5ab8b875d04bc8d61b7e4634c9fe7ffd"
+    },
+    {
+      "name": "feedback-write",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "scripts/feedback-evidence.mjs",
+        "--write",
+        "--edition",
+        "WO-220",
+        "--revision",
+        "001"
+      ],
+      "result": {
+        "name": "bounded-probe",
+        "durationMs": 2276,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 2276,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 123433848,
+        "peakRssBytes": 261111808,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-24T06:04:34.493Z",
+        "finishedAt": "2026-10-24T06:04:36.769Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "caseReports": [],
+      "logSha256": "b29267a3da1db90ef2a55b88914b5efc70e20d0fef3ea8664a32acdb4ed75664"
+    },
+    {
+      "name": "feedback-check",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "scripts/feedback-evidence.mjs",
+        "--check",
+        "--edition",
+        "WO-220",
+        "--revision",
+        "001"
+      ],
+      "result": {
+        "name": "bounded-probe",
+        "durationMs": 2340,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 2340,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 97772976,
+        "peakRssBytes": 188628992,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-24T06:05:37.805Z",
+        "finishedAt": "2026-10-24T06:05:40.145Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "logSha256": "a7576cf5b78b0487f1415593453270c1be878565db7c7f51ef72d2793e7d153f"
+    },
+    {
+      "name": "artifact-remint",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "scripts/artifact-identity-evidence.mjs",
+        "--write",
+        "--edition",
+        "WO-220",
+        "--revision",
+        "001"
+      ],
+      "result": {
+        "name": "bounded-probe",
+        "durationMs": 222,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 222,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 63739232,
+        "peakRssBytes": 110624768,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-24T06:07:14.721Z",
+        "finishedAt": "2026-10-24T06:07:14.943Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "logSha256": "c6a391f93bfc62da35a312caf90b11d4faed49ccd4a1d568b6059b02cbc53d16"
+    },
+    {
+      "name": "artifact-check",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "scripts/artifact-identity-evidence.mjs",
+        "--check",
+        "--edition",
+        "WO-220",
+        "--revision",
+        "001"
+      ],
+      "result": {
+        "name": "bounded-probe",
+        "durationMs": 236,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 236,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 62608904,
+        "peakRssBytes": 109379584,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-24T06:07:20.380Z",
+        "finishedAt": "2026-10-24T06:07:20.616Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "logSha256": "908ba37e9b211a46edeeec93d4bdb5aed0c44230301cfaef29b57e9aff73c4ee"
+    },
+    {
+      "name": "verification-remint",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "scripts/verification-evidence.mjs",
+        "--write",
+        "--edition",
+        "WO-220",
+        "--revision",
+        "001"
+      ],
+      "result": {
+        "name": "bounded-probe",
+        "durationMs": 1094,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 1094,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 74521008,
+        "peakRssBytes": 122142720,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-24T06:07:20.817Z",
+        "finishedAt": "2026-10-24T06:07:21.911Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "logSha256": "a00919c0b8cbbc62a4f76619bb8c9a220eb27d47925ea42083b2b7862c56485a"
+    },
+    {
+      "name": "verification-check",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "scripts/verification-evidence.mjs",
+        "--check",
+        "--edition",
+        "WO-220",
+        "--revision",
+        "001"
+      ],
+      "result": {
+        "name": "bounded-probe",
+        "durationMs": 1100,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 1100,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 75127240,
+        "peakRssBytes": 122732544,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-24T06:07:37.257Z",
+        "finishedAt": "2026-10-24T06:07:38.357Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "logSha256": "cf34c5e0819ab92632198c3f8654654b44f555791cf2659e3bccda7cf61600e4"
+    },
+    {
+      "name": "final-format",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "npm",
+        "run",
+        "format"
+      ],
+      "result": {
+        "name": "bounded-probe",
+        "durationMs": 7032,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 7032,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 514891000,
+        "peakRssBytes": 591937536,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-24T06:05:57.804Z",
+        "finishedAt": "2026-10-24T06:06:04.836Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "logSha256": "df82df19a36a4536ead2ccb72acbfad211798dfd0f97243e93e57a21f6a81bec"
+    },
+    {
+      "name": "final-sync",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "npm",
+        "run",
+        "sync"
+      ],
+      "result": {
+        "name": "bounded-probe",
+        "durationMs": 34864,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 34864,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 467425304,
+        "peakRssBytes": 641220608,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-24T06:06:20.137Z",
+        "finishedAt": "2026-10-24T06:06:55.001Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "logSha256": "cc7832d9bd23f527e4bd28a24af3185f9b19a2c891f8a564a8201610ed8b5f99"
+    },
+    {
+      "name": "publication-check",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "npm",
+        "run",
+        "publication:check"
+      ],
+      "result": {
+        "name": "bounded-probe",
+        "durationMs": 254,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 254,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 27545128,
+        "peakRssBytes": 82182144,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-24T06:07:04.773Z",
+        "finishedAt": "2026-10-24T06:07:05.027Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "logSha256": "05a591fcdc3154938aace13d9d5a4d2fedee4d41c5eedddbc76c84e0c72d839b"
+    },
+    {
+      "name": "meta-check",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "npm",
+        "run",
+        "meta",
+        "--",
+        "--check"
+      ],
+      "result": {
+        "name": "bounded-probe",
+        "durationMs": 4740,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 4740,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 238067928,
+        "peakRssBytes": 330678272,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-24T06:07:58.020Z",
+        "finishedAt": "2026-10-24T06:08:02.760Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "logSha256": "f9ac9159db8ea2c4a3e24cba3fcf425b3e26d0ee9794cdf776f7d2e458e714f5"
+    },
+    {
+      "name": "selected-editions-sync",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "npm",
+        "run",
+        "sync"
+      ],
+      "result": {
+        "name": "bounded-probe",
+        "durationMs": 24257,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 24257,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 492173752,
+        "peakRssBytes": 618004480,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-24T06:08:14.267Z",
+        "finishedAt": "2026-10-24T06:08:38.524Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "logSha256": "71c8ea129fd4630925a30bd89562a0643d46c4b4cdc1356b770a9144a4792dc8"
+    },
+    {
+      "name": "projection-correction-build",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "npm",
+        "run",
+        "build"
+      ],
+      "result": {
+        "name": "bounded-probe",
+        "durationMs": 756,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 756,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 27610592,
+        "peakRssBytes": 82165760,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-24T06:31:00.513Z",
+        "finishedAt": "2026-10-24T06:31:01.270Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "caseReports": [],
+      "logSha256": "538d994e55403cee44b84abbc5c9648ee2a53757c4737ad8d9e6568107d7b9d3"
+    },
+    {
+      "name": "projection-correction",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "--test",
+        "packages/skeleton/dist/test/feedback-edition.test.js"
+      ],
+      "result": {
+        "name": "bounded-probe",
+        "durationMs": 603,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 603,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 44570768,
+        "peakRssBytes": 139739136,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-24T06:31:03.545Z",
+        "finishedAt": "2026-10-24T06:31:04.148Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "caseReports": [
+        "\u2714 WO-154 a reference rebuilds its body from the working tree before commit and from Git after it; a missing body is named (91.627917ms)",
+        "\u2714 WO-154 the pins snapshot resolves a stranded derived reference from the working tree, with no Git object (51.573458ms)",
+        "\u2714 WO-154 a verifier stream committed by reference rebuilds byte for byte and leaves other records alone (30.763833ms)",
+        "\u2714 WO-154 the behavioral identity moves with a judged change and not with release labels; the pins record moves with the labels (16.142959ms)",
+        "\u2714 [document] WO-154 criterion 3: a behavioral change never inherits an older live audit, with the behavioral check bypassed; the D010 comparison passes mechanically (297.925917ms)",
+        "\u2139 tests 5",
+        "\u2139 suites 0",
+        "\u2139 pass 5",
+        "\u2139 fail 0",
+        "\u2139 cancelled 0",
+        "\u2139 skipped 0",
+        "\u2139 todo 0",
+        "\u2139 duration_ms 554.699167"
+      ],
+      "logSha256": "820c52b26c37cef9e5ae65ba624cd170c994a3a733743b4e51be9d6ed6039467"
+    },
+    {
+      "name": "publication-final",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "npm",
+        "run",
+        "publication:check"
+      ],
+      "result": {
+        "name": "bounded-probe",
+        "durationMs": 252,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 252,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 27512312,
+        "peakRssBytes": 82264064,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-24T06:32:25.629Z",
+        "finishedAt": "2026-10-24T06:32:25.881Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "caseReports": [],
+      "logSha256": "a15961374450b333cdb5abafb866175ef94400c2c763da75eee87b3d2ee61ab1"
+    },
+    {
+      "name": "meta-final",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "npm",
+        "run",
+        "meta",
+        "--",
+        "--check"
+      ],
+      "result": {
+        "name": "bounded-probe",
+        "durationMs": 4761,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 4761,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 249553928,
+        "peakRssBytes": 341573632,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-24T06:32:28.024Z",
+        "finishedAt": "2026-10-24T06:32:32.785Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "caseReports": [],
+      "logSha256": "fe0d8b98ed536ffef56064c62587c883ef6b8501a1fffe963705bea0596c5721"
+    },
+    {
+      "name": "target-publish-correction",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "--test",
+        "scripts/test-target-publish.mjs"
+      ],
+      "result": {
+        "name": "bounded-probe",
+        "durationMs": 93316,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 93316,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 220029336,
+        "peakRssBytes": 390234112,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-24T06:36:03.944Z",
+        "finishedAt": "2026-10-24T06:37:37.260Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "caseReports": [
+        "\u2714 kit record paths exempt only launchpad identifiers and retain redacted vocabulary checks (12.529583ms)",
+        "\u2714 WO-227 criterion 4: a Change row's exemption covers only its own bytes, so a review word that runs from a base-held row into an added path is still a review item (2.164209ms)",
+        "\u2714 private matches crossing two or three Change rows retain refusal, confirmation and redaction over every contributing row (14.325ms)",
+        "\u2714 WO-227 criterion 2: a review-mode private term in the generated body is a review item the reviewer confirms with the composed body's digest, and the confirmation is recorded (2848.745ms)",
+        "\u2714 WO-182 AC3: readiness refusal precedes every remote call; operator publication shows the same gaps (1941.308209ms)",
+        "\u2714 WO-182 AC3: one absent item names its gap; the same store publishes a proposal without the flag (2719.542417ms)",
+        "\u2714 WO-182 current replayed baseline, verification and review permit required publication (460.039ms)",
+        "\u2714 WO-182 stale preparation and forged baseline/review events cannot bypass readiness (775.84425ms)",
+        "\u2714 WO-064 AC1: publish refuses without an operator grant before any remote call (1599.83725ms)",
+        "\u2714 WO-064 AC1: a host-policy grant is not operator provenance (1491.3515ms)",
+        "\u2714 WO-064 AC1/AC2: lint and target refusals name their rule; the granted publish pushes and opens the pull request with the pinned body (2060.923209ms)",
+        "\u2714 WO-064 AC1 (VER-001 F1): a same-head acceptance matrix must verify this WorkOrder's criteria (768.121333ms)",
+        "\u2714 WO-157: publication runs no hook or repository configuration the target holds (572.872792ms)",
+        "\u2714 WO-210 malformed publication arguments are diagnosed without a main worktree (241.771083ms)",
+        "\u2714 WO-066 AC5: a signed-header commit runs planted gpg on ordinary log, never publication; request binds origin before remote calls (1808.63225ms)",
+        "\u2714 WO-065 AC1: typed classes, correlation, roles and latest normalized-state dedup through the CLI (2405.139666ms)",
+        "\u2714 WO-065 F1: actor types decide roles on every comment connection and pagination path (362.854333ms)",
+        "\u2714 WO-073 criterion 4: registered machine logins and link hosts reach the observer through the target request (626.617709ms)",
+        "\u2714 WO-065 AC2: every declared secret and URL form is refused without persisted text; safe peers survive (338.824834ms)",
+        "\u2714 WO-065 AC1/AC2: all connections and nested thread comments paginate (480.843375ms)",
+        "\u2714 WO-065 AC3: unknown PR, malformed JSON/fields, partial errors and gh failure append nothing (3492.003792ms)",
+        "\u2714 WO-065: duplicate nodes, stalled pagination and concurrent writer refuse (547.139541ms)",
+        "\u2714 WO-065 F2: malformed screened bodies remain refused items while safe peers survive (616.337833ms)",
+        "\u2714 WO-065 F3: refused metadata stays local, preserves check states, and retains no rejected content (630.57825ms)",
+        "\u2714 WO-065 F3: forge hosts incompatible with the screen refuse before gh (388.49225ms)",
+        "\u2714 WO-065: draft comments stay transient, deleted authors and opaque padded ids remain readable, empty checks are valid (338.968375ms)",
+        "\u2714 WO-065: a valid page over the default child-process buffer is decoded and stored (362.947791ms)",
+        "\u2714 WO-197 authentic scenario seeds restore files, refs, events and metadata; stale callbacks refuse (2275.087417ms)",
+        "\u2714 WO-066 AC1/AC3: an accepted automated thread repairs, verifies, pushes, disposes and records fresh resolution; recovery never pushes twice (6768.662417ms)",
+        "\u2714 WO-066 AC1: a mapped failing check repairs and is freshly observed successful at the new head (2546.336459ms)",
+        "\u2714 WO-066 AC2: reject carries evidence to the thread; human comments never dispatch or dispose; outside paths and unmapped checks name NeedsHuman (1002.180417ms)",
+        "\u2714 WO-066 AC2: a refused comment stops with its identifier; failed repair verification cannot push or dispatch a second round (2352.093583ms)",
+        "\u2714 WO-066 AC3: later comments enter at observation, but a local resolved bit without an observer event proves nothing (542.688625ms)",
+        "\u2714 WO-066 AC4: push and every thread disposition require their operator effect before gh; a foreign repaired head cannot push (2389.1455ms)",
+        "\u2714 WO-184 criterion 7: response-derived argument tokens refuse before reuse without echo (497.508875ms)",
+        "\u2714 WO-184 criterion 7: screen overflow refuses only the item, preserving its safe peer (381.318209ms)",
+        "\u2714 WO-184 criterion 8: required publication rechecks a recorded head without remote calls (932.169166ms)",
+        "\u2714 WO-184 criterion 8: lint not-applicable carries its reason, while tests always require evidence (646.371541ms)",
+        "\u2714 WO-184 criterion 9: pending and cancelled mapped checks stop needs-human with their item (5058.7065ms)",
+        "\u2714 WO-184 criterion 9: interruption after the observer append resumes from the last effect receipt (2715.775916ms)",
+        "\u2714 WO-184 criterion 9: missing lines and unmatched required checks end human, allowing later items (3061.134083ms)",
+        "\u2714 WO-184 criterion 9: pushRepairedHead refuses a failing exact-head matrix before any push (2233.227417ms)",
+        "\u2714 WO-184 criterion 7: every observer caller gets a fixed reason for unexpected errors (0.442292ms)",
+        "\u2714 WO-112 an unsupplied automated item is judged by the triage episode; its verdict is recorded with provenance and never bypasses the loop's guards (6975.761167ms)",
+        "\u2714 WO-112 VER-003 F3 retryable inline and review-body triage stays undecided and retries once (9081.255875ms)",
+        "\u2714 WO-112 VER-003 F3 non-retryable triage failures persist human decisions (957.492584ms)",
+        "\u2714 WO-112 an automated review body is disposed only by a recorded model acknowledgement; an actionable or unjudged body still stops typed (6000.714959ms)",
+        "\u2714 WO-112 review-body triage refreshes edited text, changed heads and newly added items before stopping (754.182458ms)",
+        "\u2714 WO-112 VER-004 F2 changing review bodies have a finite invocation and never seal an unjudged subject (2525.0035ms)",
+        "\u2714 WO-112 F4 review-body acknowledgements bind text, candidate head and original contract (2334.962958ms)",
+        "\u2714 WO-112 review-body acknowledgements reject malformed evidence on admission and replay (2861.886833ms)",
+        "\u2139 tests 61",
+        "\u2139 suites 0",
+        "\u2139 pass 61",
+        "\u2139 fail 0",
+        "\u2139 cancelled 0",
+        "\u2139 skipped 0",
+        "\u2139 todo 0",
+        "\u2139 duration_ms 93267.15425"
+      ],
+      "logSha256": "69fc02ed8524ba6b4139de52fb09f9bb046f3f8d7cb21f2bc58fc78c5f2dde6b"
+    },
+    {
+      "name": "metadata-handoff",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "npm",
+        "run",
+        "meta",
+        "--",
+        "--check"
+      ],
+      "result": {
+        "name": "bounded-probe",
+        "durationMs": 4774,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 4774,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 253944888,
+        "peakRssBytes": 345948160,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-24T07:05:53.019Z",
+        "finishedAt": "2026-10-24T07:05:57.793Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "caseReports": [],
+      "logSha256": "97d4d7d6b6c0521e33802dc50ca270f5f636bfdbff3e444ecc929e04bb336d94"
+    },
+    {
+      "name": "retained-qualification",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "--test",
+        "scripts/probes/local-model-role-qualification.test.mjs"
+      ],
+      "result": {
+        "name": "bounded-probe",
+        "durationMs": 2687,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 2687,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 59415872,
+        "peakRssBytes": 160464896,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-24T07:10:49.712Z",
+        "finishedAt": "2026-10-24T07:10:52.399Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "caseReports": [
+        "\u2714 WO-138 matrix pre-registers 30 baselines, five one-factor cells and three failure cells (0.746292ms)",
+        "\u2714 WO-138 T1 oracle is derived from the cited receipt's own labeled rows (0.749ms)",
+        "\u2714 WO-138 T2 executes the discovery producer over the seeded scratch fixture (80.398834ms)",
+        "\u2714 WO-138 T3 keeps labels held out and changes one prompt factor at a time (0.211125ms)",
+        "\u2714 WO-138 reuses one retained discovery snapshot across transports and rejects changed bindings (81.427666ms)",
+        "\u2714 WO-138 validators reject guesses on injected input and score all three deterministic oracles (75.08675ms)",
+        "\u2714 WO-138 HTTP double receives fixed decoding and returns a host-validated candidate for validation (91.44175ms)",
+        "\u2714 WO-138 T1 schema declares the existing host length bounds (75.558167ms)",
+        "\u2714 WO-138 remote T2 schema omits unsupported uniqueness while host rejects duplicates (73.688042ms)",
+        "\u2714 WO-138 remote decoder retains JSONL error diagnostics and exit status without unrelated stream items (0.706958ms)",
+        "\u2714 WO-138 live HTTP episode is discarded when a product gate starts in flight (392.521375ms)",
+        "\u2714 WO-138 evaluation applies the pre-registered floors without promoting capability levels (87.2255ms)",
+        "\u2714 WO-138 committed episodes bind their retained historical build; current and altered builds are rejected (6.724916ms)",
+        "\u2139 tests 13",
+        "\u2139 suites 0",
+        "\u2139 pass 13",
+        "\u2139 fail 0",
+        "\u2139 cancelled 0",
+        "\u2139 skipped 0",
+        "\u2139 todo 0",
+        "\u2139 duration_ms 2637.806834"
+      ],
+      "logSha256": "76ee5aa57bbcadb42822571611386e3fd06a4d90c2b1c22532d726e0880b9f0e"
+    },
+    {
+      "name": "metadata-final-handoff",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "npm",
+        "run",
+        "meta",
+        "--",
+        "--check"
+      ],
+      "result": {
+        "name": "bounded-probe",
+        "durationMs": 4775,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 4775,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 254649736,
+        "peakRssBytes": 346406912,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-24T07:44:23.295Z",
+        "finishedAt": "2026-10-24T07:44:28.070Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "caseReports": [],
+      "logSha256": "d986c7f3e6e71ab320e220bf6ee8aec086e21bd8c071f84af5d876e5f86129d7"
+    }
+  ],
+  "liveFeedback": {
+    "selection": {
+      "transport": "codex-cli-exec",
+      "model": "gpt-6.1-sol",
+      "effort": "max",
+      "configuredAndAttemptRecorded": true,
+      "phase": "complete",
+      "fixtures": 10,
+      "carried": false,
+      "edition": "docs/evidence/WO-220/feedback-001"
+    },
+    "result": {
+      "name": "bounded-probe",
+      "durationMs": 38544,
+      "slowestCases": [
+        {
+          "name": "bounded-probe",
+          "durationMs": 38544,
+          "exitCode": 0,
+          "granularity": "task"
+        }
+      ],
+      "peakFootprintBytes": 259245528,
+      "peakRssBytes": 375193600,
+      "memoryBudgetBytes": 3221225472,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+      "droppedOutputBytes": 0,
+      "startedAt": "2026-10-24T06:04:45.427Z",
+      "finishedAt": "2026-10-24T06:05:23.971Z",
+      "exitCode": 0,
+      "executed": true
+    },
+    "logSha256": "737d837b444bac503e59f16aaef309e67c239008dd22a5d48e35787896259d4b"
+  }
+}

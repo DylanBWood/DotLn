@@ -1,0 +1,1670 @@
+{
+  "schemaVersion": 1,
+  "baselineCommit": "f80701eaa73d25fa8a54bb5e53aba357a0f2c5b1",
+  "method": "Paired probes run serially in an isolated copy of current tracked/untracked source, with local workspace package links. Only listed reversions change the negative arm. TypeScript is rebuilt and all original bytes are restored between controls. Positive exit zero and behavioral negative exit one are required; compilation or setup failure is not a verdict. Original worktree files are never reverted. Each control records its own source snapshot and reversion-file hashes. After the legacy repair compatibility refinement, the two three-push controls and the new legacy recovery control are rerun; unchanged controls retain their original executed observations.",
+  "results": [
+    {
+      "id": "audit-partial",
+      "rows": [
+        3
+      ],
+      "rowIds": [
+        "FUP-2341c85c58331f3e"
+      ],
+      "suite": "skeleton",
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern",
+        "audit links truthful partial",
+        "packages/skeleton/dist/test/audit.test.js"
+      ],
+      "reversion": [
+        {
+          "path": "packages/skeleton/src/audit.ts",
+          "baseFile": "f80701eaa73d25fa8a54bb5e53aba357a0f2c5b1:packages/skeleton/src/audit.ts"
+        }
+      ],
+      "positive": {
+        "exitCode": 0,
+        "seconds": 0.215,
+        "logSha256": "0fa0b5f28170b580f092e0cf6ba7129690be65369e406d6066bd650f322a5903",
+        "caseReports": [
+          "\u2714 audit links truthful partial revocation inputs without inventing missing inputs (1.694625ms)",
+          "\u2139 tests 1",
+          "\u2139 pass 1",
+          "\u2139 fail 0"
+        ]
+      },
+      "negative": {
+        "exitCode": 1,
+        "seconds": 0.217,
+        "logSha256": "067ea0af02282b441982a01c1d8216c9ec5b6c1beeb9ac9d293804240793dc03",
+        "caseReports": [
+          "\u2716 audit links truthful partial revocation inputs without inventing missing inputs (1.611208ms)",
+          "\u2139 tests 1",
+          "\u2139 pass 0",
+          "\u2139 fail 1",
+          "\u2716 failing tests:",
+          "\u2716 audit links truthful partial revocation inputs without inventing missing inputs (1.611208ms)"
+        ]
+      },
+      "verdict": "demonstrated",
+      "sourceHashes": {
+        "packages/skeleton/src/audit.ts": "0e5ad7bd1726d8f0929703813f2b1041bb396c238d778998d4c188200e963773"
+      },
+      "startedAt": "2026-10-24T05:52:36.904398+00:00",
+      "negativeBuild": {
+        "exitCode": 0,
+        "seconds": 0.936,
+        "logSha256": "adabfa404cd53306024fc16f308387cc0a297ac879bc578de147f84d01cbc8be",
+        "caseReports": []
+      },
+      "restoredBuild": {
+        "exitCode": 0,
+        "seconds": 0.925,
+        "logSha256": "ff13e9ac635d0d842374099ba82a404dc0dce1a553f0e9b4aa3fbf47720142ad",
+        "caseReports": []
+      },
+      "finishedAt": "2026-10-24T05:52:39.207434+00:00",
+      "sourceSnapshotIdentity": "3cb4341a460868b35d4db5f1a7329252912bb3b1546987659c672f3b5e2bd564"
+    },
+    {
+      "id": "intent-status",
+      "rows": [
+        4
+      ],
+      "rowIds": [
+        "FUP-2b9a8e696b38fb97"
+      ],
+      "suite": "skeleton",
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern",
+        "resident expiry between",
+        "packages/skeleton/dist/test/runtime-status.test.js"
+      ],
+      "reversion": [
+        {
+          "path": "packages/skeleton/src/runtime-status.ts",
+          "baseFile": "f80701eaa73d25fa8a54bb5e53aba357a0f2c5b1:packages/skeleton/src/runtime-status.ts"
+        }
+      ],
+      "positive": {
+        "exitCode": 0,
+        "seconds": 0.236,
+        "logSha256": "3db932460f411bf1319f35a761242dbb97212059690caebbe1746ad2b0bf4c53",
+        "caseReports": [
+          "\u2714 resident expiry between steps shows one hold and terminal outcomes preserve the indexed phase (2.187541ms)",
+          "\u2139 tests 1",
+          "\u2139 pass 1",
+          "\u2139 fail 0"
+        ]
+      },
+      "negative": {
+        "exitCode": 1,
+        "seconds": 0.242,
+        "logSha256": "a1899f181305eaf0cc504f9c0ec37cd8912cd2c0493a9726201b145fd8a89ca9",
+        "caseReports": [
+          "\u2716 resident expiry between steps shows one hold and terminal outcomes preserve the indexed phase (2.17725ms)",
+          "\u2139 tests 1",
+          "\u2139 pass 0",
+          "\u2139 fail 1",
+          "\u2716 failing tests:",
+          "\u2716 resident expiry between steps shows one hold and terminal outcomes preserve the indexed phase (2.17725ms)"
+        ]
+      },
+      "verdict": "demonstrated",
+      "sourceHashes": {
+        "packages/skeleton/src/runtime-status.ts": "65fdf360c4cdd6f59475ca01e97e523e58fba74464253c229213d54f9d258dbf"
+      },
+      "startedAt": "2026-10-24T05:52:39.238740+00:00",
+      "negativeBuild": {
+        "exitCode": 0,
+        "seconds": 0.911,
+        "logSha256": "364872e508f9e4f57e72e3a5acbc52bcf186fb266fda10420f99cb6149de2f00",
+        "caseReports": []
+      },
+      "restoredBuild": {
+        "exitCode": 0,
+        "seconds": 0.892,
+        "logSha256": "8414717ca81690981a4fbb16f957aef2280cc98dc96752be580d0a7f764b34dc",
+        "caseReports": []
+      },
+      "finishedAt": "2026-10-24T05:52:41.530075+00:00",
+      "sourceSnapshotIdentity": "3cb4341a460868b35d4db5f1a7329252912bb3b1546987659c672f3b5e2bd564"
+    },
+    {
+      "id": "budget-label",
+      "rows": [
+        4
+      ],
+      "rowIds": [
+        "FUP-2b9a8e696b38fb97"
+      ],
+      "suite": "console",
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern",
+        "resident status labels",
+        "packages/console/dist/test/runtime-status.test.js"
+      ],
+      "reversion": [
+        {
+          "path": "packages/console/src/runtime-status.ts",
+          "baseFile": "f80701eaa73d25fa8a54bb5e53aba357a0f2c5b1:packages/console/src/runtime-status.ts"
+        },
+        {
+          "path": "packages/console/src/live.ts",
+          "baseFile": "f80701eaa73d25fa8a54bb5e53aba357a0f2c5b1:packages/console/src/live.ts"
+        }
+      ],
+      "positive": {
+        "exitCode": 0,
+        "seconds": 0.177,
+        "logSha256": "262ed2d1f4b9f587c4e1cb855bf3f86d09933f22726e79e1e868c75b2f866351",
+        "caseReports": [
+          "\u2714 resident status labels the budget as portfolio-only beside an intent outcome (0.51525ms)",
+          "\u2139 tests 1",
+          "\u2139 pass 1",
+          "\u2139 fail 0"
+        ]
+      },
+      "negative": {
+        "exitCode": 1,
+        "seconds": 0.19,
+        "logSha256": "a4727085879ea8ced6eba65a9aea03f4a8515344b5c83c10b028706b284fc1be",
+        "caseReports": [
+          "\u2716 resident status labels the budget as portfolio-only beside an intent outcome (0.86825ms)",
+          "\u2139 tests 1",
+          "\u2139 pass 0",
+          "\u2139 fail 1",
+          "\u2716 failing tests:",
+          "\u2716 resident status labels the budget as portfolio-only beside an intent outcome (0.86825ms)"
+        ]
+      },
+      "verdict": "demonstrated",
+      "sourceHashes": {
+        "packages/console/src/runtime-status.ts": "693edf7915b7bbe318c7a2425dcc347910d5f4c11fb5a244a23522cbcb20e339",
+        "packages/console/src/live.ts": "bb71ea0976bba445a181bc1c4fbe5da1e4103c9d20bb9b186c0d91440600eefd"
+      },
+      "startedAt": "2026-10-24T05:52:41.558667+00:00",
+      "negativeBuild": {
+        "exitCode": 0,
+        "seconds": 0.873,
+        "logSha256": "a21c5fbf854a180365a3c4401adcdcf2d595e58df0ba813f77f87403b6cfbd81",
+        "caseReports": []
+      },
+      "restoredBuild": {
+        "exitCode": 0,
+        "seconds": 0.888,
+        "logSha256": "f77001e512abc09b6c11ae34bcb087e59746fd89d4965195ab64eb57072d80d9",
+        "caseReports": []
+      },
+      "finishedAt": "2026-10-24T05:52:43.702146+00:00",
+      "sourceSnapshotIdentity": "3cb4341a460868b35d4db5f1a7329252912bb3b1546987659c672f3b5e2bd564"
+    },
+    {
+      "id": "t1-minimum",
+      "rows": [
+        5
+      ],
+      "rowIds": [
+        "FUP-349058ac0342247d"
+      ],
+      "suite": "harness-probe",
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern",
+        "T1 emitted minimum",
+        "scripts/test-harness-probe.mjs"
+      ],
+      "reversion": [
+        {
+          "path": "scripts/probes/local-model-role-qualification.mjs",
+          "baseFile": "f80701eaa73d25fa8a54bb5e53aba357a0f2c5b1:scripts/probes/local-model-role-qualification.mjs"
+        }
+      ],
+      "positive": {
+        "exitCode": 0,
+        "seconds": 0.183,
+        "logSha256": "768ed6f9a3d971debf81b4b5c60d22d75559b91e08a0b4111aaaac4ab02dd3c8",
+        "caseReports": [
+          "\u2714 T1 emitted minimum and maximum match every receipt field's host validation (2.33875ms)",
+          "\u2139 tests 1",
+          "\u2139 pass 1",
+          "\u2139 fail 0"
+        ]
+      },
+      "negative": {
+        "exitCode": 1,
+        "seconds": 0.182,
+        "logSha256": "9bcb3f3405503421e21cebf5ce791096317f557e759192e80aa41990df7252ec",
+        "caseReports": [
+          "\u2716 T1 emitted minimum and maximum match every receipt field's host validation (2.013708ms)",
+          "\u2139 tests 1",
+          "\u2139 pass 0",
+          "\u2139 fail 1",
+          "\u2716 failing tests:",
+          "\u2716 T1 emitted minimum and maximum match every receipt field's host validation (2.013708ms)"
+        ]
+      },
+      "verdict": "demonstrated",
+      "sourceHashes": {
+        "scripts/probes/local-model-role-qualification.mjs": "3fe55f597fda082cd42434c65914d2467a8b0c0f5b1a366d58525e1b06df30a5"
+      },
+      "startedAt": "2026-10-24T07:13:06.137737+00:00",
+      "finishedAt": "2026-10-24T07:13:06.511449+00:00",
+      "sourceSnapshotIdentity": "2994522135749d0c3c3cce7e0eacc1d96090e225a3e84f37b5473554372e3f54"
+    },
+    {
+      "id": "recovery-refusal",
+      "rows": [
+        7
+      ],
+      "rowIds": [
+        "FUP-49c4a5f7176252e7"
+      ],
+      "suite": "skeleton",
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern",
+        "recovered unreceipted dirty",
+        "packages/skeleton/dist/test/source-change-host.test.js"
+      ],
+      "reversion": [
+        {
+          "path": "packages/skeleton/src/source-change-host.ts",
+          "baseFile": "f80701eaa73d25fa8a54bb5e53aba357a0f2c5b1:packages/skeleton/src/source-change-host.ts"
+        }
+      ],
+      "positive": {
+        "exitCode": 0,
+        "seconds": 4.009,
+        "logSha256": "bf67f849e8ceaf2e31ae39151689f0e03d5bcbc2b7c6e0e67b3b0c988b92438a",
+        "caseReports": [
+          "\u2714 recovered unreceipted dirty commits close with a typed host admission refusal (3810.028958ms)",
+          "\u2139 tests 1",
+          "\u2139 pass 1",
+          "\u2139 fail 0"
+        ]
+      },
+      "negative": {
+        "exitCode": 1,
+        "seconds": 2.072,
+        "logSha256": "62d40b0a41fbb9814c3e3b975a095c0db20140f76754bc5613d9c6c161735976",
+        "caseReports": [
+          "\u2716 recovered unreceipted dirty commits close with a typed host admission refusal (1860.66925ms)",
+          "\u2139 tests 1",
+          "\u2139 pass 0",
+          "\u2139 fail 1",
+          "\u2716 failing tests:",
+          "\u2716 recovered unreceipted dirty commits close with a typed host admission refusal (1860.66925ms)"
+        ]
+      },
+      "verdict": "demonstrated",
+      "sourceHashes": {
+        "packages/skeleton/src/source-change-host.ts": "19a84c6d6406047515c72b1faeec8553ef6f35e62217ca05cf328b3c7c62fc1a"
+      },
+      "startedAt": "2026-10-24T05:52:44.140392+00:00",
+      "negativeBuild": {
+        "exitCode": 0,
+        "seconds": 0.89,
+        "logSha256": "036b1917bb9c1c60c72f23a49ab9de91b130e8ebfab4de4ccaf3f8775edb0fff",
+        "caseReports": []
+      },
+      "restoredBuild": {
+        "exitCode": 0,
+        "seconds": 0.912,
+        "logSha256": "eeee35f730239551f06c85f0ea177df543b7c3d4aa51163062e23fad35423603",
+        "caseReports": []
+      },
+      "finishedAt": "2026-10-24T05:52:52.033141+00:00",
+      "sourceSnapshotIdentity": "3cb4341a460868b35d4db5f1a7329252912bb3b1546987659c672f3b5e2bd564"
+    },
+    {
+      "id": "noop-identity",
+      "rows": [
+        8
+      ],
+      "rowIds": [
+        "FUP-4f8cd7989607ad3f"
+      ],
+      "suite": "skeleton",
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern",
+        "resident NoOp identity",
+        "packages/skeleton/dist/test/resident.test.js"
+      ],
+      "reversion": [
+        {
+          "path": "packages/skeleton/src/resident-host.ts",
+          "old": "state.lastNoOp !== reason || state.lastNoOpKey !== key",
+          "new": "state.lastNoOp !== reason",
+          "count": 1
+        }
+      ],
+      "positive": {
+        "exitCode": 0,
+        "seconds": 0.635,
+        "logSha256": "91ba1dc1bfd4ff0ebb7639a3f9ee0490210f4af1f82b69d71d199400d8319c9a",
+        "caseReports": [
+          "\u2714 resident NoOp identity survives replay and distinguishes phase and rearm (408.565958ms)",
+          "\u2139 tests 1",
+          "\u2139 pass 1",
+          "\u2139 fail 0"
+        ]
+      },
+      "negative": {
+        "exitCode": 1,
+        "seconds": 0.545,
+        "logSha256": "24e2f8a62ab6f9c01844ce9ed41297e22f2d86aa5e08dd54fcd25ff7221424a0",
+        "caseReports": [
+          "\u2716 resident NoOp identity survives replay and distinguishes phase and rearm (317.61825ms)",
+          "\u2139 tests 1",
+          "\u2139 pass 0",
+          "\u2139 fail 1",
+          "\u2716 failing tests:",
+          "\u2716 resident NoOp identity survives replay and distinguishes phase and rearm (317.61825ms)"
+        ]
+      },
+      "verdict": "demonstrated",
+      "sourceHashes": {
+        "packages/skeleton/src/resident-host.ts": "3243742a6852154240063ed914db2a23d40c1a7ccb9e7127ae893758163792bb"
+      },
+      "startedAt": "2026-10-24T05:52:52.063300+00:00",
+      "negativeBuild": {
+        "exitCode": 0,
+        "seconds": 0.898,
+        "logSha256": "9375f872b562a9a3f6a445200635949e33f75cad231b50e612d0c063a3e021f8",
+        "caseReports": []
+      },
+      "restoredBuild": {
+        "exitCode": 0,
+        "seconds": 0.9,
+        "logSha256": "f85c4cb4a7cd993c94aaa3b1a0d74e0cf4a0f3a33e802bf4df809ffedc951af4",
+        "caseReports": []
+      },
+      "finishedAt": "2026-10-24T05:52:55.042641+00:00",
+      "sourceSnapshotIdentity": "3cb4341a460868b35d4db5f1a7329252912bb3b1546987659c672f3b5e2bd564"
+    },
+    {
+      "id": "review-triage",
+      "rows": [
+        10
+      ],
+      "rowIds": [
+        "FUP-7c269a184f75e742"
+      ],
+      "suite": "vertical",
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern",
+        "review invocation bounds combined",
+        "scripts/test-vertical-judgment.mjs"
+      ],
+      "reversion": [
+        {
+          "path": "scripts/lib/review-comment-loop.mjs",
+          "old": "triages >= REVIEW_TRIAGE_LIMIT",
+          "new": "false",
+          "count": 2
+        }
+      ],
+      "positive": {
+        "exitCode": 0,
+        "seconds": 1.649,
+        "logSha256": "c30b973e4e396163efc12beb6601c5c3b4266b4e228217938c035b6653b45da9",
+        "caseReports": [
+          "\u2714 review invocation bounds combined inline and body triage before opening the next item (1397.317292ms)",
+          "\u2139 tests 1",
+          "\u2139 pass 1",
+          "\u2139 fail 0"
+        ]
+      },
+      "negative": {
+        "exitCode": 1,
+        "seconds": 1.772,
+        "logSha256": "8c811633befbb518f03bae81c698ea44d799524ee524973041a6697c82d20e47",
+        "caseReports": [
+          "\u2716 review invocation bounds combined inline and body triage before opening the next item (1514.124541ms)",
+          "\u2139 tests 1",
+          "\u2139 pass 0",
+          "\u2139 fail 1",
+          "\u2716 failing tests:",
+          "\u2716 review invocation bounds combined inline and body triage before opening the next item (1514.124541ms)"
+        ]
+      },
+      "verdict": "demonstrated",
+      "sourceHashes": {
+        "scripts/lib/review-comment-loop.mjs": "912707ee27c5213a13e241c9ff61052b2c37759ed9eb6d34e432da87c08665fd"
+      },
+      "startedAt": "2026-10-24T05:52:55.072522+00:00",
+      "finishedAt": "2026-10-24T05:52:58.494479+00:00",
+      "sourceSnapshotIdentity": "3cb4341a460868b35d4db5f1a7329252912bb3b1546987659c672f3b5e2bd564"
+    },
+    {
+      "id": "review-outward",
+      "rows": [
+        10
+      ],
+      "rowIds": [
+        "FUP-7c269a184f75e742"
+      ],
+      "suite": "vertical",
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern",
+        "review invocation stops at its outward",
+        "scripts/test-vertical-judgment.mjs"
+      ],
+      "reversion": [
+        {
+          "path": "scripts/lib/review-comment-loop.mjs",
+          "old": "outward >= REVIEW_OUTWARD_LIMIT",
+          "new": "false",
+          "count": 2
+        }
+      ],
+      "positive": {
+        "exitCode": 0,
+        "seconds": 30.636,
+        "logSha256": "cbbc9b1fd118d09b8f2db6f6aa6f481f979bba82e5ed335cdc4e6f4b7e1ba12d",
+        "caseReports": [
+          "\u2714 review invocation stops at its outward bound before disposing a further thread (30381.88775ms)",
+          "\u2139 tests 1",
+          "\u2139 pass 1",
+          "\u2139 fail 0"
+        ]
+      },
+      "negative": {
+        "exitCode": 1,
+        "seconds": 32.374,
+        "logSha256": "183ef31f2da4666c3add40baa1d1811c98f976b9520ac8ead5594b4d2dcb055b",
+        "caseReports": [
+          "\u2716 review invocation stops at its outward bound before disposing a further thread (32121.759708ms)",
+          "\u2139 tests 1",
+          "\u2139 pass 0",
+          "\u2139 fail 1",
+          "\u2716 failing tests:",
+          "\u2716 review invocation stops at its outward bound before disposing a further thread (32121.759708ms)"
+        ]
+      },
+      "verdict": "demonstrated",
+      "sourceHashes": {
+        "scripts/lib/review-comment-loop.mjs": "912707ee27c5213a13e241c9ff61052b2c37759ed9eb6d34e432da87c08665fd"
+      },
+      "startedAt": "2026-10-24T05:52:58.523816+00:00",
+      "finishedAt": "2026-10-24T05:54:01.534367+00:00",
+      "sourceSnapshotIdentity": "3cb4341a460868b35d4db5f1a7329252912bb3b1546987659c672f3b5e2bd564"
+    },
+    {
+      "id": "review-rekey",
+      "rows": [
+        10
+      ],
+      "rowIds": [
+        "FUP-7c269a184f75e742"
+      ],
+      "suite": "vertical",
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern",
+        "three repair pushes",
+        "scripts/test-vertical-judgment.mjs"
+      ],
+      "reversion": [
+        {
+          "path": "scripts/lib/review-comment-loop.mjs",
+          "old": "const ownPushRekey = ownPushBodyRekey(\n            events(),\n            candidate,\n            observation,\n            pushedHeads,\n          );",
+          "new": "const ownPushRekey = false;",
+          "count": 1
+        }
+      ],
+      "positive": {
+        "exitCode": 0,
+        "seconds": 48.637,
+        "logSha256": "164df5bc996a42fb68a6efd724220c8c497d22b5d78ff95c39cfe54f787974db",
+        "caseReports": [
+          "\u2714 three repair pushes rekey unchanged bodies without spending their eight-item allowance (48369.452417ms)",
+          "\u2139 tests 1",
+          "\u2139 pass 1",
+          "\u2139 fail 0"
+        ]
+      },
+      "negative": {
+        "exitCode": 1,
+        "seconds": 46.154,
+        "logSha256": "ec1a5550cc926b948b7c516c39e3d4cbc2586b59e84c87f6237962ced6885426",
+        "caseReports": [
+          "\u2716 three repair pushes rekey unchanged bodies without spending their eight-item allowance (45904.469916ms)",
+          "\u2139 tests 1",
+          "\u2139 pass 0",
+          "\u2139 fail 1",
+          "\u2716 failing tests:",
+          "\u2716 three repair pushes rekey unchanged bodies without spending their eight-item allowance (45904.469916ms)"
+        ]
+      },
+      "verdict": "demonstrated",
+      "sourceHashes": {
+        "scripts/lib/review-comment-loop.mjs": "912707ee27c5213a13e241c9ff61052b2c37759ed9eb6d34e432da87c08665fd"
+      },
+      "startedAt": "2026-10-24T05:59:36.475975+00:00",
+      "finishedAt": "2026-10-24T06:01:11.268281+00:00",
+      "sourceSnapshotIdentity": "75f153f5bcac600013da886dbd4033b6ad54ca5dadafb8bb67067d501742689a"
+    },
+    {
+      "id": "repair-worktrees",
+      "rows": [
+        10
+      ],
+      "rowIds": [
+        "FUP-7c269a184f75e742"
+      ],
+      "suite": "vertical",
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern",
+        "three repair pushes",
+        "scripts/test-vertical-judgment.mjs"
+      ],
+      "reversion": [
+        {
+          "path": "packages/skeleton/src/repair-host.ts",
+          "old": "      worktreeParent,",
+          "new": "      worktreeParent: this.options.source.worktreeParent,",
+          "count": 1
+        }
+      ],
+      "positive": {
+        "exitCode": 0,
+        "seconds": 48.979,
+        "logSha256": "1fb7befe8598f38bacd7a635e3b3b543346141bd58da6cde33198056aa58b1b5",
+        "caseReports": [
+          "\u2714 three repair pushes rekey unchanged bodies without spending their eight-item allowance (48729.086459ms)",
+          "\u2139 tests 1",
+          "\u2139 pass 1",
+          "\u2139 fail 0"
+        ]
+      },
+      "negative": {
+        "exitCode": 1,
+        "seconds": 21.05,
+        "logSha256": "1b7fdec887a9501598453f90e2675913f282dec1e9f06fe36295520f1bbed4c4",
+        "caseReports": [
+          "\u2716 three repair pushes rekey unchanged bodies without spending their eight-item allowance (20800.5475ms)",
+          "\u2139 tests 1",
+          "\u2139 pass 0",
+          "\u2139 fail 1",
+          "\u2716 failing tests:",
+          "\u2716 three repair pushes rekey unchanged bodies without spending their eight-item allowance (20800.5475ms)"
+        ]
+      },
+      "verdict": "demonstrated",
+      "sourceHashes": {
+        "packages/skeleton/src/repair-host.ts": "94adf642f22cf886ab6926cc6bb2f2b53a59b0d9587118c4ab4c32d80fbe8f93"
+      },
+      "startedAt": "2026-10-24T06:01:11.297934+00:00",
+      "negativeBuild": {
+        "exitCode": 0,
+        "seconds": 0.9,
+        "logSha256": "cfe872ee0d49f2d59eda0104a807b880e0a1ee43abf080412cf36bd5bc7b6386",
+        "caseReports": []
+      },
+      "restoredBuild": {
+        "exitCode": 0,
+        "seconds": 0.905,
+        "logSha256": "02db06c583a672a1464ad99dab53a24b66e3ccd2f64a82f877229be1ad6bf789",
+        "caseReports": []
+      },
+      "finishedAt": "2026-10-24T06:02:23.132788+00:00",
+      "sourceSnapshotIdentity": "75f153f5bcac600013da886dbd4033b6ad54ca5dadafb8bb67067d501742689a"
+    },
+    {
+      "id": "repair-legacy-parent",
+      "rows": [
+        10
+      ],
+      "rowIds": [
+        "FUP-7c269a184f75e742"
+      ],
+      "suite": "skeleton",
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern",
+        "namespaced repair resumes",
+        "packages/skeleton/dist/test/repair.test.js"
+      ],
+      "reversion": [
+        {
+          "path": "packages/skeleton/src/repair-host.ts",
+          "old": "this.options.episodeNamespace && !legacyParent",
+          "new": "this.options.episodeNamespace && (legacyParent || !legacyParent)",
+          "count": 2
+        }
+      ],
+      "positive": {
+        "exitCode": 0,
+        "seconds": 5.354,
+        "logSha256": "d393f68fafc51b099b73b9bdecb53537a5c4f782893bb214e1fca57a5e1c5320",
+        "caseReports": [
+          "\u2714 namespaced repair resumes a recorded legacy worktree without another writer (5120.31825ms)",
+          "\u2139 tests 1",
+          "\u2139 pass 1",
+          "\u2139 fail 0"
+        ]
+      },
+      "negative": {
+        "exitCode": 1,
+        "seconds": 4.426,
+        "logSha256": "ccb94598dd97db5be551b3061619050890553abaa619618a11eabfb9f0dca287",
+        "caseReports": [
+          "\u2716 namespaced repair resumes a recorded legacy worktree without another writer (4205.132625ms)",
+          "\u2139 tests 1",
+          "\u2139 pass 0",
+          "\u2139 fail 1",
+          "\u2716 failing tests:",
+          "\u2716 namespaced repair resumes a recorded legacy worktree without another writer (4205.132625ms)"
+        ]
+      },
+      "verdict": "demonstrated",
+      "sourceSnapshotIdentity": "75f153f5bcac600013da886dbd4033b6ad54ca5dadafb8bb67067d501742689a",
+      "sourceHashes": {
+        "packages/skeleton/src/repair-host.ts": "94adf642f22cf886ab6926cc6bb2f2b53a59b0d9587118c4ab4c32d80fbe8f93"
+      },
+      "startedAt": "2026-10-24T05:59:24.774616+00:00",
+      "negativeBuild": {
+        "exitCode": 0,
+        "seconds": 0.942,
+        "logSha256": "6a708e97db5a6698d7249e8e1f29f73a0acd4a99265ce677d49646e48ef6cfb0",
+        "caseReports": []
+      },
+      "restoredBuild": {
+        "exitCode": 0,
+        "seconds": 0.946,
+        "logSha256": "f94b9505c8da797a6da46dc5b8d4462abea339db7b3c6fdb92361305224a6988",
+        "caseReports": []
+      },
+      "finishedAt": "2026-10-24T05:59:36.443603+00:00"
+    },
+    {
+      "id": "cached-resolution",
+      "rows": [
+        10
+      ],
+      "rowIds": [
+        "FUP-7c269a184f75e742"
+      ],
+      "suite": "vertical",
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern",
+        "cached resolution input rebinds",
+        "scripts/test-vertical-judgment.mjs"
+      ],
+      "reversion": [
+        {
+          "path": "scripts/lib/vertical-primitives.mjs",
+          "old": "input: validateSnapshot(\n                state,\n                read(receipt),\n                active.observation.payload.headSha,\n              )",
+          "new": "input: read(receipt)",
+          "count": 1
+        }
+      ],
+      "positive": {
+        "exitCode": 0,
+        "seconds": 18.834,
+        "logSha256": "ff63ae89f60fe3e9be65e3eff9fb1030c1f143623292c020db4faf6cc1b18a75",
+        "caseReports": [
+          "\u2714 cached resolution input rebinds its observed head, contract and snapshot before triage (18580.385292ms)",
+          "\u2139 tests 1",
+          "\u2139 pass 1",
+          "\u2139 fail 0"
+        ]
+      },
+      "negative": {
+        "exitCode": 1,
+        "seconds": 6.456,
+        "logSha256": "bf2b75c0b10b394f59329645add7d11f4da36838d43cc0e2cdfe6629928641d4",
+        "caseReports": [
+          "\u2716 cached resolution input rebinds its observed head, contract and snapshot before triage (6212.402834ms)",
+          "\u2139 tests 1",
+          "\u2139 pass 0",
+          "\u2139 fail 1",
+          "\u2716 failing tests:",
+          "\u2716 cached resolution input rebinds its observed head, contract and snapshot before triage (6212.402834ms)"
+        ]
+      },
+      "verdict": "demonstrated",
+      "sourceHashes": {
+        "scripts/lib/vertical-primitives.mjs": "33ae6b25d2ad02578ddb9c1e683143686a55dd582bad4592142bed15fbe926b0"
+      },
+      "startedAt": "2026-10-24T05:56:46.748588+00:00",
+      "finishedAt": "2026-10-24T05:57:12.040056+00:00",
+      "sourceSnapshotIdentity": "3cb4341a460868b35d4db5f1a7329252912bb3b1546987659c672f3b5e2bd564"
+    },
+    {
+      "id": "continuation-backoff",
+      "rows": [
+        10
+      ],
+      "rowIds": [
+        "FUP-7c269a184f75e742"
+      ],
+      "suite": "vertical",
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern",
+        "continuation backoff survives",
+        "scripts/test-vertical-judgment.mjs"
+      ],
+      "reversion": [
+        {
+          "path": "packages/skeleton/src/vertical-resident.ts",
+          "old": "if (state.receipts.length > completedBefore)\n            continuations.delete(binding.key);",
+          "new": "continuations.delete(binding.key);",
+          "count": 1
+        }
+      ],
+      "positive": {
+        "exitCode": 0,
+        "seconds": 17.632,
+        "logSha256": "23d7ac8d2fa388fb7e8823de4e0e1d40b92e292ef1104f0cc53bde5e3b004deb",
+        "caseReports": [
+          "\u2714 WO-112 continuation backoff survives a no-progress return, caps repeated failures and never defers authority expiry (17390.644292ms)",
+          "\u2139 tests 1",
+          "\u2139 pass 1",
+          "\u2139 fail 0"
+        ]
+      },
+      "negative": {
+        "exitCode": 1,
+        "seconds": 10.185,
+        "logSha256": "bb4cb54d7ca19756266d616dcf0d9a4085208810edc9c85730b3696f8036b23e",
+        "caseReports": [
+          "\u2716 WO-112 continuation backoff survives a no-progress return, caps repeated failures and never defers authority expiry (9925.604458ms)",
+          "\u2139 tests 1",
+          "\u2139 pass 0",
+          "\u2139 fail 1",
+          "\u2716 failing tests:",
+          "\u2716 WO-112 continuation backoff survives a no-progress return, caps repeated failures and never defers authority expiry (9925.604458ms)"
+        ]
+      },
+      "verdict": "demonstrated",
+      "sourceHashes": {
+        "packages/skeleton/src/vertical-resident.ts": "87a9fe67ccf1a001ca3ffecb8e5fa628a4e501a3123b4c3b276d8770331f4380"
+      },
+      "startedAt": "2026-10-24T05:57:12.068792+00:00",
+      "negativeBuild": {
+        "exitCode": 0,
+        "seconds": 0.886,
+        "logSha256": "4b0d28425eb53bec6769f845a3d3b61486add6d60fd047f2cd429e58182d4d47",
+        "caseReports": []
+      },
+      "restoredBuild": {
+        "exitCode": 0,
+        "seconds": 0.905,
+        "logSha256": "65b9f999cb17979dc91af4bf256656b7736f5f141c0acd7ab6fcb183b27b08ad",
+        "caseReports": []
+      },
+      "finishedAt": "2026-10-24T05:57:41.678555+00:00",
+      "sourceSnapshotIdentity": "3cb4341a460868b35d4db5f1a7329252912bb3b1546987659c672f3b5e2bd564"
+    },
+    {
+      "id": "browser-signal",
+      "rows": [
+        11
+      ],
+      "rowIds": [
+        "FUP-88c339c51cfc1933"
+      ],
+      "suite": "vertical",
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern",
+        "browser witness cancellation",
+        "scripts/test-vertical.recovery.mjs"
+      ],
+      "reversion": [
+        {
+          "path": "scripts/lib/vertical-primitives.mjs",
+          "old": "...(recoverFrom ? { recoverFrom } : {}),\n              ...(signal ? { signal } : {}),",
+          "new": "...(recoverFrom ? { recoverFrom } : {}),",
+          "count": 1
+        }
+      ],
+      "positive": {
+        "exitCode": 0,
+        "seconds": 6.063,
+        "logSha256": "a6c1c9254f9f23473ad8b210f4ec487770f981f8d496a5d0bfb01b66532ccb0f",
+        "caseReports": [
+          "\u2714 browser witness cancellation closes owned processes and resumes in a fresh attempt directory (5803.322583ms)",
+          "\u2139 tests 1",
+          "\u2139 pass 1",
+          "\u2139 fail 0"
+        ]
+      },
+      "negative": {
+        "exitCode": 1,
+        "seconds": 34.947,
+        "logSha256": "e1731768176df1e1e50f9a6cd9a56957c045f3fd654804e5ad1ee122952e575c",
+        "caseReports": [
+          "\u2716 browser witness cancellation closes owned processes and resumes in a fresh attempt directory (34704.575333ms)",
+          "\u2139 tests 1",
+          "\u2139 pass 0",
+          "\u2139 fail 1",
+          "\u2716 failing tests:",
+          "\u2716 browser witness cancellation closes owned processes and resumes in a fresh attempt directory (34704.575333ms)"
+        ]
+      },
+      "verdict": "demonstrated",
+      "sourceHashes": {
+        "scripts/lib/vertical-primitives.mjs": "33ae6b25d2ad02578ddb9c1e683143686a55dd582bad4592142bed15fbe926b0"
+      },
+      "startedAt": "2026-10-24T05:57:41.709628+00:00",
+      "finishedAt": "2026-10-24T05:58:22.720745+00:00",
+      "sourceSnapshotIdentity": "3cb4341a460868b35d4db5f1a7329252912bb3b1546987659c672f3b5e2bd564"
+    },
+    {
+      "id": "browser-recovery",
+      "rows": [
+        11
+      ],
+      "rowIds": [
+        "FUP-88c339c51cfc1933"
+      ],
+      "suite": "vertical",
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern",
+        "browser witness cancellation",
+        "scripts/test-vertical.recovery.mjs"
+      ],
+      "reversion": [
+        {
+          "path": "scripts/lib/vertical-primitives.mjs",
+          "old": "          while (existsSync(browserDirectory)) {\n            recoverFrom = browserDirectory;\n            browserDirectory = join(\n              directory,\n              `browser-${command.round}-${++attempt}`,\n            );\n          }",
+          "new": "",
+          "count": 1
+        }
+      ],
+      "positive": {
+        "exitCode": 0,
+        "seconds": 6.057,
+        "logSha256": "744260a608181564df9185f121de15c21d4474a748c6ea889a74402fcb2f844f",
+        "caseReports": [
+          "\u2714 browser witness cancellation closes owned processes and resumes in a fresh attempt directory (5808.090958ms)",
+          "\u2139 tests 1",
+          "\u2139 pass 1",
+          "\u2139 fail 0"
+        ]
+      },
+      "negative": {
+        "exitCode": 1,
+        "seconds": 5.249,
+        "logSha256": "da2dacd3de6282ddfa0babd161c130430ab6e76f3adb3d27e4f5edda1511febe",
+        "caseReports": [
+          "\u2716 browser witness cancellation closes owned processes and resumes in a fresh attempt directory (4996.671041ms)",
+          "\u2139 tests 1",
+          "\u2139 pass 0",
+          "\u2139 fail 1",
+          "\u2716 failing tests:",
+          "\u2716 browser witness cancellation closes owned processes and resumes in a fresh attempt directory (4996.671041ms)"
+        ]
+      },
+      "verdict": "demonstrated",
+      "sourceHashes": {
+        "scripts/lib/vertical-primitives.mjs": "33ae6b25d2ad02578ddb9c1e683143686a55dd582bad4592142bed15fbe926b0"
+      },
+      "startedAt": "2026-10-24T05:58:22.750160+00:00",
+      "finishedAt": "2026-10-24T05:58:34.057337+00:00",
+      "sourceSnapshotIdentity": "3cb4341a460868b35d4db5f1a7329252912bb3b1546987659c672f3b5e2bd564"
+    },
+    {
+      "id": "collector-archive",
+      "rows": [
+        13
+      ],
+      "rowIds": [
+        "FUP-8f0561e50754114f"
+      ],
+      "suite": "wo107-schema",
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern",
+        "classification exception",
+        "corpus/harness/wo107-schema.test.mjs"
+      ],
+      "reversion": [
+        {
+          "path": "corpus/harness/profile.mjs",
+          "old": "[initialHash, secondHash, currentHash].includes(row.protocolHash)",
+          "new": "[initialHash, currentHash].includes(row.protocolHash)",
+          "count": 1
+        }
+      ],
+      "positive": {
+        "exitCode": 0,
+        "seconds": 0.22,
+        "logSha256": "d2c8a5a0bda9090baf57c51c3dd2ef58af9f96cae1268b813d6ca79b343d83ae",
+        "caseReports": [
+          "\u2714 harness classification exception is exact and both collector revisions preserve timed bytes (20.596958ms)",
+          "\u2139 tests 1",
+          "\u2139 pass 1",
+          "\u2139 fail 0"
+        ]
+      },
+      "negative": {
+        "exitCode": 1,
+        "seconds": 0.216,
+        "logSha256": "e6e0d72ab88fb39e2bc84152fcb8f9c0152f631265f3ef33194db70faf52e30d",
+        "caseReports": [
+          "\u2716 harness classification exception is exact and both collector revisions preserve timed bytes (19.197959ms)",
+          "\u2139 tests 1",
+          "\u2139 pass 0",
+          "\u2139 fail 1",
+          "\u2716 failing tests:",
+          "\u2716 harness classification exception is exact and both collector revisions preserve timed bytes (19.197959ms)"
+        ]
+      },
+      "verdict": "demonstrated",
+      "sourceHashes": {
+        "corpus/harness/profile.mjs": "97512666dc5b3239d21b7a4496cb4717d062590374cdfeb4d6e02787f738bc4b"
+      },
+      "startedAt": "2026-10-24T05:58:34.087336+00:00",
+      "finishedAt": "2026-10-24T05:58:34.523449+00:00",
+      "sourceSnapshotIdentity": "3cb4341a460868b35d4db5f1a7329252912bb3b1546987659c672f3b5e2bd564"
+    },
+    {
+      "id": "comparison-newline",
+      "rows": [
+        13
+      ],
+      "rowIds": [
+        "FUP-8f0561e50754114f"
+      ],
+      "suite": "wo107-schema",
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern",
+        "harness full dummy executions",
+        "corpus/harness/wo107-schema.test.mjs"
+      ],
+      "reversion": [
+        {
+          "path": "corpus/harness/wo107-records.mjs",
+          "old": "lines.join(\"\\n\").trimEnd()",
+          "new": "lines.join(\"\\n\")",
+          "count": 1
+        }
+      ],
+      "positive": {
+        "exitCode": 0,
+        "seconds": 0.241,
+        "logSha256": "89bf5139b0e1d93f8f641d1794358586dfae3e5f838519d2dec8151863a808fd",
+        "caseReports": [
+          "\u2714 harness full dummy executions round-trip through schema and comparison (39.372542ms)",
+          "\u2139 tests 1",
+          "\u2139 pass 1",
+          "\u2139 fail 0"
+        ]
+      },
+      "negative": {
+        "exitCode": 1,
+        "seconds": 0.241,
+        "logSha256": "ecb3f23e02ca50903f9ddf8976b938b600e6ddcc3e74198edd2fed582a8bb755",
+        "caseReports": [
+          "\u2716 harness full dummy executions round-trip through schema and comparison (41.202375ms)",
+          "\u2139 tests 1",
+          "\u2139 pass 0",
+          "\u2139 fail 1",
+          "\u2716 failing tests:",
+          "\u2716 harness full dummy executions round-trip through schema and comparison (41.202375ms)"
+        ]
+      },
+      "verdict": "demonstrated",
+      "sourceHashes": {
+        "corpus/harness/wo107-records.mjs": "b68bea88658d3842495592eb7ad33b4a2f382d7c1a0a272424c2f2fab57ea5d5"
+      },
+      "startedAt": "2026-10-24T05:58:34.553790+00:00",
+      "finishedAt": "2026-10-24T05:58:35.036983+00:00",
+      "sourceSnapshotIdentity": "3cb4341a460868b35d4db5f1a7329252912bb3b1546987659c672f3b5e2bd564"
+    },
+    {
+      "id": "judgment-replay",
+      "rows": [
+        10,
+        14
+      ],
+      "rowIds": [
+        "FUP-7c269a184f75e742",
+        "FUP-b8440605da5a4eb2"
+      ],
+      "suite": "vertical",
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern",
+        "stored intake result refusal|stored triage result refusal",
+        "scripts/test-vertical-judgment.mjs"
+      ],
+      "reversion": [
+        {
+          "path": "scripts/lib/vertical-judgment.mjs",
+          "old": "throw new JudgmentReplayError(task, error);",
+          "new": "throw error;",
+          "count": 1
+        }
+      ],
+      "positive": {
+        "exitCode": 0,
+        "seconds": 3.803,
+        "logSha256": "d51949478ef484577391a6fab1194eb128a8d183277facc503433fdd91c62571",
+        "caseReports": [
+          "\u2714 stored intake result refusal is a bounded record fault with no new episode (3405.215875ms)",
+          "\u2714 stored triage result refusal ends needs-human and is never called an episode failure (155.051875ms)",
+          "\u2139 tests 2",
+          "\u2139 pass 2",
+          "\u2139 fail 0"
+        ]
+      },
+      "negative": {
+        "exitCode": 1,
+        "seconds": 3.445,
+        "logSha256": "505ffe2afb13e95d0974be017d3697a2938b77bffbf57a965718ec10e85013a6",
+        "caseReports": [
+          "\u2716 stored intake result refusal is a bounded record fault with no new episode (3178.087625ms)",
+          "\u2716 stored triage result refusal ends needs-human and is never called an episode failure (11.933542ms)",
+          "\u2139 tests 2",
+          "\u2139 pass 0",
+          "\u2139 fail 2",
+          "\u2716 failing tests:",
+          "\u2716 stored intake result refusal is a bounded record fault with no new episode (3178.087625ms)",
+          "\u2716 stored triage result refusal ends needs-human and is never called an episode failure (11.933542ms)"
+        ]
+      },
+      "verdict": "demonstrated",
+      "sourceHashes": {
+        "scripts/lib/vertical-judgment.mjs": "66c9e3948e6b58b3e1f032e8847161c51ddf82ba2459476312b581e7304daf31"
+      },
+      "startedAt": "2026-10-24T05:58:35.066092+00:00",
+      "finishedAt": "2026-10-24T05:58:42.314359+00:00",
+      "sourceSnapshotIdentity": "3cb4341a460868b35d4db5f1a7329252912bb3b1546987659c672f3b5e2bd564"
+    },
+    {
+      "id": "preparation-clock",
+      "rows": [
+        15
+      ],
+      "rowIds": [
+        "FUP-bcd4724fca7bff7a"
+      ],
+      "suite": "vertical",
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern",
+        "preparation retries cool",
+        "scripts/test-vertical.mjs"
+      ],
+      "reversion": [
+        {
+          "path": "packages/skeleton/src/vertical-resident.ts",
+          "old": "deferred.set(draftId, {\n              failures,\n              faults,\n              notBefore: now() + backoff(failures),",
+          "new": "deferred.set(draftId, {\n              failures,\n              faults,\n              notBefore: context.at + backoff(failures),",
+          "count": 1
+        }
+      ],
+      "positive": {
+        "exitCode": 0,
+        "seconds": 1.698,
+        "logSha256": "e32d657f589adea4243b82c8cce089ed761c23f7f561f937cd3ef1685d0f50d4",
+        "caseReports": [
+          "\u2714 preparation retries cool down after short and slow failures, cap the delay and honor expiry (1454.990708ms)",
+          "\u2139 tests 1",
+          "\u2139 pass 1",
+          "\u2139 fail 0"
+        ]
+      },
+      "negative": {
+        "exitCode": 1,
+        "seconds": 1.13,
+        "logSha256": "db2423daa453dbd96852dd328089785958d48aa50a864c773b85fc202ed85bac",
+        "caseReports": [
+          "\u2716 preparation retries cool down after short and slow failures, cap the delay and honor expiry (885.732625ms)",
+          "\u2139 tests 1",
+          "\u2139 pass 0",
+          "\u2139 fail 1",
+          "\u2716 failing tests:",
+          "\u2716 preparation retries cool down after short and slow failures, cap the delay and honor expiry (885.732625ms)"
+        ]
+      },
+      "verdict": "demonstrated",
+      "sourceHashes": {
+        "packages/skeleton/src/vertical-resident.ts": "87a9fe67ccf1a001ca3ffecb8e5fa628a4e501a3123b4c3b276d8770331f4380"
+      },
+      "startedAt": "2026-10-24T05:58:42.343078+00:00",
+      "negativeBuild": {
+        "exitCode": 0,
+        "seconds": 0.916,
+        "logSha256": "31a60f7f4d676d3f2742fa1bec706a9d671ef3f43bbac7ac8524aa2a332d3147",
+        "caseReports": []
+      },
+      "restoredBuild": {
+        "exitCode": 0,
+        "seconds": 0.908,
+        "logSha256": "b249947ebd5bf3ae935a8621195ead9005d4e7df807134275f25f7e1bcd6323d",
+        "caseReports": []
+      },
+      "finishedAt": "2026-10-24T05:58:46.995940+00:00",
+      "sourceSnapshotIdentity": "3cb4341a460868b35d4db5f1a7329252912bb3b1546987659c672f3b5e2bd564"
+    },
+    {
+      "id": "command-persist",
+      "rows": [
+        16
+      ],
+      "rowIds": [
+        "FUP-c1d4be019802be0d"
+      ],
+      "suite": "kernel",
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern",
+        "new command admission",
+        "packages/kernel/dist/test/kernel.test.js"
+      ],
+      "reversion": [
+        {
+          "path": "packages/kernel/src/core.ts",
+          "old": "  assertCommand(command);\n  return insertCommand(state, command);",
+          "new": "  return insertCommand(state, command);",
+          "count": 1
+        }
+      ],
+      "positive": {
+        "exitCode": 0,
+        "seconds": 0.185,
+        "logSha256": "6d5a0396e2bcbb6e7e1b36e04e70b0fc2b0eaf1c8978d882bcf841269245d698",
+        "caseReports": [
+          "\u2714 new command admission rejects malformed structure while old logs replay unchanged (1.503292ms)",
+          "\u2139 tests 1",
+          "\u2139 pass 1",
+          "\u2139 fail 0"
+        ]
+      },
+      "negative": {
+        "exitCode": 1,
+        "seconds": 0.183,
+        "logSha256": "220086cd60b31804076c2ef836ae09d9e72f1f23cc076b6adfc84e6693258976",
+        "caseReports": [
+          "\u2716 new command admission rejects malformed structure while old logs replay unchanged (0.807542ms)",
+          "\u2139 tests 1",
+          "\u2139 pass 0",
+          "\u2139 fail 1",
+          "\u2716 failing tests:",
+          "\u2716 new command admission rejects malformed structure while old logs replay unchanged (0.807542ms)"
+        ]
+      },
+      "verdict": "demonstrated",
+      "sourceHashes": {
+        "packages/kernel/src/core.ts": "c7911d1d7e307fa7a2c697768875b471f6c7e0cd7b43c55a95857d1ac6850cba"
+      },
+      "startedAt": "2026-10-24T05:58:47.024645+00:00",
+      "negativeBuild": {
+        "exitCode": 0,
+        "seconds": 0.895,
+        "logSha256": "0f8c59f76b0f2636d3a94917c045c499468c88dda29f17d01f21124e670e5da7",
+        "caseReports": []
+      },
+      "restoredBuild": {
+        "exitCode": 0,
+        "seconds": 0.906,
+        "logSha256": "806ce103c82eb743f88d59161af12a043f7f4c0f58f29a6b5e69831fd61b0b3f",
+        "caseReports": []
+      },
+      "finishedAt": "2026-10-24T05:58:49.194767+00:00",
+      "sourceSnapshotIdentity": "3cb4341a460868b35d4db5f1a7329252912bb3b1546987659c672f3b5e2bd564"
+    },
+    {
+      "id": "command-append",
+      "rows": [
+        16
+      ],
+      "rowIds": [
+        "FUP-c1d4be019802be0d"
+      ],
+      "suite": "kernel",
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern",
+        "new command admission",
+        "packages/kernel/dist/test/kernel.test.js"
+      ],
+      "reversion": [
+        {
+          "path": "packages/kernel/src/store.ts",
+          "old": "  if (event.type === \"CommandPersisted\") {\n    const payload = event.payload;\n    assertCommand(\n      payload !== null && typeof payload === \"object\" && !Array.isArray(payload)\n        ? (payload as Readonly<Record<string, unknown>>)[\"command\"]\n        : undefined,\n    );\n  }",
+          "new": "",
+          "count": 1
+        },
+        {
+          "path": "packages/kernel/src/store.ts",
+          "old": "  if (persisted.type === \"CommandPersisted\") {\n    const payload = persisted.payload;\n    assertCommand(\n      payload !== null && typeof payload === \"object\" && !Array.isArray(payload)\n        ? (payload as Readonly<Record<string, unknown>>)[\"command\"]\n        : undefined,\n    );\n  }",
+          "new": "",
+          "count": 1
+        }
+      ],
+      "positive": {
+        "exitCode": 0,
+        "seconds": 0.179,
+        "logSha256": "c7811f26891ccaa399bbb213e7cafd66d549837dd185d5555ec9bfea56bad9f1",
+        "caseReports": [
+          "\u2714 new command admission rejects malformed structure while old logs replay unchanged (1.550417ms)",
+          "\u2139 tests 1",
+          "\u2139 pass 1",
+          "\u2139 fail 0"
+        ]
+      },
+      "negative": {
+        "exitCode": 1,
+        "seconds": 0.191,
+        "logSha256": "e0ff9fff3fcadc8c573da80b31241647aad5b69ba3a4c0594bc873cd97d0592f",
+        "caseReports": [
+          "\u2716 new command admission rejects malformed structure while old logs replay unchanged (1.139125ms)",
+          "\u2139 tests 1",
+          "\u2139 pass 0",
+          "\u2139 fail 1",
+          "\u2716 failing tests:",
+          "\u2716 new command admission rejects malformed structure while old logs replay unchanged (1.139125ms)"
+        ]
+      },
+      "verdict": "demonstrated",
+      "sourceHashes": {
+        "packages/kernel/src/store.ts": "6e0677540a8ecc2e26bf71652e91142d0c441f258b750bf72e12ca0ee7242e67"
+      },
+      "startedAt": "2026-10-24T05:58:49.225716+00:00",
+      "negativeBuild": {
+        "exitCode": 0,
+        "seconds": 0.9,
+        "logSha256": "e1ed7eb75ddf26dee9f28ecf955035f2f9ecde4d8094d9b80e27b8dd452c6a27",
+        "caseReports": []
+      },
+      "restoredBuild": {
+        "exitCode": 0,
+        "seconds": 0.908,
+        "logSha256": "b0cb75cf901cc567af44cb9a621522ffce7a45f7681b1b85b33be1129954b3d3",
+        "caseReports": []
+      },
+      "finishedAt": "2026-10-24T05:58:51.405231+00:00",
+      "sourceSnapshotIdentity": "3cb4341a460868b35d4db5f1a7329252912bb3b1546987659c672f3b5e2bd564"
+    },
+    {
+      "id": "command-serialization",
+      "rows": [
+        16
+      ],
+      "rowIds": [
+        "FUP-c1d4be019802be0d"
+      ],
+      "suite": "kernel",
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern",
+        "new command admission",
+        "packages/kernel/dist/test/kernel.test.js"
+      ],
+      "reversion": [
+        {
+          "path": "packages/kernel/src/store.ts",
+          "old": "  if (persisted.type === \"CommandPersisted\") {\n    const payload = persisted.payload;\n    assertCommand(\n      payload !== null && typeof payload === \"object\" && !Array.isArray(payload)\n        ? (payload as Readonly<Record<string, unknown>>)[\"command\"]\n        : undefined,\n    );\n  }",
+          "new": "",
+          "count": 1
+        }
+      ],
+      "positive": {
+        "exitCode": 0,
+        "seconds": 0.18,
+        "logSha256": "4b6053447e183dfeef3989af72ec4bd4a5924815d72f24fee6369863ef7b64f2",
+        "caseReports": [
+          "\u2714 new command admission rejects malformed structure while old logs replay unchanged (1.502791ms)",
+          "\u2139 tests 1",
+          "\u2139 pass 1",
+          "\u2139 fail 0"
+        ]
+      },
+      "negative": {
+        "exitCode": 1,
+        "seconds": 0.191,
+        "logSha256": "685e9eb004263593f2e203c5dca2e73dc281a3501e684bde4163916874e7687d",
+        "caseReports": [
+          "\u2716 new command admission rejects malformed structure while old logs replay unchanged (1.418166ms)",
+          "\u2139 tests 1",
+          "\u2139 pass 0",
+          "\u2139 fail 1",
+          "\u2716 failing tests:",
+          "\u2716 new command admission rejects malformed structure while old logs replay unchanged (1.418166ms)"
+        ]
+      },
+      "verdict": "demonstrated",
+      "sourceHashes": {
+        "packages/kernel/src/store.ts": "6e0677540a8ecc2e26bf71652e91142d0c441f258b750bf72e12ca0ee7242e67"
+      },
+      "startedAt": "2026-10-24T05:58:51.434163+00:00",
+      "negativeBuild": {
+        "exitCode": 0,
+        "seconds": 0.882,
+        "logSha256": "adfabb1aa8afcb28e6defe7fd4137dcd4ef56c4d49a608f262df9f2ccbe6aafc",
+        "caseReports": []
+      },
+      "restoredBuild": {
+        "exitCode": 0,
+        "seconds": 0.933,
+        "logSha256": "59a507ce6eaf076a890a8fa65ad6e25a0d6247736f45f3c9b6c8f3c9b9172979",
+        "caseReports": []
+      },
+      "finishedAt": "2026-10-24T05:58:53.621195+00:00",
+      "sourceSnapshotIdentity": "3cb4341a460868b35d4db5f1a7329252912bb3b1546987659c672f3b5e2bd564"
+    },
+    {
+      "id": "corpus-after-base",
+      "rows": [
+        17
+      ],
+      "rowIds": [
+        "FUP-d093f77bd927f9dc"
+      ],
+      "suite": "node --test wo105-skeleton",
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern",
+        "after-base reports",
+        "corpus/harness/wo105-skeleton.test.mjs"
+      ],
+      "reversion": [
+        {
+          "path": "corpus/harness/wo105-common.mjs",
+          "old": "if (drift.length) {",
+          "new": "if (false) {",
+          "count": 1
+        }
+      ],
+      "positive": {
+        "exitCode": 0,
+        "seconds": 0.215,
+        "logSha256": "c8940e55372d399dc21fb7e71c3e4fba6ac0a4a69c018889b4d5838f972c8b0b",
+        "caseReports": [
+          "\u2714 WO-105 after-base reports identity drift but still rejects changed crash-shape pins (4.952042ms)",
+          "\u2139 tests 1",
+          "\u2139 pass 1",
+          "\u2139 fail 0"
+        ]
+      },
+      "negative": {
+        "exitCode": 1,
+        "seconds": 0.218,
+        "logSha256": "25b939c1a607dd9f844435abe636d8ac0d4ad9cff71832de5ec493695b7f2467",
+        "caseReports": [
+          "\u2716 WO-105 after-base reports identity drift but still rejects changed crash-shape pins (1.189833ms)",
+          "\u2139 tests 1",
+          "\u2139 pass 0",
+          "\u2139 fail 1",
+          "\u2716 failing tests:",
+          "\u2716 WO-105 after-base reports identity drift but still rejects changed crash-shape pins (1.189833ms)"
+        ]
+      },
+      "verdict": "demonstrated",
+      "sourceHashes": {
+        "corpus/harness/wo105-common.mjs": "d3336504df18cbc97e1ea741987d09ea993851044de66696b0f48c4ea35f72c3"
+      },
+      "startedAt": "2026-10-24T05:58:53.650300+00:00",
+      "finishedAt": "2026-10-24T05:58:54.083580+00:00",
+      "sourceSnapshotIdentity": "3cb4341a460868b35d4db5f1a7329252912bb3b1546987659c672f3b5e2bd564"
+    },
+    {
+      "id": "authority-contest",
+      "rows": [
+        18
+      ],
+      "rowIds": [
+        "FUP-d22dc57e754ba35c"
+      ],
+      "suite": "node --test wo103-authority",
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern",
+        "authority factorial contests",
+        "corpus/harness/wo103-authority.test.mjs"
+      ],
+      "reversion": [
+        {
+          "path": "corpus/harness/wo103-authority-lib.mjs",
+          "old": "    \"deny-without-allow\",\n",
+          "new": "",
+          "count": 1
+        }
+      ],
+      "positive": {
+        "exitCode": 0,
+        "seconds": 0.213,
+        "logSha256": "78ae5ec4c7bc3537a8dc9186ddc2d7270f5e73f68177d48711581b6442c27310",
+        "caseReports": [
+          "\u2714 authority factorial contests denial without allow and pins the expanded axes (1.428542ms)",
+          "\u2139 tests 1",
+          "\u2139 pass 1",
+          "\u2139 fail 0"
+        ]
+      },
+      "negative": {
+        "exitCode": 1,
+        "seconds": 0.213,
+        "logSha256": "a22e20c15b31bf311bf63c80984820c59be1e16b3301784a5c7068cc48dd3a4a",
+        "caseReports": [
+          "\u2716 authority factorial contests denial without allow and pins the expanded axes (2.523625ms)",
+          "\u2139 tests 1",
+          "\u2139 pass 0",
+          "\u2139 fail 1",
+          "\u2716 failing tests:",
+          "\u2716 authority factorial contests denial without allow and pins the expanded axes (2.523625ms)"
+        ]
+      },
+      "verdict": "demonstrated",
+      "sourceHashes": {
+        "corpus/harness/wo103-authority-lib.mjs": "3d8418eb0c1cc1b4ffae7445641ef2cd03a2108a2259d9d03b966eb0297565aa"
+      },
+      "startedAt": "2026-10-24T05:58:54.114515+00:00",
+      "finishedAt": "2026-10-24T05:58:54.541346+00:00",
+      "sourceSnapshotIdentity": "3cb4341a460868b35d4db5f1a7329252912bb3b1546987659c672f3b5e2bd564"
+    },
+    {
+      "id": "intent-only",
+      "rows": [
+        20
+      ],
+      "rowIds": [
+        "FUP-eeb25ea9315438ad"
+      ],
+      "suite": "vertical",
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern",
+        "intent-only residents skip",
+        "scripts/test-vertical.mjs"
+      ],
+      "reversion": [
+        {
+          "path": "packages/skeleton/src/resident-host.ts",
+          "old": "if (unavailable && !intentOnly)",
+          "new": "if (unavailable)",
+          "count": 1
+        },
+        {
+          "path": "packages/skeleton/src/resident-host.ts",
+          "old": "        if (intentOnly) return null;",
+          "new": "",
+          "count": 1
+        }
+      ],
+      "positive": {
+        "exitCode": 0,
+        "seconds": 1.231,
+        "logSha256": "b7608e24b3b6869431061c1e971c64146ccf1b4b6cf286b29ca4734360a01fd4",
+        "caseReports": [
+          "\u2714 intent-only residents skip an unbound portfolio actor but ordinary portfolios still report it (965.894584ms)",
+          "\u2139 tests 1",
+          "\u2139 pass 1",
+          "\u2139 fail 0"
+        ]
+      },
+      "negative": {
+        "exitCode": 1,
+        "seconds": 0.898,
+        "logSha256": "32899d1e8f9e595482fc3beffdc5d4566e6fe9093f1c35115ac9ae3af11a0e70",
+        "caseReports": [
+          "\u2716 intent-only residents skip an unbound portfolio actor but ordinary portfolios still report it (649.259667ms)",
+          "\u2139 tests 1",
+          "\u2139 pass 0",
+          "\u2139 fail 1",
+          "\u2716 failing tests:",
+          "\u2716 intent-only residents skip an unbound portfolio actor but ordinary portfolios still report it (649.259667ms)"
+        ]
+      },
+      "verdict": "demonstrated",
+      "sourceHashes": {
+        "packages/skeleton/src/resident-host.ts": "3243742a6852154240063ed914db2a23d40c1a7ccb9e7127ae893758163792bb"
+      },
+      "startedAt": "2026-10-24T05:58:54.572292+00:00",
+      "negativeBuild": {
+        "exitCode": 0,
+        "seconds": 0.902,
+        "logSha256": "794a2f2a647d2d0455c5839009de90b1d3a922407677fe0144b47589385120ba",
+        "caseReports": []
+      },
+      "restoredBuild": {
+        "exitCode": 0,
+        "seconds": 0.913,
+        "logSha256": "760971f176feddf96acfcfabfdfe25eaca16c5d153fa1aeca08ee68ce08e8bdb",
+        "caseReports": []
+      },
+      "finishedAt": "2026-10-24T05:58:58.516817+00:00",
+      "sourceSnapshotIdentity": "3cb4341a460868b35d4db5f1a7329252912bb3b1546987659c672f3b5e2bd564"
+    },
+    {
+      "id": "browser-startup",
+      "rows": [
+        11
+      ],
+      "rowIds": [
+        "FUP-88c339c51cfc1933"
+      ],
+      "suite": "vertical",
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern",
+        "browser witness resumes a pre-launch",
+        "scripts/test-vertical.recovery.mjs"
+      ],
+      "reversion": [
+        {
+          "path": "packages/browser-evidence/src/processes.ts",
+          "old": "  let bytes: string;\n  try {\n    bytes = readFileSync(join(directory, \"processes.json\"), \"utf8\");\n  } catch (error) {\n    // Launch follows the first atomic process record. These are the only\n    // files an interrupted pre-launch preparation can have created.\n    if (\n      (error as NodeJS.ErrnoException).code === \"ENOENT\" &&\n      readdirSync(directory).every((name) =>\n        [\"scenario.json\", \"replay-fields.json\", \"processes.json.new\"].includes(\n          name,\n        ),\n      )\n    )\n      return [];\n    throw error;\n  }\n  const record = JSON.parse(bytes) as ProcessRecord;",
+          "new": "  const record = JSON.parse(readFileSync(join(directory, \"processes.json\"), \"utf8\")) as ProcessRecord;",
+          "count": 1
+        }
+      ],
+      "positive": {
+        "exitCode": 0,
+        "seconds": 5.255,
+        "logSha256": "afa98da28801d821b1ac8a36ff469629e25ebcdd93ccdf9ac25f1e12847f81ba",
+        "caseReports": [
+          "\u2714 browser witness resumes a pre-launch directory without a process record (5007.97025ms)",
+          "\u2139 tests 1",
+          "\u2139 pass 1",
+          "\u2139 fail 0"
+        ]
+      },
+      "negative": {
+        "exitCode": 1,
+        "seconds": 4.614,
+        "logSha256": "00740b22574ded6e72c21e2a97b5f272881ee8ec4af7910a7cc755d84c62a038",
+        "caseReports": [
+          "\u2716 browser witness resumes a pre-launch directory without a process record (4364.932083ms)",
+          "\u2139 tests 1",
+          "\u2139 pass 0",
+          "\u2139 fail 1",
+          "\u2716 failing tests:",
+          "\u2716 browser witness resumes a pre-launch directory without a process record (4364.932083ms)"
+        ]
+      },
+      "verdict": "demonstrated",
+      "sourceHashes": {
+        "packages/browser-evidence/src/processes.ts": "2f7ad319b14f4701c7c5862e0ade4f90240759fceb6717c73d8fa1fb3fe2c8d1"
+      },
+      "startedAt": "2026-10-24T05:58:58.546750+00:00",
+      "negativeBuild": {
+        "exitCode": 0,
+        "seconds": 0.913,
+        "logSha256": "2f4ca321409bcd447d8f87226409b394e9fa112a5f658f0518d87b480c359d5c",
+        "caseReports": []
+      },
+      "restoredBuild": {
+        "exitCode": 0,
+        "seconds": 0.917,
+        "logSha256": "da60c2c8bbf62002a9cb23cc157a983ce8bb277edcd7200e908b87a70aed75b6",
+        "caseReports": []
+      },
+      "finishedAt": "2026-10-24T05:59:10.246673+00:00",
+      "sourceSnapshotIdentity": "3cb4341a460868b35d4db5f1a7329252912bb3b1546987659c672f3b5e2bd564"
+    }
+  ],
+  "snapshotIdentity": "2994522135749d0c3c3cce7e0eacc1d96090e225a3e84f37b5473554372e3f54"
+}

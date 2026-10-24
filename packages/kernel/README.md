@@ -22,7 +22,13 @@ and consult no ambient clock or randomness. Import the public API from
 | `WorkOrder`, `ResultEnvelope`                                                                                                 | WorkOrder and Result envelope                                                                            |
 | `ReplayResult`, `JsonlLog`, `appendEvent`, `encodeLog`, `decodeLog`, `tryDecodeLog`, `DecodeResult`, `replay`, `defaultEnvironmentProjection`                                                 | Event store (append-only JSONL); eventId edge-assigned at the store boundary; deterministic replay       |
 | `OutboxEntry`, `OutboxState`, `emptyOutbox`, `persistCommand`, `pendingCommands`, `replayOutbox`, `applyCommandResult`        | Command outbox protocol: replay recovery and deterministic duplicate-result dedup                        |
+| `assertCommand`, `CommandAdmissionError`                                                                                       | Command admission: required fields and JSON payload validation before new persistence                    |
 | `PresenceDecision`, `guardQueuedPulse`                                                                                        | Reactor guard for the operator-return race: NoOp Intent with evidence, plus future Schedule cancellation |
+
+`assertCommand` validates required command and Act fields and JSON payloads.
+`CommandAdmissionError` carries a `persist/malformed/<field>` trace. New
+`persistCommand` calls and `CommandPersisted` appends require this validation;
+historical log decoding and outbox replay retain their previous ID-only rule.
 
 Cadence exports types for `Once`, `After`, `Every`, `Burst`, `Calendar`,
 `Window`, `While`, `Until`, `Gate`, `Sequence`, `Merge`, `Race`, `Repeat`, and

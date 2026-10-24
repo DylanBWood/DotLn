@@ -8,10 +8,15 @@ const cfg = JSON.parse(
 );
 if (cfg.interruptWriter === "before-commit")
   process.kill(process.pid, "SIGKILL");
-const content =
+let content =
   cfg.plantReview && !input.workOrder.workOrderId.includes("_repair_")
     ? "changed by synthetic worker\n\n"
     : "changed by synthetic worker\n";
+if (cfg.sequentialRepairs) {
+  content = input.workOrder.workOrderId.includes("_repair_")
+    ? readFileSync("fixture.txt", "utf8").replace(/\n$/u, "")
+    : "changed by synthetic worker\n" + "\n".repeat(cfg.sequentialRepairs);
+}
 writeFileSync("fixture.txt", content);
 const git = (...args) =>
   execFileSync(

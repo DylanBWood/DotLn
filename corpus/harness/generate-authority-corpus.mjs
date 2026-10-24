@@ -128,7 +128,7 @@ export async function buildCorpus(seed = SEED) {
   const findings = [
     ...carryIns.map((f) => ({
       number: f.number,
-      kind: "unlinked-audit-refusal",
+      kind: f.traceLinked ? "linked-audit-refusal" : "unlinked-audit-refusal",
       cellId: f.cellId,
       reproduced: !f.traceLinked,
       input: f.input,
@@ -168,11 +168,11 @@ export async function buildCorpus(seed = SEED) {
   const table = buildPrecedenceTable(authority.winners);
   files.push({ path: "corpus/manifests/WO-103-precedence.md", bytes: table });
   const findingsText =
-    "# WO-103 quarantined findings\n\nObserved shipped behavior; no runtime repair is made by this evidence-only order.\n\n" +
+    "# WO-103 findings and resolved carry-ins\n\nGenerated observations of the current runtime. Original evidence remains in Git history; resolved carry-ins retain their numbers and report reproduced false.\n\n" +
     findings
       .map(
         (f) =>
-          `## ${f.number}\n\n${f.kind === "unlinked-audit-refusal" ? "Missing semantic input refuses with the exact partial trace, but deriveAuditRecords omits the DecisionRecorded event from the denied record's eventIds. Carry-in: WO-017 FINAL-001 adjudication 8." : f.kind === "incomplete-command-pending" ? "Replay admits a command with a non-empty string commandId but incomplete Command structure. It reaches pendingCommands; this is quarantined, not asserted valid." : "Shipped behavior diverges from the independent oracle. Reproducing cells are quarantined below."}\n\n\`\`\`json\n${JSON.stringify(f, null, 2)}\n\`\`\`\n`,
+          `## ${f.number}\n\n${f.kind === "linked-audit-refusal" ? "Resolved: truthful partial semantic-input refusals now link their DecisionRecorded event without inventing missing inputs." : f.kind === "unlinked-audit-refusal" ? "Missing semantic input refuses with the exact partial trace, but deriveAuditRecords omits the DecisionRecorded event from the denied record's eventIds. Carry-in: WO-017 FINAL-001 adjudication 8." : f.kind === "incomplete-command-pending" ? "Historical replay admits a command with a non-empty string commandId but incomplete Command structure. New appends validate the structure separately; historical replay remains unchanged." : "Shipped behavior diverges from the independent oracle. Reproducing cells are quarantined below."}\n\n\`\`\`json\n${JSON.stringify(f, null, 2)}\n\`\`\`\n`,
       )
       .join("\n");
   files.push({
