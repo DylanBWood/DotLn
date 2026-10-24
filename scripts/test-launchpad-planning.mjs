@@ -839,6 +839,98 @@ test("planning and release-close reads run in a fresh exported instance", async 
       assert.equal(parse(entropySubject)?.latestFiledReview, null);
       assert.equal(entropyReceipt.status, 0);
     }
+    // The carried entropy host reviews a registered product clone, using
+    // the same exported runtime and fake transport as the launchpad above.
+    const entropyTarget = join(scratch, "entropy-target");
+    mkdirSync(entropyTarget);
+    git(entropyTarget, ["init", "--quiet", "-b", "main"]);
+    configure(entropyTarget);
+    write(entropyTarget, "app.txt", "Exported instance target.\n");
+    commit(entropyTarget, "test: entropy target");
+    const entropyBase = git(entropyTarget, ["rev-parse", "HEAD"]);
+    git(entropyTarget, ["update-ref", "refs/remotes/origin/main", entropyBase]);
+    const entropyConfig = JSON.parse(
+      readFileSync(join(kit, "dotln.config.json"), "utf8"),
+    );
+    entropyConfig.classes = {
+      ...entropyConfig.classes,
+      entropyFixture: { checks: [], supports: [] },
+    };
+    entropyConfig.repositories = {
+      ...entropyConfig.repositories,
+      entropyTarget: {
+        baseBranch: "main",
+        worktreeParent: "../targets",
+        repositoryClass: "entropyFixture",
+        authorityProfile: {
+          authorityEnvelopeId: "fixture.entropy",
+          allowedEffects: ["repo.read", "repo.test"],
+          deniedEffects: ["repo.push"],
+          resourceLimits: {},
+          requiredEvidence: [],
+          expiresAt: Number.MAX_SAFE_INTEGER,
+          revocationEventTypes: [],
+        },
+      },
+    };
+    write(kit, "dotln.config.json", entropyConfig);
+    ok(
+      nodeObserve([
+        "--input-type=module",
+        "-e",
+        `import { recordRepositoryClone } from './scripts/lib/target-worktrees.mjs'; recordRepositoryClone(process.cwd(), 'entropyTarget', ${JSON.stringify(entropyTarget)});`,
+      ]),
+      "register exported entropy target",
+    );
+    const targetSubject = parse(
+      ok(
+        observe(["entropy", "--", "subject", "--repository", "entropyTarget"]),
+        "exported target subject",
+      ),
+    );
+    assert.equal(targetSubject.repository, "entropyTarget");
+    assert.equal(targetSubject.baseCommit, entropyBase);
+    const targetReview = parse(
+      ok(
+        observe([
+          "entropy",
+          "--",
+          "review",
+          "--repository",
+          "entropyTarget",
+          "--transport",
+          "fake",
+        ]),
+        "exported target review",
+      ),
+    );
+    const targetFiled = parse(
+      ok(
+        observe(targetReview.file.split(" ").slice(2)),
+        "exported target receipt",
+      ),
+    );
+    const targetReceipt = JSON.parse(
+      readFileSync(
+        join(kit, targetFiled.receipt.replace(/\.md$/u, ".json")),
+        "utf8",
+      ),
+    );
+    assert.equal(targetReceipt.subject.repository, "entropyTarget");
+    assert.equal(targetReceipt.subject.baseCommit, entropyBase);
+    assert.equal(
+      targetReceipt.confinement.launchpad.workingTreeDirtyAtDispatch,
+      true,
+    );
+    assert.equal(
+      parse(
+        ok(
+          observe(["entropy", "--", "check"]),
+          "exported target receipt chain",
+        ),
+      ).status,
+      "ok",
+    );
     write(kit, "docs/product/00-vision.md", "# Malformed declared vision\n");
     const malformed = run(kit, "npm", [
       "run",

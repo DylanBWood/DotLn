@@ -16,12 +16,12 @@ import {
 
 const toolRoot = findLaunchpad();
 const usage = [
-  "entropy review [<commit>] [--transport claude-cli-print|codex-cli-exec|fake] [--model <model>] [--effort <level>] [--source <source>] [--account-label <label>] [--concern '<hypothesis>']",
+  "entropy review [--repository <id> [<commit>] | --workstream WS-NNN | <commit>] [--transport claude-cli-print|codex-cli-exec|fake] [--model <model>] [--effort <level>] [--source <source>] [--account-label <label>] [--concern '<hypothesis>']",
   "entropy receipt <result.json> --statement <statement.txt>",
   "entropy refute <REVIEW-NNN> [--transport <name>] [--model <model>] [--effort <level>] [--source <source>] [--account-label <label>]",
   "entropy refutation-receipt <attempts.json> [--statement <statement.txt> (accepted, not recorded)]",
   "entropy dispose <REVIEW-NNN> <id> accept|defer|dismiss '<reason>'",
-  "entropy subject",
+  "entropy subject [--repository <id> [<commit>] | --workstream WS-NNN | <commit>]",
   "entropy discard review|refutation",
   "entropy check",
 ].join("\n  ");
@@ -45,6 +45,30 @@ const ACTOR_FLAGS = [
   "--source",
   "--account-label",
 ];
+const SUBJECT_FLAGS = ["--repository", "--workstream"];
+const subjectOptions = (args, allowed = []) => {
+  const flags = [],
+    positional = [];
+  for (let index = 0; index < args.length; index++) {
+    if (args[index].startsWith("--")) flags.push(args[index], args[++index]);
+    else positional.push(args[index]);
+  }
+  if (positional.length > 1) throw new Error(usage);
+  const opt = options(flags, [...SUBJECT_FLAGS, ...allowed]);
+  if (
+    (opt["--repository"] && opt["--workstream"]) ||
+    (opt["--workstream"] && positional.length)
+  )
+    throw new Error(usage);
+  return {
+    opt,
+    selection: {
+      revision: positional[0],
+      repository: opt["--repository"],
+      workstream: opt["--workstream"],
+    },
+  };
+};
 const actor = (opt) => ({
   transport: opt["--transport"] ?? null,
   ...(opt["--model"] ? { model: opt["--model"] } : {}),
@@ -59,13 +83,12 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
   const [command, ...rest] = args;
 
   if (command === "review") {
-    const revision = rest[0] && !rest[0].startsWith("--") ? rest[0] : "HEAD";
-    const opt = options(revision === "HEAD" ? rest : rest.slice(1), [
+    const { opt, selection } = subjectOptions(rest, [
       ...ACTOR_FLAGS,
       "--concern",
     ]);
     return beginEntropyReview(root, {
-      revision,
+      ...selection,
       ...actor(opt),
       concern: opt["--concern"] ?? null,
     });
@@ -121,7 +144,8 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
     return readReceipt(root, rest[0]);
   }
 
-  if (command === "subject" && !rest.length) return entropySubject(root);
+  if (command === "subject")
+    return entropySubject(root, subjectOptions(rest).selection);
 
   if (command === "check" && !rest.length) return checkEntropyReceipts(root);
 

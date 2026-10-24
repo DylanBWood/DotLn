@@ -223,7 +223,13 @@ A workstream owns an outcome spanning repositories and time. A repository owns
 its local code history, branch/worktree, tests, and delivery boundaries. Each
 bounded work order names its repository bases and scope; the workstream view
 relates those results without collapsing them into one repository or one long
-model session.
+model session. Its distinct repositories can be reviewed as one subject set
+with `entropy review --workstream WS-NNN`: one frozen committed repository,
+pinned reviewer, blinded refutation and immutable launchpad receipt per
+dispatch, including the launchpad only for `self`. `entropy subject
+--workstream WS-NNN` identifies pending work, receipts to refute or consume,
+and the next member. The pass disposes each receipt's survivors and allocates
+accepted target-named register rows to the appropriate member orders (WO-224).
 
 A launchpad keeps one `WS-NNN-<slug>.md` per outcome under its configured
 `workstreams` root, following [the document convention](../workstreams/README.md).

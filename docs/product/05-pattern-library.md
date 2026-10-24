@@ -75,7 +75,11 @@ the guide's host steps that command, with numbered immutable receipts, a
 control log and operator dispositions that land accepted findings in the
 follow-up register as candidates; the actor pin is satisfied by invocation
 readback, and every other route is a labelled substitute reviewer carrying its
-recorded model, effort and reason. Sustain stays a candidate (the planning
+recorded model, effort and reason. The subject may also be a registered target
+repository at a recorded commit or a workstream's distinct repositories,
+reviewed sequentially with one receipt per member in the launchpad (WO-224).
+Accepted candidate titles name their repository and commit so the pass can
+allocate them to the appropriate member orders. Sustain stays a candidate (the planning
 map's section dated 2026-09-22), and no scheduler, dispatch phrase or role was
 added.
 

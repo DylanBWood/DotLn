@@ -32,6 +32,11 @@ import {
   runsRoot,
 } from "./lib/entropy-review.mjs";
 import { main as entropy } from "./entropy.mjs";
+import { main as plan } from "./refute-plan.mjs";
+import {
+  cloneMapPath,
+  recordRepositoryClone,
+} from "./lib/target-worktrees.mjs";
 
 import { compileReviewerWorkOrder } from "../packages/skeleton/dist/src/loadouts/entropy-reducer.js";
 import {
@@ -104,10 +109,567 @@ const only = (rows, type) => rows.filter((row) => row.type === type);
  * a test that ends mid-dispatch would otherwise leave in system-temp. */
 const fixtureRepositories = [];
 
+function registeredTarget(parent, launchpad, id) {
+  const home = realpathSync(mkdtempSync(join(parent, "target-")));
+  const origin = join(home, "origin.git"),
+    clone = join(home, "clone");
+  runGit(
+    home,
+    ["init", "--bare", "--quiet", "-b", "main", origin],
+    fixtureGitOptions,
+  );
+  runGit(home, ["clone", "--quiet", origin, clone], fixtureGitOptions);
+  runGit(clone, ["config", "user.name", "Fixture"], fixtureGitOptions);
+  runGit(
+    clone,
+    ["config", "user.email", "fixture@example.invalid"],
+    fixtureGitOptions,
+  );
+  runGit(clone, ["config", "commit.gpgsign", "false"], fixtureGitOptions);
+  write(clone, "README.md", `# Target ${id}\n`);
+  write(clone, "src/target.mjs", "export const target = 1;\n");
+  write(clone, ".gitignore", "node_modules/\n");
+  commit(clone, "target base");
+  const base = runGit(clone, ["rev-parse", "HEAD"]);
+  runGit(clone, ["push", "--quiet", "origin", "main"], fixtureGitOptions);
+  write(clone, "local-only.txt", "Not the fetched base.\n");
+  commit(clone, "local head differs from fetched base");
+  const configPath = join(launchpad, "dotln.config.json");
+  const config = existsSync(configPath)
+    ? JSON.parse(readFileSync(configPath, "utf8"))
+    : {
+        version: 1,
+        classes: { fixture: { checks: [], supports: [] } },
+        repositories: {},
+      };
+  config.repositories[id] = {
+    baseBranch: "main",
+    worktreeParent: "../targets",
+    repositoryClass: "fixture",
+    authorityProfile: {
+      authorityEnvelopeId: "fixture.target",
+      allowedEffects: ["repo.read", "repo.test"],
+      deniedEffects: ["repo.push"],
+      resourceLimits: {},
+      requiredEvidence: [],
+      expiresAt: Number.MAX_SAFE_INTEGER,
+      revocationEventTypes: [],
+    },
+  };
+  write(launchpad, "dotln.config.json", prettyJson(config));
+  recordRepositoryClone(launchpad, id, clone);
+  return { clone, base, head: runGit(clone, ["rev-parse", "HEAD"]) };
+}
+
+const fileReview = async (repo) => {
+  const pending = currentDispatch(repo, "review");
+  const filed = await entropy(
+    [
+      "receipt",
+      join(pending.capture, "result.json"),
+      "--statement",
+      join(pending.capture, "statement.txt"),
+    ],
+    repo,
+  );
+  return JSON.parse(
+    readFileSync(join(repo, runsRoot(repo), `${filed.receiptId}.json`), "utf8"),
+  );
+};
+const fileRefutation = async (repo, review) => {
+  await entropy(["refute", review, "--transport", "fake"], repo);
+  const pending = currentDispatch(repo, "refutation");
+  const filed = await entropy(
+    ["refutation-receipt", join(pending.capture, "result.json")],
+    repo,
+  );
+  return JSON.parse(
+    readFileSync(join(repo, runsRoot(repo), `${filed.receiptId}.json`), "utf8"),
+  );
+};
+const workstream = (
+  repo,
+  members,
+  { root = "docs/workstreams", id = "WS-001" } = {},
+) => {
+  write(
+    repo,
+    `${root}/${id}-fixture.md`,
+    `# ${id} — Fixture\n\n<!-- dotln-workstream:start -->\n${JSON.stringify({
+      id,
+      members: members.map((repositoryId, index) => ({
+        repositoryId,
+        workOrderId: `WO-${String(index + 1).padStart(3, "0")}`,
+      })),
+      edges: [],
+    })}\n<!-- dotln-workstream:end -->\n`,
+  );
+};
+
 export async function entropyFixtures() {
-  const parent = mkdtempSync(join(tmpdir(), "dotln-entropy-fixtures-"));
+  const parent = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-entropy-fixtures-")),
+  );
   process.env.DOTLN_ENTROPY_FIXTURE = "1";
   try {
+    await test("registered subjects freeze the fetched base, bind the id and witness both repositories through review and refutation", async () => {
+      const repo = fixtureRepository(parent);
+      const target = registeredTarget(parent, repo, "service");
+      commit(repo, "register fixture target");
+      write(
+        target.clone,
+        "node_modules/fixture/index.js",
+        "module.exports = {};\n",
+      );
+      write(repo, "README.md", "Dirty launchpad before dispatch.\n");
+      const beforeRefs = runGit(target.clone, ["show-ref"]);
+      const beforeStatus = runGit(target.clone, [
+        "status",
+        "--porcelain",
+        "--untracked-files=no",
+      ]);
+      const selected = await entropy(
+        ["subject", "--repository", "service"],
+        repo,
+      );
+      assert.equal(selected.baseCommit, target.base);
+      assert.notEqual(selected.baseCommit, target.head);
+      await entropy(
+        ["review", "--repository", "service", "--transport", "fake"],
+        repo,
+      );
+      let pending = currentDispatch(repo, "review");
+      rmSync(cloneMapPath(repo));
+      assert.equal(
+        (await entropy(["subject", "--repository", "service"], repo)).action,
+        "finish-pending-dispatch",
+      );
+      recordRepositoryClone(repo, "service", target.clone);
+      const frozen = pending.subject.scratchRepository;
+      assert.equal(dirname(pending.scratchParent), entropyScratchLane(repo));
+      assert.equal(runGit(frozen, ["rev-parse", "HEAD"]), target.base);
+      assert.ok(!existsSync(join(frozen, "local-only.txt")));
+      assert.ok(existsSync(join(frozen, "node_modules/fixture/index.js")));
+      assert.equal(pending.subject.repository, "service");
+      assert.equal(
+        pending.subject.hash,
+        sha256Hex(
+          JSON.stringify([
+            target.base,
+            pending.subject.trackedStatusSha256,
+            pending.subject.scratchInventorySha256,
+            pending.subject.scratchInventoryCount,
+            "service",
+          ]),
+        ),
+      );
+      assert.doesNotMatch(
+        JSON.stringify(pending.compileInputs.lensBriefs),
+        /docs\/product\/|packages\/|corpus\/|docs\/planning\//u,
+      );
+      for (const brief of pending.compileInputs.lensBriefs)
+        for (const scope of brief.files)
+          assert.ok(existsSync(join(frozen, scope)), scope);
+      const checkCopy = (copy) => {
+        assert.equal(runGit(copy, ["remote"]), "");
+        assert.notEqual(
+          spawnGit(["-C", copy, "push", "origin", "HEAD:refs/heads/escaped"], {
+            encoding: "utf8",
+          }).status,
+          0,
+        );
+      };
+      checkCopy(frozen);
+      write(repo, "src/module.mjs", "export const value = 2;\n");
+      const review = await fileReview(repo);
+      assert.equal(review.subject.repository, "service");
+      assert.equal(review.subject.baseCommit, target.base);
+      assert.equal(review.subject.scratchRepository, frozen);
+      assert.equal(
+        review.confinement.launchpad.workingTreeDirtyAtDispatch,
+        true,
+      );
+      assert.equal(
+        review.confinement.launchpad.trackedStatusByteIdentical,
+        false,
+      );
+      assert.match(
+        renderReceipt(review),
+        new RegExp(`service@${target.base}`, "u"),
+      );
+      assert.ok(
+        !JSON.stringify(review).includes(target.clone),
+        "source clone path stays in ignored pending state",
+      );
+      await entropy(["refute", review.receiptId, "--transport", "fake"], repo);
+      pending = currentDispatch(repo, "refutation");
+      assert.equal(pending.subject.repository, "service");
+      assert.equal(
+        runGit(pending.subject.scratchRepository, ["rev-parse", "HEAD"]),
+        target.base,
+      );
+      checkCopy(pending.subject.scratchRepository);
+      await entropy(
+        ["refutation-receipt", join(pending.capture, "result.json")],
+        repo,
+      );
+      const refutation = JSON.parse(
+        readFileSync(join(repo, runsRoot(repo), "REFUTATION-001.json"), "utf8"),
+      );
+      for (const receipt of [review, refutation]) {
+        assert.equal(receipt.subject.repository, "service");
+        assert.equal(receipt.subject.baseCommit, target.base);
+        assert.equal(receipt.confinement.trackedStatusByteIdentical, true);
+        assert.deepEqual(
+          receipt.confinement.sourceRefs.before,
+          receipt.confinement.sourceRefs.after,
+        );
+        assert.equal(receipt.confinement.sourceRefs.identical, true);
+      }
+      assert.equal(runGit(target.clone, ["show-ref"]), beforeRefs);
+      assert.equal(
+        runGit(target.clone, ["status", "--porcelain", "--untracked-files=no"]),
+        beforeStatus,
+      );
+      assert.equal((await entropy(["check"], repo)).status, "ok");
+      assert.equal(
+        (await entropy(["subject"], repo)).action,
+        "review",
+        "a target receipt is not a launchpad subject",
+      );
+      assert.equal(
+        (await entropy(["subject", "--repository", "service"], repo)).action,
+        "consume",
+      );
+      rmSync(cloneMapPath(repo));
+      assert.equal(
+        (await entropy(["subject", "--repository", "service"], repo)).action,
+        "consume",
+      );
+      assert.equal(
+        (
+          await entropy(
+            ["subject", "--repository", "service", target.base],
+            repo,
+          )
+        ).action,
+        "consume",
+      );
+      recordRepositoryClone(repo, "service", target.clone);
+      await entropy(
+        [
+          "review",
+          "--repository",
+          "service",
+          target.head,
+          "--transport",
+          "fake",
+        ],
+        repo,
+      );
+      assert.equal((await fileReview(repo)).subject.baseCommit, target.head);
+    });
+
+    await test("target lenses retain implementation scopes after many documentation files", async () => {
+      const repo = fixtureRepository(parent),
+        target = registeredTarget(parent, repo, "service");
+      for (let index = 1; index <= 32; index++)
+        write(
+          target.clone,
+          `docs/a${String(index).padStart(2, "0")}.md`,
+          "# Target guide\n",
+        );
+      write(
+        target.clone,
+        "docs/intake/excluded.md",
+        "Synthetic intake is excluded from lens scopes.\n",
+      );
+      commit(target.clone, "target with many documents");
+      await entropy(
+        ["review", "--repository", "service", "HEAD", "--transport", "fake"],
+        repo,
+      );
+      for (const brief of currentDispatch(repo, "review").compileInputs
+        .lensBriefs) {
+        assert.ok(brief.files.includes("src/"));
+        assert.ok(brief.files.includes("docs/a32.md"));
+        assert.ok(
+          !brief.files.some((scope) => /intake|^docs\/$/iu.test(scope)),
+        );
+      }
+      await entropy(["discard", "review"], repo);
+    });
+
+    await test("target filing binds the original clone and tree, while concurrent target refs and status are recorded", async () => {
+      const repo = fixtureRepository(parent),
+        target = registeredTarget(parent, repo, "service");
+      await entropy(
+        ["review", "--repository", "service", "--transport", "fake"],
+        repo,
+      );
+      write(target.clone, "README.md", "Concurrent target edit.\n");
+      runGit(target.clone, [
+        "update-ref",
+        "refs/heads/concurrent",
+        target.base,
+      ]);
+      const review = await fileReview(repo);
+      assert.equal(review.confinement.trackedStatusByteIdentical, false);
+      assert.equal(review.confinement.sourceRefs.identical, false);
+      await entropy(["refute", review.receiptId, "--transport", "fake"], repo);
+      const pending = currentDispatch(repo, "refutation");
+      rmSync(join(pending.subject.scratchRepository, ".git"), {
+        recursive: true,
+      });
+      await assert.rejects(
+        entropy(
+          ["refutation-receipt", join(pending.capture, "result.json")],
+          repo,
+        ),
+        /no longer resolves to the tree/u,
+      );
+      assert.equal(
+        existsSync(join(repo, runsRoot(repo), "REFUTATION-001.json")),
+        false,
+      );
+      await entropy(["discard", "refutation"], repo);
+      await entropy(
+        ["review", "--repository", "service", "--transport", "fake"],
+        repo,
+      );
+      const replacement = registeredTarget(parent, repo, "replacement");
+      recordRepositoryClone(repo, "service", replacement.clone);
+      await assert.rejects(fileReview(repo), /clone mapping changed/u);
+      await entropy(["discard", "review"], repo);
+    });
+
+    await test("workstreams dispatch distinct members in order, retain partial dispositions and allocate accepted target findings", async () => {
+      const repo = fixtureRepository(parent);
+      const first = registeredTarget(parent, repo, "service");
+      registeredTarget(parent, repo, "client");
+      const config = JSON.parse(
+        readFileSync(join(repo, "dotln.config.json"), "utf8"),
+      );
+      config.roots = { workstreams: "outcomes" };
+      write(repo, "dotln.config.json", prettyJson(config));
+      workstream(repo, ["service", "service", "client"], { root: "outcomes" });
+      write(
+        repo,
+        "docs/work-orders/WO-001-target.md",
+        `# WO-001 — Fixture\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n**Repository:** service @ ${first.base}\n**Workstream:** WS-001\n`,
+      );
+      commit(repo, "register workstream");
+      assert.equal(
+        (await entropy(["subject", "--workstream", "WS-001"], repo)).repository,
+        "service",
+      );
+      await entropy(
+        ["review", "--workstream", "WS-001", "--transport", "fake"],
+        repo,
+      );
+      const pending = currentDispatch(repo, "review");
+      await assert.rejects(
+        entropy(
+          ["review", "--workstream", "WS-001", "--transport", "fake"],
+          repo,
+        ),
+        /already pending/u,
+      );
+      assert.equal(
+        currentDispatch(repo, "review").scratchParent,
+        pending.scratchParent,
+      );
+      assert.equal(readdirSync(entropyScratchLane(repo)).length, 1);
+      const inFlight = await entropy(
+        ["subject", "--workstream", "WS-001"],
+        repo,
+      );
+      assert.equal(inFlight.action, "finish-pending-dispatch");
+      assert.equal(inFlight.pendingRepository, "service");
+      const review = await fileReview(repo);
+      assert.equal(
+        (await entropy(["subject", "--workstream", "WS-001"], repo)).action,
+        "refute",
+      );
+      await fileRefutation(repo, review.receiptId);
+      await entropy(
+        [
+          "dispose",
+          review.receiptId,
+          "ER-F01",
+          "accept",
+          "Fixture accepted target finding.",
+        ],
+        repo,
+      );
+      const candidate = readFileSync(
+        join(repo, "docs/planning/entropy-reviews/REVIEW-001.md"),
+        "utf8",
+      );
+      assert.ok(candidate.includes(`review REVIEW-001, service@${first.base}`));
+      assert.ok(
+        candidate.includes(`**ER-F01 — REVIEW-001 service@${first.base}`),
+      );
+      const feed = await plan(["followups", "--sync"], repo);
+      const row = feed.rows.find((item) => item.title.includes("service@"));
+      assert.ok(row, JSON.stringify(feed));
+      write(
+        repo,
+        "docs/control/local/allocate.json",
+        prettyJson({
+          expectedRevision: feed.revision,
+          id: row.id,
+          sourceRevision: row.sourceRevision,
+          status: "allocated",
+          reason: "Fixture member order owns the target finding.",
+          reopenWhen: "The fixture member order no longer owns the finding.",
+          targets: ["WO-001"],
+        }),
+      );
+      assert.equal(
+        (
+          await plan(
+            ["followups", "--apply", "docs/control/local/allocate.json"],
+            repo,
+          )
+        ).status,
+        "allocated",
+      );
+      const consume = await entropy(
+        ["subject", "--workstream", "WS-001"],
+        repo,
+      );
+      assert.equal(consume.action, "consume");
+      assert.ok(!consume.remaining.includes("ER-F01"));
+      for (const id of consume.remaining)
+        await entropy(
+          ["dispose", review.receiptId, id, "dismiss", "Fixture disposition."],
+          repo,
+        );
+      const next = await entropy(["subject", "--workstream", "WS-001"], repo);
+      assert.equal(next.action, "review");
+      assert.equal(next.repository, "client");
+      await entropy(
+        ["review", "--workstream", "WS-001", "--transport", "fake"],
+        repo,
+      );
+      const second = await fileReview(repo);
+      assert.equal(second.subject.repository, "client");
+      for (const receipt of [review, second]) {
+        assert.equal(receipt.workstream.id, "WS-001");
+        assert.equal(receipt.workstream.sequence, 1);
+        assert.deepEqual(receipt.workstream.repositories, [
+          "service",
+          "client",
+        ]);
+      }
+      await fileRefutation(repo, second.receiptId);
+      const remaining = (
+        await entropy(["subject", "--workstream", "WS-001"], repo)
+      ).remaining;
+      for (const id of remaining)
+        await entropy(
+          ["dispose", second.receiptId, id, "dismiss", "Fixture disposition."],
+          repo,
+        );
+      assert.equal(
+        (await entropy(["subject", "--workstream", "WS-001"], repo)).action,
+        "complete",
+      );
+      assert.equal((await entropy(["check"], repo)).receipts.length, 4);
+      await entropy(
+        ["review", "--workstream", "WS-001", "--transport", "fake"],
+        repo,
+      );
+      assert.equal(currentDispatch(repo, "review").workstream.sequence, 2);
+      await entropy(["discard", "review"], repo);
+    });
+
+    await test("workstream self freezes a named launchpad commit after the target receipt, and invalid selectors allocate no copy", async () => {
+      const repo = fixtureRepository(parent);
+      registeredTarget(parent, repo, "service");
+      workstream(repo, ["service", "missing"]);
+      for (const args of [
+        ["review", "--workstream", "WS-001", "--transport", "fake"],
+        ["subject", "--workstream", "WS-001"],
+        ["review", "--repository", "missing", "--transport", "fake"],
+        ["review", "--repository", "service", "--workstream", "WS-001"],
+        ["review", "--workstream", "WS-001", "HEAD"],
+        ["subject", "--repository"],
+      ])
+        await assert.rejects(
+          entropy(args, repo),
+          /unregistered|entropy review/u,
+        );
+      assert.ok(!existsSync(entropyScratchLane(repo)));
+      workstream(repo, ["service", "self"]);
+      commit(repo, "register self workstream");
+      const head = runGit(repo, ["rev-parse", "HEAD"]);
+      await entropy(
+        ["review", "--workstream", "WS-001", "--transport", "fake"],
+        repo,
+      );
+      await fileReview(repo);
+      write(repo, "README.md", "Concurrent launchpad work.\n");
+      await entropy(
+        ["review", "--workstream", "WS-001", "--transport", "fake"],
+        repo,
+      );
+      const self = await fileReview(repo);
+      assert.equal(self.subject.repository, ".");
+      assert.equal(self.subject.baseCommit, head);
+      assert.equal(self.namedRevision, head);
+      assert.equal(self.workstream.id, "WS-001");
+    });
+
+    await test("clone lookup uses running, primary and main maps and refuses missing mappings before cloning", async () => {
+      const primary = fixtureRepository(parent),
+        target = registeredTarget(parent, primary, "service");
+      commit(primary, "register target");
+      const secondary = join(parent, "secondary"),
+        main = join(parent, "main-checkout");
+      runGit(primary, [
+        "worktree",
+        "add",
+        "--quiet",
+        "-b",
+        "secondary",
+        secondary,
+      ]);
+      runGit(primary, ["branch", "-m", "retained"]);
+      runGit(primary, ["worktree", "add", "--quiet", "-b", "main", main]);
+      fixtureRepositories.push(secondary, main);
+      assert.equal(
+        (await entropy(["subject", "--repository", "service"], secondary))
+          .baseCommit,
+        target.base,
+      );
+      const different = registeredTarget(parent, primary, "different");
+      recordRepositoryClone(secondary, "service", different.clone);
+      assert.equal(
+        (await entropy(["subject", "--repository", "service"], secondary))
+          .baseCommit,
+        different.base,
+      );
+      rmSync(cloneMapPath(secondary));
+      recordRepositoryClone(main, "service", target.clone);
+      rmSync(cloneMapPath(primary));
+      assert.equal(
+        (await entropy(["subject", "--repository", "service"], secondary))
+          .baseCommit,
+        target.base,
+      );
+      rmSync(cloneMapPath(main));
+      await assert.rejects(
+        entropy(
+          ["review", "--repository", "service", "--transport", "fake"],
+          secondary,
+        ),
+        /running checkout, the primary checkout.*main-branch worktree/u,
+      );
+      assert.ok(!existsSync(entropyScratchLane(secondary)));
+    });
+
     await test("WO-177 CLI defaults reach review/refutation arguments and receipt attestations through fake workers", async (t) => {
       const launches = [];
       for (const Transport of [
@@ -229,6 +791,92 @@ export async function entropyFixtures() {
         runGit(repo, ["status", "--porcelain"], fixtureGitOptions),
         before,
       );
+    });
+
+    await test("historical absolute launchpad subjects keep their rendering, refutation and consumption", async () => {
+      const repo = fixtureRepository(parent);
+      await entropy(["review", "--transport", "fake"], repo);
+      const review = await fileReview(repo);
+      const historical = structuredClone(review);
+      historical.subject.repository = "/fixture/historical-launchpad";
+      assert.equal(
+        renderReceipt(historical),
+        renderReceipt(review),
+        "an old absolute launchpad path does not add target subject details",
+      );
+
+      // Build a synthetic historical pair and its matching control event.
+      // No committed receipt is rewritten or used as a fixture input.
+      const { receiptHash: priorHash, ...body } = historical;
+      assert.equal(priorHash, review.receiptHash);
+      historical.receiptHash = `sha256:${sha256Hex(JSON.stringify(body))}`;
+      const rendered = renderReceipt(historical);
+      write(
+        repo,
+        `${runsRoot(repo)}/${review.receiptId}.json`,
+        prettyJson(historical),
+      );
+      write(repo, `${runsRoot(repo)}/${review.receiptId}.md`, rendered);
+      const events = readEntropyControl(repo);
+      events[0].receiptHash = historical.receiptHash;
+      events[0].renderedHash = `sha256:${sha256Hex(rendered)}`;
+      write(
+        repo,
+        controlLog(repo),
+        events.map((event) => JSON.stringify(event)).join("\n") + "\n",
+      );
+      assert.equal(checkEntropyReceipts(repo).status, "ok");
+      const next = await entropy(["subject", "--repository", "self"], repo);
+      assert.equal(next.action, "refute");
+      assert.equal(next.repository, ".");
+
+      await entropy(["refute", review.receiptId, "--transport", "fake"], repo);
+      const pending = currentDispatch(repo, "refutation");
+      const pendingSubject = await entropy(
+        ["subject", "--repository", "self"],
+        repo,
+      );
+      assert.equal(pendingSubject.action, "finish-pending-dispatch");
+      assert.equal(pendingSubject.pendingRepository, ".");
+      const filed = await entropy(
+        ["refutation-receipt", join(pending.capture, "result.json")],
+        repo,
+      );
+      const refutation = JSON.parse(
+        readFileSync(
+          join(repo, runsRoot(repo), `${filed.receiptId}.json`),
+          "utf8",
+        ),
+      );
+      assert.equal(
+        refutation.subject.repository,
+        historical.subject.repository,
+        "refutation retains the recorded subject while freezing this launchpad",
+      );
+      assert.equal(
+        renderReceipt(refutation),
+        renderReceipt({
+          ...refutation,
+          subject: { ...refutation.subject, repository: "." },
+        }),
+      );
+      assert.equal(checkEntropyReceipts(repo).status, "ok");
+      assert.equal((await entropy(["subject"], repo)).action, "consume");
+      const selected = await entropy(["subject", "--repository", "self"], repo);
+      assert.equal(selected.action, "consume");
+      assert.equal(selected.repository, ".");
+      const accepted = await entropy(
+        [
+          "dispose",
+          review.receiptId,
+          refutation.report.promotedFindingIds[0],
+          "accept",
+          "The historical launchpad finding remains actionable.",
+        ],
+        repo,
+      );
+      const candidate = readFileSync(join(repo, accepted.candidate), "utf8");
+      assert.doesNotMatch(candidate, /historical-launchpad|self@/u);
     });
 
     await test("the fake transport drives review, receipt, refute, refutation-receipt and dispose end to end", async () => {
@@ -1326,6 +1974,7 @@ export async function entropyFixtures() {
       const gate = checkEntropyReceipts(repo);
       assert.equal(gate.status, "interrupted-filing");
       assert.deepEqual(gate.interruptedFilings, ["REVIEW-001"]);
+      assert.equal((await entropy(["subject"], repo)).action, "review");
     });
 
     await test("the attestation labels a substitute reviewer and never invents readback", () => {
