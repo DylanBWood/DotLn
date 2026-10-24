@@ -9,7 +9,15 @@ lifecycle identity per spawned worker, a sub-agent budget per phase worker, gene
 a target-order branch in the executor, verifier
 and reviewer roles; the four existing phrases keep their behavior. Assigned at activation under the standing
 opt-out default.
-**Cost:** adds a `router` role and the phrase `drive: WO-NNN` to the
+**Cost:** before-numbers, filed by the [2026-10-24
+pass](../planning/intake-mining-run-routing-2026-10-24.md) (§11) from the
+165 per-order control segments at `main` `49d8c4c3`, so the drive's effect
+can be read against them: 6.25 implied operator phrases per order over the
+record and 6.94 since 2026-10-08; a hand-gap share of 30.5% of within-order
+wall clock over the record and 33.2% since 2026-10-08; median wait from
+implementation ready to verification requested 3.6 minutes over the record
+and 17.8 since 2026-10-08; reproducible at any time from the committed
+segments by the method that section states. Adds a `router` role and the phrase `drive: WO-NNN` to the
 Contributor build (`packages/skeleton/src/loadouts/contributor.ts`), one generated agent definition per lifecycle role (executor, verifier,
 reviewer, release-close) at the pinned model and effort, from the generator and check rule WO-187 adds for spawned workers
 (`packages/compiler/src/harness.ts`), a session record, role and
@@ -611,6 +619,15 @@ integrated code identity when one exists.
 **Write-back duty:** as listed in criterion 10.
 
 **Known issues and carry-ins:**
+- 2026-10-24 pass (operator direction of 2026-10-24, ignored capture
+  SHA-256 in that planning document's §1): the drive is trusted to carry an
+  order from one phrase to the merge only after it has shown, on the record,
+  that an unattended run cannot consume the operator's budget in an afternoon
+  or continue down an unproductive path; the first driven orders therefore
+  run with the operator present, the per-order budget keys of step 3 and the
+  stop list are the evidence the acceptance reads, and the order's close
+  packet reports budget spent against the keys. Reopen when the first three
+  driven orders close inside their budgets with no operator stop.
 - 2026-10-13 reshape (the operator's sizing direction, planning document
   §12): the publication edge names WO-210, the carrier the provenance
   records; the executor root was given the preflight discipline here (step 9, criterion

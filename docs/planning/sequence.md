@@ -45,7 +45,10 @@ files WO-223 and WO-224; the [2026-10-21
 pass](fork-notes-and-operator-questions-2026-10-21.md) retires WO-223
 (v0.88.0) and WO-217 (v0.89.0), files WO-225 to WO-229, cuts WO-228 out of
 WO-193 into the separate predecessor track (WS-002) and places the four
-orders that unblock the operator's fork first.
+orders that unblock the operator's fork first; the
+[2026-10-24 pass](intake-mining-run-routing-2026-10-24.md) retires WO-226
+(v0.90.0), WO-227 (v0.91.0), WO-225 (v0.92.0), WO-229 (v0.93.0) and WO-219
+(v0.94.0), files nothing, and takes in the 2026-10-22 intake mining run.
 
 **One focus: the starter, the operator's fork of it and DotLn-Angular,
 with a DotLn UI** (operator direction, 2026-10-13). The win condition is
@@ -127,19 +130,22 @@ reason, the register showing it; the 2026-10-18 pass added five rows, the
 fork's requests) and the 2026-10-19 fork-requests pass eight (WO-222's
 four boarded rows and four of the fork's requests); the 2026-10-20 entropy
 pass adds WO-218's own four boarded rows to WO-219; WO-217 closed on
-2026-10-21 (v0.89.0). The operator may interleave them with the focus
-orders by one sequence edit.
+2026-10-21 (v0.89.0) and WO-219 on 2026-10-23 (v0.94.0). The operator may
+interleave them with the focus orders by one sequence edit.
+
+**Five closes, and the mining run taken in** (the 2026-10-24 pass). The
+four orders that took the fork's workarounds away have all closed, WO-226
+on 2026-10-22 and WO-227, WO-225 and WO-229 on 2026-10-23, and WO-219 closed
+the same day; the fork took starter v0.93.0 in its own pass of 2026-10-23.
+WO-220 is next. The operator's 2026-10-22 intake mining run, an unofficial
+research run in ignored intake (`docs/intake/notes/2026-10-22-intake-mining-run/README.md`),
+was taken in by [the 2026-10-24 pass](intake-mining-run-routing-2026-10-24.md),
+which gave each of its 46 critical ideas one route and filed no order: its
+platform candidates sit in the map and the register, its DotLn-Angular
+routes reach the fork through that pass's block, and its decision batch
+waits on the operator's answers (that document's §10).
 
 The order, serial:
-- WO-226: the kit works after an update without a hand step; the admission
-  judges authority, not bytes; a pasted prefix is read; Fable by request.
-- WO-227: outward publication as the operator intended it.
-- WO-225: the console's host contracts for the instance's browser shell.
-- WO-229: a gate says who it waited for.
-- WO-219: boarded follow-ups, batch 3: lifecycle records, attestation, role
-  text, hooks, the harness and planning machinery (50 rows, four of them
-  boarded by WO-218's own verification and final review and two the
-  2026-10-20 entropy pass's accepted REVIEW-007 findings).
 - WO-220: boarded follow-ups, batch 4: the resident, the vertical, the
   console, intake and triage, audit, the corpus lanes and the kernel's
   admission (20 rows).
@@ -176,11 +182,6 @@ The period below `v1.0.0` is early access (operator direction, 2026-09-30).
 The order of everything the operator did not place is the planner's.
 
 <!-- dotln-work-order-sequence:start -->
-- WO-226 — An instance's kit works after its update without a hand step
-- WO-227 — Outward publication as the operator intended
-- WO-225 — The console's host contracts for an instance's browser shell
-- WO-229 — A gate says who it waited for
-- WO-219 — Boarded follow-ups, batch 3: records, roles and the harness
 - WO-220 — Boarded follow-ups, batch 4: the resident and the vertical
 - WO-080 — Workstreams: document, index, board section and synthetic pilot
 - WO-224 — The Entropy Reducer on a registered target or a workstream

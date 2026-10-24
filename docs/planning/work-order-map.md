@@ -5492,3 +5492,193 @@ The generated index answers the evidence-state question after this pilot exposed
 repeated drift. Historical IDs remain unchanged. Standardized front matter, a
 registry, a scheduler, and an automatic recommendation remain unselected; the
 remaining questions need their own bounded consumer and evidence.
+
+## Candidates — returns from the intake mining run's take-in (recorded 2026-10-24)
+
+Recorded by the [2026-10-24 pass](intake-mining-run-routing-2026-10-24.md),
+which took in the operator's 2026-10-22 intake mining run (an unofficial
+research run in ignored intake, `docs/intake/notes/2026-10-22-intake-mining-run/README.md`,
+read as scoped source with no authority) and gave each of its 46 critical
+ideas one route; the planning document's §5 holds the routes, §7 the riff
+deck, §8 the research queue, §9 the fork block and §10 the decision batch put
+to the operator. Every item below is a proposal; none is filed. The horizon
+is the run's: H1 attaches to a sequenced order, H2 to nothing filed. This
+section grants no activation authority.
+
+1. **The Order Drive's folds into WO-192** (KI-006, KI-024; H1→H2). WO-192's
+   router is the first station after the operator; the run reads it as a
+   process manager over the order's control segment with a dead-letter
+   channel, a close packet that replaces reading the reports, a certification
+   readback and a veto window, and asks that its phase and stop lists be
+   diffed against the two lifecycles that already ran without a phrase
+   (WO-118's resident loop and the vertical) rather than designed fresh,
+   sharing one process-definition table with the resident host. Deferred:
+   reopen when WO-192 is next amended or activated, or when OD-013 (lanes
+   above rung 5) and OD-049 (the resident as host) are answered; the diff is
+   the riff deck's card T11.
+2. **Stage 1's two asked instruments as `plan start` prints** (KI-021,
+   KI-120, KI-124; H1). The constraint-now line in a fixed shape (what binds,
+   its evidence, when it last moved and from what, what would show it moved)
+   and a read-only phrase count over the session journals (counts only, no
+   text) printed beside the failure counts, so a phrase at zero for three
+   passes is a retirement candidate. Both are written by hand in the pass's
+   §2, the first of two hand writings. Deferred: reopen when two passes have
+   written both by hand and the next pass reads them, or on the operator's
+   word; a standing rule for the line is OD-081.
+3. **The Gödel count** (KI-176; H1→H2), re-targeted from WO-227, which has
+   merged: one line per order, pass, release and colony summing every time
+   the operator asserted acceptability from outside the rules (off-ramps,
+   overridden holds, override records), which `plan failures` already counts
+   in its record totals; the first hand count is 9 typed escapes over 165
+   orders plus the run's two unrecorded override windows. Deferred: reopen
+   when a pass wants the sum per order, pass or colony, or when WO-088's
+   generated source lands; the next order editing `scripts/lib/plan-failures.mjs`
+   or the status projection is its home.
+4. **The promotion ledger and the held-class register** (KI-050, KI-051,
+   KI-053; H2). A hand-written control file with every decision class held
+   and zero rows, one typed operator-written row per move with its evidence,
+   bound, return condition and capture digest; promotions measured on later
+   escapes, reverts and corrections, never on agreement with the judges;
+   classes locked by sample size, never by category. Deferred: reopen when
+   OD-001 (the merge) and OD-002 (which classes first) are answered and the
+   stage 1 lines of item 2 have been read for two passes.
+5. **WO-083's before-numbers into WO-192's Cost line** (KI-225; H1). The
+   pass measured them at `49d8c4c3` (its §11: 6.25 implied phrases per order
+   over 165 orders, 6.94 since 2026-10-08; a 30.5% hand-gap share, 33.2%
+   since 2026-10-08; medians per transition). Settled: the operator answered
+   OD-093 on 2026-10-24 (D20) and the pass wrote the before-numbers into
+   WO-192's Cost line with the reproducibility rule; the measurement stands
+   in the planning document.
+6. **The research queue of the run** (KI-095, KI-244; H2). Thirteen items
+   sized under the operator's rule of at most twenty agents per book or
+   concept, listed in the pass's §8: toolify the catalog; The Art of War;
+   Gladwell book by book; toys for six mined sources; the operator-model
+   program's step 1; thirteen per-work surface designs; the four later probes
+   judged; the unchecked register rows; the model-knowledge map rows; Team
+   Topologies from an authorized copy and GEB with the operator; Jujutsu
+   Kaisen and The Phoenix Project; the idea ledger as a subject; the films.
+   Deferred: reopen when the operator opens a research run naming an item;
+   each is unofficial scratch unless the operator files an order.
+7. **The fork's forward Angular routes** (KI-030, KI-031, KI-039, KI-040,
+   KI-067, KI-068, KI-069, KI-070, KI-072, KI-090, KI-091, KI-092, KI-093,
+   KI-094, KI-105, KI-106, KI-107, KI-235; H2). Slice 1 (one order as a
+   formation with a worker card and a card shelf), The Twenty (twenty units,
+   a toolbox rail, flock, arrive and a formation), the operator-model slice
+   (the patience lane on virtual time) and the toolbox, each a scene-only toy
+   the fork files and runs, with the graduation protocol as the fork's
+   decision record; the paste-ready block is the pass's §9. Deferred: reopen
+   on the operator's answers to OD-021 to OD-030, OD-042 and OD-163 and the
+   fork's next pass; core files nothing for the fork.
+8. **The riff deck and the first session** (KI-024, KI-025, KI-117, KI-118;
+   H1→H2). A 60-minute session plan and 27 cards (six round-1 cards, the
+   target model's eleven, the DotLn-Angular design's eight, two from the
+   pass's own routes), copied into the pass's §7; `planning: riff` is not a
+   phrase yet and adopting it is one product 07 paragraph that adds a phrase,
+   so it waits for the first hand-held session. Deferred: reopen when the
+   operator names the session; two riffs promoting nothing retires the mode
+   and keeps the constraint line.
+9. **The proposals pending the operator's answers** (KI-031, KI-050, KI-073,
+   KI-105, KI-106, KI-107, KI-122, KI-133 and the batch of the pass's §10:
+   OD-001, 002, 003, 006, 008, 021, 022, 023, 024, 025, 026, 027, 028, 029,
+   030, 042, 053, 093, 142, 143, 145, 161, 163, and three WO-219 operator
+   packets). Each is recorded with the run's default, the pass's
+   recommendation and the default taken if unanswered. Settled: the operator
+   answered on 2026-10-24 and the pass recorded each answer as a decision
+   (D1 to D27 in the planning document's §10) with its reopening condition;
+   the fork block carries the answers that concern the fork.
+10. **A dispatch inside the host's pasted-content wrapper is not read as a
+    dispatch.** The 2026-10-24 planning dispatch, pasted as one block, was
+    recorded by the prompt hook as `prefix: null`, `role: unknown`, 2,332
+    bytes: the host wrapped the paste in its pasted-content element, and
+    WO-226's first-content-line rule (v0.90.0) skips one leading code fence,
+    not that wrapper, so the pass ran without the planner's role record and
+    `harness usage` answered `no-session`. Shape: read the first non-blank
+    line inside the host's wrapper as well as after one fence, with a case.
+    A candidate for the next order that edits `recordOperatorMessage` in
+    `packages/skeleton/src/harness-host.ts`, or a boy-scout item for
+    WO-220's executor inside its bound; reopen on the next pasted dispatch
+    that goes unread. WO-226-D023 asked exactly this observation of the next
+    live pasted dispatch (its register row is FUP-848fd8e2ac941bc3, whose
+    reopening condition this is), so this item is that row's duplicate and
+    the disposition lives there.
+11. **The context-delta check as a standing rule, and the full re-read of
+    the run's do-not-do lists** (KI-121; H2). Before a candidate is filtered
+    as already decided, the decision id and what changed since are named;
+    unchanged is filtered with the pointer, changed becomes a new decision
+    record, unknown becomes an operator question. The pass applied it by hand
+    to everything it declined (its §13); the run's two adversarial passes'
+    27 do-not-do items were not re-read, since none is taken up. Deferred:
+    reopen at the next pass that takes up a Team Topologies or probe
+    candidate; a standing rule is OD-069, OD-070 and OD-072.
+12. **The settle-or-reopen PolarAxis** (KI-122; H2), the platform half of the
+    operator's 2026-10-22 direction that "never relitigate" is applied too
+    literally: the relitigation rule modelled as one of the ledger's adopted
+    polar axes, inertia against reinvention with asking a friend as a third
+    route, carrying its own reopen condition and a counter (how often it
+    filtered an idea; how often a filtered idea later shipped). Deferred:
+    reopen after two passes record context-delta verdicts by hand (item 11)
+    and one filtered idea later ships.
+13. **A target order's final-review result carries the launchpad's gate
+    row** (the fork's item 2 of 2026-10-23; H1). A target order's records
+    publish reads a launchpad product gate from the review's control event,
+    which a target order's final-review result does not record, so the
+    fork's WO-006 publish needed `npm run resume -- correct 8 --set
+    productGate=<evidenceRef>` after a review-time `npm test -- --review`;
+    `scripts/resume.mjs` admits exactly that correction in `closed`. Shape:
+    the target order's final-review result carries the launchpad's complete
+    row, or the publish accepts a passing row at the integrated identity
+    without a correction. Deferred: reopen at the next order on the target
+    lifecycle, or when a second target order needs the `correct` route.
+14. **The issue intake as a planning input** (operator direction,
+    2026-10-24; D6 of the pass). GitHub issues on this repository are the
+    external idea intake, filed by the operator or by autonomous agents and
+    consumed by planning passes, which list the open issues and dispose each
+    like a fork item (product 07 §Operator-opened planning pass,
+    preconditions item 6, written by the pass); the automated intake board
+    the operator names is the future feature, used the way automated bug
+    reports are, and the idea ledger is drained into the instance's UI
+    rather than fed. Deferred: reopen when the first issue is filed as an
+    idea, or when WO-193 is next amended, since the fork's request route and
+    the issue intake share a shape and one reader could serve both.
+15. **A teammate's first hour on a team's fork** (operator direction,
+    2026-10-24, the work setup; WS-002 C5; H2). Teammates who know the
+    product and the codebase, are hesitant or untrained with AI agents and
+    do not yet know the best practices, become productive by cloning the
+    team's one fork, starting a worktree for their own order and letting the
+    role text carry the practice; what the platform owes each of them is
+    product 13's assistance per UIFA role, and the kit README's route is the
+    surface. Deferred: reopen when the operator opens the work instance's
+    first planning pass or asks for the order sooner.
+16. **Research the existing codebase and the organisation's other
+    repositories before any order** (operator direction, 2026-10-24; WS-002
+    C6; H2). The starter, registered on a large and untidy existing
+    codebase, researches what is there, finds the APIs the code references
+    in the organisation's other GitHub repositories and states the approach
+    that was taken, as a research order (product 07 §Research and
+    guided-operator work orders) whose output is a map the operator reads,
+    extending WS-002's C1 census from rule-like statements to the code and
+    its cross-repository dependencies. Deferred: the same reopening as item
+    15.
+17. **The initiative layout before orders are cut** (operator direction,
+    2026-10-24; WS-002 C7; H2). Given one or many user stories or documents
+    describing a feature, a product push or an initiative, the platform lays
+    out what it understands exists, how it understands the initiative and
+    how it sees the way from the present to the goal, before any order is
+    cut; the operator and the team riff on it, trial and error included,
+    and only then are orders filed. Carriers: the target-scoped planning
+    pass (`plan target-publish`), the research order kind, and the riff
+    mode of this pass's §7, whose stated purpose is exactly the back and
+    forth before an order. Deferred: the same reopening as item 15.
+18. **One team fork, many worktrees, parallel merges** (operator direction,
+    2026-10-24; WS-002 C8; H2). A global fork at work that every team
+    member clones, each starting a worktree for their own order, the orders
+    merging in parallel with dependent ones sequenced, so the whole team is
+    involved rather than one developer working serially. Carriers that
+    exist: one writer per worktree on any branch, the lane pairs and
+    parallel orders the sequence admits, WO-100's portfolio ceilings, the
+    workstream document and index grouping WO-080 files, and the UIFA roles
+    for the people; what does not exist is an instance with several
+    operators, each on their own clone, whose control segments merge. Shape:
+    a member identity on the control row and the writer reservation, the
+    per-order segments merged by append across clones, and final review one
+    at a time per order as today. Deferred: the same reopening as item 15.

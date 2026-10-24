@@ -1243,6 +1243,13 @@ Preconditions and inputs:
    When dispatching with a pasted block, put the dispatch on its first
    content line; one opening fence and blank lines are admitted, while a
    later quoted dispatch does not select a role.
+6. GitHub issues on this repository are the external idea intake (operator
+   direction, 2026-10-24): the operator or an autonomous agent files an idea
+   as an issue, and the pass lists the open issues (`gh issue list`), reads
+   each against the record it names and files, declines or defers it with
+   its reopening condition, as it does a fork item; the idea ledger is
+   drained into the operator's instance's UI, where an idea lives first as a
+   toy, and is not fed new entries by this route.
 
 **`planning: refute` and `planning: refute full`.** These exact phrases load
 the dedicated refuter skill in either harness. The parent runs

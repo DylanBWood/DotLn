@@ -135,3 +135,56 @@ and the planning pass disposes rows instead of writing text.
 <!-- dotln-workstream:start -->
 { "id": "WS-002", "members": [{ "workOrderId": "WO-228", "repositoryId": "self" }], "edges": [{ "from": "WO-228", "to": "WO-193", "relation": "planning-deferral" }] }
 <!-- dotln-workstream:end -->
+
+## The work setup (operator direction, 2026-10-24)
+
+The operator's messages of 2026-10-24 (the planning pass's ignored capture,
+SHA-256 recorded in [that document](../planning/intake-mining-run-routing-2026-10-24.md)
+§1), synthesized: the main ask is getting the starter in front of teammates
+who know the product and the codebase well but are hesitant or untrained
+with AI agents and do not yet know the best practices, so that they are
+productive with it; a key ask inside that is integrating the starter with an
+existing, large, complicated, untidy codebase. The platform has to research
+what is there, research the APIs the code references and find them in the
+work organisation's other GitHub repositories, and understand the approach
+that was taken. The second step is to give it one or many user stories or
+documents about a new feature, product push or initiative, and have it lay
+out, before real orders are cut (as an order or a planning session), what it
+understands exists, how it understands the initiative and how it sees the
+way from the present to the goal; then back and forth and trial and error;
+then the orders. The operator's working shape for the team: one global fork
+at work, each team member cloning it and starting a worktree of their own for
+their own order, the orders merging in parallel with dependent ones
+sequenced, so everyone is involved rather than one developer working
+serially. This track therefore covers the work setup as a whole, of which
+the predecessor is one part; the candidates below join C1 to C4 and are
+filed as orders under the same rule (the operator opens the work instance's
+first planning pass, or asks for them sooner). The 2026-10-24 planning
+document's §17 and the map's items 15 to 18 carry them into the register.
+
+- **C5, a teammate's first hour.** Clone the team's fork, start a worktree
+  for your order, and let the role text carry the practice; the platform
+  owes each person the assistance product 13 names per UIFA role, and the
+  kit README's route is the surface. Carriers that exist: the kit README,
+  the compiled role text, one writer per worktree; what does not: a path
+  written for someone who has never dispatched an agent.
+- **C6, research before orders.** A research order over the registered
+  codebase that maps what exists, resolves the APIs the code references
+  against the organisation's other repositories (through the forge's CLI,
+  read-only) and states the approach taken, as a map the operator reads;
+  this widens C1's census from rule-like statements to the code and its
+  cross-repository dependencies, and C3's carrier reading applies to its
+  rows.
+- **C7, the initiative layout.** One or many stories or documents in; a
+  layout out: what exists, how the initiative is understood, the way from
+  here to there; the team riffs on it before any order is cut. Carriers:
+  the target-scoped planning pass, the research order kind, and the riff
+  mode the 2026-10-24 pass carries in its §7.
+- **C8, one fork, many worktrees, parallel merges.** An instance with
+  several operators, each on their own clone, each in their own worktree for
+  their own order, the orders merging in parallel and final review one at a
+  time per order as today. Carriers that exist: one writer per worktree on
+  any branch, the sequence's lane pairs, WO-100's portfolio ceilings,
+  WO-080's workstream grouping, the UIFA roles; what does not: a member
+  identity on the control row and the writer reservation, and per-order
+  segments merged by append across clones.

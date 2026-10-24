@@ -585,6 +585,31 @@ carries both versioned schemas; coded board failures and refused Beacon
 reasons omit machine paths. Host-owned UI state remains separate from these
 disposable projections.
 
+**DotLn-Angular is one app with sub-apps, and the sandbox where ideas live
+first** (operator direction, 2026-10-24; planning dispatch and answers,
+ignored capture SHA-256 recorded in [the 2026-10-24 planning
+document](../planning/intake-mining-run-routing-2026-10-24.md) §1),
+synthesized: the repository is an Nx monorepo and ships a single app whose
+menu opens sub-apps, a 3D scene for authoring game AI with twenty soldiers
+and a toolbox of behaviours, a detailed view of DotLn's machinery, and
+utilities designed on the side, with the logic in libraries so apps can be
+combined or split later; it is the sandbox, playground and toolbox where
+every new idea lives first as a toy the operator plays with before promoting
+the ones that work, for the five UIFA roles, people and software actors
+alike, not for core alone; it informs the platform through the issue
+intake, a future automated feature used the way automated bug reports are,
+and writes no control record; it is not wired to core directly, taking its
+data from public mining into its own store and serving the UI through its
+own API, with copied records a stopgap; it draws flat first, integrates
+Babylon.js later and may house manim, which is not Angular, since the name
+is not literal. Its first purpose for the machinery view is to change the
+mechanisms that replaced v1's rules, the active gems, supports and injected
+prose, on an agent and see what changes, so the operator can tune them to
+run without intervention, and then to see agents operate in concert beyond
+what the operator's own interventions would produce; the operator's model
+lives there first, as a personality-fidelity digital twin judged by its
+results, with variations and old versions kept to play with.
+
 **The console serves operator flow, not a skin over data** (operator
 direction, 2026-10-21; planning dispatch, ignored capture SHA-256
 `4db8e10536b76209745538e6f54f2563dc7d1b34645a2cba438fd14a7812bab6`),
