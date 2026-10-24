@@ -580,7 +580,7 @@ voice and one in core's, were withdrawn on the operator's word):
 ```
 planning: cut the DotLn-Angular work orders from the 2026-10-22 mining run
 
-The research is done. It lives at /Users/dylanwood/Projects/DotLn/docs/intake/notes/2026-10-22-intake-mining-run/ (read-only). The DotLn-Angular designs are in out/angular/ (start with README.md and dotln-angular-forward.md; toys.jsonl and the design-*.md files have the details). The book maps that feed the toolbox are in out/maps/ (see its README), out/geb/ and out/tt/. Don't redo any of it. Read what each order needs and cut the orders.
+The research is done. It lives at <worktree>/docs/intake/notes/2026-10-22-intake-mining-run/ (core's checkout on this machine) (read-only). The DotLn-Angular designs are in out/angular/ (start with README.md and dotln-angular-forward.md; toys.jsonl and the design-*.md files have the details). The book maps that feed the toolbox are in out/maps/ (see its README), out/geb/ and out/tt/. Don't redo any of it. Read what each order needs and cut the orders.
 
 What I decided:
 - One app with sub-apps behind a menu: a 3D scene for authoring game AI, a view of DotLn's machinery, side utilities. One workstream for now; logic in libs.
