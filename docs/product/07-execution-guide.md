@@ -759,6 +759,11 @@ list), and generated work-order index project the same pair. The configured
 worktree parent and every other physical path stay out of those records. An
 unknown id, missing base, malformed object id or malformed registered profile
 refuses before the activation event.
+An optional leading `**Workstream:** WS-NNN` field groups the order under a
+matching document in the configured `workstreams` root; the index validates
+its JSON membership block and records target facts for the board, with
+`track: separate` members outside the serial queue and `self` for an absent
+Repository field ([convention](../workstreams/README.md)).
 
 The host compiles a registered profile through the existing monotone authority
 floor. Profile denials and its expiry, resource, evidence and revocation

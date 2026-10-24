@@ -225,6 +225,23 @@ bounded work order names its repository bases and scope; the workstream view
 relates those results without collapsing them into one repository or one long
 model session.
 
+A launchpad keeps one `WS-NNN-<slug>.md` per outcome under its configured
+`workstreams` root, following [the document convention](../workstreams/README.md).
+The document holds the acceptance contract, members with repository and base,
+dependency and compatibility plan, and delivery states. Leading
+`**Workstream:** WS-NNN` order fields source membership; the document's
+`dotln-workstream` JSON block mirrors those ids and repositories, including
+implicit `self`, and names dependency edges. A mismatch refuses with the
+order and field. `track: separate` keeps an operator-designated stream out of
+the proposed serial queue while retaining its grouping and complete cards.
+The generated index and board's Workstreams section share one committed JSON
+observation of repository, base, phase, verdict, integration and stale state,
+plus the observed target commit and edges. Explicit index generation reads
+registered clones; check reuses the snapshot without requiring those clones.
+Integration is current, behind, diverged or unknown; stale is no, yes, yes or
+unknown respectively. Self compares the observed launchpad HEAD with main.
+A later target change is observed on refresh, not silently folded into a check.
+
 **Registered-target field (WO-071, 2026-09-21).** A bounded target order names
 that boundary in leading metadata as `**Repository:** <id> @ <base-commit>`.
 The launchpad's version-1 configuration resolves the id to its declared base
@@ -292,7 +309,8 @@ deterministic skeleton, and its own file-based work-order/control loop. The
 compiler derives classified StoryContract statements and criterion drafts from
 a SourceBundle, preserving provenance and marking affected items stale on revision.
 The generated work-order index delivered by WO-026 improves navigation of that loop
-with recorded lifecycle and release evidence.
+with recorded lifecycle and release evidence; workstream documents now group
+member orders in that index and the actor board using recorded target facts.
 It does not implement an end-user portfolio, repository coordinator, or live
 external execution service.
 
@@ -305,14 +323,24 @@ and [durable workstreams](02-domain-model.md#memory-and-observation) supply the
 existing concepts. No schema, package boundary, UI framework, provider, host
 layout, or new command is selected here.
 
-Before declaring this a useful replacement, demonstrate a single-repository
-task, a cross-repository task with a shared contract, a material source revision
-change, two colliding workstreams, an unavailable execution edge, and a session
-restart. Compare outcome quality, context restatement, manual handoffs,
-unnecessary interruptions, and time to a trusted return state against a
-synthetic baseline of the operator's successful workflow. The baseline and
-acceptance thresholds still need to be chosen; smaller prompts alone are not
-proof of a better application.
+The [synthetic real-Git pilot](../evidence/WO-080/README.md) exercises a
+single-repository member reaching closed from a target worktree (D1), a
+client proceeding against a pinned contract while the service lands first
+(D2), refusal of a second writer in an occupied worktree while another
+worktree of that repository remains eligible (the refusal half of D4), and
+session restart through `resume: next` under the emitted target bundle (D6).
+These are mechanical demonstrations, not evidence of usefulness. Source-revision
+staleness spreading to dependent claims (D3), D4's conflict half, an unavailable
+execution edge with manual handoff (D5), and a workstream-level next safe action
+remain FUP-b28d36edaa8630b1's candidates. The index's base-comparison stale mark
+does not establish D3.
+
+Before declaring a useful replacement, complete those demonstrations and compare
+outcome quality, context restatement, manual handoffs, unnecessary interruptions,
+and time to a trusted return state against a synthetic baseline of the operator's
+successful workflow. WO-083 owns the witnessed run. The baseline and acceptance
+thresholds still need to be chosen; smaller prompts alone are not proof of a
+better application.
 
 ## Open product choices
 

@@ -4180,6 +4180,13 @@
           "title": "Workstream application — end-user workflow candidate",
           "summary": "# Workstream application — end-user workflow candidate **Status:** operator-opened product exploration, 2026-09-04. This describes a candidate application of DotLn for everyday software work. It is not an implemented interface, a deployment claim, a new release rung, or a replacement for the separately named `προτείνω` thesis. The application identity and first deployment remain unannounced; this public design uses synthetic work only. The product question is what a person does when they sit down to work: start an outcome, make the decisions that need their judgment, inspect the result, and return later without reconstructing the process. DotLn should carry the coordination that currently li",
           "missing": false
+        },
+        {
+          "hash": "779dd64a1f96c9a402b2289740509443d352a8583f1747ad0cc945bfc2b88e10",
+          "ref": "docs/product/12-workstream-application.md#workstream-application--end-user-workflow-candidate",
+          "title": "Workstream application — end-user workflow candidate",
+          "summary": "# Workstream application — end-user workflow candidate **Status:** operator-opened product exploration, 2026-09-04. This describes a candidate application of DotLn for everyday software work. It is not an implemented interface, a deployment claim, a new release rung, or a replacement for the separately named `προτείνω` thesis. The application identity and first deployment remain unannounced; this public design uses synthetic work only. The product question is what a person does when they sit down to work: start an outcome, make the decisions that need their judgment, inspect the result, and return later without reconstructing the process. DotLn should carry the coordination that currently li",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -44863,6 +44870,66 @@
           "ref": "docs/evidence/WO-220/decisions.md#wo-220-d032--ver-001-pass-board-the-retained-schema-recognitions-dependence-on-the-current-functions-source-text",
           "title": "WO-220-D032: A WO-220 repair, if one happens, or the next order that edits scripts/probes/local-model-role-qualification.mjs; low priority. Rule a repair must hold: retained-record schema recognition…",
           "summary": "{ \"id\": \"WO-220-D032\", \"date\": \"2026-10-24\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Pass VER-001 at code identity 881d4a43ef351238cd74bc374006924fb5cf632521bd93561fb230b2f57b39e6; all seven criteria are met. Board F1 (follow-up). WO-220-D031's validateRecordInputs recognizes a retained T1 schema by comparing the retained harness source's taskSchema text with the current function's text (exactly, or with only the two T1 minLength declarations removed). The base compared each record's schemaHash with the hash of the current taskSchema value, so an edit that leaves the schema value unchanged left retained records valid. Now a comment-only or formatting-only edit ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-7f35e50c5d698168",
+      "key": "decision:docs/evidence/WO-080/decisions.md#wo-080-d013",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "4d38c4da6dd4aea158fb72eb9b0003ee4e98b091ad296d4ff29a9e02bb0cb6b3",
+          "ref": "docs/evidence/WO-080/decisions.md#wo-080-d013--record-the-fresh-gate-threshold-observation-for-planning",
+          "title": "WO-080-D013: Review the WO-080 fresh plain gate's 1135.28-second elapsed observation against the six-minute stand-down condition and the existing cold-gate candidate FUP-e96221b106cd136a; distinguish…",
+          "summary": "{ \"id\": \"WO-080-D013\", \"date\": \"2026-10-24\", \"dispatch\": \"resume: next\", \"decision\": \"The order's single fresh plain measurement passed all 35 selected suites: 1134.406 seconds in the gate row and 1135.28 seconds of external elapsed time. This exceeds the original six-minute stand-down condition. Record the observation for planning alongside the existing cold-gate candidate FUP-e96221b106cd136a, whose allocated order WO-222 is closed. One observation does not establish that candidate's separate thirty-day median condition. Do not infer that this suite caused the crossing: there is no equivalent pre-change measurement at this base. The pilot took 57.017 seconds in this fresh run, 56.845 secon",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-2811605b8e865d2d",
+      "key": "decision:docs/evidence/WO-080/decisions.md#wo-080-d015",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c971b7830e86647b3d0fb8e4d667d418c7810480d9479ae180eb3c7a76c7e451",
+          "ref": "docs/evidence/WO-080/decisions.md#wo-080-d015--ver-001-pass-board-the-self-members-checkout-dependent-integration-reading",
+          "title": "WO-080-D015: A WO-080 repair, if one happens, or the next order that edits readTargetFacts in scripts/work-orders.mjs; low priority. Rule a repair must hold: a self member's base, integration and…",
+          "summary": "{ \"id\": \"WO-080-D015\", \"date\": \"2026-10-24\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Pass VER-001 at code identity 6a931dea2e266c39b20dd81718bbd538efcd36df8d9424ad8618089e98428d65; all seven criteria are met. Board F1 (follow-up). readTargetFacts takes a self member's base from HEAD of whichever checkout runs npm run work-orders -- index and compares it with that checkout's refs/heads/main. After one unrelated commit on a branch, the self member's recorded integration becomes diverged and its stale mark yes, although nothing about the member changed, and index --check keeps that reading because check reuses recorded facts. The base cell also follows each commit",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-ec2be6f5cb63ae35",
+      "key": "decision:docs/evidence/WO-080/decisions.md#wo-080-d016",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "a76025eabcbf2774e10db52318cb41233d979290cb9646c15d8c5923d0e8715a",
+          "ref": "docs/evidence/WO-080/decisions.md#wo-080-d016--ver-001-board-the-pilot-demonstrations-shared-state-and-d2s-self-confirming-proof",
+          "title": "WO-080-D016: A WO-080 repair, if one happens, or WO-083 when it extends the pilot; low priority. Rule a repair must hold: each named demonstration in scripts/test-workstream-pilot.mjs passes when…",
+          "summary": "{ \"id\": \"WO-080-D016\", \"date\": \"2026-10-24\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Board F2 (follow-up). In scripts/test-workstream-pilot.mjs, D4 and D6 read members that D2 starts (orders WO-301 and WO-302), so a single demonstration cannot run alone and a D2 failure is reported as three. D2's client-proof.json assertion reads back the object the test has just written, so it observes nothing the product produced; D2's evidence is its other assertions (the client's pinned contract blob, the service closed and merged first, and the client still active). Criterion 5 asks for four named tests, each with its own assertion, all passing; that holds in the suite and",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-ed4da61921a5c255",
+      "key": "decision:docs/evidence/WO-080/decisions.md#wo-080-d017",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "5a6113858b38f147e385d20996a720b0573c8eb44e528b598eb2f10516320579",
+          "ref": "docs/evidence/WO-080/decisions.md#wo-080-d017--ver-001-both-of-receipt-053s-reopening-triggers-for-criterion-5-fired",
+          "title": "WO-080-D017: Planning: receipt 053's second trigger for WO-080 criterion 5 fired (the workstream-pilot row, 56.8 to 57.0 s in the complete and fresh rows, exceeds the slowest structural task,…",
+          "summary": "{ \"id\": \"WO-080-D017\", \"date\": \"2026-10-24\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Planning receipt 2026-10-24-planning-783a352b583108a3-053 records against criterion 5 that the new suite joins every fresh core gate with no bound, and names two reopening triggers: step 19's timed fresh run above six minutes, or the workstream-pilot row's recorded wall-clock above the slowest existing structural task's. Both fired. D013 and FUP-7f35e50c5d698168 record the first; nothing records the second. The pilot row took 56.845 s in the complete review and 57.017 s in the fresh plain run; the slowest structural task, generated, took 19.122 s and 19.859 s in those rows. My ",
           "missing": false
         }
       ],

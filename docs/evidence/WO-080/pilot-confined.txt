@@ -1,0 +1,16 @@
+bounded-start {"budgetBytes":3221225472,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+PROGRESS [bounded-probe] running task: bounded-probe (reports no cases); last report: waiting for the next case report
+✔ WO-080 D1 single repository: one member reaches closed from a target worktree (6203.185833ms)
+✔ WO-080 D2 cross repository: client proceeds against the pinned contract fixture while service lands first (8462.479959ms)
+✔ WO-080 D4 two workstreams on one repository: an occupied worktree refuses a second writer (2446.700834ms)
+✔ WO-080 D6 session restart resumes from resume next in the target worktree under the emitted bundle (857.809541ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 23078.608167
+bounded-result {"name":"bounded-probe","durationMs":23132,"slowestCases":[{"name":"bounded-probe","durationMs":23132,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":253275472,"peakRssBytes":433831936,"memoryBudgetBytes":3221225472,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-24T14:31:36.993Z","finishedAt":"2026-10-24T14:32:00.125Z","exitCode":0,"executed":true}

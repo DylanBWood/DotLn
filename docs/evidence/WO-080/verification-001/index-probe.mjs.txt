@@ -1,0 +1,191 @@
+// Verifier variation probe for WO-080 criteria 1 and 2. Fixtures under argv[2].
+import { spawnSync } from "node:child_process";
+import { mkdirSync, readFileSync, writeFileSync, renameSync, rmSync, realpathSync, unlinkSync } from "node:fs";
+import { join } from "node:path";
+const R = process.cwd(); // run from the repository root
+const F = await import(`${R}/scripts/test-workstream-index-fixture.mjs`);
+const { runGit } = await import(`${R}/scripts/lib/git.mjs`);
+rmSync(process.argv[2], { recursive: true, force: true });
+mkdirSync(process.argv[2], { recursive: true });
+const base = realpathSync(process.argv[2]);
+const results = [];
+const record = (name, pass, detail = "") => results.push({ name, pass, detail: String(detail).slice(0, 300) });
+const cli = (lp, args, cwd = lp) => {
+  const r = spawnSync(process.execPath, [join(lp, "scripts/work-orders.mjs"), ...args], { encoding: "utf8", cwd });
+  return { status: r.status, out: (r.stdout + r.stderr).trim().split("\n").slice(-2).join(" | ") };
+};
+const readme = (lp) => readFileSync(join(lp, "docs/work-orders/README.md"), "utf8");
+const setReadme = (lp, text) => writeFileSync(join(lp, "docs/work-orders/README.md"), text);
+const file = (lp, p) => join(lp, p);
+const fresh = (name) => F.createWorkstreamIndexFixture(join(base, name));
+const git = (root, ...a) => runGit(root, a);
+
+// V1 columns against my own Git reads
+{
+  const fx = fresh("v1");
+  const m = F.streamSnapshot(fx.readme()).workstreams[0].members;
+  const tipS = git(fx.service, "rev-parse", "refs/heads/main");
+  const tipC = git(fx.client, "rev-parse", "refs/heads/main");
+  const anc = spawnSync("git", ["merge-base", "--is-ancestor", fx.serviceBase, tipS], { cwd: fx.service }).status;
+  record("V1 service base = header base", m[0].base === fx.serviceBase);
+  record("V1 service targetCommit = rev-parse main", m[0].targetCommit === tipS);
+  record("V1 service integration behind (base ancestor of tip, base != tip)", anc === 0 && tipS !== fx.serviceBase && m[0].integration === "behind" && m[0].stale === "yes");
+  record("V1 client members current", m.slice(1).every((x) => x.targetCommit === tipC && x.integration === "current" && x.stale === "no"));
+  const page = fx.readme();
+  const paths = [base, realpathSync(base), fx.launchpad, realpathSync(fx.launchpad), fx.service, realpathSync(fx.client), "target-worktrees", "/private/", "/var/folders"];
+  record("V1 no physical path (incl. realpath, worktree parent)", paths.every((p) => !page.includes(p)), paths.filter((p) => page.includes(p)));
+  record("V1 check from another cwd", cli(fx.launchpad, ["index", "--check"], base).status === 0);
+  // V3 forged inconsistent stale
+  const good = page;
+  setReadme(fx.launchpad, good.replace('"integration":"current","stale":"no"', '"integration":"current","stale":"yes"'));
+  let r = cli(fx.launchpad, ["index", "--check"]);
+  record("V3 forged stale inconsistent with integration refused", r.status !== 0, r.out);
+  // V4 forged phase in JSON only
+  setReadme(fx.launchpad, good.replace('"workOrderId":"WO-301","repository":"service","base":', '"workOrderId":"WO-301","repository":"service","base":').replace('"phase":"draft"', '"phase":"active"'));
+  r = cli(fx.launchpad, ["index", "--check"]);
+  record("V4 forged phase in record refused as stale page", r.status !== 0, r.out);
+  // V5 forged consistent target commit in both JSON and markdown line
+  const other = "0".repeat(40);
+  setReadme(fx.launchpad, good.replaceAll(m[0].targetCommit, other));
+  r = cli(fx.launchpad, ["index", "--check"]);
+  record("V5 consistent forged targetCommit: check trusts the record (design)", r.status === 0, r.out);
+  // V6 snapshot line removed
+  setReadme(fx.launchpad, good.split("\n").filter((l) => !l.startsWith("<!-- dotln-workstreams:")).join("\n"));
+  r = cli(fx.launchpad, ["index", "--check"]);
+  record("V6 missing snapshot refused with remedy", r.status !== 0 && /run npm run work-orders -- index/.test(r.out), r.out);
+  // V6b two snapshot lines
+  setReadme(fx.launchpad, good.replace(/^(<!-- dotln-workstreams:.*)$/m, "$1\n$1"));
+  r = cli(fx.launchpad, ["index", "--check"]);
+  record("V6b duplicate snapshot refused", r.status !== 0, r.out);
+  setReadme(fx.launchpad, good);
+  record("V1 restored check passes", cli(fx.launchpad, ["index", "--check"]).status === 0);
+}
+
+// V2 diverged target
+{
+  const fx = fresh("v2");
+  git(fx.client, "checkout", "-q", "--orphan", "rewrite");
+  writeFileSync(join(fx.client, "contract.json"), '{"field":"required"}\n');
+  git(fx.client, "add", ".");
+  git(fx.client, "-c", "user.name=x", "-c", "user.email=x@example.invalid", "commit", "-qm", "rewrite");
+  git(fx.client, "branch", "-f", "main", "HEAD");
+  git(fx.client, "checkout", "-q", "main");
+  let r = cli(fx.launchpad, ["index"]);
+  const m = F.streamSnapshot(fx.readme()).workstreams[0].members;
+  record("V2 diverged client: integration diverged, stale yes", r.status === 0 && m[1].integration === "diverged" && m[1].stale === "yes" && m[0].integration === "behind", JSON.stringify(m.map((x) => x.integration)));
+}
+
+// Membership and document variations; each on a fresh fixture
+const variant = (name, mutate, expect) => {
+  const fx = fresh(name);
+  mutate(fx);
+  const r = cli(fx.launchpad, ["index"]);
+  record(name, expect.test(r.out) && r.status !== 0, `${r.status} ${r.out}`);
+};
+const order = (fx, id) => file(fx.launchpad, `docs/work-orders/${id}-fixture.md`);
+variant("V7 field outside leading header is not membership", (fx) => {
+  const p = order(fx, "WO-303");
+  const t = readFileSync(p, "utf8").replace("**Workstream:** WS-001\n", "");
+  writeFileSync(p, t + "\n**Workstream:** WS-001\n");
+}, /WO-303 must declare \*\*Workstream:\*\* WS-001/);
+variant("V8 two documents with one id", (fx) => {
+  writeFileSync(file(fx.launchpad, "docs/workstreams/WS-001-second.md"), F.streamDocument({ id: "WS-001", members: [], edges: [] }));
+}, /invalid or duplicate workstream document|absent from members/);
+variant("V9 filename and id differ", (fx) => {
+  writeFileSync(file(fx.launchpad, "docs/workstreams/WS-003-x.md"), F.streamDocument({ id: "WS-004", members: [], edges: [] }));
+}, /WS-003-x\.md: invalid or duplicate workstream document/);
+variant("V10 unknown track value", (fx) => {
+  const p = file(fx.launchpad, "docs/workstreams/WS-001-fixture.md");
+  writeFileSync(p, readFileSync(p, "utf8").replace('{"id":"WS-001",', '{"id":"WS-001","track":"Separate",'));
+}, /invalid or duplicate workstream document/);
+variant("V11 block member with no order", (fx) => {
+  const p = file(fx.launchpad, "docs/workstreams/WS-001-fixture.md");
+  writeFileSync(p, readFileSync(p, "utf8").replace('"members":[', '"members":[{"workOrderId":"WO-399","repositoryId":"self"},'));
+}, /WO-399 must declare \*\*Workstream:\*\* WS-001/);
+variant("V12 field naming a missing document", (fx) => {
+  const p = order(fx, "WO-303");
+  writeFileSync(p, readFileSync(p, "utf8").replace("**Workstream:** WS-001", "**Workstream:** WS-009"));
+}, /WS-009 has no workstream document|WO-303 must declare/);
+variant("V13 block repository differs from header", (fx) => {
+  const p = file(fx.launchpad, "docs/workstreams/WS-001-fixture.md");
+  writeFileSync(p, readFileSync(p, "utf8").replace('{"workOrderId":"WO-303","repositoryId":"client"}', '{"workOrderId":"WO-303","repositoryId":"service"}'));
+}, /WO-303 repositoryId differs from \*\*Repository:\*\*/);
+variant("V14 edge to an unknown order", (fx) => {
+  const p = file(fx.launchpad, "docs/workstreams/WS-001-fixture.md");
+  writeFileSync(p, readFileSync(p, "utf8").replace('"to":"WO-301"', '"to":"WO-999"'));
+}, /invalid or duplicate dependency edge/);
+variant("V15 extra member key", (fx) => {
+  const p = file(fx.launchpad, "docs/workstreams/WS-001-fixture.md");
+  writeFileSync(p, readFileSync(p, "utf8").replace('{"workOrderId":"WO-303","repositoryId":"client"}', '{"workOrderId":"WO-303","repositoryId":"client","base":"x"}'));
+}, /invalid or duplicate member/);
+variant("V15b block omits a declared member", (fx) => {
+  const p = file(fx.launchpad, "docs/workstreams/WS-001-fixture.md");
+  writeFileSync(p, readFileSync(p, "utf8").replace(',{"workOrderId":"WO-303","repositoryId":"client"}', ""));
+}, /WO-303 declares \*\*Workstream:\*\* WS-001 but is absent from members/);
+variant("V15c second Workstream field", (fx) => {
+  const p = order(fx, "WO-303");
+  writeFileSync(p, readFileSync(p, "utf8").replace("**Workstream:** WS-001\n", "**Workstream:** WS-001\n**Workstream:** WS-001\n"));
+}, /duplicate \*\*Workstream:\*\* lines/);
+
+// V16 self member: on main, then on a branch with a commit
+{
+  const fx = fresh("v16");
+  const lp = fx.launchpad;
+  writeFileSync(order(fx, "WO-304").replace("WO-304-fixture", "WO-304-fixture"), F.streamAuthority("WO-304", "WS-001"));
+  const p = file(lp, "docs/workstreams/WS-001-fixture.md");
+  writeFileSync(p, readFileSync(p, "utf8").replace('"members":[', '"members":[{"workOrderId":"WO-304","repositoryId":"self"},'));
+  writeFileSync(file(lp, "docs/planning/sequence.md"), F.streamSequence(["WO-301", "WO-302", "WO-303", "WO-304"]));
+  F.fixtureCommit(lp, "Self member");
+  let r = cli(lp, ["index"]);
+  const head = git(lp, "rev-parse", "HEAD");
+  let m = F.streamSnapshot(readme(lp)).workstreams[0].members.find((x) => x.workOrderId === "WO-304");
+  record("V16a self on main: repository self, base HEAD, current", r.status === 0 && m.repository === "self" && m.base === head && m.integration === "current", JSON.stringify(m));
+  git(lp, "checkout", "-q", "-b", "wo-999");
+  writeFileSync(file(lp, "unrelated.txt"), "branch work\n");
+  F.fixtureCommit(lp, "Unrelated branch commit");
+  r = cli(lp, ["index"]);
+  m = F.streamSnapshot(readme(lp)).workstreams[0].members.find((x) => x.workOrderId === "WO-304");
+  record("V16b self after an unrelated branch commit (observation)", r.status === 0, JSON.stringify({ integration: m.integration, stale: m.stale, baseIsBranchHead: m.base === git(lp, "rev-parse", "HEAD") }));
+  record("V16c check still passes after branch commit", cli(lp, ["index", "--check"]).status === 0);
+}
+
+// V17 separate member inside a lane pair; separate member also left in sequence
+{
+  const fx = fresh("v17");
+  const lp = fx.launchpad;
+  for (const id of ["WO-303"]) {
+    const p = order(fx, id);
+    writeFileSync(p, readFileSync(p, "utf8").replace("**Workstream:** WS-001", "**Workstream:** WS-002"));
+  }
+  const p = file(lp, "docs/workstreams/WS-001-fixture.md");
+  writeFileSync(p, readFileSync(p, "utf8").replace(',{"workOrderId":"WO-303","repositoryId":"client"}', ""));
+  writeFileSync(file(lp, "docs/workstreams/WS-002-sep.md"), F.streamDocument({ id: "WS-002", track: "separate", members: [{ workOrderId: "WO-303", repositoryId: "client" }], edges: [{ from: "WO-303", to: "WO-301", relation: "hard" }] }));
+  writeFileSync(file(lp, "docs/planning/sequence.md"), "# Plan\n\n<!-- dotln-work-order-sequence:start -->\n- WO-301 — Synthetic member\n\n- WO-302 — Synthetic member\n- WO-303 — Synthetic member\n<!-- dotln-work-order-sequence:end -->\n");
+  let r = cli(lp, ["index"]);
+  const page = readme(lp);
+  const proposed = page.split("## Proposed order")[1].split("## Workstreams")[0];
+  record("V17 separate member in lane pair: out of Proposed order, partner unpaired, one card each", r.status === 0 && !proposed.includes("[WO-303]") && proposed.includes("[WO-302]") && !/pair \d/.test(proposed) && (page.match(/^### WO-303$/gm) ?? []).length === 1 && /### WS-002\n\nSeparate track/.test(page), r.status + " " + proposed.trim().split("\n").slice(0, 3).join(" / "));
+  record("V17 check passes", cli(lp, ["index", "--check"]).status === 0);
+  // Hidden from the board? the card remains; open cards order: sequenced first
+  const cards = [...page.matchAll(/^### (WO-\d{3})$/gm)].map((x) => x[1]);
+  record("V17 Open cards: sequenced first, separate after", JSON.stringify(cards) === JSON.stringify(["WO-301", "WO-302", "WO-303"]), JSON.stringify(cards));
+}
+
+// V18 unreadable single target: other target stays observed
+{
+  const fx = fresh("v18");
+  renameSync(fx.service, fx.service + "-gone");
+  const r = cli(fx.launchpad, ["index"]);
+  const m = F.streamSnapshot(fx.readme()).workstreams[0].members;
+  record("V18 one target unreadable: unknown there, base still the declared one; sibling observed", r.status === 0 && m[0].integration === "unknown" && m[0].stale === "unknown" && m[0].targetCommit === "unknown" && m[0].base === fx.serviceBase && m[1].integration === "current", JSON.stringify(m.map((x) => [x.integration, x.stale])));
+  // base commit absent in an existing clone
+  renameSync(fx.service + "-gone", fx.service);
+  const p = join(fx.launchpad, "docs/work-orders/WO-301-fixture.md");
+  writeFileSync(p, readFileSync(p, "utf8").replace(fx.serviceBase, "1".repeat(40)));
+  const r2 = cli(fx.launchpad, ["index"]);
+  const m2 = F.streamSnapshot(fx.readme()).workstreams[0].members;
+  record("V18b declared base missing from target objects -> unknown, not diverged", m2[0].integration === "unknown", `${r2.status} ${JSON.stringify(m2[0])} ${r2.out}`);
+}
+
+console.log(JSON.stringify(results, null, 1));
+console.log("FAILED:", results.filter((x) => !x.pass).map((x) => x.name));

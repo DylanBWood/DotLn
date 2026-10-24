@@ -26,8 +26,8 @@ export const TOOL_ROOT = resolve(
 );
 
 // Every document root this control plane resolves, with the segment its
-// default carries under the document base. `workstreams` is declared by the
-// WO-033 phase 1 schema and carries no control-plane surface yet.
+// default carries under the document base. Workstream documents supply the
+// membership contract used by the generated work-order index.
 const ROOT_SEGMENTS = {
   control: "control",
   workOrders: "work-orders",

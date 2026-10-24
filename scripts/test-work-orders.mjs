@@ -10,6 +10,7 @@ import {
   mkdirSync,
   readFileSync,
   realpathSync,
+  renameSync,
   symlinkSync,
   unlinkSync,
   writeFileSync,
@@ -1806,7 +1807,7 @@ await check(
     ]);
     assert.deepEqual(
       readme.split("\n").filter((line) => /^## /.test(line)),
-      ["## Proposed order", "## Active", "## Open"],
+      ["## Proposed order", "## Workstreams", "## Active", "## Open"],
     );
     assert.doesNotMatch(
       readme,
@@ -2283,5 +2284,198 @@ await check(
       0,
       "old receipts do not acquire today's configured historical ids",
     );
+  },
+);
+
+const {
+  createWorkstreamIndexFixture,
+  streamSnapshot,
+  streamAuthority,
+  streamDocument,
+  streamSequence,
+  fixtureCommit,
+} = await import("./test-workstream-index-fixture.mjs");
+
+await check(
+  "WO-080 members group with repository, base, phase, verdict, integration state and staleness",
+  () => {
+    const fixture = createWorkstreamIndexFixture(
+      join(root, "workstream-columns"),
+    );
+    const page = fixture.readme();
+    const [stream] = streamSnapshot(page).workstreams;
+    assert.deepEqual(stream.members, [
+      {
+        workOrderId: "WO-301",
+        repository: "service",
+        base: fixture.serviceBase,
+        phase: "draft",
+        verdict: "unknown",
+        integration: "behind",
+        stale: "yes",
+        targetCommit: fixture.serviceTip,
+      },
+      ...["WO-302", "WO-303"].map((workOrderId) => ({
+        workOrderId,
+        repository: "client",
+        base: fixture.clientBase,
+        phase: "draft",
+        verdict: "unknown",
+        integration: "current",
+        stale: "no",
+        targetCommit: fixture.clientBase,
+      })),
+    ]);
+    for (const physical of [
+      root,
+      fixture.launchpad,
+      fixture.service,
+      fixture.client,
+      join(root, "target-worktrees"),
+    ])
+      assert.equal(page.includes(physical), false, physical);
+    // The core-only board input is not carried by an exported kit.
+    if (!existsSync(join(scriptRoot, "../KIT-MANIFEST.json")))
+      assert.equal(
+        page,
+        readFileSync(
+          join(
+            scriptRoot,
+            "../packages/console/fixtures/inputs/workOrderIndex-workstreams.md",
+          ),
+          "utf8",
+        ),
+      );
+    assert.equal((page.match(/^### WO-/gm) ?? []).length, 3);
+    cli(fixture.launchpad, ["index", "--check"]);
+    write(
+      fixture.launchpad,
+      "docs/workstreams/WS-001-fixture.md",
+      streamDocument({
+        id: stream.id,
+        members: stream.members.map((member) => ({
+          workOrderId: member.workOrderId,
+          repositoryId: member.repository,
+        })),
+        edges: [
+          { from: "WO-302", to: "WO-301", relation: "hard" },
+          { relation: "hard", to: "WO-301", from: "WO-302" },
+        ],
+      }),
+    );
+    assert.match(
+      cli(fixture.launchpad, ["index"], false),
+      /invalid or duplicate dependency edge/,
+    );
+  },
+);
+
+await check(
+  "WO-080 moved base stays stale beside a green sibling; unreadable target is unknown; --check passes with targets absent",
+  () => {
+    const fixture = createWorkstreamIndexFixture(
+      join(root, "workstream-stale"),
+    );
+    const activated = activation("WO-302");
+    activated.repositoryId = "client";
+    activated.baseCommit = fixture.clientBase;
+    const events = completed("WO-302");
+    events[0] = activated;
+    writeLog(fixture.launchpad, events);
+    cli(fixture.launchpad, ["index"]);
+    let members = streamSnapshot(fixture.readme()).workstreams[0].members;
+    assert.equal(members[0].stale, "yes");
+    assert.equal(members[1].verdict, "pass");
+    assert.equal(members[1].phase, "closed");
+    // Moving target refs alone cannot invalidate a recorded index.
+    write(fixture.client, "later.txt", "Later target change\n");
+    fixtureCommit(fixture.client, "Later client");
+    cli(fixture.launchpad, ["index", "--check"]);
+    renameSync(fixture.client, `${fixture.client}-absent`);
+    renameSync(fixture.service, `${fixture.service}-absent`);
+    cli(fixture.launchpad, ["index", "--check"]);
+    cli(fixture.launchpad, ["index"]);
+    members = streamSnapshot(fixture.readme()).workstreams[0].members;
+    for (const member of members) {
+      assert.equal(member.integration, "unknown");
+      assert.equal(member.stale, "unknown");
+      assert.equal(member.targetCommit, "unknown");
+    }
+    cli(fixture.launchpad, ["index", "--check"]);
+  },
+);
+
+await check(
+  "WO-080 a self member, a refused block entry and a separate track",
+  () => {
+    const fixture = makeRepo("workstream-self");
+    runGit(fixture, ["symbolic-ref", "HEAD", "refs/heads/main"]);
+    const id = "WO-301";
+    const source = streamAuthority(id, "WS-002");
+    write(fixture, authorityPath(id), source);
+    write(fixture, planningPath, streamSequence([]));
+    write(
+      fixture,
+      "docs/workstreams/WS-002-fixture.md",
+      streamDocument({
+        id: "WS-002",
+        track: "separate",
+        members: [{ workOrderId: id, repositoryId: "self" }],
+        edges: [],
+      }),
+    );
+    commit(fixture, "Self member");
+    const base = runGit(fixture, ["rev-parse", "HEAD"]);
+    cli(fixture, ["index"]);
+    let page = readFileSync(
+      join(fixture, "docs/work-orders/README.md"),
+      "utf8",
+    );
+    assert.deepEqual(streamSnapshot(page).workstreams[0].members[0], {
+      workOrderId: id,
+      repository: "self",
+      base,
+      phase: "draft",
+      verdict: "unknown",
+      integration: "current",
+      stale: "no",
+      targetCommit: base,
+    });
+    assert.match(page, /### WS-002/);
+    assert.doesNotMatch(
+      page.split("## Proposed order")[1].split("## Workstreams")[0],
+      /\[WO-301\]/,
+    );
+    cli(fixture, ["index", "--check"]);
+    write(fixture, planningPath, streamSequence([id]));
+    cli(fixture, ["index"]);
+    page = readFileSync(join(fixture, "docs/work-orders/README.md"), "utf8");
+    assert.doesNotMatch(
+      page.split("## Proposed order")[1].split("## Workstreams")[0],
+      /\[WO-301\]/,
+    );
+    cli(fixture, ["index", "--check"]);
+    write(
+      fixture,
+      authorityPath(id),
+      source.replace("**Workstream:** WS-002\n", ""),
+    );
+    assert.match(
+      cli(fixture, ["index"], false),
+      /WO-301 must declare \*\*Workstream:\*\* WS-002/,
+    );
+    for (const field of [
+      "**Workstream:** bad",
+      "**Workstream:** WS-002\n**Workstream:** WS-003",
+    ]) {
+      assert.throws(
+        () =>
+          parseHeader(
+            source.replace("**Workstream:** WS-002", field),
+            "fixture",
+          ),
+        /Workstream/,
+      );
+    }
   },
 );

@@ -1,0 +1,41 @@
+// Verifier's own criterion 3/4 probe: base outputs vs current minus Workstreams.
+import { execFileSync } from "node:child_process";
+import { readFileSync } from "node:fs";
+const R = process.cwd(); // run from the repository root
+const BASE = "873e8c0ca00fb0fc74a586e6eb9cc9bca1977be6";
+const d = (p) => import(`${R}/packages/console/dist/${p}`);
+const { loadFixture, readFixtureManifest } = await d("test/fixtures.js");
+const { projectBoard } = await d("src/board.js");
+const { renderTerminal, renderHtml } = await d("src/render.js");
+const { schemaMatches } = await d("test/schema.js");
+const schema = JSON.parse(readFileSync(`${R}/packages/console/uifa-board-v1.schema.json`, "utf8"));
+const show = (p) => execFileSync("git", ["show", `${BASE}:${p}`], { cwd: R, encoding: "utf8", maxBuffer: 1 << 28 });
+const strip = (board) => ({ ...board, panels: board.panels.map((panel) => ({ ...panel, sections: panel.sections.filter((s) => s.id !== "workstreams") })) });
+const out = {};
+for (const name of Object.keys(readFixtureManifest().cases)) {
+  const board = projectBoard(loadFixture(name));
+  const encoded = JSON.stringify(board, null, 2) + "\n";
+  const exp = (ext) => readFileSync(`${R}/packages/console/fixtures/expected/${name}.${ext}`, "utf8");
+  const ws = board.panels.flatMap((p) => p.sections.filter((s) => s.id === "workstreams").map((s) => ({ panel: p.id, status: s.status, rows: s.rows.length })));
+  const r = {
+    schemaValid: schemaMatches(board, schema, schema),
+    reproducesExpected: encoded === exp("json") && renderTerminal(board) === exp("txt") && renderHtml(board) === exp("html"),
+    workstreams: ws,
+  };
+  if (name !== "workstreams") {
+    const prior = strip(board);
+    r.baseJson = JSON.stringify(prior, null, 2) + "\n" === show(`packages/console/fixtures/expected/${name}.json`);
+    r.baseTxt = renderTerminal(prior) === show(`packages/console/fixtures/expected/${name}.txt`);
+    r.baseHtml = renderHtml(prior) === show(`packages/console/fixtures/expected/${name}.html`);
+    r.priorSchemaValid = schemaMatches(prior, schema, schema);
+    r.priorRendersWithoutSection = !/Workstreams/.test(renderTerminal(prior)) && !/Workstreams/.test(renderHtml(prior));
+  } else {
+    const s = board.panels.flatMap((p) => p.sections).find((s) => s.id === "workstreams");
+    r.rows = s.rows.map((row) => Object.fromEntries(row.cells.map((c) => [c.key, c.value])));
+    r.links = s.rows.map((row) => row.links.length);
+    r.txtShowsEveryColumn = ["workstream","workOrder","repository","base","phase","verdict","integration","stale"].every((k) => renderTerminal(board).includes(`  ${k}: `));
+    r.htmlShowsStaleYes = /stale/.test(renderHtml(board)) && renderHtml(board).includes(">yes<");
+  }
+  out[name] = r;
+}
+console.log(JSON.stringify(out, null, 1));

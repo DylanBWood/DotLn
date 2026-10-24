@@ -1,10 +1,10 @@
-# WO-080 — Workstreams from document to board and pilot: a launchpad holds one workstream document per outcome whose member orders declare it, the generated index and the actor board's Workstreams section group the members with repository, base, phase, verdict, integration state and staleness from one committed record, and four of product 12's demonstrations pass as automated fixtures over a real-Git launchpad with three target repositories (version assigned at activation)
+# WO-080 — Workstreams from document to board and pilot: a launchpad holds one workstream document per outcome whose member orders declare it, the generated index and the actor board's Workstreams section group the members with repository, base, phase, verdict, integration state and staleness from one committed record, and four of product 12's demonstrations pass as automated fixtures over a real-Git launchpad with three target repositories (v0.96.0)
 
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
 **Track:** delivery
-**Release classification:** minor, the highest of the merged orders: the
+**Release classification:** minor. The highest of the merged orders: the
 board section is an additive `uifa-board-v1` extension in `packages/console`;
 the convention, field, index projection, fixtures and evidence were patch.
 No event type. Assigned at activation under the standing opt-out default.

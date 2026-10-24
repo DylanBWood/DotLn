@@ -1,0 +1,9 @@
+bounded-start {"budgetBytes":3221225472,"physicalBytes":51539607552}
+PROGRESS [bounded-probe] started
+wo009: JSON, text and HTML equal the base after removing only Workstreams
+selfhost: JSON, text and HTML equal the base after removing only Workstreams
+control: JSON, text and HTML equal the base after removing only Workstreams
+refutations: JSON, text and HTML equal the base after removing only Workstreams
+missing: JSON, text and HTML equal the base after removing only Workstreams
+Every existing pinned input and the board schema are byte-identical to the activation base.
+bounded-result {"name":"bounded-probe","durationMs":554,"slowestCases":[{"name":"bounded-probe","durationMs":554,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":24153232,"peakRssBytes":71122944,"memoryBudgetBytes":3221225472,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-10-24T14:33:22.085Z","finishedAt":"2026-10-24T14:33:22.639Z","exitCode":0,"executed":true}
