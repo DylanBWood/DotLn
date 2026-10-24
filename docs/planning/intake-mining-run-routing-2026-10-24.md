@@ -14,8 +14,8 @@ messages and the operator's answers to the batch are captured verbatim in
 ignored intake
 (`docs/intake/notes/planning-intake-mining-run-routing-2026-10-24.md`,
 SHA-256
-`e2ed6150413e0f30e8e379277e2a0b0dbd3fea6ca488ffd7148463dc3c312078` at the
-sixth entry), a sibling record, never a source to mine. The first mid-turn
+`d4bad7d4420372fdb7a1f480f3eb5cdde2efaa537ccba033ae398bcb79025c1f` at the
+seventh entry), a sibling record, never a source to mine. The first mid-turn
 message, at about 02:50Z, asked that decisions be put with ample context and
 time to respond. The batch was put twice: the first time in the run's own
 vocabulary, which the operator had not read, since another session wrote
@@ -545,10 +545,11 @@ The toolbox, the soldier scene, the machinery view and the operator's digital
 twin start in DotLn-Angular, and the instance's own planning pass cuts those
 orders; this pass does not. The run's design files are the designs, and the
 operator directed that work already done is not redone. So this pass hands
-the instance one prompt, in the operator's voice, that makes its next pass
-cut the DotLn-Angular orders from those files under the operator's
-decisions of §10, with core's answers to the fork's 2026-10-23 block folded
-in. The operator pastes it into the instance's planning session, which is
+the instance one block, in core's voice as every earlier pass wrote them
+(a first draft in the operator's voice, following the run's dispatch file,
+was withdrawn on the operator's objection), that makes its next pass cut
+the DotLn-Angular orders from those files under the operator's decisions of
+§10, with core's answers to the fork's 2026-10-23 block folded in. The operator pastes it into the instance's planning session, which is
 the designed route until WO-193 lands.
 
 **The fork's nine items of 2026-10-23**, read against the record at
@@ -572,14 +573,37 @@ the kit's build-first scripts, `npm run skeleton` among them, and the shipped
 console opens with `npm run console -- live --store .runtime/resident` (the
 kit README). (8) This prompt. (9) Acknowledged.
 
-**The prompt**, paste-ready for the instance's planning session:
+**The prompt**, paste-ready for the instance's planning session, in the
+plain form the operator asked for (two denser drafts, one in the operator's
+voice and one in core's, were withdrawn on the operator's word):
 
 ```
-planning: turn the 2026-10-22 intake mining run into DotLn-Angular work orders now; do not redo its research
-Source: the run lives on this machine at /Users/dylanwood/Projects/DotLn/docs/intake/notes/2026-10-22-intake-mining-run/ (core's ignored intake; read-only for you). Read README.md §If you read nothing else items 7 to 11 and 20, then out/angular/README.md, out/angular/dotln-angular-forward.md (the toys, the five slices, the graduation protocol, the 37 platform requests), out/angular/toys.jsonl, out/angular/design-*.md as each order needs them, out/process/ui-vision-see-the-agents.md, out/process/toolbox-ui-capture.md, out/process/toolbox-toy-scene-capture.md, out/maps/README.md (the catalog: 3,463 concept rows in one schema across out/maps/*.jsonl, out/geb/ and out/tt/), digest/queue-and-rules.md §1.2 items 14, 15, 17 and 18 (the catalog pipeline, already sized under my twenty-agent rule), and digest/key-ideas.md themes 2, 4, 5 and 6 (the UI ideas; open an entry in digest/key-ideas-catalog.md only for an idea an order takes). Do not re-read the rest, re-rank or re-synthesize anything: the designs are the designs, and I spent eight hours producing them.
-My decisions, recorded by core's 2026-10-24 pass (docs/planning/intake-mining-run-routing-2026-10-24.md §10), bind: one app with sub-apps behind a menu (a 3D scene for authoring game AI, a detailed view of DotLn's machinery, side utilities), one workstream for now with the logic in libs; the app is the sandbox, playground and toolbox where every new idea lives first as a toy I play with before promoting it, for the five UIFA roles, people and software actors alike; it informs DotLn through the issue intake (GitHub issues on DylanBWood/DotLn) and writes no control record; it is not wired to core: its data comes from public mining into its own store and reaches the UI through its own API, and field-reduced copies of core's WO-221 and WO-226 segments (ordinal, type, time, actor, verdict; no paths; your scrub check) are a stopgap; the machinery view exists to change the mechanisms that replaced v1's rules (active gems, supports, injected prose) on an agent and see what changes, first so I can tune them to run without my intervention, then to see agents operate in concert beyond what my interventions would produce; the workers are metaphors regardless of scale, today separate agents in their role slots; select-then-apply first, drag later; the ideas I drop are mine and are also saved to ignored intake; the soldier scene is a sub-app in its own right, 2D first behind a renderer seam, Babylon.js later, manim in the monorepo later; my model lives in the UI first as a personality-fidelity digital twin with variations and old versions kept, nothing held back from it, judged by results only, and the RxJS that describes me is the RxJS that runs; agents collaborate.
-Cut the orders in this pass and place them in your own sequence; do not ask me which first: (1) the app shell with the menu and the routes of the first two sub-apps; (2) the catalog pipeline as this app's own data: toolify the run's 3,463 map rows into tools with five faces (scene, selection, transform, observable, toy metric; optional DotLn analog; transform from the design's closed enum or ask) and the tool schema, in the app's own store, as your order with a fan-out of at most twelve workers (eight classifiers by map, two sampling checkers, one synthesizer, one critic), the maps' paths above, checkpointed per map; (3) the soldier scene: twenty units, the rail from the catalog's first three tools per source, RTS selection, flock, arrive, a formation, 2D; (4) the machinery view: one recorded order's agents in role slots, a mechanism change dropped on an agent and the example use case redrawn, over the scrubbed WO-221 and WO-226 fixtures; (5) the digital twin's first lane: the patience lane over WO-221 on virtual time, judged by results, after re-deriving its data (eight operator rows; the 87.8-minute gap followed a hand-back without a verdict); (6) after (2), The Art of War's map pass and toys for the six mined sources without one (Meadows, Pirsig, Poincaré, Gladwell, Taleb, 5S). Each order names the run's design file it builds from by path and SHA-256, copies nothing from intake into committed files beyond ids, short titles and generic terms, and never opens a quarantine file (merged/quarantine-all.jsonl, out/probes/quarantine.jsonl) for content. Every graduated idea goes back to core as an issue, never as a control record.
-Core's answers to your 2026-10-23 block: item 1 is fixed in v0.94.0 (take it; your plan gate passes); item 2's correct --set productGate route stands, a final-review result carrying the launchpad row is a core candidate; item 7: your shell's local host process reads console-loopback-v1.json from the resident store's owner-only console directory and hands the connection to the browser, and an export's resident runs on the carried runtime (npm run skeleton; npm run console -- live --store .runtime/resident); items 3 to 6 and 9 recorded. Nothing in core blocks you.
+planning: cut the DotLn-Angular work orders from the 2026-10-22 mining run
+
+The research is done. It lives at /Users/dylanwood/Projects/DotLn/docs/intake/notes/2026-10-22-intake-mining-run/ (read-only). The DotLn-Angular designs are in out/angular/ (start with README.md and dotln-angular-forward.md; toys.jsonl and the design-*.md files have the details). The book maps that feed the toolbox are in out/maps/ (see its README), out/geb/ and out/tt/. Don't redo any of it. Read what each order needs and cut the orders.
+
+What I decided:
+- One app with sub-apps behind a menu: a 3D scene for authoring game AI, a view of DotLn's machinery, side utilities. One workstream for now; logic in libs.
+- The app is the sandbox: every new idea lives there as a toy first, I play with it, then promote what works. It serves all five UIFA roles, not just agents.
+- It feeds back to DotLn through GitHub issues, never by writing control records.
+- It is not wired to DotLn core. Its data comes from public mining into its own store, served to the UI through its own API. Scrubbed copies of core's WO-221 and WO-226 records are a stopgap.
+- The machinery view: show an agent, drop a change to its gems/supports/mechanisms on it, and show what changes in the example use case. Purpose: tune the mechanisms until they run without me, then see agents working in concert.
+- Workers are metaphors; today they're separate agents in their role slots. Select-then-apply first, drag later. Ideas I drop also get saved to ignored intake.
+- The soldier scene is its own sub-app. 2D first, Babylon.js later. manim can live in the monorepo later.
+- My model lives in the UI first: a personality-fidelity digital twin, with variations and old versions kept. Nothing held back from it. Judged by results only. The RxJS that describes me is the RxJS that runs.
+- Agents collaborate.
+
+Cut these orders, in whatever sequence you choose:
+1. The app shell: the menu and the routes for the first two sub-apps.
+2. The toolbox catalog pipeline: turn the 3,463 map rows into tools (scene, selection, transform, observable, toy metric; optional DotLn analog) plus the tool schema, stored as this app's own data. At most twelve workers, checkpointed per map.
+3. The soldier scene: twenty units, a tool rail from the catalog, RTS selection, flock, arrive, formation. 2D.
+4. The machinery view, over the scrubbed WO-221 and WO-226 records.
+5. The digital twin's first lane: the patience lane over WO-221, judged by results. Re-derive the WO-221 data first (eight operator rows, and the 87.8-minute gap followed a hand-back with no verdict).
+6. After 2: map The Art of War, and design toys for the six mined sources that have none.
+
+Rules: each order names the design file it builds from. Nothing from intake goes into committed files beyond ids, short titles and generic terms. Never open the quarantine files.
+
+Core's answers to your 2026-10-23 block: item 1 is fixed in v0.94.0, take it. Item 2: the correct --set productGate route is the designed route. Item 7: the browser never reads console-loopback-v1.json; your shell's local host reads it and hands the connection to the browser; an export's resident runs on the carried runtime (npm run skeleton; npm run console -- live --store .runtime/resident). Items 3 to 6 and 9: recorded. Nothing in core blocks you.
 ```
 
 ## 10. The operator's answers, recorded as decisions
@@ -877,6 +901,14 @@ which that prompt names for the UI themes. The trap, named: a planning pass
 that answers "make this happen" with routes is the stall the run itself
 diagnosed (its KI-132: the heavy pass as the only promotion venue, evidence
 only ever waited for).
+
+**The operator's verdict on this pass, recorded at their direction** (the
+capture's seventh entry): without a doubt the worst planning session in
+existence. The record keeps it as the pass's own measure: twenty-six
+questions the record already answered, two drafts of orders nobody asked
+for, two drafts of the instance's prompt in the wrong voice or the wrong
+density, and the operator's messages answered late because the pass held
+the main thread in long tool chains while they were being written.
 
 **Process cost.** Counters: unknown (`harness usage` answers `no-session`
 because the dispatch was not read as one, §1). Wall-clock: the dispatch
