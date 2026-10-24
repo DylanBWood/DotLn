@@ -4296,6 +4296,14 @@
           "reopenWhen": "WO-080 closes without the workstream application rows its Known issues carry, or product 12's candidate section changes its demonstrations",
           "targets": [],
           "at": "2026-10-22T01:19:51.771Z"
+        },
+        {
+          "sourceRevision": 21,
+          "status": "deferred",
+          "reason": "Re-triaged by the 2026-10-24 second pass against the delivered convention: WO-080 closed on 2026-10-24 (v0.96.0) with the workstream document, the index grouping, the board section and the synthetic pilot, and its product 12 write-back changed this section's text only (source revision 21); the remaining demonstrations are WO-083's, which WO-080-D016 names as the pilot's extension, and WO-083 is queued, not active. No order is filed on the section this pass. [2026-10-24 second planning pass (docs/planning/target-publish-base-2026-10-24.md section 6)]",
+          "reopenWhen": "WO-083 activates or is amended, or product 12's candidate section changes its demonstrations or its first-screen claims.",
+          "targets": [],
+          "at": "2026-10-24T18:04:01.203Z"
         }
       ]
     },
@@ -44873,7 +44881,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-10-24 second pass to the next order that edits scripts/probes/local-model-role-qualification.mjs, as the decision names; low priority. [2026-10-24 second planning pass (docs/planning/target-publish-base-2026-10-24.md section 6)]",
+          "reopenWhen": "A repair binds retained schemas by value with a case that fails without it, or a later formatting change to taskSchema refuses retained records.",
+          "targets": [],
+          "at": "2026-10-24T18:04:01.689Z"
+        }
+      ]
     },
     {
       "id": "FUP-7f35e50c5d698168",
@@ -44888,7 +44905,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Evaluated by the 2026-10-24 second pass: the single fresh plain gate of 1135.28 s (1134.406 s in the row) is one observation above the six-minute stand-down, while the cold-gate candidate's condition is the thirty-day median of fresh complete plain gates, which plan conditions read as 322.102 s against 360 s at 17:38Z on 2026-10-24 (holds false); the median condition does not fire and no change is allocated. Read with FUP-ed4da61921a5c255 and FUP-e96221b106cd136a. [2026-10-24 second planning pass (docs/planning/target-publish-base-2026-10-24.md section 6)]",
+          "reopenWhen": "The plain-gate thirty-day median crosses 360 s (FUP-e96221b106cd136a), or two further fresh plain gates exceed six minutes.",
+          "targets": [],
+          "at": "2026-10-24T18:04:01.303Z"
+        }
+      ]
     },
     {
       "id": "FUP-2811605b8e865d2d",
@@ -44903,7 +44929,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-10-24 second pass to the home its decision names: the next order that edits readTargetFacts in scripts/work-orders.mjs; low priority. The rule a repair must hold stands: a self member's base, integration and stale cells describe the member, never the HEAD of the checkout that ran the refresh. [2026-10-24 second planning pass (docs/planning/target-publish-base-2026-10-24.md section 6)]",
+          "reopenWhen": "A repair makes a self member's cells independent of the generating checkout's HEAD with a case that fails without it, or a committed index on main records a self member as diverged.",
+          "targets": [],
+          "at": "2026-10-24T18:04:01.497Z"
+        }
+      ]
     },
     {
       "id": "FUP-ec2be6f5cb63ae35",
@@ -44918,7 +44953,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-10-24 second pass to WO-083, which extends the pilot, as the decision names; low priority. [2026-10-24 second planning pass (docs/planning/target-publish-base-2026-10-24.md section 6)]",
+          "reopenWhen": "A repair makes each demonstration pass alone with a case or command recorded, or a pilot failure is misattributed because one demonstration's state broke another.",
+          "targets": [],
+          "at": "2026-10-24T18:04:01.594Z"
+        }
+      ]
     },
     {
       "id": "FUP-ed4da61921a5c255",
@@ -44933,7 +44977,136 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Disposed with FUP-7f35e50c5d698168 by the 2026-10-24 second pass: the workstream-pilot row's 56.8 to 57.0 s exceeds the slowest structural task (generated, 19.1 to 19.9 s) and its standalone probe read 23.079 s, so the gate's context carries part of the cost; neither bounding the row nor moving it out of fresh plain gates is allocated while the plain-gate median reads 322.102 s against 360 s. The declined cost is this row. [2026-10-24 second planning pass (docs/planning/target-publish-base-2026-10-24.md section 6)]",
+          "reopenWhen": "The plain-gate thirty-day median crosses 360 s, or a change to the pilot or the runner moves the row's recorded wall-clock below the slowest structural task's, or WO-083 extends the pilot.",
+          "targets": [],
+          "at": "2026-10-24T18:04:01.400Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-a3e7ffa08d382a07",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-publish-blocker-recorded-2026-10-24-second-pass::196a67025f6e3ba1dd642efff57a30b2472c1ffae340b3f32547b24b3754a40f",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "8400e93293f6939ff1c6285f0651afbe9d2b0226e15030a4ec98c3be2e8beb21",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-publish-blocker-recorded-2026-10-24-second-pass",
+          "title": "A base advance event or a correctable baseCommit",
+          "summary": "1. **A base advance event or a correctable `baseCommit`** (the first half of the fork's WO-013-D008 route (a)). Declined: the activation base is the subject of `BaselineWitnessed`, the verification and the registry entry, and the published body renders the baseline sentence at it; rebinding it would name a base no baseline was walked at. WO-230 describes the change from the merge base of the subject and the base branch and names both commits instead. Reopen when an order needs its activation base itself rebound, with a baseline re-walked at the new base, or when the index's stale mark must clear without a publish.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined by the 2026-10-24 second pass: the activation base is the subject of BaselineWitnessed, the verification and the registry entry, and the published body renders the baseline sentence at it; rebinding it would name a base no baseline was walked at. WO-230 describes the change from the merge base of the subject and the base branch and names both commits instead. [2026-10-24 second planning pass (docs/planning/target-publish-base-2026-10-24.md section 6)]",
+          "reopenWhen": "An order needs its activation base itself rebound, with a baseline re-walked at the new base, or the index's stale mark must clear without a publish.",
+          "targets": [],
+          "at": "2026-10-24T18:04:01.786Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-0654a636ac6dfd12",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-publish-blocker-recorded-2026-10-24-second-pass::5229a70661d018d848b8b6e1c71c3000a5b74e1378431274ec2940095af79e67",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "c5e8a6d203e779beab97295b175fdb9e9a1a80ff68697692b100288f379166dd",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-publish-blocker-recorded-2026-10-24-second-pass",
+          "title": "A worktree start advisory on a declared base behind the base branch.",
+          "summary": "3. **A `worktree start` advisory on a declared base behind the base branch.** Deferred: the index's stale mark per repository base (WO-080, v0.96.0) is that signal, and WO-230 makes the publish right regardless. Reopen when an instance activates a second order on a stale base after WO-230 ships.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-10-24 second pass: the index's stale mark per repository base (WO-080, v0.96.0) is that signal, and WO-230 makes the publish right regardless of the declared base. [2026-10-24 second planning pass (docs/planning/target-publish-base-2026-10-24.md section 6)]",
+          "reopenWhen": "An instance activates a second order on a stale base after WO-230 ships.",
+          "targets": [],
+          "at": "2026-10-24T18:04:01.982Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-f12aae31bceb9b69",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-publish-blocker-recorded-2026-10-24-second-pass::6a939102b9d2e9dd2a74f8c850612be747b19de8382ca97fb921a04883b5e907",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "a40b0667df9279ea47679c1236e71bd992c33702002a4820c1a17f55d9f13962",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-publish-blocker-recorded-2026-10-24-second-pass",
+          "title": "The episode form's described base.",
+          "summary": "4. **The episode form's described base.** `observeTarget` binds the effect receipt's diff hash to the request's base and a resident's episode works from the base it was handed (`scripts/lib/target-publish.mjs` 753 to 799). Deferred, as WO-230's Known issue: reopen when a resident's episode integrates a later base-branch commit before its publication and the table misstates the change.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-10-24 second pass as WO-230's Known issue: observeTarget binds the effect receipt's diff hash to the request's base and a resident's episode works from the base it was handed (scripts/lib/target-publish.mjs 753 to 799). [2026-10-24 second planning pass (docs/planning/target-publish-base-2026-10-24.md section 6)]",
+          "reopenWhen": "A resident's episode integrates a later base-branch commit before its publication and the table misstates the change.",
+          "targets": [],
+          "at": "2026-10-24T18:04:02.079Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-b728f11a70c619db",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-publish-blocker-recorded-2026-10-24-second-pass::861af7b0d7816ec056499469368ad428fe778866a589a67f1d976c7462be27cf",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "48bffe842ba8e9a82e5cbf67127fe9241f94a5a5118cc83ba9645cb4ff49c224",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-publish-blocker-recorded-2026-10-24-second-pass",
+          "title": "An instance-side planning condition table",
+          "summary": "2. **An instance-side planning condition table** (the fork's item 3 of 2026-10-24). In a kit, `planningConditions` keeps only the rows whose every source id is among the instance's own decisions and register rows, and the gate-history block runs only when the instance's records carry FUP-e96221b106cd136a (`scripts/lib/planning-conditions.mjs` 497 to 534 and 553 to 557, WO-219), so an instance whose records carry none of core's ids prints an empty table by design; the gate summary's wall and lane-wait figures and the recorded row (WO-229) are its readings. Deferred: reopen when an instance needs a threshold on its own gate timing, or when WO-088 makes planning documents checked contracts an i",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-10-24 second pass: in a kit, planningConditions keeps only the rows whose every source id is among the instance's own decisions and register rows (scripts/lib/planning-conditions.mjs 497 to 534 and 553 to 557, WO-219), so an instance without core's ids prints an empty table by design; the gate summary's wall and lane-wait figures and the recorded row (WO-229) are its readings. Answered to the fork as its item 3 of 2026-10-24. [2026-10-24 second planning pass (docs/planning/target-publish-base-2026-10-24.md section 6)]",
+          "reopenWhen": "An instance needs a threshold on its own gate timing, or WO-088 makes planning documents checked contracts an instance extends.",
+          "targets": [],
+          "at": "2026-10-24T18:04:01.883Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-2e83abf61d62cc55",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-publish-blocker-recorded-2026-10-24-second-pass::b23bcd22010c47e189fa56d4eceac51090caf3b61cb93096d54ed316321247a5",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "6c6e949252312ea4d768b0c1e346e363acc0712d74f1698f40898426e436a46d",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-publish-blocker-recorded-2026-10-24-second-pass",
+          "title": "A planning-time rule that sets or checks a target order's declared base",
+          "summary": "5. **A planning-time rule that sets or checks a target order's declared base** (the last sentence of the fork's WO-013-D008: its next pass sets a provisional base before activation). Declined for core: a target order's base is the instance planner's declaration, and after WO-230 the publish describes the change whatever that declaration was. Reopen when a second instance reports the stand-in base pattern after WO-230.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined for core by the 2026-10-24 second pass: a target order's base is the instance planner's declaration, and after WO-230 the publish describes the change whatever that declaration was. [2026-10-24 second planning pass (docs/planning/target-publish-base-2026-10-24.md section 6)]",
+          "reopenWhen": "A second instance reports the stand-in base pattern after WO-230.",
+          "targets": [],
+          "at": "2026-10-24T18:04:02.176Z"
+        }
+      ]
     }
   ]
 }

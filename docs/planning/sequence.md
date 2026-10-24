@@ -48,7 +48,10 @@ WO-193 into the separate predecessor track (WS-002) and places the four
 orders that unblock the operator's fork first; the
 [2026-10-24 pass](intake-mining-run-routing-2026-10-24.md) retires WO-226
 (v0.90.0), WO-227 (v0.91.0), WO-225 (v0.92.0), WO-229 (v0.93.0) and WO-219
-(v0.94.0), files nothing, and takes in the 2026-10-22 intake mining run.
+(v0.94.0), files nothing, and takes in the 2026-10-22 intake mining run; the
+[2026-10-24 second pass](target-publish-base-2026-10-24.md) retires WO-220
+(v0.95.0) and WO-080 (v0.96.0), files WO-230 and places it first on the
+operator's direction.
 
 **One focus: the starter, the operator's fork of it and DotLn-Angular,
 with a DotLn UI** (operator direction, 2026-10-13). The win condition is
@@ -147,12 +150,28 @@ planning prompt (its §9) that turns the run's UI designs into DotLn-Angular
 orders in the instance's own pass, where the toolbox, the soldier scene, the
 machinery view and the operator's digital twin are built.
 
+**The fork's publish is unblocked first** (the 2026-10-24 second pass). WO-220
+closed on 2026-10-24 as v0.95.0 and WO-080 the same day as v0.96.0. The
+fork's WO-013, verified, cannot publish: the kit composes the pull request's
+Change table from the order's activation base, and the fork's planning pass
+had written DotLn-Angular's initial commit there as a stand-in for a
+predecessor's merge commit that did not yet exist, so the table describes
+515 files instead of the change's 83 and the outward lint refuses the
+earlier orders' moved records in it. The operator chose a core fix taken
+through a kit update over withdrawing the order (the fork's WO-013-D009)
+and directed that the order go next. WO-230 computes the table, the
+base-tree exemption and the no-change check from the merge base of the
+subject and the target's base branch, names the activation base beside it,
+and stops the plan gate advising renames of the kit's own evidence files.
+It blocks the fork's next three orders by id (WO-013, WO-014 and WO-016
+share the base); nothing else in the queue moves relative to its
+neighbours.
+
 The order, serial:
-- WO-220: boarded follow-ups, batch 4: the resident, the vertical, the
-  console, intake and triage, audit, the corpus lanes and the kernel's
-  admission (20 rows).
-- WO-080: the workstream document the run holds, the board's Workstreams
-  section and the synthetic pilot. It absorbed WO-081 and WO-082.
+- WO-230: a target publish describes the change its pull request shows: the
+  Change table from the merge base of the subject and the base branch, the
+  activation base named beside it, and the plan gate's path advisory kept to
+  target paths. The fork's blocker; first on the operator's direction.
 - WO-224: the Entropy Reducer on a registered target repository or a
   workstream's repositories, one episode per member, in the kit.
 - WO-204: the source writer is made safe before WO-083. It absorbed WO-205,
@@ -184,8 +203,7 @@ The period below `v1.0.0` is early access (operator direction, 2026-09-30).
 The order of everything the operator did not place is the planner's.
 
 <!-- dotln-work-order-sequence:start -->
-- WO-220 — Boarded follow-ups, batch 4: the resident and the vertical
-- WO-080 — Workstreams: document, index, board section and synthetic pilot
+- WO-230 — A target publish describes the change its pull request shows
 - WO-224 — The Entropy Reducer on a registered target or a workstream
 - WO-204 — The source writer cannot damage the operator's repository
 - WO-192 — A router drives an order through its lifecycle

@@ -40,6 +40,19 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
+## 2026-10-24 — Planning pass, second of the day: the fork's publish blocker filed as WO-230 and placed first, and its seven items answered; registration only; the record is the planning document
+
+Dispatch: `planning: quick planning pass +`, sent as one message holding the
+fork's request block of 2026-10-24, the quoted recommendation of its
+WO-013-D008 ("blocker:") and the operator's direction that the unblock order
+go next, with one mid-turn message asking why the fork's order sits on the
+initial commit and why core never met the defect, captured in
+`docs/intake/notes/planning-target-publish-base-2026-10-24.md` (ignored; the
+planning document §1 records its SHA-256). The record is
+[the planning document](../planning/target-publish-base-2026-10-24.md); this
+heading registers the pass for the plan tooling (WO-088 moves registration
+out of the ledger). This pass writes no ledger entry.
+
 ## 2026-10-24 — Planning pass: the 2026-10-22 intake mining run taken in and its critical ideas routed; registration only; the record is the planning document
 
 Dispatch: `planning: take in the 2026-10-22 intake mining run and route its
