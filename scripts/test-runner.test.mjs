@@ -9188,7 +9188,7 @@ test("target-worktree file tasks keep all declared cases and two independent dea
       "utf8",
     ),
   );
-  assert.equal(declarations.length, 62);
+  assert.equal(declarations.length, 67);
   assert.deepEqual(declarations.sort(), expected.declarations.sort());
   const names = [];
   for (const task of tasks) {
@@ -9210,8 +9210,8 @@ test("target-worktree file tasks keep all declared cases and two independent dea
     );
     names.push(...collected.registeredNames);
   }
-  assert.equal(names.length, 89);
-  assert.equal(new Set(names).size, 89);
+  assert.equal(names.length, 95);
+  assert.equal(new Set(names).size, 95);
   assert.deepEqual(names.sort(), expected.names.sort());
   let active = 0,
     peak = 0;

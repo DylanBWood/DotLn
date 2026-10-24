@@ -7,6 +7,7 @@ import {
   mkdirSync,
   mkdtempSync,
   readFileSync,
+  realpathSync,
   rmSync,
   symlinkSync,
 } from "node:fs";
@@ -45,6 +46,28 @@ import {
   withoutHomeDirectories,
 } from "./lib/private-paths.mjs";
 import { readDecisions } from "./lib/meta.mjs";
+import { createWorkstreamIndexFixture } from "./test-workstream-index-fixture.mjs";
+
+test("the console workstream document matches the current generated index", () => {
+  const root = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-workstream-document-")),
+  );
+  try {
+    const fixture = createWorkstreamIndexFixture(root);
+    assert.equal(
+      fixture.readme(),
+      readFileSync(
+        new URL(
+          "../packages/console/fixtures/inputs/workOrderIndex-workstreams.md",
+          import.meta.url,
+        ),
+        "utf8",
+      ),
+    );
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
 
 test("WO-178 attributed operator words advise by record, with capture and fingerprinted baseline exceptions", (t) => {
   const f = fixture(t);

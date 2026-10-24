@@ -2334,18 +2334,6 @@ await check(
       join(root, "target-worktrees"),
     ])
       assert.equal(page.includes(physical), false, physical);
-    // The core-only board input is not carried by an exported kit.
-    if (!existsSync(join(scriptRoot, "../KIT-MANIFEST.json")))
-      assert.equal(
-        page,
-        readFileSync(
-          join(
-            scriptRoot,
-            "../packages/console/fixtures/inputs/workOrderIndex-workstreams.md",
-          ),
-          "utf8",
-        ),
-      );
     assert.equal((page.match(/^### WO-/gm) ?? []).length, 3);
     cli(fixture.launchpad, ["index", "--check"]);
     write(

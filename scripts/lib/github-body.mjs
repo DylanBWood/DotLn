@@ -1093,7 +1093,12 @@ const changeCount = (value) => (value === null ? "binary" : String(value));
 // by this exact string.
 const changeRow = (file) =>
   `| ${literal(file.path)} | ${changeCount(file.added)} | ${changeCount(file.deleted)} |`;
-export const targetChangeSection = ({ baseCommit, headCommit, files }) => {
+export const targetChangeSection = ({
+  baseCommit,
+  activationBase = baseCommit,
+  headCommit,
+  files,
+}) => {
   return [
     "## Change",
     "",
@@ -1101,7 +1106,7 @@ export const targetChangeSection = ({ baseCommit, headCommit, files }) => {
     "| --- | ---: | ---: |",
     ...files.map(changeRow),
     "",
-    `${files.length} ${files.length === 1 ? "file" : "files"} changed from base ${baseCommit} to head ${headCommit}.`,
+    `${files.length} ${files.length === 1 ? "file" : "files"} changed from base ${baseCommit} to head ${headCommit}${activationBase !== baseCommit ? `; activated at base ${activationBase}, which ${baseCommit} descends from` : ""}.`,
   ].join("\n");
 };
 /** Text built from labelled parts: each named part's offsets become a lint
@@ -1134,6 +1139,7 @@ export const labelledParts = (parts) => {
 export const composeTargetBody = ({
   body,
   baseCommit,
+  activationBase = baseCommit,
   headCommit,
   files,
   baseTree = new Set(),
@@ -1143,7 +1149,10 @@ export const composeTargetBody = ({
   const composed = labelledParts([
     ["reviewed prose", body.trimEnd()],
     ["", "\n\n"],
-    ["Change table", targetChangeSection({ baseCommit, headCommit, files })],
+    [
+      "Change table",
+      targetChangeSection({ baseCommit, activationBase, headCommit, files }),
+    ],
     ...(gate
       ? [
           ["", "\n\n"],

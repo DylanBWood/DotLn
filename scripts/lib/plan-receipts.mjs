@@ -15,7 +15,7 @@ import {
   readdirSync,
   writeFileSync,
 } from "node:fs";
-import { join } from "node:path";
+import { join, posix } from "node:path";
 import {
   buildPlanSubject,
   committedReader,
@@ -1649,7 +1649,16 @@ export function targetOrderPathAdvisories(root, rows) {
       continue;
     }
     if (!repository) continue;
+    const recordRoots = ["evidence", "verifications", "finalReviews"].map(
+      (key) => `${docRelative(root, key, row.id)}/`,
+    );
     for (const named of executionPlanPaths(markdown)) {
+      // These paths move as the order's kit records, whose identifiers are
+      // admitted at publication; target-side paths still need the advisory.
+      if (
+        recordRoots.some((prefix) => posix.normalize(named).startsWith(prefix))
+      )
+        continue;
       const identifiers = [
         ...new Set(
           matchLaunchpadIdentifiers(named).map((match) => match.identifier),

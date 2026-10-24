@@ -59,6 +59,7 @@ import {
 import {
   checkPassReceipt,
   checkPlanGate,
+  targetOrderPathAdvisories,
   OVERRIDES,
   overridePlanHold,
   disposePlanHold,
@@ -2714,6 +2715,73 @@ export async function fixtures() {
         );
       },
     );
+    for (const relocated of [false, true]) {
+      await check(
+        `plan path advisories skip only the order's configured record roots: relocated=${relocated}`,
+        async () => {
+          const repo = makeRepo(parent, `record-paths-${relocated}`);
+          const roots = relocated
+            ? {
+                evidence: "records/proofs",
+                verifications: "records/checks",
+                finalReviews: "records/reviews",
+              }
+            : {
+                evidence: "docs/evidence",
+                verifications: "docs/verifications",
+                finalReviews: "docs/final-reviews",
+              };
+          if (relocated)
+            write(
+              repo,
+              "dotln.config.json",
+              JSON.stringify({ version: 1, roots }),
+            );
+          const ownPaths = [
+            `${roots.evidence}/WO-901/host-qualification.md`,
+            `${roots.verifications}/WO-901/VER-001.md`,
+            `${roots.finalReviews}/WO-901/RELEASE-NOTES.md`,
+          ];
+          write(
+            repo,
+            orderPath("WO-901"),
+            order("WO-901").replace(
+              "**Effort:** executor any; verifier any; reviewer any.\n",
+              `**Effort:** executor any; verifier any; reviewer any.\n**Repository:** target @ ${"a".repeat(40)}\n`,
+            ) +
+              `\n**Execution plan:**\n\n1. ${[...ownPaths, "docs/WO-006-notes.md"].map((path) => `\`${path}\``).join(", ")}.\n`,
+          );
+          commit(repo, "target order naming its own records");
+          await writeDirectReceipt(repo);
+          commit(repo, "record reviewed plan");
+          const result = await plan(["check"], repo);
+          assert.deepEqual(result.advisories, [
+            "advisory: WO-901 names docs/WO-006-notes.md in its execution plan, which carries the launchpad identifier WO-006; rename the file before a draft publish meets it",
+          ]);
+          const targetPaths = [
+            `${roots.evidence}/WO-902/notes.md`,
+            `${roots.evidence}/WO-901-extra/notes.md`,
+            `${roots.evidence}/WO-901/../WO-006-notes.md`,
+          ];
+          write(
+            repo,
+            orderPath("WO-901"),
+            read(repo, orderPath("WO-901")) +
+              `2. ${targetPaths.map((path) => `\`${path}\``).join(", ")}.\n`,
+          );
+          const remaining = targetOrderPathAdvisories(repo, [
+            {
+              id: "WO-901",
+              section: "Open",
+              authorityLink: "WO-901-fixture.md",
+            },
+          ]);
+          assert.equal(remaining.length, 4);
+          for (const path of targetPaths)
+            assert.ok(remaining.some((line) => line.includes(path)));
+        },
+      );
+    }
     await check(
       "AC3 local-terms phrases across separators and lines, private diagnostics, and atomic receipt refusal",
       async () => {
