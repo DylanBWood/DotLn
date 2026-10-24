@@ -1,0 +1,1269 @@
+{
+ "schemaVersion": 1,
+ "subject": {
+  "baseCommit": "f80701eaa73d25fa8a54bb5e53aba357a0f2c5b1",
+  "gateCodeIdentity": "881d4a43ef351238cd74bc374006924fb5cf632521bd93561fb230b2f57b39e6",
+  "copyDiffSha256Prefix": "4f11a1e6755a96c3",
+  "note": "The isolated copy is a shared local clone checked out at the base and overlaid with every modified and untracked file of the worktree; git diff of the copy and of the worktree hash identically, and every untracked file matched by sha256."
+ },
+ "method": "replay.mjs.txt replays each control of ../repair-controls.json: positive arm, recorded reversion (base file or exact old/new needle with its count), npm run build when a .ts file is reverted, negative arm, restore and rebuild. Demonstrated requires positive exit 0 with no failed case and negative exit 1 with a failed case. Each arm runs under node scripts/harness.mjs bounded.",
+ "environmentNote": "The first run of browser-signal and browser-recovery failed its positive arm too: the case sets PLAYWRIGHT_BROWSERS_PATH to <checkout>/.runtime/playwright, an ignored directory the copy lacked, so Chromium never launched (browser witness did not reach the wait step). Rerun with PLAYWRIGHT_BROWSERS_PATH set to the worktree pinned Chromium, both demonstrate. Both runs are listed.",
+ "summary": {
+  "controls": 26,
+  "demonstrated": 26
+ },
+ "final": [
+  {
+   "id": "audit-partial",
+   "rowIds": [
+    "FUP-2341c85c58331f3e"
+   ],
+   "run": "first",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ audit links truthful partial revocation inputs without inventing missing inputs (1.37575ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": 0,
+   "restoredBuild": 0
+  },
+  {
+   "id": "intent-status",
+   "rowIds": [
+    "FUP-2b9a8e696b38fb97"
+   ],
+   "run": "first",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ resident expiry between steps shows one hold and terminal outcomes preserve the indexed phase (2.72425ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": 0,
+   "restoredBuild": 0
+  },
+  {
+   "id": "budget-label",
+   "rowIds": [
+    "FUP-2b9a8e696b38fb97"
+   ],
+   "run": "first",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ resident status labels the budget as portfolio-only beside an intent outcome (0.9465ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": 0,
+   "restoredBuild": 0
+  },
+  {
+   "id": "t1-minimum",
+   "rowIds": [
+    "FUP-349058ac0342247d"
+   ],
+   "run": "first",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ T1 emitted minimum and maximum match every receipt field's host validation (1.881709ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": null,
+   "restoredBuild": null
+  },
+  {
+   "id": "recovery-refusal",
+   "rowIds": [
+    "FUP-49c4a5f7176252e7"
+   ],
+   "run": "first",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ recovered unreceipted dirty commits close with a typed host admission refusal (1880.535208ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": 0,
+   "restoredBuild": 0
+  },
+  {
+   "id": "noop-identity",
+   "rowIds": [
+    "FUP-4f8cd7989607ad3f"
+   ],
+   "run": "first",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ resident NoOp identity survives replay and distinguishes phase and rearm (318.578958ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": 0,
+   "restoredBuild": 0
+  },
+  {
+   "id": "review-triage",
+   "rowIds": [
+    "FUP-7c269a184f75e742"
+   ],
+   "run": "first",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ review invocation bounds combined inline and body triage before opening the next item (1438.217458ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": null,
+   "restoredBuild": null
+  },
+  {
+   "id": "review-outward",
+   "rowIds": [
+    "FUP-7c269a184f75e742"
+   ],
+   "run": "first",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ review invocation stops at its outward bound before disposing a further thread (32521.849291ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": null,
+   "restoredBuild": null
+  },
+  {
+   "id": "review-rekey",
+   "rowIds": [
+    "FUP-7c269a184f75e742"
+   ],
+   "run": "first",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ three repair pushes rekey unchanged bodies without spending their eight-item allowance (46051.511584ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": null,
+   "restoredBuild": null
+  },
+  {
+   "id": "repair-worktrees",
+   "rowIds": [
+    "FUP-7c269a184f75e742"
+   ],
+   "run": "first",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ three repair pushes rekey unchanged bodies without spending their eight-item allowance (19861.464083ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": 0,
+   "restoredBuild": 0
+  },
+  {
+   "id": "repair-legacy-parent",
+   "rowIds": [
+    "FUP-7c269a184f75e742"
+   ],
+   "run": "first",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ namespaced repair resumes a recorded legacy worktree without another writer (3704.301917ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": 0,
+   "restoredBuild": 0
+  },
+  {
+   "id": "cached-resolution",
+   "rowIds": [
+    "FUP-7c269a184f75e742"
+   ],
+   "run": "first",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ cached resolution input rebinds its observed head, contract and snapshot before triage (6014.557792ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": null,
+   "restoredBuild": null
+  },
+  {
+   "id": "continuation-backoff",
+   "rowIds": [
+    "FUP-7c269a184f75e742"
+   ],
+   "run": "first",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ WO-112 continuation backoff survives a no-progress return, caps repeated failures and never defers authority expiry (9",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": 0,
+   "restoredBuild": 0
+  },
+  {
+   "id": "browser-signal",
+   "rowIds": [
+    "FUP-88c339c51cfc1933"
+   ],
+   "run": "rerun-with-pinned-chromium",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ browser witness cancellation closes owned processes and resumes in a fresh attempt directory (34833.315166ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": null,
+   "restoredBuild": null
+  },
+  {
+   "id": "browser-recovery",
+   "rowIds": [
+    "FUP-88c339c51cfc1933"
+   ],
+   "run": "rerun-with-pinned-chromium",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ browser witness cancellation closes owned processes and resumes in a fresh attempt directory (5551.808917ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": null,
+   "restoredBuild": null
+  },
+  {
+   "id": "collector-archive",
+   "rowIds": [
+    "FUP-8f0561e50754114f"
+   ],
+   "run": "first",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ harness classification exception is exact and both collector revisions preserve timed bytes (16.351833ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": null,
+   "restoredBuild": null
+  },
+  {
+   "id": "comparison-newline",
+   "rowIds": [
+    "FUP-8f0561e50754114f"
+   ],
+   "run": "first",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ harness full dummy executions round-trip through schema and comparison (31.579208ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": null,
+   "restoredBuild": null
+  },
+  {
+   "id": "judgment-replay",
+   "rowIds": [
+    "FUP-7c269a184f75e742",
+    "FUP-b8440605da5a4eb2"
+   ],
+   "run": "first",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 2 ℹ pass 2 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 2 ℹ pass 0 ℹ fail 2",
+    "failed": [
+     "✖ stored intake result refusal is a bounded record fault with no new episode (3120.516583ms)",
+     "✖ stored triage result refusal ends needs-human and is never called an episode failure (11.12075ms)"
+    ]
+   },
+   "negativeBuild": null,
+   "restoredBuild": null
+  },
+  {
+   "id": "preparation-clock",
+   "rowIds": [
+    "FUP-bcd4724fca7bff7a"
+   ],
+   "run": "first",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ preparation retries cool down after short and slow failures, cap the delay and honor expiry (819.760875ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": 0,
+   "restoredBuild": 0
+  },
+  {
+   "id": "command-persist",
+   "rowIds": [
+    "FUP-c1d4be019802be0d"
+   ],
+   "run": "first",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ new command admission rejects malformed structure while old logs replay unchanged (0.791334ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": 0,
+   "restoredBuild": 0
+  },
+  {
+   "id": "command-append",
+   "rowIds": [
+    "FUP-c1d4be019802be0d"
+   ],
+   "run": "first",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ new command admission rejects malformed structure while old logs replay unchanged (0.98675ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": 0,
+   "restoredBuild": 0
+  },
+  {
+   "id": "command-serialization",
+   "rowIds": [
+    "FUP-c1d4be019802be0d"
+   ],
+   "run": "first",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ new command admission rejects malformed structure while old logs replay unchanged (1.293959ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": 0,
+   "restoredBuild": 0
+  },
+  {
+   "id": "corpus-after-base",
+   "rowIds": [
+    "FUP-d093f77bd927f9dc"
+   ],
+   "run": "first",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ WO-105 after-base reports identity drift but still rejects changed crash-shape pins (1.104333ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": null,
+   "restoredBuild": null
+  },
+  {
+   "id": "authority-contest",
+   "rowIds": [
+    "FUP-d22dc57e754ba35c"
+   ],
+   "run": "first",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ authority factorial contests denial without allow and pins the expanded axes (2.121209ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": null,
+   "restoredBuild": null
+  },
+  {
+   "id": "intent-only",
+   "rowIds": [
+    "FUP-eeb25ea9315438ad"
+   ],
+   "run": "first",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ intent-only residents skip an unbound portfolio actor but ordinary portfolios still report it (650.575792ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": 0,
+   "restoredBuild": 0
+  },
+  {
+   "id": "browser-startup",
+   "rowIds": [
+    "FUP-88c339c51cfc1933"
+   ],
+   "run": "first",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ browser witness resumes a pre-launch directory without a process record (4145.524083ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": 0,
+   "restoredBuild": 0
+  }
+ ],
+ "allRuns": [
+  {
+   "id": "audit-partial",
+   "rowIds": [
+    "FUP-2341c85c58331f3e"
+   ],
+   "run": "first",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ audit links truthful partial revocation inputs without inventing missing inputs (1.37575ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": 0,
+   "restoredBuild": 0
+  },
+  {
+   "id": "intent-status",
+   "rowIds": [
+    "FUP-2b9a8e696b38fb97"
+   ],
+   "run": "first",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ resident expiry between steps shows one hold and terminal outcomes preserve the indexed phase (2.72425ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": 0,
+   "restoredBuild": 0
+  },
+  {
+   "id": "budget-label",
+   "rowIds": [
+    "FUP-2b9a8e696b38fb97"
+   ],
+   "run": "first",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ resident status labels the budget as portfolio-only beside an intent outcome (0.9465ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": 0,
+   "restoredBuild": 0
+  },
+  {
+   "id": "t1-minimum",
+   "rowIds": [
+    "FUP-349058ac0342247d"
+   ],
+   "run": "first",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ T1 emitted minimum and maximum match every receipt field's host validation (1.881709ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": null,
+   "restoredBuild": null
+  },
+  {
+   "id": "recovery-refusal",
+   "rowIds": [
+    "FUP-49c4a5f7176252e7"
+   ],
+   "run": "first",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ recovered unreceipted dirty commits close with a typed host admission refusal (1880.535208ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": 0,
+   "restoredBuild": 0
+  },
+  {
+   "id": "noop-identity",
+   "rowIds": [
+    "FUP-4f8cd7989607ad3f"
+   ],
+   "run": "first",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ resident NoOp identity survives replay and distinguishes phase and rearm (318.578958ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": 0,
+   "restoredBuild": 0
+  },
+  {
+   "id": "review-triage",
+   "rowIds": [
+    "FUP-7c269a184f75e742"
+   ],
+   "run": "first",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ review invocation bounds combined inline and body triage before opening the next item (1438.217458ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": null,
+   "restoredBuild": null
+  },
+  {
+   "id": "review-outward",
+   "rowIds": [
+    "FUP-7c269a184f75e742"
+   ],
+   "run": "first",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ review invocation stops at its outward bound before disposing a further thread (32521.849291ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": null,
+   "restoredBuild": null
+  },
+  {
+   "id": "review-rekey",
+   "rowIds": [
+    "FUP-7c269a184f75e742"
+   ],
+   "run": "first",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ three repair pushes rekey unchanged bodies without spending their eight-item allowance (46051.511584ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": null,
+   "restoredBuild": null
+  },
+  {
+   "id": "repair-worktrees",
+   "rowIds": [
+    "FUP-7c269a184f75e742"
+   ],
+   "run": "first",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ three repair pushes rekey unchanged bodies without spending their eight-item allowance (19861.464083ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": 0,
+   "restoredBuild": 0
+  },
+  {
+   "id": "repair-legacy-parent",
+   "rowIds": [
+    "FUP-7c269a184f75e742"
+   ],
+   "run": "first",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ namespaced repair resumes a recorded legacy worktree without another writer (3704.301917ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": 0,
+   "restoredBuild": 0
+  },
+  {
+   "id": "cached-resolution",
+   "rowIds": [
+    "FUP-7c269a184f75e742"
+   ],
+   "run": "first",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ cached resolution input rebinds its observed head, contract and snapshot before triage (6014.557792ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": null,
+   "restoredBuild": null
+  },
+  {
+   "id": "continuation-backoff",
+   "rowIds": [
+    "FUP-7c269a184f75e742"
+   ],
+   "run": "first",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ WO-112 continuation backoff survives a no-progress return, caps repeated failures and never defers authority expiry (9",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": 0,
+   "restoredBuild": 0
+  },
+  {
+   "id": "browser-signal",
+   "rowIds": [
+    "FUP-88c339c51cfc1933"
+   ],
+   "run": "first",
+   "verdict": "NOT-DEMONSTRATED",
+   "positive": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ browser witness cancellation closes owned processes and resumes in a fresh attempt directory (23800.812458ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ browser witness cancellation closes owned processes and resumes in a fresh attempt directory (23756.738917ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": null,
+   "restoredBuild": null
+  },
+  {
+   "id": "browser-recovery",
+   "rowIds": [
+    "FUP-88c339c51cfc1933"
+   ],
+   "run": "first",
+   "verdict": "NOT-DEMONSTRATED",
+   "positive": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ browser witness cancellation closes owned processes and resumes in a fresh attempt directory (23752.756917ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ browser witness cancellation closes owned processes and resumes in a fresh attempt directory (23757.032292ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": null,
+   "restoredBuild": null
+  },
+  {
+   "id": "collector-archive",
+   "rowIds": [
+    "FUP-8f0561e50754114f"
+   ],
+   "run": "first",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ harness classification exception is exact and both collector revisions preserve timed bytes (16.351833ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": null,
+   "restoredBuild": null
+  },
+  {
+   "id": "comparison-newline",
+   "rowIds": [
+    "FUP-8f0561e50754114f"
+   ],
+   "run": "first",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ harness full dummy executions round-trip through schema and comparison (31.579208ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": null,
+   "restoredBuild": null
+  },
+  {
+   "id": "judgment-replay",
+   "rowIds": [
+    "FUP-7c269a184f75e742",
+    "FUP-b8440605da5a4eb2"
+   ],
+   "run": "first",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 2 ℹ pass 2 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 2 ℹ pass 0 ℹ fail 2",
+    "failed": [
+     "✖ stored intake result refusal is a bounded record fault with no new episode (3120.516583ms)",
+     "✖ stored triage result refusal ends needs-human and is never called an episode failure (11.12075ms)"
+    ]
+   },
+   "negativeBuild": null,
+   "restoredBuild": null
+  },
+  {
+   "id": "preparation-clock",
+   "rowIds": [
+    "FUP-bcd4724fca7bff7a"
+   ],
+   "run": "first",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ preparation retries cool down after short and slow failures, cap the delay and honor expiry (819.760875ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": 0,
+   "restoredBuild": 0
+  },
+  {
+   "id": "command-persist",
+   "rowIds": [
+    "FUP-c1d4be019802be0d"
+   ],
+   "run": "first",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ new command admission rejects malformed structure while old logs replay unchanged (0.791334ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": 0,
+   "restoredBuild": 0
+  },
+  {
+   "id": "command-append",
+   "rowIds": [
+    "FUP-c1d4be019802be0d"
+   ],
+   "run": "first",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ new command admission rejects malformed structure while old logs replay unchanged (0.98675ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": 0,
+   "restoredBuild": 0
+  },
+  {
+   "id": "command-serialization",
+   "rowIds": [
+    "FUP-c1d4be019802be0d"
+   ],
+   "run": "first",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ new command admission rejects malformed structure while old logs replay unchanged (1.293959ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": 0,
+   "restoredBuild": 0
+  },
+  {
+   "id": "corpus-after-base",
+   "rowIds": [
+    "FUP-d093f77bd927f9dc"
+   ],
+   "run": "first",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ WO-105 after-base reports identity drift but still rejects changed crash-shape pins (1.104333ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": null,
+   "restoredBuild": null
+  },
+  {
+   "id": "authority-contest",
+   "rowIds": [
+    "FUP-d22dc57e754ba35c"
+   ],
+   "run": "first",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ authority factorial contests denial without allow and pins the expanded axes (2.121209ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": null,
+   "restoredBuild": null
+  },
+  {
+   "id": "intent-only",
+   "rowIds": [
+    "FUP-eeb25ea9315438ad"
+   ],
+   "run": "first",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ intent-only residents skip an unbound portfolio actor but ordinary portfolios still report it (650.575792ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": 0,
+   "restoredBuild": 0
+  },
+  {
+   "id": "browser-startup",
+   "rowIds": [
+    "FUP-88c339c51cfc1933"
+   ],
+   "run": "first",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ browser witness resumes a pre-launch directory without a process record (4145.524083ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": 0,
+   "restoredBuild": 0
+  },
+  {
+   "id": "browser-signal",
+   "rowIds": [
+    "FUP-88c339c51cfc1933"
+   ],
+   "run": "rerun-with-pinned-chromium",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ browser witness cancellation closes owned processes and resumes in a fresh attempt directory (34833.315166ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": null,
+   "restoredBuild": null
+  },
+  {
+   "id": "browser-recovery",
+   "rowIds": [
+    "FUP-88c339c51cfc1933"
+   ],
+   "run": "rerun-with-pinned-chromium",
+   "verdict": "demonstrated",
+   "positive": {
+    "exitCode": 0,
+    "counts": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "failed": []
+   },
+   "negative": {
+    "exitCode": 1,
+    "counts": "ℹ tests 1 ℹ pass 0 ℹ fail 1",
+    "failed": [
+     "✖ browser witness cancellation closes owned processes and resumes in a fresh attempt directory (5551.808917ms)",
+     "✖ failing tests:"
+    ]
+   },
+   "negativeBuild": null,
+   "restoredBuild": null
+  }
+ ]
+}

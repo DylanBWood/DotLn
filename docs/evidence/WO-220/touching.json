@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-24T07:13:34.504710+00:00",
+  "command": "npm run plan -- followups --touching (all continuation pages)",
+  "pages": [
+    {
+      "revision": "2c0ee50fbbeffced34a02bd7fb6347f6446462322be8b974af8523c50c1aac69",
+      "match": "Textual match, a pointer for judgment and never a verdict: a pending row is listed when its source title or summary, its decision's followup or reopenWhen, or its latest disposition names a given path, a trailing part of it such as its base name, or a given order. A false match costs one row read; a row that names its seam in other words is not listed.",
+      "touching": {
+        "paths": 139,
+        "orders": [
+          "WO-220"
+        ]
+      },
+      "pending": 178,
+      "matched": 5,
+      "rows": [
+        {
+          "id": "FUP-268c774fd159addb",
+          "status": "deferred",
+          "sourceRevision": 1,
+          "title": "WO-225-D021: Next order or repair editing scripts/test-launchpad-export.mjs or scripts/lib/launchpad-fixture.mjs: run the WO-225 case's carried node --test child with NODE_TEST_CONTEXT removed from\u2026",
+          "source": "docs/evidence/WO-225/decisions.md#wo-225-d021",
+          "sourceMissing": false,
+          "reason": "Boarded by a closed order's decision (the row's source); by the operator's 2026-10-17 direction a boarded row is resolved by a work order, and the next order editing its surface takes it; no order filed in the 2026-10-24",
+          "reopenWhen": "A carried console schema test fails in an export, or another nested node --test child in the launchpad fixtures is found to pass without running; or WO-220's activation (its executor may take this console row inside the ",
+          "matched": [
+            "WO-220"
+          ]
+        },
+        {
+          "id": "FUP-848fd8e2ac941bc3",
+          "status": "deferred",
+          "sourceRevision": 1,
+          "title": "WO-226-D023: The next planning pass that revisits the first-line rule or the next live pasted dispatch: read the prompt's first bytes in a live episode under this release; if the host delivers a\u2026",
+          "source": "docs/evidence/WO-226/decisions.md#wo-226-d023",
+          "sourceMissing": false,
+          "reason": "Its reopening condition occurred on 2026-10-24: the planning dispatch, pasted as one block, was recorded prefix null, role unknown, 2,332 bytes, because the host wrapped the paste in its pasted-content element and the fi",
+          "reopenWhen": "the next order that edits recordOperatorMessage in packages/skeleton/src/harness-host.ts or harnessPromptLine in packages/compiler/src/harness.ts, WO-220's activation (its executor may take it inside the Boy Scout bound)",
+          "matched": [
+            "WO-220"
+          ]
+        },
+        {
+          "id": "FUP-ce1f662a6b966a2a",
+          "status": "deferred",
+          "sourceRevision": 1,
+          "title": "WO-225-D022: Next order editing packages/console/src/values.ts readFailureReason: give a child ended by a signal or by its output limit (ENOBUFS, or status null with a signal) a command-failure code\u2026",
+          "source": "docs/evidence/WO-225/decisions.md#wo-225-d022",
+          "sourceMissing": false,
+          "reason": "Boarded by a closed order's decision (the row's source); by the operator's 2026-10-17 direction a boarded row is resolved by a work order, and the next order editing its surface takes it; no order filed in the 2026-10-24",
+          "reopenWhen": "An instance reports an unavailable console source as 'invalid format' whose command was killed or exceeded its output limit; or WO-220's activation (its executor may take this console row inside the Boy Scout bound) or t",
+          "matched": [
+            "WO-220"
+          ]
+        },
+        {
+          "id": "FUP-d0a9719cc2e4ec55",
+          "status": "deferred",
+          "sourceRevision": 4,
+          "title": "WO-185-D006: Establish complete ownership for descendants through unobserved intermediate exits, including ignored-wrapper bare commands; compare an inheritable ownership mechanism with an authorized\u2026",
+          "source": "docs/evidence/WO-185/decisions.md#wo-185-d006--recorded-survivor-guarantee-limitation",
+          "sourceMissing": false,
+          "reason": "Deferred again by the 2026-10-21 pass: the operator's note 9 of 2026-10-21 defers the WO-217 packet, whose D026 re-boarded this row (complete descendant ownership through unobserved intermediate exits); no order on the h",
+          "reopenWhen": "The operator returns to the WO-217 packet, or a probe records a detached descendant surviving a bounded command after the guard",
+          "matched": [
+            "scripts/test-runner.mjs"
+          ]
+        },
+        {
+          "id": "FUP-d2646e66a2dfdb40",
+          "status": "deferred",
+          "sourceRevision": 1,
+          "title": "WO-219-D008: Low priority: bind the historical WO-105 canonical-demo sweep to its filed input (or give the modern-runtime comparison an explicitly current manifest) in\u2026",
+          "source": "docs/evidence/WO-219/decisions.md#wo-219-d008--keep-the-historical-sweep-mismatch-separate-from-append-proof",
+          "sourceMissing": false,
+          "reason": "WO-219-D008 in docs/evidence/WO-219/decisions.md: Defer repair of the historical store-sweep test input binding. Its live canonical-demo output differs from the WO-105 pinned manifest identically at this order's base and",
+          "reopenWhen": "The historical sweep is promoted into a current gate or its intended input binding is repaired under a separately recorded bounded change.",
+          "matched": [
+            "corpus/harness/wo105-store.test.mjs",
+            "corpus/manifests/WO-105.json"
+          ]
+        }
+      ],
+      "next": null
+    }
+  ]
+}

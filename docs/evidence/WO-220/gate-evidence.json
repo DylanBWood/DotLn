@@ -1,0 +1,360 @@
+{
+  "schemaVersion": 1,
+  "completeReview": {
+    "checkId": "npm test",
+    "treeHash": "9558aeb236c77dbe2e9226ebe1aa1383a2b91552",
+    "codeIdentity": "881d4a43ef351238cd74bc374006924fb5cf632521bd93561fb230b2f57b39e6",
+    "subject": "9558aeb236c77dbe2e9226ebe1aa1383a2b91552",
+    "durationMs": 1491907,
+    "exitCode": 0,
+    "executed": true,
+    "evidenceRef": "host-gate:881d4a43ef351238cd74bc374006924fb5cf632521bd93561fb230b2f57b39e6:npm test",
+    "recordedAt": "2026-10-24T07:43:01.719Z",
+    "executionMode": "fresh",
+    "gateSelection": "review",
+    "identityUnchanged": true,
+    "buildOutputUnchanged": true,
+    "freshSuites": 106,
+    "reusedSuites": 0,
+    "requiredSuites": [
+      "build",
+      "format",
+      "configuration-root",
+      "registrations",
+      "declarations",
+      "generated",
+      "host",
+      "release-preparation",
+      "github-body",
+      "outward-lint",
+      "target-publish",
+      "target-worktree",
+      "vertical",
+      "license-fixtures",
+      "publication-fixtures",
+      "backup-intake",
+      "launchpad",
+      "beacon-portability",
+      "checkpoint",
+      "worktree",
+      "worktree-integration",
+      "release",
+      "work-orders-fixtures",
+      "siblings-fixtures",
+      "kernel",
+      "compiler",
+      "skeleton",
+      "console",
+      "browser-evidence",
+      "adjacent-queue",
+      "derived-orders",
+      "portfolio",
+      "codex-continuation",
+      "authority-grants",
+      "launchpad-planning",
+      "harness-probe",
+      "harness-fixtures",
+      "wo107-schema",
+      "runner-fixtures",
+      "sync-fixtures"
+    ],
+    "unrunSuites": [],
+    "cases": [
+      {
+        "name": "build",
+        "durationMs": 670,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "format",
+        "durationMs": 6989,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "configuration-root",
+        "durationMs": 5793,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "registrations",
+        "durationMs": 574,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "declarations",
+        "durationMs": 277,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "generated",
+        "durationMs": 16883,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "host",
+        "durationMs": 62,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "release-preparation",
+        "durationMs": 3452,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "github-body",
+        "durationMs": 237,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "outward-lint",
+        "durationMs": 818,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "target-publish",
+        "durationMs": 176184,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "target-worktree",
+        "durationMs": 698955,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "vertical",
+        "durationMs": 574113,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "license-fixtures",
+        "durationMs": 14803,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "publication-fixtures",
+        "durationMs": 1388,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "backup-intake",
+        "durationMs": 309,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "launchpad",
+        "durationMs": 1147606,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "beacon-portability",
+        "durationMs": 917,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "checkpoint",
+        "durationMs": 7915,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "worktree",
+        "durationMs": 151174,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "worktree-integration",
+        "durationMs": 201819,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "release",
+        "durationMs": 545305,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "work-orders-fixtures",
+        "durationMs": 24440,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "siblings-fixtures",
+        "durationMs": 11975,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "kernel",
+        "durationMs": 522,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "compiler",
+        "durationMs": 963,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "skeleton",
+        "durationMs": 304752,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "console",
+        "durationMs": 18789,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "browser-evidence",
+        "durationMs": 20529,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "adjacent-queue",
+        "durationMs": 819,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "derived-orders",
+        "durationMs": 8138,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "portfolio",
+        "durationMs": 20215,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "codex-continuation",
+        "durationMs": 6059,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "authority-grants",
+        "durationMs": 199,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "launchpad-planning",
+        "durationMs": 296129,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "harness-probe",
+        "durationMs": 55605,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "harness-fixtures",
+        "durationMs": 325859,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "wo107-schema",
+        "durationMs": 1091,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "runner-fixtures",
+        "durationMs": 185856,
+        "exitCode": 0,
+        "executed": true
+      },
+      {
+        "name": "sync-fixtures",
+        "durationMs": 200467,
+        "exitCode": 0,
+        "executed": true
+      }
+    ],
+    "criticalPath": {
+      "workMs": 1490816,
+      "waitMs": 278,
+      "durationMs": 1491094
+    }
+  },
+  "documentValidationBeforeFinalHandoff": {
+    "checkId": "npm run test:docs",
+    "treeHash": "393e5cfb1523a73e193c18a74b0913fea238e042",
+    "codeIdentity": "881d4a43ef351238cd74bc374006924fb5cf632521bd93561fb230b2f57b39e6",
+    "durationMs": 151720,
+    "exitCode": 0,
+    "executed": true,
+    "evidenceRef": "host-gate:881d4a43ef351238cd74bc374006924fb5cf632521bd93561fb230b2f57b39e6:npm run test:docs",
+    "recordedAt": "2026-10-24T07:16:31.929Z",
+    "identityUnchanged": true,
+    "requiredSuites": [
+      "build",
+      "format",
+      "configuration-root",
+      "registrations",
+      "declarations",
+      "generated",
+      "host",
+      "license-surfaces",
+      "resume",
+      "launchpad-docs",
+      "docs-check",
+      "docs-check-fixtures",
+      "comment-labels",
+      "comment-labels-fixtures",
+      "lineage-fixtures",
+      "kernel-docs",
+      "skeleton-docs",
+      "console-docs",
+      "resident-bind",
+      "local-runner-double",
+      "harness-context",
+      "plan-refutation-current",
+      "artifact-corpus",
+      "plan",
+      "reader-profiles",
+      "reader-fixtures",
+      "entropy"
+    ],
+    "unrunSuites": []
+  },
+  "priorCompleteReviewBeforeHistoricalSchemaCorrection": {
+    "checkId": "npm test",
+    "codeIdentity": "d67b20b925582a062928ae0efd79d38d43acddc116d3985dafb90e868c91f662",
+    "durationMs": 1535349,
+    "exitCode": 0,
+    "evidenceRef": "host-gate:d67b20b925582a062928ae0efd79d38d43acddc116d3985dafb90e868c91f662:npm test",
+    "recordedAt": "2026-10-24T07:04:13.611Z",
+    "freshSuites": 106
+  }
+}

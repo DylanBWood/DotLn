@@ -4,7 +4,7 @@
 
 ## Proposed order
 
-- [ ] [WO-220] — Boarded follow-ups, batch 4: the resident and the vertical · **queued**
+- [x] [WO-220] — Boarded follow-ups, batch 4: the resident and the vertical · **final-reviewed**
 - [ ] [WO-080] — Workstreams: document, index, board section and synthetic pilot · **queued**
 - [ ] [WO-224] — The Entropy Reducer on a registered target or a workstream · **queued**
 - [ ] [WO-204] — The source writer cannot damage the operator's repository · **queued**
@@ -34,23 +34,6 @@ Full evidence for the active and sequenced orders follows; the Open cards are in
 None.
 
 ## Open
-
-### WO-220
-
-[WO-220 — Boarded follow-ups, batch 4: the resident, the vertical, the console, intake and triage, audit, the corpus lanes and the kernel's admission: every one of the 20 register rows listed below is fixed with a fixture case or declined with its recorded reason, the register shows it, and a row only the operator can decide leaves as an operator packet (version assigned at activation)](WO-220-boarded-follow-ups-the-resident-and-the-vertical.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-219: reference-only (non-blocking) — placed before this batch in the serial queue; no hard edge.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer xhigh.
-- Track: delivery
-- Cost: adds the fixes and fixture cases the listed rows need, across &#96;packages/skeleton/src/vertical.ts&#96;, &#96;packages/skeleton/src/resident-state.ts&#96;, &#96;packages/skeleton/src/resident-host.ts&#96;, &#96;packages/skeleton/src/mission-check-source.ts&#96;, &#96;packages/skeleton/src/audit.ts&#96;, &#96;packages/skeleton/src/vertical-judgment-host.ts&#96;, &#96;packages/skeleton/src/source-change-host.ts&#96; (&#96;run&#96;'s recovery observation, row FUP-49c4a5f7176252e7; a registered evidence source and a &#96;FEEDBACK_SOURCE_PATHS&#96; file, so its edit owes the re-mint and one live feedback episode), &#96;packages/console/src/&#96;, &#96;packages/kernel/src/core.ts&#96;, &#96;scripts/docs-check.mjs&#96;, the WO-103, WO-105 and WO-107 lanes under &#96;corpus/harness/&#96; and the fixtures the rows name; unknown until each row is triaged, and the README records the per-row command and case. Removes no pending rows: the 20 rows were allocated at filing and already count as closed (WO-218 D056), and the README records the register's pending count before and after; at &#96;7b8206f4&#96; the register held 281 pending rows, 130 of them decision rows boarded by closed orders across 53 orders (the oldest from WO-054, 2026-09-18), 88 of them follow-ups boarded in the week of 2026-10-13 to 2026-10-17 alone, and the rule that "the next order that edits the surface" takes a row had delivered none of these 20 (corrected by the 2026-10-21 pass). Wall-clock: one triage per row plus the fixes; unknown until run. Context bytes: this order's row list is read once. Commands: none added. Tokens: unknown until run. Steps: 7. Re-mints: the executor checks each edited file against &#96;scripts/lib/evidence-sources.mjs&#96; (a registered source owes its edition's deterministic re-mint) and &#96;FEEDBACK_SOURCE_PATHS&#96; in &#96;packages/skeleton/src/feedback-audit.ts&#96; (an edited judged source owes one live feedback self-host episode on Codex &#96;gpt-6.1-sol&#96; at &#96;max&#96; or Claude Code &#96;claude-opus-5-5&#96; at &#96;xhigh&#96;, no authorization needed, cost accepted); any edited declared machinery source (&#96;machinerySources&#96; in &#96;scripts/test-runner.mjs&#96;) puts &#96;npm test -- --review&#96; in the final criterion, which names it already.
-- Authority: [docs/work-orders/WO-220-boarded-follow-ups-the-resident-and-the-vertical.md](WO-220-boarded-follow-ups-the-resident-and-the-vertical.md)
 
 ### WO-080
 
