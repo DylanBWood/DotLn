@@ -140,10 +140,12 @@ the same day; the fork took starter v0.93.0 in its own pass of 2026-10-23.
 WO-220 is next. The operator's 2026-10-22 intake mining run, an unofficial
 research run in ignored intake (`docs/intake/notes/2026-10-22-intake-mining-run/README.md`),
 was taken in by [the 2026-10-24 pass](intake-mining-run-routing-2026-10-24.md),
-which gave each of its 46 critical ideas one route and filed no order: its
-platform candidates sit in the map and the register, its DotLn-Angular
-routes reach the fork through that pass's block, and its decision batch
-waits on the operator's answers (that document's §10).
+which gave each of its 46 critical ideas one route, recorded the operator's
+decisions on the run's open questions (that document's §10), filed no order,
+and hands the instance a
+planning prompt (its §9) that turns the run's UI designs into DotLn-Angular
+orders in the instance's own pass, where the toolbox, the soldier scene, the
+machinery view and the operator's digital twin are built.
 
 The order, serial:
 - WO-220: boarded follow-ups, batch 4: the resident, the vertical, the

@@ -44186,6 +44186,13 @@
           "title": "The Gödel count",
           "summary": "3. **The Gödel count** (KI-176; H1→H2), re-targeted from WO-227, which has merged: one line per order, pass, release and colony summing every time the operator asserted acceptability from outside the rules (off-ramps, overridden holds, override records), which `plan failures` already counts in its record totals; the first hand count is 9 typed escapes over 165 orders plus the run's two unrecorded override windows. Deferred: reopen when a pass wants the sum per order, pass or colony, or when WO-088's generated source lands; the next order editing `scripts/lib/plan-failures.mjs` or the status projection is its home.",
           "missing": false
+        },
+        {
+          "hash": "8d7210695d42ee4316706ae61ce89570a3dbf8b1f014f5faaf97da5ad45eee99",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-intake-mining-runs-take-in-recorded-2026-10-24",
+          "title": "The Gödel count",
+          "summary": "3. **The Gödel count** (KI-176; H1→H2), re-targeted from WO-227, which has merged: one line per order, pass, release and colony summing every time the operator asserted acceptability from outside the rules (off-ramps, overridden holds, override records), which `plan failures` already counts in its record totals; the first hand count is 9 typed escapes over 165 orders plus the run's two unrecorded override windows. Deferred: reopen when a pass wants the sum per order, pass or colony, or when WO-088's generated source lands.",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -44196,6 +44203,14 @@
           "reopenWhen": "a pass wants the escape sum per order, pass or colony; WO-088's generated source lands; or the next order edits scripts/lib/plan-failures.mjs or the status projection",
           "targets": [],
           "at": "2026-10-24T04:18:36.634Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Re-targeted from WO-227, which merged: one line per order, pass, release and colony summing the escapes plan failures already counts; the first hand count is 9 typed escapes over 165 orders plus the run's two unrecorded override windows (section 13). [2026-10-24 planning pass on the intake mining run (docs/planning/intake-mining-run-routing-2026-10-24.md section 6 item 3)]",
+          "reopenWhen": "a pass wants the escape sum per order, pass or colony; WO-088's generated source lands; or the next order edits scripts/lib/plan-failures.mjs or the status projection",
+          "targets": [],
+          "at": "2026-10-24T04:45:48.100Z"
         }
       ]
     },
@@ -44401,6 +44416,13 @@
           "title": "Stage 1's two asked instruments as plan start prints",
           "summary": "2. **Stage 1's two asked instruments as `plan start` prints** (KI-021, KI-120, KI-124; H1). The constraint-now line in a fixed shape (what binds, its evidence, when it last moved and from what, what would show it moved) and a read-only phrase count over the session journals (counts only, no text) printed beside the failure counts, so a phrase at zero for three passes is a retirement candidate. Both are written by hand in the pass's §2, the first of two hand writings. Deferred: reopen when two passes have written both by hand and the next pass reads them, or on the operator's word; a standing rule for the line is OD-081.",
           "missing": false
+        },
+        {
+          "hash": "f39254873059028d4d843bb8b73836cf61397b777d6ebf914d5c0bc170c5583c",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-intake-mining-runs-take-in-recorded-2026-10-24",
+          "title": "Stage 1's two asked instruments as plan start prints",
+          "summary": "2. **Stage 1's two asked instruments as `plan start` prints** (KI-021, KI-120, KI-124; H1). The constraint-now line in a fixed shape (what binds, its evidence, when it last moved and from what, what would show it moved) and a read-only phrase count over the session journals (counts only, no text) printed beside the failure counts, so a phrase at zero for three passes is a retirement candidate. Both are written by hand in the pass's §2, the first of two hand writings. Deferred: reopen when two passes have written both by hand and the next pass reads them, or on the operator's word; the constraint line stays hand-written until then.",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -44411,6 +44433,14 @@
           "reopenWhen": "two passes have written the constraint-now and phrase-use lines by hand (the 2026-10-24 pass is the first) and the next pass reads them, or the operator asks for the print",
           "targets": [],
           "at": "2026-10-24T04:18:36.839Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "The constraint-now line and the phrase-use line were written by hand in the pass's section 2, the first of two hand writings before any plan start print is built; the read-only phrase count over the journals is counts only. [2026-10-24 planning pass on the intake mining run (docs/planning/intake-mining-run-routing-2026-10-24.md section 6 item 2)]",
+          "reopenWhen": "two passes have written the constraint-now and phrase-use lines by hand (the 2026-10-24 pass is the first) and the next pass reads them, or the operator asks for the print",
+          "targets": [],
+          "at": "2026-10-24T04:45:48.208Z"
         }
       ]
     },
@@ -44497,6 +44527,13 @@
           "title": "The issue intake as a planning input",
           "summary": "14. **The issue intake as a planning input** (operator direction, 2026-10-24; D6 of the pass). GitHub issues on this repository are the external idea intake, filed by the operator or by autonomous agents and consumed by planning passes, which list the open issues and dispose each like a fork item (product 07 §Operator-opened planning pass, preconditions item 6, written by the pass); the automated intake board the operator names is the future feature, used the way automated bug reports are, and the idea ledger is drained into the instance's UI rather than fed. Deferred: reopen when the first issue is filed as an idea, or when WO-193 is next amended, since the fork's request route and the issu",
           "missing": false
+        },
+        {
+          "hash": "ee31b0a8b5d95c3ee16e9108ea8d9ce9959ada3beb9a4db2e24fdee1ed7c7257",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-intake-mining-runs-take-in-recorded-2026-10-24",
+          "title": "The issue intake as a planning input",
+          "summary": "14. **The issue intake as a planning input** (operator direction, 2026-10-24; D6 of the pass). GitHub issues on this repository are the external idea intake, filed by the operator or by autonomous agents and consumed by planning passes, which list the open issues and dispose each like a fork item (product 07 §Operator-opened planning pass, preconditions item 6, written by the pass); the automated intake board the operator names is the future feature, used the way automated bug reports are, and the idea ledger is drained into the instance's UI rather than fed. Deferred: the pass lists open issues by hand with the forge's CLI until an order makes it a print; reopen when the first issue is file",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -44507,6 +44544,14 @@
           "reopenWhen": "the first issue is filed as an idea, or WO-193 is next amended",
           "targets": [],
           "at": "2026-10-24T04:18:37.247Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "GitHub issues are the external idea intake planning passes read (the operator's D6 of 2026-10-24; product 07 preconditions item 6 written by the pass); the automated intake board is the future feature. [2026-10-24 planning pass on the intake mining run (docs/planning/intake-mining-run-routing-2026-10-24.md section 10)]",
+          "reopenWhen": "the first issue is filed as an idea, or WO-193 is next amended",
+          "targets": [],
+          "at": "2026-10-24T04:45:48.312Z"
         }
       ]
     },

@@ -5522,18 +5522,13 @@ section grants no activation authority.
    and a read-only phrase count over the session journals (counts only, no
    text) printed beside the failure counts, so a phrase at zero for three
    passes is a retirement candidate. Both are written by hand in the pass's
-   §2, the first of two hand writings. Deferred: reopen when two passes have
-   written both by hand and the next pass reads them, or on the operator's
-   word; a standing rule for the line is OD-081.
+   §2, the first of two hand writings. Deferred: reopen when two passes have written both by hand and the next pass reads them, or on the operator's word; the constraint line stays hand-written until then.
 3. **The Gödel count** (KI-176; H1→H2), re-targeted from WO-227, which has
    merged: one line per order, pass, release and colony summing every time
    the operator asserted acceptability from outside the rules (off-ramps,
    overridden holds, override records), which `plan failures` already counts
    in its record totals; the first hand count is 9 typed escapes over 165
-   orders plus the run's two unrecorded override windows. Deferred: reopen
-   when a pass wants the sum per order, pass or colony, or when WO-088's
-   generated source lands; the next order editing `scripts/lib/plan-failures.mjs`
-   or the status projection is its home.
+   orders plus the run's two unrecorded override windows. Deferred: reopen when a pass wants the sum per order, pass or colony, or when WO-088's generated source lands.
 4. **The promotion ledger and the held-class register** (KI-050, KI-051,
    KI-053; H2). A hand-written control file with every decision class held
    and zero rows, one typed operator-written row per move with its evidence,
@@ -5637,9 +5632,7 @@ section grants no activation authority.
     preconditions item 6, written by the pass); the automated intake board
     the operator names is the future feature, used the way automated bug
     reports are, and the idea ledger is drained into the instance's UI
-    rather than fed. Deferred: reopen when the first issue is filed as an
-    idea, or when WO-193 is next amended, since the fork's request route and
-    the issue intake share a shape and one reader could serve both.
+    rather than fed. Deferred: the pass lists open issues by hand with the forge's CLI until an order makes it a print; reopen when the first issue is filed as an idea, or when WO-193 is next amended, since the fork's request route and the issue intake share a shape.
 15. **A teammate's first hour on a team's fork** (operator direction,
     2026-10-24, the work setup; WS-002 C5; H2). Teammates who know the
     product and the codebase, are hesitant or untrained with AI agents and
@@ -5682,3 +5675,4 @@ section grants no activation authority.
     a member identity on the control row and the writer reservation, the
     per-order segments merged by append across clones, and final review one
     at a time per order as today. Deferred: the same reopening as item 15.
+

@@ -14,8 +14,8 @@ messages and the operator's answers to the batch are captured verbatim in
 ignored intake
 (`docs/intake/notes/planning-intake-mining-run-routing-2026-10-24.md`,
 SHA-256
-`37b5070bfab252b9146da87caba3481cf43d37b4e848501024a1abeba1d07535` at the
-fifth entry), a sibling record, never a source to mine. The first mid-turn
+`e2ed6150413e0f30e8e379277e2a0b0dbd3fea6ca488ffd7148463dc3c312078` at the
+sixth entry), a sibling record, never a source to mine. The first mid-turn
 message, at about 02:50Z, asked that decisions be put with ample context and
 time to respond. The batch was put twice: the first time in the run's own
 vocabulary, which the operator had not read, since another session wrote
@@ -249,7 +249,7 @@ sample, and no order is filed on them.
 executor's 29,484 against WO-150-D003's 24,576, reopened and reserved for the
 operator's efficiency pass (FUP-f1c7a256bec46737, unchanged reading). The
 sequence file read 12,154 bytes at entry against an accepted 8,192 overrun;
-this pass's revision reads 12,316 bytes (§16). The order-size rule: first
+this pass's revision is measured in §16. The order-size rule: first
 verification failed in five of the last eight closed orders (WO-218, WO-217,
 WO-227, WO-229, WO-219), equal to the five-of-eight baseline and not above
 it, so the rule is not reopened; the merged batches WO-219 (fail, one row)
@@ -356,7 +356,7 @@ names the decision in §10 that settles the idea's open question.
 | KI-132 | Why ideas stall: the diagnosis behind riff mode | H1 | context, cited | frames KI-117 and 118; the operator's answer is the issue intake (D6) and the app as the place ideas live first (D12) | D6, D12 |
 | KI-133 | Make this run known: access is not knowledge | H1 | decision record | D21: one sentence in the sequence suffices; no pass is required to know the run | D21 |
 | KI-173 | DotLn built itself: the strange loop | H1→H2 | context, cited | frames KI-176; GEB rows wait for the operator's reading | — |
-| KI-176 | The Gödel count: every time the operator asserted acceptability from outside the system | H1→H2 | candidate order | map item 3, re-targeted from WO-227 (merged); the first hand count is in §13 | — |
+| KI-176 | The Gödel count: how often the operator had to step outside the rules to make the system accept something | H1→H2 | candidate order | map item 3, re-targeted from WO-227 (merged); the first hand count is in §13 | — |
 | KI-225 | File WO-083's before-numbers before WO-192 runs | H1 | decision record | D20: measured in §11 and written into WO-192's Cost line | D20 |
 | KI-235 | The maps are the toolbox's catalog | H1→H2 | DotLn-Angular toy | §9, the toolbox; the catalog fixture waits on queue item 14; D4's own store is its home | D4 |
 | KI-244 | The research queue: a work enters the catalog only through its own map pass | H2 | research-queue item | §8, the whole queue, sized | — |
@@ -385,11 +385,12 @@ register by `followups --sync` and disposed in §15. One line each:
    when WO-192 is next amended or activated, or when OD-013 and OD-049 are
    answered.
 2. Stage 1's two asked instruments as `plan start` prints: the constraint
-   line and a read-only phrase count (KI-021, KI-120, KI-124). Deferred:
-   reopen when two passes have written both by hand and the next pass reads
-   them, or on the operator's word.
-3. The Gödel count (KI-176), re-targeted from WO-227. Deferred: reopen when a
-   pass wants the sum per order, pass or colony, or when WO-088's generated
+   line's inputs and a read-only phrase count (KI-021, KI-120, KI-124).
+   Deferred: reopen when two passes have written both by hand and the next
+   pass reads them, or on the operator's word.
+3. The Gödel count (KI-176: how often the operator had to step outside the
+   rules to make the system accept something), re-targeted from WO-227.
+   Deferred: reopen when a pass wants the sum, or when WO-088's generated
    source lands.
 4. The promotion ledger and the held-class register (KI-050, KI-051, KI-053),
    starting from no class held by construction (D14). Deferred: reopen when
@@ -420,9 +421,9 @@ register by `followups --sync` and disposed in §15. One line each:
 14. The issue intake as a planning input: the pass lists open issues and
     disposes each like a fork item (D6; product 07's new precondition item
     6); the automated intake board is the future feature the operator names.
-    Deferred: reopen when the first issue is filed as an idea, or when WO-193
-    is next amended, since the fork's request route and the issue intake
-    share a shape.
+    Deferred: the pass lists open issues by hand with the forge's CLI until
+    an order makes it a print; reopen when the first issue is filed, or when
+    WO-193 is next amended.
 15. A teammate's first hour on a team's fork (the work setup, §17; WS-002
     C5). Deferred: reopen when the operator opens the work instance's first
     planning pass or asks for the order sooner.
@@ -538,77 +539,47 @@ numbering so a later reader can find the item in the run's queue file.
 | 48 | Mine the idea ledger as a subject, if the operator wants it (OD-162); under D6 the ledger is drained into the app, so this is the pass that would do it | OM-07 names the ledger beside intake; the run used it only to check carriage | 4 to 5 |
 | 50 | Probe the films the operator referenced | OM-07 names them; they have wave-one rows only | one probe pass, at most 20 |
 
-## 9. The fork block, and the fork's nine items
+## 9. The instance's prompt, and the fork's nine items
 
-The fork's pass of 2026-10-23 paused its own take-in of the run and wrote a
-nine-item request block for core (its §11), to be pasted beside the
-operator's mining-run dispatch; the operator did not paste it and, asked,
-said to take it in if it was new information (§10, F1). Each item, read
-against the record it names at `49d8c4c3`:
+The toolbox, the soldier scene, the machinery view and the operator's digital
+twin start in DotLn-Angular, and the instance's own planning pass cuts those
+orders; this pass does not. The run's design files are the designs, and the
+operator directed that work already done is not redone. So this pass hands
+the instance one prompt, in the operator's voice, that makes its next pass
+cut the DotLn-Angular orders from those files under the operator's
+decisions of §10, with core's answers to the fork's 2026-10-23 block folded
+in. The operator pastes it into the instance's planning session, which is
+the designed route until WO-193 lands.
 
-1. **Blocking: the plan gate reads an execution amendment's decision only
-   from a contained launchpad file.** True at v0.93.0, where
-   `amendmentDecision` in `scripts/lib/plan-receipts.mjs` checked
-   `containedRegularFile` on `docs/evidence/WO-NNN/decisions.md` before
-   reading; WO-219 (v0.94.0, commit `b5812c0f`) removed that check, and the
-   function now reads the decision through `readDecisions`, which resolves a
-   target order's moved decisions through their binding. The fix the fork
-   asks for has shipped: the fork takes starter v0.94.0 and its plan gate
-   passes. No order.
-2. **A target order's records publish needs a `correct` to bind the
-   launchpad's product gate.** Confirmed in `scripts/resume.mjs`: in `closed`
-   a correction binds only `productGate` (`--set productGate=<evidenceRef>`),
-   which is the route the fork used; the publish's read of that gate from the
-   review's control event stands. Candidate (map item 13): a target order's
-   final-review result carries the launchpad's complete row, or the publish
-   accepts a passing row at the identity. Deferred to the next order on the
-   target lifecycle; the route today is the fork's own.
-3. **Confirmations in the field at v0.93.0.** Recorded: the path-free board,
-   the two schemas as kit files, `update --finish`, the lane-wait line and
-   `harness lanes`, and the dispatch read from a multi-line paste. The last
-   is the case WO-226 fixed; this pass's own dispatch found the case it did
-   not (the host's wrapper, §1), which WO-226-D023 anticipated.
-4. **The document-gate medians under WO-229** wait on item 1; with v0.94.0
-   the fork's probe should run, and the next reading is the fork's.
-5. **The outward vocabulary**: recorded, no ask.
-6. **The host admission at the fork's next publish**: recorded as the live
-   qualification §6.2 of the 2026-10-21 pass waits for; WO-221's row takes
-   the observation when the fork reports it.
-7. **The console question.** How a browser shell obtains the loopback token:
-   the resident writes `console-loopback-v1.json` into the owner-only
-   `console` directory of its store (`packages/skeleton/src/console-loopback.ts`),
-   and the Node client reads it with an owner-only check
-   (`packages/console/src/console-client-node.ts`), whose comment states the
-   design: browser shells receive the same connection from their local host
-   rather than reading filesystem data. So the shell's own local host process
-   (the fork's dev server or a small local proxy it owns) reads the file and
-   hands the connection to the browser; nothing is pasted, and the token
-   never leaves the machine. Whether a resident for an exported instance runs
-   from `npm run skeleton`: the kit's README names `npm run skeleton` among
-   the build-first commands that run the carried runtime in an export, and
-   opens the shipped console with `npm run console -- live --store
-   .runtime/resident`; the resident's own start is that README's resident
-   section, which the fork reads at v0.94.0.
-8. **The run's routes for the fork**: the block below.
-9. **Acknowledged**: WO-219 closed (v0.94.0); WO-224 is queued third.
+**The fork's nine items of 2026-10-23**, read against the record at
+`49d8c4c3`: (1) blocking, the plan gate's amendment reader: true at v0.93.0
+and fixed in v0.94.0 (WO-219, commit `b5812c0f`, removed the contained-file
+check; `amendmentDecision` now reads through `readDecisions`, which
+resolves a target order's moved decisions); the fork takes v0.94.0; no
+order. (2) The records publish and the launchpad gate: `correct --set
+productGate=<evidenceRef>` in `closed` is the designed route
+(`scripts/resume.mjs`); a final-review result carrying the launchpad row is
+map item 13, deferred to the next target-lifecycle order. (3) Confirmations
+recorded. (4) Measure under v0.94.0. (5) No ask. (6) Recorded as the live
+qualification. (7) The browser never reads `console-loopback-v1.json`: the
+resident writes it owner-only into its store's `console` directory
+(`packages/skeleton/src/console-loopback.ts`), the Node client reads it with
+an owner-only check and its comment states that browser shells receive the
+connection from their local host (`packages/console/src/console-client-node.ts`),
+so the shell's local host process reads the file and hands the connection to
+the browser; the resident in an export runs on the carried runtime through
+the kit's build-first scripts, `npm run skeleton` among them, and the shipped
+console opens with `npm run console -- live --store .runtime/resident` (the
+kit README). (8) This prompt. (9) Acknowledged.
 
-Paste-ready for the fork's next pass; the fork reads it against its own
-records:
+**The prompt**, paste-ready for the instance's planning session:
 
 ```
-planning: core's answers to the fork's block of 2026-10-23 (docs/planning/standard-pass-v0-93-0-2026-10-23.md §11) and the routes from the operator's 2026-10-22 intake mining run, read at core main 49d8c4c3 (docs/planning/intake-mining-run-routing-2026-10-24.md §9 and §10).
-
-Item 1, blocking: fixed in v0.94.0 (WO-219 removed the contained-file check in the plan gate's amendment reader; it now reads a target order's moved decisions through their binding). Take v0.94.0 and your plan gate passes; nothing blocks WO-007 after that. Item 2: your correct --set productGate route is the designed route in closed; a target order's final-review result carrying the launchpad row is a core candidate for the next target-lifecycle order. Items 3, 5, 6, 9: recorded. Item 4: measure under v0.94.0. Item 7: the browser never reads console-loopback-v1.json; your shell's local host process reads the owner-only file from the resident store's console directory and hands the connection to the browser (the Node client's comment states this design); the resident in an export runs on the carried runtime through the kit's build-first scripts, npm run skeleton among them, and the shipped console opens with npm run console -- live --store .runtime/resident.
-
-Item 8, the corrected subject of the DotLn-Angular work, in the operator's words of 2026-10-24, paraphrased:
-- One app, with sub-apps behind a menu: a 3D scene for authoring game AI (the twenty soldiers, a toolbox of behaviours such as flock, RTS selection, apply and watch), a detailed view of DotLn's machinery, and utilities designed on the side. One workstream for now; separate apps or workstreams only if it grows; the logic in libraries so splitting later is cheap.
-- The app is the sandbox, playground and toolbox where every new idea lives first as a toy the operator plays with before promoting the ones that work. It serves the five UIFA roles, people and software actors alike, not core alone. It feeds back into DotLn through the issue intake (a future automated feature, used the way automated bug reports are) and writes no control record.
-- It is not wired to core directly. Its data comes from public mining into its own store and reaches the UI through its own API; field-reduced copies of core's WO-221 and WO-226 segments (ordinal, type, time, actor, verdict; no paths; scrubbed by your existing check; the core commit recorded) are a stopgap until that store exists.
-- The machinery view's first purpose: change the mechanisms that replaced v1's rules (the active gems, supports and injected prose) on an agent and see what changes, so the operator can tune them to run without intervention; then see agents operate in concert beyond what the operator's own interventions would produce. The workers are metaphors regardless of scale; today they are separate agents working beside each other, drawn in their role slots. Select-then-apply first, drag later. The ideas the operator drops are the operator's own and are also saved into the ignored intake so they are not lost in a browser; no machine-generated cards from records.
-- The soldier scene is a sub-app in its own right, flat 2D first with a renderer seam, Babylon.js integrated later; manim (3blue1brown's Python animation library) may also live in the monorepo later; the repository's name is not literal. Tools carry five faces (scene, selection, transform, observable, toy metric) and an optional DotLn analog.
-- The operator's model lives in the UI first, as a personality-fidelity digital twin that grows over time, with variations and old versions kept to play with; nothing is withheld from it by construction; the RxJS that describes the operator is the RxJS that runs; it is judged by results only, never by agreement with the operator's recorded actions. Re-derive WO-221's data before the first lane (eight operator rows; the 87.8-minute gap followed a hand-back without a verdict).
-- Agents collaborate; blinded judgment stays a verification mechanism, not the shape of the organisation.
-- Order among the sub-apps is yours; core ranks nothing and files nothing for this work. Your request route to core stays the paste until WO-193; ideas for core go as GitHub issues on the DotLn repository, which planning passes now read as intake.
+planning: turn the 2026-10-22 intake mining run into DotLn-Angular work orders now; do not redo its research
+Source: the run lives on this machine at /Users/dylanwood/Projects/DotLn/docs/intake/notes/2026-10-22-intake-mining-run/ (core's ignored intake; read-only for you). Read README.md §If you read nothing else items 7 to 11 and 20, then out/angular/README.md, out/angular/dotln-angular-forward.md (the toys, the five slices, the graduation protocol, the 37 platform requests), out/angular/toys.jsonl, out/angular/design-*.md as each order needs them, out/process/ui-vision-see-the-agents.md, out/process/toolbox-ui-capture.md, out/process/toolbox-toy-scene-capture.md, out/maps/README.md (the catalog: 3,463 concept rows in one schema across out/maps/*.jsonl, out/geb/ and out/tt/), digest/queue-and-rules.md §1.2 items 14, 15, 17 and 18 (the catalog pipeline, already sized under my twenty-agent rule), and digest/key-ideas.md themes 2, 4, 5 and 6 (the UI ideas; open an entry in digest/key-ideas-catalog.md only for an idea an order takes). Do not re-read the rest, re-rank or re-synthesize anything: the designs are the designs, and I spent eight hours producing them.
+My decisions, recorded by core's 2026-10-24 pass (docs/planning/intake-mining-run-routing-2026-10-24.md §10), bind: one app with sub-apps behind a menu (a 3D scene for authoring game AI, a detailed view of DotLn's machinery, side utilities), one workstream for now with the logic in libs; the app is the sandbox, playground and toolbox where every new idea lives first as a toy I play with before promoting it, for the five UIFA roles, people and software actors alike; it informs DotLn through the issue intake (GitHub issues on DylanBWood/DotLn) and writes no control record; it is not wired to core: its data comes from public mining into its own store and reaches the UI through its own API, and field-reduced copies of core's WO-221 and WO-226 segments (ordinal, type, time, actor, verdict; no paths; your scrub check) are a stopgap; the machinery view exists to change the mechanisms that replaced v1's rules (active gems, supports, injected prose) on an agent and see what changes, first so I can tune them to run without my intervention, then to see agents operate in concert beyond what my interventions would produce; the workers are metaphors regardless of scale, today separate agents in their role slots; select-then-apply first, drag later; the ideas I drop are mine and are also saved to ignored intake; the soldier scene is a sub-app in its own right, 2D first behind a renderer seam, Babylon.js later, manim in the monorepo later; my model lives in the UI first as a personality-fidelity digital twin with variations and old versions kept, nothing held back from it, judged by results only, and the RxJS that describes me is the RxJS that runs; agents collaborate.
+Cut the orders in this pass and place them in your own sequence; do not ask me which first: (1) the app shell with the menu and the routes of the first two sub-apps; (2) the catalog pipeline as this app's own data: toolify the run's 3,463 map rows into tools with five faces (scene, selection, transform, observable, toy metric; optional DotLn analog; transform from the design's closed enum or ask) and the tool schema, in the app's own store, as your order with a fan-out of at most twelve workers (eight classifiers by map, two sampling checkers, one synthesizer, one critic), the maps' paths above, checkpointed per map; (3) the soldier scene: twenty units, the rail from the catalog's first three tools per source, RTS selection, flock, arrive, a formation, 2D; (4) the machinery view: one recorded order's agents in role slots, a mechanism change dropped on an agent and the example use case redrawn, over the scrubbed WO-221 and WO-226 fixtures; (5) the digital twin's first lane: the patience lane over WO-221 on virtual time, judged by results, after re-deriving its data (eight operator rows; the 87.8-minute gap followed a hand-back without a verdict); (6) after (2), The Art of War's map pass and toys for the six mined sources without one (Meadows, Pirsig, Poincaré, Gladwell, Taleb, 5S). Each order names the run's design file it builds from by path and SHA-256, copies nothing from intake into committed files beyond ids, short titles and generic terms, and never opens a quarantine file (merged/quarantine-all.jsonl, out/probes/quarantine.jsonl) for content. Every graduated idea goes back to core as an issue, never as a control record.
+Core's answers to your 2026-10-23 block: item 1 is fixed in v0.94.0 (take it; your plan gate passes); item 2's correct --set productGate route stands, a final-review result carrying the launchpad row is a core candidate; item 7: your shell's local host process reads console-loopback-v1.json from the resident store's owner-only console directory and hands the connection to the browser, and an export's resident runs on the carried runtime (npm run skeleton; npm run console -- live --store .runtime/resident); items 3 to 6 and 9 recorded. Nothing in core blocks you.
 ```
 
 ## 10. The operator's answers, recorded as decisions
@@ -743,8 +714,9 @@ decision the NoOp rests on and whether its context has changed.
 | Machine-generated idea cards from records | prior: the run's design; delta: D6 | the operator's picture is their own ideas dropped on workers and saved to intake | — | the operator asks for generated cards |
 | Putting the three WO-219 packets to the operator again | prior: the rows' reopen conditions; delta: the operator called it shifting the burden | decided by the pass (D23 to D25) | their reopen conditions | — |
 
-**The first Gödel count, by hand** (KI-176), from `plan failures`' record
-totals at `49d8c4c3`: typed escapes from the rules are 6 off-ramps (4
+**The first Gödel count, by hand** (KI-176: how often the operator had to
+step outside the rules to make the system accept something), from `plan
+failures`' record totals at `49d8c4c3`: typed escapes from the rules are 6 off-ramps (4
 criteria waived, 2 override records) and 3 overridden refutation holds, 9
 over 165 orders, plus the run's two unrecorded override windows (§1). Not
 counted as escapes by the run's definition: 196 corrections, 93 execution
@@ -758,11 +730,10 @@ Retired, closed since the 2026-10-21 revision: WO-226 (v0.90.0), WO-227
 (v0.91.0), WO-225 (v0.92.0), WO-229 (v0.93.0) and WO-219 (v0.94.0). The
 serial order is now WO-220, WO-080, WO-224, WO-204, WO-192, WO-083, WO-207,
 WO-193, WO-183, WO-088, WO-091, WO-096 and WO-014, as before relative to one
-another, with WO-228 apart in the predecessor track. No order is added or
-moved; the fork's blocking item needed none (§9). WO-192 is amended in place
-with the before-numbers and the operator's budget condition (D20); the
-sequence document carries the dated rationale paragraph and reads 12,316
-bytes.
+another, with WO-228 apart in the predecessor track. No order is filed: the fork's blocking item needed none (§9), and the two orders drafted during the pass (a toolbox order for core, and a planning-instruments order placed at the front of the queue) were withdrawn before commit on the operator's word, the first because the toolbox starts in DotLn-Angular, whose orders the instance's own pass cuts, the second because nobody had asked for it and it displaced the queue. The prompt in §9 carries the toolbox to the instance. WO-192 is
+amended in place with the before-numbers and the operator's budget
+condition (D20). The sequence document carries the dated rationale
+paragraph; its size is in §16.
 
 ## 15. The register
 
@@ -797,7 +768,7 @@ entry (1 open, 1 needs-review, 11 untriaged, 155 deferred) of 1,281; 180
 pending after the sync minted the eighteen rows; 178 pending after the
 apply, all deferred, none open, untriaged or needing review, of 1,299 rows
 (735 settled, 202 allocated, 121 declined, 63 duplicate), at revision
-`e46ffddb…`. Every row the pass read is disposed.
+`e46ffddb…`; after the pass's later edits returned three rows to review (the two instrument items and the issue intake), a second batch re-disposed them as deferred, revision `c7dcb59d…`, 178 pending, none open, untriaged or needing review. Every row the pass read is disposed.
 
 ## 16. Write-backs and document ceilings
 
@@ -817,7 +788,7 @@ the 2026-10-07 pass):
 | 04-interfaces.md | 63,647 | 66,601 | 73,262 |
 | 07-execution-guide.md | 240,430 | 255,873 | 281,461 |
 
-No byte figure binds any order; the ceilings advise the next pass.
+The sequence document reads 12,433 bytes against its accepted 8,192 overrun. No byte figure binds any order; the ceilings advise the next pass.
 
 ## 17. The work setup: the operator's direction of 2026-10-24
 
@@ -888,6 +859,25 @@ in its deliverables (routes, copies, decisions, the fork block) and missed it
 in cost: the operator's attention, which the pass's own constraint line
 names as the constraint.
 
+**The second failure, and its correction.** After the readback was
+confirmed, the pass still produced lists: the fork block, register rows and
+a research queue deferred to the operator's next dispatch, and when the
+operator said that the point of the pass was that the research be turned
+into things, the pass drafted two orders, one of which typed the run's book
+concepts into tools inside core, and a generated register section of 139
+rows for the run's remaining ideas. The operator stopped both: the toolbox
+starts in DotLn-Angular, whose orders the instance's own planning pass cuts,
+and lists are not action. The correction in the record: the core toolbox
+order and the generated section were removed before commit; the planning-instruments order drafted for core was withdrawn too, since
+nobody asked for it and it displaced the queue; the instance receives a prompt
+in the operator's voice (§9) that cuts the DotLn-Angular orders from the
+run's existing design files without redoing the research; and the run's
+remaining ideas stay in its catalog with the run's own next-use routes,
+which that prompt names for the UI themes. The trap, named: a planning pass
+that answers "make this happen" with routes is the stall the run itself
+diagnosed (its KI-132: the heavy pass as the only promotion venue, evidence
+only ever waited for).
+
 **Process cost.** Counters: unknown (`harness usage` answers `no-session`
 because the dispatch was not read as one, §1). Wall-clock: the dispatch
 arrived at 02:43Z on 2026-10-24; the batch was put at about 03:35Z and again
@@ -918,6 +908,21 @@ advisory that the roadmap's release table lacked v0.94.0, answered by `npm
 run release -- list --markdown --write`) and `--only format` (7 passed).
 `npm run test:docs -- --only format` and `--only docs-check` had also run
 green on the draft before the pause for the operator's answers.
+
+**An interim judgment, superseded.** A first background `dotln-worker`
+judged the subject as committed at `30941037` (before WO-230 was filed and
+the fork prompt rewritten): aligned-with-findings, no hold, six known-issue
+findings on WO-192 (criterion 9's live evidence covering no launchpad-own
+order and no after-measurement against the filed before-numbers; criterion
+12's cold-start accounting with the reviewer and executor roots already
+over their ceilings; criterion 5's per-agent writer reservation refusing
+where today admits; criterion 1's missing fallback design if the probe
+finds agent identity absent; criterion 4's fail-before check proving only a
+missing role; criterion 10's unrecorded comparison with a resident-hosted
+driver). The subject changed after that judgment, so its receipt was not
+filed; its findings are recorded here for WO-192's next amendment and the
+second judgment below is the pass's receipt. It made no repository or Git
+write and spawned nothing; 33 tool uses, 128,590 tokens, 439 s.
 
 **The refutation.** [PENDING: written when the receipt is filed.]
 
