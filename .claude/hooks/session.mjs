@@ -191,9 +191,9 @@ control = recoveryInput ? await (async function operatorControl(input, event) {
         return message(requested && requested !== "normal" ? requested : "unavailable", "Recovery state could not be read or persisted; this hook remains advisory.");
     }
 })({ ...input, session_id: typeof input.session_id === "string" ? input.session_id : undefined }, event) : null;
-if (control && !control.overrideExit) { try { const { recordOperatorMessage } = await import("../../.runtime/harness/d2f67c64958ddd88/packages/skeleton/dist/src/harness-host.js"); const { fileURLToPath } = await import("node:url"); recordOperatorMessage(fileURLToPath(new URL("../../", import.meta.url)), input); } catch {} process.stdout.write(JSON.stringify(control)); } else {
-const { feedbackBoundary } = await import("../../.runtime/harness/d2f67c64958ddd88/packages/skeleton/dist/src/feedback-boundary.js");
-const { runHarnessHook } = await import("../../.runtime/harness/d2f67c64958ddd88/packages/skeleton/dist/src/harness-host.js");
+if (control && !control.overrideExit) { try { const { recordOperatorMessage } = await import("../../.runtime/harness/3fb583b9becae0d5/packages/skeleton/dist/src/harness-host.js"); const { fileURLToPath } = await import("node:url"); recordOperatorMessage(fileURLToPath(new URL("../../", import.meta.url)), input); } catch {} process.stdout.write(JSON.stringify(control)); } else {
+const { feedbackBoundary } = await import("../../.runtime/harness/3fb583b9becae0d5/packages/skeleton/dist/src/feedback-boundary.js");
+const { runHarnessHook } = await import("../../.runtime/harness/3fb583b9becae0d5/packages/skeleton/dist/src/harness-host.js");
 await runHarnessHook({
   "compilerPackageVersion": "0.31.0",
   "runtime": {
@@ -365,7 +365,7 @@ await runHarnessHook({
         "hash": "fnv1a64:5ad495017c40b9b2"
       }
     ],
-    "snapshot": ".runtime/harness/d2f67c64958ddd88"
+    "snapshot": ".runtime/harness/3fb583b9becae0d5"
   },
   "event": "UserPromptSubmit",
   "tools": {
@@ -755,7 +755,7 @@ const { join } = await import("node:path");
 const { createHash } = await import("node:crypto");
 const { fileURLToPath } = await import("node:url");
 const root = fileURLToPath(new URL("../../", import.meta.url));
-const snapshot = ".runtime/harness/d2f67c64958ddd88";
+const snapshot = ".runtime/harness/3fb583b9becae0d5";
 let cause = snapshot && !fs.existsSync(join(root, snapshot)) ? "snapshot-missing" : "runtime-unavailable";
 try {
   const hash = (value) => {

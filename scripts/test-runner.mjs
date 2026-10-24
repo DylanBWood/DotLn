@@ -1066,6 +1066,11 @@ export const suites = [
     protects:
       "launchpad export writes only manifest-listed kit files and instance seeds from the scripts' checkout's commit, carries the commit's compiled runtime and the harness bundle the export's own emit writes, refuses a non-empty destination, a dirty pinned input and a local-terms match, and the export passes harness check, activates its first order, emits control Beacons and reserves a Codex writer without package source",
   }),
+  nodeTests("workstream-pilot", "scripts/test-workstream-pilot.mjs", {
+    kit: "core-only: package TypeScript and build configuration needed to export",
+    protects:
+      "product 12's demonstrations hold over a real-Git launchpad and three targets",
+  }),
   nodeTests("launchpad-planning", "scripts/test-launchpad-planning.mjs", {
     kit: "core-only: package TypeScript and build configuration needed to export",
     needsBuild: false,

@@ -25,11 +25,9 @@ serial queue the operator reads between orders, the way the
 adjacent evidence track apart in 2026-09. Orders that test with the
 operator's personal instance or with DotLn-Angular are not members: the
 operator keeps those in the queue. Members may depend on or be blocked by
-core orders; they never block one. Until WO-080 lands, the generated index
-still lists a member in the proposed order (an open order must have a place
-in the marked sequence), so the sequence carries this track as its last
-group, labelled, and WO-080's index grouping takes it out of the serial list
-(its amendment of 2026-10-21).
+core orders; they never block one. The block marks this track as `separate`: the generated index groups its
+members under Workstreams and omits them from the serial Proposed order,
+even while the marked sequence retains the older labelled entry.
 
 ## Member orders
 
@@ -133,7 +131,7 @@ and the planning pass disposes rows instead of writing text.
 | WO-228 | proposed | none yet |
 
 <!-- dotln-workstream:start -->
-{ "id": "WS-002", "members": [{ "workOrderId": "WO-228", "repositoryId": "self" }], "edges": [{ "from": "WO-228", "to": "WO-193", "relation": "planning-deferral" }] }
+{ "id": "WS-002", "track": "separate", "members": [{ "workOrderId": "WO-228", "repositoryId": "self" }], "edges": [{ "from": "WO-228", "to": "WO-193", "relation": "planning-deferral" }] }
 <!-- dotln-workstream:end -->
 
 ## The work setup (operator direction, 2026-10-24)

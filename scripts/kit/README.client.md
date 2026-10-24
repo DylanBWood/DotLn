@@ -506,6 +506,7 @@ reason, including with `--list`, and records no gate result.
 | `verification-evidence` | package sources and core verification evidence edition |
 | `vertical` | core outward-vocabulary control data |
 | `wo107-schema` | historical corpus observations, collector and Git objects |
+| `workstream-pilot` | package TypeScript and build configuration needed to export |
 | `worktree` | docs/LEGAL.md and core release inputs |
 | `worktree-integration` | core source and publication inputs |
 

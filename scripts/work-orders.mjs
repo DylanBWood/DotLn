@@ -9,6 +9,7 @@ import {
   docPath,
   docRelative,
   findLaunchpad,
+  loadConfig,
 } from "./lib/config.mjs";
 import {
   existsSync,
@@ -34,7 +35,7 @@ import {
   umbrellaSuccessors,
   withdrawnDependencySet,
 } from "./lib/dependencies.mjs";
-import { runGit } from "./lib/git.mjs";
+import { runGit, primaryWorktree } from "./lib/git.mjs";
 import {
   containedRegularFile,
   parseJson,
@@ -54,6 +55,14 @@ import {
   checkGeneratedSections,
 } from "./lib/derived-contract.mjs";
 import { parseRepositoryDeclaration } from "./lib/work-order-repository.mjs";
+import { recordedRepositoryClone } from "./lib/target-worktrees.mjs";
+import {
+  parseWorkstreamDeclaration,
+  readWorkstreams,
+  readWorkstreamSnapshot,
+  projectWorkstreams,
+  workstreamSnapshotPrefix,
+} from "./lib/work-order-workstream.mjs";
 
 const toolRoot = findLaunchpad();
 const indexPath = defaultDocRelative("workOrders", "README.md");
@@ -125,6 +134,7 @@ export const parseHeader = (markdown, path, { historicalIds } = {}) => {
       : "unknown",
     cost: field("Cost") ?? "unavailable",
     repository: parseRepositoryDeclaration(markdown, path),
+    workstream: parseWorkstreamDeclaration(markdown, path),
     provenance: parseDerivedProvenance(markdown, path),
     ledgerSubstitution: inheritedLedgerDuty(markdown),
     dependencies,
@@ -211,8 +221,8 @@ export const checkSequenceTopology = (
  * Every open order has a place in the sequence (WO-190). An Open row that is
  * neither an umbrella record (listed under Superseded) nor a derived draft
  * (its place is its allocation, admitted by a resident outside the operator's
- * sequence; product 07 §Derived work and intent) must appear in the marked
- * sequence. Active orders are shown by the Now line and the Active cards
+ * sequence; product 07 §Derived work and intent) or a separate workstream
+ * member must appear in the marked sequence. Active orders are shown by the Now line and the Active cards
  * whether or not the sequence names them. Kept apart from
  * checkSequenceTopology, which historical planning receipts still judge.
  */
@@ -223,7 +233,11 @@ export const checkSequenceCoverage = (
   const placed = new Set(sequence.map(({ id }) => id));
   const missing = rows
     .filter(
-      (row) => row.section === "Open" && !row.provenance && !placed.has(row.id),
+      (row) =>
+        row.section === "Open" &&
+        !row.provenance &&
+        !row.separateWorkstream &&
+        !placed.has(row.id),
     )
     .map((row) => row.id);
   if (missing.length)
@@ -473,9 +487,21 @@ export const readIndex = (root, releases = localReleaseRecords(root)) => {
   // The rows stay in identifier order for every reader; each row carries its
   // place in the sequence (or null), which the index page orders Open cards by.
   const positions = new Map(sequence.map(({ id }, index) => [id, index]));
-  for (const row of rows) row.position = positions.get(row.id) ?? null;
+  const workstreamDocuments = readWorkstreams(root, rows);
+  const separate = new Set(
+    workstreamDocuments
+      .filter((stream) => stream.track === "separate")
+      .map((stream) => stream.id),
+  );
+  for (const row of rows) {
+    row.separateWorkstream = separate.has(row.workstream);
+    row.position = row.separateWorkstream
+      ? null
+      : (positions.get(row.id) ?? null);
+  }
   return {
     rows,
+    workstreamDocuments,
     releases,
     sequence,
     groups,
@@ -493,6 +519,80 @@ export const readIndex = (root, releases = localReleaseRecords(root)) => {
         : {}),
     },
   };
+};
+
+/** Host observations belong only to explicit index generation. Check and
+ * planning readers use the committed observation and never open targets. */
+export const readTargetFacts = (root, rows) => {
+  const config = loadConfig(root);
+  const facts = new Map();
+  const git = (clone, args) =>
+    runGit(clone, ["--no-replace-objects", ...args], {
+      raw: true,
+      encoding: "utf8",
+      timeout: 10_000,
+    });
+  const commit = (clone, revision) => {
+    const result = git(clone, [
+      "rev-parse",
+      "--verify",
+      `${revision}^{commit}`,
+    ]);
+    const value = result.stdout?.trim();
+    return result.status === 0 && /^(?:[0-9a-f]{40}|[0-9a-f]{64})$/u.test(value)
+      ? value
+      : "unknown";
+  };
+  for (const row of rows.filter((row) => row.workstream)) {
+    let base = row.repository?.baseCommit ?? "unknown";
+    let targetCommit = "unknown";
+    let integration = "unknown";
+    try {
+      const id = row.repository?.id ?? "self";
+      const repository =
+        id === "self" ? { baseBranch: "main" } : config.repositories[id];
+      const clone =
+        id === "self"
+          ? root
+          : (recordedRepositoryClone(root, id) ??
+            recordedRepositoryClone(primaryWorktree(root), id));
+      if (repository && clone) {
+        if (id === "self") base = commit(clone, "HEAD");
+        targetCommit = commit(clone, `refs/heads/${repository.baseBranch}`);
+        if (base !== "unknown" && targetCommit !== "unknown") {
+          if (base === targetCommit) integration = "current";
+          else {
+            const ancestor = git(clone, [
+              "merge-base",
+              "--is-ancestor",
+              base,
+              targetCommit,
+            ]);
+            integration =
+              ancestor.status === 0
+                ? "behind"
+                : ancestor.status === 1
+                  ? "diverged"
+                  : "unknown";
+          }
+        }
+      }
+    } catch {
+      // Missing clone maps, checkouts or Git objects are unobserved facts.
+    }
+    facts.set(`${row.workstream}/${row.id}`, {
+      base,
+      targetCommit,
+      integration,
+      stale:
+        integration === "unknown"
+          ? "unknown"
+          : integration === "current"
+            ? "no"
+            : "yes",
+    });
+  }
+  return facts;
 };
 
 const cell = (value) =>
@@ -607,8 +707,17 @@ const renderSection = (lines, rows, section) => {
 /** The index page: the active line, the sequence with its lane pairs, and
  * the Active and Open cards. Its first line, generated-by sentence, headings
  * and card fields are the contract the resident and the console read. */
-export const renderIndex = ({ rows, sequence, groups = [] }) => {
+export const renderIndex = ({
+  rows,
+  sequence,
+  groups = [],
+  workstreams = [],
+}) => {
   const byId = new Map(rows.map((row) => [row.id, row]));
+  sequence = sequence.filter(({ id }) => !byId.get(id)?.separateWorkstream);
+  groups = groups.map((group) =>
+    group.filter(({ id }) => !byId.get(id)?.separateWorkstream),
+  );
   const active = sectionRows(rows, "Active");
   const pairOf = new Map();
   let pairs = 0;
@@ -656,9 +765,25 @@ export const renderIndex = ({ rows, sequence, groups = [] }) => {
     "",
     "This file is generated by `npm run work-orders -- index`; actors refresh it at dispatch and outcome.",
     "Edit sequence.md's marked sequence to change the plan; do not cross off entries here.",
-    "`npm run work-orders -- index --check` detects changed headers, control state, proposed sequence or tag record on either page, and refuses an open order that has no place in the sequence; active orders and derived drafts are not judged.",
+    "`npm run work-orders -- index --check` detects changed headers, control state, proposed sequence or recorded observations on either page. Separate workstream members have their place in the grouping; other open orders need a sequence entry unless they are derived drafts.",
     "",
     "Full evidence for the active and sequenced orders follows; the Open cards are in sequence order.",
+    "",
+  );
+  lines.push("## Workstreams", "");
+  if (!workstreams.length) lines.push("None.", "");
+  for (const stream of workstreams) {
+    lines.push(`### ${stream.id}`, "");
+    if (stream.track === "separate")
+      lines.push("Separate track; outside the proposed serial order.", "");
+    for (const member of stream.members)
+      lines.push(
+        `- [${member.workOrderId}] — repository: ${cell(member.repository)}; base: ${cell(member.base)}; phase: ${cell(member.phase)}; verdict: ${cell(member.verdict)}; integration: ${cell(member.integration)}; stale: ${cell(member.stale)}; observed target: ${cell(member.targetCommit)}.`,
+      );
+    lines.push("");
+  }
+  lines.push(
+    `${workstreamSnapshotPrefix}${JSON.stringify({ workstreams })} -->`,
     "",
   );
   for (const section of INDEX_SECTIONS) renderSection(lines, rows, section);
@@ -666,6 +791,9 @@ export const renderIndex = ({ rows, sequence, groups = [] }) => {
   const referenced = new Set([
     ...active.map((row) => row.id),
     ...sequence.map(({ id }) => id),
+    ...workstreams.flatMap((stream) =>
+      stream.members.map((member) => member.workOrderId),
+    ),
   ]);
   for (const row of rows)
     if (referenced.has(row.id)) lines.push(definition(row));
@@ -724,8 +852,8 @@ const renderSources = (releases, paths) => {
   const lines = [
     "## Sources and limits",
     "",
-    "- **Two pages (WO-190):** `README.md` holds the active line, the proposed sequence with its lane pairs and the Active and Open cards, the Open cards in sequence order; this page holds every settled card (Closed, Withdrawn, Superseded, Historical), these sources and limits and the release-tag record. Every order file appears on exactly one page. `index --check` judges both pages, names the stale one, and refuses an open order that has no place in the sequence unless it is an umbrella record or a derived draft, whose place is its allocation.",
-    "- **Header observation:** each authority's H1, sole strict application version, Model, Effort, optional Track (delivery, machinery or evidence; absent or invalid is unknown), and leading typed dependency block (or legacy Depends on paragraph). Invalid typed declarations refuse with the authority path and offending entry; other unknown metadata is attributed by the Authority link.",
+    "- **Two pages (WO-190):** `README.md` holds the active line, the proposed sequence with its lane pairs and the Active and Open cards, the Open cards in sequence order; this page holds every settled card (Closed, Withdrawn, Superseded, Historical), these sources and limits and the release-tag record. Every order file appears on exactly one page. `index --check` judges both pages, names the stale one, and refuses an open order that has no place in the sequence unless it is an umbrella record, a derived draft whose place is its allocation, or a member placed in a separate workstream.",
+    "- **Header observation:** each authority's H1, sole strict application version, Model, Effort, optional Track (delivery, machinery or evidence; absent or invalid is unknown), Repository, Workstream and leading typed dependency block (or legacy Depends on paragraph). Invalid typed declarations refuse with the authority path and offending entry; other unknown metadata is attributed by the Authority link. Workstream documents mirror the leading fields. The index page's dotln-workstreams JSON records member columns, edges and target commits; check reuses its Git observations without opening targets. Refresh with index to observe moved targets. Integration compares the declared base (self uses the launchpad HEAD observed at refresh) with the target's configured base branch (self uses main): current, behind, diverged or unknown; stale is yes, no or unknown. A separate track is omitted from the serial sequence; its complete Open cards follow sequenced cards in identifier order.",
     "- **Proposed sequence:** the marked block in planning/sequence.md, in operator-selected order; two entries between blank lines are a lane pair. Historical fixtures without that file use the map. Missing/malformed blocks, duplicate IDs, and IDs without an authority refuse. This is not a scheduler or proof of dependency eligibility.",
     `- **Control evidence:** the shared fold of legacy \`${paths.legacy}\` plus \`${paths.orders}\`, reduced independently per work order in segment append order. Closed means a passing final review; it does not independently prove merge or publication. A withdrawn order is listed under Withdrawn on this page with its recorded disposition, unchecked in the proposed order, and never counts as a pass. Report verdicts come from events, not inferred report contents.`,
     "- **Superseded:** an umbrella record is an order superseded whole: the `**Umbrella record:**` label in its leading header plus typed superseded entries. It is listed under Superseded with the successors those entries name, `resume activate` refuses it naming them, and no control event records it (WO-190). Recorded control state, when any exists, wins.",
@@ -940,6 +1068,11 @@ export const main = (args = process.argv.slice(2), root = toolRoot) => {
       );
     }
     const index = readIndex(root, releases);
+    index.workstreams = projectWorkstreams(
+      index.workstreamDocuments,
+      index.rows,
+      readWorkstreamSnapshot(actual.readme, pages.readme.path),
+    );
     checkPreflightSuites(root, index);
     checkSequenceTopology(index, planningSource);
     checkSequenceCoverage(index, planningSource);
@@ -961,6 +1094,11 @@ export const main = (args = process.argv.slice(2), root = toolRoot) => {
       process.stdout.write(`PASS ${page.path} is current\n`);
   } else {
     const index = readIndex(root);
+    index.workstreams = projectWorkstreams(
+      index.workstreamDocuments,
+      index.rows,
+      readTargetFacts(root, index.rows),
+    );
     const writes = Object.values(pages)
       .map((page) => ({ ...page, expected: page.render(index) }))
       .filter(

@@ -1,0 +1,1059 @@
+{
+  "viewModelVersion": "uifa-board-v1",
+  "fidelity": "lossy-read-only",
+  "panels": [
+    {
+      "id": "actors",
+      "title": "Actors",
+      "roles": [
+        "showrunner",
+        "engineer",
+        "tester"
+      ],
+      "question": "Who is recorded, what are they equipped to do, and what evidence shows their work?",
+      "sections": [
+        {
+          "id": "episode-actors",
+          "title": "Recorded episodes",
+          "status": "unavailable",
+          "explanation": "No worker or audit store was supplied",
+          "rows": []
+        },
+        {
+          "id": "control-actors",
+          "title": "People and recorded workflow actors",
+          "status": "unavailable",
+          "explanation": "Source not supplied",
+          "rows": []
+        },
+        {
+          "id": "actor-definitions",
+          "title": "Saved actor definitions",
+          "status": "unavailable",
+          "explanation": "Source not supplied",
+          "rows": []
+        }
+      ]
+    },
+    {
+      "id": "builds",
+      "title": "Builds",
+      "roles": [
+        "engineer"
+      ],
+      "question": "Does this composition express the behavior I mean, and what does it cost?",
+      "sections": [
+        {
+          "id": "saved-builds",
+          "title": "Saved builds",
+          "status": "unavailable",
+          "explanation": "Source not supplied",
+          "rows": []
+        }
+      ]
+    },
+    {
+      "id": "mechanisms",
+      "title": "Mechanisms",
+      "roles": [
+        "tester",
+        "engineer",
+        "devops"
+      ],
+      "question": "In this situation, does the equipped behavior do the right thing?",
+      "sections": [
+        {
+          "id": "compiled-mechanisms",
+          "title": "Compiled mechanisms",
+          "status": "unavailable",
+          "explanation": "Source not supplied",
+          "rows": []
+        }
+      ]
+    },
+    {
+      "id": "work",
+      "title": "Work",
+      "roles": [
+        "showrunner",
+        "devops"
+      ],
+      "question": "What is active, what is blocked, what closed, and what did the release contain?",
+      "sections": [
+        {
+          "id": "orders",
+          "title": "Orders and legal actions",
+          "status": "unavailable",
+          "explanation": "Source not supplied",
+          "rows": []
+        },
+        {
+          "id": "worktrees",
+          "title": "Worktree Beacon observations",
+          "status": "unavailable",
+          "explanation": "Source not supplied",
+          "rows": []
+        },
+        {
+          "id": "releases",
+          "title": "Published releases",
+          "status": "unavailable",
+          "explanation": "Source not supplied",
+          "rows": []
+        },
+        {
+          "id": "work-order-index",
+          "title": "Work-order evidence index",
+          "status": "available",
+          "explanation": null,
+          "rows": [
+            {
+              "id": "indexed-order-fa175d4c85ec07c8",
+              "title": "WO-301",
+              "cells": [
+                {
+                  "key": "title",
+                  "label": "title",
+                  "status": "known",
+                  "value": "WO-301 — Synthetic member (version assigned at activation)",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-1"
+                  ]
+                },
+                {
+                  "key": "State",
+                  "label": "State",
+                  "status": "known",
+                  "value": "draft.",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-1"
+                  ]
+                },
+                {
+                  "key": "Repository",
+                  "label": "Repository",
+                  "status": "known",
+                  "value": "service @ cbd82a45ad8a74dd7b6bd2a3b66c24e38416d68b.",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-1"
+                  ]
+                },
+                {
+                  "key": "Application target",
+                  "label": "Application target",
+                  "status": "known",
+                  "value": "unassigned.",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-1"
+                  ]
+                },
+                {
+                  "key": "Dependencies",
+                  "label": "Dependencies",
+                  "status": "known",
+                  "value": "conservative token view; does not block.",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-1"
+                  ]
+                },
+                {
+                  "key": "References",
+                  "label": "References",
+                  "status": "known",
+                  "value": "none declared.",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-1"
+                  ]
+                },
+                {
+                  "key": "Verification",
+                  "label": "Verification",
+                  "status": "known",
+                  "value": "none recorded.",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-1"
+                  ]
+                },
+                {
+                  "key": "Final review",
+                  "label": "Final review",
+                  "status": "known",
+                  "value": "none recorded.",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-1"
+                  ]
+                },
+                {
+                  "key": "Release",
+                  "label": "Release",
+                  "status": "known",
+                  "value": "none recorded.",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-1"
+                  ]
+                },
+                {
+                  "key": "Model",
+                  "label": "Model",
+                  "status": "known",
+                  "value": "fixture",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-1"
+                  ]
+                },
+                {
+                  "key": "Effort",
+                  "label": "Effort",
+                  "status": "known",
+                  "value": "executor xhigh+; verifier xhigh+; reviewer any.",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-1"
+                  ]
+                },
+                {
+                  "key": "Track",
+                  "label": "Track",
+                  "status": "known",
+                  "value": "unknown",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-1"
+                  ]
+                },
+                {
+                  "key": "Cost",
+                  "label": "Cost",
+                  "status": "known",
+                  "value": "unavailable",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-1"
+                  ]
+                },
+                {
+                  "key": "Authority",
+                  "label": "Authority",
+                  "status": "known",
+                  "value": "docs/work-orders/WO-301-fixture.md",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-1"
+                  ]
+                }
+              ],
+              "links": [
+                {
+                  "label": "Evidence: WO-301-fixture.md",
+                  "target": "evidence-2"
+                }
+              ]
+            },
+            {
+              "id": "indexed-order-fa17604c85ec0ce1",
+              "title": "WO-302",
+              "cells": [
+                {
+                  "key": "title",
+                  "label": "title",
+                  "status": "known",
+                  "value": "WO-302 — Synthetic member (version assigned at activation)",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-3"
+                  ]
+                },
+                {
+                  "key": "State",
+                  "label": "State",
+                  "status": "known",
+                  "value": "draft.",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-3"
+                  ]
+                },
+                {
+                  "key": "Repository",
+                  "label": "Repository",
+                  "status": "known",
+                  "value": "client @ 6a3e7984706e5bdc50fb297f29365e202e700d97.",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-3"
+                  ]
+                },
+                {
+                  "key": "Application target",
+                  "label": "Application target",
+                  "status": "known",
+                  "value": "unassigned.",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-3"
+                  ]
+                },
+                {
+                  "key": "Dependencies",
+                  "label": "Dependencies",
+                  "status": "known",
+                  "value": "conservative token view; does not block.",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-3"
+                  ]
+                },
+                {
+                  "key": "References",
+                  "label": "References",
+                  "status": "known",
+                  "value": "none declared.",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-3"
+                  ]
+                },
+                {
+                  "key": "Verification",
+                  "label": "Verification",
+                  "status": "known",
+                  "value": "none recorded.",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-3"
+                  ]
+                },
+                {
+                  "key": "Final review",
+                  "label": "Final review",
+                  "status": "known",
+                  "value": "none recorded.",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-3"
+                  ]
+                },
+                {
+                  "key": "Release",
+                  "label": "Release",
+                  "status": "known",
+                  "value": "none recorded.",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-3"
+                  ]
+                },
+                {
+                  "key": "Model",
+                  "label": "Model",
+                  "status": "known",
+                  "value": "fixture",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-3"
+                  ]
+                },
+                {
+                  "key": "Effort",
+                  "label": "Effort",
+                  "status": "known",
+                  "value": "executor xhigh+; verifier xhigh+; reviewer any.",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-3"
+                  ]
+                },
+                {
+                  "key": "Track",
+                  "label": "Track",
+                  "status": "known",
+                  "value": "unknown",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-3"
+                  ]
+                },
+                {
+                  "key": "Cost",
+                  "label": "Cost",
+                  "status": "known",
+                  "value": "unavailable",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-3"
+                  ]
+                },
+                {
+                  "key": "Authority",
+                  "label": "Authority",
+                  "status": "known",
+                  "value": "docs/work-orders/WO-302-fixture.md",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-3"
+                  ]
+                }
+              ],
+              "links": [
+                {
+                  "label": "Evidence: WO-302-fixture.md",
+                  "target": "evidence-4"
+                }
+              ]
+            },
+            {
+              "id": "indexed-order-fa175f4c85ec0b2e",
+              "title": "WO-303",
+              "cells": [
+                {
+                  "key": "title",
+                  "label": "title",
+                  "status": "known",
+                  "value": "WO-303 — Synthetic member (version assigned at activation)",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-5"
+                  ]
+                },
+                {
+                  "key": "State",
+                  "label": "State",
+                  "status": "known",
+                  "value": "draft.",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-5"
+                  ]
+                },
+                {
+                  "key": "Repository",
+                  "label": "Repository",
+                  "status": "known",
+                  "value": "client @ 6a3e7984706e5bdc50fb297f29365e202e700d97.",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-5"
+                  ]
+                },
+                {
+                  "key": "Application target",
+                  "label": "Application target",
+                  "status": "known",
+                  "value": "unassigned.",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-5"
+                  ]
+                },
+                {
+                  "key": "Dependencies",
+                  "label": "Dependencies",
+                  "status": "known",
+                  "value": "conservative token view; does not block.",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-5"
+                  ]
+                },
+                {
+                  "key": "References",
+                  "label": "References",
+                  "status": "known",
+                  "value": "none declared.",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-5"
+                  ]
+                },
+                {
+                  "key": "Verification",
+                  "label": "Verification",
+                  "status": "known",
+                  "value": "none recorded.",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-5"
+                  ]
+                },
+                {
+                  "key": "Final review",
+                  "label": "Final review",
+                  "status": "known",
+                  "value": "none recorded.",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-5"
+                  ]
+                },
+                {
+                  "key": "Release",
+                  "label": "Release",
+                  "status": "known",
+                  "value": "none recorded.",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-5"
+                  ]
+                },
+                {
+                  "key": "Model",
+                  "label": "Model",
+                  "status": "known",
+                  "value": "fixture",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-5"
+                  ]
+                },
+                {
+                  "key": "Effort",
+                  "label": "Effort",
+                  "status": "known",
+                  "value": "executor xhigh+; verifier xhigh+; reviewer any.",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-5"
+                  ]
+                },
+                {
+                  "key": "Track",
+                  "label": "Track",
+                  "status": "known",
+                  "value": "unknown",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-5"
+                  ]
+                },
+                {
+                  "key": "Cost",
+                  "label": "Cost",
+                  "status": "known",
+                  "value": "unavailable",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-5"
+                  ]
+                },
+                {
+                  "key": "Authority",
+                  "label": "Authority",
+                  "status": "known",
+                  "value": "docs/work-orders/WO-303-fixture.md",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-5"
+                  ]
+                }
+              ],
+              "links": [
+                {
+                  "label": "Evidence: WO-303-fixture.md",
+                  "target": "evidence-6"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "work-order-history",
+          "title": "Work-order history index",
+          "status": "unavailable",
+          "explanation": "Source not supplied",
+          "rows": []
+        },
+        {
+          "id": "usage",
+          "title": "Recorded actor usage",
+          "status": "unavailable",
+          "explanation": "Source not supplied",
+          "rows": []
+        },
+        {
+          "id": "workstreams",
+          "title": "Workstreams",
+          "status": "available",
+          "explanation": null,
+          "rows": [
+            {
+              "id": "workstream-member-f73ab996c03b5f63",
+              "title": "WS-001/WO-301",
+              "cells": [
+                {
+                  "key": "workstream",
+                  "label": "workstream",
+                  "status": "known",
+                  "value": "WS-001",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-7"
+                  ]
+                },
+                {
+                  "key": "workOrder",
+                  "label": "workOrder",
+                  "status": "known",
+                  "value": "WO-301",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-7"
+                  ]
+                },
+                {
+                  "key": "repository",
+                  "label": "repository",
+                  "status": "known",
+                  "value": "service",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-7"
+                  ]
+                },
+                {
+                  "key": "base",
+                  "label": "base",
+                  "status": "known",
+                  "value": "cbd82a45ad8a74dd7b6bd2a3b66c24e38416d68b",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-7"
+                  ]
+                },
+                {
+                  "key": "phase",
+                  "label": "phase",
+                  "status": "known",
+                  "value": "draft",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-7"
+                  ]
+                },
+                {
+                  "key": "verdict",
+                  "label": "verdict",
+                  "status": "known",
+                  "value": "unknown",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-7"
+                  ]
+                },
+                {
+                  "key": "integration",
+                  "label": "integration",
+                  "status": "known",
+                  "value": "behind",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-7"
+                  ]
+                },
+                {
+                  "key": "stale",
+                  "label": "stale",
+                  "status": "known",
+                  "value": "yes",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-7"
+                  ]
+                }
+              ],
+              "links": [
+                {
+                  "label": "Work-order evidence",
+                  "target": "indexed-order-fa175d4c85ec07c8"
+                }
+              ]
+            },
+            {
+              "id": "workstream-member-f73aba96c03b6116",
+              "title": "WS-001/WO-302",
+              "cells": [
+                {
+                  "key": "workstream",
+                  "label": "workstream",
+                  "status": "known",
+                  "value": "WS-001",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-8"
+                  ]
+                },
+                {
+                  "key": "workOrder",
+                  "label": "workOrder",
+                  "status": "known",
+                  "value": "WO-302",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-8"
+                  ]
+                },
+                {
+                  "key": "repository",
+                  "label": "repository",
+                  "status": "known",
+                  "value": "client",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-8"
+                  ]
+                },
+                {
+                  "key": "base",
+                  "label": "base",
+                  "status": "known",
+                  "value": "6a3e7984706e5bdc50fb297f29365e202e700d97",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-8"
+                  ]
+                },
+                {
+                  "key": "phase",
+                  "label": "phase",
+                  "status": "known",
+                  "value": "draft",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-8"
+                  ]
+                },
+                {
+                  "key": "verdict",
+                  "label": "verdict",
+                  "status": "known",
+                  "value": "unknown",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-8"
+                  ]
+                },
+                {
+                  "key": "integration",
+                  "label": "integration",
+                  "status": "known",
+                  "value": "current",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-8"
+                  ]
+                },
+                {
+                  "key": "stale",
+                  "label": "stale",
+                  "status": "known",
+                  "value": "no",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-8"
+                  ]
+                }
+              ],
+              "links": [
+                {
+                  "label": "Work-order evidence",
+                  "target": "indexed-order-fa17604c85ec0ce1"
+                }
+              ]
+            },
+            {
+              "id": "workstream-member-f73abb96c03b62c9",
+              "title": "WS-001/WO-303",
+              "cells": [
+                {
+                  "key": "workstream",
+                  "label": "workstream",
+                  "status": "known",
+                  "value": "WS-001",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-9"
+                  ]
+                },
+                {
+                  "key": "workOrder",
+                  "label": "workOrder",
+                  "status": "known",
+                  "value": "WO-303",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-9"
+                  ]
+                },
+                {
+                  "key": "repository",
+                  "label": "repository",
+                  "status": "known",
+                  "value": "client",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-9"
+                  ]
+                },
+                {
+                  "key": "base",
+                  "label": "base",
+                  "status": "known",
+                  "value": "6a3e7984706e5bdc50fb297f29365e202e700d97",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-9"
+                  ]
+                },
+                {
+                  "key": "phase",
+                  "label": "phase",
+                  "status": "known",
+                  "value": "draft",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-9"
+                  ]
+                },
+                {
+                  "key": "verdict",
+                  "label": "verdict",
+                  "status": "known",
+                  "value": "unknown",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-9"
+                  ]
+                },
+                {
+                  "key": "integration",
+                  "label": "integration",
+                  "status": "known",
+                  "value": "current",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-9"
+                  ]
+                },
+                {
+                  "key": "stale",
+                  "label": "stale",
+                  "status": "known",
+                  "value": "no",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-9"
+                  ]
+                }
+              ],
+              "links": [
+                {
+                  "label": "Work-order evidence",
+                  "target": "indexed-order-fa175f4c85ec0b2e"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "blueprint",
+      "title": "Blueprint",
+      "roles": [
+        "product-lead",
+        "devops"
+      ],
+      "question": "Is this still the thing we mean?",
+      "sections": [
+        {
+          "id": "refutation-verdicts",
+          "title": "Latest plan-refutation verdicts",
+          "status": "unavailable",
+          "explanation": "Source not supplied",
+          "rows": []
+        },
+        {
+          "id": "capabilities",
+          "title": "Capability evidence",
+          "status": "unavailable",
+          "explanation": "Source not supplied",
+          "rows": []
+        },
+        {
+          "id": "publication",
+          "title": "Publication status",
+          "status": "unavailable",
+          "explanation": "Source not supplied",
+          "rows": []
+        },
+        {
+          "id": "roadmap",
+          "title": "Pending roadmap rungs",
+          "status": "unavailable",
+          "explanation": "Source not supplied",
+          "rows": []
+        }
+      ]
+    }
+  ],
+  "roleAnswers": [
+    {
+      "role": "product-lead",
+      "question": "Is this still the thing we mean?",
+      "target": "refutation-verdicts",
+      "cell": "verdict + reason; latest-refutation.holdStatus",
+      "source": "docs/product/13-uifa-roles.md#the-five-roles"
+    },
+    {
+      "role": "showrunner",
+      "question": "What is active, what is blocked, what closed, and what did the release contain?",
+      "target": "orders",
+      "cell": "phase + blockers + dependencyCheck + legalNextActions; releases.workOrders",
+      "source": "docs/product/13-uifa-roles.md#the-five-roles"
+    },
+    {
+      "role": "engineer",
+      "question": "Does this composition express the behavior I mean, and what does it cost?",
+      "target": "saved-builds",
+      "cell": "tooltip + semanticHash + hashAgreement",
+      "source": "docs/product/13-uifa-roles.md#the-five-roles"
+    },
+    {
+      "role": "tester",
+      "question": "In this situation, does the equipped behavior do the right thing?",
+      "target": "compiled-mechanisms",
+      "cell": "desiredBehavior + fixture.incidentsPrevented + lastActivation; acceptance matrix status and evidence",
+      "source": "docs/product/13-uifa-roles.md#the-five-roles"
+    },
+    {
+      "role": "devops",
+      "question": "Which repeated step can become a checked mechanism next?",
+      "target": "compiled-mechanisms",
+      "cell": "boundary + rung + nextMaturity; capabilities.Next smallest promotable increment",
+      "source": "docs/product/13-uifa-roles.md#the-five-roles"
+    }
+  ],
+  "sources": [
+    {
+      "ref": "skeleton:loadout-exports",
+      "status": "unavailable",
+      "explanation": "Source not supplied"
+    },
+    {
+      "ref": "skeleton:feedback-units",
+      "status": "unavailable",
+      "explanation": "Source not supplied"
+    },
+    {
+      "ref": "control:canonical-segments",
+      "status": "unavailable",
+      "explanation": "Source not supplied"
+    },
+    {
+      "ref": "docs/work-orders/README.md",
+      "status": "available",
+      "explanation": null
+    },
+    {
+      "ref": "docs/work-orders/HISTORY.md",
+      "status": "unavailable",
+      "explanation": "Source not supplied"
+    },
+    {
+      "ref": "resume:status--json",
+      "status": "unavailable",
+      "explanation": "Source not supplied"
+    },
+    {
+      "ref": "worktree:constellation",
+      "status": "unavailable",
+      "explanation": "Source not supplied"
+    },
+    {
+      "ref": "release:list",
+      "status": "unavailable",
+      "explanation": "Source not supplied"
+    },
+    {
+      "ref": "resume:usage--json",
+      "status": "unavailable",
+      "explanation": "Source not supplied"
+    },
+    {
+      "ref": "docs/planning/capability-table.md",
+      "status": "unavailable",
+      "explanation": "Source not supplied"
+    },
+    {
+      "ref": "docs/publication/audience-status-index.md",
+      "status": "unavailable",
+      "explanation": "Source not supplied"
+    },
+    {
+      "ref": "docs/product/06-roadmap.md",
+      "status": "unavailable",
+      "explanation": "Source not supplied"
+    },
+    {
+      "ref": "docs/planning/refutations/",
+      "status": "unavailable",
+      "explanation": "Source not supplied"
+    }
+  ],
+  "evidence": [
+    {
+      "id": "evidence-1",
+      "source": "docs/work-orders/README.md",
+      "record": "line:37 (WO-301)"
+    },
+    {
+      "id": "evidence-2",
+      "source": "docs/work-orders/README.md",
+      "record": "link:WO-301-fixture.md"
+    },
+    {
+      "id": "evidence-3",
+      "source": "docs/work-orders/README.md",
+      "record": "line:55 (WO-302)"
+    },
+    {
+      "id": "evidence-4",
+      "source": "docs/work-orders/README.md",
+      "record": "link:WO-302-fixture.md"
+    },
+    {
+      "id": "evidence-5",
+      "source": "docs/work-orders/README.md",
+      "record": "line:73 (WO-303)"
+    },
+    {
+      "id": "evidence-6",
+      "source": "docs/work-orders/README.md",
+      "record": "link:WO-303-fixture.md"
+    },
+    {
+      "id": "evidence-7",
+      "source": "docs/work-orders/README.md",
+      "record": "workstreams:WS-001/WO-301"
+    },
+    {
+      "id": "evidence-8",
+      "source": "docs/work-orders/README.md",
+      "record": "workstreams:WS-001/WO-302"
+    },
+    {
+      "id": "evidence-9",
+      "source": "docs/work-orders/README.md",
+      "record": "workstreams:WS-001/WO-303"
+    }
+  ]
+}

@@ -17,6 +17,7 @@ import {
   parseConstellation,
   parseReleases,
   parseWorkOrderIndex,
+  parseWorkstreams,
   plainText,
 } from "./text-sources.js";
 
@@ -305,5 +306,25 @@ export function projectWork(
       ];
     },
   );
-  return [status, constellation, releases, index, history, usage];
+  const workstreams = ctx.section(
+    "workstreams",
+    "Workstreams",
+    sources.workOrderIndex,
+    INDEX_PAGES.index.ref,
+    (text, ref) =>
+      parseWorkstreams(text).map((row): BoardRow => {
+        const detail = indexed.get(row.values["workOrder"]!);
+        return {
+          id: id("workstream-member", row.key),
+          title: row.key,
+          cells: Object.entries(row.values).map(([key, value]) =>
+            known(key, key, value, ctx.ref(ref, `workstreams:${row.key}`)),
+          ),
+          links: detail
+            ? [{ label: "Work-order evidence", target: detail.id }]
+            : [],
+        };
+      }),
+  );
+  return [status, constellation, releases, index, history, usage, workstreams];
 }

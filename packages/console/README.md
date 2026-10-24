@@ -308,7 +308,7 @@ with that limitation instead of claiming an equipped saved build.
 | Actors     | Recorded worker attempts and control actors; `identity`, `role`, `episode`, `phase`, `transport`, selected/effective model and effort, `buildHash`, `hashKind`, `loadoutHash`, `allowed`, `denied`; local matrix/receipt links |
 | Builds     | `loadout`, `semanticHash`, `hash.code-dsl`, `hash.function-table`, `hash.statechart-json`, `hashAgreement`, `items`, `tooltip`; compiler-rendered mechanics and declared costs                                                 |
 | Mechanisms | Unit id as row title; `rung`, `boundary`, `enforcement`, `fixture.*`, `live.*`, `lastActivation`; five counters per observation source                                                                                         |
-| Work       | Order id as row title; `phase`, `blockers`, `dependencyCheck`, `elapsed.*`, `legalNextActions`; index evidence, usage, constellation metadata, releases                                                                        |
+| Work       | Order id as row title; `phase`, `blockers`, `dependencyCheck`, `elapsed.*`, `legalNextActions`; index evidence, usage, constellation metadata, releases; Workstreams: `workstream`, `workOrder`, `repository`, `base`, `phase`, `verdict`, `integration`, `stale`                                                                        |
 | Blueprint  | Source table columns and assessment headings; pending roadmap rungs; `verdict`, `reason`, and `latest-refutation.holdStatus` from the latest selected refutation                                                               |
 
 The pinned outputs show every exact key; the generic schema deliberately does
@@ -379,6 +379,16 @@ the card of every order they name on either page. A card on both pages makes
 the history section unavailable rather than a second truth; a page without
 cards is a valid, empty source.
 
+The Workstreams section reads only the index's `dotln-workstreams` JSON line,
+never rendered prose or live Git state. An older index without the marker
+produces an empty section; malformed or duplicate records make it unavailable.
+It shares the index source reference, so a grouping parse failure marks that
+source unavailable while the independently parsed order-card section stays
+available. A member links to its card only when that card is present. The
+section is additive within `uifa-board-v1`; hosts still accept older views
+without it. `stale` is `yes`, `no` or `unknown`, with integration unknown when
+the target could not be read at the last explicit index refresh.
+
 Text adapters pin the generated index's `### WO-NNN` sections and named fields, the constellation's
 individual/group format, release-list TSV, capability table variants (including
 dated additions), publication tables, and roadmap headings. Unsupported formats
@@ -395,9 +405,9 @@ npm run evidence:console -- --check
 npm test
 ```
 
-[manifest.json](fixtures/manifest.json) pins every input by SHA-256. Five cases
+[manifest.json](fixtures/manifest.json) pins every input by SHA-256. Six cases
 cover WO-009, the self-hosted feedback edition (`selfhost`), control,
-refutations and absent sources; each pins JSON, terminal and HTML outputs in
+refutations, absent sources and a generated synthetic workstream; each pins JSON, terminal and HTML outputs in
 [expected/](fixtures/expected/). The `selfhost` case pins the report and both
 streams of one recorded edition; when the edition moves, update its three
 manifest inputs and regenerate the expected outputs. The six real

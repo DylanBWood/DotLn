@@ -541,8 +541,10 @@ five panels, Actors (identity, role, loadout hash, episode state, authority,
 evidence), Builds (every shipped loadout's tooltips and view hashes through
 the compiler render), Mechanisms (every compiled unit with its rung,
 boundary, enforcement, and maturity counts), Work (the control state's
-orders, phases, blockers, worktrees, releases, and evidence links, which was
-the first draft's whole scope), and Blueprint (capability rows and
+orders, phases, blockers, worktrees, releases, evidence links, and a
+Workstreams section grouping member orders by outcome with repository, base,
+phase, verdict, integration and stale state from the index's committed JSON
+observation), and Blueprint (capability rows and
 publication statuses plus the latest recorded plan-refutation verdicts and
 hold state), each naming the UIFA role it serves, over the
 documented machine interfaces and evidence stores, rendered in the terminal

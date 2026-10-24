@@ -1980,8 +1980,14 @@ test("an instance exported at v0.81.0 takes this release by its README's procedu
       "CLAUDE.md",
       "docs/control/budgets.json",
       "docs/work-orders/WO-001-environment-truth.md",
+      "docs/workstreams/README.md",
       "README.md",
     ]);
+    assert.equal(
+      readFileSync(join(starter, "docs/workstreams/README.md"), "utf8"),
+      readFileSync(join(core, "scripts/kit/workstream.template.md"), "utf8"),
+      "the refreshed starter carries the current workstream convention",
+    );
     // A new fork of the refreshed starter still lacks the lineage index a
     // fresh export seeds; its README's first step generates that index
     // before the first document gate, whose check names the remedy.

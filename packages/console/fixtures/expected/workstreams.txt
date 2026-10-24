@@ -1,0 +1,211 @@
+DOTLN / ACTOR BOARD
+uifa-board-v1 · Read-only, lossy projection
+Recorded facts only. Unknown is not zero; a missing source is unavailable.
+
+ACTORS [actors]
+Serves: showrunner, engineer, tester
+Who is recorded, what are they equipped to do, and what evidence shows their
+work?
+
+Recorded episodes [episode-actors] — unavailable
+No worker or audit store was supplied
+
+People and recorded workflow actors [control-actors] — unavailable
+Source not supplied
+
+Saved actor definitions [actor-definitions] — unavailable
+Source not supplied
+
+BUILDS [builds]
+Serves: engineer
+Does this composition express the behavior I mean, and what does it cost?
+
+Saved builds [saved-builds] — unavailable
+Source not supplied
+
+MECHANISMS [mechanisms]
+Serves: tester, engineer, devops
+In this situation, does the equipped behavior do the right thing?
+
+Compiled mechanisms [compiled-mechanisms] — unavailable
+Source not supplied
+
+WORK [work]
+Serves: showrunner, devops
+What is active, what is blocked, what closed, and what did the release contain?
+
+Orders and legal actions [orders] — unavailable
+Source not supplied
+
+Worktree Beacon observations [worktrees] — unavailable
+Source not supplied
+
+Published releases [releases] — unavailable
+Source not supplied
+
+Work-order evidence index [work-order-index] — available
+
+WO-301 [indexed-order-fa175d4c85ec07c8]
+  title: WO-301 — Synthetic member (version assigned at activation) [evidence-1]
+  State: draft. [evidence-1]
+  Repository: service @ cbd82a45ad8a74dd7b6bd2a3b66c24e38416d68b. [evidence-1]
+  Application target: unassigned. [evidence-1]
+  Dependencies: conservative token view; does not block. [evidence-1]
+  References: none declared. [evidence-1]
+  Verification: none recorded. [evidence-1]
+  Final review: none recorded. [evidence-1]
+  Release: none recorded. [evidence-1]
+  Model: fixture [evidence-1]
+  Effort: executor xhigh+; verifier xhigh+; reviewer any. [evidence-1]
+  Track: unknown [evidence-1]
+  Cost: unavailable [evidence-1]
+  Authority: docs/work-orders/WO-301-fixture.md [evidence-1]
+  -> Evidence: WO-301-fixture.md [evidence-2]
+
+WO-302 [indexed-order-fa17604c85ec0ce1]
+  title: WO-302 — Synthetic member (version assigned at activation) [evidence-3]
+  State: draft. [evidence-3]
+  Repository: client @ 6a3e7984706e5bdc50fb297f29365e202e700d97. [evidence-3]
+  Application target: unassigned. [evidence-3]
+  Dependencies: conservative token view; does not block. [evidence-3]
+  References: none declared. [evidence-3]
+  Verification: none recorded. [evidence-3]
+  Final review: none recorded. [evidence-3]
+  Release: none recorded. [evidence-3]
+  Model: fixture [evidence-3]
+  Effort: executor xhigh+; verifier xhigh+; reviewer any. [evidence-3]
+  Track: unknown [evidence-3]
+  Cost: unavailable [evidence-3]
+  Authority: docs/work-orders/WO-302-fixture.md [evidence-3]
+  -> Evidence: WO-302-fixture.md [evidence-4]
+
+WO-303 [indexed-order-fa175f4c85ec0b2e]
+  title: WO-303 — Synthetic member (version assigned at activation) [evidence-5]
+  State: draft. [evidence-5]
+  Repository: client @ 6a3e7984706e5bdc50fb297f29365e202e700d97. [evidence-5]
+  Application target: unassigned. [evidence-5]
+  Dependencies: conservative token view; does not block. [evidence-5]
+  References: none declared. [evidence-5]
+  Verification: none recorded. [evidence-5]
+  Final review: none recorded. [evidence-5]
+  Release: none recorded. [evidence-5]
+  Model: fixture [evidence-5]
+  Effort: executor xhigh+; verifier xhigh+; reviewer any. [evidence-5]
+  Track: unknown [evidence-5]
+  Cost: unavailable [evidence-5]
+  Authority: docs/work-orders/WO-303-fixture.md [evidence-5]
+  -> Evidence: WO-303-fixture.md [evidence-6]
+
+Work-order history index [work-order-history] — unavailable
+Source not supplied
+
+Recorded actor usage [usage] — unavailable
+Source not supplied
+
+Workstreams [workstreams] — available
+
+WS-001/WO-301 [workstream-member-f73ab996c03b5f63]
+  workstream: WS-001 [evidence-7]
+  workOrder: WO-301 [evidence-7]
+  repository: service [evidence-7]
+  base: cbd82a45ad8a74dd7b6bd2a3b66c24e38416d68b [evidence-7]
+  phase: draft [evidence-7]
+  verdict: unknown [evidence-7]
+  integration: behind [evidence-7]
+  stale: yes [evidence-7]
+  -> Work-order evidence [indexed-order-fa175d4c85ec07c8]
+
+WS-001/WO-302 [workstream-member-f73aba96c03b6116]
+  workstream: WS-001 [evidence-8]
+  workOrder: WO-302 [evidence-8]
+  repository: client [evidence-8]
+  base: 6a3e7984706e5bdc50fb297f29365e202e700d97 [evidence-8]
+  phase: draft [evidence-8]
+  verdict: unknown [evidence-8]
+  integration: current [evidence-8]
+  stale: no [evidence-8]
+  -> Work-order evidence [indexed-order-fa17604c85ec0ce1]
+
+WS-001/WO-303 [workstream-member-f73abb96c03b62c9]
+  workstream: WS-001 [evidence-9]
+  workOrder: WO-303 [evidence-9]
+  repository: client [evidence-9]
+  base: 6a3e7984706e5bdc50fb297f29365e202e700d97 [evidence-9]
+  phase: draft [evidence-9]
+  verdict: unknown [evidence-9]
+  integration: current [evidence-9]
+  stale: no [evidence-9]
+  -> Work-order evidence [indexed-order-fa175f4c85ec0b2e]
+
+BLUEPRINT [blueprint]
+Serves: product-lead, devops
+Is this still the thing we mean?
+
+Latest plan-refutation verdicts [refutation-verdicts] — unavailable
+Source not supplied
+
+Capability evidence [capabilities] — unavailable
+Source not supplied
+
+Publication status [publication] — unavailable
+Source not supplied
+
+Pending roadmap rungs [roadmap] — unavailable
+Source not supplied
+
+ROLE QUESTIONS
+product-lead: Is this still the thing we mean?
+  [refutation-verdicts] verdict + reason; latest-refutation.holdStatus
+  Source: docs/product/13-uifa-roles.md#the-five-roles
+showrunner: What is active, what is blocked, what closed, and what did the
+release contain?
+  [orders] phase + blockers + dependencyCheck + legalNextActions;
+releases.workOrders
+  Source: docs/product/13-uifa-roles.md#the-five-roles
+engineer: Does this composition express the behavior I mean, and what does it
+cost?
+  [saved-builds] tooltip + semanticHash + hashAgreement
+  Source: docs/product/13-uifa-roles.md#the-five-roles
+tester: In this situation, does the equipped behavior do the right thing?
+  [compiled-mechanisms] desiredBehavior + fixture.incidentsPrevented +
+lastActivation; acceptance matrix status and evidence
+  Source: docs/product/13-uifa-roles.md#the-five-roles
+devops: Which repeated step can become a checked mechanism next?
+  [compiled-mechanisms] boundary + rung + nextMaturity; capabilities.Next
+smallest promotable increment
+  Source: docs/product/13-uifa-roles.md#the-five-roles
+
+SOURCES
+unavailable: skeleton:loadout-exports — Source not supplied
+unavailable: skeleton:feedback-units — Source not supplied
+unavailable: control:canonical-segments — Source not supplied
+available: docs/work-orders/README.md
+unavailable: docs/work-orders/HISTORY.md — Source not supplied
+unavailable: resume:status--json — Source not supplied
+unavailable: worktree:constellation — Source not supplied
+unavailable: release:list — Source not supplied
+unavailable: resume:usage--json — Source not supplied
+unavailable: docs/planning/capability-table.md — Source not supplied
+unavailable: docs/publication/audience-status-index.md — Source not supplied
+unavailable: docs/product/06-roadmap.md — Source not supplied
+unavailable: docs/planning/refutations/ — Source not supplied
+
+EVIDENCE
+[evidence-1] docs/work-orders/README.md
+  line:37 (WO-301)
+[evidence-2] docs/work-orders/README.md
+  link:WO-301-fixture.md
+[evidence-3] docs/work-orders/README.md
+  line:55 (WO-302)
+[evidence-4] docs/work-orders/README.md
+  link:WO-302-fixture.md
+[evidence-5] docs/work-orders/README.md
+  line:73 (WO-303)
+[evidence-6] docs/work-orders/README.md
+  link:WO-303-fixture.md
+[evidence-7] docs/work-orders/README.md
+  workstreams:WS-001/WO-301
+[evidence-8] docs/work-orders/README.md
+  workstreams:WS-001/WO-302
+[evidence-9] docs/work-orders/README.md
+  workstreams:WS-001/WO-303
