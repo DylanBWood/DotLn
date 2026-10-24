@@ -363,5 +363,51 @@ The blocker (WO-013-D008 route (a)): filed as WO-230, first in core's queue on t
 
 ## 12. Validation and independent judgment
 
-Filled after the refutation receipt is filed and the document gate runs
-(see the commit that follows the receipt).
+**The refutation.** The subject was committed at `1e6c3f8d` (the order,
+the sequence, the map, the register, the index and this document) and the
+pass registered at `4e21bc4e`; a first `plan refute` before that
+registration refused with "one judgment per pass", because the pass id is
+the latest dated heading in the idea ledger and this morning's pass held
+it, and the registration is the fix. One fresh background `dotln-worker`
+(claude-opus-5-5, xhigh, no model override; its effective model and effort
+have no host readback, so the worker type is the parent's launch
+attestation) judged the canonical prompt from a file in session scratch
+and nothing else, as its statement says. Its statement was returned once
+more with two private absolute paths replaced by placeholders, a
+formatting repair by the same worker with the judgment untouched, after
+the receipt helper refused the first. Receipt
+[`2026-10-24-planning-b4ff901f3d0907a0-054`](refutations/2026-10-24-planning-b4ff901f3d0907a0-054.md):
+WO-230 **aligned-with-findings**, plan verdict aligned-with-findings, no
+hold; 12 unchanged orders carried by hash; judged, committed and workspace
+subjects equal (`sha256:c6f26ff8…`); 620.4 s from dispatch to file. The
+five known issues, each with its reopening observation, are recorded on
+WO-230's Catalog row in the map for its executor: criterion 1 (the fixtures
+make the merge base and the fetched base head coincide; the executor adds
+the case where the base branch has advanced past the subject's integration
+point), criterion 5 (the merge base not descending from the activation
+base, and several merge bases, are unpinned; the intended behavior is
+today's activation-base table, recorded with a case), criterion 4 (the
+fetch is an added call and refusal path, not already paid; the Cost line's
+wording overstated the offset), criterion 6 (the advisory's root
+resolution against the lint's own exemption under non-default roots) and
+criterion 7 (the standing cold-start breach, neither widened nor priced).
+None changes the order's text after the judgment; the refuter's reading on
+criterion 4 is accepted as a correction of the Cost line's wording, carried
+here rather than by an edit of the judged bytes.
+
+**The gates.** `npm run plan -- check` passed inside the receipt helper
+(54 receipts, 43 passes, no advisories). `npm run test:docs` ran after this
+section was written; its result is in the response and in the commit that
+carries this section. `npm run work-orders -- index --check` and `node
+scripts/lineage.mjs index --check` passed before the subject commit.
+
+**Usage at handoff** (`harness usage`, 2026-10-24T18:20:59.548Z, source
+claude-transcript-message-usage, scope dispatch): inputTokens 1,134,
+cachedInputTokens 7,819,435, cacheWriteInputTokens
+265,846, outputTokens 127,222,
+totalTokens 8,213,637; reasoning tokens and cost unknown
+(counter-unavailable); subagents 1 of 20 (exact-observed).
+The refuter's own usage: 123,377 tokens over 9 tool uses in 394.6 s, and
+7,704 ms for the restatement. The outcome matched the aim stated at entry:
+one order filed where the operator directed, first in the queue, every
+item and every read row disposed with its reopening condition.
