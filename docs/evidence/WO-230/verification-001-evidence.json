@@ -1,0 +1,91 @@
+{
+  "workOrder": "WO-230",
+  "verification": "VER-001",
+  "subject": {
+    "base": "7e16d0d5b039ec5149a9fa32876626a3bcf52e5b",
+    "checkpoint": "refs/dotln/checkpoint/WO-230/3",
+    "checkpointSha": "2ce3a99d174e9d7718d8c00e74c269b8ef42c101",
+    "codeIdentity": "201d143894c00d9beaa6b4c24297b4e79d8110d0baba3d89a77ccaa594c10aaf",
+    "codeIdentitySource": "gateCodeIdentity at 2026-10-24T20:38Z"
+  },
+  "consumedRows": [
+    {
+      "checkId": "npm test",
+      "gateSelection": "review",
+      "codeIdentity": "201d143894c00d9beaa6b4c24297b4e79d8110d0baba3d89a77ccaa594c10aaf",
+      "recordedAt": "2026-10-24T20:14:11.199Z",
+      "exitCode": 0,
+      "freshSuites": 105,
+      "reusedSuites": 0,
+      "source": "docs/control/local/harness/checks.json"
+    },
+    {
+      "checkId": "structural",
+      "codeIdentity": "201d143894c00d9beaa6b4c24297b4e79d8110d0baba3d89a77ccaa594c10aaf",
+      "recordedAt": "2026-10-24T20:17:53.872Z",
+      "exitCode": 0,
+      "source": "docs/control/local/harness/checks.json"
+    }
+  ],
+  "probes": [
+    {
+      "id": "described-base-scenarios",
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-230/verification-001-probe.mjs",
+      "exitCode": 0,
+      "durationMs": 14753,
+      "finishedAt": "2026-10-24T20:45:10.214Z",
+      "outcomes": {
+        "A-merge-base-behind-fetched-head": {
+          "rows": ["reviewed.txt +1 -0"],
+          "describedBase": "merge base (the later commit the subject took)",
+          "fetchedHeadDiffers": true,
+          "laterBaseBranchFileNamed": false,
+          "activationClause": true
+        },
+        "B-unrelated-fetched-base": {
+          "rows": ["reviewed.txt +1 -0"],
+          "describedBase": "activation base",
+          "activationClause": false,
+          "refused": false
+        },
+        "D-unchanged-tree-at-activation-base": {
+          "offlineRefusal": "fetch failed for origin base branch main on github.com/dotln-fixture/target; prepared work retained",
+          "eventsAfterOfflineRefusal": ["DraftPrepared"],
+          "onlineRefusal": "the target's working tree equals the base; no change to draft",
+          "forgeCalls": 0
+        }
+      }
+    },
+    {
+      "id": "new-publish-cases",
+      "command": "node scripts/harness.mjs bounded -- node --test --test-name-pattern=<the six WO-230 case names> scripts/test-target-worktree-publish.mjs",
+      "exitCode": 0,
+      "tests": 6,
+      "pass": 6,
+      "durationMs": 32943
+    },
+    {
+      "id": "format",
+      "command": "node scripts/harness.mjs bounded -- npm run format:check",
+      "exitCode": 0,
+      "finishedAt": "2026-10-24T20:41:29.867Z"
+    },
+    {
+      "id": "publication",
+      "command": "node scripts/harness.mjs bounded -- npm run publication:check",
+      "exitCode": 0,
+      "output": "255/255 product headings indexed; 3 identical claim links per voice; 29 and 45 linked source sections current"
+    },
+    {
+      "id": "harness-check",
+      "command": "node scripts/harness.mjs bounded -- node scripts/harness.mjs check",
+      "exitCode": 0,
+      "output": "35 generated surfaces; local-terms list: present"
+    },
+    {
+      "id": "prior-descent-case",
+      "command": "git grep -n 'does not descend' main -- scripts",
+      "finding": "At main no test asserted 'target HEAD does not descend from the activated base commit'; the only test match is scripts/test-target-publish.mjs:3832, the repaired-head refusal."
+    }
+  ]
+}

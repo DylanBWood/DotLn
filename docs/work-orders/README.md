@@ -4,7 +4,7 @@
 
 ## Proposed order
 
-- [ ] [WO-230] — A target publish describes the change its pull request shows · **queued**
+- [x] [WO-230] — A target publish describes the change its pull request shows · **final-reviewed**
 - [ ] [WO-224] — The Entropy Reducer on a registered target or a workstream · **queued**
 - [ ] [WO-204] — The source writer cannot damage the operator's repository · **queued**
 - [ ] [WO-192] — A router drives an order through its lifecycle · **queued**
@@ -33,32 +33,15 @@ Full evidence for the active and sequenced orders follows; the Open cards are in
 
 Separate track; outside the proposed serial order.
 
-- [WO-228] — repository: self; base: 5173e80abe6de12230686053be13539a7fb71417; phase: draft; verdict: unknown; integration: current; stale: no; observed target: 5173e80abe6de12230686053be13539a7fb71417.
+- [WO-228] — repository: self; base: 7e16d0d5b039ec5149a9fa32876626a3bcf52e5b; phase: draft; verdict: unknown; integration: current; stale: no; observed target: 7e16d0d5b039ec5149a9fa32876626a3bcf52e5b.
 
-<!-- dotln-workstreams: {"workstreams":[{"id":"WS-002","track":"separate","members":[{"workOrderId":"WO-228","repository":"self","base":"5173e80abe6de12230686053be13539a7fb71417","phase":"draft","verdict":"unknown","integration":"current","stale":"no","targetCommit":"5173e80abe6de12230686053be13539a7fb71417"}],"edges":[{"from":"WO-228","to":"WO-193","relation":"planning-deferral"}]}]} -->
+<!-- dotln-workstreams: {"workstreams":[{"id":"WS-002","track":"separate","members":[{"workOrderId":"WO-228","repository":"self","base":"7e16d0d5b039ec5149a9fa32876626a3bcf52e5b","phase":"draft","verdict":"unknown","integration":"current","stale":"no","targetCommit":"7e16d0d5b039ec5149a9fa32876626a3bcf52e5b"}],"edges":[{"from":"WO-228","to":"WO-193","relation":"planning-deferral"}]}]} -->
 
 ## Active
 
 None.
 
 ## Open
-
-### WO-230
-
-[WO-230 — A target publish describes the change its pull request shows: the Change table, the base-tree exemption and the no-change check are taken from the merge base of the subject and the target's base branch when the subject has moved past its activation base, the body names the activation base that merge base descends from, and the plan gate's path advisory skips the launchpad's own record paths](WO-230-target-publish-against-the-base-branch.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-227: satisfied-by-close (met) — the identifier refusal and the composed body whose Change table this order computes from a different base; WO-221: satisfied-by-close (met) — the draft publish form this order corrects; WO-080: reference-only (non-blocking) — the index's stale mark already shows the condition this order's publish then handles; nothing here changes the index.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer high.
-- Track: delivery
-- Cost: adds, in &#96;scripts/lib/target-publish.mjs&#96;, one helper that fetches the target's base branch through the lane and reads the merge base of the subject and that branch, threaded into &#96;publishTargetDraft&#96; and &#96;publishTargetWorktree&#96; where they call &#96;targetChanges&#96;, &#96;baseTreePaths&#96; and &#96;composeTargetBody&#96; and where they refuse an unchanged tree; in &#96;scripts/lib/github-body.mjs&#96;, the Change section's closing sentence naming the activation base when it differs from the described base; in &#96;scripts/lib/plan-receipts.mjs&#96;, a filter in &#96;targetOrderPathAdvisories&#96; for an order's own record paths; cases in &#96;scripts/test-target-worktree-publish.mjs&#96; and &#96;scripts/test-plan-refutation.mjs&#96;; two sentences in product 07; decisions. Removes the state the operator's fork met on 2026-10-24: a verified target order whose draft publish is refused before any push because the table describes 515 files from an activation base the base branch has since passed, 17 of them earlier orders' moved records whose identifiers the lint refuses, and a plan gate that advises renaming the kit's own evidence files (eight of the fork's eleven advisories). Re-mints: none known; no edition names &#96;target-publish.mjs&#96;, &#96;github-body.mjs&#96; or &#96;plan-receipts.mjs&#96; as a source (a read of &#96;scripts/sync.mjs&#96;, the compiler sources and the harness manifest at &#96;5173e80a&#96;); the executor runs &#96;npm run sync&#96; and &#96;node scripts/harness.mjs check&#96; before handoff and records the result. Wall-clock: one fetch and one &#96;git merge-base&#96; per publish, both already paid by the push and the close. Context bytes: this file, about 22,000. Steps: 9.
-- Authority: [docs/work-orders/WO-230-target-publish-against-the-base-branch.md](WO-230-target-publish-against-the-base-branch.md)
 
 ### WO-224
 

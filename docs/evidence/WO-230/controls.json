@@ -1,0 +1,138 @@
+{
+  "workOrder": "WO-230",
+  "baseline": {
+    "implementation": "pre-change",
+    "scenario": "target fast-forwarded to later main, then reviewed.txt added",
+    "files": [
+      "later.txt",
+      "reviewed.txt"
+    ],
+    "count": 2,
+    "command": "node scripts/harness.mjs bounded -- node <session-scratch>/wo230-baseline.mjs",
+    "exitCode": 0,
+    "durationMs": 4683,
+    "finishedAt": "2026-10-24T18:58:35.352Z"
+  },
+  "regressionEvidence": {
+    "command": "npm test -- --review",
+    "recordedAt": "2026-10-24T20:14:11.199Z",
+    "codeIdentity": "201d143894c00d9beaa6b4c24297b4e79d8110d0baba3d89a77ccaa594c10aaf",
+    "treeHash": "46d464b5b5975c6e29126a7aabdad082eb6fa4a9",
+    "evidenceRef": "host-gate:201d143894c00d9beaa6b4c24297b4e79d8110d0baba3d89a77ccaa594c10aaf:npm test",
+    "exitCode": 0,
+    "durationMs": 1558394,
+    "executionMode": "fresh",
+    "freshTasks": 105,
+    "reusedTasks": 0,
+    "unrunTasks": [],
+    "record": "gate-runs.json"
+  },
+  "controls": [
+    {
+      "id": "draft-at-activation",
+      "test": "target draft describes the fetched merge base: integrated=false",
+      "sameWorkingTreeAsIntegratedArm": true,
+      "describedBase": "activation base",
+      "files": [
+        "later.txt",
+        "reviewed.txt"
+      ],
+      "count": 2,
+      "activationClause": false,
+      "activationRecordUnchanged": true,
+      "trackingRefUnchanged": true
+    },
+    {
+      "id": "draft-after-integration",
+      "test": "target draft describes the fetched merge base: integrated=true",
+      "sameWorkingTreeAsActivationArm": true,
+      "describedBase": "fetched merge base",
+      "files": [
+        "reviewed.txt"
+      ],
+      "count": 1,
+      "activationClause": true,
+      "activationRecordUnchanged": true,
+      "trackingRefUnchanged": true
+    },
+    {
+      "id": "final-after-integration",
+      "test": "target final publish excludes earlier records, exempts fetched-base paths and refuses an already integrated records tree",
+      "earlierRecordExcluded": "docs/evidence/WO-998/decisions.md",
+      "existingTargetPathAdmitted": "docs/WO-006-notes.md",
+      "reviewedPaths": [
+        "docs/WO-006-notes.md",
+        "reviewed.txt"
+      ],
+      "movedRecordCount": 4,
+      "mergeBaseDiffCount": 6,
+      "parentDiffCount": 4,
+      "parentDiffOmitsReviewedChange": true,
+      "activationClause": true,
+      "activationRecordUnchanged": true
+    },
+    {
+      "id": "no-change",
+      "tests": [
+        "target draft refuses a tree equal to the described base and a subject outside its activation ancestry",
+        "target final publish excludes earlier records, exempts fetched-base paths and refuses an already integrated records tree"
+      ],
+      "draftRefusal": "no change to draft",
+      "finalRefusal": "no target change to publish",
+      "forgeCallsAfterRefusal": 0
+    },
+    {
+      "id": "fetch-failure-and-retry",
+      "tests": [
+        "target draft retains its preparation across a redacted fetch failure and reuses it on retry",
+        "target final publish excludes earlier records, exempts fetched-base paths and refuses an already integrated records tree"
+      ],
+      "remoteNamed": "origin base branch main on github.com/dotln-fixture/target",
+      "hostPathAbsent": true,
+      "beforePush": true,
+      "draftPreparations": 1,
+      "draftCommitReused": true,
+      "draftHeadAndIndexUnchanged": true,
+      "finalRecordsHeadRetained": true
+    },
+    {
+      "id": "activation-ancestry",
+      "test": "target draft refuses a tree equal to the described base and a subject outside its activation ancestry",
+      "refusal": "target HEAD does not descend from the activated base commit",
+      "forgeCalls": 0
+    },
+    {
+      "id": "same-tree-published-retry",
+      "test": "same-tree draft retry refreshes the body when the remote base advances without preparing another commit",
+      "initialFileCount": 2,
+      "retriedFileCount": 1,
+      "draftCommitUnchanged": true,
+      "draftPreparations": 1,
+      "pullRequestCreates": 1,
+      "pullRequestEdits": 1
+    },
+    {
+      "id": "plan-record-roots",
+      "tests": [
+        "plan path advisories skip only the order's configured record roots: relocated=false",
+        "plan path advisories skip only the order's configured record roots: relocated=true"
+      ],
+      "ownRecordKinds": [
+        "evidence",
+        "verifications",
+        "finalReviews"
+      ],
+      "advisedTargetPath": "docs/WO-006-notes.md",
+      "identifierAdvisoryCountPerArm": 1,
+      "otherOrderAndPrefixAndTraversalPathsStillAdvised": true,
+      "existingReviewWordAdvisoryPreserved": "fixtures/gem-board.json"
+    },
+    {
+      "id": "body-compatibility",
+      "test": "the described base adds activation context without changing table row offsets",
+      "equalBasesByteIdentical": true,
+      "advancedBaseOnlyAddsClosingClause": true,
+      "rowOffsetsUnchanged": true
+    }
+  ]
+}
