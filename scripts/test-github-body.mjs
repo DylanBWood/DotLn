@@ -1367,6 +1367,30 @@ await test("WO-227 criterion 4: the composed target body names its parts and the
   );
 });
 
+await test("the described base adds activation context without changing table row offsets", () => {
+  const input = {
+    body: "## Result\n\nPreserve the board.\n",
+    baseCommit: base,
+    headCommit: head,
+    files: [{ path: "board.txt", added: 1, deleted: 0 }],
+  };
+  const legacy = composeTargetBody(input);
+  assert.deepEqual(
+    composeTargetBody({ ...input, activationBase: base }),
+    legacy,
+  );
+  const activationBase = "c".repeat(40);
+  const advanced = composeTargetBody({ ...input, activationBase });
+  assert.deepEqual(advanced.rows, legacy.rows);
+  assert.equal(
+    advanced.text,
+    legacy.text.replace(
+      /\.\n$/u,
+      `; activated at base ${activationBase}, which ${base} descends from.\n`,
+    ),
+  );
+});
+
 await test("WO-227 criterion 6: the meter block moves after the last prose paragraph and changes no other byte", () => {
   const begin = "<!-- dotln-process-meter:start -->";
   const end = "<!-- dotln-process-meter:end -->";

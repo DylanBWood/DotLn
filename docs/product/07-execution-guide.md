@@ -464,7 +464,11 @@ withholds the `npm run worktree -- publish` form with an advisory naming
 it, WO-218 D062); it never merges either. An instance order may name an actor and the phrase for the opt-in
 `--draft` form at `verified`, which pushes the target worktree's working tree
 to that branch under a draft pull request the closed-phase publish reuses;
-core declares no draft step and no actor (WO-221). Release close of a target
+core declares no draft step and no actor (WO-221). Its Change table describes
+the subject against its merge base with the target's base branch fetched at
+publish, retaining the activation base when it is not an ancestor of that
+merge base and naming it beside the described base when the two differ.
+Release close of a target
 order fetches the target's base branch and
 fast-forwards the clone's base branch before it judges containment. Release
 close may create and push only the validated annotated tag, create the
@@ -2006,7 +2010,13 @@ messages, titles, bodies and replies; event payload references remain intact.
 
 For a session order, `worktree publish WO-NNN --target-worktree --branch
 <type>/<slug> --title <title> --body-file <path>` reads a committed contained
-regular body file from the clean order launchpad. Its opt-in `--draft` form
+regular body file from the clean order launchpad. Both session forms use
+the same publication base: the subject's merge
+base with the fetched target base branch when it descends from the activation
+base, otherwise the activation base; the Change table, existing-path exemptions
+and no-change check use that described base, and the closing sentence also
+names the activation base when different, without rebinding any record.
+Its opt-in `--draft` form
 is legal at `verified` with a passing verification: it reads the body's
 working bytes, writes a commit object from the target worktree's working tree
 through a temporary index (HEAD and the index unchanged), pushes it to the

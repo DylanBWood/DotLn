@@ -73,6 +73,7 @@ import {
   parseGitHubTarget,
   parsePullRequestUrl,
   HOST_GIT_READ,
+  fetchRemoteBranch,
   pushUrl,
   pushObservedCommit,
 } from "./github-repository.mjs";
@@ -826,6 +827,39 @@ export function targetChanges(repo, baseCommit, commit) {
   return { files, commits };
 }
 
+/** Describe the forge's diff without rebinding the order's recorded base.
+ * The lane returns the fetched commit, so a stale remote-tracking ref cannot
+ * select the base and no local branch or tracking ref needs to move. */
+function describedTargetBase(entry, activationBase, subjectCommit, url) {
+  const read = (args, options) =>
+    runGit(entry.target, [...HOST_GIT_READ, ...args], options);
+  if (
+    read(["merge-base", "--is-ancestor", activationBase, subjectCommit], {
+      onFailure: () => false,
+    }) === false
+  )
+    throw refuse("target HEAD does not descend from the activated base commit");
+  let fetched;
+  try {
+    fetched = fetchRemoteBranch(entry.target, url, entry.baseBranch);
+  } catch {
+    throw refuse(
+      `fetch failed for origin base branch ${entry.baseBranch} on ${parseGitHubTarget(url).selector}; prepared work retained; fix the fetch and retry the same command`,
+    );
+  }
+  const mergeBase = read(["merge-base", subjectCommit, fetched], {
+    onFailure: () => null,
+  });
+  const baseCommit =
+    mergeBase &&
+    read(["merge-base", "--is-ancestor", activationBase, mergeBase], {
+      onFailure: () => false,
+    }) !== false
+      ? mergeBase
+      : activationBase;
+  return { baseCommit, activationBase };
+}
+
 export function authorizeRegisteredPublication(
   repository,
   registry,
@@ -1016,10 +1050,12 @@ export function publishTargetDraft({
   if (read(["symbolic-ref", "--short", "HEAD"]) !== entry.branch)
     throw refuse(`target worktree is not on ${entry.branch}`);
   const tree = workingTree(entry.target);
-  if (tree === read(["rev-parse", `${state.baseCommit}^{tree}`]))
-    throw refuse(
-      "the target's working tree equals the base; no change to draft",
-    );
+  const requireChange = (baseCommit) => {
+    if (tree === read(["rev-parse", `${baseCommit}^{tree}`]))
+      throw refuse(
+        "the target's working tree equals the base; no change to draft",
+      );
+  };
   try {
     checkTargetHarness(entry.target, { runtimeRoot: entry.runtimeRoot });
   } catch (error) {
@@ -1058,33 +1094,49 @@ export function publishTargetDraft({
   }
   if (entry.origin && entry.origin !== forge.identity)
     throw refuse("origin differs from the registered target repository");
-  if (previous && read(["rev-parse", `${previous.headSha}^{tree}`]) === tree) {
-    pushObservedCommit(
-      entry.target,
-      boundUrl,
-      entry.branch,
+  const samePublishedTree =
+    previous && read(["rev-parse", `${previous.headSha}^{tree}`]) === tree;
+  let publishedBase;
+  if (samePublishedTree) {
+    publishedBase = describedTargetBase(
+      entry,
+      state.baseCommit,
       previous.headSha,
-      branch,
-      {
-        sourceRef: previous.headSha,
-        lease: previous.headSha,
-        leases: publicationHeads,
-        pullRequest: previous.number,
-      },
+      boundUrl,
     );
-    log(
-      `Already published draft at tree ${tree}: pull request #${previous.number} on ${previous.repositoryId} from ${previous.branch}; nothing pushed.`,
-    );
-    return previous;
+    requireChange(publishedBase.baseCommit);
+    // A direct child of the activation base has no intermediate ancestor
+    // the remote could newly incorporate. Longer histories must recompose
+    // the body even at the same tree; their described base can advance.
+    if (read(["rev-parse", `${previous.headSha}^`]) === state.baseCommit) {
+      pushObservedCommit(
+        entry.target,
+        boundUrl,
+        entry.branch,
+        previous.headSha,
+        branch,
+        {
+          sourceRef: previous.headSha,
+          lease: previous.headSha,
+          leases: publicationHeads,
+          pullRequest: previous.number,
+        },
+      );
+      log(
+        `Already published draft at tree ${tree}: pull request #${previous.number} on ${previous.repositoryId} from ${previous.branch}; nothing pushed.`,
+      );
+      return previous;
+    }
   }
   if (previous && previous.branch !== branch)
     throw refuse(
       `one pull request per order: the draft is on ${previous.branch}; use --branch ${previous.branch}`,
     );
-  const retainedCommit =
-    prepared?.tree === tree &&
-    prepared.parent === headBefore &&
-    prepared.title === title
+  const retainedCommit = samePublishedTree
+    ? previous.headSha
+    : prepared?.tree === tree &&
+        prepared.parent === headBefore &&
+        prepared.title === title
       ? prepared.headSha
       : null;
   const commit = retainedCommit
@@ -1108,22 +1160,6 @@ export function publishTargetDraft({
       `git commit-tree failed: ${redactPaths(String(commit.stderr ?? "").trim(), [[entry.target, "<target>"]])}`,
     );
   const draftCommit = commit.stdout.trim();
-  const changes = targetChanges(entry.target, state.baseCommit, draftCommit);
-  const {
-    text: publishedBody,
-    sections,
-    rows,
-  } = composeTargetBody({
-    body,
-    baseCommit: state.baseCommit,
-    headCommit: draftCommit,
-    files: changes.files,
-    baseTree: baseTreePaths(
-      entry.target,
-      state.baseCommit,
-      changes.files.map((file) => file.path),
-    ),
-  });
   // The lane fetches a ref, so the draft commit gets one under refs/dotln;
   // no branch moves and the index is untouched. The prepared commit is
   // recorded before the body is judged: a refusal the reviewer answers by
@@ -1152,6 +1188,27 @@ export function publishTargetDraft({
       });
       publication.append(event);
     }
+    const { baseCommit, activationBase } =
+      publishedBase ??
+      describedTargetBase(entry, state.baseCommit, draftCommit, boundUrl);
+    requireChange(baseCommit);
+    const changes = targetChanges(entry.target, baseCommit, draftCommit);
+    const {
+      text: publishedBody,
+      sections,
+      rows,
+    } = composeTargetBody({
+      body,
+      baseCommit,
+      activationBase,
+      headCommit: draftCommit,
+      files: changes.files,
+      baseTree: baseTreePaths(
+        entry.target,
+        baseCommit,
+        changes.files.map((file) => file.path),
+      ),
+    });
     const { review } = lintArtifacts(
       main,
       [
@@ -1283,7 +1340,9 @@ export function publishTargetDraft({
         "the target worktree changed while the draft was published; inspect it before retrying",
       );
     log(
-      `Pushed draft ${branch} at ${draftCommit} and ${previous ? "updated" : "opened"} draft pull request #${payload.number} on ${forge.selector}; HEAD and the index are unchanged.`,
+      samePublishedTree
+        ? `Already published draft ${branch} at ${draftCommit}; refreshed the body of pull request #${payload.number} on ${forge.selector}; HEAD and the index are unchanged.`
+        : `Pushed draft ${branch} at ${draftCommit} and ${previous ? "updated" : "opened"} draft pull request #${payload.number} on ${forge.selector}; HEAD and the index are unchanged.`,
     );
     return payload;
   } finally {
@@ -1349,11 +1408,20 @@ export function publishTargetWorktree({
   const forge = parseGitHubTarget(boundUrl);
   if (entry.origin && entry.origin !== forge.identity)
     throw refuse("origin differs from the registered target repository");
-  const changes = targetChanges(
-    entry.target,
+  const { baseCommit, activationBase } = describedTargetBase(
+    entry,
     subject.baseCommit,
     records.commit,
+    boundUrl,
   );
+  if (
+    gitText(entry.target, "rev-parse", `${records.commit}^{tree}`) ===
+    gitText(entry.target, "rev-parse", `${baseCommit}^{tree}`)
+  )
+    throw refuse(
+      "records tree equals the described base; no target change to publish",
+    );
+  const changes = targetChanges(entry.target, baseCommit, records.commit);
   const manifestPath = ".claude/target-worker-manifest.json";
   const manifestFile = join(entry.target, manifestPath);
   try {
@@ -1379,12 +1447,13 @@ export function publishTargetWorktree({
     rows,
   } = composeTargetBody({
     body,
-    baseCommit: subject.baseCommit,
+    baseCommit,
+    activationBase,
     headCommit: records.commit,
     files: changes.files,
     baseTree: baseTreePaths(
       entry.target,
-      subject.baseCommit,
+      baseCommit,
       changes.files.map((file) => file.path),
     ),
     kitPaths: new Set(

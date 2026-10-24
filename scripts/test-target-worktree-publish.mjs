@@ -2319,3 +2319,328 @@ test("target publication normalizes nested links and preserves encoded paths and
   assert.deepEqual(relativeLinkFailures(body), []);
   assert.equal(absoluteBodyLinks(body, options), body);
 });
+
+const verifyDraftBaseFixture = (f) => {
+  write(
+    f.orderRoot,
+    "draft-body.md",
+    "## Draft\n\nPreserve reviewed behavior.\n",
+  );
+  f.ok(f.call(f.orderRoot, f.orderRoot, "target-gate", ["WO-999", "--review"]));
+  f.ok(f.resume(["implementation-ready", ...actorArgs]));
+  f.ok(f.resume(["verify"]));
+  write(
+    f.orderRoot,
+    "records/verifications/WO-999/VER-001.md",
+    `# Verification fixture\n\n**Actor attestation:** ${JSON.stringify(actor)}\n\n**Process cost:** unknown; cause no-session\n`,
+  );
+  f.ok(f.resume(["verification-result", "pass", ...actorArgs]));
+  return () =>
+    f.worktree(
+      "publish",
+      "WO-999",
+      "--target-worktree",
+      "--draft",
+      "--branch",
+      "feat/reviewed-behavior",
+      "--title",
+      "feat: preserve reviewed behavior",
+      "--body-file",
+      "draft-body.md",
+    );
+};
+
+for (const integrated of [false, true]) {
+  test(`target draft describes the fetched merge base: integrated=${integrated}`, () =>
+    withFixture((f) => {
+      const forge = publicationSetup(f);
+      f.mapClone();
+      f.start();
+      const later = git(f.clone, "rev-parse", "main");
+      if (integrated) git(f.target, "merge", "--ff-only", later);
+      else write(f.target, "later.txt", "not in declared base\n");
+      write(f.target, "reviewed.txt", "Reviewed change.\n");
+      // The checkout's stale tracking ref is deliberately not the fetch result.
+      git(f.target, "update-ref", "refs/remotes/origin/main", f.baseCommit);
+      const draft = verifyDraftBaseFixture(f);
+      const result = f.ok(draft());
+      assert.doesNotMatch(result, /identifier\.launchpad/u);
+      const body = JSON.parse(readFileSync(forge.state, "utf8")).pulls[7].body;
+      const paths = [...body.matchAll(/^\| ([^|]+) \| \d+ \| \d+ \|$/gm)].map(
+        (m) => m[1],
+      );
+      assert.deepEqual(
+        paths,
+        integrated ? ["reviewed.txt"] : ["later.txt", "reviewed.txt"],
+      );
+      const head = git(f.target, "rev-parse", "refs/dotln/draft/WO-999");
+      const described = integrated ? later : f.baseCommit;
+      assert.ok(
+        body.endsWith(
+          `${paths.length} ${paths.length === 1 ? "file" : "files"} changed from base ${described} to head ${head}${integrated ? `; activated at base ${f.baseCommit}, which ${later} descends from` : ""}.\n`,
+        ),
+      );
+      assert.equal(
+        git(f.target, "rev-parse", "refs/remotes/origin/main"),
+        f.baseCommit,
+      );
+      assert.equal(
+        readControl(f.orderRoot).orders.get("WO-999").state.baseCommit,
+        f.baseCommit,
+      );
+    }));
+}
+
+test("target draft retains its preparation across a redacted fetch failure and reuses it on retry", () =>
+  withFixture((f) => {
+    const forge = publicationSetup(f);
+    f.mapClone();
+    f.start();
+    git(f.target, "merge", "--ff-only", "main");
+    write(f.target, "reviewed.txt", "Reviewed change.\n");
+    const draft = verifyDraftBaseFixture(f);
+    const head = git(f.target, "rev-parse", "HEAD");
+    const before = git(f.target, "status", "--porcelain");
+    const remote = join(f.base, "target.git");
+    renameSync(remote, `${remote}.offline`);
+    const failed = draft();
+    assert.notEqual(failed.status, 0);
+    assert.match(
+      failed.stderr,
+      /fetch failed for origin base branch main on github\.com\/dotln-fixture\/target; prepared work retained/u,
+    );
+    assert.ok(!failed.stderr.includes(f.base));
+    assert.equal(existsSync(forge.log), false);
+    assert.equal(git(f.target, "rev-parse", "HEAD"), head);
+    assert.equal(git(f.target, "status", "--porcelain"), before);
+    const prepared = git(f.target, "rev-parse", "refs/dotln/draft/WO-999");
+    const eventsPath = docPath(
+      f.main,
+      "control",
+      "local/target-publications/WO-999/events.jsonl",
+    );
+    const preparations = () =>
+      readFileSync(eventsPath, "utf8")
+        .trim()
+        .split("\n")
+        .map(JSON.parse)
+        .filter((row) => row.type === "DraftPrepared");
+    assert.equal(preparations().length, 1);
+    renameSync(`${remote}.offline`, remote);
+    assert.equal(git(remote, "branch", "--list", "feat/reviewed-behavior"), "");
+    f.ok(draft());
+    assert.equal(
+      git(f.target, "rev-parse", "refs/dotln/draft/WO-999"),
+      prepared,
+    );
+    assert.equal(
+      git(remote, "rev-parse", "refs/heads/feat/reviewed-behavior"),
+      prepared,
+    );
+    assert.equal(preparations().length, 1);
+  }));
+
+test("target draft refuses a tree equal to the described base and a subject outside its activation ancestry", () =>
+  withFixture((f) => {
+    const forge = publicationSetup(f);
+    f.mapClone();
+    f.start();
+    git(f.target, "merge", "--ff-only", "main");
+    const draft = verifyDraftBaseFixture(f);
+    const unchanged = draft();
+    assert.notEqual(unchanged.status, 0);
+    assert.match(unchanged.stderr, /no change to draft/u);
+    const orphan = git(
+      f.target,
+      "commit-tree",
+      "HEAD^{tree}",
+      "-m",
+      "test: unrelated history",
+    );
+    git(f.target, "update-ref", "refs/heads/wo-999", orphan);
+    const unrelated = draft();
+    assert.notEqual(unrelated.status, 0);
+    assert.match(
+      unrelated.stderr,
+      /target HEAD does not descend from the activated base commit/u,
+    );
+    assert.equal(existsSync(forge.log), false);
+    assert.equal(
+      git(
+        join(f.base, "target.git"),
+        "branch",
+        "--list",
+        "feat/reviewed-behavior",
+      ),
+      "",
+    );
+  }));
+
+test("target final publish excludes earlier records, exempts fetched-base paths and refuses an already integrated records tree", () =>
+  withFixture((f) => {
+    const priorRecord = "docs/evidence/WO-998/decisions.md";
+    const existingPath = "docs/WO-006-notes.md";
+    write(f.clone, priorRecord, "# Earlier records\n");
+    write(f.clone, existingPath, "Existing target notes.\n");
+    git(f.clone, "add", "-A");
+    git(f.clone, "commit", "-qm", "docs: preserve earlier notes");
+    git(f.clone, "push", "-q", "origin", "main");
+    const described = git(f.clone, "rev-parse", "HEAD");
+    const forge = publicationSetup(f);
+    f.mapClone();
+    f.start();
+    git(f.target, "merge", "--ff-only", described);
+    write(f.target, "reviewed.txt", "Reviewed change.\n");
+    write(f.target, existingPath, "Updated target notes.\n");
+    git(f.target, "add", "-A");
+    git(f.target, "commit", "-qm", "fix: preserve reviewed behavior");
+    const reviewed = git(f.target, "rev-parse", "HEAD");
+    closeOrder(f);
+    write(
+      f.orderRoot,
+      "records/evidence/WO-999/decisions.md",
+      "# Decisions\n\nPreserve reviewed behavior.\n",
+    );
+    f.ok(f.resume(["target-records", ...actorArgs]));
+    const records = git(f.target, "rev-parse", "HEAD");
+    write(
+      f.orderRoot,
+      "reviewed-body.md",
+      "## Result\n\nPreserve reviewed behavior.\n",
+    );
+    git(f.orderRoot, "add", "-A");
+    git(f.orderRoot, "commit", "-qm", "docs: preserve reviewed behavior");
+    const publish = () =>
+      f.worktree(
+        "publish",
+        "WO-999",
+        "--target-worktree",
+        "--branch",
+        "fix/reviewed-behavior",
+        "--title",
+        "fix: preserve reviewed behavior",
+        "--body-file",
+        "reviewed-body.md",
+      );
+    const remote = join(f.base, "target.git");
+    renameSync(remote, `${remote}.offline`);
+    const failed = publish();
+    assert.notEqual(failed.status, 0);
+    assert.match(
+      failed.stderr,
+      /fetch failed for origin base branch main on github\.com\/dotln-fixture\/target/u,
+    );
+    assert.ok(!failed.stderr.includes(f.base));
+    assert.equal(existsSync(forge.log), false);
+    assert.equal(git(f.target, "rev-parse", "HEAD"), records);
+    renameSync(`${remote}.offline`, remote);
+    const result = f.ok(publish());
+    assert.doesNotMatch(result, /identifier\.launchpad/u);
+    const body = JSON.parse(readFileSync(forge.state, "utf8")).pulls[7].body;
+    assert.ok(!body.includes(priorRecord));
+    assert.ok(!body.includes("later.txt"));
+    assert.ok(body.includes(`| ${existingPath} | 1 | 1 |`));
+    assert.ok(body.includes("| reviewed.txt | 1 | 0 |"));
+    assert.ok(
+      body.includes(
+        `activated at base ${f.baseCommit}, which ${described} descends from`,
+      ),
+    );
+    const fromMergeBase = git(
+      f.target,
+      "diff",
+      "--name-only",
+      described,
+      records,
+    ).split("\n");
+    const fromParent = git(
+      f.target,
+      "diff",
+      "--name-only",
+      reviewed,
+      records,
+    ).split("\n");
+    assert.equal(fromMergeBase.length, 6);
+    assert.equal(fromParent.length, 4);
+    assert.ok(
+      !fromParent.includes("reviewed.txt"),
+      "the parent comparison would lose the reviewed change",
+    );
+    assert.equal(
+      readControl(f.orderRoot).orders.get("WO-999").state.baseCommit,
+      f.baseCommit,
+    );
+    // After the forge base incorporates the records, a stale tracking ref
+    // must not allow another publication with an empty pull-request diff.
+    git(remote, "update-ref", "refs/heads/main", records);
+    const calls = readFileSync(forge.log, "utf8");
+    const unchanged = publish();
+    assert.notEqual(unchanged.status, 0);
+    assert.match(unchanged.stderr, /no target change to publish/u);
+    assert.equal(readFileSync(forge.log, "utf8"), calls);
+    assert.equal(git(f.target, "rev-parse", "HEAD"), records);
+  }));
+
+test("same-tree draft retry refreshes the body when the remote base advances without preparing another commit", () =>
+  withFixture((f) => {
+    const later = git(f.clone, "rev-parse", "main");
+    const remote = join(f.base, "target.git");
+    // The target already includes this ancestor before the base branch does.
+    git(remote, "update-ref", "refs/heads/main", f.baseCommit);
+    const forge = publicationSetup(f);
+    f.mapClone();
+    f.start();
+    git(f.target, "merge", "--ff-only", later);
+    write(f.target, "reviewed.txt", "Reviewed change.\n");
+    const draft = verifyDraftBaseFixture(f);
+    f.ok(draft());
+    const prepared = git(f.target, "rev-parse", "refs/dotln/draft/WO-999");
+    const body = () =>
+      JSON.parse(readFileSync(forge.state, "utf8")).pulls[7].body;
+    assert.ok(body().includes("| later.txt | 1 | 0 |"));
+    assert.ok(body().includes(`2 files changed from base ${f.baseCommit}`));
+    assert.ok(!body().includes("activated at base"));
+    git(remote, "update-ref", "refs/heads/main", later);
+    f.ok(draft());
+    assert.ok(!body().includes("later.txt"));
+    assert.ok(
+      body().includes(
+        `1 file changed from base ${later} to head ${prepared}; activated at base ${f.baseCommit}, which ${later} descends from.`,
+      ),
+    );
+    assert.equal(
+      git(f.target, "rev-parse", "refs/dotln/draft/WO-999"),
+      prepared,
+    );
+    assert.equal(
+      git(remote, "rev-parse", "refs/heads/feat/reviewed-behavior"),
+      prepared,
+    );
+    const events = readFileSync(
+      docPath(
+        f.main,
+        "control",
+        "local/target-publications/WO-999/events.jsonl",
+      ),
+      "utf8",
+    )
+      .trim()
+      .split("\n")
+      .map(JSON.parse);
+    assert.equal(
+      events.filter((row) => row.type === "DraftPrepared").length,
+      1,
+    );
+    const calls = readFileSync(forge.log, "utf8")
+      .trim()
+      .split("\n")
+      .map(JSON.parse);
+    assert.equal(
+      calls.filter((args) => args[0] === "pr" && args[1] === "create").length,
+      1,
+    );
+    assert.equal(
+      calls.filter((args) => args[0] === "pr" && args[1] === "edit").length,
+      1,
+    );
+  }));

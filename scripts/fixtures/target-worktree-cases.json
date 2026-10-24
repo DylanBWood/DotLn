@@ -61,7 +61,12 @@
     "\"WO-227 criterion 7: the reviewed header refuses an absent or invalid notes file before any tag push, carries the rendered notes with a confirmed review, binds the body's digest and refuses changed notes on retry\"",
     "\"WO-227 criterion 7: only the bytes the renderer writes for a moved record are the Release's kit frame; a target URL or a link fragment the notes' author wrote is judged like the rest of the notes, whatever its commit or bytes\"",
     "`immutable ${side} disposable output stops deletion with the checkout role and retry command`",
-    "`oversized ${vector} listing names its checkout role and a runnable close retry`"
+    "`oversized ${vector} listing names its checkout role and a runnable close retry`",
+    "`target draft describes the fetched merge base: integrated=${integrated}`",
+    "\"target draft retains its preparation across a redacted fetch failure and reuses it on retry\"",
+    "\"target draft refuses a tree equal to the described base and a subject outside its activation ancestry\"",
+    "\"target final publish excludes earlier records, exempts fetched-base paths and refuses an already integrated records tree\"",
+    "\"same-tree draft retry refreshes the body when the remote base advances without preparing another commit\""
   ],
   "names": [
     "target release preparation is a read-only no-release outcome",
@@ -152,6 +157,12 @@
     "immutable target disposable output stops deletion with the checkout role and retry command",
     "oversized target-files listing names its checkout role and a runnable close retry",
     "oversized target-directories listing names its checkout role and a runnable close retry",
-    "oversized judge-only listing names its checkout role and a runnable close retry"
+    "oversized judge-only listing names its checkout role and a runnable close retry",
+    "target draft describes the fetched merge base: integrated=false",
+    "target draft describes the fetched merge base: integrated=true",
+    "target draft retains its preparation across a redacted fetch failure and reuses it on retry",
+    "target draft refuses a tree equal to the described base and a subject outside its activation ancestry",
+    "target final publish excludes earlier records, exempts fetched-base paths and refuses an already integrated records tree",
+    "same-tree draft retry refreshes the body when the remote base advances without preparing another commit"
   ]
 }
