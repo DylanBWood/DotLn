@@ -4187,6 +4187,13 @@
           "title": "Workstream application — end-user workflow candidate",
           "summary": "# Workstream application — end-user workflow candidate **Status:** operator-opened product exploration, 2026-09-04. This describes a candidate application of DotLn for everyday software work. It is not an implemented interface, a deployment claim, a new release rung, or a replacement for the separately named `προτείνω` thesis. The application identity and first deployment remain unannounced; this public design uses synthetic work only. The product question is what a person does when they sit down to work: start an outcome, make the decisions that need their judgment, inspect the result, and return later without reconstructing the process. DotLn should carry the coordination that currently li",
           "missing": false
+        },
+        {
+          "hash": "e0672de6c3b20b3e3ed013c9f561fe9c42e28fd4e16258303085fae3de24d3b9",
+          "ref": "docs/product/12-workstream-application.md#workstream-application--end-user-workflow-candidate",
+          "title": "Workstream application — end-user workflow candidate",
+          "summary": "# Workstream application — end-user workflow candidate **Status:** operator-opened product exploration, 2026-09-04. This describes a candidate application of DotLn for everyday software work. It is not an implemented interface, a deployment claim, a new release rung, or a replacement for the separately named `προτείνω` thesis. The application identity and first deployment remain unannounced; this public design uses synthetic work only. The product question is what a person does when they sit down to work: start an outcome, make the decisions that need their judgment, inspect the result, and return later without reconstructing the process. DotLn should carry the coordination that currently li",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -45107,6 +45114,36 @@
           "at": "2026-10-24T18:04:02.176Z"
         }
       ]
+    },
+    {
+      "id": "FUP-13db0bc45db31d8d",
+      "key": "decision:docs/evidence/WO-224/decisions.md#wo-224-d017",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c6847ad34e45e6a758f431627bf2bbbd8e39c8004f1ba59e99164e05384bb4cf",
+          "ref": "docs/evidence/WO-224/decisions.md#wo-224-d017--name-the-missing-fetched-base-when-a-target-subject-cannot-resolve",
+          "title": "WO-224-D017: Entropy target subjects: when a registered clone lacks refs/remotes/origin/<baseBranch> and no commit is named, refuse with a message naming the repository id, the missing ref and the…",
+          "summary": "{ \"id\": \"WO-224-D017\", \"date\": \"2026-10-24\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-001 boards a non-blocking diagnosability follow-up. A registered clone that has no refs/remotes/origin/<baseBranch> ref, because it was never fetched or names its remote differently, refuses `entropy review --repository <id>` and `entropy subject --repository <id>` before any frozen copy is made. That refusal is correct, but its message is Git's bare `fatal: Needed a single revision`, which names neither the repository id nor the missing ref. No criterion covers an unfetched clone, and main had no target subject, so nothing regresses. The verifier leaves the implementation unchanged.\", \"evidence\": [ \"",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-53a2c609d6815549",
+      "key": "decision:docs/evidence/WO-224/decisions.md#wo-224-d018",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "d6149539d005bae42a081467770556a9b91cf4ad1c5a979fc37fe442f7174d54",
+          "ref": "docs/evidence/WO-224/decisions.md#wo-224-d018--target-lens-scopes-must-be-ones-the-compiled-validator-accepts",
+          "title": "WO-224-D018: Entropy target lenses: targetLensBriefs must emit only scopes validateLensFileScope accepts, for example by omitting a top-level tracked file named docs (in any case) from the lens…",
+          "summary": "{ \"id\": \"WO-224-D018\", \"date\": \"2026-10-24\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-001 boards a non-blocking follow-up. targetLensBriefs keeps a tracked top-level file as its own scope, so a target that tracks a file named exactly `docs` yields the scope `docs`. The unchanged compiled validator, validateLensFileScope, refuses `docs` as the intake ancestor, and the target review therefore cannot be dispatched at all. The refusal happens at compile time and leaves no frozen copy behind. No criterion names such a target, and main had no target route, so nothing regresses. The verifier leaves the implementation unchanged.\", \"evidence\": [ \"Verifier probe (session scratch probe3.mjs, boun",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }
