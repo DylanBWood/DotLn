@@ -1,4 +1,4 @@
-# WO-230 — A target publish describes the change its pull request shows: the Change table, the base-tree exemption and the no-change check are taken from the merge base of the subject and the target's base branch when the subject has moved past its activation base, the body names the activation base that merge base descends from, and the plan gate's path advisory skips the launchpad's own record paths
+# WO-230 — A target publish describes the change its pull request shows: the Change table, the base-tree exemption and the no-change check are taken from the merge base of the subject and the target's base branch when the subject has moved past its activation base, the body names the activation base that merge base descends from, and the plan gate's path advisory skips the launchpad's own record paths (v0.96.1)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
