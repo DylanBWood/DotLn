@@ -111,10 +111,14 @@ export async function recordedJudgment({
       !["model", "double"].includes(record.provenance?.kind)
     )
       throw new Error(`${task} record does not bind this subject's episode`);
-    (task === "intake" ? validateIntakeResult : validateTriageResult)(
-      record.result,
-      subject,
-    );
+    try {
+      (task === "intake" ? validateIntakeResult : validateTriageResult)(
+        record.result,
+        subject,
+      );
+    } catch (error) {
+      throw new JudgmentReplayError(task, error);
+    }
     return record;
   };
   if (existsSync(file)) return replay();
@@ -163,5 +167,16 @@ export class JudgmentRecordError extends Error {
   constructor(task, error) {
     super(`${task} record could not be written`, { cause: error });
     this.name = "JudgmentRecordError";
+  }
+}
+
+/** A stored verdict binds its subject but fails today's result validation.
+ * No episode ran, and retrying the same record cannot buy a new judgment. */
+export class JudgmentReplayError extends Error {
+  constructor(task, error) {
+    super(`${task} record refused: current result validation failed`, {
+      cause: error,
+    });
+    this.name = "JudgmentReplayError";
   }
 }

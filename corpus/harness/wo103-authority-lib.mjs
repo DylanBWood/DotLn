@@ -29,6 +29,7 @@ export const FACTORS = Object.freeze({
     "deny-star",
     "deny-prefix",
     "overlap",
+    "deny-without-allow",
     "list-tail",
   ],
   evidence: ["required-empty", "empty", "subset", "superset"],
@@ -100,6 +101,7 @@ const PATTERNS = {
   "deny-exact": [["act"], ["act"]],
   "deny-star": [["act"], ["*"]],
   "deny-prefix": [["act"], ["a*"]],
+  "deny-without-allow": [["other"], ["act"]],
   overlap: [
     ["*", "act"],
     ["a*", "other"],

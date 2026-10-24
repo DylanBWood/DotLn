@@ -48,6 +48,7 @@ import {
   foldVertical,
   IntentPreparationRefusal,
 } from "../packages/skeleton/dist/src/vertical.js";
+import { VerticalHost } from "../packages/skeleton/dist/src/vertical-host.js";
 import { withDetachedCheckout } from "./lib/vertical-primitives.mjs";
 import {
   JudgmentRecordError,
@@ -873,7 +874,7 @@ test("WO-112 VER-004 F1 ResidentHost.run survives repeated triage failures and r
   }
 });
 
-test("WO-112 VER-004 F1 continuation backoff caps repeated failures and never defers authority expiry", async () => {
+test("WO-112 continuation backoff survives a no-progress return, caps repeated failures and never defers authority expiry", async () => {
   for (const mode of ["cap", "expiry"]) {
     const f = await verticalFixture({
       forge: {
@@ -941,6 +942,22 @@ test("WO-112 VER-004 F1 continuation backoff caps repeated failures and never de
           f.setTime(at + wait - 1);
           await host.tick();
           assert.equal(judge.calls.length, i + 1);
+          if (i === 1) {
+            const run = VerticalHost.prototype.run;
+            VerticalHost.prototype.run = async function () {
+              return decodeLog(this.store.read()).reduce(
+                foldVertical,
+                undefined,
+              );
+            };
+            try {
+              f.setTime(at + wait);
+              await host.tick();
+              assert.equal(judge.calls.length, i + 1);
+            } finally {
+              VerticalHost.prototype.run = run;
+            }
+          }
           f.setTime((at += wait));
           await host.tick();
           assert.equal(judge.calls.length, i + 2);
@@ -2133,6 +2150,415 @@ test("WO-199 a signal during a held intake episode ends the admission at once, r
       JSON.stringify(result.terminal),
     );
     assert.equal(judge.calls.length, 2);
+  } finally {
+    f.close();
+  }
+});
+
+test("stored intake result refusal is a bounded record fault with no new episode", async () => {
+  const f = await verticalFixture();
+  try {
+    useModelIntake(f);
+    const judge = judgmentDouble(intakeByUnit);
+    const cfg = readVerticalConfiguration(f.directory, f.launchpad);
+    const entry = createVerticalEntry({
+      directory: f.directory,
+      configuration: cfg,
+      now: f.now,
+      external: { ...f.external, judge: judge.transport },
+    });
+    const phase = compileLoadout(cfg.resident.graph, cfg.resident.environment)
+      .program.presence[0].phases[0];
+    await entry.ports.prepare(f.filed.workOrder, phase, {
+      episodes: 0,
+      wallMs: 0,
+      tokens: 0,
+    });
+    const directory = join(f.directory, "issue-intake");
+    const file = join(
+      directory,
+      readdirSync(directory).find((name) => name.endsWith(".json")),
+    );
+    const record = json(file);
+    record.result.spans = [];
+    put(file, record);
+    const result = await residentIntake(f, {
+      ...f.external,
+      judge: judge.transport,
+    });
+    assert.deepEqual(
+      [result.prepares, judge.calls.length, result.held],
+      [3, 1, ["intake record refused: current result validation failed"]],
+    );
+  } finally {
+    f.close();
+  }
+});
+
+test("stored triage result refusal ends needs-human and is never called an episode failure", async () => {
+  const { appendEvent } = await import("@dotln/kernel");
+  const { resolveReviewComments, REVIEW_LOOP_HOST } =
+    await import("./lib/review-comment-loop.mjs");
+  const { TARGET_PUBLISH_HOST } = await import("./lib/target-publish.mjs");
+  const { PULL_REQUEST_OBSERVER } =
+    await import("./lib/pull-request-observer.mjs");
+  const { JudgmentReplayError } = await import("./lib/vertical-judgment.mjs");
+  const root = mkdtempSync(join(tmpdir(), "dotln-record-refusal-"));
+  try {
+    const subject = {
+      schemaVersion: "vertical-triage-v1",
+      item: {
+        id: "S1",
+        class: "automated-review",
+        path: null,
+        line: null,
+        text: "Review body.",
+      },
+      criteria: [],
+      statements: [],
+      candidate: { revision: "a".repeat(40), diff: "", files: [] },
+      evidence: [{ ref: "contract", detail: "Admitted contract." }],
+    };
+    const judge = judgmentDouble(() => ({
+      kind: "acknowledge",
+      criterionId: null,
+      reason: "No action.",
+      evidenceRefs: ["contract"],
+    }));
+    const directory = join(root, "judgments");
+    const options = {
+      directory,
+      name: "triage",
+      task: "triage",
+      subject,
+      transport: judge.transport,
+      model: "fixture",
+      effort: "max",
+      now: () => 1,
+    };
+    await recordedJudgment(options);
+    const file = join(
+      directory,
+      readdirSync(directory).find((name) => name.startsWith("triage-")),
+    );
+    const saved = json(file);
+    saved.result.evidenceRefs = ["absent"];
+    put(file, saved);
+    await assert.rejects(recordedJudgment(options), JudgmentReplayError);
+    const store = new WorkerStore(join(root, "publication"));
+    const record = (actorId, type, payload, causationId) => {
+      store.acquire();
+      try {
+        const { event } = appendEvent(store.read(), {
+          schemaVersion: 1,
+          actorId,
+          type,
+          payload,
+          occurredAt: 1,
+          workstreamId: "fixture",
+          ...(causationId ? { causationId } : {}),
+        });
+        store.append(event);
+        return event;
+      } finally {
+        store.release();
+      }
+    };
+    const opening = record(TARGET_PUBLISH_HOST, "PullRequestOpened", {
+      repositoryId: "fixture",
+      number: 1,
+    });
+    const observe = () =>
+      record(
+        PULL_REQUEST_OBSERVER,
+        "PullRequestStateObserved",
+        {
+          repositoryId: "fixture",
+          number: 1,
+          headSha: "a".repeat(40),
+          checks: [],
+          comments: [
+            {
+              id: "S1",
+              class: "automated-review",
+              text: "Review body.",
+              resolved: false,
+            },
+          ],
+        },
+        opening.eventId,
+      );
+    const result = await resolveReviewComments({
+      store: root,
+      repositoryId: "fixture",
+      number: 1,
+      original: { surfaces: [], criteria: [], tests: [] },
+      observe,
+      triage: () => recordedJudgment(options),
+      now: () => 2,
+    });
+    assert.equal(result.status, "needs-human");
+    assert.equal(
+      result.reason,
+      "triage record refused: current result validation failed",
+    );
+    assert.equal(judge.calls.length, 1);
+    assert.ok(
+      decodeLog(store.read()).some(
+        (e) => e.actorId === REVIEW_LOOP_HOST && e.type === "ReviewBodyJudged",
+      ),
+    );
+    assert.doesNotMatch(store.read(), /triage episode failed/);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("cached resolution input rebinds its observed head, contract and snapshot before triage", async () => {
+  for (const field of ["revision", "contract", "snapshot"]) {
+    const f = await verticalFixture({
+      forge: {
+        reviews: [{ id: "S1", text: "No additional changes requested." }],
+      },
+    });
+    try {
+      const judge = judgmentDouble(() => {
+        throw new WorkerFailure("interrupted", "fixture pause after preparing");
+      });
+      const external = { ...f.external, judge: judge.transport };
+      await assert.rejects(runIssue(f, external), RetryableTriageError);
+      const directory = join(
+        f.directory,
+        "vertical",
+        readdirSync(join(f.directory, "vertical")).find((name) =>
+          existsSync(join(f.directory, "vertical", name, "events.jsonl")),
+        ),
+      );
+      const child = join(
+        directory,
+        readdirSync(directory).find(
+          (name) =>
+            name.startsWith("resolution-") &&
+            existsSync(join(directory, name, "prepared.json")),
+        ),
+      );
+      const file = join(child, "prepared.json");
+      const prepared = json(file);
+      if (field === "revision") prepared.subject.revision = "b".repeat(40);
+      if (field === "contract")
+        prepared.subject.snapshot.contract = { altered: true };
+      if (field === "snapshot")
+        prepared.snapshotPath = join(f.root, "missing-snapshot");
+      put(file, prepared);
+      const result = await runIssue(f, external);
+      assert.equal(result.terminal.kind, "refused", field);
+      assert.equal(result.terminal.step, "resolution", field);
+      assert.equal(
+        judge.calls.length,
+        1,
+        "no forged candidate reaches another episode",
+      );
+    } finally {
+      f.close();
+    }
+  }
+});
+
+test("review invocation bounds combined inline and body triage before opening the next item", async () => {
+  const { appendEvent } = await import("@dotln/kernel");
+  const { resolveReviewComments, REVIEW_TRIAGE_LIMIT } =
+    await import("./lib/review-comment-loop.mjs");
+  const { TARGET_PUBLISH_HOST } = await import("./lib/target-publish.mjs");
+  const { PULL_REQUEST_OBSERVER } =
+    await import("./lib/pull-request-observer.mjs");
+  const root = mkdtempSync(join(tmpdir(), "dotln-triage-cap-"));
+  try {
+    const store = new WorkerStore(join(root, "publication"));
+    const record = (actorId, type, payload, causationId) => {
+      store.acquire();
+      try {
+        const { event } = appendEvent(store.read(), {
+          schemaVersion: 1,
+          actorId,
+          type,
+          payload,
+          occurredAt: 1,
+          workstreamId: "fixture",
+          ...(causationId ? { causationId } : {}),
+        });
+        store.append(event);
+        return event;
+      } finally {
+        store.release();
+      }
+    };
+    const opening = record(TARGET_PUBLISH_HOST, "PullRequestOpened", {
+      repositoryId: "fixture",
+      number: 1,
+    });
+    const comments = Array.from(
+      { length: REVIEW_TRIAGE_LIMIT + 1 },
+      (_, i) => ({
+        id: `I${i}`,
+        class: "automated-review",
+        text: "Fixture item",
+        resolved: false,
+        ...(i % 3 ? { path: "fixture.txt", line: 1, threadId: `T${i}` } : {}),
+      }),
+    );
+    const observe = () =>
+      record(
+        PULL_REQUEST_OBSERVER,
+        "PullRequestStateObserved",
+        {
+          repositoryId: "fixture",
+          number: 1,
+          headSha: "a".repeat(40),
+          checks: [],
+          comments,
+        },
+        opening.eventId,
+      );
+    let calls = 0;
+    const result = await resolveReviewComments({
+      store: root,
+      repositoryId: "fixture",
+      number: 1,
+      original: { surfaces: ["fixture.txt"], criteria: [], tests: [] },
+      observe,
+      triage: async () => {
+        calls++;
+        return { kind: "NeedsHuman", reason: "Fixture human decision" };
+      },
+      now: () => 2,
+    });
+    assert.equal(calls, REVIEW_TRIAGE_LIMIT);
+    assert.equal(result.itemId, `I${REVIEW_TRIAGE_LIMIT}`);
+    assert.match(result.reason, /review triage limit/);
+    assert.ok(
+      !decodeLog(store.read()).some(
+        (event) =>
+          event.type === "ReviewItemOpened" &&
+          event.payload.item.id === result.itemId,
+      ),
+    );
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("three repair pushes rekey unchanged bodies without spending their eight-item allowance", async () => {
+  const f = await verticalFixture({
+    plantReview: true,
+    forge: {
+      sequentialRepairs: 3,
+      appendBodyPerPush: true,
+      reviews: [{ id: "A0", text: "No further action." }],
+      items: [1, 2, 3].map((n) => ({
+        id: `R${n}`,
+        path: "fixture.txt",
+        line: 1,
+        role: "automation",
+      })),
+    },
+  });
+  try {
+    const judge = judgmentDouble((request) => ({
+      kind: request.subject.item.path ? "accept" : "acknowledge",
+      criterionId: request.subject.item.path
+        ? request.subject.criteria[0].criterionId
+        : null,
+      reason: "Fixture repair or acknowledgement",
+      evidenceRefs: [request.subject.evidence[0].ref],
+    }));
+    const result = await runIssue(f, { ...f.external, judge: judge.transport });
+    assert.equal(result.terminal.kind, "resolved");
+    const store = new WorkerStore(
+      join(
+        result.receipts.find(
+          (receipt) => receipt.command.step === "source-change",
+        ).value.store,
+        "publication",
+      ),
+    );
+    const events = decodeLog(store.read());
+    assert.equal(
+      events.filter((event) => event.type === "PullRequestRepairPushed").length,
+      3,
+    );
+    assert.equal(
+      events.filter((event) => event.type === "PullRequestThreadDisposed")
+        .length,
+      3,
+    );
+    assert.equal(
+      events.filter((event) => event.type === "ReviewBodyJudged").length,
+      10,
+    );
+    assert.equal(judge.calls.length, 13);
+  } finally {
+    f.close();
+  }
+});
+
+test("review invocation stops at its outward bound before disposing a further thread", async () => {
+  const { REVIEW_OUTWARD_LIMIT } =
+    await import("./lib/review-comment-loop.mjs");
+  const f = await verticalFixture({
+    plantReview: true,
+    forge: {
+      items: Array.from({ length: REVIEW_OUTWARD_LIMIT }, (_, i) => ({
+        id: `R${i + 1}`,
+        path: "fixture.txt",
+        line: 1,
+        role: "automation",
+      })),
+    },
+  });
+  try {
+    const judge = judgmentDouble((request) => ({
+      kind: request.subject.item.id === "R1" ? "accept" : "reject",
+      criterionId:
+        request.subject.item.id === "R1"
+          ? request.subject.criteria[0].criterionId
+          : null,
+      reason: "Fixture disposition",
+      evidenceRefs: [request.subject.evidence[0].ref],
+    }));
+    const result = await runIssue(f, { ...f.external, judge: judge.transport });
+    const store = new WorkerStore(
+      join(
+        result.receipts.find(
+          (receipt) => receipt.command.step === "source-change",
+        ).value.store,
+        "publication",
+      ),
+    );
+    const events = decodeLog(store.read());
+    const stop = events
+      .filter((event) => event.type === "PullRequestReviewLoopStopped")
+      .at(-1);
+    assert.match(stop.payload.reason, /review outward limit/);
+    assert.equal(
+      stop.payload.itemId,
+      "R9",
+      "the observer's sorted final thread is left undisposed",
+    );
+    assert.equal(judge.calls.length, 15, "the next item is not triaged");
+    assert.ok(
+      !events.some(
+        (event) =>
+          event.type === "ReviewItemOpened" && event.payload.item.id === "R9",
+      ),
+    );
+    assert.equal(
+      events.filter((event) =>
+        ["PullRequestRepairPushed", "PullRequestThreadDisposed"].includes(
+          event.type,
+        ),
+      ).length,
+      REVIEW_OUTWARD_LIMIT,
+    );
   } finally {
     f.close();
   }

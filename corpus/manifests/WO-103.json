@@ -57,6 +57,7 @@
         "deny-star",
         "deny-prefix",
         "overlap",
+        "deny-without-allow",
         "list-tail"
       ],
       "evidence": [
@@ -79,21 +80,21 @@
         "toString:own"
       ]
     },
-    "expectedCells": 2694384,
-    "observedCells": 2694384,
-    "expectedStreamSha256": "dcbd7d040e60de11208f86b4bd28e5c5c98245e7336bc96e178ad8aef69bdb3a",
+    "expectedCells": 2993760,
+    "observedCells": 2993760,
+    "expectedStreamSha256": "f99c7124e4b36bc3c28458f70af02e2925e6a9b753ae4f09a2f9ce72de54ab31",
     "winners": {
       "act": 18800,
       "resource limit exceeded": 22560,
       "required evidence missing": 41360,
       "effect not allowed": 20680,
-      "effect denied": 82720,
-      "cannot evaluate revocation": 185328,
-      "authority revoked": 77616,
-      "authority expired": 898128,
-      "effect is not a string": 1347192
+      "effect denied": 103400,
+      "cannot evaluate revocation": 205920,
+      "authority revoked": 86240,
+      "authority expired": 997920,
+      "effect is not a string": 1496880
     },
-    "observedPredicateCalls": 220968,
+    "observedPredicateCalls": 245520,
     "divergences": 0,
     "inactiveAxes": "Zero conditions/events/types retain inactive labels; every Cartesian label tuple still has exactly one cell.",
     "predicateRegistry": {
@@ -206,26 +207,26 @@
     {
       "path": "corpus/fixtures/authority/wo103-000.jsonl",
       "rows": 128,
-      "bytes": 224947,
-      "sha256": "df91c5c1e09dabcf9fa9ff441a447e5d0de2b938b3c1ad0d4abfbacad8e877ba"
+      "bytes": 223417,
+      "sha256": "1640898687785496831214afef05dce1c3cac33c34fcbbcdfe19f27ba18a05ea"
     },
     {
       "path": "corpus/fixtures/authority/wo103-001.jsonl",
       "rows": 128,
-      "bytes": 225992,
-      "sha256": "db65a0f32d70869590fcdb161a87ebe504e5625fe2547a1420ef702aa901bbe8"
+      "bytes": 226600,
+      "sha256": "7e847ab1d09e1a25b704e3772a173357cf3a115244e7e29619c6317aa51b6a2e"
     },
     {
       "path": "corpus/fixtures/authority/wo103-002.jsonl",
       "rows": 128,
-      "bytes": 228025,
-      "sha256": "b875d49fd800bb1b2c72c86e1eb81fcada50f8bf49513d21e234f57111f52de1"
+      "bytes": 229183,
+      "sha256": "826f3c449aad59e65fa921e2f882b78714f6a1c6e368e7449a21ddb43553c60d"
     },
     {
       "path": "corpus/fixtures/authority/wo103-003.jsonl",
       "rows": 128,
-      "bytes": 233362,
-      "sha256": "3c25335dc34283711c1f607f9e2f9e114d7c909390a4455b03e9bec810c9c288"
+      "bytes": 227881,
+      "sha256": "efa9aa5bce1a9ea8a8f2be1861c0aa93b9f5be215ac4bb4dc6bf90d9e5cd4d0c"
     },
     {
       "path": "corpus/fixtures/outbox/wo103-000.jsonl",
@@ -261,7 +262,7 @@
   "fixtureTotals": {
     "files": 9,
     "rows": 1152,
-    "bytes": 2304495
+    "bytes": 2299250
   },
   "fixtureTransport": {
     "protocol": "EventEnvelope v1 JSONL",
@@ -274,11 +275,11 @@
   "generatedSurfaces": [
     {
       "path": "corpus/manifests/WO-103-precedence.md",
-      "sha256": "960e41b55c362c1030c97e2359edfcb623eef646240aeab6e512a45f78accd51"
+      "sha256": "f04c4ebe8cce4b683a906382417dc5553c65137def1197188239abd05222c07e"
     },
     {
       "path": "corpus/manifests/findings-WO-103.md",
-      "sha256": "ab75ff76f0a0f500445937d54f4a3eadab3dd421cbcbf64599ae4f6ad5a50fdb"
+      "sha256": "50bae40f58d9d067146d195917a604800030eed2792885b2812065702822222d"
     }
   ],
   "findingNumbers": [

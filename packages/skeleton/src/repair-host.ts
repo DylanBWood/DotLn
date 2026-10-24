@@ -216,11 +216,32 @@ export class RepairHost {
   sourceHost(): SourceChangeHost {
     const order = this.state.order;
     if (!order) throw new Error("repair has no derived order");
+    const store = new WorkerStore(
+      join(this.options.directory, `source-${order.round}`),
+    );
+    const persisted = decodeLog(store.read()).find(
+      (event) => event.type === "CommandPersisted",
+    )?.payload as
+      | { command?: { intent?: { payload?: { worktreeParent?: unknown } } } }
+      | undefined;
+    const legacyParent =
+      persisted?.command?.intent?.payload?.worktreeParent ===
+      this.options.source.worktreeParent;
+    // Independent review items retain the same repair contract and round,
+    // so their source command IDs share a name. Isolate their worktrees by
+    // the stable item namespace already used for branches and episodes.
+    // Already-started children retain their recorded layout. The source host
+    // still checks the complete persisted command and worktree on recovery.
+    const worktreeParent =
+      this.options.episodeNamespace && !legacyParent
+        ? join(this.options.source.worktreeParent, this.workstreamId)
+        : this.options.source.worktreeParent;
+    if (this.options.episodeNamespace && !legacyParent)
+      mkdirSync(worktreeParent, { recursive: true });
     return new SourceChangeHost({
       ...this.options.source,
-      store: new WorkerStore(
-        join(this.options.directory, `source-${order.round}`),
-      ),
+      worktreeParent,
+      store,
       workOrder: order.workOrder,
       authorityEnvelope: order.authorityEnvelope,
       executionBaseCommit: order.executionBaseCommit,

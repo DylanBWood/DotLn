@@ -27,7 +27,7 @@ test("WO-103 complete authority factorial: exact results, traces, IDs, limits, c
   const result = sweepAuthority(kernel);
   assert.equal(result.count, totalCells());
   assert.equal(result.count, manifest.authority.expectedCells);
-  assert.equal(result.count, 2694384);
+  assert.equal(result.count, 2993760);
   assert.equal(result.sha256, manifest.authority.expectedStreamSha256);
   assert.deepEqual(result.winners, manifest.authority.winners);
   assert.equal(result.calls, manifest.authority.observedPredicateCalls);
@@ -273,9 +273,15 @@ test("WO-103 missing-input partial traces reproduce both numbered audit carry-in
       f.expected.refusal.payload.reason,
       "cannot evaluate revocation",
     );
-    assert.equal(f.traceLinked, false);
-    assert.deepEqual(f.auditRecords[0].eventIds, [f.events[0].eventId]);
-    assert.ok(manifest.findingNumbers.includes(f.number));
+    assert.equal(f.traceLinked, true);
+    assert.deepEqual(
+      f.auditRecords[0].eventIds,
+      f.events.map((event) => event.eventId),
+    );
+    assert.ok(
+      manifest.findingNumbers.includes(f.number),
+      "historical finding identity is retained",
+    );
   }
   assert.deepEqual(findings[0].expected.trace.envInputs.slice(4), [
     `rngState:${findings[0].input.environment.rngState}`,
@@ -314,4 +320,21 @@ test("WO-103 mixed-radix labels match independently traversed Cartesian prefixes
         encoded * levels.length + levels.indexOf(dimensionAt(index)[key]);
     assert.equal(encoded, index);
   }
+});
+
+test("authority factorial contests denial without allow and pins the expanded axes", () => {
+  assert.ok(FACTORS.patterns.includes("deny-without-allow"));
+  const input = planted({
+    patterns: "deny-without-allow",
+    evidence: "empty",
+    resource: "zero",
+  });
+  assert.deepEqual(input.envelope.allowedEffects, ["other"]);
+  assert.deepEqual(input.envelope.deniedEffects, ["act"]);
+  assert.equal(
+    runCell(kernel, input).observed.refusal.payload.reason,
+    "effect denied",
+  );
+  assert.equal(totalCells(), 2993760);
+  assert.equal(manifest.authority.expectedCells, totalCells());
 });

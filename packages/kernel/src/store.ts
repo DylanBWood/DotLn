@@ -1,4 +1,5 @@
 import type { DecodeResult, Event, EventEnvelope } from "./types.js";
+import { assertCommand } from "./core.js";
 export type JsonlLog = string;
 
 const requiredFields = [
@@ -154,6 +155,14 @@ export function appendEvent(
   log: JsonlLog,
   event: Omit<EventEnvelope, "eventId">,
 ): { readonly log: JsonlLog; readonly event: Event } {
+  if (event.type === "CommandPersisted") {
+    const payload = event.payload;
+    assertCommand(
+      payload !== null && typeof payload === "object" && !Array.isArray(payload)
+        ? (payload as Readonly<Record<string, unknown>>)["command"]
+        : undefined,
+    );
+  }
   const eventId = `evt_${decodeLog(log).length + 1}`;
   const assigned = { ...event, eventId } as Event;
   const line = `${JSON.stringify(assigned)}\n`;
@@ -161,8 +170,17 @@ export function appendEvent(
   // decoder used by readers; a malformed draft must never create a bad log.
   const appended = `${log}${line}`;
   const decoded = decodeLog(appended);
+  const persisted = decoded[decoded.length - 1]!;
+  if (persisted.type === "CommandPersisted") {
+    const payload = persisted.payload;
+    assertCommand(
+      payload !== null && typeof payload === "object" && !Array.isArray(payload)
+        ? (payload as Readonly<Record<string, unknown>>)["command"]
+        : undefined,
+    );
+  }
   // Live consumers receive the same JSON value that replay will read.
-  return { log: appended, event: decoded[decoded.length - 1]! };
+  return { log: appended, event: persisted };
 }
 export function decodeLog(log: JsonlLog): readonly Event[] {
   const result = tryDecodeLog(log);

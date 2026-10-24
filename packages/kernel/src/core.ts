@@ -608,10 +608,101 @@ export function replay<S extends JsonValue>(
 }
 
 export const emptyOutbox = (): OutboxState => ({ entries: {} });
+export class CommandAdmissionError extends Error {
+  readonly trace: DecisionTrace;
+  constructor(readonly field: string) {
+    super(`CommandPersisted admission refused: malformed ${field}`);
+    this.name = "CommandAdmissionError";
+    this.trace = {
+      reactorId: "outbox",
+      reactorVersion: "1",
+      branchPath: ["persist", "malformed", field],
+      envInputs: [field],
+      cadenceEvaluations: [],
+    };
+  }
+}
+
+/** New commands require structure; replay keeps the historical ID-only rule. */
+export function assertCommand(command: unknown): asserts command is Command {
+  const object = (value: unknown): value is Record<string, unknown> =>
+    value !== null &&
+    typeof value === "object" &&
+    !Array.isArray(value) &&
+    [Object.prototype, null].includes(Object.getPrototypeOf(value));
+  const data = (value: Record<string, unknown>, key: string, label = key) => {
+    const descriptor = Object.getOwnPropertyDescriptor(value, key);
+    if (!descriptor || !descriptor.enumerable || !("value" in descriptor))
+      throw new CommandAdmissionError(label);
+    return descriptor.value as unknown;
+  };
+  const nonempty = (value: unknown) =>
+    typeof value === "string" && value.length > 0;
+  if (!object(command)) throw new CommandAdmissionError("command");
+  for (const field of ["commandId", "workstreamId"])
+    if (!nonempty(data(command, field))) throw new CommandAdmissionError(field);
+  if (
+    Object.hasOwn(command, "episodeId") &&
+    data(command, "episodeId") !== undefined &&
+    !nonempty(data(command, "episodeId"))
+  )
+    throw new CommandAdmissionError("episodeId");
+  const intent = data(command, "intent");
+  if (!object(intent)) throw new CommandAdmissionError("intent");
+  if (data(intent, "kind", "intent.kind") !== "Act")
+    throw new CommandAdmissionError("intent.kind");
+  if (!nonempty(data(intent, "effect", "intent.effect")))
+    throw new CommandAdmissionError("intent.effect");
+  if (
+    Object.hasOwn(intent, "resource") &&
+    data(intent, "resource", "intent.resource") !== undefined &&
+    !nonempty(data(intent, "resource", "intent.resource"))
+  )
+    throw new CommandAdmissionError("intent.resource");
+  const pending: Array<{ value: unknown; leave?: boolean }> = [
+    { value: data(intent, "payload", "intent.payload") },
+  ];
+  const ancestors = new Set<object>();
+  while (pending.length) {
+    const { value, leave } = pending.pop()!;
+    if (leave) {
+      ancestors.delete(value as object);
+      continue;
+    }
+    if (
+      value === null ||
+      typeof value === "string" ||
+      typeof value === "boolean" ||
+      (typeof value === "number" && Number.isFinite(value))
+    )
+      continue;
+    if (typeof value !== "object" || value === null || ancestors.has(value))
+      throw new CommandAdmissionError("intent.payload");
+    ancestors.add(value);
+    if (
+      !Array.isArray(value) &&
+      Object.getPrototypeOf(value) !== Object.prototype &&
+      Object.getPrototypeOf(value) !== null
+    )
+      throw new CommandAdmissionError("intent.payload");
+    pending.push({ value, leave: true });
+    const keys = Array.isArray(value)
+      ? Array.from({ length: value.length }, (_, i) => String(i))
+      : Object.keys(value);
+    for (const key of keys)
+      pending.push({
+        value: data(value as Record<string, unknown>, key, "intent.payload"),
+      });
+  }
+}
 export function persistCommand(
   state: OutboxState,
   command: Command,
 ): OutboxState {
+  assertCommand(command);
+  return insertCommand(state, command);
+}
+function insertCommand(state: OutboxState, command: Command): OutboxState {
   return Object.hasOwn(state.entries, command.commandId)
     ? state
     : {
@@ -668,7 +759,7 @@ export function replayOutbox(
         typeof command.commandId === "string" &&
         command.commandId !== ""
       ) {
-        state = persistCommand(state, command);
+        state = insertCommand(state, command);
         const orphaned = orphanResults.get(command.commandId);
         if (orphaned !== undefined) {
           orphaned.forEach(({ event: result, traceIndex }, index) => {

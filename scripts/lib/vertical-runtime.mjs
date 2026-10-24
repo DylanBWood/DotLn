@@ -62,6 +62,7 @@ import { createVerticalPrimitives } from "./vertical-primitives.mjs";
 import { verticalTransport } from "./vertical-transport.mjs";
 import {
   JudgmentRecordError,
+  JudgmentReplayError,
   liveTransport,
   recordedJudgment,
 } from "./vertical-judgment.mjs";
@@ -445,6 +446,13 @@ export function createVerticalEntry({
         now,
       });
     } catch (error) {
+      if (error instanceof JudgmentReplayError)
+        throw new IntentPreparationRefusal(
+          "contract",
+          error.message,
+          true,
+          true,
+        );
       if (error instanceof RetryableJudgmentError)
         throw new IntentPreparationRefusal(
           "contract",

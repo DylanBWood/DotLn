@@ -509,3 +509,78 @@ test("AC7 README maps every public export and package import target is valid", a
   assert.equal(stableHash("é"), "0ac21707b7181e01");
   assert.equal(commandId("ws", "", 3, 0), commandId("ws", undefined, 3, 0));
 });
+
+test("new command admission rejects malformed structure while old logs replay unchanged", () => {
+  const good = {
+    commandId: "new",
+    workstreamId: "ws",
+    intent: { kind: "Act" as const, effect: "repo.read", payload: null },
+  };
+  const event = (command: unknown) =>
+    ({
+      schemaVersion: 1,
+      type: "CommandPersisted",
+      occurredAt: 1,
+      actorId: "host",
+      workstreamId: "ws",
+      payload: { command },
+    }) as unknown as Parameters<typeof appendEvent>[1];
+  const malformed = [
+    null,
+    {},
+    { commandId: "old" },
+    { ...good, commandId: "" },
+    { ...good, workstreamId: 3 },
+    { ...good, episodeId: "" },
+    { ...good, intent: null },
+    Object.assign(Object.create({ workstreamId: "ws", intent: good.intent }), {
+      commandId: "inherited",
+    }),
+    { ...good, intent: Object.create(good.intent) },
+    Object.defineProperty({ ...good }, "commandId", { get: () => "getter" }),
+    Object.defineProperty({ ...good }, "workstreamId", {
+      value: "ws",
+      enumerable: false,
+    }),
+    ...[
+      { kind: "Wait" },
+      { effect: "" },
+      { payload: undefined },
+      { payload: NaN },
+      { resource: 4 },
+    ].map((change) => ({ ...good, intent: { ...good.intent, ...change } })),
+  ];
+  for (const command of malformed) {
+    assert.throws(
+      () => persistCommand(emptyOutbox(), command as typeof good),
+      /CommandPersisted admission refused/,
+    );
+    assert.throws(
+      () => appendEvent("", event(command)),
+      /CommandPersisted admission refused/,
+    );
+  }
+  const appended = appendEvent("", event(good));
+  assert.throws(
+    () =>
+      appendEvent(
+        "",
+        event({ ...good, toJSON: () => ({ commandId: "serialization-loss" }) }),
+      ),
+    /CommandPersisted admission refused/,
+  );
+  assert.deepEqual(pendingCommands(replayOutbox(decodeLog(appended.log))), [
+    good,
+  ]);
+  const old = { commandId: "old" };
+  const historical = `${JSON.stringify({ ...event(old), eventId: "evt_1" })}\n`;
+  const replayed = replayOutbox(decodeLog(historical), { includeTraces: true });
+  assert.deepEqual(pendingCommands(replayed.state), [old]);
+  assert.deepEqual(replayed.traces, []);
+  assert.deepEqual(
+    pendingCommands(
+      replayOutbox(decodeLog(appendEvent(historical, event(good)).log)),
+    ),
+    [old, good],
+  );
+});

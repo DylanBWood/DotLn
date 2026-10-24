@@ -16,6 +16,7 @@ import {
   readJson,
   SEED,
   sha256,
+  compareBase,
 } from "./wo105-common.mjs";
 import {
   buildStoreFiles,
@@ -150,8 +151,11 @@ test("WO-105 classifier self-tests pin empty/full/LF/mid-line and planted silent
 
 test("WO-105 every declared store cut pins its prefix, counts, raw digest and compact ranges", () => {
   const result = storeSweep();
-  assert.deepEqual(result, readJson(MANIFEST).store);
-  assert.equal(result.cutPoints, 72345);
+  compareBase(result, readJson(MANIFEST).store, "store byte cuts");
+  assert.equal(
+    result.cutPoints,
+    result.sweeps.reduce((sum, sweep) => sum + sweep.bytes + 1, 0),
+  );
   for (const sweep of result.sweeps) {
     const rows = [];
     for (const { offset, through, ...classification } of sweep.ranges)

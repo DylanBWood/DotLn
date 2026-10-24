@@ -11,6 +11,8 @@ import {
   jsonBytes,
   ROOT,
   SEED,
+  compareBase,
+  read,
 } from "./wo105-common.mjs";
 import { assertScenarioIdentity } from "./generate-tree-corpus.mjs";
 
@@ -63,7 +65,13 @@ export function assertBaseSources() {
 if (isMain(import.meta.url)) {
   const { mode } = args(process.argv.slice(2), ["write", "check"]);
   if (mode === "write") assertBaseSources();
-  exactFiles(buildGoldenFiles(), mode);
+  if (mode === "check")
+    compareBase(
+      buildGoldenFiles()[GOLDEN],
+      read(GOLDEN),
+      "golden regeneration",
+    );
+  else exactFiles(buildGoldenFiles(), mode);
   console.log(
     JSON.stringify({ lane: "golden", mode, baseCommit: BASE, fixture: GOLDEN }),
   );

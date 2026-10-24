@@ -47,3 +47,23 @@ The generated layout extends `docs/product/03-architecture.md` §Corpus policy.
 WO-108's operator-authorized scope amendment synchronizes that policy with the
 existing generated corpora and the mutation lane; the historical WO-101 source
 and evidence remain unchanged.
+
+WO-105 separates retained artifact integrity from current runtime laws. Its
+manifest, fixture hashes and append-only observations still describe base
+`2b1af1abfd947068c402daa1ee24b447fc81b1af`. Oracle source hashes are checked
+against that Git object. Every current byte cut and recovery invariant still
+runs; comparisons report `base-source-drift` when package sources differ and separate
+only the compiler version fields and the version-bearing digests named in the
+manifest. All crash offsets, counts, classifications, pending/effect counts,
+outbox hashes and other fields remain pinned; an identity byte-length change
+that moves crash geometry requires a separately reviewed baseline. A
+base-identical comparison requires exact equality even for identity. No new
+measurement replaces historical observations.
+
+WO-107 retains both collectors under `harness/wo107-initial-protocol/` and
+`harness/wo107-second-protocol/`. Provenance accepts their pinned hashes and the
+current collector's hash. The registry execution test is explicitly base-only
+and reports drift after its source changes; retained schema checks still run. New
+measurements remain base-only under the collector's source preflight. The
+classification check keeps the historical exception and validates only that
+entry in the growing live registry. Comparison text ends in one newline.

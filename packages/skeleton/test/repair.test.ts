@@ -14,6 +14,7 @@ import {
   projectRuntimeEnvironment,
 } from "../src/reactor.js";
 import { RepairHost } from "../src/repair-host.js";
+import { SourceChangeHost } from "../src/source-change-host.js";
 import {
   deriveRepairOrder,
   repairContract,
@@ -379,6 +380,44 @@ for (const cut of ["afterRepairCommit", "afterSnapshotPrepared"] as const)
       disposeRepairFixture(fixture.root);
     }
   });
+
+test("namespaced repair resumes a recorded legacy worktree without another writer", async () => {
+  const fixture = await createRepairFixture();
+  try {
+    const options = {
+      ...repairFixtureOptions(fixture.root),
+      episodeNamespace: "review-item-before-parent-isolation",
+    };
+    // Reproduce the earlier source layout while retaining the same parent
+    // continuation, branch, command and worker request bytes.
+    class LegacyRepairHost extends RepairHost {
+      override sourceHost(): SourceChangeHost {
+        const source = super.sourceHost();
+        return new SourceChangeHost({
+          ...source.options,
+          worktreeParent: options.source.worktreeParent,
+        });
+      }
+    }
+    const before = new LegacyRepairHost({
+      ...options,
+      afterRepairCommit() {
+        throw new Error("fixture interruption after legacy repair commit");
+      },
+    });
+    await assert.rejects(before.run(), /fixture interruption/);
+    const sourceLog = before.sourceHost().options.store.read();
+    const tree = before.sourceHost().tree.path;
+    assert.equal(rows(fixture.root, "repair-launches.jsonl").length, 1);
+    const resumed = new RepairHost(options);
+    assert.equal((await resumed.run()).status, "complete");
+    assert.equal(resumed.sourceHost().tree.path, tree);
+    assert.equal(resumed.sourceHost().options.store.read(), sourceLog);
+    assert.equal(rows(fixture.root, "repair-launches.jsonl").length, 1);
+  } finally {
+    disposeRepairFixture(fixture.root);
+  }
+});
 
 test("WO-055 AC1 refused path or command persists byte-identical envelope and dispatches no writer", async () => {
   for (const kind of ["path", "command"] as const) {

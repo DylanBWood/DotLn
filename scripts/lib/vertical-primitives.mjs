@@ -384,6 +384,9 @@ export function createVerticalPrimitives({
       );
       write(saved, prepared);
     }
+    return validateSnapshot(state, prepared, commit);
+  }
+  function validateSnapshot(state, prepared, commit) {
     if (
       prepared.subject.revision !== commit ||
       !verticalEqual(
@@ -599,11 +602,23 @@ export function createVerticalPrimitives({
         if (cfg.browserScenario) {
           const { runScenario } =
             await import("../../packages/browser-evidence/dist/src/index.js");
+          let attempt = 0;
+          let browserDirectory = join(directory, `browser-${command.round}`);
+          let recoverFrom;
+          while (existsSync(browserDirectory)) {
+            recoverFrom = browserDirectory;
+            browserDirectory = join(
+              directory,
+              `browser-${command.round}-${++attempt}`,
+            );
+          }
           browser = await (external.browser ?? runScenario)(
             cfg.browserScenario,
             {
               subjectRevision: current.commit,
-              directory: join(directory, `browser-${command.round}`),
+              directory: browserDirectory,
+              ...(recoverFrom ? { recoverFrom } : {}),
+              ...(signal ? { signal } : {}),
             },
           );
           if (visual)
@@ -872,7 +887,14 @@ export function createVerticalPrimitives({
               throw new Error(
                 "vertical resolution input is not an ordinary file",
               );
-            return { child, input: read(receipt) };
+            return {
+              child,
+              input: validateSnapshot(
+                state,
+                read(receipt),
+                active.observation.payload.headSha,
+              ),
+            };
           }
           const input = await withDetachedCheckout(
             state.binding.target,

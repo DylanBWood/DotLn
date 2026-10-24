@@ -482,3 +482,26 @@ test("WO-117 schema and decoder accept legacy status and only coded unavailable 
     }
   }
 });
+
+test("resident status labels the budget as portfolio-only beside an intent outcome", () => {
+  const status: RuntimeStatusV1 = {
+    ...view,
+    workOrders: {
+      ...view.workOrders,
+      items: [
+        {
+          order: "WO-114",
+          phase: "active; intent-resolved",
+          dependency: "ready",
+          verdict: null,
+        },
+      ],
+    },
+  };
+  const text = renderRuntimeStatus(status);
+  assert.match(
+    text,
+    /Budget \(portfolio actors only; intent admissions excluded\)/,
+  );
+  assert.match(text, /active; intent-resolved/);
+});

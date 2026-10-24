@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process";
-import { readFileSync, renameSync, writeFileSync } from "node:fs";
+import { readFileSync, readdirSync, renameSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { setTimeout as delay } from "node:timers/promises";
 import type { ProcessIdentity, ProcessRecord } from "./types.js";
@@ -71,9 +71,24 @@ export async function remainingOwned(record: ProcessRecord): Promise<number[]> {
   }
 }
 export async function recover(directory: string): Promise<number[]> {
-  const record = JSON.parse(
-    readFileSync(join(directory, "processes.json"), "utf8"),
-  ) as ProcessRecord;
+  let bytes: string;
+  try {
+    bytes = readFileSync(join(directory, "processes.json"), "utf8");
+  } catch (error) {
+    // Launch follows the first atomic process record. These are the only
+    // files an interrupted pre-launch preparation can have created.
+    if (
+      (error as NodeJS.ErrnoException).code === "ENOENT" &&
+      readdirSync(directory).every((name) =>
+        ["scenario.json", "replay-fields.json", "processes.json.new"].includes(
+          name,
+        ),
+      )
+    )
+      return [];
+    throw error;
+  }
+  const record = JSON.parse(bytes) as ProcessRecord;
   const validIdentity = (entry: ProcessIdentity) =>
     entry &&
     Number.isSafeInteger(entry.pid) &&

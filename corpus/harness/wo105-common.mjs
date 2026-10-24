@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
@@ -15,6 +16,103 @@ export const read = (name) => readFileSync(resolve(ROOT, name), "utf8");
 export const readJson = (name) => JSON.parse(read(name));
 export const sha256 = (bytes) =>
   createHash("sha256").update(bytes).digest("hex");
+export const baseRead = (name) =>
+  execFileSync("git", ["show", `${BASE}:${name}`], {
+    cwd: ROOT,
+    encoding: "utf8",
+    maxBuffer: 16 * 1024 * 1024,
+  });
+export function runtimeDrift() {
+  return execFileSync(
+    "git",
+    [
+      "diff",
+      "--no-ext-diff",
+      "--no-textconv",
+      "--name-only",
+      BASE,
+      "--",
+      "packages/kernel/src",
+      "packages/compiler/src",
+      "packages/skeleton/src",
+      "packages/kernel/package.json",
+      "packages/compiler/package.json",
+      "packages/skeleton/package.json",
+      "packages/skeleton/fixtures/repo-tree.json",
+    ],
+    { cwd: ROOT, encoding: "utf8" },
+  )
+    .trim()
+    .split("\n")
+    .filter(Boolean);
+}
+// Only named identity-bearing fields may drift. Every crash-shape field,
+// including offsets, counts, classifications and effect/pending counts, stays pinned.
+function compatibleView(value, key = "") {
+  if (typeof value === "string") {
+    if (/^artifactIdentity\.compilerPackageVersion:\d+\.\d+\.\d+$/u.test(value))
+      return "artifactIdentity.compilerPackageVersion:<release>";
+    if (key === "golden regeneration") return compatibleView(JSON.parse(value));
+    if (key === "eventLog" || key === "golden event log")
+      return value
+        .trimEnd()
+        .split("\n")
+        .map((line) => compatibleView(JSON.parse(line)));
+    return value;
+  }
+  if (Array.isArray(value)) return value.map((item) => compatibleView(item));
+  if (!value || typeof value !== "object") return value;
+  const result = Object.fromEntries(
+    Object.entries(value).map(([name, item]) => [
+      name,
+      name === "compilerPackageVersion" &&
+      key === "artifactIdentity" &&
+      /^\d+\.\d+\.\d+$/u.test(item)
+        ? "<release>"
+        : compatibleView(item, name),
+    ]),
+  );
+  const mask = (object, field) => {
+    assert.match(object[field], /^[a-f0-9]{64}$/u, `invalid ${field}`);
+    object[field] = "<version-bearing digest>";
+  };
+  for (const sweep of result.sweeps ?? []) {
+    if (sweep.id === "canonical-demo") mask(sweep, "logSha256");
+    if (sweep.id === "canonical-crash-opening") {
+      mask(sweep, "logSha256");
+      mask(sweep, "recordsSha256");
+      for (const range of sweep.ranges)
+        if (Object.hasOwn(range, "traceSha256")) mask(range, "traceSha256");
+      for (const family of result.families) {
+        mask(family, "logSha256");
+        mask(family, "replaySha256");
+        mask(family.classification, "traceSha256");
+      }
+    }
+  }
+  return result;
+}
+export function compareBase(actual, expected, label, drift = runtimeDrift()) {
+  if (drift.length) {
+    assert.deepEqual(
+      compatibleView(actual, label),
+      compatibleView(expected, label),
+      `${label}: crash-shape drift beyond version-bearing identity`,
+    );
+    const result = {
+      kind: "base-source-drift",
+      label,
+      baseCommit: BASE,
+      paths: drift,
+    };
+    process.stdout.write(
+      `${JSON.stringify({ ...result, paths: undefined, changedSourceCount: drift.length, changedPathsSha256: sha256(drift.join("\n")) })}\n`,
+    );
+    return result;
+  }
+  assert.deepEqual(actual, expected, label);
+  return { kind: "base-identical", label, baseCommit: BASE };
+}
 export const demoTree = () =>
   readJson("packages/skeleton/fixtures/repo-tree.json");
 export const isMain = (url) =>
@@ -123,7 +221,7 @@ export function collectOffsets(meta, rows, emit = () => {}) {
 
 export function compareLane(lane, result) {
   const expected = readJson(MANIFEST)[lane];
-  assert.deepEqual(
+  return compareBase(
     result,
     expected,
     `${lane} observations differ from the manifest`,

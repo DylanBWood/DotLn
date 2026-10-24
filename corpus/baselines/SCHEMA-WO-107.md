@@ -58,15 +58,18 @@ git diff --check
 byte equality with the recorded report. Comparison does not load or execute the
 current kernel or skeleton; it can inspect the pinned evidence after runtime
 source changes. It binds each recorded protocol hash to the four harness modules,
-using the initial byte-exact archive for the first execution and the current
-modules for the second. The archive hash is pinned. Exact equality checks cover
+using the initial byte-exact archive for the first execution and the
+`wo107-second-protocol` archive for the second. Both archive hashes are pinned;
+current collector bytes have their own hash. Exact equality checks cover
 both complete scenario/watchdog modules, the measurement/boundary functions,
 command runner, metrics, distribution functions, scheduler and execution engine.
 Only provenance, preflight, schema validation and report construction changed.
 The classification and corpus-inventory difference is a disclosed comparability
 limitation; these observations do not establish an identical-workspace experiment.
-The schema tests also exercise current registry construction and the small
-function/demo batches, so those tests require a build. A new measurement at
+The registry construction and function/demo self-test is explicitly base-only;
+it reports `base-source-drift` and skips when package source or the scenario
+registry has changed. Schema/provenance/statistics checks still run on every
+retained record after the base. Collection preflight remains base-only. A new measurement at
 another base requires a separately reviewed protocol and fresh evidence path.
 
 ## Declared scenario set

@@ -40,6 +40,8 @@ export interface ScenarioEnvironment {
   directory: string;
   /** Interrupted output directory whose recorded owner must have exited. */
   recoverFrom?: string;
+  /** Cancellation closes this attempt's browser before rejecting the run. */
+  signal?: AbortSignal;
 }
 export interface BrowserEvidence {
   evidenceId: string;

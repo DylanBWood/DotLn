@@ -1644,6 +1644,13 @@ changes.
 
 Worker and verification recovery positively decode the event log, host lock, saved receipts, canonical request keys and persisted verification capsules before lock reclaim or dispatch; cached-result loads revalidate the concrete request, and malformed or unpublished staging state refuses by path while preserving store bytes for inspection.
 
+New `CommandPersisted` appends and direct pending-outbox insertion validate
+the required Command and Act fields and JSON payload. Malformed new commands
+raise a typed admission error carrying the `persist/malformed/<field>` trace.
+Historical decoding and outbox replay retain the earlier ID-only insertion
+rule; this admission change neither rewrites old events nor changes their
+replay identity.
+
 **Source-change host (WO-052):** a compiled order pins the repository, base,
 branch, surfaces and focused test. The host creates its governed branch
 worktree under the configured parent. Before launch WorkerStore persists the
@@ -1659,6 +1666,9 @@ interrupted attempt exhausts that retry. Dirty committed trees, changed requests
 foreign branches and malformed receipts preserve work and refuse. A saved receipt
 matching Git reuses test observations and appends the missing source observation
 once, even in older admitted logs without process markers.
+Recovery observation of an unreceipted commit uses the same typed
+`host-admission-<check>` refusal as initial observation and closes its command.
+A pending terminal signal takes precedence and leaves it undecided.
 
 Authority is rechecked before dispatch, after worker completion and around the
 after-test; host testing creates no worker lease. While the issued route has a
@@ -1954,7 +1964,16 @@ text, never the default channel for state you own in structured form.
   Without the flag, proposals publish with gaps. Post-submission: CI is
   deterministically classified before repair; triage episodes retry with capped
   resident backoff, while host preparation failures stop. Each invocation judges
-  at most eight review bodies, then names the unjudged item. Source drift stays
+  at most sixteen combined inline/body triages and sixteen outward actions,
+  then names the next item before acting. At most eight new or changed review
+  bodies consume body slots; unchanged bodies rebound after the loop's own
+  repair pushes do not spend that allowance again, but still spend a triage.
+  Cached resolution preparation must bind the current head and original
+  contract and pass snapshot validation. Invalid stored judgment results are
+  record refusals: intake counts a bounded host fault and triage ends in human
+  attention without claiming a new episode failed. Preparation backoff starts
+  at failure return; a normal continuation return resets its failure series
+  only after a new step receipt. Source drift stays
   watched until a human-controlled terminal state. External artifacts carry no
   internal vocabulary.
 

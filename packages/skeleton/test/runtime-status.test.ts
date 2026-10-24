@@ -296,7 +296,10 @@ test("finished vertical continuations leave live status and keep at most one hol
     const key = `intent_${draftId.toLowerCase()}`;
     intents[draftId] = {
       kind: "admitted",
-      binding: { key } as unknown as IntentBinding,
+      binding: {
+        key,
+        authority: { expiresAt: 1_000_000 },
+      } as unknown as IntentBinding,
     };
     return key;
   };
@@ -814,5 +817,72 @@ test("[document] WO-190 the repository's index page yields the active and queued
   assert.throws(
     () => runtimeOrdersFromIndex(history),
     /invalid generated work-order index/u,
+  );
+});
+
+test("resident expiry between steps shows one hold and terminal outcomes preserve the indexed phase", () => {
+  const key = "intent_status";
+  const command = verticalCommands(key).find((c) => c.step === "bundle")!;
+  const events = [
+    {
+      eventId: "start",
+      type: "IntentStepStarted",
+      occurredAt: 1,
+      payload: { key, commandId: command.commandId },
+    },
+    {
+      eventId: "end",
+      type: "IntentStepSettled",
+      occurredAt: 2,
+      payload: {
+        key,
+        commandId: command.commandId,
+        result: "completed",
+        terminal: false,
+      },
+    },
+  ] as unknown as Event[];
+  const state = {
+    at: 9,
+    intentStep: null,
+    intents: {
+      "WO-114": {
+        kind: "admitted",
+        binding: { key, authority: { expiresAt: 10 } },
+      },
+    },
+  } as unknown as ResidentState;
+  assert.equal(projectRuntimeStatus(state, events, index).actors.length, 1);
+  state.at = 10;
+  const expired = projectRuntimeStatus(state, events, index);
+  assert.deepEqual(expired.actors, []);
+  assert.deepEqual(expired.holds, [
+    { kind: "dispatch", reason: "intent-needs-human", order: "WO-114" },
+  ]);
+  assert.equal(
+    expired.workOrders.items.find((r) => r.order === "WO-114")!.phase,
+    "active; intent-needs-human",
+  );
+  assert.deepEqual(
+    projectRuntimeStatus(state, events, index),
+    expired,
+    "replay adds no duplicate hold",
+  );
+  const finished = structuredClone(events);
+  (finished[1]!.payload as Record<string, unknown>).terminal = true;
+  const resolved = projectRuntimeStatus(state, finished, index);
+  assert.deepEqual(
+    resolved.holds,
+    [],
+    "a completed intent is not expired again",
+  );
+  assert.equal(
+    resolved.workOrders.items.find((r) => r.order === "WO-114")!.phase,
+    "active; intent-resolved",
+  );
+  assert.deepEqual(
+    projectRuntimeStatus(state, [], index).holds,
+    expired.holds,
+    "expiry before the first step also holds",
   );
 });

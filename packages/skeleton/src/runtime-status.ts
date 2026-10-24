@@ -158,6 +158,7 @@ export function projectRuntimeStatus(
         : null,
   }));
   const holds: RuntimeStatusV1["holds"] = [];
+  const intentOutcomes = new Map<string, string>();
   for (const [draftId, intent] of Object.entries(state?.intents ?? {})) {
     if (intent.kind === "NeedsHuman") {
       holds.push({
@@ -168,17 +169,32 @@ export function projectRuntimeStatus(
       continue;
     }
     const started = verticalStarts.get(intent.binding.key);
-    if (!started) continue;
-    const commandId = (started.payload as Record<string, unknown>)["commandId"];
-    if (typeof commandId !== "string") continue;
-    const command = verticalCommand(intent.binding.key, commandId);
-    if (!command) continue;
+    const commandId = (
+      started?.payload as Record<string, unknown> | undefined
+    )?.["commandId"];
+    const command =
+      typeof commandId === "string"
+        ? verticalCommand(intent.binding.key, commandId)
+        : null;
     // A continuation whose latest step settled terminally has finished. It
     // leaves the actor list, so finished intents never accumulate there; an
     // outcome that still awaits a human stays visible as its one hold.
     const outcome = verticalSettlements.get(intent.binding.key)?.payload as
       Record<string, unknown> | undefined;
-    if (outcome?.["commandId"] === commandId && outcome["terminal"] === true) {
+    if (
+      command &&
+      outcome &&
+      outcome["commandId"] === commandId &&
+      outcome["terminal"] === true
+    ) {
+      intentOutcomes.set(
+        draftId,
+        outcome["result"] === "completed"
+          ? "resolved"
+          : outcome["result"] === "refused"
+            ? "refused"
+            : "needs-human",
+      );
       if (
         ["NeedsHuman", "retry", "repair", "refused"].includes(
           String(outcome["result"]),
@@ -194,6 +210,19 @@ export function projectRuntimeStatus(
         });
       continue;
     }
+    if (
+      intent.binding.authority.expiresAt <= state!.at &&
+      state?.intentStep?.key !== intent.binding.key
+    ) {
+      holds.push({
+        kind: "dispatch",
+        reason: "intent-needs-human",
+        order: orderId(draftId),
+      });
+      intentOutcomes.set(draftId, "needs-human");
+      continue;
+    }
+    if (!started || !command) continue;
     const live =
       state?.intentStep?.key === intent.binding.key &&
       state.intentStep.commandId === commandId;
@@ -249,6 +278,21 @@ export function projectRuntimeStatus(
     workOrders = runtimeOrdersFromIndex(indexText);
   } catch {
     workOrders = { status: "unavailable", items: [] };
+  }
+  // Preserve the index's lifecycle phase and annotate it with the resident's
+  // separate continuation outcome. No lifecycle transition is inferred.
+  for (const [draft, outcome] of intentOutcomes) {
+    const order = orderId(draft);
+    if (!order) continue;
+    const indexed = workOrders.items.find((row) => row.order === order);
+    if (indexed) indexed.phase += `; intent-${outcome}`;
+    else
+      workOrders.items.push({
+        order,
+        phase: `index-unknown; intent-${outcome}`,
+        dependency: "unknown",
+        verdict: null,
+      });
   }
   return {
     viewModelVersion: "runtime-status-v1",

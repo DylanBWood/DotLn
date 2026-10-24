@@ -262,6 +262,8 @@ const KNOWN_SURFACE: readonly string[] = [
   "replay",
   "emptyOutbox",
   "persistCommand",
+  "assertCommand",
+  "CommandAdmissionError",
   "pendingCommands",
   "replayOutbox",
   "applyCommandResult",

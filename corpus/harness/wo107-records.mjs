@@ -428,5 +428,5 @@ export function comparison(records, options) {
       "",
     );
   }
-  return `${lines.join("\n")}\n`;
+  return `${lines.join("\n").trimEnd()}\n`;
 }

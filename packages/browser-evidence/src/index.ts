@@ -288,6 +288,7 @@ export async function runScenario(
   input: BrowserScenario | string,
   env: ScenarioEnvironment,
 ): Promise<ScenarioResult> {
+  env.signal?.throwIfAborted();
   const scenario = scenarioInput(input);
   if (!line(env.subjectRevision) || !line(env.directory))
     throw new Error("Invalid scenario environment");
@@ -324,6 +325,11 @@ export async function runScenario(
   let failure: string | null = null;
   let unavailable: string | null = null;
   let remainingPids: number[] = [];
+  let stopping: Promise<void> | undefined;
+  const abort = () => {
+    if (browserServer) stopping ??= browserServer.kill().catch(() => {});
+  };
+  env.signal?.addEventListener("abort", abort, { once: true });
   try {
     try {
       browserServer = await chromium.launchServer({
@@ -331,6 +337,8 @@ export async function runScenario(
         headless: true,
         timeout: 10_000,
       });
+      if (env.signal?.aborted) abort();
+      env.signal?.throwIfAborted();
     } catch (error) {
       unavailable =
         error instanceof Error &&
@@ -338,6 +346,7 @@ export async function runScenario(
           ? `Pinned Chromium launch unavailable; run ${installCommand}`
           : "Pinned Chromium launch failed; browser launch unavailable";
     }
+    env.signal?.throwIfAborted();
     if (browserServer) {
       record.browserPid = browserServer.process().pid ?? null;
       if (record.browserPid === null)
@@ -460,6 +469,7 @@ export async function runScenario(
             JSON.stringify({ step: index, action: step.action }),
           );
           recordNow();
+          env.signal?.throwIfAborted();
           switch (step.action) {
             case "navigate":
               await page.goto(`${app.origin}${step.path}`, {
@@ -493,12 +503,12 @@ export async function runScenario(
               ) {
                 if (Date.now() >= until)
                   throw new Error("Response assertion failed");
-                await delay(25);
+                await delay(25, undefined, { signal: env.signal });
               }
               break;
             }
             case "wait":
-              await delay(step.milliseconds);
+              await delay(step.milliseconds, undefined, { signal: env.signal });
               break;
           }
         }
@@ -556,6 +566,8 @@ export async function runScenario(
   } catch {
     unavailable = "Browser capture or fixture runtime unavailable";
   } finally {
+    env.signal?.removeEventListener("abort", abort);
+    await stopping;
     if (recorder) clearInterval(recorder);
     if (context && traceStarted) {
       try {
@@ -594,6 +606,7 @@ export async function runScenario(
     record.closed = remainingPids.length === 0;
     saveProcesses(directory, record);
   }
+  env.signal?.throwIfAborted();
   const result: ScenarioResult = {
     availability: unavailable ? "unavailable" : "available",
     reason: unavailable,

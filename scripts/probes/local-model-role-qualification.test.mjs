@@ -295,12 +295,17 @@ test("WO-138 T1 schema declares the existing host length bounds", async () => {
   const properties = taskSchema("T1", inputs).properties.result.properties;
   for (const [name, property] of Object.entries(properties)) {
     const limit = name === "summary" ? 320 : 40;
+    assert.equal(property.minLength, 1);
     assert.equal(property.maxLength, limit);
     const answer = answerFor("T1", inputs, []);
     answer.result[name] = "x".repeat(limit);
     assert.doesNotThrow(() => validateAnswer(answer, "T1", inputs));
     answer.result[name] += "x";
     assert.throws(() => validateAnswer(answer, "T1", inputs), /invalid T1/u);
+    answer.result[name] = "";
+    assert.throws(() => validateAnswer(answer, "T1", inputs), /invalid T1/u);
+    answer.result[name] = "x";
+    assert.doesNotThrow(() => validateAnswer(answer, "T1", inputs));
   }
 });
 
@@ -571,6 +576,18 @@ test("WO-138 committed episodes bind their retained historical build; current an
   assert.doesNotThrow(() =>
     validateRecordInputs(records, inputs, historicalSource),
   );
+  const unsupportedSource = Buffer.from(
+    historicalSource.toString().replace("maxLength: 40", "maxLength: 41"),
+  );
+  assert.throws(
+    () =>
+      validateRecordInputs(
+        [{ ...records[0], harnessBuildHash: sha256(unsupportedSource) }],
+        inputs,
+        unsupportedSource,
+      ),
+    /unsupported retained task schema/u,
+  );
   assert.throws(
     () => validateRecordInputs(records, inputs),
     /binding differs/u,
@@ -624,9 +641,15 @@ test("WO-138 committed episodes bind their retained historical build; current an
       sha256(stableStringify(input)),
       cell.episodeId,
     );
+    const historicalSchema = taskSchema(cell.taskId, inputs);
+    if (cell.taskId === "T1")
+      for (const field of Object.values(
+        historicalSchema.properties.result.properties,
+      ))
+        delete field.minLength;
     assert.equal(
       record.schemaHash,
-      sha256(stableStringify(taskSchema(cell.taskId, inputs))),
+      sha256(stableStringify(historicalSchema)),
       cell.episodeId,
     );
     assert.equal(

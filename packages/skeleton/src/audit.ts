@@ -358,20 +358,24 @@ const sameEpisodeAndTime = (left: Event, right: Event): boolean =>
 
 const semanticAuthorityInputsAreComplete = (
   inputs: readonly string[],
+  partial = false,
 ): boolean => {
   if (inputs.length === 0) return true;
-  const rngState = inputs[1]?.slice("rngState:".length);
+  const hasState = inputs[0] === "state";
+  if (!partial && !hasState) return false;
+  const environment = hasState ? inputs.slice(1) : inputs;
+  if (partial && environment.length === 0) return true;
+  const rngState = environment[0]?.slice("rngState:".length);
   return (
-    inputs.length >= 3 &&
-    inputs.length <= 4 &&
-    inputs[0] === "state" &&
-    inputs[1]?.startsWith("rngState:") === true &&
+    environment.length >= 2 &&
+    environment.length <= 3 &&
+    environment[0]?.startsWith("rngState:") === true &&
     rngState !== undefined &&
     rngState.trim() !== "" &&
     Number.isFinite(Number(rngState)) &&
     String(Number(rngState)) === rngState &&
-    inputs[2] === "predicates" &&
-    (inputs.length === 3 || inputs[3] === "policy")
+    environment[1] === "predicates" &&
+    (environment.length === 2 || environment[2] === "policy")
   );
 };
 
@@ -453,7 +457,10 @@ const isRefusedDecisionTrace = (
     envInputs[2] === "evidence" &&
     envInputs[3] === "revocations" &&
     unpinned !== undefined &&
-    semanticAuthorityInputsAreComplete(unpinned.slice(4)) &&
+    semanticAuthorityInputsAreComplete(
+      unpinned.slice(4),
+      reason === "cannot evaluate revocation",
+    ) &&
     Array.isArray(cadenceEvaluations) &&
     cadenceEvaluations.length === 0
   );

@@ -907,20 +907,24 @@ function releaseScenarioHarness(root) {
   scenarioTreeDigest(root, true);
   const trees = join(root, "trees");
   if (!existsSync(trees)) return;
-  for (const entry of readdirSync(trees)) {
-    const tree = join(trees, entry);
+  const release = (tree) => {
     const info = lstatSync(tree);
     assert.equal(
       info.isSymbolicLink(),
       false,
       "fixture child cannot be a symlink",
     );
-    if (
-      info.isDirectory() &&
-      existsSync(join(tree, ".claude/target-worker-manifest.json"))
-    )
+    if (!info.isDirectory()) return;
+    if (existsSync(join(tree, ".claude/target-worker-manifest.json"))) {
       removeTargetHarness(tree, { runtimeRoot: repoRoot });
-  }
+      return;
+    }
+    // Item namespaces contain worktrees one level below the shared parent.
+    // Stop at a worktree so its source directories are never cleanup inputs.
+    if (existsSync(join(tree, ".git"))) return;
+    for (const entry of readdirSync(tree)) release(join(tree, entry));
+  };
+  for (const entry of readdirSync(trees)) release(join(trees, entry));
 }
 
 function scenarioOwner(owner) {

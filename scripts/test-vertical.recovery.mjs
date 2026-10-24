@@ -1190,3 +1190,134 @@ test("WO-199 a signal queued at the final return is delivered before the CLI rem
     f.close();
   }
 });
+
+test(
+  "browser witness cancellation closes owned processes and resumes in a fresh attempt directory",
+  { timeout: 60000 },
+  async () => {
+    const f = await verticalFixture();
+    const browserRoot = new URL("../.runtime/playwright", import.meta.url)
+      .pathname;
+    const previous = process.env.PLAYWRIGHT_BROWSERS_PATH;
+    process.env.PLAYWRIGHT_BROWSERS_PATH ??= browserRoot;
+    let running;
+    const abort = new AbortController();
+    try {
+      const state = await steps(f, 6);
+      const scenario = JSON.parse(
+        readFileSync(
+          new URL(
+            "../packages/browser-evidence/fixtures/scenario.json",
+            import.meta.url,
+          ),
+          "utf8",
+        ),
+      );
+      scenario.steps.push({ action: "wait", milliseconds: 30_000 });
+      f.config.browserScenario = join(f.root, "browser.json");
+      put(f.config.browserScenario, scenario);
+      put(join(f.directory, "vertical.json"), f.config);
+      const directory = join(f.directory, "vertical", state.binding.key);
+      running = runVerticalIssue({
+        directory: f.directory,
+        issue: 1,
+        configuration: readVerticalConfiguration(f.directory, f.launchpad),
+        now: f.now,
+        external: f.external,
+        signal: abort.signal,
+      });
+      void running.catch(() => {});
+      await until(
+        () => {
+          try {
+            return (
+              JSON.parse(
+                readFileSync(
+                  join(directory, "browser-0/progress.json"),
+                  "utf8",
+                ),
+              ).action === "wait"
+            );
+          } catch {
+            return false;
+          }
+        },
+        20_000,
+        "browser witness did not reach the wait step",
+      );
+      abort.abort("SIGTERM");
+      await assert.rejects(
+        within(running, 5000, "browser abort did not settle"),
+      );
+      const record = JSON.parse(
+        readFileSync(join(directory, "browser-0/processes.json"), "utf8"),
+      );
+      assert.equal(record.closed, true);
+      assert.ok(record.processes.every((p) => gone(p.pid)));
+      assert.equal(
+        runState(f.directory, state.binding.key).pending.step,
+        "witnesses",
+      );
+      assert.equal(runState(f.directory, state.binding.key).terminal, null);
+      scenario.steps.pop();
+      put(f.config.browserScenario, scenario);
+      const resumed = await steps(f, 1);
+      assert.equal(resumed.receipts.at(-1).command.step, "witnesses");
+      assert.equal(resumed.receipts.at(-1).result, "completed");
+      assert.equal(
+        resumed.receipts.at(-1).value.browser.directory,
+        join(directory, "browser-0-1"),
+      );
+      assert.ok(
+        existsSync(join(directory, "browser-0/scenario.json")),
+        "interrupted evidence is retained",
+      );
+    } finally {
+      abort.abort("SIGTERM");
+      await running?.catch(() => {});
+      if (previous === undefined) delete process.env.PLAYWRIGHT_BROWSERS_PATH;
+      else process.env.PLAYWRIGHT_BROWSERS_PATH = previous;
+      f.close();
+    }
+  },
+);
+
+test("browser witness resumes a pre-launch directory without a process record", async () => {
+  const { mkdirSync } = await import("node:fs");
+  const f = await verticalFixture();
+  const previous = process.env.PLAYWRIGHT_BROWSERS_PATH;
+  process.env.PLAYWRIGHT_BROWSERS_PATH ??= new URL(
+    "../.runtime/playwright",
+    import.meta.url,
+  ).pathname;
+  try {
+    const state = await steps(f, 6);
+    f.config.browserScenario = new URL(
+      "../packages/browser-evidence/fixtures/scenario.json",
+      import.meta.url,
+    ).pathname;
+    put(join(f.directory, "vertical.json"), f.config);
+    const directory = join(f.directory, "vertical", state.binding.key);
+    const interrupted = join(directory, "browser-0");
+    mkdirSync(interrupted);
+    put(
+      join(interrupted, "scenario.json"),
+      JSON.parse(readFileSync(f.config.browserScenario, "utf8")),
+    );
+    put(join(interrupted, "processes.json.new"), "partial initial write");
+    const resumed = await steps(f, 1);
+    assert.equal(resumed.receipts.at(-1).result, "completed");
+    assert.equal(
+      resumed.receipts.at(-1).value.browser.directory,
+      join(directory, "browser-0-1"),
+    );
+    assert.ok(
+      existsSync(join(interrupted, "processes.json.new")),
+      "unadmitted startup bytes are retained",
+    );
+  } finally {
+    if (previous === undefined) delete process.env.PLAYWRIGHT_BROWSERS_PATH;
+    else process.env.PLAYWRIGHT_BROWSERS_PATH = previous;
+    f.close();
+  }
+});
