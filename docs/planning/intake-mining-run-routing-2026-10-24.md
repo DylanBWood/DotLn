@@ -956,6 +956,28 @@ filed; its findings are recorded here for WO-192's next amendment and the
 second judgment below is the pass's receipt. It made no repository or Git
 write and spawned nothing; 33 tool uses, 128,590 tokens, 439 s.
 
-**The refutation.** [PENDING: written when the receipt is filed.]
+**The refutation.** One fresh background `dotln-worker` was given only the
+canonical prompt of `npm run plan -- refute` for commit `acd1c94f`
+(claude-opus-5-5 by its definition and as its own context stated; effort
+unknown, no readback) and judged the pass's subject, WO-192 and the
+sequence, in 776,337 ms over 49 tool uses and 197,552 tokens; it validated
+its result against the repository's `validatePlanResult`, made no
+repository or Git write (one scratchpad mkdir was refused by the project
+hook), spawned nothing. Receipt `2026-10-24-planning-783a352b583108a3-053`:
+plan verdict aligned-with-findings, no hold; WO-192 aligned-with-findings
+with eight findings, one an observed breach (criterion 12: the executor and
+reviewer roots already over their cold-start ceilings, which the order
+deepens with only a byte record) and seven known issues (the per-agent
+writer key against pid liveness; the missing probe row for a worker's
+working directory and the fallback's unstated coverage of criteria 4 to 6;
+criterion 9 admitting parent-session hooks over a target worker and
+re-measuring none of the filed before-numbers; the phrase-only spawn rule
+turning operator directions into stops; the merged check without a fetch;
+the generated hook paragraph's stale cap unit), each with its reopening
+observation, recorded on WO-192's catalog row for its next amendment.
+The judged, committed and workspace subjects agree
+(`62f35883…`); the receipt was filed and committed by the helper.
 
-**Final gate.** [PENDING: written after the receipt.]
+**Final gate.** `npm run test:docs` after the receipt and the catalog row:
+the result is recorded in the pull request's body and in the ignored checks
+record; a failure there is repaired before the push.
