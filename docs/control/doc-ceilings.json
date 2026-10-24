@@ -27,10 +27,10 @@
       "decision": "docs/planning/fork-notes-and-operator-questions-2026-10-21.md#11-write-backs-and-document-ceilings"
     },
     "04-interfaces.md": {
-      "nonExemptBytesAtLanding": 63647,
-      "ceiling": 70012,
-      "date": "2026-10-21",
-      "decision": "docs/planning/fork-notes-and-operator-questions-2026-10-21.md#11-write-backs-and-document-ceilings"
+      "nonExemptBytesAtLanding": 66601,
+      "ceiling": 73262,
+      "date": "2026-10-24",
+      "decision": "docs/planning/intake-mining-run-routing-2026-10-24.md#16-write-backs-and-document-ceilings"
     },
     "05-pattern-library.md": {
       "nonExemptBytesAtLanding": 135946,
@@ -45,10 +45,10 @@
       "decision": "docs/planning/entropy-review-007-2026-10-20.md#9-document-ceilings"
     },
     "07-execution-guide.md": {
-      "nonExemptBytesAtLanding": 240430,
-      "ceiling": 264473,
-      "date": "2026-10-21",
-      "decision": "docs/planning/fork-notes-and-operator-questions-2026-10-21.md#11-write-backs-and-document-ceilings"
+      "nonExemptBytesAtLanding": 255873,
+      "ceiling": 281461,
+      "date": "2026-10-24",
+      "decision": "docs/planning/intake-mining-run-routing-2026-10-24.md#16-write-backs-and-document-ceilings"
     },
     "08-publication-compiler.md": {
       "nonExemptBytesAtLanding": 24867,

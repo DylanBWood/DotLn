@@ -40,6 +40,20 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
+## 2026-10-24 — Planning pass: the 2026-10-22 intake mining run taken in and its critical ideas routed; registration only; the record is the planning document
+
+Dispatch: `planning: take in the 2026-10-22 intake mining run and route its
+key ideas`, sent as one pasted block, with one mid-turn message asking that
+decisions be put with ample context and time to respond, captured in
+`docs/intake/notes/planning-intake-mining-run-routing-2026-10-24.md`
+(ignored; the planning document §1 records its SHA-256). The source was the
+run's README in ignored intake, read as scoped source with no authority. The
+record is [the planning document](../planning/intake-mining-run-routing-2026-10-24.md);
+this heading registers the pass for the plan tooling (WO-088 moves
+registration out of the ledger). The operator-voiced ideas the run holds are
+listed in that document's §12 for a later `ideation:` dispatch; this pass
+writes no ledger entry.
+
 ## 2026-10-21 — Planning pass on the fork's notes and the operator's questions: registration only; the record is the planning document
 
 Dispatch: `planning: standard planning pass + some notes from various fork

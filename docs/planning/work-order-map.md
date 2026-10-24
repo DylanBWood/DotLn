@@ -5390,7 +5390,7 @@ Retained dependency wording is dated planning context, not a second state source
 | [WO-189](../work-orders/WO-189-front-page.md) | machinery, the front page — an inventory of every paragraph, three candidate pages scored by fresh readers, the operator's choice, a release block that holds one generated line, and a check that refuses an order's edit to the page unless its criteria name it | WO-068 and WO-086 closed; the fifth pair's machinery lane, free to run as a third lane at any time; filed 2026-10-02 from the operator's note, the third time the page's growth was raised; assign version at activation (patch) | implementer, then independent verifier; the operator picks the candidate at final review, with a recorded fallback | fresh reader agents | `README.md`, `scripts/lib/release-preparation.mjs`, `scripts/release.mjs`, `scripts/docs-check.mjs`, `docs/PLAYBOOK.md`, product 07 |
 | [WO-190](../work-orders/WO-190-index-and-roadmap-show-the-work-ahead.md) | machinery, navigation — the index holds the active line, the sequence and the queued cards in sequence order, with settled orders on a companion page; an umbrella record is a header class shown as superseded and refused at activation; every open order has a position; the roadmap leads with the rungs ahead | WO-158 and WO-086 closed; the sixth pair's machinery lane; filed 2026-10-02 from the operator's note; assign version at activation (patch) | implementer, then independent verifier | none | `scripts/work-orders.mjs`, `scripts/resume.mjs`, `packages/console/src`, product 06 |
 | [WO-191](../work-orders/WO-191-reader-profiles.md) | machinery, published text — one committed profile per surface over five dimensions, an examples library, guidance printed where titles, bodies and notes are written, and a score from fresh readers collected at planning passes; no text is refused or rewritten | WO-188 closed (hard: its item 24 repairs the generated parts the examples start from); WO-126 closed; the seventh pair's machinery lane; filed 2026-10-02 from the operator's note; assign version at activation (patch) Receipt 038's known issues are written in the order's own text, amended by the operator-answer pass of 2026-10-02. Receipt 039 known issues (2026-10-02): by the order's own figures the removal (three corrections, none after 2026-09-09) is smaller than the addition, and the score is an agent's judgment; reopen when an operator style correction is recorded on a surface whose profile is committed, or two scoring runs in a row are followed by no decision that cites them. WO-188's body-profile check refuses forms this order's guidance could ask for, and no precedence is stated; reopen when a guidance line or example asks for a form the check refuses, or an order edits one to satisfy the other. | implementer, then independent verifier; the operator picks profiles from the examples, with a recorded fallback | fresh reader agents | `scripts/reader.mjs` (new), `scripts/worktree.mjs`, `scripts/release.mjs`, `contributor.ts`, product 08, `docs/publication/` |
-| [WO-192](../work-orders/WO-192-router-drives-an-order.md) | delivery, orchestration — `drive: WO-NNN` selects a router role that reads the canonical status and starts one fresh worker per phase with the phrase as its whole prompt; identity, writer and sub-agent budget per worker; probe first, with one separate session per phase as the fallback | WO-187 closed (hard: the generated agent definition); WO-139, WO-135, WO-130 and WO-158 closed; a single entry after WO-118 (amended 2026-10-02: the product exit does not wait behind the instance orders), movable into the machinery lane after WO-188 at the operator's word; filed 2026-10-02; assign version at activation (minor) Receipt 038's known issues are written in the order's own text, amended by the operator-answer pass of 2026-10-02. Receipt 039 known issues (2026-10-02): the Cost line counts moving phase work into workers as a removal, though the same work still runs; reopen when the live drive's record shows router plus worker usage at or above the same phases run as separate sessions, or a decision cites worker-side usage as saved. The router is a second lifecycle driver beside the resident; reopen when a later order implements the same re-entry, repair-bound or next-action rule in both, or the two disagree about an order both can see. The router's new root has no cold-start ceiling; reopen when it is generated with none in the budgets file. Amended 2026-10-11 (route pass, item (k)): the router drives target orders as well as launchpad orders; each phase's worker runs in the target worktree WO-072 created under WO-049's bundle, launched from the instance; the probe gains the target-worktree row and the live drive is a target order; WO-072 is a typed hard edge; placed after WO-206 and directly before WO-083 so the measured run is driven the way the operator drives orders. Receipt 044 known issues (2026-10-11): criterion 9: One listed removal is a metering relocation (phase work moved off a main-thread-metered host's main thread), not a reduction in work. Total usage (router plus one cold start per phase worker) is unmeasured, and the split is recorded only as far as the host exposes it. (reopen when criterion 9's record shows the driven order's total tokens (router plus workers) above those of a comparable order run through per-phase sessions, or the host exposes no worker usage, so the total is unknown) criterion 3: The new router cold-start root has no stated ceiling, while existing role ceilings have been raised step by step and the refuter root is already unset. (reopen when the meter reports a router cold-start profile with ceiling null, or with bytes above the smallest existing role ceiling) criterion 9: The live evidence stops at final review, while the objective claims the session carries the order to a mergeable pull request and, after the merge, through release close. Those later phases rest only on fixtures. (reopen when the first live driven order that reaches publication or release close (for example in WO-083) records a manual handoff, an unhandled stop or a failure in those phases) Amended 2026-10-13 (standard pass): the Design and criterion 4 say the worker is handed the phrase and the order comes from its working directory, as step 4 and the 2026-10-07 decision said; steps 3, 7 and 8 and criterion 7 are written from WO-072's landing (`targetWorktreeForOrder`, a target order's two worktrees, physical identity, the merge in the clone); WO-211 is a typed hard edge (a driven target order publishes through it); step 3 seeds the router's budget keys in the kit and reads an absent entry as null; placed after the WO-211/WO-212 pair. Receipt 052 known issues (2026-10-22): criterion 12: steps 3, 6 and 9 grow the executor and reviewer roots (424 and 281 bytes of headroom) with no figure in the Cost line, deferring to an acceptance under a route that has raised a ceiling by one 4 KB step eleven times (reopen: WO-192's decisions record a root above its ceiling or a `coldStartBytes` acceptance filed during WO-192). | implementer, then independent verifier | the installed host version's behavior for spawned agents, recorded by the order's first criterion; one live driven order in a scratch clone | `packages/skeleton/src/harness-host.ts`, `subagent-budget.ts`, `contributor.ts`, `packages/compiler/src/harness.ts`, `scripts/resume.mjs`, product 07 Amended 2026-10-13 (reshape): position 6 of the serial queue, a Preflight line, absorbed orders retargeted to their carriers. Receipt 045 known issues (2026-10-13): the added role text has no byte bound against the executor's 1,134-byte cold-start headroom; the Cost line counts moving phase work off a metered main thread as a removal; phase workers may run under the router session's hooks rather than their role's, which criterion 9 only records (criteria 11, 9). |
+| [WO-192](../work-orders/WO-192-router-drives-an-order.md) | delivery, orchestration — `drive: WO-NNN` selects a router role that reads the canonical status and starts one fresh worker per phase with the phrase as its whole prompt; identity, writer and sub-agent budget per worker; probe first, with one separate session per phase as the fallback | WO-187 closed (hard: the generated agent definition); WO-139, WO-135, WO-130 and WO-158 closed; a single entry after WO-118 (amended 2026-10-02: the product exit does not wait behind the instance orders), movable into the machinery lane after WO-188 at the operator's word; filed 2026-10-02; assign version at activation (minor) Receipt 038's known issues are written in the order's own text, amended by the operator-answer pass of 2026-10-02. Receipt 039 known issues (2026-10-02): the Cost line counts moving phase work into workers as a removal, though the same work still runs; reopen when the live drive's record shows router plus worker usage at or above the same phases run as separate sessions, or a decision cites worker-side usage as saved. The router is a second lifecycle driver beside the resident; reopen when a later order implements the same re-entry, repair-bound or next-action rule in both, or the two disagree about an order both can see. The router's new root has no cold-start ceiling; reopen when it is generated with none in the budgets file. Amended 2026-10-11 (route pass, item (k)): the router drives target orders as well as launchpad orders; each phase's worker runs in the target worktree WO-072 created under WO-049's bundle, launched from the instance; the probe gains the target-worktree row and the live drive is a target order; WO-072 is a typed hard edge; placed after WO-206 and directly before WO-083 so the measured run is driven the way the operator drives orders. Receipt 044 known issues (2026-10-11): criterion 9: One listed removal is a metering relocation (phase work moved off a main-thread-metered host's main thread), not a reduction in work. Total usage (router plus one cold start per phase worker) is unmeasured, and the split is recorded only as far as the host exposes it. (reopen when criterion 9's record shows the driven order's total tokens (router plus workers) above those of a comparable order run through per-phase sessions, or the host exposes no worker usage, so the total is unknown) criterion 3: The new router cold-start root has no stated ceiling, while existing role ceilings have been raised step by step and the refuter root is already unset. (reopen when the meter reports a router cold-start profile with ceiling null, or with bytes above the smallest existing role ceiling) criterion 9: The live evidence stops at final review, while the objective claims the session carries the order to a mergeable pull request and, after the merge, through release close. Those later phases rest only on fixtures. (reopen when the first live driven order that reaches publication or release close (for example in WO-083) records a manual handoff, an unhandled stop or a failure in those phases) Amended 2026-10-13 (standard pass): the Design and criterion 4 say the worker is handed the phrase and the order comes from its working directory, as step 4 and the 2026-10-07 decision said; steps 3, 7 and 8 and criterion 7 are written from WO-072's landing (`targetWorktreeForOrder`, a target order's two worktrees, physical identity, the merge in the clone); WO-211 is a typed hard edge (a driven target order publishes through it); step 3 seeds the router's budget keys in the kit and reads an absent entry as null; placed after the WO-211/WO-212 pair. Receipt 052 known issues (2026-10-22): criterion 12: steps 3, 6 and 9 grow the executor and reviewer roots (424 and 281 bytes of headroom) with no figure in the Cost line, deferring to an acceptance under a route that has raised a ceiling by one 4 KB step eleven times (reopen: WO-192's decisions record a root above its ceiling or a `coldStartBytes` acceptance filed during WO-192). | implementer, then independent verifier | the installed host version's behavior for spawned agents, recorded by the order's first criterion; one live driven order in a scratch clone | `packages/skeleton/src/harness-host.ts`, `subagent-budget.ts`, `contributor.ts`, `packages/compiler/src/harness.ts`, `scripts/resume.mjs`, product 07 Amended 2026-10-13 (reshape): position 6 of the serial queue, a Preflight line, absorbed orders retargeted to their carriers. Receipt 045 known issues (2026-10-13): the added role text has no byte bound against the executor's 1,134-byte cold-start headroom; the Cost line counts moving phase work off a metered main thread as a removal; phase workers may run under the router session's hooks rather than their role's, which criterion 9 only records (criteria 11, 9). Receipt 053's known issues (2026-10-24, aligned-with-findings, no hold): criterion 12 leaves the executor and reviewer roots above their cold-start ceilings with only a before/after byte record (an observed breach; one clause requiring a dated acceptance or a removal per root repairs it); criterion 5's per-agent writer key against pid liveness can refuse a re-dispatched worker after one ends without recording completion; criterion 1 names no probe row for whether a spawned worker's working directory can be set, and the fallback design does not say which of criteria 4 to 6 it discharges; criterion 9 admits a target worker governed by the parent session's hooks and re-measures none of the before-numbers the Cost line files; criterion 4's phrase-only spawn rule turns an operator direction into a stop at the rate the record shows directions; step 8 judges merged against origin/main without a fetch; criterion 10 leaves the generated hook paragraph describing subagentCap as a per-session bound after the driven-session ceiling changes its unit. Each carries its reopening observation in the receipt. |
 | [WO-193](../work-orders/WO-193-instance-capability-requests.md) | delivery, the starter — a kit command that drafts, screens and files a generic, operator-written request (`requests.route` defaulting to `none`); a planning intake of labelled issues into register candidates; a typed `UPSTREAM.md` block whose answered list reaches the instance-actions note on both update routes and the sibling receipt on a from-core update; and a deployment-record template; the private predecessor map (a kit command and row schema for an instance-owned map from each predecessor behavior to what carries it) was cut out into WO-228 in the predecessor track (WS-002) by the 2026-10-21 pass | WO-074, WO-076, WO-077 and WO-078 closed (hard); WO-062, WO-063 and WO-060 closed; position 9 of the serial queue; merged 2026-10-13 (standard pass) from WO-193 and WO-194; carry-ins: receipt 038's known issues and the 2026-10-07 decisions of both; the 2026-10-13 re-observations (WO-203's merge route, `build: none` with no `origin`, closed dependencies, moved anchors) written into the order; one deterministic re-mint for both `package.json` entries; one live request under the operator's grant; FUP-0126 and FUP-0115 gain source revisions from the write-backs; Clean Room applies with force; assign version at activation (minor) Receipt 045 known issues (2026-10-13): it opens the first automated inbound route from an instance into core's register, first consumed by the work instance, so the clean-room screen carries the whole boundary (criterion 4). Receipt 052 known issues (2026-10-22): criterion 8: the Cost line and the live-run surfaces bullet cite criterion 14 for the live issue, which after the 2026-10-21 split is criterion 8; a correction of fact the next pass applies and the executor reads at activation (reopen: an execution or verification record cites criterion 14 or cannot locate the live-request criterion); criterion 10: the Cost line still credits the merge with removing one order cycle and one re-mint covering both `package.json` entries, though WO-228 now pays its own cycle and re-mint; a correction of fact for the next pass (reopen: WO-193 and WO-228 both close, each with its own cycle and re-mint, while the record still credits the saving). |
 | [WO-194](../work-orders/WO-194-private-predecessor-map.md) | delivery, the starter — a kit command and row schema for an instance-owned map from each predecessor behavior to what carries it, with six mapping statuses, a report that says when a generation is fully carried, and a request draft built from a row's generic statement only | WO-074, WO-076 and WO-193 closed (hard); a single entry after WO-193; filed 2026-10-02; Clean Room applies with force: every row in this repository is synthetic or already public generic text, and a need for a predecessor fact is the stop condition; assign version at activation (minor) Receipt 038's known issues are written in the order's own text, amended by the operator-answer pass of 2026-10-02. Re-observed 2026-10-13 (standard pass), not amended: WO-076 closed (v0.76.0), so the overlay is instance-owned at the path `build.overlay` selects and the blocker on WO-076 is stale; a `build: none` manifest has no `origin` (`scripts/lib/harness.mjs` lines 319 to 333), so step 4's carrier lookup in `origin.ids` would read every carrier as absent there. The pass that places WO-194 within the next pair amends it. | implementer, then independent verifier | synthetic rows only | Umbrella record (2026-10-13): superseded whole by WO-193, which carries its obligations (merged; the 2026-10-13 standard pass §12.3). the export's file set, `scripts/parity.mjs` (new), kit templates, products 10 and 12 |
 | [WO-195](../work-orders/WO-195-roles-finish-what-was-dispatched.md) | machinery, the finish — the release-close admission recorded and applied when main's built adapter is stale after the merge; one admitted spelling and a short helper output with the full report retained; write permission restored before removal, a directory Git dropped removed on the same or a later run, the merged branch deleted by the run that removes the worktree; a release-close sentence that names when the close is done and makes the re-run the retry; a planning pass that pushes its branch and opens its pull request | WO-178, WO-179 and WO-176 closed; next, a third lane beside WO-185 (shared `harness-host.ts` and `resume.mjs`); filed 2026-10-03 from the operator's dispatch and the WO-184 close; takes WO-188 item 2; assign version at activation. Receipt 040 known issues (2026-10-03): the admission has never fired live, so whether Claude Code's auto mode honors a DotLn allow over its classifier is unobserved; reopen when the first Claude close after WO-195 journals `releaseCloseAdmission` and still shows a host denial or an operator-run close command. The planning half lands as a sentence and a write-back with no helper or fixture; reopen when a planning pass after WO-195 ends without its branch pushed and its pull request open, or the operator asks for them. The classifier may deny the planning push or `gh pr create` too, and nothing admits them; reopen when a planning session after WO-195 records that denial. No criterion recounts operator-run close commands or push requests after landing; reopen when the next pass finds either, or finds them uncounted. No critical-path gate is named; reopen when a gate order waits behind WO-195 while Claude closes still need the operator. A failed write of the full report would lose output that reaches the session today; reopen when a summary names a report that is missing or short. |
@@ -5492,3 +5492,187 @@ The generated index answers the evidence-state question after this pilot exposed
 repeated drift. Historical IDs remain unchanged. Standardized front matter, a
 registry, a scheduler, and an automatic recommendation remain unselected; the
 remaining questions need their own bounded consumer and evidence.
+
+## Candidates — returns from the intake mining run's take-in (recorded 2026-10-24)
+
+Recorded by the [2026-10-24 pass](intake-mining-run-routing-2026-10-24.md),
+which took in the operator's 2026-10-22 intake mining run (an unofficial
+research run in ignored intake, `docs/intake/notes/2026-10-22-intake-mining-run/README.md`,
+read as scoped source with no authority) and gave each of its 46 critical
+ideas one route; the planning document's §5 holds the routes, §7 the riff
+deck, §8 the research queue, §9 the fork block and §10 the decision batch put
+to the operator. Every item below is a proposal; none is filed. The horizon
+is the run's: H1 attaches to a sequenced order, H2 to nothing filed. This
+section grants no activation authority.
+
+1. **The Order Drive's folds into WO-192** (KI-006, KI-024; H1→H2). WO-192's
+   router is the first station after the operator; the run reads it as a
+   process manager over the order's control segment with a dead-letter
+   channel, a close packet that replaces reading the reports, a certification
+   readback and a veto window, and asks that its phase and stop lists be
+   diffed against the two lifecycles that already ran without a phrase
+   (WO-118's resident loop and the vertical) rather than designed fresh,
+   sharing one process-definition table with the resident host. Deferred:
+   reopen when WO-192 is next amended or activated, or when OD-013 (lanes
+   above rung 5) and OD-049 (the resident as host) are answered; the diff is
+   the riff deck's card T11.
+2. **Stage 1's two asked instruments as `plan start` prints** (KI-021,
+   KI-120, KI-124; H1). The constraint-now line in a fixed shape (what binds,
+   its evidence, when it last moved and from what, what would show it moved)
+   and a read-only phrase count over the session journals (counts only, no
+   text) printed beside the failure counts, so a phrase at zero for three
+   passes is a retirement candidate. Both are written by hand in the pass's
+   §2, the first of two hand writings. Deferred: reopen when two passes have written both by hand and the next pass reads them, or on the operator's word; the constraint line stays hand-written until then.
+3. **The Gödel count** (KI-176; H1→H2), re-targeted from WO-227, which has
+   merged: one line per order, pass, release and colony summing every time
+   the operator asserted acceptability from outside the rules (off-ramps,
+   overridden holds, override records), which `plan failures` already counts
+   in its record totals; the first hand count is 9 typed escapes over 165
+   orders plus the run's two unrecorded override windows. Deferred: reopen when a pass wants the sum per order, pass or colony, or when WO-088's generated source lands.
+4. **The promotion ledger and the held-class register** (KI-050, KI-051,
+   KI-053; H2). A hand-written control file with every decision class held
+   and zero rows, one typed operator-written row per move with its evidence,
+   bound, return condition and capture digest; promotions measured on later
+   escapes, reverts and corrections, never on agreement with the judges;
+   classes locked by sample size, never by category. Deferred: reopen when
+   OD-001 (the merge) and OD-002 (which classes first) are answered and the
+   stage 1 lines of item 2 have been read for two passes.
+5. **WO-083's before-numbers into WO-192's Cost line** (KI-225; H1). The
+   pass measured them at `49d8c4c3` (its §11: 6.25 implied phrases per order
+   over 165 orders, 6.94 since 2026-10-08; a 30.5% hand-gap share, 33.2%
+   since 2026-10-08; medians per transition). Settled: the operator answered
+   OD-093 on 2026-10-24 (D20) and the pass wrote the before-numbers into
+   WO-192's Cost line with the reproducibility rule; the measurement stands
+   in the planning document.
+6. **The research queue of the run** (KI-095, KI-244; H2). Thirteen items
+   sized under the operator's rule of at most twenty agents per book or
+   concept, listed in the pass's §8: toolify the catalog; The Art of War;
+   Gladwell book by book; toys for six mined sources; the operator-model
+   program's step 1; thirteen per-work surface designs; the four later probes
+   judged; the unchecked register rows; the model-knowledge map rows; Team
+   Topologies from an authorized copy and GEB with the operator; Jujutsu
+   Kaisen and The Phoenix Project; the idea ledger as a subject; the films.
+   Deferred: reopen when the operator opens a research run naming an item;
+   each is unofficial scratch unless the operator files an order.
+7. **The fork's forward Angular routes** (KI-030, KI-031, KI-039, KI-040,
+   KI-067, KI-068, KI-069, KI-070, KI-072, KI-090, KI-091, KI-092, KI-093,
+   KI-094, KI-105, KI-106, KI-107, KI-235; H2). Slice 1 (one order as a
+   formation with a worker card and a card shelf), The Twenty (twenty units,
+   a toolbox rail, flock, arrive and a formation), the operator-model slice
+   (the patience lane on virtual time) and the toolbox, each a scene-only toy
+   the fork files and runs, with the graduation protocol as the fork's
+   decision record; the paste-ready block is the pass's §9. Deferred: reopen
+   on the operator's answers to OD-021 to OD-030, OD-042 and OD-163 and the
+   fork's next pass; core files nothing for the fork.
+8. **The riff deck and the first session** (KI-024, KI-025, KI-117, KI-118;
+   H1→H2). A 60-minute session plan and 27 cards (six round-1 cards, the
+   target model's eleven, the DotLn-Angular design's eight, two from the
+   pass's own routes), copied into the pass's §7; `planning: riff` is not a
+   phrase yet and adopting it is one product 07 paragraph that adds a phrase,
+   so it waits for the first hand-held session. Deferred: reopen when the
+   operator names the session; two riffs promoting nothing retires the mode
+   and keeps the constraint line.
+9. **The proposals pending the operator's answers** (KI-031, KI-050, KI-073,
+   KI-105, KI-106, KI-107, KI-122, KI-133 and the batch of the pass's §10:
+   OD-001, 002, 003, 006, 008, 021, 022, 023, 024, 025, 026, 027, 028, 029,
+   030, 042, 053, 093, 142, 143, 145, 161, 163, and three WO-219 operator
+   packets). Each is recorded with the run's default, the pass's
+   recommendation and the default taken if unanswered. Settled: the operator
+   answered on 2026-10-24 and the pass recorded each answer as a decision
+   (D1 to D27 in the planning document's §10) with its reopening condition;
+   the fork block carries the answers that concern the fork.
+10. **A dispatch inside the host's pasted-content wrapper is not read as a
+    dispatch.** The 2026-10-24 planning dispatch, pasted as one block, was
+    recorded by the prompt hook as `prefix: null`, `role: unknown`, 2,332
+    bytes: the host wrapped the paste in its pasted-content element, and
+    WO-226's first-content-line rule (v0.90.0) skips one leading code fence,
+    not that wrapper, so the pass ran without the planner's role record and
+    `harness usage` answered `no-session`. Shape: read the first non-blank
+    line inside the host's wrapper as well as after one fence, with a case.
+    A candidate for the next order that edits `recordOperatorMessage` in
+    `packages/skeleton/src/harness-host.ts`, or a boy-scout item for
+    WO-220's executor inside its bound; reopen on the next pasted dispatch
+    that goes unread. WO-226-D023 asked exactly this observation of the next
+    live pasted dispatch (its register row is FUP-848fd8e2ac941bc3, whose
+    reopening condition this is), so this item is that row's duplicate and
+    the disposition lives there.
+11. **The context-delta check as a standing rule, and the full re-read of
+    the run's do-not-do lists** (KI-121; H2). Before a candidate is filtered
+    as already decided, the decision id and what changed since are named;
+    unchanged is filtered with the pointer, changed becomes a new decision
+    record, unknown becomes an operator question. The pass applied it by hand
+    to everything it declined (its §13); the run's two adversarial passes'
+    27 do-not-do items were not re-read, since none is taken up. Deferred:
+    reopen at the next pass that takes up a Team Topologies or probe
+    candidate; a standing rule is OD-069, OD-070 and OD-072.
+12. **The settle-or-reopen PolarAxis** (KI-122; H2), the platform half of the
+    operator's 2026-10-22 direction that "never relitigate" is applied too
+    literally: the relitigation rule modelled as one of the ledger's adopted
+    polar axes, inertia against reinvention with asking a friend as a third
+    route, carrying its own reopen condition and a counter (how often it
+    filtered an idea; how often a filtered idea later shipped). Deferred:
+    reopen after two passes record context-delta verdicts by hand (item 11)
+    and one filtered idea later ships.
+13. **A target order's final-review result carries the launchpad's gate
+    row** (the fork's item 2 of 2026-10-23; H1). A target order's records
+    publish reads a launchpad product gate from the review's control event,
+    which a target order's final-review result does not record, so the
+    fork's WO-006 publish needed `npm run resume -- correct 8 --set
+    productGate=<evidenceRef>` after a review-time `npm test -- --review`;
+    `scripts/resume.mjs` admits exactly that correction in `closed`. Shape:
+    the target order's final-review result carries the launchpad's complete
+    row, or the publish accepts a passing row at the integrated identity
+    without a correction. Deferred: reopen at the next order on the target
+    lifecycle, or when a second target order needs the `correct` route.
+14. **The issue intake as a planning input** (operator direction,
+    2026-10-24; D6 of the pass). GitHub issues on this repository are the
+    external idea intake, filed by the operator or by autonomous agents and
+    consumed by planning passes, which list the open issues and dispose each
+    like a fork item (product 07 §Operator-opened planning pass,
+    preconditions item 6, written by the pass); the automated intake board
+    the operator names is the future feature, used the way automated bug
+    reports are, and the idea ledger is drained into the instance's UI
+    rather than fed. Deferred: the pass lists open issues by hand with the forge's CLI until an order makes it a print; reopen when the first issue is filed as an idea, or when WO-193 is next amended, since the fork's request route and the issue intake share a shape.
+15. **A teammate's first hour on a team's fork** (operator direction,
+    2026-10-24, the work setup; WS-002 C5; H2). Teammates who know the
+    product and the codebase, are hesitant or untrained with AI agents and
+    do not yet know the best practices, become productive by cloning the
+    team's one fork, starting a worktree for their own order and letting the
+    role text carry the practice; what the platform owes each of them is
+    product 13's assistance per UIFA role, and the kit README's route is the
+    surface. Deferred: reopen when the operator opens the work instance's
+    first planning pass or asks for the order sooner.
+16. **Research the existing codebase and the organisation's other
+    repositories before any order** (operator direction, 2026-10-24; WS-002
+    C6; H2). The starter, registered on a large and untidy existing
+    codebase, researches what is there, finds the APIs the code references
+    in the organisation's other GitHub repositories and states the approach
+    that was taken, as a research order (product 07 §Research and
+    guided-operator work orders) whose output is a map the operator reads,
+    extending WS-002's C1 census from rule-like statements to the code and
+    its cross-repository dependencies. Deferred: the same reopening as item
+    15.
+17. **The initiative layout before orders are cut** (operator direction,
+    2026-10-24; WS-002 C7; H2). Given one or many user stories or documents
+    describing a feature, a product push or an initiative, the platform lays
+    out what it understands exists, how it understands the initiative and
+    how it sees the way from the present to the goal, before any order is
+    cut; the operator and the team riff on it, trial and error included,
+    and only then are orders filed. Carriers: the target-scoped planning
+    pass (`plan target-publish`), the research order kind, and the riff
+    mode of this pass's §7, whose stated purpose is exactly the back and
+    forth before an order. Deferred: the same reopening as item 15.
+18. **One team fork, many worktrees, parallel merges** (operator direction,
+    2026-10-24; WS-002 C8; H2). A global fork at work that every team
+    member clones, each starting a worktree for their own order, the orders
+    merging in parallel with dependent ones sequenced, so the whole team is
+    involved rather than one developer working serially. Carriers that
+    exist: one writer per worktree on any branch, the lane pairs and
+    parallel orders the sequence admits, WO-100's portfolio ceilings, the
+    workstream document and index grouping WO-080 files, and the UIFA roles
+    for the people; what does not exist is an instance with several
+    operators, each on their own clone, whose control segments merge. Shape:
+    a member identity on the control row and the writer reservation, the
+    per-order segments merged by append across clones, and final review one
+    at a time per order as today. Deferred: the same reopening as item 15.
+

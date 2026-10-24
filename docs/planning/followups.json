@@ -10852,6 +10852,14 @@
           "reopenWhen": "R2, a live denial of the exact helper, or an outside write admitted without a grant",
           "targets": [],
           "at": "2026-10-01T15:47:39.152Z"
+        },
+        {
+          "sourceRevision": 14,
+          "status": "deferred",
+          "reason": "Source revision 14 read at 49d8c4c3 (product 03's candidate text changed with WO-219's write-backs); the candidate and its earlier reason stand: WO-178-D002's exact hook admission, host deny and ask rules still apply, broader DotLn-owned authority remains the R2 candidate. [2026-10-24 planning pass on the intake mining run (docs/planning/intake-mining-run-routing-2026-10-24.md section 15)]",
+          "reopenWhen": "R2, a live denial of the exact helper, or an outside write admitted without a grant",
+          "targets": [],
+          "at": "2026-10-24T04:18:35.190Z"
         }
       ]
     },
@@ -25740,6 +25748,14 @@
           "reopenWhen": "Review of the WO-219 pull request chooses the cross-harness record policy, a host exposes a mode readback, or an actual spaced-spelling mismatch is captured at a named matcher.",
           "targets": [],
           "at": "2026-10-23T16:09:34.820Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "The WO-219 pull request merged with no review or comment; put to the operator on 2026-10-24, who declined to carry it; decided by the pass (D24): each harness keeps its own meaning (Codex an effort value, Claude a mode) and the old spaced-spelling mismatch stays recorded as unlocated. [2026-10-24 planning pass on the intake mining run (docs/planning/intake-mining-run-routing-2026-10-24.md section 10)]",
+          "reopenWhen": "a spaced-spelling mismatch is captured at a named matcher",
+          "targets": [],
+          "at": "2026-10-24T04:18:35.607Z"
         }
       ]
     },
@@ -25814,6 +25830,14 @@
           "reopenWhen": "At review of the WO-219 pull request the operator decides whether the count remains an advisory estimate under its stated limit or a structured field returns; any later new measure uses a fresh battery.",
           "targets": [],
           "at": "2026-10-23T16:09:35.247Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "The WO-219 pull request merged with no review or comment; put to the operator on 2026-10-24, who declined to carry it; decided by the pass (D25): the operator-step count stays a labelled advisory estimate under its stated limit, and a structured field returns only when a pass needs the count for a decision. [2026-10-24 planning pass on the intake mining run (docs/planning/intake-mining-run-routing-2026-10-24.md section 10)]",
+          "reopenWhen": "a pass needs the operator-step count for a decision",
+          "targets": [],
+          "at": "2026-10-24T04:18:35.709Z"
         }
       ]
     },
@@ -30544,6 +30568,14 @@
           "reopenWhen": "At review of the WO-219 pull request, the operator chooses the Claude representation/readback policy and whether an authorized canonical historical correction is due; a host-provided mode readback also reopens this packet.",
           "targets": [],
           "at": "2026-10-23T16:09:32.976Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "The WO-219 pull request (#237) merged on 2026-10-23 with no review or comment; put to the operator on 2026-10-24, who declined to carry it (shifting the burden); decided by the pass (D23): the Claude mode is recorded as its own attestation field once the host exposes a readback, and WO-186's historical VER-001 actor is not rewritten. [2026-10-24 planning pass on the intake mining run (docs/planning/intake-mining-run-routing-2026-10-24.md section 10)]",
+          "reopenWhen": "a host exposes a mode readback",
+          "targets": [],
+          "at": "2026-10-24T04:18:35.401Z"
         }
       ]
     },
@@ -42564,6 +42596,14 @@
           "reopenWhen": "WO-219's first verification fails on more than a third of its rows, or its implementation passes 20 hours",
           "targets": [],
           "at": "2026-10-20T20:18:31.359Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-219 closed on 2026-10-23 (v0.94.0) with the condition unmet: its first verification failed on one criterion for one row of fifty, and implementation took 6.1 hours against the row's 20. [2026-10-24 planning pass on the intake mining run (docs/planning/intake-mining-run-routing-2026-10-24.md section 2)]",
+          "reopenWhen": "a later batch order exceeds either bound",
+          "targets": [],
+          "at": "2026-10-24T04:18:35.505Z"
         }
       ]
     },
@@ -43137,6 +43177,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-10-22T11:47:01.611Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Its condition occurred (WO-226-D025: the carried-runtime restore measured 501.788 ms in the fixture export, under 10 s). Weighed: WO-226's update --finish already bootstraps main after a merged update in one command, so a SessionStart preparation would remove one typed command per update at the cost of a hook that runs in every session under a 15 s timeout; no order filed on the operator's direction; WO-207 (an instance's kit updates) is the order on this surface. [2026-10-24 planning pass on the intake mining run (docs/planning/intake-mining-run-routing-2026-10-24.md section 15)]",
+          "reopenWhen": "WO-207's activation or next amendment, where the preparation is weighed as a step, or an instance reports a hand bootstrap after update --finish",
+          "targets": [],
+          "at": "2026-10-24T04:18:35.297Z"
         }
       ]
     },
@@ -43573,7 +43621,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Boarded by a closed order's decision (the row's source); by the operator's 2026-10-17 direction a boarded row is resolved by a work order, and the next order editing its surface takes it; no order filed in the 2026-10-24 pass on the operator's direction (none directed). [2026-10-24 planning pass on the intake mining run (docs/planning/intake-mining-run-routing-2026-10-24.md section 15)]",
+          "reopenWhen": "A session told to run the plain spelling of a release close runs another spelling, or a repair restores the hint with its case; or the next order editing registeredTargetNearMiss or releaseCloseAdmission in packages/skeleton",
+          "targets": [],
+          "at": "2026-10-24T04:18:36.940Z"
+        }
+      ]
     },
     {
       "id": "FUP-eed385be08e5bdd9",
@@ -43588,7 +43645,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Boarded by a closed order's decision (the row's source); by the operator's 2026-10-17 direction a boarded row is resolved by a work order, and the next order editing its surface takes it; no order filed in the 2026-10-24 pass on the operator's direction (none directed). [2026-10-24 planning pass on the intake mining run (docs/planning/intake-mining-run-routing-2026-10-24.md section 15)]",
+          "reopenWhen": "A role grows past its pin without the oracle changing, or a ceiling breach appears in meta --check with no decision boarding it; or the next order touching scripts/test-gate-followups.mjs or re-minting the role oracle",
+          "targets": [],
+          "at": "2026-10-24T04:18:38.674Z"
+        }
+      ]
     },
     {
       "id": "FUP-848fd8e2ac941bc3",
@@ -43603,7 +43669,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Its reopening condition occurred on 2026-10-24: the planning dispatch, pasted as one block, was recorded prefix null, role unknown, 2,332 bytes, because the host wrapped the paste in its pasted-content element and the first-line rule skips one fence, not that wrapper; harness usage answered no-session for the pass. Shape: admit the host's framing line as the fence is admitted, with a case. No order filed on the operator's direction (none directed). [2026-10-24 planning pass on the intake mining run (docs/planning/intake-mining-run-routing-2026-10-24.md section 1)]",
+          "reopenWhen": "the next order that edits recordOperatorMessage in packages/skeleton/src/harness-host.ts or harnessPromptLine in packages/compiler/src/harness.ts, WO-220's activation (its executor may take it inside the Boy Scout bound), or a second pasted dispatch recorded prefix null",
+          "targets": [],
+          "at": "2026-10-24T04:18:37.556Z"
+        }
+      ]
     },
     {
       "id": "FUP-ca1f0cdb7c785d6a",
@@ -43642,7 +43717,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Boarded by a closed order's decision (the row's source); by the operator's 2026-10-17 direction a boarded row is resolved by a work order, and the next order editing its surface takes it; no order filed in the 2026-10-24 pass on the operator's direction (none directed). [2026-10-24 planning pass on the intake mining run (docs/planning/intake-mining-run-routing-2026-10-24.md section 15)]",
+          "reopenWhen": "Product 02 is next edited for the private-list contract, or an operator needs that paragraph to explain publication confirmation; or the next authorized product-document edit of product 02 for the private-list contract (this pass edited products 04 and 07 only, on the operator's direction)",
+          "targets": [],
+          "at": "2026-10-24T04:18:37.453Z"
+        }
+      ]
     },
     {
       "id": "FUP-b499375b96131fba",
@@ -43657,7 +43741,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Boarded by a closed order's decision (the row's source); by the operator's 2026-10-17 direction a boarded row is resolved by a work order, and the next order editing its surface takes it; no order filed in the 2026-10-24 pass on the operator's direction (none directed). [2026-10-24 planning pass on the intake mining run (docs/planning/intake-mining-run-routing-2026-10-24.md section 15)]",
+          "reopenWhen": "The identifier normalizer is revised or an instance encounters an invisible-character identifier in an outward artifact; or the next order revising the identifier normalizer",
+          "targets": [],
+          "at": "2026-10-24T04:18:38.064Z"
+        }
+      ]
     },
     {
       "id": "FUP-182e789079d09c25",
@@ -43696,7 +43789,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Boarded by a closed order's decision (the row's source); by the operator's 2026-10-17 direction a boarded row is resolved by a work order, and the next order editing its surface takes it; no order filed in the 2026-10-24 pass on the operator's direction (none directed). [2026-10-24 planning pass on the intake mining run (docs/planning/intake-mining-run-routing-2026-10-24.md section 15)]",
+          "reopenWhen": "An instance meets a review word in a target planning publication, or the planning route is next edited; or the next outward-lint or target-planning order",
+          "targets": [],
+          "at": "2026-10-24T04:18:37.043Z"
+        }
+      ]
     },
     {
       "id": "FUP-1b94e79e02e54e70",
@@ -43711,7 +43813,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Boarded by a closed order's decision (the row's source); by the operator's 2026-10-17 direction a boarded row is resolved by a work order, and the next order editing its surface takes it; no order filed in the 2026-10-24 pass on the operator's direction (none directed). [2026-10-24 planning pass on the intake mining run (docs/planning/intake-mining-run-routing-2026-10-24.md section 15)]",
+          "reopenWhen": "An operator meets local-terms.configuration on a publish and cannot locate the line; or the next order editing the outward lint (scripts/lib/outward-lint.mjs or scripts/lib/target-publish.mjs)",
+          "targets": [],
+          "at": "2026-10-24T04:18:36.121Z"
+        }
+      ]
     },
     {
       "id": "FUP-92ba1ed0802639ce",
@@ -43726,7 +43837,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Boarded by a closed order's decision (the row's source); by the operator's 2026-10-17 direction a boarded row is resolved by a work order, and the next order editing its surface takes it; no order filed in the 2026-10-24 pass on the operator's direction (none directed). [2026-10-24 planning pass on the intake mining run (docs/planning/intake-mining-run-routing-2026-10-24.md section 15)]",
+          "reopenWhen": "A stored body with CR line endings reaches release prepare or regeneratedPullRequestBody, or an instance's repository sets core.whitespace with cr-at-eol; or the next github-body or release-prepare order",
+          "targets": [],
+          "at": "2026-10-24T04:18:37.762Z"
+        }
+      ]
     },
     {
       "id": "FUP-1d0c6e7432372b1a",
@@ -43813,7 +43933,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Boarded by a closed order's decision (the row's source); by the operator's 2026-10-17 direction a boarded row is resolved by a work order, and the next order editing its surface takes it; no order filed in the 2026-10-24 pass on the operator's direction (none directed). [2026-10-24 planning pass on the intake mining run (docs/planning/intake-mining-run-routing-2026-10-24.md section 15)]",
+          "reopenWhen": "A carried console schema test fails in an export, or another nested node --test child in the launchpad fixtures is found to pass without running; or WO-220's activation (its executor may take this console row inside the Boy Scout bound) or the next order editing the launchpad fixtures",
+          "targets": [],
+          "at": "2026-10-24T04:18:36.531Z"
+        }
+      ]
     },
     {
       "id": "FUP-ce1f662a6b966a2a",
@@ -43828,7 +43957,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Boarded by a closed order's decision (the row's source); by the operator's 2026-10-17 direction a boarded row is resolved by a work order, and the next order editing its surface takes it; no order filed in the 2026-10-24 pass on the operator's direction (none directed). [2026-10-24 planning pass on the intake mining run (docs/planning/intake-mining-run-routing-2026-10-24.md section 15)]",
+          "reopenWhen": "An instance reports an unavailable console source as 'invalid format' whose command was killed or exceeded its output limit; or WO-220's activation (its executor may take this console row inside the Boy Scout bound) or the next order editing packages/console/src/values.ts",
+          "targets": [],
+          "at": "2026-10-24T04:18:38.266Z"
+        }
+      ]
     },
     {
       "id": "FUP-1fcb24c8dc65eacc",
@@ -44002,7 +44140,516 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Receipt 052's criterion:2 known issue for WO-219 is closed by WO-219's close (v0.94.0): its first verification failed on one product write-back under criterion 6, the paired controls held (20 of 109 replayed), and the repair closed it. Decided: no per-row write-back check is added, since the verifier's documentation-write-back class caught the one row at the cost of one repair; the elapsed time per code byte (47.999 against WO-217's 102.9 at VER-001) needs no bound or split. [2026-10-24 planning pass on the intake mining run (docs/planning/intake-mining-run-routing-2026-10-24.md section 15)]",
+          "reopenWhen": "another follow-up batch's first verification fails on a write-back, or WO-220's first verification fails",
+          "targets": [],
+          "at": "2026-10-24T04:18:37.862Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-4d04c64ea5ae3fa0",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-intake-mining-runs-take-in-recorded-2026-10-24::10ac99178e3a48d1decf5ccfb3531ddb1f8f486ea70767ff7327c15fd30160d4",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "093fbeef3b6b074fa7dbad07170adf68de7443b1e6afed5aeed3c5822acab97b",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-intake-mining-runs-take-in-recorded-2026-10-24",
+          "title": "The promotion ledger and the held-class register",
+          "summary": "4. **The promotion ledger and the held-class register** (KI-050, KI-051, KI-053; H2). A hand-written control file with every decision class held and zero rows, one typed operator-written row per move with its evidence, bound, return condition and capture digest; promotions measured on later escapes, reverts and corrections, never on agreement with the judges; classes locked by sample size, never by category. Deferred: reopen when OD-001 (the merge) and OD-002 (which classes first) are answered and the stage 1 lines of item 2 have been read for two passes.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "A hand-written file of decision classes and moves, starting from no class held by construction (the operator's D14 of 2026-10-24) with the merge alone the operator's for now (D15) and promotions judged by results (D16). [2026-10-24 planning pass on the intake mining run (docs/planning/intake-mining-run-routing-2026-10-24.md section 6 item 4)]",
+          "reopenWhen": "the merge's signal (D15) or the first class measured by results (D16) exists",
+          "targets": [],
+          "at": "2026-10-24T04:18:36.738Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-34bee344f576ba39",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-intake-mining-runs-take-in-recorded-2026-10-24::2ebf49bb4bc45642526113d760d85ceeecae57540fda142f52d2d905371a1083",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "cc539b37e22e564be22d8f944187bbf3d196df23ad2d758130b4a08b18faccfc",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-intake-mining-runs-take-in-recorded-2026-10-24",
+          "title": "The Gödel count",
+          "summary": "3. **The Gödel count** (KI-176; H1→H2), re-targeted from WO-227, which has merged: one line per order, pass, release and colony summing every time the operator asserted acceptability from outside the rules (off-ramps, overridden holds, override records), which `plan failures` already counts in its record totals; the first hand count is 9 typed escapes over 165 orders plus the run's two unrecorded override windows. Deferred: reopen when a pass wants the sum per order, pass or colony, or when WO-088's generated source lands; the next order editing `scripts/lib/plan-failures.mjs` or the status projection is its home.",
+          "missing": false
+        },
+        {
+          "hash": "8d7210695d42ee4316706ae61ce89570a3dbf8b1f014f5faaf97da5ad45eee99",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-intake-mining-runs-take-in-recorded-2026-10-24",
+          "title": "The Gödel count",
+          "summary": "3. **The Gödel count** (KI-176; H1→H2), re-targeted from WO-227, which has merged: one line per order, pass, release and colony summing every time the operator asserted acceptability from outside the rules (off-ramps, overridden holds, override records), which `plan failures` already counts in its record totals; the first hand count is 9 typed escapes over 165 orders plus the run's two unrecorded override windows. Deferred: reopen when a pass wants the sum per order, pass or colony, or when WO-088's generated source lands.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Re-targeted from WO-227, which merged: one line per order, pass, release and colony summing the escapes plan failures already counts; the first hand count is 9 typed escapes over 165 orders plus the run's two unrecorded override windows (section 13). [2026-10-24 planning pass on the intake mining run (docs/planning/intake-mining-run-routing-2026-10-24.md section 6 item 3)]",
+          "reopenWhen": "a pass wants the escape sum per order, pass or colony; WO-088's generated source lands; or the next order edits scripts/lib/plan-failures.mjs or the status projection",
+          "targets": [],
+          "at": "2026-10-24T04:18:36.634Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Re-targeted from WO-227, which merged: one line per order, pass, release and colony summing the escapes plan failures already counts; the first hand count is 9 typed escapes over 165 orders plus the run's two unrecorded override windows (section 13). [2026-10-24 planning pass on the intake mining run (docs/planning/intake-mining-run-routing-2026-10-24.md section 6 item 3)]",
+          "reopenWhen": "a pass wants the escape sum per order, pass or colony; WO-088's generated source lands; or the next order edits scripts/lib/plan-failures.mjs or the status projection",
+          "targets": [],
+          "at": "2026-10-24T04:45:48.100Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-21f68ddc59cdbe7c",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-intake-mining-runs-take-in-recorded-2026-10-24::4b1c5da762f58a05ab540e8ac1babd9325ac6a51d47d849ce64fb1bddd9b4d47",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "79f40de3aad31de68d3da82d50e76685a3a0790ad2148ee3f45eb294a6e9aeca",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-intake-mining-runs-take-in-recorded-2026-10-24",
+          "title": "The proposals pending the operator's answers",
+          "summary": "9. **The proposals pending the operator's answers** (KI-031, KI-050, KI-073, KI-105, KI-106, KI-107, KI-122, KI-133 and the batch of the pass's §10: OD-001, 002, 003, 006, 008, 021, 022, 023, 024, 025, 026, 027, 028, 029, 030, 042, 053, 093, 142, 143, 145, 161, 163, and three WO-219 operator packets). Each is recorded with the run's default, the pass's recommendation and the default taken if unanswered. Deferred: reopen on the answers; the pass that receives them writes a decision record for each answered one, naming the dispatch and its reopening condition.",
+          "missing": false
+        },
+        {
+          "hash": "2112dbad19f9e87f3f7507adcfd084f3664c8ba75e13f1d396672b9ed4236d5e",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-intake-mining-runs-take-in-recorded-2026-10-24",
+          "title": "The proposals pending the operator's answers",
+          "summary": "9. **The proposals pending the operator's answers** (KI-031, KI-050, KI-073, KI-105, KI-106, KI-107, KI-122, KI-133 and the batch of the pass's §10: OD-001, 002, 003, 006, 008, 021, 022, 023, 024, 025, 026, 027, 028, 029, 030, 042, 053, 093, 142, 143, 145, 161, 163, and three WO-219 operator packets). Each is recorded with the run's default, the pass's recommendation and the default taken if unanswered. Settled: the operator answered on 2026-10-24 and the pass recorded each answer as a decision (D1 to D27 in the planning document's §10) with its reopening condition; the fork block carries the answers that concern the fork.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "The operator answered on 2026-10-24 and the pass recorded each answer as a decision (D1 to D27 of its section 10) with its reopening condition. [2026-10-24 planning pass on the intake mining run (docs/planning/intake-mining-run-routing-2026-10-24.md section 10)]",
+          "reopenWhen": "a decision of the pass's section 10 names its own reopening condition and it occurs",
+          "targets": [],
+          "at": "2026-10-24T04:18:36.430Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-e8d925b3dcbebc40",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-intake-mining-runs-take-in-recorded-2026-10-24::69817ef5f31ee12ea945b1b943d2db199010e919be2604ad2110ba75fb699c13",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "a88038fd5805cc928829ffc0a35a367a6e0360df5246be615107afcff74d0a2d",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-intake-mining-runs-take-in-recorded-2026-10-24",
+          "title": "The settle-or-reopen PolarAxis",
+          "summary": "12. **The settle-or-reopen PolarAxis** (KI-122; H2), the platform half of the operator's 2026-10-22 direction that \"never relitigate\" is applied too literally: the relitigation rule modelled as one of the ledger's adopted polar axes, inertia against reinvention with asking a friend as a third route, carrying its own reopen condition and a counter (how often it filtered an idea; how often a filtered idea later shipped). Deferred: reopen after two passes record context-delta verdicts by hand (item 11) and one filtered idea later ships.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "The platform half of the operator's 2026-10-22 direction on relitigation; the hand check is its first probe. [2026-10-24 planning pass on the intake mining run (docs/planning/intake-mining-run-routing-2026-10-24.md section 6 item 12)]",
+          "reopenWhen": "two passes have recorded context-delta verdicts by hand and one filtered idea later ships",
+          "targets": [],
+          "at": "2026-10-24T04:18:38.571Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-785c5b2fe5344d4d",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-intake-mining-runs-take-in-recorded-2026-10-24::7f3caaf3d2a68cc708384e0dd090e5abaef35a2da284708d72b19c5f48613b47",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "9b0a43df33854fa9cbf334057c133a7ac963fcae6b7837db73ea1951cfb71830",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-intake-mining-runs-take-in-recorded-2026-10-24",
+          "title": "The research queue of the run",
+          "summary": "6. **The research queue of the run** (KI-095, KI-244; H2). Thirteen items sized under the operator's rule of at most twenty agents per book or concept, listed in the pass's §8: toolify the catalog; The Art of War; Gladwell book by book; toys for six mined sources; the operator-model program's step 1; thirteen per-work surface designs; the four later probes judged; the unchecked register rows; the model-knowledge map rows; Team Topologies from an authorized copy and GEB with the operator; Jujutsu Kaisen and The Phoenix Project; the idea ledger as a subject; the films. Deferred: reopen when the operator opens a research run naming an item; each is unofficial scratch unless the operator files a",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Thirteen research items sized under the twenty-agent rule, copied into the pass's section 8; each is unofficial scratch unless the operator files an order or an issue. [2026-10-24 planning pass on the intake mining run (docs/planning/intake-mining-run-routing-2026-10-24.md section 8)]",
+          "reopenWhen": "the operator opens a research run naming an item of the queue, or files it as an issue",
+          "targets": [],
+          "at": "2026-10-24T04:18:37.349Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-e770ccc9bb005829",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-intake-mining-runs-take-in-recorded-2026-10-24::a15365358ec9f5f0accf72647100c50350bed5710b8c7a96a074ea8623ed558c",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "dbc118bd18cb22122b1f236aca0d0cf086a302ef5cecdb41ef1b084c855a2793",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-intake-mining-runs-take-in-recorded-2026-10-24",
+          "title": "WO-083's before-numbers into WO-192's Cost line",
+          "summary": "5. **WO-083's before-numbers into WO-192's Cost line** (KI-225; H1). The pass measured them at `49d8c4c3` (its §11: 6.25 implied phrases per order over 165 orders, 6.94 since 2026-10-08; a 30.5% hand-gap share, 33.2% since 2026-10-08; medians per transition). Deferred: reopen on the operator's answer to OD-093; the measurement stands in the planning document either way.",
+          "missing": false
+        },
+        {
+          "hash": "27b50881ec9eb1a464db5abd2f1a91a023c60d5e7f02d7a52b883f721f09bbc0",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-intake-mining-runs-take-in-recorded-2026-10-24",
+          "title": "WO-083's before-numbers into WO-192's Cost line",
+          "summary": "5. **WO-083's before-numbers into WO-192's Cost line** (KI-225; H1). The pass measured them at `49d8c4c3` (its §11: 6.25 implied phrases per order over 165 orders, 6.94 since 2026-10-08; a 30.5% hand-gap share, 33.2% since 2026-10-08; medians per transition). Settled: the operator answered OD-093 on 2026-10-24 (D20) and the pass wrote the before-numbers into WO-192's Cost line with the reproducibility rule; the measurement stands in the planning document.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "The operator answered OD-093 on 2026-10-24 (D20): the pass wrote the before-numbers measured at 49d8c4c3 (6.25 implied phrases per order, 6.94 since 2026-10-08; hand-gap share 30.5% and 33.2%) into WO-192's Cost line with the rule that they stay reproducible from the control segments. [2026-10-24 planning pass on the intake mining run (docs/planning/intake-mining-run-routing-2026-10-24.md sections 10 and 11)]",
+          "reopenWhen": "WO-192's Cost line is next rewritten, or the segments' method changes",
+          "targets": [],
+          "at": "2026-10-24T04:18:38.470Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-c713e7e97964d316",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-intake-mining-runs-take-in-recorded-2026-10-24::b11c73fc189b33fdcda48671bfd6b7e517bf4ca0c217e8e2ea289fd61bb16b95",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "26a5788041551b8fb5ee997e38b0deec5ae3fdafa089b0a242d7c43a28950b83",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-intake-mining-runs-take-in-recorded-2026-10-24",
+          "title": "The Order Drive's folds into WO-192",
+          "summary": "1. **The Order Drive's folds into WO-192** (KI-006, KI-024; H1→H2). WO-192's router is the first station after the operator; the run reads it as a process manager over the order's control segment with a dead-letter channel, a close packet that replaces reading the reports, a certification readback and a veto window, and asks that its phase and stop lists be diffed against the two lifecycles that already ran without a phrase (WO-118's resident loop and the vertical) rather than designed fresh, sharing one process-definition table with the resident host. Deferred: reopen when WO-192 is next amended or activated, or when OD-013 (lanes above rung 5) and OD-049 (the resident as host) are answered",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Folds into WO-192 at its next amendment (the shared process-definition table with the resident host, the dead-letter channel, the close packet, the certification readback and veto window), with the diff against WO-118's fourteen phases and the vertical's stations as the first probe (riff card T11). [2026-10-24 planning pass on the intake mining run (docs/planning/intake-mining-run-routing-2026-10-24.md section 6 item 1)]",
+          "reopenWhen": "WO-192 is next amended or activated, or OD-013 (lanes above rung 5) and OD-049 (the resident as host) are answered",
+          "targets": [],
+          "at": "2026-10-24T04:18:38.164Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-007e1c4be6bff6b0",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-intake-mining-runs-take-in-recorded-2026-10-24::c063edb713658ffb532afa26660a1bc48676710bf9084928dd8aa604b627228c",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "a5fd344c2fd95350be62a22793005562533bcceaf816af94fee34d66b21e61d6",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-intake-mining-runs-take-in-recorded-2026-10-24",
+          "title": "The context-delta check as a standing rule, and the full re-read of the run's do-not-do lists",
+          "summary": "11. **The context-delta check as a standing rule, and the full re-read of the run's do-not-do lists** (KI-121; H2). Before a candidate is filtered as already decided, the decision id and what changed since are named; unchanged is filtered with the pointer, changed becomes a new decision record, unknown becomes an operator question. The pass applied it by hand to everything it declined (its §13); the run's two adversarial passes' 27 do-not-do items were not re-read, since none is taken up. Deferred: reopen at the next pass that takes up a Team Topologies or probe candidate; a standing rule is OD-069, OD-070 and OD-072.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Applied by hand to everything the pass declined (its section 13); the run's 27 do-not-do items were not re-read since none is taken up. [2026-10-24 planning pass on the intake mining run (docs/planning/intake-mining-run-routing-2026-10-24.md section 13)]",
+          "reopenWhen": "the next pass that takes up a Team Topologies or probe candidate from the run",
+          "targets": [],
+          "at": "2026-10-24T04:18:35.809Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-1dde4c9dc656b93e",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-intake-mining-runs-take-in-recorded-2026-10-24::d000d7c2a9066a19bf1336d312950778ecdb12332c4460caa84983177fab3a4e",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "a3c35f90c2afe1cf9c8a445bad228329e0ba4dd170c67617ae668d64fbf974ea",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-intake-mining-runs-take-in-recorded-2026-10-24",
+          "title": "A dispatch inside the host's pasted-content wrapper is not read as a dispatch.",
+          "summary": "10. **A dispatch inside the host's pasted-content wrapper is not read as a dispatch.** The 2026-10-24 planning dispatch, pasted as one block, was recorded by the prompt hook as `prefix: null`, `role: unknown`, 2,332 bytes: the host wrapped the paste in its pasted-content element, and WO-226's first-content-line rule (v0.90.0) skips one leading code fence, not that wrapper, so the pass ran without the planner's role record and `harness usage` answered `no-session`. Shape: read the first non-blank line inside the host's wrapper as well as after one fence, with a case. A candidate for the next order that edits `recordOperatorMessage` in `packages/skeleton/src/harness-host.ts`, or a boy-scout it",
+          "missing": false
+        },
+        {
+          "hash": "5e6ba3e59239aa6c58ae41b81af1577ce93feb1330df48945cf6691f3d7870cf",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-intake-mining-runs-take-in-recorded-2026-10-24",
+          "title": "A dispatch inside the host's pasted-content wrapper is not read as a dispatch.",
+          "summary": "10. **A dispatch inside the host's pasted-content wrapper is not read as a dispatch.** The 2026-10-24 planning dispatch, pasted as one block, was recorded by the prompt hook as `prefix: null`, `role: unknown`, 2,332 bytes: the host wrapped the paste in its pasted-content element, and WO-226's first-content-line rule (v0.90.0) skips one leading code fence, not that wrapper, so the pass ran without the planner's role record and `harness usage` answered `no-session`. Shape: read the first non-blank line inside the host's wrapper as well as after one fence, with a case. A candidate for the next order that edits `recordOperatorMessage` in `packages/skeleton/src/harness-host.ts`, or a boy-scout it",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "duplicate",
+          "reason": "The observation WO-226-D023 asked the next live pasted dispatch to make, made by the 2026-10-24 pass; its register row FUP-848fd8e2ac941bc3 carries the disposition. [2026-10-24 planning pass on the intake mining run (docs/planning/intake-mining-run-routing-2026-10-24.md section 1)]",
+          "reopenWhen": "the next order that edits the prompt hook's first-line rule, WO-220's activation, or a second pasted dispatch recorded prefix null",
+          "targets": [
+            "FUP-848fd8e2ac941bc3"
+          ],
+          "at": "2026-10-24T04:18:36.327Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-52c65619d84df6ff",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-intake-mining-runs-take-in-recorded-2026-10-24::d4113191c32bbd9d48d61842161b7e30241e053948e0c07170019d130f482720",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "992a1111450554a3aa9021dfd42bdde1d9816549ed2bd20e43b71f2f4c470ea1",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-intake-mining-runs-take-in-recorded-2026-10-24",
+          "title": "Stage 1's two asked instruments as plan start prints",
+          "summary": "2. **Stage 1's two asked instruments as `plan start` prints** (KI-021, KI-120, KI-124; H1). The constraint-now line in a fixed shape (what binds, its evidence, when it last moved and from what, what would show it moved) and a read-only phrase count over the session journals (counts only, no text) printed beside the failure counts, so a phrase at zero for three passes is a retirement candidate. Both are written by hand in the pass's §2, the first of two hand writings. Deferred: reopen when two passes have written both by hand and the next pass reads them, or on the operator's word; a standing rule for the line is OD-081.",
+          "missing": false
+        },
+        {
+          "hash": "f39254873059028d4d843bb8b73836cf61397b777d6ebf914d5c0bc170c5583c",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-intake-mining-runs-take-in-recorded-2026-10-24",
+          "title": "Stage 1's two asked instruments as plan start prints",
+          "summary": "2. **Stage 1's two asked instruments as `plan start` prints** (KI-021, KI-120, KI-124; H1). The constraint-now line in a fixed shape (what binds, its evidence, when it last moved and from what, what would show it moved) and a read-only phrase count over the session journals (counts only, no text) printed beside the failure counts, so a phrase at zero for three passes is a retirement candidate. Both are written by hand in the pass's §2, the first of two hand writings. Deferred: reopen when two passes have written both by hand and the next pass reads them, or on the operator's word; the constraint line stays hand-written until then.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "The constraint-now line and the phrase-use line were written by hand in the pass's section 2, the first of two hand writings before any plan start print is built; the read-only phrase count over the journals is counts only. [2026-10-24 planning pass on the intake mining run (docs/planning/intake-mining-run-routing-2026-10-24.md section 6 item 2)]",
+          "reopenWhen": "two passes have written the constraint-now and phrase-use lines by hand (the 2026-10-24 pass is the first) and the next pass reads them, or the operator asks for the print",
+          "targets": [],
+          "at": "2026-10-24T04:18:36.839Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "The constraint-now line and the phrase-use line were written by hand in the pass's section 2, the first of two hand writings before any plan start print is built; the read-only phrase count over the journals is counts only. [2026-10-24 planning pass on the intake mining run (docs/planning/intake-mining-run-routing-2026-10-24.md section 6 item 2)]",
+          "reopenWhen": "two passes have written the constraint-now and phrase-use lines by hand (the 2026-10-24 pass is the first) and the next pass reads them, or the operator asks for the print",
+          "targets": [],
+          "at": "2026-10-24T04:45:48.208Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-b3194ab4c57b34ca",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-intake-mining-runs-take-in-recorded-2026-10-24::ed02ea626bd87d55fe610102096d35e7e9b69f4d7d8c12cf88aa32f6b1c42110",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "32ba6ad831be7bdfaee244c994c2829ef6ff64ed61c25a016d3ddf4587666130",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-intake-mining-runs-take-in-recorded-2026-10-24",
+          "title": "The riff deck and the first session",
+          "summary": "8. **The riff deck and the first session** (KI-024, KI-025, KI-117, KI-118; H1→H2). A 60-minute session plan and 27 cards (six round-1 cards, the target model's eleven, the DotLn-Angular design's eight, two from the pass's own routes), copied into the pass's §7; `planning: riff` is not a phrase yet and adopting it is one product 07 paragraph that adds a phrase, so it waits for the first hand-held session. Deferred: reopen when the operator names the session; two riffs promoting nothing retires the mode and keeps the constraint line.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "A 60-minute session plan and 27 cards copied into the pass's section 7; planning: riff is not a phrase and adopting it waits for the first hand-held session. [2026-10-24 planning pass on the intake mining run (docs/planning/intake-mining-run-routing-2026-10-24.md section 7)]",
+          "reopenWhen": "the operator names the first riff session; two riffs promoting nothing retires the mode",
+          "targets": [],
+          "at": "2026-10-24T04:18:37.963Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-d9bd536a83932945",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-intake-mining-runs-take-in-recorded-2026-10-24::fcbd17b4e5e992beb3b01e29326114bcc17d6d8d19373f16f4764ca1ddd01bd7",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "88299a5ba74638a64df0e8c0204a21bc46299dba18610368a14c281ba80f232d",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-intake-mining-runs-take-in-recorded-2026-10-24",
+          "title": "The fork's forward Angular routes",
+          "summary": "7. **The fork's forward Angular routes** (KI-030, KI-031, KI-039, KI-040, KI-067, KI-068, KI-069, KI-070, KI-072, KI-090, KI-091, KI-092, KI-093, KI-094, KI-105, KI-106, KI-107, KI-235; H2). Slice 1 (one order as a formation with a worker card and a card shelf), The Twenty (twenty units, a toolbox rail, flock, arrive and a formation), the operator-model slice (the patience lane on virtual time) and the toolbox, each a scene-only toy the fork files and runs, with the graduation protocol as the fork's decision record; the paste-ready block is the pass's §9. Deferred: reopen on the operator's answers to OD-021 to OD-030, OD-042 and OD-163 and the fork's next pass; core files nothing for the for",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "The corrected subject of the DotLn-Angular work in the operator's words of 2026-10-24 (one app with sub-apps; the sandbox where ideas live first; the machinery view's purpose; the soldier scene; the digital twin), handed to the fork as the paste-ready block of the pass's section 9; core files nothing for it. [2026-10-24 planning pass on the intake mining run (docs/planning/intake-mining-run-routing-2026-10-24.md sections 9 and 10)]",
+          "reopenWhen": "the fork's next pass reads the block, or the operator changes a decision of the pass's section 10",
+          "targets": [],
+          "at": "2026-10-24T04:18:38.367Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-67b423fdf450129c",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-intake-mining-runs-take-in-recorded-2026-10-24::1f389bce929904b823ac2ecb128c569cc2801731c6ae3b45de2daecf4f08c0fa",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "08b715a437c63641792d27c95a04c8ac9bd9b6497b7d8ff601447b761f10d6a7",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-intake-mining-runs-take-in-recorded-2026-10-24",
+          "title": "Research the existing codebase and the organisation's other repositories before any order",
+          "summary": "16. **Research the existing codebase and the organisation's other repositories before any order** (operator direction, 2026-10-24; WS-002 C6; H2). The starter, registered on a large and untidy existing codebase, researches what is there, finds the APIs the code references in the organisation's other GitHub repositories and states the approach that was taken, as a research order (product 07 §Research and guided-operator work orders) whose output is a map the operator reads, extending WS-002's C1 census from rule-like statements to the code and its cross-repository dependencies. Deferred: the same reopening as item 15.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WS-002 C6, from the operator's direction of 2026-10-24; widens C1's census to the code and its cross-repository dependencies. [2026-10-24 planning pass on the intake mining run (docs/planning/intake-mining-run-routing-2026-10-24.md section 17)]",
+          "reopenWhen": "the operator opens the work instance's first planning pass or asks for the order sooner",
+          "targets": [],
+          "at": "2026-10-24T04:18:37.146Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-75d361f43a699228",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-intake-mining-runs-take-in-recorded-2026-10-24::52357c2d09cb981b5ac7929abdeeb888fe4848005f36f77421ad2880f8d82c30",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "4e4c19ed7a05fc76f2027f288d0d0ac48c06e739e41216f003ecd5baf2ba2152",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-intake-mining-runs-take-in-recorded-2026-10-24",
+          "title": "The issue intake as a planning input",
+          "summary": "14. **The issue intake as a planning input** (operator direction, 2026-10-24; D6 of the pass). GitHub issues on this repository are the external idea intake, filed by the operator or by autonomous agents and consumed by planning passes, which list the open issues and dispose each like a fork item (product 07 §Operator-opened planning pass, preconditions item 6, written by the pass); the automated intake board the operator names is the future feature, used the way automated bug reports are, and the idea ledger is drained into the instance's UI rather than fed. Deferred: reopen when the first issue is filed as an idea, or when WO-193 is next amended, since the fork's request route and the issu",
+          "missing": false
+        },
+        {
+          "hash": "ee31b0a8b5d95c3ee16e9108ea8d9ce9959ada3beb9a4db2e24fdee1ed7c7257",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-intake-mining-runs-take-in-recorded-2026-10-24",
+          "title": "The issue intake as a planning input",
+          "summary": "14. **The issue intake as a planning input** (operator direction, 2026-10-24; D6 of the pass). GitHub issues on this repository are the external idea intake, filed by the operator or by autonomous agents and consumed by planning passes, which list the open issues and dispose each like a fork item (product 07 §Operator-opened planning pass, preconditions item 6, written by the pass); the automated intake board the operator names is the future feature, used the way automated bug reports are, and the idea ledger is drained into the instance's UI rather than fed. Deferred: the pass lists open issues by hand with the forge's CLI until an order makes it a print; reopen when the first issue is file",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "GitHub issues are the external idea intake planning passes read (the operator's D6 of 2026-10-24; product 07 preconditions item 6 written by the pass); the automated intake board is the future feature. [2026-10-24 planning pass on the intake mining run (docs/planning/intake-mining-run-routing-2026-10-24.md section 10)]",
+          "reopenWhen": "the first issue is filed as an idea, or WO-193 is next amended",
+          "targets": [],
+          "at": "2026-10-24T04:18:37.247Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "GitHub issues are the external idea intake planning passes read (the operator's D6 of 2026-10-24; product 07 preconditions item 6 written by the pass); the automated intake board is the future feature. [2026-10-24 planning pass on the intake mining run (docs/planning/intake-mining-run-routing-2026-10-24.md section 10)]",
+          "reopenWhen": "the first issue is filed as an idea, or WO-193 is next amended",
+          "targets": [],
+          "at": "2026-10-24T04:45:48.312Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-855495d77825af2b",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-intake-mining-runs-take-in-recorded-2026-10-24::8139fcd22670e496dd40b563f48863728b375185755c1b50c1e2841d6ed8402b",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "b365e96007e4505c700534982acc963f07aef5ee5c16a398622fa9e9460b41ad",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-intake-mining-runs-take-in-recorded-2026-10-24",
+          "title": "The initiative layout before orders are cut",
+          "summary": "17. **The initiative layout before orders are cut** (operator direction, 2026-10-24; WS-002 C7; H2). Given one or many user stories or documents describing a feature, a product push or an initiative, the platform lays out what it understands exists, how it understands the initiative and how it sees the way from the present to the goal, before any order is cut; the operator and the team riff on it, trial and error included, and only then are orders filed. Carriers: the target-scoped planning pass (`plan target-publish`), the research order kind, and the riff mode of this pass's §7, whose stated purpose is exactly the back and forth before an order. Deferred: the same reopening as item 15.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WS-002 C7, from the operator's direction of 2026-10-24; carriers: the target-scoped planning pass, the research order kind and the riff mode. [2026-10-24 planning pass on the intake mining run (docs/planning/intake-mining-run-routing-2026-10-24.md section 17)]",
+          "reopenWhen": "the operator opens the work instance's first planning pass or asks for the order sooner",
+          "targets": [],
+          "at": "2026-10-24T04:18:37.658Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-0695bdd05c71bf08",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-intake-mining-runs-take-in-recorded-2026-10-24::81d8c0ed5d369e61217f05c9fd69ff85ec909b4a00f766dfad47b6337940e7ca",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "751da44cb90fe0669babfeca6732dd6e2cfd10751fd38b3824bf90c685752ceb",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-intake-mining-runs-take-in-recorded-2026-10-24",
+          "title": "A teammate's first hour on a team's fork",
+          "summary": "15. **A teammate's first hour on a team's fork** (operator direction, 2026-10-24, the work setup; WS-002 C5; H2). Teammates who know the product and the codebase, are hesitant or untrained with AI agents and do not yet know the best practices, become productive by cloning the team's one fork, starting a worktree for their own order and letting the role text carry the practice; what the platform owes each of them is product 13's assistance per UIFA role, and the kit README's route is the surface. Deferred: reopen when the operator opens the work instance's first planning pass or asks for the order sooner.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "The work setup's first candidate (WS-002 C5), from the operator's direction of 2026-10-24; carriers that exist are named in the pass's section 17. [2026-10-24 planning pass on the intake mining run (docs/planning/intake-mining-run-routing-2026-10-24.md section 17)]",
+          "reopenWhen": "the operator opens the work instance's first planning pass or asks for the order sooner",
+          "targets": [],
+          "at": "2026-10-24T04:18:36.016Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-1c36325905c52243",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-intake-mining-runs-take-in-recorded-2026-10-24::a26f7c609d0f420209bc7b6db7b19bcda5f705cc180c8e4cf41555d4572e6383",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "d590c34ebec6db0c6af7f4d3127c285263c261dc89f3331a851750c4e973817b",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-intake-mining-runs-take-in-recorded-2026-10-24",
+          "title": "One team fork, many worktrees, parallel merges",
+          "summary": "18. **One team fork, many worktrees, parallel merges** (operator direction, 2026-10-24; WS-002 C8; H2). A global fork at work that every team member clones, each starting a worktree for their own order, the orders merging in parallel with dependent ones sequenced, so the whole team is involved rather than one developer working serially. Carriers that exist: one writer per worktree on any branch, the lane pairs and parallel orders the sequence admits, WO-100's portfolio ceilings, the workstream document and index grouping WO-080 files, and the UIFA roles for the people; what does not exist is an instance with several operators, each on their own clone, whose control segments merge. Shape: a m",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WS-002 C8, from the operator's direction of 2026-10-24; what exists and what does not are named in the pass's section 17. [2026-10-24 planning pass on the intake mining run (docs/planning/intake-mining-run-routing-2026-10-24.md section 17)]",
+          "reopenWhen": "the operator opens the work instance's first planning pass or asks for the order sooner",
+          "targets": [],
+          "at": "2026-10-24T04:18:36.225Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-048618f9ee2eb349",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-intake-mining-runs-take-in-recorded-2026-10-24::d1d49c97ef884ef805b3e5e09c4ab44cab3a05ce68cfa837cb08bf887acb4602",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "90016f684f7fe249c6570e1f4877c73e96553ec0a47971b2dc362f31cf17d20c",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-intake-mining-runs-take-in-recorded-2026-10-24",
+          "title": "A target order's final-review result carries the launchpad's gate row",
+          "summary": "13. **A target order's final-review result carries the launchpad's gate row** (the fork's item 2 of 2026-10-23; H1). A target order's records publish reads a launchpad product gate from the review's control event, which a target order's final-review result does not record, so the fork's WO-006 publish needed `npm run resume -- correct 8 --set productGate=<evidenceRef>` after a review-time `npm test -- --review`; `scripts/resume.mjs` admits exactly that correction in `closed`. Shape: the target order's final-review result carries the launchpad's complete row, or the publish accepts a passing row at the integrated identity without a correction. Deferred: reopen at the next order on the target ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "The fork's item 2 of 2026-10-23: the correct --set productGate route in closed is the designed route today; a final-review result carrying the launchpad row, or a publish accepting a passing row at the identity, waits for the next target-lifecycle order. [2026-10-24 planning pass on the intake mining run (docs/planning/intake-mining-run-routing-2026-10-24.md section 9)]",
+          "reopenWhen": "the next order on the target lifecycle, or a second target order needs the correct route",
+          "targets": [],
+          "at": "2026-10-24T04:18:35.912Z"
+        }
+      ]
     }
   ]
 }
