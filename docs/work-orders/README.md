@@ -5,7 +5,7 @@
 ## Proposed order
 
 - [x] [WO-230] — A target publish describes the change its pull request shows · **final-reviewed**
-- [ ] [WO-224] — The Entropy Reducer on a registered target or a workstream · **queued**
+- [x] [WO-224] — The Entropy Reducer on a registered target or a workstream · **final-reviewed**
 - [ ] [WO-204] — The source writer cannot damage the operator's repository · **queued**
 - [ ] [WO-192] — A router drives an order through its lifecycle · **queued**
 - [ ] [WO-083] — The real run from the operator's instance · **queued**
@@ -33,32 +33,15 @@ Full evidence for the active and sequenced orders follows; the Open cards are in
 
 Separate track; outside the proposed serial order.
 
-- [WO-228] — repository: self; base: 7e16d0d5b039ec5149a9fa32876626a3bcf52e5b; phase: draft; verdict: unknown; integration: current; stale: no; observed target: 7e16d0d5b039ec5149a9fa32876626a3bcf52e5b.
+- [WO-228] — repository: self; base: 5ad686d170c71f432d2fafcb10225f2900630381; phase: draft; verdict: unknown; integration: current; stale: no; observed target: 5ad686d170c71f432d2fafcb10225f2900630381.
 
-<!-- dotln-workstreams: {"workstreams":[{"id":"WS-002","track":"separate","members":[{"workOrderId":"WO-228","repository":"self","base":"7e16d0d5b039ec5149a9fa32876626a3bcf52e5b","phase":"draft","verdict":"unknown","integration":"current","stale":"no","targetCommit":"7e16d0d5b039ec5149a9fa32876626a3bcf52e5b"}],"edges":[{"from":"WO-228","to":"WO-193","relation":"planning-deferral"}]}]} -->
+<!-- dotln-workstreams: {"workstreams":[{"id":"WS-002","track":"separate","members":[{"workOrderId":"WO-228","repository":"self","base":"5ad686d170c71f432d2fafcb10225f2900630381","phase":"draft","verdict":"unknown","integration":"current","stale":"no","targetCommit":"5ad686d170c71f432d2fafcb10225f2900630381"}],"edges":[{"from":"WO-228","to":"WO-193","relation":"planning-deferral"}]}]} -->
 
 ## Active
 
 None.
 
 ## Open
-
-### WO-224
-
-[WO-224 — The Entropy Reducer reviews a registered target repository or a workstream's repositories: &#96;npm run entropy -- review --repository &lt;id&gt; &#91;&lt;commit&gt;&#93;&#96; and &#96;--workstream WS-NNN&#96; freeze the registered clone at a recorded commit the way the launchpad is frozen, run the pinned reviewer, the blinded refutation and the immutable receipts in the launchpad, dispose into its register with rows a pass allocates to the workstream's orders, and ship in the kit (version assigned at activation)](WO-224-entropy-reducer-on-a-registered-target.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-151: satisfied-by-close (met) — the entropy command family this order extends; WO-165: satisfied-by-close (met) — the pinned route and its receipts; WO-071: satisfied-by-close (met) — the registered target repository this order freezes (its clone mapping is WO-072's, v0.75.0, and the lookup order WO-223's, v0.88.0); WO-219: reference-only (non-blocking) — step 22's frozen-copy confinement; whichever runs second rebases; WO-080: reference-only (non-blocking) — the workstream document convention the --workstream form reads.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer xhigh.
-- Track: delivery
-- Cost: adds the repository and workstream subjects in &#96;scripts/lib/entropy-review.mjs&#96; (&#96;resolveSubject&#96;, &#96;freezeSubject&#96;, &#96;subjectRecord&#96;, &#96;beginEntropyReview&#96;, &#96;fileEntropyReview&#96;, &#96;beginEntropyRefutation&#96;, &#96;fileEntropyRefutation&#96;, &#96;disposeEntropyFinding&#96;, &#96;entropySubject&#96;) and their flags in &#96;scripts/entropy.mjs&#96;; the workstream block reader (the &#96;dotln-workstream&#96; JSON block of &#96;WS-NNN-*.md&#96; under the configured &#96;workstreams&#96; document root); fixture cases in &#96;scripts/test-entropy-review.mjs&#96; over a fixture launchpad with a registered fixture target; the review guide and the product 07, 05 and 12 sentences the write-backs step names. Removes the state the gap records: an instance that can review its launchpad and not the repositories where its product code lives, so the discipline the launchpad has (a frozen subject, a pinned reviewer, a blinded refutation, immutable receipts, operator disposition into the register) stops at the control plane. Per-episode cost at the pinned actor: about 993 s and USD 9.50 by the REVIEW-002 observation (product 07 §Operator-opened planning pass), USD 9.32, 5.03 and 7.21 per review-and-refutation pair for REVIEW-005 to REVIEW-007 (the 2026-10-20 entropy pass §5.3), paid once per member repository of a workstream; the fixtures run the &#96;fake&#96; transport. Re-mints: &#96;packages/skeleton/src/entropy-review-protocol.ts&#96; and &#96;packages/skeleton/src/loadouts/entropy-reducer.ts&#96; are registered sources (&#96;scripts/lib/evidence-sources.mjs&#96; lines 77, 85, 170 and 209) and the protocol file is in &#96;FEEDBACK_SOURCE_PATHS&#96; (&#96;packages/skeleton/src/feedback-audit.ts&#96;); the design keeps both files unchanged (the subject schema already admits any string &#96;repository&#96;, and the loadout compiles against the &#96;repo&#96; path it is given), so no re-mint and no live feedback episode is owed unless a step must edit one of them, in which case the executor records the deterministic re-mint and runs one live feedback self-host episode on Codex &#96;gpt-6.1-sol&#96; at &#96;max&#96; or Claude Code &#96;claude-opus-5-5&#96; at &#96;xhigh&#96;, no authorization needed, cost accepted. &#96;scripts/entropy.mjs&#96; and &#96;scripts/lib/entropy-review.mjs&#96; are declared machinery sources of &#96;launchpad-planning&#96; (&#96;machinerySources&#96; in &#96;scripts/test-runner.mjs&#96;), so &#96;npm test -- --review&#96; runs before handoff. Wall-clock: a target review adds one clone of the registered clone and one checkout at the named commit, as the launchpad review does today; a workstream review runs its episodes in sequence. Commands: &#96;--repository &lt;id&gt; &#91;&lt;commit&gt;&#93;&#96; and &#96;--workstream WS-NNN&#96; on &#96;review&#96; and &#96;subject&#96;. Context bytes: this file, about 26,000. Tokens: unknown until run. Steps: 11.
-- Authority: [docs/work-orders/WO-224-entropy-reducer-on-a-registered-target.md](WO-224-entropy-reducer-on-a-registered-target.md)
 
 ### WO-204
 

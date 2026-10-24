@@ -7,7 +7,12 @@ import {
   locked as withReceiptLock,
   json as prettyJson,
 } from "./helpers.mjs";
-import { docRelative } from "./config.mjs";
+import {
+  defaultDocRelative,
+  docPath,
+  docRelative,
+  loadConfig,
+} from "./config.mjs";
 import {
   appendFileSync,
   cpSync,
@@ -27,7 +32,16 @@ import { join, resolve, sep } from "node:path";
 import { containedRegularFile } from "./paths.mjs";
 import { committedReader, sha256, sha256Hex } from "./plan-subject.mjs";
 import { checkLocalTerms } from "./terms.mjs";
-import { runGit, runGitPathList } from "./git.mjs";
+import {
+  mainWorktree,
+  primaryWorktree,
+  runGit,
+  runGitPathList,
+} from "./git.mjs";
+import {
+  physicalDirectory,
+  recordedRepositoryClone,
+} from "./target-worktrees.mjs";
 import { validateAccountLabel } from "./control-actor.mjs";
 
 /**
@@ -357,15 +371,15 @@ const scratchLane = (root) => {
  * workspace links inside it are relative and so resolve to this copy's own
  * packages, and the receipt records whether they were provisioned.
  */
-function freezeSubject(root, baseCommit) {
+function freezeSubject(root, source, baseCommit) {
   const parent = mkdtempSync(join(scratchLane(root), "review-"));
   const repository = join(parent, "repo");
-  runGit(root, [
+  runGit(source, [
     "clone",
     "--no-hardlinks",
     "--quiet",
     "--no-checkout",
-    root,
+    source,
     repository,
   ]);
   runGit(repository, ["remote", "remove", "origin"]);
@@ -375,9 +389,9 @@ function freezeSubject(root, baseCommit) {
   );
   runGit(repository, ["checkout", "--quiet", "--detach", baseCommit]);
   let dependencies = "absent";
-  if (existsSync(join(root, "node_modules")))
+  if (existsSync(join(source, "node_modules")))
     try {
-      cpSync(join(root, "node_modules"), join(repository, "node_modules"), {
+      cpSync(join(source, "node_modules"), join(repository, "node_modules"), {
         recursive: true,
         // Keep the relative workspace links as links so they resolve here.
         verbatimSymlinks: true,
@@ -391,23 +405,77 @@ function freezeSubject(root, baseCommit) {
   return { parent, repository, dependencies, temporaryDirectory };
 }
 
-export function resolveSubject(root, revision) {
-  const baseCommit = runGit(root, [
-    "rev-parse",
-    "--verify",
-    `${revision}^{commit}`,
-  ]);
-  const status = trackedStatus(root);
-  return { baseCommit, status, workingTreeDirty: status !== "" };
+const repositoryId = (id) => (id === "self" ? "." : id);
+
+// Earlier launchpad receipts used an absolute repository path. Only target
+// receipts carry the separate launchpad witness; historical paths never
+// become registration ids or live source locations.
+const receiptRepository = (receipt) =>
+  receipt.confinement.launchpad ? receipt.subject.repository : ".";
+const dispatchRepository = (pending) =>
+  pending.sourceRepository ? pending.subject.repository : ".";
+
+/** Local clone lookup follows the moved-record reader. A mapping never grants
+ * registration, and a secondary checkout need not duplicate the primary map. */
+function subjectSource(root, id = ".") {
+  id = repositoryId(id);
+  if (id === ".")
+    return { source: root, repository: ".", defaultRevision: "HEAD" };
+  const registrations = loadConfig(root).repositories;
+  check(
+    Object.hasOwn(registrations, id),
+    `unregistered repository ${JSON.stringify(id)}`,
+  );
+  let clone = recordedRepositoryClone(root, id);
+  if (!clone) {
+    const primary = primaryWorktree(root);
+    if (primary) clone = recordedRepositoryClone(primary, id);
+  }
+  if (!clone) {
+    let main;
+    try {
+      main = mainWorktree(root);
+    } catch (error) {
+      if (error.message !== "no main-branch control-plane worktree found")
+        throw error;
+    }
+    if (main) clone = recordedRepositoryClone(main, id);
+  }
+  check(
+    clone,
+    `repository ${id}: recorded target clone unavailable; checked the running checkout, the primary checkout (common Git directory owner), and the main-branch worktree when present. Keep the ignored local clone mapping in one of those launchpad checkouts; the primary checkout may be on any branch`,
+  );
+  physicalDirectory(clone);
+  check(
+    runGit(clone, ["rev-parse", "--show-toplevel"]) === clone,
+    `repository ${id}: recorded clone must be a Git top level`,
+  );
+  return {
+    source: clone,
+    repository: id,
+    defaultRevision: `refs/remotes/origin/${registrations[id].baseBranch}`,
+  };
 }
 
-const subjectRecord = (baseCommit, status, inventory, repository) => {
+export function resolveSubject(root, revision, id = ".") {
+  const selected = subjectSource(root, id);
+  const baseCommit = runGit(selected.source, [
+    "rev-parse",
+    "--verify",
+    "--end-of-options",
+    `${revision ?? selected.defaultRevision}^{commit}`,
+  ]);
+  const status = trackedStatus(selected.source);
+  return { ...selected, baseCommit, status, workingTreeDirty: status !== "" };
+}
+
+const subjectRecord = (baseCommit, status, inventory, repository, id = ".") => {
   const subject = {
     schemaVersion: "entropy-review-v1",
     baseCommit,
     // The launchpad is written relative; scratchRepository still records the
     // frozen copy's absolute temporary path, which filing reopens.
-    repository: ".",
+    repository: id,
     scratchRepository: repository,
     trackedStatusSha256: hex(status),
     scratchInventorySha256: inventory.sha256,
@@ -420,10 +488,89 @@ const subjectRecord = (baseCommit, status, inventory, repository) => {
       subject.trackedStatusSha256,
       subject.scratchInventorySha256,
       subject.scratchInventoryCount,
+      // Preserve existing launchpad hashes; target subjects bind their id too.
+      ...(id === "." ? [] : [id]),
     ]),
   );
   return subject;
 };
+
+const dispatchSource = (root, pending) => {
+  const { source } = subjectSource(root, dispatchRepository(pending));
+  check(
+    !pending.sourceRepository || source === pending.sourceRepository,
+    "the recorded target clone mapping changed after dispatch; restore the mapping or discard and dispatch a fresh review",
+  );
+  return source;
+};
+
+function bindReviewedTree(source, pending) {
+  let sourceTree = null,
+    frozenTree = null;
+  try {
+    sourceTree = runGit(source, [
+      "rev-parse",
+      `${pending.subject.baseCommit}^{tree}`,
+    ]);
+    frozenTree = runGit(pending.subject.scratchRepository, [
+      "rev-parse",
+      `${pending.subject.baseCommit}^{tree}`,
+    ]);
+  } catch {
+    sourceTree = null;
+  }
+  check(
+    sourceTree !== null && sourceTree === frozenTree,
+    `the reviewed commit ${pending.subject.baseCommit} no longer resolves to the tree the frozen copy was reviewed from; the receipt would name a subject that moved.`,
+  );
+}
+
+const launchpadWitness = (root, pending) => {
+  if (pending.launchpadStatusBefore === undefined) return {};
+  const after = trackedStatus(root);
+  return {
+    launchpad: {
+      workingTreeDirtyAtDispatch: pending.launchpadStatusBefore !== "",
+      trackedStatusBeforeSha256: hex(pending.launchpadStatusBefore),
+      trackedStatusAfterSha256: hex(after),
+      trackedStatusByteIdentical: after === pending.launchpadStatusBefore,
+    },
+  };
+};
+
+/** Retain the compiled lenses' questions and budgets, scoped to paths actually
+ * present in the target census instead of assuming a launchpad layout. */
+function targetLensBriefs(source, briefs) {
+  // The compiled lens validator excludes the default intake scope and its
+  // document-base ancestor even for targets with a different document layout.
+  const documentBase = defaultDocRelative("docs").toLowerCase();
+  const intake = defaultDocRelative("intake").toLowerCase();
+  const scopes = [
+    ...new Set(
+      runGitPathList(source, ["ls-files", "-z"])
+        .filter(
+          (name) =>
+            !/[\\*?\[\]{}\u0000-\u001f]/u.test(name) &&
+            name === name.trim() &&
+            name.toLowerCase() !== intake &&
+            !name.toLowerCase().startsWith(`${intake}/`),
+        )
+        .map((name) => {
+          const parts = name.split("/");
+          return parts[0].toLowerCase() === documentBase
+            ? parts.length > 2
+              ? `${parts.slice(0, 2).join("/")}/`
+              : name
+            : parts.length > 1
+              ? `${parts[0]}/`
+              : name;
+        }),
+    ),
+  ].sort();
+  return scopes.length
+    ? briefs.map((brief) => ({ ...brief, files: scopes }))
+    : [];
+}
 
 // ----------------------------------------------------------- the pending set
 
@@ -699,6 +846,23 @@ const appendControl = (root, event) => {
 const paragraph = (value, limit) =>
   value.replace(/\s+/gu, " ").trim().slice(0, limit);
 
+const subjectLabel = (receipt) =>
+  `${receiptRepository(receipt) === "." ? "self" : receiptRepository(receipt)}@${receipt.subject.baseCommit}`;
+const subjectDetails = (receipt) => [
+  ...(receiptRepository(receipt) !== "." || receipt.workstream
+    ? [
+        `Repository: \`${subjectLabel(receipt)}\`; frozen copy: \`${receipt.subject.scratchRepository}\`.${receipt.workstream ? ` Workstream: \`${receipt.workstream.id}\`, sequence ${receipt.workstream.sequence}.` : ""}`,
+        "",
+      ]
+    : []),
+  ...(receipt.confinement.launchpad
+    ? [
+        `Launchpad tracked status unchanged across the episode: **${receipt.confinement.launchpad.trackedStatusByteIdentical}**; dirty at dispatch: **${receipt.confinement.launchpad.workingTreeDirtyAtDispatch}** (recorded, never the target subject).`,
+        "",
+      ]
+    : []),
+];
+
 export function renderReviewReceipt(receipt) {
   const actor = receipt.actorAttestation;
   const counts = receipt.findingSummary;
@@ -708,6 +872,7 @@ export function renderReviewReceipt(receipt) {
     "",
     `Subject: commit \`${receipt.subject.baseCommit}\`; subject hash \`${receipt.subject.hash}\`; frozen copy inventoried at ${receipt.subject.scratchInventoryCount} path(s).`,
     "",
+    ...subjectDetails(receipt),
     `Reviewer: **${actor.identity}** — \`${actor.model}\` at effort \`${actor.effort}\` on \`${actor.harness}\` ${actor.harnessVersion}; route \`${actor.route}\`; transport \`${actor.transport ?? "none"}\`; source \`${actor.source}\`. Effective model and effort: unknown.`,
     "",
     actor.identity === PINNED_IDENTITY
@@ -801,6 +966,7 @@ export function renderRefutationReceipt(receipt) {
     "",
     `Challenges \`${receipt.reviewReceiptId}\` (receipt hash \`${receipt.reviewReceiptHash}\`) over subject hash \`${receipt.subject.hash}\` at commit \`${receipt.subject.baseCommit}\`.`,
     "",
+    ...subjectDetails(receipt),
     `Refuter: **${actor.identity}** — \`${actor.model}\` at effort \`${actor.effort}\` on \`${actor.harness}\` ${actor.harnessVersion}; route \`${actor.route}\`; transport \`${actor.transport ?? "none"}\`; source \`${actor.source}\`. Effective model and effort: unknown.`,
     "",
     actor.identity === PINNED_IDENTITY
@@ -1116,7 +1282,9 @@ async function runEpisode(root, request, pending, role) {
 export async function beginEntropyReview(
   root,
   {
-    revision = "HEAD",
+    revision,
+    repository: selectedRepository,
+    workstream,
     transport = null,
     model,
     effort,
@@ -1131,17 +1299,36 @@ export async function beginEntropyReview(
     transport !== "fake" || fixture,
     "the fake transport drives executable fixtures only and cannot satisfy a live row",
   );
-  const explicit = revision !== "HEAD";
-  const state = resolveSubject(root, revision);
   check(
-    !state.workingTreeDirty || explicit,
-    `entropy review refuses a dirty tree: ${trackedStatus(root).split("\n").filter(Boolean).length} tracked path(s) differ from ${revision}. Commit them, or name the committed subject explicitly (npm run entropy -- review <commit>) so the receipt cannot be read as a review of the working tree.`,
+    !(selectedRepository && workstream),
+    "select either a repository or a workstream",
+  );
+  check(
+    !workstream || revision === undefined,
+    "a workstream selects each member's base; it takes no commit",
   );
   requireNoPending(root, "review");
-  const untrackedAtDispatch = untrackedListing(root);
-  const refsAtDispatch = sourceRefs(root);
+  const sequence = workstream
+    ? workstreamSequence(root, workstream, { restart: true })
+    : null;
+  const state = resolveSubject(
+    root,
+    revision,
+    sequence?.nextRepository ?? selectedRepository,
+  );
+  const target = state.repository !== ".";
+  const namedRevision =
+    target || sequence ? state.baseCommit : (revision ?? "HEAD");
+  const explicit = namedRevision !== "HEAD";
+  check(
+    !state.workingTreeDirty || explicit,
+    `entropy review refuses a dirty tree: ${trackedStatus(root).split("\n").filter(Boolean).length} tracked path(s) differ from ${namedRevision}. Commit them, or name the committed subject explicitly (npm run entropy -- review <commit>) so the receipt cannot be read as a review of the working tree.`,
+  );
+  const untrackedAtDispatch = untrackedListing(state.source);
+  const refsAtDispatch = sourceRefs(state.source);
+  const launchpadStatusBefore = target ? trackedStatus(root) : undefined;
   const { parent, repository, dependencies, temporaryDirectory } =
-    freezeSubject(root, state.baseCommit);
+    freezeSubject(root, state.source, state.baseCommit);
   let retained = false;
   try {
     const inventory = scratchInventory(repository);
@@ -1150,12 +1337,12 @@ export async function beginEntropyReview(
       state.status,
       inventory,
       repository,
+      state.repository,
     );
     const dispatchedAtMs = Date.now();
     const episodeId = `ep_entropy_${subject.hash.slice(0, 16)}`;
-    const { compileReviewerWorkOrder } = await skeleton(
-      "loadouts/entropy-reducer",
-    );
+    const { compileReviewerWorkOrder, entropyReducerLensBriefs } =
+      await skeleton("loadouts/entropy-reducer");
     const compiled = compileReviewerWorkOrder({
       route: transport ?? "background",
       repo: repository,
@@ -1163,6 +1350,9 @@ export async function beginEntropyReview(
       episodeId,
       dispatchedAt: dispatchedAtMs,
       episodeEndsAt: dispatchedAtMs + EPISODE_WINDOW_MS,
+      ...(target
+        ? { lensBriefs: targetLensBriefs(repository, entropyReducerLensBriefs) }
+        : {}),
     });
     const { entropyReviewAuthorization } = await skeleton("reactor");
     const grant = entropyReviewAuthorization(
@@ -1206,7 +1396,11 @@ export async function beginEntropyReview(
       untrackedListingBefore: untrackedAtDispatch,
       sourceRefsBefore: refsAtDispatch,
       scratchInventoryBeforeEntries: inventory.entries,
-      namedRevision: revision,
+      namedRevision,
+      ...(target
+        ? { sourceRepository: state.source, launchpadStatusBefore }
+        : {}),
+      ...(sequence ? { workstream: sequence.record } : {}),
       scratchParent: parent,
       temporaryDirectory,
       capture,
@@ -1303,7 +1497,8 @@ export async function fileEntropyReview(
       `entropy review result rejected: ${error instanceof Error ? error.message : "invalid output"}; rejected result and statement retained at ${lane}`,
     );
   }
-  const trackedStatusAfterSha256 = hex(trackedStatus(root));
+  const sourceRepository = dispatchSource(root, pending);
+  const trackedStatusAfterSha256 = hex(trackedStatus(sourceRepository));
   const trackedStatusByteIdentical =
     trackedStatusAfterSha256 === pending.subject.trackedStatusSha256;
   // What must not move is the subject. On the default route the subject is
@@ -1312,7 +1507,7 @@ export async function fileEntropyReview(
   // commit, which the working tree cannot move; the binding there is that the
   // commit still resolves to the tree the frozen copy was reviewed from, and
   // the working tree's own drift is recorded rather than refused.
-  const refs = sourceRefsWitness(root, pending);
+  const refs = sourceRefsWitness(sourceRepository, pending);
   if (pending.namedRevision === "HEAD" || !pending.namedRevision) {
     check(
       trackedStatusByteIdentical,
@@ -1323,29 +1518,12 @@ export async function fileEntropyReview(
       "source refs changed during the review episode; dispatch a fresh review, or explicitly name the committed subject when concurrent ref changes are intended.",
     );
   } else {
-    let sourceTree = null;
-    let frozenTree = null;
-    try {
-      sourceTree = runGit(root, [
-        "rev-parse",
-        `${pending.subject.baseCommit}^{tree}`,
-      ]);
-      frozenTree = runGit(pending.subject.scratchRepository, [
-        "rev-parse",
-        `${pending.subject.baseCommit}^{tree}`,
-      ]);
-    } catch {
-      sourceTree = null;
-    }
-    check(
-      sourceTree !== null && sourceTree === frozenTree,
-      `the reviewed commit ${pending.subject.baseCommit} no longer resolves to the tree the frozen copy was reviewed from; the receipt would name a subject that moved.`,
-    );
+    bindReviewedTree(sourceRepository, pending);
   }
   const inventoryAfter = existsSync(pending.subject.scratchRepository)
     ? scratchInventory(pending.subject.scratchRepository)
     : null;
-  const widened = widenedWitness(root, pending, inventoryAfter);
+  const widened = widenedWitness(sourceRepository, pending, inventoryAfter);
   const episode = pending.episode ?? null;
   const attestation = buildAttestation(
     {
@@ -1372,6 +1550,7 @@ export async function fileEntropyReview(
       startedAt: episode?.startedAt ?? pending.dispatchedAt,
       endedAt: episode?.endedAt ?? now(),
       subject: pending.subject,
+      ...(pending.workstream ? { workstream: pending.workstream } : {}),
       workingTreeDirtyAtDispatch: pending.workingTreeDirtyAtDispatch === true,
       namedRevision: pending.namedRevision,
       actorAttestation: attestation,
@@ -1404,6 +1583,7 @@ export async function fileEntropyReview(
             : "an explicitly named commit; bound by its tree object, with the working tree's own drift recorded rather than refused",
         ...temporaryWitness(pending),
         ...refs,
+        ...launchpadWitness(root, pending),
         trackedStatusBeforeSha256: pending.subject.trackedStatusSha256,
         trackedStatusAfterSha256,
         trackedStatusByteIdentical,
@@ -1520,30 +1700,35 @@ export async function beginEntropyRefutation(
     `${reviewReceiptId} selected no findings: measured ${selection.measuredStatus}, by inspection ${selection.inspectionStatus}. There is nothing to refute and no synthetic pass is recorded.`,
   );
   requireNoPending(root, "refutation");
+  const state = resolveSubject(
+    root,
+    review.subject.baseCommit,
+    receiptRepository(review),
+  );
+  const target = state.repository !== ".";
   // The refuter runs commands by design and Claude's shell is instructed
   // rather than path-confined, so this episode needs the same before-and-after
   // witness the review records: the source repository's tracked status here,
   // and the frozen copy's inventory on either side of the episode.
-  const statusAtDispatch = trackedStatus(root);
-  const untrackedAtDispatch = untrackedListing(root);
-  const refsAtDispatch = sourceRefs(root);
+  const statusAtDispatch = state.status;
+  const untrackedAtDispatch = untrackedListing(state.source);
+  const refsAtDispatch = sourceRefs(state.source);
+  const launchpadStatusBefore = target ? trackedStatus(root) : undefined;
   const { parent, repository, dependencies, temporaryDirectory } =
-    freezeSubject(root, review.subject.baseCommit);
+    freezeSubject(root, state.source, review.subject.baseCommit);
   let retained = false;
   try {
     const inventory = scratchInventory(repository);
     const subject = {
       ...review.subject,
-      repository: ".",
       scratchRepository: repository,
       scratchInventorySha256: inventory.sha256,
       scratchInventoryCount: inventory.count,
     };
     const dispatchedAtMs = Date.now();
     const episodeId = `ep_entropy_ref_${subject.hash.slice(0, 12)}`;
-    const { compileReviewerWorkOrder } = await skeleton(
-      "loadouts/entropy-reducer",
-    );
+    const { compileReviewerWorkOrder, entropyReducerLensBriefs } =
+      await skeleton("loadouts/entropy-reducer");
     const compiled = compileReviewerWorkOrder({
       route: transport ?? "background",
       repo: repository,
@@ -1551,6 +1736,9 @@ export async function beginEntropyRefutation(
       episodeId,
       dispatchedAt: dispatchedAtMs,
       episodeEndsAt: dispatchedAtMs + EPISODE_WINDOW_MS,
+      ...(target
+        ? { lensBriefs: targetLensBriefs(repository, entropyReducerLensBriefs) }
+        : {}),
     });
     const { entropyReviewAuthorization } = await skeleton("reactor");
     const grant = entropyReviewAuthorization(
@@ -1598,6 +1786,10 @@ export async function beginEntropyRefutation(
       subjectHash: subject.hash,
       subject,
       trackedStatusBeforeSha256: hex(statusAtDispatch),
+      ...(target
+        ? { sourceRepository: state.source, launchpadStatusBefore }
+        : {}),
+      ...(review.workstream ? { workstream: review.workstream } : {}),
       untrackedListingBefore: untrackedAtDispatch,
       sourceRefsBefore: refsAtDispatch,
       scratchInventoryBeforeEntries: inventory.entries,
@@ -1713,13 +1905,15 @@ export async function fileEntropyRefutation(
   // explicit review route records it.
   const trackedStatusBeforeSha256 =
     pending.trackedStatusBeforeSha256 ?? pending.subject.trackedStatusSha256;
-  const trackedStatusAfterSha256 = hex(trackedStatus(root));
+  const sourceRepository = dispatchSource(root, pending);
+  if (pending.sourceRepository) bindReviewedTree(sourceRepository, pending);
+  const trackedStatusAfterSha256 = hex(trackedStatus(sourceRepository));
   const trackedStatusByteIdentical =
     trackedStatusAfterSha256 === trackedStatusBeforeSha256;
   const inventoryAfter = existsSync(pending.subject.scratchRepository)
     ? scratchInventory(pending.subject.scratchRepository)
     : null;
-  const widened = widenedWitness(root, pending, inventoryAfter);
+  const widened = widenedWitness(sourceRepository, pending, inventoryAfter);
   const episode = pending.episode ?? null;
   const attestation = buildAttestation(
     {
@@ -1753,6 +1947,7 @@ export async function fileEntropyRefutation(
       startedAt: episode?.startedAt ?? pending.dispatchedAt,
       endedAt: episode?.endedAt ?? now(),
       subject: pending.subject,
+      ...(pending.workstream ? { workstream: pending.workstream } : {}),
       reviewReceiptId: pending.reviewReceiptId,
       reviewReceiptHash: pending.reviewReceiptHash,
       actorAttestation: attestation,
@@ -1760,7 +1955,8 @@ export async function fileEntropyRefutation(
         subjectBinding:
           "the commit the challenged review receipt names, re-frozen for this episode; the working tree's own drift is recorded rather than refused",
         ...temporaryWitness(pending),
-        ...sourceRefsWitness(root, pending),
+        ...sourceRefsWitness(sourceRepository, pending),
+        ...launchpadWitness(root, pending),
         trackedStatusBeforeSha256,
         trackedStatusAfterSha256,
         trackedStatusByteIdentical,
@@ -1855,20 +2051,25 @@ const latestRefutationFor = (root, reviewReceiptId) => {
   return receipts.at(-1) ?? null;
 };
 
-const candidateHeading = (reviewReceiptId, date) =>
-  `## Candidates — accepted Entropy Reducer findings, review ${reviewReceiptId} (recorded ${date})`;
+const candidateHeading = (review, date) =>
+  `## Candidates — accepted Entropy Reducer findings, review ${review.receiptId}${receiptRepository(review) !== "." || review.workstream ? `, ${subjectLabel(review)}` : ""} (recorded ${date})`;
 
 /** The follow-up collector harvests formal candidate headings and their
  * top-level list items from the planning root; an accepted finding becomes one
  * such item, and `npm run meta` then lists it as a register row. Promotion to
  * a work order stays a planning act. */
-function appendCandidate(root, reviewReceiptId, finding, reason, date) {
+function appendCandidate(root, review, finding, reason, date) {
+  const reviewReceiptId = review.receiptId;
   ensureDirectory(root, reviewsRoot(root));
   const path = `${reviewsRoot(root)}/${reviewReceiptId}.md`;
   const absolute = join(root, path);
-  const heading = candidateHeading(reviewReceiptId, date);
+  const heading = candidateHeading(review, date);
+  const subject =
+    receiptRepository(review) !== "." || review.workstream
+      ? `${reviewReceiptId} ${subjectLabel(review)} — `
+      : "";
   const item = [
-    `- **${finding.findingId} — ${paragraph(finding.criterion, 160)}**`,
+    `- **${finding.findingId} — ${subject}${paragraph(finding.criterion, 160)}**`,
     `  Surface \`${finding.surface}\`, severity ${finding.severity}, altitude ${finding.altitude}, evidence ${finding.evidenceLabel}.`,
     `  Observed: ${paragraph(finding.observed, 400)}`,
     `  Expected: ${paragraph(finding.expected, 400)}`,
@@ -2046,7 +2247,7 @@ export async function disposeEntropyFinding(
   ];
   let candidate = null;
   if (disposition === "accept")
-    candidate = appendCandidate(root, receiptId, finding, reason, date);
+    candidate = appendCandidate(root, review, finding, reason, date);
   for (const event of events) appendControl(root, event);
   return {
     receiptId,
@@ -2063,14 +2264,123 @@ export async function disposeEntropyFinding(
 
 // -------------------------------------------------------------- the pass input
 
+/** Only the selected document is an input here. The work-order index owns
+ * cross-checking order declarations; this reader validates the subject set
+ * and every registration before dispatch can allocate a frozen copy. */
+export function workstreamRepositories(root, id) {
+  check(/^WS-\d{3}$/u.test(id), "workstream must be WS-NNN");
+  const directory = docPath(root, "workstreams");
+  const names = existsSync(directory)
+    ? readdirSync(directory).filter(
+        (name) => name.startsWith(`${id}-`) && name.endsWith(".md"),
+      )
+    : [];
+  check(
+    names.length === 1,
+    `${id}: expected exactly one workstream document under ${docRelative(root, "workstreams")}`,
+  );
+  const file = join(directory, names[0]);
+  check(
+    containedRegularFile(file, root),
+    `${id}: workstream must be a contained regular file`,
+  );
+  const lines = readFileSync(file, "utf8").split(/\r?\n/u);
+  const markers = (value) =>
+    lines.flatMap((line, index) => (line === value ? [index] : []));
+  const starts = markers("<!-- dotln-workstream:start -->"),
+    ends = markers("<!-- dotln-workstream:end -->");
+  check(
+    starts.length === 1 && ends.length === 1 && starts[0] < ends[0],
+    `${id}: expected one dotln-workstream block`,
+  );
+  const block = parseWithLabel(
+    lines.slice(starts[0] + 1, ends[0]).join("\n"),
+    id,
+  );
+  check(
+    block?.id === id &&
+      Array.isArray(block.members) &&
+      block.members.length > 0 &&
+      Array.isArray(block.edges),
+    `${id}: invalid workstream subject set`,
+  );
+  const config = loadConfig(root),
+    orders = new Set(),
+    repositories = new Set();
+  for (const member of block.members) {
+    check(
+      exact(member, ["workOrderId", "repositoryId"]) &&
+        typeof member.repositoryId === "string" &&
+        /^WO-\d{3}$/u.test(member.workOrderId) &&
+        !orders.has(member.workOrderId),
+      `${id}: invalid or duplicate workstream member`,
+    );
+    orders.add(member.workOrderId);
+    check(
+      member.repositoryId === "self" ||
+        Object.hasOwn(config.repositories, member.repositoryId),
+      `${id}: unregistered repository ${JSON.stringify(member.repositoryId)}`,
+    );
+    repositories.add(repositoryId(member.repositoryId));
+  }
+  return [...repositories];
+}
+
+const filedReviews = (root) => {
+  const present = new Set(runNames(root));
+  return readEntropyControl(root)
+    .filter((event) => event.type === "EntropyReviewFiled")
+    .filter((event) => present.has(event.receiptId))
+    .map((event) => readReceipt(root, event.receiptId));
+};
+
+function workstreamSequence(root, id, { restart = false } = {}) {
+  const repositories = workstreamRepositories(root, id);
+  const reviews = filedReviews(root).filter(
+    (review) => review.workstream?.id === id,
+  );
+  const latest = reviews.at(-1)?.workstream;
+  const reviewed = new Set(
+    reviews
+      .filter((review) => review.workstream.sequence === latest?.sequence)
+      .map((review) => receiptRepository(review)),
+  );
+  const unfinished = latest?.repositories.some(
+    (member) => !reviewed.has(member),
+  );
+  check(
+    !unfinished ||
+      JSON.stringify(latest.repositories) === JSON.stringify(repositories),
+    `${id}: membership changed during the review sequence; finish the recorded member set before starting another`,
+  );
+  const complete = latest && !unfinished;
+  const record =
+    complete && restart
+      ? { id, sequence: latest.sequence + 1, repositories }
+      : (latest ?? { id, sequence: 1, repositories });
+  const nextRepository =
+    complete && restart
+      ? repositories[0]
+      : (record.repositories.find((member) => !reviewed.has(member)) ?? null);
+  return { record, nextRepository };
+}
+
+const matchesSubject = (review, { repository, workstream, baseCommit } = {}) =>
+  (workstream
+    ? review.workstream?.id === workstream
+    : receiptRepository(review) === repositoryId(repository ?? ".")) &&
+  (!baseCommit || review.subject.baseCommit === baseCommit);
+
 /**
  * The review a planning pass should consume before it pays for another one: the
  * most recently filed review that has a bound refutation and no disposition
  * yet. A pass that finds one works from it; only when there is none does a
  * fresh review earn its episode.
  */
-export function unconsumedReview(root) {
+export function unconsumedReview(root, selection = {}) {
   const events = readEntropyControl(root);
+  const selected =
+    selection.repository !== undefined || selection.workstream !== undefined;
   const disposed = new Set(
     events
       .filter((event) => event.type === "EntropyFindingDisposed")
@@ -2084,34 +2394,80 @@ export function unconsumedReview(root) {
   const reviews = runNames(root)
     .filter((name) => filed.has(name))
     .map((name) => readReceipt(root, name))
-    .filter((receipt) => receipt.kind === "EntropyReducerReviewRun");
+    .filter(
+      (receipt) =>
+        receipt.kind === "EntropyReducerReviewRun" &&
+        matchesSubject(receipt, selection),
+    );
   for (const review of reviews.reverse()) {
-    if (disposed.has(review.receiptId)) continue;
+    if (!selected && disposed.has(review.receiptId)) continue;
     const refutation = latestRefutationFor(root, review.receiptId);
-    if (!refutation) continue;
+    if (
+      !refutation &&
+      (!selected || review.selection.selectedFindingIds.length)
+    )
+      continue;
+    const disposedIds = new Set(
+      events
+        .filter(
+          (event) =>
+            event.type === "EntropyFindingDisposed" &&
+            event.receiptId === review.receiptId,
+        )
+        .map((event) => event.findingId),
+    );
+    const survivors = refutation?.report.promotedFindingIds ?? [];
+    const packets = review.reviewerOutput.proposalPackets.map(
+      (packet) => packet.suggestion.suggestionId,
+    );
+    if (
+      selected &&
+      [...survivors, ...packets].every((id) => disposedIds.has(id))
+    )
+      continue;
     return {
       receiptId: review.receiptId,
       receiptPath: `${runsRoot(root)}/${review.receiptId}.md`,
-      refutationReceiptId: refutation.receiptId,
-      refutationPath: `${runsRoot(root)}/${refutation.receiptId}.md`,
+      refutationReceiptId: refutation?.receiptId ?? null,
+      refutationPath: refutation
+        ? `${runsRoot(root)}/${refutation.receiptId}.md`
+        : null,
       baseCommit: review.subject.baseCommit,
+      ...(selected
+        ? {
+            repository: receiptRepository(review),
+            ...(review.workstream ? { workstream: review.workstream } : {}),
+            remaining: [...survivors, ...packets].filter(
+              (id) => !disposedIds.has(id),
+            ),
+          }
+        : {}),
       reviewer: review.actorAttestation.identity,
       findings: review.findingSummary,
-      survived: refutation.report.promotedFindingIds,
-      refuted: refutation.report.refutedFindingIds,
-      blocked: refutation.report.blockedFindingIds,
-      unselected: refutation.report.unselectedFindingIds,
-      proposalPackets: review.reviewerOutput.proposalPackets.map(
-        (packet) => packet.suggestion.suggestionId,
-      ),
+      survived: survivors,
+      refuted: refutation?.report.refutedFindingIds ?? [],
+      blocked: refutation?.report.blockedFindingIds ?? [],
+      unselected: refutation?.report.unselectedFindingIds ?? [],
+      proposalPackets: packets,
     };
   }
   return null;
 }
 
 /** What `planning: entropy reducer` should do next, without doing it. */
-export function entropySubject(root) {
-  const unconsumed = unconsumedReview(root);
+export function entropySubject(
+  root,
+  { repository, workstream, revision } = {},
+) {
+  check(
+    !(repository && workstream),
+    "select either a repository or a workstream",
+  );
+  check(
+    !workstream || revision === undefined,
+    "a workstream selects each member's base; it takes no commit",
+  );
+  const selected = repository !== undefined || workstream !== undefined;
   const pending = {
     review: currentDispatch(root, "review"),
     refutation: currentDispatch(root, "refutation"),
@@ -2121,25 +2477,92 @@ export function entropySubject(root) {
       action: "finish-pending-dispatch",
       pendingReview: pending.review?.episodeId ?? null,
       pendingRefutation: pending.refutation?.episodeId ?? null,
+      ...(selected
+        ? {
+            pendingRepository: dispatchRepository(
+              pending.review ?? pending.refutation,
+            ),
+            pendingWorkstream:
+              (pending.review ?? pending.refutation).workstream ?? null,
+          }
+        : {}),
       reason:
         "a dispatch is already pending; file its receipt or discard it before opening a pass",
     };
+  // Recorded work remains actionable even when a clone is offline or a
+  // workstream document has changed since dispatch. Only a fresh subject
+  // needs the current mapping and membership.
+  const recordedCommit = /^[0-9a-f]{40}$/u.test(revision ?? "")
+    ? revision
+    : null;
+  let state =
+    revision !== undefined && !recordedCommit
+      ? resolveSubject(root, revision, repository)
+      : null;
+  const selection = {
+    repository,
+    workstream,
+    ...(recordedCommit || state
+      ? { baseCommit: recordedCommit ?? state.baseCommit }
+      : {}),
+  };
+  const unconsumed = unconsumedReview(root, selection);
   if (unconsumed)
     return {
       action: "consume",
-      reason:
-        "this review is bound by a refutation and nothing has been disposed from it; consume it rather than paying for another episode",
+      reason: selected
+        ? "this review has undisposed survivors or proposal packets; consume them before producing another review"
+        : "this review is bound by a refutation and nothing has been disposed from it; consume it rather than paying for another episode",
       ...unconsumed,
     };
+  const reviews = filedReviews(root).filter((review) =>
+    matchesSubject(review, selection),
+  );
+  if (selected) {
+    const unrefuted = [...reviews]
+      .reverse()
+      .find(
+        (review) =>
+          review.selection.selectedFindingIds.length &&
+          !latestRefutationFor(root, review.receiptId),
+      );
+    if (unrefuted)
+      return {
+        action: "refute",
+        receiptId: unrefuted.receiptId,
+        repository: receiptRepository(unrefuted),
+        baseCommit: unrefuted.subject.baseCommit,
+        command: `npm run entropy -- refute ${unrefuted.receiptId} --transport claude-cli-print`,
+      };
+  }
+  const sequence = workstream ? workstreamSequence(root, workstream) : null;
+  if (sequence && sequence.nextRepository === null)
+    return {
+      action: "complete",
+      workstream: sequence.record,
+      reason:
+        "every member has a filed review and no refutation or survivor disposition remains; an explicit review command starts a new sequence",
+      command: `npm run entropy -- review --workstream ${workstream} --transport claude-cli-print`,
+    };
+  if (!workstream && (selected || revision !== undefined) && !state)
+    state = resolveSubject(root, revision, repository);
+  const flags = workstream
+    ? ` --workstream ${workstream}`
+    : selected
+      ? ` --repository ${state.repository === "." ? "self" : state.repository}`
+      : "";
   return {
     action: "review",
-    latestFiledReview:
-      readEntropyControl(root)
-        .filter((event) => event.type === "EntropyReviewFiled")
-        .at(-1)?.receiptId ?? null,
+    latestFiledReview: reviews.at(-1)?.receiptId ?? null,
+    ...(sequence
+      ? { workstream: sequence.record, repository: sequence.nextRepository }
+      : {}),
+    ...(state
+      ? { repository: state.repository, baseCommit: state.baseCommit }
+      : {}),
     reason:
       "no filed review is both refuted and undisposed, so a fresh episode earns its cost",
-    command: "npm run entropy -- review --transport claude-cli-print",
+    command: `npm run entropy -- review${flags}${revision !== undefined ? ` ${state.baseCommit}` : ""} --transport claude-cli-print`,
   };
 }
 

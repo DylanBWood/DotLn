@@ -85,6 +85,37 @@ supplied, under
 unrelated untracked files are never review inputs, and the reviewer is told not
 to read `docs/intake/**`.
 
+`review --repository <id> [<commit>]` reviews a registered target. The id
+must be in the launchpad configuration; its ignored clone mapping is looked
+up in the running checkout, the primary checkout (on any branch), then the
+main-branch worktree. With no commit, the subject is the clone's already
+fetched `refs/remotes/origin/<baseBranch>` tip; this command does not fetch.
+An explicit commit resolves in that clone. The same freeze path copies it
+under the launchpad's scratch lane, removes its remote and copies installed
+dependencies when present. Target lens scopes come from the frozen copy's
+tracked paths, excluding intake, rather than assuming the launchpad's layout.
+The repository id participates in the target subject hash. Review and
+refutation both bind the named commit's tree in the same recorded clone;
+clone refs and tracked status are witnessed on either side. Launchpad tracked
+status is recorded separately and never substitutes for the target subject.
+
+`review --workstream WS-NNN` reads the selected document under the configured
+`workstreams` root. It validates every member's registration before cloning,
+then dispatches the next distinct repository in membership order. `self`
+includes the launchpad at its recorded HEAD commit. Each dispatch returns for
+`receipt` filing; each receipt carries the workstream id, sequence number and
+member set. A pending dispatch still refuses a second review. Membership
+cannot change midway through a sequence. After every member has been filed,
+an explicit `review --workstream` starts a new sequence.
+
+Use `subject --repository <id> [<commit>]` or `subject --workstream WS-NNN`
+to select the pass's input. It names a pending episode, a receipt requiring
+refutation, the remaining survivors and proposal packets to dispose, or the
+next member to review. A finished workstream returns `complete`; it never
+starts another sequence itself. These selected forms keep returning a
+partially disposed receipt until all survivors and packets have a disposition.
+No target code or target-side receipt is written.
+
 ## Who reviewed, as a fact
 
 The receipt's identity line reads `entropy-reducer@1` **only** when the pinned
@@ -175,6 +206,14 @@ harvests and `npm run meta` lists as a register row. `accept` on a proposal
 packet files it at `docs/proposals/<suggestionId>/packet.json`. Filing is not
 promotion: turning a candidate into a work order remains an operator-authorized
 planning act.
+
+Target and workstream receipts remain numbered and filed in the launchpad.
+Their rendered subject names the repository, commit and frozen path; the
+refutation retains the same repository and commit. An accepted target finding's
+candidate heading and bold title name `REVIEW-NNN <repository>@<commit>`.
+`npm run plan -- followups --sync` therefore mints a row naming the target;
+the pass can allocate it with `--apply` to any launchpad order, including a
+workstream member. Proposal packets retain their existing filing route.
 
 `entropy check` runs in `npm run test:docs`. It fails on a hand-edited receipt,
 on a rendering that is not its JSON's projection, on a filed pair with no

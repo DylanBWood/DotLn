@@ -1187,11 +1187,20 @@ happen. The phrase is itself the operator request that authorizes the external
 CLI launch of the pinned reviewer and its refuter, and it adds no scheduler:
 nothing runs a review unless the operator opens a pass this way. A pass opened
 any other way may still consume an earlier review's surviving findings as one
-input among others. The subject is the launchpad; a review of a registered
-target repository at a recorded commit, or of a workstream's repositories,
-is WO-224's (`--repository <id>` and `--workstream WS-NNN`, filed by the
-2026-10-20 fork-answers pass), with the same pinned reviewer, refutation,
-receipts and disposition, paid once per repository. Consumptions: [[REVIEW-002 pass](../planning/entropy-review-002-2026-09-22.md),
+input among others. The subject defaults to the launchpad. A trailing
+registered repository id in `planning: entropy reducer <id>` selects
+`subject --repository <id>` and `review --repository <id> [<commit>]`;
+a trailing workstream id selects `subject --workstream WS-NNN` and
+`review --workstream WS-NNN`. The target defaults to its clone's already
+fetched base-branch tip. A workstream dispatches one distinct member at a
+time, with each receipt filed separately and all survivors disposed in this
+pass; `self` includes the launchpad at a named commit. Selected subjects
+report a needed refutation or remaining dispositions before another review;
+a completed set reports `complete`, and a later explicit review starts a new
+sequence. The same pinned reviewer, blinded refutation, immutable launchpad
+receipts and register disposition apply. Episode cost is paid once per
+repository: the REVIEW-002 observation above is about 993 s and USD 9.50
+for one episode, not the whole workstream. Consumptions: [[REVIEW-002 pass](../planning/entropy-review-002-2026-09-22.md),
 2026-09-22]; [[off-ramps pass](../planning/off-ramps-5s-entropy-2026-09-25.md)
 §9, 2026-09-25]; [[REVIEW-006 pass](../planning/entropy-review-006-2026-10-10.md),
 2026-10-10: one order from one finding, one product sentence from the other];

@@ -1,4 +1,4 @@
-# WO-224 — The Entropy Reducer reviews a registered target repository or a workstream's repositories: `npm run entropy -- review --repository <id> [<commit>]` and `--workstream WS-NNN` freeze the registered clone at a recorded commit the way the launchpad is frozen, run the pinned reviewer, the blinded refutation and the immutable receipts in the launchpad, dispose into its register with rows a pass allocates to the workstream's orders, and ship in the kit (version assigned at activation)
+# WO-224 — The Entropy Reducer reviews a registered target repository or a workstream's repositories: `npm run entropy -- review --repository <id> [<commit>]` and `--workstream WS-NNN` freeze the registered clone at a recorded commit the way the launchpad is frozen, run the pinned reviewer, the blinded refutation and the immutable receipts in the launchpad, dispose into its register with rows a pass allocates to the workstream's orders, and ship in the kit (v0.97.0)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
