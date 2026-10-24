@@ -1,0 +1,411 @@
+{
+  "subject": {
+    "codeIdentity": "6a931dea2e266c39b20dd81718bbd538efcd36df8d9424ad8618089e98428d65",
+    "base": "873e8c0ca00fb0fc74a586e6eb9cc9bca1977be6"
+  },
+  "indexVariations": {
+    "command": "node scripts/harness.mjs bounded -- node <index-probe.mjs> <scratch-dir>",
+    "exitCode": 0,
+    "results": [
+      {
+        "name": "V1 service base = header base",
+        "pass": true,
+        "detail": ""
+      },
+      {
+        "name": "V1 service targetCommit = rev-parse main",
+        "pass": true,
+        "detail": ""
+      },
+      {
+        "name": "V1 service integration behind (base ancestor of tip, base != tip)",
+        "pass": true,
+        "detail": ""
+      },
+      {
+        "name": "V1 client members current",
+        "pass": true,
+        "detail": ""
+      },
+      {
+        "name": "V1 no physical path (incl. realpath, worktree parent)",
+        "pass": true,
+        "detail": ""
+      },
+      {
+        "name": "V1 check from another cwd",
+        "pass": true,
+        "detail": ""
+      },
+      {
+        "name": "V3 forged stale inconsistent with integration refused",
+        "pass": true,
+        "detail": "error: docs/work-orders/README.md: invalid workstream snapshot member WS-001/WO-302"
+      },
+      {
+        "name": "V4 forged phase in record refused as stale page",
+        "pass": true,
+        "detail": "error: docs/work-orders/README.md is stale at line 29; run npm run work-orders -- index"
+      },
+      {
+        "name": "V5 consistent forged targetCommit: check trusts the record (design)",
+        "pass": true,
+        "detail": "PASS docs/work-orders/README.md is current | PASS docs/work-orders/HISTORY.md is current"
+      },
+      {
+        "name": "V6 missing snapshot refused with remedy",
+        "pass": true,
+        "detail": "error: docs/work-orders/README.md: missing or malformed workstream snapshot; run npm run work-orders -- index"
+      },
+      {
+        "name": "V6b duplicate snapshot refused",
+        "pass": true,
+        "detail": "error: docs/work-orders/README.md: missing or malformed workstream snapshot; run npm run work-orders -- index"
+      },
+      {
+        "name": "V1 restored check passes",
+        "pass": true,
+        "detail": ""
+      },
+      {
+        "name": "V2 diverged client: integration diverged, stale yes",
+        "pass": true,
+        "detail": "[\"behind\",\"diverged\",\"diverged\"]"
+      },
+      {
+        "name": "V7 field outside leading header is not membership",
+        "pass": true,
+        "detail": "1 error: docs/workstreams/WS-001-fixture.md: WO-303 must declare **Workstream:** WS-001 in its order"
+      },
+      {
+        "name": "V8 two documents with one id",
+        "pass": true,
+        "detail": "1 error: docs/workstreams/WS-001-second.md: invalid or duplicate workstream document"
+      },
+      {
+        "name": "V9 filename and id differ",
+        "pass": true,
+        "detail": "1 error: docs/workstreams/WS-003-x.md: invalid or duplicate workstream document"
+      },
+      {
+        "name": "V10 unknown track value",
+        "pass": true,
+        "detail": "1 error: docs/workstreams/WS-001-fixture.md: invalid or duplicate workstream document"
+      },
+      {
+        "name": "V11 block member with no order",
+        "pass": true,
+        "detail": "1 error: docs/workstreams/WS-001-fixture.md: WO-399 must declare **Workstream:** WS-001 in its order"
+      },
+      {
+        "name": "V12 field naming a missing document",
+        "pass": true,
+        "detail": "1 error: docs/workstreams/WS-001-fixture.md: WO-303 must declare **Workstream:** WS-001 in its order"
+      },
+      {
+        "name": "V13 block repository differs from header",
+        "pass": true,
+        "detail": "1 error: docs/workstreams/WS-001-fixture.md: WO-303 repositoryId differs from **Repository:** (absence means self)"
+      },
+      {
+        "name": "V14 edge to an unknown order",
+        "pass": true,
+        "detail": "1 error: docs/workstreams/WS-001-fixture.md: invalid or duplicate dependency edge"
+      },
+      {
+        "name": "V15 extra member key",
+        "pass": true,
+        "detail": "1 error: docs/workstreams/WS-001-fixture.md: invalid or duplicate member"
+      },
+      {
+        "name": "V15b block omits a declared member",
+        "pass": true,
+        "detail": "1 error: docs/workstreams/WS-001-fixture.md: WO-303 declares **Workstream:** WS-001 but is absent from members"
+      },
+      {
+        "name": "V15c second Workstream field",
+        "pass": true,
+        "detail": "1 error: docs/work-orders/WO-303-fixture.md: duplicate **Workstream:** lines"
+      },
+      {
+        "name": "V16a self on main: repository self, base HEAD, current",
+        "pass": true,
+        "detail": "{\"workOrderId\":\"WO-304\",\"repository\":\"self\",\"base\":\"c71c2e3b5a8c34e6254f68068b25cd4a3a818ea2\",\"phase\":\"draft\",\"verdict\":\"unknown\",\"integration\":\"current\",\"stale\":\"no\",\"targetCommit\":\"c71c2e3b5a8c34e6254f68068b25cd4a3a818ea2\"}"
+      },
+      {
+        "name": "V16b self after an unrelated branch commit (observation)",
+        "pass": true,
+        "detail": "{\"integration\":\"diverged\",\"stale\":\"yes\",\"baseIsBranchHead\":true}"
+      },
+      {
+        "name": "V16c check still passes after branch commit",
+        "pass": true,
+        "detail": ""
+      },
+      {
+        "name": "V17 separate member in lane pair: out of Proposed order, partner unpaired, one card each",
+        "pass": true,
+        "detail": "0 - [ ] [WO-301] — Synthetic member · **queued** / - [ ] [WO-302] — Synthetic member · **queued** / "
+      },
+      {
+        "name": "V17 check passes",
+        "pass": true,
+        "detail": ""
+      },
+      {
+        "name": "V17 Open cards: sequenced first, separate after",
+        "pass": true,
+        "detail": "[\"WO-301\",\"WO-302\",\"WO-303\"]"
+      },
+      {
+        "name": "V18 one target unreadable: unknown there, base still the declared one; sibling observed",
+        "pass": true,
+        "detail": "[[\"unknown\",\"unknown\"],[\"current\",\"no\"],[\"current\",\"no\"]]"
+      },
+      {
+        "name": "V18b declared base missing from target objects -> unknown, not diverged",
+        "pass": true,
+        "detail": "0 {\"workOrderId\":\"WO-301\",\"repository\":\"service\",\"base\":\"1111111111111111111111111111111111111111\",\"phase\":\"draft\",\"verdict\":\"unknown\",\"integration\":\"unknown\",\"stale\":\"unknown\",\"targetCommit\":\"ced739d2f5c6f9108817fa8be5a55a97ff2744f2\"} Generated docs/work-orders/README.md"
+      }
+    ]
+  },
+  "checkWithTargetsAbsent": {
+    "command": "node scripts/harness.mjs bounded -- node <absent-probe.mjs> <scratch-dir>",
+    "cloneMapFiles": [
+      "repository-clones.json"
+    ],
+    "checkWithBothClonesDeleted": {
+      "exit": 0,
+      "output": "PASS docs/work-orders/README.md is current | PASS docs/work-orders/HISTORY.md is current"
+    },
+    "checkWithCloneMapAlsoDeleted": {
+      "exit": 0,
+      "output": "PASS docs/work-orders/README.md is current | PASS docs/work-orders/HISTORY.md is current"
+    },
+    "readmeUnchanged": true
+  },
+  "board": {
+    "command": "node scripts/harness.mjs bounded -- node <board-probe.mjs>",
+    "exitCode": 0,
+    "cases": {
+      "wo009": {
+        "schemaValid": true,
+        "reproducesExpected": true,
+        "workstreams": [
+          {
+            "panel": "work",
+            "status": "unavailable",
+            "rows": 0
+          }
+        ],
+        "baseJson": true,
+        "baseTxt": true,
+        "baseHtml": true,
+        "priorSchemaValid": true,
+        "priorRendersWithoutSection": true
+      },
+      "selfhost": {
+        "schemaValid": true,
+        "reproducesExpected": true,
+        "workstreams": [
+          {
+            "panel": "work",
+            "status": "unavailable",
+            "rows": 0
+          }
+        ],
+        "baseJson": true,
+        "baseTxt": true,
+        "baseHtml": true,
+        "priorSchemaValid": true,
+        "priorRendersWithoutSection": true
+      },
+      "control": {
+        "schemaValid": true,
+        "reproducesExpected": true,
+        "workstreams": [
+          {
+            "panel": "work",
+            "status": "available",
+            "rows": 0
+          }
+        ],
+        "baseJson": true,
+        "baseTxt": true,
+        "baseHtml": true,
+        "priorSchemaValid": true,
+        "priorRendersWithoutSection": true
+      },
+      "refutations": {
+        "schemaValid": true,
+        "reproducesExpected": true,
+        "workstreams": [
+          {
+            "panel": "work",
+            "status": "unavailable",
+            "rows": 0
+          }
+        ],
+        "baseJson": true,
+        "baseTxt": true,
+        "baseHtml": true,
+        "priorSchemaValid": true,
+        "priorRendersWithoutSection": true
+      },
+      "missing": {
+        "schemaValid": true,
+        "reproducesExpected": true,
+        "workstreams": [
+          {
+            "panel": "work",
+            "status": "unavailable",
+            "rows": 0
+          }
+        ],
+        "baseJson": true,
+        "baseTxt": true,
+        "baseHtml": true,
+        "priorSchemaValid": true,
+        "priorRendersWithoutSection": true
+      },
+      "workstreams": {
+        "schemaValid": true,
+        "reproducesExpected": true,
+        "workstreams": [
+          {
+            "panel": "work",
+            "status": "available",
+            "rows": 3
+          }
+        ],
+        "rows": [
+          {
+            "workstream": "WS-001",
+            "workOrder": "WO-301",
+            "repository": "service",
+            "base": "cbd82a45ad8a74dd7b6bd2a3b66c24e38416d68b",
+            "phase": "draft",
+            "verdict": "unknown",
+            "integration": "behind",
+            "stale": "yes"
+          },
+          {
+            "workstream": "WS-001",
+            "workOrder": "WO-302",
+            "repository": "client",
+            "base": "6a3e7984706e5bdc50fb297f29365e202e700d97",
+            "phase": "draft",
+            "verdict": "unknown",
+            "integration": "current",
+            "stale": "no"
+          },
+          {
+            "workstream": "WS-001",
+            "workOrder": "WO-303",
+            "repository": "client",
+            "base": "6a3e7984706e5bdc50fb297f29365e202e700d97",
+            "phase": "draft",
+            "verdict": "unknown",
+            "integration": "current",
+            "stale": "no"
+          }
+        ],
+        "links": [
+          1,
+          1,
+          1
+        ],
+        "txtShowsEveryColumn": true,
+        "htmlShowsStaleYes": true
+      }
+    }
+  },
+  "pilot": {
+    "runner": {
+      "command": "node scripts/harness.mjs bounded -- npm test -- --only workstream-pilot",
+      "exitCode": 0,
+      "summary": "suite:workstream-pilot: 8 passed; 0 failed; 44.04 s; 8 fresh tasks",
+      "pilotTaskSeconds": 27.91,
+      "generatedTaskSeconds": 19.69,
+      "excludedReads": 0
+    },
+    "direct": {
+      "command": "node scripts/harness.mjs bounded -- node --test --test-reporter=tap scripts/test-workstream-pilot.mjs",
+      "exitCode": 0,
+      "tests": [
+        "ok 1 - WO-080 D1 single repository: one member reaches closed from a target worktree",
+        "ok 2 - WO-080 D2 cross repository: client proceeds against the pinned contract fixture while service lands first",
+        "ok 3 - WO-080 D4 two workstreams on one repository: an occupied worktree refuses a second writer",
+        "ok 4 - WO-080 D6 session restart resumes from resume next in the target worktree under the emitted bundle"
+      ],
+      "durationMs": 22882.97
+    },
+    "d4DenyReason": {
+      "method": "scratch copy of the suite with imports made absolute, D1 skipped, printing the second writer's hook output",
+      "exitCode": 0,
+      "hookSpecificOutput": {
+        "hookEventName": "PreToolUse",
+        "permissionDecision": "deny",
+        "permissionDecisionReason": "DOTLN_TARGET_REFUSED: compiled feedback refused target effect"
+      },
+      "passed": [
+        "D2",
+        "D4",
+        "D6"
+      ]
+    },
+    "d4Alone": {
+      "command": "node scripts/harness.mjs bounded -- node --test --test-reporter=tap --test-name-pattern=\"WO-080 D4\" scripts/test-workstream-pilot.mjs",
+      "exitCode": 1,
+      "result": "not ok 1 - WO-080 D4 two workstreams on one repository: an occupied worktree refuses a second writer; TypeError: Cannot read properties of undefined (reading 'target')"
+    }
+  },
+  "generatedChecks": {
+    "npm test -- --only index": {
+      "exitCode": 0,
+      "summary": "suite:index: 8 passed; 0 failed; 37.13 s"
+    },
+    "npm test -- --only release-surfaces": {
+      "exitCode": 0,
+      "summary": "suite:release-surfaces: 8 passed; 0 failed; 38.74 s"
+    }
+  },
+  "readOnly": {
+    "npm run format:check": 0,
+    "git diff --check": 0,
+    "git diff --exit-code --diff-filter=MD <base> -- packages/console/fixtures/inputs/": 0,
+    "git diff --exit-code <base> -- packages/console/uifa-board-v1.schema.json": 0,
+    "npm run work-orders -- index --check": 0,
+    "manifest": {
+      "changedExistingInputsOrCases": [],
+      "newInputs": [
+        "workOrderIndexWorkstreams"
+      ],
+      "newCases": [
+        "workstreams"
+      ],
+      "captureAppendedOnly": true,
+      "pinnedSha256Matches": true
+    },
+    "dependencyManifests": "only packages/console/package.json and its package-lock.json entry change, 0.4.8 to 0.5.0",
+    "evidenceSourceHits": "package-lock.json only, in every edition; evidenceSourceContent normalizes its component versions"
+  },
+  "receipt053Triggers": {
+    "freshPlainSeconds": 1134.406,
+    "sixMinuteLimitSeconds": 360,
+    "pilotRowSeconds": {
+      "review": 56.845,
+      "fresh": 57.017
+    },
+    "slowestStructuralTaskSeconds": {
+      "review": [
+        "generated",
+        19.122
+      ],
+      "fresh": [
+        "generated",
+        19.859
+      ]
+    }
+  }
+}

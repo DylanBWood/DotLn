@@ -1,0 +1,19 @@
+import { spawnSync } from "node:child_process";
+import { mkdirSync, rmSync, realpathSync, readdirSync, existsSync, readFileSync } from "node:fs";
+import { join } from "node:path";
+const R = process.cwd(); // run from the repository root
+const F = await import(`${R}/scripts/test-workstream-index-fixture.mjs`);
+rmSync(process.argv[2], { recursive: true, force: true });
+mkdirSync(process.argv[2], { recursive: true });
+const base = realpathSync(process.argv[2]);
+const fx = F.createWorkstreamIndexFixture(join(base, "absent"));
+const before = fx.readme();
+const cli = (args) => { const r = spawnSync(process.execPath, [join(fx.launchpad, "scripts/work-orders.mjs"), ...args], { cwd: fx.launchpad, encoding: "utf8" }); return [r.status, (r.stdout + r.stderr).trim().replace(/\n/g, " | ")]; };
+const local = join(fx.launchpad, "docs/control/local");
+const mapFiles = existsSync(local) ? readdirSync(local, { recursive: true }) : [];
+rmSync(fx.service, { recursive: true, force: true });
+rmSync(fx.client, { recursive: true, force: true });
+const a = cli(["index", "--check"]);
+rmSync(local, { recursive: true, force: true });
+const b = cli(["index", "--check"]);
+console.log(JSON.stringify({ cloneMapFiles: mapFiles, checkClonesDeleted: a, checkCloneMapDeleted: b, readmeUnchanged: fx.readme() === before }, null, 1));

@@ -1,22 +1,22 @@
 # Current control state
 
-## WO-220
+## WO-080
 
-- Work order: WO-220
-- Work-order path: docs/work-orders/WO-220-boarded-follow-ups-the-resident-and-the-vertical.md
+- Work order: WO-080
+- Work-order path: docs/work-orders/WO-080-workstream-document-and-index.md
 - Phase: closed
 - Latest verification: VER-001
-- Verification path: docs/verifications/WO-220/VER-001.md
+- Verification path: docs/verifications/WO-080/VER-001.md
 - Latest verdict: pass
 - Final review: FINAL-001
-- Final-review path: docs/final-reviews/WO-220/FINAL-001.md
-- Latest attestation: harness claude-code; version 2.1.310; model claude-opus-5-5; effort max; source claude-session-readback; account not-applicable
+- Final-review path: docs/final-reviews/WO-080/FINAL-001.md
+- Latest attestation: harness claude-code; version 2.1.310; model claude-fable-5-1; effort xhigh; source claude-session-readback; account not-applicable
 - Effort drift: max -> xhigh
-- Latest recordedAt: 2026-10-24T13:32:56.082Z
-- Elapsed implementation: 8955243 ms
-- Elapsed verification: 2202101 ms
-- Elapsed finalReview: 2654808 ms
-- Latest checkpoint: 22f1484f111feac5fab9fc638ceb9b41378a7b67 (restore: `git checkout refs/dotln/checkpoint/WO-220/7 -- .`)
+- Latest recordedAt: 2026-10-24T17:24:54.803Z
+- Elapsed implementation: 8163070 ms
+- Elapsed verification: 1342094 ms
+- Elapsed finalReview: 1740818 ms
+- Latest checkpoint: 43f928cb33c4ac48104c5331d2af325193766906 (restore: `git checkout refs/dotln/checkpoint/WO-080/7 -- .`)
 - Legal next actions: release-close, next, activate
 - Legal off-ramps: correct, override-record
 
