@@ -5,7 +5,7 @@
 ## Proposed order
 
 - [x] [WO-231] — The final-review lint of a target order's commits reads the described base · **final-reviewed**
-- [ ] [WO-232] — A starter release does not break the instance that takes it · **queued**
+- [x] [WO-232] — A starter release does not break the instance that takes it · **final-reviewed**
 - [ ] [WO-204] — The source writer cannot damage the operator's repository · **queued**
 - [ ] [WO-192] — A router drives an order through its lifecycle · **queued**
 - [ ] [WO-083] — The real run from the operator's instance · **queued**
@@ -33,32 +33,15 @@ Full evidence for the active and sequenced orders follows; the Open cards are in
 
 Separate track; outside the proposed serial order.
 
-- [WO-228] — repository: self; base: 522fec0efea3e841e8b05e3d884084755d0c9bf1; phase: draft; verdict: unknown; integration: current; stale: no; observed target: 522fec0efea3e841e8b05e3d884084755d0c9bf1.
+- [WO-228] — repository: self; base: a81561976c8629834a5a18623b097fa4d7d8681a; phase: draft; verdict: unknown; integration: current; stale: no; observed target: a81561976c8629834a5a18623b097fa4d7d8681a.
 
-<!-- dotln-workstreams: {"workstreams":[{"id":"WS-002","track":"separate","members":[{"workOrderId":"WO-228","repository":"self","base":"522fec0efea3e841e8b05e3d884084755d0c9bf1","phase":"draft","verdict":"unknown","integration":"current","stale":"no","targetCommit":"522fec0efea3e841e8b05e3d884084755d0c9bf1"}],"edges":[{"from":"WO-228","to":"WO-193","relation":"planning-deferral"}]}]} -->
+<!-- dotln-workstreams: {"workstreams":[{"id":"WS-002","track":"separate","members":[{"workOrderId":"WO-228","repository":"self","base":"a81561976c8629834a5a18623b097fa4d7d8681a","phase":"draft","verdict":"unknown","integration":"current","stale":"no","targetCommit":"a81561976c8629834a5a18623b097fa4d7d8681a"}],"edges":[{"from":"WO-228","to":"WO-193","relation":"planning-deferral"}]}]} -->
 
 ## Active
 
 None.
 
 ## Open
-
-### WO-232
-
-[WO-232 — A starter release does not break the instance that takes it: core's gate updates a committed fixture instance carrying the record shapes the fork's updates met (a closed order with a bound amendment and a later Workstream field, a workstream with closed self members, records moved into a target, a target order at a stand-in base) to the current kit and runs the kit's own checks on it; the amendment binding admits a leading Workstream field; the workstream check admits a closed member without one; a self member's cells read the launchpad's main; and the rule that a kit check admits what the previous release admitted is written where releases are (version assigned at activation)](WO-232-a-release-does-not-break-the-instance.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-080: satisfied-by-close (met) — the workstream check, the Workstream field and the self member's index reading this order admits and corrects; WO-226: satisfied-by-close (met) — the kit update the fixture instance takes at every fresh gate; WO-219: reference-only (non-blocking) — D061's amendment reader is one of the field repairs the fixture's moved-record shape preserves.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer xhigh.
-- Track: machinery
-- Cost: adds, under &#96;scripts/fixtures/instance-with-history/&#96;, one Git bundle of an exported instance with records plus its generator and shape manifest; one product suite (&#96;instance-history&#96;, core-only) in &#96;scripts/test-runner.mjs&#96; with its test file; in &#96;scripts/lib/plan-continuation.mjs&#96;, the leading-field normalization in &#96;executionAmendmentSource&#96;; in &#96;scripts/lib/work-order-workstream.mjs&#96;, the closed-member admission with its advisory; in &#96;scripts/work-orders.mjs&#96;, &#96;readTargetFacts&#96; reading a &#96;self&#96; member's base from the launchpad's base branch; cases in &#96;scripts/test-plan-refutation.mjs&#96; and &#96;scripts/test-work-orders.mjs&#96;; sentences in products 07 and 12, the convention README and the kit seed; decisions. Removes the pattern the operator named on 2026-10-25: four of the fork's six starter updates since 2026-10-19 blocked an update or left a gate red or a record damaged (the Observed gap). Re-mints: none known; no edition names these files as a source (a read of &#96;scripts/lib/evidence-sources.mjs&#96; and the harness manifest at &#96;0027d9c1&#96;); the executor runs &#96;npm run sync&#96; and &#96;node scripts/harness.mjs check&#96; before handoff and records the result. Wall-clock: one more product suite per fresh gate, budgeted at the clone, one kit update and four checks, which the executor measures and records against the 328.6 s plain-gate median (&#96;plan conditions&#96;, 2026-10-24); the generator runs on demand, never at the gate. Context bytes: this file, about 27,000. Steps: 11.
-- Authority: [docs/work-orders/WO-232-a-release-does-not-break-the-instance.md](WO-232-a-release-does-not-break-the-instance.md)
 
 ### WO-204
 

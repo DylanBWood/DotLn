@@ -1,0 +1,466 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-232",
+  "dispatch": "resume: fix",
+  "failureSource": "docs/verifications/WO-232/VER-002.md",
+  "reproduction": {
+    "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-232/verification-002-field-only.mjs",
+    "orders": [
+      "WO-002",
+      "WO-004"
+    ],
+    "before": {
+      "exitCode": 1,
+      "finishedAt": "2026-10-25T13:22:14.386Z",
+      "durationMs": 10983,
+      "subjectAmendExitCodes": [
+        1,
+        1
+      ],
+      "subjectPlanAfterExitCodes": [
+        1,
+        1
+      ],
+      "regression": true
+    },
+    "after": {
+      "exitCode": 0,
+      "finishedAt": "2026-10-25T13:25:13.137Z",
+      "durationMs": 11177,
+      "subjectPlanBeforeExitCodes": [
+        1,
+        1
+      ],
+      "subjectAmendExitCodes": [
+        0,
+        0
+      ],
+      "subjectPlanAfterExitCodes": [
+        0,
+        0
+      ],
+      "baseBoundPlanExitCodes": [
+        0,
+        0
+      ],
+      "ungroupedControlPlanExitCodes": [
+        0,
+        0
+      ],
+      "regression": false
+    },
+    "baseArmLimit": "The base-only plan checks refuse the bundle's unrelated WO-001 binding. The base writer binds both field-only changes, and the base-bound arm's subject checks pass."
+  },
+  "priorRepairProbe": {
+    "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-232/verification-001-amendment.mjs",
+    "exitCode": 0,
+    "finishedAt": "2026-10-25T13:25:54.172Z",
+    "durationMs": 1484,
+    "baseAmendExitCode": 0,
+    "basePlanExitCode": 0,
+    "subjectPlanExitCode": 0,
+    "regression": false
+  },
+  "bindingComparison": {
+    "axis": "unchanged field-and-body binding bytes",
+    "source": "Synthetic placeholder-title order, with either the Workstream field alone or the same field plus an objective change. The prior field-and-body binding removes the field and retains the approved objective bytes.",
+    "runner": "harness bounded runner; disposable binding-comparison.mjs in session scratch",
+    "finishedAt": "2026-10-25T13:28:48.085Z",
+    "durationMs": 66,
+    "exitCode": 0,
+    "arms": [
+      {
+        "name": "retain only when removal erases the amendment",
+        "fieldOnlyIsBindable": true,
+        "fieldAndBodyBindingUnchanged": true,
+        "releaseOnlyNeedsNoAmendment": true
+      },
+      {
+        "name": "always retain the grouping field",
+        "fieldOnlyIsBindable": true,
+        "fieldAndBodyBindingUnchanged": false,
+        "releaseOnlyNeedsNoAmendment": true
+      }
+    ]
+  },
+  "workerCount": 0,
+  "completeReview": {
+    "checkId": "npm test",
+    "codeIdentity": "d7de382e8b43fe01f8d06c0dc7a8d09b1ee1f78e48b45ad851af6b2a707be760",
+    "recordedAt": "2026-10-25T13:59:28.292Z",
+    "executionMode": "fresh",
+    "gateSelection": "review",
+    "identityUnchanged": true,
+    "buildOutputUnchanged": true,
+    "freshSuites": 108,
+    "reusedSuites": 0,
+    "requiredSuites": [
+      "build",
+      "format",
+      "configuration-root",
+      "registrations",
+      "declarations",
+      "generated",
+      "host",
+      "release-preparation",
+      "github-body",
+      "outward-lint",
+      "target-publish",
+      "target-worktree",
+      "vertical",
+      "license-fixtures",
+      "publication-fixtures",
+      "backup-intake",
+      "launchpad",
+      "workstream-pilot",
+      "instance-history",
+      "beacon-portability",
+      "checkpoint",
+      "worktree",
+      "worktree-integration",
+      "release",
+      "work-orders-fixtures",
+      "siblings-fixtures",
+      "kernel",
+      "compiler",
+      "skeleton",
+      "console",
+      "browser-evidence",
+      "adjacent-queue",
+      "derived-orders",
+      "portfolio",
+      "codex-continuation",
+      "authority-grants",
+      "launchpad-planning",
+      "harness-fixtures",
+      "plan-refutation",
+      "runner-fixtures",
+      "sync-fixtures",
+      "process-debt"
+    ],
+    "unrunSuites": [],
+    "durationMs": 1728364,
+    "exitCode": 0,
+    "executed": true,
+    "evidenceRef": "host-gate:d7de382e8b43fe01f8d06c0dc7a8d09b1ee1f78e48b45ad851af6b2a707be760:npm test",
+    "hostLaneWait": {
+      "wallMs": 1308,
+      "byRelation": {
+        "this-checkout": 0,
+        "another-checkout": 0,
+        "unknown": 1308
+      },
+      "holders": []
+    },
+    "criticalPath": {
+      "laneWaitMs": 880,
+      "gapMs": 549856,
+      "tasks": [
+        "format",
+        "configuration-root",
+        "registrations",
+        "declarations",
+        "generated",
+        "host",
+        "build",
+        "release-preparation",
+        "release:case:surfaces_local_snapshot",
+        "release:case:prepare_independent",
+        "release:case:surfaces_committed_readme",
+        "release:case:surfaces_lower",
+        "release:case:surfaces_first",
+        "release:case:surfaces_non_source",
+        "release:case:surfaces_new_component",
+        "release:case:surfaceclose_linked",
+        "release:case:bodyclose",
+        "release:case:unreachable",
+        "release:case:settings_scope",
+        "release:case:nonmain",
+        "release:case:malformed",
+        "release:case:unauthenticated",
+        "release:case:lower",
+        "release:case:cadence_missing",
+        "release:case:conflict",
+        "release:case:localconflict",
+        "release:case:nestedtag",
+        "release:case:missinglocalprevious",
+        "release:case:refrecovery",
+        "release:case:submodule_force",
+        "release:case:malformed_material",
+        "release:case:stale_helpers",
+        "release:case:success",
+        "release:case:edition",
+        "release:case:composed_evidence",
+        "release:case:material",
+        "release:case:close_retry_paths",
+        "release:case:close_receipt_recovery",
+        "github-body",
+        "outward-lint",
+        "license-fixtures",
+        "backup-intake",
+        "beacon-portability",
+        "work-orders-fixtures",
+        "adjacent-queue",
+        "derived-orders",
+        "portfolio",
+        "launchpad:file:test-launchpad-seeds.mjs",
+        "target-publish",
+        "vertical:file:test-vertical.mjs:workflow",
+        "vertical:file:test-vertical.recovery.mjs",
+        "launchpad:file:test-launchpad-export.mjs"
+      ],
+      "workMs": 1176801,
+      "waitMs": 550736,
+      "durationMs": 1727537
+    },
+    "suites": [
+      {
+        "name": "build",
+        "durationMs": 666,
+        "exitCode": 0
+      },
+      {
+        "name": "format",
+        "durationMs": 7355,
+        "exitCode": 0
+      },
+      {
+        "name": "configuration-root",
+        "durationMs": 6346,
+        "exitCode": 0
+      },
+      {
+        "name": "registrations",
+        "durationMs": 586,
+        "exitCode": 0
+      },
+      {
+        "name": "declarations",
+        "durationMs": 280,
+        "exitCode": 0
+      },
+      {
+        "name": "generated",
+        "durationMs": 19009,
+        "exitCode": 0
+      },
+      {
+        "name": "host",
+        "durationMs": 67,
+        "exitCode": 0
+      },
+      {
+        "name": "release-preparation",
+        "durationMs": 3657,
+        "exitCode": 0,
+        "excludedReads": 0
+      },
+      {
+        "name": "github-body",
+        "durationMs": 244,
+        "exitCode": 0,
+        "excludedReads": 0
+      },
+      {
+        "name": "outward-lint",
+        "durationMs": 821,
+        "exitCode": 0,
+        "excludedReads": 0
+      },
+      {
+        "name": "target-publish",
+        "durationMs": 179818,
+        "exitCode": 0,
+        "excludedReads": 0
+      },
+      {
+        "name": "target-worktree",
+        "durationMs": 725300,
+        "exitCode": 0
+      },
+      {
+        "name": "vertical",
+        "durationMs": 700537,
+        "exitCode": 0
+      },
+      {
+        "name": "license-fixtures",
+        "durationMs": 14933,
+        "exitCode": 0,
+        "excludedReads": 0
+      },
+      {
+        "name": "publication-fixtures",
+        "durationMs": 1438,
+        "exitCode": 0,
+        "excludedReads": 0
+      },
+      {
+        "name": "backup-intake",
+        "durationMs": 318,
+        "exitCode": 0,
+        "excludedReads": 0
+      },
+      {
+        "name": "launchpad",
+        "durationMs": 1255719,
+        "exitCode": 0
+      },
+      {
+        "name": "workstream-pilot",
+        "durationMs": 45974,
+        "exitCode": 0,
+        "excludedReads": 0
+      },
+      {
+        "name": "instance-history",
+        "durationMs": 33431,
+        "exitCode": 0,
+        "excludedReads": 0
+      },
+      {
+        "name": "beacon-portability",
+        "durationMs": 1058,
+        "exitCode": 0,
+        "excludedReads": 0
+      },
+      {
+        "name": "checkpoint",
+        "durationMs": 8164,
+        "exitCode": 0,
+        "excludedReads": 0
+      },
+      {
+        "name": "worktree",
+        "durationMs": 154330,
+        "exitCode": 0,
+        "excludedReads": 0
+      },
+      {
+        "name": "worktree-integration",
+        "durationMs": 211064,
+        "exitCode": 0,
+        "excludedReads": 0
+      },
+      {
+        "name": "release",
+        "durationMs": 672412,
+        "exitCode": 0
+      },
+      {
+        "name": "work-orders-fixtures",
+        "durationMs": 27348,
+        "exitCode": 0,
+        "excludedReads": 0
+      },
+      {
+        "name": "siblings-fixtures",
+        "durationMs": 12189,
+        "exitCode": 0,
+        "excludedReads": 0
+      },
+      {
+        "name": "kernel",
+        "durationMs": 529,
+        "exitCode": 0,
+        "excludedReads": 0
+      },
+      {
+        "name": "compiler",
+        "durationMs": 975,
+        "exitCode": 0,
+        "excludedReads": 0
+      },
+      {
+        "name": "skeleton",
+        "durationMs": 304764,
+        "exitCode": 0,
+        "excludedReads": 0
+      },
+      {
+        "name": "console",
+        "durationMs": 18185,
+        "exitCode": 0,
+        "excludedReads": 0
+      },
+      {
+        "name": "browser-evidence",
+        "durationMs": 21772,
+        "exitCode": 0,
+        "excludedReads": 0
+      },
+      {
+        "name": "adjacent-queue",
+        "durationMs": 848,
+        "exitCode": 0,
+        "excludedReads": 0
+      },
+      {
+        "name": "derived-orders",
+        "durationMs": 8080,
+        "exitCode": 0,
+        "excludedReads": 0
+      },
+      {
+        "name": "portfolio",
+        "durationMs": 20694,
+        "exitCode": 0,
+        "excludedReads": 0
+      },
+      {
+        "name": "codex-continuation",
+        "durationMs": 6132,
+        "exitCode": 0,
+        "excludedReads": 0
+      },
+      {
+        "name": "authority-grants",
+        "durationMs": 200,
+        "exitCode": 0,
+        "excludedReads": 0
+      },
+      {
+        "name": "launchpad-planning",
+        "durationMs": 169486,
+        "exitCode": 0
+      },
+      {
+        "name": "harness-fixtures",
+        "durationMs": 331219,
+        "exitCode": 0
+      },
+      {
+        "name": "plan-refutation",
+        "durationMs": 77949,
+        "exitCode": 0
+      },
+      {
+        "name": "runner-fixtures",
+        "durationMs": 118843,
+        "exitCode": 0
+      },
+      {
+        "name": "sync-fixtures",
+        "durationMs": 205857,
+        "exitCode": 0
+      },
+      {
+        "name": "process-debt",
+        "durationMs": 115424,
+        "exitCode": 0
+      }
+    ]
+  },
+  "historyControl": {
+    "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-232/controls.mjs",
+    "file": "docs/evidence/WO-232/controls.json",
+    "finishedAt": "2026-10-25T14:03:06.915Z",
+    "exitCode": 0,
+    "durationMs": 49811,
+    "bundleChanged": false,
+    "baseExitCode": 1,
+    "baseElapsedMs": 24572,
+    "headExitCode": 0,
+    "headElapsedMs": 24721
+  }
+}

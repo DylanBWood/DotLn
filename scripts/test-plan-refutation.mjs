@@ -89,6 +89,7 @@ import {
 import {
   capabilityHistoryRepair,
   executionAmendmentSource,
+  matchesExecutionAmendment,
   reassessments,
 } from "./lib/plan-continuation.mjs";
 import {
@@ -3680,6 +3681,413 @@ else {
         write(repo, OVERRIDES, log);
       },
     );
+    for (const [titleShape, filedLabel, newline] of [
+      ["unlabelled", "", "\n"],
+      ["placeholder", " (version assigned at activation)", "\r\n"],
+      ["versioned", " (v1.0.0)", "\n"],
+    ])
+      await check(
+        `a field-only Workstream amendment keeps its execution route (${titleShape} title)`,
+        async () => {
+          const repo = makeRepo(parent, `field-only-workstream-${titleShape}`);
+          const path = orderPath("WO-901");
+          const filed = read(repo, path)
+            .replace("# WO-901 — Fixture", `# WO-901 — Fixture${filedLabel}`)
+            .replace(
+              "**Nomination provenance:**",
+              "**Cost:** one bounded fixture.\n**Nomination provenance:**",
+            )
+            .replace(
+              "**Objective:**",
+              '<!-- dotln-dependencies:start -->\n[{"workOrderId":"WO-902","relation":"reference-only","reason":"Fixture reference"}]\n<!-- dotln-dependencies:end -->\n\n**Objective:**',
+            )
+            .replaceAll("\n", newline);
+          write(repo, path, filed);
+          commit(repo, "file grouping source");
+          await writeDirectReceipt(repo);
+          commit(repo, "record planning judgment");
+          write(
+            repo,
+            "docs/evidence/WO-901/decisions.md",
+            `# Decisions\n\n${failureDecision("WO-901-D001", "2030-01-02", {
+              decision: "Authorize grouping the judged order under WS-001.",
+            })}`,
+          );
+          const request = {
+            workOrderId: "WO-901",
+            decisionId: "WO-901-D001",
+            reason: "Synthetic grouping authorization",
+            now: () => "2030-01-02T13:00:00.000Z",
+          };
+          const releaseOnly = filed.replace(
+            /^# [^\r\n]+/u,
+            "# WO-901 — Fixture (v1.2.3)",
+          );
+          write(repo, path, releaseOnly);
+          await assert.rejects(
+            amendPlanOrder(repo, request),
+            /no substantive execution amendment/u,
+            "a release label alone still needs no amendment",
+          );
+          const grouped = releaseOnly.replace(
+            "**Model:**",
+            `**Workstream:** WS-001${newline}**Model:**`,
+          );
+          write(repo, path, grouped);
+          write(
+            repo,
+            "docs/workstreams/WS-001-fixture.md",
+            '# WS-001 — Fixture\n\n<!-- dotln-workstream:start -->\n{"id":"WS-001","members":[{"workOrderId":"WO-901","repositoryId":"self"}],"edges":[]}\n<!-- dotln-workstream:end -->\n',
+          );
+          await assert.rejects(
+            checkPlanGate(repo),
+            /existing work-order bytes changed/u,
+            "grouping a judged order still requires the recorded authorization",
+          );
+          const event = await amendPlanOrder(repo, request);
+          const binding = read(repo, OVERRIDES);
+          assert.equal(
+            (await checkPlanGate(repo)).continuation.workspaceUpdates[0].kind,
+            "authorized-execution-amendment",
+          );
+          assert.deepEqual(await amendPlanOrder(repo, request), event);
+          for (const [name, altered] of [
+            ["criterion", grouped.replace("useful shape", "different shape")],
+            [
+              "objective",
+              grouped.replace("Move the shape", "Change the shape"),
+            ],
+            [
+              "dependency",
+              grouped.replace("Fixture reference", "Changed reference"),
+            ],
+            [
+              "Cost",
+              grouped.replace("one bounded fixture", "two bounded fixtures"),
+            ],
+          ]) {
+            write(repo, path, altered);
+            await assert.rejects(
+              checkPlanGate(repo),
+              /unmatched execution amendment WO-901/u,
+              name,
+            );
+          }
+          for (const altered of [
+            grouped.replace("WS-001", "WS-002"),
+            releaseOnly,
+          ])
+            assert.equal(
+              matchesExecutionAmendment(filed, altered, event),
+              false,
+              "the grouping-only binding retains its field",
+            );
+          const retimed = grouped.replace("(v1.2.3)", "(v1.2.4)");
+          write(
+            repo,
+            path,
+            retimed.trimEnd() +
+              `\n\n## Execution record${newline}${newline}Later evidence.${newline}`,
+          );
+          assert.ok((await checkPlanGate(repo)).continuation);
+          commit(repo, "record authorized grouping with later evidence");
+          assert.equal(
+            (await checkPlanGate(repo)).continuation.committedUpdates[0].kind,
+            "authorized-execution-amendment",
+          );
+          write(
+            repo,
+            path,
+            retimed.trimEnd() +
+              "\n\n## Changed scope\n\nNot an execution record.\n",
+          );
+          await assert.rejects(
+            checkPlanGate(repo),
+            /only an appended execution-record section/u,
+          );
+          assert.equal(read(repo, OVERRIDES), binding);
+        },
+      );
+    for (const [titleShape, filedLabel, boundLabel] of [
+      ["unlabelled", "", ""],
+      [
+        "placeholder",
+        " (version assigned at activation)",
+        " (version assigned at activation)",
+      ],
+      ["versioned", " (v1.0.0)", " (version assigned at activation)"],
+    ])
+      await check(
+        `a previous reader's Workstream and body binding survives an update (${titleShape} title)`,
+        async () => {
+          const repo = makeRepo(parent, `bound-workstream-${titleShape}`);
+          const path = orderPath("WO-901");
+          write(
+            repo,
+            path,
+            read(repo, path)
+              .replace("# WO-901 — Fixture", `# WO-901 — Fixture${filedLabel}`)
+              .replace(
+                "**Nomination provenance:**",
+                "**Cost:** one bounded fixture.\n**Nomination provenance:**",
+              )
+              .replace(
+                "**Objective:**",
+                '<!-- dotln-dependencies:start -->\n[{"workOrderId":"WO-902","relation":"reference-only","reason":"Fixture reference"}]\n<!-- dotln-dependencies:end -->\n\n**Objective:**',
+              ),
+          );
+          commit(repo, "file amendment source");
+          await writeDirectReceipt(repo);
+          commit(repo, "record planning judgment");
+          write(
+            repo,
+            "docs/evidence/WO-901/decisions.md",
+            `# Decisions\n\n${failureDecision("WO-901-D001", "2030-01-02")}`,
+          );
+          const filed = read(repo, path);
+          const approved = filed
+            .replace(/^# [^\n]+/u, "# WO-901 — Fixture (v1.2.3)")
+            .replace("**Model:**", "**Workstream:** WS-001\n**Model:**")
+            .replace("Move the shape.", "Move the approved shape.")
+            .replace("a useful shape", "an approved useful shape");
+          write(repo, path, approved);
+          const event = await amendPlanOrder(repo, {
+            workOrderId: "WO-901",
+            decisionId: "WO-901-D001",
+            reason: "Synthetic bounded authorization",
+            now: () => "2030-01-02T13:00:00.000Z",
+          });
+          // The previous release bound these bytes, keeping the grouping field
+          // and normalizing only the title. Compute its fixture binding without
+          // the current writer, which would remove the newly added field.
+          const bound = approved
+            .replace(/^# [^\n]+/u, `# WO-901 — Fixture${boundLabel}`)
+            .trimEnd();
+          const historical = {
+            ...event,
+            orderHash: sha256(bound),
+            orderLength: bound.length,
+          };
+          const binding = lines([historical]);
+          write(repo, OVERRIDES, binding);
+          assert.equal(
+            matchesExecutionAmendment(
+              filed,
+              approved.replace("WS-001", "WS-002"),
+              historical,
+            ),
+            false,
+            "a field included in the old binding remains bound",
+          );
+          write(
+            repo,
+            "docs/workstreams/WS-001-fixture.md",
+            '# WS-001 — Fixture\n\n<!-- dotln-workstream:start -->\n{"id":"WS-001","members":[{"workOrderId":"WO-901","repositoryId":"self"}],"edges":[]}\n<!-- dotln-workstream:end -->\n',
+          );
+          assert.equal(
+            (await checkPlanGate(repo)).continuation.workspaceUpdates[0].kind,
+            "authorized-execution-amendment",
+          );
+          for (const [name, altered] of [
+            ["criterion", approved.replace("useful shape", "different shape")],
+            [
+              "objective",
+              approved.replace("approved shape", "unapproved shape"),
+            ],
+            [
+              "dependency",
+              approved.replace("Fixture reference", "Changed reference"),
+            ],
+            [
+              "Cost",
+              approved.replace("one bounded fixture", "two bounded fixtures"),
+            ],
+          ]) {
+            write(repo, path, altered);
+            await assert.rejects(
+              checkPlanGate(repo),
+              /unmatched execution amendment WO-901/u,
+              name,
+            );
+          }
+          const retimed = approved.replace("(v1.2.3)", "(v1.2.4)");
+          write(
+            repo,
+            path,
+            retimed + "\n## Execution record\n\nLater evidence.\n",
+          );
+          assert.ok((await checkPlanGate(repo)).continuation);
+          commit(
+            repo,
+            "retain the previous binding with later execution evidence",
+          );
+          assert.equal(
+            (await checkPlanGate(repo)).continuation.committedUpdates[0].kind,
+            "authorized-execution-amendment",
+          );
+          write(
+            repo,
+            path,
+            retimed + "\n## Changed scope\n\nNot an execution record.\n",
+          );
+          await assert.rejects(
+            checkPlanGate(repo),
+            /only an appended execution-record section/u,
+          );
+          assert.equal(
+            read(repo, OVERRIDES),
+            binding,
+            "the old binding stays unchanged",
+          );
+        },
+      );
+    await check(
+      "a later leading Workstream field preserves a closed amendment but no other changed byte",
+      async () => {
+        const repo = makeRepo(parent, "closed-workstream-amendment");
+        const path = orderPath("WO-901");
+        write(
+          repo,
+          path,
+          read(repo, path)
+            .replace(
+              "**Nomination provenance:**",
+              "**Cost:** one bounded fixture.\n**Nomination provenance:**",
+            )
+            .replace(
+              "**Objective:**",
+              '<!-- dotln-dependencies:start -->\n[{"workOrderId":"WO-902","relation":"reference-only","reason":"Fixture reference"}]\n<!-- dotln-dependencies:end -->\n\n**Objective:**',
+            ),
+        );
+        commit(repo, "file amendment source");
+        const receipt = await writeDirectReceipt(repo);
+        commit(repo, "record planning judgment");
+        write(
+          repo,
+          "docs/evidence/WO-901/decisions.md",
+          `# Decisions\n\n${failureDecision("WO-901-D001", "2030-01-02")}`,
+        );
+        const filed = read(repo, path);
+        write(
+          repo,
+          path,
+          filed.replace("Move the shape.", "Move the approved shape."),
+        );
+        const event = await amendPlanOrder(repo, {
+          workOrderId: "WO-901",
+          decisionId: "WO-901-D001",
+          reason: "Synthetic bounded authorization",
+          now: () => "2030-01-02T13:00:00.000Z",
+        });
+        const approved = read(repo, path),
+          binding = read(repo, OVERRIDES);
+        write(
+          repo,
+          "docs/control/orders/WO-901.jsonl",
+          lines([
+            {
+              type: "WorkOrderActivated",
+              workOrderId: "WO-901",
+              workOrderPath: path,
+            },
+            {
+              type: "FinalReviewCompleted",
+              workOrderId: "WO-901",
+              finalReviewId: "FINAL-001",
+              reportPath: "docs/final-reviews/WO-901/FINAL-001.md",
+              verdict: "pass",
+            },
+          ]),
+        );
+        write(
+          repo,
+          "docs/workstreams/WS-001-fixture.md",
+          '# WS-001 — Fixture\n\n<!-- dotln-workstream:start -->\n{"id":"WS-001","members":[{"workOrderId":"WO-901","repositoryId":"self"}],"edges":[]}\n<!-- dotln-workstream:end -->\n',
+        );
+        const grouped = approved.replace(
+          "**Model:**",
+          "**Workstream:** WS-001\n**Model:**",
+        );
+        write(repo, path, grouped);
+        assert.ok((await checkPlanGate(repo)).continuation);
+        assert.equal(
+          read(repo, OVERRIDES),
+          binding,
+          "admission neither rebinds nor withdraws the amendment",
+        );
+        for (const [name, altered] of [
+          ["criterion", grouped.replace("useful shape", "different shape")],
+          ["objective", grouped.replace("approved shape", "unapproved shape")],
+          [
+            "dependency",
+            grouped.replace("Fixture reference", "Changed reference"),
+          ],
+          [
+            "Cost",
+            grouped.replace("one bounded fixture", "two bounded fixtures"),
+          ],
+        ]) {
+          write(repo, path, altered);
+          await assert.rejects(
+            checkPlanGate(repo),
+            /unmatched execution amendment WO-901/u,
+            name,
+          );
+        }
+        // Exercise the amendment rule directly: an earlier workstream-parser
+        // refusal must not conceal a matcher that admits malformed metadata.
+        for (const candidate of [
+          grouped.replace("WS-001", "WS-1"),
+          grouped.replace("WS-001\n", "WS-001 \n"),
+          grouped.replace(
+            "**Workstream:** WS-001\n",
+            "**Workstream:** WS-001\n**Workstream:** WS-002\n",
+          ),
+          grouped.replace("**Model:**", "\n**Model:**"),
+        ])
+          assert.equal(
+            matchesExecutionAmendment(filed, candidate, event),
+            false,
+            "malformed metadata must not match the approved amendment",
+          );
+        // A body field leaves the bound prefix intact; the gate must reject
+        // it through its separate execution-appendix validation.
+        write(repo, path, approved + "\n**Workstream:** WS-001\n");
+        await assert.rejects(
+          checkPlanGate(repo),
+          /only an appended execution-record section/u,
+        );
+        assert.notEqual(
+          executionAmendmentSource(
+            grouped.replace("WS-001", "WS-002"),
+            grouped,
+          ),
+          executionAmendmentSource(grouped),
+        );
+        assert.equal(
+          executionAmendmentSource(
+            grouped.replaceAll("\n", "\r\n"),
+            filed.replaceAll("\n", "\r\n"),
+          ),
+          executionAmendmentSource(approved.replaceAll("\n", "\r\n")),
+        );
+        write(repo, path, grouped);
+        write(repo, orderPath("WO-903"), order("WO-903"));
+        await assert.rejects(
+          amendPlanOrder(repo, {
+            workOrderId: "WO-903",
+            decisionId: "WO-903-D001",
+            reason: "Synthetic outside-horizon request",
+          }),
+          /current judged horizon/u,
+        );
+        assert.equal(
+          (await readReceipts(repo))[0].receiptHash,
+          receipt.receiptHash,
+        );
+        assert.equal(read(repo, OVERRIDES), binding);
+      },
+    );
     for (const goalReview of [false, true])
       await check(
         `execution writeback admits only exact authorized story bytes with an unchanged reviewed criterion (goal review: ${goalReview})`,
@@ -4114,71 +4522,188 @@ else {
         assert.equal(read(repo, OVERRIDES), currentLog);
       },
     );
-    await check(
-      "WO-160 legacy activation amendment admits a later execution appendix",
-      async () => {
-        const repo = makeRepo(parent, "legacy-activation-appendix");
-        const path = orderPath("WO-901");
-        await writeDirectReceipt(repo);
-        commit(repo, "judged plan");
-        const filed = read(repo, path);
-        write(
-          repo,
-          "docs/evidence/WO-901/decisions.md",
-          "# Decisions\n\n```json\n" +
-            JSON.stringify({
-              id: "WO-901-D001",
-              date: "2030-01-02",
-              dispatch: "scope expand: fixture",
-              decision: "Approve the version label",
-              evidence: ["operator"],
-              rejected: ["NoOp"],
-              reopenWhen: "New evidence",
-            }) +
-            "\n```\n",
-        );
-        write(
-          repo,
-          path,
-          filed.replace("useful shape", "amended useful shape"),
-        );
-        const event = await amendPlanOrder(repo, {
-          workOrderId: "WO-901",
-          decisionId: "WO-901-D001",
-          reason: "Fixture legacy activation row",
-          now: () => "2030-01-02T13:00:00.000Z",
-        });
-        const versioned = filed.replace(
-          "# WO-901 — Fixture",
-          "# WO-901 — Fixture (v1.2.3)",
-        );
-        const legacy = executionAmendmentSource(versioned);
-        write(
-          repo,
-          OVERRIDES,
-          JSON.stringify({
+    for (const [shape, newline, boundAppendix] of [
+      ["activation only", "\n", false],
+      ["activation and existing record", "\r\n", true],
+    ])
+      await check(
+        `a legacy amendment admits later grouping and preserves all bound bytes (${shape})`,
+        async () => {
+          const repo = makeRepo(parent, `legacy-grouping-${boundAppendix}`);
+          const path = orderPath("WO-901");
+          const filed = read(repo, path)
+            .replace(
+              "**Nomination provenance:**",
+              "**Cost:** one bounded fixture.\n**Nomination provenance:**",
+            )
+            .replace(
+              "**Objective:**",
+              '<!-- dotln-dependencies:start -->\n[{"workOrderId":"WO-902","relation":"reference-only","reason":"Fixture reference"}]\n<!-- dotln-dependencies:end -->\n\n**Objective:**',
+            )
+            .replaceAll("\n", newline);
+          write(repo, path, filed);
+          commit(repo, "file legacy amendment source");
+          await writeDirectReceipt(repo);
+          commit(repo, "judged plan");
+          write(
+            repo,
+            "docs/evidence/WO-901/decisions.md",
+            `# Decisions\n\n${failureDecision("WO-901-D001", "2030-01-02")}`,
+          );
+          write(
+            repo,
+            path,
+            filed.replace("useful shape", "amended useful shape"),
+          );
+          const event = await amendPlanOrder(repo, {
+            workOrderId: "WO-901",
+            decisionId: "WO-901-D001",
+            reason: "Fixture legacy activation row",
+            now: () => "2030-01-02T13:00:00.000Z",
+          });
+          const approved =
+            filed
+              .replace("# WO-901 — Fixture", "# WO-901 — Fixture (v1.2.3)")
+              .trimEnd() +
+            (boundAppendix
+              ? `\n\n## Execution record${newline}${newline}Bound evidence.${newline}`
+              : "");
+          // Historical writers bound the placeholder title even when the filed
+          // title had no label. Build that row independently of today's writer.
+          const bound = approved
+            .replace("(v1.2.3)", "(version assigned at activation)")
+            .trimEnd();
+          const historical = {
             ...event,
-            orderHash: sha256(legacy),
-            orderLength: legacy.length,
-          }) + "\n",
-        );
-        const appendix = "\n## Execution record\n\nLater execution evidence.\n";
-        write(repo, path, versioned + appendix);
-        assert.equal(
-          (await checkPlanGate(repo)).continuation.workspaceUpdates[0].kind,
-          "authorized-execution-amendment",
-        );
-        write(
-          repo,
-          path,
-          versioned.replace("useful shape", "changed shape") + appendix,
-        );
-        await assert.rejects(
-          checkPlanGate(repo),
-          /unmatched execution amendment|work-order bytes changed/,
-        );
-      },
-    );
+            orderHash: sha256(bound),
+            orderLength: bound.length,
+          };
+          const binding = lines([historical]);
+          write(repo, OVERRIDES, binding);
+          write(repo, path, approved);
+          assert.ok(
+            (await checkPlanGate(repo)).continuation,
+            "the original row still matches",
+          );
+          const grouped = approved.replace(
+            "**Model:**",
+            `**Workstream:** WS-001${newline}**Model:**`,
+          );
+          write(repo, path, grouped);
+          write(
+            repo,
+            "docs/workstreams/WS-001-fixture.md",
+            '# WS-001 — Fixture\n\n<!-- dotln-workstream:start -->\n{"id":"WS-001","members":[{"workOrderId":"WO-901","repositoryId":"self"}],"edges":[]}\n<!-- dotln-workstream:end -->\n',
+          );
+          assert.equal(
+            (await checkPlanGate(repo)).continuation.workspaceUpdates[0].kind,
+            "authorized-execution-amendment",
+          );
+          for (const [name, altered] of [
+            ["criterion", grouped.replace("useful shape", "different shape")],
+            [
+              "objective",
+              grouped.replace("Move the shape", "Change the shape"),
+            ],
+            [
+              "dependency",
+              grouped.replace("Fixture reference", "Changed reference"),
+            ],
+            [
+              "Cost",
+              grouped.replace("one bounded fixture", "two bounded fixtures"),
+            ],
+            ...(boundAppendix
+              ? [
+                  [
+                    "bound evidence",
+                    grouped.replace("Bound evidence", "Changed evidence"),
+                  ],
+                ]
+              : []),
+          ]) {
+            write(repo, path, altered);
+            await assert.rejects(
+              checkPlanGate(repo),
+              /unmatched execution amendment WO-901/u,
+              name,
+            );
+          }
+          for (const malformed of [
+            grouped.replace("WS-001", "WS-1"),
+            grouped.replace("WS-001", "WS-0001"),
+            grouped.replace("WS-001", "WS-001 "),
+            grouped.replace("WS-001", "WS-001\t"),
+            grouped.replace(
+              "**Workstream:** WS-001",
+              "**Workstream:**  WS-001",
+            ),
+            grouped.replace(
+              "**Model:**",
+              `**Workstream:** WS-002${newline}**Model:**`,
+            ),
+            approved + `${newline}**Workstream:** WS-001${newline}`,
+          ])
+            assert.equal(
+              matchesExecutionAmendment(filed, malformed, historical),
+              false,
+              "only one exact leading field is admitted",
+            );
+          const continued =
+            grouped.replace("(v1.2.3)", "(v1.2.4)").trimEnd() +
+            `\n\n## Execution record${newline}${newline}Later evidence.${newline}`;
+          write(repo, path, continued);
+          assert.ok((await checkPlanGate(repo)).continuation);
+          commit(
+            repo,
+            "retain legacy binding with grouping and later evidence",
+          );
+          assert.equal(
+            (await checkPlanGate(repo)).continuation.committedUpdates[0].kind,
+            "authorized-execution-amendment",
+          );
+          write(
+            repo,
+            path,
+            continued + "\n## Changed scope\n\nNot an execution record.\n",
+          );
+          await assert.rejects(
+            checkPlanGate(repo),
+            /unmatched execution amendment WO-901/u,
+          );
+          assert.equal(
+            read(repo, OVERRIDES),
+            binding,
+            "admission leaves the historical binding unchanged",
+          );
+
+          // Preserve rows that already bound the field in the placeholder form.
+          // The body is still the filed body, and a changed bound field refuses.
+          const withRecord =
+            grouped.trimEnd() +
+            "\n\n## Execution record\n\nRecorded evidence.\n";
+          const groupedBound = withRecord
+            .replace("(v1.2.3)", "(version assigned at activation)")
+            .trimEnd();
+          const groupedRow = {
+            ...event,
+            orderHash: sha256(groupedBound),
+            orderLength: groupedBound.length,
+          };
+          assert.equal(
+            matchesExecutionAmendment(filed, withRecord, groupedRow),
+            true,
+          );
+          assert.equal(
+            matchesExecutionAmendment(
+              filed,
+              withRecord.replace("WS-001", "WS-002"),
+              groupedRow,
+            ),
+            false,
+          );
+        },
+      );
     await check(
       "WO-139 execution amendments do not discharge an independent hold",
       async () => {

@@ -1,0 +1,150 @@
+{
+  "schemaVersion": 1,
+  "comparison": "Same instance-history suite, with only the three reader files replaced by activation-base bytes in the base arm; current exporter and harness in both arms.",
+  "base": {
+    "baseline": "a81561976c8629834a5a18623b097fa4d7d8681a",
+    "readerFiles": [
+      "scripts/lib/plan-continuation.mjs",
+      "scripts/lib/work-order-workstream.mjs",
+      "scripts/work-orders.mjs"
+    ],
+    "readerDigests": {
+      "scripts/lib/plan-continuation.mjs": "f33169053abf79796aa311a400dde674a3f89e912a21186cc34ab04ff54060b2",
+      "scripts/lib/work-order-workstream.mjs": "023790c10bc9b2aa94bf53d292fb77816ac2e4f717413a4398b47db19e0771a6",
+      "scripts/work-orders.mjs": "d10abca63f59b019555463fba5e11aedbcc85a8da5f3a22ac980c2caecae4ec1"
+    },
+    "bundleSha256": "e5ab2fe0db7a4269730fa13e069a4f3bca87e5cce293802d80f37e081a04f6bf",
+    "exitCode": 1,
+    "checks": [
+      {
+        "command": "npm run sync",
+        "exitCode": 0,
+        "elapsedMs": 6601,
+        "output": "\n> sync\n> node scripts/sync.mjs\n\nartifact | before | after | action\nformat | current | current | none\nruntime | current | current | none\nmeta | current | current | none\nlineage | current | current | none\nindex | current | current | none\nrelease-surfaces | current | current | none\nsiblings | current | current | none\nharness | stale | current | regenerated\npublication | current | current | none\n"
+      },
+      {
+        "command": "npm run work-orders -- index --check",
+        "exitCode": 0,
+        "elapsedMs": 179,
+        "output": "\n> work-orders\n> node scripts/work-orders.mjs index --check\n\nPASS docs/work-orders/README.md is current\nPASS docs/work-orders/HISTORY.md is current\n"
+      },
+      {
+        "command": "npm run plan -- check",
+        "exitCode": 1,
+        "elapsedMs": 406,
+        "output": "\n> plan\n> node scripts/refute-plan.mjs check\n\nplanning pass needs a receipt matching the current subject: unmatched execution amendment WO-001 row 1; withdraw it explicitly or restore its approved bytes\n"
+      },
+      {
+        "command": "npm run test:docs",
+        "exitCode": 1,
+        "elapsedMs": 15458,
+        "output": "\n> test:docs\n> node scripts/test-runner.mjs --document\n\nPROGRESS [format] 0.0 s started\nPASS format 3.45 s\nPROGRESS [configuration-root] 0.0 s started\nPROGRESS [configuration-root] 6.1 s # Subtest: publication declarations under a configured root require both editions\nPASS configuration-root 6.07 s\nPROGRESS [registrations] 0.0 s started\nPASS registrations 0.08 s\nPROGRESS [declarations] 0.0 s started\nPASS declarations 0.26 s\nPROGRESS [generated] 0.0 s started\nPASS generated 2.23 s\nPROGRESS [host] 0.0 s started\nPASS host 0.06 s\nPROGRESS [kit-verify] 0.0 s started\nPASS kit-verify 0.11 s\n  [kit-verify] kit: 999 files verified at de2f93d9aedac8a517cc7dfb717f4a76f256b206\nPROGRESS [license-surfaces] 0.0 s started\nPROGRESS [docs-check] 0.0 s started\nPROGRESS [harness-context] 0.0 s started\nPASS harness-context 0.09 s\nPASS docs-check 0.27 s\nPASS license-surfaces 1.30 s\nPROGRESS [plan] 0.0 s started\nPROGRESS [plan-refutation-current] 0.0 s started\nPROGRESS [reader-profiles] 0.0 s started\nPROGRESS [entropy] 0.0 s started\nPASS reader-profiles 0.06 s\nPASS entropy 0.10 s\nFAIL plan-refutation-current 0.27 s\n  [plan-refutation-current] Error: planning pass needs a receipt matching the current subject: unmatched execution amendment WO-001 row 1; withdraw it explicitly or restore its approved bytes\n  [plan-refutation-current]     at check (file:///private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-fixture-temporary-v6aDql/dotln-instance-history-qsPveD/instance/scripts/lib/plan-receipts.mjs:80:25)\n  [plan-refutation-current]     at requireMatchedAmendments (file:///private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-fixture-temporary-v6aDql/dotln-instance-history-qsPveD/instance/scripts/lib/plan-receipts.mjs:1443:5)\n  [plan-refutation-current]     at checkPlanGate (file:///private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-fixture-temporary-v6aDql/dotln-instance-history-qsPveD/instance/scripts/lib/plan-receipts.mjs:1759:3)\n  [plan-refutation-current]     at async file:///private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-fixture-temporary-v6aDql/dotln-instance-history-qsPveD/instance/scripts/test-plan-refutation.mjs:7383:38\nFAIL plan 0.31 s\n  [plan] planning pass needs a receipt matching the current subject: unmatched execution amendment WO-001 row 1; withdraw it explicitly or restore its approved bytes\ninherited plan-refutation-current against 244d5122e5ef22f2ed6c09316c96142b7dc2f492\ninherited plan against 244d5122e5ef22f2ed6c09316c96142b7dc2f492\nnpm run test:docs: 12 passed; 2 failed; 14.89 s; 14 fresh tasks; 0.1 s waiting for host lanes (0.1 s behind checkout unknown)\n"
+      },
+      {
+        "command": "npm run work-orders -- index",
+        "exitCode": 0,
+        "elapsedMs": 204,
+        "output": "\n> work-orders\n> node scripts/work-orders.mjs index\n\nGenerated docs/work-orders/README.md\n"
+      }
+    ],
+    "selfMembers": [
+      {
+        "workOrderId": "WO-001",
+        "repository": "self",
+        "base": "2cffe633f217a70470a10f24f92af356322394bc",
+        "phase": "closed",
+        "verdict": "pass",
+        "integration": "diverged",
+        "stale": "yes",
+        "targetCommit": "244d5122e5ef22f2ed6c09316c96142b7dc2f492"
+      },
+      {
+        "workOrderId": "WO-002",
+        "repository": "self",
+        "base": "2cffe633f217a70470a10f24f92af356322394bc",
+        "phase": "closed",
+        "verdict": "pass",
+        "integration": "diverged",
+        "stale": "yes",
+        "targetCommit": "244d5122e5ef22f2ed6c09316c96142b7dc2f492"
+      }
+    ],
+    "elapsedMs": 25501,
+    "update": "kit files: 999 replaced; 0 added; 0 removed; 0 refused.",
+    "main": "244d5122e5ef22f2ed6c09316c96142b7dc2f492",
+    "branch": "2cffe633f217a70470a10f24f92af356322394bc"
+  },
+  "head": {
+    "baseline": "a81561976c8629834a5a18623b097fa4d7d8681a",
+    "readerFiles": [
+      "scripts/lib/plan-continuation.mjs",
+      "scripts/lib/work-order-workstream.mjs",
+      "scripts/work-orders.mjs"
+    ],
+    "readerDigests": {
+      "scripts/lib/plan-continuation.mjs": "6ec3341ab710b800d6d7682de4ecfa1fddeb7f560c01a96d48a1be515dc3e37a",
+      "scripts/lib/work-order-workstream.mjs": "798aceb2ef64c9efc64ac28577eea244aaf6a9fc72f7e39779ac22976b4fd1a0",
+      "scripts/work-orders.mjs": "dfc101046786f557d3647bd8b16ad35cac276bfe44d4a57c8f656e390f69f2e0"
+    },
+    "bundleSha256": "e5ab2fe0db7a4269730fa13e069a4f3bca87e5cce293802d80f37e081a04f6bf",
+    "exitCode": 0,
+    "checks": [
+      {
+        "command": "npm run sync",
+        "exitCode": 0,
+        "elapsedMs": 6118,
+        "output": "\n> sync\n> node scripts/sync.mjs\n\nartifact | before | after | action\nformat | current | current | none\nruntime | current | current | none\nmeta | current | current | none\nlineage | current | current | none\nindex | current | current | none\nrelease-surfaces | current | current | none\nsiblings | current | current | none\nharness | stale | current | regenerated\npublication | current | current | none\n"
+      },
+      {
+        "command": "npm run work-orders -- index --check",
+        "exitCode": 0,
+        "elapsedMs": 169,
+        "output": "\n> work-orders\n> node scripts/work-orders.mjs index --check\n\nPASS docs/work-orders/README.md is current\nPASS docs/work-orders/HISTORY.md is current\n"
+      },
+      {
+        "command": "npm run plan -- check",
+        "exitCode": 0,
+        "elapsedMs": 404,
+        "output": "\n> plan\n> node scripts/refute-plan.mjs check\n\n{\n  \"receipts\": 1,\n  \"passes\": 1,\n  \"enforcement\": \"2026-10-25\",\n  \"localTerms\": \"present\",\n  \"continuation\": {\n    \"receiptId\": \"2026-10-25-planning-6a54822f981fc374-001\",\n    \"judgedSubject\": \"sha256:2de2a8221ca4d01d99e4680c2107e3cab9e1f0706e7dea5abb43edad69d567b1\",\n    \"committedSubject\": \"sha256:4957d889bd09d9fc0015e83d75543ee25629a73faee1eed27689673195476dd0\",\n    \"workspaceSubject\": \"sha256:4957d889bd09d9fc0015e83d75543ee25629a73faee1eed27689673195476dd0\",\n    \"committedUpdates\": [\n      {\n        \"path\": \"docs/work-orders/WO-001-history.md\",\n        \"workOrderId\": \"WO-001\",\n        \"kind\": \"authorized-execution-amendment\",\n        \"decisionId\": \"WO-001-D001\",\n        \"judgedSourceHash\": \"sha256:3c1f06ac7408b418f573028bb1dce3e9f8df15ad9ded8ffd9e0232a82e17db0b\",\n        \"currentSourceHash\": \"sha256:4f0dc768e18fb5286841071ec9bc411bf0caeb1708c07afc2096dc0367b025ac\"\n      },\n      {\n        \"path\": \"docs/work-orders/WO-002-history.md\",\n        \"workOrderId\": \"WO-002\",\n        \"kind\": \"authorized-execution-amendment\",\n        \"decisionId\": \"WO-002-D001\",\n        \"judgedSourceHash\": \"sha256:39bcd517835f50142785167122d9173c0ddcd68dfc2bbf741931442305a4cae3\",\n        \"currentSourceHash\": \"sha256:1290c5668771dc453f9bb5bb8253f2409a97799e9284a6cb044bcbcfd1b7e7ca\"\n      },\n      {\n        \"path\": \"docs/work-orders/WO-003-history.md\",\n        \"workOrderId\": \"WO-003\",\n        \"kind\": \"authorized-execution-amendment\",\n        \"decisionId\": \"WO-003-D001\",\n        \"judgedSourceHash\": \"sha256:c9cb07789c7d2d53444852befda03f01c407f4971d4fff304c9cea6996081942\",\n        \"currentSourceHash\": \"sha256:df3e9d39e1c3437b7b5f586e2f1a868a99e7e5ed03f7b33b1d386df839bea53a\"\n      },\n      {\n        \"path\": \"docs/work-orders/WO-004-history.md\",\n        \"workOrderId\": \"WO-004\",\n        \"kind\": \"authorized-execution-amendment\",\n        \"decisionId\": \"WO-004-D001\",\n        \"judgedSourceHash\": \"sha256:ebb3a63bcd4e4aeafc72e9f0c8e9afa51ec2feec7b23b571351610d2ffd66be3\",\n        \"currentSourceHash\": \"sha256:97dcfeba52c6bc4df40022e91037be2b5026550ef46f6c83ef2374cc89e76b69\"\n      }\n    ],\n    \"workspaceUpdates\": [\n      {\n        \"path\": \"docs/work-orders/WO-001-history.md\",\n        \"workOrderId\": \"WO-001\",\n        \"kind\": \"authorized-execution-amendment\",\n        \"decisionId\": \"WO-001-D001\",\n        \"judgedSourceHash\": \"sha256:3c1f06ac7408b418f573028bb1dce3e9f8df15ad9ded8ffd9e0232a82e17db0b\",\n        \"currentSourceHash\": \"sha256:4f0dc768e18fb5286841071ec9bc411bf0caeb1708c07afc2096dc0367b025ac\"\n      },\n      {\n        \"path\": \"docs/work-orders/WO-002-history.md\",\n        \"workOrderId\": \"WO-002\",\n        \"kind\": \"authorized-execution-amendment\",\n        \"decisionId\": \"WO-002-D001\",\n        \"judgedSourceHash\": \"sha256:39bcd517835f50142785167122d9173c0ddcd68dfc2bbf741931442305a4cae3\",\n        \"currentSourceHash\": \"sha256:1290c5668771dc453f9bb5bb8253f2409a97799e9284a6cb044bcbcfd1b7e7ca\"\n      },\n      {\n        \"path\": \"docs/work-orders/WO-003-history.md\",\n        \"workOrderId\": \"WO-003\",\n        \"kind\": \"authorized-execution-amendment\",\n        \"decisionId\": \"WO-003-D001\",\n        \"judgedSourceHash\": \"sha256:c9cb07789c7d2d53444852befda03f01c407f4971d4fff304c9cea6996081942\",\n        \"currentSourceHash\": \"sha256:df3e9d39e1c3437b7b5f586e2f1a868a99e7e5ed03f7b33b1d386df839bea53a\"\n      },\n      {\n        \"path\": \"docs/work-orders/WO-004-history.md\",\n        \"workOrderId\": \"WO-004\",\n        \"kind\": \"authorized-execution-amendment\",\n        \"decisionId\": \"WO-004-D001\",\n        \"judgedSourceHash\": \"sha256:ebb3a63bcd4e4aeafc72e9f0c8e9afa51ec2feec7b23b571351610d2ffd66be3\",\n        \"currentSourceHash\": \"sha256:97dcfeba52c6bc4df40022e91037be2b5026550ef46f6c83ef2374cc89e76b69\"\n      }\n    ]\n  },\n  \"advisories\": []\n}\n"
+      },
+      {
+        "command": "npm run test:docs",
+        "exitCode": 0,
+        "elapsedMs": 14746,
+        "output": "\n> test:docs\n> node scripts/test-runner.mjs --document\n\nPROGRESS [format] 0.0 s started\nPASS format 3.39 s\nPROGRESS [configuration-root] 0.0 s started\nPROGRESS [configuration-root] 6.0 s # Subtest: publication declarations under a configured root require both editions\nPASS configuration-root 6.01 s\nPROGRESS [registrations] 0.0 s started\nPASS registrations 0.07 s\nPROGRESS [declarations] 0.0 s started\nPASS declarations 0.26 s\nPROGRESS [generated] 0.0 s started\nPASS generated 2.19 s\nPROGRESS [host] 0.0 s started\nPASS host 0.07 s\nPROGRESS [kit-verify] 0.0 s started\nPASS kit-verify 0.11 s\n  [kit-verify] kit: 999 files verified at c2918d27539cae29203d53477414c32694d26a7c\nPROGRESS [license-surfaces] 0.0 s started\nPROGRESS [docs-check] 0.0 s started\nPROGRESS [harness-context] 0.0 s started\nPASS harness-context 0.10 s\nPASS docs-check 0.26 s\nPASS license-surfaces 1.32 s\nPROGRESS [plan-refutation-current] 0.0 s started\nPROGRESS [plan] 0.0 s started\nPROGRESS [reader-profiles] 0.0 s started\nPROGRESS [entropy] 0.0 s started\nPASS reader-profiles 0.06 s\nPASS entropy 0.10 s\nPASS plan-refutation-current 0.32 s\nPASS plan 0.35 s\nnpm run test:docs: 14 passed; 0 failed; 14.19 s; 14 fresh tasks; 0.1 s waiting for host lanes (0.1 s behind checkout unknown)\n"
+      },
+      {
+        "command": "npm run work-orders -- index",
+        "exitCode": 0,
+        "elapsedMs": 184,
+        "output": "\n> work-orders\n> node scripts/work-orders.mjs index\n\nGenerated docs/work-orders/README.md\n"
+      }
+    ],
+    "selfMembers": [
+      {
+        "workOrderId": "WO-001",
+        "repository": "self",
+        "base": "244d5122e5ef22f2ed6c09316c96142b7dc2f492",
+        "phase": "closed",
+        "verdict": "pass",
+        "integration": "current",
+        "stale": "no",
+        "targetCommit": "244d5122e5ef22f2ed6c09316c96142b7dc2f492"
+      },
+      {
+        "workOrderId": "WO-002",
+        "repository": "self",
+        "base": "244d5122e5ef22f2ed6c09316c96142b7dc2f492",
+        "phase": "closed",
+        "verdict": "pass",
+        "integration": "current",
+        "stale": "no",
+        "targetCommit": "244d5122e5ef22f2ed6c09316c96142b7dc2f492"
+      }
+    ],
+    "elapsedMs": 24293,
+    "update": "kit files: 999 replaced; 0 added; 0 removed; 0 refused.",
+    "main": "244d5122e5ef22f2ed6c09316c96142b7dc2f492",
+    "branch": "126acd073dd7025c10171edca41d0ad7cf724e24"
+  }
+}

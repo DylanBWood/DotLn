@@ -2435,6 +2435,22 @@ await check(
       /\[WO-301\]/,
     );
     cli(fixture, ["index", "--check"]);
+    runGit(fixture, ["switch", "-qc", "chore/index-refresh"]);
+    write(
+      fixture,
+      "unrelated.txt",
+      "A branch commit does not move the self member.\n",
+    );
+    commit(fixture, "Unrelated branch commit");
+    cli(fixture, ["index"]);
+    const refreshed = streamSnapshot(
+      readFileSync(join(fixture, "docs/work-orders/README.md"), "utf8"),
+    ).workstreams[0].members[0];
+    assert.equal(refreshed.base, base);
+    assert.equal(refreshed.targetCommit, base);
+    assert.equal(refreshed.integration, "current");
+    assert.equal(refreshed.stale, "no");
+    cli(fixture, ["index", "--check"]);
     write(fixture, planningPath, streamSequence([id]));
     cli(fixture, ["index"]);
     page = readFileSync(join(fixture, "docs/work-orders/README.md"), "utf8");
@@ -2465,5 +2481,83 @@ await check(
         /Workstream/,
       );
     }
+  },
+);
+
+await check(
+  "closed workstream members may lack the field while open and contradictory membership still refuses",
+  () => {
+    const fixture = makeRepo("closed-workstream-field");
+    runGit(fixture, ["symbolic-ref", "HEAD", "refs/heads/main"]);
+    const id = "WO-301",
+      declared = streamAuthority(id, "WS-001");
+    write(
+      fixture,
+      authorityPath(id),
+      declared.replace("**Workstream:** WS-001\n", ""),
+    );
+    write(fixture, planningPath, streamSequence([]));
+    writeLog(fixture, completed(id));
+    const document = "docs/workstreams/WS-001-fixture.md";
+    const stream = {
+      id: "WS-001",
+      members: [{ workOrderId: id, repositoryId: "self" }],
+      edges: [],
+    };
+    write(fixture, document, streamDocument(stream));
+    commit(fixture, "Closed member without a later field");
+    const output = cli(fixture, ["index"]);
+    assert.equal(
+      (
+        output.match(/Advisory:.*closed WO-301.*\*\*Workstream:\*\* WS-001/g) ??
+        []
+      ).length,
+      1,
+    );
+    const member = streamSnapshot(
+      readFileSync(join(fixture, "docs/work-orders/README.md"), "utf8"),
+    ).workstreams[0].members[0];
+    assert.equal(member.phase, "closed");
+    assert.equal(member.integration, "current");
+    assert.equal(member.stale, "no");
+    cli(fixture, ["index", "--check"]);
+    assert.equal(
+      readFileSync(join(fixture, authorityPath(id)), "utf8"),
+      declared.replace("**Workstream:** WS-001\n", ""),
+    );
+    writeLog(fixture, [activation(id)]);
+    assert.match(
+      cli(fixture, ["index"], false),
+      /WO-301 must declare \*\*Workstream:\*\* WS-001/,
+    );
+    writeLog(fixture, completed(id));
+    write(fixture, authorityPath(id), declared.replace("WS-001", "WS-002"));
+    assert.match(cli(fixture, ["index"], false), /WO-301 must declare/);
+    write(fixture, authorityPath(id), declared);
+    unlinkSync(join(fixture, document));
+    assert.match(
+      cli(fixture, ["index"], false),
+      /\*\*Workstream:\*\* WS-001 has no workstream document/,
+    );
+    write(fixture, document, streamDocument({ ...stream, members: [] }));
+    assert.match(
+      cli(fixture, ["index"], false),
+      /WO-301 declares.*absent from members/,
+    );
+    write(
+      fixture,
+      authorityPath(id),
+      declared.replace("**Workstream:** WS-001\n", ""),
+    );
+    write(fixture, document, streamDocument(stream));
+    write(
+      fixture,
+      "docs/workstreams/WS-002-fixture.md",
+      streamDocument({ ...stream, id: "WS-002" }),
+    );
+    assert.match(
+      cli(fixture, ["index"], false),
+      /WO-301 is already a member of WS-001/,
+    );
   },
 );

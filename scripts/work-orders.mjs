@@ -488,12 +488,20 @@ export const readIndex = (root, releases = localReleaseRecords(root)) => {
   // place in the sequence (or null), which the index page orders Open cards by.
   const positions = new Map(sequence.map(({ id }, index) => [id, index]));
   const workstreamDocuments = readWorkstreams(root, rows);
+  // A closed order predating the field gets its grouping from the validated
+  // document. Keep its authority bytes intact and include it in Git facts.
+  const membership = new Map(
+    workstreamDocuments.flatMap((stream) =>
+      stream.members.map((member) => [member.workOrderId, stream.id]),
+    ),
+  );
   const separate = new Set(
     workstreamDocuments
       .filter((stream) => stream.track === "separate")
       .map((stream) => stream.id),
   );
   for (const row of rows) {
+    row.workstream ??= membership.get(row.id);
     row.separateWorkstream = separate.has(row.workstream);
     row.position = row.separateWorkstream
       ? null
@@ -557,8 +565,8 @@ export const readTargetFacts = (root, rows) => {
           : (recordedRepositoryClone(root, id) ??
             recordedRepositoryClone(primaryWorktree(root), id));
       if (repository && clone) {
-        if (id === "self") base = commit(clone, "HEAD");
         targetCommit = commit(clone, `refs/heads/${repository.baseBranch}`);
+        if (id === "self") base = targetCommit;
         if (base !== "unknown" && targetCommit !== "unknown") {
           if (base === targetCommit) integration = "current";
           else {

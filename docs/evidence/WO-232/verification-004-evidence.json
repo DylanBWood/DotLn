@@ -1,0 +1,224 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-232",
+  "dispatch": "resume: verify",
+  "report": "docs/verifications/WO-232/VER-004.md",
+  "subject": {
+    "baseCommit": "a81561976c8629834a5a18623b097fa4d7d8681a",
+    "checkpoint": "refs/dotln/checkpoint/WO-232/15",
+    "codeIdentity": "98839c72b08bb113c1977e1b40484ba33fb4e58b250eab3136a3bcc202df77d4",
+    "repairChangedSince": "refs/dotln/checkpoint/WO-232/11 (the VER-003 subject): scripts/lib/plan-continuation.mjs (withoutAddedWorkstream split from the writer's field-only retention, applied to both title representations in executionAmendmentMatch), scripts/test-plan-refutation.mjs and documents; the bundle, manifest, generator, support, suite, workstream and index readers are byte-identical to the VER-003 subject",
+    "workingTreeSinceCheckpoint": "at dispatch, only docs/control/current.md, docs/control/orders/WO-232.jsonl and docs/work-orders/README.md, from the recorded verify dispatch; this verification then wrote only its report, this file, the two probe scripts, D017 and the generated decision projections"
+  },
+  "consumedRows": {
+    "complete": {
+      "checkId": "npm test",
+      "gateSelection": "review",
+      "executionMode": "fresh",
+      "codeIdentity": "98839c72b08bb113c1977e1b40484ba33fb4e58b250eab3136a3bcc202df77d4",
+      "recordedAt": "2026-10-25T15:33:24.864Z",
+      "exitCode": 0,
+      "requiredGroups": 42,
+      "unrunSuites": [],
+      "identityUnchanged": true,
+      "buildOutputUnchanged": true,
+      "evidenceRef": "host-gate:98839c72b08bb113c1977e1b40484ba33fb4e58b250eab3136a3bcc202df77d4:npm test"
+    },
+    "structural": {
+      "recordedAt": "2026-10-25T15:33:24.864Z",
+      "exitCode": 0,
+      "evidenceRef": "host-gate:98839c72b08bb113c1977e1b40484ba33fb4e58b250eab3136a3bcc202df77d4:structural:2026-10-25T15:33:24.864Z"
+    },
+    "document": "the completion consumes the newest passing npm run test:docs row for the working tree after this report's last edit"
+  },
+  "probes": [
+    {
+      "name": "VER-003 legacy reproduction, unchanged",
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-232/verification-003-legacy.mjs",
+      "exitCode": 0,
+      "observed": "Synthetic legacy row: matches without the field, matches with the field added later (base refuses), refuses the field with a changed objective. WO-159 (legacy) and WO-160 (current) match as is and with the field added; the base refuses both with the field. F4 is repaired."
+    },
+    {
+      "name": "representation matrix",
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-232/verification-004-matrix.mjs",
+      "exitCode": 0,
+      "observed": "1,384 rows over LF and CRLF, three filed-title states, with and without an existing execution record, four bound changes and three binding writers; 104 live bindings and 1,268 judged rows. The subject agrees with the expected outcome in every judged row (456 admissions), regresses no row the activation base or the VER-003 subject admitted, and newly admits 20 rows over the VER-003 subject, all in the legacy placeholder representation over an unlabelled filed title. Writer outputs equal the VER-003 subject's in 4,152 comparisons. Eight bindings are dead under both readers: the placeholder writer over an unlabelled filed title with a body change, which the legacy path never admitted."
+    },
+    {
+      "name": "live amendment rows through the plan gate",
+      "command": "node scripts/harness.mjs bounded -- node <session scratch>/ver004-live.mjs <session scratch>",
+      "script": "clones this worktree into session scratch, overlays its uncommitted status paths and package build output, links dependencies, and runs node scripts/refute-plan.mjs check per variant; the WS-002 document lists the edited order",
+      "exitCode": 0,
+      "variants": [
+        { "variant": "as is", "exitCode": 0 },
+        { "variant": "WO-159 exact field", "exitCode": 0 },
+        {
+          "variant": "WO-159 field and appended execution record",
+          "exitCode": 0
+        },
+        {
+          "variant": "WO-159 field and changed Objective",
+          "exitCode": 1,
+          "message": "unmatched execution amendment WO-159 row 23; withdraw it explicitly or restore its approved bytes"
+        },
+        {
+          "variant": "WO-159 field and appended non-record section",
+          "exitCode": 1,
+          "message": "unmatched execution amendment WO-159 row 23; withdraw it explicitly or restore its approved bytes"
+        },
+        {
+          "variant": "WO-159 malformed field WS-02",
+          "exitCode": 1,
+          "message": "malformed **Workstream:** line; expected **Workstream:** WS-NNN"
+        },
+        { "variant": "WO-160 exact field", "exitCode": 0 },
+        {
+          "variant": "WO-160 field and changed Objective",
+          "exitCode": 1,
+          "message": "unmatched execution amendment WO-160 row 26; withdraw it explicitly or restore its approved bytes"
+        },
+        { "variant": "restored", "exitCode": 0 }
+      ]
+    },
+    {
+      "name": "permanent cases under six mutants",
+      "command": "node scripts/harness.mjs bounded -- node <session scratch>/ver004-mutants.mjs <session scratch>",
+      "script": "copies scripts and docs (less intake and local control) into session scratch and runs the four named Workstream amendment case groups of scripts/test-plan-refutation.mjs, unchanged, against each version of scripts/lib/plan-continuation.mjs",
+      "exitCode": 0,
+      "arms": [
+        { "arm": "subject", "pass": 9, "fail": 0 },
+        { "arm": "existing filed field also removed", "pass": 9, "fail": 0 },
+        { "arm": "first of several added fields removed", "pass": 9, "fail": 0 },
+        { "arm": "prefix-only field pattern", "pass": 6, "fail": 3 },
+        { "arm": "field removed outside the leading header", "pass": 9, "fail": 0 },
+        { "arm": "legacy branch without field removal", "pass": 7, "fail": 2 },
+        {
+          "arm": "widened digits and trailing spaces (the executor's mutant)",
+          "pass": 6,
+          "fail": 3
+        }
+      ],
+      "observed": "D016's repair kills the widened field pattern, as claimed. Three guard mutants survive; see F6 and D017."
+    },
+    {
+      "name": "F6 reproduction",
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-232/verification-004-guards.mjs",
+      "exitCode": 1,
+      "observed": "For each of the three guards, the subject refuses one input at the matcher and the guard's mutant admits it; the nine permanent cases pass under the subject and under every mutant. Exit 1 is the reproduction."
+    },
+    {
+      "name": "VER-001 reproduction, unchanged",
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-232/verification-001-amendment.mjs",
+      "exitCode": 0,
+      "observed": "All three reader cases match under the subject; the cloned instance's base-reader amend-order and both plan checks exit 0. F1 stays repaired."
+    },
+    {
+      "name": "VER-002 reproduction, unchanged",
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-232/verification-002-field-only.mjs",
+      "exitCode": 0,
+      "observed": "For WO-002 and WO-004, the subject's unbound field fails plan check, amend-order exits 0 and the following plan check exits 0; the base-bound and control arms pass. F3 stays repaired."
+    },
+    {
+      "name": "independent instance-history arms",
+      "command": "node scripts/harness.mjs bounded -- node <session scratch>/ver004-arms.mjs <session scratch>",
+      "script": "imports exerciseHistory and assertHistory from scripts/test-instance-history.mjs; the base arm installs the three activation-base readers in the disposable core; prints only",
+      "exitCode": 0,
+      "head": {
+        "assertion": "pass",
+        "elapsedMs": 25067,
+        "update": "kit files: 999 replaced; 0 added; 0 removed; 0 refused.",
+        "checks": "sync, index --check, plan -- check, test:docs and index all exit 0",
+        "selfMembers": "WO-001 and WO-002 current, stale no, base and target 244d5122e5ef22f2ed6c09316c96142b7dc2f492 (main) from update branch 03243f38acc246d3c5ed8056168e0e6aeca39d47"
+      },
+      "base": {
+        "assertion": "fail",
+        "elapsedMs": 25556,
+        "checks": "plan -- check and test:docs exit 1 on unmatched execution amendment WO-001 row 1; sync, index --check and index exit 0",
+        "selfMembers": "WO-001 and WO-002 diverged, stale yes, base the update branch, target main"
+      }
+    },
+    {
+      "name": "shape commands from the evidence README",
+      "command": "the README's §Inspect each shape commands, run from the repository root in disposable clones of both bundle refs",
+      "exitCode": 0,
+      "observed": "(a) WO-001 filed at e62d8b9, amended and closed at 2af257c, field added at 244d512; (b) WS-001's block and both self orders ending FinalReviewCompleted; (c) WO-003's TargetRecordsCommitted row, the launchpad decisions path absent, WO-003-D001 in the target and its amendment row; (d) WO-004 activated at 2bdbf8e, before target main c972d40. The bundle's SHA-256 e5ab2fe0db7a4269730fa13e069a4f3bca87e5cce293802d80f37e081a04f6bf matches the manifest."
+    },
+    {
+      "name": "generator rebuild into scratch",
+      "command": "node scripts/harness.mjs bounded -- node scripts/fixtures/instance-with-history/generate.mjs <session scratch>/regen",
+      "exitCode": 0,
+      "durationMs": 45824,
+      "observed": "A bundle and manifest were written to scratch; the committed bundle's digest is unchanged. Against the committed bundle, WO-001's order and WS-001's document are byte-identical and WO-001's event types match. Control records, receipts and the WO-003 and WO-004 Repository lines differ only in timestamps, durations, gate evidence UUIDs and commit ids, and kit files carry the current kit."
+    },
+    {
+      "name": "criteria 4 and 5 on this repository's records",
+      "command": "node scripts/harness.mjs bounded -- node <session scratch>/ver004-index.mjs <session scratch>",
+      "script": "clones this worktree into session scratch with its uncommitted subject and build output committed as main, then runs node scripts/work-orders.mjs index per case",
+      "exitCode": 0,
+      "criterion4": [
+        {
+          "case": "closed WO-159 listed in WS-002 without the field",
+          "exitCode": 0,
+          "advisory": "Advisory: docs/workstreams/WS-002-predecessor-track.md: closed WO-159 has no **Workstream:** WS-002 field; document membership admitted."
+        },
+        {
+          "case": "open WO-232 listed without the field",
+          "exitCode": 1,
+          "message": "WO-232 must declare **Workstream:** WS-002 in its order"
+        },
+        {
+          "case": "closed WO-159 declares WS-009, no document",
+          "exitCode": 1,
+          "message": "**Workstream:** WS-009 has no workstream document"
+        },
+        {
+          "case": "closed WO-159 declares WS-002, absent from members",
+          "exitCode": 1,
+          "message": "WO-159 declares **Workstream:** WS-002 but is absent from members"
+        },
+        {
+          "case": "closed WO-159 declares WS-002 and is listed",
+          "exitCode": 0
+        }
+      ],
+      "criterion5": {
+        "branch": "one commit past main",
+        "subject": "WO-228 current, stale no, base and target equal to main's tip",
+        "base": "WO-228 diverged, stale yes, base the branch tip, target main's tip"
+      }
+    },
+    {
+      "name": "repository checks",
+      "commands": [
+        "git diff --check",
+        "git diff --cached --check HEAD through a scratch index holding the untracked files",
+        "node scripts/harness.mjs bounded -- npm run format:check",
+        "node scripts/harness.mjs bounded -- npm run publication:check"
+      ],
+      "exitCode": 0,
+      "observed": "No whitespace errors in tracked or untracked changes; Prettier passes; 255/255 product headings indexed and both editions current."
+    }
+  ],
+  "findings": [
+    {
+      "id": "F4",
+      "route": "blocking in VER-003",
+      "disposition": "repaired; the unchanged VER-003 reproduction, the matrix and the live WO-159 plan gate pass"
+    },
+    {
+      "id": "F5",
+      "route": "follow-up in VER-003",
+      "disposition": "repaired; the executor's widened-pattern mutant and a prefix-only mutant each fail three permanent cases"
+    },
+    {
+      "id": "F6",
+      "route": "follow-up",
+      "decision": "WO-232-D017",
+      "summary": "three guards of the Workstream admission have no permanent case; the implementation holds each"
+    }
+  ],
+  "workers": {
+    "spawned": 0,
+    "budget": "0 of 20 planned and observed"
+  }
+}

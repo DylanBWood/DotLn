@@ -1,0 +1,110 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-232",
+  "dispatch": "resume: verify",
+  "report": "docs/verifications/WO-232/VER-002.md",
+  "subject": {
+    "baseCommit": "a81561976c8629834a5a18623b097fa4d7d8681a",
+    "checkpoint": "refs/dotln/checkpoint/WO-232/7",
+    "codeIdentity": "d96de5ce76ecda1bd3e4ad6b3af637f4fbfa01636ec75e9b9be34d3006950151",
+    "repairChangedSince": "refs/dotln/checkpoint/WO-232/5: scripts/lib/plan-continuation.mjs, scripts/test-plan-refutation.mjs and documents; the bundle, manifest, generator, support, suite, workstream and index readers are byte-identical to the VER-001 subject"
+  },
+  "consumedRows": {
+    "complete": {
+      "checkId": "npm test",
+      "gateSelection": "review",
+      "codeIdentity": "d96de5ce76ecda1bd3e4ad6b3af637f4fbfa01636ec75e9b9be34d3006950151",
+      "recordedAt": "2026-10-25T12:44:55.886Z",
+      "exitCode": 0,
+      "requiredGroups": 42,
+      "unrunSuites": [],
+      "instanceHistoryMs": 73423
+    },
+    "document": "the completion consumes the newest passing npm run test:docs row for the working tree after this report's last edit"
+  },
+  "probes": [
+    {
+      "name": "VER-001 reproduction, unchanged",
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-232/verification-001-amendment.mjs",
+      "finishedAt": "2026-10-25T13:02:01.482Z",
+      "exitCode": 0,
+      "observed": "All three reader cases match under the subject, including the base-reader field-and-objective binding; the cloned instance's base-reader amend-order and both plan checks exit 0. F1 is repaired."
+    },
+    {
+      "name": "independent instance-history arms",
+      "command": "node scripts/harness.mjs bounded -- node <session scratch>/history-arms.mjs <repository root>",
+      "script": "imports exerciseHistory and assertHistory from scripts/test-instance-history.mjs; the base arm installs the three activation-base readers in the disposable core; prints only",
+      "finishedAt": "2026-10-25T13:05:57.733Z",
+      "exitCode": 0,
+      "head": {
+        "assertion": "pass",
+        "elapsedMs": 24824,
+        "update": "kit files: 999 replaced; 0 added; 0 removed; 0 refused.",
+        "checks": "sync, index --check, plan check, test:docs and index all exit 0",
+        "selfMembers": "WO-001 and WO-002 current, stale no, base and target 244d5122 (main) from branch 54cc59de"
+      },
+      "base": {
+        "assertion": "fail",
+        "elapsedMs": 25665,
+        "checks": "sync and index --check exit 0; plan check and test:docs exit 1 with unmatched execution amendment WO-001 row 1; index exits 0",
+        "selfMembers": "WO-001 and WO-002 diverged, stale yes, base 985fe62c (the update branch), target 244d5122"
+      }
+    },
+    {
+      "name": "shape inspection in fresh clones of both bundle refs",
+      "observed": {
+        "a": "WO-001 history: e62d8b9 filed, 2af257c amendment and close, 244d512 later field",
+        "b": "WS-001 lists WO-001, WO-002 and WO-004; WO-001 and WO-002 end FinalReviewCompleted pass",
+        "c": "WO-003 has one TargetRecordsCommitted row; launchpad docs/evidence/WO-003/decisions.md absent; the target holds WO-003-D001",
+        "d": "WO-004 base 2bdbf8e1 is an ancestor of target main c972d40, and differs from it"
+      }
+    },
+    {
+      "name": "plan-refutation suite",
+      "command": "node scripts/harness.mjs bounded -- npm test -- --only plan-refutation",
+      "finishedAt": "2026-10-25T13:07:48.289Z",
+      "exitCode": 0,
+      "row": "suite:plan-refutation at code identity d96de5ce76ecda1b..., 8 fresh tasks, 101.14 s"
+    },
+    {
+      "name": "format",
+      "command": "node scripts/harness.mjs bounded -- npm run format:check",
+      "finishedAt": "2026-10-25T13:08:57.647Z",
+      "exitCode": 0
+    },
+    {
+      "name": "publication",
+      "command": "node scripts/harness.mjs bounded -- npm run publication:check",
+      "finishedAt": "2026-10-25T13:08:58.007Z",
+      "exitCode": 0,
+      "observed": "255/255 product headings indexed; both editions current"
+    },
+    {
+      "name": "whitespace",
+      "command": "git diff --check",
+      "exitCode": 0
+    },
+    {
+      "name": "F3: field-only change to a judged order with no active amendment",
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-232/verification-002-field-only.mjs",
+      "finishedAt": "2026-10-25T13:12:24.982Z",
+      "exitCode": 1,
+      "arms": {
+        "WO-002 (closed self member)": {
+          "base": "withdraw 0; amend-order binds the field-only change, exit 0; plan check exits 1 only on the bundle's unrelated WO-001 row 1",
+          "subject": "withdraw 0; plan check 1, existing work-order bytes changed; amend-order 1, order has no substantive execution amendment; plan check 1, existing work-order bytes changed",
+          "baseBound": "the base reader's field-only binding, checked by the subject's readers: plan check 0",
+          "control": "the subject's readers over the filed bytes without the field: plan check 0"
+        },
+        "WO-004 (open target member)": {
+          "base": "withdraw 0; amend-order 0; plan check 1 only on WO-001 row 1",
+          "subject": "withdraw 0; plan check 1, existing work-order bytes changed; amend-order 1, order has no substantive execution amendment; plan check 1",
+          "baseBound": "plan check 0",
+          "control": "filed bytes without the field and without WS-001 membership: plan check 0"
+        }
+      },
+      "regression": true
+    }
+  ],
+  "workers": 0
+}
