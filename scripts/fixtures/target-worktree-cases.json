@@ -66,7 +66,9 @@
     "\"target draft retains its preparation across a redacted fetch failure and reuses it on retry\"",
     "\"target draft refuses a tree equal to the described base and a subject outside its activation ancestry\"",
     "\"target final publish excludes earlier records, exempts fetched-base paths and refuses an already integrated records tree\"",
-    "\"same-tree draft retry refreshes the body when the remote base advances without preparing another commit\""
+    "\"same-tree draft retry refreshes the body when the remote base advances without preparing another commit\"",
+    "`target final review excludes merged subjects unless the fetched ref is absent: missingRef=${missingRef}`",
+    "`target final review names the described range before its ${name} refusal`"
   ],
   "names": [
     "target release preparation is a read-only no-release outcome",
@@ -163,6 +165,11 @@
     "target draft retains its preparation across a redacted fetch failure and reuses it on retry",
     "target draft refuses a tree equal to the described base and a subject outside its activation ancestry",
     "target final publish excludes earlier records, exempts fetched-base paths and refuses an already integrated records tree",
-    "same-tree draft retry refreshes the body when the remote base advances without preparing another commit"
+    "same-tree draft retry refreshes the body when the remote base advances without preparing another commit",
+    "target final review excludes merged subjects unless the fetched ref is absent: missingRef=false",
+    "target final review excludes merged subjects unless the fetched ref is absent: missingRef=true",
+    "target final review names the described range before its format refusal",
+    "target final review names the described range before its identifier refusal",
+    "target final review names the described range before its attribution refusal"
   ]
 }
