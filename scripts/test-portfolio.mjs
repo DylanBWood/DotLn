@@ -41,6 +41,10 @@ import {
 import { portfolioExecution } from "../packages/skeleton/dist/src/portfolio-host.js";
 import { fixtureVerificationResult } from "../packages/skeleton/dist/src/verification-fake.js";
 import { parseEvidenceResult } from "../packages/skeleton/dist/src/verification-protocol.js";
+import {
+  sourceObjectEnvironment,
+  sourceWriterState,
+} from "../packages/skeleton/dist/src/source-change-worktree.js";
 import { ResidentHost } from "../packages/skeleton/dist/src/resident-host.js";
 import {
   recordPresence,
@@ -69,6 +73,11 @@ const fixtureGitFlags = [
   "user.email=fixture@example.invalid",
 ];
 const fixtureGitOptions = { exec: true, stdio: ["ignore", "pipe", "pipe"] };
+const writerGit = (cwd, args) =>
+  runGit(cwd, args, {
+    ...fixtureGitOptions,
+    env: { ...process.env, ...sourceObjectEnvironment(cwd) },
+  });
 
 /** The reviewed text: 5S maintenance of one registered scratch repository. */
 const portfolioText = (overrides = {}) => ({
@@ -227,7 +236,7 @@ const shine =
         ? source.replace(marker, "")
         : `${source}// attempted\n`,
     );
-    runGit(cwd, [...fixtureGitFlags, "add", "src/main.js"], fixtureGitOptions);
+    writerGit(cwd, [...fixtureGitFlags, "add", "src/main.js"]);
   };
 /** A writer double (WO-052): it edits and commits inside its worktree; the
  * host refuses any committed path outside the declared surfaces. */
@@ -237,25 +246,21 @@ function writer(log, edit) {
     harnessVersion: "fixture",
     dispatch(request, now) {
       edit(request.cwd, request);
-      runGit(
-        request.cwd,
-        [
-          ...fixtureGitFlags,
-          "-c",
-          "maintenance.auto=false",
-          "commit",
-          "-q",
-          "-F",
-          request.commitMessagePath,
-        ],
-        fixtureGitOptions,
-      );
+      writerGit(request.cwd, [
+        ...fixtureGitFlags,
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-q",
+        "-F",
+        request.commitMessagePath,
+      ]);
       appendFileSync(log, `${request.workOrder.workOrderId}\n`);
-      const sha = runGit(
-        request.cwd,
-        [...fixtureGitFlags, "rev-parse", "HEAD"],
-        fixtureGitOptions,
-      );
+      const sha = writerGit(request.cwd, [
+        ...fixtureGitFlags,
+        "rev-parse",
+        "HEAD",
+      ]);
       return {
         receipt: Promise.resolve({
           commandId: request.command.commandId,
@@ -272,11 +277,7 @@ function writer(log, edit) {
             requiresHuman: false,
             observedCommit: {
               sha,
-              branch: runGit(
-                request.cwd,
-                [...fixtureGitFlags, "symbolic-ref", "--short", "HEAD"],
-                fixtureGitOptions,
-              ),
+              branch: sourceWriterState(request.cwd).branch,
             },
             observedDenials: "unavailable",
           },
@@ -772,11 +773,12 @@ test("a Sort move passes only when the host sees the exact relocation and its na
     };
     const move = (cwd) => {
       mkdirSync(join(cwd, "docs"), { recursive: true });
-      runGit(
-        cwd,
-        [...fixtureGitFlags, "mv", "loose/guide.md", "docs/guide.md"],
-        fixtureGitOptions,
-      );
+      writerGit(cwd, [
+        ...fixtureGitFlags,
+        "mv",
+        "loose/guide.md",
+        "docs/guide.md",
+      ]);
     };
     const moved = await run("misplaced-file:loose/guide.md", move, {}, "moved");
     assert.deepEqual(moved.verdict, {
@@ -809,11 +811,7 @@ test("a Sort move passes only when the host sees the exact relocation and its na
         join(cwd, "docs/guide.md"),
         readFileSync(join(cwd, "loose/guide.md")),
       );
-      runGit(
-        cwd,
-        [...fixtureGitFlags, "add", "docs/guide.md"],
-        fixtureGitOptions,
-      );
+      writerGit(cwd, [...fixtureGitFlags, "add", "docs/guide.md"]);
     };
     const copied = await run(
       "misplaced-file:loose/guide.md",

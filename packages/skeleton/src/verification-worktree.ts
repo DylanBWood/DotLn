@@ -30,12 +30,13 @@ import {
 import { discoverySandbox } from "./discovery-sandbox.js";
 import { WorkerFailure } from "./worker-protocol.js";
 import { interruptibleHostCall } from "./host-interruption.js";
+import { HOST_GIT } from "./source-change-worktree.js";
 
 const refuse = (detail: string): never => {
   throw new WorkerFailure("profile-refused", detail);
 };
 const git = (cwd: string, ...args: string[]): Buffer =>
-  execFileSync("git", args, {
+  execFileSync("git", [...HOST_GIT, ...args], {
     cwd,
     timeout: 15_000,
     maxBuffer: 16 * 1024 * 1024,

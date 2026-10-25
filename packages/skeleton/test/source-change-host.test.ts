@@ -9,6 +9,9 @@ import {
   writeFileSync,
   chmodSync,
   linkSync,
+  symlinkSync,
+  readlinkSync,
+  mkdirSync,
   unlinkSync,
 } from "node:fs";
 import { join } from "node:path";
@@ -40,12 +43,19 @@ import {
   decodeSourceRequest,
   sourceChangeDecision,
 } from "../src/source-change-state.js";
-import { sourceDigest } from "../src/source-change-worktree.js";
+import {
+  sourceDigest,
+  sourceGit,
+  sourceObjectEnvironment,
+  SourceImportRefusal,
+} from "../src/source-change-worktree.js";
 import { installSourceChangeCommands } from "../src/source-change-command.js";
 import {
   createSourceFixture,
+  cleanupFaults,
   sourceFixtureOptions,
   fixtureGit as git,
+  fixtureObjectEnvironment,
   launchpad,
 } from "./source-change-fixture.js";
 
@@ -58,6 +68,99 @@ const events = (root: string) =>
   decodeLog(readFileSync(join(root, "store/events.jsonl"), "utf8"));
 const dispose = (root: string) =>
   rmSync(root, { recursive: true, force: true });
+
+test("WO-204-target-writer: only a live host grant admits an exclusive detached writer", async () => {
+  const root = createSourceFixture();
+  try {
+    const options = sourceFixtureOptions(root, () => 10, "commit", "claude");
+    const transport = options.transport;
+    const host = new SourceChangeHost({
+      ...options,
+      transport: {
+        name: transport.name,
+        harnessVersion: transport.harnessVersion,
+        dispatch(request, now) {
+          const route = join(
+            launchpad,
+            "docs/control/local/harness/targets",
+            sourceDigest(request.cwd),
+            "source-change-commands.json",
+          );
+          const original = readFileSync(route, "utf8");
+          const grant = JSON.parse(original);
+          const guard = (session = request.episodeId) => {
+            const run = spawnSync(
+              process.execPath,
+              [
+                join(
+                  request.cwd,
+                  ".claude/hooks/concurrent-work-requires-worktrees.mjs",
+                ),
+              ],
+              {
+                cwd: request.cwd,
+                encoding: "utf8",
+                timeout: 10_000,
+                env: {
+                  ...process.env,
+                  ...fixtureObjectEnvironment(request.cwd),
+                  CLAUDE_PID: String(process.pid),
+                },
+                input: JSON.stringify({
+                  hook_event_name: "PreToolUse",
+                  cwd: request.cwd,
+                  session_id: session,
+                  tool_name: "Write",
+                  tool_input: {
+                    file_path: join(request.cwd, "fixture.txt"),
+                    content: "synthetic",
+                  },
+                }),
+              },
+            );
+            assert.equal(run.status, 0, run.stderr);
+            return JSON.parse(run.stdout).hookSpecificOutput
+              ?.permissionDecision;
+          };
+          try {
+            unlinkSync(route);
+            assert.equal(
+              guard(),
+              "deny",
+              "an arbitrary detached checkout has no host-bound branch",
+            );
+            for (const changed of [
+              { expiresAt: 0 },
+              { branch: "forged" },
+              { baseCommit: "0".repeat(40) },
+            ]) {
+              writeFileSync(route, JSON.stringify({ ...grant, ...changed }));
+              assert.equal(guard(), "deny");
+            }
+            writeFileSync(route, original);
+            assert.equal(
+              guard(),
+              undefined,
+              "the live host route can reserve its source writer",
+            );
+            assert.equal(
+              guard("another_writer"),
+              "deny",
+              "the same worktree still has one writer",
+            );
+          } finally {
+            writeFileSync(route, original);
+          }
+          return transport.dispatch(request, now);
+        },
+      },
+    });
+
+    assert.equal((await host.run()).status, "observed");
+  } finally {
+    dispose(root);
+  }
+});
 
 test("recovered unreceipted dirty commits close with a typed host admission refusal", async () => {
   for (const interruption of ["signal", "crash"]) {
@@ -123,7 +226,10 @@ test("recovered unreceipted dirty commits close with a typed host admission refu
       ).run();
       assert.equal(recovered.status, "refused");
       if (recovered.status === "refused")
-        assert.equal(recovered.refusal.reason, "host-admission-effect");
+        assert.equal(
+          recovered.refusal.reason,
+          "committed-tree-drift:fixture.txt",
+        );
       assert.equal(
         events(root).filter((e) => e.type === "SourceChangeRefused").length,
         1,
@@ -164,17 +270,21 @@ for (const transport of ["claude", "codex"] as const)
                 "source-change-commands.json",
               ),
             ),
-            false,
-            "settled writer retains no command route before host admission",
+            true,
+            "the settlement hook precedes the durable result and cleanup",
           );
           assert.equal(
             existsSync(writerSandboxProfilePath(launchpad, host.tree.path)),
-            false,
-            "settled writer retains no command sandbox profile",
+            true,
+            "cleanup follows the durable result and integrity observation",
           );
         },
       });
       const result = await host.run();
+      assert.equal(
+        existsSync(writerSandboxProfilePath(launchpad, host.tree.path)),
+        false,
+      );
       assert.equal(settled, true);
       assert.equal(result.status, "observed");
       if (result.status !== "observed") return;
@@ -253,6 +363,424 @@ for (const transport of ["claude", "codex"] as const)
       dispose(root);
     }
   });
+
+for (const transport of ["codex", "claude"] as const)
+  for (const behavior of [
+    "commit-blocked",
+    "commit-attention",
+    "commit-failed",
+    "blocked",
+  ])
+    test(`WO-204 ${transport} ${behavior}: writer request holds before admission and stays held`, async () => {
+      const root = createSourceFixture();
+      try {
+        const options = sourceFixtureOptions(
+          root,
+          () => 10,
+          behavior,
+          transport,
+        );
+        const host = new SourceChangeHost(options);
+        const outcome = await host.run();
+        assert.deepEqual(outcome, {
+          status: "refused",
+          refusal: {
+            workOrderId: "wo_source_fixture",
+            reason: "writer-requested-attention",
+          },
+        });
+        const rows = events(root),
+          types = rows.map((row) => row.type);
+        assert.ok(
+          types.indexOf("WorkerResultObserved") <
+            types.indexOf("SourceChangeIntegrityChecked"),
+        );
+        assert.ok(
+          types.lastIndexOf("SourceChangeIntegrityChecked") <
+            types.indexOf("SourceChangeRefused"),
+        );
+        assert.ok(
+          types.indexOf("CommandGrantsRevoked") <
+            types.indexOf("SourceChangeRefused"),
+        );
+        assert.equal(
+          types.includes("SourceChangeObserved") ||
+            types.includes("CandidateImported"),
+          false,
+        );
+        assert.equal(
+          readdirSync(join(root, "store")).some((name) =>
+            name.endsWith(".source-change.json"),
+          ),
+          false,
+        );
+        assert.throws(() =>
+          sourceGit(
+            options.workOrder.repo,
+            "rev-parse",
+            "--verify",
+            "refs/heads/source-fixture",
+          ),
+        );
+        const commit = git(host.tree.path, "rev-parse", "HEAD");
+        if (behavior.startsWith("commit-")) {
+          assert.notEqual(commit, options.workOrder.baseCommit);
+          assert.throws(() =>
+            sourceGit(options.workOrder.repo, "cat-file", "-e", commit),
+          );
+          assert.ok(
+            existsSync(
+              join(
+                host.tree.objectDirectory,
+                commit.slice(0, 2),
+                commit.slice(2),
+              ),
+            ),
+          );
+        } else assert.equal(commit, options.workOrder.baseCommit);
+        assert.deepEqual(await new SourceChangeHost(options).run(), outcome);
+        assert.equal(launches(root), 1);
+      } finally {
+        dispose(root);
+      }
+    });
+
+for (const transport of ["codex", "claude"] as const)
+  test(`WO-204 ${transport}: a crash after the writer request still holds on recovery`, async () => {
+    const root = createSourceFixture();
+    try {
+      const script = `
+        import { SourceChangeHost } from ${JSON.stringify(new URL("../src/source-change-host.js", import.meta.url).href)};
+        import { sourceFixtureOptions } from ${JSON.stringify(new URL("./source-change-fixture.js", import.meta.url).href)};
+        await new SourceChangeHost({...sourceFixtureOptions(process.argv[1], () => 10, 'commit-blocked', process.argv[2]),
+          onEvent(event) { if (event.type === 'WorkerResultObserved') process.kill(process.pid, 'SIGKILL'); }
+        }).run();`;
+      const killed = spawnSync(
+        process.execPath,
+        ["--input-type=module", "-e", script, root, transport],
+        { encoding: "utf8", timeout: 30_000 },
+      );
+      assert.equal(killed.signal, "SIGKILL", killed.stderr);
+      const options = sourceFixtureOptions(
+        root,
+        () => 100,
+        "commit-blocked",
+        transport,
+      );
+      assert.deepEqual(await new SourceChangeHost(options).run(), {
+        status: "refused",
+        refusal: {
+          workOrderId: "wo_source_fixture",
+          reason: "writer-requested-attention",
+        },
+      });
+      assert.equal(launches(root), 1);
+      assert.equal(
+        events(root).some(
+          (row) =>
+            row.type === "CandidateImported" ||
+            row.type === "SourceChangeObserved",
+        ),
+        false,
+      );
+      assert.throws(() =>
+        sourceGit(
+          options.workOrder.repo,
+          "rev-parse",
+          "--verify",
+          "refs/heads/source-fixture",
+        ),
+      );
+    } finally {
+      dispose(root);
+    }
+  });
+
+for (const transport of ["codex", "claude"] as const)
+  test(`WO-204 ${transport}: detached commits are private until host import`, async () => {
+    const root = createSourceFixture();
+    try {
+      const options = sourceFixtureOptions(root, () => 10, "commit", transport);
+      const refs = git(
+        options.workOrder.repo,
+        "for-each-ref",
+        "--format=%(refname) %(objectname)",
+      );
+      let privateCommit = "";
+      const host = new SourceChangeHost({
+        ...options,
+        afterResult() {
+          privateCommit = git(host.tree.path, "rev-parse", "HEAD");
+          const env = sourceObjectEnvironment(host.tree.path);
+          assert.equal(
+            git(host.tree.path, "rev-parse", "--abbrev-ref", "HEAD"),
+            "HEAD",
+          );
+          assert.equal(env.GIT_OBJECT_DIRECTORY, host.tree.objectDirectory);
+          assert.ok(
+            existsSync(
+              join(
+                env.GIT_OBJECT_DIRECTORY,
+                privateCommit.slice(0, 2),
+                privateCommit.slice(2),
+              ),
+            ),
+          );
+          assert.throws(() =>
+            sourceGit(options.workOrder.repo, "cat-file", "-e", privateCommit),
+          );
+          assert.equal(
+            git(
+              options.workOrder.repo,
+              "for-each-ref",
+              "--format=%(refname) %(objectname)",
+            ),
+            refs,
+          );
+          // These host reads must resolve a HEAD that is absent from the common store.
+          assert.equal(host.tree.verify(), privateCommit);
+          host.tree.cleanAgainstCommit();
+          assert.equal(host.tree.effect()?.commit, privateCommit);
+          host.tree.sharedState();
+        },
+      });
+      const outcome = await host.run();
+      assert.equal(outcome.status, "observed");
+      assert.equal(
+        sourceGit(options.workOrder.repo, "rev-parse", "source-fixture"),
+        privateCommit,
+      );
+      assert.equal(
+        sourceGit(
+          options.workOrder.repo,
+          "rev-parse",
+          `${privateCommit}^{tree}`,
+        ),
+        git(host.tree.path, "rev-parse", "HEAD^{tree}"),
+      );
+      const rows = events(root);
+      const imported = rows.filter((row) => row.type === "CandidateImported");
+      assert.equal(imported.length, 1);
+      assert.equal(
+        (imported[0]!.payload as { commit: string }).commit,
+        privateCommit,
+      );
+      for (const object of (imported[0]!.payload as { objects: string[] })
+        .objects)
+        assert.doesNotThrow(() =>
+          sourceGit(options.workOrder.repo, "cat-file", "-e", object),
+        );
+      assert.ok(
+        rows.findIndex((row) => row.type === "CommandGrantsRevoked") <
+          rows.findIndex((row) => row.type === "CandidateImported"),
+      );
+      assert.ok(
+        rows.findIndex((row) => row.type === "CandidateImported") <
+          rows.findIndex((row) => row.type === "SourceChangeObserved"),
+      );
+    } finally {
+      dispose(root);
+    }
+  });
+
+for (const point of ["before-import", "after-import"] as const)
+  test(`WO-204 recovery ${point}: retained private objects import once before one ref update`, async () => {
+    const root = createSourceFixture();
+    try {
+      const script = `
+        import { SourceChangeHost } from ${JSON.stringify(new URL("../src/source-change-host.js", import.meta.url).href)};
+        import { sourceFixtureOptions } from ${JSON.stringify(new URL("./source-change-fixture.js", import.meta.url).href)};
+        await new SourceChangeHost({...sourceFixtureOptions(process.argv[1], () => 10),
+          onEvent(event) { if (event.type === (process.argv[2] === 'before-import' ? 'CommandGrantsRevoked' : 'CandidateImported')) process.kill(process.pid, 'SIGKILL'); }
+        }).run();`;
+      const killed = spawnSync(
+        process.execPath,
+        ["--input-type=module", "-e", script, root, point],
+        { encoding: "utf8", timeout: 30_000 },
+      );
+      assert.equal(killed.signal, "SIGKILL", killed.stderr);
+      const options = sourceFixtureOptions(root, () => 100);
+      assert.throws(() =>
+        sourceGit(
+          options.workOrder.repo,
+          "rev-parse",
+          "--verify",
+          "refs/heads/source-fixture",
+        ),
+      );
+      const host = new SourceChangeHost(options);
+      const candidate = git(host.tree.path, "rev-parse", "HEAD");
+      const packs = join(options.workOrder.repo, ".git/objects/pack");
+      const importedBefore = readdirSync(packs).filter((name) =>
+        name.endsWith(".pack"),
+      );
+      assert.equal(importedBefore.length, point === "after-import" ? 1 : 0);
+      const packBytes = importedBefore.map((name) =>
+        sourceDigest(readFileSync(join(packs, name))),
+      );
+      assert.equal((await host.run()).status, "observed");
+      assert.equal(launches(root), 1);
+      assert.equal(
+        sourceGit(options.workOrder.repo, "rev-parse", "source-fixture"),
+        candidate,
+      );
+      assert.equal(
+        git(
+          options.workOrder.repo,
+          "reflog",
+          "show",
+          "--format=%H",
+          "source-fixture",
+        ).split("\n").length,
+        1,
+      );
+      assert.equal(
+        events(root).filter((row) => row.type === "CandidateImported").length,
+        1,
+      );
+      if (point === "after-import")
+        assert.deepEqual(
+          readdirSync(packs)
+            .filter((name) => name.endsWith(".pack"))
+            .map((name) => sourceDigest(readFileSync(join(packs, name)))),
+          packBytes,
+        );
+      assert.equal(
+        readdirSync(packs).some((name) => name.endsWith(".keep")),
+        false,
+      );
+    } finally {
+      dispose(root);
+    }
+  });
+
+for (const maintenance of [
+  ["gc", "--prune=now"],
+  ["repack", "-ad"],
+])
+  for (const point of ["before-import", "after-import"] as const)
+    test(`WO-204 maintenance ${maintenance.join(" ")} ${point}: admission retains every object`, async () => {
+      const root = createSourceFixture();
+      try {
+        const options = sourceFixtureOptions(root, () => 10);
+        const baseline = sourceGit(
+          options.workOrder.repo,
+          "rev-parse",
+          "HEAD:fixture.txt",
+        );
+        let maintenanceExit: number | null | undefined;
+        const host = new SourceChangeHost({
+          ...options,
+          onEvent(event) {
+            if (
+              event.type ===
+              (point === "before-import"
+                ? "CommandGrantsRevoked"
+                : "CandidateImported")
+            ) {
+              const run = spawnSync(
+                "git",
+                ["-c", "core.hooksPath=/dev/null", ...maintenance],
+                {
+                  cwd: options.workOrder.repo,
+                  encoding: "utf8",
+                  timeout: 15_000,
+                  env: {
+                    ...process.env,
+                    GIT_OBJECT_DIRECTORY: undefined,
+                    GIT_ALTERNATE_OBJECT_DIRECTORIES: undefined,
+                  },
+                },
+              );
+              maintenanceExit = run.status;
+              // Shared maintenance sees the detached worktree's private HEAD and
+              // safely stops until import makes that object visible to it.
+              if (point === "before-import")
+                assert.match(run.stderr, /bad object worktrees\/.+\/HEAD/u);
+              else assert.equal(run.status, 0, run.stderr);
+            }
+          },
+        });
+        let verified = 0;
+        const verify = host.tree.verifyImported.bind(host.tree);
+        host.tree.verifyImported = (candidate) => {
+          verified++;
+          verify(candidate);
+        };
+        const outcome = await host.run();
+        assert.equal(outcome.status, "observed");
+        assert.equal(maintenanceExit, point === "before-import" ? 128 : 0);
+        assert.equal(
+          sourceGit(options.workOrder.repo, "cat-file", "blob", baseline),
+          "baseline",
+        );
+        assert.ok(
+          verified >= 3,
+          "import and both sides of ref publication verify shared objects",
+        );
+        const imported = events(root).find(
+          (row) => row.type === "CandidateImported",
+        )!.payload as { commit: string; objects: string[] };
+        assert.equal(
+          sourceGit(options.workOrder.repo, "rev-parse", "source-fixture"),
+          imported.commit,
+        );
+        for (const object of imported.objects)
+          assert.doesNotThrow(() =>
+            sourceGit(options.workOrder.repo, "cat-file", "-e", object),
+          );
+        assert.doesNotThrow(
+          () => sourceGit(options.workOrder.repo, ...maintenance),
+          "maintenance can complete after import and publication",
+        );
+      } finally {
+        dispose(root);
+      }
+    });
+
+test("WO-204 a failed import verification names the object and moves no ref", async () => {
+  const root = createSourceFixture();
+  try {
+    const options = sourceFixtureOptions(root, () => 10);
+    const host = new SourceChangeHost(options);
+    host.tree.verifyImported = (candidate) => {
+      throw new SourceImportRefusal(
+        candidate.commit,
+        new Error("synthetic import verification failure"),
+      );
+    };
+    await assert.rejects(host.run(), /source-change import refused/u);
+    const candidate = git(host.tree.path, "rev-parse", "HEAD");
+    const refusal = events(root).find(
+      (row) => row.type === "SourceChangeRefused",
+    )!.payload as { reason: string };
+    assert.equal(refusal.reason, `import:${candidate}`);
+    assert.throws(() =>
+      sourceGit(
+        options.workOrder.repo,
+        "rev-parse",
+        "--verify",
+        "source-fixture",
+      ),
+    );
+    assert.equal(
+      events(root).some(
+        (row) =>
+          row.type === "CandidateImported" ||
+          row.type === "SourceChangeObserved",
+      ),
+      false,
+    );
+    assert.equal(
+      readdirSync(join(root, "store")).some((name) =>
+        name.endsWith(".source-change.json"),
+      ),
+      false,
+    );
+  } finally {
+    dispose(root);
+  }
+});
 
 for (const point of ["before-commit", "after-commit", "after-receipt"] as const)
   test(`WO-199 real host SIGKILL ${point}: immediate recovery observes one effect`, async () => {
@@ -784,9 +1312,9 @@ for (const name of ["claude", "codex"] as const)
         ...sourceFixtureOptions(root, () => 10, "commit", name),
         afterResult: () => {
           const head = git(host.tree.path, "rev-parse", "HEAD");
-          git(repo, "update-ref", "refs/heads/main", head);
-          git(repo, "update-ref", "refs/tags/stray", head);
-          git(repo, "replace", head, base);
+          git(host.tree.path, "update-ref", "refs/heads/main", head);
+          git(host.tree.path, "update-ref", "refs/tags/stray", head);
+          git(host.tree.path, "replace", head, base);
           writeFileSync(
             join(repo, ".git/objects/info/alternates"),
             `${join(root, "alternate", "objects")}\n`,
@@ -808,9 +1336,9 @@ for (const name of ["claude", "codex"] as const)
         existsSync(join(repo, ".git/objects/info/alternates")),
         true,
       );
-      assert.notEqual(
-        git(repo, "rev-parse", "refs/heads/source-fixture"),
-        base,
+      assert.notEqual(git(host.tree.path, "rev-parse", "HEAD"), base);
+      assert.throws(() =>
+        git(repo, "rev-parse", "--verify", "refs/heads/source-fixture"),
       );
       assert.equal(launches(root), 1);
       assert.equal(
@@ -911,7 +1439,7 @@ test("WO-112 a replace ref cannot hide a change outside the surfaces from the ho
           "-m",
           "Synthetic source change",
         );
-        plant = () => git(repo, "replace", head, disguise);
+        plant = () => git(tree, "replace", head, disguise);
         plant();
       },
     });
@@ -920,7 +1448,7 @@ test("WO-112 a replace ref cannot hide a change outside the surfaces from the ho
       outcome.status === "refused" && outcome.refusal.reason,
       "shared-repository-changed",
     );
-    assert.notEqual(git(repo, "for-each-ref", "refs/replace"), "");
+    assert.notEqual(git(host.tree.path, "for-each-ref", "refs/replace"), "");
     // Planted where no snapshot saw it, as after a lost host, the host's own
     // Git still judges the real commit.
     assert.throws(() => host.tree.effect(), /outside the declared surfaces/);
@@ -1120,3 +1648,503 @@ test("WO-157 the host counts committed paths against the files ceiling and refus
     /without repo\.delete \(2 paths against the envelope's files ceiling of 2\): D fixture\.txt$/u,
   );
 });
+
+for (const transport of ["claude", "codex"] as const) {
+  test(`WO-204 ${transport}: a previously removed profile still revokes the route`, async () => {
+    const root = createSourceFixture();
+    try {
+      const host = new SourceChangeHost({
+        ...sourceFixtureOptions(root, () => 10, "commit", transport),
+        afterResult() {
+          unlinkSync(writerSandboxProfilePath(launchpad, host.tree.path));
+        },
+      });
+      assert.equal((await host.run()).status, "observed");
+      const rows = events(root);
+      const revoked = rows.find(
+        (event) => event.type === "CommandGrantsRevoked",
+      )!;
+      const removed = (revoked.payload as { removed: string[] }).removed;
+      assert.equal(removed.length, 2);
+      assert.ok(removed.every((path) => !existsSync(path)));
+      assert.equal(
+        rows.some((event) => event.type === "CommandCleanupFailed"),
+        false,
+      );
+      assert.ok(
+        rows.findIndex(
+          (event) => event.type === "SourceChangeIntegrityChecked",
+        ) < rows.indexOf(revoked),
+      );
+    } finally {
+      dispose(root);
+    }
+  });
+  for (const fail of [
+    { profile: [1] },
+    { route: [1] },
+    { profile: [1], route: [1] },
+    { profile: "always" },
+    { route: "always" },
+    { profile: "always", route: "always" },
+  ] as const)
+    for (const interrupted of [false, true])
+      test(`WO-204 ${transport}: cleanup ${JSON.stringify(fail)}, interrupted=${interrupted}`, async () => {
+        const root = createSourceFixture();
+        try {
+          const faults = cleanupFaults(fail);
+          const options = sourceFixtureOptions(
+            root,
+            () => 10,
+            "commit",
+            transport,
+          );
+          const host = new SourceChangeHost({
+            ...options,
+            unlinkCommandFile: faults.unlink,
+            ...(interrupted
+              ? {
+                  onRunning(
+                    dispatch: import("../src/worker-transport.js").TransportDispatch<
+                      import("../src/worker-protocol.js").WriterResult
+                    >,
+                  ) {
+                    dispatch.kill();
+                  },
+                }
+              : {}),
+          });
+          let effects = 0;
+          const effect = host.tree.effect.bind(host.tree);
+          host.tree.effect = (...args) => {
+            effects++;
+            return effect(...args);
+          };
+          const first = await host.run();
+          assert.equal(first.status, "refused");
+          if (first.status === "refused")
+            assert.match(first.refusal.reason, /^command-route-live:/u);
+          // The initial baseline-effect read is the only one: no candidate
+          // admission, after-test, import, receipt or terminal command result.
+          assert.equal(effects, 1);
+          assert.deepEqual(
+            faults.calls.map((call) => call.kind),
+            ["profile", "route"],
+          );
+          assert.ok(faults.calls.every((call) => call.count === 1));
+          const rows = events(root),
+            failed = rows.findIndex(
+              (event) => event.type === "CommandCleanupFailed",
+            );
+          const stopped = rows.findIndex(
+            (event) => event.type === "SourceChangeProcessStopped",
+          );
+          const integrity = rows.findIndex(
+            (event) => event.type === "SourceChangeIntegrityChecked",
+          );
+          assert.ok(stopped >= 0 && stopped < integrity && integrity < failed);
+          if (interrupted) {
+            const index = rows.findIndex(
+              (event) => event.type === "WorkerInterrupted",
+            );
+            assert.ok(stopped < index && index < integrity);
+          } else
+            assert.ok(
+              rows.findIndex((event) => event.type === "WorkerResultObserved") <
+                integrity,
+            );
+          for (const type of [
+            "SourceChangeObserved",
+            "CommandResult",
+            "CandidateImported",
+            "CommandGrantsRevoked",
+          ])
+            assert.equal(
+              rows.some((event) => event.type === type),
+              false,
+              type,
+            );
+          const survivors = rows
+            .filter((event) => event.type === "CommandCleanupFailed")
+            .map((event) => event.payload as { path: string; code: string });
+          assert.ok(survivors.length > 0);
+          for (const survivor of survivors) {
+            assert.equal(survivor.code, "EACCES");
+            assert.equal(existsSync(survivor.path), true);
+            if (first.status === "refused")
+              assert.ok(first.refusal.reason.includes(survivor.path));
+          }
+          // A restarted host has the real unlink. It must revoke the original
+          // survivors before observing the candidate or starting a replacement.
+          const next = await new SourceChangeHost(
+            sourceFixtureOptions(root, () => 100, "commit", transport),
+          ).run();
+          assert.equal(next.status, "observed");
+          assert.ok(survivors.every((survivor) => !existsSync(survivor.path)));
+          assert.equal(launches(root), interrupted ? 2 : 1);
+        } finally {
+          dispose(root);
+        }
+      });
+}
+
+test("WO-204 cleanup injection counts each path independently", () => {
+  const faults = cleanupFaults({ profile: [1], route: [2] });
+  assert.throws(() => faults.unlink("/synthetic/profile"), { code: "EACCES" });
+  assert.throws(() => faults.unlink("/synthetic/source-change-commands.json"), {
+    code: "ENOENT",
+  });
+  assert.throws(() => faults.unlink("/synthetic/source-change-commands.json"), {
+    code: "EACCES",
+  });
+  assert.deepEqual(
+    faults.calls.map(({ kind, count }) => [kind, count]),
+    [
+      ["profile", 1],
+      ["route", 1],
+      ["route", 2],
+    ],
+  );
+});
+
+for (const flag of ["skip-worktree", "assume-unchanged", "none"] as const)
+  for (const drift of ["modified", "deleted", "executable"] as const)
+    test(`WO-204 committed bytes: ${flag} with ${drift} refuses before after-testing`, async () => {
+      const root = createSourceFixture();
+      try {
+        const host = new SourceChangeHost({
+          ...sourceFixtureOptions(root, () => 10),
+          afterResult() {
+            if (flag !== "none")
+              git(host.tree.path, "update-index", `--${flag}`, "fixture.txt");
+            const path = join(host.tree.path, "fixture.txt");
+            if (drift === "modified")
+              writeFileSync(path, "uncommitted bytes\n");
+            if (drift === "deleted") unlinkSync(path);
+            if (drift === "executable") chmodSync(path, 0o755);
+          },
+        });
+        let admittedEffects = 0;
+        const effect = host.tree.effect.bind(host.tree);
+        host.tree.effect = (admit = false) => {
+          if (admit) admittedEffects++;
+          return effect(admit);
+        };
+        await assert.rejects(
+          host.run(),
+          /committed tree is dirty: fixture.txt/u,
+        );
+        assert.equal(admittedEffects, 0);
+        const rows = events(root);
+        const refusal = rows.find(
+          (event) => event.type === "SourceChangeRefused",
+        )!.payload as { reason: string };
+        assert.equal(
+          refusal.reason,
+          `${flag === "none" ? "committed-tree-drift" : "index-flags"}:fixture.txt`,
+        );
+        assert.equal(
+          rows.some((event) =>
+            ["SourceChangeObserved", "CandidateImported"].includes(event.type),
+          ),
+          false,
+        );
+        const file = join(host.tree.path, "fixture.txt");
+        if (drift === "modified")
+          assert.equal(readFileSync(file, "utf8"), "uncommitted bytes\n");
+        if (drift === "deleted") assert.equal(existsSync(file), false);
+        if (drift === "executable")
+          assert.ok((await import("node:fs")).lstatSync(file).mode & 0o111);
+        if (flag !== "none")
+          assert.match(
+            git(host.tree.path, "ls-files", "-v", "fixture.txt"),
+            flag === "skip-worktree" ? /^S /u : /^h /u,
+          );
+      } finally {
+        dispose(root);
+      }
+    });
+
+for (const transport of ["codex", "claude"] as const) {
+  for (const kind of ["symlink", "dangling-symlink", "gitlink"] as const)
+    test(`WO-204 clean committed entry: ${transport} ${kind}`, async () => {
+      const root = createSourceFixture();
+      try {
+        const repo = join(root, "target");
+        if (kind === "gitlink")
+          git(
+            repo,
+            "update-index",
+            "--add",
+            "--cacheinfo",
+            `160000,${git(repo, "rev-parse", "HEAD")},vendor/sub`,
+          );
+        else {
+          symlinkSync(
+            kind === "symlink" ? "fixture.txt" : "absent.txt",
+            join(repo, "link.txt"),
+          );
+          git(repo, "add", "link.txt");
+        }
+        git(repo, "commit", "-m", "Track an entry beside the candidate");
+        writeFileSync(join(root, "base.txt"), git(repo, "rev-parse", "HEAD"));
+        const host = new SourceChangeHost(
+          sourceFixtureOptions(root, () => 10, "commit", transport),
+        );
+        assert.equal((await host.run()).status, "observed");
+      } finally {
+        dispose(root);
+      }
+    });
+
+  for (const drift of ["target", "symlink-to-file", "file-to-symlink"] as const)
+    test(`WO-204 committed entry drift: ${transport} ${drift}`, async () => {
+      const root = createSourceFixture();
+      try {
+        const repo = join(root, "target");
+        symlinkSync("fixture.txt", join(repo, "link.txt"));
+        git(repo, "add", "link.txt");
+        git(repo, "commit", "-m", "Track a symlink beside the candidate");
+        writeFileSync(join(root, "base.txt"), git(repo, "rev-parse", "HEAD"));
+        const name = drift === "file-to-symlink" ? "fixture.txt" : "link.txt";
+        const host = new SourceChangeHost({
+          ...sourceFixtureOptions(root, () => 10, "commit", transport),
+          afterResult() {
+            const path = join(host.tree.path, name);
+            unlinkSync(path);
+            if (drift === "symlink-to-file") writeFileSync(path, "fixture.txt");
+            else symlinkSync("absent.txt", path);
+          },
+        });
+        let afterEffects = 0;
+        const effect = host.tree.effect.bind(host.tree);
+        host.tree.effect = (admit = false) => {
+          if (admit) afterEffects++;
+          return effect(admit);
+        };
+        await assert.rejects(
+          host.run(),
+          new RegExp(`committed-tree-drift:${name}`),
+        );
+        assert.equal(afterEffects, 0);
+        assert.equal(
+          events(root).some((event) => event.type === "CandidateImported"),
+          false,
+        );
+        if (drift !== "symlink-to-file")
+          assert.equal(readlinkSync(join(host.tree.path, name)), "absent.txt");
+      } finally {
+        dispose(root);
+      }
+    });
+
+  for (const outcome of [
+    "admission",
+    "hold",
+    "cleanup",
+    "interrupted",
+  ] as const)
+    test(`WO-204 retained candidate: ${transport} ${outcome} preserves shared Git and recovery`, async () => {
+      const root = createSourceFixture();
+      try {
+        const repo = join(root, "target");
+        symlinkSync("fixture.txt", join(repo, "link.txt"));
+        git(repo, "add", "link.txt");
+        git(repo, "commit", "-m", "Track a symlink through candidate recovery");
+        writeFileSync(join(root, "base.txt"), git(repo, "rev-parse", "HEAD"));
+        const options = sourceFixtureOptions(
+          root,
+          () => 10,
+          outcome === "hold"
+            ? "commit-blocked"
+            : outcome === "admission"
+              ? "commit-wide"
+              : "commit",
+          transport,
+        );
+        const abort = new AbortController();
+        let originalHead: Buffer, originalIndex: Buffer;
+        const host = new SourceChangeHost({
+          ...options,
+          ...(outcome === "cleanup"
+            ? { unlinkCommandFile: cleanupFaults({ profile: [1] }).unlink }
+            : {}),
+          ...(outcome === "interrupted" ? { signal: abort.signal } : {}),
+          afterResult() {
+            const directory = git(
+              host.tree.path,
+              "rev-parse",
+              "--absolute-git-dir",
+            );
+            originalHead = readFileSync(join(directory, "HEAD"));
+            originalIndex = readFileSync(join(directory, "index"));
+            if (outcome === "interrupted") abort.abort("SIGINT");
+          },
+        });
+        if (outcome === "admission")
+          await assert.rejects(host.run(), /outside the declared surfaces/);
+        else if (outcome === "interrupted")
+          await assert.rejects(host.run(), /interrupted/);
+        else assert.equal((await host.run()).status, "refused");
+        const candidate = git(host.tree.path, "rev-parse", "HEAD");
+        const directory = git(
+          host.tree.path,
+          "rev-parse",
+          "--absolute-git-dir",
+        );
+        const head = readFileSync(join(directory, "HEAD"));
+        const index = readFileSync(join(directory, "index"));
+        assert.deepEqual(head, originalHead!);
+        assert.deepEqual(index, originalIndex!);
+        const plainEnv = {
+          ...process.env,
+          GIT_OBJECT_DIRECTORY: undefined,
+          GIT_ALTERNATE_OBJECT_DIRECTORIES: undefined,
+        };
+        for (const args of [
+          ["log", "--all", "--oneline"],
+          ["rev-list", "--all", "--count"],
+          ["fsck"],
+          ["repack", "-ad"],
+          ["gc", "--prune=now"],
+          ["worktree", "prune", "--expire", "now"],
+        ]) {
+          const result = spawnSync("git", args, {
+            cwd: repo,
+            env: plainEnv,
+            encoding: "utf8",
+          });
+          assert.equal(result.status, 0, `${args.join(" ")}: ${result.stderr}`);
+        }
+        assert.equal(
+          spawnSync("git", ["cat-file", "-e", candidate], {
+            cwd: repo,
+            env: plainEnv,
+          }).status,
+          1,
+        );
+        const retained = events(root).find(
+          (event) => event.type === "SourceChangeCandidateRetained",
+        )!.payload as { inspectionCommand: string };
+        const inspect = spawnSync(
+          "/bin/sh",
+          ["-c", retained.inspectionCommand],
+          { env: plainEnv, encoding: "utf8" },
+        );
+        assert.equal(inspect.status, 0, inspect.stderr);
+        assert.ok(inspect.stdout.includes(candidate));
+        assert.deepEqual(readFileSync(join(directory, "HEAD")), head);
+        assert.deepEqual(readFileSync(join(directory, "index")), index);
+        const resumed = new SourceChangeHost(options);
+        const result = await resumed.run();
+        const recoverable = outcome === "cleanup" || outcome === "interrupted";
+        assert.equal(result.status, recoverable ? "observed" : "refused");
+        assert.equal(
+          readlinkSync(join(host.tree.path, "link.txt")),
+          "fixture.txt",
+        );
+        assert.equal(launches(root), 1);
+        if (recoverable) {
+          assert.equal(existsSync(join(directory, "gitdir")), true);
+          assert.equal(
+            existsSync(join(directory, "dotln-retained-gitdir")),
+            false,
+          );
+          resumed.finish();
+          assert.equal(existsSync(host.tree.path), false);
+        } else {
+          assert.equal(git(host.tree.path, "rev-parse", "HEAD"), candidate);
+          assert.equal(
+            events(root).filter((event) => event.type === "CandidateImported")
+              .length,
+            0,
+          );
+        }
+      } finally {
+        dispose(root);
+      }
+    });
+}
+
+for (const transport of ["codex", "claude"] as const)
+  for (const planted of ["alternates", "commit-graph", "symlink"] as const)
+    test(`WO-204 private-store-layout: ${transport} refuses ${planted} before private Git reads`, async () => {
+      const root = createSourceFixture();
+      try {
+        const host = new SourceChangeHost({
+          ...sourceFixtureOptions(root, () => 10, "commit", transport),
+          afterResult() {
+            const info = join(host.tree.objectDirectory, "info");
+            if (planted === "symlink")
+              symlinkSync(join(root, "target/.git/objects/info"), info);
+            else {
+              mkdirSync(info, { recursive: true });
+              writeFileSync(
+                join(info, planted),
+                planted === "alternates"
+                  ? join(root, "target/.git/objects") + "\n"
+                  : "planted graph",
+              );
+            }
+          },
+        });
+        await assert.rejects(
+          host.run(),
+          /private object store contains unsupported metadata/,
+        );
+        assert.equal(
+          (
+            events(root).find((event) => event.type === "SourceChangeRefused")!
+              .payload as { reason: string }
+          ).reason,
+          "private-object-layout",
+        );
+        assert.equal(
+          events(root).some((event) =>
+            ["CandidateImported", "SourceChangeObserved"].includes(event.type),
+          ),
+          false,
+        );
+        assert.equal(existsSync(join(host.tree.objectDirectory, "info")), true);
+        assert.equal(
+          spawnSync("git", ["fsck"], {
+            cwd: join(root, "target"),
+            env: {
+              ...process.env,
+              GIT_OBJECT_DIRECTORY: undefined,
+              GIT_ALTERNATE_OBJECT_DIRECTORIES: undefined,
+            },
+          }).status,
+          0,
+        );
+      } finally {
+        dispose(root);
+      }
+    });
+
+for (const transport of ["codex", "claude"] as const)
+  test(`WO-204 saved-receipt recovery: ${transport} finishes an already imported candidate`, async () => {
+    const root = createSourceFixture();
+    try {
+      const options = sourceFixtureOptions(root, () => 10, "commit", transport);
+      const host = new SourceChangeHost({
+        ...options,
+        afterReceiptSaved() {
+          throw new Error("synthetic post-receipt exception");
+        },
+      });
+      await assert.rejects(host.run(), /synthetic post-receipt exception/);
+      assert.equal(
+        events(root).filter((event) => event.type === "CandidateImported")
+          .length,
+        1,
+      );
+      const resumed = new SourceChangeHost(options);
+      assert.equal((await resumed.run()).status, "observed");
+      assert.equal(launches(root), 1);
+      resumed.finish();
+      assert.equal(existsSync(host.tree.path), false);
+    } finally {
+      dispose(root);
+    }
+  });

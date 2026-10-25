@@ -1,8 +1,14 @@
 import test from "node:test";
+import {
+  prepareSourceObjectStore,
+  sourceObjectEnvironment,
+} from "../src/source-change-worktree.js";
+import { fixtureObjectEnvironment } from "./source-change-fixture.js";
 import assert from "node:assert/strict";
-import { execFileSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 import {
   existsSync,
+  chmodSync,
   mkdirSync,
   mkdtempSync,
   readFileSync,
@@ -98,6 +104,7 @@ const git = (cwd: string, ...args: string[]) =>
       stdio: ["ignore", "pipe", "pipe"],
       env: {
         ...process.env,
+        ...fixtureObjectEnvironment(cwd),
         GIT_AUTHOR_NAME: "Fixture",
         GIT_AUTHOR_EMAIL: "fixture@example.invalid",
         GIT_COMMITTER_NAME: "Fixture",
@@ -128,7 +135,8 @@ function scratch() {
     "-m",
     "fixture baseline",
   );
-  git(launchpad, "worktree", "add", "-b", "writer", cwd);
+  git(launchpad, "worktree", "add", "--detach", cwd);
+  prepareSourceObjectStore(cwd, "writer", git(cwd, "rev-parse", "HEAD"));
   mkdirSync(join(cwd, ".dotln"));
   writeFileSync(join(launchpad, ".git/info/exclude"), "/.dotln/\n");
   const commitMessagePath = join(cwd, ".dotln/message.txt");
@@ -177,6 +185,113 @@ function scratch() {
     dispose: () => rmSync(root, { recursive: true, force: true }),
   };
 }
+
+const codexShellEnvironment = (request: WriterRequest): NodeJS.ProcessEnv => {
+  const table = canonicalWorkerArgs(
+    "codex-cli-exec",
+    request,
+    "/schema.json",
+    "0.154.0",
+  ).find((arg) => arg.startsWith("shell_environment_policy.set="))!;
+  return Object.fromEntries(
+    [...table.matchAll(/([A-Z][A-Z0-9_]*)=("(?:[^"\\]|\\.)*")/gu)].map(
+      ([, key, value]) => [key!, JSON.parse(value!)],
+    ),
+  );
+};
+const claudeWriterEnvironment = (request: WriterRequest): NodeJS.ProcessEnv => {
+  let captured: WorkerLaunch | undefined;
+  const stop = new Error("captured before launch");
+  assert.throws(
+    () =>
+      new ClaudeCliPrintWorkOrderTransport((launch) => {
+        captured = launch;
+        throw stop;
+      }, "2.1.270").dispatch(request, () => 1),
+    (error) => error === stop,
+  );
+  assert.ok(captured?.env);
+  return captured.env;
+};
+
+for (const transport of ["codex", "claude"] as const)
+  test(
+    `WO-204 ${transport}: writer Git configuration suppresses rerere and detached maintenance`,
+    { skip: transport === "codex" && process.getuid?.() === 0 },
+    () => {
+      const rows = [];
+      for (const control of transport === "codex" ? [false, true] : [false]) {
+        const s = scratch(),
+          common = join(s.input.launchpadCheckout, ".git");
+        try {
+          git(s.request.cwd, "config", "rerere.enabled", "true");
+          git(s.request.cwd, "config", "commit.gpgsign", "false");
+          git(s.request.cwd, "config", "core.hooksPath", "/dev/null");
+          git(s.request.cwd, "pack-refs", "--all");
+          rmSync(join(common, "rr-cache"), { recursive: true, force: true });
+          const env =
+            transport === "codex"
+              ? codexShellEnvironment(s.request)
+              : claudeWriterEnvironment(s.request);
+          if (control)
+            for (const key of Object.keys(env))
+              if (key.startsWith("GIT_CONFIG_")) delete env[key];
+          const trace = join(s.root, "trace.jsonl");
+          const runEnv = {
+            ...env,
+            GIT_AUTHOR_NAME: "Fixture",
+            GIT_AUTHOR_EMAIL: "fixture@example.invalid",
+            GIT_COMMITTER_NAME: "Fixture",
+            GIT_COMMITTER_EMAIL: "fixture@example.invalid",
+            GIT_TRACE2_EVENT: trace,
+          };
+          writeFileSync(
+            join(s.request.cwd, "fixture.txt"),
+            "changed by synthetic worker\n",
+          );
+          if (transport === "codex") chmodSync(common, 0o555);
+          const add = spawnSync("git", ["add", "-A"], {
+            cwd: s.request.cwd,
+            env: runEnv,
+            encoding: "utf8",
+          });
+          assert.equal(add.status, 0, add.stderr);
+          const commit = spawnSync(
+            "git",
+            ["commit", "-F", s.request.commitMessagePath],
+            { cwd: s.request.cwd, env: runEnv, encoding: "utf8" },
+          );
+          const childStarts = readFileSync(trace, "utf8")
+            .trim()
+            .split("\n")
+            .map((line) => JSON.parse(line))
+            .filter(
+              (row) =>
+                row.event === "child_start" &&
+                row.argv?.includes("maintenance"),
+            );
+          rows.push({
+            control,
+            exitCode: commit.status,
+            rrCache: existsSync(join(common, "rr-cache")),
+            maintenance: childStarts.length,
+          });
+        } finally {
+          chmodSync(common, 0o755);
+          s.dispose();
+        }
+      }
+      assert.deepEqual(
+        rows,
+        transport === "codex"
+          ? [
+              { control: false, exitCode: 0, rrCache: false, maintenance: 0 },
+              { control: true, exitCode: 128, rrCache: false, maintenance: 0 },
+            ]
+          : [{ control: false, exitCode: 0, rrCache: false, maintenance: 0 }],
+      );
+    },
+  );
 
 test("WO-051 inspection request, validator, parser, prompt and both launch arrays retain activation bytes", () => {
   assert.deepEqual(
@@ -437,9 +552,8 @@ test("WO-051 C-W2/C-W3/C-W8/C-W9 and X-W1/X-W2/X-W8 canonical writer shapes", ()
         "/schema.json",
         key === "claude" ? "2.1.270" : "0.154.0",
       );
-      // Only the Codex writer's commit grants and its PATH are added, and
-      // --sandbox is dropped so the named profile applies; every other pinned
-      // byte is unchanged (WO-112 D017).
+      // The writer grants and shell environment specialize the pinned launch;
+      // the named profile takes the place of the inspection sandbox option.
       if (key === "codex") assert.equal(launched.includes("--sandbox"), false);
       const args =
         key === "codex"
@@ -482,9 +596,10 @@ test("WO-051 C-W2/C-W3/C-W8/C-W9 and X-W1/X-W2/X-W8 canonical writer shapes", ()
         );
         for (const [path, mode] of [
           [gitDir, "write"],
-          [join(common, "objects"), "write"],
-          [join(common, "refs"), "write"],
-          [join(common, "logs"), "write"],
+          [
+            sourceObjectEnvironment(s.request.cwd).GIT_OBJECT_DIRECTORY,
+            "write",
+          ],
           [common, "read"],
         ])
           assert.ok(
@@ -518,7 +633,7 @@ test("WO-051 C-W2/C-W3/C-W8/C-W9 and X-W1/X-W2/X-W8 canonical writer shapes", ()
         }
         // The whole grant set, pinned: toolchain, Git and Codex installs,
         // the user's Git identity, shared metadata read; the worktree's own
-        // gitdir and the commit's objects, refs and logs written.
+        // gitdir and its private objects written.
         const installed = (name: string) => {
           try {
             return realpathSync(
@@ -544,9 +659,10 @@ test("WO-051 C-W2/C-W3/C-W8/C-W9 and X-W1/X-W2/X-W8 canonical writer shapes", ()
             [join(homedir(), ".gitconfig"), "read"],
             [common, "read"],
             [gitDir, "write"],
-            [join(common, "objects"), "write"],
-            [join(common, "refs"), "write"],
-            [join(common, "logs"), "write"],
+            [
+              sourceObjectEnvironment(s.request.cwd).GIT_OBJECT_DIRECTORY,
+              "write",
+            ],
           ],
         );
         for (const [path] of grants.matchAll(/"((?:[^"\\]|\\.)*)"=/gu))
@@ -589,6 +705,29 @@ test("WO-051 C-W2/C-W3/C-W8/C-W9 and X-W1/X-W2/X-W8 canonical writer shapes", ()
           grants.includes(`${JSON.stringify(common)}="write"`),
           false,
         );
+        for (const entry of [
+          "objects",
+          "refs",
+          "logs",
+          "packed-refs",
+          "packed-refs.lock",
+          "rr-cache",
+        ])
+          assert.equal(
+            grants.includes(`${JSON.stringify(join(common, entry))}="write"`),
+            false,
+          );
+        const environment = codexShellEnvironment(s.request);
+        const { PATH, ...gitEnvironment } = environment;
+        assert.ok(PATH?.includes(dirname(realpathSync(process.execPath))));
+        assert.deepEqual(gitEnvironment, {
+          ...sourceObjectEnvironment(s.request.cwd),
+          GIT_CONFIG_COUNT: "2",
+          GIT_CONFIG_KEY_0: "rerere.enabled",
+          GIT_CONFIG_VALUE_0: "false",
+          GIT_CONFIG_KEY_1: "maintenance.auto",
+          GIT_CONFIG_VALUE_1: "false",
+        });
         assert.ok(
           launched.includes("permissions.dotln-writer.network.enabled=false"),
         );
@@ -636,6 +775,43 @@ test("WO-051 C-W2/C-W3/C-W8/C-W9 and X-W1/X-W2/X-W8 canonical writer shapes", ()
       args[args.indexOf("--allowedTools") + 1],
       `Edit,Write,Read,Bash(${confined}),Bash(git add -A),Bash(git commit -F ${s.request.commitMessagePath})`,
     );
+    const inherited = Object.fromEntries(
+      Object.entries(process.env).filter(([key]) =>
+        key.startsWith("GIT_CONFIG_"),
+      ),
+    );
+    try {
+      Object.assign(process.env, {
+        GIT_CONFIG_COUNT: "1",
+        GIT_CONFIG_KEY_0: "rerere.enabled",
+        GIT_CONFIG_VALUE_0: "true",
+        GIT_CONFIG_KEY_99: "maintenance.auto",
+        GIT_CONFIG_VALUE_99: "true",
+      });
+      const environment = claudeWriterEnvironment(s.request);
+      assert.deepEqual(
+        Object.fromEntries(
+          Object.entries(environment).filter(([key]) =>
+            key.startsWith("GIT_CONFIG_"),
+          ),
+        ),
+        {
+          GIT_CONFIG_COUNT: "2",
+          GIT_CONFIG_KEY_0: "rerere.enabled",
+          GIT_CONFIG_VALUE_0: "false",
+          GIT_CONFIG_KEY_1: "maintenance.auto",
+          GIT_CONFIG_VALUE_1: "false",
+        },
+      );
+      for (const [key, value] of Object.entries(
+        sourceObjectEnvironment(s.request.cwd),
+      ))
+        assert.equal(environment[key], value);
+    } finally {
+      for (const key of Object.keys(process.env))
+        if (key.startsWith("GIT_CONFIG_")) delete process.env[key];
+      Object.assign(process.env, inherited);
+    }
     assert.ok(!args[args.indexOf("--allowedTools") + 1]!.includes("*"));
     assert.ok(
       s.request.profile.writableSurfaces.every(

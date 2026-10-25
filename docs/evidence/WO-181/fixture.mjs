@@ -20,6 +20,7 @@ import { fixtureVerificationResult } from "../../../packages/skeleton/dist/src/v
 import { parseEvidenceResult } from "../../../packages/skeleton/dist/src/verification-protocol.js";
 import { repairContract } from "../../../packages/skeleton/dist/src/repair.js";
 import { RepairHost } from "../../../packages/skeleton/dist/src/repair-host.js";
+import { sourceWriterState } from "../../../packages/skeleton/dist/src/source-change-worktree.js";
 import { routeReview } from "../../../packages/skeleton/dist/src/review.js";
 import {
   ClaudeCliPrintWorkOrderTransport,
@@ -365,12 +366,7 @@ export async function composeRepairDouble(fixture, review) {
                     requiresHuman: false,
                     observedCommit: {
                       sha: git(request.cwd, "rev-parse", "HEAD"),
-                      branch: git(
-                        request.cwd,
-                        "symbolic-ref",
-                        "--short",
-                        "HEAD",
-                      ),
+                      branch: sourceWriterState(request.cwd).branch,
                     },
                     observedDenials: "unavailable",
                   },

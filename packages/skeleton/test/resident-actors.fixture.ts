@@ -18,6 +18,8 @@ import {
 import { decodeResidentConfiguration } from "../src/resident-state.js";
 import type { ActorSpec } from "../src/actor-contract.js";
 import type { ProcessRunner } from "../src/worker-transport.js";
+import { prepareSourceObjectStore } from "../src/source-change-worktree.js";
+import { fixtureObjectEnvironment } from "./source-change-fixture.js";
 
 export function actorFixture(kind: "writer" | "inspection" = "writer") {
   const root = realpathSync(
@@ -38,6 +40,7 @@ export function actorFixture(kind: "writer" | "inspection" = "writer") {
         stdio: ["ignore", "pipe", "pipe"],
         env: {
           ...process.env,
+          ...fixtureObjectEnvironment(directory),
           GIT_AUTHOR_NAME: "Fixture",
           GIT_AUTHOR_EMAIL: "fixture@example.invalid",
           GIT_COMMITTER_NAME: "Fixture",
@@ -60,7 +63,8 @@ export function actorFixture(kind: "writer" | "inspection" = "writer") {
     "-m",
     "fixture baseline",
   );
-  git(launchpad, "worktree", "add", "-b", "writer", cwd);
+  git(launchpad, "worktree", "add", "--detach", cwd);
+  prepareSourceObjectStore(cwd, "writer", git(cwd, "rev-parse", "HEAD"));
   git(cwd, "config", "user.name", "Fixture");
   git(cwd, "config", "user.email", "fixture@example.invalid");
   git(cwd, "config", "commit.gpgsign", "false");

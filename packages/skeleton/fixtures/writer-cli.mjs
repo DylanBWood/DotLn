@@ -1,6 +1,12 @@
 // Process double only: never invokes a vendor or authenticates.
 import { execFileSync } from "node:child_process";
-import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import {
+  mkdirSync,
+  readFileSync,
+  rmSync,
+  unlinkSync,
+  writeFileSync,
+} from "node:fs";
 const [transport, behavior] = process.argv.slice(2);
 const input = JSON.parse(readFileSync(0, "utf8"));
 // Shapes of a committed change the host counts (WO-157): a Sort move keeps
@@ -47,6 +53,31 @@ if (behavior === "commit" || behavior.startsWith("commit-")) {
     },
   );
 }
+// The hostile process exercises its own authority after producing a candidate.
+// A refused deletion must fail the episode, not become a successful envelope.
+if (process.env.DOTLN_FIXTURE_DELETE_OBJECT) {
+  const victim = process.env.DOTLN_FIXTURE_DELETE_OBJECT;
+  process.stderr.write(
+    "synthetic writer reached shared-object deletion after commit\n",
+  );
+  if (transport === "claude") {
+    const response = JSON.parse(
+      execFileSync(process.execPath, [".claude/hooks/permissions.mjs"], {
+        encoding: "utf8",
+        input: JSON.stringify({
+          hook_event_name: "PreToolUse",
+          cwd: process.cwd(),
+          session_id: input.episodeId,
+          tool_name: "Write",
+          tool_input: { file_path: victim, content: "corrupted" },
+        }),
+      }),
+    );
+    if (response.hookSpecificOutput?.permissionDecision === "deny")
+      throw new Error("shared object write refused by the writer bundle");
+  }
+  unlinkSync(victim);
+}
 const envelope = {
   workOrderId: input.workOrder.workOrderId,
   episodeId: input.episodeId,
@@ -54,6 +85,12 @@ const envelope = {
   status: "completed",
   summary: "Synthetic source change.",
   requiresHuman: false,
+  ...({
+    "commit-blocked": { status: "blocked", requiresHuman: true },
+    "commit-attention": { status: "completed", requiresHuman: true },
+    "commit-failed": { status: "failed", requiresHuman: false },
+    blocked: { status: "blocked", requiresHuman: true },
+  }[behavior] ?? {}),
 };
 if (behavior === "spoof")
   envelope.observedCommit = { sha: "0".repeat(40), branch: "spoof" };

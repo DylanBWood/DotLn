@@ -44,6 +44,9 @@ const envelope = {
   status: "completed",
   summary: "Synthetic bounded source change.",
   requiresHuman: false,
+  ...(input.workOrder.workOrderId.includes("_repair_")
+    ? cfg.repairEnvelope
+    : cfg.sourceEnvelope),
 };
 const events = JSON.parse(
   readFileSync(
