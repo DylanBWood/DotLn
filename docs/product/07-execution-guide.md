@@ -772,6 +772,19 @@ matching document in the configured `workstreams` root; the index validates
 its JSON membership block and records target facts for the board, with
 `track: separate` members outside the serial queue and `self` for an absent
 Repository field ([convention](../workstreams/README.md)).
+A closed member without the field is admitted from that document with an
+advisory; open members still require it. A self member's base and integration
+target both read the launchpad's `refs/heads/main`, so it remains `current`,
+stale `no`, when refreshed from a planning or update branch. Adding one exact
+leading `**Workstream:** WS-NNN` line to an order whose filed amendment source
+lacked it preserves the amendment binding. Bindings a previous release made
+with that field already present also remain matched; other changed bytes
+remain bound under either representation. Both field representations are
+checked for every historical title format, including activation-placeholder
+bindings.
+A field-only grouping change on a judged order still uses `amend-order` to
+record its authorization; that binding retains the field. Release-title
+assignment or retiming alone still needs no amendment.
 
 The host compiles a registered profile through the existing monotone authority
 floor. Profile denials and its expiry, resource, evidence and revocation
@@ -1558,7 +1571,9 @@ moved the publish's three reads to the described base and left
 DotLn-Angular fork's WO-013 FINAL-002 was refused on two merged subjects the
 day the release landed, and WO-231 moves it). A release's Read before
 upgrading is also screened: it asks an instance to read, never to edit a
-closed record by hand (WO-232). Order size
+closed record by hand. A new or tightened kit check must admit records the
+previous release admitted, or the release is held; the `instance-history`
+suite checks that compatibility before release (WO-232). Order size
 [2026-10-13 pass, operator direction]: the 2026-09-08 cut (one seam and one outcome per order,
 split again above four hours) was a correction for its time and no longer
 binds. The binding cost is now the full gate run and the fixed cycle every
@@ -1789,7 +1804,14 @@ refresh. First export preserves an existing committed configuration and renders
 the new README with its release name. An ignored or untracked local configuration
 refuses before publication; commit its intended declaration before retrying.
 Generated control/planning records and opted-in instance actions
-remain unchanged. Ordinary instance kit updates still preserve seed ownership;
+remain unchanged. A kit check added or tightened in a release must admit the
+records the previous release admitted, or the release is held until it does.
+The core-only `instance-history` suite updates a committed fixture instance
+and runs its own sync, index, planning and document checks against accumulated
+record shapes. A new field refusal reported by an instance adds a shape at
+the next planning pass. A Read before upgrading line never asks an instance
+to edit a closed record by hand; a necessary migration needs its own planning
+decision before release. Ordinary instance kit updates still preserve seed ownership;
 the instance's own session previews the refreshed starter with the incoming
 revision's launchpad, merges it on an update branch, re-emits and generates
 the lineage index there, and commits the regenerated files in that update

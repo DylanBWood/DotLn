@@ -32,6 +32,7 @@ export const readWorkstreams = (root, rows) => {
   const byId = new Map(rows.map((row) => [row.id, row]));
   const streams = [];
   const seen = new Set();
+  const membership = new Map();
   for (const name of existsSync(directory)
     ? readdirSync(directory).sort()
     : []) {
@@ -77,10 +78,21 @@ export const readWorkstreams = (root, rows) => {
       )
         throw new Error(`${path}: invalid or duplicate member`);
       const row = byId.get(member.workOrderId);
-      if (!row || row.workstream !== stream.id)
+      if (!row || row.workstream !== stream.id) {
+        if (row?.phase === "closed" && row.workstream === undefined)
+          console.warn(
+            `Advisory: ${path}: closed ${row.id} has no **Workstream:** ${stream.id} field; document membership admitted.`,
+          );
+        else
+          throw new Error(
+            `${path}: ${member.workOrderId} must declare **Workstream:** ${stream.id} in its order`,
+          );
+      }
+      if (membership.has(member.workOrderId))
         throw new Error(
-          `${path}: ${member.workOrderId} must declare **Workstream:** ${stream.id} in its order`,
+          `${path}: ${member.workOrderId} is already a member of ${membership.get(member.workOrderId)}`,
         );
+      membership.set(member.workOrderId, stream.id);
       if (member.repositoryId !== (row.repository?.id ?? "self"))
         throw new Error(
           `${path}: ${member.workOrderId} repositoryId differs from **Repository:** (absence means self)`,

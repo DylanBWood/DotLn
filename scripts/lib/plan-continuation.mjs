@@ -11,6 +11,7 @@ import {
 import { containedRegularFile } from "./paths.mjs";
 import { LEGACY_COST_HEADER } from "./legacy-cost.mjs";
 import { dependencyMigration } from "./plan-dependency-migration.mjs";
+import { dependencyHeader } from "./dependencies.mjs";
 import { parsers } from "prettier/plugins/markdown.mjs";
 
 const capabilityTable = (root) =>
@@ -283,18 +284,16 @@ const executionAppendix = (before, after) => {
   return true;
 };
 
-/** Bind the entire approved order, including existing execution records;
- * only the admitted release label is normalized. Later appendices are checked
- * separately. Given the filed source, a label appended to a title filed with
- * neither placeholder nor label (WO-158-D017) normalizes back to that title.
- */
-export const executionAmendmentSource = (source, filed) => {
+// Preserve the representation older amendments bound before grouping metadata
+// was admitted. A label added to an unlabelled filed title normalizes back to
+// that title; a title filed with a label keeps its placeholder representation.
+const executionAmendmentReleaseSource = (source, filed) => {
   const filedTitle = filed?.match(/^# [^\r\n]+/u)?.[0];
   const unlabelled =
     filedTitle !== undefined &&
     !filedTitle.endsWith("(version assigned at activation)") &&
     !/\(v[^()]*\)$/u.test(filedTitle);
-  const normalized = source.replace(
+  return source.replace(
     /^(# [^\r\n]+?)( ?)\(v(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\)(?=\r?\n|$)/u,
     (whole, title, space) =>
       unlabelled
@@ -303,26 +302,74 @@ export const executionAmendmentSource = (source, filed) => {
           : whole
         : `${title}${space}(version assigned at activation)`,
   );
-  return normalized.trimEnd();
+};
+
+// Grouping is independent of the release-title representation. Remove only
+// one exact leading field absent from the filed source, preserving other bytes.
+const withoutAddedWorkstream = (source, filed) => {
+  if (filed !== undefined) {
+    const fields = (text) => {
+      const { first, end } = dependencyHeader(text);
+      // Retain line endings and every other byte of the binding.
+      const lines = text.split(/(?<=\n)/u);
+      const indices = lines.flatMap((line, index) =>
+        index > first && index < end && /^\*\*Workstream:\*\*/u.test(line)
+          ? [index]
+          : [],
+      );
+      return { lines, indices };
+    };
+    const before = fields(filed),
+      after = fields(source);
+    if (
+      before.indices.length === 0 &&
+      after.indices.length === 1 &&
+      /^\*\*Workstream:\*\* WS-\d{3}(?:\r?\n|$)$/u.test(
+        after.lines[after.indices[0]],
+      )
+    ) {
+      after.lines.splice(after.indices[0], 1);
+      return after.lines.join("");
+    }
+  }
+  return source;
+};
+
+/** Bind the entire approved order, including existing execution records;
+ * normalize only the release label and an added leading Workstream field.
+ * A field-only amendment retains its field so it remains bindable.
+ * Later appendices are checked separately.
+ */
+export const executionAmendmentSource = (source, filed) => {
+  const retained = executionAmendmentReleaseSource(source, filed);
+  const normalized = withoutAddedWorkstream(retained, filed).trimEnd();
+  // Writing must not erase the only change that requires authorization.
+  return filed !== undefined &&
+    normalized === executionAmendmentReleaseSource(filed).trimEnd()
+    ? retained.trimEnd()
+    : normalized;
 };
 
 function executionAmendmentMatch(before, after, row) {
   if (row.sourceOrderHash !== sha256(executionAmendmentSource(before)))
     return null;
-  const current = executionAmendmentSource(after, before);
-  if (
-    row.orderLength <= current.length &&
-    sha256(current.slice(0, row.orderLength)) === row.orderHash
-  )
-    return { source: current, kind: "current" };
+  const retained = executionAmendmentReleaseSource(after, before);
+  const current = withoutAddedWorkstream(retained, before).trimEnd();
+  const boundPrefix = (source) =>
+    row.orderLength <= source.length &&
+    sha256(source.slice(0, row.orderLength)) === row.orderHash;
+  // Reading accepts both field representations for each historical title
+  // representation. It must not inherit the writer's field-only fallback.
+  for (const source of [retained.trimEnd(), current])
+    if (boundPrefix(source)) return { source, kind: "current" };
   // Historical activation rows normalized an appended label to a placeholder.
   // The old binding may have a later, strictly appended execution record.
-  const legacy = executionAmendmentSource(after);
-  if (
-    row.orderLength > legacy.length ||
-    sha256(legacy.slice(0, row.orderLength)) !== row.orderHash
-  )
-    return null;
+  const legacyRetained = executionAmendmentReleaseSource(after);
+  const legacy = [
+    legacyRetained.trimEnd(),
+    withoutAddedWorkstream(legacyRetained, before).trimEnd(),
+  ].find(boundPrefix);
+  if (legacy === undefined) return null;
   const filed = executionAmendmentSource(before);
   if (!current.startsWith(filed)) return null;
   try {

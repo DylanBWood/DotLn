@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "synthetic": true,
+  "generatedAt": "2026-10-25T04:17:11.520Z",
+  "generator": "node scripts/fixtures/instance-with-history/generate.mjs",
+  "source": {
+    "coreCommit": "a81561976c8629834a5a18623b097fa4d7d8681a",
+    "kitCommit": "6739ebf788b4f4feeed9b62038bf6cb3b2a4fc0e"
+  },
+  "bundle": {
+    "file": "instance.bundle",
+    "bytes": 4174480,
+    "sha256": "e5ab2fe0db7a4269730fa13e069a4f3bca87e5cce293802d80f37e081a04f6bf"
+  },
+  "refs": {
+    "instance": "244d5122e5ef22f2ed6c09316c96142b7dc2f492",
+    "target": "c972d40b84e3d58231552fafbd964678596efa28"
+  },
+  "shapes": [
+    {
+      "id": "closed-amendment-field",
+      "order": "WO-001",
+      "path": "docs/work-orders/WO-001-history.md",
+      "fieldReport": "2026-10-24 standard pass, section 2: closed WO-011 and WO-012 amendments refused after the Workstream field"
+    },
+    {
+      "id": "closed-self-workstream",
+      "path": "docs/workstreams/WS-001-history.md",
+      "selfOrders": [
+        "WO-001",
+        "WO-002"
+      ],
+      "targetOrder": "WO-004",
+      "fieldReport": "2026-10-24 workstream update and WO-080-D015: closed self members on an update branch"
+    },
+    {
+      "id": "moved-amendment-decision",
+      "order": "WO-003",
+      "decision": "WO-003-D001",
+      "fieldReport": "2026-10-20 and 2026-10-23 update passes: moved WO-004 decisions and bound moved WO-006 decisions refused"
+    },
+    {
+      "id": "target-base-behind",
+      "order": "WO-004",
+      "base": "2bdbf8e14d0c8d05366a814db356dd4deba49fbc",
+      "tip": "c972d40b84e3d58231552fafbd964678596efa28",
+      "fieldReport": "2026-10-24 standard pass, section 2: WO-013 at a provisional target base"
+    }
+  ]
+}

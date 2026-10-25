@@ -238,14 +238,18 @@ dependency and compatibility plan, and delivery states. Leading
 `**Workstream:** WS-NNN` order fields source membership; the document's
 `dotln-workstream` JSON block mirrors those ids and repositories, including
 implicit `self`, and names dependency edges. A mismatch refuses with the
-order and field. `track: separate` keeps an operator-designated stream out of
+order and field, except a closed member without the field is admitted from
+the document with an advisory, preserving its order. Open members still
+require the field. `track: separate` keeps an operator-designated stream out of
 the proposed serial queue while retaining its grouping and complete cards.
 The generated index and board's Workstreams section share one committed JSON
 observation of repository, base, phase, verdict, integration and stale state,
 plus the observed target commit and edges. Explicit index generation reads
 registered clones; check reuses the snapshot without requiring those clones.
 Integration is current, behind, diverged or unknown; stale is no, yes, yes or
-unknown respectively. Self compares the observed launchpad HEAD with main.
+unknown respectively. A self member's base and integration target both read
+the launchpad's `refs/heads/main`; it stays current, stale no, regardless of
+the branch running the refresh, and unreadable main stays unknown.
 A later target change is observed on refresh, not silently folded into a check.
 
 **Registered-target field (WO-071, 2026-09-21).** A bounded target order names

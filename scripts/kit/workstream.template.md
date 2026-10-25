@@ -17,14 +17,18 @@ base-branch tip, `behind` when the base is its ancestor, `diverged` otherwise,
 and `unknown` when Git cannot establish it. Stale is `no` for current, `yes`
 for behind or diverged, and `unknown` for unknown. A green sibling does not
 change another member's observation. An order without `**Repository:**` is
-`self`: its base is the launchpad HEAD observed at refresh and its integration
-target is the launchpad's `main`. Paths to local clones never enter the record.
+`self`: both its base and integration target are the launchpad's
+`refs/heads/main` observed at refresh. It reads `current`, stale `no`, from
+any branch; an unreadable main remains `unknown`. Paths to local clones never enter the record.
 
 Files match `WS-NNN-\*.md` under the configured `workstreams` root. Each has
 exactly one block, with an id matching its filename. Membership comes from
 orders' leading `**Workstream:**` fields; the block must mirror their order
-ids and repository ids, including `self`. A missing field refuses with the
-order id and field to add. Dependency edges name a member as `from` and an
+ids and repository ids, including `self`. A closed member without the field
+is admitted from the document with one advisory naming the order and field;
+its order stays unchanged. An open member without the field still refuses,
+as does a conflicting declaration, an absent document or a declaring order
+absent from its members. Dependency edges name a member as `from` and an
 existing order as `to`, so an external prerequisite can be recorded too.
 
 A block may add `"track": "separate"` for an operator-designated stream
