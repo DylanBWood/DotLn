@@ -4311,6 +4311,14 @@
           "reopenWhen": "WO-083 activates or is amended, or product 12's candidate section changes its demonstrations or its first-screen claims.",
           "targets": [],
           "at": "2026-10-24T18:04:01.203Z"
+        },
+        {
+          "sourceRevision": 22,
+          "status": "deferred",
+          "reason": "Re-triaged by the 2026-10-25 pass after WO-224's product 12 write-back (source revision 22: one paragraph on allocating target-named register rows to member orders); the section's demonstrations and first-screen claims are unchanged, WO-083 is queued, not active, and no order is filed on the section this pass. [2026-10-25 planning pass (docs/planning/fork-returns-and-review-lint-2026-10-25.md section 8)]",
+          "reopenWhen": "WO-083 activates or is amended, or product 12's candidate section changes its demonstrations or its first-screen claims.",
+          "targets": [],
+          "at": "2026-10-25T00:26:53.763Z"
         }
       ]
     },
@@ -44944,6 +44952,16 @@
           "reopenWhen": "A repair makes a self member's cells independent of the generating checkout's HEAD with a case that fails without it, or a committed index on main records a self member as diverged.",
           "targets": [],
           "at": "2026-10-24T18:04:01.497Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-25 pass to WO-232, criterion 5: readTargetFacts reads a self member's base from the launchpad's refs/heads/<baseBranch>, never HEAD, with the branch case and its paired control; the fork observed the diverged reading on its v0.96.1 update branch (its item 2 of 2026-10-24). [2026-10-25 planning pass (docs/planning/fork-returns-and-review-lint-2026-10-25.md section 8)]",
+          "reopenWhen": "WO-232 closes without criterion 5's case, or a committed index on main records a self member as diverged after it ships.",
+          "targets": [
+            "WO-232"
+          ],
+          "at": "2026-10-25T00:26:53.469Z"
         }
       ]
     },
@@ -45128,7 +45146,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-10-25 pass to the next order that edits the target subject resolution in scripts/lib/entropy-review.mjs; low priority: the refusal is correct and early (before any frozen copy), only its message is Git's bare text, and no instance has met it. [2026-10-25 planning pass (docs/planning/fork-returns-and-review-lint-2026-10-25.md section 8)]",
+          "reopenWhen": "An instance reports the bare 'fatal: Needed a single revision' from entropy subject --repository or review --repository, or the next order edits the target subject resolution in scripts/lib/entropy-review.mjs.",
+          "targets": [],
+          "at": "2026-10-25T00:26:53.567Z"
+        }
+      ]
     },
     {
       "id": "FUP-53a2c609d6815549",
@@ -45143,7 +45170,184 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-10-25 pass to the next order that edits targetLensBriefs in scripts/lib/entropy-review.mjs; low priority: no registered target tracks a top-level file named docs, the refusal is at compile time and leaves no copy behind. [2026-10-25 planning pass (docs/planning/fork-returns-and-review-lint-2026-10-25.md section 8)]",
+          "reopenWhen": "A registered target tracks a top-level file named docs, or the next order edits targetLensBriefs.",
+          "targets": [],
+          "at": "2026-10-25T00:26:53.665Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-8403c95932bd4738",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-second-block-and-the-review-lint-recorded-2026-10-25::0591e092b73ff3e8ecf5a50ea258b9d8b960c423b3b695f871073f823d02b177",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "3652b2503b3af308903f432e883ec4e899cede02e71ecdd746d679948e110207",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-second-block-and-the-review-lint-recorded-2026-10-25",
+          "title": "A mechanical check that an order moving a lifecycle field names every reader",
+          "summary": "7. **A mechanical check that an order moving a lifecycle field names every reader** (the screen this pass adds to product 07 as prose). Declined as mechanism: the screen is a planning read (`grep` of the field across `scripts/` and `packages/`) and a check would need to know which reads describe a change and which bind a record, a judgment the Observed gap records in words. Reopen when a second order moves a lifecycle field and leaves a reader, after this screen is in force.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined as mechanism by the 2026-10-25 pass: the screen is a planning read of every reader of a lifecycle field, and a check would need to know which reads describe a change and which bind a record, a judgment the Observed gap records in words; product 07 carries the screen as prose from this pass. [2026-10-25 planning pass (docs/planning/fork-returns-and-review-lint-2026-10-25.md section 10)]",
+          "reopenWhen": "A second order moves a lifecycle field and leaves a reader after this screen is in force.",
+          "targets": [],
+          "at": "2026-10-25T00:26:54.441Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-d6aa40b490d734c8",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-second-block-and-the-review-lint-recorded-2026-10-25::15681695a783595e42027d011d9e59540c31a9f33057383ab048a96a0db57c91",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "09eeb52033f3a3012190a8568dcbaa342b8e6d77d60c98a8058795793bb58060",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-second-block-and-the-review-lint-recorded-2026-10-25",
+          "title": "Admitting every leading metadata field in the amendment binding",
+          "summary": "3. **Admitting every leading metadata field in the amendment binding** (the general form of the fork's item 1). Declined: `**Repository:**` and `**Effort:**` change what an order binds, and the release-classification admission (`scripts/lib/plan-continuation.mjs` 761 to 785) is exact for the same reason; WO-232 admits the one field that changes only grouping. Reopen when a second leading field is reported refused on a closed order with a bound amendment.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined by the 2026-10-25 pass: Repository and Effort fields change what an order binds, and the release-classification admission (scripts/lib/plan-continuation.mjs 761 to 785) is exact for the same reason; WO-232 admits the one leading field that changes only grouping. [2026-10-25 planning pass (docs/planning/fork-returns-and-review-lint-2026-10-25.md section 10)]",
+          "reopenWhen": "A second leading field is reported refused on a closed order with a bound amendment.",
+          "targets": [],
+          "at": "2026-10-25T00:26:54.054Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-33464d9b03f2805b",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-second-block-and-the-review-lint-recorded-2026-10-25::460b716b49bffa62e99eca3ecfe2b832b1d1a1c0722b517af12f078fda4703e3",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "ead87ce653984c6714ab0e3c859a7c7213ced6ffaa83bd857af0e6a642a0ce4c",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-second-block-and-the-review-lint-recorded-2026-10-25",
+          "title": "The lifecycle's refresh on main as the repair for a self member's mark",
+          "summary": "5. **The lifecycle's refresh on `main` as the repair for a self member's mark** (the second reading the fork's item 2 offers). Declined as the repair and kept as today's mitigation: it overwrites the mark only at the next close, and a planning or update branch that regenerates after its first commit carries the mark into `main` at merge (the fork observed `diverged` on its update branch; this pass regenerates its index before its first commit for that reason). Reopen when a committed index on `main` records a self member as `diverged` after WO-232 ships.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined as the repair by the 2026-10-25 pass and kept as today's mitigation: the lifecycle's refresh on main overwrites the mark only at the next close, and a planning or update branch that regenerates after its first commit carries the mark into main at merge (the fork's item 2 of 2026-10-24); WO-232 reads the base branch's tip. [2026-10-25 planning pass (docs/planning/fork-returns-and-review-lint-2026-10-25.md section 10)]",
+          "reopenWhen": "A committed index on main records a self member as diverged after WO-232 ships.",
+          "targets": [],
+          "at": "2026-10-25T00:26:54.246Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-95ba8df9fd384fab",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-second-block-and-the-review-lint-recorded-2026-10-25::4c1582c3ae201b75d59d96bed4f94f265934166d021581ebe9d837a239b879a5",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "df848cf6a2203910351fef1a3f9e28c9f7e7405ec84fca57513a3ee82189d60d",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-second-block-and-the-review-lint-recorded-2026-10-25",
+          "title": "A self member's base from the control log's activation base",
+          "summary": "4. **A self member's base from the control log's activation base** (the richer reading of the fork's item 2). Declined: every closed self member would read `behind` forever, which an operator cannot act on; a launchpad order branches from `main` and integrates it, so WO-232 reads the base branch's tip. Reopen when an operator needs a self member's distance from `main` on the board.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined by the 2026-10-25 pass: every closed self member would read behind forever, which an operator cannot act on; a launchpad order branches from main and integrates it, so WO-232 reads the base branch's tip. [2026-10-25 planning pass (docs/planning/fork-returns-and-review-lint-2026-10-25.md section 10)]",
+          "reopenWhen": "An operator needs a self member's distance from main on the board.",
+          "targets": [],
+          "at": "2026-10-25T00:26:54.150Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-139b4ef659db1cb5",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-second-block-and-the-review-lint-recorded-2026-10-25::cd9aafa90717787f4d0df91d51733b0d65e5336dddd2fec7d8010c1dbd6d7b72",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "18a8c785a7975a7c8c60da4e177218f0bfc9f1ae629b28ff17db598332172ed7",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-second-block-and-the-review-lint-recorded-2026-10-25",
+          "title": "A fetch of the base branch at final review",
+          "summary": "2. **A fetch of the base branch at final review** (the exact-range reading of the fork's request). Declined: a review is a judgment, the reviewer's `worktree integrate` fetched the ref moments before, and the publish fetches through the lane and lints the same commits from the fetched merge base (`scripts/lib/target-publish.mjs` 1469 to 1479), so a stale ref at review only lints more commits and is corrected at publish. Reopen when a review is refused on a merged commit after a fetch, or when the review and the publish disagree on a commit set in the field.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined by the 2026-10-25 pass: a review is a judgment, the reviewer's worktree integrate fetched the ref moments before, and the publish fetches through the lane and lints the same commits from the fetched merge base (scripts/lib/target-publish.mjs 1469 to 1479); WO-231 reads the clone's fetched ref and names the range. [2026-10-25 planning pass (docs/planning/fork-returns-and-review-lint-2026-10-25.md section 10)]",
+          "reopenWhen": "A review is refused on a merged commit after a fetch, or the review and the publish disagree on a commit set in the field.",
+          "targets": [],
+          "at": "2026-10-25T00:26:53.959Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-d9f80546479cd4ae",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-second-block-and-the-review-lint-recorded-2026-10-25::ce32fad9f70720d63d64ccad7e84600ac1dca948e03fddbf841ae57376bc4133",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "8f7858951609dcd9713a87ad3581ff15e0b7cfb691cfe265cdd79e67bf251a02",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-second-block-and-the-review-lint-recorded-2026-10-25",
+          "title": "Generating the history instance from the previous release's kit at every gate",
+          "summary": "6. **Generating the history instance from the previous release's kit at every gate** (the alternative to WO-232's committed bundle). Declined: four lifecycles with target records cost minutes per fresh gate and the `target-worktree` task already holds its reopening condition at 611 s; an older bundle taking a newer kit is the stricter test. Reopen when the committed bundle misses a shape the previous release's kit would have produced, or when the plain gate's median falls to half of 328.6 s.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined by the 2026-10-25 pass: four lifecycles with target records cost minutes per fresh gate and the target-worktree task holds its reopening condition at 611 s; an older committed bundle taking a newer kit is the stricter test, and the generator reruns when the shape list grows (WO-232's Design). [2026-10-25 planning pass (docs/planning/fork-returns-and-review-lint-2026-10-25.md section 10)]",
+          "reopenWhen": "The committed bundle misses a shape the previous release's kit would have produced, or the plain gate's median falls to half of 328.6 s.",
+          "targets": [],
+          "at": "2026-10-25T00:26:54.343Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-f6001fb0076f65cb",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-second-block-and-the-review-lint-recorded-2026-10-25::d171cc5b90cb09965e9a409d18e4444735f0222d52798d944c08c3acbab1d100",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "ea29f84f4cd1eca3d3ec2af0645af6335b2696efa88dc7501e7e76c9be20fd2d",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-second-block-and-the-review-lint-recorded-2026-10-25",
+          "title": "A kit instance action that edits an instance's records",
+          "summary": "1. **A kit instance action that edits an instance's records** (the migration half of WO-232's rule). Declined: the kit's three action kinds (`rename-root`, `add-config-field`, `change-phrase`; `scripts/launchpad.mjs` 1586 to 1650) touch configuration and roots, product 07 holds generated records and records outside opted-in actions unchanged (1778), and an instance's orders are the operator's record; WO-232 admits what the previous release admitted instead. Reopen when a release needs a record field no admission can grandfather.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined by the 2026-10-25 pass: the kit's three action kinds touch configuration and roots (scripts/launchpad.mjs 1586 to 1650), product 07 holds records outside opted-in actions unchanged (1778), and an instance's orders are the operator's record; WO-232 admits what the previous release admitted instead. [2026-10-25 planning pass (docs/planning/fork-returns-and-review-lint-2026-10-25.md section 10)]",
+          "reopenWhen": "A release needs a record field no admission can grandfather.",
+          "targets": [],
+          "at": "2026-10-25T00:26:53.861Z"
+        }
+      ]
     }
   ]
 }

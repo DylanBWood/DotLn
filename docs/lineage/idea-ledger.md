@@ -40,6 +40,20 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
+## 2026-10-25 — Planning pass: the fork's second block of 2026-10-24 and the DotLn-Angular review-lint request answered, WO-231 and WO-232 filed on the operator's direction that a release must not break the instance; registration only; the record is the planning document
+
+Dispatch: `planning: observations and requests from the DotLn-Enterprise-Starter
+fork …`, sent at 2026-10-24T23:52Z as one message holding the fork's request
+block of its second pass of 2026-10-24 (six items) and the DotLn-Angular
+fork's WO-013 FINAL-002 request on the final-review lint, with one mid-turn
+operator message at 00:04Z directing that starter updates stop breaking and
+blocking downstream consumers, captured in
+`docs/intake/notes/planning-fork-returns-and-review-lint-2026-10-25.md`
+(ignored; the planning document §1 records its SHA-256). The record is
+[the planning document](../planning/fork-returns-and-review-lint-2026-10-25.md);
+this heading registers the pass for the plan tooling (WO-088 moves
+registration out of the ledger). This pass writes no ledger entry.
+
 ## 2026-10-24 — Planning pass, second of the day: the fork's publish blocker filed as WO-230 and placed first, and its seven items answered; registration only; the record is the planning document
 
 Dispatch: `planning: quick planning pass +`, sent as one message holding the

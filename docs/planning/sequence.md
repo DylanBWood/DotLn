@@ -51,7 +51,9 @@ orders that unblock the operator's fork first; the
 (v0.94.0), files nothing, and takes in the 2026-10-22 intake mining run; the
 [2026-10-24 second pass](target-publish-base-2026-10-24.md) retires WO-220
 (v0.95.0) and WO-080 (v0.96.0), files WO-230 and places it first on the
-operator's direction.
+operator's direction; the [2026-10-25 pass](fork-returns-and-review-lint-2026-10-25.md)
+retires WO-230 (v0.96.1) and WO-224 (v0.97.0), files WO-231 and WO-232 and
+places them first on the fork's blocker and the operator's direction.
 
 **One focus: the starter, the operator's fork of it and DotLn-Angular,
 with a DotLn UI** (operator direction, 2026-10-13). The win condition is
@@ -167,13 +169,36 @@ It blocks the fork's next three orders by id (WO-013, WO-014 and WO-016
 share the base); nothing else in the queue moves relative to its
 neighbours.
 
+**A release must not break the instance that takes it** (the 2026-10-25
+pass; operator direction of 2026-10-25). WO-230 closed on 2026-10-24 as
+v0.96.1 and WO-224 the same day as v0.97.0; the fork took v0.96.1 in its
+second pass of 2026-10-24. Its WO-013, dispatched for its fix, is refused
+again at `final-review-result pass`: the review-time lint still reads the
+commits from the activation base and refuses two subjects merged on the
+target's `main` that no one can repair (the DotLn-Angular fork's
+FINAL-002). WO-231 moves that lint onto the described base WO-230 gave the
+publish; it is the fork's blocker and goes first. The operator's direction
+during this pass, that it is becoming routine for a starter release to
+break and block every downstream consumer, is read against the fork's
+record: four of its six updates since 2026-10-19 blocked the update or left
+a gate red or a record damaged (v0.87.0's moved-record document check,
+v0.88.0 and v0.93.0's red plan gate, v0.96.0's workstream field and the
+amendment withdrawals it forced, v0.96.1's half fix), each a check core's
+gate never ran against an instance with history. WO-232 commits a fixture
+instance carrying those record shapes, updates it to the current kit in
+every fresh core gate and runs the kit's own checks on it; it also admits
+the leading Workstream field in the amendment binding, admits a closed
+member without the field, and reads a self member's cells from `main`
+(the fork's items 1 and 2 of 2026-10-24). It goes second, before WO-204,
+because every later release pays for it otherwise. Nothing else moves
+relative to its neighbours.
+
 The order, serial:
-- WO-230: a target publish describes the change its pull request shows: the
-  Change table from the merge base of the subject and the base branch, the
-  activation base named beside it, and the plan gate's path advisory kept to
-  target paths. The fork's blocker; first on the operator's direction.
-- WO-224: the Entropy Reducer on a registered target repository or a
-  workstream's repositories, one episode per member, in the kit.
+- WO-231: the final-review lint of a target order's commits reads the
+  described base; the fork's blocker; first.
+- WO-232: a starter release does not break the instance that takes it: the
+  fixture instance with history in core's gate, the two admissions and the
+  self member's reading; the operator's direction; second.
 - WO-204: the source writer is made safe before WO-083. It absorbed WO-205,
   WO-206 and WO-212.
 - WO-192: the router, before WO-083, so the measured run is driven the way
@@ -203,8 +228,8 @@ The period below `v1.0.0` is early access (operator direction, 2026-09-30).
 The order of everything the operator did not place is the planner's.
 
 <!-- dotln-work-order-sequence:start -->
-- WO-230 — A target publish describes the change its pull request shows
-- WO-224 — The Entropy Reducer on a registered target or a workstream
+- WO-231 — The final-review lint of a target order's commits reads the described base
+- WO-232 — A starter release does not break the instance that takes it
 - WO-204 — The source writer cannot damage the operator's repository
 - WO-192 — A router drives an order through its lifecycle
 - WO-083 — The real run from the operator's instance
