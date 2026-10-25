@@ -25,6 +25,7 @@ import { createInterface } from "node:readline/promises";
 
 import { emitTargetHarness, runtimeModuleDirectory } from "./harness.mjs";
 import { installSourceChangeCommands } from "../../packages/skeleton/dist/src/source-change-command.js";
+import { prepareSourceObjectStore } from "../../packages/skeleton/dist/src/source-change-worktree.js";
 import { activeGateRuns } from "../../packages/skeleton/dist/src/gate-evidence.mjs";
 import {
   codexExecArgv,
@@ -124,7 +125,12 @@ export function createAuthorityFixture(cell) {
     );
     git(source, ["add", "."]);
     git(source, ["commit", "--quiet", "-m", "Fixture baseline"]);
-    git(source, ["worktree", "add", "--quiet", "-b", "probe", target]);
+    git(source, ["worktree", "add", "--quiet", "--detach", target]);
+    prepareSourceObjectStore(
+      target,
+      "probe",
+      git(target, ["rev-parse", "HEAD"]),
+    );
     git(source, [
       "worktree",
       "add",

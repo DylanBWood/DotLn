@@ -10,6 +10,13 @@ import {
   throwIfInterrupted,
 } from "./host-interruption.js";
 export { interruption, throwIfInterrupted } from "./host-interruption.js";
+/** The source host retained a pending command while revoking a surviving
+ * command grant. A later vertical invocation must resume that same command. */
+export class RetryableSourceCleanupError extends Error {
+  constructor() {
+    super("source-change command grant cleanup remains pending");
+  }
+}
 import {
   baselineClass,
   foldVertical,
@@ -215,6 +222,11 @@ export class VerticalHost {
             );
           } catch (error) {
             if (await deliverPendingSignal(this.options.signal)) throw error;
+            if (
+              command.step === "source-change" &&
+              error instanceof RetryableSourceCleanupError
+            )
+              break;
             // An actor can die while its resident survives. Keep the same
             // command for the next tick only if another launch is admitted;
             // the source host proves termination and bounds its recovery.

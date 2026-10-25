@@ -85,9 +85,6 @@
     "packages/skeleton/src/source-change-host.ts": {
       "c2031a6caad82a0589e571a301556bb0ad10040d27e25d3a0da44e014f26aa51": 1
     },
-    "packages/skeleton/src/source-change-worktree.ts": {
-      "3e54b2bf410fe7508b43bcaad9f85fc20235914ee59a6163a4663396a6765973": 1
-    },
     "packages/skeleton/src/subagent-budget.ts": {
       "61cd98cb95042dfcefedfb08bb4ec49bd391f3d53039c2103de07556977eab02": 1
     },

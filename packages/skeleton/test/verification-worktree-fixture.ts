@@ -1,4 +1,6 @@
-import { writeFileSync } from "node:fs";
+import { writeFileSync, readFileSync, chmodSync, mkdirSync } from "node:fs";
+import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { join } from "node:path";
 import type {
   AcceptanceCriterion,
@@ -174,4 +176,95 @@ export function openSnapshotDriver(
     now: () => 12,
   });
   return { store, driver, host };
+}
+
+// Synthetic SHA-1 commit-graph corruption using Git's documented CDAT format.
+// Recompute the checksum so the host cannot rely on a malformed-file warning.
+export const forgeGraph = (
+  file: string,
+  commit: string,
+  change: { tree: string } | { parent: string },
+) => {
+  const bytes = readFileSync(file);
+  assert.equal(bytes.toString("ascii", 0, 4), "CGPH");
+  assert.equal(bytes[5], 1);
+  const chunks = new Map<string, number>();
+  for (let i = 0; i < bytes[6]!; i++) {
+    const at = 8 + i * 12;
+    chunks.set(
+      bytes.toString("ascii", at, at + 4),
+      Number(bytes.readBigUInt64BE(at + 4)),
+    );
+  }
+  const oidl = chunks.get("OIDL")!,
+    cdat = chunks.get("CDAT")!,
+    count = bytes.readUInt32BE(chunks.get("OIDF")! + 255 * 4);
+  const position = (oid: string) => {
+    for (let i = 0; i < count; i++)
+      if (bytes.toString("hex", oidl + i * 20, oidl + (i + 1) * 20) === oid)
+        return i;
+    throw new Error("synthetic commit missing from graph");
+  };
+  const at = cdat + position(commit) * 36;
+  if ("tree" in change) Buffer.from(change.tree, "hex").copy(bytes, at);
+  else {
+    const parent = position(change.parent);
+    bytes.writeUInt32BE(parent, at + 20);
+    // Keep generation-v1 levels consistent with the forged ancestry edge.
+    assert.equal(chunks.has("GDA2"), false);
+    const parentLevel = bytes.readUInt32BE(cdat + parent * 36 + 28) >>> 2;
+    bytes.writeUInt32BE(
+      (parentLevel + 1) * 4 + (bytes.readUInt32BE(at + 28) & 3),
+      at + 28,
+    );
+  }
+  createHash("sha1")
+    .update(bytes.subarray(0, -20))
+    .digest()
+    .copy(bytes, bytes.length - 20);
+  chmodSync(file, 0o644);
+  writeFileSync(file, bytes);
+};
+
+/** Each planted interpretation has a control that ordinary Git would consume. */
+export function plantGitInterpretation(
+  root: string,
+  worktree: string,
+  kind: "replace" | "graph" | "hooks",
+  commit: string,
+  base: string,
+) {
+  const common = fixtureGit(
+    worktree,
+    "rev-parse",
+    "--path-format=absolute",
+    "--git-common-dir",
+  );
+  const marker = join(root, "hook-executed");
+  if (kind === "replace") fixtureGit(worktree, "replace", commit, base);
+  if (kind === "graph") {
+    fixtureGit(worktree, "config", "core.commitGraph", "true");
+    fixtureGit(
+      worktree,
+      "-c",
+      "commitGraph.generationVersion=1",
+      "commit-graph",
+      "write",
+      "--reachable",
+    );
+    forgeGraph(join(common, "objects/info/commit-graph"), commit, {
+      tree: fixtureGit(worktree, "rev-parse", `${base}^{tree}`),
+    });
+  }
+  if (kind === "hooks") {
+    const hooks = join(root, "planted-hooks");
+    mkdirSync(hooks);
+    const script = `#!/bin/sh\nprintf executed > '${marker}'\n`;
+    for (const name of ["post-checkout", "fsmonitor"]) {
+      writeFileSync(join(hooks, name), script, { mode: 0o755 });
+    }
+    fixtureGit(worktree, "config", "core.hooksPath", hooks);
+    fixtureGit(worktree, "config", "core.fsmonitor", join(hooks, "fsmonitor"));
+  }
+  return { common, marker };
 }

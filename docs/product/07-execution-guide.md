@@ -2340,9 +2340,13 @@ are read separately when the order names them.
 
 Before `implementation-ready`, and not before `repair-complete`, the
 executor spawns two fresh `dotln-worker` agents, each given only the order
-and the diff: an adversary that attacks the criteria and an improver that
-critiques design, simplicity and what a maintainer will not understand in
-six months. It fixes or records every finding and writes a line in
+and the diff, with distinct briefs. The criteria adversary seeks concrete
+counterexamples, failed acceptance criteria and missing regression tests;
+design cleanup is outside its brief. The design improver seeks simpler
+structure, lower coupling, sound error handling and what a maintainer will
+not understand in six months; criterion verdicts and adversarial test design
+are outside its brief. An issue discovered in the other lane is transferred,
+not reviewed twice. The executor fixes or records every distinct finding and writes a line in
 `handoff.md` that starts `self-review: found N; fixed N; recorded N`, then
 names both workers or the separate-pass fallback and its evidence. A list
 marker, balanced inline emphasis or code wrappers may decorate the line;

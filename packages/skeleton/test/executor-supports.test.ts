@@ -808,7 +808,15 @@ test("execution roles open with an ordered handoff and keep shared rules below i
     executor,
     /Before `implementation-ready` only, spawn two fresh `dotln-worker` agents/,
   );
-  assert.match(executor, /one adversary of the criteria and one improver/);
+  assert.match(executor, /nonoverlapping briefs/);
+  assert.match(
+    executor,
+    /criteria adversary for concrete counterexamples, failed acceptance criteria and missing regression tests; exclude design cleanup/,
+  );
+  assert.match(
+    executor,
+    /design improver for simpler structure, coupling, error handling and six-month maintainability; exclude criterion verdicts and adversarial test design/,
+  );
   assert.doesNotMatch(
     executor,
     /Before either completion|900 s|all eight system traps/,

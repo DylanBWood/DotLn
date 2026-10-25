@@ -8,6 +8,11 @@ import {
   writeFileSync,
 } from "node:fs";
 import { join, relative, sep } from "node:path";
+import {
+  HOST_GIT,
+  sourceObjectEnvironment,
+  sourceWriterState,
+} from "./source-change-worktree.js";
 import { observedExecFileSync as execFileSync } from "./gate-deadlines.mjs";
 import {
   confinedTestCommand,
@@ -40,6 +45,56 @@ function ordinary(root: string, path: string): void {
       throw new Error("source-change command grant path is not ordinary");
   }
 }
+export interface CommandCleanup {
+  readonly removed: string[];
+  readonly survived: { path: string; code: string }[];
+}
+/** Remove both owned grants, including after a partial earlier removal. */
+export function removeSourceChangeCommands(input: {
+  readonly launchpad: string;
+  readonly target: string;
+  readonly commandId: string;
+  readonly episodeId: string;
+  readonly unlink?: (path: string) => void;
+}): CommandCleanup {
+  const route = grantPath(input.launchpad, input.target);
+  const paths = [
+    writerSandboxProfilePath(input.launchpad, input.target),
+    route,
+  ];
+  const result: CommandCleanup = { removed: [], survived: [] };
+  let ownerError: unknown;
+  try {
+    ordinary(input.launchpad, route);
+    const owner = JSON.parse(readFileSync(route, "utf8")) as {
+      commandId?: unknown;
+      episodeId?: unknown;
+    };
+    if (
+      owner.commandId !== input.commandId ||
+      owner.episodeId !== input.episodeId
+    )
+      throw Object.assign(
+        new Error("source-change command ownership changed"),
+        { code: "ownership" },
+      );
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== "ENOENT") ownerError = error;
+  }
+  for (const path of paths) {
+    try {
+      if (ownerError) throw ownerError;
+      ordinary(input.launchpad, path);
+      (input.unlink ?? unlinkSync)(path);
+      result.removed.push(path);
+    } catch (error) {
+      const code = (error as NodeJS.ErrnoException).code;
+      if (code === "ENOENT") result.removed.push(path);
+      else result.survived.push({ path, code: code ?? "unreadable" });
+    }
+  }
+  return result;
+}
 export function installSourceChangeCommands(input: {
   readonly launchpad: string;
   readonly target: string;
@@ -51,7 +106,8 @@ export function installSourceChangeCommands(input: {
   readonly testCommand: string;
   readonly messagePath: string;
   readonly expiresAt: number;
-}): () => void {
+  readonly unlink?: (path: string) => void;
+}): () => CommandCleanup {
   const path = grantPath(input.launchpad, input.target);
   const profileFile = writerSandboxProfilePath(input.launchpad, input.target);
   confinedTestCommand(input.target, input.testCommand, profileFile);
@@ -112,21 +168,15 @@ export function installSourceChangeCommands(input: {
     unlinkSync(profileFile);
     throw error;
   }
-  return () => {
-    ordinary(input.launchpad, path);
-    ordinary(input.launchpad, profileFile);
-    unlinkSync(profileFile);
-    unlinkSync(path);
-  };
+  return () => removeSourceChangeCommands(input);
 }
 
-/** Exact host-selected shell commands only. Native permissions still decide. */
-export function sourceChangeCommandEffect(
+/** Validate the host-owned route before using its intended branch or commands. */
+function sourceChangeGrant(
   launchpad: string,
   target: string,
-  command: string,
   now = Date.now(),
-): "shell.run" | "git.local" | undefined {
+) {
   const path = grantPath(launchpad, target);
   ordinary(launchpad, path);
   if (!lstatSync(path, { throwIfNoEntry: false })) return undefined;
@@ -188,19 +238,62 @@ export function sourceChangeCommandEffect(
     digest(readFileSync(value.messagePath, "utf8")) !== value.messageHash
   )
     throw new Error("source-change command message drift");
-  const branch = execFileSync("git", ["symbolic-ref", "--short", "HEAD"], {
-    cwd: target,
-    encoding: "utf8",
-    timeout: 5_000,
-  }).trim();
-  if (branch !== value.branch)
+  const branch = execFileSync(
+    "git",
+    [...HOST_GIT, "rev-parse", "--abbrev-ref", "HEAD"],
+    {
+      cwd: target,
+      env: { ...process.env, ...sourceObjectEnvironment(target) },
+      encoding: "utf8",
+      timeout: 5_000,
+    },
+  ).trim();
+  const writer = sourceWriterState(target);
+  if (
+    branch !== "HEAD" ||
+    writer.branch !== value.branch ||
+    writer.baseCommit !== value.baseCommit
+  )
     throw new Error("source-change command branch drift");
   execFileSync(
     "git",
-    ["merge-base", "--is-ancestor", value.baseCommit, "HEAD"],
-    { cwd: target, timeout: 5_000, stdio: "pipe" },
+    [...HOST_GIT, "merge-base", "--is-ancestor", value.baseCommit, "HEAD"],
+    {
+      cwd: target,
+      env: { ...process.env, ...sourceObjectEnvironment(target) },
+      timeout: 5_000,
+      stdio: "pipe",
+    },
   );
-  if (command === confinedTestCommand(target, value.testCommand, profileFile))
+  return {
+    branch: value.branch,
+    testCommand: value.testCommand,
+    messagePath: value.messagePath,
+    profileFile,
+  };
+}
+
+/** A detached source episode may reserve its host-bound destination branch. */
+export function sourceChangeWriterBranch(
+  launchpad: string,
+  target: string,
+): string | undefined {
+  return sourceChangeGrant(launchpad, target)?.branch;
+}
+
+/** Exact host-selected shell commands only. Native permissions still decide. */
+export function sourceChangeCommandEffect(
+  launchpad: string,
+  target: string,
+  command: string,
+  now = Date.now(),
+): "shell.run" | "git.local" | undefined {
+  const value = sourceChangeGrant(launchpad, target, now);
+  if (!value) return undefined;
+  if (
+    command ===
+    confinedTestCommand(target, value.testCommand, value.profileFile)
+  )
     return "shell.run";
   if (
     command === "git add -A" ||

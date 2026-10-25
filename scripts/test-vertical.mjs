@@ -9,6 +9,7 @@ import {
   readdirSync,
   renameSync,
   rmSync,
+  unlinkSync,
   writeFileSync,
 } from "node:fs";
 import {
@@ -426,6 +427,175 @@ test("WO-123 one command repairs a blocking independent review, re-verifies and 
       );
       writeFileSync(childPath, originalBytes);
     }
+  } finally {
+    f.close();
+  }
+});
+
+for (const step of ["source-change", "repair"])
+  test(`WO-204 a writer request ends the vertical in NeedsHuman at ${step}`, async () => {
+    const f = await verticalFixture({
+      plantReview: step === "repair",
+      forge: {
+        [step === "repair" ? "repairEnvelope" : "sourceEnvelope"]: {
+          status: "blocked",
+          requiresHuman: true,
+        },
+      },
+      ...(step === "repair"
+        ? {
+            reviewFindings(request) {
+              return [
+                {
+                  class: "review",
+                  findingId: "one-line",
+                  criterionId: request.capsule.criteria[0].criterionId,
+                  severity: "blocking",
+                  observed: "fixture.txt has an extra blank line.",
+                  expected: "Keep fixture.txt as a single line.",
+                  reproductionSteps: ["Read fixture.txt and CONVENTIONS.md."],
+                  evidenceRefs: [
+                    "conventions:CONVENTIONS.md",
+                    "file:fixture.txt",
+                    "diff",
+                  ],
+                  likelySurface: ["fixture.txt"],
+                },
+              ];
+            },
+          }
+        : {}),
+    });
+    try {
+      const result = await runVerticalIssue({
+        directory: f.directory,
+        issue: 1,
+        configuration: readVerticalConfiguration(f.directory, f.launchpad),
+        now: () => {
+          f.tick();
+          return f.now();
+        },
+        external: f.external,
+      });
+      assert.deepEqual(
+        [result.terminal.kind, result.terminal.step],
+        ["NeedsHuman", step],
+      );
+      const receipt = result.receipts.at(-1);
+      assert.equal(receipt.command.step, step);
+      assert.equal(
+        result.receipts.some((row) => row.command.step === "publish"),
+        false,
+      );
+      if (step === "source-change") {
+        assert.equal(
+          receipt.value.refusal.reason,
+          "writer-requested-attention",
+        );
+        const rows = decodeLog(
+          new WorkerStore(
+            join(f.directory, "vertical", result.binding.key, "source"),
+          ).read(),
+        );
+        const writer = rows.findLast(
+          (row) => row.type === "WorkerResultObserved",
+        ).payload;
+        assert.deepEqual(receipt.value.writer, {
+          episodeId: writer.workerEpisodeId,
+          status: "blocked",
+          requiresHuman: true,
+        });
+        assert.equal("summary" in receipt.value.writer, false);
+        assert.equal(
+          result.receipts.some((row) => row.command.step === "witnesses"),
+          false,
+        );
+      } else {
+        const child = join(receipt.value.repairStore, "children", "source-1");
+        const rows = decodeLog(new WorkerStore(child).read());
+        assert.equal(
+          rows.findLast((row) => row.type === "SourceChangeRefused")?.payload
+            .reason,
+          "writer-requested-attention",
+        );
+      }
+      assert.equal(existsSync(join(f.root, "published.json")), false);
+    } finally {
+      f.close();
+    }
+  });
+
+test("source command cleanup failure stays pending across vertical invocations", async () => {
+  const f = await verticalFixture();
+  try {
+    let failed = false;
+    const external = {
+      ...f.external,
+      sourceGrantUnlink(path) {
+        if (!failed && path.endsWith("source-change-commands.json")) {
+          failed = true;
+          throw Object.assign(new Error("synthetic grant unlink failure"), {
+            code: "EACCES",
+          });
+        }
+        unlinkSync(path);
+      },
+    };
+    const run = (steps) =>
+      runVerticalIssue({
+        directory: f.directory,
+        issue: 1,
+        configuration: readVerticalConfiguration(f.directory, f.launchpad),
+        now: () => {
+          f.tick();
+          return f.now();
+        },
+        external,
+        steps,
+      });
+    const pending = await run(6);
+    assert.equal(failed, true);
+    assert.equal(pending.terminal, null);
+    assert.equal(pending.pending?.step, "source-change");
+    assert.equal(
+      pending.receipts.some((row) => row.command.step === "source-change"),
+      false,
+    );
+    const source = new WorkerStore(
+      join(f.directory, "vertical", pending.binding.key, "source"),
+    );
+    const before = decodeLog(source.read());
+    assert.equal(
+      before.filter((row) => row.type === "WorkerAttemptStarted").length,
+      1,
+    );
+    assert.equal(
+      before.filter((row) => row.type === "CommandCleanupFailed").length,
+      1,
+    );
+    assert.equal(
+      before.some((row) => row.type === "CandidateImported"),
+      false,
+    );
+    const resumed = await run(1);
+    assert.equal(resumed.pending, null);
+    assert.deepEqual(
+      [resumed.receipts.at(-1)?.command.step, resumed.receipts.at(-1)?.result],
+      ["source-change", "completed"],
+    );
+    const after = decodeLog(source.read());
+    assert.equal(
+      after.filter((row) => row.type === "WorkerAttemptStarted").length,
+      1,
+    );
+    assert.equal(
+      after.filter((row) => row.type === "CommandGrantsRevoked").length,
+      1,
+    );
+    assert.equal(
+      after.filter((row) => row.type === "CandidateImported").length,
+      1,
+    );
   } finally {
     f.close();
   }

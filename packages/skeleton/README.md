@@ -996,11 +996,13 @@ const outcome = await host.run();
 host.finish();
 ```
 
-`run()` creates the target branch from the declared base, emits the matching
-target-worker bundle, records the host's baseline test, and dispatches. Test
+`run()` creates a detached worktree and private object store from the declared
+base, emits the matching target-worker bundle, records the host's baseline test,
+and dispatches; host import and branch publication follow admission. Test
 commands are bounded argument vectors, with no shell interpolation. Results
-are `observed` with a commit/diff/test receipt, or `refused` with a reason;
-observation alone never claims verification. A returned worker without a commit
+are `observed` with a commit/diff/test receipt, or `refused` with a reason,
+including `writer-requested-attention` for a non-completed status or
+`requiresHuman`; observation alone never claims verification. A returned worker without a commit
 refuses and retains any edits. A failed after-test is recorded faithfully.
 The host checks every changed path against `surfaces`, plus branch identity,
 base ancestry, clean source and governance/message integrity.

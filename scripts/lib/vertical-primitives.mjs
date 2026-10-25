@@ -14,7 +14,10 @@ import { setTimeout as delay } from "node:timers/promises";
 import { compileLoadout, compileVerificationTask } from "@dotln/compiler";
 import { decodeLog } from "@dotln/kernel";
 import { WorkerStore } from "../../packages/skeleton/dist/src/worker-store.js";
-import { SourceChangeHost } from "../../packages/skeleton/dist/src/source-change-host.js";
+import {
+  SourceChangeHost,
+  WRITER_REQUESTED_ATTENTION,
+} from "../../packages/skeleton/dist/src/source-change-host.js";
 import {
   VerificationDriver,
   VerificationHost,
@@ -32,7 +35,10 @@ import {
   verticalEqual,
 } from "../../packages/skeleton/dist/src/vertical.js";
 import { SOURCE_CHANGE_DENIED } from "../../packages/skeleton/dist/src/worker-protocol.js";
-import { throwIfInterrupted } from "../../packages/skeleton/dist/src/vertical-host.js";
+import {
+  RetryableSourceCleanupError,
+  throwIfInterrupted,
+} from "../../packages/skeleton/dist/src/vertical-host.js";
 import { sourceGit } from "../../packages/skeleton/dist/src/source-change-worktree.js";
 import { writerLoadout, publishTargetOrder } from "./target-publish.mjs";
 import { deliveryContractHash } from "./github-body.mjs";
@@ -355,6 +361,9 @@ export function createVerticalPrimitives({
       model: cfg.workers.model,
       effort: cfg.workers.effort,
       transport: transport("writer"),
+      ...(external.sourceGrantUnlink
+        ? { unlinkCommandFile: external.sourceGrantUnlink }
+        : {}),
       ...(signal ? { signal } : {}),
     };
   }
@@ -567,6 +576,29 @@ export function createVerticalPrimitives({
           now,
         });
         const result = await host.run();
+        if (
+          result.status === "refused" &&
+          result.refusal.reason === WRITER_REQUESTED_ATTENTION
+        ) {
+          const reported = decodeLog(host.options.store.read()).findLast(
+            (event) => event.type === "WorkerResultObserved",
+          )?.payload;
+          if (!reported)
+            throw new Error("writer attention refusal has no recorded result");
+          return held("source writer requested attention", {
+            refusal: result.refusal,
+            writer: {
+              episodeId: reported.workerEpisodeId,
+              status: reported.envelope.status,
+              requiresHuman: reported.envelope.requiresHuman,
+            },
+          });
+        }
+        if (
+          result.status === "refused" &&
+          result.refusal.reason.startsWith("command-route-live:")
+        )
+          throw new RetryableSourceCleanupError();
         if (result.status !== "observed")
           return {
             result: "refused",

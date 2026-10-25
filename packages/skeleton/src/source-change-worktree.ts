@@ -9,7 +9,9 @@ import {
   openSync,
   readFileSync,
   readdirSync,
+  readlinkSync,
   realpathSync,
+  renameSync,
   rmdirSync,
   unlinkSync,
   writeFileSync,
@@ -30,32 +32,105 @@ import {
 
 export const sourceDigest = (value: string | Buffer): string =>
   createHash("sha256").update(value).digest("hex");
-// A writer, or the focused test the host runs after it, can write the target's
-// common Git directory, so the host's own Git calls run no hook (a planted
-// post-checkout would run on the next `worktree add`) and no fsmonitor
-// (WO-157).
+// Host reads never execute target hooks or trust writer-controlled derived
+// metadata. They judge the actual commit objects and committed file bytes.
 export const HOST_GIT = [
   "-c",
   "core.hooksPath=/dev/null",
   "-c",
   "core.fsmonitor=false",
-  // A writer could otherwise plant a replace ref that hides a file from the
-  // host's diff while the real commit is published (WO-112 D022).
+  // A replace ref could hide a file from the host's diff.
   "-c",
   "core.useReplaceRefs=false",
   // A writer-writable commit-graph can substitute a commit's tree or parents.
-  // Admission must parse the commit objects instead (WO-112 VER-003 F1).
+  // Admission must parse the commit objects instead.
   "-c",
   "core.commitGraph=false",
 ] as const;
 export const sourceGit = (cwd: string, ...args: string[]): string =>
   execFileSync("git", [...HOST_GIT, ...args], {
     cwd,
+    env: {
+      ...process.env,
+      GIT_OBJECT_DIRECTORY: undefined,
+      GIT_ALTERNATE_OBJECT_DIRECTORIES: undefined,
+    },
     encoding: "utf8",
     stdio: ["ignore", "pipe", "pipe"],
     timeout: 15_000,
     maxBuffer: 8 * 1024 * 1024,
   }).trim();
+/** Git writes new objects only to the private store; the common store is an
+ * alternate. Quote the alternate as Git's documented C-style path entry. */
+export function sourceObjectEnvironment(cwd: string): {
+  GIT_OBJECT_DIRECTORY: string;
+  GIT_ALTERNATE_OBJECT_DIRECTORIES: string;
+} {
+  const [gitdir, common] = sourceGit(
+    cwd,
+    "rev-parse",
+    "--path-format=absolute",
+    "--git-dir",
+    "--git-common-dir",
+  ).split("\n");
+  if (!gitdir || !common || realpathSync(gitdir) === realpathSync(common))
+    throw new Error("source writer requires a linked worktree");
+  return {
+    GIT_OBJECT_DIRECTORY: join(realpathSync(gitdir), "dotln-objects"),
+    GIT_ALTERNATE_OBJECT_DIRECTORIES: JSON.stringify(
+      join(realpathSync(common), "objects"),
+    ),
+  };
+}
+export function sourceWriterState(cwd: string): {
+  version: 1;
+  branch: string;
+  baseCommit: string;
+  objectDirectory: string;
+} {
+  const env = sourceObjectEnvironment(cwd);
+  const value = JSON.parse(
+    ordinaryFile(
+      join(dirname(env.GIT_OBJECT_DIRECTORY), "dotln-source.json"),
+    ).toString("utf8"),
+  );
+  if (
+    !value ||
+    Object.keys(value).sort().join(",") !==
+      "baseCommit,branch,objectDirectory,version" ||
+    value.version !== 1 ||
+    typeof value.branch !== "string" ||
+    !value.branch ||
+    value.objectDirectory !== env.GIT_OBJECT_DIRECTORY
+  )
+    throw new Error("source-change private store identity drift");
+  assertSourceCommit(value.baseCommit);
+  canonicalDirectory(env.GIT_OBJECT_DIRECTORY);
+  return value;
+}
+/** Host preparation only. The writer receives the resulting environment. */
+export function prepareSourceObjectStore(
+  cwd: string,
+  branch: string,
+  baseCommit: string,
+): void {
+  const { GIT_OBJECT_DIRECTORY: objectDirectory } =
+    sourceObjectEnvironment(cwd);
+  const state = { version: 1 as const, branch, baseCommit, objectDirectory };
+  const file = join(dirname(objectDirectory), "dotln-source.json");
+  if (present(file)) {
+    if (JSON.stringify(sourceWriterState(cwd)) !== JSON.stringify(state))
+      throw new Error("source-change private store request drift");
+    return;
+  }
+  if (present(objectDirectory))
+    throw new Error("source-change private store has no ownership record");
+  mkdirSync(objectDirectory, { mode: 0o700 });
+  writeFileSync(file, JSON.stringify(state) + "\n", {
+    flag: "wx",
+    mode: 0o400,
+  });
+}
 const present = (path: string) =>
   lstatSync(path, { throwIfNoEntry: false }) !== undefined;
 const ordinaryFile = (path: string): Buffer => {
@@ -90,6 +165,73 @@ const canonicalDirectory = (path: string) => {
   return path;
 };
 
+export class SourceWorktreeRefusal extends Error {
+  constructor(
+    readonly reason: string,
+    path: string,
+  ) {
+    super(`source-change committed tree is dirty: ${path}; ${reason}`);
+  }
+}
+export class SourceImportRefusal extends Error {
+  readonly reason: string;
+  constructor(commit: string, cause: unknown) {
+    super(`source-change import refused: ${commit}`, { cause });
+    this.reason = `import:${commit}`;
+  }
+}
+export class SourceObjectIntegrityRefusal extends Error {
+  readonly reason = "private-object-integrity";
+  constructor(cause: unknown) {
+    super("source-change private object store failed strict integrity check", {
+      cause,
+    });
+  }
+}
+export class SourceObjectLayoutRefusal extends Error {
+  readonly reason = "private-object-layout";
+  constructor() {
+    super("source-change private object store contains unsupported metadata");
+  }
+}
+
+// An object directory can add alternates and commit graphs of its own. Check
+// its small, episode-owned inventory before giving it to any host Git reader.
+function assertPrivateObjectLayout(directory: string): void {
+  const ordinaryDirectory = (path: string) =>
+    lstatSync(path).isDirectory() && realpathSync(path) === path;
+  try {
+    if (!ordinaryDirectory(directory)) throw new SourceObjectLayoutRefusal();
+    for (const name of readdirSync(directory)) {
+      const path = join(directory, name);
+      if (!ordinaryDirectory(path)) throw new SourceObjectLayoutRefusal();
+      const loose = /^[a-f0-9]{2}$/u.test(name);
+      if (!loose && name !== "pack" && name !== "info")
+        throw new SourceObjectLayoutRefusal();
+      for (const entry of readdirSync(path)) {
+        const allowed = loose
+          ? /^(?:[a-f0-9]{38}|[a-f0-9]{62})$/u.test(entry)
+          : name === "pack" &&
+            /^pack-(?:[a-f0-9]{40}|[a-f0-9]{64})\.(?:pack|idx|rev|bitmap|keep)$/u.test(
+              entry,
+            );
+        const info = lstatSync(join(path, entry));
+        if (!allowed || !info.isFile() || info.nlink !== 1)
+          throw new SourceObjectLayoutRefusal();
+      }
+    }
+  } catch {
+    throw new SourceObjectLayoutRefusal();
+  }
+}
+export const sourceAdmissionReason = (check: string, error: unknown): string =>
+  error instanceof SourceWorktreeRefusal ||
+  error instanceof SourceImportRefusal ||
+  error instanceof SourceObjectIntegrityRefusal ||
+  error instanceof SourceObjectLayoutRefusal
+    ? error.reason
+    : `host-admission-${check}`;
+
 export interface SourceWorktreeOptions {
   readonly requested: SourceChangeRequested;
   readonly commandId: string;
@@ -108,11 +250,38 @@ export interface SourceChangeLimits {
   /** A Sort move's declared relocation: its source may be removed. */
   readonly relocation?: { readonly from: string; readonly to: string };
 }
+export interface ImportedCandidate {
+  readonly commit: string;
+  readonly tree: string;
+  readonly objects: string[];
+  readonly pack: string;
+}
 
 /** Branch-specific lifecycle; inspection's detached worktree contract is unchanged. */
 export class SourceChangeWorktree {
   readonly path: string;
   readonly messagePath: string;
+  private objectEnv?: ReturnType<typeof sourceObjectEnvironment>;
+  get objectEnvironment(): ReturnType<typeof sourceObjectEnvironment> {
+    return (this.objectEnv ??= sourceObjectEnvironment(this.path));
+  }
+  get objectDirectory(): string {
+    return this.objectEnvironment.GIT_OBJECT_DIRECTORY;
+  }
+  private get environment(): NodeJS.ProcessEnv {
+    assertPrivateObjectLayout(this.objectDirectory);
+    return { ...process.env, ...this.objectEnvironment };
+  }
+  private git(...args: string[]): string {
+    return execFileSync("git", [...HOST_GIT, ...args], {
+      cwd: this.path,
+      env: this.environment,
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "pipe"],
+      timeout: 15_000,
+      maxBuffer: 8 * 1024 * 1024,
+    }).trim();
+  }
   constructor(readonly options: SourceWorktreeOptions) {
     const { requested, parent, launchpad, commandId, commitMessage } = options;
     canonicalDirectory(parent);
@@ -197,9 +366,13 @@ export class SourceChangeWorktree {
         requested.repo,
         "worktree",
         "add",
-        "-b",
-        requested.branch,
+        "--detach",
         this.path,
+        requested.baseCommit,
+      );
+      prepareSourceObjectStore(
+        this.path,
+        requested.branch,
         requested.baseCommit,
       );
     }
@@ -211,26 +384,42 @@ export class SourceChangeWorktree {
       dirname(this.path) !== parent ||
       lstatSync(this.path).isSymbolicLink() ||
       realpathSync(this.path) !== this.path ||
-      sourceGit(this.path, "rev-parse", "--show-toplevel") !== this.path ||
-      sourceGit(this.path, "symbolic-ref", "--short", "HEAD") !==
-        requested.branch
+      this.git("rev-parse", "--show-toplevel") !== this.path ||
+      this.git("rev-parse", "--abbrev-ref", "HEAD") !== "HEAD"
     )
       throw new Error("source-change worktree identity drift");
+    const state = sourceWriterState(this.path);
+    if (
+      state.branch !== requested.branch ||
+      state.baseCommit !== requested.baseCommit ||
+      state.objectDirectory !== this.objectDirectory
+    )
+      throw new Error("source-change worktree recorded branch drift");
     const common = (root: string) =>
       realpathSync(
         resolve(root, sourceGit(root, "rev-parse", "--git-common-dir")),
       );
     if (common(this.path) !== common(requested.repo))
       throw new Error("source-change worktree belongs to another repository");
-    const head = sourceGit(this.path, "rev-parse", "HEAD");
+    const head = this.git("rev-parse", "HEAD");
     assertSourceCommit(head);
-    sourceGit(
-      this.path,
-      "merge-base",
-      "--is-ancestor",
-      requested.baseCommit,
-      head,
-    );
+    // The private store wins object lookup over its shared alternate. Validate
+    // the candidate graph before a shadow object can alter a base-tree
+    // comparison. An explicit head excludes unrelated shared refs from fsck.
+    try {
+      this.git(
+        "fsck",
+        "--no-full",
+        "--strict",
+        "--no-reflogs",
+        "--no-dangling",
+        "--no-references",
+        head,
+      );
+    } catch (error) {
+      throw new SourceObjectIntegrityRefusal(error);
+    }
+    this.git("merge-base", "--is-ancestor", requested.baseCommit, head);
     return head;
   }
   /** Observe shared state without following a substituted alternates entry.
@@ -392,11 +581,130 @@ export class SourceChangeWorktree {
     )
       throw new Error("source-change host message drift");
   }
-  clean(): void {
-    if (sourceGit(this.path, "status", "--porcelain", "--untracked-files=all"))
+  cleanAgainstCommit(): void {
+    const flags = execFileSync("git", [...HOST_GIT, "ls-files", "-v", "-z"], {
+      cwd: this.path,
+      env: this.environment,
+      timeout: 15_000,
+    })
+      .toString("utf8")
+      .split("\0")
+      .filter(Boolean);
+    for (const entry of flags) {
+      if (entry[0] === "S" || entry[0] === entry[0]!.toLowerCase()) {
+        const path = entry.slice(2);
+        throw new SourceWorktreeRefusal(`index-flags:${path}`, path);
+      }
+    }
+    const entries = execFileSync(
+      "git",
+      [...HOST_GIT, "ls-tree", "-r", "-z", "HEAD"],
+      {
+        cwd: this.path,
+        env: this.environment,
+        timeout: 15_000,
+        maxBuffer: 8 * 1024 * 1024,
+      },
+    )
+      .toString("utf8")
+      .split("\0")
+      .filter(Boolean);
+    for (const entry of entries) {
+      const tab = entry.indexOf("\t"),
+        path = entry.slice(tab + 1);
+      const [mode, type, object] = entry.slice(0, tab).split(" ");
+      // Git status judges gitlinks, including uninitialized submodules. They
+      // are commit entries, not files whose contents equal a blob.
+      if (mode === "160000" && type === "commit") continue;
+      const absolute = join(this.path, path);
+      const info = lstatSync(absolute, { throwIfNoEntry: false });
+      const symlink = mode === "120000";
+      if (
+        type !== "blob" ||
+        !info ||
+        realpathSync(dirname(absolute)) !== dirname(absolute) ||
+        (symlink
+          ? !info?.isSymbolicLink()
+          : !info?.isFile() ||
+            !["100644", "100755"].includes(mode!) ||
+            (info.mode & 0o111 ? "100755" : "100644") !== mode) ||
+        !execFileSync("git", [...HOST_GIT, "cat-file", "blob", object!], {
+          cwd: this.path,
+          env: this.environment,
+          timeout: 15_000,
+          maxBuffer: 8 * 1024 * 1024,
+        }).equals(
+          symlink
+            ? readlinkSync(absolute, { encoding: "buffer" })
+            : readFileSync(absolute),
+        )
+      )
+        throw new SourceWorktreeRefusal(`committed-tree-drift:${path}`, path);
+    }
+    if (this.git("status", "--porcelain", "--untracked-files=all"))
       throw new Error(
         "source-change committed tree is dirty; preserve for inspection",
       );
+  }
+  /** Keep an unadmitted candidate out of shared reachability walks without
+   * changing its HEAD, index, objects or working files. Git's lock protects
+   * the retained administration from pruning while its backlink is saved. */
+  retainUnimported(): string | undefined {
+    if (!present(this.path)) return undefined;
+    const directory = dirname(this.objectDirectory);
+    const common = realpathSync(
+      sourceGit(
+        this.options.requested.repo,
+        "rev-parse",
+        "--path-format=absolute",
+        "--git-common-dir",
+      ),
+    );
+    if (
+      dirname(directory) !== join(common, "worktrees") ||
+      realpathSync(directory) !== directory ||
+      ordinaryFile(join(this.path, ".git")).toString("utf8").trim() !==
+        `gitdir: ${directory}`
+    )
+      throw new Error("source-change retention identity drift");
+    const backlink = join(directory, "gitdir");
+    const retained = join(directory, "dotln-retained-gitdir");
+    const expected = join(this.path, ".git");
+    const pointer = present(retained) ? retained : backlink;
+    if (ordinaryFile(pointer).toString("utf8").trim() !== expected)
+      throw new Error("source-change retention backlink drift");
+    if (present(retained) && present(backlink))
+      throw new Error("source-change retention has two backlinks");
+    const lock = join(directory, "locked");
+    if (present(lock)) ordinaryFile(lock);
+    else writeFileSync(lock, this.retentionLock, { flag: "wx", mode: 0o600 });
+    if (!present(retained)) renameSync(backlink, retained);
+    const quote = (value: string) => `'${value.replaceAll("'", "'\\''")}'`;
+    return [
+      "env",
+      `GIT_OBJECT_DIRECTORY=${quote(this.objectDirectory)}`,
+      `GIT_ALTERNATE_OBJECT_DIRECTORIES=${quote(this.objectEnvironment.GIT_ALTERNATE_OBJECT_DIRECTORIES)}`,
+      "git",
+      ...HOST_GIT.map(quote),
+      "-C",
+      quote(this.path),
+      "log -1 --stat",
+    ].join(" ");
+  }
+  private get retentionLock(): string {
+    return `source-change ${this.options.commandId}: retained private candidate\n`;
+  }
+  private restoreRegistration(): void {
+    const directory = dirname(this.objectDirectory);
+    const retained = join(directory, "dotln-retained-gitdir");
+    if (!present(retained)) return;
+    // Revalidate the owned paths before undoing retention. The imported
+    // candidate has already been checked in the shared object store.
+    this.retainUnimported();
+    renameSync(retained, join(directory, "gitdir"));
+    const lock = join(directory, "locked");
+    if (ordinaryFile(lock).toString("utf8") === this.retentionLock)
+      unlinkSync(lock);
   }
   /** The committed change, re-verified; `admit` also applies the envelope's
    * change limits, which judge a change once, when it is first observed, so a
@@ -404,7 +712,7 @@ export class SourceChangeWorktree {
   effect(admit = false): { commit: string; diffHash: string } | undefined {
     const commit = this.verify();
     if (commit === this.options.requested.baseCommit) return undefined;
-    this.clean();
+    this.cleanAgainstCommit();
     this.bundle("check");
     this.checkMessage();
     const { baseCommit, surfaces } = this.options.requested;
@@ -422,7 +730,7 @@ export class SourceChangeWorktree {
         commit,
         "--",
       ],
-      { cwd: this.path, timeout: 15_000 },
+      { cwd: this.path, env: this.environment, timeout: 15_000 },
     )
       .toString()
       .split("\0")
@@ -445,13 +753,8 @@ export class SourceChangeWorktree {
       );
     // One commit carrying the host's message, whoever the writer was.
     if (
-      sourceGit(
-        this.path,
-        "rev-list",
-        "--count",
-        `${baseCommit}..${commit}`,
-      ) !== "1" ||
-      sourceGit(this.path, "log", "-1", "--format=%B", commit).trimEnd() !==
+      this.git("rev-list", "--count", `${baseCommit}..${commit}`) !== "1" ||
+      this.git("log", "-1", "--format=%B", commit).trimEnd() !==
         this.options.commitMessage.trimEnd()
     )
       throw new Error(
@@ -471,7 +774,12 @@ export class SourceChangeWorktree {
         commit,
         "--",
       ],
-      { cwd: this.path, timeout: 15_000, maxBuffer: 8 * 1024 * 1024 },
+      {
+        cwd: this.path,
+        env: this.environment,
+        timeout: 15_000,
+        maxBuffer: 8 * 1024 * 1024,
+      },
     );
     return { commit, diffHash: sourceDigest(diff) };
   }
@@ -494,7 +802,12 @@ export class SourceChangeWorktree {
         commit,
         "--",
       ],
-      { cwd: this.path, timeout: 15_000, maxBuffer: 8 * 1024 * 1024 },
+      {
+        cwd: this.path,
+        env: this.environment,
+        timeout: 15_000,
+        maxBuffer: 8 * 1024 * 1024,
+      },
     )
       .toString()
       .split("\0")
@@ -517,6 +830,128 @@ export class SourceChangeWorktree {
       throw new Error(
         `source-change diff removes or changes the type of paths without repo.delete (${changes.length} paths against ${limits.files === undefined ? "no files ceiling" : `the envelope's files ceiling of ${limits.files}`}): ${removed.join(", ")}`,
       );
+  }
+  /** The reader sees the private objects, and index-pack writes only to the
+   * common store. A keep file protects the pack until a shared ref exists. */
+  importCandidate(commit: string): ImportedCandidate {
+    try {
+      const tree = this.git("rev-parse", `${commit}^{tree}`);
+      const revisions = [commit, `^${this.options.requested.baseCommit}`];
+      const objects = this.git(
+        "rev-list",
+        "--objects",
+        "--no-object-names",
+        ...revisions,
+      )
+        .split("\n")
+        .filter(Boolean)
+        .sort();
+      const bytes = execFileSync(
+        "git",
+        [...HOST_GIT, "pack-objects", "--stdout", "--revs"],
+        {
+          cwd: this.path,
+          env: this.environment,
+          input: revisions.join("\n") + "\n",
+          stdio: ["pipe", "pipe", "pipe"],
+          timeout: 15_000,
+          maxBuffer: 64 * 1024 * 1024,
+        },
+      );
+      const sharedEnv = { ...process.env };
+      delete sharedEnv.GIT_OBJECT_DIRECTORY;
+      delete sharedEnv.GIT_ALTERNATE_OBJECT_DIRECTORIES;
+      const indexed = execFileSync(
+        "git",
+        [
+          ...HOST_GIT,
+          "index-pack",
+          "--stdin",
+          "--strict",
+          `--keep=${this.keepMessage}`,
+        ],
+        {
+          cwd: this.options.requested.repo,
+          env: sharedEnv,
+          input: bytes,
+          stdio: ["pipe", "pipe", "pipe"],
+          timeout: 15_000,
+          maxBuffer: 1024 * 1024,
+        },
+      )
+        .toString("utf8")
+        .trim();
+      const pack = /^(?:pack|keep)\t([a-f0-9]{40}|[a-f0-9]{64})$/u.exec(
+        indexed,
+      )?.[1];
+      if (!pack)
+        throw new Error("source-change import returned no pack identity");
+      const imported = { commit, tree, objects, pack };
+      this.verifyImported(imported);
+      return imported;
+    } catch (error) {
+      throw new SourceImportRefusal(commit, error);
+    }
+  }
+  private get keepMessage(): string {
+    return `source-change ${this.options.commandId}`;
+  }
+  verifyImported(candidate: ImportedCandidate): void {
+    const repo = this.options.requested.repo;
+    try {
+      for (const object of candidate.objects)
+        sourceGit(repo, "cat-file", "-e", object);
+      if (
+        sourceGit(repo, "rev-parse", `${candidate.commit}^{tree}`) !==
+        candidate.tree
+      )
+        throw new Error("imported tree differs from admission");
+    } catch (error) {
+      throw new SourceImportRefusal(candidate.commit, error);
+    }
+  }
+  publishCandidate(candidate: ImportedCandidate): void {
+    const { repo, branch } = this.options.requested;
+    this.verifyImported(candidate);
+    const ref = `refs/heads/${branch}`;
+    const existing = spawnSync(
+      "git",
+      [...HOST_GIT, "show-ref", "--verify", "--quiet", ref],
+      {
+        cwd: repo,
+        timeout: 5_000,
+      },
+    );
+    if (existing.status === 1)
+      sourceGit(
+        repo,
+        "update-ref",
+        ref,
+        candidate.commit,
+        "0".repeat(candidate.commit.length),
+      );
+    else if (
+      existing.status !== 0 ||
+      sourceGit(repo, "rev-parse", ref) !== candidate.commit
+    )
+      throw new SourceImportRefusal(
+        candidate.commit,
+        new Error("episode branch differs from the admitted commit"),
+      );
+    this.verifyImported(candidate);
+    this.restoreRegistration();
+    const common = sourceGit(
+      repo,
+      "rev-parse",
+      "--path-format=absolute",
+      "--git-common-dir",
+    );
+    const keep = join(common, "objects/pack", `pack-${candidate.pack}.keep`);
+    if (
+      present(keep) &&
+      ordinaryFile(keep).toString("utf8").trim() === this.keepMessage
+    )
+      unlinkSync(keep);
   }
   finish(commit: string, diffHash: string): void {
     const effect = this.effect();
@@ -542,7 +977,7 @@ export class SourceChangeWorktree {
         "--exclude-standard",
         "-z",
       ],
-      { cwd: this.path, timeout: 15_000 },
+      { cwd: this.path, env: this.environment, timeout: 15_000 },
     )
       .toString()
       .split("\0")
@@ -560,8 +995,7 @@ export class SourceChangeWorktree {
     unlinkSync(this.messagePath);
     rmdirSync(dirname(this.messagePath));
     if (
-      sourceGit(
-        this.path,
+      this.git(
         "status",
         "--porcelain",
         "--untracked-files=all",

@@ -70,6 +70,12 @@ import {
 
 import { validateSourceChangeEnvironment } from "./source-change-environment.js";
 import {
+  HOST_GIT,
+  sourceGit,
+  sourceObjectEnvironment,
+  sourceWriterState,
+} from "./source-change-worktree.js";
+import {
   confinedTestCommand,
   toolchainReadRoots,
   writerSandboxProfilePath,
@@ -969,7 +975,11 @@ function sourceChangeArgs(
       'shell_environment_policy.inherit="none"',
       // The empty environment still needs the host's node and git.
       "-c",
-      `shell_environment_policy.set={PATH=${JSON.stringify(access.path)}}`,
+      `shell_environment_policy.set={PATH=${JSON.stringify(access.path)},${Object.entries(
+        sourceWriterEnvironment(request.cwd),
+      )
+        .map(([key, value]) => `${key}=${JSON.stringify(value)}`)
+        .join(",")}}`,
       // X-W1 needs native tools. WO-122's live row also requires the stable
       // code-mode host: disabling it leaves model-exposed tools unable to run.
       ...codexDisabled
@@ -986,20 +996,42 @@ function sourceChangeArgs(
   });
 }
 
+/** Commit-local configuration prevents shared rerere writes and maintenance
+ * children. Remove inherited configuration entries before installing the two
+ * bounded pairs, including entries beyond an inherited count. */
+function sourceWriterEnvironment(
+  cwd: string,
+  inherited: NodeJS.ProcessEnv = {},
+): NodeJS.ProcessEnv {
+  return {
+    ...Object.fromEntries(
+      Object.entries(inherited).filter(
+        ([key]) => !key.startsWith("GIT_CONFIG_"),
+      ),
+    ),
+    ...sourceObjectEnvironment(cwd),
+    GIT_CONFIG_COUNT: "2",
+    GIT_CONFIG_KEY_0: "rerere.enabled",
+    GIT_CONFIG_VALUE_0: "false",
+    GIT_CONFIG_KEY_1: "maintenance.auto",
+    GIT_CONFIG_VALUE_1: "false",
+  };
+}
+
 /** The writer's grants beyond its worktree: read the host's node, git and
  * Codex installations, the user's git identity and the shared repository
- * metadata; write its own gitdir and the shared objects, refs and logs.
- * These directory-wide grants do not protect existing object bytes. */
+ * metadata; write only its own gitdir and private object store. */
 function codexWriterAccess(
   cwd: string,
   codexHome?: string,
 ): { filesystem: string; path: string } {
-  const [gitDir, commonDir] = writerGit(cwd, [
+  const [gitDir, commonDir] = sourceGit(
+    cwd,
     "rev-parse",
     "--path-format=absolute",
     "--git-dir",
     "--git-common-dir",
-  ]).split("\n");
+  ).split("\n");
   if (!gitDir || !commonDir)
     throw new WorkerFailure("profile-refused", "writer Git directories");
   // A main checkout's gitdir is the shared directory, hooks and config included.
@@ -1028,10 +1060,7 @@ function codexWriterAccess(
     [join(homedir(), ".gitconfig"), "read"],
     [realpathSync(commonDir), "read"],
     [realpathSync(gitDir), "write"],
-    ...(["objects", "refs", "logs"] as const).map((name): [string, "write"] => [
-      join(realpathSync(commonDir), name),
-      "write",
-    ]),
+    [realpathSync(sourceObjectEnvironment(cwd).GIT_OBJECT_DIRECTORY), "write"],
   ];
   // No read root may be / or hold the home directory or Codex's credentials.
   const guarded = [homedir(), userCodexHome()].map((path) => resolve(path));
@@ -1079,8 +1108,9 @@ function hostBinary(name: string): string {
 
 function writerGit(cwd: string, args: readonly string[]): string {
   try {
-    return execFileSync("git", [...args], {
+    return execFileSync("git", [...HOST_GIT, ...args], {
       cwd,
+      env: { ...process.env, ...sourceObjectEnvironment(cwd) },
       encoding: "utf8",
       stdio: ["ignore", "pipe", "pipe"],
       timeout: 5_000,
@@ -1160,11 +1190,7 @@ function decodeWriterResult(
         : {
             observedCommit: {
               sha,
-              branch: writerGit(request.cwd, [
-                "rev-parse",
-                "--abbrev-ref",
-                "HEAD",
-              ]),
+              branch: sourceWriterState(request.cwd).branch,
             },
           }),
     });
@@ -1405,7 +1431,9 @@ abstract class CliWorkOrderTransport implements WorkOrderTransport {
         input: transportPrompt(request, this.name),
         ...(isWriterRequest(request) ? { ownProcessGroup: true } : {}),
         ...(options?.launchGate ? { launchGate: options.launchGate } : {}),
-        env: episode?.env ?? launchEnv,
+        env: isWriterRequest(request)
+          ? sourceWriterEnvironment(request.cwd, episode?.env ?? launchEnv)
+          : (episode?.env ?? launchEnv),
         timeoutMs: isEntropyReviewRequest(request)
           ? ENTROPY_REVIEW_LIMITS.timeoutMs
           : isEntropyRefutationRequest(request)

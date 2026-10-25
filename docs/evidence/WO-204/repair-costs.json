@@ -1,0 +1,61 @@
+{
+  "recordedAt": "2026-10-25T17:05:50.885Z",
+  "source": "synthetic vertical fixture",
+  "method": "Wall-clock performance.now around the actual clean check and pack-objects/index-pack import. Separately time cat-file for every tracked blob with the same host Git flags and private environment; no path sampling.",
+  "cleanChecks": [
+    {
+      "durationMs": 78.67670799999996,
+      "trackedBlobs": 3,
+      "catFileMs": [
+        12.065750000000207,
+        11.366791000000376,
+        11.167625000000044
+      ]
+    },
+    {
+      "durationMs": 68.30825000000004,
+      "trackedBlobs": 3,
+      "catFileMs": [
+        11.241790999999921,
+        10.438458999999966,
+        10.593000000000302
+      ]
+    },
+    {
+      "durationMs": 62.60508299999992,
+      "trackedBlobs": 3,
+      "catFileMs": [
+        9.80099999999993,
+        9.854709000000184,
+        9.048832999999831
+      ]
+    },
+    {
+      "durationMs": 61.259833999999955,
+      "trackedBlobs": 3,
+      "catFileMs": [
+        10.298832999999831,
+        9.982417000000169,
+        9.690499999999702
+      ]
+    },
+    {
+      "durationMs": 63.00183299999935,
+      "trackedBlobs": 3,
+      "catFileMs": [
+        10.936250000000655,
+        11.289042000000336,
+        12.244167000000743
+      ]
+    }
+  ],
+  "imports": [
+    {
+      "durationMs": 94.4121669999995,
+      "objects": 3
+    }
+  ],
+  "maxCleanMs": 78.67670799999996,
+  "maxCatFileMs": 12.244167000000743,
+  "maxImportMs": 94.4121669999995
+}

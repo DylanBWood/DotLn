@@ -10,7 +10,13 @@ import {
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 import { createServer } from "node:net";
-import { createSourceFixture, fixtureGit } from "./source-change-fixture.js";
+import {
+  createSourceFixture,
+  fixtureGit,
+  fixtureGit as git,
+  sourceFixtureOptions,
+  launchpad,
+} from "./source-change-fixture.js";
 import { runFocusedTest, sourceDigest } from "../src/source-change-worktree.js";
 import {
   confinedTestCommand,
@@ -18,6 +24,115 @@ import {
   writerSandboxProfile,
 } from "../src/discovery-sandbox.js";
 import { mkdirSync } from "node:fs";
+import { decodeLog } from "@dotln/kernel";
+import { SourceChangeHost } from "../src/source-change-host.js";
+import {
+  ClaudeCliPrintWorkOrderTransport,
+  CodexCliExecWorkOrderTransport,
+  runWorkerProcess,
+} from "../src/worker-transport.js";
+const events = (root: string) =>
+  decodeLog(readFileSync(join(root, "store/events.jsonl"), "utf8"));
+const dispose = (root: string) =>
+  rmSync(root, { recursive: true, force: true });
+
+for (const transport of ["codex", "claude"] as const)
+  test(
+    `WO-204 ${transport}: the writer cannot delete an independent sibling blob`,
+    { skip: transport === "codex" && process.platform !== "darwin" },
+    async () => {
+      const root = createSourceFixture();
+      try {
+        const repo = join(root, "target"),
+          sibling = join(root, "sibling");
+        git(repo, "worktree", "add", "-b", "independent", sibling, "HEAD");
+        writeFileSync(
+          join(sibling, "unique.txt"),
+          "Independent synthetic bytes.\n",
+        );
+        git(sibling, "add", "unique.txt");
+        git(sibling, "commit", "-m", "Independent fixture");
+        const blob = git(sibling, "rev-parse", "HEAD:unique.txt");
+        const victim = join(
+          repo,
+          ".git/objects",
+          blob.slice(0, 2),
+          blob.slice(2),
+        );
+        const options = sourceFixtureOptions(
+          root,
+          () => 10,
+          "commit",
+          transport,
+        );
+        let stderr = "";
+        const runner: import("../src/worker-transport.js").ProcessRunner = (
+          launch,
+        ) => {
+          const args = [
+            join(launchpad, "packages/skeleton/fixtures/source-change-cli.mjs"),
+            transport,
+            "commit",
+          ];
+          const grants = launch.args.find((arg) =>
+            arg.startsWith("permissions.dotln-writer.filesystem="),
+          );
+          const writes =
+            transport === "codex"
+              ? [...(grants ?? "").matchAll(/("(?:[^"\\]|\\.)*")="write"/gu)]
+                  .map((match) => JSON.parse(match[1]!) as string)
+                  .filter((path) => !path.startsWith(":"))
+              : [];
+          // The gate's read observer writes its own exact log outside this
+          // synthetic writer profile. Admit that instrumentation file so the
+          // attempted shared-object deletion is the operation under test.
+          const observerLog = launch.env?.DOTLN_PRODUCT_READ_LOG;
+          const profile = `(version 1)(allow default)(deny file-write*)(allow file-write* ${[launch.cwd, ...writes].map((path) => `(subpath ${JSON.stringify(path)})`).join(" ")}${observerLog ? ` (literal ${JSON.stringify(observerLog)})` : ""})(allow file-write* (literal "/dev/null"))`;
+          const running = runWorkerProcess({
+            ...launch,
+            binary:
+              transport === "codex"
+                ? "/usr/bin/sandbox-exec"
+                : process.execPath,
+            args:
+              transport === "codex"
+                ? ["-p", profile, process.execPath, ...args]
+                : args,
+            env: { ...launch.env, DOTLN_FIXTURE_DELETE_OBJECT: victim },
+          });
+          return {
+            ...running,
+            completed: running.completed.then((result) => {
+              stderr = result.stderr;
+              return result;
+            }),
+          };
+        };
+        const host = new SourceChangeHost({
+          ...options,
+          transport:
+            transport === "codex"
+              ? new CodexCliExecWorkOrderTransport(runner, "0.154.0")
+              : new ClaudeCliPrintWorkOrderTransport(runner, "2.1.270"),
+        });
+        await assert.rejects(host.run());
+        assert.match(
+          stderr,
+          /synthetic writer reached shared-object deletion after commit/u,
+        );
+        assert.equal(
+          git(repo, "cat-file", "blob", blob),
+          "Independent synthetic bytes.",
+        );
+        assert.equal(
+          events(root).some((event) => event.type === "SourceChangeObserved"),
+          false,
+        );
+      } finally {
+        dispose(root);
+      }
+    },
+  );
 
 test(
   "WO-066 AC6: host and exact writer command deny direct network, common-Git writes and outside reads",

@@ -1652,11 +1652,22 @@ rule; this admission change neither rewrites old events nor changes their
 replay identity.
 
 **Source-change host (WO-052):** a compiled order pins the repository, base,
-branch, surfaces and focused test. The host creates its governed branch
-worktree under the configured parent. Before launch WorkerStore persists the
+branch, surfaces and focused test. The host creates a governed detached
+worktree under the configured parent, with a private object store and the
+shared store as a read-only alternate. Before launch WorkerStore persists the
 test, request, five-second leases, shared refs (including symbolic targets) and
-alternates. Refs require Git's files backend; object bytes remain unprotected
-(WO-112-D033).
+alternates. Refs require Git's files backend. After admission the host imports
+the candidate's objects, verifies the imported tree and records
+`CandidateImported` before publishing the episode branch; the writer has no
+shared-object write authority. Private host reads first refuse auxiliary metadata
+in the episode's object store, including alternates and commit graphs. After a
+settled writer leaves an unadmitted candidate, the host locks its administration
+against pruning and saves the registration backlink without changing HEAD,
+index, objects or working files. `SourceChangeCandidateRetained` records an
+inspection command using the private object environment, so the shared repository's
+reachability commands remain usable while the candidate stays private. A recovery
+that imports and publishes the candidate restores registration before normal
+finish. Abrupt death before settlement still requires recovery.
 Unreceipted recovery requires writer termination and unchanged refs and
 alternates. Host Git ignores replace refs and commit-graph.
 A live or unobservable prior process group stops recovery;
@@ -1674,7 +1685,10 @@ Authority is rechecked before dispatch, after worker completion and around the
 after-test; host testing creates no worker lease. While the issued route has a
 live owner and unexpired deadline, target guards admit only the exact test,
 `git add -A` and host-message commit. Branch/base/message, permissions, isolation
-and attribution checks still apply. Dispatch completion revokes the route.
+and attribution checks still apply. After process settlement, the worker
+result or interruption and integrity verdict precede independent removal of
+the route and sandbox profile; any surviving grant refuses admission and
+after-testing with `command-route-live`, and recovery retries removal.
 Native writers use a separate process group; this is host
 governance, not isolation of arbitrary scripts or descendants that escape that
 group. [WO-053](../evidence/WO-053/README.md) observed clean harness episodes
@@ -1750,7 +1764,8 @@ text, never the default channel for state you own in structured form.
   requirement-coverage confidence (default 1). A **source revision guard**
   watches the artifact's revision: a material mid-cycle change invalidates
   exactly the downstream contract/plan/evidence derived from the changed
-  portion. Enterprise ticket trackers remain a future adapter. `fetchIssueBundle`
+  portion; source worktrees are judged against the committed tree's bytes and
+  modes under the host's Git interpretation. Enterprise ticket trackers remain a future adapter. `fetchIssueBundle`
   is the first, for GitHub Issues: `gh` reads, forge-host-only allowlist, hash
   storage and a text-free omission receipt whose typed stop the consumer must
   honor. Image markup keeps spans; unavailable byte hashes are explicit.
@@ -1843,13 +1858,18 @@ text, never the default channel for state you own in structured form.
   `Bash,Read,Edit,Write`, exact `--allowedTools` entries for Edit/Write/Read and
   three Bash commands (the declared test, `git add -A`, `git commit -F <path>`),
   no permission prompts, project/local settings, no persistence, strict empty
-  MCP, no browser, a $3 budget and `stream-json` with hook events. Codex uses
+  MCP, no browser, a $3 budget and JSON result output. Its launch environment
+  names the private object directory and read-only shared alternate and disables
+  rerere and automatic maintenance through two Git configuration pairs. Codex uses
   X-W1/X-W2/X-W8: `-a never exec --ephemeral --ignore-user-config --cd
   <worktree> --json`, named `dotln-writer` permissions (`:minimal` read,
-  `:workspace_roots` write, toolchain read, gitdir/objects/refs/logs write,
-  network disabled) with no overriding `--sandbox`, and the inspection
+  `:workspace_roots` write, toolchain read, gitdir and private object-store
+  write, network disabled) with no overriding `--sandbox`, and the inspection
   profile's hardening minus the shell-tool disables, retaining
-  `shell_environment_policy.inherit="none"` with a host PATH. Synthetic
+  `shell_environment_policy.inherit="none"` with a host PATH, the private object
+  directory and shared alternate, and Git configuration pairs disabling rerere
+  and automatic maintenance. No write grant names shared objects, refs, logs,
+  `rr-cache` or `packed-refs.lock`. Synthetic
   fixtures pin the exact arrays.
   Construction refuses tools-only Claude (C-W1, ambiguous), on-request Codex
   approval (X-U2, ambiguous) and a Codex hook expectation (X-W3, unavailable).
@@ -1860,6 +1880,8 @@ text, never the default channel for state you own in structured form.
   `unavailable` for Codex. An edited uncommitted tree has no observed commit.
   Model-supplied observations refuse; saved host observations remain bound to
   the request's kind, mount, authority and command in its immutable result key.
+  A source writer's status other than `completed`, or `requiresHuman`, ends
+  its step with `writer-requested-attention`; the vertical records `NeedsHuman`.
   The sandbox is not the containment boundary: C-W6 and X-W6 observed sibling
   writes. Target governance and host post-exit checks bound acceptance.
   WO-051 established subprocess fixtures, WO-052 worktree/message ownership,

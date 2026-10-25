@@ -175,6 +175,7 @@ for (const mode of [
 ])
   test(`resident survives source actor death: ${mode}`, async () => {
     const f = await verticalFixture({ onReturn: "kill" });
+    const initialMain = fixtureGit(f.target, "rev-parse", "main");
     let host;
     try {
       const fixture = join(f.root, "fixture.json");
@@ -326,17 +327,18 @@ for (const mode of [
           rows().findIndex((e) => e.eventId === stopped.eventId) <
             rows().findIndex((e) => e.eventId === attempts()[1].eventId),
         );
-      assert.equal(
-        Number(
-          fixtureGit(
-            f.target,
-            "rev-list",
-            "--count",
-            `main..fix/intent-${binding.key}`,
+      const branch = `fix/intent-${binding.key}`;
+      if (mode === "exhausted") {
+        assert.equal(fixtureGit(f.target, "branch", "--list", branch), "");
+        assert.equal(fixtureGit(f.target, "rev-parse", "main"), initialMain);
+      } else {
+        assert.equal(
+          Number(
+            fixtureGit(f.target, "rev-list", "--count", `main..${branch}`),
           ),
-        ),
-        mode === "exhausted" ? 0 : 1,
-      );
+          1,
+        );
+      }
       const ledger = decodeLog(host.store.read());
       for (const type of ["IntentStepStarted", "IntentStepSettled"])
         assert.equal(
@@ -510,6 +512,86 @@ test("WO-199 dotln vertical forwards SIGINT, SIGTERM and SIGHUP and resumes the 
       await stopWriter(group, join(f.root, "writer-ready"));
       f.close();
     }
+  }
+});
+
+test("WO-204 dotln vertical keeps a killed writer pending and reruns exactly one commit", async () => {
+  const f = await verticalFixture();
+  let child, group;
+  try {
+    const state = await steps(f, 5);
+    assert.equal(state.receipts.at(-1).command.step, "baseline");
+    const fixture = join(f.root, "fixture.json"),
+      settings = join(f.root, "interrupt.json");
+    const config = JSON.parse(readFileSync(fixture, "utf8"));
+    put(fixture, { ...config, interruptWriter: "before-commit" });
+    put(settings, { at: f.now() + 1, sleep: false });
+    const first = cli(f, settings);
+    child = first.child;
+    const stopped = await within(
+      first.done,
+      30_000,
+      "killed writer did not leave a pending CLI",
+    );
+    assert.equal(stopped.code, 1, stopped.stderr);
+    assert.match(stopped.stdout, /"kind":\s*"pending"/u);
+    assert.match(stopped.stdout, /"pendingStep":\s*"source-change"/u);
+    const source = new WorkerStore(
+      join(f.directory, "vertical", state.binding.key, "source"),
+    );
+    const rows = decodeLog(source.read());
+    assert.equal(
+      rows.filter((event) => event.type === "WorkerAttemptStarted").length,
+      1,
+    );
+    const interrupted = rows.find(
+      (event) => event.type === "WorkerInterrupted",
+    ).payload;
+    assert.equal(interrupted.reason, "interrupted");
+    assert.equal(Object.hasOwn(interrupted, "signal"), false);
+    group = rows.find((event) => event.type === "SourceChangeProcessStarted")
+      .payload.processGroup;
+    assert.throws(() => process.kill(-group, 0), { code: "ESRCH" });
+    put(fixture, config);
+    put(settings, { at: f.now() + 2, sleep: false });
+    const second = cli(f, settings);
+    child = second.child;
+    const resumed = await within(
+      second.done,
+      60_000,
+      "writer rerun did not finish",
+    );
+    assert.equal(resumed.code, 0, `${resumed.stderr}\n${resumed.stdout}`);
+    assert.equal(
+      runState(f.directory, state.binding.key).terminal?.kind,
+      "resolved",
+    );
+    const final = decodeLog(source.read());
+    const attempts = final.filter(
+      (event) => event.type === "WorkerAttemptStarted",
+    );
+    assert.equal(attempts.length, 2);
+    assert.equal(
+      new Set(attempts.map((event) => event.payload.commandId)).size,
+      1,
+    );
+    assert.equal(
+      final.filter((event) => event.type === "SourceChangeRequested").length,
+      1,
+    );
+    assert.equal(
+      fixtureGit(
+        join(f.root, "target"),
+        "rev-list",
+        "--count",
+        `main..fix/intent-${state.binding.key}`,
+      ),
+      "1",
+    );
+  } finally {
+    child?.kill("SIGKILL");
+    await stopWriter(group, join(f.root, "writer-ready"));
+    f.close();
   }
 });
 

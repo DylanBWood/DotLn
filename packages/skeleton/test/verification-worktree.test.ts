@@ -650,3 +650,100 @@ test("WO-056 Codex launches a verifier in the files-only snapshot and every othe
     store.release();
   }
 });
+
+for (const kind of ["replace", "graph", "hooks"] as const)
+  test(`WO-204 verification ignores planted ${kind} and binds the clean-clone commit, tree and blobs`, async () => {
+    const f = await sourceSnapshotFixture();
+    try {
+      const { plantGitInterpretation } =
+        await import("./verification-worktree-fixture.js");
+      const repo = f.source.options.workOrder.repo,
+        commit = f.result.observation.commit;
+      const clone = join(f.root, "clean-clone");
+      fixtureGit(repo, "clone", "--no-local", "--no-checkout", repo, clone);
+      fixtureGit(clone, "checkout", "--detach", commit);
+      const expectedTree = fixtureGit(
+        clone,
+        "--no-replace-objects",
+        "-c",
+        "core.commitGraph=false",
+        "rev-parse",
+        `${commit}^{tree}`,
+      );
+      const { marker } = plantGitInterpretation(
+        f.root,
+        repo,
+        kind,
+        commit,
+        f.options.baseCommit,
+      );
+      if (kind === "replace")
+        assert.notEqual(
+          fixtureGit(repo, "rev-parse", `${commit}^{tree}`),
+          expectedTree,
+        );
+      else if (kind === "graph")
+        assert.equal(
+          fixtureGit(repo, "diff", "--name-only", f.options.baseCommit, commit),
+          "",
+        );
+      else {
+        fixtureGit(f.source.tree.path, "status", "--porcelain");
+        assert.equal(existsSync(marker), true);
+        unlinkSync(marker);
+      }
+      const prepared = prepareWorktreeVerification({
+        ...f.options,
+        directory: join(f.root, "planted-verification"),
+      });
+      assert.equal(prepared.subject.revision, commit);
+      const { sourceGit } = await import("../src/source-change-worktree.js");
+      assert.equal(
+        sourceGit(f.source.tree.path, "rev-parse", `${commit}^{tree}`),
+        expectedTree,
+      );
+      for (const file of prepared.subject.files) {
+        assert.equal(
+          file.contents,
+          readFileSync(join(clone, file.path), "utf8"),
+        );
+        assert.equal(
+          file.mode,
+          lstatSync(join(clone, file.path)).mode & 0o111 ? "100755" : "100644",
+        );
+        assert.equal(
+          sourceGit(f.source.tree.path, "rev-parse", `${commit}:${file.path}`),
+          fixtureGit(
+            clone,
+            "--no-replace-objects",
+            "-c",
+            "core.commitGraph=false",
+            "rev-parse",
+            `${commit}:${file.path}`,
+          ),
+        );
+      }
+      assert.equal(existsSync(marker), false);
+      if (kind !== "hooks") {
+        writeFileSync(join(f.source.tree.path, "fixture.txt"), "baseline\n");
+        fixtureGit(
+          f.source.tree.path,
+          "update-index",
+          "--skip-worktree",
+          "fixture.txt",
+        );
+        assert.throws(
+          () =>
+            prepareWorktreeVerification({
+              ...f.options,
+              directory: join(f.root, "hidden-verification"),
+            }),
+          /bytes or mode drift|committed, clean/u,
+        );
+        assert.equal(existsSync(join(f.root, "hidden-verification")), false);
+      }
+    } finally {
+      unlock(f.root);
+      rmSync(f.root, { recursive: true, force: true });
+    }
+  });

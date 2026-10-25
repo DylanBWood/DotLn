@@ -1,9 +1,10 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { createHash } from "node:crypto";
+import { forgeGraph } from "./verification-worktree-fixture.js";
 import {
   chmodSync,
+  copyFileSync,
   existsSync,
   linkSync,
   lstatSync,
@@ -19,7 +20,10 @@ import {
 import { join } from "node:path";
 import { decodeLog, encodeLog, type JsonValue } from "@dotln/kernel";
 import { SourceChangeHost } from "../src/source-change-host.js";
-import { sourceDigest } from "../src/source-change-worktree.js";
+import {
+  sourceDigest,
+  SourceObjectLayoutRefusal,
+} from "../src/source-change-worktree.js";
 import { writerSandboxProfilePath } from "../src/discovery-sandbox.js";
 import {
   CodexCliExecWorkOrderTransport,
@@ -32,6 +36,7 @@ import {
   createSourceFixture,
   sourceFixtureOptions,
   fixtureGit as git,
+  fixtureObjectEnvironment,
 } from "./source-change-fixture.js";
 
 const logPath = (root: string) => join(root, "store/events.jsonl");
@@ -127,7 +132,9 @@ test("WO-199 post-result effect and receipt refusals retain their own host check
           rows.find((event) => event.type === "SourceChangeRefused")
             ?.payload as { reason: string } | undefined
         )?.reason,
-        `host-admission-${check}`,
+        check === "effect"
+          ? "committed-tree-drift:fixture.txt"
+          : `host-admission-${check}`,
       );
       assert.equal(
         rows.some((event) => event.type === "WorkerInterrupted"),
@@ -143,55 +150,7 @@ test("WO-199 post-result effect and receipt refusals retain their own host check
   }
 });
 
-// Synthetic SHA-1 commit-graph corruption using Git's documented CDAT format.
-// Recompute the checksum so the host cannot rely on a malformed-file warning.
-const forgeGraph = (
-  file: string,
-  commit: string,
-  change: { tree: string } | { parent: string },
-) => {
-  const bytes = readFileSync(file);
-  assert.equal(bytes.toString("ascii", 0, 4), "CGPH");
-  assert.equal(bytes[5], 1);
-  const chunks = new Map<string, number>();
-  for (let i = 0; i < bytes[6]!; i++) {
-    const at = 8 + i * 12;
-    chunks.set(
-      bytes.toString("ascii", at, at + 4),
-      Number(bytes.readBigUInt64BE(at + 4)),
-    );
-  }
-  const oidl = chunks.get("OIDL")!,
-    cdat = chunks.get("CDAT")!,
-    count = bytes.readUInt32BE(chunks.get("OIDF")! + 255 * 4);
-  const position = (oid: string) => {
-    for (let i = 0; i < count; i++)
-      if (bytes.toString("hex", oidl + i * 20, oidl + (i + 1) * 20) === oid)
-        return i;
-    throw new Error("synthetic commit missing from graph");
-  };
-  const at = cdat + position(commit) * 36;
-  if ("tree" in change) Buffer.from(change.tree, "hex").copy(bytes, at);
-  else {
-    const parent = position(change.parent);
-    bytes.writeUInt32BE(parent, at + 20);
-    // Keep generation-v1 levels consistent with the forged ancestry edge.
-    assert.equal(chunks.has("GDA2"), false);
-    const parentLevel = bytes.readUInt32BE(cdat + parent * 36 + 28) >>> 2;
-    bytes.writeUInt32BE(
-      (parentLevel + 1) * 4 + (bytes.readUInt32BE(at + 28) & 3),
-      at + 28,
-    );
-  }
-  createHash("sha1")
-    .update(bytes.subarray(0, -20))
-    .digest()
-    .copy(bytes, bytes.length - 20);
-  chmodSync(file, 0o644);
-  writeFileSync(file, bytes);
-};
-
-test("WO-112 VER-003 F1 admission ignores forged commit-graph trees and parents", async () => {
+test("WO-112 admission refuses private forged commit-graph trees and parents", async () => {
   for (const changed of ["tree", "parent"]) {
     const root = createSourceFixture();
     try {
@@ -223,6 +182,10 @@ test("WO-112 VER-003 F1 admission ignores forged commit-graph trees and parents"
                   .join("\n");
                 const made = spawnSync("git", ["mktree"], {
                   cwd: request.cwd,
+                  env: {
+                    ...process.env,
+                    ...fixtureObjectEnvironment(request.cwd),
+                  },
                   input: `${listing}\n`,
                   encoding: "utf8",
                 });
@@ -238,16 +201,31 @@ test("WO-112 VER-003 F1 admission ignores forged commit-graph trees and parents"
                 request.commitMessagePath,
               );
               git(request.cwd, "update-ref", "HEAD", forged);
-              git(
-                request.cwd,
-                "-c",
-                "commitGraph.generationVersion=1",
-                "commit-graph",
-                "write",
-                "--reachable",
+              const graph = spawnSync(
+                "git",
+                [
+                  "-c",
+                  "commitGraph.generationVersion=1",
+                  "commit-graph",
+                  "write",
+                  "--stdin-commits",
+                ],
+                {
+                  cwd: request.cwd,
+                  env: {
+                    ...process.env,
+                    ...fixtureObjectEnvironment(request.cwd),
+                  },
+                  input: `${base}\n${forged}\n`,
+                  encoding: "utf8",
+                },
               );
+              assert.equal(graph.status, 0, graph.stderr);
               forgeGraph(
-                join(options.workOrder.repo, ".git/objects/info/commit-graph"),
+                join(
+                  fixtureObjectEnvironment(request.cwd).GIT_OBJECT_DIRECTORY!,
+                  "info/commit-graph",
+                ),
                 forged,
                 changed === "tree" ? { tree } : { parent: base },
               );
@@ -281,7 +259,14 @@ test("WO-112 VER-003 F1 admission ignores forged commit-graph trees and parents"
                       base,
                       forged,
                     ],
-                    { cwd: request.cwd, encoding: "utf8" },
+                    {
+                      cwd: request.cwd,
+                      env: {
+                        ...process.env,
+                        ...fixtureObjectEnvironment(request.cwd),
+                      },
+                      encoding: "utf8",
+                    },
                   ).status;
                 assert.equal(
                   ancestry(true),
@@ -305,14 +290,29 @@ test("WO-112 VER-003 F1 admission ignores forged commit-graph trees and parents"
           };
         },
       };
-      await assert.rejects(
-        () => new SourceChangeHost({ ...options, transport }).run(),
-        changed === "tree"
-          ? /committed tree is dirty|outside the declared surfaces/u
-          : /merge-base --is-ancestor/u,
+      const host = new SourceChangeHost({ ...options, transport });
+      let admittedEffects = 0;
+      const effect = host.tree.effect.bind(host.tree);
+      host.tree.effect = (admit = false) => {
+        if (admit) admittedEffects++;
+        return effect(admit);
+      };
+      await assert.rejects(host.run(), SourceObjectLayoutRefusal);
+      assert.equal(admittedEffects, 0);
+      assert.equal(
+        (
+          events(root).find((event) => event.type === "SourceChangeRefused")
+            ?.payload as { reason: string } | undefined
+        )?.reason,
+        "private-object-layout",
+      );
+      assert.ok(
+        existsSync(join(host.tree.objectDirectory, "info/commit-graph")),
       );
       assert.equal(
-        events(root).some((event) => event.type === "SourceChangeObserved"),
+        events(root).some((event) =>
+          ["CandidateImported", "SourceChangeObserved"].includes(event.type),
+        ),
         false,
       );
       assert.ok(
@@ -326,6 +326,112 @@ test("WO-112 VER-003 F1 admission ignores forged commit-graph trees and parents"
     } finally {
       dispose(root);
     }
+  }
+});
+
+test("a private shadow of the base tree cannot hide an out-of-surface candidate file", async () => {
+  const root = createSourceFixture();
+  try {
+    const options = sourceFixtureOptions(root, () => 10);
+    const repo = options.workOrder.repo;
+    const maliciousTest = "process.exit(0);\n";
+    const maliciousPath = join(root, "malicious-test.mjs");
+    writeFileSync(maliciousPath, maliciousTest);
+    // This blob is already in the shared store, so a candidate pack can omit
+    // it while a forged private base tree conceals the candidate's edit.
+    const maliciousBlob = git(repo, "hash-object", "-w", maliciousPath);
+    const transport: WorkOrderTransport<WriterRequest> = {
+      name: options.transport.name,
+      harnessVersion: options.transport.harnessVersion,
+      dispatch(request, now) {
+        const pending = options.transport.dispatch(request, now);
+        return {
+          ...pending,
+          completed: pending.completed.then((result) => {
+            const baseTree = git(
+              request.cwd,
+              "rev-parse",
+              `${options.workOrder.baseCommit}^{tree}`,
+            );
+            writeFileSync(join(request.cwd, "fixture-test.mjs"), maliciousTest);
+            git(request.cwd, "add", "fixture-test.mjs");
+            git(request.cwd, "commit", "--amend", "--no-edit");
+            const candidate = git(request.cwd, "rev-parse", "HEAD");
+            const listing = git(request.cwd, "ls-tree", baseTree)
+              .split("\n")
+              .map((line) =>
+                line.endsWith("\tfixture-test.mjs")
+                  ? line.replace(/blob [0-9a-f]{40}/u, `blob ${maliciousBlob}`)
+                  : line,
+              )
+              .join("\n");
+            const forged = spawnSync("git", ["mktree"], {
+              cwd: request.cwd,
+              env: { ...process.env, ...fixtureObjectEnvironment(request.cwd) },
+              input: `${listing}\n`,
+              encoding: "utf8",
+            });
+            assert.equal(forged.status, 0, forged.stderr);
+            const forgedTree = forged.stdout.trim();
+            const objectDirectory = fixtureObjectEnvironment(
+              request.cwd,
+            ).GIT_OBJECT_DIRECTORY!;
+            const loose = (oid: string) =>
+              join(objectDirectory, oid.slice(0, 2), oid.slice(2));
+            mkdirSync(join(objectDirectory, baseTree.slice(0, 2)), {
+              recursive: true,
+            });
+            copyFileSync(loose(forgedTree), loose(baseTree));
+            assert.equal(
+              git(
+                request.cwd,
+                "diff",
+                "--name-only",
+                options.workOrder.baseCommit,
+                candidate,
+              ),
+              "fixture.txt",
+            );
+            return {
+              ...result,
+              envelope: {
+                ...result.envelope,
+                observedCommit: { sha: candidate, branch: options.branch },
+              },
+            };
+          }),
+        };
+      },
+    };
+    await assert.rejects(
+      () => new SourceChangeHost({ ...options, transport }).run(),
+      /private object store failed strict integrity check/u,
+    );
+    const refusal = events(root).find(
+      (event) => event.type === "SourceChangeRefused",
+    );
+    assert.equal(
+      (refusal?.payload as { reason?: string } | undefined)?.reason,
+      "private-object-integrity",
+    );
+    assert.equal(
+      events(root).some((event) => event.type === "CandidateImported"),
+      false,
+    );
+    assert.equal(
+      events(root).some((event) => event.type === "SourceChangeObserved"),
+      false,
+    );
+    assert.equal(
+      spawnSync(
+        "git",
+        ["show-ref", "--verify", "--quiet", `refs/heads/${options.branch}`],
+        { cwd: repo },
+      ).status,
+      1,
+    );
+  } finally {
+    dispose(root);
   }
 });
 
@@ -882,7 +988,12 @@ test("WO-112 F3 adjudicates malformed returns and transport failures durably bef
       const append = options.store.append.bind(options.store);
       let host: SourceChangeHost;
       options.store.append = (event) => {
-        if (event.type === "SourceChangeIntegrityChecked") {
+        if (
+          ["SourceChangeIntegrityChecked", "CommandGrantsRevoked"].includes(
+            event.type,
+          )
+        ) {
+          const grantsPresent = event.type === "SourceChangeIntegrityChecked";
           assert.equal(
             existsSync(
               join(
@@ -892,8 +1003,8 @@ test("WO-112 F3 adjudicates malformed returns and transport failures durably bef
                 "source-change-commands.json",
               ),
             ),
-            false,
-            "failed writer retains no command route during integrity adjudication",
+            grantsPresent,
+            "command cleanup follows durable integrity adjudication",
           );
           assert.equal(
             existsSync(
@@ -902,8 +1013,8 @@ test("WO-112 F3 adjudicates malformed returns and transport failures durably bef
                 host.tree.path,
               ),
             ),
-            false,
-            "failed writer retains no sandbox profile during integrity adjudication",
+            grantsPresent,
+            "profile cleanup follows durable integrity adjudication",
           );
         }
         return append(event);
