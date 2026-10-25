@@ -1,0 +1,85 @@
+{
+  "workOrder": "WO-231",
+  "baseline": {
+    "workOrder": "WO-231",
+    "implementation": "pre-change",
+    "scenario": "Long merged subject after activation; order fast-forwarded onto fetched main; one conforming order commit",
+    "command": "node scripts/harness.mjs bounded -- node <session-scratch>/wo231-baseline.mjs",
+    "finishedAt": "2026-10-25T01:26:28.159Z",
+    "transitionExitCode": 1,
+    "stderr": "Advisory: attestation recorded as supplied; human not-applicable effort unknown has no matching discovery observation.\nerror: target publish refused: commit message format refused before final review: subject.length: 90 of 72 characters",
+    "activationRangeCommits": 3,
+    "describedRangeCommits": 1,
+    "finalReviewRecorded": false
+  },
+  "afterChange": {
+    "command": "npm test -- --review",
+    "recordedAt": "2026-10-25T01:43:25.537Z",
+    "evidenceRef": "host-gate:8e4453683b6bec2630a65902e72888777816f6339842001426c1e20db0f8970e:npm test",
+    "overallExitCode": 1,
+    "task": "target-worktree:file:test-target-worktree-start.mjs",
+    "taskExitCode": 0,
+    "source": "Executed assertions in scripts/test-target-worktree-start.mjs; the passing task asserts each transition exit code and record before returning. The complete run failed separately on the test inventory.",
+    "controls": [
+      {
+        "id": "merged-subject",
+        "transitionExitCode": 0,
+        "activationRangeCommits": 3,
+        "describedRangeCommits": 1,
+        "finalReviewRecorded": true,
+        "activationRecordUnchanged": true,
+        "originOffline": true
+      },
+      {
+        "id": "absent-ref",
+        "transitionExitCode": 1,
+        "activationRangeCommits": 3,
+        "describedRangeCommits": 3,
+        "finalReviewRecorded": false,
+        "activationRecordUnchanged": true,
+        "originOffline": true,
+        "diagnostic": "subject.length: 90 of 72 characters; range and absent ref asserted"
+      },
+      {
+        "id": "range-format",
+        "transitionExitCode": 1,
+        "describedRangeCommits": 1,
+        "activationContext": true,
+        "finalReviewRecorded": false
+      },
+      {
+        "id": "range-identifier",
+        "transitionExitCode": 1,
+        "describedRangeCommits": 1,
+        "activationContext": true,
+        "finalReviewRecorded": false
+      },
+      {
+        "id": "range-attribution",
+        "transitionExitCode": 1,
+        "describedRangeCommits": 1,
+        "activationContext": true,
+        "finalReviewRecorded": false
+      }
+    ]
+  },
+  "finalRegression": {
+    "command": "npm test -- --review",
+    "recordedAt": "2026-10-25T02:07:18.989Z",
+    "codeIdentity": "734504dc897e7648c6b214c024892bc2898126f0c5bbc3250c51948ddfd0df60",
+    "evidenceRef": "host-gate:734504dc897e7648c6b214c024892bc2898126f0c5bbc3250c51948ddfd0df60:npm test",
+    "exitCode": 0,
+    "durationMs": 1255725,
+    "freshTasks": 102,
+    "reusedTasks": 0,
+    "unrunTasks": [],
+    "source": "All controls above executed again in the complete passing run; gate-runs.json records every task outcome.",
+    "originalReviewCasesByteIdentical": true,
+    "publicationCasesUnedited": true,
+    "inventory": {
+      "declarations": 69,
+      "names": 100,
+      "boundedReproductionExitCode": 0
+    }
+  }
+}

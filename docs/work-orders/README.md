@@ -4,7 +4,7 @@
 
 ## Proposed order
 
-- [ ] [WO-231] — The final-review lint of a target order's commits reads the described base · **queued**
+- [x] [WO-231] — The final-review lint of a target order's commits reads the described base · **final-reviewed**
 - [ ] [WO-232] — A starter release does not break the instance that takes it · **queued**
 - [ ] [WO-204] — The source writer cannot damage the operator's repository · **queued**
 - [ ] [WO-192] — A router drives an order through its lifecycle · **queued**
@@ -33,32 +33,15 @@ Full evidence for the active and sequenced orders follows; the Open cards are in
 
 Separate track; outside the proposed serial order.
 
-- [WO-228] — repository: self; base: 0027d9c1e574d161b6215d43b80061eccda37340; phase: draft; verdict: unknown; integration: current; stale: no; observed target: 0027d9c1e574d161b6215d43b80061eccda37340.
+- [WO-228] — repository: self; base: 522fec0efea3e841e8b05e3d884084755d0c9bf1; phase: draft; verdict: unknown; integration: current; stale: no; observed target: 522fec0efea3e841e8b05e3d884084755d0c9bf1.
 
-<!-- dotln-workstreams: {"workstreams":[{"id":"WS-002","track":"separate","members":[{"workOrderId":"WO-228","repository":"self","base":"0027d9c1e574d161b6215d43b80061eccda37340","phase":"draft","verdict":"unknown","integration":"current","stale":"no","targetCommit":"0027d9c1e574d161b6215d43b80061eccda37340"}],"edges":[{"from":"WO-228","to":"WO-193","relation":"planning-deferral"}]}]} -->
+<!-- dotln-workstreams: {"workstreams":[{"id":"WS-002","track":"separate","members":[{"workOrderId":"WO-228","repository":"self","base":"522fec0efea3e841e8b05e3d884084755d0c9bf1","phase":"draft","verdict":"unknown","integration":"current","stale":"no","targetCommit":"522fec0efea3e841e8b05e3d884084755d0c9bf1"}],"edges":[{"from":"WO-228","to":"WO-193","relation":"planning-deferral"}]}]} -->
 
 ## Active
 
 None.
 
 ## Open
-
-### WO-231
-
-[WO-231 — The final-review lint of a target order's commits reads the described base: &#96;final-review-result pass&#96; lints the commits between the subject and its merge base with the target's fetched base branch when the activation base is that merge base's ancestor, names the range and the activation base in a refusal, and keeps today's activation-base range for a subject the base branch has not passed (version assigned at activation)](WO-231-final-review-lint-from-the-described-base.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-230: satisfied-by-close (met) — the described-base rule the publish applies and this order moves into a shared helper the review lint also calls; WO-227: satisfied-by-close (met) — the outward lint's commit rules, applied unchanged to a narrower range.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer high.
-- Track: delivery
-- Cost: adds one small module, &#96;scripts/lib/target-base.mjs&#96;, holding the described-base choice &#96;describedTargetBase&#96; already makes (the merge base when the activation base is its ancestor, else the activation base), called from &#96;scripts/lib/target-publish.mjs&#96; after its fetch and from &#96;scripts/lib/target-commit-lint.mjs&#96; with the clone's fetched base-branch ref; in &#96;target-commit-lint.mjs&#96;, the range and the message; two cases and their paired control in &#96;scripts/test-target-worktree-start.mjs&#96;; one sentence in product 07; decisions. Removes the state the DotLn-Angular fork met on 2026-10-24: a verified target order whose &#96;final-review-result pass&#96; is refused on commits already merged on the target's base branch, which no one can repair. Re-mints: none known; no edition names &#96;target-commit-lint.mjs&#96; or &#96;target-publish.mjs&#96; as a source (a read of &#96;scripts/lib/evidence-sources.mjs&#96; and the harness manifest at &#96;0027d9c1&#96;); the executor runs &#96;npm run sync&#96; and &#96;node scripts/harness.mjs check&#96; before handoff and records the result. Wall-clock: one &#96;git rev-parse&#96; and one &#96;git merge-base&#96; per review, no fetch. Context bytes: this file, about 19,000. Steps: 8.
-- Authority: [docs/work-orders/WO-231-final-review-lint-from-the-described-base.md](WO-231-final-review-lint-from-the-described-base.md)
 
 ### WO-232
 

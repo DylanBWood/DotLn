@@ -1,0 +1,112 @@
+{
+  "workOrder": "WO-231",
+  "verification": "VER-001",
+  "subject": {
+    "base": "522fec0efea3e841e8b05e3d884084755d0c9bf1",
+    "checkpoint": "refs/dotln/checkpoint/WO-231/3",
+    "checkpointSha": "2f0c52a3d9b0aabfb03a9b439479fba462c20bf0",
+    "codeIdentity": "734504dc897e7648c6b214c024892bc2898126f0c5bbc3250c51948ddfd0df60",
+    "codeIdentitySource": "gateCodeIdentity at 2026-10-25T02:50Z"
+  },
+  "consumedRows": [
+    {
+      "checkId": "npm test",
+      "gateSelection": "review",
+      "codeIdentity": "734504dc897e7648c6b214c024892bc2898126f0c5bbc3250c51948ddfd0df60",
+      "recordedAt": "2026-10-25T02:07:18.989Z",
+      "exitCode": 0,
+      "freshSuites": 102,
+      "reusedSuites": 0,
+      "unrunSuites": [],
+      "namedSuiteExitCodes": {
+        "target-worktree": 0,
+        "target-publish": 0,
+        "configuration-root": 0,
+        "runner-fixtures": 0
+      },
+      "source": "docs/control/local/harness/checks.json, read through node scripts/harness.mjs evidence"
+    }
+  ],
+  "commands": [
+    {
+      "command": "node scripts/harness.mjs bounded -- npm run format:check",
+      "exitCode": 0,
+      "finishedAt": "2026-10-25T02:51:36.927Z"
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- npm run publication:check",
+      "exitCode": 0,
+      "finishedAt": "2026-10-25T02:55:29.648Z",
+      "summary": "255/255 product headings indexed; both editions current"
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0
+    }
+  ],
+  "probes": [
+    {
+      "id": "ref-variations",
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-231/verification-001-probe.mjs",
+      "exitCode": 0,
+      "durationMs": 26142,
+      "finishedAt": "2026-10-25T02:57:43.625Z",
+      "outcomes": {
+        "C1-criterion-1-origin-online": {
+          "exit": 0,
+          "lastEvent": "FinalReviewCompleted",
+          "recordedBaseIsActivation": true,
+          "activationRange": 3,
+          "describedRange": 1
+        },
+        "A-stale-ref-behind-merged": {
+          "exit": 1,
+          "appended": false,
+          "refusal": "linted 3 commits from base <activation> to subject <subject>; commit <merged>: commit message format refused before final review: subject.length: 90 of 72 characters",
+          "namesTrackingRef": false,
+          "namesRemedy": false
+        },
+        "B-ref-moved-to-subject": {
+          "reviewExit": 0,
+          "phaseAfterReview": "closed",
+          "reviewedCommitIsSubject": true,
+          "commitsLintedAtReview": 0,
+          "publishExit": 1,
+          "publishRefusal": "outward lint: commit refused: subject.length: 90 of 72 characters (line 1)",
+          "pullsOpened": 0
+        },
+        "B-control-ref-untouched": {
+          "reviewExit": 1,
+          "appended": false,
+          "refusal": "linted 1 commit from base <refTip> to subject <subject>; activated at base <activation>; commit <subject>: commit message format refused before final review: subject.length: 90 of 72 characters"
+        },
+        "C-ref-resolves-to-tree": {
+          "exit": 1,
+          "saysAbsent": true,
+          "activationRange": 3
+        },
+        "D-ref-on-unrelated-history": {
+          "exit": 1,
+          "refusal": "linted 1 commit from base <activation> to subject <subject>; commit <subject>: commit message format refused before final review: subject.length: 90 of 72 characters",
+          "namesTrackingRef": false
+        }
+      }
+    },
+    {
+      "id": "fork-real-corpus",
+      "command": "read-only git plumbing and the shipped targetBase and targetCommits against the fork's WO-013 target worktree on the operator's machine, under node scripts/harness.mjs bounded --",
+      "exitCode": 0,
+      "finishedAt": "2026-10-25T02:54:38.160Z",
+      "outcomes": {
+        "branch": "wo-013",
+        "subject": "99a30be",
+        "trackingRef": "2ab4f285",
+        "activationBase": "bc9133e9",
+        "describedBase": "2ab4f285",
+        "activationRange": 17,
+        "describedRange": 1,
+        "describedSubjectLengths": [61]
+      }
+    }
+  ]
+}
