@@ -1,4 +1,4 @@
-# WO-231 — The final-review lint of a target order's commits reads the described base: `final-review-result pass` lints the commits between the subject and its merge base with the target's fetched base branch when the activation base is that merge base's ancestor, names the range and the activation base in a refusal, and keeps today's activation-base range for a subject the base branch has not passed (version assigned at activation)
+# WO-231 — The final-review lint of a target order's commits reads the described base: `final-review-result pass` lints the commits between the subject and its merge base with the target's fetched base branch when the activation base is that merge base's ancestor, names the range and the activation base in a refusal, and keeps today's activation-base range for a subject the base branch has not passed (v0.97.1)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
