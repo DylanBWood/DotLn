@@ -737,13 +737,20 @@ test("WO-185 duplicate pruning preserves an already observed detached descendant
   rmSync(retiredRepo, { recursive: true });
   for (let n = 0; n < 100 && existsSync(original.file); n++) await delay(20);
   assert.ok(!existsSync(original.file));
+  const incidentFile = join(
+    f.directory,
+    "latest-incidents",
+    `${grandchildPid}.json`,
+  );
   writeFileSync(allocateFile, "allocate\n");
   for (let n = 0; n < 100; n++) {
+    // The guard stops the process before publishing its incident record.
     if (
       !processAlive(
         grandchild,
         readHostSnapshot({ footprint: false }).processes,
-      )
+      ) &&
+      existsSync(incidentFile)
     )
       break;
     await delay(20);
@@ -766,12 +773,7 @@ test("WO-185 duplicate pruning preserves an already observed detached descendant
             guardLog: readFileSync(join(f.directory, "guard.log"), "utf8"),
           })),
   );
-  const incident = JSON.parse(
-    readFileSync(
-      join(f.directory, "latest-incidents", `${grandchildPid}.json`),
-      "utf8",
-    ),
-  );
+  const incident = JSON.parse(readFileSync(incidentFile, "utf8"));
   assert.equal(incident.failureKind, "memory-budget");
   assert.ok(incident.killedProcesses.some((row) => row.pid === grandchildPid));
   transcript("duplicate-ownership-transfer", {
