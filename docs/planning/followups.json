@@ -45348,6 +45348,54 @@
           "at": "2026-10-25T00:26:53.861Z"
         }
       ]
+    },
+    {
+      "id": "FUP-378c5638bf515e52",
+      "key": "decision:docs/evidence/WO-231/decisions.md#wo-231-d005",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "796eceb10afdf57ca9466b2ddb4f871e3ea0eaab9a6cb56f775a89e724cf1ca6",
+          "ref": "docs/evidence/WO-231/decisions.md#wo-231-d005--ver-001-boards-a-review-range-a-moved-tracking-ref-can-empty",
+          "title": "WO-231-D005: The next order that edits scripts/lib/target-commit-lint.mjs or scripts/lib/target-base.mjs. A review range that the clone's tracking ref empties must not pass silently: when the subject…",
+          "summary": "{ \"id\": \"WO-231-D005\", \"date\": \"2026-10-25\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-001 boards planning receipt 055's criterion-4 issue as a reproduced follow-up. With the target clone's refs/remotes/origin/main moved locally onto the subject, final-review-result pass linted 0 commits, appended FinalReviewCompleted and closed the order over an order commit with a 90-character subject; the untouched-ref control refuses that commit. The publish then refused the commit at its lane-fetched lint and opened no pull request, leaving a closed order whose reviewed commit cannot be published without a new commit. No criterion breaks: the objective names the clone's ref as the selector and the ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by WO-231 FINAL-001 (2026-10-25). VER-001 reproduced the emptied review range (probe B: a tracking ref moved onto the subject) and boarded it as WO-231-D005; the publish's lane-fetched lint refuses the commit and opens no pull request, and no criterion breaks. A reviewer never writes a behavioral fix and certifies it, so the next order that edits scripts/lib/target-commit-lint.mjs or scripts/lib/target-base.mjs takes D005's repair rule.",
+          "reopenWhen": "A publish refuses a commit that a passing final review's range excluded, or a writer-observed update of a target clone's refs/remotes/origin/<baseBranch> during an order (receipt 055's condition).",
+          "targets": [],
+          "at": "2026-10-25T03:24:20.128Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-e4fa2bbf7c3968ec",
+      "key": "decision:docs/evidence/WO-231/decisions.md#wo-231-d006",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "7430754a3abec2cb99c9d7c09d8d54170bf769891c69fe6c90185b06dacacfbc",
+          "ref": "docs/evidence/WO-231/decisions.md#wo-231-d006--ver-001-boards-the-unnamed-tracking-ref-and-corrects-the-no-fetch-rationale",
+          "title": "WO-231-D006: The next order that edits scripts/lib/target-commit-lint.mjs. When refs/remotes/origin/<baseBranch> is present, the refusal names it and the commit it resolved to; when the ref is…",
+          "summary": "{ \"id\": \"WO-231-D006\", \"date\": \"2026-10-25\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-001 boards a follow-up on the refusal's ref diagnostics and records the rationale correction receipt 055 assigned to this order's decisions. The refusal names the count, the described base, the activation base when the two differ, the subject and the offending commit, so criterion 3 holds; it names the tracking ref only when rev-parse fails. When the ref is present but does not advance the described base (stale behind the merged commits, probe A; on unrelated history, probe D), the refusal names neither the ref, its commit nor the remedy, and a ref that resolves to a tree is reported as absent (probe ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by WO-231 FINAL-001 (2026-10-25). VER-001 reproduced the unnamed tracking ref (probes A, C and D) and boarded it as WO-231-D006; criterion 3 is met as written and a stale ref keeps today's conservative refusal. The next order that edits scripts/lib/target-commit-lint.mjs takes D006's repair rule: name the ref and its commit, say why an unusable ref is unusable, and name the fetch-and-retry remedy.",
+          "reopenWhen": "A target final-review refusal whose named range contains a commit reachable from the remote base branch but not from the clone's refs/remotes/origin/<baseBranch>, or an operator asks which ref a refusal read (receipt 055's condition).",
+          "targets": [],
+          "at": "2026-10-25T03:24:20.235Z"
+        }
+      ]
     }
   ]
 }

@@ -673,7 +673,11 @@ registration from `main`. Selection compares physical launchpad
 identity, so alternate spellings keep the same order. With repository
 declarations or a target registry, an unregistered foreign directory selects
 no order; `status --json` then refuses with a nonzero exit. A passing final
-review binds the clean target commit and its review gate. Reports are drafted
+review binds the clean target commit and its review gate, linting only the commits
+from the subject's merge base with the clone's fetched base-branch ref
+(`refs/remotes/origin/<baseBranch>`) when the activation base is its ancestor,
+otherwise from the activation base; review does not fetch, and an absent ref
+keeps the activation-base range with the absence named in any refusal. Reports are drafted
 in the launchpad; `resume target-records` copies the order and moves its
 decisions and filed reports into the target's `documentationRoot`, retaining
 control state, raw evidence and links in the launchpad.

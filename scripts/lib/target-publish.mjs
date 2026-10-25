@@ -49,6 +49,7 @@ import { hasAiAttribution } from "../../packages/compiler/src/attribution.mjs";
 import { checkOutwardArtifact } from "../outward-lint.mjs";
 import { isReviewFinding, outwardFindingText } from "./outward-lint.mjs";
 import { targetCommits } from "./target-commit-lint.mjs";
+import { targetBase } from "./target-base.mjs";
 import {
   acceptanceStatuses,
   deliverableReady,
@@ -847,17 +848,7 @@ function describedTargetBase(entry, activationBase, subjectCommit, url) {
       `fetch failed for origin base branch ${entry.baseBranch} on ${parseGitHubTarget(url).selector}; prepared work retained; fix the fetch and retry the same command`,
     );
   }
-  const mergeBase = read(["merge-base", subjectCommit, fetched], {
-    onFailure: () => null,
-  });
-  const baseCommit =
-    mergeBase &&
-    read(["merge-base", "--is-ancestor", activationBase, mergeBase], {
-      onFailure: () => false,
-    }) !== false
-      ? mergeBase
-      : activationBase;
-  return { baseCommit, activationBase };
+  return targetBase(read, activationBase, subjectCommit, fetched);
 }
 
 export function authorizeRegisteredPublication(
