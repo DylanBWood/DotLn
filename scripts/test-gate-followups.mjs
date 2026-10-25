@@ -52,11 +52,11 @@ test("bounded role wording preserves prior savings and records reviewed startup 
   );
   const oracle = JSON.parse(
     fs.readFileSync(
-      join(sourceRoot, "packages/skeleton/fixtures/wo219-role-baseline.json"),
+      join(sourceRoot, "packages/skeleton/fixtures/wo204-role-baseline.json"),
       "utf8",
     ),
   );
-  assert.equal(oracle.historicalBaseline, "wo226-role-baseline.json");
+  assert.equal(oracle.historicalBaseline, "wo219-role-baseline.json");
   const historicalBytes = fs.readFileSync(
     join(sourceRoot, "packages/skeleton/fixtures", oracle.historicalBaseline),
   );
@@ -68,9 +68,21 @@ test("bounded role wording preserves prior savings and records reviewed startup 
   const historicalOracle = JSON.parse(historicalBytes);
   assert.equal(oracle.upstreamBaseline, historicalOracle.upstreamBaseline);
   assert.equal(oracle.upstreamSha256, historicalOracle.upstreamSha256);
-  const historical = historicalOracle.startupCost;
+  const precedingBytes = fs.readFileSync(
+    join(
+      sourceRoot,
+      "packages/skeleton/fixtures",
+      historicalOracle.historicalBaseline,
+    ),
+  );
+  assert.equal(
+    createHash("sha256").update(precedingBytes).digest("hex"),
+    historicalOracle.historicalSha256,
+  );
+  const historical = JSON.parse(precedingBytes).startupCost;
+  const priorCost = historicalOracle.startupCost;
   const reviewed = oracle.startupCost;
-  for (const cost of [historical, reviewed]) {
+  for (const cost of [historical, priorCost, reviewed]) {
     assert.match(cost.decision, /^WO-\d{3}-D\d{3}$/u);
     assert.match(cost.followup, /^FUP-[a-f0-9]{16}$/u);
   }
@@ -90,7 +102,8 @@ test("bounded role wording preserves prior savings and records reviewed startup 
     const bytes = Buffer.byteLength(instruction) + Buffer.byteLength(contents);
     const role = file.split("/")[2].slice("dotln-".length);
     const measured = reviewed.profiles[role];
-    const prior = historical.profiles[role];
+    const prior = priorCost.profiles[role];
+    const original = historical.profiles[role];
     assert.equal(bytes, measured.bytes, `${file}: reviewed startup bytes`);
     assert.equal(
       measured.beforeBytes,
@@ -103,9 +116,19 @@ test("bounded role wording preserves prior savings and records reviewed startup 
       `${file}: only the separately reviewed role additions`,
     );
     assert.equal(
-      prior.bytes - prior.beforeBytes,
+      original.bytes - original.beforeBytes,
       historical.sharedRuleGrowthBytes,
       `${file}: the preceding shared-rule addition remains recorded`,
+    );
+    assert.equal(
+      prior.beforeBytes,
+      original.bytes,
+      `${file}: the previous role cost remains linked`,
+    );
+    assert.equal(
+      prior.bytes - prior.beforeBytes,
+      prior.growthBytes,
+      `${file}: the previous role growth remains recorded`,
     );
     assert.equal(
       measured.ceiling === null ? null : measured.ceiling - bytes,
@@ -125,12 +148,12 @@ test("bounded role wording preserves prior savings and records reviewed startup 
     // Keep the earlier wording savings distinct from later required duties.
     // Current headroom records the full cost of those reviewed additions.
     assert.ok(
-      prior.beforeBytes <= previous.bytes,
-      `${file}: ${prior.beforeBytes} exceeds before ${previous.bytes}`,
+      original.beforeBytes <= previous.bytes,
+      `${file}: ${original.beforeBytes} exceeds before ${previous.bytes}`,
     );
     if (role === "executor" || role === "reviewer")
       assert.ok(
-        prior.ceiling - prior.beforeBytes >= 256,
+        original.ceiling - original.beforeBytes >= 256,
         `${role}: the prior wording savings retain 256 bytes of working headroom`,
       );
   }

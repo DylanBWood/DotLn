@@ -494,6 +494,7 @@ export const machinerySources = {
     "packages/skeleton/fixtures/wo217-role-baseline.json",
     "packages/skeleton/fixtures/wo226-role-baseline.json",
     "packages/skeleton/fixtures/wo219-role-baseline.json",
+    "packages/skeleton/fixtures/wo204-role-baseline.json",
     "packages/skeleton/fixtures/wo217-role-efficiency-baseline.json",
     "scripts/test-helper-reuse.mjs",
     "scripts/lib/helpers.mjs",
