@@ -4194,6 +4194,13 @@
           "title": "Workstream application — end-user workflow candidate",
           "summary": "# Workstream application — end-user workflow candidate **Status:** operator-opened product exploration, 2026-09-04. This describes a candidate application of DotLn for everyday software work. It is not an implemented interface, a deployment claim, a new release rung, or a replacement for the separately named `προτείνω` thesis. The application identity and first deployment remain unannounced; this public design uses synthetic work only. The product question is what a person does when they sit down to work: start an outcome, make the decisions that need their judgment, inspect the result, and return later without reconstructing the process. DotLn should carry the coordination that currently li",
           "missing": false
+        },
+        {
+          "hash": "b7db08b56f6300695fc17c6357f6b5dfaf993dc58240105bfd460d245cf9d2c4",
+          "ref": "docs/product/12-workstream-application.md#workstream-application--end-user-workflow-candidate",
+          "title": "Workstream application — end-user workflow candidate",
+          "summary": "# Workstream application — end-user workflow candidate **Status:** operator-opened product exploration, 2026-09-04. This describes a candidate application of DotLn for everyday software work. It is not an implemented interface, a deployment claim, a new release rung, or a replacement for the separately named `προτείνω` thesis. The application identity and first deployment remain unannounced; this public design uses synthetic work only. The product question is what a person does when they sit down to work: start an outcome, make the decisions that need their judgment, inspect the result, and return later without reconstructing the process. DotLn should carry the coordination that currently li",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -44962,6 +44969,14 @@
             "WO-232"
           ],
           "at": "2026-10-25T00:26:53.469Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-232 criterion 5 changes readTargetFacts to use refs/heads/main for both self base and target. The paired instance-history controls in docs/evidence/WO-232/controls.json run from an unrelated update-branch commit: activation-base readers record both closed self members diverged/stale yes; current readers pass all five instance commands and record both current/stale no with base equal to main. scripts/test-work-orders.mjs also retains the explicit branch regression case. WO-232-D003 records the decision.",
+          "reopenWhen": "A self member's base, integration or stale cells again depend on the checkout HEAD, or a committed index on main records that member as diverged.",
+          "targets": [],
+          "at": "2026-10-25T04:13:40.951Z"
         }
       ]
     },
@@ -45394,6 +45409,157 @@
           "reopenWhen": "A target final-review refusal whose named range contains a commit reachable from the remote base branch but not from the clone's refs/remotes/origin/<baseBranch>, or an operator asks which ref a refusal read (receipt 055's condition).",
           "targets": [],
           "at": "2026-10-25T03:24:20.235Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-db1b128913b4d542",
+      "key": "decision:docs/evidence/WO-232/decisions.md#wo-232-d007",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c2c1b173328f3255a1b67b3fe18a72dfd60cb8fa45453ab4ecef37aada6a9247",
+          "ref": "docs/evidence/WO-232/decisions.md#wo-232-d007--admit-the-field-without-unbinding-amendments-the-previous-release-bound",
+          "title": "WO-232-D007: WO-232 repair: the amendment match admits every binding the previous release's reader admitted, for example by also accepting the current source without the leading-field normalization,…",
+          "summary": "{ \"id\": \"WO-232-D007\", \"date\": \"2026-10-25\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-001 fails on a reproduced regression of behavior main had, which product 07 §Verification review and attack routes as blocking. executionAmendmentMatch now reads the current source through executionAmendmentSource(after, before), which deletes a leading **Workstream:** WS-NNN line whenever the filed source lacked one. The reader of v0.96.0 to v0.97.1 bound amend-order rows over the current source with the line kept, so a binding recorded after an operator added the field together with any non-append change includes the line. The subject's current form drops the line and no longer matches the bound pre",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-232-D009 repairs the old-binding regression. The unchanged base-reader instance probe now exits 0; the complete review at code identity d96de5ce76ecda1bd3e4ad6b3af637f4fbfa01636ec75e9b9be34d3006950151 passes all 42 groups, including historical binding and mutation-refusal cases. Independent re-verification remains required.",
+          "reopenWhen": "A previous-reader binding is rejected, a substantive mutation is accepted, or re-verification reproduces this regression.",
+          "targets": [],
+          "at": "2026-10-25T12:46:02.239Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-912bcf619a547236",
+      "key": "decision:docs/evidence/WO-232/decisions.md#wo-232-d008",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "27a8034ebf190c0c170e18ac48bf12f4d0ca2492086edcb0e00ba58ac9aa321d",
+          "ref": "docs/evidence/WO-232/decisions.md#wo-232-d008--the-history-fixture-holds-only-fields-and-bindings-its-own-kit-produced",
+          "title": "WO-232-D008: WO-232 repair within the Boy Scout bound, or the next planning pass: add a closed self member without the field (the v0.96.0 sync refusal) to the manifest so the suite's base arm fails…",
+          "summary": "{ \"id\": \"WO-232-D008\", \"date\": \"2026-10-25\", \"dispatch\": \"resume: verify\", \"decision\": \"Follow-up, not blocking. Criterion 1's four shapes are present, but every WS-001 member declares the field and every amendment in the bundle was bound by the subject's reader. With the base readers installed, the suite's npm run sync and index --check pass, so instance-history does not observe the v0.96.0 refusal of a closed member without the field, and it passed over D007's regression. This breaks no criterion; it is a coverage gap in a declared surface, and an instance of the planning receipt's known issue that regeneration with the current kit can hide shapes only an older kit emitted.\", \"evidence\": [",
+          "missing": false
+        },
+        {
+          "hash": "a67c0426aadd600d249c5b5ac364da45a8179b402db45c9b7ec768639265b5c2",
+          "ref": "docs/evidence/WO-232/decisions.md#wo-232-d008--the-history-fixture-holds-only-fields-and-bindings-its-own-kit-produced",
+          "title": "WO-232-D008: WO-232 repair within the Boy Scout bound, or the next planning pass: add a closed self member without the field (the v0.96.0 sync refusal) to the manifest so the suite's base arm fails…",
+          "summary": "{ \"id\": \"WO-232-D008\", \"date\": \"2026-10-25\", \"dispatch\": \"resume: verify\", \"decision\": \"Follow-up, not blocking. Criterion 1's four shapes are present, but every WS-001 member declares the field and every amendment in the bundle was bound by the subject's reader. With the base readers installed, the suite's npm run sync and index --check pass, so instance-history does not observe the v0.96.0 refusal of a closed member without the field, and it passed over D007's regression. This breaks no criterion; it is a coverage gap in a declared surface, and an instance of the planning receipt's known issue that regeneration with the current kit can hide shapes only an older kit emitted.\", \"evidence\": [",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-232-D010 and adjacent-0002 retain the original history bundle. The repair adds permanent old-binding regression cases and the actual base-reader instance probe; the next planning pass selects prior-writer provenance and independent missing-field control arms.",
+          "reopenWhen": "The next planning pass considers the history fixture, or an instance reports either absent shape before then.",
+          "targets": [],
+          "at": "2026-10-25T12:10:00.528Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-a2fbcef21e8c10e8",
+      "key": "decision:docs/evidence/WO-232/decisions.md#wo-232-d011",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "fe097f672a78fba6ed40ff6d5fc3b6ccc74e652fde147b6df183dddb4fc3b4bd",
+          "ref": "docs/evidence/WO-232/decisions.md#wo-232-d011--keep-amend-orders-route-for-a-field-only-grouping-change",
+          "title": "WO-232-D011: WO-232 repair: an operator who adds only one leading Workstream: WS-NNN line to a judged order with no active amendment keeps an execution route that leaves the plan gate green, as…",
+          "summary": "{ \"id\": \"WO-232-D011\", \"date\": \"2026-10-25\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-002 fails on a reproduced regression of behavior main had, which product 07 §Verification review and attack routes as blocking. amendPlanOrder computes its binding through executionAmendmentSource(current, filed), which now removes one added leading **Workstream:** WS-NNN line whenever the filed source lacked it. When that field is an order's only change from its filed bytes, the binding equals the source hash and amend-order refuses with order has no substantive execution amendment. The plan gate admits the field only for an order that already has a binding, so a judged order with no active amendment",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-232-D012 restores the authorized field-only amend-order route. Both unchanged verifier probes pass, the refreshed history controls preserve the base/head contrast, and the complete review passed all 42 required groups at code identity d7de382e8b43fe01f8d06c0dc7a8d09b1ee1f78e48b45ad851af6b2a707be760. Independent re-verification remains the next lifecycle step.",
+          "reopenWhen": "A field-only change on a judged order cannot be bound, a prior binding stops matching, or a substantive post-binding change is admitted.",
+          "targets": [],
+          "at": "2026-10-25T14:05:05.332Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-4c22840b1c8c7133",
+      "key": "decision:docs/evidence/WO-232/decisions.md#wo-232-d013",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "7b1c3566ee2cb951c3ae31dd4167100a5d109dd685db498f717cee193f0f95f3",
+          "ref": "docs/evidence/WO-232/decisions.md#wo-232-d013--admit-the-field-over-an-amendment-bound-in-the-legacy-representation",
+          "title": "WO-232-D013: WO-232 repair: the legacy match path admits one added exact leading Workstream: WS-NNN line the filed source lacked, exactly as the current path does. For example, remove the field from…",
+          "summary": "{ \"id\": \"WO-232-D013\", \"date\": \"2026-10-25\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-003 fails criterion 3. executionAmendmentMatch has two representations. The current path removes one added exact leading **Workstream:** WS-NNN line when the filed source lacked it. The legacy path, for rows a pre-v0.51.0 writer bound with an appended release label normalized to the activation placeholder, still reads executionAmendmentSource(after) without the filed source, so it keeps the line inside the bound prefix. An order whose amendment row matches only through the legacy path therefore becomes unmatched when it gains the field, and the plan gate offers only withdrawal. This repository holds s",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-232-D015 repairs the legacy title-format admission. The unchanged verifier probe passes; all 38 live amendment rows admit the later field; independent historical fixture cases and all 42 complete-review groups pass at 98839c72b08bb113c1977e1b40484ba33fb4e58b250eab3136a3bcc202df77d4.",
+          "reopenWhen": "A prior binding stops matching, a writer output changes without a separate decision, or grouping admits a bound-byte change.",
+          "targets": [],
+          "at": "2026-10-25T15:37:07.263Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-4fe509a1afa404a1",
+      "key": "decision:docs/evidence/WO-232/decisions.md#wo-232-d014",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "740edc9062cae1ec0a366e8cb6b211a17d10c8d51e4188001bc2042f2fea826d",
+          "ref": "docs/evidence/WO-232/decisions.md#wo-232-d014--the-malformed-field-guard-no-longer-detects-a-widened-field-pattern",
+          "title": "WO-232-D014: WO-232 repair within the Boy Scout bound, or the next order that edits executionAmendmentSource: the malformed-field guard compares against a filed source that differs from the candidate…",
+          "summary": "{ \"id\": \"WO-232-D014\", \"date\": \"2026-10-25\", \"dispatch\": \"resume: verify\", \"decision\": \"Follow-up, not blocking. D012's writer repair retains the field when removing it leaves the filed source. The malformed-field guard in scripts/test-plan-refutation.mjs (the candidates WS-1, a trailing space, a duplicate and a body field) asserts executionAmendmentSource(candidate, approved) differs from executionAmendmentSource(approved), with the approved body as the filed source. For a candidate whose only change is that line, the retention now makes the two differ whatever the field pattern is, so the guard passes even if the pattern widens. It is the only malformed-field case in the suite. The impleme",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-232-D016 restores the exact-field guard at its owning boundary. The subject passes all three selected permanent cases and a widened pattern fails all three. The complete review passes all 42 groups at 98839c72b08bb113c1977e1b40484ba33fb4e58b250eab3136a3bcc202df77d4.",
+          "reopenWhen": "A widened field pattern passes the guard or another parser masks an amendment-matching regression.",
+          "targets": [],
+          "at": "2026-10-25T15:37:07.367Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-c4c7ba9f126d2e4a",
+      "key": "decision:docs/evidence/WO-232/decisions.md#wo-232-d017",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "b46ddb3cc024b625f9e66d241ddf8c6e6efe4df15eee81e2063cacac9bb4ca60",
+          "ref": "docs/evidence/WO-232/decisions.md#wo-232-d017--three-guards-of-the-workstream-admission-lack-a-permanent-case",
+          "title": "WO-232-D017: The next order that edits executionAmendmentSource or withoutAddedWorkstream, or a WO-232 repair if one happens, within the Boy Scout bound: add plan-refutation cases that refuse,…",
+          "summary": "{ \"id\": \"WO-232-D017\", \"date\": \"2026-10-25\", \"dispatch\": \"resume: verify\", \"decision\": \"Follow-up, not blocking. VER-004 confirms F4 and F5 repaired and every criterion met. The admission in withoutAddedWorkstream (scripts/lib/plan-continuation.mjs) has three guards besides the exact field pattern: the filed order declares no field, exactly one field was added, and that field lies in the leading header before **Objective:**. The subject implements all three; for each, it refuses an input that a mutant without the guard admits at the matcher. No permanent case protects them: the nine Workstream amendment cases in scripts/test-plan-refutation.mjs pass unchanged under each of the three mutants.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by WO-232's final review (FINAL-001, D019) to the home D017 names: the next order that edits executionAmendmentSource or withoutAddedWorkstream in scripts/lib/plan-continuation.mjs, within the Boy Scout bound. Reproduced at the integrated tree: verification-004-guards.mjs exits 1 with the three guards unprotected while the shipped code refuses each input. A reviewer never writes a behavioral fix or a new regression case and certifies it, and a test edit would move the code identity and owe a fresh complete run.",
+          "reopenWhen": "verification-004-guards.mjs exits 0 on a later subject, or any of the three guards (the filed order declares no field, exactly one field was added, the field lies in the leading header) is changed or removed.",
+          "targets": [],
+          "at": "2026-10-25T16:34:31.956Z"
         }
       ]
     }

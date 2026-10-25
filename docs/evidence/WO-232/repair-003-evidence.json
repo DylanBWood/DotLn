@@ -1,0 +1,1179 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-232",
+  "dispatch": "resume: fix",
+  "failureSource": "docs/verifications/WO-232/VER-003.md",
+  "before": {
+    "exitCode": 1,
+    "run": {
+      "name": "bounded-probe",
+      "durationMs": 204,
+      "slowestCases": [
+        {
+          "name": "bounded-probe",
+          "durationMs": 204,
+          "exitCode": 1,
+          "granularity": "task"
+        }
+      ],
+      "peakFootprintBytes": 26627336,
+      "peakRssBytes": 74612736,
+      "memoryBudgetBytes": 3221225472,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+      "droppedOutputBytes": 0,
+      "startedAt": "2026-10-25T14:41:00.519Z",
+      "finishedAt": "2026-10-25T14:41:00.723Z",
+      "exitCode": 1,
+      "executed": true
+    },
+    "observation": {
+      "baseline": "a81561976c8629834a5a18623b097fa4d7d8681a",
+      "synthetic": [
+        {
+          "case": "legacy row, no field",
+          "expected": true,
+          "base": true,
+          "subject": true
+        },
+        {
+          "case": "legacy row, field added later",
+          "expected": true,
+          "base": false,
+          "subject": false
+        },
+        {
+          "case": "legacy row, field and objective changed",
+          "expected": false,
+          "base": false,
+          "subject": false
+        }
+      ],
+      "records": [
+        {
+          "order": "WO-159",
+          "recordedAt": "2026-09-25T04:33:50.468Z",
+          "filedLacksField": true,
+          "laterReceipts": 0,
+          "asIs": {
+            "base": true,
+            "subject": true
+          },
+          "withField": {
+            "base": false,
+            "subject": false
+          }
+        },
+        {
+          "order": "WO-160",
+          "recordedAt": "2026-09-25T17:04:23.342Z",
+          "filedLacksField": true,
+          "laterReceipts": 0,
+          "asIs": {
+            "base": true,
+            "subject": true
+          },
+          "withField": {
+            "base": false,
+            "subject": true
+          }
+        }
+      ],
+      "guard": [
+        {
+          "candidate": "WS-1",
+          "impl": "subject",
+          "existingGuardHolds": true,
+          "gateAdmits": false
+        },
+        {
+          "candidate": "WS-1",
+          "impl": "mutant",
+          "existingGuardHolds": true,
+          "gateAdmits": true
+        },
+        {
+          "candidate": "trailing space",
+          "impl": "subject",
+          "existingGuardHolds": true,
+          "gateAdmits": false
+        },
+        {
+          "candidate": "trailing space",
+          "impl": "mutant",
+          "existingGuardHolds": true,
+          "gateAdmits": true
+        }
+      ],
+      "unadmitted": true
+    }
+  },
+  "after": {
+    "exitCode": 0,
+    "run": {
+      "name": "bounded-probe",
+      "durationMs": 214,
+      "slowestCases": [
+        {
+          "name": "bounded-probe",
+          "durationMs": 214,
+          "exitCode": 0,
+          "granularity": "task"
+        }
+      ],
+      "peakFootprintBytes": 26774912,
+      "peakRssBytes": 74760192,
+      "memoryBudgetBytes": 3221225472,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+      "droppedOutputBytes": 0,
+      "startedAt": "2026-10-25T14:55:17.605Z",
+      "finishedAt": "2026-10-25T14:55:17.819Z",
+      "exitCode": 0,
+      "executed": true
+    },
+    "observation": {
+      "baseline": "a81561976c8629834a5a18623b097fa4d7d8681a",
+      "synthetic": [
+        {
+          "case": "legacy row, no field",
+          "expected": true,
+          "base": true,
+          "subject": true
+        },
+        {
+          "case": "legacy row, field added later",
+          "expected": true,
+          "base": false,
+          "subject": true
+        },
+        {
+          "case": "legacy row, field and objective changed",
+          "expected": false,
+          "base": false,
+          "subject": false
+        }
+      ],
+      "records": [
+        {
+          "order": "WO-159",
+          "recordedAt": "2026-09-25T04:33:50.468Z",
+          "filedLacksField": true,
+          "laterReceipts": 0,
+          "asIs": {
+            "base": true,
+            "subject": true
+          },
+          "withField": {
+            "base": false,
+            "subject": true
+          }
+        },
+        {
+          "order": "WO-160",
+          "recordedAt": "2026-09-25T17:04:23.342Z",
+          "filedLacksField": true,
+          "laterReceipts": 0,
+          "asIs": {
+            "base": true,
+            "subject": true
+          },
+          "withField": {
+            "base": false,
+            "subject": true
+          }
+        }
+      ],
+      "guard": [
+        {
+          "candidate": "WS-1",
+          "impl": "subject",
+          "existingGuardHolds": true,
+          "gateAdmits": false
+        },
+        {
+          "candidate": "WS-1",
+          "impl": "mutant",
+          "existingGuardHolds": true,
+          "gateAdmits": true
+        },
+        {
+          "candidate": "trailing space",
+          "impl": "subject",
+          "existingGuardHolds": true,
+          "gateAdmits": false
+        },
+        {
+          "candidate": "trailing space",
+          "impl": "mutant",
+          "existingGuardHolds": true,
+          "gateAdmits": true
+        }
+      ],
+      "unadmitted": false
+    }
+  },
+  "compatibility": {
+    "exitCode": 0,
+    "run": {
+      "name": "bounded-probe",
+      "durationMs": 3367,
+      "slowestCases": [
+        {
+          "name": "bounded-probe",
+          "durationMs": 3367,
+          "exitCode": 0,
+          "granularity": "task"
+        }
+      ],
+      "peakFootprintBytes": 482171352,
+      "peakRssBytes": 507510784,
+      "memoryBudgetBytes": 3221225472,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+      "droppedOutputBytes": 0,
+      "startedAt": "2026-10-25T14:55:14.121Z",
+      "finishedAt": "2026-10-25T14:55:17.488Z",
+      "exitCode": 0,
+      "executed": true
+    },
+    "observation": {
+      "beforeRevision": "4e3b84ef57ea27badca26ca1466a7cb01000894e",
+      "writerComparisons": 216,
+      "preservedMatches": 770,
+      "substantiveRefusals": 1164,
+      "records": [
+        {
+          "order": "WO-053",
+          "row": 4,
+          "asIs": true,
+          "eligible": true,
+          "withField": true
+        },
+        {
+          "order": "WO-054",
+          "row": 7,
+          "asIs": true,
+          "eligible": true,
+          "withField": true
+        },
+        {
+          "order": "WO-137",
+          "row": 9,
+          "asIs": true,
+          "eligible": true,
+          "withField": true
+        },
+        {
+          "order": "WO-142",
+          "row": 12,
+          "asIs": true,
+          "eligible": true,
+          "withField": true
+        },
+        {
+          "order": "WO-146",
+          "row": 15,
+          "asIs": true,
+          "eligible": true,
+          "withField": true
+        },
+        {
+          "order": "WO-056",
+          "row": 14,
+          "asIs": true,
+          "eligible": true,
+          "withField": true
+        },
+        {
+          "order": "WO-151",
+          "row": 16,
+          "asIs": true,
+          "eligible": true,
+          "withField": true
+        },
+        {
+          "order": "WO-100",
+          "row": 17,
+          "asIs": true,
+          "eligible": true,
+          "withField": true
+        },
+        {
+          "order": "WO-157",
+          "row": 18,
+          "asIs": true,
+          "eligible": true,
+          "withField": true
+        },
+        {
+          "order": "WO-154",
+          "row": 19,
+          "asIs": true,
+          "eligible": true,
+          "withField": true
+        },
+        {
+          "order": "WO-156",
+          "row": 21,
+          "asIs": true,
+          "eligible": true,
+          "withField": true
+        },
+        {
+          "order": "WO-159",
+          "row": 23,
+          "asIs": true,
+          "eligible": true,
+          "withField": true
+        },
+        {
+          "order": "WO-160",
+          "row": 26,
+          "asIs": true,
+          "eligible": true,
+          "withField": true
+        },
+        {
+          "order": "WO-070",
+          "row": 27,
+          "asIs": true,
+          "eligible": true,
+          "withField": true
+        },
+        {
+          "order": "WO-162",
+          "row": 29,
+          "asIs": true,
+          "eligible": true,
+          "withField": true
+        },
+        {
+          "order": "WO-065",
+          "row": 30,
+          "asIs": true,
+          "eligible": true,
+          "withField": true
+        },
+        {
+          "order": "WO-086",
+          "row": 32,
+          "asIs": true,
+          "eligible": true,
+          "withField": true
+        },
+        {
+          "order": "WO-172",
+          "row": 37,
+          "asIs": true,
+          "eligible": true,
+          "withField": true
+        },
+        {
+          "order": "WO-087",
+          "row": 39,
+          "asIs": true,
+          "eligible": true,
+          "withField": true
+        },
+        {
+          "order": "WO-176",
+          "row": 40,
+          "asIs": true,
+          "eligible": true,
+          "withField": true
+        },
+        {
+          "order": "WO-181",
+          "row": 41,
+          "asIs": true,
+          "eligible": true,
+          "withField": true
+        },
+        {
+          "order": "WO-186",
+          "row": 42,
+          "asIs": true,
+          "eligible": true,
+          "withField": true
+        },
+        {
+          "order": "WO-187",
+          "row": 43,
+          "asIs": true,
+          "eligible": true,
+          "withField": true
+        },
+        {
+          "order": "WO-112",
+          "row": 52,
+          "asIs": true,
+          "eligible": true,
+          "withField": true
+        },
+        {
+          "order": "WO-200",
+          "row": 53,
+          "asIs": true,
+          "eligible": true,
+          "withField": true
+        },
+        {
+          "order": "WO-118",
+          "row": 58,
+          "asIs": true,
+          "eligible": true,
+          "withField": true
+        },
+        {
+          "order": "WO-210",
+          "row": 63,
+          "asIs": true,
+          "eligible": true,
+          "withField": true
+        },
+        {
+          "order": "WO-213",
+          "row": 73,
+          "asIs": true,
+          "eligible": true,
+          "withField": true
+        },
+        {
+          "order": "WO-216",
+          "row": 76,
+          "asIs": true,
+          "eligible": true,
+          "withField": true
+        },
+        {
+          "order": "WO-221",
+          "row": 80,
+          "asIs": true,
+          "eligible": true,
+          "withField": true
+        },
+        {
+          "order": "WO-222",
+          "row": 81,
+          "asIs": true,
+          "eligible": true,
+          "withField": true
+        },
+        {
+          "order": "WO-218",
+          "row": 82,
+          "asIs": true,
+          "eligible": true,
+          "withField": true
+        },
+        {
+          "order": "WO-217",
+          "row": 93,
+          "asIs": true,
+          "eligible": true,
+          "withField": true
+        },
+        {
+          "order": "WO-229",
+          "row": 94,
+          "asIs": true,
+          "eligible": true,
+          "withField": true
+        },
+        {
+          "order": "WO-193",
+          "row": 97,
+          "asIs": true,
+          "eligible": true,
+          "withField": true
+        },
+        {
+          "order": "WO-219",
+          "row": 96,
+          "asIs": true,
+          "eligible": true,
+          "withField": true
+        },
+        {
+          "order": "WO-220",
+          "row": 98,
+          "asIs": true,
+          "eligible": true,
+          "withField": true
+        },
+        {
+          "order": "WO-080",
+          "row": 99,
+          "asIs": true,
+          "eligible": true,
+          "withField": true
+        }
+      ],
+      "liveRecords": 38,
+      "laterFieldAdmissions": 38
+    }
+  },
+  "priorBinding": {
+    "exitCode": 0,
+    "run": {
+      "name": "bounded-probe",
+      "durationMs": 1533,
+      "slowestCases": [
+        {
+          "name": "bounded-probe",
+          "durationMs": 1533,
+          "exitCode": 0,
+          "granularity": "task"
+        }
+      ],
+      "peakFootprintBytes": 65380440,
+      "peakRssBytes": 163545088,
+      "memoryBudgetBytes": 3221225472,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+      "droppedOutputBytes": 0,
+      "startedAt": "2026-10-25T14:55:17.930Z",
+      "finishedAt": "2026-10-25T14:55:19.463Z",
+      "exitCode": 0,
+      "executed": true
+    },
+    "observation": {
+      "baseline": "a81561976c8629834a5a18623b097fa4d7d8681a",
+      "unit": [
+        {
+          "case": "field and objective bound by the base reader",
+          "base": true,
+          "subject": true
+        },
+        {
+          "case": "field alone bound by the base reader",
+          "base": true,
+          "subject": true
+        },
+        {
+          "case": "objective bound by the base reader, field added later",
+          "base": false,
+          "subject": true
+        }
+      ],
+      "instance": [
+        {
+          "step": "amend-order WO-004 under the base readers",
+          "command": "node scripts/refute-plan.mjs amend-order WO-004 WO-004-D002 Synthetic binding under the base readers",
+          "exitCode": 0,
+          "refusal": null
+        },
+        {
+          "step": "plan check under the base readers",
+          "command": "node scripts/refute-plan.mjs check",
+          "exitCode": 0,
+          "refusal": null
+        },
+        {
+          "step": "plan check under the subject's readers",
+          "command": "node scripts/refute-plan.mjs check",
+          "exitCode": 0,
+          "refusal": null
+        }
+      ],
+      "regression": false
+    }
+  },
+  "fieldOnly": {
+    "exitCode": 0,
+    "run": {
+      "name": "bounded-probe",
+      "durationMs": 11338,
+      "slowestCases": [
+        {
+          "name": "bounded-probe",
+          "durationMs": 11338,
+          "exitCode": 0,
+          "granularity": "task"
+        }
+      ],
+      "peakFootprintBytes": 64823600,
+      "peakRssBytes": 167313408,
+      "memoryBudgetBytes": 3221225472,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+      "droppedOutputBytes": 0,
+      "startedAt": "2026-10-25T14:55:19.581Z",
+      "finishedAt": "2026-10-25T14:55:30.919Z",
+      "exitCode": 0,
+      "executed": true
+    },
+    "observation": {
+      "baseline": "a81561976c8629834a5a18623b097fa4d7d8681a",
+      "orders": {
+        "WO-002": {
+          "base": [
+            {
+              "step": "withdraw the order's amendment",
+              "command": "node scripts/refute-plan.mjs amend-order WO-002 --withdraw 3 VER-002 probe: no active amendment",
+              "exitCode": 0,
+              "refusal": null
+            },
+            {
+              "step": "filed bytes plus one leading field",
+              "filedLacksField": true
+            },
+            {
+              "step": "plan check before amend-order",
+              "command": "node scripts/refute-plan.mjs check",
+              "exitCode": 1,
+              "refusal": "planning pass needs a receipt matching the current subject: unmatched execution amendment WO-001 row 1; withdraw it explicitly or restore its approved bytes"
+            },
+            {
+              "step": "amend-order (field only)",
+              "command": "node scripts/refute-plan.mjs amend-order WO-002 WO-002-D009 VER-002 probe: field-only grouping",
+              "exitCode": 0,
+              "refusal": null
+            },
+            {
+              "step": "plan check after amend-order",
+              "command": "node scripts/refute-plan.mjs check",
+              "exitCode": 1,
+              "refusal": "planning pass needs a receipt matching the current subject: unmatched execution amendment WO-001 row 1; withdraw it explicitly or restore its approved bytes"
+            }
+          ],
+          "subject": [
+            {
+              "step": "withdraw the order's amendment",
+              "command": "node scripts/refute-plan.mjs amend-order WO-002 --withdraw 3 VER-002 probe: no active amendment",
+              "exitCode": 0,
+              "refusal": null
+            },
+            {
+              "step": "filed bytes plus one leading field",
+              "filedLacksField": true
+            },
+            {
+              "step": "plan check before amend-order",
+              "command": "node scripts/refute-plan.mjs check",
+              "exitCode": 1,
+              "refusal": "planning pass needs a receipt matching the current subject: existing work-order bytes changed"
+            },
+            {
+              "step": "amend-order (field only)",
+              "command": "node scripts/refute-plan.mjs amend-order WO-002 WO-002-D009 VER-002 probe: field-only grouping",
+              "exitCode": 0,
+              "refusal": null
+            },
+            {
+              "step": "plan check after amend-order",
+              "command": "node scripts/refute-plan.mjs check",
+              "exitCode": 0,
+              "refusal": null
+            }
+          ],
+          "base-bound": [
+            {
+              "step": "withdraw the order's amendment",
+              "command": "node scripts/refute-plan.mjs amend-order WO-002 --withdraw 3 VER-002 probe: no active amendment",
+              "exitCode": 0,
+              "refusal": null
+            },
+            {
+              "step": "filed bytes plus one leading field",
+              "filedLacksField": true
+            },
+            {
+              "step": "plan check before amend-order",
+              "command": "node scripts/refute-plan.mjs check",
+              "exitCode": 1,
+              "refusal": "planning pass needs a receipt matching the current subject: unmatched execution amendment WO-001 row 1; withdraw it explicitly or restore its approved bytes"
+            },
+            {
+              "step": "amend-order (field only)",
+              "command": "node scripts/refute-plan.mjs amend-order WO-002 WO-002-D009 VER-002 probe: field-only grouping",
+              "exitCode": 0,
+              "refusal": null
+            },
+            {
+              "step": "plan check after amend-order",
+              "command": "node scripts/refute-plan.mjs check",
+              "exitCode": 0,
+              "refusal": null
+            }
+          ],
+          "control": [
+            {
+              "step": "withdraw the order's amendment",
+              "command": "node scripts/refute-plan.mjs amend-order WO-002 --withdraw 3 VER-002 probe: no active amendment",
+              "exitCode": 0,
+              "refusal": null
+            },
+            {
+              "step": "filed bytes",
+              "filedLacksField": true
+            },
+            {
+              "step": "plan check before amend-order",
+              "command": "node scripts/refute-plan.mjs check",
+              "exitCode": 0,
+              "refusal": null
+            }
+          ]
+        },
+        "WO-004": {
+          "base": [
+            {
+              "step": "withdraw the order's amendment",
+              "command": "node scripts/refute-plan.mjs amend-order WO-004 --withdraw 4 VER-002 probe: no active amendment",
+              "exitCode": 0,
+              "refusal": null
+            },
+            {
+              "step": "filed bytes plus one leading field",
+              "filedLacksField": true
+            },
+            {
+              "step": "plan check before amend-order",
+              "command": "node scripts/refute-plan.mjs check",
+              "exitCode": 1,
+              "refusal": "planning pass needs a receipt matching the current subject: unmatched execution amendment WO-001 row 1; withdraw it explicitly or restore its approved bytes"
+            },
+            {
+              "step": "amend-order (field only)",
+              "command": "node scripts/refute-plan.mjs amend-order WO-004 WO-004-D009 VER-002 probe: field-only grouping",
+              "exitCode": 0,
+              "refusal": null
+            },
+            {
+              "step": "plan check after amend-order",
+              "command": "node scripts/refute-plan.mjs check",
+              "exitCode": 1,
+              "refusal": "planning pass needs a receipt matching the current subject: unmatched execution amendment WO-001 row 1; withdraw it explicitly or restore its approved bytes"
+            }
+          ],
+          "subject": [
+            {
+              "step": "withdraw the order's amendment",
+              "command": "node scripts/refute-plan.mjs amend-order WO-004 --withdraw 4 VER-002 probe: no active amendment",
+              "exitCode": 0,
+              "refusal": null
+            },
+            {
+              "step": "filed bytes plus one leading field",
+              "filedLacksField": true
+            },
+            {
+              "step": "plan check before amend-order",
+              "command": "node scripts/refute-plan.mjs check",
+              "exitCode": 1,
+              "refusal": "planning pass needs a receipt matching the current subject: existing work-order bytes changed"
+            },
+            {
+              "step": "amend-order (field only)",
+              "command": "node scripts/refute-plan.mjs amend-order WO-004 WO-004-D009 VER-002 probe: field-only grouping",
+              "exitCode": 0,
+              "refusal": null
+            },
+            {
+              "step": "plan check after amend-order",
+              "command": "node scripts/refute-plan.mjs check",
+              "exitCode": 0,
+              "refusal": null
+            }
+          ],
+          "base-bound": [
+            {
+              "step": "withdraw the order's amendment",
+              "command": "node scripts/refute-plan.mjs amend-order WO-004 --withdraw 4 VER-002 probe: no active amendment",
+              "exitCode": 0,
+              "refusal": null
+            },
+            {
+              "step": "filed bytes plus one leading field",
+              "filedLacksField": true
+            },
+            {
+              "step": "plan check before amend-order",
+              "command": "node scripts/refute-plan.mjs check",
+              "exitCode": 1,
+              "refusal": "planning pass needs a receipt matching the current subject: unmatched execution amendment WO-001 row 1; withdraw it explicitly or restore its approved bytes"
+            },
+            {
+              "step": "amend-order (field only)",
+              "command": "node scripts/refute-plan.mjs amend-order WO-004 WO-004-D009 VER-002 probe: field-only grouping",
+              "exitCode": 0,
+              "refusal": null
+            },
+            {
+              "step": "plan check after amend-order",
+              "command": "node scripts/refute-plan.mjs check",
+              "exitCode": 0,
+              "refusal": null
+            }
+          ],
+          "control": [
+            {
+              "step": "withdraw the order's amendment",
+              "command": "node scripts/refute-plan.mjs amend-order WO-004 --withdraw 4 VER-002 probe: no active amendment",
+              "exitCode": 0,
+              "refusal": null
+            },
+            {
+              "step": "filed bytes",
+              "filedLacksField": true
+            },
+            {
+              "step": "plan check before amend-order",
+              "command": "node scripts/refute-plan.mjs check",
+              "exitCode": 0,
+              "refusal": null
+            }
+          ]
+        }
+      },
+      "regression": false
+    }
+  },
+  "workerCount": 0,
+  "completeReview": {
+    "checkId": "npm test",
+    "codeIdentity": "98839c72b08bb113c1977e1b40484ba33fb4e58b250eab3136a3bcc202df77d4",
+    "recordedAt": "2026-10-25T15:33:24.864Z",
+    "durationMs": 1708794,
+    "exitCode": 0,
+    "executed": true,
+    "evidenceRef": "host-gate:98839c72b08bb113c1977e1b40484ba33fb4e58b250eab3136a3bcc202df77d4:npm test",
+    "executionMode": "fresh",
+    "gateSelection": "review",
+    "identityUnchanged": true,
+    "buildOutputUnchanged": true,
+    "freshSuites": 108,
+    "reusedSuites": 0,
+    "requiredSuites": [
+      "build",
+      "format",
+      "configuration-root",
+      "registrations",
+      "declarations",
+      "generated",
+      "host",
+      "release-preparation",
+      "github-body",
+      "outward-lint",
+      "target-publish",
+      "target-worktree",
+      "vertical",
+      "license-fixtures",
+      "publication-fixtures",
+      "backup-intake",
+      "launchpad",
+      "workstream-pilot",
+      "instance-history",
+      "beacon-portability",
+      "checkpoint",
+      "worktree",
+      "worktree-integration",
+      "release",
+      "work-orders-fixtures",
+      "siblings-fixtures",
+      "kernel",
+      "compiler",
+      "skeleton",
+      "console",
+      "browser-evidence",
+      "adjacent-queue",
+      "derived-orders",
+      "portfolio",
+      "codex-continuation",
+      "authority-grants",
+      "launchpad-planning",
+      "harness-fixtures",
+      "plan-refutation",
+      "runner-fixtures",
+      "sync-fixtures",
+      "process-debt"
+    ],
+    "unrunSuites": [],
+    "hostLaneWait": {
+      "wallMs": 1175,
+      "byRelation": {
+        "this-checkout": 0,
+        "another-checkout": 0,
+        "unknown": 1175
+      },
+      "holders": []
+    },
+    "criticalPath": {
+      "laneWaitMs": 163,
+      "gapMs": 178,
+      "tasks": [
+        "format",
+        "configuration-root",
+        "registrations",
+        "declarations",
+        "generated",
+        "host",
+        "build",
+        "runner-fixtures",
+        "harness-fixtures",
+        "process-debt",
+        "worktree-integration",
+        "sync-fixtures",
+        "vertical:file:test-vertical.mjs:workflow",
+        "vertical:file:test-vertical.recovery.mjs",
+        "launchpad:file:test-launchpad-export.mjs"
+      ],
+      "workMs": 1707504,
+      "waitMs": 341,
+      "durationMs": 1707845
+    },
+    "selectedCases": [
+      {
+        "name": "instance-history",
+        "durationMs": 72610,
+        "slowestCases": [
+          {
+            "name": "a kit update preserves and admits the committed instance history",
+            "file": "scripts/test-instance-history.mjs",
+            "durationMs": 72284.006083,
+            "exitCode": 0
+          }
+        ],
+        "peakFootprintBytes": 386108440,
+        "peakRssBytes": 665862144,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-25T15:19:45.733Z",
+        "finishedAt": "2026-10-25T15:20:58.361Z",
+        "exitCode": 0,
+        "productReadLog": "docs/control/local/harness/runner/product-reads/instance-history-40d2c59d-36e4-4b17-879b-125beaff34b5.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "launchpad-planning",
+          "sync-fixtures",
+          "worktree",
+          "skeleton",
+          "target-publish",
+          "target-worktree:file:test-target-worktree-start.mjs",
+          "target-worktree:file:test-target-worktree-publish.mjs"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "configuration-root",
+          "registrations",
+          "declarations",
+          "generated",
+          "host",
+          "workstream-pilot"
+        ],
+        "schedulerDurationMs": 72628,
+        "loadClass": "shared",
+        "loadFactor": 16,
+        "peerCap": 7,
+        "reservedSlots": 1,
+        "slotCapacity": 8,
+        "hostCapacity": 8,
+        "timeoutMs": 900000,
+        "lanes": [
+          7
+        ],
+        "hostLaneWaitMs": 16,
+        "hostLaneWaitRelations": [],
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "work-orders-fixtures",
+        "durationMs": 27863,
+        "slowestCases": [
+          {
+            "name": "work-orders-fixtures",
+            "durationMs": 27863,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 73835928,
+        "peakRssBytes": 179372032,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-25T15:10:58.034Z",
+        "finishedAt": "2026-10-25T15:11:25.907Z",
+        "exitCode": 0,
+        "productReadLog": "docs/control/local/harness/runner/product-reads/work-orders-fixtures-c4915e03-d49e-4587-9052-19faa69dc39f.jsonl",
+        "excludedReads": 0,
+        "executed": true,
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "checkpoint"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "configuration-root",
+          "registrations",
+          "declarations",
+          "generated",
+          "host",
+          "beacon-portability"
+        ],
+        "schedulerDurationMs": 27873,
+        "loadClass": "shared",
+        "loadFactor": 16,
+        "peerCap": 7,
+        "reservedSlots": 1,
+        "slotCapacity": 8,
+        "hostCapacity": 8,
+        "timeoutMs": 900000,
+        "lanes": [
+          7
+        ],
+        "hostLaneWaitMs": 8,
+        "hostLaneWaitRelations": [
+          {
+            "observedAt": "2026-10-25T15:07:22.930Z",
+            "relations": [
+              "unknown"
+            ]
+          }
+        ],
+        "hostLaneSlots": 1
+      },
+      {
+        "name": "plan-refutation",
+        "durationMs": 72660,
+        "slowestCases": [
+          {
+            "name": "plan-refutation",
+            "durationMs": 72660,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 671935400,
+        "peakRssBytes": 701284352,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-25T15:05:31.200Z",
+        "finishedAt": "2026-10-25T15:06:43.870Z",
+        "exitCode": 0,
+        "executed": true,
+        "concurrentAtStart": [],
+        "predecessors": [
+          "build",
+          "format",
+          "configuration-root",
+          "registrations",
+          "declarations",
+          "generated",
+          "host"
+        ],
+        "schedulerDurationMs": 72670,
+        "loadClass": "shared",
+        "loadFactor": 16,
+        "peerCap": 7,
+        "reservedSlots": 1,
+        "slotCapacity": 8,
+        "hostCapacity": 8,
+        "timeoutMs": 900000,
+        "lanes": [
+          0
+        ],
+        "hostLaneWaitMs": 10,
+        "hostLaneWaitRelations": [],
+        "hostLaneSlots": 1
+      }
+    ],
+    "failedCases": []
+  },
+  "mutation": {
+    "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-232/repair-003-mutation.mjs",
+    "exitCode": 0,
+    "run": {
+      "name": "bounded-probe",
+      "durationMs": 3028,
+      "slowestCases": [
+        {
+          "name": "bounded-probe",
+          "durationMs": 3028,
+          "exitCode": 0,
+          "granularity": "task"
+        }
+      ],
+      "peakFootprintBytes": 92876920,
+      "peakRssBytes": 231784448,
+      "memoryBudgetBytes": 3221225472,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+      "droppedOutputBytes": 0,
+      "startedAt": "2026-10-25T15:02:29.313Z",
+      "finishedAt": "2026-10-25T15:02:32.341Z",
+      "exitCode": 0,
+      "executed": true
+    },
+    "observation": {
+      "pattern": "WS-\\d{3} to WS-\\d+ with optional trailing spaces",
+      "results": [
+        {
+          "arm": "subject",
+          "exitCode": 0,
+          "failures": [],
+          "summary": [
+            "\u2139 tests 3",
+            "\u2139 suites 0",
+            "\u2139 pass 3",
+            "\u2139 fail 0",
+            "\u2139 cancelled 0",
+            "\u2139 skipped 0",
+            "\u2139 todo 0",
+            "\u2139 duration_ms 1573.027958"
+          ]
+        },
+        {
+          "arm": "widened-pattern",
+          "exitCode": 1,
+          "failures": [
+            "\u2716 a later leading Workstream field preserves a closed amendment but no other changed byte (385.945625ms)",
+            "\u2716 a legacy amendment admits later grouping and preserves all bound bytes (activation only) (378.574ms)",
+            "\u2716 a legacy amendment admits later grouping and preserves all bound bytes (activation and existing record) (363.765792ms)",
+            "\u2716 failing tests:",
+            "\u2716 a later leading Workstream field preserves a closed amendment but no other changed byte (385.945625ms)",
+            "\u2716 a legacy amendment admits later grouping and preserves all bound bytes (activation only) (378.574ms)",
+            "\u2716 a legacy amendment admits later grouping and preserves all bound bytes (activation and existing record) (363.765792ms)"
+          ],
+          "summary": [
+            "\u2139 tests 3",
+            "\u2139 suites 0",
+            "\u2139 pass 0",
+            "\u2139 fail 3",
+            "\u2139 cancelled 0",
+            "\u2139 skipped 0",
+            "\u2139 todo 0",
+            "\u2139 duration_ms 1266.689125"
+          ]
+        }
+      ]
+    }
+  },
+  "failedReviews": [
+    {
+      "checkId": "npm test",
+      "codeIdentity": "28face5f24d803c0a1e2f9c9b8cccdf1e11c2449d485e625bc2118a42b68a8d1",
+      "recordedAt": "2026-10-25T15:00:08.263Z",
+      "durationMs": 205812,
+      "exitCode": 1,
+      "executed": true,
+      "evidenceRef": "host-gate:28face5f24d803c0a1e2f9c9b8cccdf1e11c2449d485e625bc2118a42b68a8d1:npm test",
+      "failedFirst": "plan-refutation",
+      "unrunTaskCount": 97,
+      "failure": "Malformed-field assertion expected an amendment error; parseWorkstreamDeclaration correctly refused WS-1 before matching.",
+      "repair": "Assert malformed leading fields directly through the matcher; retain full-gate appendix validation for the body-field case."
+    }
+  ],
+  "controls": {
+    "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-232/controls.mjs",
+    "exitCode": 0,
+    "finishedAt": "2026-10-25T15:34:51.275Z",
+    "durationMs": 50311,
+    "baseExitCode": 1,
+    "headExitCode": 0,
+    "baseElapsedMs": 25501,
+    "headElapsedMs": 24293,
+    "currentReaderDigests": true
+  }
+}

@@ -1,0 +1,160 @@
+{
+  "schemaVersion": 1,
+  "verification": "VER-001",
+  "subject": {
+    "workOrder": "WO-232",
+    "base": "a81561976c8629834a5a18623b097fa4d7d8681a",
+    "checkpoint": "refs/dotln/checkpoint/WO-232/3",
+    "codeIdentity": "1964e7d07ce7b3f247922b3db29c1aaba65a41d57fad333389ad1d6fafd63f5e"
+  },
+  "consumedRows": [
+    {
+      "checkId": "npm test",
+      "gateSelection": "review",
+      "evidenceRef": "host-gate:1964e7d07ce7b3f247922b3db29c1aaba65a41d57fad333389ad1d6fafd63f5e:npm test",
+      "recordedAt": "2026-10-25T06:03:04.569Z",
+      "exitCode": 0,
+      "requiredSuites": 42,
+      "unrunSuites": 0,
+      "failedSuites": 0,
+      "instanceHistoryMs": 48028
+    }
+  ],
+  "probes": [
+    {
+      "command": "node scripts/harness.mjs bounded -- npm run format:check",
+      "exitCode": 0
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- npm run publication:check",
+      "exitCode": 0,
+      "note": "255/255 product headings indexed"
+    },
+    {
+      "command": "node scripts/harness.mjs evidence",
+      "note": "git diff --check row exit 0; the npm test row is current at the subject identity"
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node <session scratch>/arms.mjs (exerciseHistory head arm; base arm with the three a81561976c86 readers)",
+      "head": {
+        "assertion": "pass",
+        "elapsedMs": 25495,
+        "update": "kit files: 999 replaced; 0 added; 0 removed; 0 refused.",
+        "checks": [
+          {
+            "command": "npm run sync",
+            "exitCode": 0
+          },
+          {
+            "command": "npm run work-orders -- index --check",
+            "exitCode": 0
+          },
+          {
+            "command": "npm run plan -- check",
+            "exitCode": 0
+          },
+          {
+            "command": "npm run test:docs",
+            "exitCode": 0
+          },
+          {
+            "command": "npm run work-orders -- index",
+            "exitCode": 0
+          }
+        ],
+        "selfMembers": [
+          {
+            "workOrderId": "WO-001",
+            "base": "244d5122e5ef22f2ed6c09316c96142b7dc2f492",
+            "targetCommit": "244d5122e5ef22f2ed6c09316c96142b7dc2f492",
+            "integration": "current",
+            "stale": "no"
+          },
+          {
+            "workOrderId": "WO-002",
+            "base": "244d5122e5ef22f2ed6c09316c96142b7dc2f492",
+            "targetCommit": "244d5122e5ef22f2ed6c09316c96142b7dc2f492",
+            "integration": "current",
+            "stale": "no"
+          }
+        ],
+        "main": "244d5122e5ef22f2ed6c09316c96142b7dc2f492",
+        "branchAhead": true
+      },
+      "base": {
+        "assertion": "fail",
+        "elapsedMs": 26611,
+        "update": "kit files: 999 replaced; 0 added; 0 removed; 0 refused.",
+        "checks": [
+          {
+            "command": "npm run sync",
+            "exitCode": 0
+          },
+          {
+            "command": "npm run work-orders -- index --check",
+            "exitCode": 0
+          },
+          {
+            "command": "npm run plan -- check",
+            "exitCode": 1,
+            "refusal": [
+              "planning pass needs a receipt matching the current subject: unmatched execution amendment WO-001 row 1; withdraw it explicitly or restore its approved bytes"
+            ]
+          },
+          {
+            "command": "npm run test:docs",
+            "exitCode": 1,
+            "refusal": [
+              "  [plan-refutation-current] Error: planning pass needs a receipt matching the current subject: unmatched execution amendment WO-001 row 1; withdraw it explicitly or restore its approved bytes"
+            ]
+          },
+          {
+            "command": "npm run work-orders -- index",
+            "exitCode": 0
+          }
+        ],
+        "selfMembers": [
+          {
+            "workOrderId": "WO-001",
+            "base": "ca4d0bbfda24ef6e71de00d10bae4d5123d945e8",
+            "targetCommit": "244d5122e5ef22f2ed6c09316c96142b7dc2f492",
+            "integration": "diverged",
+            "stale": "yes"
+          },
+          {
+            "workOrderId": "WO-002",
+            "base": "ca4d0bbfda24ef6e71de00d10bae4d5123d945e8",
+            "targetCommit": "244d5122e5ef22f2ed6c09316c96142b7dc2f492",
+            "integration": "diverged",
+            "stale": "yes"
+          }
+        ],
+        "main": "244d5122e5ef22f2ed6c09316c96142b7dc2f492",
+        "branchAhead": true
+      }
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-232/verification-001-amendment.mjs",
+      "exitCode": 1,
+      "finding": "WO-232-D007",
+      "refusal": "planning pass needs a receipt matching the current subject: unmatched execution amendment WO-004 row 5; withdraw it explicitly or restore its approved bytes"
+    },
+    {
+      "command": "the evidence README inspection commands for shapes (a) to (d)",
+      "outcome": "(a) amendment row and close in commit 2af257c0, field added in 244d5122; (b) WS-001 lists WO-001, WO-002 and WO-004, both self orders FinalReviewCompleted pass; (c) TargetRecordsCommitted for WO-003, launchpad decisions path absent, target holds WO-003-D001; (d) WO-004 activation base 2bdbf8e1 precedes target main c972d40b"
+    },
+    {
+      "command": "node scripts/work-orders.mjs index in a bundle clone with the target clone mapped",
+      "outcome": "WO-004 (target) integration behind, stale yes, base 2bdbf8e1, targetCommit c972d40b"
+    },
+    {
+      "command": "git grep over every commit of both bundle refs for machine paths, the local user name, personal mail and key material",
+      "outcome": "no machine path or private identifier; hits are public kit files tracked in this repository (NOTICE, synthetic test fixtures); author History Fixture <fixture@example.invalid>"
+    }
+  ],
+  "limits": [
+    "Base readers come from the activation base a81561976c86; plan-continuation.mjs there is the same blob as at v0.96.0 and v0.97.1.",
+    "The instance arm emulates a previous-release instance by installing the base readers into a clone whose other kit files are the subject era; only the amendment reader decides the refusal.",
+    "Whether any real instance holds a D007-shaped binding is unknown; the shape is reachable through amend-order from v0.96.0 to v0.97.1."
+  ]
+}
