@@ -1,6 +1,10 @@
 {
   "schemaVersion": 1,
   "commits": {
+    "0027d9c1e574d161b6215d43b80061eccda37340": {
+      "tag": "v0.97.0",
+      "nearest": "v0.97.0"
+    },
     "32f9653f1d1de9ec007924916f0ffb5dbd6a5546": {
       "tag": "v0.84.0",
       "nearest": "v0.84.0"

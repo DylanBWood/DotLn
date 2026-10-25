@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "passed": true,
+  "episodes": [
+    {
+      "episode": 1,
+      "causeDecision": null,
+      "cliVersion": "2.1.310",
+      "model": "claude-opus-5-5",
+      "effort": "xhigh",
+      "effectiveReadback": "unknown",
+      "maxBudgetUsd": 3,
+      "startedAt": "2026-10-25T03:16:42.195Z",
+      "durationMs": 32625,
+      "processWindow": {
+        "startedAt": "2026-10-25T03:16:43.043Z",
+        "stoppedAt": "2026-10-25T03:17:12.706Z"
+      },
+      "objectLocation": {
+        "changed": true,
+        "privateReadable": true,
+        "sharedReadable": false,
+        "classification": "private-only"
+      },
+      "sharedRepository": {
+        "settleMs": 1000,
+        "changedPaths": [],
+        "rrCachePresent": false,
+        "excluded": "<gitdir> (including its private <store>)"
+      },
+      "host": {
+        "outcome": "observed",
+        "refusal": null,
+        "writer": {
+          "status": "completed",
+          "requiresHuman": false
+        },
+        "attempts": 1,
+        "candidateImported": 1,
+        "importedObjects": 3,
+        "sourceChangeObserved": 1,
+        "importPrecedesObservation": true,
+        "focusedBeforeExit": 1,
+        "focusedAfterExit": 0
+      },
+      "usage": {
+        "source": "claude-result-envelope",
+        "scope": "dispatch",
+        "observedAt": null,
+        "usage": {
+          "inputTokens": 16,
+          "cachedInputTokens": 65938,
+          "cacheWriteInputTokens": 11313,
+          "outputTokens": 2330,
+          "reasoningOutputTokens": null,
+          "totalTokens": 79597,
+          "costUsd": 0.15035560000000003
+        }
+      },
+      "failure": null,
+      "passed": true,
+      "stopReason": null
+    }
+  ]
+}

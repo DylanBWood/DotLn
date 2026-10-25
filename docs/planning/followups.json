@@ -37874,6 +37874,14 @@
             "WO-204"
           ],
           "at": "2026-10-13T19:07:13.998Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-204-D010, D015 and the WO-204 source-host tests resolve the allocated set: blocked or requiresHuman writers produce writer-requested-attention, a killed writer resumes under one command, and the installed Codex CLI 0.164.0 live qualification committed with exit 0 under the narrowed grants. The Codex probe records CandidateImported before SourceChangeObserved and only the expected packed-refs.lock denial.",
+          "reopenWhen": "A later installed CLI fails the same commit, a writer attention result is admitted, or a killed writer cannot resume without an extra unbounded launch.",
+          "targets": [],
+          "at": "2026-10-25T03:33:42.601Z"
         }
       ]
     },
@@ -38100,6 +38108,14 @@
             "WO-204"
           ],
           "at": "2026-10-13T19:07:14.275Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-204-D011 records the Claude CLI 2.1.310 live source writer on rerere-enabled packed refs: the candidate stayed private until host import, the shared snapshot had no rr-cache or other changed path outside the writer administration, and CandidateImported preceded SourceChangeObserved.",
+          "reopenWhen": "A later Claude launch environment creates rr-cache, maintenance output or shared objects before host import.",
+          "targets": [],
+          "at": "2026-10-25T03:33:42.697Z"
         }
       ]
     },
@@ -43844,6 +43860,14 @@
           "reopenWhen": "The next planning pass evaluates instruction-byte optimization, or another role edit changes the recorded measurements.",
           "targets": [],
           "at": "2026-10-22T03:17:34.692Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-204-D042: its reopening condition occurred. WO-204-D013's operator-directed executor brief added 343 bytes to the executor role (29,484 to 29,827 against the unchanged 29,246 ceiling; headroom -238 to -581), recorded in packages/skeleton/fixtures/wo204-role-baseline.json with FUP-e08668268dea62b1 as the boarding row; the reviewer role is unchanged at 29,584 (headroom -700). No ceiling was raised and no duty was cut. The optimization stays with the next planning pass that evaluates instruction-byte optimization.",
+          "reopenWhen": "The next planning pass evaluates instruction-byte optimization, or another role edit changes the measured overrun.",
+          "targets": [],
+          "at": "2026-10-25T20:19:13.268Z"
         }
       ]
     },
@@ -43892,6 +43916,14 @@
           "reopenWhen": "A role grows past its pin without the oracle changing, or a ceiling breach appears in meta --check with no decision boarding it; or the next order touching scripts/test-gate-followups.mjs or re-minting the role oracle",
           "targets": [],
           "at": "2026-10-24T04:18:38.674Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-204-D042: its condition occurred, because this order touches scripts/test-gate-followups.mjs and re-mints the role oracle (wo204-role-baseline.json, chained to wo219 and wo226). The test asserts the oracle's recorded headroom as ceiling minus installed bytes for every role, so the executor's -581 and the reviewer's -700 are asserted as the negative numbers they are; the historical 256-byte inequality is retained on the earliest chained baseline as the record of the WO-217 wording savings, and the executor did not replace it. The final review changes no test. Deferred to the next order that touches the file or re-mints the oracle, to decide whether the retained inequality still carries meaning.",
+          "reopenWhen": "A role grows past its pin without the oracle changing, or a ceiling breach appears in meta --check with no decision boarding it; or the next order touching scripts/test-gate-followups.mjs or re-minting the role oracle.",
+          "targets": [],
+          "at": "2026-10-25T20:19:13.366Z"
         }
       ]
     },
@@ -44324,6 +44356,14 @@
           "reopenWhen": "A bounded comparison demonstrates a shorter equivalent instruction set, or another required rule changes the measured overrun.",
           "targets": [],
           "at": "2026-10-23T16:09:37.933Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-204-D042: its condition occurred, because WO-204-D013's required executor brief changed the measured overrun. wo204-role-baseline.json records the executor at 29,827 bytes against the 29,246 ceiling (headroom -581, growth 343) and the reviewer at 29,584 against 28,884 (headroom -700, unchanged), with this row as the boarding row. The ceilings are unchanged and no instruction was cut. The bounded comparison that would show a shorter equivalent instruction set is still owed to the next planning pass.",
+          "reopenWhen": "A bounded comparison demonstrates a shorter equivalent instruction set, or another required rule changes the measured overrun.",
+          "targets": [],
+          "at": "2026-10-25T20:19:13.464Z"
         }
       ]
     },
@@ -45560,6 +45600,229 @@
           "reopenWhen": "verification-004-guards.mjs exits 0 on a later subject, or any of the three guards (the filed order declares no field, exactly one field was added, the field lies in the leading header) is changed or removed.",
           "targets": [],
           "at": "2026-10-25T16:34:31.956Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-c9b8699c6e654e7c",
+      "key": "decision:docs/evidence/WO-204/decisions.md#wo-204-d004",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "2b457b6b375453194ae4c1a552dc3ffb78195055f49b81420c37ec220c6e1c06",
+          "ref": "docs/evidence/WO-204/decisions.md#wo-204-d004--import-a-protected-pack-before-publishing-the-episode-branch",
+          "title": "WO-204-D004: Keep shared gc/repack available while a detached source writer's HEAD names private objects. Today both commands safely return 128 until host import, then succeed; qualify a design that…",
+          "summary": "{ \"id\": \"WO-204-D004\", \"date\": \"2026-10-25\", \"dispatch\": \"resume: next\", \"decision\": \"Keep the writer detached with a private object directory and the shared store as a read-only alternate. Pack the admitted candidate with the private reader, then index it with a shared-store writer whose object-directory environment is cleared. Protect the imported pack with an owned keep file until the branch exists; verify every candidate object and its tree before and after the ref update. Preserve the private store through receipt persistence and reuse the same CandidateImported record on recovery.\", \"evidence\": [ \"Git's current git-index-pack documentation says --stdin writes the pack to the current re",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-204-D004 records safe Git gc and repack refusal while detached HEAD names a private candidate, followed by successful maintenance after import. No object loss or required running-maintenance behavior fails in this order; preserve the performance question for a measured design pass.",
+          "reopenWhen": "A required shared maintenance operation must succeed during an active private candidate, or a real gc/repack run loses an object despite the safe refusal.",
+          "targets": [],
+          "at": "2026-10-25T03:33:42.794Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-0a193da1efd0347b",
+      "key": "decision:docs/evidence/WO-204/decisions.md#wo-204-d017",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "897f8c05151dd103d914fcc0e2d57f7b1d25ab039104b6b9a3ed04aa281b1b1f",
+          "ref": "docs/evidence/WO-204/decisions.md#wo-204-d017--board-probe-setup-failure-recording",
+          "title": "WO-204-D017: Next qualification-probe maintenance: enclose fixture creation, CLI version lookup and host construction in a failure-recording and cleanup lifecycle in both Claude and Codex live…",
+          "summary": "{ \"id\": \"WO-204-D017\", \"date\": \"2026-10-25\", \"dispatch\": \"resume: next; design improver finding\", \"decision\": \"Record a follow-up for both live qualification scripts to include fixture creation, CLI version lookup and host construction in their failure-recording and disposal lifecycle. Their successful WO-204 episodes are already durable; changing either live script after the two-episode Codex limit would leave its evidence at a different source identity.\", \"evidence\": [ \"The design worker identified setup before try/finally in claude-writer-qualification.mjs and codex-writer-qualification.mjs. A setup exception can leave scratch and no JSON failure row.\", \"The Codex record already retains o",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-204-D017 boards the design worker finding. Both live qualification episodes passed and the Codex two-episode launch budget is exhausted; fault-injected setup recording and cleanup belong to the next probe-maintenance order.",
+          "reopenWhen": "A new probe maintenance order edits either live setup path, or a setup failure recurs before then.",
+          "targets": [],
+          "at": "2026-10-25T03:33:42.888Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-ab58df1c1a5ee115",
+      "key": "decision:docs/evidence/WO-204/decisions.md#wo-204-d018",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c7d54c1964242f3eae6f988c284d1cfd8046b11275c4369321a73fd741afc7c4",
+          "ref": "docs/evidence/WO-204/decisions.md#wo-204-d018--board-batched-imported-object-presence-checks",
+          "title": "WO-204-D018: Next source-change import maintenance: batch imported-object presence checks into one bounded Git query per checkpoint, preserving every object's presence requirement and the checks…",
+          "summary": "{ \"id\": \"WO-204-D018\", \"date\": \"2026-10-25\", \"dispatch\": \"resume: next; design improver finding\", \"decision\": \"Keep the existing per-object presence checks for this order's bounded candidate sizes; record a performance follow-up to batch each checkpoint's query without reducing the prepublication and postpublication checks.\", \"evidence\": [ \"The design worker counted one Git child per object in verifyImported, invoked at import and around publication. The current fixture and both live qualifications passed with that implementation.\", \"Batching is a performance and maintenance improvement; no acceptance criterion or observed candidate outcome fails at the current bound.\" ], \"followup\": \"Next s",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-204-D018 boards a bounded performance improvement. Current multi-object fixture, host recovery and live qualifications pass with per-object verification at each checkpoint.",
+          "reopenWhen": "A measured import breaches its deadline, or the next source-change import maintenance order batches presence checks while retaining all checkpoints.",
+          "targets": [],
+          "at": "2026-10-25T03:33:42.983Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-2053ae747b5c18ac",
+      "key": "decision:docs/evidence/WO-204/decisions.md#wo-204-d026",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "a4824708ab54e25040539f46cc1364687e9d3d24b80593db2f0ca8d4a74a87c8",
+          "ref": "docs/evidence/WO-204/decisions.md#wo-204-d026--the-committed-tree-check-must-judge-symlinks-and-gitlinks-by-their-committed-type",
+          "title": "WO-204-D026: WO-204 repair: cleanAgainstCommit judges each tracked HEAD entry by its committed type and refuses only an index flag or a difference. A 120000 entry must be a symlink in the worktree…",
+          "summary": "{ \"id\": \"WO-204-D026\", \"date\": \"2026-10-25\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-001 fails criterion 7. SourceChangeWorktree.cleanAgainstCommit refuses every tracked HEAD entry that is not a regular 100644 or 100755 file whose path is its own realpath. A target whose baseline tracks an unchanged symlink (120000) or gitlink (160000) therefore throws committed-tree-drift at the host's baseline clean check, before WorkerAttemptStarted, for both transports, so no source change on such a target can start. At the base the same clean candidate is observed. The order's Design refuses an index flag or a byte or mode that differs from the committed blob, not a tracked entry type. The verifi",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Implemented in WO-204 repair, decisions WO-204-D031. The retained verification reproductions and both transports' regression cases pass. Fresh independent verification remains the next lifecycle phase.",
+          "reopenWhen": "Independent verification reproduces this class on the repaired subject or a later target exposes the same failure.",
+          "targets": [],
+          "at": "2026-10-25T17:11:11.350Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-1f8764cbbff3008a",
+      "key": "decision:docs/evidence/WO-204/decisions.md#wo-204-d027",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "2175d1ad4a28c7bf2af16b193bdd8b6dfbf839809d9dbb021e53e125d93dbd39",
+          "ref": "docs/evidence/WO-204/decisions.md#wo-204-d027--an-unimported-candidate-must-leave-the-shared-repositorys-git-and-its-own-inspection-working",
+          "title": "WO-204-D027: WO-204 repair: when an episode's outcome leaves its candidate unimported, the shared repository's ordinary reachability commands (git log --all, git rev-list --all, git fsck, git repack…",
+          "summary": "{ \"id\": \"WO-204-D027\", \"date\": \"2026-10-25\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-001 records a blocking reproduced regression. The writer's detached worktree registers <common>/worktrees/<id>/HEAD in the shared Git directory, and after the writer commits that HEAD names a commit present only in the episode's private store. The host removes the worktree only in finish() after an observed receipt, so every outcome that leaves the candidate unimported (an admission refusal, the writer-requested-attention hold, a pending command-route-live cleanup, an interrupted episode) leaves the shared repository holding a per-worktree ref Git cannot resolve. git log --all, git rev-list --all, git",
+          "missing": false
+        },
+        {
+          "hash": "7238ebefb7660e4869b40bb6b144ded818fe8097e880a969868e72dbbf6201de",
+          "ref": "docs/evidence/WO-204/decisions.md#wo-204-d027--an-unimported-candidate-must-leave-the-shared-repositorys-git-and-its-own-inspection-working",
+          "title": "WO-204-D027: WO-204 repair: when an episode's outcome leaves its candidate unimported, the shared repository's ordinary reachability commands (git log --all, git rev-list --all, git fsck, git repack…",
+          "summary": "{ \"id\": \"WO-204-D027\", \"date\": \"2026-10-25\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-001 records a blocking reproduced regression. The writer's detached worktree registers <common>/worktrees/<id>/HEAD in the shared Git directory, and after the writer commits that HEAD names a commit present only in the episode's private store. The host removes the worktree only in finish() after an observed receipt, so an outcome that leaves the candidate unimported leaves the shared repository holding a per-worktree ref Git cannot resolve. The probe observed this after an admission refusal and after the writer-requested-attention hold; by inference from the same source it also follows a pending comma",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Implemented in WO-204 repair, decisions WO-204-D032. The retained verification reproductions and both transports' regression cases pass. Fresh independent verification remains the next lifecycle phase.",
+          "reopenWhen": "Independent verification reproduces this class on the repaired subject or a later target exposes the same failure.",
+          "targets": [],
+          "at": "2026-10-25T17:11:11.447Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-80c71ac9b32245e0",
+      "key": "decision:docs/evidence/WO-204/decisions.md#wo-204-d028",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "a5a85ddd4fb5f0c1df64255d08e1cad5a1709354e49e1f43c1614f8a6d8eb4cc",
+          "ref": "docs/evidence/WO-204/decisions.md#wo-204-d028--refuse-an-alternates-entry-inside-the-private-object-store",
+          "title": "WO-204-D028: WO-204 repair, as Adjacent Repair, or the next source-change confinement order: before any host read under the private environment, refuse admission with a typed reason when the private…",
+          "summary": "{ \"id\": \"WO-204-D028\", \"date\": \"2026-10-25\", \"dispatch\": \"resume: verify\", \"decision\": \"A non-blocking hardening item within the declared surfaces, found in VER-001. The private store is <gitdir>/dotln-objects, inside the writer's own gitdir, which the Codex writer's access grants for write. Git follows $GIT_OBJECT_DIRECTORY/info/alternates. The host's pre-import reads, its strict fsck and its pack-objects run with GIT_OBJECT_DIRECTORY set to that store, while sharedState() inventories only the shared store's alternates. An alternates file in the private store would therefore add object sources to the host's own reads and import beyond the single read-only alternate the Design names. No crit",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Implemented in WO-204 repair, decisions WO-204-D033. The retained verification reproductions and both transports' regression cases pass. Fresh independent verification remains the next lifecycle phase.",
+          "reopenWhen": "Independent verification reproduces this class on the repaired subject or a later target exposes the same failure.",
+          "targets": [],
+          "at": "2026-10-25T17:11:11.543Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-6d00441a98f2e6d7",
+      "key": "decision:docs/evidence/WO-204/decisions.md#wo-204-d029",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "d7d2b9b5e7ca31584059e083a7e34b373d1c7fe652057095c8ee3271eab16f68",
+          "ref": "docs/evidence/WO-204/decisions.md#wo-204-d029--record-the-known-issue-durations-and-per-check-costs-at-handoff",
+          "title": "WO-204-D029: WO-204 repair handoff: record the skeleton and vertical durations at the repaired subject against their medians, and measure on the vertical fixture the clean check's per-path cat-file…",
+          "summary": "{ \"id\": \"WO-204-D029\", \"date\": \"2026-10-25\", \"dispatch\": \"resume: verify\", \"decision\": \"A non-blocking record omission found in VER-001. The order's Known issues ask the handoff to record the skeleton suite's and the vertical task's durations against their recorded medians, and to measure on the vertical fixture the clean check's per-path cat-file cost and the import's cost per admitted candidate, naming the cause of any above one second. handoff.md records only the complete gate's 1,811.378 s, and no decision carries the other four. From the passing complete row the verifier read skeleton at 419.774 s, 1.45 times its 289.9 s median and under the two-times threshold. The vertical files now r",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-204-D034 and WO-204-D038 plus the repair handoff record all four requested costs: skeleton 418.632 s, all vertical task durations (longest 503.398 s), every measured cat-file read (9.049–12.244 ms), and one three-object import (94.412 ms). The complete review passed at the repaired integrated source.",
+          "reopenWhen": "The repaired measurements are contradicted, a measured clean check or import exceeds one second, or a task exceeds its recorded growth threshold.",
+          "targets": [],
+          "at": "2026-10-25T18:09:11.589Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-3556f78540a5f22e",
+      "key": "decision:docs/evidence/WO-204/decisions.md#wo-204-d039",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "607b9700feca52faf9bc18469075d9ad74da33d7a25a13bdc8a3176592c24e28",
+          "ref": "docs/evidence/WO-204/decisions.md#wo-204-d039--retention-must-not-replace-a-settled-outcome",
+          "title": "WO-204-D039: The next source-change confinement order: an error while retaining an unimported candidate never replaces the outcome the run settled. run() returns the settled refusal, or rethrows the…",
+          "summary": "{ \"id\": \"WO-204-D039\", \"date\": \"2026-10-25\", \"dispatch\": \"resume: verify\", \"decision\": \"A non-blocking hardening item within the declared surfaces, found in VER-002. SourceChangeHost.run() calls SourceChangeWorktree.retainUnimported() in the finally block that guards the whole run, including a replayed refusal. When retention throws, its error replaces the outcome the run had already settled. With the registration backlink <gitdir>/gitdir already absent when a commit-blocked writer settles (the Codex writer's access grants that gitdir for write), the run throws ENOENT for that path instead of returning refused writer-requested-attention, and every rerun throws the same. The durable SourceCha",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-204-D042: minted by VER-002 against this order's retention and untriaged; reproduced at the integrated tree by verification-002-retention.mjs, case absent-backlink-at-settlement, where both transports throw ENOENT on the run and the rerun while the hold is durably recorded, nothing is imported, launches stay at 1 and shared Git works. The final review repairs nothing: a reviewer never writes a behavioral fix and certifies it, and a source edit moves the identity the complete row and VER-002 judged. Deferred to the next source-change confinement order, which takes D039's repair rule.",
+          "reopenWhen": "A retention failure is observed replacing a settled outcome in a live or vertical run, or the follow-up's cases pass (WO-204-D039).",
+          "targets": [],
+          "at": "2026-10-25T20:19:13.066Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-30cee01e368d4a23",
+      "key": "decision:docs/evidence/WO-204/decisions.md#wo-204-d040",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "94f313831b06dc207b20367d023e01485e9859d027e5c92275b86acd12e5522a",
+          "ref": "docs/evidence/WO-204/decisions.md#wo-204-d040--record-a-retained-candidates-removal-and-its-reachability-window",
+          "title": "WO-204-D040: The next source-change order that touches retention: SourceChangeCandidateRetained, product 03 and the skeleton README name the removal procedure beside the inspection command (repair,…",
+          "summary": "{ \"id\": \"WO-204-D040\", \"date\": \"2026-10-25\", \"dispatch\": \"resume: verify\", \"decision\": \"A non-blocking record and operability item found in VER-002. A retained candidate is hidden from ordinary worktree management: git worktree list does not show it, git worktree remove --force fails with 'is not a working tree', and git worktree prune keeps its locked administration. At main the same refused worktree is registered, listed and removable. SourceChangeCandidateRetained names only an inspection command, and the vertical's NeedsHuman receipt carries neither it nor a removal step. Git-native removal works: git worktree repair <path>, git worktree unlock <path>, then git worktree remove --force <p",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-204-D042: minted by VER-002 and untriaged; reproduced at the integrated tree by verification-002-retention.mjs, case retained-worktree-ordinary-git, where the retained worktree is unlisted, remove --force fails, prune keeps the lock, and repair, unlock then remove --force removes it. Record and operability only: no criterion names worktree removal and the five reachability commands pass after every settled outcome. Deferred to the next source-change order that touches retention, which takes D040's record rule.",
+          "reopenWhen": "An operator cannot discover or remove a retained candidate, or the follow-up's records land (WO-204-D040).",
+          "targets": [],
+          "at": "2026-10-25T20:19:13.168Z"
         }
       ]
     }

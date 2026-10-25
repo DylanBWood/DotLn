@@ -1,0 +1,2323 @@
+{
+  "schemaVersion": 1,
+  "sandbox": {
+    "cliVersion": "0.164.0",
+    "startedAt": "2026-10-25T03:28:16.939Z",
+    "stoppedAt": "2026-10-25T03:28:32.483Z",
+    "durationMs": 16547,
+    "helper": "codex sandbox -P dotln-writer --log-denials",
+    "arguments": [
+      "-c",
+      "default_permissions=\"dotln-writer\"",
+      "-c",
+      "permissions.dotln-writer.filesystem={\":minimal\"=\"read\",\":workspace_roots\"=\"write\",\"/usr\"=\"read\",\"/bin\"=\"read\",\"/System\"=\"read\",\"/Library/Apple\"=\"read\",\"/opt/homebrew\"=\"read\",\"<home>/.local/share/fnm/node-versions/v26.9.0/installation\"=\"read\",\"/private/var/db/dyld\"=\"read\",\"/opt/homebrew/Cellar/git/2.55.0\"=\"read\",\"<home>/.codex/packages/standalone/releases/0.164.0-aarch64-apple-darwin\"=\"read\",\"<home>/.gitconfig\"=\"read\",\"<common>\"=\"read\",\"<gitdir>\"=\"write\",\"<store>\"=\"write\"}",
+      "-c",
+      "permissions.dotln-writer.network.enabled=false",
+      "-c",
+      "shell_environment_policy.inherit=\"none\"",
+      "-c",
+      "shell_environment_policy.set={PATH=\"<home>/.local/share/fnm/node-versions/v26.9.0/installation/bin:/opt/homebrew/Cellar/git/2.55.0/bin:/usr/bin:/bin\",GIT_OBJECT_DIRECTORY=\"<store>\",GIT_ALTERNATE_OBJECT_DIRECTORIES=\"\\\"<common>/objects\\\"\",GIT_CONFIG_COUNT=\"2\",GIT_CONFIG_KEY_0=\"rerere.enabled\",GIT_CONFIG_VALUE_0=\"false\",GIT_CONFIG_KEY_1=\"maintenance.auto\",GIT_CONFIG_VALUE_1=\"false\"}"
+    ],
+    "fixture": {
+      "rerereEnabled": true,
+      "packedRefsPresent": true
+    },
+    "addExitCode": 0,
+    "commitExitCode": 0,
+    "withoutGitConfig": {
+      "addExitCode": 0,
+      "commitExitCode": 128,
+      "denials": [
+        {
+          "operation": "file-write-create",
+          "path": "<common>/packed-refs.lock",
+          "classification": "expected-packed-refs-lock",
+          "count": 1
+        },
+        {
+          "operation": "file-write-create",
+          "path": "<common>/rr-cache",
+          "classification": "repository",
+          "count": 1
+        }
+      ]
+    },
+    "writes": [
+      {
+        "path": "<common>/qualification-write",
+        "exitCode": 1,
+        "exists": false,
+        "denials": [
+          {
+            "operation": "file-write-create",
+            "path": "<common>/qualification-write",
+            "classification": "repository",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "path": "<common>/hooks/qualification-write",
+        "exitCode": 1,
+        "exists": false,
+        "denials": [
+          {
+            "operation": "file-write-create",
+            "path": "<common>/hooks/qualification-write",
+            "classification": "repository",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "path": "<outside>/qualification-write",
+        "exitCode": 1,
+        "exists": false,
+        "denials": [
+          {
+            "operation": "file-write-create",
+            "path": "<outside>/qualification-write",
+            "classification": "outside",
+            "count": 1
+          }
+        ]
+      }
+    ],
+    "network": {
+      "sandboxCode": "EPERM",
+      "controlCode": "timeout"
+    },
+    "calibration": {
+      "reader": "/usr/bin/log stream --style ndjson",
+      "readerExitCode": null,
+      "calibrated": true,
+      "printedDenials": [
+        {
+          "operation": "file-write-create",
+          "path": "<common>/hooks/qualification-write",
+          "classification": "repository",
+          "count": 1
+        },
+        {
+          "operation": "file-write-times",
+          "path": "<common>/objects/7a/84be4a9cf1733e29d9639a04fea7a29dd121b1",
+          "classification": "repository",
+          "count": 1
+        },
+        {
+          "operation": "file-write-create",
+          "path": "<common>/packed-refs.lock",
+          "classification": "expected-packed-refs-lock",
+          "count": 2
+        },
+        {
+          "operation": "file-write-create",
+          "path": "<common>/qualification-write",
+          "classification": "repository",
+          "count": 1
+        },
+        {
+          "operation": "file-write-create",
+          "path": "<common>/rr-cache",
+          "classification": "repository",
+          "count": 1
+        },
+        {
+          "operation": "file-read-data",
+          "path": "<home>/.CFUserTextEncoding",
+          "classification": "outside",
+          "count": 5
+        },
+        {
+          "operation": "file-read-data",
+          "path": "<home>/Library/Preferences/.GlobalPreferences_m.plist",
+          "classification": "outside",
+          "count": 4
+        },
+        {
+          "operation": "file-read-data",
+          "path": "<home>/Library/Preferences/.GlobalPreferences.plist",
+          "classification": "outside",
+          "count": 4
+        },
+        {
+          "operation": "file-read-data",
+          "path": "<home>/Library/Preferences/ByHost/<redacted>",
+          "classification": "outside",
+          "count": 4
+        },
+        {
+          "operation": "file-write-create",
+          "path": "<outside>/qualification-write",
+          "classification": "outside",
+          "count": 1
+        },
+        {
+          "operation": "sysctl-read",
+          "path": "kern.bootargs",
+          "classification": "outside",
+          "count": 32
+        },
+        {
+          "operation": "sysctl-read",
+          "path": "kern.iossupportversion",
+          "classification": "outside",
+          "count": 32
+        },
+        {
+          "operation": "sysctl-read",
+          "path": "kern.ngroups",
+          "classification": "outside",
+          "count": 8
+        },
+        {
+          "operation": "network-outbound",
+          "path": "remote:*:9",
+          "classification": "network",
+          "count": 1
+        },
+        {
+          "operation": "sysctl-read",
+          "path": "security.mac.lockdown_mode_state",
+          "classification": "outside",
+          "count": 32
+        },
+        {
+          "operation": "system-info",
+          "path": "vfs.disk-space",
+          "classification": "outside",
+          "count": 4
+        }
+      ],
+      "observedDenials": [
+        {
+          "operation": "file-write-create",
+          "path": "<common>/hooks/qualification-write",
+          "classification": "repository",
+          "count": 1
+        },
+        {
+          "operation": "file-write-times",
+          "path": "<common>/objects/7a/84be4a9cf1733e29d9639a04fea7a29dd121b1",
+          "classification": "repository",
+          "count": 1
+        },
+        {
+          "operation": "file-write-create",
+          "path": "<common>/packed-refs.lock",
+          "classification": "expected-packed-refs-lock",
+          "count": 2
+        },
+        {
+          "operation": "file-write-create",
+          "path": "<common>/qualification-write",
+          "classification": "repository",
+          "count": 1
+        },
+        {
+          "operation": "file-write-create",
+          "path": "<common>/rr-cache",
+          "classification": "repository",
+          "count": 1
+        },
+        {
+          "operation": "file-read-data",
+          "path": "<home>/.CFUserTextEncoding",
+          "classification": "outside",
+          "count": 10
+        },
+        {
+          "operation": "file-read-data",
+          "path": "<home>/Library/Preferences/.GlobalPreferences_m.plist",
+          "classification": "outside",
+          "count": 4
+        },
+        {
+          "operation": "file-read-data",
+          "path": "<home>/Library/Preferences/.GlobalPreferences.plist",
+          "classification": "outside",
+          "count": 4
+        },
+        {
+          "operation": "file-read-data",
+          "path": "<home>/Library/Preferences/ByHost/<redacted>",
+          "classification": "outside",
+          "count": 4
+        },
+        {
+          "operation": "file-write-create",
+          "path": "<outside>/qualification-write",
+          "classification": "outside",
+          "count": 1
+        },
+        {
+          "operation": "sysctl-read",
+          "path": "kern.bootargs",
+          "classification": "outside",
+          "count": 40
+        },
+        {
+          "operation": "sysctl-read",
+          "path": "kern.iossupportversion",
+          "classification": "outside",
+          "count": 40
+        },
+        {
+          "operation": "sysctl-read",
+          "path": "kern.ngroups",
+          "classification": "outside",
+          "count": 8
+        },
+        {
+          "operation": "network-outbound",
+          "path": "remote:*:9",
+          "classification": "network",
+          "count": 1
+        },
+        {
+          "operation": "sysctl-read",
+          "path": "security.mac.lockdown_mode_state",
+          "classification": "outside",
+          "count": 40
+        },
+        {
+          "operation": "system-info",
+          "path": "vfs.disk-space",
+          "classification": "outside",
+          "count": 35
+        }
+      ]
+    },
+    "passed": true,
+    "attempts": [
+      {
+        "cliVersion": "0.164.0",
+        "startedAt": "2026-10-25T02:09:25.970Z",
+        "stoppedAt": "2026-10-25T02:09:28.713Z",
+        "durationMs": 4456,
+        "helper": "codex sandbox -P dotln-writer --log-denials",
+        "arguments": [
+          "-c",
+          "default_permissions=\"dotln-writer\"",
+          "-c",
+          "permissions.dotln-writer.filesystem={\":minimal\"=\"read\",\":workspace_roots\"=\"write\",\"/usr\"=\"read\",\"/bin\"=\"read\",\"/System\"=\"read\",\"/Library/Apple\"=\"read\",\"/opt/homebrew\"=\"read\",\"<home>/.local/share/fnm/node-versions/v26.9.0/installation\"=\"read\",\"/private/var/db/dyld\"=\"read\",\"/opt/homebrew/Cellar/git/2.55.0\"=\"read\",\"<home>/.codex/packages/standalone/releases/0.164.0-aarch64-apple-darwin\"=\"read\",\"<home>/.gitconfig\"=\"read\",\"<common>\"=\"read\",\"<gitdir>\"=\"write\",\"<store>\"=\"write\"}",
+          "-c",
+          "permissions.dotln-writer.network.enabled=false",
+          "-c",
+          "shell_environment_policy.inherit=\"none\"",
+          "-c",
+          "shell_environment_policy.set={PATH=\"<home>/.local/share/fnm/node-versions/v26.9.0/installation/bin:/opt/homebrew/Cellar/git/2.55.0/bin:/usr/bin:/bin\",GIT_OBJECT_DIRECTORY=\"<store>\",GIT_ALTERNATE_OBJECT_DIRECTORIES=\"\\\"<common>/objects\\\"\",GIT_CONFIG_COUNT=\"2\",GIT_CONFIG_KEY_0=\"rerere.enabled\",GIT_CONFIG_VALUE_0=\"false\",GIT_CONFIG_KEY_1=\"maintenance.auto\",GIT_CONFIG_VALUE_1=\"false\"}"
+        ],
+        "fixture": {
+          "rerereEnabled": true,
+          "packedRefsPresent": true
+        },
+        "addExitCode": 0,
+        "commitExitCode": 0,
+        "withoutGitConfig": {
+          "addExitCode": 0,
+          "commitExitCode": 128,
+          "denials": []
+        },
+        "writes": [
+          {
+            "path": "<common>/qualification-write",
+            "exitCode": 1,
+            "exists": false,
+            "denials": []
+          },
+          {
+            "path": "<common>/hooks/qualification-write",
+            "exitCode": 1,
+            "exists": false,
+            "denials": []
+          },
+          {
+            "path": "<outside>/qualification-write",
+            "exitCode": 1,
+            "exists": false,
+            "denials": []
+          }
+        ],
+        "network": {
+          "sandboxCode": "EPERM",
+          "controlCode": "timeout"
+        },
+        "calibration": {
+          "reader": "/usr/bin/log show --style ndjson",
+          "readerExitCode": 0,
+          "calibrated": false,
+          "printedDenials": [],
+          "observedDenials": []
+        },
+        "passed": false
+      },
+      {
+        "cliVersion": "0.164.0",
+        "startedAt": "2026-10-25T02:10:19.615Z",
+        "stoppedAt": "2026-10-25T02:10:34.613Z",
+        "durationMs": 16733,
+        "helper": "codex sandbox -P dotln-writer --log-denials",
+        "arguments": [
+          "-c",
+          "default_permissions=\"dotln-writer\"",
+          "-c",
+          "permissions.dotln-writer.filesystem={\":minimal\"=\"read\",\":workspace_roots\"=\"write\",\"/usr\"=\"read\",\"/bin\"=\"read\",\"/System\"=\"read\",\"/Library/Apple\"=\"read\",\"/opt/homebrew\"=\"read\",\"<home>/.local/share/fnm/node-versions/v26.9.0/installation\"=\"read\",\"/private/var/db/dyld\"=\"read\",\"/opt/homebrew/Cellar/git/2.55.0\"=\"read\",\"<home>/.codex/packages/standalone/releases/0.164.0-aarch64-apple-darwin\"=\"read\",\"<home>/.gitconfig\"=\"read\",\"<common>\"=\"read\",\"<gitdir>\"=\"write\",\"<store>\"=\"write\"}",
+          "-c",
+          "permissions.dotln-writer.network.enabled=false",
+          "-c",
+          "shell_environment_policy.inherit=\"none\"",
+          "-c",
+          "shell_environment_policy.set={PATH=\"<home>/.local/share/fnm/node-versions/v26.9.0/installation/bin:/opt/homebrew/Cellar/git/2.55.0/bin:/usr/bin:/bin\",GIT_OBJECT_DIRECTORY=\"<store>\",GIT_ALTERNATE_OBJECT_DIRECTORIES=\"\\\"<common>/objects\\\"\",GIT_CONFIG_COUNT=\"2\",GIT_CONFIG_KEY_0=\"rerere.enabled\",GIT_CONFIG_VALUE_0=\"false\",GIT_CONFIG_KEY_1=\"maintenance.auto\",GIT_CONFIG_VALUE_1=\"false\"}"
+        ],
+        "fixture": {
+          "rerereEnabled": true,
+          "packedRefsPresent": true
+        },
+        "addExitCode": 0,
+        "commitExitCode": 0,
+        "withoutGitConfig": {
+          "addExitCode": 0,
+          "commitExitCode": 128,
+          "denials": []
+        },
+        "writes": [
+          {
+            "path": "<common>/qualification-write",
+            "exitCode": 1,
+            "exists": false,
+            "denials": []
+          },
+          {
+            "path": "<common>/hooks/qualification-write",
+            "exitCode": 1,
+            "exists": false,
+            "denials": []
+          },
+          {
+            "path": "<outside>/qualification-write",
+            "exitCode": 1,
+            "exists": false,
+            "denials": []
+          }
+        ],
+        "network": {
+          "sandboxCode": "EPERM",
+          "controlCode": "timeout"
+        },
+        "calibration": {
+          "reader": "/usr/bin/log show --style ndjson",
+          "readerExitCode": 0,
+          "calibrated": false,
+          "printedDenials": [],
+          "observedDenials": []
+        },
+        "passed": false
+      },
+      {
+        "cliVersion": "0.164.0",
+        "startedAt": "2026-10-25T03:06:24.172Z",
+        "stoppedAt": "2026-10-25T03:06:39.077Z",
+        "durationMs": 16707,
+        "helper": "codex sandbox -P dotln-writer --log-denials",
+        "arguments": [
+          "-c",
+          "default_permissions=\"dotln-writer\"",
+          "-c",
+          "permissions.dotln-writer.filesystem={\":minimal\"=\"read\",\":workspace_roots\"=\"write\",\"/usr\"=\"read\",\"/bin\"=\"read\",\"/System\"=\"read\",\"/Library/Apple\"=\"read\",\"/opt/homebrew\"=\"read\",\"<home>/.local/share/fnm/node-versions/v26.9.0/installation\"=\"read\",\"/private/var/db/dyld\"=\"read\",\"/opt/homebrew/Cellar/git/2.55.0\"=\"read\",\"<home>/.codex/packages/standalone/releases/0.164.0-aarch64-apple-darwin\"=\"read\",\"<home>/.gitconfig\"=\"read\",\"<common>\"=\"read\",\"<gitdir>\"=\"write\",\"<store>\"=\"write\"}",
+          "-c",
+          "permissions.dotln-writer.network.enabled=false",
+          "-c",
+          "shell_environment_policy.inherit=\"none\"",
+          "-c",
+          "shell_environment_policy.set={PATH=\"<home>/.local/share/fnm/node-versions/v26.9.0/installation/bin:/opt/homebrew/Cellar/git/2.55.0/bin:/usr/bin:/bin\",GIT_OBJECT_DIRECTORY=\"<store>\",GIT_ALTERNATE_OBJECT_DIRECTORIES=\"\\\"<common>/objects\\\"\",GIT_CONFIG_COUNT=\"2\",GIT_CONFIG_KEY_0=\"rerere.enabled\",GIT_CONFIG_VALUE_0=\"false\",GIT_CONFIG_KEY_1=\"maintenance.auto\",GIT_CONFIG_VALUE_1=\"false\"}"
+        ],
+        "fixture": {
+          "rerereEnabled": true,
+          "packedRefsPresent": true
+        },
+        "addExitCode": 0,
+        "commitExitCode": 0,
+        "withoutGitConfig": {
+          "addExitCode": 0,
+          "commitExitCode": 128,
+          "denials": []
+        },
+        "writes": [
+          {
+            "path": "<common>/qualification-write",
+            "exitCode": 1,
+            "exists": false,
+            "denials": []
+          },
+          {
+            "path": "<common>/hooks/qualification-write",
+            "exitCode": 1,
+            "exists": false,
+            "denials": []
+          },
+          {
+            "path": "<outside>/qualification-write",
+            "exitCode": 1,
+            "exists": false,
+            "denials": []
+          }
+        ],
+        "network": {
+          "sandboxCode": "EPERM",
+          "controlCode": "timeout"
+        },
+        "calibration": {
+          "reader": "/usr/bin/log show --style ndjson",
+          "readerExitCode": 0,
+          "calibrated": false,
+          "printedDenials": [],
+          "observedDenials": []
+        },
+        "passed": false
+      },
+      {
+        "cliVersion": "0.164.0",
+        "startedAt": "2026-10-25T03:06:53.745Z",
+        "stoppedAt": "2026-10-25T03:07:08.521Z",
+        "durationMs": 16476,
+        "helper": "codex sandbox -P dotln-writer --log-denials",
+        "arguments": [
+          "-c",
+          "default_permissions=\"dotln-writer\"",
+          "-c",
+          "permissions.dotln-writer.filesystem={\":minimal\"=\"read\",\":workspace_roots\"=\"write\",\"/usr\"=\"read\",\"/bin\"=\"read\",\"/System\"=\"read\",\"/Library/Apple\"=\"read\",\"/opt/homebrew\"=\"read\",\"<home>/.local/share/fnm/node-versions/v26.9.0/installation\"=\"read\",\"/private/var/db/dyld\"=\"read\",\"/opt/homebrew/Cellar/git/2.55.0\"=\"read\",\"<home>/.codex/packages/standalone/releases/0.164.0-aarch64-apple-darwin\"=\"read\",\"<home>/.gitconfig\"=\"read\",\"<common>\"=\"read\",\"<gitdir>\"=\"write\",\"<store>\"=\"write\"}",
+          "-c",
+          "permissions.dotln-writer.network.enabled=false",
+          "-c",
+          "shell_environment_policy.inherit=\"none\"",
+          "-c",
+          "shell_environment_policy.set={PATH=\"<home>/.local/share/fnm/node-versions/v26.9.0/installation/bin:/opt/homebrew/Cellar/git/2.55.0/bin:/usr/bin:/bin\",GIT_OBJECT_DIRECTORY=\"<store>\",GIT_ALTERNATE_OBJECT_DIRECTORIES=\"\\\"<common>/objects\\\"\",GIT_CONFIG_COUNT=\"2\",GIT_CONFIG_KEY_0=\"rerere.enabled\",GIT_CONFIG_VALUE_0=\"false\",GIT_CONFIG_KEY_1=\"maintenance.auto\",GIT_CONFIG_VALUE_1=\"false\"}"
+        ],
+        "fixture": {
+          "rerereEnabled": true,
+          "packedRefsPresent": true
+        },
+        "addExitCode": 0,
+        "commitExitCode": 0,
+        "withoutGitConfig": {
+          "addExitCode": 0,
+          "commitExitCode": 128,
+          "denials": []
+        },
+        "writes": [
+          {
+            "path": "<common>/qualification-write",
+            "exitCode": 1,
+            "exists": false,
+            "denials": []
+          },
+          {
+            "path": "<common>/hooks/qualification-write",
+            "exitCode": 1,
+            "exists": false,
+            "denials": []
+          },
+          {
+            "path": "<outside>/qualification-write",
+            "exitCode": 1,
+            "exists": false,
+            "denials": []
+          }
+        ],
+        "network": {
+          "sandboxCode": "EPERM",
+          "controlCode": "timeout"
+        },
+        "calibration": {
+          "reader": "/usr/bin/log show --style ndjson",
+          "readerExitCode": 0,
+          "calibrated": false,
+          "printedDenials": [],
+          "observedDenials": []
+        },
+        "passed": false
+      },
+      {
+        "cliVersion": "0.164.0",
+        "startedAt": "2026-10-25T03:07:24.412Z",
+        "stoppedAt": "2026-10-25T03:07:39.212Z",
+        "durationMs": 16492,
+        "helper": "codex sandbox -P dotln-writer --log-denials",
+        "arguments": [
+          "-c",
+          "default_permissions=\"dotln-writer\"",
+          "-c",
+          "permissions.dotln-writer.filesystem={\":minimal\"=\"read\",\":workspace_roots\"=\"write\",\"/usr\"=\"read\",\"/bin\"=\"read\",\"/System\"=\"read\",\"/Library/Apple\"=\"read\",\"/opt/homebrew\"=\"read\",\"<home>/.local/share/fnm/node-versions/v26.9.0/installation\"=\"read\",\"/private/var/db/dyld\"=\"read\",\"/opt/homebrew/Cellar/git/2.55.0\"=\"read\",\"<home>/.codex/packages/standalone/releases/0.164.0-aarch64-apple-darwin\"=\"read\",\"<home>/.gitconfig\"=\"read\",\"<common>\"=\"read\",\"<gitdir>\"=\"write\",\"<store>\"=\"write\"}",
+          "-c",
+          "permissions.dotln-writer.network.enabled=false",
+          "-c",
+          "shell_environment_policy.inherit=\"none\"",
+          "-c",
+          "shell_environment_policy.set={PATH=\"<home>/.local/share/fnm/node-versions/v26.9.0/installation/bin:/opt/homebrew/Cellar/git/2.55.0/bin:/usr/bin:/bin\",GIT_OBJECT_DIRECTORY=\"<store>\",GIT_ALTERNATE_OBJECT_DIRECTORIES=\"\\\"<common>/objects\\\"\",GIT_CONFIG_COUNT=\"2\",GIT_CONFIG_KEY_0=\"rerere.enabled\",GIT_CONFIG_VALUE_0=\"false\",GIT_CONFIG_KEY_1=\"maintenance.auto\",GIT_CONFIG_VALUE_1=\"false\"}"
+        ],
+        "fixture": {
+          "rerereEnabled": true,
+          "packedRefsPresent": true
+        },
+        "addExitCode": 0,
+        "commitExitCode": 0,
+        "withoutGitConfig": {
+          "addExitCode": 0,
+          "commitExitCode": 128,
+          "denials": [
+            {
+              "operation": "file-write-create",
+              "path": "<common>/packed-refs.lock",
+              "classification": "expected-packed-refs-lock",
+              "count": 1
+            },
+            {
+              "operation": "file-write-create",
+              "path": "<common>/rr-cache",
+              "classification": "repository",
+              "count": 1
+            }
+          ]
+        },
+        "writes": [
+          {
+            "path": "<common>/qualification-write",
+            "exitCode": 1,
+            "exists": false,
+            "denials": [
+              {
+                "operation": "file-write-create",
+                "path": "<common>/qualification-write",
+                "classification": "repository",
+                "count": 1
+              }
+            ]
+          },
+          {
+            "path": "<common>/hooks/qualification-write",
+            "exitCode": 1,
+            "exists": false,
+            "denials": [
+              {
+                "operation": "file-write-create",
+                "path": "<common>/hooks/qualification-write",
+                "classification": "repository",
+                "count": 1
+              }
+            ]
+          },
+          {
+            "path": "<outside>/qualification-write",
+            "exitCode": 1,
+            "exists": false,
+            "denials": [
+              {
+                "operation": "file-write-create",
+                "path": "<outside>/qualification-write",
+                "classification": "outside",
+                "count": 1
+              }
+            ]
+          }
+        ],
+        "network": {
+          "sandboxCode": "EPERM",
+          "controlCode": "timeout"
+        },
+        "calibration": {
+          "reader": "/usr/bin/log show --style ndjson",
+          "readerExitCode": 0,
+          "calibrated": false,
+          "printedDenials": [
+            {
+              "operation": "file-write-create",
+              "path": "<common>/hooks/qualification-write",
+              "classification": "repository",
+              "count": 1
+            },
+            {
+              "operation": "file-write-times",
+              "path": "<common>/objects/7a/84be4a9cf1733e29d9639a04fea7a29dd121b1",
+              "classification": "repository",
+              "count": 1
+            },
+            {
+              "operation": "file-write-create",
+              "path": "<common>/packed-refs.lock",
+              "classification": "expected-packed-refs-lock",
+              "count": 2
+            },
+            {
+              "operation": "file-write-create",
+              "path": "<common>/qualification-write",
+              "classification": "repository",
+              "count": 1
+            },
+            {
+              "operation": "file-write-create",
+              "path": "<common>/rr-cache",
+              "classification": "repository",
+              "count": 1
+            },
+            {
+              "operation": "file-write-create",
+              "path": "<outside>/qualification-write",
+              "classification": "outside",
+              "count": 1
+            },
+            {
+              "operation": "network-outbound",
+              "path": "remote:*:9",
+              "classification": "network",
+              "count": 1
+            }
+          ],
+          "observedDenials": []
+        },
+        "passed": false
+      },
+      {
+        "cliVersion": "0.164.0",
+        "startedAt": "2026-10-25T03:08:59.476Z",
+        "stoppedAt": "2026-10-25T03:09:15.090Z",
+        "durationMs": 16617,
+        "helper": "codex sandbox -P dotln-writer --log-denials",
+        "arguments": [
+          "-c",
+          "default_permissions=\"dotln-writer\"",
+          "-c",
+          "permissions.dotln-writer.filesystem={\":minimal\"=\"read\",\":workspace_roots\"=\"write\",\"/usr\"=\"read\",\"/bin\"=\"read\",\"/System\"=\"read\",\"/Library/Apple\"=\"read\",\"/opt/homebrew\"=\"read\",\"<home>/.local/share/fnm/node-versions/v26.9.0/installation\"=\"read\",\"/private/var/db/dyld\"=\"read\",\"/opt/homebrew/Cellar/git/2.55.0\"=\"read\",\"<home>/.codex/packages/standalone/releases/0.164.0-aarch64-apple-darwin\"=\"read\",\"<home>/.gitconfig\"=\"read\",\"<common>\"=\"read\",\"<gitdir>\"=\"write\",\"<store>\"=\"write\"}",
+          "-c",
+          "permissions.dotln-writer.network.enabled=false",
+          "-c",
+          "shell_environment_policy.inherit=\"none\"",
+          "-c",
+          "shell_environment_policy.set={PATH=\"<home>/.local/share/fnm/node-versions/v26.9.0/installation/bin:/opt/homebrew/Cellar/git/2.55.0/bin:/usr/bin:/bin\",GIT_OBJECT_DIRECTORY=\"<store>\",GIT_ALTERNATE_OBJECT_DIRECTORIES=\"\\\"<common>/objects\\\"\",GIT_CONFIG_COUNT=\"2\",GIT_CONFIG_KEY_0=\"rerere.enabled\",GIT_CONFIG_VALUE_0=\"false\",GIT_CONFIG_KEY_1=\"maintenance.auto\",GIT_CONFIG_VALUE_1=\"false\"}"
+        ],
+        "fixture": {
+          "rerereEnabled": true,
+          "packedRefsPresent": true
+        },
+        "addExitCode": 0,
+        "commitExitCode": 0,
+        "withoutGitConfig": {
+          "addExitCode": 0,
+          "commitExitCode": 128,
+          "denials": [
+            {
+              "operation": "file-write-create",
+              "path": "<common>/packed-refs.lock",
+              "classification": "expected-packed-refs-lock",
+              "count": 1
+            },
+            {
+              "operation": "file-write-create",
+              "path": "<common>/rr-cache",
+              "classification": "repository",
+              "count": 1
+            }
+          ]
+        },
+        "writes": [
+          {
+            "path": "<common>/qualification-write",
+            "exitCode": 1,
+            "exists": false,
+            "denials": [
+              {
+                "operation": "file-write-create",
+                "path": "<common>/qualification-write",
+                "classification": "repository",
+                "count": 1
+              }
+            ]
+          },
+          {
+            "path": "<common>/hooks/qualification-write",
+            "exitCode": 1,
+            "exists": false,
+            "denials": [
+              {
+                "operation": "file-write-create",
+                "path": "<common>/hooks/qualification-write",
+                "classification": "repository",
+                "count": 1
+              }
+            ]
+          },
+          {
+            "path": "<outside>/qualification-write",
+            "exitCode": 1,
+            "exists": false,
+            "denials": [
+              {
+                "operation": "file-write-create",
+                "path": "<outside>/qualification-write",
+                "classification": "outside",
+                "count": 1
+              }
+            ]
+          }
+        ],
+        "network": {
+          "sandboxCode": "EPERM",
+          "controlCode": "timeout"
+        },
+        "calibration": {
+          "reader": "/usr/bin/log stream --style ndjson",
+          "readerExitCode": null,
+          "calibrated": false,
+          "printedDenials": [
+            {
+              "operation": "file-write-create",
+              "path": "<common>/hooks/qualification-write",
+              "classification": "repository",
+              "count": 1
+            },
+            {
+              "operation": "file-write-create",
+              "path": "<common>/qualification-write",
+              "classification": "repository",
+              "count": 1
+            },
+            {
+              "operation": "file-write-create",
+              "path": "<outside>/qualification-write",
+              "classification": "outside",
+              "count": 1
+            }
+          ],
+          "observedDenials": []
+        },
+        "passed": false
+      },
+      {
+        "cliVersion": "0.164.0",
+        "startedAt": "2026-10-25T03:09:33.878Z",
+        "stoppedAt": "2026-10-25T03:09:49.480Z",
+        "durationMs": 16604,
+        "helper": "codex sandbox -P dotln-writer --log-denials",
+        "arguments": [
+          "-c",
+          "default_permissions=\"dotln-writer\"",
+          "-c",
+          "permissions.dotln-writer.filesystem={\":minimal\"=\"read\",\":workspace_roots\"=\"write\",\"/usr\"=\"read\",\"/bin\"=\"read\",\"/System\"=\"read\",\"/Library/Apple\"=\"read\",\"/opt/homebrew\"=\"read\",\"<home>/.local/share/fnm/node-versions/v26.9.0/installation\"=\"read\",\"/private/var/db/dyld\"=\"read\",\"/opt/homebrew/Cellar/git/2.55.0\"=\"read\",\"<home>/.codex/packages/standalone/releases/0.164.0-aarch64-apple-darwin\"=\"read\",\"<home>/.gitconfig\"=\"read\",\"<common>\"=\"read\",\"<gitdir>\"=\"write\",\"<store>\"=\"write\"}",
+          "-c",
+          "permissions.dotln-writer.network.enabled=false",
+          "-c",
+          "shell_environment_policy.inherit=\"none\"",
+          "-c",
+          "shell_environment_policy.set={PATH=\"<home>/.local/share/fnm/node-versions/v26.9.0/installation/bin:/opt/homebrew/Cellar/git/2.55.0/bin:/usr/bin:/bin\",GIT_OBJECT_DIRECTORY=\"<store>\",GIT_ALTERNATE_OBJECT_DIRECTORIES=\"\\\"<common>/objects\\\"\",GIT_CONFIG_COUNT=\"2\",GIT_CONFIG_KEY_0=\"rerere.enabled\",GIT_CONFIG_VALUE_0=\"false\",GIT_CONFIG_KEY_1=\"maintenance.auto\",GIT_CONFIG_VALUE_1=\"false\"}"
+        ],
+        "fixture": {
+          "rerereEnabled": true,
+          "packedRefsPresent": true
+        },
+        "addExitCode": 0,
+        "commitExitCode": 0,
+        "withoutGitConfig": {
+          "addExitCode": 0,
+          "commitExitCode": 128,
+          "denials": [
+            {
+              "operation": "file-write-create",
+              "path": "<common>/packed-refs.lock",
+              "classification": "expected-packed-refs-lock",
+              "count": 1
+            },
+            {
+              "operation": "file-write-create",
+              "path": "<common>/rr-cache",
+              "classification": "repository",
+              "count": 1
+            }
+          ]
+        },
+        "writes": [
+          {
+            "path": "<common>/qualification-write",
+            "exitCode": 1,
+            "exists": false,
+            "denials": [
+              {
+                "operation": "file-write-create",
+                "path": "<common>/qualification-write",
+                "classification": "repository",
+                "count": 1
+              }
+            ]
+          },
+          {
+            "path": "<common>/hooks/qualification-write",
+            "exitCode": 1,
+            "exists": false,
+            "denials": [
+              {
+                "operation": "file-write-create",
+                "path": "<common>/hooks/qualification-write",
+                "classification": "repository",
+                "count": 1
+              }
+            ]
+          },
+          {
+            "path": "<outside>/qualification-write",
+            "exitCode": 1,
+            "exists": false,
+            "denials": [
+              {
+                "operation": "file-write-create",
+                "path": "<outside>/qualification-write",
+                "classification": "outside",
+                "count": 1
+              }
+            ]
+          }
+        ],
+        "network": {
+          "sandboxCode": "EPERM",
+          "controlCode": "timeout"
+        },
+        "calibration": {
+          "reader": "/usr/bin/log stream --style ndjson",
+          "readerExitCode": null,
+          "calibrated": false,
+          "printedDenials": [
+            {
+              "operation": "file-write-create",
+              "path": "<common>/hooks/qualification-write",
+              "classification": "repository",
+              "count": 1
+            },
+            {
+              "operation": "file-write-create",
+              "path": "<common>/qualification-write",
+              "classification": "repository",
+              "count": 1
+            },
+            {
+              "operation": "file-write-create",
+              "path": "<outside>/qualification-write",
+              "classification": "outside",
+              "count": 1
+            }
+          ],
+          "observedDenials": []
+        },
+        "passed": false
+      },
+      {
+        "cliVersion": "0.164.0",
+        "startedAt": "2026-10-25T03:10:00.029Z",
+        "stoppedAt": "2026-10-25T03:10:15.697Z",
+        "durationMs": 16672,
+        "helper": "codex sandbox -P dotln-writer --log-denials",
+        "arguments": [
+          "-c",
+          "default_permissions=\"dotln-writer\"",
+          "-c",
+          "permissions.dotln-writer.filesystem={\":minimal\"=\"read\",\":workspace_roots\"=\"write\",\"/usr\"=\"read\",\"/bin\"=\"read\",\"/System\"=\"read\",\"/Library/Apple\"=\"read\",\"/opt/homebrew\"=\"read\",\"<home>/.local/share/fnm/node-versions/v26.9.0/installation\"=\"read\",\"/private/var/db/dyld\"=\"read\",\"/opt/homebrew/Cellar/git/2.55.0\"=\"read\",\"<home>/.codex/packages/standalone/releases/0.164.0-aarch64-apple-darwin\"=\"read\",\"<home>/.gitconfig\"=\"read\",\"<common>\"=\"read\",\"<gitdir>\"=\"write\",\"<store>\"=\"write\"}",
+          "-c",
+          "permissions.dotln-writer.network.enabled=false",
+          "-c",
+          "shell_environment_policy.inherit=\"none\"",
+          "-c",
+          "shell_environment_policy.set={PATH=\"<home>/.local/share/fnm/node-versions/v26.9.0/installation/bin:/opt/homebrew/Cellar/git/2.55.0/bin:/usr/bin:/bin\",GIT_OBJECT_DIRECTORY=\"<store>\",GIT_ALTERNATE_OBJECT_DIRECTORIES=\"\\\"<common>/objects\\\"\",GIT_CONFIG_COUNT=\"2\",GIT_CONFIG_KEY_0=\"rerere.enabled\",GIT_CONFIG_VALUE_0=\"false\",GIT_CONFIG_KEY_1=\"maintenance.auto\",GIT_CONFIG_VALUE_1=\"false\"}"
+        ],
+        "fixture": {
+          "rerereEnabled": true,
+          "packedRefsPresent": true
+        },
+        "addExitCode": 0,
+        "commitExitCode": 0,
+        "withoutGitConfig": {
+          "addExitCode": 0,
+          "commitExitCode": 128,
+          "denials": [
+            {
+              "operation": "file-write-create",
+              "path": "<common>/packed-refs.lock",
+              "classification": "expected-packed-refs-lock",
+              "count": 1
+            },
+            {
+              "operation": "file-write-create",
+              "path": "<common>/rr-cache",
+              "classification": "repository",
+              "count": 1
+            }
+          ]
+        },
+        "writes": [
+          {
+            "path": "<common>/qualification-write",
+            "exitCode": 1,
+            "exists": false,
+            "denials": [
+              {
+                "operation": "file-write-create",
+                "path": "<common>/qualification-write",
+                "classification": "repository",
+                "count": 1
+              }
+            ]
+          },
+          {
+            "path": "<common>/hooks/qualification-write",
+            "exitCode": 1,
+            "exists": false,
+            "denials": [
+              {
+                "operation": "file-write-create",
+                "path": "<common>/hooks/qualification-write",
+                "classification": "repository",
+                "count": 1
+              }
+            ]
+          },
+          {
+            "path": "<outside>/qualification-write",
+            "exitCode": 1,
+            "exists": false,
+            "denials": [
+              {
+                "operation": "file-write-create",
+                "path": "<outside>/qualification-write",
+                "classification": "outside",
+                "count": 1
+              }
+            ]
+          }
+        ],
+        "network": {
+          "sandboxCode": "EPERM",
+          "controlCode": "timeout"
+        },
+        "calibration": {
+          "reader": "/usr/bin/log stream --style ndjson",
+          "readerExitCode": null,
+          "calibrated": false,
+          "printedDenials": [
+            {
+              "operation": "file-write-create",
+              "path": "<common>/hooks/qualification-write",
+              "classification": "repository",
+              "count": 1
+            },
+            {
+              "operation": "file-write-create",
+              "path": "<common>/qualification-write",
+              "classification": "repository",
+              "count": 1
+            },
+            {
+              "operation": "file-write-create",
+              "path": "<outside>/qualification-write",
+              "classification": "outside",
+              "count": 1
+            }
+          ],
+          "observedDenials": []
+        },
+        "passed": false
+      },
+      {
+        "cliVersion": "0.164.0",
+        "startedAt": "2026-10-25T03:10:22.796Z",
+        "stoppedAt": "2026-10-25T03:10:38.395Z",
+        "durationMs": 16603,
+        "helper": "codex sandbox -P dotln-writer --log-denials",
+        "arguments": [
+          "-c",
+          "default_permissions=\"dotln-writer\"",
+          "-c",
+          "permissions.dotln-writer.filesystem={\":minimal\"=\"read\",\":workspace_roots\"=\"write\",\"/usr\"=\"read\",\"/bin\"=\"read\",\"/System\"=\"read\",\"/Library/Apple\"=\"read\",\"/opt/homebrew\"=\"read\",\"<home>/.local/share/fnm/node-versions/v26.9.0/installation\"=\"read\",\"/private/var/db/dyld\"=\"read\",\"/opt/homebrew/Cellar/git/2.55.0\"=\"read\",\"<home>/.codex/packages/standalone/releases/0.164.0-aarch64-apple-darwin\"=\"read\",\"<home>/.gitconfig\"=\"read\",\"<common>\"=\"read\",\"<gitdir>\"=\"write\",\"<store>\"=\"write\"}",
+          "-c",
+          "permissions.dotln-writer.network.enabled=false",
+          "-c",
+          "shell_environment_policy.inherit=\"none\"",
+          "-c",
+          "shell_environment_policy.set={PATH=\"<home>/.local/share/fnm/node-versions/v26.9.0/installation/bin:/opt/homebrew/Cellar/git/2.55.0/bin:/usr/bin:/bin\",GIT_OBJECT_DIRECTORY=\"<store>\",GIT_ALTERNATE_OBJECT_DIRECTORIES=\"\\\"<common>/objects\\\"\",GIT_CONFIG_COUNT=\"2\",GIT_CONFIG_KEY_0=\"rerere.enabled\",GIT_CONFIG_VALUE_0=\"false\",GIT_CONFIG_KEY_1=\"maintenance.auto\",GIT_CONFIG_VALUE_1=\"false\"}"
+        ],
+        "fixture": {
+          "rerereEnabled": true,
+          "packedRefsPresent": true
+        },
+        "addExitCode": 0,
+        "commitExitCode": 0,
+        "withoutGitConfig": {
+          "addExitCode": 0,
+          "commitExitCode": 128,
+          "denials": [
+            {
+              "operation": "file-write-create",
+              "path": "<common>/packed-refs.lock",
+              "classification": "expected-packed-refs-lock",
+              "count": 1
+            },
+            {
+              "operation": "file-write-create",
+              "path": "<common>/rr-cache",
+              "classification": "repository",
+              "count": 1
+            }
+          ]
+        },
+        "writes": [
+          {
+            "path": "<common>/qualification-write",
+            "exitCode": 1,
+            "exists": false,
+            "denials": [
+              {
+                "operation": "file-write-create",
+                "path": "<common>/qualification-write",
+                "classification": "repository",
+                "count": 1
+              }
+            ]
+          },
+          {
+            "path": "<common>/hooks/qualification-write",
+            "exitCode": 1,
+            "exists": false,
+            "denials": [
+              {
+                "operation": "file-write-create",
+                "path": "<common>/hooks/qualification-write",
+                "classification": "repository",
+                "count": 1
+              }
+            ]
+          },
+          {
+            "path": "<outside>/qualification-write",
+            "exitCode": 1,
+            "exists": false,
+            "denials": [
+              {
+                "operation": "file-write-create",
+                "path": "<outside>/qualification-write",
+                "classification": "outside",
+                "count": 1
+              }
+            ]
+          }
+        ],
+        "network": {
+          "sandboxCode": "EPERM",
+          "controlCode": "timeout"
+        },
+        "calibration": {
+          "reader": "/usr/bin/log stream --style ndjson",
+          "readerExitCode": null,
+          "calibrated": false,
+          "printedDenials": [
+            {
+              "operation": "file-write-create",
+              "path": "<common>/hooks/qualification-write",
+              "classification": "repository",
+              "count": 1
+            },
+            {
+              "operation": "file-write-create",
+              "path": "<common>/qualification-write",
+              "classification": "repository",
+              "count": 1
+            },
+            {
+              "operation": "file-write-create",
+              "path": "<outside>/qualification-write",
+              "classification": "outside",
+              "count": 1
+            }
+          ],
+          "observedDenials": []
+        },
+        "passed": false
+      },
+      {
+        "cliVersion": "0.164.0",
+        "startedAt": "2026-10-25T03:10:46.054Z",
+        "stoppedAt": "2026-10-25T03:11:01.668Z",
+        "durationMs": 16617,
+        "helper": "codex sandbox -P dotln-writer --log-denials",
+        "arguments": [
+          "-c",
+          "default_permissions=\"dotln-writer\"",
+          "-c",
+          "permissions.dotln-writer.filesystem={\":minimal\"=\"read\",\":workspace_roots\"=\"write\",\"/usr\"=\"read\",\"/bin\"=\"read\",\"/System\"=\"read\",\"/Library/Apple\"=\"read\",\"/opt/homebrew\"=\"read\",\"<home>/.local/share/fnm/node-versions/v26.9.0/installation\"=\"read\",\"/private/var/db/dyld\"=\"read\",\"/opt/homebrew/Cellar/git/2.55.0\"=\"read\",\"<home>/.codex/packages/standalone/releases/0.164.0-aarch64-apple-darwin\"=\"read\",\"<home>/.gitconfig\"=\"read\",\"<common>\"=\"read\",\"<gitdir>\"=\"write\",\"<store>\"=\"write\"}",
+          "-c",
+          "permissions.dotln-writer.network.enabled=false",
+          "-c",
+          "shell_environment_policy.inherit=\"none\"",
+          "-c",
+          "shell_environment_policy.set={PATH=\"<home>/.local/share/fnm/node-versions/v26.9.0/installation/bin:/opt/homebrew/Cellar/git/2.55.0/bin:/usr/bin:/bin\",GIT_OBJECT_DIRECTORY=\"<store>\",GIT_ALTERNATE_OBJECT_DIRECTORIES=\"\\\"<common>/objects\\\"\",GIT_CONFIG_COUNT=\"2\",GIT_CONFIG_KEY_0=\"rerere.enabled\",GIT_CONFIG_VALUE_0=\"false\",GIT_CONFIG_KEY_1=\"maintenance.auto\",GIT_CONFIG_VALUE_1=\"false\"}"
+        ],
+        "fixture": {
+          "rerereEnabled": true,
+          "packedRefsPresent": true
+        },
+        "addExitCode": 0,
+        "commitExitCode": 0,
+        "withoutGitConfig": {
+          "addExitCode": 0,
+          "commitExitCode": 128,
+          "denials": [
+            {
+              "operation": "file-write-create",
+              "path": "<common>/packed-refs.lock",
+              "classification": "expected-packed-refs-lock",
+              "count": 1
+            },
+            {
+              "operation": "file-write-create",
+              "path": "<common>/rr-cache",
+              "classification": "repository",
+              "count": 1
+            }
+          ]
+        },
+        "writes": [
+          {
+            "path": "<common>/qualification-write",
+            "exitCode": 1,
+            "exists": false,
+            "denials": [
+              {
+                "operation": "file-write-create",
+                "path": "<common>/qualification-write",
+                "classification": "repository",
+                "count": 1
+              }
+            ]
+          },
+          {
+            "path": "<common>/hooks/qualification-write",
+            "exitCode": 1,
+            "exists": false,
+            "denials": [
+              {
+                "operation": "file-write-create",
+                "path": "<common>/hooks/qualification-write",
+                "classification": "repository",
+                "count": 1
+              }
+            ]
+          },
+          {
+            "path": "<outside>/qualification-write",
+            "exitCode": 1,
+            "exists": false,
+            "denials": [
+              {
+                "operation": "file-write-create",
+                "path": "<outside>/qualification-write",
+                "classification": "outside",
+                "count": 1
+              }
+            ]
+          }
+        ],
+        "network": {
+          "sandboxCode": "EPERM",
+          "controlCode": "timeout"
+        },
+        "calibration": {
+          "reader": "/usr/bin/log stream --style ndjson",
+          "readerExitCode": null,
+          "calibrated": false,
+          "printedDenials": [
+            {
+              "operation": "file-write-create",
+              "path": "<common>/hooks/qualification-write",
+              "classification": "repository",
+              "count": 1
+            },
+            {
+              "operation": "file-write-create",
+              "path": "<common>/qualification-write",
+              "classification": "repository",
+              "count": 1
+            },
+            {
+              "operation": "file-write-create",
+              "path": "<outside>/qualification-write",
+              "classification": "outside",
+              "count": 1
+            }
+          ],
+          "observedDenials": []
+        },
+        "passed": false
+      },
+      {
+        "cliVersion": "0.164.0",
+        "startedAt": "2026-10-25T03:11:20.483Z",
+        "stoppedAt": "2026-10-25T03:11:36.116Z",
+        "durationMs": 16636,
+        "helper": "codex sandbox -P dotln-writer --log-denials",
+        "arguments": [
+          "-c",
+          "default_permissions=\"dotln-writer\"",
+          "-c",
+          "permissions.dotln-writer.filesystem={\":minimal\"=\"read\",\":workspace_roots\"=\"write\",\"/usr\"=\"read\",\"/bin\"=\"read\",\"/System\"=\"read\",\"/Library/Apple\"=\"read\",\"/opt/homebrew\"=\"read\",\"<home>/.local/share/fnm/node-versions/v26.9.0/installation\"=\"read\",\"/private/var/db/dyld\"=\"read\",\"/opt/homebrew/Cellar/git/2.55.0\"=\"read\",\"<home>/.codex/packages/standalone/releases/0.164.0-aarch64-apple-darwin\"=\"read\",\"<home>/.gitconfig\"=\"read\",\"<common>\"=\"read\",\"<gitdir>\"=\"write\",\"<store>\"=\"write\"}",
+          "-c",
+          "permissions.dotln-writer.network.enabled=false",
+          "-c",
+          "shell_environment_policy.inherit=\"none\"",
+          "-c",
+          "shell_environment_policy.set={PATH=\"<home>/.local/share/fnm/node-versions/v26.9.0/installation/bin:/opt/homebrew/Cellar/git/2.55.0/bin:/usr/bin:/bin\",GIT_OBJECT_DIRECTORY=\"<store>\",GIT_ALTERNATE_OBJECT_DIRECTORIES=\"\\\"<common>/objects\\\"\",GIT_CONFIG_COUNT=\"2\",GIT_CONFIG_KEY_0=\"rerere.enabled\",GIT_CONFIG_VALUE_0=\"false\",GIT_CONFIG_KEY_1=\"maintenance.auto\",GIT_CONFIG_VALUE_1=\"false\"}"
+        ],
+        "fixture": {
+          "rerereEnabled": true,
+          "packedRefsPresent": true
+        },
+        "addExitCode": 0,
+        "commitExitCode": 0,
+        "withoutGitConfig": {
+          "addExitCode": 0,
+          "commitExitCode": 128,
+          "denials": [
+            {
+              "operation": "file-write-create",
+              "path": "<common>/packed-refs.lock",
+              "classification": "expected-packed-refs-lock",
+              "count": 1
+            },
+            {
+              "operation": "file-write-create",
+              "path": "<common>/rr-cache",
+              "classification": "repository",
+              "count": 1
+            }
+          ]
+        },
+        "writes": [
+          {
+            "path": "<common>/qualification-write",
+            "exitCode": 1,
+            "exists": false,
+            "denials": [
+              {
+                "operation": "file-write-create",
+                "path": "<common>/qualification-write",
+                "classification": "repository",
+                "count": 1
+              }
+            ]
+          },
+          {
+            "path": "<common>/hooks/qualification-write",
+            "exitCode": 1,
+            "exists": false,
+            "denials": [
+              {
+                "operation": "file-write-create",
+                "path": "<common>/hooks/qualification-write",
+                "classification": "repository",
+                "count": 1
+              }
+            ]
+          },
+          {
+            "path": "<outside>/qualification-write",
+            "exitCode": 1,
+            "exists": false,
+            "denials": [
+              {
+                "operation": "file-write-create",
+                "path": "<outside>/qualification-write",
+                "classification": "outside",
+                "count": 1
+              }
+            ]
+          }
+        ],
+        "network": {
+          "sandboxCode": "EPERM",
+          "controlCode": "timeout"
+        },
+        "calibration": {
+          "reader": "/usr/bin/log stream --style ndjson",
+          "readerExitCode": null,
+          "calibrated": false,
+          "printedDenials": [
+            {
+              "operation": "file-write-create",
+              "path": "<common>/hooks/qualification-write",
+              "classification": "repository",
+              "count": 1
+            },
+            {
+              "operation": "file-write-create",
+              "path": "<common>/qualification-write",
+              "classification": "repository",
+              "count": 1
+            },
+            {
+              "operation": "file-write-create",
+              "path": "<outside>/qualification-write",
+              "classification": "outside",
+              "count": 1
+            }
+          ],
+          "observedDenials": []
+        },
+        "passed": false
+      },
+      {
+        "cliVersion": "0.164.0",
+        "startedAt": "2026-10-25T03:12:06.492Z",
+        "stoppedAt": "2026-10-25T03:12:22.030Z",
+        "durationMs": 16542,
+        "helper": "codex sandbox -P dotln-writer --log-denials",
+        "arguments": [
+          "-c",
+          "default_permissions=\"dotln-writer\"",
+          "-c",
+          "permissions.dotln-writer.filesystem={\":minimal\"=\"read\",\":workspace_roots\"=\"write\",\"/usr\"=\"read\",\"/bin\"=\"read\",\"/System\"=\"read\",\"/Library/Apple\"=\"read\",\"/opt/homebrew\"=\"read\",\"<home>/.local/share/fnm/node-versions/v26.9.0/installation\"=\"read\",\"/private/var/db/dyld\"=\"read\",\"/opt/homebrew/Cellar/git/2.55.0\"=\"read\",\"<home>/.codex/packages/standalone/releases/0.164.0-aarch64-apple-darwin\"=\"read\",\"<home>/.gitconfig\"=\"read\",\"<common>\"=\"read\",\"<gitdir>\"=\"write\",\"<store>\"=\"write\"}",
+          "-c",
+          "permissions.dotln-writer.network.enabled=false",
+          "-c",
+          "shell_environment_policy.inherit=\"none\"",
+          "-c",
+          "shell_environment_policy.set={PATH=\"<home>/.local/share/fnm/node-versions/v26.9.0/installation/bin:/opt/homebrew/Cellar/git/2.55.0/bin:/usr/bin:/bin\",GIT_OBJECT_DIRECTORY=\"<store>\",GIT_ALTERNATE_OBJECT_DIRECTORIES=\"\\\"<common>/objects\\\"\",GIT_CONFIG_COUNT=\"2\",GIT_CONFIG_KEY_0=\"rerere.enabled\",GIT_CONFIG_VALUE_0=\"false\",GIT_CONFIG_KEY_1=\"maintenance.auto\",GIT_CONFIG_VALUE_1=\"false\"}"
+        ],
+        "fixture": {
+          "rerereEnabled": true,
+          "packedRefsPresent": true
+        },
+        "addExitCode": 0,
+        "commitExitCode": 0,
+        "withoutGitConfig": {
+          "addExitCode": 0,
+          "commitExitCode": 128,
+          "denials": [
+            {
+              "operation": "file-write-create",
+              "path": "<common>/packed-refs.lock",
+              "classification": "expected-packed-refs-lock",
+              "count": 1
+            },
+            {
+              "operation": "file-write-create",
+              "path": "<common>/rr-cache",
+              "classification": "repository",
+              "count": 1
+            }
+          ]
+        },
+        "writes": [
+          {
+            "path": "<common>/qualification-write",
+            "exitCode": 1,
+            "exists": false,
+            "denials": [
+              {
+                "operation": "file-write-create",
+                "path": "<common>/qualification-write",
+                "classification": "repository",
+                "count": 1
+              }
+            ]
+          },
+          {
+            "path": "<common>/hooks/qualification-write",
+            "exitCode": 1,
+            "exists": false,
+            "denials": [
+              {
+                "operation": "file-write-create",
+                "path": "<common>/hooks/qualification-write",
+                "classification": "repository",
+                "count": 1
+              }
+            ]
+          },
+          {
+            "path": "<outside>/qualification-write",
+            "exitCode": 1,
+            "exists": false,
+            "denials": [
+              {
+                "operation": "file-write-create",
+                "path": "<outside>/qualification-write",
+                "classification": "outside",
+                "count": 1
+              }
+            ]
+          }
+        ],
+        "network": {
+          "sandboxCode": "EPERM",
+          "controlCode": "timeout"
+        },
+        "calibration": {
+          "reader": "/usr/bin/log stream --style ndjson",
+          "readerExitCode": null,
+          "calibrated": true,
+          "printedDenials": [
+            {
+              "operation": "file-write-create",
+              "path": "<common>/hooks/qualification-write",
+              "classification": "repository",
+              "count": 1
+            },
+            {
+              "operation": "file-write-create",
+              "path": "<common>/qualification-write",
+              "classification": "repository",
+              "count": 1
+            },
+            {
+              "operation": "file-write-create",
+              "path": "<outside>/qualification-write",
+              "classification": "outside",
+              "count": 1
+            }
+          ],
+          "observedDenials": [
+            {
+              "operation": "file-write-create",
+              "path": "<common>/hooks/qualification-write",
+              "classification": "repository",
+              "count": 1
+            },
+            {
+              "operation": "file-write-create",
+              "path": "<common>/qualification-write",
+              "classification": "repository",
+              "count": 1
+            },
+            {
+              "operation": "file-write-create",
+              "path": "<outside>/qualification-write",
+              "classification": "outside",
+              "count": 1
+            }
+          ]
+        },
+        "passed": true
+      },
+      {
+        "cliVersion": "0.164.0",
+        "startedAt": "2026-10-25T03:27:12.076Z",
+        "stoppedAt": "2026-10-25T03:27:27.689Z",
+        "durationMs": 16617,
+        "helper": "codex sandbox -P dotln-writer --log-denials",
+        "arguments": [
+          "-c",
+          "default_permissions=\"dotln-writer\"",
+          "-c",
+          "permissions.dotln-writer.filesystem={\":minimal\"=\"read\",\":workspace_roots\"=\"write\",\"/usr\"=\"read\",\"/bin\"=\"read\",\"/System\"=\"read\",\"/Library/Apple\"=\"read\",\"/opt/homebrew\"=\"read\",\"<home>/.local/share/fnm/node-versions/v26.9.0/installation\"=\"read\",\"/private/var/db/dyld\"=\"read\",\"/opt/homebrew/Cellar/git/2.55.0\"=\"read\",\"<home>/.codex/packages/standalone/releases/0.164.0-aarch64-apple-darwin\"=\"read\",\"<home>/.gitconfig\"=\"read\",\"<common>\"=\"read\",\"<gitdir>\"=\"write\",\"<store>\"=\"write\"}",
+          "-c",
+          "permissions.dotln-writer.network.enabled=false",
+          "-c",
+          "shell_environment_policy.inherit=\"none\"",
+          "-c",
+          "shell_environment_policy.set={PATH=\"<home>/.local/share/fnm/node-versions/v26.9.0/installation/bin:/opt/homebrew/Cellar/git/2.55.0/bin:/usr/bin:/bin\",GIT_OBJECT_DIRECTORY=\"<store>\",GIT_ALTERNATE_OBJECT_DIRECTORIES=\"\\\"<common>/objects\\\"\",GIT_CONFIG_COUNT=\"2\",GIT_CONFIG_KEY_0=\"rerere.enabled\",GIT_CONFIG_VALUE_0=\"false\",GIT_CONFIG_KEY_1=\"maintenance.auto\",GIT_CONFIG_VALUE_1=\"false\"}"
+        ],
+        "fixture": {
+          "rerereEnabled": true,
+          "packedRefsPresent": true
+        },
+        "addExitCode": 0,
+        "commitExitCode": 0,
+        "withoutGitConfig": {
+          "addExitCode": 0,
+          "commitExitCode": 128,
+          "denials": [
+            {
+              "operation": "file-write-create",
+              "path": "<common>/packed-refs.lock",
+              "classification": "expected-packed-refs-lock",
+              "count": 1
+            },
+            {
+              "operation": "file-write-create",
+              "path": "<common>/rr-cache",
+              "classification": "repository",
+              "count": 1
+            }
+          ]
+        },
+        "writes": [
+          {
+            "path": "<common>/qualification-write",
+            "exitCode": 1,
+            "exists": false,
+            "denials": [
+              {
+                "operation": "file-write-create",
+                "path": "<common>/qualification-write",
+                "classification": "repository",
+                "count": 1
+              }
+            ]
+          },
+          {
+            "path": "<common>/hooks/qualification-write",
+            "exitCode": 1,
+            "exists": false,
+            "denials": [
+              {
+                "operation": "file-write-create",
+                "path": "<common>/hooks/qualification-write",
+                "classification": "repository",
+                "count": 1
+              }
+            ]
+          },
+          {
+            "path": "<outside>/qualification-write",
+            "exitCode": 1,
+            "exists": false,
+            "denials": [
+              {
+                "operation": "file-write-create",
+                "path": "<outside>/qualification-write",
+                "classification": "outside",
+                "count": 1
+              }
+            ]
+          }
+        ],
+        "network": {
+          "sandboxCode": "EPERM",
+          "controlCode": "timeout"
+        },
+        "calibration": {
+          "reader": "/usr/bin/log stream --style ndjson",
+          "readerExitCode": null,
+          "calibrated": false,
+          "printedDenials": [
+            {
+              "operation": "file-write-create",
+              "path": "<common>/hooks/qualification-write",
+              "classification": "repository",
+              "count": 1
+            },
+            {
+              "operation": "file-write-times",
+              "path": "<common>/objects/7a/84be4a9cf1733e29d9639a04fea7a29dd121b1",
+              "classification": "repository",
+              "count": 1
+            },
+            {
+              "operation": "file-write-create",
+              "path": "<common>/packed-refs.lock",
+              "classification": "expected-packed-refs-lock",
+              "count": 2
+            },
+            {
+              "operation": "file-write-create",
+              "path": "<common>/qualification-write",
+              "classification": "repository",
+              "count": 1
+            },
+            {
+              "operation": "file-write-create",
+              "path": "<common>/rr-cache",
+              "classification": "repository",
+              "count": 1
+            },
+            {
+              "operation": "file-read-data",
+              "path": "<home>/.CFUserTextEncoding",
+              "classification": "outside",
+              "count": 4
+            },
+            {
+              "operation": "file-read-data",
+              "path": "<home>/Library/Preferences/.GlobalPreferences_m.plist",
+              "classification": "outside",
+              "count": 3
+            },
+            {
+              "operation": "file-read-data",
+              "path": "<home>/Library/Preferences/.GlobalPreferences.plist",
+              "classification": "outside",
+              "count": 3
+            },
+            {
+              "operation": "file-read-data",
+              "path": "<home>/Library/Preferences/ByHost/<redacted>",
+              "classification": "outside",
+              "count": 3
+            },
+            {
+              "operation": "file-write-create",
+              "path": "<outside>/qualification-write",
+              "classification": "outside",
+              "count": 1
+            },
+            {
+              "operation": "sysctl-read",
+              "path": "kern.bootargs",
+              "classification": "outside",
+              "count": 31
+            },
+            {
+              "operation": "sysctl-read",
+              "path": "kern.iossupportversion",
+              "classification": "outside",
+              "count": 31
+            },
+            {
+              "operation": "sysctl-read",
+              "path": "kern.ngroups",
+              "classification": "outside",
+              "count": 8
+            },
+            {
+              "operation": "network-outbound",
+              "path": "remote:*:9",
+              "classification": "network",
+              "count": 1
+            },
+            {
+              "operation": "sysctl-read",
+              "path": "security.mac.lockdown_mode_state",
+              "classification": "outside",
+              "count": 31
+            },
+            {
+              "operation": "system-info",
+              "path": "vfs.disk-space",
+              "classification": "outside",
+              "count": 4
+            }
+          ],
+          "observedDenials": [
+            {
+              "operation": "file-write-create",
+              "path": "<common>/hooks/qualification-write",
+              "classification": "repository",
+              "count": 1
+            },
+            {
+              "operation": "file-write-times",
+              "path": "<common>/objects/7a/84be4a9cf1733e29d9639a04fea7a29dd121b1",
+              "classification": "repository",
+              "count": 1
+            },
+            {
+              "operation": "file-write-create",
+              "path": "<common>/packed-refs.lock",
+              "classification": "expected-packed-refs-lock",
+              "count": 2
+            },
+            {
+              "operation": "file-write-create",
+              "path": "<common>/qualification-write",
+              "classification": "repository",
+              "count": 1
+            },
+            {
+              "operation": "file-write-create",
+              "path": "<common>/rr-cache",
+              "classification": "repository",
+              "count": 1
+            },
+            {
+              "operation": "file-write-create",
+              "path": "<outside>/qualification-write",
+              "classification": "outside",
+              "count": 1
+            }
+          ]
+        },
+        "passed": false
+      },
+      {
+        "cliVersion": "0.164.0",
+        "startedAt": "2026-10-25T03:28:16.939Z",
+        "stoppedAt": "2026-10-25T03:28:32.483Z",
+        "durationMs": 16547,
+        "helper": "codex sandbox -P dotln-writer --log-denials",
+        "arguments": [
+          "-c",
+          "default_permissions=\"dotln-writer\"",
+          "-c",
+          "permissions.dotln-writer.filesystem={\":minimal\"=\"read\",\":workspace_roots\"=\"write\",\"/usr\"=\"read\",\"/bin\"=\"read\",\"/System\"=\"read\",\"/Library/Apple\"=\"read\",\"/opt/homebrew\"=\"read\",\"<home>/.local/share/fnm/node-versions/v26.9.0/installation\"=\"read\",\"/private/var/db/dyld\"=\"read\",\"/opt/homebrew/Cellar/git/2.55.0\"=\"read\",\"<home>/.codex/packages/standalone/releases/0.164.0-aarch64-apple-darwin\"=\"read\",\"<home>/.gitconfig\"=\"read\",\"<common>\"=\"read\",\"<gitdir>\"=\"write\",\"<store>\"=\"write\"}",
+          "-c",
+          "permissions.dotln-writer.network.enabled=false",
+          "-c",
+          "shell_environment_policy.inherit=\"none\"",
+          "-c",
+          "shell_environment_policy.set={PATH=\"<home>/.local/share/fnm/node-versions/v26.9.0/installation/bin:/opt/homebrew/Cellar/git/2.55.0/bin:/usr/bin:/bin\",GIT_OBJECT_DIRECTORY=\"<store>\",GIT_ALTERNATE_OBJECT_DIRECTORIES=\"\\\"<common>/objects\\\"\",GIT_CONFIG_COUNT=\"2\",GIT_CONFIG_KEY_0=\"rerere.enabled\",GIT_CONFIG_VALUE_0=\"false\",GIT_CONFIG_KEY_1=\"maintenance.auto\",GIT_CONFIG_VALUE_1=\"false\"}"
+        ],
+        "fixture": {
+          "rerereEnabled": true,
+          "packedRefsPresent": true
+        },
+        "addExitCode": 0,
+        "commitExitCode": 0,
+        "withoutGitConfig": {
+          "addExitCode": 0,
+          "commitExitCode": 128,
+          "denials": [
+            {
+              "operation": "file-write-create",
+              "path": "<common>/packed-refs.lock",
+              "classification": "expected-packed-refs-lock",
+              "count": 1
+            },
+            {
+              "operation": "file-write-create",
+              "path": "<common>/rr-cache",
+              "classification": "repository",
+              "count": 1
+            }
+          ]
+        },
+        "writes": [
+          {
+            "path": "<common>/qualification-write",
+            "exitCode": 1,
+            "exists": false,
+            "denials": [
+              {
+                "operation": "file-write-create",
+                "path": "<common>/qualification-write",
+                "classification": "repository",
+                "count": 1
+              }
+            ]
+          },
+          {
+            "path": "<common>/hooks/qualification-write",
+            "exitCode": 1,
+            "exists": false,
+            "denials": [
+              {
+                "operation": "file-write-create",
+                "path": "<common>/hooks/qualification-write",
+                "classification": "repository",
+                "count": 1
+              }
+            ]
+          },
+          {
+            "path": "<outside>/qualification-write",
+            "exitCode": 1,
+            "exists": false,
+            "denials": [
+              {
+                "operation": "file-write-create",
+                "path": "<outside>/qualification-write",
+                "classification": "outside",
+                "count": 1
+              }
+            ]
+          }
+        ],
+        "network": {
+          "sandboxCode": "EPERM",
+          "controlCode": "timeout"
+        },
+        "calibration": {
+          "reader": "/usr/bin/log stream --style ndjson",
+          "readerExitCode": null,
+          "calibrated": true,
+          "printedDenials": [
+            {
+              "operation": "file-write-create",
+              "path": "<common>/hooks/qualification-write",
+              "classification": "repository",
+              "count": 1
+            },
+            {
+              "operation": "file-write-times",
+              "path": "<common>/objects/7a/84be4a9cf1733e29d9639a04fea7a29dd121b1",
+              "classification": "repository",
+              "count": 1
+            },
+            {
+              "operation": "file-write-create",
+              "path": "<common>/packed-refs.lock",
+              "classification": "expected-packed-refs-lock",
+              "count": 2
+            },
+            {
+              "operation": "file-write-create",
+              "path": "<common>/qualification-write",
+              "classification": "repository",
+              "count": 1
+            },
+            {
+              "operation": "file-write-create",
+              "path": "<common>/rr-cache",
+              "classification": "repository",
+              "count": 1
+            },
+            {
+              "operation": "file-read-data",
+              "path": "<home>/.CFUserTextEncoding",
+              "classification": "outside",
+              "count": 5
+            },
+            {
+              "operation": "file-read-data",
+              "path": "<home>/Library/Preferences/.GlobalPreferences_m.plist",
+              "classification": "outside",
+              "count": 4
+            },
+            {
+              "operation": "file-read-data",
+              "path": "<home>/Library/Preferences/.GlobalPreferences.plist",
+              "classification": "outside",
+              "count": 4
+            },
+            {
+              "operation": "file-read-data",
+              "path": "<home>/Library/Preferences/ByHost/<redacted>",
+              "classification": "outside",
+              "count": 4
+            },
+            {
+              "operation": "file-write-create",
+              "path": "<outside>/qualification-write",
+              "classification": "outside",
+              "count": 1
+            },
+            {
+              "operation": "sysctl-read",
+              "path": "kern.bootargs",
+              "classification": "outside",
+              "count": 32
+            },
+            {
+              "operation": "sysctl-read",
+              "path": "kern.iossupportversion",
+              "classification": "outside",
+              "count": 32
+            },
+            {
+              "operation": "sysctl-read",
+              "path": "kern.ngroups",
+              "classification": "outside",
+              "count": 8
+            },
+            {
+              "operation": "network-outbound",
+              "path": "remote:*:9",
+              "classification": "network",
+              "count": 1
+            },
+            {
+              "operation": "sysctl-read",
+              "path": "security.mac.lockdown_mode_state",
+              "classification": "outside",
+              "count": 32
+            },
+            {
+              "operation": "system-info",
+              "path": "vfs.disk-space",
+              "classification": "outside",
+              "count": 4
+            }
+          ],
+          "observedDenials": [
+            {
+              "operation": "file-write-create",
+              "path": "<common>/hooks/qualification-write",
+              "classification": "repository",
+              "count": 1
+            },
+            {
+              "operation": "file-write-times",
+              "path": "<common>/objects/7a/84be4a9cf1733e29d9639a04fea7a29dd121b1",
+              "classification": "repository",
+              "count": 1
+            },
+            {
+              "operation": "file-write-create",
+              "path": "<common>/packed-refs.lock",
+              "classification": "expected-packed-refs-lock",
+              "count": 2
+            },
+            {
+              "operation": "file-write-create",
+              "path": "<common>/qualification-write",
+              "classification": "repository",
+              "count": 1
+            },
+            {
+              "operation": "file-write-create",
+              "path": "<common>/rr-cache",
+              "classification": "repository",
+              "count": 1
+            },
+            {
+              "operation": "file-read-data",
+              "path": "<home>/.CFUserTextEncoding",
+              "classification": "outside",
+              "count": 10
+            },
+            {
+              "operation": "file-read-data",
+              "path": "<home>/Library/Preferences/.GlobalPreferences_m.plist",
+              "classification": "outside",
+              "count": 4
+            },
+            {
+              "operation": "file-read-data",
+              "path": "<home>/Library/Preferences/.GlobalPreferences.plist",
+              "classification": "outside",
+              "count": 4
+            },
+            {
+              "operation": "file-read-data",
+              "path": "<home>/Library/Preferences/ByHost/<redacted>",
+              "classification": "outside",
+              "count": 4
+            },
+            {
+              "operation": "file-write-create",
+              "path": "<outside>/qualification-write",
+              "classification": "outside",
+              "count": 1
+            },
+            {
+              "operation": "sysctl-read",
+              "path": "kern.bootargs",
+              "classification": "outside",
+              "count": 40
+            },
+            {
+              "operation": "sysctl-read",
+              "path": "kern.iossupportversion",
+              "classification": "outside",
+              "count": 40
+            },
+            {
+              "operation": "sysctl-read",
+              "path": "kern.ngroups",
+              "classification": "outside",
+              "count": 8
+            },
+            {
+              "operation": "network-outbound",
+              "path": "remote:*:9",
+              "classification": "network",
+              "count": 1
+            },
+            {
+              "operation": "sysctl-read",
+              "path": "security.mac.lockdown_mode_state",
+              "classification": "outside",
+              "count": 40
+            },
+            {
+              "operation": "system-info",
+              "path": "vfs.disk-space",
+              "classification": "outside",
+              "count": 35
+            }
+          ]
+        },
+        "passed": true
+      }
+    ]
+  },
+  "live": {
+    "passed": true,
+    "episodes": [
+      {
+        "episode": 1,
+        "causeDecision": null,
+        "cliVersion": "0.164.0",
+        "model": "gpt-6.1-sol",
+        "effort": "max",
+        "effectiveReadback": "unknown",
+        "startedAt": "2026-10-25T03:12:33.053Z",
+        "durationMs": 56664,
+        "processWindow": {
+          "startedAt": "2026-10-25T03:12:34.688Z",
+          "stoppedAt": "2026-10-25T03:13:27.660Z"
+        },
+        "commands": [
+          {
+            "command": "/bin/zsh -lc pwd",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc 'git rev-parse --show-toplevel'",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc 'git ls-files'",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc 'git status --short'",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc 'cat -- AGENTS.md'",
+            "exitCode": 1
+          },
+          {
+            "command": "/bin/zsh -lc 'cat -- fixture-test.mjs'",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc 'cat -- fixture.txt'",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc 'node fixture-test.mjs'",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc 'git status --short'",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc 'git diff --cached --no-ext-diff --no-textconv'",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc 'git diff --no-ext-diff --no-textconv'",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc 'git add -A'",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc 'git commit -F <worktree>/.dotln/commit-message.txt'",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc 'git status --short'",
+            "exitCode": 0
+          }
+        ],
+        "commitCommandCount": 1,
+        "objectLocation": {
+          "changed": true,
+          "privateReadable": true,
+          "sharedReadable": false,
+          "classification": "private-only"
+        },
+        "host": {
+          "outcome": "observed",
+          "refusal": null,
+          "writer": {
+            "status": "completed",
+            "requiresHuman": false
+          },
+          "attempts": 1,
+          "candidateImported": 1,
+          "importedObjects": 3,
+          "sourceChangeObserved": 1,
+          "importPrecedesObservation": true,
+          "focusedBeforeExit": 1,
+          "focusedAfterExit": 0
+        },
+        "denials": {
+          "available": false,
+          "readerExitCode": null,
+          "paths": [],
+          "packedRefsLockCount": 0
+        },
+        "usage": {
+          "source": "codex-result-envelope",
+          "scope": "dispatch",
+          "observedAt": null,
+          "usage": {
+            "inputTokens": 135408,
+            "cachedInputTokens": 118016,
+            "cacheWriteInputTokens": 0,
+            "outputTokens": 1053,
+            "reasoningOutputTokens": 235,
+            "totalTokens": 136461,
+            "costUsd": null
+          }
+        },
+        "failure": null,
+        "passed": false,
+        "stopReason": null
+      },
+      {
+        "episode": 2,
+        "causeDecision": "WO-204-D009",
+        "cliVersion": "0.164.0",
+        "model": "gpt-6.1-sol",
+        "effort": "max",
+        "effectiveReadback": "unknown",
+        "startedAt": "2026-10-25T03:15:43.221Z",
+        "durationMs": 47554,
+        "processWindow": {
+          "startedAt": "2026-10-25T03:15:44.927Z",
+          "stoppedAt": "2026-10-25T03:16:28.811Z"
+        },
+        "commands": [
+          {
+            "command": "/bin/zsh -lc pwd",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc 'git rev-parse --show-toplevel'",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc 'git ls-files'",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc 'git status --short'",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc 'cat -- fixture-test.mjs'",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc 'cat -- AGENTS.md'",
+            "exitCode": 1
+          },
+          {
+            "command": "/bin/zsh -lc 'cat -- fixture.txt'",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc 'node fixture-test.mjs'",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc 'git diff --cached --no-ext-diff --no-textconv'",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc 'git diff --no-ext-diff --no-textconv'",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc 'git status --short'",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc 'git add -A'",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc 'git commit -F <worktree>/.dotln/commit-message.txt'",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc 'git diff --cached --no-ext-diff --no-textconv'",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc 'git status --short'",
+            "exitCode": 0
+          }
+        ],
+        "commitCommandCount": 1,
+        "objectLocation": {
+          "changed": true,
+          "privateReadable": true,
+          "sharedReadable": false,
+          "classification": "private-only"
+        },
+        "host": {
+          "outcome": "observed",
+          "refusal": null,
+          "writer": {
+            "status": "completed",
+            "requiresHuman": false
+          },
+          "attempts": 1,
+          "candidateImported": 1,
+          "importedObjects": 3,
+          "sourceChangeObserved": 1,
+          "importPrecedesObservation": true,
+          "focusedBeforeExit": 1,
+          "focusedAfterExit": 0
+        },
+        "denials": {
+          "available": true,
+          "readerExitCode": null,
+          "paths": [
+            {
+              "operation": "file-write-create",
+              "path": "<common>/packed-refs.lock",
+              "classification": "expected-packed-refs-lock",
+              "count": 1
+            }
+          ],
+          "packedRefsLockCount": 1
+        },
+        "usage": {
+          "source": "codex-result-envelope",
+          "scope": "dispatch",
+          "observedAt": null,
+          "usage": {
+            "inputTokens": 135323,
+            "cachedInputTokens": 116864,
+            "cacheWriteInputTokens": 0,
+            "outputTokens": 1212,
+            "reasoningOutputTokens": 321,
+            "totalTokens": 136535,
+            "costUsd": null
+          }
+        },
+        "failure": null,
+        "passed": true,
+        "stopReason": null
+      }
+    ],
+    "setupFailures": [
+      {
+        "attemptedEpisode": 2,
+        "causeDecision": "WO-204-D008",
+        "cliVersion": "0.164.0",
+        "model": "gpt-6.1-sol",
+        "effort": "max",
+        "effectiveReadback": "unknown",
+        "startedAt": "2026-10-25T03:14:22.803Z",
+        "durationMs": 2383,
+        "processWindow": {
+          "startedAt": null,
+          "stoppedAt": null
+        },
+        "commands": [],
+        "commitCommandCount": 0,
+        "objectLocation": null,
+        "host": {
+          "outcome": "error",
+          "refusal": null,
+          "writer": null,
+          "attempts": 0,
+          "candidateImported": 0,
+          "importedObjects": 0,
+          "sourceChangeObserved": 0,
+          "importPrecedesObservation": false,
+          "focusedBeforeExit": null,
+          "focusedAfterExit": null
+        },
+        "denials": {
+          "available": true,
+          "readerExitCode": null,
+          "paths": [],
+          "packedRefsLockCount": 0
+        },
+        "usage": {
+          "source": "unavailable",
+          "usage": null
+        },
+        "failure": {
+          "kind": "Error",
+          "code": null
+        },
+        "passed": false,
+        "stopReason": null
+      }
+    ]
+  }
+}
