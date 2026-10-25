@@ -4,8 +4,8 @@
 
 ## Proposed order
 
-- [x] [WO-230] — A target publish describes the change its pull request shows · **final-reviewed**
-- [x] [WO-224] — The Entropy Reducer on a registered target or a workstream · **final-reviewed**
+- [ ] [WO-231] — The final-review lint of a target order's commits reads the described base · **queued**
+- [ ] [WO-232] — A starter release does not break the instance that takes it · **queued**
 - [ ] [WO-204] — The source writer cannot damage the operator's repository · **queued**
 - [ ] [WO-192] — A router drives an order through its lifecycle · **queued**
 - [ ] [WO-083] — The real run from the operator's instance · **queued**
@@ -33,15 +33,49 @@ Full evidence for the active and sequenced orders follows; the Open cards are in
 
 Separate track; outside the proposed serial order.
 
-- [WO-228] — repository: self; base: 5ad686d170c71f432d2fafcb10225f2900630381; phase: draft; verdict: unknown; integration: current; stale: no; observed target: 5ad686d170c71f432d2fafcb10225f2900630381.
+- [WO-228] — repository: self; base: 0027d9c1e574d161b6215d43b80061eccda37340; phase: draft; verdict: unknown; integration: current; stale: no; observed target: 0027d9c1e574d161b6215d43b80061eccda37340.
 
-<!-- dotln-workstreams: {"workstreams":[{"id":"WS-002","track":"separate","members":[{"workOrderId":"WO-228","repository":"self","base":"5ad686d170c71f432d2fafcb10225f2900630381","phase":"draft","verdict":"unknown","integration":"current","stale":"no","targetCommit":"5ad686d170c71f432d2fafcb10225f2900630381"}],"edges":[{"from":"WO-228","to":"WO-193","relation":"planning-deferral"}]}]} -->
+<!-- dotln-workstreams: {"workstreams":[{"id":"WS-002","track":"separate","members":[{"workOrderId":"WO-228","repository":"self","base":"0027d9c1e574d161b6215d43b80061eccda37340","phase":"draft","verdict":"unknown","integration":"current","stale":"no","targetCommit":"0027d9c1e574d161b6215d43b80061eccda37340"}],"edges":[{"from":"WO-228","to":"WO-193","relation":"planning-deferral"}]}]} -->
 
 ## Active
 
 None.
 
 ## Open
+
+### WO-231
+
+[WO-231 — The final-review lint of a target order's commits reads the described base: &#96;final-review-result pass&#96; lints the commits between the subject and its merge base with the target's fetched base branch when the activation base is that merge base's ancestor, names the range and the activation base in a refusal, and keeps today's activation-base range for a subject the base branch has not passed (version assigned at activation)](WO-231-final-review-lint-from-the-described-base.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; dependency-ready.
+- References: WO-230: satisfied-by-close (met) — the described-base rule the publish applies and this order moves into a shared helper the review lint also calls; WO-227: satisfied-by-close (met) — the outward lint's commit rules, applied unchanged to a narrower range.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: delivery
+- Cost: adds one small module, &#96;scripts/lib/target-base.mjs&#96;, holding the described-base choice &#96;describedTargetBase&#96; already makes (the merge base when the activation base is its ancestor, else the activation base), called from &#96;scripts/lib/target-publish.mjs&#96; after its fetch and from &#96;scripts/lib/target-commit-lint.mjs&#96; with the clone's fetched base-branch ref; in &#96;target-commit-lint.mjs&#96;, the range and the message; two cases and their paired control in &#96;scripts/test-target-worktree-start.mjs&#96;; one sentence in product 07; decisions. Removes the state the DotLn-Angular fork met on 2026-10-24: a verified target order whose &#96;final-review-result pass&#96; is refused on commits already merged on the target's base branch, which no one can repair. Re-mints: none known; no edition names &#96;target-commit-lint.mjs&#96; or &#96;target-publish.mjs&#96; as a source (a read of &#96;scripts/lib/evidence-sources.mjs&#96; and the harness manifest at &#96;0027d9c1&#96;); the executor runs &#96;npm run sync&#96; and &#96;node scripts/harness.mjs check&#96; before handoff and records the result. Wall-clock: one &#96;git rev-parse&#96; and one &#96;git merge-base&#96; per review, no fetch. Context bytes: this file, about 19,000. Steps: 8.
+- Authority: [docs/work-orders/WO-231-final-review-lint-from-the-described-base.md](WO-231-final-review-lint-from-the-described-base.md)
+
+### WO-232
+
+[WO-232 — A starter release does not break the instance that takes it: core's gate updates a committed fixture instance carrying the record shapes the fork's updates met (a closed order with a bound amendment and a later Workstream field, a workstream with closed self members, records moved into a target, a target order at a stand-in base) to the current kit and runs the kit's own checks on it; the amendment binding admits a leading Workstream field; the workstream check admits a closed member without one; a self member's cells read the launchpad's main; and the rule that a kit check admits what the previous release admitted is written where releases are (version assigned at activation)](WO-232-a-release-does-not-break-the-instance.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; dependency-ready.
+- References: WO-080: satisfied-by-close (met) — the workstream check, the Workstream field and the self member's index reading this order admits and corrects; WO-226: satisfied-by-close (met) — the kit update the fixture instance takes at every fresh gate; WO-219: reference-only (non-blocking) — D061's amendment reader is one of the field repairs the fixture's moved-record shape preserves.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer xhigh.
+- Track: machinery
+- Cost: adds, under &#96;scripts/fixtures/instance-with-history/&#96;, one Git bundle of an exported instance with records plus its generator and shape manifest; one product suite (&#96;instance-history&#96;, core-only) in &#96;scripts/test-runner.mjs&#96; with its test file; in &#96;scripts/lib/plan-continuation.mjs&#96;, the leading-field normalization in &#96;executionAmendmentSource&#96;; in &#96;scripts/lib/work-order-workstream.mjs&#96;, the closed-member admission with its advisory; in &#96;scripts/work-orders.mjs&#96;, &#96;readTargetFacts&#96; reading a &#96;self&#96; member's base from the launchpad's base branch; cases in &#96;scripts/test-plan-refutation.mjs&#96; and &#96;scripts/test-work-orders.mjs&#96;; sentences in products 07 and 12, the convention README and the kit seed; decisions. Removes the pattern the operator named on 2026-10-25: four of the fork's six starter updates since 2026-10-19 blocked an update or left a gate red or a record damaged (the Observed gap). Re-mints: none known; no edition names these files as a source (a read of &#96;scripts/lib/evidence-sources.mjs&#96; and the harness manifest at &#96;0027d9c1&#96;); the executor runs &#96;npm run sync&#96; and &#96;node scripts/harness.mjs check&#96; before handoff and records the result. Wall-clock: one more product suite per fresh gate, budgeted at the clone, one kit update and four checks, which the executor measures and records against the 328.6 s plain-gate median (&#96;plan conditions&#96;, 2026-10-24); the generator runs on demand, never at the gate. Context bytes: this file, about 27,000. Steps: 11.
+- Authority: [docs/work-orders/WO-232-a-release-does-not-break-the-instance.md](WO-232-a-release-does-not-break-the-instance.md)
 
 ### WO-204
 
@@ -242,6 +276,6 @@ None.
 [WO-193]: WO-193-instance-capability-requests.md
 [WO-204]: WO-204-source-writer-cleanup-revocation.md
 [WO-207]: WO-207-update-rollback.md
-[WO-224]: WO-224-entropy-reducer-on-a-registered-target.md
 [WO-228]: WO-228-private-predecessor-map.md
-[WO-230]: WO-230-target-publish-against-the-base-branch.md
+[WO-231]: WO-231-final-review-lint-from-the-described-base.md
+[WO-232]: WO-232-a-release-does-not-break-the-instance.md

@@ -1545,7 +1545,16 @@ fails without the fix names the control, the case run with only that
 row's fix reverted and recorded with both arms' exit codes in a replayable
 file, as WO-218's repair recorded its 91 controls after VER-001 found three
 named cases passing at the base; a case that also passes at the base, or
-with the fix reverted, settles nothing. Order size
+with the fix reverted, settles nothing. One more [2026-10-25 pass]: an order
+that changes which commit a lifecycle step computes from (a base, a merge
+base, a revision) names every reader of that field across `scripts/` and
+`packages/` in its Observed gap, each kept or moved with its reason (WO-230
+moved the publish's three reads to the described base and left
+`lintReviewedTargetCommits`, the fourth reader, on the activation base; the
+DotLn-Angular fork's WO-013 FINAL-002 was refused on two merged subjects the
+day the release landed, and WO-231 moves it). A release's Read before
+upgrading is also screened: it asks an instance to read, never to edit a
+closed record by hand (WO-232). Order size
 [2026-10-13 pass, operator direction]: the 2026-09-08 cut (one seam and one outcome per order,
 split again above four hours) was a correction for its time and no longer
 binds. The binding cost is now the full gate run and the fixed cycle every
