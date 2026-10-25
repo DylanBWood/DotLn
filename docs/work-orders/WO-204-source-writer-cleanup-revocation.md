@@ -1,4 +1,4 @@
-# WO-204 — Source-writer containment and requests: the source writer cannot damage the operator's repository, because its command grants stay revoked through host cleanup failures, its Git configuration cannot change the bytes the host after-tests or the commit verification judges, and it commits into a private object store the host imports from after admission; a writer's request ends its step in a typed hold the vertical records as `NeedsHuman`; the Codex writer's Git grants are requalified live at the installed Codex CLI; and the Claude writer's launch environment, which gains the private object store and the same two Git configuration pairs, is requalified live at the installed Claude CLI (version assigned at activation)
+# WO-204 — Source-writer containment and requests: the source writer cannot damage the operator's repository, because its command grants stay revoked through host cleanup failures, its Git configuration cannot change the bytes the host after-tests or the commit verification judges, and it commits into a private object store the host imports from after admission; a writer's request ends its step in a typed hold the vertical records as `NeedsHuman`; the Codex writer's Git grants are requalified live at the installed Codex CLI; and the Claude writer's launch environment, which gains the private object store and the same two Git configuration pairs, is requalified live at the installed Claude CLI (v0.99.0)
 
 **Model:** any capable model. The live Codex writer qualification runs on
 Codex `gpt-6.1-sol` at `max`; the live Claude writer requalification runs
@@ -8,7 +8,9 @@ on Claude Code `claude-opus-5-5` at `xhigh`; the one live feedback episode runs 
 actually run.
 **Effort:** executor max; verifier xhigh; reviewer xhigh.
 **Track:** machinery
-**Release classification:** minor, the highest of the four merged orders
+**Release classification:** minor.
+
+This is the highest of the four merged orders
 (the object-store and writer-request parts were minor; the revocation and
 Git-interpretation parts patch). The source writer's
 object authority changes (a private object store per episode, a host-owned
