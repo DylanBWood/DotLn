@@ -95,8 +95,13 @@ issue list --state open` returned no open issue on this repository.
 **The index before the first commit.** `npm run meta` regenerates the
 work-order index, and it ran here while `HEAD` equalled `main`, so the one
 `self` member, WO-228, reads base `0027d9c1`, integration `current`, stale
-`no`. The pass regenerates nothing after its first commit for the reason
-the fork's item 2 names (§4, item 2; §10).
+`no`. After the first commit (`cc93efd2`), `npm run meta -- --plan-cost`,
+run to refresh the cost table at the committed subject, regenerated the index
+again from the branch and WO-228 read base `cc93efd2`, integration
+`diverged`, stale `yes`: the fork's item 2, reproduced in core on this
+branch. The committed page was restored (`git checkout`), `index --check`
+passed on its recorded facts, and only the cost table was committed
+(`924b405e`); nothing regenerated the index after that (§4, item 2; §10).
 
 ## 3. Reopening observations
 
@@ -176,7 +181,9 @@ operator direction; the operator's own direction is §6.
    first commit carries the mark into `main` at merge (declined as the
    repair in the map, §10 item 5). Until WO-232 ships, a pass regenerates
    its index before its first commit, while `HEAD` equals `main`, and not
-   after; this pass does exactly that (§2).
+   after; this pass did that and still met the mark once, when the
+   cost-table refresh regenerated the index from the branch, and restored
+   the committed page (§2).
 3. **Confirmations at v0.96.1**: recorded. The board schema
    `packages/console/uifa-board-v1.schema.json` has SHA-256
    `7d20e785c718b4b6…` at the v0.96.1 and v0.97.0 tags (read here), so the
@@ -406,10 +413,15 @@ withdrawal, the closed member's refusal and the self member's false mark.
 Failure behavior: both orders fail closed (a refusal names the check and
 the record; a missing ref keeps today's range and says so). Process cost:
 the session's counters are unavailable at this host (the prompt hook's
-observed facts and `harness usage` both say so); the pass spent one refuter
-episode (§14), no research worker, and the wall-clock from dispatch
-(23:52Z) to the first commit is in the response. The outcome matched the
-aim stated in §1.
+observed facts and `harness usage` both say so). Wall-clock: dispatch
+2026-10-24T23:52Z, the operator's direction 00:04Z, the first commit
+00:39:52Z (48 minutes), the cost-table commit 00:40:48Z, the receipt
+00:58:01Z. The one refuter episode: 1,024.0 s from dispatch to file by the
+receipt; the host's task notification reports 183,397 tokens, 47 tool uses
+and 790.5 s for the worker (host-observed; its effective model and effort
+have no readback, and the worker type is the parent's launch attestation).
+No research worker; 1 of 20 admissions used. The outcome matched the aim
+stated in §1.
 
 ## 13. The answer block for the forks' next passes
 
@@ -419,7 +431,7 @@ planning: core's answers of 2026-10-25 to the fork's second block of 2026-10-24 
 Both blocks are answered by core's third pass of the day (docs/planning/fork-returns-and-review-lint-2026-10-25.md). Two orders are filed, first in core's queue: WO-231 (the final-review lint reads the described base) and WO-232 (a starter release does not break the instance that takes it). The operator's direction during the pass, that it is becoming routine for a starter release to break and block downstream consumers, is read against your record (four of your six updates since 2026-10-19) and is WO-232's reason.
 
 1. Yes to both. The leading **Workstream:** field becomes an admitted non-criterion change in the amendment binding (WO-232 criterion 3), so adding it to a closed amended order costs no withdrawal; and the workstream check admits a closed member without the field with one advisory and still refuses an open one (criterion 4). Your route was the only one: amend-order requires an order in the current judged horizon, which closed orders leave with the sequence, so the gate offered withdrawal by design. Your withdrawals stand as your record; your D004 authorizations stay readable; nothing is asked of you now or after WO-232. Blocking: no.
-2. Confirmed, and the repair is the first reading: the index reads the launchpad's main for a self member (WO-080-D015's rule, FUP-2811605b8e865d2d, allocated to WO-232 criterion 5 with a branch case and its paired control). The lifecycle's refresh on main is today's mitigation, not the repair. Until WO-232 ships: regenerate the index before a pass's first commit, while HEAD equals main, and not after; core's pass of 2026-10-25 did exactly that. Blocking: no.
+2. Confirmed, and the repair is the first reading: the index reads the launchpad's main for a self member (WO-080-D015's rule, FUP-2811605b8e865d2d, allocated to WO-232 criterion 5 with a branch case and its paired control). The lifecycle's refresh on main is today's mitigation, not the repair. Until WO-232 ships: regenerate the index before a pass's first commit, while HEAD equals main, and not after, and know that npm run meta (and meta --plan-cost) regenerates the index; core's pass of 2026-10-25 met the diverged mark once that way after its first commit and restored the committed page. Blocking: no.
 3. Recorded. The board schema's digest is 7d20e785… at v0.96.1 and v0.97.0 (read in core); WO-230-D002 confirmed; update --finish at its third use noted.
 4. Recorded. No change.
 5. Recorded, and overtaken: your WO-013 FINAL-002 refusal is WO-231, blocking: yes. The lint at final-review-result pass still read the activation base after WO-230 (core's error, recorded in the pass's §7); WO-231 lints only the commits between the subject and its merge base with the clone's fetched base-branch ref, names the range and the activation base, and changes nothing recorded; it does not fetch at review (your worktree integrate fetched; the publish fetches and lints the same commits again). Take the release that carries it and dispatch resume: final review on WO-013 again; FINAL-002 stands as a truthful fail and the review reuses pull request #6. WO-224 landed as v0.97.0 (npm run entropy -- review --workstream WS-001; its Read before upgrading asks you to read, not to edit); you take it in the same update.
@@ -430,5 +442,54 @@ WO-232, for your reading: core's gate will update a committed fixture instance c
 
 ## 14. Validation and independent judgment
 
-Written after the refutation receipt is filed; the response carries the
-same facts.
+**The refutation.** The subject was committed at `cc93efd2` (the orders,
+the sequence, the map, the register, the ledger registration, the index,
+product 07, the ceilings, the roadmap table, the edition lock and this
+document) and the cost table at `924b405e`, the refuted revision. One fresh
+background `dotln-worker` (claude-opus-5-5, xhigh, no model override; its
+effective model and effort have no host readback, so the worker type is the
+parent's launch attestation) judged the canonical prompt from a file in
+session scratch and nothing else, as its statement says; it read the named
+source files read-only to check claims and no planner narrative. Its own
+writes to session scratch were refused by the outside-write guard (the
+worker holds no grant), so it returned the judgment and statement to the
+parent, which saved them in the ignored local control lane and filed them;
+nothing was retried around the guard. Receipt
+[`2026-10-25-planning-880741b26c81a3dd-055`](refutations/2026-10-25-planning-880741b26c81a3dd-055.md):
+WO-231 **aligned-with-findings** (2 known issues), WO-232
+**aligned-with-findings** (9 known issues), plan verdict
+aligned-with-findings, no hold; 11 unchanged orders carried by hash;
+judged, committed and workspace subjects equal (`sha256:4334646c…`);
+1,024.0 s from dispatch to file. Every known issue is recorded with its
+reopening observation on the order's Catalog row in the map for its
+executor; none changes the judged text.
+
+Two of the refuter's readings are corrections of this pass's own text,
+accepted here rather than by an edit of the judged bytes. WO-231's Objective
+and Design say the reviewer's `worktree integrate` fetched the clone's
+base-branch ref; it did not: `integrateWorktree` fetches the launchpad's
+`origin main` in the launchpad worktree (`scripts/lib/worktree-integration.mjs`
+806 to 819), and the publish's `fetchRemoteBranch` unbundles objects without
+moving a ref in the clone, so the clone's ref moves only at a target close, a
+target planning publication or a manual fetch. The design still fails safe
+(a stale ref lints more commits and gives today's refusal), and the
+executor's decisions correct the rationale and make the refusal name the
+ref's commit and the remedy. WO-232's self-member reading makes the cell a
+constant (`current` whenever `main` resolves); this pass holds that reading
+as the honest value for a launchpad order with no pinned base, and the
+refuter's alternative (render not applicable, or derive from the member's
+record) is the executor's to weigh with product 12's sentence. The seven
+other WO-232 issues (the rule's missing exit for a check that must tighten;
+shape (d) unread by the suite; regeneration drift; no wall-clock ceiling or
+infrastructure-failure fallback; the normalization's scope; the `--apply`
+opt-in against the fork's own update route; a binary bundle opaque to the
+text screens) are the executor's decisions, each with its reopening
+observation on the row; the ninth (the kit seed's cold-start effect) is
+answered on the row: the seed is the workstream document template, not role
+text.
+
+**The gates.** `npm run plan -- check` passed inside the receipt helper (55
+receipts, 44 passes, no advisories). `npm run test:docs` after the receipt
+and the map's known-issue rows: 27 passed, 0 failed (157.7 s, 27 fresh
+tasks); run once more after this section was written, with its result in
+the response and the pull request.
