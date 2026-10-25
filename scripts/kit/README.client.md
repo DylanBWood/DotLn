@@ -484,6 +484,7 @@ reason, including with `--list`, and records no gate result.
 | `harness-evidence` | package sources, historical harness baseline and live evidence |
 | `harness-fixtures` | Entropy Reducer baseline history and package sources |
 | `harness-probe` | core security, budget and discovery records plus package sources |
+| `instance-history` | committed instance history and package sources needed to export |
 | `kernel` | kernel package source audits and package README |
 | `kernel-docs` | kernel recorded product evidence and documentation |
 | `launchpad` | package TypeScript and build configuration needed to export |

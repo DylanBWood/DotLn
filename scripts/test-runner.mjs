@@ -1071,6 +1071,19 @@ export const suites = [
     protects:
       "product 12's demonstrations hold over a real-Git launchpad and three targets",
   }),
+  nodeTests("instance-history", "scripts/test-instance-history.mjs", {
+    kit: "core-only: committed instance history and package sources needed to export",
+    needsBuild: false,
+    sources: [
+      "scripts/fixtures/instance-with-history/",
+      "scripts/launchpad.mjs",
+      "scripts/lib/plan-continuation.mjs",
+      "scripts/lib/work-order-workstream.mjs",
+      "scripts/work-orders.mjs",
+    ],
+    protects:
+      "a kit release admits accumulated instance records without rewriting closed orders or amendment bindings, and self members stay current on an update branch",
+  }),
   nodeTests("launchpad-planning", "scripts/test-launchpad-planning.mjs", {
     kit: "core-only: package TypeScript and build configuration needed to export",
     needsBuild: false,

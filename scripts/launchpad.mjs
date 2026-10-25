@@ -209,6 +209,13 @@ export const KIT_FILES = Object.freeze({
     "packages/console/runtime-status-v1.schema.json",
   ]),
   excluded: Object.freeze([
+    // This core-only history includes a prior kit. Exporting it would nest
+    // earlier bundles each time the fixture is regenerated.
+    "scripts/fixtures/instance-with-history/instance.bundle",
+    "scripts/fixtures/instance-with-history/manifest.json",
+    "scripts/fixtures/instance-with-history/generate.mjs",
+    "scripts/fixtures/instance-with-history/support.mjs",
+    "scripts/test-instance-history.mjs",
     "scripts/fixtures/wo138-local-role-qualification.json",
     "scripts/test-runner.test.mjs",
     "scripts/test-gate-deadlines.mjs",
