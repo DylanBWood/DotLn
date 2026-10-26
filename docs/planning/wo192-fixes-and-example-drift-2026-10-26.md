@@ -402,11 +402,64 @@ and removes the operator as the only stop; WO-235 adds one record and
 removes the nearest-example guidance. Failure behavior: each refuses closed
 and names its route; a missing journal or budget key reads `unset`, never
 a fabricated bound. Wall-clock: dispatch 22:26Z; the operator's ten
-messages to 22:49Z; the orders written by 23:0xZ; the first commit and the
+messages to 22:49Z; the three orders, the sequence, the map, the ledger
+and product 07 written between 22:53Z and 23:17Z; the first commit and the
 refutation times are in the last section. Usage at handoff is in the
 response. Agents: the refuter only; the actual worker type is recorded
 below.
 
 ## Validation and independent judgment
 
-Written after the refutation receipt is filed.
+The subject was committed at `6e7f01da` (the three orders, the sequence,
+the map, the register, the ledger registration, the index, product 07, the
+ceilings, the roadmap's release table, the publication lock, the cost table
+and this document). One fresh background `dotln-worker` (claude-opus-5-5,
+xhigh, no model override; its effective model and effort have no host
+readback, so the worker type is the parent's launch attestation) judged the
+canonical prompt `npm run plan -- refute --direct` wrote to session scratch
+and nothing else; it read named repository files read-only at the base to
+check the orders' claims and, as its statement says, did not open this
+document, the receipts or the intake. Its statement first named the prompt
+file by its absolute path, which the receipt helper refused; the same
+worker restated it with the placeholder spelling and no other change.
+Receipt [`2026-10-26-planning-ac3a85c89c586be3-056`](refutations/2026-10-26-planning-ac3a85c89c586be3-056.md):
+WO-233 **aligned-with-findings** (five known issues), WO-234
+**aligned-with-findings** (four), WO-235 **aligned-with-findings** (four),
+plan verdict aligned-with-findings, no hold; ten unchanged orders carried
+by hash; judged, committed and workspace subjects equal
+(`sha256:3171dcba…`); 1,195,443 ms from dispatch to file. The host's task
+notification reports 215,460 tokens, 54 tool uses and 939.2 s for the
+worker's judgment and 216,589 tokens, 1 tool use and 7.5 s for its
+restatement (host-observed). Every known issue is recorded with its
+reopening observation on the order's catalog row in the map for its
+executor, as product 07 directs for a pass's own receipt; none changes the
+judged text.
+
+Two of the refuter's readings are corrections of this pass's own text,
+accepted here rather than by an edit of the judged bytes. WO-233's Cost
+line calls `scripts/lib/launchpad-fixture.mjs` a declared machinery
+source; it is a source of the `launchpad` product row
+(`scripts/test-runner.mjs` 1055), and the order's review-gate conclusion
+stands on the three files that are machinery sources. WO-235 names no
+blocked outcome, which the goal rules ask of risk-reduction work; its
+effect runs through WO-083's run, where the instance's roles carry the
+ledger, and the catalog row says so. Two readings sharpen the design for
+the executors without changing it: the session-end prune of WO-233 keys
+on a dead owner and a finished Stop, as the existing prune already
+requires, never on the Stop hook alone, which fires at every turn; and
+WO-235's ledger entry records the turn it was written in, so a correction
+entry written after a destructive or scope-expanding call is a finding the
+verifier reads. The remaining issues (serialization against refusal, the
+migration's file count and the one owner marker, the warm fixture's
+retention class, the base record restating WO-192's figures, unreadable
+inputs reading as unset, idle time, focused runs past the bound, the two
+roots over their ceilings, host notifications in the ledger, the byte
+minimum as a proxy) are the executors' decisions, each with its reopening
+observation on the row.
+
+Usage at handoff is in the response. The pass's dispatch-to-commit
+wall-clock: dispatch 22:26:17Z, the subject committed at 23:17:06Z and
+revised at 23:20:51Z, the receipt filed at 23:40:57Z. `npm run test:docs` ran green before the
+subject commit and again after this section, and the pass pushes its
+branch and opens its pull request on the dispatch's authority; it never
+merges.
