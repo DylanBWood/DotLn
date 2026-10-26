@@ -1437,6 +1437,18 @@ the same duty as role text, and `operator override:` admits authorized recovery.
 The six manual redirect receipts are
 pre-mechanism evidence and are never rewritten or re-run by this gate.
 
+A pass derives each artifact below from this list and from the check that
+judges it (`plan check`, `work-orders index --check`, `test:docs`); an
+earlier pass's document or order is evidence of what happened, never the
+pattern for the next one, and a shape this list does not name is left out or
+named as the pass's own choice. Every operator message in the dispatch, typed
+or not, is a direction until the pass records its disposition: the pass keeps
+a direction ledger (the message's hook time, the event the pass reads in it,
+its aim, acted on or declined with the reason), a later message adds to the
+dispatch's aim unless it says it replaces it, and a correction in any register
+is acted on before the pass continues [2026-10-26 pass; the checks that
+enforce this are WO-235's].
+
 Standard artifacts, all doc-only:
 
 - a compaction-safety capture of the dispatch in ignored intake;

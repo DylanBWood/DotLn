@@ -3031,6 +3031,14 @@
           "reopenWhen": "a planning pass names a consumer scenario after WO-091 to WO-095 land (the pass's suggestion), or the clause the source section states",
           "targets": [],
           "at": "2026-09-19T01:19:57.080Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-234 adds a dispatch bound and no supervisor role; the Flow Steward stays a candidate. [2026-10-26 planning pass (docs/planning/wo192-fixes-and-example-drift-2026-10-26.md)]",
+          "reopenWhen": "A planning pass names a consumer scenario for a steward beyond a bound, or the clause the source section states.",
+          "targets": [],
+          "at": "2026-10-26T23:11:08.327Z"
         }
       ]
     },
@@ -24218,6 +24226,16 @@
             "WO-222"
           ],
           "at": "2026-10-19T13:47:56.239Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Its condition occurred: the plain gate's thirty-day median is 419.1 s against 360 s (plan conditions, 2026-10-26); WO-233's criterion 8 records the launchpad export suite's time before and after the warm fixture; the target-worktree task at 611.3 s stays named here and is not WO-233's. [2026-10-26 planning pass (docs/planning/wo192-fixes-and-example-drift-2026-10-26.md)]",
+          "reopenWhen": "The plain-gate median stays above 360 s after WO-233 closes, or a fresh target-worktree task sample holds above 189.8 s.",
+          "targets": [
+            "WO-233"
+          ],
+          "at": "2026-10-26T23:11:08.035Z"
         }
       ]
     },
@@ -44212,6 +44230,16 @@
           "reopenWhen": "A carried console schema test fails in an export, or another nested node --test child in the launchpad fixtures is found to pass without running; or WO-220's activation (its executor may take this console row inside the Boy Scout bound) or the next order editing the launchpad fixtures",
           "targets": [],
           "at": "2026-10-24T04:18:36.531Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Its home is the next order editing the launchpad fixtures; WO-233's step 9 edits them and carries the row inside the Boy Scout bound or records it as left. [2026-10-26 planning pass (docs/planning/wo192-fixes-and-example-drift-2026-10-26.md)]",
+          "reopenWhen": "WO-233 closes with the row recorded as left, or a nested node --test child is found passing without running before then.",
+          "targets": [
+            "WO-233"
+          ],
+          "at": "2026-10-26T23:11:08.133Z"
         }
       ]
     },
@@ -45504,6 +45532,16 @@
           "reopenWhen": "The next planning pass considers the history fixture, or an instance reports either absent shape before then.",
           "targets": [],
           "at": "2026-10-25T12:10:00.528Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "WO-233's step 13 edits the instance-history suite and adds the closed self member without the field to the manifest as its carry-in. [2026-10-26 planning pass (docs/planning/wo192-fixes-and-example-drift-2026-10-26.md)]",
+          "reopenWhen": "WO-233 closes with the shape absent, or an instance reports the shape refused before then.",
+          "targets": [
+            "WO-233"
+          ],
+          "at": "2026-10-26T23:11:08.230Z"
         }
       ]
     },
@@ -45823,6 +45861,298 @@
           "reopenWhen": "An operator cannot discover or remove a retained candidate, or the follow-up's records land (WO-204-D040).",
           "targets": [],
           "at": "2026-10-25T20:19:13.168Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-69b53bd88a420022",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-wo-192s-record-and-the-operators-corrections-recorded-2026-10-26::05ac845a77f1c421914befd6f7e560edccd3207f022fc2b3f0c1ce2f277e53ef",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "08ad4aa047a18ce702ca44bf0b91e958f9523b452964859a090f78cb3e7d4c8b",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-wo-192s-record-and-the-operators-corrections-recorded-2026-10-26",
+          "title": "Placing WO-192 before the three new orders.",
+          "summary": "10. **Placing WO-192 before the three new orders.** Declined: each further gate run of its remaining cycle adds the residue WO-233 stops and runs under no bound until WO-234; the integrate conflict its wait costs is paid once at its final review, in hunks of three files. Reopen on the operator's word: one sequence edit moves it.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Each further gate run of WO-192's remaining cycle adds the residue WO-233 stops and runs under no bound until WO-234; the integrate conflict is paid once at its final review. [2026-10-26 planning pass (docs/planning/wo192-fixes-and-example-drift-2026-10-26.md)]",
+          "reopenWhen": "The operator's word: one sequence edit moves it.",
+          "targets": [],
+          "at": "2026-10-26T23:11:07.739Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-3ace06ce101bcd5a",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-wo-192s-record-and-the-operators-corrections-recorded-2026-10-26::23515e112c9f2c051da0cbebb2b3738fa166b28a46ddbe90abbf75a3c5965a95",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "500ab328a40a0a54631c3d8d126a8e05142b3af1a778c7e355b02b762b682f0d",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-wo-192s-record-and-the-operators-corrections-recorded-2026-10-26",
+          "title": "A token or dollar bound per dispatch.",
+          "summary": "5. **A token or dollar bound per dispatch.** Declined for WO-234: token counters are unavailable on some hosts in use (this pass's own session readback carried `costUsd` unknown), and the budgets file's unset policy on those keys is the operator's. Reopen when every host in use exposes a token counter to the session journal, or the operator sets the keys.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Token counters are unavailable on some hosts in use and the budgets file's unset policy on token and dollar keys is the operator's; WO-234 bounds wall clock and complete runs, observed everywhere. [2026-10-26 planning pass (docs/planning/wo192-fixes-and-example-drift-2026-10-26.md)]",
+          "reopenWhen": "Every host in use exposes a token counter to the session journal, or the operator sets the keys.",
+          "targets": [],
+          "at": "2026-10-26T23:11:07.241Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-4588b71a7fdc0c77",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-wo-192s-record-and-the-operators-corrections-recorded-2026-10-26::34b30eb891cc3b94c70ae426e5376e2620545504e3e4c4f23fd00a6fcfd06111",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "413c27a59a49811090bce8a0d31a8b8fef25c2152744addae6229758e3bc2754",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-wo-192s-record-and-the-operators-corrections-recorded-2026-10-26",
+          "title": "The routed-run meta-watcher",
+          "summary": "2. **The routed-run meta-watcher** (D023; FUP-02446577ce028d06). Allocated to WO-234 for its first two questions (detection, an intervention with recorded authority) and for the third as meter data a pass reads; a watcher that judges interventions itself is declined (receipt 039's second-driver condition on WO-192; the Flow Steward stays a candidate, FUP-0104). Reopen when a pass reads the `boundStops` block and cannot answer whether a stop helped, or when WO-192 merges or is withdrawn.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "WO-234 meets D023's detection and intervention-with-recorded-authority questions by the dispatch bound and the acceptance route, and its evaluation question as meter data (boundStops, boundAcceptances, afterStop) a planning pass reads; a judging watcher is declined. [2026-10-26 planning pass (docs/planning/wo192-fixes-and-example-drift-2026-10-26.md)]",
+          "reopenWhen": "A pass reads the boundStops block and cannot answer whether a stop helped; or WO-192 merges or is withdrawn, so FUP-02446577ce028d06 can be disposed.",
+          "targets": [
+            "WO-234"
+          ],
+          "at": "2026-10-26T23:11:06.939Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-2eb40c68c4c77db4",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-wo-192s-record-and-the-operators-corrections-recorded-2026-10-26::6e3be0e3c6ed8aa3bc6dd999a09fac83ae8ee18be5d0fea291e0668afeec3bc6",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "8057fc5d34e644c58a9c454a59caeae7a7bce3c4d884a67d295acafd206f6d22",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-wo-192s-record-and-the-operators-corrections-recorded-2026-10-26",
+          "title": "A byte cap on pull-request bodies, orders or planning documents.",
+          "summary": "6. **A byte cap on pull-request bodies, orders or planning documents.** Declined for WO-235: the operator's direction of 2026-09-14 (artificial caps yield to needed rules) and the 2026-10-07 rule (ceilings are planning's); the best comparable and its ratio are reported instead. Reopen when the operator directs a cap, or when the advisory is printed on ten consecutive closes without a disclosed changed condition.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "The operator's 2026-09-14 direction (artificial caps yield to needed rules) and the 2026-10-07 rule (ceilings are planning's); WO-235 reports the best comparable passing instance and the ratio instead. [2026-10-26 planning pass (docs/planning/wo192-fixes-and-example-drift-2026-10-26.md)]",
+          "reopenWhen": "The operator directs a cap, or the advisory prints on ten consecutive closes without a disclosed changed condition.",
+          "targets": [],
+          "at": "2026-10-26T23:11:07.339Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-18a44de758813fea",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-wo-192s-record-and-the-operators-corrections-recorded-2026-10-26::722309b7b8e605f2afaf94794c8c033d2bf4dedfec0ad625d0db0adb85ec139d",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "cc6328d2878526291eec5bf2559a2352f7bda51a4c8ab87a7f428fc59755d268",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-wo-192s-record-and-the-operators-corrections-recorded-2026-10-26",
+          "title": "Durable native sandbox policy for routed runs",
+          "summary": "3. **Durable native sandbox policy for routed runs** (D057; FUP-ec3d1b98b15afd49). Deferred: the surfaces it would declare on (`scripts/lib/drive-worker.mjs`, the generated role instructions, the qualification fixtures) exist only in WO-192's uncommitted worktree, and the operator's intent (unsandboxed environments) is recorded there. Reopen when WO-192 closes, or when a routed run is refused by host policy under the temporary fixture exception.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "The surfaces a durable native sandbox policy would declare on exist only in WO-192's uncommitted worktree; deferred until they land. [2026-10-26 planning pass (docs/planning/wo192-fixes-and-example-drift-2026-10-26.md)]",
+          "reopenWhen": "WO-192 closes, or a routed run is refused by host policy under the temporary fixture exception.",
+          "targets": [],
+          "at": "2026-10-26T23:11:07.043Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-1f8d72ea7a1c44fb",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-wo-192s-record-and-the-operators-corrections-recorded-2026-10-26::85da1b335bf605d5c5d84276eacff410cee3a877c923ad644a3e5cecbd2a121a",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "742968d22da11256044d165d9bb0cd1bca2a21d1b320a985002a25881641b33b",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-wo-192s-record-and-the-operators-corrections-recorded-2026-10-26",
+          "title": "The time-budgeted gate the operator declined on 2026-10-17",
+          "summary": "12. **The time-budgeted gate the operator declined on 2026-10-17** (FUP-94c0c0235e3aea67). Left declined: WO-234 bounds a dispatch's wall clock and complete-run count and changes no task deadline, which is the distinction the draft lacked. Reopen when the operator reads WO-234 as that draft.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "The draft stays declined at the operator's word of 2026-10-17; WO-234 bounds a dispatch's wall clock and complete-run count and changes no task deadline, the distinction the draft lacked. [2026-10-26 planning pass (docs/planning/wo192-fixes-and-example-drift-2026-10-26.md)]",
+          "reopenWhen": "The operator reads WO-234 as the declined draft.",
+          "targets": [],
+          "at": "2026-10-26T23:11:07.937Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-b6dd1acbc01c11db",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-wo-192s-record-and-the-operators-corrections-recorded-2026-10-26::88d64abb8f247d402bc4d43885d31bfdf3280f9b47158d6715917db78a6a4c59",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "6a8e779976707acb556e50361fd40fb3f718b457bdd9741580db0946bf01ce1c",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-wo-192s-record-and-the-operators-corrections-recorded-2026-10-26",
+          "title": "Amending WO-088 to carry the planning skeleton and the direction ledger.",
+          "summary": "11. **Amending WO-088 to carry the planning skeleton and the direction ledger.** Declined: WO-235 carries them beside the role rule and the meter columns they belong with, and WO-088 adjusts the skeleton when it moves pass registration. Reopen when WO-088 activates before WO-235.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "WO-235 carries the skeleton and the direction ledger beside the role rule and the meter columns they belong with; WO-088 adjusts the skeleton when it moves pass registration. [2026-10-26 planning pass (docs/planning/wo192-fixes-and-example-drift-2026-10-26.md)]",
+          "reopenWhen": "WO-088 activates before WO-235.",
+          "targets": [],
+          "at": "2026-10-26T23:11:07.838Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-b461ec6d6e5aa5c3",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-wo-192s-record-and-the-operators-corrections-recorded-2026-10-26::8d27813555fc43bb54c34c68ea1f6b3f27b3852be41743af50528bcf7323314d",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "c572dd0d4313f43c6011a7a46e9153b9ad1801bc3c3bca8f7368eaab8eab3c45",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-wo-192s-record-and-the-operators-corrections-recorded-2026-10-26",
+          "title": "WO-192's retention, fork delivery and churn follow-ups",
+          "summary": "1. **WO-192's retention, fork delivery and churn follow-ups** (its D080, D081 and D083; FUP-ca213b859ce6a36c, FUP-d925bbf866d1d43c and FUP-575e9e05f616d44c in the worktree's register). Allocated to WO-233, which takes every item each names: the stash drop at integration, the session-scratch retention and prune kind, the prune at release close and its report at session start, the `fseventsd` measurement before any layout change, the kit delivery with the export-fixture check, the warm export fixture and cached `node_modules`, `.metadata_never_index`, the files-created-and-deleted metric and the permission reset. Reopen when WO-192 merges or is withdrawn, so the rows themselves can be disposed",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "WO-233 takes every item WO-192's D080, D081 and D083 name: the stash drop at integration, the session-scratch retention and prune kind, the prune at release close and its report at start, the fseventsd measurement, the kit delivery with the export-fixture check, the warm export fixture, .metadata_never_index, the churn metric and the permission reset; the decision rows themselves live in WO-192's worktree register. [2026-10-26 planning pass (docs/planning/wo192-fixes-and-example-drift-2026-10-26.md)]",
+          "reopenWhen": "WO-192 merges or is withdrawn, so the decision rows FUP-ca213b859ce6a36c, FUP-d925bbf866d1d43c and FUP-575e9e05f616d44c can be disposed; or WO-233 is withdrawn.",
+          "targets": [
+            "WO-233"
+          ],
+          "at": "2026-10-26T23:11:06.836Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-5698ab63b327b4c6",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-wo-192s-record-and-the-operators-corrections-recorded-2026-10-26::a4379ab6a51e46ee8defa348a6c15d9411b19069a4697bf05e7ac38fa7f2e839",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "c8613705f344df913f08db2425b1cf66449763012429699db4097ae9ec661a71",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-wo-192s-record-and-the-operators-corrections-recorded-2026-10-26",
+          "title": "A hook that classifies untyped operator messages.",
+          "summary": "7. **A hook that classifies untyped operator messages.** Declined for WO-235: the planning screen refuses a criterion that needs a deterministic reading of natural language; the hook records index and digest and the role records the event as its judgment. Reopen when a host exposes a typed classification of a message, or when the ledger shows the same message judged two ways by two roles.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "The planning screen refuses a criterion that needs a deterministic reading of natural language; in WO-235 the hook records index and digest and the role records the event as its judgment. [2026-10-26 planning pass (docs/planning/wo192-fixes-and-example-drift-2026-10-26.md)]",
+          "reopenWhen": "A host exposes a typed classification of a message, or the ledger shows one message judged two ways by two roles.",
+          "targets": [],
+          "at": "2026-10-26T23:11:07.437Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-bd59bdd4be4d1ed1",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-wo-192s-record-and-the-operators-corrections-recorded-2026-10-26::c490275570ef2421aaba55fe9464c9ea7e5baca19d384902cd5f0c38adb3dd6e",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "e41e0e5c054f407c7fc55341c7ccb98e06ff95cb315168c7c63396425df8d79e",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-wo-192s-record-and-the-operators-corrections-recorded-2026-10-26",
+          "title": "WO-192's validation-order fix",
+          "summary": "4. **WO-192's validation-order fix** (D072, D073 and D075; FUP-cdb3ed9086345e76, allocated to WO-192). Not re-filed: it is implemented in the preserved worktree (the synthetic lifecycle fixtures as the product preflight, the record comparisons in the document gate, `scripts/test-resume.sh --fixtures-only|--documents-only`) and lands with WO-192. Reopen when WO-192 is withdrawn: the next pass files it from the worktree's diff.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-192's D073 and D075 implemented the validation-order fix in its preserved worktree; it lands with WO-192 and is not re-filed. [2026-10-26 planning pass (docs/planning/wo192-fixes-and-example-drift-2026-10-26.md)]",
+          "reopenWhen": "WO-192 is withdrawn: the next pass files the fix from the worktree's diff.",
+          "targets": [],
+          "at": "2026-10-26T23:11:07.143Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-599e87035674274f",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-wo-192s-record-and-the-operators-corrections-recorded-2026-10-26::d0dce8f9ec3f9edb70c22789109d6ff21f9c130b9d9776f7940cf86878a9244b",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "036fda1ba09af736ac2a6fd27530ec6bdaeb9851559fa9f17f1e1c29c9e9a06e",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-wo-192s-record-and-the-operators-corrections-recorded-2026-10-26",
+          "title": "Withdrawing WO-192 in this pass and re-filing a smaller router.",
+          "summary": "9. **Withdrawing WO-192 in this pass and re-filing a smaller router.** Declined: withdrawal is the operator's off-ramp, the implementation is complete in its worktree except its final gate, and the pass preserves it; the route and its command are on WO-192's preflight paragraph. Reopen when the operator withdraws it: the next pass files the validation-order fix and re-cuts the router.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Withdrawal is the operator's off-ramp; the implementation is complete in its worktree except its final gate and the pass preserves it; both routes are on WO-192's preflight paragraph. [2026-10-26 planning pass (docs/planning/wo192-fixes-and-example-drift-2026-10-26.md)]",
+          "reopenWhen": "The operator withdraws WO-192: the next pass files the validation-order fix and re-cuts the router.",
+          "targets": [],
+          "at": "2026-10-26T23:11:07.638Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-c80dc7bd3fbcaf6a",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-wo-192s-record-and-the-operators-corrections-recorded-2026-10-26::f5eb72a69d4a9723a8592470ab543cde8b80335ea34c0c33cba7a0e0dd0ff5cd",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "43e4a78b139f69d6f3924a33cd0444ff060b18411262e37bbcc7d10c78b7e301",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-wo-192s-record-and-the-operators-corrections-recorded-2026-10-26",
+          "title": "Changing the gate's temp layout, or admitting a memory warning.",
+          "summary": "8. **Changing the gate's temp layout, or admitting a memory warning.** Declined for WO-233 (D080 and D083's reasons): the cause of the host's memory growth is unmeasured and the admission refused a real condition. Reopen when WO-233's `fseventsd` measurement attributes the growth to the layout, or when a complete review is refused by host memory after WO-233 closes.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "D080 and D083's reasons: the host's memory growth is unmeasured and the admission refused a real condition; WO-233 measures first. [2026-10-26 planning pass (docs/planning/wo192-fixes-and-example-drift-2026-10-26.md)]",
+          "reopenWhen": "WO-233's fseventsd measurement attributes the growth to the layout, or a complete review is refused by host memory after WO-233 closes.",
+          "targets": [],
+          "at": "2026-10-26T23:11:07.536Z"
         }
       ]
     }
