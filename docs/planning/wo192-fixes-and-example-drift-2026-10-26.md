@@ -127,14 +127,16 @@ What happened, from the record:
   host-memory admission after 1,622.9 s (D083). Criterion 13 is unmet: a
   fresh complete review and the document gate at the current source are
   owed (`handoff.md`).
-- The operator stopped the first session (D076 records, at the operator's
-  demand, the operator's assessment of it as the worst failure by any agent
-  that has worked for them) and the second (D084: the session asked for confirmation twice
+- The operator stopped the first session (D076) and the second (D084); the
+  operator's assessment of both is in those two records and in item 1 of
+  this pass's capture (SHA-256
+  `6652d1057db77797fcba54da8d1998adb821528b42649a2d7d9a9c425bebbc72`). D084
+  records that the session asked for confirmation twice
   after the cleanup was ordered, ran a third complete review at memory
   warning, started a gate and a sync while the operator's prune ran so that
   prune's "subject changed" check refused and the 85 stashes stayed, and
   delivered the cleanup commands mid-turn three times before one pasteable
-  block).
+  block.
 - The proposed fixes, recorded by the executor for planning: D080 (every
   `worktree integrate` leaves a stash the harness never drops, every session
   leaves a scratch tree nothing prunes, `harness prune` knows the stashes
@@ -351,8 +353,9 @@ ledger its registration heading.
 
 Every candidate weighed and not filed is in the map's section "Candidates —
 returns from WO-192's record and the operator's corrections (recorded
-2026-10-26)" with its evidence and reopening condition, and disposed in the
-register: the sandbox policy, the validation-order fix, a judging watcher, a
+2026-10-26)" (the corrections are items 2 to 10 of the capture, SHA-256
+`6652d1057db77797fcba54da8d1998adb821528b42649a2d7d9a9c425bebbc72`) with
+its evidence and reopening condition, and disposed in the register: the sandbox policy, the validation-order fix, a judging watcher, a
 token or dollar bound, a byte cap, a hook classifier of messages, a changed
 temp layout or admitted memory warning, withdrawing WO-192 here, placing
 WO-192 first, amending WO-088 for the skeleton, and the declined
