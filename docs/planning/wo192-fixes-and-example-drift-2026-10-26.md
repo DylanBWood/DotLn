@@ -45,6 +45,13 @@ by hand. Times are the prompt hook's observation times.
 | 8 | 22:46:32Z | OperatorDirection | Do not drop the mechanisms | Acted: WO-235 filed, not deferred |
 | 9 | 22:47:24Z | OperatorDirection | Build a guard against acting only on the operator's latest message | Acted: the direction ledger (this table) and WO-235's completion and receipt refusal; the pass's own recency failure recorded (§The operator's corrections) |
 | 10 | 22:49:07Z | OperatorCorrectionReceived | Urgency is to be read from context, as the communication modes the operator associated with the Korean Air chapters of _Outliers_ intend | Acted: WO-235's correction freeze on a recorded correction event in any register, with the ledger's typed events and product 05's Mode entry rule as the design |
+| 11 | 23:55:25Z | OperatorDirection (a question, after #248 opened; the amendment capture, SHA-256 `2280c0555104abe9c811daf4efd4218f4d835b0eab50be56ff7afc78a6cb190a`) | How WO-192 resumes: run WO-233 to WO-235, then resume it and integrate main | Answered, then corrected by rows 12 to 15 |
+| 12 | 23:56:42Z | OperatorCorrectionReceived | The gates are what clogged the machine; they run in the executor's route; WO-192 was stopped so no further run leaks | Acted: the pass's description corrected (the executor's run would have been on the unfixed gate); amendment D001 |
+| 13 | 23:59:13Z | OperatorRejectsUnsupportedAssumption | (1) The two runs cannot both be on the fixed gate; (2) what became of the 24,526 fixture roots | Acted: (1) conceded and fixed by D001; (2) the removal was attempted and denied by the host's classifier, the command handed over once (§Amendment) |
+| 14 | 00:01:47Z | OperatorDirection (authorization) | Change WO-233 so an out-of-date active order can integrate main | Acted: WO-233-D001, bound by `amend-order` against receipt 056 |
+| 15 | 00:02:57Z | OperatorCorrectionReceived | The WO-192 worktree the resume runs in would not carry the code admitting it | Acted: D001's design performs the integrate by the main checkout's current code against the stale worktree |
+| 16 | 00:03:16Z | OperatorReportsRepeatedFailure | The fixture-roots question had gone unanswered in the visible replies | Acted: answered in the response and recorded in §Amendment; the response now leads with it |
+| 17 | 00:08Z | OperatorDirection (the fork's block carried; capture SHA-256 `b524ef799db8449d3662dced20ad32775774b1c65aba955aa8304dcd76a3fdc2`) | Answer the fork's five items of its 2026-10-25 pass | Acted: §The fork's block, with the paste-ready answer |
 
 No message withdrew an earlier one; messages 7 and 8 reorder and bound the
 others. The dispatch's aim stayed first throughout the orders filed, and
@@ -407,6 +414,112 @@ and product 07 written between 22:53Z and 23:17Z; the first commit and the
 refutation times are in the last section. Usage at handoff is in the
 response. Agents: the refuter only; the actual worker type is recorded
 below.
+
+## Amendment after the receipt: WO-192 resumes on the fixed gate with one run
+
+After pull request #248 opened, the operator asked how WO-192 would resume
+and corrected two things in this pass's reading (captured verbatim in
+ignored intake, SHA-256
+`2280c0555104abe9c811daf4efd4218f4d835b0eab50be56ff7afc78a6cb190a`). First,
+the gate runs in the executor's route, and the reason WO-192 was stopped was
+that no further run should leak memory; the pass's description had WO-192's
+executor paying a complete review before final review's integrate, which
+would have run on the worktree's own unfixed gate and then paid a second
+run at the integrated identity. Second, the operator directed that WO-233 be
+changed so an out-of-date active order can integrate main, and then pointed
+out the chicken-and-egg: the WO-192 worktree that `resume: next` runs in
+would not carry the code admitting it. The code confirms both:
+`integrate` is refused outside `repairing` and `final-review`
+(`scripts/lib/worktree-integration.mjs` 595 to 597) and must run from the
+matching worktree root (20 to 26), so a stale worktree can only run its own
+old script.
+
+WO-233 is amended by the operator-authorized route (its D001, bound by
+`amend-order` against receipt 056): `integrate` is admitted for an order
+in `active` whose worktree is behind `main`, and it is performed by the
+main checkout's current code against the order's registered worktree, so
+the code that carries the rule does the merge and the worktree then carries
+main's code; the executor root says to integrate first when main has moved,
+then format, sync and the one complete run; the row at the integrated
+identity is the one final review reuses. For WO-192 that means: after
+WO-233, WO-234 and WO-235 close, `resume: next` in its worktree integrates
+by main's code (the three files' conflicts resolved once), runs one
+complete review on the fixed gate, records implementation-ready;
+verification reproduces with `--only`; final review's integrate takes in
+nothing and reuses the row; one complete run instead of two, and none on
+the unfixed gate. The amendment adds step 16 and criterion 14 to WO-233 and
+one sentence to the executor root; the known-issue reading of receipt 056 on
+the roots over their ceilings applies to it.
+
+The fixture roots: with no gate or DotLn process live, this pass ran the
+removal of the 24,230 stale `dotln-*` roots older than an hour (keeping
+the host guard's state, the writer-transition locks and the context7
+cache); the host's auto-mode permission classifier denied it as a shared
+scratch sweep, the denial WO-192's D081 recorded for `prune --apply`, and
+nothing was removed. The one-line command was handed to the operator once,
+to run under the operator's own keystroke. The source of the largest family
+is now known: `docs/evidence/WO-056/fixture.mjs` (186) creates a
+`dotln-wo056-` root on every run of the document gate's task that calls it
+and removes none; 15,428 of the 24,526 roots are its, and this pass's two
+`test:docs` runs added more. WO-233's gate-end prune is the permanent fix
+and its step 14 the backfill, with the host's admissible spelling recorded
+or the order's own release close performing it.
+
+## The fork's block of 2026-10-25, answered
+
+The operator pasted the DotLn-Enterprise-Starter fork's request block from
+its planning pass of 2026-10-25 on starter v0.99.0 at 00:08Z (captured
+verbatim in ignored intake, SHA-256
+`b524ef799db8449d3662dced20ad32775774b1c65aba955aa8304dcd76a3fdc2`). Five
+items; two carry questions. Each is evidence the operator carried, read
+against the record it names.
+
+1. Confirmations at v0.99.0, no ask: recorded. The index reading WO-232
+   changed (self members `current` on an update branch) is confirmed in the
+   field.
+2. WO-013 and WO-231's field case, no ask: recorded; the fork's next block
+   reports the first field use of the review lint and whether the stale-ref
+   rows (FUP-e4fa2bbf7c3968ec, FUP-378c5638bf515e52) were met; both stay
+   deferred until then.
+3. Rows minted in a worktree: yes, by construction, and this pass met the
+   same case with WO-192's nine rows. The collector reads decisions from
+   `docs/evidence/<WO>/decisions.md` in the checkout it runs in
+   (`scripts/lib/planning-followups.mjs` 280 to 286), so a worktree's rows
+   reach main's register only when the order's records merge; the working
+   route is to read them live, record what the pass did with them on its
+   own candidate rows (this pass's items 1 and 2 of the map's section), and
+   dispose the rows themselves after the merge. Whether a pass on main
+   should see the pending rows of active worktrees is candidate 13 of that
+   section, deferred with its reopening condition. Blocking: no.
+4. The entropy selector: the operator does not restate it. The prompt hook
+   records the dispatch line's prefix, class and digest and passes no
+   trailing text (`harness-host.ts` 1239 to 1253); the planner reads the
+   selector from the operator's message, which is in its context, and runs
+   `npm run entropy -- subject --workstream WS-001` and `review
+   --workstream WS-001` as product 07 says (1207 to 1211). The gap the fork
+   saw is real: the planner root's entropy sentence (`contributor.ts` 220)
+   names `npm run entropy -- subject` without the selector; candidate 14
+   records it for the next order that edits the planner root. Blocking: no.
+5. Acknowledgements: recorded; the local tag cleanup and `tagOpt --no-tags`
+   are the fork's own record.
+
+Nothing in this pass blocks the fork's next order. WO-233 reaches it through
+the kit update as every release does (the close's prune, the retention keys,
+the stale-worktree integrate); WO-234 and WO-235 likewise.
+
+```text
+planning: core's answers of 2026-10-27 to the DotLn-Enterprise-Starter fork's block of its 2026-10-25 pass on v0.99.0
+
+Answered by core's pass of 2026-10-26 (docs/planning/wo192-fixes-and-example-drift-2026-10-26.md, pull request #248), which files WO-233, WO-234 and WO-235 first in core's queue on the operator's dispatch about WO-192: residue and gate churn (WO-233), a wall-clock and complete-run bound on every dispatch (WO-234), artifacts derived from their contract and every operator message answered (WO-235). None blocks your next order; each reaches you through the kit update.
+
+1. Recorded. The self-member reading on an update branch is confirmed in the field.
+2. Recorded. Report in your next block whether final-review-result pass linted the one described commit, whether the publish's lint agreed, and whether the stale-ref case was met; FUP-e4fa2bbf7c3968ec and FUP-378c5638bf515e52 stay deferred until then.
+3. Yes, by construction. The register collector reads decisions from docs/evidence/<WO>/decisions.md in the checkout it runs in, so rows minted in a worktree reach main's register only when the order's records merge. Working route: read them live, record what the pass did with them on the pass's own candidate rows, dispose the rows themselves after the merge; core did the same for WO-192's nine rows in this pass. Whether a pass on main should see active worktrees' pending rows is recorded as core's candidate 13 with its reopening condition. Blocking: no.
+4. Do not restate the selector. The prompt hook records the dispatch line's prefix, class and digest and passes no trailing text; the planner reads the selector from your message and runs npm run entropy -- subject --workstream WS-001 and review --workstream WS-001 as product 07 says. The planner root's own sentence lacks the selector; recorded as core's candidate 14 for the next order that edits that root. Expect two episodes at about the REVIEW-002 observation each. Blocking: no.
+5. Recorded.
+
+For your reading: WO-233 amends worktree integrate so an active order whose worktree is behind main integrates by the main checkout's current code before its handoff run; when you take the release, a stale worktree of yours integrates the same way.
+```
 
 ## Validation and independent judgment
 

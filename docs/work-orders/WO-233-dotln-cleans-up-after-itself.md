@@ -25,16 +25,23 @@ fixture in `scripts/lib/launchpad-fixture.mjs` and
 case in `scripts/test-instance-history.mjs`, cases in `scripts/test-harness.mjs`,
 `scripts/test-worktree-integration.mjs`, `scripts/test-release.mjs`,
 `scripts/test-runner.test.mjs` and `scripts/test-launchpad-export.mjs`, a
-declarations rule in `scripts/structural-checks.mjs`, and sentences in
-product 07, the security document, the gate architecture record and the kit
-README. Removes: the residue WO-192 measured and the operator removed by
+declarations rule in `scripts/structural-checks.mjs`, the `active`
+admission and the current-code route of `worktree integrate` in
+`scripts/lib/worktree-integration.mjs` and `scripts/worktree.mjs` with cases in
+`scripts/test-worktree-integration.mjs` and the executor root's integrate-first
+sentence in `packages/skeleton/src/loadouts/contributor.ts` (amendment D001),
+and sentences in product 07, the security document, the gate architecture
+record and the kit README. Removes: the residue WO-192 measured and the operator removed by
 hand on 2026-10-26 (85 integration stashes, 41.30 GB; 641 session scratch
 trees, 9.7 GB) and the residue this pass measured that WO-192 did not (24,526
 `dotln-*` roots in the system temp directory, 14 GB, the oldest from
 2026-09-29); the `npm ci` every complete review pays per export fixture after
 the first; the cleanup commands handed to the operator (WO-192-D081, D084);
-and the "Prune subject changed" refusal that stopped the operator's chain
-when a session started a gate beside it (D084). Wall-clock: the launchpad
+the "Prune subject changed" refusal that stopped the operator's chain
+when a session started a gate beside it (D084); and, for every order that
+resumes behind `main`, the second complete review final review pays at the
+integrated identity and the hand merge a stale worktree otherwise needs
+(WO-192's last complete review ran 1,902.3 s; amendment D001). Wall-clock: the launchpad
 suite loses its per-run installs (unmeasured until run; the export task read
 164.231 s at WO-216's base and the whole plain gate's thirty-day median is
 419.1 s against a 360 s threshold at `plan conditions` 2026-10-26); release
@@ -43,16 +50,20 @@ snapshot candidates in under a second); session end gains one prune of the
 session's own trees. Context bytes: this file; product 07 grows by the
 sentences of step 15. Commands: none new for the operator; `harness prune
 [--apply]` keeps its spelling and gains the census. Tokens: unknown until
-run. Steps: 16. Re-mints: `harness-host.ts` is a registered evidence source
+run. Steps: 17. Re-mints: `harness-host.ts` is a registered evidence source
 (`scripts/lib/evidence-sources.mjs`), so the editions it stales are re-minted
 deterministically; it is not a file the feedback verifier judges, so no live
 feedback episode; `harness-prune.mjs`, `test-runner.mjs` and
 `launchpad-fixture.mjs` are declared sources of machinery suites
 (`scripts/test-runner.mjs` `machinerySources`), so `npm test -- --review`
-runs before handoff. No role text changes: if the executor finds a role
-sentence necessary (the release-close root saying the close prunes), it
-edits `contributor.ts`, re-mints the role oracle and records the cold-start
-bytes before and after.
+runs before handoff. One role text change: the executor root's handoff step
+gains the integrate-first sentence of step 16 (amendment D001), so
+`contributor.ts` is edited, the role oracle re-minted and each root's
+cold-start bytes recorded before and after; the executor root is already over
+its ceiling, so the same change carries product 07's standing route (a dated
+acceptance or an offsetting removal), never an advisory left across orders.
+The release-close root is unchanged unless the executor finds a prune sentence
+necessary, recorded the same way.
 **Nomination provenance:** the operator's dispatch of 2026-10-26 (the pass's
 capture in ignored intake, SHA-256
 `6652d1057db77797fcba54da8d1998adb821528b42649a2d7d9a9c425bebbc72`, item 1:
@@ -152,7 +163,11 @@ host's file-event daemon weighed before and after; prune and gate serialize
 under the host lock instead of refusing each other; read-only leftovers are
 made writable before removal; and every piece ships in the kit, so an
 instance that takes the release prunes its own residue and core's gate
-proves it on the fixture instance with history.
+proves it on the fixture instance with history. An active order whose
+worktree is behind `main` integrates main by the main checkout's current code
+before its handoff's complete run, so a stale worktree takes the current gate
+and the row it records is the one final review reuses (amendment D001, the
+operator's authorization of 2026-10-27).
 
 **Observed gap (dated 2026-10-26 at `main` `939af628`; WO-192's worktree and this machine read on 2026-10-26T22:30Z to 22:36Z):**
 
@@ -220,6 +235,15 @@ proves it on the fixture instance with history.
   a dead release-test fixture, because fixtures leave directories without
   write permission (D083). The operator's dispatch of this pass names the
   cost: about two hours of running scripts by hand.
+- A stale worktree cannot take the fix. `worktree integrate` requires the
+  order in `repairing` or `final-review` (`scripts/lib/worktree-integration.mjs`
+  595 to 597) and the command's cwd to be the matching `wo-NNN` worktree root
+  (20 to 26; `scripts/worktree.mjs` 716 to 724 passes `process.cwd()`), so an
+  active order that waited while `main` moved cannot take main's code before
+  its handoff run, pays a second complete review at final review because the
+  integrated identity has no passing row, and a worktree whose own script
+  predates a rule can never run that rule. WO-192's worktree at `939af628`,
+  resumed after this order and two more close, is the case (amendment D001).
 - The forks. `harness-prune.mjs` and `stash-drop.mjs` are kit files and
   present in `DotLn-Instance` and `DotLn-Enterprise-Starter` (read on this
   machine); no instance runs prune, and the instance held 16 stashes before
@@ -306,6 +330,19 @@ proves it on the fixture instance with history.
   `temporary-root` candidates afterwards, and the update preview prints the
   instance's report; the release's Read before upgrading names the retention
   keys an instance may edit and asks no record edit.
+- **A stale worktree integrates by current code.** `integrate` is admitted
+  for an order in `active` whose worktree's merge base is behind `main`; the
+  main checkout's current `scripts/worktree.mjs` performs it against the
+  order's registered worktree, resolved from `git worktree list --porcelain`
+  by the order's branch, so the code that carries the rule does the merge
+  and the worktree then carries main's code; the executor root says to
+  integrate first when main has moved, resolve authorized conflicts, re-run
+  format and sync, and only then start the one complete run. The form (a
+  worktree argument from the main checkout, or main's script run by path
+  from the worktree session) is the executor's, recorded with the hook's
+  admission. Rejected: admitting integrate at every phase (axis: verification
+  and final review judge a frozen subject). Rejected: a hand cherry-pick into
+  the stale worktree (axis: the operator's hand, once per waiting worktree).
 - **Live-run surfaces at the base.** Release close's cleanup rows: exist
   (`release.mjs` 2330 to 2375). The host lock: exists (`withHostLock`). The
   instance-history suite: exists (WO-232, v0.98.0). Prune's apply route in
@@ -423,7 +460,24 @@ proves it on the fixture instance with history.
     the Read before upgrading text); `docs/evidence/WO-233/decisions.md`;
     `npm run meta`; `node scripts/lineage.mjs index --check`; `node
     scripts/check-publication.mjs --print-locks`; `npm run publication:check`.
-16. Handoff: finish source edits; `npm run format` and `npm run sync`; start
+16. `scripts/lib/worktree-integration.mjs` (the phase check at 595 and the
+    root check at 20 to 26) and `scripts/worktree.mjs` (716): admit `active`
+    when the worktree's merge base with `main` is behind main's tip; resolve
+    the order's worktree from the main checkout by its branch when the cwd
+    is not that worktree; a worktree not behind main integrates as today's
+    "took in nothing". `packages/skeleton/src/loadouts/contributor.ts`
+    `roleSteps.executor`, the full-gate step: integrate first when main has
+    moved, then format, sync and the one complete run. Then `npm run build &&
+    node scripts/harness.mjs emit`; the role oracle fixture
+    `packages/skeleton/fixtures/wo233-role-baseline.json` with the chain
+    intact; the decisions record each root's cold-start bytes before and
+    after and the standing route for the executor root. Check: `npm test --
+    --only worktree-integration` (a fixture worktree behind main integrated
+    from the main checkout's code at `active`, and the worktree then holds
+    main's newer file; the paired control at the base refuses with the phase
+    message, both arms' exit codes in `controls.json`); `npm run harness --
+    check`; `npm test -- --only process-debt`.
+17. Handoff: finish source edits; `npm run format` and `npm run sync`; start
     one `npm test -- --review` in the background, never under the bounded
     wrapper, and await it with `node scripts/harness.mjs evidence --wait`;
     after it passes, complete `docs/evidence/WO-233/handoff.md`; `npm run
@@ -502,7 +556,17 @@ controls and the backfill record; the write-backs.
     this machine's census before and after the first apply, or the exact
     host denial and the reviewer's release-close prune record in its place;
     the executor ran the commands, not the operator.
-14. Product 07, the security document, the gate architecture record and the
+14. `npm run worktree -- integrate WO-NNN` is admitted for an order in
+    `active` whose worktree's merge base is behind `main`, performed by the
+    main checkout's current code against the order's registered worktree
+    when the cwd is not that worktree, after which the worktree holds main's
+    code; a worktree not behind main integrates as a no-op; the executor
+    root states the integrate-first duty before the handoff's complete run;
+    the role oracle pins it; the decisions record the roots' bytes before
+    and after with the standing route; the paired control at the base
+    refuses with `integrate requires the selected order in repairing or
+    final-review`, both arms' exit codes in `docs/evidence/WO-233/controls.json`.
+15. Product 07, the security document, the gate architecture record and the
     kit README state the mechanism as built (step 15); the Read before
     upgrading names the retention keys and asks no record edit; `npm run
     publication:check`, `npm test -- --review` and `npm run test:docs`
@@ -510,7 +574,7 @@ controls and the backfill record; the write-backs.
 
 **Preflight:** `npm test -- --only harness` for steps 2, 5 and 14;
 `npm test -- --only declarations` and `npm test -- --only fixture-temp-root`
-for step 3; `npm test -- --only worktree-integration` for step 4;
+for step 3; `npm test -- --only worktree-integration` for steps 4 and 16;
 `npm test -- --only release` for step 6; `npm test -- --only harness-fixtures`
 and `npm test -- --only skeleton` for step 7; `npm test -- --only runner-fixtures`
 for step 8; `npm test -- --only launchpad` for steps 9 and 10;
@@ -523,14 +587,25 @@ for step 11; `npm test -- --only instance-history` for step 13;
 (07-execution-guide.md §Preflight before the full gate).
 
 **Evidence gate:** the base record and controls; the cases of criteria 1 to
-12; the backfill or denial record of criterion 13; the deterministic re-mints
-of the editions `harness-host.ts` stales; `npm test -- --review` before
+12; the backfill or denial record of criterion 13; the integrate cases and
+control of criterion 14; the re-minted role oracle; the deterministic
+re-mints of the editions `harness-host.ts` and `contributor.ts` stale; `npm test -- --review` before
 `implementation-ready`, final review reusing the passing complete row at the
 integrated code identity when one exists.
 
-**Write-back duty:** as listed in step 15 and criterion 14.
+**Write-back duty:** as listed in step 15 and criterion 15, and product 07
+§Independent workflows and integration (the `active` admission and the
+current-code route of step 16).
 
 **Known issues and carry-ins:**
+- Amendment D001 (2026-10-27; the operator's authorization in ignored
+  capture SHA-256
+  `2280c0555104abe9c811daf4efd4218f4d835b0eab50be56ff7afc78a6cb190a`;
+  bound by `amend-order` against receipt 056): step 16 and criterion 14, the
+  integrate rule; WO-192 is its first consumer (reopen: a resumed order's
+  integrate from current code leaves a mixed runtime in the worktree, or an
+  integrated identity's row is reused for a subject the integrate changed
+  after the row was recorded).
 - FUP-ca213b859ce6a36c (WO-192-D080), FUP-d925bbf866d1d43c (D081) and
   FUP-575e9e05f616d44c (D083) are this order's sources; their register rows
   live in WO-192's uncommitted worktree, not in `main`'s register, so the

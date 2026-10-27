@@ -46155,6 +46155,54 @@
           "at": "2026-10-26T23:11:07.536Z"
         }
       ]
+    },
+    {
+      "id": "FUP-770baf2f452c669e",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-wo-192s-record-and-the-operators-corrections-recorded-2026-10-26::3651dfeaebdfce16feeef64cdc496c6b05ccbb6f85e0cc92a6f8b5b1ee2c7b63",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "235c44a67b2f087a748730a149a542241a46f40fca12aba8003b9374fe345c03",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-wo-192s-record-and-the-operators-corrections-recorded-2026-10-26",
+          "title": "The planner root names the entropy subject selector",
+          "summary": "14. **The planner root names the entropy subject selector** (the fork's item 4). Deferred: product 07 names the trailing repository or workstream id that selects `subject --repository <id>` or `--workstream WS-NNN` (1207 to 1211) and the planner root's entropy sentence (`contributor.ts` 220) names `npm run entropy -- subject` with no selector; the hook records the dispatch line's prefix, class and digest and passes no trailing text (`harness-host.ts` 1239 to 1253), and the role reads the selector from the operator's message, which is in its context, so nothing is restated. The next order that edits the planner root carries the sentence. Reopen when a pass dispatched with a trailing id runs t",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "The fork's item 4: the planner reads the trailing repository or workstream id from the operator's message and product 07 names the selector (1207 to 1211); the planner root's entropy sentence (contributor.ts 220) lacks it; the next order that edits the planner root carries the sentence. [2026-10-26 planning pass (docs/planning/wo192-fixes-and-example-drift-2026-10-26.md)]",
+          "reopenWhen": "A pass dispatched with a trailing id runs the launchpad subject instead, or the next order editing the planner root activates.",
+          "targets": [],
+          "at": "2026-10-27T00:11:36.327Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-941fd291e0fd1033",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-wo-192s-record-and-the-operators-corrections-recorded-2026-10-26::5866bcd2692f874e7edb4f2bf83f7b3378a4a5f569072b0804ed9e5ea0387fed",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "5b0f4253b3a40b262a188ac6e2c7d7c8c2aad9d0dc3445f2c3e57dd6280d8180",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-wo-192s-record-and-the-operators-corrections-recorded-2026-10-26",
+          "title": "Pending rows of active worktrees visible to a pass on main",
+          "summary": "13. **Pending rows of active worktrees visible to a pass on main** (the fork's item 3 of its 2026-10-25 pass, pasted on 2026-10-27; this pass's own case with WO-192's nine rows). Deferred: the collector reads decisions from `docs/evidence/<WO>/decisions.md` in the checkout it runs in (`scripts/lib/planning-followups.mjs` 280 to 286, `readDecisions`), so a row minted in a worktree reaches main's register only when the order's records merge; a pass on main reads such rows live and records what it did with them on its own candidate rows, disposing the rows themselves after the merge. Reopen when a second pass on either side must act on a worktree's rows without disposing them, or a records merg",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "The fork's item 3 of its 2026-10-25 pass and this pass's own case with WO-192's nine rows: the collector reads decisions from docs/evidence/<WO>/decisions.md in the checkout it runs in (scripts/lib/planning-followups.mjs 280 to 286), so a worktree's rows reach main's register only at the records merge; the working route is to read them live, record the pass's action on its own candidate rows and dispose the rows after the merge. [2026-10-26 planning pass (docs/planning/wo192-fixes-and-example-drift-2026-10-26.md)]",
+          "reopenWhen": "A second pass on either side must act on a worktree's rows without disposing them, or a records merge brings a row a pass already acted on and the two dispositions disagree.",
+          "targets": [],
+          "at": "2026-10-27T00:11:36.225Z"
+        }
+      ]
     }
   ]
 }
