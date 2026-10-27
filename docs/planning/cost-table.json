@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "subjectSourceHash": "sha256:ae3ef27d994ee1e1d5f636a5f90f82ea804a76f98abe43bb08ce69d4368524ea",
+  "subjectSourceHash": "sha256:e8de58a49c3aeaf95d7eec689d66739f39a8889f1e510db28f6a72f7141a460c",
   "acceptances": [
     {
       "date": "2026-10-05",
@@ -115,72 +115,72 @@
       "reason": "WO-140 measured 21,299 bytes in both generated roots (installed CLAUDE.md 5,788 plus the reviewer skill 15,511) against 20,480, from 20,434 before it, after adding two reviewed rules of 865 bytes together: the product gate runs outside the harness sandbox from the start in an attended session and a resident-launched verification records a partial result, and the receipt's Process cost line carries counters with their source or one cause code. During resume: next on 2026-09-19 the operator authorized raising the limit; raise by one 4 KB step under that authorization and the standing direction of 2026-09-17, preserving every reviewed rule; the verifier measures 20,081 against 20,480 with the same two rules and stays unchanged. Reassess when another reviewed rule needs more. Decision: docs/evidence/WO-140/decisions.md#wo-140-d005."
     }
   ],
-  "observedAt": "2026-10-26T23:17:15.814Z",
-  "subjectRevision": "77cbb0143be6c38c4815f53b65f04a6bc9e685d4",
+  "observedAt": "2026-10-27T00:12:08.513Z",
+  "subjectRevision": "0a335b649666a40c27f4e4b6b97a85dcb64b1b77",
   "rows": [
     {
       "workOrder": "WO-233",
-      "observedAt": "2026-10-26T23:17:15.814Z",
+      "observedAt": "2026-10-27T00:12:08.513Z",
       "metrics": null
     },
     {
       "workOrder": "WO-234",
-      "observedAt": "2026-10-26T23:17:15.814Z",
+      "observedAt": "2026-10-27T00:12:08.513Z",
       "metrics": null
     },
     {
       "workOrder": "WO-235",
-      "observedAt": "2026-10-26T23:17:15.814Z",
+      "observedAt": "2026-10-27T00:12:08.513Z",
       "metrics": null
     },
     {
       "workOrder": "WO-192",
-      "observedAt": "2026-10-26T23:17:15.814Z",
+      "observedAt": "2026-10-27T00:12:08.513Z",
       "metrics": null
     },
     {
       "workOrder": "WO-083",
-      "observedAt": "2026-10-26T23:17:15.814Z",
+      "observedAt": "2026-10-27T00:12:08.513Z",
       "metrics": null
     },
     {
       "workOrder": "WO-207",
-      "observedAt": "2026-10-26T23:17:15.814Z",
+      "observedAt": "2026-10-27T00:12:08.513Z",
       "metrics": null
     },
     {
       "workOrder": "WO-193",
-      "observedAt": "2026-10-26T23:17:15.814Z",
+      "observedAt": "2026-10-27T00:12:08.513Z",
       "metrics": null
     },
     {
       "workOrder": "WO-183",
-      "observedAt": "2026-10-26T23:17:15.814Z",
+      "observedAt": "2026-10-27T00:12:08.513Z",
       "metrics": null
     },
     {
       "workOrder": "WO-088",
-      "observedAt": "2026-10-26T23:17:15.814Z",
+      "observedAt": "2026-10-27T00:12:08.513Z",
       "metrics": null
     },
     {
       "workOrder": "WO-091",
-      "observedAt": "2026-10-26T23:17:15.814Z",
+      "observedAt": "2026-10-27T00:12:08.513Z",
       "metrics": null
     },
     {
       "workOrder": "WO-096",
-      "observedAt": "2026-10-26T23:17:15.814Z",
+      "observedAt": "2026-10-27T00:12:08.513Z",
       "metrics": null
     },
     {
       "workOrder": "WO-014",
-      "observedAt": "2026-10-26T23:17:15.814Z",
+      "observedAt": "2026-10-27T00:12:08.513Z",
       "metrics": null
     },
     {
       "workOrder": "WO-228",
-      "observedAt": "2026-10-26T23:17:15.814Z",
+      "observedAt": "2026-10-27T00:12:08.513Z",
       "metrics": null
     }
   ],
