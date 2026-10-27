@@ -40,6 +40,17 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
+## 2026-10-26 — Planning pass: WO-192's proposed fixes made permanent (WO-233, WO-234) and the operator's corrections on example inheritance and dropped directions (WO-235); registration only; the record is the planning document
+
+Dispatch: `planning: FIX THE BULLSHIT FROM WO-192 …`, sent at
+2026-10-26T22:26:17Z in Claude Code (Fable 5.1 at max, operator-selected),
+with nine mid-turn operator messages between 22:38Z and 22:49Z, all captured
+verbatim in `docs/intake/notes/planning-wo192-fixes-and-example-drift-2026-10-26.md`
+(SHA-256 `6652d1057db77797fcba54da8d1998adb821528b42649a2d7d9a9c425bebbc72`).
+The pass files WO-233, WO-234 and WO-235, places them first, retires WO-231,
+WO-232 and WO-204, and records WO-192's state and routes. Record:
+[the planning document](../planning/wo192-fixes-and-example-drift-2026-10-26.md).
+
 ## 2026-10-25 — Planning pass: the fork's second block of 2026-10-24 and the DotLn-Angular review-lint request answered, WO-231 and WO-232 filed on the operator's direction that a release must not break the instance; registration only; the record is the planning document
 
 Dispatch: `planning: observations and requests from the DotLn-Enterprise-Starter

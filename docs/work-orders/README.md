@@ -4,9 +4,9 @@
 
 ## Proposed order
 
-- [x] [WO-231] — The final-review lint of a target order's commits reads the described base · **final-reviewed**
-- [x] [WO-232] — A starter release does not break the instance that takes it · **final-reviewed**
-- [x] [WO-204] — The source writer cannot damage the operator's repository · **final-reviewed**
+- [ ] [WO-233] — DotLn cleans up after itself · **queued**
+- [ ] [WO-234] — A dispatch cannot run away · **queued**
+- [ ] [WO-235] — No artifact is shaped by its predecessor and no operator direction is dropped · **queued**
 - [ ] [WO-192] — A router drives an order through its lifecycle · **queued**
 - [ ] [WO-083] — The real run from the operator's instance · **queued**
 - [ ] [WO-207] — An instance's kit updates: rollback, extension point and build channel · **queued**
@@ -33,15 +33,67 @@ Full evidence for the active and sequenced orders follows; the Open cards are in
 
 Separate track; outside the proposed serial order.
 
-- [WO-228] — repository: self; base: 28cc4882d24b573b7d809bc2d9a427a9fdc2b7d9; phase: draft; verdict: unknown; integration: current; stale: no; observed target: 28cc4882d24b573b7d809bc2d9a427a9fdc2b7d9.
+- [WO-228] — repository: self; base: 939af628cc317ca436b2c5e1f9d5446adb1d3a0d; phase: draft; verdict: unknown; integration: current; stale: no; observed target: 939af628cc317ca436b2c5e1f9d5446adb1d3a0d.
 
-<!-- dotln-workstreams: {"workstreams":[{"id":"WS-002","track":"separate","members":[{"workOrderId":"WO-228","repository":"self","base":"28cc4882d24b573b7d809bc2d9a427a9fdc2b7d9","phase":"draft","verdict":"unknown","integration":"current","stale":"no","targetCommit":"28cc4882d24b573b7d809bc2d9a427a9fdc2b7d9"}],"edges":[{"from":"WO-228","to":"WO-193","relation":"planning-deferral"}]}]} -->
+<!-- dotln-workstreams: {"workstreams":[{"id":"WS-002","track":"separate","members":[{"workOrderId":"WO-228","repository":"self","base":"939af628cc317ca436b2c5e1f9d5446adb1d3a0d","phase":"draft","verdict":"unknown","integration":"current","stale":"no","targetCommit":"939af628cc317ca436b2c5e1f9d5446adb1d3a0d"}],"edges":[{"from":"WO-228","to":"WO-193","relation":"planning-deferral"}]}]} -->
 
 ## Active
 
 None.
 
 ## Open
+
+### WO-233
+
+[WO-233 — DotLn cleans up after itself: an integration drops its own stash when it completes, every temporary root carries an owner and a retention class the prune judges, the prune runs inside release close, session end and gate end instead of in the operator's hands, a complete review reuses a warm export fixture instead of a fresh install per run, and the kit carries all of it to every instance (version assigned at activation)](WO-233-dotln-cleans-up-after-itself.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; dependency-ready.
+- References: WO-232: satisfied-by-close (met) — the instance-history suite and its committed fixture instance, in which step 13 proves an updated instance prunes its own residue; WO-226: satisfied-by-close (met) — update --finish and the carried runtime, the path by which an exported instance takes this order's kit files; WO-215: satisfied-by-close (met) — release close's cleanup and starter refresh, the step the prune joins; WO-229: satisfied-by-close (met) — the host-lane registry and the host structural task the gate-end prune and the prune-gate serialization build on; WO-192: reference-only (non-blocking) — its decisions D080, D081, D083, D084 and D017 are the sources; its worktree holds them uncommitted; nothing here waits on its merge.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer xhigh.
+- Track: machinery
+- Cost: adds &#96;scripts/lib/temporary-roots.mjs&#96; (new; the owner record, the class table and the ledger every temporary root is created through), the &#96;temporary-root&#96;, &#96;session-scratch&#96; and legacy-backfill candidate kinds and the host-lock serialization in &#96;scripts/lib/harness-prune.mjs&#96;, the stash drop at completion in &#96;scripts/lib/worktree-integration.mjs&#96;, the prune step and its record in &#96;scripts/release.mjs&#96;, the session-end prune in &#96;packages/skeleton/src/harness-host.ts&#96;, the gate-end prune, the churn metric and the fseventsd sample in &#96;scripts/test-runner.mjs&#96;, the warm export fixture in &#96;scripts/lib/launchpad-fixture.mjs&#96; and &#96;scripts/test-launchpad-export.mjs&#96;, &#96;retention&#96; keys in &#96;docs/control/budgets.json&#96; and &#96;scripts/kit/budgets.template.json&#96;, one case in &#96;scripts/test-instance-history.mjs&#96;, cases in &#96;scripts/test-harness.mjs&#96;, &#96;scripts/test-worktree-integration.mjs&#96;, &#96;scripts/test-release.mjs&#96;, &#96;scripts/test-runner.test.mjs&#96; and &#96;scripts/test-launchpad-export.mjs&#96;, a declarations rule in &#96;scripts/structural-checks.mjs&#96;, the &#96;active&#96; admission and the current-code route of &#96;worktree integrate&#96; in &#96;scripts/lib/worktree-integration.mjs&#96; and &#96;scripts/worktree.mjs&#96; with cases in &#96;scripts/test-worktree-integration.mjs&#96; and the executor root's integrate-first sentence in &#96;packages/skeleton/src/loadouts/contributor.ts&#96; (amendment D001), and sentences in product 07, the security document, the gate architecture record and the kit README. Removes: the residue WO-192 measured and the operator removed by hand on 2026-10-26 (85 integration stashes, 41.30 GB; 641 session scratch trees, 9.7 GB) and the residue this pass measured that WO-192 did not (24,526 &#96;dotln-*&#96; roots in the system temp directory, 14 GB, the oldest from 2026-09-29); the &#96;npm ci&#96; every complete review pays per export fixture after the first; the cleanup commands handed to the operator (WO-192-D081, D084); the "Prune subject changed" refusal that stopped the operator's chain when a session started a gate beside it (D084); and, for every order that resumes behind &#96;main&#96;, the second complete review final review pays at the integrated identity and the hand merge a stale worktree otherwise needs (WO-192's last complete review ran 1,902.3 s; amendment D001). Wall-clock: the launchpad suite loses its per-run installs (unmeasured until run; the export task read 164.231 s at WO-216's base and the whole plain gate's thirty-day median is 419.1 s against a 360 s threshold at &#96;plan conditions&#96; 2026-10-26); release close gains one prune (seconds; the dry run on this machine judged 84.8 MB of snapshot candidates in under a second); session end gains one prune of the session's own trees. Context bytes: this file; product 07 grows by the sentences of step 15. Commands: none new for the operator; &#96;harness prune &#91;--apply&#93;&#96; keeps its spelling and gains the census. Tokens: unknown until run. Steps: 17. Re-mints: &#96;harness-host.ts&#96; is a registered evidence source (&#96;scripts/lib/evidence-sources.mjs&#96;), so the editions it stales are re-minted deterministically; it is not a file the feedback verifier judges, so no live feedback episode; &#96;harness-prune.mjs&#96;, &#96;test-runner.mjs&#96; and &#96;launchpad-fixture.mjs&#96; are declared sources of machinery suites (&#96;scripts/test-runner.mjs&#96; &#96;machinerySources&#96;), so &#96;npm test -- --review&#96; runs before handoff. One role text change: the executor root's handoff step gains the integrate-first sentence of step 16 (amendment D001), so &#96;contributor.ts&#96; is edited, the role oracle re-minted and each root's cold-start bytes recorded before and after; the executor root is already over its ceiling, so the same change carries product 07's standing route (a dated acceptance or an offsetting removal), never an advisory left across orders. The release-close root is unchanged unless the executor finds a prune sentence necessary, recorded the same way.
+- Authority: [docs/work-orders/WO-233-dotln-cleans-up-after-itself.md](WO-233-dotln-cleans-up-after-itself.md)
+
+### WO-234
+
+[WO-234 — A dispatch cannot run away: every role session carries a wall-clock bound and a complete-run bound read from the budgets file, the gate, the bounded wrapper and the lifecycle refuse to start past it, the hooks say where the session stands at every turn, an operator acceptance extends it on the record, and the meter reports every stop and what followed (version assigned at activation)](WO-234-a-dispatch-cannot-run-away.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; dependency-ready.
+- References: WO-158: satisfied-by-close (met) — the off-ramp routes (typed event, operator capture with digest, legal-phase refusal, status projection) the accept-overrun route follows; WO-126: satisfied-by-close (met) — the budgets file, readBudgets and budgetVerdict that the two new keys and their acceptances extend; WO-144: satisfied-by-close (met) — the hook boundary and its five refusals, which this order extends by a sixth; WO-229: satisfied-by-close (met) — the host structural task and the lane registry where the gate's bound refusal is judged; WO-139: satisfied-by-close (met) — the session journal and the usage readback the standing is computed from; WO-192: reference-only (non-blocking) — its driven-run stops bound a router's workers and are unmerged; its D023, D076 and D084 are this order's sources.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer xhigh.
+- Track: machinery
+- Cost: adds &#96;scripts/lib/dispatch-bound.mjs&#96; (new; reads the session journal, the gate rows and the budgets, returns the dispatch's standing), &#96;dispatches.&lt;role&gt;.wallClockMs&#96; and &#96;.completeRuns&#96; in &#96;docs/control/budgets.json&#96; and &#96;scripts/kit/budgets.template.json&#96; with their validation in &#96;scripts/lib/process-budget.mjs&#96;, the refusal in &#96;scripts/test-runner.mjs&#96;'s &#96;host&#96; task, the refusal in &#96;scripts/lib/bounded-command.mjs&#96;, the &#96;accept-overrun&#96; route and the &#96;DispatchBoundAccepted&#96; event in &#96;scripts/resume.mjs&#96; and the control fold, the standing line in the Stop hook and the sixth refusal in &#96;packages/skeleton/src/harness-host.ts&#96;, the shared sentence in &#96;packages/skeleton/src/loadouts/contributor.ts&#96; with its oracle re-mint, &#96;boundStops&#96;, &#96;boundAcceptances&#96; and &#96;afterStop&#96; in &#96;scripts/lib/meta.mjs&#96; and a &#96;boundStops&#96; block in &#96;scripts/lib/plan-failures.mjs&#96;, cases in &#96;scripts/test-runner.test.mjs&#96;, &#96;scripts/test-harness.mjs&#96;, &#96;scripts/test-harness-fixtures&#96; cases, &#96;scripts/test-control-segments.mjs&#96; and &#96;scripts/test-process-debt.mjs&#96;, and sentences in product 07, the security document, &#96;CLAUDE.md&#96;'s generated paragraph and the kit README. Removes: the unbounded dispatch WO-192 ran (80,817,117 ms of executor wall clock, 327,404,836 tokens, 109 gate steps and 17,144,915 ms of gate time in one phase with no phase transition, stopped twice by the operator and never by the system; WO-192's &#96;meta.json&#96; and decisions D076 and D084), and the operator's attendance as the only stop. Wall-clock: one journal and gate-row read per gate start, per probe start and per turn end (milliseconds); nothing else. Context bytes: this file; every role's cold start grows by the shared sentence of step 8, measured and recorded before and after. Commands: &#96;npm run resume -- accept-overrun&#96; (new, operator-run after a stop); &#96;harness usage&#96; gains the standing. Tokens: unknown until run. Steps: 11. Re-mints: &#96;harness-host.ts&#96;, &#96;harness-command.ts&#96; and &#96;contributor.ts&#96; are registered evidence sources, so the editions they stale are re-minted deterministically; none is a file the feedback verifier judges, so no live feedback episode; &#96;test-runner.mjs&#96;, &#96;bounded-command.mjs&#96; and &#96;process-budget.mjs&#96; are declared sources of machinery suites, so &#96;npm test -- --review&#96; runs before handoff; the role oracle is re-minted for the shared sentence.
+- Authority: [docs/work-orders/WO-234-a-dispatch-cannot-run-away.md](WO-234-a-dispatch-cannot-run-away.md)
+
+### WO-235
+
+[WO-235 — No artifact is shaped by its predecessor and no operator direction is dropped: every generated role derives each artifact from its contract and the check that judges it, the meter compares each measured artifact with the best comparable passing instance, every operator message in a dispatch becomes a typed direction-ledger entry that completion and the planning receipt refuse to leave unanswered, and a correction in any register freezes scope before the role continues (version assigned at activation)](WO-235-no-artifact-shaped-by-its-predecessor.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; dependency-ready.
+- References: WO-130: satisfied-by-close (met) — the dispatch record the prompt hook appends, which the direction ledger indexes by message; WO-226: satisfied-by-close (met) — the first-line prefix reading of an operator message, extended with an index and digest per message; WO-187: satisfied-by-close (met) — the generated role roots and worker definitions the shared rule enters, pinned by the oracle; WO-158: satisfied-by-close (met) — the completion routes whose refusal shape the unanswered-direction refusal follows; WO-227: satisfied-by-close (met) — the pull-request body rules and outward lint beside which the best-comparable advisory stands; WO-088: reference-only (non-blocking) — pass registration moves out of the idea ledger there; the skeleton this order writes follows it then.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer xhigh.
+- Track: machinery
+- Cost: adds the direction ledger (&#96;docs/evidence/WO-NNN/directions.jsonl&#96; for an order; a marker block in a pass's planning document) with its reader in &#96;scripts/lib/direction-ledger.mjs&#96; (new), the message index and digest the prompt hook records in &#96;packages/skeleton/src/harness-host.ts&#96;, the refusals in &#96;scripts/resume.mjs&#96;'s completion commands and in &#96;scripts/lib/plan-receipts.mjs&#96;, &#96;bestComparableBytes&#96; and its ratio in &#96;scripts/lib/meta.mjs&#96; with the advisory in &#96;scripts/refute-plan.mjs&#96; and the completion commands, the best-comparable line in &#96;scripts/lib/reader-profiles.mjs&#96; &#96;writingGuidance&#96;, the skeleton in &#96;scripts/refute-plan.mjs&#96; &#96;start&#96;, the shared sentence in &#96;packages/skeleton/src/loadouts/contributor.ts&#96; with its oracle re-mint, the Stop hook's refusal to end a turn with an operator message unanswered in &#96;packages/skeleton/src/harness-host.ts&#96; (amendment D001), cases in &#96;scripts/test-harness.mjs&#96;, &#96;scripts/test-plan-refutation.mjs&#96;, &#96;scripts/test-control-segments.mjs&#96;, &#96;scripts/test-process-debt.mjs&#96; and &#96;scripts/test-publication*.mjs&#96;, and sentences in products 05 and 07, the security document and the kit README. Removes: the pattern the filing pass observed in itself and in the record (fifteen of forty-nine planning documents share one inherited section skeleton no contract names; pull-request bodies grew from 1,707 bytes at WO-202 to 17,605 at WO-210, fell to 1,920 at WO-215 after a correction and grew again to 11,604 at WO-221 and 8,594 at WO-232), the "Nearest example" the writing guidance offers as a pattern, and the nine of thirteen operator messages in the current window the record files as &#96;unclassified&#96; with no disposition, and the reply-per-message pattern of the filing pass's own session (four messages in eleven seconds answered one at a time; amendment D001). Wall-clock: one record write per operator message, one read at completion (milliseconds). Context bytes: this file; every role's cold start grows by the shared sentence of step 7, measured and recorded before and after. Commands: none new for the operator. Tokens: unknown until run. Steps: 12. Re-mints: &#96;harness-host.ts&#96; and &#96;contributor.ts&#96; are registered evidence sources, so the editions they stale are re-minted deterministically; neither is a file the feedback verifier judges, so no live feedback episode; &#96;meta.mjs&#96;, &#96;plan-receipts.mjs&#96; and &#96;reader-profiles.mjs&#96; are declared sources of machinery suites, so &#96;npm test -- --review&#96; runs before handoff; the role oracle is re-minted.
+- Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-235/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
+- Authority: [docs/work-orders/WO-235-no-artifact-shaped-by-its-predecessor.md](WO-235-no-artifact-shaped-by-its-predecessor.md)
 
 ### WO-192
 
@@ -223,8 +275,8 @@ None.
 [WO-183]: WO-183-intent-declaration-and-the-stranger-test.md
 [WO-192]: WO-192-router-drives-an-order.md
 [WO-193]: WO-193-instance-capability-requests.md
-[WO-204]: WO-204-source-writer-cleanup-revocation.md
 [WO-207]: WO-207-update-rollback.md
 [WO-228]: WO-228-private-predecessor-map.md
-[WO-231]: WO-231-final-review-lint-from-the-described-base.md
-[WO-232]: WO-232-a-release-does-not-break-the-instance.md
+[WO-233]: WO-233-dotln-cleans-up-after-itself.md
+[WO-234]: WO-234-a-dispatch-cannot-run-away.md
+[WO-235]: WO-235-no-artifact-shaped-by-its-predecessor.md

@@ -193,16 +193,41 @@ member without the field, and reads a self member's cells from `main`
 because every later release pays for it otherwise. Nothing else moves
 relative to its neighbours.
 
+**WO-192's issues come first; the record's mechanisms follow** (the
+2026-10-26 pass; operator dispatch of 2026-10-26 and its corrections). WO-231
+closed on 2026-10-25 as v0.97.1, WO-232 as v0.98.0 and WO-204 on 2026-10-25
+as v0.99.0; all three leave the list. WO-192, activated on 2026-10-25, ran
+22.4 hours of executor wall clock without leaving `active`, was stopped
+twice by the operator, and left its implementation uncommitted in its
+worktree; its decisions D080, D081 and D083 record the residue (85
+integration stashes, 41.30 GB; 641 session scratch trees, 9.7 GB) and the
+churn that refused its own gate by host memory, and this pass measured
+24,526 further fixture roots, 14 GB, in the system temp directory. The
+operator's dispatch directs that these be fixed permanently for DotLn and
+the forks with no cleanup run by hand, and the operator's corrections during
+the pass direct that the mechanisms behind two further failures be built, in
+that priority. Three orders go first: WO-233 (DotLn cleans up after itself:
+the stash dropped at integration, every temporary root owned and judged, the
+prune at release close, session end and gate end, the warm export fixture,
+all in the kit), WO-234 (a dispatch cannot run away: wall-clock and
+complete-run bounds the gate, the wrapper and the lifecycle refuse past,
+with an acceptance on the record), then WO-235 (no artifact shaped by its
+predecessor, every operator message answered, a correction heard at its
+urgency). WO-192 stays active with its worktree preserved and resumes after
+them; the operator may instead withdraw it (the pass's planning document
+names both commands). The forks take WO-233 through the kit update, as
+every release. Nothing else moves relative to its neighbours.
+
 The order, serial:
-- WO-231: the final-review lint of a target order's commits reads the
-  described base; the fork's blocker; first.
-- WO-232: a starter release does not break the instance that takes it: the
-  fixture instance with history in core's gate, the two admissions and the
-  self member's reading; the operator's direction; second.
-- WO-204: the source writer is made safe before WO-083. It absorbed WO-205,
-  WO-206 and WO-212.
-- WO-192: the router, before WO-083, so the measured run is driven the way
-  the operator will drive orders (operator item k, 2026-10-11).
+- WO-233: DotLn cleans up after itself; WO-192's residue and churn fixed at
+  the source and shipped in the kit; first.
+- WO-234: a dispatch cannot run away; the bound WO-192's 22.4-hour dispatch
+  lacked; second.
+- WO-235: no artifact shaped by its predecessor and no operator direction
+  dropped; the operator's corrections of 2026-10-26; third.
+- WO-192: the router, active with its worktree preserved, before WO-083, so
+  the measured run is driven the way the operator will drive orders
+  (operator item k, 2026-10-11).
 - WO-083: the real run.
 - WO-207: rollback, the extension point for the fork's own features and
   supports, and the build channel (the 2026-10-11 order). It absorbed WO-208
@@ -228,9 +253,9 @@ The period below `v1.0.0` is early access (operator direction, 2026-09-30).
 The order of everything the operator did not place is the planner's.
 
 <!-- dotln-work-order-sequence:start -->
-- WO-231 — The final-review lint of a target order's commits reads the described base
-- WO-232 — A starter release does not break the instance that takes it
-- WO-204 — The source writer cannot damage the operator's repository
+- WO-233 — DotLn cleans up after itself
+- WO-234 — A dispatch cannot run away
+- WO-235 — No artifact is shaped by its predecessor and no operator direction is dropped
 - WO-192 — A router drives an order through its lifecycle
 - WO-083 — The real run from the operator's instance
 - WO-207 — An instance's kit updates: rollback, extension point and build channel

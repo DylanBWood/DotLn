@@ -45,10 +45,10 @@
       "decision": "docs/planning/entropy-review-007-2026-10-20.md#9-document-ceilings"
     },
     "07-execution-guide.md": {
-      "nonExemptBytesAtLanding": 258146,
-      "ceiling": 283961,
-      "date": "2026-10-25",
-      "decision": "docs/planning/fork-returns-and-review-lint-2026-10-25.md#9-write-backs-and-document-ceilings"
+      "nonExemptBytesAtLanding": 261194,
+      "ceiling": 287314,
+      "date": "2026-10-26",
+      "decision": "docs/planning/wo192-fixes-and-example-drift-2026-10-26.md#write-backs-and-document-ceilings"
     },
     "08-publication-compiler.md": {
       "nonExemptBytesAtLanding": 24867,
