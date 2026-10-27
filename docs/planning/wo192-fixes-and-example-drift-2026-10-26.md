@@ -51,7 +51,14 @@ by hand. Times are the prompt hook's observation times.
 | 14 | 00:01:47Z | OperatorDirection (authorization) | Change WO-233 so an out-of-date active order can integrate main | Acted: WO-233-D001, bound by `amend-order` against receipt 056 |
 | 15 | 00:02:57Z | OperatorCorrectionReceived | The WO-192 worktree the resume runs in would not carry the code admitting it | Acted: D001's design performs the integrate by the main checkout's current code against the stale worktree |
 | 16 | 00:03:16Z | OperatorReportsRepeatedFailure | The fixture-roots question had gone unanswered in the visible replies | Acted: answered in the response and recorded in §Amendment; the response now leads with it |
-| 17 | 00:08Z | OperatorDirection (the fork's block carried; capture SHA-256 `b524ef799db8449d3662dced20ad32775774b1c65aba955aa8304dcd76a3fdc2`) | Answer the fork's five items of its 2026-10-25 pass | Acted: §The fork's block, with the paste-ready answer |
+| 17 | 00:08Z | OperatorDirection (the fork's block carried; capture SHA-256 `b524ef799db8449d3662dced20ad32775774b1c65aba955aa8304dcd76a3fdc2`) | Answer the fork's five items of its 2026-10-25 pass | Acted: §The fork's block, with the paste-ready answer, which the response first failed to carry and then carried on the operator's ask |
+| 18 | 00:17:26Z | OperatorReportsRepeatedFailure (the burst capture, SHA-256 `6baae3cbbd738603fad5a6e38caa1753302561399b42cdf9ffa4aecb50806d93`) | The session held the main thread for long foreground runs | Acknowledged with the observed figures (two document gates of 155.22 s and 157.37 s, run in the foreground) |
+| 19 | 00:17:48Z | OperatorCorrectionReceived | The removal command had been queued since it was given, not just run | Acknowledged: queued behind the session's chain between 7 and 12 minutes by the hook's timestamps |
+| 20 | 00:18:14Z | OperatorDirection | Put the fork's answer block in the session | Acted: pasted in full |
+| 21 | 00:18:31Z | OperatorRejectsUnsupportedAssumption | The answer must be in the session, not found in a document | Acted: in the session; the omission acknowledged |
+| 22 | 00:19:02Z | OperatorReportsRepeatedFailure | The session misparses messages | Acknowledged with four instances; two of the four were then found wrong and corrected (row 24) |
+| 23 | 00:19:13Z to 00:19:24Z | OperatorDirection (four messages in a row) | Answer a burst once, after its last message; fix it permanently | Acted: WO-235-D001, the Stop hook's turn-end refusal, bound by `amend-order` against receipt 056 |
+| 24 | 00:19:29Z | OperatorCorrectionReceived | The "four times" reply had errors | Acted: two items corrected in the response (the withdraw route was the session's own word; the block came on the first ask) |
 
 No message withdrew an earlier one; messages 7 and 8 reorder and bound the
 others. The dispatch's aim stayed first throughout the orders filed, and
@@ -451,13 +458,28 @@ the unfixed gate. The amendment adds step 16 and criterion 14 to WO-233 and
 one sentence to the executor root; the known-issue reading of receipt 056 on
 the roots over their ceilings applies to it.
 
+A second amendment, WO-235-D001, follows the operator's direction of
+00:19:13Z to 00:19:24Z (four messages in eleven seconds, answered one at a
+time, after four earlier messages had been answered the same way; the burst
+capture, SHA-256
+`6baae3cbbd738603fad5a6e38caa1753302561399b42cdf9ffa4aecb50806d93`): under
+Claude the Stop hook refuses to end a turn while the journal holds an
+operator message newer than the dispatch's last direction-ledger entry, so a
+burst is answered once, after its last; a habit cannot do this because the
+host starts a reply per message when the role is idle. It is the ledger
+check at turn granularity, bound by `amend-order` against receipt 056 (step
+11, criterion 9 of WO-235).
+
 The fixture roots: with no gate or DotLn process live, this pass ran the
 removal of the 24,230 stale `dotln-*` roots older than an hour (keeping
 the host guard's state, the writer-transition locks and the context7
 cache); the host's auto-mode permission classifier denied it as a shared
 scratch sweep, the denial WO-192's D081 recorded for `prune --apply`, and
 nothing was removed. The one-line command was handed to the operator once,
-to run under the operator's own keystroke. The source of the largest family
+to run under the operator's own keystroke; the operator ran it at 00:15Z
+(it had waited behind the session's foreground chain since it was given),
+and it removed 24,479 roots: 47 remain, 63 MB, the three kept directories
+and the roots of the last hour, which WO-233's backfill takes. The source of the largest family
 is now known: `docs/evidence/WO-056/fixture.mjs` (186) creates a
 `dotln-wo056-` root on every run of the document gate's task that calls it
 and removes none; 15,428 of the 24,526 roots are its, and this pass's two

@@ -19,8 +19,10 @@ refusals in `scripts/resume.mjs`'s completion commands and in
 the completion commands, the best-comparable line in
 `scripts/lib/reader-profiles.mjs` `writingGuidance`, the skeleton in
 `scripts/refute-plan.mjs` `start`, the shared sentence in
-`packages/skeleton/src/loadouts/contributor.ts` with its oracle re-mint,
-cases in `scripts/test-harness.mjs`, `scripts/test-plan-refutation.mjs`,
+`packages/skeleton/src/loadouts/contributor.ts` with its oracle re-mint, the
+Stop hook's refusal to end a turn with an operator message unanswered in
+`packages/skeleton/src/harness-host.ts` (amendment D001), cases in
+`scripts/test-harness.mjs`, `scripts/test-plan-refutation.mjs`,
 `scripts/test-control-segments.mjs`, `scripts/test-process-debt.mjs` and
 `scripts/test-publication*.mjs`, and sentences in products 05 and 07, the
 security document and the kit README. Removes: the pattern the filing pass
@@ -30,12 +32,14 @@ pull-request bodies grew from 1,707 bytes at WO-202 to 17,605 at WO-210,
 fell to 1,920 at WO-215 after a correction and grew again to 11,604 at
 WO-221 and 8,594 at WO-232), the "Nearest example" the writing guidance
 offers as a pattern, and the nine of thirteen operator messages in the
-current window the record files as `unclassified` with no disposition.
+current window the record files as `unclassified` with no disposition, and
+the reply-per-message pattern of the filing pass's own session (four
+messages in eleven seconds answered one at a time; amendment D001).
 Wall-clock: one record write per operator message, one read at
 completion (milliseconds). Context bytes: this file; every role's cold
 start grows by the shared sentence of step 7, measured and recorded before
 and after. Commands: none new for the operator. Tokens: unknown until run.
-Steps: 11. Re-mints: `harness-host.ts` and `contributor.ts` are registered
+Steps: 12. Re-mints: `harness-host.ts` and `contributor.ts` are registered
 evidence sources, so the editions they stale are re-minted
 deterministically; neither is a file the feedback verifier judges, so no
 live feedback episode; `meta.mjs`, `plan-receipts.mjs` and
@@ -166,6 +170,14 @@ latest example.
   has no entry, naming it. A later message adds to the earlier aim unless
   its entry records a withdrawal; the dispatch's aim stays first unless an
   `OperatorReorder` entry says otherwise.
+- **A turn ends only with every message answered.** Under Claude the Stop
+  hook refuses to end a turn while the session journal holds an operator
+  message (never a host task notification) newer than the last
+  direction-ledger entry of the dispatch, naming the unanswered indexes, so
+  a burst of messages is answered once, after its last, and a message that
+  arrives mid-turn cannot be dropped; `operator override:` suspends it as it
+  does the other refusals; under Codex and Copilot the rule is role text
+  (amendment D001, the operator's direction of 2026-10-27).
 - **A correction is heard at its urgency.** An entry whose event is a
   correction, a repeated-failure report or a rejected assumption triggers
   the compiled fail-conservative freeze whether or not the message carried
@@ -212,6 +224,13 @@ latest example.
   profanity trigger; product 05 (668 to 674) forbids inferring a mode from
   register and admits an intense message as a directive about posture.
   Neither is implemented as a record or a check.
+- The filing pass also answered a burst in pieces: the operator sent four
+  messages between 00:19:13Z and 00:19:24Z and a fifth at 00:19:29Z after
+  the session had answered the message of 00:19:02Z alone, and the four
+  messages before them were each answered individually; the Stop hook
+  prints advisories and refuses nothing about messages (`harness-host.ts`
+  5689), and the host starts a reply per message when the role is idle, so
+  only a refusal to end the turn can hold a burst together (amendment D001).
 - The filing pass did this too: the operator's messages 2 to 6 displaced the
   dispatch's aim for several minutes of work until message 7 restored it
   (the capture's hook times 22:38Z to 22:46Z), the recency failure the
@@ -241,6 +260,13 @@ latest example.
   process cost, validation) and the direction-ledger marker; the pass fills
   it. Rejected: generating the whole document (axis: the pass's judgments
   are its content; the skeleton removes the reason to copy, nothing more).
+- **Batching is a refusal, not a habit.** The turn-end refusal is the
+  ledger check at turn granularity: the journal's newest operator message
+  index against the ledger's newest answered index. Rejected: a waiting
+  period in the role before replying (axis: the host starts a turn per
+  message when the role is idle; a habit cannot hold it). Rejected:
+  refusing every stop until the operator says the exchange is done (axis: a
+  lockout; the refusal names only unanswered messages).
 - **Urgency is heard without inferring mood.** The freeze is keyed to the
   recorded event, and the event is the role's judgment of the message's
   content; the register is at most a weak feature, as the ledger says, and
@@ -312,7 +338,18 @@ latest example.
 10. The order's own ledger: `docs/evidence/WO-235/directions.jsonl` records
     every operator message of its own execution, so the check judges its
     executor first.
-11. Handoff: finish source edits; `npm run format` and `npm run sync`; start
+11. `packages/skeleton/src/harness-host.ts`, the Stop judgment (the site at
+    5689): compare the journal's newest operator message index (source not
+    `host-task-notification`) with the dispatch's newest ledger entry; refuse
+    the stop naming the unanswered indexes; admit when the ledger is current
+    and under `operator override:`; the executor reads the host's Stop-hook
+    page for the blocking form and records it in the decisions. Check: `npm
+    test -- --only harness-fixtures` (three messages recorded and two
+    answered: the stop is refused naming the third; the third's entry
+    written: admitted; a host notification never counts; the paired control
+    at the base admits the stop, both arms' exit codes in
+    `docs/evidence/WO-235/controls.json`).
+12. Handoff: finish source edits; `npm run format` and `npm run sync`; start
     one `npm test -- --review` in the background, never under the bounded
     wrapper, and await it with `node scripts/harness.mjs evidence --wait`;
     after it passes, complete `docs/evidence/WO-235/handoff.md`; `npm run
@@ -357,7 +394,14 @@ the shared role sentence and the re-minted oracle; the write-backs.
 8. The executor's own `docs/evidence/WO-235/directions.jsonl` holds one
    entry per operator message of its execution, each with its event, aim
    and disposition.
-9. Products 05 and 07, the security document and the kit README state the
+9. Under Claude the Stop hook refuses to end a turn while the journal holds
+   an operator message newer than the dispatch's last ledger entry, naming
+   the unanswered indexes; it admits when every message has an entry and
+   under `operator override:`; a host task notification never counts; the
+   paired control at the base admits the stop, both arms' exit codes in
+   `docs/evidence/WO-235/controls.json`; the security document states the
+   refusal beside the five tool-call refusals it leaves unchanged.
+10. Products 05 and 07, the security document and the kit README state the
    mechanism as built (steps 8 and 9); `npm run publication:check`, `npm
    test -- --review` and `npm run test:docs` green; `git diff --check`
    clean; no new dependency.
@@ -378,9 +422,17 @@ deterministic re-mints of the editions `harness-host.ts` and
 before `implementation-ready`, final review reusing the passing complete
 row at the integrated code identity when one exists.
 
-**Write-back duty:** as listed in step 9 and criterion 9.
+**Write-back duty:** as listed in step 9 and criterion 10, and the security
+document's statement of the turn-end refusal (criterion 9).
 
 **Known issues and carry-ins:**
+- Amendment D001 (2026-10-27; the operator's direction in ignored capture
+  SHA-256
+  `6baae3cbbd738603fad5a6e38caa1753302561399b42cdf9ffa4aecb50806d93`;
+  bound by `amend-order` against receipt 056): step 11 and criterion 9, the
+  turn-end refusal (reopen: a refusal names a message the operator did not
+  send, a burst is answered in pieces after the rule lands, or the host's
+  Stop hook stops admitting a blocking decision).
 - The event classification is the role's recorded judgment, not a check's;
   a wrong event is corrected by a later entry naming the first (reopen: a
   pass finds a correction event recorded as a plain direction after the
