@@ -1408,6 +1408,7 @@ function releaseCloseAdmission(
 // does not, and a command outside every clause gets no admission.
 interface RegisteredTargetEntry {
   readonly target: string;
+  readonly launchpad: string;
   readonly clone: string;
   readonly branch: string;
   readonly baseBranch: string;
@@ -4856,6 +4857,65 @@ export function grantedSessionRoot(
   };
 }
 
+/** Resolve the executor's target from current lifecycle and local registration.
+ * Missing or ambiguous inputs withhold this grant without disabling the guard. */
+function registeredTargetWriteRoot(
+  root: string,
+  session: HarnessSession,
+): { path: string; physical?: string; cause?: string } {
+  let path = "target-worktree";
+  try {
+    if (session.role !== "executor")
+      return { path, cause: "target-worktree is executor-only" };
+    const state = harnessControl(root, session.workOrder);
+    const order = session.workOrder ?? state.workOrder;
+    if (!order) return { path, cause: "no dispatched or selected work order" };
+    if (state.workOrder !== order)
+      return {
+        path,
+        cause: "canonical status differs from the dispatched order",
+      };
+    if (state.phase !== "active" && state.phase !== "repairing")
+      return {
+        path,
+        cause: `work order ${order} is ${state.phase}, not active or repairing`,
+      };
+    const configuration = JSON.parse(
+      readFileSync(contained(root, "dotln.config.json"), "utf8"),
+    ) as PublicationConfiguration;
+    const controlRoot =
+      configuration.roots?.control ??
+      `${configuration.roots?.docs ?? "docs"}/control`;
+    path = contained(root, `${controlRoot}/local/target-worktrees.json`);
+    const info = lstatSync(path);
+    if (!info.isFile() || info.isSymbolicLink())
+      return { path, cause: "target registry is not a regular file" };
+    const registry: unknown = JSON.parse(readFileSync(path, "utf8"));
+    if (!registry || typeof registry !== "object" || Array.isArray(registry))
+      return { path, cause: "target registry is not an object" };
+    const entries = Object.values(registry).filter(
+      (entry) => entry?.workOrderId === order,
+    ) as RegisteredTargetEntry[];
+    if (entries.length !== 1)
+      return {
+        path,
+        cause: `no single recorded target worktree for ${order} (${entries.length} rows)`,
+      };
+    const entry = entries[0]!;
+    if (entry.launchpad !== realpathSync(root))
+      return { path, cause: "registered target is bound to another launchpad" };
+    if (typeof entry.target !== "string" || !isAbsolute(entry.target))
+      return { path, cause: "registered target path is not absolute" };
+    path = entry.target;
+    return { path, physical: prospectiveRealpath(path) };
+  } catch (error) {
+    return {
+      path,
+      cause: `target registration unavailable (${error instanceof Error ? error.message : String(error)})`,
+    };
+  }
+}
+
 function outsideWriteResponse(
   config: HookConfig,
   input: HarnessInput,
@@ -4920,7 +4980,7 @@ function outsideWriteResponse(
           ),
         }
       : config.envelope;
-    const ungranted: { path: string; physical: string; cause: string }[] = [];
+    const ungranted: { path: string; physical?: string; cause: string }[] = [];
     const roots = grants
       .filter((grant) => {
         const effect = outsideWriteEffect(grant);
@@ -4950,6 +5010,24 @@ function outsideWriteResponse(
           case "operator-root":
             path = grant.root;
             break;
+          case "target-worktree": {
+            const target = registeredTargetWriteRoot(root, session);
+            if (target.cause || !target.physical) {
+              ungranted.push({
+                path: target.path,
+                cause: target.cause ?? "target root unavailable",
+              });
+              return [];
+            }
+            if (!withinRoot(target.physical, destination.physical)) {
+              ungranted.push({
+                path: target.path,
+                cause: "destination is outside the registered target worktree",
+              });
+              return [];
+            }
+            return [{ ...grant, physical: target.physical }];
+          }
           case "main-intake": {
             const main = git(root, ["worktree", "list", "--porcelain", "-z"])
               .split("\0")[0]
@@ -4984,12 +5062,24 @@ function outsideWriteResponse(
     const grant = roots.find((candidate) =>
       withinRoot(candidate.physical, destination.physical),
     );
-    // Only a root the destination would have used explains its refusal.
+    // Physical roots explain their own destinations. A dynamic grant can also
+    // explain why no target root could be resolved or equipped for this role.
     const withheld = grant
       ? undefined
-      : ungranted.find((candidate) =>
-          withinRoot(candidate.physical, destination.physical),
-        );
+      : (ungranted.find(
+          (candidate) =>
+            candidate.physical === undefined ||
+            withinRoot(candidate.physical, destination.physical),
+        ) ??
+        (!grants.some((candidate) => candidate.kind === "target-worktree") &&
+        rows.some((row) =>
+          row.grants.some((candidate) => candidate.kind === "target-worktree"),
+        )
+          ? {
+              path: "target-worktree",
+              cause: `no equipped target-worktree grant for role ${session.role ?? "unknown"}`,
+            }
+          : undefined));
     observe({
       role: session.role ?? "unknown",
       destination: destination.physical,

@@ -22,6 +22,8 @@ import {
 import { decodeLog, replay, type Event } from "@dotln/kernel";
 import {
   outsideWriteEffect,
+  fnv1a64,
+  COMPILER_PACKAGE_VERSION,
   seiriEnvironment,
   seiriLoadout,
 } from "@dotln/compiler";
@@ -50,6 +52,13 @@ import {
   SourceImportRefusal,
 } from "../src/source-change-worktree.js";
 import { installSourceChangeCommands } from "../src/source-change-command.js";
+import {
+  beginHarnessSession,
+  evaluateHarnessHook,
+} from "../src/harness-host.js";
+import { feedbackBoundary } from "../src/feedback-boundary.js";
+import { contributorProgram } from "../src/loadouts/contributor.js";
+import { HARNESS_HOST_VERSION } from "../src/version.js";
 import {
   createSourceFixture,
   cleanupFaults,
@@ -1492,6 +1501,99 @@ test("WO-052 a second interrupted attempt exhausts recovery; no third dispatch",
     assert.equal(dispatches, 2);
   } finally {
     dispose(root);
+  }
+});
+
+test("an executor permission hook admits its registered target and refuses the sibling directory", async () => {
+  const fixture = createSourceFixture();
+  const root = join(fixture, "target");
+  const target = join(fixture, "registered-target");
+  const temporary = join(fixture, "temporary");
+  const before = process.env.TMPDIR;
+  try {
+    mkdirSync(target);
+    mkdirSync(temporary);
+    process.env.TMPDIR = temporary;
+    mkdirSync(join(root, "scripts"), { recursive: true });
+    mkdirSync(join(root, "docs/control/local"), { recursive: true });
+    writeFileSync(
+      join(root, "dotln.config.json"),
+      JSON.stringify({ version: 1 }),
+    );
+    writeFileSync(
+      join(root, "scripts/resume.mjs"),
+      'console.log(JSON.stringify({ workOrder: "WO-999", phase: "active" }));\n',
+    );
+    writeFileSync(
+      join(root, "docs/control/local/target-worktrees.json"),
+      JSON.stringify({
+        [target]: { target, launchpad: root, workOrderId: "WO-999" },
+      }),
+    );
+    const program = contributorProgram();
+    const config = {
+      compilerPackageVersion: COMPILER_PACKAGE_VERSION,
+      runtime: {
+        skeletonVersion: HARNESS_HOST_VERSION,
+        boundaryContract: "feedback-v1" as const,
+        files: [
+          {
+            path: "fixture.txt",
+            hash: `fnv1a64:${fnv1a64(readFileSync(join(root, "fixture.txt"), "utf8"))}`,
+          },
+        ],
+      },
+      event: "PreToolUse" as const,
+      kind: "permission" as const,
+      envelope: program.loadout.authorityEnvelope,
+      grants: program.loadout.grants ?? [],
+      outsideWriteGrants: [
+        {
+          role: "executor",
+          grants: [
+            {
+              kind: "target-worktree" as const,
+              source: "Fixture target registration",
+              originId: "contributor.executor",
+              authorityGrantId: "contributor.target-worktree",
+            },
+          ],
+        },
+      ],
+    };
+    beginHarnessSession(root, "registered-executor", "executor");
+    const call = (file_path: string) =>
+      evaluateHarnessHook(
+        config,
+        {
+          cwd: root,
+          session_id: "registered-executor",
+          hook_event_name: "PreToolUse",
+          tool_name: "Edit",
+          tool_input: { file_path },
+        },
+        root,
+        feedbackBoundary,
+      );
+    const admitted = await call(join(target, "new.txt"));
+    assert.notEqual(
+      (
+        admitted.hookSpecificOutput as
+          { permissionDecision?: string } | undefined
+      )?.permissionDecision,
+      "deny",
+      JSON.stringify(admitted),
+    );
+    const refused = await call(join(fixture, "beside.txt"));
+    assert.equal(
+      (refused.hookSpecificOutput as { permissionDecision?: string })
+        .permissionDecision,
+      "deny",
+    );
+  } finally {
+    if (before === undefined) delete process.env.TMPDIR;
+    else process.env.TMPDIR = before;
+    dispose(fixture);
   }
 });
 

@@ -3,7 +3,7 @@ name: dotln-verifier
 description: "Independently verify the selected DotLn work order on resume: verify and file the allocated immutable VER report."
 ---
 
-<!-- Origin: {"ids":["anti-oscillation","bounded-boy-scout-cleanup","concurrent-work-requires-worktrees","contributor.verifier","correctness-over-sycophancy","fail-conservative-correction","goal-alignment","no-attribution","no-lint-type-disables-as-fixes","no-partial-completion","process-cost","read-your-own-output","verify-app-before-done"],"loadoutId":"contributor","semanticHash":"fnv1a64:c0a496bda5f362de"} -->
+<!-- Origin: {"ids":["anti-oscillation","bounded-boy-scout-cleanup","concurrent-work-requires-worktrees","contributor.verifier","correctness-over-sycophancy","fail-conservative-correction","goal-alignment","no-attribution","no-lint-type-disables-as-fixes","no-partial-completion","process-cost","read-your-own-output","verify-app-before-done"],"loadoutId":"contributor","semanticHash":"fnv1a64:275ba05519d0f5c5"} -->
 
 1. Resolve cwd/Git root and canonical status; honor operator controls and dispatch verify once.
 2. Read the order, citations, subject and earlier reports; attack each criterion with your own probes, review the implementation and apply the worker rule below.

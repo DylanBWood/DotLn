@@ -9625,6 +9625,193 @@ test("WO-144 generated hooks apply active-role grants to physical writes and rem
   }
 });
 
+test("registered target writes follow the executor's current order, phase and unique local registration", () => {
+  const root = fixture();
+  const outside = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-target-write-")),
+  );
+  const target = join(outside, "target");
+  const temporary = join(outside, "temporary");
+  mkdirSync(target);
+  mkdirSync(temporary);
+  const environment = { TMPDIR: temporary, TEMP: temporary, TMP: temporary };
+  const entry = { workOrderId: "WO-999", launchpad: root, target };
+  const registry = "records/control/local/target-worktrees.json";
+  const request = (tool, args, session_id = "target-executor") =>
+    input(root, "PreToolUse", {
+      session_id,
+      tool_name: tool,
+      tool_input: args,
+    });
+  const call = (payload, env = environment) =>
+    invoke(root, "permissions", payload, false, env);
+  const writeTarget = () =>
+    request("Edit", { file_path: join(target, "new.txt") });
+  const setRegistry = (entries) => write(root, registry, json(entries));
+  const refused = (payload, cause) => {
+    const response = call(payload);
+    assert.equal(allowed(response), false, JSON.stringify(response));
+    assert.match(response.hookSpecificOutput.permissionDecisionReason, cause);
+    return response;
+  };
+  try {
+    write(
+      root,
+      "dotln.config.json",
+      json({ version: 1, roots: { control: "records/control" } }),
+    );
+    beginHarnessSession(root, "target-executor", "executor");
+    setRegistry({ [target]: entry });
+    for (const payload of [
+      writeTarget(),
+      request("Write", { file_path: join(target, "new.txt") }),
+      request("Bash", { command: `printf x > '${target}/new.txt'` }),
+    ])
+      assert.equal(allowed(call(payload)), true);
+    assert.equal(
+      allowed(
+        call(
+          request("Write", {
+            path: join(target, "copilot.txt"),
+            file_text: "fixture",
+          }),
+          { ...environment, COPILOT_PROJECT_DIR: root },
+        ),
+      ),
+      true,
+    );
+    const rows = wo178Rows(root, "target-executor").filter(
+      (row) => row.outsideWrite?.status === "granted",
+    );
+    assert.equal(rows.length, 4);
+    for (const row of rows)
+      assert.deepEqual(
+        {
+          kind: row.outsideWrite.kind,
+          originId: row.outsideWrite.originId,
+          source: row.outsideWrite.source,
+          authorityGrantId: row.outsideWrite.authorityGrantId,
+        },
+        {
+          kind: "target-worktree",
+          originId: "contributor.executor",
+          source: "WO-236-D001: the active order's registered target worktree",
+          authorityGrantId: "contributor.target-worktree",
+        },
+      );
+    for (const destination of [
+      outside,
+      join(outside, "sibling/new.txt"),
+      join(outside, "clone/new.txt"),
+      `${target}-beside/new.txt`,
+    ])
+      refused(
+        request("Write", { file_path: destination }),
+        /Granted root .* grants nothing: destination is outside the registered target worktree/,
+      );
+    symlinkSync(outside, join(target, "escape"));
+    refused(
+      request("Write", { file_path: join(target, "escape/new.txt") }),
+      /outside-project write/,
+    );
+    for (const role of [
+      "verifier",
+      "reviewer",
+      "release-close",
+      "planner",
+      "refuter",
+    ]) {
+      beginHarnessSession(root, `target-${role}`, role);
+      const response = refused(
+        request(
+          "Write",
+          { file_path: join(target, "new.txt") },
+          `target-${role}`,
+        ),
+        new RegExp(`outside-write grant for role ${role}`),
+      );
+      assert.match(
+        response.hookSpecificOutput.permissionDecisionReason,
+        new RegExp(
+          `Granted root target-worktree grants nothing: no equipped target-worktree grant for role ${role}.*WO-168`,
+        ),
+      );
+    }
+    for (const [entries, cause] of [
+      [{}, /no single recorded target worktree.*0 rows/],
+      [{ a: entry, b: entry }, /no single recorded target worktree.*2 rows/],
+      [{ a: { ...entry, launchpad: outside } }, /bound to another launchpad/],
+      [{ a: { ...entry, target: "relative" } }, /target path is not absolute/],
+    ]) {
+      setRegistry(entries);
+      refused(writeTarget(), cause);
+    }
+    write(root, registry, "{broken");
+    refused(
+      writeTarget(),
+      /Granted root .* grants nothing: target registration unavailable/,
+    );
+    setRegistry({ [target]: entry });
+    for (const phase of [
+      "ready-to-verify",
+      "verifying",
+      "verified",
+      "final-review",
+      "closed",
+      "needs-fix",
+    ]) {
+      write(
+        root,
+        "docs/control/fixture-status.json",
+        json({ ...control, phase }),
+      );
+      refused(
+        writeTarget(),
+        new RegExp(`is ${phase}, not active or repairing`),
+      );
+    }
+    write(
+      root,
+      "docs/control/fixture-status.json",
+      json({ ...control, phase: "repairing" }),
+    );
+    assert.equal(allowed(call(writeTarget())), true);
+    const sessionPath = join(
+      root,
+      "docs/control/local/harness",
+      `${sha256("target-executor")}.json`,
+    );
+    const session = JSON.parse(readFileSync(sessionPath, "utf8"));
+    writeFileSync(sessionPath, json({ ...session, workOrder: "WO-998" }));
+    refused(
+      writeTarget(),
+      /canonical status differs from the dispatched order/,
+    );
+    const { workOrder, ...unbound } = session;
+    writeFileSync(sessionPath, json(unbound));
+    assert.equal(
+      allowed(call(writeTarget())),
+      true,
+      "an unbound session uses canonical selection",
+    );
+    write(
+      root,
+      "docs/control/fixture-status.json",
+      json({ ...control, workOrder: null }),
+    );
+    refused(writeTarget(), /no dispatched or selected work order/);
+    // Ordinary project writes must not require a readable registry or status.
+    write(root, registry, "{broken");
+    assert.equal(
+      allowed(call(request("Write", { file_path: "inside.txt" }))),
+      true,
+    );
+  } finally {
+    removeFixture(root, { recursive: true });
+    removeFixture(outside, { recursive: true });
+  }
+});
+
 test("WO-144 equipped support grants are attributable and disappear when unequipped", async () => {
   const root = fixture();
   const outside = realpathSync(

@@ -12,6 +12,7 @@ import { dirname, join } from "node:path";
 import { createHash } from "node:crypto";
 import { docPath } from "./lib/config.mjs";
 import { write } from "./lib/helpers.mjs";
+import { shellQuote } from "./lib/git.mjs";
 import { staleOrderHostRules } from "./lib/target-worktrees.mjs";
 import { publicationGrant } from "./test-target-publication-fixture.mjs";
 import { readGateChecks } from "./lib/gate-evidence.mjs";
@@ -1081,7 +1082,12 @@ test("WO-221 a registration without a release policy closes with no-release and 
     );
     f.mapClone();
     const started = f.start();
-    assert.match(started, /Codex workspace-write session: codex --add-dir/u);
+    assert.ok(
+      started.includes(
+        `Codex workspace-write session: cd ${shellQuote(f.orderRoot)} && codex --add-dir ${shellQuote(f.target)}`,
+      ),
+      started,
+    );
     assert.match(started, /copilot --allow-tool 'shell\(/u);
     assert.ok(started.includes(`${f.orderRoot}/scripts/worktree.mjs`));
     assert.doesNotMatch(started, /shell\(git|shell\(gh|shell\(npm/u);

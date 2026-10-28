@@ -6542,14 +6542,14 @@ test("WO-145 optional economy support preserves historical snapshots through the
   // WO-196's ordered procedures and conditional economy preserve WO-187.
   // Publication guidance and conditional reader scoring preserve the prior role oracle and all its history.
   // WO-221's release-close deletion sentence preserves WO-216's snapshot.
-  // The distinct executor review briefs preserve WO-219's snapshot.
+  // The executor's target registration grant preserves the previous snapshot.
   const baseline = JSON.parse(
     readFileSync(
-      join(source, "packages/skeleton/fixtures/wo233-role-baseline.json"),
+      join(source, "packages/skeleton/fixtures/wo236-role-baseline.json"),
       "utf8",
     ),
   );
-  assert.equal(baseline.historicalBaseline, "wo204-role-baseline.json");
+  assert.equal(baseline.historicalBaseline, "wo233-role-baseline.json");
   assert.equal(baseline.upstreamBaseline, "wo185-role-baseline.json");
   const chains = [
     baseline,

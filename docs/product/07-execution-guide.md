@@ -2150,8 +2150,16 @@ node publish or release-close helper hidden by a pipe, redirect or prefix
 gets a `registeredTargetAdmission` row with `kind: "near-miss"` and its
 `syntax`, plus an advisory to run the plain spelling; it gets no permission
 decision. Raw Git, gh and npm receive no automatic
-registered-target admission; `worktree start` prints the Codex `--add-dir` and Copilot
-`--allow-tool` lines; and a registration's `hostRules: "literal"` writes that
+registered-target admission; `worktree start` prints launchpad-based sessions
+for Codex (`codex --add-dir <target>`), Copilot (`copilot --allow-tool …`)
+and Claude Code (`claude`, then `resume: next`). Claude's executor-only
+`target-worktree` grant resolves the active order's unique local registry row
+at each judged write while its phase is `active` or `repairing`, admitting
+only the registered target under the row's physical launchpad binding.
+Copilot reuses the same hook; host deny and ask rules still apply. The
+`Next (run manually)` block starts Codex from the launchpad and adds the
+target, consistently with these host lines; a session started inside the
+target uses the separate worker bundle. A registration's `hostRules: "literal"` writes that
 order's exact rules to the main checkout's untracked local settings and
 `.codex/rules/dotln-WO-NNN.rules` until the close removes them, `harness check`
 naming a stale one. The hook journals each admission it carries as a
@@ -3039,9 +3047,12 @@ usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-
   without a containing root declared by its active role or equipped support
   and admitted through the compiled authority envelope. Root kinds are system
   temporary, DotLn session scratch, the host-printed scratchpad, main's ignored
-  intake and an operator-named absolute root; the manifest names declaration and authority-grant sources.
-  The six default roles carry temporary, session-scratch and host-scratchpad
-  grants only.
+  intake, an operator-named absolute root and the registered target worktree;
+  the manifest names declaration and authority-grant sources. The six default
+  roles share the temporary, session-scratch and host-scratchpad grants.
+  The executor additionally declares the target-worktree grant, resolved from
+  its current order's unique local registration and physical launchpad binding
+  while the order is active or repairing.
   `os.tmpdir()` identifies the temporary root; scratch is
   `<system-temp>/dotln/<session-key>/scratch`. Claude role dispatch prints the
   concrete path; Codex uses `node scripts/harness.mjs scratch`. Each, and a

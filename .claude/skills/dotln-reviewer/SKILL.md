@@ -3,7 +3,7 @@ name: dotln-reviewer
 description: "Perform DotLn final review for resume: final review; prepare and publish only the reviewed work-order branch on pass."
 ---
 
-<!-- Origin: {"ids":["anti-oscillation","bounded-boy-scout-cleanup","concurrent-work-requires-worktrees","contributor.reviewer","correctness-over-sycophancy","fail-conservative-correction","goal-alignment","no-attribution","no-lint-type-disables-as-fixes","no-partial-completion","process-cost","read-your-own-output","verify-app-before-done"],"loadoutId":"contributor","semanticHash":"fnv1a64:c0a496bda5f362de"} -->
+<!-- Origin: {"ids":["anti-oscillation","bounded-boy-scout-cleanup","concurrent-work-requires-worktrees","contributor.reviewer","correctness-over-sycophancy","fail-conservative-correction","goal-alignment","no-attribution","no-lint-type-disables-as-fixes","no-partial-completion","process-cost","read-your-own-output","verify-app-before-done"],"loadoutId":"contributor","semanticHash":"fnv1a64:275ba05519d0f5c5"} -->
 
 1. Resolve cwd/Git root and canonical status; honor operator controls and dispatch final-review once.
 2. Read the order, full diff, numbered verification sequence and publication contract; integrate main with `npm run worktree -- integrate WO-NNN` and resolve authorized conflicts.

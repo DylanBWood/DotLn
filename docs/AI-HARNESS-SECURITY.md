@@ -350,7 +350,20 @@ overlap remain open ([WO-139 evidence](evidence/WO-139/README.md)).
 All six default contributor roles grant the host `os.tmpdir()` root and DotLn
 session scratch below `<system-temp>/dotln/<session-key>/scratch` and the
 host-printed scratchpad; no role
-grants arbitrary home folders or main intake by default. Main's ignored intake
+grants arbitrary home folders or main intake by default. The executor alone
+also declares the sixth kind, `target-worktree`, under
+`contributor.target-worktree`. At every judged outside write it resolves the
+session's dispatched order (or canonical selected order when unbound),
+requires canonical phase `active` or `repairing`, and reads exactly one row
+for that order from the launchpad's configured control root's
+`local/target-worktrees.json`. The row's `launchpad` must equal this physical
+root; only its physically resolved `target` is granted. No root is serialized
+in this declaration. A missing order, other phase, missing or duplicate row,
+another launchpad binding or unreadable registry grants nothing and names
+the withheld cause in the outside-write refusal. Copilot reuses the Claude
+registration and the same executor admission (covered by the native-path
+fixture); Codex tool calls remain unhooked and use `--add-dir`.
+Main's ignored intake
 and an operator-named absolute root are available declaration kinds, requiring
 explicit admitted authority. Missing active roles grant nothing. An opaque
 destination is journaled as unobserved. Unreadable grant configuration,

@@ -548,9 +548,9 @@ export async function completeSelfStart(
   return output;
 }
 
-// Each host's default restrictive mode needs to know the target worktree
-// (WO-221): Codex takes the directory, Copilot takes the publication tools
-// for the session, and Claude Code's hook admits the registered commands.
+// Executor sessions start in the launchpad, where lifecycle and role skills
+// live. Codex adds the target directory; Claude's executor grant resolves it
+// from the registry. Copilot takes the publication tools for the session.
 // Under the registration's literal fallback the order's exact rules are also
 // written to the main checkout's local settings and its Codex rules file;
 // release close removes them.
@@ -559,17 +559,24 @@ const hostLaunchLines = (mainPath, entry, repository) => {
   try {
     selector = parseGitHubTarget(pushUrl(entry.target)).selector;
   } catch {
-    return `Host launch lines: unavailable; the target's origin is not one GitHub push URL.\n`;
+    // Editing the registered target does not require a publication origin.
   }
+  const copilotRules = selector
+    ? orderHostRules(mainPath, entry, selector)
+        .copilot.map((rule) => `--allow-tool ${shellQuote(rule)}`)
+        .join(" ")
+    : "";
   const lines = [
     "Host launch lines for this target order:",
-    `  Codex workspace-write session: codex --add-dir ${shellQuote(entry.target)}`,
-    `  Copilot default mode: copilot ${orderHostRules(mainPath, entry, selector)
-      .copilot.map((rule) => `--allow-tool ${shellQuote(rule)}`)
-      .join(" ")}`,
-    "  Claude Code: the kit's hook admits the registered commands for this order at verified and closed; host deny rules still apply.",
+    `  Codex workspace-write session: cd ${shellQuote(entry.launchpad)} && codex --add-dir ${shellQuote(entry.target)}`,
+    `  Copilot default mode: cd ${shellQuote(entry.launchpad)} && copilot${copilotRules ? ` ${copilotRules}` : ""}`,
+    `  Claude Code: cd ${shellQuote(entry.launchpad)} && claude; enter: resume: next. The executor's target-worktree grant admits ${shellQuote(entry.target)} for this order while active or repairing;${selector ? " the hook admits the registered publication commands at verified and closed;" : ""} host deny and ask rules still apply.`,
   ];
-  if (repository.hostRules === "literal") {
+  if (!selector)
+    lines.push(
+      "  Publication host rules: unavailable; the target's origin is not one GitHub push URL.",
+    );
+  if (selector && repository.hostRules === "literal") {
     const written = writeOrderHostRules(mainPath, entry, selector);
     lines.push(
       `  Literal rules written for ${entry.workOrderId}: ${written.settings} (Claude Code local settings) and ${written.codex} (Codex rules); release close removes them.`,
@@ -702,7 +709,7 @@ const startTargetWorktree = async (mainPath, entry) => {
     const launchLines = hostLaunchLines(mainPath, entry, repository);
     forgetTargetStart(mainPath, workOrderId);
     process.stdout.write(
-      `Target worktree ${target} on ${branch}.\nAuthority profile: ${JSON.stringify(repository.authorityProfile)}\nTarget status: ${launchpadInvocation(launchpad, "resume")} status\nCreated ${launchpad} on ${branch}.\nActivated ${workOrderId}.\nPhase: active.\n${launchLines}Next (run manually):\n  cd ${shellQuote(target)}\n  codex\n  enter: resume: next\n`,
+      `Target worktree ${target} on ${branch}.\nAuthority profile: ${JSON.stringify(repository.authorityProfile)}\nTarget status: ${launchpadInvocation(launchpad, "resume")} status\nCreated ${launchpad} on ${branch}.\nActivated ${workOrderId}.\nPhase: active.\n${launchLines}Next (run manually):\n  cd ${shellQuote(launchpad)}\n  codex --add-dir ${shellQuote(target)}\n  enter: resume: next\n`,
     );
   } catch (error) {
     throw new Error(

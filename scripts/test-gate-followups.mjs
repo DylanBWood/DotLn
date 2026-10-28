@@ -32,6 +32,7 @@ import { acquireHostLanes } from "./lib/host-lanes.mjs";
 import { checkHost } from "./structural-checks.mjs";
 import { suiteEnvironment } from "./lib/suite-evidence.mjs";
 import { classifyDocumentFailures } from "./lib/document-failures.mjs";
+import { budgetVerdict } from "./lib/process-budget.mjs";
 
 const fixture = (t) => {
   const root = createFixtureRoot(join(tmpdir(), "dotln-gate-followups-"));
@@ -57,11 +58,11 @@ test("bounded role wording preserves prior savings and records reviewed startup 
   );
   const oracle = JSON.parse(
     fs.readFileSync(
-      join(sourceRoot, "packages/skeleton/fixtures/wo233-role-baseline.json"),
+      join(sourceRoot, "packages/skeleton/fixtures/wo236-role-baseline.json"),
       "utf8",
     ),
   );
-  assert.equal(oracle.historicalBaseline, "wo204-role-baseline.json");
+  assert.equal(oracle.historicalBaseline, "wo233-role-baseline.json");
   const historicalBytes = fs.readFileSync(
     join(sourceRoot, "packages/skeleton/fixtures", oracle.historicalBaseline),
   );
@@ -94,6 +95,10 @@ test("bounded role wording preserves prior savings and records reviewed startup 
   const reviewed = oracle.startupCost;
   for (const cost of [historical, priorCost, reviewed]) {
     assert.match(cost.decision, /^WO-\d{3}-D\d{3}$/u);
+  }
+  // Historical overruns keep their dispositions; current accepted growth
+  // needs its own measured record, without inventing another deferred item.
+  for (const cost of [historical, priorCost]) {
     assert.match(cost.followup, /^FUP-[a-f0-9]{16}$/u);
   }
   const files = new Map(
@@ -144,18 +149,35 @@ test("bounded role wording preserves prior savings and records reviewed startup 
     assert.equal(
       measured.ceiling === null ? null : measured.ceiling - bytes,
       measured.headroomBytes,
-      `${file}: installed headroom includes the recorded overrun`,
+      `${file}: installed headroom uses the recorded effective ceiling`,
     );
     assert.equal(
-      measured.ceiling,
+      measured.nominalCeiling,
       prior.ceiling,
-      `${role}: reviewed additions preserve the preceding ceiling`,
+      `${role}: reviewed additions preserve the preceding nominal ceiling`,
     );
     assert.equal(
       budgets.limits.coldStartBytes[role],
-      measured.ceiling,
+      measured.nominalCeiling,
       `${role}: the operating-cost ceiling stays unchanged`,
     );
+    const metric = `coldStartBytes.${role}`;
+    assert.notEqual(
+      budgetVerdict(budgets, metric, bytes, measured.nominalCeiling),
+      "breach",
+      `${role}: current bytes fit the configured or accepted ceiling`,
+    );
+    if (measured.ceiling !== measured.nominalCeiling)
+      assert.ok(
+        budgets.acceptances.some(
+          (entry) =>
+            entry.metric === metric &&
+            !entry.scope &&
+            entry.ceiling === measured.ceiling,
+        ),
+        `${role}: an explicit global acceptance supplies the recorded ceiling`,
+      );
+    assert.ok(measured.ceiling === null || bytes <= measured.ceiling);
     // Keep the earlier wording savings distinct from later required duties.
     // Current headroom records the full cost of those reviewed additions.
     assert.ok(
