@@ -10851,6 +10851,13 @@
           "title": "Candidate — DotLn-owned authority with minimal native harness restrictions",
           "summary": "## Candidate — DotLn-owned authority with minimal native harness restrictions Operator direction during WO-119 (2026-09-16): reach an operating mode as soon as evidence supports it in which native Claude and Codex harness sandboxes can be disabled and Claude's settings have nearly empty allow/deny lists. The source of permissions, security and authority is the equipped DotLn supports, build and role. The operator clarified the assurance requirement: faithful runtime enforcement plus adversarial tests, including attempts to bypass the declared authority. See the [ideation receipt](../evidence/WO-119/ideation-authority.md). This candidate asks planning to identify the earliest justified route ",
           "missing": false
+        },
+        {
+          "hash": "790b1ed0861f4d8d16dd9e5053927d97408cce7cf8af752aaf206b45c0baa283",
+          "ref": "docs/product/03-architecture.md#candidate--dotln-owned-authority-with-minimal-native-harness-restrictions",
+          "title": "Candidate — DotLn-owned authority with minimal native harness restrictions",
+          "summary": "## Candidate — DotLn-owned authority with minimal native harness restrictions Operator direction during WO-119 (2026-09-16): reach an operating mode as soon as evidence supports it in which native Claude and Codex harness sandboxes can be disabled and Claude's settings have nearly empty allow/deny lists. The source of permissions, security and authority is the equipped DotLn supports, build and role. The operator clarified the assurance requirement: faithful runtime enforcement plus adversarial tests, including attempts to bypass the declared authority. See the [ideation receipt](../evidence/WO-119/ideation-authority.md). This candidate asks planning to identify the earliest justified route ",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -43894,6 +43901,14 @@
           "reopenWhen": "The next planning pass evaluates instruction-byte optimization, or another role edit changes the measured overrun.",
           "targets": [],
           "at": "2026-10-25T20:19:13.268Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-236-D031: its condition occurred. The executor's required target-worktree grant line adds 17 bytes to the executor role, 30,857 to 30,874 in both installed roots, against the nominal ceiling of 29,246 and within the 34,953 accepted on 2026-10-27 (headroom 4,079); packages/skeleton/fixtures/wo236-role-baseline.json and docs/evidence/WO-236/cold-start.json record it, and the other five roles are unchanged (the reviewer at 29,811 against the nominal 28,884, within the 33,907 accepted on 2026-10-28). No ceiling moved and no duty was cut. npm run meta -- --check now names drift-to-low-performance a reopen candidate over three consecutive order deltas. The optimization stays with the next planning pass that evaluates instruction-byte optimization.",
+          "reopenWhen": "The next planning pass evaluates instruction-byte optimization, or another role edit changes the measured overrun.",
+          "targets": [],
+          "at": "2026-10-28T18:18:34.341Z"
         }
       ]
     },
@@ -43950,6 +43965,14 @@
           "reopenWhen": "A role grows past its pin without the oracle changing, or a ceiling breach appears in meta --check with no decision boarding it; or the next order touching scripts/test-gate-followups.mjs or re-minting the role oracle.",
           "targets": [],
           "at": "2026-10-25T20:19:13.366Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-236-D031: its condition occurred, because WO-236 touches scripts/test-gate-followups.mjs (D012) and re-mints the role oracle (wo236-role-baseline.json, chained to wo233 and wo185). D012 asserts the installed headroom against the oracle's recorded effective ceiling, requires an explicit global acceptance when that ceiling differs from the nominal one, and refuses a budgetVerdict breach, so an unboarded breach now fails the suite; the historical 256-byte inequality is still asserted on the earliest chained baseline as the record of the WO-217 wording savings. Whether that retained inequality still carries meaning is not decided here, because the final review changes no test. Deferred to the next order that touches the file or re-mints the oracle.",
+          "reopenWhen": "A role grows past its pin without the oracle changing, or a ceiling breach appears in meta --check with no decision boarding it; or the next order touching scripts/test-gate-followups.mjs or re-minting the role oracle.",
+          "targets": [],
+          "at": "2026-10-28T18:18:34.543Z"
         }
       ]
     },
@@ -44400,6 +44423,14 @@
           "reopenWhen": "A bounded comparison demonstrates a shorter equivalent instruction set, or another required rule changes the measured overrun.",
           "targets": [],
           "at": "2026-10-25T20:19:13.464Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-236-D031: its condition occurred, because the executor's required target-worktree grant line changed the measured overrun by 17 bytes: the executor reads 30,874 against the nominal 29,246 and within the accepted 34,953; the reviewer is unchanged at 29,811 against the nominal 28,884 and within the accepted 33,907. The bounded comparison that would show a shorter equivalent instruction set is still owed to the next planning pass; this review cut no instruction and raised no ceiling.",
+          "reopenWhen": "A bounded comparison demonstrates a shorter equivalent instruction set, or another required rule changes the measured overrun.",
+          "targets": [],
+          "at": "2026-10-28T18:18:34.443Z"
         }
       ]
     },
@@ -47245,6 +47276,368 @@
           "reopenWhen": "The operator directs it, or a second verified target order passes with no draft head and no CI run before final review.",
           "targets": [],
           "at": "2026-10-28T14:03:38.392Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-591b694d5c307e54",
+      "key": "decision:docs/evidence/WO-236/decisions.md#wo-236-d014",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "989b54fe45f2d3d3b2472f4f3a3c81991de1b02afb3adba7989e0fd0a06e6279",
+          "ref": "docs/evidence/WO-236/decisions.md#wo-236-d014--explicit-integration-authority-and-gate-isolation",
+          "title": "WO-236-D014: Require explicit operator authority for main integration, enforce the no-integration-during-live-gate boundary, and skip integration helpers when read-only ancestry evidence shows no…",
+          "summary": "{ \"id\": \"WO-236-D014\", \"date\": \"2026-10-28\", \"dispatch\": \"resume: next; operator direction\", \"decision\": \"Record the operator objection to automatic integration. The executor invoked main’s worktree integrate helper before the complete runs, including while the refs were already equal; every helper response said it took in nothing. The later in-gate command read HEAD and main refs. The explanation failed to distinguish those actions promptly and clearly. Further integration in this session requires explicit operator direction. Preserve the worktree and record a future process correction; do not edit integration policy in this order.\", \"evidence\": [ \"Tool transcript: the integration helper re",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Operator-directed follow-up only: Explicit integration authority and gate isolation. Preserve this action for a future planning pass or separate explicitly assigned scope; do not implement it in WO-236.",
+          "reopenWhen": "A future planning pass prioritizes this issue or the operator assigns a separate implementation scope.",
+          "targets": [],
+          "at": "2026-10-28T16:34:50.970Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-19862c74280a148e",
+      "key": "decision:docs/evidence/WO-236/decisions.md#wo-236-d016",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "acc96a3d90b2ddca1221a37fb694f6807279d2f200ffa74347c88e93fadf2ee0",
+          "ref": "docs/evidence/WO-236/decisions.md#wo-236-d016--tests-need-independent-behavioral-contracts",
+          "title": "WO-236-D016: Audit test expectations against independent requirements, expose brittle duplicated metadata consumers, and prevent assertion updates that merely bless implementation output. Include…",
+          "summary": "{ \"id\": \"WO-236-D016\", \"date\": \"2026-10-28\", \"dispatch\": \"resume: next; operator direction\", \"decision\": \"The operator questioned the value of tests whose expected values are changed whenever implementation changes. Preserve the distinction between authorized expected-data maintenance and independent regression requirements; defer a broader test-design correction.\", \"evidence\": [ \"The operator’s test-value question followed stale expected authority lists and startup-byte consumers.\", \"D010–D012 record the failures and their original-order repairs; the base/head controls and role/registry/phase denials remain separate behavior evidence.\" ], \"rejected\": [ { \"option\": \"Implement the operator-ra",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Operator-directed follow-up only: Tests need independent behavioral contracts. Preserve this action for a future planning pass or separate explicitly assigned scope; do not implement it in WO-236.",
+          "reopenWhen": "A future planning pass prioritizes this issue or the operator assigns a separate implementation scope.",
+          "targets": [],
+          "at": "2026-10-28T16:34:51.092Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-4e4a73be7b53eb45",
+      "key": "decision:docs/evidence/WO-236/decisions.md#wo-236-d017",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "b4ed27384d43342e1874a08eb28c5d42423877ea911318700bf72377ea530482",
+          "ref": "docs/evidence/WO-236/decisions.md#wo-236-d017--consistency-review-missed-its-assigned-consumers",
+          "title": "WO-236-D017: Make consistency review trace changed contracts through current consumers and adjacent expected metadata, with file-level evidence and bounded search coverage. Require the executor to…",
+          "summary": "{ \"id\": \"WO-236-D017\", \"date\": \"2026-10-28\", \"dispatch\": \"resume: next; operator direction\", \"decision\": \"The operator identified that full-run failures were in the consistency reviewer’s explicit brief. The executor accepted incomplete coverage claims. Record the review failure and defer the process remedy.\", \"evidence\": [ \"The review brief explicitly included fixture expectations, generated baselines, dependencies and adjacent metadata.\", \"The full runs exposed the authority projection, a second startup-oracle consumer and the release launch-text consumer; the later inventory found a duplicated stale grant summary.\" ], \"rejected\": [ { \"option\": \"Implement the operator-raised issue inside W",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Operator-directed follow-up only: Consistency review missed its assigned consumers. Preserve this action for a future planning pass or separate explicitly assigned scope; do not implement it in WO-236.",
+          "reopenWhen": "A future planning pass prioritizes this issue or the operator assigns a separate implementation scope.",
+          "targets": [],
+          "at": "2026-10-28T16:34:51.213Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-c42e96567d1dee6f",
+      "key": "decision:docs/evidence/WO-236/decisions.md#wo-236-d018",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "2fb299b07000a9f0127d4d183e1a3aeb989453d570f66a54e3d071ed47c47233",
+          "ref": "docs/evidence/WO-236/decisions.md#wo-236-d018--review-corrections-must-persist-beyond-one-session",
+          "title": "WO-236-D018: Implement a durable consistency-review correction through maintained source and generated guidance, with evidence it catches the known missed consumers. Assess the existing…",
+          "summary": "{ \"id\": \"WO-236-D018\", \"date\": \"2026-10-28\", \"dispatch\": \"resume: next; operator direction\", \"decision\": \"The operator rejected a session-only checklist. Defer a repository-owned correction that survives regeneration and export, with executable evidence where it provides useful coverage. No new reviewer machinery or instruction changes were implemented here.\", \"evidence\": [ \"The operator asked why a process that lives only in this session would be useful.\", \"ReadHandoffLedger currently only advises on the self-review summary; generated role instructions carry the review brief.\", \"The design worker proposed reusing existing structural checks and exact-case execution guards; its cost needs ass",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Operator-directed follow-up only: Review corrections must persist beyond one session. Preserve this action for a future planning pass or separate explicitly assigned scope; do not implement it in WO-236.",
+          "reopenWhen": "A future planning pass prioritizes this issue or the operator assigns a separate implementation scope.",
+          "targets": [],
+          "at": "2026-10-28T16:34:51.332Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-dfd7fa315fec65e4",
+      "key": "decision:docs/evidence/WO-236/decisions.md#wo-236-d019",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "7684340e93e7588f22f03d7214a7b613c83b741c5b20c1f3440bf5c455e3179a",
+          "ref": "docs/evidence/WO-236/decisions.md#wo-236-d019--complete-and-self-contained-chat-answers",
+          "title": "WO-236-D019: Diagnose incomplete or interrupted assistant responses and ensure answers remain complete and self-contained across steering events. Reproduce the quoted fragment behavior before…",
+          "summary": "{ \"id\": \"WO-236-D019\", \"date\": \"2026-10-28\", \"dispatch\": \"resume: next; operator direction\", \"decision\": \"The operator repeatedly received or quoted incomplete sentences. The cause of chat truncation was not established; record the observed communication failure without attributing it to an unobserved renderer or delivery mechanism.\", \"evidence\": [ \"The operator quoted an unfinished planning-directory sentence and objected to repeated incomplete answers.\", \"The assistant provided a corrected complete statement but had no evidence establishing the truncation cause.\" ], \"rejected\": [ { \"option\": \"Implement the operator-raised issue inside WO-236\", \"reason\": \"The operator explicitly directed th",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Operator-directed follow-up only: Complete and self-contained chat answers. Preserve this action for a future planning pass or separate explicitly assigned scope; do not implement it in WO-236.",
+          "reopenWhen": "A future planning pass prioritizes this issue or the operator assigns a separate implementation scope.",
+          "targets": [],
+          "at": "2026-10-28T16:34:51.449Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-d1b15b1b3e4dc761",
+      "key": "decision:docs/evidence/WO-236/decisions.md#wo-236-d020",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "514a0578c000d1f16bc2699860f06ddb8d8d247029dae3016693e766efa449a1",
+          "ref": "docs/evidence/WO-236/decisions.md#wo-236-d020--promptly-answer-operator-corrections",
+          "title": "WO-236-D020: Ensure operator questions and corrections receive a prompt, complete answer before further tool work or long internal planning. Preserve the active task and apply explicit stop/scope…",
+          "summary": "{ \"id\": \"WO-236-D020\", \"date\": \"2026-10-28\", \"dispatch\": \"resume: next; operator direction\", \"decision\": \"The operator repeatedly asked for a direct answer while the integration explanation was delayed. Defer a communication-control correction; ongoing task execution must remain responsive to operator questions and corrections.\", \"evidence\": [ \"The operator sent repeated requests for an answer during the integration-authority dispute.\", \"The required reply was a direct account of the actual helper calls, their no-op results, their timing and the mistaken authorization reading.\" ], \"rejected\": [ { \"option\": \"Implement the operator-raised issue inside WO-236\", \"reason\": \"The operator explicitl",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Operator-directed follow-up only: Promptly answer operator corrections. Preserve this action for a future planning pass or separate explicitly assigned scope; do not implement it in WO-236.",
+          "reopenWhen": "A future planning pass prioritizes this issue or the operator assigns a separate implementation scope.",
+          "targets": [],
+          "at": "2026-10-28T16:34:51.571Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-6a069fbfd769e741",
+      "key": "decision:docs/evidence/WO-236/decisions.md#wo-236-d021",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "34f7d39f4b34500486528b965a68126d63962fec6dd8b836ae008ae79f6dd8a5",
+          "ref": "docs/evidence/WO-236/decisions.md#wo-236-d021--remove-useless-cost-prose-from-work-order-navigation",
+          "title": "WO-236-D021: Redesign the work-order index’s cost presentation and the source Cost requirement around useful decision information. Remove duplicated implementation inventories and unsupported or…",
+          "summary": "{ \"id\": \"WO-236-D021\", \"date\": \"2026-10-28\", \"dispatch\": \"resume: next; operator direction\", \"decision\": \"The operator objected to the giant repeated Cost paragraphs in the public work-order index. Record the issue for later; the index generator and planning Cost contract remain unchanged in WO-236.\", \"evidence\": [ \"Published docs/work-orders/README.md repeats the entire Cost field in each card.\", \"scripts/work-orders.mjs parseHeader reads the complete wrapped Cost field and the card renderer emits row.cost; product 07 requires a detailed planning Cost field.\" ], \"rejected\": [ { \"option\": \"Implement the operator-raised issue inside WO-236\", \"reason\": \"The operator explicitly directed that ev",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Operator-directed follow-up only: Remove useless cost prose from work-order navigation. Preserve this action for a future planning pass or separate explicitly assigned scope; do not implement it in WO-236.",
+          "reopenWhen": "A future planning pass prioritizes this issue or the operator assigns a separate implementation scope.",
+          "targets": [],
+          "at": "2026-10-28T16:34:51.693Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-32ac48069c7acdda",
+      "key": "decision:docs/evidence/WO-236/decisions.md#wo-236-d022",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c78a80e3eec33a1bd3898543d5d26fe9d77e17c534718fc09a6ddbb8866c9f99",
+          "ref": "docs/evidence/WO-236/decisions.md#wo-236-d022--separate-current-planning-from-pass-history",
+          "title": "WO-236-D022: Make the planning entry point show the current actionable plan, with historical pass records organized behind an archive/history view. Inventory existing readers and citations before…",
+          "summary": "{ \"id\": \"WO-236-D022\", \"date\": \"2026-10-28\", \"dispatch\": \"resume: next; operator direction\", \"decision\": \"The operator objected to the planning directory exposing extensive dated planning-pass history beside the current sequence and map. Defer organization changes; preserve records and current references here.\", \"evidence\": [ \"The public planning root contains dated pass records alongside current planning surfaces and already has an archive directory.\", \"The operator asked why literally every planning pass is presented there.\" ], \"rejected\": [ { \"option\": \"Implement the operator-raised issue inside WO-236\", \"reason\": \"The operator explicitly directed that every raised issue become a follow-u",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Operator-directed follow-up only: Separate current planning from pass history. Preserve this action for a future planning pass or separate explicitly assigned scope; do not implement it in WO-236.",
+          "reopenWhen": "A future planning pass prioritizes this issue or the operator assigns a separate implementation scope.",
+          "targets": [],
+          "at": "2026-10-28T16:34:51.815Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-a58dc4c969ee9c62",
+      "key": "decision:docs/evidence/WO-236/decisions.md#wo-236-d023",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "bbf19392c57aaada799753a619194b66c9dad689a63ff5a7ab68a8e60db27de6",
+          "ref": "docs/evidence/WO-236/decisions.md#wo-236-d023--keep-the-idea-ledger-for-operator-ideas",
+          "title": "WO-236-D023: Carry the ledger-registration and planning-history pollution correction in WO-088: migrate pass registration/sections to planning records and restore the ledger’s focus on operator…",
+          "summary": "{ \"id\": \"WO-236-D023\", \"date\": \"2026-10-28\", \"dispatch\": \"resume: next; operator direction\", \"decision\": \"The operator objected to planning-pass registrations burying the organized idea list. The operator then explicitly accepted that WO-088 already owns replacing the registration mechanism and directed that it be handled there. Allocate this follow-up to that existing order; make no ledger migration here.\", \"evidence\": [ \"scripts/lib/plan-subject.mjs planningPasses derives pass identities from idea-ledger headings.\", \"Product 07 currently directs dated registration headings in the ledger until WO-088.\", \"WO-088-phrase-table-single-source.md explicitly owns marker-based planning records and ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Operator explicitly accepted handling ledger registration and planning-pass migration in existing WO-088; its filed scope contains that mechanism. No migration is performed in WO-236.",
+          "reopenWhen": "WO-088 closes without restoring the ledger’s idea-focused purpose, or the operator changes the assignment.",
+          "targets": [
+            "WO-088"
+          ],
+          "at": "2026-10-28T16:34:51.935Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-0e87122ae2310325",
+      "key": "decision:docs/evidence/WO-236/decisions.md#wo-236-d024",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "ffd6b119570e806945309fb337e88a8672934020474f2bcfc0cfac28a707bc38",
+          "ref": "docs/evidence/WO-236/decisions.md#wo-236-d024--distinguish-consumers-from-export-siblings",
+          "title": "WO-236-D024: Clarify the repository relationship model and generated registry so contract consumers, registered targets and exported kits have accurate names and applicable fields. Assess…",
+          "summary": "{ \"id\": \"WO-236-D024\", \"date\": \"2026-10-28\", \"dispatch\": \"resume: next; operator direction\", \"decision\": \"The operator challenged classifying DotLn-Angular as a sibling. Its declaration is a consumer of uifa-board-v1, while the generated Siblings page applies the export-shaped fields to it and reports those fields as not evidenced. Defer the classification/presentation correction.\", \"evidence\": [ \"docs/siblings/siblings.json declares DotLn-Angular relation.kind consumer and the starter relation.kind export.\", \"scripts/lib/siblings.mjs admits both under the siblings collection; exportSiblings selects only export entries.\", \"The public registry presents the consumer with kit/build/receipt fiel",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Operator-directed follow-up only: Distinguish consumers from export siblings. Preserve this action for a future planning pass or separate explicitly assigned scope; do not implement it in WO-236.",
+          "reopenWhen": "A future planning pass prioritizes this issue or the operator assigns a separate implementation scope.",
+          "targets": [],
+          "at": "2026-10-28T16:34:52.056Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-260aa01784c55025",
+      "key": "decision:docs/evidence/WO-236/decisions.md#wo-236-d025",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "477039ab865817fd40c35e6888d33a4d319de30697f3421732ea5d848cccaa97",
+          "ref": "docs/evidence/WO-236/decisions.md#wo-236-d025--measure-recurring-checks-before-increasing-gate-cost",
+          "title": "WO-236-D025: Measure useful early consistency checks and total gate overhead before adopting recurring work. Compare equivalent coverage and include setup, work and waiting; preserve independent…",
+          "summary": "{ \"id\": \"WO-236-D025\", \"date\": \"2026-10-28\", \"dispatch\": \"resume: next; operator direction\", \"decision\": \"The operator challenged the runtime cost of a proposed structural projection check. No such check was added. The only measured full release-fixture reproduction took 493725ms; an isolated replacement was not built or measured. Defer the recurring-check proposal and its tradeoff assessment.\", \"evidence\": [ \"The operator asked how much longer the proposed durable review check would make things.\", \"The bounded existing release case passed in 493725ms; it includes publication/closeout behavior and is unsuitable as an assumed-cheap recurring check.\", \"Three full runs encountered stale metadat",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Operator-directed follow-up only: Measure recurring checks before increasing gate cost. Preserve this action for a future planning pass or separate explicitly assigned scope; do not implement it in WO-236.",
+          "reopenWhen": "A future planning pass prioritizes this issue or the operator assigns a separate implementation scope.",
+          "targets": [],
+          "at": "2026-10-28T16:34:52.173Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-35719f293094b9c0",
+      "key": "decision:docs/evidence/WO-236/decisions.md#wo-236-d026",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "67cf194b15c36d6dd0c2ff36488af20816590ebb66d4c6b539778de93cde1779",
+          "ref": "docs/evidence/WO-236/decisions.md#wo-236-d026--make-the-execution-guide-useful-to-its-readers",
+          "title": "WO-236-D026: Redesign product 07 around explicit reader tasks and authoritative ownership: concise operator reference, maintained generated agent procedures, and separately navigable…",
+          "summary": "{ \"id\": \"WO-236-D026\", \"date\": \"2026-10-28\", \"dispatch\": \"resume: next; operator direction\", \"decision\": \"The operator questioned who consumes the execution guide and objected to its length and repetitive generated prose. Record the document-role problem for later; a wholesale guide rewrite is outside this order.\", \"evidence\": [ \"Generated skills and work-order citations direct agents to selected product 07 sections; the guide also serves operators and structural/document consumers.\", \"The guide mixes current procedures, implementation details, historical explanations, exceptions and measurements.\", \"The original WO-236 write-back review found another operational grant summary that contradic",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Operator-directed follow-up only: Make the execution guide useful to its readers. Preserve this action for a future planning pass or separate explicitly assigned scope; do not implement it in WO-236.",
+          "reopenWhen": "A future planning pass prioritizes this issue or the operator assigns a separate implementation scope.",
+          "targets": [],
+          "at": "2026-10-28T16:34:52.291Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-911dc28a35dc4c44",
+      "key": "decision:docs/evidence/WO-236/decisions.md#wo-236-d028",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "eaa091f020585e8c526925142cab17b1825b71f123e442de40c1b7c42873670f",
+          "ref": "docs/evidence/WO-236/decisions.md#wo-236-d028--ver-001-follow-up-the-target-grants-root-comes-from-registration-the-executors-own-root-holds",
+          "title": "WO-236-D028: In a repair of WO-236 if one happens, or else the next order that touches the hook's target resolution: resolve the target-worktree root only from registration that an admitted…",
+          "summary": "{ \"id\": \"WO-236-D028\", \"date\": \"2026-10-28\", \"dispatch\": \"resume: verify\", \"decision\": \"A follow-up in the declared surfaces that breaks no criterion. Planning receipt 2026-10-28-planning-f266262cbe291586-057 recorded a criterion 3 known issue: the grant's extent can be widened from inside the session. It reopens on its second condition, because no WO-236 case refuses a row that differs from main's registry or clone map. registeredTargetWriteRoot (packages/skeleton/src/harness-host.ts 4860 to 4917) takes the control root from the launchpad's working dotln.config.json and reads the launchpad's own local target registry. It checks three things in the single row for the order: workOrderId, a la",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-236-D031 (FINAL-001): VER-001 F1 is a follow-up in the declared surfaces that breaks no criterion and no behavior main had, because the target-worktree kind did not exist at main. registeredTargetWriteRoot reads the launchpad's own registry and checks the row's workOrderId, launchpad and target shape; it does not compare the row with main's registry or clone map as the publish admission does. The final review judged it from the recorded rule and wrote no source byte. Deferred to a repair of WO-236 if one happens, else the next order that touches registeredTargetWriteRoot in packages/skeleton/src/harness-host.ts.",
+          "reopenWhen": "The resolution compares the row with main's registry and clone map, and a case refuses a differing row; or an executor journal shows a granted target-worktree destination outside the registered clone's worktree on the order's branch.",
+          "targets": [],
+          "at": "2026-10-28T18:18:34.029Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-be6721fbdd4b6285",
+      "key": "decision:docs/evidence/WO-236/decisions.md#wo-236-d029",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c93bde58699dc13a1b19675eec22bcc9d4cd6532de57af1c6708229bf17bdfa4",
+          "ref": "docs/evidence/WO-236/decisions.md#wo-236-d029--ver-001-follow-up-every-judged-executor-outside-write-spawns-the-lifecycle-status",
+          "title": "WO-236-D029: In a repair of WO-236 if one happens, or else the next order that touches the hook's outside-write path: resolve the target-worktree root only when no static root contains the…",
+          "summary": "{ \"id\": \"WO-236-D029\", \"date\": \"2026-10-28\", \"dispatch\": \"resume: verify\", \"decision\": \"A follow-up in the declared surfaces that breaks no criterion. Planning receipt 2026-10-28-planning-f266262cbe291586-057 recorded a criterion 3 known issue: the Cost line understates wall-clock. It reopens on both conditions. outsideWriteResponse resolves every equipped grant before it matches the destination (packages/skeleton/src/harness-host.ts 4984 to 5061). The target-worktree branch calls registeredTargetWriteRoot, whose first lookup is harnessControl (593 to 612), a synchronous spawn of scripts/resume.mjs status --json. Every judged outside write in an executor session therefore spawns the lifecycl",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-236-D031 (FINAL-001): VER-001 F2, reproduced at the reviewed tree with docs/evidence/WO-236/verification-001-target-grant.mjs: one lifecycle spawn per executor outside write in each of the permissions, concurrent-work-requires-worktrees and write-observer hooks, none for a verifier temp write or an executor in-project write; permission-hook medians 125 against 97 ms with a stub status and 303 against 98 ms with this checkout's status. Every admission and refusal is correct and no criterion covers latency. Deferred to a repair of WO-236 if one happens, else the next order that touches outsideWriteResponse.",
+          "reopenWhen": "An executor scratch write no longer spawns the lifecycle and its permission-hook median is within tens of milliseconds of a verifier's on the same build; or a slow status refuses an executor's target write through harnessControl's 10 s timeout.",
+          "targets": [],
+          "at": "2026-10-28T18:18:34.133Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-dc138fc0fac6a3fc",
+      "key": "decision:docs/evidence/WO-236/decisions.md#wo-236-d030",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "b2cc997b69ad0d25756d9b3c216786c4e9091f980df5a41202cc7203600a47b9",
+          "ref": "docs/evidence/WO-236/decisions.md#wo-236-d030--ver-001-follow-up-refusals-unrelated-to-any-target-name-a-target-worktree-root",
+          "title": "WO-236-D030: In a repair of WO-236 if one happens, or else the next order that touches the outside-write refusal text: name a target-worktree root only when it explains the refusal. For another role,…",
+          "summary": "{ \"id\": \"WO-236-D030\", \"date\": \"2026-10-28\", \"dispatch\": \"resume: verify\", \"decision\": \"A follow-up in the declared surfaces that breaks no criterion. Criterion 3 requires the WO-168 clause for other roles and for an executor whose registration cannot be resolved. To meet it, outsideWriteResponse (packages/skeleton/src/harness-host.ts 5065 to 5082) names a target-worktree root whenever another role declares the kind and the session's role does not. An executor's withheld target entry carries no physical root, so it explains every refused destination. Two consequences follow. First, every non-executor refusal of any outside write says 'Granted root target-worktree grants nothing: no equipped ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-236-D031 (FINAL-001): VER-001 F3, reproduced at the reviewed tree: a verifier's write to an unrelated directory is refused with the clause naming a target-worktree root, and an executor on a launchpad with no registry sees the registry file named as the granted root with an ENOENT cause. The refusal decisions are unchanged and criterion 3's cases hold. Deferred to a repair of WO-236 if one happens, else the next order that touches the outside-write refusal text in outsideWriteResponse.",
+          "reopenWhen": "Unrelated refusals no longer name a target-worktree root and the new cases pass, or an operator reports a misleading target-worktree clause on a refusal unrelated to any target.",
+          "targets": [],
+          "at": "2026-10-28T18:18:34.238Z"
         }
       ]
     }

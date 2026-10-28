@@ -1,0 +1,386 @@
+{
+  "schemaVersion": 1,
+  "report": "docs/verifications/WO-236/VER-001.md",
+  "subject": {
+    "workOrder": "WO-236",
+    "head": "4ceef05d9484d76d6a64bd8fd897c7e388c8c228",
+    "checkpoint": "refs/dotln/checkpoint/WO-236/3",
+    "codeIdentity": "d11731e16f92f4b054e3f4b6ca545145c7990629c748b7182657e293790002e8",
+    "codeIdentitySource": "gateCodeIdentity(<worktree>) recomputed by the verifier at 2026-10-28T17:33:06Z"
+  },
+  "consumedRows": [
+    {
+      "checkId": "npm test",
+      "codeIdentity": "d11731e16f92f4b054e3f4b6ca545145c7990629c748b7182657e293790002e8",
+      "treeHash": "50960f69f74f9124e67d2a92c6ef4ea3a079cea6",
+      "gateSelection": "review",
+      "exitCode": 0,
+      "recordedAt": "2026-10-28T17:15:23.769Z",
+      "suites": 41,
+      "failedSuites": [],
+      "unrunSuites": []
+    },
+    {
+      "checkId": "structural",
+      "codeIdentity": "d11731e16f92f4b054e3f4b6ca545145c7990629c748b7182657e293790002e8",
+      "treeHash": "50960f69f74f9124e67d2a92c6ef4ea3a079cea6",
+      "gateSelection": "structural",
+      "exitCode": 0,
+      "recordedAt": "2026-10-28T17:13:17.531Z",
+      "suites": 6,
+      "failedSuites": [],
+      "unrunSuites": []
+    },
+    {
+      "checkId": "npm run test:docs",
+      "codeIdentity": "d11731e16f92f4b054e3f4b6ca545145c7990629c748b7182657e293790002e8",
+      "treeHash": "a0bd6178aa18082781beaf371cd72d5bd2a5a49c",
+      "gateSelection": "document",
+      "exitCode": 0,
+      "recordedAt": "2026-10-28T17:26:16.428Z",
+      "suites": 27,
+      "failedSuites": [],
+      "unrunSuites": []
+    },
+    {
+      "checkId": "structural",
+      "codeIdentity": "d11731e16f92f4b054e3f4b6ca545145c7990629c748b7182657e293790002e8",
+      "treeHash": "a0bd6178aa18082781beaf371cd72d5bd2a5a49c",
+      "gateSelection": "structural",
+      "exitCode": 0,
+      "recordedAt": "2026-10-28T17:26:12.799Z",
+      "suites": 6,
+      "failedSuites": [],
+      "unrunSuites": []
+    }
+  ],
+  "verifierChecks": [
+    {
+      "command": "npm run format:check",
+      "wrapper": "harness bounded",
+      "startedAt": "2026-10-28T17:33:20.266Z",
+      "exitCode": 0,
+      "result": "All matched files use Prettier code style"
+    },
+    {
+      "command": "node scripts/harness.mjs check",
+      "wrapper": "harness bounded",
+      "startedAt": "2026-10-28T17:39:10.316Z",
+      "exitCode": 0,
+      "result": "35 generated surfaces; local-terms list present"
+    },
+    {
+      "command": "npm run publication:check",
+      "wrapper": "harness bounded",
+      "startedAt": "2026-10-28T17:40:04.433Z",
+      "exitCode": 0,
+      "result": "255/255 headings indexed; both editions current"
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0
+    },
+    {
+      "command": "node scripts/resume.mjs status --json --work-order WO-236",
+      "purpose": "confirm the status the hook spawns writes no file",
+      "exitCode": 0,
+      "result": "no file outside node_modules and .git newer than a marker taken before the call"
+    }
+  ],
+  "probe": {
+    "command": "PROBE_SCRATCH=<session-scratch> node scripts/harness.mjs bounded -- node docs/evidence/WO-236/verification-001-target-grant.mjs <worktree> <session-scratch>/ver001-run.json WO-236",
+    "completedAt": "2026-10-28T17:43:47.883Z",
+    "exitCode": 0,
+    "note": "Fixture paths are rendered as <fixture>; the fixture is removed in finally.",
+    "results": {
+      "subject": "WO-236",
+      "probes": {
+        "headEdit": {
+          "exitCode": 0,
+          "admitted": true,
+          "statusSpawns": 1,
+          "ms": 128
+        },
+        "headWrite": {
+          "exitCode": 0,
+          "admitted": true,
+          "statusSpawns": 1,
+          "ms": 135
+        },
+        "headRedirect": {
+          "exitCode": 0,
+          "admitted": true,
+          "statusSpawns": 1,
+          "ms": 141
+        },
+        "headJournal": [
+          {
+            "role": "executor",
+            "destination": "<fixture>/target/file.txt",
+            "status": "granted",
+            "kind": "target-worktree",
+            "originId": "contributor.executor",
+            "source": "WO-236-D001: the active order's registered target worktree",
+            "authorityGrantId": "contributor.target-worktree"
+          },
+          {
+            "role": "executor",
+            "destination": "<fixture>/target/file.txt",
+            "status": "granted",
+            "kind": "target-worktree",
+            "originId": "contributor.executor",
+            "source": "WO-236-D001: the active order's registered target worktree",
+            "authorityGrantId": "contributor.target-worktree"
+          },
+          {
+            "role": "executor",
+            "destination": "<fixture>/target/file.txt",
+            "status": "granted",
+            "kind": "target-worktree",
+            "originId": "contributor.executor",
+            "source": "WO-236-D001: the active order's registered target worktree",
+            "authorityGrantId": "contributor.target-worktree"
+          }
+        ],
+        "spawns": {
+          "permissions": {
+            "executorTemp": 1,
+            "verifierTemp": 0,
+            "executorInProject": 0
+          },
+          "concurrent-work-requires-worktrees": {
+            "executorTemp": 1,
+            "verifierTemp": 0,
+            "executorInProject": 0
+          },
+          "write-observer": {
+            "executorTemp": 1,
+            "verifierTemp": 0,
+            "executorInProject": 0
+          }
+        },
+        "latencyStubStatus": {
+          "executorTempMedianMs": 124,
+          "verifierTempMedianMs": 96,
+          "executorTempMs": [
+            125,
+            124,
+            122,
+            123,
+            123,
+            131,
+            125,
+            124,
+            126
+          ],
+          "verifierTempMs": [
+            96,
+            95,
+            94,
+            93,
+            102,
+            97,
+            96,
+            100,
+            96
+          ]
+        },
+        "latencyRepositoryStatusCost": {
+          "executorTempMedianMs": 302,
+          "verifierTempMedianMs": 97,
+          "executorTempMs": [
+            303,
+            302,
+            298,
+            308,
+            302,
+            300,
+            300,
+            297,
+            305
+          ],
+          "verifierTempMs": [
+            99,
+            95,
+            96,
+            98,
+            100,
+            96,
+            97,
+            96,
+            100
+          ]
+        },
+        "repositoryStatusMs": [
+          163,
+          166,
+          163
+        ],
+        "bareNodeMs": [
+          26,
+          27,
+          28
+        ],
+        "verifierElsewhere": {
+          "exitCode": 0,
+          "admitted": false,
+          "reason": "DOTLN_HARNESS_REFUSED: outside-project write to <fixture>/elsewhere/x.txt (physical destination <fixture>/elsewhere/x.txt) lacks an equipped outside-write grant for role verifier (WO-144). Granted root target-worktree grants nothing: no equipped target-worktree grant for role verifier (WO-168). Use operator override: for authorized recovery.",
+          "statusSpawns": 0,
+          "ms": 99
+        },
+        "executorElsewhere": {
+          "exitCode": 0,
+          "admitted": false,
+          "reason": "DOTLN_HARNESS_REFUSED: outside-project write to <fixture>/elsewhere/x.txt (physical destination <fixture>/elsewhere/x.txt) lacks an equipped outside-write grant for role executor (WO-144). Granted root <fixture>/target grants nothing: destination is outside the registered target worktree (WO-168). Use operator override: for authorized recovery.",
+          "statusSpawns": 1,
+          "ms": 127
+        },
+        "verifierIntoTarget": {
+          "exitCode": 0,
+          "admitted": false,
+          "reason": "DOTLN_HARNESS_REFUSED: outside-project write to <fixture>/target/x.txt (physical destination <fixture>/target/x.txt) lacks an equipped outside-write grant for role verifier (WO-144). Granted root target-worktree grants nothing: no equipped target-worktree grant for role verifier (WO-168). Use operator override: for authorized recovery.",
+          "statusSpawns": 0,
+          "ms": 94
+        },
+        "releaseCloseIntoTarget": {
+          "exitCode": 0,
+          "admitted": false,
+          "reason": "DOTLN_HARNESS_REFUSED: outside-project write to <fixture>/target/x.txt (physical destination <fixture>/target/x.txt) lacks an equipped outside-write grant for role release-close (WO-144). Granted root target-worktree grants nothing: no equipped target-worktree grant for role release-close (WO-168). Use operator override: for authorized recovery.",
+          "statusSpawns": 0,
+          "ms": 97
+        },
+        "traversal": {
+          "exitCode": 0,
+          "admitted": false,
+          "reason": "DOTLN_HARNESS_REFUSED: outside-project write to <fixture>/target/../elsewhere/x.txt (physical destination <fixture>/elsewhere/x.txt) lacks an equipped outside-write grant for role executor (WO-144). Granted root <fixture>/target grants nothing: destination is outside the registered target worktree (WO-168). Use operator override: for authorized recovery.",
+          "statusSpawns": 1,
+          "ms": 127
+        },
+        "noRegistryElsewhere": {
+          "exitCode": 0,
+          "admitted": false,
+          "reason": "DOTLN_HARNESS_REFUSED: outside-project write to <fixture>/elsewhere/x.txt (physical destination <fixture>/elsewhere/x.txt) lacks an equipped outside-write grant for role executor (WO-144). Granted root <fixture>/launchpad/docs/control/local/target-worktrees.json grants nothing: target registration unavailable (ENOENT: no such file or directory, lstat '<fixture>/launchpad/docs/control/local/target-worktrees.json') (WO-168). Use operator override: for authorized recovery.",
+          "statusSpawns": 1,
+          "ms": 126
+        },
+        "noRegistryTemp": {
+          "exitCode": 0,
+          "admitted": true,
+          "statusSpawns": 1,
+          "ms": 131
+        },
+        "noRegistryTarget": {
+          "exitCode": 0,
+          "admitted": false,
+          "reason": "DOTLN_HARNESS_REFUSED: outside-project write to <fixture>/target/x.txt (physical destination <fixture>/target/x.txt) lacks an equipped outside-write grant for role executor (WO-144). Granted root <fixture>/launchpad/docs/control/local/target-worktrees.json grants nothing: target registration unavailable (ENOENT: no such file or directory, lstat '<fixture>/launchpad/docs/control/local/target-worktrees.json') (WO-168). Use operator override: for authorized recovery.",
+          "statusSpawns": 1,
+          "ms": 123
+        },
+        "missingTargetInto": {
+          "exitCode": 0,
+          "admitted": true,
+          "statusSpawns": 1,
+          "ms": 127
+        },
+        "missingTargetElsewhere": {
+          "exitCode": 0,
+          "admitted": false,
+          "reason": "DOTLN_HARNESS_REFUSED: outside-project write to <fixture>/elsewhere/x.txt (physical destination <fixture>/elsewhere/x.txt) lacks an equipped outside-write grant for role executor (WO-144). Granted root <fixture>/target grants nothing: destination is outside the registered target worktree (WO-168). Use operator override: for authorized recovery.",
+          "statusSpawns": 1,
+          "ms": 129
+        },
+        "statusUnavailableTarget": {
+          "exitCode": 0,
+          "admitted": false,
+          "reason": "DOTLN_HARNESS_REFUSED: outside-project write to <fixture>/target/x.txt (physical destination <fixture>/target/x.txt) lacks an equipped outside-write grant for role executor (WO-144). Granted root target-worktree grants nothing: target registration unavailable (Canonical lifecycle observation unavailable) (WO-168). Use operator override: for authorized recovery.",
+          "statusSpawns": 1,
+          "ms": 129
+        },
+        "statusUnavailableTemp": {
+          "exitCode": 0,
+          "admitted": true,
+          "statusSpawns": 1,
+          "ms": 130
+        },
+        "registrySymlink": {
+          "exitCode": 0,
+          "admitted": false,
+          "reason": "DOTLN_HARNESS_REFUSED: outside-project write to <fixture>/target/x.txt (physical destination <fixture>/target/x.txt) lacks an equipped outside-write grant for role executor (WO-144). Granted root target-worktree grants nothing: target registration unavailable (Path resolves outside the worktree) (WO-168). Use operator override: for authorized recovery.",
+          "statusSpawns": 1,
+          "ms": 127
+        },
+        "phases": {
+          "active": {
+            "admitted": true
+          },
+          "repairing": {
+            "admitted": true
+          },
+          "ready-to-verify": {
+            "admitted": false,
+            "reason": "DOTLN_HARNESS_REFUSED: outside-project write to <fixture>/target/x.txt (physical destination <fixture>/target/x.txt) lacks an equipped outside-write grant for role executor (WO-144). Granted root target-worktree grants nothing: work order WO-999 is ready-to-verify, not active or repairing (WO-168). Use operator override: for authorized recovery."
+          },
+          "verifying": {
+            "admitted": false,
+            "reason": "DOTLN_HARNESS_REFUSED: outside-project write to <fixture>/target/x.txt (physical destination <fixture>/target/x.txt) lacks an equipped outside-write grant for role executor (WO-144). Granted root target-worktree grants nothing: work order WO-999 is verifying, not active or repairing (WO-168). Use operator override: for authorized recovery."
+          },
+          "final-review": {
+            "admitted": false,
+            "reason": "DOTLN_HARNESS_REFUSED: outside-project write to <fixture>/target/x.txt (physical destination <fixture>/target/x.txt) lacks an equipped outside-write grant for role executor (WO-144). Granted root target-worktree grants nothing: work order WO-999 is final-review, not active or repairing (WO-168). Use operator override: for authorized recovery."
+          },
+          "closed": {
+            "admitted": false,
+            "reason": "DOTLN_HARNESS_REFUSED: outside-project write to <fixture>/target/x.txt (physical destination <fixture>/target/x.txt) lacks an equipped outside-write grant for role executor (WO-144). Granted root target-worktree grants nothing: work order WO-999 is closed, not active or repairing (WO-168). Use operator override: for authorized recovery."
+          }
+        },
+        "copilotIntoTarget": {
+          "exitCode": 0,
+          "admitted": true,
+          "statusSpawns": 1,
+          "ms": 126
+        },
+        "copilotElsewhere": {
+          "exitCode": 0,
+          "admitted": false,
+          "reason": "DOTLN_HARNESS_REFUSED: outside-project write to <fixture>/elsewhere/copilot.txt (physical destination <fixture>/elsewhere/copilot.txt) lacks an equipped outside-write grant for role executor (WO-144). Granted root <fixture>/target grants nothing: destination is outside the registered target worktree (WO-168). Use operator override: for authorized recovery.",
+          "statusSpawns": 1,
+          "ms": 128
+        }
+      },
+      "grantKinds": {
+        "executor": [
+          "system-temp",
+          "session-scratch",
+          "host-scratchpad",
+          "target-worktree"
+        ],
+        "verifier": [
+          "system-temp",
+          "session-scratch",
+          "host-scratchpad"
+        ],
+        "reviewer": [
+          "system-temp",
+          "session-scratch",
+          "host-scratchpad"
+        ],
+        "release-close": [
+          "system-temp",
+          "session-scratch",
+          "host-scratchpad"
+        ],
+        "planner": [
+          "system-temp",
+          "session-scratch",
+          "host-scratchpad"
+        ],
+        "refuter": [
+          "system-temp",
+          "session-scratch",
+          "host-scratchpad"
+        ]
+      },
+      "fixtureRemoved": true
+    }
+  }
+}
