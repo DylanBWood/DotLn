@@ -40,6 +40,20 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
+## 2026-10-28 — Planning pass: the fork's target-write blocker filed as WO-236 and placed first, the journal question answered on its corrected unit as WO-237, and the fork's two blocks answered; registration only; the record is the planning document
+
+Dispatch: `planning: issues from the fucking fork. HUGE FUCKING BLOCKER. …`,
+sent at 2026-10-28T13:22:01Z in Claude Code (Fable 5.1 at max,
+operator-selected), carrying the DotLn-Enterprise-Starter fork's blocker
+block, the operator's question on worktree retention and the fork's
+standard block of its v0.100.0 pass, with two mid-turn operator messages at
+13:22:32Z and 13:22:42Z, all captured verbatim in
+`docs/intake/notes/planning-target-write-grant-and-fork-block-2026-10-28.md`
+(SHA-256 in the planning document's first section). The pass files WO-236
+first and WO-237 fourth, retires WO-233, answers the fork's blocks of
+2026-10-26 and 2026-10-28, and annotates the 2026-10-24 planning document.
+Record: [the planning document](../planning/target-write-grant-and-fork-block-2026-10-28.md).
+
 ## 2026-10-26 — Planning pass: WO-192's proposed fixes made permanent (WO-233, WO-234) and the operator's corrections on example inheritance and dropped directions (WO-235); registration only; the record is the planning document
 
 Dispatch: `planning: FIX THE BULLSHIT FROM WO-192 …`, sent at

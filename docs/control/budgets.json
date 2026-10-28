@@ -63,6 +63,14 @@
   },
   "acceptances": [
     {
+      "date": "2026-10-28",
+      "metric": "coldStartBytes.reviewer",
+      "scope": null,
+      "dispatch": "planner",
+      "ceiling": 33907,
+      "reason": "The reviewer root measures 29,811 bytes in the installed skill root (CLAUDE.md 7,099 plus the reviewer skill 22,712) against the 28,884 ceiling of 2026-09-29, since WO-233 added four hand-written lines to CLAUDE.md on 2026-10-27 (commit e35caed6: follow a requirement's purpose, scope and timing; record failures and corrections while continuing the authorized task) under the operator's direction; the breach was left advisory at WO-233's close, which the standing route of 2026-09-17 forbids across orders, and planning receipt 057 recorded it as an observed failure against WO-236's and WO-235's criterion 7. Under product 07's standing route the 2026-10-28 planning pass preserves the reviewed lines and accepts the measured bytes plus one 4,096-byte step, 33,907. The executor (30,857 against 34,953), verifier (27,385), release-close (18,574) and planner (19,483) roots remain within their ceilings; refuter remains unset. Reassess when another reviewed rule needs more. Record: docs/planning/target-write-grant-and-fork-block-2026-10-28.md, the validation section."
+    },
+    {
       "date": "2026-10-27",
       "metric": "coldStartBytes.executor",
       "scope": null,

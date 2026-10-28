@@ -4334,6 +4334,14 @@
           "reopenWhen": "WO-083 activates or is amended, or product 12's candidate section changes its demonstrations or its first-screen claims.",
           "targets": [],
           "at": "2026-10-25T00:26:53.763Z"
+        },
+        {
+          "sourceRevision": 23,
+          "status": "deferred",
+          "reason": "Re-triaged by the 2026-10-28 pass: product 12's candidate section is unchanged by this pass (source revision 23 stands), WO-083 stays queued after WO-192, and no order is filed on the section. [2026-10-28 pass, docs/planning/target-write-grant-and-fork-block-2026-10-28.md, The register]",
+          "reopenWhen": "WO-083 activates or is amended, or product 12's candidate section changes its demonstrations or its first-screen claims.",
+          "targets": [],
+          "at": "2026-10-28T14:03:37.215Z"
         }
       ]
     },
@@ -45453,6 +45461,14 @@
           "reopenWhen": "A publish refuses a commit that a passing final review's range excluded, or a writer-observed update of a target clone's refs/remotes/origin/<baseBranch> during an order (receipt 055's condition).",
           "targets": [],
           "at": "2026-10-25T03:24:20.128Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Re-disposed by the 2026-10-28 pass with the fork's two field uses (its block of 2026-10-28, item 1): WO-013's FINAL-003 linted one commit after the second fix had fetched the base, with the merge base and the clone's tracking ref at the same commit before and after the publish; WO-014's FINAL-001 passed over a range that would have refused two merged subjects from the activation base. Neither stale-ref case occurred. The next order that edits scripts/lib/target-commit-lint.mjs or scripts/lib/target-base.mjs takes D005's repair rule together with the fork's ask to record the linted range on the FinalReviewCompleted event (the pass's candidate 5).",
+          "reopenWhen": "A publish refuses a commit that a passing final review's range excluded, or a writer-observed update of a target clone's refs/remotes/origin/<baseBranch> during an order (receipt 055's condition).",
+          "targets": [],
+          "at": "2026-10-28T14:03:37.328Z"
         }
       ]
     },
@@ -45477,6 +45493,14 @@
           "reopenWhen": "A target final-review refusal whose named range contains a commit reachable from the remote base branch but not from the clone's refs/remotes/origin/<baseBranch>, or an operator asks which ref a refusal read (receipt 055's condition).",
           "targets": [],
           "at": "2026-10-25T03:24:20.235Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Re-disposed by the 2026-10-28 pass with the fork's two field uses (its block of 2026-10-28, item 1): in WO-013's and WO-014's final reviews the clone's tracking ref was present and current, no refusal named a ref, and the fork has no stale-ref observation to give. The next order that edits scripts/lib/target-commit-lint.mjs takes D006's repair rule together with the fork's ask to record the linted range on the FinalReviewCompleted event (the pass's candidate 5).",
+          "reopenWhen": "A target final-review refusal whose named range contains a commit reachable from the remote base branch but not from the clone's refs/remotes/origin/<baseBranch>, or an operator asks which ref a refusal read (receipt 055's condition).",
+          "targets": [],
+          "at": "2026-10-28T14:03:37.435Z"
         }
       ]
     },
@@ -46855,6 +46879,372 @@
           "reopenWhen": "The operator confirms or strips the lines (D080s condition).",
           "targets": [],
           "at": "2026-10-28T03:44:17.251Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-b8917a0da507079a",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-target-write-blocker-the-journal-question-and-the-forks-two-blocks-recorded-2026-10-28::0601599c8151a11c39d5113892495359ebdb4929e14981392853d19bf8046372",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "4f31952f451ce4eaa7957bf97770f7f8fedeb50e8741252682ea1268b6d12839",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-target-write-blocker-the-journal-question-and-the-forks-two-blocks-recorded-2026-10-28",
+          "title": "operator override: as the standing route for target edits.",
+          "summary": "2. **`operator override:` as the standing route for target edits.** Declined: it suspends all five refusals for the session (product 07 §Operator recovery controls) and records its use only at `off`; the fork asked for the narrowest route. It stays one of the two interim routes for the fork's live WO-019 session until the release lands (the other is a Codex session with `--add-dir`, as WO-004 to WO-014 ran), recorded on WO-236's known issues. Reopen when an override session is observed editing outside the target it was opened for.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined by the 2026-10-28 pass as the standing route: operator override suspends all five refusals for the session and records its use only at off; the fork asked for the narrowest route, which WO-236 is. It stays one of two interim routes for the fork's live session until the carrying release lands, recorded on WO-236's known issues.",
+          "reopenWhen": "An override session is observed editing outside the target it was opened for.",
+          "targets": [],
+          "at": "2026-10-28T14:03:37.653Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-f6efcb5addbfd630",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-target-write-blocker-the-journal-question-and-the-forks-two-blocks-recorded-2026-10-28::0955eda097597c7cf331c432d3ae16783dadace70e3c684b8e5cfecaa05c88f3",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "285f75e57fec7b911a1436003ea7e8c1c24b5a3f7cd2777a1f4763e7f68abab7",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-target-write-blocker-the-journal-question-and-the-forks-two-blocks-recorded-2026-10-28",
+          "title": "The Next (run manually): cd <target> lines beside the Codex --add-dir line",
+          "summary": "14. **The `Next (run manually): cd <target>` lines beside the Codex `--add-dir` line** (`worktree.mjs` 705 and 1096 against 566). Carried in WO-236's step 5 and known issues: the executor makes the printed lines consistent and records which directory each host's session starts in, from WO-221's host evidence. Reopen when a host page names a different directory than the recorded one.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-28 pass to WO-236 (step 5 and its known issues): the executor makes the printed Next lines consistent with the host launch lines and records which directory each host's session starts in, from WO-221's host evidence and the registry's launchpad field.",
+          "reopenWhen": "A host page names a different directory for a workspace-write session than the recorded one.",
+          "targets": [
+            "WO-236"
+          ],
+          "at": "2026-10-28T14:03:38.914Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-fc889fc98e33c547",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-target-write-blocker-the-journal-question-and-the-forks-two-blocks-recorded-2026-10-28::0a4a976df97aa49a2299a0c625f235ade996f15812335b0c81b36fbeb3512e58",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "f587ea013da7068a1b736e82c3726188f32c75611471233e6ad11cce9e32f8cf",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-target-write-blocker-the-journal-question-and-the-forks-two-blocks-recorded-2026-10-28",
+          "title": "An instance-owned role duty that survives regeneration and upgrade",
+          "summary": "8. **An instance-owned role duty that survives regeneration and upgrade** (item 2 of 2026-10-26; WO-014-D019's question). Deferred: what an instance owns today is the support switches (`contributorConfiguredProgram(options.supports)`, `harness.mjs` 346 and 1247), the publication grants file and the registration's `hostRules`; no route adds duty text to a generated role, and the order text, the workstream rule and the operator record are the designed carriers of a duty (product 07: a duty an order owes is written under Known issues and carry-ins). An extension contract for instance-owned role duties, with an incompatible-update check and a survival test, is a kit design the fork calls a conve",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-10-28 pass: what an instance owns today is the support switches, the publication grants file and the registration's hostRules; no route adds duty text to a generated role, and the order text, the workstream rule and the operator record are the designed carriers of a duty. An extension contract for instance-owned role duties with an incompatible-update check and a survival test is a kit design the fork calls a convenience with a working route.",
+          "reopenWhen": "The operator directs the contract, an instance records a duty lost at an update, or a second instance asks.",
+          "targets": [],
+          "at": "2026-10-28T14:03:38.287Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-2fe2709d9b33c9e7",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-target-write-blocker-the-journal-question-and-the-forks-two-blocks-recorded-2026-10-28::0d20d8459c9b94b84180c707a882e52c67affc750e181ad3298fb0a76635b707",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "5e11d4c34b42ea0f7dddd6edc6f9bc55faaccdfef586c5c8bd30ef838a9cb530",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-target-write-blocker-the-journal-question-and-the-forks-two-blocks-recorded-2026-10-28",
+          "title": "The linted range on the FinalReviewCompleted event or in the report's kit-written lines",
+          "summary": "5. **The linted range on the `FinalReviewCompleted` event or in the report's kit-written lines** (the fork's block of 2026-10-28, item 1). Deferred and allocated to the next order that edits `scripts/lib/target-commit-lint.mjs`: the lint builds the range text (`linted N commits from base … to subject …`, with the activation base and the absent-ref note) and uses it only in refusals (lines 46 to 52), and the event's keys are the subject, the gate, the finding counts, the evidence, the report hash and the actor (`resume.mjs` 1849 to 1860); recording `targetLint: { base, activationBase, commits, subject }` on the event is a small addition in the same seam that WO-231-D005 and WO-231-D006 alread",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-10-28 pass to the next order that edits scripts/lib/target-commit-lint.mjs: the lint builds the range text and uses it only in refusals, and the FinalReviewCompleted event records the subject, the gate, the finding counts, the evidence, the report hash and the actor; recording the linted range on the event is a small addition in the seam WO-231-D005 and WO-231-D006 already wait on. A convenience; the fork continues.",
+          "reopenWhen": "The next order editing scripts/lib/target-commit-lint.mjs activates, or a fork again reports the linted range from a probe instead of the record.",
+          "targets": [],
+          "at": "2026-10-28T14:03:37.973Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-632348a91b2ae9d8",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-target-write-blocker-the-journal-question-and-the-forks-two-blocks-recorded-2026-10-28::254e655bf562ca5da8c39544bae4100c5d4dad69c83b2393808e201cdb3cad14",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "5dec76fec13a47942de1c9ae4a89041be1f8fb72d9c11827b1fb820897305e9b",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-target-write-blocker-the-journal-question-and-the-forks-two-blocks-recorded-2026-10-28",
+          "title": "WO-234 and an attended session; an acceptance ahead of a stop",
+          "summary": "11. **WO-234 and an attended session; an acceptance ahead of a stop** (item 4a of 2026-10-28). Recorded as a field case on WO-234's catalog row for its executor's criterion-1 reading; WO-234 is active and its text is not amended by this pass. Reopen when WO-234's decisions record a reading the attended case contradicts, or the first bound stop lands in an attended session.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Recorded by the 2026-10-28 pass as a field case on WO-234's catalog row for its executor's criterion-1 reading: as filed the bound is elapsed wall clock from the dispatch start, so an attended session counts as an unattended one, and accept-overrun is legal in active and the other named phases with no stop required first, so an acceptance recorded ahead of a stop extends the bound ahead of it. WO-234 is active and its text is not amended by this pass.",
+          "reopenWhen": "WO-234's decisions record a reading the attended case contradicts, or the first bound stop lands in an attended session.",
+          "targets": [],
+          "at": "2026-10-28T14:03:38.606Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-3543644330310589",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-target-write-blocker-the-journal-question-and-the-forks-two-blocks-recorded-2026-10-28::26b25b0450e8b3ee0d72607bdbb8d904913f1fd5a7371f7a951d33a79bc6eea1",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "a82df8eae68b05899c19b3e5f242a41c14851071d5cd1459fcfa603e65536821",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-target-write-blocker-the-journal-question-and-the-forks-two-blocks-recorded-2026-10-28",
+          "title": "A product 07 sentence on iterative design comparison",
+          "summary": "13. **A product 07 sentence on iterative design comparison** (item 4c). Declined: the procedure (two rendered choices, the preference makes the next pair, until the operator says done; a preference is not acceptance) is the fork's workstream rule and its orders carry it; product 07 governs core's lifecycle. Reopen when a second instance runs an iterative comparison, or when the fork asks for the sentence.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined by the 2026-10-28 pass: the iterative design comparison (two rendered choices, the preference makes the next pair, until the operator says done; a preference is not acceptance) is the fork's workstream rule and its orders carry it; product 07 governs core's lifecycle.",
+          "reopenWhen": "A second instance runs an iterative comparison, or the fork asks for the sentence.",
+          "targets": [],
+          "at": "2026-10-28T14:03:38.810Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-673c3991de705929",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-target-write-blocker-the-journal-question-and-the-forks-two-blocks-recorded-2026-10-28::4202e9c2718a6c233fd4620545b3afa807ba3b1e8a44225ac53b987dbf2d22a5",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "6f32d6d366045d786755add61b91aed83194e874348422ef4ab255da85121ef2",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-target-write-blocker-the-journal-question-and-the-forks-two-blocks-recorded-2026-10-28",
+          "title": "A session-drafted paste block carries the session's authority",
+          "summary": "7. **A session-drafted paste block carries the session's authority** (the fork's block of 2026-10-26, item 1). Settled in this pass: the 2026-10-24 planning document is annotated after its drafted block, and product 07 §Operator-opened planning pass item 5 records the rule. Reopen when an instance pass again records a drafted block's sentence as the operator's rule.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-10-28 pass: the 2026-10-24 planning document is annotated after its drafted block, and product 07's Operator-opened planning pass item 5 records that a session-drafted paste block carries the session's authority only, whatever its grammatical person.",
+          "reopenWhen": "An instance pass again records a drafted block's sentence as the operator's rule.",
+          "targets": [],
+          "at": "2026-10-28T14:03:38.182Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-8fb144fabed2b84d",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-target-write-blocker-the-journal-question-and-the-forks-two-blocks-recorded-2026-10-28::68be5cad5b5887f1a29a74a028d5c9f1711587582acc6c8090345a5d9fb30839",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "20a361c7d14c89e73536239a11381205c777695f75ea87e3c1c943a183002981",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-target-write-blocker-the-journal-question-and-the-forks-two-blocks-recorded-2026-10-28",
+          "title": "Keeping worktrees fourteen to thirty days before automatic removal",
+          "summary": "4. **Keeping worktrees fourteen to thirty days before automatic removal** (the operator's question of 2026-10-28). Declined as the unit, with the concern filed as WO-237 on the journals: a worktree on this machine is 1.3 GB (the fork's target) to 2.1 GB (WO-192's, of which 1.1 GB is the gate's `runner/` captures), the captures already carry retention classes, and WO-233 was filed on the operator's direction to stop that residue; the information the fork's executor lacked is the session journals, 368 KB in WO-192's worktree and 604 KB in the fork's WO-019 launchpad, which release close removes with the directory and which `plan failures` never reads for a closed order. Reopen when the operato",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined as the unit by the 2026-10-28 pass, with the concern filed as WO-237 on the journals: a worktree on this machine is 1.3 to 2.1 GB of regenerable gate captures, build output and installed packages that already carry retention classes, and WO-233 was filed on the operator's direction to stop that residue; the information the fork's executor lacked is the session journals (hundreds of kilobytes), which release close removes with the directory and planning never reads for a closed order. WO-237 keeps them thirty days under a class the prune judges.",
+          "reopenWhen": "The operator directs the worktree unit after reading WO-237, or a retained journal lane cannot answer a question only the removed worktree could have.",
+          "targets": [],
+          "at": "2026-10-28T14:03:37.867Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-552421f436626033",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-target-write-blocker-the-journal-question-and-the-forks-two-blocks-recorded-2026-10-28::8261f7481ca217b4e8e761ad7a8ab0e05c2b0943512e9e2918407dd270127f55",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "765837a1652d392a9cdbf456478abdbed446b767c2b3f6b7f3e5a4e797b8acbe",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-target-write-blocker-the-journal-question-and-the-forks-two-blocks-recorded-2026-10-28",
+          "title": "The refutation receipt as a form filled to length",
+          "summary": "10. **The refutation receipt as a form filled to length** (item 4 of 2026-10-26). Allocated to WO-088 as a carry-in on its catalog row: the protocol's per-order text fields and the receipt renderer are that order's subsystem. Reopen when WO-088 activates, or when the operator directs it earlier.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-28 pass to WO-088 as a carry-in on its catalog row: the refutation protocol's per-order text fields and the receipt renderer are that order's subsystem (planning documents as checked contracts). The three asks (a carried order as a reference, a structured per-trap judgment, unchanged fields by reference) are recorded there.",
+          "reopenWhen": "WO-088 activates, whose activating pass writes the carry-in into the order; or the operator directs it earlier.",
+          "targets": [
+            "WO-088"
+          ],
+          "at": "2026-10-28T14:03:38.501Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-bcaaa8a0be02f59e",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-target-write-blocker-the-journal-question-and-the-forks-two-blocks-recorded-2026-10-28::8fb305ff60ead01bb4fdc6f87247a2077726b07fbbfea8801af1fb9841a702ce",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "f72117389143dc0cdffe1e3c4dbeb45b89a07dc2a00ac9f7fc5dd1870320fc38",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-target-write-blocker-the-journal-question-and-the-forks-two-blocks-recorded-2026-10-28",
+          "title": "The entry readings' failures.",
+          "summary": "15. **The entry readings' failures.** WO-233's four failed verifications and four repairs since receipt 056 are closed with WO-233 (v0.100.0, its decisions); its 31 failed local gate rows are the churn WO-233 was filed to stop, measured on itself; FUP-0126's needs-review status is re-disposed below (product 12 unchanged by this pass; WO-083 queued). Nothing routes to a new order. Reopen when a post-WO-233 close records the same gate churn.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-10-28 pass: WO-233's four failed verifications and four repairs since receipt 056 are closed with WO-233 (v0.100.0) and its 31 failed local gate rows are the churn it was filed to stop, measured on itself; FUP-0126 is re-disposed. Nothing routes to a new order.",
+          "reopenWhen": "A close after WO-233 records the same gate churn.",
+          "targets": [],
+          "at": "2026-10-28T14:03:39.018Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-b44117f7b047e976",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-target-write-blocker-the-journal-question-and-the-forks-two-blocks-recorded-2026-10-28::9a217e0149cab4204265c61bd873e26d4934224f9e5507f7be8a18f9a3179621",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "cafc8793393f8595e7c227f7dc01ff91c96a413fbc176a64a8f32b71c0e3a350",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-target-write-blocker-the-journal-question-and-the-forks-two-blocks-recorded-2026-10-28",
+          "title": "The update preview lists instance files seeded from a changed kit template",
+          "summary": "6. **The update preview lists instance files seeded from a changed kit template** (item 2). Allocated to WO-207 as a carry-in on its catalog row (its scope is the instance's update control: the log, the retained copies, the instance actions). Reopen when WO-207 activates, or when an instance that edited a seeded file misses a carrier a release named.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-10-28 pass to WO-207 as a carry-in on its catalog row: the instance's update control (the log, the retained copies, the instance actions) is where the preview lists an instance file seeded from a changed kit template, or update --finish reports the drift. A convenience; the fork continues.",
+          "reopenWhen": "WO-207 activates, whose activating pass writes the carry-in into the order; or an instance that edited a seeded file misses a carrier a release named.",
+          "targets": [
+            "WO-207"
+          ],
+          "at": "2026-10-28T14:03:38.076Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-4aad33559d1d2d75",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-target-write-blocker-the-journal-question-and-the-forks-two-blocks-recorded-2026-10-28::ae610b9f646ea43538ff9c33a53b642912722dd05dd2b350485b374710b3b1e0",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "6aed3dd9a037f7743e886cf6ec09066b9e84ac02fa34923eed8b45af19916b99",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-target-write-blocker-the-journal-question-and-the-forks-two-blocks-recorded-2026-10-28",
+          "title": "An operator-root grant per order, written beside the publication grant in grants.json",
+          "summary": "1. **An operator-root grant per order, written beside the publication grant in `grants.json`** (the fork's route 1). Declined: `grants.json` is publication authority read by the publish admission (`harness-host.ts` 1920 to 1930) and feeds no outside-write grant; an `operator-root` kind is admitted only through a provenance-bearing authority grant compiled into the loadout (`packages/compiler/src/harness.ts` 395 to 407), so the route needs a loadout change and an emit per order and bakes one order's path into the manifest. WO-236 resolves the root from the registry instead. Reopen when an instance needs a standing outside root that no registry row describes.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined by the 2026-10-28 pass: grants.json is publication authority read by the publish admission and feeds no outside-write grant; an operator-root kind is admitted only through a provenance-bearing authority grant compiled into the loadout, so the route needs a loadout change and an emit per order and bakes one order's path into the manifest. WO-236 resolves the root from the instance's own registry at every judged write instead.",
+          "reopenWhen": "An instance needs a standing outside root that no registry row describes.",
+          "targets": [],
+          "at": "2026-10-28T14:03:37.547Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-26f3950b44d6cfe8",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-target-write-blocker-the-journal-question-and-the-forks-two-blocks-recorded-2026-10-28::b0e83c130f38466d70f20be5e67bd6e7f3c5c5a09adc9b68f1b297580a415c52",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "bfd2f217465263cf8f53acb60b8e85ad13aa87d5d0ef9f1af502cf6f44d240e4",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-target-write-blocker-the-journal-question-and-the-forks-two-blocks-recorded-2026-10-28",
+          "title": "WO-235's field case",
+          "summary": "12. **WO-235's field case** (item 4b). Recorded on WO-235's catalog row; nothing to decide. Reopen when WO-235's ledger shape cannot carry an `ideation:` message's dispositions as the case did.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Recorded by the 2026-10-28 pass on WO-235's catalog row as a field case for the direction ledger; nothing to decide.",
+          "reopenWhen": "WO-235's ledger shape cannot carry an ideation message's dispositions as the case did.",
+          "targets": [],
+          "at": "2026-10-28T14:03:38.709Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-eb0985a7a2a61b60",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-target-write-blocker-the-journal-question-and-the-forks-two-blocks-recorded-2026-10-28::bded0065dea96cf64e3ab75e19d7c46b1e00cb4b0fbe6189e40bf85118ffb890",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "741ceb66d0d76c2dc738a1026baa21db6ffdb053ec98ab4e237b91348d58b503",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-target-write-blocker-the-journal-question-and-the-forks-two-blocks-recorded-2026-10-28",
+          "title": "Granting the verifier and reviewer roles the target worktree too.",
+          "summary": "3. **Granting the verifier and reviewer roles the target worktree too.** Declined: they read the target and run its declared gate, whose program effects the hook does not judge (the fifth refusal judges literal destinations), and the fork asked for the executor only. Reopen when a verifier's or reviewer's `Write` or `Edit` into a target is refused and the verification or review needed it.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined by the 2026-10-28 pass: the verifier and reviewer read the target and run its declared gate, whose program effects the hook does not judge (the fifth refusal judges literal destinations), and the fork asked for the executor only.",
+          "reopenWhen": "A verifier's or reviewer's Write or Edit into a target is refused and the verification or review needed it.",
+          "targets": [],
+          "at": "2026-10-28T14:03:37.760Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-9a4929e4a041875f",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-forks-target-write-blocker-the-journal-question-and-the-forks-two-blocks-recorded-2026-10-28::eb19d7f0f438e89042f92bbb456dc3ab26067f648e53eed856ada690613f6332",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "399cb7a3c9ae424420207328676889dee4a74f22d8cda5e4a72fc70fa482fad1",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-target-write-blocker-the-journal-question-and-the-forks-two-blocks-recorded-2026-10-28",
+          "title": "The draft publish's observability at verification-result pass",
+          "summary": "9. **The draft publish's observability at `verification-result pass`** (item 3 of 2026-10-26). Deferred: the draft form is opt-in and core declares no draft step and no actor (`target-publish.mjs` 995 to 1000), so the verification-result briefing names no publish; the fork's orders name the verifier's session as the one that runs it. Printing the draft command in that briefing, or refusing the event until a draft head is recorded, is the next edit of `resume.mjs`'s verification-result case on a target order. Reopen when the operator directs it, or when a second verified target order passes with no draft head and no CI run before final review.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-10-28 pass: the draft form is opt-in and core declares no draft step and no actor, so the verification-result briefing names no publish; the fork's orders name the verifier's session as the one that runs it. Printing the draft command in that briefing, or refusing the event until a draft head is recorded, is the next edit of the verification-result case on a target order.",
+          "reopenWhen": "The operator directs it, or a second verified target order passes with no draft head and no CI run before final review.",
+          "targets": [],
+          "at": "2026-10-28T14:03:38.392Z"
         }
       ]
     }
