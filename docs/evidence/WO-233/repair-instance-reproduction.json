@@ -1,0 +1,61 @@
+{
+  "command": "node scripts/harness.mjs bounded -- npm test -- --only instance-history",
+  "exitCode": 1,
+  "evidenceRef": "host-gate:62796646dc82a32512e1b3b91dccb5b2f3f49da53a55c9844c3c5edec953a160:instance-history",
+  "recordedAt": "2026-10-27T15:06:29.375Z",
+  "durationMs": 67953,
+  "temporaryGateId": "a35bb44d-6b14-4528-8492-a5173cf23949",
+  "candidate": {
+    "kind": "temporary-root",
+    "class": "coordination",
+    "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-fixture-temporary-65dcjS/dotln-writer-transition-501",
+    "bytes": 593,
+    "ownerAlive": false,
+    "source": "Focused assertion output before the enclosing gate completed"
+  },
+  "ownerAfterFailure": {
+    "schemaVersion": 1,
+    "token": "9f634f21-e08f-4833-8bf1-9678188143a3",
+    "class": "coordination",
+    "owner": {
+      "pid": 20030,
+      "birth": "1793113562.958631",
+      "gateId": "217b73c5-df22-4e23-8ba0-811eec030725",
+      "suite": "configuration-root",
+      "repository": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-fixture-temporary-65dcjS/dotln-instance-history-XkNdUX/instance"
+    },
+    "createdAt": "2026-10-27T15:06:03.207Z",
+    "retentionHours": 24,
+    "device": 16777233,
+    "inode": 765645725,
+    "fixtureOwner": {
+      "token": "3167bb25-451c-4abb-ab4c-8caf6aa97c97",
+      "gateId": "a35bb44d-6b14-4528-8492-a5173cf23949",
+      "suite": "instance-history"
+    },
+    "endedAt": "2026-10-27T15:06:28.675Z",
+    "endSource": "completion",
+    "outcome": "failed"
+  },
+  "containerAfterFailure": {
+    "schemaVersion": 1,
+    "token": "3167bb25-451c-4abb-ab4c-8caf6aa97c97",
+    "class": "gate-fixture",
+    "owner": {
+      "pid": 8322,
+      "birth": "1793113537.424229",
+      "gateId": "a35bb44d-6b14-4528-8492-a5173cf23949",
+      "suite": "instance-history",
+      "repository": "<worktree>"
+    },
+    "createdAt": "2026-10-27T15:05:37.481Z",
+    "retentionHours": 24,
+    "device": 16777233,
+    "inode": 765631434,
+    "endedAt": "2026-10-27T15:06:28.794Z",
+    "endSource": "completion",
+    "outcome": "failed"
+  },
+  "outputRef": "docs/control/local/harness/check-output/af0515ea1a3b632aaa7b15d682cf1ce40a23a7b28c14d65879069069acd9ff93.log",
+  "pathNormalization": "The current checkout absolute path is rendered as <worktree>; observations, owner tokens and filesystem identities are unchanged."
+}

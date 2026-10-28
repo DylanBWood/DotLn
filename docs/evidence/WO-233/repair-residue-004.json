@@ -1,0 +1,954 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-27T13:45:45.768Z",
+  "apply": false,
+  "diagnosis": true,
+  "rule": "Only recorded passed fixtures with dead creators are recovered. Copied markers require a matching immutable Git blob or duplicate bytes tied to the containing fixture token. General invalid-record refusal is unchanged.",
+  "roots": [
+    {
+      "root": "dotln-entropy-fixtures-LC7Cf3",
+      "token": "63f75592-8992-4254-b2b5-226be81b07f0",
+      "sha256": "2a7d434e73a6ec3ed71bfc8209151ade36b1734c4695f845cfbf3f75bff5a403",
+      "device": 16777233,
+      "inode": 752617325,
+      "gateId": "761c7a01-c073-4aae-b9dc-8ba4117a2fa1",
+      "suite": "plan-refutation",
+      "copies": [
+        {
+          "path": "main-checkout",
+          "sha256": "9b2506daa7b2a44304a8890cb67ee5d232330ae9a6652f94960f0c399c7de15f",
+          "token": "48f895f4-48ba-42f8-ac35-e4e2684cf5e5",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "48157a92520d3261245ceaa2cad5c2bbb65ffc69"
+          }
+        },
+        {
+          "path": "secondary",
+          "sha256": "9b2506daa7b2a44304a8890cb67ee5d232330ae9a6652f94960f0c399c7de15f",
+          "token": "48f895f4-48ba-42f8-ac35-e4e2684cf5e5",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "48157a92520d3261245ceaa2cad5c2bbb65ffc69"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 1923986
+    },
+    {
+      "root": "dotln-fixture-temporary-3sHpVT",
+      "token": "02e566e3-0645-4813-8693-ebd66de17551",
+      "sha256": "c0c3f57d5e881d8a16df3c3e7ee122859b584258945c1a278fba25eb146c9060",
+      "device": 16777233,
+      "inode": 750803555,
+      "gateId": "b59b8fda-c3f3-4cf4-9c7d-9cb4ab8ea233",
+      "suite": "harness-fixtures",
+      "copies": [
+        {
+          "path": "dotln-grant-kinds-u74LCw/linked",
+          "sha256": "aa1f4e1a30cf8d300e11074a38eaa3f85328a0f2e0ecea9085e28ab0969f9b8f",
+          "token": "54ea52c7-db46-4e1e-9ab5-1e9fe89a990d",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "06f1a7abbf441e2ecdd554dc6c92d830db4ac44c"
+          }
+        },
+        {
+          "path": "dotln-harness-test-C17fh2/sibling",
+          "sha256": "038263785f4cf24d03038447362717816f313890fa9dc49fd80e4237c0ef99e5",
+          "token": "0c6e353d-625c-4471-a768-c4be180f8102",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "42a2d2e1193a83894416747ee854e4923a5dc5ab"
+          }
+        },
+        {
+          "path": "dotln-harness-test-W9y5Lu/docs/control/local/linked-main",
+          "sha256": "c08f43faf6c8c78cc39b7cbd799d24ee83019fc0ca9f51943be50b47691c65c5",
+          "token": "07488c8b-1d05-47e1-a2d0-66ef70200dd6",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "8aa321f49a0e3835699a95d7ad87aac19cc6775a"
+          }
+        },
+        {
+          "path": "dotln-harness-test-ugGkp0/sibling",
+          "sha256": "7334129267cbb6a262e8abb4eeaa521a8588d586f679a7ab986726d008820512",
+          "token": "a8527151-c319-4343-a2d0-3412d9bc0070",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "41f83eb8e273471d6f1f1c54a98adf370dc71563"
+          }
+        },
+        {
+          "path": "dotln-temporary-roots-test-tanDBK/blocked",
+          "sha256": "28fca28ef02d08bd61931c03999b7a5b822392132867682e88b2db492ee9f087",
+          "token": "60bb03a1-e9fc-4890-8b73-7ca242261eef",
+          "proof": {
+            "kind": "empty-malformed-control",
+            "registrationToken": "60bb03a1-e9fc-4890-8b73-7ca242261eef",
+            "source": "scripts/test-temporary-roots.mjs"
+          }
+        },
+        {
+          "path": "dotln-temporary-roots-test-tanDBK/unrelated",
+          "sha256": "28fca28ef02d08bd61931c03999b7a5b822392132867682e88b2db492ee9f087",
+          "token": "d90fb3a0-ee20-45d1-a4e4-1b9e09cd12a9",
+          "proof": {
+            "kind": "empty-malformed-control",
+            "registrationToken": "d90fb3a0-ee20-45d1-a4e4-1b9e09cd12a9",
+            "source": "scripts/test-temporary-roots.mjs"
+          }
+        },
+        {
+          "path": "dotln-wo221-target-i5Y1B2/main-checkout",
+          "sha256": "0699a7ba36cc943866e6ce2334c0988114afa45c07e79fc26c0a41a841180c1f",
+          "token": "8247fc44-1d3a-4859-b1c3-46d05641efec",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "1f97a1097cfbb12331ad6c999245cdcf9522d85a"
+          }
+        }
+      ],
+      "migrations": [
+        {
+          "path": "dotln/2ecf9208b052ad26d41394ada252d0eb3faa9e2ccedbe3ca489744a85ff33624/scratch",
+          "sha256": "adc5e8fea302e2ab34c3531e84a0f8e56610c38bf914d714e2003b9de4a18b64",
+          "token": "6a533278-146a-4b74-aa03-e6d89682c9a1"
+        },
+        {
+          "path": "dotln/3f9848bb36cfd6beeacd61b4182ef29053cd7fb3f061660a41927cf935ce8a35/scratch",
+          "sha256": "0708aec6695f45575280e1f6c1b68b9df8b9689ee9afd15914bce2b3d20e4eb2",
+          "token": "4a3b7fd6-63ff-48f7-b0c3-f74161bbff76"
+        },
+        {
+          "path": "dotln/65f97367238c83eab6818a4900f218b82e1c7d96316cdb8dad9609d6c3a34f03/scratch",
+          "sha256": "12ef2034ac51b31e3f5979b4264979b6a5bc2870f796e739125067eaea7b0517",
+          "token": "a14e03ab-6bf7-4c30-8447-b4553cf608d6"
+        },
+        {
+          "path": "dotln/6e812ca70d50da473093cc642dce15097523e1d4f9761fe1c9cf8ce1818f21ef/scratch",
+          "sha256": "8b01b2450c12a01d6beeb91cff207c6e97dc9e3de3aac9e0be242d9c4e8b5841",
+          "token": "e3b9c4e7-7452-46e5-9889-7e1ea26dd762"
+        },
+        {
+          "path": "dotln/a6dc8b1e16ff57c6fde4d4a28101f3a902b6d8e6ed96c1249bc9d97ed27ebc5c/scratch",
+          "sha256": "4a7b65d9c1b6ec2346d24948514ca35ba8c2e17fedde7451df23d203ab55a467",
+          "token": "3c413695-54f7-43b6-bc5c-86e30c4a2c02"
+        },
+        {
+          "path": "dotln/ba6d0cae54639c1ef584c8910334c0efa99ce2de95886075de34a7e943bc317f/scratch",
+          "sha256": "2d25d3d4fcb5d8f9dee297ce2cad8f1d8426348ff00bf35d0cbc798a16251470",
+          "token": "8dcb76ee-1eca-4cb1-8f50-96d61208be13"
+        },
+        {
+          "path": "dotln/c8462315c9a7e5a4901034b3643d119cc92c239f5b6b2ed3fb9bb45878b3f86d/scratch",
+          "sha256": "17a4468bedfbf2f79a6ba9dacfd291519a13168dc611e33cfa89ac809215bf89",
+          "token": "e08287ae-e1bb-48c4-a743-89b9a4e62ec1"
+        },
+        {
+          "path": "dotln/d00887833a064e3e39a9e969d3b9e5c30440377c437629ead30863c4c75e2057/scratch",
+          "sha256": "f596dc845cd561beb72eb6921601e3ca638e33d6e9feafa909cf0ebad1395aab",
+          "token": "49c11c38-28cd-4ccc-b0f1-86250618cfbd"
+        },
+        {
+          "path": "dotln/d380d779cdfb9cb6c2aef038cb01433fd059376a0ee40922b75364281d0757e1/scratch",
+          "sha256": "be70624c01f2156abeca5e461785fb760d7c4ac1f38131a6ea2067c2fda2704a",
+          "token": "0fb3ac2f-4f1f-4cbd-909f-8cc8c52c240e"
+        },
+        {
+          "path": "dotln-harness-test-A4KcQ3/session-scratch",
+          "sha256": "8527e9561715c7bd750e8b3aec21eca3ec637a7e673e1ef1ef8a13ad9228084a",
+          "token": "6a0560ae-e453-4161-a6f5-73c53657f650"
+        },
+        {
+          "path": "dotln-harness-test-A4KcQ3/sibling-scratch",
+          "sha256": "d2fb9e798e02fd78573355205e47fa6dcdaaa35c60dd09c74f3bd26970065f42",
+          "token": "20925494-4647-42d8-bf1b-ef7df76da119"
+        },
+        {
+          "path": "dotln-temporary-roots-test-3o8bGY/roots/orphan-f6kFVU",
+          "sha256": "b8e59769705aa4d51f163491548f8dd6e99503c5be93c115b4a586a96a8be397",
+          "token": "8d3dfebe-83f5-4bdf-b28c-d3035442e843"
+        },
+        {
+          "path": "dotln-temporary-roots-test-AIMa7c/roots/sibling-root-5P6udR",
+          "sha256": "c5e12de7211301fd75cd2c0af20b09e5f382530c986b8fe75f5adb651334200d",
+          "token": "9dd2fb6b-8e13-42cd-aff9-a3d40e8ba4b2"
+        },
+        {
+          "path": "dotln-temporary-roots-test-BT8Nvy/roots/owner-4CbDqM",
+          "sha256": "fc7e0deac44c24c7b3a6e5f27cf49a4c689de4c56525b7097f4f289bbf7c0d10",
+          "token": "4a35bac1-5eb6-4ae7-b2fc-69cd2c4cc6b8"
+        },
+        {
+          "path": "dotln-temporary-roots-test-BsmAlK/roots/promoted-parent-s7JfuI",
+          "sha256": "17ba34da6994fd61ba635b29b7d0999e60e7f838dd469ce78b06843b948136f4",
+          "token": "c184c839-8608-471d-8145-ea00ce571adf"
+        },
+        {
+          "path": "dotln-temporary-roots-test-H0AVFE/roots/failed-2W4AT2",
+          "sha256": "e3171237a892e1b5e58c43fd2b2229a152d0eb74f866cc30460e8db192532b07",
+          "token": "d729c0ed-5720-43ab-9d7a-f638f4b8b966"
+        },
+        {
+          "path": "dotln-temporary-roots-test-MCCxwa/roots/parent-1FslZP",
+          "sha256": "63c97cd4162e1c7ed25f29837a6f9f03986a7cf75483534f7092432c11d56592",
+          "token": "ed0b85c0-59f4-4214-a3fa-709a578f6e6b"
+        },
+        {
+          "path": "dotln-temporary-roots-test-MCCxwa/roots/parent-1FslZP/child-rDZPRp",
+          "sha256": "ed81bc1af64243525183d3ca9386b878d858df50777be873db55e7b481d95cf0",
+          "token": "28948f33-4db4-4e8c-94bb-cbe7230071c1"
+        },
+        {
+          "path": "dotln-temporary-roots-test-NGc7IV/live",
+          "sha256": "e2ca016623044fba8a5bf53ae1600552fe43ab99daab43b1ae3bbd506739ad41",
+          "token": "d0675fc8-7e61-4a2b-bbb5-14924169c485"
+        },
+        {
+          "path": "dotln-temporary-roots-test-NGc7IV/sibling",
+          "sha256": "f69d086789c28e88797494930c8540d7553d26c99197dabf0f4029ef5eb6f32a",
+          "token": "d2ec4a8c-2d80-47cb-8caf-84c64db0fe03"
+        },
+        {
+          "path": "dotln-temporary-roots-test-R8zP7Y/roots/warm-C7eZGu",
+          "sha256": "3d80c47562846f5606cf2dcd443034d9712b9e03c29b13aa8018f0b01eedf487",
+          "token": "109f2148-004d-48f9-980b-3ff4ff8526a9"
+        },
+        {
+          "path": "dotln-temporary-roots-test-RGJFh0/roots/forever-5VVXI8",
+          "sha256": "855725c25267ff2db911b86f9f6ad535c2e9fb7f96ba6ea61ccd0d2ba39c7dec",
+          "token": "d01e98c2-5e71-4c7c-bd6f-9d2883f1acb4"
+        },
+        {
+          "path": "dotln-temporary-roots-test-keixP3/roots/readonly-wHBi8i",
+          "sha256": "9cef5ac11af51ae4eb05f59aaa08c9912e2ec73162df626393cb9b41c4852615",
+          "token": "e681249e-a6c3-4ca7-92a5-c5a9504d1a7b"
+        },
+        {
+          "path": "dotln-writer-transition-501",
+          "sha256": "929ec0fe48fe345c6cbbfa0d6f6df01451dc8b98ec76b540c547907c61e7f5e3",
+          "token": "eb46cc17-3b7b-4a1d-ba99-55bd21bac28f"
+        }
+      ],
+      "disposals": [],
+      "bytes": 1237695370
+    },
+    {
+      "root": "dotln-fixture-temporary-IProBS",
+      "token": "834c7b7a-6328-4237-b9ca-11ed64da58f3",
+      "sha256": "14fd2b32846e2b092d8ca82d63bd37c5711a49b2c7b0d0a39c4cd3a9996f7b7c",
+      "device": 16777233,
+      "inode": 751528847,
+      "gateId": "761c7a01-c073-4aae-b9dc-8ba4117a2fa1",
+      "suite": "process-debt",
+      "copies": [
+        {
+          "path": "dotln-debt-09IvK2/vendor/sub",
+          "sha256": "30f2d369e47f7b82c8a783271e8a56cc98379ce463ed560914a4fd007c567100",
+          "token": "72725110-f1cb-4cdc-a581-e2fbfef8413a",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "124a9e479dc336f9aa151ecc2dc010101f791713"
+          }
+        },
+        {
+          "path": "dotln-document-base-oxkQnH/subject",
+          "sha256": "b150afab4ce4e05e15ddcb031b8fa4d2282f1b616d8087280e059ad3a212f931",
+          "token": "946c9602-5167-4871-864c-31d8abe4a313",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "e69645b72be03ca1db43e0239a7b4bb245eb146a"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 941731384
+    },
+    {
+      "root": "dotln-fixture-temporary-yv90KE",
+      "token": "4d2db5e8-a3bc-49c0-841e-abd1362ce05e",
+      "sha256": "595ea052ee7078a92cef661e5be4c037bf842a9d24ea8e332efb4137018c11cf",
+      "device": 16777233,
+      "inode": 751147177,
+      "gateId": "761c7a01-c073-4aae-b9dc-8ba4117a2fa1",
+      "suite": "harness-fixtures",
+      "copies": [
+        {
+          "path": "dotln-grant-kinds-hL7Qhw/linked",
+          "sha256": "43096f0195b767e65bafe75ef5d47ebd6c8e233f276a507be3bb031ea42af505",
+          "token": "7ef76f8e-f529-48e8-b440-906ecaa46c49",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "2f15afcc375522d599ef8716920a0d9f31192a3e"
+          }
+        },
+        {
+          "path": "dotln-harness-test-BzmSZp/sibling",
+          "sha256": "288854ca094cffc56f28e3b58e979e45ede80c81cef9e8170bbed087268cae9d",
+          "token": "41e15461-7ee2-467b-80e0-41d85a2ff1d5",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "d4b37bf7c521ce2047be6ec6eb7ef71d2e73e044"
+          }
+        },
+        {
+          "path": "dotln-harness-test-KbzzmF/docs/control/local/linked-main",
+          "sha256": "9a9df48c287251053212ceb948dea1d89900cf3e91015e6ad37a9a7e52ed3b14",
+          "token": "d52f60f0-8652-462c-97ba-15762ec6c861",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "435c901e611a2fc013f70d9b8f697047f11a9f3c"
+          }
+        },
+        {
+          "path": "dotln-harness-test-dFvQsa/sibling",
+          "sha256": "b41fe2c13cac9841ed2d0b8fa7e0f0f1f035ba90e60022d1c5282eea3900b0b5",
+          "token": "3a524c69-a79b-4908-bf28-8382a3d2153f",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "176753355312c0abe0326eba8ba588c7fddf1145"
+          }
+        },
+        {
+          "path": "dotln-temporary-roots-test-BvfEei/roots/copied-roUmeA",
+          "sha256": "6479f4ccdc2ce4e9b1824391df9297e19a0c4adf38b5446ab60d7827eaa3cb94",
+          "token": "6883cf44-7d06-4702-b67a-37b61b6b02b8",
+          "proof": {
+            "kind": "empty-copy-control",
+            "registrationToken": "6883cf44-7d06-4702-b67a-37b61b6b02b8",
+            "source": "scripts/test-temporary-roots.mjs",
+            "sourcePath": "dotln-temporary-roots-test-BvfEei/roots/forever-zjSbiB"
+          }
+        },
+        {
+          "path": "dotln-temporary-roots-test-SlZXV2/blocked",
+          "sha256": "28fca28ef02d08bd61931c03999b7a5b822392132867682e88b2db492ee9f087",
+          "token": "3553de1e-66c1-4e3f-8f5f-70865fc4655e",
+          "proof": {
+            "kind": "empty-malformed-control",
+            "registrationToken": "3553de1e-66c1-4e3f-8f5f-70865fc4655e",
+            "source": "scripts/test-temporary-roots.mjs"
+          }
+        },
+        {
+          "path": "dotln-temporary-roots-test-SlZXV2/unrelated",
+          "sha256": "28fca28ef02d08bd61931c03999b7a5b822392132867682e88b2db492ee9f087",
+          "token": "7cf80a0d-c592-4325-bd30-61beb2b077b7",
+          "proof": {
+            "kind": "empty-malformed-control",
+            "registrationToken": "7cf80a0d-c592-4325-bd30-61beb2b077b7",
+            "source": "scripts/test-temporary-roots.mjs"
+          }
+        },
+        {
+          "path": "dotln-wo221-target-z94pxK/main-checkout",
+          "sha256": "fecf701e98f2ea2b12181ee14fa526de2e8170d62142ccfe73cd1b612352b243",
+          "token": "51b4ea28-32c3-4970-9e39-8a5deead970f",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "80baa46bb99234f07181972378b8abe71efb6cac"
+          }
+        }
+      ],
+      "migrations": [
+        {
+          "path": "dotln-temporary-roots-test-F8DA7I/roots/owner-HND1Vk",
+          "sha256": "4b396356aa0b5d58aad6294c3660db4df624e4917725113ed1c092aa1e0072f4",
+          "token": "305613c5-75e9-4c96-835f-bd577f391c9d"
+        },
+        {
+          "path": "dotln-temporary-roots-test-HT2tpX/roots/failed-CQKmDt",
+          "sha256": "530d4d07fcd5fbccc87b74d752db62ceb89729c30f0201c45a21972cad6c4a62",
+          "token": "ceb6280a-6d43-4de2-b0e1-85a535e40d13"
+        },
+        {
+          "path": "dotln-temporary-roots-test-Iie0wN/roots/sibling-root-TUzwza",
+          "sha256": "63e1d329fa2f7869285d0e73a2117f84bad63d94b359b69cc33eeaa78e9ea383",
+          "token": "8782dad2-e686-43cb-abf6-5c08f7fef177"
+        },
+        {
+          "path": "dotln-temporary-roots-test-ULtYAm/roots/parent-ZD84cB",
+          "sha256": "696ecbf1a00319da372eab30e4a94641272a9f12937e7990f01a34248e92d841",
+          "token": "9db7a8e4-54ae-4886-9629-f334a24e5e11"
+        },
+        {
+          "path": "dotln-temporary-roots-test-ULtYAm/roots/parent-ZD84cB/child-b1B96L",
+          "sha256": "aea7e13d9113f4ba5816bbe0ffad005ff387e5644a2732b81458ee419a5b26f3",
+          "token": "0ed2d391-8742-4ba0-894f-3b0a4b9212f1"
+        },
+        {
+          "path": "dotln-temporary-roots-test-UukiYS/roots/warm-Nz2aRh",
+          "sha256": "a2bae42cb1ddd932350f4314f79d7754f30e0042151788b7bccbb66d83de940d",
+          "token": "b3be4254-cf22-47aa-9c00-3df2ca263d16"
+        },
+        {
+          "path": "dotln-temporary-roots-test-V825UF/roots/recovery-parent-HIKVul",
+          "sha256": "fceefdafd7d7da0a79dfdc140ac5caee276093cf86a3adb36e49e8d1fa516988",
+          "token": "1dc9e3c9-a707-461f-80e8-2c749c0d9c69"
+        },
+        {
+          "path": "dotln-temporary-roots-test-V825UF/roots/recovery-parent-HIKVul/disposable-BL9YKd",
+          "sha256": "9dba43512e1c436d5796212ccbd5059c17f2504fed4efa6743583980c10a86f2",
+          "token": "f7be54c5-9989-40d7-983f-c106f7fe67d0"
+        },
+        {
+          "path": "dotln-temporary-roots-test-e5Wbge/roots/promoted-parent-KS4jsg",
+          "sha256": "26df9d4e2e1b7b697a9458928bb9d53f7e35464bc42dd8cf97f8f4a6042d62e1",
+          "token": "93116cca-9c41-4506-8837-8abcad58cae0"
+        },
+        {
+          "path": "dotln-temporary-roots-test-r7pXjh/roots/warm-pJz6Fy",
+          "sha256": "f7864c5cf5d9ce673fb3c02ce42a0e43331fa89396ea7b0521a2241db5bde800",
+          "token": "2aac5309-b640-4530-8238-714200800938"
+        }
+      ],
+      "disposals": [
+        {
+          "path": "dotln-temporary-roots-test-BvfEei/roots/forever-zjSbiB",
+          "sha256": "6479f4ccdc2ce4e9b1824391df9297e19a0c4adf38b5446ab60d7827eaa3cb94",
+          "token": "d4a9b306-0428-4595-894e-d262ecf59a5c",
+          "proof": "explicit teardown of an empty, source-identified null-retention test control"
+        },
+        {
+          "path": "dotln-temporary-roots-test-V825UF/roots/recovery-parent-HIKVul/forever-9aQYwL",
+          "sha256": "3ff9c4426d45e32df3be44b3b833cc35e5dcfd54472d398cd6e4cde26dc8d691",
+          "token": "3251bb1b-f436-423d-9363-216fdda9c026",
+          "proof": "explicit teardown of an empty, source-identified null-retention test control"
+        },
+        {
+          "path": "dotln-temporary-roots-test-V825UF/roots/recovery-parent-HIKVul/scratch-WLBpeq",
+          "sha256": "b70f4ea26f65a1bb70a48238b63b53410a96d337ed6ca28484bfc8f634cb17f8",
+          "token": "dbd56418-c5ca-4b5e-b423-a2430b8e9335",
+          "proof": "explicit teardown of an empty, source-identified null-retention test control"
+        }
+      ],
+      "bytes": 1230500772
+    },
+    {
+      "root": "review-G4oaE2",
+      "token": "028e3b09-26e2-4282-81b8-4ea8126ed9a0",
+      "sha256": "b36484cc874ceffdec9fba16fcd4ce70a4814ffc87b91d195ed26ba67947f7af",
+      "device": 16777233,
+      "inode": 752635169,
+      "gateId": "761c7a01-c073-4aae-b9dc-8ba4117a2fa1",
+      "suite": "plan-refutation",
+      "copies": [
+        {
+          "path": "repo",
+          "sha256": "89e3744ae84ed07a0569dd47bc8d08a131f9036f3b03eb9a962d014b6d86d5c9",
+          "token": "d3a86c58-37ee-431e-a573-4fa23569d614",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "da3d694c0721c7ebee8ee590deb9fc0a56138511"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 38005
+    },
+    {
+      "root": "review-5fYAzw",
+      "token": "9dbf5cc9-ef8f-4471-a8bb-e4a367709882",
+      "sha256": "ddd81ea7cfc09fe83e324607da9de99752682ba619742e3317ca2de5d0e0bbc2",
+      "device": 16777233,
+      "inode": 752639002,
+      "gateId": "761c7a01-c073-4aae-b9dc-8ba4117a2fa1",
+      "suite": "plan-refutation",
+      "copies": [
+        {
+          "path": "repo",
+          "sha256": "2db06de23b1bb99da5e5a956c2e036f6afd99870941e78faca2b64a99add2b82",
+          "token": "6d684f2b-9373-4247-8b14-19917e95a684",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "9d2ef5510a0e24b5c92c70f42f169635cbf75359"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 38006
+    },
+    {
+      "root": "review-8Yc6LM",
+      "token": "d7501704-3e2f-45ad-bc0d-16d32379c9d0",
+      "sha256": "72c31bfe16002fba4d1f5f28dfad3801e5d7f67b40e17151c75c87f2a61e8994",
+      "device": 16777233,
+      "inode": 752633251,
+      "gateId": "761c7a01-c073-4aae-b9dc-8ba4117a2fa1",
+      "suite": "plan-refutation",
+      "copies": [
+        {
+          "path": "repo",
+          "sha256": "5d900e667d1c507b289913b8c7463e14b70404e1d815bfe5dcf63558b668bac3",
+          "token": "f9923e06-1fa1-4c9f-acb7-743b7db274c9",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "39dc9b08e4d5a99a749ed01c3e4eee7f2303b5d9"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 38006
+    },
+    {
+      "root": "review-agaT6w",
+      "token": "b0e33549-8ee2-47e5-9588-61a97d2aa6f4",
+      "sha256": "24c85ce9f9164648337953340e922cf57f5926ad02098e890b74b63f59a19ce0",
+      "device": 16777233,
+      "inode": 752643016,
+      "gateId": "761c7a01-c073-4aae-b9dc-8ba4117a2fa1",
+      "suite": "plan-refutation",
+      "copies": [
+        {
+          "path": "repo",
+          "sha256": "12ad552761c42c12669db41fea622bf1f7be999ba0cf65eaf2ba74f8482d8a80",
+          "token": "ab5458f6-9442-49a7-a3dc-89734288b2a8",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "028d89767b6f54538b5813374ffcae90e5acfb08"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 38007
+    },
+    {
+      "root": "review-pyaW7I",
+      "token": "a74a5029-c4f2-4c66-98f5-3205c494c900",
+      "sha256": "76a4e66ff86acff06d1d2d8118519645c9d1c66cec16b4096fbcb81a838a1813",
+      "device": 16777233,
+      "inode": 752634199,
+      "gateId": "761c7a01-c073-4aae-b9dc-8ba4117a2fa1",
+      "suite": "plan-refutation",
+      "copies": [
+        {
+          "path": "repo",
+          "sha256": "b791ba7342653c36125601960636a416e6b20969eead26efe0ac1e474e1b2a14",
+          "token": "ba71d377-31ec-4b2e-aa58-661237693c41",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "eb4a597cc11e0325a06f860246502686095e6487"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 38005
+    },
+    {
+      "root": "review-ECMeVG",
+      "token": "90641aeb-b4f8-42ba-911d-6fa424fcfb09",
+      "sha256": "0756582057fe44bd6f97224e186216b5e046caa36114bedb91b7a86f338eb61d",
+      "device": 16777233,
+      "inode": 752634626,
+      "gateId": "761c7a01-c073-4aae-b9dc-8ba4117a2fa1",
+      "suite": "plan-refutation",
+      "copies": [
+        {
+          "path": "repo",
+          "sha256": "43870b2e968c676efca46432fef42528eba2718d88edcf944483ee8c6144db11",
+          "token": "f10f1e8c-603d-4a1b-8777-8af7c34d0057",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "ca10ef1a9dad9f6b306d3d47caa86d1089de8d00"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 38006
+    },
+    {
+      "root": "review-ekLQN8",
+      "token": "6ca372d4-b42b-41d4-a089-4101e053286b",
+      "sha256": "4286b780f039317afd6f6dcff0eadc15d945d2c9feae0b7058e61941cb000c78",
+      "device": 16777233,
+      "inode": 752640909,
+      "gateId": "761c7a01-c073-4aae-b9dc-8ba4117a2fa1",
+      "suite": "plan-refutation",
+      "copies": [
+        {
+          "path": "repo",
+          "sha256": "f2e5a277947a0532e5f64938016ec1dfce47b2332ba18674696c7357d8e69052",
+          "token": "d0794ed5-dc1d-4eda-b297-e8c31c545989",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "66217d591db45be79ff291e766a882e24ec3b3a9"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 43930
+    },
+    {
+      "root": "review-BeIf3D",
+      "token": "a505d36f-7306-42d0-8e34-033ef90c069f",
+      "sha256": "693de6d393f7d9f1d62cea7423dd6c4b7b505a4be84eea484c6e611f068507f3",
+      "device": 16777233,
+      "inode": 752641995,
+      "gateId": "761c7a01-c073-4aae-b9dc-8ba4117a2fa1",
+      "suite": "plan-refutation",
+      "copies": [
+        {
+          "path": "repo",
+          "sha256": "a6bd2fee54efc53ce180b2cf8f4c61c9ddf9224a778b23aadf6e661f54cbdc34",
+          "token": "4f45f3d4-f48d-4f4b-a787-de5d6f5dfb3b",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "41aaf2135b64f49ba845f7e43841e328155a215f"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 31140
+    },
+    {
+      "root": "review-PMznoJ",
+      "token": "6988b187-69ee-43cc-9dde-14d5f67ddef4",
+      "sha256": "7ff1c243dd00bbeeb8cc57ae97d6d03294688fd71bf49eb51a5227a3da4371a5",
+      "device": 16777233,
+      "inode": 752638379,
+      "gateId": "761c7a01-c073-4aae-b9dc-8ba4117a2fa1",
+      "suite": "plan-refutation",
+      "copies": [
+        {
+          "path": "repo",
+          "sha256": "b615310a257ae0776300a41d8e92724cbde9f1a2954f43b21419bb533cf71b43",
+          "token": "3e204bcc-b6f6-4c05-8c36-f84dc349266e",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "cfd4a6da334f7a23dfe5edd63fc745e224cc1676"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 38008
+    },
+    {
+      "root": "review-OqJv2d",
+      "token": "ec4d0896-1c0c-4180-80cd-67aef66129e7",
+      "sha256": "bb5a500f0d131e87163f5585c7c70144fec928cb8523145de3cc7b9f958e7beb",
+      "device": 16777233,
+      "inode": 752637204,
+      "gateId": "761c7a01-c073-4aae-b9dc-8ba4117a2fa1",
+      "suite": "plan-refutation",
+      "copies": [
+        {
+          "path": "repo",
+          "sha256": "41d96d1e111d7cfba62e4f355d533d575336c823c93465feca3328a809c3672c",
+          "token": "6603e558-414f-4326-bb26-b5e0de6dee88",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "937d4597821e2aac3255fb88f8b98a21f1521a49"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 38004
+    },
+    {
+      "root": "review-IVXEws",
+      "token": "005b1652-e79c-4107-8372-f4f2048fce8d",
+      "sha256": "98f6fc84a3388734ec228705a700d3adcd9ff9a94e51a93fe020aaf6f17a6efb",
+      "device": 16777233,
+      "inode": 752639566,
+      "gateId": "761c7a01-c073-4aae-b9dc-8ba4117a2fa1",
+      "suite": "plan-refutation",
+      "copies": [
+        {
+          "path": "repo",
+          "sha256": "2aa2638d8940caa2c9a57be8324e42ee3cf2ba86ab2ba51e85ceb1f4ca5b17da",
+          "token": "2bdbe90f-a6a7-45ec-bcce-0be46ffece08",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "4cfd7b970011f79aaacaea521aca65cabe889a2d"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 38007
+    },
+    {
+      "root": "review-J0mID9",
+      "token": "a821fa08-eecb-4253-8a1b-76c64399563b",
+      "sha256": "9ea5a7b26964a0a3f4bf8f1d636b478de6de6271c101d367bae9697e916aba7b",
+      "device": 16777233,
+      "inode": 752630186,
+      "gateId": "761c7a01-c073-4aae-b9dc-8ba4117a2fa1",
+      "suite": "plan-refutation",
+      "copies": [
+        {
+          "path": "repo",
+          "sha256": "9fb26bc64c15182ebdb966fae3f1315af1c235c43c038d962ed83ea7af545a07",
+          "token": "9a5a3626-d42f-4531-b939-6383cc27cc7e",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "c3bb804d78b53e87f50c56ac28f4a48e6cab8096"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 38008
+    },
+    {
+      "root": "review-gY7zSq",
+      "token": "8cfe0266-bbd2-402b-8733-6af6c633d111",
+      "sha256": "b5953721f997bd4a00bc39d328658fa298a62ebd419b6001617c15324e5b057b",
+      "device": 16777233,
+      "inode": 752630572,
+      "gateId": "761c7a01-c073-4aae-b9dc-8ba4117a2fa1",
+      "suite": "plan-refutation",
+      "copies": [
+        {
+          "path": "repo",
+          "sha256": "c5710750449748752aa5281795dd43c91cf2ebb99f743ee90e953818f5a6323b",
+          "token": "a11e20ea-dc65-498e-ae01-38db28dc708f",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "4a09eae7be85add5c4ea503c673333a6c993dec2"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 31534
+    },
+    {
+      "root": "review-LsREGg",
+      "token": "5b0934c5-4901-4a15-8b78-c53788f483f4",
+      "sha256": "2bb1dea32c3e3d5274246aa4fc1b018ac187838acb57bef1a8bb63793fcd79c6",
+      "device": 16777233,
+      "inode": 752643352,
+      "gateId": "761c7a01-c073-4aae-b9dc-8ba4117a2fa1",
+      "suite": "plan-refutation",
+      "copies": [
+        {
+          "path": "repo",
+          "sha256": "932b524ef3d505418929e97565e4fdc013c95acd9768542dfab12df9a148b65f",
+          "token": "51c194f1-e078-4468-bf5f-5297442e99d7",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "242242d9766b4298063d275a021f34ed5db6fb70"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 38009
+    },
+    {
+      "root": "review-0cvJbt",
+      "token": "8f512227-fe59-42a9-aaf2-473387b44393",
+      "sha256": "3c710349961e1ad312095dadbed92bc52e9e8904dabbc457776044b181df8acb",
+      "device": 16777233,
+      "inode": 752640355,
+      "gateId": "761c7a01-c073-4aae-b9dc-8ba4117a2fa1",
+      "suite": "plan-refutation",
+      "copies": [
+        {
+          "path": "repo",
+          "sha256": "5a386f6d6009fb19f483fd0a5e569c48b8df3909cb5caaac263d7b939a2c3056",
+          "token": "0676d7ce-79b7-4769-af79-9eb5c607ae10",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "3d87eba1f7201afffafcf480e595c2f1eb9342bb"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 38008
+    },
+    {
+      "root": "review-wIhU3w",
+      "token": "1d1ea2df-8e65-4d8d-a99d-093e4ffc2085",
+      "sha256": "c5140e61079c9c0ee87f75d9ef66e0284bf8d6ba3bbd07debc506946bc9655ea",
+      "device": 16777233,
+      "inode": 752636333,
+      "gateId": "761c7a01-c073-4aae-b9dc-8ba4117a2fa1",
+      "suite": "plan-refutation",
+      "copies": [
+        {
+          "path": "repo",
+          "sha256": "2ca09b7aa69434e6aae8a2abe5712e08663d1ae5763b442e65e4a1cfcdd461e1",
+          "token": "f5812d19-f12f-430a-b0e0-0c008de05d2f",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "8b43bad53b9e67fd76ddf4adffc535fd2342e71a"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 38006
+    },
+    {
+      "root": "review-PajKGd",
+      "token": "e409a824-f59d-4188-95fc-693e76bd4f7f",
+      "sha256": "f1314436e2399f4eb6730a3437c6a691beae9ffb0604b24a739529e11a65fadc",
+      "device": 16777233,
+      "inode": 752632074,
+      "gateId": "761c7a01-c073-4aae-b9dc-8ba4117a2fa1",
+      "suite": "plan-refutation",
+      "copies": [
+        {
+          "path": "repo",
+          "sha256": "5c9203a03bc00e1929d28816dd6dca223c820a501de34f3981a2cdada3d0f7cc",
+          "token": "096356b6-179a-4258-914b-d3ecc878aba8",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "bde030332bde59582d352d719b2e38870b7a21fd"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 31138
+    },
+    {
+      "root": "review-Fc3wEh",
+      "token": "d63572c9-b895-4331-b129-11b8cc159946",
+      "sha256": "9e2be098c7117447e06b17ff7f3dff7502c04e5506bd66355e131edc9e664fae",
+      "device": 16777233,
+      "inode": 752642624,
+      "gateId": "761c7a01-c073-4aae-b9dc-8ba4117a2fa1",
+      "suite": "plan-refutation",
+      "copies": [
+        {
+          "path": "repo",
+          "sha256": "b50eddf9ac8838882b91d1b8fcd77ce6a7a6cc639ae4ef12b8d603ff72c1b2bd",
+          "token": "f5596b78-99ed-4b44-b3e8-0504f26f5daa",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "30f42207a6e30722e738b7fbd6a3fdef216b0efa"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 37995
+    },
+    {
+      "root": "review-0EEu1Q",
+      "token": "07c09e39-c218-4d3f-a6c0-3a42749a39ad",
+      "sha256": "afbc7edf12cf537e90d71adbb1b726aed571f0284359936b8bf9ab57134f4d0b",
+      "device": 16777233,
+      "inode": 752638054,
+      "gateId": "761c7a01-c073-4aae-b9dc-8ba4117a2fa1",
+      "suite": "plan-refutation",
+      "copies": [
+        {
+          "path": "repo",
+          "sha256": "fdc3578c5a1032d20b23f9de5b55f46841690af761a602890323a379fc51a126",
+          "token": "65284b1f-dedf-4f56-8cf5-eab1a0f382dd",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "0f1a0f95d7d24047808a0ef48382640e8cb60c41"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 38006
+    },
+    {
+      "root": "review-bB1R4M",
+      "token": "04cf030b-de21-40b4-a2bb-efe5d643f523",
+      "sha256": "70cae7a2ed008d99f23633db27b308b12193a15a4c92ff9c5bb419e9d773e052",
+      "device": 16777233,
+      "inode": 752631119,
+      "gateId": "761c7a01-c073-4aae-b9dc-8ba4117a2fa1",
+      "suite": "plan-refutation",
+      "copies": [
+        {
+          "path": "repo",
+          "sha256": "0058cdd6bf72df2cf50eeb9032e5bfc9251367969aac488c5766009f289bbca9",
+          "token": "85234429-bc7f-4868-bfbe-cccc0eaee653",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "79dd2aa652ad6a445b11542b1e56b936a7f8ff06"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 31552
+    },
+    {
+      "root": "review-xrxngq",
+      "token": "2f83e602-d953-48d8-af8e-558d176705bc",
+      "sha256": "cecff5b36fd453642c0a8c5fccc73d49e8ff4649423f5bacd0c25840d61de625",
+      "device": 16777233,
+      "inode": 752637718,
+      "gateId": "761c7a01-c073-4aae-b9dc-8ba4117a2fa1",
+      "suite": "plan-refutation",
+      "copies": [
+        {
+          "path": "repo",
+          "sha256": "f52d9bb86a5e459d2cf7de1c05cb8ec63bac674718491b09c643e9bf87fd9d5f",
+          "token": "057ba01d-883b-436f-9c55-179cfed0a2ea",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "a8afe69fc961364472f32e4ce14080781db41770"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 31192
+    }
+  ],
+  "summary": {
+    "planned": 25,
+    "bytes": 3412622084,
+    "copies": 40,
+    "inheritedLifetimes": 34,
+    "emptyTestControls": 3,
+    "removed": 0,
+    "remaining": 25
+  },
+  "cleanups": [],
+  "remaining": [
+    "dotln-entropy-fixtures-LC7Cf3",
+    "dotln-fixture-temporary-3sHpVT",
+    "dotln-fixture-temporary-IProBS",
+    "dotln-fixture-temporary-yv90KE",
+    "review-G4oaE2",
+    "review-5fYAzw",
+    "review-8Yc6LM",
+    "review-agaT6w",
+    "review-pyaW7I",
+    "review-ECMeVG",
+    "review-ekLQN8",
+    "review-BeIf3D",
+    "review-PMznoJ",
+    "review-OqJv2d",
+    "review-IVXEws",
+    "review-J0mID9",
+    "review-gY7zSq",
+    "review-LsREGg",
+    "review-0cvJbt",
+    "review-wIhU3w",
+    "review-PajKGd",
+    "review-Fc3wEh",
+    "review-0EEu1Q",
+    "review-bB1R4M",
+    "review-xrxngq"
+  ],
+  "skipped": []
+}

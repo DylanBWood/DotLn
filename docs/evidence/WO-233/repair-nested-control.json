@@ -1,0 +1,250 @@
+{
+  "plan": {
+    "result": {
+      "gateId": "e38288a3-d0ae-411c-863b-7f2ae37e7350",
+      "gateRecordedAt": "2026-10-27T17:37:48.501Z",
+      "apply": false,
+      "before": [
+        {
+          "schemaVersion": 1,
+          "token": "dd3ded3e-7fbe-45da-a6ab-9917b1e3897a",
+          "class": "gate-fixture",
+          "owner": {
+            "pid": 20387,
+            "birth": "1793120854.040679",
+            "gateId": "e38288a3-d0ae-411c-863b-7f2ae37e7350",
+            "suite": "harness-fixtures",
+            "repository": "<worktree>"
+          },
+          "createdAt": "2026-10-27T17:07:34.134Z",
+          "retentionHours": 0,
+          "device": 16777233,
+          "inode": 768639462,
+          "endedAt": "2026-10-27T17:35:48.230Z",
+          "endSource": "completion",
+          "outcome": "passed"
+        },
+        {
+          "schemaVersion": 1,
+          "token": "5e490148-5eb2-434c-ac36-996392945f8f",
+          "class": "gate-fixture",
+          "owner": {
+            "pid": 20387,
+            "birth": "1793120854.040679",
+            "gateId": "e38288a3-d0ae-411c-863b-7f2ae37e7350",
+            "suite": "harness-fixtures",
+            "repository": "<worktree>"
+          },
+          "createdAt": "2026-10-27T17:07:34.802Z",
+          "retentionHours": 0,
+          "device": 16777233,
+          "inode": 768641919,
+          "fixtureOwner": {
+            "token": "dd3ded3e-7fbe-45da-a6ab-9917b1e3897a",
+            "gateId": "e38288a3-d0ae-411c-863b-7f2ae37e7350",
+            "suite": "harness-fixtures"
+          },
+          "endedAt": "2026-10-27T17:35:48.230Z",
+          "endSource": "completion",
+          "outcome": "passed"
+        },
+        {
+          "schemaVersion": 1,
+          "token": "2fda6603-65f4-4d80-acfe-9d639380685b",
+          "class": "gate-fixture",
+          "owner": {
+            "pid": 2147483647,
+            "birth": "1.0",
+            "gateId": "e84ff4aa-28dd-4f8d-9c7f-8881aa1061f6",
+            "suite": "passed",
+            "session": "0000000000000000000000000000000000000000000000000000000000000000",
+            "repository": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-fixture-temporary-eoXSQC/dotln-temporary-roots-test-ti3Kab"
+          },
+          "createdAt": "2020-01-01T00:00:00.000Z",
+          "retentionHours": 0,
+          "device": 16777233,
+          "inode": 768641923,
+          "endedAt": "2026-10-27T17:07:34.812Z",
+          "endSource": "completion",
+          "outcome": "passed"
+        },
+        {
+          "schemaVersion": 1,
+          "token": "c0ede869-750c-45c0-be02-edec71477f9a",
+          "class": "gate-fixture",
+          "owner": {
+            "pid": 2147483647,
+            "birth": "1.0",
+            "gateId": "e84ff4aa-28dd-4f8d-9c7f-8881aa1061f6",
+            "suite": "failed",
+            "session": "0000000000000000000000000000000000000000000000000000000000000000",
+            "repository": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-fixture-temporary-eoXSQC/dotln-temporary-roots-test-ti3Kab"
+          },
+          "createdAt": "2026-10-27T17:07:34.812Z",
+          "retentionHours": 24,
+          "device": 16777233,
+          "inode": 768641935,
+          "fixtureOwner": {
+            "token": "2fda6603-65f4-4d80-acfe-9d639380685b",
+            "gateId": "e84ff4aa-28dd-4f8d-9c7f-8881aa1061f6",
+            "suite": "passed"
+          },
+          "endedAt": "2026-10-27T17:07:34.812Z",
+          "endSource": "completion",
+          "outcome": "failed"
+        }
+      ],
+      "cleanup": null,
+      "containerRemains": true
+    },
+    "execution": {
+      "name": "bounded-probe",
+      "durationMs": 95,
+      "slowestCases": [
+        {
+          "name": "bounded-probe",
+          "durationMs": 95,
+          "exitCode": 0,
+          "granularity": "task"
+        }
+      ],
+      "peakFootprintBytes": 1327464,
+      "peakRssBytes": 1802240,
+      "memoryBudgetBytes": 3221225472,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+      "droppedOutputBytes": 0,
+      "startedAt": "2026-10-27T17:40:55.120Z",
+      "finishedAt": "2026-10-27T17:40:55.216Z",
+      "exitCode": 0,
+      "executed": true
+    }
+  },
+  "apply": {
+    "result": {
+      "gateId": "e38288a3-d0ae-411c-863b-7f2ae37e7350",
+      "gateRecordedAt": "2026-10-27T17:37:48.501Z",
+      "apply": true,
+      "before": [
+        {
+          "schemaVersion": 1,
+          "token": "dd3ded3e-7fbe-45da-a6ab-9917b1e3897a",
+          "class": "gate-fixture",
+          "owner": {
+            "pid": 20387,
+            "birth": "1793120854.040679",
+            "gateId": "e38288a3-d0ae-411c-863b-7f2ae37e7350",
+            "suite": "harness-fixtures",
+            "repository": "<worktree>"
+          },
+          "createdAt": "2026-10-27T17:07:34.134Z",
+          "retentionHours": 0,
+          "device": 16777233,
+          "inode": 768639462,
+          "endedAt": "2026-10-27T17:35:48.230Z",
+          "endSource": "completion",
+          "outcome": "passed"
+        },
+        {
+          "schemaVersion": 1,
+          "token": "5e490148-5eb2-434c-ac36-996392945f8f",
+          "class": "gate-fixture",
+          "owner": {
+            "pid": 20387,
+            "birth": "1793120854.040679",
+            "gateId": "e38288a3-d0ae-411c-863b-7f2ae37e7350",
+            "suite": "harness-fixtures",
+            "repository": "<worktree>"
+          },
+          "createdAt": "2026-10-27T17:07:34.802Z",
+          "retentionHours": 0,
+          "device": 16777233,
+          "inode": 768641919,
+          "fixtureOwner": {
+            "token": "dd3ded3e-7fbe-45da-a6ab-9917b1e3897a",
+            "gateId": "e38288a3-d0ae-411c-863b-7f2ae37e7350",
+            "suite": "harness-fixtures"
+          },
+          "endedAt": "2026-10-27T17:35:48.230Z",
+          "endSource": "completion",
+          "outcome": "passed"
+        },
+        {
+          "schemaVersion": 1,
+          "token": "2fda6603-65f4-4d80-acfe-9d639380685b",
+          "class": "gate-fixture",
+          "owner": {
+            "pid": 2147483647,
+            "birth": "1.0",
+            "gateId": "e84ff4aa-28dd-4f8d-9c7f-8881aa1061f6",
+            "suite": "passed",
+            "session": "0000000000000000000000000000000000000000000000000000000000000000",
+            "repository": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-fixture-temporary-eoXSQC/dotln-temporary-roots-test-ti3Kab"
+          },
+          "createdAt": "2020-01-01T00:00:00.000Z",
+          "retentionHours": 0,
+          "device": 16777233,
+          "inode": 768641923,
+          "endedAt": "2026-10-27T17:07:34.812Z",
+          "endSource": "completion",
+          "outcome": "passed"
+        },
+        {
+          "schemaVersion": 1,
+          "token": "c0ede869-750c-45c0-be02-edec71477f9a",
+          "class": "gate-fixture",
+          "owner": {
+            "pid": 2147483647,
+            "birth": "1.0",
+            "gateId": "e84ff4aa-28dd-4f8d-9c7f-8881aa1061f6",
+            "suite": "failed",
+            "session": "0000000000000000000000000000000000000000000000000000000000000000",
+            "repository": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-fixture-temporary-eoXSQC/dotln-temporary-roots-test-ti3Kab"
+          },
+          "createdAt": "2026-10-27T17:07:34.812Z",
+          "retentionHours": 24,
+          "device": 16777233,
+          "inode": 768641935,
+          "fixtureOwner": {
+            "token": "2fda6603-65f4-4d80-acfe-9d639380685b",
+            "gateId": "e84ff4aa-28dd-4f8d-9c7f-8881aa1061f6",
+            "suite": "passed"
+          },
+          "endedAt": "2026-10-27T17:07:34.812Z",
+          "endSource": "completion",
+          "outcome": "failed"
+        }
+      ],
+      "cleanup": {
+        "removed": [
+          "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-fixture-temporary-eoXSQC/dotln-temporary-roots-test-ti3Kab",
+          "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-fixture-temporary-eoXSQC"
+        ],
+        "retained": [],
+        "blockers": []
+      },
+      "containerRemains": false
+    },
+    "execution": {
+      "name": "bounded-probe",
+      "durationMs": 275,
+      "slowestCases": [
+        {
+          "name": "bounded-probe",
+          "durationMs": 275,
+          "exitCode": 0,
+          "granularity": "task"
+        }
+      ],
+      "peakFootprintBytes": 74423136,
+      "peakRssBytes": 118898688,
+      "memoryBudgetBytes": 3221225472,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+      "droppedOutputBytes": 0,
+      "startedAt": "2026-10-27T17:41:00.602Z",
+      "finishedAt": "2026-10-27T17:41:00.877Z",
+      "exitCode": 0,
+      "executed": true
+    }
+  },
+  "pathNormalization": "The current checkout absolute path is rendered as <worktree>; observations, owner tokens and filesystem identities are unchanged."
+}

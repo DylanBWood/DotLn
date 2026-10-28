@@ -1,0 +1,110 @@
+{
+  "codeIdentity": "ebf2aea465086f52b93a212e714dda4e9b3a961060df6929697eb8973d9ff6c2",
+  "temporaryGateId": "10f1fc32-8251-4d39-b7c9-91e185dc66a3",
+  "probes": {
+    "passed-roots": {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-233/verification-001-passed-roots.mjs",
+      "result": {
+        "gateId": "10f1fc32-8251-4d39-b7c9-91e185dc66a3",
+        "recordedAt": "2026-10-27T18:14:03.709Z",
+        "codeIdentity": "ebf2aea465086f52b93a212e714dda4e9b3a961060df6929697eb8973d9ff6c2",
+        "passedRootsRemaining": 0,
+        "bySuite": {},
+        "pinnedByCopiedRecord": 0,
+        "pinnedByTrackedRecord": 0,
+        "rowRetainedForNestedRoot": 0
+      },
+      "execution": {
+        "name": "bounded-probe",
+        "durationMs": 427,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 427,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 29413048,
+        "peakRssBytes": 77266944,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-27T18:14:10.775Z",
+        "finishedAt": "2026-10-27T18:14:11.202Z",
+        "exitCode": 0,
+        "executed": true
+      }
+    },
+    "fseventsd": {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-233/verification-001-fseventsd.mjs",
+      "result": {
+        "sample": {
+          "residentBytes": 19169280,
+          "source": "ps -A -o rss=,comm= (KiB converted to bytes)",
+          "observedAt": "2026-10-27T18:14:15.234Z"
+        },
+        "independentResidentBytes": [
+          19169280
+        ],
+        "commandColumnMaxBytesWhenFirst": 16
+      },
+      "execution": {
+        "name": "bounded-probe",
+        "durationMs": 129,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 129,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 19024344,
+        "peakRssBytes": 63078400,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-27T18:14:15.164Z",
+        "finishedAt": "2026-10-27T18:14:15.294Z",
+        "exitCode": 0,
+        "executed": true
+      }
+    },
+    "session-scratch": {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-233/verification-001-session-scratch.mjs",
+      "result": {
+        "stopPrune": [
+          "Session prune: 0 owned roots removed; 1 retained; 0 blockers."
+        ],
+        "phaseAfterTurn1": "active",
+        "turn2PrintsScratch": false,
+        "scratchExists": true,
+        "stagedFileExists": true,
+        "ownerPid": 98243,
+        "ownerAlive": false
+      },
+      "execution": {
+        "name": "bounded-probe",
+        "durationMs": 1176,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 1176,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 65773416,
+        "peakRssBytes": 158695424,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-27T18:14:15.411Z",
+        "finishedAt": "2026-10-27T18:14:16.587Z",
+        "exitCode": 0,
+        "executed": true
+      }
+    }
+  }
+}

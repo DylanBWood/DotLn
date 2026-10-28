@@ -1,0 +1,83 @@
+{
+  "command": "npm test -- --review",
+  "checkId": "npm test",
+  "evidenceRef": "host-gate:85eb4f8ae74e0773443e4cbfa5e355f68a63fe971f79e04d516a4c29a002185c:npm test",
+  "temporaryGateId": "ca145571-4ea4-491b-8721-68cdb65879a1",
+  "recordedAt": "2026-10-27T17:04:41.888Z",
+  "codeIdentity": "85eb4f8ae74e0773443e4cbfa5e355f68a63fe971f79e04d516a4c29a002185c",
+  "exitCode": 1,
+  "durationMs": 1082019,
+  "freshTasks": 85,
+  "unrunTasks": [
+    "target-publish",
+    "target-worktree:file:test-target-worktree-start.mjs",
+    "target-worktree:file:test-target-worktree-publish.mjs",
+    "target-worktree:file:test-target-worktree-close.mjs",
+    "target-worktree:file:test-target-worktree-release.mjs",
+    "vertical:file:test-vertical.mjs:statements",
+    "vertical:file:test-vertical.mjs:workflow",
+    "vertical:file:test-vertical-judgment.mjs",
+    "vertical:file:test-vertical.recovery.mjs",
+    "launchpad:file:test-launchpad-update.mjs",
+    "launchpad:file:test-launchpad-export.mjs",
+    "workstream-pilot",
+    "instance-history",
+    "worktree",
+    "release:case:meter_shape",
+    "release:case:close_foreign_tag",
+    "release:case:close_overlap",
+    "release:case:close_real_writer",
+    "browser-evidence",
+    "fixture-temp-root",
+    "launchpad-planning",
+    "evidence-sources",
+    "harness-probe",
+    "plan-refutation",
+    "runner-fixtures",
+    "sync-fixtures",
+    "process-debt"
+  ],
+  "executedFailures": [
+    {
+      "name": "harness-fixtures",
+      "exitCode": 1,
+      "durationMs": 322943
+    }
+  ],
+  "assertions": [
+    {
+      "file": "scripts/test-temporary-roots.mjs",
+      "case": "a retained nested owner protects its ancestor and churn counts each file once",
+      "observation": "Expected retention window; received containing fixture gate is live. The synthetic independent parent inherited the real runner fixture lifetime."
+    }
+  ],
+  "temporaryCleanup": {
+    "removed": 796,
+    "retained": 419,
+    "blockers": []
+  },
+  "churn": {
+    "filesCreated": 483943,
+    "filesDeleted": 344486,
+    "bytesWritten": 11355120143,
+    "source": "owned-root content inventories at helper removal and gate completion, capped by allocated bytes for sparse files; physical I/O, overwrites and uninstrumented removals unobserved"
+  },
+  "fileEvents": {
+    "before": {
+      "residentBytes": 18972672,
+      "source": "ps -A -o rss=,comm= (KiB converted to bytes)",
+      "observedAt": "2026-10-27T16:46:39.282Z"
+    },
+    "host": {
+      "residentBytes": 18989056,
+      "source": "ps -A -o rss=,comm= (KiB converted to bytes)",
+      "observedAt": "2026-10-27T16:47:15.182Z"
+    },
+    "after": {
+      "residentBytes": 19070976,
+      "source": "ps -A -o rss=,comm= (KiB converted to bytes)",
+      "observedAt": "2026-10-27T17:04:41.888Z"
+    }
+  },
+  "outputRef": "docs/control/local/harness/check-output/2a46491c81ddfa4a5d065468216d33bed9228c9ea260d0dc5e773bee102ef94d.log"
+}

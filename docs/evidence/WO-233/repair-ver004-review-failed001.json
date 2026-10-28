@@ -1,0 +1,208 @@
+{
+  "command": "npm test -- --review",
+  "gateId": "5fb3245b-08ca-418c-b84d-dd90e075ff89",
+  "evidenceRef": "host-gate:f05be9729a592860f5e78d23766d911c78a71dd9f7f3f162985618031f27ddb8:npm test",
+  "codeIdentity": "f05be9729a592860f5e78d23766d911c78a71dd9f7f3f162985618031f27ddb8",
+  "recordedAt": "2026-10-28T00:27:45.541Z",
+  "durationMs": 381874,
+  "exitCode": 1,
+  "identityUnchanged": true,
+  "buildOutputUnchanged": true,
+  "freshTasks": 83,
+  "reusedTasks": 0,
+  "requiredSuites": [
+    "build",
+    "format",
+    "configuration-root",
+    "registrations",
+    "declarations",
+    "generated",
+    "host",
+    "release-preparation",
+    "github-body",
+    "outward-lint",
+    "target-publish",
+    "target-worktree",
+    "vertical",
+    "license-fixtures",
+    "publication-fixtures",
+    "backup-intake",
+    "launchpad",
+    "workstream-pilot",
+    "instance-history",
+    "beacon-portability",
+    "checkpoint",
+    "worktree",
+    "worktree-integration",
+    "release",
+    "work-orders-fixtures",
+    "siblings-fixtures",
+    "kernel",
+    "compiler",
+    "skeleton",
+    "console",
+    "browser-evidence",
+    "adjacent-queue",
+    "derived-orders",
+    "portfolio",
+    "codex-continuation",
+    "authority-grants",
+    "fixture-temp-root",
+    "launchpad-planning",
+    "evidence-sources",
+    "harness-probe",
+    "harness-fixtures",
+    "harness-context",
+    "plan-refutation",
+    "wo107-schema",
+    "mutation",
+    "runner-fixtures",
+    "sync-fixtures",
+    "process-debt"
+  ],
+  "unrunTasks": [
+    "target-publish",
+    "target-worktree:file:test-target-worktree-start.mjs",
+    "target-worktree:file:test-target-worktree-publish.mjs",
+    "target-worktree:file:test-target-worktree-close.mjs",
+    "target-worktree:file:test-target-worktree-release.mjs",
+    "vertical:file:test-vertical.mjs:statements",
+    "vertical:file:test-vertical.mjs:workflow",
+    "vertical:file:test-vertical-judgment.mjs",
+    "vertical:file:test-vertical.recovery.mjs",
+    "launchpad:file:test-launchpad-update.mjs",
+    "launchpad:file:test-launchpad-export.mjs",
+    "workstream-pilot",
+    "instance-history",
+    "worktree",
+    "worktree-integration",
+    "release:case:meter_shape",
+    "release:case:close_foreign_tag",
+    "release:case:close_overlap",
+    "release:case:close_real_writer",
+    "skeleton",
+    "browser-evidence",
+    "fixture-temp-root",
+    "launchpad-planning",
+    "evidence-sources",
+    "harness-probe",
+    "plan-refutation",
+    "wo107-schema",
+    "mutation",
+    "runner-fixtures",
+    "sync-fixtures",
+    "process-debt"
+  ],
+  "failedExecutedTasks": [
+    {
+      "name": "harness-fixtures",
+      "durationMs": 328339,
+      "slowestCases": [
+        {
+          "name": "foreground CLI dispatch binds the actual roleless hook session and preserves observations",
+          "file": "scripts/test-harness.mjs",
+          "durationMs": 18926.13825,
+          "exitCode": 0
+        },
+        {
+          "name": "WO-221 registered-target admission admits only the bound publication helper at verified and closed and nothing outside the registration",
+          "file": "scripts/test-harness.mjs",
+          "durationMs": 15637.032041,
+          "exitCode": 0
+        },
+        {
+          "name": "WO-132 only the live product gate refuses input and success-record writes, including opaque shell writes",
+          "file": "scripts/test-harness.mjs",
+          "durationMs": 13600.78175,
+          "exitCode": 0
+        },
+        {
+          "name": "WO-125 F3 runner refuses generated-hook writes throughout the gate and releases on exit",
+          "file": "scripts/test-harness.mjs",
+          "durationMs": 13345.503917,
+          "exitCode": 0
+        },
+        {
+          "name": "WO-125 F3 entry refuses generated-hook writes throughout the gate and releases on exit",
+          "file": "scripts/test-harness.mjs",
+          "durationMs": 13229.63825,
+          "exitCode": 0
+        }
+      ],
+      "peakFootprintBytes": 370821464,
+      "peakRssBytes": 682835968,
+      "memoryBudgetBytes": 3221225472,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+      "droppedOutputBytes": 0,
+      "startedAt": "2026-10-28T00:22:00.295Z",
+      "finishedAt": "2026-10-28T00:27:28.649Z",
+      "exitCode": 1,
+      "executed": true,
+      "concurrentAtStart": [],
+      "predecessors": [
+        "build",
+        "format",
+        "configuration-root",
+        "registrations",
+        "declarations",
+        "generated",
+        "host",
+        "harness-context"
+      ],
+      "schedulerDurationMs": 328354,
+      "loadClass": "shared",
+      "loadFactor": 6,
+      "peerCap": 2,
+      "reservedSlots": 6,
+      "slotCapacity": 8,
+      "hostCapacity": 8,
+      "timeoutMs": 900000,
+      "lanes": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "hostLaneWaitMs": 15,
+      "hostLaneWaitRelations": [
+        {
+          "observedAt": "2026-10-28T00:22:00.301Z",
+          "relations": [
+            "unknown"
+          ]
+        }
+      ],
+      "hostLaneSlots": 6
+    }
+  ],
+  "cleanup": {
+    "removed": 469,
+    "retainedCount": 458,
+    "blockers": []
+  },
+  "churn": {
+    "filesCreated": 221529,
+    "filesDeleted": 81077,
+    "bytesWritten": 2056675387,
+    "source": "owned-root content inventories at helper removal and gate completion, capped by allocated bytes for sparse files; physical I/O, overwrites and uninstrumented removals unobserved"
+  },
+  "fileEvents": {
+    "before": {
+      "residentBytes": 19251200,
+      "source": "ps -A -o rss=,comm= (KiB converted to bytes)",
+      "observedAt": "2026-10-28T00:21:22.755Z"
+    },
+    "host": {
+      "residentBytes": 19251200,
+      "source": "ps -A -o rss=,comm= (KiB converted to bytes)",
+      "observedAt": "2026-10-28T00:21:59.442Z"
+    },
+    "after": {
+      "residentBytes": 19349504,
+      "source": "ps -A -o rss=,comm= (KiB converted to bytes)",
+      "observedAt": "2026-10-28T00:27:45.541Z"
+    }
+  }
+}

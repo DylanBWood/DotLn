@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-27T15:26:41.783Z",
+  "apply": true,
+  "diagnosis": false,
+  "rule": "Only recorded terminal fixtures with dead creators are recovered. Copied markers require a matching immutable Git blob, a valid source, duplicate bytes tied to the containing fixture, or an empty source-identified negative control with its creation registration. Failed fixtures retain their diagnosis data and original gate-end window, including the recovered marker bytes. General invalid-record refusal is unchanged.",
+  "roots": [
+    {
+      "root": "dotln-fixture-temporary-M6o4fG",
+      "token": "7e26ea4b-c251-49a8-85cf-91950d43cb15",
+      "sha256": "f0cc8661e17dd8590ee62f12226a93d1e2d81010460d06f074ecfa8de07ea80e",
+      "device": 16777233,
+      "inode": 764099384,
+      "gateId": "94ed0c26-dd5a-4e3a-9823-7e0f80ed9d24",
+      "suite": "process-debt",
+      "copies": [],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 1138384
+    }
+  ],
+  "summary": {
+    "planned": 1,
+    "bytes": 1138384,
+    "copies": 0,
+    "inheritedLifetimes": 0,
+    "emptyTestControls": 0,
+    "removed": 1,
+    "remaining": 0
+  },
+  "cleanups": [
+    {
+      "gateId": "94ed0c26-dd5a-4e3a-9823-7e0f80ed9d24",
+      "removed": 4,
+      "retained": [],
+      "blockers": []
+    }
+  ],
+  "remaining": [],
+  "skipped": []
+}

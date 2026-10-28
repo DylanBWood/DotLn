@@ -1,0 +1,214 @@
+{
+  "complete": {
+    "command": "npm test -- --review",
+    "gateId": "344a3f31-c882-4f10-9c2a-b7fd8e079dbf",
+    "evidenceRef": "host-gate:b0afad3f0c8e4c2ac5d36973ab798d8f3aff305ee862bdfce00f83c37a462a99:npm test",
+    "codeIdentity": "b0afad3f0c8e4c2ac5d36973ab798d8f3aff305ee862bdfce00f83c37a462a99",
+    "recordedAt": "2026-10-27T22:31:13.505Z",
+    "durationMs": 1947150,
+    "exitCode": 0,
+    "identityUnchanged": true,
+    "buildOutputUnchanged": true,
+    "freshTasks": 114,
+    "reusedTasks": 0,
+    "requiredSuites": [
+      "build",
+      "format",
+      "configuration-root",
+      "registrations",
+      "declarations",
+      "generated",
+      "host",
+      "release-preparation",
+      "github-body",
+      "outward-lint",
+      "target-publish",
+      "target-worktree",
+      "vertical",
+      "license-fixtures",
+      "publication-fixtures",
+      "backup-intake",
+      "launchpad",
+      "workstream-pilot",
+      "instance-history",
+      "beacon-portability",
+      "checkpoint",
+      "worktree",
+      "worktree-integration",
+      "release",
+      "work-orders-fixtures",
+      "siblings-fixtures",
+      "kernel",
+      "compiler",
+      "skeleton",
+      "console",
+      "browser-evidence",
+      "adjacent-queue",
+      "derived-orders",
+      "portfolio",
+      "codex-continuation",
+      "authority-grants",
+      "fixture-temp-root",
+      "launchpad-planning",
+      "evidence-sources",
+      "harness-probe",
+      "harness-fixtures",
+      "harness-context",
+      "plan-refutation",
+      "wo107-schema",
+      "mutation",
+      "runner-fixtures",
+      "sync-fixtures",
+      "process-debt"
+    ],
+    "unrunTasks": [],
+    "failedExecutedTasks": [],
+    "cleanup": {
+      "removed": 2289,
+      "retained": [
+        {
+          "path": "<worktree>/.runtime/fixtures/launchpad/f1579b56e5a216c7dc12d83a1d505d0729c468359f245986f5279998b7ead696",
+          "reason": "warm-fixture retains its owning protocol"
+        }
+      ],
+      "blockers": []
+    },
+    "churn": {
+      "filesCreated": 1058771,
+      "filesDeleted": 1051853,
+      "bytesWritten": 20824769896,
+      "source": "owned-root content inventories at helper removal and gate completion, capped by allocated bytes for sparse files; physical I/O, overwrites and uninstrumented removals unobserved"
+    },
+    "fileEvents": {
+      "before": {
+        "residentBytes": 19234816,
+        "source": "ps -A -o rss=,comm= (KiB converted to bytes)",
+        "observedAt": "2026-10-27T21:58:45.799Z"
+      },
+      "host": {
+        "residentBytes": 19185664,
+        "source": "ps -A -o rss=,comm= (KiB converted to bytes)",
+        "observedAt": "2026-10-27T21:59:21.680Z"
+      },
+      "after": {
+        "residentBytes": 19300352,
+        "source": "ps -A -o rss=,comm= (KiB converted to bytes)",
+        "observedAt": "2026-10-27T22:31:13.505Z"
+      }
+    }
+  },
+  "documentReproduction": {
+    "command": "npm run test:docs",
+    "gateId": "02f94955-2519-4c7a-85c0-e8f93395ba79",
+    "evidenceRef": "host-gate:b0afad3f0c8e4c2ac5d36973ab798d8f3aff305ee862bdfce00f83c37a462a99:npm run test:docs",
+    "codeIdentity": "b0afad3f0c8e4c2ac5d36973ab798d8f3aff305ee862bdfce00f83c37a462a99",
+    "recordedAt": "2026-10-27T22:35:24.674Z",
+    "durationMs": 170407,
+    "exitCode": 0,
+    "identityUnchanged": true,
+    "buildOutputUnchanged": true,
+    "freshTasks": 27,
+    "reusedTasks": 0,
+    "requiredSuites": [
+      "build",
+      "format",
+      "configuration-root",
+      "registrations",
+      "declarations",
+      "generated",
+      "host",
+      "license-surfaces",
+      "resume",
+      "launchpad-docs",
+      "docs-check",
+      "docs-check-fixtures",
+      "comment-labels",
+      "comment-labels-fixtures",
+      "lineage-fixtures",
+      "kernel-docs",
+      "skeleton-docs",
+      "console-docs",
+      "resident-bind",
+      "local-runner-double",
+      "harness-context",
+      "plan-refutation-current",
+      "artifact-corpus",
+      "plan",
+      "reader-profiles",
+      "reader-fixtures",
+      "entropy"
+    ],
+    "unrunTasks": [],
+    "failedExecutedTasks": [],
+    "cleanup": {
+      "removed": 230,
+      "retained": [],
+      "blockers": []
+    },
+    "churn": {
+      "filesCreated": 20909,
+      "filesDeleted": 20909,
+      "bytesWritten": 186729644,
+      "source": "owned-root content inventories at helper removal and gate completion, capped by allocated bytes for sparse files; physical I/O, overwrites and uninstrumented removals unobserved"
+    },
+    "fileEvents": {
+      "before": {
+        "residentBytes": 19316736,
+        "source": "ps -A -o rss=,comm= (KiB converted to bytes)",
+        "observedAt": "2026-10-27T22:32:33.644Z"
+      },
+      "host": {
+        "residentBytes": 19333120,
+        "source": "ps -A -o rss=,comm= (KiB converted to bytes)",
+        "observedAt": "2026-10-27T22:33:11.838Z"
+      },
+      "after": {
+        "residentBytes": 19316736,
+        "source": "ps -A -o rss=,comm= (KiB converted to bytes)",
+        "observedAt": "2026-10-27T22:35:24.674Z"
+      }
+    }
+  },
+  "main": {
+    "before": "bca92e77d03880ec57a83d37eebb85a3a8f7ab76",
+    "after": "bca92e77d03880ec57a83d37eebb85a3a8f7ab76"
+  },
+  "hostLaneWait": {
+    "wallMs": 943,
+    "byRelation": {
+      "this-checkout": 0,
+      "another-checkout": 0,
+      "unknown": 943
+    },
+    "holders": []
+  },
+  "exportObservation": {
+    "taskDurationMs": 205363,
+    "startedAt": "2026-10-27T22:25:31.513Z",
+    "finishedAt": "2026-10-27T22:28:56.886Z",
+    "before": {
+      "observedAt": "2026-10-27T21:58:41.790Z",
+      "current": {
+        "key": "e48866e7cff0819c8868eec8169ef622d147e9b13afae17436bb831d06e44a11"
+      },
+      "ready": {
+        "content": {
+          "key": "e48866e7cff0819c8868eec8169ef622d147e9b13afae17436bb831d06e44a11"
+        },
+        "mtimeMs": 1793137591497.2327
+      }
+    },
+    "currentReady": {
+      "key": "f1579b56e5a216c7dc12d83a1d505d0729c468359f245986f5279998b7ead696",
+      "modifiedAt": "2026-10-27T22:25:42.122Z"
+    },
+    "derivedNpmCiCalls": 2,
+    "basis": "ready.json is written only after the cold-cache npm ci succeeds; its mtime is inside this task. The separate fresh offline npm ci and independent cache-hit assertion passed in the same task. This is executed-path derivation, not retained process tracing.",
+    "baseUnconditionalInstallSites": 3,
+    "baseSource": "WO-233-D017",
+    "historicalPlainGateMedianMs": 419100,
+    "comparisonLimit": "The export task and historical whole plain-gate median have different subjects and scopes; no percentage speedup is claimed."
+  },
+  "priorAttempt": "repair-ver003-review-failed001.json",
+  "probeRecord": "repair-ver003-probes.json"
+}

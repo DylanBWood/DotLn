@@ -1,0 +1,230 @@
+{
+  "verification": "VER-005",
+  "subject": {
+    "base": "bca92e77d03880ec57a83d37eebb85a3a8f7ab76",
+    "checkpoint": "refs/dotln/checkpoint/WO-233/19",
+    "checkpointCommit": "db26e4df2322ea0fbc08b45b9e35b02bce0c9571",
+    "priorVerificationCheckpoint": "refs/dotln/checkpoint/WO-233/15",
+    "codeIdentity": "915660c02e8988f150b76c3e544b2db503203f543bed0615965e3c803c4f35dc",
+    "identitySource": "gateCodeIdentity(<worktree>) read at 2026-10-28T02:25:51Z and again at 02:46Z, equal to the consumed rows; it excludes docs/ and root Markdown, so this verification's records leave it unchanged"
+  },
+  "consumedRows": [
+    {
+      "checkId": "structural",
+      "gate": "217c5080-0d09-477c-a886-992f6137e241",
+      "recordedAt": "2026-10-28T01:51:48.342Z",
+      "exitCode": 0,
+      "freshSuites": 6
+    },
+    {
+      "checkId": "npm test",
+      "selection": "review",
+      "gate": "217c5080-0d09-477c-a886-992f6137e241",
+      "recordedAt": "2026-10-28T01:54:06.688Z",
+      "exitCode": 0,
+      "freshSuites": 114,
+      "reusedSuites": 0,
+      "unrunSuites": 0,
+      "failedTasks": 0,
+      "durationMs": 2241028,
+      "temporaryCleanup": {
+        "removed": 2318,
+        "retained": [
+          "<worktree>/.runtime/fixtures/launchpad/e795987aa3d0f4c9282a5a6ea18eb6bcdc1ac6b66c9ab03024697916803388f8"
+        ],
+        "blockers": 0
+      },
+      "churn": {
+        "filesCreated": 1060760,
+        "filesDeleted": 1053842,
+        "bytesWritten": 20920104960
+      },
+      "fileEvents": {
+        "beforeResidentBytes": 19349504,
+        "hostResidentBytes": 19316736,
+        "afterResidentBytes": 19382272
+      },
+      "exportTask": {
+        "name": "launchpad:file:test-launchpad-export.mjs",
+        "durationMs": 200178,
+        "exitCode": 0
+      }
+    }
+  ],
+  "executorDocumentRow": {
+    "checkId": "npm run test:docs",
+    "gate": "32f97eba-f5de-4c1a-b6c7-ffa811662e8d",
+    "recordedAt": "2026-10-28T02:18:57.501Z",
+    "exitCode": 0,
+    "note": "The executor's row before this verification's edits; completion consumes the document row run after this report's last edit."
+  },
+  "probes": [
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-233/verification-004-failed-fixture-pins.mjs",
+      "startedAt": "2026-10-28T02:29:58.481Z",
+      "finishedAt": "2026-10-28T02:32:13.238Z",
+      "exitCode": 0,
+      "result": {
+        "armsCandidate": [
+          "control",
+          "worktreeRemoved",
+          "later",
+          "nestedRemoved",
+          "nestedWarm"
+        ],
+        "machine": {
+          "failedRootsOwnedByWorktree": 2256,
+          "holdingFixtureOwnedNested": 55,
+          "fixtureOwnedNested": 2722,
+          "bytesHoldingFixtureOwnedNested": 12090056633,
+          "judgedIn49hWriterReleased": { "candidates": 2256, "retained": 0 }
+        },
+        "scaffoldRemaining": false
+      }
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-233/verification-004-census.mjs",
+      "startedAt": "2026-10-28T02:32:58.533Z",
+      "finishedAt": "2026-10-28T02:33:00.482Z",
+      "exitCode": 0,
+      "result": {
+        "rows": ["217c5080 (npm test)", "32f97eba (npm run test:docs)"],
+        "scanned": {
+          "roots": 5647,
+          "sessionScratchTrees": 7,
+          "worktreeLedger": 5400
+        },
+        "unaccountedRootsCarryingRowGate": [],
+        "bornInCompleteWindowStillPresent": [
+          "dotln-fixture-temporary-zZgxEE: inner gate 1ee6b465, failed, repository removed; retained now by its window, a candidate at 25 h",
+          "dotln-license-surfaces-0AkbDQ: inner gate 1ee6b465, failed, repository removed; a candidate at 25 h",
+          "dotln-license-surfaces-7EYvCs: inner gate b10e0785, failed, repository removed; a candidate at 25 h",
+          "dotln-verification-evidence-TftsKC: inner gate 1ee6b465, failed, repository removed; a candidate at 25 h",
+          "the warm export e795987a: retained by the live writer, then by its current key"
+        ],
+        "noRemovingLifecycle": 0
+      }
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-233/verification-005-absence-variations.mjs <host-scratchpad>",
+      "startedAt": "2026-10-28T02:46:08Z",
+      "finishedAt": "2026-10-28T02:46:09Z",
+      "exitCode": 0,
+      "note": "Rerun after formatting the probe; the run at 02:38:16Z to 02:38:18Z gave the same results.",
+      "result": {
+        "control": "candidate (linked worktree present)",
+        "linkedRemoved": "candidate (removed with git worktree remove --force, as release close removes it)",
+        "linkedPrunable": "candidate (deleted while still registered)",
+        "outside": "candidate (linked worktree in <host-scratchpad>, outside the system temp directory, removed)",
+        "liveOwner": "retained: nested owned root retained (owner is live)",
+        "fresh": "retained: nested owned root retained (retention window has not passed)",
+        "unreadable": "plan refused: EACCES on the worktree's active-gates directory, from the pre-existing per-worktree gate read in pruneContext (harness-prune.mjs 462 to 465; 414 at the base)",
+        "file": "retained: nested owned root retained (ENOTDIR on the active-gates path)",
+        "cleanup": { "scaffoldRemaining": false, "outsideRemaining": false }
+      }
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-233/verification-001-passed-roots.mjs",
+      "startedAt": "2026-10-28T02:43:10Z",
+      "exitCode": 0,
+      "result": "passedRootsRemaining 0 for gate 217c5080"
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-233/verification-002-gate-residue.mjs",
+      "startedAt": "2026-10-28T02:43:10Z",
+      "exitCode": 0,
+      "result": "deadOwnerRootsOfPassingSuitesRemaining 0 (217c5080); unownedRootsBornInWindow 0 (document row 32f97eba)"
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-233/verification-003-gate-census.mjs",
+      "startedAt": "2026-10-28T02:43:10Z",
+      "exitCode": 0,
+      "result": "unaccountedRootsCarryingGate [] for both passing rows"
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-233/verification-001-fseventsd.mjs",
+      "startedAt": "2026-10-28T02:43:11Z",
+      "exitCode": 0,
+      "result": "sampler 19365888 bytes, equal to the independent read"
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-233/verification-001-session-scratch.mjs",
+      "startedAt": "2026-10-28T02:43:11Z",
+      "exitCode": 0,
+      "result": "a live session's scratch and staged file survive an ordinary turn end"
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-233/verification-002-session-completion.mjs",
+      "startedAt": "2026-10-28T02:43:12Z",
+      "finishedAt": "2026-10-28T02:43:15Z",
+      "exitCode": 0,
+      "result": "scratch, staged file and live capture survive two turn ends; at the Stop after ImplementationReady the session's own scratch is removed while its live capture and a live sibling's scratch remain"
+    }
+  ],
+  "otherChecks": [
+    {
+      "command": "node scripts/harness.mjs bounded -- npm run plan --silent -- check",
+      "startedAt": "2026-10-28T02:42:26.166Z",
+      "exitCode": 1,
+      "result": "Planning follow-ups: register is stale. Caused by this verification's D076 and D077 before npm run meta synced them."
+    },
+    {
+      "command": "npm run meta",
+      "exitCode": 0,
+      "result": "decisions index and follow-up register refreshed for D075 to D077; run again after D078, exit 0"
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- npm run plan --silent -- check",
+      "exitCode": 0,
+      "result": "no advisories"
+    },
+    {
+      "command": "npm run format:check",
+      "exitCode": 1,
+      "result": "the only file flagged was this verification's own probe; formatted with prettier --write on that path alone, then exit 0"
+    },
+    { "command": "git diff --check", "exitCode": 0 },
+    {
+      "command": "npm run publication:check",
+      "startedAt": "2026-10-28T02:46:09Z",
+      "exitCode": 0,
+      "result": "255/255 product headings indexed; both editions current"
+    }
+  ],
+  "machineObservations": {
+    "stashEntries": 0,
+    "metadataNeverIndex": [
+      "<system-temp>/dotln/.metadata_never_index",
+      "<worktree>/.runtime/.metadata_never_index"
+    ],
+    "retentionBlocksIdentical": true,
+    "retention": {
+      "gate-fixture-passed": 0,
+      "gate-fixture-failed": 24,
+      "session-scratch": 24,
+      "worker-capture": 1,
+      "warm-fixture": 0,
+      "legacy-backfill": 48,
+      "coordination": null
+    },
+    "dependencyChanges": [
+      "@dotln/skeleton 0.69.0 to 0.70.0 (internal package version and its exact pin)"
+    ],
+    "claudeMdHarnessBlock": {
+      "claudeMdBytes": 7099,
+      "generatedBlockBytes": 3868,
+      "profileResidueLines": 10,
+      "profileResidueBytes": 1327,
+      "codexResidueLines": 8,
+      "codexResidueBytes": 1080,
+      "codexLinesWithIdenticalReason": 6
+    }
+  },
+  "limits": [
+    "No real release close ran. The linked-removed arm drives pruneHarness from a synthetic main checkout after git worktree remove, the close's order.",
+    "The complete gate and controls.mjs were not rerun; controls.mjs rewrites the executor's controls.json.",
+    "verification-003-nested-suite-residue.mjs was not rerun; the repair diff leaves the runner and nested-ledger path unchanged, and the census probes cover its outcome.",
+    "The executor's three repair reviewers ran under Codex, which has no spawn hook. Their work is read from self-review.md and corroborated by the corrections present in the diff, not from a host observation.",
+    "Instrumentation: the prune judge under verification decides candidacy in the F10 and VER-005 probes; owners, repositories and bytes are counted from records and inventories on disk."
+  ]
+}

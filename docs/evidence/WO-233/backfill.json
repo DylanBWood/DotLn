@@ -1,0 +1,107 @@
+{
+  "host": "Codex danger-full-access, approval never; no settings changed",
+  "rows": [
+    {
+      "stage": "before",
+      "command": "node scripts/harness.mjs prune",
+      "exitCode": 0,
+      "observedAt": "2026-10-27T01:29:22.012Z",
+      "candidates": 0,
+      "bytes": 0,
+      "removed": 0,
+      "retained": 73,
+      "census": [
+        {
+          "kind": "snapshot",
+          "class": null,
+          "candidates": 0,
+          "retained": 1,
+          "bytes": 0
+        },
+        {
+          "kind": "legacy-backfill",
+          "class": null,
+          "candidates": 0,
+          "retained": 71,
+          "bytes": 0
+        },
+        {
+          "kind": "temporary-root",
+          "class": null,
+          "candidates": 0,
+          "retained": 1,
+          "bytes": 0
+        }
+      ],
+      "blockers": []
+    },
+    {
+      "stage": "apply",
+      "command": "node scripts/harness.mjs prune --apply",
+      "exitCode": 0,
+      "observedAt": "2026-10-27T01:29:24.223Z",
+      "candidates": 0,
+      "bytes": 0,
+      "removed": 0,
+      "retained": 73,
+      "census": [
+        {
+          "kind": "snapshot",
+          "class": null,
+          "candidates": 0,
+          "retained": 1,
+          "bytes": 0
+        },
+        {
+          "kind": "legacy-backfill",
+          "class": null,
+          "candidates": 0,
+          "retained": 71,
+          "bytes": 0
+        },
+        {
+          "kind": "temporary-root",
+          "class": null,
+          "candidates": 0,
+          "retained": 1,
+          "bytes": 0
+        }
+      ],
+      "blockers": []
+    },
+    {
+      "stage": "after",
+      "command": "node scripts/harness.mjs prune",
+      "exitCode": 0,
+      "observedAt": "2026-10-27T01:29:26.408Z",
+      "candidates": 0,
+      "bytes": 0,
+      "removed": 0,
+      "retained": 73,
+      "census": [
+        {
+          "kind": "snapshot",
+          "class": null,
+          "candidates": 0,
+          "retained": 1,
+          "bytes": 0
+        },
+        {
+          "kind": "legacy-backfill",
+          "class": null,
+          "candidates": 0,
+          "retained": 71,
+          "bytes": 0
+        },
+        {
+          "kind": "temporary-root",
+          "class": null,
+          "candidates": 0,
+          "retained": 1,
+          "bytes": 0
+        }
+      ],
+      "blockers": []
+    }
+  ]
+}

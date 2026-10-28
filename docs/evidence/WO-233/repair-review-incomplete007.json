@@ -1,0 +1,152 @@
+{
+  "checkId": "npm test",
+  "evidenceRef": "host-gate:97ba9df7f7c0575ba98d5cd1cf189861400016222aa9faeb426d9cd3ce4d7043:npm test",
+  "temporaryGateId": "e38288a3-d0ae-411c-863b-7f2ae37e7350",
+  "recordedAt": "2026-10-27T17:37:48.501Z",
+  "codeIdentity": "97ba9df7f7c0575ba98d5cd1cf189861400016222aa9faeb426d9cd3ce4d7043",
+  "exitCode": 0,
+  "durationMs": 1850794,
+  "identityUnchanged": true,
+  "buildOutputUnchanged": true,
+  "freshSuites": 112,
+  "reusedSuites": 0,
+  "unrunSuites": [],
+  "requiredSuites": [
+    "build",
+    "format",
+    "configuration-root",
+    "registrations",
+    "declarations",
+    "generated",
+    "host",
+    "release-preparation",
+    "github-body",
+    "outward-lint",
+    "target-publish",
+    "target-worktree",
+    "vertical",
+    "license-fixtures",
+    "publication-fixtures",
+    "backup-intake",
+    "launchpad",
+    "workstream-pilot",
+    "instance-history",
+    "beacon-portability",
+    "checkpoint",
+    "worktree",
+    "worktree-integration",
+    "release",
+    "work-orders-fixtures",
+    "siblings-fixtures",
+    "kernel",
+    "compiler",
+    "skeleton",
+    "console",
+    "browser-evidence",
+    "adjacent-queue",
+    "derived-orders",
+    "portfolio",
+    "codex-continuation",
+    "authority-grants",
+    "fixture-temp-root",
+    "launchpad-planning",
+    "evidence-sources",
+    "harness-probe",
+    "harness-fixtures",
+    "harness-context",
+    "plan-refutation",
+    "runner-fixtures",
+    "sync-fixtures",
+    "process-debt"
+  ],
+  "churn": {
+    "filesCreated": 1051908,
+    "filesDeleted": 1044785,
+    "bytesWritten": 20631986241,
+    "source": "owned-root content inventories at helper removal and gate completion, capped by allocated bytes for sparse files; physical I/O, overwrites and uninstrumented removals unobserved"
+  },
+  "fileEvents": {
+    "before": {
+      "residentBytes": 19038208,
+      "source": "ps -A -o rss=,comm= (KiB converted to bytes)",
+      "observedAt": "2026-10-27T17:06:57.144Z"
+    },
+    "host": {
+      "residentBytes": 19038208,
+      "source": "ps -A -o rss=,comm= (KiB converted to bytes)",
+      "observedAt": "2026-10-27T17:07:33.115Z"
+    },
+    "after": {
+      "residentBytes": 19070976,
+      "source": "ps -A -o rss=,comm= (KiB converted to bytes)",
+      "observedAt": "2026-10-27T17:37:48.501Z"
+    }
+  },
+  "hostLaneWait": {
+    "wallMs": 987,
+    "byRelation": {
+      "this-checkout": 0,
+      "another-checkout": 0,
+      "unknown": 987
+    },
+    "holders": []
+  },
+  "command": "npm test -- --review",
+  "acceptance": "unmet: post-gate filesystem probe found one passing fixture retained by this regression\u2019s independent failed-owner control; do not consume as the repair handoff",
+  "temporaryCleanup": {
+    "removed": 2215,
+    "retained": 2,
+    "blockers": []
+  },
+  "retentions": [
+    {
+      "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-fixture-temporary-eoXSQC/dotln-temporary-roots-test-ti3Kab",
+      "reason": "nested owned root is retained"
+    },
+    {
+      "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-fixture-temporary-eoXSQC",
+      "reason": "nested owned root is retained"
+    }
+  ],
+  "postGateProbe": {
+    "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-233/verification-001-passed-roots.mjs",
+    "result": {
+      "gateId": "e38288a3-d0ae-411c-863b-7f2ae37e7350",
+      "recordedAt": "2026-10-27T17:37:48.501Z",
+      "codeIdentity": "97ba9df7f7c0575ba98d5cd1cf189861400016222aa9faeb426d9cd3ce4d7043",
+      "passedRootsRemaining": 1,
+      "bySuite": {
+        "harness-fixtures": 1
+      },
+      "pinnedByCopiedRecord": 0,
+      "pinnedByTrackedRecord": 0,
+      "example": {
+        "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-fixture-temporary-eoXSQC",
+        "suite": "harness-fixtures",
+        "pinnedBy": []
+      },
+      "rowRetainedForNestedRoot": 2
+    },
+    "execution": {
+      "name": "bounded-probe",
+      "durationMs": 448,
+      "slowestCases": [
+        {
+          "name": "bounded-probe",
+          "durationMs": 448,
+          "exitCode": 1,
+          "granularity": "task"
+        }
+      ],
+      "peakFootprintBytes": 29609656,
+      "peakRssBytes": 77463552,
+      "memoryBudgetBytes": 3221225472,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+      "droppedOutputBytes": 0,
+      "startedAt": "2026-10-27T17:38:08.717Z",
+      "finishedAt": "2026-10-27T17:38:09.165Z",
+      "exitCode": 1,
+      "executed": true
+    }
+  }
+}

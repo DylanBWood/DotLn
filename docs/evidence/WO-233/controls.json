@@ -1,0 +1,50 @@
+{
+  "base": "bca92e77d03880ec57a83d37eebb85a3a8f7ab76",
+  "observedAt": "2026-10-27T01:26:44.030Z",
+  "arms": [
+    {
+      "scenario": "completed-stash",
+      "arm": "base",
+      "exitCode": 0,
+      "stashBefore": 0,
+      "stashAfter": 1,
+      "complete": true,
+      "stashDropped": false,
+      "upstreamFile": "upstream intent\n",
+      "output": "Checkpoint: refs/dotln/checkpoint/WO-998/1\nRetained stash: WO-998 integrate 2026-10-27 (46b358b62078e8a830d84045c19d1f2c211f0a2c)\nRegenerated: runtime\nRegenerated: harness bundle and manifest\nRegenerated: current control projection\nRegenerated: release preparation\nRegenerated: integration decision stub\nRegenerated: decisions index, follow-up register and meta\nRegenerated: work-order index\nRegenerated: publication locks\nRegenerated: selected console fixtures\nBases: ccd2d5e1610a6cb707660e1b7c71708affbbbca7 -> c9d67f34f081ebe9c13733183c9d22253c9a11cd\nAuthored conflicts: none\nAffected checks (not run):\n  npm test -- --review\n  npm run publication:check\n  node scripts/harness.mjs check\n  npm run release -- check-surfaces --local\nReviewer: complete the integration decision's carried-forward claims; assess component-version collisions and changed evidence inputs. No lifecycle event or acceptance result was appended.\nIntegration mechanics complete. Preservation and merge identities are in the receipt; recovery refs and stash retained.\n"
+    },
+    {
+      "scenario": "completed-stash",
+      "arm": "changed",
+      "exitCode": 0,
+      "stashBefore": 0,
+      "stashAfter": 0,
+      "complete": true,
+      "stashDropped": true,
+      "upstreamFile": "upstream intent\n",
+      "output": "Checkpoint: refs/dotln/checkpoint/WO-998/1\nRetained stash: WO-998 integrate 2026-10-27 (423bd0fb1e34ef2df50f402fd2f8b845da4375ee)\nRegenerated: runtime\nRegenerated: harness bundle and manifest\nRegenerated: current control projection\nRegenerated: release preparation\nRegenerated: integration decision stub\nRegenerated: decisions index, follow-up register and meta\nRegenerated: work-order index\nRegenerated: publication locks\nRegenerated: selected console fixtures\nBases: 2dc2c199134c20ae45ee1c463222f74783537ce6 -> 565cc8bcdf14377560db0e767c8d00d92c193942\nAuthored conflicts: none\nAffected checks (not run):\n  npm test -- --review\n  npm run publication:check\n  node scripts/harness.mjs check\n  npm run release -- check-surfaces --local\nReviewer: complete the integration decision's carried-forward claims; assess component-version collisions and changed evidence inputs. No lifecycle event or acceptance result was appended.\nIntegration mechanics complete. Preservation and merge identities are in the receipt; recovery refs retained and the completed integration's stash dropped.\n"
+    },
+    {
+      "scenario": "active-current-main",
+      "arm": "base",
+      "exitCode": 1,
+      "stashBefore": 0,
+      "stashAfter": 0,
+      "complete": false,
+      "stashDropped": false,
+      "upstreamFile": "base intent\n",
+      "output": "error: integrate requires the selected order in repairing or final-review\n"
+    },
+    {
+      "scenario": "active-current-main",
+      "arm": "changed",
+      "exitCode": 0,
+      "stashBefore": 0,
+      "stashAfter": 0,
+      "complete": true,
+      "stashDropped": true,
+      "upstreamFile": "upstream intent\n",
+      "output": "Checkpoint: refs/dotln/checkpoint/WO-998/1\nRetained stash: WO-998 integrate 2026-10-27 (c3965483ff5591393d18bd57902d068b1d7362ee)\nRegenerated: runtime\nRegenerated: harness bundle and manifest\nRegenerated: current control projection\nRegenerated: release preparation\nRegenerated: integration decision stub\nRegenerated: decisions index, follow-up register and meta\nRegenerated: work-order index\nRegenerated: publication locks\nRegenerated: selected console fixtures\nBases: a7c4450c56ec2a725bee91c45a8fc1facc466bb4 -> 545ab173bb57b1e8df7616ad098141b389878b4c\nAuthored conflicts: none\nAffected checks (not run):\n  npm test -- --review\n  npm run publication:check\n  node scripts/harness.mjs check\n  npm run release -- check-surfaces --local\nReviewer: complete the integration decision's carried-forward claims; assess component-version collisions and changed evidence inputs. No lifecycle event or acceptance result was appended.\nIntegration mechanics complete. Preservation and merge identities are in the receipt; recovery refs retained and the completed integration's stash dropped.\n"
+    }
+  ]
+}

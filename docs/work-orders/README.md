@@ -4,7 +4,7 @@
 
 ## Proposed order
 
-- [ ] [WO-233] — DotLn cleans up after itself · **queued**
+- [x] [WO-233] — DotLn cleans up after itself · **final-reviewed**
 - [ ] [WO-234] — A dispatch cannot run away · **queued**
 - [ ] [WO-235] — No artifact is shaped by its predecessor and no operator direction is dropped · **queued**
 - [ ] [WO-192] — A router drives an order through its lifecycle · **queued**
@@ -33,32 +33,15 @@ Full evidence for the active and sequenced orders follows; the Open cards are in
 
 Separate track; outside the proposed serial order.
 
-- [WO-228] — repository: self; base: 939af628cc317ca436b2c5e1f9d5446adb1d3a0d; phase: draft; verdict: unknown; integration: current; stale: no; observed target: 939af628cc317ca436b2c5e1f9d5446adb1d3a0d.
+- [WO-228] — repository: self; base: bca92e77d03880ec57a83d37eebb85a3a8f7ab76; phase: draft; verdict: unknown; integration: current; stale: no; observed target: bca92e77d03880ec57a83d37eebb85a3a8f7ab76.
 
-<!-- dotln-workstreams: {"workstreams":[{"id":"WS-002","track":"separate","members":[{"workOrderId":"WO-228","repository":"self","base":"939af628cc317ca436b2c5e1f9d5446adb1d3a0d","phase":"draft","verdict":"unknown","integration":"current","stale":"no","targetCommit":"939af628cc317ca436b2c5e1f9d5446adb1d3a0d"}],"edges":[{"from":"WO-228","to":"WO-193","relation":"planning-deferral"}]}]} -->
+<!-- dotln-workstreams: {"workstreams":[{"id":"WS-002","track":"separate","members":[{"workOrderId":"WO-228","repository":"self","base":"bca92e77d03880ec57a83d37eebb85a3a8f7ab76","phase":"draft","verdict":"unknown","integration":"current","stale":"no","targetCommit":"bca92e77d03880ec57a83d37eebb85a3a8f7ab76"}],"edges":[{"from":"WO-228","to":"WO-193","relation":"planning-deferral"}]}]} -->
 
 ## Active
 
 None.
 
 ## Open
-
-### WO-233
-
-[WO-233 — DotLn cleans up after itself: an integration drops its own stash when it completes, every temporary root carries an owner and a retention class the prune judges, the prune runs inside release close, session end and gate end instead of in the operator's hands, a complete review reuses a warm export fixture instead of a fresh install per run, and the kit carries all of it to every instance (version assigned at activation)](WO-233-dotln-cleans-up-after-itself.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-232: satisfied-by-close (met) — the instance-history suite and its committed fixture instance, in which step 13 proves an updated instance prunes its own residue; WO-226: satisfied-by-close (met) — update --finish and the carried runtime, the path by which an exported instance takes this order's kit files; WO-215: satisfied-by-close (met) — release close's cleanup and starter refresh, the step the prune joins; WO-229: satisfied-by-close (met) — the host-lane registry and the host structural task the gate-end prune and the prune-gate serialization build on; WO-192: reference-only (non-blocking) — its decisions D080, D081, D083, D084 and D017 are the sources; its worktree holds them uncommitted; nothing here waits on its merge.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer xhigh.
-- Track: machinery
-- Cost: adds &#96;scripts/lib/temporary-roots.mjs&#96; (new; the owner record, the class table and the ledger every temporary root is created through), the &#96;temporary-root&#96;, &#96;session-scratch&#96; and legacy-backfill candidate kinds and the host-lock serialization in &#96;scripts/lib/harness-prune.mjs&#96;, the stash drop at completion in &#96;scripts/lib/worktree-integration.mjs&#96;, the prune step and its record in &#96;scripts/release.mjs&#96;, the session-end prune in &#96;packages/skeleton/src/harness-host.ts&#96;, the gate-end prune, the churn metric and the fseventsd sample in &#96;scripts/test-runner.mjs&#96;, the warm export fixture in &#96;scripts/lib/launchpad-fixture.mjs&#96; and &#96;scripts/test-launchpad-export.mjs&#96;, &#96;retention&#96; keys in &#96;docs/control/budgets.json&#96; and &#96;scripts/kit/budgets.template.json&#96;, one case in &#96;scripts/test-instance-history.mjs&#96;, cases in &#96;scripts/test-harness.mjs&#96;, &#96;scripts/test-worktree-integration.mjs&#96;, &#96;scripts/test-release.mjs&#96;, &#96;scripts/test-runner.test.mjs&#96; and &#96;scripts/test-launchpad-export.mjs&#96;, a declarations rule in &#96;scripts/structural-checks.mjs&#96;, the &#96;active&#96; admission and the current-code route of &#96;worktree integrate&#96; in &#96;scripts/lib/worktree-integration.mjs&#96; and &#96;scripts/worktree.mjs&#96; with cases in &#96;scripts/test-worktree-integration.mjs&#96; and the executor root's integrate-first sentence in &#96;packages/skeleton/src/loadouts/contributor.ts&#96; (amendment D001), and sentences in product 07, the security document, the gate architecture record and the kit README. Removes: the residue WO-192 measured and the operator removed by hand on 2026-10-26 (85 integration stashes, 41.30 GB; 641 session scratch trees, 9.7 GB) and the residue this pass measured that WO-192 did not (24,526 &#96;dotln-*&#96; roots in the system temp directory, 14 GB, the oldest from 2026-09-29); the &#96;npm ci&#96; every complete review pays per export fixture after the first; the cleanup commands handed to the operator (WO-192-D081, D084); the "Prune subject changed" refusal that stopped the operator's chain when a session started a gate beside it (D084); and, for every order that resumes behind &#96;main&#96;, the second complete review final review pays at the integrated identity and the hand merge a stale worktree otherwise needs (WO-192's last complete review ran 1,902.3 s; amendment D001). Wall-clock: the launchpad suite loses its per-run installs (unmeasured until run; the export task read 164.231 s at WO-216's base and the whole plain gate's thirty-day median is 419.1 s against a 360 s threshold at &#96;plan conditions&#96; 2026-10-26); release close gains one prune (seconds; the dry run on this machine judged 84.8 MB of snapshot candidates in under a second); session end gains one prune of the session's own trees. Context bytes: this file; product 07 grows by the sentences of step 15. Commands: none new for the operator; &#96;harness prune &#91;--apply&#93;&#96; keeps its spelling and gains the census. Tokens: unknown until run. Steps: 17. Re-mints: &#96;harness-host.ts&#96; is a registered evidence source (&#96;scripts/lib/evidence-sources.mjs&#96;), so the editions it stales are re-minted deterministically; it is not a file the feedback verifier judges, so no live feedback episode; &#96;harness-prune.mjs&#96;, &#96;test-runner.mjs&#96; and &#96;launchpad-fixture.mjs&#96; are declared sources of machinery suites (&#96;scripts/test-runner.mjs&#96; &#96;machinerySources&#96;), so &#96;npm test -- --review&#96; runs before handoff. One role text change: the executor root's handoff step gains the integrate-first sentence of step 16 (amendment D001), so &#96;contributor.ts&#96; is edited, the role oracle re-minted and each root's cold-start bytes recorded before and after; the executor root is already over its ceiling, so the same change carries product 07's standing route (a dated acceptance or an offsetting removal), never an advisory left across orders. The release-close root is unchanged unless the executor finds a prune sentence necessary, recorded the same way.
-- Authority: [docs/work-orders/WO-233-dotln-cleans-up-after-itself.md](WO-233-dotln-cleans-up-after-itself.md)
 
 ### WO-234
 

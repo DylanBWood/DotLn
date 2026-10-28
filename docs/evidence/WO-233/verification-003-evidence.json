@@ -1,0 +1,152 @@
+{
+  "verification": "VER-003",
+  "subject": {
+    "workOrder": "WO-233",
+    "base": "bca92e77d03880ec57a83d37eebb85a3a8f7ab76",
+    "checkpoint": "refs/dotln/checkpoint/WO-233/11",
+    "checkpointObject": "3e1902038ed675cf5863c9b24da99c2078a033ee",
+    "codeIdentity": "87065fbd538fd6c07ed5419cbece792f08111a27b06a24f42c2d319ddf8b1815",
+    "workingTreeVersusCheckpoint": "differs only in the dispatch's lifecycle projections: docs/control/current.md, docs/control/orders/WO-233.jsonl, docs/work-orders/README.md"
+  },
+  "consumedRows": {
+    "structural": {
+      "gateId": "10b258ee-5319-4423-9c64-1731c490f7c4",
+      "recordedAt": "2026-10-27T20:29:02.975Z",
+      "exitCode": 0,
+      "freshTasks": 6
+    },
+    "complete": {
+      "checkId": "npm test",
+      "gateSelection": "review",
+      "gateId": "10b258ee-5319-4423-9c64-1731c490f7c4",
+      "recordedAt": "2026-10-27T20:31:18.147Z",
+      "durationMs": 1844626,
+      "exitCode": 0,
+      "freshSuites": 114,
+      "reusedSuites": 0,
+      "unrunSuites": 0,
+      "failedTasks": 0,
+      "identityUnchanged": true,
+      "buildOutputUnchanged": true,
+      "temporaryCleanup": {
+        "removed": 2272,
+        "retained": [
+          "<worktree>/.runtime/fixtures/launchpad/7e9c1616c9b5fd5ef6af7ad0a0c29f9f9d8ae0355bce63d021992e3d64971093"
+        ],
+        "blockers": 0
+      },
+      "filesCreated": 1055632,
+      "filesDeleted": 1048714,
+      "bytesWritten": 20736147441,
+      "fileEventsResidentBytes": {
+        "before": 19251200,
+        "host": 19185664,
+        "after": 19234816
+      },
+      "hostLaneWaitMs": 1035
+    },
+    "document": [
+      {
+        "gateId": "b3e1a613-44dd-418c-b055-cab11b347582",
+        "recordedAt": "2026-10-27T20:35:20.162Z",
+        "durationMs": 168059,
+        "exitCode": 0,
+        "temporaryCleanup": { "removed": 230, "retained": 0, "blockers": 0 }
+      },
+      {
+        "gateId": "d2828763-beb5-43a0-aa2f-7d88ac1b2dea",
+        "recordedAt": "2026-10-27T20:45:56.754Z",
+        "durationMs": 161778,
+        "exitCode": 0,
+        "temporaryCleanup": { "removed": 230, "retained": 0, "blockers": 0 }
+      }
+    ]
+  },
+  "probes": [
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-233/verification-002-gate-residue.mjs",
+      "startedAt": "2026-10-27T20:53:29Z",
+      "exitCode": 0,
+      "result": "complete 10b258ee: deadOwnerRootsOfPassingSuitesRemaining 0; document d2828763: unownedRootsBornInWindow 0; processTableReadable true"
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-233/verification-001-passed-roots.mjs",
+      "startedAt": "2026-10-27T20:53:36Z",
+      "exitCode": 0,
+      "result": "passedRootsRemaining 0; pinnedByCopiedRecord 0; pinnedByTrackedRecord 0 for gate 10b258ee"
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-233/verification-001-fseventsd.mjs",
+      "startedAt": "2026-10-27T20:53:37Z",
+      "exitCode": 0,
+      "result": "sampler 19,185,664 bytes; independent RSS-first read 19,185,664 bytes"
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-233/verification-001-session-scratch.mjs",
+      "startedAt": "2026-10-27T20:53:45Z",
+      "exitCode": 0,
+      "result": "Stop: 0 removed, 1 retained; scratch and staged file exist on the next turn; owner alive"
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-233/verification-002-session-completion.mjs",
+      "startedAt": "2026-10-27T20:53:47Z",
+      "exitCode": 0,
+      "result": "scratch, staged file and live capture survive two turn ends; the Stop after ImplementationReady removes the session's own scratch; live capture and a live sibling's scratch and file remain"
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-233/verification-003-gate-census.mjs",
+      "startedAt": "2026-10-27T21:12:54Z",
+      "exitCode": 1,
+      "result": "gate 10b258ee: one unaccounted root carrying the gate, <system-temp>/dotln-wo185-quarantine-9LOzTD (gate-fixture; suite nonfinite-quarantine-roundtrip, not in the task timeline; repository <system-temp>/dotln-wo185-buEJPM/repo, removed; owner birth null; ownerAlive null; no end). Documents b3e1a613 and d2828763: none. Born in 10b258ee's window and still present: 4 failed-outcome roots of nested gates ff5465b1 and 83253c13, the WO-186 lock-cancel trace and pause files, and 11 Playwright directories."
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-233/verification-003-nested-suite-residue.mjs",
+      "startedAt": "2026-10-27T21:13:14Z",
+      "exitCode": 1,
+      "result": "base arm (file at bca92e77): exit 0, case passed, 0 roots left. Changed arm: exit 0, case passed, 1 root left recording the arm's gate, the nested suite, the copy as repository and owner birth null, with no end; the copy's ledger lists it, the outer ledger does not; finishGateTemporaryRoots selects removed 0, retained 0, blockers 0; after the copy is gone judgeTemporaryRoot retains it with 'owner identity is unavailable'. Probe cleanup: 0 roots and no scaffold remaining."
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- zsh -c \"node scripts/harness.mjs prune > <scratch>/prune-full.json\"",
+      "startedAt": "2026-10-27T21:07:58Z",
+      "exitCode": 0,
+      "durationMs": 162945,
+      "result": "dry run, untruncated: 18 candidates (8 snapshots, 8 advisories, 2 worker captures), 4,932 retained, 0 blockers. Unknown-owner retentions: <system-temp>/dotln-wo185-quarantine-9LOzTD, -q9undf and <system-temp>/dotln-fixture-temporary-3sHpVT/dotln/894b8b9a…/scratch. Invalid-record retentions: <system-temp>/dotln-document-base-OtlDQc/subject and -uybkyR/subject, and their parents. 4,337 temporary roots and 51 session scratch trees are retained by this worktree's writer reservation (FUP-0287986e9f873e20)."
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node <scratch>/decl/probe.mjs <worktree>",
+      "exitCode": 0,
+      "result": "unownedTemporaryRootSites on a synthetic root flags docs/evidence/WO-900/fixture.mjs:4 (relative import from a test) and docs/evidence/WO-901/seed.mjs:4 (repository-relative path literal), and excludes the intake factory and an unreferenced evidence module; a computed path (join(cwd, 'docs/evidence', id, 'seed.mjs')) is not followed, the limit D044's reopen condition names"
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node <scratch>/d045-probe.mjs <worktree>",
+      "exitCode": 0,
+      "result": "finishTemporaryRoot: first end 03:00:00Z; a later repeat (13:30) keeps 03:00:00Z; an earlier completion (02:00) corrects to 02:00:00Z; a completion at 05:00 replaces an owner-death observation at 01:00 with endSource completion"
+    }
+  ],
+  "checks": {
+    "formatCheck": "npm run format:check under the bounded runner: exit 0, all matched files use Prettier code style",
+    "publicationCheck": "npm run publication:check under the bounded runner: exit 0; 255/255 product headings indexed; both editions current",
+    "diffCheck": "git diff --check: exit 0, no output",
+    "dependencies": "the dependency diff changes only the internal @dotln/skeleton pin 0.69.0 to 0.70.0 and its version; no new dependency"
+  },
+  "machineObservations": {
+    "observedAt": "2026-10-27T21:16:00Z",
+    "systemTempEntries": 11099,
+    "dotlnLockCancelFiles": 294,
+    "playwrightDirectories": 3877,
+    "playwrightKilobytes": 21044,
+    "warmFixtureKeys": 14,
+    "warmFixtureCurrentKey": "7e9c1616c9b5fd5ef6af7ad0a0c29f9f9d8ae0355bce63d021992e3d64971093",
+    "temporaryLedgerSegments": 4848,
+    "unindexedMarkers": [
+      "<system-temp>/dotln/.metadata_never_index",
+      "<worktree>/.runtime/.metadata_never_index"
+    ]
+  },
+  "limits": [
+    "Only top-level system-temp entries are censused per gate; nested roots are judged through the dry-run prune.",
+    "The probes and the bounded runner use the subject's helper, ownership parser and process-table reader; the census reads owner records, birth times and existence from disk independently of the rows' cleanup counts.",
+    "The first dry-run prune (20:57:57Z, 187.7 s) lost 97,900 bytes of output to the bounded runner's tail; the second wrote untruncated output to scratch and is the one recorded.",
+    "The complete gate and the controls were not rerun; the consumed rows are at the subject identity."
+  ]
+}

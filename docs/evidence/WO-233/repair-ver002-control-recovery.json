@@ -1,0 +1,65 @@
+{
+  "observedAt": "2026-10-27T19:58:08.161Z",
+  "sourceGate": "2a47ed0d-5c31-4d6c-bcf9-2f5737a0fdb9",
+  "sourceRecordedAt": "2026-10-27T19:53:31.557Z",
+  "rule": "Explicit creator disposal of seven empty, source-identified test controls; no production liveness, identity or retention exception.",
+  "controls": [
+    {
+      "name": "cache",
+      "class": "warm-fixture",
+      "gateId": "d179a980-e7b8-460e-afff-3bcb9e6fa093",
+      "retentionHours": 0,
+      "emptyApartFromOwner": true
+    },
+    {
+      "name": "coordination",
+      "class": "coordination",
+      "gateId": "d179a980-e7b8-460e-afff-3bcb9e6fa093",
+      "retentionHours": 24,
+      "emptyApartFromOwner": true
+    },
+    {
+      "name": "failed",
+      "class": "worker-capture",
+      "gateId": "d179a980-e7b8-460e-afff-3bcb9e6fa093",
+      "retentionHours": 24,
+      "outcome": "failed",
+      "emptyApartFromOwner": true
+    },
+    {
+      "name": "forever",
+      "class": "worker-capture",
+      "gateId": "d179a980-e7b8-460e-afff-3bcb9e6fa093",
+      "retentionHours": null,
+      "outcome": "passed",
+      "emptyApartFromOwner": true
+    },
+    {
+      "name": "scratch",
+      "class": "session-scratch",
+      "gateId": "d179a980-e7b8-460e-afff-3bcb9e6fa093",
+      "retentionHours": null,
+      "outcome": "passed",
+      "emptyApartFromOwner": true
+    },
+    {
+      "name": "sibling",
+      "class": "worker-capture",
+      "gateId": "86d27bda-df42-40bf-8b06-b608386a6cd2",
+      "retentionHours": 1,
+      "emptyApartFromOwner": true
+    },
+    {
+      "name": "unknown",
+      "class": "worker-capture",
+      "gateId": "d179a980-e7b8-460e-afff-3bcb9e6fa093",
+      "retentionHours": 0,
+      "outcome": "passed",
+      "emptyApartFromOwner": true
+    }
+  ],
+  "removedContainers": 2,
+  "retained": [],
+  "blockers": [],
+  "parentRemains": false
+}

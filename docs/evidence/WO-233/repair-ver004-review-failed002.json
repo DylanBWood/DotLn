@@ -1,0 +1,235 @@
+{
+  "command": "npm test -- --review",
+  "gateId": "5f4720d4-b41d-4456-816e-770da771456f",
+  "evidenceRef": "host-gate:9c61ad765c8b8d044d8c5c23a91d69ed82d3dd24b61a6e3f975c952eb3c97ae7:npm test",
+  "codeIdentity": "9c61ad765c8b8d044d8c5c23a91d69ed82d3dd24b61a6e3f975c952eb3c97ae7",
+  "recordedAt": "2026-10-28T01:08:52.634Z",
+  "durationMs": 1539386,
+  "exitCode": 1,
+  "identityUnchanged": true,
+  "buildOutputUnchanged": true,
+  "freshTasks": 109,
+  "reusedTasks": 0,
+  "requiredSuites": [
+    "build",
+    "format",
+    "configuration-root",
+    "registrations",
+    "declarations",
+    "generated",
+    "host",
+    "release-preparation",
+    "github-body",
+    "outward-lint",
+    "target-publish",
+    "target-worktree",
+    "vertical",
+    "license-fixtures",
+    "publication-fixtures",
+    "backup-intake",
+    "launchpad",
+    "workstream-pilot",
+    "instance-history",
+    "beacon-portability",
+    "checkpoint",
+    "worktree",
+    "worktree-integration",
+    "release",
+    "work-orders-fixtures",
+    "siblings-fixtures",
+    "kernel",
+    "compiler",
+    "skeleton",
+    "console",
+    "browser-evidence",
+    "adjacent-queue",
+    "derived-orders",
+    "portfolio",
+    "codex-continuation",
+    "authority-grants",
+    "fixture-temp-root",
+    "launchpad-planning",
+    "evidence-sources",
+    "harness-probe",
+    "harness-fixtures",
+    "harness-context",
+    "plan-refutation",
+    "wo107-schema",
+    "mutation",
+    "runner-fixtures",
+    "sync-fixtures",
+    "process-debt"
+  ],
+  "unrunTasks": [
+    "vertical:file:test-vertical-judgment.mjs",
+    "vertical:file:test-vertical.recovery.mjs",
+    "launchpad:file:test-launchpad-update.mjs",
+    "launchpad:file:test-launchpad-export.mjs",
+    "browser-evidence"
+  ],
+  "failedExecutedTasks": [
+    {
+      "name": "skeleton",
+      "durationMs": 511824,
+      "slowestCases": [
+        {
+          "name": "WO-143 once and loop restart at every acquisition filesystem boundary, including killed reclaimers",
+          "file": "packages/skeleton/dist/test/resident.test.js",
+          "durationMs": 100773.791416,
+          "exitCode": 0
+        },
+        {
+          "name": "WO-143 once and loop recover kills during a running episode's polling acquisition",
+          "file": "packages/skeleton/dist/test/resident.test.js",
+          "durationMs": 55673.746459,
+          "exitCode": 0
+        },
+        {
+          "name": "cell loop-lifetime-reclaim",
+          "file": "packages/skeleton/dist/test/resident.test.js",
+          "durationMs": 55149.567,
+          "exitCode": 0
+        },
+        {
+          "name": "cell loop-append-reclaim",
+          "file": "packages/skeleton/dist/test/resident.test.js",
+          "durationMs": 50619.524209,
+          "exitCode": 0
+        },
+        {
+          "name": "cell once-lifetime-reclaim",
+          "file": "packages/skeleton/dist/test/resident.test.js",
+          "durationMs": 49854.802292,
+          "exitCode": 0
+        }
+      ],
+      "peakFootprintBytes": 420891048,
+      "peakRssBytes": 872595456,
+      "memoryBudgetBytes": 3221225472,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+      "droppedOutputBytes": 0,
+      "startedAt": "2026-10-28T00:54:50.740Z",
+      "finishedAt": "2026-10-28T01:03:22.605Z",
+      "exitCode": 1,
+      "productReadLog": "docs/control/local/harness/runner/product-reads/skeleton-19a570c2-ecb3-4d31-a4de-529b1d6400d1.jsonl",
+      "excludedReads": 0,
+      "executed": true,
+      "concurrentAtStart": [
+        "launchpad-planning",
+        "evidence-sources",
+        "harness-probe",
+        "plan-refutation",
+        "runner-fixtures",
+        "sync-fixtures",
+        "worktree"
+      ],
+      "predecessors": [
+        "build",
+        "format",
+        "configuration-root",
+        "registrations",
+        "declarations",
+        "generated",
+        "host",
+        "harness-context",
+        "mutation",
+        "compiler"
+      ],
+      "schedulerDurationMs": 511865,
+      "loadClass": "shared",
+      "loadFactor": 16,
+      "peerCap": 7,
+      "reservedSlots": 1,
+      "slotCapacity": 8,
+      "hostCapacity": 8,
+      "timeoutMs": 900000,
+      "lanes": [
+        6
+      ],
+      "hostLaneWaitMs": 9,
+      "hostLaneWaitRelations": [],
+      "hostLaneSlots": 1
+    }
+  ],
+  "cleanup": {
+    "removed": 1901,
+    "retainedCount": 315,
+    "blockers": []
+  },
+  "churn": {
+    "filesCreated": 915861,
+    "filesDeleted": 897598,
+    "bytesWritten": 18012022247,
+    "source": "owned-root content inventories at helper removal and gate completion, capped by allocated bytes for sparse files; physical I/O, overwrites and uninstrumented removals unobserved"
+  },
+  "fileEvents": {
+    "before": {
+      "residentBytes": 19349504,
+      "source": "ps -A -o rss=,comm= (KiB converted to bytes)",
+      "observedAt": "2026-10-28T00:43:12.694Z"
+    },
+    "host": {
+      "residentBytes": 19316736,
+      "source": "ps -A -o rss=,comm= (KiB converted to bytes)",
+      "observedAt": "2026-10-28T00:43:49.030Z"
+    },
+    "after": {
+      "residentBytes": 19365888,
+      "source": "ps -A -o rss=,comm= (KiB converted to bytes)",
+      "observedAt": "2026-10-28T01:08:52.634Z"
+    }
+  },
+  "postWindowProjection": {
+    "command": "node scripts/harness.mjs bounded -- node docs/control/local/repair-ver004-failed-window.mjs 5f4720d4-b41d-4456-816e-770da771456f",
+    "name": "bounded-probe",
+    "durationMs": 947,
+    "slowestCases": [
+      {
+        "name": "bounded-probe",
+        "durationMs": 947,
+        "exitCode": 0,
+        "granularity": "task"
+      }
+    ],
+    "peakFootprintBytes": 116091128,
+    "peakRssBytes": 162103296,
+    "memoryBudgetBytes": 3221225472,
+    "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+    "droppedOutputBytes": 0,
+    "startedAt": "2026-10-28T01:11:51.730Z",
+    "finishedAt": "2026-10-28T01:11:52.677Z",
+    "exitCode": 0,
+    "executed": true,
+    "retainedTopLevelRoots": 294,
+    "futureCandidates": 294,
+    "remainingReasons": [],
+    "limit": "Read-only judgment 49 hours after observation, with this worktree writer treated as released; no fixture deleted."
+  },
+  "remedyReproduction": {
+    "command": "node scripts/harness.mjs bounded -- node --test packages/skeleton/dist/test/executor-supports.test.js",
+    "name": "bounded-probe",
+    "durationMs": 1427,
+    "slowestCases": [
+      {
+        "name": "bounded-probe",
+        "durationMs": 1427,
+        "exitCode": 0,
+        "granularity": "task"
+      }
+    ],
+    "peakFootprintBytes": 140592144,
+    "peakRssBytes": 224231424,
+    "memoryBudgetBytes": 3221225472,
+    "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+    "droppedOutputBytes": 0,
+    "startedAt": "2026-10-28T01:09:33.384Z",
+    "finishedAt": "2026-10-28T01:09:34.811Z",
+    "exitCode": 0,
+    "executed": true,
+    "tests": 8,
+    "passed": 8,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0
+  }
+}

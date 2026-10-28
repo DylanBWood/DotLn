@@ -1,0 +1,61 @@
+{
+  "command": "npm test -- --review",
+  "checkId": "npm test",
+  "evidenceRef": "host-gate:932de5640be18220da0e621bbf9a5e426030ecda57f7a0a4a6150f593784d9a0:npm test",
+  "temporaryGateId": "212ba3f6-609c-4584-9ee4-e57ac5de10c1",
+  "recordedAt": "2026-10-27T16:05:45.958Z",
+  "codeIdentity": "932de5640be18220da0e621bbf9a5e426030ecda57f7a0a4a6150f593784d9a0",
+  "exitCode": 1,
+  "durationMs": 1543195,
+  "freshTasks": 107,
+  "unrunTasks": [
+    "vertical:file:test-vertical-judgment.mjs",
+    "vertical:file:test-vertical.recovery.mjs",
+    "launchpad:file:test-launchpad-update.mjs",
+    "launchpad:file:test-launchpad-export.mjs",
+    "browser-evidence"
+  ],
+  "executedFailures": [
+    {
+      "name": "skeleton",
+      "exitCode": 1,
+      "durationMs": 511242
+    }
+  ],
+  "assertions": [
+    {
+      "file": "packages/skeleton/test/source-change-host.test.ts",
+      "name": "WO-204 recovery after-import: retained private objects import once before one ref update",
+      "observation": "Child returned transport-failed: source-change launch gate identity before its expected SIGKILL."
+    }
+  ],
+  "temporaryCleanup": {
+    "removed": 1846,
+    "retained": 288,
+    "blockers": []
+  },
+  "churn": {
+    "filesCreated": 904978,
+    "filesDeleted": 891856,
+    "bytesWritten": 17721861473,
+    "source": "owned-root content inventories at helper removal and gate completion, capped by allocated bytes for sparse files; physical I/O, overwrites and uninstrumented removals unobserved"
+  },
+  "fileEvents": {
+    "before": {
+      "residentBytes": 18939904,
+      "source": "ps -A -o rss=,comm= (KiB converted to bytes)",
+      "observedAt": "2026-10-27T15:40:02.210Z"
+    },
+    "host": {
+      "residentBytes": 18939904,
+      "source": "ps -A -o rss=,comm= (KiB converted to bytes)",
+      "observedAt": "2026-10-27T15:40:37.836Z"
+    },
+    "after": {
+      "residentBytes": 18939904,
+      "source": "ps -A -o rss=,comm= (KiB converted to bytes)",
+      "observedAt": "2026-10-27T16:05:45.958Z"
+    }
+  },
+  "outputRef": "docs/control/local/harness/check-output/0d35b1f9ce3abe7dc094fd2c12f4567d0d2bc28e66ba190627388111eeda5c1b.log"
+}

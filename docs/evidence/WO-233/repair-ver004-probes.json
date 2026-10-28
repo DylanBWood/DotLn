@@ -1,0 +1,237 @@
+{
+  "codeIdentity": "915660c02e8988f150b76c3e544b2db503203f543bed0615965e3c803c4f35dc",
+  "probes": [
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-233/verification-004-failed-fixture-pins.mjs",
+      "execution": {
+        "name": "bounded-probe",
+        "durationMs": 130730,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 130730,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 339074096,
+        "peakRssBytes": 365625344,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-28T01:54:33.522Z",
+        "finishedAt": "2026-10-28T01:56:44.252Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "result": {
+        "control": {
+          "fixtureIsCandidate": true,
+          "fixtureRetainedReason": null,
+          "nestedSharesFixtureLifetime": true,
+          "worktreeExists": true,
+          "nestedRepositoryExists": true
+        },
+        "worktreeRemoved": {
+          "fixtureIsCandidate": true,
+          "fixtureRetainedReason": null,
+          "nestedSharesFixtureLifetime": true,
+          "worktreeExists": false,
+          "nestedRepositoryExists": true
+        },
+        "later": {
+          "fixtureIsCandidate": true,
+          "fixtureRetainedReason": null,
+          "nestedSharesFixtureLifetime": true,
+          "worktreeExists": false,
+          "nestedRepositoryExists": true
+        },
+        "nestedRemoved": {
+          "fixtureIsCandidate": true,
+          "fixtureRetainedReason": null,
+          "nestedSharesFixtureLifetime": true,
+          "worktreeExists": true,
+          "nestedRepositoryExists": false
+        },
+        "nestedWarm": {
+          "fixtureIsCandidate": true,
+          "fixtureRetainedReason": null,
+          "nestedSharesFixtureLifetime": true,
+          "worktreeExists": true,
+          "nestedRepositoryExists": true
+        },
+        "machine": {
+          "failedRootsOwnedByWorktree": 2256,
+          "holdingFixtureOwnedNested": 55,
+          "fixtureOwnedNested": 2722,
+          "bytesHoldingFixtureOwnedNested": 12090056633,
+          "judgedIn49hWriterReleased": {
+            "candidates": 2256,
+            "retained": {}
+          },
+          "retainedRoots": []
+        },
+        "cleanup": {
+          "scaffoldRemaining": false
+        }
+      }
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-233/verification-004-census.mjs",
+      "execution": {
+        "name": "bounded-probe",
+        "durationMs": 2099,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 2099,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 162656544,
+        "peakRssBytes": 207503360,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-28T01:56:55.440Z",
+        "finishedAt": "2026-10-28T01:56:57.539Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "result": {
+        "codeIdentity": "915660c02e8988f150b76c3e544b2db503203f543bed0615965e3c803c4f35dc",
+        "processTableReadable": true,
+        "observedAt": "2026-10-28T01:56:55.756Z",
+        "rows": [
+          {
+            "checkId": "npm test",
+            "gate": "217c5080-0d09-477c-a886-992f6137e241",
+            "recordedAt": "2026-10-28T01:54:06.688Z",
+            "removed": 2318,
+            "retained": [
+              "<worktree>/.runtime/fixtures/launchpad/e795987aa3d0f4c9282a5a6ea18eb6bcdc1ac6b66c9ab03024697916803388f8"
+            ],
+            "blockers": 0
+          }
+        ],
+        "scanned": {
+          "roots": 5646,
+          "sessionScratchTrees": 6,
+          "worktreeLedger": 5399,
+          "nested": 0
+        },
+        "completeWindow": [
+          "2026-10-28T01:16:45.660Z",
+          "2026-10-28T01:54:06.688Z"
+        ],
+        "unaccountedRootsCarryingRowGate": [],
+        "bornInCompleteWindowStillPresent": [
+          {
+            "root": "<system-temp>/dotln-fixture-temporary-zZgxEE",
+            "sources": [
+              "top-level"
+            ],
+            "class": "gate-fixture",
+            "gate": "1ee6b465-a6b6-495d-97e8-8b8322d9c330",
+            "fixtureGate": null,
+            "suite": "generated",
+            "outcome": "failed",
+            "retentionHours": 24,
+            "repositoryExists": false,
+            "ownerBirthRecorded": true,
+            "ownerAlive": false,
+            "recordError": null,
+            "judgedNow": "retention window has not passed",
+            "judgedIn25h": "candidate",
+            "judgedIn49hReleased": "candidate",
+            "noRemovingLifecycle": false
+          },
+          {
+            "root": "<system-temp>/dotln-license-surfaces-0AkbDQ",
+            "sources": [
+              "top-level"
+            ],
+            "class": "gate-fixture",
+            "gate": "1ee6b465-a6b6-495d-97e8-8b8322d9c330",
+            "fixtureGate": null,
+            "suite": "generated",
+            "outcome": "failed",
+            "retentionHours": 24,
+            "repositoryExists": false,
+            "ownerBirthRecorded": true,
+            "ownerAlive": false,
+            "recordError": null,
+            "judgedNow": "retention window has not passed",
+            "judgedIn25h": "candidate",
+            "judgedIn49hReleased": "candidate",
+            "noRemovingLifecycle": false
+          },
+          {
+            "root": "<system-temp>/dotln-license-surfaces-7EYvCs",
+            "sources": [
+              "top-level"
+            ],
+            "class": "gate-fixture",
+            "gate": "b10e0785-25a1-4e0f-8e86-3586adccc621",
+            "fixtureGate": null,
+            "suite": "generated",
+            "outcome": "failed",
+            "retentionHours": 24,
+            "repositoryExists": false,
+            "ownerBirthRecorded": true,
+            "ownerAlive": false,
+            "recordError": null,
+            "judgedNow": "retention window has not passed",
+            "judgedIn25h": "candidate",
+            "judgedIn49hReleased": "candidate",
+            "noRemovingLifecycle": false
+          },
+          {
+            "root": "<system-temp>/dotln-verification-evidence-TftsKC",
+            "sources": [
+              "top-level"
+            ],
+            "class": "gate-fixture",
+            "gate": "1ee6b465-a6b6-495d-97e8-8b8322d9c330",
+            "fixtureGate": null,
+            "suite": "generated",
+            "outcome": "failed",
+            "retentionHours": 24,
+            "repositoryExists": false,
+            "ownerBirthRecorded": true,
+            "ownerAlive": false,
+            "recordError": null,
+            "judgedNow": "retention window has not passed",
+            "judgedIn25h": "candidate",
+            "judgedIn49hReleased": "candidate",
+            "noRemovingLifecycle": false
+          },
+          {
+            "root": "<worktree>/.runtime/fixtures/launchpad/e795987aa3d0f4c9282a5a6ea18eb6bcdc1ac6b66c9ab03024697916803388f8",
+            "sources": [
+              "worktree-ledger"
+            ],
+            "class": "warm-fixture",
+            "gate": "217c5080-0d09-477c-a886-992f6137e241",
+            "fixtureGate": null,
+            "suite": "launchpad:file:test-launchpad-export.mjs",
+            "outcome": null,
+            "retentionHours": 0,
+            "repositoryExists": true,
+            "ownerBirthRecorded": true,
+            "ownerAlive": false,
+            "recordError": null,
+            "judgedNow": "writer reservation names this root or session",
+            "judgedIn25h": "writer reservation names this root or session",
+            "judgedIn49hReleased": "warm fixture is current or its current key is unavailable",
+            "noRemovingLifecycle": false
+          }
+        ],
+        "sessionScratchBornInCompleteWindow": 0,
+        "lockCancelFilesBornInCompleteWindow": 0
+      }
+    }
+  ],
+  "limits": "The unchanged F10 probe drives the subject prune judge and separately inventories machine owner records. Its 49-hour projection treats this worktree writer as released and deletes no historical tree. The unchanged census scans system temp, session scratch, ledger roots and descendants of roots born in the complete-run window or carrying a current passing gate; unaccounted-root checks do not filter on owner liveness. It is repeated after the final document gate, with that final observation retained in ignored local evidence."
+}

@@ -1,0 +1,73 @@
+{
+  "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-233/verification-002-gate-residue.mjs",
+  "exitCode": 0,
+  "probe": {
+    "codeIdentity": "87065fbd538fd6c07ed5419cbece792f08111a27b06a24f42c2d319ddf8b1815",
+    "processTableReadable": true,
+    "complete": {
+      "gateId": "10b258ee-5319-4423-9c64-1731c490f7c4",
+      "recordedAt": "2026-10-27T20:31:18.147Z",
+      "rowCleanup": {
+        "removed": 2272,
+        "retained": 1
+      },
+      "deadOwnerRootsOfPassingSuitesRemaining": 0,
+      "byClass": {},
+      "bySuite": {},
+      "byFamily": {}
+    },
+    "document": {
+      "gateId": "b3e1a613-44dd-418c-b055-cab11b347582",
+      "window": [
+        "2026-10-27T20:32:32.103Z",
+        "2026-10-27T20:35:20.162Z"
+      ],
+      "rowCleanup": {
+        "removed": 230,
+        "retained": 0
+      },
+      "unownedRootsBornInWindow": 0,
+      "byFamily": {}
+    }
+  },
+  "bounded": {
+    "name": "bounded-probe",
+    "durationMs": 468,
+    "slowestCases": [
+      {
+        "name": "bounded-probe",
+        "durationMs": 468,
+        "exitCode": 0,
+        "granularity": "task"
+      }
+    ],
+    "peakFootprintBytes": 29298360,
+    "peakRssBytes": 77135872,
+    "memoryBudgetBytes": 3221225472,
+    "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+    "droppedOutputBytes": 0,
+    "startedAt": "2026-10-27T20:35:29.195Z",
+    "finishedAt": "2026-10-27T20:35:29.663Z",
+    "exitCode": 0,
+    "executed": true
+  },
+  "documentRow": {
+    "checkId": "npm run test:docs",
+    "temporaryGateId": "b3e1a613-44dd-418c-b055-cab11b347582",
+    "evidenceRef": "host-gate:87065fbd538fd6c07ed5419cbece792f08111a27b06a24f42c2d319ddf8b1815:npm run test:docs",
+    "recordedAt": "2026-10-27T20:35:20.162Z",
+    "treeHash": "8fef440dd829c601b933b5501257448757668a09",
+    "codeIdentity": "87065fbd538fd6c07ed5419cbece792f08111a27b06a24f42c2d319ddf8b1815",
+    "durationMs": 168059,
+    "exitCode": 0,
+    "freshTasks": 27,
+    "reusedTasks": 0,
+    "unrunTasks": [],
+    "temporaryCleanup": {
+      "removed": 230,
+      "retained": [],
+      "blockers": []
+    }
+  },
+  "instrumentation": "The subject runner/helper produced gate cleanup and churn. The unchanged verifier probe separately reads filesystem owner records, process liveness and birth times; it uses the subject ownership parser and process-table helper. Both current row references and a readable process table are asserted, so null probe results cannot pass acceptance."
+}

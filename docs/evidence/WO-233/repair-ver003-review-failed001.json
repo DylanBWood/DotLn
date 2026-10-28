@@ -1,0 +1,52 @@
+{
+  "command": "npm test -- --review",
+  "gateId": "fb95d881-5a8f-481b-a20d-85575f11a521",
+  "codeIdentity": "cf247b40475dc13a8b272056aff713d7a302993fb97165608f887c90accf58d6",
+  "recordedAt": "2026-10-27T21:54:51.590Z",
+  "durationMs": 872915,
+  "exitCode": 1,
+  "freshTasks": 90,
+  "reusedTasks": 0,
+  "unrunTasks": [
+    "target-publish",
+    "target-worktree:file:test-target-worktree-start.mjs",
+    "target-worktree:file:test-target-worktree-publish.mjs",
+    "target-worktree:file:test-target-worktree-close.mjs",
+    "target-worktree:file:test-target-worktree-release.mjs",
+    "vertical:file:test-vertical.mjs:statements",
+    "vertical:file:test-vertical.mjs:workflow",
+    "vertical:file:test-vertical-judgment.mjs",
+    "vertical:file:test-vertical.recovery.mjs",
+    "workstream-pilot",
+    "instance-history",
+    "worktree",
+    "worktree-integration",
+    "release:case:meter_shape",
+    "release:case:close_foreign_tag",
+    "release:case:close_overlap",
+    "release:case:close_real_writer",
+    "browser-evidence",
+    "evidence-sources",
+    "harness-probe",
+    "plan-refutation",
+    "wo107-schema",
+    "mutation",
+    "process-debt"
+  ],
+  "failedExecutedTasks": [
+    {
+      "name": "runner-fixtures",
+      "exitCode": 1
+    }
+  ],
+  "diagnosis": [
+    "The heartbeat case expected its marker directory gone at nested task return. The repaired runner now correctly registers that marker to the still-running outer gate and preserves it for the gate outcome. Its heartbeat timing and duration assertions passed; the sole failed assertion was directory absence at scripts/test-runner.test.mjs:7516.",
+    "The corrected assertion requires a retained marker to have the completing gate's physical repository, gate id, suite and ledger token; outside a managed gate it still requires immediate removal. The new nested-suite regression separately proves passing-gate removal and failed-gate retention."
+  ],
+  "cleanup": {
+    "removed": 1336,
+    "retained": 219,
+    "blockers": 0
+  },
+  "outputRef": "docs/control/local/harness/check-output/679155e9ddb995cc35f620c9cf51aa49e084e4e15a21bc97c2e0de37608cf1f4.log"
+}

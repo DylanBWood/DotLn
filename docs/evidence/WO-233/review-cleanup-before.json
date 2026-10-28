@@ -1,0 +1,22 @@
+{
+  "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-233/review-cleanup-probes.mjs",
+  "exitCode": 0,
+  "meaning": "Observation probe before fixes; exit zero reports the observations, not successful acceptance criteria.",
+  "observedAt": "2026-10-27T16:30:49.075Z",
+  "diagnosticRetention": {
+    "constructorArms": ["createScratchRoot", "createWorkerCapture", "promoted"],
+    "survived": { "scratch": false, "capture": false, "durable": true },
+    "blockers": []
+  },
+  "nestedFailure": {
+    "storedOutcome": "failed",
+    "storedRetentionHours": 24,
+    "gateRetainedChild": true,
+    "subsequentPruneSelectsChild": true,
+    "subsequentPruneSelectsParent": true
+  },
+  "seedPropagation": {
+    "tracked": ".dotln-owner.json",
+    "cloneRefusal": "Temporary owner record is invalid or the directory was replaced"
+  }
+}
