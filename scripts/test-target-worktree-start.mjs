@@ -750,6 +750,38 @@ test("WO-072 criterion 1: declared target base, governed ignored bundle and conv
     f.mapClone();
     const output = f.start();
     assert.match(output, /Authority profile:/);
+    const quote = (value) => `'${value.replaceAll("'", `'\\''`)}'`;
+    assert.ok(
+      output.includes(
+        `Claude Code: cd ${quote(f.orderRoot)} && claude; enter: resume: next.`,
+      ),
+      output,
+    );
+    assert.ok(
+      output.includes(
+        `target-worktree grant admits ${quote(f.target)} for this order while active or repairing`,
+      ),
+      output,
+    );
+    assert.ok(
+      output.includes(
+        `Codex workspace-write session: cd ${quote(f.orderRoot)} && codex --add-dir ${quote(f.target)}`,
+      ),
+      output,
+    );
+    assert.ok(
+      output.includes(
+        `Copilot default mode: cd ${quote(f.orderRoot)} && copilot\n`,
+      ),
+      output,
+    );
+    assert.match(output, /Publication host rules: unavailable/);
+    assert.ok(
+      output.includes(
+        `Next (run manually):\n  cd ${quote(f.orderRoot)}\n  codex --add-dir ${quote(f.target)}\n  enter: resume: next`,
+      ),
+      output,
+    );
     assert.ok(output.includes(JSON.stringify(profile)));
     assert.equal(git(f.target, "rev-parse", "HEAD"), f.baseCommit);
     assert.equal(existsSync(join(f.target, "later.txt")), false);
@@ -909,7 +941,13 @@ test("host-rule rewrite requires a committed opt-in and preserves operator rules
   withFixture((f) => {
     publicationSetup(f);
     f.mapClone();
-    f.start();
+    const launch = f.start();
+    assert.match(launch, /Copilot default mode: cd .* && copilot --allow-tool/);
+    assert.match(
+      launch,
+      /the hook admits the registered publication commands at verified and closed/,
+    );
+    assert.doesNotMatch(launch, /Publication host rules: unavailable/);
     const settings = join(f.main, ".claude/settings.local.json");
     const codex = join(f.main, ".codex/rules/dotln-WO-999.rules");
     const sidecar = docPath(f.main, "control", "local/host-rules/WO-999.json");

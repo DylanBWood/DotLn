@@ -213,7 +213,11 @@ export type OutsideWriteGrant = {
 } & (
   | {
       readonly kind:
-        "system-temp" | "session-scratch" | "host-scratchpad" | "main-intake";
+        | "system-temp"
+        | "session-scratch"
+        | "host-scratchpad"
+        | "main-intake"
+        | "target-worktree";
     }
   | { readonly kind: "operator-root"; readonly root: string }
 );
@@ -349,6 +353,7 @@ export function assertOutsideWriteGrants(
           "host-scratchpad",
           "main-intake",
           "operator-root",
+          "target-worktree",
         ].includes(grant.kind) &&
         (grant.kind === "operator-root"
           ? typeof grant.root === "string" &&

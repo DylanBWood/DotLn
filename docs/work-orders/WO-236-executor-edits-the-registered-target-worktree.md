@@ -1,4 +1,4 @@
-# WO-236 — The executor edits the registered target worktree: the kit declares one more outside-write grant for the executor role, the active order's registered target worktree, resolved from the launchpad's registry at every judged write, and `worktree start` prints the Claude Code launch line beside the Codex and Copilot ones (version assigned at activation)
+# WO-236 — The executor edits the registered target worktree: the kit declares one more outside-write grant for the executor role, the active order's registered target worktree, resolved from the launchpad's registry at every judged write, and `worktree start` prints the Claude Code launch line beside the Codex and Copilot ones (v0.101.0)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

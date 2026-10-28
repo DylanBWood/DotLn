@@ -180,8 +180,16 @@ operator sandbox settings.
    comes from the registration and the kit: the generated hook admits only
    the node spelling of the publish helper for the recorded target worktree,
    under the merged registration, clone map and authority grant at the
-   phases the lifecycle makes them legal, `worktree start` prints the Codex
-   `--add-dir` and Copilot `--allow-tool` lines, and a registration's
+   phases the lifecycle makes them legal. `worktree start` prints sessions
+   starting in the launchpad for Codex (`codex --add-dir <target>`), Copilot
+   (`copilot --allow-tool …`) and Claude Code (`claude`, then `resume: next`).
+   Claude's executor-only `target-worktree` grant reads the current order's
+   unique local target registration on each judged write, requires this
+   physical launchpad binding and phase `active` or `repairing`, and admits
+   the registered target. Copilot uses the same hook; host deny and ask
+   rules still apply. The `Next (run manually)` block also starts Codex in
+   the launchpad with `--add-dir`; starting inside the target selects its
+   separate worker bundle. A registration's
    `hostRules: "literal"` writes that order's exact rules to the main
    checkout's untracked `.claude/settings.local.json` and `.codex/rules/`
    until release close removes them (`node scripts/harness.mjs check` names a

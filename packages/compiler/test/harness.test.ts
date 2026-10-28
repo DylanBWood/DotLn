@@ -321,6 +321,64 @@ test("WO-144 role grants are closed, source-bearing target data in hooks and man
     /equipped prompt support/,
   );
 });
+test("target-worktree grants carry authority without accepting a baked-in root", () => {
+  const grant = {
+    kind: "target-worktree" as const,
+    source: "Fixture target authorization",
+  };
+  assertOutsideWriteGrants([grant]);
+  assert.throws(
+    () => assertOutsideWriteGrants([{ ...grant, root: "/fixture/target" }]),
+    /outside-write/,
+  );
+  assert.equal(outsideWriteEffect(grant), "outside.write:target-worktree");
+  const authority = {
+    grantId: "fixture.target",
+    version: 1,
+    grantedBy: "operator" as const,
+    effects: [outsideWriteEffect(grant)],
+    repo: seiriEnvironment().repo,
+    reason: grant.source,
+  };
+  const loadout = requireCompiled(
+    compileLoadout(
+      { ...seiriLoadout, authorityGrants: [authority] },
+      { ...seiriEnvironment(), authorityGrantRegistry: [authority] },
+    ),
+  );
+  const bundle = lower({
+    ...program,
+    loadout,
+    roles: program.roles.map((role) => ({
+      ...role,
+      outsideWriteGrants: [grant],
+    })),
+  });
+  assert.ok(bundle.manifest.outsideWriteGrants);
+  assert.deepEqual(bundle.manifest.outsideWriteGrants[0]!.grants, [
+    {
+      ...grant,
+      originId: "fixture.executor",
+      authorityGrantId: authority.grantId,
+    },
+  ]);
+  assert.match(
+    bundle.files.find((file) => file.path.endsWith("/SKILL.md"))!.contents,
+    /Outside-write grants for executor: target-worktree;/,
+  );
+  assert.throws(
+    () =>
+      lower({
+        ...program,
+        roles: program.roles.map((role) => ({
+          ...role,
+          outsideWriteGrants: [grant],
+        })),
+      }),
+    /provenance-bearing grant/,
+  );
+});
+
 const freeze = (value: unknown) => {
   if (value && typeof value === "object") {
     Object.freeze(value);

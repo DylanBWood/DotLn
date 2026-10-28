@@ -1,0 +1,116 @@
+{
+  "schemaVersion": 1,
+  "method": "Installed CLAUDE.md plus the installed role skill only; UTF-8 source bytes, no task documents or estimated tokens. Previous edition is the highest reachable local vX.Y.Z release tag (or explicit comparison). Last acceptance uses the first committed snapshot on HEAD's first-parent history containing the role's latest global acceptance (date, then record order); it does not infer a measurement from the ceiling or reason prose. Missing history or files are null with a cause.",
+  "instructionBytes": 7099,
+  "source": "bounded node scripts/harness-context.mjs before and after harness emit; installed bytes, not token estimates",
+  "profiles": [
+    {
+      "role": "executor",
+      "path": ".claude/skills/dotln-executor/SKILL.md",
+      "beforeBytes": 30857,
+      "bytes": 30874,
+      "growthBytes": 17,
+      "ceiling": 34953,
+      "headroomBytes": 4079
+    },
+    {
+      "role": "verifier",
+      "path": ".claude/skills/dotln-verifier/SKILL.md",
+      "beforeBytes": 27385,
+      "bytes": 27385,
+      "growthBytes": 0,
+      "ceiling": 29831,
+      "headroomBytes": 2446
+    },
+    {
+      "role": "reviewer",
+      "path": ".claude/skills/dotln-reviewer/SKILL.md",
+      "beforeBytes": 29811,
+      "bytes": 29811,
+      "growthBytes": 0,
+      "ceiling": 33907,
+      "headroomBytes": 4096
+    },
+    {
+      "role": "release-close",
+      "path": ".claude/skills/dotln-release-close/SKILL.md",
+      "beforeBytes": 18574,
+      "bytes": 18574,
+      "growthBytes": 0,
+      "ceiling": 21266,
+      "headroomBytes": 2692
+    },
+    {
+      "role": "planner",
+      "path": ".claude/skills/dotln-planner/SKILL.md",
+      "beforeBytes": 19483,
+      "bytes": 19483,
+      "growthBytes": 0,
+      "ceiling": 24576,
+      "headroomBytes": 5093
+    },
+    {
+      "role": "refuter",
+      "path": ".claude/skills/dotln-refuter/SKILL.md",
+      "beforeBytes": 18297,
+      "bytes": 18297,
+      "growthBytes": 0,
+      "ceiling": null,
+      "headroomBytes": null
+    },
+    {
+      "role": "executor",
+      "path": ".agents/skills/dotln-executor/SKILL.md",
+      "beforeBytes": 30857,
+      "bytes": 30874,
+      "growthBytes": 17,
+      "ceiling": 34953,
+      "headroomBytes": 4079
+    },
+    {
+      "role": "verifier",
+      "path": ".agents/skills/dotln-verifier/SKILL.md",
+      "beforeBytes": 27385,
+      "bytes": 27385,
+      "growthBytes": 0,
+      "ceiling": 29831,
+      "headroomBytes": 2446
+    },
+    {
+      "role": "reviewer",
+      "path": ".agents/skills/dotln-reviewer/SKILL.md",
+      "beforeBytes": 29811,
+      "bytes": 29811,
+      "growthBytes": 0,
+      "ceiling": 33907,
+      "headroomBytes": 4096
+    },
+    {
+      "role": "release-close",
+      "path": ".agents/skills/dotln-release-close/SKILL.md",
+      "beforeBytes": 18574,
+      "bytes": 18574,
+      "growthBytes": 0,
+      "ceiling": 21266,
+      "headroomBytes": 2692
+    },
+    {
+      "role": "planner",
+      "path": ".agents/skills/dotln-planner/SKILL.md",
+      "beforeBytes": 19483,
+      "bytes": 19483,
+      "growthBytes": 0,
+      "ceiling": 24576,
+      "headroomBytes": 5093
+    },
+    {
+      "role": "refuter",
+      "path": ".agents/skills/dotln-refuter/SKILL.md",
+      "beforeBytes": 18297,
+      "bytes": 18297,
+      "growthBytes": 0,
+      "ceiling": null,
+      "headroomBytes": null
+    }
+  ]
+}

@@ -3,7 +3,7 @@ name: dotln-refuter
 description: "Run an independent background-worker judgment of the latest planning pass on planning: refute; planning: refute full judges the whole horizon."
 ---
 
-<!-- Origin: {"ids":["anti-oscillation","bounded-boy-scout-cleanup","concurrent-work-requires-worktrees","contributor.refuter","correctness-over-sycophancy","fail-conservative-correction","goal-alignment","no-attribution","no-lint-type-disables-as-fixes","no-partial-completion","process-cost","read-your-own-output","verify-app-before-done"],"loadoutId":"contributor","semanticHash":"fnv1a64:c0a496bda5f362de"} -->
+<!-- Origin: {"ids":["anti-oscillation","bounded-boy-scout-cleanup","concurrent-work-requires-worktrees","contributor.refuter","correctness-over-sycophancy","fail-conservative-correction","goal-alignment","no-attribution","no-lint-type-disables-as-fixes","no-partial-completion","process-cost","read-your-own-output","verify-app-before-done"],"loadoutId":"contributor","semanticHash":"fnv1a64:275ba05519d0f5c5"} -->
 
 Process Cost: At entry/handoff run `node scripts/harness.mjs usage <session>`. Report available total, source, scope and cutoff; unavailable counters are unknown and never block completion. Final counters stay in ignored receipts and the response. Compare equivalent outcomes including work and waiting; name tradeoffs, invent no counts.
 Goal Alignment: Before a material choice, name the traps that would change what you do and what you will do about each, and the NoOp; where none applies, write nothing; at handoff say whether the outcome matched.

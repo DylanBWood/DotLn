@@ -1,0 +1,208 @@
+{
+  "schemaVersion": 1,
+  "comparison": "Identical synthetic launchpad registration, active executor and three write requests; each arm runs its own emitted permission hook and pinned runtime. Hook protocol exits zero even for a refusal; criterionExitCode is zero only when the requested admission is present. Base runs the unchanged activation build before any rebuild; head runs the changed build.",
+  "base": {
+    "observedAt": "2026-10-28T14:50:10.110Z",
+    "sourceRevision": "4ceef05d9484d76d6a64bd8fd897c7e388c8c228",
+    "runtimeDigests": {
+      "compiler/dist/src/harness.js": "925b33594390f983d6309de8dbcc983a41a4d5f650b076c123ebf3d7109dc1c8",
+      "skeleton/dist/src/harness-host.js": "5e2a8f52f34828774032d3c1656c0b92be36794918c969d6ebdfbbb348b29873",
+      "skeleton/dist/src/loadouts/contributor.js": "7f5b47b8cfaf6081f966ddc230dc5bc72097b606202761e477b85f7fbfccb35c"
+    },
+    "executorGrants": {
+      "role": "executor",
+      "grants": [
+        {
+          "kind": "system-temp",
+          "source": "WO-144-D001: contributor temporary work",
+          "originId": "contributor.executor",
+          "authorityGrantId": "contributor.outside-temporary"
+        },
+        {
+          "kind": "session-scratch",
+          "source": "WO-144-D001: operator-selected DotLn session scratch",
+          "originId": "contributor.executor",
+          "authorityGrantId": "contributor.outside-temporary"
+        },
+        {
+          "kind": "host-scratchpad",
+          "source": "WO-158-D010: the scratchpad Claude Code prints for this session",
+          "originId": "contributor.executor",
+          "authorityGrantId": "contributor.outside-temporary"
+        }
+      ]
+    },
+    "rows": [
+      {
+        "tool": "Edit",
+        "processExitCode": 0,
+        "criterionExitCode": 1,
+        "response": {
+          "hookSpecificOutput": {
+            "hookEventName": "PreToolUse",
+            "permissionDecision": "deny",
+            "permissionDecisionReason": "DOTLN_HARNESS_REFUSED: outside-project write to <fixture>/target/file.txt (physical destination <fixture>/target/file.txt) lacks an equipped outside-write grant for role executor (WO-144). Use operator override: for authorized recovery."
+          }
+        }
+      },
+      {
+        "tool": "Write",
+        "processExitCode": 0,
+        "criterionExitCode": 1,
+        "response": {
+          "hookSpecificOutput": {
+            "hookEventName": "PreToolUse",
+            "permissionDecision": "deny",
+            "permissionDecisionReason": "DOTLN_HARNESS_REFUSED: outside-project write to <fixture>/target/file.txt (physical destination <fixture>/target/file.txt) lacks an equipped outside-write grant for role executor (WO-144). Use operator override: for authorized recovery."
+          }
+        }
+      },
+      {
+        "tool": "Bash",
+        "processExitCode": 0,
+        "criterionExitCode": 1,
+        "response": {
+          "hookSpecificOutput": {
+            "hookEventName": "PreToolUse",
+            "permissionDecision": "deny",
+            "permissionDecisionReason": "DOTLN_HARNESS_REFUSED: outside-project write to <fixture>/target/file.txt (physical destination <fixture>/target/file.txt) lacks an equipped outside-write grant for role executor (WO-144). Use operator override: for authorized recovery."
+          }
+        }
+      }
+    ],
+    "journal": [
+      {
+        "recordedAt": "2026-10-28T14:50:09.930Z",
+        "event": "PreToolUse",
+        "tool": "Edit",
+        "outsideWrite": {
+          "role": "executor",
+          "destination": "<fixture>/target/file.txt",
+          "status": "refused"
+        }
+      },
+      {
+        "recordedAt": "2026-10-28T14:50:10.016Z",
+        "event": "PreToolUse",
+        "tool": "Write",
+        "outsideWrite": {
+          "role": "executor",
+          "destination": "<fixture>/target/file.txt",
+          "status": "refused"
+        }
+      },
+      {
+        "recordedAt": "2026-10-28T14:50:10.100Z",
+        "event": "PreToolUse",
+        "tool": "Bash",
+        "outsideWrite": {
+          "role": "executor",
+          "destination": "<fixture>/target/file.txt",
+          "status": "refused"
+        }
+      }
+    ]
+  },
+  "head": {
+    "observedAt": "2026-10-28T15:03:11.688Z",
+    "sourceRevision": "4ceef05d9484d76d6a64bd8fd897c7e388c8c228",
+    "runtimeDigests": {
+      "compiler/dist/src/harness.js": "ae29522dad18f4c97c41a920b9772c4da414cd3beaa690e936f2de6c4f71006d",
+      "skeleton/dist/src/harness-host.js": "73f354aed6cefc428f19420a1e86a17b5f9d968b6723bbb4d7b3e8be51eb5d21",
+      "skeleton/dist/src/loadouts/contributor.js": "f5897eed6525b11ea1de0b220c8732d9e8e2cf44375f72f70732c3caf71518f7"
+    },
+    "executorGrants": {
+      "role": "executor",
+      "grants": [
+        {
+          "kind": "system-temp",
+          "source": "WO-144-D001: contributor temporary work",
+          "originId": "contributor.executor",
+          "authorityGrantId": "contributor.outside-temporary"
+        },
+        {
+          "kind": "session-scratch",
+          "source": "WO-144-D001: operator-selected DotLn session scratch",
+          "originId": "contributor.executor",
+          "authorityGrantId": "contributor.outside-temporary"
+        },
+        {
+          "kind": "host-scratchpad",
+          "source": "WO-158-D010: the scratchpad Claude Code prints for this session",
+          "originId": "contributor.executor",
+          "authorityGrantId": "contributor.outside-temporary"
+        },
+        {
+          "kind": "target-worktree",
+          "source": "WO-236-D001: the active order's registered target worktree",
+          "originId": "contributor.executor",
+          "authorityGrantId": "contributor.target-worktree"
+        }
+      ]
+    },
+    "rows": [
+      {
+        "tool": "Edit",
+        "processExitCode": 0,
+        "criterionExitCode": 0,
+        "response": {}
+      },
+      {
+        "tool": "Write",
+        "processExitCode": 0,
+        "criterionExitCode": 0,
+        "response": {}
+      },
+      {
+        "tool": "Bash",
+        "processExitCode": 0,
+        "criterionExitCode": 0,
+        "response": {}
+      }
+    ],
+    "journal": [
+      {
+        "recordedAt": "2026-10-28T15:03:11.454Z",
+        "event": "PreToolUse",
+        "tool": "Edit",
+        "outsideWrite": {
+          "role": "executor",
+          "destination": "<fixture>/target/file.txt",
+          "status": "granted",
+          "kind": "target-worktree",
+          "originId": "contributor.executor",
+          "source": "WO-236-D001: the active order's registered target worktree",
+          "authorityGrantId": "contributor.target-worktree"
+        }
+      },
+      {
+        "recordedAt": "2026-10-28T15:03:11.564Z",
+        "event": "PreToolUse",
+        "tool": "Write",
+        "outsideWrite": {
+          "role": "executor",
+          "destination": "<fixture>/target/file.txt",
+          "status": "granted",
+          "kind": "target-worktree",
+          "originId": "contributor.executor",
+          "source": "WO-236-D001: the active order's registered target worktree",
+          "authorityGrantId": "contributor.target-worktree"
+        }
+      },
+      {
+        "recordedAt": "2026-10-28T15:03:11.677Z",
+        "event": "PreToolUse",
+        "tool": "Bash",
+        "outsideWrite": {
+          "role": "executor",
+          "destination": "<fixture>/target/file.txt",
+          "status": "granted",
+          "kind": "target-worktree",
+          "originId": "contributor.executor",
+          "source": "WO-236-D001: the active order's registered target worktree",
+          "authorityGrantId": "contributor.target-worktree"
+        }
+      }
+    ]
+  }
+}

@@ -887,8 +887,8 @@ guarantee covers known write destinations; opaque command effects and Codex
 enforcement stay open.
 
 **Implemented 2026-09-19 — WO-144.** Roles and equipped supports declare
-`system-temp`, `session-scratch`, `main-intake` or an operator-named absolute
-root with a source. Each root binds an exact `outside.write:` effect to a
+`system-temp`, `session-scratch`, `host-scratchpad`, `main-intake`,
+`target-worktree` or an operator-named absolute root with a source. Each root binds an exact `outside.write:` effect to a
 host-registry-admitted WO-042 authority grant in the effective envelope; the
 manifest names that grant and the declaring role/support. Supports cannot
 widen the envelope themselves. The generated Claude pre-tool boundary refuses
@@ -897,6 +897,17 @@ containing grant, including removals and the redirects named under the
 FINAL-001 repair below. Symlinks are resolved; removal judges the entry it
 unlinks. The planning restriction still governs
 in-project paths. An in-project write never consults the outside-grant table.
+
+The executor alone declares `target-worktree` under the operator's
+2026-10-28 authorization ([WO-236 D001](../evidence/WO-236/decisions.md#wo-236-d001)).
+At each judged outside write, the hook reads the session's dispatched order
+(or canonical selection when none is bound), its canonical `active` or
+`repairing` phase, and the launchpad's current local target registry under
+its configured control root. Exactly one row for that order must name this
+physical launchpad. The grant contains only that row's physically resolved
+target, with no root baked into the manifest. Missing, unreadable, ambiguous
+or differently bound registration withholds this grant and names the cause;
+the other grants and refusals keep their judgments.
 
 All six contributor roles declare system temporary work, the operator's
 selected DotLn scratch convention, `<system-temp>/dotln/<session-key>/scratch`,

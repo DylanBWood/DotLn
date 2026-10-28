@@ -4,7 +4,7 @@
 
 ## Proposed order
 
-- [ ] [WO-236] — The executor edits the registered target worktree · **queued**
+- [x] [WO-236] — The executor edits the registered target worktree · **final-reviewed**
 - [ ] [WO-234] — A dispatch cannot run away · **queued**
 - [ ] [WO-235] — No artifact is shaped by its predecessor and no operator direction is dropped · **queued**
 - [ ] [WO-237] — A closed order keeps its journals · **queued**
@@ -34,32 +34,15 @@ Full evidence for the active and sequenced orders follows; the Open cards are in
 
 Separate track; outside the proposed serial order.
 
-- [WO-228] — repository: self; base: 2b872abc11157f04718d60c3bdf8b9836e4e0f24; phase: draft; verdict: unknown; integration: current; stale: no; observed target: 2b872abc11157f04718d60c3bdf8b9836e4e0f24.
+- [WO-228] — repository: self; base: 4ceef05d9484d76d6a64bd8fd897c7e388c8c228; phase: draft; verdict: unknown; integration: current; stale: no; observed target: 4ceef05d9484d76d6a64bd8fd897c7e388c8c228.
 
-<!-- dotln-workstreams: {"workstreams":[{"id":"WS-002","track":"separate","members":[{"workOrderId":"WO-228","repository":"self","base":"2b872abc11157f04718d60c3bdf8b9836e4e0f24","phase":"draft","verdict":"unknown","integration":"current","stale":"no","targetCommit":"2b872abc11157f04718d60c3bdf8b9836e4e0f24"}],"edges":[{"from":"WO-228","to":"WO-193","relation":"planning-deferral"}]}]} -->
+<!-- dotln-workstreams: {"workstreams":[{"id":"WS-002","track":"separate","members":[{"workOrderId":"WO-228","repository":"self","base":"4ceef05d9484d76d6a64bd8fd897c7e388c8c228","phase":"draft","verdict":"unknown","integration":"current","stale":"no","targetCommit":"4ceef05d9484d76d6a64bd8fd897c7e388c8c228"}],"edges":[{"from":"WO-228","to":"WO-193","relation":"planning-deferral"}]}]} -->
 
 ## Active
 
 None.
 
 ## Open
-
-### WO-236
-
-[WO-236 — The executor edits the registered target worktree: the kit declares one more outside-write grant for the executor role, the active order's registered target worktree, resolved from the launchpad's registry at every judged write, and &#96;worktree start&#96; prints the Claude Code launch line beside the Codex and Copilot ones (version assigned at activation)](WO-236-executor-edits-the-registered-target-worktree.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-144: satisfied-by-close (met) — the fifth refusal, its grant kinds and the authority binding this order extends by one kind; WO-221: satisfied-by-close (met) — the target registry the hook already reads for the publish admission and the host launch lines this order extends; WO-233: satisfied-by-close (met) — an active order behind main integrates by the main checkout's current code, which this order or WO-234 uses, whichever closes second; WO-234: reference-only (non-blocking) — active in its worktree with overlapping hunks in harness-host.ts, contributor.ts, the compiler's harness.ts and the role oracle; this order does not wait on it.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer xhigh.
-- Track: machinery
-- Cost: adds the &#96;target-worktree&#96; grant kind to &#96;packages/compiler/src/harness.ts&#96; (&#96;OutsideWriteGrant&#96;, the validation list, &#96;outsideWriteEffect&#96;, the generated grant line), its resolution in &#96;packages/skeleton/src/harness-host.ts&#96; (&#96;outsideWriteResponse&#96;), the executor role's declaration and the &#96;contributor.target-worktree&#96; authority grant in &#96;packages/skeleton/src/loadouts/contributor.ts&#96;, the Claude Code line in &#96;scripts/worktree.mjs&#96; (&#96;hostLaunchLines&#96;), cases in &#96;scripts/test-harness.mjs&#96;, &#96;packages/skeleton/test/source-change-host.test.ts&#96; and &#96;scripts/test-target-worktree-start.mjs&#96;, the re-emitted manifest and role roots, the role oracle fixture, and sentences in product 03, product 07, the security document and the kit README. Removes: the Codex-only route for implementing a target order (every implementation and repair of the fork's six closed target orders ran under Codex with its sandbox off; the fork's control logs) and &#96;operator override:&#96; as the only Claude Code route. Wall-clock: one registry read and one realpath per judged outside-project write (milliseconds); nothing else. Context bytes: this file; the executor root's grant line grows by one kind name (about 17 bytes), measured and recorded before and after. Commands: none new; &#96;worktree start&#96; prints one more line. Tokens: unknown until run. Steps: 9. Re-mints: &#96;harness-host.ts&#96;, &#96;contributor.ts&#96; and the compiler's &#96;harness.ts&#96; are registered evidence sources, so the editions they stale are re-minted deterministically; none is a file the feedback verifier judges, so no live feedback episode; the compiler's &#96;harness.ts&#96; and &#96;worktree.mjs&#96; are declared sources of the &#96;launchpad-planning&#96; machinery suite, so &#96;npm test -- --review&#96; runs before handoff; the role oracle is re-minted for the grant line.
-- Authority: [docs/work-orders/WO-236-executor-edits-the-registered-target-worktree.md](WO-236-executor-edits-the-registered-target-worktree.md)
 
 ### WO-234
 

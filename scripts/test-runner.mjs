@@ -465,6 +465,8 @@ export const machinerySources = {
   ],
   "process-debt": [
     "scripts/test-gate-followups.mjs",
+    "docs/control/budgets.json",
+    "CLAUDE.md",
     "scripts/lib/fixture-inputs.mjs",
     // Direct entry imports and literal first-party script inputs (WO-174).
     "packages/compiler/src/feedback.ts",
@@ -522,6 +524,7 @@ export const machinerySources = {
     "packages/skeleton/fixtures/wo219-role-baseline.json",
     "packages/skeleton/fixtures/wo204-role-baseline.json",
     "packages/skeleton/fixtures/wo233-role-baseline.json",
+    "packages/skeleton/fixtures/wo236-role-baseline.json",
     "packages/skeleton/fixtures/wo217-role-efficiency-baseline.json",
     "scripts/test-helper-reuse.mjs",
     "scripts/lib/helpers.mjs",
