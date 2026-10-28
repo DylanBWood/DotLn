@@ -1,6 +1,11 @@
+import {
+  excludeFixtureOwnership,
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { once } from "node:events";
@@ -24,7 +29,7 @@ const shared = {
 };
 const root = new URL("../", import.meta.url).pathname;
 const directory = (t) => {
-  const path = mkdtempSync(join(tmpdir(), "dotln-deadlines-"));
+  const path = createFixtureRoot(join(tmpdir(), "dotln-deadlines-"));
   t.after(() => rmSync(path, { recursive: true, force: true }));
   return path;
 };
@@ -587,6 +592,7 @@ test("measured structural requests let a sibling document gate progress beside c
     for (const repo of [completeRepo, documentRepo]) {
       mkdirSync(repo, { recursive: true });
       runGit(repo, ["init", "-q", "-b", "main"]);
+      excludeFixtureOwnership(repo);
       writeFileSync(join(repo, "README.md"), "Fixture\n");
       runGit(repo, ["add", "."]);
       runGit(repo, [

@@ -1,8 +1,12 @@
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
 import { write as writeFixture } from "./lib/helpers.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { mkdtempSync, readFileSync, rmSync, symlinkSync } from "node:fs";
+import { readFileSync, symlinkSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -53,7 +57,7 @@ test("subject-length diagnostics count characters and name the shared limit", ()
   }
 });
 const fixture = (t, control = "docs/control") => {
-  const root = mkdtempSync(join(tmpdir(), "outward-lint-"));
+  const root = createFixtureRoot(join(tmpdir(), "outward-lint-"));
   t.after(() => rmSync(root, { recursive: true, force: true }));
   const write = (path, text) => writeFixture(root, path, text);
   write(
@@ -1053,12 +1057,23 @@ test("copied CLI runs with relocated documents and no default document tree", (t
     "lib/validation.mjs",
     "lib/paths.mjs",
     "lib/git.mjs",
+    "lib/temporary-roots.mjs",
     "lib/terms.mjs",
   ])
     write(
       `scripts/${path}`,
       readFileSync(new URL(path, import.meta.url), "utf8"),
     );
+  write(
+    "packages/skeleton/src/temporary-root-records.mjs",
+    readFileSync(
+      new URL(
+        "../packages/skeleton/src/temporary-root-records.mjs",
+        import.meta.url,
+      ),
+      "utf8",
+    ),
+  );
   terms("SyntheticForbidden\n");
   const result = run(
     root,

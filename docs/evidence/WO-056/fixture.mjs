@@ -2,11 +2,11 @@
 // implementer plants a change that passes the superficial test and violates the
 // contract; the verifier and the repair worker are the live harness under test.
 import { execFileSync, spawn } from "node:child_process";
+import { createFixtureRoot } from "../../../scripts/lib/temporary-roots.mjs";
 import {
   appendFileSync,
   existsSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   realpathSync,
   writeFileSync,
@@ -183,7 +183,7 @@ export function createFixture() {
     git(launchpad, "rev-parse", "--show-toplevel") !== launchpad
   )
     throw new Error("Run from the selected launchpad Git root");
-  const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-wo056-")));
+  const root = createFixtureRoot(join(tmpdir(), "dotln-wo056-"));
   const repo = join(root, "target");
   mkdirSync(repo);
   mkdirSync(join(root, "trees", "sentinel"), { recursive: true });

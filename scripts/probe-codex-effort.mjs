@@ -1,16 +1,13 @@
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
 import { json as prettyJson } from "./lib/helpers.mjs";
 import { spawnGit } from "./lib/git.mjs";
 import { findLaunchpad } from "./lib/config.mjs";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import {
-  existsSync,
-  mkdtempSync,
-  readFileSync,
-  realpathSync,
-  rmSync,
-  writeFileSync,
-} from "node:fs";
+import { existsSync, readFileSync, realpathSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 
@@ -67,7 +64,9 @@ const versionRun = run(["--version"], root);
 assert.equal(versionRun.status, 0);
 const version = versionRun.stdout.match(/\b\d+\.\d+\.\d+\b/u)?.[0];
 assert.ok(version);
-const cwd = realpathSync(mkdtempSync(join(tmpdir(), "dotln-effort-probe-")));
+const cwd = realpathSync(
+  createFixtureRoot(join(tmpdir(), "dotln-effort-probe-")),
+);
 const startedAt = new Date().toISOString();
 try {
   assert.equal(spawnGit(["init", "--quiet", cwd]).status, 0);

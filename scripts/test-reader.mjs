@@ -1,3 +1,8 @@
+import {
+  excludeFixtureOwnership,
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
@@ -5,9 +10,7 @@ import {
   chmodSync,
   cpSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
-  rmSync,
   symlinkSync,
   writeFileSync,
 } from "node:fs";
@@ -56,9 +59,10 @@ const write = (root, path, value) => {
   writeFileSync(join(root, path), value);
 };
 function fixture(t) {
-  const root = mkdtempSync(join(tmpdir(), "dotln-reader-"));
+  const root = createFixtureRoot(join(tmpdir(), "dotln-reader-"));
   t.after(() => rmSync(root, { recursive: true, force: true }));
   runGit(root, ["init", "--quiet", "-b", "main"]);
+  excludeFixtureOwnership(root);
   runGit(root, ["config", "user.name", "Fixture"]);
   runGit(root, ["config", "user.email", "fixture@example.invalid"]);
   write(root, "README.md", "Reader fixture.\n");
@@ -596,7 +600,7 @@ test("a missing recorded tag names the release and fetch, then verifies after re
   tag(root, "v1.0.0");
   recordScores(answers(root), root);
   const tagObject = readScores(root)[0].tagObject;
-  const remote = mkdtempSync(join(tmpdir(), "dotln-reader-remote-"));
+  const remote = createFixtureRoot(join(tmpdir(), "dotln-reader-remote-"));
   t.after(() => rmSync(remote, { recursive: true, force: true }));
   runGit(remote, ["init", "--bare", "--quiet"]);
   runGit(root, ["remote", "add", "origin", remote]);

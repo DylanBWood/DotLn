@@ -1,3 +1,7 @@
+import {
+  createScratchRoot,
+  removeTemporaryPath as rmSync,
+} from "./temporary-roots.mjs";
 import { spawnGit } from "./git.mjs";
 import { json, write as writeFixture } from "./helpers.mjs";
 import { docRelative, findLaunchpad } from "./config.mjs";
@@ -7,11 +11,9 @@ import {
   copyFileSync,
   existsSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   readdirSync,
   realpathSync,
-  rmSync,
   symlinkSync,
   writeFileSync,
 } from "node:fs";
@@ -141,7 +143,7 @@ export function prepareCopilotScratch(
     "scratch base must be system-temporary",
   );
   const directory = containedTemp(
-    mkdtempSync(join(parent, "dotln-copilot-probe-")),
+    createScratchRoot(join(parent, "dotln-copilot-probe-")),
   );
   const home = join(directory, "cli-home");
   mkdirSync(home);

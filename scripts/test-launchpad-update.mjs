@@ -1068,6 +1068,29 @@ test("export update preserves ownership, validates actions and keeps the exporte
       for (const path of [modified, droppedModified])
         assert.ok(again.stdout.includes(`refused: ${path}`));
       assert.deepEqual(snapshot(target), after);
+      const older = instance("before-retention-keys");
+      const olderBudgets = join(older, "docs/control/budgets.json");
+      const budgets = JSON.parse(readFileSync(olderBudgets, "utf8"));
+      delete budgets.retention;
+      writeFileSync(olderBudgets, JSON.stringify(budgets, null, 2) + "\n");
+      ok(
+        runUpdate(older),
+        "update an instance whose budgets predate retention keys",
+      );
+      if (!existsSync(join(older, "node_modules/typescript")))
+        symlinkSync(
+          join(repository, "node_modules/typescript"),
+          join(older, "node_modules/typescript"),
+        );
+      ok(
+        run(process.execPath, ["scripts/meta.mjs"], { cwd: older }),
+        "older instance meta uses retention seeds after update",
+      );
+      assert.equal(
+        JSON.parse(readFileSync(olderBudgets, "utf8")).retention,
+        undefined,
+        "instance-owned budgets need no record edit",
+      );
       t.diagnostic(result.stdout.trim());
     },
   );

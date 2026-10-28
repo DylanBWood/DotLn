@@ -1,5 +1,9 @@
 #!/usr/bin/env node
 import {
+  createScratchRoot,
+  removeTemporaryPath as rmSync,
+} from "../../scripts/lib/temporary-roots.mjs";
+import {
   chmodSync,
   closeSync,
   constants,
@@ -7,12 +11,10 @@ import {
   fsyncSync,
   lstatSync,
   mkdirSync,
-  mkdtempSync,
   openSync,
   readFileSync,
   readdirSync,
   realpathSync,
-  rmSync,
   statSync,
   symlinkSync,
   writeFileSync,
@@ -43,7 +45,7 @@ const fail = (message) => {
 
 export function createScratch() {
   const parent = realpathSync(tmpdir());
-  const path = realpathSync(mkdtempSync(join(parent, "dotln-mutation-")));
+  const path = createScratchRoot(join(parent, "dotln-mutation-"));
   const marker = randomUUID(),
     identity = lstatSync(path);
   writeFileSync(join(path, ".owner"), marker, { flag: "wx", mode: 0o600 });

@@ -1,14 +1,16 @@
 #!/usr/bin/env node
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
 import { findLaunchpad } from "./lib/config.mjs";
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import {
   cpSync,
   existsSync,
-  mkdtempSync,
   readFileSync,
   readdirSync,
-  rmSync,
   writeFileSync,
 } from "node:fs";
 import { arch, platform, tmpdir } from "node:os";
@@ -85,7 +87,7 @@ if (comparePython) {
     );
   pythonVersion = probe.stdout.trim();
 }
-const fixture = mkdtempSync(join(tmpdir(), "dotln-build-comparison-"));
+const fixture = createFixtureRoot(join(tmpdir(), "dotln-build-comparison-"));
 const samples = [];
 try {
   for (const implementation of implementations)

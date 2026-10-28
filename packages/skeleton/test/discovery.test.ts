@@ -1,11 +1,13 @@
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "../src/temporary-roots.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
-  mkdtempSync,
   readFileSync,
   writeFileSync,
   mkdirSync,
-  rmSync,
   realpathSync,
   symlinkSync,
   unlinkSync,
@@ -66,7 +68,9 @@ function seed(root: string): DiscoveryConventions {
   return conventions;
 }
 function scratch(t: { after: (fn: () => void) => void }) {
-  const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-discovery-")));
+  const root = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-discovery-")),
+  );
   t.after(() => rmSync(root, { recursive: true, force: true }));
   return root;
 }

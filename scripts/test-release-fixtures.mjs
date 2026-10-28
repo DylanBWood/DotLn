@@ -1,3 +1,8 @@
+import {
+  createFixtureRoot,
+  withTemporaryOwner,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
 import { runGit } from "./lib/git.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
@@ -6,9 +11,7 @@ import {
   existsSync,
   lstatSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
-  rmSync,
   writeFileSync,
 } from "node:fs";
 import { join, resolve } from "node:path";
@@ -27,7 +30,7 @@ test("case inventory includes existing release scenarios and the one-gate lifecy
       " ",
     );
   assert.deepEqual(releaseCases(repo), expected);
-  const root = mkdtempSync(join(tmpdir(), "dotln-case-list-"));
+  const root = createFixtureRoot(join(tmpdir(), "dotln-case-list-"));
   t.after(() => rmSync(root, { recursive: true, force: true }));
   mkdirSync(join(root, "scripts"));
   writeFileSync(
@@ -46,7 +49,7 @@ test("case inventory includes existing release scenarios and the one-gate lifecy
 });
 
 test("sealed fixture copies share no mutable refs or files and refuse a changed template", (t) => {
-  const root = mkdtempSync(join(tmpdir(), "dotln-fixture-copy-"));
+  const root = createFixtureRoot(join(tmpdir(), "dotln-fixture-copy-"));
   t.after(() => rmSync(root, { recursive: true, force: true }));
   const fixture = join(root, "fixture");
   mkdirSync(fixture);
@@ -154,7 +157,10 @@ test("sealed fixture copies share no mutable refs or files and refuse a changed 
 });
 
 test("fixture context cleans only its owned temporary root", () => {
-  const context = createReleaseFixtureContext();
+  const context = withTemporaryOwner(
+    { gateId: null, suite: null },
+    createReleaseFixtureContext,
+  );
   const directory = resolve(context.template, "..");
   const marker = join(directory, ".owner");
   const token = readFileSync(marker);

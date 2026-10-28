@@ -1,3 +1,7 @@
+import {
+  createScratchRoot,
+  removeTemporaryPath as rmSync,
+} from "./temporary-roots.mjs";
 import { createHash } from "node:crypto";
 import {
   existsSync,
@@ -5,11 +9,9 @@ import {
   constants,
   lstatSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   readdirSync,
   realpathSync,
-  rmSync,
   rmdirSync,
   unlinkSync,
   writeFileSync,
@@ -130,7 +132,7 @@ const ignoredByTree = (clone, commit, paths) => {
     [...HOST_GIT_READ, "ls-tree", "-r", "--name-only", "-z", commit],
     (file) => file === ".gitignore" || file.endsWith("/.gitignore"),
   );
-  const scratch = mkdtempSync(join(tmpdir(), "dotln-target-ignore-"));
+  const scratch = createScratchRoot(join(tmpdir(), "dotln-target-ignore-"));
   try {
     // Only committed ignore blobs supply policy: neither an init template's
     // info/exclude nor the operator's global excludes may authorize deletion.

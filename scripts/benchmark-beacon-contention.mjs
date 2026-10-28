@@ -1,12 +1,14 @@
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
 import assert from "node:assert/strict";
 import { startDeadline } from "../packages/skeleton/src/gate-deadlines.mjs";
 import {
   lstatSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   realpathSync,
-  rmSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
@@ -64,7 +66,7 @@ if (!isMainThread) {
   const smoke = args[0] === "--smoke";
   const requests = smoke ? 8 : 1000;
   const root = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-beacon-contention-")),
+    createFixtureRoot(join(tmpdir(), "dotln-beacon-contention-")),
   );
   const round = async (fixture, members, readers, kind) => {
     const workers = [];

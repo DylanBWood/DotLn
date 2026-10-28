@@ -5,6 +5,7 @@ docs/intake/**
 !docs/intake/**/.gitkeep
 
 .DS_Store
+.dotln-owner.json
 node_modules/
 .env
 .env.*

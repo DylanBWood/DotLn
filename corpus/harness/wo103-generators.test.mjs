@@ -1,13 +1,11 @@
 import test from "node:test";
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "../../scripts/lib/temporary-roots.mjs";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import {
-  readFileSync,
-  readdirSync,
-  mkdtempSync,
-  writeFileSync,
-  rmSync,
-} from "node:fs";
+import { readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import * as kernel from "../../packages/kernel/dist/src/index.js";
@@ -141,7 +139,7 @@ test("WO-103 regeneration rejects wrong seed, argument ambiguity and planted byt
     runGenerator(["--seed", SEED, "--write", "--check"]),
     /usage/,
   );
-  const temp = mkdtempSync(join(tmpdir(), "wo103-check-"));
+  const temp = createFixtureRoot(join(tmpdir(), "wo103-check-"));
   try {
     const file = join(temp, "planted.jsonl");
     writeFileSync(file, '{"expected":true}\n');

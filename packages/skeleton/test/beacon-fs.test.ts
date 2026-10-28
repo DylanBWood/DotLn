@@ -1,3 +1,7 @@
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "../src/temporary-roots.js";
 import test, { type TestContext } from "node:test";
 import { startDeadline } from "../src/gate-deadlines.mjs";
 import assert from "node:assert/strict";
@@ -8,11 +12,9 @@ import {
   existsSync,
   lstatSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   readdirSync,
   realpathSync,
-  rmSync,
   symlinkSync,
   writeFileSync,
 } from "node:fs";
@@ -60,7 +62,7 @@ const claim: BeaconClaimRecord = {
 };
 
 const temporary = (t: TestContext): string => {
-  const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-wo020-")));
+  const root = realpathSync(createFixtureRoot(join(tmpdir(), "dotln-wo020-")));
   t.after(() => rmSync(root, { recursive: true, force: true }));
   return root;
 };
@@ -235,7 +237,7 @@ test(
       assert.ok(result.samples >= 128);
       assert.equal(result.seen.length, 2);
       assert.deepEqual(
-        readdirSync(root),
+        readdirSync(root).filter((name) => name !== ".dotln-owner.json"),
         ["beacons"],
         "sibling staging is removed",
       );
@@ -384,7 +386,11 @@ test("WO-020/WO-029 CLI pins the new timeline, remains opt-in, and prints termin
       `@dotln/skeleton v${manifest.version}`,
     ),
   );
-  assert.deepEqual(readdirSync(root), [], "default creates no files");
+  assert.deepEqual(
+    readdirSync(root).filter((name) => name !== ".dotln-owner.json"),
+    [],
+    "default creates no files",
+  );
   for (const args of [
     ["--beacons"],
     ["--beacons", "--audit"],
@@ -393,7 +399,10 @@ test("WO-020/WO-029 CLI pins the new timeline, remains opt-in, and prints termin
     const rejected = run(...args);
     assert.notEqual(rejected.status, 0);
     assert.match(rejected.stderr, /usage: --beacons/);
-    assert.deepEqual(readdirSync(root), []);
+    assert.deepEqual(
+      readdirSync(root).filter((name) => name !== ".dotln-owner.json"),
+      [],
+    );
   }
   const directory = join(root, "beacons");
   const emitted = run("--audit", "--compiled-diff", "--beacons", directory);

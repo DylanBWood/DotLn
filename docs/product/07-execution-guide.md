@@ -820,15 +820,22 @@ Run the affected executable checks and release/publication preflights on the int
 
 The existing resume phrases remain the operator interface. The actor performing a handoff completes authorized integration chores within that session. `npm run release -- prepare` handles a colliding target, the README claim, and the integration decision under the recorded release classification. It uses origin's tag observation; `--local` deliberately uses only the fetched local tag snapshot. It never publishes, alters component versions, or appends control events. A missing component bump against the verified branch baseline remains an executor defect. A component bump that was valid at verification may be retimed during integration if upstream consumed the same version, preserving its already-declared compatibility impact and recording that evidence; this is distinct from omitting the original bump. `npm run test:docs` runs `check-surfaces --local` as a preflight against annotated local releases in the subject's own `HEAD` ancestry. Worktrees share tag refs, so an unintegrated sibling's newer tag is excluded from this verification baseline. `worktree publish` / `release close` retain the authoritative remote check on the integrated result. No command acquires authority from a sibling's phase.
 
-Run `npm run worktree -- integrate WO-NNN` inside the matching worktree
+Run `npm run worktree -- integrate WO-NNN` inside the matching worktree or run
+main's current `scripts/worktree.mjs integrate WO-NNN` from main; Git's
+worktree registry selects the matching branch and its writer lock still applies
 ([WO-079](../work-orders/WO-079-worktree-sync.md), the successor to WO-033's
 sync proposal). It checkpoints current work without a lifecycle event,
-keeps a named include-untracked stash, fetches main and tags, fast-forwards
+keeps a named include-untracked stash until application completes, fetches main
+and tags for repair/review (uses local main for active execution), fast-forwards
 an uncommitted branch or starts a non-rewriting merge, applies the stash,
 and regenerates the projections below. Ignored intake requires
 `--intake-backup <archive.zip>` naming an external archive whose bytes match
 the current intake; `npm run backup:intake -- <authorized-directory>` creates
-one. The helper is admitted in `repairing` and `final-review`, records that phase,
+one. The helper is admitted in `active`, `repairing` and `final-review`. An active
+worktree whose merge base is behind main integrates main; otherwise it reports
+that it took in nothing, without checkpointing or stashing. Executors integrate
+first when main moved, before formatting, sync and the complete handoff run.
+The helper records that phase,
 makes its preservation recovery commit and any necessary merge commit with
 hooks disabled through invocation-local flags, and records both identities in
 the integration receipt. It never reads a sibling's phase as admission authority.
@@ -850,7 +857,10 @@ The command lists authored conflicts and exits nonzero while work remains.
 Resolve those paths explicitly, stage those resolutions, then use
 `npm run worktree -- integrate WO-NNN --continue`. The ignored integration
 receipt keeps the original bases, checkpoint and stash across this boundary;
-the stash is never popped or dropped. If application was interrupted at stage
+the stash remains while application, conflicts or regeneration are pending.
+At a completed application it drops only its named stash through the
+identity-checked stash-drop helper and records `stashDropped`; sibling stash
+identities and recovery checkpoints survive. If application was interrupted at stage
 `applying`, inspect and complete the application, stage resolved content, and
 use `worktree integrate WO-NNN --continue --stash-applied`; this attestation
 still checks conflicts, restored untracked files and upstream ancestry. The
@@ -892,6 +902,13 @@ sentence nothing checks is a documented condition, not a gate
 [vision-into-use pass, 2026-09-17].
 
 ## Operator recovery controls
+
+Cleanup is owned by the workflow, not handed to the operator. `worktree start`,
+`plan start` and kit update preview print a read-only prune census by kind,
+class, count and candidate bytes. `harness prune --apply` remains the explicit
+recovery route, with fresh ownership checks under the host lane lock; a live
+gate is named and retained. A host denial is recorded and cleanup stays on the
+release close's retry path. No command changes host permissions to gain access.
 
 `analysis:` interrupts the current routine and opens operator-directed diagnosis.
 The agent explains the observed state, constraints and next options, and awaits
@@ -1408,8 +1425,12 @@ accepted planning-input hashes. The current amendment must bind the decision
 and order, and the named criterion must remain unchanged. Only those exact
 story-section bytes continue; other planning inputs retain their checks.
 Changing accepted bytes requires rebinding through `amend-order`. The gate
-reads a writeback only from the order's current amendment, so a later
-amendment of that order restates it. This is
+judges the workspace through the order's latest unwithdrawn amendment, so a
+later workspace amendment restates its writeback. The committed snapshot is
+judged with its committed amendment log and decision bytes; a pending rebind
+or withdrawal does not rewrite that history. A current authorization can
+also approve committed bytes. The most specific matching approved source
+takes precedence over an older prefix. This is
 reported separately as `authorized-execution-writeback` [WO-118-D004 and D007, 2026-10-13]. If committed execution overwrote an existing capability row, restore the judged
 source and append the exact newer row as a dated reassessment. The continuing-work
 check reports a pending history repair before commit only when every changed HEAD
@@ -1716,6 +1737,19 @@ the alternatives declined. Reopen when an index consumer needs the outcome
 typed, or when a research order is cited as a capability.
 
 ## Workflow closeout and releases
+
+After worktree and branch cleanup, release close runs the owned-resource prune;
+its dry run previews the same candidates. `release-close.json` retains
+`prune.candidates`, `removed`, `retained` and `blockers`. A refusal is a cleanup
+blocker with the same close retry command. Global apply shares the host lane
+lock and refuses while any gate holds lanes, naming it. Two orders may continue
+in parallel worktrees: a live or uncertain owner, sibling writer, live gate or
+lane protects its roots, and a completed integration drops only its own stash.
+An observed removed repository has no active gate to pin its expired fixtures;
+unavailable observations still retain them. A nested cache or coordination root
+with a checked containing lifetime ends with that fixture, subject to liveness
+and retention, including null policies. An independent cache keeps its freshness
+protocol and independent coordination keeps its owning protocol.
 
 Final review publishes the reviewed work-order branch and PR; the operator
 retains merge authority. After merge, `resume: release close` authorizes the
@@ -2269,10 +2303,10 @@ three duties in order; choose relevant lenses and state why in the report.
    holds the same contract, what a maintainer will not understand in six
    months, and whether it fits repository principles and the platform lens
    in §Goal-aligned decisions. Propose improvements with concrete evidence.
-3. **Read the two worker reports and reproduce.** The executor's adversary
-   and improver (below) ran at `implementation-ready`; read their reports
-   and the executor's dispositions, and reproduce the claims your verdict
-   rests on. Spawn a fresh `dotln-worker` only to reproduce one named
+3. **Read the three worker reports and reproduce.** Read the current
+   execution or repair's criteria-adversary, design-improver and consistency
+   reports (below), together with the executor's dispositions. Reproduce the
+   claims your verdict rests on. Spawn a fresh `dotln-worker` only to reproduce one named
    claim you cannot run yourself, with only the order and diff. Never
    delegate the verdict [2026-10-07 pass; the operator's direction of
    2026-10-02 as WO-187 D051 records it].
@@ -2350,23 +2384,37 @@ are read separately when the order names them.
 | Authority and private data | Do effects stay authorized and public data stay separate from private inputs? | Hosts, writes, transport and publication |
 | Maintainer in six months | Can the next maintainer explain the rule and change it safely? | Every nontrivial implementation |
 
-Before `implementation-ready`, and not before `repair-complete`, the
-executor spawns two fresh `dotln-worker` agents, each given only the order
-and the diff, with distinct briefs. The criteria adversary seeks concrete
+Every execution and fix requires three fresh independent `dotln-worker` agents
+before its complete validation run, each given the current order and diff,
+with distinct briefs. The criteria adversary seeks concrete
 counterexamples, failed acceptance criteria and missing regression tests;
 design cleanup is outside its brief. The design improver seeks simpler
 structure, lower coupling, sound error handling and what a maintainer will
 not understand in six months; criterion verdicts and adversarial test design
-are outside its brief. An issue discovered in the other lane is transferred,
+are outside its brief. The consistency reviewer's sole brief is to verify
+that write-backs and related metadata are complete and agree with the change:
+product and operational documentation, decisions, indexes, cross-references,
+package and lockfile versions, release metadata, generated artifacts and
+installed guidance. This explicitly includes test dependencies, fixture
+inputs and manifests, fixture version pins, generated test baselines and
+evidence-source declarations, together with adjacent metadata of those kinds.
+Give that reviewer the corresponding source and generated surfaces to check.
+It does not duplicate criterion attacks or design review.
+An issue discovered in another reviewer's brief is transferred,
 not reviewed twice. The executor fixes or records every distinct finding and writes a line in
 `handoff.md` that starts `self-review: found N; fixed N; recorded N`, then
-names both workers or the separate-pass fallback and its evidence. A list
+names all three workers and their reports. The executor's own separate pass is not
+a substitute for an independent worker. Return changes that materially
+affect a finding to its reviewer. Reviews belong to the execution or repair
+run; ordinary edits do not expire them or require new reviewers. After the
+complete run, have the same consistency reviewer check the final handoff and
+other final write-backs before the document check. A list
 marker, balanced inline emphasis or code wrappers may decorate the line;
 case and a parenthetical worker label are tolerated. The three integer counts
-remain required; quoted or fenced examples are not the line. Absence advises once
-and never refuses completion. A line does not prove a review occurred. Until
-WO-196 regenerates the role text, this section governs where a role sentence
-differs from it.
+remain required. The advisory checks line shape only; a summary line does
+not prove a review occurred. Both completion commands retain the
+existing advisory when the summary is absent; the mandatory review is the
+executor's duty. No additional receipt or hash check is required.
 
 Final review is acceptance: the criteria, the integration and the release
 surfaces. A finding outside the criteria that breaks no behavior `main` had
@@ -3302,11 +3350,74 @@ usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-
 
 ### Preflight before the full gate
 
+The shared temporary-root helper marks every fixture with its class, process
+lifetime, repository, gate/suite or session identity, creation time and retention.
+After recording a terminal cleanup row, the runner removes roots of passing
+suites and tags failed suites for diagnosis. It publishes passing gate evidence
+only after cleanup succeeds. Whole fixture teardown waits for that outcome;
+the census includes every root carrying the gate identity. Nested suites keep
+the owning gate's repository and suite even when the
+nested command runs in a copied repository. A gate id alone does not defer
+explicit creator teardown to an unobserved ledger. Standalone captures
+and scratch share their suite's retention, with live workers and null policies
+still protected; reusable caches and independent coordination retain their own
+protocols and receive explicit retention reasons. Repeated completion never
+moves an already recorded end later.
+A readable process table proves an absent PID dead even when its birth was
+unavailable at creation; a present PID without a recorded birth stays unknown.
+A retained nested owner protects its ancestor. Runtime directories created
+inside a gate fixture share its recorded lifetime; independent owners and
+explicit null retention still protect their material. Nested instance gates
+keep their own task metrics and inherit the containing fixture's lifetime.
+An inner pass cannot end that lifetime while the containing gate is live.
+Within the same gate, a child's explicitly assigned suite keeps its own
+outcome at completion and later prune; a passed parent cannot shorten a failed
+child's diagnosis window.
+Ownership markers describe one physical directory: fixture copies exclude
+them, and fixture seeds keep them out of Git, clones and archives. An invalid
+nested marker retains its tree and fails cleanup rather than qualifying a
+passing row. Application scratch keeps
+its explicit operation cleanup; the containing fixture provides fallback cleanup
+for leftovers. Root-token ledger segments are
+retired independently after their gate metrics are durable, so cleanup does
+not replay the lifetime history or rewrite another worker's active segment.
+The final row carries `filesCreated`,
+`filesDeleted`, `bytesWritten` and the helper's inventory method: sparse holes are excluded by the allocated-byte cap; overwrites, physical I/O
+and removals outside the helper are unobserved. The host task samples file-event
+daemon memory; macOS rows include that reading and before/after
+`fseventsd` resident bytes, or an explicit unavailable reason; they do not assign
+causation to a gate. `.metadata_never_index` marks the system-temp `dotln` root
+and `.runtime/` on macOS. A measured reproducible daemon-growth comparison is
+required before changing the gate's temp layout.
+
+Launchpad cases reuse an export/dependency cache under each worktree's own
+`.runtime/fixtures/launchpad/<manifest-and-lock-hash>/`; case records and
+workspace links remain private. The lockfile acceptance case still runs one
+fresh offline `npm ci`. A cold cache adds one installation; a warm run adds none.
+A changed hash makes the old cache eligible only after ownership checks.
+`docs/control/budgets.json` and the kit template seed retention hours: passed
+fixtures 0, failed fixtures 24, orphan session scratch 24, worker captures 1,
+legacy backfill 48, warm fixtures 0 after stale, coordination indefinite.
+Each key admits `null` to preserve independently owned roots in that class.
+When an orphan's actual end was not observed, apply records the first proven
+dead-owner observation and starts its full window then; preview writes nothing.
+Session completion explicitly tears down only its own scratch and dead captures
+after writer release and observed background work. An ordinary Claude Stop is
+a turn end: a live or unknown host keeps its scratch until the dispatch's
+completion event is recorded. Codex lifecycle completion supplies that same
+positive boundary. Orphan retention handles abandoned sessions.
+Saved rejection diagnostics and pending entropy subjects are promoted out of
+temporary ownership. Their existing retention or filing/discard protocol owns
+them across sessions; session cleanup cannot remove them.
+
 Every selection begins with six structural tasks, in order: `format`,
 `configuration-root`, `registrations`, `declarations`, `generated` and
 `host`. They finish before a build or selected suite starts. Declarations
-check machinery inputs and declared copied-fixture closures. Generated
-checks retain their own short deadlines and name all stale artifacts in the
+check machinery inputs and declared copied-fixture closures.
+The temporary-root declaration check follows runtime imports and executable
+path literals into corpus and evidence fixtures, so their directory does not
+hide a raw temporary-root factory.
+Generated checks retain their own short deadlines and name all stale artifacts in the
 row; `npm run sync` regenerates them in dependency order and changes nothing
 on a second current run. Only a recognized stale report authorizes a writer;
 crashes, timeouts, unreadable inputs and unrelated failures refuse regeneration.

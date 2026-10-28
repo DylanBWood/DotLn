@@ -66,6 +66,8 @@ import {
   configureRepository,
   initRepository,
   commitExport,
+  commitWarmExport,
+  linkWarmInstall,
   runExport,
   files,
   treeSnapshot,
@@ -563,19 +565,46 @@ test("WO-201 criterion 4: verify checks runtime and compiled tests, and reports 
 
 test("the exported instance checks runtime, coordination records and explicit diagnostics separately", (t) => {
   const started = performance.now();
-  const destination = commitExport(join(scratch, "gate-kit"));
+  const destination = commitWarmExport(join(scratch, "gate-kit"));
+  const reuse = ok(
+    run(
+      process.execPath,
+      [
+        "--input-type=module",
+        "-e",
+        `import { join } from "node:path"; import { scratch, commitWarmExport } from ${JSON.stringify(pathToFileURL(join(repository, "scripts/lib/launchpad-fixture.mjs")).href)}; commitWarmExport(join(scratch, "reuse-probe"));`,
+      ],
+      {
+        env: {
+          ...env,
+          GIT_AUTHOR_DATE: "2001-01-02T00:00:00Z",
+          GIT_COMMITTER_DATE: "2001-01-02T00:00:00Z",
+        },
+        timeout: 300000,
+      },
+    ),
+    "independent warm-cache consumer",
+  );
+  assert.match(reuse.stdout, /Fixture install: warm cache hit \(0 npm ci\)/);
   // A new consumer has no upstream comparison ref. That must not select
   // every shipped platform fixture for its ordinary review.
   git(destination, ["branch", "-m", "instance"]);
   assert.equal(hasPackageSources(destination), false);
-  ok(
-    run(
-      "npm",
-      ["ci", "--offline", "--no-audit", "--no-fund", "--loglevel=error"],
-      { cwd: destination },
-    ),
-    "gate kit offline install",
+  assert.ok(existsSync(join(destination, "node_modules/typescript")));
+  const nestedCase = join(destination, ".runtime/nested-runner.test.mjs");
+  mkdirSync(dirname(nestedCase), { recursive: true });
+  writeFileSync(
+    nestedCase,
+    'import test from "node:test"; test("nested runner executes", () => {});\n',
   );
+  const nested = ok(
+    run(process.execPath, ["--test", "--test-reporter=tap", nestedCase], {
+      cwd: destination,
+    }),
+    "nested Node runner",
+  );
+  assert.match(nested.stdout, /# tests 1\b/u);
+  assert.match(nested.stdout, /# pass 1\b/u);
   // Follow the kit's documented first steps: activation creates this
   // instance's own indexes, without importing any of core's control history.
   ok(
@@ -1145,6 +1174,7 @@ test("WO-074 criteria 1, 2 and 5: without package source the export activates it
       "packages/skeleton/src/gate-deadlines.mjs",
       "packages/skeleton/src/gate-evidence.mjs",
       "packages/skeleton/src/runtime-inputs.mjs",
+      "packages/skeleton/src/temporary-root-records.mjs",
       "packages/skeleton/src/usage-observation.mjs",
       "packages/skeleton/src/writer-teardown.mjs",
       "packages/skeleton/test/control-beacon-cli.fixture-inputs.json",
@@ -1920,14 +1950,7 @@ test("WO-075 design: a fresh clone of the committed export lacks the ignored sna
     unlinked.stderr,
     /Cannot find package '@dotln\/|ERR_MODULE_NOT_FOUND/u,
   );
-  ok(
-    run(
-      "npm",
-      ["ci", "--offline", "--no-audit", "--no-fund", "--loglevel=error"],
-      { cwd: clone, timeout: 300_000 },
-    ),
-    "npm ci in the clone",
-  );
+  linkWarmInstall(clone);
   // The README's order, commit then install, leaves the tree clean: the bin
   // target npm makes executable was written executable by the export.
   assert.equal(git(clone, ["status", "--porcelain"]).stdout, "");

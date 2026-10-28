@@ -1,6 +1,12 @@
 import { observedSpawnSync as spawnSync } from "./gate-deadlines.mjs";
 import { withWriterRegistration } from "./writer-teardown.mjs";
 import {
+  ensureTemporaryRoot,
+  pruneSessionTemporaryRoots,
+  temporaryProcessIdentity,
+  temporaryRepository,
+} from "./temporary-roots.js";
+import {
   sourceChangeCommandEffect,
   sourceChangeWriterBranch,
 } from "./source-change-command.js";
@@ -914,7 +920,7 @@ async function observeCliDispatch(
     source: "observed-cli-dispatch",
     dispatch: { action: pending.action, recorded: true },
   });
-  const scratch = ensureHarnessSessionScratch(input.session_id);
+  const scratch = ensureHarnessSessionScratch(input.session_id, root);
   const admission =
     pending.action === "release-close"
       ? " The release-close publish admission stays withheld: only the operator's resume: release close phrase records the dispatch that keys it."
@@ -3110,8 +3116,10 @@ function reserveHarnessWriter(
   actorId: string,
   owner?: HarnessProcess,
 ): readonly HarnessWriter[] {
-  return withWriterRegistration(root, () =>
-    reserveWriterWhileRegistered(root, input, actorId, owner),
+  return withWriterRegistration(
+    root,
+    () => reserveWriterWhileRegistered(root, input, actorId, owner),
+    { repository: targetState.getStore()?.launchpad ?? root },
   );
 }
 function reserveWriterWhileRegistered(
@@ -3249,6 +3257,37 @@ export function reserveCodexDispatchWriter(
   const foreign = writers.find((writer) => writer.actorId !== actorId);
   if (foreign) throw new Error(writerRefusal(foreign));
   return harnessWriterView(root);
+}
+
+/** A command aimed at a sibling worktree uses that worktree's writer lock.
+ * An existing reservation of this session survives the command; a temporary
+ * command reservation is released even when integration needs continuation. */
+export async function withHarnessCommandWriter<T>(
+  root: string,
+  sessionId: string,
+  operation: () => Promise<T>,
+): Promise<T> {
+  const input: HarnessInput = {
+    cwd: root,
+    session_id: sessionId,
+    hook_event_name: "PreToolUse",
+  };
+  const actorId = sessionKey(input);
+  const prior = harnessWriterView(root);
+  const held = prior.reserved && prior.actorId === actorId;
+  const self = processTable().find((row) => row.pid === process.pid);
+  const writers = reserveHarnessWriter(root, input, actorId, {
+    pid: process.pid,
+    ...(self ? { startedAt: self.startedAt } : {}),
+    source: "parent",
+  });
+  const foreign = writers.find((writer) => writer.actorId !== actorId);
+  if (foreign) throw new Error(writerRefusal(foreign));
+  try {
+    return await operation();
+  } finally {
+    if (!held) releaseHarnessWriter(root, input);
+  }
 }
 export const harnessSubject = gateTreeHash;
 
@@ -3552,7 +3591,7 @@ function enterHarnessSession(
   }
   const override = openOverrideAdvisory(root);
   if (override) process.stderr.write(`${override}\n`);
-  const scratch = ensureHarnessSessionScratch(sessionId);
+  const scratch = ensureHarnessSessionScratch(sessionId, root);
   if (scratch.advisory) process.stderr.write(`${scratch.advisory}\n`);
   return {
     session: sessionKey(input),
@@ -4684,7 +4723,10 @@ const notOwnDirectory = (info: Stats): string | null =>
  * existing real directory the session user owns is used as it is. Anything
  * else is one advisory naming the path and the cause, never a refusal.
  */
-export function ensureHarnessSessionScratch(sessionId: string): {
+export function ensureHarnessSessionScratch(
+  sessionId: string,
+  root = temporaryRepository(),
+): {
   readonly path: string;
   readonly advisory?: string;
 } {
@@ -4701,6 +4743,20 @@ export function ensureHarnessSessionScratch(sessionId: string): {
       info = lstatSync(path);
     }
     cause = notOwnDirectory(info);
+    if (!cause) {
+      const host = process.env.CODEX_THREAD_ID
+        ? codexHostProcess()
+        : harnessHostProcess();
+      const identity = host.pid
+        ? temporaryProcessIdentity(host.pid, root)
+        : { pid: null, birth: null };
+      ensureTemporaryRoot(path, {
+        class: "session-scratch",
+        repository: root,
+        adoptExisting: true,
+        owner: { ...identity, session: digest(sessionId) },
+      });
+    }
   } catch (error) {
     cause =
       errorCode(error) ??
@@ -5393,7 +5449,7 @@ async function evaluateExistingHarnessHook(
         receipt = dispatched.receipt;
       }
       additionalContext = `DotLn resolved role ${role.name}. Load the dotln-${role.name} skill.${control.workOrderPath ? ` Read the selected work order ${control.workOrderPath} before interpreting the phase, including a closed phase.` : " Follow its requested observation or planning/ideation procedure."} A skill grants no authority.${dispatched ? `\n${dispatched.context}` : ""}`;
-      const scratch = ensureHarnessSessionScratch(input.session_id);
+      const scratch = ensureHarnessSessionScratch(input.session_id, root);
       scratchAdvisory = scratch.advisory;
       additionalContext += `\nDotLn session scratch: ${scratch.path}. ${scratchAdvisory ?? "Use this path for temporary work."} Native scratch and /tmp need a separate grant when outside system-temp; a printed path does not override the active grants.`;
       if (input.session_id)
@@ -5683,7 +5739,7 @@ async function evaluateExistingHarnessHook(
       const tasks = observedFacts(root, observationScope()).tasks.filter(
         (task) =>
           task.dispatchedAt &&
-          ["dispatched", "running", "pending"].includes(task.state),
+          !["completed", "failed", "stopped", "killed"].includes(task.state),
       );
       if (tasks.length)
         running = `DotLn advisory: background dispatches still running by this session's journal: ${tasks.map((task) => `${task.label} (${String(task.key).slice(0, 12)}, ${task.state})`).join(", ")}; expected completion: ${session.expectedEvent ?? "none"}.`;
@@ -5701,7 +5757,9 @@ async function evaluateExistingHarnessHook(
               `DotLn advisory: pending ${unmet.join(", ")}; these observations do not block lifecycle completion.`,
             ]
           : []),
-        ...(running ? [running] : []),
+        ...(running
+          ? [running]
+          : [pruneCompletedHarnessSession(root, input.session_id)]),
       ].join("\n"),
     };
   }
@@ -6377,6 +6435,66 @@ export function releaseHarnessWriter(root: string, input: HarnessInput): void {
     actorId,
     ...ownerFields(instance.writer.owner),
   });
+}
+
+/** Completion may tear down only this dispatch's roots, after its writer and
+ * observed background work have ended. A failed observation preserves them.
+ */
+export function pruneCompletedHarnessSession(
+  root: string,
+  sessionId: string,
+  { dispatchEnded = false }: { dispatchEnded?: boolean } = {},
+): string {
+  try {
+    const writer = harnessWriterView(root);
+    if (writer.reserved && writer.actorId === digest(sessionId))
+      return "Session prune: retained while its writer is reserved.";
+    const input: HarnessInput = {
+      cwd: root,
+      session_id: sessionId,
+      hook_event_name: "Stop",
+    };
+    const session = readJson(statePath(root, input), initialSession(), true);
+    const facts = observedFacts(root, {
+      sessionKey: digest(sessionId),
+      usageKey: session.usageSessionKey ?? digest(sessionId),
+      workOrder: session.workOrder ?? null,
+      phase: observationPhase(session),
+      ...(session.startedAt ? { startedAt: session.startedAt } : {}),
+    });
+    if (
+      facts.tasks.some(
+        (task) =>
+          task.dispatchedAt &&
+          !["completed", "failed", "stopped", "killed"].includes(task.state),
+      )
+    )
+      return "Session prune: retained while background dispatches have no observed completion.";
+    // Stop is also emitted between turns. Only the dispatch's recorded
+    // completion (or the lifecycle command that just appended it) proves
+    // that a live host no longer needs this scratch.
+    const completed =
+      dispatchEnded ||
+      Boolean(
+        session.expectedEvent &&
+        localEvents(root, session.workOrder ?? null)
+          .slice(session.startingEventCount)
+          .some((event) => event.type === session.expectedEvent),
+      );
+    const result = pruneSessionTemporaryRoots(root, sessionId, {
+      dispatchEnded: completed,
+    });
+    record(root, input, {
+      sessionPrune: {
+        removed: result.removed.length,
+        retained: result.retained.length,
+        blockers: result.blockers.length,
+      },
+    });
+    return `Session prune: ${result.removed.length} owned roots removed; ${result.retained.length} retained; ${result.blockers.length} blockers.`;
+  } catch (error) {
+    return `Session prune: retained; ${error instanceof Error ? error.message : "ownership observation unavailable"}.`;
+  }
 }
 /**
  * Operator-facing release from outside a governed session. The liveness

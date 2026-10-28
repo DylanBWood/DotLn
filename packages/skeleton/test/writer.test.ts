@@ -1,3 +1,7 @@
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "../src/temporary-roots.js";
 import test from "node:test";
 import {
   prepareSourceObjectStore,
@@ -10,10 +14,8 @@ import {
   existsSync,
   chmodSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   realpathSync,
-  rmSync,
   symlinkSync,
   writeFileSync,
 } from "node:fs";
@@ -114,7 +116,9 @@ const git = (cwd: string, ...args: string[]) =>
   ).trim();
 
 function scratch() {
-  const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-writer-test-")));
+  const root = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-writer-test-")),
+  );
   const launchpad = join(root, "launchpad");
   const parent = join(root, "trees");
   const cwd = join(parent, "writer");
@@ -609,7 +613,7 @@ test("WO-051 C-W2/C-W3/C-W8/C-W9 and X-W1/X-W2/X-W8 canonical writer shapes", ()
         // Codex's helper aliases live under the episode home; only that
         // directory is granted, never the home and its credentials.
         const home = realpathSync(
-          mkdtempSync(join(tmpdir(), "dotln-codex-home-test-")),
+          createFixtureRoot(join(tmpdir(), "dotln-codex-home-test-")),
         );
         try {
           const withHome = canonicalWorkerArgs(
@@ -673,7 +677,7 @@ test("WO-051 C-W2/C-W3/C-W8/C-W9 and X-W1/X-W2/X-W8 canonical writer shapes", ()
         // A main checkout's gitdir holds the shared hooks and config; one
         // that passes the mount checks is still refused its grants.
         const main = realpathSync(
-          mkdtempSync(join(s.request.profile.worktreeParent, "main-")),
+          createFixtureRoot(join(s.request.profile.worktreeParent, "main-")),
         );
         try {
           execFileSync("git", ["init", "--quiet"], { cwd: main });

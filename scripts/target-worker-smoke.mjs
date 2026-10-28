@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { createFixtureRoot } from "./lib/temporary-roots.mjs";
 import { json as prettyJson } from "./lib/helpers.mjs";
 import { runGit } from "./lib/git.mjs";
 // Operator-approved outside-sandbox smoke. Retain only bounded derived facts.
@@ -8,7 +9,6 @@ import { createHash } from "node:crypto";
 import {
   existsSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   readdirSync,
   realpathSync,
@@ -45,7 +45,9 @@ if (existsSync(output))
   throw new Error(
     "live result already exists; preserve it before recording another attempt",
   );
-const target = realpathSync(mkdtempSync(join(tmpdir(), "dotln-target-live-")));
+const target = realpathSync(
+  createFixtureRoot(join(tmpdir(), "dotln-target-live-")),
+);
 runGit(target, ["init", "-b", "target-smoke"], fixtureGitOptions);
 writeFileSync(join(target, "source.txt"), "synthetic smoke\n");
 runGit(target, ["add", "source.txt"], fixtureGitOptions);

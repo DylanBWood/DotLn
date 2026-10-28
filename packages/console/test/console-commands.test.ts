@@ -1,3 +1,7 @@
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "@dotln/skeleton/dist/src/temporary-roots.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { spawn, spawnSync } from "node:child_process";
@@ -6,10 +10,8 @@ import {
   chmodSync,
   cpSync,
   existsSync,
-  mkdtempSync,
   readFileSync,
   readdirSync,
-  rmSync,
   statSync,
   writeFileSync,
 } from "node:fs";
@@ -102,7 +104,7 @@ const readOnly = (cwd: string) => {
 };
 
 const temporary = (label: string) =>
-  mkdtempSync(join(tmpdir(), `dotln-wo115-${label}-`));
+  createFixtureRoot(join(tmpdir(), `dotln-wo115-${label}-`));
 const sha256 = (value: string | Buffer) =>
   createHash("sha256").update(value).digest("hex");
 const logOf = (store: string) =>

@@ -33,12 +33,31 @@ import {
   environmentWithoutGhRepo,
   resolveGitHubPushTarget,
 } from "./github-repository.mjs";
-import { activeGateRuns } from "./gate-evidence.mjs";
+import { activeGateRuns, readGateChecks } from "./gate-evidence.mjs";
 import {
   harnessWriterView,
   harnessProcessAlive,
 } from "../../packages/skeleton/dist/src/harness-host.js";
 import { staleCodexEpisodeHomes } from "../../packages/skeleton/dist/src/worker-transport.js";
+import {
+  hostStateRoot,
+  readHostSnapshot,
+  registerProcess,
+  recordedHostLaneCapacity,
+  withHostLock,
+} from "./host-resources.mjs";
+import { readHolders } from "./host-lanes.mjs";
+import {
+  temporaryPrunePaths,
+  judgeTemporaryRoot,
+  applyTemporaryCandidate,
+  pruneCensus,
+  observeTemporaryOwnerEnd,
+} from "./temporary-prune.mjs";
+import {
+  makeTemporaryWritable,
+  retireTemporaryLedger,
+} from "./temporary-roots.mjs";
 
 const json = (path) => readJsonFile(path, { rawErrors: true });
 const lines = (path) =>
@@ -397,12 +416,43 @@ function pruneContext(root, options, publication) {
   );
   const worktrees = parseWorktrees(root);
   let pins;
+  const scope = options.scope ?? process.env.DOTLN_PRUNE_SCOPE ?? "all";
+  const processes =
+    options.processes ??
+    readHostSnapshot({ footprint: false, directory: options.hostDirectory })
+      .processes;
+  let openPaths = options.openPaths;
+  if (openPaths === undefined && scope === "all") {
+    // Inspect this user's open paths once; never print command lines or file
+    // contents. A failed/truncated observation preserves every legacy root.
+    const result = spawnSync(
+      "lsof",
+      ["-n", "-P", "-u", String(process.getuid?.() ?? ""), "-Fn"],
+      { encoding: "utf8", timeout: 10000, maxBuffer: 32 * 1024 * 1024 },
+    );
+    openPaths =
+      result.status === 0 && !result.error
+        ? result.stdout
+            .split("\n")
+            .filter((line) => line.startsWith("n/"))
+            .map((line) => line.slice(1))
+        : null;
+    options.openPaths = openPaths;
+  }
   return {
     root,
     options,
     directory,
     currentKey: current ? digest(current) : null,
     worktrees,
+    processes,
+    openPaths,
+    holders:
+      options.holders ??
+      readHolders(options.hostDirectory ?? hostStateRoot(), {
+        worktree: root,
+        includeWorktrees: true,
+      }).holders,
     registered: (order) =>
       worktrees.some(
         (tree) => tree.branch === `refs/heads/${order.toLowerCase()}`,
@@ -678,6 +728,14 @@ function judgeLane(context, order) {
     order,
   );
   const label = docRelative(root, "control", `local/retained/${order}`);
+  if (context.options.preserveOrders?.includes(order))
+    return {
+      retained: {
+        kind: "retained-lane",
+        path: label,
+        reason: "active close preserves its own receipt",
+      },
+    };
   const registered = context.registered(order);
   const release = registered ? null : context.releaseOf(order);
   const judged = assess(
@@ -773,10 +831,12 @@ export function planHarnessPrune(root, options = {}) {
     throw new Error("harness prune requires the physical Git root");
   const context = pruneContext(root, options);
   const candidates = [],
-    retained = [];
+    retained = [],
+    observations = [];
   const record = (judged) => {
     if (judged?.candidate) candidates.push(judged.candidate);
     else if (judged) retained.push(judged.retained);
+    if (judged?.observation) observations.push(judged.observation);
   };
   const snapshots = safeChild(root, ".runtime/harness");
   if (stat(snapshots)?.isDirectory())
@@ -804,11 +864,30 @@ export function planHarnessPrune(root, options = {}) {
       record(judgeLane(context, order));
   for (const stash of integrationStashes(root))
     record(judgeStash(context, stash));
+  for (const path of temporaryPrunePaths(root, options))
+    record(judgeTemporaryRoot(root, path, options, context));
+  // An eligible ancestor was judged with every nested owner and removes that
+  // tree once. Do not delete a child first and invalidate a legacy parent's
+  // age through our own directory mutation, or count its bytes twice.
+  const topCandidates = candidates.filter(
+    (row) =>
+      !row.absolute ||
+      !candidates.some(
+        (parent) =>
+          parent !== row &&
+          ["temporary-root", "session-scratch", "legacy-backfill"].includes(
+            parent.kind,
+          ) &&
+          parent.absolute &&
+          row.absolute.startsWith(parent.absolute + sep),
+      ),
+  );
   return {
     root,
-    candidates,
+    candidates: topCandidates,
     retained,
-    bytes: candidates.reduce((sum, row) => sum + row.bytes, 0),
+    observations,
+    bytes: topCandidates.reduce((sum, row) => sum + row.bytes, 0),
     publication: context.releaseOf,
   };
 }
@@ -827,6 +906,10 @@ function recheckCandidate(plan, row, options) {
     judged = judgeShellClaim(context, basename(row.absolute));
   else if (row.kind === "retained-lane")
     judged = judgeLane(context, row.workOrder);
+  else if (
+    ["temporary-root", "session-scratch", "legacy-backfill"].includes(row.kind)
+  )
+    judged = judgeTemporaryRoot(plan.root, row.absolute, options, context);
   else {
     const entry = integrationStashes(plan.root).find(
       (entry) => entry.stash === row.stash,
@@ -842,10 +925,28 @@ function recheckCandidate(plan, row, options) {
 
 // One plan per apply. Each deletion follows a re-check of that candidate alone,
 // and its byte proof precedes it, so a stopped apply resumes by running again.
-export function pruneHarness(root, { apply = false, ...options } = {}) {
+function pruneUnderLock(root, { apply = false, ...options } = {}) {
   options = { ...options, inventoryCache: new Map() };
   const plan = planHarnessPrune(root, options);
+  const retentionsStarted = [];
   if (apply) {
+    for (const observation of plan.observations) {
+      const started = observeTemporaryOwnerEnd(
+        root,
+        observation,
+        options,
+        pruneContext(root, options, plan.publication),
+      );
+      if (started) {
+        retentionsStarted.push(started);
+        const retained = plan.retained.find(
+          (row) => row.path === observation.path,
+        );
+        if (retained)
+          retained.reason =
+            "owner death first observed; retention window started";
+      }
+    }
     for (const row of plan.candidates) {
       let proofCreated = false;
       let proofPath;
@@ -933,18 +1034,86 @@ export function pruneHarness(root, { apply = false, ...options } = {}) {
           throw error;
         }
         row.recoveryProof = relative(plan.root, recoveryPath);
-      } else if (row.kind === "shell-claim") retireShellClaim(row);
-      else rmSync(row.absolute, { recursive: true });
+      } else if (
+        ["temporary-root", "session-scratch", "legacy-backfill"].includes(
+          row.kind,
+        )
+      )
+        applyTemporaryCandidate(root, row);
+      else if (row.kind === "shell-claim") retireShellClaim(row);
+      else {
+        makeTemporaryWritable(row.absolute);
+        rmSync(row.absolute, { recursive: true });
+      }
     }
+  }
+  if (apply) {
+    retireTemporaryLedger(root);
+    const active = new Set(activeGateRuns(root).map((row) => row.runId));
+    for (const id of new Set(
+      readGateChecks(root)
+        .map((row) => row.temporaryGateId)
+        .filter(Boolean),
+    ))
+      if (!active.has(id)) retireTemporaryLedger(root, id);
   }
   return {
     apply,
     bytes: plan.bytes,
     candidates: plan.candidates.map(({ absolute, inventory, ...row }) => row),
+    removed: apply
+      ? plan.candidates.map(({ absolute, inventory, ...row }) => row)
+      : [],
     retained: plan.retained,
+    retentionsStarted,
+    census: pruneCensus(plan.candidates, plan.retained),
+    blockers: [],
     // Listed, not pruned here; the next Codex launch removes them (WO-159).
     staleCodexEpisodeHomes: staleCodexEpisodeHomes(options.codexHomeRoot).map(
       (path) => basename(path),
     ),
   };
+}
+
+/** Apply and host-lane admission share the same kernel lock. Inventory starts
+ * only after admission, so a gate cannot change the plan halfway through.
+ * A repository-scoped prune touches only that repository's registered roots;
+ * fixture children use it without examining the host's other repositories.
+ */
+export async function pruneHarness(root, { apply = false, ...options } = {}) {
+  if (!apply) return pruneUnderLock(root, { ...options, apply });
+  const directory = options.hostDirectory ?? hostStateRoot();
+  const scope = options.scope ?? process.env.DOTLN_PRUNE_SCOPE ?? "all";
+  return withHostLock(directory, "lanes", async () => {
+    const observation = readHolders(directory, { worktree: root });
+    const holders = observation.holders.filter(
+      (row) => scope === "all" || row.relation === "this-checkout",
+    );
+    if (holders.length)
+      throw new Error(
+        `Prune refused: running gate ${holders.map((row) => row.task).join(", ")} holds host lanes; retry after they are released`,
+      );
+    const lease = registerProcess(
+      "lanes",
+      process.pid,
+      {
+        task: "harness prune",
+        worktree: root,
+        slots: recordedHostLaneCapacity(directory),
+        prune: true,
+      },
+      directory,
+    );
+    try {
+      await options.beforeApply?.();
+      return pruneUnderLock(root, {
+        ...options,
+        scope,
+        holders: observation.holders,
+        apply,
+      });
+    } finally {
+      lease.release();
+    }
+  });
 }

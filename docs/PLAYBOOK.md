@@ -351,8 +351,9 @@ The phrase allocates the immutable `VER-NNN` path and prints the authoritative
 work-order path, its `Known issues and carry-ins`, and the latest filed
 planning receipt's known issues for that order. Following product 07
 §Verification review and attack, the verifier attacks the change and reviews
-the whole implementation, including the executor's two independent worker
-reports. It reproduces claims directly and may use a pinned worker for a named
+the whole implementation, including the current execution or repair's three
+independent reports: criteria adversary, design improver and consistency
+reviewer. It reproduces claims directly and may use a pinned worker for a named
 claim it cannot reproduce itself; it never delegates the verdict. The verifier
 writes only its allocated report and records `pass` or `fail`; it does not
 repair its own findings. Completion consumes standing structural, declared

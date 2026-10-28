@@ -1,11 +1,10 @@
-import { execFileSync } from "node:child_process";
 import {
-  copyFileSync,
-  existsSync,
-  mkdirSync,
-  mkdtempSync,
-  rmSync,
-} from "node:fs";
+  createWorkerCapture,
+  promoteTemporaryRoot,
+  removeTemporaryPath as rmSync,
+} from "./temporary-roots.js";
+import { execFileSync } from "node:child_process";
+import { copyFileSync, existsSync, mkdirSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import type { Command, WorkOrder } from "@dotln/kernel";
@@ -109,7 +108,7 @@ export async function runVerticalJudgment<T extends VerticalJudgmentTask>(
   };
   const dispatchedAt = now();
   // An empty Git directory satisfies Codex trust without adding any context.
-  const cwd = mkdtempSync(join(tmpdir(), `dotln-vertical-${task}-`));
+  const cwd = createWorkerCapture(join(tmpdir(), `dotln-vertical-${task}-`));
   let dispatch: TransportDispatch<IntakeResult | TriageResult> | undefined;
   try {
     try {
@@ -186,9 +185,11 @@ export async function runVerticalJudgment<T extends VerticalJudgmentTask>(
       );
       if (options.retain && kept.length) {
         mkdirSync(options.retain, { recursive: true, mode: 0o700 });
-        const retained = mkdtempSync(join(options.retain, "rejected-"));
+        const retained = createWorkerCapture(join(options.retain, "rejected-"));
         for (const name of kept)
           copyFileSync(join(cwd, name), join(retained, name));
+        // A recorded diagnostic belongs to the retention lane, not the session.
+        promoteTemporaryRoot(retained);
       }
     } catch {
       /* the episode's own error stands */

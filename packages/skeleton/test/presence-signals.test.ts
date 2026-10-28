@@ -1,13 +1,10 @@
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "../src/temporary-roots.js";
 import test from "node:test";
 import assert from "node:assert/strict";
-import {
-  mkdtempSync,
-  readFileSync,
-  rmSync,
-  mkdirSync,
-  writeFileSync,
-  symlinkSync,
-} from "node:fs";
+import { readFileSync, mkdirSync, writeFileSync, symlinkSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -137,7 +134,7 @@ test("WO-121 negative activity stream never changes away phase or cancels; human
     heartbeat("UserPromptSubmit", "human"),
   ] as PresenceSignal[]) {
     for (const disposition of ["kill", "finish", "foreground"] as const) {
-      const directory = mkdtempSync(join(tmpdir(), "dotln-origins-"));
+      const directory = createFixtureRoot(join(tmpdir(), "dotln-origins-"));
       const configuration = config(directory);
       configuration.graph = {
         ...configuration.graph,
@@ -256,7 +253,7 @@ test("WO-121 negative activity stream never changes away phase or cancels; human
 });
 
 test("WO-121 human idle threshold, actor stall, and task progress are independent replay clocks", async (t) => {
-  const directory = mkdtempSync(join(tmpdir(), "dotln-clocks-"));
+  const directory = createFixtureRoot(join(tmpdir(), "dotln-clocks-"));
   const configuration = config(directory);
   configuration.graph = {
     ...configuration.graph,
@@ -386,7 +383,7 @@ test("WO-121 human idle threshold, actor stall, and task progress are independen
 });
 
 test("WO-121 running actor silence is sampled without incoming traffic", async (t) => {
-  const directory = mkdtempSync(join(tmpdir(), "dotln-silence-"));
+  const directory = createFixtureRoot(join(tmpdir(), "dotln-silence-"));
   let at = 0;
   let finish!: (r: ActorResult) => void;
   const configuration = config(directory);
@@ -437,7 +434,7 @@ test("WO-121 running actor silence is sampled without incoming traffic", async (
 });
 
 test("WO-121 late heartbeats retain missed deadlines; backwards live back preserves intent; task keys are data", async (t) => {
-  const directory = mkdtempSync(join(tmpdir(), "dotln-late-signals-"));
+  const directory = createFixtureRoot(join(tmpdir(), "dotln-late-signals-"));
   const configuration = config(directory);
   configuration.graph = {
     ...configuration.graph,
@@ -530,7 +527,7 @@ test("WO-121 late heartbeats retain missed deadlines; backwards live back preser
 });
 
 test("WO-121 generated hooks emit exactly one reduced observation per event and no SessionStart heartbeat", async (t) => {
-  const directory = mkdtempSync(join(tmpdir(), "dotln-hook-presence-"));
+  const directory = createFixtureRoot(join(tmpdir(), "dotln-hook-presence-"));
   t.after(() => rmSync(directory, { recursive: true, force: true }));
   const root = fileURLToPath(new URL("../../../../", import.meta.url));
   symlinkSync(join(root, "packages"), join(directory, "packages"), "dir");
@@ -611,7 +608,7 @@ test("WO-121 native script receives only explicit resident stamp environment", a
     t.skip(unavailable);
     return;
   }
-  const directory = mkdtempSync(join(tmpdir(), "dotln-stamp-"));
+  const directory = createFixtureRoot(join(tmpdir(), "dotln-stamp-"));
   t.after(() => rmSync(directory, { recursive: true, force: true }));
   const expected = "/fixture-store|fixture-episode|undefined";
   const actor = config(directory).actors["probe"]!;

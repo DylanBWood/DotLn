@@ -1,4 +1,11 @@
 #!/usr/bin/env node
+import {
+  excludeFixtureOwnership,
+  createFixtureRoot,
+  withTemporaryOwner,
+  pruneSessionTemporaryRoots,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
 import { runGit, spawnGit } from "./lib/git.mjs";
 import { write, json as prettyJson, sha256Hex } from "./lib/helpers.mjs";
 import { isMainModule } from "./lib/paths.mjs";
@@ -8,11 +15,9 @@ import {
   existsSync,
   chmodSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   readdirSync,
   realpathSync,
-  rmSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
@@ -76,9 +81,10 @@ const commit = (repo, message) => {
 function fixtureRepository(parent) {
   // macOS resolves the temporary root through a symlink; Git reports the real
   // path, and the command refuses a root that is not its own.
-  const repo = realpathSync(mkdtempSync(join(parent, "entropy-")));
+  const repo = realpathSync(createFixtureRoot(join(parent, "entropy-")));
   fixtureRepositories.push(repo);
   runGit(repo, ["init", "--quiet", "-b", "main"], fixtureGitOptions);
+  excludeFixtureOwnership(repo);
   runGit(
     repo,
     ["config", "user.email", "fixture@example.invalid"],
@@ -98,8 +104,13 @@ function fixtureRepository(parent) {
     "docs/instance/entropy-reducer/README.md",
     "# Fixture guide\n\nThe command family drives this instance.\n",
   );
-  write(repo, ".gitignore", "docs/control/local/\nnode_modules/\n");
+  write(
+    repo,
+    ".gitignore",
+    "docs/control/local/\nnode_modules/\n.dotln-owner.json\n",
+  );
   commit(repo, "fixture subject");
+  assert.equal(runGit(repo, ["ls-files", ".dotln-owner.json"]), "");
   return repo;
 }
 
@@ -110,7 +121,7 @@ const only = (rows, type) => rows.filter((row) => row.type === type);
 const fixtureRepositories = [];
 
 function registeredTarget(parent, launchpad, id) {
-  const home = realpathSync(mkdtempSync(join(parent, "target-")));
+  const home = realpathSync(createFixtureRoot(join(parent, "target-")));
   const origin = join(home, "origin.git"),
     clone = join(home, "clone");
   runGit(
@@ -208,7 +219,7 @@ const workstream = (
 
 export async function entropyFixtures() {
   const parent = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-entropy-fixtures-")),
+    createFixtureRoot(join(tmpdir(), "dotln-entropy-fixtures-")),
   );
   process.env.DOTLN_ENTROPY_FIXTURE = "1";
   try {
@@ -246,7 +257,10 @@ export async function entropyFixtures() {
       );
       recordRepositoryClone(repo, "service", target.clone);
       const frozen = pending.subject.scratchRepository;
-      assert.equal(dirname(pending.scratchParent), entropyScratchLane(repo));
+      assert.equal(
+        dirname(pending.scratchParent),
+        realpathSync(entropyScratchLane(repo)),
+      );
       assert.equal(runGit(frozen, ["rev-parse", "HEAD"]), target.base);
       assert.ok(!existsSync(join(frozen, "local-only.txt")));
       assert.ok(existsSync(join(frozen, "node_modules/fixture/index.js")));
@@ -1145,7 +1159,7 @@ export async function entropyFixtures() {
         renderReceipt(filed),
         /Episode temporary directory: 2 path\(s\), \d+ bytes/,
       );
-      const leftover = mkdtempSync(join(parent, "cleanup-failure-"));
+      const leftover = createFixtureRoot(join(parent, "cleanup-failure-"));
       const warnings = [];
       assert.equal(
         removeEpisodeScratch(leftover, {
@@ -1753,8 +1767,19 @@ export async function entropyFixtures() {
 
     await test("an invalid return is rejected and retained with its statement", async () => {
       const repo = fixtureRepository(parent);
-      await entropy(["review"], repo);
+      const session = "entropy-pending-and-diagnosis";
+      const owner = {
+        repository: repo,
+        session: sha256Hex(session),
+        pid: 2147483647,
+        birth: "exited-fixture-host",
+        gateId: undefined,
+        suite: undefined,
+      };
+      await withTemporaryOwner(owner, () => entropy(["review"], repo));
       const pending = currentDispatch(repo, "review");
+      pruneSessionTemporaryRoots(repo, session, { dispatchEnded: true });
+      assert.ok(existsSync(pending.subject.scratchRepository));
       mkdirSync(pending.capture, { recursive: true });
       writeFileSync(
         join(pending.capture, "result.json"),
@@ -1765,20 +1790,30 @@ export async function entropyFixtures() {
         "Fixture statement.",
       );
       await assert.rejects(
-        entropy(
-          [
-            "receipt",
-            join(pending.capture, "result.json"),
-            "--statement",
-            join(pending.capture, "statement.txt"),
-          ],
-          repo,
+        withTemporaryOwner(owner, () =>
+          entropy(
+            [
+              "receipt",
+              join(pending.capture, "result.json"),
+              "--statement",
+              join(pending.capture, "statement.txt"),
+            ],
+            repo,
+          ),
         ),
         /rejected result and statement retained at/u,
       );
       const lane = join(repo, "docs/control/local/entropy/rejected");
       assert.ok(existsSync(lane) && readdirSync(lane).length === 1);
+      const retained = join(lane, readdirSync(lane)[0]);
+      pruneSessionTemporaryRoots(repo, session, { dispatchEnded: true });
+      assert.equal(
+        readFileSync(join(retained, "statement.txt"), "utf8"),
+        "Fixture statement.",
+      );
       await entropy(["discard", "review"], repo);
+      assert.equal(existsSync(pending.scratchParent), false);
+      assert.ok(existsSync(join(retained, "result.json")));
     });
 
     await test("accepting a refuted, blocked, unselected or unknown identifier is refused", async () => {

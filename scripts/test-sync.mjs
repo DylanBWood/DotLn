@@ -1,13 +1,11 @@
+import {
+  excludeFixtureOwnership,
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
-import {
-  mkdirSync,
-  mkdtempSync,
-  readFileSync,
-  readdirSync,
-  rmSync,
-  writeFileSync,
-} from "node:fs";
+import { mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { syncArtifacts } from "./sync.mjs";
@@ -20,7 +18,7 @@ import { TOOL_ROOT } from "./lib/config.mjs";
 import { runGit } from "./lib/git.mjs";
 
 function fixture(t) {
-  const root = mkdtempSync(join(tmpdir(), "dotln-sync-"));
+  const root = createFixtureRoot(join(tmpdir(), "dotln-sync-"));
   t.after(() => rmSync(root, { recursive: true, force: true }));
   mkdirSync(join(root, "scripts"));
   writeFileSync(
@@ -331,6 +329,7 @@ test("sync names the unselected orphan when an evidence writer or recheck fails"
   for (const stage of ["write", "check"]) {
     const { root } = fixture(t);
     runGit(root, ["init", "-q", "-b", "wo-999"]);
+    excludeFixtureOwnership(root);
     mkdirSync(join(root, "docs/control/orders"), { recursive: true });
     mkdirSync(join(root, "docs/evidence"), { recursive: true });
     writeFileSync(

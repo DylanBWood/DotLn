@@ -1,41 +1,109 @@
 [
   {
     "fixture": "configured publication check",
-    "entries": ["scripts/check-publication.mjs"],
-    "files": ["scripts/check-publication.mjs"],
-    "directories": ["scripts/lib"],
-    "includes": ["scripts/test-beacon-fixture.fixture-inputs.json"]
+    "entries": [
+      "scripts/check-publication.mjs"
+    ],
+    "files": [
+      "scripts/check-publication.mjs",
+      "packages/skeleton/src/temporary-root-records.mjs",
+      "scripts/temporary-root.mjs"
+    ],
+    "directories": [
+      "scripts/lib"
+    ],
+    "includes": [
+      "scripts/test-beacon-fixture.fixture-inputs.json"
+    ]
   },
   {
     "fixture": "configured profile activation",
-    "entries": ["scripts/resume.mjs"],
-    "files": ["scripts/resume.mjs"],
-    "directories": ["scripts/lib"],
-    "includes": ["scripts/test-beacon-fixture.fixture-inputs.json"]
+    "entries": [
+      "scripts/resume.mjs"
+    ],
+    "files": [
+      "scripts/resume.mjs",
+      "packages/skeleton/src/temporary-root-records.mjs",
+      "scripts/temporary-root.mjs"
+    ],
+    "directories": [
+      "scripts/lib"
+    ],
+    "includes": [
+      "scripts/test-beacon-fixture.fixture-inputs.json"
+    ]
   },
   {
     "fixture": "configured target effects",
-    "entries": ["scripts/resume.mjs", "scripts/outward-lint.mjs"],
-    "files": ["scripts/resume.mjs", "scripts/outward-lint.mjs"],
-    "directories": ["scripts/lib"],
-    "includes": ["scripts/test-beacon-fixture.fixture-inputs.json"]
+    "entries": [
+      "scripts/resume.mjs",
+      "scripts/outward-lint.mjs"
+    ],
+    "files": [
+      "scripts/resume.mjs",
+      "scripts/outward-lint.mjs",
+      "packages/skeleton/src/temporary-root-records.mjs",
+      "scripts/temporary-root.mjs"
+    ],
+    "directories": [
+      "scripts/lib"
+    ],
+    "includes": [
+      "scripts/test-beacon-fixture.fixture-inputs.json"
+    ]
   },
   {
     "fixture": "concurrent work-order projection",
-    "entries": ["scripts/work-orders.mjs"],
-    "files": ["scripts/work-orders.mjs"],
-    "directories": ["scripts/lib"]
+    "entries": [
+      "scripts/work-orders.mjs"
+    ],
+    "files": [
+      "scripts/work-orders.mjs",
+      "packages/skeleton/src/temporary-root-records.mjs",
+      "scripts/temporary-root.mjs"
+    ],
+    "directories": [
+      "scripts/lib"
+    ]
   },
   {
     "fixture": "harness completion ownership",
-    "entries": ["scripts/resume.mjs", "scripts/work-orders.mjs"],
-    "files": ["scripts/resume.mjs", "scripts/work-orders.mjs"],
-    "directories": ["scripts/lib", "packages/skeleton/src", "packages/compiler/dist", "packages/kernel/dist", "packages/skeleton/dist", "packages/beacons"]
+    "entries": [
+      "scripts/resume.mjs",
+      "scripts/work-orders.mjs"
+    ],
+    "files": [
+      "scripts/resume.mjs",
+      "scripts/work-orders.mjs",
+      "scripts/temporary-root.mjs"
+    ],
+    "directories": [
+      "scripts/lib",
+      "packages/skeleton/src",
+      "packages/compiler/dist",
+      "packages/kernel/dist",
+      "packages/skeleton/dist",
+      "packages/beacons"
+    ]
   },
   {
     "fixture": "harness control observation",
-    "entries": ["scripts/resume.mjs"],
-    "files": ["scripts/resume.mjs"],
-    "directories": ["scripts/lib", "packages/compiler/src", "packages/kernel/src", "packages/skeleton/src", "packages/compiler/dist", "packages/kernel/dist", "packages/skeleton/dist", "packages/beacons"]
+    "entries": [
+      "scripts/resume.mjs"
+    ],
+    "files": [
+      "scripts/resume.mjs",
+      "scripts/temporary-root.mjs"
+    ],
+    "directories": [
+      "scripts/lib",
+      "packages/compiler/src",
+      "packages/kernel/src",
+      "packages/skeleton/src",
+      "packages/compiler/dist",
+      "packages/kernel/dist",
+      "packages/skeleton/dist",
+      "packages/beacons"
+    ]
   }
 ]

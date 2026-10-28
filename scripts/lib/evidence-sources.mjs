@@ -88,6 +88,9 @@ const commonSources = [
   "packages/skeleton/src/verification-worktree.ts",
   "packages/skeleton/src/worker-status.ts",
   "packages/skeleton/src/worker-transport.ts",
+  "packages/skeleton/src/temporary-roots.ts",
+  "packages/skeleton/src/temporary-root-records.mjs",
+  "scripts/lib/temporary-roots.mjs",
   "packages/beacons/src/beacon-codebook.mjs",
   "packages/beacons/src/beacon-v3-codebook.mjs",
   "packages/skeleton/src/control-beacon.ts",
@@ -372,6 +375,10 @@ const BUILD_ONLY =
   "scripts/build.mjs loads it only after compiling, to preserve an installed harness runtime snapshot (harness.mjs) or to test for a main module (paths.mjs); compiled output does not depend on it. The authority and harness editions register it.";
 export const evidenceImportExclusions = {
   "*": {
+    "scripts/lib/temporary-prune.mjs":
+      "Lifecycle cleanup runs after a session or gate ends; no edition invokes those cleanup boundaries. Ownership records are registered separately; harness and runner fixtures judge pruning, retention and parallel-worktree safety.",
+    "scripts/lib/temporary-prune-summary.mjs":
+      "Read-only lifecycle census presentation is outside the editions' judged behavior; startup, update and release fixtures judge this best-effort summary and its runtime-unavailable path.",
     "scripts/lib/config.mjs":
       "Resolves the launchpad and its configured document roots; each edition's inputs are registered by the path it resolves, and its repository and portfolio validation is outside every edition's recorded behaviour.",
     "packages/skeleton/src/local-model-actor.ts":

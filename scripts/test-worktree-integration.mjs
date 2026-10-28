@@ -1,3 +1,9 @@
+import {
+  excludeFixtureOwnership,
+  createFixtureRoot,
+  copyTemporaryMaterial as cpSync,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
 import { runGit, spawnGit } from "./lib/git.mjs";
 import {
   json as prettyJson,
@@ -11,14 +17,11 @@ import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import {
   chmodSync,
-  cpSync,
   existsSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   readdirSync,
   realpathSync,
-  rmSync,
   symlinkSync,
   writeFileSync,
 } from "node:fs";
@@ -26,6 +29,7 @@ import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { unionFollowups } from "./lib/planning-followups.mjs";
+import { linkDependencies } from "./fixtures/instance-with-history/support.mjs";
 import { readControl } from "./lib/control-store.mjs";
 import { executionAmendmentSource } from "./lib/plan-continuation.mjs";
 import {
@@ -151,7 +155,7 @@ const fixtureGitOptions = {
 
 test("nested material keeps linked-worktree remedies and shares Git inspection primitives", async (t) => {
   const root = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-nested-material-")),
+    createFixtureRoot(join(tmpdir(), "dotln-nested-material-")),
   );
   t.after(() => rmSync(root, { recursive: true, force: true }));
   const main = join(root, "main");
@@ -169,6 +173,7 @@ test("nested material keeps linked-worktree remedies and shares Git inspection p
       fixtureGitOptions,
     );
   git(main, "init", "-q", "-b", "main");
+  excludeFixtureOwnership(main);
   put(main, ".gitignore", ".runtime/\ndocs/control/local/\n");
   git(main, "add", ".");
   git(main, "-c", "maintenance.auto=false", "commit", "-qm", "test: fixture");
@@ -213,7 +218,7 @@ test("nested material keeps linked-worktree remedies and shares Git inspection p
 
 test("completion names unignored scratch before tree refusal and checks whitespace with it present", async (t) => {
   const root = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-completion-scratch-")),
+    createFixtureRoot(join(tmpdir(), "dotln-completion-scratch-")),
   );
   t.after(() => rmSync(root, { recursive: true, force: true }));
   const git = (cwd, ...args) =>
@@ -229,12 +234,14 @@ test("completion names unignored scratch before tree refusal and checks whitespa
       fixtureGitOptions,
     );
   git(root, "init", "-q");
+  excludeFixtureOwnership(root);
   put(root, "tracked.txt", "fixture\n");
   git(root, "add", ".");
   git(root, "-c", "maintenance.auto=false", "commit", "-qm", "test: fixture");
   const nested = join(root, "unignored/scratch");
   mkdirSync(nested, { recursive: true });
   git(nested, "init", "-q");
+  excludeFixtureOwnership(nested);
   put(nested, "inner.txt", "inner whitespace \n");
   git(nested, "add", ".");
   git(
@@ -450,7 +457,7 @@ function focusedSource() {
     return focusedSeed.root;
   }
   const root = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-integrate-seed-")),
+    createFixtureRoot(join(tmpdir(), "dotln-integrate-seed-")),
   );
   try {
     // Recovery cases need real code and Git operations, but not the project's
@@ -486,6 +493,9 @@ function focusedSource() {
     });
     assert.equal(extracted.status, 0, extracted.stderr);
     overlayImplementation(root);
+    // The archived baseline predates physical ownership markers. A seed's
+    // local marker must stay out of every clone and archive it produces.
+    put(root, ".gitignore", text(root, ".gitignore") + "\n.dotln-owner.json\n");
     focusedGenerators(root);
     put(
       root,
@@ -504,6 +514,7 @@ function focusedSource() {
       ["init", "--quiet", "--initial-branch=main"],
       fixtureGitOptions,
     );
+    excludeFixtureOwnership(root);
     for (const [key, value] of [
       ["user.name", "Fixture"],
       ["user.email", "fixture@example.invalid"],
@@ -523,6 +534,10 @@ function focusedSource() {
       fixtureGitOptions,
     );
     focusedSeed = { root, state: seedState(root) };
+    assert.equal(
+      runGit(root, ["ls-files", ".dotln-owner.json"], fixtureGitOptions),
+      "",
+    );
     assert.equal(focusedSeed.state.dirty, "");
     return root;
   } catch (error) {
@@ -543,6 +558,7 @@ function fixture(
   t,
   {
     reviewed = false,
+    active = false,
     third = "active",
     authored = true,
     generators = "real",
@@ -551,7 +567,7 @@ function fixture(
   } = {},
 ) {
   const temporary = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-integrate-test-")),
+    createFixtureRoot(join(tmpdir(), "dotln-integrate-test-")),
   );
   t.after(() => rmSync(temporary, { recursive: true, force: true }));
   const origin = join(temporary, "origin.git"),
@@ -704,26 +720,27 @@ function fixture(
       event(id, "WorkOrderActivated", { workOrderPath: path }),
     );
   }
-  put(
-    main,
-    "docs/control/orders/WO-998.jsonl",
-    text(main, "docs/control/orders/WO-998.jsonl") +
-      event("WO-998", "ImplementationReady") +
-      event("WO-998", "VerificationRequested", {
-        verificationId: "VER-001",
-        reportPath: "docs/verifications/WO-998/VER-001.md",
-      }) +
-      event("WO-998", "VerificationCompleted", {
-        verificationId: "VER-001",
-        verdict: reviewed ? "pass" : "fail",
-      }) +
-      (reviewed
-        ? event("WO-998", "FinalReviewRequested", {
-            finalReviewId: "FINAL-001",
-            reportPath: "docs/final-reviews/WO-998/FINAL-001.md",
-          })
-        : event("WO-998", "RepairRequested")),
-  );
+  if (!active)
+    put(
+      main,
+      "docs/control/orders/WO-998.jsonl",
+      text(main, "docs/control/orders/WO-998.jsonl") +
+        event("WO-998", "ImplementationReady") +
+        event("WO-998", "VerificationRequested", {
+          verificationId: "VER-001",
+          reportPath: "docs/verifications/WO-998/VER-001.md",
+        }) +
+        event("WO-998", "VerificationCompleted", {
+          verificationId: "VER-001",
+          verdict: reviewed ? "pass" : "fail",
+        }) +
+        (reviewed
+          ? event("WO-998", "FinalReviewRequested", {
+              finalReviewId: "FINAL-001",
+              reportPath: "docs/final-reviews/WO-998/FINAL-001.md",
+            })
+          : event("WO-998", "RepairRequested")),
+    );
   if (third === "verifying")
     put(
       main,
@@ -1206,11 +1223,8 @@ for (const reviewed of [false, true])
       receipt.checkpointRef,
       "continuation must not create another checkpoint",
     );
-    assert.equal(
-      runGit(f.subject, ["rev-parse", "refs/stash"], fixtureGitOptions),
-      receipt.stash,
-      "stash was kept",
-    );
+    assert.equal(after.stashDropped, receipt.stash);
+    assert.equal(runGit(f.subject, ["stash", "list"], fixtureGitOptions), "");
     assert.equal(
       text(f.subject, "untracked-fixture.md"),
       "retained untracked bytes\n",
@@ -1335,7 +1349,7 @@ for (const reviewed of [false, true])
       JSON.stringify({
         case: reviewed ? "reviewed merge" : "fast-forward",
         checkpoint: after.checkpointRef,
-        retainedStash: after.stash,
+        droppedStash: after.stashDropped,
         retimed: heading.match(/v\d+\.\d+\.\d+/)[0],
         unchangedControl: true,
         realGenerators: true,
@@ -1712,10 +1726,11 @@ for (const interrupted of [false, true])
       text(f.subject, "untracked-fixture.md"),
       "explicitly combined upstream and local addition\n",
     );
-    assert.equal(
-      runGit(f.subject, ["rev-parse", "refs/stash"], fixtureGitOptions),
-      receipt.stash,
+    const completed = JSON.parse(
+      text(f.subject, "docs/control/local/integration.json"),
     );
+    assert.equal(completed.stashDropped, receipt.stash);
+    assert.equal(runGit(f.subject, ["stash", "list"], fixtureGitOptions), "");
   });
 
 test("WO-167 --continue judges the recorded phase while the uncommitted control log travels in the stash", (t) => {
@@ -2368,7 +2383,7 @@ for (const blocker of ["symlink", "directory"])
 
 test("the fixture overlay carries the console package and its fixture script from the working tree without build output", (t) => {
   const root = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-integrate-overlay-")),
+    createFixtureRoot(join(tmpdir(), "dotln-integrate-overlay-")),
   );
   t.after(() => rmSync(root, { recursive: true, force: true }));
   overlayImplementation(root);
@@ -2469,10 +2484,11 @@ test("WO-169 the integration record holds each release message as one line with 
 
 test("printed checks use the runner's declared machinery sources, including package code", async (t) => {
   const root = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-integrate-checks-")),
+    createFixtureRoot(join(tmpdir(), "dotln-integrate-checks-")),
   );
   t.after(() => rmSync(root, { recursive: true, force: true }));
   runGit(root, ["init", "-q", "-b", "main"], fixtureGitOptions);
+  excludeFixtureOwnership(root);
   runGit(root, ["config", "user.name", "Fixture"], fixtureGitOptions);
   runGit(
     root,
@@ -2544,10 +2560,11 @@ for (const stop of [
   "reflog-installed",
 ])
   test(`stash drop stopped at ${stop} keeps a whole proof or names recovery`, (t) => {
-    const root = mkdtempSync(join(tmpdir(), "dotln-stash-stop-"));
+    const root = createFixtureRoot(join(tmpdir(), "dotln-stash-stop-"));
     t.after(() => rmSync(root, { recursive: true, force: true }));
     const git = (args) => runGit(root, args, fixtureGitOptions);
     git(["init", "-q"]);
+    excludeFixtureOwnership(root);
     git(["config", "user.name", "Fixture"]);
     git(["config", "user.email", "fixture@example.invalid"]);
     put(root, "file.txt", "base\n");
@@ -2621,3 +2638,61 @@ for (const stop of [
       assert.equal(JSON.parse(readFileSync(recovery, "utf8")).stash, stash);
     }
   });
+
+test("active integration uses main's current code and preserves another worktree's stash", (t) => {
+  const f = fixture(t, {
+    active: true,
+    authored: false,
+    generators: "focused",
+  });
+  // Commit a sibling stash before the subject's integration. The shared stack
+  // must preserve that exact identity when the subject drops its own entry.
+  put(f.main, "sibling-untracked.md", "parallel order's recovery\n");
+  runGit(
+    f.main,
+    ["stash", "push", "--include-untracked", "-m", "sibling recovery"],
+    fixtureGitOptions,
+  );
+  const before = runGit(
+    f.main,
+    ["stash", "list", "--format=%H"],
+    fixtureGitOptions,
+  );
+  for (const name of ["kernel", "compiler", "skeleton", "console"])
+    cpSync(
+      join(source, "packages", name, "dist"),
+      join(f.main, "packages", name, "dist"),
+      { recursive: true },
+    );
+  linkDependencies(f.main);
+  // Direct import proves the implementation comes from main even if the
+  // target's pre-integration CLI is old. All actual effects target its branch.
+  const program = `const {integrateWorktree}=await import(${JSON.stringify(new URL("file://" + join(f.main, "scripts/lib/worktree-integration.mjs")).href)}); const row=await integrateWorktree(process.cwd(), "WO-998"); if(!row.complete)process.exitCode=1;`;
+  const result = run(f.main, process.execPath, [
+    "--input-type=module",
+    "-e",
+    program,
+  ]);
+  assert.equal(result.status, 0, result.stdout + result.stderr);
+  assert.equal(text(f.subject, "authored-fixture.md"), "upstream intent\n");
+  const receipt = JSON.parse(
+    text(f.subject, "docs/control/local/integration.json"),
+  );
+  assert.equal(receipt.phase, "active");
+  assert.equal(receipt.stashDropped, receipt.stash);
+  assert.equal(
+    runGit(f.main, ["stash", "list", "--format=%H"], fixtureGitOptions),
+    before,
+  );
+  const second = run(f.main, process.execPath, [
+    "--input-type=module",
+    "-e",
+    program,
+  ]);
+  assert.equal(second.status, 0, second.stdout + second.stderr);
+  assert.match(second.stdout, /took in nothing/);
+  assert.equal(
+    runGit(f.main, ["stash", "list", "--format=%H"], fixtureGitOptions),
+    before,
+  );
+});

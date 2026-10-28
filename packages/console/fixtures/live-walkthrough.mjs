@@ -1,8 +1,9 @@
 #!/usr/bin/env node
+import { createFixtureRoot } from "../../../scripts/lib/temporary-roots.mjs";
 // A real resident and read-only script actor; no fake transport or model claim.
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { mkdirSync, mkdtempSync, realpathSync, writeFileSync } from "node:fs";
+import { mkdirSync, realpathSync, writeFileSync } from "node:fs";
 import { join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { missionConfiguration } from "../../../scripts/resident-bind.mjs";
@@ -28,7 +29,7 @@ const git = execFileSync("/usr/bin/which", ["git"], {
 }).trim();
 const lane = join(kit, ".runtime", "wo117-walkthrough");
 mkdirSync(lane, { recursive: true });
-const directory = mkdtempSync(join(lane, "session-"));
+const directory = createFixtureRoot(join(lane, "session-"));
 execFileSync("git", [
   "-C",
   kit,

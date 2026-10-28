@@ -1,3 +1,8 @@
+import {
+  excludeFixtureOwnership,
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
 import { copyFixtureFiles } from "./lib/fixture-inputs.mjs";
 import { spawnGit, runGit } from "./lib/git.mjs";
 import { write, json as prettyJson } from "./lib/helpers.mjs";
@@ -9,11 +14,9 @@ import {
   cpSync,
   existsSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   readdirSync,
   realpathSync,
-  rmSync,
   symlinkSync,
   writeFileSync,
 } from "node:fs";
@@ -53,7 +56,9 @@ const fixtureEnvironment = {
 };
 
 const temporary = (prefix, run) => {
-  const root = realpathSync(mkdtempSync(join(tmpdir(), `dotln-${prefix}-`)));
+  const root = realpathSync(
+    createFixtureRoot(join(tmpdir(), `dotln-${prefix}-`)),
+  );
   try {
     return run(root);
   } finally {
@@ -515,6 +520,7 @@ await test("configuration root", async (t) => {
           });
           installBeaconFixture(launchpad);
           runGit(launchpad, ["init", "-q", "-b", "wo-999"], fixtureGitOptions);
+          excludeFixtureOwnership(launchpad);
           const profile =
             kind === "escape" ? "../outside.md" : "profiles/target.md";
           const file = join(launchpad, profile);
@@ -930,7 +936,7 @@ await test("configuration root", async (t) => {
     "configured lineage and planning consumers use the launchpad ledger",
     async () => {
       const root = realpathSync(
-        mkdtempSync(join(tmpdir(), "dotln-config-planning-")),
+        createFixtureRoot(join(tmpdir(), "dotln-config-planning-")),
       );
       try {
         declared({ root, body: { version: 1, roots: { docs: "records" } } });
@@ -942,6 +948,7 @@ await test("configuration root", async (t) => {
         );
         write(root, "scripts/refute-plan.mjs", "// fixture introduction\n");
         runGit(root, ["init", "-q", "-b", "main"], fixtureGitOptions);
+        excludeFixtureOwnership(root);
         runGit(
           root,
           ["config", "user.email", "fixture@example.invalid"],
@@ -1031,7 +1038,7 @@ await test("configuration root", async (t) => {
     "writing-worker defaults separate tool inputs from configured outputs",
     async () => {
       const root = realpathSync(
-        mkdtempSync(join(tmpdir(), "dotln-config-writing-worker-")),
+        createFixtureRoot(join(tmpdir(), "dotln-config-writing-worker-")),
       );
       const tool = join(root, "tool");
       const launchpad = join(root, "launchpad");
@@ -1095,6 +1102,7 @@ await test("configuration root", async (t) => {
         const target = join(root, "target");
         mkdirSync(target);
         runGit(target, ["init", "-q", "-b", "wo-999"], fixtureGitOptions);
+        excludeFixtureOwnership(target);
         runGit(
           target,
           [
@@ -1136,6 +1144,7 @@ await test("configuration root", async (t) => {
         });
         installBeaconFixture(root);
         runGit(root, ["init", "-q", "-b", "wo-999"], fixtureGitOptions);
+        excludeFixtureOwnership(root);
         write(root, ".gitignore", "/target/\n");
         runGit(
           root,
@@ -1340,6 +1349,7 @@ await test("configuration root", async (t) => {
           (path) =>
             !path.startsWith("records/") &&
             path !== CONFIG_FILENAME &&
+            path !== ".dotln-owner.json" &&
             path !== ".gitignore" &&
             !path.startsWith("target/") &&
             !path.startsWith(".control-beacons/") &&
@@ -1432,7 +1442,7 @@ await test("configuration root", async (t) => {
           "# WO-999 — configuration-root worktree fixture\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n",
         );
         write(main, "package.json", '{"private":true}\n');
-        write(main, ".gitignore", `${roots.control}/local/\n`);
+        write(main, ".gitignore", `${roots.control}/local/\n.runtime/\n`);
         runGit(main, ["add", "."], fixtureGitOptions);
         runGit(
           main,
@@ -1656,6 +1666,7 @@ test("instance contribution identity controls sign-off independently of Git iden
         ...args,
       ]);
     git(["init", "-q", "-b", "main"]);
+    excludeFixtureOwnership(root);
     git([
       "-c",
       "maintenance.auto=false",
@@ -1718,6 +1729,7 @@ test(
   () => {
     temporary("legacy-seed", (root) => {
       runGit(root, ["init", "-q", "-b", "main"]);
+      excludeFixtureOwnership(root);
       for (const name of [
         "packages/skeleton/fixtures/wo119-discovery/repository.json",
         "packages/skeleton/fixtures/wo100-portfolio.json",
@@ -1728,10 +1740,17 @@ test(
       const source = readFileSync(
         join(sourceRoot, "docs/evidence/WO-111/seed.mjs"),
         "utf8",
-      ).replace(
-        'import { TOOL_ROOT, docRelative } from "../../../scripts/lib/config.mjs";',
-        `import { docRelative } from ${JSON.stringify(pathToFileURL(join(scriptRoot, "lib/config.mjs")).href)}; const TOOL_ROOT = ${JSON.stringify(root)};`,
-      );
+      )
+        .replace(
+          'import { TOOL_ROOT, docRelative } from "../../../scripts/lib/config.mjs";',
+          `import { docRelative } from ${JSON.stringify(pathToFileURL(join(scriptRoot, "lib/config.mjs")).href)}; const TOOL_ROOT = ${JSON.stringify(root)};`,
+        )
+        .replace(
+          '"../../../scripts/lib/temporary-roots.mjs"',
+          JSON.stringify(
+            pathToFileURL(join(scriptRoot, "lib/temporary-roots.mjs")).href,
+          ),
+        );
       write(root, "seed.mjs", source);
       mkdirSync(join(root, "temporary"));
       const result = spawnSync(process.execPath, ["seed.mjs", "prepare"], {

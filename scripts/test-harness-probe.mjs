@@ -1,3 +1,7 @@
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
 import { spawnGit } from "./lib/git.mjs";
 import { write } from "./lib/helpers.mjs";
 import test from "node:test";
@@ -8,10 +12,8 @@ import {
   chmodSync,
   existsSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   readdirSync,
-  rmSync,
   writeFileSync,
 } from "node:fs";
 import { hostname, tmpdir } from "node:os";
@@ -166,7 +168,7 @@ test("WO-146 Copilot stub exercises both registrations, trust, caps, denial evid
     summarizeCopilotProbe,
     renderCopilotProbe,
   } = await import("./lib/copilot-probe.mjs");
-  const root = mkdtempSync(join(tmpdir(), "dotln-copilot-test-"));
+  const root = createFixtureRoot(join(tmpdir(), "dotln-copilot-test-"));
   t.after(() => rmSync(root, { recursive: true, force: true }));
   const binary = join(root, "copilot-stub");
   writeFileSync(binary, copilotStub, { mode: 0o700 });
@@ -316,7 +318,7 @@ test("WO-146 Copilot stub exercises both registrations, trust, caps, denial evid
 
 test("the Copilot failure-event mode names the failed-command event in the shared file, runs one failing command and records what the CLI did", async (t) => {
   const { runCopilotProbe } = await import("./lib/copilot-probe.mjs");
-  const root = mkdtempSync(join(tmpdir(), "dotln-copilot-test-"));
+  const root = createFixtureRoot(join(tmpdir(), "dotln-copilot-test-"));
   t.after(() => rmSync(root, { recursive: true, force: true }));
   const binary = join(root, "copilot-stub");
   writeFileSync(binary, copilotStub, { mode: 0o700 });
@@ -395,7 +397,9 @@ test("WO-146 operator qualification uses real fixture transitions, fresh identit
     armCopilotQualification,
     collectCopilotQualification,
   } = await import("./lib/copilot-qualification.mjs");
-  const out = mkdtempSync(join(tmpdir(), "dotln-copilot-qualification-test-"));
+  const out = createFixtureRoot(
+    join(tmpdir(), "dotln-copilot-qualification-test-"),
+  );
   t.after(() => rmSync(out, { recursive: true, force: true }));
   const { directory } = prepareCopilotQualification({ out, base: out });
   assert.throws(
@@ -562,7 +566,9 @@ test("WO-146 operator qualification uses real fixture transitions, fresh identit
 test("WO-146 interactive reservations require operator attestations and preserve blocked observations", async (t) => {
   const { prepareCopilotInteractive, collectCopilotInteractive } =
     await import("./lib/copilot-probe.mjs");
-  const out = mkdtempSync(join(tmpdir(), "dotln-copilot-interactive-test-"));
+  const out = createFixtureRoot(
+    join(tmpdir(), "dotln-copilot-interactive-test-"),
+  );
   t.after(() => rmSync(out, { recursive: true, force: true }));
   write(
     out,
@@ -608,7 +614,7 @@ test("WO-146 interactive reservations require operator attestations and preserve
 });
 
 test("WO-139 subagent probe confines reads and parent fan-out structurally", (t) => {
-  const root = mkdtempSync(join(tmpdir(), "dotln-probe-budget-test-"));
+  const root = createFixtureRoot(join(tmpdir(), "dotln-probe-budget-test-"));
   t.after(() => rmSync(root, { recursive: true, force: true }));
   write(root, "root-session.txt", "synthetic-root");
   write(root, "identity-key.txt", "synthetic-key");
@@ -763,7 +769,7 @@ const out = (m) => process.stdout.write(JSON.stringify(m) + "\n");
 const step = Number(process.env.DOTLN_STUB_STEP_MS || 120);
 // WO-159: every DotLn Codex invocation runs in its own isolated home.
 const home = process.env.CODEX_HOME;
-if (!home || !/^dotln-codex-home-\d+-/.test(path.basename(home)) || fs.readdirSync(home).some((name) => name !== "auth.json")) throw new Error("non-isolated Codex home");
+if (!home || !/^dotln-codex-home-\d+-/.test(path.basename(home)) || fs.readdirSync(home).some((name) => !["auth.json", ".dotln-owner.json"].includes(name))) throw new Error("non-isolated Codex home");
 // The home each invocation saw, so a fixture can prove no two launches share one.
 if (process.env.DOTLN_STUB_STATE) fs.appendFileSync(path.join(process.env.DOTLN_STUB_STATE, "codex-homes.jsonl"), JSON.stringify({ home, command: args.includes("exec") ? "exec" : args[0] }) + "\n");
 if (args[0] === "--version") { console.log("codex-cli 9.9.9 (stub)"); process.exit(0); }
@@ -798,7 +804,7 @@ out({ type: "turn.completed", usage: { input_tokens: 1, output_tokens: 1 } });
 `;
 
 function stubEnvironment(t) {
-  const root = mkdtempSync(join(tmpdir(), "dotln-probe-test-"));
+  const root = createFixtureRoot(join(tmpdir(), "dotln-probe-test-"));
   t.after(() => rmSync(root, { recursive: true, force: true }));
   const bin = join(root, "bin");
   mkdirSync(bin);
@@ -848,7 +854,9 @@ const readTree = (root) => {
 };
 
 test("WO-177 the subagent probe launches and records the pinned Claude default", async (t) => {
-  const root = mkdtempSync(join(tmpdir(), "dotln-subagent-default-test-"));
+  const root = createFixtureRoot(
+    join(tmpdir(), "dotln-subagent-default-test-"),
+  );
   t.after(() => rmSync(root, { recursive: true, force: true }));
   const binary = join(root, "claude");
   const launchPath = join(root, "launch.json");

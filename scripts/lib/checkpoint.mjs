@@ -1,4 +1,7 @@
-import { mkdtempSync, rmSync } from "node:fs";
+import {
+  createScratchRoot,
+  removeTemporaryPath as rmSync,
+} from "./temporary-roots.mjs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { runGit } from "./git.mjs";
@@ -20,7 +23,7 @@ export function createCheckpoint(
     .map((ref) => Number(ref.slice(prefix.length)))
     .filter(Number.isInteger);
   const checkpointRef = `${prefix}${Math.max(0, ...used) + 1}`;
-  const temporary = mkdtempSync(join(tmpdir(), "dotln-checkpoint-"));
+  const temporary = createScratchRoot(join(tmpdir(), "dotln-checkpoint-"));
   try {
     const env = { ...process.env, GIT_INDEX_FILE: join(temporary, "index") };
     runGit(root, ["add", "-A"], { env });

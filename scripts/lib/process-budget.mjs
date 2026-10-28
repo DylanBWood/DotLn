@@ -2,6 +2,7 @@ import { docPath, docRelative } from "./config.mjs";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { coldStartHistory } from "./harness-context.mjs";
+import { validateRetention } from "./temporary-roots.mjs";
 
 export const dispatchKinds = [
   "executor",
@@ -15,6 +16,7 @@ export function readBudgets(root) {
   const path = docPath(root, "control", "budgets.json");
   if (!existsSync(path)) return null;
   const value = JSON.parse(readFileSync(path, "utf8"));
+  value.retention = validateRetention(value.retention);
   if (
     value.schemaVersion !== 1 ||
     !value.source ||

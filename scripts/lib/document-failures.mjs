@@ -1,13 +1,10 @@
+import {
+  createScratchRoot,
+  removeTemporaryPath as rmSync,
+} from "./temporary-roots.mjs";
 import { runGit } from "./git.mjs";
 
-import {
-  existsSync,
-  mkdirSync,
-  mkdtempSync,
-  readdirSync,
-  rmSync,
-  symlinkSync,
-} from "node:fs";
+import { existsSync, mkdirSync, readdirSync, symlinkSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -43,7 +40,7 @@ export async function classifyDocumentFailures(
           baseGitOptions,
         )
       : runGit(repo, ["merge-base", "HEAD", "main"], baseGitOptions);
-    temporary = mkdtempSync(join(tmpdir(), "dotln-document-base-"));
+    temporary = createScratchRoot(join(tmpdir(), "dotln-document-base-"));
     const copy = join(temporary, "subject");
     runGit(
       repo,

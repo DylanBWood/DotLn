@@ -1,15 +1,18 @@
+import {
+  createScratchRoot,
+  removeTemporaryPath as rmSync,
+} from "./temporary-roots.mjs";
 import { json } from "./helpers.mjs";
 import { docRelative } from "./config.mjs";
 import { spawnSync } from "node:child_process";
+import { randomUUID } from "node:crypto";
 import {
   existsSync,
   lstatSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   readlinkSync,
   realpathSync,
-  rmSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
@@ -21,6 +24,7 @@ import {
   runGitPathList,
   shellQuote,
   spawnGit,
+  parseWorktrees,
 } from "./git.mjs";
 import {
   containedRegularFile,
@@ -34,6 +38,7 @@ import { followupsPath, unionFollowups } from "./planning-followups.mjs";
 import { strictVersionsIn } from "./release-records.mjs";
 import { decisionsConflicted } from "./release-preparation.mjs";
 import { refreshControlProjection } from "../resume.mjs";
+import { dropInventoriedStash } from "./stash-drop.mjs";
 
 const receiptFile = (root) =>
   docRelative(root, "control", "local/integration.json");
@@ -187,7 +192,7 @@ function mixedProjection(root, path, recordedPath) {
   if (!mask) return false;
   const sources = [":2", ":1", ":3"].map((stage) => blob(root, stage, path));
   if (sources.some((s) => s === null)) return false;
-  const temporary = mkdtempSync(join(tmpdir(), "dotln-integrate-merge-"));
+  const temporary = createScratchRoot(join(tmpdir(), "dotln-integrate-merge-"));
   try {
     const files = sources.map((s, i) => {
       const file = join(temporary, String(i));
@@ -353,7 +358,18 @@ function decisionStub(root, receipt) {
     );
   const before = recorded ?? `# ${receipt.workOrder} decisions\n`;
   const marker = `<!-- integration ${receipt.checkpointRef} -->`;
-  if (before.includes(marker)) return;
+  if (before.includes(marker)) {
+    if (receipt.stashDropped)
+      put(
+        root,
+        path,
+        before.replace(
+          `Named stash retained until completed application: \`${receipt.stash}\``,
+          `Named stash dropped after completed application: \`${receipt.stash}\``,
+        ),
+      );
+    return;
+  }
   const used = [
     ...before.matchAll(new RegExp(`${receipt.workOrder}-D(\\d{3})`, "g")),
   ].map((match) => Number(match[1]));
@@ -361,7 +377,7 @@ function decisionStub(root, receipt) {
   const row = {
     id,
     date: receipt.date,
-    dispatch: `resume: ${receipt.phase === "repairing" ? "fix" : "final review"}; worktree integrate ${receipt.workOrder}`,
+    dispatch: `resume: ${receipt.phase === "active" ? "next" : receipt.phase === "repairing" ? "fix" : "final review"}; worktree integrate ${receipt.workOrder}`,
     decision:
       "Draft integration record: preserve both bases and recovery material; reviewer must assess carried-forward claims and complete this record.",
     evidence: [
@@ -374,8 +390,10 @@ function decisionStub(root, receipt) {
     ],
     rejected: [
       {
-        option: "Rewrite reviewed commits or discard the integration stash",
-        reason: "Both histories and recovery material must remain available.",
+        option:
+          "Rewrite reviewed commits or drop a stash before application completes",
+        reason:
+          "Both histories and unfinished recovery material must remain available.",
       },
     ],
     reopenWhen:
@@ -386,7 +404,7 @@ function decisionStub(root, receipt) {
     path,
     `${before.trimEnd()}\n\n## ${id}\n\n${marker}\n\n\`\`\`json\n${json(row)}\`\`\`\n\nIntegration date: ${receipt.date}. Original base: \`${receipt.before}\`.
 Fetched main: \`${receipt.upstream}\`. Checkpoint: \`${receipt.checkpointRef}\`.
-Named stash retained: ${receipt.stash ? `\`${receipt.stash}\` (${receipt.stashName})` : "none needed (clean tree)"}.
+Named stash ${receipt.stashDropped ? "dropped after completed application" : "retained until completed application"}: ${receipt.stash ? `\`${receipt.stash}\` (${receipt.stashName})` : "none needed (clean tree)"}.
 Resolved projections: ${receipt.resolved.join(", ") || "none"}.
 Release preparation: ${releaseLine(receipt.release || "pending")}
 Carried-forward claims: **reviewer to complete; no acceptance judgment recorded**.
@@ -539,6 +557,36 @@ export async function integrationTestCommand(root, before) {
 }
 
 export async function integrateWorktree(root, workOrder, args = []) {
+  root = realpathSync(root);
+  if (
+    !/^WO-\d{3}$/.test(workOrder ?? "") ||
+    realpathSync(runGit(root, ["rev-parse", "--show-toplevel"])) !== root
+  )
+    throw new Error("integrate requires the matching wo-NNN worktree root");
+  if (runGit(root, ["branch", "--show-current"]) !== workOrder.toLowerCase()) {
+    const matching = parseWorktrees(root).filter(
+      (tree) => tree.branch === `refs/heads/${workOrder.toLowerCase()}`,
+    );
+    if (matching.length !== 1 || !existsSync(matching[0].worktree))
+      throw new Error(
+        "integrate requires the matching wo-NNN worktree root in Git's worktree registry",
+      );
+    root = realpathSync(matching[0].worktree);
+  }
+  const { withHarnessCommandWriter } =
+    await import("../../packages/skeleton/dist/src/harness-host.js");
+  const session =
+    process.env.CODEX_THREAD_ID ||
+    process.env.CLAUDE_CODE_SESSION_ID ||
+    process.env.CLAUDE_SESSION_ID ||
+    process.env.COPILOT_AGENT_SESSION_ID ||
+    `integration-${randomUUID()}`;
+  return withHarnessCommandWriter(root, session, () =>
+    integrateOwnedWorktree(root, workOrder, args),
+  );
+}
+
+async function integrateOwnedWorktree(root, workOrder, args) {
   let backup,
     continuation = false,
     stashApplied = false;
@@ -592,10 +640,24 @@ export async function integrateWorktree(root, workOrder, args = []) {
     readControl(root).orders.get(workOrder)?.state ??
     (continuation ? previous : undefined);
   const { phase, workOrderPath } = state ?? {};
-  if (!["repairing", "final-review"].includes(phase))
+  if (!["active", "repairing", "final-review"].includes(phase))
     throw new Error(
-      "integrate requires the selected order in repairing or final-review",
+      "integrate requires the selected order in active, repairing or final-review",
     );
+  const activeMain =
+    phase === "active"
+      ? runGit(root, ["rev-parse", "refs/heads/main^{commit}"])
+      : null;
+  if (
+    !continuation &&
+    activeMain &&
+    runGit(root, ["merge-base", "HEAD", activeMain]) === activeMain
+  ) {
+    console.log(
+      "Integration took in nothing: the worktree is not behind main.",
+    );
+    return { complete: true, noop: true, workOrder };
+  }
   verifyIntake(root, backup ?? previous?.backup);
   if (gitResult(root, ["check-ignore", "-q", receiptPath]).status !== 0)
     throw new Error("integration receipt must be ignored by Git");
@@ -803,20 +865,24 @@ export async function integrateWorktree(root, workOrder, args = []) {
       throw new Error("finish the existing merge before starting integration");
     refuseIntentToAdd();
     // Resolve upstream before minting recovery refs or moving any work.
-    runGit(root, ["ls-remote", "--exit-code", "origin", "refs/heads/main"]);
-    runGit(root, [
-      "fetch",
-      "--no-auto-maintenance",
-      "--tags",
-      "origin",
-      "+refs/heads/main:refs/remotes/origin/main",
-    ]);
+    if (!activeMain) {
+      runGit(root, ["ls-remote", "--exit-code", "origin", "refs/heads/main"]);
+      runGit(root, [
+        "fetch",
+        "--no-auto-maintenance",
+        "--tags",
+        "origin",
+        "+refs/heads/main:refs/remotes/origin/main",
+      ]);
+    }
     const before = runGit(root, ["rev-parse", "HEAD"]);
-    const upstream = runGit(root, [
-      "rev-parse",
-      "--verify",
-      "refs/remotes/origin/main^{commit}",
-    ]);
+    const upstream =
+      activeMain ??
+      runGit(root, [
+        "rev-parse",
+        "--verify",
+        "refs/remotes/origin/main^{commit}",
+      ]);
     runGit(root, ["merge-base", before, upstream]);
     const date = new Date().toISOString().slice(0, 10);
     const changed = runGitPathList(root, [
@@ -953,9 +1019,47 @@ export async function integrateWorktree(root, workOrder, args = []) {
   const remaining = [
     ...new Set([...conflicts(root), ...(receipt.untrackedConflicts ?? [])]),
   ];
-  receipt.complete =
+  const completed =
     receipt.stage === "applied" && !pending.length && !remaining.length;
   receipt.pending = pending;
+  if (completed && receipt.stash && !receipt.stashDropped) {
+    const recoveryPath = join(
+      root,
+      docRelative(
+        root,
+        "control",
+        `local/integration-stash-drops/${receipt.stash}.json`,
+      ),
+    );
+    const entries = stashEntries().filter(([sha]) => sha === receipt.stash);
+    // Persist the intent before the drop. If the process stops after Git's
+    // atomic mutation, a continuation recognizes only its own saved recovery.
+    const wasPending = receipt.stashDropPending === receipt.stash;
+    receipt.stashDropPending = receipt.stash;
+    save();
+    if (entries.length === 1) {
+      dropInventoriedStash(root, receipt.stash, entries[0][1], recoveryPath);
+    } else if (
+      entries.length ||
+      !wasPending ||
+      !existsSync(recoveryPath) ||
+      JSON.parse(readFileSync(recoveryPath, "utf8")).stash !== receipt.stash
+    ) {
+      throw new Error(
+        "Completed integration stash identity is unavailable; recovery retained",
+      );
+    }
+    receipt.stashDropped = receipt.stash;
+    delete receipt.stashDropPending;
+  }
+  if (receipt.stashDropped) {
+    try {
+      decisionStub(root, receipt);
+    } catch (error) {
+      pending.push(`integration stash-drop record: ${error.message}`);
+    }
+  }
+  receipt.complete = completed && !pending.length;
   save();
   console.log(`Bases: ${receipt.before} -> ${receipt.upstream}`);
   console.log(
@@ -982,7 +1086,7 @@ export async function integrateWorktree(root, workOrder, args = []) {
   );
   console.log(
     receipt.complete
-      ? "Integration mechanics complete. Preservation and merge identities are in the receipt; recovery refs and stash retained."
+      ? "Integration mechanics complete. Preservation and merge identities are in the receipt; recovery refs retained and the completed integration's stash dropped."
       : `Generation ran and left the pending steps above; repair their cause, then run npm run worktree -- integrate ${workOrder} --continue`,
   );
   return receipt;

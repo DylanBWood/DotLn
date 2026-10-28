@@ -1,3 +1,8 @@
+import {
+  excludeFixtureOwnership,
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
 import { readJsonFile } from "./lib/paths.mjs";
 import { runGit } from "./lib/git.mjs";
 import { write } from "./lib/helpers.mjs";
@@ -14,11 +19,9 @@ import {
   chmodSync,
   lstatSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   readdirSync,
   realpathSync,
-  rmSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
@@ -120,7 +123,9 @@ const configuration = (portfolios) => ({
 });
 
 async function fixture(fn) {
-  const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-portfolio-")));
+  const root = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-portfolio-")),
+  );
   try {
     // The launchpad: WO-120's control plane and the reviewed configuration.
     const launchpad = join(root, "launchpad");
@@ -146,6 +151,7 @@ async function fixture(fn) {
       [...fixtureGitFlags, "init", "-q", "--initial-branch=main"],
       fixtureGitOptions,
     );
+    excludeFixtureOwnership(launchpad);
     runGit(launchpad, [...fixtureGitFlags, "add", "."], fixtureGitOptions);
     runGit(
       launchpad,
@@ -181,6 +187,7 @@ async function fixture(fn) {
       [...fixtureGitFlags, "init", "-q", "--initial-branch=main"],
       fixtureGitOptions,
     );
+    excludeFixtureOwnership(target);
     runGit(target, [...fixtureGitFlags, "add", "-A"], fixtureGitOptions);
     runGit(
       target,

@@ -1,3 +1,7 @@
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "../src/temporary-roots.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
@@ -5,11 +9,9 @@ import {
   existsSync,
   lstatSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   readdirSync,
   realpathSync,
-  rmSync,
   chmodSync,
   statSync,
   utimesSync,
@@ -60,7 +62,7 @@ const USER_CONFIG = [
   "",
 ].join("\n");
 const temporary = () =>
-  realpathSync(mkdtempSync(join(tmpdir(), "dotln-codex-episode-test-")));
+  realpathSync(createFixtureRoot(join(tmpdir(), "dotln-codex-episode-test-")));
 /** A fixture operator: a user-level Codex home with config and auth. */
 const operator = () => {
   const root = temporary();
@@ -146,7 +148,10 @@ test("WO-159 an episode isolates CODEX_HOME, links auth and removes the home", (
     assert.equal(statSync(home).mode & 0o777, 0o700);
     const link = join(home, "auth.json");
     assert.ok(lstatSync(link).isSymbolicLink());
-    assert.deepEqual(readdirSync(home), ["auth.json"]);
+    assert.deepEqual(readdirSync(home).sort(), [
+      ".dotln-owner.json",
+      "auth.json",
+    ]);
     // Everything else in the caller's environment is kept.
     assert.equal(episode.env.PATH, env.PATH);
     const record = episode.finish();

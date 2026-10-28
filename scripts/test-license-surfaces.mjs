@@ -1,11 +1,14 @@
+import {
+  excludeFixtureOwnership,
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import {
   chmodSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
-  rmSync,
   symlinkSync,
   writeFileSync,
 } from "node:fs";
@@ -18,7 +21,7 @@ import { runGit } from "./lib/git.mjs";
 import { installLicenseFixture } from "./test-license-fixture.mjs";
 
 const withFixture = (operation) => {
-  const root = mkdtempSync(join(tmpdir(), "dotln-license-test-"));
+  const root = createFixtureRoot(join(tmpdir(), "dotln-license-test-"));
   try {
     mkdirSync(join(root, "packages/kernel"), { recursive: true });
     writeFileSync(join(root, "package.json"), '{"name":"license-fixture"}');
@@ -50,6 +53,7 @@ test("a kit names absent legal pins, while declared pins and every other license
     const baseline = licenseSurfaceRules(root);
     writeFileSync(join(root, "KIT-MANIFEST.json"), "{}\n");
     runGit(root, ["init", "-q", "-b", "main"]);
+    excludeFixtureOwnership(root);
     const snapshot = () =>
       commit(
         root,
@@ -267,6 +271,7 @@ test("symlinked workspace directories refuse in both working and committed snaps
       /workspace directories must not be symlinks/,
     );
     runGit(root, ["init", "-b", "main"]);
+    excludeFixtureOwnership(root);
     commit(
       root,
       "Fixture Author <author@example.invalid>",
@@ -314,6 +319,7 @@ test("missing npm, unrelated failures, and success with a marker cannot masquera
 test("committed checks read Git blobs for metadata, hashes, and npm snapshots", () =>
   withFixture((root) => {
     runGit(root, ["init", "-b", "main"]);
+    excludeFixtureOwnership(root);
     const manifestPath = "packages/kernel/package.json";
     const valid = readFileSync(join(root, manifestPath));
     changeManifest(root, manifestPath, (manifest) => delete manifest.license);
@@ -352,6 +358,7 @@ test("DCO checks every new commit's author and trailer, exempts only the operato
       JSON.stringify({ version: 1, contributions: { operatorAuthor } }),
     );
     runGit(root, ["init", "-b", "main"]);
+    excludeFixtureOwnership(root);
     const base = commit(
       root,
       "Old Contributor <old@example.invalid>",
@@ -400,6 +407,7 @@ test("operator merge commits do not hide unsigned outside commits on a merged br
       JSON.stringify({ version: 1, contributions: { operatorAuthor } }),
     );
     runGit(root, ["init", "-b", "main"]);
+    excludeFixtureOwnership(root);
     const base = commit(root, operatorAuthor, "baseline");
     runGit(root, ["update-ref", "refs/remotes/origin/main", base]);
     runGit(root, ["switch", "-c", "outside"]);
@@ -431,6 +439,7 @@ test("operator merge commits do not hide unsigned outside commits on a merged br
 test("contribution exemption follows instance data and never mutable Git identity", () =>
   withFixture((root) => {
     runGit(root, ["init", "-b", "main"]);
+    excludeFixtureOwnership(root);
     const base = commit(
       root,
       "Prior Author <prior@example.invalid>",

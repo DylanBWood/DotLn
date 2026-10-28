@@ -1,13 +1,10 @@
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "../src/temporary-roots.js";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import {
-  existsSync,
-  mkdtempSync,
-  readFileSync,
-  readdirSync,
-  rmSync,
-  writeFileSync,
-} from "node:fs";
+import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -75,12 +72,13 @@ const skeletonAudit = () => {
   return result.stdout.slice(start, end);
 };
 const storeWith = (label: string, log?: string) => {
-  const directory = mkdtempSync(join(tmpdir(), `dotln-wo116-${label}-`));
+  const directory = createFixtureRoot(join(tmpdir(), `dotln-wo116-${label}-`));
   if (log !== undefined) writeFileSync(join(directory, "events.jsonl"), log);
   return directory;
 };
 const listing = (directory: string) =>
   readdirSync(directory)
+    .filter((name) => name !== ".dotln-owner.json")
     .sort()
     .map((name) => [name, readFileSync(join(directory, name), "utf8")]);
 

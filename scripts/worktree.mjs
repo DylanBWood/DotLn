@@ -996,6 +996,9 @@ const main = async () => {
     };
     const initial = readStartAuthority(Boolean(pending));
     ensureClean(mainPath);
+    const { temporaryPruneSummary } =
+      await import("./lib/temporary-prune-summary.mjs");
+    console.log(await temporaryPruneSummary(mainPath));
     readPendingReceipts(mainPath);
     if (pending) {
       if (

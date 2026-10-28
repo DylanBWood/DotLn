@@ -1,14 +1,12 @@
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
 import test from "node:test";
 import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import assert from "node:assert/strict";
-import {
-  mkdirSync,
-  mkdtempSync,
-  readFileSync,
-  rmSync,
-  writeFileSync,
-} from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
@@ -19,7 +17,7 @@ import {
 } from "../packages/skeleton/src/usage-observation.mjs";
 
 function fixture() {
-  const root = mkdtempSync(join(tmpdir(), "dotln-session-readback-"));
+  const root = createFixtureRoot(join(tmpdir(), "dotln-session-readback-"));
   const directory = join(root, "sessions");
   mkdirSync(directory);
   const id = "current-fixture-thread";

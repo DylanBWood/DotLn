@@ -1,4 +1,8 @@
 #!/usr/bin/env node
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
 import { docRelative, findLaunchpad } from "./lib/config.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 import { createHash } from "node:crypto";
@@ -7,10 +11,8 @@ import {
   existsSync,
   lstatSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   readdirSync,
-  rmSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
@@ -97,7 +99,7 @@ const dryRunRules = (manifests) => {
   // Only validated manifests enter this scratch snapshot. The exact
   // prepublishOnly command refuses before other lifecycle scripts can run.
   // No source files, .npmrc, or ambient credentials enter it.
-  const scratch = mkdtempSync(join(tmpdir(), "dotln-license-surfaces-"));
+  const scratch = createFixtureRoot(join(tmpdir(), "dotln-license-surfaces-"));
   try {
     const root = join(scratch, "subject");
     for (const { path, bytes } of manifests) {

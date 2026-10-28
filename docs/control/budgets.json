@@ -63,6 +63,14 @@
   },
   "acceptances": [
     {
+      "date": "2026-10-27",
+      "metric": "coldStartBytes.executor",
+      "scope": null,
+      "dispatch": "executor",
+      "ceiling": 34953,
+      "reason": "WO-233's authorized integrate-first duty and three independent reviews on every execution and fix measure 30857 bytes in each skill root, from 29827, against the 29246 operating ceiling. Under product 07's standing route, accept the measured bytes plus one 4096-byte step while preserving the required duties. Reassess when another reviewed rule needs more. Decisions: docs/evidence/WO-233/decisions.md#wo-233-d003 and #wo-233-d067."
+    },
+    {
       "date": "2026-10-05",
       "metric": "coldStartBytes.verifier",
       "scope": null,
@@ -176,5 +184,14 @@
     }
   ],
   "unsetPolicy": "Collect observed usage first. The operator left token, dollar and PR-body ceilings unset; null is not zero and never triggers an invented cap.",
-  "decision": "docs/evidence/WO-126/decisions.md#wo-126-d001"
+  "decision": "docs/evidence/WO-126/decisions.md#wo-126-d001",
+  "retention": {
+    "gate-fixture-passed": 0,
+    "gate-fixture-failed": 24,
+    "session-scratch": 24,
+    "worker-capture": 1,
+    "warm-fixture": 0,
+    "legacy-backfill": 48,
+    "coordination": null
+  }
 }

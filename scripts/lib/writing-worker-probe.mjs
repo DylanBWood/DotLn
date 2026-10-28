@@ -1,3 +1,7 @@
+import {
+  createScratchRoot,
+  removeTemporaryPath as rmSync,
+} from "./temporary-roots.mjs";
 import { write as writeFixture, json as prettyJson } from "./helpers.mjs";
 import { spawnGit } from "./git.mjs";
 // Writing-worker and unattended-launch probe (WO-044).
@@ -16,12 +20,10 @@ import {
   copyFileSync,
   existsSync,
   mkdirSync,
-  mkdtempSync,
   openSync,
   readFileSync,
   readdirSync,
   realpathSync,
-  rmSync,
   writeFileSync,
 } from "node:fs";
 import { homedir, tmpdir } from "node:os";
@@ -149,13 +151,13 @@ process.stdout.write(JSON.stringify(response));
 
 export function createScratchWorktree({ base = tmpdir() } = {}) {
   const scratch = realpathSync(
-    mkdtempSync(join(base, "dotln-writing-worker-")),
+    createScratchRoot(join(base, "dotln-writing-worker-")),
   );
   const sibling = realpathSync(
-    mkdtempSync(join(base, "dotln-writing-worker-sibling-")),
+    createScratchRoot(join(base, "dotln-writing-worker-sibling-")),
   );
   const runtimeDirectory = realpathSync(
-    mkdtempSync(join(base, "dotln-writing-worker-runtime-")),
+    createScratchRoot(join(base, "dotln-writing-worker-runtime-")),
   );
   const write = (path, text) => writeFixture(scratch, path, text);
   const git = spawnGit(["init", "--quiet", scratch], {
@@ -319,7 +321,7 @@ export async function runProcess({
   try {
     const stdio = detached
       ? (() => {
-          outFile = mkdtempSync(join(spoolBase, "dotln-detached-"));
+          outFile = createScratchRoot(join(spoolBase, "dotln-detached-"));
           outFd = openSync(join(outFile, "stdout"), "w", 0o600);
           errFd = openSync(join(outFile, "stderr"), "w", 0o600);
           return ["ignore", outFd, errFd];

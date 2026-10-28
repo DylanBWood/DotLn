@@ -1,13 +1,10 @@
+import {
+  createScratchRoot,
+  removeTemporaryPath as rmSync,
+} from "./temporary-roots.mjs";
 import { runGit, runGitPathList, shellQuote, spawnGit } from "./git.mjs";
 import { docPath } from "./config.mjs";
-import {
-  copyFileSync,
-  existsSync,
-  mkdtempSync,
-  readFileSync,
-  readdirSync,
-  rmSync,
-} from "node:fs";
+import { copyFileSync, existsSync, readFileSync, readdirSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { inventoryMaterial } from "./worktree-material.mjs";
@@ -26,7 +23,7 @@ export function checkLifecycleWhitespace(root) {
   let scratch, env;
   try {
     if (untracked.length) {
-      scratch = mkdtempSync(join(tmpdir(), "dotln-whitespace-"));
+      scratch = createScratchRoot(join(tmpdir(), "dotln-whitespace-"));
       const index = join(scratch, "index");
       const real = runGit(root, [
         "rev-parse",

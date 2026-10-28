@@ -1,4 +1,8 @@
 #!/usr/bin/env node
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "../../lib/temporary-roots.mjs";
 // Rebuild this historical subject only when a newly reported record shape
 // needs it. Gates consume the committed bundle and never replay lifecycles.
 import assert from "node:assert/strict";
@@ -6,10 +10,8 @@ import { createHash } from "node:crypto";
 import {
   existsSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   realpathSync,
-  rmSync,
   statSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
@@ -39,7 +41,7 @@ const destination = process.argv[2]
   ? resolve(process.argv[2])
   : dirname(fileURLToPath(import.meta.url));
 const scratch = realpathSync(
-  mkdtempSync(join(tmpdir(), "dotln-history-generate-")),
+  createFixtureRoot(join(tmpdir(), "dotln-history-generate-")),
 );
 const env = fixtureEnvironment();
 const c = runner(env);
@@ -306,7 +308,7 @@ try {
 
   // Membership is added after the self orders closed. Only WO-001 retains
   // its older binding; the other changed declarations are explicitly bound.
-  for (const id of ["WO-001", "WO-002", "WO-004"])
+  for (const id of ["WO-001", "WO-004"])
     write(
       instance,
       orderPath(id),
@@ -402,6 +404,13 @@ try {
         targetOrder: "WO-004",
         fieldReport:
           "2026-10-24 workstream update and WO-080-D015: closed self members on an update branch",
+      },
+      {
+        id: "closed-self-without-field",
+        order: "WO-002",
+        path: orderPath("WO-002"),
+        fieldReport:
+          "WO-232-D008: a closed self member predates its workstream field",
       },
       {
         id: "moved-amendment-decision",

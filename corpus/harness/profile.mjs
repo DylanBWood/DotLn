@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { createScratchRoot } from "../../scripts/lib/temporary-roots.mjs";
 import assert from "node:assert/strict";
 import { spawn, execFileSync } from "node:child_process";
 import {
@@ -7,7 +8,6 @@ import {
   readFileSync,
   writeFileSync,
   realpathSync,
-  mkdtempSync,
   mkdirSync,
   createWriteStream,
 } from "node:fs";
@@ -432,7 +432,7 @@ async function main(argv) {
     lockfileSha256: digest(readFileSync("package-lock.json")),
     safety: SAFETY,
   };
-  const diagnostics = mkdtempSync(join(tmpdir(), "dotln-wo107-profile-"));
+  const diagnostics = createScratchRoot(join(tmpdir(), "dotln-wo107-profile-"));
   const registry = await scenarios(commandRunner(diagnostics));
   const specs = metadata(registry);
   const protocol = protocolHash();

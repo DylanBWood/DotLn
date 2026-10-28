@@ -1,4 +1,8 @@
 #!/usr/bin/env node
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "../../lib/temporary-roots.mjs";
 // Opt-in and outside every gate (WO-157 item 15, WO-063 D005): reproduce the
 // host-confinement fixture teardown race under load. Runs the WO-140 partial test many
 // times at once with two loose objects planted under objects/17 before its
@@ -8,7 +12,7 @@
 //
 //   node scripts/probes/gate-sandbox-race/race.mjs [--runs 200] [--width 10] [--unfix]
 import { spawn } from "node:child_process";
-import { mkdtempSync, readdirSync, rmSync } from "node:fs";
+import { readdirSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -22,7 +26,7 @@ const runs = option("--runs", 200);
 const width = option("--width", 10);
 const unfix = args.includes("--unfix");
 const repo = fileURLToPath(new URL("../../..", import.meta.url));
-const lane = mkdtempSync(join(tmpdir(), "dotln-teardown-race-"));
+const lane = createFixtureRoot(join(tmpdir(), "dotln-teardown-race-"));
 let started = 0;
 let failed = 0;
 let enotempty = 0;

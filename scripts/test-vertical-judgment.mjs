@@ -1,5 +1,11 @@
+import {
+  excludeFixtureOwnership,
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { basename, dirname, join } from "node:path";
 import { syncBuiltinESMExports } from "node:module";
 import { tmpdir } from "node:os";
@@ -8,12 +14,10 @@ import fs, {
   chmodSync,
   existsSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   readdirSync,
   realpathSync,
   renameSync,
-  rmSync,
   symlinkSync,
   writeFileSync,
 } from "node:fs";
@@ -40,6 +44,10 @@ import {
 import { WorkerStore } from "../packages/skeleton/dist/src/worker-store.js";
 import { WorkerFailure } from "../packages/skeleton/dist/src/worker-protocol.js";
 import { RetryableTriageError } from "../packages/skeleton/dist/src/vertical-judgment-host.js";
+import {
+  withTemporaryOwner,
+  pruneSessionTemporaryRoots,
+} from "../packages/skeleton/dist/src/temporary-roots.js";
 import { verticalResident } from "../packages/skeleton/dist/src/vertical-resident.js";
 import { repairHash } from "../packages/skeleton/dist/src/repair.js";
 import { writerLoadout } from "./lib/target-publish.mjs";
@@ -229,7 +237,18 @@ test("WO-112 an unreachable intake actor leaves the draft undecided; a refused r
         replayResident(new ResidentStore(f.directory).read()).state.resident
           .intents?.[f.filed.workOrderId];
       assert.equal(intents(), undefined);
-      const held = await runIssue(f, external);
+      const session = "rejected-vertical-diagnosis";
+      const held = await withTemporaryOwner(
+        {
+          repository: f.launchpad,
+          session: createHash("sha256").update(session).digest("hex"),
+          pid: 2147483647,
+          birth: "exited-fixture-host",
+          gateId: undefined,
+          suite: undefined,
+        },
+        () => runIssue(f, external),
+      );
       assert.deepEqual(held, {
         kind: "NeedsHuman",
         step: "contract",
@@ -240,6 +259,15 @@ test("WO-112 an unreachable intake actor leaves the draft undecided; a refused r
       const kept = readdirSync(join(f.directory, "issue-intake"));
       assert.equal(kept.length, 1);
       assert.match(kept[0], /^rejected-/u);
+      const retained = join(f.directory, "issue-intake", kept[0]);
+      const diagnostic = readFileSync(join(retained, "result.json"));
+      assert.deepEqual(
+        pruneSessionTemporaryRoots(f.launchpad, session, {
+          dispatchEnded: true,
+        }).blockers,
+        [],
+      );
+      assert.deepEqual(readFileSync(join(retained, "result.json")), diagnostic);
       assert.deepEqual(await runIssue(f, external), held);
       assert.equal(judge.calls.length, 2);
     } finally {
@@ -374,11 +402,14 @@ for (const [finished, checkStates, awaited, reason] of [
   });
 
 test("WO-112 a resolution checkout clears a killed run's leftover, always removes itself, and refuses a relocated directory before any add", async () => {
-  const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-checkout-")));
+  const root = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-checkout-")),
+  );
   try {
     const target = join(root, "target");
     mkdirSync(target);
     fixtureGit(target, "init", "--initial-branch=main");
+    excludeFixtureOwnership(target);
     writeFileSync(join(target, "a.txt"), "a\n");
     fixtureGit(target, "add", "a.txt");
     fixtureGit(target, "-c", "maintenance.auto=false", "commit", "-m", "Seed");
@@ -478,7 +509,7 @@ test("WO-112 a resolution checkout clears a killed run's leftover, always remove
 
 test("WO-112 replay refuses a changed judgment schema or stored subject without another launch", async () => {
   const directory = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-judgment-replay-")),
+    createFixtureRoot(join(tmpdir(), "dotln-judgment-replay-")),
   );
   try {
     const subject = {
@@ -1539,11 +1570,12 @@ test("WO-112 D047 a deferred continuation holding the slot prepares no other dra
 });
 
 test("WO-112 D047 checkout recovery clears only its own registration and leaves every other worktree registration, stale or valid", () => {
-  const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-prune-")));
+  const root = realpathSync(createFixtureRoot(join(tmpdir(), "dotln-prune-")));
   try {
     const target = join(root, "target");
     mkdirSync(target);
     fixtureGit(target, "init", "--initial-branch=main");
+    excludeFixtureOwnership(target);
     writeFileSync(join(target, "a.txt"), "a\n");
     fixtureGit(target, "add", "a.txt");
     fixtureGit(target, "-c", "maintenance.auto=false", "commit", "-m", "Seed");
@@ -2203,7 +2235,7 @@ test("stored triage result refusal ends needs-human and is never called an episo
   const { PULL_REQUEST_OBSERVER } =
     await import("./lib/pull-request-observer.mjs");
   const { JudgmentReplayError } = await import("./lib/vertical-judgment.mjs");
-  const root = mkdtempSync(join(tmpdir(), "dotln-record-refusal-"));
+  const root = createFixtureRoot(join(tmpdir(), "dotln-record-refusal-"));
   try {
     const subject = {
       schemaVersion: "vertical-triage-v1",
@@ -2371,7 +2403,7 @@ test("review invocation bounds combined inline and body triage before opening th
   const { TARGET_PUBLISH_HOST } = await import("./lib/target-publish.mjs");
   const { PULL_REQUEST_OBSERVER } =
     await import("./lib/pull-request-observer.mjs");
-  const root = mkdtempSync(join(tmpdir(), "dotln-triage-cap-"));
+  const root = createFixtureRoot(join(tmpdir(), "dotln-triage-cap-"));
   try {
     const store = new WorkerStore(join(root, "publication"));
     const record = (actorId, type, payload, causationId) => {

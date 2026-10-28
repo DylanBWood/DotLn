@@ -1,13 +1,9 @@
-import { execFileSync, spawnSync } from "node:child_process";
 import {
-  realpathSync,
-  statSync,
-  mkdtempSync,
-  openSync,
-  closeSync,
-  readSync,
-  rmSync,
-} from "node:fs";
+  createScratchRoot,
+  removeTemporaryPath as rmSync,
+} from "./temporary-roots.mjs";
+import { execFileSync, spawnSync } from "node:child_process";
+import { realpathSync, statSync, openSync, closeSync, readSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 
@@ -281,7 +277,7 @@ export const releaseCloseCommand = (main, workOrder, mode = "--publish") => {
 /** Stream a large tree's NUL-framed names and retain only the selected paths.
  * The child's stdout goes to an owned temporary file, never a captured buffer. */
 export function selectGitPaths(root, args, select) {
-  const scratch = mkdtempSync(join(tmpdir(), "dotln-git-paths-"));
+  const scratch = createScratchRoot(join(tmpdir(), "dotln-git-paths-"));
   let descriptor;
   try {
     descriptor = openSync(join(scratch, "paths"), "w+");

@@ -1,13 +1,10 @@
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
-import {
-  existsSync,
-  mkdtempSync,
-  mkdirSync,
-  readFileSync,
-  rmSync,
-  writeFileSync,
-} from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -122,7 +119,7 @@ test("quoted examples in fences do not become ledger entries or headings", () =>
 });
 
 test("CLI generation is deterministic; --check refuses stale output and invalid fixtures without writes", (t) => {
-  const root = mkdtempSync(join(tmpdir(), "dotln-lineage-"));
+  const root = createFixtureRoot(join(tmpdir(), "dotln-lineage-"));
   t.after(() => rmSync(root, { recursive: true, force: true }));
   mkdirSync(join(root, "docs/lineage"), { recursive: true });
   const ledger = join(root, "docs/lineage/idea-ledger.md");
@@ -157,7 +154,7 @@ test("CLI generation is deterministic; --check refuses stale output and invalid 
 });
 
 test("CLI --check names an absent index by its configured relative path and generating command", (t) => {
-  const root = mkdtempSync(join(tmpdir(), "dotln-lineage-"));
+  const root = createFixtureRoot(join(tmpdir(), "dotln-lineage-"));
   t.after(() => rmSync(root, { recursive: true, force: true }));
   // A moved document root: the refusal follows the configuration and never
   // names the temporary directory the launchpad lives in.

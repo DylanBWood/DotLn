@@ -227,6 +227,24 @@ make_repo() {
   git -C "$main" push -u origin main >/dev/null 2>&1
   git -C "$main" push origin refs/tags/v0.2.0 >/dev/null 2>&1
   fi
+  # Close now runs the real prune. Supply its runtime imports without copying
+  # the compiled module graph into every disposable release repository.
+  "$node_bin" --input-type=module - "$main" "$script_dir/.." <<'JS'
+import { mkdirSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { pathToFileURL } from 'node:url';
+const [root, source] = process.argv.slice(2);
+const directory = join(root, 'packages/skeleton/dist/src');
+mkdirSync(directory, { recursive: true });
+writeFileSync(join(directory, 'package.json'), '{"type":"module"}\n');
+for (const [file, names] of [
+  ['harness-host.js', 'releaseHarnessWriter, harnessWriterView, harnessProcessAlive'],
+  ['worker-transport.js', 'staleCodexEpisodeHomes'],
+]) {
+  const url = pathToFileURL(join(source, 'packages/skeleton/dist/src', file)).href;
+  writeFileSync(join(directory, file), `export { ${names} } from ${JSON.stringify(url)};\n`);
+}
+JS
   # The copied helpers resolve the launchpad's installed Markdown parser as
   # the launchpad does: through a node_modules above them.
   mkdir -p "$fixture/node_modules"
@@ -489,22 +507,30 @@ seed_release_close_writer() {
   local directory="$main/docs/control/local/harness"
   mkdir -p "$directory"
   printf '{"session":"fixture-close-session"}\n' >"$directory/writer.json"
-  cat >"$main/packages/skeleton/dist/src/harness-host.js" <<'JS'
-const { createHash } = require("node:crypto");
-const { existsSync, readFileSync, rmSync } = require("node:fs");
-const { join } = require("node:path");
+  "$node_bin" --input-type=module - "$main" "$script_dir/.." <<'JS'
+import { writeFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { pathToFileURL } from 'node:url';
+const [root, source] = process.argv.slice(2);
+const runtime = pathToFileURL(join(source, 'packages/skeleton/dist/src/harness-host.js')).href;
+writeFileSync(join(root, 'packages/skeleton/dist/src/harness-host.js'), `
+import { createHash } from "node:crypto";
+import { existsSync, readFileSync, rmSync } from "node:fs";
+import { join } from "node:path";
+export { harnessProcessAlive } from ${JSON.stringify(runtime)};
 const marker = (root) => join(root, "docs/control/local/harness/writer.json");
-exports.releaseHarnessWriter = (root, input) => {
+export const releaseHarnessWriter = (root, input) => {
   const path = marker(root);
   if (existsSync(path) && JSON.parse(readFileSync(path, "utf8")).session === input.session_id)
     rmSync(path);
 };
-exports.harnessWriterView = (root) => {
+export const harnessWriterView = (root) => {
   const path = marker(root);
   return existsSync(path)
     ? { reserved: true, actorId: createHash("sha256").update(JSON.parse(readFileSync(path, "utf8")).session).digest("hex") }
     : { reserved: false };
 };
+`);
 JS
 }
 
@@ -520,7 +546,7 @@ const { seedHarnessWriter } = await import(url);
 const directory = join(root, 'packages/skeleton/dist/src');
 mkdirSync(directory, { recursive: true });
 writeFileSync(join(directory, 'package.json'), '{"type":"module"}\n');
-writeFileSync(join(directory, 'harness-host.js'), `export { releaseHarnessWriter, harnessWriterView } from ${JSON.stringify(url)};\n`);
+writeFileSync(join(directory, 'harness-host.js'), `export { releaseHarnessWriter, harnessWriterView, harnessProcessAlive } from ${JSON.stringify(url)};\n`);
 seedHarnessWriter(root, { actorId: createHash('sha256').update('fixture-close-session').digest('hex'), reservedAt: new Date().toISOString() });
 JS
 }
@@ -1239,6 +1265,8 @@ assert.equal(record.publication.outcome, "no-release");
 assert.equal(record.publication.tag, "v0.0.2");
 assert.equal(record.publication.tagOutcome, null);
 assert.equal(record.cleanup.outcome, "clean");
+assert.ok(record.prune, 'close records its prune');
+for (const field of ['candidates','removed','retained','blockers']) assert.ok(Array.isArray(record.prune[field]), field);
 assert.equal(record.blockers.length, 0);
 JS
 test ! -e "$npm_log"
@@ -2333,6 +2361,8 @@ const record = JSON.parse(fs.readFileSync(file, "utf8"));
 assert.equal(record.dryRun, true);
 assert.equal(record.publication.outcome, "preview");
 assert.equal(record.cleanup.outcome, "clean");
+assert.ok(record.prune, 'close records its prune');
+for (const field of ['candidates','removed','retained','blockers']) assert.ok(Array.isArray(record.prune[field]), field);
 assert.equal(record.material.length, mode === "scratch" ? 2 : 1);
 assert.equal(record.material[0].source, mode === "preserve" ? "declared" : "lane");
 assert.ok(!record.blockers.some((row) => row.action === "material"));
@@ -2370,6 +2400,8 @@ assert.equal(record.publication.tag, "v0.2.1");
 assert.equal(record.publication.tagOutcome, "published");
 assert.equal(record.publication.release, "created");
 assert.equal(record.cleanup.outcome, "clean");
+assert.ok(record.prune, 'close records its prune');
+for (const field of ['candidates','removed','retained','blockers']) assert.ok(Array.isArray(record.prune[field]), field);
 assert.equal(record.cleanup.worktrees[0].outcome, "removed");
 assert.ok(!record.blockers.some((row) => row.action === "material"));
 assert.equal(record.dispatch.harness, "claude-code");
@@ -2452,6 +2484,8 @@ const [file, derived, head] = process.argv.slice(2);
 const record = JSON.parse(fs.readFileSync(file, "utf8"));
 assert.equal(record.publication.outcome, "already-published");
 assert.equal(record.cleanup.outcome, "clean");
+assert.ok(record.prune, 'close records its prune');
+for (const field of ['candidates','removed','retained','blockers']) assert.ok(Array.isArray(record.prune[field]), field);
 const removal = record.removals.find((row) => row.worktree === derived);
 assert.deepEqual([removal.path, removal.head, removal.remoteHeld, removal.outcome], ["scratch-material/x", head, false, "removed"]);
 JS
@@ -2518,6 +2552,8 @@ const assert = require("node:assert/strict"), fs = require("node:fs");
 const [file, misnamed, listed] = process.argv.slice(2);
 const record = JSON.parse(fs.readFileSync(file, "utf8"));
 assert.equal(record.cleanup.outcome, "clean");
+assert.ok(record.prune, 'close records its prune');
+for (const field of ['candidates','removed','retained','blockers']) assert.ok(Array.isArray(record.prune[field]), field);
 for (const worktree of [misnamed, listed])
   assert.equal(record.removals.find((row) => row.worktree === worktree && row.path === "scratch-material/x").outcome, "removed");
 JS

@@ -1,11 +1,11 @@
 import { execFileSync, spawn } from "node:child_process";
+import { createFixtureRoot } from "../../../scripts/lib/temporary-roots.mjs";
 import { createHash } from "node:crypto";
 import {
   appendFileSync,
   existsSync,
   lstatSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   readdirSync,
   realpathSync,
@@ -77,7 +77,7 @@ export function createFixture() {
     git(launchpad, "rev-parse", "--show-toplevel") !== launchpad
   )
     throw new Error("Run from the selected launchpad Git root");
-  const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-wo053-")));
+  const root = createFixtureRoot(join(tmpdir(), "dotln-wo053-"));
   const repo = join(root, "target");
   mkdirSync(repo);
   mkdirSync(join(root, "trees"));

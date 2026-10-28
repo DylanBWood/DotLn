@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { findLaunchpad } from "./lib/config.mjs";
 import { isMainModule } from "./lib/paths.mjs";
+import { unownedTemporaryRootSites } from "./lib/temporary-root-declarations.mjs";
 import {
   uncoveredFixtureInputs,
   uncoveredMachinerySources,
@@ -9,6 +10,7 @@ import {
   largestTaskPeakRss,
   memoryBudgets,
   pressureSample,
+  sampleFileEventDaemon,
 } from "./lib/host-resources.mjs";
 import {
   BUILD_PHASE_ARTIFACTS,
@@ -21,6 +23,7 @@ export function checkHost(
   {
     limits = memoryBudgets(findLaunchpad()),
     requiredPeakBytes = largestTaskPeakRss(),
+    fileEvents = sampleFileEventDaemon(),
   } = {},
 ) {
   const underBudget = limits.taskBytes < requiredPeakBytes;
@@ -36,6 +39,7 @@ export function checkHost(
     exitCode:
       ["warning", "critical"].includes(sample.level) || underBudget ? 1 : 0,
     sample,
+    fileEvents,
     taskBudgetBytes: limits.taskBytes,
     requiredPeakBytes,
     output: `Host memory: ${sample.level}; pressure=${sample.pressure}; swapBytes=${sample.swapBytes}; physicalBytes=${sample.physicalBytes}; source=${sample.source}\nPer-lane memory budget ${limits.taskBytes} bytes ${underBudget ? "is below" : "covers"} measured task peak RSS ${requiredPeakBytes} bytes (${limits.hostLanes} host lanes)${remedy}`,
@@ -45,8 +49,9 @@ export function checkHost(
 export function checkDeclarations(root, table, closures) {
   const machinery = uncoveredMachinerySources(root, table);
   const fixtures = uncoveredFixtureInputs(root, closures);
+  const temporary = unownedTemporaryRootSites(root);
   return {
-    exitCode: machinery.length || fixtures.length ? 1 : 0,
+    exitCode: machinery.length || fixtures.length || temporary.length ? 1 : 0,
     output: [
       ...machinery.map(
         ({ suite, path }) =>
@@ -55,6 +60,10 @@ export function checkDeclarations(root, table, closures) {
       ...fixtures.map(
         ({ fixture, path, declaration }) =>
           `Missing copied-fixture input: ${fixture}: ${path}; update ${declaration}`,
+      ),
+      ...temporary.map(
+        ({ path, line }) =>
+          `Unowned temporary root: ${path}:${line}; use createTemporaryRoot with an owner and class`,
       ),
     ].join("\n"),
   };

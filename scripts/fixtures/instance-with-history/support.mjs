@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
+import { copyTemporaryMaterial as cpSync } from "../../lib/temporary-roots.mjs";
 import { spawnSync } from "node:child_process";
 import {
-  cpSync,
   existsSync,
   mkdirSync,
   readFileSync,
@@ -24,6 +24,7 @@ export const fixtureEnvironment = () => {
     npm_config_update_notifier: "false",
   };
   for (const key of [
+    "NODE_TEST_CONTEXT",
     "CODEX_THREAD_ID",
     "COPILOT_AGENT_SESSION_ID",
     "COPILOT_PROJECT_DIR",

@@ -8,6 +8,7 @@ _dotln_test_temp_bases=()
 _dotln_test_temp_prefixes=()
 _dotln_test_temp_tokens=()
 test_temp_root_result=""
+_dotln_temp_root_tool="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)/temporary-root.mjs"
 
 reject_test_tmp_base() {
   local raw_base="$1"
@@ -90,7 +91,7 @@ create_test_temp_root() {
     reject_test_tmp_base "$resolved_base" 'creation base is not in resolved form'
     return 1
   fi
-  if ! root="$(mktemp -d "${resolved_base}/${prefix}.XXXXXX")"; then
+  if ! root="$(node "$_dotln_temp_root_tool" create "${resolved_base}/${prefix}." "$$")"; then
     printf 'error: could not create fixture root beneath temporary base %s\n' "$resolved_base" >&2
     return 1
   fi
@@ -182,7 +183,7 @@ cleanup_test_temp_root() {
     return 1
   fi
 
-  if ! rm -rf -- "$root"; then
+  if ! node "$_dotln_temp_root_tool" remove "$root"; then
     printf 'error: failed to remove owned fixture root %s\n' "$root" >&2
     return 1
   fi
@@ -200,9 +201,11 @@ _dotln_finish_test_temp_root() {
   local status="$1"
 
   trap - EXIT INT TERM
-  if ! cleanup_test_temp_root "$_dotln_test_temp_trap_base" "$_dotln_test_temp_trap_root" "$_dotln_test_temp_trap_prefix"; then
-    exit 1
+  if [[ "$status" != 0 && -n "${DOTLN_TEMP_GATE:-}" ]]; then
+    node "$_dotln_temp_root_tool" failed "$_dotln_test_temp_trap_root" || exit 1
+    exit "$status"
   fi
+  node "$_dotln_temp_root_tool" complete "$_dotln_test_temp_trap_root" || exit 1
   exit "$status"
 }
 

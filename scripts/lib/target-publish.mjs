@@ -1,3 +1,7 @@
+import {
+  createScratchRoot,
+  removeTemporaryPath as rmSync,
+} from "./temporary-roots.mjs";
 import { spawnGit, runGit, ensureClean, mainWorktree } from "./git.mjs";
 import {
   findLaunchpad,
@@ -24,10 +28,8 @@ import { createHash } from "node:crypto";
 import {
   appendFileSync,
   existsSync,
-  mkdtempSync,
   readFileSync,
   realpathSync,
-  rmSync,
   lstatSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
@@ -937,7 +939,7 @@ function committedRegistration(main, repositoryId) {
 /** The tree of the target worktree's working copy, staged through a
  * temporary index so HEAD and the real index stay untouched. */
 function workingTree(target) {
-  const scratch = mkdtempSync(join(tmpdir(), "dotln-target-draft-"));
+  const scratch = createScratchRoot(join(tmpdir(), "dotln-target-draft-"));
   try {
     const env = { ...process.env, GIT_INDEX_FILE: join(scratch, "index") };
     const inTarget = (args) => {

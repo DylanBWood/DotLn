@@ -806,6 +806,46 @@ are checked before destination writes, and each applied or preserved action
 is listed in the output. No control event is appended. Repeated actions preserve
 the already-migrated state; keep the output with your review of the update.
 
+## Owned cleanup and retention
+
+Release close prunes owned leftovers after its worktree cleanup and records
+candidates, removals, retentions and blockers in the close receipt. A blocker
+keeps the same close retry command. Gate completion removes passing fixtures
+and retains failed ones for diagnosis, including standalone captures and scratch
+owned by those suites. Every gate-owned root is accounted for; live workers,
+null retention, reusable caches and independent coordination remain protected.
+Repeating completion does not restart the diagnosis window.
+Session completion removes only its own
+scratch and dead captures after writer release and background work ends. Live
+or uncertain owners and another worktree's lanes or writer remain protected.
+An ordinary Claude Stop ends a turn; scratch survives until the session or its
+dispatch has an observed end. Physical ownership markers are excluded from
+fixture copies and seed commits. Invalid nested metadata retains the tree and
+reports a cleanup blocker.
+Global apply shares the host lane lock; no daemon or host-memory exception is
+installed. `worktree start`, `plan start` and update preview print the census.
+Nested suite commands retain their outer gate's cleanup ownership across copied
+repositories. Creator teardown waits only for a gate that can read its ledger.
+
+Read before upgrading: the optional `retention` object in
+`docs/control/budgets.json` takes hours for `gate-fixture-passed` (0),
+`gate-fixture-failed` (24), `session-scratch` (24), `worker-capture` (1),
+`warm-fixture` (0 after stale), `legacy-backfill` (48) and `coordination` (null).
+Every key admits null, which preserves independently owned roots in that class.
+Runtime directories inside gate fixtures share the fixture's lifetime; an
+explicit per-root null still protects nested material. Application scratch uses
+its own operation cleanup, with fixture ownership as the fallback for leftovers.
+A nested cache with recorded fixture ownership also ends with the fixture.
+Removing the owning repository does not pin an expired fixture; inaccessible
+or invalid observations still retain it. Independent caches and coordination
+keep their own protocols.
+An older instance without the block reads these defaults and keeps `npm run meta`; no historical
+control record or judgment needs editing. Exact helper spelling and host policy
+still decide command admission; the kit does not change account settings.
+An orphan without an observed end is retained on preview. Applying prune
+records the first proven-dead observation and starts its full retention window;
+it cannot be deleted by that same plan merely because it was created long ago.
+
 ## License
 
 The license files this export carries are listed in the manifest and

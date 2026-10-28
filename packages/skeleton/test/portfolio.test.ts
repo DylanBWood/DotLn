@@ -1,13 +1,10 @@
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "../src/temporary-roots.js";
 import test from "node:test";
 import assert from "node:assert/strict";
-import {
-  mkdirSync,
-  mkdtempSync,
-  readFileSync,
-  realpathSync,
-  rmSync,
-  writeFileSync,
-} from "node:fs";
+import { mkdirSync, readFileSync, realpathSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -85,7 +82,9 @@ const fixturePortfolio = (): Portfolio =>
 const BASE = "a".repeat(40);
 
 function scratch(t: { after: (fn: () => void) => void }) {
-  const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-portfolio-")));
+  const root = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-portfolio-")),
+  );
   t.after(() => rmSync(root, { recursive: true, force: true }));
   return root;
 }

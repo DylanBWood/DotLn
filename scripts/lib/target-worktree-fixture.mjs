@@ -1,3 +1,7 @@
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "./temporary-roots.mjs";
 import { copyFixtureFiles } from "./fixture-inputs.mjs";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
@@ -6,12 +10,10 @@ import {
   existsSync,
   lstatSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   readdirSync,
   readlinkSync,
   realpathSync,
-  rmSync,
   symlinkSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
@@ -275,7 +277,7 @@ for (const name of ${JSON.stringify(runtimePackages)}) {
 
 const withFixture = (run, options) => {
   const base = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-target-worktree-")),
+    createFixtureRoot(join(tmpdir(), "dotln-target-worktree-")),
   );
   try {
     return run(fixture(base, options));

@@ -1,4 +1,8 @@
 #!/usr/bin/env node
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "../lib/temporary-roots.mjs";
 import { sha256Hex as sha256, json } from "../lib/helpers.mjs";
 
 // Live evaluations are explicit (WO-138). Importing this module performs no
@@ -7,11 +11,9 @@ import { spawn, execFileSync } from "node:child_process";
 import {
   existsSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   realpathSync,
   renameSync,
-  rmSync,
   writeFileSync,
 } from "node:fs";
 import { homedir, tmpdir } from "node:os";
@@ -202,7 +204,7 @@ export async function t2Input() {
       "T2 preparation needs the current runtime; run node scripts/bootstrap.mjs",
     );
   const scratch = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-wo138-discovery-")),
+    createFixtureRoot(join(tmpdir(), "dotln-wo138-discovery-")),
   );
   try {
     seedDiscoveryFixture(scratch, source);
@@ -758,7 +760,7 @@ export async function runCodexEpisode({
     pathToFileURL(join(ROOT, "packages/skeleton/dist/src/worker-transport.js"))
       .href
   );
-  const scratch = mkdtempSync(join(tmpdir(), "dotln-wo138-schema-"));
+  const scratch = createFixtureRoot(join(tmpdir(), "dotln-wo138-schema-"));
   const schemaPath = join(scratch, "result.json");
   writeFileSync(schemaPath, JSON.stringify(schema), { mode: 0o600 });
   const args = launcher.codexExecArgv({

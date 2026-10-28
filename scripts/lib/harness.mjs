@@ -1,4 +1,9 @@
 import {
+  createFixtureRoot,
+  promoteTemporaryRoot,
+  removeTemporaryPath as rmSync,
+} from "./temporary-roots.mjs";
+import {
   HARNESS_START,
   HARNESS_END,
   NO_COMPILED_HARNESS,
@@ -27,7 +32,6 @@ import {
   cpSync,
   existsSync,
   lstatSync,
-  mkdtempSync,
   mkdirSync,
   readFileSync,
   readdirSync,
@@ -35,7 +39,6 @@ import {
   realpathSync,
   renameSync,
   rmdirSync,
-  rmSync,
   symlinkSync,
   unlinkSync,
   writeFileSync,
@@ -844,7 +847,7 @@ export function preserveHarnessRuntime(
     return;
   }
   mkdirSync(dirname(destination), { recursive: true });
-  const staging = mkdtempSync(`${destination}.preparing-`);
+  const staging = createFixtureRoot(`${destination}.preparing-`);
   try {
     mkdirSync(join(staging, "node_modules/@dotln"), { recursive: true });
     for (const entry of inventory) {
@@ -866,6 +869,7 @@ export function preserveHarnessRuntime(
         );
       }
     }
+    promoteTemporaryRoot(staging);
     // A staging tree that disagrees is removed below; the remedy names the
     // snapshot it was meant to become.
     checkRuntimeSnapshot(
