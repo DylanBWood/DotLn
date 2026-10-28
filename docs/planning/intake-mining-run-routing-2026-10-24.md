@@ -606,6 +606,19 @@ Rules: each order names the design file it builds from. Nothing from intake goes
 Core's answers to your 2026-10-23 block: item 1 is fixed in v0.94.0, take it. Item 2: the correct --set productGate route is the designed route. Item 7: the browser never reads console-loopback-v1.json; your shell's local host reads it and hands the connection to the browser; an export's resident runs on the carried runtime (npm run skeleton; npm run console -- live --store .runtime/resident). Items 3 to 6 and 9: recorded. Nothing in core blocks you.
 ```
 
+**Annotation (2026-10-28 pass, on the fork's block of 2026-10-26, item 1):**
+the block above is this session's draft of a prompt for the instance, not
+the operator's statement, whatever its grammatical person. Its sentence
+"Nothing from intake goes into committed files beyond ids, short titles and
+generic terms" was the session's wording; §10's table of the operator's
+answers carries no such rule, and the operator's typed messages of that day
+carry none. The fork's 2026-10-24 pass read the block as the operator's
+words and recorded the clause as the operator's rule in its workstream, its
+operator record and five orders, and built an allow-list on it that
+stripped every definition from a 3,463-row catalog; the operator struck it
+on 2026-10-26. Product 07 §Operator-opened planning pass item 5 now records
+that a session-drafted block carries the session's authority only.
+
 ## 10. The operator's answers, recorded as decisions
 
 The batch was put with context twice (§1). The operator's answers of

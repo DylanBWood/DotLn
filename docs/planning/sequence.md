@@ -218,13 +218,40 @@ them; the operator may instead withdraw it (the pass's planning document
 names both commands). The forks take WO-233 through the kit update, as
 every release. Nothing else moves relative to its neighbours.
 
+**The fork's target-write blocker goes first; a closed order keeps its
+journals** (the 2026-10-28 pass; operator dispatch of 2026-10-28 carrying
+the fork's blocker block of the same day). WO-233 closed on 2026-10-28 as
+v0.100.0 and leaves the list. The fork's first Claude Code executor
+dispatch on a target order (its WO-019) was refused at its first Edit into
+the registered target worktree, because the kit's fifth refusal knows five
+grant kinds and none resolves a registered target; every earlier target
+implementation ran under Codex, whose tool calls are unhooked. WO-236
+grants the executor role that one root, resolved from the launchpad's own
+registry at every judged write, keeps every other refusal, and prints the
+Claude Code launch line; it goes first on the operator's dispatch. WO-234
+is active in its sibling worktree since 2026-10-28T12:53Z with its
+implementation begun, and its hunks overlap WO-236's in the hook, the
+loadout, the compiler and the role oracle; under the serial rule one closes
+before the other activates, and which runs first is the operator's choice
+at activation: WO-236 now, with WO-234's worktree resuming afterwards and
+integrating `main` by the main checkout's current code (WO-233's rule), or
+WO-234 to its close first, with WO-236 one cycle later. WO-237 keeps a
+closed order's session journals, state and gate index in main's retained
+lane for thirty days under a retention class the prune judges, which is
+the operator's question of the same dispatch answered on the corrected
+unit (a worktree is gigabytes of regenerable captures; the journals are
+kilobytes); it goes fourth, after WO-235, and before WO-192. Nothing else
+moves relative to its neighbours.
+
 The order, serial:
-- WO-233: DotLn cleans up after itself; WO-192's residue and churn fixed at
-  the source and shipped in the kit; first.
+- WO-236: the executor edits the registered target worktree; the fork's
+  blocker of 2026-10-28; first.
 - WO-234: a dispatch cannot run away; the bound WO-192's 22.4-hour dispatch
-  lacked; second.
+  lacked; second, active in its worktree.
 - WO-235: no artifact shaped by its predecessor and no operator direction
   dropped; the operator's corrections of 2026-10-26; third.
+- WO-237: a closed order keeps its journals; the operator's question of
+  2026-10-28 on the corrected unit; fourth.
 - WO-192: the router, active with its worktree preserved, before WO-083, so
   the measured run is driven the way the operator will drive orders
   (operator item k, 2026-10-11).
@@ -253,9 +280,10 @@ The period below `v1.0.0` is early access (operator direction, 2026-09-30).
 The order of everything the operator did not place is the planner's.
 
 <!-- dotln-work-order-sequence:start -->
-- WO-233 — DotLn cleans up after itself
+- WO-236 — The executor edits the registered target worktree
 - WO-234 — A dispatch cannot run away
 - WO-235 — No artifact is shaped by its predecessor and no operator direction is dropped
+- WO-237 — A closed order keeps its journals
 - WO-192 — A router drives an order through its lifecycle
 - WO-083 — The real run from the operator's instance
 - WO-207 — An instance's kit updates: rollback, extension point and build channel
