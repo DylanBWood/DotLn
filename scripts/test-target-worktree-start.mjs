@@ -368,6 +368,11 @@ test("target briefings name a missing repository throughout dispatch and print l
     const timings = (result) =>
       `${result.status}\n${result.stdout}`
         .replace(/[0-9]+\.[0-9]+ s/gu, "<t>")
+        .replace(/"observedAt":"[^"]+"/gu, '"observedAt":"<time>"')
+        .replace(
+          /"residentBytes":(?:null|[0-9]+)/gu,
+          '"residentBytes":"<sample>"',
+        )
         .replace(/(dotln-[a-z-]+-)[A-Za-z0-9]{6}\b/gu, "$1<tmp>");
     assert.equal(
       timings(gate.run()),

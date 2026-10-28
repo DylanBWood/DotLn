@@ -1,3 +1,8 @@
+import {
+  excludeFixtureOwnership,
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
 import { write as writeFixture } from "./lib/helpers.mjs";
 import { spawnGit } from "./lib/git.mjs";
 import test from "node:test";
@@ -5,10 +10,8 @@ import assert from "node:assert/strict";
 import {
   chmodSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   realpathSync,
-  rmSync,
   symlinkSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
@@ -50,7 +53,7 @@ import { createWorkstreamIndexFixture } from "./test-workstream-index-fixture.mj
 
 test("the console workstream document matches the current generated index", () => {
   const root = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-workstream-document-")),
+    createFixtureRoot(join(tmpdir(), "dotln-workstream-document-")),
   );
   try {
     const fixture = createWorkstreamIndexFixture(root);
@@ -393,10 +396,11 @@ test("WO-190 the roadmap leads with the work ahead: the index is the list of ord
 
 const script = resolve("scripts/docs-check.mjs");
 function fixture(t, roots = {}) {
-  const root = mkdtempSync(join(tmpdir(), "dotln-docs-check-"));
+  const root = createFixtureRoot(join(tmpdir(), "dotln-docs-check-"));
   t.after(() => rmSync(root, { recursive: true, force: true }));
   const write = (path, source) => writeFixture(root, path, source);
   assert.equal(spawnGit(["init", "-q", root]).status, 0);
+  excludeFixtureOwnership(root);
   write("dotln.config.json", JSON.stringify({ version: 1, roots }));
   const docs = roots.docs ?? "docs",
     product = roots.product ?? `${docs}/product`,
@@ -2997,7 +3001,9 @@ test("the refusal is new: the document check at 08845c71 admits the same undecla
   );
   // The historical scripts tree runs beside this checkout's installed
   // dependencies; nothing in this repository is written.
-  const extracted = mkdtempSync(join(tmpdir(), "dotln-docs-check-historical-"));
+  const extracted = createFixtureRoot(
+    join(tmpdir(), "dotln-docs-check-historical-"),
+  );
   t.after(() => rmSync(extracted, { recursive: true, force: true }));
   const archive = join(extracted, "historical.tar");
   const archived = spawnGit(

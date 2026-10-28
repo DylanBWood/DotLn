@@ -1,3 +1,7 @@
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
 import "./test-fixture-temporary.mjs";
 import test, { before, after } from "node:test";
 import assert from "node:assert/strict";
@@ -6,11 +10,9 @@ import {
   cpSync,
   existsSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   readdirSync,
   realpathSync,
-  rmSync,
   symlinkSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
@@ -35,7 +37,7 @@ import {
 import { publicationVocabulary } from "./test-target-publication-fixture.mjs";
 
 const scratch = realpathSync(
-  mkdtempSync(join(tmpdir(), "dotln-workstream-pilot-")),
+  createFixtureRoot(join(tmpdir(), "dotln-workstream-pilot-")),
 );
 const source = join(scratch, "source");
 const launchpad = join(scratch, "launchpad");

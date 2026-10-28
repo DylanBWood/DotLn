@@ -1,12 +1,15 @@
+import {
+  createScratchRoot,
+  removeTemporaryPath,
+  TEMPORARY_OWNER_FILE,
+} from "./temporary-roots.mjs";
 import { createHash } from "node:crypto";
 import {
   lstatSync,
   existsSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   readdirSync,
-  rmdirSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
@@ -261,7 +264,7 @@ export function publishTargetPlanning({
     );
   const scratch =
     pending?.scratch ??
-    mkdtempSync(join(temporaryRoot, "dotln-target-planning-"));
+    createScratchRoot(join(temporaryRoot, "dotln-target-planning-"));
   const target = pending?.target ?? join(scratch, "worktree");
   const operation = { ...pending, inputHash, clone, scratch, target };
   recordTargetOperation(main, "planning", key, operation);
@@ -364,7 +367,11 @@ export function publishTargetPlanning({
     const links = files.map(({ path }) => ({ repositoryId, commit, path }));
     runGit(clone, [...HOST_GIT_READ, "worktree", "remove", target]);
     runGit(clone, [...HOST_GIT_READ, "branch", "-D", branch]);
-    rmdirSync(scratch);
+    // Only our metadata may remain after removing the worktree. Preserve an
+    // operator's note or other unexpected material for the existing retry.
+    if (readdirSync(scratch).some((name) => name !== TEMPORARY_OWNER_FILE))
+      throw new Error(`ENOTEMPTY: unexpected material in ${scratch}`);
+    removeTemporaryPath(scratch, { recursive: true });
     forgetTargetOperation(main, "planning", key);
     for (const row of links) log(`${repositoryId} at ${commit}: ${row.path}`);
     return { ...opened, records: links };

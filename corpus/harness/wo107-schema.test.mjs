@@ -1,7 +1,11 @@
 import { suites, machinerySources } from "../../scripts/test-runner.mjs";
+import {
+  createFixtureRoot,
+  removeTemporaryPath,
+} from "../../scripts/lib/temporary-roots.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync, readdirSync, existsSync, mkdtempSync } from "node:fs";
+import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { spawn, spawnSync, execFileSync } from "node:child_process";
@@ -434,7 +438,7 @@ test("corpus schema refuses omissions, nonfinite values, lost outliers, duplicat
   assert.throws(() => parseRecords("\n"));
 });
 
-test("corpus generated comparison is byte identical and check never appends or rewrites", () => {
+test("corpus generated comparison is byte identical and check never appends or rewrites", (t) => {
   const original = readFileSync(observations);
   const report = readFileSync("corpus/baselines/WO-107-comparison.md", "utf8");
   const records = parseRecords(original.toString());
@@ -450,10 +454,9 @@ test("corpus generated comparison is byte identical and check never appends or r
     readFileSync("corpus/baselines/WO-107-comparison.md", "utf8"),
     report,
   );
-  const temporary = join(
-    mkdtempSync(join(tmpdir(), "dotln-wo107-check-")),
-    "absent.md",
-  );
+  const fixture = createFixtureRoot(join(tmpdir(), "dotln-wo107-check-"));
+  t.after(() => removeTemporaryPath(fixture, { recursive: true, force: true }));
+  const temporary = join(fixture, "absent.md");
   const absent = spawnSync(
     process.execPath,
     [

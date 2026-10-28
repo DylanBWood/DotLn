@@ -1,3 +1,7 @@
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
@@ -6,11 +10,9 @@ import {
   existsSync,
   lstatSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   readdirSync,
   realpathSync,
-  rmSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
@@ -70,9 +72,9 @@ test("WO-070 grep scan finds one home for the seven Beacon leaves and no skeleto
   }
 });
 
-test("WO-070 copied control plane emits a decoded Beacon without skeleton source", async (t) => {
+test("WO-070 copied control plane emits a decoded Beacon without TypeScript source or a built skeleton runtime", async (t) => {
   const root = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-beacon-portable-")),
+    createFixtureRoot(join(tmpdir(), "dotln-beacon-portable-")),
   );
   t.after(() => rmSync(root, { recursive: true, force: true }));
   const run = (file, args) => {
@@ -108,7 +110,15 @@ test("WO-070 copied control plane emits a decoded Beacon without skeleton source
     join(root, "docs/work-orders/WO-099-fixture.md"),
     "# WO-099 fixture\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n",
   );
-  assert.ok(!existsSync(join(root, "packages/skeleton/src")));
+  mkdirSync(join(root, "packages/skeleton/src"), { recursive: true });
+  cpSync(
+    join(repository, "packages/skeleton/src/temporary-root-records.mjs"),
+    join(root, "packages/skeleton/src/temporary-root-records.mjs"),
+  );
+  assert.deepEqual(readdirSync(join(root, "packages/skeleton/src")), [
+    "temporary-root-records.mjs",
+  ]);
+  assert.ok(!existsSync(join(root, "packages/skeleton/dist")));
   run("git", ["add", "."]);
   run("git", [
     "-c",
@@ -132,7 +142,9 @@ test("WO-070 copied control plane emits a decoded Beacon without skeleton source
   );
   assert.equal(status.phase, "active");
   assert.equal(status.latestVerdict, null);
-  assert.ok(!existsSync(join(root, "packages/skeleton/src")));
+  assert.deepEqual(readdirSync(join(root, "packages/skeleton/src")), [
+    "temporary-root-records.mjs",
+  ]);
   const { controlBeaconAddress, controlBeaconDirectory } = await import(
     pathToFileURL(join(root, "packages/beacons/src/control-beacon-fs.mjs")).href
   );

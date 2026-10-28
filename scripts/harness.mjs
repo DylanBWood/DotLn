@@ -70,7 +70,7 @@ try {
     const { pruneHarness } = await import("./lib/harness-prune.mjs");
     console.log(
       JSON.stringify(
-        pruneHarness(root, { apply: args[0] === "--apply" }),
+        await pruneHarness(root, { apply: args[0] === "--apply" }),
         null,
         2,
       ),

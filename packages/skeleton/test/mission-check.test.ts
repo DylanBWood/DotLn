@@ -1,11 +1,13 @@
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "../src/temporary-roots.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
   lstatSync,
   mkdirSync,
-  mkdtempSync,
   renameSync,
-  rmSync,
   symlinkSync,
   unlinkSync,
   writeFileSync,
@@ -840,7 +842,7 @@ test("WO-099 VER-005 F1: ordinary build residue under a baselined ignored root l
   // Exactly what `scripts/build.mjs` does to a collapsed ignored root:
   // `atomicBuild` creates and removes a staging directory directly under
   // `.runtime/`, and `publishBuildTree` renames a direct child into `dist/`.
-  const staging = mkdtempSync(join(runtime, "build-"));
+  const staging = createFixtureRoot(join(runtime, "build-"));
   writeFileSync(join(staging, "tsconfig.tsbuildinfo"), "{}\n");
   renameSync(
     join(staging, "tsconfig.tsbuildinfo"),
@@ -945,7 +947,7 @@ test("WO-099 VER-005 F1: an ordinary build during the cadence raises no hold", a
   await recordPresence(fixture.directory, "away", () => at);
   // What the build does to the collapsed roots the pin already carries
   // (`scripts/build.mjs`), performed inside the interval the check supervises.
-  const staging = mkdtempSync(join(fixture.work, ".runtime/build-"));
+  const staging = createFixtureRoot(join(fixture.work, ".runtime/build-"));
   writeFileSync(join(staging, "tsconfig.tsbuildinfo"), "{}\n");
   renameSync(
     join(staging, "tsconfig.tsbuildinfo"),

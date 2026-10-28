@@ -1,4 +1,8 @@
 #!/usr/bin/env node
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
 import { TOOL_ROOT } from "./lib/config.mjs";
 import { isKitRoot } from "../packages/skeleton/src/runtime-inputs.mjs";
 import { recordBuildFreshness } from "./lib/build-freshness.mjs";
@@ -10,11 +14,9 @@ import {
   existsSync,
   lstatSync,
   mkdirSync,
-  mkdtempSync,
   readdirSync,
   readFileSync,
   renameSync,
-  rmSync,
   symlinkSync,
   unlinkSync,
 } from "node:fs";
@@ -69,7 +71,7 @@ export function publishBuildTree(source, destination, observe = () => {}) {
 
 export function atomicBuild(repo = root, observe = () => {}) {
   mkdirSync(join(repo, ".runtime"), { recursive: true });
-  const staging = mkdtempSync(join(repo, ".runtime/build-"));
+  const staging = createFixtureRoot(join(repo, ".runtime/build-"));
   try {
     cpSync(join(repo, "tsconfig.json"), join(staging, "tsconfig.json"));
     const names = readdirSync(join(repo, "packages")).filter((name) =>

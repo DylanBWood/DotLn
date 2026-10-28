@@ -1,0 +1,164 @@
+{
+  "command": "npm test -- --review --keep-going",
+  "checkId": "npm test",
+  "evidenceRef": "host-gate:1d4c0c700e6c31ed15f24d82f977eddf23adc1167afc3b478330426f8b5f48d9:npm test",
+  "recordedAt": "2026-10-27T07:51:37.903Z",
+  "codeIdentity": "1d4c0c700e6c31ed15f24d82f977eddf23adc1167afc3b478330426f8b5f48d9",
+  "exitCode": 0,
+  "durationMs": 1820831,
+  "executionMode": "fresh",
+  "freshTasks": 112,
+  "reusedTasks": 0,
+  "requiredSuites": [
+    "build",
+    "format",
+    "configuration-root",
+    "registrations",
+    "declarations",
+    "generated",
+    "host",
+    "release-preparation",
+    "github-body",
+    "outward-lint",
+    "target-publish",
+    "target-worktree",
+    "vertical",
+    "license-fixtures",
+    "publication-fixtures",
+    "backup-intake",
+    "launchpad",
+    "workstream-pilot",
+    "instance-history",
+    "beacon-portability",
+    "checkpoint",
+    "worktree",
+    "worktree-integration",
+    "release",
+    "work-orders-fixtures",
+    "siblings-fixtures",
+    "kernel",
+    "compiler",
+    "skeleton",
+    "console",
+    "browser-evidence",
+    "adjacent-queue",
+    "derived-orders",
+    "portfolio",
+    "codex-continuation",
+    "authority-grants",
+    "fixture-temp-root",
+    "launchpad-planning",
+    "evidence-sources",
+    "harness-probe",
+    "harness-fixtures",
+    "harness-context",
+    "plan-refutation",
+    "runner-fixtures",
+    "sync-fixtures",
+    "process-debt"
+  ],
+  "unrunTasks": [],
+  "identityUnchanged": true,
+  "buildOutputUnchanged": true,
+  "failures": [],
+  "abandonedRootsCount": 0,
+  "temporaryCleanup": {
+    "removed": 2116,
+    "retained": 81,
+    "blockers": [],
+    "retentionReasons": {
+      "live or unknown owner": 29,
+      "writer reservation names this root or session": 3,
+      "temporary root identity changed": 3,
+      "configured retention": 1,
+      "nested owned root is retained": 45
+    }
+  },
+  "churn": {
+    "filesCreated": 1046737,
+    "filesDeleted": 955079,
+    "bytesWritten": 20460027803,
+    "source": "owned-root content inventories at helper removal and gate completion, capped by allocated bytes for sparse files; physical I/O, overwrites and uninstrumented removals unobserved"
+  },
+  "fileEvents": {
+    "before": {
+      "residentBytes": null,
+      "source": "ps -A -o comm= -o rss= (KiB converted to bytes)",
+      "observedAt": "2026-10-27T07:21:16.520Z",
+      "unavailable": "fseventsd absent from the readable process table"
+    },
+    "host": {
+      "residentBytes": null,
+      "source": "ps -A -o comm= -o rss= (KiB converted to bytes)",
+      "observedAt": "2026-10-27T07:21:50.359Z",
+      "unavailable": "fseventsd absent from the readable process table"
+    },
+    "after": {
+      "residentBytes": null,
+      "source": "ps -A -o comm= -o rss= (KiB converted to bytes)",
+      "observedAt": "2026-10-27T07:51:37.903Z",
+      "unavailable": "fseventsd absent from the readable process table"
+    }
+  },
+  "hostLaneWait": {
+    "wallMs": 344918,
+    "byRelation": {
+      "this-checkout": 344253,
+      "another-checkout": 0,
+      "unknown": 992
+    },
+    "holders": [
+      {
+        "task": "harness-fixtures:overlap",
+        "slots": 8,
+        "relation": "this-checkout",
+        "nested": false
+      },
+      {
+        "task": "console",
+        "slots": 1,
+        "relation": "this-checkout",
+        "nested": false
+      }
+    ]
+  },
+  "tasks": [
+    {
+      "name": "runner-fixtures",
+      "exitCode": 0,
+      "durationMs": 182225
+    },
+    {
+      "name": "instance-history",
+      "exitCode": 0,
+      "durationMs": 70029,
+      "excludedReads": 0
+    },
+    {
+      "name": "launchpad:file:test-launchpad-export.mjs",
+      "exitCode": 0,
+      "durationMs": 205207,
+      "excludedReads": 0
+    }
+  ],
+  "exportInstall": {
+    "source": "Successful complete export task; fresh offline acceptance and independent-process cache-hit assertion; warm ready marker is written only after npm ci succeeds.",
+    "kind": "executed-path count derived from passing source and ready-marker birth time, not a process trace",
+    "before": {
+      "npmCi": 3,
+      "source": "Three unconditional npm ci call sites in the base export suite."
+    },
+    "after": {
+      "freshOfflineNpmCi": 1,
+      "warmCacheNpmCi": 1,
+      "totalNpmCi": 2
+    },
+    "currentKey": "28a72e5176e7169605aba770e94b41b58b06a6e3c5e0d4083dc2f0eab54da002",
+    "readyKeyMatches": true,
+    "readyCreatedAt": "2026-10-27T07:46:21.986Z",
+    "taskStartedAt": "2026-10-27T07:46:10.745Z",
+    "taskFinishedAt": "2026-10-27T07:49:35.963Z",
+    "independentCacheHit": "The passing exported-instance case asserts zero installs in a separate process with different ambient commit timestamps.",
+    "successfulOutputRetention": "The gate intentionally discards passing task stdout; no discarded install log is claimed as retained evidence."
+  }
+}

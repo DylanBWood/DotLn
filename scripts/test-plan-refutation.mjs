@@ -1,4 +1,9 @@
 #!/usr/bin/env node
+import {
+  excludeFixtureOwnership,
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
 import { write, json as prettyJson } from "./lib/helpers.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 import test from "node:test";
@@ -9,13 +14,11 @@ import { syncBuiltinESMExports } from "node:module";
 import { createHash } from "node:crypto";
 import {
   existsSync,
-  mkdtempSync,
   mkdirSync,
   readFileSync,
   readdirSync,
   realpathSync,
   renameSync,
-  rmSync,
   symlinkSync,
   writeFileSync,
 } from "node:fs";
@@ -36,6 +39,10 @@ import {
   cannedGoalReview,
 } from "../packages/skeleton/dist/src/plan-refutation-fake.js";
 import { runPlanRefutation } from "../packages/skeleton/dist/src/plan-refutation-host.js";
+import {
+  withTemporaryOwner,
+  pruneSessionTemporaryRoots,
+} from "../packages/skeleton/dist/src/temporary-roots.js";
 import {
   validatePlanResult,
   planResultSchema,
@@ -161,6 +168,7 @@ const makeRepo = (parent, name, oldDate = "2029-01-01") => {
   const repo = join(parent, name);
   mkdirSync(repo);
   runGit(repo, ["init", "-q"]);
+  excludeFixtureOwnership(repo);
   assert.equal(runGit(repo, ["rev-parse", "--show-toplevel"]), repo);
   write(repo, ".gitignore", "docs/intake/**\ndocs/control/local/**\n");
   write(
@@ -666,6 +674,7 @@ const failureRepo = (parent, name, options) => {
   const repo = join(parent, name);
   mkdirSync(repo);
   runGit(repo, ["init", "-q", "-b", "main"]);
+  excludeFixtureOwnership(repo);
   write(repo, ".gitignore", "docs/intake/**\ndocs/control/local/**\n");
   return failureRecord(repo, options);
 };
@@ -715,7 +724,7 @@ const treeDigest = (repo) => {
 
 export async function fixtures() {
   const parent = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-plan-fixtures-")),
+    createFixtureRoot(join(tmpdir(), "dotln-plan-fixtures-")),
   );
   const check = (label, run) => test(label, run);
   try {
@@ -3251,11 +3260,35 @@ export async function fixtures() {
           "2.1.270",
         );
         const lane = join(repo, "docs/control/local/refutations");
+        const session = "rejected-plan-diagnosis";
         await assert.rejects(
-          runPlanRefutation(subject, transport, "fixture", "max", now, lane),
+          withTemporaryOwner(
+            {
+              repository: repo,
+              session: createHash("sha256").update(session).digest("hex"),
+              pid: 2147483647,
+              birth: "exited-fixture-host",
+              gateId: undefined,
+              suite: undefined,
+            },
+            () =>
+              runPlanRefutation(
+                subject,
+                transport,
+                "fixture",
+                "max",
+                now,
+                lane,
+              ),
+          ),
           /known issue requires a reopening observation; rejected result and statement retained at/,
         );
         const retained = join(lane, readdirSync(lane)[0]);
+        assert.deepEqual(
+          pruneSessionTemporaryRoots(repo, session, { dispatchEnded: true })
+            .blockers,
+          [],
+        );
         assert.deepEqual(
           JSON.parse(readFileSync(join(retained, "result.json"), "utf8")),
           bad,
@@ -3681,6 +3714,120 @@ else {
         write(repo, OVERRIDES, log);
       },
     );
+    for (const shape of ["replacement", "append"])
+      await check(
+        `a later workspace amendment preserves the earlier authorized committed order (${shape})`,
+        async () => {
+          const repo = makeRepo(
+            parent,
+            `successive-execution-amendments-${shape}`,
+          );
+          const path = orderPath("WO-901");
+          const receipt = await writeDirectReceipt(repo);
+          const receiptBytes = read(
+            repo,
+            `${RECEIPTS}/${receipt.receiptId}.json`,
+          );
+          commit(repo, "judged plan");
+          const filed = read(repo, path);
+          const first = filed.replace("useful shape", "first useful shape");
+          const second =
+            shape === "append"
+              ? first.trimEnd() +
+                "\n\n**Additional scope:** authorized bounded change.\n"
+              : filed.replace("useful shape", "second useful shape");
+          write(
+            repo,
+            "docs/evidence/WO-901/decisions.md",
+            "# Decisions\n\n" +
+              [1, 2]
+                .map(
+                  (number) =>
+                    "```json\n" +
+                    JSON.stringify({
+                      id: `WO-901-D00${number}`,
+                      path: "docs/metadata-placeholder.md",
+                      workOrder: "WO-999",
+                      anchor: "authored-anchor",
+                      recordSource: "authored-source",
+                      date: "2030-01-02",
+                      dispatch:
+                        "scope expand: operator authorizes fixture change",
+                      decision: `Authorized change ${number}`,
+                      evidence: ["operator direction"],
+                      rejected: ["NoOp retains the prior scope"],
+                      reopenWhen: "New direction",
+                    }) +
+                    "\n```\n",
+                )
+                .join("\n"),
+          );
+          write(repo, path, first);
+          await amendPlanOrder(repo, {
+            workOrderId: "WO-901",
+            decisionId: "WO-901-D001",
+            reason: "First authorization",
+            now: () => "2030-01-02T13:00:00.000Z",
+          });
+          commit(repo, "first authorized amendment");
+          write(repo, path, second);
+          await amendPlanOrder(repo, {
+            workOrderId: "WO-901",
+            decisionId: "WO-901-D002",
+            reason: "Second authorization",
+            now: () => "2030-01-02T14:00:00.000Z",
+          });
+          const result = await checkPlanGate(repo);
+          assert.equal(
+            result.continuation.committedUpdates[0].decisionId,
+            "WO-901-D001",
+          );
+          assert.equal(
+            result.continuation.workspaceUpdates[0].decisionId,
+            "WO-901-D002",
+          );
+          write(repo, path, first);
+          await assert.rejects(
+            checkPlanGate(repo),
+            /unmatched execution amendment/,
+          );
+          write(repo, path, filed);
+          await withdrawPlanAmendment(repo, {
+            workOrderId: "WO-901",
+            ordinal: 2,
+            reason: "Withdraw pending second authorization",
+            now: () => "2030-01-02T15:00:00.000Z",
+          });
+          assert.equal(
+            (await checkPlanGate(repo)).continuation.committedUpdates[0]
+              .decisionId,
+            "WO-901-D001",
+            "withdrawing pending scope does not rewrite committed authorization",
+          );
+          write(repo, path, first);
+          await assert.rejects(
+            checkPlanGate(repo),
+            /work-order bytes changed|no text-bound disposition/,
+          );
+          write(repo, path, second);
+          await amendPlanOrder(repo, {
+            workOrderId: "WO-901",
+            decisionId: "WO-901-D002",
+            reason: "Reauthorize second scope",
+            now: () => "2030-01-02T16:00:00.000Z",
+          });
+          commit(repo, "second authorized amendment");
+          assert.equal(
+            (await checkPlanGate(repo)).continuation.committedUpdates[0]
+              .decisionId,
+            "WO-901-D002",
+          );
+          assert.equal(
+            read(repo, `${RECEIPTS}/${receipt.receiptId}.json`),
+            receiptBytes,
+          );
+        },
+      );
     for (const [titleShape, filedLabel, newline] of [
       ["unlabelled", "", "\n"],
       ["placeholder", " (version assigned at activation)", "\r\n"],
@@ -4376,6 +4523,46 @@ else {
             /matching the current subject/,
           );
           write(repo, vision, relocatedVision);
+          // Rebinding the same decision must not substitute its new writeback
+          // for the older decision that authorized the committed snapshot.
+          write(
+            repo,
+            vision,
+            relocatedVision.replace(
+              "bounded run was [observed](#the-core-bet).",
+              "later bounded run was [observed](#the-core-bet).",
+            ),
+          );
+          write(
+            repo,
+            path,
+            approvedOrder.replace(
+              "authorized repair",
+              "second authorized repair",
+            ),
+          );
+          saveDecision({
+            ...decision,
+            executionWritebacks: [
+              {
+                ...writeback,
+                acceptedHash: buildPlanSubject(repo, "HEAD", {
+                  workspace: true,
+                }).inputs.find((input) => input.name === inputName).hash,
+              },
+            ],
+          });
+          await amend();
+          const rebound = await checkPlanGate(repo);
+          for (const updates of [
+            rebound.continuation.committedUpdates,
+            rebound.continuation.workspaceUpdates,
+          ])
+            assert.ok(
+              updates.some(
+                (update) => update.kind === "authorized-execution-writeback",
+              ),
+            );
           assert.equal(
             read(repo, `${RECEIPTS}/${receipt.receiptId}.json`),
             receiptBytes,
@@ -6684,7 +6871,7 @@ else {
         }
         assert.ok(pages.length > 2);
         const outside = realpathSync(
-          mkdtempSync(join(tmpdir(), "dotln-failures-export-")),
+          createFixtureRoot(join(tmpdir(), "dotln-failures-export-")),
         );
         try {
           const printed = await plan(
@@ -7516,9 +7703,10 @@ export async function laneConditionFixtures() {
   });
 
   await test("planning reuse drops lane attribution and timeline fields from carried tasks", async (t) => {
-    const repo = mkdtempSync(join(tmpdir(), "dotln-plan-lane-reuse-"));
+    const repo = createFixtureRoot(join(tmpdir(), "dotln-plan-lane-reuse-"));
     t.after(() => rmSync(repo, { recursive: true, force: true }));
     runGit(repo, ["init", "-q", "-b", "main"]);
+    excludeFixtureOwnership(repo);
     writeFileSync(join(repo, "README.md"), "Fixture\n");
     runGit(repo, ["add", "."]);
     runGit(repo, [
@@ -7589,7 +7777,7 @@ export async function movedAmendmentFixtures({
   locations = ["contained", "moved"],
 } = {}) {
   const parent = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-moved-amendment-")),
+    createFixtureRoot(join(tmpdir(), "dotln-moved-amendment-")),
   );
   try {
     for (const location of locations)
@@ -7598,6 +7786,7 @@ export async function movedAmendmentFixtures({
         const target = join(parent, `${location}-target`);
         mkdirSync(target);
         runGit(target, ["init", "-q"]);
+        excludeFixtureOwnership(target);
         write(target, "source.txt", "Synthetic reviewed target.\n");
         commit(target, "reviewed target");
         const reviewed = runGit(target, ["rev-parse", "HEAD"]);

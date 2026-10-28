@@ -1,12 +1,14 @@
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "../src/temporary-roots.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
   chmodSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   realpathSync,
-  rmSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
@@ -115,7 +117,7 @@ async function fixtureReceipt(root: string): Promise<Receipt> {
 test("[document] WO-159 AC4 a fixture receipt passes; unequal pairs and other forgeries fail the receipt check", async () => {
   const { validateReceipt } = await receiptTools();
   const root = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-codex-receipt-test-")),
+    createFixtureRoot(join(tmpdir(), "dotln-codex-receipt-test-")),
   );
   try {
     const receipt = await fixtureReceipt(root);
@@ -283,7 +285,7 @@ test("[document] WO-159 AC4 the verification host's own episode record builds a 
     matchSharedStream,
   } = await receiptTools();
   const root = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-codex-receipt-test-")),
+    createFixtureRoot(join(tmpdir(), "dotln-codex-receipt-test-")),
   );
   try {
     const { env, login, transport } = operator(root, "verification-cli.mjs");

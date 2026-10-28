@@ -1,13 +1,17 @@
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
 // A session under test now creates its scratch directory (WO-168), beside the
 // operator-control and writer-coordination state fixtures already keep in the
 // system temporary directory. A suite that imports this module before anything
 // else keeps all of it in one directory of its own, removed when it exits.
-import { mkdtempSync, realpathSync, rmSync } from "node:fs";
+import { realpathSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 export const fixtureTemporary = realpathSync(
-  mkdtempSync(join(tmpdir(), "dotln-fixture-temporary-")),
+  createFixtureRoot(join(tmpdir(), "dotln-fixture-temporary-")),
 );
 for (const name of ["TMPDIR", "TMP", "TEMP"])
   process.env[name] = fixtureTemporary;

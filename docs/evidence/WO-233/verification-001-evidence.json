@@ -1,0 +1,121 @@
+{
+  "report": "docs/verifications/WO-233/VER-001.md",
+  "subject": {
+    "base": "bca92e77d03880ec57a83d37eebb85a3a8f7ab76",
+    "checkpoint": "refs/dotln/checkpoint/WO-233/3",
+    "codeIdentity": "1d4c0c700e6c31ed15f24d82f977eddf23adc1167afc3b478330426f8b5f48d9"
+  },
+  "consumedRows": [
+    {
+      "checkId": "npm test",
+      "gateSelection": "review",
+      "evidenceRef": "host-gate:1d4c0c700e6c31ed15f24d82f977eddf23adc1167afc3b478330426f8b5f48d9:npm test",
+      "temporaryGateId": "8fe86269-16e2-4e5e-ade7-192c192cad08",
+      "recordedAt": "2026-10-27T07:51:37.903Z",
+      "exitCode": 0,
+      "freshSuites": 112,
+      "reusedSuites": 0,
+      "unrunSuites": 0,
+      "durationMs": 1820831
+    }
+  ],
+  "probes": [
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-233/verification-001-passed-roots.mjs",
+      "exitCode": 1,
+      "finding": "F1",
+      "observed": {
+        "passedRootsRemaining": 26,
+        "bySuite": {
+          "worktree-integration": 22,
+          "plan-refutation": 1,
+          "instance-history": 1,
+          "harness-fixtures": 1,
+          "process-debt": 1
+        },
+        "pinnedByCopiedRecord": 23,
+        "pinnedByTrackedRecord": 22,
+        "rowRetainedForNestedRoot": 45,
+        "bytes": "1.57 GB (du -sk over the 26 roots)"
+      }
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-233/verification-001-fseventsd.mjs",
+      "exitCode": 1,
+      "finding": "F2",
+      "observed": {
+        "sampleResidentBytes": null,
+        "sampleUnavailable": "fseventsd absent from the readable process table",
+        "independentResidentBytes": [18677760],
+        "commandColumnMaxBytesWhenFirst": 16
+      }
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-233/verification-001-session-scratch.mjs",
+      "exitCode": 1,
+      "finding": "F3",
+      "observed": {
+        "stopPrune": "Session prune: 1 owned roots removed; 0 retained; 0 blockers.",
+        "phaseAfterTurn1": "active",
+        "turn2PrintsScratch": false,
+        "scratchExists": false,
+        "stagedFileExists": false,
+        "ownerAlive": true
+      }
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node scripts/harness.mjs prune",
+      "exitCode": 0,
+      "observed": {
+        "candidates": 27,
+        "candidateBytes": 31448558,
+        "retained": 4034,
+        "retainedForWriterReservation": 3026,
+        "retainedForInvalidRecord": 274,
+        "retainedForNestedInvalidMain": 110,
+        "warmFixtureCandidates": 0,
+        "warmFixturesRetained": 10,
+        "blockers": 0
+      }
+    },
+    {
+      "command": "system-temp census of top-level dotln-* roots with a gate-fixture owner record and outcome passed",
+      "observed": {
+        "roots": 128,
+        "bytes": "7.83 GB",
+        "dotlnIntegrateTest": {
+          "roots": 110,
+          "perGate": 22,
+          "gates": ["761c7a01", "43bff0ec", "1c880d0c", "76a6260d", "8fe86269"],
+          "bytes": "7.8 GB"
+        }
+      }
+    },
+    {
+      "command": "unownedTemporaryRootSites on the current tree and a planted scratch tree",
+      "observed": {
+        "currentTree": [],
+        "planted": ["scripts/raw.mjs:3", "packages/x/src/ns.ts:2"],
+        "missed": "fs.promises.mkdtemp(\"<tmp>/dotln-p-\") as a literal absolute path"
+      }
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- npm run format:check",
+      "exitCode": 0
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0
+    }
+  ],
+  "markers": {
+    "tempDotlnRoot": "<tmp>/dotln/.metadata_never_index present",
+    "runtime": ".runtime/.metadata_never_index present"
+  },
+  "warmFixture": {
+    "path": ".runtime/fixtures/launchpad/28a72e5176e7169605aba770e94b41b58b06a6e3c5e0d4083dc2f0eab54da002",
+    "class": "warm-fixture",
+    "gateId": "8fe86269-16e2-4e5e-ade7-192c192cad08",
+    "survivedPassingGate": true
+  }
+}

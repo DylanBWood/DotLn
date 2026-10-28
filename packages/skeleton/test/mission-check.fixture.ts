@@ -1,13 +1,10 @@
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "../src/temporary-roots.js";
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import {
-  mkdirSync,
-  mkdtempSync,
-  readFileSync,
-  realpathSync,
-  rmSync,
-  writeFileSync,
-} from "node:fs";
+import { mkdirSync, readFileSync, realpathSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import type { ActorSpec } from "../src/actor-contract.js";
@@ -84,7 +81,9 @@ export function missionFixture(
     };
   } = {},
 ) {
-  const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-mission-")));
+  const root = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-mission-")),
+  );
   const work = join(root, "work");
   mkdirSync(work);
   const git = (...args: string[]) =>

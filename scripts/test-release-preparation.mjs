@@ -1,3 +1,8 @@
+import {
+  excludeFixtureOwnership,
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
 import { execGit } from "./lib/git.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
@@ -8,10 +13,8 @@ import { seedReaderProfiles } from "./test-reader-fixture.mjs";
 import {
   existsSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   realpathSync,
-  rmSync,
   symlinkSync,
   writeFileSync,
 } from "node:fs";
@@ -60,11 +63,12 @@ function fixture({
   claim = target,
 } = {}) {
   const root = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-release-preparation-")),
+    createFixtureRoot(join(tmpdir(), "dotln-release-preparation-")),
   );
   execGit(["init", "--quiet", "-b", "wo-099", root], {
     stdio: "pipe",
   });
+  excludeFixtureOwnership(root);
   const authorityPath = "docs/work-orders/WO-099-fixture.md";
   const title = target
     ? `# WO-099 — fixture (${target})`
@@ -554,7 +558,7 @@ test("release preparation refuses malformed or ambiguous inputs before writing",
 test("a decisions record is never created outside the repository", () => {
   const f = fixture();
   const outside = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-release-preparation-outside-")),
+    createFixtureRoot(join(tmpdir(), "dotln-release-preparation-outside-")),
   );
   try {
     mkdirSync(join(f.root, "docs/evidence"), { recursive: true });
@@ -795,7 +799,7 @@ test("close history retains parsed publication when archiving fails and bounds r
   const { readCloseHistory, reanchorCloseHistory } =
     await import("./release.mjs");
   const root = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-close-history-")),
+    createFixtureRoot(join(tmpdir(), "dotln-close-history-")),
   );
   t.after(() => rmSync(root, { recursive: true, force: true }));
   const order = "WO-999",

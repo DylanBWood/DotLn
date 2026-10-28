@@ -1,3 +1,7 @@
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
 import { write as writeFixture } from "./lib/helpers.mjs";
 import { spawnGit, execGit } from "./lib/git.mjs";
 // Target publication over real source-change episodes, a local bare origin
@@ -14,12 +18,10 @@ import {
   existsSync,
   lstatSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   readdirSync,
   readlinkSync,
   realpathSync,
-  rmSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
@@ -243,7 +245,7 @@ const MESSAGE = "fix: record the synthetic worker line\n";
 const GITHUB = "https://github.com/dotln-fixture/target.git";
 
 const shared = realpathSync(
-  mkdtempSync(join(tmpdir(), "dotln-target-publish-")),
+  createFixtureRoot(join(tmpdir(), "dotln-target-publish-")),
 );
 // The shared stubs outlive every awaited test; a root after() hook runs early.
 process.on("exit", () => rmSync(shared, { recursive: true, force: true }));
@@ -1019,7 +1021,9 @@ async function scenario(
         ),
       );
       seed.digest = scenarioTreeDigest(seed.subject.root, true);
-      seed.backupRoot = mkdtempSync(join(tmpdir(), "dotln-scenario-seed-"));
+      seed.backupRoot = createFixtureRoot(
+        join(tmpdir(), "dotln-scenario-seed-"),
+      );
       seed.snapshot = join(seed.backupRoot, "snapshot");
       cpSync(seed.subject.root, seed.snapshot, scenarioCopyOptions);
       assert.equal(scenarioTreeDigest(seed.snapshot, true), seed.digest);
@@ -1074,7 +1078,7 @@ const refusedBeforeRemote = (subject, run, pattern) => {
 };
 
 await test("kit record paths exempt only launchpad identifiers and retain redacted vocabulary checks", () => {
-  const root = mkdtempSync(join(tmpdir(), "dotln-kit-path-"));
+  const root = createFixtureRoot(join(tmpdir(), "dotln-kit-path-"));
   try {
     writeFixture(root, "dotln.config.json", JSON.stringify({ version: 1 }));
     writeFixture(
@@ -1177,7 +1181,7 @@ await test("kit record paths exempt only launchpad identifiers and retain redact
 });
 
 await test("WO-227 criterion 4: a Change row's exemption covers only its own bytes, so a review word that runs from a base-held row into an added path is still a review item", () => {
-  const root = mkdtempSync(join(tmpdir(), "dotln-row-span-"));
+  const root = createFixtureRoot(join(tmpdir(), "dotln-row-span-"));
   try {
     writeFixture(root, "dotln.config.json", JSON.stringify({ version: 1 }));
     writeFixture(
@@ -1218,7 +1222,7 @@ await test("WO-227 criterion 4: a Change row's exemption covers only its own byt
 });
 
 await test("private matches crossing two or three Change rows retain refusal, confirmation and redaction over every contributing row", () => {
-  const root = mkdtempSync(join(tmpdir(), "dotln-private-range-"));
+  const root = createFixtureRoot(join(tmpdir(), "dotln-private-range-"));
   try {
     writeFixture(root, "dotln.config.json", JSON.stringify({ version: 1 }));
     const vocabulary = (reviewTerms) =>
@@ -1322,7 +1326,7 @@ await test("private matches crossing two or three Change rows retain refusal, co
 });
 
 await test("WO-227 criterion 2: a review-mode private term in the generated body is a review item the reviewer confirms with the composed body's digest, and the confirmation is recorded", async (t) => {
-  const root = mkdtempSync(join(tmpdir(), "dotln-private-path-"));
+  const root = createFixtureRoot(join(tmpdir(), "dotln-private-path-"));
   try {
     writeFixture(root, "dotln.config.json", JSON.stringify({ version: 1 }));
     writeFixture(
@@ -2038,7 +2042,7 @@ function observationScenario(
   fixture = observationFixture,
   repositoryId = "github.com/dotln-fixture/target",
 ) {
-  const root = mkdtempSync(join(shared, "observe-"));
+  const root = createFixtureRoot(join(shared, "observe-"));
   t.after(() => rmSync(root, { recursive: true, force: true }));
   const store = join(root, "store");
   const publication = new WorkerStore(join(store, "publication"));
@@ -3203,7 +3207,7 @@ function guardReviewScenario(
     reviews = [],
   } = {},
 ) {
-  const root = mkdtempSync(join(tmpdir(), "dotln-review-guard-"));
+  const root = createFixtureRoot(join(tmpdir(), "dotln-review-guard-"));
   const publication = new WorkerStore(join(root, "publication"));
   const repositoryId = "github.com/dotln-fixture/target",
     number = 7;
@@ -4466,7 +4470,7 @@ await test("WO-112 an automated review body is disposed only by a recorded model
 
 await test("WO-112 review-body triage refreshes edited text, changed heads and newly added items before stopping", async () => {
   for (const changed of ["body", "head", "inline", "unsettled"]) {
-    const root = mkdtempSync(join(tmpdir(), "dotln-review-body-race-"));
+    const root = createFixtureRoot(join(tmpdir(), "dotln-review-body-race-"));
     try {
       const publication = new WorkerStore(join(root, "publication"));
       const repositoryId = "github.com/dotln-fixture/target",
@@ -4579,7 +4583,7 @@ await test("WO-112 review-body triage refreshes edited text, changed heads and n
 
 await test("WO-112 VER-004 F2 changing review bodies have a finite invocation and never seal an unjudged subject", async () => {
   for (const mode of ["text", "head", "many", "settles-at-limit"]) {
-    const root = mkdtempSync(join(tmpdir(), "dotln-review-body-bound-"));
+    const root = createFixtureRoot(join(tmpdir(), "dotln-review-body-bound-"));
     try {
       const publication = new WorkerStore(join(root, "publication"));
       const repositoryId = "github.com/dotln-fixture/target",
@@ -4716,7 +4720,7 @@ await test("WO-112 F4 review-body acknowledgements bind text, candidate head and
     "replacement",
     "legacy",
   ]) {
-    const root = mkdtempSync(join(tmpdir(), "dotln-review-body-"));
+    const root = createFixtureRoot(join(tmpdir(), "dotln-review-body-"));
     try {
       const publication = new WorkerStore(join(root, "publication"));
       let clock = 10,
@@ -4866,7 +4870,7 @@ await test("WO-112 review-body acknowledgements reject malformed evidence on adm
     null,
   ]) {
     for (const supplied of [true, false]) {
-      const root = mkdtempSync(join(tmpdir(), "dotln-body-evidence-"));
+      const root = createFixtureRoot(join(tmpdir(), "dotln-body-evidence-"));
       try {
         const publication = new WorkerStore(join(root, "publication"));
         let clock = 10,

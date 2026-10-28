@@ -1,3 +1,8 @@
+import {
+  excludeFixtureOwnership,
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
 // Sibling registry fixtures. A temporary launchpad with its own Git history
 // stands in for core, so the generator's reads of tags and committed control
 // records are judged without this checkout's state; the export that writes a
@@ -11,12 +16,10 @@ import {
   cpSync,
   existsSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   readdirSync,
   symlinkSync,
   realpathSync,
-  rmSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
@@ -37,7 +40,9 @@ import {
 
 const repository = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const generator = join(repository, "scripts/siblings.mjs");
-const scratch = realpathSync(mkdtempSync(join(tmpdir(), "dotln-siblings-")));
+const scratch = realpathSync(
+  createFixtureRoot(join(tmpdir(), "dotln-siblings-")),
+);
 const launchpad = join(scratch, "launchpad");
 const registryPath = "docs/siblings/README.md";
 const observationsPath = "docs/siblings/tag-observations.json";
@@ -212,6 +217,7 @@ const closedOrderSegment = (id) => {
 
 mkdirSync(launchpad);
 git(["init", "-q", "-b", "main"]);
+excludeFixtureOwnership(launchpad);
 git(["config", "maintenance.auto", "false"]);
 git(["config", "user.name", "DotLn Fixture"]);
 git(["config", "user.email", "fixture@example.invalid"]);

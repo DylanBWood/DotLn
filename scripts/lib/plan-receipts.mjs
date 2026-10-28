@@ -43,7 +43,7 @@ import {
   executionAmendmentSource,
   matchesExecutionAmendment,
 } from "./plan-continuation.mjs";
-import { readDecisions } from "./meta.mjs";
+import { markdownHeadings, readDecisions } from "./meta.mjs";
 import { checkSequenceTopology, readIndex } from "../work-orders.mjs";
 
 // Default-layout names for peers and fixtures; the reader and writer below
@@ -1269,13 +1269,37 @@ export async function disposePlanHold(
   });
 }
 
-const amendmentDecision = (root, decisionId) => {
+const amendmentDecision = (root, decisionId, reader) => {
   const workOrderId = decisionId.slice(0, 6);
   const decision = readDecisions(root, { workOrder: workOrderId }).find(
     (row) => row.id === decisionId,
   );
   check(decision, `execution amendment needs recorded decision ${decisionId}`);
-  const { path: decisionPath, workOrder, ...entry } = decision;
+  let selected = decision;
+  if (reader?.paths.includes(decision.path)) {
+    const source = reader.read(decision.path);
+    const found = [...source.matchAll(/^```json\n([\s\S]*?)^```/gm)]
+      .map((match) => ({
+        entry: json(match[1], "committed execution decision"),
+        index: match.index,
+      }))
+      .find(({ entry }) => entry?.id === decisionId);
+    check(found, `execution amendment needs recorded decision ${decisionId}`);
+    // Match readDecisions' projection, including its treatment of authored
+    // keys that coincide with metadata. Historical hashes keep that contract.
+    selected = {
+      ...found.entry,
+      workOrder: decision.workOrder,
+      path: decision.path,
+    };
+    Object.defineProperty(selected, "anchor", {
+      value: markdownHeadings(source).findLast(
+        (heading) => heading.index < found.index,
+      )?.anchor,
+    });
+    Object.defineProperty(selected, "recordSource", { value: source });
+  }
+  const { path: decisionPath, workOrder, ...entry } = selected;
   const executionWritebacks = entry.executionWritebacks ?? [];
   if (Object.hasOwn(entry, "executionWritebacks"))
     check(
@@ -1757,6 +1781,29 @@ export async function checkPlanGate(root) {
       .executionWritebacks,
   }));
   requireMatchedAmendments(root, amendments, receipts);
+  // Judge committed bytes with their committed authorization and decision.
+  // Pending rebinding or withdrawal changes the workspace, not that history.
+  const committed = committedReader(root);
+  const committedRows = committed.paths.includes(overridesPath(root))
+    ? committed.read(overridesPath(root)).split("\n").length - 1
+    : 0;
+  const committedAmendments = [
+    ...currentAmendments(
+      overrides.filter((row) => row.rowOrdinal <= committedRows),
+    ).map((row) => {
+      const decision = amendmentDecision(root, row.decisionId, committed);
+      check(
+        decision.hash === row.decisionHash,
+        "committed execution amendment decision binding differs",
+      );
+      return {
+        ...row,
+        rowOrdinal: row.rowOrdinal,
+        executionWritebacks: decision.executionWritebacks,
+      };
+    }),
+    ...amendments,
+  ].sort((left, right) => right.orderLength - left.orderLength);
   const { passes, enforcement } = planningPassScope(root);
   if (!enforcement)
     return {
@@ -1807,7 +1854,7 @@ export async function checkPlanGate(root) {
       committedUpdates: checkPlanContinuation(root, latest.subject, subject, {
         allowCapabilityHistoryRepair: true,
         dispositions: criterionDispositions(receipts, overrides),
-        amendments: amendments.filter(
+        amendments: committedAmendments.filter(
           (row) =>
             row.type === "PlanExecutionAmended" &&
             row.receiptHash === latest.receiptHash,

@@ -1,3 +1,7 @@
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
 import { json as prettyJson, write } from "./lib/helpers.mjs";
 import { execGit } from "./lib/git.mjs";
 // The recorded evidence inventories follow the import graph. A copy of this
@@ -12,11 +16,9 @@ import {
   cpSync,
   existsSync,
   mkdirSync,
-  mkdtempSync,
   readdirSync,
   readFileSync,
   realpathSync,
-  rmSync,
   symlinkSync,
   writeFileSync,
 } from "node:fs";
@@ -142,7 +144,9 @@ test("WO-157 a moved entropy review protocol stales the feedback edition; an exc
 
 test("WO-157 relative imports resolve compiled and type-only forms as the check reads them", async (t) => {
   const { relativeImports } = await import("./lib/evidence-sources.mjs");
-  const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-imports-")));
+  const root = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-imports-")),
+  );
   t.after(() => rmSync(root, { recursive: true, force: true }));
   const put = (path, text) => write(root, path, text);
   put("packages/p/src/a.ts", "export const a = 1;\n");
@@ -187,7 +191,9 @@ test("WO-157 relative imports resolve compiled and type-only forms as the check 
 
 test("WO-157 VER-001 F4: every legal runtime import form is read, and only type imports are skipped", async (t) => {
   const { relativeImports } = await import("./lib/evidence-sources.mjs");
-  const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-imports-")));
+  const root = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-imports-")),
+  );
   t.after(() => rmSync(root, { recursive: true, force: true }));
   const put = (path, text) => write(root, path, text);
   const runtime = [..."efghijklmqrsvwxyz", "aa", "u$"];

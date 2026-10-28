@@ -1,3 +1,8 @@
+import {
+  excludeFixtureOwnership,
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
@@ -29,8 +34,8 @@ import { suiteEnvironment } from "./lib/suite-evidence.mjs";
 import { classifyDocumentFailures } from "./lib/document-failures.mjs";
 
 const fixture = (t) => {
-  const root = fs.mkdtempSync(join(tmpdir(), "dotln-gate-followups-"));
-  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  const root = createFixtureRoot(join(tmpdir(), "dotln-gate-followups-"));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
   return root;
 };
 const sourceRoot = resolve(import.meta.dirname, "..");
@@ -52,11 +57,11 @@ test("bounded role wording preserves prior savings and records reviewed startup 
   );
   const oracle = JSON.parse(
     fs.readFileSync(
-      join(sourceRoot, "packages/skeleton/fixtures/wo204-role-baseline.json"),
+      join(sourceRoot, "packages/skeleton/fixtures/wo233-role-baseline.json"),
       "utf8",
     ),
   );
-  assert.equal(oracle.historicalBaseline, "wo219-role-baseline.json");
+  assert.equal(oracle.historicalBaseline, "wo204-role-baseline.json");
   const historicalBytes = fs.readFileSync(
     join(sourceRoot, "packages/skeleton/fixtures", oracle.historicalBaseline),
   );
@@ -79,7 +84,12 @@ test("bounded role wording preserves prior savings and records reviewed startup 
     createHash("sha256").update(precedingBytes).digest("hex"),
     historicalOracle.historicalSha256,
   );
-  const historical = JSON.parse(precedingBytes).startupCost;
+  const historical = JSON.parse(
+    fs.readFileSync(
+      join(sourceRoot, "packages/skeleton/fixtures/wo226-role-baseline.json"),
+      "utf8",
+    ),
+  ).startupCost;
   const priorCost = historicalOracle.startupCost;
   const reviewed = oracle.startupCost;
   for (const cost of [historical, priorCost, reviewed]) {
@@ -120,10 +130,11 @@ test("bounded role wording preserves prior savings and records reviewed startup 
       historical.sharedRuleGrowthBytes,
       `${file}: the preceding shared-rule addition remains recorded`,
     );
+    const predecessor = JSON.parse(precedingBytes).startupCost.profiles[role];
     assert.equal(
       prior.beforeBytes,
-      original.bytes,
-      `${file}: the previous role cost remains linked`,
+      predecessor.bytes,
+      `${file}: preceding role cost remains linked`,
     );
     assert.equal(
       prior.bytes - prior.beforeBytes,
@@ -213,6 +224,7 @@ test("fixture suites do not inherit the invoking target launchpad", () => {
 test("protected intake repositories stay outside the gate candidate while ordinary untracked source remains judged", async (t) => {
   const root = fixture(t);
   runGit(root, ["init", "-q", "-b", "main"]);
+  excludeFixtureOwnership(root);
   fs.copyFileSync(join(sourceRoot, ".gitignore"), join(root, ".gitignore"));
   fs.writeFileSync(join(root, "source.mjs"), "export const fixture = true;\n");
   runGit(root, ["add", "."]);
@@ -220,6 +232,7 @@ test("protected intake repositories stay outside the gate candidate while ordina
   const intake = join(root, "docs/intake/nested");
   fs.mkdirSync(intake, { recursive: true });
   runGit(intake, ["init", "-q"]);
+  excludeFixtureOwnership(intake);
   fs.writeFileSync(join(intake, "private-fixture.txt"), "synthetic intake\n");
   runGit(intake, ["add", "."]);
   runGit(intake, [
@@ -310,6 +323,7 @@ test("sync selection includes release preparation and current role oracle inputs
 test("document failure classification does not build for skipped or infrastructure-failed tasks", async (t) => {
   const root = fixture(t);
   runGit(root, ["init", "-q", "-b", "main"]);
+  excludeFixtureOwnership(root);
   fs.writeFileSync(join(root, "source.txt"), "fixture\n");
   runGit(root, ["add", "."]);
   runGit(root, [
@@ -357,6 +371,7 @@ test("document failure classification does not build for skipped or infrastructu
 test("a newly stopped evidence invocation does not cite a historical stopped row", (t) => {
   const repo = fixture(t);
   runGit(repo, ["init", "-q"]);
+  excludeFixtureOwnership(repo);
   fs.writeFileSync(join(repo, ".gitignore"), "docs/control/local/\n");
   runGit(repo, ["add", "."]);
   childProbe(
@@ -514,6 +529,7 @@ process.on('exit',()=>{if(!commits){console.error('fixture commit observation mi
 test("a signal after the in-memory resource stop retains the typed gate row without an incident file", (t) => {
   const repo = fixture(t);
   runGit(repo, ["init", "-q"]);
+  excludeFixtureOwnership(repo);
   fs.writeFileSync(join(repo, ".gitignore"), "docs/control/local/\nhost/\n");
   runGit(repo, ["add", "."]);
   childProbe(
@@ -677,6 +693,7 @@ test("console transport retains nested diagnostic codes without private error ma
 test("collector ignore assertions reject a later negation in both declaration cases", (t) => {
   const root = fixture(t);
   runGit(root, ["init", "-q"]);
+  excludeFixtureOwnership(root);
   const original = fs.readFileSync(join(sourceRoot, ".prettierignore"), "utf8");
   const inputs = original
     .split("\n")
@@ -747,6 +764,7 @@ const row = (second, tasks = [], exitCode = 0) => ({
 test("gate lookup rejects displaced tasks and accepts a later repair", async (t) => {
   const root = fixture(t);
   runGit(root, ["init", "-q"]);
+  excludeFixtureOwnership(root);
   fs.writeFileSync(join(root, "source.js"), "export const value = 1;\n");
   runGit(root, ["add", "source.js"]);
   runGit(root, [
@@ -1276,6 +1294,7 @@ test("authority transcript references preserve immutable bodies and resolve Git 
   for (const format of ["sha1", "sha256"]) {
     const root = fixture(t);
     runGit(root, ["init", "-q", `--object-format=${format}`]);
+    excludeFixtureOwnership(root);
     const before = "docs/evidence/WO-990/authority/001";
     const after = "docs/evidence/WO-990/authority/002";
     const third = "docs/evidence/WO-990/authority/003";
@@ -1408,6 +1427,7 @@ test("authority evidence refuses symlinked destination ancestors before writing"
   const root = fixture(t);
   const outside = fixture(t);
   runGit(root, ["init", "-q"]);
+  excludeFixtureOwnership(root);
   const previous = "docs/evidence/WO-990/authority/001";
   writeAuthorityEvidence(root, previous, "unchanged\n");
   for (const location of [
@@ -1424,6 +1444,6 @@ test("authority evidence refuses symlinked destination ancestors before writing"
         () => writeAuthorityEvidence(root, directory, contents, previous),
         /contained directory ancestors/,
       );
-    assert.deepEqual(fs.readdirSync(outside), []);
+    assert.deepEqual(fs.readdirSync(outside), [".dotln-owner.json"]);
   }
 });

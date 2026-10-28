@@ -6,7 +6,9 @@
   ],
   "files": [
     "scripts/work-orders.mjs",
-    "scripts/resume.mjs"
+    "scripts/resume.mjs",
+    "packages/skeleton/src/temporary-root-records.mjs",
+    "scripts/temporary-root.mjs"
   ],
   "directories": [
     "scripts/lib"

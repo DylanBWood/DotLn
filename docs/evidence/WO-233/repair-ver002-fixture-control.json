@@ -1,0 +1,32 @@
+{
+  "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-233/repair-ver002-fixture-control.mjs",
+  "observedAt": "2026-10-27T19:56:59.306Z",
+  "gateId": "96e21d63-7d3a-4b79-b59f-25efddb3e52e",
+  "childExitCode": 0,
+  "childOutput": "✔ standalone gate material shares suite retention without losing null policies or cache ownership (60.999125ms)\nℹ tests 1\nℹ suites 0\nℹ pass 1\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 146.96275\n",
+  "parentRemains": false,
+  "removed": 2,
+  "retainedReasons": [],
+  "blockers": [],
+  "bounded": {
+    "name": "bounded-probe",
+    "durationMs": 524,
+    "slowestCases": [
+      {
+        "name": "bounded-probe",
+        "durationMs": 524,
+        "exitCode": 0,
+        "granularity": "task"
+      }
+    ],
+    "peakFootprintBytes": 42391312,
+    "peakRssBytes": 159121408,
+    "memoryBudgetBytes": 3221225472,
+    "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+    "droppedOutputBytes": 0,
+    "startedAt": "2026-10-27T19:56:58.901Z",
+    "finishedAt": "2026-10-27T19:56:59.425Z",
+    "exitCode": 0,
+    "executed": true
+  }
+}

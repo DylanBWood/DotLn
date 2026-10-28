@@ -408,6 +408,9 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
     const { readerScoresAtStart } = await import("./lib/reader-profiles.mjs");
     const readerScores = readerScoresAtStart(root);
     const conditions = await conditionsAtStart(root);
+    const { temporaryPruneSummary } =
+      await import("./lib/temporary-prune-summary.mjs");
+    console.log(await temporaryPruneSummary(root));
     const branch = `planning/${new Date().toISOString().slice(0, 10)}-${rest[0]}`;
     runGit(root, ["switch", "-c", branch]);
     return {

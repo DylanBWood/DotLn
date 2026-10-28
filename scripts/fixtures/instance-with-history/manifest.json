@@ -1,20 +1,20 @@
 {
   "schemaVersion": 1,
   "synthetic": true,
-  "generatedAt": "2026-10-25T04:17:11.520Z",
+  "generatedAt": "2026-10-27T04:32:34.913Z",
   "generator": "node scripts/fixtures/instance-with-history/generate.mjs",
   "source": {
-    "coreCommit": "a81561976c8629834a5a18623b097fa4d7d8681a",
-    "kitCommit": "6739ebf788b4f4feeed9b62038bf6cb3b2a4fc0e"
+    "coreCommit": "bca92e77d03880ec57a83d37eebb85a3a8f7ab76",
+    "kitCommit": "9b34b11664186bf230d40284d589557991139041"
   },
   "bundle": {
     "file": "instance.bundle",
-    "bytes": 4174480,
-    "sha256": "e5ab2fe0db7a4269730fa13e069a4f3bca87e5cce293802d80f37e081a04f6bf"
+    "bytes": 4248321,
+    "sha256": "3e3fb53abb2563aa11c8625b75f9844a819b57e450c679320cf212bf4edab9db"
   },
   "refs": {
-    "instance": "244d5122e5ef22f2ed6c09316c96142b7dc2f492",
-    "target": "c972d40b84e3d58231552fafbd964678596efa28"
+    "instance": "56834075000275d281eb56f718539ebfc20bc3c2",
+    "target": "e74da8d97081e6355e8c238b31e935a972f8870d"
   },
   "shapes": [
     {
@@ -34,6 +34,12 @@
       "fieldReport": "2026-10-24 workstream update and WO-080-D015: closed self members on an update branch"
     },
     {
+      "id": "closed-self-without-field",
+      "order": "WO-002",
+      "path": "docs/work-orders/WO-002-history.md",
+      "fieldReport": "WO-232-D008: a closed self member predates its workstream field"
+    },
+    {
       "id": "moved-amendment-decision",
       "order": "WO-003",
       "decision": "WO-003-D001",
@@ -42,8 +48,8 @@
     {
       "id": "target-base-behind",
       "order": "WO-004",
-      "base": "2bdbf8e14d0c8d05366a814db356dd4deba49fbc",
-      "tip": "c972d40b84e3d58231552fafbd964678596efa28",
+      "base": "b32d9e2bef1c8f76a1f9c1792740ef57e1635138",
+      "tip": "e74da8d97081e6355e8c238b31e935a972f8870d",
       "fieldReport": "2026-10-24 standard pass, section 2: WO-013 at a provisional target base"
     }
   ]

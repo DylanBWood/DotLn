@@ -1,0 +1,194 @@
+{
+  "verification": "VER-004",
+  "subject": {
+    "base": "bca92e77d03880ec57a83d37eebb85a3a8f7ab76",
+    "checkpoint": "refs/dotln/checkpoint/WO-233/15",
+    "checkpointCommit": "c4be9b0f000190da89fe4347ca9f8d9f0d3c1928",
+    "codeIdentity": "b0afad3f0c8e4c2ac5d36973ab798d8f3aff305ee862bdfce00f83c37a462a99",
+    "identitySource": "gateCodeIdentity(<worktree>) read at 22:46Z, equal to the consumed rows"
+  },
+  "consumedRows": [
+    {
+      "checkId": "structural",
+      "gate": "344a3f31-c882-4f10-9c2a-b7fd8e079dbf",
+      "recordedAt": "2026-10-27T22:28:57.120Z",
+      "exitCode": 0,
+      "freshTasks": 6
+    },
+    {
+      "checkId": "npm test",
+      "gate": "344a3f31-c882-4f10-9c2a-b7fd8e079dbf",
+      "selection": "review",
+      "recordedAt": "2026-10-27T22:31:13.505Z",
+      "exitCode": 0,
+      "freshTasks": 114,
+      "reusedTasks": 0,
+      "unrunSuites": 0,
+      "durationMs": 1947150,
+      "temporaryCleanup": {
+        "removed": 2289,
+        "retained": [
+          "<worktree>/.runtime/fixtures/launchpad/f1579b56e5a216c7dc12d83a1d505d0729c468359f245986f5279998b7ead696"
+        ],
+        "blockers": 0
+      },
+      "churn": {
+        "filesCreated": 1058771,
+        "filesDeleted": 1051853,
+        "bytesWritten": 20824769896
+      },
+      "fileEvents": {
+        "beforeResidentBytes": 19234816,
+        "hostResidentBytes": 19185664,
+        "afterResidentBytes": 19300352
+      },
+      "exportTaskMs": 205363
+    },
+    {
+      "checkId": "npm run test:docs",
+      "gate": "02f94955-2519-4c7a-85c0-e8f93395ba79",
+      "recordedAt": "2026-10-27T22:35:24.674Z",
+      "exitCode": 0,
+      "freshTasks": 27,
+      "temporaryCleanup": { "removed": 230, "retained": [], "blockers": 0 }
+    },
+    {
+      "checkId": "npm run test:docs",
+      "gate": "4e57453d-1a4d-4e70-abd1-e9038773fa8e",
+      "recordedAt": "2026-10-27T22:42:38.388Z",
+      "exitCode": 0,
+      "freshTasks": 27,
+      "temporaryCleanup": { "removed": 230, "retained": [], "blockers": 0 }
+    }
+  ],
+  "probes": [
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-233/verification-003-gate-census.mjs",
+      "startedAt": "2026-10-27T22:48:32Z",
+      "exitCode": 0,
+      "result": "No unaccounted root carries gate 344a3f31, 02f94955 or 4e57453d. Born in the complete row's window and still present: four failed roots of nested test gates 35ce394c and c2dc4f04 (suite generated, 24-hour window), plus 11 Playwright directories (FUP-e6e359c3f51ce087)."
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-233/verification-003-nested-suite-residue.mjs",
+      "startedAt": "2026-10-27T22:49:12Z",
+      "exitCode": 0,
+      "result": "Both arms pass the quarantine case and leave 0 roots. The probe gives its child DOTLN_TEMP_GATE without DOTLN_TEMP_GATE_REPOSITORY, so its exit 0 exercises the rule that teardown with no matching ledger is immediate. The inheritance path is covered by the consumed runner case and the census of the real row."
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-233/verification-002-gate-residue.mjs",
+      "startedAt": "2026-10-27T22:49:36Z",
+      "exitCode": 0,
+      "result": "0 dead-owner roots of passing suites remain for 344a3f31; 0 unowned roots were born in 4e57453d's window."
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-233/verification-001-passed-roots.mjs",
+      "startedAt": "2026-10-27T22:49:37Z",
+      "exitCode": 0,
+      "result": "0 passed roots remain; 0 are pinned by a copied or tracked record."
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-233/verification-001-session-scratch.mjs",
+      "startedAt": "2026-10-27T22:49:49Z",
+      "exitCode": 0,
+      "result": "A live session's scratch and its staged file survive a turn-end Stop."
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-233/verification-002-session-completion.mjs",
+      "startedAt": "2026-10-27T22:49:50Z",
+      "exitCode": 0,
+      "result": "Scratch survives two turns and goes at the Stop after the expected completion. The live capture and a live sibling's scratch remain; the dead capture is gone."
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-233/verification-004-census.mjs",
+      "startedAt": "2026-10-27T23:08:51Z",
+      "finishedAt": "2026-10-27T23:08:53Z",
+      "exitCode": 0,
+      "probeSha256Prefix": "9c2397392f17126b",
+      "result": "4,929 roots scanned, including 6 session scratch trees and 4,689 worktree-ledger registrations. No unaccounted root carries a passing row's gate. Born in the complete row's window and still present: the four failed nested-gate roots, each retained now for its window and a candidate 25 hours on, and the retained warm fixture. No session scratch and no dotln-lock-cancel file was born in the window."
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-233/verification-004-failed-fixture-pins.mjs",
+      "startedAt": "2026-10-27T23:08:53Z",
+      "finishedAt": "2026-10-27T23:10:20Z",
+      "exitCode": 1,
+      "probeSha256Prefix": "2d02f73c305f4432",
+      "arms": {
+        "control": { "fixtureIsCandidate": true },
+        "worktreeRemoved": {
+          "fixtureIsCandidate": false,
+          "reason": "nested owned root retained: dotln-nested-… (ENOENT: no such file or directory, lstat '<scaffold>/worktree-removed/worktree')"
+        },
+        "later": {
+          "fixtureIsCandidate": false,
+          "now": "2036-01-01T00:00:00.000Z",
+          "reason": "nested owned root retained: dotln-nested-… (ENOENT: no such file or directory, lstat '<scaffold>/later/worktree')"
+        },
+        "nestedRemoved": {
+          "fixtureIsCandidate": false,
+          "reason": "nested owned root retained: dotln-nested-… (ENOENT: no such file or directory, lstat '<scaffold>/nested-removed/temp/dotln-fixture-temporary-…/dotln-harness-test-repo')"
+        },
+        "nestedWarm": {
+          "fixtureIsCandidate": false,
+          "reason": "nested owned root retained: dotln-nested-… (warm fixture is current or its current key is unavailable)"
+        }
+      },
+      "machine": {
+        "failedRootsOwnedByWorktree": 1960,
+        "holdingFixtureOwnedNested": 47,
+        "fixtureOwnedNested": 2229,
+        "bytesHoldingFixtureOwnedNested": 10841341608,
+        "judgedIn49hWriterReleased": {
+          "candidates": 1956,
+          "retainedByNestedWarmFixture": [
+            "dotln-fixture-temporary-grW5Jd (gate ca145571)",
+            "dotln-fixture-temporary-n3G3pG (gate be15e224)",
+            "dotln-fixture-temporary-yv90KE (gate 761c7a01)"
+          ],
+          "retainedByNestedCoordinationRoot": [
+            "dotln-fixture-temporary-3sHpVT (gate b59b8fda)"
+          ],
+          "retainedBytes": 4941827904
+        }
+      },
+      "scaffoldRemaining": false
+    }
+  ],
+  "otherChecks": [
+    {
+      "command": "node scripts/harness.mjs bounded -- npm run format:check",
+      "startedAt": "2026-10-27T23:08:07Z",
+      "exitCode": 1,
+      "result": "Flags only the two new VER-004 probes; the implementation is clean."
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- npx prettier --write docs/evidence/WO-233/verification-004-census.mjs docs/evidence/WO-233/verification-004-failed-fixture-pins.mjs",
+      "exitCode": 0,
+      "result": "Formats only the verifier's own probes. Both are rerun on their formatted bytes and recorded above."
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- npm run format:check",
+      "startedAt": "2026-10-27T23:08:25Z",
+      "exitCode": 0
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- npm run publication:check",
+      "startedAt": "2026-10-27T23:08:39Z",
+      "exitCode": 0,
+      "result": "255/255 product headings indexed; both editions current."
+    }
+  ],
+  "machineObservations": [
+    "<system-temp>/dotln-wo185-quarantine-OKYOO2 remains from the repair's failed first complete attempt (fb95d881). Its record names the outer worktree, suite runner-fixtures, a recorded birth, outcome failed and a 24-hour window: the repaired attribution keeping a failed suite's root for diagnosis.",
+    "Session scratch trees judged read-only at 23:11Z and 49 hours on: four carry owner records and writer reservations retain them. Two carry no record (621d4630…, born 2026-10-26T20:29Z, 16 KB; bf03b5f6…, born 2026-10-26T22:26Z, 296 KB) and are retained by the legacy name rule at both instants (D058).",
+    "git stash list: 0 entries.",
+    "docs/control/budgets.json and scripts/kit/budgets.template.json carry identical retention blocks with the order's seeds and coordination null.",
+    "<system-temp>/dotln/.metadata_never_index and <worktree>/.runtime/.metadata_never_index exist.",
+    "controls.json: completed-stash base 0 to 1 and changed 0 to 0 with stashDropped, both exit 0; active-current-main base exits 1 with 'integrate requires the selected order in repairing or final-review', changed exits 0 with the upstream file."
+  ],
+  "limits": [
+    "Release close itself was not run. The pins probe drives pruneHarness with the context release close builds and reproduces its order of operations: the worktree removed, then the prune.",
+    "The 49-hour machine judgment passes a finishing gate naming this worktree only to skip its own writer reservation. Its four retained roots are counted from records whose repositories exist, where that context changes nothing else.",
+    "The census covers top-level system temp, the session scratch trees, the worktree ledger and roots nested in those born in the complete row's window.",
+    "The complete gate and the controls were not rerun."
+  ]
+}

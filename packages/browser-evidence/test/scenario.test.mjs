@@ -1,3 +1,4 @@
+import { createFixtureRoot } from "../../skeleton/dist/src/temporary-roots.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { spawn, spawnSync } from "node:child_process";
@@ -6,7 +7,6 @@ import { createHash } from "node:crypto";
 import {
   existsSync,
   mkdirSync,
-  mkdtempSync,
   readdirSync,
   readFileSync,
   realpathSync,
@@ -33,7 +33,7 @@ const fixture = join(root, "packages/browser-evidence/fixtures/scenario.json");
 const scenario = JSON.parse(readFileSync(fixture, "utf8"));
 const parent = process.env.DOTLN_BROWSER_EVIDENCE_DIR ?? tmpdir();
 mkdirSync(parent, { recursive: true });
-const output = mkdtempSync(join(parent, "wo059-browser-"));
+const output = createFixtureRoot(join(parent, "wo059-browser-"));
 const transcript = {
   schemaVersion: 1,
   scope: "WO-059 synthetic browser fixtures",
@@ -809,7 +809,7 @@ test("missing pinned browser returns unavailable evidence and the package suite 
 test("fresh worktree suite default prints an install remedy for its actual cache and README setup", () => {
   // npm scans ancestors for workspaces even above a local manifest. Model an
   // independent worktree outside this checkout regardless of capture storage.
-  const created = mkdtempSync(join(tmpdir(), "wo059-fresh-worktree-"));
+  const created = createFixtureRoot(join(tmpdir(), "wo059-fresh-worktree-"));
   // Node canonicalizes the copied suite's module URL; macOS tmpdir is a symlink.
   const fresh = realpathSync(created);
   const browserPackage = join(fresh, "packages/browser-evidence");

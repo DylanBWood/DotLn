@@ -156,6 +156,7 @@ export const EMIT_CLOSURE = Object.freeze([
   "scripts/lib/harness.mjs",
   "scripts/lib/helpers.mjs",
   "scripts/lib/paths.mjs",
+  "scripts/lib/temporary-roots.mjs",
   "scripts/lib/terms.mjs",
   "scripts/lib/validation.mjs",
 ]);
@@ -184,6 +185,7 @@ export const FIRST_ORDER = "WO-001-environment-truth.md";
 // The build-free modules the kit's scripts import from the compiled packages
 // (the 2026-10-07 pass). TypeScript source is never a kit file.
 export const BUILD_FREE_MODULES = Object.freeze([
+  "packages/skeleton/src/temporary-root-records.mjs",
   "packages/compiler/src/attribution.mjs",
   "packages/compiler/src/codex-continuation.mjs",
   "packages/compiler/src/operator-control.mjs",
@@ -1926,8 +1928,11 @@ export async function planKitUpdate(
   );
   const manifest = kitManifest({ ...prepared.manifest, files: retained });
   const date = new Date().toISOString();
+  const { temporaryPruneSummary } =
+    await import("./lib/temporary-prune-summary.mjs");
   return {
     destination: target,
+    pruneSummary: await temporaryPruneSummary(target, { scope: "repository" }),
     launchpad,
     ...prepared.summary,
     prior,
@@ -2169,6 +2174,7 @@ export function renderUpdatePlan(planned, { preview = false } = {}) {
     `${preview ? "Preview of" : "Updated"} the DotLn kit ${preview ? "at" : "to"} ${planned.commit} in ${planned.destination}.`,
     `kit files: ${counts.replace} replaced; ${counts.add} added; ${counts.remove} removed; ${counts.refuse} refused${planned.revision ? `; ${counts.unchanged} unchanged` : ""}.`,
   ];
+  if (planned.pruneSummary) lines.push(planned.pruneSummary);
   if (preview)
     lines.push(
       `incoming: ${planned.commit} (${planned.tag ?? "untagged"})`,

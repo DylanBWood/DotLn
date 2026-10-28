@@ -1,3 +1,8 @@
+import {
+  excludeFixtureOwnership,
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
 import { spawnGit, runGit } from "./lib/git.mjs";
 import { write, json as prettyJson } from "./lib/helpers.mjs";
 // The fixtures are a real Git launchpad with an activated order in its own
@@ -11,12 +16,10 @@ import {
   appendFileSync,
   existsSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   readdirSync,
   realpathSync,
   renameSync,
-  rmSync,
   statSync,
   writeFileSync,
 } from "node:fs";
@@ -114,7 +117,7 @@ const fixtureGitOptions = {
  * `ignoreLane: false` withholds the ignore rule that lane would need. */
 function fixture(options = {}) {
   const root = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-resident-bind-")),
+    createFixtureRoot(join(tmpdir(), "dotln-resident-bind-")),
   );
   const launchpad = join(root, "launchpad");
   const controlRoot = options.controlRoot ?? "docs/control";
@@ -125,6 +128,7 @@ function fixture(options = {}) {
     [...fixtureGitFlags, "init", "--initial-branch=main"],
     fixtureGitOptions,
   );
+  excludeFixtureOwnership(launchpad);
   write(
     launchpad,
     ".gitignore",
@@ -1195,7 +1199,7 @@ const PORTFOLIO = {
 };
 function portfolioFixture() {
   const root = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-resident-bind-portfolio-")),
+    createFixtureRoot(join(tmpdir(), "dotln-resident-bind-portfolio-")),
   );
   const launchpad = join(root, "launchpad");
   mkdirSync(launchpad);
@@ -1204,6 +1208,7 @@ function portfolioFixture() {
     [...fixtureGitFlags, "init", "--initial-branch=main"],
     fixtureGitOptions,
   );
+  excludeFixtureOwnership(launchpad);
   write(launchpad, ".gitignore", "/docs/control/local/\n");
   write(launchpad, "packages/skeleton/loadouts/grants.json", "[]\n");
   const config = {

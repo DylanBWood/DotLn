@@ -1,3 +1,4 @@
+[
 {
   "fixture": "scripts/test-runner.test repository copy",
   "entries": [
@@ -9,4 +10,14 @@
     "packages",
     "corpus"
   ]
+},
+{
+  "fixture": "nested temporary helper",
+  "entries": ["scripts/lib/temporary-roots.mjs"],
+  "files": [
+    "scripts/lib/temporary-roots.mjs",
+    "packages/skeleton/src/temporary-root-records.mjs"
+  ],
+  "directories": []
 }
+]

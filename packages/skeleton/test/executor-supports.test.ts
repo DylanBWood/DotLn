@@ -777,6 +777,10 @@ test("execution roles open with an ordered handoff and keep shared rules below i
       assert.match(steps[run]!, /composes nothing from `--only` rows/);
       assert.doesNotMatch(steps.join("\n"), /--only format/);
       assert.match(steps[run + 1]!, /After the complete run passes/);
+      assert.match(
+        steps[run + 1]!,
+        /same consistency reviewer check the final write-backs/,
+      );
     } else if (name === "verifier") {
       assert.match(steps[run]!, /npm test -- --only <suite>/);
       assert.match(steps[run]!, /passing complete row/);
@@ -806,27 +810,35 @@ test("execution roles open with an ordered handoff and keep shared rules below i
     .procedure.join("\n");
   assert.match(
     executor,
-    /Before `implementation-ready` only, spawn two fresh `dotln-worker` agents/,
+    /Every execution and fix requires three fresh independent `dotln-worker` agents/,
   );
   assert.match(executor, /nonoverlapping briefs/);
   assert.match(
     executor,
-    /criteria adversary for concrete counterexamples, failed acceptance criteria and missing regression tests; exclude design cleanup/,
+    /criteria adversary seeks concrete counterexamples, failed acceptance criteria and missing regression tests; exclude design cleanup/,
   );
   assert.match(
     executor,
-    /design improver for simpler structure, coupling, error handling and six-month maintainability; exclude criterion verdicts and adversarial test design/,
+    /design improver seeks simpler structure, coupling, error handling and six-month maintainability; exclude criterion verdicts and adversarial test design/,
+  );
+  assert.match(
+    executor,
+    /consistency reviewer solely verifies write-backs, dependencies and versions/,
+  );
+  assert.match(
+    executor,
+    /test dependencies, fixture inputs\/manifests\/pins, generated test baselines and evidence-source declarations/,
   );
   assert.doesNotMatch(
     executor,
-    /Before either completion|900 s|all eight system traps/,
+    /Before `implementation-ready` only|separate-pass fallback|900 s|all eight system traps/,
   );
   const verifier = roles
     .find((row) => row.name === "verifier")!
     .procedure.join("\n");
   assert.match(
     verifier,
-    /your own probes and the executor's two worker reports/,
+    /your own probes and the executor's three worker reports/,
   );
   assert.match(verifier, /Spawn a worker only to reproduce one named claim/);
   assert.match(

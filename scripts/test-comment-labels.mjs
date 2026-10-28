@@ -1,12 +1,11 @@
+import {
+  excludeFixtureOwnership,
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
-import {
-  mkdtempSync,
-  mkdirSync,
-  readFileSync,
-  rmSync,
-  writeFileSync,
-} from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { spawnSync } from "node:child_process";
@@ -22,9 +21,10 @@ import { suites } from "./test-runner.mjs";
 
 const normalized = (text) => text.replace(/\s+/gu, " ").trim();
 function fixture(t) {
-  const root = mkdtempSync(join(tmpdir(), "dotln-comment-labels-"));
+  const root = createFixtureRoot(join(tmpdir(), "dotln-comment-labels-"));
   t.after(() => rmSync(root, { recursive: true, force: true }));
   assert.equal(spawnGit(["init", "-q", root]).status, 0);
+  excludeFixtureOwnership(root);
   const write = (path, source) => {
     mkdirSync(dirname(join(root, path)), { recursive: true });
     writeFileSync(join(root, path), source);

@@ -1,11 +1,13 @@
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "../src/temporary-roots.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   readdirSync,
-  rmSync,
   statSync,
   writeFileSync,
 } from "node:fs";
@@ -18,7 +20,7 @@ import {
 } from "../src/resident-host.js";
 
 test("WO-225 resident board refresh shares one child, preserves fresh bytes, and atomically replaces stale bytes", async () => {
-  const root = mkdtempSync(join(tmpdir(), "dotln-board-snapshot-"));
+  const root = createFixtureRoot(join(tmpdir(), "dotln-board-snapshot-"));
   const store = join(root, "store");
   mkdirSync(join(store, "console"), { recursive: true, mode: 0o700 });
   mkdirSync(join(root, "packages/console/dist/src"), { recursive: true });
@@ -82,7 +84,7 @@ test("WO-225 resident board refresh shares one child, preserves fresh bytes, and
 });
 
 test("WO-225 board collection timeout and shutdown terminate the child without publishing", async () => {
-  const root = mkdtempSync(join(tmpdir(), "dotln-board-timeout-"));
+  const root = createFixtureRoot(join(tmpdir(), "dotln-board-timeout-"));
   const store = join(root, "store");
   mkdirSync(join(store, "console"), { recursive: true, mode: 0o700 });
   mkdirSync(join(root, "packages/console/dist/src"), { recursive: true });
@@ -110,7 +112,9 @@ test("WO-225 board collection timeout and shutdown terminate the child without p
 test("WO-225 every projection and command route refuses a non-loopback socket before reading", async () => {
   const { ConsoleLoopback } = await import("../src/console-loopback.js");
   const { ResidentStore } = await import("../src/resident-store.js");
-  const directory = mkdtempSync(join(tmpdir(), "dotln-nonlocal-console-"));
+  const directory = createFixtureRoot(
+    join(tmpdir(), "dotln-nonlocal-console-"),
+  );
   let reads = 0;
   const loopback = new ConsoleLoopback(
     new ResidentStore(directory),
@@ -162,7 +166,10 @@ test("WO-225 every projection and command route refuses a non-loopback socket be
       );
     }
     assert.equal(reads, 0);
-    assert.deepEqual(readdirSync(directory), []);
+    assert.deepEqual(
+      readdirSync(directory).filter((name) => name !== ".dotln-owner.json"),
+      [],
+    );
   } finally {
     rmSync(directory, { recursive: true, force: true });
   }

@@ -451,6 +451,49 @@ export function pressureSample() {
   };
 }
 
+/** A measured daemon RSS value, not an attribution of its growth to a gate. */
+export function sampleFileEventDaemon({
+  platform = process.platform,
+  execFile = execFileSync,
+} = {}) {
+  if (platform !== "darwin")
+    return { residentBytes: null, source: "not-macos" };
+  const source = "ps -A -o rss=,comm= (KiB converted to bytes)";
+  try {
+    // The daemon belongs to the system user; the memory guard's per-user
+    // process census cannot supply this independent sample. On macOS the
+    // command must be last: ps truncates it when another column follows.
+    const output = execFile("ps", ["-A", "-o", "rss=,comm="], {
+      encoding: "utf8",
+      timeout: 3000,
+      maxBuffer: 4 * 1024 * 1024,
+    });
+    const rows = output.split("\n").flatMap((line) => {
+      const match = /^\s*(\d+)\s+(?:.*\/)?fseventsd\s*$/.exec(line);
+      return match ? [Number(match[1]) * 1024] : [];
+    });
+    return {
+      residentBytes: rows.length
+        ? rows.reduce((sum, bytes) => sum + bytes, 0)
+        : null,
+      source,
+      observedAt: new Date().toISOString(),
+      ...(rows.length
+        ? {}
+        : {
+            unavailable:
+              "fseventsd not identified in the RSS-first process table",
+          }),
+    };
+  } catch (error) {
+    return {
+      residentBytes: null,
+      source,
+      unavailable: error.message,
+    };
+  }
+}
+
 export function processAlive(owner, table) {
   return table.some(
     (row) => row.pid === owner.pid && row.birth === owner.birth,

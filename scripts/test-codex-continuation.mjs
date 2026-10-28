@@ -1,15 +1,18 @@
+import {
+  excludeFixtureOwnership,
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
 import { sha256Hex as digest } from "./lib/helpers.mjs";
 import { spawnGit } from "./lib/git.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 
 import {
-  mkdtempSync,
   realpathSync,
   mkdirSync,
   readFileSync,
   readdirSync,
-  rmSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
@@ -75,9 +78,10 @@ test("Codex generated entry restores context and continues through the emitted n
 });
 async function fixture(run) {
   const root = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-codex-continuation-")),
+    createFixtureRoot(join(tmpdir(), "dotln-codex-continuation-")),
   );
   assert.equal(spawnGit(["init", "--quiet"], { cwd: root }).status, 0);
+  excludeFixtureOwnership(root);
   assert.equal(
     spawnGit(["rev-parse", "--show-toplevel"], {
       cwd: root,

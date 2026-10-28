@@ -1,0 +1,56 @@
+{
+  "observedAt": "2026-10-27T00:31:09.045Z",
+  "command": "node docs/evidence/WO-233/census.mjs",
+  "boundary": "system temp dotln and dotln-* directories; lstat only, links not followed",
+  "fseventsdResidentBytes": null,
+  "families": [
+    {
+      "family": "dotln",
+      "roots": 1,
+      "bytes": 244710,
+      "files": 29,
+      "unreadable": 0,
+      "oldestMtime": "2026-10-27T00:30:10.776Z"
+    },
+    {
+      "family": "dotln-ctx7-cache",
+      "roots": 1,
+      "bytes": 44019284,
+      "files": 2053,
+      "unreadable": 0,
+      "oldestMtime": "2026-10-16T23:07:44.112Z"
+    },
+    {
+      "family": "dotln-host-v1-501",
+      "roots": 1,
+      "bytes": 368119,
+      "files": 108,
+      "unreadable": 0,
+      "oldestMtime": "2026-10-27T00:31:08.614Z"
+    },
+    {
+      "family": "dotln-source-host-*",
+      "roots": 3,
+      "bytes": 149853,
+      "files": 240,
+      "unreadable": 0,
+      "oldestMtime": "2026-10-26T23:43:22.278Z"
+    },
+    {
+      "family": "dotln-wo056-*",
+      "roots": 63,
+      "bytes": 6407593,
+      "files": 4458,
+      "unreadable": 0,
+      "oldestMtime": "2026-10-26T23:43:06.644Z"
+    },
+    {
+      "family": "dotln-writer-transition-501",
+      "roots": 1,
+      "bytes": 0,
+      "files": 0,
+      "unreadable": 0,
+      "oldestMtime": "2026-10-27T00:30:10.449Z"
+    }
+  ]
+}

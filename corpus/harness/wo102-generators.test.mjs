@@ -1,4 +1,8 @@
 import test from "node:test";
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "../../scripts/lib/temporary-roots.mjs";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -290,20 +294,11 @@ test("WO-185 bounded full-grid equality distinguishes nonfinite swaps beyond its
 });
 
 test("WO-185 oversized drift quarantine refuses generation before changing any file", async (t) => {
-  const {
-    mkdtempSync,
-    mkdirSync,
-    cpSync,
-    writeFileSync,
-    rmSync,
-    readdirSync,
-    realpathSync,
-  } = await import("node:fs");
+  const { mkdirSync, cpSync, writeFileSync, readdirSync } =
+    await import("node:fs");
   const { tmpdir } = await import("node:os");
   const { execFileSync } = await import("node:child_process");
-  const scratch = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-wo185-quarantine-")),
-  );
+  const scratch = createFixtureRoot(join(tmpdir(), "dotln-wo185-quarantine-"));
   t.after(() => rmSync(scratch, { recursive: true, force: true }));
   mkdirSync(join(scratch, "corpus/harness"), { recursive: true });
   mkdirSync(join(scratch, "packages/kernel"), { recursive: true });

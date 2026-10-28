@@ -1,3 +1,8 @@
+import {
+  excludeFixtureOwnership,
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
 import { runGit } from "./lib/git.mjs";
 import { write, sha256Hex as digest } from "./lib/helpers.mjs";
 import test from "node:test";
@@ -8,13 +13,11 @@ import {
   cpSync,
   existsSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   readdirSync,
   realpathSync,
   linkSync,
   renameSync,
-  rmSync,
   symlinkSync,
   unlinkSync,
   writeFileSync,
@@ -56,13 +59,14 @@ const tree = (root, path = "") =>
   );
 function fixture(unrelated = false) {
   const base = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-target-fixture-")),
+    createFixtureRoot(join(tmpdir(), "dotln-target-fixture-")),
   );
   const target = join(base, "target");
   const launchpad = join(base, "launchpad with space # unicode-é");
   mkdirSync(target);
   mkdirSync(launchpad);
   runGit(target, ["init", "-b", "fixture-target"], fixtureGitOptions);
+  excludeFixtureOwnership(target);
   write(target, "source.txt", "fixture\n");
   if (unrelated) write(target, ".claude/unrelated.txt", "preserve\n");
   runGit(target, ["add", "."], fixtureGitOptions);

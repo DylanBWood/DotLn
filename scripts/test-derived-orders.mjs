@@ -1,3 +1,8 @@
+import {
+  excludeFixtureOwnership,
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
 import { copyFixtureFiles } from "./lib/fixture-inputs.mjs";
 import { runGit } from "./lib/git.mjs";
 import { write } from "./lib/helpers.mjs";
@@ -9,10 +14,8 @@ import {
   cpSync,
   existsSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   realpathSync,
-  rmSync,
   symlinkSync,
   unlinkSync,
   writeFileSync,
@@ -72,7 +75,9 @@ const run = (root, script, args = [], success = true) => {
   return result;
 };
 async function fixture(fn, config) {
-  const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-derived-")));
+  const root = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-derived-")),
+  );
   const fixtureGitFlags = [
     "-c",
     "core.hooksPath=/dev/null",
@@ -111,6 +116,7 @@ async function fixture(fn, config) {
       [...fixtureGitFlags, "init", "--initial-branch=main"],
       fixtureGitOptions,
     );
+    excludeFixtureOwnership(root);
     assert.equal(
       realpathSync(
         runGit(
@@ -687,7 +693,7 @@ test("existing handwritten identities are preserved, UI filing shares the catalo
 test("direct activation refuses a derived authority root redirected outside the launchpad", async () =>
   fixture(async (root) => {
     const outside = realpathSync(
-      mkdtempSync(join(tmpdir(), "dotln-derived-outside-")),
+      createFixtureRoot(join(tmpdir(), "dotln-derived-outside-")),
     );
     try {
       const name = "WO-950-derived.md";
@@ -730,7 +736,9 @@ test("WO-157 an allocation written under a superseded section set folds after th
       root,
       activate: false,
     });
-    const tool = realpathSync(mkdtempSync(join(tmpdir(), "dotln-sections-")));
+    const tool = realpathSync(
+      createFixtureRoot(join(tmpdir(), "dotln-sections-")),
+    );
     try {
       mkdirSync(join(tool, "scripts"));
       cpSync(join(TOOL_ROOT, "scripts/lib"), join(tool, "scripts/lib"), {

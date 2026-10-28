@@ -1,0 +1,133 @@
+{
+  "codeIdentity": "b0afad3f0c8e4c2ac5d36973ab798d8f3aff305ee862bdfce00f83c37a462a99",
+  "probes": [
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-233/verification-003-nested-suite-residue.mjs",
+      "exitCode": 0,
+      "executed": true,
+      "startedAt": "2026-10-27T22:31:32.638Z",
+      "finishedAt": "2026-10-27T22:31:39.277Z",
+      "durationMs": 6639,
+      "result": {
+        "base": {
+          "exitCode": 0,
+          "quarantineCasePassed": true,
+          "rootsLeft": 0
+        },
+        "changed": {
+          "exitCode": 0,
+          "quarantineCasePassed": true,
+          "rootsLeft": 0
+        },
+        "cleanup": {
+          "probeRootsRemaining": 0,
+          "scaffoldRemaining": false
+        }
+      }
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-233/verification-003-gate-census.mjs",
+      "exitCode": 0,
+      "executed": true,
+      "startedAt": "2026-10-27T22:35:35.901Z",
+      "finishedAt": "2026-10-27T22:35:36.231Z",
+      "durationMs": 330,
+      "result": {
+        "codeIdentity": "b0afad3f0c8e4c2ac5d36973ab798d8f3aff305ee862bdfce00f83c37a462a99",
+        "processTableReadable": true,
+        "rows": 2,
+        "gates": [
+          {
+            "checkId": "npm test",
+            "gateId": "344a3f31-c882-4f10-9c2a-b7fd8e079dbf",
+            "window": [
+              "2026-10-27T21:58:46.355Z",
+              "2026-10-27T22:31:13.505Z"
+            ],
+            "rowCleanup": {
+              "removed": 2289,
+              "retained": [
+                "<worktree>/.runtime/fixtures/launchpad/f1579b56e5a216c7dc12d83a1d505d0729c468359f245986f5279998b7ead696"
+              ],
+              "blockers": 0
+            },
+            "unaccountedRootsCarryingGate": [],
+            "bornInWindowStillPresent": {
+              "owned": {
+                "dotln-fixture-temporary/ [gate-fixture; gate 35ce394c; failed]": 1,
+                "dotln-license-surfaces/ [gate-fixture; gate 35ce394c; failed]": 1,
+                "dotln-license-surfaces/ [gate-fixture; gate c2dc4f04; failed]": 1,
+                "dotln-verification-evidence/ [gate-fixture; gate 35ce394c; failed]": 1
+              },
+              "unownedDotln": {},
+              "invalid": {},
+              "other": {
+                "playwright-artifacts/": 5,
+                "playwright-tracing/": 1,
+                "playwright_chromiumdev_profile/": 5
+              }
+            }
+          },
+          {
+            "checkId": "npm run test:docs",
+            "gateId": "02f94955-2519-4c7a-85c0-e8f93395ba79",
+            "window": [
+              "2026-10-27T22:32:34.267Z",
+              "2026-10-27T22:35:24.674Z"
+            ],
+            "rowCleanup": {
+              "removed": 230,
+              "retained": [],
+              "blockers": 0
+            },
+            "unaccountedRootsCarryingGate": [],
+            "bornInWindowStillPresent": {
+              "owned": {},
+              "unownedDotln": {},
+              "invalid": {},
+              "other": {}
+            }
+          }
+        ]
+      }
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-233/verification-002-gate-residue.mjs",
+      "exitCode": 0,
+      "executed": true,
+      "startedAt": "2026-10-27T22:35:31.275Z",
+      "finishedAt": "2026-10-27T22:35:31.596Z",
+      "durationMs": 321,
+      "result": {
+        "codeIdentity": "b0afad3f0c8e4c2ac5d36973ab798d8f3aff305ee862bdfce00f83c37a462a99",
+        "processTableReadable": true,
+        "complete": {
+          "gateId": "344a3f31-c882-4f10-9c2a-b7fd8e079dbf",
+          "recordedAt": "2026-10-27T22:31:13.505Z",
+          "rowCleanup": {
+            "removed": 2289,
+            "retained": 1
+          },
+          "deadOwnerRootsOfPassingSuitesRemaining": 0,
+          "byClass": {},
+          "bySuite": {},
+          "byFamily": {}
+        },
+        "document": {
+          "gateId": "02f94955-2519-4c7a-85c0-e8f93395ba79",
+          "window": [
+            "2026-10-27T22:32:34.267Z",
+            "2026-10-27T22:35:24.674Z"
+          ],
+          "rowCleanup": {
+            "removed": 230,
+            "retained": 0
+          },
+          "unownedRootsBornInWindow": 0,
+          "byFamily": {}
+        }
+      }
+    }
+  ],
+  "limits": "The census covers top-level system temp and every readable owner record carrying either gate identity, without suite or liveness filters. The older probe additionally checks unowned document roots. Nested root checks also run in the complete suite. The census records owned failed diagnostics of separate nested gates and browser-owned directories without claiming their removal."
+}

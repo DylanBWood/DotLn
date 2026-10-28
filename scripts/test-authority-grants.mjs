@@ -1,7 +1,11 @@
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
 import { write as writeFixture } from "./lib/helpers.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, readFileSync, rmSync, symlinkSync } from "node:fs";
+import { readFileSync, symlinkSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -101,7 +105,9 @@ test("WO-042 AC2 trace, effective envelope and runtime authorize agree for every
 });
 
 test("WO-042 AC3 host admits only matching grants from the committed and ignored local registries", () => {
-  const fixture = mkdtempSync(join(tmpdir(), "dotln-authority-registry-"));
+  const fixture = createFixtureRoot(
+    join(tmpdir(), "dotln-authority-registry-"),
+  );
   try {
     write(fixture, COMMITTED_AUTHORITY_GRANTS, []);
     const graph = authorityFixture([], [authorityGrant]);
@@ -155,7 +161,9 @@ test("WO-042 AC3 host admits only matching grants from the committed and ignored
 });
 
 test("WO-071 registered profiles narrow the WorkOrder and widen only through retained grant provenance", () => {
-  const fixture = mkdtempSync(join(tmpdir(), "dotln-registered-repository-"));
+  const fixture = createFixtureRoot(
+    join(tmpdir(), "dotln-registered-repository-"),
+  );
   try {
     write(fixture, COMMITTED_AUTHORITY_GRANTS, []);
     write(fixture, CONFIG_FILENAME, {
@@ -348,7 +356,7 @@ test("WO-042 AC5/6 Contributor projection and grant bundle carry the enforced en
 });
 
 test("an exported instance may commit the operator grant its registration order writes", () => {
-  const instance = mkdtempSync(join(tmpdir(), "dotln-instance-grants-"));
+  const instance = createFixtureRoot(join(tmpdir(), "dotln-instance-grants-"));
   try {
     writeFixture(instance, "KIT-MANIFEST.json", "{}\n");
     const registry = join(instance, COMMITTED_AUTHORITY_GRANTS);
@@ -389,7 +397,7 @@ test("an exported instance may commit the operator grant its registration order 
 });
 
 test("WO-073 criterion 1: two repositories in one class", () => {
-  const fixture = mkdtempSync(join(tmpdir(), "dotln-repository-class-"));
+  const fixture = createFixtureRoot(join(tmpdir(), "dotln-repository-class-"));
   try {
     const support = authoritySupport("class-scope");
     const graph = authorityFixture([

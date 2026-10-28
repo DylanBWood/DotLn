@@ -1,3 +1,7 @@
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "../src/temporary-roots.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
@@ -7,10 +11,8 @@ import {
   existsSync,
   lstatSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   realpathSync,
-  rmSync,
   symlinkSync,
   writeFileSync,
 } from "node:fs";
@@ -26,7 +28,9 @@ import { replayBeaconSweep } from "../src/beacon-observe.js";
 import type { BeaconSweepRequest } from "../src/control-beacon.js";
 
 test("WO-021 agent constellation CLI persists permission/refusal and one metadata perception through the reactor", (t) => {
-  const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-beacon-cli-")));
+  const root = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-beacon-cli-")),
+  );
   t.after(() => rmSync(root, { recursive: true, force: true }));
   const repository = fileURLToPath(new URL("../../../../", import.meta.url));
   const run = (file: string, args: readonly string[]) =>

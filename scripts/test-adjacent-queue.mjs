@@ -1,12 +1,15 @@
+import {
+  excludeFixtureOwnership,
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import {
-  mkdtempSync,
   mkdirSync,
   readFileSync,
   realpathSync,
-  rmSync,
   symlinkSync,
   writeFileSync,
 } from "node:fs";
@@ -34,7 +37,9 @@ const spec = (summary, priority = 10) => ({
   priority,
 });
 const fixture = (run) => {
-  const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-adjacent-")));
+  const root = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-adjacent-")),
+  );
   try {
     return run(root);
   } finally {
@@ -276,6 +281,7 @@ test("WO-042 queue persistence refuses escape, truncation, stale writers and for
 test("WO-042 actual queue CLI uses the selected work order and read-only listing", () =>
   fixture((root) => {
     runGit(root, ["init", "-q", "-b", "wo-999"]);
+    excludeFixtureOwnership(root);
     mkdirSync(join(root, "docs/control/orders"), { recursive: true });
     const controlPath = join(root, "docs/control/orders/WO-999.jsonl");
     const activation = {
@@ -320,6 +326,7 @@ test("WO-042 actual queue CLI uses the selected work order and read-only listing
 test("queue CLI run outside the launchpad reads the one DOTLN_LAUNCHPAD names, from its physical Git root only", () =>
   fixture((root) => {
     runGit(root, ["init", "-q", "-b", "wo-999"]);
+    excludeFixtureOwnership(root);
     mkdirSync(join(root, "docs/control/orders"), { recursive: true });
     writeFileSync(
       join(root, "docs/control/orders/WO-999.jsonl"),
@@ -387,6 +394,7 @@ test("queue CLI run outside the launchpad reads the one DOTLN_LAUNCHPAD names, f
 test("WO-157 retarget moves only a deferred item's target onto an existing FUP, also at final review", () =>
   fixture((root) => {
     runGit(root, ["init", "-q", "-b", "wo-999"]);
+    excludeFixtureOwnership(root);
     mkdirSync(join(root, "docs/control/orders"), { recursive: true });
     mkdirSync(join(root, "docs/product"), { recursive: true });
     writeFileSync(

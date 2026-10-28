@@ -1,3 +1,4 @@
+import { createFixtureRoot } from "./lib/temporary-roots.mjs";
 import { write as writeFixture, json as prettyJson } from "./lib/helpers.mjs";
 import { spawnGit } from "./lib/git.mjs";
 import { docRelative, findLaunchpad } from "./lib/config.mjs";
@@ -8,7 +9,6 @@ import {
   copyFileSync,
   existsSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   realpathSync,
   writeFileSync,
@@ -109,7 +109,7 @@ function phaseZero(mode) {
     !existsSync(target),
     "retain probe observations; choose a new evidence path for a new attempt",
   );
-  const directory = mkdtempSync(
+  const directory = createFixtureRoot(
     join(realpathSync(tmpdir()), "dotln-harness-probe-"),
   );
   const write = (path, text) => writeFixture(directory, path, text);

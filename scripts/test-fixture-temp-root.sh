@@ -211,7 +211,7 @@ mkdir -p -- "$symlink_cleanup_target"
 printf 'survive\n' >"$symlink_cleanup_target/target.sentinel"
 create_test_temp_root "$cleanup_base" "$cleanup_prefix"
 registered_symlink="$test_temp_root_result"
-rm -- "$registered_symlink/.dotln-test-root-owner"
+rm -- "$registered_symlink/.dotln-test-root-owner" "$registered_symlink/.dotln-owner.json"
 rmdir -- "$registered_symlink"
 ln -s -- "$symlink_cleanup_target" "$registered_symlink"
 expect_cleanup_refusal "$cleanup_base" "$registered_symlink" "$cleanup_prefix" 'unsafe fixture-root cleanup target' symlink-root
@@ -274,7 +274,7 @@ probe_script="$test_root/trap-probe.sh"
     'install_test_temp_root_traps "$tmp_base" "$test_root" "$test_root_prefix"' \
     'printf "%s\\n" "$test_root" >"$3"' \
     'if [[ "$4" == ordinary ]]; then exit 0; fi' \
-    'if [[ "$4" == unsafe ]]; then rm -- "$test_root/.dotln-test-root-owner"; rmdir -- "$test_root"; ln -s -- "$6" "$test_root"; exit 0; fi' \
+    'if [[ "$4" == unsafe ]]; then rm -- "$test_root/.dotln-test-root-owner" "$test_root/.dotln-owner.json"; rmdir -- "$test_root"; ln -s -- "$6" "$test_root"; exit 0; fi' \
     'printf "ready\\n" >"$5"' \
     'while :; do sleep 1; done'
 } >"$probe_script"
@@ -285,6 +285,10 @@ ordinary_root_record="$test_root/ordinary-root.txt"
 mkdir -p -- "$ordinary_trap_base"
 TMPDIR="$ordinary_trap_base" bash "$probe_script" "$script_dir/test-temp-root.sh" dotln-ordinary-trap-test "$ordinary_root_record" ordinary "$test_root/unused-ready"
 ordinary_root="$(tr -d '\n' <"$ordinary_root_record")"
+if [[ -n "${DOTLN_TEMP_GATE:-}" ]]; then
+  test -f "$ordinary_root/.dotln-owner.json"
+  node "$_dotln_temp_root_tool" remove "$ordinary_root"
+fi
 test ! -e "$ordinary_root"
 printf 'PASS ordinary EXIT trap: fixture root removed\n'
 
@@ -418,7 +422,10 @@ exercise_suite_signal() {
       if(failure) {
         if(beaconMode === "driver-failure") {
           assert.equal(forcedKill,false);assert.equal(code,143);assert.equal(exitSignal,null);
-          assert.equal(fs.existsSync(proof.root),false,"failed driver reaps the restoring child");
+          if(process.env.DOTLN_TEMP_GATE) {
+            assert.equal(JSON.parse(fs.readFileSync(path.join(proof.root,".dotln-owner.json"))).outcome,"failed");
+            fs.rmSync(proof.root,{recursive:true});
+          } else assert.equal(fs.existsSync(proof.root),false,"failed driver reaps the restoring child");
         } else if(beaconMode === "forced-kill") {
           assert.equal(forcedKill,true);assert.equal(exitSignal,"SIGKILL");
           assert.equal(fs.statSync(beacon).mode & 0o777,0o700,"forced-kill cleanup restores only captured beacon");
@@ -443,6 +450,12 @@ exercise_suite_signal() {
         fs.chmodSync(beacon+".saved",0o700);
         assert.equal(fs.readFileSync(path.join(beacon+".saved","signal"),"utf8"),"disposable beacon\n");
         fs.rmSync(root,{recursive:true});
+      }
+      if(process.env.DOTLN_TEMP_GATE && beaconMode === "owned") {
+        const owner=JSON.parse(fs.readFileSync(path.join(proof.root,".dotln-owner.json")));
+        assert.equal(owner.outcome,"failed");
+        assert.equal(owner.retentionHours,24);
+        fs.rmSync(proof.root,{recursive:true});
       }
       process.stdout.write(`status=${code}\n`);
       } catch(error) {

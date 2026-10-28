@@ -1,4 +1,12 @@
+import {
+  excludeFixtureOwnership,
+  createFixtureRoot,
+  readTemporaryOwner,
+  registeredTemporaryRoots,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
 import { spawnGit, execGit, runGit } from "./lib/git.mjs";
+import { copyFixtureFiles } from "./lib/fixture-inputs.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync, spawn, spawnSync } from "node:child_process";
@@ -8,14 +16,12 @@ import {
   cpSync,
   existsSync,
   linkSync,
-  mkdtempSync,
   mkdirSync,
   openSync,
   readFileSync,
   readdirSync,
   writeFileSync,
   realpathSync,
-  rmSync,
   symlinkSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
@@ -71,11 +77,12 @@ import {
   uncoveredMachinerySources,
   machineryCoverageScope,
 } from "./lib/machinery-coverage.mjs";
+import { sampleFileEventDaemon } from "./lib/host-resources.mjs";
 
 const root = resolve(import.meta.dirname, "..");
 const barrier = { name: "build", command: ["build"], build: true };
 test("target runner claims do not change self-order handoff or verification claims", async (t) => {
-  const repo = mkdtempSync(join(tmpdir(), "dotln-self-claims-"));
+  const repo = createFixtureRoot(join(tmpdir(), "dotln-self-claims-"));
   t.after(() => rmSync(repo, { recursive: true, force: true }));
   mkdirSync(join(repo, "docs/work-orders"), { recursive: true });
   mkdirSync(join(repo, "docs/evidence/WO-999"), { recursive: true });
@@ -107,7 +114,7 @@ test("target runner claims do not change self-order handoff or verification clai
 
 test("target claims use only current target selection rows and consume the document row", async (t) => {
   const base = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-target-claims-")),
+    createFixtureRoot(join(tmpdir(), "dotln-target-claims-")),
   );
   t.after(() => rmSync(base, { recursive: true, force: true }));
   const repo = join(base, "launchpad"),
@@ -115,6 +122,7 @@ test("target claims use only current target selection rows and consume the docum
   for (const path of [repo, target]) {
     mkdirSync(path);
     runGit(path, ["init", "-q", "-b", "wo-999"]);
+    excludeFixtureOwnership(path);
     runGit(path, ["config", "user.name", "Fixture"]);
     runGit(path, ["config", "user.email", "fixture@example.invalid"]);
     writeFileSync(join(path, ".gitignore"), "/docs/control/local/\n");
@@ -376,10 +384,11 @@ test("target claims use only current target selection rows and consume the docum
 
 test("records publication proves unchanged launchpad identity or requires the reviewer gate", async (t) => {
   const repo = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-records-identity-")),
+    createFixtureRoot(join(tmpdir(), "dotln-records-identity-")),
   );
   t.after(() => rmSync(repo, { recursive: true, force: true }));
   runGit(repo, ["init", "-q", "-b", "wo-999"]);
+  excludeFixtureOwnership(repo);
   runGit(repo, ["config", "user.name", "Fixture"]);
   runGit(repo, ["config", "user.email", "fixture@example.invalid"]);
   writeFileSync(join(repo, "source.txt"), "source\n");
@@ -426,7 +435,7 @@ test("records publication proves unchanged launchpad identity or requires the re
 });
 test("bounded command uses the requested cwd and deadline with launchpad budgets", async (t) => {
   const directory = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-bounded-cwd-")),
+    createFixtureRoot(join(tmpdir(), "dotln-bounded-cwd-")),
   );
   t.after(() => rmSync(directory, { recursive: true, force: true }));
   const { boundedCommand } = await import("./lib/bounded-command.mjs");
@@ -455,7 +464,7 @@ test("bounded command uses the requested cwd and deadline with launchpad budgets
   assert.ok(lines.some((line) => line.startsWith("bounded-start ")));
 });
 test("kit defaults separate runtime integrity from documents and explicit platform diagnostics", async (t) => {
-  const repo = mkdtempSync(join(tmpdir(), "dotln-kit-list-"));
+  const repo = createFixtureRoot(join(tmpdir(), "dotln-kit-list-"));
   t.after(() => rmSync(repo, { recursive: true, force: true }));
   writeFileSync(join(repo, "KIT-MANIFEST.json"), "{}\n");
   const lines = [];
@@ -540,7 +549,7 @@ test("the installed-runtime digest comparison names a missing recorded digest ap
 });
 
 test("instance runtime digests reject aliases before selection and frame arbitrary file bytes", (t) => {
-  const base = mkdtempSync(join(tmpdir(), "dotln-runtime-digest-"));
+  const base = createFixtureRoot(join(tmpdir(), "dotln-runtime-digest-"));
   t.after(() => rmSync(base, { recursive: true, force: true }));
   const repo = join(base, "instance"),
     outside = join(base, "outside");
@@ -655,9 +664,10 @@ test("instance runtime digests reject aliases before selection and frame arbitra
 });
 
 test("instance runtime identity ignores host metadata and normalizes permissions while retaining real drift", (t) => {
-  const repo = mkdtempSync(join(tmpdir(), "dotln-runtime-inputs-"));
+  const repo = createFixtureRoot(join(tmpdir(), "dotln-runtime-inputs-"));
   t.after(() => rmSync(repo, { recursive: true, force: true }));
   execGit(["init", "-q"], { cwd: repo });
+  excludeFixtureOwnership(repo);
   const write = (path, text = "incidental\n") => {
     mkdirSync(dirname(join(repo, path)), { recursive: true });
     writeFileSync(join(repo, path), text);
@@ -729,7 +739,7 @@ test("instance runtime identity ignores host metadata and normalizes permissions
 test("instance selection and evidence agree on malformed package-source declarations", async (t) => {
   const { hasPackageSources } =
     await import("../packages/skeleton/src/runtime-inputs.mjs");
-  const repo = mkdtempSync(join(tmpdir(), "dotln-runtime-shape-"));
+  const repo = createFixtureRoot(join(tmpdir(), "dotln-runtime-shape-"));
   t.after(() => rmSync(repo, { recursive: true, force: true }));
   writeFileSync(join(repo, "KIT-MANIFEST.json"), "{}\n");
   mkdirSync(join(repo, "packages/core"), { recursive: true });
@@ -771,9 +781,10 @@ test("instance selection and evidence agree on malformed package-source declarat
 });
 
 test("kit checks execute fresh against ignored runtime and document inputs under full gate protection", async (t) => {
-  const repo = mkdtempSync(join(tmpdir(), "dotln-kit-current-"));
+  const repo = createFixtureRoot(join(tmpdir(), "dotln-kit-current-"));
   t.after(() => rmSync(repo, { recursive: true, force: true }));
   execGit(["init", "-q"], { cwd: repo });
+  excludeFixtureOwnership(repo);
   mkdirSync(join(repo, "scripts"));
   mkdirSync(join(repo, "docs"));
   mkdirSync(join(repo, ".runtime/harness"), { recursive: true });
@@ -1086,7 +1097,7 @@ test("kit checks execute fresh against ignored runtime and document inputs under
 });
 
 test("kit --only refuses unavailable suites without running or recording a check, including list requests", async (t) => {
-  const repo = mkdtempSync(join(tmpdir(), "dotln-kit-only-"));
+  const repo = createFixtureRoot(join(tmpdir(), "dotln-kit-only-"));
   t.after(() => rmSync(repo, { recursive: true, force: true }));
   writeFileSync(join(repo, "KIT-MANIFEST.json"), "{}\n");
   const lines = [];
@@ -1109,9 +1120,10 @@ test("kit --only refuses unavailable suites without running or recording a check
 });
 
 test("WO-174 product read guard fails the task and names the case and excluded tracked input, including inherited Node children", async (t) => {
-  const repo = mkdtempSync(join(tmpdir(), "dotln-product-reads-"));
+  const repo = createFixtureRoot(join(tmpdir(), "dotln-product-reads-"));
   t.after(() => rmSync(repo, { recursive: true, force: true }));
   execGit(["init", "-q"], { cwd: repo });
+  excludeFixtureOwnership(repo);
   mkdirSync(join(repo, "docs"));
   mkdirSync(join(repo, "scripts"));
   writeFileSync(join(repo, "docs/input.md"), "fixture\n");
@@ -1201,7 +1213,7 @@ test("named async read case", async t => {
 });
 
 test("WO-174 machinery coverage names an uncovered entry, direct import or literal spawned script, accepts only reasoned exclusions and keeps its stated boundary", (t) => {
-  const repo = mkdtempSync(join(tmpdir(), "dotln-machinery-coverage-"));
+  const repo = createFixtureRoot(join(tmpdir(), "dotln-machinery-coverage-"));
   t.after(() => rmSync(repo, { recursive: true, force: true }));
   mkdirSync(join(repo, "scripts"));
   writeFileSync(
@@ -1278,7 +1290,7 @@ test("WO-174 every machinery suite covers its direct entry imports and literal s
 });
 
 test("release shell changes select their inventory guard during review", async (t) => {
-  const repo = mkdtempSync(join(tmpdir(), "dotln-release-selection-"));
+  const repo = createFixtureRoot(join(tmpdir(), "dotln-release-selection-"));
   t.after(() => rmSync(repo, { recursive: true, force: true }));
   const fixtureGitOptions = {
     exec: true,
@@ -1288,6 +1300,7 @@ test("release shell changes select their inventory guard during review", async (
     stdio: ["ignore", "pipe", "pipe"],
   };
   runGit(repo, ["init", "-b", "main"], fixtureGitOptions);
+  excludeFixtureOwnership(repo);
   mkdirSync(join(repo, "scripts"));
   const shell = join(repo, "scripts/test-release.sh");
   const baseline = "release_case_existing() {\n  :\n}\n";
@@ -1356,7 +1369,7 @@ test("release shell changes select their inventory guard during review", async (
 });
 
 test("npm test composes plain and review task rows; explicit fresh, changed code and unusable observations run fresh", async (t) => {
-  const repo = mkdtempSync(join(tmpdir(), "dotln-gate-reuse-"));
+  const repo = createFixtureRoot(join(tmpdir(), "dotln-gate-reuse-"));
   t.after(() => rmSync(repo, { recursive: true, force: true }));
   const fixtureGitOptions = {
     exec: true,
@@ -1365,6 +1378,7 @@ test("npm test composes plain and review task rows; explicit fresh, changed code
     stdio: ["ignore", "pipe", "pipe"],
   };
   runGit(repo, ["init", "-b", "main"], fixtureGitOptions);
+  excludeFixtureOwnership(repo);
   runGit(repo, ["config", "maintenance.auto", "false"], fixtureGitOptions);
   runGit(repo, ["config", "user.name", "Fixture"], fixtureGitOptions);
   runGit(
@@ -1622,7 +1636,7 @@ test("npm test composes plain and review task rows; explicit fresh, changed code
 });
 
 test("WO-169 a changed script outside the former eight sources selects the configuration-root suite", async (t) => {
-  const repo = mkdtempSync(join(tmpdir(), "dotln-script-selection-"));
+  const repo = createFixtureRoot(join(tmpdir(), "dotln-script-selection-"));
   t.after(() => rmSync(repo, { recursive: true, force: true }));
   const fixtureGitOptions = {
     exec: true,
@@ -1632,6 +1646,7 @@ test("WO-169 a changed script outside the former eight sources selects the confi
     stdio: ["ignore", "pipe", "pipe"],
   };
   runGit(repo, ["init", "-b", "main"], fixtureGitOptions);
+  excludeFixtureOwnership(repo);
   mkdirSync(join(repo, "scripts"));
   mkdirSync(join(repo, "packages/kernel/src"), { recursive: true });
   // The script WO-165 changed while no gate selected the suite that scans
@@ -1686,7 +1701,7 @@ test("WO-169 a changed script outside the former eight sources selects the confi
 });
 
 test("WO-133 review selection ignores release-only changes and retains host behavior suites", async () => {
-  const repo = mkdtempSync(join(tmpdir(), "dotln-version-selection-"));
+  const repo = createFixtureRoot(join(tmpdir(), "dotln-version-selection-"));
   const fixtureGitOptions = {
     exec: true,
     trim: false,
@@ -1698,6 +1713,7 @@ test("WO-133 review selection ignores release-only changes and retains host beha
   const compiler = "packages/compiler/src/artifact-identity.ts";
   try {
     runGit(repo, ["init", "-b", "main"], fixtureGitOptions);
+    excludeFixtureOwnership(repo);
     mkdirSync(join(repo, "packages/skeleton/src"), { recursive: true });
     mkdirSync(join(repo, "packages/compiler/src"), { recursive: true });
     writeFileSync(
@@ -2046,7 +2062,7 @@ test("package tests and fixtures wait for preflights and never start after a fai
 });
 
 test("failed split-case diagnostics survive aggregate evidence as addressed logs", (t) => {
-  const repo = mkdtempSync(join(tmpdir(), "dotln-case-output-"));
+  const repo = createFixtureRoot(join(tmpdir(), "dotln-case-output-"));
   t.after(() => rmSync(repo, { recursive: true, force: true }));
   const selected = [{ name: "release" }];
   const tasks = [
@@ -2200,9 +2216,10 @@ test("vertical tasks preserve complementary coverage, guards and the two-task co
   }
 });
 test("vertical task dispatch executes every declared case exactly once across partitions", async (t) => {
-  const repo = mkdtempSync(join(tmpdir(), "dotln-vertical-dispatch-"));
+  const repo = createFixtureRoot(join(tmpdir(), "dotln-vertical-dispatch-"));
   t.after(() => rmSync(repo, { recursive: true, force: true }));
   execGit(["init", "-q"], { cwd: repo });
+  excludeFixtureOwnership(repo);
   mkdirSync(join(repo, "scripts"));
   const files = [
     "scripts/test-vertical.mjs",
@@ -2449,7 +2466,7 @@ for (const blockedBy of ["group", "dependency"])
   });
 
 test("test discovery refuses missing compiled cases instead of silently succeeding", () => {
-  const repo = mkdtempSync(join(tmpdir(), "dotln-runner-"));
+  const repo = createFixtureRoot(join(tmpdir(), "dotln-runner-"));
   try {
     assert.throws(
       () => expand(["packages/missing/dist/test/*.test.js"], repo),
@@ -2478,7 +2495,7 @@ test("timeout is an executed failure with suite identity and measured duration",
 });
 
 test("only and document CLI selection execute their declared checks with the projection build", async () => {
-  const repo = mkdtempSync(join(tmpdir(), "dotln-runner-cli-"));
+  const repo = createFixtureRoot(join(tmpdir(), "dotln-runner-cli-"));
   try {
     const fixtureGitOptions = {
       exec: true,
@@ -2488,6 +2505,7 @@ test("only and document CLI selection execute their declared checks with the pro
       stdio: ["ignore", "pipe", "pipe"],
     };
     runGit(repo, ["init", "-q"], fixtureGitOptions);
+    excludeFixtureOwnership(repo);
     runGit(repo, ["config", "user.name", "Fixture"], fixtureGitOptions);
     runGit(
       repo,
@@ -2496,7 +2514,7 @@ test("only and document CLI selection execute their declared checks with the pro
     );
     writeFileSync(
       join(repo, ".gitignore"),
-      "docs/control/local/\nobserved.jsonl\n",
+      "docs/control/local/\n.runtime/\nobserved.jsonl\n",
     );
     mkdirSync(join(repo, "scripts"));
     const observer =
@@ -2602,7 +2620,7 @@ test("WO-157 the document gate refuses an unregistered docs JSONL and an unstubb
     "test:docs carries the registration row (WO-151 D021)",
   );
   const parent = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-registrations-")),
+    createFixtureRoot(join(tmpdir(), "dotln-registrations-")),
   );
   t.after(() => rmSync(parent, { recursive: true, force: true }));
   const copy = join(parent, "repository");
@@ -2711,8 +2729,8 @@ test("WO-157 the document gate refuses an unregistered docs JSONL and an unstubb
 });
 
 test("WO-125 nested gate markers remain independent and local to their worktree", (t) => {
-  const repo = mkdtempSync(join(tmpdir(), "dotln-gate-markers-"));
-  const other = mkdtempSync(join(tmpdir(), "dotln-gate-other-"));
+  const repo = createFixtureRoot(join(tmpdir(), "dotln-gate-markers-"));
+  const other = createFixtureRoot(join(tmpdir(), "dotln-gate-other-"));
   t.after(() => {
     rmSync(repo, { recursive: true, force: true });
     rmSync(other, { recursive: true, force: true });
@@ -2735,7 +2753,7 @@ test("WO-125 nested gate markers remain independent and local to their worktree"
 });
 
 test("WO-044 a stop request reaches a gate through its marker lineage and is consumed with the marker", async (t) => {
-  const repo = mkdtempSync(join(tmpdir(), "dotln-gate-stop-"));
+  const repo = createFixtureRoot(join(tmpdir(), "dotln-gate-stop-"));
   const markers = join(repo, "docs/control/local/harness/active-gates");
   const saved = process.env[GATE_RUN_ENVIRONMENT];
   t.after(() => {
@@ -2816,7 +2834,7 @@ test("WO-044 a stop request reaches a gate through its marker lineage and is con
 });
 
 test("WO-044 a gate that polls its request ends within the stop command's wait and leaves nothing behind", async (t) => {
-  const repo = mkdtempSync(join(tmpdir(), "dotln-gate-stop-child-"));
+  const repo = createFixtureRoot(join(tmpdir(), "dotln-gate-stop-child-"));
   t.after(() => rmSync(repo, { recursive: true, force: true }));
   const markers = join(repo, "docs/control/local/harness/active-gates");
   const child = spawn(
@@ -2849,7 +2867,7 @@ test("WO-044 a gate that polls its request ends within the stop command's wait a
 });
 
 test("WO-044 the runner honours a stop request at its next boundary, ends running suites and records no check", async () => {
-  const repo = mkdtempSync(join(tmpdir(), "dotln-runner-stop-"));
+  const repo = createFixtureRoot(join(tmpdir(), "dotln-runner-stop-"));
   try {
     const fixtureGitOptions = {
       exec: true,
@@ -2859,6 +2877,7 @@ test("WO-044 the runner honours a stop request at its next boundary, ends runnin
       stdio: ["ignore", "pipe", "pipe"],
     };
     runGit(repo, ["init", "-q"], fixtureGitOptions);
+    excludeFixtureOwnership(repo);
     runGit(repo, ["config", "user.name", "Fixture"], fixtureGitOptions);
     runGit(
       repo,
@@ -2962,7 +2981,7 @@ test("WO-044 an aborted signal ends a running suite and its result names the sto
 });
 
 test("WO-044 VER-001 cancellation ends a grandchild holding inherited output pipes", async (t) => {
-  const repo = mkdtempSync(join(tmpdir(), "dotln-suite-descendants-"));
+  const repo = createFixtureRoot(join(tmpdir(), "dotln-suite-descendants-"));
   let descendant;
   t.after(() => {
     if (descendant)
@@ -3006,9 +3025,10 @@ test("WO-044 VER-001 cancellation ends a grandchild holding inherited output pip
 });
 
 test("WO-125 gate inputs include tracked ignored files and new installed roots, excluding scratch", (t) => {
-  const repo = mkdtempSync(join(tmpdir(), "dotln-gate-inputs-"));
+  const repo = createFixtureRoot(join(tmpdir(), "dotln-gate-inputs-"));
   t.after(() => rmSync(repo, { recursive: true, force: true }));
   execGit(["init", "-q"], { cwd: repo });
+  excludeFixtureOwnership(repo);
   mkdirSync(join(repo, "scratch"));
   writeFileSync(join(repo, ".gitignore"), "scratch/\nnode_modules/\ndist/\n");
   writeFileSync(join(repo, "scratch/retained.txt"), "tracked\n");
@@ -3024,9 +3044,10 @@ test("WO-125 gate inputs include tracked ignored files and new installed roots, 
 });
 
 test("WO-125 VER-002 installed input case aliases include prospective roots", (t) => {
-  const repo = mkdtempSync(join(tmpdir(), "dotln-gate-case-"));
+  const repo = createFixtureRoot(join(tmpdir(), "dotln-gate-case-"));
   t.after(() => rmSync(repo, { recursive: true, force: true }));
   execGit(["init", "-q"], { cwd: repo });
+  excludeFixtureOwnership(repo);
   mkdirSync(join(repo, "node_modules"));
   mkdirSync(join(repo, "packages/skeleton/dist"), { recursive: true });
   mkdirSync(join(repo, "packages/future"));
@@ -3046,9 +3067,10 @@ test("WO-125 VER-002 installed input case aliases include prospective roots", (t
 });
 
 test("WO-125 VER-002 resolves dangling links and physical parent traversal", (t) => {
-  const repo = mkdtempSync(join(tmpdir(), "dotln-gate-symlink-"));
+  const repo = createFixtureRoot(join(tmpdir(), "dotln-gate-symlink-"));
   t.after(() => rmSync(repo, { recursive: true, force: true }));
   execGit(["init", "-q"], { cwd: repo });
+  excludeFixtureOwnership(repo);
   mkdirSync(join(repo, "scratch"));
   mkdirSync(join(repo, "packages/skeleton"), { recursive: true });
   writeFileSync(join(repo, ".gitignore"), "scratch/\n");
@@ -3073,9 +3095,10 @@ test("WO-125 VER-002 resolves dangling links and physical parent traversal", (t)
 });
 
 test("WO-125 VER-003 protects pre-existing hard links while ordinary scratch stays writable", (t) => {
-  const repo = mkdtempSync(join(tmpdir(), "dotln-gate-hardlink-"));
+  const repo = createFixtureRoot(join(tmpdir(), "dotln-gate-hardlink-"));
   t.after(() => rmSync(repo, { recursive: true, force: true }));
   execGit(["init", "-q"], { cwd: repo });
+  excludeFixtureOwnership(repo);
   mkdirSync(join(repo, "scratch"));
   writeFileSync(join(repo, ".gitignore"), "scratch/\n");
   writeFileSync(join(repo, "input.ts"), "export const value = 1;\n");
@@ -3150,8 +3173,9 @@ test("release cases use concurrent lanes, wait for preparation and require compl
 });
 
 test("console product and document selections execute every test exactly once", async (t) => {
-  const repo = mkdtempSync(join(tmpdir(), "dotln-console-dispatch-"));
+  const repo = createFixtureRoot(join(tmpdir(), "dotln-console-dispatch-"));
   execGit(["init", "-q"], { cwd: repo });
+  excludeFixtureOwnership(repo);
   t.after(() => rmSync(repo, { recursive: true, force: true }));
   const directory = join(repo, "packages/console/dist/test");
   mkdirSync(directory, { recursive: true });
@@ -3189,7 +3213,7 @@ test("console product and document selections execute every test exactly once", 
 });
 
 test("planning task dispatch delivers each selection flag to the executable", async (t) => {
-  const repo = mkdtempSync(join(tmpdir(), "dotln-plan-dispatch-"));
+  const repo = createFixtureRoot(join(tmpdir(), "dotln-plan-dispatch-"));
   t.after(() => rmSync(repo, { recursive: true, force: true }));
   mkdirSync(join(repo, "scripts"));
   writeFileSync(
@@ -3209,9 +3233,12 @@ test("planning task dispatch delivers each selection flag to the executable", as
 });
 
 test("product glob reads observe recursive records through sync, callback and promise APIs", async (t) => {
-  const repo = realpathSync(mkdtempSync(join(tmpdir(), "dotln-glob-guard-")));
+  const repo = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-glob-guard-")),
+  );
   t.after(() => rmSync(repo, { recursive: true, force: true }));
   runGit(repo, ["init", "-q"]);
+  excludeFixtureOwnership(repo);
   mkdirSync(join(repo, "docs/evidence/WO-999"), { recursive: true });
   writeFileSync(
     join(repo, "docs/evidence/WO-999/report.md"),
@@ -3291,10 +3318,11 @@ test("live progress arrives before a running process completes and remains bound
 });
 
 test("code identity follows tracked source and dependency bytes across processes and revisions", () => {
-  const repo = mkdtempSync(join(tmpdir(), "dotln-code-identity-"));
+  const repo = createFixtureRoot(join(tmpdir(), "dotln-code-identity-"));
   const fixtureGitOptions = { encoding: "utf8" };
   try {
     execGit(["-C", repo, "init", "-q"], fixtureGitOptions);
+    excludeFixtureOwnership(repo);
     // As in confinementFixture, no detached maintenance may race teardown.
     execGit(
       ["-C", repo, "config", "maintenance.auto", "false"],
@@ -3409,7 +3437,7 @@ const confinementFixture = (t) => {
   // Under a gate the root carries the run's tag, which the gate's own
   // abandoned-root check judges (WO-157 item 15).
   const tag = process.env.DOTLN_GATE_FIXTURE_TAG;
-  const repo = mkdtempSync(
+  const repo = createFixtureRoot(
     join(
       tmpdir(),
       tag ? `dotln-host-confinement-${tag}-` : "dotln-host-confinement-",
@@ -3428,6 +3456,7 @@ const confinementFixture = (t) => {
     stdio: ["ignore", "pipe", "pipe"],
   };
   runGit(repo, ["init", "-q"], fixtureGitOptions);
+  excludeFixtureOwnership(repo);
   // Every commit otherwise starts Git's detached automatic maintenance. Git
   // 2.55 estimates loose objects from objects/17 alone, so two there made a
   // fixture commit start a geometric repack still writing .git/objects/pack
@@ -3816,9 +3845,10 @@ test("WO-140 the recognized markers probe the path their sandbox protects and fa
       ["codex-cli", "CODEX_SANDBOX"],
     ],
   );
-  const repo = mkdtempSync(join(tmpdir(), "dotln-confinement-markers-"));
+  const repo = createFixtureRoot(join(tmpdir(), "dotln-confinement-markers-"));
   t.after(() => rmSync(repo, { recursive: true, force: true }));
   execGit(["init", "-q"], { cwd: repo });
+  excludeFixtureOwnership(repo);
   const [claude, codex] = confinementMarkers;
   assert.equal(claude.deniedDirectory(repo), join(repo, ".claude/hooks"));
   assert.equal(
@@ -3842,7 +3872,9 @@ test("WO-140 the probe classifies only a denied write as a sandbox, and every ot
     assert.equal(deniedWriteCode(code), true, code);
   for (const code of ["ENOENT", "ENOTDIR", "EEXIST", "ENOSPC", undefined])
     assert.equal(deniedWriteCode(code), false, String(code));
-  const directory = mkdtempSync(join(tmpdir(), "dotln-confinement-probe-"));
+  const directory = createFixtureRoot(
+    join(tmpdir(), "dotln-confinement-probe-"),
+  );
   t.after(() => {
     chmodSync(directory, 0o755);
     if (existsSync(join(directory, "denied")))
@@ -3934,7 +3966,9 @@ test("WO-140 a real Seatbelt denial under the real marker reads EPERM and is in 
     ).status === 0;
   // Inside a harness sandbox the nested profile is itself refused.
   if (!usable) return t.skip("sandbox-exec is unavailable or nested here");
-  const repo = realpathSync(mkdtempSync(join(tmpdir(), "dotln-seatbelt-")));
+  const repo = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-seatbelt-")),
+  );
   t.after(() => rmSync(repo, { recursive: true, force: true }));
   const hooks = join(repo, ".claude/hooks");
   mkdirSync(hooks, { recursive: true });
@@ -4053,7 +4087,7 @@ test("WO-157 the host-confinement fixture's commits start no background Git main
       0,
       "two loose objects under objects/17 are a state automatic maintenance acts on",
     );
-  const traces = mkdtempSync(join(tmpdir(), "dotln-maintenance-trace-"));
+  const traces = createFixtureRoot(join(tmpdir(), "dotln-maintenance-trace-"));
   t.after(() => rmSync(traces, { recursive: true, force: true }));
   writeFileSync(join(repo, "teardown.txt"), "teardown probe\n");
   runGit(repo, ["add", "teardown.txt"], fixtureGitOptions);
@@ -4096,7 +4130,7 @@ test("WO-157 a gate whose suites leave a host-confinement fixture root behind fa
     for (const path of planted) rmSync(path, { recursive: true, force: true });
   });
   // Another run's root in the shared temporary directory is never judged.
-  const foreign = mkdtempSync(
+  const foreign = createFixtureRoot(
     join(tmpdir(), "dotln-host-confinement-foreign-"),
   );
   planted.push(foreign);
@@ -4136,11 +4170,12 @@ test("WO-157 a gate whose suites leave a host-confinement fixture root behind fa
 
 test("WO-160 document failures rerun at the base, retain red status and record introduced/inherited labels", async (t) => {
   const repo = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-document-label-")),
+    createFixtureRoot(join(tmpdir(), "dotln-document-label-")),
   );
   t.after(() => rmSync(repo, { recursive: true, force: true }));
   const fixtureGitOptions = { exec: true, trim: true, encoding: "utf8" };
   runGit(repo, ["init", "-q", "-b", "main"], fixtureGitOptions);
+  excludeFixtureOwnership(repo);
   runGit(repo, ["config", "user.name", "Fixture"], fixtureGitOptions);
   runGit(
     repo,
@@ -4148,7 +4183,7 @@ test("WO-160 document failures rerun at the base, retain red status and record i
     fixtureGitOptions,
   );
   mkdirSync(join(repo, "scripts"));
-  writeFileSync(join(repo, ".gitignore"), "docs/control/local/\n");
+  writeFileSync(join(repo, ".gitignore"), "docs/control/local/\n.runtime/\n");
   writeFileSync(join(repo, "scripts/inherited.mjs"), "process.exitCode = 1;\n");
   writeFileSync(
     join(repo, "scripts/introduced.mjs"),
@@ -4233,7 +4268,7 @@ test("WO-160 document failures rerun at the base, retain red status and record i
 // Exercise actual child commands and durable rows across shell/session
 // boundaries, rather than an in-memory scheduler double (WO-186).
 function taskReuseFixture(t) {
-  const repo = mkdtempSync(join(tmpdir(), "dotln-task-reuse-"));
+  const repo = createFixtureRoot(join(tmpdir(), "dotln-task-reuse-"));
   t.after(() => rmSync(repo, { recursive: true, force: true }));
   for (const args of [
     ["init", "-q", "-b", "main"],
@@ -4245,7 +4280,7 @@ function taskReuseFixture(t) {
   mkdirSync(join(repo, "scripts"));
   writeFileSync(
     join(repo, ".gitignore"),
-    "docs/control/local/\nobserved.jsonl\nfail-beta\n",
+    "docs/control/local/\n.runtime/\nobserved.jsonl\nfail-beta\n",
   );
   for (const name of ["build", "alpha", "beta", "machine"])
     writeFileSync(
@@ -4309,7 +4344,7 @@ function sharedRefsFixture(t) {
     "-qm",
     "branch-local gate input",
   ]);
-  const origin = mkdtempSync(join(tmpdir(), "dotln-shared-origin-"));
+  const origin = createFixtureRoot(join(tmpdir(), "dotln-shared-origin-"));
   const worktree = `${repo}-worktree`;
   t.after(() => {
     rmSync(worktree, { recursive: true, force: true });
@@ -4357,6 +4392,338 @@ async function captureGate(args, repo, options) {
     console.log = log;
   }
 }
+
+test("gate judges abandoned host-confinement roots after owned fixture cleanup", async (t) => {
+  const { repo, table } = taskReuseFixture(t);
+  const helper = pathToFileURL(
+    join(root, "scripts/lib/temporary-roots.mjs"),
+  ).href;
+  writeFileSync(
+    join(repo, "scripts/alpha.mjs"),
+    `
+      import { createFixtureRoot, removeTemporaryPath } from ${JSON.stringify(helper)};
+      import { mkdirSync, writeFileSync } from "node:fs";
+      import { tmpdir } from "node:os";
+      import { join } from "node:path";
+      const fixture = createFixtureRoot(join(tmpdir(), "dotln-host-confinement-" + process.env.DOTLN_GATE_FIXTURE_TAG + "-"));
+      process.on("exit", () => removeTemporaryPath(fixture, { recursive: true, force: true }));
+      mkdirSync(".runtime", { recursive: true });
+      writeFileSync(".runtime/owned-confinement-root.json", JSON.stringify(fixture));
+    `,
+  );
+  const { row } = await captureGate([], repo, { table });
+  const fixture = JSON.parse(
+    readFileSync(join(repo, ".runtime/owned-confinement-root.json"), "utf8"),
+  );
+  t.after(() => rmSync(fixture, { recursive: true, force: true }));
+  assert.equal(existsSync(fixture), false);
+  assert.ok(row.temporaryCleanup.removed.includes(fixture));
+  assert.equal(row.exitCode, 0, row.output);
+  assert.equal(row.abandonedRoots, undefined);
+  const recorded = readGateChecks(repo).findLast(
+    (item) => item.temporaryGateId === row.temporaryGateId,
+  );
+  assert.equal(recorded.exitCode, 0);
+  assert.equal(recorded.abandonedRoots, undefined);
+});
+
+test("the macOS daemon sample requests an untruncated command and reads its resident bytes", () => {
+  const firstColumn = "/System/Library/  18272\n";
+  const lastColumn =
+    " 18272 /System/Library/Frameworks/CoreServices.framework/Frameworks/FSEvents.framework/Support/fseventsd\n 4 fseventsd\n 999 fseventsd-helper\n";
+  const sample = sampleFileEventDaemon({
+    platform: "darwin",
+    execFile: (file, args) => {
+      assert.equal(file, "ps");
+      const commandLast = args.join(" ") === "-A -o rss=,comm=";
+      assert.ok(
+        commandLast,
+        "macOS truncates comm when it is not the last column",
+      );
+      return commandLast ? lastColumn : firstColumn;
+    },
+  });
+  assert.equal(sample.residentBytes, (18272 + 4) * 1024);
+  assert.equal(sample.unavailable, undefined);
+  assert.match(sample.source, /rss=,comm=/);
+  const truncated = sampleFileEventDaemon({
+    platform: "darwin",
+    execFile: () => firstColumn,
+  });
+  assert.equal(truncated.residentBytes, null);
+  assert.match(
+    truncated.unavailable,
+    /not identified in the RSS-first process table/,
+  );
+  assert.equal(
+    sampleFileEventDaemon({
+      platform: "linux",
+      execFile: () => assert.fail("not macOS"),
+    }).source,
+    "not-macos",
+  );
+  const unavailable = sampleFileEventDaemon({
+    platform: "darwin",
+    execFile: () => {
+      throw new Error("process table denied");
+    },
+  });
+  assert.equal(unavailable.residentBytes, null);
+  assert.equal(unavailable.unavailable, "process table denied");
+});
+
+test("gate cleanup removes seed-derived clones and refuses a passing row with invalid nested ownership", async (t) => {
+  const { repo, table } = taskReuseFixture(t);
+  const helper = pathToFileURL(
+    join(root, "scripts/lib/temporary-roots.mjs"),
+  ).href;
+  const gitHelper = pathToFileURL(join(root, "scripts/lib/git.mjs")).href;
+  writeFileSync(
+    join(repo, "scripts/alpha.mjs"),
+    `
+    import { createFixtureRoot } from ${JSON.stringify(helper)};
+    import { runGit } from ${JSON.stringify(gitHelper)};
+    import { mkdirSync, writeFileSync } from "node:fs";
+    import { tmpdir } from "node:os";
+    import { join } from "node:path";
+    const parent = createFixtureRoot(join(tmpdir(), "dotln-seed-derived-"));
+    const seed = createFixtureRoot(join(parent, "seed-"));
+    writeFileSync(join(seed, ".gitignore"), ".dotln-owner.json\\n");
+    writeFileSync(join(seed, "payload"), "source material");
+    const git = (...args) => runGit(seed, args);
+    git("init", "-q"); git("add", ".");
+    git("-c", "user.name=Fixture", "-c", "user.email=fixture@example.invalid", "-c", "commit.gpgsign=false", "commit", "-qm", "fixture seed");
+    runGit(parent, ["clone", "-q", seed, join(parent, "clone")]);
+    mkdirSync(".runtime", {recursive: true});
+    writeFileSync(".runtime/seed-parent.json", JSON.stringify(parent));
+  `,
+  );
+  let { row } = await captureGate([], repo, { table });
+  const parent = JSON.parse(
+    readFileSync(join(repo, ".runtime/seed-parent.json"), "utf8"),
+  );
+  t.after(() => rmSync(parent, { recursive: true, force: true }));
+  assert.equal(row.exitCode, 0, row.output);
+  assert.equal(existsSync(parent), false);
+  const passingScript = readFileSync(join(repo, "scripts/alpha.mjs"), "utf8");
+  writeFileSync(
+    join(repo, "scripts/alpha.mjs"),
+    passingScript +
+      `
+    const invalid = join(parent, "clone", ".dotln-owner.json");
+    writeFileSync(invalid, "unattributable metadata");
+  `,
+  );
+  ({ row } = await captureGate([], repo, { table }));
+  const retained = JSON.parse(
+    readFileSync(join(repo, ".runtime/seed-parent.json"), "utf8"),
+  );
+  t.after(() => rmSync(retained, { recursive: true, force: true }));
+  assert.equal(row.exitCode, 1);
+  assert.ok(existsSync(retained));
+  assert.ok(
+    row.temporaryCleanup.blockers.some(
+      (item) => item.path === join(retained, "clone"),
+    ),
+  );
+});
+
+test("a passing gate accounts for top-level captures and preserves a live worker", async (t) => {
+  const { repo, table } = taskReuseFixture(t);
+  const helper = pathToFileURL(
+    join(root, "scripts/lib/temporary-roots.mjs"),
+  ).href;
+  writeFileSync(
+    join(repo, "scripts/alpha.mjs"),
+    `
+      import { createTemporaryRoot } from ${JSON.stringify(helper)};
+      import { mkdirSync, writeFileSync } from "node:fs";
+      import { tmpdir } from "node:os";
+      import { join } from "node:path";
+      const dead = createTemporaryRoot(join(tmpdir(), "dotln-gate-dead-capture-"), { class: "worker-capture" });
+      const live = createTemporaryRoot(join(tmpdir(), "dotln-gate-live-capture-"), { class: "worker-capture", owner: { pid: ${process.pid} } });
+      mkdirSync(".runtime", { recursive: true });
+      writeFileSync(".runtime/captures.json", JSON.stringify({ dead, live }));
+    `,
+  );
+  const { row } = await captureGate([], repo, { table });
+  const paths = JSON.parse(
+    readFileSync(join(repo, ".runtime/captures.json"), "utf8"),
+  );
+  t.after(() => {
+    for (const path of Object.values(paths))
+      rmSync(path, { recursive: true, force: true });
+  });
+  assert.equal(row.exitCode, 0, row.output);
+  assert.equal(existsSync(paths.dead), false);
+  assert.equal(existsSync(paths.live), true);
+  assert.ok(row.temporaryCleanup.removed.includes(paths.dead));
+  assert.ok(
+    row.temporaryCleanup.retained.some(
+      (item) => item.path === paths.live && /live/.test(item.reason),
+    ),
+  );
+  assert.deepEqual(row.temporaryCleanup.blockers, []);
+  const recorded = readGateChecks(repo).findLast(
+    (item) => item.temporaryGateId === row.temporaryGateId,
+  );
+  assert.deepEqual(recorded.temporaryCleanup, row.temporaryCleanup);
+});
+
+test("nested suites in copied repositories retain the outer gate's ledger and outcome", async (t) => {
+  const { repo, table } = taskReuseFixture(t);
+  const copy = join(repo, "nested-repository");
+  copyFixtureFiles(
+    root,
+    copy,
+    "scripts/test-runner.test.fixture-inputs.json",
+    "nested temporary helper",
+  );
+  assert.equal(existsSync(join(copy, "scripts/lib/host-resources.mjs")), false);
+  const report = join(repo, ".runtime/nested-roots.json");
+  const helperFile = join(copy, "scripts/nested-helper.mjs");
+  writeFileSync(
+    helperFile,
+    `
+    import { createTemporaryRoot, readTemporaryOwner, removeTemporaryPath } from "./lib/temporary-roots.mjs";
+    import { existsSync, mkdirSync, writeFileSync } from "node:fs";
+    import { dirname } from "node:path";
+    const paths = ["teardown", "interrupted"].map((name) =>
+      createTemporaryRoot("dotln-nested-" + name + "-", { class: "gate-fixture" }));
+    removeTemporaryPath(paths[0], { recursive: true, force: true });
+    mkdirSync(dirname(${JSON.stringify(report)}), { recursive: true });
+    writeFileSync(${JSON.stringify(report)}, JSON.stringify(paths.map((path) => ({
+      path, existsAfterTeardown: existsSync(path), record: readTemporaryOwner(path)
+    }))));
+  `,
+  );
+  const runner = pathToFileURL(join(root, "scripts/test-runner.mjs")).href;
+  const script = `
+    import { executeSuite } from ${JSON.stringify(runner)};
+    const result = await executeSuite({
+      name: "nested-leaf", command: [process.execPath, "scripts/nested-helper.mjs"]
+    }, ${JSON.stringify(copy)}, 30000);
+    if (result.exitCode !== 0) throw new Error(result.output);
+  `;
+  for (const failed of [false, true]) {
+    writeFileSync(
+      join(repo, "scripts/alpha.mjs"),
+      script + (failed ? "process.exitCode = 1;\n" : ""),
+    );
+    const { row } = await captureGate([], repo, { table });
+    assert.equal(row.exitCode, failed ? 1 : 0, row.output);
+    const roots = JSON.parse(readFileSync(report, "utf8"));
+    for (const { path, existsAfterTeardown, record } of roots) {
+      t.after(() => rmSync(path, { recursive: true, force: true }));
+      assert.equal(existsAfterTeardown, true);
+      assert.equal(record.owner.repository, realpathSync(repo));
+      assert.equal(record.owner.gateId, row.temporaryGateId);
+      assert.equal(record.owner.suite, "alpha");
+      assert.equal(
+        record.owner.birth,
+        null,
+        "the copied helper has no process-table module",
+      );
+      assert.equal(existsSync(path), failed);
+      if (failed) {
+        assert.ok(
+          row.temporaryCleanup.retained.some(
+            (item) => item.path === path && /diagnosis/.test(item.reason),
+          ),
+        );
+        const ended = JSON.parse(
+          readFileSync(join(path, ".dotln-owner.json"), "utf8"),
+        );
+        assert.equal(ended.outcome, "failed");
+        assert.equal(ended.retentionHours, 24);
+      } else assert.ok(row.temporaryCleanup.removed.includes(path));
+    }
+    assert.deepEqual(row.temporaryCleanup.blockers, []);
+    assert.deepEqual(
+      readGateChecks(repo).findLast(
+        (item) => item.temporaryGateId === row.temporaryGateId,
+      ).temporaryCleanup,
+      row.temporaryCleanup,
+    );
+    assert.equal(
+      existsSync(join(copy, ".runtime/temporary-roots/roots")),
+      false,
+    );
+  }
+});
+
+test("gate completion removes passing fixtures, retains failed fixtures and records churn", async (t) => {
+  const { repo, table } = taskReuseFixture(t);
+  const helper = pathToFileURL(
+    join(root, "scripts/lib/temporary-roots.mjs"),
+  ).href;
+  for (const name of ["alpha", "beta"])
+    writeFileSync(
+      join(repo, `scripts/${name}.mjs`),
+      `
+      import { createTemporaryRoot, removeTemporaryPath } from ${JSON.stringify(helper)};
+      import test from "node:test";
+      import assert from "node:assert/strict";
+      import { mkdirSync, writeFileSync } from "node:fs";
+      import { tmpdir } from "node:os";
+      import { join } from "node:path";
+      const container = createTemporaryRoot(join(tmpdir(), "dotln-gate-cleanup-${name}-"), { class: "gate-fixture", repository: process.cwd() });
+      process.on("exit", () => removeTemporaryPath(container, { recursive: true, force: true }));
+      test("ordinary teardown", (t) => {
+        const fixture = createTemporaryRoot(join(container, "fixture-"), { class: "gate-fixture", repository: process.cwd() });
+        t.after(() => removeTemporaryPath(fixture, { recursive: true, force: true }));
+        writeFileSync(join(fixture, "payload"), "fixture payload");
+        mkdirSync(".runtime/observed-roots", { recursive: true });
+        writeFileSync(".runtime/observed-roots/${name}.json", JSON.stringify({ fixture, container }));
+        ${name === "beta" ? 'assert.fail("diagnosis fixture");' : "assert.ok(true);"}
+      });
+    `,
+    );
+  const { row } = await captureGate([], repo, { table });
+  const paths = Object.fromEntries(
+    ["alpha", "beta"].map((name) => [
+      name,
+      JSON.parse(
+        readFileSync(
+          join(repo, `.runtime/observed-roots/${name}.json`),
+          "utf8",
+        ),
+      ).fixture,
+    ]),
+  );
+  t.after(() => rmSync(paths.beta, { recursive: true, force: true }));
+  assert.equal(row.exitCode, 1);
+  assert.equal(existsSync(paths.alpha), false);
+  assert.equal(existsSync(paths.beta), true);
+  const failedContainer = JSON.parse(
+    readFileSync(join(repo, ".runtime/observed-roots/beta.json"), "utf8"),
+  ).container;
+  assert.ok(
+    existsSync(failedContainer),
+    "exit teardown also preserves the failing suite's container",
+  );
+  t.after(() => rmSync(failedContainer, { recursive: true, force: true }));
+  const owner = JSON.parse(
+    readFileSync(join(paths.beta, ".dotln-owner.json"), "utf8"),
+  );
+  assert.equal(owner.outcome, "failed");
+  assert.equal(owner.retentionHours, 24);
+  assert.equal(owner.owner.gateId, row.temporaryGateId);
+  assert.ok(row.temporaryCleanup.removed.includes(paths.alpha));
+  assert.ok(
+    row.temporaryCleanup.retained.some((item) => item.path === paths.beta),
+  );
+  assert.ok(row.filesCreated > 0);
+  assert.ok(row.filesDeleted > 0);
+  assert.ok(row.bytesWritten > 0);
+  assert.equal(row.filesCreated, row.churn.filesCreated);
+  for (const sample of [row.fileEvents.before, row.fileEvents.after])
+    assert.ok(sample.residentBytes === null || sample.residentBytes >= 0);
+  const recorded = readGateChecks(repo).findLast(
+    (item) => item.temporaryGateId === row.temporaryGateId,
+  );
+  assert.deepEqual(recorded.temporaryCleanup, row.temporaryCleanup);
+});
 
 test("WO-198 shared-ref comparisons name absence transitions and isolate unreadable fields", (t) => {
   const before = {
@@ -4495,9 +4862,10 @@ test("WO-198 origin/main created between failed linked-worktree gates is named e
 });
 
 test("WO-198 shared refs tolerate absent branches and count only annotated v tags", (t) => {
-  const repo = mkdtempSync(join(tmpdir(), "dotln-shared-absent-"));
+  const repo = createFixtureRoot(join(tmpdir(), "dotln-shared-absent-"));
   t.after(() => rmSync(repo, { recursive: true, force: true }));
   runGit(repo, ["init", "-q", "-b", "topic"]);
+  excludeFixtureOwnership(repo);
   assert.deepEqual(readSharedRefs(repo), {
     originMain: "absent",
     main: "absent",
@@ -5966,7 +6334,7 @@ test("WO-186 VER-001 an attested output is carried in another session, and a wor
 
 test("WO-186 VER-001 the build output digest covers wildcard directories by bytes and refuses what it cannot cover", async (t) => {
   const { buildOutputDigest } = await import("./lib/gate-reuse.mjs");
-  const root = mkdtempSync(join(tmpdir(), "dotln-output-digest-"));
+  const root = createFixtureRoot(join(tmpdir(), "dotln-output-digest-"));
   t.after(() => rmSync(root, { recursive: true, force: true }));
   for (const name of ["a", "b"]) {
     mkdirSync(join(root, `pk/${name}/dist/src`), { recursive: true });
@@ -6704,7 +7072,7 @@ await fs.promises.copyFile(file,"copy-promise.txt"); await fs.promises.cp(file,"
 test("WO-186 VER-001 product tasks reject recursive listings, watches and copies from the root or an ancestor, and blob and link reads of records", async (t) => {
   // A private parent keeps the ancestor walk small and owned by the fixture.
   const parent = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-read-ancestor-")),
+    createFixtureRoot(join(tmpdir(), "dotln-read-ancestor-")),
   );
   t.after(() => rmSync(parent, { recursive: true, force: true }));
   const repo = join(parent, "repo");
@@ -6712,6 +7080,7 @@ test("WO-186 VER-001 product tasks reject recursive listings, watches and copies
   mkdirSync(join(repo, "scripts"));
   mkdirSync(join(repo, "out"));
   runGit(repo, ["init", "-q", "-b", "main"]);
+  excludeFixtureOwnership(repo);
   writeFileSync(join(repo, ".gitignore"), "docs/control/local/\nout/\n");
   writeFileSync(join(repo, "docs/evidence/WO-999/report.md"), "live report\n");
   writeFileSync(join(repo, "docs/input.md"), "tracked document\n");
@@ -7144,9 +7513,25 @@ test("peer sync", () => {
   // Reporter events still supply the durations.
   assert.equal(measured.slowestCases.length, 5);
   assert.ok(measured.slowestCases.every((row) => row.durationMs >= 1000));
-  // The marker file is the task's own and is gone with it.
+  // A nested task keeps its marker in the completing gate's ledger. Without
+  // a gate, explicit task teardown removes the marker immediately.
   assert.match(markers, /dotln-case-markers-/u);
-  assert.equal(existsSync(dirname(markers)), false);
+  const markerRoot = dirname(markers);
+  if (process.env.DOTLN_TEMP_GATE_REPOSITORY) {
+    const marker = readTemporaryOwner(markerRoot);
+    assert.equal(marker?.class, "gate-fixture");
+    assert.equal(
+      marker.owner.repository,
+      realpathSync(process.env.DOTLN_TEMP_GATE_REPOSITORY),
+    );
+    assert.equal(marker.owner.gateId, process.env.DOTLN_TEMP_GATE);
+    assert.equal(marker.owner.suite, process.env.DOTLN_TEMP_SUITE);
+    assert.ok(
+      registeredTemporaryRoots(marker.owner.repository).some(
+        (entry) => entry.path === markerRoot && entry.token === marker.token,
+      ),
+    );
+  } else assert.equal(existsSync(markerRoot), false);
   // A test process that dies inside a case leaves a start marker with no
   // end. The heartbeat drops it with the process and names what still runs.
   writeFileSync(
@@ -7674,7 +8059,7 @@ test("WO-186 FINAL-001 machinery selection preserves removed, quoted and unlista
 });
 
 test("WO-186 FINAL-001 a reporter loads from a checkout with URL delimiter characters", async (t) => {
-  const directory = mkdtempSync(join(tmpdir(), "dotln-reporter-url-"));
+  const directory = createFixtureRoot(join(tmpdir(), "dotln-reporter-url-"));
   t.after(() => rmSync(directory, { recursive: true, force: true }));
   const checkout = join(directory, "checkout #?%");
   for (const entry of [
@@ -7960,7 +8345,9 @@ test("structural tasks lead every selection exactly once before a suite or build
 
 test("declarations diagnose missing suite imports and copied fixture inputs before execution", async (t) => {
   const { checkDeclarations } = await import("./structural-checks.mjs");
-  const repo = mkdtempSync(join(tmpdir(), "dotln-structural-declarations-"));
+  const repo = createFixtureRoot(
+    join(tmpdir(), "dotln-structural-declarations-"),
+  );
   t.after(() => rmSync(repo, { recursive: true, force: true }));
   mkdirSync(join(repo, "scripts"));
   writeFileSync(join(repo, "scripts/entry.mjs"), 'import "./leaf.mjs";\n');
@@ -8027,9 +8414,15 @@ test("host structural check refuses warning and critical samples and reports the
       physicalBytes: 8192,
       source: "fixture",
     };
-    const result = checkHost(sample);
+    const fileEvents = {
+      residentBytes: 1024,
+      source: "fixture",
+      observedAt: "2026-10-27T00:00:00.000Z",
+    };
+    const result = checkHost(sample, { fileEvents });
     assert.equal(result.exitCode, level === "normal" ? 0 : 1);
     assert.deepEqual(result.sample, sample);
+    assert.deepEqual(result.fileEvents, fileEvents);
     assert.match(result.output, /swapBytes=1234; physicalBytes=8192/);
   }
 });
@@ -8372,7 +8765,7 @@ test("launchpad files retain all 37 cases and run at most two independent deadli
 });
 
 test("a malformed kit declaration reaches the CLI refusal instead of failing during import", (t) => {
-  const repo = mkdtempSync(join(tmpdir(), "dotln-runner-import-"));
+  const repo = createFixtureRoot(join(tmpdir(), "dotln-runner-import-"));
   t.after(() => rmSync(repo, { recursive: true, force: true }));
   for (const entry of [
     "scripts",
@@ -8383,6 +8776,7 @@ test("a malformed kit declaration reaches the CLI refusal instead of failing dur
     cpSync(join(root, entry), join(repo, entry), { recursive: true });
   }
   runGit(repo, ["init", "-q"]);
+  excludeFixtureOwnership(repo);
   writeFileSync(join(repo, "KIT-MANIFEST.json"), "{}\n");
   mkdirSync(join(repo, "packages/core/tsconfig.json"), { recursive: true });
   for (const flags of [["--list"], ["--only", "format", "--list"]]) {
@@ -8506,7 +8900,7 @@ test("copied fixtures use the checked declaration and directory coverage never s
   const { copyFixtureFiles } = await import("./lib/fixture-inputs.mjs");
   const { uncoveredFixtureInputs, copiedFixtureClosures } =
     await import("./lib/machinery-coverage.mjs");
-  const repo = mkdtempSync(join(tmpdir(), "dotln-declared-copy-"));
+  const repo = createFixtureRoot(join(tmpdir(), "dotln-declared-copy-"));
   t.after(() => rmSync(repo, { recursive: true, force: true }));
   mkdirSync(join(repo, "scripts"));
   const row = {
@@ -8557,7 +8951,7 @@ test("copied fixtures use the checked declaration and directory coverage never s
 });
 
 test("priority-regression: a complete selection leads with suites whose inputs changed since the newest gate row", (t) => {
-  const repo = mkdtempSync(join(tmpdir(), "dotln-changed-first-"));
+  const repo = createFixtureRoot(join(tmpdir(), "dotln-changed-first-"));
   t.after(() => rmSync(repo, { recursive: true, force: true }));
   const git = (...args) => {
     const run = runGit(
@@ -8574,6 +8968,7 @@ test("priority-regression: a complete selection leads with suites whose inputs c
     assert.equal(run.status, 0, run.stderr);
   };
   git("init", "-q");
+  excludeFixtureOwnership(repo);
   mkdirSync(join(repo, "scripts"), { recursive: true });
   mkdirSync(join(repo, "packages/delta/src"), { recursive: true });
   writeFileSync(join(repo, "scripts/alpha.mjs"), "export const alpha = 1;\n");
@@ -8581,6 +8976,7 @@ test("priority-regression: a complete selection leads with suites whose inputs c
   writeFileSync(join(repo, "packages/delta/src/a.ts"), "export {};\n");
   git("add", "-A");
   git("-c", "maintenance.auto=false", "commit", "-q", "-m", "fixture");
+  assert.equal(runGit(repo, ["ls-files", ".dotln-owner.json"]), "");
   const table = [
     { name: "alpha", sources: ["scripts/alpha"] },
     { name: "beta", sources: ["scripts/beta.mjs"] },
@@ -8905,7 +9301,7 @@ test("per-lane host admission compares the divided gate share with measured task
   const { hostLaneCapacity, largestTaskPeakRss, memoryBudgets } =
     await import("./lib/host-resources.mjs");
   const { checkHost } = await import("./structural-checks.mjs");
-  const repo = mkdtempSync(join(tmpdir(), "dotln-host-budget-"));
+  const repo = createFixtureRoot(join(tmpdir(), "dotln-host-budget-"));
   t.after(() => rmSync(repo, { recursive: true, force: true }));
   const sample = {
     level: "normal",
@@ -8937,7 +9333,7 @@ test("per-lane host admission compares the divided gate share with measured task
 test("exclusive overlap uses only measured light peers and preserves its nested lease", async (t) => {
   const { acquireHostLaneCapacity, acquireHostLanes } =
     await import("./lib/host-lanes.mjs");
-  const dir = mkdtempSync(join(tmpdir(), "dotln-overlap-"));
+  const dir = createFixtureRoot(join(tmpdir(), "dotln-overlap-"));
   t.after(() => rmSync(dir, { recursive: true, force: true }));
   await acquireHostLaneCapacity({ directory: dir, capacity: 8 });
   const samples = [
@@ -9069,7 +9465,7 @@ test("exclusive overlap uses only measured light peers and preserves its nested 
 test("an exclusive gate reserves unused overlap slots against an independent gate", async (t) => {
   const { acquireHostLaneCapacity, acquireHostLanes } =
     await import("./lib/host-lanes.mjs");
-  const directory = mkdtempSync(join(tmpdir(), "dotln-exclusive-host-"));
+  const directory = createFixtureRoot(join(tmpdir(), "dotln-exclusive-host-"));
   t.after(() => rmSync(directory, { recursive: true, force: true }));
   await acquireHostLaneCapacity({ directory, capacity: 8 });
   const rows = await scheduleSuites(
@@ -9242,9 +9638,10 @@ test("target-worktree file tasks keep all declared cases and two independent dea
 });
 
 test("review listing includes every available machinery declaration without a change selection", async (t) => {
-  const repo = mkdtempSync(join(tmpdir(), "dotln-review-list-"));
+  const repo = createFixtureRoot(join(tmpdir(), "dotln-review-list-"));
   t.after(() => rmSync(repo, { recursive: true, force: true }));
   runGit(repo, ["init", "-q", "-b", "main"]);
+  excludeFixtureOwnership(repo);
   writeFileSync(join(repo, "README.md"), "Fixture\n");
   runGit(repo, ["add", "."]);
   runGit(repo, [
@@ -9301,10 +9698,11 @@ test("review listing includes every available machinery declaration without a ch
 
 test("Preflight keeps a complete structural pass after a passing partial and refuses a failing partial", async (t) => {
   const repo = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-partial-preflight-")),
+    createFixtureRoot(join(tmpdir(), "dotln-partial-preflight-")),
   );
   t.after(() => rmSync(repo, { recursive: true, force: true }));
   execGit(["init", "-q", "-b", "main", repo]);
+  excludeFixtureOwnership(repo);
   writeFileSync(join(repo, "fixture.mjs"), "export const value = 1;\n");
   execGit(["add", "."], { cwd: repo });
   execGit(

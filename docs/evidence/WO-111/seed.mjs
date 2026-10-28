@@ -2,13 +2,8 @@
 // Create the WO-111 public synthetic target and an isolated control launchpad.
 // Physical locations stay in ignored local state; this file is the generator.
 import { execFileSync } from "node:child_process";
-import {
-  mkdirSync,
-  mkdtempSync,
-  readFileSync,
-  realpathSync,
-  writeFileSync,
-} from "node:fs";
+import { createFixtureRoot } from "../../../scripts/lib/temporary-roots.mjs";
+import { mkdirSync, readFileSync, realpathSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -65,7 +60,7 @@ export function prepare(returnProof = false) {
     git(TOOL_ROOT, "rev-parse", "--show-toplevel") !== TOOL_ROOT
   )
     throw new Error("run from the selected DotLn Git root");
-  const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-wo111-")));
+  const root = createFixtureRoot(join(tmpdir(), "dotln-wo111-"));
   const target = join(root, "target");
   const launchpad = join(root, "launchpad");
   mkdirSync(target);

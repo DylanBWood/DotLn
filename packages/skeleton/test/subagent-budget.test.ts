@@ -1,14 +1,11 @@
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "../src/temporary-roots.js";
 import test, { type TestContext } from "node:test";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
-import {
-  mkdtempSync,
-  mkdirSync,
-  readFileSync,
-  readdirSync,
-  rmSync,
-  writeFileSync,
-} from "node:fs";
+import { mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
@@ -20,7 +17,7 @@ import {
 } from "../src/subagent-budget.js";
 
 function fixture(t: TestContext, cap: number | null = 3) {
-  const root = mkdtempSync(join(tmpdir(), "dotln-subagent-budget-"));
+  const root = createFixtureRoot(join(tmpdir(), "dotln-subagent-budget-"));
   const directory = join(root, "docs/control/local/harness");
   mkdirSync(join(root, "docs/control"), { recursive: true });
   const budgets = (value: unknown) =>

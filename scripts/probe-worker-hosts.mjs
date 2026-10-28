@@ -1,13 +1,15 @@
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import {
-  mkdtempSync,
   mkdirSync,
   writeFileSync,
   readFileSync,
   openSync,
   closeSync,
-  rmSync,
   realpathSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
@@ -26,7 +28,7 @@ const run = (binary, args, cwd) => {
   const episode = binary === "codex" ? startCodexEpisode() : null;
   // Claude's help can exit before its pipe flushes. A regular file captures
   // the complete bounded help rather than misclassifying a truncated pipe.
-  const capture = mkdtempSync(join(tmpdir(), "dotln-worker-help-"));
+  const capture = createFixtureRoot(join(tmpdir(), "dotln-worker-help-"));
   const file = join(capture, "stdout");
   const fd = openSync(file, "wx", 0o600);
   try {
@@ -97,7 +99,9 @@ for (const flag of [
   else throw new Error(`Claude required control absent: ${flag}`);
 
 if (process.argv.includes("--sandbox")) {
-  const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-worker-probe-")));
+  const root = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-worker-probe-")),
+  );
   const mount = join(root, "mount");
   mkdirSync(mount);
   writeFileSync(join(mount, "allowed"), "fixture-in-mount\n");

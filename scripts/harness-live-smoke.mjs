@@ -1,3 +1,4 @@
+import { createFixtureRoot } from "./lib/temporary-roots.mjs";
 import { write as writeFixture, json as prettyJson } from "./lib/helpers.mjs";
 import { runGit } from "./lib/git.mjs";
 import { docPath, docRelative, findLaunchpad } from "./lib/config.mjs";
@@ -8,7 +9,6 @@ import {
   cpSync,
   existsSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   readdirSync,
   realpathSync,
@@ -67,7 +67,7 @@ assert.ok(
   "live observations are immutable; select the next attempt",
 );
 const scratch = realpathSync(
-  mkdtempSync(join(tmpdir(), "dotln-harness-live-")),
+  createFixtureRoot(join(tmpdir(), "dotln-harness-live-")),
 );
 const write = (path, text) => writeFixture(scratch, path, text);
 runGit(scratch, ["init", "-b", "wo-999"], fixtureGitOptions);

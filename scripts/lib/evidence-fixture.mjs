@@ -1,14 +1,16 @@
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "./temporary-roots.mjs";
 import { execGit } from "./git.mjs";
 import { spawnSync } from "node:child_process";
 import {
   cpSync,
   existsSync,
   mkdirSync,
-  mkdtempSync,
   readdirSync,
   readFileSync,
   realpathSync,
-  rmSync,
   symlinkSync,
   writeFileSync,
 } from "node:fs";
@@ -28,7 +30,7 @@ const paths = (...args) =>
  * in the copy is the compiler every replay loads (WO-154 VER-001). */
 export function editionCopy(t, { workspace = false } = {}) {
   const parent = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-evidence-sources-")),
+    createFixtureRoot(join(tmpdir(), "dotln-evidence-sources-")),
   );
   t.after(() => rmSync(parent, { recursive: true, force: true }));
   const copy = join(parent, "repository");

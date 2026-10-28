@@ -1,3 +1,8 @@
+import {
+  createWorkerCapture,
+  assignTemporaryProcess,
+  removeTemporaryPath as rmSync,
+} from "./temporary-roots.js";
 import { spawn } from "node:child_process";
 import { createHash } from "node:crypto";
 import { observedExecFileSync as execFileSync } from "./gate-deadlines.mjs";
@@ -11,12 +16,10 @@ import {
   fstatSync,
   lstatSync,
   mkdirSync,
-  mkdtempSync,
   openSync,
   readdirSync,
   readFileSync,
   realpathSync,
-  rmSync,
   symlinkSync,
   writeFileSync,
 } from "node:fs";
@@ -118,7 +121,7 @@ export const runWorkerProcess: ProcessRunner = (launch) => {
     "worker-transport:process",
     launch.timeoutMs,
   );
-  const capture = mkdtempSync(join(tmpdir(), "dotln-worker-output-"));
+  const capture = createWorkerCapture(join(tmpdir(), "dotln-worker-output-"));
   const file = join(capture, "stdout");
   const fd = openSync(file, "wx", 0o600);
   const grouped =
@@ -149,6 +152,9 @@ export const runWorkerProcess: ProcessRunner = (launch) => {
       ...(grouped ? { detached: true } : {}),
     },
   );
+  child.once("spawn", () => {
+    if (child.pid) assignTemporaryProcess(capture, child.pid);
+  });
   let live = false;
   let settled = false;
   let stderr = "";
@@ -585,7 +591,9 @@ export function startCodexEpisode(
   const before = configDigests(config);
   let home: string;
   try {
-    home = mkdtempSync(join(tmpdir(), `dotln-codex-home-${process.pid}-`));
+    home = createWorkerCapture(
+      join(tmpdir(), `dotln-codex-home-${process.pid}-`),
+    );
   } catch {
     throw new WorkerFailure("profile-refused", "isolated Codex home");
   }
@@ -1388,7 +1396,9 @@ abstract class CliWorkOrderTransport implements WorkOrderTransport {
     now: () => number,
     options?: { readonly launchGate?: string },
   ): TransportDispatch<TransportResultFor<R>> {
-    const schemaDirectory = mkdtempSync(join(tmpdir(), "dotln-worker-schema-"));
+    const schemaDirectory = createWorkerCapture(
+      join(tmpdir(), "dotln-worker-schema-"),
+    );
     let episode: CodexEpisode | undefined;
     try {
       const schemaPath = join(schemaDirectory, "result.json");

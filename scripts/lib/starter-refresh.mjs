@@ -1,3 +1,7 @@
+import {
+  createScratchRoot,
+  removeTemporaryPath as rmSync,
+} from "./temporary-roots.mjs";
 import { spawnSync } from "node:child_process";
 import { createHash, randomUUID } from "node:crypto";
 import {
@@ -5,11 +9,9 @@ import {
   chmodSync,
   lstatSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   readlinkSync,
   realpathSync,
-  rmSync,
   renameSync,
   writeFileSync,
   symlinkSync,
@@ -190,7 +192,7 @@ const ownCommand = (root, script, action) => {
 // redirect the read. Import only the resulting objects into its tracking ref.
 const fetchMain = (checkout, url) => {
   const lane = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-starter-fetch-")),
+    createScratchRoot(join(tmpdir(), "dotln-starter-fetch-")),
   );
   try {
     git(lane, ["init", "--quiet", "--bare"]);
@@ -647,7 +649,7 @@ const refreshOne = async ({ main, head, tag, dryRun }, sibling) => {
       return row;
     }
     scratch = realpathSync(
-      mkdtempSync(join(tmpdir(), "dotln-starter-refresh-")),
+      createScratchRoot(join(tmpdir(), "dotln-starter-refresh-")),
     );
     worktree = join(scratch, "worktree");
     const scratchStat = lstatSync(scratch);

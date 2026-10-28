@@ -1,0 +1,18 @@
+{
+  "command": "npm run test:docs",
+  "checkId": "npm run test:docs",
+  "evidenceRef": "host-gate:ebf2aea465086f52b93a212e714dda4e9b3a961060df6929697eb8973d9ff6c2:npm run test:docs",
+  "recordedAt": "2026-10-27T18:17:51.154Z",
+  "codeIdentity": "ebf2aea465086f52b93a212e714dda4e9b3a961060df6929697eb8973d9ff6c2",
+  "durationMs": 90906,
+  "exitCode": 1,
+  "failures": [
+    "[docs-check] FAIL docs/evidence/WO-233/repair-instance-reproduction.json:49: absolute home path in a record; write a repository-relative path or a placeholder such as <home>/ or <worktree>/",
+    "[docs-check] FAIL docs/evidence/WO-233/repair-nested-control.json:17: absolute home path in a record; write a repository-relative path or a placeholder such as <home>/ or <worktree>/",
+    "[docs-check] FAIL docs/evidence/WO-233/repair-nested-control.json:36: absolute home path in a record; write a repository-relative path or a placeholder such as <home>/ or <worktree>/",
+    "[docs-check] FAIL docs/evidence/WO-233/repair-nested-control.json:137: absolute home path in a record; write a repository-relative path or a placeholder such as <home>/ or <worktree>/",
+    "[docs-check] FAIL docs/evidence/WO-233/repair-nested-control.json:156: absolute home path in a record; write a repository-relative path or a placeholder such as <home>/ or <worktree>/",
+    "[docs-check] FAIL docs check: 15 product documents; 412 declared historical link occurrences; 509 declared historical home-path lines; 5 failures"
+  ],
+  "correction": "Normalize only the five checkout home paths in the two named evidence records. Product code is unchanged; the current passing complete review remains valid."
+}

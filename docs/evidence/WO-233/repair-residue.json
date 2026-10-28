@@ -1,0 +1,4350 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-27T13:31:31.873Z",
+  "apply": true,
+  "rule": "Only recorded passed fixtures with dead creators are recovered. Copied markers require a matching immutable Git blob or duplicate bytes tied to the containing fixture token. General invalid-record refusal is unchanged.",
+  "roots": [
+    {
+      "root": "dotln-entropy-fixtures-7DHqsH",
+      "token": "0e97b93b-4d86-45c0-a781-a14150968823",
+      "sha256": "aa40efa1bbbc6735f56bbbbf7091f83be6ef67ffedcedf37a325efdec14a104c",
+      "device": 16777233,
+      "inode": 757387236,
+      "gateId": "1c880d0c-7bb0-459b-a0bf-e7f91602577d",
+      "suite": "plan-refutation",
+      "copies": [
+        {
+          "path": "main-checkout",
+          "sha256": "7c955d8f4f6673a07c95d06ee5d6f420d94dacf6471cad9052b4cea94568c474",
+          "token": "a6681133-70f4-495b-82dd-9b3063518158",
+          "proof": {
+            "kind": "duplicate-contained-fixture-record",
+            "peer": "secondary"
+          }
+        },
+        {
+          "path": "secondary",
+          "sha256": "7c955d8f4f6673a07c95d06ee5d6f420d94dacf6471cad9052b4cea94568c474",
+          "token": "a6681133-70f4-495b-82dd-9b3063518158",
+          "proof": {
+            "kind": "duplicate-contained-fixture-record",
+            "peer": "main-checkout"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 3264
+    },
+    {
+      "root": "dotln-entropy-fixtures-GSX0Tt",
+      "token": "4e888523-4424-482f-9557-e4e020c96d9e",
+      "sha256": "756f1bccf5ded4356c43e784542723b36c6e1affe7eccba191660cb6cbc4eac5",
+      "device": 16777233,
+      "inode": 759369579,
+      "gateId": "76a6260d-24ee-473e-892b-1e366ebe2de4",
+      "suite": "plan-refutation",
+      "copies": [
+        {
+          "path": "main-checkout",
+          "sha256": "20891061c126f070ead9d815042c0cf7ab062caa252ce0dec40b7389234c7839",
+          "token": "6fd83380-7060-434a-b0f7-0a0199f95275",
+          "proof": {
+            "kind": "duplicate-contained-fixture-record",
+            "peer": "secondary"
+          }
+        },
+        {
+          "path": "secondary",
+          "sha256": "20891061c126f070ead9d815042c0cf7ab062caa252ce0dec40b7389234c7839",
+          "token": "6fd83380-7060-434a-b0f7-0a0199f95275",
+          "proof": {
+            "kind": "duplicate-contained-fixture-record",
+            "peer": "main-checkout"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 3264
+    },
+    {
+      "root": "dotln-entropy-fixtures-OCj9gs",
+      "token": "9949e8ac-f7bd-4d1e-8abf-6579ea69200b",
+      "sha256": "c8ec786a5f2e33e73ce341711d47813d3d826b4956315b7ac527999a64717bea",
+      "device": 16777233,
+      "inode": 754331300,
+      "gateId": "43bff0ec-1b0b-4b67-8772-ce0903285183",
+      "suite": "plan-refutation",
+      "copies": [
+        {
+          "path": "main-checkout",
+          "sha256": "ae4b023d94d7ca2f0c56386d68be335ba65d44ee8fc68d0cb6be7b2dc041a12e",
+          "token": "981c4247-758f-4fb2-bf16-93d7c9ee906d",
+          "proof": {
+            "kind": "duplicate-contained-fixture-record",
+            "peer": "secondary"
+          }
+        },
+        {
+          "path": "secondary",
+          "sha256": "ae4b023d94d7ca2f0c56386d68be335ba65d44ee8fc68d0cb6be7b2dc041a12e",
+          "token": "981c4247-758f-4fb2-bf16-93d7c9ee906d",
+          "proof": {
+            "kind": "duplicate-contained-fixture-record",
+            "peer": "main-checkout"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 3264
+    },
+    {
+      "root": "dotln-entropy-fixtures-ejhNfA",
+      "token": "78474380-858e-4fa5-babd-f9b20f3abac1",
+      "sha256": "359d1f8049d660cbd6d5b32f6be96dfa654ac250567080688c4fbb6493a417f4",
+      "device": 16777233,
+      "inode": 761473045,
+      "gateId": "8fe86269-16e2-4e5e-ade7-192c192cad08",
+      "suite": "plan-refutation",
+      "copies": [
+        {
+          "path": "main-checkout",
+          "sha256": "fa33afbebe7cb2ef88470f5befeb1abfc0e2f8fb169a06c36031f6af4b158838",
+          "token": "bd1f38a8-98fa-4077-ac93-ad1e37874039",
+          "proof": {
+            "kind": "duplicate-contained-fixture-record",
+            "peer": "secondary"
+          }
+        },
+        {
+          "path": "secondary",
+          "sha256": "fa33afbebe7cb2ef88470f5befeb1abfc0e2f8fb169a06c36031f6af4b158838",
+          "token": "bd1f38a8-98fa-4077-ac93-ad1e37874039",
+          "proof": {
+            "kind": "duplicate-contained-fixture-record",
+            "peer": "main-checkout"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 3264
+    },
+    {
+      "root": "dotln-fixture-temporary-5zESSK",
+      "token": "0b3d886b-e5c7-424d-bc89-f2400b2f0182",
+      "sha256": "58d86d83b4e63ff9b0d3052132d05b9fb2f0fde5170d5a0e4da852ae7835703f",
+      "device": 16777233,
+      "inode": 754065138,
+      "gateId": "43bff0ec-1b0b-4b67-8772-ce0903285183",
+      "suite": "instance-history",
+      "copies": [],
+      "migrations": [
+        {
+          "path": "dotln-writer-transition-501",
+          "sha256": "0b2814d168fce35338c0c14fba5263a272dacd7a4a9c2b3e0092f461093ed114",
+          "token": "a1578b7b-9b1a-449b-acae-9c980923cafa"
+        }
+      ],
+      "disposals": [],
+      "bytes": 1935029
+    },
+    {
+      "root": "dotln-fixture-temporary-9NjMmG",
+      "token": "976004e7-a205-4718-958f-f5830e7f195d",
+      "sha256": "c32fada27e9c636ec8a35b2318b158210f4a229c1d945309076cf3eb3be6fe3c",
+      "device": 16777233,
+      "inode": 758153611,
+      "gateId": "76a6260d-24ee-473e-892b-1e366ebe2de4",
+      "suite": "harness-fixtures",
+      "copies": [
+        {
+          "path": "dotln-temporary-roots-test-EFHOmu/roots/copied-Nekakq",
+          "sha256": "8319495887d42ee281ebe2ed3195530b8c9c311990b1a894d75f6441ee446c44",
+          "token": "22b21810-8b3b-430f-bcaf-5cec59e18733",
+          "proof": {
+            "kind": "empty-copy-control",
+            "registrationToken": "22b21810-8b3b-430f-bcaf-5cec59e18733",
+            "source": "scripts/test-temporary-roots.mjs",
+            "sourcePath": "dotln-temporary-roots-test-EFHOmu/roots/forever-WRMWnz"
+          }
+        },
+        {
+          "path": "dotln-temporary-roots-test-n4v5zs/blocked",
+          "sha256": "28fca28ef02d08bd61931c03999b7a5b822392132867682e88b2db492ee9f087",
+          "token": "ff178965-ee24-4a84-ab8d-b32f0654ee9e",
+          "proof": {
+            "kind": "empty-malformed-control",
+            "registrationToken": "ff178965-ee24-4a84-ab8d-b32f0654ee9e",
+            "source": "scripts/test-temporary-roots.mjs"
+          }
+        },
+        {
+          "path": "dotln-temporary-roots-test-n4v5zs/unrelated",
+          "sha256": "28fca28ef02d08bd61931c03999b7a5b822392132867682e88b2db492ee9f087",
+          "token": "e9f55160-805f-438a-977a-e20a7d1a890b",
+          "proof": {
+            "kind": "empty-malformed-control",
+            "registrationToken": "e9f55160-805f-438a-977a-e20a7d1a890b",
+            "source": "scripts/test-temporary-roots.mjs"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [
+        {
+          "path": "dotln-temporary-roots-test-EFHOmu/roots/forever-WRMWnz",
+          "sha256": "8319495887d42ee281ebe2ed3195530b8c9c311990b1a894d75f6441ee446c44",
+          "token": "e23b3d3e-398b-4b21-a861-3d758e5e3dfb",
+          "proof": "explicit teardown of an empty, source-identified null-retention test control"
+        },
+        {
+          "path": "dotln-temporary-roots-test-bR9v1m/changed-policy",
+          "sha256": "3bf4940bf8fa34913b6fb345ce3343a99707a440d6c56339b3a78c8079ffe62c",
+          "token": "a15c6165-3025-497f-9071-997d5336cc3d",
+          "proof": "explicit teardown of an empty, source-identified null-retention test control"
+        },
+        {
+          "path": "dotln-temporary-roots-test-imn0qx/roots/recovery-parent-aC7ZvQ/forever-EUa3xy",
+          "sha256": "ac7e062e67cead987c720529cc85ab0f2c7dfd519b718d685ac00aa561cb4d41",
+          "token": "782d742b-1d9d-4f47-a439-f430d0b9359e",
+          "proof": "explicit teardown of an empty, source-identified null-retention test control"
+        },
+        {
+          "path": "dotln-temporary-roots-test-imn0qx/roots/recovery-parent-aC7ZvQ/scratch-UI3vdY",
+          "sha256": "6a5f1d8fd8ca5ed04e406a8c9f05ecc0a3e8b074307373d21dacc7154f875c05",
+          "token": "ed3b8b4e-589e-44db-aadc-3f78b8780315",
+          "proof": "explicit teardown of an empty, source-identified null-retention test control"
+        }
+      ],
+      "bytes": 700740
+    },
+    {
+      "root": "dotln-fixture-temporary-DojJFZ",
+      "token": "9cfb6126-afb2-41fe-906d-b9b50619a68b",
+      "sha256": "841356f68e02caff871c6532478b35dc26f3c51b725050f8eb25742dca13b198",
+      "device": 16777233,
+      "inode": 756749342,
+      "gateId": "1c880d0c-7bb0-459b-a0bf-e7f91602577d",
+      "suite": "process-debt",
+      "copies": [
+        {
+          "path": "dotln-debt-mV5o8n/vendor/sub",
+          "sha256": "af3896dc8cf4a96a46656a22aa7c4674f2ca0b9660820b041d3faab898bf6684",
+          "token": "513d60d3-c59d-45f2-b7bc-32b2a38606b8",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "a181ff2411142e2751ae61dba8d27596e839945b"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 1400436
+    },
+    {
+      "root": "dotln-fixture-temporary-IKFrLl",
+      "token": "c9170aee-788c-44d1-bd1e-32d8f830b196",
+      "sha256": "cd21ced47468c9cb46fd72f8aad517bd187b6949985eb237b0af9583c5c5de5d",
+      "device": 16777233,
+      "inode": 761610575,
+      "gateId": "8fe86269-16e2-4e5e-ade7-192c192cad08",
+      "suite": "instance-history",
+      "copies": [],
+      "migrations": [
+        {
+          "path": "dotln-writer-transition-501",
+          "sha256": "4c4cefb2cf0d179f3fad02b340e333f12bf26677ea8053879272ace7b77541d8",
+          "token": "b3bbbc2b-2193-4a3c-8514-00b0c68e170e"
+        }
+      ],
+      "disposals": [],
+      "bytes": 1934982
+    },
+    {
+      "root": "dotln-fixture-temporary-QjP3fF",
+      "token": "233f74a0-58f3-463b-a359-29d7a7648c8b",
+      "sha256": "de9b91510b8360e42583231149da63f59853e39eee406beec724117ce1586580",
+      "device": 16777233,
+      "inode": 754550903,
+      "gateId": "43bff0ec-1b0b-4b67-8772-ce0903285183",
+      "suite": "workstream-pilot",
+      "copies": [],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 1429932
+    },
+    {
+      "root": "dotln-fixture-temporary-RS7CEt",
+      "token": "f1223af6-ab1c-421c-acdb-250238265ff9",
+      "sha256": "6a831b534fbdb352cb7305e281595b6b9cea3ac5ed72bc2c76e8dcb7dee425fd",
+      "device": 16777233,
+      "inode": 753962486,
+      "gateId": "43bff0ec-1b0b-4b67-8772-ce0903285183",
+      "suite": "process-debt",
+      "copies": [
+        {
+          "path": "dotln-debt-vj7c3w/vendor/sub",
+          "sha256": "3c5d50bc912b3856f003f751e0a4eadfe5e70e2562edfec48ee4c20da986a3bf",
+          "token": "438df66a-6af1-4537-a2d9-c563402d2d01",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "a8b8fbbbf8b4a9d772f1e1d79b0b330b9f5446b1"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 1400368
+    },
+    {
+      "root": "dotln-fixture-temporary-RsI0w7",
+      "token": "50225e48-ac7d-4324-83c6-1c25ab64726a",
+      "sha256": "2044105ce6535f3238adde642d11401e1751eb1f9ec00ed09508b670ae3a760e",
+      "device": 16777233,
+      "inode": 760408739,
+      "gateId": "8fe86269-16e2-4e5e-ade7-192c192cad08",
+      "suite": "harness-fixtures",
+      "copies": [
+        {
+          "path": "dotln-temporary-roots-test-X4rhlL/blocked",
+          "sha256": "28fca28ef02d08bd61931c03999b7a5b822392132867682e88b2db492ee9f087",
+          "token": "71d00a38-daeb-4a61-9c5d-60c898971b42",
+          "proof": {
+            "kind": "empty-malformed-control",
+            "registrationToken": "71d00a38-daeb-4a61-9c5d-60c898971b42",
+            "source": "scripts/test-temporary-roots.mjs"
+          }
+        },
+        {
+          "path": "dotln-temporary-roots-test-X4rhlL/unrelated",
+          "sha256": "28fca28ef02d08bd61931c03999b7a5b822392132867682e88b2db492ee9f087",
+          "token": "80917f14-e79c-4e7e-8e84-ede2a75fbb75",
+          "proof": {
+            "kind": "empty-malformed-control",
+            "registrationToken": "80917f14-e79c-4e7e-8e84-ede2a75fbb75",
+            "source": "scripts/test-temporary-roots.mjs"
+          }
+        },
+        {
+          "path": "dotln-temporary-roots-test-tFdB34/roots/copied-Op1qqS",
+          "sha256": "1bbb1a090cfaffe37e45421bb2238c109ae08c50cc83b68003aeaba40536ea5d",
+          "token": "908eaf89-33b5-4322-b5dc-7ad633eb40dd",
+          "proof": {
+            "kind": "empty-copy-control",
+            "registrationToken": "908eaf89-33b5-4322-b5dc-7ad633eb40dd",
+            "source": "scripts/test-temporary-roots.mjs",
+            "sourcePath": "dotln-temporary-roots-test-tFdB34/roots/forever-m92cOo"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [
+        {
+          "path": "dotln-temporary-roots-test-RhwYvb/changed-policy",
+          "sha256": "86ba13a33b18c7547564dbe7cb908ead72609d36cb96c6d9ccb6991d1b8b6e71",
+          "token": "2e195e23-aa7b-482b-a6e1-26cd252c52a4",
+          "proof": "explicit teardown of an empty, source-identified null-retention test control"
+        },
+        {
+          "path": "dotln-temporary-roots-test-eiBhZ0/roots/recovery-parent-SzsQ9E/forever-7ryRPh",
+          "sha256": "6ed0da19623ca423083b8409792c76e94ec9bbbe8e5403b96bda479bd57e25ab",
+          "token": "c11ab075-c1e3-4deb-a768-cdf260239429",
+          "proof": "explicit teardown of an empty, source-identified null-retention test control"
+        },
+        {
+          "path": "dotln-temporary-roots-test-eiBhZ0/roots/recovery-parent-SzsQ9E/scratch-GlxPdG",
+          "sha256": "363f449c8712ff67c38d3b83971deb3d674f9a65703a2f0985604fbcc49ea226",
+          "token": "5b80700b-1447-4605-b2bf-6f500658f353",
+          "proof": "explicit teardown of an empty, source-identified null-retention test control"
+        },
+        {
+          "path": "dotln-temporary-roots-test-tFdB34/roots/forever-m92cOo",
+          "sha256": "1bbb1a090cfaffe37e45421bb2238c109ae08c50cc83b68003aeaba40536ea5d",
+          "token": "9114a4a4-bdde-4644-b65f-47f1f3011ce5",
+          "proof": "explicit teardown of an empty, source-identified null-retention test control"
+        }
+      ],
+      "bytes": 700725
+    },
+    {
+      "root": "dotln-fixture-temporary-Unm8kp",
+      "token": "745e0d16-ec3e-42c2-a453-c9db6cba1443",
+      "sha256": "9a6e1f3a700076900be8e3d8c3c394cfea53cdc91ad9ffba1795cfe265fcdcad",
+      "device": 16777233,
+      "inode": 757451591,
+      "gateId": "1c880d0c-7bb0-459b-a0bf-e7f91602577d",
+      "suite": "instance-history",
+      "copies": [],
+      "migrations": [
+        {
+          "path": "dotln-writer-transition-501",
+          "sha256": "b7697c07a5b3f25ee4456afd5b183b578e5cd69a4da9cc86f382ee01581c58a0",
+          "token": "39800d69-7df6-46af-a01d-cf896dc13139"
+        }
+      ],
+      "disposals": [],
+      "bytes": 1934983
+    },
+    {
+      "root": "dotln-fixture-temporary-gx8zpm",
+      "token": "ca6123be-4ae2-466e-b6ab-10a462ad38cd",
+      "sha256": "ef88144c0109ef74212cf13e315341a2cf0c97cbe80d4a4a8c939387985c9175",
+      "device": 16777233,
+      "inode": 753565300,
+      "gateId": "43bff0ec-1b0b-4b67-8772-ce0903285183",
+      "suite": "harness-fixtures",
+      "copies": [
+        {
+          "path": "dotln-temporary-roots-test-8NULK7/blocked",
+          "sha256": "28fca28ef02d08bd61931c03999b7a5b822392132867682e88b2db492ee9f087",
+          "token": "fc81fc4c-0660-4567-a5a4-aab6f3b0e73e",
+          "proof": {
+            "kind": "empty-malformed-control",
+            "registrationToken": "fc81fc4c-0660-4567-a5a4-aab6f3b0e73e",
+            "source": "scripts/test-temporary-roots.mjs"
+          }
+        },
+        {
+          "path": "dotln-temporary-roots-test-8NULK7/unrelated",
+          "sha256": "28fca28ef02d08bd61931c03999b7a5b822392132867682e88b2db492ee9f087",
+          "token": "66e50b79-9b4b-4b01-8111-b0d57576155a",
+          "proof": {
+            "kind": "empty-malformed-control",
+            "registrationToken": "66e50b79-9b4b-4b01-8111-b0d57576155a",
+            "source": "scripts/test-temporary-roots.mjs"
+          }
+        },
+        {
+          "path": "dotln-temporary-roots-test-zyEEE5/roots/copied-HaL5dm",
+          "sha256": "33970f6d2006799304f862d448a01d84dffaa837fb55bc82fd89fe2db37b7ce9",
+          "token": "fb7ebcbc-bc02-44fc-b36b-dfeb46282c08",
+          "proof": {
+            "kind": "empty-copy-control",
+            "registrationToken": "fb7ebcbc-bc02-44fc-b36b-dfeb46282c08",
+            "source": "scripts/test-temporary-roots.mjs",
+            "sourcePath": "dotln-temporary-roots-test-zyEEE5/roots/forever-V3BFOH"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [
+        {
+          "path": "dotln-temporary-roots-test-0TtgQQ/changed-policy",
+          "sha256": "8e1395539c1b0eb9b81663abf261ca3b3315ab3e82c0745157cc2c280d4ec9f5",
+          "token": "b6adfbb6-6f42-4121-b80a-ff21d3cc1155",
+          "proof": "explicit teardown of an empty, source-identified null-retention test control"
+        },
+        {
+          "path": "dotln-temporary-roots-test-WygMX0/roots/recovery-parent-8MthjC/forever-Lg1Jzd",
+          "sha256": "7cdaa912ceb8fec252a452d1bf796a796264177a6815ee095d88a159411be2b5",
+          "token": "7e75048b-45c2-4ac1-a72a-9702270d6470",
+          "proof": "explicit teardown of an empty, source-identified null-retention test control"
+        },
+        {
+          "path": "dotln-temporary-roots-test-WygMX0/roots/recovery-parent-8MthjC/scratch-hIcnd4",
+          "sha256": "12205f11f29eb0e72bd53d471daff9eb93078ebd25f2bac70c2af219e438ea1c",
+          "token": "8e1959c5-7a18-4508-8459-3a14e20d6bc5",
+          "proof": "explicit teardown of an empty, source-identified null-retention test control"
+        },
+        {
+          "path": "dotln-temporary-roots-test-zyEEE5/roots/forever-V3BFOH",
+          "sha256": "33970f6d2006799304f862d448a01d84dffaa837fb55bc82fd89fe2db37b7ce9",
+          "token": "ad83d864-f486-447c-81d0-dc3b1908650a",
+          "proof": "explicit teardown of an empty, source-identified null-retention test control"
+        }
+      ],
+      "bytes": 700725
+    },
+    {
+      "root": "dotln-fixture-temporary-iPY0ed",
+      "token": "b425fa6a-07f8-40b9-a93e-3272c8ea667b",
+      "sha256": "c86a99eb6e41faeb12b2b960a36949321c55bd91e92e49f75b10074c1129633d",
+      "device": 16777233,
+      "inode": 759347410,
+      "gateId": "76a6260d-24ee-473e-892b-1e366ebe2de4",
+      "suite": "instance-history",
+      "copies": [],
+      "migrations": [
+        {
+          "path": "dotln-writer-transition-501",
+          "sha256": "aabc9f50dd31185eeee2b4adf3342078da7cfee15bd7d8aa85162e7e199b2f0a",
+          "token": "598d6dd3-0e14-4649-a2b8-7826480fb79f"
+        }
+      ],
+      "disposals": [],
+      "bytes": 1935054
+    },
+    {
+      "root": "dotln-fixture-temporary-mzXW6s",
+      "token": "5641f5c8-b438-4a12-8260-46923f113b49",
+      "sha256": "54a13f84674e939f271f9bc8c6db78249e2d02f8d3b02364a3f4169b18f28f62",
+      "device": 16777233,
+      "inode": 752399417,
+      "gateId": "761c7a01-c073-4aae-b9dc-8ba4117a2fa1",
+      "suite": "workstream-pilot",
+      "copies": [],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 1429932
+    },
+    {
+      "root": "dotln-fixture-temporary-wsxpgR",
+      "token": "cf92373e-ce4d-40ab-9f11-76ba33374f27",
+      "sha256": "3bf245c8fe312d35f4b2b4e2e2631fdda22a6efe399d08ec10e8bb8a2e144a64",
+      "device": 16777233,
+      "inode": 758720235,
+      "gateId": "76a6260d-24ee-473e-892b-1e366ebe2de4",
+      "suite": "process-debt",
+      "copies": [
+        {
+          "path": "dotln-debt-abQzrq/vendor/sub",
+          "sha256": "9812821a3d2eeed2e88ef55ec42615568cd878d18b2af59eaf511d0f54ce853f",
+          "token": "009e4da7-7e04-4175-8981-d59776af4f05",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "47cf8615667926f990630ca48d1db5aa7c646442"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 1400490
+    },
+    {
+      "root": "dotln-fixture-temporary-xhF1jq",
+      "token": "e078ef0b-36a2-42a7-8ffc-cabf028d084e",
+      "sha256": "9f0516a82071cc24770a8b9df93b93e5bb64b53aa38703fab060bc275b650d3d",
+      "device": 16777233,
+      "inode": 756391663,
+      "gateId": "1c880d0c-7bb0-459b-a0bf-e7f91602577d",
+      "suite": "harness-fixtures",
+      "copies": [
+        {
+          "path": "dotln-temporary-roots-test-TLJp5Z/blocked",
+          "sha256": "28fca28ef02d08bd61931c03999b7a5b822392132867682e88b2db492ee9f087",
+          "token": "a86adce2-815d-4753-b0ae-5a606e36ac73",
+          "proof": {
+            "kind": "empty-malformed-control",
+            "registrationToken": "a86adce2-815d-4753-b0ae-5a606e36ac73",
+            "source": "scripts/test-temporary-roots.mjs"
+          }
+        },
+        {
+          "path": "dotln-temporary-roots-test-TLJp5Z/unrelated",
+          "sha256": "28fca28ef02d08bd61931c03999b7a5b822392132867682e88b2db492ee9f087",
+          "token": "ad96706d-c5e6-4ee0-b42b-7ac543f7af74",
+          "proof": {
+            "kind": "empty-malformed-control",
+            "registrationToken": "ad96706d-c5e6-4ee0-b42b-7ac543f7af74",
+            "source": "scripts/test-temporary-roots.mjs"
+          }
+        },
+        {
+          "path": "dotln-temporary-roots-test-W3uYTH/roots/copied-RGki0t",
+          "sha256": "b18489d019ab772d0ed60dc4e7ae6a125d3ac79c7bd1c1ec8c01f5a3ba2b0516",
+          "token": "a8c4b53e-1a79-4fc8-86f8-d04b91808087",
+          "proof": {
+            "kind": "empty-copy-control",
+            "registrationToken": "a8c4b53e-1a79-4fc8-86f8-d04b91808087",
+            "source": "scripts/test-temporary-roots.mjs",
+            "sourcePath": "dotln-temporary-roots-test-W3uYTH/roots/forever-AuUMVs"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [
+        {
+          "path": "dotln-temporary-roots-test-BPDeiE/changed-policy",
+          "sha256": "43694c5370fea876e5745fbcfeb8666b8447364ad33eb48d1b1d53e35e88d24b",
+          "token": "5e4753d5-9275-4d3d-9b15-890c51a0698a",
+          "proof": "explicit teardown of an empty, source-identified null-retention test control"
+        },
+        {
+          "path": "dotln-temporary-roots-test-W3uYTH/roots/forever-AuUMVs",
+          "sha256": "b18489d019ab772d0ed60dc4e7ae6a125d3ac79c7bd1c1ec8c01f5a3ba2b0516",
+          "token": "98591581-393e-4422-8df6-30ecd1ac6588",
+          "proof": "explicit teardown of an empty, source-identified null-retention test control"
+        },
+        {
+          "path": "dotln-temporary-roots-test-bbXnTD/roots/recovery-parent-IMJ7Fd/forever-NDNhuw",
+          "sha256": "a30d6acf852c544d1be50a6232a51e4be29d4cced1b536272c8d82445b0c60a8",
+          "token": "bcd459fb-4ea8-4b03-b584-2ec6c88d97b5",
+          "proof": "explicit teardown of an empty, source-identified null-retention test control"
+        },
+        {
+          "path": "dotln-temporary-roots-test-bbXnTD/roots/recovery-parent-IMJ7Fd/scratch-eUi5Bh",
+          "sha256": "ef863309336b1b09e9a1ec74e80fd6c7045ffdf7795b67fd9eae950db27ba841",
+          "token": "1dc6613d-5e47-4b05-8559-bff4a79b523d",
+          "proof": "explicit teardown of an empty, source-identified null-retention test control"
+        }
+      ],
+      "bytes": 700741
+    },
+    {
+      "root": "dotln-fixture-temporary-z6ze2C",
+      "token": "bcf55699-bd20-4bf8-8704-c96cf66bf288",
+      "sha256": "a8c7ae2bf8702f5a5c006918e28ddee5f27e6374032366bd769812f06fa8c862",
+      "device": 16777233,
+      "inode": 760769271,
+      "gateId": "8fe86269-16e2-4e5e-ade7-192c192cad08",
+      "suite": "process-debt",
+      "copies": [
+        {
+          "path": "dotln-debt-ZRSrdm/vendor/sub",
+          "sha256": "34e6efdb210af615f297b34dd26170ee83e6252bfa13fbb84b7d1728ae34ef36",
+          "token": "96438f54-a0f1-45ef-bf03-1632126888ed",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "3f20ebb038de43f297731aadafcfdc7fbb67e05a"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 1400485
+    },
+    {
+      "root": "dotln-integrate-test-0w0GW5",
+      "token": "6ca68f15-58e5-4f0f-af4e-6635f6dafb7f",
+      "sha256": "63a47e1ba437c98ae6016859ec2e4b66be001e3ce46ffff05e6369221c2880b0",
+      "device": 16777233,
+      "inode": 752357690,
+      "gateId": "761c7a01-c073-4aae-b9dc-8ba4117a2fa1",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "0fd051a0bdb68d2659bd9fda3cd58bc5269c545daf0b1d0e69dd71c54d3a8b9a",
+          "token": "37b1e591-7146-4807-bd80-877f051fa47c",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "115114327b36b3e103aa8d651defa1b2f4b1b474"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "0fd051a0bdb68d2659bd9fda3cd58bc5269c545daf0b1d0e69dd71c54d3a8b9a",
+          "token": "37b1e591-7146-4807-bd80-877f051fa47c",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "115114327b36b3e103aa8d651defa1b2f4b1b474"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66112899
+    },
+    {
+      "root": "dotln-integrate-test-1FXuF1",
+      "token": "fa73015f-9f4f-4d3b-b289-73c6c4c49fff",
+      "sha256": "cb61d827d9861cdc0c89c9373383f34ff9e810bb969ea30708e3c5368b1f9c6c",
+      "device": 16777233,
+      "inode": 755459441,
+      "gateId": "43bff0ec-1b0b-4b67-8772-ce0903285183",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "e25dd2ea371de5c4393420583e2fd9b0b9d48716b81c1645aeccfa89147ab71e",
+          "token": "7eeab5b6-02e2-431d-853c-5f620ee530a2",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "7d2f6c3b3dc21ad4c6bdabd23d05fd7a449d5b46"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "e25dd2ea371de5c4393420583e2fd9b0b9d48716b81c1645aeccfa89147ab71e",
+          "token": "7eeab5b6-02e2-431d-853c-5f620ee530a2",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "7d2f6c3b3dc21ad4c6bdabd23d05fd7a449d5b46"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66064579
+    },
+    {
+      "root": "dotln-integrate-test-1qvJRV",
+      "token": "09f4fee3-4a3f-4939-8274-fb8812fc3d72",
+      "sha256": "5cb8bccad7b81f7a05d7bc441035bb44957af130e4e6aee76421f7a4ca9c3014",
+      "device": 16777233,
+      "inode": 757079252,
+      "gateId": "1c880d0c-7bb0-459b-a0bf-e7f91602577d",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "ebefa701f15264192f4fce647b4d450dfc20c5639125922985c93e5da03477aa",
+          "token": "74fcaab7-e2f7-4dfa-b467-8d6a5a74c313",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "1b32249d5ba6efb1a7142cb9d2cefa611c759032"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "ebefa701f15264192f4fce647b4d450dfc20c5639125922985c93e5da03477aa",
+          "token": "74fcaab7-e2f7-4dfa-b467-8d6a5a74c313",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "1b32249d5ba6efb1a7142cb9d2cefa611c759032"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66064183
+    },
+    {
+      "root": "dotln-integrate-test-2LdeYX",
+      "token": "c3b256ec-201a-4ba3-bb0f-e74ba4ea0fb6",
+      "sha256": "9e85acd9dd2212e09499c9620465b68792ba8bdf42d7506509f3b35ff6b64dad",
+      "device": 16777233,
+      "inode": 759050150,
+      "gateId": "76a6260d-24ee-473e-892b-1e366ebe2de4",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "bd57e0c20595b9d8f38929556e00c6680bd4d9cb168a0f1cfca2e31a5a966229",
+          "token": "39909686-87af-473b-b8e5-3d79841c7e85",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "87d3935c802c01d5c3ff3fc6c4b782017c5edd86"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "bd57e0c20595b9d8f38929556e00c6680bd4d9cb168a0f1cfca2e31a5a966229",
+          "token": "39909686-87af-473b-b8e5-3d79841c7e85",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "87d3935c802c01d5c3ff3fc6c4b782017c5edd86"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66064174
+    },
+    {
+      "root": "dotln-integrate-test-2dVntU",
+      "token": "2631b764-214b-4921-8fed-0d51580d6e27",
+      "sha256": "4156fc42f7bdcc3e6ab1551118dec4a6401d5f23b2fcfc751f962a1cad4a1705",
+      "device": 16777233,
+      "inode": 761161777,
+      "gateId": "8fe86269-16e2-4e5e-ade7-192c192cad08",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "218e57cf44c3549cf9cc416baf310a52b13df854c2a6255929bd9e512a44ff81",
+          "token": "2112e9d0-e598-433c-8244-d36b2206ed62",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "124f35e4981ed99f0bbab65ad79ca1649163495f"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "218e57cf44c3549cf9cc416baf310a52b13df854c2a6255929bd9e512a44ff81",
+          "token": "2112e9d0-e598-433c-8244-d36b2206ed62",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "124f35e4981ed99f0bbab65ad79ca1649163495f"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66066293
+    },
+    {
+      "root": "dotln-integrate-test-3GXABw",
+      "token": "016a832c-55eb-4f40-b828-95875c4b7e20",
+      "sha256": "0002bcf26178a579d616b9fed56922a74996504e98e83c93f468609a44ccb95b",
+      "device": 16777233,
+      "inode": 755230170,
+      "gateId": "43bff0ec-1b0b-4b67-8772-ce0903285183",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "e25dd2ea371de5c4393420583e2fd9b0b9d48716b81c1645aeccfa89147ab71e",
+          "token": "7eeab5b6-02e2-431d-853c-5f620ee530a2",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "7d2f6c3b3dc21ad4c6bdabd23d05fd7a449d5b46"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "e25dd2ea371de5c4393420583e2fd9b0b9d48716b81c1645aeccfa89147ab71e",
+          "token": "7eeab5b6-02e2-431d-853c-5f620ee530a2",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "7d2f6c3b3dc21ad4c6bdabd23d05fd7a449d5b46"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 65888725
+    },
+    {
+      "root": "dotln-integrate-test-3s9Xyk",
+      "token": "9c96935f-5438-48fb-9966-37482996df10",
+      "sha256": "5ff94fdf364b81583764fea35f188cd8be1487f7a4431e9290d0f05808630725",
+      "device": 16777233,
+      "inode": 761187892,
+      "gateId": "8fe86269-16e2-4e5e-ade7-192c192cad08",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "218e57cf44c3549cf9cc416baf310a52b13df854c2a6255929bd9e512a44ff81",
+          "token": "2112e9d0-e598-433c-8244-d36b2206ed62",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "124f35e4981ed99f0bbab65ad79ca1649163495f"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "218e57cf44c3549cf9cc416baf310a52b13df854c2a6255929bd9e512a44ff81",
+          "token": "2112e9d0-e598-433c-8244-d36b2206ed62",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "124f35e4981ed99f0bbab65ad79ca1649163495f"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66062717
+    },
+    {
+      "root": "dotln-integrate-test-49K6Q0",
+      "token": "38df4fad-ebc5-4e8c-98d4-4b4240a3853b",
+      "sha256": "bf817d18ad20857e0b46eb05431213321f9e4138832cfb18698737ab33a4c7cb",
+      "device": 16777233,
+      "inode": 761219169,
+      "gateId": "8fe86269-16e2-4e5e-ade7-192c192cad08",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "218e57cf44c3549cf9cc416baf310a52b13df854c2a6255929bd9e512a44ff81",
+          "token": "2112e9d0-e598-433c-8244-d36b2206ed62",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "124f35e4981ed99f0bbab65ad79ca1649163495f"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "218e57cf44c3549cf9cc416baf310a52b13df854c2a6255929bd9e512a44ff81",
+          "token": "2112e9d0-e598-433c-8244-d36b2206ed62",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "124f35e4981ed99f0bbab65ad79ca1649163495f"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66063717
+    },
+    {
+      "root": "dotln-integrate-test-4KgAkv",
+      "token": "34efe8f5-0a2e-49bc-a362-2d0f1ca6dd2f",
+      "sha256": "4296905b1ab4a12217e0bbb264420d7a119e2b174ddf18fde2604431a48b28b0",
+      "device": 16777233,
+      "inode": 758820814,
+      "gateId": "76a6260d-24ee-473e-892b-1e366ebe2de4",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "bd57e0c20595b9d8f38929556e00c6680bd4d9cb168a0f1cfca2e31a5a966229",
+          "token": "39909686-87af-473b-b8e5-3d79841c7e85",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "87d3935c802c01d5c3ff3fc6c4b782017c5edd86"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "bd57e0c20595b9d8f38929556e00c6680bd4d9cb168a0f1cfca2e31a5a966229",
+          "token": "39909686-87af-473b-b8e5-3d79841c7e85",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "87d3935c802c01d5c3ff3fc6c4b782017c5edd86"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 65873759
+    },
+    {
+      "root": "dotln-integrate-test-5fE8OE",
+      "token": "79555a40-1947-4e54-a3a4-48da6c95f09c",
+      "sha256": "8f407e5b55a08839df20b4f129c3a882d8a60c5043016030028c08f9b68c8c5b",
+      "device": 16777233,
+      "inode": 757136559,
+      "gateId": "1c880d0c-7bb0-459b-a0bf-e7f91602577d",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "ebefa701f15264192f4fce647b4d450dfc20c5639125922985c93e5da03477aa",
+          "token": "74fcaab7-e2f7-4dfa-b467-8d6a5a74c313",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "1b32249d5ba6efb1a7142cb9d2cefa611c759032"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "ebefa701f15264192f4fce647b4d450dfc20c5639125922985c93e5da03477aa",
+          "token": "74fcaab7-e2f7-4dfa-b467-8d6a5a74c313",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "1b32249d5ba6efb1a7142cb9d2cefa611c759032"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66063706
+    },
+    {
+      "root": "dotln-integrate-test-63yzGP",
+      "token": "37096496-07a2-4831-81cc-6413c8213246",
+      "sha256": "e4e4175be4f7f19d014de942881fdf02e10fdca0478d4dd812e7963ae6073faf",
+      "device": 16777233,
+      "inode": 752390167,
+      "gateId": "761c7a01-c073-4aae-b9dc-8ba4117a2fa1",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "0fd051a0bdb68d2659bd9fda3cd58bc5269c545daf0b1d0e69dd71c54d3a8b9a",
+          "token": "37b1e591-7146-4807-bd80-877f051fa47c",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "115114327b36b3e103aa8d651defa1b2f4b1b474"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "0fd051a0bdb68d2659bd9fda3cd58bc5269c545daf0b1d0e69dd71c54d3a8b9a",
+          "token": "37b1e591-7146-4807-bd80-877f051fa47c",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "115114327b36b3e103aa8d651defa1b2f4b1b474"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 70851116
+    },
+    {
+      "root": "dotln-integrate-test-6KLf7s",
+      "token": "8fe448f0-7454-4dbb-9895-4a76d7702ffd",
+      "sha256": "e8eed37f9ebea55d69c33e59e79733964513a14d55aefa4075b309939e701333",
+      "device": 16777233,
+      "inode": 756855099,
+      "gateId": "1c880d0c-7bb0-459b-a0bf-e7f91602577d",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "ebefa701f15264192f4fce647b4d450dfc20c5639125922985c93e5da03477aa",
+          "token": "74fcaab7-e2f7-4dfa-b467-8d6a5a74c313",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "1b32249d5ba6efb1a7142cb9d2cefa611c759032"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "ebefa701f15264192f4fce647b4d450dfc20c5639125922985c93e5da03477aa",
+          "token": "74fcaab7-e2f7-4dfa-b467-8d6a5a74c313",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "1b32249d5ba6efb1a7142cb9d2cefa611c759032"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 63487393
+    },
+    {
+      "root": "dotln-integrate-test-7l3P4f",
+      "token": "c07cad74-2487-4e33-a3e4-f86fc7eb606e",
+      "sha256": "6ef79b5df5ed3fed70afa3fdc9cd4e94866ddce4ffb0e07ce552b45f655b848d",
+      "device": 16777233,
+      "inode": 755464672,
+      "gateId": "43bff0ec-1b0b-4b67-8772-ce0903285183",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "e25dd2ea371de5c4393420583e2fd9b0b9d48716b81c1645aeccfa89147ab71e",
+          "token": "7eeab5b6-02e2-431d-853c-5f620ee530a2",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "7d2f6c3b3dc21ad4c6bdabd23d05fd7a449d5b46"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "e25dd2ea371de5c4393420583e2fd9b0b9d48716b81c1645aeccfa89147ab71e",
+          "token": "7eeab5b6-02e2-431d-853c-5f620ee530a2",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "7d2f6c3b3dc21ad4c6bdabd23d05fd7a449d5b46"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66055104
+    },
+    {
+      "root": "dotln-integrate-test-7y88xh",
+      "token": "2e694014-0619-4fb6-99f9-77f2765c1832",
+      "sha256": "770640e95c1ba4b41b9326d5dc23497b7bba7a0ff5f0e3f44e564286648e5417",
+      "device": 16777233,
+      "inode": 758831320,
+      "gateId": "76a6260d-24ee-473e-892b-1e366ebe2de4",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "bd57e0c20595b9d8f38929556e00c6680bd4d9cb168a0f1cfca2e31a5a966229",
+          "token": "39909686-87af-473b-b8e5-3d79841c7e85",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "87d3935c802c01d5c3ff3fc6c4b782017c5edd86"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "bd57e0c20595b9d8f38929556e00c6680bd4d9cb168a0f1cfca2e31a5a966229",
+          "token": "39909686-87af-473b-b8e5-3d79841c7e85",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "87d3935c802c01d5c3ff3fc6c4b782017c5edd86"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 65889878
+    },
+    {
+      "root": "dotln-integrate-test-8sq9kg",
+      "token": "0fb227d8-e44e-4fcf-978c-530d943a3816",
+      "sha256": "933fe7c95da2d64a0dc3477f10b33218adffae2161ed7ec4e32e2fcd4c3af170",
+      "device": 16777233,
+      "inode": 759076206,
+      "gateId": "76a6260d-24ee-473e-892b-1e366ebe2de4",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "bd57e0c20595b9d8f38929556e00c6680bd4d9cb168a0f1cfca2e31a5a966229",
+          "token": "39909686-87af-473b-b8e5-3d79841c7e85",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "87d3935c802c01d5c3ff3fc6c4b782017c5edd86"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "bd57e0c20595b9d8f38929556e00c6680bd4d9cb168a0f1cfca2e31a5a966229",
+          "token": "39909686-87af-473b-b8e5-3d79841c7e85",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "87d3935c802c01d5c3ff3fc6c4b782017c5edd86"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66063556
+    },
+    {
+      "root": "dotln-integrate-test-8wTJ3i",
+      "token": "4f1eb36b-1c47-4967-9768-42f7db86b08f",
+      "sha256": "08ca3b94d9d64051ff538de58caaaf355f9a34230591e2f58f42f6bc6648facb",
+      "device": 16777233,
+      "inode": 752071906,
+      "gateId": "761c7a01-c073-4aae-b9dc-8ba4117a2fa1",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "0fd051a0bdb68d2659bd9fda3cd58bc5269c545daf0b1d0e69dd71c54d3a8b9a",
+          "token": "37b1e591-7146-4807-bd80-877f051fa47c",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "115114327b36b3e103aa8d651defa1b2f4b1b474"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "0fd051a0bdb68d2659bd9fda3cd58bc5269c545daf0b1d0e69dd71c54d3a8b9a",
+          "token": "37b1e591-7146-4807-bd80-877f051fa47c",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "115114327b36b3e103aa8d651defa1b2f4b1b474"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 65811293
+    },
+    {
+      "root": "dotln-integrate-test-96eKbv",
+      "token": "d2d2aea9-3483-455d-9103-f88b623a20ed",
+      "sha256": "cc926550066aafd8ab1eb5d23e9f28126f04540054c2e88d194f712d999fca74",
+      "device": 16777233,
+      "inode": 755449009,
+      "gateId": "43bff0ec-1b0b-4b67-8772-ce0903285183",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "e25dd2ea371de5c4393420583e2fd9b0b9d48716b81c1645aeccfa89147ab71e",
+          "token": "7eeab5b6-02e2-431d-853c-5f620ee530a2",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "7d2f6c3b3dc21ad4c6bdabd23d05fd7a449d5b46"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "e25dd2ea371de5c4393420583e2fd9b0b9d48716b81c1645aeccfa89147ab71e",
+          "token": "7eeab5b6-02e2-431d-853c-5f620ee530a2",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "7d2f6c3b3dc21ad4c6bdabd23d05fd7a449d5b46"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66063028
+    },
+    {
+      "root": "dotln-integrate-test-9e9LxY",
+      "token": "2ea47c66-6d59-43ee-a0b7-0cf23df45e11",
+      "sha256": "f12c444908e8b75f4b5d6271f35241a6076f09218fe6298328eee229dc2c36f6",
+      "device": 16777233,
+      "inode": 752373360,
+      "gateId": "761c7a01-c073-4aae-b9dc-8ba4117a2fa1",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "0fd051a0bdb68d2659bd9fda3cd58bc5269c545daf0b1d0e69dd71c54d3a8b9a",
+          "token": "37b1e591-7146-4807-bd80-877f051fa47c",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "115114327b36b3e103aa8d651defa1b2f4b1b474"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "0fd051a0bdb68d2659bd9fda3cd58bc5269c545daf0b1d0e69dd71c54d3a8b9a",
+          "token": "37b1e591-7146-4807-bd80-877f051fa47c",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "115114327b36b3e103aa8d651defa1b2f4b1b474"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66052081
+    },
+    {
+      "root": "dotln-integrate-test-9v9Rlr",
+      "token": "d9c52167-93e9-4464-a7d6-89eb7346e150",
+      "sha256": "21fe2856c5623c08e23030d71cc0e95aec0ddb64200d1371fd31ac316bf5e470",
+      "device": 16777233,
+      "inode": 755219670,
+      "gateId": "43bff0ec-1b0b-4b67-8772-ce0903285183",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "e25dd2ea371de5c4393420583e2fd9b0b9d48716b81c1645aeccfa89147ab71e",
+          "token": "7eeab5b6-02e2-431d-853c-5f620ee530a2",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "7d2f6c3b3dc21ad4c6bdabd23d05fd7a449d5b46"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "e25dd2ea371de5c4393420583e2fd9b0b9d48716b81c1645aeccfa89147ab71e",
+          "token": "7eeab5b6-02e2-431d-853c-5f620ee530a2",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "7d2f6c3b3dc21ad4c6bdabd23d05fd7a449d5b46"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 65872612
+    },
+    {
+      "root": "dotln-integrate-test-AKwZ4C",
+      "token": "b377d613-593c-42af-879f-21eab6d8bd60",
+      "sha256": "4042542182f44bc58d232ff9087d74402e84419688976b95ff91df13330134eb",
+      "device": 16777233,
+      "inode": 759071014,
+      "gateId": "76a6260d-24ee-473e-892b-1e366ebe2de4",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "bd57e0c20595b9d8f38929556e00c6680bd4d9cb168a0f1cfca2e31a5a966229",
+          "token": "39909686-87af-473b-b8e5-3d79841c7e85",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "87d3935c802c01d5c3ff3fc6c4b782017c5edd86"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "bd57e0c20595b9d8f38929556e00c6680bd4d9cb168a0f1cfca2e31a5a966229",
+          "token": "39909686-87af-473b-b8e5-3d79841c7e85",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "87d3935c802c01d5c3ff3fc6c4b782017c5edd86"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66056512
+    },
+    {
+      "root": "dotln-integrate-test-Ae7Q7A",
+      "token": "1a673597-4a07-4510-9c19-eacc69f76a6a",
+      "sha256": "adf30c55733515c93eee1eb87da0cd084956319b6498074c9ca9d5733fe4f77b",
+      "device": 16777233,
+      "inode": 757105294,
+      "gateId": "1c880d0c-7bb0-459b-a0bf-e7f91602577d",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "ebefa701f15264192f4fce647b4d450dfc20c5639125922985c93e5da03477aa",
+          "token": "74fcaab7-e2f7-4dfa-b467-8d6a5a74c313",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "1b32249d5ba6efb1a7142cb9d2cefa611c759032"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "ebefa701f15264192f4fce647b4d450dfc20c5639125922985c93e5da03477aa",
+          "token": "74fcaab7-e2f7-4dfa-b467-8d6a5a74c313",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "1b32249d5ba6efb1a7142cb9d2cefa611c759032"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66063578
+    },
+    {
+      "root": "dotln-integrate-test-BdMtxa",
+      "token": "e949a0cc-e123-4bed-b378-e8194e7d374b",
+      "sha256": "ce93959f193dff39ffecd1ff9f64a1d3a07417f142933e459e8ff3daef38fc0a",
+      "device": 16777233,
+      "inode": 752331645,
+      "gateId": "761c7a01-c073-4aae-b9dc-8ba4117a2fa1",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "0fd051a0bdb68d2659bd9fda3cd58bc5269c545daf0b1d0e69dd71c54d3a8b9a",
+          "token": "37b1e591-7146-4807-bd80-877f051fa47c",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "115114327b36b3e103aa8d651defa1b2f4b1b474"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "0fd051a0bdb68d2659bd9fda3cd58bc5269c545daf0b1d0e69dd71c54d3a8b9a",
+          "token": "37b1e591-7146-4807-bd80-877f051fa47c",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "115114327b36b3e103aa8d651defa1b2f4b1b474"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66044992
+    },
+    {
+      "root": "dotln-integrate-test-Bw6SVK",
+      "token": "a1cfa6a4-c35c-4a11-b77e-63c963025692",
+      "sha256": "c399feb16c8b4318f7bf59d7971e1fdb843e331cb19ded6e192287a47a6cf08e",
+      "device": 16777233,
+      "inode": 757152797,
+      "gateId": "1c880d0c-7bb0-459b-a0bf-e7f91602577d",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "ebefa701f15264192f4fce647b4d450dfc20c5639125922985c93e5da03477aa",
+          "token": "74fcaab7-e2f7-4dfa-b467-8d6a5a74c313",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "1b32249d5ba6efb1a7142cb9d2cefa611c759032"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "ebefa701f15264192f4fce647b4d450dfc20c5639125922985c93e5da03477aa",
+          "token": "74fcaab7-e2f7-4dfa-b467-8d6a5a74c313",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "1b32249d5ba6efb1a7142cb9d2cefa611c759032"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66062160
+    },
+    {
+      "root": "dotln-integrate-test-CBlWLm",
+      "token": "30a91ce6-0067-4d69-a74e-45c12844daed",
+      "sha256": "9434ab825442dccbaf09a026463b754eb58c9b18647c8393cbb275d17993237e",
+      "device": 16777233,
+      "inode": 756840494,
+      "gateId": "1c880d0c-7bb0-459b-a0bf-e7f91602577d",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "ebefa701f15264192f4fce647b4d450dfc20c5639125922985c93e5da03477aa",
+          "token": "74fcaab7-e2f7-4dfa-b467-8d6a5a74c313",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "1b32249d5ba6efb1a7142cb9d2cefa611c759032"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "ebefa701f15264192f4fce647b4d450dfc20c5639125922985c93e5da03477aa",
+          "token": "74fcaab7-e2f7-4dfa-b467-8d6a5a74c313",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "1b32249d5ba6efb1a7142cb9d2cefa611c759032"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 65822839
+    },
+    {
+      "root": "dotln-integrate-test-CasTy1",
+      "token": "962fd19b-7be9-4465-8210-43faa6a48598",
+      "sha256": "719455d97807418b651181fa81b0325433dda0f5315ced96020da9c5c7bad353",
+      "device": 16777233,
+      "inode": 760937695,
+      "gateId": "8fe86269-16e2-4e5e-ade7-192c192cad08",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "218e57cf44c3549cf9cc416baf310a52b13df854c2a6255929bd9e512a44ff81",
+          "token": "2112e9d0-e598-433c-8244-d36b2206ed62",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "124f35e4981ed99f0bbab65ad79ca1649163495f"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "218e57cf44c3549cf9cc416baf310a52b13df854c2a6255929bd9e512a44ff81",
+          "token": "2112e9d0-e598-433c-8244-d36b2206ed62",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "124f35e4981ed99f0bbab65ad79ca1649163495f"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 65890002
+    },
+    {
+      "root": "dotln-integrate-test-Cu6N9o",
+      "token": "20683756-c72d-46b4-bcbb-06fd1d607fb1",
+      "sha256": "6f82b1b1e6f86fafe3a11c022447cf9c453e569b335d68c32c0393b31a5333b6",
+      "device": 16777233,
+      "inode": 760917833,
+      "gateId": "8fe86269-16e2-4e5e-ade7-192c192cad08",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "218e57cf44c3549cf9cc416baf310a52b13df854c2a6255929bd9e512a44ff81",
+          "token": "2112e9d0-e598-433c-8244-d36b2206ed62",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "124f35e4981ed99f0bbab65ad79ca1649163495f"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "218e57cf44c3549cf9cc416baf310a52b13df854c2a6255929bd9e512a44ff81",
+          "token": "2112e9d0-e598-433c-8244-d36b2206ed62",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "124f35e4981ed99f0bbab65ad79ca1649163495f"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 65822952
+    },
+    {
+      "root": "dotln-integrate-test-DNrz3L",
+      "token": "eee7984e-8222-429b-8a6f-6acfcfa5dc16",
+      "sha256": "08925b4077eaf1bacaa66c5e3e0d86faad36011d11a2f5f3c2426d19cba2cb8e",
+      "device": 16777233,
+      "inode": 755522533,
+      "gateId": "43bff0ec-1b0b-4b67-8772-ce0903285183",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "e25dd2ea371de5c4393420583e2fd9b0b9d48716b81c1645aeccfa89147ab71e",
+          "token": "7eeab5b6-02e2-431d-853c-5f620ee530a2",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "7d2f6c3b3dc21ad4c6bdabd23d05fd7a449d5b46"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "e25dd2ea371de5c4393420583e2fd9b0b9d48716b81c1645aeccfa89147ab71e",
+          "token": "7eeab5b6-02e2-431d-853c-5f620ee530a2",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "7d2f6c3b3dc21ad4c6bdabd23d05fd7a449d5b46"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66060998
+    },
+    {
+      "root": "dotln-integrate-test-DQzuuf",
+      "token": "75f951c3-2809-4321-ab73-45040a719ef0",
+      "sha256": "e4c615841b3fb026d2920c780405e75237085afd53b9780765155a8ba25cdcf5",
+      "device": 16777233,
+      "inode": 755517230,
+      "gateId": "43bff0ec-1b0b-4b67-8772-ce0903285183",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "e25dd2ea371de5c4393420583e2fd9b0b9d48716b81c1645aeccfa89147ab71e",
+          "token": "7eeab5b6-02e2-431d-853c-5f620ee530a2",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "7d2f6c3b3dc21ad4c6bdabd23d05fd7a449d5b46"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "e25dd2ea371de5c4393420583e2fd9b0b9d48716b81c1645aeccfa89147ab71e",
+          "token": "7eeab5b6-02e2-431d-853c-5f620ee530a2",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "7d2f6c3b3dc21ad4c6bdabd23d05fd7a449d5b46"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66064323
+    },
+    {
+      "root": "dotln-integrate-test-DaNbFz",
+      "token": "8cbb2f41-b137-4bda-addf-d81e428c1b14",
+      "sha256": "eae20da9d82b88321a4d4a74049f3dd1b45b67568a8957a723b7bcd236d80983",
+      "device": 16777233,
+      "inode": 752368140,
+      "gateId": "761c7a01-c073-4aae-b9dc-8ba4117a2fa1",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "0fd051a0bdb68d2659bd9fda3cd58bc5269c545daf0b1d0e69dd71c54d3a8b9a",
+          "token": "37b1e591-7146-4807-bd80-877f051fa47c",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "115114327b36b3e103aa8d651defa1b2f4b1b474"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "0fd051a0bdb68d2659bd9fda3cd58bc5269c545daf0b1d0e69dd71c54d3a8b9a",
+          "token": "37b1e591-7146-4807-bd80-877f051fa47c",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "115114327b36b3e103aa8d651defa1b2f4b1b474"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66052170
+    },
+    {
+      "root": "dotln-integrate-test-FqJ4B9",
+      "token": "1177b5d8-1605-4413-91a1-22409c44af75",
+      "sha256": "8d5d8c3bf462798d5cd7080d270177c4f395ad77b827a5b793333de22db01e2b",
+      "device": 16777233,
+      "inode": 755506305,
+      "gateId": "43bff0ec-1b0b-4b67-8772-ce0903285183",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "e25dd2ea371de5c4393420583e2fd9b0b9d48716b81c1645aeccfa89147ab71e",
+          "token": "7eeab5b6-02e2-431d-853c-5f620ee530a2",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "7d2f6c3b3dc21ad4c6bdabd23d05fd7a449d5b46"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "e25dd2ea371de5c4393420583e2fd9b0b9d48716b81c1645aeccfa89147ab71e",
+          "token": "7eeab5b6-02e2-431d-853c-5f620ee530a2",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "7d2f6c3b3dc21ad4c6bdabd23d05fd7a449d5b46"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66062533
+    },
+    {
+      "root": "dotln-integrate-test-GD9Uzs",
+      "token": "f90aa7fb-d97b-4ab2-8920-4608f3c5cd2c",
+      "sha256": "c74c0183123038b27e7744dcf6182d984cc93489037c3e5b9d5135e22510d601",
+      "device": 16777233,
+      "inode": 761172250,
+      "gateId": "8fe86269-16e2-4e5e-ade7-192c192cad08",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "218e57cf44c3549cf9cc416baf310a52b13df854c2a6255929bd9e512a44ff81",
+          "token": "2112e9d0-e598-433c-8244-d36b2206ed62",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "124f35e4981ed99f0bbab65ad79ca1649163495f"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "218e57cf44c3549cf9cc416baf310a52b13df854c2a6255929bd9e512a44ff81",
+          "token": "2112e9d0-e598-433c-8244-d36b2206ed62",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "124f35e4981ed99f0bbab65ad79ca1649163495f"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66056368
+    },
+    {
+      "root": "dotln-integrate-test-GMwkVT",
+      "token": "db988d7e-71be-487b-abe6-03a889a01b6b",
+      "sha256": "2d2dfa3607cbb96f888f227f952fde495076732a92912fa15e236359092f8173",
+      "device": 16777233,
+      "inode": 752347255,
+      "gateId": "761c7a01-c073-4aae-b9dc-8ba4117a2fa1",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "0fd051a0bdb68d2659bd9fda3cd58bc5269c545daf0b1d0e69dd71c54d3a8b9a",
+          "token": "37b1e591-7146-4807-bd80-877f051fa47c",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "115114327b36b3e103aa8d651defa1b2f4b1b474"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "0fd051a0bdb68d2659bd9fda3cd58bc5269c545daf0b1d0e69dd71c54d3a8b9a",
+          "token": "37b1e591-7146-4807-bd80-877f051fa47c",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "115114327b36b3e103aa8d651defa1b2f4b1b474"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66052035
+    },
+    {
+      "root": "dotln-integrate-test-GNMofq",
+      "token": "680aaa3c-3dc5-4c62-9fb4-0a953016f050",
+      "sha256": "96cb667eb074ecc86a40846c3318145e95ee98a4a36afbb5d549ab92fdae3052",
+      "device": 16777233,
+      "inode": 756849852,
+      "gateId": "1c880d0c-7bb0-459b-a0bf-e7f91602577d",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "ebefa701f15264192f4fce647b4d450dfc20c5639125922985c93e5da03477aa",
+          "token": "74fcaab7-e2f7-4dfa-b467-8d6a5a74c313",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "1b32249d5ba6efb1a7142cb9d2cefa611c759032"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "ebefa701f15264192f4fce647b4d450dfc20c5639125922985c93e5da03477aa",
+          "token": "74fcaab7-e2f7-4dfa-b467-8d6a5a74c313",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "1b32249d5ba6efb1a7142cb9d2cefa611c759032"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 65873774
+    },
+    {
+      "root": "dotln-integrate-test-GsJAW6",
+      "token": "ce1ee0db-1b99-4352-9e67-2033c56427e1",
+      "sha256": "2acf2f3be569a5b925a3e727d76b3fa688b6acde9da64d17bdfb55ec7db5da63",
+      "device": 16777233,
+      "inode": 759081418,
+      "gateId": "76a6260d-24ee-473e-892b-1e366ebe2de4",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "bd57e0c20595b9d8f38929556e00c6680bd4d9cb168a0f1cfca2e31a5a966229",
+          "token": "39909686-87af-473b-b8e5-3d79841c7e85",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "87d3935c802c01d5c3ff3fc6c4b782017c5edd86"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "bd57e0c20595b9d8f38929556e00c6680bd4d9cb168a0f1cfca2e31a5a966229",
+          "token": "39909686-87af-473b-b8e5-3d79841c7e85",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "87d3935c802c01d5c3ff3fc6c4b782017c5edd86"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66062587
+    },
+    {
+      "root": "dotln-integrate-test-HVn0mB",
+      "token": "f7064cba-ccb3-44b2-92b5-8c1546f8b5c6",
+      "sha256": "f0b2e4d61f62471c26d3119e38624d144900728ff41c55eb33e747929d25507f",
+      "device": 16777233,
+      "inode": 759112707,
+      "gateId": "76a6260d-24ee-473e-892b-1e366ebe2de4",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "bd57e0c20595b9d8f38929556e00c6680bd4d9cb168a0f1cfca2e31a5a966229",
+          "token": "39909686-87af-473b-b8e5-3d79841c7e85",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "87d3935c802c01d5c3ff3fc6c4b782017c5edd86"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "bd57e0c20595b9d8f38929556e00c6680bd4d9cb168a0f1cfca2e31a5a966229",
+          "token": "39909686-87af-473b-b8e5-3d79841c7e85",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "87d3935c802c01d5c3ff3fc6c4b782017c5edd86"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66063587
+    },
+    {
+      "root": "dotln-integrate-test-I6edGX",
+      "token": "1efda54b-450c-4c1c-b49a-c4c392498d7b",
+      "sha256": "55229d3b3ec30535b5a65a5deae6708fd590999fb7d1e7b93235cb942c837d2d",
+      "device": 16777233,
+      "inode": 759118424,
+      "gateId": "76a6260d-24ee-473e-892b-1e366ebe2de4",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "bd57e0c20595b9d8f38929556e00c6680bd4d9cb168a0f1cfca2e31a5a966229",
+          "token": "39909686-87af-473b-b8e5-3d79841c7e85",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "87d3935c802c01d5c3ff3fc6c4b782017c5edd86"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "bd57e0c20595b9d8f38929556e00c6680bd4d9cb168a0f1cfca2e31a5a966229",
+          "token": "39909686-87af-473b-b8e5-3d79841c7e85",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "87d3935c802c01d5c3ff3fc6c4b782017c5edd86"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66065471
+    },
+    {
+      "root": "dotln-integrate-test-JFUk6f",
+      "token": "b6dbeecf-870a-4408-85f1-40ca36c7c70e",
+      "sha256": "628e5471b11bb8333141ec67dcdad9871c583a296833ac184b83ef73f7051f40",
+      "device": 16777233,
+      "inode": 761177451,
+      "gateId": "8fe86269-16e2-4e5e-ade7-192c192cad08",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "218e57cf44c3549cf9cc416baf310a52b13df854c2a6255929bd9e512a44ff81",
+          "token": "2112e9d0-e598-433c-8244-d36b2206ed62",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "124f35e4981ed99f0bbab65ad79ca1649163495f"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "218e57cf44c3549cf9cc416baf310a52b13df854c2a6255929bd9e512a44ff81",
+          "token": "2112e9d0-e598-433c-8244-d36b2206ed62",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "124f35e4981ed99f0bbab65ad79ca1649163495f"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66056629
+    },
+    {
+      "root": "dotln-integrate-test-JMvKuZ",
+      "token": "1ab75255-bd05-45e8-8a5d-8fdc95de36c2",
+      "sha256": "6deeb1c60b3edbba7f62ea6a0632556df40dbe7991d80464485958fb98eb20b5",
+      "device": 16777233,
+      "inode": 759097042,
+      "gateId": "76a6260d-24ee-473e-892b-1e366ebe2de4",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "bd57e0c20595b9d8f38929556e00c6680bd4d9cb168a0f1cfca2e31a5a966229",
+          "token": "39909686-87af-473b-b8e5-3d79841c7e85",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "87d3935c802c01d5c3ff3fc6c4b782017c5edd86"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "bd57e0c20595b9d8f38929556e00c6680bd4d9cb168a0f1cfca2e31a5a966229",
+          "token": "39909686-87af-473b-b8e5-3d79841c7e85",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "87d3935c802c01d5c3ff3fc6c4b782017c5edd86"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66124409
+    },
+    {
+      "root": "dotln-integrate-test-JdNcf1",
+      "token": "df08a9c7-8214-4e4e-aeb7-d7f025642e43",
+      "sha256": "d9213ed5b98482076e1b5325622d012b1e4da34d8f7170853f5043eb52e0c5d8",
+      "device": 16777233,
+      "inode": 757094911,
+      "gateId": "1c880d0c-7bb0-459b-a0bf-e7f91602577d",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "ebefa701f15264192f4fce647b4d450dfc20c5639125922985c93e5da03477aa",
+          "token": "74fcaab7-e2f7-4dfa-b467-8d6a5a74c313",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "1b32249d5ba6efb1a7142cb9d2cefa611c759032"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "ebefa701f15264192f4fce647b4d450dfc20c5639125922985c93e5da03477aa",
+          "token": "74fcaab7-e2f7-4dfa-b467-8d6a5a74c313",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "1b32249d5ba6efb1a7142cb9d2cefa611c759032"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66056263
+    },
+    {
+      "root": "dotln-integrate-test-JlA9E5",
+      "token": "17afdaa7-7900-4a3c-9bd7-20f362a4b9ae",
+      "sha256": "951a2073884d2a37a5aeb8f6516fe9af6609f91cbcfcdba1d2188dbb530d0f58",
+      "device": 16777233,
+      "inode": 759123728,
+      "gateId": "76a6260d-24ee-473e-892b-1e366ebe2de4",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "bd57e0c20595b9d8f38929556e00c6680bd4d9cb168a0f1cfca2e31a5a966229",
+          "token": "39909686-87af-473b-b8e5-3d79841c7e85",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "87d3935c802c01d5c3ff3fc6c4b782017c5edd86"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "bd57e0c20595b9d8f38929556e00c6680bd4d9cb168a0f1cfca2e31a5a966229",
+          "token": "39909686-87af-473b-b8e5-3d79841c7e85",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "87d3935c802c01d5c3ff3fc6c4b782017c5edd86"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66062136
+    },
+    {
+      "root": "dotln-integrate-test-Jxx1mq",
+      "token": "179a8a14-3dfd-481a-95ac-ecdbf8c7b120",
+      "sha256": "072163e6940dc3a7243b4aeed40dfb619f6411eb383b194df942426b56deb744",
+      "device": 16777233,
+      "inode": 761193093,
+      "gateId": "8fe86269-16e2-4e5e-ade7-192c192cad08",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "218e57cf44c3549cf9cc416baf310a52b13df854c2a6255929bd9e512a44ff81",
+          "token": "2112e9d0-e598-433c-8244-d36b2206ed62",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "124f35e4981ed99f0bbab65ad79ca1649163495f"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "218e57cf44c3549cf9cc416baf310a52b13df854c2a6255929bd9e512a44ff81",
+          "token": "2112e9d0-e598-433c-8244-d36b2206ed62",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "124f35e4981ed99f0bbab65ad79ca1649163495f"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66063666
+    },
+    {
+      "root": "dotln-integrate-test-K9Ds7v",
+      "token": "b68c8583-781c-4217-ae72-2ebe47bb2619",
+      "sha256": "80131286ae290454caa4b48eb96f8a39df9ef56f80a6529e5f824d766bacc813",
+      "device": 16777233,
+      "inode": 757115700,
+      "gateId": "1c880d0c-7bb0-459b-a0bf-e7f91602577d",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "ebefa701f15264192f4fce647b4d450dfc20c5639125922985c93e5da03477aa",
+          "token": "74fcaab7-e2f7-4dfa-b467-8d6a5a74c313",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "1b32249d5ba6efb1a7142cb9d2cefa611c759032"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "ebefa701f15264192f4fce647b4d450dfc20c5639125922985c93e5da03477aa",
+          "token": "74fcaab7-e2f7-4dfa-b467-8d6a5a74c313",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "1b32249d5ba6efb1a7142cb9d2cefa611c759032"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66063560
+    },
+    {
+      "root": "dotln-integrate-test-M4P8f7",
+      "token": "eccf4274-3562-4d3d-b571-d51208680349",
+      "sha256": "45236fc743bc057a8a134e8d170b51e588c8def43680d9e6cff421cd4f0fd05c",
+      "device": 16777233,
+      "inode": 755511521,
+      "gateId": "43bff0ec-1b0b-4b67-8772-ce0903285183",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "e25dd2ea371de5c4393420583e2fd9b0b9d48716b81c1645aeccfa89147ab71e",
+          "token": "7eeab5b6-02e2-431d-853c-5f620ee530a2",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "7d2f6c3b3dc21ad4c6bdabd23d05fd7a449d5b46"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "e25dd2ea371de5c4393420583e2fd9b0b9d48716b81c1645aeccfa89147ab71e",
+          "token": "7eeab5b6-02e2-431d-853c-5f620ee530a2",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "7d2f6c3b3dc21ad4c6bdabd23d05fd7a449d5b46"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66062453
+    },
+    {
+      "root": "dotln-integrate-test-MNTRKB",
+      "token": "50ae7656-4404-4d12-9ebc-e5f91ad82a61",
+      "sha256": "1f62f999ed591af341df446b19e2938d8cea023515b8999de657b3b3c56fed73",
+      "device": 16777233,
+      "inode": 757131345,
+      "gateId": "1c880d0c-7bb0-459b-a0bf-e7f91602577d",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "ebefa701f15264192f4fce647b4d450dfc20c5639125922985c93e5da03477aa",
+          "token": "74fcaab7-e2f7-4dfa-b467-8d6a5a74c313",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "1b32249d5ba6efb1a7142cb9d2cefa611c759032"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "ebefa701f15264192f4fce647b4d450dfc20c5639125922985c93e5da03477aa",
+          "token": "74fcaab7-e2f7-4dfa-b467-8d6a5a74c313",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "1b32249d5ba6efb1a7142cb9d2cefa611c759032"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66125685
+    },
+    {
+      "root": "dotln-integrate-test-Mlf7Cg",
+      "token": "0860d40c-8b89-40ee-937a-9c396a2ffd0b",
+      "sha256": "18efb582e5a3310652ece8cabc88bd8742bdfd1e02d314ea2b2815bac8261398",
+      "device": 16777233,
+      "inode": 759129509,
+      "gateId": "76a6260d-24ee-473e-892b-1e366ebe2de4",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "bd57e0c20595b9d8f38929556e00c6680bd4d9cb168a0f1cfca2e31a5a966229",
+          "token": "39909686-87af-473b-b8e5-3d79841c7e85",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "87d3935c802c01d5c3ff3fc6c4b782017c5edd86"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "bd57e0c20595b9d8f38929556e00c6680bd4d9cb168a0f1cfca2e31a5a966229",
+          "token": "39909686-87af-473b-b8e5-3d79841c7e85",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "87d3935c802c01d5c3ff3fc6c4b782017c5edd86"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 70864213
+    },
+    {
+      "root": "dotln-integrate-test-NBWG9r",
+      "token": "195d7d13-3819-4993-a8bc-216c721e3ac8",
+      "sha256": "3fd2e1a9e7d6db0b9a8a24a2bd880ee0fd14b22229f7713fe1d467e41a22007b",
+      "device": 16777233,
+      "inode": 752310773,
+      "gateId": "761c7a01-c073-4aae-b9dc-8ba4117a2fa1",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "0fd051a0bdb68d2659bd9fda3cd58bc5269c545daf0b1d0e69dd71c54d3a8b9a",
+          "token": "37b1e591-7146-4807-bd80-877f051fa47c",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "115114327b36b3e103aa8d651defa1b2f4b1b474"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "0fd051a0bdb68d2659bd9fda3cd58bc5269c545daf0b1d0e69dd71c54d3a8b9a",
+          "token": "37b1e591-7146-4807-bd80-877f051fa47c",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "115114327b36b3e103aa8d651defa1b2f4b1b474"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66052656
+    },
+    {
+      "root": "dotln-integrate-test-NRTf4j",
+      "token": "607dbd02-e226-4f72-b2bd-7d57f14db818",
+      "sha256": "62f52f89f1d233eab9521dcc2df8620febc94af8ab9e66d15047420f4d096c62",
+      "device": 16777233,
+      "inode": 757100102,
+      "gateId": "1c880d0c-7bb0-459b-a0bf-e7f91602577d",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "ebefa701f15264192f4fce647b4d450dfc20c5639125922985c93e5da03477aa",
+          "token": "74fcaab7-e2f7-4dfa-b467-8d6a5a74c313",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "1b32249d5ba6efb1a7142cb9d2cefa611c759032"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "ebefa701f15264192f4fce647b4d450dfc20c5639125922985c93e5da03477aa",
+          "token": "74fcaab7-e2f7-4dfa-b467-8d6a5a74c313",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "1b32249d5ba6efb1a7142cb9d2cefa611c759032"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66056522
+    },
+    {
+      "root": "dotln-integrate-test-NoCdiD",
+      "token": "4149c572-9315-468a-adf7-b8ab18d2e53f",
+      "sha256": "697716ce428ca889dbc6a52351082cc963fc38d765983e1a662112b507821ee7",
+      "device": 16777233,
+      "inode": 755501089,
+      "gateId": "43bff0ec-1b0b-4b67-8772-ce0903285183",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "e25dd2ea371de5c4393420583e2fd9b0b9d48716b81c1645aeccfa89147ab71e",
+          "token": "7eeab5b6-02e2-431d-853c-5f620ee530a2",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "7d2f6c3b3dc21ad4c6bdabd23d05fd7a449d5b46"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "e25dd2ea371de5c4393420583e2fd9b0b9d48716b81c1645aeccfa89147ab71e",
+          "token": "7eeab5b6-02e2-431d-853c-5f620ee530a2",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "7d2f6c3b3dc21ad4c6bdabd23d05fd7a449d5b46"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66124518
+    },
+    {
+      "root": "dotln-integrate-test-OBNZq9",
+      "token": "f452ca39-645c-4aa3-884d-dd3bcfce9779",
+      "sha256": "13898fd2fbefc8de40387cc909785d512efb597004c433f4a766e176b55161d1",
+      "device": 16777233,
+      "inode": 759044971,
+      "gateId": "76a6260d-24ee-473e-892b-1e366ebe2de4",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "bd57e0c20595b9d8f38929556e00c6680bd4d9cb168a0f1cfca2e31a5a966229",
+          "token": "39909686-87af-473b-b8e5-3d79841c7e85",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "87d3935c802c01d5c3ff3fc6c4b782017c5edd86"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "bd57e0c20595b9d8f38929556e00c6680bd4d9cb168a0f1cfca2e31a5a966229",
+          "token": "39909686-87af-473b-b8e5-3d79841c7e85",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "87d3935c802c01d5c3ff3fc6c4b782017c5edd86"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66062144
+    },
+    {
+      "root": "dotln-integrate-test-OHv2U4",
+      "token": "189c58ab-a38e-494d-854d-f24d9676308d",
+      "sha256": "de52eaa6716d3bcde4d8f1e38c7eec841e5dcfbab7eeddbb5a676941bf825e93",
+      "device": 16777233,
+      "inode": 752379076,
+      "gateId": "761c7a01-c073-4aae-b9dc-8ba4117a2fa1",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "0fd051a0bdb68d2659bd9fda3cd58bc5269c545daf0b1d0e69dd71c54d3a8b9a",
+          "token": "37b1e591-7146-4807-bd80-877f051fa47c",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "115114327b36b3e103aa8d651defa1b2f4b1b474"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "0fd051a0bdb68d2659bd9fda3cd58bc5269c545daf0b1d0e69dd71c54d3a8b9a",
+          "token": "37b1e591-7146-4807-bd80-877f051fa47c",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "115114327b36b3e103aa8d651defa1b2f4b1b474"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66053960
+    },
+    {
+      "root": "dotln-integrate-test-Onn3FG",
+      "token": "cf01fe4b-2b24-4975-bb38-d3fc6221d1c7",
+      "sha256": "8a1cc74df360d61e5b033c780fce80436aaa4bdb602106ba884aff54bbbc62e1",
+      "device": 16777233,
+      "inode": 759107489,
+      "gateId": "76a6260d-24ee-473e-892b-1e366ebe2de4",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "bd57e0c20595b9d8f38929556e00c6680bd4d9cb168a0f1cfca2e31a5a966229",
+          "token": "39909686-87af-473b-b8e5-3d79841c7e85",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "87d3935c802c01d5c3ff3fc6c4b782017c5edd86"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "bd57e0c20595b9d8f38929556e00c6680bd4d9cb168a0f1cfca2e31a5a966229",
+          "token": "39909686-87af-473b-b8e5-3d79841c7e85",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "87d3935c802c01d5c3ff3fc6c4b782017c5edd86"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66063674
+    },
+    {
+      "root": "dotln-integrate-test-Q68sDz",
+      "token": "7ce7e204-78a4-4efe-98b0-d8187054d259",
+      "sha256": "84487109a1f9464ed68716e8135ea1e974ca37bb4fe7d7d64cc83be209b34d6c",
+      "device": 16777233,
+      "inode": 752305587,
+      "gateId": "761c7a01-c073-4aae-b9dc-8ba4117a2fa1",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "0fd051a0bdb68d2659bd9fda3cd58bc5269c545daf0b1d0e69dd71c54d3a8b9a",
+          "token": "37b1e591-7146-4807-bd80-877f051fa47c",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "115114327b36b3e103aa8d651defa1b2f4b1b474"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "0fd051a0bdb68d2659bd9fda3cd58bc5269c545daf0b1d0e69dd71c54d3a8b9a",
+          "token": "37b1e591-7146-4807-bd80-877f051fa47c",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "115114327b36b3e103aa8d651defa1b2f4b1b474"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66050630
+    },
+    {
+      "root": "dotln-integrate-test-QBFoff",
+      "token": "5bc81c7b-6c2d-4993-be43-653213c7a0a9",
+      "sha256": "d06c16b1f591a75b3fa69ac5e9441aa09187b42a419da583f8beaa4bd15ef792",
+      "device": 16777233,
+      "inode": 752352479,
+      "gateId": "761c7a01-c073-4aae-b9dc-8ba4117a2fa1",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "0fd051a0bdb68d2659bd9fda3cd58bc5269c545daf0b1d0e69dd71c54d3a8b9a",
+          "token": "37b1e591-7146-4807-bd80-877f051fa47c",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "115114327b36b3e103aa8d651defa1b2f4b1b474"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "0fd051a0bdb68d2659bd9fda3cd58bc5269c545daf0b1d0e69dd71c54d3a8b9a",
+          "token": "37b1e591-7146-4807-bd80-877f051fa47c",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "115114327b36b3e103aa8d651defa1b2f4b1b474"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66051977
+    },
+    {
+      "root": "dotln-integrate-test-ReK0AA",
+      "token": "8ad7c741-0609-4f0a-ad54-96e3577b01e8",
+      "sha256": "83e2e3508e44b3a54ee818fc77c72ee713a3586256b8f7fd162c16df2affa140",
+      "device": 16777233,
+      "inode": 755210312,
+      "gateId": "43bff0ec-1b0b-4b67-8772-ce0903285183",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "e25dd2ea371de5c4393420583e2fd9b0b9d48716b81c1645aeccfa89147ab71e",
+          "token": "7eeab5b6-02e2-431d-853c-5f620ee530a2",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "7d2f6c3b3dc21ad4c6bdabd23d05fd7a449d5b46"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "e25dd2ea371de5c4393420583e2fd9b0b9d48716b81c1645aeccfa89147ab71e",
+          "token": "7eeab5b6-02e2-431d-853c-5f620ee530a2",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "7d2f6c3b3dc21ad4c6bdabd23d05fd7a449d5b46"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 65821674
+    },
+    {
+      "root": "dotln-integrate-test-SU85JW",
+      "token": "c8739244-7c16-4d92-9359-88ac780410a4",
+      "sha256": "0db68f8fad6bcd518be1333a9c7489bbf35d8f5584424720441e2071a2de20fe",
+      "device": 16777233,
+      "inode": 755469862,
+      "gateId": "43bff0ec-1b0b-4b67-8772-ce0903285183",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "e25dd2ea371de5c4393420583e2fd9b0b9d48716b81c1645aeccfa89147ab71e",
+          "token": "7eeab5b6-02e2-431d-853c-5f620ee530a2",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "7d2f6c3b3dc21ad4c6bdabd23d05fd7a449d5b46"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "e25dd2ea371de5c4393420583e2fd9b0b9d48716b81c1645aeccfa89147ab71e",
+          "token": "7eeab5b6-02e2-431d-853c-5f620ee530a2",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "7d2f6c3b3dc21ad4c6bdabd23d05fd7a449d5b46"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66055368
+    },
+    {
+      "root": "dotln-integrate-test-SeeDdM",
+      "token": "64e2004d-7923-446c-af2c-97b5419ea89d",
+      "sha256": "93080fe39adaa647615536f84debbd87d74a94460ac169ecbf557adba0988866",
+      "device": 16777233,
+      "inode": 757089678,
+      "gateId": "1c880d0c-7bb0-459b-a0bf-e7f91602577d",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "ebefa701f15264192f4fce647b4d450dfc20c5639125922985c93e5da03477aa",
+          "token": "74fcaab7-e2f7-4dfa-b467-8d6a5a74c313",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "1b32249d5ba6efb1a7142cb9d2cefa611c759032"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "ebefa701f15264192f4fce647b4d450dfc20c5639125922985c93e5da03477aa",
+          "token": "74fcaab7-e2f7-4dfa-b467-8d6a5a74c313",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "1b32249d5ba6efb1a7142cb9d2cefa611c759032"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66065744
+    },
+    {
+      "root": "dotln-integrate-test-UmEPto",
+      "token": "3dff24ae-16dd-4a17-8ec0-214ada24d476",
+      "sha256": "37cc8f6e7692025bb53add7d00623f8834bb0241cf5573aad70ab6d49a4c03e7",
+      "device": 16777233,
+      "inode": 760927193,
+      "gateId": "8fe86269-16e2-4e5e-ade7-192c192cad08",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "218e57cf44c3549cf9cc416baf310a52b13df854c2a6255929bd9e512a44ff81",
+          "token": "2112e9d0-e598-433c-8244-d36b2206ed62",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "124f35e4981ed99f0bbab65ad79ca1649163495f"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "218e57cf44c3549cf9cc416baf310a52b13df854c2a6255929bd9e512a44ff81",
+          "token": "2112e9d0-e598-433c-8244-d36b2206ed62",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "124f35e4981ed99f0bbab65ad79ca1649163495f"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 65873889
+    },
+    {
+      "root": "dotln-integrate-test-VO3jEo",
+      "token": "b36957eb-70e8-4f30-87e0-c2ea59283436",
+      "sha256": "5bb7f2d476b34eaf94e39016d7c01b4605a5eb68c0d1174014d2f65c6888e0d6",
+      "device": 16777233,
+      "inode": 752326451,
+      "gateId": "761c7a01-c073-4aae-b9dc-8ba4117a2fa1",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "0fd051a0bdb68d2659bd9fda3cd58bc5269c545daf0b1d0e69dd71c54d3a8b9a",
+          "token": "37b1e591-7146-4807-bd80-877f051fa47c",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "115114327b36b3e103aa8d651defa1b2f4b1b474"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "0fd051a0bdb68d2659bd9fda3cd58bc5269c545daf0b1d0e69dd71c54d3a8b9a",
+          "token": "37b1e591-7146-4807-bd80-877f051fa47c",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "115114327b36b3e103aa8d651defa1b2f4b1b474"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66044739
+    },
+    {
+      "root": "dotln-integrate-test-Vcipu7",
+      "token": "73f2dac3-6c43-4db7-ae6b-f4046e5d493e",
+      "sha256": "2b78c68322dcadf6edede76422fd83d2b4e4a58a5ce5926c427f243771dc1894",
+      "device": 16777233,
+      "inode": 758836595,
+      "gateId": "76a6260d-24ee-473e-892b-1e366ebe2de4",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "bd57e0c20595b9d8f38929556e00c6680bd4d9cb168a0f1cfca2e31a5a966229",
+          "token": "39909686-87af-473b-b8e5-3d79841c7e85",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "87d3935c802c01d5c3ff3fc6c4b782017c5edd86"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "bd57e0c20595b9d8f38929556e00c6680bd4d9cb168a0f1cfca2e31a5a966229",
+          "token": "39909686-87af-473b-b8e5-3d79841c7e85",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "87d3935c802c01d5c3ff3fc6c4b782017c5edd86"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 65889877
+    },
+    {
+      "root": "dotln-integrate-test-VvTqTa",
+      "token": "4f2c9e6b-fbbd-4bf7-ac12-fb3867392fa6",
+      "sha256": "c21be2ed31705983c428c5380981c6e601675818250a63582701df4106458c6c",
+      "device": 16777233,
+      "inode": 757120915,
+      "gateId": "1c880d0c-7bb0-459b-a0bf-e7f91602577d",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "ebefa701f15264192f4fce647b4d450dfc20c5639125922985c93e5da03477aa",
+          "token": "74fcaab7-e2f7-4dfa-b467-8d6a5a74c313",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "1b32249d5ba6efb1a7142cb9d2cefa611c759032"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "ebefa701f15264192f4fce647b4d450dfc20c5639125922985c93e5da03477aa",
+          "token": "74fcaab7-e2f7-4dfa-b467-8d6a5a74c313",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "1b32249d5ba6efb1a7142cb9d2cefa611c759032"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66063508
+    },
+    {
+      "root": "dotln-integrate-test-VvcxTx",
+      "token": "9ce58247-ffc8-4023-85b1-c1fe173131a4",
+      "sha256": "3837f75072430b7bbf891012ab14e969110aef3e10791f3a8bd6617d6f3e5a6b",
+      "device": 16777233,
+      "inode": 752315975,
+      "gateId": "761c7a01-c073-4aae-b9dc-8ba4117a2fa1",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "0fd051a0bdb68d2659bd9fda3cd58bc5269c545daf0b1d0e69dd71c54d3a8b9a",
+          "token": "37b1e591-7146-4807-bd80-877f051fa47c",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "115114327b36b3e103aa8d651defa1b2f4b1b474"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "0fd051a0bdb68d2659bd9fda3cd58bc5269c545daf0b1d0e69dd71c54d3a8b9a",
+          "token": "37b1e591-7146-4807-bd80-877f051fa47c",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "115114327b36b3e103aa8d651defa1b2f4b1b474"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66054657
+    },
+    {
+      "root": "dotln-integrate-test-X0ovJz",
+      "token": "8f64377d-bc9f-45d4-9b1b-6e981e6745b2",
+      "sha256": "1c0c73562750a1315fb82bbfa35b0313dfd7d29bf42578230b0b658732c4d89c",
+      "device": 16777233,
+      "inode": 757074069,
+      "gateId": "1c880d0c-7bb0-459b-a0bf-e7f91602577d",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "ebefa701f15264192f4fce647b4d450dfc20c5639125922985c93e5da03477aa",
+          "token": "74fcaab7-e2f7-4dfa-b467-8d6a5a74c313",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "1b32249d5ba6efb1a7142cb9d2cefa611c759032"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "ebefa701f15264192f4fce647b4d450dfc20c5639125922985c93e5da03477aa",
+          "token": "74fcaab7-e2f7-4dfa-b467-8d6a5a74c313",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "1b32249d5ba6efb1a7142cb9d2cefa611c759032"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66062154
+    },
+    {
+      "root": "dotln-integrate-test-XfTPfC",
+      "token": "e64cd2a3-68bd-494e-89e0-f5942e0f0f40",
+      "sha256": "88437b229c98f750e0d6df46bd6d43831fc79c44feb4dd004edfa03ae0f240b0",
+      "device": 16777233,
+      "inode": 755443828,
+      "gateId": "43bff0ec-1b0b-4b67-8772-ce0903285183",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "e25dd2ea371de5c4393420583e2fd9b0b9d48716b81c1645aeccfa89147ab71e",
+          "token": "7eeab5b6-02e2-431d-853c-5f620ee530a2",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "7d2f6c3b3dc21ad4c6bdabd23d05fd7a449d5b46"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "e25dd2ea371de5c4393420583e2fd9b0b9d48716b81c1645aeccfa89147ab71e",
+          "token": "7eeab5b6-02e2-431d-853c-5f620ee530a2",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "7d2f6c3b3dc21ad4c6bdabd23d05fd7a449d5b46"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66060996
+    },
+    {
+      "root": "dotln-integrate-test-YdQ8jI",
+      "token": "a1a622b9-7415-4976-9810-cc66e34f356d",
+      "sha256": "4b36fe430a90201f890ac2366f3c1b99527e22f4e35a7f4f1b1e108d730c138d",
+      "device": 16777233,
+      "inode": 755480258,
+      "gateId": "43bff0ec-1b0b-4b67-8772-ce0903285183",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "e25dd2ea371de5c4393420583e2fd9b0b9d48716b81c1645aeccfa89147ab71e",
+          "token": "7eeab5b6-02e2-431d-853c-5f620ee530a2",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "7d2f6c3b3dc21ad4c6bdabd23d05fd7a449d5b46"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "e25dd2ea371de5c4393420583e2fd9b0b9d48716b81c1645aeccfa89147ab71e",
+          "token": "7eeab5b6-02e2-431d-853c-5f620ee530a2",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "7d2f6c3b3dc21ad4c6bdabd23d05fd7a449d5b46"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66061448
+    },
+    {
+      "root": "dotln-integrate-test-Yy2za6",
+      "token": "aa3afcdf-cd5c-4ac4-92d2-df7ec39eb266",
+      "sha256": "9cf0f131c88d4d4f178ab23e4d657b31b5ebf2a3e42d8ecbe1b5f780f58494d0",
+      "device": 16777233,
+      "inode": 758811452,
+      "gateId": "76a6260d-24ee-473e-892b-1e366ebe2de4",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "bd57e0c20595b9d8f38929556e00c6680bd4d9cb168a0f1cfca2e31a5a966229",
+          "token": "39909686-87af-473b-b8e5-3d79841c7e85",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "87d3935c802c01d5c3ff3fc6c4b782017c5edd86"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "bd57e0c20595b9d8f38929556e00c6680bd4d9cb168a0f1cfca2e31a5a966229",
+          "token": "39909686-87af-473b-b8e5-3d79841c7e85",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "87d3935c802c01d5c3ff3fc6c4b782017c5edd86"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 65822830
+    },
+    {
+      "root": "dotln-integrate-test-ZqPuZL",
+      "token": "caa1fd44-4262-4f30-aaf8-34b90885e2a1",
+      "sha256": "459fdffc1e2b7d68c3a5ae0486f2180eba59a5fa7707348c4bfb1c00e3e767f9",
+      "device": 16777233,
+      "inode": 757158577,
+      "gateId": "1c880d0c-7bb0-459b-a0bf-e7f91602577d",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "ebefa701f15264192f4fce647b4d450dfc20c5639125922985c93e5da03477aa",
+          "token": "74fcaab7-e2f7-4dfa-b467-8d6a5a74c313",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "1b32249d5ba6efb1a7142cb9d2cefa611c759032"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "ebefa701f15264192f4fce647b4d450dfc20c5639125922985c93e5da03477aa",
+          "token": "74fcaab7-e2f7-4dfa-b467-8d6a5a74c313",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "1b32249d5ba6efb1a7142cb9d2cefa611c759032"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 70864232
+    },
+    {
+      "root": "dotln-integrate-test-ajGXCi",
+      "token": "53103b9e-1df2-4d03-87ad-782c49ea923e",
+      "sha256": "01619b8527fc949c5489effc5942c51895050c1c7919f39bf929504546a3a61b",
+      "device": 16777233,
+      "inode": 757147493,
+      "gateId": "1c880d0c-7bb0-459b-a0bf-e7f91602577d",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "ebefa701f15264192f4fce647b4d450dfc20c5639125922985c93e5da03477aa",
+          "token": "74fcaab7-e2f7-4dfa-b467-8d6a5a74c313",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "1b32249d5ba6efb1a7142cb9d2cefa611c759032"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "ebefa701f15264192f4fce647b4d450dfc20c5639125922985c93e5da03477aa",
+          "token": "74fcaab7-e2f7-4dfa-b467-8d6a5a74c313",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "1b32249d5ba6efb1a7142cb9d2cefa611c759032"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66065491
+    },
+    {
+      "root": "dotln-integrate-test-b3oEEU",
+      "token": "05f27ef4-1ad1-4d0e-b0a8-a1e531a4f5f5",
+      "sha256": "89a2e8fcdf2998d682b8e22a6e58bef26152e6602a36937eb1ec06253d7959d2",
+      "device": 16777233,
+      "inode": 752091786,
+      "gateId": "761c7a01-c073-4aae-b9dc-8ba4117a2fa1",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "0fd051a0bdb68d2659bd9fda3cd58bc5269c545daf0b1d0e69dd71c54d3a8b9a",
+          "token": "37b1e591-7146-4807-bd80-877f051fa47c",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "115114327b36b3e103aa8d651defa1b2f4b1b474"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "0fd051a0bdb68d2659bd9fda3cd58bc5269c545daf0b1d0e69dd71c54d3a8b9a",
+          "token": "37b1e591-7146-4807-bd80-877f051fa47c",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "115114327b36b3e103aa8d651defa1b2f4b1b474"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 65878348
+    },
+    {
+      "root": "dotln-integrate-test-dMLgaQ",
+      "token": "de3a9639-3271-4f5e-940e-bdfe5147277d",
+      "sha256": "49f413852f127d5ec1991ebfcbdc2052ea89a8356acb6f64f60ae5f3a44e6f71",
+      "device": 16777233,
+      "inode": 755495877,
+      "gateId": "43bff0ec-1b0b-4b67-8772-ce0903285183",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "e25dd2ea371de5c4393420583e2fd9b0b9d48716b81c1645aeccfa89147ab71e",
+          "token": "7eeab5b6-02e2-431d-853c-5f620ee530a2",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "7d2f6c3b3dc21ad4c6bdabd23d05fd7a449d5b46"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "e25dd2ea371de5c4393420583e2fd9b0b9d48716b81c1645aeccfa89147ab71e",
+          "token": "7eeab5b6-02e2-431d-853c-5f620ee530a2",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "7d2f6c3b3dc21ad4c6bdabd23d05fd7a449d5b46"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66123266
+    },
+    {
+      "root": "dotln-integrate-test-fE28Pl",
+      "token": "76550e12-c15e-4bd7-9e9d-26148b16b0dc",
+      "sha256": "ea3b49061e3950ef30ee8964f02e38c5251fa3e9e49c72d7504cdc017c5c781c",
+      "device": 16777233,
+      "inode": 760942969,
+      "gateId": "8fe86269-16e2-4e5e-ade7-192c192cad08",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "218e57cf44c3549cf9cc416baf310a52b13df854c2a6255929bd9e512a44ff81",
+          "token": "2112e9d0-e598-433c-8244-d36b2206ed62",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "124f35e4981ed99f0bbab65ad79ca1649163495f"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "218e57cf44c3549cf9cc416baf310a52b13df854c2a6255929bd9e512a44ff81",
+          "token": "2112e9d0-e598-433c-8244-d36b2206ed62",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "124f35e4981ed99f0bbab65ad79ca1649163495f"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 65890009
+    },
+    {
+      "root": "dotln-integrate-test-fH7JOP",
+      "token": "4f851b17-fa66-4f9c-86fd-9c3ef02d2f84",
+      "sha256": "195d72c6632fe2fba0dba6aa9d61d825bbcbeef0c3190a68ca6f32fa2ab3c018",
+      "device": 16777233,
+      "inode": 755490671,
+      "gateId": "43bff0ec-1b0b-4b67-8772-ce0903285183",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "e25dd2ea371de5c4393420583e2fd9b0b9d48716b81c1645aeccfa89147ab71e",
+          "token": "7eeab5b6-02e2-431d-853c-5f620ee530a2",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "7d2f6c3b3dc21ad4c6bdabd23d05fd7a449d5b46"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "e25dd2ea371de5c4393420583e2fd9b0b9d48716b81c1645aeccfa89147ab71e",
+          "token": "7eeab5b6-02e2-431d-853c-5f620ee530a2",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "7d2f6c3b3dc21ad4c6bdabd23d05fd7a449d5b46"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66062337
+    },
+    {
+      "root": "dotln-integrate-test-gLBXeC",
+      "token": "d95680d8-1b11-4d23-9d5c-e3de0a4dcd42",
+      "sha256": "dfdbf0ee4ac23df31cf39e5bad79a7b061ab745dde51e5954fb9de9f6c29236d",
+      "device": 16777233,
+      "inode": 761182678,
+      "gateId": "8fe86269-16e2-4e5e-ade7-192c192cad08",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "218e57cf44c3549cf9cc416baf310a52b13df854c2a6255929bd9e512a44ff81",
+          "token": "2112e9d0-e598-433c-8244-d36b2206ed62",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "124f35e4981ed99f0bbab65ad79ca1649163495f"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "218e57cf44c3549cf9cc416baf310a52b13df854c2a6255929bd9e512a44ff81",
+          "token": "2112e9d0-e598-433c-8244-d36b2206ed62",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "124f35e4981ed99f0bbab65ad79ca1649163495f"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66063681
+    },
+    {
+      "root": "dotln-integrate-test-hEius8",
+      "token": "a1ad0402-4cce-47a5-aea3-43ca7199d2b8",
+      "sha256": "16213a18cfabd2ded76f8b55de2b91e1de7e61d3edcad1136359135b2d04f011",
+      "device": 16777233,
+      "inode": 761230195,
+      "gateId": "8fe86269-16e2-4e5e-ade7-192c192cad08",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "218e57cf44c3549cf9cc416baf310a52b13df854c2a6255929bd9e512a44ff81",
+          "token": "2112e9d0-e598-433c-8244-d36b2206ed62",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "124f35e4981ed99f0bbab65ad79ca1649163495f"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "218e57cf44c3549cf9cc416baf310a52b13df854c2a6255929bd9e512a44ff81",
+          "token": "2112e9d0-e598-433c-8244-d36b2206ed62",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "124f35e4981ed99f0bbab65ad79ca1649163495f"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66062267
+    },
+    {
+      "root": "dotln-integrate-test-hPL7rZ",
+      "token": "c886b510-136a-4c1c-8bb9-551307e387ff",
+      "sha256": "5dac24fd8d23f9f4b40c15ab1a92b54cd518e180a5c971a08d76aba1f2cc1eea",
+      "device": 16777233,
+      "inode": 760932439,
+      "gateId": "8fe86269-16e2-4e5e-ade7-192c192cad08",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "218e57cf44c3549cf9cc416baf310a52b13df854c2a6255929bd9e512a44ff81",
+          "token": "2112e9d0-e598-433c-8244-d36b2206ed62",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "124f35e4981ed99f0bbab65ad79ca1649163495f"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "218e57cf44c3549cf9cc416baf310a52b13df854c2a6255929bd9e512a44ff81",
+          "token": "2112e9d0-e598-433c-8244-d36b2206ed62",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "124f35e4981ed99f0bbab65ad79ca1649163495f"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 63487512
+    },
+    {
+      "root": "dotln-integrate-test-hWSrWI",
+      "token": "76651d53-8af3-49e9-addd-35128c19dc5d",
+      "sha256": "b29a25683e0d5aea314ce1c5f742d65934eccaf5f069d9fe2666c1c18759840c",
+      "device": 16777233,
+      "inode": 759102273,
+      "gateId": "76a6260d-24ee-473e-892b-1e366ebe2de4",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "bd57e0c20595b9d8f38929556e00c6680bd4d9cb168a0f1cfca2e31a5a966229",
+          "token": "39909686-87af-473b-b8e5-3d79841c7e85",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "87d3935c802c01d5c3ff3fc6c4b782017c5edd86"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "bd57e0c20595b9d8f38929556e00c6680bd4d9cb168a0f1cfca2e31a5a966229",
+          "token": "39909686-87af-473b-b8e5-3d79841c7e85",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "87d3935c802c01d5c3ff3fc6c4b782017c5edd86"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66125653
+    },
+    {
+      "root": "dotln-integrate-test-hZXbbr",
+      "token": "4f55bd9a-fe96-41d6-9047-338bded6e7a8",
+      "sha256": "b3adb54c19948fbddfc5104dc1982cdb5de511d015e564a10456d6c6830fa9d8",
+      "device": 16777233,
+      "inode": 761156567,
+      "gateId": "8fe86269-16e2-4e5e-ade7-192c192cad08",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "218e57cf44c3549cf9cc416baf310a52b13df854c2a6255929bd9e512a44ff81",
+          "token": "2112e9d0-e598-433c-8244-d36b2206ed62",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "124f35e4981ed99f0bbab65ad79ca1649163495f"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "218e57cf44c3549cf9cc416baf310a52b13df854c2a6255929bd9e512a44ff81",
+          "token": "2112e9d0-e598-433c-8244-d36b2206ed62",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "124f35e4981ed99f0bbab65ad79ca1649163495f"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66064289
+    },
+    {
+      "root": "dotln-integrate-test-hburAt",
+      "token": "a14f2b2b-1f63-49f4-843e-3acf28b09f49",
+      "sha256": "943034858fef785b8581046d6bac474e7dffdf7925b47d4af54b15b2b143ab81",
+      "device": 16777233,
+      "inode": 752086521,
+      "gateId": "761c7a01-c073-4aae-b9dc-8ba4117a2fa1",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "0fd051a0bdb68d2659bd9fda3cd58bc5269c545daf0b1d0e69dd71c54d3a8b9a",
+          "token": "37b1e591-7146-4807-bd80-877f051fa47c",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "115114327b36b3e103aa8d651defa1b2f4b1b474"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "0fd051a0bdb68d2659bd9fda3cd58bc5269c545daf0b1d0e69dd71c54d3a8b9a",
+          "token": "37b1e591-7146-4807-bd80-877f051fa47c",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "115114327b36b3e103aa8d651defa1b2f4b1b474"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 63475855
+    },
+    {
+      "root": "dotln-integrate-test-hd8e5R",
+      "token": "3a0ad010-d1fc-404b-89c8-5f7e95fc6928",
+      "sha256": "910c598f1449259dc424037ba5b1f2214639271b70876fd64a6d74986f61cf5c",
+      "device": 16777233,
+      "inode": 759065825,
+      "gateId": "76a6260d-24ee-473e-892b-1e366ebe2de4",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "bd57e0c20595b9d8f38929556e00c6680bd4d9cb168a0f1cfca2e31a5a966229",
+          "token": "39909686-87af-473b-b8e5-3d79841c7e85",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "87d3935c802c01d5c3ff3fc6c4b782017c5edd86"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "bd57e0c20595b9d8f38929556e00c6680bd4d9cb168a0f1cfca2e31a5a966229",
+          "token": "39909686-87af-473b-b8e5-3d79841c7e85",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "87d3935c802c01d5c3ff3fc6c4b782017c5edd86"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66056246
+    },
+    {
+      "root": "dotln-integrate-test-iMlIUK",
+      "token": "c1a86a0d-6021-4c26-8aaa-b03a2c194c92",
+      "sha256": "f83a2b17215e6ad23b855edd7a4063953c33321ef19b0490471f981affab1b4e",
+      "device": 16777233,
+      "inode": 761224881,
+      "gateId": "8fe86269-16e2-4e5e-ade7-192c192cad08",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "218e57cf44c3549cf9cc416baf310a52b13df854c2a6255929bd9e512a44ff81",
+          "token": "2112e9d0-e598-433c-8244-d36b2206ed62",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "124f35e4981ed99f0bbab65ad79ca1649163495f"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "218e57cf44c3549cf9cc416baf310a52b13df854c2a6255929bd9e512a44ff81",
+          "token": "2112e9d0-e598-433c-8244-d36b2206ed62",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "124f35e4981ed99f0bbab65ad79ca1649163495f"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66065588
+    },
+    {
+      "root": "dotln-integrate-test-imDmOP",
+      "token": "8ccedd2b-b3d3-467b-945b-bae096c4238a",
+      "sha256": "4309915c8e3d9178378d2880c2e4dff62e2af402ab55a47dce4be26e27b307ad",
+      "device": 16777233,
+      "inode": 757084445,
+      "gateId": "1c880d0c-7bb0-459b-a0bf-e7f91602577d",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "ebefa701f15264192f4fce647b4d450dfc20c5639125922985c93e5da03477aa",
+          "token": "74fcaab7-e2f7-4dfa-b467-8d6a5a74c313",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "1b32249d5ba6efb1a7142cb9d2cefa611c759032"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "ebefa701f15264192f4fce647b4d450dfc20c5639125922985c93e5da03477aa",
+          "token": "74fcaab7-e2f7-4dfa-b467-8d6a5a74c313",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "1b32249d5ba6efb1a7142cb9d2cefa611c759032"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66066190
+    },
+    {
+      "root": "dotln-integrate-test-iuHZyd",
+      "token": "a655479f-956e-4af7-bb7d-ed3300ccf8ad",
+      "sha256": "7b90e7029688104615e9c86375b6a658ec7fbb6e0466212874b30131cedfc57a",
+      "device": 16777233,
+      "inode": 761213953,
+      "gateId": "8fe86269-16e2-4e5e-ade7-192c192cad08",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "218e57cf44c3549cf9cc416baf310a52b13df854c2a6255929bd9e512a44ff81",
+          "token": "2112e9d0-e598-433c-8244-d36b2206ed62",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "124f35e4981ed99f0bbab65ad79ca1649163495f"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "218e57cf44c3549cf9cc416baf310a52b13df854c2a6255929bd9e512a44ff81",
+          "token": "2112e9d0-e598-433c-8244-d36b2206ed62",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "124f35e4981ed99f0bbab65ad79ca1649163495f"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66063799
+    },
+    {
+      "root": "dotln-integrate-test-ju6olE",
+      "token": "a7f50f3d-c4b4-4707-9298-8bd14513d926",
+      "sha256": "0d1ff2a1f87c3bb4fc87f5b1e2998ef7011c88433cbae25de1d8fe939d484d98",
+      "device": 16777233,
+      "inode": 755475048,
+      "gateId": "43bff0ec-1b0b-4b67-8772-ce0903285183",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "e25dd2ea371de5c4393420583e2fd9b0b9d48716b81c1645aeccfa89147ab71e",
+          "token": "7eeab5b6-02e2-431d-853c-5f620ee530a2",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "7d2f6c3b3dc21ad4c6bdabd23d05fd7a449d5b46"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "e25dd2ea371de5c4393420583e2fd9b0b9d48716b81c1645aeccfa89147ab71e",
+          "token": "7eeab5b6-02e2-431d-853c-5f620ee530a2",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "7d2f6c3b3dc21ad4c6bdabd23d05fd7a449d5b46"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66062405
+    },
+    {
+      "root": "dotln-integrate-test-k17jbD",
+      "token": "6afc3d03-5464-433e-9f22-568108d93ce4",
+      "sha256": "c5355b4ea956618e73ff6382f688333cb78ba77680ab67b3864380d6a5562020",
+      "device": 16777233,
+      "inode": 755454200,
+      "gateId": "43bff0ec-1b0b-4b67-8772-ce0903285183",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "e25dd2ea371de5c4393420583e2fd9b0b9d48716b81c1645aeccfa89147ab71e",
+          "token": "7eeab5b6-02e2-431d-853c-5f620ee530a2",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "7d2f6c3b3dc21ad4c6bdabd23d05fd7a449d5b46"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "e25dd2ea371de5c4393420583e2fd9b0b9d48716b81c1645aeccfa89147ab71e",
+          "token": "7eeab5b6-02e2-431d-853c-5f620ee530a2",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "7d2f6c3b3dc21ad4c6bdabd23d05fd7a449d5b46"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66065033
+    },
+    {
+      "root": "dotln-integrate-test-k2OzQj",
+      "token": "5218c206-d1c4-4df3-a347-ca1e4a53b1a0",
+      "sha256": "f03364bbdc977518f2c0d2043dae05b9f2cb87d3b7bedba41e3f377a4d4089ac",
+      "device": 16777233,
+      "inode": 761151385,
+      "gateId": "8fe86269-16e2-4e5e-ade7-192c192cad08",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "218e57cf44c3549cf9cc416baf310a52b13df854c2a6255929bd9e512a44ff81",
+          "token": "2112e9d0-e598-433c-8244-d36b2206ed62",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "124f35e4981ed99f0bbab65ad79ca1649163495f"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "218e57cf44c3549cf9cc416baf310a52b13df854c2a6255929bd9e512a44ff81",
+          "token": "2112e9d0-e598-433c-8244-d36b2206ed62",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "124f35e4981ed99f0bbab65ad79ca1649163495f"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66062275
+    },
+    {
+      "root": "dotln-integrate-test-kA2AIw",
+      "token": "a914882e-a8c7-4289-a645-c03c7a299f68",
+      "sha256": "e800218b7e468f06e3ee2de42fa97c3da4ad5c93f3c9f0ae55e88ceac3cc15d2",
+      "device": 16777233,
+      "inode": 752336838,
+      "gateId": "761c7a01-c073-4aae-b9dc-8ba4117a2fa1",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "0fd051a0bdb68d2659bd9fda3cd58bc5269c545daf0b1d0e69dd71c54d3a8b9a",
+          "token": "37b1e591-7146-4807-bd80-877f051fa47c",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "115114327b36b3e103aa8d651defa1b2f4b1b474"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "0fd051a0bdb68d2659bd9fda3cd58bc5269c545daf0b1d0e69dd71c54d3a8b9a",
+          "token": "37b1e591-7146-4807-bd80-877f051fa47c",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "115114327b36b3e103aa8d651defa1b2f4b1b474"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66052048
+    },
+    {
+      "root": "dotln-integrate-test-kKGI7p",
+      "token": "0b8bc6eb-2ee7-4492-93de-6d603f954ac2",
+      "sha256": "5c1b2aabd5fe3d80b7d9e19aff72fa1577d197a6042652479a0d948bf41991c0",
+      "device": 16777233,
+      "inode": 759091837,
+      "gateId": "76a6260d-24ee-473e-892b-1e366ebe2de4",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "bd57e0c20595b9d8f38929556e00c6680bd4d9cb168a0f1cfca2e31a5a966229",
+          "token": "39909686-87af-473b-b8e5-3d79841c7e85",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "87d3935c802c01d5c3ff3fc6c4b782017c5edd86"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "bd57e0c20595b9d8f38929556e00c6680bd4d9cb168a0f1cfca2e31a5a966229",
+          "token": "39909686-87af-473b-b8e5-3d79841c7e85",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "87d3935c802c01d5c3ff3fc6c4b782017c5edd86"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66063482
+    },
+    {
+      "root": "dotln-integrate-test-kLMJW6",
+      "token": "392752f0-cd52-4818-b494-bc63cb0020b8",
+      "sha256": "52136d6401211e112d48875fb6f2a4ae2e16422c15946be77aaea6602d33a635",
+      "device": 16777233,
+      "inode": 759055345,
+      "gateId": "76a6260d-24ee-473e-892b-1e366ebe2de4",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "bd57e0c20595b9d8f38929556e00c6680bd4d9cb168a0f1cfca2e31a5a966229",
+          "token": "39909686-87af-473b-b8e5-3d79841c7e85",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "87d3935c802c01d5c3ff3fc6c4b782017c5edd86"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "bd57e0c20595b9d8f38929556e00c6680bd4d9cb168a0f1cfca2e31a5a966229",
+          "token": "39909686-87af-473b-b8e5-3d79841c7e85",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "87d3935c802c01d5c3ff3fc6c4b782017c5edd86"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66066172
+    },
+    {
+      "root": "dotln-integrate-test-l6AapI",
+      "token": "0513a2a1-3704-407c-bc54-7d6b99e76f06",
+      "sha256": "3ddc54944cf967b8503f15e5e02a7232d6b7a7496194121978a8d94c01e1a2cc",
+      "device": 16777233,
+      "inode": 761208737,
+      "gateId": "8fe86269-16e2-4e5e-ade7-192c192cad08",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "218e57cf44c3549cf9cc416baf310a52b13df854c2a6255929bd9e512a44ff81",
+          "token": "2112e9d0-e598-433c-8244-d36b2206ed62",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "124f35e4981ed99f0bbab65ad79ca1649163495f"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "218e57cf44c3549cf9cc416baf310a52b13df854c2a6255929bd9e512a44ff81",
+          "token": "2112e9d0-e598-433c-8244-d36b2206ed62",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "124f35e4981ed99f0bbab65ad79ca1649163495f"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66125787
+    },
+    {
+      "root": "dotln-integrate-test-lUspt9",
+      "token": "3ef903c5-36ec-408c-80d3-a4d18dc912ed",
+      "sha256": "a451c6e1ca2270093467a37fcfe75d44d93717d6912b65e03d70106db48bb61a",
+      "device": 16777233,
+      "inode": 752097077,
+      "gateId": "761c7a01-c073-4aae-b9dc-8ba4117a2fa1",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "0fd051a0bdb68d2659bd9fda3cd58bc5269c545daf0b1d0e69dd71c54d3a8b9a",
+          "token": "37b1e591-7146-4807-bd80-877f051fa47c",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "115114327b36b3e103aa8d651defa1b2f4b1b474"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "0fd051a0bdb68d2659bd9fda3cd58bc5269c545daf0b1d0e69dd71c54d3a8b9a",
+          "token": "37b1e591-7146-4807-bd80-877f051fa47c",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "115114327b36b3e103aa8d651defa1b2f4b1b474"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 65878356
+    },
+    {
+      "root": "dotln-integrate-test-lgWseq",
+      "token": "77d46804-36ed-4b8b-a0d6-80d81d344933",
+      "sha256": "8e9bf3f128ab13bb76e01e3abce1484c14820a9b8a4a882baffff3aeb39b7dc6",
+      "device": 16777233,
+      "inode": 759060582,
+      "gateId": "76a6260d-24ee-473e-892b-1e366ebe2de4",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "bd57e0c20595b9d8f38929556e00c6680bd4d9cb168a0f1cfca2e31a5a966229",
+          "token": "39909686-87af-473b-b8e5-3d79841c7e85",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "87d3935c802c01d5c3ff3fc6c4b782017c5edd86"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "bd57e0c20595b9d8f38929556e00c6680bd4d9cb168a0f1cfca2e31a5a966229",
+          "token": "39909686-87af-473b-b8e5-3d79841c7e85",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "87d3935c802c01d5c3ff3fc6c4b782017c5edd86"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66065725
+    },
+    {
+      "root": "dotln-integrate-test-m0m6ye",
+      "token": "1ae914e1-7746-4b7b-b92b-142d0c06637e",
+      "sha256": "ad2817755b0318f80266e9d2d893f0015311e734b4fec64e9bc10da8f11091eb",
+      "device": 16777233,
+      "inode": 755235445,
+      "gateId": "43bff0ec-1b0b-4b67-8772-ce0903285183",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "e25dd2ea371de5c4393420583e2fd9b0b9d48716b81c1645aeccfa89147ab71e",
+          "token": "7eeab5b6-02e2-431d-853c-5f620ee530a2",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "7d2f6c3b3dc21ad4c6bdabd23d05fd7a449d5b46"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "e25dd2ea371de5c4393420583e2fd9b0b9d48716b81c1645aeccfa89147ab71e",
+          "token": "7eeab5b6-02e2-431d-853c-5f620ee530a2",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "7d2f6c3b3dc21ad4c6bdabd23d05fd7a449d5b46"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 65888723
+    },
+    {
+      "root": "dotln-integrate-test-mElFfv",
+      "token": "30f4740c-cf51-46ca-b746-6e0c53f620a6",
+      "sha256": "fe7cb95a1b29a9cb5a99d46cd4bdf04dc58944a37983226e36020581e2faa7ec",
+      "device": 16777233,
+      "inode": 761198309,
+      "gateId": "8fe86269-16e2-4e5e-ade7-192c192cad08",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "218e57cf44c3549cf9cc416baf310a52b13df854c2a6255929bd9e512a44ff81",
+          "token": "2112e9d0-e598-433c-8244-d36b2206ed62",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "124f35e4981ed99f0bbab65ad79ca1649163495f"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "218e57cf44c3549cf9cc416baf310a52b13df854c2a6255929bd9e512a44ff81",
+          "token": "2112e9d0-e598-433c-8244-d36b2206ed62",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "124f35e4981ed99f0bbab65ad79ca1649163495f"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66063611
+    },
+    {
+      "root": "dotln-integrate-test-mdAAFN",
+      "token": "cdf124be-4633-46a2-b36f-c22b082264bb",
+      "sha256": "afebd876a267c407d31020232601a80edec2ce71609044708210cb872934ee70",
+      "device": 16777233,
+      "inode": 761167015,
+      "gateId": "8fe86269-16e2-4e5e-ade7-192c192cad08",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "218e57cf44c3549cf9cc416baf310a52b13df854c2a6255929bd9e512a44ff81",
+          "token": "2112e9d0-e598-433c-8244-d36b2206ed62",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "124f35e4981ed99f0bbab65ad79ca1649163495f"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "218e57cf44c3549cf9cc416baf310a52b13df854c2a6255929bd9e512a44ff81",
+          "token": "2112e9d0-e598-433c-8244-d36b2206ed62",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "124f35e4981ed99f0bbab65ad79ca1649163495f"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66065843
+    },
+    {
+      "root": "dotln-integrate-test-mvM841",
+      "token": "5cc0d40c-e492-4127-a5c2-5b3c0a5c79bf",
+      "sha256": "9ec5455dda179f784fdf42f793dcba59b03cb72b9148ae7c59b495bf96b1c43a",
+      "device": 16777233,
+      "inode": 761235974,
+      "gateId": "8fe86269-16e2-4e5e-ade7-192c192cad08",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "218e57cf44c3549cf9cc416baf310a52b13df854c2a6255929bd9e512a44ff81",
+          "token": "2112e9d0-e598-433c-8244-d36b2206ed62",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "124f35e4981ed99f0bbab65ad79ca1649163495f"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "218e57cf44c3549cf9cc416baf310a52b13df854c2a6255929bd9e512a44ff81",
+          "token": "2112e9d0-e598-433c-8244-d36b2206ed62",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "124f35e4981ed99f0bbab65ad79ca1649163495f"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 70864373
+    },
+    {
+      "root": "dotln-integrate-test-nk1z75",
+      "token": "ab9466a3-831d-44d9-bd41-f47a5ebefd08",
+      "sha256": "9ac6dd849bc79dde55c7671012a897fbc0506b90839e30676d23185e90cb1a1e",
+      "device": 16777233,
+      "inode": 752342051,
+      "gateId": "761c7a01-c073-4aae-b9dc-8ba4117a2fa1",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "0fd051a0bdb68d2659bd9fda3cd58bc5269c545daf0b1d0e69dd71c54d3a8b9a",
+          "token": "37b1e591-7146-4807-bd80-877f051fa47c",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "115114327b36b3e103aa8d651defa1b2f4b1b474"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "0fd051a0bdb68d2659bd9fda3cd58bc5269c545daf0b1d0e69dd71c54d3a8b9a",
+          "token": "37b1e591-7146-4807-bd80-877f051fa47c",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "115114327b36b3e103aa8d651defa1b2f4b1b474"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66051082
+    },
+    {
+      "root": "dotln-integrate-test-o7LQOL",
+      "token": "b705eab2-9ce1-4492-933a-0cb0edbc9b91",
+      "sha256": "c541681f40d3366eb1407b478df1cfccee58169fdd7f7d8cc2381dc674a91e55",
+      "device": 16777233,
+      "inode": 761203518,
+      "gateId": "8fe86269-16e2-4e5e-ade7-192c192cad08",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "218e57cf44c3549cf9cc416baf310a52b13df854c2a6255929bd9e512a44ff81",
+          "token": "2112e9d0-e598-433c-8244-d36b2206ed62",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "124f35e4981ed99f0bbab65ad79ca1649163495f"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "218e57cf44c3549cf9cc416baf310a52b13df854c2a6255929bd9e512a44ff81",
+          "token": "2112e9d0-e598-433c-8244-d36b2206ed62",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "124f35e4981ed99f0bbab65ad79ca1649163495f"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66124547
+    },
+    {
+      "root": "dotln-integrate-test-o9X5iP",
+      "token": "2ad86c41-3074-40c0-8857-eaaffcca5fdb",
+      "sha256": "7f248ee895a2c700121be660d122ab78f622607cced8183faa8b3b80d6747d6b",
+      "device": 16777233,
+      "inode": 758826066,
+      "gateId": "76a6260d-24ee-473e-892b-1e366ebe2de4",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "bd57e0c20595b9d8f38929556e00c6680bd4d9cb168a0f1cfca2e31a5a966229",
+          "token": "39909686-87af-473b-b8e5-3d79841c7e85",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "87d3935c802c01d5c3ff3fc6c4b782017c5edd86"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "bd57e0c20595b9d8f38929556e00c6680bd4d9cb168a0f1cfca2e31a5a966229",
+          "token": "39909686-87af-473b-b8e5-3d79841c7e85",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "87d3935c802c01d5c3ff3fc6c4b782017c5edd86"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 63487389
+    },
+    {
+      "root": "dotln-integrate-test-oN0Or9",
+      "token": "ad6a4f00-840a-4bd0-ab16-4e96776cfcba",
+      "sha256": "518a2a1ec861561acc74746bbc2becd8025e843fc7431ef354aa9146f9140b98",
+      "device": 16777233,
+      "inode": 757126126,
+      "gateId": "1c880d0c-7bb0-459b-a0bf-e7f91602577d",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "ebefa701f15264192f4fce647b4d450dfc20c5639125922985c93e5da03477aa",
+          "token": "74fcaab7-e2f7-4dfa-b467-8d6a5a74c313",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "1b32249d5ba6efb1a7142cb9d2cefa611c759032"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "ebefa701f15264192f4fce647b4d450dfc20c5639125922985c93e5da03477aa",
+          "token": "74fcaab7-e2f7-4dfa-b467-8d6a5a74c313",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "1b32249d5ba6efb1a7142cb9d2cefa611c759032"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66124442
+    },
+    {
+      "root": "dotln-integrate-test-pEqt4i",
+      "token": "11a1a3b4-6f95-4148-8568-0694ada9e82a",
+      "sha256": "6f9fbef2a8ea69e170f77abdc4ae74042f4163d317953d27e0f0042fb5ada758",
+      "device": 16777233,
+      "inode": 755224912,
+      "gateId": "43bff0ec-1b0b-4b67-8772-ce0903285183",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "e25dd2ea371de5c4393420583e2fd9b0b9d48716b81c1645aeccfa89147ab71e",
+          "token": "7eeab5b6-02e2-431d-853c-5f620ee530a2",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "7d2f6c3b3dc21ad4c6bdabd23d05fd7a449d5b46"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "e25dd2ea371de5c4393420583e2fd9b0b9d48716b81c1645aeccfa89147ab71e",
+          "token": "7eeab5b6-02e2-431d-853c-5f620ee530a2",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "7d2f6c3b3dc21ad4c6bdabd23d05fd7a449d5b46"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 63486228
+    },
+    {
+      "root": "dotln-integrate-test-pgufYL",
+      "token": "2a9c09bf-cc3d-4d1a-8dba-e6e2af79d548",
+      "sha256": "18940bfa29694b6c58e49336a849ede96df33acf2768709a83654b36bf80c167",
+      "device": 16777233,
+      "inode": 752384386,
+      "gateId": "761c7a01-c073-4aae-b9dc-8ba4117a2fa1",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "0fd051a0bdb68d2659bd9fda3cd58bc5269c545daf0b1d0e69dd71c54d3a8b9a",
+          "token": "37b1e591-7146-4807-bd80-877f051fa47c",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "115114327b36b3e103aa8d651defa1b2f4b1b474"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "0fd051a0bdb68d2659bd9fda3cd58bc5269c545daf0b1d0e69dd71c54d3a8b9a",
+          "token": "37b1e591-7146-4807-bd80-877f051fa47c",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "115114327b36b3e103aa8d651defa1b2f4b1b474"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66050629
+    },
+    {
+      "root": "dotln-integrate-test-pya0oG",
+      "token": "a179d06a-f2e3-4a83-b83c-4480843a8492",
+      "sha256": "508234f5529d55a2c4335425e6b0555c19730c4746e62ab3ad17750dc9a4311a",
+      "device": 16777233,
+      "inode": 755528307,
+      "gateId": "43bff0ec-1b0b-4b67-8772-ce0903285183",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "e25dd2ea371de5c4393420583e2fd9b0b9d48716b81c1645aeccfa89147ab71e",
+          "token": "7eeab5b6-02e2-431d-853c-5f620ee530a2",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "7d2f6c3b3dc21ad4c6bdabd23d05fd7a449d5b46"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "e25dd2ea371de5c4393420583e2fd9b0b9d48716b81c1645aeccfa89147ab71e",
+          "token": "7eeab5b6-02e2-431d-853c-5f620ee530a2",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "7d2f6c3b3dc21ad4c6bdabd23d05fd7a449d5b46"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 70863074
+    },
+    {
+      "root": "dotln-integrate-test-qOCPFW",
+      "token": "fecb1395-d585-4a66-9dde-5a2dc0afedf1",
+      "sha256": "f4a04c203143bcd88c0056e499bd2e9e3aec610f84f5cafed3ac7d77af6cc484",
+      "device": 16777233,
+      "inode": 756860353,
+      "gateId": "1c880d0c-7bb0-459b-a0bf-e7f91602577d",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "ebefa701f15264192f4fce647b4d450dfc20c5639125922985c93e5da03477aa",
+          "token": "74fcaab7-e2f7-4dfa-b467-8d6a5a74c313",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "1b32249d5ba6efb1a7142cb9d2cefa611c759032"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "ebefa701f15264192f4fce647b4d450dfc20c5639125922985c93e5da03477aa",
+          "token": "74fcaab7-e2f7-4dfa-b467-8d6a5a74c313",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "1b32249d5ba6efb1a7142cb9d2cefa611c759032"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 65889886
+    },
+    {
+      "root": "dotln-integrate-test-tWSzPD",
+      "token": "b40a9873-6461-4809-a27e-1a279cddcd14",
+      "sha256": "c89ff8e285b4ecfc32ba35f7967a84082381b74898ae3943f27a127e8cee545a",
+      "device": 16777233,
+      "inode": 752321215,
+      "gateId": "761c7a01-c073-4aae-b9dc-8ba4117a2fa1",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "0fd051a0bdb68d2659bd9fda3cd58bc5269c545daf0b1d0e69dd71c54d3a8b9a",
+          "token": "37b1e591-7146-4807-bd80-877f051fa47c",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "115114327b36b3e103aa8d651defa1b2f4b1b474"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "0fd051a0bdb68d2659bd9fda3cd58bc5269c545daf0b1d0e69dd71c54d3a8b9a",
+          "token": "37b1e591-7146-4807-bd80-877f051fa47c",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "115114327b36b3e103aa8d651defa1b2f4b1b474"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66054211
+    },
+    {
+      "root": "dotln-integrate-test-uYbAtQ",
+      "token": "e6b35e88-f85c-4a59-a257-84dff6141a8b",
+      "sha256": "efb3baccc860c56e4fcd222145dce21c3a55765ad01b7280a6c4f2894fc6fdaf",
+      "device": 16777233,
+      "inode": 756865625,
+      "gateId": "1c880d0c-7bb0-459b-a0bf-e7f91602577d",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "ebefa701f15264192f4fce647b4d450dfc20c5639125922985c93e5da03477aa",
+          "token": "74fcaab7-e2f7-4dfa-b467-8d6a5a74c313",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "1b32249d5ba6efb1a7142cb9d2cefa611c759032"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "ebefa701f15264192f4fce647b4d450dfc20c5639125922985c93e5da03477aa",
+          "token": "74fcaab7-e2f7-4dfa-b467-8d6a5a74c313",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "1b32249d5ba6efb1a7142cb9d2cefa611c759032"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 65889893
+    },
+    {
+      "root": "dotln-integrate-test-vah0Gc",
+      "token": "f544c800-2c83-482f-bfaf-0836b05e95c8",
+      "sha256": "05472c422daaa0eba5af44d4accecf62cdbd6b069c18da1c283a00111b2a4ed7",
+      "device": 16777233,
+      "inode": 757141777,
+      "gateId": "1c880d0c-7bb0-459b-a0bf-e7f91602577d",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "ebefa701f15264192f4fce647b4d450dfc20c5639125922985c93e5da03477aa",
+          "token": "74fcaab7-e2f7-4dfa-b467-8d6a5a74c313",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "1b32249d5ba6efb1a7142cb9d2cefa611c759032"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "ebefa701f15264192f4fce647b4d450dfc20c5639125922985c93e5da03477aa",
+          "token": "74fcaab7-e2f7-4dfa-b467-8d6a5a74c313",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "1b32249d5ba6efb1a7142cb9d2cefa611c759032"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66063612
+    },
+    {
+      "root": "dotln-integrate-test-w6JOQo",
+      "token": "5887e62e-4400-4604-a422-e8ba63d78361",
+      "sha256": "2cb4d9927519bd38913a102a6a138cdad67d319701488fb85f0e7067f39c20ca",
+      "device": 16777233,
+      "inode": 752362909,
+      "gateId": "761c7a01-c073-4aae-b9dc-8ba4117a2fa1",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "0fd051a0bdb68d2659bd9fda3cd58bc5269c545daf0b1d0e69dd71c54d3a8b9a",
+          "token": "37b1e591-7146-4807-bd80-877f051fa47c",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "115114327b36b3e103aa8d651defa1b2f4b1b474"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "0fd051a0bdb68d2659bd9fda3cd58bc5269c545daf0b1d0e69dd71c54d3a8b9a",
+          "token": "37b1e591-7146-4807-bd80-877f051fa47c",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "115114327b36b3e103aa8d651defa1b2f4b1b474"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66114140
+    },
+    {
+      "root": "dotln-integrate-test-wf0zBo",
+      "token": "dbe4cf42-5680-4c24-abab-6971d4bc9bec",
+      "sha256": "d661214d46c4f08a1a9ad5cda1e629fbcf64b2d097dc7814ed22c69730aaadb6",
+      "device": 16777233,
+      "inode": 752081271,
+      "gateId": "761c7a01-c073-4aae-b9dc-8ba4117a2fa1",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "0fd051a0bdb68d2659bd9fda3cd58bc5269c545daf0b1d0e69dd71c54d3a8b9a",
+          "token": "37b1e591-7146-4807-bd80-877f051fa47c",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "115114327b36b3e103aa8d651defa1b2f4b1b474"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "0fd051a0bdb68d2659bd9fda3cd58bc5269c545daf0b1d0e69dd71c54d3a8b9a",
+          "token": "37b1e591-7146-4807-bd80-877f051fa47c",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "115114327b36b3e103aa8d651defa1b2f4b1b474"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 65862233
+    },
+    {
+      "root": "dotln-integrate-test-x0Ockj",
+      "token": "5f9e473e-8d01-4c23-aa7a-90f718d5309f",
+      "sha256": "1aed2dd3520c91cc5d02f534b5b58f5b4917f58f6d227d4f80cb6f1976331f5d",
+      "device": 16777233,
+      "inode": 757110503,
+      "gateId": "1c880d0c-7bb0-459b-a0bf-e7f91602577d",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "ebefa701f15264192f4fce647b4d450dfc20c5639125922985c93e5da03477aa",
+          "token": "74fcaab7-e2f7-4dfa-b467-8d6a5a74c313",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "1b32249d5ba6efb1a7142cb9d2cefa611c759032"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "ebefa701f15264192f4fce647b4d450dfc20c5639125922985c93e5da03477aa",
+          "token": "74fcaab7-e2f7-4dfa-b467-8d6a5a74c313",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "1b32249d5ba6efb1a7142cb9d2cefa611c759032"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66062609
+    },
+    {
+      "root": "dotln-integrate-test-xU1SKQ",
+      "token": "fd42cf46-6bf9-456b-910e-3748e81e9e39",
+      "sha256": "10d5d9bfc1ec31f2b138b3d963c792b4401c27e22619712664ae21f19c031762",
+      "device": 16777233,
+      "inode": 755485455,
+      "gateId": "43bff0ec-1b0b-4b67-8772-ce0903285183",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "e25dd2ea371de5c4393420583e2fd9b0b9d48716b81c1645aeccfa89147ab71e",
+          "token": "7eeab5b6-02e2-431d-853c-5f620ee530a2",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "7d2f6c3b3dc21ad4c6bdabd23d05fd7a449d5b46"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "e25dd2ea371de5c4393420583e2fd9b0b9d48716b81c1645aeccfa89147ab71e",
+          "token": "7eeab5b6-02e2-431d-853c-5f620ee530a2",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "7d2f6c3b3dc21ad4c6bdabd23d05fd7a449d5b46"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66062392
+    },
+    {
+      "root": "dotln-integrate-test-yZH77I",
+      "token": "98cec641-9812-4689-84f1-314642689b2c",
+      "sha256": "c0ad3b03e215208ef42ffde4ecbf50379934ccac475041da4fa42f21ea339896",
+      "device": 16777233,
+      "inode": 759086619,
+      "gateId": "76a6260d-24ee-473e-892b-1e366ebe2de4",
+      "suite": "worktree-integration",
+      "copies": [
+        {
+          "path": "main",
+          "sha256": "bd57e0c20595b9d8f38929556e00c6680bd4d9cb168a0f1cfca2e31a5a966229",
+          "token": "39909686-87af-473b-b8e5-3d79841c7e85",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "87d3935c802c01d5c3ff3fc6c4b782017c5edd86"
+          }
+        },
+        {
+          "path": "wo998",
+          "sha256": "bd57e0c20595b9d8f38929556e00c6680bd4d9cb168a0f1cfca2e31a5a966229",
+          "token": "39909686-87af-473b-b8e5-3d79841c7e85",
+          "proof": {
+            "kind": "tracked-copy",
+            "commit": "87d3935c802c01d5c3ff3fc6c4b782017c5edd86"
+          }
+        }
+      ],
+      "migrations": [],
+      "disposals": [],
+      "bytes": 66063550
+    }
+  ],
+  "summary": {
+    "planned": 128,
+    "bytes": 7293525864,
+    "copies": 244,
+    "inheritedCoordination": 4,
+    "emptyTestControls": 16,
+    "removed": 124,
+    "remaining": 4
+  },
+  "cleanups": [
+    {
+      "gateId": "1c880d0c-7bb0-459b-a0bf-e7f91602577d",
+      "removed": 58,
+      "retained": 20,
+      "blockers": []
+    },
+    {
+      "gateId": "76a6260d-24ee-473e-892b-1e366ebe2de4",
+      "removed": 58,
+      "retained": 20,
+      "blockers": []
+    },
+    {
+      "gateId": "43bff0ec-1b0b-4b67-8772-ce0903285183",
+      "removed": 60,
+      "retained": 91,
+      "blockers": []
+    },
+    {
+      "gateId": "8fe86269-16e2-4e5e-ade7-192c192cad08",
+      "removed": 58,
+      "retained": 20,
+      "blockers": []
+    },
+    {
+      "gateId": "761c7a01-c073-4aae-b9dc-8ba4117a2fa1",
+      "removed": 24,
+      "retained": 2358,
+      "blockers": [
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-entropy/95a4a440675c0ce6/review-IVXEws/repo",
+          "reason": "Temporary owner record is invalid or the directory was replaced"
+        },
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-entropy/0bdff9d98b8dca79/review-G4oaE2/repo",
+          "reason": "Temporary owner record is invalid or the directory was replaced"
+        },
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-entropy/f28e6ebd7ce9526a/review-bB1R4M/repo",
+          "reason": "Temporary owner record is invalid or the directory was replaced"
+        },
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-entropy/ed43e4c9cfe1a50d/review-0EEu1Q/repo",
+          "reason": "Temporary owner record is invalid or the directory was replaced"
+        },
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-entropy/b469bc6206a2d67a/review-wIhU3w/repo",
+          "reason": "Temporary owner record is invalid or the directory was replaced"
+        },
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-fixture-temporary-yv90KE/dotln-wo221-target-z94pxK/main-checkout",
+          "reason": "Temporary owner record is invalid or the directory was replaced"
+        },
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-entropy/f9f0b82a7a592bbe/review-xrxngq/repo",
+          "reason": "Temporary owner record is invalid or the directory was replaced"
+        },
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-fixture-temporary-yv90KE/dotln-harness-test-dFvQsa/sibling",
+          "reason": "Temporary owner record is invalid or the directory was replaced"
+        },
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-fixture-temporary-yv90KE/dotln-harness-test-BzmSZp/sibling",
+          "reason": "Temporary owner record is invalid or the directory was replaced"
+        },
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-fixture-temporary-yv90KE/dotln-grant-kinds-hL7Qhw/linked",
+          "reason": "Temporary owner record is invalid or the directory was replaced"
+        },
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-fixture-temporary-yv90KE/dotln-harness-test-BzmSZp/sibling",
+          "reason": "Temporary owner record is invalid or the directory was replaced"
+        },
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-fixture-temporary-yv90KE/dotln-harness-test-KbzzmF/docs/control/local/linked-main",
+          "reason": "Temporary owner record is invalid or the directory was replaced"
+        },
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-fixture-temporary-yv90KE/dotln-harness-test-dFvQsa/sibling",
+          "reason": "Temporary owner record is invalid or the directory was replaced"
+        },
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-fixture-temporary-yv90KE/dotln-temporary-roots-test-BvfEei/roots/copied-roUmeA",
+          "reason": "Temporary owner record is invalid or the directory was replaced"
+        },
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-fixture-temporary-yv90KE/dotln-temporary-roots-test-SlZXV2/blocked",
+          "reason": "Unexpected token 'i', \"invalid\n\" is not valid JSON"
+        },
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-fixture-temporary-yv90KE/dotln-temporary-roots-test-SlZXV2/unrelated",
+          "reason": "Unexpected token 'i', \"invalid\n\" is not valid JSON"
+        },
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-fixture-temporary-yv90KE/dotln-wo221-target-z94pxK/main-checkout",
+          "reason": "Temporary owner record is invalid or the directory was replaced"
+        },
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-entropy/aca2e60ee8573289/review-LsREGg/repo",
+          "reason": "Temporary owner record is invalid or the directory was replaced"
+        },
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-fixture-temporary-yv90KE/dotln-grant-kinds-hL7Qhw/linked",
+          "reason": "Temporary owner record is invalid or the directory was replaced"
+        },
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-entropy-fixtures-LC7Cf3/main-checkout",
+          "reason": "Temporary owner record is invalid or the directory was replaced"
+        },
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-entropy-fixtures-LC7Cf3/secondary",
+          "reason": "Temporary owner record is invalid or the directory was replaced"
+        },
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-entropy/5e159923c9bd4328/review-PMznoJ/repo",
+          "reason": "Temporary owner record is invalid or the directory was replaced"
+        },
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-entropy/40b62815229aa7ed/review-ekLQN8/repo",
+          "reason": "Temporary owner record is invalid or the directory was replaced"
+        },
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-fixture-temporary-yv90KE/dotln-temporary-roots-test-SlZXV2/blocked",
+          "reason": "Unexpected token 'i', \"invalid\n\" is not valid JSON"
+        },
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-fixture-temporary-yv90KE/dotln-temporary-roots-test-SlZXV2/unrelated",
+          "reason": "Unexpected token 'i', \"invalid\n\" is not valid JSON"
+        },
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-fixture-temporary-IProBS/dotln-document-base-oxkQnH/subject",
+          "reason": "Temporary owner record is invalid or the directory was replaced"
+        },
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-fixture-temporary-IProBS/dotln-debt-09IvK2/vendor/sub",
+          "reason": "Temporary owner record is invalid or the directory was replaced"
+        },
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-fixture-temporary-IProBS/dotln-document-base-oxkQnH/subject",
+          "reason": "Temporary owner record is invalid or the directory was replaced"
+        },
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-entropy/a7105fd342757a5d/review-gY7zSq/repo",
+          "reason": "Temporary owner record is invalid or the directory was replaced"
+        },
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-entropy/b18f3cd2b2acba43/review-0cvJbt/repo",
+          "reason": "Temporary owner record is invalid or the directory was replaced"
+        },
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-entropy/2b1ebcbbcea80fe3/review-ECMeVG/repo",
+          "reason": "Temporary owner record is invalid or the directory was replaced"
+        },
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-entropy/0be09f4827dc098c/review-5fYAzw/repo",
+          "reason": "Temporary owner record is invalid or the directory was replaced"
+        },
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-entropy/44b933881a03cb11/review-BeIf3D/repo",
+          "reason": "Temporary owner record is invalid or the directory was replaced"
+        },
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-entropy/2a8b8670ebf653e5/review-pyaW7I/repo",
+          "reason": "Temporary owner record is invalid or the directory was replaced"
+        },
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-entropy/a5935af85ccf6a01/review-J0mID9/repo",
+          "reason": "Temporary owner record is invalid or the directory was replaced"
+        },
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-entropy/1e820fc795aefdb5/review-agaT6w/repo",
+          "reason": "Temporary owner record is invalid or the directory was replaced"
+        },
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-fixture-temporary-yv90KE/dotln-temporary-roots-test-BvfEei/roots/copied-roUmeA",
+          "reason": "Temporary owner record is invalid or the directory was replaced"
+        },
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-fixture-temporary-yv90KE/dotln-harness-test-KbzzmF/docs/control/local/linked-main",
+          "reason": "Temporary owner record is invalid or the directory was replaced"
+        },
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-entropy/de0090bef7837f15/review-Fc3wEh/repo",
+          "reason": "Temporary owner record is invalid or the directory was replaced"
+        },
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-entropy/0e9740d8e57976be/review-8Yc6LM/repo",
+          "reason": "Temporary owner record is invalid or the directory was replaced"
+        },
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-entropy/c0099cd209e3f5fb/review-PajKGd/repo",
+          "reason": "Temporary owner record is invalid or the directory was replaced"
+        },
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-fixture-temporary-IProBS/dotln-debt-09IvK2/vendor/sub",
+          "reason": "Temporary owner record is invalid or the directory was replaced"
+        },
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-entropy/66684cc1699bd35d/review-OqJv2d/repo",
+          "reason": "Temporary owner record is invalid or the directory was replaced"
+        }
+      ]
+    }
+  ],
+  "remaining": [
+    "dotln-fixture-temporary-9NjMmG",
+    "dotln-fixture-temporary-RsI0w7",
+    "dotln-fixture-temporary-gx8zpm",
+    "dotln-fixture-temporary-xhF1jq"
+  ]
+}

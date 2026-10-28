@@ -1,0 +1,31 @@
+{
+  "observedAt": "2026-10-27T05:48:30.982931+00:00",
+  "method": "Two fresh copies of the same export inside this checkout runtime directory; one offline npm ci per copy, under the product read observer. The creator removed its own disposable roots after the calls.",
+  "arguments": [
+    "ci",
+    "--offline",
+    "--no-audit",
+    "--no-fund",
+    "--loglevel=error"
+  ],
+  "documentation": "https://github.com/npm/cli/blob/latest/workspaces/config/lib/index.js",
+  "arms": [
+    {
+      "explicitExportPrefix": false,
+      "exitCode": 0,
+      "durationMs": 429,
+      "excludedReads": [
+        {
+          "path": "packages",
+          "method": "readdir"
+        }
+      ]
+    },
+    {
+      "explicitExportPrefix": true,
+      "exitCode": 0,
+      "durationMs": 434,
+      "excludedReads": []
+    }
+  ]
+}

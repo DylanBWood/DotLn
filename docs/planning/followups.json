@@ -46203,6 +46203,660 @@
           "at": "2026-10-27T00:11:36.225Z"
         }
       ]
+    },
+    {
+      "id": "FUP-c96827441d81b831",
+      "key": "decision:docs/evidence/WO-233/decisions.md#wo-233-d020",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e8af6539e0974a353c4850ce5c8539bc352ba688d8a568d8fc4774cc97216f9d",
+          "ref": "docs/evidence/WO-233/decisions.md#wo-233-d020--ver-001-f1-a-passing-gates-roots-stay-pinned-by-copied-owner-records",
+          "title": "WO-233-D020: WO-233 repair. Class: ownership-record propagation. Rule: an owner record never travels into a copy, clone, archive or Git tree, so a fixture builder that commits or copies an owned root…",
+          "summary": "{ \"id\": \"WO-233-D020\", \"date\": \"2026-10-27\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-001 fails criterion 6 on a reproduced defect in a declared surface. After the passing complete row of 07:51:37.903Z (gate 8fe86269), 26 system-temp roots that gate marked passed still exist (1.57 GB), and the row itself lists 45 retentions for a nested owned root. 22 are dotln-integrate-test roots from the passing worktree-integration suite. Each holds clones (main, wo998) of the focused integration seed. The seed commits its own .dotln-owner.json, so every clone checks out a foreign owner record whose inode is not its directory's. readTemporaryOwner then throws 'invalid or the directory was replaced'",
+          "missing": false
+        },
+        {
+          "hash": "d53245fb93fcdff50a8fddd098e16183bd561f11ac29a331e2cc6305c6275838",
+          "ref": "docs/evidence/WO-233/decisions.md#wo-233-d020--ver-001-f1-a-passing-gates-roots-stay-pinned-by-copied-owner-records",
+          "title": "WO-233-D020: WO-233 repair. Class: ownership-record propagation. Rule: an owner record never travels into a copy, clone, archive or Git tree, so a fixture builder that commits or copies an owned root…",
+          "summary": "{ \"id\": \"WO-233-D020\", \"date\": \"2026-10-27\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-001 fails criterion 6 on a reproduced defect in a declared surface. After the passing complete row of 07:51:37.903Z (gate 8fe86269), 26 system-temp roots that gate marked passed still exist (1.57 GB), and the row itself lists 45 retentions for a nested owned root. 22 are dotln-integrate-test roots from the passing worktree-integration suite. Each holds clones (main, wo998) of the focused integration seed. The seed commits its own .dotln-owner.json, so every clone checks out a foreign owner record whose inode is not its directory's. readTemporaryOwner then throws 'invalid or the directory was replaced'",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-233 FINAL-001: the follow-up named this order's repair of VER-001 F1. D024 excludes the owner marker from fixture copies and seed commits and recovered the 128 pinned containers through the lifecycle; VER-002 to VER-005 confirmed it, and verification-001-passed-roots.mjs exits 0 at the integrated tree with 0 passed roots remaining for gate 217c5080 (docs/evidence/WO-233/decisions.md#wo-233-d081).",
+          "reopenWhen": "A passing gate leaves a root pinned by a copied or tracked owner record (D020's condition).",
+          "targets": [],
+          "at": "2026-10-28T03:44:15.984Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-18a1288e98574d8b",
+      "key": "decision:docs/evidence/WO-233/decisions.md#wo-233-d021",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "7903db30d619382bfd2398785538480a4ea6a9cf04ed27e86fc89a290a5f98b3",
+          "ref": "docs/evidence/WO-233/decisions.md#wo-233-d021--ver-001-f2-the-fseventsd-sample-can-never-read-the-daemon-on-macos",
+          "title": "WO-233-D021: WO-233 repair. Class: observation implementation that cannot observe its subject. Rule: the sample reads the daemon's resident bytes whenever the process table lists it, for example by…",
+          "summary": "{ \"id\": \"WO-233-D021\", \"date\": \"2026-10-27\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-001 fails criteria 6 and 9 on a reproduced defect in a declared surface. sampleFileEventDaemon (scripts/lib/host-resources.mjs) runs ps -A -o comm= -o rss= and matches /(?:^|\\\\/)fseventsd\\\\s+(\\\\d+)\\\\s*$/. On this macOS host, ps truncates the command column to 16 bytes when it is not last, so the daemon's row reads '/System/Library/ 18272' and never matches. The sampler then reports 'fseventsd absent from the readable process table' while the daemon runs (pid 63541). The before, host and after samples of the passing complete row are all null for this reason. The handoff's and D017's cause, 'the daemon ",
+          "missing": false
+        },
+        {
+          "hash": "03e5b96145c67d2055cb6d696b78b32c4ec2c6d963c66680c13f99c7c11d84d3",
+          "ref": "docs/evidence/WO-233/decisions.md#wo-233-d021--ver-001-f2-the-fseventsd-sample-can-never-read-the-daemon-on-macos",
+          "title": "WO-233-D021: WO-233 repair. Class: observation implementation that cannot observe its subject. Rule: the sample reads the daemon's resident bytes whenever the process table lists it, for example by…",
+          "summary": "{ \"id\": \"WO-233-D021\", \"date\": \"2026-10-27\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-001 fails criteria 6 and 9 on a reproduced defect in a declared surface. sampleFileEventDaemon (scripts/lib/host-resources.mjs) runs ps -A -o comm= -o rss= and matches /(?:^|\\\\/)fseventsd\\\\s+(\\\\d+)\\\\s*$/. On this macOS host, ps truncates the command column to 16 bytes when it is not last, so the daemon's row reads '/System/Library/ 18272' and never matches. The sampler then reports 'fseventsd absent from the readable process table' while the daemon runs (pid 63541). The before, host and after samples of the passing complete row are all null for this reason. The handoff's and D017's cause, 'the daemon ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-233 FINAL-001: the follow-up named this order's repair of VER-001 F2. D025 reads the process table RSS-first with the command last; VER-002 confirmed numeric samples, and verification-001-fseventsd.mjs exits 0 at the integrated tree with the sampler and an independent read both at 18,513,920 bytes (D081).",
+          "reopenWhen": "A readable fseventsd is missed again, or a complete row records null daemon samples on macOS while the process table lists the daemon (D021's condition).",
+          "targets": [],
+          "at": "2026-10-28T03:44:16.095Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-425c73229fa61f98",
+      "key": "decision:docs/evidence/WO-233/decisions.md#wo-233-d022",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "452980c10a86c4aede96e93f0beafdc04391e70916ad9db8e81e62ece618eccb",
+          "ref": "docs/evidence/WO-233/decisions.md#wo-233-d022--ver-001-f3-the-claude-stop-hook-prunes-a-live-sessions-scratch-at-every-turn-end",
+          "title": "WO-233-D022: WO-233 repair. Class: lifecycle boundary misidentified (turn end treated as session end). Rule: session scratch is removed only after an observed end of the session or of its dispatch,…",
+          "summary": "{ \"id\": \"WO-233-D022\", \"date\": \"2026-10-27\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-001 fails criterion 5 on a reproduced regression of behavior main had. The Stop ('finish') branch of harness-host.ts calls releaseHarnessWriter in its finally block at every turn end, then calls pruneCompletedHarnessSession whenever no background dispatch is running. The prune's writer check is therefore always satisfied at Stop. Session scratch carries the live host process as its owner, yet pruneSessionTemporaryRoots never checks that owner's liveness for the session-scratch class. Explicit completion also ignores the 24-hour window. So an ordinary turn end removes the session's printed scratch and ",
+          "missing": false
+        },
+        {
+          "hash": "b1d58269856918901e5a564136cfe591e44c66c55e930caaab4a1c56d9fcbf4c",
+          "ref": "docs/evidence/WO-233/decisions.md#wo-233-d022--ver-001-f3-the-claude-stop-hook-prunes-a-live-sessions-scratch-at-every-turn-end",
+          "title": "WO-233-D022: WO-233 repair. Class: lifecycle boundary misidentified (turn end treated as session end). Rule: session scratch is removed only after an observed end of the session or of its dispatch,…",
+          "summary": "{ \"id\": \"WO-233-D022\", \"date\": \"2026-10-27\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-001 fails criterion 5 on a reproduced regression of behavior main had. The Stop ('finish') branch of harness-host.ts calls releaseHarnessWriter in its finally block at every turn end, then calls pruneCompletedHarnessSession whenever no background dispatch is running. The prune's writer check is therefore always satisfied at Stop. Session scratch carries the live host process as its owner, yet pruneSessionTemporaryRoots never checks that owner's liveness for the session-scratch class. Explicit completion also ignores the 24-hour window. So an ordinary turn end removes the session's printed scratch and ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-233 FINAL-001: the follow-up named this order's repair of VER-001 F3. D026 waits for the dispatch's recorded completion before the Stop removes a session's scratch; VER-002 to VER-005 confirmed it, and verification-001-session-scratch.mjs and verification-002-session-completion.mjs exit 0 at the integrated tree (D081).",
+          "reopenWhen": "A live session loses staged scratch at an ordinary turn end, or a completed session retains unprotected scratch (D022's condition).",
+          "targets": [],
+          "at": "2026-10-28T03:44:16.204Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-d2b3ec96079c6275",
+      "key": "decision:docs/evidence/WO-233/decisions.md#wo-233-d023",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "50d647f1bbf2e602917a53c0413802845f11c9a7b8d614bbd01ffa505170c573",
+          "ref": "docs/evidence/WO-233/decisions.md#wo-233-d023--ver-001-follow-ups-that-break-no-criterion",
+          "title": "WO-233-D023: WO-233 repair within the Boy Scout bound, or the next planning pass: (a) word the refusal as a refusal ('Prune refused: gate <tasks> holds host lanes; retry after they are released'), or…",
+          "summary": "{ \"id\": \"WO-233-D023\", \"date\": \"2026-10-27\", \"dispatch\": \"resume: verify\", \"decision\": \"Three non-blocking findings. (a) pruneHarness's apply refuses with 'Prune waits for running gate: <tasks>; retry after its lanes are released'. It throws rather than waits, so the message misstates what happened. Criterion 7 admits a refusal that names the gate, so it stays met. (b) The declarations rule (scripts/lib/temporary-root-declarations.mjs) flags mkdtemp calls whose arguments mention tmpdir or a quoted 'dotln-' prefix, and misses a hard-coded path such as mkdtemp(\\\"/tmp/dotln-x-\\\"). No such site exists in the current tree. (c) The carry-in FUP-268c774fd159addb is fixed (scripts/lib/launchpad-fixt",
+          "missing": false
+        },
+        {
+          "hash": "b51c276dcf563897f420a044f05c6262656072945e700e83700eb5e3cd9f80d8",
+          "ref": "docs/evidence/WO-233/decisions.md#wo-233-d023--ver-001-follow-ups-that-break-no-criterion",
+          "title": "WO-233-D023: WO-233 repair within the Boy Scout bound, or the next planning pass: (a) word the refusal as a refusal ('Prune refused: gate <tasks> holds host lanes; retry after they are released'), or…",
+          "summary": "{ \"id\": \"WO-233-D023\", \"date\": \"2026-10-27\", \"dispatch\": \"resume: verify\", \"decision\": \"Three non-blocking findings. (a) pruneHarness's apply refuses with 'Prune waits for running gate: <tasks>; retry after its lanes are released'. It throws rather than waits, so the message misstates what happened. Criterion 7 admits a refusal that names the gate, so it stays met. (b) The declarations rule (scripts/lib/temporary-root-declarations.mjs) flags mkdtemp calls whose arguments mention tmpdir or a quoted 'dotln-' prefix, and misses a hard-coded absolute system-temp path such as mkdtemp(\\\"<tmp>/dotln-x-\\\"). No such site exists in the current tree. (c) The carry-in FUP-268c774fd159addb is fixed (scri",
+          "missing": false
+        },
+        {
+          "hash": "949f94029c31059dc10d4a5dcbb0f1731056bbc0b8ac21b95b94f10739d27018",
+          "ref": "docs/evidence/WO-233/decisions.md#wo-233-d023--ver-001-follow-ups-that-break-no-criterion",
+          "title": "WO-233-D023: WO-233 repair within the Boy Scout bound, or the next planning pass: (a) word the refusal as a refusal ('Prune refused: gate <tasks> holds host lanes; retry after they are released'), or…",
+          "summary": "{ \"id\": \"WO-233-D023\", \"date\": \"2026-10-27\", \"dispatch\": \"resume: verify\", \"decision\": \"Three non-blocking findings. (a) pruneHarness's apply refuses with 'Prune waits for running gate: <tasks>; retry after its lanes are released'. It throws rather than waits, so the message misstates what happened. Criterion 7 admits a refusal that names the gate, so it stays met. (b) The declarations rule (scripts/lib/temporary-root-declarations.mjs) flags mkdtemp calls whose arguments mention tmpdir or a quoted 'dotln-' prefix, and misses a hard-coded absolute system-temp path such as mkdtemp(\\\"<tmp>/dotln-x-\\\"). No such site exists in the current tree. (c) The carry-in FUP-268c774fd159addb is fixed (scri",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 3,
+          "status": "settled",
+          "reason": "WO-233 FINAL-001: D027 closed the three VER-001 follow-ups inside the Adjacent Repair bound (the prune refusal wording, the declarations rule's literal-path recognition, FUP-268c774fd159addb recorded as fixed with the nested-runner case); VER-002 F4 confirmed them (D081).",
+          "reopenWhen": "A raw literal system-temp root escapes the declarations rule, or a prune diagnostic misstates its refusal (D023's condition).",
+          "targets": [],
+          "at": "2026-10-28T03:44:16.309Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-5ca719907f0be379",
+      "key": "decision:docs/evidence/WO-233/decisions.md#wo-233-d033",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "9da93b1dac836d469a548ba595fe9f60c95e28ffca4da2c2e3c321c0eec4ceee",
+          "ref": "docs/evidence/WO-233/decisions.md#wo-233-d033--preserve-the-unexplained-launch-refusal-and-keep-the-identity-floor",
+          "title": "WO-233-D033: Next machinery planning pass: investigate the intermittent source-change launch identity refusal in the WO-204 after-import recovery case. Capture native census and launcher termination…",
+          "summary": "{ \"id\": \"WO-233-D033\", \"date\": \"2026-10-27\", \"dispatch\": \"resume: fix; fourth complete repair review\", \"decision\": \"Keep the source-change launch identity refusal unchanged. Record the unexplained failed recovery case, validate the full skeleton suite and run a fresh complete review. Nominate investigation rather than changing native process admission on an unproved cause. The writer remains held until its process-group identity is observed.\", \"evidence\": [ \"repair-review-failed004.json preserves the fourth complete command's exit 1 at 2026-10-27T16:05:45.958Z, duration 1,543.195 seconds, 107 fresh tasks and five unrun tasks. Only skeleton executed a failing task: WO-204 recovery after-impor",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "D033 retains the unexplained source-change launch-refusal investigation for the next machinery planning pass. The current full skeleton suite passes, but the retained evidence establishes neither a cause nor a production fix.",
+          "reopenWhen": "The refusal recurs or new launcher and native-census evidence identifies its cause.",
+          "targets": [],
+          "at": "2026-10-27T20:38:46.310Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-8c74c863d4f1d39c",
+      "key": "decision:docs/evidence/WO-233/decisions.md#wo-233-d040",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "042a748eb052748635077389346f207813fa7cac8d2a2e2c40d68a966074f002",
+          "ref": "docs/evidence/WO-233/decisions.md#wo-233-d040--ver-002-f5-a-passing-gate-leaves-its-passing-suites-worker-captures",
+          "title": "WO-233-D040: WO-233 repair. Class: cleanup selection narrower than the ownership it records. Rule: after a gate records a passing row, no root remains whose owner record names that gate and a suite…",
+          "summary": "{ \"id\": \"WO-233-D040\", \"date\": \"2026-10-27\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-002 fails criterion 6 on a reproduced defect in a declared surface. After the passing complete row of 18:14:03.709Z (gate 10f1fc32, the row this verification consumes), 45 system-temp roots that the gate's passing suites created still exist. They are 15 dotln-worker-output, 15 dotln-worker-schema and 15 dotln-codex-home roots, all of class worker-capture, recording gate 10f1fc32 and suite skeleton (27) or vertical:file:test-vertical.recovery.mjs (18). Both suites exit 0 in the row. Every record is valid and registered in this worktree's ledger, and the process table no longer lists any of the owners. ",
+          "missing": false
+        },
+        {
+          "hash": "b41c105c4e5c02c231f15b86e50b273162d74ebe55b294235bc057fde360970e",
+          "ref": "docs/evidence/WO-233/decisions.md#wo-233-d040--ver-002-f5-a-passing-gate-leaves-its-passing-suites-worker-captures",
+          "title": "WO-233-D040: WO-233 repair. Class: cleanup selection narrower than the ownership it records. Rule: after a gate records a passing row, no root remains whose owner record names that gate and a suite…",
+          "summary": "{ \"id\": \"WO-233-D040\", \"date\": \"2026-10-27\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-002 fails criterion 6 on a reproduced defect in a declared surface. After the passing complete row of 18:14:03.709Z (gate 10f1fc32, the row this verification consumes), 45 system-temp roots that the gate's passing suites created still exist. They are 15 dotln-worker-output, 15 dotln-worker-schema and 15 dotln-codex-home roots, all of class worker-capture, recording gate 10f1fc32 and suite skeleton (27) or vertical:file:test-vertical.recovery.mjs (18). Both suites exit 0 in the row. Every record is valid and registered in this worktree's ledger, and the process table no longer lists any of the owners. ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "D043 and D049 repair gate selection and suite retention for standalone disposable roots. The current complete row and unchanged filesystem probe record zero remaining dead-owner roots from passing suites.",
+          "reopenWhen": "A completed gate omits an owned disposable root or the unchanged residue probe reproduces a leak.",
+          "targets": [],
+          "at": "2026-10-27T20:38:45.915Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-b99e3445b58fb6dd",
+      "key": "decision:docs/evidence/WO-233/decisions.md#wo-233-d041",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "eaca5ca98481dc13b461aec0316f9c493966170878e549c553ec90ac7daae99e",
+          "ref": "docs/evidence/WO-233/decisions.md#wo-233-d041--ver-002-f6-every-document-gate-leaves-21-unowned-dotln-wo056-fixture-roots",
+          "title": "WO-233-D041: WO-233 repair. Class: creation site outside the declarations rule's scan. Rule: every root a gate's tests create carries an owner record through the helper and is removed after a passing…",
+          "summary": "{ \"id\": \"WO-233-D041\", \"date\": \"2026-10-27\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-002 fails criteria 2 and 6 on a reproduced defect. The [document] tests in packages/skeleton/test/baseline.test.ts (25) and review.test.ts (31, 52 and 97) load docs/evidence/WO-180/fixture.mjs, WO-181/fixture.mjs and WO-184/fixture.mjs. Those call WO-056's createFixture (docs/evidence/WO-056/fixture.mjs 186), which runs realpathSync(mkdtempSync(join(tmpdir(), 'dotln-wo056-'))). The root has no owner record, and nothing removes it. Each npm run test:docs leaves 21 of these roots, about 7 MB. The passing document row of 18:22:03.841Z (gate b77e62cf, consumed for criterion 15) reports removed 208, retain",
+          "missing": false
+        },
+        {
+          "hash": "6b00d04de45621225916a6bfafc0e71f91981b72acd8b98abc65f74c69e940ed",
+          "ref": "docs/evidence/WO-233/decisions.md#wo-233-d041--ver-002-f6-every-document-gate-leaves-21-unowned-dotln-wo056-fixture-roots",
+          "title": "WO-233-D041: WO-233 repair. Class: creation site outside the declarations rule's scan. Rule: every root a gate's tests create carries an owner record through the helper and is removed after a passing…",
+          "summary": "{ \"id\": \"WO-233-D041\", \"date\": \"2026-10-27\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-002 fails criteria 2 and 6 on a reproduced defect. The [document] tests in packages/skeleton/test/baseline.test.ts (25) and review.test.ts (31, 52 and 97) load docs/evidence/WO-180/fixture.mjs, WO-181/fixture.mjs and WO-184/fixture.mjs. Those call WO-056's createFixture (docs/evidence/WO-056/fixture.mjs 186), which runs realpathSync(mkdtempSync(join(tmpdir(), 'dotln-wo056-'))). The root has no owner record, and nothing removes it. Each npm run test:docs leaves 21 of these roots, about 7 MB. The passing document row of 18:22:03.841Z (gate b77e62cf, consumed for criterion 15) reports removed 208, retain",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "D044 and D049 migrate the executable fixture factories and extend declarations through runtime imports and executable literals. The passing document run removes all 230 roots; the unchanged probe finds zero newly born unowned roots.",
+          "reopenWhen": "An executable fixture factory escapes declaration coverage or a passing document run leaves unowned roots.",
+          "targets": [],
+          "at": "2026-10-27T20:38:46.015Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-d04308f6144891d3",
+      "key": "decision:docs/evidence/WO-233/decisions.md#wo-233-d042",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "d1e36933726e784318a11ae8e591ee2ff1014dc40dff21a40b43cda2f903c498",
+          "ref": "docs/evidence/WO-233/decisions.md#wo-233-d042--ver-002-follow-ups-that-break-no-criterion",
+          "title": "WO-233-D042: Next machinery planning pass, or the WO-233 repair within the Boy Scout bound: (a) decide whether a writer reservation protects only roots it names (its session, or a path it holds) or…",
+          "summary": "{ \"id\": \"WO-233-D042\", \"date\": \"2026-10-27\", \"dispatch\": \"resume: verify\", \"decision\": \"Four non-blocking observations. (a) harness prune retains every root owned by, or located inside, a worktree whose writer is reserved. blockedByUse compares record.owner.repository and containment with the worktree, not only a named root or session. For an active order that covers the whole order: this worktree's 12 warm fixtures (754 MB, 11 of them not the current key) wait for release close, as will every diagnosis root once its window passes. No root is past its window today (the oldest failed root ended 16.5 hours before the census), and criterion 3 admits writer reservations, so nothing is broken yet",
+          "missing": false
+        },
+        {
+          "hash": "c9c6b1696812d8e8c918e1470ec39dbff91c35760023b186eaa2f95150f4677d",
+          "ref": "docs/evidence/WO-233/decisions.md#wo-233-d042--ver-002-follow-ups-that-break-no-criterion",
+          "title": "WO-233-D042: Next machinery planning pass, or the WO-233 repair within the Boy Scout bound: (a) decide whether a writer reservation protects only roots it names (its session, or a path it holds) or…",
+          "summary": "{ \"id\": \"WO-233-D042\", \"date\": \"2026-10-27\", \"dispatch\": \"resume: verify\", \"decision\": \"Four non-blocking observations. (a) harness prune retains every root owned by, or located inside, a worktree whose writer is reserved. blockedByUse compares record.owner.repository and containment with the worktree, not only a named root or session. For an active order that covers the whole order: this worktree's 12 warm fixtures (754 MB, 11 of them not the current key) wait for release close, as will every diagnosis root once its window passes. No root is past its window today (the oldest failed root ended 16.5 hours before the census), and criterion 3 admits writer reservations, so nothing is broken yet",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "duplicate",
+          "reason": "D045 repairs the repeated-completion timestamp issue here. D046 preserves the remaining writer-retention, census-cost and empty-container questions with the original D042 evidence.",
+          "reopenWhen": "A remaining policy, census or container observation meets the reopening condition of D046.",
+          "targets": [
+            "FUP-0287986e9f873e20"
+          ],
+          "at": "2026-10-27T20:38:46.115Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-0287986e9f873e20",
+      "key": "decision:docs/evidence/WO-233/decisions.md#wo-233-d046",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "93725a29e83f14c4dfcf9c9935dedd020a7ad5bec2a3daf3913c9fe1c7a29f3a",
+          "ref": "docs/evidence/WO-233/decisions.md#wo-233-d046--preserve-the-broader-nonblocking-retention-questions",
+          "title": "WO-233-D046: Next machinery planning pass: decide named-root versus worktree-wide writer protection; compare a bounded or cached global start census against the current report; identify owned empty…",
+          "summary": "{ \"id\": \"WO-233-D046\", \"date\": \"2026-10-27\", \"dispatch\": \"resume: fix; VER-002 F7(a-c)\", \"decision\": \"Keep conservative writer protection and the current global start census during this repair. Defer narrowing writer protection, changing census scope or caching, and removal of empty session/store containers to the existing planning follow-up. Repair F7(d) here through D045.\", \"evidence\": [ \"VER-002 D042 records 12 warm fixtures protected by this worktree's writer, a 174.4-second global census over 2,211 roots, and empty session/entropy containers. No criterion failed on those observations.\", \"The bounded repair changes gate completion and executable fixture coverage. Narrowing writer protect",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "D046 defers the broader deletion-authority, global-census and protocol-container questions to the next machinery planning pass. The bounded repair preserves their current contracts; F7(d) is repaired separately by D045.",
+          "reopenWhen": "A writer alone retains expired roots, census cost affects an order, or owned empty containers justify protocol-specific removal.",
+          "targets": [],
+          "at": "2026-10-27T20:38:46.212Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-1eda21fa7caee47d",
+      "key": "decision:docs/evidence/WO-233/decisions.md#wo-233-d050",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "68fce3a4d79442aaa4b777c6743f7ab3647a4368d69a006df84f9abbea05ed61",
+          "ref": "docs/evidence/WO-233/decisions.md#wo-233-d050--ver-003-f8-a-nested-suites-gate-fixture-outlives-its-gates-accounting-and-stays-forever",
+          "title": "WO-233-D050: WO-233 repair. Class: a gate-owned root registered outside the gate's ledger, with an owner identity no lifecycle can judge. Rule: every root whose owner record carries a gate's identity…",
+          "summary": "{ \"id\": \"WO-233-D050\", \"date\": \"2026-10-27\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-003 fails criteria 6 and 15 on a reproduced defect in a declared surface, introduced by the VER-002 repair. D044 moved the WO-185 quarantine case in corpus/harness/wo102-generators.test.mjs from a raw mkdtempSync root, which fs.rmSync removed at test teardown, onto createFixtureRoot, with removeTemporaryPath as its teardown. The runner-fixtures suite runs scripts/test-host-guard.test.mjs, which runs that file nested through executeSuite (suite nonfinite-quarantine-roundtrip) inside a copied fixture repository. executeSuite passes the child the outer gate's DOTLN_TEMP_GATE, with the copy as DOTLN_TEMP_",
+          "missing": false
+        },
+        {
+          "hash": "bf34dcfbdbd4ac0a0f159d8937af3a7acfa3dd60750226f2007f6bc9b7b933f4",
+          "ref": "docs/evidence/WO-233/decisions.md#wo-233-d050--ver-003-f8-a-nested-suites-gate-fixture-outlives-its-gates-accounting-and-stays-forever",
+          "title": "WO-233-D050: WO-233 repair. Class: a gate-owned root registered outside the gate's ledger, with an owner identity no lifecycle can judge. Rule: every root whose owner record carries a gate's identity…",
+          "summary": "{ \"id\": \"WO-233-D050\", \"date\": \"2026-10-27\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-003 fails criteria 6 and 15 on a reproduced defect in a declared surface, introduced by the VER-002 repair. D044 moved the WO-185 quarantine case in corpus/harness/wo102-generators.test.mjs from a raw mkdtempSync root, which fs.rmSync removed at test teardown, onto createFixtureRoot, with removeTemporaryPath as its teardown. The runner-fixtures suite runs scripts/test-host-guard.test.mjs, which runs that file nested through executeSuite (suite nonfinite-quarantine-roundtrip) inside a copied fixture repository. executeSuite passes the child the outer gate's DOTLN_TEMP_GATE, with the copy as DOTLN_TEMP_",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-233-D052, D055 and D056 implement the nested-ledger repair. The complete review and both unchanged VER-003 probes pass; the two historical quarantine roots were removed through their gate completion. Independent verification remains a separate dispatch.",
+          "reopenWhen": "A current gate leaves an unaccounted owned root, or the nested-suite probe reproduces a leftover.",
+          "targets": [],
+          "at": "2026-10-27T22:37:37.128Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-e1d64f127cfe43e6",
+      "key": "decision:docs/evidence/WO-233/decisions.md#wo-233-d051",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "520c74be2e7a3ef3c6f5d0123916998ab0b9acffd7cbcfbbd3bdaaee3efed53a",
+          "ref": "docs/evidence/WO-233/decisions.md#wo-233-d051--ver-003-follow-ups-that-break-no-criterion",
+          "title": "WO-233-D051: (a) The WO-233 repair, within the Boy Scout bound: remove the three historical roots through the lifecycle with checked recovery, as D024 did, without weakening the refusal for an…",
+          "summary": "{ \"id\": \"WO-233-D051\", \"date\": \"2026-10-27\", \"dispatch\": \"resume: verify\", \"decision\": \"Three non-blocking observations. (a) Historical roots from this order's earlier gates remain pinned. VER-001 F1's repair rule required that the roots this order's earlier gates left pinned be removed by the lifecycle. Two dotln-document-base roots (OtlDQc and uybkyR, 288 KB, 2026-10-27T03:35Z, inside gate 761c7a01) are retained now because each contains a subject directory whose owner record was copied from gate 761c7a01 (inode mismatch). The failed gate b59b8fda's harness-fixtures root dotln-fixture-temporary-3sHpVT (1.55 GB, ended 02:29:09Z) holds a nested session-scratch with owner birth null and no fi",
+          "missing": false
+        },
+        {
+          "hash": "32138ac1245ed515cf7fe52695f38576ff17cef10e09bfc6558dcdc5d37433d3",
+          "ref": "docs/evidence/WO-233/decisions.md#wo-233-d051--ver-003-follow-ups-that-break-no-criterion",
+          "title": "WO-233-D051: (a) The WO-233 repair, within the Boy Scout bound: remove the three historical roots through the lifecycle with checked recovery, as D024 did, without weakening the refusal for an…",
+          "summary": "{ \"id\": \"WO-233-D051\", \"date\": \"2026-10-27\", \"dispatch\": \"resume: verify\", \"decision\": \"Three non-blocking observations. (a) Historical roots from this order's earlier gates remain pinned. VER-001 F1's repair rule required that the roots this order's earlier gates left pinned be removed by the lifecycle. Two dotln-document-base roots (OtlDQc and uybkyR, 288 KB, 2026-10-27T03:35Z, inside gate 761c7a01) are retained now because each contains a subject directory whose owner record was copied from gate 761c7a01 (inode mismatch). The failed gate b59b8fda's harness-fixtures root dotln-fixture-temporary-3sHpVT (1.55 GB, ended 02:29:09Z) holds a nested session-scratch with owner birth null and no fi",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "duplicate",
+          "reason": "F9(a) and F9(b) are addressed by D053: checked ownership recovery preserves the original failed windows, and lock diagnostics live inside their fixture. The remaining F9(c) browser-owned cleanup question is carried by the dedicated D054 follow-up.",
+          "reopenWhen": "A recovered root remains pinned after its window and writer release, new lock-test sibling files appear, or the dedicated browser follow-up loses this scope.",
+          "targets": [
+            "FUP-e6e359c3f51ce087"
+          ],
+          "at": "2026-10-27T22:37:37.231Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-e6e359c3f51ce087",
+      "key": "decision:docs/evidence/WO-233/decisions.md#wo-233-d054",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "f4492976210eac62b01f876816164bfdd68d9d085ea6ef828f768caf9b122cff",
+          "ref": "docs/evidence/WO-233/decisions.md#wo-233-d054--keep-browser-owned-temporary-roots-on-their-existing-planning-route",
+          "title": "WO-233-D054: At the next machinery planning pass, inspect browser-evidence fixture launch and teardown and current browser API documentation. Decide whether its browser temporary directory should…",
+          "summary": "{ \"id\": \"WO-233-D054\", \"date\": \"2026-10-27\", \"dispatch\": \"resume: fix\", \"decision\": \"Defer VER-003 F9(c)'s browser-owned temporary directories to a machinery planning pass. This repair touches the gate ownership boundary and source-identified DotLn fixtures; the order explicitly excludes deletion of non-DotLn temporary families. No browser-owned directory is adopted or removed here. D046's broader census-cost, writer-protection and stale-cache policy questions also remain on their existing follow-up.\", \"evidence\": [ \"VER-003 and D051 record 11 Playwright-owned directories born in the preceding complete gate's window, 3,877 historical directories, and the order's deletion-scope exclusion.\", \"",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-233-D054 reserves browser temporary-directory ownership for a machinery planning pass. The order excludes deleting non-DotLn families; the current census still observes 11 browser-owned directories. No browser cleanup guarantee is assumed.",
+          "reopenWhen": "A machinery planning pass allocates browser temporary ownership or another complete review adds the same families; inspect normal completion and interruption using current browser API documentation.",
+          "targets": [],
+          "at": "2026-10-27T22:37:37.334Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-cf88f38430ab7ec5",
+      "key": "decision:docs/evidence/WO-233/decisions.md#wo-233-d057",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "0173eb00cf5f0f3755780d22efc5dec54a0e26b7ea5809666467b3d4a1d062ca",
+          "ref": "docs/evidence/WO-233/decisions.md#wo-233-d057--ver-004-f10-a-failed-suites-fixture-past-its-diagnosis-window-is-never-pruned",
+          "title": "WO-233-D057: WO-233 repair. Class: a failed gate fixture past its diagnosis window that no lifecycle removes, because the prune's judgment of a nested root that shares its lifetime never concludes.…",
+          "summary": "{ \"id\": \"WO-233-D057\", \"date\": \"2026-10-27\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-004 fails criteria 3 and 15 on a reproduced defect in a declared surface, the prune's temporary-root judge (scripts/lib/temporary-prune.mjs). A gate fixture whose suite failed ends with a 24-hour diagnosis window, and a nested root inside it that shares its lifetime carries a fixtureOwner naming it. Once the window has passed and every owner is dead, the fixture is never a prune candidate in two cases. (1) A repository named by its records is gone. For any nested root with a fixtureOwner, blockedByUse calls activeGateRuns on the containing fixture's repository. It also calls it on the nested root's ow",
+          "missing": false
+        },
+        {
+          "hash": "fe305c308104603a9954a3c20f88457c0ae76b40374c0873293f3e367b9c3787",
+          "ref": "docs/evidence/WO-233/decisions.md#wo-233-d057--ver-004-f10-a-failed-suites-fixture-past-its-diagnosis-window-is-never-pruned",
+          "title": "WO-233-D057: WO-233 repair. Class: a failed gate fixture past its diagnosis window that no lifecycle removes, because the prune's judgment of a nested root that shares its lifetime never concludes.…",
+          "summary": "{ \"id\": \"WO-233-D057\", \"date\": \"2026-10-27\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-004 fails criteria 3 and 15 on a reproduced defect in a declared surface, the prune's temporary-root judge (scripts/lib/temporary-prune.mjs). A gate fixture whose suite failed ends with a 24-hour diagnosis window, and a nested root inside it that shares its lifetime carries a fixtureOwner naming it. Once the window has passed and every owner is dead, the fixture is never a prune candidate in two cases. (1) A repository named by its records is gone. For any nested root with a fixtureOwner, blockedByUse calls activeGateRuns on the containing fixture's repository. It also calls it on the nested root's ow",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-233-D059, D069 and D073 close F10 through the shared judge and checked historical recovery. The current complete review and both unchanged VER-004 probes pass; all 2256 observed failed roots are eligible after their windows and writer release. This records repair evidence; independent verification remains a separate dispatch.",
+          "reopenWhen": "An expired attributed fixture remains pinned after repository removal, a nested cache lifetime, or checked historical recovery; or a live/unknown owner loses protection.",
+          "targets": [],
+          "at": "2026-10-28T02:02:16.577Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-3eec5e4ef50d3478",
+      "key": "decision:docs/evidence/WO-233/decisions.md#wo-233-d058",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "653f4842ffd96e89adee6024542321e796fb9305d2a64bd894c7efcea1853cda",
+          "ref": "docs/evidence/WO-233/decisions.md#wo-233-d058--ver-004-f11-legacy-unmarked-session-scratch-stays-forever",
+          "title": "WO-233-D058: The WO-233 repair within the Boy Scout bound, or the next machinery planning pass: judge an unmarked legacy session scratch tree under <system-temp>/dotln/<digest>/scratch by the…",
+          "summary": "{ \"id\": \"WO-233-D058\", \"date\": \"2026-10-27\", \"dispatch\": \"resume: verify\", \"decision\": \"A non-blocking observation. Two session scratch trees under <system-temp>/dotln/<digest>/scratch carry no owner record: 621d4630… (born 2026-10-26T20:29Z, 16 KB) and bf03b5f6… (born 2026-10-26T22:26Z, 296 KB). Both come from sessions before this order's implementation. The prune retains both at every instant with 'unmarked root has no recognized disposable prefix and suffix', because the legacy backfill rule (legacyRootName) admits only dotln-* names with a six-character suffix. Criterion 3's legacy clause names dotln-* roots, and main removed no session scratch, so this breaks no criterion and no behavio",
+          "missing": false
+        },
+        {
+          "hash": "d92156b26b6d88ad5f59147b3590ceeed0ae93e417f59a2ca87fea2a3b139a9d",
+          "ref": "docs/evidence/WO-233/decisions.md#wo-233-d058--ver-004-f11-legacy-unmarked-session-scratch-stays-forever",
+          "title": "WO-233-D058: The WO-233 repair within the Boy Scout bound, or the next machinery planning pass: judge an unmarked legacy session scratch tree under <system-temp>/dotln/<digest>/scratch by the…",
+          "summary": "{ \"id\": \"WO-233-D058\", \"date\": \"2026-10-27\", \"dispatch\": \"resume: verify\", \"decision\": \"A non-blocking observation. Two session scratch trees under <system-temp>/dotln/<digest>/scratch carry no owner record: 621d4630… (born 2026-10-26T20:29Z, 16 KB) and bf03b5f6… (born 2026-10-26T22:26Z, 296 KB). Both come from sessions before this order's implementation. The prune retains both at every instant with 'unmarked root has no recognized disposable prefix and suffix', because the legacy backfill rule (legacyRootName) admits only dotln-* names with a six-character suffix. Criterion 3's legacy clause names dotln-* roots, and main removed no session scratch, so this breaks no criterion and no behavio",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-233-D061 and adjacent-0004 preserve the two unmarked legacy scratch trees until machinery planning establishes positive session/repository attribution and the corresponding liveness checks. Their names and age alone cannot establish safe disposal. VER-004 classifies this as nonblocking.",
+          "reopenWhen": "A machinery planning pass establishes the attribution contract, or source-backed evidence identifies these exact owners for a bounded recovery.",
+          "targets": [],
+          "at": "2026-10-28T02:02:16.678Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-f37a41806d95cd68",
+      "key": "decision:docs/evidence/WO-233/decisions.md#wo-233-d053",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "3b70a5633244e1945000e6ffe75db47786d4a1d43f2592fbe144c01603edea48",
+          "ref": "docs/evidence/WO-233/decisions.md#wo-233-d053--recover-checked-residue-without-shortening-diagnosis",
+          "title": "WO-233-D053: Remove F8's two passing quarantine leftovers through their owning gate's normal completion after recovering the outer repository and suite attribution. Repair F9(a)'s two proven copied…",
+          "summary": "{ \"id\": \"WO-233-D053\", \"date\": \"2026-10-27\", \"dispatch\": \"resume: fix; equipped adjacent repair\", \"decision\": \"Remove F8's two passing quarantine leftovers through their owning gate's normal completion after recovering the outer repository and suite attribution. Repair F9(a)'s two proven copied markers and empty nested scratch, keeping the failed roots' original 24-hour windows and a backup of corrected marker bytes. Keep F9(b)'s lock-process trace, pause and resume paths inside the owned test directory. The local queue records the bounded combined scope, announcement, steering opportunity and actor-attested check-in; the complete and document rows judge its completion.\", \"evidence\": [ \"repa",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-233 FINAL-001: D053's recovery of the F8 leftovers and F9(a) and (b) was carried out, and D069 completed the five-record coordination recovery that D053's one-record account missed; verification-004-failed-fixture-pins.mjs at the integrated tree finds no root retained in the 49-hour writer-released projection (D081).",
+          "reopenWhen": "A recovered root remains pinned after its diagnosis window and writer release, or a skeleton run creates new sibling lock files (D053's condition).",
+          "targets": [],
+          "at": "2026-10-28T03:44:16.414Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-71e59504dc3c22d8",
+      "key": "decision:docs/evidence/WO-233/decisions.md#wo-233-d064",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "9a2b0199867d1641be9f227b8053369c2cf677cac747da90f5d72be27a0f253a",
+          "ref": "docs/evidence/WO-233/decisions.md#wo-233-d064--require-independent-reviews-on-every-execution-and-repair",
+          "title": "WO-233-D064: Remove the repair exemption and the root-only fallback from the executor workflow. Every execution and repair requires two fresh independent workers with separate criteria-adversary and…",
+          "summary": "{ \"id\": \"WO-233-D064\", \"date\": \"2026-10-27\", \"dispatch\": \"resume: fix; operator-authorized permanent workflow correction\", \"decision\": \"Remove the repair exemption and the root-only fallback from the executor workflow. Every execution and repair requires two fresh independent workers with separate criteria-adversary and design-improver briefs before its complete validation run and handoff. Make both completion commands require the current run's two completed review reports, distinct worker identities, counts and evidence bound to that run and reviewed code subject. Regenerate both skill roots and the current role oracle; update the lifecycle fixtures and regression cases. Preserve the existi",
+          "missing": false
+        },
+        {
+          "hash": "d08137cc43101e23897d1dfcb2f6f8ceec71626b6b4e94196ec0c1ba9e72f586",
+          "ref": "docs/evidence/WO-233/decisions.md#wo-233-d064--require-independent-reviews-on-every-execution-and-repair",
+          "title": "WO-233-D064: Remove the repair exemption and the root-only fallback from the executor workflow. Every execution and repair requires two fresh independent workers with separate criteria-adversary and…",
+          "summary": "{ \"id\": \"WO-233-D064\", \"date\": \"2026-10-27\", \"dispatch\": \"resume: fix; operator-authorized permanent workflow correction\", \"decision\": \"Remove the repair exemption and the root-only fallback from the executor workflow. Every execution and repair requires two fresh independent workers with separate criteria-adversary and design-improver briefs before its complete validation run and handoff. Make both completion commands require the current run's two completed review reports, distinct worker identities, counts and evidence bound to that run and reviewed code subject. Regenerate both skill roots and the current role oracle; update the lifecycle fixtures and regression cases. Preserve the existi",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-233 FINAL-001: the operator's permanent review correction is in force. D065 and D066 narrowed D064's design, D067 added the consistency reviewer, D072 migrated every consumer, and criterion 16 is met in VER-005 and in FINAL-001 (D081).",
+          "reopenWhen": "Either completion again exempts repair, an active consumer expects two reports, or a run's reviewers fail to review the submitted subject (D064's and D072's conditions).",
+          "targets": [],
+          "at": "2026-10-28T03:44:16.621Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-569fec1bace59a3c",
+      "key": "decision:docs/evidence/WO-233/decisions.md#wo-233-d066",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "da0dba5790a7756e02d83aa29ca17d657719e03743d740926f2af8b34a652c64",
+          "ref": "docs/evidence/WO-233/decisions.md#wo-233-d066--critical-hard-error-and-failure-unnecessary-review-evidence-subsystem",
+          "title": "WO-233-D066: CRITICAL HARD ERROR AND FAILURE. Remove the new executor-review.json subsystem, validator, fixture helper and its tests. The permanent correction removes the implementation-ready-only…",
+          "summary": "{ \"id\": \"WO-233-D066\", \"date\": \"2026-10-27\", \"dispatch\": \"operator correction during resume: fix\", \"decision\": \"CRITICAL HARD ERROR AND FAILURE. Remove the new executor-review.json subsystem, validator, fixture helper and its tests. The permanent correction removes the implementation-ready-only exemption and root-only fallback from authored and generated guidance and applies the existing handoff summary to repairs. Use actual worker reports and that summary for this run. No new receipt protocol or review invalidation gate is needed.\", \"operatorAuthorization\": \"The operator challenged the new review evidence requirement, explained that the expected correction was chiefly removal of implementa",
+          "missing": false
+        },
+        {
+          "hash": "77c63fbc5ba88cde4a7b58ba9d4509fddbe8c6a148b273cce990f200d8cf9d3d",
+          "ref": "docs/evidence/WO-233/decisions.md#wo-233-d066--critical-hard-error-and-failure-unnecessary-review-evidence-subsystem",
+          "title": "WO-233-D066: CRITICAL HARD ERROR AND FAILURE. Remove the new executor-review.json subsystem, validator, fixture helper and its tests. The permanent correction removes the implementation-ready-only…",
+          "summary": "{ \"id\": \"WO-233-D066\", \"date\": \"2026-10-27\", \"dispatch\": \"resume: fix; operator correction\", \"decision\": \"CRITICAL HARD ERROR AND FAILURE. Remove the new executor-review.json subsystem, validator, fixture helper and its tests. The permanent correction removes the implementation-ready-only exemption and root-only fallback from authored and generated guidance and applies the existing handoff summary to repairs. Use actual worker reports and that summary for this run. No new receipt protocol or review invalidation gate is needed.\", \"operatorAuthorization\": \"The operator challenged the new review evidence requirement, explained that the expected correction was chiefly removal of implementation-r",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-233 FINAL-001: the executor-review.json subsystem, its validator, fixture helper and tests are removed from the tree, and the permanent correction uses the existing reports and handoff summary; VER-005 criterion 16 and this review's tree search confirm it (D081).",
+          "reopenWhen": "A demonstrated need for review evidence beyond the worker reports and handoff is authorized by the operator (D066's condition).",
+          "targets": [],
+          "at": "2026-10-28T03:44:16.723Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-196cf59dd9abe1ec",
+      "key": "decision:docs/evidence/WO-233/decisions.md#wo-233-d060",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "520ff938903acb94f50ce7d1c153e4d245e95632da240a16ba93f2ae5a2a75be",
+          "ref": "docs/evidence/WO-233/decisions.md#wo-233-d060--correct-the-historical-coordination-lifetime-and-eligibility-claim",
+          "title": "WO-233-D060: Correct D053's eligibility claim for the historical 3sHpVT fixture. Its scratch recovery did not establish that the whole tree would become eligible at 2026-10-28T02:29:09.310Z: a…",
+          "summary": "{ \"id\": \"WO-233-D060\", \"date\": \"2026-10-27\", \"dispatch\": \"resume: fix\", \"decision\": \"Correct D053's eligibility claim for the historical 3sHpVT fixture. Its scratch recovery did not establish that the whole tree would become eligible at 2026-10-28T02:29:09.310Z: a different coordination descendant still lacked its containing lifetime. Recover only that checked record, preserving its old marker beside the fixture and leaving both physical ancestors' bytes and original diagnosis end unchanged. Normal release close remains responsible for deletion after retention and ownership checks; this recovery deletes no fixture and weakens no general record refusal.\", \"evidence\": [ \"The unchanged VER-004 ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-233 FINAL-001: D060's one-record recovery is superseded by D069, which recovered all five historical coordination records with checked provenance and preserved markers; VER-005 confirmed the full-tree judgment (D081).",
+          "reopenWhen": "A physical identity, original marker or recorded diagnosis window of the recovered records fails its check (D069's condition).",
+          "targets": [],
+          "at": "2026-10-28T03:44:16.518Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-8470b1f3e4bba536",
+      "key": "decision:docs/evidence/WO-233/decisions.md#wo-233-d067",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "dea031eddbb7fff0613e8dde146829a79f70357f0fa54d12ad6522070d8eca4e",
+          "ref": "docs/evidence/WO-233/decisions.md#wo-233-d067--require-a-third-reviewer-for-write-back-and-dependency-consistency",
+          "title": "WO-233-D067: Require a fresh third independent reviewer on every execution and fix, including this repair. Its sole responsibility is consistency and completeness of write-backs, dependencies,…",
+          "summary": "{ \"id\": \"WO-233-D067\", \"date\": \"2026-10-27\", \"dispatch\": \"scope expand: mandatory third reviewer for executor/fix agents\", \"decision\": \"Require a fresh third independent reviewer on every execution and fix, including this repair. Its sole responsibility is consistency and completeness of write-backs, dependencies, versions and related metadata: product and operational docs, decisions, indexes, cross-references, package manifests and lockfiles, release metadata, generated artifacts, installed guidance, test dependencies, fixture input manifests and pins, generated test baselines and evidence-source declarations. The same reviewer checks final write-backs after the complete run. Keep the exist",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-233 FINAL-001: the third independent consistency reviewer is required on every execution and fix in contributor.ts, both installed executor roots, product 07, the playbook and the executor-supports test (D072), and the fourth repair ran it with seven findings fixed; criterion 16 is met (D081).",
+          "reopenWhen": "A write-back or dependency surface of the named kinds escapes the consistency brief, or the operator changes the reviewer requirement (D067's condition).",
+          "targets": [],
+          "at": "2026-10-28T03:44:16.830Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-5c365230770ba19c",
+      "key": "decision:docs/evidence/WO-233/decisions.md#wo-233-d076",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "479120d7fc8da946033260c8a244b64990b43cbc7bc68e2f21e6d09c85f41c81",
+          "ref": "docs/evidence/WO-233/decisions.md#wo-233-d076--ver-005-follow-up-the-shared-instruction-file-repeats-per-rule-codex-residue",
+          "title": "WO-233-D076: Machinery planning: decide what the shared instruction file carries for harness residue. Keep one line per rule, write one line per profile naming its rule ids with the shared reason, or…",
+          "summary": "{ \"id\": \"WO-233-D076\", \"date\": \"2026-10-28\", \"dispatch\": \"resume: verify; operator question on commit 16ecf2c and its CLAUDE.md lines\", \"decision\": \"A follow-up outside WO-233's criteria and surfaces. The generated harness block of CLAUDE.md, between the dotln-harness start and end markers, prints one line per residue item of every harness profile. AGENTS.md is a symlink to CLAUDE.md, so both harnesses read the block. The Codex profile codex-cli-0.153.4 declares all four hook events unavailable for one reason. As a result, each of the six hook-enforced rules gets its own line with identical text: concurrent-work-requires-worktrees, no-attribution, no-lint-type-disables-as-fixes, no-partial-c",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-233 FINAL-001: a machinery planning question on the form of the generated CLAUDE.md residue block; outside this order's criteria and surfaces, and a change to the compiler's generated text, its tests, the role oracle and the cold-start ceilings belongs to a planning pass (D076, D081).",
+          "reopenWhen": "A machinery planning pass decides the residue form, or a cold-start measurement shows the residue lines deciding whether a role root meets its ceiling (D076's condition).",
+          "targets": [],
+          "at": "2026-10-28T03:44:16.936Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-f0af19c7f2e536d3",
+      "key": "decision:docs/evidence/WO-233/decisions.md#wo-233-d077",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "7d9c347754f1e2a8f971e23d563ec3ec2fd73e7ffb6dc0af40408df878c6d9ca",
+          "ref": "docs/evidence/WO-233/decisions.md#wo-233-d077--ver-005-follow-up-a-project-instruction-rule-added-without-a-recorded-authorization",
+          "title": "WO-233-D077: Before final review integrates WO-233: record the provenance of the four CLAUDE.md lines in WO-233's decisions, either the operator's direction with its capture hash or the executor's…",
+          "summary": "{ \"id\": \"WO-233-D077\", \"date\": \"2026-10-28\", \"dispatch\": \"resume: verify\", \"decision\": \"A follow-up that blocks nothing. The subject adds four lines to the hand-written Evidence before claims section of CLAUDE.md, which AGENTS.md shares. In substance, they tell an agent to follow a requirement's purpose, scope and timing, to treat a convenient proxy as unequal evidence, and to record failures and corrections while continuing the authorized task unless the operator explicitly pauses, stops or cancels it. No decision, handoff, self-review, session-failure record or order text names this edit. The order's scope expansion names the authored role and product guidance, the installed roots, the rol",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-233 FINAL-001: the four CLAUDE.md lines' provenance is unknown from every record read, and unrecorded is not unauthorized; the reviewed bytes stay and the operator confirms or strips them at merge, with the pull request body naming the choice (D080, D081).",
+          "reopenWhen": "The operator confirms or strips the lines (D080's condition).",
+          "targets": [],
+          "at": "2026-10-28T03:44:17.042Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-3fc196bee33d6d9e",
+      "key": "decision:docs/evidence/WO-233/decisions.md#wo-233-d078",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "d40612c19917aa1c363453c9370ef7fb96d2851c8ecd736ab8275467006d1707",
+          "ref": "docs/evidence/WO-233/decisions.md#wo-233-d078--ver-005-follow-up-the-absence-rules-ancestor-check-is-named-for-a-property-it-does-not-test",
+          "title": "WO-233-D078: Final review within the Boy Scout bound, or the next order that touches the prune: give the ancestor check a name that says what it tests wherever it is applied to a repository, or wrap…",
+          "summary": "{ \"id\": \"WO-233-D078\", \"date\": \"2026-10-28\", \"dispatch\": \"resume: verify\", \"decision\": \"A follow-up in the declared surfaces that breaks no criterion. The F10 repair's absence rule (repositoryGateRuns in scripts/lib/temporary-prune.mjs) calls requireTemporaryDirectory on the owning repository before treating its absence as no active gate. For this order's own fixtures, that repository is a worktree outside the system temp directory. The function refuses a non-directory or symbolic-link ancestor and a directory owned by another user. It never tests whether a path is temporary, though its name says it does. Every suite case and both earlier verifier probes place the owning worktree inside the ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-233 FINAL-001: renaming the ancestor check and adding a temporary-roots case are source edits that move the code identity and owe a fresh complete run over bytes no verifier judged; the behavior is correct on the real layout (verification-005-absence-variations.mjs's outside arm exits 0 here). Deferred to the next order that touches scripts/lib/temporary-prune.mjs (D078, D081).",
+          "reopenWhen": "The check is renamed or wrapped with a case whose owning worktree lies outside the system temp directory, or a change makes a removed real worktree's expired fixture a retention again (D078's condition).",
+          "targets": [],
+          "at": "2026-10-28T03:44:17.148Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-cf9c1b8f5686dec3",
+      "key": "decision:docs/evidence/WO-233/decisions.md#wo-233-d080",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "fe5fb8a76978a23dc281ead8e1c1a35dcaf3d5e8bfa70cb210dee9a077f1d42e",
+          "ref": "docs/evidence/WO-233/decisions.md#wo-233-d080--the-four-claudemd-lines-have-no-recorded-authorization-the-reviewed-bytes-stay-and-the-operator-decides-at-merge",
+          "title": "WO-233-D080: The operator, at merge: confirm the four CLAUDE.md lines as an operator direction (a decision naming the capture or the words) or strip them from the branch before merging; the pull…",
+          "summary": "{ \"id\": \"WO-233-D080\", \"date\": \"2026-10-28\", \"dispatch\": \"resume: final review\", \"decision\": \"Operator packet for VER-005 F14 (D077). The four lines the subject adds to the hand-written Evidence before claims section of CLAUDE.md (three of text and one blank, 227 bytes; AGENTS.md shares them) have no recorded authorization this review could find, and this review cannot establish that none exists. The safe default is recorded and taken: the reviewed bytes stay as VER-005 judged them, the choice is named in the pull request body among its limits, and the operator decides at merge whether to confirm the lines as their own direction or strip them from the branch first. The reviewer edits nothing",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-233 FINAL-001: the operator packet on the four CLAUDE.md lines; the reviewed bytes stay and the pull request body names the choice, which only the operator can make at merge (D080, D081).",
+          "reopenWhen": "The operator confirms or strips the lines (D080s condition).",
+          "targets": [],
+          "at": "2026-10-28T03:44:17.251Z"
+        }
+      ]
     }
   ]
 }

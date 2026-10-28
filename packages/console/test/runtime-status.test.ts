@@ -1,3 +1,7 @@
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "@dotln/skeleton/dist/src/temporary-roots.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { spawn, spawnSync } from "node:child_process";
@@ -5,14 +9,7 @@ import { EventEmitter } from "node:events";
 import fs from "node:fs";
 import { syncBuiltinESMExports } from "node:module";
 import { setTimeout as delay } from "node:timers/promises";
-import {
-  mkdtempSync,
-  readFileSync,
-  renameSync,
-  rmSync,
-  unlinkSync,
-  writeFileSync,
-} from "node:fs";
+import { readFileSync, renameSync, unlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
@@ -182,7 +179,7 @@ test("WO-114 shared schema and decoder admit the fixture and reject foreign fiel
 });
 
 test("WO-114 text host renders every status section and CLI reads the file", (t) => {
-  const directory = mkdtempSync(join(tmpdir(), "dotln-console-status-"));
+  const directory = createFixtureRoot(join(tmpdir(), "dotln-console-status-"));
   t.after(() => rmSync(directory, { recursive: true, force: true }));
   writeFileSync(
     join(directory, "runtime-status-v1.json"),
@@ -219,7 +216,7 @@ test("WO-114 text host renders every status section and CLI reads the file", (t)
 });
 
 test("WO-114 text host refreshes after atomic replacement", async (t) => {
-  const directory = mkdtempSync(join(tmpdir(), "dotln-console-watch-"));
+  const directory = createFixtureRoot(join(tmpdir(), "dotln-console-watch-"));
   t.after(() => rmSync(directory, { recursive: true, force: true }));
   const target = join(directory, "runtime-status-v1.json");
   writeFileSync(target, JSON.stringify(view));
@@ -241,7 +238,9 @@ test("WO-114 text host refreshes after atomic replacement", async (t) => {
 });
 
 test("WO-114 status watch recovers when notifications are absent", async (t) => {
-  const directory = mkdtempSync(join(tmpdir(), "dotln-console-watch-poll-"));
+  const directory = createFixtureRoot(
+    join(tmpdir(), "dotln-console-watch-poll-"),
+  );
   t.after(() => rmSync(directory, { recursive: true, force: true }));
   const target = join(directory, "runtime-status-v1.json");
   writeFileSync(target, JSON.stringify(view));
@@ -274,7 +273,9 @@ test("WO-114 status watch recovers when notifications are absent", async (t) => 
 });
 
 test("WO-114 status poll stops when a watcher error closes without a close event", async (t) => {
-  const directory = mkdtempSync(join(tmpdir(), "dotln-console-watch-error-"));
+  const directory = createFixtureRoot(
+    join(tmpdir(), "dotln-console-watch-error-"),
+  );
   t.after(() => rmSync(directory, { recursive: true, force: true }));
   const target = join(directory, "runtime-status-v1.json");
   writeFileSync(target, JSON.stringify(view));
@@ -377,7 +378,7 @@ test(
   "WO-114 watch CLI survives missing, malformed and foreign files and deduplicates replacements",
   { timeout: 10000 },
   async (t) => {
-    const directory = mkdtempSync(
+    const directory = createFixtureRoot(
       join(tmpdir(), "dotln-console-watch-recovery-"),
     );
     t.after(() => rmSync(directory, { recursive: true, force: true }));

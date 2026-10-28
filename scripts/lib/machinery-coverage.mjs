@@ -17,6 +17,10 @@ export const machinerySourceExclusions = {
       "This schema case reads the classified source declaration; runner-fixtures checks runner metadata and selection for runner changes. The collector lane stays selected by its test and pinned collector bytes.",
   },
   "*": {
+    "scripts/lib/temporary-roots.mjs":
+      "Owned-root creation and removal are covered by harness-fixtures and runner-fixtures; fixture consumers retain their own behavioral selection.",
+    "packages/skeleton/src/temporary-root-records.mjs":
+      "Shared temporary ownership is exercised by harness-fixtures, shell fixture-temp-root and the runtime tests.",
     "scripts/lib/git.mjs":
       "Git invocation transport is covered by the product worktree, checkpoint and release fixtures; not every machinery consumer needs a rerun for a transport-only edit.",
     "scripts/lib/paths.mjs":
@@ -30,7 +34,7 @@ export const machinerySourceExclusions = {
 
 const require = createRequire(import.meta.url);
 let ast;
-function scriptLiterals(text) {
+export function* scriptTokens(text) {
   ast ??= require("typescript/unstable/ast");
   const { SyntaxKind: K, LanguageVariant, createScanner } = ast;
   const scanner = createScanner(true, LanguageVariant.Standard);
@@ -57,8 +61,8 @@ function scriptLiterals(text) {
       K.MinusMinusToken,
     ].includes(kind);
   let previous;
-  const braces = [],
-    found = [];
+  const braces = [];
+  let previousEnd = -1;
   for (let kind = scanner.scan(); kind !== K.EndOfFile; kind = scanner.scan()) {
     if (
       (kind === K.SlashToken || kind === K.SlashEqualsToken) &&
@@ -71,13 +75,31 @@ function scriptLiterals(text) {
       kind = scanner.reScanTemplateToken(false);
       if (kind === K.TemplateMiddle) braces.push(true);
     }
-    if (kind === K.StringLiteral || kind === K.NoSubstitutionTemplateLiteral) {
-      const path = scanner.getTokenValue();
-      if (/^(?:scripts|packages)\/[\w./-]+\.(?:mjs|cjs|js|ts|sh)$/u.test(path))
-        found.push(path);
-    }
+    const end = scanner.getTokenEnd();
+    if (end <= previousEnd)
+      throw new Error(`Source scanner did not advance at byte ${end}`);
+    previousEnd = end;
+    yield {
+      text: scanner.getTokenText(),
+      value: scanner.getTokenValue(),
+      start: scanner.getTokenStart(),
+      identifier: kind === K.Identifier,
+      string:
+        kind === K.StringLiteral || kind === K.NoSubstitutionTemplateLiteral,
+    };
     previous = kind;
   }
+}
+function scriptLiterals(text) {
+  const found = [];
+  for (const token of scriptTokens(text))
+    if (
+      token.string &&
+      /^(?:scripts|packages)\/[\w./-]+\.(?:mjs|cjs|js|ts|sh)$/u.test(
+        token.value,
+      )
+    )
+      found.push(token.value);
   return found;
 }
 function sourcePath(root, path) {

@@ -1,11 +1,15 @@
-import { mkdtempSync, writeFileSync, rmSync } from "node:fs";
+import {
+  createScratchRoot,
+  removeTemporaryPath as rmSync,
+} from "./temporary-roots.mjs";
+import { writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, posix } from "node:path";
 import { createHash } from "node:crypto";
 import { createRequire } from "node:module";
 
 export const withTemporaryBody = (body, operation, filename = "PR.md") => {
-  const directory = mkdtempSync(join(tmpdir(), "dotln-body-"));
+  const directory = createScratchRoot(join(tmpdir(), "dotln-body-"));
   const path = join(directory, filename);
   try {
     writeFileSync(path, body, "utf8");

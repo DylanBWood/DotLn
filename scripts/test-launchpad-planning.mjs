@@ -1,3 +1,8 @@
+import {
+  excludeFixtureOwnership,
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
 // Exercise the planning command surface in one real export, using only
 // synthetic planning judgments and the fake entropy transport.
 import test from "node:test";
@@ -8,11 +13,9 @@ import {
   cpSync,
   existsSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   readdirSync,
   realpathSync,
-  rmSync,
   symlinkSync,
   writeFileSync,
 } from "node:fs";
@@ -221,7 +224,7 @@ const verifyFirstOrder = (root, resume) => {
 
 test("planning and release-close reads run in a fresh exported instance", async (t) => {
   const scratch = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-planning-kit-")),
+    createFixtureRoot(join(tmpdir(), "dotln-planning-kit-")),
   );
   const source = join(scratch, "source");
   let kit = join(scratch, "kit");
@@ -236,6 +239,7 @@ test("planning and release-close reads run in a fresh exported instance", async 
       `${["Term", "Forbidden", "Planning", "Synthetic"].reverse().join("")}\n`,
     );
     git(source, ["init", "-q", "-b", "main"]);
+    excludeFixtureOwnership(source);
     configure(source);
     git(source, [
       "remote",
@@ -844,6 +848,7 @@ test("planning and release-close reads run in a fresh exported instance", async 
     const entropyTarget = join(scratch, "entropy-target");
     mkdirSync(entropyTarget);
     git(entropyTarget, ["init", "--quiet", "-b", "main"]);
+    excludeFixtureOwnership(entropyTarget);
     configure(entropyTarget);
     write(entropyTarget, "app.txt", "Exported instance target.\n");
     commit(entropyTarget, "test: entropy target");
@@ -1864,7 +1869,7 @@ const documentedCommands = (readme, sentence) => {
 
 test("an instance exported at v0.81.0 takes this release by its README's procedure", () => {
   const scratch = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-legacy-update-")),
+    createFixtureRoot(join(tmpdir(), "dotln-legacy-update-")),
   );
   // This case's forge double never reaches the other case's environment.
   const local = { ...env };
@@ -1948,6 +1953,7 @@ test("an instance exported at v0.81.0 takes this release by its README's procedu
     ]);
     ok(spawnSync("tar", ["-xf", archive, "-C", core]), "extract v0.81.0");
     lgit(core, ["init", "-q", "-b", "main"]);
+    excludeFixtureOwnership(core);
     setup(core);
     lgit(core, [
       "remote",
@@ -2069,6 +2075,7 @@ test("an instance exported at v0.81.0 takes this release by its README's procedu
     )[0];
     assert.equal(refreshRow.outcome, "refreshed", JSON.stringify(refreshRow));
     assert.deepEqual(refreshRow.rewrittenSeeds, [
+      ".gitignore",
       "CLAUDE.md",
       "docs/control/budgets.json",
       "docs/work-orders/WO-001-environment-truth.md",

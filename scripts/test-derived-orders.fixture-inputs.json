@@ -5,7 +5,8 @@
     "scripts/lib/control-store.mjs"
   ],
   "files": [
-    "scripts/work-orders.mjs"
+    "scripts/work-orders.mjs",
+    "scripts/temporary-root.mjs"
   ],
   "directories": [
     "scripts/lib",

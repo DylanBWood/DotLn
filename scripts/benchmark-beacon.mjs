@@ -1,12 +1,14 @@
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
 import assert from "node:assert/strict";
 import {
   lstatSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   readdirSync,
   realpathSync,
-  rmSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
@@ -34,7 +36,7 @@ if (args.length > 1 || (args.length === 1 && args[0] !== "--smoke"))
   throw new Error("usage: node scripts/benchmark-beacon.mjs [--smoke]");
 const smoke = args[0] === "--smoke";
 const root = realpathSync(
-  mkdtempSync(join(tmpdir(), "dotln-beacon-benchmark-")),
+  createFixtureRoot(join(tmpdir(), "dotln-beacon-benchmark-")),
 );
 const rounds = smoke ? 3 : 50;
 const measure = (read) => {

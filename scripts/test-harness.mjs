@@ -1,3 +1,9 @@
+import {
+  excludeFixtureOwnership,
+  ensureTemporaryRoot,
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
 import * as gitCommands from "./lib/git.mjs";
 import { copyFixtureFiles } from "./lib/fixture-inputs.mjs";
 const { runGit, shellQuote } = gitCommands;
@@ -10,6 +16,7 @@ const releaseCloseCommand =
 import { materialCloseCommand } from "./lib/worktree-material.mjs";
 import { write, json, sha256Hex as sha256 } from "./lib/helpers.mjs";
 import "./test-fixture-temporary.mjs";
+import "./test-temporary-roots.mjs";
 import test from "node:test";
 import { pruneHarness, pruneInventory } from "./lib/harness-prune.mjs";
 import { reconcileWorktreeMaterial } from "./lib/intake-reconciliation.mjs";
@@ -19,6 +26,7 @@ import {
   journalRows,
   appendObservation,
   correctionCounts,
+  observationBoundary,
 } from "../packages/skeleton/dist/src/observed-facts.js";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
@@ -39,12 +47,10 @@ import {
   linkSync,
   lstatSync,
   mkdirSync,
-  mkdtempSync,
   readdirSync,
   readFileSync,
   realpathSync,
   renameSync,
-  rmSync,
   symlinkSync,
   utimesSync,
   writeFileSync,
@@ -96,6 +102,7 @@ import {
   evaluateHarnessHook,
   readHarnessOutput,
   releaseHarnessWriter,
+  pruneCompletedHarnessSession,
   releaseHarnessWriterByOperator,
   reserveCodexDispatchWriter,
   runHarnessEvidence,
@@ -203,8 +210,11 @@ const control = {
   latestVerdict: null,
 };
 function fixture() {
-  const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-harness-test-")));
+  const root = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-harness-test-")),
+  );
   runGit(root, ["init", "-b", "wo-999"], fixtureGitOptions);
+  excludeFixtureOwnership(root);
   assert.equal(
     realpathSync(
       runGit(root, ["rev-parse", "--show-toplevel"], fixtureGitOptions),
@@ -243,7 +253,11 @@ function fixture() {
     join(sourceRoot, "node_modules/typescript"),
     join(root, "node_modules/typescript"),
   );
-  write(root, ".gitignore", "node_modules/\n**/dist/\ndocs/control/local/\n");
+  write(
+    root,
+    ".gitignore",
+    "node_modules/\n**/dist/\ndocs/control/local/\n.runtime/\n.dotln-owner.json\n",
+  );
   write(
     root,
     "CLAUDE.md",
@@ -1953,7 +1967,7 @@ test("WO-178 Stop names only journaled dispatches without terminal observations"
       phase: "implementation",
     };
     const at = new Date().toISOString(),
-      key = sha256("fixture-monitor");
+      key = sha256("/root/review");
     appendObservation(
       root,
       scope,
@@ -1967,11 +1981,77 @@ test("WO-178 Stop names only journaled dispatches without terminal observations"
       },
       at,
     );
+    const scratch = ensureTemporaryRoot(join(root, "session-scratch"), {
+      class: "session-scratch",
+      repository: root,
+      owner: { session: scope.sessionKey },
+    });
+    const sibling = ensureTemporaryRoot(join(root, "sibling-scratch"), {
+      class: "session-scratch",
+      repository: root,
+      owner: { session: sha256("parallel-session") },
+    });
+    releaseHarnessWriter(root, input(root, "Stop"));
+    assert.match(
+      pruneCompletedHarnessSession(root, "synthetic-session"),
+      /background dispatches/,
+    );
+    assert.ok(existsSync(scratch));
     let response = invoke(root, "finish", input(root, "Stop"));
     assert.match(
       response.systemMessage,
       /background dispatches still running.*task 1.*expected completion: ImplementationReady/,
     );
+    const transcriptPath = join(root, "agent-followup.jsonl");
+    const transcript = [
+      ["spawn_agent", { task_name: "review" }, { task_name: "/root/review" }],
+      [
+        "list_agents",
+        {},
+        {
+          agents: [
+            {
+              agent_name: "/root/review",
+              agent_status: { completed: "review finished" },
+            },
+          ],
+        },
+      ],
+      ["followup_task", { target: "review", message: "check the repair" }, ""],
+    ].flatMap(([name, args, output], index) => [
+      {
+        type: "response_item",
+        timestamp: at,
+        payload: {
+          type: "function_call",
+          call_id: `review-${index}`,
+          name: `collaboration.${name}`,
+          arguments: JSON.stringify(args),
+        },
+      },
+      {
+        type: "response_item",
+        timestamp: at,
+        payload: {
+          type: "function_call_output",
+          call_id: `review-${index}`,
+          output: JSON.stringify(output),
+        },
+      },
+    ]);
+    writeFileSync(
+      transcriptPath,
+      transcript.map((row) => JSON.stringify(row)).join("\n") + "\n",
+    );
+    observationBoundary(root, scope, {
+      transcriptPath,
+      now: new Date().toISOString(),
+    });
+    assert.match(
+      pruneCompletedHarnessSession(root, "synthetic-session"),
+      /no observed completion/,
+    );
+    assert.ok(existsSync(scratch));
     appendObservation(root, scope, {
       backgroundTask: {
         key,
@@ -1984,6 +2064,30 @@ test("WO-178 Stop names only journaled dispatches without terminal observations"
       response.systemMessage,
       /background dispatches still running/,
     );
+    assert.equal(existsSync(scratch), true);
+    write(root, "session-scratch/staged.md", "needed by turn two\n");
+    invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", { prompt: "Answer: yes. Continue." }),
+    );
+    assert.equal(
+      readFileSync(join(scratch, "staged.md"), "utf8"),
+      "needed by turn two\n",
+    );
+    writeFileSync(
+      join(root, "docs/control/orders/WO-999.jsonl"),
+      JSON.stringify({ type: "ImplementationReady", workOrderId: "WO-999" }) +
+        "\n",
+      { flag: "a" },
+    );
+    response = invoke(root, "finish", input(root, "Stop"));
+    assert.match(
+      response.systemMessage,
+      /Session prune: .*owned roots removed/,
+    );
+    assert.equal(existsSync(scratch), false);
+    assert.equal(existsSync(sibling), true);
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
@@ -2269,7 +2373,9 @@ test("WO-178 exact close helper admission requires the recorded dispatch, main a
 
 test("WO-221 registered-target admission admits only the bound publication helper at verified and closed and nothing outside the registration", async (t) => {
   const root = fixture();
-  const base = realpathSync(mkdtempSync(join(tmpdir(), "dotln-wo221-target-")));
+  const base = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-wo221-target-")),
+  );
   const identity = [
     "-c",
     "user.name=Fixture",
@@ -3505,7 +3611,7 @@ test("WO-139 cap-module-only changes refresh the runtime and snapshot damage is 
 
 test("declared runtime packages preserve complete inventories within the product-read boundary", async () => {
   const root = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-runtime-inventory-")),
+    createFixtureRoot(join(tmpdir(), "dotln-runtime-inventory-")),
   );
   try {
     const lock = JSON.stringify({
@@ -3527,6 +3633,7 @@ test("declared runtime packages preserve complete inventories within the product
       "/packages/*/README.md dotln-documentation\n",
     );
     runGit(root, ["init", "-q"], fixtureGitOptions);
+    excludeFixtureOwnership(root);
     runGit(root, ["add", "."], fixtureGitOptions);
     const before = runtimePackageInventory(root);
     assert.ok(
@@ -3617,7 +3724,7 @@ test("declared runtime packages preserve complete inventories within the product
 });
 
 test("the runtime inventory binds the executable bit as one boolean whatever modes the writing host left", () => {
-  const root = mkdtempSync(join(tmpdir(), "dotln-inventory-modes-"));
+  const root = createFixtureRoot(join(tmpdir(), "dotln-inventory-modes-"));
   try {
     const files = {
       "packages/runtime/package.json": '{"name":"@dotln/runtime"}\n',
@@ -3773,7 +3880,7 @@ test("runtime snapshots identify all copied package bytes and restore only exact
 test("WO-070 runtime snapshots own the build-free Beacon workspace they import", async () => {
   const root = fixture();
   const outside = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-harness-snapshot-")),
+    createFixtureRoot(join(tmpdir(), "dotln-harness-snapshot-")),
   );
   try {
     const installed = join(
@@ -5086,7 +5193,7 @@ test("WO-132 inherited outputs add no reads; invalid deliveries advise without c
 test("WO-039 installed bundle detects content, missing, unexpected and manifest drift and refuses unowned replacement", () => {
   const root = fixture();
   const outside = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-harness-outside-")),
+    createFixtureRoot(join(tmpdir(), "dotln-harness-outside-")),
   );
   try {
     assert.equal(checkHarness(root).localTerms.status, "unavailable");
@@ -7966,7 +8073,7 @@ test("WO-168 a live gate admits four argument forms of listed reads and the seco
 
   const root = fixture();
   const hooksPath = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-wo168-hooks-")),
+    createFixtureRoot(join(tmpdir(), "dotln-wo168-hooks-")),
   );
   try {
     const payload = (command) =>
@@ -8668,7 +8775,7 @@ test("WO-168 an override exit prints ahead of an input refusal, and an appended 
 test("WO-135 generated planning hooks refuse repository code paths and preserve documents, scratch and override", () => {
   const root = fixture();
   const scratch = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-planning-scratch-")),
+    createFixtureRoot(join(tmpdir(), "dotln-planning-scratch-")),
   );
   const sessionId = `wo135-planning-${root}`;
   try {
@@ -8774,7 +8881,7 @@ test("WO-135 generated planning hooks refuse repository code paths and preserve 
 test("WO-144 repair admits null discards and exposes scratch with single consistent observations", () => {
   const root = fixture();
   const outside = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-repair-grants-")),
+    createFixtureRoot(join(tmpdir(), "dotln-repair-grants-")),
   );
   const temporary = join(outside, "per-user-temp");
   const session = "repair-grants";
@@ -8948,7 +9055,7 @@ test("WO-144 repair admits null discards and exposes scratch with single consist
 test("WO-168 a printed session scratch path exists at the dispatch, the Codex begin and harness scratch, and an obstructed path advises without blocking", () => {
   const root = fixture();
   const outside = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-wo168-scratch-")),
+    createFixtureRoot(join(tmpdir(), "dotln-wo168-scratch-")),
   );
   const temporary = join(outside, "temporary");
   mkdirSync(temporary);
@@ -9087,7 +9194,7 @@ test("WO-168 a printed session scratch path exists at the dispatch, the Codex be
 test("WO-168 a granted session root is a real directory: a linked root grants nothing, a real or absent root grants, and an unreadable root advises once", () => {
   const root = fixture();
   const outside = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-wo168-roots-")),
+    createFixtureRoot(join(tmpdir(), "dotln-wo168-roots-")),
   );
   const temporary = join(outside, "temporary");
   const blocked = join(outside, "blocked");
@@ -9303,7 +9410,7 @@ test("WO-168 a granted session root is a real directory: a linked root grants no
 test("WO-144 generated hooks apply active-role grants to physical writes and removals", () => {
   const root = fixture();
   const outside = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-outside-grants-")),
+    createFixtureRoot(join(tmpdir(), "dotln-outside-grants-")),
   );
   const temporary = join(outside, "temporary");
   const session = "outside-grants";
@@ -9521,7 +9628,7 @@ test("WO-144 generated hooks apply active-role grants to physical writes and rem
 test("WO-144 equipped support grants are attributable and disappear when unequipped", async () => {
   const root = fixture();
   const outside = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-support-grants-")),
+    createFixtureRoot(join(tmpdir(), "dotln-support-grants-")),
   );
   const temporary = join(outside, "temporary");
   mkdirSync(temporary);
@@ -9648,7 +9755,7 @@ test("WO-144 equipped support grants are attributable and disappear when unequip
 test("WO-144 unreadable grants advise once and preserve all four existing refusals", () => {
   const root = fixture();
   const outside = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-broken-grants-")),
+    createFixtureRoot(join(tmpdir(), "dotln-broken-grants-")),
   );
   const session = "broken-grants";
   const request = (tool, args, extra = {}) =>
@@ -9780,7 +9887,7 @@ test("WO-144 unreadable grants advise once and preserve all four existing refusa
 test("WO-144 scratch-only role grant is session-scoped and main intake must be ignored", () => {
   const root = fixture();
   const outside = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-grant-kinds-")),
+    createFixtureRoot(join(tmpdir(), "dotln-grant-kinds-")),
   );
   const linked = join(outside, "linked");
   const session = "scratch-only";
@@ -9879,7 +9986,7 @@ test("WO-144 scratch-only role grant is session-scoped and main intake must be i
 test("WO-144 FINAL-001 F1 a moved working directory is still judged and journals in the hook's own project", () => {
   const root = fixture();
   const outside = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-outside-moved-")),
+    createFixtureRoot(join(tmpdir(), "dotln-outside-moved-")),
   );
   const temporary = join(outside, "temporary");
   const other = join(outside, "other-repository");
@@ -9888,6 +9995,7 @@ test("WO-144 FINAL-001 F1 a moved working directory is still judged and journals
   for (const directory of [temporary, other, documents])
     mkdirSync(directory, { recursive: true });
   runGit(other, ["init", "-b", "main"], fixtureGitOptions);
+  excludeFixtureOwnership(other);
   mkdirSync(join(root, "docs/nested"), { recursive: true });
   const environment = { TMPDIR: temporary, TMP: temporary, TEMP: temporary };
   const request = (cwd, tool, args) =>
@@ -10016,6 +10124,7 @@ test("WO-144 FINAL-001 F1 a moved working directory is still judged and journals
     // adjacent-0003: nothing is journaled or marked in another repository.
     assert.deepEqual(readdirSync(other), [".git"]);
     assert.deepEqual(readdirSync(outside).sort(), [
+      ".dotln-owner.json",
       "home",
       "other-repository",
       "temporary",
@@ -10058,6 +10167,7 @@ test("WO-144 FINAL-001 F1 a moved working directory is still judged and journals
     }
     assert.deepEqual(readdirSync(other), [".git"]);
     assert.deepEqual(readdirSync(outside).sort(), [
+      ".dotln-owner.json",
       "home",
       "other-repository",
       "temporary",
@@ -10113,7 +10223,7 @@ test("WO-144 FINAL-001 F2 a literal redirect is judged on any program while the 
   }
   const root = fixture();
   const outside = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-outside-redirect-")),
+    createFixtureRoot(join(tmpdir(), "dotln-outside-redirect-")),
   );
   const temporary = join(outside, "temporary");
   const session = "outside-redirect";
@@ -10578,8 +10688,8 @@ test("WO-142 B17 generated executor, verifier and reviewer text boards up unfixe
     }
 });
 
-test("WO-142 D1 prune previews without writes, preserves live files and keeps deleted-lane byte proofs", () => {
-  const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-prune-")));
+test("WO-142 D1 prune previews without writes, preserves live files and keeps deleted-lane byte proofs", async () => {
+  const root = realpathSync(createFixtureRoot(join(tmpdir(), "dotln-prune-")));
   const ended = createHash("sha256").update("ended").digest("hex");
   const current = createHash("sha256").update("current").digest("hex");
   const marker = "docs/control/local/harness/";
@@ -10590,6 +10700,7 @@ test("WO-142 D1 prune previews without writes, preserves live files and keeps de
   assert.equal(harnessProcessAlive(deadOwner), false);
   try {
     runGit(root, ["init", "--quiet"], fixtureGitOptions);
+    excludeFixtureOwnership(root);
     write(
       root,
       ".claude/harness-manifest.json",
@@ -10656,7 +10767,7 @@ test("WO-142 D1 prune previews without writes, preserves live files and keeps de
     };
     const roots = [".claude", ".runtime", "docs", ".git/dotln"];
     const before = roots.map((path) => pruneInventory(join(root, path)));
-    const preview = pruneHarness(root, options);
+    const preview = await pruneHarness(root, options);
     assert.deepEqual(preview.staleCodexEpisodeHomes, [
       `dotln-codex-home-${exited}-abc123`,
     ]);
@@ -10681,7 +10792,7 @@ test("WO-142 D1 prune previews without writes, preserves live files and keeps de
         },
       ],
     );
-    const applied = pruneHarness(root, { ...options, apply: true });
+    const applied = await pruneHarness(root, { ...options, apply: true });
     assert.deepEqual(
       applied.candidates.map((row) => row.path),
       preview.candidates.map((row) => row.path),
@@ -10711,12 +10822,12 @@ test("WO-142 D1 prune previews without writes, preserves live files and keeps de
       proof.files.find((row) => row.path === "evidence.txt").sha256,
       createHash("sha256").update("retained bytes").digest("hex"),
     );
-    assert.deepEqual(pruneHarness(root, options).candidates, []);
+    assert.deepEqual((await pruneHarness(root, options)).candidates, []);
     symlinkSync(
       join(root, "docs"),
       join(root, ".runtime/harness/cccccccccccccccc"),
     );
-    const linked = pruneHarness(root, options);
+    const linked = await pruneHarness(root, options);
     assert.ok(
       linked.retained.some(
         (row) =>
@@ -10962,8 +11073,10 @@ test("WO-142 B5 generated agent_id hooks charge a live counter and refuse the fo
   }
 });
 
-test("WO-142 D1 target receipts and stopped live or unknown readers retain their files", () => {
-  const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-prune-safety-")));
+test("WO-142 D1 target receipts and stopped live or unknown readers retain their files", async () => {
+  const root = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-prune-safety-")),
+  );
   const local = "docs/control/local/harness";
   const deadOwner = {
     pid: spawnSync(process.execPath, ["-e", ""]).pid,
@@ -10972,6 +11085,7 @@ test("WO-142 D1 target receipts and stopped live or unknown readers retain their
   assert.equal(harnessProcessAlive(deadOwner), false);
   try {
     runGit(root, ["init", "--quiet"], fixtureGitOptions);
+    excludeFixtureOwnership(root);
     write(
       root,
       ".runtime/harness/aaaaaaaaaaaaaaaa/runtime.js",
@@ -11025,7 +11139,7 @@ test("WO-142 D1 target receipts and stopped live or unknown readers retain their
       sessionId: "pruning-session",
       publishedRelease: () => null,
     };
-    let plan = pruneHarness(root, options);
+    let plan = await pruneHarness(root, options);
     assert.ok(
       plan.retained.some(
         (row) =>
@@ -11053,7 +11167,7 @@ test("WO-142 D1 target receipts and stopped live or unknown readers retain their
       ["dead.advisory", "history-dead.advisory"],
     );
     write(root, receipt, "{broken");
-    plan = pruneHarness(root, options);
+    plan = await pruneHarness(root, options);
     assert.equal(
       plan.candidates.some((row) => row.kind === "snapshot"),
       false,
@@ -11070,7 +11184,7 @@ test("WO-142 D1 target receipts and stopped live or unknown readers retain their
     write(root, ".git/dotln/suite-success/old.json", "dead-cache");
     const gate = beginGateRun(root, "npm test");
     try {
-      plan = pruneHarness(root, options);
+      plan = await pruneHarness(root, options);
       assert.equal(
         plan.candidates.some((row) =>
           ["snapshot", "dead-cache"].includes(row.kind),
@@ -11086,7 +11200,7 @@ test("WO-142 D1 target receipts and stopped live or unknown readers retain their
       worktree: root,
       owner: harnessHostProcess(),
     });
-    plan = pruneHarness(root, options);
+    plan = await pruneHarness(root, options);
     assert.equal(
       plan.candidates.some((row) => row.kind === "snapshot"),
       false,
@@ -11101,12 +11215,13 @@ test("WO-142 D1 target receipts and stopped live or unknown readers retain their
   }
 });
 
-test("WO-142 D1 malformed installed manifests never establish absent snapshot ownership", () => {
+test("WO-142 D1 malformed installed manifests never establish absent snapshot ownership", async () => {
   const root = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-prune-manifest-")),
+    createFixtureRoot(join(tmpdir(), "dotln-prune-manifest-")),
   );
   try {
     runGit(root, ["init", "--quiet"], fixtureGitOptions);
+    excludeFixtureOwnership(root);
     write(root, ".runtime/harness/aaaaaaaaaaaaaaaa/runtime.js", "installed");
     write(root, ".runtime/harness/bbbbbbbbbbbbbbbb/runtime.js", "unowned");
     const manifestPath = ".claude/harness-manifest.json";
@@ -11134,7 +11249,9 @@ test("WO-142 D1 malformed installed manifests never establish absent snapshot ow
     ]) {
       write(root, manifestPath, JSON.stringify(malformed));
       assert.equal(
-        pruneHarness(root).candidates.some((row) => row.kind === "snapshot"),
+        (await pruneHarness(root)).candidates.some(
+          (row) => row.kind === "snapshot",
+        ),
         false,
         JSON.stringify(malformed),
       );
@@ -11149,7 +11266,9 @@ test("WO-142 D1 malformed installed manifests never establish absent snapshot ow
     ]) {
       write(root, targetPath, JSON.stringify(malformed));
       assert.equal(
-        pruneHarness(root).candidates.some((row) => row.kind === "snapshot"),
+        (await pruneHarness(root)).candidates.some(
+          (row) => row.kind === "snapshot",
+        ),
         false,
         JSON.stringify(malformed),
       );
@@ -11165,8 +11284,8 @@ test("WO-142 D1 malformed installed manifests never establish absent snapshot ow
       }),
     );
     assert.deepEqual(
-      pruneHarness(root)
-        .candidates.filter((row) => row.kind === "snapshot")
+      (await pruneHarness(root)).candidates
+        .filter((row) => row.kind === "snapshot")
         .map((row) => row.path),
       [".runtime/harness/bbbbbbbbbbbbbbbb"],
     );
@@ -11175,12 +11294,13 @@ test("WO-142 D1 malformed installed manifests never establish absent snapshot ow
   }
 });
 
-test("WO-142 D1 publication proof binds the origin repository despite ambient GH targets", () => {
+test("WO-142 D1 publication proof binds the origin repository despite ambient GH targets", async () => {
   const root = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-prune-publication-")),
+    createFixtureRoot(join(tmpdir(), "dotln-prune-publication-")),
   );
   try {
     runGit(root, ["init", "--quiet"], fixtureGitOptions);
+    excludeFixtureOwnership(root);
     runGit(
       root,
       [
@@ -11257,7 +11377,7 @@ test("WO-142 D1 publication proof binds the origin repository despite ambient GH
         [
           "--input-type=module",
           "-e",
-          `import {pruneHarness} from ${JSON.stringify(new URL("./lib/harness-prune.mjs", import.meta.url).href)};console.log(JSON.stringify(pruneHarness(process.argv[1])));`,
+          `import {pruneHarness} from ${JSON.stringify(new URL("./lib/harness-prune.mjs", import.meta.url).href)};console.log(JSON.stringify((await pruneHarness(process.argv[1]))));`,
           root,
         ],
         {
@@ -11306,10 +11426,13 @@ test("WO-142 D1 publication proof binds the origin repository despite ambient GH
   }
 });
 
-test("WO-142 D1 snapshot package links are inventoried without traversal while unsafe links and lanes stay retained", () => {
-  const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-prune-links-")));
+test("WO-142 D1 snapshot package links are inventoried without traversal while unsafe links and lanes stay retained", async () => {
+  const root = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-prune-links-")),
+  );
   try {
     runGit(root, ["init", "--quiet"], fixtureGitOptions);
+    excludeFixtureOwnership(root);
     const snapshot = ".runtime/harness/aaaaaaaaaaaaaaaa";
     const names = ["kernel", "compiler", "skeleton", "console"];
     mkdirSync(join(root, snapshot, "node_modules/@dotln"), { recursive: true });
@@ -11360,7 +11483,7 @@ test("WO-142 D1 snapshot package links are inventoried without traversal while u
     write(root, `${lane}/inside.txt`, "retained lane bytes");
     symlinkSync("inside.txt", join(root, lane, "internal-link"));
     const options = { publishedRelease: () => "v9.9.9" };
-    const preview = pruneHarness(root, options);
+    const preview = await pruneHarness(root, options);
     assert.deepEqual(
       preview.candidates.map((row) => row.path),
       [snapshot],
@@ -11377,7 +11500,7 @@ test("WO-142 D1 snapshot package links are inventoried without traversal while u
         (row) => row.path === lane && /non-regular/.test(row.reason),
       ),
     );
-    const applied = pruneHarness(root, { ...options, apply: true });
+    const applied = await pruneHarness(root, { ...options, apply: true });
     assert.deepEqual(
       applied.candidates.map((row) => row.path),
       [snapshot],
@@ -11965,7 +12088,7 @@ const runRepairShell = (command, cwd) => {
   return `${result.stdout}\n${result.stderr}`;
 };
 test("WO-172 repair reads actual process substitutions and keeps printed diagnostics inert", () => {
-  const root = mkdtempSync(join(tmpdir(), "dotln-shell-repair-"));
+  const root = createFixtureRoot(join(tmpdir(), "dotln-shell-repair-"));
   try {
     for (const [command, kind] of shellRepairCases) {
       const found = shellDiagnostics(command, runRepairShell(command, root));
@@ -13014,9 +13137,9 @@ syncBuiltinESMExports();
   }
 });
 
-test("WO-142 repair D1 Claude current session survives a stale finished owner", () => {
+test("WO-142 repair D1 Claude current session survives a stale finished owner", async () => {
   const root = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-prune-current-")),
+    createFixtureRoot(join(tmpdir(), "dotln-prune-current-")),
   );
   const saved = Object.fromEntries(
     ["CODEX_THREAD_ID", "CLAUDE_CODE_SESSION_ID", "CLAUDE_SESSION_ID"].map(
@@ -13028,6 +13151,7 @@ test("WO-142 repair D1 Claude current session survives a stale finished owner", 
     delete process.env.CLAUDE_SESSION_ID;
     process.env.CLAUDE_CODE_SESSION_ID = "fixture-current-claude";
     runGit(root, ["init", "--quiet"], fixtureGitOptions);
+    excludeFixtureOwnership(root);
     const sessionKey = createHash("sha256")
       .update("fixture-current-claude")
       .digest("hex");
@@ -13044,7 +13168,7 @@ test("WO-142 repair D1 Claude current session survives a stale finished owner", 
       JSON.stringify({ event: "Stop", finished: true }) + "\n",
     );
     const options = { publishedRelease: () => null };
-    const protectedPlan = pruneHarness(root, options);
+    const protectedPlan = await pruneHarness(root, options);
     assert.ok(
       protectedPlan.retained.some(
         (row) => row.path === path && /current/.test(row.reason),
@@ -13053,7 +13177,9 @@ test("WO-142 repair D1 Claude current session survives a stale finished owner", 
     assert.ok(!protectedPlan.candidates.some((row) => row.path === path));
     delete process.env.CLAUDE_CODE_SESSION_ID;
     assert.ok(
-      pruneHarness(root, options).candidates.some((row) => row.path === path),
+      (await pruneHarness(root, options)).candidates.some(
+        (row) => row.path === path,
+      ),
       "current-session identity, rather than owner liveness, is the discriminating protection",
     );
   } finally {
@@ -13131,7 +13257,7 @@ test("WO-142 VER-002 B3 preserves the activation read vocabulary and every outpu
 });
 
 test("an enqueue with no recorded command mode retains unknown authorship", () => {
-  const root = mkdtempSync(join(tmpdir(), "dotln-prompt-attribution-"));
+  const root = createFixtureRoot(join(tmpdir(), "dotln-prompt-attribution-"));
   const transcript = join(root, "transcript.jsonl");
   const prompt = "synthetic private queued words";
   try {
@@ -13312,12 +13438,13 @@ test("VER-003 N1 generated prompt hook observes an idle notice before transcript
   }
 });
 
-test("WO-160 prune removes a sole published stash with recovery bytes and permits the next stash", () => {
+test("WO-160 prune removes a sole published stash with recovery bytes and permits the next stash", async () => {
   const root = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-prune-last-stash-")),
+    createFixtureRoot(join(tmpdir(), "dotln-prune-last-stash-")),
   );
   try {
     runGit(root, ["init", "--quiet", "-b", "main"], fixtureGitOptions);
+    excludeFixtureOwnership(root);
     runGit(root, ["config", "user.name", "Fixture"], fixtureGitOptions);
     runGit(
       root,
@@ -13358,7 +13485,7 @@ test("WO-160 prune removes a sole published stash with recovery bytes and permit
       ref: readFileSync(ref, "utf8"),
       reflog: readFileSync(log, "utf8"),
     };
-    const applied = pruneHarness(root, {
+    const applied = await pruneHarness(root, {
       apply: true,
       publishedRelease: () => "v1.0.0",
     });
@@ -13397,12 +13524,13 @@ test("WO-160 prune removes a sole published stash with recovery bytes and permit
   }
 });
 
-test("WO-160 prune inventories only published integration stashes and resolves shifted selectors", () => {
+test("WO-160 prune inventories only published integration stashes and resolves shifted selectors", async () => {
   const root = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-prune-stashes-")),
+    createFixtureRoot(join(tmpdir(), "dotln-prune-stashes-")),
   );
   try {
     runGit(root, ["init", "--quiet", "-b", "main"], fixtureGitOptions);
+    excludeFixtureOwnership(root);
     runGit(root, ["config", "user.name", "Fixture"], fixtureGitOptions);
     runGit(
       root,
@@ -13446,7 +13574,7 @@ test("WO-160 prune inventories only published integration stashes and resolves s
     );
     writeFileSync(reflog, readFileSync(reflog, "utf8").replace(/\n$/u, "  \n"));
     const before = runGit(root, ["stash", "list"], fixtureGitOptions);
-    const preview = pruneHarness(root, options);
+    const preview = await pruneHarness(root, options);
     assert.equal(runGit(root, ["stash", "list"], fixtureGitOptions), before);
     assert.deepEqual(
       new Set(
@@ -13478,8 +13606,8 @@ test("WO-160 prune inventories only published integration stashes and resolves s
           ).trim(),
         ) + ".lock";
       writeFileSync(lock, "other writer lock");
-      assert.throws(
-        () => pruneHarness(root, { ...options, apply: true }),
+      await assert.rejects(
+        async () => await pruneHarness(root, { ...options, apply: true }),
         /stash drop lock remains: .*; after checking no Git process holds it, remove this named lock and retry; stash retained/,
       );
       assert.equal(readFileSync(lock, "utf8"), "other writer lock");
@@ -13496,8 +13624,8 @@ test("WO-160 prune inventories only published integration stashes and resolves s
       reflog,
       Buffer.concat([originalLog.subarray(0, -1), Buffer.from([255, 10])]),
     );
-    assert.throws(
-      () => pruneHarness(root, { ...options, apply: true }),
+    await assert.rejects(
+      async () => await pruneHarness(root, { ...options, apply: true }),
       /non-UTF-8/,
     );
     assert.deepEqual(
@@ -13505,7 +13633,7 @@ test("WO-160 prune inventories only published integration stashes and resolves s
       Buffer.concat([originalLog.subarray(0, -1), Buffer.from([255, 10])]),
     );
     writeFileSync(reflog, originalLog);
-    const applied = pruneHarness(root, { ...options, apply: true });
+    const applied = await pruneHarness(root, { ...options, apply: true });
     assert.ok(readFileSync(reflog, "utf8").endsWith("ordinary saved work  \n"));
     for (const row of applied.candidates.filter(
       (row) => row.kind === "integration-stash",
@@ -13540,10 +13668,13 @@ test("WO-160 prune inventories only published integration stashes and resolves s
   }
 });
 
-test("WO-160 prune removes packed stash refs without resurrecting entries", () => {
-  const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-prune-packed-")));
+test("WO-160 prune removes packed stash refs without resurrecting entries", async () => {
+  const root = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-prune-packed-")),
+  );
   try {
     runGit(root, ["init", "--quiet", "-b", "main"], fixtureGitOptions);
+    excludeFixtureOwnership(root);
     runGit(root, ["config", "user.name", "Fixture"], fixtureGitOptions);
     runGit(
       root,
@@ -13591,7 +13722,7 @@ test("WO-160 prune removes packed stash refs without resurrecting entries", () =
     const originalPackedMode = lstatSync(packed).mode & 0o777;
     assert.match(originalPacked, / refs\/stash$/m);
     const options = { publishedRelease: () => "v1.0.0" };
-    const preview = pruneHarness(root, options);
+    const preview = await pruneHarness(root, options);
     assert.deepEqual(
       new Set(
         preview.candidates
@@ -13600,7 +13731,7 @@ test("WO-160 prune removes packed stash refs without resurrecting entries", () =
       ),
       new Set([first, second]),
     );
-    const applied = pruneHarness(root, { ...options, apply: true });
+    const applied = await pruneHarness(root, { ...options, apply: true });
     assert.equal(runGit(root, ["stash", "list"], fixtureGitOptions).trim(), "");
     assert.equal(existsSync(ref), false);
     assert.doesNotMatch(readFileSync(packed, "utf8"), / refs\/stash$/m);
@@ -13618,7 +13749,7 @@ test("WO-160 prune removes packed stash refs without resurrecting entries", () =
     const published = stash("WO-901 integrate 2030-01-02", "published\n");
     runGit(root, ["pack-refs", "--all"], fixtureGitOptions);
     const beforeTopDrop = readFileSync(packed);
-    pruneHarness(root, { ...options, apply: true });
+    await pruneHarness(root, { ...options, apply: true });
     assert.equal(
       runGit(root, ["rev-parse", "refs/stash"], fixtureGitOptions).trim(),
       retained,
@@ -13632,15 +13763,16 @@ test("WO-160 prune removes packed stash refs without resurrecting entries", () =
   }
 });
 
-test("WO-160 prune rewrites an expired reflog prefix like Git stash drop", () => {
+test("WO-160 prune rewrites an expired reflog prefix like Git stash drop", async () => {
   const root = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-prune-expired-")),
+    createFixtureRoot(join(tmpdir(), "dotln-prune-expired-")),
   );
   const control = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-drop-expired-")),
+    createFixtureRoot(join(tmpdir(), "dotln-drop-expired-")),
   );
   try {
     runGit(root, ["init", "--quiet", "-b", "main"], fixtureGitOptions);
+    excludeFixtureOwnership(root);
     runGit(root, ["config", "user.name", "Fixture"], fixtureGitOptions);
     runGit(
       root,
@@ -13670,7 +13802,7 @@ test("WO-160 prune rewrites an expired reflog prefix like Git stash drop", () =>
     );
     cpSync(root, control, { recursive: true });
     runGit(control, ["stash", "drop", "stash@{1}"], fixtureGitOptions);
-    pruneHarness(root, { apply: true, publishedRelease: () => "v1.0.0" });
+    await pruneHarness(root, { apply: true, publishedRelease: () => "v1.0.0" });
     assert.equal(
       runGit(root, ["rev-parse", "refs/stash"], fixtureGitOptions),
       runGit(control, ["rev-parse", "refs/stash"], fixtureGitOptions),
@@ -13691,11 +13823,12 @@ test("WO-160 prune rewrites an expired reflog prefix like Git stash drop", () =>
 
 test("WO-160 non-top prune retains stashes during concurrent pack-refs pruning", async () => {
   const root = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-prune-pack-race-")),
+    createFixtureRoot(join(tmpdir(), "dotln-prune-pack-race-")),
   );
   let pack, exited;
   try {
     runGit(root, ["init", "--quiet", "-b", "main"], fixtureGitOptions);
+    excludeFixtureOwnership(root);
     runGit(root, ["config", "user.name", "Fixture"], fixtureGitOptions);
     runGit(
       root,
@@ -13738,7 +13871,7 @@ test("WO-160 non-top prune retains stashes during concurrent pack-refs pruning",
       stdio: ["ignore", "pipe", "pipe"],
     });
     let stderr = "";
-    pack.stderr.on("data", (bytes) => {
+    pack.stderr.on("data", async (bytes) => {
       stderr += bytes;
     });
     exited = new Promise((resolveExit) => {
@@ -13773,7 +13906,7 @@ test("WO-160 non-top prune retains stashes during concurrent pack-refs pruning",
     assert.equal(readFileSync(ref, "utf8").trim(), stashes[2]);
     const packedBefore = readFileSync(packed);
     assert.ok(packedBefore.includes(`${stashes[2]} refs/stash\n`));
-    const applied = pruneHarness(root, {
+    const applied = await pruneHarness(root, {
       apply: true,
       publishedRelease: (order) => (order === "WO-901" ? "v1.0.0" : null),
     });
@@ -13812,8 +13945,9 @@ test("WO-160 non-top prune retains stashes during concurrent pack-refs pruning",
 
 // Four published retained lanes and two published integration stashes.
 const pruneApplyFixture = (prefix) => {
-  const root = realpathSync(mkdtempSync(join(tmpdir(), prefix)));
+  const root = realpathSync(createFixtureRoot(join(tmpdir(), prefix)));
   runGit(root, ["init", "--quiet", "-b", "main"], fixtureGitOptions);
+  excludeFixtureOwnership(root);
   runGit(root, ["config", "user.name", "Fixture"], fixtureGitOptions);
   runGit(
     root,
@@ -13889,14 +14023,14 @@ require("node:module").syncBuiltinESMExports();
       preload,
       "--input-type=module",
       "-e",
-      `import {pruneHarness} from ${JSON.stringify(new URL("./lib/harness-prune.mjs", import.meta.url).href)};pruneHarness(process.argv[1], {apply: true, publishedRelease: () => "v1.0.0"});`,
+      `import {pruneHarness} from ${JSON.stringify(new URL("./lib/harness-prune.mjs", import.meta.url).href)};(await pruneHarness(process.argv[1], {apply: true, publishedRelease: () => "v1.0.0"}));`,
       root,
     ],
     { encoding: "utf8" },
   );
 };
 
-test("WO-171 one apply plans once and asks each order's publication at most once", () => {
+test("WO-171 one apply plans once and asks each order's publication at most once", async () => {
   const { root, lanes, stashes } = pruneApplyFixture("dotln-prune-once-");
   try {
     // Never a candidate: asked once by the plan and never by a check.
@@ -13923,7 +14057,7 @@ require("node:module").syncBuiltinESMExports();
         join(root, "bin/prune-plans.cjs"),
         "--input-type=module",
         "-e",
-        `import {pruneHarness} from ${JSON.stringify(new URL("./lib/harness-prune.mjs", import.meta.url).href)};const calls = [];const applied = pruneHarness(process.argv[1], {apply: true, publishedRelease: (order) => { calls.push(order); return order === "WO-907" ? null : "v1.0.0"; }});console.log(JSON.stringify({plans: globalThis.pruneRetainedListings, calls, candidates: applied.candidates}));`,
+        `import {pruneHarness} from ${JSON.stringify(new URL("./lib/harness-prune.mjs", import.meta.url).href)};const calls = [];const applied = (await pruneHarness(process.argv[1], {apply: true, publishedRelease: (order) => { calls.push(order); return order === "WO-907" ? null : "v1.0.0"; }}));console.log(JSON.stringify({plans: globalThis.pruneRetainedListings, calls, candidates: applied.candidates}));`,
         root,
       ],
       { encoding: "utf8" },
@@ -13956,7 +14090,7 @@ require("node:module").syncBuiltinESMExports();
   }
 });
 
-test("WO-171 one apply issues one release listing and one tag listing whatever the number of orders", () => {
+test("WO-171 one apply issues one release listing and one tag listing whatever the number of orders", async () => {
   const { root, lanes } = pruneApplyFixture("dotln-prune-listings-");
   try {
     runGit(
@@ -14037,7 +14171,7 @@ test("WO-171 one apply issues one release listing and one tag listing whatever t
         [
           "--input-type=module",
           "-e",
-          `import {pruneHarness} from ${JSON.stringify(new URL("./lib/harness-prune.mjs", import.meta.url).href)};console.log(JSON.stringify(pruneHarness(process.argv[1], {apply: process.argv[2] === "apply"})));`,
+          `import {pruneHarness} from ${JSON.stringify(new URL("./lib/harness-prune.mjs", import.meta.url).href)};console.log(JSON.stringify((await pruneHarness(process.argv[1], {apply: process.argv[2] === "apply"}))));`,
           root,
           apply ? "apply" : "preview",
         ],
@@ -14122,7 +14256,7 @@ test("WO-171 one apply issues one release listing and one tag listing whatever t
   }
 });
 
-test("WO-171 an apply stopped after two deletions resumes and keeps the first byte proofs", () => {
+test("WO-171 an apply stopped after two deletions resumes and keeps the first byte proofs", async () => {
   const { root, lanes, stashes } = pruneApplyFixture("dotln-prune-resume-");
   try {
     const stopped = interruptedPrune(root, 2, { stop: true });
@@ -14146,7 +14280,7 @@ test("WO-171 an apply stopped after two deletions resumes and keeps the first by
       ),
       [...stashes].reverse().join("\n"),
     );
-    const resumed = pruneHarness(root, {
+    const resumed = await pruneHarness(root, {
       apply: true,
       publishedRelease: () => "v1.0.0",
     });
@@ -14163,7 +14297,8 @@ test("WO-171 an apply stopped after two deletions resumes and keeps the first by
     );
     assert.equal(runGit(root, ["stash", "list"], fixtureGitOptions), "");
     assert.deepEqual(
-      pruneHarness(root, { publishedRelease: () => "v1.0.0" }).candidates,
+      (await pruneHarness(root, { publishedRelease: () => "v1.0.0" }))
+        .candidates,
       [],
     );
   } finally {
@@ -14203,10 +14338,13 @@ test("WO-171 a candidate changed between the plan and its deletion is refused wh
   }
 });
 
-test("WO-171 a lane holding a usage copy is retained until a committed snapshot carries it", () => {
-  const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-prune-usage-")));
+test("WO-171 a lane holding a usage copy is retained until a committed snapshot carries it", async () => {
+  const root = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-prune-usage-")),
+  );
   try {
     runGit(root, ["init", "--quiet", "-b", "main"], fixtureGitOptions);
+    excludeFixtureOwnership(root);
     runGit(root, ["config", "user.name", "Fixture"], fixtureGitOptions);
     runGit(
       root,
@@ -14250,9 +14388,9 @@ test("WO-171 a lane holding a usage copy is retained until a committed snapshot 
     const options = {
       publishedRelease: (order) => (order === "WO-913" ? null : "v1.0.0"),
     };
-    const reasons = () =>
+    const reasons = async () =>
       Object.fromEntries(
-        pruneHarness(root, options).retained.map((row) => [
+        (await pruneHarness(root, options)).retained.map((row) => [
           row.path.split("/").at(-1),
           row.reason,
         ]),
@@ -14265,13 +14403,15 @@ test("WO-171 a lane holding a usage copy is retained until a committed snapshot 
         fixtureGitOptions,
       );
     };
-    assert.deepEqual(reasons(), {
+    assert.deepEqual(await reasons(), {
       "WO-911": "usage has no committed snapshot",
       "WO-913": "published release is not established",
       "WO-914": "usage has no committed snapshot",
     });
     assert.deepEqual(
-      pruneHarness(root, options).candidates.map((row) => row.workOrder),
+      (await pruneHarness(root, options)).candidates.map(
+        (row) => row.workOrder,
+      ),
       ["WO-912"],
     );
     // A whole-meter snapshot names the order and postdates the copy, yet holds
@@ -14291,11 +14431,11 @@ test("WO-171 a lane holding a usage copy is retained until a committed snapshot 
     symlinkSync("/nonexistent", join(root, "docs/evidence/WO-914/meta.json"));
     commit("docs/evidence/WO-914/meta.json", "WO-914 link");
     assert.equal(
-      reasons()["WO-911"],
+      (await reasons())["WO-911"],
       "usage copy is not in the committed snapshot",
     );
     assert.equal(
-      reasons()["WO-914"],
+      (await reasons())["WO-914"],
       "usage copy is not in the committed snapshot",
     );
     // A copy is carried only in the field WO-170 settles: a digest named
@@ -14310,7 +14450,7 @@ test("WO-171 a lane holding a usage copy is retained until a committed snapshot 
     );
     commit(meter, "WO-911 snapshot naming a copy it does not carry");
     assert.equal(
-      reasons()["WO-911"],
+      (await reasons())["WO-911"],
       "usage copy is not in the committed snapshot",
     );
     // Written but not committed, it is not yet the order's record.
@@ -14321,15 +14461,15 @@ test("WO-171 a lane holding a usage copy is retained until a committed snapshot 
       }) + "\n";
     write(root, meter, carried);
     assert.equal(
-      reasons()["WO-911"],
+      (await reasons())["WO-911"],
       "usage copy is not in the committed snapshot",
     );
     commit(meter, "WO-911 meter snapshot");
-    assert.deepEqual(reasons(), {
+    assert.deepEqual(await reasons(), {
       "WO-913": "published release is not established",
       "WO-914": "usage copy is not in the committed snapshot",
     });
-    const applied = pruneHarness(root, { ...options, apply: true });
+    const applied = await pruneHarness(root, { ...options, apply: true });
     assert.deepEqual(
       applied.candidates.map((row) => row.workOrder),
       ["WO-911", "WO-912"],
@@ -14357,16 +14497,17 @@ test("WO-171 a lane holding a usage copy is retained until a committed snapshot 
 // Worktree preservation names a colliding file or directory
 // `<name>.from-WO-NNN[-n]`, so a lane can hold usage copies under names the
 // canonical path misses. Each keeps the lane until the snapshot names it.
-test("WO-171 a collision-preserved usage copy keeps its lane until the snapshot names it", () => {
+test("WO-171 a collision-preserved usage copy keeps its lane until the snapshot names it", async () => {
   const main = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-prune-collision-")),
+    createFixtureRoot(join(tmpdir(), "dotln-prune-collision-")),
   );
   const source = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-prune-collision-source-")),
+    createFixtureRoot(join(tmpdir(), "dotln-prune-collision-source-")),
   );
   try {
     for (const root of [main, source]) {
       runGit(root, ["init", "--quiet", "-b", "main"], fixtureGitOptions);
+      excludeFixtureOwnership(root);
       runGit(root, ["config", "user.name", "Fixture"], fixtureGitOptions);
       runGit(
         root,
@@ -14427,9 +14568,9 @@ test("WO-171 a collision-preserved usage copy keeps its lane until the snapshot 
       ],
     );
     const options = { publishedRelease: () => "v1.0.0" };
-    const reasons = () =>
+    const reasons = async () =>
       Object.fromEntries(
-        pruneHarness(main, options).retained.map((row) => [
+        (await pruneHarness(main, options)).retained.map((row) => [
           row.path.split("/").at(-1),
           row.reason,
         ]),
@@ -14458,7 +14599,7 @@ test("WO-171 a collision-preserved usage copy keeps its lane until the snapshot 
       );
     };
     // The only usage copies of WO-922 and WO-923 are preserved under a suffix.
-    assert.deepEqual(reasons(), {
+    assert.deepEqual(await reasons(), {
       "WO-921": "usage has no committed snapshot",
       "WO-922": "usage has no committed snapshot",
       "WO-923": "usage has no committed snapshot",
@@ -14467,20 +14608,20 @@ test("WO-171 a collision-preserved usage copy keeps its lane until the snapshot 
     snapshot("WO-921", [copies.canonical]);
     snapshot("WO-922", [copies.directory]);
     snapshot("WO-923", [copies.directory]);
-    assert.deepEqual(reasons(), {
+    assert.deepEqual(await reasons(), {
       "WO-921": "usage copy is not in the committed snapshot",
       "WO-923": "usage copy is not in the committed snapshot",
     });
     snapshot("WO-921", [copies.canonical, copies.file]);
     assert.equal(
-      reasons()["WO-921"],
+      (await reasons())["WO-921"],
       "usage copy is not in the committed snapshot",
     );
     snapshot("WO-921", [copies.canonical, copies.file, copies.fileAgain]);
-    assert.deepEqual(reasons(), {
+    assert.deepEqual(await reasons(), {
       "WO-923": "usage copy is not in the committed snapshot",
     });
-    const applied = pruneHarness(main, { ...options, apply: true });
+    const applied = await pruneHarness(main, { ...options, apply: true });
     assert.deepEqual(
       applied.candidates.map((row) => row.workOrder),
       ["WO-921", "WO-922"],
@@ -14519,12 +14660,13 @@ test("WO-171 a collision-preserved usage copy keeps its lane until the snapshot 
   }
 });
 
-test("WO-171 a bound resident store follows its retained lane into the byte proof", () => {
+test("WO-171 a bound resident store follows its retained lane into the byte proof", async () => {
   const root = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-prune-resident-")),
+    createFixtureRoot(join(tmpdir(), "dotln-prune-resident-")),
   );
   try {
     runGit(root, ["init", "--quiet", "-b", "main"], fixtureGitOptions);
+    excludeFixtureOwnership(root);
     const lane = "docs/control/local/retained/WO-921";
     const store = [
       "resident/WO-921-1/binding.json",
@@ -14533,7 +14675,7 @@ test("WO-171 a bound resident store follows its retained lane into the byte proo
       "resident/WO-921-1/.resident-append/events.jsonl",
     ];
     for (const path of store) write(root, `${lane}/${path}`, `${path}\n`);
-    const applied = pruneHarness(root, {
+    const applied = await pruneHarness(root, {
       apply: true,
       publishedRelease: () => "v1.0.0",
     });
@@ -14562,25 +14704,30 @@ test("WO-171 a bound resident store follows its retained lane into the byte proo
   }
 });
 
-test("WO-171 an unreadable global observation still stops the plan", () => {
-  const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-prune-closed-")));
+test("WO-171 an unreadable global observation still stops the plan", async () => {
+  const root = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-prune-closed-")),
+  );
   try {
     runGit(root, ["init", "--quiet", "-b", "main"], fixtureGitOptions);
+    excludeFixtureOwnership(root);
     const lane = "docs/control/local/retained/WO-931/evidence.txt";
     write(root, lane, "published lane\n");
     const options = { apply: true, publishedRelease: () => "v1.0.0" };
     const events = "docs/control/local/harness/writer-events.jsonl";
     write(root, events, "{not json\n");
-    assert.throws(() => pruneHarness(root, options), /JSON/);
+    await assert.rejects(async () => await pruneHarness(root, options), /JSON/);
     assert.ok(existsSync(join(root, lane)));
     rmSync(join(root, events));
     const marker = `docs/control/local/harness/active-gates/${randomUUID()}.json`;
     write(root, marker, "{not json");
-    assert.throws(() => pruneHarness(root, options), /JSON/);
+    await assert.rejects(async () => await pruneHarness(root, options), /JSON/);
     assert.ok(existsSync(join(root, lane)));
     rmSync(join(root, marker));
     assert.deepEqual(
-      pruneHarness(root, options).candidates.map((row) => row.workOrder),
+      (await pruneHarness(root, options)).candidates.map(
+        (row) => row.workOrder,
+      ),
       ["WO-931"],
     );
   } finally {
@@ -14588,7 +14735,7 @@ test("WO-171 an unreadable global observation still stops the plan", () => {
   }
 });
 
-test("WO-171 a stop before a byte proof is published leaves nothing a rerun refuses", () => {
+test("WO-171 a stop before a byte proof is published leaves nothing a rerun refuses", async () => {
   const { root, lanes } = pruneApplyFixture("dotln-prune-proof-");
   try {
     write(
@@ -14613,7 +14760,7 @@ require("node:module").syncBuiltinESMExports();
         join(root, "bin/prune-proof-stop.cjs"),
         "--input-type=module",
         "-e",
-        `import {pruneHarness} from ${JSON.stringify(new URL("./lib/harness-prune.mjs", import.meta.url).href)};pruneHarness(process.argv[1], {apply: true, publishedRelease: () => "v1.0.0"});`,
+        `import {pruneHarness} from ${JSON.stringify(new URL("./lib/harness-prune.mjs", import.meta.url).href)};(await pruneHarness(process.argv[1], {apply: true, publishedRelease: () => "v1.0.0"}));`,
         root,
       ],
       { encoding: "utf8" },
@@ -14629,7 +14776,7 @@ require("node:module").syncBuiltinESMExports();
     assert.ok(existsSync(join(retained, "WO-901/evidence.txt")));
     // Even a torn partial is replaced, never read as the proof.
     writeFileSync(join(retained, partials[0]), "{");
-    const resumed = pruneHarness(root, {
+    const resumed = await pruneHarness(root, {
       apply: true,
       publishedRelease: () => "v1.0.0",
     });
@@ -14649,7 +14796,7 @@ require("node:module").syncBuiltinESMExports();
   }
 });
 
-test("a prune removes a leftover partial that sits beside a whole proof", () => {
+test("a prune removes a leftover partial that sits beside a whole proof", async () => {
   const { root } = pruneApplyFixture("dotln-prune-leftover-");
   try {
     // A stop between the link and the partial's removal leaves the partial
@@ -14677,7 +14824,7 @@ require("node:module").syncBuiltinESMExports();
         join(root, "bin/prune-proof-leftover.cjs"),
         "--input-type=module",
         "-e",
-        `import {pruneHarness} from ${JSON.stringify(new URL("./lib/harness-prune.mjs", import.meta.url).href)};pruneHarness(process.argv[1], {apply: true, publishedRelease: () => "v1.0.0"});`,
+        `import {pruneHarness} from ${JSON.stringify(new URL("./lib/harness-prune.mjs", import.meta.url).href)};(await pruneHarness(process.argv[1], {apply: true, publishedRelease: () => "v1.0.0"}));`,
         root,
       ],
       { encoding: "utf8" },
@@ -14693,7 +14840,7 @@ require("node:module").syncBuiltinESMExports();
     );
     assert.ok(existsSync(join(retained, "WO-901/evidence.txt")));
     const bytes = laneProofs(root)[proofs[0]];
-    const resumed = pruneHarness(root, {
+    const resumed = await pruneHarness(root, {
       apply: true,
       publishedRelease: () => "v1.0.0",
     });
@@ -14982,7 +15129,7 @@ test("overlay marker text and narrowing undone by grants refuse before writing",
 test("every scratchpad component below the temporary prefix is inspected", async () => {
   const { grantedSessionRoot } =
     await import("../packages/skeleton/dist/src/harness-host.js");
-  const root = mkdtempSync(join(tmpdir(), "dotln-scratch-ancestors-"));
+  const root = createFixtureRoot(join(tmpdir(), "dotln-scratch-ancestors-"));
   try {
     const prefix = join(root, "temporary"),
       target = join(root, "outside");
@@ -15257,12 +15404,13 @@ RegExp.prototype.exec=function(value){
   }
 });
 
-test("prune independently retires dead shell claims and preparations while preserving live and unknown owners", () => {
+test("prune independently retires dead shell claims and preparations while preserving live and unknown owners", async () => {
   const root = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-shell-claim-prune-")),
+    createFixtureRoot(join(tmpdir(), "dotln-shell-claim-prune-")),
   );
   try {
     runGit(root, ["init", "-q"], fixtureGitOptions);
+    excludeFixtureOwnership(root);
     const state = join(root, "docs/control/local/harness");
     const dead = { pid: spawnSync(process.execPath, ["-e", ""]).pid };
     assert.equal(harnessProcessAlive(dead), false);
@@ -15288,7 +15436,7 @@ test("prune independently retires dead shell claims and preparations while prese
       codexHomeRoot: join(root, "codex-homes"),
     };
     const before = pruneInventory(state);
-    const preview = pruneHarness(root, options);
+    const preview = await pruneHarness(root, options);
     assert.deepEqual(pruneInventory(state), before, "preview changes no claim");
     assert.deepEqual(
       preview.candidates
@@ -15297,7 +15445,7 @@ test("prune independently retires dead shell claims and preparations while prese
         .sort(),
       [stale.name, prepared.name].sort(),
     );
-    const applied = pruneHarness(root, { ...options, apply: true });
+    const applied = await pruneHarness(root, { ...options, apply: true });
     assert.equal(
       applied.candidates.filter((row) => row.kind === "shell-claim").length,
       2,
@@ -15318,13 +15466,14 @@ test("prune independently retires dead shell claims and preparations while prese
 
 test("prune cannot retire a replacement shell-claim owner after its final dead-owner observation", async () => {
   const root = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-shell-claim-replaced-")),
+    createFixtureRoot(join(tmpdir(), "dotln-shell-claim-replaced-")),
   );
   const fs = (await import("node:fs")).default;
   const { syncBuiltinESMExports } = await import("node:module");
   const original = { unlinkSync: fs.unlinkSync, rmdirSync: fs.rmdirSync };
   try {
     runGit(root, ["init", "-q"], fixtureGitOptions);
+    excludeFixtureOwnership(root);
     const dead = { pid: spawnSync(process.execPath, ["-e", ""]).pid };
     const directory = join(
       root,
@@ -15346,7 +15495,7 @@ test("prune cannot retire a replacement shell-claim owner after its final dead-o
       return original.unlinkSync(file, ...args);
     };
     syncBuiltinESMExports();
-    pruneHarness(root, {
+    await pruneHarness(root, {
       apply: true,
       publishedRelease: () => null,
       codexHomeRoot: join(root, "codex-homes"),
@@ -15363,7 +15512,7 @@ test("prune cannot retire a replacement shell-claim owner after its final dead-o
 
 test("terminal task notifications before transcript flush are host observations; malformed envelopes and explicit operator copies retain their attribution", async () => {
   const root = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-preflush-notice-")),
+    createFixtureRoot(join(tmpdir(), "dotln-preflush-notice-")),
   );
   const transcript = join(root, "transcript.jsonl");
   const rows = () =>

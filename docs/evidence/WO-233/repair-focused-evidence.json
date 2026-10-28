@@ -1,0 +1,50 @@
+{
+  "scope": "Focused regressions after the recorded complete failures; not a complete review",
+  "records": [
+    {
+      "command": "node scripts/harness.mjs bounded -- npm test -- --only harness-fixtures",
+      "checkId": "suite:harness-fixtures",
+      "recordedAt": "2026-10-27T15:35:12.119Z",
+      "codeIdentity": "932de5640be18220da0e621bbf9a5e426030ecda57f7a0a4a6150f593784d9a0",
+      "evidenceRef": "host-gate:932de5640be18220da0e621bbf9a5e426030ecda57f7a0a4a6150f593784d9a0:harness-fixtures",
+      "exitCode": 0,
+      "durationMs": 363952,
+      "unrunTasks": [],
+      "tasks": [
+        {
+          "name": "harness-fixtures",
+          "exitCode": 0,
+          "durationMs": 314449
+        }
+      ],
+      "temporaryCleanup": {
+        "removed": 447,
+        "retained": 0,
+        "blockers": []
+      }
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- npm test -- --only instance-history",
+      "checkId": "suite:instance-history",
+      "recordedAt": "2026-10-27T15:36:32.848Z",
+      "codeIdentity": "932de5640be18220da0e621bbf9a5e426030ecda57f7a0a4a6150f593784d9a0",
+      "evidenceRef": "host-gate:932de5640be18220da0e621bbf9a5e426030ecda57f7a0a4a6150f593784d9a0:instance-history",
+      "exitCode": 0,
+      "durationMs": 64833,
+      "unrunTasks": [],
+      "tasks": [
+        {
+          "name": "instance-history",
+          "exitCode": 0,
+          "durationMs": 47990,
+          "excludedReads": 0
+        }
+      ],
+      "temporaryCleanup": {
+        "removed": 36,
+        "retained": 0,
+        "blockers": []
+      }
+    }
+  ]
+}

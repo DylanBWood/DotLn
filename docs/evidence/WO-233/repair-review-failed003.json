@@ -1,0 +1,70 @@
+{
+  "command": "npm test -- --review",
+  "checkId": "npm test",
+  "evidenceRef": "host-gate:e85cdfc64d13f82ed4a9c104f59c12b6e807fcc95f230ecbea2fd92fc0f66e70:npm test",
+  "temporaryGateId": "94ed0c26-dd5a-4e3a-9823-7e0f80ed9d24",
+  "recordedAt": "2026-10-27T14:57:25.754Z",
+  "codeIdentity": "e85cdfc64d13f82ed4a9c104f59c12b6e807fcc95f230ecbea2fd92fc0f66e70",
+  "exitCode": 1,
+  "durationMs": 1488304,
+  "freshTasks": 104,
+  "unrunTasks": [
+    "target-worktree:file:test-target-worktree-close.mjs",
+    "target-worktree:file:test-target-worktree-release.mjs",
+    "vertical:file:test-vertical.mjs:workflow",
+    "vertical:file:test-vertical-judgment.mjs",
+    "vertical:file:test-vertical.recovery.mjs",
+    "launchpad:file:test-launchpad-update.mjs",
+    "launchpad:file:test-launchpad-export.mjs",
+    "browser-evidence"
+  ],
+  "executedFailures": [
+    {
+      "name": "instance-history",
+      "exitCode": 1,
+      "durationMs": 73156
+    }
+  ],
+  "assertions": [
+    {
+      "file": "scripts/test-instance-history.mjs",
+      "name": "a kit update preserves and admits the committed instance history",
+      "observation": "One integration-stash or temporary-root candidate remained after synthetic close; the focused reproduction adds the missing candidate diagnostic."
+    }
+  ],
+  "temporaryCleanup": {
+    "removed": 2062,
+    "retained": 16,
+    "retentionReasons": {
+      "writer reservation names this root or session": 3,
+      "failed suite diagnosis window": 7,
+      "temporary root identity changed": 3,
+      "nested owned root is retained": 3
+    },
+    "blockers": []
+  },
+  "churn": {
+    "filesCreated": 821856,
+    "filesDeleted": 816479,
+    "bytesWritten": 16962436950,
+    "source": "owned-root content inventories at helper removal and gate completion, capped by allocated bytes for sparse files; physical I/O, overwrites and uninstrumented removals unobserved"
+  },
+  "fileEvents": {
+    "before": {
+      "residentBytes": 18939904,
+      "source": "ps -A -o rss=,comm= (KiB converted to bytes)",
+      "observedAt": "2026-10-27T14:32:36.871Z"
+    },
+    "host": {
+      "residentBytes": 18956288,
+      "source": "ps -A -o rss=,comm= (KiB converted to bytes)",
+      "observedAt": "2026-10-27T14:33:12.831Z"
+    },
+    "after": {
+      "residentBytes": 18956288,
+      "source": "ps -A -o rss=,comm= (KiB converted to bytes)",
+      "observedAt": "2026-10-27T14:57:25.754Z"
+    }
+  },
+  "outputRef": "docs/control/local/harness/check-output/2db7c8b11f12f9d97eeba844fcfceffc54da889c3a1fbe36a25ad21b98d02484.log"
+}

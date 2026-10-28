@@ -1,17 +1,20 @@
+import {
+  excludeFixtureOwnership,
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
 import { copyFixtureFiles } from "./lib/fixture-inputs.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync, spawn } from "node:child_process";
 import { execGit } from "./lib/git.mjs";
 import {
-  mkdtempSync,
   mkdirSync,
   readFileSync,
   readdirSync,
   existsSync,
   fstatSync,
   writeFileSync,
-  rmSync,
   cpSync,
   realpathSync,
 } from "node:fs";
@@ -83,7 +86,7 @@ test("a live guard restores its missing record and a concurrent start reuses it"
 });
 
 async function fixture(t, { containmentBudget = true } = {}) {
-  const base = realpathSync(mkdtempSync(join(tmpdir(), "dotln-wo185-"))),
+  const base = realpathSync(createFixtureRoot(join(tmpdir(), "dotln-wo185-"))),
     directory = join(base, "host"),
     repo = join(base, "repo");
   mkdirSync(repo);
@@ -104,6 +107,7 @@ async function fixture(t, { containmentBudget = true } = {}) {
   // machine running them. Capacity inheritance is exercised separately.
   await acquireHostLaneCapacity({ directory, capacity: 4 });
   execGit(["init", "-q", repo]);
+  excludeFixtureOwnership(repo);
   execGit(["-C", repo, "add", "."]);
   execGit([
     "-C",
@@ -783,7 +787,9 @@ test("WO-185 duplicate pruning preserves an already observed detached descendant
 });
 
 test("WO-112 a repository removed mid-sample never retires a registration into itself", (t) => {
-  const base = realpathSync(mkdtempSync(join(tmpdir(), "dotln-wo112-guard-")));
+  const base = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-wo112-guard-")),
+  );
   t.after(() => rmSync(base, { recursive: true, force: true }));
   const owner = { pid: 4242, birth: "100.000001" },
     grandchild = { pid: 4343, birth: "101.000001" },
@@ -1720,7 +1726,7 @@ test(
 );
 
 test("legacy budget settings cannot override the host capacity or the gate share per lane", (t) => {
-  const repo = mkdtempSync(join(tmpdir(), "dotln-wo185-"));
+  const repo = createFixtureRoot(join(tmpdir(), "dotln-wo185-"));
   t.after(() => rmSync(repo, { recursive: true, force: true }));
   mkdirSync(join(repo, "docs/control"), { recursive: true });
   const budgets = (hostLanes) =>
@@ -1743,7 +1749,7 @@ test("legacy budget settings cannot override the host capacity or the gate share
 });
 
 test("WO-185 a guard census that straddles a runner's withdrawal keeps no tag from the withdrawn watch", (t) => {
-  const base = mkdtempSync(join(tmpdir(), "dotln-wo185-")),
+  const base = createFixtureRoot(join(tmpdir(), "dotln-wo185-")),
     published = join(base, "published.json"),
     withdrawn = join(base, "withdrawn.json");
   t.after(() => rmSync(base, { recursive: true, force: true }));
@@ -2098,7 +2104,9 @@ if(existsSync(file)) throw new Error('fixture guard did not stop');
 );
 
 test("WO-185 membership publication cannot prevent a task or gate budget stop", (t) => {
-  const directory = mkdtempSync(join(tmpdir(), "dotln-wo185-monitor-writes-"));
+  const directory = createFixtureRoot(
+    join(tmpdir(), "dotln-wo185-monitor-writes-"),
+  );
   t.after(() => rmSync(directory, { recursive: true, force: true }));
   for (const scope of ["task", "gate"]) {
     const rootPid = 999999990,
@@ -2614,7 +2622,7 @@ test("WO-185 a generated quarantine with nonfinite findings passes all three wo1
 });
 
 test("the first host acquirer records capacity and later derivations inherit it", async (t) => {
-  const base = mkdtempSync(join(tmpdir(), "dotln-host-capacity-"));
+  const base = createFixtureRoot(join(tmpdir(), "dotln-host-capacity-"));
   t.after(() => rmSync(base, { recursive: true, force: true }));
   const directory = join(base, "host");
   const first = await acquireHostLanes({

@@ -1,0 +1,41 @@
+{
+  "command": "node scripts/harness.mjs bounded -- node docs/control/local/repair-ver004-fixture-reproduction.mjs",
+  "purpose": "Execute the temporary-root regression file under an active enclosing gate",
+  "name": "bounded-probe",
+  "durationMs": 5061,
+  "slowestCases": [
+    {
+      "name": "bounded-probe",
+      "durationMs": 5061,
+      "exitCode": 0,
+      "granularity": "task"
+    }
+  ],
+  "peakFootprintBytes": 94417016,
+  "peakRssBytes": 232996864,
+  "memoryBudgetBytes": 3221225472,
+  "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+  "droppedOutputBytes": 0,
+  "startedAt": "2026-10-28T00:31:06.361Z",
+  "finishedAt": "2026-10-28T00:31:11.422Z",
+  "exitCode": 0,
+  "executed": true,
+  "testResult": {
+    "tests": 58,
+    "passed": 58,
+    "failed": 0,
+    "cancelled": 0,
+    "skipped": 0
+  },
+  "syntheticScaffoldRemoved": true,
+  "cleanup": {
+    "removed": 0,
+    "retainedCount": 2,
+    "reasons": [
+      "writer reservation names this root or session",
+      "nested owned root is retained"
+    ],
+    "blockers": []
+  },
+  "limit": "Synthetic cleanup retained its coordination root while the source writer was live; explicit creator teardown removed the complete probe scaffold. The complete gate remains required."
+}

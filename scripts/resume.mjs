@@ -1703,7 +1703,7 @@ const run = async (argv) => {
     case "repair-complete": {
       requirePhase(state, orderEvents, "repairing");
       const actor = completionActor(action, args, state, "executor");
-      const handoff = readHandoffLedger(repoRoot, state, { selfReview: false });
+      const handoff = readHandoffLedger(repoRoot, state);
       releaseExecutorWriter = await executorWriterRelease(repoRoot);
       const { gateIndexError, ...evidence } = await requireLifecycleEvidence(
         repoRoot,

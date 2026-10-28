@@ -1,0 +1,47 @@
+{
+  "command": "npm run test:docs",
+  "gateId": "15bcb7e5-e71b-4649-bbf0-af5700aeb85e",
+  "evidenceRef": "host-gate:915660c02e8988f150b76c3e544b2db503203f543bed0615965e3c803c4f35dc:npm run test:docs",
+  "codeIdentity": "915660c02e8988f150b76c3e544b2db503203f543bed0615965e3c803c4f35dc",
+  "recordedAt": "2026-10-28T02:08:24.795Z",
+  "durationMs": 97530,
+  "exitCode": 1,
+  "identityUnchanged": true,
+  "buildOutputUnchanged": true,
+  "freshTasks": 11,
+  "reusedTasks": 0,
+  "unrunTasks": [
+    "resume",
+    "launchpad-docs",
+    "docs-check-fixtures",
+    "comment-labels-fixtures",
+    "lineage-fixtures",
+    "kernel-docs",
+    "skeleton-docs",
+    "console-docs",
+    "resident-bind",
+    "local-runner-double",
+    "plan-refutation-current",
+    "artifact-corpus",
+    "plan",
+    "reader-profiles",
+    "reader-fixtures",
+    "entropy"
+  ],
+  "failedExecutedTasks": [
+    {
+      "name": "docs-check",
+      "exitCode": 1
+    }
+  ],
+  "failures": [
+    "WO-233-D063: dispatch needs a control prefix and at most 240 characters of paraphrase on one line",
+    "WO-233-D065: dispatch needs a control prefix and at most 240 characters of paraphrase on one line",
+    "WO-233-D066: dispatch needs a control prefix and at most 240 characters of paraphrase on one line"
+  ],
+  "cleanup": {
+    "removed": 34,
+    "retained": [],
+    "blockers": []
+  }
+}

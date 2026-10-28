@@ -1,3 +1,4 @@
+import { createFixtureRoot } from "./temporary-roots.mjs";
 import { write as writeFixture, json as prettyJson } from "./helpers.mjs";
 import { spawnGit } from "./git.mjs";
 import { TOOL_ROOT } from "./config.mjs";
@@ -8,7 +9,6 @@ import {
   copyFileSync,
   existsSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   realpathSync,
   unlinkSync,
@@ -30,7 +30,9 @@ export async function subagentProbe(args) {
     !existsSync(target),
     "retain existing observations; choose a new evidence file",
   );
-  const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-subagents-")));
+  const root = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-subagents-")),
+  );
   assert.equal(spawnGit(["init", "--quiet", root], { cwd: root }).status, 0);
   assert.equal(
     realpathSync(

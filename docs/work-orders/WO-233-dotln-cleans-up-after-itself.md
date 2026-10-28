@@ -1,8 +1,20 @@
-# WO-233 — DotLn cleans up after itself: an integration drops its own stash when it completes, every temporary root carries an owner and a retention class the prune judges, the prune runs inside release close, session end and gate end instead of in the operator's hands, a complete review reuses a warm export fixture instead of a fresh install per run, and the kit carries all of it to every instance (version assigned at activation)
+# WO-233 — DotLn cleans up after itself: an integration drops its own stash when it completes, every temporary root carries an owner and a retention class the prune judges, the prune runs inside release close, session end and gate end instead of in the operator's hands, a complete review reuses a warm export fixture instead of a fresh install per run, and the kit carries all of it to every instance (v0.100.0)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh; verifier xhigh; reviewer xhigh.
+**Operator scope expansion (2026-10-27, D064–D067):** Make independent
+executor reviews mandatory for every execution and fix. Remove the repair
+exemption and root-only fallback in the authored role and product guidance,
+apply the existing handoff summary to repairs, regenerate the installed roots
+and current role oracle, and update the lifecycle fixture. D065 and D066
+correct the executor's unnecessary hash binding and new evidence subsystem;
+neither belongs in the final change. The operator explicitly required this
+permanent fix during the fourth repair; D062 and D063 preserve the earlier
+session failures. The subsequent explicit scope expansion adds a third
+independent consistency reviewer whose sole brief covers write-backs,
+dependencies, versions and related metadata, including test and fixture
+dependencies, manifests, pins, generated baselines and evidence sources.
 **Track:** machinery
 **Release classification:** minor. New prune candidate kinds, a shared
 temporary-root helper with a declarations check, retention keys in the
@@ -571,6 +583,16 @@ controls and the backfill record; the write-backs.
     upgrading names the retention keys and asks no record edit; `npm run
     publication:check`, `npm test -- --review` and `npm run test:docs`
     green; `git diff --check` clean; no new dependency.
+16. Every execution and fix requires fresh criteria-adversary, design-improver
+    and consistency-review agents before handoff. The third independently
+    checks write-backs, dependencies, versions and adjacent metadata, including
+    test and fixture dependencies, manifests, pins, generated baselines and
+    evidence-source declarations. The authored role, generated
+    skill roots and product guidance state that requirement without a repair
+    exemption or root-only fallback. The existing handoff summary applies to
+    repairs as well, covered by the lifecycle fixture. This repair supplies
+    its own three completed reviews. No new receipt subsystem or file-hash invalidation
+    rule is introduced.
 
 **Preflight:** `npm test -- --only harness` for steps 2, 5 and 14;
 `npm test -- --only declarations` and `npm test -- --only fixture-temp-root`

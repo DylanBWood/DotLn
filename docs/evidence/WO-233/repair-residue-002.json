@@ -1,0 +1,357 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-27T13:34:14.210Z",
+  "apply": true,
+  "rule": "Only recorded passed fixtures with dead creators are recovered. Copied markers require a matching immutable Git blob or duplicate bytes tied to the containing fixture token. General invalid-record refusal is unchanged.",
+  "roots": [
+    {
+      "root": "dotln-fixture-temporary-9NjMmG",
+      "token": "976004e7-a205-4718-958f-f5830e7f195d",
+      "sha256": "814467c947d04434e864aff6fdcdd4127f9c173d72dcf295de0f0425134eaeca",
+      "device": 16777233,
+      "inode": 758153611,
+      "gateId": "76a6260d-24ee-473e-892b-1e366ebe2de4",
+      "suite": "harness-fixtures",
+      "copies": [],
+      "migrations": [
+        {
+          "path": "dotln-temporary-roots-test-2pNOD6/roots/replaced-EisNby",
+          "sha256": "3af6e86610bdb4ffa22aa8fd2d06f64b8148c459e816a5cd050861e2c3f1ee73",
+          "token": "0b3023ed-8896-4a64-859d-7e24045c37b8"
+        },
+        {
+          "path": "dotln-temporary-roots-test-3DvsBO/roots/promoted-parent-n7Khaa",
+          "sha256": "daa01dafe2fa8280927f9981d7fb2b5416a75e24448cffac1ba18a3b397a36f4",
+          "token": "db560a4c-4bab-426e-bc2a-89579387cd50"
+        },
+        {
+          "path": "dotln-temporary-roots-test-6D3mcK/roots/parent-pmkzQR",
+          "sha256": "9c92651286cc7e0c1af91d4b246933f18f4d95cc842fb6779b55d660e09cda07",
+          "token": "8a83f926-010d-4939-ad5d-90c53a182d41"
+        },
+        {
+          "path": "dotln-temporary-roots-test-6D3mcK/roots/parent-pmkzQR/child-5DfE8e",
+          "sha256": "824c3dfa63bfe2baeb9b907678ac24a783a04454c38da3f5404b269acb25a223",
+          "token": "bbc79ab7-4347-41bd-b27f-144d97a6be92"
+        },
+        {
+          "path": "dotln-temporary-roots-test-Ac96Pr/roots/warm-FnUACs",
+          "sha256": "6f66eadff9560812eafaa9e01885f040f67f5758c7dd0b18ddba5fe1021f6fc5",
+          "token": "5542cb05-09bb-4f3c-8b2f-35177cc43722"
+        },
+        {
+          "path": "dotln-temporary-roots-test-EgjBu9/roots/failed-AW1nHT",
+          "sha256": "34c289e46b10c47d805f66b6f35ff35a7a6c79a8dfccd15fe3eccf0b2ea3d2ae",
+          "token": "93596869-e9fe-48e8-bc04-d450e4297656"
+        },
+        {
+          "path": "dotln-temporary-roots-test-UB3DfB/roots/owner-sjHqq5",
+          "sha256": "f8947fadd84f39b54ae419a9ddfff65ff530e9a6f9085b985d5b50e768b311ae",
+          "token": "d2957ca9-8a55-403d-b7df-9de6daa029a3"
+        },
+        {
+          "path": "dotln-temporary-roots-test-dvDLBp/roots/warm-VpqlDn",
+          "sha256": "99b93a348a2e8ad4e891e0ccdcc4fa52fdd3381fc69fa75b79b1513c57fc3191",
+          "token": "8906065d-2425-4f2a-8580-f9ae9056cd22"
+        },
+        {
+          "path": "dotln-temporary-roots-test-imn0qx/roots/recovery-parent-aC7ZvQ",
+          "sha256": "6b7feee34b9d43a5b255086d50f78ffecc4f34126c786996bfcaf59dd3897fa1",
+          "token": "9073dd19-3bb8-4dc8-a700-ee6a5c725e83"
+        },
+        {
+          "path": "dotln-temporary-roots-test-ms0CtF/roots/sibling-root-lUset8",
+          "sha256": "40e8f0b08b1e1c19eade485f6df44b9bf60a8a4f34695faa8e17867818b217b1",
+          "token": "8d731dd6-ea7a-4e49-b725-7211338a4433"
+        }
+      ],
+      "disposals": [],
+      "bytes": 679003
+    },
+    {
+      "root": "dotln-fixture-temporary-RsI0w7",
+      "token": "50225e48-ac7d-4324-83c6-1c25ab64726a",
+      "sha256": "c4a96071196b41b4a57961b8593678fc5a6339627b1afdc60a18fe79a0a5c17c",
+      "device": 16777233,
+      "inode": 760408739,
+      "gateId": "8fe86269-16e2-4e5e-ade7-192c192cad08",
+      "suite": "harness-fixtures",
+      "copies": [],
+      "migrations": [
+        {
+          "path": "dotln-temporary-roots-test-7l2Kxf/roots/sibling-root-Lz4et6",
+          "sha256": "7bfb7f7785d2e15f0adc5c6c86bd10bee3282a6e9b246ac53725c911eb31dd03",
+          "token": "77f0eff4-0c13-412f-b49b-949fdeb33afc"
+        },
+        {
+          "path": "dotln-temporary-roots-test-IGSbtv/roots/warm-MXUuWL",
+          "sha256": "f3ec1ca55334ac1558c015e9504de0960e1fb99ca946dec3edd73c97bd174184",
+          "token": "43ad97c8-9214-4f80-833a-52c1052248fc"
+        },
+        {
+          "path": "dotln-temporary-roots-test-Q3HXNr/roots/failed-2uJiyE",
+          "sha256": "f42df72af91a75df9e46684e7c36828b440b169a731dcc55786800fc2fa06f40",
+          "token": "0c95ebff-7171-43ef-878f-25c80a757466"
+        },
+        {
+          "path": "dotln-temporary-roots-test-SLOjMo/roots/owner-xDKqT8",
+          "sha256": "62337b1fdbf916d59423c651445c5fd0d2675f73d896829f46f6fc879cb354e6",
+          "token": "e4d855a4-50a9-4c7e-b290-c85b69c7a1bd"
+        },
+        {
+          "path": "dotln-temporary-roots-test-d8PCRK/roots/promoted-parent-Vvvv4e",
+          "sha256": "1428b1eec2a904f4a01b7549dde35f7ed99419c3189d7433ff123be6b25f7880",
+          "token": "8d2ca8ae-7c05-4d24-b6bf-68660fb8564a"
+        },
+        {
+          "path": "dotln-temporary-roots-test-eiBhZ0/roots/recovery-parent-SzsQ9E",
+          "sha256": "3498f78aff955733e28428b1ac3baf7f63e7490a44b0924324addb9870cc2c84",
+          "token": "0182c713-4e7c-4820-b359-e5022b7f3601"
+        },
+        {
+          "path": "dotln-temporary-roots-test-lyJdTL/roots/parent-6L91KU",
+          "sha256": "5ad75a1a083c654383119c9760715ebd0ddfd7af94da38bd5511de136286be84",
+          "token": "f86a85a4-e9dc-4747-8540-3b5bda650364"
+        },
+        {
+          "path": "dotln-temporary-roots-test-lyJdTL/roots/parent-6L91KU/child-oQHh6i",
+          "sha256": "d72dc81669e7c5dde12afea09e95df9213ff4af04c52279217be507cd9d13c52",
+          "token": "dba7e030-417a-4e5f-a5d8-081d55719abe"
+        },
+        {
+          "path": "dotln-temporary-roots-test-rUQVCo/roots/replaced-ZBoVa0",
+          "sha256": "292675f006c91f67fa0dd0fbe6215233f10928671826c17d9c007ff0c0954441",
+          "token": "f88c5b1f-f8a9-437b-b527-097b767093a4"
+        },
+        {
+          "path": "dotln-temporary-roots-test-xTz7gl/roots/warm-utOCUb",
+          "sha256": "881df7773eb29a0fa9bcb87694ae97a3ff0dde8714f22ab4c42bd3d9a6fa7a19",
+          "token": "30eddf41-6ea4-44fe-97d5-0421b9a9c299"
+        }
+      ],
+      "disposals": [],
+      "bytes": 678988
+    },
+    {
+      "root": "dotln-fixture-temporary-gx8zpm",
+      "token": "ca6123be-4ae2-466e-b6ab-10a462ad38cd",
+      "sha256": "7f6e7f4448fcbca7abc6d7db922447ed566551e8b2444f7b2e00a2cf31de2256",
+      "device": 16777233,
+      "inode": 753565300,
+      "gateId": "43bff0ec-1b0b-4b67-8772-ce0903285183",
+      "suite": "harness-fixtures",
+      "copies": [],
+      "migrations": [
+        {
+          "path": "dotln-temporary-roots-test-042yjL/roots/replaced-gz6v8n",
+          "sha256": "295126651eba24f6ab9104e75f1a04e2754f2daef14570e583782742913baad8",
+          "token": "ad51d86e-af00-4963-89bc-450e85a1c452"
+        },
+        {
+          "path": "dotln-temporary-roots-test-1vVs8e/roots/warm-G2H2EV",
+          "sha256": "f33964261d2fba7c3a08f7ae3277bc769ee6ab1446dfb19676c3e64999abf7a5",
+          "token": "3849c273-c5a9-434e-90dd-e98f80cfebaa"
+        },
+        {
+          "path": "dotln-temporary-roots-test-3N7W3g/roots/sibling-root-v6Tvof",
+          "sha256": "2339844e0cb587eab89dc7e399c4921549d67c265f8d313c239955449cbde059",
+          "token": "a260a18c-1b43-422f-8253-f7f9373715cd"
+        },
+        {
+          "path": "dotln-temporary-roots-test-41G46e/roots/promoted-parent-Vj69iM",
+          "sha256": "3ee23543adef98f4667bc51de556821ad40058582736291771b895eb19b0cfac",
+          "token": "3472f2e7-32c2-495d-8c29-bd802ec4ca82"
+        },
+        {
+          "path": "dotln-temporary-roots-test-65T1do/roots/parent-j2pLXc",
+          "sha256": "5ab0619f8590e557deaf4a6e03f7e958b92984c100f8c55e91fc90f1067f861c",
+          "token": "346770cb-d4ca-4b6e-b028-3c36b47cdd38"
+        },
+        {
+          "path": "dotln-temporary-roots-test-65T1do/roots/parent-j2pLXc/child-9K2pzV",
+          "sha256": "43131999ca41b05f26ccc846b3c7857940ce0f1563eb4bfc8c057a059766c740",
+          "token": "8294e4b2-c8e8-49bc-87e3-f94e3ad40e62"
+        },
+        {
+          "path": "dotln-temporary-roots-test-DyQ23x/roots/owner-1F6cqB",
+          "sha256": "22f3765c00f19e2f925a8472b3704b55041653e738ec9cf3e2389c8ad273ffe6",
+          "token": "0a79ec29-3b6f-4010-957b-20b1f7d35988"
+        },
+        {
+          "path": "dotln-temporary-roots-test-FvNtb7/roots/failed-tB6Gjc",
+          "sha256": "341e8fd213c52a79c4b7379160192c156d9695b42efef0b5f3d6b944c3497492",
+          "token": "86caf14f-6d72-48be-b308-68efc3d0d513"
+        },
+        {
+          "path": "dotln-temporary-roots-test-SPNaLx/roots/warm-htrzQy",
+          "sha256": "3b9e5ed12ddc48464675802be62522d8f841cfbd0f323d1c362fbb14251e6ec7",
+          "token": "a13abade-4c8a-40f5-98b9-a4abdc737e63"
+        },
+        {
+          "path": "dotln-temporary-roots-test-WygMX0/roots/recovery-parent-8MthjC",
+          "sha256": "0941aa8ecdb1358af7bd455328b2f4c3d45c93b8caba62abb62ca0c39c1949db",
+          "token": "cc591a69-5563-4b39-a29b-0c7e047b8f0d"
+        }
+      ],
+      "disposals": [],
+      "bytes": 678988
+    },
+    {
+      "root": "dotln-fixture-temporary-xhF1jq",
+      "token": "e078ef0b-36a2-42a7-8ffc-cabf028d084e",
+      "sha256": "14eec1572c6fca151ce1f830142fbd05078f0d6a7441152a6ffca4e055e09a70",
+      "device": 16777233,
+      "inode": 756391663,
+      "gateId": "1c880d0c-7bb0-459b-a0bf-e7f91602577d",
+      "suite": "harness-fixtures",
+      "copies": [],
+      "migrations": [
+        {
+          "path": "dotln-temporary-roots-test-4nsWoC/roots/owner-veWdt4",
+          "sha256": "2fb375259625438555db57f3348c323190a3f0e4d8a55e70e76ef2f59a599ac4",
+          "token": "41acd2a7-330d-4058-ac3b-49af0765c17c"
+        },
+        {
+          "path": "dotln-temporary-roots-test-7B1aBA/roots/replaced-qZhuyA",
+          "sha256": "32ddd0dd0d5e27218425d40479bca88a49012128a7089c1ecc3b331bb482ab19",
+          "token": "7e6704ce-2d54-4f8d-ae86-b741a2bc3dd9"
+        },
+        {
+          "path": "dotln-temporary-roots-test-A8M2ZQ/roots/sibling-root-yidKlu",
+          "sha256": "a5268aa1fd13db4a3a2eb2c8f57c084d76e9631e1eebe2c3c90bcbf35a0eaf8f",
+          "token": "786c2202-ac48-4d16-8226-3073a0aa133a"
+        },
+        {
+          "path": "dotln-temporary-roots-test-YZ2pYU/roots/warm-9IFRSF",
+          "sha256": "01f83f5f6f72c4093fc0ce5cb22ff88cdf05206936afdbd581339ca49bde3dcd",
+          "token": "f2ccdbc4-6397-43ca-b3a1-b8879b55be49"
+        },
+        {
+          "path": "dotln-temporary-roots-test-aBbpfF/roots/failed-bKBPJc",
+          "sha256": "2f48c990ed1e53486270d9946c5dd5fa6a62e3a64033106ef705ba026e2709d4",
+          "token": "f0b9e205-dc01-44bc-a707-f5c8d50139ee"
+        },
+        {
+          "path": "dotln-temporary-roots-test-bbXnTD/roots/recovery-parent-IMJ7Fd",
+          "sha256": "2326484d0dec5d13b515dc82ed369420b0e456b84643521d9cdccadd3d527b80",
+          "token": "92a3d771-c3a0-4482-b111-690a1f935991"
+        },
+        {
+          "path": "dotln-temporary-roots-test-idcpw1/roots/promoted-parent-BxC3ev",
+          "sha256": "af7242040f7e7ede94ac0fc6ed40eeb9ef1bd22d728298fcd15ffd132daf3d26",
+          "token": "d6e41d2a-aee3-4097-8056-bdbde4a7021b"
+        },
+        {
+          "path": "dotln-temporary-roots-test-jHqUer/roots/warm-HRRfhz",
+          "sha256": "614382cdfade33f8bcf5c91fa6043a43abc10a4f38b18c8e5d82a095f8c73410",
+          "token": "3a54a2c9-20a7-407a-bfe4-1876b5510301"
+        },
+        {
+          "path": "dotln-temporary-roots-test-wqGWAg/roots/parent-qTWPBP",
+          "sha256": "4046275ed292f102fea9ab9b05719614856b492d400018d5014a876c8acb1801",
+          "token": "fa26096b-7c0e-4784-bf64-e1cc8a683c57"
+        },
+        {
+          "path": "dotln-temporary-roots-test-wqGWAg/roots/parent-qTWPBP/child-Zlkpb5",
+          "sha256": "f0f6d252cb1b0481e3acd07356ae142788b5ab5e8d227e182550a22ac5ec7b73",
+          "token": "2eefb527-f384-43b2-88fd-8a9de13b837e"
+        }
+      ],
+      "disposals": [],
+      "bytes": 679004
+    }
+  ],
+  "summary": {
+    "planned": 4,
+    "bytes": 2715983,
+    "copies": 0,
+    "inheritedCoordination": 40,
+    "emptyTestControls": 0,
+    "removed": 0,
+    "remaining": 4
+  },
+  "cleanups": [
+    {
+      "gateId": "76a6260d-24ee-473e-892b-1e366ebe2de4",
+      "removed": 27,
+      "retained": [
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-fixture-temporary-9NjMmG/dotln-temporary-roots-test-imn0qx/roots/recovery-parent-aC7ZvQ",
+          "reason": "nested owned root is retained"
+        },
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-fixture-temporary-9NjMmG/dotln-temporary-roots-test-imn0qx",
+          "reason": "nested owned root is retained"
+        },
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-fixture-temporary-9NjMmG",
+          "reason": "nested owned root is retained"
+        }
+      ],
+      "blockers": []
+    },
+    {
+      "gateId": "8fe86269-16e2-4e5e-ade7-192c192cad08",
+      "removed": 27,
+      "retained": [
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-fixture-temporary-RsI0w7/dotln-temporary-roots-test-eiBhZ0/roots/recovery-parent-SzsQ9E",
+          "reason": "nested owned root is retained"
+        },
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-fixture-temporary-RsI0w7/dotln-temporary-roots-test-eiBhZ0",
+          "reason": "nested owned root is retained"
+        },
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-fixture-temporary-RsI0w7",
+          "reason": "nested owned root is retained"
+        }
+      ],
+      "blockers": []
+    },
+    {
+      "gateId": "43bff0ec-1b0b-4b67-8772-ce0903285183",
+      "removed": 27,
+      "retained": [
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-fixture-temporary-gx8zpm/dotln-temporary-roots-test-WygMX0/roots/recovery-parent-8MthjC",
+          "reason": "nested owned root is retained"
+        },
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-fixture-temporary-gx8zpm/dotln-temporary-roots-test-WygMX0",
+          "reason": "nested owned root is retained"
+        },
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-fixture-temporary-gx8zpm",
+          "reason": "nested owned root is retained"
+        }
+      ],
+      "blockers": []
+    },
+    {
+      "gateId": "1c880d0c-7bb0-459b-a0bf-e7f91602577d",
+      "removed": 27,
+      "retained": [
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-fixture-temporary-xhF1jq/dotln-temporary-roots-test-bbXnTD/roots/recovery-parent-IMJ7Fd",
+          "reason": "nested owned root is retained"
+        },
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-fixture-temporary-xhF1jq/dotln-temporary-roots-test-bbXnTD",
+          "reason": "nested owned root is retained"
+        },
+        {
+          "path": "/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-fixture-temporary-xhF1jq",
+          "reason": "nested owned root is retained"
+        }
+      ],
+      "blockers": []
+    }
+  ],
+  "remaining": [
+    "dotln-fixture-temporary-9NjMmG",
+    "dotln-fixture-temporary-RsI0w7",
+    "dotln-fixture-temporary-gx8zpm",
+    "dotln-fixture-temporary-xhF1jq"
+  ]
+}

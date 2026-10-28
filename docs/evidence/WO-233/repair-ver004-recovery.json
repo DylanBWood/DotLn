@@ -1,0 +1,52 @@
+{
+  "observedAt": "2026-10-27T23:44:31.577Z",
+  "apply": true,
+  "source": "scripts/test-harness.mjs private TMPDIR cases: outside-grants, outside-redirect, repair-grants, wo168-hooks, wo168-roots; writer-teardown.mjs transitionPaths",
+  "records": [
+    {
+      "subject": "dotln-outside-grants-nLsVtU/temporary/dotln-writer-transition-501",
+      "markerBeforeSha256": "dd67215eb32405f0c88f448883aeea220a1723ef514c7c01f48054c9fedffeef",
+      "recovered": true,
+      "markerBackupPresent": true,
+      "ancestorBytesPreserved": true
+    },
+    {
+      "subject": "dotln-outside-redirect-Gufu0C/temporary/dotln-writer-transition-501",
+      "markerBeforeSha256": "a06dfe9e7d1bd38083160c04da902522cdcc18ed4d9b67b1997795c2af12ebef",
+      "recovered": true,
+      "markerBackupPresent": true,
+      "ancestorBytesPreserved": true
+    },
+    {
+      "subject": "dotln-repair-grants-85iCS6/per-user-temp/dotln-writer-transition-501",
+      "markerBeforeSha256": "904bfbe4ec8e8359aa113e5a4f5560464242d6775f62a1d27ce960af926053b7",
+      "recovered": true,
+      "markerBackupPresent": true,
+      "ancestorBytesPreserved": true
+    },
+    {
+      "subject": "dotln-wo168-hooks-fNPu7Q/dotln-writer-transition-501",
+      "markerBeforeSha256": "0677af14c24553831a6218cfe8dd1ef19755ffb51f6785ca0977fcdbff05175d",
+      "recovered": true,
+      "markerBackupPresent": true,
+      "ancestorBytesPreserved": true
+    },
+    {
+      "subject": "dotln-wo168-roots-uiSxip/temporary/dotln-writer-transition-501",
+      "markerBeforeSha256": "f22c541bce0c080aa205bcc6ccf5b3094365fb3fcd033d08e8b034c1437b62b7",
+      "recovered": true,
+      "markerBackupPresent": true,
+      "ancestorBytesPreserved": true
+    }
+  ],
+  "originalDiagnosisEnd": "2026-10-27T02:29:09.310Z",
+  "originalParentBytesPreserved": true,
+  "missingContainingLifetimes": [],
+  "judgedNowWithWriterReleased": "nested owned root retained: dotln/2ecf9208b052ad26d41394ada252d0eb3faa9e2ccedbe3ca489744a85ff33624/scratch (retention window has not passed)",
+  "judgedAfterWindowWithWriterReleased": "candidate",
+  "execution": {
+    "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-233/repair-ver004-recovery.mjs --apply",
+    "exitCode": 0,
+    "source": "retained bounded command output; terminal bounded-result exitCode 0"
+  }
+}

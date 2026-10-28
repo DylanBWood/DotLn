@@ -1,3 +1,9 @@
+import {
+  createFixtureRoot,
+  copyTemporaryMaterial as cpSync,
+  ensureTemporaryRoot,
+  removeTemporaryPath as rmSync,
+} from "./temporary-roots.mjs";
 // Launchpad export fixtures, one case per WO-074 acceptance criterion. The
 // order stays uncommitted until final review, so the fixtures commit a bounded
 // copy of the work tree into a temporary repository and export from it.
@@ -11,16 +17,13 @@ import { createHash } from "node:crypto";
 import { sha256Hex as sha256 } from "./helpers.mjs";
 import {
   chmodSync,
-  cpSync,
   existsSync,
   lstatSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   readdirSync,
   readlinkSync,
   realpathSync,
-  rmSync,
   symlinkSync,
   unlinkSync,
   utimesSync,
@@ -46,7 +49,9 @@ import { markdownLinks } from "../docs-check.mjs";
 import { suites } from "../test-runner.mjs";
 
 const repository = TOOL_ROOT;
-const scratch = realpathSync(mkdtempSync(join(tmpdir(), "dotln-launchpad-")));
+const scratch = realpathSync(
+  createFixtureRoot(join(tmpdir(), "dotln-launchpad-")),
+);
 const source = join(scratch, "source");
 const RUNTIME_PACKAGES = ["kernel", "compiler", "skeleton", "console"];
 const HARNESS_MANIFEST = ".claude/harness-manifest.json";
@@ -83,6 +88,9 @@ const env = {
   CLAUDE_EFFORT: "",
   npm_config_update_notifier: "false",
 };
+// A nested --test process must start its own runner. The parent's internal
+// worker context otherwise makes Node execute a test file without its runner.
+delete env.NODE_TEST_CONTEXT;
 const blobId = (bytes) =>
   createHash("sha1")
     .update(`blob ${bytes.length}\0`)
@@ -174,12 +182,22 @@ const treeSnapshot = (root) => {
 // workspaces, as atomicBuild stages them, so a package-name import resolves
 // inside the copy and never to the running checkout's packages. A directory
 // named node_modules is ignored by the copied .gitignore; a link would not be.
-const linkInstall = (target) => {
+const linkInstall = (target, installed = repository) => {
   mkdirSync(join(target, "node_modules/@dotln"), { recursive: true });
-  for (const entry of readdirSync(join(repository, "node_modules")))
+  // Keep npm scripts on this install's pinned tools. Relative bin links also
+  // resolve workspace commands against the case's own package links.
+  cpSync(
+    join(installed, "node_modules/.bin"),
+    join(target, "node_modules/.bin"),
+    {
+      recursive: true,
+      verbatimSymlinks: true,
+    },
+  );
+  for (const entry of readdirSync(join(installed, "node_modules")))
     if (![".bin", "@dotln"].includes(entry))
       symlinkSync(
-        join(repository, "node_modules", entry),
+        join(installed, "node_modules", entry),
         join(target, "node_modules", entry),
       );
   for (const name of readdirSync(join(target, "packages")))
@@ -292,13 +310,33 @@ for (const kind of ["intake", "settings", "beacon", "controlBeacon", "store"]) {
   );
   git(source, ["add", "-f", "--", planted[kind]]);
 }
-git(source, [
-  "-c",
-  "maintenance.auto=false",
-  "commit",
-  "-qm",
-  "bounded copy of the work tree with planted instance material",
-]);
+// Provenance is part of the exported manifest. Keep this synthetic commit
+// reproducible so identical source bytes share the same cross-run cache key.
+ok(
+  run(
+    "git",
+    [
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "bounded copy of the work tree with planted instance material",
+    ],
+    {
+      cwd: source,
+      env: {
+        ...env,
+        GIT_AUTHOR_NAME: "DotLn Fixture",
+        GIT_COMMITTER_NAME: "DotLn Fixture",
+        GIT_AUTHOR_EMAIL: "fixture@example.invalid",
+        GIT_COMMITTER_EMAIL: "fixture@example.invalid",
+        GIT_AUTHOR_DATE: "2000-01-01T00:00:00Z",
+        GIT_COMMITTER_DATE: "2000-01-01T00:00:00Z",
+      },
+    },
+  ),
+  "reproducible source fixture commit",
+);
 const commit = git(source, ["rev-parse", "HEAD"]).stdout.trim();
 git(source, ["tag", "-a", "v9.9.9-fixture", "-m", "fixture tag"]);
 // The build resolves its third-party dependencies through the running
@@ -325,6 +363,86 @@ assert.equal(
 const kit = join(scratch, "kit");
 const exported = ok(runExport(kit), "export");
 
+// Cache dependencies per worktree and exact exported content/lockfile. Mutable
+// Git, records and workspace links always belong to the individual case.
+const warmKey = sha256(
+  JSON.stringify(manifestOf(kit).files) +
+    readFileSync(join(kit, "package-lock.json"), "utf8"),
+);
+const warmParent = join(repository, ".runtime/fixtures/launchpad");
+const warm = join(warmParent, warmKey);
+let warmReady = false;
+const warmExport = () => {
+  if (warmReady) return warm;
+  mkdirSync(warmParent, { recursive: true });
+  ensureTemporaryRoot(warm, {
+    class: "warm-fixture",
+    repository,
+    cacheKey: warmKey,
+  });
+  if (!existsSync(join(warm, "ready.json"))) {
+    cpSync(kit, join(warm, "export"), {
+      recursive: true,
+      verbatimSymlinks: true,
+      filter: (path) =>
+        ![".git", "node_modules", ".runtime"].includes(basename(path)),
+    });
+    ok(
+      run(
+        "npm",
+        [
+          "ci",
+          "--offline",
+          "--no-audit",
+          "--no-fund",
+          "--loglevel=error",
+          // The cache lives inside the checkout, so make its export the
+          // install boundary without inspecting the ancestor's workspaces.
+          "--prefix",
+          join(warm, "export"),
+        ],
+        {
+          cwd: join(warm, "export"),
+          timeout: 300_000,
+        },
+      ),
+      "warm export offline install",
+    );
+    writeFileSync(
+      join(warm, "ready.json"),
+      JSON.stringify({ key: warmKey }) + "\n",
+    );
+    console.log("Fixture install: warm cache miss (1 npm ci)");
+  } else console.log("Fixture install: warm cache hit (0 npm ci)");
+  writeFileSync(
+    join(warmParent, "current.json"),
+    JSON.stringify({ key: warmKey }) + "\n",
+  );
+  warmReady = true;
+  return warm;
+};
+const linkWarmInstall = (target) =>
+  linkInstall(target, join(warmExport(), "export"));
+const commitWarmExport = (destination) => {
+  cpSync(join(warmExport(), "export"), destination, {
+    recursive: true,
+    verbatimSymlinks: true,
+    filter: (path) => !["node_modules", ".runtime"].includes(basename(path)),
+  });
+  initRepository(destination);
+  git(destination, ["add", "."]);
+  git(destination, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "exported launchpad",
+  ]);
+  linkWarmInstall(destination);
+  ok(harness(destination, "emit"), "warm clone harness");
+  return destination;
+};
+
 test.after(() => rmSync(scratch, { recursive: true, force: true }));
 
 const root = typeof process.getuid === "function" && process.getuid() === 0;
@@ -349,6 +467,8 @@ export {
   configureRepository,
   initRepository,
   commitExport,
+  commitWarmExport,
+  linkWarmInstall,
   runExport,
   files,
   treeSnapshot,

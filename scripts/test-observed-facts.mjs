@@ -1,13 +1,11 @@
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
 import { write, sha256Hex as nativeNoticeHash } from "./lib/helpers.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
-import {
-  mkdtempSync,
-  mkdirSync,
-  writeFileSync,
-  rmSync,
-  appendFileSync,
-} from "node:fs";
+import { mkdirSync, writeFileSync, appendFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { createHash } from "node:crypto";
@@ -36,7 +34,7 @@ const scope = {
 const now = "2026-09-17T14:32:00.000Z";
 const dispatch = "2026-09-17T14:06:00.000Z";
 const fixture = (t) => {
-  const root = mkdtempSync(join(tmpdir(), "dotln-facts-"));
+  const root = createFixtureRoot(join(tmpdir(), "dotln-facts-"));
   t.after(() => rmSync(root, { recursive: true, force: true }));
   return root;
 };
@@ -704,7 +702,7 @@ test("WO-142 B2 non-Codex briefing leaves the facts block to its hook", async ()
 const nativeNotice = (id, status = "completed", call = "") =>
   `<task-notification><task-id>${id}</task-id>${call ? `<tool-use-id>${call}</tool-use-id>` : ""}<status>${status}</status><summary>synthetic payload</summary></task-notification>`;
 const nativeNoticeFixture = (t) => {
-  const root = mkdtempSync(join(tmpdir(), "wo142-f2-negative-"));
+  const root = createFixtureRoot(join(tmpdir(), "wo142-f2-negative-"));
   t.after(() => rmSync(root, { recursive: true, force: true }));
   const scope = {
     sessionKey: nativeNoticeHash("fixture-native"),
@@ -738,6 +736,72 @@ const nativeNoticeFixture = (t) => {
     },
   };
 };
+test("Codex agent metadata follows reusable workers without retaining their prose or unrelated agents", (t) => {
+  const f = nativeNoticeFixture(t);
+  const rows = [];
+  let call = 0;
+  const run = (name, input, output) => {
+    const id = `call-${++call}`;
+    const timestamp = `2026-09-17T14:07:0${call}.000Z`;
+    rows.push(
+      {
+        type: "response_item",
+        timestamp,
+        payload: {
+          type: "function_call",
+          call_id: id,
+          name: `collaboration.${name}`,
+          arguments: JSON.stringify(input),
+        },
+      },
+      {
+        type: "response_item",
+        timestamp,
+        payload: {
+          type: "function_call_output",
+          call_id: id,
+          output: typeof output === "string" ? output : JSON.stringify(output),
+        },
+      },
+    );
+    f.run(rows);
+    const tasks = observedFacts(f.root, f.scope, now).tasks;
+    assert.equal(tasks.length, 1);
+    return tasks[0];
+  };
+  assert.equal(
+    run("spawn_agent", { task_name: "review" }, { task_name: "/root/review" })
+      .state,
+    "dispatched",
+  );
+  const snapshot = (agent_status) => ({
+    agents: [
+      { agent_name: "/root", agent_status: "running" },
+      { agent_name: "/root/unrelated", agent_status: "running" },
+      { agent_name: "/root/review", agent_status },
+    ],
+  });
+  assert.equal(
+    run("list_agents", {}, snapshot({ result: "completed" })).state,
+    "unknown",
+  );
+  const completed = snapshot({ completed: "private worker report" });
+  assert.equal(run("list_agents", {}, completed).state, "completed");
+  assert.equal(
+    run("followup_task", { target: "review", message: "private follow-up" }, "")
+      .state,
+    "unknown",
+  );
+  assert.equal(run("list_agents", {}, snapshot("running")).state, "running");
+  assert.equal(run("list_agents", {}, completed).state, "completed");
+  const count = journalRows(f.root, f.scope).length;
+  f.run(rows);
+  assert.equal(journalRows(f.root, f.scope).length, count);
+  assert.doesNotMatch(
+    JSON.stringify(journalRows(f.root, f.scope)),
+    /private|\/root|unrelated/,
+  );
+});
 test("F2 queue remove, stale timestamps and unrelated attachments establish no task", (t) => {
   const f = nativeNoticeFixture(t);
   f.run([

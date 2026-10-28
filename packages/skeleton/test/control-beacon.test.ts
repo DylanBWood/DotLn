@@ -1,9 +1,11 @@
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "../src/temporary-roots.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs, {
-  mkdtempSync,
   realpathSync,
-  rmSync,
   lstatSync,
   readdirSync,
   readFileSync,
@@ -319,7 +321,7 @@ test("WO-021 group exhaustively proves the bounded additive lattice", (t) => {
 
 test("WO-021 maximum dense/sparse files obey allocation bounds; unsupported sizes create nothing", (t) => {
   const root = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-control-beacon-")),
+    createFixtureRoot(join(tmpdir(), "dotln-control-beacon-")),
   );
   t.after(() => rmSync(root, { recursive: true, force: true }));
   const storage = probeBeaconStorage(root);
@@ -339,7 +341,10 @@ test("WO-021 maximum dense/sparse files obey allocation bounds; unsupported size
         ),
       /representable|ceiling/,
     );
-  assert.deepEqual(readdirSync(root), []);
+  assert.deepEqual(
+    readdirSync(root).filter((name) => name !== ".dotln-owner.json"),
+    [],
+  );
   assert.throws(
     () => exactHostSize(81833n, { ...storage, maxLogicalBytes: 81832n }),
     /ceiling/,
@@ -440,7 +445,7 @@ test("WO-142 Node 26 beacon precision preserves the millisecond and refuses adja
 
 test("WO-142 beacon timestamp readback refusal preserves the published projection", (t) => {
   const root = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-beacon-readback-")),
+    createFixtureRoot(join(tmpdir(), "dotln-beacon-readback-")),
   );
   t.after(() => rmSync(root, { recursive: true, force: true }));
   const storage = probeBeaconStorage(root);
@@ -495,7 +500,7 @@ test("WO-142 beacon timestamp readback refusal preserves the published projectio
     );
     assert.equal(after.mtimeNs, metadataBefore.mtimeNs);
     assert.deepEqual(
-      readdirSync(root),
+      readdirSync(root).filter((name) => name !== ".dotln-owner.json"),
       ["beacons"],
       "the failed staging directory is removed",
     );
@@ -504,7 +509,7 @@ test("WO-142 beacon timestamp readback refusal preserves the published projectio
 
 test("WO-142 Node 26 beacon emission preserves raw precision and unchanged age boundaries", (t) => {
   const root = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-beacon-precision-")),
+    createFixtureRoot(join(tmpdir(), "dotln-beacon-precision-")),
   );
   t.after(() => rmSync(root, { recursive: true, force: true }));
   const storage = probeBeaconStorage(root);

@@ -1,0 +1,69 @@
+{
+  "before": {
+    "result": {
+      "gateId": "318d6ae4-a020-4bb5-884b-75fae6f25aaa",
+      "childExitCode": 0,
+      "childOutput": "\u2714 a retained nested owner protects its ancestor and churn counts each file once (27.89475ms)\n\u2139 tests 1\n\u2139 suites 0\n\u2139 pass 1\n\u2139 fail 0\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 103.801167\n",
+      "parentRemains": true,
+      "removed": 0,
+      "retainedReasons": [
+        "nested owned root is retained",
+        "nested owned root is retained"
+      ],
+      "blockers": []
+    },
+    "execution": {
+      "name": "bounded-probe",
+      "durationMs": 414,
+      "slowestCases": [
+        {
+          "name": "bounded-probe",
+          "durationMs": 414,
+          "exitCode": 0,
+          "granularity": "task"
+        }
+      ],
+      "peakFootprintBytes": 48732904,
+      "peakRssBytes": 168804352,
+      "memoryBudgetBytes": 3221225472,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+      "droppedOutputBytes": 0,
+      "startedAt": "2026-10-27T17:39:50.524Z",
+      "finishedAt": "2026-10-27T17:39:50.938Z",
+      "exitCode": 0,
+      "executed": true
+    }
+  },
+  "after": {
+    "result": {
+      "gateId": "c9f7faa8-ec33-4bdf-8970-64926df064ff",
+      "childExitCode": 0,
+      "childOutput": "\u2714 a retained nested owner protects its ancestor and churn counts each file once (31.83425ms)\n\u2139 tests 1\n\u2139 suites 0\n\u2139 pass 1\n\u2139 fail 0\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 109.059917\n",
+      "parentRemains": false,
+      "removed": 2,
+      "retainedReasons": [],
+      "blockers": []
+    },
+    "execution": {
+      "name": "bounded-probe",
+      "durationMs": 446,
+      "slowestCases": [
+        {
+          "name": "bounded-probe",
+          "durationMs": 446,
+          "exitCode": 0,
+          "granularity": "task"
+        }
+      ],
+      "peakFootprintBytes": 43374472,
+      "peakRssBytes": 160612352,
+      "memoryBudgetBytes": 3221225472,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+      "droppedOutputBytes": 0,
+      "startedAt": "2026-10-27T17:39:57.075Z",
+      "finishedAt": "2026-10-27T17:39:57.521Z",
+      "exitCode": 0,
+      "executed": true
+    }
+  }
+}

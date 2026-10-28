@@ -1,3 +1,7 @@
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
 import { spawnSync } from "node:child_process";
 import test from "node:test";
 import assert from "node:assert/strict";
@@ -5,13 +9,11 @@ import {
   chmodSync,
   existsSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   readdirSync,
   readlinkSync,
   realpathSync,
   renameSync,
-  rmSync,
   statSync,
   symlinkSync,
   writeFileSync,
@@ -249,7 +251,7 @@ test("Finder metadata scans retain unreadable ignored directories and name other
   if (process.getuid?.() === 0)
     return t.skip("root bypasses directory read permissions");
   const root = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-finder-permissions-")),
+    createFixtureRoot(join(tmpdir(), "dotln-finder-permissions-")),
   );
   const cache = join(root, "cache");
   try {
@@ -1408,7 +1410,7 @@ for (const side of ["base", "target"])
     ));
 
 test("path-list overflow is bounded while the tree selector streams beyond the same ceiling", async (t) => {
-  const root = mkdtempSync(join(tmpdir(), "dotln-path-list-limit-"));
+  const root = createFixtureRoot(join(tmpdir(), "dotln-path-list-limit-"));
   t.after(() => rmSync(root, { recursive: true, force: true }));
   const { spawnSync } = await import("node:child_process");
   const fake = join(root, "git");

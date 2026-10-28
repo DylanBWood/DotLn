@@ -1,0 +1,94 @@
+{
+  "command": "npm test -- --review",
+  "checkId": "npm test",
+  "evidenceRef": "host-gate:99a788494aaf3b06eca4d61ff5179d37ab4b3172fc21ca6c8bd7e702589cb485:npm test",
+  "temporaryGateId": "be15e224-ea37-4fe8-92e9-b96f9e2269d3",
+  "recordedAt": "2026-10-27T14:13:13.770Z",
+  "codeIdentity": "99a788494aaf3b06eca4d61ff5179d37ab4b3172fc21ca6c8bd7e702589cb485",
+  "exitCode": 1,
+  "durationMs": 639746,
+  "freshTasks": 84,
+  "unrunTasks": [
+    "target-publish",
+    "target-worktree:file:test-target-worktree-start.mjs",
+    "target-worktree:file:test-target-worktree-publish.mjs",
+    "target-worktree:file:test-target-worktree-close.mjs",
+    "target-worktree:file:test-target-worktree-release.mjs",
+    "vertical:file:test-vertical.mjs:statements",
+    "vertical:file:test-vertical.mjs:workflow",
+    "vertical:file:test-vertical-judgment.mjs",
+    "vertical:file:test-vertical.recovery.mjs",
+    "launchpad:file:test-launchpad-update.mjs",
+    "launchpad:file:test-launchpad-export.mjs",
+    "workstream-pilot",
+    "instance-history",
+    "worktree",
+    "release:case:meter_shape",
+    "release:case:close_foreign_tag",
+    "release:case:close_overlap",
+    "release:case:close_real_writer",
+    "skeleton",
+    "browser-evidence",
+    "fixture-temp-root",
+    "launchpad-planning",
+    "evidence-sources",
+    "harness-probe",
+    "plan-refutation",
+    "runner-fixtures",
+    "sync-fixtures",
+    "process-debt"
+  ],
+  "executedFailures": [
+    {
+      "name": "harness-fixtures",
+      "exitCode": 1,
+      "durationMs": 319969
+    }
+  ],
+  "assertions": [
+    {
+      "file": "scripts/test-temporary-roots.mjs",
+      "name": "a nested instance gate shares its containing fixture's cleanup while a live capture stays protected",
+      "cause": "The creator-process exemption also applied to worker captures."
+    },
+    {
+      "file": "scripts/test-temporary-roots.mjs",
+      "name": "an orphan's full window starts when apply first proves its long-lived owner ended",
+      "cause": "The independent-orphan simulation inherited its containing gate fixture lifetime."
+    },
+    {
+      "file": "scripts/test-temporary-roots.mjs",
+      "name": "prune and gate admission name each other under the host lock",
+      "cause": "The assertion expected the old refusal punctuation."
+    }
+  ],
+  "temporaryCleanup": {
+    "removed": 509,
+    "retained": 414,
+    "blockers": []
+  },
+  "churn": {
+    "filesCreated": 469687,
+    "filesDeleted": 330384,
+    "bytesWritten": 11306601246,
+    "source": "owned-root content inventories at helper removal and gate completion, capped by allocated bytes for sparse files; physical I/O, overwrites and uninstrumented removals unobserved"
+  },
+  "fileEvents": {
+    "before": {
+      "residentBytes": 18759680,
+      "source": "ps -A -o rss=,comm= (KiB converted to bytes)",
+      "observedAt": "2026-10-27T14:02:33.069Z"
+    },
+    "host": {
+      "residentBytes": 18759680,
+      "source": "ps -A -o rss=,comm= (KiB converted to bytes)",
+      "observedAt": "2026-10-27T14:03:10.045Z"
+    },
+    "after": {
+      "residentBytes": 18857984,
+      "source": "ps -A -o rss=,comm= (KiB converted to bytes)",
+      "observedAt": "2026-10-27T14:13:13.770Z"
+    }
+  },
+  "outputRef": "docs/control/local/harness/check-output/8260f80eac99c0d1df1bd95682cb7b4decffb71c71103b86331e0d3367ada467.log"
+}

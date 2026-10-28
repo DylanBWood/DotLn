@@ -146,6 +146,93 @@ an implementation. No external implementation was copied into DotLn.
 | Ghodsi et al., [Dominant Resource Fairness, NSDI 2011](https://www.usenix.org/conference/nsdi11/dominant-resource-fairness-fair-allocation-multiple-resource-types) | Allocates multiple resources using each owner's largest normalized resource share. | CPU and memory can produce different bottlenecks. DRF is a candidate allocation model after costs are measured; its fairness properties do not imply a short-gate latency bound for indivisible tasks. |
 | Slurm [backfill scheduling](https://slurm.schedmd.com/sched_config.html) | Lower-priority jobs may use otherwise idle capacity when they do not delay the reserved start of higher-priority work; useful bounds on job duration matter. | Backfill can improve a reservation queue, but a historical median or percentile is an estimate, not a guaranteed finish time. Begin with a simpler queue before claiming this reservation property. |
 
+## Owned temporary material and churn
+
+WO-233 couples fixture teardown to the gate's terminal suite outcomes. A
+separate durable terminal row supports crash recovery before deletion; it
+cannot be consumed as passing gate evidence. The accepted gate row follows
+cleanup and records files created/deleted and bytes written from owned-root
+inventories, beside capacity, lanes and time. Counts include entries seen at
+helper removal plus remaining entries; sparse holes are excluded by the allocated-byte cap; overwrites, physical I/O
+and removals outside the helper are unobserved. Failed-suite roots retain their diagnosis window.
+Whole-root fixture teardown defers to that outcome, including exit cleanup.
+Nested suite commands inherit the outer gate's repository, policy and suite
+for temporary ownership, independently of their working directory. A fresh
+gate establishes a fresh boundary. Explicit creator cleanup defers only when
+its context identifies the repository whose gate will read the ledger;
+an inherited gate id by itself cannot transfer that responsibility.
+Completion inventories every registered root bearing the gate identity,
+including standalone captures and scratch. Disposable roots share their suite's
+retention; the actual worker's live or unknown identity still protects a capture.
+Reusable caches and independent coordination receive explicit retention reasons.
+The declarations scan follows runtime imports and executable path literals into
+corpus and evidence modules, covering fixture factories outside the script and
+package directories. Archived text captures and ignored intake remain outside
+that executable closure.
+Runtime directories created inside a fixture carry that containing fixture's
+gate ownership and finish with it, including coordination for an instance gate
+running inside the disposable repository. The inner gate keeps its own metrics.
+Generic prune resolves the containing fixture's physical token and judges its
+active gate and terminal outcome. An inner pass cannot end that outer lifetime;
+an orphan end observation starts the window on the containing fixture.
+Repository removal is an observed absence of active gates, including at ordinary
+prune after release close removes a worktree. Errors other than proven absence
+still retain the root. Nested caches with a checked containing lifetime follow
+that lifetime instead of an independent cache-key protocol; live and unknown
+owners and null retention remain protected.
+Completion and later prune share one suite-outcome rule: a child assigned to
+the completing gate keeps its own suite result; an inner instance inherits the
+containing suite at outer completion.
+Scratch and coordination use their containing fixture's process lifetime;
+worker captures keep the actual worker's liveness check. Missing process
+observations stay protected. A readable table proves an absent
+PID dead even if creation could not observe its birth; a present PID without
+a birth remains unknown. Independent children and
+explicit null retention remain protected. Application scratch is removed when its
+operation completes; fixture ownership supplies fallback cleanup if it is left
+behind. Product children receive retention
+policy from the runner, without reading excluded control documents themselves.
+Nested retained roots protect their ancestors; overlapping retained or promoted
+inventories are counted through their containing root. Each owner token has
+an independent ledger segment, retired after terminal gate metrics are durable.
+Generic cleanup cannot retire a gate's unfinished metrics, and segment readers
+tolerate another completed cleanup removing an entry concurrently.
+Fixture copies exclude physical ownership markers, and seed commits ignore
+them so Git clones and archives cannot reproduce a foreign directory identity.
+Synthetic repository initialization explicitly adds the marker to its local
+Git exclusion file, preserving the fixture's tracked ignore rules. Successfully
+saved diagnostics and pending entropy subjects use promotion to transfer their
+cleanup to the existing durable protocol, rather than inheriting session end.
+An invalid nested record preserves its tree and records a cleanup blocker.
+
+The prune apply transaction holds the existing host lane lock through its
+fresh inventory and deletions. Global apply refuses any live lane and names
+its task; new admission waits for the applying prune and names it. Per-worktree
+warm exports and per-session owner records keep parallel orders separate.
+Warm freshness uses the owning worktree's current key, including when another
+checkout invokes prune.
+Inspection never mutates a candidate. Live/unknown owners, gates and writer
+reservations retain material; symlink ancestors and replaced owner records
+refuse. macOS `fseventsd` resident-byte samples put the command last in the
+process table so its name is not truncated; RSS is converted from KiB to bytes.
+These are observations, not a memory
+admission change or proof that DotLn caused growth. Retain the current temp
+layout until comparable complete runs demonstrate growth that a bounded layout
+comparison reduces without weakening ownership or evidence.
+
+Gate cleanup holds the same lock through inventory and durable metrics and
+checks sibling writer/lane ownership before touching a root. Its own checkout's
+still-held writer is part of the completing gate's authority. Cleanup rechecks
+retained roots after successful removals: a fixture repository may disappear
+after its longer scratch path was protected by that fixture's writer. The retry
+repeats the same writer and liveness checks and keeps one end time. Crash recovery
+cannot move a recorded completion later; an earlier authoritative end can correct
+a late recovery, while a real completion supersedes a provisional orphan observation.
+Crash recovery
+uses the normal completion retention judgment, including null overrides. If an
+orphan has no observed end, preview retains it; apply records the first proven
+dead-owner observation and starts the full retention window at that time.
+
 ## Alternatives and tradeoffs
 
 | Paradigm | Benefit | Cost or failure mode | Disposition |

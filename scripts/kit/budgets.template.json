@@ -51,5 +51,14 @@
     "passRefutationMs": null
   },
   "acceptances": [],
-  "unsetPolicy": "Collect observed usage first. Null is not zero and never implies an invented cap."
+  "unsetPolicy": "Collect observed usage first. Null is not zero and never implies an invented cap.",
+  "retention": {
+    "gate-fixture-passed": 0,
+    "gate-fixture-failed": 24,
+    "session-scratch": 24,
+    "worker-capture": 1,
+    "warm-fixture": 0,
+    "legacy-backfill": 48,
+    "coordination": null
+  }
 }

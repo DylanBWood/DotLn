@@ -1,12 +1,11 @@
+import {
+  excludeFixtureOwnership,
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
-import {
-  mkdirSync,
-  mkdtempSync,
-  realpathSync,
-  rmSync,
-  writeFileSync,
-} from "node:fs";
+import { mkdirSync, realpathSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { readHandoffLedger } from "./lib/handoff-ledger.mjs";
@@ -58,7 +57,7 @@ const write = (root, name, value) => {
 };
 const fixture = (t) => {
   const root = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-retained-records-")),
+    createFixtureRoot(join(tmpdir(), "dotln-retained-records-")),
   );
   t.after(() => rmSync(root, { recursive: true, force: true }));
   write(
@@ -188,6 +187,7 @@ test("latest malformed planning findings advise without resurrecting earlier iss
 test("passing integration and new-scope review counts are not failure items", (t) => {
   const root = fixture(t);
   runGit(root, ["init", "-q"], { exec: true });
+  excludeFixtureOwnership(root);
   assert.equal(runGit(root, ["rev-parse", "--show-toplevel"]), root);
   runGit(
     root,

@@ -1,15 +1,12 @@
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
 import { runGit } from "./lib/git.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import {
-  existsSync,
-  mkdtempSync,
-  readFileSync,
-  rmSync,
-  symlinkSync,
-  writeFileSync,
-} from "node:fs";
+import { existsSync, readFileSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir, hostname } from "node:os";
 import { join } from "node:path";
 import {
@@ -647,7 +644,9 @@ test("session budget and interruption reservations cannot be reset by missing ru
     sessionAdmission(session, [{ failure: null }], now),
     "cell-already-measured",
   );
-  const directory = mkdtempSync(join(tmpdir(), "dotln-authority-recovery-"));
+  const directory = createFixtureRoot(
+    join(tmpdir(), "dotln-authority-recovery-"),
+  );
   t.after(() => rmSync(directory, { recursive: true, force: true }));
   const attempts = recoverAuthorityAttempts(directory, session, cell(2));
   assert.equal(attempts[0].failure, "interrupted-before-observation");
@@ -672,7 +671,9 @@ test("session budget and interruption reservations cannot be reset by missing ru
 });
 
 test("ordinary filtered resume refuses an unresolved launch in another harness and mode", (t) => {
-  const directory = mkdtempSync(join(tmpdir(), "dotln-authority-resume-"));
+  const directory = createFixtureRoot(
+    join(tmpdir(), "dotln-authority-resume-"),
+  );
   t.after(() => rmSync(directory, { recursive: true, force: true }));
   const now = Date.now();
   const unresolved = cell(9, "codex", "off");
@@ -708,7 +709,9 @@ test("ordinary filtered resume refuses an unresolved launch in another harness a
 });
 
 test("explicit continuation preserves the original run, clock and budget and resumes the skipped cell", (t) => {
-  const directory = mkdtempSync(join(tmpdir(), "dotln-authority-continue-"));
+  const directory = createFixtureRoot(
+    join(tmpdir(), "dotln-authority-continue-"),
+  );
   t.after(() => rmSync(directory, { recursive: true, force: true }));
   const now = Date.now();
   const first = cell(1, "claude", "on");
@@ -944,7 +947,9 @@ for (const stop of ["timeout", "SIGINT", "SIGTERM", "abort"]) {
 }
 
 test("report is reproducible, incomplete remains inconclusive, and sandbox rejection is negative", (t) => {
-  const directory = mkdtempSync(join(tmpdir(), "dotln-authority-report-"));
+  const directory = createFixtureRoot(
+    join(tmpdir(), "dotln-authority-report-"),
+  );
   t.after(() => rmSync(directory, { recursive: true, force: true }));
   const packet = renderAuthorityReport({ out: directory, date: "2030-01-02" });
   assert.equal(packet.matrix.length, 40);

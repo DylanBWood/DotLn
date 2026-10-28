@@ -1,8 +1,12 @@
 #!/usr/bin/env node
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
 import { json } from "./lib/helpers.mjs";
 import { findLaunchpad } from "./lib/config.mjs";
 import assert from "node:assert/strict";
-import { mkdtempSync, readFileSync, realpathSync, rmSync } from "node:fs";
+import { readFileSync, realpathSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -37,7 +41,7 @@ if (mode.length !== 1 || !["--write", "--check"].includes(mode[0]))
 checkEvidenceImports(fileURLToPath(repository), "verification");
 const root = new URL(`${selection.directory}/`, repository);
 const directory = realpathSync(
-  mkdtempSync(join(tmpdir(), "dotln-verification-evidence-")),
+  createFixtureRoot(join(tmpdir(), "dotln-verification-evidence-")),
 );
 try {
   let at = 1_000_000;

@@ -1,3 +1,7 @@
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "../src/temporary-roots.js";
 // Feedback editions by reference (WO-154). A schema 2 edition commits its
 // verifier stream with every body replaced by a Git blob reference, keys
 // staleness on the judged behavior, and keeps WO-147 D010's refusal: a
@@ -5,14 +9,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync, spawnSync } from "node:child_process";
-import {
-  mkdirSync,
-  mkdtempSync,
-  readFileSync,
-  realpathSync,
-  rmSync,
-  writeFileSync,
-} from "node:fs";
+import { mkdirSync, readFileSync, realpathSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -50,7 +47,7 @@ const root = fileURLToPath(new URL("../../../../", import.meta.url)).replace(
 
 function repository(t: { after: (fn: () => void) => void }) {
   const directory = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-feedback-edition-")),
+    createFixtureRoot(join(tmpdir(), "dotln-feedback-edition-")),
   );
   t.after(() => rmSync(directory, { recursive: true, force: true }));
   const git = (...args: string[]) =>

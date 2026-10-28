@@ -24,9 +24,11 @@ export async function executorWriterRelease(
       );
     return () => {};
   }
-  const { releaseHarnessWriter, harnessWriterView } = await import(
-    pathToFileURL(runtime).href
-  );
+  const {
+    releaseHarnessWriter,
+    harnessWriterView,
+    pruneCompletedHarnessSession,
+  } = await import(pathToFileURL(runtime).href);
   if (
     typeof releaseHarnessWriter !== "function" ||
     typeof harnessWriterView !== "function"
@@ -45,6 +47,10 @@ export async function executorWriterRelease(
     if (writer.reserved && writer.actorId === actorId)
       throw new Error(
         "Completion recorded but this session's writer reservation remains; do not repeat the transition",
+      );
+    if (typeof pruneCompletedHarnessSession === "function")
+      console.log(
+        pruneCompletedHarnessSession(root, sessionId, { dispatchEnded: true }),
       );
   };
 }

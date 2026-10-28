@@ -12,7 +12,10 @@
     "corpus/harness/wo102-reference.mjs",
     "corpus/harness/wo102-generators.test.mjs",
     "corpus/harness/wo102-properties.test.mjs",
-    "corpus/harness/wo102-replay.test.mjs"
+    "corpus/harness/wo102-replay.test.mjs",
+    "scripts/lib/temporary-roots.mjs",
+    "packages/skeleton/src/temporary-root-records.mjs",
+    "scripts/temporary-root.mjs"
   ],
   "directories": [
     "packages/kernel/dist"

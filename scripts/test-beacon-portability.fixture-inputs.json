@@ -3,7 +3,9 @@
   "entries": [
     "scripts/resume.mjs"
   ],
-  "files": [],
+  "files": [
+    "packages/skeleton/src/temporary-root-records.mjs"
+  ],
   "directories": [
     "scripts"
   ],

@@ -1,3 +1,8 @@
+import {
+  excludeFixtureOwnership,
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
@@ -5,10 +10,8 @@ import {
   existsSync,
   lstatSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   readdirSync,
-  rmSync,
   symlinkSync,
   writeFileSync,
 } from "node:fs";
@@ -33,7 +36,7 @@ const root = resolve(import.meta.dirname, "..");
 const before = (path) =>
   runGit(root, ["show", `${baseline}:${path}`], { trim: false });
 const temporary = (t) => {
-  const path = mkdtempSync(join(tmpdir(), "dotln-helper-reuse-"));
+  const path = createFixtureRoot(join(tmpdir(), "dotln-helper-reuse-"));
   t.after(() => rmSync(path, { recursive: true, force: true }));
   return path;
 };
@@ -182,6 +185,7 @@ test("WO-162 serializers and digest names preserve stored bytes", (t) => {
 test("WO-162 Git adapters preserve raw results, trimming, bytes, flags and failure diagnostics", (t) => {
   const directory = temporary(t);
   runGit(directory, ["init", "-q"]);
+  excludeFixtureOwnership(directory);
   const expression = before("scripts/test-harness.mjs").match(
     /const git = ([\s\S]*?\.trim\(\));/u,
   )?.[1];

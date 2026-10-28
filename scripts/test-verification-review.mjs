@@ -119,7 +119,7 @@ const call = (args, cwd = root) => {
 };
 const ledger = "docs/evidence/WO-187/handoff.md";
 const SELF_REVIEW_ADVISORY = (path) =>
-  `${path} lacks a self-review: line; write a line that starts \`self-review: found <n>; fixed <n>; recorded <n>\` with the fresh review's counts, then the worker or the separate-pass fallback. Completion records all the same.`;
+  `${path} lacks a self-review: line; summarize this run's three independent reviews as \`self-review: found <n>; fixed <n>; recorded <n>\` and cite all three workers' reports.`;
 write(ledger, "**Criterion 1:** met. Read.\n");
 call(["activate", "WO-187", "docs/work-orders/WO-187-fixture.md"]);
 const missing = call(["implementation-ready", ...flags]);
@@ -309,7 +309,11 @@ recorded(
 );
 call(["fix"]);
 write(ledger, "**Criterion 1:** met. Read.\n");
-assert.ok(!call(["repair-complete", ...flags]).stderr.includes("self-review"));
+assert.ok(
+  call(["repair-complete", ...flags]).stderr.includes(
+    SELF_REVIEW_ADVISORY(ledger),
+  ),
+);
 call(["verify"]);
 report("docs/verifications/WO-187/VER-002.md");
 call(["verification-result", "pass", ...flags]);

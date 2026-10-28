@@ -1,0 +1,207 @@
+{
+  "verification": "VER-002",
+  "subject": {
+    "base": "bca92e77d03880ec57a83d37eebb85a3a8f7ab76",
+    "checkpoint": "refs/dotln/checkpoint/WO-233/7",
+    "checkpointSha": "e3a8f06ef4ef6d2c759bed823900a7cb38937708",
+    "codeIdentity": "ebf2aea465086f52b93a212e714dda4e9b3a961060df6929697eb8973d9ff6c2",
+    "workingTreeAgainstCheckpoint": "7,559 files compared by blob hash; equal except the dispatch's lifecycle projections (docs/control/orders/WO-233.jsonl, docs/control/current.md, docs/work-orders/README.md) and the AGENTS.md symbolic link, which hash-object reads through"
+  },
+  "pathNotation": "<system-temp> is this user's physical os.tmpdir(); <worktree> is this checkout. Both are rendered so no private path enters the record.",
+  "consumedRows": [
+    {
+      "checkId": "npm test",
+      "gateSelection": "review",
+      "temporaryGateId": "10f1fc32-8251-4d39-b7c9-91e185dc66a3",
+      "recordedAt": "2026-10-27T18:14:03.709Z",
+      "exitCode": 0,
+      "freshSuites": 112,
+      "reusedSuites": 0,
+      "unrunSuites": 0,
+      "temporaryCleanup": { "removed": 2217, "retained": 0, "blockers": 0 },
+      "churn": {
+        "filesCreated": 1051054,
+        "filesDeleted": 1044046,
+        "bytesWritten": 20631364586
+      },
+      "fileEvents": {
+        "beforeResidentBytes": 19070976,
+        "hostResidentBytes": 19038208,
+        "afterResidentBytes": 19152896
+      }
+    },
+    {
+      "checkId": "npm run test:docs",
+      "gateSelection": "document",
+      "temporaryGateId": "b77e62cf-c843-434c-a497-cc77c4431659",
+      "recordedAt": "2026-10-27T18:22:03.841Z",
+      "durationMs": 168227,
+      "exitCode": 0,
+      "temporaryCleanup": { "removed": 208, "retained": 0, "blockers": 0 }
+    }
+  ],
+  "probes": [
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-233/verification-001-passed-roots.mjs",
+      "startedAt": "2026-10-27T18:27:45.733Z",
+      "exitCode": 0,
+      "result": {
+        "gateId": "10f1fc32-8251-4d39-b7c9-91e185dc66a3",
+        "passedRootsRemaining": 0,
+        "pinnedByCopiedRecord": 0,
+        "pinnedByTrackedRecord": 0,
+        "rowRetainedForNestedRoot": 0
+      },
+      "limit": "Counts only gate-fixture roots whose record says outcome passed; worker captures and unowned roots are outside its lens (see verification-002-gate-residue.mjs)."
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-233/verification-001-fseventsd.mjs",
+      "startedAt": "2026-10-27T18:27:50.862Z",
+      "exitCode": 0,
+      "result": {
+        "residentBytes": 19169280,
+        "independentResidentBytes": [19169280],
+        "commandColumnMaxBytesWhenFirst": 16
+      }
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-233/verification-001-session-scratch.mjs",
+      "startedAt": "2026-10-27T18:28:01.437Z",
+      "exitCode": 0,
+      "result": {
+        "stopPrune": "Session prune: 0 owned roots removed; 1 retained; 0 blockers.",
+        "phaseAfterTurn1": "active",
+        "scratchExists": true,
+        "stagedFileExists": true,
+        "ownerAlive": true
+      },
+      "note": "Under this Claude Code session the scratch owner is the probe process itself, so the probe judged the live-owner case VER-001 reproduced."
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-233/verification-002-session-completion.mjs",
+      "startedAt": "2026-10-27T18:50:11.555Z",
+      "exitCode": 0,
+      "result": {
+        "fixtureProcessTableReadable": true,
+        "stop1": "Session prune: 1 owned roots removed; 2 retained; 0 blockers.",
+        "stop2": "Session prune: 0 owned roots removed; 2 retained; 0 blockers.",
+        "afterTurns": {
+          "scratch": true,
+          "staged": true,
+          "liveCapture": true,
+          "deadCapture": false
+        },
+        "expectedEvent": "ImplementationReady",
+        "stop3": "Session prune: 1 owned roots removed; 1 retained; 0 blockers.",
+        "afterCompletion": {
+          "scratch": false,
+          "scratchParentLeft": [],
+          "liveCapture": true,
+          "deadCapture": false,
+          "siblingScratch": true,
+          "siblingFile": true
+        }
+      },
+      "corrections": "Two earlier runs of this probe at 18:30:40Z and 18:31:48Z exited 1 on the probe's own errors, not the subject's: the first read a dead identity through the fixture, whose copied host-resources.mjs could not load without gate-evidence.mjs and gate-deadlines.mjs (birth null, so the subject correctly kept the unknown owner); the second expected a dead-owner capture to survive turn ends, which its class boundary (the worker's end) does not require. The probe now copies the two modules and records, without judging, which Stop removes that capture."
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-233/verification-002-gate-residue.mjs",
+      "startedAt": "2026-10-27T18:45:57.178Z",
+      "exitCode": 1,
+      "result": {
+        "complete": {
+          "gateId": "10f1fc32-8251-4d39-b7c9-91e185dc66a3",
+          "rowCleanup": { "removed": 2217, "retained": 0 },
+          "deadOwnerRootsOfPassingSuitesRemaining": 45,
+          "byClass": { "worker-capture": 45 },
+          "bySuite": {
+            "skeleton": 27,
+            "vertical:file:test-vertical.recovery.mjs": 18
+          },
+          "byFamily": {
+            "dotln-worker-output": 15,
+            "dotln-worker-schema": 15,
+            "dotln-codex-home-<pid>": 15
+          }
+        },
+        "document": {
+          "gateId": "b77e62cf-c843-434c-a497-cc77c4431659",
+          "window": ["2026-10-27T18:19:15.614Z", "2026-10-27T18:22:03.841Z"],
+          "rowCleanup": { "removed": 208, "retained": 0 },
+          "unownedRootsBornInWindow": 21,
+          "byFamily": { "dotln-wo056": 21 }
+        }
+      }
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node scripts/harness.mjs prune",
+      "startedAt": "2026-10-27T18:33:22.872Z",
+      "finishedAt": "2026-10-27T18:36:17.310Z",
+      "exitCode": 0,
+      "droppedOutputBytes": 90251,
+      "census": [
+        { "kind": "snapshot", "candidates": 8, "retained": 5, "bytes": 35945788 },
+        { "kind": "advisory", "candidates": 5, "retained": 2, "bytes": 825 },
+        { "kind": "temporary-root", "class": "worker-capture", "candidates": 2, "retained": 5, "bytes": 1342 },
+        { "kind": "release-list-cache", "candidates": 0, "retained": 1 },
+        { "kind": "session-scratch", "class": null, "candidates": 0, "retained": 51 },
+        { "kind": "session-scratch", "class": "session-scratch", "candidates": 0, "retained": 103 },
+        { "kind": "temporary-root", "class": null, "candidates": 0, "retained": 4488 },
+        { "kind": "temporary-root", "class": "gate-fixture", "candidates": 0, "retained": 72 },
+        { "kind": "temporary-root", "class": "coordination", "candidates": 0, "retained": 7 },
+        { "kind": "legacy-backfill", "candidates": 0, "retained": 158 },
+        { "kind": "temporary-root", "class": "warm-fixture", "candidates": 0, "retained": 7 }
+      ],
+      "blockers": 0,
+      "limit": "The bounded runner kept the output tail; the census, the retained tail and the blockers are complete, the candidate list is not. A null class marks a root retained before its class was read, such as by the writer rule."
+    }
+  ],
+  "systemTempCensus": {
+    "observedAt": "2026-10-27T18:37:01Z",
+    "boundary": "top-level dotln-* directories in <system-temp>; owner records read, links not followed; bytes by du -sk",
+    "roots": 2211,
+    "megabytes": 14987,
+    "byGroup": [
+      { "group": "gate-fixture failed, gate 761c7a01", "roots": 1225, "megabytes": 7838.5 },
+      { "group": "gate-fixture failed, gate b59b8fda", "roots": 56, "megabytes": 1528.6 },
+      { "group": "gate-fixture failed, gates ca145571, be15e224, adc20cc0", "roots": 6, "megabytes": 4079.9 },
+      { "group": "gate-fixture failed, gate 43bff0ec", "roots": 53, "megabytes": 706.2 },
+      { "group": "gate-fixture failed, gate 212ba3f6", "roots": 267, "megabytes": 78.3 },
+      { "group": "unmarked (dotln-wo056 147, dotln-source-host 3, four stable stores)", "roots": 154, "megabytes": 172.8 },
+      { "group": "worker-capture, ten gates of this order", "roots": 294, "megabytes": 1.7, "note": "sum of per-gate du figures rounded to 0.1 MB" }
+    ],
+    "failedRootWindow": "Every failed gate-fixture root ended at most 16.5 hours before the census, inside its 24-hour diagnosis window.",
+    "failedRootEndTimes": {
+      "761c7a01": { "rowRecordedAt": "2026-10-27T03:57:58.673Z", "rootsEndedAtRow": 3, "rootsEndedAt13:31Z": 1222, "endSource": "completion" },
+      "43bff0ec": { "rowRecordedAt": "2026-10-27T05:26:23.626Z", "rootsEndedAt13:30Z": 53, "endSource": "completion" },
+      "attribution": "repair-residue.json (written 13:31Z) lists finishGateTemporaryRoots cleanups for 761c7a01 (removed 24, retained 2358, blockers 43) and 43bff0ec (removed 60, retained 91); repair-residue.mjs, modified at 13:51Z, now passes endedAt: gate.recordedAt and rootPaths. The 13:31Z apply therefore re-finished these failed roots with the current time."
+    },
+    "dotlnWo056BirthBatches": {
+      "rootsPerBatch": 21,
+      "batchesLocalMinute": [
+        "2026-10-26T19:43",
+        "2026-10-26T20:13",
+        "2026-10-26T20:25",
+        "2026-10-27T03:10",
+        "2026-10-27T03:56",
+        "2026-10-27T08:33",
+        "2026-10-27T14:20"
+      ],
+      "matchingDocumentGates": ["0915b133 (failed)", "092f3cd7", "19ed9436", "b77e62cf"],
+      "baseCensusCount": 63,
+      "kilobytes": 49168
+    },
+    "sessionTree": "<system-temp>/dotln holds 9 session digests: 6 with scratch, 3 empty after their scratch was removed",
+    "warmFixtures": "<worktree>/.runtime/fixtures/launchpad holds 12 keys of 62.8 MB each (753.7 MB); 11 are not the current key and the prune retains all 12 under the writer rule"
+  },
+  "checks": [
+    { "command": "npm run format:check", "exitCode": 0, "note": "First run exited 1 on this verification's own new probe file; prettier --write on the two verification-002 probe files only, then exit 0. The implementation needed no formatting." },
+    { "command": "node scripts/harness.mjs bounded -- npm run publication:check", "exitCode": 0, "note": "255/255 headings; both editions current; git status unchanged" },
+    { "command": "git diff --check HEAD", "exitCode": 0 },
+    { "command": "git diff HEAD -- package.json packages/*/package.json package-lock.json", "result": "only @dotln/skeleton 0.69.0 to 0.70.0; no new dependency" }
+  ],
+  "notRun": [
+    "The complete gate: consumed at the subject identity.",
+    "docs/evidence/WO-233/controls.mjs: it rewrites the executor's controls.json; criteria 1 and 14 stand on that record, the consumed worktree-integration task and the source read."
+  ]
+}

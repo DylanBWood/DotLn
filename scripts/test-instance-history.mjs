@@ -1,14 +1,12 @@
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
 import "./test-fixture-temporary.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import {
-  existsSync,
-  mkdtempSync,
-  readFileSync,
-  realpathSync,
-  rmSync,
-} from "node:fs";
+import { existsSync, readFileSync, realpathSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { performance } from "node:perf_hooks";
@@ -39,7 +37,7 @@ const snapshot = (root) =>
 export function exerciseHistory({ prepareSource } = {}) {
   const started = performance.now();
   const scratch = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-instance-history-")),
+    createFixtureRoot(join(tmpdir(), "dotln-instance-history-")),
   );
   const c = runner(fixtureEnvironment());
   const core = join(scratch, "core"),
@@ -65,6 +63,19 @@ export function exerciseHistory({ prepareSource } = {}) {
     c.node(instance, "worktree", "clone", "target", target);
     assert.equal(c.git(instance, "rev-parse", "HEAD"), manifest.refs.instance);
     assert.equal(c.git(target, "rev-parse", "HEAD"), manifest.refs.target);
+    assert.ok(
+      manifest.shapes.some(
+        (shape) =>
+          shape.id === "closed-self-without-field" && shape.order === "WO-002",
+      ),
+    );
+    assert.doesNotMatch(
+      readFileSync(
+        join(instance, "docs/work-orders/WO-002-history.md"),
+        "utf8",
+      ),
+      /^\*\*Workstream:\*\*/mu,
+    );
     // Establish the shapes from immutable records before the update can act.
     const amendments = events(instance, "docs/control/plan-refutations.jsonl");
     const bound = amendments.find(
@@ -178,6 +189,18 @@ export function exerciseHistory({ prepareSource } = {}) {
     }
     c.git(instance, "switch", "-qc", "chore/kit-update");
     c.commit(instance, "test: unrelated update branch commit");
+    const preview = c.node(
+      core,
+      "launchpad",
+      "export",
+      "--update",
+      instance,
+      "--preview",
+    );
+    assert.match(preview, /Prune: \d+ candidates; \d+ bytes/);
+    result.preview = preview
+      .split("\n")
+      .find((line) => line.startsWith("Prune:"));
     const update = c.node(
       core,
       "launchpad",
@@ -246,11 +269,106 @@ export function exerciseHistory({ prepareSource } = {}) {
         bytes,
         `instance checks preserved ${path}`,
       );
+    result.integration = exerciseIntegrationClose(instance, scratch, c);
     return result;
   } finally {
     result.elapsedMs = Math.round(performance.now() - started);
     rmSync(scratch, { recursive: true, force: true });
   }
+}
+
+// Exercise the installed kit after the immutable-history assertions. All new
+// history is synthetic and its remote is another directory in this fixture.
+function exerciseIntegrationClose(instance, scratch, c) {
+  const order = "WO-005",
+    workOrderPath = "docs/work-orders/WO-005-cleanup.md";
+  c.commit(instance, "test: current updated kit");
+  c.git(instance, "switch", "main");
+  c.git(instance, "merge", "--ff-only", "chore/kit-update");
+  write(
+    instance,
+    workOrderPath,
+    "# WO-005 — Synthetic cleanup (v9000.0.1)\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n**Release classification:** patch. Fixture only.\n\n**Objective:** Preserve the synthetic cleanup history.\n\n**Acceptance criteria (all required)**\n\n1. Preserve the synthetic cleanup history.\n\n**Non-goals:** Live publication.\n",
+  );
+  const readme = readFileSync(join(instance, "README.md"), "utf8");
+  write(
+    instance,
+    "README.md",
+    readme.replace(
+      /<!-- DOTLN-RELEASE-BEGIN -->[\s\S]*?<!-- DOTLN-RELEASE-END -->/u,
+      "<!-- DOTLN-RELEASE-BEGIN -->\nThis source prepares DotLn `v9000.0.1`.\n<!-- DOTLN-RELEASE-END -->",
+    ),
+  );
+  c.commit(instance, "test: synthetic integration authority");
+  const origin = join(scratch, "cleanup-origin.git");
+  c.git(scratch, "clone", "--bare", "-q", instance, origin);
+  c.git(instance, "remote", "set-url", "origin", origin);
+  const subject = join(scratch, "cleanup-worktree");
+  c.git(instance, "worktree", "add", "-q", "-b", "wo-005", subject);
+  linkDependencies(subject);
+  c.node(subject, "harness", "emit");
+  write(
+    subject,
+    "docs/control/local/terms.txt",
+    "SyntheticForbiddenHistoryTerm\n",
+  );
+  c.node(subject, "resume", "activate", order, workOrderPath);
+  write(instance, "synthetic-main.txt", "New main bytes.\n");
+  c.commit(instance, "test: advance main before integration");
+  const before = c.git(instance, "stash", "list", "--format=%H");
+  c.node(instance, "worktree", "integrate", order);
+  const receipt = json(subject, "docs/control/local/integration.json");
+  assert.equal(receipt.complete, true);
+  assert.equal(receipt.stashDropped, receipt.stash);
+  assert.equal(
+    readFileSync(join(subject, "synthetic-main.txt"), "utf8"),
+    "New main bytes.\n",
+  );
+  assert.equal(c.git(instance, "stash", "list", "--format=%H"), before);
+  const actor = {
+    harness: "human",
+    harnessVersion: "fixture",
+    model: "human",
+    effort: "unknown",
+    source: "operator-attested",
+  };
+  const flags = Object.entries(actor).flatMap(([key, value]) => [
+    `--${key === "harnessVersion" ? "harness-version" : key}`,
+    value,
+  ]);
+  const report = `# Synthetic judgment\n\n**Actor attestation:** ${JSON.stringify(actor)}\n\n**Process cost:** unknown; cause no-session\n\n**Criterion 1:** met — synthetic history preserved.\n`;
+  write(
+    subject,
+    `docs/evidence/${order}/handoff.md`,
+    report + "\nself-review: found 0; fixed 0; recorded 0\n",
+  );
+  c.node(subject, "resume", "implementation-ready", ...flags);
+  c.node(subject, "resume", "verify");
+  write(subject, `docs/verifications/${order}/VER-001.md`, report);
+  c.node(subject, "resume", "verification-result", "pass", ...flags);
+  c.node(subject, "resume", "final-review");
+  write(subject, `docs/final-reviews/${order}/FINAL-001.md`, report);
+  c.node(subject, "resume", "final-review-result", "pass", ...flags);
+  c.node(subject, "sync");
+  c.commit(subject, "test: synthetic lifecycle close");
+  c.git(instance, "merge", "--ff-only", "wo-005");
+  c.git(instance, "push", "-q", "origin", "main");
+  c.node(instance, "worktree", "finish", order);
+  assert.equal(existsSync(subject), false);
+  const prune = JSON.parse(c.node(instance, "harness", "prune"));
+  assert.deepEqual(
+    prune.candidates.filter((row) =>
+      ["integration-stash", "temporary-root"].includes(row.kind),
+    ),
+    [],
+    "integration and close leave no stash or stale temporary root",
+  );
+  return {
+    phase: "closed",
+    stashBefore: before ? before.split("\n").length : 0,
+    stashAfter: c.git(instance, "stash", "list") ? 1 : 0,
+    candidates: prune.census,
+  };
 }
 
 export function assertHistory(result) {

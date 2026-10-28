@@ -226,6 +226,18 @@ The earlier `workspace-write` example below remains another sandboxed option.
 
 ## DotLn hook boundary — WO-144, 2026-09-19
 
+WO-233 adds cleanup at owned lifecycle boundaries without changing the five
+refusals. Claude Stop checks for the dispatch's recorded completion; an ordinary
+turn end keeps a live host's scratch for later turns. That observed boundary and
+Codex lifecycle completion prune only the completing session's marked scratch
+and dead worker captures after its writer is released and no observed background
+dispatch remains running. Another session's roots,
+live or unknown process identities, indefinite-retention classes and host
+coordination state remain. Device/inode and token checks reject replacement;
+directory permission reset never follows a symbolic link. Release close's
+broader prune serializes with host lane admission and reports blockers for retry.
+It does not change the host memory admission policy or grant itself permissions.
+
 WO-185 adds resource supervision outside the tool-call approval boundary.
 A probe outside a gate runs under `node scripts/harness.mjs bounded -- <command>`,
 one process at a time, with the ordinary host permission decision. Dispatch

@@ -17,7 +17,9 @@
       "scripts/work-orders.mjs",
       "scripts/worktree.mjs",
       "scripts/license-surfaces.mjs",
-      "scripts/siblings.mjs"
+      "scripts/siblings.mjs",
+      "packages/skeleton/src/temporary-root-records.mjs",
+      "scripts/temporary-root.mjs"
     ],
     "directories": [
       "scripts/lib",
@@ -42,7 +44,9 @@
     "files": [
       "scripts/harness.mjs",
       "scripts/harness-entry.mjs",
-      "scripts/work-orders.mjs"
+      "scripts/work-orders.mjs",
+      "packages/skeleton/src/temporary-root-records.mjs",
+      "scripts/temporary-root.mjs"
     ],
     "directories": [
       "scripts/lib",

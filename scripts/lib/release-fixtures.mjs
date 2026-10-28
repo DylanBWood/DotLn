@@ -1,3 +1,7 @@
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "./temporary-roots.mjs";
 import { spawnGit } from "./git.mjs";
 import { createHash, randomUUID } from "node:crypto";
 import {
@@ -5,11 +9,9 @@ import {
   existsSync,
   lstatSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   readdirSync,
   realpathSync,
-  rmSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
@@ -125,13 +127,14 @@ export function copyReleaseTemplate(template, destination) {
 
 export function createReleaseFixtureContext() {
   const base = realpathSync(tmpdir());
-  const directory = mkdtempSync(join(base, "dotln-release-shared-"));
+  const directory = createFixtureRoot(join(base, "dotln-release-shared-"));
   const token = randomUUID();
   const ownership = join(directory, ".owner");
   writeFileSync(ownership, token, { flag: "wx", mode: 0o600 });
   return {
     template: join(directory, "template"),
     cleanup() {
+      if (!existsSync(directory)) return;
       if (
         lstatSync(directory).isSymbolicLink() ||
         realpathSync(directory) !== directory ||

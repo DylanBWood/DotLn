@@ -1,13 +1,9 @@
+import { createFixtureRoot } from "./lib/temporary-roots.mjs";
 import { json as prettyJson } from "./lib/helpers.mjs";
 import assert from "node:assert/strict";
 import { tmpdir } from "node:os";
 import { spawnSync } from "node:child_process";
-import {
-  mkdtempSync,
-  readFileSync,
-  writeFileSync,
-  realpathSync,
-} from "node:fs";
+import { readFileSync, writeFileSync, realpathSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { decodeLog } from "../packages/kernel/dist/src/index.js";
@@ -48,7 +44,7 @@ for (const transport of [
   new CodexCliExecWorkOrderTransport(),
 ]) {
   if (args.includes("--only") && option("--only") !== transport.name) continue;
-  const directory = mkdtempSync(
+  const directory = createFixtureRoot(
     join(realpathSync(tmpdir()), "dotln-live-worker-"),
   );
   const store = new WorkerStore(directory);

@@ -1,3 +1,7 @@
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "../src/temporary-roots.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync, spawn, spawnSync } from "node:child_process";
@@ -5,11 +9,9 @@ import {
   existsSync,
   lstatSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   readdirSync,
   realpathSync,
-  rmSync,
   symlinkSync,
   writeFileSync,
 } from "node:fs";
@@ -73,7 +75,7 @@ const processFixture = fileURLToPath(
 );
 const statusCli = fileURLToPath(new URL("../src/dotln.js", import.meta.url));
 const temporary = () =>
-  realpathSync(mkdtempSync(join(tmpdir(), "dotln-worker-test-")));
+  realpathSync(createFixtureRoot(join(tmpdir(), "dotln-worker-test-")));
 const cliRunner =
   (
     transport: string,

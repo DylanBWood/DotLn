@@ -1,0 +1,60 @@
+{
+  "observedAt": "2026-10-28T00:41:18.509Z",
+  "apply": true,
+  "sourceGate": "5fb3245b-08ca-418c-b84d-dd90e075ff89",
+  "sourceRecordedAt": "2026-10-28T00:27:45.541Z",
+  "rule": "Creator disposal of exactly six empty source-identified synthetic controls; preserve original markers and the real failed fixture's diagnosis window.",
+  "controls": [
+    {
+      "path": "dotln-temporary-roots-test-S5iDce/roots/runtime-parent-u6z6bF/keep-DyIbuG",
+      "class": "worker-capture",
+      "ownerGate": "runtime-fixture",
+      "retentionHours": null,
+      "emptyApartFromOwner": true
+    },
+    {
+      "path": "dotln-temporary-roots-test-UK0ztn/roots/policy-parent-1CDjUO/protected-9BoWbL",
+      "class": "session-scratch",
+      "ownerGate": "removed-policy",
+      "retentionHours": null,
+      "emptyApartFromOwner": true
+    },
+    {
+      "path": "dotln-temporary-roots-test-gDBW3Z/roots/forever-ogycCS",
+      "class": "gate-fixture",
+      "ownerGate": null,
+      "retentionHours": null,
+      "emptyApartFromOwner": true
+    },
+    {
+      "path": "dotln-temporary-roots-test-iRYRdO/roots/dotln-expired-fixture-iCjj5z/nested-llTdgw",
+      "class": "session-scratch",
+      "ownerGate": "211b10d8-a7bb-4cd9-b302-d78f4bad876a",
+      "retentionHours": 24,
+      "emptyApartFromOwner": true
+    },
+    {
+      "path": "dotln-temporary-roots-test-iWeF1a/roots/dotln-expired-fixture-EMdo51/nested-RAzfYW",
+      "class": "session-scratch",
+      "ownerGate": "cce54fd3-3727-451a-9ca0-54346989ece7",
+      "retentionHours": 24,
+      "emptyApartFromOwner": true
+    },
+    {
+      "path": "dotln-temporary-roots-test-tcibUV/roots/dotln-expired-fixture-4xKVhW/nested-Jn9Nr3",
+      "class": "warm-fixture",
+      "ownerGate": "cd712af9-085f-4ead-9bac-71c440a08434",
+      "retentionHours": null,
+      "emptyApartFromOwner": true
+    }
+  ],
+  "controlsRemaining": 0,
+  "originalsPreserved": true,
+  "ancestorBytesPreserved": true,
+  "parentRemains": true,
+  "endedAt": "2026-10-28T00:27:32.094Z",
+  "earliestEligibility": "2026-10-29T00:27:32.094Z",
+  "postWindowCandidate": true,
+  "postWindowReason": null,
+  "limit": "The future judgment treats this worktree's writer as released; normal pruning still checks live use. No real failed fixture was deleted."
+}

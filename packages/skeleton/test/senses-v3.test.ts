@@ -1,3 +1,7 @@
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "../src/temporary-roots.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { createHmac } from "node:crypto";
@@ -8,13 +12,11 @@ import {
   existsSync,
   lstatSync,
   mkdirSync,
-  mkdtempSync,
   openSync,
   readFileSync,
   readSync,
   readdirSync,
   realpathSync,
-  rmSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
@@ -174,7 +176,9 @@ test("[document] WO-022 normative v3 codebook data matches the blueprint", () =>
 });
 
 test("WO-022 AC9 maximum v3 is sparse through atomic replacement; unsupported hosts create no file", (t) => {
-  const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-v3-storage-")));
+  const root = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-v3-storage-")),
+  );
   t.after(() => rmSync(root, { recursive: true, force: true }));
   const storage = probeV3Storage(root);
   const destination = join(root, "beacons");
@@ -206,7 +210,10 @@ test("WO-022 AC9 maximum v3 is sparse through atomic replacement; unsupported ho
         unsupported as V3Storage,
       ),
     );
-  assert.deepEqual(readdirSync(root), []);
+  assert.deepEqual(
+    readdirSync(root).filter((name) => name !== ".dotln-owner.json"),
+    [],
+  );
   for (const size of [
     BigInt(Number.MAX_SAFE_INTEGER) + 1n,
     MAX_V3_LOGICAL_BYTES + 1n,
@@ -219,7 +226,10 @@ test("WO-022 AC9 maximum v3 is sparse through atomic replacement; unsupported ho
         storage,
       ),
     );
-  assert.deepEqual(readdirSync(root), []);
+  assert.deepEqual(
+    readdirSync(root).filter((name) => name !== ".dotln-owner.json"),
+    [],
+  );
   const original = Buffer.alloc;
   Buffer.alloc = ((
     size: number,
@@ -277,7 +287,9 @@ test("WO-022 AC9 maximum v3 is sparse through atomic replacement; unsupported ho
 });
 
 test("WO-022 AC6/8/10 dynamic external keys, forged provenance, replay, unknown/rotated epochs and exhaustion", (t) => {
-  const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-v3-host-")));
+  const root = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-v3-host-")),
+  );
   t.after(() => rmSync(root, { recursive: true, force: true }));
   const keyPath = join(root, "host-key");
   assert.equal(createBeaconKey(keyPath, repository), 0);
@@ -386,12 +398,12 @@ test("WO-022 AC6/8/10 dynamic external keys, forged provenance, replay, unknown/
     lstatSync(join(root, "live", address), { bigint: true }).size,
     beaconBefore.size,
   );
-  assert.deepEqual(readdirSync(root).sort(), [
-    "forged",
-    "host-key",
-    "live",
-    "replay",
-  ]);
+  assert.deepEqual(
+    readdirSync(root)
+      .filter((name) => name !== ".dotln-owner.json")
+      .sort(),
+    ["forged", "host-key", "live", "replay"],
+  );
   const privateKey = (JSON.parse(keyBefore.toString()) as { key: string }).key;
   assert.ok(
     !JSON.stringify({ actual, rederived, record }).includes(privateKey),

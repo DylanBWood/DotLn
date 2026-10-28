@@ -204,7 +204,7 @@ function readProcessTable(directory) {
 // or reclaims dead records. A concurrent rename/release may change this view.
 export function readHolders(
   directory = hostStateRoot(),
-  { worktree = process.cwd(), now = Date.now() } = {},
+  { worktree = process.cwd(), now = Date.now(), includeWorktrees = false } = {},
 ) {
   let names;
   try {
@@ -228,9 +228,10 @@ export function readHolders(
   const capacity = recordedHostLaneCapacity(directory, null);
   const table = rows.length ? readProcessTable(directory) : [];
   const live = retainedHolders(rows, table);
-  const holders = live.map((row) =>
-    holderObservation(row, table, live, worktree, now),
-  );
+  const holders = live.map((row) => ({
+    ...holderObservation(row, table, live, worktree, now),
+    ...(includeWorktrees ? { worktree: row.worktree } : {}),
+  }));
   const byRelation = Object.fromEntries(
     ["this-checkout", "another-checkout", "unknown"].map((relation) => {
       const group = holders.filter((row) => row.relation === relation);
@@ -258,7 +259,7 @@ export function readHolders(
 }
 
 export function formatLaneWait(task, observation) {
-  return `WAIT host lanes for ${task}: ${observation.waitedMs} ms; ${observation.phase === "lock" ? "waiting for the lane registry lock" : `held by ${observation.holders.map((row) => `${row.task} (${laneRelationLabel(row.relation)}, ${row.slots} slots, ${row.ageMs ?? "unknown"} ms old, owner ${row.ownerAlive ? "alive" : "exited"}, ${row.survivingTasks} task processes, ${row.retainedSubleases} retained subleases${row.nested ? ", nested" : ""}${row.released ? ", released" : ""})`).join("; ")}`}`;
+  return `WAIT host lanes for ${task}: ${observation.waitedMs} ms; ${observation.phase === "lock" ? `waiting for the lane registry lock${observation.holders?.length ? ` held by ${observation.holders.map((row) => row.task).join(", ")}` : ""}` : `held by ${observation.holders.map((row) => `${row.task} (${laneRelationLabel(row.relation)}, ${row.slots} slots, ${row.ageMs ?? "unknown"} ms old, owner ${row.ownerAlive ? "alive" : "exited"}, ${row.survivingTasks} task processes, ${row.retainedSubleases} retained subleases${row.nested ? ", nested" : ""}${row.released ? ", released" : ""})`).join("; ")}`}`;
 }
 
 // Detailed holder history is bounded; attribution retains every change of
@@ -318,11 +319,12 @@ export async function acquireHostLanes({
     let notificationError;
     const heartbeat = setInterval(() => {
       try {
-        publishWait([], {
+        const lockHolders = readHolders(directory, { worktree }).holders;
+        publishWait(lockHolders, {
           observedAt: new Date().toISOString(),
           waitedMs: Date.now() - started,
           phase: "lock",
-          holders: [],
+          holders: lockHolders,
         });
       } catch (error) {
         notificationFailed = true;

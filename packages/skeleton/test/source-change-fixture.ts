@@ -1,8 +1,8 @@
+import { createFixtureRoot } from "../src/temporary-roots.js";
 import { execFileSync } from "node:child_process";
 import {
   appendFileSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   realpathSync,
   existsSync,
@@ -101,7 +101,9 @@ export const fixtureGit = (cwd: string, ...args: string[]): string =>
     },
   ).trim();
 export function createSourceFixture(): string {
-  const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-source-host-")));
+  const root = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-source-host-")),
+  );
   const repo = join(root, "target");
   mkdirSync(repo);
   mkdirSync(join(root, "trees"));

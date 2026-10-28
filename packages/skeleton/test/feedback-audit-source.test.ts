@@ -1,14 +1,11 @@
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "../src/temporary-roots.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import {
-  mkdirSync,
-  mkdtempSync,
-  readFileSync,
-  realpathSync,
-  rmSync,
-  writeFileSync,
-} from "node:fs";
+import { mkdirSync, readFileSync, realpathSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -19,7 +16,7 @@ import {
 
 function fixture() {
   const root = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-feedback-source-")),
+    createFixtureRoot(join(tmpdir(), "dotln-feedback-source-")),
   );
   execFileSync("git", ["init", "--quiet", root], { stdio: "pipe" });
   for (const path of FEEDBACK_SOURCE_PATHS) {

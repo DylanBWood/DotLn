@@ -1,3 +1,8 @@
+import {
+  excludeFixtureOwnership,
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
 import { copyFixtureFiles } from "./lib/fixture-inputs.mjs";
 import { execGit, runGit, runGitPathList } from "./lib/git.mjs";
 import {
@@ -30,11 +35,9 @@ import {
   linkSync,
   lstatSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   readdirSync,
   realpathSync,
-  rmSync,
   symlinkSync,
   statSync,
   writeFileSync,
@@ -1822,7 +1825,7 @@ const writableOwnedTree = (path) => {
   }
 };
 function repo(t, { runtime = false } = {}) {
-  const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-debt-")));
+  const root = realpathSync(createFixtureRoot(join(tmpdir(), "dotln-debt-")));
   t.after(() => {
     // Snapshot copies can retain read-only mount modes. Restore only this
     // fixture's owned entries, without following links back to installed roots.
@@ -1842,6 +1845,7 @@ function repo(t, { runtime = false } = {}) {
     });
   });
   runGit(root, ["init", "-q", "-b", "wo-999"], fixtureGitOptions);
+  excludeFixtureOwnership(root);
   assert.equal(
     realpathSync(
       runGit(root, ["rev-parse", "--show-toplevel"], fixtureGitOptions),
@@ -1857,7 +1861,7 @@ function repo(t, { runtime = false } = {}) {
   write(
     root,
     ".gitignore",
-    "node_modules/\n.runtime/\n**/dist/\ndocs/control/local/\ndocs/intake/\n",
+    "node_modules/\n.runtime/\n**/dist/\ndocs/control/local/\ndocs/intake/\n.dotln-owner.json\n",
   );
   write(root, "CLAUDE.md", "# Fixture floor\nPersonal source only.\n");
   write(
@@ -5315,9 +5319,11 @@ test("closeout classifies nested repositories: outside intake they are scratch, 
   const mount = `${local}/feedback/verifier/mount`;
   mkdirSync(join(from, mount), { recursive: true });
   runGit(join(from, mount), ["init", "-q"], fixtureGitOptions);
+  excludeFixtureOwnership(join(from, mount));
   const kept = `${local}/prototypes/repo`;
   mkdirSync(join(from, kept), { recursive: true });
   runGit(join(from, kept), ["init", "-q"], fixtureGitOptions);
+  excludeFixtureOwnership(join(from, kept));
   write(from, `${kept}/file.txt`, "kept nested content\n");
   const author = [
     "-c",
@@ -5439,6 +5445,7 @@ test("unborn repositories with refs, staged-only bytes, dangling objects or unre
     const nested = join(from, path);
     mkdirSync(nested, { recursive: true });
     runGit(nested, ["init", "-q"], fixtureGitOptions);
+    excludeFixtureOwnership(nested);
     if (kind === "refs") {
       runGit(
         nested,
@@ -6538,11 +6545,11 @@ test("WO-145 optional economy support preserves historical snapshots through the
   // The distinct executor review briefs preserve WO-219's snapshot.
   const baseline = JSON.parse(
     readFileSync(
-      join(source, "packages/skeleton/fixtures/wo204-role-baseline.json"),
+      join(source, "packages/skeleton/fixtures/wo233-role-baseline.json"),
       "utf8",
     ),
   );
-  assert.equal(baseline.historicalBaseline, "wo219-role-baseline.json");
+  assert.equal(baseline.historicalBaseline, "wo204-role-baseline.json");
   assert.equal(baseline.upstreamBaseline, "wo185-role-baseline.json");
   const chains = [
     baseline,
@@ -7837,7 +7844,9 @@ test("WO-169 followups --export writes every pending row whole to a granted dest
   const long = "A reason that a page would clip. ".repeat(12).trim();
   defer(root, ids["Candidate — Named order"], long);
   defer(root, ids["Candidate — Named order"], "WO-115 activates");
-  const outside = realpathSync(mkdtempSync(join(tmpdir(), "dotln-export-")));
+  const outside = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-export-")),
+  );
   t.after(() => rmSync(outside, { recursive: true, force: true }));
   const pages = () => {
     const rows = [];
@@ -7998,6 +8007,7 @@ test("WO-169 followups --export writes every pending row whole to a granted dest
   symlinkSync("/", join(root, "docs/control/local/elsewhere"));
   mkdirSync(join(outside, "checkout"));
   runGit(join(outside, "checkout"), ["init", "-q"], fixtureGitOptions);
+  excludeFixtureOwnership(join(outside, "checkout"));
   for (const refused of [
     "docs/planning/rows.json",
     "rows.json",
@@ -10933,9 +10943,12 @@ test("WO-140 a newly allocated receipt needs counters with their source or one c
     /found 2/,
   );
 
-  const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-receipt-cost-")));
+  const root = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-receipt-cost-")),
+  );
   t.after(() => rmSync(root, { recursive: true, force: true }));
   execGit(["init", "-q"], { cwd: root });
+  excludeFixtureOwnership(root);
   const write = (path, text) => writeFixture(root, path, text);
   const requested = (id, stamped) => ({
     schemaVersion: 1,
@@ -11118,10 +11131,11 @@ test("WO-140 the cost line is a record and not a mention, and meta --check is wi
   );
 
   const root = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-receipt-wiring-")),
+    createFixtureRoot(join(tmpdir(), "dotln-receipt-wiring-")),
   );
   t.after(() => rmSync(root, { recursive: true, force: true }));
   execGit(["init", "-q"], { cwd: root });
+  excludeFixtureOwnership(root);
   const write = (path, text) => writeFixture(root, path, text);
   const event = (reportPath, index) => ({
     schemaVersion: 1,
@@ -11533,6 +11547,7 @@ function materialRepository(root, path, bytes = "nested fixture\n") {
   const nested = join(root, path);
   mkdirSync(nested, { recursive: true });
   runGit(nested, ["init", "-q"], fixtureGitOptions);
+  excludeFixtureOwnership(nested);
   write(nested, "saved.txt", bytes);
   runGit(nested, ["add", "saved.txt"], fixtureGitOptions);
   runGit(
@@ -11570,6 +11585,7 @@ test("a nested repository outside intake that the tracked tree does not declare 
   materialRepository(from, "outside-lanes/probe");
   mkdirSync(join(from, ".runtime/empty"), { recursive: true });
   runGit(join(from, ".runtime/empty"), ["init", "-q"], fixtureGitOptions);
+  excludeFixtureOwnership(join(from, ".runtime/empty"));
   assert.deepEqual(
     inventoryMaterial(from).map((row) => [
       row.path,
@@ -11809,6 +11825,7 @@ test("reconciliation removes scratch repositories and records each with its head
     ["init", "-q"],
     fixtureGitOptions,
   );
+  excludeFixtureOwnership(join(from, "scratch-material/empty"));
   materialRepository(from, "docs/intake/x", "protected intake\n");
   const kept = materialRepository(from, "scratch-material/kept");
   // A scratch repository's own hooks and file monitor never run during the
@@ -12108,6 +12125,7 @@ test("the completion whitespace check reads untracked files and exempts byte-exa
   // repository remains; the later gate tree judgment retains its refusal.
   mkdirSync(join(root, "nested"));
   runGit(join(root, "nested"), ["init", "-q"], fixtureGitOptions);
+  excludeFixtureOwnership(join(root, "nested"));
   write(root, "nested/inner.txt", "inner trailing space \n");
   assert.ok(
     runGitPathList(root, [
@@ -12377,12 +12395,13 @@ test("WO-219 a linked worktree refreshes closed usage after late rows without wr
   const { pruneHarness } = await import("./lib/harness-prune.mjs");
   const listing = () =>
     pruneHarness(main, { publishedRelease: () => "v1.0.0" });
-  const retained = () =>
-    listing().retained.find((row) => row.path.endsWith("/WO-999"))?.reason;
-  const candidate = () =>
-    listing().candidates.some((row) => row.workOrder === workOrder);
+  const retained = async () =>
+    (await listing()).retained.find((row) => row.path.endsWith("/WO-999"))
+      ?.reason;
+  const candidate = async () =>
+    (await listing()).candidates.some((row) => row.workOrder === workOrder);
   assert.equal(
-    retained(),
+    await retained(),
     "usage copy is not in the committed snapshot",
     "an uncommitted refresh does not release the lane",
   );
@@ -12402,7 +12421,7 @@ test("WO-219 a linked worktree refreshes closed usage after late rows without wr
   };
   acceptSnapshot();
   assert.equal(
-    candidate(),
+    await candidate(),
     true,
     "the reviewed committed digest covers the lane",
   );
@@ -12416,7 +12435,7 @@ test("WO-219 a linked worktree refreshes closed usage after late rows without wr
     "a later row invalidates the earlier retention proof",
   );
   assert.equal(
-    retained(),
+    await retained(),
     "usage copy is not in the committed snapshot",
     "another late row reopens retention",
   );
@@ -12426,10 +12445,10 @@ test("WO-219 a linked worktree refreshes closed usage after late rows without wr
     workOrder,
   );
   assert.equal(second.written, true, second.reason);
-  assert.equal(retained(), "usage copy is not in the committed snapshot");
+  assert.equal(await retained(), "usage copy is not in the committed snapshot");
   acceptSnapshot();
   assert.equal(
-    candidate(),
+    await candidate(),
     true,
     "a second reviewed refresh covers the late row",
   );
@@ -12467,7 +12486,7 @@ test("WO-219 a linked worktree refreshes closed usage after late rows without wr
     currentUsageBytes,
   );
   assert.equal(
-    retained(),
+    await retained(),
     "usage copy is not in the committed snapshot",
     "mixed and unreadable copies remain retained",
   );

@@ -1,4 +1,9 @@
 import {
+  createScratchRoot,
+  promoteTemporaryRoot,
+  removeTemporaryPath as rmSync,
+} from "./temporary-roots.mjs";
+import {
   timestamp,
   validDigest,
   exact,
@@ -20,11 +25,9 @@ import {
   existsSync,
   lstatSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   readdirSync,
   realpathSync,
-  rmSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
@@ -372,7 +375,7 @@ const scratchLane = (root) => {
  * packages, and the receipt records whether they were provisioned.
  */
 function freezeSubject(root, source, baseCommit) {
-  const parent = mkdtempSync(join(scratchLane(root), "review-"));
+  const parent = createScratchRoot(join(scratchLane(root), "review-"));
   const repository = join(parent, "repo");
   runGit(source, [
     "clone",
@@ -1249,7 +1252,7 @@ async function runEpisode(root, request, pending, role) {
     dispatch.kill();
     let retained = null;
     try {
-      retained = mkdtempSync(join(retentionLane(root), "rejected-"));
+      retained = createScratchRoot(join(retentionLane(root), "rejected-"));
       for (const name of ["result.json", "statement.txt", "wire.jsonl"])
         if (existsSync(join(request.capture, name)))
           writeFileSync(
@@ -1257,6 +1260,7 @@ async function runEpisode(root, request, pending, role) {
             readFileSync(join(request.capture, name)),
             { mode: 0o600 },
           );
+      promoteTemporaryRoot(retained);
     } catch {
       retained = null;
     }
@@ -1424,6 +1428,9 @@ export async function beginEntropyReview(
       fixture: fixture || transport === "fake",
       episode: null,
     };
+    // Filing or explicit discard owns this subject across host sessions.
+    // If publishing the pending record fails, the catch still removes it.
+    promoteTemporaryRoot(parent);
     writePending(root, "review", pending);
     retained = true;
     const { transportPrompt, transportResultSchema } = await skeleton(
@@ -1488,11 +1495,12 @@ export async function fileEntropyReview(
       episodeId: pending.episodeId,
     });
   } catch (error) {
-    const lane = mkdtempSync(join(retentionLane(root), "rejected-"));
+    const lane = createScratchRoot(join(retentionLane(root), "rejected-"));
     writeFileSync(join(lane, "result.json"), readFileSync(result), {
       mode: 0o600,
     });
     writeFileSync(join(lane, "statement.txt"), statement, { mode: 0o600 });
+    promoteTemporaryRoot(lane);
     throw new Error(
       `entropy review result rejected: ${error instanceof Error ? error.message : "invalid output"}; rejected result and statement retained at ${lane}`,
     );
@@ -1812,6 +1820,7 @@ export async function beginEntropyRefutation(
       fixture: fixture || transport === "fake",
       episode: null,
     };
+    promoteTemporaryRoot(parent);
     writePending(root, "refutation", pending);
     retained = true;
     const { transportPrompt, transportResultSchema } = await skeleton(
@@ -1890,12 +1899,13 @@ export async function fileEntropyRefutation(
   try {
     report = buildRefutationReport(review.reviewerOutput.findings, attempts);
   } catch (error) {
-    const lane = mkdtempSync(join(retentionLane(root), "rejected-"));
+    const lane = createScratchRoot(join(retentionLane(root), "rejected-"));
     writeFileSync(join(lane, "result.json"), readFileSync(attemptsFile), {
       mode: 0o600,
     });
     if (statement !== null)
       writeFileSync(join(lane, "statement.txt"), statement, { mode: 0o600 });
+    promoteTemporaryRoot(lane);
     throw new Error(
       `entropy refutation result rejected: ${error instanceof Error ? error.message : "invalid attempts"}; rejected result${statement !== null ? " and statement" : ""} retained at ${lane}`,
     );

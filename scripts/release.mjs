@@ -1,4 +1,9 @@
 #!/usr/bin/env node
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
+import { formatPruneReport } from "./lib/temporary-prune-summary.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 import {
   hasPackageSources,
@@ -24,11 +29,9 @@ import {
 import {
   existsSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   readdirSync,
   realpathSync,
-  rmSync,
   symlinkSync,
   writeFileSync,
 } from "node:fs";
@@ -471,6 +474,7 @@ export function releaseCloseSummary(record) {
       `Starter refresh ${row.sibling}: ${row.outcome}; ${line(row.reason ?? `${row.before} -> ${row.after}`)}${row.outcome === "refreshed" ? `; ${row.before} -> ${row.after}` : ""}${row.rewrittenSeeds?.length ? `; seeds published: ${row.rewrittenSeeds.join(", ")}` : ""}${row.seedChanges?.length ? `; seeds would change: ${row.seedChanges.join(", ")}` : ""}${row.siblingTag ? `; tag ${row.siblingTag.tag}: ${row.siblingTag.outcome}; GitHub Release ${row.siblingRelease ?? "not verified"}${row.siblingReleaseTitle ? ` (${row.siblingReleaseTitle})` : ""}` : ""}.`,
     );
   lines.push(`Cleanup: ${record.cleanup.outcome}.`);
+  if (record.prune) lines.push(formatPruneReport(record.prune));
   if (publication.target?.policy === "declared")
     lines.push(
       `Target release ${publication.target.repositoryId}: ${publication.target.outcome}; tag ${publication.target.tag ?? "unknown"}; GitHub Release ${publication.target.release ?? (record.dryRun ? "would create" : "not verified")}${publication.target.title ? `; title ${publication.target.title}` : ""}.`,
@@ -1851,7 +1855,7 @@ const ensureReleaseRuntime = (root) => {
 const withPreviewRuntime = (root, operation) => {
   // This is an unregistered preview directory, never a release worktree. Its
   // temporary index and build output are removed without moving main or any branch.
-  const temporary = mkdtempSync(join(tmpdir(), "dotln-release-preview-"));
+  const temporary = createFixtureRoot(join(tmpdir(), "dotln-release-preview-"));
   try {
     const env = {
       ...process.env,
@@ -2137,7 +2141,7 @@ const updateMain = (root) => {
   )
     throw new Error("main is not synchronized with origin/main");
 };
-const finishPublishedWorktree = (
+const finishPublishedWorktree = async (
   root,
   workOrderId,
   dryRun = false,
@@ -2493,6 +2497,31 @@ const finishPublishedWorktree = (
           command: releaseCloseCommand(root, workOrderId),
         });
       }
+    }
+    try {
+      const { pruneHarness } = await import("./lib/harness-prune.mjs");
+      const prune = await pruneHarness(root, {
+        apply: !dryRun,
+        preserveOrders: [workOrderId],
+      });
+      if (record) record.prune = prune;
+      writeOutput(`${formatPruneReport(prune)}\n`);
+    } catch (error) {
+      const blocker = {
+        action: "prune",
+        reason: error.message,
+        command: releaseCloseCommand(root, workOrderId),
+      };
+      if (record)
+        record.prune = {
+          candidates: [],
+          removed: [],
+          retained: [],
+          bytes: 0,
+          census: [],
+          blockers: [blocker],
+        };
+      record?.blockers.push(blocker);
     }
     cleanup.outcome =
       cleanup.worktrees.some((row) => row.outcome === "retained") ||
@@ -3221,7 +3250,13 @@ const close = async (workOrderId, parsed, record) => {
       // The target branch is proven merged by the close; a declared target
       // release tags that merged base and creates the target's Release.
       publishRelease?.();
-      finishPublishedWorktree(root, workOrderId, dryRun, record, overrides);
+      await finishPublishedWorktree(
+        root,
+        workOrderId,
+        dryRun,
+        record,
+        overrides,
+      );
     }
     const target = record.publication.target;
     writeOutput(
@@ -3284,7 +3319,13 @@ const close = async (workOrderId, parsed, record) => {
         writeOutput,
       );
     if (publish || dryRun)
-      finishPublishedWorktree(root, workOrderId, dryRun, record, overrides);
+      await finishPublishedWorktree(
+        root,
+        workOrderId,
+        dryRun,
+        record,
+        overrides,
+      );
     writeOutput(
       `${workOrderId} closes ${authority.version}, below latest release ${latest}; no release tag is due. ${mainStatus}\n`,
     );
@@ -3321,7 +3362,7 @@ const close = async (workOrderId, parsed, record) => {
       writeOutput(
         `Dry run: would fast-forward main to ${head}, validate the recorded reviewer gate, and reconcile the existing Release.\n${JSON.stringify(existing.manifest, null, 2)}\n`,
       );
-      finishPublishedWorktree(root, workOrderId, true, record, overrides);
+      await finishPublishedWorktree(root, workOrderId, true, record, overrides);
       if (publish)
         await refreshPublishedStarters(
           root,
@@ -3345,7 +3386,13 @@ const close = async (workOrderId, parsed, record) => {
     record.publication.outcome = "already-published";
     record.publication.release = projection ?? null;
     if (publish) {
-      finishPublishedWorktree(root, workOrderId, false, record, overrides);
+      await finishPublishedWorktree(
+        root,
+        workOrderId,
+        false,
+        record,
+        overrides,
+      );
       await refreshPublishedStarters(
         root,
         existing.manifest.release.commit,
@@ -3403,7 +3450,7 @@ const close = async (workOrderId, parsed, record) => {
     writeOutput(
       `Dry run: would fast-forward main to ${head}, run surface checks, build missing or mismatched pinned runtime, validate this reviewer-gate manifest, ${publish ? "create and push the annotated tag and create the Release" : "prepare the release"}, then attempt worktree cleanup. No suite, install or CLI smoke runs.\n${JSON.stringify(manifest, null, 2)}\n`,
     );
-    finishPublishedWorktree(root, workOrderId, true, record, overrides);
+    await finishPublishedWorktree(root, workOrderId, true, record, overrides);
     if (publish)
       await refreshPublishedStarters(
         root,
@@ -3442,7 +3489,7 @@ const close = async (workOrderId, parsed, record) => {
   record.publication.outcome = "published";
   record.publication.release = projection;
   ensureTrackedClean(root);
-  finishPublishedWorktree(root, workOrderId, false, record, overrides);
+  await finishPublishedWorktree(root, workOrderId, false, record, overrides);
   await refreshPublishedStarters(
     root,
     head,

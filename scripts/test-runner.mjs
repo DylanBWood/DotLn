@@ -1,4 +1,17 @@
 #!/usr/bin/env node
+import {
+  createFixtureRoot,
+  readRetention,
+  temporaryChurn,
+  retireTemporaryLedger,
+  withTemporaryOwner,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
+import {
+  finishGateTemporaryRoots,
+  recordTemporaryGateResult,
+  removeTemporaryGateResult,
+} from "./lib/temporary-prune.mjs";
 import { spawnGit } from "./lib/git.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 import { spawn } from "node:child_process";
@@ -19,8 +32,10 @@ import {
   recordedHostLaneCapacity,
   schedulingBaseline,
   registerProcess,
+  withHostLock,
   taskLauncher,
   holdTaskDescriptors,
+  sampleFileEventDaemon,
 } from "./lib/host-resources.mjs";
 import {
   ensureHostGuard,
@@ -33,11 +48,9 @@ import {
   existsSync,
   lstatSync,
   mkdirSync,
-  mkdtempSync,
   readdirSync,
   readFileSync,
   renameSync,
-  rmSync,
   writeFileSync,
 } from "node:fs";
 import { basename, dirname, join, relative, resolve } from "node:path";
@@ -198,6 +211,9 @@ export const machinerySources = {
     "corpus/harness/wo107-bounded.mjs",
   ],
   "fixture-temp-root": [
+    "scripts/temporary-root.mjs",
+    "scripts/lib/temporary-roots.mjs",
+    "packages/skeleton/src/temporary-root-records.mjs",
     "scripts/test-temp-root.sh",
     "scripts/test-fixture-temp-root.sh",
   ],
@@ -223,6 +239,11 @@ export const machinerySources = {
     "packages/skeleton/src/worker-transport.ts",
   ],
   "harness-fixtures": [
+    "scripts/test-temporary-roots.mjs",
+    "scripts/lib/temporary-prune.mjs",
+    "scripts/lib/temporary-root-declarations.mjs",
+    "scripts/lib/temporary-roots.mjs",
+    "packages/skeleton/src/temporary-root-records.mjs",
     "scripts/lib/fixture-inputs.mjs",
     "scripts/lib/plan-failures.mjs",
     // Direct entry imports and literal first-party script inputs (WO-174).
@@ -333,6 +354,7 @@ export const machinerySources = {
     "scripts/work-orders.mjs",
     "packages/skeleton/src/plan-refutation-host.ts",
     "packages/skeleton/src/plan-refutation-fake.ts",
+    "packages/skeleton/src/temporary-roots.ts",
     "packages/skeleton/src/worker-transport.ts",
     "scripts/test-plan-refutation.mjs",
     "scripts/refute-plan.mjs",
@@ -350,6 +372,10 @@ export const machinerySources = {
     "scripts/lib/entropy-review.mjs",
   ],
   "runner-fixtures": [
+    "scripts/lib/temporary-prune.mjs",
+    "scripts/lib/temporary-root-declarations.mjs",
+    "scripts/lib/temporary-roots.mjs",
+    "packages/skeleton/src/temporary-root-records.mjs",
     "scripts/check-role-oracle.mjs",
     "scripts/lib/fixture-inputs.mjs",
     "scripts/structural-checks.mjs",
@@ -495,6 +521,7 @@ export const machinerySources = {
     "packages/skeleton/fixtures/wo226-role-baseline.json",
     "packages/skeleton/fixtures/wo219-role-baseline.json",
     "packages/skeleton/fixtures/wo204-role-baseline.json",
+    "packages/skeleton/fixtures/wo233-role-baseline.json",
     "packages/skeleton/fixtures/wo217-role-efficiency-baseline.json",
     "scripts/test-helper-reuse.mjs",
     "scripts/lib/helpers.mjs",
@@ -1539,6 +1566,34 @@ export function executeSuite(
         row.executionEnvironment ?? process.env,
         row.gateContext,
       );
+  // A nested suite contributes to its caller's task, even when its cwd is a
+  // disposable repository. Keep that gate's ledger and outcome owner; only a
+  // new gate establishes a new repository/suite boundary.
+  const inheritedTemporaryGate =
+    !row.temporaryGateId &&
+    env.DOTLN_TEMP_GATE &&
+    env.DOTLN_TEMP_GATE_REPOSITORY &&
+    env.DOTLN_TEMP_GATE_REPOSITORY === env.DOTLN_TEMP_REPOSITORY;
+  const temporaryOwner = {
+    repository: inheritedTemporaryGate ? env.DOTLN_TEMP_REPOSITORY : repo,
+    gateId: row.temporaryGateId ?? env.DOTLN_TEMP_GATE,
+    suite: inheritedTemporaryGate ? env.DOTLN_TEMP_SUITE : row.name,
+  };
+  if (!row.probe)
+    env = {
+      ...env,
+      DOTLN_TEMP_REPOSITORY: temporaryOwner.repository,
+      DOTLN_TEMP_RETENTION: inheritedTemporaryGate
+        ? env.DOTLN_TEMP_RETENTION
+        : JSON.stringify(readRetention(repo)),
+      DOTLN_TEMP_SUITE: temporaryOwner.suite,
+      DOTLN_TEMP_GATE: temporaryOwner.gateId,
+      DOTLN_TEMP_GATE_REPOSITORY:
+        row.temporaryGateId || inheritedTemporaryGate
+          ? temporaryOwner.repository
+          : undefined,
+      DOTLN_PRUNE_SCOPE: "repository",
+    };
   const deadline = startDeadline(`suite:${row.name}`, timeoutMs, { env });
   onProgress({ name: row.name, message: "started", elapsedMs: 0 });
   let command;
@@ -1577,7 +1632,9 @@ export function executeSuite(
       // Without a place for them the task runs unmarked and names no case.
       try {
         caseMarkers = join(
-          mkdtempSync(join(tmpdir(), "dotln-case-markers-")),
+          withTemporaryOwner(temporaryOwner, () =>
+            createFixtureRoot(join(tmpdir(), "dotln-case-markers-")),
+          ),
           "cases.jsonl",
         );
         writeFileSync(caseMarkers, "");
@@ -2838,10 +2895,15 @@ export async function runGate(
       { scope: "gate" },
       options.hostDirectory,
     );
-    return await runGateChecks(args, repo, {
-      stopRequested: active.stopRequested,
-      ...options,
-    });
+    return await withTemporaryOwner(
+      { repository: repo, gateId: active.run.runId, suite: undefined },
+      () =>
+        runGateChecks(args, repo, {
+          stopRequested: active.stopRequested,
+          temporaryGateId: active.run.runId,
+          ...options,
+        }),
+    );
   } finally {
     registration?.release();
     active.release();
@@ -2859,6 +2921,7 @@ async function runGateChecks(
     ),
     hostDirectory = hostStateRoot(),
     planningSampleId,
+    temporaryGateId = randomUUID(),
   } = {},
 ) {
   let document = false,
@@ -3101,6 +3164,7 @@ async function runGateChecks(
         : confinedPartial
           ? CONFINED_PARTIAL_CHECK
           : "npm test";
+  const fileEventsBefore = sampleFileEventDaemon();
   const treeHash = gateTreeHash(repo),
     codeIdentity = gateCodeIdentity(repo),
     started = Date.now();
@@ -3340,6 +3404,7 @@ async function runGateChecks(
             : await executeSuite(
                 {
                   ...row,
+                  temporaryGateId,
                   resourceMonitor: monitor,
                   memoryLimits: limits,
                   hostDirectory,
@@ -3362,7 +3427,7 @@ async function runGateChecks(
               const detail = JSON.parse(
                 line.slice("STRUCTURAL_RESULT ".length),
               );
-              for (const key of ["stale", "cases", "sample"])
+              for (const key of ["stale", "cases", "sample", "fileEvents"])
                 if (detail[key] !== undefined) result[key] = detail[key];
               if (Array.isArray(result.cases))
                 result.cases = result.cases.map(failedOutputOnly);
@@ -3486,14 +3551,6 @@ async function runGateChecks(
     // row's passes tied to no output: the row may pass and supplies nothing.
     const outputUnattested =
       built?.exitCode === 0 && Array.isArray(buildRow.outputs) && !outputJudged;
-    // A root that survives every suite's own teardown is a failed gate; the
-    // check names it and removes nothing, so the leftover stays diagnosable.
-    const abandoned = readdirSync(tmpdir())
-      .filter((name) =>
-        name.startsWith(`dotln-host-confinement-${fixtureTag}-`),
-      )
-      .map((name) => join(tmpdir(), name))
-      .sort();
     const freshTasks = taskRows.filter((row) => row.executed && !row.reused);
     // Structural tasks and a preflight format run fresh in every selection;
     // a composition whose only fresh tasks are those reused everything else.
@@ -3508,6 +3565,7 @@ async function runGateChecks(
       );
     const check = {
       checkId,
+      temporaryGateId,
       treeHash,
       codeIdentity,
       sharedRefs: { start: sharedRefsStart, end: readSharedRefs(repo) },
@@ -3518,7 +3576,6 @@ async function runGateChecks(
         completeCoverage(tasks, taskRows, codeIdentity) &&
         unchanged &&
         outputUnchanged &&
-        !abandoned.length &&
         !resourceGateFailure
           ? 0
           : 1,
@@ -3572,7 +3629,6 @@ async function runGateChecks(
         ? { partial: true, excludedSuites: excluded.map((row) => row.name) }
         : {}),
       ...(sandbox.marker ? { sandbox } : {}),
-      ...(abandoned.length ? { abandonedRoots: abandoned } : {}),
       cases: rows.map(failedOutputOnly),
       ...(document ? { failureComparisons } : {}),
       loadClass: {
@@ -3619,7 +3675,6 @@ async function runGateChecks(
         .concat(
           !unchanged ? ["Gate input identity changed"] : [],
           !outputUnchanged ? ["Build output changed"] : [],
-          abandoned.length ? ["Fixture roots remain after teardown"] : [],
           resourceGateFailure ? [JSON.stringify(resourceGateFailure)] : [],
         )
         .join("\n");
@@ -3710,12 +3765,61 @@ async function runGateChecks(
             .map((row) => row.name),
         }
       : null;
-    recordGateChecks(repo, [
-      check,
-      ...(structuralCheck ? [structuralCheck] : []),
-    ]);
+    // This terminal marker makes crash recovery possible before deletion, but
+    // cannot supply passing application evidence while cleanup is unfinished.
+    recordTemporaryGateResult(repo, {
+      temporaryGateId,
+      recordedAt: check.recordedAt,
+      taskTimeline: taskRows.map(withoutOutput),
+    });
+    await withHostLock(hostDirectory, "lanes", () => {
+      check.temporaryCleanup = finishGateTemporaryRoots(
+        repo,
+        temporaryGateId,
+        taskRows,
+        { hostDirectory },
+      );
+      // Owned fixtures defer teardown until their suite's outcome is known.
+      // Judge leftovers after that cleanup; anything still present remains
+      // diagnosable and fails the gate, including an unowned fixture root.
+      const abandoned = readdirSync(tmpdir())
+        .filter((name) =>
+          name.startsWith(`dotln-host-confinement-${fixtureTag}-`),
+        )
+        .map((name) => join(tmpdir(), name))
+        .sort();
+      if (abandoned.length) {
+        check.exitCode = 1;
+        check.abandonedRoots = abandoned;
+        check.output = `${check.output ?? ""}\nFixture roots remain after teardown`;
+      }
+      check.churn = temporaryChurn(repo, temporaryGateId);
+      for (const name of ["filesCreated", "filesDeleted", "bytesWritten"])
+        check[name] = check.churn[name];
+      check.fileEvents = {
+        before: fileEventsBefore,
+        host:
+          structuralRows.find((row) => row.name === "host")?.fileEvents ?? null,
+        after: sampleFileEventDaemon(),
+      };
+      if (check.temporaryCleanup.blockers.length) {
+        check.exitCode = 1;
+        check.output = `${check.output ?? ""}\nTemporary cleanup blockers: ${JSON.stringify(check.temporaryCleanup.blockers)}`;
+      }
+      check.durationMs = Date.now() - started;
+      check.recordedAt = new Date().toISOString();
+      recordGateChecks(repo, [
+        check,
+        ...(structuralCheck ? [structuralCheck] : []),
+      ]);
+      retireTemporaryLedger(repo, temporaryGateId);
+      removeTemporaryGateResult(repo, temporaryGateId);
+    });
     console.log(
-      `${checkId}: ${rows.filter((row) => row.exitCode === 0).length} passed; ${rows.filter((row) => row.exitCode !== 0).length} failed; ${(check.durationMs / 1000).toFixed(2)} s; ${check.freshSuites} fresh tasks${formatHostLaneWait(check.hostLaneWait)}${unchanged ? "" : "; code changed"}${outputUnchanged ? "" : "; build output changed during the gate"}${abandoned.length ? `; abandoned fixture roots: ${abandoned.join(", ")}` : ""}${confinedPartial ? `; partial, not product-gate evidence: excluded ${check.excludedSuites.join(", ") || "none"}` : ""}`,
+      `Gate cleanup: ${check.temporaryCleanup.removed.length} roots removed; ${check.temporaryCleanup.retained.length} retained; ${check.temporaryCleanup.blockers.length} blockers. Churn: ${JSON.stringify(check.churn)}. fseventsd: ${JSON.stringify(check.fileEvents)}`,
+    );
+    console.log(
+      `${checkId}: ${rows.filter((row) => row.exitCode === 0).length} passed; ${rows.filter((row) => row.exitCode !== 0).length} failed; ${(check.durationMs / 1000).toFixed(2)} s; ${check.freshSuites} fresh tasks${formatHostLaneWait(check.hostLaneWait)}${unchanged ? "" : "; code changed"}${outputUnchanged ? "" : "; build output changed during the gate"}${check.abandonedRoots?.length ? `; abandoned fixture roots: ${check.abandonedRoots.join(", ")}` : ""}${confinedPartial ? `; partial, not product-gate evidence: excluded ${check.excludedSuites.join(", ") || "none"}` : ""}`,
     );
     return check;
   } finally {

@@ -1,3 +1,7 @@
+import {
+  createScratchRoot,
+  removeTemporaryPath as rmSync,
+} from "./temporary-roots.mjs";
 import { runGit } from "./git.mjs";
 import { json, write as writeFixture } from "./helpers.mjs";
 // Research apparatus for the authority enforcement matrix (WO-136). Nothing
@@ -11,11 +15,9 @@ import {
   existsSync,
   lstatSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   readdirSync,
   realpathSync,
-  rmSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
@@ -95,7 +97,9 @@ const git = (cwd, args, optional = false) =>
 
 export function createAuthorityFixture(cell) {
   assert.ok(cells().some((entry) => entry.id === cell.id));
-  const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-authority-")));
+  const root = realpathSync(
+    createScratchRoot(join(tmpdir(), "dotln-authority-")),
+  );
   try {
     const target = join(root, "target");
     const launchpad = join(root, "launchpad");

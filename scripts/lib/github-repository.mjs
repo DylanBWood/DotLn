@@ -1,6 +1,10 @@
+import {
+  createScratchRoot,
+  removeTemporaryPath as rmSync,
+} from "./temporary-roots.mjs";
 import { spawnGit, runGit, shellQuote } from "./git.mjs";
 import { createHash } from "node:crypto";
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
@@ -233,7 +237,7 @@ export function pushObservedCommit(
 /** One host-created bare lane, as pushObservedCommit uses: only the
  * operator's global and system Git configuration apply inside it. */
 function withPublishLane(run) {
-  const lane = mkdtempSync(join(tmpdir(), "dotln-target-push-"));
+  const lane = createScratchRoot(join(tmpdir(), "dotln-target-push-"));
   try {
     const init = spawnGit(["init", "--quiet", "--bare", "--template=", lane], {
       encoding: "utf8",
@@ -274,7 +278,7 @@ export function fetchRemoteBranch(repo, url, branch, { beforeImport } = {}) {
     // A caller can judge the fetched history before any object or reference
     // is written to its checkout. The lane is removed on refusal as well.
     beforeImport?.(inLane, commit);
-    const scratch = mkdtempSync(join(tmpdir(), "dotln-target-fetch-"));
+    const scratch = createScratchRoot(join(tmpdir(), "dotln-target-fetch-"));
     try {
       const bundle = join(scratch, "fetched.bundle");
       inLane(["bundle", "create", bundle, "refs/heads/fetched"]);
@@ -391,7 +395,7 @@ export function ensureRelease(
       `${tag} GitHub Release state not verified: ${String(viewed.stderr ?? "").trim()}`,
     );
   const notes = join(
-    mkdtempSync(join(tmpdir(), "dotln-release-notes-")),
+    createScratchRoot(join(tmpdir(), "dotln-release-notes-")),
     "RELEASE.md",
   );
   try {

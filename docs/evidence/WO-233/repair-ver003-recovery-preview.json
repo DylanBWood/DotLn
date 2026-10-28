@@ -1,0 +1,43 @@
+{
+  "observedAt": "2026-10-27T21:36:50.189Z",
+  "apply": false,
+  "rule": "Exact source-identified roots only; physical records and dead creators checked before mutation. Copied markers require matching Git blobs. Passing roots use normal gate completion; failed roots retain original windows and marker backups. No general ownership refusal is weakened.",
+  "plans": [
+    {
+      "kind": "passing-quarantine",
+      "root": "dotln-wo185-quarantine-9LOzTD",
+      "originalMarkerSha256": "cb3117dcf2ea4448acc02d12f3f005ceef081d1103ebe2a7e0af05810ec9be14",
+      "gateId": "10b258ee-5319-4423-9c64-1731c490f7c4"
+    },
+    {
+      "kind": "passing-quarantine",
+      "root": "dotln-wo185-quarantine-q9undf",
+      "originalMarkerSha256": "1301f67ca69173eef0a3ff761f0dedf5de97a18dcc394e6a85239cdb1f16e05c",
+      "gateId": "2a47ed0d-5c31-4d6c-bcf9-2f5737a0fdb9"
+    },
+    {
+      "kind": "copied-marker",
+      "root": "dotln-document-base-OtlDQc",
+      "child": "subject",
+      "originalMarkerSha256": "fac5939b01b79af5572b9bda62b2266cc80f138846cbca8881145d2acbacb425",
+      "gateId": "6026bb82-a267-46d3-bdb3-2773a8e9fbfd",
+      "proof": "0c44305287d73de30311319ec31f9b58e1fd5f0b"
+    },
+    {
+      "kind": "copied-marker",
+      "root": "dotln-document-base-uybkyR",
+      "child": "subject",
+      "originalMarkerSha256": "f152c541372e385eca7de7f185b1cd5178178a2f0fcc7c3211e265664e6cb859",
+      "gateId": "c16afb4c-50c8-47a2-9db3-83f16090e890",
+      "proof": "e207ab310400bcc243ecc905b15ecb82e5d417ad"
+    },
+    {
+      "kind": "containing-lifetime",
+      "root": "dotln-fixture-temporary-3sHpVT",
+      "child": "dotln/894b8b9abe80335e64d666c7a965d4d21c013562578527e2e7d508cbe5fc1c3a/scratch",
+      "originalMarkerSha256": "fa8bdcec18469693dfd0dc5ef4478fd8c0f7968fa5409de677d51fa398aac0a8",
+      "gateId": "b59b8fda-c3f3-4cf4-9c7d-9cb4ab8ea233"
+    }
+  ],
+  "cleanup": []
+}

@@ -1,3 +1,4 @@
+import { createScratchRoot } from "./temporary-roots.mjs";
 import { runGit } from "./git.mjs";
 import { json, write as writeFixture } from "./helpers.mjs";
 import { docPath, docRelative, findLaunchpad, rootPattern } from "./config.mjs";
@@ -7,7 +8,6 @@ import {
   cpSync,
   existsSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   realpathSync,
   symlinkSync,
@@ -176,7 +176,7 @@ export function prepareCopilotQualification({
       parent.startsWith(`${realpathSync(tmpdir())}${sep}`),
   );
   const root = realpathSync(
-    mkdtempSync(join(parent, "dotln-copilot-qualification-")),
+    createScratchRoot(join(parent, "dotln-copilot-qualification-")),
   );
   runGit(root, ["init", "--quiet", "-b", "wo-999"], fixtureGitOptions());
   for (const directory of ["scripts", docRelative(repository, "product")])

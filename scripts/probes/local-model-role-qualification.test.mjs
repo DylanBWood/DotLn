@@ -1,8 +1,12 @@
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "../lib/temporary-roots.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { createServer } from "node:http";
-import { readFileSync, existsSync, mkdtempSync, rmSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
@@ -152,7 +156,7 @@ test("WO-138 T3 keeps labels held out and changes one prompt factor at a time", 
 });
 
 test("WO-138 reuses one retained discovery snapshot across transports and rejects changed bindings", async (t) => {
-  const scratch = mkdtempSync(join(tmpdir(), "dotln-wo138-inputs-test-"));
+  const scratch = createFixtureRoot(join(tmpdir(), "dotln-wo138-inputs-test-"));
   t.after(() => rmSync(scratch, { recursive: true, force: true }));
   const path = join(scratch, "inputs.json");
   const first = await pinTaskInputs(path);

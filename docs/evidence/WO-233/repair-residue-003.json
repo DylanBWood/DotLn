@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-27T13:34:36.281Z",
+  "apply": true,
+  "rule": "Only recorded passed fixtures with dead creators are recovered. Copied markers require a matching immutable Git blob or duplicate bytes tied to the containing fixture token. General invalid-record refusal is unchanged.",
+  "roots": [
+    {
+      "root": "dotln-fixture-temporary-9NjMmG",
+      "token": "976004e7-a205-4718-958f-f5830e7f195d",
+      "sha256": "ee7667130d81fbc955e437ba5bde49966d098d1b7cd6d5e8925a2955e4f4aa0a",
+      "device": 16777233,
+      "inode": 758153611,
+      "gateId": "76a6260d-24ee-473e-892b-1e366ebe2de4",
+      "suite": "harness-fixtures",
+      "copies": [],
+      "migrations": [
+        {
+          "path": "dotln-temporary-roots-test-imn0qx/roots/recovery-parent-aC7ZvQ/disposable-Hwbg9v",
+          "sha256": "4720780918d4b5f45865f92ce1250a0f79e4cb8bf69d7953fd43657e22187c4c",
+          "token": "4a767213-0c7c-46ba-8a3a-a6f56ced9fca"
+        }
+      ],
+      "disposals": [],
+      "bytes": 627029
+    },
+    {
+      "root": "dotln-fixture-temporary-RsI0w7",
+      "token": "50225e48-ac7d-4324-83c6-1c25ab64726a",
+      "sha256": "997cb77657fe7c5ad4e5e69f1422f576e729a8272bd60a84cd999b53cc47797f",
+      "device": 16777233,
+      "inode": 760408739,
+      "gateId": "8fe86269-16e2-4e5e-ade7-192c192cad08",
+      "suite": "harness-fixtures",
+      "copies": [],
+      "migrations": [
+        {
+          "path": "dotln-temporary-roots-test-eiBhZ0/roots/recovery-parent-SzsQ9E/disposable-JVWtsr",
+          "sha256": "058bd7e2e193d6c589db10f50e5fb392086663b64ba5f0f5f0508f1d665b5f6f",
+          "token": "1664330c-c7d8-4fdf-9c99-1e6407048482"
+        }
+      ],
+      "disposals": [],
+      "bytes": 627013
+    },
+    {
+      "root": "dotln-fixture-temporary-gx8zpm",
+      "token": "ca6123be-4ae2-466e-b6ab-10a462ad38cd",
+      "sha256": "42d9652464a56e43c8ccd131f48647123bd5e0309ea8f4f9becf2669a0fcca86",
+      "device": 16777233,
+      "inode": 753565300,
+      "gateId": "43bff0ec-1b0b-4b67-8772-ce0903285183",
+      "suite": "harness-fixtures",
+      "copies": [],
+      "migrations": [
+        {
+          "path": "dotln-temporary-roots-test-WygMX0/roots/recovery-parent-8MthjC/disposable-Tc7zXJ",
+          "sha256": "225881ddac0b3973d67ef3f25f0c950087ebda5a2e133537c2bcdda07e159ea0",
+          "token": "5c8d94f9-bc56-4cb9-acc1-e92ee92d0626"
+        }
+      ],
+      "disposals": [],
+      "bytes": 627013
+    },
+    {
+      "root": "dotln-fixture-temporary-xhF1jq",
+      "token": "e078ef0b-36a2-42a7-8ffc-cabf028d084e",
+      "sha256": "4917fe656f9bfdf3a0e305f64f663279f88db75dbbb4d94542c8320a4c5970bd",
+      "device": 16777233,
+      "inode": 756391663,
+      "gateId": "1c880d0c-7bb0-459b-a0bf-e7f91602577d",
+      "suite": "harness-fixtures",
+      "copies": [],
+      "migrations": [
+        {
+          "path": "dotln-temporary-roots-test-bbXnTD/roots/recovery-parent-IMJ7Fd/disposable-OvUP3K",
+          "sha256": "55107dc236c2ae271224fe26eccf8421c85a5f84fad119e020f3b71ba8abaabc",
+          "token": "3534649f-487d-47e8-b6a7-c92ae8c4ee11"
+        }
+      ],
+      "disposals": [],
+      "bytes": 627029
+    }
+  ],
+  "summary": {
+    "planned": 4,
+    "bytes": 2508084,
+    "copies": 0,
+    "inheritedLifetimes": 4,
+    "emptyTestControls": 0,
+    "removed": 4,
+    "remaining": 0
+  },
+  "cleanups": [
+    {
+      "gateId": "76a6260d-24ee-473e-892b-1e366ebe2de4",
+      "removed": 4,
+      "retained": [],
+      "blockers": []
+    },
+    {
+      "gateId": "8fe86269-16e2-4e5e-ade7-192c192cad08",
+      "removed": 4,
+      "retained": [],
+      "blockers": []
+    },
+    {
+      "gateId": "43bff0ec-1b0b-4b67-8772-ce0903285183",
+      "removed": 4,
+      "retained": [],
+      "blockers": []
+    },
+    {
+      "gateId": "1c880d0c-7bb0-459b-a0bf-e7f91602577d",
+      "removed": 4,
+      "retained": [],
+      "blockers": []
+    }
+  ],
+  "remaining": []
+}
