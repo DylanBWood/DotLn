@@ -25,6 +25,10 @@ Do not wait for the operator to challenge a claim before checking it.
 When wrong, state the specific error, the checked evidence and the correction
 directly. A wording change does not correct an unsupported claim or decision.
 
+Follow a requirement's purpose, scope and timing; a convenient proxy is not
+equivalent evidence. Record failures and corrections while continuing the
+authorized task unless the operator explicitly pauses, stops or cancels it.
+
 ## Shell
 
 Commands run in zsh, not bash. Quote a pattern meant for a program
