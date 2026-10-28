@@ -397,6 +397,18 @@ sequence file reads 18,914 bytes against its 12,369-byte acceptance, an
 advisory the standing route leaves to planning, as the 2026-10-26 pass
 recorded at 17,017.
 
+One budgets acceptance, recorded after the receipt (§Validation): the
+reviewer root measures 29,811 bytes (CLAUDE.md 7,099 plus the reviewer skill
+22,712) against its 28,884 ceiling since WO-233's four hand-written
+CLAUDE.md lines of 2026-10-27 (`e35caed6`), a breach left advisory at
+WO-233's close, which the standing route of 2026-09-17 forbids across
+orders. Receipt 057 recorded it as an observed failure against WO-236's and
+WO-235's criterion 7. The pass preserves the reviewed lines and records the
+dated acceptance at the measured bytes plus one 4,096-byte step, 33,907, in
+`docs/control/budgets.json`; the executor (30,857 against 34,953), verifier
+(27,385 against 29,831), release-close (18,574 against 21,266) and planner
+(19,483 against 24,576) roots are within their ceilings.
+
 ## NoOps and traps
 
 Every candidate weighed and not filed is in the map's section "Candidates —
@@ -465,3 +477,50 @@ the ledger and the register written from 13:50Z; the first commit and the
 refutation times are in the last section. Usage at handoff is in the
 response. Agents: the refuter only; the actual worker type is recorded
 below.
+
+## Validation and independent judgment
+
+The subject was committed at `0764cfd1` (the two orders, the sequence, the
+map, the register, the ledger registration, the index, product 07, the
+2026-10-24 annotation, the ceilings, the publication lock and this
+document) and `f58bc580` (the cost table). One fresh background
+`dotln-worker` (claude-opus-5-5, xhigh, no model override; its effective
+model and effort have no host readback, so the worker type is the parent's
+launch attestation) judged the canonical prompt `npm run plan -- refute`
+printed, which the parent saved to session scratch, and nothing else of the
+planner's; it read named repository files read-only at `f58bc580` to check
+the orders' claims and, as its statement says, opened no planning document,
+receipt, local record, intake or other repository, ran no script and wrote
+nothing in the repository. The host observed the worker for 1,110 s; the
+receipt records 1,332 s from dispatch to file. Receipt
+[`2026-10-28-planning-f266262cbe291586-057`](refutations/2026-10-28-planning-f266262cbe291586-057.md),
+committed by the helper as `4908a14f`: plan verdict
+`aligned-with-findings`; WO-236, WO-235 and WO-237 each
+`aligned-with-findings`; no holds; eleven orders carried by hash; the gate
+reads 57 receipts, 46 passes, no advisory, and the judged, committed and
+workspace subjects equal (`sha256:e860a68e…`).
+
+Fifteen findings, six on WO-236, seven on WO-235 and two on WO-237, are
+recorded on the three catalog rows as receipt 057's known issues for the
+executors' decisions. Two are observed failures with one cause: the
+reviewer root is over its cold-start ceiling at HEAD, WO-233's residue,
+which §Write-backs records as a dated acceptance under the standing route,
+so both criteria are satisfiable as written. The pass's reading of the
+rest, for WO-236's executor in particular: the two criterion-3 findings
+(the launchpad's registry copy can be edited from inside the executor's
+root, so the resolution should require the row to equal main's registry
+and clone map and the target to be the registered clone's worktree on the
+order's branch, as the publish admission already requires; and every
+resolution error must withhold rather than throw, because a thrown error
+turns the whole outside-write judgment into an advisory admission) are
+design readings the order's "any other case grants nothing" sentence
+intends and the executor makes explicit in step 3 and its cases; the
+criterion-5 finding (writer reservation is per root) and the criterion-1
+finding (WO-192's target-rooted workers) are recorded for WO-236's and
+WO-192's executors with their reopening observations. WO-235's seven and
+WO-237's two are recorded for their executors in the same way. No judged
+text is edited after the receipt.
+
+Process cost at handoff: the usage readback is in the response; one
+agent was launched (the refuter), 1 of the 20-admission cap. The outcome
+matched the aim stated in the direction ledger.
