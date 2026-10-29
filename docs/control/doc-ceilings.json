@@ -5,92 +5,92 @@
     "00-vision.md": {
       "nonExemptBytesAtLanding": 28275,
       "ceiling": 31103,
-      "date": "2026-10-20",
-      "decision": "docs/planning/entropy-review-007-2026-10-20.md#9-document-ceilings"
+      "date": "2026-10-28",
+      "decision": "docs/planning/document-contract-and-release-close-2026-10-28.md#11-write-backs-and-ceilings"
     },
     "01-principles.md": {
       "nonExemptBytesAtLanding": 9462,
       "ceiling": 10409,
-      "date": "2026-10-20",
-      "decision": "docs/planning/entropy-review-007-2026-10-20.md#9-document-ceilings"
+      "date": "2026-10-28",
+      "decision": "docs/planning/document-contract-and-release-close-2026-10-28.md#11-write-backs-and-ceilings"
     },
     "02-domain-model.md": {
-      "nonExemptBytesAtLanding": 149912,
-      "ceiling": 164904,
-      "date": "2026-10-20",
-      "decision": "docs/planning/entropy-review-007-2026-10-20.md#9-document-ceilings"
+      "nonExemptBytesAtLanding": 150031,
+      "ceiling": 165035,
+      "date": "2026-10-28",
+      "decision": "docs/planning/document-contract-and-release-close-2026-10-28.md#11-write-backs-and-ceilings"
     },
     "03-architecture.md": {
-      "nonExemptBytesAtLanding": 185493,
-      "ceiling": 204043,
-      "date": "2026-10-21",
-      "decision": "docs/planning/fork-notes-and-operator-questions-2026-10-21.md#11-write-backs-and-document-ceilings"
+      "nonExemptBytesAtLanding": 190325,
+      "ceiling": 209358,
+      "date": "2026-10-28",
+      "decision": "docs/planning/document-contract-and-release-close-2026-10-28.md#11-write-backs-and-ceilings"
     },
     "04-interfaces.md": {
-      "nonExemptBytesAtLanding": 66601,
-      "ceiling": 73262,
-      "date": "2026-10-24",
-      "decision": "docs/planning/intake-mining-run-routing-2026-10-24.md#16-write-backs-and-document-ceilings"
+      "nonExemptBytesAtLanding": 67351,
+      "ceiling": 74087,
+      "date": "2026-10-28",
+      "decision": "docs/planning/document-contract-and-release-close-2026-10-28.md#11-write-backs-and-ceilings"
     },
     "05-pattern-library.md": {
-      "nonExemptBytesAtLanding": 135946,
-      "ceiling": 149541,
-      "date": "2026-10-20",
-      "decision": "docs/planning/entropy-review-007-2026-10-20.md#9-document-ceilings"
+      "nonExemptBytesAtLanding": 136263,
+      "ceiling": 149890,
+      "date": "2026-10-28",
+      "decision": "docs/planning/document-contract-and-release-close-2026-10-28.md#11-write-backs-and-ceilings"
     },
     "06-roadmap.md": {
       "nonExemptBytesAtLanding": 41953,
       "ceiling": 46149,
-      "date": "2026-10-20",
-      "decision": "docs/planning/entropy-review-007-2026-10-20.md#9-document-ceilings"
+      "date": "2026-10-28",
+      "decision": "docs/planning/document-contract-and-release-close-2026-10-28.md#11-write-backs-and-ceilings"
     },
     "07-execution-guide.md": {
-      "nonExemptBytesAtLanding": 269727,
-      "ceiling": 296700,
+      "nonExemptBytesAtLanding": 279012,
+      "ceiling": 306914,
       "date": "2026-10-28",
-      "decision": "docs/planning/target-write-grant-and-fork-block-2026-10-28.md#write-backs-and-document-ceilings"
+      "decision": "docs/planning/document-contract-and-release-close-2026-10-28.md#11-write-backs-and-ceilings"
     },
     "08-publication-compiler.md": {
-      "nonExemptBytesAtLanding": 24867,
-      "ceiling": 27354,
-      "date": "2026-10-20",
-      "decision": "docs/planning/entropy-review-007-2026-10-20.md#9-document-ceilings"
+      "nonExemptBytesAtLanding": 26515,
+      "ceiling": 29167,
+      "date": "2026-10-28",
+      "decision": "docs/planning/document-contract-and-release-close-2026-10-28.md#11-write-backs-and-ceilings"
     },
     "09-audit-resilience-privacy.md": {
-      "nonExemptBytesAtLanding": 52735,
-      "ceiling": 58009,
-      "date": "2026-10-20",
-      "decision": "docs/planning/entropy-review-007-2026-10-20.md#9-document-ceilings"
+      "nonExemptBytesAtLanding": 53441,
+      "ceiling": 58786,
+      "date": "2026-10-28",
+      "decision": "docs/planning/document-contract-and-release-close-2026-10-28.md#11-write-backs-and-ceilings"
     },
     "10-ir-compatibility.md": {
       "nonExemptBytesAtLanding": 25787,
       "ceiling": 28366,
-      "date": "2026-10-20",
-      "decision": "docs/planning/entropy-review-007-2026-10-20.md#9-document-ceilings"
+      "date": "2026-10-28",
+      "decision": "docs/planning/document-contract-and-release-close-2026-10-28.md#11-write-backs-and-ceilings"
     },
     "11-proteino.md": {
       "nonExemptBytesAtLanding": 2058,
       "ceiling": 2264,
-      "date": "2026-10-20",
-      "decision": "docs/planning/entropy-review-007-2026-10-20.md#9-document-ceilings"
+      "date": "2026-10-28",
+      "decision": "docs/planning/document-contract-and-release-close-2026-10-28.md#11-write-backs-and-ceilings"
     },
     "11-protino.md": {
       "nonExemptBytesAtLanding": 30626,
       "ceiling": 33689,
-      "date": "2026-10-20",
-      "decision": "docs/planning/entropy-review-007-2026-10-20.md#9-document-ceilings"
+      "date": "2026-10-28",
+      "decision": "docs/planning/document-contract-and-release-close-2026-10-28.md#11-write-backs-and-ceilings"
     },
     "12-workstream-application.md": {
-      "nonExemptBytesAtLanding": 27447,
-      "ceiling": 30192,
-      "date": "2026-10-25",
-      "decision": "docs/planning/fork-returns-and-review-lint-2026-10-25.md#9-write-backs-and-document-ceilings"
+      "nonExemptBytesAtLanding": 27741,
+      "ceiling": 30516,
+      "date": "2026-10-28",
+      "decision": "docs/planning/document-contract-and-release-close-2026-10-28.md#11-write-backs-and-ceilings"
     },
     "13-uifa-roles.md": {
       "nonExemptBytesAtLanding": 27084,
       "ceiling": 29793,
-      "date": "2026-10-21",
-      "decision": "docs/planning/fork-notes-and-operator-questions-2026-10-21.md#11-write-backs-and-document-ceilings"
+      "date": "2026-10-28",
+      "decision": "docs/planning/document-contract-and-release-close-2026-10-28.md#11-write-backs-and-ceilings"
     }
   }
 }

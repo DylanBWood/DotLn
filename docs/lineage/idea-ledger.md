@@ -40,6 +40,20 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
+## 2026-10-28 — Planning pass: release close, the entropy proposals, the follow-ups, document accretion and the fork's second block (WO-239, WO-238; WO-235 amended); registration only; the record is the planning document
+
+Dispatch: `planning:` with five numbered items and the fork's block, sent at
+2026-10-29T02:36:25.671Z (hook time; the operator's local date is 2026-10-28)
+in Claude Code (Fable 5.1 at max, operator-selected), with one mid-turn
+operator message at 02:43:49Z, both captured verbatim in
+`docs/intake/notes/planning-document-contract-and-release-close-2026-10-28.md`
+(SHA-256 `1fd328b01272d8b90a6ca2cc1beca9e71d5d2473d20026390899082c03c13141`).
+The pass files WO-239 and WO-238, amends WO-235, retires WO-236 and WO-234,
+cuts the sequence to its current state, writes the document-kinds contract
+and the operator-record sentence into product 07, disposes the follow-ups
+of WO-236, WO-234 and WO-233, and answers the fork's block. Record:
+[the planning document](../planning/document-contract-and-release-close-2026-10-28.md).
+
 ## 2026-10-28 — Planning pass: the fork's target-write blocker filed as WO-236 and placed first, the journal question answered on its corrected unit as WO-237, and the fork's two blocks answered; registration only; the record is the planning document
 
 Dispatch: `planning: issues from the fucking fork. HUGE FUCKING BLOCKER. …`,

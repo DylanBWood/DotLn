@@ -18,7 +18,7 @@ refusals in `scripts/resume.mjs`'s completion commands and in
 `scripts/lib/meta.mjs` with the advisory in `scripts/refute-plan.mjs` and
 the completion commands, the best-comparable line in
 `scripts/lib/reader-profiles.mjs` `writingGuidance`, the skeleton in
-`scripts/refute-plan.mjs` `start`, the shared sentence in
+`scripts/refute-plan.mjs` `start`, the shared sentence, with its standing-document clause, in
 `packages/skeleton/src/loadouts/contributor.ts` with its oracle re-mint, the
 Stop hook's refusal to end a turn with an operator message unanswered in
 `packages/skeleton/src/harness-host.ts` (amendment D001), cases in
@@ -65,6 +65,10 @@ with authority) and product 05's Mode entry paragraph (668 to 674: mode is
 never inferred from profanity, capitalization or sentiment; an intense
 message may be a directive about response posture). Filed by the
 [2026-10-26 pass](../planning/wo192-fixes-and-example-drift-2026-10-26.md).
+Amended by the [2026-10-28 document-contract pass](../planning/document-contract-and-release-close-2026-10-28.md)
+on the operator's item 4.c of that day (capture SHA-256
+`1fd328b01272d8b90a6ca2cc1beca9e71d5d2473d20026390899082c03c13141`): the
+trend in the fork's documents is this order's to address.
 Planner-synthesized. Opaque identifier, not a priority. Clean-room screen:
 no stop condition; the Korean Air association is the operator's own
 reading of a public book, preserved as product 05 already preserves it,
@@ -146,7 +150,16 @@ latest example.
   never the pattern; when the contract is silent on a shape, say so in the
   record and keep the artifact to what the contract names. `plan start`
   writes the pass document's skeleton from product 07's artifact list, so a
-  pass has no reason to open the previous one for its shape.
+  pass has no reason to open the previous one for its shape. The rule has a
+  standing-document clause: a standing document (a product document, the
+  sequence, the map's catalog, a workstream, a repository profile, an
+  instance's operator record) holds the current state for its reader; a
+  change replaces the sentence that is now wrong and links the record, and
+  the dated account of what happened goes to the record (the order's
+  decisions, the pass's document), never under a standing heading (product
+  07 §Operator-opened planning pass, item 7; the operator's direction of
+  2026-10-28, with the fork's operator record and repository profile as the
+  observed instances).
 - **The standard is the best comparable, disclosed.** For each measured
   artifact class (pull-request body, order file, planning document,
   verification and final-review reports) the meter records the smallest
@@ -313,12 +326,13 @@ latest example.
    process-debt`.
 6. `scripts/lib/reader-profiles.mjs` `writingGuidance`: the contract first,
    then "Best comparable: <path> (<bytes>)", the "Nearest example" line
-   removed. Check: `npm test -- --only publication-fixtures`; `npm test --
+   removed, and the surface's document kind and reader named (standing,
+   record or generated; who reads it and when). Check: `npm test -- --only publication-fixtures`; `npm test --
    --only github-body`.
 7. `packages/skeleton/src/loadouts/contributor.ts`: the shared sentence in
-   `targetRoles` (553): the shape rule, the ledger duty, the correction
-   freeze on a recorded correction event, the priority rule and the
-   register rule. Then `npm run build && node scripts/harness.mjs emit`; the
+   `targetRoles` (553): the shape rule and its standing-document clause,
+   the ledger duty, the correction freeze on a recorded correction event,
+   the priority rule and the register rule. Then `npm run build && node scripts/harness.mjs emit`; the
    role oracle fixture `packages/skeleton/fixtures/wo235-role-baseline.json`
    with the chain intact; the decisions record each root's cold-start bytes
    before and after. Check: `npm run harness -- check`; `npm test -- --only
@@ -386,10 +400,11 @@ the shared role sentence and the re-minted oracle; the write-backs.
    `prBodyBytes` series of the Observed gap names WO-222 as the best
    comparable at WO-232.
 6. `writingGuidance` for every surface names the contract first and the
-   best comparable instance, and no longer names a nearest example.
-7. Every generated role root states the shape rule, the ledger duty, the
-   correction freeze on a recorded correction event, the priority rule and
-   the register rule; the role oracle pins the roots with its chain intact;
+   best comparable instance, names the surface's kind and reader, and no
+   longer names a nearest example.
+7. Every generated role root states the shape rule and its
+   standing-document clause, the ledger duty, the correction freeze on a
+   recorded correction event, the priority rule and the register rule; the role oracle pins the roots with its chain intact;
    the decisions record each root's cold-start bytes before and after.
 8. The executor's own `docs/evidence/WO-235/directions.jsonl` holds one
    entry per operator message of its execution, each with its event, aim
@@ -449,6 +464,21 @@ document's statement of the turn-end refusal (criterion 9).
   check refuses the sentence as a new shape).
 - The filing pass's own direction ledger (its planning document) is the
   first instance of the record, written by hand before this order lands.
+- Carry-ins from WO-236, the operator's follow-ups of 2026-10-28, taken by
+  the 2026-10-28 document-contract pass: D016 (FUP-19862c74280a148e), an
+  expected-data update (the role oracle, a projection fixture) names its
+  cause and provenance in the decisions and the reviewer checks the fixture
+  diff against it; D017 (FUP-4e4a73be7b53eb45) and D018
+  (FUP-c42e96567d1dee6f), the consistency review traces a changed contract
+  through its consumers with file-level evidence, as a duty in the shared
+  role text this order re-mints, never a session-only checklist; D020
+  (FUP-d1b15b1b3e4dc761), answered by the ledger, the freeze and the
+  turn-end refusal (reopen: a review finds an expected-data update without
+  a cause, or a consumer the brief named is missed after the rule lands).
+- The standing-document clause (the operator's direction of 2026-10-28,
+  item 4.c): WO-238 adds the derived kinds, the reader binding, the read
+  census and the checks; this order carries the rule into every role
+  (reopen: WO-238 is withdrawn, in which case the clause stands alone).
 
 **Non-goals:** a byte cap on any artifact; a communication-mode state
 machine or a voice selector; refusing reads of prior documents; a
