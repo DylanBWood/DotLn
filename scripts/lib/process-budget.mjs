@@ -1,8 +1,11 @@
+import { formatDuration } from "./duration.mjs";
 import { docPath, docRelative } from "./config.mjs";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { coldStartHistory } from "./harness-context.mjs";
 import { validateRetention } from "./temporary-roots.mjs";
+import { readControl, eventsForOrder } from "./control-store.mjs";
+import { completedPhaseAttempts } from "./control-time.mjs";
 
 export const dispatchKinds = [
   "executor",
@@ -12,7 +15,7 @@ export const dispatchKinds = [
   "planner",
   "refuter",
 ];
-export function readBudgets(root) {
+export function readBudgets(root, { cutoff } = {}) {
   const path = docPath(root, "control", "budgets.json");
   if (!existsSync(path)) return null;
   const value = JSON.parse(readFileSync(path, "utf8"));
@@ -25,6 +28,46 @@ export function readBudgets(root) {
     throw new Error("Invalid process budget contract");
   const numberOrNull = (entry) =>
     entry === null || (Number.isFinite(entry) && entry >= 0);
+  let attempts;
+  const localWallClock = (phase) => {
+    if (!attempts) {
+      const control = readControl(root);
+      attempts = [...control.orders.keys()].flatMap((order) => [
+        ...completedPhaseAttempts(
+          eventsForOrder(control, order).filter(
+            (event) =>
+              !cutoff || (event.recordedAt && event.recordedAt <= cutoff),
+          ),
+        ),
+      ]);
+    }
+    const samples = attempts
+      .filter(
+        (attempt) =>
+          attempt.phase === phase &&
+          Number.isFinite(attempt.elapsedMs) &&
+          attempt.elapsedMs >= 0,
+      )
+      .map((attempt) => attempt.elapsedMs)
+      .sort((a, b) => a - b);
+    const middle = Math.floor(samples.length / 2);
+    const medianMs =
+      samples.length === 0
+        ? null
+        : samples.length % 2
+          ? samples[middle]
+          : (samples[middle - 1] + samples[middle]) / 2;
+    return {
+      source: "consumer-local completed phase attempts",
+      phase,
+      sampleCount: samples.length,
+      medianMs,
+      multiplier: 4,
+      minimumMs: 8 * 60 * 60 * 1000,
+      cutoff: cutoff ?? null,
+      ceiling: Math.max(4 * (medianMs ?? 0), 8 * 60 * 60 * 1000),
+    };
+  };
   if (
     value.subagentCap !== undefined &&
     value.subagentCap !== null &&
@@ -32,6 +75,37 @@ export function readBudgets(root) {
   )
     throw new Error("Invalid budget: subagentCap");
   for (const role of dispatchKinds) {
+    const dispatch = value.dispatches?.[role];
+    for (const limits of [
+      dispatch,
+      ...(role === "executor" && dispatch?.repair !== undefined
+        ? [dispatch.repair]
+        : []),
+    ]) {
+      if (!limits || typeof limits !== "object" || Array.isArray(limits))
+        throw new Error(`Invalid dispatch budget for ${role}`);
+      for (const metric of ["wallClockMs", "completeRuns"]) {
+        if (limits[metric] === undefined) limits[metric] = null;
+        if (metric === "wallClockMs" && limits[metric] === "local-median") {
+          const phase =
+            role === "executor"
+              ? limits === dispatch
+                ? "implementation"
+                : "repair"
+              : role === "verifier"
+                ? "verification"
+                : role === "reviewer"
+                  ? "finalReview"
+                  : undefined;
+          if (!phase)
+            throw new Error(`No completed-phase timing source for ${role}`);
+          limits.wallClockBasis = localWallClock(phase);
+          limits[metric] = limits.wallClockBasis.ceiling;
+        }
+        if (!numberOrNull(limits[metric]))
+          throw new Error(`Invalid budget: ${role}.${metric}`);
+      }
+    }
     if (
       !numberOrNull(value.dispatches?.[role]?.tokens) ||
       !numberOrNull(value.dispatches?.[role]?.costUsd) ||
@@ -79,10 +153,12 @@ export function budgetVerdict(budgets, metric, value, ceiling, scope) {
 }
 
 export function requireBudgets(rows) {
+  const durationOrValue = (metric, value) =>
+    /Ms$/u.test(metric) ? formatDuration(value) : value;
   const breaches = rows.filter((row) => row.verdict === "breach");
   if (breaches.length)
     console.warn(
-      `Advisory: process budget exceeded: ${breaches.map((row) => `${row.metric}=${row.value ?? row.bytes} > ${row.ceiling}`).join("; ")}`,
+      `Advisory: process budget exceeded: ${breaches.map((row) => `${row.metric}=${durationOrValue(row.metric, row.value ?? row.bytes)} > ${durationOrValue(row.metric, row.ceiling)}`).join("; ")}`,
     );
 }
 

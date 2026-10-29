@@ -1,4 +1,13 @@
 #!/usr/bin/env node
+import { readBudgets } from "./lib/process-budget.mjs";
+import { formatDuration } from "./lib/duration.mjs";
+import {
+  phaseDispatchAnchor,
+  effectiveDispatchLimits,
+  dispatchEvents,
+  dispatchStanding,
+  requireRedispatchBound,
+} from "./lib/dispatch-bound.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 import {
   existsSync,
@@ -292,6 +301,13 @@ const openPhases = [
   "final-review",
 ];
 export const OFF_RAMP_PHASES = {
+  "accept-overrun": [
+    "active",
+    "needs-fix",
+    "repairing",
+    "verifying",
+    "final-review",
+  ],
   waive: ["verifying", "needs-fix", "repairing", "verified", "final-review"],
   // Every phase but closed and withdrawn; `none` only for an order the log
   // knows (an allocated derived order never activated).
@@ -312,6 +328,7 @@ const actorCommand = (action, positional = "") =>
   `npm run resume -- ${action}${positional ? ` ${positional}` : ""} ${actorFlagUsage}`;
 const captureUsage = "--capture <path> --capture-hash sha256:<digest>";
 const offRampPositional = {
+  "accept-overrun": `<wallClockMs|completeRuns> --ceiling <value|unlimited> --reason <text> ${captureUsage}`,
   waive: `<criterion> --reason <text> ${captureUsage}`,
   withdraw: `--disposition ${WITHDRAWAL_DISPOSITIONS.join("|")} --reason <text> ${captureUsage}`,
   correct: `<ordinal|report-path> --set <field>=<value> [--set <field>=<value>] --reason <text>`,
@@ -770,7 +787,7 @@ const renderElapsed = (elapsed) =>
   Object.entries(elapsed)
     .map(
       ([phase, value]) =>
-        `- Elapsed ${phase}: ${value === "unknown" ? value : `${value} ms`}\n`,
+        `- Elapsed ${phase}: ${value === "unknown" ? value : formatDuration(value)}\n`,
     )
     .join("");
 
@@ -813,7 +830,7 @@ ${state.provenance ? `- Provenance: ${JSON.stringify(state.provenance)}\n` : ""}
 ${renderElapsed(timing.elapsed)}- Latest checkpoint: ${state.latestCheckpointRef ? `${state.latestCheckpointSha} (restore: \`git checkout ${state.latestCheckpointRef} -- .\`)` : state.checkpointUnavailable ? "unavailable for the latest transition; do not use an older checkpoint" : "none"}
 - Legal next actions: ${legalActions(state).join(", ") || "none"}
 - Legal off-ramps: ${legalOffRamps(state).join(", ") || "none"}
-${renderOffRamps(state)}`;
+${state.boundAcceptances?.length ? `- Bound acceptances: ${state.boundAcceptances.map((row) => `${row.phase} ${row.metric}=${row.ceiling === null ? "as needed" : row.metric === "wallClockMs" ? formatDuration(row.ceiling) : row.ceiling} (ordinal ${row.ordinal})`).join("; ")}\n` : ""}${renderOffRamps(state)}`;
 
 // Present only when recorded, so an order without off-ramps reads as before.
 const renderOffRamps = (state) =>
@@ -902,6 +919,7 @@ const projectOrder = (state, events) => {
         : null,
     legalNextActions: liveActions(state, events),
     legalOffRamps: legalOffRamps(state),
+    boundAcceptances: state.boundAcceptances ?? [],
     waivedCriteria: state.waivedCriteria ?? [],
     unmetCriteria: state.unmetCriteria ?? [],
     withdrawal: state.withdrawal ?? null,
@@ -1690,6 +1708,10 @@ const run = async (argv) => {
         )
       )
         requirePhase(state, orderEvents, "needs-fix");
+      requireRedispatchBound(repoRoot, {
+        workOrder: state.workOrderId,
+        intent: "resume: fix",
+      });
       await reserveCodexDispatch();
       message = repairBriefing(state);
       appendTransition(action, {
@@ -1888,6 +1910,93 @@ const run = async (argv) => {
       }
       removeMovedTargetRecords(repoRoot, result.moved, state.workOrderId);
       message = `${result.already ? "Already recorded" : "Recorded"} target records for ${state.repositoryId} at ${result.payload.commit}: ${result.payload.records.map((row) => row.path).join(", ")}. Run npm run meta and npm run plan -- followups --sync to refresh moved-decision indexes, then commit the instance's control segment, indexes and record removals before publishing both branches.`;
+      break;
+    }
+    case "accept-overrun": {
+      requireOffRamp(state, orderEvents, action);
+      const [metric, ...rest] = args;
+      if (!["wallClockMs", "completeRuns"].includes(metric))
+        throw new Error(`usage: ${commandFor(action)}`);
+      const { values, actorArgs } = routeArgs(action, rest, {
+        "--ceiling": "one",
+        "--reason": "one",
+        "--capture": "one",
+        "--capture-hash": "one",
+      });
+      const actor = routeActor(action, actorArgs);
+      const suppliedCeiling = values.get("--ceiling");
+      const ceiling =
+        suppliedCeiling === "unlimited" ? null : Number(suppliedCeiling);
+      if (
+        suppliedCeiling === undefined ||
+        (ceiling !== null && (!Number.isFinite(ceiling) || ceiling < 0))
+      )
+        throw new Error(
+          "accept-overrun requires a nonnegative finite --ceiling or unlimited",
+        );
+      // The operator authorizes the extension in conversation; the current
+      // agent records that capture with its actual identity and keeps its
+      // writer. Recording the authorization does not waive a criterion.
+      const phase = state.phase === "needs-fix" ? "repairing" : state.phase;
+      const events = dispatchEvents(repoRoot, state.workOrderId);
+      const anchor = phaseDispatchAnchor(repoRoot, {
+        workOrder: state.workOrderId,
+        phase,
+        events,
+      });
+      let previous;
+      let value = null;
+      if (anchor) {
+        const standing = dispatchStanding(repoRoot, {
+          journal: anchor.journal,
+          sessionKey: anchor.key,
+          events,
+        });
+        previous =
+          metric === "wallClockMs" ? standing.wallClockMs : standing.bound;
+        value =
+          metric === "wallClockMs" ? standing.elapsedMs : standing.completeRuns;
+      } else {
+        const role =
+          phase === "verifying"
+            ? "verifier"
+            : phase === "final-review"
+              ? "reviewer"
+              : "executor";
+        previous = effectiveDispatchLimits(
+          readBudgets(repoRoot),
+          role,
+          phase,
+          events,
+        )[metric];
+      }
+      if (
+        ceiling !== null &&
+        (previous === null ||
+          ceiling <= previous ||
+          (value !== null && ceiling <= value))
+      )
+        throw new Error(
+          `accept-overrun must extend ${metric} beyond its current value ${value === null ? "unknown" : metric === "wallClockMs" ? formatDuration(value) : value} and bound ${previous === null ? "unset" : metric === "wallClockMs" ? formatDuration(previous) : previous}`,
+        );
+      const session = recordingSession(repoRoot);
+      const { capture, captureHash } = routeCapture(action, values);
+      const { ordinal } = appendTransition(action, {
+        type: "DispatchBoundAccepted",
+        workOrderId: state.workOrderId,
+        phase: state.phase,
+        metric,
+        ceiling,
+        reason: values.get("--reason"),
+        capture,
+        captureHash,
+        recordingSession: {
+          role: session.role,
+          capture: captureTiming(repoRoot, capture, session),
+        },
+        actor,
+      });
+      message = `Recorded DispatchBoundAccepted for ${state.workOrderId} phase ${state.phase}: ${metric}=${ceiling === null ? "as needed" : metric === "wallClockMs" ? formatDuration(ceiling) : ceiling} at ordinal ${ordinal}. No phase or verdict changed.`;
       break;
     }
     case "waive": {
@@ -2384,7 +2493,13 @@ const run = async (argv) => {
           );
         restricted = `\n${restrictedBeaconBriefing(repoRoot, state.workOrderId, args[1])}`;
       }
-      if (state.phase === "active") await reserveCodexDispatch();
+      if (state.phase === "active") {
+        requireRedispatchBound(repoRoot, {
+          workOrder: state.workOrderId,
+          intent: "resume: next",
+        });
+        await reserveCodexDispatch();
+      }
       message =
         state.phase === "active"
           ? `${executionBriefing(state)}${restricted}`
@@ -2460,7 +2575,12 @@ const run = async (argv) => {
             codexDispatchRole,
           );
           if (typeof recordCodexDispatch === "function")
-            recordCodexDispatch(repoRoot, process.env.CODEX_THREAD_ID, action);
+            recordCodexDispatch(
+              repoRoot,
+              process.env.CODEX_THREAD_ID,
+              action,
+              state.workOrderId,
+            );
         } catch (error) {
           process.stderr.write(
             `DotLn advisory: Codex session entry failed (${error instanceof Error ? error.message : String(error)}); process cost remains unknown; cause no-session.\n`,

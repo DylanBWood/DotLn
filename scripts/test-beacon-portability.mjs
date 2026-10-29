@@ -111,13 +111,23 @@ test("WO-070 copied control plane emits a decoded Beacon without TypeScript sour
     "# WO-099 fixture\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n",
   );
   mkdirSync(join(root, "packages/skeleton/src"), { recursive: true });
-  cpSync(
-    join(repository, "packages/skeleton/src/temporary-root-records.mjs"),
-    join(root, "packages/skeleton/src/temporary-root-records.mjs"),
-  );
-  assert.deepEqual(readdirSync(join(root, "packages/skeleton/src")), [
+  const buildFree = [
+    "dispatch-journal.mjs",
+    "duration.mjs",
+    "gate-deadlines.mjs",
+    "gate-evidence.mjs",
+    "runtime-inputs.mjs",
     "temporary-root-records.mjs",
-  ]);
+  ];
+  for (const file of buildFree)
+    cpSync(
+      join(repository, "packages/skeleton/src", file),
+      join(root, "packages/skeleton/src", file),
+    );
+  assert.deepEqual(
+    readdirSync(join(root, "packages/skeleton/src")).sort(),
+    buildFree,
+  );
   assert.ok(!existsSync(join(root, "packages/skeleton/dist")));
   run("git", ["add", "."]);
   run("git", [
@@ -142,9 +152,10 @@ test("WO-070 copied control plane emits a decoded Beacon without TypeScript sour
   );
   assert.equal(status.phase, "active");
   assert.equal(status.latestVerdict, null);
-  assert.deepEqual(readdirSync(join(root, "packages/skeleton/src")), [
-    "temporary-root-records.mjs",
-  ]);
+  assert.deepEqual(
+    readdirSync(join(root, "packages/skeleton/src")).sort(),
+    buildFree,
+  );
   const { controlBeaconAddress, controlBeaconDirectory } = await import(
     pathToFileURL(join(root, "packages/beacons/src/control-beacon-fs.mjs")).href
   );

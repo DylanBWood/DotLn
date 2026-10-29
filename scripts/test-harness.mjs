@@ -1,3 +1,4 @@
+import "./test-dispatch-bound.mjs";
 import {
   excludeFixtureOwnership,
   ensureTemporaryRoot,
@@ -643,6 +644,10 @@ test("foreground CLI dispatch binds the actual roleless hook session and preserv
         .map(JSON.stringify)
         .join("\n") + "\n",
     );
+    // Damage appears after the successful lifecycle command, while the CLI
+    // observer still owes role binding and ordinary tool observations.
+    const damagedJournal = `docs/control/local/harness/${"e".repeat(64)}.json`;
+    write(root, damagedJournal, "{ truncated");
     const bound = invoke(
       root,
       "read-observer",
@@ -670,6 +675,12 @@ test("foreground CLI dispatch binds the actual roleless hook session and preserv
       /DotLn shell diagnostic, for an earlier command/u,
     );
     const after = state(id);
+    assert.ok(after.boundDispatch.unavailable.includes(damagedJournal));
+    assert.ok(bound.systemMessage.includes(damagedJournal));
+    assert.doesNotMatch(bound.systemMessage, /runtime-unavailable|bootstrap/u);
+    rmSync(join(root, damagedJournal));
+    recordCodexDispatch(root, id, "next", "WO-999");
+    assert.equal(state(id).boundDispatch.unavailable, undefined);
     for (const key of ["reads", "byteReads", "versionWarning"])
       assert.deepEqual(after[key], prior[key], key);
     assert.ok(after.authoredPaths.includes("own.txt"));
@@ -943,7 +954,10 @@ test("WO-139 Codex executor and fix completion automatically release after the f
     );
     const refusedDispatch = resume("verify");
     assert.notEqual(refusedDispatch.status, 0);
-    assert.match(refusedDispatch.stderr, /age \d+ seconds.*writer --release/u);
+    assert.match(
+      refusedDispatch.stderr,
+      /age \d+ h \d+ min.*writer --release/u,
+    );
     assert.equal(
       readFileSync(join(root, "docs/control/orders/WO-999.jsonl"), "utf8"),
       beforeRefusal,
@@ -1172,11 +1186,11 @@ test("WO-166 Codex dispatch refuses foreign holders before control events and pr
     });
     assert.throws(
       () => reserveCodexDispatchWriter(root, "new-wo166-session"),
-      /actor [0-9a-f]{12}; host process .*\).*reservedAt 2026-09-07T00:00:00.000Z; age \d+ seconds.*writer --release --force/,
+      /actor [0-9a-f]{12}; host process .*\).*reservedAt 2026-09-07T00:00:00.000Z; age \d+ h \d+ min.*writer --release --force/,
     );
     assert.throws(
       () => releaseHarnessWriterByOperator(root),
-      /owner is alive.*actor [0-9a-f]{12};.*Owner .*reservedAt 2026-09-07T00:00:00.000Z; age \d+ seconds.*writer --release --force/,
+      /owner is alive.*actor [0-9a-f]{12};.*Owner .*reservedAt 2026-09-07T00:00:00.000Z; age \d+ h \d+ min.*writer --release --force/,
     );
     assert.equal(readFileSync(controlPath, "utf8"), controlBefore);
     releaseHarnessWriter(root, input(root, "Stop", { session_id: foreign }));
@@ -6631,7 +6645,7 @@ test("WO-039 foreign writer reservations refuse while their owner lives, reclaim
     const refused = reason(edit);
     assert.match(
       refused,
-      /reserved by another session \(actor [0-9a-f]{12}; host process .*\).*reservedAt 2026-09-07T00:00:00.000Z; age \d+ seconds/,
+      /reserved by another session \(actor [0-9a-f]{12}; host process .*\).*reservedAt 2026-09-07T00:00:00.000Z; age \d+ h \d+ min/,
     );
     assert.ok(
       refused.includes(foreign.slice(0, 12)) &&
@@ -15944,6 +15958,352 @@ test("a closed selected order's override exit names its pending record and main'
       [record.actor.harness, record.actor.effort, record.actor.source],
       ["claude-code", "high", "claude-session-readback"],
     );
+  } finally {
+    removeFixture(root, { recursive: true });
+  }
+});
+
+test("dispatch-bound hooks refuse expensive starts, preserve diagnostic reads and report each turn", async () => {
+  const root = fixture();
+  try {
+    const budgets = JSON.parse(
+      readFileSync(
+        join(sourceRoot, "scripts/kit/budgets.template.json"),
+        "utf8",
+      ),
+    );
+    budgets.dispatches.executor.wallClockMs = 0;
+    write(root, "docs/control/budgets.json", json(budgets));
+    write(
+      root,
+      `docs/control/local/harness/${sha256("synthetic-session")}.json`,
+      json({
+        role: "executor",
+        intent: "resume: next",
+        startedAt: new Date().toISOString(),
+        workOrder: "WO-999",
+        startingEventCount: 1,
+        reads: [],
+      }),
+    );
+    const permission = await fixtureHook(root, "permissions");
+    for (const extra of [
+      ...["DOTLN_TEST_MODE=fixture ", "env DOTLN_TEST_MODE=fixture "].flatMap(
+        (prefix) =>
+          [
+            "npm test",
+            "npm test -- --review",
+            "npm --silent test -- --review",
+            "npm --prefix . test -- --review",
+            "node scripts/harness.mjs bounded -- node -e 0",
+          ].map((command) => ({
+            tool_name: "Bash",
+            tool_input: { command: prefix + command },
+          })),
+      ),
+      {
+        tool_name: "Bash",
+        tool_input: { command: "sh -c 'npm test -- --review'" },
+      },
+      {
+        tool_name: "Bash",
+        tool_input: {
+          command:
+            "sh -c 'env DOTLN_TEST_MODE=fixture npm --silent test -- --review'",
+        },
+      },
+      { tool_name: "Bash", tool_input: { command: "npm test -- --review" } },
+      {
+        tool_name: "Bash",
+        tool_input: { command: "npm --silent test -- --review" },
+      },
+      {
+        tool_name: "Bash",
+        tool_input: { command: "npm --prefix . test -- --review" },
+      },
+      {
+        tool_name: "Bash",
+        tool_input: {
+          command: "node scripts/harness.mjs bounded -- node -e 0",
+        },
+      },
+      { tool_name: "Agent", tool_input: { prompt: "fixture review" } },
+      {
+        tool_name: "Bash",
+        tool_input: {
+          command: "npm --silent run harness -- bounded -- node -e 0",
+        },
+      },
+    ]) {
+      const result = await permission(input(root, "PreToolUse", extra));
+      assert.equal(
+        result.hookSpecificOutput?.permissionDecision,
+        "deny",
+        `${JSON.stringify(extra)}: ${JSON.stringify(result)}`,
+      );
+      assert.match(
+        result.hookSpecificOutput.permissionDecisionReason,
+        /DOTLN_DISPATCH_BOUND.*analysis:.*accept-overrun/u,
+      );
+    }
+    for (const command of [
+      "cat fixture.ts",
+      "DOTLN_TEST_MODE=fixture npm test -- --only skeleton",
+      "env DOTLN_TEST_MODE=fixture npm test -- --only skeleton",
+      "env DOTLN_TEST_MODE=fixture npm --silent test -- --only skeleton",
+      "sh -c 'env DOTLN_TEST_MODE=fixture npm --silent test -- --only skeleton'",
+      "env DOTLN_TEST_MODE=fixture node scripts/harness.mjs bounded -- npm test -- --only skeleton",
+      "npm test -- --only skeleton",
+      "node scripts/harness.mjs bounded -- npm test -- --only skeleton",
+      "npm run harness -- bounded -- npm test -- --only skeleton",
+      "npm --silent run harness -- bounded -- npm test -- --only skeleton",
+      "node scripts/resume.mjs status --json",
+    ])
+      assert.notEqual(
+        (
+          await permission(
+            input(root, "PreToolUse", {
+              tool_name: "Bash",
+              tool_input: { command },
+            }),
+          )
+        ).hookSpecificOutput?.permissionDecision,
+        "deny",
+      );
+    const finish = await fixtureHook(root, "finish");
+    assert.match(
+      (await finish(input(root, "Stop"))).systemMessage,
+      /dispatch standing: .* h .* min/u,
+    );
+    await operatorControl(
+      {
+        session_id: "synthetic-session",
+        cwd: root,
+        prompt: "operator override: fixture",
+      },
+      "UserPromptSubmit",
+    );
+    const override = invoke(
+      root,
+      "permissions",
+      input(root, "PreToolUse", {
+        tool_name: "Bash",
+        tool_input: { command: "npm test -- --review" },
+      }),
+    );
+    assert.notEqual(override.hookSpecificOutput?.permissionDecision, "deny");
+  } finally {
+    await operatorControl(
+      {
+        session_id: "synthetic-session",
+        cwd: root,
+        prompt: "operator override: off",
+      },
+      "UserPromptSubmit",
+    );
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("a legacy executor keeps its own-order authority exclusion through prompt role binding", async () => {
+  const root = fixture();
+  try {
+    const key = sha256("synthetic-session");
+    write(
+      root,
+      `docs/control/local/harness/${key}.json`,
+      json({
+        role: "executor",
+        intent: "resume: next",
+        workOrder: "WO-999",
+        startedAt: new Date().toISOString(),
+        startingEventCount: 1,
+        reads: [],
+      }),
+    );
+    const prompt = await fixtureHook(root, "session");
+    await prompt(
+      input(root, "UserPromptSubmit", { prompt: "resume: final review" }),
+    );
+    const state = JSON.parse(
+      readFileSync(
+        join(root, `docs/control/local/harness/${key}.json`),
+        "utf8",
+      ),
+    );
+    assert.equal(state.role, "reviewer");
+    assert.ok(state.executedOrders.includes("WO-999"));
+    const { executorOf, recordingSession } =
+      await import("./lib/off-ramps.mjs");
+    const env = { CLAUDE_CODE_SESSION_ID: "synthetic-session" };
+    assert.match(executorOf(root, "WO-999", env), /executor/u);
+    assert.equal(executorOf(root, "WO-998", env), null);
+    assert.equal(recordingSession(root, env).role, "reviewer");
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("prompt, explicit begin and Codex entry retain role grants beside damaged dispatch history", async () => {
+  const root = fixture();
+  try {
+    const sessionHook = await fixtureHook(root, "session");
+    const permission = await fixtureHook(root, "permissions");
+    const finish = await fixtureHook(root, "finish");
+    const damaged = `docs/control/local/harness/${"c".repeat(64)}.json`;
+    for (const broken of [false, true]) {
+      if (broken) write(root, damaged, "{ truncated");
+      for (const entry of ["prompt", "begin", "codex"]) {
+        const id = `entry-${entry}-${broken}`;
+        const request = (event, extra = {}) =>
+          input(root, event, { session_id: id, ...extra });
+        if (entry === "prompt") {
+          const result = await sessionHook(
+            request("UserPromptSubmit", { prompt: "resume: verify" }),
+          );
+          assert.doesNotMatch(
+            JSON.stringify(result),
+            /runtime-unavailable|bootstrap/u,
+          );
+          if (broken) assert.ok(result.systemMessage.includes(damaged));
+        } else if (entry === "begin") beginHarnessSession(root, id, "verifier");
+        else recordCodexDispatch(root, id, "verify", "WO-999");
+        const saved = JSON.parse(
+          readFileSync(
+            join(root, `docs/control/local/harness/${sha256(id)}.json`),
+            "utf8",
+          ),
+        );
+        assert.equal(saved.role, "verifier");
+        assert.equal(saved.intent, "resume: verify");
+        assert.equal(saved.workOrder, "WO-999");
+        assert.equal(Boolean(saved.boundDispatch.unavailable), broken);
+        const grant = await permission(
+          request("PreToolUse", {
+            tool_name: "Write",
+            tool_input: {
+              file_path: join(tmpdir(), "dispatch-grant-fixture.txt"),
+              content: "fixture",
+            },
+          }),
+        );
+        assert.notEqual(
+          grant.hookSpecificOutput?.permissionDecision,
+          "deny",
+          JSON.stringify(grant),
+        );
+        if (broken) {
+          for (const extra of [
+            {
+              tool_name: "Bash",
+              tool_input: { command: "npm test -- --review" },
+            },
+            {
+              tool_name: "Bash",
+              tool_input: {
+                command: "node scripts/harness.mjs bounded -- node -e 0",
+              },
+            },
+            { tool_name: "Agent", tool_input: { prompt: "fixture" } },
+          ]) {
+            const result = await permission(request("PreToolUse", extra));
+            // The transport suppresses repeated terminal advisories, while
+            // every call still records its actual judgment.
+            const rows = readFileSync(
+              join(root, `docs/control/local/harness/${sha256(id)}.jsonl`),
+              "utf8",
+            )
+              .trim()
+              .split("\n")
+              .map(JSON.parse);
+            const advisory = rows.at(-1).advisory;
+            assert.match(
+              advisory,
+              /dispatch standing unavailable/u,
+              JSON.stringify({ entry, extra, result }),
+            );
+            assert.ok(advisory.includes(damaged));
+          }
+          const diagnostic = await permission(
+            request("PreToolUse", {
+              tool_name: "Bash",
+              tool_input: { command: "npm test -- --only skeleton" },
+            }),
+          );
+          assert.notEqual(
+            diagnostic.hookSpecificOutput?.permissionDecision,
+            "deny",
+          );
+          assert.match(
+            (await finish(request("Stop"))).systemMessage,
+            /dispatch standing: unavailable/u,
+          );
+        }
+      }
+    }
+  } finally {
+    removeFixture(root, { recursive: true });
+  }
+});
+
+test("usage retains its observation and host readback when standing is unavailable", () => {
+  const root = fixture();
+  try {
+    write(
+      root,
+      "docs/control/budgets.json",
+      readFileSync(join(sourceRoot, "scripts/kit/budgets.template.json")),
+    );
+    const damaged = `docs/control/local/harness/${"c".repeat(64)}.json`;
+    for (const host of ["claude", "codex", "copilot"]) {
+      const id = `usage-standing-${host}`;
+      const env = {
+        ...process.env,
+        CODEX_THREAD_ID: host === "codex" ? id : "",
+        COPILOT_AGENT_SESSION_ID: host === "copilot" ? id : "",
+      };
+      const observe = () => {
+        const run = spawnSync(
+          process.execPath,
+          ["scripts/harness.mjs", "usage", id],
+          {
+            cwd: root,
+            encoding: "utf8",
+            env,
+          },
+        );
+        assert.equal(run.status, 0, run.stderr);
+        return JSON.parse(run.stdout);
+      };
+      beginHarnessSession(root, id, "verifier");
+      const clean = observe();
+      assert.equal(clean.dispatchStanding.state, "within");
+      assert.equal("currentSession" in clean, host !== "claude");
+      write(root, damaged, "{ truncated");
+      recordCodexDispatch(root, id, "verify", "WO-999");
+      const broken = observe();
+      assert.deepEqual(broken.usage, clean.usage);
+      assert.equal(broken.source, clean.source);
+      assert.equal(broken.scope, clean.scope);
+      assert.equal(broken.dispatchStanding.state, "unavailable");
+      assert.ok(broken.dispatchStanding.cause.includes(damaged));
+      assert.equal(broken.dispatchStanding.completeRuns, undefined);
+      assert.equal(broken.dispatchStanding.startedAt, undefined);
+      assert.equal(
+        broken.standing,
+        `dispatch standing: unavailable (${broken.dispatchStanding.cause})`,
+      );
+      assert.equal("currentSession" in broken, "currentSession" in clean);
+      if (host !== "claude") {
+        assert.equal(
+          broken.currentSession.available,
+          clean.currentSession.available,
+        );
+        assert.equal(broken.currentSession.source, clean.currentSession.source);
+      }
+      rmSync(join(root, damaged));
+      assert.equal(observe().dispatchStanding.state, "within");
+    }
   } finally {
     removeFixture(root, { recursive: true });
   }

@@ -167,6 +167,52 @@ await test("WO-210 target review subjects bind exactly to the activation", () =>
     undefined,
   );
 });
+await test("dispatch acceptance fold validates the metric, ceiling, phase and capture", () => {
+  const activation = {
+    type: "WorkOrderActivated",
+    workOrderId: "WO-999",
+    workOrderPath: "docs/work-orders/WO-999.md",
+  };
+  const event = {
+    type: "DispatchBoundAccepted",
+    workOrderId: "WO-999",
+    phase: "active",
+    metric: "completeRuns",
+    ceiling: 4,
+    reason: "fixture",
+    capture: "docs/intake/operator.md",
+    captureHash: `sha256:${"a".repeat(64)}`,
+    actor: {
+      harness: "human",
+      harnessVersion: "fixture",
+      model: "human",
+      effort: "unknown",
+      source: "operator-attested",
+    },
+  };
+  const state = (entry) =>
+    foldWorkOrders([activation, entry]).orders.get("WO-999").state;
+  assert.equal(state(event).boundAcceptances[0].ceiling, 4);
+  assert.equal(state(event).phase, "active");
+  assert.equal(
+    state({ ...event, ceiling: null }).boundAcceptances[0].ceiling,
+    null,
+  );
+  for (const invalid of [
+    { metric: "tokens" },
+    { ceiling: -1 },
+    { ceiling: "4" },
+    { ceiling: undefined },
+    { phase: "closed" },
+    { captureHash: "wrong" },
+    { actor: {} },
+  ])
+    assert.throws(
+      () => state({ ...event, ...invalid }),
+      /invalid DispatchBoundAccepted/u,
+    );
+});
+
 await test("test-control-segments", async (t) => {
   let scriptRoot,
     root,

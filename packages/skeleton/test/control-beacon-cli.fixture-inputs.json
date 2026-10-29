@@ -1,12 +1,25 @@
 {
   "fixture": "control-beacon CLI",
-  "entries": ["packages/skeleton/src/gate-evidence.mjs"],
+  "entries": [
+    "packages/skeleton/src/gate-evidence.mjs",
+    "scripts/resume.mjs",
+    "scripts/worktree.mjs"
+  ],
   "files": [
     "packages/skeleton/src/gate-deadlines.mjs",
     "packages/skeleton/src/gate-evidence.mjs",
     "packages/skeleton/src/runtime-inputs.mjs",
     "packages/skeleton/src/temporary-root-records.mjs",
-    "packages/skeleton/src/writer-teardown.mjs"
+    "packages/skeleton/src/writer-teardown.mjs",
+    "packages/skeleton/src/duration.mjs",
+    "packages/skeleton/src/dispatch-journal.mjs",
+    "packages/compiler/src/attribution.mjs"
   ],
-  "directories": ["scripts", "packages/beacons", "packages/compiler/dist", "packages/kernel/dist", "packages/skeleton/dist"]
+  "directories": [
+    "scripts",
+    "packages/beacons",
+    "packages/compiler/dist",
+    "packages/kernel/dist",
+    "packages/skeleton/dist"
+  ]
 }

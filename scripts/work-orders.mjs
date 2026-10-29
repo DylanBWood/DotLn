@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { formatDuration } from "./lib/duration.mjs";
 import { firstDifferingLine } from "./lib/validation.mjs";
 import { spawnSync } from "node:child_process";
 import { pathToFileURL } from "node:url";
@@ -834,6 +835,11 @@ export const renderHistory = ({
 
 // The order's off-ramp events, shown only when recorded (WO-158).
 const offRampLines = (state) => [
+  ...(state?.boundAcceptances?.length
+    ? [
+        `- Bound acceptances: ${cell(state.boundAcceptances.map((row) => `${row.phase} ${row.metric}=${row.ceiling === null ? "as needed" : row.metric === "wallClockMs" ? formatDuration(row.ceiling) : row.ceiling} by ordinal ${row.ordinal}`).join("; "))}.`,
+      ]
+    : []),
   ...(state?.withdrawal
     ? [
         `- Withdrawal: ${cell(`${state.withdrawal.disposition} at ordinal ${state.withdrawal.ordinal} — ${state.withdrawal.reason}`)}.`,

@@ -327,6 +327,14 @@ export function shellInvocations(source: string): string[][] {
   return shellWords(source).map(({ words }) => words.map((word) => word.value));
 }
 
+/** Normalize executable operands for admission without requiring an effect
+ * adapter for every operand. Effect classification keeps its own full checks. */
+export function executableShellInvocations(source: string): string[][] {
+  return executableInvocations(source, 0, [], { screenEffects: false }).map(
+    (words) => words.map((word) => word.value),
+  );
+}
+
 /** WO-172: what the shell itself said about a command as written. zsh begins
  * such a line with its own name, the name of a builtin that refused and a
  * line number. The same text inside other output is not this command's
@@ -2216,7 +2224,9 @@ function executableInvocations(
   source: string,
   depth = 0,
   inheritedInput: readonly ShellWord[] = [],
+  options: { readonly screenEffects?: boolean } = {},
 ): ShellWord[][] {
+  const screenEffects = options.screenEffects !== false;
   if (depth > 16)
     throw new HarnessCommandRefused(
       "Shell nesting requires an explicit effect adapter",
@@ -2238,6 +2248,7 @@ function executableInvocations(
         args.map((word) => requireLiteral(word, "eval command")).join(" "),
         depth + 1,
         input,
+        options,
       );
     if (shellPrograms.has(program ?? "")) {
       // Shells accept combined short options such as -lc and -xc. The command
@@ -2250,6 +2261,7 @@ function executableInvocations(
           requireLiteral(args[commandOption + 1], "shell command"),
           depth + 1,
           input,
+          options,
         );
       if (invocation.stdin.length)
         return [
@@ -2258,15 +2270,20 @@ function executableInvocations(
             invocation.stdin.join("\n"),
             depth + 1,
             input,
+            options,
           ),
         ];
-      refuseDeniedProgram([...input, ...words]);
+      if (screenEffects) refuseDeniedProgram([...input, ...words]);
     }
     // Recognizing a program never makes its remaining operands data. Keep the
     // literal floor for every invocation except proven data operands; structured
     // classification may add effects, but cannot exempt a future subcommand.
     // An already-denied invocation keeps its precise effect classification.
-    if (!dataPrograms.has(program ?? "") && !deniedInvocation(words))
+    if (
+      screenEffects &&
+      !dataPrograms.has(program ?? "") &&
+      !deniedInvocation(words)
+    )
       refuseDeniedProgram([...input, ...floorOperands(words)]);
     return words.length ? [words] : [];
   });

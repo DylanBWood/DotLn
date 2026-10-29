@@ -1,4 +1,9 @@
 #!/usr/bin/env node
+import { formatDuration } from "./lib/duration.mjs";
+import {
+  dispatchStanding,
+  dispatchStandingLine,
+} from "./lib/dispatch-bound.mjs";
 import { mkdirSync, readFileSync, realpathSync } from "node:fs";
 import { resolve } from "node:path";
 import { usageObservation } from "../packages/skeleton/dist/src/usage-observation.mjs";
@@ -134,9 +139,22 @@ try {
       );
       observation = { ...usageObservation([]), cause: "no-session" };
     }
+    let standing, standingLine;
+    try {
+      standing = dispatchStanding(root, { session: args[0] });
+      standingLine = dispatchStandingLine(standing);
+    } catch (error) {
+      // Consumption evidence can be unreadable while usage remains observable.
+      // Keep the readback available without inventing a fresh or unset bound.
+      const cause = error instanceof Error ? error.message : String(error);
+      standing = { state: "unavailable", cause };
+      standingLine = `dispatch standing: unavailable (${cause})`;
+    }
     console.log(
       JSON.stringify({
         ...observation,
+        dispatchStanding: standing,
+        standing: standingLine,
         ...(process.env.CODEX_THREAD_ID || process.env.COPILOT_AGENT_SESSION_ID
           ? { currentSession: await optionalCurrentSession(root, args[0]) }
           : {}),
@@ -182,7 +200,9 @@ try {
       throw new Error("usage: harness evidence --wait [--timeout <seconds>]");
     const timeout = args.length === 3 ? Number(args[2]) : 1200;
     if (!Number.isFinite(timeout) || timeout < 0 || timeout > 3600)
-      throw new Error("wait timeout must be between 0 and 3600 seconds");
+      throw new Error(
+        "wait timeout must be between 0 h 0 min and 1 h 0 min (the --timeout argument is in seconds)",
+      );
     const started = activeGateRuns(root);
     const runIds = started.map((run) => run.runId);
     const deadline = Date.now() + timeout * 1000;
@@ -262,7 +282,7 @@ try {
         const preparation = prepareHarnessEvidence(root);
         treeHash = gateTreeHash(root);
         console.log(
-          `Prepared owned evidence projections in ${preparation.durationMs.toFixed(1)} ms`,
+          `Prepared owned evidence projections in ${formatDuration(preparation.durationMs)}`,
         );
         if (active.stopRequested())
           throw new Error(

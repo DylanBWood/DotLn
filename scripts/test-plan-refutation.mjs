@@ -6889,6 +6889,7 @@ else {
             "localReleaseCloses",
             "localHostDenials",
             "interventions",
+            "boundStops",
             "longPhases",
             "repeatedGateRuns",
             "recentTracks",

@@ -84,7 +84,10 @@ test("a slow barrier double survives simulated load and a hit reads current peer
     JSON.stringify({ tasks: ["slow-double", "later-peer"] }),
   );
   time = 801;
-  assert.throws(() => deadline.check(), /fixture:barrier.*801/);
+  assert.throws(
+    () => deadline.check(),
+    /fixture:barrier hit after 0 h 0 min \(bound 0 h 0 min;/,
+  );
   const [record] = readFileSync(log, "utf8").trim().split("\n").map(JSON.parse);
   assert.equal(record.timeoutMs, 800);
   assert.equal(record.durationMs, 801);
@@ -556,10 +559,7 @@ test("lane wait unions overlapping tasks, attributes relation changes and separa
   });
   assert.equal(wait.holders.length, 2);
   assert.ok(!JSON.stringify(wait).includes("/private/"));
-  assert.match(
-    formatHostLaneWait(wait),
-    /1.6 s waiting for host lanes.*0.7 s behind another checkout/,
-  );
+  assert.equal(formatHostLaneWait(wait), "");
   const critical = gateCriticalPath(rows);
   assert.equal(critical.waitMs, critical.laneWaitMs + critical.gapMs);
   assert.equal(critical.laneWaitMs, 1050);
@@ -809,21 +809,25 @@ test("lane wait summary omits zero-rounded totals and relation parts without cha
   assert.deepEqual(wait, before);
   assert.equal(
     formatHostLaneWait({
-      wallMs: 1050,
+      wallMs: 105000,
       byRelation: {
         "this-checkout": 10,
-        "another-checkout": 1000,
+        "another-checkout": 100000,
         unknown: 40,
       },
     }),
-    "; 1.1 s waiting for host lanes (1.0 s behind another checkout)",
+    "; 0 h 2 min waiting for host lanes (0 h 2 min behind another checkout)",
   );
   assert.equal(
     formatHostLaneWait({
-      wallMs: 60,
-      byRelation: { "this-checkout": 20, "another-checkout": 20, unknown: 20 },
+      wallMs: 60000,
+      byRelation: {
+        "this-checkout": 20000,
+        "another-checkout": 20000,
+        unknown: 20000,
+      },
     }),
-    "; 0.1 s waiting for host lanes",
+    "; 0 h 1 min waiting for host lanes",
   );
 });
 

@@ -1,3 +1,6 @@
+import { dispatchJournalDirectory } from "../../packages/skeleton/src/dispatch-journal.mjs";
+import { dispatchBoundActivity } from "./dispatch-bound.mjs";
+import { formatDuration } from "./duration.mjs";
 import {
   readJsonFile,
   containedRegularFile,
@@ -19,7 +22,7 @@ import {
   realpathSync,
   writeFileSync,
 } from "node:fs";
-import { dirname, join, resolve } from "node:path";
+import { dirname, join, relative, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { usageRecordIdentity } from "../../packages/skeleton/src/usage-observation.mjs";
 import { correctionCounts } from "../../packages/skeleton/src/correction-observation.mjs";
@@ -132,7 +135,7 @@ function checkExperiment(entry, path) {
     !text(entry.cost.source)
   )
     throw new Error(
-      `${path}: experiment requires measured cost with commands/source inside its budget (at most 900 s); unknown tokens use null`,
+      `${path}: experiment requires measured cost with commands/source inside its budget (at most 0 h 15 min); unknown tokens use null`,
     );
   if (
     !effectMeasurement(entry.effect?.wallSecondsPerOrder) ||
@@ -568,7 +571,17 @@ const requireObservationFile = (root, path) => {
     );
 };
 function journalCopies(root, supplemental = false) {
-  const directory = docPath(root, "control", "local/harness");
+  // Installed harness observations retain their physical lane until loader
+  // migration; keep configured historical copies too and deduplicate prefixes.
+  const directories = [
+    docPath(root, "control", "local/harness"),
+    dispatchJournalDirectory(root),
+  ];
+  return [...new Set(directories)].flatMap((directory) =>
+    journalDirectoryCopies(root, directory, supplemental),
+  );
+}
+function journalDirectoryCopies(root, directory, supplemental) {
   if (!existsSync(directory)) return [];
   if (
     supplemental &&
@@ -582,25 +595,19 @@ function journalCopies(root, supplemental = false) {
     .filter((name) => /^[a-f0-9]{64}\.jsonl$/.test(name))
     .map((name) => {
       if (supplemental) {
+        requireObservationFile(root, join(relative(root, directory), name));
         requireObservationFile(
           root,
-          docRelative(root, "control", `local/harness/${name}`),
-        );
-        requireObservationFile(
-          root,
-          docRelative(root, "control", `local/harness/${name.slice(0, -1)}`),
+          join(relative(root, directory), name.slice(0, -1)),
         );
       }
       const state = json(
         root,
-        docRelative(root, "control", `local/harness/${name.slice(0, -1)}`),
+        join(relative(root, directory), name.slice(0, -1)),
         {},
       );
       let role;
-      const raw = jsonl(
-        root,
-        docRelative(root, "control", `local/harness/${name}`),
-      );
+      const raw = jsonl(root, join(relative(root, directory), name));
       return {
         name,
         raw,
@@ -1055,6 +1062,13 @@ export function orderSnapshot(meta, workOrder, source) {
         metrics: order.metrics,
         corrections: order.corrections,
         directions: order.directions,
+        ...(order.boundStops
+          ? {
+              boundStops: order.boundStops,
+              boundAcceptances: order.boundAcceptances,
+              afterStop: order.afterStop,
+            }
+          : {}),
         usageByRole: Object.fromEntries(
           Object.entries(order.usageByRole).map(
             ([role, { source, ...totals }]) => [role, totals],
@@ -1282,6 +1296,13 @@ export function recoveredUsageSnapshot(
           metrics: kept.metrics,
           ...(kept.corrections ? { corrections: kept.corrections } : {}),
           ...(kept.directions ? { directions: kept.directions } : {}),
+          ...(kept.boundStops
+            ? {
+                boundStops: kept.boundStops,
+                boundAcceptances: kept.boundAcceptances ?? [],
+                afterStop: kept.afterStop ?? [],
+              }
+            : {}),
           usageByRole,
           dispatches: observedDispatches(kept.dispatches ?? []),
           declared: kept.declared ?? null,
@@ -1747,6 +1768,40 @@ export async function collectMeta(
         check.workOrder === workOrder &&
         ["npm test", "npm run test:full"].includes(check.checkId),
     );
+    const boundStops = [
+      ...hook
+        .filter((value) => value.boundStop && value.source !== "gate")
+        .map((value) => ({
+          ...value.boundStop,
+          at: value.at ?? value.recordedAt,
+          workOrder,
+          role: value.role,
+          phase: value.phase,
+          source: value.source,
+        })),
+      ...gateRows
+        .filter((value) => value.boundStop)
+        .map((value) => ({
+          ...value.boundStop,
+          at: value.recordedAt,
+          workOrder,
+          role:
+            value.dispatchBound?.role ??
+            value.role ??
+            hook.find((entry) => entry.source === "gate" && entry.boundStop)
+              ?.role ??
+            "unknown",
+          source: "gate",
+        })),
+    ];
+    const boundActivity =
+      closedOrder && prior?.boundStops
+        ? {
+            boundStops: prior.boundStops,
+            boundAcceptances: prior.boundAcceptances ?? [],
+            afterStop: prior.afterStop ?? [],
+          }
+        : dispatchBoundActivity(events, boundStops);
     const successfulGate = gateRows.findLast(
       (row) => row.executed === true && row.exitCode === 0,
     );
@@ -1942,6 +1997,13 @@ export async function collectMeta(
           : computed;
       return {
         role,
+        ...(closedOrder && heldRole?.boundStops
+          ? {
+              boundStops: heldRole.boundStops,
+              boundAcceptances: heldRole.boundAcceptances ?? [],
+              afterStop: heldRole.afterStop ?? [],
+            }
+          : dispatchBoundActivity(events, boundStops, role)),
         wallClockMs:
           sumKnown(rolePhases.map((value) => value.elapsedMs)) ??
           sumKnown(roleUsage.map((value) => value.durationMs)) ??
@@ -2003,6 +2065,7 @@ export async function collectMeta(
       metrics,
       corrections,
       directions,
+      ...boundActivity,
       dispatches,
       usage,
       usageByRole,
@@ -2219,6 +2282,8 @@ export async function collectMeta(
   };
 }
 
+const displayMetric = (key, value) =>
+  /Ms$/u.test(key) ? formatDuration(value) : display(value);
 const display = (value) =>
   value === null || value === undefined
     ? "unavailable"
@@ -2248,7 +2313,17 @@ export function renderMetaTable(meta) {
     }
     return display(value);
   };
-  const d = (row, key) => cell(row.metrics[key], row.delta[key]);
+  const durationCell = (value, delta) => {
+    if (unobserved(value)) {
+      omitted++;
+      return "";
+    }
+    return `${formatDuration(value)}${unobserved(delta) ? "" : ` (Δ ${formatDuration(delta)})`}`;
+  };
+  const d = (row, key) =>
+    ["elapsedMs", "gateMs"].includes(key)
+      ? durationCell(row.metrics[key], row.delta[key])
+      : cell(row.metrics[key], row.delta[key]);
   const orderKeys = [
     "elapsedMs",
     "attempts",
@@ -2267,7 +2342,7 @@ export function renderMetaTable(meta) {
       return [];
     }
     return [
-      `| ${row.workOrder} | ${d(row, "elapsedMs")} / ${plain(row.metrics.attempts)} | ${d(row, "gateMs")} | ${d(row, "readObligationCount")} / ${d(row, "readObligationBytes")} | ${d(row, "tokens")} / ${d(row, "costUsd")} | ${d(row, "declaredPromptTokens")} | ${d(row, "operatorCorrections")} | ${d(row, "operatorDirections")} |`,
+      `| ${row.workOrder} | ${d(row, "elapsedMs")} / ${plain(row.metrics.attempts)} | ${d(row, "gateMs")} | ${d(row, "readObligationCount")} / ${d(row, "readObligationBytes")} | ${d(row, "tokens")} / ${d(row, "costUsd")} | ${d(row, "declaredPromptTokens")} | ${d(row, "operatorCorrections")} | ${d(row, "operatorDirections")} | ${plain(row.boundStops?.count)} | ${plain(row.boundAcceptances?.length)} |`,
     ];
   });
   const observed = [
@@ -2287,9 +2362,12 @@ export function renderMetaTable(meta) {
           omitted += observed.length;
           return [];
         }
-        const pair = (key) => cell(row[key], row.delta?.[key]);
+        const pair = (key) =>
+          key === "wallClockMs"
+            ? durationCell(row[key], row.delta?.[key])
+            : cell(row[key], row.delta?.[key]);
         return [
-          `| ${order.workOrder}/${row.role} | ${pair("wallClockMs")} | ${pair("bytesReadIntoContext")} | ${pair("commandsRun")} | ${pair("observedTokens")} | ${pair("stepCount")} | ${pair("observedCostUsd")} / ${plain(row.declaredPromptTokens)} |`,
+          `| ${order.workOrder}/${row.role} | ${pair("wallClockMs")} | ${pair("bytesReadIntoContext")} | ${pair("commandsRun")} | ${pair("observedTokens")} | ${pair("stepCount")} | ${pair("observedCostUsd")} / ${plain(row.declaredPromptTokens)} | ${plain(row.boundStops?.count)} | ${plain(row.boundAcceptances?.length)} |`,
         ];
       }),
     );
@@ -2297,12 +2375,12 @@ export function renderMetaTable(meta) {
     "",
     `Observation cutoff: ${meta.observedAt ?? "unknown"}; source: canonical control events and the recorded gate, usage and harness observations collected by npm run meta.`,
     "",
-    "| Work | Phase ms / attempts | Gate ms | Read files / bytes | Observed tokens / USD | Declared prompt tokens | Corrections | Directions |",
-    "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
+    "| Work | Phase / attempts | Gate | Read files / bytes | Observed tokens / USD | Declared prompt tokens | Corrections | Directions | Bound stops | Bound acceptances |",
+    "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
     ...orders,
     "",
-    "| Dispatch | Wall ms (Δ) | Context bytes (Δ) | Commands (Δ) | Tokens (Δ) | Steps (Δ) | USD (Δ) / declared prompt tokens |",
-    "| --- | ---: | ---: | ---: | ---: | ---: | ---: |",
+    "| Dispatch | Wall (Δ) | Context bytes (Δ) | Commands (Δ) | Tokens (Δ) | Steps (Δ) | USD (Δ) / declared prompt tokens | Bound stops | Bound acceptances |",
+    "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
     ...dispatches,
     "",
     `${omitted} unavailable observations omitted as blank cells or rows; unavailable is not zero; unset ceilings are not approvals of a future limit.`,
@@ -2315,18 +2393,27 @@ export function renderMeta(meta) {
     `${order.workOrder} metrics (value; previous-order delta):`,
     ...Object.entries(order.metrics).map(
       ([key, value]) =>
-        `  ${key}: ${display(value)}; Δ ${display(order.delta[key])}`,
+        `  ${key.replace(/Ms$/u, "")}: ${displayMetric(key, value)}; Δ ${displayMetric(key, order.delta[key])}`,
     ),
     ...order.phases.map(
-      (row) => `  phase ${row.phase}: ${display(row.elapsedMs)} ms`,
+      (row) => `  phase ${row.phase}: ${formatDuration(row.elapsedMs)}`,
     ),
     ...order.dispatches.map(
       (row) =>
         `  ${row.role}: ${Object.entries(row)
-          .filter(([key]) => !["role", "delta"].includes(key))
+          .filter(
+            ([key]) =>
+              ![
+                "role",
+                "delta",
+                "boundStops",
+                "boundAcceptances",
+                "afterStop",
+              ].includes(key),
+          )
           .map(
             ([key, value]) =>
-              `${key} ${display(value)} (Δ ${display(row.delta[key])})`,
+              `${key.replace(/Ms$/u, "")} ${displayMetric(key, value)} (Δ ${displayMetric(key, row.delta?.[key])})`,
           )
           .join("; ")}`,
     ),
@@ -2374,13 +2461,33 @@ export function renderMeta(meta) {
     "Closed-order cost reconciliation (planning input only):",
     ...(meta.costReconciliation ?? []).map(
       (row) =>
-        `${row.workOrder}: promised removal: ${row.promisedRemoval}; observed: ${row.observedRows.length ? row.observedRows.map((gate) => `${gate.checkId} ${display(gate.durationMs)} ms at ${gate.recordedAt} (${gate.evidenceRef})`).join("; ") : row.historicalMetrics ? `historical metrics ${JSON.stringify(row.historicalMetrics.metrics)}; source ${row.historicalMetrics.source}; cutoff ${row.historicalMetrics.cutoff}` : "unknown"}; outcome ${row.outcome}${row.planningInput ? `; PLANNING INPUT: ${row.planningInput}` : ""}`,
+        `${row.workOrder}: promised removal: ${row.promisedRemoval}; observed: ${
+          row.observedRows.length
+            ? row.observedRows
+                .map(
+                  (gate) =>
+                    `${gate.checkId} ${formatDuration(gate.durationMs)} at ${gate.recordedAt} (${gate.evidenceRef})`,
+                )
+                .join("; ")
+            : row.historicalMetrics
+              ? `historical metrics ${Object.entries(
+                  row.historicalMetrics.metrics,
+                )
+                  .map(
+                    ([key, value]) =>
+                      `${key.replace(/Ms$/u, "")}=${displayMetric(key, value)}`,
+                  )
+                  .join(
+                    "; ",
+                  )}; source ${row.historicalMetrics.source}; cutoff ${row.historicalMetrics.cutoff}`
+              : "unknown"
+        }; outcome ${row.outcome}${row.planningInput ? `; PLANNING INPUT: ${row.planningInput}` : ""}`,
     ),
     "",
     "Budget observations:",
     ...meta.budgets.map(
       (row) =>
-        `${row.scope ?? "current"}/${row.metric}: ${display(row.value)}; ceiling ${row.ceiling == null ? "unset" : row.ceiling}; ${row.verdict}`,
+        `${row.scope ?? "current"}/${row.metric}: ${displayMetric(row.metric, row.value)}; ceiling ${row.ceiling == null ? "unset" : displayMetric(row.metric, row.ceiling)}; ${row.verdict}`,
     ),
     "",
     "Systems-trap signals:",
@@ -2464,6 +2571,6 @@ export function metaHealth(meta) {
 export function checkMeta(meta) {
   for (const row of meta.budgets.filter((row) => row.verdict === "breach"))
     console.warn(
-      `Advisory: process budget ${row.metric}=${row.value ?? row.bytes} exceeds ${row.ceiling}; planning input.`,
+      `Advisory: process budget ${row.metric}=${displayMetric(row.metric, row.value ?? row.bytes)} exceeds ${displayMetric(row.metric, row.ceiling)}; planning input.`,
     );
 }

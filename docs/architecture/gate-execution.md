@@ -60,6 +60,7 @@ priority changes are recorded in [D009](../evidence/WO-222/decisions.md).
 | Host admission | Coordinate slot leases across clones under one per-user host registry and lock. | All cooperating clients use one capacity; nested leases consume their parent's reservation. |
 | Execution and ownership | Start attributable process trees and retain ownership of surviving descendants. | Releasing a parent cannot make a live child disappear from accounting. |
 | Memory and deadlines | Observe host pressure and owned footprint; apply finite task and command deadlines with declared peer load. | A capacity heuristic is not a proof of safe memory use or a diagnosis of a timeout. |
+| Dispatch bounds | Read the owning phase's wall-clock and complete-run standing before a complete gate, bounded probe or same-phase redispatch. | An operator-recorded extension changes only its order and phase; unavailable history never becomes fresh consumption. |
 | Reporting | Preserve executed, reused, failed, stopped and unrun states, timeline peers and resource observations. | Scheduling measurements and completion claims use the same executed evidence. |
 
 The source map is [test-runner.mjs](../../scripts/test-runner.mjs),
@@ -69,6 +70,27 @@ The source map is [test-runner.mjs](../../scripts/test-runner.mjs),
 [gate-deadlines.mjs](../../packages/skeleton/src/gate-deadlines.mjs) and
 [gate-reuse.mjs](../../scripts/lib/gate-reuse.mjs). Product 07's
 [execution guide](../product/07-execution-guide.md) remains the workflow contract.
+The dispatch bound is shared by [dispatch-bound.mjs](../../scripts/lib/dispatch-bound.mjs),
+the gate's host task, [bounded-command.mjs](../../scripts/lib/bounded-command.mjs)
+and [resume.mjs](../../scripts/resume.mjs).
+
+WO-234 adds this dispatch boundary without changing task deadlines or memory
+admission. Only host-admitted complete/review selections consume a run, including
+admitted failures and interruptions. Recorded host refusals and unrun host tasks
+consume none; historical rows without admission evidence retain their earlier
+interpretation. A damaged journal leaves standing unavailable while usage stays
+readable. Restored history recovers the recorded phase request and earliest
+anchor, including after completion, without rewriting journals or replenishing
+budget. The operator's captured authorization extends either ceiling through
+`resume accept-overrun`; it changes no criterion or verdict.
+
+The [paired controls](../evidence/WO-234/controls.json) establish admission at
+the prior baseline and refusal at an exhausted bound. The
+[repair reproductions](../evidence/WO-234/repair-002-probes.json) retain damaged
+history and synthetic host-pressure results; [D024–D027](../evidence/WO-234/decisions.md)
+record the usage, recovery, count and write-back decisions. These checks establish
+behavior, not a scheduling speedup or a host-memory benchmark. Reopen when a
+refusal consumes a run, recovery resets a known anchor or diagnostic usage is lost.
 
 In the WO-222 implementation, capacity is the lesser of eight and half the
 available logical processors, with a minimum of one. The first acquirer records

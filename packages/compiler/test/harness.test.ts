@@ -665,7 +665,7 @@ test("WO-132 both harness roles receive identical duties and the shared instruct
     /document and mixed review gates retain the full refusal/,
   );
   assert.match(merged, /node scripts\/harness\.mjs evidence --stop/);
-  assert.match(merged, /five refusals \(WO-135, WO-139, WO-144\)/);
+  assert.match(merged, /six refusals \(WO-135, WO-139, WO-144, WO-234\)/);
   assert.match(
     merged,
     /planning\/ branches refuses repository writes outside docs\/ and root Markdown/,
@@ -673,7 +673,7 @@ test("WO-132 both harness roles receive identical duties and the shared instruct
   assert.match(merged, /operator override:/);
   assert.match(
     merged,
-    /under Codex a lifecycle dispatch reserves the writer and refuses a foreign holder, and the other duties and grants are role text because Codex tool calls are unhooked/,
+    /under Codex a lifecycle dispatch reserves the writer and refuses a foreign holder, the gate, bounded wrapper and lifecycle enforce dispatch bounds in process; the other duties and grants are role text because Codex tool calls are unhooked/,
   );
   for (const file of availableBundle.files.filter(
     (file) =>

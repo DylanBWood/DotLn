@@ -2912,7 +2912,7 @@ test("WO-044 the runner honours a stop request at its next boundary, ends runnin
       runGate(["--only", "format", "--serial"], repo, {
         stopRequested: () => true,
       }),
-      /^Error: Gate stopped by request after [\d.]+ s; no check recorded for tree [a-f0-9]{40,64}$/,
+      /^Error: Gate stopped by request after \d+ h \d+ min; no check recorded for tree [a-f0-9]{40,64}$/,
     );
     assert.equal(existsSync(join(repo, "observed.jsonl")), false);
     assert.deepEqual(readGateChecks(repo), []);
@@ -7467,7 +7467,7 @@ test("peer sync", () => {
       if (!/^running cases?: /u.test(message)) return;
       const at = Date.now();
       for (const [, name] of message.matchAll(
-        /(?:: |; )([^;]+?) \(entered [\d.]+ s ago\)/gu,
+        /(?:: |; )([^;]+?) \(entered \d+ h \d+ min ago\)/gu,
       ))
         beats.push({ name, at });
     },
@@ -8707,6 +8707,31 @@ finally { clearInterval(poll); }
       );
       if (completed) {
         assert.equal(rows[0].stopped, true);
+        assert.equal(rows[0].gateSelection, "plain");
+        assert.ok(Number.isFinite(Date.parse(rows[0].startedAt)));
+        const { dispatchStanding } = await import("./lib/dispatch-bound.mjs");
+        const standing = dispatchStanding(repo, {
+          journal: {
+            role: "executor",
+            intent: "resume: next",
+            startedAt: rows[0].startedAt,
+          },
+          events: [],
+          gates: rows,
+        });
+        assert.equal(standing.completeRuns, 1);
+        assert.equal(
+          dispatchStanding(repo, {
+            journal: {
+              role: "executor",
+              intent: "resume: next",
+              startedAt: rows[0].startedAt,
+            },
+            events: [],
+            gates: [{ ...rows[0], checkId: "suite:resident" }],
+          }).completeRuns,
+          0,
+        );
         assert.equal(rows[0].stoppedBy, stoppedBy);
         assert.equal(rows[0].exitCode, 1);
         assert.deepEqual(
@@ -9754,4 +9779,199 @@ test("Preflight keeps a complete structural pass after a passing partial and ref
   const refused = await preflightRows(repo, codeIdentity, []);
   assert.equal(refused.missing[0].suite, "structural");
   assert.ok(refused.missing[0].displaced.includes("generated"));
+});
+
+test("dispatch bounds stop complete host admission on each metric and preserve focused reproduction", async (t) => {
+  const repo = createFixtureRoot(join(tmpdir(), "dotln-dispatch-gate-"));
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
+  const gitOptions = { exec: true, stdio: ["ignore", "pipe", "pipe"] };
+  runGit(repo, ["init", "-b", "main"], gitOptions);
+  excludeFixtureOwnership(repo);
+  mkdirSync(join(repo, "scripts"));
+  writeFileSync(join(repo, ".gitignore"), "docs/control/local/\nran.txt\n");
+  writeFileSync(
+    join(repo, "scripts/host.mjs"),
+    `import {checkHost} from ${JSON.stringify(pathToFileURL(join(root, "scripts/structural-checks.mjs")).href)};
+import {dispatchStanding} from ${JSON.stringify(pathToFileURL(join(root, "scripts/lib/dispatch-bound.mjs")).href)};
+const sample={level:"normal",pressure:0,swapBytes:0,physicalBytes:2**36,source:"fixture"};
+const standing=process.argv.includes("--dispatch-bound")?dispatchStanding(process.cwd()):undefined;
+const result=checkHost(sample,{standing,limits:{taskBytes:2**30,hostLanes:8},requiredPeakBytes:0,fileEvents:{}});
+console.log("STRUCTURAL_RESULT "+JSON.stringify(result)); process.exitCode=result.exitCode;`,
+  );
+  const budgets = JSON.parse(
+    readFileSync(join(root, "scripts/kit/budgets.template.json"), "utf8"),
+  );
+  budgets.dispatches.executor.wallClockMs = 0;
+  budgets.dispatches.executor.completeRuns = 0;
+  mkdirSync(join(repo, "docs/control/local/harness"), { recursive: true });
+  writeFileSync(
+    join(repo, "docs/control/budgets.json"),
+    JSON.stringify(budgets),
+  );
+  const session = "dispatch-gate-fixture",
+    key = createHash("sha256").update(session).digest("hex");
+  writeFileSync(
+    join(repo, `docs/control/local/harness/${key}.json`),
+    JSON.stringify({
+      role: "executor",
+      intent: "resume: next",
+      workOrder: "WO-999",
+      startedAt: new Date().toISOString(),
+    }),
+  );
+  runGit(repo, ["add", "."], gitOptions);
+  runGit(
+    repo,
+    [
+      "-c",
+      "user.name=Fixture",
+      "-c",
+      "user.email=fixture@example.invalid",
+      "-c",
+      "commit.gpgsign=false",
+      "commit",
+      "-qm",
+      "fixture",
+    ],
+    gitOptions,
+  );
+  const prior = process.env.CODEX_THREAD_ID;
+  process.env.CODEX_THREAD_ID = session;
+  t.after(() =>
+    prior === undefined
+      ? delete process.env.CODEX_THREAD_ID
+      : (process.env.CODEX_THREAD_ID = prior),
+  );
+  const table = [
+    {
+      name: "host",
+      command: [process.execPath, "scripts/host.mjs"],
+      args: ["host"],
+      structural: true,
+      product: true,
+    },
+    {
+      name: "build",
+      command: [process.execPath, "-e", "0"],
+      build: true,
+      product: true,
+      outputs: [],
+    },
+    {
+      name: "alpha",
+      command: [
+        process.execPath,
+        "-e",
+        'require("fs").writeFileSync("ran.txt","yes")',
+      ],
+      product: true,
+    },
+  ];
+  const stopped = await runGate(["--review", "--serial", "--again"], repo, {
+    table,
+  });
+  assert.equal(stopped.exitCode, 1);
+  assert.equal(stopped.boundStop.metric, "wallClockMs");
+  assert.deepEqual(
+    stopped.boundStop.exceeded.map((entry) => entry.metric),
+    ["wallClockMs", "completeRuns"],
+  );
+  assert.equal(stopped.dispatchBound.role, "executor");
+  const stopLog = () =>
+    readFileSync(join(repo, `docs/control/local/harness/${key}.jsonl`), "utf8")
+      .trim()
+      .split("\n")
+      .map(JSON.parse);
+  assert.equal(stopLog().length, 1, "one gate refusal records one stop");
+  assert.equal(stopLog()[0].source, "gate");
+  assert.deepEqual(stopLog()[0].boundStop.exceeded, stopped.boundStop.exceeded);
+  assert.equal(existsSync(join(repo, "ran.txt")), false);
+  const focused = await runGate(["--only", "alpha", "--serial"], repo, {
+    table,
+  });
+  assert.equal(focused.exitCode, 0);
+  budgets.dispatches.executor.wallClockMs = null;
+  budgets.dispatches.executor.completeRuns = 0;
+  writeFileSync(
+    join(repo, "docs/control/budgets.json"),
+    JSON.stringify(budgets),
+  );
+  const runs = await runGate(["--review", "--serial", "--again"], repo, {
+    table,
+  });
+  assert.equal(runs.exitCode, 1);
+  assert.equal(runs.boundStop.metric, "completeRuns");
+  assert.equal(stopLog().length, 2, "the second refusal adds one stop");
+  const { dispatchStanding } = await import("./lib/dispatch-bound.mjs");
+  const consumed = () => dispatchStanding(repo, { session }).completeRuns;
+  assert.equal(
+    consumed(),
+    0,
+    "bound stops and focused reproductions consume no complete runs",
+  );
+  budgets.dispatches.executor.completeRuns = 3;
+  writeFileSync(
+    join(repo, "docs/control/budgets.json"),
+    JSON.stringify(budgets),
+  );
+  const hostFile = join(repo, "scripts/host.mjs");
+  const normalHost = readFileSync(hostFile, "utf8");
+  writeFileSync(
+    hostFile,
+    normalHost.replace('level:"normal"', 'level:"critical"'),
+  );
+  const memory = await runGate(["--review", "--serial", "--again"], repo, {
+    table,
+  });
+  assert.equal(memory.exitCode, 1);
+  assert.equal(
+    memory.taskTimeline.find((row) => row.name === "host").exitCode,
+    1,
+  );
+  assert.equal(
+    consumed(),
+    0,
+    "a real memory admission refusal consumes no run",
+  );
+  writeFileSync(hostFile, normalHost);
+  const sessionFile = join(repo, `docs/control/local/harness/${key}.json`);
+  const saved = readFileSync(sessionFile, "utf8");
+  const damaged = join(
+    repo,
+    `docs/control/local/harness/${"c".repeat(64)}.json`,
+  );
+  writeFileSync(damaged, "{ truncated");
+  const journal = JSON.parse(saved);
+  writeFileSync(
+    sessionFile,
+    JSON.stringify({
+      ...journal,
+      boundDispatch: {
+        ...journal,
+        phaseBoundary: "WO-999:WorkOrderActivated:-1",
+        unavailable: "damaged history",
+      },
+    }),
+  );
+  const unavailable = await runGate(["--review", "--serial", "--again"], repo, {
+    table,
+  });
+  assert.equal(unavailable.exitCode, 1);
+  const failedHost = unavailable.taskTimeline.find(
+    (row) => row.name === "host",
+  );
+  assert.equal(failedHost.exitCode, 1);
+  assert.equal(unavailable.boundStop, undefined);
+  rmSync(damaged);
+  writeFileSync(sessionFile, saved);
+  assert.equal(
+    consumed(),
+    0,
+    "an unavailable-standing admission refusal consumes no run",
+  );
+  const admitted = await runGate(["--review", "--serial", "--again"], repo, {
+    table,
+  });
+  assert.equal(admitted.exitCode, 0);
+  assert.equal(consumed(), 1, "one admitted review consumes exactly one run");
 });

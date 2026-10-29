@@ -57,8 +57,9 @@ not a fresh enforcement probe. The WO-136 experiment remains inconclusive.
 **2026-09-25 reaffirmation (WO-161).** The operator explicitly confirmed no
 host sandbox in Claude Code, Codex or Copilot. This standing choice is now
 recorded in the [ADR-0003 amendment](decisions/0003-personal-ai-harness-security.md#amendments).
-DotLn's five refusals plus the host permission mode are the boundary, with
-Codex lifecycle dispatch reserving the writer and refusing a foreign holder;
+DotLn's six refusals plus the host permission mode are the boundary, with
+Codex lifecycle dispatch reserving the writer and refusing a foreign holder,
+and dispatch bounds enforced by the gate, bounded wrapper and lifecycle;
 its remaining duties and grants are role text because tool calls are unhooked. The host-confinement detector creates
 no confinement and reports `inForce: false` in WO-161's executor session.
 DotLn's discovery `sandbox-exec` and the `--sandbox workspace-write` argument
@@ -274,7 +275,7 @@ resolves one per-user root independent of the environment. The seven earlier
 WO-185 test/probe rows are preserved in an ignored archive outside the real-work
 incident count (D012).
 
-DotLn's generated hooks refuse five conditions (WO-135, WO-139 and WO-144): a second live writer
+DotLn's generated hooks refuse six conditions (WO-135, WO-139, WO-144 and WO-234): a second live writer
 in the same worktree; a write to gate inputs or the success record during a live
 gate, where a product gate admits only the active order's evidence,
 verification and final-review directories
@@ -283,7 +284,15 @@ full refusal; a classified repository write outside `docs/` and root Markdown
 on a `planning/` branch; an observable subagent admission beyond
 `docs/control/budgets.json` `subagentCap` (default 20; `null` disables); and a
 known write destination outside the project without a containing grant from
-the active role or an equipped support. The last refusal binds roots to
+the active role or an equipped support; and a complete gate, bounded probe or
+worker launch at an exhausted dispatch wall-clock or complete-run bound.
+The bound refusal reports the standing in hours and minutes and names
+`analysis:` and the operator-captured `resume accept-overrun` extension. Reads,
+listing and focused reproductions remain admitted, and `operator override:`
+suspends the hook refusal. Claude's Stop hook reports standing each turn;
+Codex and Copilot retain their turn-observation limits. The gate host task,
+bounded wrapper and lifecycle redispatch also enforce the shared standing in
+process on all three harnesses. The outside-write refusal binds roots to
 host-registry-admitted authority grants and the effective envelope, with
 sources in the manifest. It resolves symlinks; unlinking judges the removed
 entry. It is not confinement of an arbitrary program's effects.
@@ -384,8 +393,8 @@ grants no new network, filesystem, credential or publication authority. Any
 configured host denials for publication, SSH/SCP/SFTP and credential access
 remain in force; DotLn role text does not establish those host restrictions.
 Claude applies the generated hooks. Codex lifecycle dispatch reserves the
-writer and refuses a foreign holder; its remaining invariants, grants and
-commands are role text because tool calls are unhooked. Copilot
+writer and refuses a foreign holder; dispatch bounds also hold in the runner, probe wrapper and lifecycle; its
+remaining invariants, grants and commands are role text because tool calls are unhooked. Copilot
 reuses the Claude registration; its narrower, dated observations are below.
 
 Harness, version, model, effort and source are recorded as supplied. `unknown`

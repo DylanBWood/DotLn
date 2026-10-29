@@ -411,7 +411,7 @@ test("WO-170 a closed order's snapshot stands for its journals, and with neither
     /^Operator directions per closed order \(committed decisions and control events\): WO-999 0\.$/m,
   );
   const table = renderMetaTable(await collectMeta(root));
-  assert.match(table, /^\| WO-999 \|.*\|  \| 0 \|$/m);
+  assert.match(table, /^\| WO-999 \|.*\|  \| 0 \| 0 \| 0 \|$/m);
   assert.ok(
     !table
       .split("\n")
@@ -853,8 +853,11 @@ test("WO-170 operator directions equal a hand count of committed decisions and o
   assert.equal(none.metrics.operatorDirections, 0);
   assert.equal(none.directions.total, 0);
   const table = renderMetaTable(meta);
-  assert.match(table, /\| Corrections \| Directions \|$/m);
-  assert.match(table, /^\| WO-999 \|.*\| 4(?: \(Δ [^)]*\))? \|$/m);
+  assert.match(
+    table,
+    /\| Corrections \| Directions \| Bound stops \| Bound acceptances \|$/m,
+  );
+  assert.match(table, /^\| WO-999 \|.*\| 4(?: \(Δ [^)]*\))? \| 0 \| 0 \|$/m);
   assert.match(table, /^\| WO-998 \|.*\| 0(?: \(Δ [^)]*\))? \|$/m);
   assert.match(
     renderMeta(meta),
@@ -1730,6 +1733,21 @@ test("WO-170 recovery carries usage totals by role and each retained copy's dige
     ],
     budgets: [],
   };
+  Object.assign(prior.orders[0], {
+    boundStops: {
+      count: 1,
+      stops: [
+        {
+          metric: "wallClockMs",
+          at: now,
+          role: "executor",
+          workOrder: "WO-996",
+        },
+      ],
+    },
+    boundAcceptances: [{ metric: "wallClockMs", ceiling: 100, at: now }],
+    afterStop: [{ nextEvent: "RepairRequested", delayMs: 60000 }],
+  });
   const kept = recoveredUsageSnapshot(main, "WO-996", prior, now);
   assert.equal(kept.observedAt, prior.observedAt);
   assert.equal(kept.revision, prior.revision);
@@ -1737,11 +1755,16 @@ test("WO-170 recovery carries usage totals by role and each retained copy's dige
     observedAt: now,
     source: "retained usage copies in the main checkout's lane",
   });
+  for (const field of ["boundStops", "boundAcceptances", "afterStop"])
+    assert.deepEqual(kept.orders[0][field], prior.orders[0][field]);
   assert.deepEqual(kept.orders, [
     {
       workOrder: "WO-996",
       phase: "final-review",
       metrics: { gateMs: 5, tokens: 1 },
+      boundStops: prior.orders[0].boundStops,
+      boundAcceptances: prior.orders[0].boundAcceptances,
+      afterStop: prior.orders[0].afterStop,
       usageByRole: {
         reviewer: {
           dispatches: 1,
@@ -6048,6 +6071,120 @@ test("WO-167 VER-001 F1 harness-context --check refuses a renamed heading an ins
   );
 });
 
+test("configured-root meter retains installed journal stops and deduplicates historical copies", async (t) => {
+  const root = repo(t);
+  write(
+    root,
+    "dotln.config.json",
+    JSON.stringify({ version: 1, roots: { control: "records/state" } }),
+  );
+  write(
+    root,
+    "records/state/orders/WO-999.jsonl",
+    readFileSync(join(root, "docs/control/orders/WO-999.jsonl")),
+  );
+  const name = "b".repeat(64);
+  const row = {
+    at: "2030-01-01T00:01:00.000Z",
+    workOrder: "WO-999",
+    role: "executor",
+    phase: "active",
+    source: "probe",
+    boundStop: { metric: "wallClockMs", value: 1000, bound: 1000 },
+  };
+  const readStops = async () =>
+    (await collectMeta(root)).orders.find((row) => row.workOrder === "WO-999")
+      .boundStops;
+  const installed = "docs/control/local/harness";
+  write(
+    root,
+    `${installed}/${name}.json`,
+    JSON.stringify({ workOrder: "WO-999", role: "executor" }),
+  );
+  write(root, `${installed}/${name}.jsonl`, JSON.stringify(row) + "\n");
+  assert.equal(
+    (await readStops()).count,
+    1,
+    "the installed lane is observed even without a configured-history copy",
+  );
+  for (const directory of ["records/state/local/harness"]) {
+    write(
+      root,
+      `${directory}/${name}.json`,
+      JSON.stringify({ workOrder: "WO-999", role: "executor" }),
+    );
+    write(root, `${directory}/${name}.jsonl`, JSON.stringify(row) + "\n");
+  }
+  const result = (await collectMeta(root)).orders.find(
+    (row) => row.workOrder === "WO-999",
+  );
+  assert.equal(
+    result.boundStops.count,
+    1,
+    "the same copied stop is retained once",
+  );
+  assert.equal(result.boundStops.stops[0].metric, "wallClockMs");
+});
+
+test("meter attributes gate bound stops to their recorded dispatch role", async (t) => {
+  const root = repo(t);
+  const stops = [
+    { at: "2030-01-01T00:01:00.000Z", role: "executor" },
+    { at: "2030-01-01T00:02:00.000Z", role: "reviewer" },
+  ];
+  write(
+    root,
+    "docs/control/local/harness/checks.json",
+    JSON.stringify(
+      stops.map((stop) => ({
+        checkId: "npm test",
+        executed: true,
+        exitCode: 1,
+        recordedAt: stop.at,
+        workOrder: "WO-999",
+        boundStop: { metric: "wallClockMs", value: 1000, bound: 1000 },
+        dispatchBound: { role: stop.role },
+      })),
+    ),
+  );
+  const result = (await collectMeta(root)).orders.find(
+    (row) => row.workOrder === "WO-999",
+  );
+  assert.equal(result.boundStops.count, 2);
+  assert.equal(
+    result.dispatches.find((row) => row.role === "executor").boundStops.count,
+    1,
+  );
+  assert.equal(
+    result.dispatches.find((row) => row.role === "reviewer").boundStops.count,
+    1,
+  );
+});
+
+test("dispatch budgets validate both bounds and preserve pre-bound exports", (t) => {
+  const root = repo(t);
+  const file = "docs/control/budgets.json";
+  const original = JSON.parse(readFileSync(join(source, file), "utf8"));
+  for (const metric of ["wallClockMs", "completeRuns"]) {
+    for (const invalid of [-1, "3", true]) {
+      const value = structuredClone(original);
+      value.dispatches.executor[metric] = invalid;
+      write(root, file, JSON.stringify(value));
+      assert.throws(() => readBudgets(root), /Invalid budget/);
+    }
+  }
+  for (const dispatch of Object.values(original.dispatches)) {
+    delete dispatch.wallClockMs;
+    delete dispatch.completeRuns;
+    delete dispatch.repair;
+  }
+  write(root, file, JSON.stringify(original));
+  for (const dispatch of Object.values(readBudgets(root).dispatches)) {
+    assert.equal(dispatch.wallClockMs, null);
+    assert.equal(dispatch.completeRuns, null);
+  }
+});
+
 test("budgets keep unselected caps unset and cold-start measurement ignores product prose", (t) => {
   const root = repo(t);
   write(
@@ -6542,17 +6679,24 @@ test("WO-145 optional economy support preserves historical snapshots through the
   // WO-196's ordered procedures and conditional economy preserve WO-187.
   // Publication guidance and conditional reader scoring preserve the prior role oracle and all its history.
   // WO-221's release-close deletion sentence preserves WO-216's snapshot.
-  // The executor's target registration grant preserves the previous snapshot.
+  // The combined oracle preserves both independently reviewed role histories.
   const baseline = JSON.parse(
     readFileSync(
-      join(source, "packages/skeleton/fixtures/wo236-role-baseline.json"),
+      join(
+        source,
+        "packages/skeleton/fixtures/wo234-integration-role-baseline.json",
+      ),
       "utf8",
     ),
   );
-  assert.equal(baseline.historicalBaseline, "wo233-role-baseline.json");
+  assert.equal(baseline.historicalBaseline, "wo236-role-baseline.json");
   assert.equal(baseline.upstreamBaseline, "wo185-role-baseline.json");
   const chains = [
     baseline,
+    {
+      historicalBaseline: baseline.branchBaseline,
+      historicalSha256: baseline.branchSha256,
+    },
     {
       historicalBaseline: baseline.upstreamBaseline,
       historicalSha256: baseline.upstreamSha256,
@@ -10491,7 +10635,7 @@ test("WO-131 prompt submission stays open while dispatches retain the ordinary c
   // boundary between the two calls changes that one field (WO-168).
   // The pattern below still requires an age in the delivered reason.
   const ageless = (text) =>
-    text.replace(/; age \d+ seconds\./g, "; age <seconds> seconds.");
+    text.replace(/; age \d+ h \d+ min\./g, "; age <duration>.");
   assert.ok(
     ageless(contended.hookSpecificOutput.additionalContext).includes(
       ageless(writerDenied.permissionDecisionReason),
@@ -10500,7 +10644,7 @@ test("WO-131 prompt submission stays open while dispatches retain the ordinary c
   );
   assert.match(
     contended.hookSpecificOutput.additionalContext,
-    /DOTLN_HARNESS_REFUSED: concurrent-work-requires-worktrees: write dispatch lacks a verified exclusive worktree; the worktree is reserved by another session \(actor [0-9a-f]{12}; host process \d+ is alive\)\. Owner .*reservedAt 2026-09-13T00:00:00\.000Z; age \d+ seconds.*writer --release --force/,
+    /DOTLN_HARNESS_REFUSED: concurrent-work-requires-worktrees: write dispatch lacks a verified exclusive worktree; the worktree is reserved by another session \(actor [0-9a-f]{12}; host process \d+ is alive\)\. Owner .*reservedAt 2026-09-13T00:00:00\.000Z; age \d+ h \d+ min.*writer --release --force/,
   );
   assert.match(contended.systemMessage, /prompt accepted/);
   assert.deepEqual(lifecycle(), reserved);
@@ -10864,19 +11008,22 @@ test("the meter table leaves unavailable observations blank, drops an unobserved
   );
   assert.match(
     rendered,
-    /^\| WO-999 \| 10 \(Δ 5\) \/ 1 \|  \| 2 \(Δ 1\) \/ 3 \|  \/  \| 4 \| 0 \| 1 \|$/m,
+    /^\| WO-999 \| 0 h 0 min \(Δ 0 h 0 min\) \/ 1 \|  \| 2 \(Δ 1\) \/ 3 \|  \/  \| 4 \| 0 \| 1 \|  \|  \|$/m,
   );
   assert.match(
     rendered,
-    /^\| WO-999\/executor \| 7 \(Δ 7\) \| 7 \(Δ 7\) \| 7 \(Δ 7\) \| 7 \(Δ 7\) \| 7 \(Δ 7\) \| 7 \(Δ 7\) \/ 7 \|$/m,
+    /^\| WO-999\/executor \| 0 h 0 min \(Δ 0 h 0 min\) \| 7 \(Δ 7\) \| 7 \(Δ 7\) \| 7 \(Δ 7\) \| 7 \(Δ 7\) \| 7 \(Δ 7\) \/ 7 \|  \|  \|$/m,
   );
   assert.ok(!rendered.includes("WO-999/verifier"));
-  assert.match(rendered, /\| Corrections \| Directions \|$/m);
+  assert.match(
+    rendered,
+    /\| Corrections \| Directions \| Bound stops \| Bound acceptances \|$/m,
+  );
   // Three missing values, four missing deltas and the seven cells of the
   // dropped dispatch row.
   assert.match(
     rendered,
-    /^14 unavailable observations omitted as blank cells or rows; unavailable is not zero; unset ceilings are not approvals of a future limit\.$/m,
+    /^18 unavailable observations omitted as blank cells or rows; unavailable is not zero; unset ceilings are not approvals of a future limit\.$/m,
   );
 });
 

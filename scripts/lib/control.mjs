@@ -84,6 +84,22 @@ const offRampEvent = (event, at) => {
       refuse("operator capture");
   };
   switch (event.type) {
+    case "DispatchBoundAccepted":
+      if (
+        !["wallClockMs", "completeRuns"].includes(event.metric) ||
+        (event.ceiling !== null &&
+          (!Number.isFinite(event.ceiling) || event.ceiling < 0)) ||
+        ![
+          "active",
+          "needs-fix",
+          "repairing",
+          "verifying",
+          "final-review",
+        ].includes(event.phase)
+      )
+        refuse("dispatch bound");
+      capture();
+      break;
     case "CriterionWaived":
       if (!CRITERION_ID.test(event.criterionId ?? "")) refuse("criterionId");
       capture();
@@ -197,6 +213,7 @@ const emptyState = () => ({
   effortDeclarationValidated: false,
   // The off-ramp projections stay undefined until their event appears, so
   // folds of histories without off-ramps keep their recorded shape (WO-158).
+  boundAcceptances: undefined,
   waivedCriteria: undefined,
   withdrawal: undefined,
   corrections: undefined,
@@ -306,6 +323,7 @@ const scanControl = (events, visit) => {
           latestAttestation: undefined,
           effortPairs: [],
           effortDeclarationValidated: event.effortDeclarationValidated === true,
+          boundAcceptances: undefined,
           waivedCriteria: undefined,
           withdrawal: undefined,
           corrections: undefined,
@@ -462,6 +480,21 @@ const scanControl = (events, visit) => {
       }
       // None of these changes the phase except the withdrawal, and
       // none is an attested completion of the order's own work (WO-158).
+      case "DispatchBoundAccepted":
+        offRampEvent(event, index + 1);
+        state.boundAcceptances = [
+          ...(state.boundAcceptances ?? []),
+          {
+            metric: event.metric,
+            ceiling: event.ceiling,
+            phase: event.phase,
+            ordinal: index + 1,
+            reason: event.reason,
+            captureHash: event.captureHash,
+            recordedAt: event.recordedAt,
+          },
+        ];
+        break;
       case "CriterionWaived":
         offRampEvent(event, index + 1);
         state.waivedCriteria = [

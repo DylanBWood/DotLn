@@ -1,3 +1,15 @@
+import { createRequire } from "node:module";
+import {
+  DispatchJournalError,
+  dispatchJournalDirectory,
+  readDispatchJournals,
+} from "./dispatch-journal.mjs";
+import {
+  completeTestSelection,
+  diagnosticTestSelection,
+  npmScriptArgs,
+} from "./test-selection.mjs";
+import { formatDuration } from "./duration.mjs";
 import { observedSpawnSync as spawnSync } from "./gate-deadlines.mjs";
 import { withWriterRegistration } from "./writer-teardown.mjs";
 import {
@@ -84,6 +96,7 @@ import {
   commitMessageInputs,
   shellDiagnostics,
   shellInvocations,
+  executableShellInvocations,
   shellGuidance,
 } from "./harness-command.js";
 import {
@@ -342,7 +355,140 @@ export interface HarnessCheck {
   readonly codeIdentity?: string;
   readonly durationMs?: number;
 }
+async function dispatchBounds(root: string) {
+  return import(
+    pathToFileURL(join(root, "scripts/lib/dispatch-bound.mjs")).href
+  );
+}
+
+function startsBoundedWork(input: HarnessInput, spawn: boolean): boolean {
+  if (spawn) return true;
+  const command = input.tool_input?.command;
+  if (typeof command !== "string") return false;
+  try {
+    return executableShellInvocations(command).some((words) => {
+      if (
+        (words[0] === "node" || words[0] === process.execPath) &&
+        /(?:^|\/)harness(?:-entry)?\.mjs$/u.test(words[1] ?? "") &&
+        words[2] === "bounded"
+      ) {
+        const separator = words.indexOf("--", 3);
+        return (
+          separator === -1 ||
+          !diagnosticTestSelection(words.slice(separator + 1))
+        );
+      }
+      const harnessArgs = npmScriptArgs(words, "harness");
+      if (harnessArgs?.includes("bounded")) {
+        const separator = harnessArgs.indexOf(
+          "--",
+          harnessArgs.indexOf("bounded") + 1,
+        );
+        return (
+          separator === -1 ||
+          !diagnosticTestSelection(harnessArgs.slice(separator + 1))
+        );
+      }
+      return completeTestSelection(words);
+    });
+  } catch {
+    return false;
+  }
+}
+
+/** A dispatch gets its own budget anchor while session observations retain
+ * their original lifetime. Repeating an unfinished phase cannot reset it. */
+export function bindDispatchBound(
+  root: string,
+  session: HarnessSession,
+  role: string,
+  intent: string,
+  workOrder: string | null,
+  now = new Date().toISOString(),
+): void {
+  intent =
+    /^(resume: (?:final review|release close|next|fix|verify))\b/u.exec(
+      intent,
+    )?.[1] ?? intent;
+  const request = intent.startsWith("resume: fix")
+    ? "RepairRequested"
+    : intent.startsWith("resume: verify")
+      ? "VerificationRequested"
+      : intent.startsWith("resume: final review")
+        ? "FinalReviewRequested"
+        : intent.startsWith("resume: next")
+          ? "WorkOrderActivated"
+          : "none";
+  const events = localEvents(root, workOrder, true);
+  let boundary = events.length - 1;
+  while (boundary >= 0 && events[boundary]?.type !== request) boundary--;
+  const phaseBoundary = `${workOrder ?? "none"}:${request}:${boundary}`;
+  const previous = session.boundDispatch;
+  const executed = new Set(session.executedOrders ?? []);
+  if (session.role === "executor" && session.workOrder)
+    executed.add(session.workOrder);
+  if (previous?.role === "executor" && previous.workOrder)
+    executed.add(previous.workOrder);
+  if (role === "executor" && workOrder) executed.add(workOrder);
+  if (executed.size) session.executedOrders = [...executed];
+  const sameAttempt = (anchor: {
+    role?: string;
+    intent?: string;
+    workOrder?: string | null;
+    phaseBoundary?: string;
+    startedAt?: string;
+  }) =>
+    anchor.role === role &&
+    anchor.intent === intent &&
+    anchor.workOrder === workOrder &&
+    (anchor.phaseBoundary === phaseBoundary ||
+      (anchor.phaseBoundary === undefined &&
+        boundary >= 0 &&
+        typeof events[boundary]?.recordedAt === "string" &&
+        Date.parse(anchor.startedAt ?? "") >=
+          Date.parse(events[boundary]!.recordedAt as string)));
+  // A thread owns its usage lifetime, but an unfinished phase owns its
+  // original budget anchor. Re-entry cannot replenish spent time or runs.
+  let journals: ReturnType<typeof readDispatchJournals>;
+  let unavailable: string | undefined;
+  try {
+    journals = readDispatchJournals(harnessStateDirectory(root));
+  } catch (error) {
+    if (!(error instanceof DispatchJournalError)) throw error;
+    // Role binding and its grants survive damaged consumption evidence. Keep
+    // the failure on this dispatch so admission cannot mistake it for no bound.
+    unavailable = new DispatchJournalError(
+      relative(root, error.file),
+      error.detail,
+    ).message;
+    journals = [];
+  }
+  const anchors = [
+    ...(previous && sameAttempt(previous) ? [previous] : []),
+    ...journals.map(({ journal }) => journal).filter(sameAttempt),
+  ].sort(
+    (a, b) => Date.parse(a.startedAt ?? "") - Date.parse(b.startedAt ?? ""),
+  );
+  session.boundDispatch = {
+    role,
+    intent,
+    workOrder,
+    startedAt: anchors[0]?.startedAt ?? now,
+    phaseBoundary,
+    ...(unavailable ? { unavailable } : {}),
+  };
+}
+
 export interface HarnessSession {
+  executedOrders?: string[];
+  boundDispatch?: {
+    role: string;
+    intent: string;
+    workOrder: string | null;
+    startedAt: string;
+    phaseBoundary: string;
+    unavailable?: string;
+  };
   role?: string;
   intent?: string;
   expectedEvent?: string;
@@ -368,6 +514,13 @@ export interface HarnessSession {
     eventCount: number;
     eventPrefixHash: string;
   };
+}
+
+function dispatchBindingAdvisory(session: HarnessSession): string | undefined {
+  const unavailable = session.boundDispatch?.unavailable;
+  return unavailable
+    ? `DotLn advisory: dispatch standing unavailable: ${unavailable}; role and grants retained. Use analysis: to diagnose.`
+    : undefined;
 }
 interface HarnessByteRead {
   readonly path: string;
@@ -477,7 +630,7 @@ export const harnessStateDirectory = (root: string) => {
   const target = targetState.getStore();
   return target?.root === root
     ? target.directory
-    : join(root, "docs/control/local/harness");
+    : dispatchJournalDirectory(root);
 };
 const sessionKey = (input: HarnessInput) =>
   digest(input.session_id ?? "unknown");
@@ -573,10 +726,28 @@ const writeJson = (path: string, value: unknown) => {
 const localEvents = (
   root: string,
   order: string | null,
-): { type: string }[] => {
+  configured = false,
+): { type: string; recordedAt?: string }[] => {
+  const configModule = join(root, "scripts/lib/config.mjs");
+  const docPath =
+    configured && existsSync(configModule)
+      ? (
+          createRequire(import.meta.url)(configModule) as {
+            docPath: (root: string, key: string, ...parts: string[]) => string;
+          }
+        ).docPath
+      : undefined;
   const paths = [
-    join(root, "docs/control/resume.jsonl"),
-    ...(order ? [join(root, `docs/control/orders/${order}.jsonl`)] : []),
+    docPath
+      ? docPath(root, "control", "resume.jsonl")
+      : join(root, "docs/control/resume.jsonl"),
+    ...(order
+      ? [
+          docPath
+            ? docPath(root, "orders", `${order}.jsonl`)
+            : join(root, `docs/control/orders/${order}.jsonl`),
+        ]
+      : []),
   ];
   return paths.flatMap((path) =>
     existsSync(path)
@@ -900,6 +1071,13 @@ async function observeCliDispatch(
       git(root, ["branch", "--show-current"]).trim() !== "main")
   )
     return {};
+  bindDispatchBound(
+    root,
+    session,
+    contract.role,
+    contract.intent,
+    pending.workOrder,
+  );
   session.role = contract.role;
   session.intent = contract.intent;
   session.workOrder = pending.workOrder;
@@ -926,7 +1104,12 @@ async function observeCliDispatch(
       ? " The release-close publish admission stays withheld: only the operator's resume: release close phrase records the dispatch that keys it."
       : "";
   return {
-    systemMessage: `DotLn: observed successful npm run resume -- ${pending.action} for ${pending.workOrder}; bound this session as ${contract.role}.${admission}`,
+    systemMessage: [
+      `DotLn: observed successful npm run resume -- ${pending.action} for ${pending.workOrder}; bound this session as ${contract.role}.${admission}`,
+      dispatchBindingAdvisory(session),
+    ]
+      .filter(Boolean)
+      .join("\n"),
     hookSpecificOutput: {
       hookEventName: "PostToolUse",
       additionalContext: `Load the dotln-${contract.role} skill and continue the recorded dispatch without repeating it. DotLn session scratch: ${scratch.path}. ${scratch.advisory ?? "Use this path for temporary work."}\n${usageReadbackLine(input.session_id)}`,
@@ -1265,6 +1448,7 @@ export function recordCodexDispatch(
   root: string,
   sessionId: string,
   action: string,
+  workOrder?: string,
 ) {
   const phrase = (
     {
@@ -1284,7 +1468,21 @@ export function recordCodexDispatch(
   };
   const session = readJson(statePath(root, input), initialSession(), true);
   session.intent = `resume: ${phrase}`;
+  const selected = harnessControl(root, workOrder);
+  const role =
+    action === "next" || action === "fix"
+      ? "executor"
+      : action === "verify"
+        ? "verifier"
+        : action === "final-review"
+          ? "reviewer"
+          : "release-close";
+  bindDispatchBound(root, session, role, session.intent, selected.workOrder);
+  session.role = role;
+  if (selected.workOrder) session.workOrder = selected.workOrder;
   writeJson(statePath(root, input), session);
+  const advisory = dispatchBindingAdvisory(session);
+  if (advisory) process.stderr.write(`${advisory}\n`);
   recordOperatorMessage(root, input, "codex-dispatch-phrase");
 }
 
@@ -3009,8 +3207,8 @@ const ownerDead = (writer: HarnessWriter) =>
   !harnessProcessAlive(writer.owner);
 const writerRefusal = (writer: HarnessWriter) => {
   const age = writer.reservedAt ? Date.parse(writer.reservedAt) : Number.NaN;
-  const ageSeconds = Number.isFinite(age)
-    ? String(Math.max(0, Math.floor((Date.now() - age) / 1000)))
+  const ageText = Number.isFinite(age)
+    ? formatDuration(Math.max(0, Date.now() - age))
     : "unknown";
   const alive = writerView(writer).alive;
   const liveness =
@@ -3024,7 +3222,7 @@ const writerRefusal = (writer: HarnessWriter) => {
     : writer.owner?.source === "thread"
       ? "thread owner is of unknown liveness"
       : "host process is not recorded";
-  return `the worktree is reserved by another session (actor ${writer.actorId.slice(0, 12)}; ${owner}). Owner ${JSON.stringify(writer.owner ?? { source: "unknown" })}; reservedAt ${writer.reservedAt ?? "unknown"}; age ${ageSeconds} seconds. Inspect with node scripts/harness.mjs writer --show or release from an operator terminal with node scripts/harness.mjs writer --release${alive === true ? " --force" : ""}`;
+  return `the worktree is reserved by another session (actor ${writer.actorId.slice(0, 12)}; ${owner}). Owner ${JSON.stringify(writer.owner ?? { source: "unknown" })}; reservedAt ${writer.reservedAt ?? "unknown"}; age ${ageText}. Inspect with node scripts/harness.mjs writer --show or release from an operator terminal with node scripts/harness.mjs writer --release${alive === true ? " --force" : ""}`;
 };
 function acquireHarnessWriter(
   root: string,
@@ -3568,6 +3766,13 @@ function enterHarnessSession(
     beforeOutputs: prior?.beforeOutputs ?? snapshot,
     authoredPaths: [...new Set([...(prior?.authoredPaths ?? []), ...adopted])],
   };
+  bindDispatchBound(
+    root,
+    session,
+    role,
+    session.intent ?? role,
+    control.workOrder,
+  );
   writeJson(statePath(root, input), session);
   const counterWarning = initializeSubagentCounter(
     harnessStateDirectory(root),
@@ -3594,6 +3799,8 @@ function enterHarnessSession(
   if (override) process.stderr.write(`${override}\n`);
   const scratch = ensureHarnessSessionScratch(sessionId, root);
   if (scratch.advisory) process.stderr.write(`${scratch.advisory}\n`);
+  const advisory = dispatchBindingAdvisory(session);
+  if (advisory) process.stderr.write(`${advisory}\n`);
   return {
     session: sessionKey(input),
     scratch: scratch.path,
@@ -3981,7 +4188,7 @@ function runHarnessEvidenceChecks(
     const durationMs = Date.now() - started;
     if (run.error)
       process.stderr.write(
-        `Suite ${checkId} failed after ${durationMs} ms: ${run.error.message}\n`,
+        `Suite ${checkId} failed after ${formatDuration(durationMs)}: ${run.error.message}\n`,
       );
     if (run.status === 0) {
       const recorded = findGateCheck(root, checkId, treeHash);
@@ -5552,6 +5759,14 @@ async function evaluateExistingHarnessHook(
       };
       if (!auxiliary || !session.role) {
         if (role.name !== "release-close") delete session.releaseCloseDispatch;
+        if (!["resume: status", "resume: times"].includes(intent))
+          bindDispatchBound(
+            root,
+            session,
+            role.name,
+            intent,
+            control.workOrder,
+          );
         session.role = role.name;
         session.intent = intent;
         session.startingEventCount = localEvents(
@@ -5655,7 +5870,12 @@ async function evaluateExistingHarnessHook(
       .join("\n");
     // The receipt is the operator's only terminal evidence of the dispatch;
     // the briefing itself reaches the model alone.
-    const notices = [receipt, warning, scratchAdvisory]
+    const notices = [
+      receipt,
+      warning,
+      scratchAdvisory,
+      dispatchBindingAdvisory(session),
+    ]
       .filter(Boolean)
       .join("\n");
     return additionalContext
@@ -5836,6 +6056,16 @@ async function evaluateExistingHarnessHook(
     } catch {
       // Missing optional task observation preserves the existing Stop advice.
     }
+    let standingLine: string;
+    try {
+      const { dispatchStanding, dispatchStandingLine } =
+        await dispatchBounds(root);
+      standingLine = dispatchStandingLine(
+        dispatchStanding(root, { session: input.session_id }),
+      );
+    } catch (error) {
+      standingLine = `dispatch standing: unavailable (${error instanceof Error ? error.message : String(error)})`;
+    }
     return {
       systemMessage: [
         subagentSummary(
@@ -5850,12 +6080,35 @@ async function evaluateExistingHarnessHook(
         ...(running
           ? [running]
           : [pruneCompletedHarnessSession(root, input.session_id)]),
+        standingLine,
       ].join("\n"),
     };
   }
   if (config.kind === "permission") {
     if (!config.envelope) throw new Error("Missing compiled authority");
     const spawn = config.tools?.[input.tool_name ?? ""] === "spawn";
+    let boundAdvisory: string | undefined;
+    if (startsBoundedWork(input, spawn)) {
+      try {
+        const { dispatchStanding, dispatchBoundMessage, recordBoundStop } =
+          await dispatchBounds(root);
+        const standing = dispatchStanding(root, { session: input.session_id });
+        if (standing.state === "exceeded") {
+          let recording = "";
+          try {
+            recordBoundStop(root, standing, "hook");
+          } catch (error) {
+            recording = ` Stop record unavailable: ${error instanceof Error ? error.message : String(error)}.`;
+          }
+          return protocolRefusal(
+            config.event,
+            dispatchBoundMessage(standing) + recording,
+          );
+        }
+      } catch (error) {
+        boundAdvisory = `DotLn advisory: dispatch standing unavailable: ${error instanceof Error ? error.message : String(error)}; existing judgments remain active.`;
+      }
+    }
     const admission =
       spawn || input.agent_id
         ? admitSubagentTool(root, harnessStateDirectory(root), input, spawn)
@@ -5867,7 +6120,7 @@ async function evaluateExistingHarnessHook(
       ? `DotLn advisory: spawn admitted during live gate ${liveGates.map((run) => `${run.runId} (${run.kind ?? "unknown"})`).join(", ")}; probes under node, npm and harness bounded will be refused until it ends.`
       : undefined;
     if (gateAdvisory) record(root, input, { advisory: gateAdvisory });
-    const spawnAdvisory = [admission?.advisory, gateAdvisory]
+    const spawnAdvisory = [admission?.advisory, gateAdvisory, boundAdvisory]
       .filter(Boolean)
       .join("\n");
     // A counter advisory never bypasses the existing permission classification.

@@ -13,7 +13,10 @@
     "packages/skeleton/src/correction-observation.mjs",
     "scripts/lib/temporary-roots.mjs",
     "packages/skeleton/src/temporary-root-records.mjs",
-    "scripts/temporary-root.mjs"
+    "scripts/temporary-root.mjs",
+    "packages/skeleton/src/duration.mjs",
+    "packages/skeleton/src/dispatch-journal.mjs",
+    "packages/skeleton/src/test-selection.mjs"
   ],
   "directories": [
     "packages/beacons"

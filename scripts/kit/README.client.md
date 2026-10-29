@@ -835,6 +835,44 @@ installed. `worktree start`, `plan start` and update preview print the census.
 Nested suite commands retain their outer gate's cleanup ownership across copied
 repositories. Creator teardown waits only for a gate that can read its ledger.
 
+Every role's `dispatches` entry in `docs/control/budgets.json` carries
+`wallClockMs` and `completeRuns`; missing keys and null disable that bound.
+`dispatches.executor.repair` overrides the executor's bounds for `resume: fix`.
+The kit exports `local-median` for implementation, verification, final review
+and repair. Each consumer derives max(4 times its own completed phase median,
+8 h 0 min); without local history the bound is 8 h 0 min. History is cut off at
+the dispatch's original start. No source-repository timing sample is exported.
+Explicit numeric overrides and null retain their meanings; the complete-run
+default is three. Planner, refuter and release close stay unset. This instance
+owns its budgets.
+The gate host task, bounded wrapper and lifecycle redispatch refuse exhausted
+bounds. Claude's tool hook also refuses costly starts and worker launches,
+and its Stop hook prints standing. `node scripts/harness.mjs usage <session>`
+returns the same standing on all hosts. If standing cannot be read, usage still
+prints its observation and host session readback with
+`dispatch standing: unavailable (<named read error>)`. Restored history recovers
+the original phase attempt's anchor even after completion. Host-refused complete
+selections consume no run; admitted failures and interruptions do. Reads, listings and focused
+reproductions stay available. Use `analysis:` for diagnosis. When the operator
+authorizes proceeding in ordinary language, interpret the conversation context,
+capture the actual words and context in ignored intake, and run
+`npm run resume -- accept-overrun <wallClockMs|completeRuns>
+--ceiling <value> --reason <text> --capture <path> --capture-hash sha256:<digest>
+<actor-flags>` yourself with your actual actor attestation. The executor can
+record that authorization while keeping its writer. No exact phrase, session
+exit or manual operator command is required; diagnose and repair script errors
+in the same session. Without operator authorization the bound still holds.
+An operator may also authorize a run for as long as needed before it begins,
+in ordinary language. Record `--ceiling unlimited` for both `wallClockMs` and
+`completeRuns` with that capture. Null acceptance ceilings lift those two
+limits until the current phase completes; they preserve timing and run counts.
+The extension applies
+only to the current order activation and phase, changes no verdict, and is
+projected by `status --json`. The meter and `plan failures` show stops,
+acceptances and the next same-order event with its delay. Operator-facing
+durations use hours and minutes; numeric flags and machine records keep their
+declared units.
+
 Read before upgrading: the optional `retention` object in
 `docs/control/budgets.json` takes hours for `gate-fixture-passed` (0),
 `gate-fixture-failed` (24), `session-scratch` (24), `worker-capture` (1),
