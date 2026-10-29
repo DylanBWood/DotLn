@@ -1,0 +1,138 @@
+{
+  "before": [
+    {
+      "role": "executor",
+      "skillsRoot": ".claude/skills",
+      "bytes": 30857
+    },
+    {
+      "role": "verifier",
+      "skillsRoot": ".claude/skills",
+      "bytes": 27385
+    },
+    {
+      "role": "reviewer",
+      "skillsRoot": ".claude/skills",
+      "bytes": 29811
+    },
+    {
+      "role": "release-close",
+      "skillsRoot": ".claude/skills",
+      "bytes": 18574
+    },
+    {
+      "role": "planner",
+      "skillsRoot": ".claude/skills",
+      "bytes": 19483
+    },
+    {
+      "role": "refuter",
+      "skillsRoot": ".claude/skills",
+      "bytes": 18297
+    },
+    {
+      "role": "executor",
+      "skillsRoot": ".agents/skills",
+      "bytes": 30857
+    },
+    {
+      "role": "verifier",
+      "skillsRoot": ".agents/skills",
+      "bytes": 27385
+    },
+    {
+      "role": "reviewer",
+      "skillsRoot": ".agents/skills",
+      "bytes": 29811
+    },
+    {
+      "role": "release-close",
+      "skillsRoot": ".agents/skills",
+      "bytes": 18574
+    },
+    {
+      "role": "planner",
+      "skillsRoot": ".agents/skills",
+      "bytes": 19483
+    },
+    {
+      "role": "refuter",
+      "skillsRoot": ".agents/skills",
+      "bytes": 18297
+    }
+  ],
+  "after": [
+    {
+      "role": "executor",
+      "skillsRoot": ".claude/skills",
+      "bytes": 31546,
+      "ceiling": 29246
+    },
+    {
+      "role": "verifier",
+      "skillsRoot": ".claude/skills",
+      "bytes": 28074,
+      "ceiling": 29831
+    },
+    {
+      "role": "reviewer",
+      "skillsRoot": ".claude/skills",
+      "bytes": 30500,
+      "ceiling": 28884
+    },
+    {
+      "role": "release-close",
+      "skillsRoot": ".claude/skills",
+      "bytes": 19263,
+      "ceiling": 21266
+    },
+    {
+      "role": "planner",
+      "skillsRoot": ".claude/skills",
+      "bytes": 20172,
+      "ceiling": 24576
+    },
+    {
+      "role": "refuter",
+      "skillsRoot": ".claude/skills",
+      "bytes": 18986,
+      "ceiling": null
+    },
+    {
+      "role": "executor",
+      "skillsRoot": ".agents/skills",
+      "bytes": 31546,
+      "ceiling": 29246
+    },
+    {
+      "role": "verifier",
+      "skillsRoot": ".agents/skills",
+      "bytes": 28074,
+      "ceiling": 29831
+    },
+    {
+      "role": "reviewer",
+      "skillsRoot": ".agents/skills",
+      "bytes": 30500,
+      "ceiling": 28884
+    },
+    {
+      "role": "release-close",
+      "skillsRoot": ".agents/skills",
+      "bytes": 19263,
+      "ceiling": 21266
+    },
+    {
+      "role": "planner",
+      "skillsRoot": ".agents/skills",
+      "bytes": 20172,
+      "ceiling": 24576
+    },
+    {
+      "role": "refuter",
+      "skillsRoot": ".agents/skills",
+      "bytes": 18986,
+      "ceiling": null
+    }
+  ]
+}

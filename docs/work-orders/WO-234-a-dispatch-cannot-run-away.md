@@ -1,4 +1,4 @@
-# WO-234 — A dispatch cannot run away: every role session carries a wall-clock bound and a complete-run bound read from the budgets file, the gate, the bounded wrapper and the lifecycle refuse to start past it, the hooks say where the session stands at every turn, an operator acceptance extends it on the record, and the meter reports every stop and what followed (version assigned at activation)
+# WO-234 — A dispatch cannot run away: every role session carries a wall-clock bound and a complete-run bound read from the budgets file, the gate, the bounded wrapper and the lifecycle refuse to start past it, the hooks say where the session stands at every turn, an operator acceptance extends it on the record, and the meter reports every stop and what followed (v0.102.0)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
@@ -36,12 +36,14 @@ operator's attendance as the only stop. Wall-clock: one journal and gate-row
 read per gate start, per probe start and per turn end (milliseconds);
 nothing else. Context bytes: this file; every role's cold start grows by the
 shared sentence of step 8, measured and recorded before and after. Commands:
-`npm run resume -- accept-overrun` (new, operator-run after a stop);
+`npm run resume -- accept-overrun` (new, agent-run from contextual operator authorization, before a run or after a stop);
 `harness usage` gains the standing. Tokens: unknown until run. Steps: 11.
 Re-mints: `harness-host.ts`, `harness-command.ts` and `contributor.ts` are
 registered evidence sources, so the editions they stale are re-minted
-deterministically; none is a file the feedback verifier judges, so no live
-feedback episode; `test-runner.mjs`, `bounded-command.mjs` and
+deterministically. The operator's duration-presentation correction also changes
+`gate-deadlines.mjs` and registers its formatter in `FEEDBACK_SOURCE_PATHS`,
+so this execution owes one live feedback self-host episode and a new feedback
+edition on those final judged sources. `test-runner.mjs`, `bounded-command.mjs` and
 `process-budget.mjs` are declared sources of machinery suites, so `npm test
 -- --review` runs before handoff; the role oracle is re-minted for the
 shared sentence.
@@ -59,7 +61,7 @@ continue down an unproductive path). Filed by the
 [2026-10-26 pass](../planning/wo192-fixes-and-example-drift-2026-10-26.md).
 Planner-synthesized. Opaque identifier, not a priority. Clean-room screen:
 no stop condition; no host is named beyond its generic form.
-**Depends on:** WO-158 (closed, v0.57.0: the off-ramp routes whose typed
+**Depends on:** WO-158 (closed, v0.49.0: the off-ramp routes whose typed
 event, capture and refusal shape the acceptance route follows), WO-126
 (closed: the budgets file, `readBudgets` and `budgetVerdict`), WO-144
 (closed: the hook boundary and its five refusals, which gain a sixth),
@@ -147,6 +149,13 @@ so a planning pass reads whether a stop or an operator intervention helped,
 which is the evaluation WO-192's D023 asked for, as data rather than as a
 second lifecycle driver.
 
+**Operator scope expansion (2026-10-28, WO-234-D002):** Present every
+operator-facing duration in hours and minutes. Apply the shared formatter to
+the changed admission, lifecycle, gate and meter output, including deadline
+errors; retain exact numeric units in machine records. Regenerate the role
+guidance and run the live feedback self-host required by the deadline-source
+change before complete validation.
+
 **Observed gap (dated 2026-10-26 at `main` `939af628`; WO-192's worktree read 2026-10-26T22:30Z):**
 
 - WO-192's executor dispatch ran 80,817,117 ms (22.4 hours) of wall clock
@@ -204,13 +213,13 @@ second lifecycle driver.
   WO-192; the Flow Steward stays a candidate). Rejected: hook refusals
   alone (axis: Codex has no tool-call hooks; WO-192's sessions were Codex).
 - **Two numbers, read from the record, owned by the operator.** Each
-  dispatch kind gets `wallClockMs` and `completeRuns`, seeded by the filing
-  pass from the record and recorded with their basis: four times the phase
-  median `plan failures` reports on 2026-10-26 for the executor
-  (implementation 4,927,430 ms, so 19,709,720 ms, about 5.5 hours), the
-  verifier (1,042,596 ms, so 4,170,384 ms), the reviewer (1,540,750 ms, so
-  6,163,000 ms) and the executor's repair dispatch (2,762,141 ms, so
-  11,048,564 ms, read when the dispatch is `resume: fix`); three complete
+  dispatch kind gets `wallClockMs` and `completeRuns`. Implementation,
+  verification, final review and repair select `local-median`: each consumer
+  derives max(4 times its own completed phase median, 8 h 0 min), using
+  8 h 0 min without history. Resolve history at the dispatch's original
+  start so later completions cannot move a live bound. Export the policy,
+  never this repository's observed durations. Explicit numeric overrides
+  and null retain their meanings. Keep three complete
   runs per dispatch; release close, planner and refuter `null` until the
   record gives their medians. `null` disables a bound, as it does elsewhere
   in the file; the keys are the operator's to edit. The executor re-reads
@@ -224,7 +233,11 @@ second lifecycle driver.
   appends `DispatchBoundAccepted` to the order's control log, scoped to the
   order and its current phase, in the shape of WO-158's routes (the
   capture is the operator's own words at their digest; the order's own
-  executor is refused as the recording session, as for `waive`); the
+  executor may record the operator's contextual authorization with its actual
+  actor attestation and existing writer; no exact phrase, session exit or
+  manual operator command is required). Early authorization to run as long
+  as needed records `--ceiling unlimited` for both metrics, stored as null
+  acceptance ceilings until the phase completes; the
   standing reads it; `status --json` projects it under `legalOffRamps` and
   `boundAcceptances`. Rejected: editing `acceptances` in the budgets file
   during a live gate (axis: a tracked gate input written mid-gate, which
@@ -265,9 +278,10 @@ second lifecycle driver.
 
 1. `docs/control/budgets.json` and `scripts/kit/budgets.template.json`:
    `dispatches.<role>.wallClockMs` and `.completeRuns` for every
-   `dispatchKinds` role with the seeds of the Design and `null` where no
-   median exists; `scripts/lib/process-budget.mjs` `readBudgets` (14)
-   validates them as `numberOrNull` and reads an absent key as `null`, so
+   `dispatchKinds` role: supported phases select consumer-local medians
+   with the 8 h 0 min fallback; unsupported roles remain `null`; `scripts/lib/process-budget.mjs` `readBudgets` (14)
+   validates numeric/null bounds and the consumer-local `local-median`
+   wall-clock policy, and reads an absent key as `null`, so
    an export made before this order keeps `npm run meta`. Check: `npm test
    -- --only process-debt`; `npm test -- --only launchpad` (the update case).
 2. `scripts/lib/dispatch-bound.mjs` (new): `dispatchStanding(root, {
@@ -287,8 +301,9 @@ second lifecycle driver.
    bound with the same message. Check: `npm test -- --only harness`.
 5. `scripts/resume.mjs`: `accept-overrun` (the route of the Design), legal
    in `active`, `needs-fix`, `repairing`, `verifying` and `final-review`,
-   refused to the order's own executor as `waive` is, projected in `status
-   --json`; `next` and `fix` refuse to re-dispatch a phase whose last
+   recorded in-session by the current agent, including the executor, from
+   contextual operator authorization; `--ceiling unlimited` admits an
+   early as-needed run for each metric. It is projected in `status --json`; `next` and `fix` refuse to re-dispatch a phase whose last
    dispatch ended `exceeded` without an acceptance, naming the route; the
    control fold validates `DispatchBoundAccepted`. Check: `npm test --
    --only checkpoint`; `npm test -- --only work-orders-fixtures`; the
@@ -343,8 +358,8 @@ failures` block; the write-backs.
 **Acceptance criteria (all required)**
 
 1. `docs/control/budgets.json` and the kit template carry `wallClockMs` and
-   `completeRuns` for every dispatch kind with the seeds and their basis
-   recorded in the decisions; `readBudgets` validates them, reads an absent
+   `completeRuns` for every dispatch kind, with consumer-local median policy
+   and its 8 h 0 min floor recorded in the decisions; `readBudgets` validates them, reads an absent
    key as `null`, and an export made before this order passes `npm run meta`
    after an update.
 2. `dispatchStanding` returns `within`, `exceeded` or `unset` from the
@@ -359,8 +374,10 @@ failures` block; the write-backs.
 4. The bounded wrapper refuses to start a probe past the bound with the same
    message; a probe within the bound runs as today.
 5. `npm run resume -- accept-overrun` appends `DispatchBoundAccepted` with
-   the operator's capture digest, scoped to the order and phase, is refused
-   to the order's own executor and outside its legal phases, and is
+   the operator's capture digest, scoped to the order and phase, admits the
+   executor recording contextual operator authorization with its current
+   writer, supports early as-needed ceilings, refuses outside its legal
+   phases, and is
    projected in `status --json`; `next` and `fix` refuse to re-dispatch a
    phase whose last dispatch ended `exceeded` without one, and admit it
    with one.
@@ -416,8 +433,8 @@ the passing complete row at the integrated code identity when one exists.
 - FUP-0104 (the Flow Steward) stays a candidate: this order adds no
   supervisor role (reopen: a planning pass names a consumer scenario for a
   steward beyond a bound).
-- The seeds are four times the medians of 2026-10-26; the executor records
-  the medians at activation and seeds from those; a bound the operator
+- The default is max(4 times each consumer's own phase median, 8 h 0 min),
+  with an 8 h 0 min fallback and a dispatch-start cutoff; a bound the operator
   changes is the operator's record in the budgets file (reopen: a dispatch
   stops within its median, or two consecutive closes record an acceptance
   on the same metric).

@@ -1,0 +1,71 @@
+{
+  "observedAt": "2026-10-28T19:20:44.186Z",
+  "baseline": "22ce7799cce61db93f5852069dacf2409373adbd",
+  "method": "The same exported host judgment call with the same synthetic normal-pressure sample, dispatch standing and memory options. Base ignores the new standing option; current refuses a complete selection. Focused controls omit standing as the runner does. Child process exit codes are recorded. This is a deterministic admission comparison, not a live host-memory claim.",
+  "cases": [
+    {
+      "metric": "wallClockMs",
+      "selection": "complete review",
+      "base": {
+        "exitCode": 0,
+        "boundStop": null,
+        "output": "Host memory: normal; pressure=0; swapBytes=0; physicalBytes=68719476736; source=paired synthetic sample\nPer-lane memory budget 1073741824 bytes covers measured task peak RSS 0 bytes (8 host lanes)"
+      },
+      "current": {
+        "exitCode": 1,
+        "boundStop": {
+          "metric": "wallClockMs",
+          "value": 84,
+          "bound": 0
+        },
+        "output": "DOTLN_DISPATCH_BOUND: wall clock=0 h 0 min, bound=0 h 0 min. dispatch standing: 0 h 0 min of 0 h 0 min; complete runs 0 of unset; exceeded. Use analysis: to diagnose. The operator can authorize proceeding in ordinary language in this conversation, including an early run for as long as needed; the agent records the contextual authorization with npm run resume -- accept-overrun <wallClockMs|completeRuns> --ceiling <value|unlimited> --reason <text> --capture <path> --capture-hash sha256:<digest> <actor-flags> and continues in the same session. No special phrase, session exit or manual operator command is required."
+      }
+    },
+    {
+      "metric": "wallClockMs",
+      "selection": "focused reproduction",
+      "base": {
+        "exitCode": 0,
+        "boundStop": null,
+        "output": "Host memory: normal; pressure=0; swapBytes=0; physicalBytes=68719476736; source=paired synthetic sample\nPer-lane memory budget 1073741824 bytes covers measured task peak RSS 0 bytes (8 host lanes)"
+      },
+      "current": {
+        "exitCode": 0,
+        "boundStop": null,
+        "output": "Host memory: normal; pressure=0; swapBytes=0; physicalBytes=68719476736; source=paired synthetic sample\nPer-lane memory budget 1073741824 bytes covers measured task peak RSS 0 bytes (8 host lanes)"
+      }
+    },
+    {
+      "metric": "completeRuns",
+      "selection": "complete review",
+      "base": {
+        "exitCode": 0,
+        "boundStop": null,
+        "output": "Host memory: normal; pressure=0; swapBytes=0; physicalBytes=68719476736; source=paired synthetic sample\nPer-lane memory budget 1073741824 bytes covers measured task peak RSS 0 bytes (8 host lanes)"
+      },
+      "current": {
+        "exitCode": 1,
+        "boundStop": {
+          "metric": "completeRuns",
+          "value": 0,
+          "bound": 0
+        },
+        "output": "DOTLN_DISPATCH_BOUND: complete runs=0, bound=0. dispatch standing: 0 h 0 min of unset; complete runs 0 of 0; exceeded. Use analysis: to diagnose. The operator can authorize proceeding in ordinary language in this conversation, including an early run for as long as needed; the agent records the contextual authorization with npm run resume -- accept-overrun <wallClockMs|completeRuns> --ceiling <value|unlimited> --reason <text> --capture <path> --capture-hash sha256:<digest> <actor-flags> and continues in the same session. No special phrase, session exit or manual operator command is required."
+      }
+    },
+    {
+      "metric": "completeRuns",
+      "selection": "focused reproduction",
+      "base": {
+        "exitCode": 0,
+        "boundStop": null,
+        "output": "Host memory: normal; pressure=0; swapBytes=0; physicalBytes=68719476736; source=paired synthetic sample\nPer-lane memory budget 1073741824 bytes covers measured task peak RSS 0 bytes (8 host lanes)"
+      },
+      "current": {
+        "exitCode": 0,
+        "boundStop": null,
+        "output": "Host memory: normal; pressure=0; swapBytes=0; physicalBytes=68719476736; source=paired synthetic sample\nPer-lane memory budget 1073741824 bytes covers measured task peak RSS 0 bytes (8 host lanes)"
+      }
+    }
+  ]
+}
