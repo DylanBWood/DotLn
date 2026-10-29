@@ -29,6 +29,8 @@ clean `main` at `7b0a5b5c` (v0.102.0).
 | 02:36:25.671Z | Items 4 to 4.e: documents that accrete; the kit's part; a useful fix, not removal, not byte caps; references | OperatorCorrectionReceived | diagnose the mechanism in core and the kit; propose and file the fix; answer with references | acted on: §6, WO-238, WO-235, §11 |
 | 02:36:25.671Z | Item 5: the fork's block | OperatorDirection (carried evidence, not direction, per product 07 item 5) | dispose each item | acted on: §12 |
 | 02:43:49.172Z | "im not sure why i need to authorize them; if they are useful then they are useful…" | OperatorDirection | decide the follow-ups by usefulness; give a summary of each with its disposition | acted on: §5 (the table is the summary; the operator may re-dispose by list) |
+| 03:40:36.604Z | "so my initial prompt, all fup, all entropy proposals netted 1 new work order...?" | OperatorAnswer sought (a question on the count) | account for where every input went | answered in the session with the routing table of §5 and §7: two new orders, one amended, the rest routed into orders owning the surface; no change to the plan |
+| 03:41:53.976Z | "oh nice" | OperatorAnswer (acknowledgement) | none | recorded; no action |
 
 Aim stated before acting: diagnose with evidence, act inside planning
 authority, file what needs code, answer every item. Assumption recorded:
@@ -92,6 +94,13 @@ the starter refresh only: preparation 2.4 s, update 0.2 s, verification
 | `node scripts/harness.mjs prune` (dry run; the census the close runs) | 186.9 s | 5,633 retained roots walked, 4,690 of them gate fixtures under the system temp directory |
 | `npm run build` | 1.0 s | nothing to rebuild on `main`; at a close it is a real rebuild (unmeasured) |
 | `npm run license-surfaces` | 1.9 s | |
+
+The refuter's NoOp reading, verified by this pass against the retained
+records: WO-232 closed on 2026-10-25 in one invocation of 25 s with no
+prune; the prune joined the close with WO-233's implementation
+(`f4163301`, 2026-10-27), and WO-233's own close on 2026-10-28 took 13 min
+47 s over two invocations (386 s preview, 441 s publish; 4,126 and 4,720
+roots retained). The 20 to 30 minutes began there.
 
 Inference, labeled: the census is about three of each invocation's four to
 five minutes, and it ran in every one of the six invocations (9 to 10 of
@@ -555,9 +564,23 @@ first-line reading: a dispatch pasted whole is read as a paste, not a
 prefix (reopen: a typed `planning:` on the first content line is read as
 `unknown`).
 
-Validation, in order: `npm run plan -- followups --sync` and `--apply`;
-`npm run meta`; `npm run meta -- --plan-cost`; `npm run work-orders --
-index`; `npm run plan -- check`; `npm run test:docs`; commit; `npm run
-plan -- refute` with one fresh `dotln-worker`; `npm run plan -- receipt`;
-`npm run test:docs`; push; the `:memo:` pull request. Results are in the
-response and the receipt.
+Validation, in order: `npm run plan -- followups --sync` and `--apply`
+(31 dispositions, 10 rows minted); `npm run meta`; `npm run meta --
+--plan-cost`; `npm run work-orders -- index`; `npm run format`; commit;
+`npm run plan -- check` (the new heading awaited its receipt; nothing
+else); `npm run test:docs` (24 passed, 3 awaiting the receipt); `npm run
+plan -- refute` with one fresh `dotln-worker` (claude-opus-5-5 at xhigh by
+the pin; the host read back neither); the worker ran 21 min 47 s and
+returned `aligned-with-findings` with fourteen known issues and no holds;
+`npm run plan -- receipt` filed
+[receipt 058](refutations/2026-10-29-planning-aa634f39243f266b-058.md)
+(dispatch to file 25 min 33 s; 58 receipts, 47 passes; no advisories);
+the fourteen known issues are on the three catalog rows with the
+planner's readings, the two on WO-238's criterion 10 settling the move
+question the refuter found (the dated documents stay at their paths, the
+archive view is the kind classification plus a planning README, no record
+changes a byte); then `npm run test:docs`, push and the `:memo:` pull
+request, whose results are in the response. The meter's trap table at
+`meta` flagged drift to low performance as a reopen candidate
+(coldStartBytes 32,292, three consecutive rises); the three orders'
+known issues carry the offset duty, and the next pass reads the series.
