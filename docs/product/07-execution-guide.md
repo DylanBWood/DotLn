@@ -1381,6 +1381,27 @@ Preconditions and inputs:
    its reopening condition, as it does a fork item; the idea ledger is
    drained into the operator's instance's UI, where an idea lives first as a
    toy, and is not fed new entries by this route.
+7. Every committed document is one of three kinds, and the pass writes to
+   each in its own way. A standing document (a product document, the
+   sequence, the map's catalog, a workstream, a repository profile, an
+   instance's operator record, a root instruction file) states what is so
+   for a named reader: a change replaces the sentence that is now wrong and
+   links the record, and no dated account of what happened is appended
+   under its headings. A record (an order's decisions and evidence, a
+   pass's own document, a verification, a final review, a receipt, a
+   release note) is dated and immutable, one per event, reached by link
+   and never named by a session-start read list. A generated document is
+   derived by a command and never edited by hand. An instance's operator
+   record is a standing document: it carries the operator's standing
+   directions, each as the rule with its date and capture digest, and
+   never an account of the day, the history of how a rule arrived or a
+   characterization of the operator; the pass's own document holds the
+   day. A document no reader entry point names and no session reads is
+   the pass's removal candidate, whatever its size; a document a role
+   reads at every dispatch stays, whatever its size. WO-238 adds the
+   derived kinds, the reader binding, the read census and the checks;
+   until it lands the rule is this paragraph and the reviewer's judgment
+   ([the 2026-10-28 pass](../planning/document-contract-and-release-close-2026-10-28.md)).
 
 **`planning: refute` and `planning: refute full`.** These exact phrases load
 the dedicated refuter skill in either harness. The parent runs
@@ -1681,7 +1702,13 @@ base, a revision) names every reader of that field across `scripts/` and
 moved the publish's three reads to the described base and left
 `lintReviewedTargetCommits`, the fourth reader, on the activation base; the
 DotLn-Angular fork's WO-013 FINAL-002 was refused on two merged subjects the
-day the release landed, and WO-231 moves it). A release's Read before
+day the release landed, and WO-231 moves it). An order that adds recurring
+work to a gate, a hook, a prune or a close names that work's measured cost
+before and after, in its Cost line and its decisions, from a close's step
+timings or `plan conditions`; a cost that is not measured is `unknown`,
+never assumed cheap ([the 2026-10-28
+pass](../planning/document-contract-and-release-close-2026-10-28.md);
+WO-236-D025). A release's Read before
 upgrading is also screened: it asks an instance to read, never to edit a
 closed record by hand. A new or tightened kit check must admit records the
 previous release admitted, or the release is held; the `instance-history`
@@ -2329,7 +2356,13 @@ wrong and citing the evidence; a dated paragraph appended under a product
 heading is a receipt and belongs in the order's evidence README, and a
 candidate belongs in the planning map (operator direction, 2026-09-25; WO-085
 binds `scripts/docs-check.mjs` in `npm run test:docs` to the byte ceilings
-in `docs/control/doc-ceilings.json`). Record the affected surfaces
+in `docs/control/doc-ceilings.json`). The same rule holds for every
+standing document, not only a product document: the sequence, the map's
+catalog, a workstream, a repository profile and an instance's operator
+record state what is so for their readers and are replaced in place, and
+the dated account of what happened lives in a record, which is the order's
+decisions, the pass's document, a verification or a receipt (§Operator-opened
+planning pass, item 7). Record the affected surfaces
 and evidence in the existing work-order outcome or breakout receipt; do not
 create a new ceremony or rewrite unrelated historical artifacts. The front
 page, `README.md`, is edited only by an order whose leading header carries

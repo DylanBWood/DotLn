@@ -24251,6 +24251,14 @@
             "WO-233"
           ],
           "at": "2026-10-26T23:11:08.035Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Fired (the plain gate's thirty-day median 490 s against 360; the skeleton task 514 s against a 302 s median; target-worktree 611 s against 127 s) and re-disposed: no order is filed on the figure because the growth is not attributed to orders (plan conditions gives task medians, not the rows that moved them); product 07's planning screens now require a measured cost for new recurring work, and WO-239's step timings give the next pass the close's share. [2026-10-28 document-contract planning pass (docs/planning/document-contract-and-release-close-2026-10-28.md section 9)]",
+          "reopenWhen": "A gate task holds at a row whose order's decisions do not name the growth, or the plain gate's thirty-day median is still above 360 s when WO-239 closes.",
+          "targets": [],
+          "at": "2026-10-29T03:30:50.409Z"
         }
       ]
     },
@@ -46443,6 +46451,14 @@
           "reopenWhen": "The refusal recurs or new launcher and native-census evidence identifies its cause.",
           "targets": [],
           "at": "2026-10-27T20:38:46.310Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Read by the 2026-10-28 document-contract pass: no new observation of the intermittent launch identity refusal since D033; stands. [2026-10-28 document-contract planning pass (docs/planning/document-contract-and-release-close-2026-10-28.md section 5)]",
+          "reopenWhen": "The full skeleton check or a fresh complete review repeats the refusal, or another observation establishes whether the held launcher died or its live group was missed.",
+          "targets": [],
+          "at": "2026-10-29T03:30:49.871Z"
         }
       ]
     },
@@ -46562,6 +46578,16 @@
           "reopenWhen": "A writer alone retains expired roots, census cost affects an order, or owned empty containers justify protocol-specific removal.",
           "targets": [],
           "at": "2026-10-27T20:38:46.212Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "The census half is allocated to WO-239 (step 3): the close census judges the closing order's roots, main's retained lane and this checkout's temporary roots, the global walk staying at harness prune and session end (the census measured 186.9 s over 5,633 roots and ran in all six close invocations of 2026-10-28). Writer-protection scope and empty owned containers stay deferred on this row. [2026-10-28 document-contract planning pass (docs/planning/document-contract-and-release-close-2026-10-28.md section 3)]",
+          "reopenWhen": "The scoped close census retains an expired root the global walk would have removed; a writer alone retains an expired root; or owned empty containers justify protocol-specific removal.",
+          "targets": [
+            "WO-239"
+          ],
+          "at": "2026-10-29T03:30:49.428Z"
         }
       ]
     },
@@ -46650,6 +46676,14 @@
           "reopenWhen": "A machinery planning pass allocates browser temporary ownership or another complete review adds the same families; inspect normal completion and interruption using current browser API documentation.",
           "targets": [],
           "at": "2026-10-27T22:37:37.334Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Read by the 2026-10-28 document-contract pass: no order filed touches browser-evidence; stands. [2026-10-28 document-contract planning pass (docs/planning/document-contract-and-release-close-2026-10-28.md section 5)]",
+          "reopenWhen": "A planning pass allocates browser temporary ownership, or a later complete review adds directories from the same browser-owned families.",
+          "targets": [],
+          "at": "2026-10-29T03:30:49.980Z"
         }
       ]
     },
@@ -46712,6 +46746,14 @@
           "reopenWhen": "A machinery planning pass establishes the attribution contract, or source-backed evidence identifies these exact owners for a bounded recovery.",
           "targets": [],
           "at": "2026-10-28T02:02:16.678Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Read by the 2026-10-28 document-contract pass: a dry-run prune on 2026-10-28 (186.9 s, 5,633 retained) retained no unmarked legacy session scratch tree by that reason in the pages read; stands. [2026-10-28 document-contract planning pass (docs/planning/document-contract-and-release-close-2026-10-28.md section 5)]",
+          "reopenWhen": "A dry-run prune retains an unmarked session scratch tree older than the backfill window that no live session, open path or writer names.",
+          "targets": [],
+          "at": "2026-10-29T03:30:50.090Z"
         }
       ]
     },
@@ -46870,6 +46912,16 @@
           "reopenWhen": "A machinery planning pass decides the residue form, or a cold-start measurement shows the residue lines deciding whether a role root meets its ceiling (D076's condition).",
           "targets": [],
           "at": "2026-10-28T03:44:16.936Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-238 (step 9): the residue in the shared instruction file becomes one line per profile naming its rule ids with the shared reason; core's CLAUDE.md carries eleven such lines today. [2026-10-28 document-contract planning pass (docs/planning/document-contract-and-release-close-2026-10-28.md section 5)]",
+          "reopenWhen": "A residue line's rule id is not resolvable from the manifest.",
+          "targets": [
+            "WO-238"
+          ],
+          "at": "2026-10-29T03:30:49.537Z"
         }
       ]
     },
@@ -46894,6 +46946,14 @@
           "reopenWhen": "The operator confirms or strips the lines (D080's condition).",
           "targets": [],
           "at": "2026-10-28T03:44:17.042Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled with FUP-cf9c1b8f5686dec3: the operator merged WO-233 with the four lines present; the provenance question was answered by the operator's act at merge. [2026-10-28 document-contract planning pass (docs/planning/document-contract-and-release-close-2026-10-28.md section 5)]",
+          "reopenWhen": "The operator strikes the four lines, or a later review finds another hand-written CLAUDE.md change in a branch without a recorded direction.",
+          "targets": [],
+          "at": "2026-10-29T03:30:49.759Z"
         }
       ]
     },
@@ -46942,6 +47002,14 @@
           "reopenWhen": "The operator confirms or strips the lines (D080s condition).",
           "targets": [],
           "at": "2026-10-28T03:44:17.251Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled: the operator merged WO-233 with the four lines present (commit e35caed6 is in main's first-parent history; the pull request body named the choice). The merge is the operator's act the row asked for. [2026-10-28 document-contract planning pass (docs/planning/document-contract-and-release-close-2026-10-28.md section 5)]",
+          "reopenWhen": "The operator strikes the four lines, or a later review finds another hand-written CLAUDE.md change in a branch without a recorded direction.",
+          "targets": [],
+          "at": "2026-10-29T03:30:49.648Z"
         }
       ]
     },
@@ -47220,6 +47288,16 @@
             "WO-207"
           ],
           "at": "2026-10-28T14:03:38.076Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Still allocated to WO-207; the fork's second pass of 2026-10-28 adds README.md (the registered-target paragraph) as the third template-derived carrier in two releases after .gitignore and budgets.json, merged only because the fork never edited it. [2026-10-28 document-contract planning pass (docs/planning/document-contract-and-release-close-2026-10-28.md section 12)]",
+          "reopenWhen": "WO-207 activates, whose activating pass writes the carry-in into the order; or an instance that edited a seeded file misses a carrier a release named.",
+          "targets": [
+            "WO-207"
+          ],
+          "at": "2026-10-29T03:30:50.195Z"
         }
       ]
     },
@@ -47340,6 +47418,16 @@
           "reopenWhen": "A future planning pass prioritizes this issue or the operator assigns a separate implementation scope.",
           "targets": [],
           "at": "2026-10-28T16:34:50.970Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-239 (steps 5 and 6): worktree integrate refuses while a gate holds a lane for the worktree or main, returns before any stash when main is an ancestor of HEAD, and the executor's role text names the lifecycle's integration points. The operator's follow-up needs no further authorization (the operator's message of 2026-10-29T02:43Z). [2026-10-28 document-contract planning pass (docs/planning/document-contract-and-release-close-2026-10-28.md section 5)]",
+          "reopenWhen": "An executor integrates during a live gate after the guard lands, or a legitimate integration at a named point is refused.",
+          "targets": [
+            "WO-239"
+          ],
+          "at": "2026-10-29T03:30:48.351Z"
         }
       ]
     },
@@ -47364,6 +47452,16 @@
           "reopenWhen": "A future planning pass prioritizes this issue or the operator assigns a separate implementation scope.",
           "targets": [],
           "at": "2026-10-28T16:34:51.092Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-235 as a carry-in: an expected-data update (the role oracle, a projection fixture) names its cause and provenance in the decisions and the reviewer checks the fixture diff against it; WO-235 re-mints the oracle and the reviewer brief. [2026-10-28 document-contract planning pass (docs/planning/document-contract-and-release-close-2026-10-28.md section 5)]",
+          "reopenWhen": "A review finds an expected-data update without a cause after the rule lands.",
+          "targets": [
+            "WO-235"
+          ],
+          "at": "2026-10-29T03:30:48.463Z"
         }
       ]
     },
@@ -47388,6 +47486,16 @@
           "reopenWhen": "A future planning pass prioritizes this issue or the operator assigns a separate implementation scope.",
           "targets": [],
           "at": "2026-10-28T16:34:51.213Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-235 as a carry-in: the consistency review traces a changed contract through its consumers with file-level evidence, as a duty in the shared role text WO-235 re-mints, never a generic no-omissions claim. [2026-10-28 document-contract planning pass (docs/planning/document-contract-and-release-close-2026-10-28.md section 5)]",
+          "reopenWhen": "A consumer the brief named is missed after the rule lands.",
+          "targets": [
+            "WO-235"
+          ],
+          "at": "2026-10-29T03:30:48.572Z"
         }
       ]
     },
@@ -47412,6 +47520,16 @@
           "reopenWhen": "A future planning pass prioritizes this issue or the operator assigns a separate implementation scope.",
           "targets": [],
           "at": "2026-10-28T16:34:51.332Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-235 as a carry-in with D017: the correction lives in the generated role text and the role oracle, not a session checklist; the evidence it catches the known missed consumers is the reviewer's recorded trace. [2026-10-28 document-contract planning pass (docs/planning/document-contract-and-release-close-2026-10-28.md section 5)]",
+          "reopenWhen": "A consumer the brief named is missed after the rule lands, or the duty is found only in a session-local note.",
+          "targets": [
+            "WO-235"
+          ],
+          "at": "2026-10-29T03:30:48.682Z"
         }
       ]
     },
@@ -47436,6 +47554,14 @@
           "reopenWhen": "A future planning pass prioritizes this issue or the operator assigns a separate implementation scope.",
           "targets": [],
           "at": "2026-10-28T16:34:51.449Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined as an order: the decision records that the cause of the truncated answers was not observed and names no renderer or delivery mechanism; nothing can be fixed without a reproduction. WO-235's turn-end refusal covers the adjacent failure (a message left unanswered). [2026-10-28 document-contract planning pass (docs/planning/document-contract-and-release-close-2026-10-28.md section 5)]",
+          "reopenWhen": "A reproduced fragment with the journal's full text beside the rendered one.",
+          "targets": [],
+          "at": "2026-10-29T03:30:47.908Z"
         }
       ]
     },
@@ -47460,6 +47586,16 @@
           "reopenWhen": "A future planning pass prioritizes this issue or the operator assigns a separate implementation scope.",
           "targets": [],
           "at": "2026-10-28T16:34:51.571Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-235, whose objective already carries it: the direction ledger, the correction freeze and the turn-end refusal answer operator questions and corrections before further tool work. [2026-10-28 document-contract planning pass (docs/planning/document-contract-and-release-close-2026-10-28.md section 5)]",
+          "reopenWhen": "An operator question goes unanswered through a turn after WO-235 lands.",
+          "targets": [
+            "WO-235"
+          ],
+          "at": "2026-10-29T03:30:48.789Z"
         }
       ]
     },
@@ -47484,6 +47620,16 @@
           "reopenWhen": "A future planning pass prioritizes this issue or the operator assigns a separate implementation scope.",
           "targets": [],
           "at": "2026-10-28T16:34:51.693Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-238 (step 8): the index card drops the Cost paragraph; the order file keeps the Cost field for planning. [2026-10-28 document-contract planning pass (docs/planning/document-contract-and-release-close-2026-10-28.md section 5)]",
+          "reopenWhen": "The index needs a cost figure a reader uses.",
+          "targets": [
+            "WO-238"
+          ],
+          "at": "2026-10-29T03:30:48.895Z"
         }
       ]
     },
@@ -47508,6 +47654,16 @@
           "reopenWhen": "A future planning pass prioritizes this issue or the operator assigns a separate implementation scope.",
           "targets": [],
           "at": "2026-10-28T16:34:51.815Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Applied in part by this pass: docs/planning/sequence.md is cut to the rules in force and the current order (18,876 to about 5,300 bytes), its retirement history already in the generated history page and the dated pass documents. The move of the dated pass documents under docs/planning/passes/ with every link rewritten is WO-238 (step 10). [2026-10-28 document-contract planning pass (docs/planning/document-contract-and-release-close-2026-10-28.md section 8)]",
+          "reopenWhen": "A moved record's reader cannot find it from the entry points.",
+          "targets": [
+            "WO-238"
+          ],
+          "at": "2026-10-29T03:30:49.001Z"
         }
       ]
     },
@@ -47558,6 +47714,16 @@
           "reopenWhen": "A future planning pass prioritizes this issue or the operator assigns a separate implementation scope.",
           "targets": [],
           "at": "2026-10-28T16:34:52.056Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-207 as a carry-in on its row: the kit-update order owns the siblings registry and its generated page; a contract consumer (DotLn-Angular) is presented with consumer fields and an export sibling with export fields. [2026-10-28 document-contract planning pass (docs/planning/document-contract-and-release-close-2026-10-28.md section 5)]",
+          "reopenWhen": "WO-207 activates, whose activating pass writes the carry-in into the order; or the Siblings page reports a consumer's export fields as not evidenced again.",
+          "targets": [
+            "WO-207"
+          ],
+          "at": "2026-10-29T03:30:49.107Z"
         }
       ]
     },
@@ -47582,6 +47748,14 @@
           "reopenWhen": "A future planning pass prioritizes this issue or the operator assigns a separate implementation scope.",
           "targets": [],
           "at": "2026-10-28T16:34:52.173Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by write-back: product 07's planning screens now require that an order adding recurring work to a gate, a hook, a prune or a close names that work's measured cost before and after, from a close's step timings or plan conditions, with an unmeasured cost written as unknown. [2026-10-28 document-contract planning pass (docs/planning/document-contract-and-release-close-2026-10-28.md section 11)]",
+          "reopenWhen": "An order adds recurring work to a gate, a hook, a prune or a close without the measured cost the screen requires and passes planning anyway.",
+          "targets": [],
+          "at": "2026-10-29T03:30:49.212Z"
         }
       ]
     },
@@ -47606,6 +47780,16 @@
           "reopenWhen": "A future planning pass prioritizes this issue or the operator assigns a separate implementation scope.",
           "targets": [],
           "at": "2026-10-28T16:34:52.291Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-238 (step 11): product 07 split by reader on the census of which sections roles and skills cite and read; an operator reference for the operator's procedures; the dated accounts moved to a record; dated bracket citations turned into links or dropped. [2026-10-28 document-contract planning pass (docs/planning/document-contract-and-release-close-2026-10-28.md section 5)]",
+          "reopenWhen": "A role cites a product 07 section the split moved.",
+          "targets": [
+            "WO-238"
+          ],
+          "at": "2026-10-29T03:30:49.318Z"
         }
       ]
     },
@@ -47654,6 +47838,14 @@
           "reopenWhen": "An executor scratch write no longer spawns the lifecycle and its permission-hook median is within tens of milliseconds of a verifier's on the same build; or a slow status refuses an executor's target write through harnessControl's 10 s timeout.",
           "targets": [],
           "at": "2026-10-28T18:18:34.133Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred with the fork's observation as the field case: D029's hook latency (about 180 ms more per judged executor outside write) is paid most in the fork's attended comparison sessions; the fork records the measured cost from its WO-019 resume. [2026-10-28 document-contract planning pass (docs/planning/document-contract-and-release-close-2026-10-28.md section 12)]",
+          "reopenWhen": "An executor scratch write no longer spawns the lifecycle and its permission-hook median is within tens of milliseconds of a verifier's on the same build; or the fork's recorded cost from WO-019 exceeds a second per write.",
+          "targets": [],
+          "at": "2026-10-29T03:30:50.302Z"
         }
       ]
     },
@@ -47923,6 +48115,252 @@
           "reopenWhen": "A repair of WO-234 happens, or the next order touching scripts/lib/dispatch-bound.mjs or the gate-row reader activates; or verification-003-probe.mjs usage U4's current standing names docs/control/local/harness/checks.json.",
           "targets": [],
           "at": "2026-10-29T01:47:39.611Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-9a269553bfa4d61a",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-operators-block-on-release-close-the-entropy-proposals-the-follow-ups-and-document-accretion-and-the-forks-second-block-recorded-2026-10-28::02bf95f0e9f10e2ac997e72ec47a38d0e52e5e7e4ac769481c901e3ecde1b86a",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "b3cf82472a4121ca656b04affb19f692abfa8796884028b0b5e4d7f777f9e192",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-operators-block-on-release-close-the-entropy-proposals-the-follow-ups-and-document-accretion-and-the-forks-second-block-recorded-2026-10-28",
+          "title": "A word list, byte or pattern check against narrative in standing documents.",
+          "summary": "5. **A word list, byte or pattern check against narrative in standing documents.** Declined: the operator's direction (usefulness, not bytes) and the fork's item 7 (the place is the contract); the reviewer's judgment of a changed standing document's diff takes the role, and the structural checks judge kind, reader and entry points only. Reopen when the reviewer misses dated narrative added to a standing document in two consecutive closes.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined: the operator's direction (usefulness, not bytes) and the fork's item 7 (the place is the contract); the reviewer's judgment of a changed standing document's diff takes the role and the structural checks judge kind, reader and entry points only. [2026-10-28 document-contract planning pass (docs/planning/document-contract-and-release-close-2026-10-28.md section 10)]",
+          "reopenWhen": "The reviewer misses dated narrative added to a standing document in two consecutive closes.",
+          "targets": [],
+          "at": "2026-10-29T03:30:47.586Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-ed28b896a24b84e5",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-operators-block-on-release-close-the-entropy-proposals-the-follow-ups-and-document-accretion-and-the-forks-second-block-recorded-2026-10-28::0817278f9f471a1e165e362e83da69e04b1c8507b8a0cab871129d18d85e3e6d",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "7a7b031b3b0bb0511d550cf973d23a4c77793f83189da09e5a985f4f54280fe3",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-operators-block-on-release-close-the-entropy-proposals-the-follow-ups-and-document-accretion-and-the-forks-second-block-recorded-2026-10-28",
+          "title": "Diagnosing incomplete or interrupted chat answers",
+          "summary": "7. **Diagnosing incomplete or interrupted chat answers** (WO-236-D019). Declined as an order: the decision records that the cause was not observed and names no renderer or delivery mechanism; nothing can be fixed without a reproduction. Reopen on a reproduced fragment with the journal's full text beside the rendered one.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "duplicate",
+          "reason": "Duplicate of FUP-dfd7fa315fec65e4 (WO-236-D019), which this pass declines as an order; the candidate was recorded in the map so the register carries the NoOp. [2026-10-28 document-contract planning pass (docs/planning/document-contract-and-release-close-2026-10-28.md section 10)]",
+          "reopenWhen": "The original row FUP-dfd7fa315fec65e4 reopens on a reproduced fragment with the journal's full text beside the rendered one.",
+          "targets": [
+            "FUP-dfd7fa315fec65e4"
+          ],
+          "at": "2026-10-29T03:30:47.800Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-40adb0b3e8be6e04",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-operators-block-on-release-close-the-entropy-proposals-the-follow-ups-and-document-accretion-and-the-forks-second-block-recorded-2026-10-28::3e0cac83879f90db3cb5d9aca8eeda620530f4e390685a1bba9d2073f4572e63",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "1ca454e5b020fe2e4114418452643bf98cd0c3383d47b4e49b2b26eef816f1bc",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-operators-block-on-release-close-the-entropy-proposals-the-follow-ups-and-document-accretion-and-the-forks-second-block-recorded-2026-10-28",
+          "title": "Document byte ceilings",
+          "summary": "10. **Document byte ceilings** (`docs/control/doc-ceilings.json`). Allocated to WO-238, which retires them in favor of the reader binding and the read census (the operator's direction of 2026-10-28); role cold-start ceilings stay. Until it lands every pass sets them as the standing policy says. Reopen when the operator directs a byte figure for a document.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-238, which retires document byte ceilings in favor of the derived reader binding and the read census (the operator's direction of 2026-10-28: usefulness, not bytes); role cold-start ceilings in budgets.json stay. Until it lands every pass sets the ceilings as the standing policy says, as this pass did. [2026-10-28 document-contract planning pass (docs/planning/document-contract-and-release-close-2026-10-28.md section 11)]",
+          "reopenWhen": "The operator directs a byte figure for a document.",
+          "targets": [
+            "WO-238"
+          ],
+          "at": "2026-10-29T03:30:48.237Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-1d2353af87f9bb85",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-operators-block-on-release-close-the-entropy-proposals-the-follow-ups-and-document-accretion-and-the-forks-second-block-recorded-2026-10-28::682e8f15d656836f1136985da12251f1ac2e95b867e6cfed03b8316555ef8ea3",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "a834a1a2191138eafc4b61e59fc661f55e78505062fbdfe6ff80eb375958c6be",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-operators-block-on-release-close-the-entropy-proposals-the-follow-ups-and-document-accretion-and-the-forks-second-block-recorded-2026-10-28",
+          "title": "A default --dry-run before every release close.",
+          "summary": "6. **A default `--dry-run` before every release close.** Declined: the publish command is idempotent and re-checks an existing Release, and the preview doubled each close's cost on 2026-10-28; WO-239's role sentence keeps the preview for a prerequisite in doubt. Reopen when a publish fails on a prerequisite the preview would have shown.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined: the publish command is idempotent and re-checks an existing Release, and the preview doubled each close's cost on 2026-10-28; WO-239's role sentence keeps the preview for a prerequisite in doubt. [2026-10-28 document-contract planning pass (docs/planning/document-contract-and-release-close-2026-10-28.md section 10)]",
+          "reopenWhen": "A publish fails on a prerequisite the preview would have shown.",
+          "targets": [],
+          "at": "2026-10-29T03:30:47.692Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-078edd9225d685ac",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-operators-block-on-release-close-the-entropy-proposals-the-follow-ups-and-document-accretion-and-the-forks-second-block-recorded-2026-10-28::84eb08865932a4fea9f9661f8754903969a47a74a26ed9bf3ad08271c57898be",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "081f5ab8becc9ca01944c43ca1d56140fc2016a6b1580d7045e1fcf33ccdc89b",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-operators-block-on-release-close-the-entropy-proposals-the-follow-ups-and-document-accretion-and-the-forks-second-block-recorded-2026-10-28",
+          "title": "A continuously running 5S worker that proposes document removals",
+          "summary": "3. **A continuously running 5S worker that proposes document removals** (the operator's item 4.e). Declined: no running actor exists or is filed; WO-091 compiles the 5S equipment as loadout data and `packages/compiler/src/seiri.ts` is a presence-keyed pulse, not a document walker; the census of WO-238 is the deterministic Sort and costs one journal read per pass. Reopen when the census red-tags documents two passes running with no removal, or the operator directs a running worker.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined: no running actor exists or is filed; WO-091 compiles the 5S equipment as loadout data and seiri.ts is a presence-keyed pulse, not a document walker; WO-238's read census is the deterministic Sort at one journal read per pass. [2026-10-28 document-contract planning pass (docs/planning/document-contract-and-release-close-2026-10-28.md section 10)]",
+          "reopenWhen": "The census red-tags documents two passes running with no removal, or the operator directs a running worker.",
+          "targets": [],
+          "at": "2026-10-29T03:30:47.369Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-e29d9beb780eff58",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-operators-block-on-release-close-the-entropy-proposals-the-follow-ups-and-document-accretion-and-the-forks-second-block-recorded-2026-10-28::af0ef1f907bf876872213b26ed98cd74d94665ee7c7b252af5e20969bc338150",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "8d58269e7602cc13cdf3736bcfe4dec48ec3cb1c881c4cc4ff8327024689168b",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-operators-block-on-release-close-the-entropy-proposals-the-follow-ups-and-document-accretion-and-the-forks-second-block-recorded-2026-10-28",
+          "title": "Caching the global census instead of scoping it at close.",
+          "summary": "8. **Caching the global census instead of scoping it at close.** Declined in WO-239's design: a cache can retain a root whose owner died since the walk; a scoped walk judges fewer roots exactly, and the global walk keeps its two homes. Reopen when the scoped close census retains an expired root the global walk would have removed.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined in WO-239's design: a cached census can retain a root whose owner died since the walk; the close census is scoped instead and the global walk keeps its homes at harness prune and session end. [2026-10-28 document-contract planning pass (docs/planning/document-contract-and-release-close-2026-10-28.md section 10)]",
+          "reopenWhen": "The scoped close census retains an expired root the global walk would have removed.",
+          "targets": [],
+          "at": "2026-10-29T03:30:48.015Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-1905f0724f318615",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-operators-block-on-release-close-the-entropy-proposals-the-follow-ups-and-document-accretion-and-the-forks-second-block-recorded-2026-10-28::d8796efee6b54054514706a0a20788c4a953fe1b8b6797fd514c10fd90bb3aa5",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "c4af8a6e99331bea23a4b73fc29900a654749cad5feacd569ffe90ff64259268",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-operators-block-on-release-close-the-entropy-proposals-the-follow-ups-and-document-accretion-and-the-forks-second-block-recorded-2026-10-28",
+          "title": "Removing the fork's operator record",
+          "summary": "4. **Removing the fork's operator record** (`docs/operator/README.md`). Declined: it is a standing document with a reader (every role at session start); the contract keeps it as the operator's standing directions, and the fork's own cut to about 16 KB is accepted for now by the operator. Reopen when the fork's census shows no role reading it over N releases.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined: the fork's operator record is a standing document with a reader (every role at session start); the kinds contract keeps it as the operator's standing directions, and the operator accepted the fork's own cut for now. [2026-10-28 document-contract planning pass (docs/planning/document-contract-and-release-close-2026-10-28.md section 10)]",
+          "reopenWhen": "The fork's census shows no role reading it over N releases.",
+          "targets": [],
+          "at": "2026-10-29T03:30:47.477Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-35d504c0852f60ec",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-operators-block-on-release-close-the-entropy-proposals-the-follow-ups-and-document-accretion-and-the-forks-second-block-recorded-2026-10-28::e1640aca6569113e83cbe3f19a860253930329c55fe1cc09550410d0de3f951a",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "e1aca67c9e87c5f26353eb8e926329471bd965cea4f35a387f8d69d176905332",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-operators-block-on-release-close-the-entropy-proposals-the-follow-ups-and-document-accretion-and-the-forks-second-block-recorded-2026-10-28",
+          "title": "A fresh Entropy Reducer episode in this pass.",
+          "summary": "2. **A fresh Entropy Reducer episode in this pass.** Declined: the dispatch is not `planning: entropy reducer`; an episode costs about 993 s and USD 9.50 by the REVIEW-002 observation, and the reducer has no document lens until WO-238 lands, so a review now would find what the six before it found. Reopen on the operator's next `planning: entropy reducer`, by preference after WO-238's release.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined: the dispatch is not planning: entropy reducer; an episode costs about 993 s and USD 9.50 and the reducer has no document lens until WO-238 lands, so a review now would find what the six before it found. [2026-10-28 document-contract planning pass (docs/planning/document-contract-and-release-close-2026-10-28.md section 10)]",
+          "reopenWhen": "The operator's next planning: entropy reducer, by preference after WO-238's release.",
+          "targets": [],
+          "at": "2026-10-29T03:30:47.257Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-04e9da194ae081ea",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-operators-block-on-release-close-the-entropy-proposals-the-follow-ups-and-document-accretion-and-the-forks-second-block-recorded-2026-10-28::e404eddb1ba3709e96bd9012bbd84f16fde8724758fd4d787f1776b2c275fe9b",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "0a7699ac744c2c1935d0243de363f2f8d6f7b04c94a338fed77ba43dd53cab2d",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-operators-block-on-release-close-the-entropy-proposals-the-follow-ups-and-document-accretion-and-the-forks-second-block-recorded-2026-10-28",
+          "title": "Moving the map's dated candidate sections out of the map.",
+          "summary": "9. **Moving the map's dated candidate sections out of the map.** Declined for now: they are the register's source keys (`candidate:docs/planning/work-order-map.md#…`); WO-238 places the catalog above a record divider and the dated sections below it with their anchors unchanged, and WO-088 owns the register's source model. Reopen when WO-088 activates.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred: the map's dated candidate sections are the register's source keys; WO-238 places the catalog above a record divider and the dated sections below it with their anchors unchanged, and WO-088 owns the register's source model. [2026-10-28 document-contract planning pass (docs/planning/document-contract-and-release-close-2026-10-28.md section 10)]",
+          "reopenWhen": "WO-088 activates.",
+          "targets": [],
+          "at": "2026-10-29T03:30:48.127Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-096fedccac153108",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-operators-block-on-release-close-the-entropy-proposals-the-follow-ups-and-document-accretion-and-the-forks-second-block-recorded-2026-10-28::fe8e953769adc91db2731322e1e1d898413a7bde2329f41f8cacdda2d8c4fdb5",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "b67279a7bb4fabd7cbfd7ae592fdbd1ecffb22527c3cd0ac3c7aa85aba709e31",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-operators-block-on-release-close-the-entropy-proposals-the-follow-ups-and-document-accretion-and-the-forks-second-block-recorded-2026-10-28",
+          "title": "Passage ids from an instance's purpose block and plan-level findings for a zero-order pass",
+          "summary": "1. **Passage ids from an instance's purpose block and plan-level findings for a zero-order pass** (the fork's item 6). Allocated to WO-088 as a carry-in on its row: the compile issues passage ids from the `dotln-purpose` block (one per paragraph, `purpose:N`) as it does from core's vision theses (`scripts/lib/plan-subject.mjs` 368 to 380), a marked critical-path sentence in that block replaces the \"unavailable\" critical path (622 to 646), and the result schema admits plan-level findings when the judged horizon has zero orders (`packages/skeleton/src/plan-refutation-protocol.ts` 186 and 386 require `orders.length` to equal the subject's). A convenience: the fork's zero-order refutations stay ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-088 as a carry-in on its row: passage ids issued from an instance's dotln-purpose block (one per paragraph), a marked critical-path sentence in that block replacing the unavailable critical path, and plan-level findings admitted by the result schema when the judged horizon has zero orders (plan-refutation-protocol.ts 186 and 386 require orders.length to equal the subject's). The fork's item 6; a convenience, its zero-order refutations stay settled by the compile. [2026-10-28 document-contract planning pass (docs/planning/document-contract-and-release-close-2026-10-28.md section 12)]",
+          "reopenWhen": "WO-088 activates, whose activating pass writes the carry-in into the order; or an instance pass pays for a refutation that can carry no finding twice.",
+          "targets": [
+            "WO-088"
+          ],
+          "at": "2026-10-29T03:30:47.148Z"
         }
       ]
     }
