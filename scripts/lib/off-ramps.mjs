@@ -1,3 +1,4 @@
+import { dispatchJournalDirectory } from "../../packages/skeleton/src/dispatch-journal.mjs";
 import { sha256Hex as digest } from "./helpers.mjs";
 // Off-ramps (WO-158): the operator capture every operator act names, the
 // recording session's observed role, and the report convention that judges a
@@ -78,21 +79,29 @@ export const sessionHarness = (env = process.env) =>
       : env.CLAUDE_CODE_SESSION_ID || env.CLAUDE_SESSION_ID
         ? "claude-code"
         : "unknown";
-const harnessDirectory = (root) =>
-  join(root, docRelative(root, "control", "local/harness"));
+const harnessDirectory = dispatchJournalDirectory;
 const journalAt = (root, key) => {
   const path = join(harnessDirectory(root), `${key}.json`);
   if (!/^[0-9a-f]{64}$/u.test(key) || !existsSync(path)) return undefined;
   try {
     const session = JSON.parse(readFileSync(path, "utf8"));
+    const current = session.boundDispatch ?? session;
+    const executedOrders = new Set(
+      Array.isArray(session.executedOrders) ? session.executedOrders : [],
+    );
+    if (session.role === "executor" && typeof session.workOrder === "string")
+      executedOrders.add(session.workOrder);
+    if (current.role === "executor" && typeof current.workOrder === "string")
+      executedOrders.add(current.workOrder);
     return {
-      role: typeof session.role === "string" ? session.role : "unobserved",
-      ...(typeof session.workOrder === "string"
-        ? { workOrder: session.workOrder }
+      role: typeof current.role === "string" ? current.role : "unobserved",
+      ...(typeof current.workOrder === "string"
+        ? { workOrder: current.workOrder }
         : {}),
       ...(typeof session.startedAt === "string"
         ? { startedAt: session.startedAt }
         : {}),
+      executedOrders: [...executedOrders],
     };
   } catch {
     return undefined;
@@ -140,7 +149,8 @@ const processAlive = (pid) => {
  */
 export function executorOf(root, workOrderId, env = process.env) {
   const own = (journal) =>
-    journal?.role === "executor" && journal.workOrder === workOrderId;
+    (journal?.role === "executor" && journal.workOrder === workOrderId) ||
+    journal?.executedOrders?.includes(workOrderId);
   if (sessionJournals(root, env).some(own))
     return `this session is ${workOrderId}'s executor`;
   const directory = join(harnessDirectory(root), "writer");

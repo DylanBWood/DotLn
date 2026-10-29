@@ -1,0 +1,1186 @@
+{
+  "verification": "VER-002",
+  "workOrder": "WO-234",
+  "observedAt": "2026-10-28T23:15:04Z",
+  "subject": {
+    "base": "22ce7799cce61db93f5852069dacf2409373adbd",
+    "checkpoint": "refs/dotln/checkpoint/WO-234/10 (50bb0431f42860153ddac109605cd0da7ec3380c)",
+    "repairBase": "refs/dotln/checkpoint/WO-234/7 (b4751414) after VER-001; VER-001's subject refs/dotln/checkpoint/WO-234/6 (3212edf1)",
+    "codeIdentity": "1176301f97d412956b3f8be27fd31e7786b16c506eb8960d6e1f51b7595cdfdb",
+    "codeIdentityRecomputed": [
+      "2026-10-28T22:51:03Z before probes",
+      "2026-10-28T23:12Z after the checks and the final probe runs"
+    ],
+    "workingTreeAgainstCheckpoint": "lifecycle projections (docs/control/orders/WO-234.jsonl, docs/control/current.md, docs/work-orders/README.md) and this verification's own files; no source change"
+  },
+  "consumedRows": [
+    {
+      "checkId": "structural",
+      "gateSelection": "structural",
+      "evidenceRef": "host-gate:1176301f97d412956b3f8be27fd31e7786b16c506eb8960d6e1f51b7595cdfdb:structural:2026-10-28T22:39:33.349Z",
+      "subject": "5077a0d49cc46ede6c758fe7e1964c48ac2f4c29",
+      "startedAt": "2026-10-28T22:04:21.896Z",
+      "recordedAt": "2026-10-28T22:39:33.349Z",
+      "durationMs": 37594,
+      "exitCode": 0,
+      "executionMode": "fresh",
+      "requiredSuites": 6,
+      "unrunSuites": [],
+      "stale": [],
+      "identityUnchanged": true,
+      "buildOutputUnchanged": true
+    },
+    {
+      "checkId": "npm test",
+      "gateSelection": "review",
+      "evidenceRef": "host-gate:1176301f97d412956b3f8be27fd31e7786b16c506eb8960d6e1f51b7595cdfdb:npm test",
+      "subject": "5077a0d49cc46ede6c758fe7e1964c48ac2f4c29",
+      "startedAt": "2026-10-28T22:04:21.896Z",
+      "recordedAt": "2026-10-28T22:41:49.629Z",
+      "durationMs": 2247733,
+      "exitCode": 0,
+      "executionMode": "fresh",
+      "requiredSuites": 45,
+      "unrunSuites": [],
+      "stale": [],
+      "identityUnchanged": true,
+      "buildOutputUnchanged": true,
+      "temporaryCleanup": {
+        "removed": 2354,
+        "retained": 1,
+        "blockers": 0
+      }
+    }
+  ],
+  "checks": [
+    {
+      "command": "node scripts/harness.mjs bounded -- npm run format:check",
+      "startedAt": "2026-10-28T23:10:07Z",
+      "endedAt": "2026-10-28T23:10:15Z",
+      "exitCode": 0,
+      "note": "All matched files use Prettier code style, after formatting only verification-002-probe.mjs."
+    },
+    {
+      "command": "git diff --check; git diff --cached --check; trailing-space scan of untracked files",
+      "startedAt": "2026-10-28T23:10:21Z",
+      "exitCode": 0,
+      "note": "No whitespace error in tracked, staged or untracked files."
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- npm run harness -- check",
+      "startedAt": "2026-10-28T23:10:21Z",
+      "endedAt": "2026-10-28T23:10:22Z",
+      "exitCode": 0,
+      "note": "35 generated surfaces; local-terms list present. The command rebuilt ignored package outputs by atomic replacement; no tracked file changed."
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- npm run publication:check",
+      "startedAt": "2026-10-28T23:10:30Z",
+      "endedAt": "2026-10-28T23:10:31Z",
+      "exitCode": 0,
+      "note": "255/255 product headings indexed; both editions current."
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-234/verification-001-probe.mjs entry",
+      "startedAt": "2026-10-28T23:12:41Z",
+      "endedAt": "2026-10-28T23:12:45Z",
+      "exitCode": 0,
+      "note": "VER-001 F1's paired entry control passes on the repaired subject (D015's reopening condition).",
+      "row": {
+        "id": "R1-entry-damaged-lane",
+        "criterion": "regression",
+        "variation": "paired dispatch entry beside one damaged unrelated journal; base is main's runtime at the same commit",
+        "expected": "both arms bind the verifier role and admit its granted temp write beside the damaged journal, as main does; the current arm's bound is computed or named unavailable, never silently unset",
+        "observed": {
+          "provenance": {
+            "head": "22ce7799cce61db93f5852069dacf2409373adbd",
+            "mainHead": "22ce7799cce61db93f5852069dacf2409373adbd",
+            "mainClean": true,
+            "baseRuntimeHasBound": false,
+            "baseHostVersion": "0.37.0"
+          },
+          "base": {
+            "clean": {
+              "startStatus": 0,
+              "promptStatus": 0,
+              "role": "verifier",
+              "advisory": null,
+              "systemTempWrite": "admitted",
+              "completeReview": "admitted",
+              "standing": null
+            },
+            "damaged": {
+              "startStatus": 0,
+              "promptStatus": 0,
+              "role": "verifier",
+              "advisory": null,
+              "systemTempWrite": "admitted",
+              "completeReview": "admitted",
+              "standing": null
+            }
+          },
+          "current": {
+            "clean": {
+              "startStatus": 0,
+              "promptStatus": 0,
+              "role": "verifier",
+              "advisory": null,
+              "systemTempWrite": "admitted",
+              "completeReview": "denied: DOTLN_DISPATCH_BOUND: complete runs=0, bound=0. dispatch standing: 0 h 0 min of unset; complete runs 0 of 0; exceeded. U",
+              "standing": {
+                "state": "exceeded",
+                "cause": null,
+                "bound": 0
+              }
+            },
+            "damaged": {
+              "startStatus": 0,
+              "promptStatus": 0,
+              "role": "verifier",
+              "advisory": "advisory: dispatch standing unavailable: Invalid dispatch journal docs/control/local/harness/cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc.json: Expected property name or '}' in JSON at position 2 (lin",
+              "systemTempWrite": "admitted",
+              "completeReview": "admitted",
+              "standing": {
+                "state": "unavailable",
+                "cause": "Invalid dispatch journal <fixture>/docs/control/local/harness/cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc.json: Expected property name or '"
+              }
+            }
+          }
+        },
+        "pass": true
+      }
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- npm run meta",
+      "startedAt": "2026-10-28T23:15:00Z",
+      "endedAt": "2026-10-28T23:15:04Z",
+      "exitCode": 0,
+      "note": "Refreshed the decisions index and the follow-up register for D021 to D023."
+    }
+  ],
+  "probe": [
+    {
+      "section": "functions",
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-234/verification-002-probe.mjs functions",
+      "startedAt": "2026-10-28T23:12:11Z",
+      "endedAt": "2026-10-28T23:12:12Z",
+      "exitCode": 0,
+      "checks": 9,
+      "failed": [],
+      "rows": [
+        {
+          "id": "F1-truncated-json",
+          "criterion": 2,
+          "variation": "the shared single-journal reader on truncated-json",
+          "expected": "a DispatchJournalError that carries and names the file, with its cause bounded to 160 characters",
+          "observed": {
+            "threw": true,
+            "typed": true,
+            "file": "<fixture>/docs/control/local/harness/cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc.json",
+            "message": "Invalid dispatch journal <fixture>/docs/control/local/harness/cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc.json: Expected property name or '}' in JSON at position",
+            "causeLength": 69
+          },
+          "pass": true
+        },
+        {
+          "id": "F1-invalid-anchor",
+          "criterion": 2,
+          "variation": "the shared single-journal reader on invalid-anchor",
+          "expected": "a DispatchJournalError that carries and names the file, with its cause bounded to 160 characters",
+          "observed": {
+            "threw": true,
+            "typed": true,
+            "file": "<fixture>/docs/control/local/harness/dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd.json",
+            "message": "Invalid dispatch journal <fixture>/docs/control/local/harness/dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd.json: Invalid dispatch-bound journal anchor",
+            "causeLength": 37
+          },
+          "pass": true
+        },
+        {
+          "id": "F1-unreadable-mode",
+          "criterion": 2,
+          "variation": "the shared single-journal reader on unreadable-mode",
+          "expected": "a DispatchJournalError that carries and names the file, with its cause bounded to 160 characters",
+          "observed": {
+            "threw": true,
+            "typed": true,
+            "file": "<fixture>/docs/control/local/harness/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee.json",
+            "message": "Invalid dispatch journal <fixture>/docs/control/local/harness/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee.json: EACCES: permission denied, open '/private/var/fol",
+            "causeLength": 160
+          },
+          "pass": true
+        },
+        {
+          "id": "F1-directory",
+          "criterion": 2,
+          "variation": "the shared single-journal reader on directory",
+          "expected": "a DispatchJournalError that carries and names the file, with its cause bounded to 160 characters",
+          "observed": {
+            "threw": true,
+            "typed": true,
+            "file": "<fixture>/docs/control/local/harness/ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff.json",
+            "message": "Invalid dispatch journal <fixture>/docs/control/local/harness/ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff.json: EISDIR: illegal operation on a directory, read",
+            "causeLength": 46
+          },
+          "pass": true
+        },
+        {
+          "id": "F2-large-journal",
+          "criterion": 2,
+          "variation": "a 4 KB unparseable journal (F1-unreadable-mode exercises the 160-character cut)",
+          "expected": "the path survives whole and the cause stays within 160 characters",
+          "observed": {
+            "length": 289,
+            "namesFile": true,
+            "detailLength": 78
+          },
+          "pass": true
+        },
+        {
+          "id": "F3-marker-empty",
+          "criterion": 2,
+          "variation": "an anchor whose unavailable marker is empty",
+          "expected": "refused as an invalid anchor rather than read as available or unavailable",
+          "observed": {
+            "threw": "Invalid dispatch-bound journal anchor"
+          },
+          "pass": true
+        },
+        {
+          "id": "F3-marker-number",
+          "criterion": 2,
+          "variation": "an anchor whose unavailable marker is number",
+          "expected": "refused as an invalid anchor rather than read as available or unavailable",
+          "observed": {
+            "threw": "Invalid dispatch-bound journal anchor"
+          },
+          "pass": true
+        },
+        {
+          "id": "F4-own-invalid-json",
+          "criterion": 2,
+          "variation": "dispatchStanding for a session whose own journal holds invalid-json",
+          "expected": "a named unavailable error carrying the session's journal path (VER-001 F2's rule)",
+          "observed": {
+            "threw": "Invalid dispatch journal <fixture>/docs/control/local/harness/ac85b169734dc2440523d95d1059e5ee20ecf904255107f0b5f99af09ccb1af9.json: Expected "
+          },
+          "pass": true
+        },
+        {
+          "id": "F4-own-invalid-anchor",
+          "criterion": 2,
+          "variation": "dispatchStanding for a session whose own journal holds invalid-anchor",
+          "expected": "a named unavailable error carrying the session's journal path (VER-001 F2's rule)",
+          "observed": {
+            "threw": "Invalid dispatch journal <fixture>/docs/control/local/harness/ac85b169734dc2440523d95d1059e5ee20ecf904255107f0b5f99af09ccb1af9.json: Invalid d"
+          },
+          "pass": true
+        }
+      ]
+    },
+    {
+      "section": "entry",
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-234/verification-002-probe.mjs entry",
+      "startedAt": "2026-10-28T23:12:21Z",
+      "endedAt": "2026-10-28T23:12:35Z",
+      "exitCode": 1,
+      "checks": 11,
+      "failed": [
+        "U1-truncated-json",
+        "U1-invalid-anchor",
+        "U1-unreadable-mode",
+        "U1-directory"
+      ],
+      "rows": [
+        {
+          "id": "E0-provenance",
+          "criterion": "regression",
+          "variation": "base arm provenance",
+          "expected": "HEAD equals the main checkout's clean HEAD, whose runtime has no dispatch binder",
+          "observed": {
+            "head": "22ce7799cce61db93f5852069dacf2409373adbd",
+            "mainHead": "22ce7799cce61db93f5852069dacf2409373adbd",
+            "mainClean": true,
+            "baseRuntimeHasBound": false
+          },
+          "pass": true
+        },
+        {
+          "id": "E1-truncated-json",
+          "criterion": 6,
+          "variation": "prompt entry (resume: verify) beside one truncated-json journal of another order",
+          "expected": "the current arm binds role, intent and order and keeps the system-temp grant as base does; the marker, prompt advisory, gate-start advisories, Stop line and standing name the damaged file; the hook admits the complete review with that advisory (D013: the in-process gate refuses it, G1); nothing is classed runtime-unavailable; focused selections stay admitted",
+          "observed": {
+            "base": {
+              "startStatus": 0,
+              "promptStatus": 0,
+              "role": "verifier",
+              "intent": "resume: verify",
+              "workOrder": "WO-999",
+              "marker": null,
+              "promptAdvisory": null,
+              "misclassified": false,
+              "systemTempWrite": "admitted",
+              "review": {
+                "decision": "admitted",
+                "advisory": null
+              },
+              "focused": "admitted",
+              "bounded": {
+                "decision": "admitted",
+                "advisory": null
+              },
+              "agent": {
+                "decision": "admitted",
+                "advisory": "DotLn advisory: subagent counter cannot attribute spawn: tool_use_id missing; admitted, uncounted remainder unknown."
+              },
+              "stopLine": null,
+              "usage": {
+                "exitCode": 0,
+                "usagePrinted": true,
+                "standing": null,
+                "stderr": [
+                  "DotLn advisory: process-cost counters unavailable; recorded unknown."
+                ]
+              },
+              "damaged": "docs/control/local/harness/cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc.json",
+              "namesFile": {
+                "marker": false,
+                "prompt": false,
+                "review": false,
+                "bounded": false,
+                "agent": false,
+                "stop": false,
+                "standing": false
+              }
+            },
+            "current": {
+              "startStatus": 0,
+              "promptStatus": 0,
+              "role": "verifier",
+              "intent": "resume: verify",
+              "workOrder": "WO-999",
+              "marker": "Invalid dispatch journal docs/control/local/harness/cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc.json: Expected property name or '}' in JSON at position 2 (line 1 column 3)",
+              "promptAdvisory": "DotLn advisory: dispatch standing unavailable: Invalid dispatch journal docs/control/local/harness/cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc.json: Expected property name or '}' in JSON at position 2 (line 1 column 3); role and grants retained. Use analysis: to diagnose.",
+              "misclassified": false,
+              "systemTempWrite": "admitted",
+              "review": {
+                "decision": "admitted",
+                "advisory": "l21fs2yxgjm3540000gn/T/dotln-ver234b-entry-current-4aOP8y/docs/control/local/harness/cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc.json: Expected property name or '}' in JSON at position 2 (line 1 column 3); existing judgments remain active."
+              },
+              "focused": "admitted",
+              "bounded": {
+                "decision": "admitted",
+                "advisory": "l21fs2yxgjm3540000gn/T/dotln-ver234b-entry-current-4aOP8y/docs/control/local/harness/cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc.json: Expected property name or '}' in JSON at position 2 (line 1 column 3); existing judgments remain active."
+              },
+              "agent": {
+                "decision": "admitted",
+                "advisory": "l21fs2yxgjm3540000gn/T/dotln-ver234b-entry-current-4aOP8y/docs/control/local/harness/cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc.json: Expected property name or '}' in JSON at position 2 (line 1 column 3); existing judgments remain active."
+              },
+              "stopLine": "dispatch standing: unavailable (Invalid dispatch journal <fixture>/docs/control/local/harness/cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc.json: Expected property name or '}' in JSON at position 2 (",
+              "usage": {
+                "exitCode": 1,
+                "usagePrinted": false,
+                "standing": null,
+                "stderr": [
+                  "DotLn advisory: process-cost counters unavailable; recorded unknown.",
+                  "Invalid dispatch journal <fixture>/docs/control/local/harness/cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc.json: Expec"
+                ]
+              },
+              "standing": {
+                "state": "unavailable",
+                "message": "Invalid dispatch journal <fixture>/docs/control/local/harness/cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc.json: Expected property name or '}' in JSON at posi"
+              },
+              "damaged": "docs/control/local/harness/cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc.json",
+              "namesFile": {
+                "marker": true,
+                "prompt": true,
+                "review": true,
+                "bounded": true,
+                "agent": true,
+                "stop": true,
+                "standing": true
+              }
+            }
+          },
+          "pass": true
+        },
+        {
+          "id": "E1-invalid-anchor",
+          "criterion": 6,
+          "variation": "prompt entry (resume: verify) beside one invalid-anchor journal of another order",
+          "expected": "the current arm binds role, intent and order and keeps the system-temp grant as base does; the marker, prompt advisory, gate-start advisories, Stop line and standing name the damaged file; the hook admits the complete review with that advisory (D013: the in-process gate refuses it, G1); nothing is classed runtime-unavailable; focused selections stay admitted",
+          "observed": {
+            "base": {
+              "startStatus": 0,
+              "promptStatus": 0,
+              "role": "verifier",
+              "intent": "resume: verify",
+              "workOrder": "WO-999",
+              "marker": null,
+              "promptAdvisory": null,
+              "misclassified": false,
+              "systemTempWrite": "admitted",
+              "review": {
+                "decision": "admitted",
+                "advisory": null
+              },
+              "focused": "admitted",
+              "bounded": {
+                "decision": "admitted",
+                "advisory": null
+              },
+              "agent": {
+                "decision": "admitted",
+                "advisory": "DotLn advisory: subagent counter cannot attribute spawn: tool_use_id missing; admitted, uncounted remainder unknown."
+              },
+              "stopLine": null,
+              "usage": {
+                "exitCode": 0,
+                "usagePrinted": true,
+                "standing": null,
+                "stderr": [
+                  "DotLn advisory: process-cost counters unavailable; recorded unknown."
+                ]
+              },
+              "damaged": "docs/control/local/harness/dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd.json",
+              "namesFile": {
+                "marker": false,
+                "prompt": false,
+                "review": false,
+                "bounded": false,
+                "agent": false,
+                "stop": false,
+                "standing": false
+              }
+            },
+            "current": {
+              "startStatus": 0,
+              "promptStatus": 0,
+              "role": "verifier",
+              "intent": "resume: verify",
+              "workOrder": "WO-999",
+              "marker": "Invalid dispatch journal docs/control/local/harness/dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd.json: Invalid dispatch-bound journal anchor",
+              "promptAdvisory": "DotLn advisory: dispatch standing unavailable: Invalid dispatch journal docs/control/local/harness/dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd.json: Invalid dispatch-bound journal anchor; role and grants retained. Use analysis: to diagnose.",
+              "misclassified": false,
+              "systemTempWrite": "admitted",
+              "review": {
+                "decision": "admitted",
+                "advisory": "rivate<system-temp>/dotln-ver234b-entry-current-4aOP8y/docs/control/local/harness/dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd.json: Invalid dispatch-bound journal anchor; existing judgments remain active."
+              },
+              "focused": "admitted",
+              "bounded": {
+                "decision": "admitted",
+                "advisory": "rivate<system-temp>/dotln-ver234b-entry-current-4aOP8y/docs/control/local/harness/dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd.json: Invalid dispatch-bound journal anchor; existing judgments remain active."
+              },
+              "agent": {
+                "decision": "admitted",
+                "advisory": "rivate<system-temp>/dotln-ver234b-entry-current-4aOP8y/docs/control/local/harness/dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd.json: Invalid dispatch-bound journal anchor; existing judgments remain active."
+              },
+              "stopLine": "dispatch standing: unavailable (Invalid dispatch journal <fixture>/docs/control/local/harness/dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd.json: Invalid dispatch-bound journal anchor)",
+              "usage": {
+                "exitCode": 1,
+                "usagePrinted": false,
+                "standing": null,
+                "stderr": [
+                  "DotLn advisory: process-cost counters unavailable; recorded unknown.",
+                  "Invalid dispatch journal <fixture>/docs/control/local/harness/dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd.json: Inval"
+                ]
+              },
+              "standing": {
+                "state": "unavailable",
+                "message": "Invalid dispatch journal <fixture>/docs/control/local/harness/dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd.json: Invalid dispatch-bound journal anchor"
+              },
+              "damaged": "docs/control/local/harness/dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd.json",
+              "namesFile": {
+                "marker": true,
+                "prompt": true,
+                "review": true,
+                "bounded": true,
+                "agent": true,
+                "stop": true,
+                "standing": true
+              }
+            }
+          },
+          "pass": true
+        },
+        {
+          "id": "E1-unreadable-mode",
+          "criterion": 6,
+          "variation": "prompt entry (resume: verify) beside one unreadable-mode journal of another order",
+          "expected": "the current arm binds role, intent and order and keeps the system-temp grant as base does; the marker, prompt advisory, gate-start advisories, Stop line and standing name the damaged file; the hook admits the complete review with that advisory (D013: the in-process gate refuses it, G1); nothing is classed runtime-unavailable; focused selections stay admitted",
+          "observed": {
+            "base": {
+              "startStatus": 0,
+              "promptStatus": 0,
+              "role": "verifier",
+              "intent": "resume: verify",
+              "workOrder": "WO-999",
+              "marker": null,
+              "promptAdvisory": null,
+              "misclassified": false,
+              "systemTempWrite": "admitted",
+              "review": {
+                "decision": "admitted",
+                "advisory": null
+              },
+              "focused": "admitted",
+              "bounded": {
+                "decision": "admitted",
+                "advisory": null
+              },
+              "agent": {
+                "decision": "admitted",
+                "advisory": "DotLn advisory: subagent counter cannot attribute spawn: tool_use_id missing; admitted, uncounted remainder unknown."
+              },
+              "stopLine": null,
+              "usage": {
+                "exitCode": 0,
+                "usagePrinted": true,
+                "standing": null,
+                "stderr": [
+                  "DotLn advisory: process-cost counters unavailable; recorded unknown."
+                ]
+              },
+              "damaged": "docs/control/local/harness/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee.json",
+              "namesFile": {
+                "marker": false,
+                "prompt": false,
+                "review": false,
+                "bounded": false,
+                "agent": false,
+                "stop": false,
+                "standing": false
+              }
+            },
+            "current": {
+              "startStatus": 0,
+              "promptStatus": 0,
+              "role": "verifier",
+              "intent": "resume: verify",
+              "workOrder": "WO-999",
+              "marker": "Invalid dispatch journal docs/control/local/harness/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee.json: EACCES: permission denied, open '<system-temp>/dotln-v",
+              "promptAdvisory": "DotLn advisory: dispatch standing unavailable: Invalid dispatch journal docs/control/local/harness/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee.json: EACCES: permission denied, open '<fixture>/docs/",
+              "misclassified": false,
+              "systemTempWrite": "admitted",
+              "review": {
+                "decision": "admitted",
+                "advisory": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee.json: EACCES: permission denied, open '<fixture>/docs/control/local/harness/eeeeeeee; existing judgments remain active."
+              },
+              "focused": "admitted",
+              "bounded": {
+                "decision": "admitted",
+                "advisory": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee.json: EACCES: permission denied, open '<fixture>/docs/control/local/harness/eeeeeeee; existing judgments remain active."
+              },
+              "agent": {
+                "decision": "admitted",
+                "advisory": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee.json: EACCES: permission denied, open '<fixture>/docs/control/local/harness/eeeeeeee; existing judgments remain active."
+              },
+              "stopLine": "dispatch standing: unavailable (Invalid dispatch journal <fixture>/docs/control/local/harness/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee.json: EACCES: permission denied, open '/private/var/folders",
+              "usage": {
+                "exitCode": 1,
+                "usagePrinted": false,
+                "standing": null,
+                "stderr": [
+                  "DotLn advisory: process-cost counters unavailable; recorded unknown.",
+                  "Invalid dispatch journal <fixture>/docs/control/local/harness/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee.json: EACCE"
+                ]
+              },
+              "standing": {
+                "state": "unavailable",
+                "message": "Invalid dispatch journal <fixture>/docs/control/local/harness/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee.json: EACCES: permission denied, open '/private/var"
+              },
+              "damaged": "docs/control/local/harness/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee.json",
+              "namesFile": {
+                "marker": true,
+                "prompt": true,
+                "review": true,
+                "bounded": true,
+                "agent": true,
+                "stop": true,
+                "standing": true
+              }
+            }
+          },
+          "pass": true
+        },
+        {
+          "id": "E1-directory",
+          "criterion": 6,
+          "variation": "prompt entry (resume: verify) beside one directory journal of another order",
+          "expected": "the current arm binds role, intent and order and keeps the system-temp grant as base does; the marker, prompt advisory, gate-start advisories, Stop line and standing name the damaged file; the hook admits the complete review with that advisory (D013: the in-process gate refuses it, G1); nothing is classed runtime-unavailable; focused selections stay admitted",
+          "observed": {
+            "base": {
+              "startStatus": 0,
+              "promptStatus": 0,
+              "role": "verifier",
+              "intent": "resume: verify",
+              "workOrder": "WO-999",
+              "marker": null,
+              "promptAdvisory": null,
+              "misclassified": false,
+              "systemTempWrite": "admitted",
+              "review": {
+                "decision": "admitted",
+                "advisory": null
+              },
+              "focused": "admitted",
+              "bounded": {
+                "decision": "admitted",
+                "advisory": null
+              },
+              "agent": {
+                "decision": "admitted",
+                "advisory": "DotLn advisory: subagent counter cannot attribute spawn: tool_use_id missing; admitted, uncounted remainder unknown."
+              },
+              "stopLine": null,
+              "usage": {
+                "exitCode": 0,
+                "usagePrinted": true,
+                "standing": null,
+                "stderr": [
+                  "DotLn advisory: process-cost counters unavailable; recorded unknown."
+                ]
+              },
+              "damaged": "docs/control/local/harness/ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff.json",
+              "namesFile": {
+                "marker": false,
+                "prompt": false,
+                "review": false,
+                "bounded": false,
+                "agent": false,
+                "stop": false,
+                "standing": false
+              }
+            },
+            "current": {
+              "startStatus": 0,
+              "promptStatus": 0,
+              "role": "verifier",
+              "intent": "resume: verify",
+              "workOrder": "WO-999",
+              "marker": "Invalid dispatch journal docs/control/local/harness/ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff.json: EISDIR: illegal operation on a directory, read",
+              "promptAdvisory": "DotLn advisory: dispatch standing unavailable: Invalid dispatch journal docs/control/local/harness/ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff.json: EISDIR: illegal operation on a directory, read; role and grants retained. Use analysis: to diagnose.",
+              "misclassified": false,
+              "systemTempWrite": "admitted",
+              "review": {
+                "decision": "admitted",
+                "advisory": "r/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-ver234b-entry-current-4aOP8y/docs/control/local/harness/ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff.json: EISDIR: illegal operation on a directory, read; existing judgments remain active."
+              },
+              "focused": "admitted",
+              "bounded": {
+                "decision": "admitted",
+                "advisory": "r/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-ver234b-entry-current-4aOP8y/docs/control/local/harness/ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff.json: EISDIR: illegal operation on a directory, read; existing judgments remain active."
+              },
+              "agent": {
+                "decision": "admitted",
+                "advisory": "r/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-ver234b-entry-current-4aOP8y/docs/control/local/harness/ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff.json: EISDIR: illegal operation on a directory, read; existing judgments remain active."
+              },
+              "stopLine": "dispatch standing: unavailable (Invalid dispatch journal <fixture>/docs/control/local/harness/ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff.json: EISDIR: illegal operation on a directory, read)",
+              "usage": {
+                "exitCode": 1,
+                "usagePrinted": false,
+                "standing": null,
+                "stderr": [
+                  "DotLn advisory: process-cost counters unavailable; recorded unknown.",
+                  "Invalid dispatch journal <fixture>/docs/control/local/harness/ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff.json: EISDI"
+                ]
+              },
+              "standing": {
+                "state": "unavailable",
+                "message": "Invalid dispatch journal <fixture>/docs/control/local/harness/ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff.json: EISDIR: illegal operation on a directory, rea"
+              },
+              "damaged": "docs/control/local/harness/ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff.json",
+              "namesFile": {
+                "marker": true,
+                "prompt": true,
+                "review": true,
+                "bounded": true,
+                "agent": true,
+                "stop": true,
+                "standing": true
+              }
+            }
+          },
+          "pass": true
+        },
+        {
+          "id": "E2-clean-lane",
+          "criterion": 6,
+          "variation": "the same entry in a clean lane",
+          "expected": "both arms bind the verifier; the current arm's standing is within, with no marker or advisory",
+          "observed": {
+            "base": {
+              "startStatus": 0,
+              "promptStatus": 0,
+              "role": "verifier",
+              "intent": "resume: verify",
+              "workOrder": "WO-999",
+              "marker": null,
+              "promptAdvisory": null,
+              "misclassified": false,
+              "systemTempWrite": "admitted",
+              "review": {
+                "decision": "admitted",
+                "advisory": null
+              },
+              "focused": "admitted",
+              "bounded": {
+                "decision": "admitted",
+                "advisory": null
+              },
+              "agent": {
+                "decision": "admitted",
+                "advisory": "DotLn advisory: subagent counter cannot attribute spawn: tool_use_id missing; admitted, uncounted remainder unknown."
+              },
+              "stopLine": null,
+              "usage": {
+                "exitCode": 0,
+                "usagePrinted": true,
+                "standing": null,
+                "stderr": [
+                  "DotLn advisory: process-cost counters unavailable; recorded unknown."
+                ]
+              },
+              "damaged": null,
+              "namesFile": null
+            },
+            "current": {
+              "startStatus": 0,
+              "promptStatus": 0,
+              "role": "verifier",
+              "intent": "resume: verify",
+              "workOrder": "WO-999",
+              "marker": null,
+              "promptAdvisory": null,
+              "misclassified": false,
+              "systemTempWrite": "admitted",
+              "review": {
+                "decision": "admitted",
+                "advisory": null
+              },
+              "focused": "admitted",
+              "bounded": {
+                "decision": "admitted",
+                "advisory": null
+              },
+              "agent": {
+                "decision": "admitted",
+                "advisory": "DotLn advisory: subagent counter cannot attribute spawn: tool_use_id missing; admitted, uncounted remainder unknown."
+              },
+              "stopLine": "dispatch standing: 0 h 0 min of 8 h 0 min; complete runs 0 of 3; within",
+              "usage": {
+                "exitCode": 0,
+                "usagePrinted": true,
+                "standing": "dispatch standing: 0 h 0 min of 8 h 0 min; complete runs 0 of 3; within",
+                "stderr": [
+                  "DotLn advisory: process-cost counters unavailable; recorded unknown."
+                ]
+              },
+              "standing": {
+                "state": "within",
+                "cause": null
+              },
+              "damaged": null,
+              "namesFile": null
+            }
+          },
+          "pass": true
+        },
+        {
+          "id": "U1-clean",
+          "criterion": "regression",
+          "variation": "harness usage <session> for the session dispatched in the clean lane, read while that lane is unchanged",
+          "expected": "the usage readback prints its JSON and exits 0 in both arms, as main's does; the current arm also reports the standing",
+          "observed": {
+            "base": {
+              "exitCode": 0,
+              "usagePrinted": true,
+              "standing": null,
+              "stderr": [
+                "DotLn advisory: process-cost counters unavailable; recorded unknown."
+              ]
+            },
+            "current": {
+              "exitCode": 0,
+              "usagePrinted": true,
+              "standing": "dispatch standing: 0 h 0 min of 8 h 0 min; complete runs 0 of 3; within",
+              "stderr": [
+                "DotLn advisory: process-cost counters unavailable; recorded unknown."
+              ]
+            }
+          },
+          "pass": true
+        },
+        {
+          "id": "U1-truncated-json",
+          "criterion": "regression",
+          "variation": "harness usage <session> for the session dispatched in the truncated-json lane, read while that lane is unchanged",
+          "expected": "the usage readback prints its JSON and exits 0 in both arms, as main's does; the current arm also reports the standing",
+          "observed": {
+            "base": {
+              "exitCode": 0,
+              "usagePrinted": true,
+              "standing": null,
+              "stderr": [
+                "DotLn advisory: process-cost counters unavailable; recorded unknown."
+              ]
+            },
+            "current": {
+              "exitCode": 1,
+              "usagePrinted": false,
+              "standing": null,
+              "stderr": [
+                "DotLn advisory: process-cost counters unavailable; recorded unknown.",
+                "Invalid dispatch journal <fixture>/docs/control/local/harness/cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc.json: Expec"
+              ]
+            }
+          },
+          "pass": false
+        },
+        {
+          "id": "U1-invalid-anchor",
+          "criterion": "regression",
+          "variation": "harness usage <session> for the session dispatched in the invalid-anchor lane, read while that lane is unchanged",
+          "expected": "the usage readback prints its JSON and exits 0 in both arms, as main's does; the current arm also reports the standing",
+          "observed": {
+            "base": {
+              "exitCode": 0,
+              "usagePrinted": true,
+              "standing": null,
+              "stderr": [
+                "DotLn advisory: process-cost counters unavailable; recorded unknown."
+              ]
+            },
+            "current": {
+              "exitCode": 1,
+              "usagePrinted": false,
+              "standing": null,
+              "stderr": [
+                "DotLn advisory: process-cost counters unavailable; recorded unknown.",
+                "Invalid dispatch journal <fixture>/docs/control/local/harness/dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd.json: Inval"
+              ]
+            }
+          },
+          "pass": false
+        },
+        {
+          "id": "U1-unreadable-mode",
+          "criterion": "regression",
+          "variation": "harness usage <session> for the session dispatched in the unreadable-mode lane, read while that lane is unchanged",
+          "expected": "the usage readback prints its JSON and exits 0 in both arms, as main's does; the current arm also reports the standing",
+          "observed": {
+            "base": {
+              "exitCode": 0,
+              "usagePrinted": true,
+              "standing": null,
+              "stderr": [
+                "DotLn advisory: process-cost counters unavailable; recorded unknown."
+              ]
+            },
+            "current": {
+              "exitCode": 1,
+              "usagePrinted": false,
+              "standing": null,
+              "stderr": [
+                "DotLn advisory: process-cost counters unavailable; recorded unknown.",
+                "Invalid dispatch journal <fixture>/docs/control/local/harness/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee.json: EACCE"
+              ]
+            }
+          },
+          "pass": false
+        },
+        {
+          "id": "U1-directory",
+          "criterion": "regression",
+          "variation": "harness usage <session> for the session dispatched in the directory lane, read while that lane is unchanged",
+          "expected": "the usage readback prints its JSON and exits 0 in both arms, as main's does; the current arm also reports the standing",
+          "observed": {
+            "base": {
+              "exitCode": 0,
+              "usagePrinted": true,
+              "standing": null,
+              "stderr": [
+                "DotLn advisory: process-cost counters unavailable; recorded unknown."
+              ]
+            },
+            "current": {
+              "exitCode": 1,
+              "usagePrinted": false,
+              "standing": null,
+              "stderr": [
+                "DotLn advisory: process-cost counters unavailable; recorded unknown.",
+                "Invalid dispatch journal <fixture>/docs/control/local/harness/ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff.json: EISDI"
+              ]
+            }
+          },
+          "pass": false
+        }
+      ]
+    },
+    {
+      "section": "recovery",
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-234/verification-002-probe.mjs recovery",
+      "startedAt": "2026-10-28T23:12:35Z",
+      "endedAt": "2026-10-28T23:12:39Z",
+      "exitCode": 1,
+      "checks": 7,
+      "failed": [
+        "R4-after-phase-completion"
+      ],
+      "rows": [
+        {
+          "id": "R1-marked-while-damaged",
+          "criterion": 2,
+          "variation": "dispatch B enters while the phase's earlier anchor A is damaged",
+          "expected": "B binds the verifier with a fresh provisional start and a marker naming A; its standing is a named unavailable error, never unset or computed from the provisional start",
+          "observed": {
+            "role": "verifier",
+            "provisionalStart": true,
+            "marker": "Invalid dispatch journal docs/control/local/harness/9ec28e707ab89c950487fab6ab8936c24d7605c61bade04a8b04e8095193de46.json: Expected property name or '}' in JSON at position 2 (line 1 column 3)",
+            "standing": "Invalid dispatch journal <fixture>/docs/control/local/harness/9ec28e707ab89c950487fab6ab8936c24d7605c61bade04a8b04e8095193de46.json: Expected pr",
+            "stopLine": "dispatch standing: unavailable (Invalid dispatch journal <fixture>/docs/control/local/harness/9ec28e707ab89c950487fab6ab8936c24d7605c61bade04a8b04e8095193de46.json: Expected property name or '}' in JSON at position 2 (line 1 column 3))"
+          },
+          "pass": true
+        },
+        {
+          "id": "R2-restored-history",
+          "criterion": 2,
+          "variation": "A's bytes are restored while B is still running",
+          "expected": "B's standing reads A's original start and A's two consumed runs (within 3 h 0 min and 3 runs); A's bytes and B's stored anchor stay unchanged",
+          "observed": {
+            "startedAt": true,
+            "elapsedAtLeastTwoHours": true,
+            "completeRuns": 2,
+            "bound": 3,
+            "state": "within",
+            "stopLine": "dispatch standing: 2 h 0 min of 3 h 0 min; complete runs 2 of 3; within",
+            "aUnchanged": true,
+            "bAnchorUnchanged": true
+          },
+          "pass": true
+        },
+        {
+          "id": "R3-recovered-bound-binds",
+          "criterion": "2, 6",
+          "variation": "after recovery, a third complete run, then a 1 h 0 min wall clock",
+          "expected": "the third run exhausts the run bound counted from A and the hook refuses a complete review while a focused selection is admitted; the wall clock is exceeded from A's start, not B's",
+          "observed": {
+            "runs": {
+              "state": "exceeded",
+              "exceeded": [
+                {
+                  "metric": "completeRuns",
+                  "value": 3,
+                  "bound": 3
+                }
+              ]
+            },
+            "review": "denied: DOTLN_DISPATCH_BOUND: complete runs=3, bound=3. dispatch standing: 2 h 0 min of 3 h 0 min; complete runs 3 of 3;",
+            "focused": "admitted",
+            "wall": {
+              "state": "exceeded",
+              "exceeded": [
+                "wallClockMs"
+              ]
+            }
+          },
+          "pass": true
+        },
+        {
+          "id": "R4-after-phase-completion",
+          "criterion": "follow-up",
+          "variation": "the phase completes after B's start while A is already restored; B (marked) and C (unmarked) read their standing",
+          "expected": "both standings are computed from readable history, or the marked one names a file that is still damaged",
+          "observed": {
+            "marked": {
+              "threw": "Invalid dispatch journal docs/control/local/harness/9ec28e707ab89c950487fab6ab8936c24d7605c61bade04a8b04e8095193de46.json: Expected property name or '}' in JSON at position 2 (line 1 column 3)"
+            },
+            "unmarked": {
+              "state": "within"
+            },
+            "namedFileReadable": true
+          },
+          "pass": false
+        },
+        {
+          "id": "R5-history-deleted",
+          "criterion": "observation",
+          "variation": "the damaged anchor A is deleted rather than restored",
+          "expected": "absent history reads as absent (D013): B's standing starts at its own provisional anchor and no longer counts A's runs",
+          "observed": {
+            "startedAt": true,
+            "completeRuns": 0,
+            "state": "within"
+          },
+          "pass": true
+        },
+        {
+          "id": "R6-codex-reentry",
+          "criterion": "2, 6",
+          "variation": "a Codex re-entry of an already-anchored verifier dispatch beside a damaged unrelated journal, through a child process",
+          "expected": "the re-entry keeps its role and its earlier anchor, stores a marker, prints an advisory naming the file and reads unavailable; after the unrelated file is removed it reads from the earlier anchor",
+          "observed": {
+            "exitCode": 0,
+            "stderr": "DotLn advisory: dispatch standing unavailable: Invalid dispatch journal docs/control/local/harness/9999999999999999999999999999999999999999999999999999999999999999.json: Expected property name or '}' in JSON at position 2 (line 1 column 3); role and grants ret",
+            "role": "verifier",
+            "keptAnchor": true,
+            "marker": "Invalid dispatch journal docs/control/local/harness/9999999999999999999999999999999999999999999999999999999999999999.json: Expected property name or '}' in JSON at position 2 (line 1 column 3)",
+            "during": "Invalid dispatch journal <fixture>/docs/control/local/harness/9999999999999999999999999999999999999999999999999999999999999999",
+            "repaired": {
+              "startedAt": true,
+              "state": "within"
+            }
+          },
+          "pass": true
+        },
+        {
+          "id": "R7-cli-begin",
+          "criterion": 6,
+          "variation": "node scripts/harness.mjs begin <session> verifier from the command line beside a damaged journal",
+          "expected": "exit 0; the journal binds the verifier with a marker; stderr names the damaged file",
+          "observed": {
+            "exitCode": 0,
+            "stderr": "DotLn advisory: dispatch standing unavailable: Invalid dispatch journal docs/control/local/harness/9999999999999999999999999999999999999999999999999999999999999999.json: Expected property name or '}' in JSON at position 2 (line 1 column 3); role and grants ret",
+            "role": "verifier",
+            "marker": "Invalid dispatch journal docs/control/local/harness/9999999999999999999999999999999999999999999999999999999999999999.json: Expected property name or '}' in JSON at position 2 (line 1 column 3)"
+          },
+          "pass": true
+        }
+      ]
+    },
+    {
+      "section": "gate",
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-234/verification-002-probe.mjs gate",
+      "startedAt": "2026-10-28T23:12:39Z",
+      "endedAt": "2026-10-28T23:12:41Z",
+      "exitCode": 1,
+      "checks": 4,
+      "failed": [
+        "G3-refused-selection-consumption"
+      ],
+      "rows": [
+        {
+          "id": "G1-runner-damaged-lane",
+          "criterion": 3,
+          "variation": "the real runner for a verifier dispatched beside a damaged journal: --review, then --only alpha, then --review after the file is removed",
+          "expected": "the complete review is refused at host with Dispatch standing unavailable naming the file, alpha never runs and no bound stop is recorded; the focused selection runs; once the lane is readable the review is admitted",
+          "observed": {
+            "refusedExit": 1,
+            "refusedHost": "Dispatch standing unavailable: Invalid dispatch journal <fixture>/docs/control/local/harness/cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc.json: Expected property name or '}' in JSON at position 2 (line 1 col",
+            "refusedRow": {
+              "gateSelection": "review",
+              "executed": true,
+              "exitCode": 1,
+              "boundStop": null
+            },
+            "ranWhileDamaged": false,
+            "focusedExit": 0,
+            "focusedRan": true,
+            "admittedExit": 0,
+            "admittedRan": true,
+            "afterState": "within"
+          },
+          "pass": true
+        },
+        {
+          "id": "G3-refused-selection-consumption",
+          "criterion": "2, 10",
+          "variation": "complete reviews refused at host admission (G1's unavailable standing; a critical memory sample), then the standing's run count",
+          "expected": "product 07: failed and interrupted admitted complete selections consume a run; a selection refused at host admission, whose product suites never start, consumes none (G1 counts 1, the memory fixture 0)",
+          "observed": {
+            "unavailableLane": {
+              "refusedRow": {
+                "gateSelection": "review",
+                "executed": true,
+                "exitCode": 1,
+                "boundStop": null
+              },
+              "admittedReviews": 1,
+              "completeRuns": 2
+            },
+            "memoryPressure": {
+              "exitCode": 1,
+              "host": "",
+              "row": {
+                "gateSelection": "review",
+                "executed": true,
+                "exitCode": 1,
+                "boundStop": null
+              },
+              "alphaRan": false,
+              "completeRuns": 1,
+              "standing": "dispatch standing: 0 h 0 min of 8 h 0 min; complete runs 1 of 3; within"
+            }
+          },
+          "pass": false
+        },
+        {
+          "id": "G2-runner-both-bounds",
+          "criterion": 7,
+          "variation": "the real runner under --keep-going with both verifier bounds exhausted, then planning beside an older single-metric stop",
+          "expected": "one gate refusal whose row and single log row carry both measurements with the first metric's legacy fields; the activity counts one stop; planning lists two stops, one with both measurements and one legacy",
+          "observed": {
+            "exitCode": 1,
+            "rowBoundStop": {
+              "metric": "wallClockMs",
+              "value": 60201,
+              "bound": 0,
+              "exceeded": [
+                {
+                  "metric": "wallClockMs",
+                  "value": 60201,
+                  "bound": 0
+                },
+                {
+                  "metric": "completeRuns",
+                  "value": 0,
+                  "bound": 0
+                }
+              ]
+            },
+            "logRows": 1,
+            "logSource": "gate",
+            "logExceeded": [
+              "wallClockMs",
+              "completeRuns"
+            ],
+            "activityCount": 1,
+            "afterStopExceeded": 2,
+            "planningCount": 2,
+            "planningStops": [
+              {
+                "metric": "wallClockMs",
+                "exceeded": [
+                  "wallClockMs",
+                  "completeRuns"
+                ],
+                "source": "gate"
+              },
+              {
+                "metric": "completeRuns",
+                "exceeded": null,
+                "source": "probe-legacy"
+              }
+            ]
+          },
+          "pass": true
+        },
+        {
+          "id": "W1-wrapper-damaged-lane",
+          "criterion": 4,
+          "variation": "harness bounded for a verifier bound beside a damaged journal: a probe, then npm test -- --only alpha",
+          "expected": "the probe is refused before launch with the read error naming the file (D013); the focused selection runs",
+          "observed": {
+            "refusal": "Invalid dispatch journal <fixture>/docs/control/local/harness/dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd.json: Expected pr",
+            "probeRan": false,
+            "focusedExit": 0,
+            "focusedRan": true
+          },
+          "pass": true
+        }
+      ]
+    }
+  ]
+}

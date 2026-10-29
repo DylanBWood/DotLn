@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+import { dispatchBoundResult } from "./lib/dispatch-bound.mjs";
+import { formatDuration } from "./lib/duration.mjs";
 import { findLaunchpad } from "./lib/config.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 import { unownedTemporaryRootSites } from "./lib/temporary-root-declarations.mjs";
@@ -24,6 +26,7 @@ export function checkHost(
     limits = memoryBudgets(findLaunchpad()),
     requiredPeakBytes = largestTaskPeakRss(),
     fileEvents = sampleFileEventDaemon(),
+    standing,
   } = {},
 ) {
   const underBudget = limits.taskBytes < requiredPeakBytes;
@@ -35,6 +38,8 @@ export function checkHost(
   const remedy = underBudget
     ? `; memory.gateShare must be at least ${minimumGateShare} to admit this peak at ${limits.hostLanes} lanes${minimumGateShare > limits.hostShare ? "; that exceeds memory.hostShare, so use a host with more memory or reduce the task's measured peak" : "; set it in docs/control/budgets.json after judging the shared host budget, then retry"}`
     : "";
+  if (standing?.state === "exceeded")
+    return { ...dispatchBoundResult(standing), sample, fileEvents };
   return {
     exitCode:
       ["warning", "critical"].includes(sample.level) || underBudget ? 1 : 0,
@@ -110,7 +115,7 @@ if (isMainModule(import.meta.url)) {
     if (result.output) console.log(result.output);
     for (const row of result.cases ?? []) {
       console.log(
-        `${row.exitCode ? "STALE" : "CURRENT"} ${row.name} ${(row.durationMs / 1000).toFixed(3)} s`,
+        `${row.exitCode ? "STALE" : "CURRENT"} ${row.name} ${formatDuration(row.durationMs)}`,
       );
       if (row.exitCode) console.log(row.output);
     }

@@ -43909,6 +43909,14 @@
           "reopenWhen": "The next planning pass evaluates instruction-byte optimization, or another role edit changes the measured overrun.",
           "targets": [],
           "at": "2026-10-28T18:18:34.341Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-234-D029: its condition occurred. The shared dispatch-bound sentence and the operator-directed hours-and-minutes rule add 1,418 bytes to every installed role root: the executor reads 32,292 against the nominal 29,246 and within the 34,953 accepted on 2026-10-27 (headroom 2,661); the reviewer reads 31,229 against the nominal 28,884 and within the 34,596 that WO-234-D005 accepted on 2026-10-28 (headroom 3,367); the verifier 28,803, release-close 19,992 and planner 20,901 stay within their ceilings and the refuter 19,715 is unset. packages/skeleton/fixtures/wo234-integration-role-baseline.json and WO-234-D013 record the measurement. No duty was cut; the reviewer ceiling moved only by the dated acceptance the standing route requires. The optimization stays with the next planning pass that evaluates instruction-byte optimization.",
+          "reopenWhen": "The next planning pass evaluates instruction-byte optimization, or another role edit changes the measured overrun.",
+          "targets": [],
+          "at": "2026-10-29T01:47:39.720Z"
         }
       ]
     },
@@ -43973,6 +43981,14 @@
           "reopenWhen": "A role grows past its pin without the oracle changing, or a ceiling breach appears in meta --check with no decision boarding it; or the next order touching scripts/test-gate-followups.mjs or re-minting the role oracle.",
           "targets": [],
           "at": "2026-10-28T18:18:34.543Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-234-D029: its condition occurred, because WO-234 touches scripts/test-gate-followups.mjs and re-mints the role oracle three times (wo234-role-baseline.json chained to wo233, wo234-recovery-role-baseline.json, and wo234-integration-role-baseline.json chained to wo236 with the recovery oracle as its branch parent). The test now distinguishes a recorded deferral from accepted growth: an oracle cost without a FUP row must have its effective ceiling backed by a global acceptance in docs/control/budgets.json, and the nominal ceiling is carried from the parent oracle; the historical 256-byte inequality is still asserted on the earliest chained baseline. Whether that retained inequality still carries meaning is not decided here, because the final review changes no test. Deferred to the next order that touches the file or re-mints the oracle.",
+          "reopenWhen": "A role grows past its pin without the oracle changing, or a ceiling breach appears in meta --check with no decision boarding it; or the next order touching scripts/test-gate-followups.mjs or re-minting the role oracle.",
+          "targets": [],
+          "at": "2026-10-29T01:47:39.936Z"
         }
       ]
     },
@@ -44431,6 +44447,14 @@
           "reopenWhen": "A bounded comparison demonstrates a shorter equivalent instruction set, or another required rule changes the measured overrun.",
           "targets": [],
           "at": "2026-10-28T18:18:34.443Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-234-D029: its condition occurred, because two required rules changed the measured overrun by 1,418 bytes in every role root: the executor reads 32,292 against the nominal 29,246 and within the accepted 34,953; the reviewer reads 31,229 against the nominal 28,884 and within the 34,596 accepted by WO-234-D005 under the standing route. The bounded comparison that would show a shorter equivalent instruction set is still owed to the next planning pass; this review cut no instruction and raised no ceiling.",
+          "reopenWhen": "A bounded comparison demonstrates a shorter equivalent instruction set, or another required rule changes the measured overrun.",
+          "targets": [],
+          "at": "2026-10-29T01:47:39.828Z"
         }
       ]
     },
@@ -44557,6 +44581,14 @@
           "reopenWhen": "a pass wants the escape sum per order, pass or colony; WO-088's generated source lands; or the next order edits scripts/lib/plan-failures.mjs or the status projection",
           "targets": [],
           "at": "2026-10-24T04:45:48.100Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-234-D029: its third condition occurred textually, because WO-234 edits scripts/lib/plan-failures.mjs. The edit adds the boundStops block (stops, acceptances and the next same-order event with its delay) beside the escape counts the record totals already carry; it sums nothing per order, pass, release or colony, so the Gödel count stays unbuilt. Deferred to the pass that wants the sum or the next order that edits the escape counts or the status projection.",
+          "reopenWhen": "A pass wants the escape sum per order, pass or colony; WO-088's generated source lands; or the next order edits the escape counts in scripts/lib/plan-failures.mjs or the status projection.",
+          "targets": [],
+          "at": "2026-10-29T01:47:40.152Z"
         }
       ]
     },
@@ -47032,6 +47064,14 @@
           "reopenWhen": "WO-234's decisions record a reading the attended case contradicts, or the first bound stop lands in an attended session.",
           "targets": [],
           "at": "2026-10-28T14:03:38.606Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-234-D029: its second condition occurred. The first bound stop landed in an attended session: the executor's redispatch at 2026-10-28T12:42:58.992Z was refused at 30,115,363 ms of wall clock against the 19,719,368 ms seed then in force, with the three-run bound already spent, and the operator's contextual authorization was recorded 604,443 ms later as two acceptances (16 h 32 min and five runs); the order then reached ImplementationReady within them. WO-234-D013 records the reading the first condition names and the attended case does not contradict it: elapsed wall clock from the earliest unfinished dispatch includes attended and idle time, no attendance clock is inferred, the consumer-local max(4 times the median, 8 h 0 min) is the floor, and an acceptance may be recorded before a stop. The session ran under Codex, so its tool-active time is unobserved and whether idle time contributed is left to the planning read of the boundStops block.",
+          "reopenWhen": "A bound stop lands in an attended session whose tool-active time is observed below its wall-clock bound, or a planning pass reads the boundStops block and most initial stops end in acceptances.",
+          "targets": [],
+          "at": "2026-10-29T01:47:40.046Z"
         }
       ]
     },
@@ -47638,6 +47678,251 @@
           "reopenWhen": "Unrelated refusals no longer name a target-worktree root and the new cases pass, or an operator reports a misleading target-worktree clause on a refusal unrelated to any target.",
           "targets": [],
           "at": "2026-10-28T18:18:34.238Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-6d671aa1a3b70c9f",
+      "key": "decision:docs/evidence/WO-234/decisions.md#wo-234-d015",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "bac1a42bcb3317f958b420afd39f2ac394fee1e1197aad2762d725b26d30bd35",
+          "ref": "docs/evidence/WO-234/decisions.md#wo-234-d015--ver-001-f1-one-damaged-journal-leaves-every-later-dispatch-without-its-role-or-its-bound",
+          "title": "WO-234-D015: WO-234 repair. Class: an unreadable journal of another session breaks dispatch binding for every later session in the checkout. Rule: a dispatch binds its role, intent and order, and…",
+          "summary": "{ \"id\": \"WO-234-D015\", \"date\": \"2026-10-28\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-001 fails on a reproduced regression in a declared surface: the dispatch binder, bindDispatchBound (packages/skeleton/src/harness-host.ts 400), with readDispatchJournals (packages/skeleton/src/dispatch-journal.mjs 24). To find the phase anchor, bindDispatchBound reads every session journal in the lane through readDispatchJournals, which throws on the first file it cannot parse. Every caller runs it before the session's role is stored: the prompt hook's role binding (5730, before session.role at 5737), the CLI dispatch observation (1052, before 1059), harness begin (3738, before its journal write) and ",
+          "missing": false
+        },
+        {
+          "hash": "d0a8ff9c3721d59783fd29009ed4392041e1b9b809050c0e39451d5b03e18662",
+          "ref": "docs/evidence/WO-234/decisions.md#wo-234-d015--ver-001-f1-one-damaged-journal-leaves-every-later-dispatch-without-its-role-or-its-bound",
+          "title": "WO-234-D015: WO-234 repair. Class: an unreadable journal of another session breaks dispatch binding for every later session in the checkout. Rule: a dispatch binds its role, intent and order, and…",
+          "summary": "{ \"id\": \"WO-234-D015\", \"date\": \"2026-10-28\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-001 fails on a reproduced regression in a declared surface: the dispatch binder, bindDispatchBound (packages/skeleton/src/harness-host.ts 400), with readDispatchJournals (packages/skeleton/src/dispatch-journal.mjs 24). To find the phase anchor, bindDispatchBound reads every session journal in the lane through readDispatchJournals, which throws on the first file it cannot parse. Every caller runs it before the session's role is stored: the prompt hook's role binding (5730, before session.role at 5737), the CLI dispatch observation (1052, before 1059), harness begin (3738, before its journal write) and ",
+          "missing": false
+        },
+        {
+          "hash": "a7345f5434504f34ab4235d5bd1b4a06648d0a910361049ec4e1457462f4ee8e",
+          "ref": "docs/evidence/WO-234/decisions.md#wo-234-d015--ver-001-f1-one-damaged-journal-leaves-every-later-dispatch-without-its-role-or-its-bound",
+          "title": "WO-234-D015: WO-234 repair. Class: an unreadable journal of another session breaks dispatch binding for every later session in the checkout. Rule: a dispatch binds its role, intent and order, and…",
+          "summary": "{ \"id\": \"WO-234-D015\", \"date\": \"2026-10-28\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-001 fails on a reproduced regression in a declared surface: the dispatch binder, bindDispatchBound (packages/skeleton/src/harness-host.ts 400), with readDispatchJournals (packages/skeleton/src/dispatch-journal.mjs 24). To find the phase anchor, bindDispatchBound reads every session journal in the lane through readDispatchJournals, which throws on the first file it cannot parse. Every caller runs it before the session's role is stored: the prompt hook's role binding (5730, before session.role at 5737), the CLI dispatch observation (1052, before 1059), harness begin (3738, before its journal write) and ",
+          "missing": false
+        },
+        {
+          "hash": "1f877f1b2086292120426f5a335acd4880e9bfa999761abd978a2432155c88a6",
+          "ref": "docs/evidence/WO-234/decisions.md#wo-234-d015--ver-001-f1-one-damaged-journal-leaves-every-later-dispatch-without-its-role-or-its-bound",
+          "title": "WO-234-D015: WO-234 repair. Class: an unreadable journal of another session breaks dispatch binding for every later session in the checkout. Rule: a dispatch binds its role, intent and order, and…",
+          "summary": "{ \"id\": \"WO-234-D015\", \"date\": \"2026-10-28\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-001 fails on a reproduced regression in a declared surface: the dispatch binder, bindDispatchBound (packages/skeleton/src/harness-host.ts 400), with readDispatchJournals (packages/skeleton/src/dispatch-journal.mjs 24). To find the phase anchor, bindDispatchBound reads every session journal in the lane through readDispatchJournals, which throws on the first file it cannot parse. Every caller runs it before the session's role is stored: the prompt hook's role binding (5730, before session.role at 5737), the CLI dispatch observation (1052, before 1059), harness begin (3738, before its journal write) and ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 4,
+          "status": "settled",
+          "reason": "D018 repairs all four entry paths, retains role and grants, and recovers the earliest phase anchor after journal repair. The original verification probe, targeted regressions and complete repair review passed at 2026-10-28T22:41:49.629Z; VER-001 remains immutable for re-verification.",
+          "reopenWhen": "Damaged history drops role/grants, becomes unset, or recovery resets consumed phase history.",
+          "targets": [],
+          "at": "2026-10-28T22:43:15.084Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-4eece51e8e943a0f",
+      "key": "decision:docs/evidence/WO-234/decisions.md#wo-234-d016",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "b858fa1a902af744b122890e899fe50e2eb8de5d6ebe39262be1ddc951a48e40",
+          "ref": "docs/evidence/WO-234/decisions.md#wo-234-d016--ver-001-f2-an-unparseable-session-journals-standing-error-names-no-file",
+          "title": "WO-234-D016: In a repair of WO-234, or else the next order that touches scripts/lib/dispatch-bound.mjs: read the session journal through the shared journal reader's error form, so every…",
+          "summary": "{ \"id\": \"WO-234-D016\", \"date\": \"2026-10-28\", \"dispatch\": \"resume: verify\", \"decision\": \"A follow-up in a declared surface that breaks no criterion and no behavior main had. dispatchStanding (scripts/lib/dispatch-bound.mjs 107) reads the session's own journal with a bare JSON.parse (121), so an unparseable journal raises the parser's message without its path. An invalid boundDispatch anchor raises 'Invalid dispatch-bound journal anchor', also without its path. The gate's host task then reports 'Dispatch standing unavailable: Expected property name or '}' in JSON at position 2 (line 1 column 3). Use analysis: to diagnose.', and the bounded wrapper returns the same message, naming no file. read",
+          "missing": false
+        },
+        {
+          "hash": "eb1c4087c2b9298055b8cc29cc356f8be4128f714dfb0bbd79886c6dcca30879",
+          "ref": "docs/evidence/WO-234/decisions.md#wo-234-d016--ver-001-f2-an-unparseable-session-journals-standing-error-names-no-file",
+          "title": "WO-234-D016: In a repair of WO-234, or else the next order that touches scripts/lib/dispatch-bound.mjs: read the session journal through the shared journal reader's error form, so every…",
+          "summary": "{ \"id\": \"WO-234-D016\", \"date\": \"2026-10-28\", \"dispatch\": \"resume: verify\", \"decision\": \"A follow-up in a declared surface that breaks no criterion and no behavior main had. dispatchStanding (scripts/lib/dispatch-bound.mjs 107) reads the session's own journal with a bare JSON.parse (121), so an unparseable journal raises the parser's message without its path. An invalid boundDispatch anchor raises 'Invalid dispatch-bound journal anchor', also without its path. The gate's host task then reports 'Dispatch standing unavailable: Expected property name or '}' in JSON at position 2 (line 1 column 3). Use analysis: to diagnose.', and the bounded wrapper returns the same message, naming no file. read",
+          "missing": false
+        },
+        {
+          "hash": "0f037c8a3604d7ea24c8eb8816a71ffb6437819fb24c53067b68ced717e62b83",
+          "ref": "docs/evidence/WO-234/decisions.md#wo-234-d016--ver-001-f2-an-unparseable-session-journals-standing-error-names-no-file",
+          "title": "WO-234-D016: In a repair of WO-234, or else the next order that touches scripts/lib/dispatch-bound.mjs: read the session journal through the shared journal reader's error form, so every…",
+          "summary": "{ \"id\": \"WO-234-D016\", \"date\": \"2026-10-28\", \"dispatch\": \"resume: verify\", \"decision\": \"A follow-up in a declared surface that breaks no criterion and no behavior main had. dispatchStanding (scripts/lib/dispatch-bound.mjs 107) reads the session's own journal with a bare JSON.parse (121), so an unparseable journal raises the parser's message without its path. An invalid boundDispatch anchor raises 'Invalid dispatch-bound journal anchor', also without its path. The gate's host task then reports 'Dispatch standing unavailable: Expected property name or '}' in JSON at position 2 (line 1 column 3). Use analysis: to diagnose.', and the bounded wrapper returns the same message, naming no file. read",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 3,
+          "status": "settled",
+          "reason": "D019 uses the shared path-bearing journal reader for own-file parse and anchor errors. Both malformed-JSON and invalid-anchor regressions passed in targeted checks and the complete repair review at 2026-10-28T22:41:49.629Z.",
+          "reopenWhen": "A standing read error fails to name the journal needing repair.",
+          "targets": [],
+          "at": "2026-10-28T22:43:15.203Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-64da2167ae7e92b8",
+      "key": "decision:docs/evidence/WO-234/decisions.md#wo-234-d017",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "a0d81aada2222732097db8eccbbe253bf4adbb13949ed783896a3464896f7e1d",
+          "ref": "docs/evidence/WO-234/decisions.md#wo-234-d017--ver-001-f3-a-stop-past-both-bounds-records-only-its-first-metric",
+          "title": "WO-234-D017: In a repair of WO-234, or else the next order that touches the dispatch meter: a stop records every exceeded metric with its value and bound, on the gate row, in the stop log, in the…",
+          "summary": "{ \"id\": \"WO-234-D017\", \"date\": \"2026-10-28\", \"dispatch\": \"resume: verify\", \"decision\": \"A follow-up in the declared surfaces that breaks no criterion. When both bounds are exhausted, dispatchBoundResult (scripts/lib/dispatch-bound.mjs 197) and recordBoundStop (225) keep only standing.exceeded[0]. So the gate row's boundStop, the stop log, the meter's boundStops and the stops in plan failures carry the wall-clock metric alone, although the refusal message names both metrics. The order's only recorded stop shows it. The executor's redispatch stop at 2026-10-28T12:42:58.992Z records wallClockMs 30,115,363 of 19,719,368. Yet three complete reviews had started after that dispatch's 04:21:03.619Z ",
+          "missing": false
+        },
+        {
+          "hash": "64ad64a9fda3f8a1ee979f45cc9d073c8071725d898ecae01119aec7a18723c3",
+          "ref": "docs/evidence/WO-234/decisions.md#wo-234-d017--ver-001-f3-a-stop-past-both-bounds-records-only-its-first-metric",
+          "title": "WO-234-D017: In a repair of WO-234, or else the next order that touches the dispatch meter: a stop records every exceeded metric with its value and bound, on the gate row, in the stop log, in the…",
+          "summary": "{ \"id\": \"WO-234-D017\", \"date\": \"2026-10-28\", \"dispatch\": \"resume: verify\", \"decision\": \"A follow-up in the declared surfaces that breaks no criterion. When both bounds are exhausted, dispatchBoundResult (scripts/lib/dispatch-bound.mjs 197) and recordBoundStop (225) keep only standing.exceeded[0]. So the gate row's boundStop, the stop log, the meter's boundStops and the stops in plan failures carry the wall-clock metric alone, although the refusal message names both metrics. The order's only recorded stop shows it. The executor's redispatch stop at 2026-10-28T12:42:58.992Z records wallClockMs 30,115,363 of 19,719,368. Yet three complete reviews had started after that dispatch's 04:21:03.619Z ",
+          "missing": false
+        },
+        {
+          "hash": "08b56e29f3a5a3667183e7688a50c1551a0744c999c1a6a1a3790086258efcbb",
+          "ref": "docs/evidence/WO-234/decisions.md#wo-234-d017--ver-001-f3-a-stop-past-both-bounds-records-only-its-first-metric",
+          "title": "WO-234-D017: In a repair of WO-234, or else the next order that touches the dispatch meter: a stop records every exceeded metric with its value and bound, on the gate row, in the stop log, in the…",
+          "summary": "{ \"id\": \"WO-234-D017\", \"date\": \"2026-10-28\", \"dispatch\": \"resume: verify\", \"decision\": \"A follow-up in the declared surfaces that breaks no criterion. When both bounds are exhausted, dispatchBoundResult (scripts/lib/dispatch-bound.mjs 197) and recordBoundStop (225) keep only standing.exceeded[0]. So the gate row's boundStop, the stop log, the meter's boundStops and the stops in plan failures carry the wall-clock metric alone, although the refusal message names both metrics. The order's only recorded stop shows it. The executor's redispatch stop at 2026-10-28T12:42:58.992Z records wallClockMs 30,115,363 of 19,719,368. Yet three complete reviews had started after that dispatch's 04:21:03.619Z ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 3,
+          "status": "settled",
+          "reason": "D020 and completed adjacent-0001 preserve both exceeded measurements through gate, log, meter, live planning and closed snapshots as one stop. Targeted regressions and the real runner passed in the complete repair review at 2026-10-28T22:41:49.629Z.",
+          "reopenWhen": "A simultaneous two-bound stop loses either measurement or counts as two interventions.",
+          "targets": [],
+          "at": "2026-10-28T22:43:15.310Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-8cf000b0c3f374a8",
+      "key": "decision:docs/evidence/WO-234/decisions.md#wo-234-d021",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "48ae7ba7f09308740b9229ce84c7785d505794728a1bd14b8f5026e265440ae1",
+          "ref": "docs/evidence/WO-234/decisions.md#wo-234-d021--ver-002-f4-a-dispatch-bound-beside-a-damaged-journal-loses-its-usage-readback",
+          "title": "WO-234-D021: WO-234 repair. Class: an unavailable dispatch standing removes the usage readback. Rule: node scripts/harness.mjs usage <session> prints its usage observation with main's exit status…",
+          "summary": "{ \"id\": \"WO-234-D021\", \"date\": \"2026-10-28\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-002 fails on a reproduced regression that repair 001 introduced in a declared surface. The repair stores an unavailable marker on any dispatch bound while a journal in the lane cannot be read (bindDispatchBound, packages/skeleton/src/harness-host.ts 401 to 480). While the damage remains, dispatchStanding (scripts/lib/dispatch-bound.mjs 119 to 131) rethrows the named read error. harness usage (scripts/harness.mjs 129) measures usage, then calls dispatchStanding at 142 without a catch. For every session dispatched while one journal of another session is damaged, it therefore prints only the named error,",
+          "missing": false
+        },
+        {
+          "hash": "bb14034e9de0bab9b4b7f4831fa5f59d00c9d425722b93483b5b7540d2d161c5",
+          "ref": "docs/evidence/WO-234/decisions.md#wo-234-d021--ver-002-f4-a-dispatch-bound-beside-a-damaged-journal-loses-its-usage-readback",
+          "title": "WO-234-D021: WO-234 repair. Class: an unavailable dispatch standing removes the usage readback. Rule: node scripts/harness.mjs usage <session> prints its usage observation with main's exit status…",
+          "summary": "{ \"id\": \"WO-234-D021\", \"date\": \"2026-10-28\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-002 fails on a reproduced regression that repair 001 introduced in a declared surface. The repair stores an unavailable marker on any dispatch bound while a journal in the lane cannot be read (bindDispatchBound, packages/skeleton/src/harness-host.ts 401 to 480). While the damage remains, dispatchStanding (scripts/lib/dispatch-bound.mjs 119 to 131) rethrows the named read error. harness usage (scripts/harness.mjs 129) measures usage, then calls dispatchStanding at 142 without a catch. For every session dispatched while one journal of another session is damaged, it therefore prints only the named error,",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-234-D024 repairs VER-002 F4 at the usage presentation boundary, preserving the observation and optional host readback while naming unavailable standing. The unchanged entry probe passed 11 checks and the added cross-host regression passed. Complete review host-gate:7ad68947b597d2f0449c7add8183c679591384f9dbb3fd91222752af139ab2d4:npm test passed at 2026-10-29T00:10:57.995Z; docs/evidence/WO-234/repair-002-validation.json records the row. Independent re-verification remains separate.",
+          "reopenWhen": "A standing read failure removes observable usage or host session readback, or substitutes invented zero or unset consumption.",
+          "targets": [],
+          "at": "2026-10-29T00:14:17.704Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-f6829164a3f0a59e",
+      "key": "decision:docs/evidence/WO-234/decisions.md#wo-234-d022",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "d2a2ce57c1ff00ec364b6641796cddbc63b1afb86e9a210c4bf0464d7d641ea3",
+          "ref": "docs/evidence/WO-234/decisions.md#wo-234-d022--ver-002-f5-a-marked-dispatch-repeats-its-stale-marker-after-its-phase-completes",
+          "title": "WO-234-D022: In a repair of WO-234, or else the next order that touches scripts/lib/dispatch-bound.mjs: a stored unavailable marker is repeated only while a journal in the lane still fails to read.…",
+          "summary": "{ \"id\": \"WO-234-D022\", \"date\": \"2026-10-28\", \"dispatch\": \"resume: verify\", \"decision\": \"A follow-up in a declared surface that breaks no criterion and no behavior main had. Repair 001's rescan (dispatchStanding, scripts/lib/dispatch-bound.mjs 119 to 131) looks for a marked dispatch's anchor through phaseDispatchAnchor (264). That function's boundary is the latest WorkOrderActivated or phase-completion event (285). If the phase completes after the dispatch started, every anchor of that phase falls before the boundary and nothing is recovered. The standing then rethrows the stored marker, naming a journal that may already read correctly. An unmarked dispatch in the same state computes its stan",
+          "missing": false
+        },
+        {
+          "hash": "7d422b8858742ebf223a44fcb2b1e167b2d7b918c46efa58a413b54047776a8f",
+          "ref": "docs/evidence/WO-234/decisions.md#wo-234-d022--ver-002-f5-a-marked-dispatch-repeats-its-stale-marker-after-its-phase-completes",
+          "title": "WO-234-D022: In a repair of WO-234, or else the next order that touches scripts/lib/dispatch-bound.mjs: a stored unavailable marker is repeated only while a journal in the lane still fails to read.…",
+          "summary": "{ \"id\": \"WO-234-D022\", \"date\": \"2026-10-28\", \"dispatch\": \"resume: verify\", \"decision\": \"A follow-up in a declared surface that breaks no criterion and no behavior main had. Repair 001's rescan (dispatchStanding, scripts/lib/dispatch-bound.mjs 119 to 131) looks for a marked dispatch's anchor through phaseDispatchAnchor (264). That function's boundary is the latest WorkOrderActivated or phase-completion event (285). If the phase completes after the dispatch started, every anchor of that phase falls before the boundary and nothing is recovered. The standing then rethrows the stored marker, naming a journal that may already read correctly. An unmarked dispatch in the same state computes its stan",
+          "missing": false
+        },
+        {
+          "hash": "6e9c5b90e01f55452d340aaaf01cd2c44213f538fa5027ed32f60529ec2a3771",
+          "ref": "docs/evidence/WO-234/decisions.md#wo-234-d022--ver-002-f5-a-marked-dispatch-repeats-its-stale-marker-after-its-phase-completes",
+          "title": "WO-234-D022: In a repair of WO-234, or else the next order that touches scripts/lib/dispatch-bound.mjs: a stored unavailable marker is repeated only while a journal in the lane still fails to read.…",
+          "summary": "{ \"id\": \"WO-234-D022\", \"date\": \"2026-10-28\", \"dispatch\": \"resume: verify\", \"decision\": \"A follow-up in a declared surface that breaks no criterion and no behavior main had. Repair 001's rescan (dispatchStanding, scripts/lib/dispatch-bound.mjs 119 to 131) looks for a marked dispatch's anchor through phaseDispatchAnchor (264). That function's boundary is the latest WorkOrderActivated or phase-completion event (285). If the phase completes after the dispatch started, every anchor of that phase falls before the boundary and nothing is recovered. The standing then rethrows the stored marker, naming a journal that may already read correctly. An unmarked dispatch in the same state computes its stan",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 3,
+          "status": "settled",
+          "reason": "WO-234-D025 and completed adjacent-0002 repair VER-002 F5 using the recorded request boundary and full order history. The unchanged recovery probe passed seven checks after the final refinement; added regressions cover completion, reactivation, timestamp ties and trimmed acceptance history. Complete review host-gate:7ad68947b597d2f0449c7add8183c679591384f9dbb3fd91222752af139ab2d4:npm test passed at 2026-10-29T00:10:57.995Z; docs/evidence/WO-234/repair-002-validation.json records the row.",
+          "reopenWhen": "A restored lane stays unavailable, recovery adopts a later attempt or resets known consumption, or a standing read rewrites recorded history.",
+          "targets": [],
+          "at": "2026-10-29T00:14:17.809Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-ce8a546b6e161f72",
+      "key": "decision:docs/evidence/WO-234/decisions.md#wo-234-d023",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c9a22088cf26cf3832a9d59914847d9953dc7e6e0c060859fea4ea9e75fde469",
+          "ref": "docs/evidence/WO-234/decisions.md#wo-234-d023--ver-002-f6-a-complete-selection-refused-at-host-admission-consumes-a-run",
+          "title": "WO-234-D023: In a repair of WO-234, or else the next order that touches scripts/lib/dispatch-bound.mjs or the gate row: only a complete or review selection that the host task admitted consumes a…",
+          "summary": "{ \"id\": \"WO-234-D023\", \"date\": \"2026-10-28\", \"dispatch\": \"resume: verify\", \"decision\": \"A follow-up in the declared surfaces that breaks no criterion and no behavior main had. dispatchStanding (scripts/lib/dispatch-bound.mjs 160 to 168) counts every executed npm test row with a plain or review selection since the dispatch start. It excludes only rows with a boundStop and partial rows, and the runner records every gate row as executed (scripts/test-runner.mjs 3675). A complete selection the host task refuses for another reason, measured memory pressure or an unavailable standing, therefore consumes one of the dispatch's complete runs although no product suite started. Product 07 §Preflight be",
+          "missing": false
+        },
+        {
+          "hash": "6bb28e68eaa02235e864f1f175c3f2c6464d74dc1c1d38b560cedec34da99fdc",
+          "ref": "docs/evidence/WO-234/decisions.md#wo-234-d023--ver-002-f6-a-complete-selection-refused-at-host-admission-consumes-a-run",
+          "title": "WO-234-D023: In a repair of WO-234, or else the next order that touches scripts/lib/dispatch-bound.mjs or the gate row: only a complete or review selection that the host task admitted consumes a…",
+          "summary": "{ \"id\": \"WO-234-D023\", \"date\": \"2026-10-28\", \"dispatch\": \"resume: verify\", \"decision\": \"A follow-up in the declared surfaces that breaks no criterion and no behavior main had. dispatchStanding (scripts/lib/dispatch-bound.mjs 160 to 168) counts every executed npm test row with a plain or review selection since the dispatch start. It excludes only rows with a boundStop and partial rows, and the runner records every gate row as executed (scripts/test-runner.mjs 3675). A complete selection the host task refuses for another reason, measured memory pressure or an unavailable standing, therefore consumes one of the dispatch's complete runs although no product suite started. Product 07 §Preflight be",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-234-D026 and completed adjacent-0002 repair VER-002 F6 by counting complete selections from existing host-admission evidence. The unchanged gate probe and added real-runner cases exclude memory and unavailable-standing refusals while preserving admitted failures, interruptions and historical rows. Complete review host-gate:7ad68947b597d2f0449c7add8183c679591384f9dbb3fd91222752af139ab2d4:npm test passed at 2026-10-29T00:10:57.995Z; docs/evidence/WO-234/repair-002-validation.json records the row.",
+          "reopenWhen": "A host-refused selection consumes a run, an admitted failed or interrupted complete selection is omitted, or a historical row becomes unreadable.",
+          "targets": [],
+          "at": "2026-10-29T00:14:17.911Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-23aca17371cf7b86",
+      "key": "decision:docs/evidence/WO-234/decisions.md#wo-234-d028",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "141221a0ca31fa0c233e8bff3e395e3ec00de7048fba268f0ce0c7fae355751b",
+          "ref": "docs/evidence/WO-234/decisions.md#wo-234-d028--ver-003-f7-a-damaged-gate-row-stores-standing-error-names-no-file",
+          "title": "WO-234-D028: In a repair of WO-234, or else the next order that touches scripts/lib/dispatch-bound.mjs or the gate-row reader: a standing read error from the gate-row store names the file it could…",
+          "summary": "{ \"id\": \"WO-234-D028\", \"date\": \"2026-10-28\", \"dispatch\": \"resume: verify\", \"decision\": \"A follow-up in the declared surfaces that breaks no criterion and no behavior main had. dispatchStanding (scripts/lib/dispatch-bound.mjs 162) reads the gate rows through readGateChecks. Its file reader (packages/skeleton/src/gate-evidence.mjs readChecksFile, 1050 to 1055) parses docs/control/local/harness/checks.json and the check-history archives with a bare JSON.parse. When that store holds unparseable bytes, the standing's unavailable error carries only the parser's message. harness usage then prints 'dispatch standing: unavailable (Expected property name or '}' in JSON at position 2 (line 1 column 3))",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-234-D029: VER-003 F7 is a follow-up in the declared surfaces that breaks no criterion and no behavior main had; the final review reproduced it at the reviewed tree (verification-003-probe.mjs usage U4: the damaged gate-row store's standing carries only the parser message while U3's invalid budget names its key) and wrote no source byte. A repair of WO-234, if one happens, takes it first; else the next order that touches scripts/lib/dispatch-bound.mjs or the gate-row reader in packages/skeleton/src/gate-evidence.mjs names the file in the shared reader and adds a truncated checks.json case.",
+          "reopenWhen": "A repair of WO-234 happens, or the next order touching scripts/lib/dispatch-bound.mjs or the gate-row reader activates; or verification-003-probe.mjs usage U4's current standing names docs/control/local/harness/checks.json.",
+          "targets": [],
+          "at": "2026-10-29T01:47:39.611Z"
         }
       ]
     }

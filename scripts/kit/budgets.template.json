@@ -8,31 +8,47 @@
     "footprintIntervalMs": 4000,
     "outputTailBytes": 1048576
   },
-  "source": "Kit defaults. This instance owns its budgets and records its own acceptances.",
+  "source": "Kit defaults. This instance owns its budgets and records its own acceptances. Operator correction 2026-10-28: each consumer resolves local-median from its own completed phase history as max(4 times its median, 8 hours), using 8 hours without history; no DotLn timing samples are exported.",
   "dispatches": {
     "executor": {
       "tokens": null,
-      "costUsd": null
+      "costUsd": null,
+      "wallClockMs": "local-median",
+      "completeRuns": 3,
+      "repair": {
+        "wallClockMs": "local-median",
+        "completeRuns": 3
+      }
     },
     "verifier": {
       "tokens": null,
-      "costUsd": null
+      "costUsd": null,
+      "wallClockMs": "local-median",
+      "completeRuns": 3
     },
     "reviewer": {
       "tokens": null,
-      "costUsd": null
+      "costUsd": null,
+      "wallClockMs": "local-median",
+      "completeRuns": 3
     },
     "release-close": {
       "tokens": null,
-      "costUsd": null
+      "costUsd": null,
+      "wallClockMs": null,
+      "completeRuns": null
     },
     "planner": {
       "tokens": null,
-      "costUsd": null
+      "costUsd": null,
+      "wallClockMs": null,
+      "completeRuns": null
     },
     "refuter": {
       "tokens": null,
-      "costUsd": null
+      "costUsd": null,
+      "wallClockMs": null,
+      "completeRuns": null
     }
   },
   "limits": {

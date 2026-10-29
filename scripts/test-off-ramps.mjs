@@ -136,13 +136,37 @@ const readbackFlags = [
 // Criterion 1: each route's legal phases, independent of the route table.
 const legalIn = {
   none: [],
-  active: ["withdraw", "correct", "override-record"],
+  active: ["accept-overrun", "withdraw", "correct", "override-record"],
   "ready-to-verify": ["withdraw", "correct", "override-record"],
-  verifying: ["waive", "withdraw", "correct", "override-record"],
-  "needs-fix": ["waive", "withdraw", "correct", "override-record"],
-  repairing: ["waive", "withdraw", "correct", "override-record"],
+  verifying: [
+    "accept-overrun",
+    "waive",
+    "withdraw",
+    "correct",
+    "override-record",
+  ],
+  "needs-fix": [
+    "accept-overrun",
+    "waive",
+    "withdraw",
+    "correct",
+    "override-record",
+  ],
+  repairing: [
+    "accept-overrun",
+    "waive",
+    "withdraw",
+    "correct",
+    "override-record",
+  ],
   verified: ["waive", "withdraw", "correct", "override-record"],
-  "final-review": ["waive", "withdraw", "correct", "override-record"],
+  "final-review": [
+    "accept-overrun",
+    "waive",
+    "withdraw",
+    "correct",
+    "override-record",
+  ],
   // A correction changes no phase; a closed order's recorded pass may still
   // need its product gate bound before publication (WO-115 D026).
   closed: ["correct", "override-record"],
@@ -151,7 +175,13 @@ const legalIn = {
 const matrix = (id = "WO-099") => {
   const { phase, legalOffRamps } = status(id);
   assert.deepEqual(legalOffRamps, legalIn[phase], phase);
-  for (const route of ["waive", "withdraw", "correct", "override-record"])
+  for (const route of [
+    "accept-overrun",
+    "waive",
+    "withdraw",
+    "correct",
+    "override-record",
+  ])
     if (!legalIn[phase].includes(route))
       refuse(new RegExp(`${route} is not legal in phase ${phase}`), [
         route,
@@ -214,6 +244,7 @@ try {
 assert.equal(events()[0].checkpointUnavailable, true);
 let state = status();
 assert.deepEqual(state.legalOffRamps, [
+  "accept-overrun",
   "withdraw",
   "correct",
   "override-record",
@@ -222,12 +253,12 @@ for (const key of ["waivedCriteria", "corrections", "overrideRecords"])
   assert.deepEqual(state[key], []);
 assert.equal(state.withdrawal, null);
 refuse(
-  /waive is not legal in phase active; it is legal in verifying, needs-fix, repairing, verified, final-review\. Legal off-ramps here: withdraw, correct, override-record; run: npm run resume -- next/,
+  /waive is not legal in phase active; it is legal in verifying, needs-fix, repairing, verified, final-review\. Legal off-ramps here: accept-overrun, withdraw, correct, override-record; run: npm run resume -- next/,
   ["waive", "2", "--reason", "accepted", ...waiverCapture, ...operator],
 );
 assert.match(
   current(),
-  /- Legal off-ramps: withdraw, correct, override-record/,
+  /- Legal off-ramps: accept-overrun, withdraw, correct, override-record/,
 );
 
 // override-record appends its event with the actor attestation.
@@ -2063,4 +2094,302 @@ process.stdout.write("off-ramp fixtures passed\n");
       `closed override from ${kind} worktree refuses without writes and reruns from main`,
     );
   }
+}
+
+// A dispatch extension is an operator-captured act, independent of a result.
+{
+  const id = "WO-108";
+  gateOrder(id);
+  const budgets = JSON.parse(
+    readFileSync(join(scripts, "kit/budgets.template.json"), "utf8"),
+  );
+  budgets.dispatches.executor.wallClockMs = 0;
+  writeFileSync(
+    join(root, "docs/control/budgets.json"),
+    JSON.stringify(budgets),
+  );
+  const captureFlags = capture(
+    "bound-extension",
+    "Operator: extend this fixture dispatch bound.\n",
+  );
+  const flags = [
+    "--ceiling",
+    "9000000000000",
+    "--reason",
+    "operator extension",
+    ...captureFlags,
+    ...agentFlags,
+  ];
+  refuseOn(id, /must extend/, [
+    "accept-overrun",
+    "completeRuns",
+    "--ceiling",
+    "0",
+    "--reason",
+    "invalid",
+    ...captureFlags,
+    ...operator,
+  ]);
+  const key = createHash("sha256").update("bound-executor").digest("hex");
+  const statePath = join(root, `docs/control/local/harness/${key}.json`);
+  writeFileSync(
+    statePath,
+    JSON.stringify({
+      role: "executor",
+      intent: "resume: next",
+      workOrder: id,
+      startedAt: new Date().toISOString(),
+    }),
+  );
+  refuseOn(id, /DOTLN_DISPATCH_BOUND.*analysis:.*accept-overrun/, ["next"]);
+  on(id)(
+    [
+      "accept-overrun",
+      "wallClockMs",
+      ...flags.map((flag) =>
+        flag === "9000000000000" ? "1000000000000" : flag,
+      ),
+    ],
+    { CLAUDE_CODE_SESSION_ID: "bound-executor" },
+  );
+  writeFileSync(
+    statePath,
+    JSON.stringify({
+      role: "reviewer",
+      workOrder: "WO-105",
+      boundDispatch: {
+        role: "executor",
+        intent: "resume: next",
+        workOrder: id,
+        startedAt: new Date().toISOString(),
+        phaseBoundary: "fixture",
+      },
+    }),
+  );
+  on(id)(
+    [
+      "accept-overrun",
+      "wallClockMs",
+      ...flags.map((flag) =>
+        flag === "9000000000000" ? "2000000000000" : flag,
+      ),
+    ],
+    { CLAUDE_CODE_SESSION_ID: "bound-executor" },
+  );
+  writeFileSync(
+    statePath,
+    JSON.stringify({
+      role: "reviewer",
+      workOrder: id,
+      executedOrders: [id],
+      boundDispatch: {
+        role: "reviewer",
+        intent: "resume: final review",
+        workOrder: id,
+        startedAt: new Date().toISOString(),
+        phaseBoundary: "fixture",
+      },
+    }),
+  );
+  on(id)(
+    [
+      "accept-overrun",
+      "wallClockMs",
+      ...flags.map((flag) =>
+        flag === "9000000000000" ? "3000000000000" : flag,
+      ),
+    ],
+    { CLAUDE_CODE_SESSION_ID: "bound-executor" },
+  );
+  writeFileSync(
+    statePath,
+    JSON.stringify({
+      role: "executor",
+      intent: "resume: next",
+      workOrder: id,
+      startedAt: new Date().toISOString(),
+    }),
+  );
+  const broken = [...flags];
+  broken[broken.indexOf("--capture-hash") + 1] = `sha256:${"0".repeat(64)}`;
+  refuseOn(id, /capture hash mismatch/, [
+    "accept-overrun",
+    "wallClockMs",
+    ...broken,
+  ]);
+  on(id)(["accept-overrun", "wallClockMs", ...flags], {
+    CLAUDE_CODE_SESSION_ID: "bound-executor",
+  });
+  const event = events(id).at(-1);
+  assert.equal(event.type, "DispatchBoundAccepted");
+  assert.equal(event.phase, "active");
+  assert.match(event.captureHash, /^sha256:/u);
+  assert.equal(status(id).boundAcceptances.length, 4);
+  assert.equal(event.recordingSession.role, "executor");
+  assert.deepEqual(event.actor, agent);
+  assert.equal(status(id).phase, "active");
+  assert.match(on(id)(["next"]), /Execute/);
+  const repairStart = new Date().toISOString();
+  writeFileSync(
+    segmentPath(id),
+    readFileSync(segmentPath(id), "utf8") +
+      [
+        {
+          type: "VerificationCompleted",
+          workOrderId: id,
+          verificationId: "VER-001",
+          reportPath: `docs/verifications/${id}/VER-001.md`,
+          verdict: "fail",
+          recordedAt: repairStart,
+        },
+      ]
+        .map(JSON.stringify)
+        .join("\n") +
+      "\n",
+  );
+  budgets.dispatches.executor.repair.wallClockMs = 0;
+  writeFileSync(
+    join(root, "docs/control/budgets.json"),
+    JSON.stringify(budgets),
+  );
+  writeFileSync(
+    statePath,
+    JSON.stringify({
+      role: "executor",
+      intent: "resume: fix",
+      workOrder: id,
+      startedAt: repairStart,
+    }),
+  );
+  refuseOn(id, /DOTLN_DISPATCH_BOUND/, ["fix"]);
+  on(id)(["accept-overrun", "wallClockMs", ...flags]);
+  assert.match(on(id)(["fix"]), /Repair/);
+
+  on(id)([
+    "withdraw",
+    "--disposition",
+    "abandoned",
+    "--reason",
+    "fixture completed",
+    ...captureFlags,
+    ...operator,
+  ]);
+  refuseOn(id, /accept-overrun is not legal in phase withdrawn/, [
+    "accept-overrun",
+    "wallClockMs",
+    ...flags,
+  ]);
+}
+
+// A captured conversational authorization is recorded by the stopped executor
+// without retiring its live writer or rewriting its phase anchor.
+{
+  const id = "WO-109";
+  gateOrder(id);
+  const executorKey = createHash("sha256")
+    .update("stopped-executor")
+    .digest("hex");
+  const statePath = join(
+    root,
+    `docs/control/local/harness/${executorKey}.json`,
+  );
+  writeFileSync(
+    statePath,
+    JSON.stringify({
+      role: "executor",
+      intent: "resume: next",
+      workOrder: id,
+      startedAt: new Date().toISOString(),
+    }),
+  );
+  const reservationPath = join(
+    root,
+    "docs/control/local/harness/writer",
+    `reservation-${"b".repeat(32)}.json`,
+  );
+  mkdirSync(dirname(reservationPath), { recursive: true });
+  writeFileSync(
+    reservationPath,
+    JSON.stringify({ actorId: executorKey, owner: { pid: process.pid } }),
+  );
+  const held = readFileSync(reservationPath);
+  const anchor = readFileSync(statePath);
+  const env = { CLAUDE_CODE_SESSION_ID: "stopped-executor" };
+  const flags = [
+    "accept-overrun",
+    "completeRuns",
+    "--ceiling",
+    "4",
+    "--reason",
+    "operator authorizes the pending continuation from context",
+    ...capture(
+      "contextual-extension",
+      "The pending action is another complete review.\nOperator: fucking go.\n",
+    ),
+    ...agentFlags,
+  ];
+  const broken = [...flags];
+  broken[broken.indexOf("--capture-hash") + 1] = `sha256:${"0".repeat(64)}`;
+  refuseOn(id, /capture hash mismatch/, broken, env);
+  try {
+    on(id)(flags, env);
+    assert.equal(events(id).at(-1).recordingSession.role, "executor");
+    assert.deepEqual(events(id).at(-1).actor, agent);
+    assert.deepEqual(
+      readFileSync(reservationPath),
+      held,
+      "continuation keeps the writer byte-exact",
+    );
+    assert.deepEqual(
+      readFileSync(statePath),
+      anchor,
+      "continuation keeps the phase anchor byte-exact",
+    );
+    assert.equal(status(id).phase, "active");
+  } finally {
+    rmSync(reservationPath, { force: true });
+  }
+}
+
+// An operator may authorize an as-needed run before any dispatch or stop.
+{
+  const id = "WO-110";
+  gateOrder(id);
+  const captureFlags = capture(
+    "early-as-needed",
+    "Operator: let this run go for as long as needed.\n",
+  );
+  for (const metric of ["wallClockMs", "completeRuns"]) {
+    on(id)([
+      "accept-overrun",
+      metric,
+      "--ceiling",
+      "unlimited",
+      "--reason",
+      "early operator authorization for this phase",
+      ...captureFlags,
+      ...agentFlags,
+    ]);
+  }
+  const accepted = status(id).boundAcceptances;
+  assert.deepEqual(
+    accepted.map((row) => [row.metric, row.ceiling]),
+    [
+      ["wallClockMs", null],
+      ["completeRuns", null],
+    ],
+  );
+  assert.equal(status(id).phase, "active");
+  assert.match(current(), /as needed/);
+  assert.match(on(id)(["next"]), /Execute/);
+  refuseOn(id, /must extend/, [
+    "accept-overrun",
+    "completeRuns",
+    "--ceiling",
+    "5",
+    "--reason",
+    "cannot silently replace unlimited permission",
+    ...captureFlags,
+    ...agentFlags,
+  ]);
 }

@@ -1,0 +1,44 @@
+{
+  "command": "npm test -- --review",
+  "checkId": "npm test",
+  "evidenceRef": "host-gate:7ad68947b597d2f0449c7add8183c679591384f9dbb3fd91222752af139ab2d4:npm test",
+  "codeIdentity": "7ad68947b597d2f0449c7add8183c679591384f9dbb3fd91222752af139ab2d4",
+  "startedAt": "2026-10-28T23:35:16.983Z",
+  "recordedAt": "2026-10-29T00:10:57.995Z",
+  "durationMs": 2141012,
+  "exitCode": 0,
+  "executionMode": "fresh",
+  "identityUnchanged": true,
+  "buildOutputUnchanged": true,
+  "freshTasks": 111,
+  "reusedTasks": 0,
+  "suiteGroups": 45,
+  "unrunSuites": [],
+  "stale": [],
+  "failedFirst": null,
+  "sharedRefs": {
+    "start": {
+      "originMain": "22ce7799cce61db93f5852069dacf2409373adbd",
+      "main": "22ce7799cce61db93f5852069dacf2409373adbd",
+      "tags": {
+        "count": 188,
+        "newest": "v0.101.0"
+      },
+      "dotlnRefs": 2096
+    },
+    "end": {
+      "originMain": "22ce7799cce61db93f5852069dacf2409373adbd",
+      "main": "22ce7799cce61db93f5852069dacf2409373adbd",
+      "tags": {
+        "count": 188,
+        "newest": "v0.101.0"
+      },
+      "dotlnRefs": 2096
+    }
+  },
+  "cleanup": {
+    "removed": 2361,
+    "retained": 1,
+    "blockers": []
+  }
+}

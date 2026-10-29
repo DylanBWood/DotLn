@@ -5,7 +5,7 @@
 ## Proposed order
 
 - [x] [WO-236] — The executor edits the registered target worktree · **final-reviewed**
-- [ ] [WO-234] — A dispatch cannot run away · **queued**
+- [x] [WO-234] — A dispatch cannot run away · **final-reviewed**
 - [ ] [WO-235] — No artifact is shaped by its predecessor and no operator direction is dropped · **queued**
 - [ ] [WO-237] — A closed order keeps its journals · **queued**
 - [ ] [WO-192] — A router drives an order through its lifecycle · **queued**
@@ -34,32 +34,15 @@ Full evidence for the active and sequenced orders follows; the Open cards are in
 
 Separate track; outside the proposed serial order.
 
-- [WO-228] — repository: self; base: 4ceef05d9484d76d6a64bd8fd897c7e388c8c228; phase: draft; verdict: unknown; integration: current; stale: no; observed target: 4ceef05d9484d76d6a64bd8fd897c7e388c8c228.
+- [WO-228] — repository: self; base: 22ce7799cce61db93f5852069dacf2409373adbd; phase: draft; verdict: unknown; integration: current; stale: no; observed target: 22ce7799cce61db93f5852069dacf2409373adbd.
 
-<!-- dotln-workstreams: {"workstreams":[{"id":"WS-002","track":"separate","members":[{"workOrderId":"WO-228","repository":"self","base":"4ceef05d9484d76d6a64bd8fd897c7e388c8c228","phase":"draft","verdict":"unknown","integration":"current","stale":"no","targetCommit":"4ceef05d9484d76d6a64bd8fd897c7e388c8c228"}],"edges":[{"from":"WO-228","to":"WO-193","relation":"planning-deferral"}]}]} -->
+<!-- dotln-workstreams: {"workstreams":[{"id":"WS-002","track":"separate","members":[{"workOrderId":"WO-228","repository":"self","base":"22ce7799cce61db93f5852069dacf2409373adbd","phase":"draft","verdict":"unknown","integration":"current","stale":"no","targetCommit":"22ce7799cce61db93f5852069dacf2409373adbd"}],"edges":[{"from":"WO-228","to":"WO-193","relation":"planning-deferral"}]}]} -->
 
 ## Active
 
 None.
 
 ## Open
-
-### WO-234
-
-[WO-234 — A dispatch cannot run away: every role session carries a wall-clock bound and a complete-run bound read from the budgets file, the gate, the bounded wrapper and the lifecycle refuse to start past it, the hooks say where the session stands at every turn, an operator acceptance extends it on the record, and the meter reports every stop and what followed (version assigned at activation)](WO-234-a-dispatch-cannot-run-away.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-158: satisfied-by-close (met) — the off-ramp routes (typed event, operator capture with digest, legal-phase refusal, status projection) the accept-overrun route follows; WO-126: satisfied-by-close (met) — the budgets file, readBudgets and budgetVerdict that the two new keys and their acceptances extend; WO-144: satisfied-by-close (met) — the hook boundary and its five refusals, which this order extends by a sixth; WO-229: satisfied-by-close (met) — the host structural task and the lane registry where the gate's bound refusal is judged; WO-139: satisfied-by-close (met) — the session journal and the usage readback the standing is computed from; WO-192: reference-only (non-blocking) — its driven-run stops bound a router's workers and are unmerged; its D023, D076 and D084 are this order's sources.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer xhigh.
-- Track: machinery
-- Cost: adds &#96;scripts/lib/dispatch-bound.mjs&#96; (new; reads the session journal, the gate rows and the budgets, returns the dispatch's standing), &#96;dispatches.&lt;role&gt;.wallClockMs&#96; and &#96;.completeRuns&#96; in &#96;docs/control/budgets.json&#96; and &#96;scripts/kit/budgets.template.json&#96; with their validation in &#96;scripts/lib/process-budget.mjs&#96;, the refusal in &#96;scripts/test-runner.mjs&#96;'s &#96;host&#96; task, the refusal in &#96;scripts/lib/bounded-command.mjs&#96;, the &#96;accept-overrun&#96; route and the &#96;DispatchBoundAccepted&#96; event in &#96;scripts/resume.mjs&#96; and the control fold, the standing line in the Stop hook and the sixth refusal in &#96;packages/skeleton/src/harness-host.ts&#96;, the shared sentence in &#96;packages/skeleton/src/loadouts/contributor.ts&#96; with its oracle re-mint, &#96;boundStops&#96;, &#96;boundAcceptances&#96; and &#96;afterStop&#96; in &#96;scripts/lib/meta.mjs&#96; and a &#96;boundStops&#96; block in &#96;scripts/lib/plan-failures.mjs&#96;, cases in &#96;scripts/test-runner.test.mjs&#96;, &#96;scripts/test-harness.mjs&#96;, &#96;scripts/test-harness-fixtures&#96; cases, &#96;scripts/test-control-segments.mjs&#96; and &#96;scripts/test-process-debt.mjs&#96;, and sentences in product 07, the security document, &#96;CLAUDE.md&#96;'s generated paragraph and the kit README. Removes: the unbounded dispatch WO-192 ran (80,817,117 ms of executor wall clock, 327,404,836 tokens, 109 gate steps and 17,144,915 ms of gate time in one phase with no phase transition, stopped twice by the operator and never by the system; WO-192's &#96;meta.json&#96; and decisions D076 and D084), and the operator's attendance as the only stop. Wall-clock: one journal and gate-row read per gate start, per probe start and per turn end (milliseconds); nothing else. Context bytes: this file; every role's cold start grows by the shared sentence of step 8, measured and recorded before and after. Commands: &#96;npm run resume -- accept-overrun&#96; (new, operator-run after a stop); &#96;harness usage&#96; gains the standing. Tokens: unknown until run. Steps: 11. Re-mints: &#96;harness-host.ts&#96;, &#96;harness-command.ts&#96; and &#96;contributor.ts&#96; are registered evidence sources, so the editions they stale are re-minted deterministically; none is a file the feedback verifier judges, so no live feedback episode; &#96;test-runner.mjs&#96;, &#96;bounded-command.mjs&#96; and &#96;process-budget.mjs&#96; are declared sources of machinery suites, so &#96;npm test -- --review&#96; runs before handoff; the role oracle is re-minted for the shared sentence.
-- Authority: [docs/work-orders/WO-234-a-dispatch-cannot-run-away.md](WO-234-a-dispatch-cannot-run-away.md)
 
 ### WO-235
 

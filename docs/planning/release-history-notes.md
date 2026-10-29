@@ -908,3 +908,12 @@ separate dispatches.
 ## Byte identity
 
 The seven ranges above hold 66,778 bytes, and each occurs exactly once in this file. [WO-086's decisions](../evidence/WO-086/decisions.md) record their SHA-256 values (D008, D017).
+
+
+**WO-234 (2026-10-28):** application `v0.102.0` adds dispatch wall-clock and
+complete-run bounds with operator-recorded extensions and intervention outcomes.
+Compiler `0.33.0` carries the generated sixth-refusal contract; skeleton
+`0.72.0` and harness host `0.38.0` enforce dispatch admission and report standing.
+Operator-facing durations use hours and minutes. Kernel and console behavior
+are unchanged; exact workspace pins follow the changed components. Packages
+remain private with publication controls retained.

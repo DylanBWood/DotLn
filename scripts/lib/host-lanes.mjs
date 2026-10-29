@@ -1,3 +1,4 @@
+import { formatDuration } from "./duration.mjs";
 import {
   existsSync,
   readFileSync,
@@ -259,7 +260,7 @@ export function readHolders(
 }
 
 export function formatLaneWait(task, observation) {
-  return `WAIT host lanes for ${task}: ${observation.waitedMs} ms; ${observation.phase === "lock" ? `waiting for the lane registry lock${observation.holders?.length ? ` held by ${observation.holders.map((row) => row.task).join(", ")}` : ""}` : `held by ${observation.holders.map((row) => `${row.task} (${laneRelationLabel(row.relation)}, ${row.slots} slots, ${row.ageMs ?? "unknown"} ms old, owner ${row.ownerAlive ? "alive" : "exited"}, ${row.survivingTasks} task processes, ${row.retainedSubleases} retained subleases${row.nested ? ", nested" : ""}${row.released ? ", released" : ""})`).join("; ")}`}`;
+  return `WAIT host lanes for ${task}: ${formatDuration(observation.waitedMs)}; ${observation.phase === "lock" ? `waiting for the lane registry lock${observation.holders?.length ? ` held by ${observation.holders.map((row) => row.task).join(", ")}` : ""}` : `held by ${observation.holders.map((row) => `${row.task} (${laneRelationLabel(row.relation)}, ${row.slots} slots, ${formatDuration(row.ageMs)} old, owner ${row.ownerAlive ? "alive" : "exited"}, ${row.survivingTasks} task processes, ${row.retainedSubleases} retained subleases${row.nested ? ", nested" : ""}${row.released ? ", released" : ""})`).join("; ")}`}`;
 }
 
 // Detailed holder history is bounded; attribution retains every change of

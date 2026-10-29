@@ -1,0 +1,943 @@
+{
+  "verification": "VER-001",
+  "workOrder": "WO-234",
+  "observedAt": "2026-10-28T21:16:16Z",
+  "subject": {
+    "base": "22ce7799cce61db93f5852069dacf2409373adbd",
+    "checkpoint": "refs/dotln/checkpoint/WO-234/6 (3212edf1a9decbd3d883aeb44db4a63c4406e91a)",
+    "codeIdentity": "25d5f232ac530d0f697e5f96ea379009c08998b01a08761c16ab4725fb819acf",
+    "codeIdentityRecomputed": [
+      "2026-10-28T20:37Z before probes",
+      "2026-10-28T21:05Z after the checks and probe file"
+    ]
+  },
+  "consumedRows": [
+    {
+      "checkId": "npm test",
+      "gateSelection": "review",
+      "evidenceRef": "host-gate:25d5f232ac530d0f697e5f96ea379009c08998b01a08761c16ab4725fb819acf:npm test",
+      "recordedAt": "2026-10-28T20:17:19.934Z",
+      "exitCode": 0,
+      "executionMode": "fresh",
+      "freshSuites": 111,
+      "unrunSuites": [],
+      "stale": [],
+      "identityUnchanged": true,
+      "buildOutputUnchanged": true
+    }
+  ],
+  "checks": [
+    {
+      "command": "node scripts/harness.mjs evidence",
+      "startedAt": "2026-10-28T20:36:24Z",
+      "exitCode": 0,
+      "note": "Run once expecting a listing; it is the canonical evidence check. It prepared owned projections (no tracked file changed), judged the consumed row and recorded one ignored git diff --check row (exit 0, 20:36:24.404Z) and a passed gate outcome."
+    },
+    {
+      "command": "npm run --silent plan -- failures",
+      "startedAt": "2026-10-28T20:47:01.196Z",
+      "exitCode": 0,
+      "note": "boundStops block present; 0 stops in the window since receipt 057"
+    },
+    {
+      "command": "npm run --silent plan -- failures --since 2026-10-28T00:00:00.000Z",
+      "startedAt": "2026-10-28T20:47:23.806Z",
+      "exitCode": 0,
+      "note": "one WO-234 executor stop (redispatch, wallClockMs 30115363 of 19719368, 12:42:58.992Z); afterStop DispatchBoundAccepted, delay 604443 ms"
+    },
+    {
+      "command": "npm run --silent harness -- check",
+      "startedAt": "2026-10-28T20:48:35.520Z",
+      "exitCode": 0,
+      "note": "35 generated surfaces"
+    },
+    {
+      "command": "npm run --silent publication:check",
+      "startedAt": "2026-10-28T20:48:45.376Z",
+      "exitCode": 0,
+      "note": "255/255 headings; both editions current"
+    },
+    {
+      "command": "npm run --silent format:check",
+      "startedAt": "2026-10-28T20:48:53.635Z",
+      "exitCode": 0
+    },
+    {
+      "command": "git diff --check",
+      "startedAt": "2026-10-28T20:48:53Z",
+      "exitCode": 0,
+      "note": "untracked files scanned separately for trailing whitespace: none"
+    },
+    {
+      "command": "dispatchStanding timing on this repository (scratch script, bounded)",
+      "startedAt": "2026-10-28T20:52Z",
+      "exitCode": 0,
+      "note": "5 reads: 54, 42, 39, 39, 39 ms; 32 gate rows; readBudgets 16 ms"
+    },
+    {
+      "command": "renderMetaTable(collectMeta(root)) (scratch script, bounded, read-only)",
+      "startedAt": "2026-10-28T21:11Z",
+      "exitCode": 0,
+      "note": "WO-234 order row and dispatch rows carry Bound stops 1 and Bound acceptances 2"
+    }
+  ],
+  "probe": [
+    {
+      "section": "functions",
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-234/verification-001-probe.mjs functions",
+      "startedAt": "2026-10-28T21:13:23Z",
+      "endedAt": "2026-10-28T21:13:24Z",
+      "exitCode": 0,
+      "checks": 32,
+      "failed": [],
+      "rows": [
+        {
+          "id": "C1-preorder-instance",
+          "criterion": 1,
+          "variation": "main docs/control/budgets.json (before this order) read by the current readBudgets",
+          "expected": "valid; every role's wallClockMs and completeRuns null; repair falls back to null",
+          "observed": {
+            "values": {
+              "executor": [
+                null,
+                null
+              ],
+              "verifier": [
+                null,
+                null
+              ],
+              "reviewer": [
+                null,
+                null
+              ],
+              "release-close": [
+                null,
+                null
+              ],
+              "planner": [
+                null,
+                null
+              ],
+              "refuter": [
+                null,
+                null
+              ]
+            },
+            "repair": [
+              null,
+              null
+            ]
+          },
+          "pass": true
+        },
+        {
+          "id": "C1-preorder-kit",
+          "criterion": 1,
+          "variation": "main kit template (before this order) read by the current readBudgets",
+          "expected": "valid; every role's wallClockMs and completeRuns null; repair falls back to null",
+          "observed": {
+            "values": {
+              "executor": [
+                null,
+                null
+              ],
+              "verifier": [
+                null,
+                null
+              ],
+              "reviewer": [
+                null,
+                null
+              ],
+              "release-close": [
+                null,
+                null
+              ],
+              "planner": [
+                null,
+                null
+              ],
+              "refuter": [
+                null,
+                null
+              ]
+            },
+            "repair": [
+              null,
+              null
+            ]
+          },
+          "pass": true
+        },
+        {
+          "id": "C1-template-fresh",
+          "criterion": 1,
+          "variation": "current kit template in a consumer with no completed phases",
+          "expected": "executor, repair, verifier, reviewer 8 h 0 min and 3 runs; release-close, planner, refuter null",
+          "observed": {
+            "executor": [
+              28800000,
+              3
+            ],
+            "repair": [
+              28800000,
+              3
+            ],
+            "verifier": [
+              28800000,
+              3
+            ],
+            "reviewer": [
+              28800000,
+              3
+            ],
+            "unset": [
+              [
+                null,
+                null
+              ],
+              [
+                null,
+                null
+              ],
+              [
+                null,
+                null
+              ]
+            ],
+            "basis": {
+              "source": "consumer-local completed phase attempts",
+              "phase": "implementation",
+              "sampleCount": 0,
+              "medianMs": null,
+              "multiplier": 4,
+              "minimumMs": 28800000,
+              "cutoff": null,
+              "ceiling": 28800000
+            }
+          },
+          "pass": true
+        },
+        {
+          "id": "C1-invalid-negative",
+          "criterion": 1,
+          "variation": "readBudgets refuses an invalid dispatch bound (negative)",
+          "expected": "throws /Invalid budget: executor\\.wallClockMs/",
+          "observed": {
+            "threw": "Invalid budget: executor.wallClockMs"
+          },
+          "pass": true
+        },
+        {
+          "id": "C1-invalid-string",
+          "criterion": 1,
+          "variation": "readBudgets refuses an invalid dispatch bound (string)",
+          "expected": "throws /Invalid budget: executor\\.wallClockMs/",
+          "observed": {
+            "threw": "Invalid budget: executor.wallClockMs"
+          },
+          "pass": true
+        },
+        {
+          "id": "C1-invalid-runs-policy",
+          "criterion": 1,
+          "variation": "readBudgets refuses an invalid dispatch bound (runs-policy)",
+          "expected": "throws /Invalid budget: verifier\\.completeRuns/",
+          "observed": {
+            "threw": "Invalid budget: verifier.completeRuns"
+          },
+          "pass": true
+        },
+        {
+          "id": "C1-invalid-unsupported-policy",
+          "criterion": 1,
+          "variation": "readBudgets refuses an invalid dispatch bound (unsupported-policy)",
+          "expected": "throws /No completed-phase timing source for planner/",
+          "observed": {
+            "threw": "No completed-phase timing source for planner"
+          },
+          "pass": true
+        },
+        {
+          "id": "C1-invalid-repair-array",
+          "criterion": 1,
+          "variation": "readBudgets refuses an invalid dispatch bound (repair-array)",
+          "expected": "throws /Invalid dispatch budget for executor/",
+          "observed": {
+            "threw": "Invalid dispatch budget for executor"
+          },
+          "pass": true
+        },
+        {
+          "id": "C1-invalid-repair-negative",
+          "criterion": 1,
+          "variation": "readBudgets refuses an invalid dispatch bound (repair-negative)",
+          "expected": "throws /Invalid budget: executor\\.completeRuns/",
+          "observed": {
+            "threw": "Invalid budget: executor.completeRuns"
+          },
+          "pass": true
+        },
+        {
+          "id": "C1-invalid-role-null",
+          "criterion": 1,
+          "variation": "readBudgets refuses an invalid dispatch bound (role-null)",
+          "expected": "throws /Invalid dispatch budget for reviewer/",
+          "observed": {
+            "threw": "Invalid dispatch budget for reviewer"
+          },
+          "pass": true
+        },
+        {
+          "id": "C1-partial-key",
+          "criterion": 1,
+          "variation": "an executor entry with wallClockMs but no completeRuns key",
+          "expected": "completeRuns reads null; wallClockMs keeps its number",
+          "observed": [
+            5,
+            null
+          ],
+          "pass": true
+        },
+        {
+          "id": "C1-real-record",
+          "criterion": 1,
+          "variation": "local-median on this repository's own record at this session's dispatch start",
+          "expected": "each supported phase reports max(4 times its median, 8 h 0 min)",
+          "observed": {
+            "implementation": {
+              "sampleCount": 179,
+              "medianMs": 5066636,
+              "ceiling": 28800000,
+              "cutoff": "2026-10-28T20:34:56.153Z"
+            },
+            "repair": {
+              "sampleCount": 182,
+              "medianMs": 2801072.5,
+              "ceiling": 28800000,
+              "cutoff": "2026-10-28T20:34:56.153Z"
+            },
+            "verification": {
+              "sampleCount": 359,
+              "medianMs": 1044860,
+              "ceiling": 28800000,
+              "cutoff": "2026-10-28T20:34:56.153Z"
+            },
+            "finalReview": {
+              "sampleCount": 202,
+              "medianMs": 1546872,
+              "ceiling": 28800000,
+              "cutoff": "2026-10-28T20:34:56.153Z"
+            }
+          },
+          "pass": true
+        },
+        {
+          "id": "C2-within",
+          "criterion": 2,
+          "variation": "executor 999 ms into a 1,000 ms bound, no runs",
+          "expected": "within",
+          "observed": [
+            "within",
+            999,
+            0
+          ],
+          "pass": true
+        },
+        {
+          "id": "C2-wall-equality",
+          "criterion": 2,
+          "variation": "elapsed exactly equal to the wall-clock bound",
+          "expected": "exceeded on wallClockMs only",
+          "observed": [
+            "exceeded",
+            [
+              {
+                "metric": "wallClockMs",
+                "value": 1000,
+                "bound": 1000
+              }
+            ]
+          ],
+          "pass": true
+        },
+        {
+          "id": "C2-runs",
+          "criterion": 2,
+          "variation": "two then one qualifying complete rows against a bound of two",
+          "expected": "exceeded on completeRuns with two; within with one",
+          "observed": [
+            "exceeded",
+            [
+              {
+                "metric": "completeRuns",
+                "value": 2,
+                "bound": 2
+              }
+            ],
+            "within",
+            1
+          ],
+          "pass": true
+        },
+        {
+          "id": "C2-both",
+          "criterion": 2,
+          "variation": "both bounds exhausted together",
+          "expected": "exceeded lists both metrics; the message names both",
+          "observed": {
+            "exceeded": [
+              "wallClockMs",
+              "completeRuns"
+            ],
+            "message": "DOTLN_DISPATCH_BOUND: wall clock=0 h 0 min, bound=0 h 0 min; complete runs=2, bound=2. dispatch standing: 0 h 0 min of 0 h 0 min; complete runs 2 of 2; exceeded"
+          },
+          "pass": true
+        },
+        {
+          "id": "C2-row-kinds",
+          "criterion": 2,
+          "variation": "rows the executor cases held constant: started before the dispatch, single, document, machinery, bound stop, partial, unexecuted, focused suite id",
+          "expected": "none counted",
+          "observed": 0,
+          "pass": true
+        },
+        {
+          "id": "C2-interrupted-run",
+          "criterion": 2,
+          "variation": "an interrupted (stopped) complete review that consumed time",
+          "expected": "counted as one run, as product 07 states",
+          "observed": 1,
+          "pass": true
+        },
+        {
+          "id": "C2-null-and-mixed",
+          "criterion": 2,
+          "variation": "reviewer with both bounds null; verifier with only a wall-clock bound",
+          "expected": "reviewer unset; verifier within, then exceeded on wall clock only",
+          "observed": [
+            "unset",
+            "final-review",
+            "within",
+            "exceeded",
+            [
+              "wallClockMs"
+            ]
+          ],
+          "pass": true
+        },
+        {
+          "id": "C2-repair-limits",
+          "criterion": 2,
+          "variation": "an executor resume: fix journal",
+          "expected": "phase repairing selects the repair object (5,000 ms, one run)",
+          "observed": [
+            "repairing",
+            5000,
+            1,
+            "exceeded"
+          ],
+          "pass": true
+        },
+        {
+          "id": "C2-missing-journal",
+          "criterion": 2,
+          "variation": "no journal file, a journal without a role, and one with an unparseable start",
+          "expected": "unset with cause no-journal each time",
+          "observed": [
+            [
+              "unset",
+              "no-journal"
+            ],
+            [
+              "unset",
+              "no-journal"
+            ],
+            [
+              "unset",
+              "no-journal"
+            ]
+          ],
+          "pass": true
+        },
+        {
+          "id": "C2-malformed-journal",
+          "criterion": 2,
+          "variation": "the session's own journal holds invalid JSON; then an invalid boundDispatch anchor",
+          "expected": "a named error, never within or exceeded (D013's recorded design)",
+          "observed": {
+            "invalidJson": "Expected property name or '}' in JSON at position 2 (line 1 column 3)",
+            "invalidAnchor": "Invalid dispatch-bound journal anchor",
+            "namesFile": false
+          },
+          "pass": true
+        },
+        {
+          "id": "C2-acceptance-scope",
+          "criterion": 2,
+          "variation": "finite acceptances: same phase raising, same phase lower than base, other phase, and one before the phase's completion",
+          "expected": "only the same-phase raise after the latest completion applies",
+          "observed": {
+            "raise": [
+              "within",
+              5000
+            ],
+            "lower": [
+              "exceeded",
+              1000
+            ],
+            "other": [
+              "exceeded",
+              1000
+            ],
+            "completed": [
+              "exceeded",
+              1000
+            ]
+          },
+          "pass": true
+        },
+        {
+          "id": "C2-acceptance-cross-order",
+          "criterion": 2,
+          "variation": "an acceptance recorded on WO-998 in the real control store; the dispatch belongs to WO-999",
+          "expected": "WO-999's standing stays exceeded; WO-998's journal is within",
+          "observed": [
+            "exceeded",
+            null,
+            "within"
+          ],
+          "pass": true
+        },
+        {
+          "id": "C2-unlimited-one-metric",
+          "criterion": 2,
+          "variation": "an as-needed acceptance on wallClockMs alone",
+          "expected": "wall clock lifts (standing line says as needed); the run bound still holds",
+          "observed": [
+            "within",
+            null,
+            "dispatch standing: 277 h 47 min of as needed; complete runs 0 of 2; within",
+            "exceeded",
+            [
+              "completeRuns"
+            ]
+          ],
+          "pass": true
+        },
+        {
+          "id": "C4-refusal-before-launch",
+          "criterion": 4,
+          "variation": "verifier dispatch with completeRuns 0 (run metric, not wall clock); probe would write a marker",
+          "expected": "rejects with DOTLN_DISPATCH_BOUND equal to the shared message; marker absent; one probe stop recorded",
+          "observed": {
+            "message": "DOTLN_DISPATCH_BOUND: complete runs=0, bound=0. dispatch standing: 0 h 0 min of unset; complete runs 0 of 0; exceeded. Use analysis: to diagnose. The operator can authorize proceeding in ordinary language in this convers",
+            "sameAsShared": true,
+            "marker": false,
+            "stops": [
+              [
+                "probe",
+                "verifier",
+                "completeRuns"
+              ]
+            ]
+          },
+          "pass": true
+        },
+        {
+          "id": "C4-diagnostic-admitted",
+          "criterion": 4,
+          "variation": "past the bound: harness bounded -- npm test -- --only alpha",
+          "expected": "admitted (the wrapped command runs)",
+          "observed": {
+            "exitCode": 0,
+            "ran": true
+          },
+          "pass": true
+        },
+        {
+          "id": "C4-within-runs",
+          "criterion": 4,
+          "variation": "within the bound (completeRuns 3): a probe exiting 5",
+          "expected": "runs as today; exit 5 returned",
+          "observed": 5,
+          "pass": true
+        },
+        {
+          "id": "C5-redispatch-run-metric",
+          "criterion": 5,
+          "variation": "next for WO-997 after an earlier thread's complete run (completeRuns 1), with a later second thread journal",
+          "expected": "refused on completeRuns from the earliest anchor; WO-996 (no journal) admitted",
+          "observed": {
+            "refusal": "DOTLN_DISPATCH_BOUND: complete runs=1, bound=1. dispatch standing: 0 h 0 min of unset; complete runs 1 of 1; exceeded. U",
+            "neighbour": null
+          },
+          "pass": true
+        },
+        {
+          "id": "C5-redispatch-acceptance",
+          "criterion": 5,
+          "variation": "the same refusal after a completeRuns acceptance of 2 on WO-997's control log",
+          "expected": "admitted (within)",
+          "observed": [
+            "within",
+            2,
+            1,
+            "2031-01-01T00:00:00.100Z"
+          ],
+          "pass": true
+        },
+        {
+          "id": "C5-unrelated-malformed-journal",
+          "criterion": 5,
+          "variation": "an unrelated session's journal in the same lane holds invalid JSON",
+          "expected": "D013 design: the lifecycle read names the damaged file rather than inventing an anchor",
+          "observed": {
+            "threw": "Invalid dispatch journal <fixture>/docs/control/local/harness/cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc.json: Expected property name or '}' in JSON at position 2 (line 1 column 3)"
+          },
+          "pass": true
+        },
+        {
+          "id": "C7-repair-delay",
+          "criterion": 7,
+          "variation": "one executor stop followed 90 s later by RepairRequested, another order's event in between, and a verifier view",
+          "expected": "afterStop names RepairRequested with 90,000 ms; the verifier view has no stops",
+          "observed": {
+            "afterStop": [
+              {
+                "at": "2031-01-01T00:00:00.000Z",
+                "metric": "completeRuns",
+                "nextEvent": "RepairRequested",
+                "delayMs": 90000
+              }
+            ],
+            "verifierStops": 0
+          },
+          "pass": true
+        }
+      ]
+    },
+    {
+      "section": "hooks",
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-234/verification-001-probe.mjs hooks",
+      "startedAt": "2026-10-28T21:13:24Z",
+      "endedAt": "2026-10-28T21:13:28Z",
+      "exitCode": 0,
+      "checks": 6,
+      "failed": [],
+      "rows": [
+        {
+          "id": "C6-starts-run-metric",
+          "criterion": 6,
+          "variation": "verifier session, completeRuns 0 (run metric), complete-selection spellings the executor's cases did not use, and a bounded probe",
+          "expected": "each denied with DOTLN_DISPATCH_BOUND naming analysis: and accept-overrun",
+          "observed": {
+            "npm test": "denied-bound",
+            "npm run test": "denied-bound",
+            "npm run test:full": "denied-bound",
+            "npm test -- --review --keep-going": "denied-bound",
+            "node scripts/test-runner.mjs --review": "denied-bound",
+            "cd . && npm test -- --review": "denied-bound",
+            "node scripts/harness.mjs bounded -- node -e 0": "denied-bound"
+          },
+          "pass": true
+        },
+        {
+          "id": "C6-worker-launch",
+          "criterion": 6,
+          "variation": "verifier session past the run bound launches an Agent worker",
+          "expected": "denied with DOTLN_DISPATCH_BOUND",
+          "observed": "DOTLN_DISPATCH_BOUND: complete runs=0, bound=0. dispatch standing: 0 h 0 min of ",
+          "pass": true
+        },
+        {
+          "id": "C6-diagnosis-admitted",
+          "criterion": 6,
+          "variation": "past the bound: document check, focused and listing selections, a bounded focused probe, reads and the usage readback",
+          "expected": "none denied by the bound",
+          "observed": {
+            "npm run test:docs": "admitted",
+            "npm test -- --only skeleton": "admitted",
+            "npm test -- --list": "admitted",
+            "node scripts/harness.mjs bounded -- npm test -- --only skeleton": "admitted",
+            "git status --short": "admitted",
+            "node scripts/harness.mjs usage probe-hook-session": "admitted",
+            "cat fixture.ts": "admitted"
+          },
+          "pass": true
+        },
+        {
+          "id": "C6-stop-standing",
+          "criterion": 6,
+          "variation": "Stop hook at the exhausted run bound",
+          "expected": "system message carries the standing line in hours and minutes",
+          "observed": "dispatch standing: 0 h 0 min of unset; complete runs 0 of 0; exceeded",
+          "pass": true
+        },
+        {
+          "id": "C6-within-admitted",
+          "criterion": 6,
+          "variation": "the same verifier within its bound (completeRuns 3)",
+          "expected": "npm test -- --review admitted; Stop line says within",
+          "observed": {
+            "decision": "admitted",
+            "line": "dispatch standing: 0 h 0 min of unset; complete runs 0 of 3; within"
+          },
+          "pass": true
+        },
+        {
+          "id": "C6-malformed-journal",
+          "criterion": 6,
+          "variation": "the session journal is unparseable while the bound would be exhausted",
+          "expected": "no DOTLN_DISPATCH_BOUND denial; the outcome is recorded as observed",
+          "observed": {
+            "decision": "admitted",
+            "advisory": "DotLn advisory: session state unreadable; host permissions decide."
+          },
+          "pass": true
+        }
+      ]
+    },
+    {
+      "section": "gate",
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-234/verification-001-probe.mjs gate",
+      "startedAt": "2026-10-28T21:13:28Z",
+      "endedAt": "2026-10-28T21:13:29Z",
+      "exitCode": 0,
+      "checks": 2,
+      "failed": [],
+      "rows": [
+        {
+          "id": "C3-verifier-runs-keep-going",
+          "criterion": 3,
+          "variation": "verifier dispatch, completeRuns exhausted, runGate --review --serial --again --keep-going under a Claude session variable",
+          "expected": "complete selection refused at host; alpha never runs; the row records boundStop and the owning dispatch; message names metric, value, bound, analysis: and accept-overrun; a focused --only alpha still runs",
+          "observed": {
+            "exitCode": 1,
+            "boundStop": {
+              "metric": "completeRuns",
+              "value": 0,
+              "bound": 0
+            },
+            "dispatchBound": {
+              "role": "verifier",
+              "phase": "verifying"
+            },
+            "rowBoundStop": {
+              "metric": "completeRuns",
+              "value": 0,
+              "bound": 0
+            },
+            "rowSelection": "review",
+            "hostOutput": "",
+            "alphaRanAfterStop": false,
+            "focusedExit": 0,
+            "focusedRan": true
+          },
+          "pass": true
+        },
+        {
+          "id": "C3-reviewer-wall-plain",
+          "criterion": 3,
+          "variation": "reviewer dispatch, wallClockMs exhausted, runGate --serial --again under a Claude session variable",
+          "expected": "complete selection refused at host; alpha never runs; the row records boundStop and the owning dispatch; message names metric, value, bound, analysis: and accept-overrun; a focused --only alpha still runs",
+          "observed": {
+            "exitCode": 1,
+            "boundStop": {
+              "metric": "wallClockMs",
+              "value": 213,
+              "bound": 0
+            },
+            "dispatchBound": {
+              "role": "reviewer",
+              "phase": "final-review"
+            },
+            "rowBoundStop": {
+              "metric": "wallClockMs",
+              "value": 213,
+              "bound": 0
+            },
+            "rowSelection": "plain",
+            "hostOutput": "",
+            "alphaRanAfterStop": false,
+            "focusedExit": 0,
+            "focusedRan": true
+          },
+          "pass": true
+        }
+      ]
+    },
+    {
+      "section": "control",
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-234/verification-001-probe.mjs control",
+      "startedAt": "2026-10-28T21:13:29Z",
+      "endedAt": "2026-10-28T21:13:34Z",
+      "exitCode": 0,
+      "checks": 4,
+      "failed": [],
+      "rows": [
+        {
+          "id": "C3-control-wallClockMs-complete",
+          "criterion": 3,
+          "variation": "paired runner control: wallClockMs exhausted, complete review, base HEAD runner and current runner on identical fixtures",
+          "expected": "base admits (exit 0, alpha runs); current refuses (exit 1, alpha not run, boundStop on the metric)",
+          "observed": {
+            "base": {
+              "exitCode": 0,
+              "boundStop": null,
+              "alphaRan": true
+            },
+            "current": {
+              "exitCode": 1,
+              "boundStop": {
+                "metric": "wallClockMs",
+                "value": 242,
+                "bound": 0
+              },
+              "alphaRan": false
+            }
+          },
+          "pass": true
+        },
+        {
+          "id": "C3-control-wallClockMs-focused",
+          "criterion": 3,
+          "variation": "paired runner control: wallClockMs exhausted, focused reproduction, base HEAD runner and current runner on identical fixtures",
+          "expected": "both admit (exit 0, alpha runs)",
+          "observed": {
+            "base": {
+              "exitCode": 0,
+              "boundStop": null,
+              "alphaRan": true
+            },
+            "current": {
+              "exitCode": 0,
+              "boundStop": null,
+              "alphaRan": true
+            }
+          },
+          "pass": true
+        },
+        {
+          "id": "C3-control-completeRuns-complete",
+          "criterion": 3,
+          "variation": "paired runner control: completeRuns exhausted, complete review, base HEAD runner and current runner on identical fixtures",
+          "expected": "base admits (exit 0, alpha runs); current refuses (exit 1, alpha not run, boundStop on the metric)",
+          "observed": {
+            "base": {
+              "exitCode": 0,
+              "boundStop": null,
+              "alphaRan": true
+            },
+            "current": {
+              "exitCode": 1,
+              "boundStop": {
+                "metric": "completeRuns",
+                "value": 0,
+                "bound": 0
+              },
+              "alphaRan": false
+            }
+          },
+          "pass": true
+        },
+        {
+          "id": "C3-control-completeRuns-focused",
+          "criterion": 3,
+          "variation": "paired runner control: completeRuns exhausted, focused reproduction, base HEAD runner and current runner on identical fixtures",
+          "expected": "both admit (exit 0, alpha runs)",
+          "observed": {
+            "base": {
+              "exitCode": 0,
+              "boundStop": null,
+              "alphaRan": true
+            },
+            "current": {
+              "exitCode": 0,
+              "boundStop": null,
+              "alphaRan": true
+            }
+          },
+          "pass": true
+        }
+      ]
+    },
+    {
+      "section": "entry",
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-234/verification-001-probe.mjs entry",
+      "startedAt": "2026-10-28T21:16:12Z",
+      "endedAt": "2026-10-28T21:16:16Z",
+      "exitCode": 1,
+      "checks": 1,
+      "failed": [
+        "R1-entry-damaged-lane"
+      ],
+      "rows": [
+        {
+          "id": "R1-entry-damaged-lane",
+          "criterion": "regression",
+          "variation": "paired dispatch entry beside one damaged unrelated journal; base is main's runtime at the same commit",
+          "expected": "both arms bind the verifier role and admit its granted temp write beside the damaged journal, as main does; the current arm's bound is computed or named unavailable, never silently unset",
+          "observed": {
+            "provenance": {
+              "head": "22ce7799cce61db93f5852069dacf2409373adbd",
+              "mainHead": "22ce7799cce61db93f5852069dacf2409373adbd",
+              "mainClean": true,
+              "baseRuntimeHasBound": false,
+              "baseHostVersion": "0.37.0"
+            },
+            "base": {
+              "clean": {
+                "startStatus": 0,
+                "promptStatus": 0,
+                "role": "verifier",
+                "advisory": null,
+                "systemTempWrite": "admitted",
+                "completeReview": "admitted",
+                "standing": null
+              },
+              "damaged": {
+                "startStatus": 0,
+                "promptStatus": 0,
+                "role": "verifier",
+                "advisory": null,
+                "systemTempWrite": "admitted",
+                "completeReview": "admitted",
+                "standing": null
+              }
+            },
+            "current": {
+              "clean": {
+                "startStatus": 0,
+                "promptStatus": 0,
+                "role": "verifier",
+                "advisory": null,
+                "systemTempWrite": "admitted",
+                "completeReview": "denied: DOTLN_DISPATCH_BOUND: complete runs=0, bound=0. dispatch standing: 0 h 0 min of unset; complete runs 0 of 0; exceeded. U",
+                "standing": {
+                  "state": "exceeded",
+                  "cause": null,
+                  "bound": 0
+                }
+              },
+              "damaged": {
+                "startStatus": 0,
+                "promptStatus": 0,
+                "role": null,
+                "advisory": "advisory: runtime-unavailable: host facts or pinned runtime unavailable (Error: Invalid dispatch journal <fixture>/docs); run node scripts/",
+                "systemTempWrite": "denied: DOTLN_HARNESS_REFUSED: outside-project write to <system-temp>/dotln-ver234-entry-prob",
+                "completeReview": "admitted",
+                "standing": {
+                  "state": "unset",
+                  "cause": "no-journal",
+                  "bound": null
+                }
+              }
+            }
+          },
+          "pass": false
+        }
+      ]
+    }
+  ]
+}

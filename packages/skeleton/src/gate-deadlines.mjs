@@ -1,6 +1,7 @@
 import childProcess from "node:child_process";
 import { appendFileSync, readFileSync } from "node:fs";
 import { availableParallelism, loadavg } from "node:os";
+import { formatDuration } from "./duration.mjs";
 
 // A scheduler declaration, not a host-speed detector. The factor includes two
 // times the measured solo baseline per scheduler slot. Ordinary host commands
@@ -135,7 +136,7 @@ export function startDeadline(site, timeoutMs, options = {}) {
       if (now() - started < timeoutMs) return;
       const record = finish(true);
       throw new Error(
-        `Deadline ${record.site} hit after ${record.durationMs.toFixed(1)} ms (bound ${timeoutMs} ms; ${record.classification})`,
+        `Deadline ${record.site} hit after ${formatDuration(record.durationMs)} (bound ${formatDuration(timeoutMs)}; ${record.classification})`,
       );
     },
   };

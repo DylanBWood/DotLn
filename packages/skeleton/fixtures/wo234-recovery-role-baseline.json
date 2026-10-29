@@ -1,0 +1,85 @@
+{
+  "workOrder": "WO-234",
+  "historicalBaseline": "wo234-role-baseline.json",
+  "historicalSha256": "465310610d933e2c3ca1f9c5be09eefb00f4250615bce3aa26fff64b37399ec0",
+  "upstreamBaseline": "wo185-role-baseline.json",
+  "upstreamSha256": "f67e48b79873202b56c069902f2338d54b1fef42d3c9eb29706d3d2cd7a72ef9",
+  "method": "Pin contextual in-session continuation, early as-needed authorization and consumer-local median policy under the operator correction, preserving every prior oracle.",
+  "decision": "docs/evidence/WO-234/decisions.md#wo-234-d009",
+  "roles": {
+    ".agents/skills/dotln-executor/SKILL.md": "fa687b4e39809fe6a4a7e04aaf5a60cf2275f4b802608158637999dde2d1d7c4",
+    ".agents/skills/dotln-planner/SKILL.md": "7b5b3e803235be8c6824c2f7a9fb4810fc7e592b3344dfd7c9a2689a2730e543",
+    ".agents/skills/dotln-refuter/SKILL.md": "cd720f7fbffe3e63ab00e9b4f6e179025a25fcbbe5cc2e94f81acacaad1a9a3d",
+    ".agents/skills/dotln-release-close/SKILL.md": "e80548b8bd2a52ff59d5e0a348ddb4226ee50ff72f83c88e18d7179f25996705",
+    ".agents/skills/dotln-reviewer/SKILL.md": "1968f2caea84bdadada292bff90a45ec8f84166c09d0b0f35d552e4a866e2b59",
+    ".agents/skills/dotln-verifier/SKILL.md": "a35318d2ddca5d0cba0fd2c5347b35978cd86107d6ba01204fca2c858b790967",
+    ".claude/skills/dotln-executor/SKILL.md": "fa687b4e39809fe6a4a7e04aaf5a60cf2275f4b802608158637999dde2d1d7c4",
+    ".claude/skills/dotln-planner/SKILL.md": "7b5b3e803235be8c6824c2f7a9fb4810fc7e592b3344dfd7c9a2689a2730e543",
+    ".claude/skills/dotln-refuter/SKILL.md": "cd720f7fbffe3e63ab00e9b4f6e179025a25fcbbe5cc2e94f81acacaad1a9a3d",
+    ".claude/skills/dotln-release-close/SKILL.md": "e80548b8bd2a52ff59d5e0a348ddb4226ee50ff72f83c88e18d7179f25996705",
+    ".claude/skills/dotln-reviewer/SKILL.md": "1968f2caea84bdadada292bff90a45ec8f84166c09d0b0f35d552e4a866e2b59",
+    ".claude/skills/dotln-verifier/SKILL.md": "a35318d2ddca5d0cba0fd2c5347b35978cd86107d6ba01204fca2c858b790967"
+  },
+  "optOutRoles": {
+    ".agents/skills/dotln-executor/SKILL.md": "0416871908166b8e2bacc13fa89fa04bd6909670abd17f9fa8724ac6206951f9",
+    ".agents/skills/dotln-planner/SKILL.md": "577173e155499b3f07859764dd1fbcaac919ecc7c900c056eac2e0308a03e9aa",
+    ".agents/skills/dotln-refuter/SKILL.md": "12f01a2901c45e52ccdc45abf819b26d806d8de39682b39c9bf69441c1f980bf",
+    ".agents/skills/dotln-release-close/SKILL.md": "df53a2cfabcc2487b2173bb1385ac105d0d76f45138baf1bb123bee27606cd01",
+    ".agents/skills/dotln-reviewer/SKILL.md": "dc3942b4150fa3981a9770b3a1c0e5b907b1b9430c62bd4ecb7ea8a6e637ec65",
+    ".agents/skills/dotln-verifier/SKILL.md": "dbc4e5fae3088701c659e44b835273774dfa68c9df89af9b5ba86855b73f3ceb",
+    ".claude/skills/dotln-executor/SKILL.md": "0416871908166b8e2bacc13fa89fa04bd6909670abd17f9fa8724ac6206951f9",
+    ".claude/skills/dotln-planner/SKILL.md": "577173e155499b3f07859764dd1fbcaac919ecc7c900c056eac2e0308a03e9aa",
+    ".claude/skills/dotln-refuter/SKILL.md": "12f01a2901c45e52ccdc45abf819b26d806d8de39682b39c9bf69441c1f980bf",
+    ".claude/skills/dotln-release-close/SKILL.md": "df53a2cfabcc2487b2173bb1385ac105d0d76f45138baf1bb123bee27606cd01",
+    ".claude/skills/dotln-reviewer/SKILL.md": "dc3942b4150fa3981a9770b3a1c0e5b907b1b9430c62bd4ecb7ea8a6e637ec65",
+    ".claude/skills/dotln-verifier/SKILL.md": "dbc4e5fae3088701c659e44b835273774dfa68c9df89af9b5ba86855b73f3ceb"
+  },
+  "startupCost": {
+    "decision": "WO-234-D009",
+    "followup": "FUP-e08668268dea62b1",
+    "profiles": {
+      "executor": {
+        "beforeBytes": 31546,
+        "bytes": 32275,
+        "ceiling": 29246,
+        "growthBytes": 729,
+        "headroomBytes": -3029
+      },
+      "planner": {
+        "beforeBytes": 20172,
+        "bytes": 20901,
+        "ceiling": 24576,
+        "growthBytes": 729,
+        "headroomBytes": 3675
+      },
+      "refuter": {
+        "beforeBytes": 18986,
+        "bytes": 19715,
+        "ceiling": null,
+        "growthBytes": 729,
+        "headroomBytes": null
+      },
+      "release-close": {
+        "beforeBytes": 19263,
+        "bytes": 19992,
+        "ceiling": 21266,
+        "growthBytes": 729,
+        "headroomBytes": 1274
+      },
+      "reviewer": {
+        "beforeBytes": 30500,
+        "bytes": 31229,
+        "ceiling": 28884,
+        "growthBytes": 729,
+        "headroomBytes": -2345
+      },
+      "verifier": {
+        "beforeBytes": 28074,
+        "bytes": 28803,
+        "ceiling": 29831,
+        "growthBytes": 729,
+        "headroomBytes": 1028
+      }
+    }
+  }
+}

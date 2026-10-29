@@ -14,7 +14,12 @@
     "scripts/lib/git.mjs",
     "packages/skeleton/src/runtime-inputs.mjs",
     "packages/skeleton/src/temporary-root-records.mjs",
-    "scripts/temporary-root.mjs"
+    "scripts/temporary-root.mjs",
+    "packages/skeleton/src/duration.mjs",
+    "packages/skeleton/src/dispatch-journal.mjs",
+    "packages/skeleton/src/test-selection.mjs",
+    "packages/skeleton/src/gate-evidence.mjs",
+    "packages/skeleton/src/gate-deadlines.mjs"
   ],
   "directories": [
     "scripts/lib",

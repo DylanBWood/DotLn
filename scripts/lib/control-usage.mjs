@@ -1,3 +1,4 @@
+import { formatDuration } from "./duration.mjs";
 import { projectActor } from "./control-actor.mjs";
 import { eventsForOrder } from "./control-store.mjs";
 import { completedPhaseAttempts } from "./control-time.mjs";
@@ -57,7 +58,7 @@ export const controlUsageProjection = (control) => {
 };
 
 const renderCounts = ({ attempts, elapsedMs, unknown }) =>
-  `attempts=${attempts}; elapsedMs=${elapsedMs}; unknown=${unknown}`;
+  `attempts=${attempts}; elapsed=${formatDuration(elapsedMs)}; unknown=${unknown}`;
 const renderGroup = (group) =>
   `${["harness", "harnessVersion", "model", "effort", "accountLabel", "phase"].map((key) => `${key}=${JSON.stringify(group[key])}`).join("; ")}; ${renderCounts(group)}; workOrders=${group.workOrders.join(",")}`;
 

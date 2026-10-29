@@ -76,6 +76,7 @@ const expected = [
   "latestCheckpoint",
   "legalNextActions",
   "legalOffRamps",
+  "boundAcceptances",
   "waivedCriteria",
   "unmetCriteria",
   "withdrawal",
@@ -214,7 +215,7 @@ node "$umbrella_repo/scripts/resume.mjs" activate WO-903 docs/work-orders/WO-903
 test -s "$umbrella_repo/docs/control/orders/WO-903.jsonl"
 activate_warning="$(node "$fixture_repo/scripts/resume.mjs" activate WO-099 docs/work-orders/WO-099-fixture.md 2>&1 >/dev/null)"
 assert_status_read_only
-assert_status_json '{"workOrder":"WO-099","workOrderPath":"docs/work-orders/WO-099-fixture.md","phase":"active","latestVerification":null,"verificationPath":null,"latestVerdict":null,"finalReview":null,"finalReviewPath":null,"latestAttestation":null,"effortDrift":[],"latestCheckpoint":{"unavailable":true},"legalNextActions":["next","implementation-ready"],"legalOffRamps":["withdraw","correct","override-record"],"waivedCriteria":[],"unmetCriteria":[],"withdrawal":null,"corrections":[],"overrideRecords":[]}'
+assert_status_json '{"workOrder":"WO-099","workOrderPath":"docs/work-orders/WO-099-fixture.md","phase":"active","latestVerification":null,"verificationPath":null,"latestVerdict":null,"finalReview":null,"finalReviewPath":null,"latestAttestation":null,"effortDrift":[],"latestCheckpoint":{"unavailable":true},"legalNextActions":["next","implementation-ready"],"legalOffRamps":["accept-overrun","withdraw","correct","override-record"],"boundAcceptances":[],"waivedCriteria":[],"unmetCriteria":[],"withdrawal":null,"corrections":[],"overrideRecords":[]}'
 tail -n 1 "$active_log" | grep -Fq '"effortDeclarationValidated":true'
 grep -q 'warning: could not create recovery checkpoint.*not a valid object name HEAD' <<<"$activate_warning"
 grep -Fq 'Do not repeat this transition after it records' <<<"$activate_warning"
@@ -481,7 +482,7 @@ final_pass_output="$(node "$fixture_repo/scripts/resume.mjs" final-review-result
   --effort unknown \
   --source operator-attested 2>/dev/null)"
 assert_status_read_only
-assert_status_json '{"workOrder":"WO-099","workOrderPath":"docs/work-orders/WO-099-fixture.md","phase":"closed","latestVerification":"VER-004","verificationPath":"docs/verifications/WO-099/VER-004.md","latestVerdict":"pass","finalReview":"FINAL-003","finalReviewPath":"docs/final-reviews/WO-099/FINAL-003.md","latestAttestation":{"harness":"human","harnessVersion":"not-applicable","model":"human","effort":"unknown","source":"operator-attested"},"effortDrift":[{"effort":"xhigh"},{"effort":"custom-selector"},{"effort":"high"},{"effort":"custom-selector-2"},{"effort":"unknown"}],"latestCheckpoint":{"unavailable":true},"legalNextActions":["release-close","next","activate"],"legalOffRamps":["correct","override-record"],"waivedCriteria":[],"unmetCriteria":[],"withdrawal":null,"corrections":[],"overrideRecords":[]}'
+assert_status_json '{"workOrder":"WO-099","workOrderPath":"docs/work-orders/WO-099-fixture.md","phase":"closed","latestVerification":"VER-004","verificationPath":"docs/verifications/WO-099/VER-004.md","latestVerdict":"pass","finalReview":"FINAL-003","finalReviewPath":"docs/final-reviews/WO-099/FINAL-003.md","latestAttestation":{"harness":"human","harnessVersion":"not-applicable","model":"human","effort":"unknown","source":"operator-attested"},"effortDrift":[{"effort":"xhigh"},{"effort":"custom-selector"},{"effort":"high"},{"effort":"custom-selector-2"},{"effort":"unknown"}],"latestCheckpoint":{"unavailable":true},"legalNextActions":["release-close","next","activate"],"legalOffRamps":["correct","override-record"],"boundAcceptances":[],"waivedCriteria":[],"unmetCriteria":[],"withdrawal":null,"corrections":[],"overrideRecords":[]}'
 grep -Fq 'npm run worktree -- publish WO-099 --title "<title>" --body-file <contained-reviewed-body-path>' <<<"$final_pass_output"
 grep -Fq 'Latest attestation: harness human; version not-applicable; model human; effort unknown; source operator-attested' "$fixture_repo/docs/control/current.md"
 if grep -Fq 'raw: unknown' "$fixture_repo/docs/control/current.md"; then printf 'error: canonical unknown was duplicated as a raw label\n' >&2; exit 1; fi
@@ -539,6 +540,7 @@ assert.deepStrictEqual(status, {
   latestCheckpoint: { unavailable: true },
   legalNextActions: ["release-close", "next", "activate"],
   legalOffRamps: ["correct", "override-record"],
+  boundAcceptances: [],
   waivedCriteria: [],
   unmetCriteria: [],
   withdrawal: null,
@@ -793,7 +795,7 @@ await call(["next"]);
 const mixedStatus = JSON.parse(await call(["status", "--json"]));
 assert.deepEqual(mixedStatus.elapsed, { ...expectedElapsed, implementation: "unknown" });
 assert.ok(readFileSync(current, "utf8").includes("- Elapsed implementation: unknown\n"));
-assert.ok(readFileSync(current, "utf8").includes("- Elapsed verification: 4000 ms\n"));
+assert.ok(readFileSync(current, "utf8").includes("- Elapsed verification: 0 h 0 min\n"));
 assert.deepEqual(statusProjection(baseline.slice(0, 7)).elapsed, { implementation: 1000, verification: 2000, repair: 3000 }, "in-flight retry retains the latest completed attempt");
 const legacyRetry = baseline.map((event, index) => index === 6 ? withoutTimes[index] : event);
 assert.equal(statusProjection(legacyRetry).elapsed.verification, "unknown", "unknown latest attempt must not borrow an older duration");
@@ -954,18 +956,19 @@ assert.deepEqual(usage.byWorkOrder, [
   { workOrder: "WO-077", attempts: 2, elapsedMs: 1000, unknown: 0, byActor: expectedGroups.slice(4) },
 ]);
 assert.match(usage.timing, /include waiting/);
-// Parse both text groupings back into records independently of the renderer.
+// Exact numeric aggregates were checked above; text carries rounded duration
+// labels while keeping every actor dimension and count.
 const textGroups = rendered.split("\n").filter((line) => /^\s*- harness=/.test(line)).map((line) => {
   const entries = line.replace(/^\s*- /, "").split("; ").map((part) => {
     const at = part.indexOf("="); const key = part.slice(0, at), value = part.slice(at + 1);
-    return [key, key === "workOrders" ? value.split(",") : JSON.parse(value)];
+    return [key, key === "workOrders" ? value.split(",") : key === "elapsed" ? value : JSON.parse(value)];
   });
   return Object.fromEntries(entries);
 });
-assert.deepEqual(textGroups, [...expectedGroups, ...usage.byWorkOrder.flatMap((row) => row.byActor)]);
-assert.match(rendered, /Total: attempts=10; elapsedMs=11000; unknown=1/);
+assert.deepEqual(textGroups, [...expectedGroups, ...usage.byWorkOrder.flatMap((row) => row.byActor)].map(({ elapsedMs, ...fields }) => ({ ...fields, elapsed: `${elapsedMs < 0 ? "-" : ""}0 h 0 min` })));
+assert.match(rendered, /Total: attempts=10; elapsed=0 h 0 min; unknown=1/);
 for (const row of usage.byWorkOrder)
-  assert.ok(rendered.includes(`${row.workOrder}: attempts=${row.attempts}; elapsedMs=${row.elapsedMs}; unknown=${row.unknown}`));
+  assert.ok(rendered.includes(`${row.workOrder}: attempts=${row.attempts}; elapsed=0 h 0 min; unknown=${row.unknown}`));
 await assert.rejects(() => call(["status", "--json"]), /ambiguous work-order selection/);
 for (const args of [["--wat"], ["--json", "--json"], ["--work-order", "WO-075"]])
   await assert.rejects(() => call(["usage", ...args]), /usage: resume usage/);

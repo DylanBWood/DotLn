@@ -24,6 +24,7 @@ export const FEEDBACK_SOURCE_PATHS = [
   "packages/skeleton/src/feedback-source-comments.ts",
   "packages/skeleton/src/feedback-audit.ts",
   "packages/skeleton/src/gate-deadlines.mjs",
+  "packages/skeleton/src/duration.mjs",
   "packages/skeleton/src/feedback-selfhost.ts",
   "packages/skeleton/src/reactor.ts",
   "packages/skeleton/src/verification-fold.ts",

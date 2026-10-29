@@ -1072,10 +1072,15 @@ test("export update preserves ownership, validates actions and keeps the exporte
       const olderBudgets = join(older, "docs/control/budgets.json");
       const budgets = JSON.parse(readFileSync(olderBudgets, "utf8"));
       delete budgets.retention;
+      for (const dispatch of Object.values(budgets.dispatches)) {
+        delete dispatch.wallClockMs;
+        delete dispatch.completeRuns;
+        delete dispatch.repair;
+      }
       writeFileSync(olderBudgets, JSON.stringify(budgets, null, 2) + "\n");
       ok(
         runUpdate(older),
-        "update an instance whose budgets predate retention keys",
+        "update an instance whose budgets predate retention and dispatch bounds",
       );
       if (!existsSync(join(older, "node_modules/typescript")))
         symlinkSync(

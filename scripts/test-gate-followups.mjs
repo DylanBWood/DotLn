@@ -58,11 +58,14 @@ test("bounded role wording preserves prior savings and records reviewed startup 
   );
   const oracle = JSON.parse(
     fs.readFileSync(
-      join(sourceRoot, "packages/skeleton/fixtures/wo236-role-baseline.json"),
+      join(
+        sourceRoot,
+        "packages/skeleton/fixtures/wo234-integration-role-baseline.json",
+      ),
       "utf8",
     ),
   );
-  assert.equal(oracle.historicalBaseline, "wo233-role-baseline.json");
+  assert.equal(oracle.historicalBaseline, "wo236-role-baseline.json");
   const historicalBytes = fs.readFileSync(
     join(sourceRoot, "packages/skeleton/fixtures", oracle.historicalBaseline),
   );
@@ -99,7 +102,25 @@ test("bounded role wording preserves prior savings and records reviewed startup 
   // Historical overruns keep their dispositions; current accepted growth
   // needs its own measured record, without inventing another deferred item.
   for (const cost of [historical, priorCost]) {
-    assert.match(cost.followup, /^FUP-[a-f0-9]{16}$/u);
+    if (cost.followup !== undefined) {
+      assert.match(cost.followup, /^FUP-[a-f0-9]{16}$/u);
+      continue;
+    }
+    // An accepted addition has no deferred work; its recorded effective
+    // ceiling must be supported by the actual budget acceptance instead.
+    for (const [role, profile] of Object.entries(cost.profiles)) {
+      const nominal = profile.nominalCeiling ?? profile.ceiling;
+      if (nominal === null || profile.bytes <= nominal) continue;
+      assert.ok(
+        budgets.acceptances.some(
+          (entry) =>
+            entry.metric === `coldStartBytes.${role}` &&
+            !entry.scope &&
+            entry.ceiling === profile.ceiling,
+        ),
+        `${role}: prior accepted growth keeps its recorded disposition`,
+      );
+    }
   }
   const files = new Map(
     harnessInstallation().files.map((file) => [file.path, file.contents]),
@@ -153,7 +174,7 @@ test("bounded role wording preserves prior savings and records reviewed startup 
     );
     assert.equal(
       measured.nominalCeiling,
-      prior.ceiling,
+      prior.nominalCeiling ?? prior.ceiling,
       `${role}: reviewed additions preserve the preceding nominal ceiling`,
     );
     assert.equal(

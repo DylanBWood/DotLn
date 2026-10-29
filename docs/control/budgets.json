@@ -19,31 +19,47 @@
       "guardSamplingPercent": 1.0997731092970733
     }
   },
-  "source": "WO-126 criteria 10 and 15; operator budget clarification during resume: next on 2026-09-09; operator direction during resume: next on 2026-09-14 (WO-044): artificial caps yield to needed rules and accuracy comes before efficiency, so the cold-start ceilings the shared no-guessing line touches carry real margin; operator direction during the 2026-09-17 vision-into-use planning dispatch (message 12): a cold-start ceiling that a reviewed rule breaches is raised in the same change to the measured bytes plus one 4 KB step with the rule named, or the breach is recorded as a dated acceptance here, never trimmed around and never left advisory across orders; the reviewer (16,587) and release-close (9,941) ceilings were raised on 2026-09-17 under that direction; the fastGateMs ceiling was unset on 2026-09-19 by the second planning pass of that day: 120 s was WO-126's budget for a fast gate that WO-132 removed, the metric has since read the one full product gate (303 to 1,178 s across seventeen final reviews), no acceptance was ever recorded and nothing enforced it, so the ceiling compared two different things; gate duration stays tracked by product 07's cold-gate candidate",
+  "source": "WO-126 criteria 10 and 15; operator budget clarification during resume: next on 2026-09-09; operator direction during resume: next on 2026-09-14 (WO-044): artificial caps yield to needed rules and accuracy comes before efficiency, so the cold-start ceilings the shared no-guessing line touches carry real margin; operator direction during the 2026-09-17 vision-into-use planning dispatch (message 12): a cold-start ceiling that a reviewed rule breaches is raised in the same change to the measured bytes plus one 4 KB step with the rule named, or the breach is recorded as a dated acceptance here, never trimmed around and never left advisory across orders; the reviewer (16,587) and release-close (9,941) ceilings were raised on 2026-09-17 under that direction; the fastGateMs ceiling was unset on 2026-09-19 by the second planning pass of that day: 120 s was WO-126's budget for a fast gate that WO-132 removed, the metric has since read the one full product gate (303 to 1,178 s across seventeen final reviews), no acceptance was ever recorded and nothing enforced it, so the ceiling compared two different things; gate duration stays tracked by product 07's cold-gate candidate Operator correction 2026-10-28: each consumer resolves local-median from its own completed phase history as max(4 times its median, 8 hours), using 8 hours without history; no DotLn timing samples are exported.",
   "dispatches": {
     "executor": {
       "tokens": null,
-      "costUsd": null
+      "costUsd": null,
+      "wallClockMs": "local-median",
+      "completeRuns": 3,
+      "repair": {
+        "wallClockMs": "local-median",
+        "completeRuns": 3
+      }
     },
     "verifier": {
       "tokens": null,
-      "costUsd": null
+      "costUsd": null,
+      "wallClockMs": "local-median",
+      "completeRuns": 3
     },
     "reviewer": {
       "tokens": null,
-      "costUsd": null
+      "costUsd": null,
+      "wallClockMs": "local-median",
+      "completeRuns": 3
     },
     "release-close": {
       "tokens": null,
-      "costUsd": null
+      "costUsd": null,
+      "wallClockMs": null,
+      "completeRuns": null
     },
     "planner": {
       "tokens": null,
-      "costUsd": null
+      "costUsd": null,
+      "wallClockMs": null,
+      "completeRuns": null
     },
     "refuter": {
       "tokens": null,
-      "costUsd": null
+      "costUsd": null,
+      "wallClockMs": null,
+      "completeRuns": null
     }
   },
   "limits": {
@@ -69,6 +85,14 @@
       "dispatch": "planner",
       "ceiling": 33907,
       "reason": "The reviewer root measures 29,811 bytes in the installed skill root (CLAUDE.md 7,099 plus the reviewer skill 22,712) against the 28,884 ceiling of 2026-09-29, since WO-233 added four hand-written lines to CLAUDE.md on 2026-10-27 (commit e35caed6: follow a requirement's purpose, scope and timing; record failures and corrections while continuing the authorized task) under the operator's direction; the breach was left advisory at WO-233's close, which the standing route of 2026-09-17 forbids across orders, and planning receipt 057 recorded it as an observed failure against WO-236's and WO-235's criterion 7. Under product 07's standing route the 2026-10-28 planning pass preserves the reviewed lines and accepts the measured bytes plus one 4,096-byte step, 33,907. The executor (30,857 against 34,953), verifier (27,385), release-close (18,574) and planner (19,483) roots remain within their ceilings; refuter remains unset. Reassess when another reviewed rule needs more. Record: docs/planning/target-write-grant-and-fork-block-2026-10-28.md, the validation section."
+    },
+    {
+      "date": "2026-10-28",
+      "metric": "coldStartBytes.reviewer",
+      "scope": null,
+      "dispatch": "executor",
+      "ceiling": 34596,
+      "reason": "WO-234 adds the dispatch-bound rule and the operator-directed hours/minutes rule to every installed role. Reviewer cold start rises from 29811 to 30500 bytes, above 28884. Under product 07's standing 2026-09-17 route, preserve the rules and accept measured 30500 plus 4096 bytes. Executor remains inside its existing 34953 acceptance; the other bounded roots remain inside their ceilings. Reassess when a reviewed rule needs more. Decision: docs/evidence/WO-234/decisions.md#wo-234-d005."
     },
     {
       "date": "2026-10-27",

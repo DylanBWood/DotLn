@@ -1,0 +1,1399 @@
+{
+  "verification": "VER-003",
+  "workOrder": "WO-234",
+  "observedAt": "2026-10-29T01:09:50Z",
+  "subject": {
+    "base": "22ce7799cce61db93f5852069dacf2409373adbd",
+    "checkpoint": "refs/dotln/checkpoint/WO-234/14 (8523c200f67f790348d046321a8dae00e3802674)",
+    "repairBase": "refs/dotln/checkpoint/WO-234/10 (50bb0431) after VER-002; VER-001's subject refs/dotln/checkpoint/WO-234/6 (3212edf1)",
+    "codeIdentity": "7ad68947b597d2f0449c7add8183c679591384f9dbb3fd91222752af139ab2d4",
+    "codeIdentityRecomputed": [
+      "2026-10-29T00:39:29Z before probes",
+      "2026-10-29T00:59:08Z and 00:59:10Z around npm run harness -- check, after every probe run"
+    ],
+    "workingTreeAgainstCheckpoint": "lifecycle projections (docs/control/orders/WO-234.jsonl, docs/control/current.md, docs/work-orders/README.md) and this verification's own files; no source change"
+  },
+  "consumedRows": [
+    {
+      "checkId": "structural",
+      "gateSelection": "structural",
+      "evidenceRef": "host-gate:7ad68947b597d2f0449c7add8183c679591384f9dbb3fd91222752af139ab2d4:structural:2026-10-29T00:08:40.234Z",
+      "subject": "52777ac841307250bab58de61f5977ca4204ab2d",
+      "startedAt": "2026-10-28T23:35:16.983Z",
+      "recordedAt": "2026-10-29T00:08:40.234Z",
+      "durationMs": 37258,
+      "exitCode": 0,
+      "executionMode": "fresh",
+      "requiredSuites": 6,
+      "unrunSuites": [],
+      "stale": [],
+      "identityUnchanged": true,
+      "buildOutputUnchanged": true
+    },
+    {
+      "checkId": "npm test",
+      "gateSelection": "review",
+      "evidenceRef": "host-gate:7ad68947b597d2f0449c7add8183c679591384f9dbb3fd91222752af139ab2d4:npm test",
+      "subject": "52777ac841307250bab58de61f5977ca4204ab2d",
+      "startedAt": "2026-10-28T23:35:16.983Z",
+      "recordedAt": "2026-10-29T00:10:57.995Z",
+      "durationMs": 2141012,
+      "exitCode": 0,
+      "executionMode": "fresh",
+      "freshSuites": 111,
+      "reusedSuites": 0,
+      "failedTasks": 0,
+      "unrunSuites": [],
+      "stale": [],
+      "identityUnchanged": true,
+      "buildOutputUnchanged": true
+    }
+  ],
+  "checks": [
+    {
+      "command": "node scripts/harness.mjs bounded -- npm run format:check",
+      "startedAt": "2026-10-29T00:58:44Z",
+      "endedAt": "2026-10-29T00:58:52Z",
+      "exitCode": 0,
+      "note": "All matched files use Prettier code style, after formatting only verification-003-probe.mjs."
+    },
+    {
+      "command": "git diff --check; git diff --cached --check; git diff --no-index --check /dev/null <file> for every untracked file",
+      "startedAt": "between 2026-10-29T00:58:52Z and 00:59:08Z",
+      "exitCode": 0,
+      "note": "No whitespace error in tracked, staged or untracked files (91 untracked paths)."
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- npm run harness -- check",
+      "startedAt": "2026-10-29T00:59:08Z",
+      "endedAt": "2026-10-29T00:59:09Z",
+      "exitCode": 0,
+      "note": "35 generated surfaces; local-terms list present. It rebuilt ignored package outputs by atomic replacement; no tracked file changed, and the code identity was the same before and after."
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- npm run publication:check",
+      "startedAt": "2026-10-29T00:59:17Z",
+      "endedAt": "2026-10-29T00:59:17Z",
+      "exitCode": 0,
+      "note": "255/255 product headings indexed; both editions current."
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- npm run meta",
+      "startedAt": "2026-10-29T01:04:29Z",
+      "endedAt": "2026-10-29T01:04:34Z",
+      "exitCode": 0,
+      "note": "After D028: refreshed the decisions index, the follow-up register (FUP-23aca17371cf7b86) and the work-order index; meta.json unchanged."
+    }
+  ],
+  "probe": [
+    {
+      "verification": "VER-002",
+      "section": "entry",
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-234/verification-002-probe.mjs entry",
+      "startedAt": "2026-10-29T00:43:23Z",
+      "endedAt": "2026-10-29T00:43:38Z",
+      "exitCode": 0,
+      "checks": 11,
+      "failed": [],
+      "rows": [
+        {
+          "id": "E0-provenance",
+          "criterion": "regression",
+          "pass": true
+        },
+        {
+          "id": "E1-truncated-json",
+          "criterion": 6,
+          "pass": true
+        },
+        {
+          "id": "E1-invalid-anchor",
+          "criterion": 6,
+          "pass": true
+        },
+        {
+          "id": "E1-unreadable-mode",
+          "criterion": 6,
+          "pass": true
+        },
+        {
+          "id": "E1-directory",
+          "criterion": 6,
+          "pass": true
+        },
+        {
+          "id": "E2-clean-lane",
+          "criterion": 6,
+          "pass": true
+        },
+        {
+          "id": "U1-clean",
+          "criterion": "regression",
+          "variation": "harness usage <session> for the session dispatched in the clean lane, read while that lane is unchanged",
+          "expected": "the usage readback prints its JSON and exits 0 in both arms, as main's does; the current arm also reports the standing",
+          "observed": {
+            "base": {
+              "exitCode": 0,
+              "usagePrinted": true,
+              "standing": null,
+              "stderr": [
+                "DotLn advisory: process-cost counters unavailable; recorded unknown."
+              ]
+            },
+            "current": {
+              "exitCode": 0,
+              "usagePrinted": true,
+              "standing": "dispatch standing: 0 h 0 min of 8 h 0 min; complete runs 0 of 3; within",
+              "stderr": [
+                "DotLn advisory: process-cost counters unavailable; recorded unknown."
+              ]
+            }
+          },
+          "pass": true
+        },
+        {
+          "id": "U1-truncated-json",
+          "criterion": "regression",
+          "variation": "harness usage <session> for the session dispatched in the truncated-json lane, read while that lane is unchanged",
+          "expected": "the usage readback prints its JSON and exits 0 in both arms, as main's does; the current arm also reports the standing",
+          "observed": {
+            "base": {
+              "exitCode": 0,
+              "usagePrinted": true,
+              "standing": null,
+              "stderr": [
+                "DotLn advisory: process-cost counters unavailable; recorded unknown."
+              ]
+            },
+            "current": {
+              "exitCode": 0,
+              "usagePrinted": true,
+              "standing": "dispatch standing: unavailable (Invalid dispatch journal <fixture>/docs/control/local/harness/cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc.json: Expected property name or '}' in JSON at position 2 (line 1 column 3))",
+              "stderr": [
+                "DotLn advisory: process-cost counters unavailable; recorded unknown."
+              ]
+            }
+          },
+          "pass": true
+        },
+        {
+          "id": "U1-invalid-anchor",
+          "criterion": "regression",
+          "variation": "harness usage <session> for the session dispatched in the invalid-anchor lane, read while that lane is unchanged",
+          "expected": "the usage readback prints its JSON and exits 0 in both arms, as main's does; the current arm also reports the standing",
+          "observed": {
+            "base": {
+              "exitCode": 0,
+              "usagePrinted": true,
+              "standing": null,
+              "stderr": [
+                "DotLn advisory: process-cost counters unavailable; recorded unknown."
+              ]
+            },
+            "current": {
+              "exitCode": 0,
+              "usagePrinted": true,
+              "standing": "dispatch standing: unavailable (Invalid dispatch journal <fixture>/docs/control/local/harness/dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd.json: Invalid dispatch-bound journal anchor)",
+              "stderr": [
+                "DotLn advisory: process-cost counters unavailable; recorded unknown."
+              ]
+            }
+          },
+          "pass": true
+        },
+        {
+          "id": "U1-unreadable-mode",
+          "criterion": "regression",
+          "variation": "harness usage <session> for the session dispatched in the unreadable-mode lane, read while that lane is unchanged",
+          "expected": "the usage readback prints its JSON and exits 0 in both arms, as main's does; the current arm also reports the standing",
+          "observed": {
+            "base": {
+              "exitCode": 0,
+              "usagePrinted": true,
+              "standing": null,
+              "stderr": [
+                "DotLn advisory: process-cost counters unavailable; recorded unknown."
+              ]
+            },
+            "current": {
+              "exitCode": 0,
+              "usagePrinted": true,
+              "standing": "dispatch standing: unavailable (Invalid dispatch journal <fixture>/docs/control/local/harness/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee.json: EACCES: permission denied, open '<fixture>/docs/control/local/harness/eeeeeeee)",
+              "stderr": [
+                "DotLn advisory: process-cost counters unavailable; recorded unknown."
+              ]
+            }
+          },
+          "pass": true
+        },
+        {
+          "id": "U1-directory",
+          "criterion": "regression",
+          "variation": "harness usage <session> for the session dispatched in the directory lane, read while that lane is unchanged",
+          "expected": "the usage readback prints its JSON and exits 0 in both arms, as main's does; the current arm also reports the standing",
+          "observed": {
+            "base": {
+              "exitCode": 0,
+              "usagePrinted": true,
+              "standing": null,
+              "stderr": [
+                "DotLn advisory: process-cost counters unavailable; recorded unknown."
+              ]
+            },
+            "current": {
+              "exitCode": 0,
+              "usagePrinted": true,
+              "standing": "dispatch standing: unavailable (Invalid dispatch journal <fixture>/docs/control/local/harness/ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff.json: EISDIR: illegal operation on a directory, read)",
+              "stderr": [
+                "DotLn advisory: process-cost counters unavailable; recorded unknown."
+              ]
+            }
+          },
+          "pass": true
+        }
+      ]
+    },
+    {
+      "verification": "VER-002",
+      "section": "recovery",
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-234/verification-002-probe.mjs recovery",
+      "startedAt": "2026-10-29T00:43:50Z",
+      "endedAt": "2026-10-29T00:43:54Z",
+      "exitCode": 0,
+      "checks": 7,
+      "failed": [],
+      "rows": [
+        {
+          "id": "R1-marked-while-damaged",
+          "criterion": 2,
+          "pass": true
+        },
+        {
+          "id": "R2-restored-history",
+          "criterion": 2,
+          "pass": true
+        },
+        {
+          "id": "R3-recovered-bound-binds",
+          "criterion": "2, 6",
+          "pass": true
+        },
+        {
+          "id": "R4-after-phase-completion",
+          "criterion": "follow-up",
+          "variation": "the phase completes after B's start while A is already restored; B (marked) and C (unmarked) read their standing",
+          "expected": "both standings are computed from readable history, or the marked one names a file that is still damaged",
+          "observed": {
+            "marked": {
+              "state": "exceeded"
+            },
+            "unmarked": {
+              "state": "within"
+            },
+            "namedFileReadable": true
+          },
+          "pass": true
+        },
+        {
+          "id": "R5-history-deleted",
+          "criterion": "observation",
+          "pass": true
+        },
+        {
+          "id": "R6-codex-reentry",
+          "criterion": "2, 6",
+          "pass": true
+        },
+        {
+          "id": "R7-cli-begin",
+          "criterion": 6,
+          "pass": true
+        }
+      ]
+    },
+    {
+      "verification": "VER-002",
+      "section": "gate",
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-234/verification-002-probe.mjs gate",
+      "startedAt": "2026-10-29T00:43:54Z",
+      "endedAt": "2026-10-29T00:43:56Z",
+      "exitCode": 0,
+      "checks": 4,
+      "failed": [],
+      "rows": [
+        {
+          "id": "G1-runner-damaged-lane",
+          "criterion": 3,
+          "pass": true
+        },
+        {
+          "id": "G3-refused-selection-consumption",
+          "criterion": "2, 10",
+          "variation": "complete reviews refused at host admission (G1's unavailable standing; a critical memory sample), then the standing's run count",
+          "expected": "product 07: failed and interrupted admitted complete selections consume a run; a selection refused at host admission, whose product suites never start, consumes none (G1 counts 1, the memory fixture 0)",
+          "observed": {
+            "unavailableLane": {
+              "refusedRow": {
+                "gateSelection": "review",
+                "executed": true,
+                "exitCode": 1,
+                "boundStop": null
+              },
+              "admittedReviews": 1,
+              "completeRuns": 1
+            },
+            "memoryPressure": {
+              "exitCode": 1,
+              "host": "",
+              "row": {
+                "gateSelection": "review",
+                "executed": true,
+                "exitCode": 1,
+                "boundStop": null
+              },
+              "alphaRan": false,
+              "completeRuns": 0,
+              "standing": "dispatch standing: 0 h 0 min of 8 h 0 min; complete runs 0 of 3; within"
+            }
+          },
+          "pass": true
+        },
+        {
+          "id": "G2-runner-both-bounds",
+          "criterion": 7,
+          "pass": true
+        },
+        {
+          "id": "W1-wrapper-damaged-lane",
+          "criterion": 4,
+          "pass": true
+        }
+      ]
+    },
+    {
+      "verification": "VER-002",
+      "section": "functions",
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-234/verification-002-probe.mjs functions",
+      "startedAt": "2026-10-29T00:43:56Z",
+      "endedAt": "2026-10-29T00:43:57Z",
+      "exitCode": 0,
+      "checks": 9,
+      "failed": [],
+      "rows": [
+        {
+          "id": "F1-truncated-json",
+          "criterion": 2,
+          "pass": true
+        },
+        {
+          "id": "F1-invalid-anchor",
+          "criterion": 2,
+          "pass": true
+        },
+        {
+          "id": "F1-unreadable-mode",
+          "criterion": 2,
+          "pass": true
+        },
+        {
+          "id": "F1-directory",
+          "criterion": 2,
+          "pass": true
+        },
+        {
+          "id": "F2-large-journal",
+          "criterion": 2,
+          "pass": true
+        },
+        {
+          "id": "F3-marker-empty",
+          "criterion": 2,
+          "pass": true
+        },
+        {
+          "id": "F3-marker-number",
+          "criterion": 2,
+          "pass": true
+        },
+        {
+          "id": "F4-own-invalid-json",
+          "criterion": 2,
+          "pass": true
+        },
+        {
+          "id": "F4-own-invalid-anchor",
+          "criterion": 2,
+          "pass": true
+        }
+      ]
+    },
+    {
+      "verification": "VER-001",
+      "section": "functions",
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-234/verification-001-probe.mjs functions",
+      "startedAt": "2026-10-29T00:44:23Z",
+      "endedAt": "2026-10-29T00:44:25Z",
+      "exitCode": 0,
+      "checks": 32,
+      "failed": [],
+      "rows": [
+        {
+          "id": "C1-preorder-instance",
+          "criterion": 1,
+          "pass": true
+        },
+        {
+          "id": "C1-preorder-kit",
+          "criterion": 1,
+          "pass": true
+        },
+        {
+          "id": "C1-template-fresh",
+          "criterion": 1,
+          "pass": true
+        },
+        {
+          "id": "C1-invalid-negative",
+          "criterion": 1,
+          "pass": true
+        },
+        {
+          "id": "C1-invalid-string",
+          "criterion": 1,
+          "pass": true
+        },
+        {
+          "id": "C1-invalid-runs-policy",
+          "criterion": 1,
+          "pass": true
+        },
+        {
+          "id": "C1-invalid-unsupported-policy",
+          "criterion": 1,
+          "pass": true
+        },
+        {
+          "id": "C1-invalid-repair-array",
+          "criterion": 1,
+          "pass": true
+        },
+        {
+          "id": "C1-invalid-repair-negative",
+          "criterion": 1,
+          "pass": true
+        },
+        {
+          "id": "C1-invalid-role-null",
+          "criterion": 1,
+          "pass": true
+        },
+        {
+          "id": "C1-partial-key",
+          "criterion": 1,
+          "pass": true
+        },
+        {
+          "id": "C1-real-record",
+          "criterion": 1,
+          "pass": true
+        },
+        {
+          "id": "C2-within",
+          "criterion": 2,
+          "pass": true
+        },
+        {
+          "id": "C2-wall-equality",
+          "criterion": 2,
+          "pass": true
+        },
+        {
+          "id": "C2-runs",
+          "criterion": 2,
+          "pass": true
+        },
+        {
+          "id": "C2-both",
+          "criterion": 2,
+          "pass": true
+        },
+        {
+          "id": "C2-row-kinds",
+          "criterion": 2,
+          "pass": true
+        },
+        {
+          "id": "C2-interrupted-run",
+          "criterion": 2,
+          "pass": true
+        },
+        {
+          "id": "C2-null-and-mixed",
+          "criterion": 2,
+          "pass": true
+        },
+        {
+          "id": "C2-repair-limits",
+          "criterion": 2,
+          "pass": true
+        },
+        {
+          "id": "C2-missing-journal",
+          "criterion": 2,
+          "pass": true
+        },
+        {
+          "id": "C2-malformed-journal",
+          "criterion": 2,
+          "pass": true
+        },
+        {
+          "id": "C2-acceptance-scope",
+          "criterion": 2,
+          "pass": true
+        },
+        {
+          "id": "C2-acceptance-cross-order",
+          "criterion": 2,
+          "pass": true
+        },
+        {
+          "id": "C2-unlimited-one-metric",
+          "criterion": 2,
+          "pass": true
+        },
+        {
+          "id": "C4-refusal-before-launch",
+          "criterion": 4,
+          "pass": true
+        },
+        {
+          "id": "C4-diagnostic-admitted",
+          "criterion": 4,
+          "pass": true
+        },
+        {
+          "id": "C4-within-runs",
+          "criterion": 4,
+          "pass": true
+        },
+        {
+          "id": "C5-redispatch-run-metric",
+          "criterion": 5,
+          "pass": true
+        },
+        {
+          "id": "C5-redispatch-acceptance",
+          "criterion": 5,
+          "pass": true
+        },
+        {
+          "id": "C5-unrelated-malformed-journal",
+          "criterion": 5,
+          "pass": true
+        },
+        {
+          "id": "C7-repair-delay",
+          "criterion": 7,
+          "pass": true
+        }
+      ]
+    },
+    {
+      "verification": "VER-001",
+      "section": "hooks",
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-234/verification-001-probe.mjs hooks",
+      "startedAt": "2026-10-29T00:44:25Z",
+      "endedAt": "2026-10-29T00:44:28Z",
+      "exitCode": 0,
+      "checks": 6,
+      "failed": [],
+      "rows": [
+        {
+          "id": "C6-starts-run-metric",
+          "criterion": 6,
+          "pass": true
+        },
+        {
+          "id": "C6-worker-launch",
+          "criterion": 6,
+          "pass": true
+        },
+        {
+          "id": "C6-diagnosis-admitted",
+          "criterion": 6,
+          "pass": true
+        },
+        {
+          "id": "C6-stop-standing",
+          "criterion": 6,
+          "pass": true
+        },
+        {
+          "id": "C6-within-admitted",
+          "criterion": 6,
+          "pass": true
+        },
+        {
+          "id": "C6-malformed-journal",
+          "criterion": 6,
+          "pass": true
+        }
+      ]
+    },
+    {
+      "verification": "VER-001",
+      "section": "gate",
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-234/verification-001-probe.mjs gate",
+      "startedAt": "2026-10-29T00:44:28Z",
+      "endedAt": "2026-10-29T00:44:30Z",
+      "exitCode": 0,
+      "checks": 2,
+      "failed": [],
+      "rows": [
+        {
+          "id": "C3-verifier-runs-keep-going",
+          "criterion": 3,
+          "pass": true
+        },
+        {
+          "id": "C3-reviewer-wall-plain",
+          "criterion": 3,
+          "pass": true
+        }
+      ]
+    },
+    {
+      "verification": "VER-001",
+      "section": "control",
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-234/verification-001-probe.mjs control",
+      "startedAt": "2026-10-29T00:44:30Z",
+      "endedAt": "2026-10-29T00:44:34Z",
+      "exitCode": 0,
+      "checks": 4,
+      "failed": [],
+      "rows": [
+        {
+          "id": "C3-control-wallClockMs-complete",
+          "criterion": 3,
+          "pass": true
+        },
+        {
+          "id": "C3-control-wallClockMs-focused",
+          "criterion": 3,
+          "pass": true
+        },
+        {
+          "id": "C3-control-completeRuns-complete",
+          "criterion": 3,
+          "pass": true
+        },
+        {
+          "id": "C3-control-completeRuns-focused",
+          "criterion": 3,
+          "pass": true
+        }
+      ]
+    },
+    {
+      "verification": "VER-001",
+      "section": "entry",
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-234/verification-001-probe.mjs entry",
+      "startedAt": "2026-10-29T00:44:34Z",
+      "endedAt": "2026-10-29T00:44:37Z",
+      "exitCode": 0,
+      "checks": 1,
+      "failed": [],
+      "rows": [
+        {
+          "id": "R1-entry-damaged-lane",
+          "criterion": "regression",
+          "pass": true
+        }
+      ]
+    },
+    {
+      "section": "count",
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-234/verification-003-probe.mjs count",
+      "startedAt": "2026-10-29T00:51:50Z",
+      "endedAt": "2026-10-29T00:55:35Z",
+      "exitCode": 0,
+      "checks": 5,
+      "failed": [],
+      "rows": [
+        {
+          "id": "C1-admitted-failure",
+          "criterion": "2, 3",
+          "variation": "the real runner admits a review at host, then its product suite fails",
+          "expected": "product 07: a failed admitted complete selection consumes a run (1 of 3); the row records host executed with exit 0",
+          "observed": {
+            "exitCode": 1,
+            "threw": null,
+            "alphaRan": true,
+            "row": {
+              "gateSelection": "review",
+              "exitCode": 1,
+              "stopped": false,
+              "boundStop": null,
+              "host": {
+                "executed": true,
+                "exitCode": 0
+              },
+              "unrunHost": false
+            },
+            "standing": "dispatch standing: 0 h 5 min of 8 h 0 min; complete runs 1 of 3; within"
+          },
+          "pass": true
+        },
+        {
+          "id": "C2-admitted-interruption",
+          "criterion": "2, 3",
+          "variation": "the real runner admits a review at host; a stop request arrives while its product suite runs",
+          "expected": "product 07: an interrupted admitted complete selection consumes a run (1 of 3); the stopped row keeps the passed host in its timeline",
+          "observed": {
+            "exitCode": null,
+            "threw": "Gate stopped by request after 0 h 0 min; stopped row recorded: host-gate:d8d997eae2ac14ae838eceffc16fb5e5f07a555b6f8a6825594706d32197e308:stopped:2026-10-29T00:",
+            "alphaRan": false,
+            "row": {
+              "gateSelection": "review",
+              "exitCode": 1,
+              "stopped": true,
+              "boundStop": null,
+              "host": {
+                "executed": true,
+                "exitCode": 0
+              },
+              "unrunHost": false
+            },
+            "standing": "dispatch standing: 0 h 1 min of 8 h 0 min; complete runs 1 of 3; within"
+          },
+          "pass": true
+        },
+        {
+          "id": "C3-structural-failure-before-host",
+          "criterion": "2",
+          "variation": "the real runner fails a structural task that precedes host (the shape of this order's own 05:08:52Z row)",
+          "expected": "product 07: an unrun host consumes none (0 of 3); alpha never runs",
+          "observed": {
+            "exitCode": 1,
+            "threw": null,
+            "alphaRan": false,
+            "row": {
+              "gateSelection": "review",
+              "exitCode": 1,
+              "stopped": false,
+              "boundStop": null,
+              "host": {
+                "executed": false,
+                "exitCode": 1
+              },
+              "unrunHost": true
+            },
+            "standing": "dispatch standing: 0 h 1 min of 8 h 0 min; complete runs 0 of 3; within"
+          },
+          "pass": true
+        },
+        {
+          "id": "C4-keep-going-memory-refusal",
+          "criterion": "2, 3",
+          "variation": "the real runner under --keep-going refuses a review at host on a synthetic critical memory sample",
+          "expected": "--keep-going does not run product suites past a host refusal, and the refusal consumes none (0 of 3)",
+          "observed": {
+            "exitCode": 1,
+            "threw": null,
+            "alphaRan": false,
+            "row": {
+              "gateSelection": "review",
+              "exitCode": 1,
+              "stopped": false,
+              "boundStop": null,
+              "host": {
+                "executed": true,
+                "exitCode": 1
+              },
+              "unrunHost": false
+            },
+            "standing": "dispatch standing: 0 h 1 min of 8 h 0 min; complete runs 0 of 3; within"
+          },
+          "pass": true
+        },
+        {
+          "id": "C5-refusals-then-one-run-bound",
+          "criterion": "2, 3",
+          "variation": "a one-run bound: three memory refusals at host, one admitted review, then another review",
+          "expected": "the refusals leave 0 of 1 and within; the admitted review spends the bound (1 of 1, exceeded); the next review is refused at host with a completeRuns bound stop and alpha does not run",
+          "observed": {
+            "refusals": [
+              {
+                "exitCode": 1,
+                "alphaRan": false,
+                "hostExit": 1
+              },
+              {
+                "exitCode": 1,
+                "alphaRan": false,
+                "hostExit": 1
+              },
+              {
+                "exitCode": 1,
+                "alphaRan": false,
+                "hostExit": 1
+              }
+            ],
+            "afterRefusals": "dispatch standing: 0 h 1 min of 8 h 0 min; complete runs 0 of 1; within",
+            "admitted": {
+              "exitCode": 0,
+              "ran": true
+            },
+            "afterAdmitted": "dispatch standing: 0 h 1 min of 8 h 0 min; complete runs 1 of 1; exceeded",
+            "stopped": {
+              "exitCode": 1,
+              "threw": null,
+              "alphaRan": false,
+              "row": {
+                "gateSelection": "review",
+                "exitCode": 1,
+                "stopped": false,
+                "boundStop": "completeRuns=1/1",
+                "host": {
+                  "executed": true,
+                  "exitCode": 1
+                },
+                "unrunHost": false
+              }
+            }
+          },
+          "pass": true
+        }
+      ]
+    },
+    {
+      "section": "usage",
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-234/verification-003-probe.mjs usage",
+      "startedAt": "2026-10-29T00:57:06Z",
+      "endedAt": "2026-10-29T00:57:17Z",
+      "exitCode": 0,
+      "checks": 5,
+      "failed": [],
+      "rows": [
+        {
+          "id": "U0-provenance",
+          "criterion": "regression",
+          "variation": "base arm provenance",
+          "expected": "HEAD equals the main checkout's clean HEAD, whose runtime has no dispatch binder",
+          "observed": {
+            "head": "22ce7799cce61db93f5852069dacf2409373adbd",
+            "mainHead": "22ce7799cce61db93f5852069dacf2409373adbd",
+            "mainClean": true,
+            "baseRuntimeHasBound": false
+          },
+          "pass": true
+        },
+        {
+          "id": "U2-own-journal-damaged",
+          "criterion": "6, regression",
+          "variation": "the dispatched session's own journal is truncated after entry",
+          "expected": "the current arm keeps the base arm's usage exit status and output; where usage prints, its standing is unavailable with the read error and carries no elapsed time, run count or start; the Stop hook keeps the base arm's status, and a Stop standing line equals the usage standing",
+          "observed": {
+            "base": {
+              "clean": {
+                "exitCode": 0,
+                "usagePrinted": true,
+                "state": null,
+                "numbers": null,
+                "standing": null,
+                "stderr": [
+                  "DotLn advisory: process-cost counters unavailable; recorded unknown."
+                ]
+              },
+              "damaged": {
+                "exitCode": 1,
+                "usagePrinted": false,
+                "state": null,
+                "numbers": null,
+                "standing": null,
+                "stderr": [
+                  "session state unreadable"
+                ]
+              },
+              "stop": {
+                "status": 0,
+                "standing": null,
+                "lines": 1,
+                "other": [
+                  "DotLn advisory: session state unreadable; host permissions decide."
+                ],
+                "stderr": ""
+              }
+            },
+            "current": {
+              "clean": {
+                "exitCode": 0,
+                "usagePrinted": true,
+                "state": "within",
+                "numbers": [
+                  "elapsedMs",
+                  "completeRuns",
+                  "startedAt"
+                ],
+                "standing": "dispatch standing: 0 h 0 min of 3 h 0 min; complete runs 0 of 3; within",
+                "stderr": [
+                  "DotLn advisory: process-cost counters unavailable; recorded unknown."
+                ]
+              },
+              "damaged": {
+                "exitCode": 1,
+                "usagePrinted": false,
+                "state": null,
+                "numbers": null,
+                "standing": null,
+                "stderr": [
+                  "session state unreadable"
+                ]
+              },
+              "stop": {
+                "status": 0,
+                "standing": null,
+                "lines": 1,
+                "other": [
+                  "DotLn advisory: session state unreadable; host permissions decide."
+                ],
+                "stderr": ""
+              }
+            }
+          },
+          "pass": true
+        },
+        {
+          "id": "U3-invalid-budgets",
+          "criterion": "6, regression",
+          "variation": "the budgets file carries an invalid dispatch bound (verifier wallClockMs -1)",
+          "expected": "the current arm keeps the base arm's usage exit status and output; where usage prints, its standing is unavailable with the read error and carries no elapsed time, run count or start; the Stop hook keeps the base arm's status, and a Stop standing line equals the usage standing",
+          "observed": {
+            "base": {
+              "clean": {
+                "exitCode": 0,
+                "usagePrinted": true,
+                "state": null,
+                "numbers": null,
+                "standing": null,
+                "stderr": [
+                  "DotLn advisory: process-cost counters unavailable; recorded unknown."
+                ]
+              },
+              "damaged": {
+                "exitCode": 0,
+                "usagePrinted": true,
+                "state": null,
+                "numbers": null,
+                "standing": null,
+                "stderr": [
+                  "DotLn advisory: process-cost counters unavailable; recorded unknown."
+                ]
+              },
+              "stop": {
+                "status": 0,
+                "standing": null,
+                "lines": 8,
+                "other": [
+                  "Subagents: 0/20; key docs/control/budgets.json subagentCap; uncounted remainder unknown (agents without attributable hooks; unresolved direct/child overlap 0/0)",
+                  "Observed facts at 2026-10-29T00:57:09.079Z (session journal and gate rows):",
+                  "Background tasks: unknown (no-session-task-observation).",
+                  "Gate durations: unknown (no-session-gate-row).",
+                  "Usage: inputTokens unknown (counter-unavailable); cachedInputTokens unknown (counter-unavailable); cacheWriteInputTokens unknown (counter-unavailable); outputTo",
+                  "Final-message scan: unknown (session-transcript-unavailable).",
+                  "DotLn advisory: pending no-partial-completion, verify-app-before-done; these observations do not block lifecycle completion.",
+                  "Session prune: 0 owned roots removed; 0 retained; 0 blockers."
+                ],
+                "stderr": "DotLn advisory: process-cost counters unavailable; recorded unknown."
+              }
+            },
+            "current": {
+              "clean": {
+                "exitCode": 0,
+                "usagePrinted": true,
+                "state": "within",
+                "numbers": [
+                  "elapsedMs",
+                  "completeRuns",
+                  "startedAt"
+                ],
+                "standing": "dispatch standing: 0 h 0 min of 3 h 0 min; complete runs 0 of 3; within",
+                "stderr": [
+                  "DotLn advisory: process-cost counters unavailable; recorded unknown."
+                ]
+              },
+              "damaged": {
+                "exitCode": 0,
+                "usagePrinted": true,
+                "state": "unavailable",
+                "numbers": [],
+                "standing": "dispatch standing: unavailable (Invalid budget: verifier.wallClockMs)",
+                "stderr": [
+                  "DotLn advisory: process-cost counters unavailable; recorded unknown."
+                ]
+              },
+              "stop": {
+                "status": 0,
+                "standing": "dispatch standing: unavailable (Invalid budget: verifier.wallClockMs)",
+                "lines": 9,
+                "other": [
+                  "Subagents: 0/20; key docs/control/budgets.json subagentCap; uncounted remainder unknown (agents without attributable hooks; unresolved direct/child overlap 0/0)",
+                  "Observed facts at 2026-10-29T00:57:12.130Z (session journal and gate rows):",
+                  "Background tasks: unknown (no-session-task-observation).",
+                  "Gate durations: unknown (no-session-gate-row).",
+                  "Usage: inputTokens unknown (counter-unavailable); cachedInputTokens unknown (counter-unavailable); cacheWriteInputTokens unknown (counter-unavailable); outputTo",
+                  "Final-message scan: unknown (session-transcript-unavailable).",
+                  "DotLn advisory: pending no-partial-completion, verify-app-before-done; these observations do not block lifecycle completion.",
+                  "Session prune: 0 owned roots removed; 0 retained; 0 blockers."
+                ],
+                "stderr": "DotLn advisory: process-cost counters unavailable; recorded unknown."
+              }
+            }
+          },
+          "pass": true
+        },
+        {
+          "id": "U4-unreadable-gate-rows",
+          "criterion": "6, regression",
+          "variation": "the gate-row store holds truncated JSON",
+          "expected": "the current arm keeps the base arm's usage exit status and output; where usage prints, its standing is unavailable with the read error and carries no elapsed time, run count or start; the Stop hook keeps the base arm's status, and a Stop standing line equals the usage standing",
+          "observed": {
+            "base": {
+              "clean": {
+                "exitCode": 0,
+                "usagePrinted": true,
+                "state": null,
+                "numbers": null,
+                "standing": null,
+                "stderr": [
+                  "DotLn advisory: process-cost counters unavailable; recorded unknown."
+                ]
+              },
+              "damaged": {
+                "exitCode": 0,
+                "usagePrinted": true,
+                "state": null,
+                "numbers": null,
+                "standing": null,
+                "stderr": [
+                  "DotLn advisory: process-cost counters unavailable; recorded unknown."
+                ]
+              },
+              "stop": {
+                "status": 0,
+                "standing": null,
+                "lines": 1,
+                "other": [
+                  "DotLn advisory: runtime-unavailable: host facts or pinned runtime unavailable (SyntaxError: Expected property name or '}' in JSON at position 2 (line 1 column 3"
+                ],
+                "stderr": "DotLn advisory: process-cost counters unavailable; recorded unknown."
+              }
+            },
+            "current": {
+              "clean": {
+                "exitCode": 0,
+                "usagePrinted": true,
+                "state": "within",
+                "numbers": [
+                  "elapsedMs",
+                  "completeRuns",
+                  "startedAt"
+                ],
+                "standing": "dispatch standing: 0 h 0 min of 3 h 0 min; complete runs 0 of 3; within",
+                "stderr": [
+                  "DotLn advisory: process-cost counters unavailable; recorded unknown."
+                ]
+              },
+              "damaged": {
+                "exitCode": 0,
+                "usagePrinted": true,
+                "state": "unavailable",
+                "numbers": [],
+                "standing": "dispatch standing: unavailable (Expected property name or '}' in JSON at position 2 (line 1 column 3))",
+                "stderr": [
+                  "DotLn advisory: process-cost counters unavailable; recorded unknown."
+                ]
+              },
+              "stop": {
+                "status": 0,
+                "standing": null,
+                "lines": 1,
+                "other": [
+                  "DotLn advisory: runtime-unavailable: host facts or pinned runtime unavailable (SyntaxError: Expected property name or '}' in JSON at position 2 (line 1 column 3"
+                ],
+                "stderr": "DotLn advisory: process-cost counters unavailable; recorded unknown."
+              }
+            }
+          },
+          "pass": true
+        },
+        {
+          "id": "R8-marked-restored-completed-control-store",
+          "criterion": "2, 6",
+          "variation": "a marked dispatch B (anchor A damaged at entry) after A is restored, then after VerificationCompleted is filed in the control store, then a re-request and a new dispatch D",
+          "expected": "while damaged: unavailable naming A; once restored and after completion: B reads A's start and runs (2 h 0 min, 2 of 3) in usage and the Stop line alike; D reads its own start (0 runs); at a 1 h 0 min bound the hook denies B's complete review, admits B's focused run, and admits D's review",
+          "observed": {
+            "bMarked": true,
+            "bBoundary": "WO-999:VerificationRequested:2",
+            "whileDamaged": {
+              "usage": {
+                "exitCode": 0,
+                "usagePrinted": true,
+                "state": "unavailable",
+                "numbers": [],
+                "standing": "dispatch standing: unavailable (Invalid dispatch journal <fixture>/docs/control/local/harness/56a6d64cc6a17475855db3f406c4a52a22e69384775ec164035d99ac92b1067d.json: Expected property name or '}' in JSON at position 2 (line 1 column 3))",
+                "stderr": [
+                  "DotLn advisory: process-cost counters unavailable; recorded unknown."
+                ]
+              },
+              "stop": "dispatch standing: unavailable (Invalid dispatch journal <fixture>/docs/control/local/harness/56a6d64cc6a17475855db3f406c4a52a22e69384775ec164035d99ac92b1067d.json: Expected property name or '}' in JSON at position 2 (line 1 column 3))"
+            },
+            "restored": {
+              "usage": {
+                "exitCode": 0,
+                "usagePrinted": true,
+                "state": "within",
+                "numbers": [
+                  "elapsedMs",
+                  "completeRuns",
+                  "startedAt"
+                ],
+                "standing": "dispatch standing: 2 h 0 min of 3 h 0 min; complete runs 2 of 3; within",
+                "stderr": [
+                  "DotLn advisory: process-cost counters unavailable; recorded unknown."
+                ]
+              },
+              "stop": "dispatch standing: 2 h 0 min of 3 h 0 min; complete runs 2 of 3; within"
+            },
+            "completed": {
+              "usage": {
+                "exitCode": 0,
+                "usagePrinted": true,
+                "state": "within",
+                "numbers": [
+                  "elapsedMs",
+                  "completeRuns",
+                  "startedAt"
+                ],
+                "standing": "dispatch standing: 2 h 0 min of 3 h 0 min; complete runs 2 of 3; within",
+                "stderr": [
+                  "DotLn advisory: process-cost counters unavailable; recorded unknown."
+                ]
+              },
+              "stop": "dispatch standing: 2 h 0 min of 3 h 0 min; complete runs 2 of 3; within"
+            },
+            "next": {
+              "usage": {
+                "exitCode": 0,
+                "usagePrinted": true,
+                "state": "within",
+                "numbers": [
+                  "elapsedMs",
+                  "completeRuns",
+                  "startedAt"
+                ],
+                "standing": "dispatch standing: 0 h 0 min of 3 h 0 min; complete runs 0 of 3; within",
+                "stderr": [
+                  "DotLn advisory: process-cost counters unavailable; recorded unknown."
+                ]
+              },
+              "stop": "dispatch standing: 0 h 0 min of 3 h 0 min; complete runs 0 of 3; within"
+            },
+            "decisions": {
+              "marked": "denied: DOTLN_DISPATCH_BOUND: wall clock=2 h 0 min, bound=1 h 0 min. dispatch standing: 2 h 0 min of 1 h 0 min; complete runs 2 ",
+              "markedFocused": "admitted",
+              "nextAttempt": "admitted"
+            }
+          },
+          "pass": true
+        }
+      ],
+      "earlierRun": {
+        "startedAt": "2026-10-29T00:55:45Z",
+        "endedAt": "2026-10-29T00:55:56Z",
+        "exitCode": 1,
+        "failed": [
+          "U2-own-journal-damaged",
+          "U4-unreadable-gate-rows"
+        ],
+        "cause": "the probe's expectation, not the subject: U2 required usage to print, and U4 required a Stop standing line; neither recorded the base arm's Stop result. In both, the base arm already behaved as the current arm does (U2: exit 1 'session state unreadable' in both; U4: the same runtime-unavailable Stop advisory in both). The check now compares the current arm with the base arm and records both whole Stop results."
+      }
+    },
+    {
+      "section": "lane",
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-234/verification-003-probe.mjs lane",
+      "startedAt": "2026-10-29T00:57:27Z",
+      "endedAt": "2026-10-29T00:57:29Z",
+      "exitCode": 0,
+      "checks": 2,
+      "failed": [],
+      "rows": [
+        {
+          "id": "L1-real-lane-differential",
+          "criterion": "2, regression",
+          "variation": "checkpoint 10's and the current dispatchStanding over every bound journal in this checkout at one instant",
+          "expected": "only journals whose window holds a complete selection whose host did not run or pass change, each by that many runs and nothing else; no read throws",
+          "observed": {
+            "journals": 8,
+            "changed": [
+              {
+                "old": {
+                  "role": "executor",
+                  "phase": "active",
+                  "startedAt": "2026-10-28T04:21:03.619Z",
+                  "completeRuns": 7,
+                  "bound": 3,
+                  "state": "exceeded",
+                  "exceeded": [
+                    "wallClockMs",
+                    "completeRuns"
+                  ]
+                },
+                "current": {
+                  "role": "executor",
+                  "phase": "active",
+                  "startedAt": "2026-10-28T04:21:03.619Z",
+                  "completeRuns": 6,
+                  "bound": 3,
+                  "state": "exceeded",
+                  "exceeded": [
+                    "wallClockMs",
+                    "completeRuns"
+                  ]
+                }
+              },
+              {
+                "old": {
+                  "role": "executor",
+                  "phase": "active",
+                  "startedAt": "2026-10-28T04:21:03.619Z",
+                  "completeRuns": 7,
+                  "bound": 3,
+                  "state": "exceeded",
+                  "exceeded": [
+                    "wallClockMs",
+                    "completeRuns"
+                  ]
+                },
+                "current": {
+                  "role": "executor",
+                  "phase": "active",
+                  "startedAt": "2026-10-28T04:21:03.619Z",
+                  "completeRuns": 6,
+                  "bound": 3,
+                  "state": "exceeded",
+                  "exceeded": [
+                    "wallClockMs",
+                    "completeRuns"
+                  ]
+                }
+              },
+              {
+                "old": {
+                  "role": "executor",
+                  "phase": "active",
+                  "startedAt": "2026-10-28T04:21:03.619Z",
+                  "completeRuns": 7,
+                  "bound": 3,
+                  "state": "exceeded",
+                  "exceeded": [
+                    "wallClockMs",
+                    "completeRuns"
+                  ]
+                },
+                "current": {
+                  "role": "executor",
+                  "phase": "active",
+                  "startedAt": "2026-10-28T04:21:03.619Z",
+                  "completeRuns": 6,
+                  "bound": 3,
+                  "state": "exceeded",
+                  "exceeded": [
+                    "wallClockMs",
+                    "completeRuns"
+                  ]
+                }
+              }
+            ],
+            "unadmittedRows": [
+              {
+                "startedAt": "2026-10-28T05:08:52.874Z",
+                "failedFirst": "declarations"
+              }
+            ],
+            "npmTestRows": 7
+          },
+          "pass": true
+        },
+        {
+          "id": "L2-real-phase-request-index",
+          "criterion": "2",
+          "variation": "every WO-234 dispatch anchor in this checkout's lane against the order's control log",
+          "expected": "each stored index names an event of the stored request type, recorded before the dispatch start, with no later request of that type before the start",
+          "observed": {
+            "anchors": [
+              {
+                "intent": "resume: fix",
+                "startedAt": "2026-10-28T21:53:35.172Z",
+                "phaseBoundary": "RepairRequested:6",
+                "indexedType": "RepairRequested",
+                "precedesStart": true,
+                "latestBeforeStart": true
+              },
+              {
+                "intent": "resume: next",
+                "startedAt": "2026-10-28T04:21:03.619Z",
+                "phaseBoundary": "WorkOrderActivated:0",
+                "indexedType": "WorkOrderActivated",
+                "precedesStart": true,
+                "latestBeforeStart": true
+              },
+              {
+                "intent": "resume: fix",
+                "startedAt": "2026-10-28T23:23:38.006Z",
+                "phaseBoundary": "RepairRequested:10",
+                "indexedType": "RepairRequested",
+                "precedesStart": true,
+                "latestBeforeStart": true
+              },
+              {
+                "intent": "resume: next",
+                "startedAt": "2026-10-28T04:21:03.619Z",
+                "phaseBoundary": "WorkOrderActivated:0",
+                "indexedType": "WorkOrderActivated",
+                "precedesStart": true,
+                "latestBeforeStart": true
+              },
+              {
+                "intent": "resume: verify",
+                "startedAt": "2026-10-28T22:49:39.164Z",
+                "phaseBoundary": "VerificationRequested:8",
+                "indexedType": "VerificationRequested",
+                "precedesStart": true,
+                "latestBeforeStart": true
+              },
+              {
+                "intent": "resume: verify",
+                "startedAt": "2026-10-29T00:38:32.604Z",
+                "phaseBoundary": "VerificationRequested:12",
+                "indexedType": "VerificationRequested",
+                "precedesStart": true,
+                "latestBeforeStart": true
+              },
+              {
+                "intent": "resume: verify",
+                "startedAt": "2026-10-28T20:34:56.153Z",
+                "phaseBoundary": "VerificationRequested:4",
+                "indexedType": "VerificationRequested",
+                "precedesStart": true,
+                "latestBeforeStart": true
+              }
+            ]
+          },
+          "pass": true
+        }
+      ]
+    }
+  ]
+}

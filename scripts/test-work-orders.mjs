@@ -1522,6 +1522,42 @@ await check(
 );
 
 await check(
+  "unlimited dispatch acceptances render as needed for both metrics",
+  () => {
+    const target = makeRepo("unlimited-bound-index");
+    write(target, authorityPath("WO-099"), typedHeader("WO-099", []));
+    write(target, planningPath, sequenceSource([["WO-099", "fixture"]]));
+    writeLog(target, [
+      activation("WO-099"),
+      ...["wallClockMs", "completeRuns"].map((metric) => ({
+        type: "DispatchBoundAccepted",
+        workOrderId: "WO-099",
+        phase: "active",
+        metric,
+        ceiling: null,
+        reason: "operator authorizes this phase as needed",
+        capture: "docs/intake/operator.md",
+        captureHash: `sha256:${"a".repeat(64)}`,
+        actor: {
+          harness: "human",
+          harnessVersion: "fixture",
+          model: "human",
+          effort: "unknown",
+          source: "operator-attested",
+        },
+      })),
+    ]);
+    const rendered = renderIndex(readIndex(target));
+    assert.match(rendered, /active wallClockMs=as needed/);
+    assert.match(rendered, /active completeRuns=as needed/);
+    assert.doesNotMatch(
+      rendered,
+      /(?:wallClockMs|completeRuns)=(?:unknown|null)/,
+    );
+  },
+);
+
+await check(
   "WO-158 a withdrawn order is a settled Withdrawn entry under its disposition, unmet: withdrawn for dependents and unchecked in the sequence",
   () => {
     const target = makeRepo("withdrawn-index");

@@ -1,3 +1,4 @@
+import { formatDuration } from "./duration.mjs";
 /** Compute the observed scheduling critical path from one retained gate row.
  * Edges include dependency barriers, exclusive joins and the previous occupant
  * of the chosen slot. Gaps remain visible; this is not an ideal-packing claim. */
@@ -159,18 +160,18 @@ export function gateHostLaneWait(tasks) {
 }
 
 export function formatHostLaneWait(wait) {
-  const seconds = (ms) => (ms / 1000).toFixed(1);
-  if (Number(seconds(wait.wallMs)) === 0) return "";
+  const visible = (ms) => Number.isFinite(ms) && Math.round(ms / 60_000) > 0;
+  if (!visible(wait.wallMs)) return "";
   const labels = {
     "this-checkout": "this checkout",
     "another-checkout": "another checkout",
     unknown: "checkout unknown",
   };
   const parts = relations
-    .filter((relation) => Number(seconds(wait.byRelation[relation])) > 0)
+    .filter((relation) => visible(wait.byRelation[relation]))
     .map(
       (relation) =>
-        `${seconds(wait.byRelation[relation])} s behind ${labels[relation]}`,
+        `${formatDuration(wait.byRelation[relation])} behind ${labels[relation]}`,
     );
-  return `; ${seconds(wait.wallMs)} s waiting for host lanes${parts.length ? ` (${parts.join("; ")})` : ""}`;
+  return `; ${formatDuration(wait.wallMs)} waiting for host lanes${parts.length ? ` (${parts.join("; ")})` : ""}`;
 }

@@ -1,3 +1,4 @@
+import { dispatchBoundActivity } from "./dispatch-bound.mjs";
 import { json as encode, sha256Hex } from "./helpers.mjs";
 import { docPath, docRelative } from "./config.mjs";
 import { existsSync, lstatSync, readdirSync, readFileSync } from "node:fs";
@@ -27,6 +28,7 @@ export const FAILURES_COMMAND = "npm run plan -- failures";
 const ROWS_PER_PAGE = 32;
 const START_BYTES = 1024;
 const OFF_RAMPS = new Set([
+  "DispatchBoundAccepted",
   "CriterionWaived",
   "WorkOrderWithdrawn",
   "RecordCorrected",
@@ -683,6 +685,14 @@ const phases = new Set([
   "ideation",
   "unknown",
 ]);
+const boundStopPhases = new Map([
+  ["active", "implementation"],
+  ["repairing", "repair"],
+  ["verifying", "verification"],
+  ["final-review", "finalReview"],
+]);
+const boundStopPhase = (phase) =>
+  boundStopPhases.get(phase) ?? (phases.has(phase) ? phase : "unknown");
 const tally = (rows, field, limit = 6) => {
   const counts = new Map();
   for (const row of rows)
@@ -700,7 +710,7 @@ const tally = (rows, field, limit = 6) => {
  * metadata counts them; the export carries only these sanitized projections. */
 export function operationalFailures(root, control, includes) {
   const rows = [],
-    unreadable = { closes: 0, journals: 0, gates: 0 };
+    unreadable = { closes: 0, journals: 0, gates: 0, snapshots: 0 };
   let closeRecords = 0,
     journalRecords = 0;
   const retained = docPath(root, "control", "local/retained");
@@ -771,6 +781,16 @@ export function operationalFailures(root, control, includes) {
             phase: phases.has(row.phase) ? row.phase : "unknown",
             recordedAt: knownTime(row.recordedAt),
           };
+          if (row.boundStop)
+            rows.push({
+              kind: "bound-stop",
+              ...context,
+              phase: boundStopPhase(row.phase),
+              recordedAt: knownTime(row.at ?? row.recordedAt),
+              ...row.boundStop,
+              role: row.role,
+              source: row.source,
+            });
           if (row.typedEvent === "HostPermissionDenied")
             rows.push({ kind: "host-denial", ...context });
           else if (row.typedEvent === "OperatorMessageObserved") {
@@ -807,6 +827,60 @@ export function operationalFailures(root, control, includes) {
         unreadable.journals++;
       }
     }
+  // Closed worktrees no longer carry their journals. Their filed meter row
+  // retains the same measurements without retaining operator capture text.
+  for (const [order, entry] of control.orders) {
+    if (entry.state.phase !== "closed") continue;
+    const file = docPath(root, "evidence", order, "meta.json");
+    if (!existsSync(file)) continue;
+    let stops;
+    try {
+      if (!lstatSync(file).isFile()) throw new Error();
+      const snapshot = JSON.parse(readFileSync(file, "utf8"));
+      if (!Array.isArray(snapshot?.orders)) throw new Error();
+      const measured = snapshot.orders.find((row) => row?.workOrder === order);
+      stops = measured?.boundStops?.stops ?? [];
+      if (
+        !Array.isArray(stops) ||
+        stops.some(
+          (stop) =>
+            !stop ||
+            !["wallClockMs", "completeRuns"].includes(stop.metric) ||
+            !Number.isFinite(stop.value) ||
+            !Number.isFinite(stop.bound),
+        )
+      )
+        throw new Error();
+    } catch {
+      unreadable.snapshots++;
+      continue;
+    }
+    for (const stop of stops) {
+      if (
+        rows.some(
+          (row) =>
+            row.kind === "bound-stop" &&
+            row.order === order &&
+            row.recordedAt === stop.at &&
+            row.metric === stop.metric &&
+            row.role === stop.role,
+        )
+      )
+        continue;
+      rows.push({
+        kind: "bound-stop",
+        order,
+        recordedAt: knownTime(stop.at),
+        phase: boundStopPhase(stop.phase),
+        metric: stop.metric,
+        value: stop.value,
+        bound: stop.bound,
+        ...(stop.exceeded ? { exceeded: stop.exceeded } : {}),
+        role: stop.role,
+        source: "order-snapshot",
+      });
+    }
+  }
   const attempts = [];
   for (const events of control.eventSegments.values()) {
     const completions = events.filter((event) =>
@@ -934,6 +1008,31 @@ export function operationalFailures(root, control, includes) {
       hostNotifications,
       coverage:
         "Claude/Copilot prompt-hook rows; Codex dispatch phrases only; host task notifications excluded; prompts without transcript evidence counted as unattributed; unobserved messages unknown",
+    },
+    boundStops: {
+      ...summary("bound-stop"),
+      unreadableSnapshots: unreadable.snapshots,
+      ...(() => {
+        const events = [...control.eventSegments.values()].flat();
+        const stops = ofKind("bound-stop");
+        const activity = dispatchBoundActivity(
+          events,
+          stops.map(({ recordedAt, ...row }) => ({
+            ...row,
+            workOrder: row.order,
+            at: recordedAt,
+          })),
+        );
+        return {
+          source: "session journals and filed order snapshots",
+          stops: activity.boundStops.stops.slice(0, 8),
+          boundAcceptances: activity.boundAcceptances
+            .filter((entry) => includes({ recordedAt: entry.at }))
+            .slice(0, 8),
+          afterStop: activity.afterStop.slice(0, 8),
+          omittedStops: Math.max(0, activity.boundStops.count - 8),
+        };
+      })(),
     },
     longPhases: {
       ...summary("long-phase"),

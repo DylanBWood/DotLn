@@ -2849,7 +2849,7 @@ test("lanes CLI reads live holders and capacity without any registry mutation", 
   }
 });
 
-test("a waiting fixture gate records and prints its lane union without checkout paths", async (t) => {
+test("a waiting fixture gate records its lane union and prints the declared duration precision without checkout paths", async (t) => {
   const f = await fixture(t, { containmentBudget: false }),
     other = join(f.base, "sibling");
   mkdirSync(other);
@@ -2905,10 +2905,16 @@ test("a waiting fixture gate records and prints its lane union without checkout 
     lines.find((line) => line.startsWith("WAIT")),
     /another checkout/,
   );
-  assert.match(
-    lines.find((line) => line.startsWith("npm run test:docs:")),
-    /waiting for host lanes.*behind another checkout/,
-  );
+  const summary = lines.find((line) => line.startsWith("npm run test:docs:"));
+  if (Math.round(row.hostLaneWait.wallMs / 60_000) === 0)
+    assert.doesNotMatch(summary, /waiting for host lanes/);
+  else {
+    assert.match(summary, /\d+ h \d+ min waiting for host lanes/);
+    if (
+      Math.round(row.hostLaneWait.byRelation["another-checkout"] / 60_000) > 0
+    )
+      assert.match(summary, /behind another checkout/);
+  }
   for (const path of [f.repo, other, f.directory])
     assert.ok(!JSON.stringify({ row, lines }).includes(path));
   const recorded = readGateChecks(f.repo).find(

@@ -245,7 +245,11 @@ table includes the shared goal card and the refuter's separate subject boundary.
    Timing is projection data: `recordedAt` is the latest event's append time or
    `null`; `elapsed` maps each phase's latest completed attempt to signed
    milliseconds or `"unknown"` when an endpoint predates the migration.
-   Durations never affect legality and do not use recovered checkpoint times.
+   Completed-phase timing projections do not affect legality or use recovered
+   checkpoint times. Dispatch admission separately reads its live bound below.
+   Present every operator-facing duration in hours and minutes, rounded to the
+   nearest minute; machine-readable measurements and numeric flags retain their
+   declared units (operator correction during WO-234, 2026-10-28).
    In a `wo-NNN` worktree, the branch selects its order. Append
    `--work-order WO-NNN` to override it or to select on main. Without a branch
    selection, one open order selects itself; when several are open, bare human
@@ -942,15 +946,79 @@ by the routes below [[off-ramps pass](../planning/off-ramps-5s-entropy-2026-09-2
 general helper is a preserved requirement, not a claim of implemented recovery
 for every corrupt repository. Source and review duties: [WO-131 ideation receipt](../evidence/WO-131/ideation.md).
 
-Each of the four routes below is a `resume` command that appends its typed
+Each of the five routes below is a `resume` command that appends its typed
 event with the actor attestation and a recovery checkpoint (except the closed-order
 pending route below), refuses outside its legal phases with
 those phases and the lifecycle's legal commands, and projects in `status --json`
 (`legalOffRamps`, `waivedCriteria`, `withdrawal`, `corrections`,
-`overrideRecords`), `current.md` and the work-order index
+`overrideRecords`, `boundAcceptances`), `current.md` and the work-order index
 [[WO-158](../work-orders/WO-158-lifecycle-off-ramps.md), 2026-09-25]. The
 fold validates each event's shape; the route judges its legality.
 
+- `npm run resume -- accept-overrun <wallClockMs|completeRuns> --ceiling <value|unlimited> --reason <text> --capture <path> --capture-hash sha256:<digest> <actor-flags>`
+  appends `DispatchBoundAccepted` in `active`, `needs-fix`, `repairing`,
+  `verifying` or `final-review`. It extends only that order's current activation
+  and phase attempt; `needs-fix` names the upcoming repair. Completion of that
+  phase expires its extension; the event stays in the intervention history. A ceiling must exceed the
+  configured/previously accepted ceiling and any observed current value. A null
+  bound needs no extension. The capture follows the ignored, untracked,
+  digest-checked operator-capture contract below. The current agent, including
+  the order's executor, records the operator's authorization with its actual
+  actor attestation and recording-session role. This changes no phase,
+  criterion or verdict. `status --json` projects `boundAcceptances` and the
+  route under `legalOffRamps`.
+
+  Authorization comes from the operator's meaning in the conversation, with
+  no required wording, command or prefix. "Continue", "go", "whatever" and
+  "please proceed" can each authorize the pending continuation when context
+  makes that intent clear; they are examples, never an allowlist. Preserve
+  the operator's actual words and enough context to identify the pending
+  action in ignored intake, then record the needed finite ceiling and its
+  rationale. The operator may authorize a run for as long as needed at the
+  start, or later, without waiting for a stop. Before launching the run,
+  record `--ceiling unlimited` for both `wallClockMs` and `completeRuns` using
+  that capture. An explicit null acceptance ceiling lifts that metric until
+  this phase completes, without resetting timing or counters or changing
+  task deadlines. Other phases and orders keep their own policy. Silence
+  and an agent's own wish to proceed are not authorization.
+  The agent runs the command in the current session, keeps its writer and
+  continues; no session exit, writer release, separate operator terminal or
+  manual operator script is needed. If the command fails, the agent diagnoses
+  and repairs it here. Never relabel the agent as a human. Criterion waivers
+  retain their separate own-executor exclusion below.
+
+  Every role dispatch reads wall-clock and complete-run ceilings from
+  `docs/control/budgets.json`; missing keys and null disable a ceiling. The
+  `local-median` policy for implementation, repair, verification and final
+  review derives the greater of four times each consumer's own completed
+  phase median and 8 h 0 min. No local history uses 8 h 0 min. The original
+  dispatch start is the history cutoff, so a running bound does not drift.
+  Exports carry this policy, never DotLn's numeric measurements. Explicit
+  numeric budgets, null (disabled) and phase acceptances remain authoritative.
+  The executor's `repair` object selects repair ceilings for `resume: fix`.
+  `node scripts/harness.mjs usage <session>` prints the standing; Claude's Stop
+  hook adds it at each turn end. Complete gates, bounded probes and same-phase
+  lifecycle redispatch refuse at an exhausted ceiling, naming `analysis:` and
+  this acceptance route. Claude also refuses the corresponding tool starts
+  and worker launches; Codex and Copilot share the in-process checks. Lifecycle
+  reads, listing and focused `--only` reproductions remain available. No watcher
+  process judges progress or changes lifecycle state. A missing journal leaves
+  the bound unset. A malformed present consumption record is unavailable evidence:
+  the gate names unavailable standing and diagnosis, the wrapper and lifecycle
+  return the read error, and Claude reports an advisory while retaining its other
+  judgments. Dispatch entry still records the role, intent and order and keeps
+  the role's grants; a damaged journal makes its anchor unavailable, with the
+  journal path in the diagnostic. Reads and focused reproductions remain admitted.
+  Usage still prints its observation and host session readback beside
+  `dispatch standing: unavailable (<named read error>)`; a standing error does
+  not remove the usage output or change its successful exit status.
+  Once history is repaired, the next standing read rescans it and uses the earliest
+  recorded anchor in its original phase attempt, or its own recorded start when
+  no earlier anchor remains. This also holds after completion and reactivation,
+  without resetting time or runs or rewriting the journal.
+  No surface computes standing from a fresh anchor, zero consumption or an exceeded
+  verdict from that error (WO-234 D013, D018). The meter records stops, acceptances and
+  the next same-order event with its delay for planning.
 - `npm run resume -- waive <criterion> --reason <text> --capture <path> --capture-hash sha256:<digest> <actor-flags>`
   appends `CriterionWaived` in `verifying`, `needs-fix`, `repairing`,
   `verified` or `final-review`. The capture is an ignored, untracked file under
@@ -1253,8 +1321,10 @@ Preconditions and inputs:
    register refuses entry before creating the branch; refresh it with
    `npm run meta` and include that document update in the preceding checkpoint.
 2. Read `npm run plan -- failures`; route each failed report's cause in the pass.
-   `plan start` counts local closes, denials, interventions, long phases,
-   repeated gates and eight recent closes' tracks (WO-178).
+   `plan failures` also lists dispatch bound stops, acceptances and the next
+   same-order lifecycle event with its delay; use that data to judge whether an
+   intervention helped. `plan start` counts local closes, denials, interventions,
+   long phases, repeated gates and eight recent closes' tracks (WO-178).
    `plan start` counts numeric reopening conditions; `npm run plan -- conditions`
    lists them without refusing entry (`--slow` for gate timings, WO-175).
    Read the deferred register rows whose reopening condition opens with an
@@ -3039,13 +3109,15 @@ usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-
   and the close consume; release close is the post-merge publish of the tag
   and Release and runs no suite; attested harness, version, model and effort
   are logged as given and never refuse, and `ultra` means `xhigh` with
-  subagents; DotLn has five hook refusals (WO-135, WO-139 and WO-144): a second writer in a
+  subagents; DotLn has six hook refusals (WO-135, WO-139, WO-144 and WO-234): a second writer in a
   worktree; a write during the live gate; a classified repository write
   outside `docs/` and root Markdown on a `planning/` branch; an observable
   subagent admission exceeding `docs/control/budgets.json` `subagentCap`
   (default 20, `null` disables); and a known outside-project write destination
   without a containing root declared by its active role or equipped support
-  and admitted through the compiled authority envelope. Root kinds are system
+  and admitted through the compiled authority envelope; and a complete gate,
+  bounded probe or worker launch past the dispatch bound without recorded
+  contextual operator authorization. Root kinds are system
   temporary, DotLn session scratch, the host-printed scratchpad, main's ignored
   intake, an operator-named absolute root and the registered target worktree;
   the manifest names declaration and authority-grant sources. The six default
@@ -3459,7 +3531,16 @@ omitted sources; bootstrap is the named manual recovery command (WO-226).
 Sync refuses a role oracle without its authorizing
 update, a feedback edition whose judged sources require a live episode,
 and manual baseline fingerprints. Host admission refuses measured warning
-or critical memory pressure and records its sampled values.
+or critical memory pressure and records its sampled values. For complete/plain
+and review selections it also refuses an exhausted dispatch wall-clock or
+complete-run bound; the stopped row records every exceeded metric, value, ceiling and
+owning dispatch. Failed and interrupted admitted complete selections consume a
+run. A recorded host refusal or an unrun host consumes none, including memory
+pressure and unavailable standing; older rows without admission evidence keep
+their historical interpretation. A focused `--only` selection does not. The bounded wrapper refuses a new
+probe at the same standing, preserving focused reproductions and listings for
+diagnosis. Every refusal names `analysis:` and the operator's `accept-overrun`
+route; an operator override suspends Claude's hook refusal.
 
 Each order's **Preflight:** field names the suites its change touches, each
 as `npm test -- --only <suite>`, the spelling the handoff reads. The

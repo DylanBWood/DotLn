@@ -1,0 +1,124 @@
+{
+  "subject": "WO-234 repair 002, before independent review and complete validation",
+  "source": "executed bounded commands; summary excludes machine-specific fixture paths",
+  "entry": {
+    "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-234/verification-002-probe.mjs entry",
+    "exitCode": 0,
+    "checks": 11,
+    "failed": 0,
+    "startedAt": "2026-10-28T23:24:35.410Z",
+    "finishedAt": "2026-10-28T23:24:49.457Z",
+    "source": "tool-delivered stdout; clean lane and four damage kinds; base/current arms"
+  },
+  "sections": [
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-234/verification-002-probe.mjs recovery",
+      "exitCode": 0,
+      "startedAt": "2026-10-28T23:26:41.325Z",
+      "finishedAt": "2026-10-28T23:26:44.761Z",
+      "checks": [
+        {
+          "id": "R1-marked-while-damaged",
+          "criterion": 2,
+          "pass": true
+        },
+        {
+          "id": "R2-restored-history",
+          "criterion": 2,
+          "pass": true
+        },
+        {
+          "id": "R3-recovered-bound-binds",
+          "criterion": "2, 6",
+          "pass": true
+        },
+        {
+          "id": "R4-after-phase-completion",
+          "criterion": "follow-up",
+          "pass": true
+        },
+        {
+          "id": "R5-history-deleted",
+          "criterion": "observation",
+          "pass": true
+        },
+        {
+          "id": "R6-codex-reentry",
+          "criterion": "2, 6",
+          "pass": true
+        },
+        {
+          "id": "R7-cli-begin",
+          "criterion": 6,
+          "pass": true
+        }
+      ]
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-234/verification-002-probe.mjs gate",
+      "exitCode": 0,
+      "startedAt": "2026-10-28T23:27:00.531Z",
+      "finishedAt": "2026-10-28T23:27:02.874Z",
+      "checks": [
+        {
+          "id": "G1-runner-damaged-lane",
+          "criterion": 3,
+          "pass": true
+        },
+        {
+          "id": "G3-refused-selection-consumption",
+          "criterion": "2, 10",
+          "pass": true
+        },
+        {
+          "id": "G2-runner-both-bounds",
+          "criterion": 7,
+          "pass": true
+        },
+        {
+          "id": "W1-wrapper-damaged-lane",
+          "criterion": 4,
+          "pass": true
+        }
+      ]
+    }
+  ],
+  "regressions": {
+    "usage": {
+      "command": "node scripts/harness.mjs bounded -- node --test --test-name-pattern='usage retains its observation' scripts/test-harness.mjs",
+      "exitCode": 0,
+      "tests": 1,
+      "source": "tool-delivered stdout; Claude, Codex and Copilot readback environment forms"
+    },
+    "adjacent": {
+      "command": "node scripts/harness.mjs bounded -- node --test --test-name-pattern='marked standing|complete-run counts|dispatch bounds stop complete host admission' scripts/test-dispatch-bound.mjs scripts/test-runner.test.mjs",
+      "exitCode": 0,
+      "tests": 3,
+      "source": "bounded runner output; restored/reactivated recovery, host evidence count matrix and real host admission cases"
+    },
+    "timestampTie": {
+      "command": "node scripts/harness.mjs bounded -- node --test --test-name-pattern='marked standing|a completion at the marked dispatch timestamp|redispatch recovers a marked' scripts/test-dispatch-bound.mjs",
+      "exitCode": 0,
+      "tests": 3,
+      "failedControlExitCode": 1,
+      "observation": "The exact same-timestamp completion case failed before the phaseBoundary refinement, then passed beside completed/reactivated and normal redispatch recovery."
+    }
+  },
+  "setupCorrections": [
+    "Usage fixture initially lacked budgets: expected within but observed unset; added kit budgets.",
+    "Usage fixture attempted begin on an existing session: supported redispatch recorder now binds its unavailable marker."
+  ],
+  "limits": [
+    "Synthetic damaged lanes and synthetic critical memory through the real host checker, not a damaged live operator session or live host memory pressure.",
+    "Host session readback tests preserve fields and source availability; effective host model selection is not observed."
+  ],
+  "finalRecoveryRecheck": {
+    "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-234/verification-002-probe.mjs recovery",
+    "exitCode": 0,
+    "checks": 7,
+    "failed": [],
+    "startedAt": "2026-10-28T23:33:42.198Z",
+    "finishedAt": "2026-10-28T23:33:45.656Z",
+    "reason": "Material review refinement: stored phase-request boundary and full-history separation."
+  }
+}

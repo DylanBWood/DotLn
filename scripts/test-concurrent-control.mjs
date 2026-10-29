@@ -373,7 +373,7 @@ await test("test-concurrent-control", async (t) => {
 
       assert.match(overview, /WO-901/);
       assert.match(overview, /WO-902/);
-      assert.match(overview, /Elapsed implementation: \d+ ms/);
+      assert.match(overview, /Elapsed implementation: \d+ h \d+ min/);
       ambiguousSurface = run(main, process.execPath, [
         join(main, "scripts/release.mjs"),
         "check-surfaces",
