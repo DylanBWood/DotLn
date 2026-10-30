@@ -585,10 +585,11 @@ entry):
 ## Answers to the fork (paste-ready)
 
 This section is the pass's own choice, as product 07 §Operator-opened
-planning pass precondition 5 asks for a paste-ready block.
+planning pass precondition 5 asks for a paste-ready block. It is the
+consolidated answer: item 3 names WO-243, which the synthesis filed.
 
 ```text
-Answers from core's planning pass of 2026-10-30 (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md) to the DotLn-Enterprise-Starter fork's block of its pass of 2026-10-30 on starter v0.103.0. Read each against the record it names.
+Answers from core's planning pass of 2026-10-30 (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md; the synthesis of the day's two blind passes, receipts 059 and 060) to the DotLn-Enterprise-Starter fork's block of its pass of 2026-10-30 on starter v0.103.0. Read each against the record it names.
 
 1. Recorded. The four template-derived seeds (README.md, docs/control/budgets.json, CLAUDE.md's generated block, docs/PLAYBOOK.md) carried with no instance action declared are evidence on core's row FUP-b44117f7b047e976, allocated to WO-207 (eighth in core's queue after this pass; a convenience, your update continues). Core's v0.103.1 close took the refresh in one invocation.
 2. Recorded; nothing asked. Your field evidence (edit-tool writes judged and granted with kind target-worktree; shell-program writes fell to host permissions, which refused none) is on core's row FUP-3682b768d1d00a3b (DotLn-owned authority with minimal native restrictions), which stays deferred.
@@ -673,6 +674,42 @@ appended when it is filed.
   passes).
 - After the receipt: the operator's answer on the floor's sentence applied
   (`CLAUDE.md` §Clean Room; the map's item 10; this document), the second
-  register batch, `npm run meta`, `npm run format`, the commit, then `npm
-  run test:docs`, the push and the `:memo:` pull request, whose results
-  are in the response.
+  register batch, `npm run meta`, `npm run format`, the commit `d178db4b`,
+  `npm run test:docs` (27 passed, 0 failed), the push and pull request
+  #257 at 16:3xZ.
+- The consolidation (the operator's direction of 16:55Z): the moves, WO-243
+  and WO-244, the folds, the product and inventory edits, the roadmap table
+  (`npm run release -- list --markdown --write`), the register's third and
+  fourth batches, `npm run meta`, `npm run format`, `npm run sync` (the
+  publication index gained the row for product 07's new section; two
+  editions regenerated), `node scripts/docs-check.mjs` (0 failures after
+  the index regenerated), the commit `d784e9b7`, `npm run plan -- check`
+  ("planning pass planning-46c0f753031f2f52 needs a receipt"), `npm run
+  meta -- --plan-cost` (`e89cf933`), `npm run test:docs` (24 passed, 3
+  awaiting the receipt), `npm run plan -- refute` at `e89cf933` and one
+  fresh `dotln-worker` (claude-opus-5-5 at xhigh by the pin; no host
+  readback), dispatched 17:25:20Z and handed back 17:45:41Z (20 min 20 s):
+  `aligned-with-findings` for all eight judged orders (WO-240, WO-237,
+  WO-241, WO-242, WO-243, WO-244, WO-207, WO-193), twenty-eight known
+  issues, no observed failure, no vision contradiction and no hold; the
+  worker wrote no files. `npm run plan -- receipt` filed
+  [receipt 060](refutations/2026-10-30-planning-46c0f753031f2f52-060.md):
+  scope pass, 8 verdicts carried by hash, dispatch to file 23 min 47 s, 60
+  receipts, 48 passes, no advisories. The twenty-eight known issues are
+  on the eight catalog rows with the planner's readings as executor and
+  activating-pass duties; the ones that change a design: WO-240's Node 24
+  run must be fresh at an identity where no row of the other runtime is
+  reused; WO-237's cross-device rename falls back to copy-then-remove;
+  WO-241's queued-reader rows load with an advisory and the
+  private-destination row is instance-scoped; WO-242's approval binds to
+  an operator-written entry or an operator-message row, a clean integration
+  keeps it, and criterion 4's leftover words about the closeout sentence
+  are struck at activation; WO-243's criteria-named checks take precedence
+  and gate-input records are machinery inputs; WO-244's labels map to host
+  ids, its refusal list grows, and the closing comment becomes a criterion;
+  WO-193's intake reads only the operator's or a registered login's issues
+  and its publish exception reads core's register row.
+- Then this document's record of the receipt, `npm run format`, the commit,
+  `npm run test:docs` at the final tree, the push to #257, its title and
+  body updated, and #256 closed with a comment naming the synthesis; the
+  results are in the response.
