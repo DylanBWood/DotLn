@@ -1,4 +1,4 @@
-# WO-193 — Capability requests: an instance asks core for a capability in one standard way, answered through either update route, with a planning intake of labelled issues, a typed `UPSTREAM.md` answered list and a deployment-record template; the private predecessor map is WO-228's (version assigned at activation)
+# WO-193 — Capability requests: an instance asks core for a capability in one standard way, answered through either update route, with a planning intake of labelled issues, a typed `UPSTREAM.md` answered list and a deployment-record template; the private parity map was cut out as WO-228, retired on 2026-10-30 (version assigned at activation)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
@@ -22,10 +22,9 @@ verification, final review, release close) and the full gate a closed order
 paid in the window, 2.29 runs and 61 minutes, beside phase medians of 16.9
 minutes for verification and 24.8 for final review (planning document
 §12); one re-mint covers both `package.json` entries; neither constituent
-owed a live feedback episode. The 2026-10-21 pass cut the map back out as WO-228 (workstream WS-002, the
-predecessor track), on the operator's direction that predecessor work stays
-out of the serial queue, so this order pays its cycle for the request route
-alone. Re-mints: `package.json` is a common source
+owed a live feedback episode. The 2026-10-21 pass cut the map back out as WO-228 (workstream WS-002,
+retired with it on 2026-10-30), so this order pays its cycle for the request
+route alone. Re-mints: `package.json` is a common source
 of the evidence inventories (`scripts/lib/evidence-sources.mjs`), so each edition whose check the entry stales is re-minted deterministically,
 the feedback edition by carry (`package.json` is not in
 `FEEDBACK_SOURCE_PATHS`); no live episode. Declared machinery sources
@@ -54,10 +53,10 @@ bullet is the floor it must hold. Merged by the 2026-10-13 standard
 planning pass under the operator's sizing direction (planning document
 §12). The pass's second round gave every step that left the operator a
 file edit to a role acting on the operator's recorded word (planning
-document §12.1). Split by the 2026-10-21 pass: the private predecessor map (the former WO-194
+document §12.1). Split by the 2026-10-21 pass: the private parity map (the former WO-194
 constituent) is WO-228 in workstream WS-002, on the operator's direction of
-that day that work depending on the predecessor on the work machine stays out
-of the serial queue.
+that day that it stays out of the serial queue; both were retired on
+2026-10-30 (the operator's item 3 of that day).
 **Depends on:** WO-074 (the kit manifest and file set); WO-076
 (instance-owned files; the emitted build a carrier is checked against);
 WO-077 (the update and its note); WO-078 (the sibling receipt); WO-062 (the
@@ -138,7 +137,7 @@ by item in core) and WO-096 (core's shape rows and what it declines);
 something can ask for it in a few minutes without anything leaving the
 instance except the sentences the operator approved; the request is read at
 the next planning pass here; and when a release answers it, the instance's
-next update, from core or by merge, says so. The private map of what an instance's predecessors did, and the request a
+next update, from core or by merge, says so. The private map of what an instance's earlier workflow did, and the request a
 missing row becomes, is WO-228's (workstream WS-002), cut out of this order by
 the 2026-10-21 pass; what is missing and belongs in core becomes a generic
 request through this order's route, and nothing else leaves.
@@ -170,13 +169,13 @@ request through this order's route, and nothing else leaves.
   and no command.
 - WO-096 builds typed rows in core from the operator's own captured notes,
   with employer-specific shapes present only as counts, and declines
-  importing or paraphrasing any predecessor file. WO-112 scores the generic
+  importing or paraphrasing any file of an earlier workflow. WO-112 scores the generic
   parity sentence in core. Neither gives an instance a place for its own
   private rows.
 - The kit's manifest, once WO-074 lands, excludes instance files (no
   manifest exists at `bd437eb2`, observed 2026-10-07), and the overlay, once
   WO-076 lands, is instance-owned; nothing instance-owned yet records
-  predecessor capability.
+  an earlier workflow's capability.
 
 **Re-observed 2026-10-13 (`main` at `6dbd8771`, at the merge):**
 
@@ -209,9 +208,9 @@ request through this order's route, and nothing else leaves.
   operator's word, and the instance's deployment record cites that word
   and says why. Every map row, fixture and example
   in this repository is synthetic or already public generic text; no
-  predecessor capability, rule, name or structure is described beyond what
-  product 12 and the critical path say, and the executor adds none. A need
-  for a predecessor fact is the stop condition: stop and flag it.
+  capability, rule, name or structure of an earlier workflow is described
+  beyond what product 12 and the critical path say, and the executor adds
+  none. A need for a fact about one is the stop condition: stop and flag it.
 - **In the instance.** A typed draft waits in an ignored lane until a role
   runs `request ready` on the operator's word, which sets its `ready` field
   and records the word. `manual` prints the title and body for the
@@ -238,7 +237,7 @@ request through this order's route, and nothing else leaves.
   by the instance's first order, what may leave the instance and by which
   route, and who decides. It is instance-owned once filled.
 - **The map.** Cut out by the 2026-10-21 pass into WO-228 (workstream
-  WS-002, the predecessor track): the command, the row schema, the seed and
+  WS-002, retired 2026-10-30): the command, the row schema, the seed and
   `parity request`, which calls this order's `draftRequest`. A missing row
   becomes a request draft holding its generic statement and nothing else,
   which passes the screens and is marked ready on the operator's word like any
@@ -260,8 +259,8 @@ request through this order's route, and nothing else leaves.
   instance never writes into core); automation that comments on or closes
   issues (a new outward effect; the closing reference needs none); a
   channel other than the forge's issues (the reader exists for this one;
-  an instance that cannot reach it uses `manual`); the map's declined alternatives (rows in core for a real predecessor, an
-  importer of predecessor rule files, a map shared across instances, WO-096's
+  an instance that cannot reach it uses `manual`); the map's declined alternatives (rows in core for a real earlier workflow, an
+  importer of its rule files, a map shared across instances, WO-096's
   renderer) are recorded in WO-228.
 
 **Execution plan (the executor follows these steps in order; observed at
@@ -509,7 +508,7 @@ unchanged (planning document §12). No live row beyond that one request.
   passes it. The floor rests on the operator's reading, not on the screens.
 - The local-terms list lives only in ignored local state; without one the
   check reports unavailable, never a pass.
-- An instance that copies predecessor text into its own rows acts inside
+- An instance that copies an earlier workflow's text into its own rows acts inside
   its own boundary; this order guarantees that core's commands never carry
   a row out.
 - Whether a particular managed host permits any outward request is not
@@ -541,18 +540,18 @@ unchanged (planning document §12). No live row beyond that one request.
   FUP-0113 (an inference from those records). This order disposes neither.
 - Receipt 045 (2026-10-13), written in by the 2026-10-21 pass, criterion 4:
   `plan -- requests` is the first automated inbound route from an instance
-  into core's register, first used by the work instance, so the Clean Room
+  into core's register, first used by a private instance, so the Clean Room
   screen of each issue's text carries the whole boundary. Reopen when a
   registered request's bundle passes the declared screen and a pass then finds
   private or employer material in it.
 
 **Non-goals:** moving any instance content to core; reading or tracking an
-instance from core; any row about a real predecessor in this repository;
-reading or importing predecessor material; a tracker other than the forge's
+instance from core; any row about a real earlier workflow in this repository;
+reading or importing its material; a tracker other than the forge's
 issues, or an adapter for any tracker (an instance's adapter is WO-207's
 extension point); automation that writes to an issue after it is filed;
 deciding policy for any host; deciding what an instance may retire; the
-private predecessor map and its seed (WO-228, workstream WS-002, cut out by
+private parity map and its seed (WO-228, workstream WS-002, retired 2026-10-30, cut out by
 the 2026-10-21 pass).
 
 **Operator-review assumptions**
@@ -566,5 +565,5 @@ the 2026-10-21 pass).
    disposed there like any other row; it carries no priority of its own.
 4. The issue is closed by the operator's merge of the pull request that
    names it.
-5. The private predecessor map is WO-228's (workstream WS-002); this
+5. The private parity map is outside this order (WO-228, retired 2026-10-30); this
    order's `draftRequest` is the form WO-228's `parity request` calls.

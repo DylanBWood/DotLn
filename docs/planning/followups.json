@@ -2351,6 +2351,13 @@
           "title": "Candidate — progressive absence authority and return readiness",
           "summary": "### Candidate — progressive absence authority and return readiness This candidate originated in the predecessor `v1` workflow: one prompt-bound agent needed the operator to drive each interaction, so it sat idle during absence. A recurring cron trigger was an early way to restart useful work. DotLn now has explicit work orders and phase/status transitions; a dispatched order can keep moving while the operator is away without this payoff curve. The curve is for the later automatic work-order dispatch layer, where agents select and advance eligible orders without a human initiating each next order. WO-111 exercises a preauthorized scratch portfolio as a bounded precursor; it does not show that",
           "missing": false
+        },
+        {
+          "hash": "f69c0fde466d77146e2bb0dd1e216984b00705c90147a12e1713516f1e0335ef",
+          "ref": "docs/product/03-architecture.md#candidate--progressive-absence-authority-and-return-readiness",
+          "title": "Candidate — progressive absence authority and return readiness",
+          "summary": "### Candidate — progressive absence authority and return readiness This candidate answers a prompt-bound agent that needs the operator to drive each interaction and so sits idle during absence; a recurring trigger is the first thing one reaches for to restart useful work. DotLn now has explicit work orders and phase/status transitions; a dispatched order can keep moving while the operator is away without this payoff curve. The curve is for the later automatic work-order dispatch layer, where agents select and advance eligible orders without a human initiating each next order. WO-111 exercises a preauthorized scratch portfolio as a bounded precursor; it does not show that broader automatic al",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -2388,6 +2395,14 @@
           "reopenWhen": "a resident receipt contradicts the progressive-authority status product 03 states",
           "targets": [],
           "at": "2026-09-25T21:29:55.675Z"
+        },
+        {
+          "sourceRevision": 9,
+          "status": "deferred",
+          "reason": "Source revision read at this pass: the candidate's origin sentence in product 03 was reworded by the 2026-10-30 pass under the operator's item 3.a (no earlier system is named); the candidate and its earlier reason stand. [2026-10-30 planning pass (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)]",
+          "reopenWhen": "a resident receipt contradicts the progressive-authority status product 03 states",
+          "targets": [],
+          "at": "2026-10-30T15:50:46.792Z"
         }
       ]
     },
@@ -4209,6 +4224,13 @@
           "title": "Workstream application — end-user workflow candidate",
           "summary": "# Workstream application — end-user workflow candidate **Status:** operator-opened product exploration, 2026-09-04. This describes a candidate application of DotLn for everyday software work. It is not an implemented interface, a deployment claim, a new release rung, or a replacement for the separately named `προτείνω` thesis. The application identity and first deployment remain unannounced; this public design uses synthetic work only. The product question is what a person does when they sit down to work: start an outcome, make the decisions that need their judgment, inspect the result, and return later without reconstructing the process. DotLn should carry the coordination that currently li",
           "missing": false
+        },
+        {
+          "hash": "466ab58f6878f8192490f8bafbbd0140b12224be06b56e12738625e49a49ca50",
+          "ref": "docs/product/12-workstream-application.md#workstream-application--end-user-workflow-candidate",
+          "title": "Workstream application — end-user workflow candidate",
+          "summary": "# Workstream application — end-user workflow candidate **Status:** operator-opened product exploration, 2026-09-04. This describes a candidate application of DotLn for everyday software work. It is not an implemented interface, a deployment claim, a new release rung, or a replacement for the separately named `προτείνω` thesis. The application identity and first deployment remain unannounced; this public design uses synthetic work only. The product question is what a person does when they sit down to work: start an outcome, make the decisions that need their judgment, inspect the result, and return later without reconstructing the process. DotLn should carry the coordination that currently li",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -4342,6 +4364,14 @@
           "reopenWhen": "WO-083 activates or is amended, or product 12's candidate section changes its demonstrations or its first-screen claims.",
           "targets": [],
           "at": "2026-10-28T14:03:37.215Z"
+        },
+        {
+          "sourceRevision": 24,
+          "status": "deferred",
+          "reason": "Source revision 24 read at this pass: product 12's work-instance paragraphs were reworded and its census paragraph removed by the 2026-10-30 pass under the operator's item 3; the demonstrations and first-screen claims are unchanged. [2026-10-30 planning pass (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)]",
+          "reopenWhen": "WO-083 activates or is amended, or product 12's candidate section changes its demonstrations or its first-screen claims.",
+          "targets": [],
+          "at": "2026-10-30T15:50:46.904Z"
         }
       ]
     },
@@ -5017,6 +5047,14 @@
           "reopenWhen": "a representative observed loop and a compared escape",
           "targets": [],
           "at": "2026-09-19T01:19:52.872Z"
+        },
+        {
+          "sourceRevision": 6,
+          "status": "deferred",
+          "reason": "Re-read at source revision 6: lowered as prose in the Goal Alignment support; typed trap supports remain unbuilt and no observed loop asks for them. [2026-10-30 planning pass (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)]",
+          "reopenWhen": "a representative observed loop and a compared escape",
+          "targets": [],
+          "at": "2026-10-30T15:50:47.356Z"
         }
       ]
     },
@@ -10955,6 +10993,14 @@
           "reopenWhen": "R2, a live denial of the exact helper, or an outside write admitted without a grant",
           "targets": [],
           "at": "2026-10-24T04:18:35.190Z"
+        },
+        {
+          "sourceRevision": 15,
+          "status": "deferred",
+          "reason": "Re-read at source revision 15 with the fork's field evidence of 2026-10-30: in the fork's WO-019 session edit-tool writes to the target were judged by the hook (the first journaled granted) while shell-program writes fell to host permissions, which refused none; the candidate and its earlier reason stand. [2026-10-30 planning pass (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)]",
+          "reopenWhen": "R2, a live denial of the exact helper, or an outside write admitted without a grant",
+          "targets": [],
+          "at": "2026-10-30T15:50:47.242Z"
         }
       ]
     },
@@ -24294,6 +24340,14 @@
           "reopenWhen": "A gate task holds at a row whose order's decisions do not name the growth, or the plain gate's thirty-day median is still above 360 s when WO-239 closes.",
           "targets": [],
           "at": "2026-10-29T03:30:50.409Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "The condition occurred at WO-239's close (plain gate median 492.9 s against 360; the skeleton and target-worktree tasks above their medians) and no order is filed: the operator's direction of 2026-10-13 runs the product sequence and the complete run is paid once per order; recorded as a NoOp in the pass. [2026-10-30 planning pass (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)]",
+          "reopenWhen": "The plain gate's thirty-day median exceeds 600 s, a task's growth has a named cause in an order's decisions, or the operator names gate time as a goal.",
+          "targets": [],
+          "at": "2026-10-30T15:50:50.311Z"
         }
       ]
     },
@@ -43688,6 +43742,14 @@
           "reopenWhen": "The operator opens a planning pass on the work setup, or WO-228 closes and a work instance holds a filled map",
           "targets": [],
           "at": "2026-10-22T01:19:51.054Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "The operator's direction of 2026-10-30 (item 3) removes the predecessor track from this repository; WS-002 and WO-228 are retired in place and no C1 to C4 order is filed. [2026-10-30 planning pass (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)]",
+          "reopenWhen": "The operator's word that core carries such work again.",
+          "targets": [],
+          "at": "2026-10-30T15:50:49.287Z"
         }
       ]
     },
@@ -44934,6 +44996,14 @@
           "reopenWhen": "the operator opens the work instance's first planning pass or asks for the order sooner",
           "targets": [],
           "at": "2026-10-24T04:18:37.146Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Its reopening condition, the work instance's first planning pass in core, cannot occur under the operator's item 3.c of 2026-10-30 (core is never cloned there); the research order stays a candidate. [2026-10-30 planning pass (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)]",
+          "reopenWhen": "the operator carries the need into a core planning pass in generic words (the operator's item 3.b of 2026-10-30), or asks for the order sooner",
+          "targets": [],
+          "at": "2026-10-30T15:50:49.517Z"
         }
       ]
     },
@@ -44973,6 +45043,14 @@
           "reopenWhen": "the first issue is filed as an idea, or WO-193 is next amended",
           "targets": [],
           "at": "2026-10-24T04:45:48.312Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "The operator's item 5 of 2026-10-30 names the same seam from the other side (a fork's own tracker script as a planning source); WO-207 carries the planner step that reads configured source adapters beside gh issue list; the issue intake stays by hand until then. [2026-10-30 planning pass (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)]",
+          "reopenWhen": "The first issue is filed as an idea, WO-193 is next amended, or WO-207 activates.",
+          "targets": [],
+          "at": "2026-10-30T15:50:49.854Z"
         }
       ]
     },
@@ -44997,6 +45075,14 @@
           "reopenWhen": "the operator opens the work instance's first planning pass or asks for the order sooner",
           "targets": [],
           "at": "2026-10-24T04:18:37.658Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Its reopening condition, the work instance's first planning pass in core, cannot occur under the operator's item 3.c of 2026-10-30; the candidate stays. [2026-10-30 planning pass (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)]",
+          "reopenWhen": "the operator carries the need into a core planning pass in generic words (the operator's item 3.b of 2026-10-30), or asks for the order sooner",
+          "targets": [],
+          "at": "2026-10-30T15:50:49.742Z"
         }
       ]
     },
@@ -45021,6 +45107,16 @@
           "reopenWhen": "the operator opens the work instance's first planning pass or asks for the order sooner",
           "targets": [],
           "at": "2026-10-24T04:18:36.016Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-242 as a carry-in in its text and on its row: plan-first mode is the bridge for a teammate who knows the product and the codebase but not agents, and the kit README's plan-first section is written for that reader. [2026-10-30 planning pass (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)]",
+          "reopenWhen": "The operator reports the first teammate's session, or asks for more than the mode.",
+          "targets": [
+            "WO-242"
+          ],
+          "at": "2026-10-30T15:50:49.401Z"
         }
       ]
     },
@@ -45045,6 +45141,14 @@
           "reopenWhen": "the operator opens the work instance's first planning pass or asks for the order sooner",
           "targets": [],
           "at": "2026-10-24T04:18:36.225Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Its reopening condition, the work instance's first planning pass in core, cannot occur under the operator's item 3.c of 2026-10-30; the candidate stays. [2026-10-30 planning pass (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)]",
+          "reopenWhen": "the operator carries the need into a core planning pass in generic words (the operator's item 3.b of 2026-10-30), or asks for the order sooner",
+          "targets": [],
+          "at": "2026-10-30T15:50:49.629Z"
         }
       ]
     },
@@ -46096,6 +46200,14 @@
           "reopenWhen": "The operator directs a cap, or the advisory prints on ten consecutive closes without a disclosed changed condition.",
           "targets": [],
           "at": "2026-10-26T23:11:07.339Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "declined",
+          "reason": "Re-read at source revision 2: the operator's 2026-09-14 direction (artificial caps yield to needed rules) and the 2026-10-07 rule (ceilings are planning's) stand; WO-235 closed without a cap. [2026-10-30 planning pass (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)]",
+          "reopenWhen": "The operator directs a cap.",
+          "targets": [],
+          "at": "2026-10-30T15:50:47.130Z"
         }
       ]
     },
@@ -46182,6 +46294,14 @@
           "reopenWhen": "WO-088 activates before WO-235.",
           "targets": [],
           "at": "2026-10-26T23:11:07.838Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "settled",
+          "reason": "WO-235 closed carrying the skeleton (v0.103.0), so WO-088 cannot activate before it; the allocation question is answered. [2026-10-30 planning pass (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)]",
+          "reopenWhen": "WO-088's activating pass finds the skeleton needs a second home.",
+          "targets": [],
+          "at": "2026-10-30T15:50:47.582Z"
         }
       ]
     },
@@ -46246,6 +46366,14 @@
           "reopenWhen": "A host exposes a typed classification of a message, or the ledger shows one message judged two ways by two roles.",
           "targets": [],
           "at": "2026-10-26T23:11:07.437Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "declined",
+          "reason": "Re-read at source revision 3: WO-235-D063 removed the operator-message work; the planning screen still refuses a criterion that needs a deterministic reading of natural language. [2026-10-30 planning pass (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)]",
+          "reopenWhen": "The operator requests classification supported by evidence.",
+          "targets": [],
+          "at": "2026-10-30T15:50:47.469Z"
         }
       ]
     },
@@ -47210,6 +47338,14 @@
           "reopenWhen": "A bound stop lands in an attended session whose tool-active time is observed below its wall-clock bound, or a planning pass reads the boundStops block and most initial stops end in acceptances.",
           "targets": [],
           "at": "2026-10-29T01:47:40.046Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again with the fork's item 4 of 2026-10-30 as evidence: every bounded phase resolves to 8 h 0 min there, the first attended session under the bound is WO-015's, and the fork's rule 25 records the unlimited ceiling ahead of a stop on the operator's ordinary words. [2026-10-30 planning pass (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)]",
+          "reopenWhen": "A bound stop lands in an attended session whose tool-active time is observed below its wall-clock bound, or a planning pass reads the boundStops block and most initial stops end in acceptances.",
+          "targets": [],
+          "at": "2026-10-30T15:50:50.198Z"
         }
       ]
     },
@@ -47368,6 +47504,16 @@
             "WO-207"
           ],
           "at": "2026-10-29T03:30:50.195Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Re-allocated to WO-207 with the fork's evidence of 2026-10-30 (item 1): the v0.103.0 merge carried README.md, docs/control/budgets.json, CLAUDE.md's generated block and docs/PLAYBOOK.md with no instance action declared, because the fork never edited them. A convenience; the fork continues. [2026-10-30 planning pass (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)]",
+          "reopenWhen": "WO-207 activates, whose activating pass writes the carry-in into the order; or an instance that edited a seeded file misses a carrier a release named.",
+          "targets": [
+            "WO-207"
+          ],
+          "at": "2026-10-30T15:50:49.968Z"
         }
       ]
     },
@@ -47430,6 +47576,14 @@
           "reopenWhen": "WO-235's ledger shape cannot carry an ideation message's dispositions as the case did.",
           "targets": [],
           "at": "2026-10-28T14:03:38.709Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "settled",
+          "reason": "WO-235-D063 removed the operator-message work the field case was recorded for; WO-235 is closed (v0.103.0); nothing to decide. [2026-10-30 planning pass (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)]",
+          "reopenWhen": "A planning pass files operator-message answering again.",
+          "targets": [],
+          "at": "2026-10-30T15:50:47.016Z"
         }
       ]
     },
@@ -47938,6 +48092,14 @@
           "reopenWhen": "An executor scratch write no longer spawns the lifecycle and its permission-hook median is within tens of milliseconds of a verifier's on the same build; or the fork's recorded cost from WO-019 exceeds a second per write.",
           "targets": [],
           "at": "2026-10-29T03:30:50.302Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again: the fork's item 6 of 2026-10-30 reports that WO-019's decisions, host qualification and usage carry no measurement of D029's hook cost and its journals left with the worktree; its next executor records the cost if it notes it. [2026-10-30 planning pass (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)]",
+          "reopenWhen": "An executor scratch write no longer spawns the lifecycle and its permission-hook median is within tens of milliseconds of a verifier's on the same build; or the fork's recorded cost from WO-019 exceeds a second per write.",
+          "targets": [],
+          "at": "2026-10-30T15:50:50.083Z"
         }
       ]
     },
@@ -48469,7 +48631,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-238 as a carry-in in its text and on its row: the document row binds the candidate tree less the active order's own evidence directory, or completion re-runs the docs check inline over the changed records; repeated document-gate runs within one handoff surface as a failure. [2026-10-30 planning pass (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)]",
+          "reopenWhen": "A handoff reruns the document gate after answering an operator message or writing its own record.",
+          "targets": [
+            "WO-238"
+          ],
+          "at": "2026-10-30T15:50:48.719Z"
+        }
+      ]
     },
     {
       "id": "FUP-65fa4e70494f558c",
@@ -48484,7 +48657,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "The repair directive was discharged: VER-002, VER-003 and VER-004 each answered by a repair, FINAL-001 passed on 2026-10-30 and WO-235 closed as v0.103.0. [2026-10-30 planning pass (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)]",
+          "reopenWhen": "A current criterion of WO-235 is found unmet.",
+          "targets": [],
+          "at": "2026-10-30T15:50:48.148Z"
+        }
+      ]
     },
     {
       "id": "FUP-8fb693e06e4c178c",
@@ -48513,7 +48695,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 3,
+          "status": "settled",
+          "reason": "The repair directive was discharged: VER-003 and VER-004 followed, each answered, FINAL-001 passed and WO-235 closed as v0.103.0. [2026-10-30 planning pass (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)]",
+          "reopenWhen": "A current criterion of WO-235 is found unmet.",
+          "targets": [],
+          "at": "2026-10-30T15:50:48.832Z"
+        }
+      ]
     },
     {
       "id": "FUP-68fd3e0d6448ed01",
@@ -48528,7 +48719,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-238 as a carry-in on its row (documents and the checks that judge them): name, for each writingGuidance surface, the documents and checks that judge it, with a reader fixture that resolves each named check. [2026-10-30 planning pass (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)]",
+          "reopenWhen": "A title or subject rule moves, or a fixture shows a named check absent.",
+          "targets": [
+            "WO-238"
+          ],
+          "at": "2026-10-30T15:50:48.260Z"
+        }
+      ]
     },
     {
       "id": "FUP-7d3d2e7566c8923e",
@@ -48550,7 +48752,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-235 closed as v0.103.0 and left the sequence in this pass; there is no sequence entry to retitle. [2026-10-30 planning pass (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)]",
+          "reopenWhen": "WO-235 returns to the sequence.",
+          "targets": [],
+          "at": "2026-10-30T15:50:48.490Z"
+        }
+      ]
     },
     {
       "id": "FUP-644bf5db02876c15",
@@ -48565,7 +48776,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "The receipt directions admission is gone: scripts/lib/plan-receipts.mjs holds no 'directions' token at main 4090d70d (grep on 2026-10-30), and WO-235's FINAL-001 passed. [2026-10-30 planning pass (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)]",
+          "reopenWhen": "A producer writes a receipt directions field, or a consumer reads the baseline's harness-host.ts pin.",
+          "targets": [],
+          "at": "2026-10-30T15:50:48.034Z"
+        }
+      ]
     },
     {
       "id": "FUP-c47eeb041f0952c4",
@@ -48580,7 +48800,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "The repair directive was discharged: VER-004's F1 was answered by a repair, FINAL-001 passed and WO-235 closed; D063 then removed the reminder altogether. [2026-10-30 planning pass (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)]",
+          "reopenWhen": "A task notification or agent report receives quality pass guidance after a later order reintroduces the reminder.",
+          "targets": [],
+          "at": "2026-10-30T15:50:49.176Z"
+        }
+      ]
     },
     {
       "id": "FUP-92f34e24a8f975b4",
@@ -48616,7 +48845,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 4,
+          "status": "declined",
+          "reason": "The prompt router the follow-up assumed was removed by WO-235-D063; nothing reads the host's queue rows through it now. [2026-10-30 planning pass (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)]",
+          "reopenWhen": "Operator-message handling returns in a later order.",
+          "targets": [],
+          "at": "2026-10-30T15:50:48.946Z"
+        }
+      ]
     },
     {
       "id": "FUP-0f2a756698374d7e",
@@ -48638,7 +48876,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "WO-219-D042's condition occurred under main's router (WO-235-D063): a Claude Code task notification without a command mode counts as an operator intervention. Allocated to WO-242 as a carry-in: the plan-first turn reads only operator prompts as conversation, never a host notification or an agent report. [2026-10-30 planning pass (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)]",
+          "reopenWhen": "A host notification is paraphrased into conversation.md as an operator turn, or a host notice counts as an operator intervention after WO-242 lands.",
+          "targets": [
+            "WO-242"
+          ],
+          "at": "2026-10-30T15:50:47.693Z"
+        }
+      ]
     },
     {
       "id": "FUP-4a7c27e6c428ea55",
@@ -48660,7 +48909,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-235-D063 removed the reminder D055's reopening guarded; WO-235 is closed. [2026-10-30 planning pass (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)]",
+          "reopenWhen": "A later order reintroduces operator-message handling under WO-235's scope.",
+          "targets": [],
+          "at": "2026-10-30T15:50:47.807Z"
+        }
+      ]
     },
     {
       "id": "FUP-8331693069c2747d",
@@ -48682,7 +48940,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "The operator-message follow-ups WO-235 no longer carries are disposed together in this pass: D042's reopening to WO-242, D055's and D059's closed by the removal, D050's repair directive discharged, D022's handoff loop to WO-238. [2026-10-30 planning pass (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)]",
+          "reopenWhen": "A later order reintroduces operator-message handling under WO-235's scope.",
+          "targets": [],
+          "at": "2026-10-30T15:50:48.605Z"
+        }
+      ]
     },
     {
       "id": "FUP-4c704bb1ea210f14",
@@ -48697,7 +48964,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-240 as a carry-in in its text and on its row: WO-240 re-mints the editions package.json stales, so it removes the stale off-ramps.mjs declaration from commonSources in the same re-mint under a dated decision. [2026-10-30 planning pass (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)]",
+          "reopenWhen": "A registered source imports scripts/lib/off-ramps.mjs again.",
+          "targets": [
+            "WO-240"
+          ],
+          "at": "2026-10-30T15:50:47.920Z"
+        }
+      ]
     },
     {
       "id": "FUP-69af2e1da022aa7a",
@@ -48719,7 +48997,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Allocated to WO-237 as a carry-in in its text and on its row: measure the census cost at each candidate home (session end, plan start, a scheduled run) before choosing where routine apply-mode cleanup of expired temporary roots lives, and keep the close bounded. [2026-10-30 planning pass (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)]",
+          "reopenWhen": "Expired roots accumulate past a retention window without a run that removes them, or a chosen home adds more than its measured cost to the step it joins.",
+          "targets": [
+            "WO-237"
+          ],
+          "at": "2026-10-30T15:50:48.375Z"
+        }
+      ]
     },
     {
       "id": "FUP-977e50f635de762d",
@@ -48741,7 +49030,438 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Deferred with D023's own condition; no order touches the kit close's fixtures next. [2026-10-30 planning pass (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)]",
+          "reopenWhen": "A kit close that passes its prerequisites refuses a missing carried runtime without a working remedy, or names npm run build.",
+          "targets": [],
+          "at": "2026-10-30T15:50:49.061Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-42ef286b6dc024ad",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-work-setup-pass-on-node-24-the-features-file-plan-first-mode-and-the-end-of-the-predecessor-track-recorded-2026-10-30::1165e7d025995fd6718c1ba899ee9f9e8db48a6ab4fdb9f6e272005615a91219",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "646c6d23e6c16a475ceae58b0d8da0d1ac8184ad4318e928743bf4fa502d66d2",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-work-setup-pass-on-node-24-the-features-file-plan-first-mode-and-the-end-of-the-predecessor-track-recorded-2026-10-30",
+          "title": "WS-002 and WO-228 kept at their paths.",
+          "summary": "11. **WS-002 and WO-228 kept at their paths.** Recorded: the link check reads every Markdown file under the document root and dated planning records link to both files, so deleting or renaming them would edit immutable records; both are retired in place instead. Reopen when WO-088's retired field lands (the documents can then be cut to their retirement lines) or the operator authorizes the record edits a rename needs.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WS-002 and WO-228 are retired in place: the link check reads every Markdown file under the document root and dated planning records link to both files, so a deletion or rename would edit immutable records. [2026-10-30 planning pass (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)]",
+          "reopenWhen": "WO-088's retired field lands, or the operator authorizes the record edits a rename needs.",
+          "targets": [],
+          "at": "2026-10-30T15:50:46.003Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-03c675456fa8e484",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-work-setup-pass-on-node-24-the-features-file-plan-first-mode-and-the-end-of-the-predecessor-track-recorded-2026-10-30::290933351830478163b8068651ae79b61d52b4737809f0197c45d8daaa9595a1",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "9558d296f2f5479d5f998e93c8bad8734154d616a367b9d3d2085daccd4be1f5",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-work-setup-pass-on-node-24-the-features-file-plan-first-mode-and-the-end-of-the-predecessor-track-recorded-2026-10-30",
+          "title": "A Node version on every gate row.",
+          "summary": "13. **A Node version on every gate row.** Deferred: WO-240 records the runtime in its own evidence file and the host check refuses a runtime outside the range. Reopen when a second instance runtime is supported or a release breaks on one line after passing on the other.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-240 records the runtime in its own evidence file and the host check refuses a runtime outside the range; a per-row runtime field in the gate index is not needed for one supported pair of lines. [2026-10-30 planning pass (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)]",
+          "reopenWhen": "A second instance runtime is supported, or a release breaks on one line after passing on the other.",
+          "targets": [],
+          "at": "2026-10-30T15:50:46.225Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-b105ef71e17a0b61",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-work-setup-pass-on-node-24-the-features-file-plan-first-mode-and-the-end-of-the-predecessor-track-recorded-2026-10-30::2b7345db79408904fab932b62d91b2db79e2b50a02f91e62966179dc38d10767",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "67f486d3b72b87e2e5adfc63bf67c79edf3545d8700ed45dff7a3a948959ec77",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-work-setup-pass-on-node-24-the-features-file-plan-first-mode-and-the-end-of-the-predecessor-track-recorded-2026-10-30",
+          "title": "The kit close's runtime refusal pinned after its prerequisites",
+          "summary": "7. **The kit close's runtime refusal pinned after its prerequisites** (WO-239-D023, FUP-977e50f635de762d). Deferred with D023's own condition: reopen when a kit close that passes its prerequisites refuses a missing carried runtime without a working remedy, or names `npm run build`.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "duplicate",
+          "reason": "The decision row WO-239-D023 (FUP-977e50f635de762d) carries the kit close's runtime-refusal pin; this candidate restates it. [2026-10-30 planning pass (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)]",
+          "reopenWhen": "FUP-977e50f635de762d reopens.",
+          "targets": [
+            "FUP-977e50f635de762d"
+          ],
+          "at": "2026-10-30T15:50:45.547Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-1a6a5fa73117b25c",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-work-setup-pass-on-node-24-the-features-file-plan-first-mode-and-the-end-of-the-predecessor-track-recorded-2026-10-30::352fac6e870d783b162750a3380c77d2501dddd5699f851453713e901659b4ea",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "4d0943a1e37053343616c4e2c47eff8722f1fba1bae9951e70fd423f1fe60e32",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-work-setup-pass-on-node-24-the-features-file-plan-first-mode-and-the-end-of-the-predecessor-track-recorded-2026-10-30",
+          "title": "The hook's reach over shell-program writes",
+          "summary": "15. **The hook's reach over shell-program writes** (the fork's item 2 of 2026-10-30, evidence for FUP-3682b768d1d00a3b): in the fork's WO-019 session the first target edit was journaled `granted` with kind `target-worktree` and later edit-tool writes were admitted, while writes made by programs run from the shell (formatting, the join, test runners) were not observed by the hook and fell to host permissions, which refused none. Recorded on the row; the candidate stays deferred. Reopen when a shell-program write to a target is refused by host permissions, or the candidate's own conditions occur.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Evidence recorded on FUP-3682b768d1d00a3b (the fork's item 2 of 2026-10-30: edit-tool writes judged by the hook, shell-program writes fell to host permissions which refused none); no action of its own. [2026-10-30 planning pass (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)]",
+          "reopenWhen": "A shell-program write to a target is refused by host permissions.",
+          "targets": [],
+          "at": "2026-10-30T15:50:46.454Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-2e0ba429b055b00e",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-work-setup-pass-on-node-24-the-features-file-plan-first-mode-and-the-end-of-the-predecessor-track-recorded-2026-10-30::4e4d183828208b1e338d5147cd6fbfe26c9ab75a32ea314b75194e6717744ce6",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "fc8a86c12fe2faf5f7a42a307a97b042f8285eea207722bc3ad130773352aaf0",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-work-setup-pass-on-node-24-the-features-file-plan-first-mode-and-the-end-of-the-predecessor-track-recorded-2026-10-30",
+          "title": "The predecessor orders C1 to C4",
+          "summary": "9. **The predecessor orders C1 to C4** (FUP-8633adee1d36d76d). Declined: the operator's direction of 2026-10-30 removes the track from this repository. Reopen only on the operator's word that core carries such work again.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "duplicate",
+          "reason": "FUP-8633adee1d36d76d is the row for the predecessor orders C1 to C4, declined in this pass; this candidate restates it. [2026-10-30 planning pass (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)]",
+          "reopenWhen": "FUP-8633adee1d36d76d reopens.",
+          "targets": [
+            "FUP-8633adee1d36d76d"
+          ],
+          "at": "2026-10-30T15:50:45.775Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-7d7c75dfd2d1026c",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-work-setup-pass-on-node-24-the-features-file-plan-first-mode-and-the-end-of-the-predecessor-track-recorded-2026-10-30::58c537ecd96c3af19b10c13c5bf800fa3e920d49febb227f47c0d5bbbe5d2dcd",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "ea3dbb8c04bc53dee86389e9a06033e55982f5013eebab28ef07adfb0ba8248a",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-work-setup-pass-on-node-24-the-features-file-plan-first-mode-and-the-end-of-the-predecessor-track-recorded-2026-10-30",
+          "title": "The cold-gate condition fired at WO-239's close",
+          "summary": "5. **The cold-gate condition fired at WO-239's close** (FUP-e96221b106cd136a): `plan conditions` on 2026-10-30 reads the plain gate's thirty-day median at 492.9 s against 360, the skeleton task's latest fresh run at 486.8 s against its 299.5 s median and the target-worktree task at 611.3 s against 126.6 s. NoOp: no order is filed; the operator's direction of 2026-10-13 is to run the product sequence, the complete run is paid once per order at final review, and the two tasks' growth is a measurement without a named cause. Reopen when the median exceeds 600 s, when a task's growth has a named cause in an order's decisions, or when the operator names gate time as a goal.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "NoOp: the condition occurred (plain gate median 492.9 s against 360 at WO-239's close; skeleton 486.8 s against 299.5 s; target-worktree 611.3 s against 126.6 s) and no order is filed: the operator's direction of 2026-10-13 runs the product sequence, the complete run is paid once per order at final review, and the two tasks' growth is a measurement without a named cause. [2026-10-30 planning pass (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)]",
+          "reopenWhen": "The plain gate's thirty-day median exceeds 600 s, a task's growth has a named cause in an order's decisions, or the operator names gate time as a goal.",
+          "targets": [],
+          "at": "2026-10-30T15:50:45.319Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-fca08f20a522f7c6",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-work-setup-pass-on-node-24-the-features-file-plan-first-mode-and-the-end-of-the-predecessor-track-recorded-2026-10-30::71c39b23fee8e121862f8d6f31d174dc6f39e78fc8f92a6b14c97d8f7f3bba61",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "daf1c3c625a6629999e1400c8d5c95b1e86fd8431926bec136ce79e90c6a882b",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-work-setup-pass-on-node-24-the-features-file-plan-first-mode-and-the-end-of-the-predecessor-track-recorded-2026-10-30",
+          "title": "A fork's own tracker script as a planning source",
+          "summary": "1. **A fork's own tracker script as a planning source** (the operator's item 5). Allocated to WO-207 as a carry-in on its row and in its text: the planner's intake step reads each configured `source` adapter's open items beside `gh issue list`, through the `decodeSourceBundle` screen the vertical uses; until WO-207 lands, the fork's planner runs the script on the operator's word and reads its screened output as intake, which needs no machinery. Reopen when WO-207 activates, whose activating pass writes the step in, or the operator's fork holds such a script and asks sooner.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-207 as a carry-in in its text and on its row: the planner's intake step reads each configured source adapter's open items beside gh issue list through the decodeSourceBundle screen; until it lands the fork's planner runs its script on the operator's word and reads the screened output as intake, which needs no machinery. A convenience; the fork continues. [2026-10-30 planning pass (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)]",
+          "reopenWhen": "WO-207 activates, whose activating pass writes the planner step into it; or the operator's fork holds such a script and asks for the seam sooner.",
+          "targets": [
+            "WO-207"
+          ],
+          "at": "2026-10-30T15:50:44.864Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-2779e86c60788238",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-work-setup-pass-on-node-24-the-features-file-plan-first-mode-and-the-end-of-the-predecessor-track-recorded-2026-10-30::7aa2a9bb297849a9b581f667fa1c4374cabf0ff1b37e1e78bee956f3f4a0941f",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "b9fd7132c52c73d6e971dc23d9ba85106e4ad9ae17f4c8845a9a399f20c5d3f5",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-work-setup-pass-on-node-24-the-features-file-plan-first-mode-and-the-end-of-the-predecessor-track-recorded-2026-10-30",
+          "title": "The Clean Room floor's naming sentence in CLAUDE.md",
+          "summary": "10. **The Clean Room floor's naming sentence in `CLAUDE.md`** (\"Refer to the predecessor as `v1`; use enterprise tracker, ticket artifact, and constrained managed host as generic terms\"). Left as it is: the floor is hand-written and locked, and the sentence is a vocabulary rule for the case it names, not a comment about the work; the pass asks the operator whether item 3.a reaches it. Reopen when the operator answers.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "The Clean Room floor in CLAUDE.md is hand-written and locked; its naming sentence is a vocabulary rule for the case it names, not a comment about the work, so the pass leaves it and asks the operator whether item 3.a reaches it. [2026-10-30 planning pass (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)]",
+          "reopenWhen": "The operator answers whether item 3.a of 2026-10-30 reaches the floor's naming sentence.",
+          "targets": [],
+          "at": "2026-10-30T15:50:45.889Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-e5c861f86f7568a0",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-work-setup-pass-on-node-24-the-features-file-plan-first-mode-and-the-end-of-the-predecessor-track-recorded-2026-10-30::a565c1e0d0f978f09a9d7d19fc4c22c0dfe4c1ea73d4e3d5daf5522b9d2de9a3",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "ee5d93a1fba5c8d6ed97ae535d15139bc7b0c29f79946414c464d7d2327d19c6",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-work-setup-pass-on-node-24-the-features-file-plan-first-mode-and-the-end-of-the-predecessor-track-recorded-2026-10-30",
+          "title": "A pass whose plan start predates a mid-pass kit update",
+          "summary": "3. **A pass whose `plan start` predates a mid-pass kit update** (the fork's item 5a). Recorded on WO-088's row as a known issue for its planning-document check: the document written by hand to the current headings is admitted; nothing to build now. Reopen when a kit check refuses such a document.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Recorded on WO-088's row and in its text as a known issue for its planning-document check: a document written by hand to the current headings when plan start predates a mid-pass kit update is admitted; nothing to build now. [2026-10-30 planning pass (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)]",
+          "reopenWhen": "A kit check refuses a hand-written skeleton that carries the current headings.",
+          "targets": [
+            "WO-088"
+          ],
+          "at": "2026-10-30T15:50:45.093Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-7a6b84d04a0cbb4c",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-work-setup-pass-on-node-24-the-features-file-plan-first-mode-and-the-end-of-the-predecessor-track-recorded-2026-10-30::ae9445ae2f60d36abb24817100a2381de851373a994af6b62cc164be43722e1f",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "954fa7934f269fd6734ae2812c430e4248a906f40d49f3bc2f0f2c8b12842b72",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-work-setup-pass-on-node-24-the-features-file-plan-first-mode-and-the-end-of-the-predecessor-track-recorded-2026-10-30",
+          "title": "Node 25 support.",
+          "summary": "14. **Node 25 support.** Declined: not a long-term-support line and untested; the range `^24.15.0 || ^26.0.0` says what the gate has passed on. Reopen when a host the operator runs needs it.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Node 25 is not a long-term-support line and no gate runs under it; the range in WO-240 names what the gate has passed on. [2026-10-30 planning pass (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)]",
+          "reopenWhen": "A host the operator runs needs Node 25.",
+          "targets": [],
+          "at": "2026-10-30T15:50:46.338Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-cfa8aaa3441ad501",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-work-setup-pass-on-node-24-the-features-file-plan-first-mode-and-the-end-of-the-predecessor-track-recorded-2026-10-30::b0fde952493a2092d7f1226edd0d8bfa6337957590ad0d4ebe04a2246a4612f9",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "a0705b4846a3140dd6b5b615b2cea6c1f34babadbb62650ddf2496949c84c48f",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-work-setup-pass-on-node-24-the-features-file-plan-first-mode-and-the-end-of-the-predecessor-track-recorded-2026-10-30",
+          "title": "The dispatch bound as it resolves in the fork",
+          "summary": "16. **The dispatch bound as it resolves in the fork** (the fork's item 4, evidence for FUP-632348a91b2ae9d8): over thirteen closed orders every bounded phase resolves to 8 h 0 min; the first attended comparison session under the bound is WO-015's; the fork's workstream rule 25 records `accept-overrun --ceiling unlimited` ahead of a stop on the operator's ordinary words. Recorded; the row stays deferred. Reopen with the fork's first stop or acceptance.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Evidence recorded on FUP-632348a91b2ae9d8 (the fork's item 4 of 2026-10-30: every bounded phase resolves to 8 h 0 min over thirteen closed orders; the first attended session under the bound is WO-015's); no action of its own. [2026-10-30 planning pass (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)]",
+          "reopenWhen": "The fork reports its first bound stop or acceptance.",
+          "targets": [],
+          "at": "2026-10-30T15:50:46.566Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-222f422d85fbb53e",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-work-setup-pass-on-node-24-the-features-file-plan-first-mode-and-the-end-of-the-predecessor-track-recorded-2026-10-30::bf74f2b5da009439f75ae14054e4cf1130cf0c8af4f136d263989235e0ae2788",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "cb8b0fcf2498764ebd62d6983c141010734050103ebe79e1a7277dad141b1069",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-work-setup-pass-on-node-24-the-features-file-plan-first-mode-and-the-end-of-the-predecessor-track-recorded-2026-10-30",
+          "title": "The handoff loop that reruns the document gate",
+          "summary": "4. **The handoff loop that reruns the document gate** (WO-235-D022, FUP-8cc18bcfb0197284). Allocated to WO-238 as a carry-in: the document row binds the candidate tree less the active order's own evidence directory, or completion re-runs the docs check inline over the changed records; repeated runs within one handoff surface as a failure. Reopen when a handoff reruns the gate after answering an operator message.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "duplicate",
+          "reason": "The decision row WO-235-D022 (FUP-8cc18bcfb0197284) carries the handoff-loop repair, allocated to WO-238; this candidate restates it. [2026-10-30 planning pass (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)]",
+          "reopenWhen": "FUP-8cc18bcfb0197284 reopens.",
+          "targets": [
+            "FUP-8cc18bcfb0197284"
+          ],
+          "at": "2026-10-30T15:50:45.204Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-0ee8d88e735e5527",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-work-setup-pass-on-node-24-the-features-file-plan-first-mode-and-the-end-of-the-predecessor-track-recorded-2026-10-30::c7bd1515da3cb302eabd64c3eb87244a4ebf6b8b43500916d9e2de3be5b4cee9",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "623ec714bc1b5e942d0d161c24f16f71afc1fe216389eb597b2fec466a293547",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-work-setup-pass-on-node-24-the-features-file-plan-first-mode-and-the-end-of-the-predecessor-track-recorded-2026-10-30",
+          "title": "Four template-derived instance files carried by one Git merge",
+          "summary": "17. **Four template-derived instance files carried by one Git merge** (the fork's item 1, evidence for FUP-b44117f7b047e976 on WO-207): `README.md`, `docs/control/budgets.json`, `CLAUDE.md`'s generated block and `docs/PLAYBOOK.md` merged with no instance action declared because the fork never edited them. Recorded on the row; a convenience, the fork continues. Reopen when WO-207 activates or an instance that edited a seeded file misses a carrier a release named.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Evidence recorded on FUP-b44117f7b047e976 (WO-207's carry-in: four template-derived instance files carried by one Git merge with no instance action declared); no action of its own. [2026-10-30 planning pass (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)]",
+          "reopenWhen": "WO-207 activates, or an instance that edited a seeded file misses a carrier a release named.",
+          "targets": [],
+          "at": "2026-10-30T15:50:46.679Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-113e673d4233c31f",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-work-setup-pass-on-node-24-the-features-file-plan-first-mode-and-the-end-of-the-predecessor-track-recorded-2026-10-30::ca2ebe550b408df88c871d3ecd7a239b685ca2b0aa854761c23f7537c9f42121",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "9e7cb7d725f72e7c4590b3878d866e04937997e5ad4fce92b6a1e132a9105550",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-work-setup-pass-on-node-24-the-features-file-plan-first-mode-and-the-end-of-the-predecessor-track-recorded-2026-10-30",
+          "title": "Routine cleanup of expired temporary roots outside a close's scope",
+          "summary": "6. **Routine cleanup of expired temporary roots outside a close's scope** (WO-239-D020, FUP-69af2e1da022aa7a). Allocated to WO-237 as a carry-in: measure the census cost at each candidate home before choosing and keep the close bounded. Reopen when expired roots accumulate past a window without a run that removes them.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "duplicate",
+          "reason": "The decision row WO-239-D020 (FUP-69af2e1da022aa7a) carries the routine prune home, allocated to WO-237; this candidate restates it. [2026-10-30 planning pass (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)]",
+          "reopenWhen": "FUP-69af2e1da022aa7a reopens.",
+          "targets": [
+            "FUP-69af2e1da022aa7a"
+          ],
+          "at": "2026-10-30T15:50:45.433Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-c708c5e2098c3b09",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-work-setup-pass-on-node-24-the-features-file-plan-first-mode-and-the-end-of-the-predecessor-track-recorded-2026-10-30::dd67e590f2a4232046659e0f365243650644a0f306d414797d353209a11b1de4",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "d574207dcf33e4ace7393981c7f4e4adaf1b457b7b27e998535cf3bf212a90c9",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-work-setup-pass-on-node-24-the-features-file-plan-first-mode-and-the-end-of-the-predecessor-track-recorded-2026-10-30",
+          "title": "A retired state for a hand-filed order that never activated",
+          "summary": "2. **A retired state for a hand-filed order that never activated** (the operator's item 3). Allocated to WO-088 as a carry-in: a leading `**Retired (YYYY-MM-DD):**` field naming the capture digest settles the order (listed under Withdrawn, skipped by the coverage check, refused by activation); WO-228 is the first instance and keeps a prose header until then. Reopen when a second such order appears before WO-088 lands.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-088 as a carry-in in its text and on its row: a leading Retired field settles a hand-filed order that never activated; WO-228 is the first instance and carries a prose header until then. [2026-10-30 planning pass (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)]",
+          "reopenWhen": "A second hand-filed order needs retiring before WO-088 lands, which the same prose header carries.",
+          "targets": [
+            "WO-088"
+          ],
+          "at": "2026-10-30T15:50:44.980Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-db3940b4c418c536",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-work-setup-pass-on-node-24-the-features-file-plan-first-mode-and-the-end-of-the-predecessor-track-recorded-2026-10-30::e03fa1d2dabbb72559659af736fa708f4da1c045aebba1fa16e068b848383ac8",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "07a10d14d32a42989a1332399ed09a69c3525b379e1f2943c217606cccb0e0ec",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-work-setup-pass-on-node-24-the-features-file-plan-first-mode-and-the-end-of-the-predecessor-track-recorded-2026-10-30",
+          "title": "The work-setup candidates of 2026-10-24",
+          "summary": "8. **The work-setup candidates of 2026-10-24** (FUP-0695bdd05c71bf08, FUP-67b423fdf450129c, FUP-1c36325905c52243, FUP-855495d77825af2b). Their reopening condition, the work instance's first planning pass in core, cannot occur under the operator's item 3.c (core is never cloned there); the teammate's first hour is allocated to WO-242 as a carry-in, and the other three are deferred again with the route of item 3.b: reopen when the operator carries the need into a core planning pass in generic words.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Records the re-disposition of the four work-setup rows of 2026-10-24: the teammate's first hour is allocated to WO-242 and the other three are deferred with the route of the operator's item 3.b; no outstanding action of its own. [2026-10-30 planning pass (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)]",
+          "reopenWhen": "the operator carries the need into a core planning pass in generic words (the operator's item 3.b of 2026-10-30), or asks for the order sooner",
+          "targets": [],
+          "at": "2026-10-30T15:50:45.659Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-ca71e4b11b7779a3",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-work-setup-pass-on-node-24-the-features-file-plan-first-mode-and-the-end-of-the-predecessor-track-recorded-2026-10-30::ecfd32b8fda18655506051499928bf145b48d186a3bff56c6435dc5d5f5d94f0",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "a2a4e66223c7f08171792658573fcf697981d5eea36082fff7b8f6034f2b4283",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-work-setup-pass-on-node-24-the-features-file-plan-first-mode-and-the-end-of-the-predecessor-track-recorded-2026-10-30",
+          "title": "A per-order plan-first header beside the instance election",
+          "summary": "12. **A per-order plan-first header beside the instance election** (`**Mode:** plan-first`). Deferred: WO-242 elects the mode per instance in `dotln.config.json`. Reopen when the operator wants one order plan-first in an instance that is not, or the reverse.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-242 elects plan-first per instance in dotln.config.json; a per-order header is the next form if the operator wants both. [2026-10-30 planning pass (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)]",
+          "reopenWhen": "The operator wants one order plan-first in an instance that is not, or the reverse.",
+          "targets": [],
+          "at": "2026-10-30T15:50:46.113Z"
+        }
+      ]
     }
   ]
 }

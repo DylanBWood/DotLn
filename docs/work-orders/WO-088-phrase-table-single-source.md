@@ -797,6 +797,25 @@ row.
 
 **Known issues and carry-ins:**
 
+- Carry-in (the 2026-10-30 pass, on the operator's item 3 of 2026-10-30): a
+  hand-filed order that never activated has no settled state; `withdraw`
+  admits phase `none` only for an allocated order, so WO-228 stays a draft
+  in its retired workstream with a prose header saying it is not
+  activatable. The order-contract check this order builds admits one
+  leading `**Retired (YYYY-MM-DD):**` field naming the operator's capture
+  digest; the index lists such an order under Withdrawn with the field as
+  its disposition, the sequence coverage check skips it, activation refuses
+  it, and WO-228 is the first instance (reopen: a second order needs
+  retiring before this order lands, which the same prose header carries).
+- Known issue (the fork's item 5a of 2026-10-30): the fork's `plan start`
+  ran at starter v0.101.0 minutes before the v0.103.0 update merged, so
+  the pass wrote its document by hand to the new release's nine headings
+  and name, plus the one section the operator's standing direction
+  requires; the planning-document contract check this order writes admits
+  a document written to the current headings when `plan start` predates the
+  update, and the skeleton rule is the pass's own duty when an update
+  merges mid-pass (reopen: a kit check refuses a hand-written skeleton that
+  carries the current headings).
 - Receipt 033 (2026-09-28), phrase list: the guide's eleven rows keep the
   waive, withdraw, correct and override-off routes, so a check rejecting
   rows outside the seven conflicts with them. Reopen when the check rejects

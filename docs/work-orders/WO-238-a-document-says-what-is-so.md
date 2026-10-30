@@ -419,6 +419,21 @@ the integrated code identity when one exists.
 **Write-back duty:** as listed in steps 11 and 13 and criteria 11 and 13.
 
 **Known issues and carry-ins:**
+- Carry-in (WO-235-D022, FUP-8cc18bcfb0197284; the operator's judgment of
+  2026-10-29 that WO-235's executor phase was the worst they had seen): a
+  completion consumes only a document row whose tree hash equals the
+  working tree's, so a record that completion itself requires (a decision or
+  handoff text written after the passing `npm run test:docs`) stales the
+  row it consumes, and WO-235 ran the document gate five times on five
+  trees in one handoff. This order owns the document checks and the kinds
+  contract, so it takes the repair: the document row binds the candidate
+  tree less the active order's own evidence directory, whose files the gate
+  reads but whose later writes do not stale the row, or completion re-runs
+  the docs check inline over the changed records only (WO-173's inline
+  run); repeated document-gate runs on changed trees within one handoff are
+  reported as a failure, never as progress; the choice and its measured
+  cost are recorded in the decisions (reopen: a handoff reruns the document
+  gate after answering an operator message or writing its own record).
 - WO-236-D021 (FUP-6a069fbfd769e741), D022 (FUP-32ac48069c7acdda) and D026
   (FUP-35719f293094b9c0): taken whole, steps 8, 10 and 11 (reopen: the
   index needs a cost figure a reader uses, a moved record's reader cannot

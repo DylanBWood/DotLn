@@ -1370,7 +1370,9 @@ Preconditions and inputs:
    the instance waits for the carrying release, or is a convenience with a
    working route today, so the instance continues; a release's Read before
    upgrading says what an instance must read, and nothing else obliges an
-   instance to take it (operator question, 2026-10-22).
+   instance to take it (operator question, 2026-10-22). A private instance
+   whose operator never clones core carries its needs the same way, in the
+   operator's own generic words (operator direction, 2026-10-30).
    When dispatching with a pasted block, put the dispatch on its first
    content line; one opening fence and blank lines are admitted, while a
    later quoted dispatch does not select a role.
@@ -3756,7 +3758,11 @@ tree, and runs no gate itself; a newer failed run at the same identity displaces
 pass crosses a code identity. Source changes require a complete row at the
 new identity; report and generated-document edits do not. Target orders
 retain their repository's declared target gate and the launchpad document
-gate.
+gate: a target order whose criteria name only those owes no launchpad
+complete run at its closeout, and the integrate helper's affected-check list
+reports what main's merge touched, never a duty the order owes (the fork's
+WO-019-D031, 2026-10-28; the executor role's closeout sentence follows in
+WO-242).
 
 Scheduling adds priority leads to each task's declared priority: unresolved
 failures receive 3000, sources changed since the last product gate receive

@@ -681,7 +681,7 @@ the receipt records (criterion 1).
   operator's own machine, where DotLn may not be installed for some time),
   which that pass attributed to an operator direction the 2026-10-07
   capture does not contain. The constraint that core may not be installed
-  belongs to the work instance and to WO-193 only.
+  belongs to a private instance on a constrained managed host and to WO-193 only.
 - Blocked on WO-080 and WO-204 (hard edges, each placed before this order);
   WO-210 (v0.82.0) and WO-213 (v0.83.0) are closed; WO-192 is placed directly
   before it; WO-118 closed at

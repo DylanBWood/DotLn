@@ -28,7 +28,7 @@ and the kit branch of `scripts/test-runner.mjs`;
 `scripts/kit/upgrade-order.template.md` (new); cases in seven test files
 across six suites; the kit's example configuration and client README.
 Removes the states the record names: Git archaeology by hand as the only
-way back from an update (the operator, 2026-10-11, for the work instance); a
+way back from an update (the operator, 2026-10-11, for a private instance); a
 prose-only `SourceAdapter` port whose only adapter lives in core, with
 nowhere an instance's own code loads from (FUP-3e22cf6f99f02005); compiled
 definitions that arrive with every machinery update; the hand-run upgrade
@@ -89,20 +89,20 @@ capture, SHA-256
 the operator's answer 5 in the conversation-only session the same day
 (ignored capture, SHA-256
 `f4fbb3cf35c2608244f373f1b12c404cc724dbb2dc838a80c6795e5d3c287d85`), asking
-for a way to undo an update, needed for the work instance; amended by the
+for a way to undo an update, needed for a private instance; amended by the
 2026-10-13 standard pass at `6dbd8771`
 ([planning document](../planning/standard-pass-2026-10-13.md) §6) after
 WO-203 landed (anchors restated, the fork's merge route given its rollback
 source, two update-path items carried). The extension point: item (g) of
 the same dispatch and the operator's tenth message in that session (the
-work fork will carry its own functionality, an enterprise-tracker import
-and the v1 integration among it, while base machinery still arrives as an
+private fork will carry its own functionality, an enterprise-tracker import
+among it, while base machinery still arrives as an
 update), the request FUP-3e22cf6f99f02005 (the 2026-10-02 candidate for an
 instance-owned source adapter's port) waited for; re-observed by the
 2026-10-13 pass on its catalog row. The build channel: item (h) of the same
 dispatch (the planner chooses between the Contributor loadout as a
 definition pack and a pinned build; the personal instance defaults to both
-channels; the work instance decides per update), with the same session
+channels; a private instance decides per update), with the same session
 locating the build in `contributor.ts` and finding no channel; the planner
 chose the pinned build and recorded the definition pack as a candidate
 (FUP-d2897b117391bb26); amended by the 2026-10-13 pass at `6dbd8771` (§6)
@@ -120,7 +120,7 @@ document](../planning/fork-notes-and-operator-questions-2026-10-21.md) §9). WO-
 WO-207 by the 2026-10-13 standard planning pass under the operator's sizing
 direction (planning document §12). Planner-synthesized. Opaque identifier,
 not a priority. Clean-room screen: fixture instances are scratch
-artifacts; the work instance is named only as such; the enterprise tracker
+artifacts; a private instance is named only as such; the enterprise tracker
 only by the generic term, with no adapter for it written or described; the
 fixture adapter reads a local JSON file.
 **Depends on:** WO-203 (hard: the update's planning and applying halves,
@@ -182,7 +182,7 @@ integration packs; the executable-code review burden; "Distribution never
 implies activation"; updates create new versions and a semantic diff) and
 §Ports (`SourceAdapter`, `decodeSourceBundle`, the declared screen);
 12-workstream-application.md §Arriving at the desk (the constrained managed
-host; the work instance) and §One workstream across repositories (the
+host; a private instance) and §One workstream across repositories (the
 update loop); 07-execution-guide.md §Preflight before the full gate;
 `docs/decisions/0002-kernel-first-agentic-core.md` §Decision, item 2;
 `docs/work-orders/WO-076-instance-build-overlay.md` (the overlay's
@@ -243,7 +243,7 @@ inside the instance:
   as the GitHub source's; `effect` and `projection` adapters are admitted
   and listed, never imported here. No export, manifest or update touches
   the root; the README states the review burden. The first consumer is a
-  fixture adapter; the enterprise-tracker adapter is the work instance's.
+  fixture adapter; an instance's own tracker adapter is that instance's.
 - **Its build.** The kit manifest names its build (the compiled definition
   modules, their semantic hash and compiler version). An update takes
   `both` (today's), `machinery` (build modules kept at their pinned bytes,
@@ -319,7 +319,7 @@ at `82b7fdb7`):*
   (`previewFromRevision`, line 1893, writes nothing; line 1943); once this
   order lands, the starter's committed log rows and their
   `preUpdateCommit` arrive through the merge, its retained copies do not.
-- The work instance, a private fork on a constrained managed host where
+- A private instance, a fork on a constrained managed host where
   core is never installed (product 12, 2026-10-11), takes updates by Git
   merge and holds no core checkout.
 
@@ -525,7 +525,7 @@ order's and the workstream's (`scripts/kit/first-order.template.md`,
   `kit-verify` passes on pinned modules and still refuses any other
   differing runtime file.
 - **Defaults.** Absent `build.channel` means `both`; the personal instance
-  keeps it; for the work instance the operator chooses per update, and the
+  keeps it; for a private instance the operator chooses per update, and the
   planning pass that cuts the upgrade order records the choice.
 
 *The update record and the rollback.*
@@ -1102,6 +1102,21 @@ feedback episode only after a `resident-state.ts` edit.
 **Write-back duty:** as listed in criteria 20 and 21.
 
 **Known issues and carry-ins:**
+- Carry-in (the operator's item 5 of 2026-10-30; FUP-75d361f43a699228's
+  seam): a private fork may keep a script of its own that reads its tracker
+  and is used during a planning session instead of a direct integration.
+  Today that needs no machinery: the fork's planner runs the script on the
+  operator's word and reads its screened output from the fork's ignored
+  intake, as it reads a pasted block. The first-class route is this order's
+  extension point: the script is a `source` adapter under `extensions`, and
+  the planner's intake step reads each configured source's open items
+  beside `gh issue list` (product 07 §Operator-opened planning pass,
+  precondition 6), through the same `decodeSourceBundle` screen the
+  vertical uses, with the adapter's module named in the planning document.
+  Core ships the seam and the fixture adapter; no tracker adapter is written
+  or described here (reopen: this order activates, whose activating pass
+  writes the planner step into it, or the operator's fork holds such a
+  script and asks for the seam sooner).
 
 - Retained copies live in the ignored local lane: a fresh clone has none
   and falls back to the pre-update commit, which the log holds only when
@@ -1123,7 +1138,7 @@ feedback episode only after a `resident-state.ts` edit.
 - Pinned definitions run against the current compiler within the guard's
   range; a compiler behavior that range kept but changed is found by
   criterion 9's equality case against the pinned revision's bundle.
-- For the work instance the operator chooses the channel per update, the
+- For a private instance the operator chooses the channel per update, the
   planning pass that cuts the upgrade order records it, and that order runs
   `build --pin` or `build --take` after its merge; the channel flag serves
   updates from core.
@@ -1153,7 +1168,7 @@ feedback episode only after a `resident-state.ts` edit.
   an instance owner without an order keeps. Reopen when an instance owner
   other than the operator takes a starter update outside an upgrade order and
   the README calls that unsupported.
-- The enterprise-tracker adapter is the work instance's first extension,
+- An instance's tracker adapter is that instance's first extension,
   never written in core; what it needs beyond this contract arrives as a
   WO-193 request. The effect and projection kinds' first consumer is a
   later order, named by the request that asks for it.
@@ -1225,7 +1240,7 @@ bootstrap after the merged update (WO-226); deciding the overlay question.
    relative-import closure under `packages/skeleton/dist/src/loadouts/`, and
    what they lower into; the hooks' runtime and the loadouts' imports outside
    that directory are machinery.
-6. The personal instance keeps `both`; for the work instance the operator
+6. The personal instance keeps `both`; for a private instance the operator
    chooses per update, through the planning pass that cuts its upgrade
    order, and may stay pinned indefinitely, the true-fork path for the
    build alone, not for the machinery.
