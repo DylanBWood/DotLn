@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "subjectSourceHash": "sha256:b3dc4d1f059270563c2cb2e836563af1cd8a597aa4a126d34765550a4d650c89",
+  "subjectSourceHash": "sha256:c72d215b0b12edf327b24c626975c2da3af09f6c5d286e4c2f5864c2ba9487c8",
   "acceptances": [
     {
       "date": "2026-10-28",
@@ -163,77 +163,87 @@
       "reason": "WO-235's operator-authorized quality pass command raises executor from 34892 to 36098 bytes, above the effective 34953. Under product 07's standing route preserve the reviewed command and accept measured bytes plus 4096; reassess when another reviewed rule needs more. Decision: docs/evidence/WO-235/decisions.md#wo-235-d044."
     }
   ],
-  "observedAt": "2026-10-30T15:58:19.303Z",
-  "subjectRevision": "30d2bc05473da4dd10b06fe9a4ad99fa884996fd",
+  "observedAt": "2026-10-30T17:21:44.248Z",
+  "subjectRevision": "d784e9b79ce280018e9fe11e106f16065b8984de",
   "rows": [
     {
       "workOrder": "WO-192",
-      "observedAt": "2026-10-30T15:58:19.303Z",
+      "observedAt": "2026-10-30T17:21:44.248Z",
       "metrics": null
     },
     {
       "workOrder": "WO-240",
-      "observedAt": "2026-10-30T15:58:19.303Z",
+      "observedAt": "2026-10-30T17:21:44.248Z",
       "metrics": null
     },
     {
       "workOrder": "WO-237",
-      "observedAt": "2026-10-30T15:58:19.303Z",
+      "observedAt": "2026-10-30T17:21:44.248Z",
       "metrics": null
     },
     {
       "workOrder": "WO-238",
-      "observedAt": "2026-10-30T15:58:19.303Z",
+      "observedAt": "2026-10-30T17:21:44.248Z",
       "metrics": null
     },
     {
       "workOrder": "WO-241",
-      "observedAt": "2026-10-30T15:58:19.303Z",
+      "observedAt": "2026-10-30T17:21:44.248Z",
       "metrics": null
     },
     {
       "workOrder": "WO-242",
-      "observedAt": "2026-10-30T15:58:19.303Z",
+      "observedAt": "2026-10-30T17:21:44.248Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-243",
+      "observedAt": "2026-10-30T17:21:44.248Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-244",
+      "observedAt": "2026-10-30T17:21:44.248Z",
       "metrics": null
     },
     {
       "workOrder": "WO-083",
-      "observedAt": "2026-10-30T15:58:19.303Z",
+      "observedAt": "2026-10-30T17:21:44.248Z",
       "metrics": null
     },
     {
       "workOrder": "WO-207",
-      "observedAt": "2026-10-30T15:58:19.303Z",
+      "observedAt": "2026-10-30T17:21:44.248Z",
       "metrics": null
     },
     {
       "workOrder": "WO-193",
-      "observedAt": "2026-10-30T15:58:19.303Z",
+      "observedAt": "2026-10-30T17:21:44.248Z",
       "metrics": null
     },
     {
       "workOrder": "WO-183",
-      "observedAt": "2026-10-30T15:58:19.303Z",
+      "observedAt": "2026-10-30T17:21:44.248Z",
       "metrics": null
     },
     {
       "workOrder": "WO-088",
-      "observedAt": "2026-10-30T15:58:19.303Z",
+      "observedAt": "2026-10-30T17:21:44.248Z",
       "metrics": null
     },
     {
       "workOrder": "WO-091",
-      "observedAt": "2026-10-30T15:58:19.303Z",
+      "observedAt": "2026-10-30T17:21:44.248Z",
       "metrics": null
     },
     {
       "workOrder": "WO-096",
-      "observedAt": "2026-10-30T15:58:19.303Z",
+      "observedAt": "2026-10-30T17:21:44.248Z",
       "metrics": null
     },
     {
       "workOrder": "WO-014",
-      "observedAt": "2026-10-30T15:58:19.303Z",
+      "observedAt": "2026-10-30T17:21:44.248Z",
       "metrics": null
     }
   ],
@@ -795,7 +805,7 @@
       "reopenCandidate": false,
       "planningCaptures": [
         {
-          "pass": "planning-fd5845a6f7f28b17",
+          "pass": "planning-46c0f753031f2f52",
           "date": "2026-10-30",
           "captures": 1
         },
@@ -1186,10 +1196,10 @@
             "skillsRoot": ".claude/skills",
             "path": ".claude/skills/dotln-executor/SKILL.md",
             "skillBytes": 29184,
-            "bytes": 36500,
+            "bytes": 36378,
             "previousBytes": 36500,
             "previousCause": null,
-            "delta": 0,
+            "delta": -122,
             "ceiling": 29246,
             "lastAcceptance": {
               "date": "2026-10-29",
@@ -1197,7 +1207,7 @@
               "revision": "297bf4f167415b17b44608b3e98a7a619862bbeb",
               "source": "297bf4f167415b17b44608b3e98a7a619862bbeb:docs/control/budgets.json",
               "bytes": 34975,
-              "delta": 1525,
+              "delta": 1403,
               "cause": null
             },
             "metric": "coldStartBytes.executor",
@@ -1208,10 +1218,10 @@
             "skillsRoot": ".claude/skills",
             "path": ".claude/skills/dotln-verifier/SKILL.md",
             "skillBytes": 24180,
-            "bytes": 31496,
+            "bytes": 31374,
             "previousBytes": 31496,
             "previousCause": null,
-            "delta": 0,
+            "delta": -122,
             "ceiling": 29831,
             "lastAcceptance": {
               "date": "2026-10-29",
@@ -1219,7 +1229,7 @@
               "revision": "297bf4f167415b17b44608b3e98a7a619862bbeb",
               "source": "297bf4f167415b17b44608b3e98a7a619862bbeb:docs/control/budgets.json",
               "bytes": 31496,
-              "delta": 0,
+              "delta": -122,
               "cause": null
             },
             "metric": "coldStartBytes.verifier",
@@ -1230,10 +1240,10 @@
             "skillsRoot": ".claude/skills",
             "path": ".claude/skills/dotln-reviewer/SKILL.md",
             "skillBytes": 26628,
-            "bytes": 33944,
+            "bytes": 33822,
             "previousBytes": 33944,
             "previousCause": null,
-            "delta": 0,
+            "delta": -122,
             "ceiling": 28884,
             "lastAcceptance": {
               "date": "2026-10-28",
@@ -1241,7 +1251,7 @@
               "revision": "7b0a5b5c80946faa36a82676f944fb1896fd99e5",
               "source": "7b0a5b5c80946faa36a82676f944fb1896fd99e5:docs/control/budgets.json",
               "bytes": 31229,
-              "delta": 2715,
+              "delta": 2593,
               "cause": null
             },
             "metric": "coldStartBytes.reviewer",
@@ -1252,10 +1262,10 @@
             "skillsRoot": ".claude/skills",
             "path": ".claude/skills/dotln-release-close/SKILL.md",
             "skillBytes": 15442,
-            "bytes": 22758,
+            "bytes": 22636,
             "previousBytes": 22758,
             "previousCause": null,
-            "delta": 0,
+            "delta": -122,
             "ceiling": 21266,
             "lastAcceptance": {
               "date": "2026-10-29",
@@ -1263,7 +1273,7 @@
               "revision": "297bf4f167415b17b44608b3e98a7a619862bbeb",
               "source": "297bf4f167415b17b44608b3e98a7a619862bbeb:docs/control/budgets.json",
               "bytes": 22657,
-              "delta": 101,
+              "delta": -21,
               "cause": null
             },
             "metric": "coldStartBytes.release-close",
@@ -1274,10 +1284,10 @@
             "skillsRoot": ".claude/skills",
             "path": ".claude/skills/dotln-planner/SKILL.md",
             "skillBytes": 16250,
-            "bytes": 23566,
+            "bytes": 23444,
             "previousBytes": 23566,
             "previousCause": null,
-            "delta": 0,
+            "delta": -122,
             "ceiling": 24576,
             "lastAcceptance": {
               "date": null,
@@ -1296,10 +1306,10 @@
             "skillsRoot": ".claude/skills",
             "path": ".claude/skills/dotln-refuter/SKILL.md",
             "skillBytes": 15064,
-            "bytes": 22380,
+            "bytes": 22258,
             "previousBytes": 22380,
             "previousCause": null,
-            "delta": 0,
+            "delta": -122,
             "ceiling": null,
             "lastAcceptance": {
               "date": null,
@@ -1318,10 +1328,10 @@
             "skillsRoot": ".agents/skills",
             "path": ".agents/skills/dotln-executor/SKILL.md",
             "skillBytes": 29184,
-            "bytes": 36500,
+            "bytes": 36378,
             "previousBytes": 36500,
             "previousCause": null,
-            "delta": 0,
+            "delta": -122,
             "ceiling": 29246,
             "lastAcceptance": {
               "date": "2026-10-29",
@@ -1329,7 +1339,7 @@
               "revision": "297bf4f167415b17b44608b3e98a7a619862bbeb",
               "source": "297bf4f167415b17b44608b3e98a7a619862bbeb:docs/control/budgets.json",
               "bytes": 34975,
-              "delta": 1525,
+              "delta": 1403,
               "cause": null
             },
             "metric": "coldStartBytes.executor",
@@ -1340,10 +1350,10 @@
             "skillsRoot": ".agents/skills",
             "path": ".agents/skills/dotln-verifier/SKILL.md",
             "skillBytes": 24180,
-            "bytes": 31496,
+            "bytes": 31374,
             "previousBytes": 31496,
             "previousCause": null,
-            "delta": 0,
+            "delta": -122,
             "ceiling": 29831,
             "lastAcceptance": {
               "date": "2026-10-29",
@@ -1351,7 +1361,7 @@
               "revision": "297bf4f167415b17b44608b3e98a7a619862bbeb",
               "source": "297bf4f167415b17b44608b3e98a7a619862bbeb:docs/control/budgets.json",
               "bytes": 31496,
-              "delta": 0,
+              "delta": -122,
               "cause": null
             },
             "metric": "coldStartBytes.verifier",
@@ -1362,10 +1372,10 @@
             "skillsRoot": ".agents/skills",
             "path": ".agents/skills/dotln-reviewer/SKILL.md",
             "skillBytes": 26628,
-            "bytes": 33944,
+            "bytes": 33822,
             "previousBytes": 33944,
             "previousCause": null,
-            "delta": 0,
+            "delta": -122,
             "ceiling": 28884,
             "lastAcceptance": {
               "date": "2026-10-28",
@@ -1373,7 +1383,7 @@
               "revision": "7b0a5b5c80946faa36a82676f944fb1896fd99e5",
               "source": "7b0a5b5c80946faa36a82676f944fb1896fd99e5:docs/control/budgets.json",
               "bytes": 31229,
-              "delta": 2715,
+              "delta": 2593,
               "cause": null
             },
             "metric": "coldStartBytes.reviewer",
@@ -1384,10 +1394,10 @@
             "skillsRoot": ".agents/skills",
             "path": ".agents/skills/dotln-release-close/SKILL.md",
             "skillBytes": 15442,
-            "bytes": 22758,
+            "bytes": 22636,
             "previousBytes": 22758,
             "previousCause": null,
-            "delta": 0,
+            "delta": -122,
             "ceiling": 21266,
             "lastAcceptance": {
               "date": "2026-10-29",
@@ -1395,7 +1405,7 @@
               "revision": "297bf4f167415b17b44608b3e98a7a619862bbeb",
               "source": "297bf4f167415b17b44608b3e98a7a619862bbeb:docs/control/budgets.json",
               "bytes": 22657,
-              "delta": 101,
+              "delta": -21,
               "cause": null
             },
             "metric": "coldStartBytes.release-close",
@@ -1406,10 +1416,10 @@
             "skillsRoot": ".agents/skills",
             "path": ".agents/skills/dotln-planner/SKILL.md",
             "skillBytes": 16250,
-            "bytes": 23566,
+            "bytes": 23444,
             "previousBytes": 23566,
             "previousCause": null,
-            "delta": 0,
+            "delta": -122,
             "ceiling": 24576,
             "lastAcceptance": {
               "date": null,
@@ -1428,10 +1438,10 @@
             "skillsRoot": ".agents/skills",
             "path": ".agents/skills/dotln-refuter/SKILL.md",
             "skillBytes": 15064,
-            "bytes": 22380,
+            "bytes": 22258,
             "previousBytes": 22380,
             "previousCause": null,
-            "delta": 0,
+            "delta": -122,
             "ceiling": null,
             "lastAcceptance": {
               "date": null,
