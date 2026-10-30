@@ -359,6 +359,27 @@ corrected a misplaced carry-in inside WO-088's quoted contract and a leftover
 retired-map dependency in WO-193 before freezing the subject. The archived
 WO-228 and WS-002 match their original Git bytes exactly.
 
-Independent refutation, its dispositions, the committed subject and the final
-`npm run test:docs` result are recorded below after execution. A pending check
-is not a passing result.
+Independent [receipt 059](refutations/2026-10-30-planning-028b478e6e71fe26-059.md)
+judges six orders in pass scope and carries nine by identity: aligned with
+findings, no holds, 0 h 10 min dispatch-to-filing. The sole worker was a fresh
+`codex-spawn-agent`, requested gpt-6.1-sol at max; effective settings remain
+unverified in the canonical receipt. The subject is commit `5b87a57d` and
+its exact committed/workspace identities passed the planning check with no
+advisories. The same worker corrected only its statement's absolute-path
+format after the receipt screen refused it; the judgment was not rerolled.
+
+The three known issues are preserved without new implementation scope:
+WO-243 reopens if selector uncertainty strands a close that the old complete
+checks could validate, or omits a mixed-change check; WO-237 reopens on
+lost/duplicate/conflicting journal attribution after an interrupted retry;
+WO-193 reconciles its historical merged-cycle cost and stale criterion-14
+reference if activation uses them to justify savings or outbound authority.
+Its current live-request grant is criterion 8. The receipt supplies each
+criterion and observation; none is an observed failure requiring another
+judgment now.
+
+The planning pull request reports the final `npm run test:docs` outcome after
+these record edits. That gate, the focused checks above and the starter probe
+are this pass's validation; no core product suite, implementation activation
+or release is claimed. The resulting plan preserves the requested deployment
+boundary and historical records, with the unbuilt behavior explicitly queued.
