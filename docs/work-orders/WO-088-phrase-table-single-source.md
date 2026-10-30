@@ -797,6 +797,15 @@ row.
 
 **Known issues and carry-ins:**
 
+- Known issue (the fork's item 5a of 2026-10-30): the fork's `plan start`
+  ran at starter v0.101.0 minutes before the v0.103.0 update merged, so
+  the pass wrote its document by hand to the new release's nine headings
+  and name, plus the one section the operator's standing direction
+  requires; the planning-document contract check this order writes admits
+  a document written to the current headings when `plan start` predates the
+  update, and the skeleton rule is the pass's own duty when an update
+  merges mid-pass (reopen: a kit check refuses a hand-written skeleton that
+  carries the current headings).
 - Receipt 033 (2026-09-28), phrase list: the guide's eleven rows keep the
   waive, withdraw, correct and override-off routes, so a check rejecting
   rows outside the seven conflicts with them. Reopen when the check rejects

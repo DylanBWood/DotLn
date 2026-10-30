@@ -27,7 +27,10 @@ pointers and continuation command. Untouched items persist across passes.
   operator's word.
 - **Every open order has a place in this list.** Closed and withdrawn
   entries leave the list at the next planning pass (WO-158); the history
-  page is their record.
+  page is their record. A member of a workstream marked `track: separate`
+  is listed under Workstreams by the generated index and needs no entry
+  here; a proposal the operator retires before activation leaves the live
+  roots for `docs/retired/` with its bytes intact.
 - **Order size.** One subsystem's chain of work is one order with one
   outcome; the binding cost is the full gate run and the fixed cycle every
   order pays. Unrelated subsystems are not bundled. Reopen when the full
@@ -47,45 +50,58 @@ same time, without babysitting, with feedback and bugs routed to where they
 belong and acted on. The fork does its foundational Angular work, the UI
 included, through its own planning passes and lifecycle; WO-083's run then
 measures one bounded Angular order driven the way the operator will drive
-orders. Work that mines or works with the predecessor, launchpad v1, is
-WS-002 (`docs/workstreams/WS-002-predecessor-track.md`), apart from the
-serial queue and blocked by nothing in it.
+orders. The operator's private instance on a constrained managed host clones
+the starter, never this repository, and carries what it needs into core
+through the operator's own planning prompts in generic terms (operator
+direction, 2026-10-30); no stream of work in this repository depends on it.
 
 ## The order, serial
 
-- WO-235: no artifact shaped by its predecessor, no operator direction
-  dropped, and every standing document holding state instead of story
-  (the operator's corrections of 2026-10-26 and item 4.c of 2026-10-28);
-  first, as the operator placed it.
-- WO-239: release close prepares the runtime before it loads it and runs
-  once; every release pays the close, and the order is small; second.
+- WO-192: the router, active with its worktree preserved, ahead of every
+  order not yet active; WO-242's router step defers to it.
+- WO-240: Node 24 beside Node 26, so the starter runs where the operator's
+  other host runs it, and the private-clone recipe in the kit README; first,
+  because the clone comes next and the order is small.
+- WO-237: a closed order keeps its journals, and a temporary root survives a
+  reboot's device renumbering (the operator's item 8 of 2026-10-30: WO-239's
+  close refused six of its own build directories); second, small and live.
 - WO-238: a document says what is so: the kinds contract, the reader
   binding, the read census and red tags, the kit's templates, the planning
-  root and the execution guide (the operator's item 4 of 2026-10-28);
-  third.
-- WO-237: a closed order keeps its journals (the operator's question of
-  2026-10-28 on the corrected unit); fourth.
-- WO-192: the router, active with its worktree preserved, before WO-083 so
+  root and the execution guide; third.
+- WO-241: the features file: `dotln.config.json` says by name what an
+  instance elects, a registry says what each feature is and whose, a
+  generated page renders it; fourth, because plan-first reads it.
+- WO-242: plan-first mode: the plan, the conversation and the proposal
+  before anything is implemented, the operator's approval as a typed event
+  the hook enforces; fifth.
+- WO-243: closeout checks follow the repositories an order changed, one
+  selection read by the role text, the integrate helper and completion (the
+  fork's item 3 of 2026-10-30); sixth, small and a convenience for the fork.
+- WO-244: paired planning passes and the synthesis pass as a routine (the
+  operator's direction of 2026-10-30): the dispatch labels, the blindness
+  refusals, the pair record and `plan synthesize`; seventh.
+- WO-083: the real run from the operator's instance, after the router so
   the measured run is driven the way the operator will drive orders.
-- WO-083: the real run from the operator's instance.
 - WO-207: an instance's kit updates: rollback, the extension point and the
-  build channel.
+  build channel; the planner's source seam for an instance's own tracker
+  script is its carry-in.
 - WO-193: an instance's requests reach core's intake.
 - WO-183: an intent enters the resident's loop.
 - WO-088: planning documents as checked contracts, with pass registration
-  out of the idea ledger.
+  out of the idea ledger and the retired header for an order that never
+  activated.
 - WO-091 (the full 5S set), WO-096 (rule migration), WO-014 (the
   approval-burden baseline).
-- WS-002, apart from the queue: WO-228, the private predecessor map, which
-  waits on WO-193's request route and on the operator running an instance
-  where the predecessor is.
 
 <!-- dotln-work-order-sequence:start -->
-- WO-235 — No artifact is shaped by its predecessor and no operator direction is dropped
-- WO-239 — Release close prepares before it loads and runs once
-- WO-238 — A document says what is so
-- WO-237 — A closed order keeps its journals
 - WO-192 — A router drives an order through its lifecycle
+- WO-240 — Node 24 beside Node 26, and the private-clone recipe
+- WO-237 — A closed order keeps its journals, and a temporary root survives a reboot
+- WO-238 — A document says what is so
+- WO-241 — The features file
+- WO-242 — Plan-first mode
+- WO-243 — Closeout checks follow the repositories an order changed
+- WO-244 — Paired planning passes and the synthesis pass
 - WO-083 — The real run from the operator's instance
 - WO-207 — An instance's kit updates: rollback, extension point and build channel
 - WO-193 — An instance's capability requests to core
@@ -94,7 +110,4 @@ serial queue and blocked by nothing in it.
 - WO-091 — The full 5S set on the Repo Gardener
 - WO-096 — Feedback rule migration
 - WO-014 — Approval-burden baseline
-
-- WO-228 — The private predecessor map (WS-002, the predecessor track)
-
 <!-- dotln-work-order-sequence:end -->

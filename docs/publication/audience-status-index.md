@@ -213,6 +213,7 @@ as a current blocked verdict.
 | [Operator recovery controls](../product/07-execution-guide.md#operator-recovery-controls)                                                                  | software-engineer                   | specified   |
 | [Ideation breakout receipt and verification](../product/07-execution-guide.md#ideation-breakout-receipt-and-verification)                                    | software-engineer                   | specified   |
 | [Operator-opened planning pass](../product/07-execution-guide.md#operator-opened-planning-pass)                                                              | software-engineer                   | implemented |
+| [Paired passes and the synthesis pass](../product/07-execution-guide.md#paired-passes-and-the-synthesis-pass)                                              | software-engineer                   | specified   |
 | [Retained planning follow-ups](../product/07-execution-guide.md#retained-planning-follow-ups)                                                                | software-engineer                   | implemented |
 | [Research and guided-operator work orders](../product/07-execution-guide.md#research-and-guided-operator-work-orders) | everyday-ai-user, software-engineer | specified |
 | [Workflow closeout and releases](../product/07-execution-guide.md#workflow-closeout-and-releases)                                                            | software-engineer                   | implemented |

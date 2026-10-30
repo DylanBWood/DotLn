@@ -3,94 +3,100 @@
   "policy": "UTF-8 bytes excluding the one registered generated block, 06-roadmap.md's dotln-release-history markers (WO-086), whose rows docs-check compares with their recorded tags; any other marker pair grants no exemption. Ceilings are planning's alone (operator direction, 2026-10-07; the 2026-10-07 pass): every planning pass sets each document's ceiling to its measured non-exempt bytes plus one tenth, records that size as nonExemptBytesAtLanding and cites its planning document; an increase outside a pass requires a resolving planning-document decision in the entry. The check reports an overrun as an advisory the next pass reads once WO-196 lands; until then an entry may name an advisoryDecision as before. No order carries a byte bound and no review asks the operator to settle bytes.",
   "documents": {
     "00-vision.md": {
-      "nonExemptBytesAtLanding": 28275,
-      "ceiling": 31103,
-      "date": "2026-10-28",
-      "decision": "docs/planning/document-contract-and-release-close-2026-10-28.md#11-write-backs-and-ceilings"
+      "nonExemptBytesAtLanding": 28208,
+      "ceiling": 31029,
+      "date": "2026-10-30",
+      "decision": "docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md#write-backs-and-ceilings"
     },
     "01-principles.md": {
       "nonExemptBytesAtLanding": 9462,
       "ceiling": 10409,
-      "date": "2026-10-28",
-      "decision": "docs/planning/document-contract-and-release-close-2026-10-28.md#11-write-backs-and-ceilings"
+      "date": "2026-10-30",
+      "decision": "docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md#write-backs-and-ceilings"
     },
     "02-domain-model.md": {
       "nonExemptBytesAtLanding": 150031,
       "ceiling": 165035,
-      "date": "2026-10-28",
-      "decision": "docs/planning/document-contract-and-release-close-2026-10-28.md#11-write-backs-and-ceilings"
+      "date": "2026-10-30",
+      "decision": "docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md#write-backs-and-ceilings"
     },
     "03-architecture.md": {
-      "nonExemptBytesAtLanding": 190325,
-      "ceiling": 209358,
-      "date": "2026-10-28",
-      "decision": "docs/planning/document-contract-and-release-close-2026-10-28.md#11-write-backs-and-ceilings"
+      "nonExemptBytesAtLanding": 190387,
+      "ceiling": 209426,
+      "date": "2026-10-30",
+      "decision": "docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md#write-backs-and-ceilings"
     },
     "04-interfaces.md": {
       "nonExemptBytesAtLanding": 67351,
       "ceiling": 74087,
-      "date": "2026-10-28",
-      "decision": "docs/planning/document-contract-and-release-close-2026-10-28.md#11-write-backs-and-ceilings"
+      "date": "2026-10-30",
+      "decision": "docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md#write-backs-and-ceilings"
     },
     "05-pattern-library.md": {
-      "nonExemptBytesAtLanding": 136263,
-      "ceiling": 149890,
-      "date": "2026-10-28",
-      "decision": "docs/planning/document-contract-and-release-close-2026-10-28.md#11-write-backs-and-ceilings"
+      "nonExemptBytesAtLanding": 136813,
+      "ceiling": 150495,
+      "date": "2026-10-30",
+      "decision": "docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md#write-backs-and-ceilings"
     },
     "06-roadmap.md": {
-      "nonExemptBytesAtLanding": 41953,
-      "ceiling": 46149,
-      "date": "2026-10-28",
-      "decision": "docs/planning/document-contract-and-release-close-2026-10-28.md#11-write-backs-and-ceilings"
+      "nonExemptBytesAtLanding": 42099,
+      "ceiling": 46309,
+      "date": "2026-10-30",
+      "decision": "docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md#write-backs-and-ceilings"
     },
     "07-execution-guide.md": {
-      "nonExemptBytesAtLanding": 279012,
-      "ceiling": 306914,
-      "date": "2026-10-28",
-      "decision": "docs/planning/document-contract-and-release-close-2026-10-28.md#11-write-backs-and-ceilings"
+      "nonExemptBytesAtLanding": 291253,
+      "ceiling": 320379,
+      "date": "2026-10-30",
+      "decision": "docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md#write-backs-and-ceilings"
     },
     "08-publication-compiler.md": {
-      "nonExemptBytesAtLanding": 26515,
-      "ceiling": 29167,
-      "date": "2026-10-28",
-      "decision": "docs/planning/document-contract-and-release-close-2026-10-28.md#11-write-backs-and-ceilings"
+      "nonExemptBytesAtLanding": 27245,
+      "ceiling": 29970,
+      "date": "2026-10-30",
+      "decision": "docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md#write-backs-and-ceilings"
     },
     "09-audit-resilience-privacy.md": {
       "nonExemptBytesAtLanding": 53441,
       "ceiling": 58786,
-      "date": "2026-10-28",
-      "decision": "docs/planning/document-contract-and-release-close-2026-10-28.md#11-write-backs-and-ceilings"
+      "date": "2026-10-30",
+      "decision": "docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md#write-backs-and-ceilings"
     },
     "10-ir-compatibility.md": {
       "nonExemptBytesAtLanding": 25787,
       "ceiling": 28366,
-      "date": "2026-10-28",
-      "decision": "docs/planning/document-contract-and-release-close-2026-10-28.md#11-write-backs-and-ceilings"
+      "date": "2026-10-30",
+      "decision": "docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md#write-backs-and-ceilings"
     },
     "11-proteino.md": {
       "nonExemptBytesAtLanding": 2058,
       "ceiling": 2264,
-      "date": "2026-10-28",
-      "decision": "docs/planning/document-contract-and-release-close-2026-10-28.md#11-write-backs-and-ceilings"
+      "date": "2026-10-30",
+      "decision": "docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md#write-backs-and-ceilings"
     },
     "11-protino.md": {
       "nonExemptBytesAtLanding": 30626,
       "ceiling": 33689,
-      "date": "2026-10-28",
-      "decision": "docs/planning/document-contract-and-release-close-2026-10-28.md#11-write-backs-and-ceilings"
+      "date": "2026-10-30",
+      "decision": "docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md#write-backs-and-ceilings"
     },
     "12-workstream-application.md": {
-      "nonExemptBytesAtLanding": 27741,
-      "ceiling": 30516,
-      "date": "2026-10-28",
-      "decision": "docs/planning/document-contract-and-release-close-2026-10-28.md#11-write-backs-and-ceilings"
+      "nonExemptBytesAtLanding": 27401,
+      "ceiling": 30142,
+      "date": "2026-10-30",
+      "decision": "docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md#write-backs-and-ceilings"
     },
     "13-uifa-roles.md": {
       "nonExemptBytesAtLanding": 27084,
       "ceiling": 29793,
-      "date": "2026-10-28",
-      "decision": "docs/planning/document-contract-and-release-close-2026-10-28.md#11-write-backs-and-ceilings"
+      "date": "2026-10-30",
+      "decision": "docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md#write-backs-and-ceilings"
+    },
+    "feature-configuration.md": {
+      "nonExemptBytesAtLanding": 5020,
+      "ceiling": 5522,
+      "date": "2026-10-30",
+      "decision": "docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md#write-backs-and-ceilings"
     }
   }
 }

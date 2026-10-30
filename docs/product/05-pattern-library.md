@@ -529,8 +529,9 @@ implement this candidate.
 ## Rhythm patterns
 
 The absence curve addresses a future automatic work-order dispatch layer.
-The predecessor `v1` needed operator-driven interactions and used a recurring
-cron trigger to avoid idling; DotLn's current dispatched orders already
+A prompt-bound agent that needs the operator to drive each interaction idles
+between them and reaches for a recurring trigger to avoid idling; DotLn's
+current dispatched orders already
 progress by their recorded status while the operator is away. The curve is
 therefore about choosing and pacing further eligible work, not making an
 active order continue.

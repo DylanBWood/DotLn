@@ -117,11 +117,10 @@ language, never the underlying facts. See the
 
 ## The one-paragraph story
 
-A predecessor system (not present in this repo) proved the concept and then
-collapsed under its own success: roughly 140 accumulated feedback rules loaded
-as prose pushed fresh sessions toward 400–500k tokens of always-on context,
-where rules fired wrongly or vanished when needed most. In the project's RPG
-vocabulary, it brought the **whole stash into every map** — as if a character
+Loading rules as prose does not scale: once roughly 140 accumulated feedback
+rules ride along, a fresh session starts near 400–500k tokens of always-on
+context, where rules fire wrongly or vanish when needed most. In the project's
+RPG vocabulary, that is bringing the **whole stash into every map** — as if a character
 carried gear for every damage type when the encounter called only for cold
 resistance. In plain language, irrelevant rules consumed attention and created
 unintended interactions before the task began. The author's implementation

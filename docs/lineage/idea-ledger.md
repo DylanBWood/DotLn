@@ -40,6 +40,26 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
+## 2026-10-30 — Planning pass: Node 24 beside Node 26, the features file, plan-first mode, the end of the predecessor track and the synthesis of the day's two blind passes (WO-240 to WO-244; WO-237, WO-238, WO-207, WO-193 and WO-088 amended; WS-002 and WO-228 archived); registration only; the record is the planning document
+
+Dispatch: `planning: standard planning pass +` with eight numbered items and
+the DotLn-Enterprise-Starter fork's block of its 2026-10-30 pass, sent at
+2026-10-30T14:54:24.168Z (hook time) in Claude Code 2.1.314 (Fable 5.1 at
+max, operator-selected), captured verbatim in
+`docs/intake/notes/planning-node24-features-config-plan-first-no-work-stream-2026-10-30.md`
+(SHA-256 `94d4f4bd85efaf035a89353d6ad88abedf8e1d29c2c298fe1b3d69b62806bd8a`).
+The pass files WO-240, WO-241 and WO-242, amends WO-237 with the
+device-number identity rule, archives WS-002 and WO-228 under `docs/retired/`
+on the operator's direction, strips the predecessor and work-context
+sentences from the standing documents and the open orders, retires WO-235
+and WO-239 from the sequence, answers the operator's eight items and the
+fork's block, and rehearses the private-clone recipe. On the operator's
+direction of 16:55Z it is also the first synthesis of the paired-pass
+routine: it reads the day's other blind pass (#256, Codex), folds its
+stronger points into this branch, files WO-243 and WO-244, writes the
+routine into product 07, and re-judges the subject (receipt 060). Record:
+[the planning document](../planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md).
+
 ## 2026-10-28 — Planning pass: release close, the entropy proposals, the follow-ups, document accretion and the fork's second block (WO-239, WO-238; WO-235 amended); registration only; the record is the planning document
 
 Dispatch: `planning:` with five numbered items and the fork's block, sent at

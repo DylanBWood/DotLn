@@ -4,9 +4,8 @@
 
 Personal work only. Never import employer code, configuration, identifiers,
 internal services, credentials, or secrets. Stop and flag suspect material;
-derive decisions from this project's public sources. Refer to the predecessor
-as `v1`; use enterprise tracker, ticket artifact, and constrained managed host
-as generic terms. No support or generated configuration may weaken this floor.
+derive decisions from this project's public sources. No support or generated
+configuration may weaken this floor.
 
 `docs/intake/` is ignored, single-copy source material. Synthesize and rewrite
 ordinary raw ideation. Exact wording is allowed only for an operator-authored

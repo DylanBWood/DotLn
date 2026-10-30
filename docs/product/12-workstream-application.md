@@ -32,17 +32,36 @@ available repository access, execution transports, and persistence capabilities.
 The view names what is usable, unavailable, or still unobserved. It does not
 promise an install, a remote worker, a provider connection, background operation,
 or access to another machine. Deployment topology is an open product choice.
-The operator's work instance is this case [operator direction, 2026-10-11]: a
+A private instance is this case [operator direction, 2026-10-11]: a
 separate, private fork of the starter on a constrained managed host where
 core is never installed. It takes the kit by a Git merge from the starter when
 its operator chooses, previewed first and reversible (WO-203, WO-207), with
 the operator's build taken or pinned per update (WO-207); its repository
 profiles may pin DotLn-Angular as an upstream reference (WO-073's convention)
-and nothing more, since that repository is not used at work; it reaches core
-only through generic capability requests (WO-193) and keeps its predecessor
-map (WO-193) private; and its own code, an enterprise-tracker source adapter
-among the first, lives at the instance extension point (WO-207), never in
-core.
+and nothing more; it reaches core only through generic capability requests
+(WO-193) or through its operator's own planning prompts to core, written in
+generic terms (operator direction, 2026-10-30); its own scripts may gather a
+tracker's items for its own planning session under its own authority; and
+its own code, a tracker source adapter among the first, lives at the
+instance extension point (WO-207), never in core. Its agent's floor is the
+kit's, owner-relative; an election it records admits its own organisation's
+ordinary project links inside the instance while credentials stay excluded
+and publications keep refusing private terms (WO-241; the
+[configuration inventory](feature-configuration.md)).
+
+**Plan-first mode (planned, WO-242).** An operator new to agents, or one
+who wants to read before anything is built, elects plan-first for the
+instance. The executor then writes three documents under the order's
+evidence path in the target repository before it changes any code: a plan
+the agent regenerates (where the change goes, why, the contracts it expects,
+the decisions so far), a conversation that persists and that both the
+operator and the agent write, and a proposal that carries the complete
+proposed change as a diff drafted apart from the target. The operator
+answers in the terminal or in the conversation document; the agent
+paraphrases its own entries, announces any transformation before it carries
+a passage onto a screened surface, never rewrites the operator's lines, and
+implements only after the operator's approval of that exact proposal is
+recorded. Direct execution stays the default where the mode is not elected.
 
 The operator selects repositories and the boundary of a proposed task. The
 reference profile previews where its inputs and outputs would go and which
@@ -75,11 +94,11 @@ required; it is never proof that an unobserved worker is still running.
 ## Replacing a successful but costly workflow
 
 Migration starts with publicly expressible outcomes and synthetic scenarios.
-No predecessor code, prompts, configuration, identifiers, or internal service
-shapes are imported. Existing behavior is described afresh as what the operator
-needs to happen, not how a predecessor implemented it.
+No code, prompts, configuration, identifiers or internal service shapes of an
+earlier workflow are imported. Existing behavior is described afresh as what the
+operator needs to happen, not how it was implemented before.
 
-Inventory the useful behaviors of both existing workflow generations
+Inventory the useful behaviors of each existing workflow generation
 separately. Each obligation needs its own replacement and evidence; matching
 their shared features does not prove parity with a capability present in only
 one generation.
@@ -101,26 +120,6 @@ task until the corresponding slice has passed its acceptance demonstration.
 [Scratch-loop proof](../evidence/WO-112/README.md) observes unaided intake, scope, tests, review triage and delivery on Claude and Codex; the [starter proof](../evidence/WO-118/README.md) adds resident-owned delivery, writer replacement, restart and review repair with all eight representative parity items observed-met, plus fresh-export live status; efficiency remains unmeasured.
 Reusing an established working environment as a temporary execution edge is a
 future adapter choice, not permission to bring its implementation here.
-
-**The predecessor census and the replacement route.** Operator direction of
-2026-10-21 (the planning dispatch's sibling capture;
-`docs/workstreams/WS-002-predecessor-track.md`): the predecessor works and
-is messy, its knowledge lives in configuration and in rules spread across
-rule files and arbitrary files of large repositories, and the question is
-how to replace it effectively and efficiently without writing massive
-planning text. The route this document already implies, made concrete: the
-inventory above is kept as typed rows in the instance (WO-228's private map,
-status per row, a carrier the emitted build actually supplies); a bounded,
-resumable census run inside the instance proposes rows per cluster of
-rule-like or configuration-like statements, never copying a source's bytes
-and never running in core; and every unmapped row becomes a request to core
-or an instance order draft, so "how to incorporate" is a list of drafts the
-operator reads. The lifecycle itself must run off the main thread at work,
-through spawned workers and the host's dynamic workflows (WO-192's router),
-with token budgets tracked later. Core ships the mechanisms with synthetic
-fixtures; the clean-room floor keeps every real row in the instance. The
-census, the plan and the lifecycle transport are candidates of the track's
-document and the planning map, filed as orders when the track activates.
 
 ## One workstream across repositories
 
@@ -200,17 +199,13 @@ reads what it produces, gives product and architecture feedback, customizes
 the instance's own features and supports, and uses the DotLn UI there to
 understand DotLn. DotLn WoW Forever, a public repository the operator
 created empty on 2026-10-13, becomes a later target, and holes found along the way return to core through the request
-intake (WO-193). A work instance forked from the starter later starts from
-the delta between what the starter does and what v1 does. It keeps that
-delta in its private predecessor map, and returns only generic,
-clean-room-screened requests to core or the starter. An Angular order pays
+intake (WO-193). An Angular order pays
 DotLn-Angular's declared repository `gate` through the target gate runner,
 plus the instance's document gate, never core's product gate (WO-210). WO-207 proposes, for the operator's review, that the
 instance's gate run the carried kit suites once per kit update and its own
 declared suites for its own additions.
-The operator means to work only from instances, the personal one at home
-and a work one at work, so core itself becomes a registered target of the
-personal instance once the target route has carried an Angular order to
+The operator means to work only from instances, so core itself becomes a
+registered target of the personal instance once the target route has carried an Angular order to
 release close; until then core is also worked directly. The operator makes
 no commits of their own in any repository, gives technical and product
 guidance, types the dispatch phrases and merges pull requests; every change
@@ -363,7 +358,7 @@ better application.
 - How should the operator define cross-repository acceptance, compatibility,
   conflict ownership, and partial-delivery recovery for the first pilot?
 - What measurable parity and reduced coordination cost justify retiring each
-  predecessor step, and which advanced behaviors can wait?
+  step of the existing workflow, and which advanced behaviors can wait?
 
 Resolve these through bounded scenario work and environment evidence. Naming
 an application, adding its first integration, allocating a work order, and
