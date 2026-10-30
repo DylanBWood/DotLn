@@ -1,0 +1,2719 @@
+{
+  "schemaVersion": 1,
+  "kind": "retained-gate-failure-audit",
+  "windowStart": "2026-10-26T15:47:18.000Z",
+  "cutoff": "2026-10-29T15:47:18.000Z",
+  "scope": "All retained check rows, check-history rows and gate-outcome records under docs/control/local in the four registered checkouts; ignored intake and nested node_modules excluded. Removed/unretained checkouts and unavailable history are not covered.",
+  "checkouts": [
+    "DotLn",
+    "DotLn-wo192",
+    "DotLn-wo235",
+    "DotLn-wo239"
+  ],
+  "recordFilesRead": 2622,
+  "uniqueRowsInWindow": 299,
+  "failedRows": 88,
+  "nonStructuralFailedRows": 68,
+  "structuralCompanionRows": 20,
+  "retainedOutputFilesScanned": 225,
+  "missingReferencedOutputs": [],
+  "parseErrors": [],
+  "interpretation": "Immediate failure observations are not blanket proof of product correctness or root cause. Mixed and unproven rows remain so labelled. Historical resolved defects are input to the consistency brief, not new open findings in WO-239.",
+  "rows": [
+    {
+      "row": 0,
+      "recordedAt": "2026-10-26T17:14:11.885Z",
+      "workOrder": "WO-192",
+      "checkout": "DotLn-wo192",
+      "check": "npm test",
+      "selection": "review",
+      "exitCode": 1,
+      "category": "expectation-drift",
+      "observation": "The post-review command-list assertion expected integration after that command had moved to the pre-review handoff. WO-192 decisions explain the shared expected array.",
+      "primaryRow": 0,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/f86f200b017ccaa573445fdf19c891cb5ffc46bcd4de98dd9941c9146053fc8d.log",
+      "failedTasks": [
+        {
+          "task": "target-worktree:file:test-target-worktree-start.mjs",
+          "outputRef": "docs/control/local/harness/check-output/43bd11e0107adb53372379e616d24e6d5f4dbaba1bd1cd6ab74712796cc71ad5.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 1,
+      "recordedAt": "2026-10-26T18:32:30.373Z",
+      "workOrder": null,
+      "checkout": "DotLn-wo192",
+      "check": "npm test",
+      "selection": null,
+      "exitCode": 1,
+      "category": "expectation-drift",
+      "observation": "The historical command inventory still expected the single-file harness command after its two-file split.",
+      "primaryRow": 1,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": null,
+      "failedTasks": [
+        {
+          "task": "runner-fixtures",
+          "outputRef": "docs/control/local/harness/check-output/eae5ba863bf33b085729c78cd945f9d5565b2756c1505cfcb9e846f45af34794.log",
+          "executed": true
+        }
+      ],
+      "stopped": true
+    },
+    {
+      "row": 2,
+      "recordedAt": "2026-10-26T19:10:31.672Z",
+      "workOrder": "WO-192",
+      "checkout": "DotLn-wo192",
+      "check": "npm run test:docs",
+      "selection": "document",
+      "exitCode": 1,
+      "category": "record-validation",
+      "observation": "A decision dispatch exceeded its one-line control-prefix contract.",
+      "primaryRow": 2,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/d9448431e20c208be6a1a5ee7e57ab1fa0150786188c1774024de75b1a7e912c.log",
+      "failedTasks": [
+        {
+          "task": "docs-check",
+          "outputRef": "docs/control/local/harness/check-output/2896b98824b6e4f657c48aaae05053d6a8f7b5eae7a431ff54a9e9cc47f5e0ed.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 3,
+      "recordedAt": "2026-10-26T19:17:55.216Z",
+      "workOrder": "WO-192",
+      "checkout": "DotLn-wo192",
+      "check": "npm run test:docs",
+      "selection": "document",
+      "exitCode": 1,
+      "category": "expectation-drift",
+      "observation": "Exact status-object expectations omitted the new route field; WO-192-D071 preserves exact checks with the authorized field.",
+      "primaryRow": 3,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/b26f66ecb008e66ed6c04116fa5337a27669c6971ebaef41d9391be88f27980e.log",
+      "failedTasks": [
+        {
+          "task": "resume",
+          "outputRef": "docs/control/local/harness/check-output/95762458effa5c787c8fb5faef2da7964f47fe6af08be6e36c589bc0902538d1.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 4,
+      "recordedAt": "2026-10-26T20:12:03.651Z",
+      "workOrder": null,
+      "checkout": "DotLn-wo192",
+      "check": "npm test",
+      "selection": null,
+      "exitCode": 1,
+      "category": "mixed",
+      "observation": "One failure is host-memory pressure in an exported instance; another is the review-listing expectation for harness-context. The two causes must not be conflated.",
+      "primaryRow": 4,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": null,
+      "failedTasks": [
+        {
+          "task": "launchpad-planning",
+          "outputRef": "docs/control/local/harness/check-output/5b1da052678d77cfd6efb19a1ecadd440b116054bf97660461c4c43f3f685107.log",
+          "executed": true
+        },
+        {
+          "task": "runner-fixtures",
+          "outputRef": "docs/control/local/harness/check-output/49ab9478b8bffe1343e458d3fd30bc33afc0638f25ac5532da17adef28592a4e.log",
+          "executed": true
+        }
+      ],
+      "stopped": true
+    },
+    {
+      "row": 5,
+      "recordedAt": "2026-10-26T20:48:06.228Z",
+      "workOrder": "WO-192",
+      "checkout": "DotLn-wo192",
+      "check": "npm test",
+      "selection": "review",
+      "exitCode": 1,
+      "category": "needs-cause-evidence",
+      "observation": "A preflight scheduling assertion failed. The retained assertion alone does not prove this was unrelated to behavior.",
+      "primaryRow": 5,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/ad550a2e03757521d2771451294b66b524447c0817c8b993f0adaf8f67f2eba9.log",
+      "failedTasks": [
+        {
+          "task": "runner-fixtures",
+          "outputRef": "docs/control/local/harness/check-output/9e5fab00750a936465950e3b6af935caaf3587be096bc967bbda85ecab051806.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 6,
+      "recordedAt": "2026-10-26T21:35:44.365Z",
+      "workOrder": "WO-192",
+      "checkout": "DotLn-wo192",
+      "check": "npm test",
+      "selection": "review",
+      "exitCode": 1,
+      "category": "expectation-drift",
+      "observation": "The exported README consumer still required resume-docs after its command inventory changed.",
+      "primaryRow": 6,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/bc8e9434b9096c8b1a89cc6b9550ee79233e4c51e6719bf3f8f5560875855357.log",
+      "failedTasks": [
+        {
+          "task": "launchpad:file:test-launchpad-export.mjs",
+          "outputRef": "docs/control/local/harness/check-output/385c27e0a9d3727b410c379d8ba52f1dc4281269bb3738bf23f0017cbb7de57f.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 7,
+      "recordedAt": "2026-10-26T22:10:38.619Z",
+      "workOrder": "WO-192",
+      "checkout": "DotLn-wo192",
+      "check": "npm test",
+      "selection": "review",
+      "exitCode": 1,
+      "category": "environment",
+      "observation": "The nested document gate refused host memory pressure; no product assertion was reached at that boundary.",
+      "primaryRow": 7,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/8e8ce4f595204a6abdd7a734088ff4c63010927defee87e137e69672dca9bef2.log",
+      "failedTasks": [
+        {
+          "task": "instance-history",
+          "outputRef": "docs/control/local/harness/check-output/a7c706061a886677947f7ebaa91716203db8a63bb054b6730777ae4b50e43895.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 8,
+      "recordedAt": "2026-10-26T22:18:12.540Z",
+      "workOrder": null,
+      "checkout": "DotLn-wo192",
+      "check": "npm test",
+      "selection": null,
+      "exitCode": 1,
+      "category": "stopped",
+      "observation": "The record says stopped by request and contains no executed failing case. It is not a diagnosed product regression.",
+      "primaryRow": 8,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": null,
+      "failedTasks": [],
+      "stopped": true
+    },
+    {
+      "row": 9,
+      "recordedAt": "2026-10-26T23:12:03.287Z",
+      "workOrder": null,
+      "checkout": "DotLn",
+      "check": "npm run test:docs",
+      "selection": "document",
+      "exitCode": 1,
+      "category": "generated-drift",
+      "observation": "The lineage index and publication source lock were stale.",
+      "primaryRow": 9,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/fc8b2de470a5b409cdd52938a1f003ef60f469b489a69b30802e56b56162e6dc.log",
+      "failedTasks": [
+        {
+          "task": "lineage",
+          "outputRef": "docs/control/local/harness/check-output/96968a9c2facd770eb30099b3c8f51ee33a22e04b6b74845530908d222247590.log",
+          "executed": true
+        },
+        {
+          "task": "publication",
+          "outputRef": "docs/control/local/harness/check-output/4c73845de398208d411e4b94de3d8f0559e2bb8bf29e381301568c91f1975887.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 10,
+      "recordedAt": "2026-10-26T23:12:03.287Z",
+      "workOrder": null,
+      "checkout": "DotLn",
+      "check": "structural",
+      "selection": "structural",
+      "exitCode": 1,
+      "category": "generated-drift",
+      "observation": "The lineage index and publication source lock were stale.",
+      "primaryRow": 9,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/fc8b2de470a5b409cdd52938a1f003ef60f469b489a69b30802e56b56162e6dc.log",
+      "failedTasks": [
+        {
+          "task": "lineage",
+          "outputRef": "docs/control/local/harness/check-output/96968a9c2facd770eb30099b3c8f51ee33a22e04b6b74845530908d222247590.log",
+          "executed": true
+        },
+        {
+          "task": "publication",
+          "outputRef": "docs/control/local/harness/check-output/4c73845de398208d411e4b94de3d8f0559e2bb8bf29e381301568c91f1975887.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 11,
+      "recordedAt": "2026-10-26T23:14:12.359Z",
+      "workOrder": null,
+      "checkout": "DotLn",
+      "check": "npm run test:docs",
+      "selection": "document",
+      "exitCode": 1,
+      "category": "record-validation",
+      "observation": "Planning and work-order documents contained absolute home or temporary paths.",
+      "primaryRow": 11,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/1fb699d83a5b8587c7d5e2de0277e79aae9a0c36684c97c17d67ec9db2d68983.log",
+      "failedTasks": [
+        {
+          "task": "docs-check",
+          "outputRef": "docs/control/local/harness/check-output/3cdcf7eba2c7273fa23d76516f1c1b1d3aa73206e19c5cf5daa19ae00bb67b43.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 12,
+      "recordedAt": "2026-10-27T02:11:14.361Z",
+      "workOrder": "WO-233",
+      "checkout": "DotLn",
+      "check": "structural",
+      "selection": "structural",
+      "exitCode": 1,
+      "category": "fixture-dependencies",
+      "observation": "The synthetic-root inventory omitted its owner file, and a copied lifecycle fixture omitted a now-transitive built runtime import.",
+      "primaryRow": 13,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/382ebe627aff7d5dd44c03dd2d964ce0d1cd09277d25fcec52e866ee01bdab8d.log",
+      "failedTasks": [
+        {
+          "task": "configuration-root",
+          "outputRef": "docs/control/local/harness/check-output/797b49a2465d45013b012ca9a8409b7aeb8b4392e2fe10f97d605d2bc8ea9305.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 13,
+      "recordedAt": "2026-10-27T02:11:14.488Z",
+      "workOrder": "WO-233",
+      "checkout": "DotLn",
+      "check": "npm test",
+      "selection": "review",
+      "exitCode": 1,
+      "category": "fixture-dependencies",
+      "observation": "The synthetic-root inventory omitted its owner file, and a copied lifecycle fixture omitted a now-transitive built runtime import.",
+      "primaryRow": 13,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/382ebe627aff7d5dd44c03dd2d964ce0d1cd09277d25fcec52e866ee01bdab8d.log",
+      "failedTasks": [
+        {
+          "task": "configuration-root",
+          "outputRef": "docs/control/local/harness/check-output/797b49a2465d45013b012ca9a8409b7aeb8b4392e2fe10f97d605d2bc8ea9305.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 14,
+      "recordedAt": "2026-10-27T02:15:28.662Z",
+      "workOrder": "WO-233",
+      "checkout": "DotLn",
+      "check": "structural",
+      "selection": "structural",
+      "exitCode": 1,
+      "category": "fixture-state",
+      "observation": "The fixture treated the new runtime metadata marker as unexpected worktree dirt.",
+      "primaryRow": 15,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/b53b860b9f125d577b6f8b14a6b348d0e5121d6e17bc337568298cabe729f70e.log",
+      "failedTasks": [
+        {
+          "task": "configuration-root",
+          "outputRef": "docs/control/local/harness/check-output/e004e2488218023a14fc73ff42407174a06a016cd72e55da2731faa9049262fa.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 15,
+      "recordedAt": "2026-10-27T02:15:28.807Z",
+      "workOrder": "WO-233",
+      "checkout": "DotLn",
+      "check": "npm test",
+      "selection": "review",
+      "exitCode": 1,
+      "category": "fixture-state",
+      "observation": "The fixture treated the new runtime metadata marker as unexpected worktree dirt.",
+      "primaryRow": 15,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/b53b860b9f125d577b6f8b14a6b348d0e5121d6e17bc337568298cabe729f70e.log",
+      "failedTasks": [
+        {
+          "task": "configuration-root",
+          "outputRef": "docs/control/local/harness/check-output/e004e2488218023a14fc73ff42407174a06a016cd72e55da2731faa9049262fa.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 16,
+      "recordedAt": "2026-10-27T02:16:49.642Z",
+      "workOrder": "WO-233",
+      "checkout": "DotLn",
+      "check": "structural",
+      "selection": "structural",
+      "exitCode": 1,
+      "category": "code-defect",
+      "observation": "The declaration scanner called an unavailable getTokenPos API. This is an implementation defect, not a stale text pin.",
+      "primaryRow": 17,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/4e8517cdc133f217a79472fa8a57d5ad72b484098e65ae211f736b63841b4ff8.log",
+      "failedTasks": [
+        {
+          "task": "declarations",
+          "outputRef": "docs/control/local/harness/check-output/67b2b9d39f60ff59540e4359b5bce82cae40b7abef51a4a4a13cb20edd9fdbfa.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 17,
+      "recordedAt": "2026-10-27T02:16:50.139Z",
+      "workOrder": "WO-233",
+      "checkout": "DotLn",
+      "check": "npm test",
+      "selection": "review",
+      "exitCode": 1,
+      "category": "code-defect",
+      "observation": "The declaration scanner called an unavailable getTokenPos API. This is an implementation defect, not a stale text pin.",
+      "primaryRow": 17,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/4e8517cdc133f217a79472fa8a57d5ad72b484098e65ae211f736b63841b4ff8.log",
+      "failedTasks": [
+        {
+          "task": "declarations",
+          "outputRef": "docs/control/local/harness/check-output/67b2b9d39f60ff59540e4359b5bce82cae40b7abef51a4a4a13cb20edd9fdbfa.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 18,
+      "recordedAt": "2026-10-27T02:29:09.310Z",
+      "workOrder": "WO-233",
+      "checkout": "DotLn",
+      "check": "npm test",
+      "selection": "review",
+      "exitCode": 1,
+      "category": "mixed",
+      "observation": "Product-only cases read excluded budget input; prune fixtures also had owner/lane/terminal-row failures and old exact root inventories. These include behavior questions as well as fixture setup.",
+      "primaryRow": 18,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/da5e40edafb27fde3e38d0768b653ac2c7ee2eb39d7493b911bd908ab41a351b.log",
+      "failedTasks": [
+        {
+          "task": "release-preparation",
+          "outputRef": "docs/control/local/harness/check-output/e05d37be36b109534d938580021490f1355c493a8434bb14b4453c2b487e22b3.log",
+          "executed": true
+        },
+        {
+          "task": "release:prepare",
+          "outputRef": "docs/control/local/harness/check-output/56d8be2da908418c20cdc1d04d03f8f8bdaca7b6ca0e1f62928ae006aa415204.log",
+          "executed": true
+        },
+        {
+          "task": "harness-fixtures",
+          "outputRef": "docs/control/local/harness/check-output/a3c63c341249ffd4f3da749c8267043533519bcd117bf10c96f01a8c1e90d040.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 19,
+      "recordedAt": "2026-10-27T03:57:58.673Z",
+      "workOrder": "WO-233",
+      "checkout": "DotLn",
+      "check": "npm test",
+      "selection": "review",
+      "exitCode": 1,
+      "category": "mixed",
+      "observation": "Broad release failures included missing copied runtime/source modules; other cases show owner-file inventory drift, target cleanup and update behavior failures. Blank shell failures remain cause-unestablished.",
+      "primaryRow": 19,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/da05222aa2b18490e0cfe29998cc206444c96da8d47b74909da457ad974f61bd.log",
+      "failedTasks": [
+        {
+          "task": "outward-lint",
+          "outputRef": "docs/control/local/harness/check-output/60d2e7254a8a893f3e36a72ff29daad9c775e276b1f915e6a00b6a3a6255becb.log",
+          "executed": true
+        },
+        {
+          "task": "target-worktree:file:test-target-worktree-start.mjs",
+          "outputRef": "docs/control/local/harness/check-output/19d7908b7189422a7f8b09a46368a7c0c520e9a946a269540507684d760ab706.log",
+          "executed": true
+        },
+        {
+          "task": "target-worktree:file:test-target-worktree-publish.mjs",
+          "outputRef": "docs/control/local/harness/check-output/82afccab2b3b308d8876bf44c8c0681b4d619291b5daa15e188bf84fd608dc25.log",
+          "executed": true
+        },
+        {
+          "task": "target-worktree:file:test-target-worktree-release.mjs",
+          "outputRef": "docs/control/local/harness/check-output/1a9f8cb687fd7ef543520981cdda5ff6b93b7d392a720e0ea9dba30c711637c0.log",
+          "executed": true
+        },
+        {
+          "task": "launchpad:file:test-launchpad-export.mjs",
+          "outputRef": "docs/control/local/harness/check-output/ac40c1cf5a50ff414ccc0a454157d71bd3c8466c12fd6985e9dfe570c964548b.log",
+          "executed": true
+        },
+        {
+          "task": "launchpad:file:test-launchpad-update.mjs",
+          "outputRef": "docs/control/local/harness/check-output/add4ff332cddfac9402d53d7a8d071767e9927dd7158a5e9d3b39bbfc3e3d071.log",
+          "executed": true
+        },
+        {
+          "task": "instance-history",
+          "outputRef": "docs/control/local/harness/check-output/6127fe9fccf1c78c87b4a202161d3d8ed6c2ea9416e8db5780bb2ead1fa66aa1.log",
+          "executed": true
+        },
+        {
+          "task": "beacon-portability",
+          "outputRef": "docs/control/local/harness/check-output/ebb5ff42a9f5666a9b1c8334c447b894405ae4dbb6882a792f0849889f849650.log",
+          "executed": true
+        },
+        {
+          "task": "worktree",
+          "outputRef": "docs/control/local/harness/check-output/6916025cfad33dc66eedd201bafa49efa5ed21eae622c205294fc810ec5bf382.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:surfaces",
+          "outputRef": "docs/control/local/harness/check-output/0513fc43af8bb6814033f583f37090d9f29398befe4af098d18060ba472780f5.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:surfaces_local_snapshot",
+          "outputRef": "docs/control/local/harness/check-output/481a0b981a89e2ad74116e7734bad366da3bdb84f6e0b69a18485979744a739a.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:prepare_independent",
+          "outputRef": "docs/control/local/harness/check-output/1c8d9cad05ceecf13f24c8c2d18087794acbee72185ad0563f9b761e73507cf6.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:license_surfaces",
+          "outputRef": "docs/control/local/harness/check-output/926c4ed34fde10cf4716ff1e249a02d26ee0a3d754741846514b478cb94342dd.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:surfaces_committed_readme",
+          "outputRef": "docs/control/local/harness/check-output/b61f20fe0da360ddf35213d7aefaa308c28eaef44ca28ec22726eeda635e00a1.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:surfaces_lower",
+          "outputRef": "docs/control/local/harness/check-output/26b5662ff07355c805ac0c876118c154635063d6afdb9e903b692f170080554c.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:surfaces_first",
+          "outputRef": "docs/control/local/harness/check-output/cdeeaa5866a4955fdb7068c96834b7026b4aba368d648327dd7f368a570559cc.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:surfaces_component",
+          "outputRef": "docs/control/local/harness/check-output/d3f46f953d9efdcf343619a99228567fb8073eebf18eac837b07b38341a42eaa.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:surfaces_non_source",
+          "outputRef": "docs/control/local/harness/check-output/00d9741c2380ac74b35128bca35ee93c40f9f20a7014a33d07f90362cdd1e990.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:surfaces_new_component",
+          "outputRef": "docs/control/local/harness/check-output/dd4cf88eab9779944a2a4389c8332bc30ff403aff74ed38adeec9e76cd4263ef.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:surfaceclose",
+          "outputRef": "docs/control/local/harness/check-output/5cb3c05e8bf337cdeef73f04b57fd76333e3637eadd07dd0a9d7a32512c74603.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:surfaceclose_linked",
+          "outputRef": "docs/control/local/harness/check-output/f8d10d7c76f34cf91833261092a16ad691bef882d784bd886010345240f6a2fe.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:bodyclose",
+          "outputRef": "docs/control/local/harness/check-output/1740f6b200964efbe62318fd7b0609962a77804a293da1ca9902f75e0a71bb89.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:dirty",
+          "outputRef": "docs/control/local/harness/check-output/709f8b2f17c3baf481cbf0cae6b673fdddf9b059d3f2a820e4ef7a8e6c39f236.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:unreachable",
+          "outputRef": "docs/control/local/harness/check-output/65ab40c7e727a5d966ea89bad35d996a76d55586548c6e21ca75c1544b95b8c8.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:derived",
+          "outputRef": "docs/control/local/harness/check-output/0b4e4adaa2a328d72f9fadee2071f1fc062428a8b67bd5372db7072034f5121d.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:settings_scope",
+          "outputRef": "docs/control/local/harness/check-output/44d21d9df7ad31bbebdc76eccc16ab113fad23dfb4a2d5b4f0831ebcd63ed86e.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:missinggh",
+          "outputRef": "docs/control/local/harness/check-output/c6fa854ba48aed4fe9c756fffcbd72383e6d7a5868e7c676cad86480cd698ae5.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:unauthenticated",
+          "outputRef": "docs/control/local/harness/check-output/f6d220bdd70fa95032cf4b55c3de92a28fc3db0ea02644d01e22a28edba16d7f.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:splitorigin",
+          "outputRef": "docs/control/local/harness/check-output/745e1ab2056f17ce62193bcf813b7786dd033b5b1201425c88bc5845c2924b19.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:lower",
+          "outputRef": "docs/control/local/harness/check-output/a8e75a6f720cd8bb6a751ebf7bec4484381f65284da22ed283a2891f994ac4ec.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:failures",
+          "outputRef": "docs/control/local/harness/check-output/33c4c48feb2b101322bb23d49fb31c803321688c93e18f763954cd82246d56c9.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:cadence_missing",
+          "outputRef": "docs/control/local/harness/check-output/0ef277948267d045f2c9f6e8c3f13cf98748c604e6559109c6c5b5c849d0a5e0.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:cadence_inconsistent",
+          "outputRef": "docs/control/local/harness/check-output/46cef80b295c5058f23807868f0112a5fb943e810bbb5791474494121abd7989.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:nestedtag",
+          "outputRef": "docs/control/local/harness/check-output/f0b82e56e9cf9b74a39407f4033c91eedeefe5634e035b9672e30694987e7136.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:prepare",
+          "outputRef": "docs/control/local/harness/check-output/71313d4b1ec23cd15baf4375bd09d123c5eec8aad50b094a33524d65c65fe8aa.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:missinglocalprevious",
+          "outputRef": "docs/control/local/harness/check-output/9be442e57680f0fc4acd894e307f60dfefcca736dd48ead615209aae8bc31f0c.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:refrecovery",
+          "outputRef": "docs/control/local/harness/check-output/c850777ba1c345ad61f1f68430cd997dc7e3119dba976647d338f82920806924.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:createrecovery",
+          "outputRef": "docs/control/local/harness/check-output/5fcfe37d1e6111377f7a65842c7481f66e2d1f018e4dca49e2a59e558d21ff60.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:malformed_material",
+          "outputRef": "docs/control/local/harness/check-output/4715997a64651ad8626b4d82ffc9b35939f5de4a5ec89da2b5a5697426065a67.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:submodule_force",
+          "outputRef": "docs/control/local/harness/check-output/5af30a0b76a9c79fb6f5cc6d60f20a53fa98f6d3ef8566c4b7b982c2b77ef888.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:stale_helpers",
+          "outputRef": "docs/control/local/harness/check-output/a439310476c1990d37206596f217655b27680acc1a4a116f5b8537864c8cb63c.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:runtime_refresh",
+          "outputRef": "docs/control/local/harness/check-output/2c936bacda0d7da2c7078f9dfab9822dbc5509bb5d09f04f7e663c9ecef6ec86.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:success",
+          "outputRef": "docs/control/local/harness/check-output/db44781c5a81fc5c233a0a708d8369287d418989189cf77f009581e48fadb7ae.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:custom_identity",
+          "outputRef": "docs/control/local/harness/check-output/3c40aa3c3ca3f2af44d3f7fe2298e9d3445529ca1d1fe9dd415bd1615d88524f.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:firstrelease",
+          "outputRef": "docs/control/local/harness/check-output/98ebfda84111df4c83d87b4a3006080ddfcbc2f511e9037be2cf6ff8d192d265.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:edition",
+          "outputRef": "docs/control/local/harness/check-output/34e2735a126728546c38133ac880451b6bbe66652e4b1ec58d6674d37f6e60a4.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:cached_evidence",
+          "outputRef": "docs/control/local/harness/check-output/153134903d36f87967181226263236db3e1682133772692d5c910657e085c278.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:composed_evidence",
+          "outputRef": "docs/control/local/harness/check-output/cc22ce1dcc5e0ae781ce6a998b1eaf9157eaba41ad752dfa87233e87a989204a.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:material",
+          "outputRef": "docs/control/local/harness/check-output/0096197c9913c952115c2f385f18538e813d3dd827b63e692496016334424deb.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:close_completion",
+          "outputRef": "docs/control/local/harness/check-output/f12a922830cbe61358d2eaef89bd60de3a81518640e7395675c201cfee054234.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:close_sealed",
+          "outputRef": "docs/control/local/harness/check-output/612acdbfb04f3da1a7b74b94c95af2b34ae9365e6a13f0cd0935ce062e5d97a6.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:close_leftover",
+          "outputRef": "docs/control/local/harness/check-output/1b90439fbd1ead935d2950ba8bbc9fc6d2eef8b3673edede3dc39841c86ce847.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:close_retry_paths",
+          "outputRef": "docs/control/local/harness/check-output/4ed6b1d88e612badf5ebdd66f960824d9f7a3d3d9f6e9ff01f80457792f28b48.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:concurrent",
+          "outputRef": "docs/control/local/harness/check-output/7c1c207a96514cd281d5e7c1433ad64aa86817766557716623b93dadc1b1aa44.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:close_receipt_recovery",
+          "outputRef": "docs/control/local/harness/check-output/785e73aa0817a78e3cebb2616376a8b493d77e878184e9d17188ac15db73e4bc.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:starter_refresh",
+          "outputRef": "docs/control/local/harness/check-output/f0159289645f10fb76c1bf44792869c9f5dc94aee503cbf5713ae1462561381a.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:meter_shape",
+          "outputRef": "docs/control/local/harness/check-output/89ad3973aff113b301ef89c98465e60bcf40105cfdc6de113915dc12613a9703.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:close_foreign_tag",
+          "outputRef": "docs/control/local/harness/check-output/60aa4fb66a279e2066685b3915828bd9031daa64fdd0429adc5024ced7d849b2.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:close_real_writer",
+          "outputRef": "docs/control/local/harness/check-output/bad0a686e657eaf6efb14d19d4c3c7d5d69bdbb72e25ef07e2b4de4fdd59b21d.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:close_overlap",
+          "outputRef": "docs/control/local/harness/check-output/b42acd762c5cb5f1c8cf1645d8b7b2dd0fc8039bed539653c2b48d45794dfca1.log",
+          "executed": true
+        },
+        {
+          "task": "skeleton",
+          "outputRef": "docs/control/local/harness/check-output/2f404e850ef575de7df7cb67b9eecc4af23c91f291f64abd2fb616d751c3d9a9.log",
+          "executed": true
+        },
+        {
+          "task": "console",
+          "outputRef": "docs/control/local/harness/check-output/4263116afa1f2c0db375755ec09dbb41a4142cd5b2ba63863ce6a4c766762cfb.log",
+          "executed": true
+        },
+        {
+          "task": "browser-evidence",
+          "outputRef": "docs/control/local/harness/check-output/7f9fe52d498660dbb3f4595926a5bc7a047dbd192f607fe03e8f0432cf0de39a.log",
+          "executed": true
+        },
+        {
+          "task": "fixture-temp-root",
+          "outputRef": "docs/control/local/harness/check-output/a97de56ee14cb8de4ba9344a3ddad44be91f9dda475d792d0f50b8ababff7ab2.log",
+          "executed": true
+        },
+        {
+          "task": "launchpad-planning",
+          "outputRef": "docs/control/local/harness/check-output/7da9a0b79d49e3738e4c5ad6a2dfa859c7b65cb766236bc45c539141a330258a.log",
+          "executed": true
+        },
+        {
+          "task": "harness-probe",
+          "outputRef": "docs/control/local/harness/check-output/38b4991c3763ee963607713135a2dcab3764282d0f0ae60da781725ea842cee6.log",
+          "executed": true
+        },
+        {
+          "task": "harness-fixtures",
+          "outputRef": "docs/control/local/harness/check-output/ed0296ed4a37d185a43a33964a658cfaf6694bf027302c49c7bedc8339882308.log",
+          "executed": true
+        },
+        {
+          "task": "plan-refutation",
+          "outputRef": "docs/control/local/harness/check-output/b3fe6583ef827c8b2aa1fd2177649e208156d6cff96e77c7d07749de152397e0.log",
+          "executed": true
+        },
+        {
+          "task": "runner-fixtures",
+          "outputRef": "docs/control/local/harness/check-output/1374597788aabf0c61d64e4ec20769e9fdbdd597f26243bcfc5d8ebe280accc7.log",
+          "executed": true
+        },
+        {
+          "task": "process-debt",
+          "outputRef": "docs/control/local/harness/check-output/def8a7f26e3b93b3b3430ca9550da5687a68dcab507b9f4e46129b91f915e5dd.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 20,
+      "recordedAt": "2026-10-27T05:26:23.626Z",
+      "workOrder": "WO-233",
+      "checkout": "DotLn",
+      "check": "npm test",
+      "selection": "review",
+      "exitCode": 1,
+      "category": "needs-cause-evidence",
+      "observation": "Several release shell cases failed with only their start line retained. Similarity to the previous runtime failures is insufficient to establish the same cause.",
+      "primaryRow": 20,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/5b34d800d72928f5283c326de5163b099af2b3918f1a8f51be3cbe9cce5561ab.log",
+      "failedTasks": [
+        {
+          "task": "launchpad:file:test-launchpad-export.mjs",
+          "outputRef": "docs/control/local/harness/check-output/4adeef7e0d6f40314cb96146d0cf9d20459d23e3f53518ff5a563127a7064c1e.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:derived",
+          "outputRef": "docs/control/local/harness/check-output/b573deeebc88b690ff431e2fd689bcd2731e423b045183df044d8bdba3fc6b9e.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:lower",
+          "outputRef": "docs/control/local/harness/check-output/e17ccf9e192a1d30dd415ba77ffdf99b641ced24997a2c838d81e5d6df410674.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:material",
+          "outputRef": "docs/control/local/harness/check-output/0b38a9ea738f1f94547914eb2055336d1d55212666c31a9265e4ed05e4361862.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:close_completion",
+          "outputRef": "docs/control/local/harness/check-output/bb36c530c75fab22dcc7c5139db712ea6332d809c558969d06a0142ce0620d62.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:close_sealed",
+          "outputRef": "docs/control/local/harness/check-output/cc524cf6b678fee9580f3d67f79bbb4c71af22da035181a998c4b6a489def7e3.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:close_leftover",
+          "outputRef": "docs/control/local/harness/check-output/574d134c3103cb4282e095938eddc769121133b74697156610c66245743938ce.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:close_retry_paths",
+          "outputRef": "docs/control/local/harness/check-output/8738c6e812b7ae7ebfa44b8748fba7e854951fb353247806ef7b0c6ae1bbac4f.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:close_receipt_recovery",
+          "outputRef": "docs/control/local/harness/check-output/488287be1f4b07753ae04b977cd5889de8e7d85399e5870d5d9e491b4481f331.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:starter_refresh",
+          "outputRef": "docs/control/local/harness/check-output/309b520200f8bd49d193215f9ae2fb509f810002213b9df0ffb3eb40f111aaac.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:close_real_writer",
+          "outputRef": "docs/control/local/harness/check-output/728ca76c4128d2977d781da2552097d8e054734dfd8c305d0e8a41efddf7d31b.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 21,
+      "recordedAt": "2026-10-27T06:25:18.920Z",
+      "workOrder": "WO-233",
+      "checkout": "DotLn",
+      "check": "npm test",
+      "selection": "review",
+      "exitCode": 1,
+      "category": "cleanup",
+      "observation": "No task assertion failed; the top-level retained output says fixture roots remain after teardown. The row records abandoned confinement roots.",
+      "primaryRow": 21,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/b643f7dd7f38349e460af35db09911caf2299db1c80acbf7a335c39016fc5d34.log",
+      "failedTasks": [],
+      "stopped": false
+    },
+    {
+      "row": 22,
+      "recordedAt": "2026-10-27T07:12:08.092Z",
+      "workOrder": "WO-233",
+      "checkout": "DotLn",
+      "check": "npm run test:docs",
+      "selection": "document",
+      "exitCode": 1,
+      "category": "expectation-drift",
+      "observation": "The console read-only file inventory omitted the fixture owner metadata file.",
+      "primaryRow": 22,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/6b012adf9428260f0cbb013e6a0c3081b4dec570807144285ee016e93f9671ee.log",
+      "failedTasks": [
+        {
+          "task": "console-docs",
+          "outputRef": "docs/control/local/harness/check-output/888b7a10c49b3113d9d06c4b9e82957c135f0d9ebb88bf5d15f8a2406744e834.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 23,
+      "recordedAt": "2026-10-27T12:29:32.310Z",
+      "workOrder": "WO-233",
+      "checkout": "DotLn",
+      "check": "structural",
+      "selection": "structural",
+      "exitCode": 1,
+      "category": "formatting",
+      "observation": "Two newly authored evidence scripts failed formatting.",
+      "primaryRow": 24,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/377519df0cc2911314339b95119936992f1b0869a6b4bf7cf33d4f3e6601f595.log",
+      "failedTasks": [
+        {
+          "task": "format",
+          "outputRef": "docs/control/local/harness/check-output/1200a4908b70251ae5c5141c3270d17650a8e078ebb788727d47a5c4d8a56556.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 24,
+      "recordedAt": "2026-10-27T12:29:32.877Z",
+      "workOrder": "WO-233",
+      "checkout": "DotLn",
+      "check": "npm run test:docs",
+      "selection": "document",
+      "exitCode": 1,
+      "category": "formatting",
+      "observation": "Two newly authored evidence scripts failed formatting.",
+      "primaryRow": 24,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/377519df0cc2911314339b95119936992f1b0869a6b4bf7cf33d4f3e6601f595.log",
+      "failedTasks": [
+        {
+          "task": "format",
+          "outputRef": "docs/control/local/harness/check-output/1200a4908b70251ae5c5141c3270d17650a8e078ebb788727d47a5c4d8a56556.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 25,
+      "recordedAt": "2026-10-27T12:31:14.968Z",
+      "workOrder": "WO-233",
+      "checkout": "DotLn",
+      "check": "npm run test:docs",
+      "selection": "document",
+      "exitCode": 1,
+      "category": "record-validation",
+      "observation": "Decisions and their generated index exposed absolute home paths.",
+      "primaryRow": 25,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/9f5b4dc3162e1dd7526c921e87b566e777480f79f805bbb2c5a1db37e77b4201.log",
+      "failedTasks": [
+        {
+          "task": "docs-check",
+          "outputRef": "docs/control/local/harness/check-output/e48c9039794bef1c7629cecc01d300937487ee6d0fbae6574d234ec7fd4e34a6.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 26,
+      "recordedAt": "2026-10-27T14:13:13.770Z",
+      "workOrder": "WO-233",
+      "checkout": "DotLn",
+      "check": "npm test",
+      "selection": "review",
+      "exitCode": 1,
+      "category": "mixed",
+      "observation": "Prune tests exposed live-capture and orphan-window behavior; one assertion also pinned an obsolete colon in the live-gate refusal wording.",
+      "primaryRow": 26,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/8260f80eac99c0d1df1bd95682cb7b4decffb71c71103b86331e0d3367ada467.log",
+      "failedTasks": [
+        {
+          "task": "harness-fixtures",
+          "outputRef": "docs/control/local/harness/check-output/6327c5cfc8d0b955bf9419e32d9b06012e1b18eb5b6c8ef0d114de0bbd7b4f66.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 27,
+      "recordedAt": "2026-10-27T14:29:07.448Z",
+      "workOrder": "WO-233",
+      "checkout": "DotLn",
+      "check": "npm test",
+      "selection": "review",
+      "exitCode": 1,
+      "category": "code-policy",
+      "observation": "A test spawned Git outside the shared library; the policy check named its source file.",
+      "primaryRow": 27,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/b4f243a67b9c347bb02dcddfb52ead8993eb941e0b658b657ee9e131022613b1.log",
+      "failedTasks": [
+        {
+          "task": "process-debt",
+          "outputRef": "docs/control/local/harness/check-output/22c300b804743971372eb16f69ae548540251f287c533a2ea6122e737159809d.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 28,
+      "recordedAt": "2026-10-27T14:57:25.754Z",
+      "workOrder": "WO-233",
+      "checkout": "DotLn",
+      "check": "npm test",
+      "selection": "review",
+      "exitCode": 1,
+      "category": "needs-cause-evidence",
+      "observation": "Instance-history failed a status assertion; the retained assertion alone does not establish an incidental cause.",
+      "primaryRow": 28,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/2db7c8b11f12f9d97eeba844fcfceffc54da889c3a1fbe36a25ad21b98d02484.log",
+      "failedTasks": [
+        {
+          "task": "instance-history",
+          "outputRef": "docs/control/local/harness/check-output/4ecebc6d06b9a1b9de2a016c1474d3acf75e0e4d7980467b259b58e057f2d259.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 29,
+      "recordedAt": "2026-10-27T15:06:29.375Z",
+      "workOrder": "WO-233",
+      "checkout": "DotLn",
+      "check": "suite:instance-history",
+      "selection": "single",
+      "exitCode": 1,
+      "category": "cleanup",
+      "observation": "Instance-history found a stale coordination root after integration and close.",
+      "primaryRow": 29,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/af0515ea1a3b632aaa7b15d682cf1ce40a23a7b28c14d65879069069acd9ff93.log",
+      "failedTasks": [
+        {
+          "task": "instance-history",
+          "outputRef": "docs/control/local/harness/check-output/ea4f987465aa6c5cbd4e13d5924f9748fceb37b17872590888bb1655ccdb8df9.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 30,
+      "recordedAt": "2026-10-27T16:05:45.958Z",
+      "workOrder": "WO-233",
+      "checkout": "DotLn",
+      "check": "npm test",
+      "selection": "review",
+      "exitCode": 1,
+      "category": "behavior-or-fixture",
+      "observation": "Source-change recovery reported transport-failed at launch-gate identity. Causality outside product behavior is not established by the log.",
+      "primaryRow": 30,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/0d35b1f9ce3abe7dc094fd2c12f4567d0d2bc28e66ba190627388111eeda5c1b.log",
+      "failedTasks": [
+        {
+          "task": "skeleton",
+          "outputRef": "docs/control/local/harness/check-output/0575f7a5fc19b05fc7758a442174ada5ef46517d6450309c9f319fc2bc949632.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 31,
+      "recordedAt": "2026-10-27T16:44:54.876Z",
+      "workOrder": "WO-233",
+      "checkout": "DotLn",
+      "check": "structural",
+      "selection": "structural",
+      "exitCode": 1,
+      "category": "declaration-drift",
+      "observation": "plan-refutation omitted the temporary-roots source from machinerySources.",
+      "primaryRow": 32,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/74df5c291f4b58e55be2fa20302ebd8614a769304a46e81e2ebfaca8a23e6053.log",
+      "failedTasks": [
+        {
+          "task": "declarations",
+          "outputRef": "docs/control/local/harness/check-output/ff710b319c44659c12c14304f81e253b08f1abdff6f6fb04a85319bb7f006929.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 32,
+      "recordedAt": "2026-10-27T16:44:55.646Z",
+      "workOrder": "WO-233",
+      "checkout": "DotLn",
+      "check": "npm test",
+      "selection": "review",
+      "exitCode": 1,
+      "category": "declaration-drift",
+      "observation": "plan-refutation omitted the temporary-roots source from machinerySources.",
+      "primaryRow": 32,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/74df5c291f4b58e55be2fa20302ebd8614a769304a46e81e2ebfaca8a23e6053.log",
+      "failedTasks": [
+        {
+          "task": "declarations",
+          "outputRef": "docs/control/local/harness/check-output/ff710b319c44659c12c14304f81e253b08f1abdff6f6fb04a85319bb7f006929.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 33,
+      "recordedAt": "2026-10-27T17:04:41.888Z",
+      "workOrder": "WO-233",
+      "checkout": "DotLn",
+      "check": "npm test",
+      "selection": "review",
+      "exitCode": 1,
+      "category": "fixture-state",
+      "observation": "A nested-root fixture expected a retention-window reason while its containing fixture gate was still live.",
+      "primaryRow": 33,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/2a46491c81ddfa4a5d065468216d33bed9228c9ea260d0dc5e773bee102ef94d.log",
+      "failedTasks": [
+        {
+          "task": "harness-fixtures",
+          "outputRef": "docs/control/local/harness/check-output/3ec3a037f55c1b7d1bb93b92836637933f347d5fe6ab08c54ce1f81022bd3315.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 34,
+      "recordedAt": "2026-10-27T18:17:51.154Z",
+      "workOrder": "WO-233",
+      "checkout": "DotLn",
+      "check": "npm run test:docs",
+      "selection": "document",
+      "exitCode": 1,
+      "category": "record-validation",
+      "observation": "New repair JSON records contained absolute home paths.",
+      "primaryRow": 34,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/b9730a7a3d1498e6584cc0acd18a264e9af860dc4167499c7f7ea0a2770a385a.log",
+      "failedTasks": [
+        {
+          "task": "docs-check",
+          "outputRef": "docs/control/local/harness/check-output/449b75048bc90f20f4885b2c279a2d03f760df798ae9866d574b4f9a8a327f81.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 35,
+      "recordedAt": "2026-10-27T19:15:46.598Z",
+      "workOrder": "WO-233",
+      "checkout": "DotLn",
+      "check": "structural",
+      "selection": "structural",
+      "exitCode": 1,
+      "category": "mixed",
+      "observation": "The structural check found literal configured-document roots; the relocated legacy seed also missed rewriting its new ownership-helper import. WO-233-D047 records both repairs.",
+      "primaryRow": 36,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/839008f6f9c87b87f59cf24b47fe08a629d62c252ccdb2c9e73418e5e12812ae.log",
+      "failedTasks": [
+        {
+          "task": "configuration-root",
+          "outputRef": "docs/control/local/harness/check-output/37b32c80eeabcc0b957768aa43265e2ee146ae92ca21aff4ffbe8fe200e9abe8.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 36,
+      "recordedAt": "2026-10-27T19:15:47.064Z",
+      "workOrder": "WO-233",
+      "checkout": "DotLn",
+      "check": "npm test",
+      "selection": "review",
+      "exitCode": 1,
+      "category": "mixed",
+      "observation": "The structural check found literal configured-document roots; the relocated legacy seed also missed rewriting its new ownership-helper import. WO-233-D047 records both repairs.",
+      "primaryRow": 36,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/839008f6f9c87b87f59cf24b47fe08a629d62c252ccdb2c9e73418e5e12812ae.log",
+      "failedTasks": [
+        {
+          "task": "configuration-root",
+          "outputRef": "docs/control/local/harness/check-output/37b32c80eeabcc0b957768aa43265e2ee146ae92ca21aff4ffbe8fe200e9abe8.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 37,
+      "recordedAt": "2026-10-27T21:54:51.590Z",
+      "workOrder": "WO-233",
+      "checkout": "DotLn",
+      "check": "npm test",
+      "selection": "review",
+      "exitCode": 1,
+      "category": "timing-unproven",
+      "observation": "The heartbeat case failed a boolean assertion. Timing is a suspected shape, not a proven host cause.",
+      "primaryRow": 37,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/679155e9ddb995cc35f620c9cf51aa49e084e4e15a21bc97c2e0de37608cf1f4.log",
+      "failedTasks": [
+        {
+          "task": "runner-fixtures",
+          "outputRef": "docs/control/local/harness/check-output/3bca205c8a09fd6b5997f6ed5e104db0978cc8a6bed98dec6bf1b6c90320f345.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 38,
+      "recordedAt": "2026-10-28T00:27:45.541Z",
+      "workOrder": "WO-233",
+      "checkout": "DotLn",
+      "check": "npm test",
+      "selection": "review",
+      "exitCode": 1,
+      "category": "fixture-state",
+      "observation": "Synthetic temporary roots were judged under the containing gate rather than their intended scenario; failures repeatedly report containing fixture gate is live. Other nested-cleanup cases need their owner/lifetime contract retained.",
+      "primaryRow": 38,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/18eab264380c73fb455ffb3cde89e8cac6db98681636744c08fe6fb36724fa2e.log",
+      "failedTasks": [
+        {
+          "task": "harness-fixtures",
+          "outputRef": "docs/control/local/harness/check-output/50cc07f364a687af22c4ec88b7987ffa79214663e2419a5add90f316ba601bb6.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 39,
+      "recordedAt": "2026-10-28T01:08:52.634Z",
+      "workOrder": "WO-233",
+      "checkout": "DotLn",
+      "check": "npm test",
+      "selection": "review",
+      "exitCode": 1,
+      "category": "expectation-drift",
+      "observation": "The role test still required the old two-worker implementation-only wording after the execution/fix three-worker rule changed.",
+      "primaryRow": 39,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/741fdec9fda12ca0be87b0b962395b515bd1c817b6cb75325f2ef6f6777c5e14.log",
+      "failedTasks": [
+        {
+          "task": "skeleton",
+          "outputRef": "docs/control/local/harness/check-output/ec5e6027801ff5949d2da36b00e24f727044bd81778b19bcf656d7e2d004f55a.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 40,
+      "recordedAt": "2026-10-28T02:08:24.795Z",
+      "workOrder": "WO-233",
+      "checkout": "DotLn",
+      "check": "npm run test:docs",
+      "selection": "document",
+      "exitCode": 1,
+      "category": "record-validation",
+      "observation": "Three decision dispatch fields violated the compact control-prefix contract.",
+      "primaryRow": 40,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/6338ecf0f0535ead542d96fb5718f833b39091bfae6d680add769e5f48479744.log",
+      "failedTasks": [
+        {
+          "task": "docs-check",
+          "outputRef": "docs/control/local/harness/check-output/0b1325b858463cb6bc2f89a9c0bbcc74aa3340ee09f0ee0ff82f4156c866d652.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 41,
+      "recordedAt": "2026-10-28T03:46:51.869Z",
+      "workOrder": "WO-233",
+      "checkout": "DotLn",
+      "check": "structural",
+      "selection": "structural",
+      "exitCode": 1,
+      "category": "record-validation",
+      "observation": "Reviewed release notes contained raw HTML forbidden by their profile.",
+      "primaryRow": 42,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/9470205e90249b1daa6af795b61e983569844ece57186721556c8a28b4b9ee1a.log",
+      "failedTasks": [
+        {
+          "task": "release-surfaces",
+          "outputRef": "docs/control/local/harness/check-output/c6a0c128abf1c0907c08e349b43630d02cf2eea69163c31531f5d8ccf6832683.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 42,
+      "recordedAt": "2026-10-28T03:46:52.835Z",
+      "workOrder": "WO-233",
+      "checkout": "DotLn",
+      "check": "npm run test:docs",
+      "selection": "document",
+      "exitCode": 1,
+      "category": "record-validation",
+      "observation": "Reviewed release notes contained raw HTML forbidden by their profile.",
+      "primaryRow": 42,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/9470205e90249b1daa6af795b61e983569844ece57186721556c8a28b4b9ee1a.log",
+      "failedTasks": [
+        {
+          "task": "release-surfaces",
+          "outputRef": "docs/control/local/harness/check-output/c6a0c128abf1c0907c08e349b43630d02cf2eea69163c31531f5d8ccf6832683.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 43,
+      "recordedAt": "2026-10-28T05:09:09.878Z",
+      "workOrder": "WO-234",
+      "checkout": "DotLn",
+      "check": "structural",
+      "selection": "structural",
+      "exitCode": 1,
+      "category": "declaration-drift",
+      "observation": "harness-fixtures omitted off-ramps from machinerySources.",
+      "primaryRow": 44,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/ee6e123fdaa179f5e98d21879efeabb7deedd76d9d1cfff1b93c2e04cd157d7c.log",
+      "failedTasks": [
+        {
+          "task": "declarations",
+          "outputRef": "docs/control/local/harness/check-output/0b17f10a4b41e4a777b4d72cd3702000cfb64e7433c1f70e92f8d9600e6743bd.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 44,
+      "recordedAt": "2026-10-28T05:09:10.379Z",
+      "workOrder": "WO-234",
+      "checkout": "DotLn",
+      "check": "npm test",
+      "selection": "review",
+      "exitCode": 1,
+      "category": "declaration-drift",
+      "observation": "harness-fixtures omitted off-ramps from machinerySources.",
+      "primaryRow": 44,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/ee6e123fdaa179f5e98d21879efeabb7deedd76d9d1cfff1b93c2e04cd157d7c.log",
+      "failedTasks": [
+        {
+          "task": "declarations",
+          "outputRef": "docs/control/local/harness/check-output/0b17f10a4b41e4a777b4d72cd3702000cfb64e7433c1f70e92f8d9600e6743bd.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 45,
+      "recordedAt": "2026-10-28T05:46:49.573Z",
+      "workOrder": "WO-234",
+      "checkout": "DotLn",
+      "check": "npm test",
+      "selection": "review",
+      "exitCode": 1,
+      "category": "mixed",
+      "observation": "Duration-format and table-column assertions used old output; copied fixtures missed duration/gate-evidence/dispatch-bound modules; the plan-start 1 KB limit also failed. The size limit is an intentional contract, not a pin to discard.",
+      "primaryRow": 45,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/f73de0a12bf37c88718f76bbaceb484e478589885f335b3b78fece78ea49bb76.log",
+      "failedTasks": [
+        {
+          "task": "beacon-portability",
+          "outputRef": "docs/control/local/harness/check-output/c04aa7c18d532b91de12bc04de7fbe008260deebf4fbdafcbf6360910ad3e930.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:concurrent",
+          "outputRef": "docs/control/local/harness/check-output/07cc337e9245ec0c4648b3780d8d9d823d46802f869fd34b31a45b4ab028c4c6.log",
+          "executed": true
+        },
+        {
+          "task": "compiler",
+          "outputRef": "docs/control/local/harness/check-output/92bf140f32c5e7fa6750bf0bb52eccdcd2d8984855a6bce4544dc2c57fa14a93.log",
+          "executed": true
+        },
+        {
+          "task": "skeleton",
+          "outputRef": "docs/control/local/harness/check-output/a1957f3c0347ea235695ee7f83b92aad589ac6c587e181abb95357bc0248d714.log",
+          "executed": true
+        },
+        {
+          "task": "harness-fixtures",
+          "outputRef": "docs/control/local/harness/check-output/3a9b79669c5478e979b0efaf61f476f326f305b25212f22fca2499163eaf3df7.log",
+          "executed": true
+        },
+        {
+          "task": "plan-refutation",
+          "outputRef": "docs/control/local/harness/check-output/ca81e69c38839f49e061a9c8b585d021121b7982248e7ee55b1bae1e465e5c97.log",
+          "executed": true
+        },
+        {
+          "task": "runner-fixtures",
+          "outputRef": "docs/control/local/harness/check-output/8ff0ec5e3b9480e73bc9e9c52a0a95c07bdec3b88ed1c85fc44684dafaf06eb0.log",
+          "executed": true
+        },
+        {
+          "task": "process-debt",
+          "outputRef": "docs/control/local/harness/check-output/0182a6987d6562a3833fa2060c156c523a2607170600aaae331504ea85d88761.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 46,
+      "recordedAt": "2026-10-28T07:17:34.794Z",
+      "workOrder": "WO-234",
+      "checkout": "DotLn",
+      "check": "npm test",
+      "selection": "review",
+      "exitCode": 1,
+      "category": "expectation-drift",
+      "observation": "The lane-wait fixture expected text for a wait that rounds to zero minutes; exact numeric wait evidence remains required by WO-234-D008.",
+      "primaryRow": 46,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/e7914ef4533e1dcf76ff1b6832a99d8360ae9adcedbb6f89667f7e1d795f0d98.log",
+      "failedTasks": [
+        {
+          "task": "runner-fixtures",
+          "outputRef": "docs/control/local/harness/check-output/875ed903106d314f8e1925c71be0418971ef6e3901cc1db37fe5b6eb27998185.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 47,
+      "recordedAt": "2026-10-28T07:24:46.677Z",
+      "workOrder": "WO-234",
+      "checkout": "DotLn",
+      "check": "suite:resume",
+      "selection": "single",
+      "exitCode": 1,
+      "category": "fixture-state",
+      "observation": "The off-ramp fixture reused an order already activated in its shared scenario.",
+      "primaryRow": 47,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/ac768f05a146cc76bbfdf26bc978e5241d357f7c471c937a2cdfa566018a97f1.log",
+      "failedTasks": [
+        {
+          "task": "resume",
+          "outputRef": "docs/control/local/harness/check-output/ecbb4609a4a0442e3d3addc5c87b8e40f73decfc286e4448fdf89fd27a7f00c1.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 48,
+      "recordedAt": "2026-10-28T07:28:02.391Z",
+      "workOrder": "WO-234",
+      "checkout": "DotLn",
+      "check": "suite:resume",
+      "selection": "single",
+      "exitCode": 1,
+      "category": "authority",
+      "observation": "The extension attempt met the then-current own-executor exclusion. This is recorded authority behavior, not cosmetic drift.",
+      "primaryRow": 48,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/a3bf84d015ee1220e56d15cf1baf8078f1b3b875dd2d54acf0c0bfe88eb631a8.log",
+      "failedTasks": [
+        {
+          "task": "resume",
+          "outputRef": "docs/control/local/harness/check-output/af048ff5ddb2d514efda433a1ad8f6bc34c78075d71c7acdb8b29b5a9d67cb31.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 49,
+      "recordedAt": "2026-10-28T07:46:00.941Z",
+      "workOrder": "WO-234",
+      "checkout": "DotLn",
+      "check": "suite:resume",
+      "selection": "single",
+      "exitCode": 1,
+      "category": "expectation-drift",
+      "observation": "A usage test attempted JSON.parse on rounded human duration text. Numeric aggregates and display wording need separate assertions.",
+      "primaryRow": 49,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/df5a676efaeee5f7d1ae9c4081938490450f5cdc548155df02c486e461ec3fbd.log",
+      "failedTasks": [
+        {
+          "task": "resume",
+          "outputRef": "docs/control/local/harness/check-output/ac618e53b3f1d482a586f61e99e1b6d70d45a9f430ef03d6966eaf62e5250fb5.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 50,
+      "recordedAt": "2026-10-28T12:54:09.080Z",
+      "workOrder": "WO-234",
+      "checkout": "DotLn",
+      "check": "structural",
+      "selection": "structural",
+      "exitCode": 1,
+      "category": "formatting",
+      "observation": "Seven new or edited control and dispatch files needed formatting.",
+      "primaryRow": 51,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/4bb72c24eb9a190443c5486bc6a0065392b8cf195d8dbf23aeaf020e4356d45c.log",
+      "failedTasks": [
+        {
+          "task": "format",
+          "outputRef": "docs/control/local/harness/check-output/45c21a32c03b932bcc170c19438cb0899e7d1abae47dcd11faabfb39279457c1.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 51,
+      "recordedAt": "2026-10-28T12:54:09.230Z",
+      "workOrder": "WO-234",
+      "checkout": "DotLn",
+      "check": "suite:resume",
+      "selection": "single",
+      "exitCode": 1,
+      "category": "formatting",
+      "observation": "Seven new or edited control and dispatch files needed formatting.",
+      "primaryRow": 51,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/4bb72c24eb9a190443c5486bc6a0065392b8cf195d8dbf23aeaf020e4356d45c.log",
+      "failedTasks": [
+        {
+          "task": "format",
+          "outputRef": "docs/control/local/harness/check-output/45c21a32c03b932bcc170c19438cb0899e7d1abae47dcd11faabfb39279457c1.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 52,
+      "recordedAt": "2026-10-28T14:07:13.271Z",
+      "workOrder": null,
+      "checkout": "DotLn",
+      "check": "npm run test:docs",
+      "selection": "document",
+      "exitCode": 1,
+      "category": "planning-state",
+      "observation": "A planning gate could not resolve one committed WO-236 authority file.",
+      "primaryRow": 52,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/1aef82a1b5822566a8f741ffd964649ffd9ee99cd1fbe707c8c4804b90336d38.log",
+      "failedTasks": [
+        {
+          "task": "plan-refutation-current",
+          "outputRef": "docs/control/local/harness/check-output/b3ed0db6a49eb4d0db18ad3b9aa169b4868f9f17891e9391b46eff6182de9406.log",
+          "executed": true
+        },
+        {
+          "task": "plan",
+          "outputRef": "docs/control/local/harness/check-output/c2dcccf45a9b004a1033034776aebc68b0bafc9042b5ab3b8ffb54a33ad208c5.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 53,
+      "recordedAt": "2026-10-28T15:10:59.612Z",
+      "workOrder": null,
+      "checkout": "DotLn",
+      "check": "npm test",
+      "selection": null,
+      "exitCode": 1,
+      "category": "expectation-drift",
+      "observation": "The exact Contributor grant array omitted the newly authorized target-worktree effect; WO-236-D010 and D011 preserve exact authority checks.",
+      "primaryRow": 53,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": null,
+      "failedTasks": [
+        {
+          "task": "authority-grants",
+          "outputRef": "docs/control/local/harness/check-output/24fc9ef788a2eab1f5a4d7b9bc366878cc37036aa9eb80d3a457b82a038a88c8.log",
+          "executed": true
+        }
+      ],
+      "stopped": true
+    },
+    {
+      "row": 54,
+      "recordedAt": "2026-10-28T15:31:19.303Z",
+      "workOrder": "WO-236",
+      "checkout": "DotLn",
+      "check": "npm test",
+      "selection": "review",
+      "exitCode": 1,
+      "category": "expectation-drift",
+      "observation": "The second role-cost consumer read the prior oracle: observed 30,874 bytes versus old 30,857; WO-236-D012 identifies scripts/test-gate-followups.mjs.",
+      "primaryRow": 54,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/1865311a1b14330446ed0df377dc4041bcd5034246d56f2692a3a9c1004666f1.log",
+      "failedTasks": [
+        {
+          "task": "process-debt",
+          "outputRef": "docs/control/local/harness/check-output/eb2b39697af05768aa3ae6a406cec146efeb418ac12e752b885e649f93ba47b3.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 55,
+      "recordedAt": "2026-10-28T16:05:48.011Z",
+      "workOrder": null,
+      "checkout": "DotLn",
+      "check": "npm test",
+      "selection": null,
+      "exitCode": 1,
+      "category": "expectation-drift",
+      "observation": "A target close fixture pinned the prior Codex launch prefix; WO-236-D015 ties the replacement to the original target-directory requirement.",
+      "primaryRow": 55,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": null,
+      "failedTasks": [
+        {
+          "task": "target-worktree:file:test-target-worktree-release.mjs",
+          "outputRef": "docs/control/local/harness/check-output/89c2b01f315a515d653bcc94859b65d08710f32bf7e4826d87a5963b1f2dec57.log",
+          "executed": true
+        }
+      ],
+      "stopped": true
+    },
+    {
+      "row": 56,
+      "recordedAt": "2026-10-28T19:34:30.161Z",
+      "workOrder": "WO-234",
+      "checkout": "DotLn",
+      "check": "npm test",
+      "selection": "review",
+      "exitCode": 1,
+      "category": "code-defect",
+      "observation": "The dispatch-bound hook returned an advisory instead of a denial because command options lacked the needed effect adapter.",
+      "primaryRow": 56,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/508b19e382c9a3c5d9f2b6ab102222da48b151b3864d153f89e24b128eb830bc.log",
+      "failedTasks": [
+        {
+          "task": "harness-fixtures",
+          "outputRef": "docs/control/local/harness/check-output/10af135c34285e85ad1747fd027702ff77d31f209b3e3fe7af0fb7c6795831c0.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 57,
+      "recordedAt": "2026-10-29T01:57:53.726Z",
+      "workOrder": "WO-234",
+      "checkout": "DotLn",
+      "check": "structural",
+      "selection": "structural",
+      "exitCode": 1,
+      "category": "record-validation",
+      "observation": "Reviewed release notes contained raw HTML forbidden by their profile.",
+      "primaryRow": 58,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/f02b498fc4d087c488b6cc178d818415f6cf11712c263c3969169f142f5d7bf2.log",
+      "failedTasks": [
+        {
+          "task": "release-surfaces",
+          "outputRef": "docs/control/local/harness/check-output/35386b8d7e1a41ad34be826161b3e406f0f3b0fb943c59fe7fed82be653bad63.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 58,
+      "recordedAt": "2026-10-29T01:57:54.664Z",
+      "workOrder": "WO-234",
+      "checkout": "DotLn",
+      "check": "npm run test:docs",
+      "selection": "document",
+      "exitCode": 1,
+      "category": "record-validation",
+      "observation": "Reviewed release notes contained raw HTML forbidden by their profile.",
+      "primaryRow": 58,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/f02b498fc4d087c488b6cc178d818415f6cf11712c263c3969169f142f5d7bf2.log",
+      "failedTasks": [
+        {
+          "task": "release-surfaces",
+          "outputRef": "docs/control/local/harness/check-output/35386b8d7e1a41ad34be826161b3e406f0f3b0fb943c59fe7fed82be653bad63.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 59,
+      "recordedAt": "2026-10-29T03:32:59.653Z",
+      "workOrder": null,
+      "checkout": "DotLn",
+      "check": "structural",
+      "selection": "structural",
+      "exitCode": 1,
+      "category": "generated-drift",
+      "observation": "The lineage index and publication source lock were stale.",
+      "primaryRow": 60,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/601e578ff5af57cc7fe8a9863ffaa386484089f900562504dfd064e5e4c06e34.log",
+      "failedTasks": [
+        {
+          "task": "lineage",
+          "outputRef": "docs/control/local/harness/check-output/96968a9c2facd770eb30099b3c8f51ee33a22e04b6b74845530908d222247590.log",
+          "executed": true
+        },
+        {
+          "task": "publication",
+          "outputRef": "docs/control/local/harness/check-output/e08ec69d4b7bdcc390b9d0aa18cb9ce19e1eebcab98ed6ec7cf24316c23de350.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 60,
+      "recordedAt": "2026-10-29T03:33:01.391Z",
+      "workOrder": null,
+      "checkout": "DotLn",
+      "check": "npm run test:docs",
+      "selection": "document",
+      "exitCode": 1,
+      "category": "generated-drift",
+      "observation": "The lineage index and publication source lock were stale.",
+      "primaryRow": 60,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/601e578ff5af57cc7fe8a9863ffaa386484089f900562504dfd064e5e4c06e34.log",
+      "failedTasks": [
+        {
+          "task": "lineage",
+          "outputRef": "docs/control/local/harness/check-output/96968a9c2facd770eb30099b3c8f51ee33a22e04b6b74845530908d222247590.log",
+          "executed": true
+        },
+        {
+          "task": "publication",
+          "outputRef": "docs/control/local/harness/check-output/e08ec69d4b7bdcc390b9d0aa18cb9ce19e1eebcab98ed6ec7cf24316c23de350.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 61,
+      "recordedAt": "2026-10-29T03:36:50.018Z",
+      "workOrder": null,
+      "checkout": "DotLn",
+      "check": "npm run test:docs",
+      "selection": "document",
+      "exitCode": 1,
+      "category": "planning-state",
+      "observation": "The planning pass lacked its required refutation receipt.",
+      "primaryRow": 61,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/b3b90bb17bbd80bfc97e9c993ba7869d9a186be0e18219358c2281b3f4fee2b9.log",
+      "failedTasks": [
+        {
+          "task": "plan-refutation-current",
+          "outputRef": "docs/control/local/harness/check-output/799c0d22b058ed7f01748cd3806c43376ffa36b3c7f00ad0ae484f6ec94d7e2e.log",
+          "executed": true
+        },
+        {
+          "task": "plan",
+          "outputRef": "docs/control/local/harness/check-output/dcc73edf099bd5d758fcbf975b67a22c8d3cd13d8fa35dc370d0057c9203b64f.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 62,
+      "recordedAt": "2026-10-29T05:07:14.724Z",
+      "workOrder": "WO-235",
+      "checkout": "DotLn-wo235",
+      "check": "structural",
+      "selection": "structural",
+      "exitCode": 1,
+      "category": "fixture-dependencies",
+      "observation": "Configuration-root fixtures could not load newly transitive planning modules and the Markdown parser.",
+      "primaryRow": 63,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/f769c547a68eea91ac2d4daad13b4e85d19854a283ee7f76be5ba384100bc07c.log",
+      "failedTasks": [
+        {
+          "task": "configuration-root",
+          "outputRef": "docs/control/local/harness/check-output/8294b790a316c65096ebc88fe73e29420111ad7e7064d61489f6f2924275f094.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 63,
+      "recordedAt": "2026-10-29T05:07:14.857Z",
+      "workOrder": "WO-235",
+      "checkout": "DotLn-wo235",
+      "check": "npm test",
+      "selection": "review",
+      "exitCode": 1,
+      "category": "fixture-dependencies",
+      "observation": "Configuration-root fixtures could not load newly transitive planning modules and the Markdown parser.",
+      "primaryRow": 63,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/f769c547a68eea91ac2d4daad13b4e85d19854a283ee7f76be5ba384100bc07c.log",
+      "failedTasks": [
+        {
+          "task": "configuration-root",
+          "outputRef": "docs/control/local/harness/check-output/8294b790a316c65096ebc88fe73e29420111ad7e7064d61489f6f2924275f094.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 64,
+      "recordedAt": "2026-10-29T05:07:53.630Z",
+      "workOrder": "WO-235",
+      "checkout": "DotLn-wo235",
+      "check": "structural",
+      "selection": "structural",
+      "exitCode": 1,
+      "category": "fixture-dependencies",
+      "observation": "The focused reproduction still lacked work-orders.mjs and prettier in copied fixtures.",
+      "primaryRow": 65,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/159c34afaf0c5ed05dc4df8b6a41f5b1d6f8f93293e7b58168b0087144b21130.log",
+      "failedTasks": [
+        {
+          "task": "configuration-root",
+          "outputRef": "docs/control/local/harness/check-output/d597f8d84c68fd76031b6f26b9361137d0783169b65b7b3bd155dd633fc8525d.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 65,
+      "recordedAt": "2026-10-29T05:07:53.760Z",
+      "workOrder": "WO-235",
+      "checkout": "DotLn-wo235",
+      "check": "suite:configuration-root",
+      "selection": "single",
+      "exitCode": 1,
+      "category": "fixture-dependencies",
+      "observation": "The focused reproduction still lacked work-orders.mjs and prettier in copied fixtures.",
+      "primaryRow": 65,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/159c34afaf0c5ed05dc4df8b6a41f5b1d6f8f93293e7b58168b0087144b21130.log",
+      "failedTasks": [
+        {
+          "task": "configuration-root",
+          "outputRef": "docs/control/local/harness/check-output/d597f8d84c68fd76031b6f26b9361137d0783169b65b7b3bd155dd633fc8525d.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 66,
+      "recordedAt": "2026-10-29T05:09:07.016Z",
+      "workOrder": "WO-235",
+      "checkout": "DotLn-wo235",
+      "check": "structural",
+      "selection": "structural",
+      "exitCode": 1,
+      "category": "formatting",
+      "observation": "artifact-comparison.mjs needed formatting.",
+      "primaryRow": 67,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/adef6762991829bbb9d33924192a4f27622d3d7e28144238f7f7acdcc9fd8d39.log",
+      "failedTasks": [
+        {
+          "task": "format",
+          "outputRef": "docs/control/local/harness/check-output/05a502c1807939b281dbd3e22d3311332bc00089022a29de3c8cc66d1a3f7a45.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 67,
+      "recordedAt": "2026-10-29T05:09:07.085Z",
+      "workOrder": "WO-235",
+      "checkout": "DotLn-wo235",
+      "check": "suite:configuration-root",
+      "selection": "single",
+      "exitCode": 1,
+      "category": "formatting",
+      "observation": "artifact-comparison.mjs needed formatting.",
+      "primaryRow": 67,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/adef6762991829bbb9d33924192a4f27622d3d7e28144238f7f7acdcc9fd8d39.log",
+      "failedTasks": [
+        {
+          "task": "format",
+          "outputRef": "docs/control/local/harness/check-output/05a502c1807939b281dbd3e22d3311332bc00089022a29de3c8cc66d1a3f7a45.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 68,
+      "recordedAt": "2026-10-29T05:09:45.129Z",
+      "workOrder": "WO-235",
+      "checkout": "DotLn-wo235",
+      "check": "structural",
+      "selection": "structural",
+      "exitCode": 1,
+      "category": "declaration-drift",
+      "observation": "The new directions JSONL protocol lacked a registration.",
+      "primaryRow": 69,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/c35c13575752cbf57155a0ed5810fb6b86268795ee68ce7a6e663d277a7ea375.log",
+      "failedTasks": [
+        {
+          "task": "registrations",
+          "outputRef": "docs/control/local/harness/check-output/6d1d9878137beff88e55b8a9c017b3d662235caa3deb6fe797bd10976a9121bb.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 69,
+      "recordedAt": "2026-10-29T05:09:45.618Z",
+      "workOrder": "WO-235",
+      "checkout": "DotLn-wo235",
+      "check": "suite:configuration-root",
+      "selection": "single",
+      "exitCode": 1,
+      "category": "declaration-drift",
+      "observation": "The new directions JSONL protocol lacked a registration.",
+      "primaryRow": 69,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/c35c13575752cbf57155a0ed5810fb6b86268795ee68ce7a6e663d277a7ea375.log",
+      "failedTasks": [
+        {
+          "task": "registrations",
+          "outputRef": "docs/control/local/harness/check-output/6d1d9878137beff88e55b8a9c017b3d662235caa3deb6fe797bd10976a9121bb.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 70,
+      "recordedAt": "2026-10-29T05:15:24.283Z",
+      "workOrder": "WO-235",
+      "checkout": "DotLn-wo235",
+      "check": "structural",
+      "selection": "structural",
+      "exitCode": 1,
+      "category": "declaration-drift",
+      "observation": "process-debt omitted plan-subject.mjs from machinerySources.",
+      "primaryRow": 71,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/a0667df2e5fc06ca11211a6a94a61e9afed4f0473a60a1dca04edc7f28b46885.log",
+      "failedTasks": [
+        {
+          "task": "declarations",
+          "outputRef": "docs/control/local/harness/check-output/7f11c44243de7f98b1925859a04b38ce248b43fc742c955ebaeb587289b948a2.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 71,
+      "recordedAt": "2026-10-29T05:15:24.771Z",
+      "workOrder": "WO-235",
+      "checkout": "DotLn-wo235",
+      "check": "suite:configuration-root",
+      "selection": "single",
+      "exitCode": 1,
+      "category": "declaration-drift",
+      "observation": "process-debt omitted plan-subject.mjs from machinerySources.",
+      "primaryRow": 71,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/a0667df2e5fc06ca11211a6a94a61e9afed4f0473a60a1dca04edc7f28b46885.log",
+      "failedTasks": [
+        {
+          "task": "declarations",
+          "outputRef": "docs/control/local/harness/check-output/7f11c44243de7f98b1925859a04b38ce248b43fc742c955ebaeb587289b948a2.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 72,
+      "recordedAt": "2026-10-29T05:24:02.070Z",
+      "workOrder": "WO-235",
+      "checkout": "DotLn-wo235",
+      "check": "npm test",
+      "selection": "review",
+      "exitCode": 1,
+      "category": "mixed",
+      "observation": "The release-note reader seed omitted facts.json; a Stop fixture also lacked new answered-message setup. WO-235-D011/D012 describe the fixture repairs.",
+      "primaryRow": 72,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/f2d66b2cb05716683dfcdcac33b9296a4621a1b488de32058ed71bf31f1139c4.log",
+      "failedTasks": [
+        {
+          "task": "release-preparation",
+          "outputRef": "docs/control/local/harness/check-output/0ffdba8f8d9edb3d447c7ece178e327fddfc05b7cb800b1e0e4a4fde3565df77.log",
+          "executed": true
+        },
+        {
+          "task": "harness-fixtures",
+          "outputRef": "docs/control/local/harness/check-output/41acb599eea765839754df0459aa3e859bc3cd78047946d99096f021d7b550b4.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 73,
+      "recordedAt": "2026-10-29T05:36:28.113Z",
+      "workOrder": "WO-235",
+      "checkout": "DotLn-wo235",
+      "check": "npm test",
+      "selection": "review",
+      "exitCode": 1,
+      "category": "fixture-state",
+      "observation": "The older Stop scenario lacked the newly required answered-message setup; a later expected journal was absent.",
+      "primaryRow": 73,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/5426c976898b2565ead471d2097d24a7cc81d72d091ab28f5d61a4f89a7e4318.log",
+      "failedTasks": [
+        {
+          "task": "harness-fixtures",
+          "outputRef": "docs/control/local/harness/check-output/591d3b8730901d65eff72b427d001cfa675042ae3738c1ef75567c7daa2a2489.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 74,
+      "recordedAt": "2026-10-29T05:51:51.382Z",
+      "workOrder": "WO-235",
+      "checkout": "DotLn-wo235",
+      "check": "npm test",
+      "selection": "review",
+      "exitCode": 1,
+      "category": "fixture-dependencies",
+      "observation": "Several process-debt fixtures omitted direction-ledger.mjs from the copied helper closure.",
+      "primaryRow": 74,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/a6ab7785dcd86d50e93f27e2180e7cb1c776838213200fc59c31eff4a0b69744.log",
+      "failedTasks": [
+        {
+          "task": "process-debt",
+          "outputRef": "docs/control/local/harness/check-output/cf908394305e930bf0d980eac7972060a0b1f64271b9078a5a1a5598c721ab38.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 75,
+      "recordedAt": "2026-10-29T05:57:58.009Z",
+      "workOrder": "WO-235",
+      "checkout": "DotLn-wo235",
+      "check": "suite:process-debt",
+      "selection": "single",
+      "exitCode": 1,
+      "category": "code-defect",
+      "observation": "The runtime mixed synchronous require with an incompletely loaded ES module; the log names ERR_REQUIRE_ESM_RACE_CONDITION.",
+      "primaryRow": 75,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/b522cc191da61f7d847e347c0eb206ed68673cb3b4ff8b2f57de18e83b1f559f.log",
+      "failedTasks": [
+        {
+          "task": "process-debt",
+          "outputRef": "docs/control/local/harness/check-output/b24f21153941ecbc7e5d6027ecc071bb60d13c613a6efa519baf956114d22691.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 76,
+      "recordedAt": "2026-10-29T06:00:10.755Z",
+      "workOrder": "WO-235",
+      "checkout": "DotLn-wo235",
+      "check": "structural",
+      "selection": "structural",
+      "exitCode": 1,
+      "category": "generated-drift",
+      "observation": "The decisions index was stale.",
+      "primaryRow": 77,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/9c0ed65ffaaa930714a60b93d4ed45ac58ea416b7b1bbeee8cc0e77fbd4febea.log",
+      "failedTasks": [
+        {
+          "task": "meta",
+          "outputRef": "docs/control/local/harness/check-output/b057c0dd2e517f3c782e9b8876e75dbf19b6d68f875e015ccb0e50a87b782ea3.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 77,
+      "recordedAt": "2026-10-29T06:00:11.327Z",
+      "workOrder": "WO-235",
+      "checkout": "DotLn-wo235",
+      "check": "suite:process-debt",
+      "selection": "single",
+      "exitCode": 1,
+      "category": "generated-drift",
+      "observation": "The decisions index was stale.",
+      "primaryRow": 77,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/9c0ed65ffaaa930714a60b93d4ed45ac58ea416b7b1bbeee8cc0e77fbd4febea.log",
+      "failedTasks": [
+        {
+          "task": "meta",
+          "outputRef": "docs/control/local/harness/check-output/b057c0dd2e517f3c782e9b8876e75dbf19b6d68f875e015ccb0e50a87b782ea3.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 78,
+      "recordedAt": "2026-10-29T06:03:45.622Z",
+      "workOrder": "WO-235",
+      "checkout": "DotLn-wo235",
+      "check": "suite:process-debt",
+      "selection": "single",
+      "exitCode": 1,
+      "category": "behavior-or-fixture",
+      "observation": "The conversation-only fixture observed zero expected events instead of three; the assertion alone does not prove unrelated causality.",
+      "primaryRow": 78,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/5ea318d7cf5da09f863e540e1ed3fc1ce779ce74bda37efe9a1eb4facfa75aaf.log",
+      "failedTasks": [
+        {
+          "task": "process-debt",
+          "outputRef": "docs/control/local/harness/check-output/15f4ec4e2a16067f0423a4305bae47502268fbdf0c648d02cc87374197996fe3.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 79,
+      "recordedAt": "2026-10-29T12:34:16.058Z",
+      "workOrder": "WO-235",
+      "checkout": "DotLn-wo235",
+      "check": "npm test",
+      "selection": "review",
+      "exitCode": 1,
+      "category": "mixed",
+      "observation": "The planning output expected a prior shape; the legacy-update scenario also hit a README stash conflict. Preserve the update behavior question separately.",
+      "primaryRow": 79,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/192ca3aa536c6d4977f5fbe5206929b54d76cd9cbb67defd96786560845aec12.log",
+      "failedTasks": [
+        {
+          "task": "launchpad-planning",
+          "outputRef": "docs/control/local/harness/check-output/a1edaea0821f33299fcb8f2dc6a57eeb29e642b4a85111adf9c0ab33b6412c91.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 80,
+      "recordedAt": "2026-10-29T13:13:07.010Z",
+      "workOrder": "WO-235",
+      "checkout": "DotLn-wo235",
+      "check": "npm test",
+      "selection": "review",
+      "exitCode": 1,
+      "category": "expectation-drift",
+      "observation": "The exact plan-start field list omitted the new document field; WO-235-D018 retains count and size contracts and asserts the named skeleton.",
+      "primaryRow": 80,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/a86f590bb3c7854c0738a8decbb5b790fe68ab64335a6621583d962275855e08.log",
+      "failedTasks": [
+        {
+          "task": "plan-refutation",
+          "outputRef": "docs/control/local/harness/check-output/55930f97bca9a8620821077eaf22fb62f39e78752f0587b0a9a9eff2aad8ebba.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 81,
+      "recordedAt": "2026-10-29T13:49:07.623Z",
+      "workOrder": "WO-235",
+      "checkout": "DotLn-wo235",
+      "check": "npm test",
+      "selection": "review",
+      "exitCode": 1,
+      "category": "observation-noise",
+      "observation": "Equivalent target-briefing outputs differed in bytesWritten (2,845,900 versus 2,845,898); WO-235-D019 normalizes observed churn numbers while keeping keys and statuses.",
+      "primaryRow": 81,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/550aa2494efc6283f4eecfecd43a41daf8832e3ce2be77d1cd98c1bb32cdddad.log",
+      "failedTasks": [
+        {
+          "task": "target-worktree:file:test-target-worktree-start.mjs",
+          "outputRef": "docs/control/local/harness/check-output/fafef404b28e4f38ea43ee7ef0a0292da22542226c85a1317fd58c6fd76a79fa.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 82,
+      "recordedAt": "2026-10-29T14:57:47.931Z",
+      "workOrder": "WO-235",
+      "checkout": "DotLn-wo235",
+      "check": "structural",
+      "selection": "structural",
+      "exitCode": 1,
+      "category": "generated-drift",
+      "observation": "The decisions index was stale after handoff edits.",
+      "primaryRow": 83,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/9c0ed65ffaaa930714a60b93d4ed45ac58ea416b7b1bbeee8cc0e77fbd4febea.log",
+      "failedTasks": [
+        {
+          "task": "meta",
+          "outputRef": "docs/control/local/harness/check-output/b057c0dd2e517f3c782e9b8876e75dbf19b6d68f875e015ccb0e50a87b782ea3.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 83,
+      "recordedAt": "2026-10-29T14:57:49.679Z",
+      "workOrder": "WO-235",
+      "checkout": "DotLn-wo235",
+      "check": "npm run test:docs",
+      "selection": "document",
+      "exitCode": 1,
+      "category": "generated-drift",
+      "observation": "The decisions index was stale after handoff edits.",
+      "primaryRow": 83,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/9c0ed65ffaaa930714a60b93d4ed45ac58ea416b7b1bbeee8cc0e77fbd4febea.log",
+      "failedTasks": [
+        {
+          "task": "meta",
+          "outputRef": "docs/control/local/harness/check-output/b057c0dd2e517f3c782e9b8876e75dbf19b6d68f875e015ccb0e50a87b782ea3.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 84,
+      "recordedAt": "2026-10-29T15:00:37.691Z",
+      "workOrder": "WO-235",
+      "checkout": "DotLn-wo235",
+      "check": "npm run test:docs",
+      "selection": "document",
+      "exitCode": 1,
+      "category": "record-validation",
+      "observation": "A decision dispatch violated its one-line control-prefix contract.",
+      "primaryRow": 84,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/bb378897010fccf857e785cde25c2d05a385732b4de4fc92240ef32fe4b4db16.log",
+      "failedTasks": [
+        {
+          "task": "docs-check",
+          "outputRef": "docs/control/local/harness/check-output/17a7dab1cd05248635fbfda765b683fa29618768052b7d529aa2063b0b595cc3.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 85,
+      "recordedAt": "2026-10-29T15:18:34.531Z",
+      "workOrder": "WO-239",
+      "checkout": "DotLn-wo239",
+      "check": "structural",
+      "selection": "structural",
+      "exitCode": 1,
+      "category": "code-defect",
+      "observation": "The JavaScript scanner did not advance on shell source at byte 20899; WO-239-D008 records the language-boundary repair.",
+      "primaryRow": 86,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/8a5d2f28024af1094c31241b3e1d2aebe6bf60134c4c237820eff06d17242bdd.log",
+      "failedTasks": [
+        {
+          "task": "declarations",
+          "outputRef": "docs/control/local/harness/check-output/70f52a9c73526043266990f0b7f97393516faaec33593c184055f66061592a5b.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 86,
+      "recordedAt": "2026-10-29T15:18:36.095Z",
+      "workOrder": "WO-239",
+      "checkout": "DotLn-wo239",
+      "check": "npm test",
+      "selection": "review",
+      "exitCode": 1,
+      "category": "code-defect",
+      "observation": "The JavaScript scanner did not advance on shell source at byte 20899; WO-239-D008 records the language-boundary repair.",
+      "primaryRow": 86,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": "docs/control/local/harness/check-output/8a5d2f28024af1094c31241b3e1d2aebe6bf60134c4c237820eff06d17242bdd.log",
+      "failedTasks": [
+        {
+          "task": "declarations",
+          "outputRef": "docs/control/local/harness/check-output/70f52a9c73526043266990f0b7f97393516faaec33593c184055f66061592a5b.log",
+          "executed": true
+        }
+      ],
+      "stopped": false
+    },
+    {
+      "row": 87,
+      "recordedAt": "2026-10-29T15:46:06.849Z",
+      "workOrder": null,
+      "checkout": "DotLn-wo239",
+      "check": "npm test",
+      "selection": "review",
+      "exitCode": 1,
+      "category": "mixed",
+      "observation": "surfaceclose and surfaceclose_linked failed. Retained fixture records and the focused trace show a build before source-surface refusal; old full-path output assertions also needed compact-output updates. The executor stopped the remaining run.",
+      "primaryRow": 87,
+      "sourceRecords": [
+        "docs/control/local/harness/checks.json"
+      ],
+      "outputRef": null,
+      "failedTasks": [
+        {
+          "task": "release:case:surfaceclose",
+          "outputRef": "docs/control/local/harness/check-output/5cb3c05e8bf337cdeef73f04b57fd76333e3637eadd07dd0a9d7a32512c74603.log",
+          "executed": true
+        },
+        {
+          "task": "release:case:surfaceclose_linked",
+          "outputRef": "docs/control/local/harness/check-output/f8d10d7c76f34cf91833261092a16ad691bef882d784bd886010345240f6a2fe.log",
+          "executed": true
+        }
+      ],
+      "stopped": true
+    }
+  ],
+  "outputInventoryMethod": "The rows retain top-level and failed leaf output references; intermediateAggregateOutputs adds failed internal generated nodes. Deduplicate both inventories by checkout and outputRef.",
+  "intermediateAggregateOutputs": [
+    {
+      "checkout": "DotLn",
+      "outputRef": "docs/control/local/harness/check-output/3dda871ad7cba278f8c1749de4c7fc1d9fc9d80d1550a86b8a2e290af7586077.log",
+      "bytes": 980,
+      "nodes": [
+        {
+          "row": 9,
+          "name": "generated",
+          "depth": 1,
+          "children": 16
+        },
+        {
+          "row": 10,
+          "name": "generated",
+          "depth": 1,
+          "children": 16
+        }
+      ]
+    },
+    {
+      "checkout": "DotLn",
+      "outputRef": "docs/control/local/harness/check-output/f30164522c86fb558af3a47f29e8a548a11ef7906205e2c748564527550bf52e.log",
+      "bytes": 9611,
+      "nodes": [
+        {
+          "row": 41,
+          "name": "generated",
+          "depth": 1,
+          "children": 16
+        },
+        {
+          "row": 42,
+          "name": "generated",
+          "depth": 1,
+          "children": 16
+        }
+      ]
+    },
+    {
+      "checkout": "DotLn",
+      "outputRef": "docs/control/local/harness/check-output/ebf194a717a080fdfb91c9ad1bc5aeadd5095f49f5290a7ebdd1e4a09bb61c78.log",
+      "bytes": 9650,
+      "nodes": [
+        {
+          "row": 57,
+          "name": "generated",
+          "depth": 1,
+          "children": 16
+        },
+        {
+          "row": 58,
+          "name": "generated",
+          "depth": 1,
+          "children": 16
+        }
+      ]
+    },
+    {
+      "checkout": "DotLn",
+      "outputRef": "docs/control/local/harness/check-output/7ffc1d8f86124e4927f1c59ea97d0bfbc5670913399ed452aa46ddd097636534.log",
+      "bytes": 1012,
+      "nodes": [
+        {
+          "row": 59,
+          "name": "generated",
+          "depth": 1,
+          "children": 16
+        },
+        {
+          "row": 60,
+          "name": "generated",
+          "depth": 1,
+          "children": 16
+        }
+      ]
+    },
+    {
+      "checkout": "DotLn-wo235",
+      "outputRef": "docs/control/local/harness/check-output/92a1804018425a5269e1210654d627d4662351d14a7600b556719e5c751dd07a.log",
+      "bytes": 588,
+      "nodes": [
+        {
+          "row": 76,
+          "name": "generated",
+          "depth": 1,
+          "children": 16
+        },
+        {
+          "row": 77,
+          "name": "generated",
+          "depth": 1,
+          "children": 16
+        },
+        {
+          "row": 82,
+          "name": "generated",
+          "depth": 1,
+          "children": 16
+        },
+        {
+          "row": 83,
+          "name": "generated",
+          "depth": 1,
+          "children": 16
+        }
+      ]
+    }
+  ]
+}

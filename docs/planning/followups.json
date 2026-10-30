@@ -48698,6 +48698,50 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-69af2e1da022aa7a",
+      "key": "decision:docs/evidence/WO-239/decisions.md#wo-239-d020",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "442c836defaf89b59bc618ba28e122f6d51d17656b336a261fc71817ecd31cbe",
+          "ref": "docs/evidence/WO-239/decisions.md#wo-239-d020--resolve-the-integrated-reviews-and-state-the-global-walk-as-built",
+          "title": "WO-239-D020: Decide where routine apply-mode cleanup of expired temporary roots outside a close's scope lives, now that a close prunes only its own scope and the session-end prune never walked the…",
+          "summary": "{ \"id\": \"WO-239-D020\", \"date\": \"2026-10-30\", \"dispatch\": \"resume: next; integrated independent reviews\", \"decision\": \"Resolve all 21 distinct findings of the three fresh integrated reviews before the complete run. Fix them as follows. The role-oracle walk follows every recorded parent link, pins the integration's branch parent by name and requires every role oracle to stay reachable. The integrate guard resolves main's checkout without throwing, letting the primary checkout stand for it while a planning pass has it off main; it compares checkouts by physical path through the host-lane relation and reads local main only in the active phase. One helper binds a registered or captured temporary ",
+          "missing": false
+        },
+        {
+          "hash": "94f3b105cfbe971e44ff2bb165bf7c518966787eda303ee2ac580ccb6b9fdebc",
+          "ref": "docs/evidence/WO-239/decisions.md#wo-239-d020--resolve-the-integrated-reviews-and-state-the-global-walk-as-built",
+          "title": "WO-239-D020: Decide where routine apply-mode cleanup of expired temporary roots outside a close's scope lives, now that a close prunes only its own scope and the session-end prune never walked the…",
+          "summary": "{ \"id\": \"WO-239-D020\", \"date\": \"2026-10-30\", \"dispatch\": \"resume: next; integrated independent reviews\", \"decision\": \"Resolve all 21 distinct findings of the three fresh integrated reviews before the complete run. Fix them as follows. The role-oracle walk follows every recorded parent link, pins the integration's branch parent by name and requires every role oracle to stay reachable. The integrate guard resolves main's checkout without throwing, letting the primary checkout stand for it while a planning pass has it off main; it compares checkouts by physical path through the host-lane relation and reads local main only in the active phase. One helper binds a registered or captured temporary ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-977e50f635de762d",
+      "key": "decision:docs/evidence/WO-239/decisions.md#wo-239-d023",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "a95e22c29fced9fd32a9474e479404fd1befd9a716e3def342f47010420f235c",
+          "ref": "docs/evidence/WO-239/decisions.md#wo-239-d023--assert-the-closes-prerequisite-first-order-in-the-kit-recovery-case",
+          "title": "WO-239-D023: Pin the kit close's runtime remedy after its prerequisites pass: in a release-ready kit fixture such as the launchpad-planning kit release case, remove a carried runtime module, then…",
+          "summary": "{ \"id\": \"WO-239-D023\", \"date\": \"2026-10-30\", \"dispatch\": \"resume: next; complete-run failure repair\", \"decision\": \"Update the kit recovery case's close step to the order this order built and documented: with the carried host module removed and a local-path origin, the close refuses at its source-only origin prerequisite and leaves the runtime untouched. Keep that case's bootstrap assertions for the release-close reservation and the session entry, and its check that none of the three refusals names npm run build. Defer a test of the kit close's runtime remedy after its prerequisites pass to a release-ready kit fixture.\", \"evidence\": [ \"The complete review run at code identity 89293078771c, re",
+          "missing": false
+        },
+        {
+          "hash": "c6fd68e6b60a0315d6192d68405b0c3ed499b3f0de569ae56f4e45a8614029fb",
+          "ref": "docs/evidence/WO-239/decisions.md#wo-239-d023--assert-the-closes-prerequisite-first-order-in-the-kit-recovery-case",
+          "title": "WO-239-D023: Pin the kit close's runtime refusal after its prerequisites pass: in a release-ready kit fixture such as the launchpad-planning kit release case, commit the removal of a carried runtime…",
+          "summary": "{ \"id\": \"WO-239-D023\", \"date\": \"2026-10-30\", \"dispatch\": \"resume: next; complete-run failure repair\", \"decision\": \"Update the kit recovery case's close step to the order this order built and documented: with the carried host module removed and a local-path origin, the close refuses at its source-only origin prerequisite and leaves the runtime untouched. Keep that case's bootstrap assertions for the release-close reservation and the session entry, and its check that none of the three refusals names npm run build. Defer a test of the kit close's runtime remedy after its prerequisites pass to a release-ready kit fixture.\", \"evidence\": [ \"The complete review run at code identity 89293078771c, re",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }
