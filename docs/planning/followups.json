@@ -49226,6 +49226,13 @@
           "title": "The Clean Room floor's naming sentence in CLAUDE.md",
           "summary": "10. **The Clean Room floor's naming sentence in `CLAUDE.md`** (\"Refer to the predecessor as `v1`; use enterprise tracker, ticket artifact, and constrained managed host as generic terms\"). Left as it is: the floor is hand-written and locked, and the sentence is a vocabulary rule for the case it names, not a comment about the work; the pass asks the operator whether item 3.a reaches it. Reopen when the operator answers.",
           "missing": false
+        },
+        {
+          "hash": null,
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-work-setup-pass-on-node-24-the-features-file-plan-first-mode-and-the-end-of-the-predecessor-track-recorded-2026-10-30",
+          "title": "The Clean Room floor's naming sentence in CLAUDE.md",
+          "summary": "10. **The Clean Room floor's naming sentence in `CLAUDE.md`** (\"Refer to the predecessor as `v1`; use enterprise tracker, ticket artifact, and constrained managed host as generic terms\"). Left as it is: the floor is hand-written and locked, and the sentence is a vocabulary rule for the case it names, not a comment about the work; the pass asks the operator whether item 3.a reaches it. Reopen when the operator answers.",
+          "missing": true
         }
       ],
       "dispositions": [
@@ -49236,6 +49243,14 @@
           "reopenWhen": "The operator answers whether item 3.a of 2026-10-30 reaches the floor's naming sentence.",
           "targets": [],
           "at": "2026-10-30T15:50:45.889Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "The operator answered on 2026-10-30 at 16:06:52Z (capture digest d0858f68081f290574bb4ba07d6fa034d85b4df0912d1d93416faa99d8a7e7af) that item 3.a reaches the floor's naming sentence; the sentence is removed from CLAUDE.md section Clean Room and the floor's prohibitions are unchanged; asking was the pass's error, recorded in its document. [2026-10-30 planning pass (docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)]",
+          "reopenWhen": "A role text or check is found to depend on the removed wording, or the operator asks for a naming convention for an earlier workflow again.",
+          "targets": [],
+          "at": "2026-10-30T16:24:19.815Z"
         }
       ]
     },
@@ -49462,6 +49477,21 @@
           "at": "2026-10-30T15:50:46.113Z"
         }
       ]
+    },
+    {
+      "id": "FUP-a2ff1caaf15520a8",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-work-setup-pass-on-node-24-the-features-file-plan-first-mode-and-the-end-of-the-predecessor-track-recorded-2026-10-30::47013cb641d6a1fe52ae6df10870be8be2635d05742cff9daec607eb98931e60",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "86d70925f57f99f09bcea122103a96b2b0e7d0441c9aa4a2b9fc4733e0b3f666",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-work-setup-pass-on-node-24-the-features-file-plan-first-mode-and-the-end-of-the-predecessor-track-recorded-2026-10-30",
+          "title": "The Clean Room floor's naming sentence in CLAUDE.md.",
+          "summary": "10. **The Clean Room floor's naming sentence in `CLAUDE.md`.** First left in place and asked about, which was the pass's error: the operator's message of 16:06:52Z (capture digest in the planning document's first section) reaffirmed that item 3.a reaches it, and the sentence is removed; the floor's prohibitions are unchanged. Settled. Reopen only if a role text or check is found to depend on the removed wording.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

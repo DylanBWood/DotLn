@@ -36,6 +36,7 @@ pass did read is named in §Readings.
 | 6, 6.a | a mode that plans, shares, converses and only then implements; three documents in the target repository | WO-242 filed |
 | 7 | the fork's block | each item read against its record; answers in the paste-ready section |
 | 8 | why release close demanded that build directories be saved | diagnosed (a reboot renumbered the volume; the owner-record check compares device numbers); WO-237 amended with the fix and moved to second |
+| the operator's message of 16:06:52Z (captured in `docs/intake/notes/planning-node24-features-config-plan-first-no-work-stream-2026-10-30-message-2.md`, SHA-256 `d0858f68081f290574bb4ba07d6fa034d85b4df0912d1d93416faa99d8a7e7af`), on the pass having left the floor's naming sentence and asked about it | the direction of item 3.a reaches that sentence; asking was the pass's error | the sentence removed from `CLAUDE.md` §Clean Room; the floor's prohibitions unchanged; the NoOp withdrawn and the register row settled |
 
 Assumptions recorded: "operator-specific loadouts vs core-specific" is read
 as the scope of a feature (core, instance or both), not as the compiled
@@ -138,8 +139,15 @@ instance, a revision's predecessor). `README.md` line 86 was edited and
 reverted: the docs check refuses a front-page change on a branch that names
 no order; WO-240 carries that sentence under a `**Front page:** README.md`
 header (3.a reaches the front page through the order). The floor's sentence
-"Refer to the predecessor as `v1`" is the one place the pass did not touch
-and asks about (§NoOps). 3.b is written into product 07's planning
+"Refer to the predecessor as `v1`; use enterprise tracker, ticket artifact,
+and constrained managed host as generic terms" was first left in place and
+asked about; the operator's message of 16:06:52Z answered that item 3.a
+reaches it, and the sentence is removed from `CLAUDE.md` §Clean Room. The
+floor's prohibitions (never import employer code, configuration,
+identifiers, internal services, credentials or secrets; stop and flag
+suspect material; no support or generated configuration may weaken the
+floor) are untouched, and the harness manifest's residue line that the
+hand-written floor stays locked still describes them. 3.b is written into product 07's planning
 preconditions (item 5) and product 12; 3.c into the sequence's Focus.
 
 ### Item 4, the starter in a private repository
@@ -292,7 +300,10 @@ their retirement (one row, FUP-8633adee1d36d76d, disposed).
 
 `followups --sync` minted seventeen rows from this document's candidates
 section in the map; `--apply` took forty-nine dispositions in one batch at
-revision `693722a3…`, leaving revision `bd58cf86…`. The dispositions:
+revision `693722a3…`, leaving revision `bd58cf86…`; after the receipt a
+second sync (the map's candidate item 10 rewritten on the operator's
+answer) returned FUP-2779e86c60788238 to review and a second `--apply`
+settled it at revision `7dc8671c…`, leaving `79befe3a…`. The dispositions:
 
 | Rows | Disposition |
 | --- | --- |
@@ -307,7 +318,8 @@ revision `693722a3…`, leaving revision `bd58cf86…`. The dispositions:
 | FUP-977e50f635de762d (WO-239-D023) | deferred with its own condition; FUP-b105ef71e17a0b61 duplicate |
 | FUP-8633adee1d36d76d (the predecessor orders C1 to C4) | declined on the operator's direction; FUP-2e0ba429b055b00e duplicate |
 | FUP-67b423fdf450129c, FUP-1c36325905c52243, FUP-855495d77825af2b (the work-setup candidates of 2026-10-24) | deferred again; they reopen when the operator carries the need into a core pass in generic words (3.b); FUP-db3940b4c418c536 settled as their record |
-| FUP-2779e86c60788238 (the floor's naming sentence), FUP-42ef286b6dc024ad (the two files kept), FUP-ca71e4b11b7779a3 (a per-order plan-first header), FUP-03c675456fa8e484 (a Node version per gate row) | deferred with their conditions |
+| FUP-42ef286b6dc024ad (the two files kept), FUP-ca71e4b11b7779a3 (a per-order plan-first header), FUP-03c675456fa8e484 (a Node version per gate row) | deferred with their conditions |
+| FUP-2779e86c60788238 (the floor's naming sentence) | first deferred as a question; settled after the receipt on the operator's message of 16:06:52Z: the sentence is removed |
 | FUP-7a6b84d04a0cbb4c (Node 25) | declined |
 | FUP-1a6a5fa73117b25c, FUP-cfa8aaa3441ad501 (the fork's items 2 and 4 as evidence) | settled onto FUP-3682b768d1d00a3b and FUP-632348a91b2ae9d8, both re-deferred with that evidence |
 | FUP-75d361f43a699228 (the issue intake as a planning input) | deferred again, naming WO-207's seam |
@@ -331,14 +343,16 @@ reopening condition; the ones the operator's items raise directly:
   against 299.5; target-worktree 611.3 against 126.6). Reevaluation: every
   pass reads the conditions. Useful when the median exceeds 600 s, a cause
   is named in an order's decisions, or the operator names gate time a goal.
-- **The floor's naming sentence in `CLAUDE.md`** ("Refer to the predecessor
-  as `v1`; use enterprise tracker, ticket artifact, and constrained managed
-  host as generic terms"). Reason: the Clean Room floor is hand-written and
-  locked; the sentence is a vocabulary rule for the case it names, and
-  editing the floor is beyond the literal correction, so the pass asks one
-  question instead of guessing either way. Evidence: `CLAUDE.md` §Clean
-  Room; the harness manifest's residue line "the hand-written Clean Room
-  floor stays locked". Useful when the operator answers.
+- **The floor's naming sentence in `CLAUDE.md`: a withdrawn NoOp and a
+  correction.** The pass first left the sentence and asked whether item 3.a
+  reaches it, reading the locked floor as outside the literal correction.
+  That was the error: the sentence names the predecessor and the work terms,
+  which is exactly the category item 3.a names, and removing a naming
+  convention weakens none of the floor's prohibitions, which are what the
+  lock protects. The operator's message of 16:06:52Z reaffirmed the
+  direction; the sentence is removed and the register row
+  FUP-2779e86c60788238 is settled on that answer. Evidence: `CLAUDE.md`
+  §Clean Room before and after; the capture named in §Dispatch and capture.
 - **WS-002 and WO-228 kept at their paths.** Reason: records link to them
   and the lifecycle cannot withdraw a never-activated order. Evidence:
   `linkFailures` over every Markdown file; `OFF_RAMP_PHASES.withdraw`.
@@ -390,6 +404,8 @@ of 2026-10-13.
   workflow (the import rule and the inventory sentence without the earlier
   system; the census paragraph removed), §One workstream across repositories
   (two sentences), §Open product choices (one line) (3.a).
+- `CLAUDE.md` §Clean Room: the naming sentence removed on the operator's
+  message of 16:06:52Z; the prohibitions and the intake paragraph unchanged.
 - `README.md`: edited and reverted; the front page changes only through an
   order, so WO-240 carries its two sentences.
 - The sequence, the map (rows for WO-240 to WO-242; WO-237, WO-228, WO-193,
@@ -445,8 +461,12 @@ the `/model` line). Subagents: budget 20 (`docs/control/budgets.json`
 xhigh; the dispatch names no fable worker); none other spawned. Usage at
 entry: unknown (`harness usage` refused: no active role). The rehearsal of
 item 4 ran 1.3 s under the bounded wrapper; `plan conditions` ran 54.2 s at
-entry and 50.8 s inside `plan start`. Wall-clock from dispatch to the
-commit of the subject: recorded in §Validation. The handoff figures are in
+entry and 50.8 s inside `plan start`. The subject was committed at
+15:58Z (the first commit `30d2bc05`, one hour and four minutes after the
+dispatch at 14:54Z); the refuter was dispatched at 16:04:39Z and handed back at
+16:18:42Z (14 min 2 s); its statement was repaired once by the same worker
+for private absolute paths, without rerolling the judgment; the receipt
+helper measured dispatch to file at 19 min 41 s. The handoff figures are in
 the response and the receipt.
 
 ## Validation
@@ -466,4 +486,42 @@ appended when it is filed.
   front-page change, resolved by reverting `README.md` and routing the
   sentences through WO-240.
 - `npm run meta -- --plan-cost`: refused before the commit ("expected one
-  committed order file for WO-240"); run after it.
+  committed order file for WO-240"); green after it (`89bdd3b6`).
+- `npm run plan -- check` after the commit: one topology finding (WO-242's
+  planning-deferral edge to WO-192 with WO-192 listed after it), repaired by
+  listing the active WO-192 first; then "planning pass needs a receipt",
+  as expected.
+- `npm run test:docs` before the receipt: the first run stopped at the
+  entropy task on two stale publication editions (the product edits staled
+  their source locks); `npm run sync` regenerated them (`ece12f35`); the
+  second run read 24 passed and 3 awaiting the receipt, in 0 h 3 min.
+- `npm run plan -- refute` at `ece12f35`; one fresh `dotln-worker`
+  (claude-opus-5-5 at xhigh by the pin; the worker took no host readback)
+  returned `aligned-with-findings` for all six judged orders (WO-240,
+  WO-237, WO-241, WO-242, WO-207, WO-193), twenty known issues, no observed
+  failure, no vision contradiction and no hold. The worker disclosed that
+  the harness refused its literal-path scratchpad write (no role was
+  dispatched, so no outside-write grant was equipped) and that earlier
+  relative-redirect writes to the same scratchpad were not judged; the
+  same WO-144 boundary the 2026-10-28 pass met, recorded here as evidence
+  for WO-226's first-line reading.
+- `npm run plan -- receipt` filed
+  [receipt 059](refutations/2026-10-30-planning-fd5845a6f7f28b17-059.md)
+  (`db35de71`): scope pass, 8 verdicts carried by hash, 59 receipts, 48
+  passes, no advisories. The twenty known issues are recorded on the six
+  catalog rows with the planner's readings: WO-240 three (the fixture pins
+  the 24-line lower bound; the Node 24 run is re-run when a runtime source
+  changes after it; the refusal is the design), WO-237 two (a failed move is
+  the existing cleanup blocker; the negative control for a replaced
+  directory), WO-241 three (a no-op election refuses; the closed-WO check
+  is an advisory; a renamed id loads with an advisory for one release),
+  WO-242 four (the hook refuses from activation until approval; the
+  approval's trust model is WO-158's; the root with the election off is
+  byte-identical; a self order's conversation document is not committed
+  with a refuse term), WO-207 five and WO-193 three (for their activating
+  passes).
+- After the receipt: the operator's answer on the floor's sentence applied
+  (`CLAUDE.md` §Clean Room; the map's item 10; this document), the second
+  register batch, `npm run meta`, `npm run format`, the commit, then `npm
+  run test:docs`, the push and the `:memo:` pull request, whose results
+  are in the response.
