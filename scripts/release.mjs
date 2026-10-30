@@ -3,8 +3,11 @@ import {
   createFixtureRoot,
   removeTemporaryPath as rmSync,
 } from "./lib/temporary-roots.mjs";
+import { boundTemporaryRoots } from "./lib/temporary-prune.mjs";
 import { formatPruneReport } from "./lib/temporary-prune-summary.mjs";
 import { isMainModule } from "./lib/paths.mjs";
+import { buildFreshness } from "./lib/build-freshness.mjs";
+import { releaseSteps, withReleaseStep } from "./lib/release-steps.mjs";
 import {
   hasPackageSources,
   isKitRoot as isKitWorktree,
@@ -88,7 +91,9 @@ import {
   parseJson,
   readJsonFile,
   workOrderAuthorityPath,
+  ignoredLane,
 } from "./lib/paths.mjs";
+import { materialSummary } from "./lib/material-summary.mjs";
 import { CONTROL_LOG_SCHEMA_VERSION, statusProjection } from "./resume.mjs";
 import {
   readControl,
@@ -581,7 +586,7 @@ const ensureTrackedClean = (root) => {
       `tracked working tree is not clean: ${dirty.split("\n")[0]}`,
     );
 };
-const reportLocalMaterial = (root) => {
+const reportLocalMaterial = (root, listMaterial = false) => {
   for (const [label, flags] of [
     ["untracked", ["--others", "--exclude-standard"]],
     ["ignored", ["--others", "--ignored", "--exclude-standard"]],
@@ -592,10 +597,21 @@ const reportLocalMaterial = (root) => {
       (path) =>
         !/^(?:node_modules|packages\/[^/]+\/dist|\.runtime)\//.test(path),
     );
-    if (local.length)
-      writeOutput(
-        `Advisory: retained ${label} material: ${local.join(", ")}\n`,
+    if (local.length) {
+      const summary = materialSummary(
+        local.map((path) => ({ path, class: ignoredLane(path, root) })),
       );
+      writeOutput(
+        `Advisory: retained ${label} material: ${JSON.stringify(summary)}${
+          listMaterial
+            ? `\n${local
+                .sort()
+                .map((path) => `  ${path}`)
+                .join("\n")}`
+            : "; use --list-material for paths"
+        }\n`,
+      );
+    }
   }
 };
 // Release close fetches, lists tags, pushes the tag and creates the Release
@@ -1812,19 +1828,20 @@ const releaseEvidence = (root, workOrderId, options) => {
     },
   ];
 };
-const ensureReleaseRuntime = (root) => {
-  if (
-    !harnessRuntimeCause(root) &&
-    ["skeleton", "kernel"].every((name) =>
-      existsSync(
-        join(
-          root,
-          `packages/${name}/dist/src/${name === "kernel" ? "index.js" : "cli.js"}`,
-        ),
+const releaseRuntimeCause = (root) =>
+  harnessRuntimeCause(root) ||
+  (!buildFreshness(root).current && "source or compiled output changed") ||
+  (!["skeleton", "kernel"].every((name) =>
+    existsSync(
+      join(
+        root,
+        `packages/${name}/dist/src/${name === "kernel" ? "index.js" : "cli.js"}`,
       ),
-    )
-  )
-    return;
+    ),
+  ) &&
+    "release runtime missing");
+const ensureReleaseRuntime = (root) => {
+  if (!releaseRuntimeCause(root)) return;
   if (existsSync(join(root, "KIT-MANIFEST.json")) && !hasPackageSources(root)) {
     writeOutput("Preparing the carried release runtime (no source build).\n");
     const prepared = execute(
@@ -1841,16 +1858,29 @@ const ensureReleaseRuntime = (root) => {
   writeOutput(
     "Building release metadata runtime (no installation or test suite).\n",
   );
-  const built = execute("npm", ["run", "build"], { cwd: root });
+  const built = execute(process.execPath, [join(root, "scripts/build.mjs")], {
+    cwd: root,
+  });
   if (built.status !== 0)
     throw new Error(
       `release metadata build failed: ${failureOf(built, "build unavailable; install dependencies separately")}`,
     );
-  const remaining = harnessRuntimeCause(root);
+  const remaining = releaseRuntimeCause(root);
   if (remaining)
     throw new Error(
       `Built runtime still ${remaining}; checkout preserved; run node scripts/bootstrap.mjs`,
     );
+};
+const assertReleaseRuntime = (root) => {
+  const cause = releaseRuntimeCause(root);
+  if (cause)
+    throw new Error(
+      `Release runtime ${cause}; close entry must prepareRuntimeBeforeLoad before loading built modules`,
+    );
+};
+const prepareRuntimeBeforeLoad = (root) => {
+  ensureReleaseRuntime(root);
+  assertReleaseRuntime(root);
 };
 const withPreviewRuntime = (root, operation) => {
   // This is an unregistered preview directory, never a release worktree. Its
@@ -2128,9 +2158,9 @@ const publishedTag = (name, local, remote) => {
     throw new Error(`${name} differs between local and origin`);
   return remoteTag;
 };
-const updateMain = (root) => {
+const updateMain = (root, listMaterial = false) => {
   ensureTrackedClean(root);
-  reportLocalMaterial(root);
+  reportLocalMaterial(root, listMaterial);
   if (runGit(root, ["symbolic-ref", "--short", "HEAD"]) !== "main")
     throw new Error("release close must run from the main branch checkout");
   runGit(root, ["fetch", "origin", "main"]);
@@ -2141,7 +2171,23 @@ const updateMain = (root) => {
   )
     throw new Error("main is not synchronized with origin/main");
 };
-const finishPublishedWorktree = async (
+const finishPublishedWorktree = (
+  root,
+  workOrderId,
+  dryRun,
+  record,
+  overrides,
+) =>
+  withReleaseStep(record, "worktree-removal", () =>
+    finishPublishedWorktreeOperation(
+      root,
+      workOrderId,
+      dryRun,
+      record,
+      overrides,
+    ),
+  );
+const finishPublishedWorktreeOperation = async (
   root,
   workOrderId,
   dryRun = false,
@@ -2219,6 +2265,19 @@ const finishPublishedWorktree = async (
         .map(([path]) => path),
       ...receiptSubjects,
     ].filter(Boolean);
+    const owned = new Map();
+    for (const attempt of record?.recoveryAttempts ??
+      record?.previousAttempts ??
+      [])
+      for (const saved of attempt.ownedTemporaryRoots ?? [])
+        owned.set(saved.path, saved);
+    for (const checkout of new Set([
+      ...before.map((row) => row.worktree),
+      ...retainedPaths,
+    ]))
+      for (const saved of boundTemporaryRoots(checkout))
+        owned.set(saved.path, saved);
+    if (record) record.ownedTemporaryRoots = [...owned.values()];
     for (const retained of new Set(retainedPaths.map((path) => resolve(path))))
       if (
         retained !== root &&
@@ -2272,6 +2331,7 @@ const finishPublishedWorktree = async (
             action,
             workOrderId,
             ...(dryRun ? ["--dry-run"] : []),
+            ...(record?.listMaterial ? ["--list-material"] : []),
             ...overrides.flatMap((row) => [
               "--material",
               materialFlagValue(row),
@@ -2500,10 +2560,14 @@ const finishPublishedWorktree = async (
     }
     try {
       const { pruneHarness } = await import("./lib/harness-prune.mjs");
-      const prune = await pruneHarness(root, {
-        apply: !dryRun,
-        preserveOrders: [workOrderId],
-      });
+      const prune = await withReleaseStep(record, "prune", () =>
+        pruneHarness(root, {
+          apply: !dryRun,
+          scope: "close",
+          ownedTemporaryRoots: record?.ownedTemporaryRoots ?? [],
+          preserveOrders: [workOrderId],
+        }),
+      );
       if (record) record.prune = prune;
       writeOutput(`${formatPruneReport(prune)}\n`);
     } catch (error) {
@@ -2718,7 +2782,25 @@ const publishTag = (root, tag, commit, message, tagger, publication) => {
 // A refresh failure is a completion blocker of an already published release.
 // Declaration and import failures are recorded here too; none changes its
 // publication or cleanup outcome.
-const refreshPublishedStarters = async (
+const refreshPublishedStarters = (
+  root,
+  head,
+  tag,
+  workOrderId,
+  dryRun,
+  record,
+) =>
+  withReleaseStep(record, "starter-refresh", () =>
+    refreshPublishedStartersOperation(
+      root,
+      head,
+      tag,
+      workOrderId,
+      dryRun,
+      record,
+    ),
+  );
+const refreshPublishedStartersOperation = async (
   root,
   head,
   tag,
@@ -3163,10 +3245,8 @@ const prepareTargetRelease = async (
   };
 };
 
-const close = async (workOrderId, parsed, record) => {
-  const { flags, material: overrides, confirmTerms } = parsed;
-  const publish = flags.includes("--publish");
-  const root = findMainWorktree(toolRoot);
+const closePrerequisites = (root, workOrderId, parsed, record) => {
+  const { flags } = parsed;
   if (resolve(process.cwd()) !== root)
     throw new Error(
       `release close must run from the main control-plane checkout: ${root}`,
@@ -3185,7 +3265,7 @@ const close = async (workOrderId, parsed, record) => {
     );
   if (dryRun) {
     ensureTrackedClean(root);
-    reportLocalMaterial(root);
+    reportLocalMaterial(root, flags.includes("--list-material"));
     runGit(root, ["fetch", "origin", "main"]);
     sourceRevision = runGit(root, ["rev-parse", "origin/main"]);
     const ancestor = execute("git", [
@@ -3198,7 +3278,7 @@ const close = async (workOrderId, parsed, record) => {
     ]);
     if (ancestor.status !== 0)
       throw new Error("main cannot fast-forward to origin/main");
-  } else updateMain(root);
+  } else updateMain(root, flags.includes("--list-material"));
   const state = parseControlStateAt(root, sourceRevision, workOrderId);
   if (state.workOrderId !== workOrderId)
     throw new Error(
@@ -3209,63 +3289,10 @@ const close = async (workOrderId, parsed, record) => {
       throw new Error(
         `release close requires a closed work order; observed ${state.phase}`,
       );
-    record.publication.outcome = "no-release";
-    const targetPolicy =
-      loadConfig(root).repositories[state.repositoryId]?.release?.policy ??
-      "no-release";
-    record.publication.target = {
-      repositoryId: state.repositoryId,
-      policy: targetPolicy,
-      outcome: targetPolicy === "declared" ? "not-attempted" : "no-release",
-      tag: null,
-      release: null,
-    };
-    if (targetPolicy === "declared")
-      record.publication.outcome = "not-attempted";
-    if (publish || dryRun) {
-      const { closeTargetWorktree } =
-        await import("./lib/target-worktree-close.mjs");
-      const entry = targetWorktreeForOrder(root, state.workOrderId);
-      await closeTargetWorktree(root, state, true, record, {
-        retryMode: dryRun ? "--dry-run" : "--publish",
-      });
-      const publishRelease = await prepareTargetRelease(
-        root,
-        state,
-        sourceRevision,
-        {
-          dryRun,
-          publish,
-          record,
-          entry,
-          confirmTerms,
-        },
-      );
-      try {
-        if (!dryRun) await closeTargetWorktree(root, state, false, record);
-      } catch (error) {
-        record.cleanup.outcome = "blocked";
-        throw error;
-      }
-      // The target branch is proven merged by the close; a declared target
-      // release tags that merged base and creates the target's Release.
-      publishRelease?.();
-      await finishPublishedWorktree(
-        root,
-        workOrderId,
-        dryRun,
-        record,
-        overrides,
-      );
-    }
-    const target = record.publication.target;
-    writeOutput(
-      target && target.policy === "declared"
-        ? `${workOrderId} closes a registered target; target release ${target.tag}: ${target.outcome}${target.release ? ` (GitHub Release ${target.release})` : ""}; no launchpad tag is due.\n`
-        : `${workOrderId} closes a registered target; no release tag is due in either repository.\n`,
-    );
-    return;
+    return { state };
   }
+  // These checks depend only on source and Git. Refuse an invalid release
+  // before preparing or importing its compiled runtime.
   const authority = workOrderAuthority(root, state, sourceRevision);
   record.publication.tag = authority.version;
   let local = localTags(root);
@@ -3303,19 +3330,135 @@ const close = async (workOrderId, parsed, record) => {
       command: releaseCloseCommand(root, workOrderId),
     });
     process.exitCode = 1;
-    return;
+    return undefined;
   }
   const head = runGit(root, ["rev-parse", sourceRevision]);
   const remaining = openOrders(readControl(root, sourceRevision));
   const mainStatus = remaining.length
     ? `Main tracked files are clean; in-flight orders: ${remaining.join(", ")}.`
     : "Main tracked files are clean and between work orders.";
+  const context = { state, authority, local, remote, latest, head, mainStatus };
+  if (latest && compareVersions(authority.version, latest) < 0) return context;
+  const blockingTag = nestedTagConflict(authority.version, local, remote);
+  if (blockingTag)
+    throw new Error(
+      `release tag ${authority.version} is blocked by nested tag ${blockingTag}`,
+    );
+  const existing = latest && compareVersions(authority.version, latest) === 0;
+  if (existing) {
+    const remoteTag = remote.get(authority.version);
+    if (remoteTag?.annotated && remoteTag.target === head)
+      record.publication.tagOutcome = "already-published";
+  } else {
+    if (latest) {
+      const ancestor = execute("git", [
+        "-C",
+        root,
+        "merge-base",
+        "--is-ancestor",
+        previous.target,
+        head,
+      ]);
+      if (ancestor.status !== 0)
+        throw new Error(
+          `latest release ${latest} is not an ancestor of ${head}`,
+        );
+    }
+    if (local.has(authority.version) || remote.has(authority.version))
+      throw new Error(`release tag already exists: ${authority.version}`);
+  }
+  if (flags.includes("--publish") && !dryRun) {
+    context.repository = ensureGhPreflight(root);
+    if (!existing)
+      context.tagger = runGit(root, ["var", "GIT_COMMITTER_IDENT"]);
+  }
+  return context;
+};
+
+const close = async (root, workOrderId, parsed, record, context) => {
+  const {
+    state,
+    authority,
+    local,
+    remote,
+    latest,
+    head,
+    mainStatus,
+    repository,
+    tagger,
+  } = context;
+  const { flags, material: overrides, confirmTerms } = parsed;
+  const publish = flags.includes("--publish");
+  const dryRun = flags.includes("--dry-run");
+  if (state.repositoryId) {
+    record.publication.outcome = "no-release";
+    const targetPolicy =
+      loadConfig(root).repositories[state.repositoryId]?.release?.policy ??
+      "no-release";
+    record.publication.target = {
+      repositoryId: state.repositoryId,
+      policy: targetPolicy,
+      outcome: targetPolicy === "declared" ? "not-attempted" : "no-release",
+      tag: null,
+      release: null,
+    };
+    if (targetPolicy === "declared")
+      record.publication.outcome = "not-attempted";
+    if (publish || dryRun) {
+      const { closeTargetWorktree } =
+        await import("./lib/target-worktree-close.mjs");
+      const entry = targetWorktreeForOrder(root, state.workOrderId);
+      await withReleaseStep(record, "worktree-removal", () =>
+        closeTargetWorktree(root, state, true, record, {
+          retryMode: dryRun ? "--dry-run" : "--publish",
+        }),
+      );
+      const publishRelease = await prepareTargetRelease(
+        root,
+        state,
+        sourceRevision,
+        {
+          dryRun,
+          publish,
+          record,
+          entry,
+          confirmTerms,
+        },
+      );
+      try {
+        if (!dryRun)
+          await withReleaseStep(record, "worktree-removal", () =>
+            closeTargetWorktree(root, state, false, record),
+          );
+      } catch (error) {
+        record.cleanup.outcome = "blocked";
+        throw error;
+      }
+      // The target branch is proven merged by the close; a declared target
+      // release tags that merged base and creates the target's Release.
+      publishRelease?.();
+      await finishPublishedWorktree(
+        root,
+        workOrderId,
+        dryRun,
+        record,
+        overrides,
+      );
+    }
+    const target = record.publication.target;
+    writeOutput(
+      target && target.policy === "declared"
+        ? `${workOrderId} closes a registered target; target release ${target.tag}: ${target.outcome}${target.release ? ` (GitHub Release ${target.release})` : ""}; no launchpad tag is due.\n`
+        : `${workOrderId} closes a registered target; no release tag is due in either repository.\n`,
+    );
+    return;
+  }
   if (latest && compareVersions(authority.version, latest) < 0) {
     record.publication.outcome = "no-release";
     if (!dryRun)
       refreshHarnessRuntime(
         root,
-        () => ensureReleaseRuntime(root),
+        () => assertReleaseRuntime(root),
         writeOutput,
       );
     if (publish || dryRun)
@@ -3331,19 +3474,8 @@ const close = async (workOrderId, parsed, record) => {
     );
     return;
   }
-  const blockingTag = nestedTagConflict(authority.version, local, remote);
-  if (blockingTag)
-    throw new Error(
-      `release tag ${authority.version} is blocked by nested tag ${blockingTag}`,
-    );
   if (latest && compareVersions(authority.version, latest) === 0) {
-    // The tag already stands on the remote at this head, so its outcome is
-    // known before the preflight or the Release checks can refuse.
-    const remoteTag = remote.get(authority.version);
-    if (remoteTag?.annotated && remoteTag.target === head)
-      record.publication.tagOutcome = "already-published";
-    const repository = publish && !dryRun ? ensureGhPreflight(root) : undefined;
-    if (!dryRun) ensureReleaseRuntime(root);
+    if (!dryRun) assertReleaseRuntime(root);
     const inspectExisting = () =>
       ensureExistingRelease(
         root,
@@ -3407,25 +3539,6 @@ const close = async (workOrderId, parsed, record) => {
     );
     return;
   }
-  if (latest) {
-    const ancestor = execute("git", [
-      "-C",
-      root,
-      "merge-base",
-      "--is-ancestor",
-      previous.target,
-      head,
-    ]);
-    if (ancestor.status !== 0)
-      throw new Error(`latest release ${latest} is not an ancestor of ${head}`);
-  }
-  if (local.has(authority.version) || remote.has(authority.version))
-    throw new Error(`release tag already exists: ${authority.version}`);
-  const repository = publish && !dryRun ? ensureGhPreflight(root) : undefined;
-  const tagger =
-    publish && !dryRun
-      ? runGit(root, ["var", "GIT_COMMITTER_IDENT"])
-      : undefined;
   const prepareManifest = (installationRoot = root) =>
     validateManifest(
       root,
@@ -3442,7 +3555,7 @@ const close = async (workOrderId, parsed, record) => {
   let manifest;
   if (dryRun) manifest = withPreviewRuntime(root, prepareManifest);
   else {
-    ensureReleaseRuntime(root);
+    assertReleaseRuntime(root);
     manifest = prepareManifest();
   }
   if (dryRun) {
@@ -3811,7 +3924,7 @@ const main = async () => {
     const workOrderId = args[0];
     if (!/^WO-\d{3}$/u.test(workOrderId ?? ""))
       throw new Error(
-        "usage: release close WO-NNN [--publish] [--dry-run] [--material <path>=disposable|preserve] [--confirm-terms sha256:<digest>]",
+        "usage: release close WO-NNN [--publish] [--dry-run] [--list-material] [--material <path>=disposable|preserve] [--confirm-terms sha256:<digest>]",
       );
     // The record exists before the flags are judged: a malformed word is
     // recorded as a refusal, never a silent exit. `--confirm-terms`, which
@@ -3821,7 +3934,11 @@ const main = async () => {
     try {
       const confirmTerms = takeConfirmTerms(closeArgs);
       parsed = {
-        ...parseMaterialFlags(closeArgs, ["--publish", "--dry-run"]),
+        ...parseMaterialFlags(closeArgs, [
+          "--publish",
+          "--dry-run",
+          "--list-material",
+        ]),
         confirmTerms,
       };
     } catch (error) {
@@ -3858,7 +3975,9 @@ const main = async () => {
           schemaVersion: 1,
           workOrderId,
           startedAt: new Date().toISOString(),
+          steps: releaseSteps(),
           dryRun: parsed.flags.includes("--dry-run"),
+          listMaterial: parsed.flags.includes("--list-material"),
           dispatch: {
             harness: harness?.harness ?? null,
             session:
@@ -3895,8 +4014,23 @@ const main = async () => {
         closeTranscript = [];
         const recordAdvisory = (error) => {
           const message = `Close record unavailable: ${String(error.message).replace(/\s+/gu, " ").trim()}`;
+          // The record is written twice; a failure the second write repeats
+          // is reported once.
+          if (record.recordAdvisories.includes(message)) return;
           record.recordAdvisories.push(message);
           process.stderr.write(`Advisory: ${message}\n`);
+        };
+        const writeCloseRecord = () => {
+          try {
+            requireMaterialContainment(root, recordPath);
+            const file = join(root, recordPath);
+            mkdirSync(dirname(file), { recursive: true, mode: 0o700 });
+            writeFileSync(file, `${JSON.stringify(record, null, 2)}\n`, {
+              mode: 0o600,
+            });
+          } catch (error) {
+            recordAdvisory(error);
+          }
         };
         try {
           const { recoveryAttempts, ...history } = readCloseHistory(
@@ -3918,6 +4052,15 @@ const main = async () => {
           !parsed.flags.includes("--dry-run");
         let releaseWriter;
         try {
+          if (parseError) throw parseError;
+          if (record.historyFailure) throw new Error(record.historyFailure);
+          const context = await withReleaseStep(record, "prerequisites", () =>
+            closePrerequisites(root, workOrderId, parsed, record),
+          );
+          if (!context) return;
+          await withReleaseStep(record, "runtime", () =>
+            prepareRuntimeBeforeLoad(root),
+          );
           if (completing) {
             const writerRoot = realpathSync(process.cwd());
             try {
@@ -3938,11 +4081,13 @@ const main = async () => {
               throw error;
             }
           }
-          if (parseError) throw parseError;
-          if (record.historyFailure) throw new Error(record.historyFailure);
-          const result = await close(workOrderId, parsed, record);
+          const result = await withReleaseStep(record, "publication", () =>
+            close(root, workOrderId, parsed, record, context),
+          );
+          // Releasing the writer runs the session-end prune, so its time
+          // belongs to the prune row.
           if (!process.exitCode && record.cleanup.outcome !== "blocked")
-            releaseWriter?.();
+            await withReleaseStep(record, "prune", () => releaseWriter?.());
           return result;
         } catch (error) {
           const published = settlePublication(record, error.message);
@@ -3953,33 +4098,29 @@ const main = async () => {
           });
           throw error;
         } finally {
+          await withReleaseStep(record, "record", async () => {
+            record.recordedAt = new Date().toISOString();
+            try {
+              requireMaterialContainment(root, record.reportPath);
+              mkdirSync(dirname(join(root, record.reportPath)), {
+                recursive: true,
+                mode: 0o700,
+              });
+              writeFileSync(
+                join(root, record.reportPath),
+                closeTranscript.join(""),
+                {
+                  mode: 0o600,
+                },
+              );
+            } catch (error) {
+              recordAdvisory(error);
+            }
+            writeCloseRecord();
+          });
+          // Seal the completed timing row after the timed transcript/receipt write.
           record.recordedAt = new Date().toISOString();
-          try {
-            requireMaterialContainment(root, record.reportPath);
-            mkdirSync(dirname(join(root, record.reportPath)), {
-              recursive: true,
-              mode: 0o700,
-            });
-            writeFileSync(
-              join(root, record.reportPath),
-              closeTranscript.join(""),
-              {
-                mode: 0o600,
-              },
-            );
-          } catch (error) {
-            recordAdvisory(error);
-          }
-          try {
-            requireMaterialContainment(root, recordPath);
-            const file = join(root, recordPath);
-            mkdirSync(dirname(file), { recursive: true, mode: 0o700 });
-            writeFileSync(file, `${JSON.stringify(record, null, 2)}\n`, {
-              mode: 0o600,
-            });
-          } catch (error) {
-            recordAdvisory(error);
-          }
+          writeCloseRecord();
           process.stdout.write(releaseCloseSummary(record));
           closeTranscript = null;
         }

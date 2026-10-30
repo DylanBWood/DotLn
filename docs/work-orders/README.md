@@ -5,7 +5,7 @@
 ## Proposed order
 
 - [x] [WO-235] — No artifact is shaped by its predecessor and no operator direction is dropped · **final-reviewed**
-- [ ] [WO-239] — Release close prepares before it loads and runs once · **queued**
+- [x] [WO-239] — Release close prepares before it loads and runs once · **final-reviewed**
 - [ ] [WO-238] — A document says what is so · **queued**
 - [ ] [WO-237] — A closed order keeps its journals · **queued**
 - [ ] [WO-192] — A router drives an order through its lifecycle · **queued**
@@ -34,32 +34,15 @@ Full evidence for the active and sequenced orders follows; the Open cards are in
 
 Separate track; outside the proposed serial order.
 
-- [WO-228] — repository: self; base: 3db7571f1f0c19a935d4cbdff4c05cc3bfdee61f; phase: draft; verdict: unknown; integration: current; stale: no; observed target: 3db7571f1f0c19a935d4cbdff4c05cc3bfdee61f.
+- [WO-228] — repository: self; base: 297bf4f167415b17b44608b3e98a7a619862bbeb; phase: draft; verdict: unknown; integration: current; stale: no; observed target: 297bf4f167415b17b44608b3e98a7a619862bbeb.
 
-<!-- dotln-workstreams: {"workstreams":[{"id":"WS-002","track":"separate","members":[{"workOrderId":"WO-228","repository":"self","base":"3db7571f1f0c19a935d4cbdff4c05cc3bfdee61f","phase":"draft","verdict":"unknown","integration":"current","stale":"no","targetCommit":"3db7571f1f0c19a935d4cbdff4c05cc3bfdee61f"}],"edges":[{"from":"WO-228","to":"WO-193","relation":"planning-deferral"}]}]} -->
+<!-- dotln-workstreams: {"workstreams":[{"id":"WS-002","track":"separate","members":[{"workOrderId":"WO-228","repository":"self","base":"297bf4f167415b17b44608b3e98a7a619862bbeb","phase":"draft","verdict":"unknown","integration":"current","stale":"no","targetCommit":"297bf4f167415b17b44608b3e98a7a619862bbeb"}],"edges":[{"from":"WO-228","to":"WO-193","relation":"planning-deferral"}]}]} -->
 
 ## Active
 
 None.
 
 ## Open
-
-### WO-239
-
-[WO-239 — Release close prepares before it loads and runs once: the helper builds or prepares the runtime in a child process before any built module is imported, one publish invocation closes an order, the census at close is bounded to what the close owns, integration happens at the lifecycle's named points and never during a live gate, and the close record says where its minutes went (version assigned at activation)](WO-239-release-close-prepares-before-it-loads-and-runs-once.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-233: satisfied-by-close (met) — the prune, its census and the owned temporary roots the close scope judges; WO-234: satisfied-by-close (met) — the dispatch bounds under which a close runs; the steps record sits beside them; WO-226: satisfied-by-close (met) — the carried-runtime preparation a kit root uses in place of a build.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer xhigh.
-- Track: machinery
-- Cost: adds, in &#96;scripts/release.mjs&#96;: a runtime preparation at the &#96;close&#96; command's entry, run in a child process before &#96;executorWriterRelease&#96; (3924) and &#96;close()&#96; (3943) import any &#96;packages/*/dist&#96; module, replacing the three in-&#96;close()&#96; calls of &#96;ensureReleaseRuntime&#96; (3318, 3346, 3445) with assertions; a &#96;steps&#96; array on the close record (&#96;name&#96;, &#96;startedAt&#96;, &#96;finishedAt&#96;, &#96;durationMs&#96;) written around prerequisites, runtime, worktree removal, publication, starter refresh, prune and record; the prune call (2502 to 2506) under a &#96;close&#96; scope; the retained-material advisory as counts by class with a &#96;--list-material&#96; flag for paths. In &#96;scripts/lib/harness-prune.mjs&#96;: &#96;scope: "close"&#96;, judging the closing order's owned roots, main's retained lane and the temporary roots this checkout owns, leaving the global walk to &#96;harness prune&#96; and the session-end prune. In &#96;scripts/lib/worktree-removal.mjs&#96;: the retained material recorded as counts and a digest, paths behind the flag. In &#96;scripts/lib/worktree-integration.mjs&#96;: a refusal while a gate holds a lane for the worktree or &#96;main&#96;, and a return before any stash when &#96;main&#96; is already an ancestor of &#96;HEAD&#96;. In &#96;packages/skeleton/src/loadouts/contributor.ts&#96;: one release-close sentence (run the printed command once; preview only for a prerequisite in doubt) and one executor sentence (integrate &#96;main&#96; at the lifecycle's named points only, never during a live gate). In &#96;scripts/lib/plan-failures.mjs&#96;: &#96;localReleaseCloses&#96; reports the median total and the slowest step over the last eight closes. Cases in &#96;scripts/test-release.sh&#96;, &#96;scripts/test-worktree-integration.mjs&#96;, &#96;scripts/test-worktree.sh&#96;, &#96;scripts/test-fixture-temp-root.sh&#96;, &#96;scripts/test-harness.mjs&#96; and &#96;scripts/test-process-debt.mjs&#96;; sentences in product 07 §Workflow closeout and releases and §Independent workflows and integration, and in the kit README. Removes: the stale in-process compiler at close (two refused starter refreshes and two fresh-process retries on 2026-10-28), the default preview invocation, two of the three census walks a close paid (186.9 s each at 5,633 retained roots, measured by the filing pass), and the 800 KB transcript line. Wall-clock: a close from 16 to 19 minutes end to end (two invocations and a retry) to one invocation of about two minutes, an inference from the filing pass's measurements until the steps record reads it. Context bytes: this file; two role roots grow by one sentence each, recorded before and after. Commands: none new for the operator; &#96;--dry-run&#96; and &#96;harness prune&#96; stay. Tokens: unknown until run. Steps: 9. Re-mints: &#96;contributor.ts&#96; is a registered evidence source, so the edition it stales is re-minted deterministically and no live feedback episode is owed; &#96;release.mjs&#96;, &#96;harness-prune.mjs&#96; and &#96;worktree-integration.mjs&#96; are declared sources of machinery suites, so &#96;npm test -- --review&#96; runs before handoff; the role oracle is re-minted.
-- Authority: [docs/work-orders/WO-239-release-close-prepares-before-it-loads-and-runs-once.md](WO-239-release-close-prepares-before-it-loads-and-runs-once.md)
 
 ### WO-238
 

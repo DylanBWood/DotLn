@@ -2188,6 +2188,9 @@ test("WO-226 a fast-forwarded export restores its selected runtime for recovery,
         entryAdvisory.stderr,
         /session entry unavailable.*node scripts\/bootstrap\.mjs/,
       );
+      // The close settles its source-only prerequisites, origin among them,
+      // before it prepares or loads any runtime. This fixture's origin is a
+      // local path, so the close refuses there and leaves the runtime alone.
       const close = run(
         process.execPath,
         ["scripts/release.mjs", "close", "WO-999", "--publish"],
@@ -2196,8 +2199,9 @@ test("WO-226 a fast-forwarded export restores its selected runtime for recovery,
       assert.equal(close.status, 1);
       assert.match(
         close.stderr,
-        /Release-close runtime is not built.*node scripts\/bootstrap\.mjs/,
+        /origin must identify exactly one matching GitHub/,
       );
+      assert.equal(existsSync(host), false);
       for (const result of [reservation, entryAdvisory, close])
         assert.doesNotMatch(result.stdout + result.stderr, /npm run build/);
     } finally {

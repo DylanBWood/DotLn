@@ -25,7 +25,10 @@ import {
   shellQuote,
   spawnGit,
   parseWorktrees,
+  primaryWorktree,
 } from "./git.mjs";
+import { checkoutRelation, readHolders } from "./host-lanes.mjs";
+import { hostStateRoot } from "./host-resources.mjs";
 import {
   containedRegularFile,
   documentEntry,
@@ -632,6 +635,25 @@ async function integrateOwnedWorktree(root, workOrder, args) {
       "--stash-applied requires an interrupted stash application",
     );
   const { activeGateRuns } = await import("./gate-evidence.mjs");
+  // A gate in this worktree or in main's checkout must finish first. While a
+  // planning pass has switched the primary checkout off main, that primary
+  // checkout is still the control plane the gate runs in.
+  const main =
+    parseWorktrees(root).find((item) => item.branch === "refs/heads/main")
+      ?.worktree ?? primaryWorktree(root);
+  const holders = readHolders(hostStateRoot(), {
+    worktree: root,
+    includeWorktrees: true,
+  }).holders.filter((row) =>
+    [root, main].some(
+      (checkout) =>
+        checkoutRelation(row.worktree, checkout) === "this-checkout",
+    ),
+  );
+  if (holders.length)
+    throw new Error(
+      `Integration refused: ${holders.map((row) => `${row.task} (${row.worktree})`).join(", ")} holds host lanes; retry npm run worktree -- integrate ${workOrder}${continuation ? " --continue" : ""} after the lanes are released`,
+    );
   if (activeGateRuns(root).length)
     throw new Error("integration refuses during a live test gate");
   // An uncommitted control log travels in this integration's stash, so until
@@ -644,14 +666,28 @@ async function integrateOwnedWorktree(root, workOrder, args) {
     throw new Error(
       "integrate requires the selected order in active, repairing or final-review",
     );
-  const activeMain =
+  // Active execution takes in the local main it was started from. Repair and
+  // final review fetch origin/main first, so a stale local main cannot hide a
+  // newer upstream; both are resolved before the no-op check below.
+  let upstream =
     phase === "active"
       ? runGit(root, ["rev-parse", "refs/heads/main^{commit}"])
       : null;
+  if (!continuation && !upstream) {
+    runGit(root, ["ls-remote", "--exit-code", "origin", "refs/heads/main"]);
+    runGit(root, [
+      "fetch",
+      "--no-auto-maintenance",
+      "--tags",
+      "origin",
+      "+refs/heads/main:refs/remotes/origin/main",
+    ]);
+    upstream = runGit(root, ["rev-parse", "refs/remotes/origin/main^{commit}"]);
+  }
   if (
     !continuation &&
-    activeMain &&
-    runGit(root, ["merge-base", "HEAD", activeMain]) === activeMain
+    gitResult(root, ["merge-base", "--is-ancestor", upstream, "HEAD"])
+      .status === 0
   ) {
     console.log(
       "Integration took in nothing: the worktree is not behind main.",
@@ -864,25 +900,7 @@ async function integrateOwnedWorktree(root, workOrder, args) {
     )
       throw new Error("finish the existing merge before starting integration");
     refuseIntentToAdd();
-    // Resolve upstream before minting recovery refs or moving any work.
-    if (!activeMain) {
-      runGit(root, ["ls-remote", "--exit-code", "origin", "refs/heads/main"]);
-      runGit(root, [
-        "fetch",
-        "--no-auto-maintenance",
-        "--tags",
-        "origin",
-        "+refs/heads/main:refs/remotes/origin/main",
-      ]);
-    }
     const before = runGit(root, ["rev-parse", "HEAD"]);
-    const upstream =
-      activeMain ??
-      runGit(root, [
-        "rev-parse",
-        "--verify",
-        "refs/remotes/origin/main^{commit}",
-      ]);
     runGit(root, ["merge-base", before, upstream]);
     const date = new Date().toISOString().slice(0, 10);
     const changed = runGitPathList(root, [

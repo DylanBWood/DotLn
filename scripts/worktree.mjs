@@ -328,6 +328,7 @@ const reconcileDerivedWorktrees = (
   workOrderId,
   {
     dryRun,
+    listMaterial = false,
     reconcileWorktreeMaterial,
     renderIntakeReconciliation,
     verifyPreservedMaterial,
@@ -418,7 +419,9 @@ const reconcileDerivedWorktrees = (
             workOrderId,
             { material: locked },
           );
-          process.stdout.write(renderIntakeReconciliation(preserved));
+          process.stdout.write(
+            renderIntakeReconciliation(preserved, { listMaterial }),
+          );
           ensureNoIgnoredMaterial(path, preserved);
           verifyPreservedMaterial(path, mainPath, preserved);
           refuseSubmoduleWorktree(path);
@@ -1003,9 +1006,6 @@ const main = async () => {
     };
     const initial = readStartAuthority(Boolean(pending));
     ensureClean(mainPath);
-    const { temporaryPruneSummary } =
-      await import("./lib/temporary-prune-summary.mjs");
-    console.log(await temporaryPruneSummary(mainPath));
     readPendingReceipts(mainPath);
     if (pending) {
       if (
@@ -1338,11 +1338,12 @@ const main = async () => {
       );
     const releaseHandoff = `  Start a session in main (${shellQuote(mainPath)}); run exactly:\n  ${releaseCloseCommand(mainPath, workOrderId)}`;
     process.stdout.write(
-      `Pushed ${branch} and opened ${opened.stdout.trim()}\nAfter the operator merges the PR and authorizes resume: release close, run:\n${releaseHandoff}\nThe authorized close needs network egress to the GitHub host; --dry-run proves reachability and host permissions govern execution.\n`,
+      `Pushed ${branch} and opened ${opened.stdout.trim()}\nAfter the operator merges the PR and authorizes resume: release close, run:\n${releaseHandoff}\nThe authorized close needs network egress to the GitHub host; run the printed --publish command once. --dry-run is optional when a prerequisite is in doubt; host permissions govern execution.\n`,
     );
   } else if (action === "finish") {
     const { flags, material: overrides } = parseMaterialFlags(actionArgs, [
       "--dry-run",
+      "--list-material",
     ]);
     if (repoRoot !== mainPath)
       throw new Error(
@@ -1373,7 +1374,11 @@ const main = async () => {
       dryRun: true,
       material,
     });
-    process.stdout.write(renderIntakeReconciliation(preview));
+    process.stdout.write(
+      renderIntakeReconciliation(preview, {
+        listMaterial: flags.includes("--list-material"),
+      }),
+    );
     ensureNoIgnoredMaterial(subject, preview);
     const control = statusProjection(readControl(subject, "HEAD"), workOrderId);
     if (control?.phase !== "closed" || control.workOrder !== workOrderId)
@@ -1381,6 +1386,7 @@ const main = async () => {
     if (flags.includes("--dry-run")) {
       for (const line of reconcileDerivedWorktrees(mainPath, workOrderId, {
         dryRun: true,
+        listMaterial: flags.includes("--list-material"),
         reconcileWorktreeMaterial,
         renderIntakeReconciliation,
         verifyPreservedMaterial,
@@ -1450,7 +1456,11 @@ const main = async () => {
         workOrderId,
         { material: locked },
       );
-      process.stdout.write(renderIntakeReconciliation(reconciliation));
+      process.stdout.write(
+        renderIntakeReconciliation(reconciliation, {
+          listMaterial: flags.includes("--list-material"),
+        }),
+      );
       const checks = readGateChecks(subject);
       if (checks.length)
         recordGateChecks(mainPath, checks, { sourceRoot: subject });
@@ -1469,6 +1479,7 @@ const main = async () => {
     removeMergedBranch(mainPath, branch);
     for (const line of reconcileDerivedWorktrees(mainPath, workOrderId, {
       dryRun: false,
+      listMaterial: flags.includes("--list-material"),
       reconcileWorktreeMaterial,
       renderIntakeReconciliation,
       verifyPreservedMaterial,
@@ -1486,6 +1497,7 @@ const main = async () => {
     // the order's derived worktrees (WO-044).
     const { flags, material: overrides } = parseMaterialFlags(actionArgs, [
       "--dry-run",
+      "--list-material",
     ]);
     if (repoRoot !== mainPath)
       throw new Error(
@@ -1501,6 +1513,7 @@ const main = async () => {
       await import("../packages/skeleton/src/writer-teardown.mjs");
     const lines = reconcileDerivedWorktrees(mainPath, workOrderId, {
       dryRun: flags.includes("--dry-run"),
+      listMaterial: flags.includes("--list-material"),
       reconcileWorktreeMaterial,
       verifyPreservedMaterial,
       renderIntakeReconciliation,
@@ -1519,7 +1532,7 @@ const main = async () => {
     );
   } else {
     throw new Error(
-      "usage: worktree clone <repository-or-export-sibling-id> <absolute-path> | worktree start WO-NNN <work-order-path> | worktree integrate WO-NNN [--intake-backup <archive.zip>] [--continue] | worktree publish WO-NNN --title <title> --body-file <path> | worktree publish WO-NNN --target <request.json> [--require-deliverable-ready] [--confirm-terms sha256:<digest>] | worktree publish WO-NNN --target-worktree [--draft] --branch <type>/<slug> --title <title> --body-file <path> [--confirm-terms sha256:<digest>] | worktree observe-pr --store <episode-store> --number <N> [--repository HOST/OWNER/REPO] | worktree resolve-pr --request <review-loop-request.json> | worktree finish WO-NNN [--dry-run] | worktree settle WO-NNN [--dry-run]",
+      "usage: worktree clone <repository-or-export-sibling-id> <absolute-path> | worktree start WO-NNN <work-order-path> | worktree integrate WO-NNN [--intake-backup <archive.zip>] [--continue] | worktree publish WO-NNN --title <title> --body-file <path> | worktree publish WO-NNN --target <request.json> [--require-deliverable-ready] [--confirm-terms sha256:<digest>] | worktree publish WO-NNN --target-worktree [--draft] --branch <type>/<slug> --title <title> --body-file <path> [--confirm-terms sha256:<digest>] | worktree observe-pr --store <episode-store> --number <N> [--repository HOST/OWNER/REPO] | worktree resolve-pr --request <review-loop-request.json> | worktree finish WO-NNN [--dry-run] [--list-material] | worktree settle WO-NNN [--dry-run] [--list-material]",
     );
   }
 };

@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-239",
+  "date": "2026-10-29",
+  "scope": "Bounded disposable local fixture controls; no external publication, no production timing claim and no complete-review-row substitution.",
+  "baseline": "3db7571f1f0c19a935d4cbdff4c05cc3bfdee61f",
+  "staleCompiler": {
+    "driver": "scripts/test-release.sh --case stale_compiler",
+    "method": "Build fixture-local real package sources, then change the compiler version constant to synthetic 99.0.1 without rebuilding. Use the fixture-local writer runtime and a clean starter with no KIT-MANIFEST.json. The baseline arm substitutes only the baseline release.mjs into the fixture; both arms publish only to local fixture remotes and the fake GitHub adapter.",
+    "base": {
+      "exitCode": 1,
+      "expectedRefusal": "the export's harness emit differs from the bundle core's compiled packages predicted: .claude/hooks/commit-msg.mjs",
+      "starterOutcome": "refused",
+      "additionalObservation": "The baseline's global prune also refused on another checkout's live host lane. The independently reported starter mismatch is the criterion's negative control.",
+      "startedAt": "2026-10-29T15:00:24.810Z",
+      "finishedAt": "2026-10-29T15:00:32.795Z"
+    },
+    "head": {
+      "exitCode": 0,
+      "starterOutcome": "refreshed",
+      "publishInvocations": 1,
+      "childBuildBeforeParentImport": true,
+      "observation": "The inherited module-load trace records the child build finishing before the parent's first packages/*/dist import.",
+      "startedAt": "2026-10-29T14:59:43.435Z",
+      "finishedAt": "2026-10-29T14:59:55.826Z"
+    }
+  },
+  "integration": {
+    "driver": "scripts/test-worktree-integration.mjs: integration skips preservation when final-review has no incoming commits",
+    "method": "A reviewed subject is ahead of local and remote main and has untracked work. A Git observer executes a real stash push and then returns 86 to preserve proof if the implementation attempts one. A preload records transient merge-scratch allocation. The baseline arm substitutes only baseline worktree-integration.mjs into the fixture seed.",
+    "base": {
+      "exitCode": 1,
+      "stashPushes": 1,
+      "scratchRoots": 0,
+      "observation": "The helper created a real stash and checkpoint; the test deliberately stopped the Git call after that successful stash and failed its no-op assertion.",
+      "startedAt": "2026-10-29T15:02:21.231Z",
+      "finishedAt": "2026-10-29T15:02:25.324Z"
+    },
+    "head": {
+      "exitCode": 0,
+      "stashPushes": 0,
+      "scratchRoots": 0,
+      "stashListUnchanged": true,
+      "untrackedBytesUnchanged": true,
+      "phasesChecked": [
+        "active",
+        "repairing",
+        "final-review"
+      ],
+      "advancedRemoteIntegrated": true
+    },
+    "laneGuards": {
+      "exitCode": 0,
+      "heldWorktrees": [
+        "subject",
+        "main"
+      ],
+      "holderAndRetryNamed": true,
+      "noPreservationBeforeRefusal": true,
+      "finishedAt": "2026-10-29T15:03:09.280Z"
+    },
+    "driverCorrection": "The initial combined probe passed all three no-op cases and the advanced-origin case, but its new lane fixture failed because the process reader's cached binary belonged to another host directory. Importing the fixture's own host-resources module prepares its isolated reader; the focused lane recheck passed. No production guard was weakened."
+  },
+  "census": {
+    "driver": "scripts/test-fixture-temp-root.sh",
+    "foreignGateFixtureRoots": 1000,
+    "metric": "distinct foreign owner files read during discovery/judgment",
+    "closeScopeWalked": 0,
+    "allScopeWalked": 1000,
+    "exitCode": 0,
+    "finishedAt": "2026-10-29T15:15:23.448Z",
+    "driverCorrection": "Each synthetic root now binds its own device/inode and is explicitly removed by its owner token after observation; the first draft copied the template's identity. Existing negative cleanup cases retain their deliberately altered roots.",
+    "scopeBinding": {
+      "staleRegisteredForeignReplacementExcluded": true,
+      "capturedRootJudgedAfterLedgerRemoval": true,
+      "changedCapturedTokenExcluded": true,
+      "globalDiscoveryUnchanged": true
+    }
+  },
+  "compactMaterial": {
+    "driver": "scripts/test-release.sh --case close_compact",
+    "ignoredFilesPerCheckout": 2000,
+    "advisoryBytes": 198,
+    "removalRecordBytes": 995,
+    "fullTranscriptOmitsPreservedPathList": true,
+    "listMaterialShowsPaths": true,
+    "exitCode": 0,
+    "finishedAt": "2026-10-29T15:05:15.601Z"
+  },
+  "removalProof": {
+    "driver": "scripts/test-release.sh --case removal_inventory",
+    "coverage": [
+      "valid sidecar",
+      "missing sidecar",
+      "changed bytes",
+      "wrong digest",
+      "wrong summary count",
+      "unsafe or wrong reference",
+      "symlink",
+      "changed preserved destination",
+      "legacy inline proof",
+      "interrupted write then retry"
+    ],
+    "exitCode": 0,
+    "finishedAt": "2026-10-29T15:08:24.038Z"
+  },
+  "timing": {
+    "driver": "scripts/test-release.sh --case close_real_writer",
+    "sevenDistinctRows": true,
+    "runtimePrecedesPublication": true,
+    "sessionCleanupIncludedInPrune": true,
+    "exitCode": 0,
+    "readerRegression": "scripts/test-plan-refutation.mjs: close timings summarize the latest eight timed attempts without guessing older timings"
+  }
+}

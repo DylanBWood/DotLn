@@ -53,11 +53,52 @@ const legacyRootName = (name) =>
   /^dotln-.+[-.][A-Za-z0-9_]{6}$/.test(name) &&
   !/^dotln-(?:host-v\d|writer-transition|ctx7-cache)/.test(name);
 
+/** Every prune reader resolves its scope here, so the snapshot, cache and
+ * temporary-root walks of one prune always agree on it. */
+export const pruneScope = (options = {}) =>
+  options.scope ?? process.env.DOTLN_PRUNE_SCOPE ?? "all";
+
+// A ledger can outlive its path, or disappear with the closing worktree. A
+// recorded root still belongs to its checkout only while the owner marker at
+// its path carries the recorded token and that checkout's physical path.
+const ownerBinds = (saved) => {
+  const owner = readTemporaryOwner(saved.path);
+  return (
+    owner?.token === saved.token && owner.owner.repository === saved.repository
+  );
+};
+
+/** The roots a checkout's ledger registers that their owner markers still
+ * bind to it, each recorded with the checkout's physical path. Owner markers
+ * store physical paths, so a symlinked checkout path still matches; a
+ * checkout that no longer exists binds nothing. */
+export function boundTemporaryRoots(checkout) {
+  let repository;
+  try {
+    repository = realpathSync(checkout);
+  } catch {
+    return [];
+  }
+  return registeredTemporaryRoots(checkout)
+    .map((row) => ({ path: row.path, token: row.token, repository }))
+    .filter(ownerBinds);
+}
+
 export function temporaryPrunePaths(root, options = {}) {
-  const paths = new Set(registeredTemporaryRoots(root).map((row) => row.path));
-  const scope = options.scope ?? process.env.DOTLN_PRUNE_SCOPE ?? "all";
+  const scope = pruneScope(options);
+  const paths = new Set(
+    scope === "close"
+      ? [
+          ...boundTemporaryRoots(root),
+          ...(options.ownedTemporaryRoots ?? []).filter(ownerBinds),
+        ].map((saved) => saved.path)
+      : registeredTemporaryRoots(root).map((row) => row.path),
+  );
   const bases =
-    options.temporaryBases ?? (scope === "all" ? [realpathSync(tmpdir())] : []);
+    scope === "close"
+      ? []
+      : (options.temporaryBases ??
+        (scope === "all" ? [realpathSync(tmpdir())] : []));
   for (const base of bases) {
     requireTemporaryDirectory(base);
     if (!directory(base)) continue;

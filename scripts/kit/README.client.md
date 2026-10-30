@@ -633,6 +633,13 @@ here and the seeds it reads.
 
 ## Taking upstream updates
 
+A release close runs its printed `--publish` command once; `--dry-run` is
+optional when a prerequisite is in doubt. Before importing built modules, the
+close entry prepares the verified carried runtime in a child process (core
+builds its source runtime in a child). This keeps the compiler predicting a
+starter update aligned with the exported runtime's own emit. Publication and
+retry controls remain the same.
+
 Preview before every update. From a clean DotLn core checkout at the commit
 you want to take, with its pinned dependencies installed, run:
 
@@ -817,8 +824,19 @@ the already-migrated state; keep the output with your review of the update.
 
 ## Owned cleanup and retention
 
-Release close prunes owned leftovers after its worktree cleanup and records
-candidates, removals, retentions and blockers in the close receipt. A blocker
+Release close prunes owned leftovers after its worktree cleanup, scoped to
+the closing order's captured roots, main's retained lane and this checkout's
+registered temporary roots. It does not walk unrelated system temporary roots.
+An explicit `harness prune` and the read-only census `plan start` prints still
+walk them, but only `harness prune --apply` removes expired roots outside a
+close's scope; the update preview's census is limited to this repository. The close
+receipt records candidates, removals, retentions and blockers. Its seven timed
+steps cover prerequisites, runtime, worktree removal, publication, starter
+refresh, prune and recording; `plan failures` reports the latest eight timed
+attempts' median total and slowest step. Retained-material output and removal
+receipts use counts by class and digests. `--list-material` supplies paths
+outside the admitted close commands, so host permissions decide it;
+digest-bound inventory sidecars preserve the full removal proof for retries. A blocker
 keeps the same close retry command. Gate completion removes passing fixtures
 and retains failed ones for diagnosis, including standalone captures and scratch
 owned by those suites. Every gate-owned root is accounted for; live workers,
@@ -832,7 +850,8 @@ dispatch has an observed end. Physical ownership markers are excluded from
 fixture copies and seed commits. Invalid nested metadata retains the tree and
 reports a cleanup blocker.
 Global apply shares the host lane lock; no daemon or host-memory exception is
-installed. `worktree start`, `plan start` and update preview print the census.
+installed. `worktree start` creates the worktree without running a prune census;
+`plan start` and update preview print the census.
 Nested suite commands retain their outer gate's cleanup ownership across copied
 repositories. Creator teardown waits only for a gate that can read its ledger.
 

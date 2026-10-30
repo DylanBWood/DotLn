@@ -1,0 +1,565 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-239",
+  "verification": "VER-001",
+  "recordedAt": "2026-10-30T08:42:15.858Z",
+  "subject": {
+    "codeIdentity": "41629663fd2d2cc1514acf4074dbc36aa26d850745cd1fdff71bef9c2102b25d",
+    "baseline": "297bf4f167415b17b44608b3e98a7a619862bbeb"
+  },
+  "scope": "Independent read-only verification; all effects confined to records and disposable fixtures; no external publication.",
+  "completeGate": {
+    "checkId": "npm test",
+    "treeHash": "d25c6a86b5b8945e0786a5acff8cdff049e826d3",
+    "codeIdentity": "41629663fd2d2cc1514acf4074dbc36aa26d850745cd1fdff71bef9c2102b25d",
+    "recordedAt": "2026-10-30T08:20:48.836Z",
+    "durationMs": 2000806,
+    "exitCode": 0,
+    "executed": true,
+    "evidenceRef": "host-gate:41629663fd2d2cc1514acf4074dbc36aa26d850745cd1fdff71bef9c2102b25d:npm test",
+    "executionMode": "fresh",
+    "identityUnchanged": true,
+    "buildOutputUnchanged": true,
+    "freshSuites": 113,
+    "reusedSuites": 0,
+    "requiredSuites": [
+      "build",
+      "format",
+      "configuration-root",
+      "registrations",
+      "declarations",
+      "generated",
+      "host",
+      "release-preparation",
+      "github-body",
+      "outward-lint",
+      "target-publish",
+      "target-worktree",
+      "vertical",
+      "license-fixtures",
+      "publication-fixtures",
+      "backup-intake",
+      "launchpad",
+      "workstream-pilot",
+      "instance-history",
+      "beacon-portability",
+      "checkpoint",
+      "worktree",
+      "worktree-integration",
+      "release",
+      "work-orders-fixtures",
+      "siblings-fixtures",
+      "kernel",
+      "compiler",
+      "skeleton",
+      "console",
+      "browser-evidence",
+      "adjacent-queue",
+      "derived-orders",
+      "portfolio",
+      "codex-continuation",
+      "authority-grants",
+      "fixture-temp-root",
+      "launchpad-planning",
+      "harness-probe",
+      "harness-fixtures",
+      "plan-refutation",
+      "runner-fixtures",
+      "sync-fixtures",
+      "process-debt"
+    ],
+    "unrunSuites": []
+  },
+  "probes": [
+    {
+      "name": "format",
+      "argv": [
+        "npm",
+        "run",
+        "format:check"
+      ],
+      "supervisor": "node scripts/harness.mjs bounded --",
+      "result": {
+        "name": "bounded-probe",
+        "durationMs": 8042,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 8042,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 470454040,
+        "peakRssBytes": 544571392,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-30T08:31:33.621Z",
+        "finishedAt": "2026-10-30T08:31:41.663Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "observations": [
+        "All matched files use Prettier code style!"
+      ]
+    },
+    {
+      "name": "staleCompiler",
+      "argv": [
+        "bash",
+        "scripts/test-release.sh",
+        "--case",
+        "stale_compiler"
+      ],
+      "supervisor": "node scripts/harness.mjs bounded --",
+      "result": {
+        "name": "bounded-probe",
+        "durationMs": 11002,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 11002,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 350446976,
+        "peakRssBytes": 466026496,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-30T08:32:04.168Z",
+        "finishedAt": "2026-10-30T08:32:15.170Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "observations": [
+        "PROGRESS release case stale_compiler started",
+        "WO239 stale-compiler control exitCode=0",
+        "WO239 runtime loading {\"childBuildBeforeParentImport\":true,\"starterOutcome\":\"refreshed\"}",
+        "PROGRESS release case stale_compiler passed",
+        "release tests passed"
+      ]
+    },
+    {
+      "name": "census",
+      "argv": [
+        "bash",
+        "scripts/test-fixture-temp-root.sh"
+      ],
+      "supervisor": "node scripts/harness.mjs bounded --",
+      "result": {
+        "name": "bounded-probe",
+        "durationMs": 4526,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 4526,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 41309368,
+        "peakRssBytes": 118751232,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-30T08:32:42.463Z",
+        "finishedAt": "2026-10-30T08:32:46.989Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "observations": [
+        "WO239 close-scope counts {\"close\":0,\"all\":1000}",
+        "fixture temp-root tests passed"
+      ]
+    },
+    {
+      "name": "compactMaterial",
+      "argv": [
+        "bash",
+        "scripts/test-release.sh",
+        "--case",
+        "close_compact"
+      ],
+      "supervisor": "node scripts/harness.mjs bounded --",
+      "result": {
+        "name": "bounded-probe",
+        "durationMs": 13176,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 13176,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 119060616,
+        "peakRssBytes": 217202688,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-30T08:33:10.813Z",
+        "finishedAt": "2026-10-30T08:33:23.989Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "observations": [
+        "PROGRESS release case close_compact started",
+        "WO-195 summary bytes publish=612 dry-run=813",
+        "WO239 material counts {\"files\":2000,\"advisoryBytes\":198,\"removalRecordBytes\":995}",
+        "WO-195 summary bytes retry=450",
+        "PROGRESS release case close_compact passed",
+        "release tests passed"
+      ]
+    },
+    {
+      "name": "removalProof",
+      "argv": [
+        "bash",
+        "scripts/test-release.sh",
+        "--case",
+        "removal_inventory"
+      ],
+      "supervisor": "node scripts/harness.mjs bounded --",
+      "result": {
+        "name": "bounded-probe",
+        "durationMs": 960,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 960,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 3113392,
+        "peakRssBytes": 3948544,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-30T08:33:54.760Z",
+        "finishedAt": "2026-10-30T08:33:55.720Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "observations": [
+        "PROGRESS release case removal_inventory started",
+        "PROGRESS release case removal_inventory passed",
+        "release tests passed"
+      ]
+    },
+    {
+      "name": "integration",
+      "argv": [
+        "node",
+        "--test",
+        "--test-name-pattern=integration skips preservation|final-review integration fetches an advanced origin|integration refuses live lane|integration guards the primary checkout|a later stash failure",
+        "scripts/test-worktree-integration.mjs"
+      ],
+      "supervisor": "node scripts/harness.mjs bounded --",
+      "environment": "suiteEnvironment(process.env), scripts/lib/suite-evidence.mjs; sequential Node test files",
+      "result": {
+        "name": "bounded-probe",
+        "durationMs": 31491,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 31491,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 283506424,
+        "peakRssBytes": 506445824,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-30T08:34:02.040Z",
+        "finishedAt": "2026-10-30T08:34:33.532Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "observations": [
+        "✔ a later stash failure with nothing stashed restores the completed receipt it replaced (15899.415292ms)",
+        "WO239 integration control {\"phase\":\"active\",\"exitCode\":0,\"stashPushes\":0,\"scratchRoots\":0}",
+        "✔ integration skips preservation when active has no incoming commits (2786.543209ms)",
+        "WO239 integration control {\"phase\":\"repairing\",\"exitCode\":0,\"stashPushes\":0,\"scratchRoots\":0}",
+        "✔ integration skips preservation when repairing has no incoming commits (2014.032333ms)",
+        "WO239 integration control {\"phase\":\"final-review\",\"exitCode\":0,\"stashPushes\":0,\"scratchRoots\":0}",
+        "✔ integration skips preservation when final-review has no incoming commits (2028.838666ms)",
+        "✔ final-review integration fetches an advanced origin even when local main is already an ancestor (3230.786541ms)",
+        "✔ integration refuses live lane holders in either the subject or main before preservation (1861.73625ms)",
+        "✔ integration guards the primary checkout while a planning pass has it off main, then proceeds (3369.151875ms)",
+        "ℹ tests 7",
+        "ℹ pass 7",
+        "ℹ fail 0",
+        "ℹ skipped 0"
+      ]
+    },
+    {
+      "name": "writerTiming",
+      "argv": [
+        "bash",
+        "scripts/test-release.sh",
+        "--case",
+        "close_real_writer"
+      ],
+      "supervisor": "node scripts/harness.mjs bounded --",
+      "result": {
+        "name": "bounded-probe",
+        "durationMs": 10465,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 10465,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 55384376,
+        "peakRssBytes": 108412928,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-30T08:35:23.668Z",
+        "finishedAt": "2026-10-30T08:35:34.133Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "observations": [
+        "PROGRESS release case close_real_writer started",
+        "WO-195 summary bytes publish=607 dry-run=817",
+        "WO-195 summary bytes retry=474",
+        "PROGRESS release case close_real_writer passed",
+        "release tests passed"
+      ]
+    },
+    {
+      "name": "independent",
+      "argv": null,
+      "supervisor": "node scripts/harness.mjs bounded --",
+      "result": {
+        "name": "bounded-probe",
+        "durationMs": 108,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 108,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 1343896,
+        "peakRssBytes": 1785856,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-30T08:40:34.608Z",
+        "finishedAt": "2026-10-30T08:40:34.716Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "observations": []
+    },
+    {
+      "name": "roles",
+      "argv": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern=WO-145 optional economy support preserves historical snapshots|every role oracle is a declared input|bounded role wording preserves prior savings|closeout archives retained control files",
+        "scripts/test-process-debt.mjs",
+        "scripts/test-gate-followups.mjs"
+      ],
+      "supervisor": "node scripts/harness.mjs bounded --",
+      "environment": "suiteEnvironment(process.env), scripts/lib/suite-evidence.mjs; sequential Node test files",
+      "result": {
+        "name": "bounded-probe",
+        "durationMs": 834,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 834,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 51747968,
+        "peakRssBytes": 180011008,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-30T08:36:57.376Z",
+        "finishedAt": "2026-10-30T08:36:58.210Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "observations": [
+        "✔ bounded role wording preserves prior savings and records reviewed startup additions (74.438584ms)",
+        "✔ every role oracle is a declared input of the suite that walks it (5.801625ms)",
+        "✔ bounded role wording preserves prior savings and records reviewed startup additions (60.642709ms)",
+        "✔ every role oracle is a declared input of the suite that walks it (5.148666ms)",
+        "✔ closeout archives retained control files and nested directories without changing active main state (229.47975ms)",
+        "✔ WO-145 optional economy support preserves historical snapshots through the current release-close role and changes only executor instructions on (203.830084ms)",
+        "ℹ tests 6",
+        "ℹ pass 6",
+        "ℹ fail 0",
+        "ℹ skipped 0"
+      ]
+    },
+    {
+      "name": "publication",
+      "argv": [
+        "npm",
+        "run",
+        "publication:check"
+      ],
+      "supervisor": "node scripts/harness.mjs bounded --",
+      "result": {
+        "name": "bounded-probe",
+        "durationMs": 242,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 242,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 29675384,
+        "peakRssBytes": 107757568,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-30T08:37:34.086Z",
+        "finishedAt": "2026-10-30T08:37:34.328Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "observations": [
+        "PASS dual-voice links: 3 identical claim links per voice",
+        "CURRENT everyday-ai-user-toc.md: 29 linked source sections match",
+        "CURRENT software-engineer-toc.md: 45 linked source sections match",
+        "PASS publication bootstrap checks"
+      ]
+    },
+    {
+      "name": "harness",
+      "argv": [
+        "npm",
+        "run",
+        "harness",
+        "--",
+        "check"
+      ],
+      "supervisor": "node scripts/harness.mjs bounded --",
+      "result": {
+        "name": "bounded-probe",
+        "durationMs": 1130,
+        "slowestCases": [
+          {
+            "name": "bounded-probe",
+            "durationMs": 1130,
+            "exitCode": 0,
+            "granularity": "task"
+          }
+        ],
+        "peakFootprintBytes": 82602496,
+        "peakRssBytes": 227655680,
+        "memoryBudgetBytes": 3221225472,
+        "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+        "droppedOutputBytes": 0,
+        "startedAt": "2026-10-30T08:37:55.704Z",
+        "finishedAt": "2026-10-30T08:37:56.834Z",
+        "exitCode": 0,
+        "executed": true
+      },
+      "observations": [
+        "harness check: 35 generated surfaces; local-terms list: present"
+      ]
+    }
+  ],
+  "independent": {
+    "observations": {
+      "staticGraph": {
+        "files": 70,
+        "builtImports": 0,
+        "bareWorkspaceImports": 0
+      },
+      "timers": {
+        "nestedExclusive": true,
+        "repeated": true,
+        "failureFinalized": true,
+        "skippedUntouched": true
+      },
+      "material": {
+        "orderInvariant": true,
+        "unicodeAndNewline": true,
+        "empty": true
+      },
+      "reader": {
+        "multiOrder": true,
+        "unorderedHistory": true,
+        "latestEight": true,
+        "malformedExcluded": true,
+        "windowFilter": true,
+        "tieByName": true,
+        "previewAndRefusalIncluded": true,
+        "timing": {
+          "sampleCount": 8,
+          "medianTotalMs": 7500,
+          "slowestStep": {
+            "order": "WO-902",
+            "recordedAt": "2030-01-01T00:22:00.000Z",
+            "name": "prune",
+            "durationMs": 55555
+          }
+        }
+      }
+    },
+    "sourceSha256": "sha256:6e8123ef6187ab3baf0d180d263b59ce83d3f8e0c608d2fa67bb815e16ce3206",
+    "source": "import assert from 'node:assert/strict';\nimport { createHash } from 'node:crypto';\nimport { readFileSync, writeFileSync, mkdirSync, mkdtempSync, realpathSync } from 'node:fs';\nimport { dirname, join, resolve } from 'node:path';\nimport { spawnSync } from 'node:child_process';\n\nconst root = realpathSync(process.cwd());\nconst { pathToFileURL } = await import('node:url');\nconst { releaseSteps, withReleaseStep } = await import(pathToFileURL(join(root,'scripts/lib/release-steps.mjs')));\nconst { materialSummary } = await import(pathToFileURL(join(root,'scripts/lib/material-summary.mjs')));\nconst { operationalFailures } = await import(pathToFileURL(join(root,'scripts/lib/plan-failures.mjs')));\nassert.equal(spawnSync('git',['rev-parse','--show-toplevel'],{encoding:'utf8'}).stdout.trim(),root);\nconst seen = new Set(), pending = [join(root, 'scripts/release.mjs')];\nconst bareWorkspaceImports = [];\nwhile (pending.length) {\n  const file = pending.pop();\n  if (seen.has(file)) continue;\n  seen.add(file);\n  assert.doesNotMatch(file.slice(root.length), /\\/packages\\/[^/]+\\/dist\\//);\n  const source = readFileSync(file, 'utf8');\n  for (const match of source.matchAll(/^\\s*(?:import|export)\\s+(?:[^;\"']*?\\bfrom\\s*)?[\"']([^\"']+)[\"']/gm)) {\n    const specifier = match[1];\n    if (specifier.startsWith('.')) pending.push(resolve(dirname(file), specifier));\n    else if (specifier.startsWith('@dotln/')) bareWorkspaceImports.push(specifier);\n  }\n}\nassert.deepEqual(bareWorkspaceImports, []);\n\nconst record = { steps: releaseSteps() };\nassert.deepEqual(record.steps.map(s => s.name), ['prerequisites', 'runtime', 'worktree-removal', 'publication', 'starter-refresh', 'prune', 'record']);\nconst descriptor = Object.getOwnPropertyDescriptor(globalThis, 'performance');\nlet now = 0;\nObject.defineProperty(globalThis, 'performance', { configurable: true, value: { now: () => now } });\ntry {\n  await withReleaseStep(record, 'publication', async () => {\n    now += 10;\n    await withReleaseStep(record, 'prune', () => { now += 30; });\n    now += 20;\n  });\n  await withReleaseStep(record, 'prune', () => { now += 10; });\n  await assert.rejects(withReleaseStep(record, 'prune', () => { now += 5; throw new Error('probe failure'); }), /probe failure/);\n  await withReleaseStep(record, 'publication', () => { now += 7; });\n} finally {\n  Object.defineProperty(globalThis, 'performance', descriptor);\n}\nassert.equal(record.steps.find(s => s.name === 'publication').durationMs, 37);\nassert.equal(record.steps.find(s => s.name === 'prune').durationMs, 45);\nassert.equal(record.steps.reduce((n,s) => n+s.durationMs,0), 82);\nassert.deepEqual(record.steps.find(s => s.name === 'runtime'), { name:'runtime', startedAt:null, finishedAt:null, durationMs:0 });\nfor (const step of record.steps.filter(s => s.startedAt)) assert.ok(Date.parse(step.finishedAt) >= Date.parse(step.startedAt));\n\nconst paths = [{path:'unicode-\\u00e9/line\\nfile',class:'retained'},{path:'quote\"/file',class:'intake'}];\nconst summary = materialSummary(paths);\nassert.deepEqual(summary, materialSummary([...paths].reverse()));\nassert.equal(summary.digest, 'sha256:'+createHash('sha256').update(JSON.stringify(paths.map(r=>r.path).sort())).digest('hex'));\nassert.deepEqual(summary.countsByClass, {intake:1,retained:1});\nassert.deepEqual(materialSummary([]).countsByClass, {});\nassert.equal(materialSummary([]).count, 0);\n\nconst fixture = mkdtempSync(join(dirname(new URL(import.meta.url).pathname), 'reader-'));\nconst init = spawnSync('git',['init','-q','-b','main',fixture],{encoding:'utf8'});\nassert.equal(init.status,0,init.stderr);\nassert.equal(spawnSync('git',['-C',fixture,'rev-parse','--show-toplevel'],{encoding:'utf8'}).stdout.trim(),realpathSync(fixture));\nconst put = (file,value) => { mkdirSync(dirname(join(fixture,file)),{recursive:true}); writeFileSync(join(fixture,file),JSON.stringify(value)); };\nconst attempt = (index) => {\n  const start = Date.UTC(2030,0,1)+index*60_000;\n  return {startedAt:new Date(start).toISOString(),recordedAt:new Date(start+(index+1)*1000).toISOString(),publication:{tagOutcome:index===8?null:'published'},blockers:index===8?[{reason:'synthetic refusal'}]:[],dryRun:index===7,steps:[{name:'prune',durationMs:index*100}]};\n};\nconst attempts=Array.from({length:10},(_,i)=>attempt(i));\nput('docs/control/local/retained/WO-901/release-close.json',{...attempts[5],schemaVersion:1,workOrderId:'WO-901',previousAttempts:[...attempts.filter((_,i)=>i!==5).reverse(),{publication:{tagOutcome:null},blockers:[]},{...attempt(20),steps:[{name:'prune',durationMs:null}]}]});\nconst other={startedAt:'2030-01-01T00:20:00+00:00',recordedAt:'2030-01-01T00:22:00+00:00',publication:{tagOutcome:'published'},blockers:[],steps:[{name:'runtime',durationMs:55555},{name:'prune',durationMs:55555}]};\nput('docs/control/local/retained/WO-902/release-close.json',{...other,schemaVersion:1,workOrderId:'WO-902'});\nconst control={orders:new Map(),eventSegments:new Map()};\nconst timing=operationalFailures(fixture,control,()=>true).localReleaseCloses.timing;\nassert.equal(timing.sampleCount,8);\nassert.equal(timing.medianTotalMs,7500);\nassert.equal(timing.slowestStep.name,'prune');\nassert.equal(timing.slowestStep.order,'WO-902');\nassert.equal(timing.slowestStep.durationMs,55555);\nassert.equal(operationalFailures(fixture,control,r=>r.order==='WO-901').localReleaseCloses.timing.medianTotalMs,6500);\nassert.deepEqual(operationalFailures(fixture,control,()=>false).localReleaseCloses.timing,{sampleCount:0,medianTotalMs:null,slowestStep:null});\n\nconsole.log(JSON.stringify({staticGraph:{files:seen.size,builtImports:0,bareWorkspaceImports:0},timers:{nestedExclusive:true,repeated:true,failureFinalized:true,skippedUntouched:true},material:{orderInvariant:true,unicodeAndNewline:true,empty:true},reader:{multiOrder:true,unorderedHistory:true,latestEight:true,malformedExcluded:true,windowFilter:true,tieByName:true,previewAndRefusalIncluded:true,timing}},null,2));\n",
+    "recipe": "Save source as independent-probes.mjs in the scratch directory returned by node scripts/harness.mjs scratch, then execute it from the physical launchpad Git root under node scripts/harness.mjs bounded -- node. The probe creates only disposable children beside that saved script."
+  },
+  "rootBytes": {
+    "instruction": 7316,
+    "executor": {
+      "before": 34975,
+      "after": 36500,
+      "ceiling": 40194
+    },
+    "releaseClose": {
+      "before": 22657,
+      "after": 22758,
+      "ceiling": 26410
+    },
+    "roots": [
+      ".agents/skills",
+      ".claude/skills"
+    ]
+  },
+  "usage": {
+    "entry": {
+      "totalTokens": 54189,
+      "source": "codex-transcript-counter",
+      "scope": "dispatch",
+      "cutoff": "2026-10-30T08:30:23.883Z"
+    },
+    "handoff": {
+      "totalTokens": 5868773,
+      "source": "codex-transcript-counter",
+      "scope": "dispatch",
+      "cutoff": "2026-10-30T08:40:54.374Z"
+    },
+    "costUsd": null
+  },
+  "limits": {
+    "livePublication": "untested",
+    "productionCloseDuration": "unmeasured",
+    "hardDollarCap": "not exposed; unenforced",
+    "workerTranscripts": "execution review summaries read; raw workers not independently replayed",
+    "documentGate": "runs after final authored records; exact passing row is bound by VerificationCompleted"
+  }
+}

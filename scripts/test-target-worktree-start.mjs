@@ -235,6 +235,62 @@ const printedCommands = [
 ];
 const documentGate = "scripts/test-runner.mjs --document";
 const names = (commands) => commands.map(({ command }) => command);
+const comparableGateResult = (result) =>
+  `${result.status}\n${result.stdout}`
+    .replace(/[0-9]+\.[0-9]+ s/gu, "<t>")
+    .replace(/"observedAt":"[^"]+"/gu, '"observedAt":"<time>"')
+    .replace(/"residentBytes":(?:null|[0-9]+)/gu, '"residentBytes":"<sample>"')
+    // Separate executions measure their own churn; keep its shape and source.
+    .replace(
+      /"(filesCreated|filesDeleted|bytesWritten)":[0-9]+/gu,
+      '"$1":"<sample>"',
+    )
+    .replace(/(dotln-[a-z-]+-)[A-Za-z0-9]{6}\b/gu, "$1<tmp>");
+
+test("document gate route comparison ignores measured churn but preserves outcomes", () => {
+  const result = {
+    status: 1,
+    stdout:
+      'FAIL format\nGate cleanup: 0 roots removed; 0 retained; 0 blockers. Churn: {"filesCreated":203,"filesDeleted":203,"bytesWritten":2826105,"source":"fixture inventory"}\n',
+  };
+  for (const [field, value] of [
+    ["bytesWritten", 2826105],
+    ["filesCreated", 203],
+    ["filesDeleted", 203],
+  ])
+    assert.equal(
+      comparableGateResult({
+        ...result,
+        stdout: result.stdout.replace(
+          `"${field}":${value}`,
+          `"${field}":${value + 1}`,
+        ),
+      }),
+      comparableGateResult(result),
+      field,
+    );
+  for (const changed of [
+    { ...result, status: 0 },
+    { ...result, stdout: result.stdout.replace("FAIL format", "PASS format") },
+    { ...result, stdout: result.stdout.replace("0 blockers", "1 blockers") },
+    {
+      ...result,
+      stdout: result.stdout.replace("fixture inventory", "other source"),
+    },
+    {
+      ...result,
+      stdout: result.stdout.replace(
+        '"bytesWritten":2826105',
+        '"bytesWritten":null',
+      ),
+    },
+    { ...result, stdout: result.stdout.replace('"bytesWritten":2826105,', "") },
+  ])
+    assert.notEqual(
+      comparableGateResult(changed),
+      comparableGateResult(result),
+    );
+});
 
 test("target briefings name a missing repository throughout dispatch and print launchpad commands that resolve from the target worktree", () => {
   withFixture((f) => {
@@ -365,22 +421,9 @@ test("target briefings name a missing repository throughout dispatch and print l
     // the document gate reports what it reports from the launchpad itself,
     // the records action refuses the phase, and both publications refuse the
     // order worktree's uncommitted records.
-    const timings = (result) =>
-      `${result.status}\n${result.stdout}`
-        .replace(/[0-9]+\.[0-9]+ s/gu, "<t>")
-        .replace(/"observedAt":"[^"]+"/gu, '"observedAt":"<time>"')
-        .replace(
-          /"residentBytes":(?:null|[0-9]+)/gu,
-          '"residentBytes":"<sample>"',
-        )
-        .replace(
-          /"(filesCreated|filesDeleted|bytesWritten)":\d+/gu,
-          '"$1":"<sample>"',
-        )
-        .replace(/(dotln-[a-z-]+-)[A-Za-z0-9]{6}\b/gu, "$1<tmp>");
     assert.equal(
-      timings(gate.run()),
-      timings(
+      comparableGateResult(gate.run()),
+      comparableGateResult(
         spawnSync(process.execPath, ["scripts/test-runner.mjs", "--document"], {
           cwd: f.orderRoot,
           env: f.env,

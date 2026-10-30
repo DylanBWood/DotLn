@@ -34,6 +34,15 @@ git -C "$main" switch -c main >/dev/null 2>&1
 mkdir -p "$main/scripts" "$main/docs/work-orders" "$main/docs/control" "$main/docs/discovery" "$main/packages/kernel"
 cp "$script_dir/worktree.mjs" "$script_dir/resume.mjs" "$script_dir/release.mjs" "$script_dir/license-surfaces.mjs" "$script_dir/siblings.mjs" "$main/scripts/"
 cp -R "$script_dir/lib" "$main/scripts/lib"
+# Worktree creation must succeed without invoking the prune preview.
+node --input-type=module - "$main/scripts/lib/temporary-prune-summary.mjs" <<'JS'
+import { readFileSync, writeFileSync } from "node:fs";
+const file = process.argv[2];
+const source = readFileSync(file, "utf8");
+const start = source.indexOf("export async function temporaryPruneSummary(");
+if (start < 0) throw new Error("prune preview fixture source missing");
+writeFileSync(file, source.slice(0, start) + 'export async function temporaryPruneSummary() { throw new Error("worktree start must not invoke the prune preview"); }\n');
+JS
 # The copied helpers resolve the launchpad's installed Markdown parser as the
 # launchpad does: through a node_modules above them.
 mkdir -p "$test_root/node_modules"
@@ -134,6 +143,9 @@ grep -q '"workOrderId":"WO-099"' "$subject/docs/control/orders/WO-099.jsonl"
 grep -Fq "cd '$subject'" <<<"$start_output"
 grep -Fq '  codex' <<<"$start_output"
 grep -Fq 'resume: next' <<<"$start_output"
+if grep -Fq 'Prune:' <<<"$start_output"; then
+  printf 'error: worktree start printed a prune preview\n' >&2; exit 1
+fi
 grep -Fq 'Carried sibling receipts:' <<<"$start_output"
 if grep -Fq 'contributions.operatorAuthor' <<<"$start_output"; then
   printf 'error: declared sign-off exemption still printed an advisory\n' >&2; exit 1
@@ -526,6 +538,9 @@ grep -Fq "'$node_bin' '$main/scripts/release.mjs' close WO-099 --publish" <<<"$p
 printf '%s\n' "$publish_output" >"$test_root/publish-output.txt"
 CODEX_THREAD_ID='' COPILOT_AGENT_SESSION_ID='' "$node_bin" "$script_dir/test-close-admission.mjs" "$main" WO-099 "$test_root/publish-output.txt"
 grep -Fq 'network egress to the GitHub host' <<<"$publish_output"
+# One publish invocation closes an order; a preview is only for a prerequisite in doubt.
+grep -Fq 'run the printed --publish command once. --dry-run is optional when a prerequisite is in doubt' <<<"$publish_output"
+if grep -Eq -- '--dry-run (proves|previews) reachability' <<<"$publish_output"; then printf 'error: post-merge handoff presents the preview as a standing step\n' >&2; exit 1; fi
 if grep -Fq "'$subject/scripts/release.mjs' close WO-099 --publish" <<<"$publish_output"; then
   printf 'error: post-merge handoff names the helper the close will remove\n' >&2
   exit 1
@@ -575,7 +590,7 @@ mkdir -p "$subject/docs/intake"
 intake_path="docs/intake/raw${u202f}"$'\n'"note.md"
 assert_u202f "$intake_path"
 printf 'raw local note\n' >"$subject/$intake_path"
-intake_output="$(finish_worktree WO-099 --dry-run 2>&1)"
+intake_output="$(finish_worktree WO-099 --dry-run --list-material 2>&1)"
 "$node_bin" -e 'require("node:assert/strict").ok(process.argv[1].includes(JSON.stringify(process.argv[2])))' "$intake_output" "$intake_path"
 test ! -e "$main/$intake_path"
 test -f "$subject/$intake_path"
@@ -586,7 +601,7 @@ rmdir -- "$subject/docs/intake"
 mkdir -p "$subject/docs/intake/dist" "$subject/docs/intake/node_modules"
 printf 'protected intake distribution note\n' >"$subject/docs/intake/dist/x.md"
 printf 'protected intake dependency note\n' >"$subject/docs/intake/node_modules/y"
-intake_build_output="$(finish_worktree WO-099 --dry-run 2>&1)"
+intake_build_output="$(finish_worktree WO-099 --dry-run --list-material 2>&1)"
 grep -Fq 'docs/intake/dist/x.md' <<<"$intake_build_output"
 test -f "$subject/docs/intake/dist/x.md"
 test -f "$subject/docs/intake/node_modules/y"
@@ -594,7 +609,7 @@ test -d "$subject"
 test -n "$(git -C "$main" branch --list wo-099)"
 rm -- "$subject/docs/intake/dist/x.md"
 rmdir -- "$subject/docs/intake/dist"
-intake_node_output="$(finish_worktree WO-099 --dry-run 2>&1)"
+intake_node_output="$(finish_worktree WO-099 --dry-run --list-material 2>&1)"
 grep -Fq 'docs/intake/node_modules/y' <<<"$intake_node_output"
 test -f "$subject/docs/intake/node_modules/y"
 rm -- "$subject/docs/intake/node_modules/y"
@@ -717,7 +732,11 @@ printf 'derived measurement log\n' >"$derived_retained/docs/control/local/measur
 rm -rf -- "$derived_gone"
 retained_main_refs="$(git -C "$main" show-ref)"
 retained_subject_head="$(git -C "$subject" rev-parse HEAD)"
-retained_preview="$(finish_worktree WO-099 --dry-run 2>&1)"
+retained_compact="$(finish_worktree WO-099 --dry-run 2>&1)"
+grep -Fq 'Use --list-material for preserved paths.' <<<"$retained_compact"
+if grep -Fq 'docs/control/local/retained/WO-099/adjacent-work.jsonl' <<<"$retained_compact"; then printf 'error: compact preview listed a preserved file\n' >&2; exit 1; fi
+if grep -Fq 'docs/control/local/retained/WO-099/process/empty' <<<"$retained_compact"; then printf 'error: compact preview listed a preserved directory\n' >&2; exit 1; fi
+retained_preview="$(finish_worktree WO-099 --dry-run --list-material 2>&1)"
 grep -Fq 'docs/control/local/retained/WO-099/adjacent-work.jsonl' <<<"$retained_preview"
 grep -Fq 'docs/control/local/retained/WO-099/process/empty' <<<"$retained_preview"
 grep -Fq '"docs/control/local/prototypes/repo": nested repository disposable; removed with the worktree' <<<"$retained_preview"
