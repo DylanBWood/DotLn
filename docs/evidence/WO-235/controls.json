@@ -1,0 +1,63 @@
+{
+  "baseline": {
+    "fixture": "packages/skeleton/fixtures/wo235-control-baseline.json",
+    "revision": "3db7571f1f0c19a935d4cbdff4c05cc3bfdee61f",
+    "scope": "Pinned predecessor entry points with shared fixture support; both tests verify the source hashes, and the Stop test also verifies the installed runtime bytes.",
+    "sources": {
+      "packages/skeleton/src/harness-host.ts": "sha256:fa137f03afaa4ca90a756d0b70ba71e4d68956dd32428499a9d2ed5d0d97e862",
+      "scripts/resume.mjs": "sha256:9e31658b6d23024ce455dbfeaf657af89863ea49c7b0fa6a79e9791f57050656"
+    }
+  },
+  "completion": {
+    "test": "scripts/test-control-segments.mjs: all four completion routes refuse unanswered directions and admit answers, with a base control",
+    "observation": "Exit codes established by executed equality assertions in the passing resume suite. The gate omits successful child stdout.",
+    "gate": {
+      "command": "npm run test:docs",
+      "recordedAt": "2026-10-29T06:12:09.372Z",
+      "treeHash": "e5c2c61ef7c1a2a9013c088286e406dadfb59a6d",
+      "codeIdentity": "b9cc573cb9a5e48ad4cb1bddb5cf85dbb420d5bc37e72997b6cecd64ef6e2211",
+      "evidenceRef": "host-gate:b9cc573cb9a5e48ad4cb1bddb5cf85dbb420d5bc37e72997b6cecd64ef6e2211:npm run test:docs",
+      "exitCode": 0,
+      "resumeExecuted": true,
+      "resumeExitCode": 0
+    },
+    "arms": [
+      {
+        "action": "implementation-ready",
+        "baseExitCode": 0,
+        "unansweredExitCode": 1,
+        "answeredExitCode": 0
+      },
+      {
+        "action": "repair-complete",
+        "baseExitCode": 0,
+        "unansweredExitCode": 1,
+        "answeredExitCode": 0
+      },
+      {
+        "action": "verification-result",
+        "baseExitCode": 0,
+        "unansweredExitCode": 1,
+        "answeredExitCode": 0
+      },
+      {
+        "action": "final-review-result",
+        "baseExitCode": 0,
+        "unansweredExitCode": 1,
+        "answeredExitCode": 0
+      }
+    ]
+  },
+  "stop": {
+    "test": "scripts/test-harness.mjs: three operator prompts get indexed; Stop refuses the unanswered third and admits its answer and override",
+    "observation": "WO235_STOP_CONTROLS output in the successful paired Stop and roleless-planning sequence reproduction; all answer, reentry, notification and override assertions passed.",
+    "log": "session scratch/wo235-stop-sequence-repro.log",
+    "finishedAt": "2026-10-29T05:37:52.300Z",
+    "reproductionExitCode": 0,
+    "baseExitCode": 0,
+    "baseDecision": "admit",
+    "unansweredExitCode": 0,
+    "unansweredDecision": "block",
+    "protocol": "Claude Stop communicates refusal through decision:block at process exit 0."
+  }
+}

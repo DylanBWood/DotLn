@@ -1,0 +1,272 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-235",
+  "verification": "VER-004",
+  "subject": {
+    "branch": "wo-235",
+    "base": "3db7571f",
+    "checkpoint": "refs/dotln/checkpoint/WO-235/20",
+    "codeIdentity": "c95c868b54706d5a36347ebe0c5336196811c32bc430e212eac4d2f0a727ae59"
+  },
+  "routeReproduction": {
+    "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-235/verification-004-route-probe.mjs",
+    "observedAt": "2026-10-30T03:20:48.795Z",
+    "exitCode": 1,
+    "expectedSource": "host-task-notification",
+    "observedSource": "claude-prompt-hook",
+    "observedAttribution": "unattributed",
+    "observedRouteSource": "host-route-unavailable"
+  },
+  "generatedHookProbe": {
+    "method": "Current generated session and finish hook entrypoints in an isolated synthetic harness; the fixture constructor is the existing scripts/test-harness.mjs fixture function. Input histories are new verification variations, not a live host observation.",
+    "observedAt": "2026-10-30T03:18:08.926Z",
+    "results": [
+      {
+        "case": "idle operator paste delivered, then identical real host notification",
+        "expected": {
+          "reminded": false,
+          "source": "host-task-notification"
+        },
+        "observed": {
+          "reminded": true,
+          "qualityPass": false,
+          "source": "claude-prompt-hook",
+          "attribution": "unattributed",
+          "routeSource": "host-route-unavailable",
+          "recordedAt": "2026-10-30T03:18:08.317Z"
+        }
+      },
+      {
+        "case": "delivered operator quality command, then identical host-queued words",
+        "expected": {
+          "reminded": false,
+          "qualityPass": false,
+          "source": "host-queued"
+        },
+        "observed": {
+          "reminded": true,
+          "qualityPass": true,
+          "source": "claude-prompt-hook",
+          "attribution": "unattributed",
+          "routeSource": "host-route-unavailable",
+          "recordedAt": "2026-10-30T03:18:08.470Z"
+        }
+      },
+      {
+        "case": "fresh host notification control",
+        "expected": {
+          "reminded": false,
+          "source": "host-task-notification"
+        },
+        "observed": {
+          "reminded": false,
+          "qualityPass": false,
+          "source": "host-task-notification",
+          "attribution": "host-task-notification",
+          "routeSource": "transcript-enqueue",
+          "recordedAt": "2026-10-30T03:18:08.545Z"
+        }
+      },
+      {
+        "case": "Stop without answer coverage refusal",
+        "legacy": "absent",
+        "reentry": false,
+        "allowed": true
+      },
+      {
+        "case": "Stop without answer coverage refusal",
+        "legacy": "absent",
+        "reentry": true,
+        "allowed": true
+      },
+      {
+        "case": "Stop without answer coverage refusal",
+        "legacy": "malformed",
+        "reentry": false,
+        "allowed": true
+      },
+      {
+        "case": "Stop without answer coverage refusal",
+        "legacy": "malformed",
+        "reentry": true,
+        "allowed": true
+      }
+    ]
+  },
+  "contentAudit": {
+    "installedRoles": 12,
+    "generated": [
+      {
+        "economy": true,
+        "roles": 12,
+        "allHashesMatch": true
+      },
+      {
+        "economy": false,
+        "roles": 12,
+        "allHashesMatch": true
+      }
+    ],
+    "oracleChain": [
+      "wo235-quality-pass-role-baseline.json",
+      "wo235-maintenance-role-baseline.json",
+      "wo235-usefulness-role-baseline.json",
+      "wo235-private-reply-role-baseline.json",
+      "wo235-repair-role-baseline.json",
+      "wo235-role-baseline.json"
+    ],
+    "terminalOracle": "wo234-integration-role-baseline.json",
+    "guidance": [
+      {
+        "surface": "prTitle",
+        "contract": "Contract: docs/product/08-publication-compiler.md §PRs and commits and docs/product/07-execution-guide.md §Discipline; hasAiAttribution in packages/compiler/src/attribution.mjs refuses AI attribution at publish and in the commit-msg hook; lintOutwardArtifact in scripts/lib/outward-lint.mjs judges a target repository's title shape, type and length. Derive shape from this contract and its rules; a prior instance is evidence, never a pattern.",
+        "exampleLengthIndependent": true
+      },
+      {
+        "surface": "prBody",
+        "contract": "Contract: docs/product/08-publication-compiler.md §PRs and commits and docs/product/07-execution-guide.md §Discipline; pullRequestBodyShapeFailures in scripts/lib/github-body.mjs requires a heading first, prose before the meter block and the meter block last; githubBodyProfileFailures in scripts/lib/github-body.mjs requires one physical line per prose paragraph and, when published, no relative link; hasAiAttribution in packages/compiler/src/attribution.mjs refuses AI attribution at publish and in the commit-msg hook. Derive shape from this contract and its rules; a prior instance is evidence, never a pattern.",
+        "exampleLengthIndependent": true
+      },
+      {
+        "surface": "commitSubject",
+        "contract": "Contract: docs/product/08-publication-compiler.md §PRs and commits and docs/product/07-execution-guide.md §Discipline; hasAiAttribution in packages/compiler/src/attribution.mjs refuses AI attribution at publish and in the commit-msg hook; lintOutwardArtifact in scripts/lib/outward-lint.mjs judges a target repository's subject shape, type, length and blank line. Derive shape from this contract and its rules; a prior instance is evidence, never a pattern.",
+        "exampleLengthIndependent": true
+      },
+      {
+        "surface": "releaseNotes",
+        "contract": "Contract: docs/product/08-publication-compiler.md §Release-note edition; parseReleaseNotes in scripts/lib/release-notes.mjs requires the five sections. Derive shape from this contract and its rules; a prior instance is evidence, never a pattern.",
+        "exampleLengthIndependent": true
+      },
+      {
+        "surface": "releasePage",
+        "contract": "Contract: docs/product/08-publication-compiler.md §Release-note edition; releaseEdition in scripts/release.mjs renders the page from the reviewed notes at release close and refuses a relative link. Derive shape from this contract and its rules; a prior instance is evidence, never a pattern.",
+        "exampleLengthIndependent": true
+      }
+    ],
+    "relocatedProductRoot": true,
+    "planningSkeletonHeadings": 9,
+    "receiptShapeRestored": true,
+    "completionLogicUnchanged": true,
+    "newSuppressionDirectives": 0,
+    "pinnedRuntimeMatchesBuild": true
+  },
+  "completeReview": {
+    "command": "npm test -- --review",
+    "requiredSelectedSuites": [
+      "format",
+      "configuration-root",
+      "registrations",
+      "declarations",
+      "generated",
+      "host",
+      "build",
+      "release-preparation",
+      "github-body",
+      "outward-lint",
+      "target-publish",
+      "target-worktree",
+      "vertical",
+      "license-fixtures",
+      "publication-fixtures",
+      "backup-intake",
+      "launchpad",
+      "workstream-pilot",
+      "instance-history",
+      "beacon-portability",
+      "checkpoint",
+      "worktree",
+      "worktree-integration",
+      "release",
+      "work-orders-fixtures",
+      "siblings-fixtures",
+      "kernel",
+      "compiler",
+      "skeleton",
+      "console",
+      "browser-evidence",
+      "adjacent-queue",
+      "derived-orders",
+      "portfolio",
+      "codex-continuation",
+      "authority-grants",
+      "launchpad-planning",
+      "evidence-sources",
+      "harness-probe",
+      "harness-fixtures",
+      "harness-context",
+      "plan-refutation",
+      "runner-fixtures",
+      "sync-fixtures",
+      "process-debt"
+    ],
+    "evidenceRefs": [
+      "host-gate:c95c868b54706d5a36347ebe0c5336196811c32bc430e212eac4d2f0a727ae59:npm test"
+    ],
+    "checkId": "npm test",
+    "treeHash": "44b607bec06ee4b570f23e7b8bef041fea97afcf",
+    "codeIdentity": "c95c868b54706d5a36347ebe0c5336196811c32bc430e212eac4d2f0a727ae59",
+    "durationMs": 1950175,
+    "evidenceRef": "host-gate:c95c868b54706d5a36347ebe0c5336196811c32bc430e212eac4d2f0a727ae59:npm test",
+    "recordedAt": "2026-10-30T02:36:55.614Z",
+    "executed": true,
+    "exitCode": 0
+  },
+  "documentConsumerAtEntry": {
+    "entryTreeHash": "70dd6b59b8ddfb6d1fca259fc866bcffb8e7401c",
+    "refusedPreviousTree": true,
+    "previousDocumentRowRecordedAt": "2026-10-30T02:59:47.103Z",
+    "interpretation": "Expected after verify dispatch changed the candidate. This is evidence that a prior document pass is not silently reused."
+  },
+  "checks": [
+    {
+      "command": "node scripts/harness.mjs bounded -- npm run format:check",
+      "exitCode": 0,
+      "finishedAt": "2026-10-30T03:12:32.292Z"
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- npm run publication:check",
+      "exitCode": 0,
+      "finishedAt": "2026-10-30T03:20:52.338Z"
+    }
+  ],
+  "productionSearch": {
+    "roots": [
+      "scripts",
+      "packages/skeleton/src"
+    ],
+    "excluded": [
+      "test-*",
+      "*.test.mjs"
+    ],
+    "terms": [
+      "requireAnsweredDirections",
+      "direction-ledger",
+      "artifact-comparison",
+      "bestComparable",
+      "PlanningDirectionsCompleted",
+      "answerDigest",
+      "gateRecordProjection"
+    ],
+    "matches": []
+  },
+  "probeCorrections": [
+    {
+      "cause": "The first extracted full-hook fixture lacked its control constant.",
+      "disposition": "Imported the existing fixture control before construction; the corrected generated-hook capture ran successfully."
+    },
+    {
+      "cause": "The first content audit imposed an unsupported thirty-link oracle limit, then assumed that prefeature oracle schemas all declared the same hash fields.",
+      "disposition": "Scoped the audit to this order's six new oracle links through wo234-integration-role-baseline.json, with cycle detection and explicit source limits. The final scoped audit passed."
+    },
+    {
+      "cause": "Unprojected status, repository and follow-up reads exceeded their output budgets.",
+      "disposition": "Reread required clipped portions in bounded sections and projected follow-up fields from JSON. No verdict depends on clipped output."
+    }
+  ],
+  "limits": [
+    "No live Claude task was launched in this Codex verification. The failing history is replayed through the built router and current generated hook.",
+    "The quality-pass probe observed guidance delivery only, not an actual document edit or lifecycle transition.",
+    "Semantic answer completeness and document quality have no measured percentage.",
+    "Existing accepted role growth and the planning-owned sequence wording remain recorded follow-ups; neither is made a new blocker."
+  ]
+}

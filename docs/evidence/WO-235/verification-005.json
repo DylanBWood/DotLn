@@ -1,0 +1,242 @@
+{
+  "verification": "VER-005",
+  "probeCorrections": [
+    "The initial dependency assertion allowed the skeleton package version but omitted its console dependency pin. The checked lockfile diff changes only those two internal version fields; the corrected assertion checks both against their respective skeleton versions and compares every other field unchanged."
+  ],
+  "recordedAt": "2026-10-30T05:35:15.869Z",
+  "codeIdentity": "3ca0cfc162d216be36ba9544001b08e3c6d59d6bb2f7c01397e31f709cd2b362",
+  "results": [
+    {
+      "name": "current complete review covers the current selection",
+      "passed": true,
+      "observations": {
+        "codeIdentity": "3ca0cfc162d216be36ba9544001b08e3c6d59d6bb2f7c01397e31f709cd2b362",
+        "suites": [
+          "format",
+          "configuration-root",
+          "registrations",
+          "declarations",
+          "generated",
+          "host",
+          "build",
+          "release-preparation",
+          "github-body",
+          "outward-lint",
+          "target-publish",
+          "target-worktree",
+          "vertical",
+          "license-fixtures",
+          "publication-fixtures",
+          "backup-intake",
+          "launchpad",
+          "workstream-pilot",
+          "instance-history",
+          "beacon-portability",
+          "checkpoint",
+          "worktree",
+          "worktree-integration",
+          "release",
+          "work-orders-fixtures",
+          "siblings-fixtures",
+          "kernel",
+          "compiler",
+          "skeleton",
+          "console",
+          "browser-evidence",
+          "adjacent-queue",
+          "derived-orders",
+          "portfolio",
+          "codex-continuation",
+          "authority-grants",
+          "launchpad-planning",
+          "evidence-sources",
+          "harness-probe",
+          "harness-fixtures",
+          "harness-context",
+          "plan-refutation",
+          "runner-fixtures",
+          "sync-fixtures",
+          "process-debt"
+        ],
+        "requiredCount": 45,
+        "exitCode": 0,
+        "recordedAt": "2026-10-30T05:00:11.640Z",
+        "durationMs": 1866842,
+        "evidenceRef": "host-gate:3ca0cfc162d216be36ba9544001b08e3c6d59d6bb2f7c01397e31f709cd2b362:npm test",
+        "displaced": []
+      }
+    },
+    {
+      "name": "base parity and removal",
+      "passed": true,
+      "observations": {
+        "unchanged": [
+          "scripts/lib/plan-failures.mjs",
+          "scripts/lib/plan-receipts.mjs",
+          "packages/skeleton/src/gate-evidence.mjs",
+          "scripts/lib/github-body.mjs"
+        ],
+        "hostAddedLines": 10,
+        "resumeChangedLines": 2
+      }
+    },
+    {
+      "name": "installed roles, both generated settings, oracle chain and pinned runtime",
+      "passed": true,
+      "observations": {
+        "installedRoles": 12,
+        "settings": 2,
+        "historicalLinks": 37,
+        "runtimeFilesCompared": 3,
+        "startupCost": {
+          "executor": {
+            "beforeBytes": 36098,
+            "bytes": 34975,
+            "growthBytes": -1123
+          },
+          "verifier": {
+            "beforeBytes": 32619,
+            "bytes": 31496,
+            "growthBytes": -1123
+          },
+          "reviewer": {
+            "beforeBytes": 35067,
+            "bytes": 33944,
+            "growthBytes": -1123
+          },
+          "release-close": {
+            "beforeBytes": 23780,
+            "bytes": 22657,
+            "growthBytes": -1123
+          },
+          "planner": {
+            "beforeBytes": 24689,
+            "bytes": 23566,
+            "growthBytes": -1123
+          },
+          "refuter": {
+            "beforeBytes": 23503,
+            "bytes": 22380,
+            "growthBytes": -1123
+          }
+        }
+      }
+    },
+    {
+      "name": "writing guidance preserves contracts and context when example lengths vary",
+      "passed": true,
+      "observations": {
+        "surfaces": [
+          "prTitle",
+          "prBody",
+          "commitSubject",
+          "releaseNotes",
+          "releasePage"
+        ],
+        "exampleVariations": 15,
+        "malformedExampleRetainsGuidance": true,
+        "relocatedProductRoot": true
+      }
+    },
+    {
+      "name": "planning skeleton matches the declared headings and relocated root",
+      "passed": true,
+      "observations": {
+        "headings": [
+          "Dispatch and capture",
+          "Readings",
+          "Orders filed and amended",
+          "Register",
+          "NoOps",
+          "Sequence",
+          "Write-backs and ceilings",
+          "Process cost",
+          "Validation"
+        ],
+        "relocatedPlanningRoot": true,
+        "actualStart": true,
+        "failedBranchPreparationRemoved": true,
+        "existingDocumentPreserved": true
+      }
+    },
+    {
+      "name": "generated prompt hook uses only the current first content line",
+      "passed": true,
+      "observations": {
+        "historyVariations": [
+          {
+            "case": "task envelope",
+            "midTurn": false,
+            "guided": false
+          },
+          {
+            "case": "task envelope",
+            "midTurn": true,
+            "guided": false
+          },
+          {
+            "case": "agent envelope",
+            "midTurn": false,
+            "guided": false
+          },
+          {
+            "case": "agent envelope",
+            "midTurn": true,
+            "guided": false
+          },
+          {
+            "case": "prose lead",
+            "midTurn": false,
+            "guided": false
+          },
+          {
+            "case": "prose lead",
+            "midTurn": true,
+            "guided": false
+          }
+        ],
+        "queuedCommandGuidedUnderAmendedContract": true,
+        "leadingForms": 3,
+        "noncommands": 3,
+        "analysisPrecedence": true,
+        "stopAdmissions": 2,
+        "lifecycleLogUnchanged": true
+      }
+    },
+    {
+      "name": "document rows reject later records and the current dispatch's stale tree",
+      "passed": true,
+      "observations": {
+        "actualStaleTreeRefused": true,
+        "syntheticMutations": [
+          {
+            "path": "docs/evidence/WO-999/decisions.md",
+            "staleRowRefused": true
+          },
+          {
+            "path": "docs/verifications/WO-999/VER-001.md",
+            "staleRowRefused": true
+          },
+          {
+            "path": "docs/lineage/decisions-index.md",
+            "staleRowRefused": true
+          },
+          {
+            "path": "docs/evidence/WO-999/new-record.md",
+            "staleRowRefused": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "external dependencies unchanged",
+      "passed": true,
+      "observations": {
+        "internalVersionEntriesOnly": [
+          "packages/console",
+          "packages/skeleton"
+        ]
+      }
+    }
+  ]
+}

@@ -4,7 +4,7 @@
 
 ## Proposed order
 
-- [ ] [WO-235] — No artifact is shaped by its predecessor and no operator direction is dropped · **queued**
+- [x] [WO-235] — No artifact is shaped by its predecessor and no operator direction is dropped · **final-reviewed**
 - [ ] [WO-239] — Release close prepares before it loads and runs once · **queued**
 - [ ] [WO-238] — A document says what is so · **queued**
 - [ ] [WO-237] — A closed order keeps its journals · **queued**
@@ -34,33 +34,15 @@ Full evidence for the active and sequenced orders follows; the Open cards are in
 
 Separate track; outside the proposed serial order.
 
-- [WO-228] — repository: self; base: 7b0a5b5c80946faa36a82676f944fb1896fd99e5; phase: draft; verdict: unknown; integration: current; stale: no; observed target: 7b0a5b5c80946faa36a82676f944fb1896fd99e5.
+- [WO-228] — repository: self; base: 3db7571f1f0c19a935d4cbdff4c05cc3bfdee61f; phase: draft; verdict: unknown; integration: current; stale: no; observed target: 3db7571f1f0c19a935d4cbdff4c05cc3bfdee61f.
 
-<!-- dotln-workstreams: {"workstreams":[{"id":"WS-002","track":"separate","members":[{"workOrderId":"WO-228","repository":"self","base":"7b0a5b5c80946faa36a82676f944fb1896fd99e5","phase":"draft","verdict":"unknown","integration":"current","stale":"no","targetCommit":"7b0a5b5c80946faa36a82676f944fb1896fd99e5"}],"edges":[{"from":"WO-228","to":"WO-193","relation":"planning-deferral"}]}]} -->
+<!-- dotln-workstreams: {"workstreams":[{"id":"WS-002","track":"separate","members":[{"workOrderId":"WO-228","repository":"self","base":"3db7571f1f0c19a935d4cbdff4c05cc3bfdee61f","phase":"draft","verdict":"unknown","integration":"current","stale":"no","targetCommit":"3db7571f1f0c19a935d4cbdff4c05cc3bfdee61f"}],"edges":[{"from":"WO-228","to":"WO-193","relation":"planning-deferral"}]}]} -->
 
 ## Active
 
 None.
 
 ## Open
-
-### WO-235
-
-[WO-235 — No artifact is shaped by its predecessor and no operator direction is dropped: every generated role derives each artifact from its contract and the check that judges it, the meter compares each measured artifact with the best comparable passing instance, every operator message in a dispatch becomes a typed direction-ledger entry that completion and the planning receipt refuse to leave unanswered, and a correction in any register freezes scope before the role continues (version assigned at activation)](WO-235-no-artifact-shaped-by-its-predecessor.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-130: satisfied-by-close (met) — the dispatch record the prompt hook appends, which the direction ledger indexes by message; WO-226: satisfied-by-close (met) — the first-line prefix reading of an operator message, extended with an index and digest per message; WO-187: satisfied-by-close (met) — the generated role roots and worker definitions the shared rule enters, pinned by the oracle; WO-158: satisfied-by-close (met) — the completion routes whose refusal shape the unanswered-direction refusal follows; WO-227: satisfied-by-close (met) — the pull-request body rules and outward lint beside which the best-comparable advisory stands; WO-088: reference-only (non-blocking) — pass registration moves out of the idea ledger there; the skeleton this order writes follows it then.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer xhigh.
-- Track: machinery
-- Cost: adds the direction ledger (&#96;docs/evidence/WO-NNN/directions.jsonl&#96; for an order; a marker block in a pass's planning document) with its reader in &#96;scripts/lib/direction-ledger.mjs&#96; (new), the message index and digest the prompt hook records in &#96;packages/skeleton/src/harness-host.ts&#96;, the refusals in &#96;scripts/resume.mjs&#96;'s completion commands and in &#96;scripts/lib/plan-receipts.mjs&#96;, &#96;bestComparableBytes&#96; and its ratio in &#96;scripts/lib/meta.mjs&#96; with the advisory in &#96;scripts/refute-plan.mjs&#96; and the completion commands, the best-comparable line in &#96;scripts/lib/reader-profiles.mjs&#96; &#96;writingGuidance&#96;, the skeleton in &#96;scripts/refute-plan.mjs&#96; &#96;start&#96;, the shared sentence, with its standing-document clause, in &#96;packages/skeleton/src/loadouts/contributor.ts&#96; with its oracle re-mint, the Stop hook's refusal to end a turn with an operator message unanswered in &#96;packages/skeleton/src/harness-host.ts&#96; (amendment D001), cases in &#96;scripts/test-harness.mjs&#96;, &#96;scripts/test-plan-refutation.mjs&#96;, &#96;scripts/test-control-segments.mjs&#96;, &#96;scripts/test-process-debt.mjs&#96; and &#96;scripts/test-publication*.mjs&#96;, and sentences in products 05 and 07, the security document and the kit README. Removes: the pattern the filing pass observed in itself and in the record (fifteen of forty-nine planning documents share one inherited section skeleton no contract names; pull-request bodies grew from 1,707 bytes at WO-202 to 17,605 at WO-210, fell to 1,920 at WO-215 after a correction and grew again to 11,604 at WO-221 and 8,594 at WO-232), the "Nearest example" the writing guidance offers as a pattern, and the nine of thirteen operator messages in the current window the record files as &#96;unclassified&#96; with no disposition, and the reply-per-message pattern of the filing pass's own session (four messages in eleven seconds answered one at a time; amendment D001). Wall-clock: one record write per operator message, one read at completion (milliseconds). Context bytes: this file; every role's cold start grows by the shared sentence of step 7, measured and recorded before and after. Commands: none new for the operator. Tokens: unknown until run. Steps: 12. Re-mints: &#96;harness-host.ts&#96; and &#96;contributor.ts&#96; are registered evidence sources, so the editions they stale are re-minted deterministically; neither is a file the feedback verifier judges, so no live feedback episode; &#96;meta.mjs&#96;, &#96;plan-receipts.mjs&#96; and &#96;reader-profiles.mjs&#96; are declared sources of machinery suites, so &#96;npm test -- --review&#96; runs before handoff; the role oracle is re-minted.
-- Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-235/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
-- Authority: [docs/work-orders/WO-235-no-artifact-shaped-by-its-predecessor.md](WO-235-no-artifact-shaped-by-its-predecessor.md)
 
 ### WO-239
 
@@ -85,8 +67,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-235.
-- References: WO-235: satisfied-by-close (unmet) — the shared role rule's standing-document clause, the plan start skeleton and the writing guidance this order extends; WO-233: satisfied-by-close (met) — the session journals and the retained lane the read census reads; WO-227: satisfied-by-close (met) — the kit README's outward rules the rewritten template keeps; WO-224: satisfied-by-close (met) — the reducer's registered-target route the fifth lens brief runs under; WO-237: reference-only (non-blocking) — closed orders' journals move to the retained lane there; the census reads them where they are; WO-088: reference-only (non-blocking) — pass registration leaves the idea ledger there; the passes directory follows that decision.
+- Dependencies: typed; dependency-ready.
+- References: WO-235: satisfied-by-close (met) — the shared role rule's standing-document clause, the plan start skeleton and the writing guidance this order extends; WO-233: satisfied-by-close (met) — the session journals and the retained lane the read census reads; WO-227: satisfied-by-close (met) — the kit README's outward rules the rewritten template keeps; WO-224: satisfied-by-close (met) — the reducer's registered-target route the fifth lens brief runs under; WO-237: reference-only (non-blocking) — closed orders' journals move to the retained lane there; the census reads them where they are; WO-088: reference-only (non-blocking) — pass registration leaves the idea ledger there; the passes directory follows that decision.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
