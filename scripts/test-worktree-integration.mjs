@@ -1610,6 +1610,26 @@ test("a later stash failure with nothing stashed restores the completed receipt 
     ),
   );
   writeFileSync(lock, "");
+  const noIncoming = f.invoke();
+  assert.equal(noIncoming.status, 0, noIncoming.stdout + noIncoming.stderr);
+  assert.match(noIncoming.stdout, /the worktree is not behind main/);
+  assert.deepEqual(readFileSync(receiptPath), completed);
+
+  // The later attempt needs incoming work to reach preservation again.
+  put(f.main, "next-upstream-fixture.md", "new upstream work\n");
+  runGit(f.main, ["add", "next-upstream-fixture.md"], fixtureGitOptions);
+  runGit(
+    f.main,
+    [
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "new upstream work after integration",
+    ],
+    fixtureGitOptions,
+  );
+  runGit(f.main, ["push", "-q", "origin", "main"], fixtureGitOptions);
   const failed = f.invoke();
   rmSync(lock);
   assert.notEqual(failed.status, 0);
@@ -2695,4 +2715,210 @@ test("active integration uses main's current code and preserves another worktree
     runGit(f.main, ["stash", "list", "--format=%H"], fixtureGitOptions),
     before,
   );
+});
+
+for (const phase of ["active", "repairing", "final-review"]) {
+  test(`integration skips preservation when ${phase} has no incoming commits`, (t) => {
+    const f = fixture(t, {
+      active: phase === "active",
+      reviewed: phase === "final-review",
+      authored: false,
+      generators: "focused",
+    });
+    runGit(f.main, ["reset", "--hard", f.before], fixtureGitOptions);
+    runGit(
+      f.origin,
+      ["update-ref", "refs/heads/main", f.before],
+      fixtureGitOptions,
+    );
+    const before = runGit(
+      f.subject,
+      ["stash", "list", "--format=%H"],
+      fixtureGitOptions,
+    );
+    const sourceBytes = text(f.subject, "untracked-fixture.md");
+    const bin = join(f.temporary, "guard-bin");
+    mkdirSync(bin);
+    const events = join(f.temporary, "preservation-events.jsonl");
+    const realGit = checked(source, "/usr/bin/which", ["git"]);
+    put(
+      bin,
+      "git",
+      `#!${process.execPath}\nimport {spawnSync} from 'node:child_process';import {appendFileSync} from 'node:fs';const args=process.argv.slice(2);const result=spawnSync(${JSON.stringify(realGit)},args,{stdio:'inherit'});if(args.includes('stash')&&args.includes('push')&&result.status===0){appendFileSync(${JSON.stringify(events)},JSON.stringify({stash:true})+'\\n');process.exit(86);}process.exit(result.status??1);\n`,
+    );
+    // A package marker makes the executable wrapper an ESM file on every host.
+    put(bin, "package.json", '{"type":"module"}\n');
+    chmodSync(join(bin, "git"), 0o755);
+    const preload = join(f.temporary, "observe-scratch.mjs");
+    writeFileSync(
+      preload,
+      `import fs from 'node:fs';import {syncBuiltinESMExports} from 'node:module';const original=fs.mkdtempSync;fs.mkdtempSync=function(prefix,...args){if(String(prefix).includes('dotln-integrate-merge-'))fs.appendFileSync(${JSON.stringify(events)},JSON.stringify({scratch:true})+'\\n');return original(prefix,...args)};syncBuiltinESMExports();\n`,
+    );
+    const result = spawnSync(
+      process.execPath,
+      ["--import", preload, "scripts/worktree.mjs", "integrate", "WO-998"],
+      {
+        cwd: f.subject,
+        encoding: "utf8",
+        maxBuffer: 32 * 1024 * 1024,
+        env: {
+          ...process.env,
+          DOTLN_ACCOUNT_LABEL: "",
+          PATH: bin + ":" + process.env.PATH,
+        },
+      },
+    );
+    const observations = existsSync(events)
+      ? text(f.temporary, "preservation-events.jsonl")
+          .trim()
+          .split("\n")
+          .map(JSON.parse)
+      : [];
+    console.log(
+      "WO239 integration control " +
+        JSON.stringify({
+          phase,
+          exitCode: result.status,
+          stashPushes: observations.filter((row) => row.stash).length,
+          scratchRoots: observations.filter((row) => row.scratch).length,
+        }),
+    );
+    assert.equal(result.status, 0, result.stdout + result.stderr);
+    assert.match(result.stdout, /took in nothing/);
+    assert.deepEqual(
+      observations,
+      [],
+      "no transient stash or merge scratch is created",
+    );
+    assert.equal(
+      runGit(f.subject, ["stash", "list", "--format=%H"], fixtureGitOptions),
+      before,
+    );
+    assert.equal(text(f.subject, "untracked-fixture.md"), sourceBytes);
+    assert.equal(
+      existsSync(join(f.subject, "docs/control/local/integration.json")),
+      false,
+    );
+  });
+}
+
+test("final-review integration fetches an advanced origin even when local main is already an ancestor", (t) => {
+  const f = fixture(t, {
+    reviewed: true,
+    authored: false,
+    generators: "focused",
+  });
+  runGit(f.main, ["reset", "--hard", f.before], fixtureGitOptions);
+  const result = f.invoke();
+  assert.equal(result.status, 0, result.stdout + result.stderr);
+  assert.doesNotMatch(result.stdout, /took in nothing/);
+  assert.equal(text(f.subject, "authored-fixture.md"), "upstream intent\n");
+});
+
+test("integration refuses live lane holders in either the subject or main before preservation", async (t) => {
+  const f = fixture(t, {
+    active: true,
+    authored: false,
+    generators: "focused",
+  });
+  const directory = join(f.temporary, "isolated-host");
+  const resources = "scripts/lib/host-resources.mjs";
+  for (const checkout of [f.main, f.subject])
+    put(
+      checkout,
+      resources,
+      text(checkout, resources).replace(
+        "export function hostStateRoot() {",
+        `export function hostStateRoot() { return ${JSON.stringify(directory)};`,
+      ),
+    );
+  const { registerProcess } = await import(
+    new URL("file://" + join(f.main, resources))
+  );
+  for (const worktree of [f.subject, f.main]) {
+    const lease = registerProcess(
+      "lanes",
+      process.pid,
+      {
+        task: "fixture live gate",
+        worktree,
+        slots: 1,
+        acquiredAt: new Date().toISOString(),
+      },
+      directory,
+    );
+    try {
+      const result = run(f.subject, process.execPath, [
+        "scripts/worktree.mjs",
+        "integrate",
+        "WO-998",
+      ]);
+      assert.equal(result.status, 1, result.stdout + result.stderr);
+      assert.match(result.stderr, /fixture live gate.*holds host lanes.*retry/);
+      assert.equal(
+        existsSync(join(f.subject, "docs/control/local/integration.json")),
+        false,
+      );
+      assert.equal(runGit(f.subject, ["stash", "list"], fixtureGitOptions), "");
+    } finally {
+      lease.release();
+    }
+  }
+});
+
+test("integration guards the primary checkout while a planning pass has it off main, then proceeds", async (t) => {
+  const f = fixture(t, {
+    active: true,
+    authored: false,
+    generators: "focused",
+  });
+  // A planning pass switches the primary checkout to its own branch, so no
+  // checkout has main checked out. The active order still takes in local main.
+  runGit(f.main, ["switch", "-c", "planning/fixture-pass"], fixtureGitOptions);
+  const directory = join(f.temporary, "isolated-host");
+  const resources = "scripts/lib/host-resources.mjs";
+  for (const checkout of [f.main, f.subject])
+    put(
+      checkout,
+      resources,
+      text(checkout, resources).replace(
+        "export function hostStateRoot() {",
+        `export function hostStateRoot() { return ${JSON.stringify(directory)};`,
+      ),
+    );
+  const { registerProcess } = await import(
+    new URL("file://" + join(f.main, resources))
+  );
+  const lease = registerProcess(
+    "lanes",
+    process.pid,
+    {
+      task: "fixture planning gate",
+      worktree: f.main,
+      slots: 1,
+      acquiredAt: new Date().toISOString(),
+    },
+    directory,
+  );
+  try {
+    const refused = run(f.subject, process.execPath, [
+      "scripts/worktree.mjs",
+      "integrate",
+      "WO-998",
+    ]);
+    assert.equal(refused.status, 1, refused.stdout + refused.stderr);
+    assert.match(
+      refused.stderr,
+      /fixture planning gate.*holds host lanes.*retry/,
+    );
+  } finally {
+    lease.release();
+  }
+  const result = run(f.subject, process.execPath, [
+    "scripts/worktree.mjs",
+    "integrate",
+    "WO-998",
+  ]);
+  assert.equal(result.status, 0, result.stdout + result.stderr);
+  assert.equal(text(f.subject, "authored-fixture.md"), "upstream intent\n");
 });

@@ -399,7 +399,10 @@ export const reconcileWorktreeMaterial = (
   options = {},
 ) => reconcile(source, main, workOrder, { ...options, retainedControl: true });
 
-export function renderIntakeReconciliation(receipt) {
+export function renderIntakeReconciliation(
+  receipt,
+  { listMaterial = !receipt.retainedControl } = {},
+) {
   const label = receipt.retainedControl
     ? "Worktree preservation"
     : "Intake reconciliation";
@@ -413,10 +416,13 @@ export function renderIntakeReconciliation(receipt) {
         (row) =>
           `  ${JSON.stringify(row.source)}: nested repository ${row.disposition === "disposable" ? "disposable; removed with the worktree" : "preserved as a directory unit"}`,
       ),
-      ...[...receipt.directories, ...receipt.files].map(
+      ...(listMaterial ? [...receipt.directories, ...receipt.files] : []).map(
         (row) =>
           `  ${JSON.stringify(row.source)} -> ${JSON.stringify(row.destination)}: ${row.disposition}${row.kind === "directory" ? ", directory" : `, ${row.bytes} bytes`}`,
       ),
+      ...(!listMaterial && receipt.files.length + receipt.directories.length
+        ? ["  Use --list-material for preserved paths."]
+        : []),
     ].join("\n") + "\n"
   );
 }

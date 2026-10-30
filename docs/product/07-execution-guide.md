@@ -829,17 +829,24 @@ Run `npm run worktree -- integrate WO-NNN` inside the matching worktree or run
 main's current `scripts/worktree.mjs integrate WO-NNN` from main; Git's
 worktree registry selects the matching branch and its writer lock still applies
 ([WO-079](../work-orders/WO-079-worktree-sync.md), the successor to WO-033's
-sync proposal). It checkpoints current work without a lifecycle event,
-keeps a named include-untracked stash until application completes, fetches main
-and tags for repair/review (uses local main for active execution), fast-forwards
-an uncommitted branch or starts a non-rewriting merge, applies the stash,
-and regenerates the projections below. Ignored intake requires
+sync proposal). After resolving its upstream and the no-op check below, it
+checkpoints current work without a lifecycle event, keeps a named
+include-untracked stash until application completes, fast-forwards an
+uncommitted branch or starts a non-rewriting merge, applies the stash, and
+regenerates the projections below. Ignored intake requires
 `--intake-backup <archive.zip>` naming an external archive whose bytes match
 the current intake; `npm run backup:intake -- <authorized-directory>` creates
 one. The helper is admitted in `active`, `repairing` and `final-review`. An active
-worktree whose merge base is behind main integrates main; otherwise it reports
-that it took in nothing, without checkpointing or stashing. Executors integrate
-first when main moved, before formatting, sync and the complete handoff run.
+worktree uses local main; repair and final review fetch origin/main and tags
+first. When that upstream is already an ancestor of HEAD, the helper reports
+that it took in nothing before any checkpoint, stash or merge scratch. It
+refuses while a live host lane names either the worktree or main's checkout,
+naming the holder and retry; while a planning pass has the primary checkout
+off main, that primary checkout stands for main's.
+Executors integrate only at these lifecycle points: before formatting, sync
+and the complete handoff run when main moved; never during a live gate or on
+their own initiative inside a handoff. Final review integrates at its named
+entry point.
 The helper records that phase,
 makes its preservation recovery commit and any necessary merge commit with
 hooks disabled through invocation-local flags, and records both identities in
@@ -908,10 +915,11 @@ sentence nothing checks is a documented condition, not a gate
 
 ## Operator recovery controls
 
-Cleanup is owned by the workflow, not handed to the operator. `worktree start`,
-`plan start` and kit update preview print a read-only prune census by kind,
-class, count and candidate bytes. `harness prune --apply` remains the explicit
-recovery route, with fresh ownership checks under the host lane lock; a live
+Cleanup is owned by the workflow, not handed to the operator. `worktree start`
+creates the worktree without running a prune census. `plan start` and kit update
+preview print a read-only census by kind, class, count and candidate bytes.
+`harness prune --apply` remains the explicit recovery route, with fresh
+ownership checks under the host lane lock; a live
 gate is named and retained. A host denial is recorded and cleanup stays on the
 release close's retry path. No command changes host permissions to gain access.
 
@@ -1846,8 +1854,26 @@ typed, or when a research order is cited as a capability.
 
 ## Workflow closeout and releases
 
-After worktree and branch cleanup, release close runs the owned-resource prune;
-its dry run previews the same candidates. `release-close.json` retains
+Release close first checks prerequisites and synchronizes main for a real
+close. Release surfaces, tag conflicts and required authentication refuse before
+runtime preparation. Before loading any built module, including writer release, its entry
+prepares stale or missing runtime in a child process: the source build in core,
+or verified carried-runtime preparation in a kit. Source/output freshness and
+installed runtime pins determine whether preparation is needed. Later close
+steps assert that preparation held; they do not rebuild after imports have
+cached the old compiler. A preview retains its isolated runtime for the
+prospective revision.
+
+After worktree and branch cleanup, release close runs the owned-resource prune
+with close scope: the closing order's captured owned roots, main's retained
+lane and this checkout's registered temporary roots. It does not enumerate the
+system temporary directory's unrelated gate fixtures. An explicit
+`harness prune` and the read-only census `plan start` prints still walk them,
+but only `harness prune --apply` removes expired roots outside a close's scope.
+Kit update preview's census is limited to its repository, and session
+completion removes only its own scratch and dead captures
+([decision](../evidence/WO-239/decisions.md#wo-239-d020--resolve-the-integrated-reviews-and-state-the-global-walk-as-built)).
+The close's dry run previews the same candidates within its scope. `release-close.json` retains
 `prune.candidates`, `removed`, `retained` and `blockers`. A refusal is a cleanup
 blocker with the same close retry command. Global apply shares the host lane
 lock and refuses while any gate holds lanes, naming it. Two orders may continue
@@ -1865,13 +1891,29 @@ exact helper command printed by `resume release-close` in main or `worktree publ
 Run main's helper with main as the working directory; retries use the same
 updated main after the subject is removed.
 
-Run the printed helper exactly as printed, with no redirect, prefix, `cd` or
-pipe. For a matching dispatched order whose helper suffix differs, the
+Run the printed `--publish` helper once, exactly as printed, with no redirect,
+prefix, `cd` or pipe. `--dry-run` is optional when a prerequisite such as egress
+or a foreign tag is in doubt. For a matching dispatched order whose helper suffix differs, the
 advisory names the expected `--publish` and `--dry-run` spellings and the
 mismatch class: extra words or whitespace, a shell operator or redirect, or
 non-canonical material flag quoting or value. The admitted forms stay the
 same. Its stdout is a summary; the full output is retained beside
-`release-close.json` and the summary names that report. A close is done when
+`release-close.json` and the summary names that report. The retained-material
+advisory and removal receipt carry counts by class and a digest rather than
+path lists. `--list-material` prints paths, including preserved worktree
+material; it is a diagnostic outside the admitted helper forms, so host
+permissions decide whether it runs. Removal proofs retain their complete inventory in a digest-bound sidecar in the
+same retained lane; missing or changed inventory blocks removal, and historical
+inline proofs remain readable.
+
+The close record's `steps` has one row each for prerequisites, runtime,
+worktree-removal, publication, starter-refresh, prune and record. Each row has
+`startedAt`, `finishedAt` and `durationMs`; a skipped step has null timestamps
+and zero duration. Durations exclude nested steps; repeated visits accumulate
+in one row. Prune includes session-end cleanup when the writer is released.
+`plan failures` reports the median total wall time and the slowest timed step
+over the latest eight attempts carrying timings; older records keep their
+ordinary counts without invented durations. A close is done when
 the tag and Release exist, no worktree for the order appears in
 `git worktree list`, its directory is gone and `git branch --list wo-NNN` is
 empty, and no starter-refresh blocker remains. The lower-version no-release
@@ -2507,8 +2549,10 @@ are read separately when the order names them.
 | Maintainer in six months | Can the next maintainer explain the rule and change it safely? | Every nontrivial implementation |
 
 Every execution and fix requires three fresh independent `dotln-worker` agents
-before its complete validation run, each given the current order and diff,
-with distinct briefs. The criteria adversary seeks concrete
+before its complete validation run. Launch or restart them only after
+implementation or repair and its write-backs are complete, never as early
+scouts. Give each the current order and diff, with distinct briefs.
+The criteria adversary seeks concrete
 counterexamples, failed acceptance criteria and missing regression tests;
 design cleanup is outside its brief. The design improver seeks simpler
 structure, lower coupling, sound error handling and what a maintainer will
@@ -2519,8 +2563,16 @@ product and operational documentation, decisions, indexes, cross-references,
 package and lockfile versions, release metadata, generated artifacts and
 installed guidance. This explicitly includes test dependencies, fixture
 inputs and manifests, fixture version pins, generated test baselines and
-evidence-source declarations, together with adjacent metadata of those kinds.
+evidence-source declarations.
 Give that reviewer the corresponding source and generated surfaces to check.
+Trace each changed document, emitted output and helper to every consuming test
+by path, symbol, old/new text and byte/count pins; follow transitive imports
+and fixture copy/export manifests. Check oracle selectors, command/field
+inventories, runtime setup, gate environment and timing assumptions. Use
+relevant retained gate failures to search for the same failure shapes.
+Preserve intentional contract pins; update expectations from requirements,
+replacing incidental prose coupling with semantic assertions. Report concrete
+producer/consumer pairs, their disposition and unsearched boundaries.
 It does not duplicate criterion attacks or design review.
 An issue discovered in another reviewer's brief is transferred,
 not reviewed twice. The executor fixes or records every distinct finding and writes a line in
@@ -2528,9 +2580,14 @@ not reviewed twice. The executor fixes or records every distinct finding and wri
 names all three workers and their reports. The executor's own separate pass is not
 a substitute for an independent worker. Return changes that materially
 affect a finding to its reviewer. Reviews belong to the execution or repair
-run; ordinary edits do not expire them or require new reviewers. After the
-complete run, have the same consistency reviewer check the final handoff and
-other final write-backs before the document check. A list
+run; ordinary edits do not expire them or require new reviewers. After any new
+set of code changes, restart all three existing reviewers on the current diff
+and finish their rechecks before the next complete run. This includes repairs
+after a failed gate; reuse the same workers within the execution or repair. All three
+reviewers must finish before the complete run starts; resolve their findings
+and return material changes for recheck before that run. Do not restart them
+after a successful complete run. The executor owns the final handoff and
+write-backs before the document check. A list
 marker, balanced inline emphasis or code wrappers may decorate the line;
 case and a parenthetical worker label are tolerated. The three integer counts
 remain required. The advisory checks line shape only; a summary line does
@@ -3651,7 +3708,11 @@ Each order's **Preflight:** field names the suites its change touches, each
 as `npm test -- --only <suite>`, the spelling the handoff reads. The
 executor and each repair finish formatting and regeneration, then start one
 complete run, `npm test -- --review`, in the background and never under the
-bounded probe wrapper. The complete run schedules first the suites whose
+bounded probe wrapper. If it fails and a repair changes code, finish the repair
+and its write-backs, format, then restart all three existing reviewers on the
+changed code, resolve their findings
+and wait for all three to finish before starting a fresh complete run.
+The complete run schedules first the suites whose
 latest execution failed, then those whose inputs changed after the newest
 gate row, then the suites this branch changed, so a stale assertion fails
 within minutes rather than at the end of the run. A complete run composes

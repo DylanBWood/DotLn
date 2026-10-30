@@ -5611,19 +5611,29 @@ test("closeout archives retained control files and nested directories without ch
       (row) => row.source === `${local}/prototypes/empty`,
     ),
   );
-  const rendered = renderIntakeReconciliation(preview);
+  const compact = renderIntakeReconciliation(preview);
+  assert.match(compact, /^Worktree preservation preview: 7 files,/);
+  assert.match(compact, /Use --list-material for preserved paths/);
+  for (const path of retained)
+    assert.ok(!compact.includes(`${archive}/${path}`));
+  const rendered = renderIntakeReconciliation(preview, {
+    listMaterial: true,
+  });
+  assert.deepEqual([snapshot(from), snapshot(main)], before);
   assert.ok(
     !/[a-f0-9]{64}/.test(JSON.stringify(preview)),
     "receipt objects must not expose private content digests",
   );
   for (const path of retained)
     assert.ok(rendered.includes(`${archive}/${path}`));
-  assert.ok(!rendered.includes("disposable subject session"));
-  assert.ok(!rendered.includes("active main terms"));
-  assert.ok(
-    !/[a-f0-9]{64}/.test(rendered),
-    "receipts must not print private content digests",
-  );
+  for (const output of [compact, rendered]) {
+    assert.ok(!output.includes("disposable subject session"));
+    assert.ok(!output.includes("active main terms"));
+    assert.ok(
+      !/[a-f0-9]{64}/.test(output),
+      "receipts must not print private content digests",
+    );
+  }
   const applied = reconcileWorktreeMaterial(from, main, "WO-999");
   assert.deepEqual(snapshot(from), before[0]);
   for (const [path, hash] of Object.entries(before[1]))
@@ -6686,44 +6696,48 @@ test("WO-145 optional economy support preserves historical snapshots through the
   // WO-221's release-close deletion sentence preserves WO-216's snapshot.
   // The combined oracle preserves both independently reviewed role histories.
   // Removing a shared sentence follows the same route as adding one.
-  const baseline = JSON.parse(
-    readFileSync(
-      join(
-        source,
-        "packages/skeleton/fixtures/wo235-removal-role-baseline.json",
-      ),
-      "utf8",
-    ),
-  );
-  assert.equal(
-    baseline.historicalBaseline,
-    "wo235-quality-pass-role-baseline.json",
-  );
+  const fixtures = join(source, "packages/skeleton/fixtures");
+  const current = "wo239-integration-role-baseline.json";
+  const baseline = JSON.parse(readFileSync(join(fixtures, current), "utf8"));
+  assert.equal(baseline.historicalBaseline, "wo235-removal-role-baseline.json");
+  assert.equal(baseline.branchBaseline, "wo239-role-baseline.json");
   assert.equal(baseline.upstreamBaseline, "wo185-role-baseline.json");
-  const chains = [
-    baseline,
-    {
-      historicalBaseline: baseline.branchBaseline,
-      historicalSha256: baseline.branchSha256,
-    },
-    {
-      historicalBaseline: baseline.upstreamBaseline,
-      historicalSha256: baseline.upstreamSha256,
-    },
-  ];
-  for (const chain of chains)
-    for (let snapshot = chain; snapshot.historicalBaseline;) {
-      const previousBytes = readFileSync(
-        join(source, "packages/skeleton/fixtures", snapshot.historicalBaseline),
-      );
-      if (snapshot.historicalSha256)
+  // Follow every recorded parent, not only the historical line: an integrated
+  // oracle has two parents, and either parent may carry its own branch
+  // history. Every recorded digest must still match, and no oracle may drop
+  // out of the walk, so a later integration cannot silently stop checking an
+  // older chain.
+  const reached = new Set();
+  for (const pending = [baseline]; pending.length;) {
+    const snapshot = pending.pop();
+    for (const [name, digest] of [
+      [snapshot.historicalBaseline, snapshot.historicalSha256],
+      [snapshot.branchBaseline, snapshot.branchSha256],
+      [snapshot.upstreamBaseline, snapshot.upstreamSha256],
+    ]) {
+      if (!name) continue;
+      const previousBytes = readFileSync(join(fixtures, name));
+      if (digest)
         assert.equal(
           createHash("sha256").update(previousBytes).digest("hex"),
-          snapshot.historicalSha256,
-          `${snapshot.historicalBaseline} remains byte-exact`,
+          digest,
+          `${name} remains byte-exact`,
         );
-      snapshot = JSON.parse(previousBytes);
+      if (reached.has(name)) continue;
+      reached.add(name);
+      pending.push(JSON.parse(previousBytes));
     }
+  }
+  assert.deepEqual(
+    readdirSync(fixtures).filter(
+      (name) =>
+        name.endsWith("-role-baseline.json") &&
+        name !== current &&
+        !reached.has(name),
+    ),
+    [],
+    "every role oracle stays reachable from the current one",
+  );
   const on = harnessInstallation();
   const explicitOn = harnessInstallation({
     supports: { "tinkerer-economy": true },
@@ -6774,6 +6788,36 @@ test("WO-145 optional economy support preserves historical snapshots through the
       `${file.path} must not imply an approval path in full-access mode`,
     );
     if (file.path.endsWith("dotln-executor/SKILL.md")) {
+      assert.match(
+        file.contents,
+        /All three reviewers must finish before that run starts and must not be restarted after it passes/,
+      );
+      assert.match(
+        file.contents,
+        /After any new set of code changes, restart all three existing reviewers on the current diff and finish their rechecks before the next complete run/,
+      );
+      const completeRunStep = file.contents
+        .split("\n")
+        .find((line) => /^\d+\. Start one complete run,/.test(line));
+      assert.match(
+        completeRunStep,
+        /on failure finish.*repair and its write-backs.*format.*restart all three existing reviewers.*wait for all three to finish.*fresh complete run/,
+      );
+      const reviewStep = file.contents
+        .split("\n")
+        .find((line) => /^\d+\. Finish implementation or repair,/.test(line));
+      assert.match(
+        reviewStep,
+        /authored outputs before launching or restarting all three.*never use early scouting reviews/,
+      );
+      assert.doesNotMatch(
+        file.contents,
+        /have the same consistency reviewer check the final write-backs/,
+      );
+      assert.match(
+        file.contents,
+        /Integrate main only at the lifecycle points/,
+      );
       assert.match(
         file.contents,
         /For a target order, read on demand the profile declared for its `Repository:` id/,

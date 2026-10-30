@@ -2520,7 +2520,7 @@ const run = async (argv) => {
       // and it survives the removal of the subject worktree the helper performs.
       const helper = releaseCloseCommand(mainPath, state.workOrderId);
       const egress =
-        "The helper needs network egress to the GitHub host for fetch, ls-remote, the tag push and the Release: run it in an authorized session with egress and host approval. --dry-run previews reachability and the publication manifest.";
+        "The helper needs network egress to the GitHub host for fetch, ls-remote, the tag push and the Release: run it in an authorized session with egress and host approval. Run the printed --publish command once; --dry-run is optional when a prerequisite such as reachability or a foreign tag is in doubt.";
       message = inMain
         ? `After the operator merges the PR, run the reviewed helper from this main checkout: ${helper}. This narrowly authorizes the annotated tag and its matching GitHub Release; never push main. ${egress}`
         : `After the operator merges the PR, start a session in the main checkout (${shellQuote(mainPath)}) and run npm run resume -- release-close --work-order ${state.workOrderId} to reserve its writer and obtain the reviewed helper. Run that helper in the same main session. This narrowly authorizes the annotated tag and its matching GitHub Release; never push main. ${egress}`;

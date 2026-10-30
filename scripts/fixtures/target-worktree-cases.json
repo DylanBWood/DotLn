@@ -68,7 +68,8 @@
     "\"target final publish excludes earlier records, exempts fetched-base paths and refuses an already integrated records tree\"",
     "\"same-tree draft retry refreshes the body when the remote base advances without preparing another commit\"",
     "`target final review excludes merged subjects unless the fetched ref is absent: missingRef=${missingRef}`",
-    "`target final review names the described range before its ${name} refusal`"
+    "`target final review names the described range before its ${name} refusal`",
+    "\"document gate route comparison ignores measured churn but preserves outcomes\""
   ],
   "names": [
     "target release preparation is a read-only no-release outcome",
@@ -170,6 +171,7 @@
     "target final review excludes merged subjects unless the fetched ref is absent: missingRef=true",
     "target final review names the described range before its format refusal",
     "target final review names the described range before its identifier refusal",
-    "target final review names the described range before its attribution refusal"
+    "target final review names the described range before its attribution refusal",
+    "document gate route comparison ignores measured churn but preserves outcomes"
   ]
 }

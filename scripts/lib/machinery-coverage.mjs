@@ -6,7 +6,7 @@ import { createRequire } from "node:module";
 import { relativeImports } from "./evidence-sources.mjs";
 
 export const machineryCoverageScope =
-  "Direct entry files, runtime relative imports and literal first-party script paths in entry code; transitive imports and paths built at run time are outside this check. Script literals are conservative: a copied script can later be spawned through a variable.";
+  "Direct entry files, runtime relative imports and literal first-party script paths in entry code; transitive imports and paths built at run time are outside this check. Script literals are conservative: a copied script can later be spawned through a variable. Shell paths are collected conservatively from the whole source, including comments and heredocs.";
 
 // Shared path/configuration and presentation helpers have product coverage;
 // changing them alone need not run every consumer's expensive fixture suite.
@@ -90,7 +90,17 @@ export function* scriptTokens(text) {
     previous = kind;
   }
 }
-function scriptLiterals(text) {
+function scriptLiterals(text, { shell = false } = {}) {
+  // Shell comments, quoting and heredocs are not JavaScript tokens. Retain
+  // every literal repository script path instead of pretending to parse its
+  // execution context; existence and declared coverage are checked below.
+  if (shell)
+    return Array.from(
+      text.matchAll(
+        /(?<![\w./-])((?:scripts|packages)\/[\w./-]+\.(?:mjs|cjs|js|ts|sh))(?![\w./-])/gu,
+      ),
+      (match) => match[1],
+    );
   const found = [];
   for (const token of scriptTokens(text))
     if (
@@ -154,6 +164,7 @@ export function uncoveredMachinerySources(
           required.add(sourcePath(root, target));
       for (const target of scriptLiterals(
         readFileSync(join(root, source), "utf8"),
+        { shell: source.endsWith(".sh") },
       )) {
         const file = sourcePath(root, target);
         if (existsSync(join(root, file))) required.add(file);

@@ -478,4 +478,70 @@ exercise_suite_signal TERM 1 substituted
 exercise_suite_signal TERM 1 driver-failure
 exercise_suite_signal TERM 1 forced-kill
 
+# A close reads only the owned roots; explicit global prune still discovers
+# foreign gate fixtures. Count distinct owner-file reads, not just removals.
+"$node_bin" --input-type=module - "$test_root" "$script_dir" <<'JS'
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import { join } from 'node:path';
+import { randomUUID } from 'node:crypto';
+import { syncBuiltinESMExports } from 'node:module';
+import { pathToFileURL } from 'node:url';
+const [container,scripts]=process.argv.slice(2);
+const {runGit}=await import(pathToFileURL(join(scripts,'lib/git.mjs')));
+const {ensureTemporaryRoot,readTemporaryOwner,writeTemporaryOwner,removeTemporaryRoot}=await import(pathToFileURL(join(scripts,'lib/temporary-roots.mjs')));
+const {pruneHarness}=await import(pathToFileURL(join(scripts,'lib/harness-prune.mjs')));
+const {temporaryPrunePaths,boundTemporaryRoots}=await import(pathToFileURL(join(scripts,'lib/temporary-prune.mjs')));
+const main=join(container,'scope-main'),foreign=join(container,'scope-foreign'),base=join(container,'scope-roots');
+for(const dir of [main,foreign,base])fs.mkdirSync(dir);
+for(const dir of [main,foreign])runGit(dir,['init','-q']);
+const template=ensureTemporaryRoot(join(base,'dotln-foreign-000000'),{class:'gate-fixture',repository:foreign,owner:{pid:2147483647,birth:'1.0',gateId:undefined,suite:undefined}});
+const owner=readTemporaryOwner(template);delete owner.fixtureOwner;
+owner.createdAt='2020-01-01T00:00:00.000Z';owner.endedAt=owner.createdAt;
+writeTemporaryOwner(template,owner);
+const foreignRoots=[template];
+for(let index=1;index<1000;index++){
+ const dir=join(base,`dotln-foreign-${String(index).padStart(6,'0')}`);fs.mkdirSync(dir);
+ const stat=fs.lstatSync(dir);fs.writeFileSync(join(dir,'.dotln-owner.json'),JSON.stringify({...owner,token:randomUUID(),device:stat.dev,inode:stat.ino}));foreignRoots.push(dir);
+}
+const own=ensureTemporaryRoot(join(container,'owned-close-root'),{class:'session-scratch',repository:main});
+const reused=ensureTemporaryRoot(join(container,'reused-close-root'),{class:'session-scratch',repository:main});
+fs.rmSync(reused,{recursive:true});
+ensureTemporaryRoot(reused,{class:'session-scratch',repository:foreign});
+const closing=join(container,'closing-order');fs.mkdirSync(closing);
+const captured=ensureTemporaryRoot(join(container,'captured-order-root'),{class:'session-scratch',repository:closing});
+const capturedOwner=readTemporaryOwner(captured),saved={path:captured,token:capturedOwner.token,repository:closing};
+fs.rmSync(closing,{recursive:true});
+const boundOptions={scope:'close',ownedTemporaryRoots:[saved]};
+assert.ok(!temporaryPrunePaths(main,boundOptions).includes(reused),'stale registry cannot admit a foreign replacement');
+assert.ok(temporaryPrunePaths(main,boundOptions).includes(captured),'captured order root survives removal of its ledger');
+assert.ok(temporaryPrunePaths(main,{scope:'all',temporaryBases:[base]}).includes(reused),'global scope keeps its existing discovery');
+// Owner markers record a checkout's physical path, so a closing checkout
+// listed through a symlink must still bind and hand over its roots.
+const physical=join(container,'symlinked-order'),linked=join(container,'symlinked-order-link');
+fs.mkdirSync(physical);fs.symlinkSync(physical,linked);
+const viaLink=ensureTemporaryRoot(join(container,'symlinked-order-root'),{class:'session-scratch',repository:physical});
+const bound=boundTemporaryRoots(linked);
+assert.deepEqual(bound.map(row=>row.path),[viaLink],'a checkout listed through a symlink binds its registered root');
+assert.equal(bound[0].repository,fs.realpathSync(physical),'the binding records the physical checkout');
+assert.ok(temporaryPrunePaths(main,{scope:'close',ownedTemporaryRoots:bound}).includes(viaLink),'the scoped close admits the captured root');
+
+const options={temporaryBases:[base],publishedRelease:()=>null,processes:[],holders:[],openPaths:[],codexHomeRoot:join(container,'no-codex-homes')};
+const original=fs.readFileSync;let seen=new Set();
+fs.readFileSync=function(file,...args){const name=String(file);if(name.startsWith(base+'/')&&name.endsWith('/.dotln-owner.json'))seen.add(name);return original(file,...args);};
+syncBuiltinESMExports();
+try{
+ const close=await pruneHarness(main,{...options,...boundOptions});
+ const closeCount=seen.size;assert.equal(closeCount,0);
+ assert.ok([...close.candidates,...close.retained].some(row=>row.path===own));
+ assert.ok([...close.candidates,...close.retained].some(row=>row.path===captured));
+ assert.ok(![...close.candidates,...close.retained].some(row=>row.path===reused));
+ fs.rmSync(captured,{recursive:true});ensureTemporaryRoot(captured,{class:'session-scratch',repository:foreign});
+ assert.ok(!temporaryPrunePaths(main,boundOptions).includes(captured),'captured token cannot admit its replacement');
+ seen=new Set();await pruneHarness(main,{...options,scope:'all'});
+ assert.equal(seen.size,1000);
+ console.log('WO239 close-scope counts '+JSON.stringify({close:closeCount,all:seen.size}));
+}finally{fs.readFileSync=original;syncBuiltinESMExports();for(const dir of [...foreignRoots,own,reused,captured,viaLink])removeTemporaryRoot(dir,readTemporaryOwner(dir).token);}
+JS
+
 printf 'fixture temp-root tests passed\n'

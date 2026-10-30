@@ -48,6 +48,7 @@ import {
 } from "./host-resources.mjs";
 import { readHolders } from "./host-lanes.mjs";
 import {
+  pruneScope,
   temporaryPrunePaths,
   judgeTemporaryRoot,
   applyTemporaryCandidate,
@@ -416,7 +417,7 @@ function pruneContext(root, options, publication) {
   );
   const worktrees = parseWorktrees(root);
   let pins;
-  const scope = options.scope ?? process.env.DOTLN_PRUNE_SCOPE ?? "all";
+  const scope = pruneScope(options);
   const processes =
     options.processes ??
     readHostSnapshot({ footprint: false, directory: options.hostDirectory })
@@ -830,6 +831,7 @@ export function planHarnessPrune(root, options = {}) {
   if (realpathSync(runGit(root, ["rev-parse", "--show-toplevel"])) !== root)
     throw new Error("harness prune requires the physical Git root");
   const context = pruneContext(root, options);
+  const closeScope = pruneScope(options) === "close";
   const candidates = [],
     retained = [],
     observations = [];
@@ -839,23 +841,25 @@ export function planHarnessPrune(root, options = {}) {
     if (judged?.observation) observations.push(judged.observation);
   };
   const snapshots = safeChild(root, ".runtime/harness");
-  if (stat(snapshots)?.isDirectory())
+  if (!closeScope && stat(snapshots)?.isDirectory())
     for (const name of readdirSync(snapshots).sort())
       record(judgeSnapshot(context, name));
-  if (stat(context.directory)?.isDirectory())
+  if (!closeScope && stat(context.directory)?.isDirectory())
     for (const name of readdirSync(context.directory)
       .filter((name) => name.endsWith(".advisory"))
       .sort())
       record(judgeAdvisory(context, name));
-  if (stat(context.directory)?.isDirectory())
+  if (!closeScope && stat(context.directory)?.isDirectory())
     for (const name of readdirSync(context.directory)
       .filter((name) =>
         /^[a-f0-9]{64}\.shell-claim(?:\.prepare-[a-f0-9]{32})?$/u.test(name),
       )
       .sort())
       record(judgeShellClaim(context, name));
-  record(judgeCache(context));
-  record(judgeListingCache(context));
+  if (!closeScope) {
+    record(judgeCache(context));
+    record(judgeListingCache(context));
+  }
   const lanes = safeChild(root, docRelative(root, "control", "local/retained"));
   if (stat(lanes)?.isDirectory())
     for (const order of readdirSync(lanes)
@@ -863,7 +867,8 @@ export function planHarnessPrune(root, options = {}) {
       .sort())
       record(judgeLane(context, order));
   for (const stash of integrationStashes(root))
-    record(judgeStash(context, stash));
+    if (!closeScope || options.preserveOrders?.includes(stash.workOrder))
+      record(judgeStash(context, stash));
   for (const path of temporaryPrunePaths(root, options))
     record(judgeTemporaryRoot(root, path, options, context));
   // An eligible ancestor was judged with every nested owner and removes that
@@ -1083,7 +1088,7 @@ function pruneUnderLock(root, { apply = false, ...options } = {}) {
 export async function pruneHarness(root, { apply = false, ...options } = {}) {
   if (!apply) return pruneUnderLock(root, { ...options, apply });
   const directory = options.hostDirectory ?? hostStateRoot();
-  const scope = options.scope ?? process.env.DOTLN_PRUNE_SCOPE ?? "all";
+  const scope = pruneScope(options);
   return withHostLock(directory, "lanes", async () => {
     const observation = readHolders(directory, { worktree: root });
     const holders = observation.holders.filter(

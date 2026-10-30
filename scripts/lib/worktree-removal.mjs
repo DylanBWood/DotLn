@@ -1,9 +1,10 @@
-import { createHash } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import {
   chmodSync,
   closeSync,
   existsSync,
   lstatSync,
+  linkSync,
   mkdirSync,
   openSync,
   readFileSync,
@@ -20,6 +21,7 @@ import { parseWorktrees } from "./git.mjs";
 import { requireMaterialContainment } from "./worktree-material.mjs";
 import { activeGateRuns } from "./gate-evidence.mjs";
 import { prepareBeaconDisposal } from "./beacons.mjs";
+import { materialSummary } from "./material-summary.mjs";
 import {
   withWriterReservationLock,
   writerTeardownBlocker,
@@ -149,6 +151,21 @@ export function restoreOwnedDirectoryWrites(subject) {
   };
 }
 
+// A receipt carries these compact summaries, and reading its sidecar
+// recomputes them and requires an exact match, so writer and reader share one
+// definition.
+const inventorySummaries = (inventory) => ({
+  snapshot: materialSummary(
+    inventory.snapshot.map((row) => ({ path: row.path, class: row.kind })),
+  ),
+  preserved: materialSummary(
+    inventory.preserved.map((row) => ({ path: row.path, class: "file" })),
+  ),
+  directories: materialSummary(
+    inventory.directories.map((path) => ({ path, class: "directory" })),
+  ),
+});
+
 /** Called only after the existing in-process preservation verifier passes. */
 export function recordWorktreeRemoval(main, subject, reconciliation) {
   main = realpathSync(main);
@@ -167,23 +184,95 @@ export function recordWorktreeRemoval(main, subject, reconciliation) {
       throw new Error("Preserved file is not regular");
     return { path: file, sha256: fileDigest(join(main, file)) };
   });
+  const inventory = {
+    snapshot: snapshot(subject),
+    preserved,
+    directories: reconciliation.directories.map((row) => row.destination),
+  };
+  const bytes = JSON.stringify(inventory) + "\n";
+  const inventoryDigest = digest(bytes);
+  const file = receiptPath(main, workOrder, subject);
+  const inventoryPath = join(
+    dirname(file),
+    `removal-inventory-${inventoryDigest}.json`,
+  );
+  requireMaterialContainment(main, inventoryPath);
+  mkdirSync(dirname(join(main, inventoryPath)), {
+    recursive: true,
+    mode: 0o700,
+  });
+  const destination = join(main, inventoryPath);
+  if (!existsSync(destination)) {
+    // Publish complete bytes atomically. A stopped write can leave only an
+    // unreferenced preparation file, never a poisoned content-addressed name.
+    const temporary = `${destination}.prepare-${randomUUID()}`;
+    try {
+      writeFileSync(temporary, bytes, { flag: "wx", mode: 0o600 });
+      try {
+        linkSync(temporary, destination);
+      } catch (error) {
+        if (error.code !== "EEXIST") throw error;
+      }
+    } finally {
+      rmSync(temporary, { force: true });
+    }
+  }
+  requireMaterialContainment(main, inventoryPath);
+  if (
+    !lstatSync(destination).isFile() ||
+    fileDigest(destination) !== inventoryDigest
+  )
+    throw new Error("Removal inventory digest differs");
   const proof = {
     schemaVersion: 1,
     main,
     subject,
     workOrder,
     recordedAt: new Date().toISOString(),
-    snapshot: snapshot(subject),
-    preserved,
-    directories: reconciliation.directories.map((row) => row.destination),
+    inventory: { path: inventoryPath, digest: `sha256:${inventoryDigest}` },
+    ...inventorySummaries(inventory),
   };
-  const file = receiptPath(main, workOrder, subject);
   requireMaterialContainment(main, file);
   mkdirSync(dirname(join(main, file)), { recursive: true, mode: 0o700 });
   writeFileSync(join(main, file), JSON.stringify(proof) + "\n", {
     mode: 0o600,
   });
   return file;
+}
+
+/** Old receipts carry inline arrays. New receipts keep the same byte proof in
+ * one digest-bound sidecar, which must remain in the order's retained lane. */
+export function readRemovalInventory(
+  main,
+  file,
+  proof = JSON.parse(readFileSync(join(main, file), "utf8")),
+) {
+  if (!proof.inventory) return proof;
+  const { path, digest: expected } = proof.inventory;
+  if (
+    !/^sha256:[a-f0-9]{64}$/.test(expected ?? "") ||
+    path !== join(dirname(file), `removal-inventory-${expected.slice(7)}.json`)
+  )
+    throw new Error("Removal inventory reference is invalid");
+  requireMaterialContainment(main, path);
+  const bytes = readFileSync(join(main, path));
+  if (`sha256:${digest(bytes)}` !== expected)
+    throw new Error("Removal inventory digest differs");
+  const inventory = JSON.parse(bytes);
+  if (
+    !Array.isArray(inventory.snapshot) ||
+    !Array.isArray(inventory.preserved) ||
+    !Array.isArray(inventory.directories)
+  )
+    throw new Error("Removal inventory is invalid");
+  const summaries = inventorySummaries(inventory);
+  if (
+    Object.entries(summaries).some(
+      ([key, value]) => JSON.stringify(proof[key]) !== JSON.stringify(value),
+    )
+  )
+    throw new Error("Removal inventory summary differs");
+  return inventory;
 }
 
 /** A partial Git removal may leave only a subset of the recorded tree. Every
@@ -198,18 +287,19 @@ export function verifyWorktreeRemoval(main, subject, workOrder) {
   if (!lstatSync(join(main, file)).isFile())
     throw new Error("Preservation receipt is not regular");
   const proof = JSON.parse(readFileSync(join(main, file), "utf8"));
+  const inventory = readRemovalInventory(main, file, proof);
   if (
     proof.schemaVersion !== 1 ||
     proof.main !== main ||
     proof.subject !== subject ||
     proof.workOrder !== workOrder ||
-    !Array.isArray(proof.snapshot) ||
-    !Array.isArray(proof.preserved) ||
-    !Array.isArray(proof.directories)
+    !Array.isArray(inventory.snapshot) ||
+    !Array.isArray(inventory.preserved) ||
+    !Array.isArray(inventory.directories)
   )
     throw new Error("Preservation receipt does not bind this subject");
   const original = new Map(
-    proof.snapshot.map((row) => [row.path, JSON.stringify(row)]),
+    inventory.snapshot.map((row) => [row.path, JSON.stringify(row)]),
   );
   const restoreBeaconPermissions = prepareBeaconDisposal(subject);
   try {
@@ -222,13 +312,13 @@ export function verifyWorktreeRemoval(main, subject, workOrder) {
   } finally {
     restoreBeaconPermissions();
   }
-  for (const row of proof.preserved) {
+  for (const row of inventory.preserved) {
     requireMaterialContainment(main, row.path);
     const saved = join(main, row.path);
     if (!lstatSync(saved).isFile() || fileDigest(saved) !== row.sha256)
       throw new Error(`Preservation byte proof failed: ${row.path}`);
   }
-  for (const name of proof.directories) {
+  for (const name of inventory.directories) {
     requireMaterialContainment(main, name);
     if (!lstatSync(join(main, name)).isDirectory())
       throw new Error(`Preserved directory missing: ${name}`);

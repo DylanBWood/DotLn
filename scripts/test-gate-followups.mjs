@@ -56,11 +56,14 @@ test("bounded role wording preserves prior savings and records reviewed startup 
   const budgets = JSON.parse(
     fs.readFileSync(join(sourceRoot, "docs/control/budgets.json"), "utf8"),
   );
-  // This order's role oracles, newest first. Each names the next as its
-  // historical baseline and starts its startup bytes at the next one's
-  // measurement; test-process-debt.mjs walks the same links and checks each
-  // recorded hash.
+  // The role oracles minted since the preceding integrated oracle, newest
+  // first: the integration that combined both branches' role text, then the
+  // upstream oracles it took in. Each names the next as its historical
+  // baseline and starts its startup bytes at the next one's measurement;
+  // test-process-debt.mjs walks every recorded parent link of every oracle
+  // and checks each recorded hash.
   const chain = [
+    "wo239-integration-role-baseline.json",
     "wo235-removal-role-baseline.json",
     "wo235-quality-pass-role-baseline.json",
     "wo235-maintenance-role-baseline.json",
@@ -399,6 +402,21 @@ test("sync selection includes release preparation and current role oracle inputs
     "scripts/test-process-debt.mjs",
   ])
     assert.ok(machinerySources["sync-fixtures"].includes(file), file);
+});
+
+test("every role oracle is a declared input of the suite that walks it", async () => {
+  const { machinerySources } = await import("./test-runner.mjs");
+  // The role-oracle walk lists the fixtures directory, so a newly minted
+  // oracle must also select the suite that judges it.
+  const fixtures = "packages/skeleton/fixtures";
+  const declared = new Set(machinerySources["process-debt"]);
+  assert.deepEqual(
+    fs
+      .readdirSync(join(sourceRoot, fixtures))
+      .filter((name) => name.endsWith("-role-baseline.json"))
+      .filter((name) => !declared.has(`${fixtures}/${name}`)),
+    [],
+  );
 });
 
 test("document failure classification does not build for skipped or infrastructure-failed tasks", async (t) => {

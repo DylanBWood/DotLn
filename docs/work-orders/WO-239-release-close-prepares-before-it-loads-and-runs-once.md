@@ -1,4 +1,4 @@
-# WO-239 — Release close prepares before it loads and runs once: the helper builds or prepares the runtime in a child process before any built module is imported, one publish invocation closes an order, the census at close is bounded to what the close owns, integration happens at the lifecycle's named points and never during a live gate, and the close record says where its minutes went (version assigned at activation)
+# WO-239 — Release close prepares before it loads and runs once: the helper builds or prepares the runtime in a child process before any built module is imported, one publish invocation closes an order, the census at close is bounded to what the close owns, integration happens at the lifecycle's named points and never during a live gate, and the close record says where its minutes went (v0.103.1)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

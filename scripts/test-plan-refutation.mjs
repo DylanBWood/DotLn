@@ -824,6 +824,63 @@ export async function fixtures() {
       },
     );
     await check(
+      "close timings summarize the latest eight timed attempts without guessing older timings",
+      async () => {
+        const repo = failureRepo(parent, "close-timings");
+        const attempts = Array.from({ length: 10 }, (_, index) => {
+          const start = Date.parse("2030-01-01T00:00:00.000Z") + index * 20000;
+          return {
+            schemaVersion: 1,
+            workOrderId: "WO-802",
+            startedAt: new Date(start).toISOString(),
+            recordedAt: new Date(start + (index + 1) * 1000).toISOString(),
+            publication: { tagOutcome: "published" },
+            blockers: [],
+            steps: [
+              { name: "prune", durationMs: index === 0 ? 9999 : index * 100 },
+            ],
+          };
+        });
+        write(
+          repo,
+          "docs/control/local/retained/WO-802/release-close.json",
+          prettyJson({
+            ...attempts.at(-1),
+            previousAttempts: [
+              { publication: { tagOutcome: null }, blockers: [] },
+              ...attempts.slice(0, -1),
+            ],
+          }),
+        );
+        const control = { eventSegments: new Map(), orders: new Map() };
+        const result = operationalFailures(
+          repo,
+          control,
+          () => true,
+        ).localReleaseCloses;
+        assert.equal(
+          result.count,
+          1,
+          "the legacy untimed attempt keeps its ordinary count",
+        );
+        assert.deepEqual(result.timing, {
+          sampleCount: 8,
+          medianTotalMs: 6500,
+          slowestStep: {
+            order: "WO-802",
+            recordedAt: attempts.at(-1).recordedAt,
+            name: "prune",
+            durationMs: 900,
+          },
+        });
+        assert.deepEqual(
+          operationalFailures(repo, control, () => false).localReleaseCloses
+            .timing,
+          { sampleCount: 0, medianTotalMs: null, slowestStep: null },
+        );
+      },
+    );
+    await check(
       "WO-178 local counts and track split reach failures, its export and plan start",
       async () => {
         const repo = failureRepo(parent, "operator-record");

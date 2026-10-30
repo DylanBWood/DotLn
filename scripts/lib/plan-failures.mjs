@@ -705,11 +705,53 @@ const tally = (rows, field, limit = 6) => {
     other: ranked.slice(limit).reduce((sum, [, count]) => sum + count, 0),
   };
 };
+const median = (values) => {
+  if (!values.length) return null;
+  const sorted = [...values].sort((a, b) => a - b);
+  const middle = Math.floor(sorted.length / 2);
+  return sorted.length % 2
+    ? sorted[middle]
+    : (sorted[middle - 1] + sorted[middle]) / 2;
+};
+
+/** The latest eight timed close attempts give the median total wall time and
+ * the single slowest step; ties go to the newer record, then the step name. */
+const closeTiming = (timedCloses) => {
+  const recent = [...timedCloses]
+    .sort(
+      (a, b) =>
+        b.recordedAt.localeCompare(a.recordedAt) ||
+        a.order.localeCompare(b.order),
+    )
+    .slice(0, 8);
+  const slowest =
+    recent
+      .flatMap((row) =>
+        row.steps.map((step) => ({
+          order: row.order,
+          recordedAt: row.recordedAt,
+          name: step.name,
+          durationMs: step.durationMs,
+        })),
+      )
+      .sort(
+        (a, b) =>
+          b.durationMs - a.durationMs ||
+          b.recordedAt.localeCompare(a.recordedAt) ||
+          a.name.localeCompare(b.name),
+      )[0] ?? null;
+  return {
+    sampleCount: recent.length,
+    medianTotalMs: median(recent.map((row) => row.totalMs)),
+    slowestStep: slowest,
+  };
+};
 
 /** Local observations are kept apart from immutable failed judgments. Page
  * metadata counts them; the export carries only these sanitized projections. */
 export function operationalFailures(root, control, includes) {
   const rows = [],
+    timedCloses = [],
     unreadable = { closes: 0, journals: 0, gates: 0, snapshots: 0 };
   let closeRecords = 0,
     journalRecords = 0;
@@ -742,6 +784,28 @@ export function operationalFailures(root, control, includes) {
           const published = ["published", "already-published"].includes(
             attempt.publication.tagOutcome,
           );
+          const recordedAt = knownTime(attempt.recordedAt ?? attempt.startedAt);
+          const totalMs =
+            Date.parse(attempt.recordedAt) - Date.parse(attempt.startedAt);
+          if (
+            Array.isArray(attempt.steps) &&
+            attempt.steps.length &&
+            attempt.steps.every(
+              (step) =>
+                typeof step.name === "string" &&
+                Number.isFinite(step.durationMs) &&
+                step.durationMs >= 0,
+            ) &&
+            Number.isFinite(totalMs) &&
+            totalMs >= 0 &&
+            includes({ recordedAt, order: name })
+          )
+            timedCloses.push({
+              order: name,
+              recordedAt,
+              totalMs,
+              steps: attempt.steps,
+            });
           if (attempt.blockers.length || !published)
             rows.push({
               kind: "release-close",
@@ -904,17 +968,10 @@ export function operationalFailures(root, control, includes) {
         });
   }
   const medians = {};
-  for (const phase of new Set(attempts.map((row) => row.phase))) {
-    const values = attempts
-      .filter((row) => row.phase === phase)
-      .map((row) => row.elapsedMs)
-      .sort((a, b) => a - b);
-    const middle = Math.floor(values.length / 2);
-    medians[phase] =
-      values.length % 2
-        ? values[middle]
-        : (values[middle - 1] + values[middle]) / 2;
-  }
+  for (const phase of new Set(attempts.map((row) => row.phase)))
+    medians[phase] = median(
+      attempts.filter((row) => row.phase === phase).map((row) => row.elapsedMs),
+    );
   rows.push(
     ...attempts
       .filter((row) => row.elapsedMs > 2 * medians[row.phase])
@@ -989,6 +1046,7 @@ export function operationalFailures(root, control, includes) {
       unreadable: unreadable.closes,
       dryRuns: closes.filter((row) => row.dryRun).length,
       noRelease: closes.filter((row) => row.noRelease).length,
+      timing: closeTiming(timedCloses),
     },
     localHostDenials: {
       ...summary("host-denial"),

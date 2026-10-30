@@ -1406,6 +1406,43 @@ const computed = "scripts/" + "comment-only.mjs";
   );
 });
 
+test("machinery coverage reads shell paths conservatively across comments and heredocs", (t) => {
+  const repo = createFixtureRoot(join(tmpdir(), "dotln-machinery-shell-"));
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
+  mkdirSync(join(repo, "scripts"));
+  for (const name of ["first", "comment", "embedded", "last"])
+    writeFileSync(join(repo, `scripts/${name}.mjs`), "export {};\n");
+  writeFileSync(
+    join(repo, "scripts/entry.sh"),
+    [
+      "#!/bin/bash",
+      "# Don't tokenize shell comments as JavaScript: scripts/comment.mjs",
+      "node scripts/first.mjs",
+      "node --input-type=module <<'JS'",
+      'const value = `nested ${"value"}`;',
+      'run("scripts/embedded.mjs");',
+      "JS",
+      '# Shell syntax after the heredoc must not hide "scripts/last.mjs".',
+      'node "scripts/last.mjs"',
+    ].join("\n"),
+  );
+  const row = {
+    name: "fixture-shell",
+    machinery: true,
+    command: ["bash", "scripts/entry.sh"],
+    sources: ["scripts/entry.sh"],
+  };
+  assert.deepEqual(
+    uncoveredMachinerySources(repo, [row], {}),
+    ["comment", "embedded", "first", "last"].map((name) => ({
+      suite: "fixture-shell",
+      path: `scripts/${name}.mjs`,
+    })),
+  );
+  row.sources.push("scripts/");
+  assert.deepEqual(uncoveredMachinerySources(repo, [row], {}), []);
+});
+
 test("WO-174 every machinery suite covers its direct entry imports and literal script paths", () => {
   const findings = uncoveredMachinerySources(
     root,
@@ -9742,7 +9779,7 @@ test("target-worktree file tasks keep all declared cases and two independent dea
       "utf8",
     ),
   );
-  assert.equal(declarations.length, 69);
+  assert.equal(declarations.length, 70);
   assert.deepEqual(declarations.sort(), expected.declarations.sort());
   const names = [];
   for (const task of tasks) {
@@ -9764,8 +9801,8 @@ test("target-worktree file tasks keep all declared cases and two independent dea
     );
     names.push(...collected.registeredNames);
   }
-  assert.equal(names.length, 100);
-  assert.equal(new Set(names).size, 100);
+  assert.equal(names.length, 101);
+  assert.equal(new Set(names).size, 101);
   assert.deepEqual(names.sort(), expected.names.sort());
   let active = 0,
     peak = 0;

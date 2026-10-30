@@ -480,8 +480,9 @@ bases refuse with the work preserved; no manual base update is required.
 
 For a self order, close proves network egress first, fast-forwards main, checks release surfaces
 and derives the tag manifest from committed source and the reviewer's passing
-`npm test` row in the final-review event. It builds missing runtime output when
-needed; it runs no suite, dependency installation or CLI smoke check. The
+`npm test` row in the final-review event. Before loading any built module it
+prepares missing or stale runtime in a child process; it runs no suite,
+dependency installation or CLI smoke check. The
 manifest records code identity, the reviewed tree and the merge tree. Changed
 code refuses publication; report and release-text edits do not demand another
 gate. `--dry-run` previews the same steps and manifest without publishing.
@@ -692,9 +693,7 @@ npm run resume -- final-review
 npm run resume -- final-review-result pass|fail --harness <harness> --harness-version <version> --model <model> --effort <effort> --source <source>
 npm run worktree -- publish WO-00N --title '<title>' --body-file <contained-reviewed-body-path>
 cd <main>
-npm run release -- close WO-00N --dry-run # preview publication and manifest
-npm run release -- close WO-00N          # prepare and validate; no publication
-npm run release -- close WO-00N --publish # explicit tag + Release authority; also retry
+npm run release -- close WO-00N --publish # run once; explicit tag + Release authority; also retry
 ```
 
 Verifiers and final reviewers write the exact allocated report path and include
@@ -711,20 +710,28 @@ disposable human projection.
 
 The canonical operator interface is `resume: release close` after you merge the
 final-review PR. It authorizes `npm run release -- close WO-NNN --publish` from
-main. The command proves egress, synchronizes main, checks release surfaces,
-compares the regenerated pins with built runtime bytes, rebuilds missing or
-mismatched runtime output once, and validates the manifest against the committed
-reviewer product-gate row. It creates the annotated tag and matching GitHub
+main. Run the printed publish command once. The command proves egress,
+synchronizes main and checks source-only release surfaces, tag conflicts and
+required authentication before preparing missing or stale runtime in a child
+process. Built modules load only after preparation. Core builds sources; kits
+prepare the verified carried runtime. It then validates the manifest against
+the committed reviewer product-gate row. It creates the annotated tag and matching GitHub
 Release, then attempts worktree finish and settlement as best effort. It runs
 no suite, install or CLI smoke check. See [step 5](#the-loop-per-work-order) for
 the evidence identity and cleanup rules.
 
-Worktree finish makes the same pin comparison after its fast-forward and rebuilds
-before removing the merged worktree. A failed build preserves that worktree.
+Worktree finish compares the regenerated runtime pins with the built runtime
+after its fast-forward and rebuilds before removing the merged worktree. A failed build preserves that worktree.
 
 Without `--publish`, close may fast-forward main, fetch the latest existing release tag
 when missing before choosing a close path, and rebuild missing or mismatched runtime output;
-it creates no new release tag or GitHub Release. `--dry-run` previews the steps and manifest.
+it creates no new release tag or GitHub Release. These are optional diagnostic
+forms: `--dry-run` previews the steps and manifest when a prerequisite is in
+doubt; neither is a standing step before publication. The close records seven
+step timings and a census bounded to owned roots and main's retained lane.
+`plan failures` summarizes recent close timings. Retained-material counts and
+digests keep default transcripts compact; `--list-material` supplies paths as
+a diagnostic outside the admitted forms, so host permissions decide it.
 A deliberately deferred eligible release needs a reviewed durable reason.
 Neither form pushes to core’s main or publishes a package, binary, container or
 hosted artifact. The publish form also refreshes each declared export sibling

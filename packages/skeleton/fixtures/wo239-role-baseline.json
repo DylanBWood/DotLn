@@ -1,0 +1,92 @@
+{
+  "workOrder": "WO-239",
+  "historicalBaseline": "wo234-integration-role-baseline.json",
+  "historicalSha256": "e32d29ca7c90660965758b729b1d82f620135d2ce627773315ddbf865a3e4eb9",
+  "upstreamBaseline": "wo185-role-baseline.json",
+  "upstreamSha256": "f67e48b79873202b56c069902f2338d54b1fef42d3c9eb29706d3d2cd7a72ef9",
+  "branchBaseline": "wo234-recovery-role-baseline.json",
+  "branchSha256": "d85a794ec1f7629eb98726bcf156cbf8af17e8f2b0dd0ee6e9e112fe264d28f1",
+  "method": "Pin one publish invocation, named integration points, completed implementation before review, all-three rechecks and consistency producer/consumer tracing, preserving all prior role histories byte-exact.",
+  "decision": "docs/evidence/WO-239/decisions.md#wo-239-d004",
+  "roles": {
+    ".agents/skills/dotln-executor/SKILL.md": "2b64d855627915cd73978cf886a5b984478d96b572747825413ebd65b76ad2cf",
+    ".agents/skills/dotln-planner/SKILL.md": "e7dd0d50325dcdac6eb4325337abc873c5b446838c24d7b07a20fb9c18a85464",
+    ".agents/skills/dotln-refuter/SKILL.md": "51540251ee866df694a9435472bd1c9bf939c6e8a4d22ae0345f799e8d3b5ce8",
+    ".agents/skills/dotln-release-close/SKILL.md": "13e88ae2790834f28d3898dbe0ed9b6d4ad8dfbf80344bc14949af6ebb429e14",
+    ".agents/skills/dotln-reviewer/SKILL.md": "c0e867b35794dccd340d85adbb4865c4c27e2db27585c426251ff240cf214773",
+    ".agents/skills/dotln-verifier/SKILL.md": "03c8a51e57a747a240f3ebacc000578d1782462f67ff2af1f8d794c55bc468e9",
+    ".claude/skills/dotln-executor/SKILL.md": "2b64d855627915cd73978cf886a5b984478d96b572747825413ebd65b76ad2cf",
+    ".claude/skills/dotln-planner/SKILL.md": "e7dd0d50325dcdac6eb4325337abc873c5b446838c24d7b07a20fb9c18a85464",
+    ".claude/skills/dotln-refuter/SKILL.md": "51540251ee866df694a9435472bd1c9bf939c6e8a4d22ae0345f799e8d3b5ce8",
+    ".claude/skills/dotln-release-close/SKILL.md": "13e88ae2790834f28d3898dbe0ed9b6d4ad8dfbf80344bc14949af6ebb429e14",
+    ".claude/skills/dotln-reviewer/SKILL.md": "c0e867b35794dccd340d85adbb4865c4c27e2db27585c426251ff240cf214773",
+    ".claude/skills/dotln-verifier/SKILL.md": "03c8a51e57a747a240f3ebacc000578d1782462f67ff2af1f8d794c55bc468e9"
+  },
+  "optOutRoles": {
+    ".agents/skills/dotln-executor/SKILL.md": "f73017dad2912d66379db1db99dab76bb394652684bf17ab40d4f10ea2401d1e",
+    ".agents/skills/dotln-planner/SKILL.md": "7b788b9b4077d0c7755d55327e8f76857590fce39b8614addeb15dfe74aa9393",
+    ".agents/skills/dotln-refuter/SKILL.md": "2b32384ba9a3fe866c27dc32da928ac4a9a3765653e8fdaa6d7eda067cffbf64",
+    ".agents/skills/dotln-release-close/SKILL.md": "8d9806b6d0bee337255b2bb17b27050221c8cff1f3067296decf50ebc6c6abca",
+    ".agents/skills/dotln-reviewer/SKILL.md": "b0f1bdbfd5844c25fe679b50967a44911e789a127e7fc03ada5ad6c8106c8ef5",
+    ".agents/skills/dotln-verifier/SKILL.md": "a2652b82184f50d3806dd874365f027e292029fae9f50292e5eb90b8e31111db",
+    ".claude/skills/dotln-executor/SKILL.md": "f73017dad2912d66379db1db99dab76bb394652684bf17ab40d4f10ea2401d1e",
+    ".claude/skills/dotln-planner/SKILL.md": "7b788b9b4077d0c7755d55327e8f76857590fce39b8614addeb15dfe74aa9393",
+    ".claude/skills/dotln-refuter/SKILL.md": "2b32384ba9a3fe866c27dc32da928ac4a9a3765653e8fdaa6d7eda067cffbf64",
+    ".claude/skills/dotln-release-close/SKILL.md": "8d9806b6d0bee337255b2bb17b27050221c8cff1f3067296decf50ebc6c6abca",
+    ".claude/skills/dotln-reviewer/SKILL.md": "b0f1bdbfd5844c25fe679b50967a44911e789a127e7fc03ada5ad6c8106c8ef5",
+    ".claude/skills/dotln-verifier/SKILL.md": "a2652b82184f50d3806dd874365f027e292029fae9f50292e5eb90b8e31111db"
+  },
+  "startupCost": {
+    "decision": "WO-239-D004",
+    "profiles": {
+      "executor": {
+        "beforeBytes": 32292,
+        "bytes": 33817,
+        "growthBytes": 1525,
+        "ceiling": 34953,
+        "headroomBytes": 1136,
+        "nominalCeiling": 29246
+      },
+      "planner": {
+        "beforeBytes": 20901,
+        "bytes": 20901,
+        "growthBytes": 0,
+        "ceiling": 24576,
+        "headroomBytes": 3675,
+        "nominalCeiling": 24576
+      },
+      "refuter": {
+        "beforeBytes": 19715,
+        "bytes": 19715,
+        "growthBytes": 0,
+        "ceiling": null,
+        "headroomBytes": null,
+        "nominalCeiling": null
+      },
+      "release-close": {
+        "beforeBytes": 19992,
+        "bytes": 20093,
+        "growthBytes": 101,
+        "ceiling": 21266,
+        "headroomBytes": 1173,
+        "nominalCeiling": 21266
+      },
+      "reviewer": {
+        "beforeBytes": 31229,
+        "bytes": 31229,
+        "growthBytes": 0,
+        "ceiling": 34596,
+        "headroomBytes": 3367,
+        "nominalCeiling": 28884
+      },
+      "verifier": {
+        "beforeBytes": 28803,
+        "bytes": 28803,
+        "growthBytes": 0,
+        "ceiling": 29831,
+        "headroomBytes": 1028,
+        "nominalCeiling": 29831
+      }
+    }
+  }
+}

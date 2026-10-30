@@ -159,6 +159,11 @@ make_repo() {
   mkdir -p "$main/scripts" "$main/docs/work-orders" "$main/docs/control" "$main/docs/releases" "$main/packages/kernel/src" "$main/packages/kernel/test-fixtures" "$main/packages/skeleton/dist/src" "$main/packages/skeleton/src"
   cp "$script_dir/release.mjs" "$script_dir/worktree.mjs" "$script_dir/resume.mjs" "$script_dir/license-surfaces.mjs" "$main/scripts/"
   cp -R "$script_dir/lib" "$main/scripts/lib"
+  cat >"$main/scripts/build.mjs" <<'JS'
+import { spawnSync } from "node:child_process";
+const result = spawnSync("npm", ["run", "build"], { stdio: "inherit" });
+process.exit(result.status ?? 1);
+JS
   node "$script_dir/test-beacon-fixture.mjs" "$main"
   cp "$script_dir/../docs/releases/tag-manifest.template.json" "$main/docs/releases/"
   printf '# Historical v0.2.0 manifest for WO-003\n' >"$main/docs/releases/v0.2.0.md"
@@ -546,7 +551,7 @@ const { seedHarnessWriter } = await import(url);
 const directory = join(root, 'packages/skeleton/dist/src');
 mkdirSync(directory, { recursive: true });
 writeFileSync(join(directory, 'package.json'), '{"type":"module"}\n');
-writeFileSync(join(directory, 'harness-host.js'), `export { releaseHarnessWriter, harnessWriterView, harnessProcessAlive } from ${JSON.stringify(url)};\n`);
+writeFileSync(join(directory, 'harness-host.js'), `export { releaseHarnessWriter, harnessWriterView, harnessProcessAlive } from ${JSON.stringify(url)};\nexport const pruneCompletedHarnessSession = () => { Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 80); return "fixture session cleanup"; };\n`);
 seedHarnessWriter(root, { actorId: createHash('sha256').update('fixture-close-session').digest('hex'), reservedAt: new Date().toISOString() });
 JS
 }
@@ -972,13 +977,15 @@ printf 'release surface version and component fixtures passed\n'
 
 normalize_close_surface_report() {
   "$node_bin" -e '
-const fs = require("node:fs"), lines = fs.readFileSync(0, "utf8").split("\n");
+const fs = require("node:fs"), assert = require("node:assert/strict"), lines = fs.readFileSync(0, "utf8").split("\n");
 const prefix = "Advisory: retained ignored material: ";
 if (lines[0].startsWith(prefix)) {
-  const retained = lines[0].slice(prefix.length).split(", ").filter(file =>
-    !/^docs\/control\/local\/(?:release-close-locks\/(?:WO-099\.flock|host-lock-[a-f0-9]+)|retained\/WO-099\/(?:attempts\/[a-f0-9]{64}\.json|release-close-[0-9T-]+Z\.txt))$/.test(file));
-  if (retained.length) lines[0] = prefix + retained.join(", ");
-  else lines.shift();
+  const summary = JSON.parse(lines[0].slice(prefix.length).split("; use --list-material")[0]);
+  assert.match(summary.digest, /^sha256:[a-f0-9]{64}$/);
+  assert.ok(summary.count > 0);
+  assert.equal(Object.values(summary.countsByClass).reduce((sum, count) => sum + count, 0), summary.count);
+  assert.ok(!lines[0].includes("docs/control/local/"), "default advisory has no path list");
+  lines.shift();
 }
 process.stdout.write(lines.join("\n"));'
 }
@@ -998,10 +1005,10 @@ test "$(git -C "$main" rev-parse HEAD)" != "$(git --git-dir="$origin" rev-parse 
 seed_release_close_writer
 rm "$main/packages/skeleton/dist/src/harness-host.js"
 if unbuilt_output="$(CODEX_THREAD_ID=fixture-close-session release_close WO-099 --publish 2>&1)"; then
-  printf 'error: release close accepted an unbuilt runtime with a reservation\n' >&2
+  printf 'error: release close accepted stale surfaces with an unbuilt runtime\n' >&2
   exit 1
 fi
-grep -Fq "Release-close runtime is not built in $main; writer reservation retained. Run npm run build in the main checkout" <<<"$unbuilt_output"
+grep -Fq 'FAIL release-block: observed v0.2.0; expected exactly one v0.2.1' <<<"$unbuilt_output"
 test -f "$main/docs/control/local/harness/writer.json"
 test ! -e "$npm_log"
 seed_release_close_writer
@@ -1022,15 +1029,21 @@ assert.equal(record.publication.tag, "v0.2.1");
 assert.equal(record.publication.tagOutcome, null);
 assert.match(record.publication.refusal, /FAIL release-block/);
 assert.equal(record.cleanup.outcome, "not-attempted");
+assert.equal(record.steps.find(step => step.name === 'runtime').startedAt, null);
 JS
-# Closing reports the deliberately retained writer; check-surfaces does not.
-# Preserve equality after removing only the close's own locks and archives.
-expected_close_output="$(printf 'Advisory: retained ignored material: docs/control/local/harness/writer.json, docs/control/local/retained/WO-099/release-close.json\n%s' "$surface_failure_output")"
+# The compact advisory varies with close locks and retained attempt receipts.
+# Its shape and absence of paths are checked separately from the surface report.
+expected_close_output="$surface_failure_output"
 close_surface_normalized="$(printf '%s' "$close_surface_output" | normalize_close_surface_report)"
 if [[ "$close_surface_normalized" != "$expected_close_output" ]]; then
   diff -u <(printf '%s\n' "$expected_close_output") <(printf '%s\n' "$close_surface_normalized") >&2
   exit 1
 fi
+if listed_surface_output="$(CODEX_THREAD_ID=fixture-close-session release_close WO-099 --publish --list-material 2>&1)"; then
+  printf 'error: listing material bypassed release-surface refusal\n' >&2; exit 1
+fi
+grep -Fq 'docs/control/local/harness/writer.json' <<<"$listed_surface_output"
+test ! -e "$npm_log"
 if summary="$(release_close_summary WO-099 --publish)"; then
   printf 'error: summary close accepted a stale release block\n' >&2; exit 1
 fi
@@ -1102,8 +1115,10 @@ assert_u202f "$foreign_path"
 printf 'IGNORED=fixture\n' >"$main/$foreign_path"
 ignored_output="$(release_close WO-099 --publish)"
 grep -Fq 'Published annotated v0.2.1' <<<"$ignored_output"
-grep -Fq 'retained untracked material: untracked.txt' <<<"$ignored_output"
-"$node_bin" -e 'require("node:assert/strict").ok(process.argv[1].includes(process.argv[2]))' "$ignored_output" "$foreign_path"
+grep -Fq 'retained untracked material:' <<<"$ignored_output"
+"$node_bin" -e 'const a=require("node:assert/strict"); a.match(process.argv[1], /"digest":"sha256:[a-f0-9]{64}"/); for(const name of process.argv.slice(2)) a.ok(!process.argv[1].includes(name));' "$ignored_output" "$foreign_path" untracked.txt
+listed_output="$(release_close WO-099 --publish --list-material)"
+"$node_bin" -e 'const a=require("node:assert/strict"); for(const name of process.argv.slice(2)) a.ok(process.argv[1].includes(name));' "$listed_output" "$foreign_path" untracked.txt
 test -f "$main/untracked.txt"
 test -f "$main/$foreign_path"
 }
@@ -1169,7 +1184,7 @@ git -C "$main" push origin main >/dev/null 2>&1
 mkdir -p "$main/.claude"
 printf '/.claude/other.local.json\n' >>"$main/.git/info/exclude"
 printf 'other ignored harness state\n' >"$main/.claude/other.local.json"
-settings_scope_output="$(release_close WO-099 --publish)"
+settings_scope_output="$(release_close WO-099 --publish --list-material)"
 grep -Fq '.claude/other.local.json' <<<"$settings_scope_output"
 grep -Fq 'Published annotated v0.2.1' <<<"$settings_scope_output"
 test -f "$main/.claude/other.local.json"
@@ -1271,7 +1286,8 @@ assert.ok(record.prune, 'close records its prune');
 for (const field of ['candidates','removed','retained','blockers']) assert.ok(Array.isArray(record.prune[field]), field);
 assert.equal(record.blockers.length, 0);
 JS
-test ! -e "$npm_log"
+# Cleanup still imports the current runtime when no new release is due.
+test "$(cat "$npm_log")" = build
 test "$(git -C "$main" status --porcelain)" = ""
 test -f "$main/$intake_path"
 test -f "$main/.claude/settings.local.json"
@@ -1596,7 +1612,7 @@ git -C "$fixture/integrator" push origin main >/dev/null 2>&1
 mkdir -p "$main/.claude" "$stale_subject/docs/intake/dist"
 printf 'persistent operator settings\n' >"$main/.claude/settings.local.json"
 printf 'protected staged intake\n' >"$stale_subject/docs/intake/dist/x.md"
-stale_intake_output="$(cd "$main" && PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" DOTLN_GH_LOG="$gh_log" DOTLN_GH_STATE="$gh_state" DOTLN_GH_ORIGIN="$origin" DOTLN_STALE_RELEASE_MARKER="$stale_release_marker" DOTLN_STALE_WORKTREE_MARKER="$stale_worktree_marker" "$node_bin" "$stale_subject/scripts/release.mjs" close WO-099 --dry-run 2>&1)"
+stale_intake_output="$(cd "$main" && PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" DOTLN_GH_LOG="$gh_log" DOTLN_GH_STATE="$gh_state" DOTLN_GH_ORIGIN="$origin" DOTLN_STALE_RELEASE_MARKER="$stale_release_marker" DOTLN_STALE_WORKTREE_MARKER="$stale_worktree_marker" "$node_bin" "$stale_subject/scripts/release.mjs" close WO-099 --dry-run --list-material 2>&1)"
 stale_intake_output="$(retained_close_output "$stale_intake_output")"
 grep -Fq 'docs/intake/dist/x.md' <<<"$stale_intake_output"
 test -f "$main/.claude/settings.local.json"
@@ -1686,10 +1702,10 @@ NODE
     summary="$(release_close_summary WO-099 --publish)"
     printf '%s\n' "$summary" >"$fixture/summary.log"
     retained_close_output "$summary" >"$fixture/refresh.log"
-    if grep -Fq 'Refreshing pinned runtime' "$fixture/summary.log"; then
+    if grep -Fq 'Building release metadata runtime' "$fixture/summary.log"; then
       printf 'WO-195 refresh announcement escaped the retained report\n' >&2; return 1
     fi
-    grep -Fq 'Refreshing pinned runtime' "$fixture/refresh.log"
+    grep -Fq 'Building release metadata runtime' "$fixture/refresh.log"
     grep -Fq 'no-release' "$fixture/summary.log"
     grep -Fq 'Full report:' "$fixture/summary.log"
     printf 'WO-195 no-release summary bytes %s=%s\n' "$scenario" "$(printf '%s' "$summary" | wc -c | tr -d ' ')"
@@ -1777,7 +1793,7 @@ touch "$npm_log" "$gh_log"
 preview_head="$(git -C "$main" rev-parse HEAD)"
 preview_npm="$(wc -l <"$npm_log")"
 preview_gh="$(wc -l <"$gh_log")"
-preview_output="$(cd "$main" && PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" DOTLN_GH_LOG="$gh_log" DOTLN_GH_STATE="$gh_state" DOTLN_GH_ORIGIN="$origin" "$node_bin" "$subject/scripts/release.mjs" close WO-099 --publish --dry-run)"
+preview_output="$(cd "$main" && PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" DOTLN_GH_LOG="$gh_log" DOTLN_GH_STATE="$gh_state" DOTLN_GH_ORIGIN="$origin" "$node_bin" "$subject/scripts/release.mjs" close WO-099 --publish --dry-run --list-material)"
 preview_output="$(retained_close_output "$preview_output")"
 grep -Fq 'collision.md.from-WO-099' <<<"$preview_output"
 test "$(git -C "$main" rev-parse HEAD)" = "$preview_head"
@@ -2249,10 +2265,10 @@ make_repo close_overlap
 import assert from "node:assert/strict";
 import { readFileSync, writeFileSync } from "node:fs";
 const script = process.argv[2], original = readFileSync(script, "utf8");
-const point = "const result = await close(workOrderId, parsed, record);";
+const point = "Object.assign(record, history);";
 assert.equal(original.split(point).length, 2);
 writeFileSync(script, original.replace(point,
-  `if (process.env.DOTLN_FIXTURE_CLOSE_FIRST === "1") { writeFileSync(process.env.DOTLN_FIXTURE_CLOSE_MARKER, "ready"); await new Promise(resolve => setTimeout(resolve, 1500)); }\n${point}`));
+  `${point}\nif (process.env.DOTLN_FIXTURE_CLOSE_FIRST === "1") { writeFileSync(process.env.DOTLN_FIXTURE_CLOSE_MARKER, "ready"); await new Promise(resolve => setTimeout(resolve, 1500)); }`));
 JS
 commit_candidate "$main" WO-099 v0.2.1
 git -C "$main" push -q origin main
@@ -2596,6 +2612,12 @@ make_repo "${1:-close_completion}"
 subject="$fixture/project-wo099"
 git -C "$main" worktree add "$subject" -b wo-099 main >/dev/null
 mkdir -p "$subject/.runtime/kept" "$subject/.runtime/snapshots/deep" "$fixture/outside"
+if [[ "${1:-}" == close_compact ]]; then
+  "$node_bin" - "$main" "$subject" <<'JS'
+const fs=require('node:fs'),p=require('node:path');
+for(const root of process.argv.slice(2)){const dir=p.join(root,'docs/control/local/compact');fs.mkdirSync(dir,{recursive:true});for(let i=0;i<2000;i++)fs.writeFileSync(p.join(dir,`material-${i}.txt`),'retained fixture bytes\n');}
+JS
+fi
 printf 'preserved fixture bytes\n' >"$subject/.runtime/kept/saved.txt"
 git -C "$subject/.runtime/kept" init -q
 git -C "$subject/.runtime/kept" add .
@@ -2633,7 +2655,10 @@ if [[ "${1:-}" == close_real_writer ]]; then
   git -C "$main" push -q origin main
 fi
 output="$(release_close_summary WO-099 --publish --material .runtime/kept=preserve)"
-if [[ "${1:-}" == close_real_writer ]]; then test ! -d "$main/docs/control/local/harness/writer"; fi
+if [[ "${1:-}" == close_real_writer ]]; then
+  test ! -d "$main/docs/control/local/harness/writer"
+  "$node_bin" -e 'const r=JSON.parse(require("node:fs").readFileSync(process.argv[1]));require("node:assert/strict").ok(r.steps.find(row=>row.name==="prune").durationMs>=80,"session cleanup is timed");' "$main/docs/control/local/retained/WO-099/release-close.json"
+fi
 # Undo the fixture's external seal only after measuring the no-follow result.
 external_mode="$($node_bin -e 'console.log((require("node:fs").statSync(process.argv[1]).mode & 511).toString(8))' "$fixture/outside")"
 chmod 700 "$fixture/outside"
@@ -2648,19 +2673,89 @@ const record=JSON.parse(fs.readFileSync(process.argv[2],'utf8'));
 assert.equal(record.cleanup.outcome,'clean');
 assert.equal(record.cleanup.worktrees[0].outcome,'removed');
 assert.equal(record.cleanup.branch.outcome,'deleted');
+assert.deepEqual(record.steps.map(row=>row.name),['prerequisites','runtime','worktree-removal','publication','starter-refresh','prune','record']);
+for(const row of record.steps){assert.ok(Number.isFinite(row.durationMs)&&row.durationMs>=0);if(row.startedAt)assert.ok(Date.parse(row.finishedAt)>=Date.parse(row.startedAt));}
+assert.ok(record.steps.find(row=>row.name==='runtime').startedAt<=record.steps.find(row=>row.name==='publication').startedAt);
 const proof=JSON.parse(fs.readFileSync(p.join(process.argv[3],record.cleanup.subject.preservationReceipt),'utf8'));
-assert.ok(proof.preserved.some(row=>row.path.endsWith('saved.txt') && fs.readFileSync(p.join(process.argv[3],row.path),'utf8')==='preserved fixture bytes\n'));
+assert.equal(typeof proof.preserved.count,'number');
+const inventory=JSON.parse(fs.readFileSync(p.join(process.argv[3],proof.inventory.path),'utf8'));
+assert.equal('sha256:'+require('node:crypto').createHash('sha256').update(fs.readFileSync(p.join(process.argv[3],proof.inventory.path))).digest('hex'),proof.inventory.digest);
+assert.ok(inventory.preserved.some(row=>row.path.endsWith('saved.txt') && fs.readFileSync(p.join(process.argv[3],row.path),'utf8')==='preserved fixture bytes\n'));
 const full=fs.readFileSync(p.join(process.argv[3],record.reportPath),'utf8');
 assert.match(full,/Worktree removal proof:/);
 for(const text of process.argv.slice(4)) {assert.match(text,/Full report:/);assert.ok(Buffer.byteLength(text)<16384);}
 console.log('WO-195 summary bytes publish='+Buffer.byteLength(process.argv[4])+' dry-run='+Buffer.byteLength(process.argv[5]));
 JS
+if [[ "${1:-}" == close_compact ]]; then
+  "$node_bin" - "$record" "$main" <<'JS'
+const assert=require('node:assert/strict'),fs=require('node:fs'),p=require('node:path');const record=JSON.parse(fs.readFileSync(process.argv[2]));const main=process.argv[3];
+const transcript=fs.readFileSync(p.join(main,record.reportPath),'utf8');
+const advisory=transcript.split('\n').find(line=>line.startsWith('Advisory: retained ignored material:'));
+assert.ok(advisory);assert.doesNotMatch(transcript,/material-(?:0|1999)\.txt/);assert.match(advisory,/countsByClass/);assert.match(advisory,/sha256:/);
+const proof=JSON.parse(fs.readFileSync(p.join(main,record.cleanup.subject.preservationReceipt)));
+assert.ok(proof.snapshot.count>=2000);assert.ok(Buffer.byteLength(JSON.stringify(proof))<4096);
+console.log('WO239 material counts '+JSON.stringify({files:2000,advisoryBytes:Buffer.byteLength(advisory),removalRecordBytes:Buffer.byteLength(JSON.stringify(proof))}));
+JS
+  listed="$(release_close_summary WO-099 --publish --dry-run --list-material)"
+  retained_close_output "$listed" >"$fixture/listed.log"
+  grep -Fq 'docs/control/local/compact/material-0.txt' "$fixture/listed.log"
+  grep -Fq 'docs/control/local/compact/material-1999.txt' "$fixture/listed.log"
+fi
 retry="$(release_close_summary WO-099 --publish)"
 grep -Fq 'already-published' <<<"$retry"
 grep -Fq 'Full report:' <<<"$retry"
 printf 'WO-195 summary bytes retry=%s\n' "$(printf '%s' "$retry" | wc -c | tr -d ' ')"
 (cd "$main" && CODEX_THREAD_ID='' COPILOT_AGENT_SESSION_ID='' "$node_bin" scripts/resume.mjs release-close --work-order WO-099) >"$fixture/briefing-output.txt"
 CODEX_THREAD_ID='' COPILOT_AGENT_SESSION_ID='' "$node_bin" "$script_dir/test-close-admission.mjs" "$main" WO-099 "$fixture/briefing-output.txt"
+}
+
+release_case_close_compact() {
+release_case_close_completion close_compact
+}
+
+release_case_removal_inventory() {
+make_repo removal_inventory
+git -C "$main" worktree add "$fixture/preserved-subject" -b wo-099 main >/dev/null
+"$node_bin" --input-type=module - "$main" "$fixture" <<'JS'
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import { join } from 'node:path';
+import { pathToFileURL } from 'node:url';
+const [main,fixture]=process.argv.slice(2);
+const {recordWorktreeRemoval,verifyWorktreeRemoval,readRemovalInventory}=await import(pathToFileURL(join(main,'scripts/lib/worktree-removal.mjs')));
+const subject=join(fixture,'preserved-subject');
+fs.writeFileSync(join(subject,'retained'),'original bytes\n');
+const destination='docs/control/local/retained/WO-099/kept';fs.mkdirSync(join(main,destination),{recursive:true});
+fs.writeFileSync(join(main,destination,'retained'),'original bytes\n');
+const reconciliation={workOrder:'WO-099',files:[{destination:destination+'/retained'}],directories:[{destination}]};
+const {syncBuiltinESMExports}=await import('node:module');
+const originalWrite=fs.writeFileSync;let interrupted=false;
+fs.writeFileSync=function(file,bytes,...args){if(String(file).includes('removal-inventory-')&&String(file).includes('.prepare-')&&!interrupted){interrupted=true;originalWrite(file,'partial',...args);throw new Error('fixture interrupted inventory write');}return originalWrite(file,bytes,...args);};
+syncBuiltinESMExports();
+try{assert.throws(()=>recordWorktreeRemoval(main,subject,reconciliation),/interrupted inventory write/);}finally{fs.writeFileSync=originalWrite;syncBuiltinESMExports();}
+assert.equal(interrupted,true);
+const receipt=recordWorktreeRemoval(main,subject,reconciliation);
+const file=join(main,receipt),proof=JSON.parse(fs.readFileSync(file)),inventoryFile=join(main,proof.inventory.path),bytes=fs.readFileSync(inventoryFile);
+const verify=()=>verifyWorktreeRemoval(main,subject,'WO-099');
+assert.equal(verify(),receipt);
+const inventory=readRemovalInventory(main,receipt,proof);
+for(const mutate of [
+ row=>row.snapshot.count++,
+ row=>row.inventory.digest='sha256:'+'0'.repeat(64),
+ row=>row.inventory.path='../outside.json',
+ row=>row.inventory.path=row.inventory.path.replace('removal-inventory-','other-'),
+]){const row=structuredClone(proof);mutate(row);fs.writeFileSync(file,JSON.stringify(row));assert.throws(verify,/inventory/);}
+fs.writeFileSync(file,JSON.stringify(proof));
+fs.renameSync(inventoryFile,inventoryFile+'.saved');assert.throws(verify,/ENOENT/);
+fs.symlinkSync(inventoryFile+'.saved',inventoryFile);assert.throws(verify,/symlink/);fs.unlinkSync(inventoryFile);
+fs.renameSync(inventoryFile+'.saved',inventoryFile);
+fs.appendFileSync(inventoryFile,' ');assert.throws(verify,/digest differs/);fs.writeFileSync(inventoryFile,bytes);
+fs.appendFileSync(join(main,destination,'retained'),'changed');assert.throws(verify,/byte proof/);
+fs.writeFileSync(join(main,destination,'retained'),'original bytes\n');
+const {inventory:reference,...header}=proof;fs.writeFileSync(file,JSON.stringify({...header,...inventory}));
+assert.equal(verify(),receipt,'historical inline receipts remain usable');
+assert.ok(fs.existsSync(subject));
+JS
 }
 
 release_case_close_sealed() {
@@ -2702,10 +2797,11 @@ if [[ "${DOTLN_FIXTURE_UNREGISTER:-}" == 1 && "${3:-}" == worktree && "${4:-}" =
   node - "$2" "$subject" <<'JS'
 const fs=require('node:fs'),p=require('node:path');
 const main=process.argv[2],subject=process.argv[3],lane=p.join(main,'docs/control/local/retained/WO-099');
-const name=fs.existsSync(lane) ? fs.readdirSync(lane).find(n=>n.startsWith('worktree-removal-') && JSON.parse(fs.readFileSync(p.join(lane,n),'utf8')).subject===subject) : null;
+const name=fs.existsSync(lane) ? fs.readdirSync(lane).find(n=>/^worktree-removal-[a-f0-9]{64}\.json$/.test(n) && JSON.parse(fs.readFileSync(p.join(lane,n),'utf8')).subject===subject) : null;
 if(name) {
  const proof=JSON.parse(fs.readFileSync(p.join(lane,name),'utf8'));
- const saved=p.join(main,proof.preserved.find(row=>row.path.endsWith('kept.md')).path);
+ const inventory=JSON.parse(fs.readFileSync(p.join(main,proof.inventory.path),'utf8'));
+const saved=p.join(main,inventory.preserved.find(row=>row.path.endsWith('kept.md')).path);
  fs.writeFileSync(p.join(p.dirname(main),'destination-before-corruption'),fs.readFileSync(saved));
  fs.writeFileSync(p.join(p.dirname(main),'corrupted-destination-path'),saved);
  fs.appendFileSync(saved,'fixture corruption\n');
@@ -2753,7 +2849,7 @@ JS
 if [[ "$proof_mode" != valid ]]; then
  "$node_bin" - "$main" "$proof_mode" "$subject" <<'JS'
 const fs=require('node:fs'),p=require('node:path'),lane=p.join(process.argv[2],'docs/control/local/retained/WO-099');
-const file=p.join(lane,fs.readdirSync(lane).find(n=>n.startsWith('worktree-removal-') && JSON.parse(fs.readFileSync(p.join(lane,n),'utf8')).subject===process.argv[4]));
+const file=p.join(lane,fs.readdirSync(lane).find(n=>/^worktree-removal-[a-f0-9]{64}\.json$/.test(n) && JSON.parse(fs.readFileSync(p.join(lane,n),'utf8')).subject===process.argv[4]));
 if(process.argv[3]==='missing') fs.unlinkSync(file);
 else {const proof=JSON.parse(fs.readFileSync(file));proof.subject+='-different';fs.writeFileSync(file,JSON.stringify(proof));}
 JS
@@ -2879,10 +2975,11 @@ if [[ "$history" != preview ]]; then test ! -e "$record"; fi
 if [[ "$history" == unreadable ]]; then printf '{unreadable fixture close record\n' >"$record"; fi
 "$node_bin" - "$main" "$subject" "$fixture" <<'JS'
 const fs=require('node:fs'),p=require('node:path'),[main,subject,fixture]=process.argv.slice(2),lane=p.join(main,'docs/control/local/retained/WO-099');
-const file=fs.readdirSync(lane).find(name=>name.startsWith('worktree-removal-'));
+const file=fs.readdirSync(lane).find(name=>/^worktree-removal-[a-f0-9]{64}\.json$/.test(name));
 const proof=JSON.parse(fs.readFileSync(p.join(lane,file),'utf8'));
 if(proof.subject!==subject) throw new Error('fixture proof subject differs');
-const saved=p.join(main,proof.preserved.find(row=>row.path.endsWith('kept.md')).path);
+const inventory=JSON.parse(fs.readFileSync(p.join(main,proof.inventory.path),'utf8'));
+const saved=p.join(main,inventory.preserved.find(row=>row.path.endsWith('kept.md')).path);
 fs.writeFileSync(p.join(fixture,'saved-path'),saved);
 fs.writeFileSync(p.join(fixture,'saved-bytes'),fs.readFileSync(saved));
 fs.appendFileSync(saved,'fixture corruption\n');
@@ -2912,6 +3009,70 @@ assert.equal(record.cleanup.outcome,'clean');
 assert.equal(record.cleanup.branch.outcome,'deleted');
 JS
 done
+}
+
+release_case_stale_compiler() {
+  make_repo stale_compiler
+  "$node_bin" --input-type=module - "$main" "$script_dir/.." <<'JS'
+import {pathToFileURL} from 'node:url';
+import {join} from 'node:path';
+const [root,source]=process.argv.slice(2);
+const {copyCore,runner}=await import(pathToFileURL(join(source,'scripts/fixtures/instance-with-history/support.mjs')));
+const commands=runner();
+copyCore(root,{...commands,init(){},git(cwd,...args){if(args[0]==='remote'&&args[1]==='add')return '';return commands.git(cwd,...args);}},source);
+JS
+  (cd "$main" && "$node_bin" scripts/build.mjs) >"$fixture/old-build.log" 2>&1
+  mkdir -p "$main/docs/siblings"
+  printf '%s\n' '{"schemaVersion":1,"siblings":[{"id":"starter-fixture","purpose":"Compiler freshness fixture","relation":{"kind":"export","coreCommit":null},"capabilityRows":[]}]}' >"$main/docs/siblings/siblings.json"
+  "$node_bin" - "$main" <<'JS'
+const fs=require('node:fs'),p=require('node:path');const file=p.join(process.argv[2],'packages/compiler/src/artifact-identity.ts');const before=fs.readFileSync(file,'utf8');
+if(!/COMPILER_PACKAGE_VERSION = "[^"]+"/.test(before))throw new Error('compiler version declaration missing');
+fs.writeFileSync(file,before.replace(/COMPILER_PACKAGE_VERSION = "[^"]+"/,'COMPILER_PACKAGE_VERSION = "99.0.1"'));
+JS
+  commit_candidate "$main" WO-099 v0.2.1
+  git -C "$main" push origin main >/dev/null 2>&1
+  local starter="$fixture/fresh-starter" starter_remote="$fixture/fresh-starter.git" config="$fixture/refresh.gitconfig"
+  git init -q -b main "$starter"
+  git -C "$starter" config user.name Fixture
+  git -C "$starter" config user.email fixture@example.invalid
+  printf 'fixture starter\n' >"$starter/README.md"
+  git -C "$starter" add .
+  git -C "$starter" -c maintenance.auto=false commit -qm 'Initial starter'
+  git clone -q --bare "$starter" "$starter_remote"
+  git -C "$starter" remote add origin https://github.com/dotln-fixture/starter-fixture.git
+  printf '[url "%s"]\n insteadOf = https://github.com/dotln-fixture/starter-fixture.git\n' "$starter_remote" >"$config"
+  mkdir -p "$main/docs/control/local"
+  "$node_bin" -e 'require("node:fs").writeFileSync(process.argv[1],JSON.stringify({"starter-fixture":process.argv[2]}))' "$main/docs/control/local/repository-clones.json" "$starter"
+  "$node_bin" --input-type=module - "$main" <<'JS'
+import {createHash} from 'node:crypto';import {pathToFileURL} from 'node:url';import {join} from 'node:path';
+const root=process.argv[2];const {seedHarnessWriter}=await import(pathToFileURL(join(root,'packages/skeleton/dist/src/harness-host.js')));
+seedHarnessWriter(root,{actorId:createHash('sha256').update('fixture-close-session').digest('hex'),reservedAt:new Date().toISOString()});
+JS
+  cat >"$fixture/load-trace.mjs" <<'JS'
+import {registerHooks} from 'node:module';import {appendFileSync} from 'node:fs';
+let observed=false;
+registerHooks({load(url,context,nextLoad){
+ if(!observed&&/\/packages\/[^/]+\/dist\//.test(url)){observed=true;appendFileSync(process.env.DOTLN_FIXTURE_LOAD_TRACE,JSON.stringify({event:'dist',pid:process.pid})+'\n');}
+ const loaded=nextLoad(url,context);
+ if(url.endsWith('/scripts/build.mjs')&&process.argv[1]?.endsWith('/scripts/build.mjs'))
+  return {...loaded,source:String(loaded.source)+"\nimport {appendFileSync as traceWrite} from 'node:fs';traceWrite(process.env.DOTLN_FIXTURE_LOAD_TRACE,JSON.stringify({event:'build-finished',pid:process.pid})+'\\n');\n"};
+ return loaded;
+}});
+JS
+  local output close_code=0
+  output="$(GIT_CONFIG_GLOBAL="$config" CODEX_THREAD_ID=fixture-close-session DOTLN_FIXTURE_LOAD_TRACE="$fixture/load-trace.jsonl" NODE_OPTIONS="${NODE_OPTIONS:-} --import=$fixture/load-trace.mjs" release_close_summary WO-099 --publish)" || close_code=$?
+  printf 'WO239 stale-compiler control exitCode=%s\n' "$close_code"
+  printf '%s\n' "$output"
+  if [[ "$close_code" != 0 ]]; then retained_close_output "$output"; return 1; fi
+  "$node_bin" - "$main" "$fixture/load-trace.jsonl" <<'JS'
+const assert=require('node:assert/strict'),fs=require('node:fs'),p=require('node:path');
+const record=JSON.parse(fs.readFileSync(p.join(process.argv[2],'docs/control/local/retained/WO-099/release-close.json')));
+assert.equal(record.starterRefresh[0].outcome,'refreshed');assert.equal(record.blockers.length,0);
+const rows=fs.readFileSync(process.argv[3],'utf8').trim().split('\n').map(JSON.parse);
+const prepared=rows.findIndex(row=>row.event==='build-finished');assert.ok(prepared>=0,'a child prepared the stale runtime');
+const parentLoad=rows.findIndex(row=>row.event==='dist'&&row.pid!==rows[prepared].pid);assert.ok(parentLoad>prepared,'parent loads built code only after child preparation completes');
+console.log('WO239 runtime loading '+JSON.stringify({childBuildBeforeParentImport:true,starterOutcome:record.starterRefresh[0].outcome}));
+JS
 }
 
 release_case_starter_refresh() {
