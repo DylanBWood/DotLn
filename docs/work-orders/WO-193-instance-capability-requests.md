@@ -17,19 +17,20 @@ dated requests-to-core prompt in the instance's planning document that the
 operator carries into a core `planning:` dispatch (core's 2026-10-18
 fork-observations pass §4.3 and 2026-10-19 fork-requests pass; the fork's
 standing preference, each reopening when this order lands), replaced by
-`request file` and `plan -- requests` (restated by the 2026-10-21 pass). The merge removes one order cycle (activation,
+`request file` and `plan -- requests` (restated by the 2026-10-21 pass). The 2026-10-13 merge removed one order cycle (activation,
 verification, final review, release close) and the full gate a closed order
 paid in the window, 2.29 runs and 61 minutes, beside phase medians of 16.9
 minutes for verification and 24.8 for final review (planning document
 §12); one re-mint covers both `package.json` entries; neither constituent
 owed a live feedback episode. The 2026-10-21 pass cut the map back out as WO-228 (workstream WS-002,
-retired with it on 2026-10-30), so this order pays its cycle for the request
-route alone. Re-mints: `package.json` is a common source
+retired with it on 2026-10-30 and archived under `docs/retired/`), so this
+order pays its cycle for the request route alone and claims no merge saving
+now. Re-mints: `package.json` is a common source
 of the evidence inventories (`scripts/lib/evidence-sources.mjs`), so each edition whose check the entry stales is re-minted deterministically,
 the feedback edition by carry (`package.json` is not in
 `FEEDBACK_SOURCE_PATHS`); no live episode. Declared machinery sources
 change, so `npm test -- --review` runs before handoff. One live issue is
-created here under the operator's grant (criterion 14). Wall-clock and
+created here under the operator's grant (criterion 8). Wall-clock and
 tokens: unknown until run, one implementation phase, not two. Context
 bytes: about 39 KB against the constituents' 36,107 (the preflight,
 live-run surfaces, re-mint and merge route are new, and the second round
@@ -242,7 +243,7 @@ request through this order's route, and nothing else leaves.
   becomes a request draft holding its generic statement and nothing else,
   which passes the screens and is marked ready on the operator's word like any
   other.
-- **Live-run surfaces, at `6dbd8771`** (criterion 14). A scratch export:
+- **Live-run surfaces, at `6dbd8771`** (criterion 8). A scratch export:
   exists and has run. The route, `request file`, the labelled listing and
   `plan -- requests`: absent (steps 1, 3, 5, 6). Issue creation: no command
   does it. The `dotln-request` label here: not observed; the executor lists
@@ -414,7 +415,10 @@ request through this order's route, and nothing else leaves.
 5. `parseHeader` reads the `dotln-requests` block; the index card prints
    it; the pull-request body published for an order naming a request
    carries that request's closing reference, and `worktree publish`
-   refuses a body that lacks it; an order naming no request is unchanged.
+   refuses a body that lacks it unless the request's ledger row records a
+    disposition other than this order's (declined, superseded or answered
+    elsewhere), which the body then names; an order naming no request is
+    unchanged.
 6. A from-core update fixture from a recorded core commit to a later one
    prints, in the instance-actions note, the requests answered by the
    releases between them; the sibling receipt lists the same issue numbers
@@ -433,8 +437,8 @@ request through this order's route, and nothing else leaves.
     the request itself.
 9. The write-backs of step 11 state: in 03, the request route as
     implemented for issues; in 07, `plan -- requests` among the entry
-    reads; in 12, the route and its floor beside the request row (the map's sentences
-    are WO-228's); in 07, that the pasted-block route of its planning-pass
+    reads; in 12, the route and its floor beside the request row (the parity-map
+    sentences left product 12 on 2026-10-30 with the retired WO-228); in 07, that the pasted-block route of its planning-pass
     item 5 ends when this order lands; in the client README, the command. The decisions file
     and index; the publication locks refreshed.
 10. The re-mints of step 9 are recorded; `npm test -- --review` and
@@ -477,6 +481,11 @@ unchanged (planning document §12). No live row beyond that one request.
 **Write-back duty:** as listed in criterion 9.
 
 **Known issues and carry-ins:**
+- Receipt 059 (2026-10-30): the `ready` word is supplied as a command
+  argument by whoever runs `request ready`, the off-ramps' trust model
+  (WO-158); binding it to a harness-recorded operator message is the
+  stronger form (reopen: a ready mark or a filed request carries a word
+  matching no operator-authored message of its session).
 
 - Stale on 2026-10-07 and corrected then: `plan start` also reads
   failures and conditions (and reader scores, `scripts/refute-plan.mjs`
@@ -565,5 +574,6 @@ the 2026-10-21 pass).
    disposed there like any other row; it carries no priority of its own.
 4. The issue is closed by the operator's merge of the pull request that
    names it.
-5. The private parity map is outside this order (WO-228, retired 2026-10-30); this
-   order's `draftRequest` is the form WO-228's `parity request` calls.
+5. The private parity map is outside this order (WO-228, retired 2026-10-30 and
+   archived under `docs/retired/`); `draftRequest` stays the form a later
+   instance-owned map would call.

@@ -1,16 +1,5 @@
 # WO-228 — The private predecessor map: an instance keeps, at a configured instance-owned path, rows that say what its earlier generations did, where each lives, what in the instance now carries it and how faithfully, reads one summary of what is still missing, and turns a missing row into a generic request through WO-193's route; core ships the command, the row schema, a public synthetic seed and the fixtures, and never a row about a real predecessor (version assigned at activation)
 
-**Retired (2026-10-30):** not activatable. The operator's direction of
-2026-10-30 (item 3; ignored capture SHA-256
-`94d4f4bd85efaf035a89353d6ad88abedf8e1d29c2c298fe1b3d69b62806bd8a`) removes
-the work this order planned from this repository; it continues, if at all,
-outside it. The text below is kept unchanged as the record of what was
-planned, because records link to it and the lifecycle has no withdrawal for an
-order that never activated (`withdraw` admits phase `none` only for an
-allocated order); WO-088 carries the retired header as a settled state. Its
-workstream, WS-002, states the retirement. Recorded by the
-[2026-10-30 pass](../planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md).
-
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh; verifier xhigh; reviewer high.

@@ -1,4 +1,4 @@
-# WO-207 — Instance update control: an instance takes kit machinery with its build pinned or followed, keeps its own code at a manifest-excluded extension root that the kit's machinery loads through the SourceAdapter port and no update touches, rolls back its last update to the prior kit state, and takes a starter update only through an upgrade order its own planning pass cuts, gated by kit conformance and its own declared suites (version assigned at activation)
+# WO-207 — Instance update control: an instance takes kit machinery with its build pinned or followed, keeps its own code at a manifest-excluded extension root that the kit's machinery loads through the SourceAdapter port and no update touches, rolls back its last update to the prior kit state, and takes a starter update through the upgrade order its own planning pass cuts, or through the session-run route the README keeps for an instance owner without an order, gated by kit conformance and its own declared suites (version assigned at activation)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
@@ -32,9 +32,11 @@ way back from an update (the operator, 2026-10-11, for a private instance); a
 prose-only `SourceAdapter` port whose only adapter lives in core, with
 nowhere an instance's own code loads from (FUP-3e22cf6f99f02005); compiled
 definitions that arrive with every machinery update; the hand-run upgrade
-the client README directs (fetch, merge, re-emit, refusals resolved by hand,
-then a commit), which the operator's 2026-10-13 no-commits direction retires
-(planning document §12.1). The 2026-10-13 pass also listed a rerun of every
+the client README once directed (fetch, merge, re-emit, refusals resolved by
+hand, then a commit), which the operator's 2026-10-13 no-commits direction
+retired and WO-210's session-run route replaced before this order ran, so
+this order adds the order form and the rollback to that route rather than
+removing a state that is already gone (planning document §12.1; receipt 059). The 2026-10-13 pass also listed a rerun of every
 carried kit suite after each instance-only change; WO-213-D014 (2026-10-15,
 v0.83.0) removed that state before this order ran, and the 2026-10-21 pass
 struck the reuse tier that targeted it. The merge removes two order cycles
@@ -986,7 +988,9 @@ merge re-checked each source anchor):**
     it replaces with different bytes or removes, none for a byte-identical
     replacement, with no retained copy in `git status`; with the lane or
     the log unwritable it refuses before any write, naming the path
-    (fixture).
+    (fixture); the starter refresh's staged-set check admits the log row,
+    so a release close after this order refreshes the starter without a
+    `staged outside the plan` refusal (a case in the refresh's suite).
 13. A rollback after an update restores every kit file to the prior
     manifest's hash and the prior manifest, removes added files, restores
     removed ones, and leaves every instance file byte-identical (fixture).
@@ -1014,7 +1018,8 @@ merge re-checked each source anchor):**
 18. The instance's own suites (the planner's proposal, assumption 8): a
     declared suite runs when a path changed against the merge base lies under
     its `sources` and not otherwise; a missing merge base selects no declared
-    suite, the consumer default unchanged, unless the decisions file records
+    suite, the consumer default unchanged, and the gate row names the skip
+    and its cause so a green gate never hides it, unless the decisions file records
     an operator-approved exception to product 07 §Preflight before the full
     gate; `--only <name>` runs it; its failure fails the gate; a name equal to
     a kit row refuses (runner fixtures).
@@ -1218,8 +1223,9 @@ mining or rule import (WO-193, FUP-0115); effect and projection consumers;
 a package registry or marketplace; sandboxing an adapter beyond the
 vertical's existing confinement; the definition pack; pinning the hooks'
 runtime; per-file channels; the overlay's own semantics (WO-076); a
-channel inside a Git merge; the preview itself (WO-203), which this order
-composes with; core's own gate selection and reuse; reversing WO-213-D014 or adding any kit
+channel inside a Git merge; the preview's plan semantics (WO-203), which this
+order composes with, criterion 7's unchanged-row label and count and the
+local-removal row being this order's additions to its output; core's own gate selection and reuse; reversing WO-213-D014 or adding any kit
 identity; a target repository's gate (WO-210); pushing releases into the
 starter (WO-215) beyond admitting the log row in the refresh's staged-set
 check; replacing the README's session-run route for an instance owner without

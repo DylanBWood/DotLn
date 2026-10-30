@@ -171,7 +171,15 @@ retained session. Nothing is committed and no worktree is kept.
   volume's device number is assigned at mount and a reboot can renumber it,
   so a record older than the boot fails the comparison although the
   directory, its inode and the token file inside it are unchanged. The
-  pre-reboot number is not observable now; the refused directories are gone.
+  pre-reboot number is not observable in a surviving owner record; the
+  close's own retained record
+  (`docs/control/local/retained/WO-239/stale-build-cleanup.json`, ignored)
+  names the six roots, `.runtime/build-*` under the WO-239 worktree with
+  recorded device 16777233 against the observed 16777234, tokens and inodes
+  matching and owners dead, their verified removal under the teardown lock
+  after the operator's correction, and the retried close with no remaining
+  blocker; nothing waits on the operator, and the one-step renumbering is
+  consistent with the reboot inference.
 - The fork's item 6 of 2026-10-30 (DotLn-Enterprise-Starter, dylanwoodconsulting):
   WO-019's release close of 2026-10-29 removed its worktrees and with them
   the session journals that would have carried the first granted target
@@ -227,7 +235,12 @@ retained session. Nothing is committed and no worktree is kept.
   boot (axis: a walk over every owned root at boot against one lazy
   re-stamp when a record is read). Rejected: dropping the device number
   from the record (axis: the diagnosis of a replaced directory on another
-  volume still wants both numbers in the ledger).
+  volume still wants both numbers in the ledger). Rejected: a recovery path
+  for build staging only, keeping the strict device comparison for every
+  other class (the other pass of 2026-10-30's design, axis: it fixes the one
+  class that was refused and leaves gate fixtures, session scratch and warm
+  caches created before a reboot to refuse at the next close after one; its
+  negative cases are taken instead, below).
 - **Live-run surfaces at the base.** The owned-root helper and the prune
   with its classes: exist (WO-233). The retained lane per order with the
   removal proof: exists (`worktree-removal.mjs`). The close record's
@@ -277,7 +290,13 @@ retained session. Nothing is committed and no worktree is kept.
    current one with the same inode and token is judged by its class and
    window at the current tree; the paired control at the base retains it
    with "Temporary owner record is invalid or the directory was replaced";
-   both arms' exit codes in `docs/evidence/WO-237/controls.json`. The
+   the negative cases refuse and delete nothing: a different inode (a real
+   replacement), a token that does not match the ledger, a live or unknown
+   owner, an active gate or writer, a replacement race (the inode changes
+   between the read and the act), a symlinked root, an unexpected file the
+   class does not declare, and a root outside the registered checkouts; a
+   retried judgment is idempotent; both arms' exit codes in
+   `docs/evidence/WO-237/controls.json`. The
    re-stamp's cost is one record write per renumbered root at first read,
    measured in the fixture and recorded. Check: `npm test -- --only
    fixture-temp-root`; `npm test -- --only harness`; `npm test -- --only
@@ -311,7 +330,11 @@ control; the cases and the paired controls; the write-backs.
    harness directory into `docs/control/local/retained/<WO>/harness/` with
    an owner record of the class before the worktree is removed, leaves the
    capture directories behind, and records `journals: { lane, files, bytes
-   }` on the cleanup row and in `release-close.json`; the paired control at
+   }` on the cleanup row and in `release-close.json`; a move that fails (a
+   cross-device rename, a permission denial, a full disk) is the close's
+   existing cleanup blocker: the worktree is not removed, the row records
+   `journals.outcome: failed` with the error and the retry command, and the
+   published release is untouched; the paired control at
    the base shows the journals gone after the close; both arms' exit codes
    and the lane listing are recorded in `docs/evidence/WO-237/controls.json`.
 3. The prune removes a retained lane past its window, keeps one within it
@@ -330,10 +353,14 @@ control; the cases and the paired controls; the write-backs.
    the directory's current one, with the same inode and token, is judged by
    its class and window like any other root: the fixture at the current
    tree removes it past its window, the paired control at the base retains
-   it with "Temporary owner record is invalid or the directory was
+   with "Temporary owner record is invalid or the directory was
    replaced", the ledger carries a `device-renumbered` row with both
    numbers, the re-stamped record carries the current number, and both
    arms' exit codes are in `docs/evidence/WO-237/controls.json`; the
+   negative cases of step 7 (a different inode, a mismatched token, a live
+   or unknown owner, an active gate or writer, a replacement race, a
+   symlinked root, an undeclared file, a root outside the registered
+   checkouts) refuse and delete nothing, and a retry is idempotent; the
    starter-refresh scratch check follows the same rule in its case.
 9. `npm test -- --review` and `npm run test:docs` green; `git diff --check`
    clean; no new dependency.

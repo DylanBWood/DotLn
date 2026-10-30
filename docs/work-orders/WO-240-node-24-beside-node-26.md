@@ -156,6 +156,14 @@ no warning the kit did not predict.
   repository runs no CI and the operator's direction keeps gates local; one
   recorded run under 24.15.0 plus a standing host check is the evidence a
   local gate can give).
+- **Children run on the selected runtime.** Every child the gate, the build,
+  the emit and the native helper preparation spawn is started from
+  `process.execPath`, never from a `node` found on the path, so a run under
+  24.15.0 cannot borrow the other installed Node for a step; the executor
+  searches `scripts/` and `packages/` for bare `node` spawns and changes
+  each it finds (the other pass of 2026-10-30 named this criterion; adopted
+  on the operator's direction). A version string the comparison cannot
+  parse refuses naming the string it read.
 - **The development default stays on 26.** `.node-version` keeps `26.9.0`;
   the kit exports no `.node-version` (none is in `KIT-MANIFEST.json`), so an
   instance pins its own. Rejected: lowering `.node-version` to 24 (axis: the
@@ -190,8 +198,10 @@ no warning the kit did not predict.
    outside it, naming the range, the version and `node scripts/bootstrap.mjs`
    as unaffected; the comparison uses no new dependency (a small range
    reader for `^major.minor.patch` alternatives in `scripts/lib/`, with its
-   cases). Fixture: a stubbed version inside (24.15.0, 26.9.0) and outside
-   (22.2.0, 25.9.0, 27.0.0) the range. Check: the suite `npm test -- --list
+   cases). Fixture: a stubbed version inside (24.15.0, 24.22.2, 26.9.0) and
+   outside (22.2.0, 24.14.0, 25.9.0, 27.0.0, a prerelease and an unparsable
+   string) the range; the same step searches `scripts/` and `packages/` for
+   spawns of a bare `node` and changes each to `process.execPath`. Check: the suite `npm test -- --list
    --review` names for `scripts/structural-checks.mjs` (`declarations` or
    `generated`), spelled in the Preflight line at activation.
 3. `scripts/test-launchpad*.mjs` (the export case that reads the generated
@@ -220,7 +230,8 @@ no warning the kit did not predict.
    runtimes (Node 24.15 or later in the 24 line, or Node 26; `harness check`
    and every gate refuse another) and one passage with the private-clone
    recipe as the operator wrote it, in order: `gh repo create <org>/<name>
-   --private`; `git clone --no-tags <starter url> <name>`; `git remote
+   --private`; `git clone --no-tags <starter url> <name>` (the `--branch main` form makes
+   the initial branch explicit and is admitted); `git remote
    rename origin upstream`; `git config remote.upstream.tagOpt --no-tags`
    (redundant after the clone, kept because it is the same line §Taking
    upstream updates gives an existing clone); `git remote add origin <private
@@ -252,9 +263,10 @@ the decisions and re-mints.
    six `packages/*/package.json`; the lockfile's workspace entries carry the
    same range and no dependency version changed (`git diff
    package-lock.json` shows engines lines only).
-2. `checkHost` refuses a stubbed `process.version` of `22.2.0`, `25.9.0`
-   and `27.0.0`, naming the range and the version, and admits `24.15.0`,
-   `24.22.2` and `26.9.0`; the fixture is in the suite that declares
+2. `checkHost` refuses a stubbed `process.version` of `22.2.0`, `24.14.0`,
+   `25.9.0`, `27.0.0` and `v24.15.0-rc.1`, naming the range and the
+   version, admits `24.15.0`, `24.22.2` and `26.9.0`, and refuses an
+   unparsable string naming it; the fixture is in the suite that declares
    `scripts/structural-checks.mjs`; the gate's `host` task row on this
    checkout records the check's duration, and `docs/evidence/WO-240/decisions.md`
    names that duration before and after the change.
@@ -262,7 +274,12 @@ the decisions and re-mints.
    -- --review` run under Node `v24.15.0` with exit code 0, its gate row
    identity and duration, and the command that produced it; a fix made for
    Node 24, if any, is named in the decisions with the failing suite and
-   the cause.
+   the cause; the recorded run's code identity is the handoff identity, or
+   the run is repeated under 24.15.0 after the last change to a runtime
+   source and both identities are recorded; every child the gate, the build
+   and the emit spawned under 24.15.0 ran from `process.execPath` (the
+   search of step 2 finds no bare `node` spawn, or each is changed), so no
+   step borrowed the other installed runtime.
 4. An export's generated `package.json` carries the root range (the
    `launchpad` suite's case).
 5. `README.md` names both lines and no longer names an earlier system in
@@ -311,6 +328,12 @@ complete row at the integrated code identity when one exists.
   cause, and runs `npm run evidence:artifact -- --check` and `npm test --
   --only evidence-sources` (reopen: a registered source imports
   `off-ramps.mjs` again).
+- The other pass of 2026-10-30 (PR #256) asked for a runtime-matrix driver
+  and one live supported-host episode per runtime; declined here (axis: one
+  recorded complete run plus the standing host check is the evidence a
+  local gate can give, and a driver is machinery no other consumer runs);
+  its child-process criterion is adopted above (reopen: a second runtime
+  line is supported, or a CI host appears).
 - The kit's `README.client.md` is a kit file: an instance that edited its
   README keeps its bytes under the update's refusal rule and reads the new
   passages from `upstream/main` (reopen: the fork reports the refusal).

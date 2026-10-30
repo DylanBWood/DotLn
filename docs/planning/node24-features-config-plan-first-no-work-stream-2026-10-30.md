@@ -1,4 +1,4 @@
-# Planning pass — Node 24 beside Node 26, the features file, plan-first mode and the end of the predecessor track (2026-10-30)
+# Planning pass — Node 24 beside Node 26, the features file, plan-first mode and the end of the predecessor track, with the synthesis of the day's two blind passes (2026-10-30)
 
 ## Dispatch and capture
 
@@ -37,6 +37,10 @@ pass did read is named in §Readings.
 | 7 | the fork's block | each item read against its record; answers in the paste-ready section |
 | 8 | why release close demanded that build directories be saved | diagnosed (a reboot renumbered the volume; the owner-record check compares device numbers); WO-237 amended with the fix and moved to second |
 | the operator's message of 16:06:52Z (captured in `docs/intake/notes/planning-node24-features-config-plan-first-no-work-stream-2026-10-30-message-2.md`, SHA-256 `d0858f68081f290574bb4ba07d6fa034d85b4df0912d1d93416faa99d8a7e7af`), on the pass having left the floor's naming sentence and asked about it | the direction of item 3.a reaches that sentence; asking was the pass's error | the sentence removed from `CLAUDE.md` §Clean Room; the floor's prohibitions unchanged; the NoOp withdrawn and the register row settled |
+| 16:43:04Z (`…-message-2b.md`, SHA-256 `8b0b68e678bd70693bd61e8d9ed7547f4189a81ba565612ab194431db9cb663f`): compare this pass with `planning/2026-10-30-portable-config-assisted` and #256 | the read-first rule is lifted; judge both passes | the comparison in §Readings; the error on the link check named |
+| 16:55:10Z (`…-message-3.md`, SHA-256 `09a9e0797ba26a0b8c0c59a32801844f22f49157cc545bedbab265889329055e`): use this branch and pull request, and as a third entity take the best from both, coherent and better than either | consolidate on this branch | §Orders filed and amended, the consolidation; receipt 060 |
+| 17:01:14Z and 17:02:20Z (`…-message-4.md`, SHA-256 `ef80d5f9a2f826921495793bf20981e3bdf3f68fd785521a176f1b5623c34ebc`): make this a routine, one pass on GPT Astra and one on Claude Fable, blind to each other, then a synthesis; a simple dispatch form such as `planning: standard gpt pass`, the synth pass started by hand | a standing routine with a dispatch grammar | product 07 §Paired passes and the synthesis pass; WO-244 |
+| 17:05:34Z (`…-message-5.md`, SHA-256 `383159c1d613850961a924fcbce2b4a9edb1cf7066d7180c728e63d9701284a7`): a separate third session is the pass's call; the order should be the GPT session, then the Fable session with the synthesis | the default order and session | product 07: Codex first, then Claude Code with the synthesis in that session; a separate session admitted |
 
 Assumptions recorded: "operator-specific loadouts vs core-specific" is read
 as the scope of a feature (core, instance or both), not as the compiled
@@ -118,12 +122,20 @@ phase `none` only for an allocated order (`scripts/resume.mjs` 312 to 314;
 product 07 §Operator recovery controls), and the docs check's link checker
 reads every Markdown file under the document root (`linkFailures` over
 `markdownFiles(root)`), where the planning records of 2026-10-21 and
-2026-10-24 link to both files. So both are retired in place: WS-002's
-document states the retirement (state `abandoned`, the block unchanged in
-shape so the index's membership rule holds), WO-228 carries a `Retired
-(2026-10-30)` header saying it is not activatable, the sequence drops the
-group (a separate track's members need no entry, `checkSequenceCoverage`),
-and WO-088 carries the typed retired field as a carry-in. The one-time pass
+2026-10-24 link to both files. So both are first retired in place (a
+retirement stub for WS-002, a `Retired (2026-10-30)` header on WO-228, a
+WO-088 carry-in for a typed retired field) on the reasoning that planning
+records link to both files and the link check would fail on a move. That
+reasoning was wrong and is corrected in the consolidation: the records cite
+the paths in code spans, which `linkFailures` ignores, and `git grep` on
+`main` finds no Markdown link to either file outside the files this pass
+rewrote and the generated index; the other pass had moved both files to
+`docs/retired/` and its document gate passed. This pass adopts the move:
+both files are archived byte for byte under `docs/retired/` with a README,
+the WO-088 carry-in is withdrawn, the allocated register row that pointed at
+WO-228 is declined (with the file briefly restored, because the register's
+sync refuses an allocation whose target has no filed order), and the
+sequence's rule names the archive. The one-time pass
 (3.a) edited every sentence about the operator's earlier workflow or
 employment context in the standing documents and the open orders:
 products 00, 03 (two passages), 05, 06 and 12 (the work-instance paragraph,
@@ -149,6 +161,38 @@ suspect material; no support or generated configuration may weaken the
 floor) are untouched, and the harness manifest's residue line that the
 hand-written floor stays locked still describes them. 3.b is written into product 07's planning
 preconditions (item 5) and product 12; 3.c into the sequence's Focus.
+
+### The other pass, read after the operator lifted the blindness
+
+At 16:43Z the operator asked for the comparison; `planning/2026-10-30-portable-config-assisted`
+and #256 were fetched and read (its planning document, its four orders, its
+WO-237 amendment, its product and order diffs, its receipt
+`2026-10-30-planning-028b478e6e71fe26-059`, its intake capture with the
+operator's mid-pass clarification, and the close's retained record it had
+read). It ran on Codex (GPT Astra by its readback) with a `codex-spawn-agent`
+refuter (3 known issues, no hold); it filed WO-240 to WO-243 under its own
+filenames, amended WO-237, WO-207, WO-193 and WO-088, moved WS-002 and
+WO-228 to `docs/retired/`, wrote `docs/product/feature-configuration.md`,
+and regenerated the roadmap's release table. Where it was better: the
+retirement by move; WO-243 as an order for the fork's item 3 (the integrate
+helper and completion are code, not a sentence); WO-242's isolated
+candidate and revision-bound approval (this pass's WO-242 could not draft
+the diff it promised while the hook refused source writes); WO-241's
+destination policy (the kit template's §Secrets would still tell a private
+instance's agent to keep its own tracker links out of its own documents);
+a wider register sweep (the allocated predecessor-track row, three
+gate-cost rows whose fired threshold this pass re-disposed only once, and
+two rows that fit items 2.b and 6); and the state report on item 8 (the
+close had already removed the six directories after the operator's
+correction). Where this pass was better: the cause of item 8 (the reboot;
+its own record shows 16777233 against 16777234 and calls the cause unknown)
+and a fix for every root class rather than build staging alone; a leaner
+WO-240 with the front-page field (its WO-240 edits the README without one
+and adds a matrix driver and a live episode per runtime); orders with
+file-and-line anchors and controls; register candidates for its NoOps. The
+two pull requests cannot both merge (the same ids under different
+filenames, the same receipt number, the same files). The operator chose
+this branch as the base at 16:55Z.
 
 ### Item 4, the starter in a private repository
 
@@ -287,6 +331,72 @@ paired control at the base; placed second.
   (the document rewritten to its retirement; state `abandoned`; the block's
   shape kept).
 
+### The consolidation (the operator's direction of 16:55Z)
+
+Taken from #256, each with its provenance named in the order it joins:
+
+- **WS-002 and WO-228** moved to `docs/retired/` with their original bytes
+  and a README (the route the other pass took); the retirement stub and the
+  `Retired` header this pass had written are gone; the allocated register
+  row FUP-a3fed3091c5508be declined.
+- **WO-243 — Closeout checks follow the repositories an order changed**
+  (new; machinery; patch; sixth): one scope selection read by the executor's
+  closeout, the integrate helper's owed list and completion's advisory; an
+  unclassifiable order keeps the old behavior with the uncertainty named
+  (the other pass's refuter had named that gap). The product 07 sentence
+  this pass wrote stays as the contract; the carry-in on WO-242 is removed.
+- **WO-242** gains the proposal drafted as a real candidate apart from the
+  target, the approval bound to the base, the proposal and the conversation
+  digests, the helpers holding the wait at the apply boundary beside the
+  hook with a host-boundary matrix, the rule that an ordinary reply reopens
+  no gate, one live synthetic conversation read by the verifier, and the
+  carry-in FUP-d1b15b1b3e4dc761; receipt 059's four findings are folded in
+  (the hook refuses from activation, the root with the election off is
+  byte-identical, the approval's trust model is stated, a self order's
+  conversation document is not committed with a refuse term).
+- **WO-241** gains the `private-destination` election with the kit
+  template's §Secrets as its one consumer, the standing inventory
+  `docs/product/feature-configuration.md` written now (the other pass wrote
+  the first version) and transcribed into the registry's first rows, the
+  carry-in FUP-edefd92233980b63, and receipt 059's three findings folded in
+  (a no-op election refuses, the closed-order check is an advisory, a
+  renamed id loads with an advisory for one release); its Cost names the
+  removal honestly as the missing page, not the four places.
+- **WO-240** gains the child-process criterion (every spawn from
+  `process.execPath`) and receipt 059's three findings folded in (the
+  fixture pins 24.14.0 and a prerelease, the Node 24 run is bound to the
+  handoff identity or repeated, the refusal is the design); the other pass's
+  matrix driver and per-runtime live episode are declined.
+- **WO-237** gains the other pass's negative cases (a different inode, a
+  mismatched token, a live or unknown owner, an active gate, a replacement
+  race, a symlinked root, an undeclared file, a foreign checkout), the
+  close's retained record as evidence, and receipt 059's two findings folded
+  in (a failed move is the existing cleanup blocker; the inode control);
+  its build-staging-only recovery is declined in favor of the general rule.
+- **WO-207** and **WO-193**: receipt 059's eight findings folded in (the
+  starter refresh admits the log row as a criterion; the title keeps the
+  no-order route; the preview rows named in scope; a skipped suite named on
+  the gate row; the stale hand-run removal corrected; `criterion 14` becomes
+  8; the merge-saving claim withdrawn; criterion 9's parity-map assignment
+  dropped; the publish refusal admits a request disposed elsewhere; the
+  ready word's trust model recorded).
+- **WO-088**: the retired-field carry-in withdrawn as moot.
+- **WO-244 — Paired planning passes and the synthesis pass** (new;
+  machinery; minor; seventh), on the operator's messages of 17:01Z to
+  17:05Z: the dispatch labels and host check, the blindness refusals inside
+  a paired pass, the pair record, `plan synthesize`, the synthesis duties and
+  the closing comment on the losing pull request. Product 07 §Paired passes
+  and the synthesis pass carries the routine as the rule until it lands,
+  with the default order the operator named: Codex first, then Claude Code
+  with the synthesis in that session, a separate session admitted.
+
+The roadmap's release table is regenerated (five tags were missing; a
+holding condition the other pass had fixed and this pass had left to the
+next close). Kept from this pass against the other: the vision's founding
+figures as a mechanism statement, and the whole naming sentence removed from
+the floor (the other pass kept its generic-terms clause); both are register
+rows for the operator's word.
+
 Every new order carries a Design with rejected alternatives and their axes,
 an Execution plan naming one file and one check per step, a Preflight line
 spelled as the handoff reads it, criteria ending in `npm test -- --review`
@@ -303,7 +413,9 @@ section in the map; `--apply` took forty-nine dispositions in one batch at
 revision `693722a3…`, leaving revision `bd58cf86…`; after the receipt a
 second sync (the map's candidate item 10 rewritten on the operator's
 answer) returned FUP-2779e86c60788238 to review and a second `--apply`
-settled it at revision `7dc8671c…`, leaving `79befe3a…`. The dispositions:
+settled it at revision `7dc8671c…`, leaving `79befe3a…`; the consolidation's
+third and fourth batches (one and thirteen dispositions, at `77d9bdb7…` and
+`268fb1e4…`) left `c251de8d…`. The dispositions:
 
 | Rows | Disposition |
 | --- | --- |
@@ -329,6 +441,17 @@ settled it at revision `7dc8671c…`, leaving `79befe3a…`. The dispositions:
 | FUP-2eb40c68c4c77db4, FUP-5698ab63b327b4c6 | declined again at their new revisions |
 | FUP-3682b768d1d00a3b, FUP-5368790319434d5f | deferred again at their new revisions |
 | FUP-92f34e24a8f975b4 (WO-235-D059) | declined: the router it assumed was removed |
+| FUP-a3fed3091c5508be (the predecessor track, allocated to WO-228 and WS-002) | declined in the consolidation, with WO-228's file briefly restored because the sync refuses an allocation whose target has no filed order; revision `268fb1e4…` |
+| FUP-42ef286b6dc024ad (the two files kept) | settled: moved to `docs/retired/`; the earlier reason was wrong |
+| FUP-c708c5e2098c3b09 (a retired state for a never-activated order) | declined: moot after the move |
+| FUP-35c5888bb0015982 (the paired passes and the synthesis as a routine) | allocated to WO-244 |
+| FUP-edefd92233980b63 (core-operator decisions marked in kit text) | allocated to WO-241 (from the other pass's dispositions) |
+| FUP-d1b15b1b3e4dc761 (WO-236-D020, operator questions answered promptly) | allocated to WO-242 (from the other pass's dispositions) |
+| FUP-77efd30be6cab5c1, FUP-7f35e50c5d698168, FUP-ed4da61921a5c255 (gate-cost rows whose 360 s threshold fired) | deferred again with FUP-e96221b106cd136a's reading (the other pass had re-disposed them; this pass had missed them) |
+| FUP-60898aadb74b50f3 (a runtime-matrix driver and a live episode per runtime) | declined |
+| FUP-00f9ba8dc24ce4da (the vision's founding figures), FUP-df2995a848dc5ce0 (the floor's generic-terms clause) | deferred for the operator's word |
+| FUP-a2ff1caaf15520a8 | duplicate of FUP-2779e86c60788238 (the heading gained a period) |
+| FUP-0126 | deferred again at revision 25 (product 12's plan-first paragraph) |
 
 ## NoOps
 
@@ -353,11 +476,20 @@ reopening condition; the ones the operator's items raise directly:
   direction; the sentence is removed and the register row
   FUP-2779e86c60788238 is settled on that answer. Evidence: `CLAUDE.md`
   §Clean Room before and after; the capture named in §Dispatch and capture.
-- **WS-002 and WO-228 kept at their paths.** Reason: records link to them
-  and the lifecycle cannot withdraw a never-activated order. Evidence:
-  `linkFailures` over every Markdown file; `OFF_RAMP_PHASES.withdraw`.
-  Useful when WO-088's retired field lands or the operator authorizes the
-  record edits a rename needs.
+- **WS-002 and WO-228 kept at their paths: withdrawn.** The reason given
+  (records link to them) was wrong; the records cite the paths in code
+  spans and `git grep` finds no Markdown link outside the files this pass
+  rewrote. The move to `docs/retired/` is adopted from the other pass.
+- **A runtime-matrix driver and a live host episode per runtime** (the
+  other pass's WO-240). Reason: one recorded complete run under 24.15.0
+  plus the standing host check is the evidence a local gate can give; a
+  driver is machinery no other consumer runs. Useful when a second runtime
+  line is supported or a CI host appears.
+- **The vision's founding figures; the floor's generic-terms clause.** Two
+  places where the passes differed by judgment; this pass's reading stands
+  (figures kept as a mechanism statement; the whole naming sentence removed
+  after the operator's reply) and both are register rows for the operator's
+  word.
 - **No order for item 4.** Reason: the recipe is correct and the starter
   works as cloned; what it lacked is documentation, carried by WO-240.
   Evidence: the rehearsal log. Useful when a clone on a Node 24 host fails
@@ -378,8 +510,9 @@ member is retired. WO-192 leads the list as the active order (WO-242's
 router step defers to it, and `plan check` requires a dependency ahead of
 its dependent); of the orders not yet active, WO-240 first (small; the work
 clone waits on it), WO-237 second (small; the operator's live defect),
-WO-238 third, WO-241 fourth, WO-242 fifth (it reads WO-241), then WO-083,
-WO-207, WO-193, WO-183, WO-088, WO-091, WO-096, WO-014. The rule that every
+WO-238 third, WO-241 fourth, WO-242 fifth (it reads WO-241), WO-243 sixth
+(small; the fork's convenience), WO-244 seventh (the routine's machinery),
+then WO-083, WO-207, WO-193, WO-183, WO-088, WO-091, WO-096, WO-014. The rule that every
 open order has a place gained the sentence about separate-track and retired
 members. The Focus carries 3.c. Serial order stays the operator's direction
 of 2026-10-13.
@@ -406,6 +539,19 @@ of 2026-10-13.
   (two sentences), §Open product choices (one line) (3.a).
 - `CLAUDE.md` §Clean Room: the naming sentence removed on the operator's
   message of 16:06:52Z; the prohibitions and the intake paragraph unchanged.
+- Product 07 §Operator-opened planning pass, new §Paired passes and the
+  synthesis pass: the routine, the dispatch labels, the blindness, the
+  collision rule, the synthesis duties and the default order (the
+  operator's direction of 17:01Z to 17:05Z); WO-244 carries the machinery.
+- Product 12 §Arriving at the desk: the private instance's own planning
+  scripts and its recorded election for its own links; a plan-first
+  paragraph marked planned (WO-242). Product 03: a link to the configuration
+  inventory. Product 06: the adoption work on the rung after v0.103.1
+  (WO-240 to WO-243); its release table regenerated from the recorded tags.
+- `docs/product/feature-configuration.md` (new, standing): where an
+  instance's choices live today, which are planned, and what is not
+  electable; the first version was the other pass's.
+- `docs/retired/` with its README: WS-002 and WO-228 archived byte for byte.
 - `README.md`: edited and reverted; the front page changes only through an
   order, so WO-240 carries its two sentences.
 - The sequence, the map (rows for WO-240 to WO-242; WO-237, WO-228, WO-193,
@@ -413,26 +559,28 @@ of 2026-10-13.
   rationale paragraph; the candidates section), the idea ledger's
   registration, `docs/control/doc-ceilings.json`.
 
-Ceilings, reset to measured non-exempt bytes plus one tenth, citing this
-document:
+Ceilings, reset to measured non-exempt bytes plus one tenth at the end of
+the consolidation, citing this document (the inventory gains its first
+entry):
 
-| Document | Non-exempt bytes | Ceiling before | Ceiling now |
+| Document | Non-exempt bytes | Ceiling before this pass | Ceiling now |
 | --- | --- | --- | --- |
-| 00-vision.md | 28208 | 31103 | 31029 |
+| 00-vision.md | 28208 | 31029 | 31029 |
 | 01-principles.md | 9462 | 10409 | 10409 |
 | 02-domain-model.md | 150031 | 165035 | 165035 |
-| 03-architecture.md | 190264 | 209358 | 209291 |
+| 03-architecture.md | 190387 | 209291 | 209426 |
 | 04-interfaces.md | 67351 | 74087 | 74087 |
-| 05-pattern-library.md | 136813 | 149890 | 150495 |
-| 06-roadmap.md | 41870 | 46149 | 46058 |
-| 07-execution-guide.md | 288468 | 306914 | 317315 |
-| 08-publication-compiler.md | 27245 | 29167 | 29970 |
+| 05-pattern-library.md | 136813 | 150495 | 150495 |
+| 06-roadmap.md | 42099 | 46058 | 46309 |
+| 07-execution-guide.md | 291253 | 317315 | 320379 |
+| 08-publication-compiler.md | 27245 | 29970 | 29970 |
 | 09-audit-resilience-privacy.md | 53441 | 58786 | 58786 |
 | 10-ir-compatibility.md | 25787 | 28366 | 28366 |
 | 11-proteino.md | 2058 | 2264 | 2264 |
 | 11-protino.md | 30626 | 33689 | 33689 |
-| 12-workstream-application.md | 26072 | 30516 | 28680 |
+| 12-workstream-application.md | 27401 | 28680 | 30142 |
 | 13-uifa-roles.md | 27084 | 29793 | 29793 |
+| feature-configuration.md | 5020 | none | 5522 |
 
 ## Answers to the fork (paste-ready)
 
@@ -444,7 +592,7 @@ Answers from core's planning pass of 2026-10-30 (docs/planning/node24-features-c
 
 1. Recorded. The four template-derived seeds (README.md, docs/control/budgets.json, CLAUDE.md's generated block, docs/PLAYBOOK.md) carried with no instance action declared are evidence on core's row FUP-b44117f7b047e976, allocated to WO-207 (eighth in core's queue after this pass; a convenience, your update continues). Core's v0.103.1 close took the refresh in one invocation.
 2. Recorded; nothing asked. Your field evidence (edit-tool writes judged and granted with kind target-worktree; shell-program writes fell to host permissions, which refused none) is on core's row FUP-3682b768d1d00a3b (DotLn-owned authority with minimal native restrictions), which stays deferred.
-3. Answered. A target order whose criteria name only its declared target gate and npm run test:docs owes no launchpad complete run at its closeout: completion consumes rows only for the checks the criteria name, and product 07 §Preflight before the full gate now says so in those words. The integrate helper's affected-check list reports what main's merge touched and creates no duty. The executor role's closeout sentence ("Start one complete run ... for every execution") is the defect; core corrects it in WO-242 (fifth in core's queue) as a carry-in, so until that release your executor reads the sentence under D031's reading, which product 07 confirms. Blocks nothing; your row FUP-2403ce12b1fca8b2 can settle on this answer.
+3. Answered. A target order whose criteria name only its declared target gate and npm run test:docs owes no launchpad complete run at its closeout: completion consumes rows only for the checks the criteria name, and product 07 §Preflight before the full gate now says so in those words. The integrate helper's affected-check list reports what main's merge touched and creates no duty. The executor role's unconditional closeout sentence and the helper's selection are the defect; core files WO-243 (sixth in core's queue) for one scope selection the role text, the helper and completion all read, with an unclassifiable order keeping the old behavior. Until that release your executor reads the sentence under D031's reading, which product 07 confirms. Blocks nothing; your row FUP-2403ce12b1fca8b2 can settle on this answer.
 4. Recorded on FUP-632348a91b2ae9d8; nothing asked. Core reads the first stop or acceptance when your next block carries it.
 5. Recorded; nothing asked. (a) is a known issue on core's WO-088 row: the planning-document check admits a document written by hand to the current headings when plan start predates a mid-pass update. (b) WO-238 drops the Checked: field as before (third in core's queue).
 6. Recorded as evidence in WO-237's Observed gap (second in core's queue after this pass): WO-019's journals left with its worktree. WO-237 also takes a fix core needed today: a temporary root whose volume was renumbered by a reboot is judged by its token and inode instead of refused (core's v0.103.1 close refused six of its own build directories). Your row FUP-64d1967b092ea18a waits for the release that carries WO-237, as you recorded.
@@ -467,7 +615,10 @@ dispatch at 14:54Z); the refuter was dispatched at 16:04:39Z and handed back at
 16:18:42Z (14 min 2 s); its statement was repaired once by the same worker
 for private absolute paths, without rerolling the judgment; the receipt
 helper measured dispatch to file at 19 min 41 s. The handoff figures are in
-the response and the receipt.
+the response and the receipt. The consolidation read #256 after 16:43Z
+(its branch fetched read-only, nothing checked out), re-judged the changed
+subject with a second fresh `dotln-worker`, and files receipt 060; its
+figures are in §Validation.
 
 ## Validation
 

@@ -29,8 +29,8 @@ pointers and continuation command. Untouched items persist across passes.
   entries leave the list at the next planning pass (WO-158); the history
   page is their record. A member of a workstream marked `track: separate`
   is listed under Workstreams by the generated index and needs no entry
-  here; a retired member says so in its own header and in its workstream
-  document.
+  here; a proposal the operator retires before activation leaves the live
+  roots for `docs/retired/` with its bytes intact.
 - **Order size.** One subsystem's chain of work is one order with one
   outcome; the binding cost is the full gate run and the fixed cycle every
   order pays. Unrelated subsystems are not bundled. Reopen when the full
@@ -74,6 +74,12 @@ direction, 2026-10-30); no stream of work in this repository depends on it.
 - WO-242: plan-first mode: the plan, the conversation and the proposal
   before anything is implemented, the operator's approval as a typed event
   the hook enforces; fifth.
+- WO-243: closeout checks follow the repositories an order changed, one
+  selection read by the role text, the integrate helper and completion (the
+  fork's item 3 of 2026-10-30); sixth, small and a convenience for the fork.
+- WO-244: paired planning passes and the synthesis pass as a routine (the
+  operator's direction of 2026-10-30): the dispatch labels, the blindness
+  refusals, the pair record and `plan synthesize`; seventh.
 - WO-083: the real run from the operator's instance, after the router so
   the measured run is driven the way the operator will drive orders.
 - WO-207: an instance's kit updates: rollback, the extension point and the
@@ -94,6 +100,8 @@ direction, 2026-10-30); no stream of work in this repository depends on it.
 - WO-238 — A document says what is so
 - WO-241 — The features file
 - WO-242 — Plan-first mode
+- WO-243 — Closeout checks follow the repositories an order changed
+- WO-244 — Paired planning passes and the synthesis pass
 - WO-083 — The real run from the operator's instance
 - WO-207 — An instance's kit updates: rollback, extension point and build channel
 - WO-193 — An instance's capability requests to core

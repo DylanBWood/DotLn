@@ -21,8 +21,8 @@
       "decision": "docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md#write-backs-and-ceilings"
     },
     "03-architecture.md": {
-      "nonExemptBytesAtLanding": 190264,
-      "ceiling": 209291,
+      "nonExemptBytesAtLanding": 190387,
+      "ceiling": 209426,
       "date": "2026-10-30",
       "decision": "docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md#write-backs-and-ceilings"
     },
@@ -39,14 +39,14 @@
       "decision": "docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md#write-backs-and-ceilings"
     },
     "06-roadmap.md": {
-      "nonExemptBytesAtLanding": 41870,
-      "ceiling": 46058,
+      "nonExemptBytesAtLanding": 42099,
+      "ceiling": 46309,
       "date": "2026-10-30",
       "decision": "docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md#write-backs-and-ceilings"
     },
     "07-execution-guide.md": {
-      "nonExemptBytesAtLanding": 288468,
-      "ceiling": 317315,
+      "nonExemptBytesAtLanding": 291253,
+      "ceiling": 320379,
       "date": "2026-10-30",
       "decision": "docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md#write-backs-and-ceilings"
     },
@@ -81,14 +81,20 @@
       "decision": "docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md#write-backs-and-ceilings"
     },
     "12-workstream-application.md": {
-      "nonExemptBytesAtLanding": 26072,
-      "ceiling": 28680,
+      "nonExemptBytesAtLanding": 27401,
+      "ceiling": 30142,
       "date": "2026-10-30",
       "decision": "docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md#write-backs-and-ceilings"
     },
     "13-uifa-roles.md": {
       "nonExemptBytesAtLanding": 27084,
       "ceiling": 29793,
+      "date": "2026-10-30",
+      "decision": "docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md#write-backs-and-ceilings"
+    },
+    "feature-configuration.md": {
+      "nonExemptBytesAtLanding": 5020,
+      "ceiling": 5522,
       "date": "2026-10-30",
       "decision": "docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md#write-backs-and-ceilings"
     }

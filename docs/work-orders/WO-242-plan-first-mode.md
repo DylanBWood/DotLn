@@ -19,10 +19,15 @@ into `current.md`, `status --json` (`planFirst: { proposedAt, approvedAt,
 documents }`) and the legal next actions; in
 `packages/skeleton/src/harness-host.ts` beside `registeredTargetWriteRoot`
 (5071 to 5098) and `outsideWriteResponse` (5128), one judgment: while the
-order is `active`, plan-first is elected and no `PlanApproved` follows the
-latest `PlanProposed`, an executor write is admitted only under the order's
-plan-first directory, the order's own evidence directory and scratch, and a
-refusal names the route; in `packages/skeleton/src/loadouts/contributor.ts`
+order is `active`, plan-first is elected and no `PlanApproved` stands for
+the current proposal (from activation, before any `PlanProposed`, until the
+approval), an executor write is admitted only under the order's plan-first
+directory, the order's own evidence directory and the owned scratch where
+the candidate is drafted, and a refusal names the route; in
+`packages/skeleton/src/source-change-host.ts` and
+`scripts/lib/executor-readiness.mjs`, the same condition refuses applying a
+candidate to the target and refuses `implementation-ready`, so every route
+the helpers control is held in process where a host has no hook; in `packages/skeleton/src/loadouts/contributor.ts`
 (the executor procedure, 625 to 636), the plan-first steps; in
 `scripts/lib/config.mjs`, the directory convention
 `<evidence root>/WO-NNN/plan-first/` resolved for a self order in the
@@ -191,24 +196,52 @@ With the election off nothing changes.
 
 **Design (scope discipline):**
 
-- **Two events inside `active`, no new phase.** `PlanProposed` (paths and
-  SHA-256 of the three documents, the executor's actor) and `PlanApproved`
-  (the operator's words captured with `--capture` and `--capture-hash`, the
-  recording actor). `plan-approved` is legal only after a `PlanProposed`
-  that no later `PlanProposed` supersedes; a regenerated plan is a new
-  `PlanProposed` and needs a new approval. Rejected: a new lifecycle phase
+- **Two events inside `active`, no new phase.** `PlanProposed` (the base
+  commit, the paths and SHA-256 of the three documents, the candidate's
+  diff digest, the executor's actor) and `PlanApproved` (the operator's
+  words captured with `--capture` and `--capture-hash`, the recording
+  actor, and the exact `PlanProposed` it accepts). An approval is bound to
+  that revision: a later `PlanProposed`, a moved base or a changed
+  conversation digest invalidates it and the next turn shows what changed
+  since the operator last read. A quoted instruction, a linked document's
+  text, an agent's own suggestion, a stale approval or elapsed silence is
+  not approval. The capture is supplied by the recording actor, the same
+  trust model as WO-158's `waive` and `withdraw`; binding the approval to a
+  harness-recorded operator prompt is the stronger form and this order's
+  reopening observation. Rejected: a new lifecycle phase
   `planned` (axis: every phase consumer changes, the beacon codebook's
   `phaseRadix: 8` among them, against two events the fold projects; WO-158
   added events this way).
-- **The hook enforces the wait.** While plan-first is elected, the order is
-  `active` and the latest `PlanProposed` has no `PlanApproved` after it, the
-  executor's writes are admitted only under the plan-first directory, the
-  order's own evidence directory (decisions, handoff) and scratch; a
-  refusal names `conversation.md` and `npm run resume -- plan-approved`.
+- **The hook and the helpers enforce the wait, from activation.** While
+  plan-first is elected, the order is `active` and no `PlanApproved` stands
+  for the current proposal, which includes the time before the first
+  `PlanProposed`, the executor's writes are admitted only under the
+  plan-first directory, the order's own evidence directory (decisions,
+  handoff) and the owned scratch holding the candidate; a refusal names
+  `conversation.md` and `npm run resume -- plan-approved`. The helpers hold
+  the same condition in process at the apply boundary
+  (`source-change-host.ts`) and at readiness (`executor-readiness.mjs`), and
+  the order records a host-boundary matrix: Claude hooks refuse observed
+  writes, the helpers refuse every route they control on every host, and a
+  Codex direct tool write is a role duty under host permissions, so the
+  record never claims a boundary the host does not expose.
   Rejected: role text alone (axis: the operator's words were that the
   harness "just runs off and implementing"; a duty the hook does not hold
   is a request). Rejected: refusing every write (axis: the executor must
   write the three documents and its decisions).
+- **The proposal is real code, drafted apart from the target.** The executor
+  drafts the change in an owned scratch copy or candidate worktree the
+  owned-root helper creates (class `session-scratch`, the order's own), never
+  in the target's implementation tree, and `proposal.md` carries the
+  candidate's complete diff against the base (additions, deletions, renames
+  and tests, grouped by file but never omitted; a binary change named with
+  its hash) beside the per-file intent; on approval the executor applies the
+  accepted revision to the target and refuses when the base moved. Rejected:
+  a prose summary as the third document (axis: it cannot show every code
+  change). Rejected: drafting in the target tree behind the hook (axis: the
+  hook refuses source writes while a proposal awaits; the candidate is where
+  the code is written). This bullet adopts the other pass of 2026-10-30's
+  isolated-candidate design on the operator's direction.
 - **Three documents, three lifetimes.** `plan.md` and `proposal.md` are
   regenerated whole by the executor and carry a `dotln-plan-first` marker
   block (status, `proposedAt`, the conversation digest last read, the
@@ -219,6 +252,13 @@ With the election off nothing changes.
   section beside the operator's prose invites rewriting it). Rejected: a
   chat surface in the console (axis: the operator asked for documents in
   the repository the team reads; the console reads them later).
+- **An ordinary reply does not reopen the gate.** A conversation turn after
+  a passing document gate is the order's own record and does not force
+  another complete gate: the document row binds it the way WO-238's carry-in
+  (WO-235-D022) settles for every record completion itself requires, and
+  until WO-238 lands the executor's inline docs check over the changed
+  record is the route; a change to the plan or the proposal, the accepted
+  contract, invalidates the approval and the rows that bind them.
 - **Where they live.** `<evidence root>/WO-NNN/plan-first/` in the
   launchpad for a self order; for a target order the same path under the
   target's `documentationRoot` in the target worktree, where `resume
@@ -313,12 +353,14 @@ With the election off nothing changes.
    terminal words, paraphrase terminal words into `conversation.md` with
    their capture digest, announce every transformation before carrying a
    passage, regenerate the plan and the proposal, record `plan-proposed`
-   again when either changed, and stop; on the operator's ordinary words of
-   approval, capture them and record `plan-approved`, then continue the
-   procedure from the implementation step; a host notification is never an
-   operator turn. The closeout sentence at 631 also reads: for a target
-   order the complete run is its declared target gate and the document gate
-   (product 07 §Preflight before the full gate). Check: `npm test -- --only
+   again when either changed, and stop; answer every operator entry since
+   the last read before regenerating; on the operator's ordinary words of
+   approval, capture them and record `plan-approved` for the current
+   proposal, then apply the accepted candidate to the target and continue
+   the procedure from the implementation step; a host notification is never
+   an operator turn. The plan-first steps are emitted only when the election
+   is on, so the executor root with the election off is byte-identical to
+   the base's. Check: `npm test -- --only
    harness` (the emitted root) and `npm test -- --only harness-context`
    (the executor cold-start ceiling; a breach follows the standing route).
 6. `scripts/terms.mjs` and `scripts/outward-lint.mjs`: a `--plan-first
@@ -369,24 +411,30 @@ selection; the router step; the README section and example; the write-backs.
 **Acceptance criteria (all required)**
 
 1. With `features.plan-first` absent or `false`, `resume.mjs`'s legal
-   actions, `current.md`, `status --json`, the emitted executor root's
-   non-plan-first steps and the hook's judgments are byte-identical to the
-   base's for the fixtures (the control at the base and the current tree
+   actions, `current.md`, `status --json`, the emitted executor root and the
+   hook's judgments are byte-identical to the base's for the fixtures (the control at the base and the current tree
    recorded in `docs/evidence/WO-242/controls.json`).
-2. `plan-proposed WO-NNN` records `PlanProposed` with three existing
-   documents' paths and digests and refuses a missing document or an invalid
-   marker block; `plan-approved` refuses without a preceding unsuperseded
-   `PlanProposed`, without `--capture` and `--capture-hash`, or with a hash
-   that does not match the capture; `status --json` shows `planFirst` and
-   lists `plan-approved` among legal next actions while a proposal awaits; a
-   later `PlanProposed` clears the approval.
-3. In the harness fixture, with the election on and a proposal awaiting,
-   an executor write to a source file in the worktree and one in the
-   registered target worktree are refused naming `conversation.md` and the
-   `plan-approved` command, and writes to the plan-first directory, the
-   order's evidence directory and scratch are admitted; after `PlanApproved`
-   the same source writes are admitted; a verifier's writes are unaffected;
-   the judgment's duration before and after is recorded in the decisions.
+2. `plan-proposed WO-NNN` records `PlanProposed` with the base commit, the
+   three documents' paths and digests and the candidate's diff digest, and
+   refuses a missing document, an invalid marker block or a candidate whose
+   diff does not match `proposal.md`; `plan-approved` refuses without a
+   preceding unsuperseded `PlanProposed`, without `--capture` and
+   `--capture-hash`, or with a hash that does not match the capture;
+   `status --json` shows `planFirst` and lists `plan-approved` among legal
+   next actions while a proposal awaits; a later `PlanProposed`, a moved
+   base or a changed conversation digest clears the approval and the next
+   turn names what changed.
+3. In the harness fixture, with the election on and either no proposal yet
+   or a proposal awaiting, an executor write to a source file in the
+   worktree and one in the registered target worktree are refused naming
+   `conversation.md` and the `plan-approved` command, and writes to the
+   plan-first directory, the order's evidence directory and the owned
+   candidate scratch are admitted; the helpers refuse applying the candidate
+   and `implementation-ready` in the same states; after `PlanApproved` for
+   the current proposal the same source writes and the apply are admitted; a
+   verifier's writes are unaffected; the judgment's duration before and
+   after is recorded in the decisions, and the host-boundary matrix names
+   which boundary held in the live run of criterion 8.
 4. The emitted executor root carries the plan-first steps and the target
    closeout sentence; `harness check` passes; the executor cold-start
    measurement is recorded against its ceiling, and a breach is handled
@@ -397,7 +445,9 @@ selection; the router step; the README section and example; the write-backs.
    `conversation.md` holding a `refuse:` term in an operator entry yields an
    `Announced transformation` entry and no copy of the term in `plan.md`,
    `proposal.md` or the decisions; the operator's entry is byte-identical
-   after the turn.
+   after the turn; for a self order that document is not committed while the
+   term stands, the executor asks in the document, and the publication
+   check names the entry without printing the term.
 6. For a target order fixture the three documents resolve under the
    target's `documentationRoot` and move nothing at `target-records`; for a
    self order they resolve under the launchpad's evidence root.
@@ -406,12 +456,20 @@ selection; the router step; the README section and example; the write-backs.
    until `PlanApproved`) or recorded in the decisions as written against
    WO-192 as filed with the file it will land in, when WO-192 has not
    merged at this order's activation.
-8. The kit README's §Plan-first mode and the example configuration state
+8. One live plan-first conversation runs in the executor's session against
+   a fixture target with a synthetic order and scripted operator turns
+   (a question, a correction, an approval), through proposal, revision,
+   complete-diff inspection, approval and application; the record carries
+   the operator turns, the bytes the operator had to read per turn, the
+   elapsed work and waiting and the counters available, and the verifier
+   reads it as a novice's workflow and records usability limits; no claim
+   of reduced burden rests on shorter documents.
+9. The kit README's §Plan-first mode and the example configuration state
    the mode as built; product 07 and product 12 carry the write-backs of
    step 11; WO-241's registry row names its consumer; `npm run
    publication:check` is green.
-9. `npm test -- --review` and `npm run test:docs` green; `git diff --check`
-   clean; no new dependency.
+10. `npm test -- --review` and `npm run test:docs` green; `git diff --check`
+    clean; no new dependency.
 
 **Preflight:** `npm test -- --only work-orders-fixtures` for step 1; the
 lifecycle suite `npm test -- --list --review` names for `scripts/resume.mjs`
@@ -430,7 +488,7 @@ sources stale; `npm test -- --review` before `implementation-ready`, final
 review reusing the passing complete row at the integrated code identity when
 one exists.
 
-**Write-back duty:** as listed in step 11 and criterion 8.
+**Write-back duty:** as listed in step 11 and criterion 9.
 
 **Known issues and carry-ins:**
 
@@ -447,13 +505,12 @@ one exists.
   role text carry the practice; plan-first is the first bridge, and the kit
   README's §Plan-first mode is written for that reader (reopen: the operator
   reports the first teammate's session, or asks for more than the mode).
-- Carry-in (the fork's item 3 of 2026-10-30, WO-019-D031): the executor's
-  closeout step runs the complete launchpad run for every execution; for a
-  target order whose criteria name its target gate and the document gate no
-  launchpad complete row is owed (product 07 §Preflight before the full
-  gate), and the integrate helper's affected-check list reports what main's
-  merge touched, never a duty; step 5 corrects the sentence (reopen: a
-  target order's completion consumes a launchpad complete row).
+- Carry-in (FUP-d1b15b1b3e4dc761, WO-236-D020): an operator question or
+  correction in plan-first mode is answered in `conversation.md` before the
+  next proposal, every entry since the last read, so no question waits
+  across turns (reopen: an operator entry is left unanswered across two
+  turns). The closeout sentence for target orders is WO-243's, filed on the
+  operator's direction of 2026-10-30; this order no longer carries it.
 - The approval is inferred from ordinary language by the executor and
   recorded with the words captured; a wrong inference is corrected by
   `correct` or by a new `PlanProposed` (reopen: an approval is recorded from

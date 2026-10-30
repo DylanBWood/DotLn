@@ -40,9 +40,28 @@ the operator's build taken or pinned per update (WO-207); its repository
 profiles may pin DotLn-Angular as an upstream reference (WO-073's convention)
 and nothing more; it reaches core only through generic capability requests
 (WO-193) or through its operator's own planning prompts to core, written in
-generic terms (operator direction, 2026-10-30); and its own code, a tracker
-source adapter among the first, lives at the instance extension point
-(WO-207), never in core.
+generic terms (operator direction, 2026-10-30); its own scripts may gather a
+tracker's items for its own planning session under its own authority; and
+its own code, a tracker source adapter among the first, lives at the
+instance extension point (WO-207), never in core. Its agent's floor is the
+kit's, owner-relative; an election it records admits its own organisation's
+ordinary project links inside the instance while credentials stay excluded
+and publications keep refusing private terms (WO-241; the
+[configuration inventory](feature-configuration.md)).
+
+**Plan-first mode (planned, WO-242).** An operator new to agents, or one
+who wants to read before anything is built, elects plan-first for the
+instance. The executor then writes three documents under the order's
+evidence path in the target repository before it changes any code: a plan
+the agent regenerates (where the change goes, why, the contracts it expects,
+the decisions so far), a conversation that persists and that both the
+operator and the agent write, and a proposal that carries the complete
+proposed change as a diff drafted apart from the target. The operator
+answers in the terminal or in the conversation document; the agent
+paraphrases its own entries, announces any transformation before it carries
+a passage onto a screened surface, never rewrites the operator's lines, and
+implements only after the operator's approval of that exact proposal is
+recorded. Direct execution stays the default where the mode is not elected.
 
 The operator selects repositories and the boundary of a proposed task. The
 reference profile previews where its inputs and outputs would go and which

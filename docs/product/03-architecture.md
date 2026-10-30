@@ -246,7 +246,8 @@ The siblings' license posture and the instance boundary [operator direction,
 starter on the operator's own account, and DotLn-Angular carry the same
 posture and the same clean-room floor as core; a private fork of the starter
 on a constrained managed host where core is never installed carries the kit's
-license files unchanged. Core's own
+license files unchanged. The [configuration inventory](feature-configuration.md)
+says where an instance's choices live today and which are planned. Core's own
 control records, orders, evidence and reports are core's instance files and
 never enter the kit: the kit is the product, not core's history. An instance
 runs what core runs, its gates and planning commands included

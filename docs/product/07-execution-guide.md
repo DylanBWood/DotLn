@@ -1759,6 +1759,49 @@ change it identifies becomes a work order or a named boy-scout item for the
 next activation. Its output lands through the ordinary pull request from a
 planning branch, since `main` requires one; the `:memo:` title rule applies.
 
+### Paired passes and the synthesis pass
+
+Operator direction, 2026-10-30 (the fourth, fifth and sixth messages of
+that day's planning dispatch, captured in ignored intake with their
+digests in the planning document's first section): the standard pass runs
+as a routine of three dispatches. First a `planning:` pass on the Codex host
+(GPT Astra), then the same dispatch, word for word, on the Claude Code host
+(Fable), each blind to the other, then a synthesis pass that takes the best
+of both. The operator writes the host into the dispatch line as a label,
+`planning: standard pass, gpt` or `planning: standard pass, fable`, and
+starts the synthesis by hand with `planning: synth pass`; the label records
+intent, the host is whatever CLI the operator opened, and a pass whose label
+names the other host stops and says so.
+
+A paired pass is blind: it does not list branches or pull requests, fetch,
+read another `planning/` branch or open its pull request, and it reads no
+ignored local file whose name carries that day's other pass; it says in its
+document what it did not read. Both passes allocate ids from the same
+counter, so two blind passes file the same `WO-NNN` ids and the same receipt
+number under different filenames and hashes; that collision is expected and
+is the synthesis pass's to resolve, never a reason to renumber mid-pass.
+
+The synthesis pass runs in the second session after its own receipt is
+filed, on the operator's word, so it keeps the context of its own pass;
+the operator may open it as a separate session instead, and the dispatch
+works in either. It lifts the blindness, reads both branches and both pull
+requests against the records, judges each item by the same evidence
+standard it applied to its own work, names its own errors where the other
+pass was right, chooses one branch as the base (the one whose orders are
+more concrete is cheaper to fold into than the reverse), folds the other
+pass's stronger points into the base's orders and documents with their
+provenance named (the other branch and pull request), re-judges the changed
+subject with one fresh refuter and files the new receipt on the base branch,
+pushes, and closes the other pull request with a comment naming the
+synthesis; the losing branch is never merged and its receipt stays on it.
+The first run of this routine is the 2026-10-30 pass
+([the planning document](../planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)):
+the Codex pass opened #256, the Claude pass opened #257, and the synthesis
+ran in the Claude session on the operator's direction. WO-244 carries the
+machinery (the dispatch labels and host check, the blindness refusals, the
+pair record and the synthesis helper); until it lands this paragraph is the
+rule and the roles carry it as text.
+
 ### Retained planning follow-ups
 
 The pending feed is returned by `plan start`; `npm run plan -- followups`

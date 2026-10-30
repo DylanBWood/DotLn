@@ -17,13 +17,17 @@ list|render|check`) with its `package.json` entry, the generated
 meta`, a `features` block in `scripts/kit/dotln.config.example.json`, a
 §Features section in `scripts/kit/README.client.md`, the first two wired
 elections (`tinkerer-economy`, read by the executor supports' default, and
-`plan-first`, declared default off for WO-242 to consume), cases in
+`plan-first`, declared default off for WO-242 to consume), the
+`private-destination` row with its one consumer (the kit's
+`CLAUDE.template.md` §Secrets, emitted with the election), cases in
 `scripts/test-configuration-root.mjs`, `scripts/test-launchpad.mjs` and the
-suite that covers `npm run meta`. Removes: the state where an instance's
-elections live in four unrelated places (`release.*` surface toggles that
-nothing reads yet, `kit.applyInstanceActions`, `build.loadout`, the budgets
-file's `null` switches) and in compiled defaults, with no one page saying
-what can be turned off, by whom, or whether a switch is read at all.
+suite that covers `npm run meta`. Removes: the absence of one page that
+says, for every election wherever its key lives (`release.*` surface
+toggles that nothing reads yet, `kit.applyInstanceActions`, `build.loadout`,
+the budgets file's `null` switches, the compiled defaults), what it does,
+whose it is, and whether anything reads it; the keys themselves stay where
+they are, so the removal is the missing page and the hidden defaults, not
+the four places.
 Wall-clock: one small render per `npm run meta` (the executor measures it
 and records it; unknown until measured, never assumed cheap). Context
 bytes: this file, about 17,000. Commands: one new, `npm run features`.
@@ -172,6 +176,24 @@ second file.
   wiring the `release.*` toggles now (axis: nothing reads them; they are
   listed as `unread` so the table tells the truth, and the order that
   consumes them wires them).
+- **A private instance's own floor.** The kit's `CLAUDE.template.md`
+  §Clean Room is owner-relative (never import what the owner has no right to
+  publish), but its §Secrets tells every instance's agent never to expose,
+  copy, commit or print private hostnames or account identifiers, so an
+  instance the operator runs privately would still be told to keep its own
+  tracker links out of its own documents. The `private-destination` election
+  (scope instance, default off) records that ordinary project links and
+  identifiers of the instance's own organisation are admitted inside that
+  instance's repository; credentials stay excluded everywhere, publication
+  screens keep refusing private terms in anything that leaves the
+  instance, and core's floor is unchanged. The one consumer is the emitted
+  §Secrets paragraph of the instance's `CLAUDE.md`, which names the
+  admission when the election is on and is byte-identical to today when it
+  is off. Rejected: repository visibility as permission (axis: a forge
+  setting is not a recorded authority). Rejected: a `cleanRoom: false`
+  switch (axis: the floor is not electable; only the destination of
+  ordinary links is). This bullet adopts the other pass of 2026-10-30's
+  destination-policy finding on the operator's direction.
 - **Not electable is said.** The registry's rendering ends with the fixed
   list the file cannot change: the six refusals, the writer reservation,
   the clean-room floor, with the sentence that they are the floor. Rejected:
@@ -192,7 +214,10 @@ second file.
    `release-publication-check` reading their `release.*` keys and marked
    `unread`, `subagent-cap` reading `budgets.subagentCap`, `dispatch-bounds`
    reading `budgets.dispatches`, each with scope, default, `what`,
-   `readFrom`, `readBy`), the not-electable list, and `readFeatures(root)`.
+   `readFrom`, `readBy`), the not-electable list, and `readFeatures(root)`;
+   the first rows transcribe the table of `docs/product/feature-configuration.md`,
+   the inventory the 2026-10-30 pass wrote, which then links the generated
+   page for an instance's effective values instead of repeating them.
    Check: a new case file the executor names in `scripts/test-runner.mjs`
    under the suite that declares `scripts/lib/config.mjs`
    (`configuration-root`), spelled in the Preflight line.
@@ -218,7 +243,12 @@ second file.
    bounds unchanged).
 5. `scripts/kit/dotln.config.example.json`: a `features` block showing the
    instance-scope rows at their defaults, one in the `{ on, note }` form.
-   Check: `npm test -- --only launchpad` (the export carries the example).
+   `scripts/kit/CLAUDE.template.md` §Secrets: the sentence the
+   `private-destination` election adds when on, emitted through `harness
+   emit`'s existing template read; off, the paragraph is byte-identical to
+   today. Check: `npm test -- --only launchpad` (the export carries the
+   example); `npm test -- --only harness` (the emitted floor with the
+   election on and off).
 6. `scripts/kit/README.client.md` §Features (new, after §First steps item
    5's configuration sentence): the file, the two entry forms, the
    command, the generated page and the not-electable list. Check: `npm
@@ -256,14 +286,20 @@ write-backs and the measured render cost.
    a `features` entry of `true`, `false` or `{ "on": false, "note": "..." }`
    for a known id loads; an unknown id refuses naming the id and `npm run
    features -- list`; a non-boolean `on` or a non-string `note` refuses
-   naming the key.
+   naming the key; an entry for a row whose `readFrom` is an existing
+   configuration or budgets key refuses naming that key, so no election
+   loads as a silent no-op; a retired or renamed registry id loads with an
+   advisory naming its successor for one kit release before it refuses.
 2. Every registry row carries `id`, `scope` in `core|instance|both`,
    `default`, a non-empty `what`, `readFrom` naming `features.<id>` or an
    existing configuration or budgets key, and `readBy` naming a module in
-   the tree, `unread`, or a queued `WO-NNN`; a check refuses a row whose
-   named module does not read the named key and a row whose `WO-NNN` is
-   closed; the first rows include at least `tinkerer-economy`, `plan-first`
-   and the four `release.*` surfaces marked `unread`.
+   the tree, `unread`, or a queued `WO-NNN`; the check judges a row's reader
+   by toggling the row in a fixture and observing a changed output, never
+   by a text match, and reports a row whose `WO-NNN` has closed as an
+   advisory `npm run features -- check` prints and the next planning pass
+   reads, never as a refusal in another order's gate; the first rows include
+   at least `tinkerer-economy`, `plan-first`, `private-destination` and the
+   four `release.*` surfaces marked `unread`.
 3. `npm run features -- render` writes `docs/control/FEATURES.md` as a
    table with one row per registry entry (effective value, source `default`
    or `dotln.config.json`, scope, `what`, where read) and the not-electable
@@ -273,7 +309,11 @@ write-backs and the measured render cost.
 4. An instance fixture with `"tinkerer-economy": false` emits an executor
    root without the Tinkerer economy support and with every cold-start
    ceiling still met; with the key absent the root is byte-identical to the
-   base's; `harness check` passes in both.
+   base's; `harness check` passes in both. An instance fixture with
+   `"private-destination": true` emits a `CLAUDE.md` §Secrets that admits
+   ordinary project links inside the instance while the publication screens
+   still refuse a private term in a pull-request body fixture; with the key
+   absent the paragraph is byte-identical to today's.
 5. The kit's example configuration shows the instance-scope rows and one
    `{ on, note }` entry; an export carries it and `README.client.md`
    §Features; `npm run publication:check` is green.
@@ -299,6 +339,11 @@ row at the integrated code identity when one exists.
 
 **Known issues and carry-ins:**
 
+- Carry-in (FUP-edefd92233980b63): kit text that encodes a core-operator
+  decision is marked as such where the registry row's `scope` says `core`,
+  so an instance knows what it may decline; the first marks ride the rows
+  this order writes (reopen: a fork true-forks a role or product 07 to
+  decline a core-operator rule the marks did not name).
 - The four `release.*` surface toggles are declared and unread today; this
   order lists them as `unread` and wires none (reopen: an order consumes
   one, which then changes its row to the consuming module).
