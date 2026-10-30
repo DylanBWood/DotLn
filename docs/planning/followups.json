@@ -4972,6 +4972,41 @@
           "title": "Candidate — all eight system traps as a design lens",
           "summary": "### Candidate — all eight system traps as a design lens The operator's 2026-09-09 ideation supplies the complete eight-trap framework alongside the discussion of output-review overhead. Preserve the relationships that generate each trap, the possible escape, and evidence that the escape helps the whole system. This lens applies to compositions, resource allocation, simulation and the development process itself. WO-126 currently meters five named process signals; the full framework is broader than those implemented rows, and a signal is not a causal diagnosis. | Trap | Candidate application to DotLn | Escape to evaluate | | ------------------------------------- | -----------------------------",
           "missing": false
+        },
+        {
+          "hash": "a532658e274fddc3a7518ab2bed3c71b70f38a4105ef679ddfe4d430baa5ff6f",
+          "ref": "docs/product/05-pattern-library.md#candidate--all-eight-system-traps-as-a-design-lens",
+          "title": "Candidate — all eight system traps as a design lens",
+          "summary": "### Candidate — all eight system traps as a design lens The operator's 2026-09-09 ideation supplies the complete eight-trap framework alongside the discussion of output-review overhead. Preserve the relationships that generate each trap, the possible escape, and evidence that the escape helps the whole system. This lens applies to compositions, resource allocation, simulation and the development process itself. WO-126 currently meters five named process signals; the full framework is broader than those implemented rows, and a signal is not a causal diagnosis. | Trap | Candidate application to DotLn | Escape to evaluate | | ------------------------------------- | -----------------------------",
+          "missing": false
+        },
+        {
+          "hash": "9284699cf0024c6781bdcf773c2ca56211f0c299222a9c01626a94c9ed9ce1ae",
+          "ref": "docs/product/05-pattern-library.md#candidate--all-eight-system-traps-as-a-design-lens",
+          "title": "Candidate — all eight system traps as a design lens",
+          "summary": "### Candidate — all eight system traps as a design lens The operator's 2026-09-09 ideation supplies the complete eight-trap framework alongside the discussion of output-review overhead. Preserve the relationships that generate each trap, the possible escape, and evidence that the escape helps the whole system. This lens applies to compositions, resource allocation, simulation and the development process itself. WO-126 currently meters five named process signals; the full framework is broader than those implemented rows, and a signal is not a causal diagnosis. | Trap | Candidate application to DotLn | Escape to evaluate | | ------------------------------------- | -----------------------------",
+          "missing": false
+        },
+        {
+          "hash": "40c3a513413e6c23b42e20138916c68de8633febc98075599707b1529455d839",
+          "ref": "docs/product/05-pattern-library.md#candidate--all-eight-system-traps-as-a-design-lens",
+          "title": "Candidate — all eight system traps as a design lens",
+          "summary": "### Candidate — all eight system traps as a design lens The operator's 2026-09-09 ideation supplies the complete eight-trap framework alongside the discussion of output-review overhead. Preserve the relationships that generate each trap, the possible escape, and evidence that the escape helps the whole system. This lens applies to compositions, resource allocation, simulation and the development process itself. WO-126 currently meters five named process signals; the full framework is broader than those implemented rows, and a signal is not a causal diagnosis. | Trap | Candidate application to DotLn | Escape to evaluate | | ------------------------------------- | -----------------------------",
+          "missing": false
+        },
+        {
+          "hash": "a06b6b3a29258a95f4f63ad3ee45184255a0623743dcf208a9740391e0a94d83",
+          "ref": "docs/product/05-pattern-library.md#candidate--all-eight-system-traps-as-a-design-lens",
+          "title": "Candidate — all eight system traps as a design lens",
+          "summary": "### Candidate — all eight system traps as a design lens The operator's 2026-09-09 ideation supplies the complete eight-trap framework alongside the discussion of output-review overhead. Preserve the relationships that generate each trap, the possible escape, and evidence that the escape helps the whole system. This lens applies to compositions, resource allocation, simulation and the development process itself. WO-126 currently meters five named process signals; the full framework is broader than those implemented rows, and a signal is not a causal diagnosis. | Trap | Candidate application to DotLn | Escape to evaluate | | ------------------------------------- | -----------------------------",
+          "missing": false
+        },
+        {
+          "hash": "f7fc40fc5cafe5be6b3e2fbb6d62fca966a5e6760d2c96a333c4b8c7f1150dee",
+          "ref": "docs/product/05-pattern-library.md#candidate--all-eight-system-traps-as-a-design-lens",
+          "title": "Candidate — all eight system traps as a design lens",
+          "summary": "### Candidate — all eight system traps as a design lens The operator's 2026-09-09 ideation supplies the complete eight-trap framework alongside the discussion of output-review overhead. Preserve the relationships that generate each trap, the possible escape, and evidence that the escape helps the whole system. This lens applies to compositions, resource allocation, simulation and the development process itself. WO-126 currently meters five named process signals; the full framework is broader than those implemented rows, and a signal is not a causal diagnosis. | Trap | Candidate application to DotLn | Escape to evaluate | | ------------------------------------- | -----------------------------",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -46044,6 +46079,13 @@
           "title": "A byte cap on pull-request bodies, orders or planning documents.",
           "summary": "6. **A byte cap on pull-request bodies, orders or planning documents.** Declined for WO-235: the operator's direction of 2026-09-14 (artificial caps yield to needed rules) and the 2026-10-07 rule (ceilings are planning's); the best comparable and its ratio are reported instead. Reopen when the operator directs a cap, or when the advisory is printed on ten consecutive closes without a disclosed changed condition.",
           "missing": false
+        },
+        {
+          "hash": "05c76ecf6ec3f6700d38c864dcf04174906fdb5c3d82d42afead93016c66990a",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-wo-192s-record-and-the-operators-corrections-recorded-2026-10-26",
+          "title": "A byte cap on pull-request bodies, orders or planning documents.",
+          "summary": "6. **A byte cap on pull-request bodies, orders or planning documents.** Declined for WO-235: the operator's direction of 2026-09-14 (artificial caps yield to needed rules) and the 2026-10-07 rule (ceilings are planning's). [WO-235-D039](../evidence/WO-235/decisions.md#wo-235-d039) also removes the originally proposed byte-minimum advisory: useful information is judged by reader needs regardless of volume. Reopen when the operator directs a cap.",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -46116,6 +46158,20 @@
           "title": "Amending WO-088 to carry the planning skeleton and the direction ledger.",
           "summary": "11. **Amending WO-088 to carry the planning skeleton and the direction ledger.** Declined: WO-235 carries them beside the role rule and the meter columns they belong with, and WO-088 adjusts the skeleton when it moves pass registration. Reopen when WO-088 activates before WO-235.",
           "missing": false
+        },
+        {
+          "hash": "ce997404e44162fddd5bba5a32422b210b867bc07522cd6f39d0ab0bec312c63",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-wo-192s-record-and-the-operators-corrections-recorded-2026-10-26",
+          "title": "Amending WO-088 to carry the planning skeleton and the direction ledger.",
+          "summary": "11. **Amending WO-088 to carry the planning skeleton and the direction ledger.** Declined: WO-235 carries the contract-derived planning skeleton beside its reader and role guidance; WO-088 adjusts it when pass registration moves. The operator removed the public ledger in [WO-235-D036](../evidence/WO-235/decisions.md#wo-235-d036) and the size-ranking meter columns in [D039](../evidence/WO-235/decisions.md#wo-235-d039). Answer support stays in private current-session context, while useful artifacts follow the reader's task. Reopen the skeleton allocation if WO-088 activates before WO-235.",
+          "missing": false
+        },
+        {
+          "hash": "39630a83000c0fe78fea430135bdce781eb56d27aa177d76139cfac771631ffd",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-wo-192s-record-and-the-operators-corrections-recorded-2026-10-26",
+          "title": "Amending WO-088 to carry the planning skeleton and the direction ledger.",
+          "summary": "11. **Amending WO-088 to carry the planning skeleton and the direction ledger.** Declined: WO-235 carries the contract-derived planning skeleton beside its reader and role guidance; WO-088 adjusts it when pass registration moves. The operator removed the public ledger in [WO-235-D036](../evidence/WO-235/decisions.md#wo-235-d036) and the size-ranking meter columns in [D039](../evidence/WO-235/decisions.md#wo-235-d039), and [D063](../evidence/WO-235/decisions.md#wo-235-d063) removes the order's remaining operator-message work. Reopen the skeleton allocation if WO-088 activates before WO-235.",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -46165,6 +46221,20 @@
           "ref": "docs/planning/work-order-map.md#candidates--returns-from-wo-192s-record-and-the-operators-corrections-recorded-2026-10-26",
           "title": "A hook that classifies untyped operator messages.",
           "summary": "7. **A hook that classifies untyped operator messages.** Declined for WO-235: the planning screen refuses a criterion that needs a deterministic reading of natural language; the hook records index and digest and the role records the event as its judgment. Reopen when a host exposes a typed classification of a message, or when the ledger shows the same message judged two ways by two roles.",
+          "missing": false
+        },
+        {
+          "hash": "9eaa3238afff6dc5b6436f97fbc285686d1c7378b9623acc1a155fa78b5263d9",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-wo-192s-record-and-the-operators-corrections-recorded-2026-10-26",
+          "title": "A hook that classifies untyped operator messages.",
+          "summary": "7. **A hook that classifies untyped operator messages.** Declined for WO-235: the planning screen refuses a criterion that needs a deterministic reading of natural language. [WO-235-D036](../evidence/WO-235/decisions.md#wo-235-d036) also removes the proposed message index and public ledger; the role uses current-session working context and the existing chat history. Reopen when the operator requests classification supported by evidence.",
+          "missing": false
+        },
+        {
+          "hash": "650644009378bfa642b740c5afb94d47eb80e6836cf235f207744062fbf519ec",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-wo-192s-record-and-the-operators-corrections-recorded-2026-10-26",
+          "title": "A hook that classifies untyped operator messages.",
+          "summary": "7. **A hook that classifies untyped operator messages.** Declined for WO-235: the planning screen refuses a criterion that needs a deterministic reading of natural language. [WO-235-D063](../evidence/WO-235/decisions.md#wo-235-d063) removes WO-235's operator-message work altogether, including the message index and public ledger that D036 had already dropped. Reopen when the operator requests classification supported by evidence.",
           "missing": false
         }
       ],
@@ -47336,6 +47406,20 @@
           "title": "WO-235's field case",
           "summary": "12. **WO-235's field case** (item 4b). Recorded on WO-235's catalog row; nothing to decide. Reopen when WO-235's ledger shape cannot carry an `ideation:` message's dispositions as the case did.",
           "missing": false
+        },
+        {
+          "hash": "58ead0b64abff3eef74b1795fdc5db8de0c1a7c24f162caf6427ade5e63ca83d",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-target-write-blocker-the-journal-question-and-the-forks-two-blocks-recorded-2026-10-28",
+          "title": "WO-235's field case",
+          "summary": "12. **WO-235's field case** (item 4b). Recorded on WO-235's catalog row; [D036](../evidence/WO-235/decisions.md#wo-235-d036) now serves answer coverage through a private current-session checklist, with material product decisions kept in their ordinary records. Reopen if the aid drops an `ideation:` message's questions or requested actions, or substitutes transient question tracking for durable product decisions.",
+          "missing": false
+        },
+        {
+          "hash": "098fc7ede0a661a565374495ccdfa2b0e88f346a06b8c259c214be5cf1cee3d0",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-forks-target-write-blocker-the-journal-question-and-the-forks-two-blocks-recorded-2026-10-28",
+          "title": "WO-235's field case",
+          "summary": "12. **WO-235's field case** (item 4b). Recorded on WO-235's catalog row; [D063](../evidence/WO-235/decisions.md#wo-235-d063) removes WO-235's operator-message work, so the order no longer carries this case; FUP-8331693069c2747d returns that work to planning. Reopen when a planning pass files operator-message answering again.",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -47596,6 +47680,14 @@
             "WO-235"
           ],
           "at": "2026-10-29T03:30:48.789Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-235 no longer carries this action: the operator directed removal of everything WO-235 adds for operator messages (WO-235-D063). It returns to a future planning pass with FUP-8331693069c2747d.",
+          "reopenWhen": "A planning pass disposes FUP-8331693069c2747d or prioritizes this action, or the operator assigns implementation scope.",
+          "targets": [],
+          "at": "2026-10-30T03:57:11.944Z"
         }
       ]
     },
@@ -48363,6 +48455,249 @@
           "at": "2026-10-29T03:30:47.148Z"
         }
       ]
+    },
+    {
+      "id": "FUP-8cc18bcfb0197284",
+      "key": "decision:docs/evidence/WO-235/decisions.md#wo-235-d022",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "96f50fea4d82bc3560b9c0fb3ce4c7fe90f6eb5dbcdb16181a161b4b62c2ef14",
+          "ref": "docs/evidence/WO-235/decisions.md#wo-235-d022",
+          "title": "WO-235-D022: The next planning pass must remove the handoff loop in which a record that completion itself requires (a direction-ledger entry, or the decision and handoff text that answers the…",
+          "summary": "{ \"id\": \"WO-235-D022\", \"date\": \"2026-10-29\", \"dispatch\": \"resume: verify; operator report that the executor handoff looped on document gates and record edits for half an hour after the complete gate\", \"decision\": \"Record the operator's judgment that the WO-235 executor phase is the worst they have seen, and its observed cause. The complete review passed at 14:36:12Z; five npm run test:docs runs then judged five distinct trees (three passed, two failed) before readiness at 15:08:42Z, 0 h 32 min later. A completion consumes only a document row whose tree hash equals the working tree's, that hash covers every tracked and non-ignored untracked file, and this order requires a direction-ledger ent",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-65fa4e70494f558c",
+      "key": "decision:docs/evidence/WO-235/decisions.md#wo-235-d023",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "7334dd786680ff8013a6db45e0da0a1bc89109ecf9c74e6727b89246bd402874",
+          "ref": "docs/evidence/WO-235/decisions.md#wo-235-d023",
+          "title": "WO-235-D023: resume: fix repairs VER-001 F1 to F4 under the repair rules VER-001 names; a repair that changes the order's text first records its authorization and runs npm run plan -- amend-order.",
+          "summary": "{ \"id\": \"WO-235-D023\", \"date\": \"2026-10-29\", \"dispatch\": \"resume: verify; operator correction rejecting the deferral in D022 and directing VER-001 to fail on the direction ledger's four findings\", \"kind\": \"correction\", \"misread\": \"D022 read the direction that the next planning pass must address the handoff loop as routing its repair to that pass, and rejected failing WO-235 on it.\", \"meant\": \"The loop is not deferred. VER-001 fails WO-235 on four findings about the direction ledger, and the next planning pass still owes the disposition D022 names.\", \"changed\": \"VER-001 records fail on F1 to F4, each with its class, reproduction and repair rule; D022 stays as the record of the loop and of the",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-8fb693e06e4c178c",
+      "key": "decision:docs/evidence/WO-235/decisions.md#wo-235-d033",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "fb4e9bff82937da799b8b432ae32cbbfea03ac4bdeff8610d05d1ce266953939",
+          "ref": "docs/evidence/WO-235/decisions.md#wo-235-d033",
+          "title": "WO-235-D033: resume: fix repairs VER-002 F5, F6 and F7 under the repair rules VER-002 names, and takes or disposes F8 with its reopening condition. VER-002's fail verdict cannot be recorded until F6…",
+          "summary": "{ \"id\": \"WO-235-D033\", \"date\": \"2026-10-29\", \"dispatch\": \"resume: verify; VER-002 judged the repair of VER-001 F1 to F4 and fails WO-235 on three new blocking findings\", \"decision\": \"VER-002 fails WO-235. The repair resolves VER-001 F1, F2 and F4 under their repair rules, and conversation records no longer stale either gate row (F3). Three defects block. F5: the shared record projection removes every verification and final-review report, every order control log, the generated indexes and the order's decisions, handoff, self-review, ledger and answer records from the platform-document identity, so a completion consumes a passing npm run test:docs row for records that row never judged; no comp",
+          "missing": false
+        },
+        {
+          "hash": "bcd52cec40b0dc6cc0dc86cb3f740154744d2cd14bd26d583d7013d0f308e4a7",
+          "ref": "docs/evidence/WO-235/decisions.md#wo-235-d033",
+          "title": "WO-235-D033: resume: fix repairs VER-001 F3 as VER-002 narrows it and VER-002 F5, F6 and F7 under the repair rules VER-002 names, and takes or disposes F8 with its reopening condition. VER-002's fail…",
+          "summary": "{ \"id\": \"WO-235-D033\", \"date\": \"2026-10-29\", \"dispatch\": \"resume: verify; VER-002 judged the repair of VER-001 F1 to F4 and fails WO-235 on three new blocking findings\", \"decision\": \"VER-002 fails WO-235. The repair resolves VER-001 F1, F2 and F4 under their repair rules. F3 is resolved for the ledger, answer and other named records but not for a decision that carries a follow-up: npm run meta projects it into docs/planning/followups.json, which stays in the platform-document identity, so recording such a decision after a passing npm run test:docs still forces another run. Three further defects block. F5: the shared record projection removes every verification and final-review report, every ",
+          "missing": false
+        },
+        {
+          "hash": "9ad9c883ee3cc201a3cea6c7dc3528d3e0915a600d9131bf35c5615996ed99f1",
+          "ref": "docs/evidence/WO-235/decisions.md#wo-235-d033",
+          "title": "WO-235-D033: resume: fix repairs VER-002 F5, F6 and F7 under the repair rules VER-002 names, and takes or disposes F8 with its reopening condition. VER-002's fail verdict cannot be recorded until F6…",
+          "summary": "{ \"id\": \"WO-235-D033\", \"date\": \"2026-10-29\", \"dispatch\": \"resume: verify; VER-002 judged the repair of VER-001 F1 to F4 and fails WO-235 on three new blocking findings\", \"decision\": \"VER-002 fails WO-235. The repair resolves VER-001 F1 to F4 under their repair rules; F3 is resolved at the cost F5 records. A decision carrying a follow-up still moves the platform-document identity through docs/planning/followups.json, which is correct: the retained planning queue holds dispositions and history, plan start serves it, and product 07 has the document gate check its freshness. Three defects block. F5: the shared record projection removes every verification and final-review report, every order cont",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-68fd3e0d6448ed01",
+      "key": "decision:docs/evidence/WO-235/decisions.md#wo-235-d051",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "5b7fb64940514e50a06c6cb2123c1ff0d91c5a27919e544a6c980c80c0473be5",
+          "ref": "docs/evidence/WO-235/decisions.md#wo-235-d051",
+          "title": "WO-235-D051: Name, for each writingGuidance surface, the documents and checks that judge it, and add a reader fixture that resolves each named check.",
+          "summary": "{ \"id\": \"WO-235-D051\", \"date\": \"2026-10-29\", \"dispatch\": \"resume: verify; VER-003 follow-up on the contract writingGuidance names for PR titles and commit subjects\", \"decision\": \"Board a follow-up. By this order's usefulness standard, the guidance must let its reader, the agent writing a pull-request title or commit subject, act on the rules that judge that text and verify against them. For prTitle and commitSubject it names rules in scripts/lib/github-body.mjs beside product 07. That module holds no shape rule for either: it only takes a target pull request's title from the first line of its commit message. The rules are product 07's title and commit guidance, the reviewer role's title rule",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-7d3d2e7566c8923e",
+      "key": "decision:docs/evidence/WO-235/decisions.md#wo-235-d052",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "3a4ae432e464bbd8b48d6274d31afec49c84bc9c2091b0657075671773191dcc",
+          "ref": "docs/evidence/WO-235/decisions.md#wo-235-d052",
+          "title": "WO-235-D052: Retitle WO-235's sequence entry to the built outcome, matching the order's heading, and regenerate the work-order index.",
+          "summary": "{ \"id\": \"WO-235-D052\", \"date\": \"2026-10-29\", \"dispatch\": \"resume: verify; VER-003 follow-up on WO-235's sequence title, which still promises the withdrawn guarantee\", \"decision\": \"Board a follow-up. By this order's usefulness standard, a queue title must let a reader scanning the sequence or the generated work-order index understand what the order delivers and decide on it. docs/planning/sequence.md still titles WO-235 with the withdrawn ledger's promise that no operator direction is dropped, and docs/work-orders/README.md repeats it, while the order now delivers a private reminder and claims no coverage guarantee (its Objective, criterion 8 and Non-goals). D045's reopening condition names m",
+          "missing": false
+        },
+        {
+          "hash": "ac57eb60d5ae8b188317199ee95203c5015c8c03e874711ab6028802a54ced36",
+          "ref": "docs/evidence/WO-235/decisions.md#wo-235-d052",
+          "title": "WO-235-D052: Retitle WO-235's sequence entry to the built outcome, matching the order's heading, and regenerate the work-order index.",
+          "summary": "{ \"id\": \"WO-235-D052\", \"date\": \"2026-10-29\", \"dispatch\": \"resume: verify; VER-003 follow-up on WO-235's sequence title, which still promises the withdrawn guarantee\", \"decision\": \"Board a follow-up. By this order's usefulness standard, a queue title must let a reader scanning the sequence or the generated work-order index understand what the order delivers and decide on it. docs/planning/sequence.md still titles WO-235 with the withdrawn ledger's promise that no operator direction is dropped, and docs/work-orders/README.md repeats it, while the order now delivers a private reminder and claims no coverage guarantee (its Objective, criterion 8 and Non-goals). D045's reopening condition names m",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-644bf5db02876c15",
+      "key": "decision:docs/evidence/WO-235/decisions.md#wo-235-d053",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "8dc9ffc13c5ca7cb02ff57e349a936a817b54832a02256fef6b6be9d955d7baa",
+          "ref": "docs/evidence/WO-235/decisions.md#wo-235-d053",
+          "title": "WO-235-D053: Remove the receipt directions admission so validateReceipt matches base's closed shape, drop the unused harness-host.ts pin and the harness-fixtures declaration of…",
+          "summary": "{ \"id\": \"WO-235-D053\", \"date\": \"2026-10-29\", \"dispatch\": \"resume: verify; VER-003 follow-up on code and declarations left from the withdrawn answer protocol\", \"decision\": \"Board a follow-up. The live receipt contract is the closed shape base kept, and a maintainer reading validateReceipt should understand from it what a receipt can carry. validateReceipt in scripts/lib/plan-receipts.mjs still admits an optional planning directions snapshot that no producer writes, none of the 64 filed receipts carries and no test exercises, relaxing the closed shape base kept. packages/skeleton/fixtures/wo235-control-baseline.json still pins harness-host.ts for the removed Stop control arm, which nothing rea",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-c47eeb041f0952c4",
+      "key": "decision:docs/evidence/WO-235/decisions.md#wo-235-d050",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "cee074f896217955a72ff60da259f403e1b41d8e54ac365ef11bf6aa124efeb4",
+          "ref": "docs/evidence/WO-235/decisions.md#wo-235-d050",
+          "title": "WO-235-D050: resume: fix repairs VER-003 F1: on the supported Claude Code host a task notification receives no reminder and journals as a host notification, read from the host's own notification…",
+          "summary": "{ \"id\": \"WO-235-D050\", \"date\": \"2026-10-29\", \"dispatch\": \"resume: verify; VER-003 judges the repair of VER-002 F5 to F8 and the amended order's eleven criteria\", \"decision\": \"VER-003 fails WO-235 on F1: on Claude Code 2.1.312 a host task notification receives the private reply checklist, so criteria 1 and 9 are unmet, and criterion 10 is unmet because the security document and product 07 state the exclusion as built. The host writes a task notification's transcript enqueue row without commandMode and marks the following user row with origin kind task-notification, prompt source system and turn origin task_notification. promptRoute reads only commandMode, returns unattributed from the enqueue",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-92f34e24a8f975b4",
+      "key": "decision:docs/evidence/WO-235/decisions.md#wo-235-d059",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "194a77289af29414f690b872e381a55fb8850337ad2e5b657c46111077206ef9",
+          "ref": "docs/evidence/WO-235/decisions.md#wo-235-d059",
+          "title": "WO-235-D059: Read the host's queue and delivery rows through shared helpers in observed-facts.ts and have the background-task notice observation follow the prompt router's queue-entry rule instead of…",
+          "summary": "{ \"id\": \"WO-235-D059\", \"date\": \"2026-10-29\", \"dispatch\": \"resume: fix; resolve the three independent reviews of the VER-003 repair\", \"decision\": \"Resolve all eighteen review findings. The criteria adversary's three, an agent report receiving the reminder and counting as an intervention, a paste repeated while its first copy waits losing the reminder, and host-queued notices without a terminal status, are fixed by D055's final rule and its fixtures. Nine of the design improver's ten are taken: the branch that attributed an already-written delivery row is removed; the whole reading sits inside its guard; the memo and comments say what the code does; the route fields are literal unions read thr",
+          "missing": false
+        },
+        {
+          "hash": "621b70bc24948286271943822702af8135339ed7ea46c0a1911d672a90ece25e",
+          "ref": "docs/evidence/WO-235/decisions.md#wo-235-d059",
+          "title": "WO-235-D059: Read the host's queue and delivery rows through shared helpers in observed-facts.ts and have the background-task notice observation follow the prompt router's queue-entry rule instead of…",
+          "summary": "{ \"id\": \"WO-235-D059\", \"date\": \"2026-10-29\", \"dispatch\": \"resume: fix; resolve the three independent reviews of the VER-003 repair\", \"decision\": \"Resolve all twenty-eight findings of the three reviews and their two rechecks; the first round found eighteen. The criteria adversary's three, an agent report receiving the reminder and counting as an intervention, a paste repeated while its first copy waits losing the reminder, and host-queued notices without a terminal status, are fixed by D055's final rule and its fixtures. Nine of the design improver's ten are taken: the branch that attributed an already-written delivery row is removed; the whole reading sits inside its guard; the memo and comm",
+          "missing": false
+        },
+        {
+          "hash": "2716eda5aa61884b696a12575657f43830cde4cbc433f2bf87398f7303b44343",
+          "ref": "docs/evidence/WO-235/decisions.md#wo-235-d059",
+          "title": "WO-235-D059: Read the host's queue and delivery rows through shared helpers in observed-facts.ts and have the background-task notice observation follow the prompt router's queue-entry rule instead of…",
+          "summary": "{ \"id\": \"WO-235-D059\", \"date\": \"2026-10-29\", \"dispatch\": \"resume: fix; resolve the three independent reviews of the VER-003 repair\", \"decision\": \"Resolve all thirty-one findings of the three reviews, their two rechecks and the final write-back check; the first round found eighteen. The criteria adversary's three, an agent report receiving the reminder and counting as an intervention, a paste repeated while its first copy waits losing the reminder, and host-queued notices without a terminal status, are fixed by D055's final rule and its fixtures. Nine of the design improver's ten are taken: the branch that attributed an already-written delivery row is removed; the whole reading sits inside it",
+          "missing": false
+        },
+        {
+          "hash": "f63ac6155190c7ed7e0b8a4a3a9a09e29bf581ef7ffe65f19b6b7cc926383860",
+          "ref": "docs/evidence/WO-235/decisions.md#wo-235-d059",
+          "title": "WO-235-D059: Read the host's queue and delivery rows through shared helpers in observed-facts.ts and have the background-task notice observation follow the prompt router's queue-entry rule instead of…",
+          "summary": "{ \"id\": \"WO-235-D059\", \"date\": \"2026-10-29\", \"dispatch\": \"resume: fix; resolve the three independent reviews of the VER-003 repair\", \"decision\": \"Resolve the thirty-one findings of the three reviews, their two rechecks and the final write-back check; the first round found eighteen, and two are recorded rather than fixed. The criteria adversary's three, an agent report receiving the reminder and counting as an intervention, a paste repeated while its first copy waits losing the reminder, and host-queued notices without a terminal status, are fixed by D055's final rule and its fixtures. Nine of the design improver's ten are taken: the branch that attributed an already-written delivery row is r",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0f2a756698374d7e",
+      "key": "decision:docs/evidence/WO-219/decisions.md#wo-219-d042",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "f55170e0b081ae7804b54a261ece2de581d73a6dde5752730eb5a9a32c6140bd",
+          "ref": "docs/evidence/WO-219/decisions.md#wo-219-d042",
+          "title": "WO-219-D042: An enqueue match without a recorded command mode is unattributed, retaining its witnessed mid-turn route and digest. Preserve marked host notifications and explicit operator transcript…",
+          "summary": "{ \"id\": \"WO-219-D042\", \"date\": \"2026-10-23\", \"dispatch\": \"resume: next; WO-219 triage, with the operator's direction to own decisions and record evidence, rationale, consequences and reopening conditions\", \"kind\": \"decision\", \"decision\": \"An enqueue match without a recorded command mode is unattributed, retaining its witnessed mid-turn route and digest. Preserve marked host notifications and explicit operator transcript attribution.\", \"evidence\": [ \"docs/evidence/WO-188/decisions.md#wo-188-d009--item-7-a-host-task-notification-is-journaled-with-its-own-source-and-is-not-an-operator-message\", \"packages/skeleton/src/harness-host.ts\", \"scripts/test-harness.mjs\", \"scripts/test-harness.mjs: case ",
+          "missing": false
+        },
+        {
+          "hash": "286839d01716b6aec4731d7ac8b8f4a4270c75d2bcfa026d9eb72b47f4da9c3a",
+          "ref": "docs/evidence/WO-219/decisions.md#wo-219-d042",
+          "title": "WO-219-D042: An enqueue match without a recorded command mode is unattributed, retaining its witnessed mid-turn route and digest. Preserve marked host notifications and explicit operator transcript…",
+          "summary": "{ \"id\": \"WO-219-D042\", \"date\": \"2026-10-23\", \"dispatch\": \"resume: next; WO-219 triage, with the operator's direction to own decisions and record evidence, rationale, consequences and reopening conditions\", \"kind\": \"decision\", \"decision\": \"An enqueue match without a recorded command mode is unattributed, retaining its witnessed mid-turn route and digest. Preserve marked host notifications and explicit operator transcript attribution.\", \"evidence\": [ \"docs/evidence/WO-188/decisions.md#wo-188-d009--item-7-a-host-task-notification-is-journaled-with-its-own-source-and-is-not-an-operator-message\", \"packages/skeleton/src/harness-host.ts\", \"scripts/test-harness.mjs\", \"scripts/test-harness.mjs: case ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-4a7c27e6c428ea55",
+      "key": "decision:docs/evidence/WO-235/decisions.md#wo-235-d055",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "982d98cff9d3e3102a000916bda3df502443297c9645df0e6c66f802d0e996fe",
+          "ref": "docs/evidence/WO-235/decisions.md#wo-235-d055",
+          "title": "WO-235-D055: The reminder reaches only the operator's own prompts, and a prompt's text never decides where it came from. On Claude Code 2.1.312 the hook receives only the prompt and session title.…",
+          "summary": "{ \"id\": \"WO-235-D055\", \"date\": \"2026-10-29\", \"dispatch\": \"resume: fix; repair VER-003 F1, a host task notification that received the private reply checklist on Claude Code 2.1.312\", \"decision\": \"The reminder reaches only the operator's own prompts, and a prompt's text never decides where it came from. On Claude Code 2.1.312 the hook receives only the prompt and session title. The host queues a message it delivers itself, a task notification or another agent's report, as a queue-operation enqueue row with the prompt's exact bytes before running the hook, and writes nothing for an operator's prompt until the hook returns. The router walks the transcript's queue entries with the prompt's bytes:",
+          "missing": false
+        },
+        {
+          "hash": "7601c6a3018a641761560790239d8d973ef1a560e95b516a5867693327d187f8",
+          "ref": "docs/evidence/WO-235/decisions.md#wo-235-d055",
+          "title": "WO-235-D055: The reminder reaches only the operator's own prompts, and a prompt's text never decides where it came from. On Claude Code 2.1.312 the hook receives only the prompt and session title.…",
+          "summary": "{ \"id\": \"WO-235-D055\", \"date\": \"2026-10-29\", \"dispatch\": \"resume: fix; repair VER-003 F1, a host task notification that received the private reply checklist on Claude Code 2.1.312\", \"decision\": \"The reminder reaches only the operator's own prompts, and a prompt's text never decides where it came from. On Claude Code 2.1.312 the hook receives only the prompt and session title. The host queues a message it delivers itself, a task notification or another agent's report, as a queue-operation enqueue row with the prompt's exact bytes before running the hook, and writes nothing for an operator's prompt until the hook returns. The router walks the transcript's queue entries with the prompt's bytes:",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-8331693069c2747d",
+      "key": "decision:docs/evidence/WO-235/decisions.md#wo-235-d063",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "244fe7d0e1e376e03b7c2c216407805d31703d47ea873b96b3e77734485bc3f7",
+          "ref": "docs/evidence/WO-235/decisions.md#wo-235-d063",
+          "title": "WO-235-D063: Return to planning the operator-message work WO-235 no longer carries: on Claude Code 2.1.312 main's prompt router journals a host task notification whose queue entry carries no command…",
+          "summary": "{ \"id\": \"WO-235-D063\", \"date\": \"2026-10-29\", \"dispatch\": \"resume: fix; the operator directs removing what WO-235 adds for operator messages, limited to this order's own additions\", \"operatorAuthorization\": \"Paraphrase: during this repair of VER-004 the operator directed that everything WO-235 adds concerning operator messages be removed, because its implementation failed. After this session's first reply described the removal as reaching all of DotLn, a second message limited it to what this work order newly adds; DotLn's existing operator-message machinery stays.\", \"decision\": \"Remove WO-235's operator-message work and amend the order to its remaining scope. Removed: the prompt hook's priva",
+          "missing": false
+        },
+        {
+          "hash": "adcdf25837eec29d74e822c41913343e8db102b1a52b163f414991900af15511",
+          "ref": "docs/evidence/WO-235/decisions.md#wo-235-d063",
+          "title": "WO-235-D063: Return to planning the operator-message follow-ups WO-235 no longer carries, and dispose them together: the WO-219-D042 reopening (FUP-0f2a756698374d7e), under which main's router…",
+          "summary": "{ \"id\": \"WO-235-D063\", \"date\": \"2026-10-29\", \"dispatch\": \"resume: fix; the operator directs removing what WO-235 adds for operator messages, limited to this order's own additions\", \"operatorAuthorization\": \"Paraphrase: during this repair of VER-004 the operator directed that everything WO-235 adds concerning operator messages be removed, because its implementation failed. After this session's first reply described the removal as reaching all of DotLn, a second message limited it to what this work order newly adds; DotLn's existing operator-message machinery stays.\", \"decision\": \"Remove WO-235's operator-message work and amend the order to its remaining scope. Removed: the prompt hook's priva",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-4c704bb1ea210f14",
+      "key": "decision:docs/evidence/WO-235/decisions.md#wo-235-d065",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "412671bd1b6e1bc50489011d72abf5d6b7e703cc29e9895b3a562315ea3bedf3",
+          "ref": "docs/evidence/WO-235/decisions.md#wo-235-d065",
+          "title": "WO-235-D065: Remove scripts/lib/off-ramps.mjs from commonSources in scripts/lib/evidence-sources.mjs, since no registered evidence source imports it after the direction ledger's removal, and re-mint…",
+          "summary": "{ \"id\": \"WO-235-D065\", \"date\": \"2026-10-30\", \"dispatch\": \"resume: final review\", \"decision\": \"FINAL-001 passes WO-235 on the amended scope D063 records: all eleven criteria met, one follow-up boarded. Nothing is integrated, because main, origin/main and HEAD read one commit, 3db7571f; the integration helper is not run for a worktree that read-only ancestry shows is not behind main, the invocation the operator objected to in WO-236-D014. The complete review row at the unchanged code identity 3ca0cfc162d216be36ba9544001b08e3c6d59d6bb2f7c01397e31f709cd2b362 is consumed rather than rerun; the exact-tree document row is taken after this review's last document edit. No worker is spawned: final rev",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

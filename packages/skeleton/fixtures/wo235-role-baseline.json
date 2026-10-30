@@ -1,0 +1,92 @@
+{
+  "workOrder": "WO-235",
+  "historicalBaseline": "wo234-integration-role-baseline.json",
+  "historicalSha256": "e32d29ca7c90660965758b729b1d82f620135d2ce627773315ddbf865a3e4eb9",
+  "upstreamBaseline": "wo185-role-baseline.json",
+  "upstreamSha256": "f67e48b79873202b56c069902f2338d54b1fef42d3c9eb29706d3d2cd7a72ef9",
+  "branchBaseline": "wo234-recovery-role-baseline.json",
+  "branchSha256": "d85a794ec1f7629eb98726bcf156cbf8af17e8f2b0dd0ee6e9e112fe264d28f1",
+  "method": "Pin the contract-derived shape, standing-document, direction-ledger, correction and consumer-review duties; preserve every preceding oracle byte.",
+  "decision": "docs/evidence/WO-235/decisions.md#wo-235-d005",
+  "roles": {
+    ".agents/skills/dotln-executor/SKILL.md": "a4590cda62fd640afce54ca5b73a96ce129999ad928cbb3be59a236b56394c98",
+    ".agents/skills/dotln-planner/SKILL.md": "c2e6604616711c2cd3392835385b4862ee92f1e9a1e65373972b9c2f44df4807",
+    ".agents/skills/dotln-refuter/SKILL.md": "ecc9126b162644a192981ea9be227937a113872fec037b134152b474021c66f8",
+    ".agents/skills/dotln-release-close/SKILL.md": "4029e9c19434c4eff65e3a1127a2c43b2e83bc6d001e52b151c6ba5d0a7fe228",
+    ".agents/skills/dotln-reviewer/SKILL.md": "91764eefab09c6bf4449d19df034410ab6eed569b090f9930af14e1e206c65dd",
+    ".agents/skills/dotln-verifier/SKILL.md": "4a4f823759df86c31cfde210f83f9ced68cf1bbdebb47aca2778727322c08680",
+    ".claude/skills/dotln-executor/SKILL.md": "a4590cda62fd640afce54ca5b73a96ce129999ad928cbb3be59a236b56394c98",
+    ".claude/skills/dotln-planner/SKILL.md": "c2e6604616711c2cd3392835385b4862ee92f1e9a1e65373972b9c2f44df4807",
+    ".claude/skills/dotln-refuter/SKILL.md": "ecc9126b162644a192981ea9be227937a113872fec037b134152b474021c66f8",
+    ".claude/skills/dotln-release-close/SKILL.md": "4029e9c19434c4eff65e3a1127a2c43b2e83bc6d001e52b151c6ba5d0a7fe228",
+    ".claude/skills/dotln-reviewer/SKILL.md": "91764eefab09c6bf4449d19df034410ab6eed569b090f9930af14e1e206c65dd",
+    ".claude/skills/dotln-verifier/SKILL.md": "4a4f823759df86c31cfde210f83f9ced68cf1bbdebb47aca2778727322c08680"
+  },
+  "optOutRoles": {
+    ".agents/skills/dotln-executor/SKILL.md": "877d8f1508dba2ca4e0420261ea14743e820db5c06bb9840885425410a662a49",
+    ".agents/skills/dotln-planner/SKILL.md": "fceaee8ffe84d7d0a609e88248588a35cee4f7aa03cacd31345a04e108a3f27b",
+    ".agents/skills/dotln-refuter/SKILL.md": "e377f4f78a4c49800c825ef0f8beec14e6fbc6f095a05aa39c602f3a97ce0f6c",
+    ".agents/skills/dotln-release-close/SKILL.md": "93849891a2da65066c4d5135f6bfcfbf64836b1a4d827e59ca6b15f828b2a1b3",
+    ".agents/skills/dotln-reviewer/SKILL.md": "bf1830b47d71381cce1a8c9d2f98b115c3f8b55344aa2450fb9e8993332e7588",
+    ".agents/skills/dotln-verifier/SKILL.md": "e0b6c96775818a95c562f33a14d633544776a4cf9e9c434a9fd09eacc42f1487",
+    ".claude/skills/dotln-executor/SKILL.md": "877d8f1508dba2ca4e0420261ea14743e820db5c06bb9840885425410a662a49",
+    ".claude/skills/dotln-planner/SKILL.md": "fceaee8ffe84d7d0a609e88248588a35cee4f7aa03cacd31345a04e108a3f27b",
+    ".claude/skills/dotln-refuter/SKILL.md": "e377f4f78a4c49800c825ef0f8beec14e6fbc6f095a05aa39c602f3a97ce0f6c",
+    ".claude/skills/dotln-release-close/SKILL.md": "93849891a2da65066c4d5135f6bfcfbf64836b1a4d827e59ca6b15f828b2a1b3",
+    ".claude/skills/dotln-reviewer/SKILL.md": "bf1830b47d71381cce1a8c9d2f98b115c3f8b55344aa2450fb9e8993332e7588",
+    ".claude/skills/dotln-verifier/SKILL.md": "e0b6c96775818a95c562f33a14d633544776a4cf9e9c434a9fd09eacc42f1487"
+  },
+  "startupCost": {
+    "decision": "WO-235-D005",
+    "profiles": {
+      "executor": {
+        "beforeBytes": 32292,
+        "bytes": 34614,
+        "growthBytes": 2322,
+        "ceiling": 34953,
+        "headroomBytes": 339,
+        "nominalCeiling": 29246
+      },
+      "verifier": {
+        "beforeBytes": 28803,
+        "bytes": 31125,
+        "growthBytes": 2322,
+        "ceiling": 35221,
+        "headroomBytes": 4096,
+        "nominalCeiling": 29831
+      },
+      "reviewer": {
+        "beforeBytes": 31229,
+        "bytes": 33551,
+        "growthBytes": 2322,
+        "ceiling": 34596,
+        "headroomBytes": 1045,
+        "nominalCeiling": 28884
+      },
+      "release-close": {
+        "beforeBytes": 19992,
+        "bytes": 22314,
+        "growthBytes": 2322,
+        "ceiling": 26410,
+        "headroomBytes": 4096,
+        "nominalCeiling": 21266
+      },
+      "planner": {
+        "beforeBytes": 20901,
+        "bytes": 23223,
+        "growthBytes": 2322,
+        "ceiling": 24576,
+        "headroomBytes": 1353,
+        "nominalCeiling": 24576
+      },
+      "refuter": {
+        "beforeBytes": 19715,
+        "bytes": 22037,
+        "growthBytes": 2322,
+        "ceiling": null,
+        "headroomBytes": null,
+        "nominalCeiling": null
+      }
+    }
+  }
+}

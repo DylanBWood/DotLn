@@ -1,10 +1,10 @@
 // Origin: {"ids":["no-attribution"],"loadoutId":"contributor","semanticHash":"fnv1a64:275ba05519d0f5c5"}
-const { runCommitMessageHook } = await import("../../.runtime/harness/fe54a75e8150d6c0/packages/skeleton/dist/src/harness-host.js");
-const { feedbackBoundary } = await import("../../.runtime/harness/fe54a75e8150d6c0/packages/skeleton/dist/src/feedback-boundary.js");
+const { runCommitMessageHook } = await import("../../.runtime/harness/5b82783c8ad011d5/packages/skeleton/dist/src/harness-host.js");
+const { feedbackBoundary } = await import("../../.runtime/harness/5b82783c8ad011d5/packages/skeleton/dist/src/feedback-boundary.js");
 await runCommitMessageHook({
   "compilerPackageVersion": "0.33.0",
   "runtime": {
-    "skeletonVersion": "0.38.0",
+    "skeletonVersion": "0.39.0",
     "boundaryContract": "feedback-v1",
     "files": [
       {
@@ -37,7 +37,7 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/harness-host.js",
-        "hash": "fnv1a64:3ca6276368f19c0d"
+        "hash": "fnv1a64:2cc6a7a90024c391"
       },
       {
         "path": "packages/skeleton/dist/src/subagent-budget.js",
@@ -45,7 +45,7 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/observed-facts.js",
-        "hash": "fnv1a64:55997f055db5db93"
+        "hash": "fnv1a64:65809a19d086597c"
       },
       {
         "path": "packages/skeleton/dist/src/correction-observation.mjs",
@@ -61,11 +61,15 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/version.js",
-        "hash": "fnv1a64:0ebad138cd0fd106"
+        "hash": "fnv1a64:87d1db9a59ab68ab"
       },
       {
         "path": "packages/skeleton/dist/src/harness-command.js",
         "hash": "fnv1a64:87d59fde78cf9525"
+      },
+      {
+        "path": "packages/skeleton/dist/src/document-quality.js",
+        "hash": "fnv1a64:a68d144093fed57e"
       },
       {
         "path": "packages/skeleton/dist/src/gate-evidence.mjs",
@@ -172,7 +176,7 @@ await runCommitMessageHook({
         "hash": "fnv1a64:5ad495017c40b9b2"
       }
     ],
-    "snapshot": ".runtime/harness/fe54a75e8150d6c0"
+    "snapshot": ".runtime/harness/5b82783c8ad011d5"
   },
   "policy": {
     "contractVersion": "feedback-v1",

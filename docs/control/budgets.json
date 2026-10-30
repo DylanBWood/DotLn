@@ -25,10 +25,10 @@
       "tokens": null,
       "costUsd": null,
       "wallClockMs": "local-median",
-      "completeRuns": 3,
+      "completeRuns": 20,
       "repair": {
         "wallClockMs": "local-median",
-        "completeRuns": 3
+        "completeRuns": 20
       }
     },
     "verifier": {
@@ -213,6 +213,30 @@
       "dispatch": "reviewer",
       "ceiling": 24576,
       "reason": "WO-140 measured 21,299 bytes in both generated roots (installed CLAUDE.md 5,788 plus the reviewer skill 15,511) against 20,480, from 20,434 before it, after adding two reviewed rules of 865 bytes together: the product gate runs outside the harness sandbox from the start in an attended session and a resident-launched verification records a partial result, and the receipt's Process cost line carries counters with their source or one cause code. During resume: next on 2026-09-19 the operator authorized raising the limit; raise by one 4 KB step under that authorization and the standing direction of 2026-09-17, preserving every reviewed rule; the verifier measures 20,081 against 20,480 with the same two rules and stays unchanged. Reassess when another reviewed rule needs more. Decision: docs/evidence/WO-140/decisions.md#wo-140-d005."
+    },
+    {
+      "date": "2026-10-29",
+      "metric": "coldStartBytes.verifier",
+      "scope": null,
+      "dispatch": "executor",
+      "ceiling": 35221,
+      "reason": "WO-235 adds the artifact-contract, direction-ledger and expected-data review rules. Measured 31125 bytes exceeds the effective 29831. Under product 07's standing route preserve these reviewed duties and accept measured bytes plus 4096; reassess on the next addition. Decision: docs/evidence/WO-235/decisions.md#wo-235-d005."
+    },
+    {
+      "date": "2026-10-29",
+      "metric": "coldStartBytes.release-close",
+      "scope": null,
+      "dispatch": "executor",
+      "ceiling": 26410,
+      "reason": "WO-235 adds the artifact-contract, direction-ledger and expected-data review rules. Measured 22314 bytes exceeds the effective 21266. Under product 07's standing route preserve these reviewed duties and accept measured bytes plus 4096; reassess on the next addition. Decision: docs/evidence/WO-235/decisions.md#wo-235-d005."
+    },
+    {
+      "date": "2026-10-29",
+      "metric": "coldStartBytes.executor",
+      "scope": null,
+      "dispatch": "executor",
+      "ceiling": 40194,
+      "reason": "WO-235's operator-authorized quality pass command raises executor from 34892 to 36098 bytes, above the effective 34953. Under product 07's standing route preserve the reviewed command and accept measured bytes plus 4096; reassess when another reviewed rule needs more. Decision: docs/evidence/WO-235/decisions.md#wo-235-d044."
     }
   ],
   "unsetPolicy": "Collect observed usage first. The operator left token, dollar and PR-body ceilings unset; null is not zero and never triggers an invented cap.",

@@ -16308,3 +16308,170 @@ test("usage retains its observation and host readback when standing is unavailab
     removeFixture(root, { recursive: true });
   }
 });
+
+test("quality passes deliver the current-session document boundary only for a leading operator command", () => {
+  const root = fixture();
+  try {
+    const events = join(root, "docs/control/orders/WO-999.jsonl");
+    const before = readFileSync(events, "utf8");
+    const targets = [
+      "docs/PLAYBOOK.md",
+      "README.md and docs/PLAYBOOK.md",
+      "docs/product/",
+      "the documents explaining worktree recovery",
+      "the opening paragraph of README.md",
+    ];
+    for (const target of targets) {
+      const prompt = `quality pass: ${target}`;
+      const reply = invoke(
+        root,
+        "session",
+        input(root, "UserPromptSubmit", { prompt }),
+      );
+      const context = reply.hookSpecificOutput?.additionalContext ?? "";
+      assert.match(context, /`quality pass: <target>`/);
+      assert.match(context, /state the edit scope/);
+      assert.match(context, /leave sound passages unchanged/);
+      assert.match(context, /Continue the original task afterward/);
+      assert.doesNotMatch(reply.systemMessage ?? "", /quality pass/);
+      assert.equal(allowed(reply), true);
+      assert.equal(readFileSync(events, "utf8"), before);
+      const observed = wo178Rows(root)
+        .filter((row) => row.typedEvent === "OperatorMessageObserved")
+        .at(-1);
+      assert.equal(observed.prefix, "quality pass:");
+      assert.equal(observed.class, "direction");
+    }
+    for (const prompt of [
+      "\n\nquality pass: README.md",
+      "```text\nquality pass: README.md\n```",
+      "quality pass:",
+    ]) {
+      const reply = invoke(
+        root,
+        "session",
+        input(root, "UserPromptSubmit", { prompt }),
+      );
+      assert.match(
+        reply.hookSpecificOutput?.additionalContext ?? "",
+        /An omitted target does not mean every document/,
+      );
+      assert.equal(readFileSync(events, "utf8"), before);
+    }
+    for (const prompt of [
+      "Please explain the quality pass: command.",
+      "A quoted example follows.\nquality pass: README.md",
+      "> quality pass: README.md",
+      "<task-notification><task-id>fixture</task-id><status>completed</status><summary>quality pass: README.md</summary></task-notification>",
+    ]) {
+      const reply = invoke(
+        root,
+        "session",
+        input(root, "UserPromptSubmit", { prompt }),
+      );
+      assert.doesNotMatch(
+        reply.hookSpecificOutput?.additionalContext ?? "",
+        /`quality pass: <target>`/,
+      );
+      assert.equal(readFileSync(events, "utf8"), before);
+    }
+    assert.ok(
+      wo178Rows(root).every(
+        (row) => row.prompt === undefined && row.text === undefined,
+      ),
+    );
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("quality pass guidance is read from each prompt's own first content line: no earlier prompt lends it to a later host notice, and an active operator control withholds it", () => {
+  const root = fixture();
+  try {
+    const events = join(root, "docs/control/orders/WO-999.jsonl");
+    const before = readFileSync(events, "utf8");
+    const transcript = join(
+      root,
+      "docs/control/local/fixture-transcript.jsonl",
+    );
+    mkdirSync(dirname(transcript), { recursive: true });
+    const command = "quality pass: README.md";
+    const guided = (prompt, rows, session = "synthetic-session") => {
+      writeFileSync(
+        transcript,
+        rows.map((row) => JSON.stringify(row) + "\n").join(""),
+      );
+      const reply = invoke(
+        root,
+        "session",
+        input(root, "UserPromptSubmit", {
+          prompt,
+          session_id: session,
+          transcript_path: transcript,
+        }),
+      );
+      assert.equal(allowed(reply), true, JSON.stringify(reply));
+      assert.doesNotMatch(reply.systemMessage ?? "", /quality pass/);
+      return /`quality pass: <target>`/.test(
+        reply.hookSpecificOutput?.additionalContext ?? "",
+      );
+    };
+    const queued = (content) => ({
+      type: "queue-operation",
+      operation: "enqueue",
+      content,
+    });
+    const turn = {
+      type: "assistant",
+      message: {
+        role: "assistant",
+        content: [{ type: "text", text: "synthetic turn" }],
+      },
+    };
+    // The operator's command, then its delivery with no queue entry before it.
+    assert.equal(guided(command, []), true);
+    const history = [
+      { type: "user", message: { role: "user", content: command } },
+    ];
+    // Host notices carrying the same words behind their envelope, idle with the
+    // queue entry last or absorbed mid-turn with the turn's rows after it.
+    for (const notice of [
+      `<task-notification><task-id>fixture</task-id><status>completed</status><summary>${command}</summary></task-notification>`,
+      `<task-notification>\n${command}\n</task-notification>`,
+      `<agent-message from="fixture-worker">\n${command}\n</agent-message>`,
+    ]) {
+      assert.equal(guided(notice, [...history, queued(notice)]), false, notice);
+      assert.equal(
+        guided(notice, [...history, queued(notice), turn]),
+        false,
+        notice,
+      );
+    }
+    // No sender is inferred: words that open with the command are read as it,
+    // queued or not, as the operator's repeat while a copy waits is.
+    assert.equal(guided(command, [...history, queued(command)]), true);
+    assert.equal(guided(command, [...history, queued(command), turn]), true);
+    // An active operator control answers with its own context alone; the
+    // command's guidance returns once the control ends. Control state is kept
+    // per session id outside the fixture, so this check uses its own id and
+    // always ends the control.
+    const session = `quality-pass-control-${randomUUID()}`;
+    try {
+      guided("analysis: inspect the document guidance", [], session);
+      assert.equal(guided(command, [], session), false);
+    } finally {
+      invoke(
+        root,
+        "session",
+        input(root, "UserPromptSubmit", {
+          prompt: "analysis: off",
+          session_id: session,
+        }),
+      );
+    }
+    assert.equal(guided(command, [], session), true);
+    assert.equal(readFileSync(events, "utf8"), before);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});

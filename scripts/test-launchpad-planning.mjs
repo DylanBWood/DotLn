@@ -832,6 +832,11 @@ test("planning and release-close reads run in a fresh exported instance", async 
       assert.doesNotMatch(conditions.stdout, /core condition sources absent/u);
       assert.doesNotMatch(conditions.stdout, /collect-sources.*console/u);
       assert.equal(parse(receipt)?.verdict, "aligned");
+      for (const result of [started, receipt])
+        assert.doesNotMatch(
+          result.stdout + result.stderr,
+          /best comparable|shorten/iu,
+        );
       for (const result of [receipt, entropyReceipt]) {
         const receiptPath = parse(result)?.receipt;
         assert.match(receiptPath, /^docs\//u);

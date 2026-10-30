@@ -17,6 +17,7 @@ import {
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { docRelative } from "./lib/config.mjs";
 import { runGit } from "./lib/git.mjs";
 import { main } from "./reader.mjs";
 import {
@@ -30,6 +31,7 @@ import {
   recordScores,
   scorePrompt,
   scoreRows,
+  surfaceContracts,
   surfaces,
   taggedProfile,
   validateReaderProfiles,
@@ -193,6 +195,54 @@ test("profile revisions ignore JSON layout and key order but change on a choice"
   assert.notEqual(profileRevision(profiles), profileRevision(reordered));
 });
 
+test("each surface's contract names product sections and functions that exist where it says", (t) => {
+  const root = fixture(t);
+  const pattern = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  for (const surface of surfaces) {
+    const contract = writingGuidance(surface, root).split("\n")[0];
+    const { sections, rules } = surfaceContracts[surface];
+    assert.ok(sections.length > 0 && rules.length > 0, surface);
+    for (const { file, heading } of sections) {
+      const path = docRelative(source, "product", file);
+      assert.ok(contract.includes(`${path} §${heading}`), surface);
+      assert.match(
+        readFileSync(join(source, path), "utf8"),
+        new RegExp(`^## ${pattern(heading)}$`, "m"),
+        `${surface}: ${path} has no section ${heading}`,
+      );
+    }
+    for (const { path, name, does } of rules) {
+      assert.ok(contract.includes(`${name} in ${path} ${does}`), surface);
+      assert.match(
+        readFileSync(join(source, path), "utf8"),
+        new RegExp(
+          `^(?:export )?(?:async )?(?:function|const) ${pattern(name)}\\b`,
+          "m",
+        ),
+        `${surface}: ${path} defines no ${name}`,
+      );
+    }
+  }
+  // The pull-request body module holds no title or commit-subject rule.
+  for (const surface of ["prTitle", "commitSubject"])
+    assert.ok(
+      surfaceContracts[surface].rules.every(
+        ({ path }) => path !== "scripts/lib/github-body.mjs",
+      ),
+      surface,
+    );
+  // A repository that relocates its product root is sent to its own copy.
+  write(
+    root,
+    "dotln.config.json",
+    JSON.stringify({ version: 1, roots: { product: "handbook/product" } }),
+  );
+  assert.match(
+    writingGuidance("releaseNotes", root),
+    /^Contract: handbook\/product\/08-publication-compiler\.md §Release-note edition;/,
+  );
+});
+
 test("profile and preview cover every surface and name known surfaces on refusal", (t) => {
   const root = fixture(t);
   write(root, "docs/control/reader-profiles.json", JSON.stringify(profiles));
@@ -204,11 +254,40 @@ test("profile and preview cover every surface and name known surfaces on refusal
   for (const surface of surfaces) {
     const guidance = main(["profile", surface], root);
     assert.match(guidance, new RegExp(`Reader profile \\(${surface}\\)`));
-    assert.match(guidance, /Nearest example: .*\/balanced\.md/);
+    assert.match(guidance, /^Contract:/);
+    assert.match(guidance, /Document kind: record. Reader:/);
+    assert.match(
+      guidance,
+      /Useful information helps the intended reader understand the subject/,
+    );
+    assert.match(
+      guidance,
+      /Retain context, evidence, examples and alternatives that serve those needs regardless of length/,
+    );
+    assert.doesNotMatch(guidance, /Nearest example:|Best comparable:|shorten/);
     const shown = main(["preview", surface], root);
     assert.match(shown, /\| record \| balanced \| reader \|/);
     for (const variant of ["record", "balanced", "reader"])
       assert.ok(shown.includes(`/${surface}/${variant}.md`));
+    for (const [index, variant] of ["record", "balanced", "reader"].entries()) {
+      const path = `docs/publication/examples/${surface}/${variant}.md`;
+      const expanded =
+        readFileSync(join(root, path), "utf8") +
+        "Additional context for a different reader task.\n".repeat(
+          (index + 1) * 1000,
+        );
+      write(root, path, expanded);
+      assert.equal(
+        main(["profile", surface], root),
+        guidance,
+        "example length does not select a model or alter guidance",
+      );
+      assert.equal(
+        readFileSync(join(root, path), "utf8"),
+        expanded,
+        "guidance preserves all supplied context",
+      );
+    }
   }
   for (const command of ["profile", "preview"])
     assert.throws(
@@ -283,7 +362,7 @@ test("guidance uses the balanced default without creating editorial records and 
       guidance,
       /Profile source: balanced default; no reader profile declared/,
     );
-    assert.doesNotMatch(guidance, /Nearest example:|unavailable|ENOENT/);
+    assert.doesNotMatch(guidance, /Nearest example:|ENOENT/);
     assert.equal(writingGuidance(surface, root), guidance);
   }
   assert.equal(runGit(root, ["status", "--porcelain"]), before);
@@ -357,15 +436,44 @@ test("guidance uses the balanced default without creating editorial records and 
     /docs\/publication\/examples: document directory is unreadable/u,
   );
   const unavailable = writingGuidance("releaseNotes", root);
+  assert.match(unavailable, /^Contract:/);
+  assert.match(
+    unavailable,
+    /Reader: a user assessing a release before adoption/,
+  );
+  assert.match(unavailable, /Useful information helps the intended reader/);
   assert.match(unavailable, /unavailable: docs\/publication\/examples/u);
   assert.ok(!unavailable.includes(root));
   rmSync(join(root, "docs/publication/examples"));
+  cpSync(
+    join(source, "docs/publication/examples"),
+    join(root, "docs/publication/examples"),
+    { recursive: true },
+  );
   write(
     root,
     "docs/publication/examples/releaseNotes/balanced.md",
     "malformed declared example\n",
   );
-  assert.throws(() => main(["profile", "releaseNotes"], root));
+  assert.throws(
+    () => main(["profile", "releaseNotes"], root),
+    /expected JSON front matter/,
+  );
+  assert.throws(
+    () => main(["preview", "releaseNotes"], root),
+    /expected JSON front matter/,
+  );
+  const malformedExample = writingGuidance("releaseNotes", root);
+  assert.match(malformedExample, /^Contract:/);
+  assert.match(
+    malformedExample,
+    /Reader examples \(releaseNotes\) unavailable:/,
+  );
+  assert.match(malformedExample, /expected JSON front matter/);
+  assert.match(
+    malformedExample,
+    /Useful information helps the intended reader/,
+  );
 });
 
 test("score prompt uses at most ten unscored published tags and no private repository context", (t) => {

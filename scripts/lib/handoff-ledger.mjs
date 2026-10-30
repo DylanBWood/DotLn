@@ -259,13 +259,10 @@ export const gateFields = (row) => ({
   ),
 });
 
-/** The document row a completion consumes: the newest standing passing
- * `npm run test:docs` row this worktree recorded at the current code
- * identity whose tree hash is the working tree's, so the documents it judged
- * are the documents recorded. A later failed document execution under any
- * check displaces it through the shared lookup, and main's rows never stand
- * in for a worktree's. Completion runs no gate. Resolves to the row or to a
- * refusal naming the remedy; an unreadable gate index throws. */
+/** The document row a completion consumes is the newest standing passing
+ * row at the current code identity whose tree hash matches the candidate.
+ * Every recorded document has therefore received the ordinary document rules.
+ * A newer failure displaces the pass; completion never runs a gate. */
 export async function requireDocumentRow(root, { instead } = {}) {
   const { coveringGateCheck, describeGateRow } =
     await import("./gate-reuse.mjs");
@@ -412,8 +409,8 @@ export async function requireGateClaims(
     }
   }
   // Completion consumes the document row and never runs the document gate:
-  // the newest standing passing row recorded for the working tree as it
-  // stands, so the documents it judged are the documents recorded.
+  // the newest standing passing row for the exact candidate tree, including
+  // the current reports, decisions and generated indexes.
   if (claims.document.length || (focused && changedDocuments(root))) {
     // A control plane without the runner can hold no row of its own: a claim
     // is recorded as stated, with one advisory, as before this rule.

@@ -350,7 +350,7 @@ rows, and a signal is not a causal diagnosis.
 | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------ |
 | Policy resistance / fixes that fail   | Roles optimize incompatible local goals and repeatedly undo each other's progress.                                             | Expose those goals and negotiate a shared outcome before adding stronger control.                                  |
 | Tragedy of the commons                | Each agent or guard takes a small benefit from shared CPU, context or attention while total use exhausts the resource.         | Make aggregate consumption and capacity visible; compare shared limits, allocation and ownership.                  |
-| Drift to low performance              | A slow or bulky recent instance becomes the next instance's acceptable baseline.                                               | Keep explicit outcome standards and the best comparable historical performance, with changed conditions disclosed. |
+| Drift to low performance              | A recent instance with weak usefulness or completeness becomes the next instance's acceptable baseline.                        | Keep explicit outcome standards and compare useful results under disclosed conditions; size is not quality.        |
 | Escalation                            | Stronger constraints invite stronger workarounds, followed by still more constraints and cost.                                 | Interrupt the reinforcing response, simplify the interaction and test whether the conflict actually falls.         |
 | Success to the successful             | A previously selected model, pattern or method receives more opportunities and evidence simply because it was selected before. | Reserve fair comparison opportunities and reassess allocation under comparable conditions.                         |
 | Shifting the burden to the intervenor | Repeated operator rescue or manual patches keep work moving while the system loses the ability to recover itself.              | Build the underlying repair and recovery capacity; measure whether recurring intervention declines.                |
@@ -366,6 +366,14 @@ and [Leverage Points](https://donellameadows.org/archives/leverage-points-places
 provide the broader grounding in feedback, shared consequences, rules and goals.
 The applications above are this project's synthesis rather than quotations
 from those sources.
+
+The table's drift-to-low-performance trap, as observed in artifacts, is
+addressed by deriving shape from the contract and the reader's task, then
+judging useful and complete content. Useful information enables
+understanding, answers, decisions, action, verification or recovery of
+reasoning for that reader; context and evidence count when they serve those
+needs. It remains valuable regardless of its size; byte minima and ratios are
+not quality targets ([decision](../evidence/WO-235/decisions.md#wo-235-d039)).
 
 The read-output discussion supplies a concrete experiment candidate: compare
 whole-file delivery with a design that reviews changed regions plus necessary

@@ -796,6 +796,7 @@ const directionPrefixes = [
   ["operator override:", "operatorOverride"],
   ["analysis:", "analysis"],
   ["conversation only:", "conversationOnly"],
+  ["quality pass:", "qualityPass"],
 ];
 const directionEvents = [
   "OperatorOverrideRecorded",
@@ -876,6 +877,7 @@ export const OPERATOR_STEPS = [
 export function operatorStep(dispatch) {
   const text = String(dispatch).trim();
   if (/^scope expand:/iu.test(text)) return "scope-expansion";
+  if (/^quality pass:/iu.test(text)) return "direction";
   if (/^operator override:/iu.test(text)) return "override";
   const steps = [];
   let offset = 0;
@@ -949,7 +951,7 @@ export function operatorDirections(decisions, events) {
     else if (
       /^operator\b/iu.test(text) &&
       (!/^operator(?:'s)? resume\b/iu.test(text) ||
-        /scope expand|operator override|analysis:|conversation only|\b(?:direct|correct)/iu.test(
+        /scope expand|operator override|analysis:|conversation only|quality pass|\b(?:direct|correct)/iu.test(
           text,
         ))
     )

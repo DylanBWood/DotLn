@@ -92,6 +92,12 @@ record the usage, recovery, count and write-back decisions. These checks establi
 behavior, not a scheduling speedup or a host-memory benchmark. Reopen when a
 refusal consumes a run, recovery resets a known anchor or diagnostic usage is lost.
 
+Product rows bind `codeIdentity`; document completion consumes a passing row
+whose `treeHash` matches the exact candidate tree. That includes current reports,
+decisions and generated indexes, so a later record edit cannot inherit a document
+pass that never judged it. Configured record roots do not exempt arbitrary source
+from product identity. [Decision](../evidence/WO-235/decisions.md#wo-235-d036).
+
 In the WO-222 implementation, capacity is the lesser of eight and half the
 available logical processors, with a minimum of one. The first acquirer records
 it under the existing host lock and later clients that implement this contract

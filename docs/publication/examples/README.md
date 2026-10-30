@@ -8,9 +8,12 @@ The operator chooses at final review after seeing the alternatives.
 Run `npm run reader -- preview prTitle` to see `record`, `balanced` and `reader`
 side by side. Substitute `prBody`, `commitSubject`, `releaseNotes` or
 `releasePage` for the other surfaces. `npm run reader -- profile prTitle` prints
-the guidance and nearest example. Distance is the number of different
-positions, with ties favoring balanced, then reader, then record. A profile is
-guidance; no command refuses or rewrites publication text for its style.
+the contract, meaning the document sections that state the surface's rules and the
+functions that judge or render a draft, then the document kind and reader, and
+asks for useful, complete information.
+It does not select an example or rank artifacts by size. Examples illustrate
+choices and preserve their facts and limits; they are not templates for later artifacts.
+A profile is guidance; no command refuses or rewrites text for its style or size.
 
 The examples use **v0.73.1**, the release that records which shared Git refs a
 gate observed. `record` retains each source surface; balanced and reader

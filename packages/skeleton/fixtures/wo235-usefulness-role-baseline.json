@@ -1,0 +1,74 @@
+{
+  "workOrder": "WO-235",
+  "historicalBaseline": "wo235-private-reply-role-baseline.json",
+  "historicalSha256": "d8d291a03932922702efc2977368b238dab9b3f8dacb0118df6811a603d12fd0",
+  "upstreamBaseline": "wo185-role-baseline.json",
+  "upstreamSha256": "f67e48b79873202b56c069902f2338d54b1fef42d3c9eb29706d3d2cd7a72ef9",
+  "branchBaseline": "wo234-recovery-role-baseline.json",
+  "branchSha256": "d85a794ec1f7629eb98726bcf156cbf8af17e8f2b0dd0ee6e9e112fe264d28f1",
+  "method": "Pin D039 usefulness guidance by the intended reader task, with no size-minimum ranking or shortening target; retain the private current-session reply aid and every prior oracle byte.",
+  "decision": "docs/evidence/WO-235/decisions.md#wo-235-d040",
+  "roles": {
+    ".agents/skills/dotln-executor/SKILL.md": "7870c1023f17df85f7b2bbeddac2d40a930c704da72fb73a62b09f052b6085a2",
+    ".agents/skills/dotln-planner/SKILL.md": "3051d0344d26af423f94c36ddb7d904e63f01af054ff2866e10e851fd5c0b2ad",
+    ".agents/skills/dotln-refuter/SKILL.md": "8dc9c032c90d53474bd821ff9472f009c9f225347219939ad953cccb9c84ade8",
+    ".agents/skills/dotln-release-close/SKILL.md": "abe9fe3d2fe202c2c34d80a7aaf8a5943dcaf90df295d95c00c148c54bd9b49f",
+    ".agents/skills/dotln-reviewer/SKILL.md": "f47168b29863e0fba38cadef90727e361fef7ed5dbef8fdea0fb4f6c26a984df",
+    ".agents/skills/dotln-verifier/SKILL.md": "583d6a3910f9973f660dd349340225188a720d9390cee4682a66a1d5f3cf16b7",
+    ".claude/skills/dotln-executor/SKILL.md": "7870c1023f17df85f7b2bbeddac2d40a930c704da72fb73a62b09f052b6085a2",
+    ".claude/skills/dotln-planner/SKILL.md": "3051d0344d26af423f94c36ddb7d904e63f01af054ff2866e10e851fd5c0b2ad",
+    ".claude/skills/dotln-refuter/SKILL.md": "8dc9c032c90d53474bd821ff9472f009c9f225347219939ad953cccb9c84ade8",
+    ".claude/skills/dotln-release-close/SKILL.md": "abe9fe3d2fe202c2c34d80a7aaf8a5943dcaf90df295d95c00c148c54bd9b49f",
+    ".claude/skills/dotln-reviewer/SKILL.md": "f47168b29863e0fba38cadef90727e361fef7ed5dbef8fdea0fb4f6c26a984df",
+    ".claude/skills/dotln-verifier/SKILL.md": "583d6a3910f9973f660dd349340225188a720d9390cee4682a66a1d5f3cf16b7"
+  },
+  "optOutRoles": {
+    ".agents/skills/dotln-executor/SKILL.md": "8f45ccc79b58936895b9c40f32d9dc1a2ed561f177b0b03ac737a85b37faf1d5",
+    ".agents/skills/dotln-planner/SKILL.md": "4bef8deee7e669dca5b53a30c0695c72d153b5255b094354e02de30bec8506a7",
+    ".agents/skills/dotln-refuter/SKILL.md": "594df9b4bf3edf1376e7f4813aaa29541f585eb0e7c7a131394f6d69004848bd",
+    ".agents/skills/dotln-release-close/SKILL.md": "7554980da63b1cd420148dc5251dfc68e5d17230da035ae1fe47c54feabe8c56",
+    ".agents/skills/dotln-reviewer/SKILL.md": "49a45008dae08dd35965e2736c1103f80e18cef231071058a126395a3f1a5f4b",
+    ".agents/skills/dotln-verifier/SKILL.md": "11c6e831727db24a6ca3bb632137000cf330e2eb7788cce3b535d346c6ed1ef0",
+    ".claude/skills/dotln-executor/SKILL.md": "8f45ccc79b58936895b9c40f32d9dc1a2ed561f177b0b03ac737a85b37faf1d5",
+    ".claude/skills/dotln-planner/SKILL.md": "4bef8deee7e669dca5b53a30c0695c72d153b5255b094354e02de30bec8506a7",
+    ".claude/skills/dotln-refuter/SKILL.md": "594df9b4bf3edf1376e7f4813aaa29541f585eb0e7c7a131394f6d69004848bd",
+    ".claude/skills/dotln-release-close/SKILL.md": "7554980da63b1cd420148dc5251dfc68e5d17230da035ae1fe47c54feabe8c56",
+    ".claude/skills/dotln-reviewer/SKILL.md": "49a45008dae08dd35965e2736c1103f80e18cef231071058a126395a3f1a5f4b",
+    ".claude/skills/dotln-verifier/SKILL.md": "11c6e831727db24a6ca3bb632137000cf330e2eb7788cce3b535d346c6ed1ef0"
+  },
+  "startupCost": {
+    "decision": "WO-235-D040",
+    "profiles": {
+      "executor": {
+        "beforeBytes": 34299,
+        "bytes": 34497,
+        "growthBytes": 198
+      },
+      "verifier": {
+        "beforeBytes": 30820,
+        "bytes": 31018,
+        "growthBytes": 198
+      },
+      "reviewer": {
+        "beforeBytes": 33268,
+        "bytes": 33466,
+        "growthBytes": 198
+      },
+      "release-close": {
+        "beforeBytes": 21981,
+        "bytes": 22179,
+        "growthBytes": 198
+      },
+      "planner": {
+        "beforeBytes": 22890,
+        "bytes": 23088,
+        "growthBytes": 198
+      },
+      "refuter": {
+        "beforeBytes": 21704,
+        "bytes": 21902,
+        "growthBytes": 198
+      }
+    }
+  }
+}

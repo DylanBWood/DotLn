@@ -43,8 +43,9 @@ test("release preparation guidance gives the release-note profile without editin
   assert.match(guidance, /neither refuses nor rewrites text/);
   assert.match(
     guidance,
-    /Nearest example: docs\/publication\/examples\/releaseNotes\/(record|balanced|reader)\.md/,
+    /Document kind: record. Reader: a user assessing a release before adoption/,
   );
+  assert.doesNotMatch(guidance, /Best comparable:|smallest|shorten/);
   assert.equal(readFileSync(example, "utf8"), before);
 });
 const readmeWith = (blockLine, leading = "") =>

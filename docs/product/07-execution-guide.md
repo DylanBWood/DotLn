@@ -219,6 +219,7 @@ command vocabulary alongside `resume:`, `planning:` and `ideation:`
 | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `scope expand: <addition>`      | Authorize the stated addition to the current task. Preserve existing work and obligations, record the bounded scope expansion and its evidence/review duties, and continue under the existing effect boundaries. The prefix alone does not authorize publication, destructive effects or unrelated work.                  |
 | `conversation only: <question>` | Answer a side question briefly while continuing the active work order. The question changes no scope, phase or obligation, opens no ideation capture, and requires no repeat `resume:` instruction. Tools and changes already authorized by the work order continue. Only an explicit pause or stop interrupts that work. |
+| `quality pass: <target>`        | Improve the named documents, list, folder, described set or passage in the current session under §Discipline's usefulness and passage rules, then continue the active task. It authorizes only those document edits and changes no phase, gate or record protection.                                                      |
 
 Quoted examples of these prefixes are discussion, not a dispatch. A message
 actually prefixed `ideation:` still follows the ideation pipeline even when
@@ -1562,13 +1563,14 @@ A pass derives each artifact below from this list and from the check that
 judges it (`plan check`, `work-orders index --check`, `test:docs`); an
 earlier pass's document or order is evidence of what happened, never the
 pattern for the next one, and a shape this list does not name is left out or
-named as the pass's own choice. Every operator message in the dispatch, typed
-or not, is a direction until the pass records its disposition: the pass keeps
-a direction ledger (the message's hook time, the event the pass reads in it,
-its aim, acted on or declined with the reason), a later message adds to the
-dispatch's aim unless it says it replaces it, and a correction in any register
-is acted on before the pass continues [2026-10-26 pass; the checks that
-enforce this are WO-235's].
+named as the pass's own choice.
+
+`plan start <slug>` writes a planning document with these section headings:
+dispatch and capture, readings, orders filed and amended, register, NoOps,
+sequence, write-backs and ceilings, process cost, and validation. The headings
+live in [planning-document.mjs](../../scripts/lib/planning-document.mjs);
+change them together with this paragraph. Fill those sections with useful
+information for the pass; do not copy a predecessor's outline.
 
 Standard artifacts, all doc-only:
 
@@ -2569,6 +2571,73 @@ usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-
 
 ## Discipline
 
+An artifact's shape comes from its contract and the check that judges it; an
+older instance records what happened and supplies no template. If the contract
+is silent, state that and choose the structure that serves the reader's task.
+Preserve required content. Useful information helps the intended reader
+understand the subject, answer questions, decide or act, verify claims, or
+recover reasoning. Retain the context, evidence, examples and alternatives
+that serve those needs. Judge that against the reader's actual task; no
+universal score is defined.
+
+Byte counts measure resource cost. They do not establish quality, select a
+best example or justify removing useful context, and structural passes do not
+prove usefulness. Writing guidance names the contract, kind and reader without
+ranking historical artifacts by size. [Decision](../evidence/WO-235/decisions.md#wo-235-d039).
+
+Standing documents hold current state for their readers; dated accounts belong
+in decisions or the pass document. Integrate each change into the affected
+paragraph or section, link the decision record and read the result as a whole.
+A one-line edit is sufficient when the passage remains coherent. Rewrite or
+split a passage when accumulated additions obscure its meaning, preserving
+its useful information. Keep an established useful structure; broader
+reorganization needs a concrete defect or a changed reader need. No sentence
+count or size target governs this judgment.
+
+Work on a document repairs relevant passages and nearby defects within the
+authorized scope; it does not trigger a sweep of all old documents. Substantial
+cleanup outside that scope needs a deliberate quality pass. [WO-235-D042](../evidence/WO-235/decisions.md#wo-235-d042)
+records this maintenance boundary.
+
+Use `quality pass: <target>` to request that pass in the current session. The
+assistant resolves the target from the request and repository, states the edit
+scope, and proceeds. It asks only when the target or intended reader is
+materially ambiguous; an omitted target does not mean every document.
+
+| Target | Example |
+| --- | --- |
+| One file | `quality pass: docs/PLAYBOOK.md` |
+| A file list | `quality pass: README.md and docs/PLAYBOOK.md` |
+| A folder | `quality pass: docs/product/` |
+| A described set | `quality pass: the documents explaining worktree recovery` |
+| A passage | `quality pass: the opening paragraph of docs/PLAYBOOK.md` |
+
+Read the contract, surrounding context and factual sources, then improve
+usefulness, currency, coherence and organization within that boundary. Preserve
+useful information and established structure; leave sound passages unchanged.
+A passage target permits wider reading, not a whole-document rewrite. Correct
+generated documents through their sources and preserve immutable records. Check
+factual changes and links, run the existing checks appropriate to the changed
+documents, read the result, and report changes, no-change outcomes and unresolved
+facts before continuing the original task.
+
+This command authorizes the described documentation edits. It changes no
+lifecycle phase, adds no event, gate or quality score, and retains writer
+isolation, live-gate protection, host permissions and publication controls.
+The guidance is in every generated role. When the prompt's own first content
+line opens with the command, under the ordinary prefix rule, Claude's hook also
+adds it to assistant `additionalContext`, never to the operator's terminal
+notice; an active operator control such as `analysis:` takes precedence and
+supplies only its own context. Only that line counts, so a prose mention, a
+task notification or another agent's report (which opens with its envelope)
+does not invoke it; the hook consults no earlier prompt or transcript record.
+[WO-235-D043](../evidence/WO-235/decisions.md#wo-235-d043) records its scope and
+[WO-235-D063](../evidence/WO-235/decisions.md#wo-235-d063) its delivery rule.
+
+Expected-data changes name their cause and provenance in decisions; consistency
+review traces changed contracts through their consumers with file-level source
+and generated evidence, including fixtures, manifests and installed guidance.
+
 - **The handoff sequence (2026-10-07 pass, revised 2026-10-19).** Finish
   source edits, run `npm run format`, use `npm run sync` for stale
   publication, bookkeeping and installed-harness artifacts (a gate compiles a
@@ -2589,8 +2658,8 @@ usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-
   admits no record writes. Completion consumes the rows and runs no gate. A
   source edit changes code identity, so the complete row must run at the new
   identity, as must the final review; report, control and
-  generated-document edits keep code identity, and the document row stands
-  only while the working tree is the one it judged.
+  generated-document edits keep code identity. The document row binds the exact
+  candidate tree, including current reports, decisions and generated indexes.
 - **Scratch repositories (WO-188).** A nested repository outside the intake
   lane that the tracked tree does not declare as a submodule is scratch. An
   executor removes each before `implementation-ready` or `repair-complete`
@@ -3300,11 +3369,12 @@ usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-
   completions also read `docs/evidence/WO-NNN/handoff.md`, one line per
   declared criterion in the report's forms [WO-173, 2026-09-28]: a criterion
   recorded met that names `npm run test:docs` consumes the latest passing
-  document row at the current code identity; one that names `npm test` or
-  `npm test -- --review` consumes the structural row, the order's Preflight
-  rows and the document row at that identity, or a passing complete row
-  that covers the change's review selection (§Preflight before the full
-  gate); one recorded unmet always records and is shown at the next dispatch. `npm
+  document row for the exact candidate tree; one that names `npm test` or
+  `npm test -- --review` consumes the structural and declared Preflight rows
+  at the current code identity, or a complete row covering the review selection,
+  plus the document row for the exact candidate tree when documents changed
+  (§Preflight before the full gate); one recorded unmet always records and is
+  shown at the next dispatch. `npm
   test` runs only the selected tasks whose latest recorded run at that
   identity is not a pass, and records a complete row in which each carried
   result names the row that executed it. A later failed or timed-out run of
@@ -3593,11 +3663,12 @@ no record writes while it runs and a judgment is written with its evidence;
 `npm run test:docs` runs once after the last document edit; then the result
 is recorded. Completion consumes the passing complete row at the current
 code identity, or the passing structural and focused rows there, together
-with the newest passing document row recorded for the working tree as it
-stands (the row's tree hash), records their evidence references and runs no
-gate itself: a document edited after its document run is refused by name,
-and the recording itself changes nothing the row judged. The verifier consumes
-the same rows and reproduces a finding with `--only`. A queued order's older
+with the newest passing document row for the exact candidate tree, records
+their evidence references and runs no gate itself. Reports, decisions, indexes
+and all other public documents are part of that tree; editing them after the
+document run requires a current row. Product evidence retains its existing code
+identity boundary; arbitrary configured record roots cannot exempt source.
+The verifier consumes the same rows and reproduces a finding with `--only`. A queued order's older
 instruction to follow Preflight with a complete run is read under this
 handoff rule.
 
@@ -3619,8 +3690,8 @@ review gate admits no record writes while it runs and a judgment is written
 with its evidence;
 `npm run test:docs` runs once after the last document edit; then the
 result is recorded. Completion consumes the newest passing complete review
-row at that identity and the newest passing document row recorded for the
-working tree as it stands, and runs no gate itself; a newer failed run at the same identity displaces an older pass. No
+row at that identity and the newest passing document row for the exact candidate
+tree, and runs no gate itself; a newer failed run at the same identity displaces an older pass. No
 pass crosses a code identity. Source changes require a complete row at the
 new identity; report and generated-document edits do not. Target orders
 retain their repository's declared target gate and the launchpad document

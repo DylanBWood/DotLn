@@ -6,6 +6,7 @@ import { join, posix } from "node:path";
 // Generated harness output and selected edition output are deliberately absent.
 // Package indexes load their complete export graphs; these are explicit files.
 const commonSources = [
+  "scripts/lib/off-ramps.mjs",
   // The harness host loads the shared dispatch reader by its installed root.
   "packages/skeleton/src/duration.mjs",
   "packages/skeleton/src/test-selection.mjs",
@@ -182,6 +183,7 @@ const authoritySources = (root) => [
   "packages/skeleton/src/gate-deadlines.mjs",
   "packages/skeleton/src/gate-evidence.mjs",
   "packages/skeleton/src/harness-command.ts",
+  "packages/skeleton/src/document-quality.ts",
   "packages/skeleton/src/harness-host.ts",
   "packages/skeleton/src/dispatch-journal.mjs",
   "packages/skeleton/src/subagent-budget.ts",
@@ -281,6 +283,7 @@ const feedbackSources = (root) => [
   "packages/skeleton/src/gate-deadlines.mjs",
   "packages/skeleton/src/gate-evidence.mjs",
   "packages/skeleton/src/harness-command.ts",
+  "packages/skeleton/src/document-quality.ts",
   "packages/skeleton/src/harness-host.ts",
   "packages/skeleton/src/dispatch-journal.mjs",
   "packages/skeleton/src/subagent-budget.ts",
@@ -353,6 +356,7 @@ const harnessSources = (root) => [
   "packages/skeleton/src/gate-deadlines.mjs",
   "packages/skeleton/src/gate-evidence.mjs",
   "packages/skeleton/src/harness-command.ts",
+  "packages/skeleton/src/document-quality.ts",
   "packages/skeleton/src/harness-host.ts",
   "packages/skeleton/src/dispatch-journal.mjs",
   "packages/skeleton/src/subagent-budget.ts",

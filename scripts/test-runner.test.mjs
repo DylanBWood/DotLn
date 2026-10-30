@@ -382,6 +382,139 @@ test("target claims use only current target selection rows and consume the docum
   assert.equal((await consume()).documentGate.evidenceRef, "fixture:docs");
 });
 
+test("document completion requires the exact records judged, including reports and generated indexes", async (t) => {
+  const { requireDocumentRow } = await import("./lib/handoff-ledger.mjs");
+  const repo = createFixtureRoot(join(tmpdir(), "dotln-document-records-"));
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
+  runGit(repo, ["init", "-q", "-b", "wo-999"]);
+  excludeFixtureOwnership(repo);
+  const write = (path, source) => {
+    mkdirSync(dirname(join(repo, path)), { recursive: true });
+    writeFileSync(join(repo, path), source);
+  };
+  write(".gitignore", "docs/control/local/\n");
+  write("source.mjs", "export const result = 1;\n");
+  const paths = [
+    "docs/evidence/WO-999/decisions.md",
+    "docs/evidence/WO-999/handoff.md",
+    "docs/evidence/WO-999/self-review.md",
+    "docs/verifications/WO-999/VER-001.md",
+    "docs/final-reviews/WO-999/FINAL-001.md",
+    "docs/control/orders/WO-999.jsonl",
+    "docs/control/current.md",
+    "docs/lineage/decisions-index.md",
+    "docs/work-orders/README.md",
+    "docs/planning/fixture.md",
+    "docs/product/contract.md",
+    "docs/evidence/current.json",
+  ];
+  for (const path of paths) write(path, "Original checked record\n");
+  const row = {
+    checkId: "npm run test:docs",
+    codeIdentity: gateCodeIdentity(repo),
+    treeHash: gateTreeHash(repo),
+    subject: "fixture",
+    executed: true,
+    exitCode: 0,
+    durationMs: 1,
+    requiredSuites: ["docs-check"],
+    evidenceRef: "fixture:document-pass",
+    recordedAt: "2030-01-01T00:00:01Z",
+    cases: [
+      {
+        name: "docs-check",
+        executed: true,
+        exitCode: 0,
+        durationMs: 1,
+        finishedAt: "2030-01-01T00:00:00Z",
+      },
+    ],
+  };
+  recordGateChecks(repo, [row]);
+  assert.equal(
+    (await requireDocumentRow(repo)).row.evidenceRef,
+    row.evidenceRef,
+  );
+  for (const path of paths) {
+    write(path, "Changed record with [broken link](missing.md)\n");
+    assert.notEqual(gateTreeHash(repo), row.treeHash);
+    assert.ok((await requireDocumentRow(repo)).refusal, path);
+    write(path, "Original checked record\n");
+    assert.equal(
+      (await requireDocumentRow(repo)).row.evidenceRef,
+      row.evidenceRef,
+    );
+  }
+  write("docs/control/local/session-notes.txt", "Ignored local notes\n");
+  assert.equal(gateTreeHash(repo), row.treeHash);
+  assert.equal(
+    (await requireDocumentRow(repo)).row.evidenceRef,
+    row.evidenceRef,
+  );
+  write("source.mjs", "export const result = 2;\n");
+  assert.ok((await requireDocumentRow(repo)).refusal);
+});
+
+test("document completion covers relocated records and configured record roots cannot hide source", async (t) => {
+  const { requireDocumentRow } = await import("./lib/handoff-ledger.mjs");
+  const repo = createFixtureRoot(join(tmpdir(), "dotln-document-roots-"));
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
+  runGit(repo, ["init", "-q", "-b", "wo-999"]);
+  excludeFixtureOwnership(repo);
+  writeFileSync(
+    join(repo, ".gitignore"),
+    "docs/control/local/\nrecords/control/local/\n",
+  );
+  writeFileSync(
+    join(repo, "dotln.config.json"),
+    JSON.stringify({
+      version: 1,
+      roots: { evidence: "records/evidence", control: "records/control" },
+    }),
+  );
+  mkdirSync(join(repo, "records/evidence/WO-999"), { recursive: true });
+  const record = join(repo, "records/evidence/WO-999/handoff.md");
+  writeFileSync(record, "Checked report.\n");
+  const row = {
+    checkId: "npm run test:docs",
+    codeIdentity: gateCodeIdentity(repo),
+    treeHash: gateTreeHash(repo),
+    subject: "fixture",
+    executed: true,
+    exitCode: 0,
+    durationMs: 1,
+    evidenceRef: "fixture:relocated",
+    recordedAt: "2030-01-01T00:00:01Z",
+    requiredSuites: ["docs-check"],
+    cases: [
+      {
+        name: "docs-check",
+        executed: true,
+        exitCode: 0,
+        durationMs: 1,
+        finishedAt: "2030-01-01T00:00:00Z",
+      },
+    ],
+  };
+  recordGateChecks(repo, [row]);
+  assert.equal(
+    (await requireDocumentRow(repo)).row.evidenceRef,
+    row.evidenceRef,
+  );
+  writeFileSync(record, "Changed report.\n");
+  assert.notEqual(gateCodeIdentity(repo), row.codeIdentity);
+  assert.ok((await requireDocumentRow(repo)).refusal);
+  mkdirSync(join(repo, "scripts"), { recursive: true });
+  writeFileSync(join(repo, "scripts/source.mjs"), "export const value = 1;\n");
+  writeFileSync(
+    join(repo, "dotln.config.json"),
+    JSON.stringify({ version: 1, roots: { verifications: "scripts" } }),
+  );
+  const before = gateCodeIdentity(repo);
+  writeFileSync(join(repo, "scripts/source.mjs"), "export const value = 2;\n");
+  assert.notEqual(gateCodeIdentity(repo), before);
+});
+
 test("records publication proves unchanged launchpad identity or requires the reviewer gate", async (t) => {
   const repo = realpathSync(
     createFixtureRoot(join(tmpdir(), "dotln-records-identity-")),

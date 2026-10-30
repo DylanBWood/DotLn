@@ -168,6 +168,7 @@ export const machinerySources = {
     "scripts/lib/build-freshness.mjs",
   ],
   "launchpad-planning": [
+    "scripts/lib/planning-document.mjs",
     "packages/kernel/src/types.ts",
     "packages/compiler/src/harness.ts",
     "packages/console/src/index.ts",
@@ -224,6 +225,7 @@ export const machinerySources = {
     "scripts/test-fixture-temp-root.sh",
   ],
   "harness-probe": [
+    "scripts/lib/planning-document.mjs",
     // Direct entry imports and literal first-party script inputs (WO-174).
     "packages/skeleton/src/discovery-sandbox.ts",
     "packages/skeleton/src/source-change-command.ts",
@@ -245,6 +247,7 @@ export const machinerySources = {
     "packages/skeleton/src/worker-transport.ts",
   ],
   "harness-fixtures": [
+    "scripts/lib/planning-document.mjs",
     "scripts/lib/off-ramps.mjs",
     "scripts/test-dispatch-bound.mjs",
     "scripts/test-temporary-roots.mjs",
@@ -314,6 +317,7 @@ export const machinerySources = {
     "packages/skeleton/src/version.ts",
     "packages/skeleton/src/subagent-budget.ts",
     "packages/skeleton/src/harness-command.ts",
+    "packages/skeleton/src/document-quality.ts",
     "packages/skeleton/src/loadouts/",
   ],
   harness: [
@@ -363,6 +367,7 @@ export const machinerySources = {
   ],
   "harness-evidence": recordedSources["harness"],
   "plan-refutation": [
+    "scripts/lib/planning-document.mjs",
     "scripts/lib/gate-evidence.mjs",
     "scripts/lib/gate-reuse.mjs",
     "scripts/lib/planning-conditions.mjs",
@@ -492,6 +497,8 @@ export const machinerySources = {
     "scripts/lib/target-worktree-fixture.mjs",
   ],
   "process-debt": [
+    "scripts/lib/plan-subject.mjs",
+    "scripts/lib/planning-document.mjs",
     "scripts/test-gate-followups.mjs",
     "docs/control/budgets.json",
     "CLAUDE.md",
@@ -504,6 +511,7 @@ export const machinerySources = {
     "packages/skeleton/src/feedback-selfhost.ts",
     "packages/skeleton/src/gate-deadlines.mjs",
     "packages/skeleton/src/harness-command.ts",
+    "packages/skeleton/src/document-quality.ts",
     "packages/skeleton/src/observed-facts.ts",
     "packages/skeleton/src/writer-teardown.mjs",
     "scripts/bootstrap.mjs",
@@ -537,6 +545,7 @@ export const machinerySources = {
     "scripts/discover.mjs",
     "packages/skeleton/src/usage-observation.mjs",
     "scripts/test-process-debt.mjs",
+    "scripts/test-process-debt.fixture-inputs.json",
     "packages/skeleton/fixtures/wo195-role-baseline.json",
     "packages/skeleton/fixtures/wo195-integrated-role-baseline.json",
     "packages/skeleton/fixtures/wo186-role-baseline.json",
@@ -556,6 +565,13 @@ export const machinerySources = {
     "packages/skeleton/fixtures/wo234-role-baseline.json",
     "packages/skeleton/fixtures/wo234-recovery-role-baseline.json",
     "packages/skeleton/fixtures/wo234-integration-role-baseline.json",
+    "packages/skeleton/fixtures/wo235-role-baseline.json",
+    "packages/skeleton/fixtures/wo235-repair-role-baseline.json",
+    "packages/skeleton/fixtures/wo235-private-reply-role-baseline.json",
+    "packages/skeleton/fixtures/wo235-usefulness-role-baseline.json",
+    "packages/skeleton/fixtures/wo235-maintenance-role-baseline.json",
+    "packages/skeleton/fixtures/wo235-quality-pass-role-baseline.json",
+    "packages/skeleton/fixtures/wo235-removal-role-baseline.json",
     "packages/skeleton/fixtures/wo217-role-efficiency-baseline.json",
     "scripts/test-helper-reuse.mjs",
     "scripts/lib/helpers.mjs",
@@ -609,6 +625,7 @@ export const machinerySources = {
   // Any changed docs path, stub list or registry re-runs the registration
   // check under --review, not only under test:docs (WO-157 item 13).
   registrations: [
+    "scripts/lib/planning-document.mjs",
     "scripts/lib/build-freshness.mjs",
     // Direct entry imports and literal first-party script inputs (WO-174).
     "packages/kernel/src/index.ts",
@@ -1470,7 +1487,7 @@ export const suites = [
     document: true,
     needsBuild: false,
     protects:
-      "reader commands reject invalid profiles and quotations, select the nearest example, retain tag profiles and record scores idempotently",
+      "reader commands reject invalid profiles and quotations, name the contract and reader without ranking example size, retain tag profiles and record scores idempotently",
   }),
   node("entropy", "scripts/entropy.mjs", {
     args: ["check"],
