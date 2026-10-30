@@ -1,4 +1,4 @@
-# WO-237 — A closed order keeps its journals: release close moves the worktree's session journals, session state and gate index into main's retained lane for the order under a `closed-journal` retention class the prune judges, and planning's failure counts and the usage readback read them by order (version assigned at activation)
+# WO-237 — Keep closed-order journals and safely remove generated build staging (version assigned at activation)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
@@ -8,7 +8,7 @@
 template, one step inside the close's worktree removal with its record
 field, two readers extended; no new command, no new operator phrase.
 Assigned at activation under the standing opt-out default.
-**Cost:** adds `closed-journal` to `DEFAULT_RETENTION` in
+**Cost:** adds a bounded stale-build recovery path and its negative controls, plus `closed-journal` to `DEFAULT_RETENTION` in
 `packages/skeleton/src/temporary-root-records.mjs` and the seed to
 `docs/control/budgets.json` and `scripts/kit/budgets.template.json`, the
 move in the close's worktree removal (`scripts/release.mjs` around 2290 to
@@ -28,7 +28,7 @@ Wall-clock: one directory move per close (milliseconds; WO-192's worktree
 holds four journals of 368 KB; main's 242 journals of two months are 63 MB;
 the gate captures that make a harness directory large keep their own
 classes and do not move). Context bytes: this file. Commands: none new;
-`harness prune` reports the class. Tokens: unknown until run. Steps: 8.
+`harness prune` reports the class. Tokens: unknown until run. Steps: ten, including two added cleanup steps. The recovery path's before/after close cost is unknown until measured; it must retain WO-239's scoped census. The previous milliseconds estimate for journal movement is an estimate, not measured evidence.
 Re-mints: `temporary-root-records.mjs` and `usage-observation.mjs` are
 runtime sources; the executor checks `scripts/lib/evidence-sources.mjs` at
 activation and re-mints deterministically any edition they stale; none is a
@@ -47,6 +47,16 @@ is wrong, and the journals are the thing to keep. Filed by the
 [2026-10-28 pass](../planning/target-write-grant-and-fork-block-2026-10-28.md).
 Planner-synthesized. Opaque identifier, not a priority. Clean-room screen:
 no stop condition.
+**Amendment (2026-10-30):** operator item 8 in the
+[planning pass](../planning/portable-config-assisted-2026-10-30.md) identifies
+a cleanup defect on the same owned-root subsystem. The local WO-239 close
+record shows six generated `.runtime/build-*` directories rejected because
+the recorded device differed although ledger tokens and inodes matched.
+Their verified removal and close retry succeeded; the cause of device drift
+is unknown. Preserve journals, not build staging. No failed or closed report
+is rewritten. The fork's item 6 confirms why journals are needed: WO-019's
+close lost its session-level grant observations and any unrecorded timings.
+
 **Depends on:** WO-233 (closed, v0.100.0: the owner records, the retention
 classes in the budgets file, the prune at release close and the close
 record's `prune` field this order extends), WO-178 (closed: `plan start`
@@ -102,7 +112,10 @@ next prune), records the move on the close record, and leaves the gate
 captures to the classes they already have; the prune judges the lane as it
 judges every owned root; `plan failures` counts a closed order's rows from
 the lane, attributed to the order; `harness usage <session>` reads a
-retained session. Nothing is committed and no worktree is kept.
+retained session. Nothing is committed and no worktree is kept. Generated
+build staging is disposed of through normal ownership checks or the narrowly
+verified recovery below; a stale device binding does not turn builds into
+operator material.
 
 **Observed gap (dated 2026-10-28 at `main` `2b872abc`):**
 
@@ -186,6 +199,18 @@ retained session. Nothing is committed and no worktree is kept.
   cleanup rows: exist. A journal move: absent. A retained-lane read in
   either reader: absent.
 
+The added cleanup design preserves the normal token/device/inode binding for
+all ordinary deletion. A narrow build-staging recovery rechecks the exact
+registered path, owner token, physical containment, current user, staging
+shape, owner process birth/liveness and absence of an active writer/gate under
+the teardown lock, then removes only proven regenerable staging without
+following child symlinks. An unknown owner, unexpected file or raced identity
+remains a concrete refusal; it never becomes an offer to save builds. Reject
+ignoring device checks globally and reject moving all rejected roots to
+scratch. Record the reason for retention separately from operator material.
+No conclusion about why the operating system changed device identity is
+required or claimed.
+
 **Execution plan (the executor follows these steps in order; observed at `2b872abc`, 2026-10-28):**
 
 1. `packages/skeleton/src/temporary-root-records.mjs` `DEFAULT_RETENTION`
@@ -206,7 +231,7 @@ retained session. Nothing is committed and no worktree is kept.
    `scripts/test-release.sh`.
 3. `scripts/lib/harness-prune.mjs`: the lane is judged as an owned root
    of its class; `null` keeps; the report names the class and the lane.
-   Check: `npm test -- --only harness`; `npm test -- --only
+   Check: `npm test -- --only harness-fixtures`; `npm test -- --only
    fixture-temp-root`.
 4. `scripts/lib/plan-failures.mjs` (750 to 770): read the retained lanes
    beside the checkout's directory, attribute rows to the lane's order,
@@ -214,17 +239,31 @@ retained session. Nothing is committed and no worktree is kept.
    test -- --only plan-refutation`.
 5. `scripts/harness.mjs usage` with `packages/skeleton/src/usage-observation.mjs`:
    a session digest found in a retained lane is read from there with
-   `source` naming the lane. Check: `npm test -- --only harness`.
+   `source` naming the lane. Check: `npm test -- --only harness-fixtures`.
 6. `scripts/test-instance-history.mjs`: an updated instance's close moves
    its journals into the lane under the class. Check: `npm test -- --only
    instance-history`.
-7. Write-backs: product 07 §Workflow closeout and releases (what moves,
-   what stays, the lane, the class and the seed; that the lane is ignored
+7. `packages/skeleton/src/temporary-root-records.mjs` with
+   `scripts/lib/temporary-roots.mjs`, `scripts/lib/temporary-prune.mjs` and
+   `scripts/lib/worktree-removal.mjs`: add the narrowly verified build-staging
+   recovery above at close, using `scripts/build.mjs`'s actual staging shape.
+   Keep ordinary owner binding strict and close discovery scoped. Check:
+   `npm test -- --only fixture-temp-root` and `npm test -- --only release`.
+8. `scripts/test-temporary-roots.mjs` and `scripts/test-release.sh`: reproduce
+   the six-root device-only mismatch with dead owners and record a before
+   control with the recovery disabled. Successful recovery removes builds and
+   preserves journals/intake; changed inode/token, unknown or live owner,
+   active gate, replacement race, symlinked root, unexpected operator file
+   and foreign checkout refuse safely. A retry is idempotent. Measure close
+   costs before/after, including the refusal path. Check the same two suites.
+9. Write-backs: product 07 §Workflow closeout and releases (what moves,
+   what stays, the lane, the class and the seed; build staging is disposable
+   and an ownership refusal triggers bounded diagnosis, not a preservation offer; that the lane is ignored
    local material); `scripts/kit/README.client.md` §Owned cleanup and
    retention (the key and the seed); `docs/evidence/WO-237/decisions.md`;
    `npm run meta`; `node scripts/lineage.mjs index --check`; `npm run
    publication:check`.
-8. Handoff: integrate `main` first when it has moved (WO-233's rule);
+10. Handoff: integrate `main` first when it has moved (WO-233's rule);
    finish source edits; `npm run format` and `npm run sync`; the three
    fresh independent reviewers the executor root requires; one `npm test
    -- --review` in the background awaited with `node scripts/harness.mjs
@@ -234,7 +273,8 @@ retained session. Nothing is committed and no worktree is kept.
 
 **Deliverables:** the class, its seed and template; the move inside the
 close with its record field; the prune's judgment of the lane; the two
-readers extended; the cases and the paired control; the write-backs.
+readers extended; the bounded build-staging recovery and refusal diagnostics;
+the cases and paired controls; the write-backs.
 
 **Acceptance criteria (all required)**
 
@@ -261,25 +301,33 @@ readers extended; the cases and the paired control; the write-backs.
    journals into the lane under the class.
 7. Product 07 and the kit README state the lane, the class, the seed, what
    moves and what stays; `npm run publication:check` is green.
-8. `npm test -- --review` and `npm run test:docs` green; `git diff --check`
+8. The close removes a registered generated build-staging root in the
+   device-only mismatch fixture after the recovery checks in steps 7 and 8,
+   records the verification and disposal, and never archives or offers that
+   build output for preservation. Every unsafe/unknown case in step 8 remains
+   refused without deletion; ordinary owner binding remains strict, close
+   discovery stays scoped and the retry is idempotent. The paired control
+   fails without the recovery and records both exits. Measured before/after
+   close cost and the unknown cause of the original device change are stated.
+9. `npm test`, `npm test -- --review` and `npm run test:docs` green; `git diff --check`
    clean; no new dependency.
 
 **Preflight:** `npm test -- --only fixture-temp-root` and `npm test --
---only process-debt` for steps 1 and 3; `npm test -- --only launchpad` for
-step 1; `npm test -- --only release` for step 2; `npm test -- --only
-harness` for steps 3 and 5; `npm test -- --only plan-refutation` for step
+--only process-debt` for steps 1, 3, 7 and 8; `npm test -- --only launchpad` for
+step 1; `npm test -- --only release` for steps 2, 7 and 8; `npm test -- --only
+harness-fixtures` for steps 3 and 5; `npm test -- --only plan-refutation` for step
 4; `npm test -- --only instance-history` for step 6; `npm test -- --only
 configuration-root` for every script step; `npm run test:docs` when a
 document changes; each under `node scripts/harness.mjs bounded --`; then
 one `npm test -- --review` (07-execution-guide.md §Preflight before the
 full gate).
 
-**Evidence gate:** the cases and controls of criteria 1 to 7; the
+**Evidence gate:** the cases and controls of criteria 1 to 8; the
 deterministic re-mints of any edition the runtime sources stale; `npm test
 -- --review` before `implementation-ready`, final review reusing the
 passing complete row at the integrated code identity when one exists.
 
-**Write-back duty:** as listed in step 7 and criterion 7.
+**Write-back duty:** as listed in step 9 and criteria 7 and 8.
 
 **Known issues and carry-ins:**
 - The journals hold host paths, session ids and operator-message digests;

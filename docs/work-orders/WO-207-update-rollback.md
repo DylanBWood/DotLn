@@ -1101,6 +1101,19 @@ feedback episode only after a `resident-state.ts` edit.
 
 **Write-back duty:** as listed in criteria 20 and 21.
 
+**2026-10-30 carry-in:** The fork's v0.103.0 update merged four untouched
+instance seeds (README, budgets, the generated CLAUDE block and PLAYBOOK)
+with no declared instance action. Extend the existing two-route update cases
+to cover both locally edited and untouched versions of all four; a clean
+Git merge is not permission to replace instance policy. Read WO-241's
+configuration inventory before defining extensions/suites/build selectors.
+A repository-owned planning script already runs manually under local authority;
+this order supplies automatic SourceAdapter loading, not a mandatory tracker
+integration or a route for private source into core. The private deployment
+track is retired by the [2026-10-30 pass](../planning/portable-config-assisted-2026-10-30.md).
+Reopen the update decision if either route changes an instance-owned selection
+without a reviewed instance action.
+
 **Known issues and carry-ins:**
 
 - Retained copies live in the ignored local lane: a fresh clone has none

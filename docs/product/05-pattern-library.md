@@ -529,9 +529,8 @@ implement this candidate.
 ## Rhythm patterns
 
 The absence curve addresses a future automatic work-order dispatch layer.
-The predecessor `v1` needed operator-driven interactions and used a recurring
-cron trigger to avoid idling; DotLn's current dispatched orders already
-progress by their recorded status while the operator is away. The curve is
+DotLn's dispatched orders progress by their recorded status while the operator
+is away. The curve is
 therefore about choosing and pacing further eligible work, not making an
 active order continue.
 
@@ -1510,8 +1509,8 @@ The operator's follow-up asks for a collection outline for both harnesses and
 notes that the same percentage represents materially different absolute sizes.
 Show occupied tokens, reported capacity and percentage together. The operator
 reports a one-million-token Claude setup; discover each actual session's
-capacity rather than baking that value into the support. Prior v1 experience
-is motivation, not imported implementation or evidence of this version.
+capacity rather than baking that value into the support. The reported setup
+is motivation, not evidence of this version's behavior.
 
 Claude's [status-line payload](https://code.claude.com/docs/en/statusline)
 exposes `context_window.used_percentage`, `context_window_size`, `current_usage`

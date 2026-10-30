@@ -117,14 +117,10 @@ language, never the underlying facts. See the
 
 ## The one-paragraph story
 
-A predecessor system (not present in this repo) proved the concept and then
-collapsed under its own success: roughly 140 accumulated feedback rules loaded
-as prose pushed fresh sessions toward 400–500k tokens of always-on context,
-where rules fired wrongly or vanished when needed most. In the project's RPG
-vocabulary, it brought the **whole stash into every map** — as if a character
-carried gear for every damage type when the encounter called only for cold
-resistance. In plain language, irrelevant rules consumed attention and created
-unintended interactions before the task began. The author's implementation
+Always-on collections of prose rules consume attention and create unintended
+interactions before a task begins. In the project's RPG vocabulary, that is
+bringing the whole stash into every map, when a particular encounter needs
+only a selected build. The author's implementation
 answers with _compiled_ rules: each correction becomes a typed mechanism (a
 permission, a guard, a reactor, an evaluator, a transformer, a workflow gate)
 attached only where relevant. A session in that profile gets **a build, not a

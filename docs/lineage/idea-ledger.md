@@ -40,6 +40,14 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
+## 2026-10-30 — Planning pass: runtime compatibility, readable configuration and assisted review
+
+Registration only. The operator requested a standard pass with eight topics;
+the [planning record](../planning/portable-config-assisted-2026-10-30.md) holds
+the synthesized decisions, sources, dispositions and validation. WO-240 to
+WO-243 are filed; WO-237 is amended. This is not a new ideation batch or a
+claim that those capabilities have shipped.
+
 ## 2026-10-28 — Planning pass: release close, the entropy proposals, the follow-ups, document accretion and the fork's second block (WO-239, WO-238; WO-235 amended); registration only; the record is the planning document
 
 Dispatch: `planning:` with five numbered items and the fork's block, sent at

@@ -303,6 +303,7 @@ as a current blocked verdict.
 | [Arriving at the desk](../product/12-workstream-application.md#arriving-at-the-desk)                                                                | everyday-ai-user, software-engineer | vision |
 | [One outcome from request to return](../product/12-workstream-application.md#one-outcome-from-request-to-return)                                    | everyday-ai-user, software-engineer | vision |
 | [Replacing a successful but costly workflow](../product/12-workstream-application.md#replacing-a-successful-but-costly-workflow)                    | everyday-ai-user, software-engineer | vision |
+| [Assisted change review](../product/12-workstream-application.md#assisted-change-review) | everyday-ai-user, software-engineer | vision |
 | [One workstream across repositories](../product/12-workstream-application.md#one-workstream-across-repositories)                                    | everyday-ai-user, software-engineer | vision |
 | [What exists and what must be proved](../product/12-workstream-application.md#what-exists-and-what-must-be-proved)                                  | everyday-ai-user, software-engineer | vision |
 | [Open product choices](../product/12-workstream-application.md#open-product-choices)                                                                | everyday-ai-user, software-engineer | vision |

@@ -1,4 +1,4 @@
-# WO-193 — Capability requests: an instance asks core for a capability in one standard way, answered through either update route, with a planning intake of labelled issues, a typed `UPSTREAM.md` answered list and a deployment-record template; the private predecessor map is WO-228's (version assigned at activation)
+# WO-193 — Capability requests: an instance asks core for a capability in one standard way, answered through either update route, with a planning intake of labelled issues, a typed `UPSTREAM.md` answered list and a deployment-record template (version assigned at activation)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
@@ -138,10 +138,9 @@ by item in core) and WO-096 (core's shape rows and what it declines);
 something can ask for it in a few minutes without anything leaving the
 instance except the sentences the operator approved; the request is read at
 the next planning pass here; and when a release answers it, the instance's
-next update, from core or by merge, says so. The private map of what an instance's predecessors did, and the request a
-missing row becomes, is WO-228's (workstream WS-002), cut out of this order by
-the 2026-10-21 pass; what is missing and belongs in core becomes a generic
-request through this order's route, and nothing else leaves.
+next update, from core or by merge, says so. This optional generic request route is not a dependency of private deployments.
+The operator supplies their requests manually through planning; no private
+instance content is read or synchronized by core.
 
 **Observed gap (dated 2026-10-02, `main` at `08845c71`):**
 
@@ -237,12 +236,6 @@ request through this order's route, and nothing else leaves.
   record ADR-0001 says a work deployment owes: host and harness as observed
   by the instance's first order, what may leave the instance and by which
   route, and who decides. It is instance-owned once filled.
-- **The map.** Cut out by the 2026-10-21 pass into WO-228 (workstream
-  WS-002, the predecessor track): the command, the row schema, the seed and
-  `parity request`, which calls this order's `draftRequest`. A missing row
-  becomes a request draft holding its generic statement and nothing else,
-  which passes the screens and is marked ready on the operator's word like any
-  other.
 - **Live-run surfaces, at `6dbd8771`** (criterion 14). A scratch export:
   exists and has run. The route, `request file`, the labelled listing and
   `plan -- requests`: absent (steps 1, 3, 5, 6). Issue creation: no command
@@ -260,9 +253,7 @@ request through this order's route, and nothing else leaves.
   instance never writes into core); automation that comments on or closes
   issues (a new outward effect; the closing reference needs none); a
   channel other than the forge's issues (the reader exists for this one;
-  an instance that cannot reach it uses `manual`); the map's declined alternatives (rows in core for a real predecessor, an
-  importer of predecessor rule files, a map shared across instances, WO-096's
-  renderer) are recorded in WO-228.
+  an instance that cannot reach it uses `manual`).
 
 **Execution plan (the executor follows these steps in order; observed at
 `bd437eb2`, 2026-10-07; re-observed at `6dbd8771`, 2026-10-13):**
@@ -566,5 +557,6 @@ the 2026-10-21 pass).
    disposed there like any other row; it carries no priority of its own.
 4. The issue is closed by the operator's merge of the pull request that
    names it.
-5. The private predecessor map is WO-228's (workstream WS-002); this
-   order's `draftRequest` is the form WO-228's `parity request` calls.
+5. Private deployment planning belongs to the instance. Manual generic
+   planning prompts remain sufficient; this optional request route is not a
+   prerequisite for that instance.

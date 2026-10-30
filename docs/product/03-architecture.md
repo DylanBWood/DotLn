@@ -244,9 +244,11 @@ The siblings' license posture and the instance boundary [operator direction,
 (Apache-2.0 for code, CC-BY-4.0 for documentation, `NOTICE`) and never with
 `--license none`; the operator's personal instance, a public fork of the
 starter on the operator's own account, and DotLn-Angular carry the same
-posture and the same clean-room floor as core; the operator's work instance
-is a private fork of the starter on a constrained managed host where core is
-never installed, and it carries the kit's license files unchanged. Core's own
+posture and the same clean-room floor as core. A private instance clones the
+starter, retains its license files and owns its deployment policy; it needs
+no core checkout. Requests to core are manually supplied generic statements.
+The [configuration inventory](feature-configuration.md) distinguishes current
+loadout choices from the planned destination-aware policy. Core's own
 control records, orders, evidence and reports are core's instance files and
 never enter the kit: the kit is the product, not core's history. An instance
 runs what core runs, its gates and planning commands included
@@ -2348,9 +2350,6 @@ reopening conditions.
 
 ### Candidate — progressive absence authority and return readiness
 
-This candidate originated in the predecessor `v1` workflow: one prompt-bound
-agent needed the operator to drive each interaction, so it sat idle during
-absence. A recurring cron trigger was an early way to restart useful work.
 DotLn now has explicit work orders and phase/status transitions; a dispatched
 order can keep moving while the operator is away without this payoff curve.
 The curve is for the later automatic work-order dispatch layer, where agents

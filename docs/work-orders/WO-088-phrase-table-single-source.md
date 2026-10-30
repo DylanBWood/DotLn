@@ -797,6 +797,14 @@ row.
 
 **Known issues and carry-ins:**
 
+- FUP-644bf5db02876c15 (WO-235-D053), allocated by the
+  [2026-10-30 pass](../planning/portable-config-assisted-2026-10-30.md): while
+  editing the receipt contract, remove its unused `directions` admission,
+  the unused `harness-host.ts` baseline pin and its fixture declaration.
+  Confirm no producer or consumer depends on them; preserve historical
+  receipt bytes. Check declarations and `npm test -- --only plan-refutation`.
+  Reopen if a real producer/consumer is found, rather than breaking its record.
+
 - Receipt 033 (2026-09-28), phrase list: the guide's eleven rows keep the
   waive, withdraw, correct and override-off routes, so a check rejecting
   rows outside the seven conflicts with them. Reopen when the check rejects

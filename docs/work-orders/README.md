@@ -4,10 +4,12 @@
 
 ## Proposed order
 
-- [x] [WO-235] — No artifact is shaped by its predecessor and no operator direction is dropped · **final-reviewed**
-- [x] [WO-239] — Release close prepares before it loads and runs once · **final-reviewed**
+- [ ] [WO-240] — Run core and the starter on Node 24.15.0 and Node 26 · **queued**
+- [ ] [WO-241] — Make feature and loadout choices readable and effective · **queued**
+- [ ] [WO-242] — Discuss and inspect a proposed change before applying it · **queued**
+- [ ] [WO-243] — Select closeout checks for the repositories an order changes · **queued**
+- [ ] [WO-237] — Keep closed journals and remove disposable build staging safely · **queued**
 - [ ] [WO-238] — A document says what is so · **queued**
-- [ ] [WO-237] — A closed order keeps its journals · **queued**
 - [ ] [WO-192] — A router drives an order through its lifecycle · **queued**
 - [ ] [WO-083] — The real run from the operator's instance · **queued**
 - [ ] [WO-207] — An instance's kit updates: rollback, extension point and build channel · **queued**
@@ -30,19 +32,100 @@ Full evidence for the active and sequenced orders follows; the Open cards are in
 
 ## Workstreams
 
-### WS-002
+None.
 
-Separate track; outside the proposed serial order.
-
-- [WO-228] — repository: self; base: 297bf4f167415b17b44608b3e98a7a619862bbeb; phase: draft; verdict: unknown; integration: current; stale: no; observed target: 297bf4f167415b17b44608b3e98a7a619862bbeb.
-
-<!-- dotln-workstreams: {"workstreams":[{"id":"WS-002","track":"separate","members":[{"workOrderId":"WO-228","repository":"self","base":"297bf4f167415b17b44608b3e98a7a619862bbeb","phase":"draft","verdict":"unknown","integration":"current","stale":"no","targetCommit":"297bf4f167415b17b44608b3e98a7a619862bbeb"}],"edges":[{"from":"WO-228","to":"WO-193","relation":"planning-deferral"}]}]} -->
+<!-- dotln-workstreams: {"workstreams":[]} -->
 
 ## Active
 
 None.
 
 ## Open
+
+### WO-240
+
+[WO-240 — Run core and the starter on Node 24.15.0 and Node 26 (version assigned at activation)](WO-240-node-24-and-26.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; dependency-ready.
+- References: none declared.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model; record the actual model and effort.
+- Effort: executor xhigh; verifier xhigh; reviewer xhigh.
+- Track: delivery
+- Cost: adds two-runtime compatibility evidence and a reproducible runtime matrix, including a fresh starter bootstrap on each runtime. Removes the Node-26-only admission while preserving the already-working starter setup without a core checkout. Commands: retain bootstrap, emit, check and the existing gates; one matrix entry point if the repository has no suitable runner. Steps: six. Context bytes and tokens: unknown until implementation; measure changed guidance before and after. Wall-clock: full checks on both runtimes cost two observations instead of one; runtime acquisition and gate cost are unknown until measured. No new recurring hook work. Inspect registered evidence sources at activation and deterministically re-mint affected editions; a runtime change requires the bounded live host requalification named below. No feedback behavior change is proposed; if an implementation touches a feedback-judged source, record the extra re-mint and live feedback self-host episode before doing so.
+- Authority: [docs/work-orders/WO-240-node-24-and-26.md](WO-240-node-24-and-26.md)
+
+### WO-241
+
+[WO-241 — Make feature and loadout choices readable and effective (version assigned at activation)](WO-241-readable-feature-configuration.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; dependency-ready.
+- References: none declared.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model; record actual model and effort.
+- Effort: executor xhigh; verifier xhigh; reviewer xhigh.
+- Track: delivery
+- Cost: adds a maintained feature inventory and an effective-configuration view, extending &#96;dotln.config.json&#96; rather than adding a second settings file. Removes hidden operator preferences from the portable default and the need to infer switches from TypeScript. Commands: one inspection/validation form on an existing CLI; no startup command required of the operator. Steps: seven. Wall-clock, context-byte and token changes are unknown until measured; record emit/check and role-root costs before/after. The one-time source/comment cleanup is not a new recurring gate. The Contributor and harness library are registered evidence sources: deterministically re-mint affected editions and the role oracle while preserving historical chains. If a shared feedback-judged definition changes, include one live feedback self-host episode and its re-mint; enumerate this closure before editing.
+- Authority: [docs/work-orders/WO-241-readable-feature-configuration.md](WO-241-readable-feature-configuration.md)
+
+### WO-242
+
+[WO-242 — Discuss and inspect a proposed change before applying it (version assigned at activation)](WO-242-assisted-change-review.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; blocked on WO-241.
+- References: WO-241: hard (unmet) — the explicit interaction selection and destination policy use the existing configuration extended there; WO-236: satisfied-by-close (met) — registered target writes already have scoped grants.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model; record actual model and effort.
+- Effort: executor xhigh; verifier xhigh; reviewer xhigh.
+- Track: delivery
+- Cost: adds three target-local review documents, proposal/acceptance state and checks at the apply boundary. Removes reliance on terminal memory and the jump from a request to source mutation. Commands: propose, refresh and apply forms on the existing target/work-order tooling if necessary; the operator may use ordinary conversation or edit the dialogue instead of learning commands. Steps: seven. Wall-clock, tokens and context bytes are unknown until a representative comparison; measure proposal generation, operator turns, reading burden and the same accepted outcome under the current mode. No per-message complete gate or global transcript scan. Deterministically re-mint every affected registered edition; changes to feedback-judged source-change or resident behavior owe one live feedback self-host episode and its re-mint, with the executor recording that closure before editing. All work and waiting count in the comparison.
+- Authority: [docs/work-orders/WO-242-assisted-change-review.md](WO-242-assisted-change-review.md)
+
+### WO-243
+
+[WO-243 — Select closeout checks for the repositories an order changes (version assigned at activation)](WO-243-target-order-gate-scope.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; dependency-ready.
+- References: WO-210: satisfied-by-close (met) — the target gate contract already exists; WO-239: satisfied-by-close (met) — current integration and release-close behavior is the baseline.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model; record actual model and effort.
+- Effort: executor xhigh; verifier xhigh; reviewer xhigh.
+- Track: machinery
+- Cost: removes unrelated complete launchpad runs from target-only orders. Adds a shared gate-scope selection and mixed-change regression cases, no new operator command. Steps: five. The fork stopped one unnecessary run after 0 h 3 min; its total potential cost is unknown. Measure comparable target-only and mixed closeouts before/after, including waiting. Context bytes and tokens: unknown until run; measure changed role roots. Contributor changes require deterministic evidence re-mints and an oracle refresh; trace the closure and run a live feedback self-host episode only if a feedback-judged source changes. No cleanup or gate memoization is bundled.
+- Authority: [docs/work-orders/WO-243-target-order-gate-scope.md](WO-243-target-order-gate-scope.md)
+
+### WO-237
+
+[WO-237 — Keep closed-order journals and safely remove generated build staging (version assigned at activation)](WO-237-a-closed-order-keeps-its-journals.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; dependency-ready.
+- References: WO-233: satisfied-by-close (met) — the owner records, the retention classes, the prune at release close and the close record this order extends; WO-178: satisfied-by-close (met) — plan start and plan failures counting local closes, denials and interventions from the journals; WO-139: satisfied-by-close (met) — the session journal and the usage readback this order lets read from a retained lane.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer xhigh.
+- Track: machinery
+- Cost: adds a bounded stale-build recovery path and its negative controls, plus &#96;closed-journal&#96; to &#96;DEFAULT_RETENTION&#96; in &#96;packages/skeleton/src/temporary-root-records.mjs&#96; and the seed to &#96;docs/control/budgets.json&#96; and &#96;scripts/kit/budgets.template.json&#96;, the move in the close's worktree removal (&#96;scripts/release.mjs&#96; around 2290 to 2330 with &#96;scripts/lib/worktree-removal.mjs&#96;), the &#96;journals&#96; field of the cleanup row and &#96;release-close.json&#96;, the retained-lane read in &#96;scripts/lib/plan-failures.mjs&#96; and in the usage readback (&#96;scripts/harness.mjs usage&#96; with &#96;packages/skeleton/src/usage-observation.mjs&#96;), cases in &#96;scripts/test-release.sh&#96;, &#96;scripts/test-temporary-roots.mjs&#96;, &#96;scripts/test-plan-refutation.mjs&#96;, &#96;scripts/test-harness.mjs&#96; and &#96;scripts/test-instance-history.mjs&#96;, and sentences in product 07 and the kit README. Removes: the loss, at every release close, of the order's hook judgments, host denials, dispatch rows, operator-message rows and gate index (the fork's executor could not read the earlier target orders' journals on 2026-10-28; &#96;plan failures&#96; counts denials and interventions from the current checkout's journals only, so a closed order contributes none). Wall-clock: one directory move per close (milliseconds; WO-192's worktree holds four journals of 368 KB; main's 242 journals of two months are 63 MB; the gate captures that make a harness directory large keep their own classes and do not move). Context bytes: this file. Commands: none new; &#96;harness prune&#96; reports the class. Tokens: unknown until run. Steps: ten, including two added cleanup steps. The recovery path's before/after close cost is unknown until measured; it must retain WO-239's scoped census. The previous milliseconds estimate for journal movement is an estimate, not measured evidence. Re-mints: &#96;temporary-root-records.mjs&#96; and &#96;usage-observation.mjs&#96; are runtime sources; the executor checks &#96;scripts/lib/evidence-sources.mjs&#96; at activation and re-mints deterministically any edition they stale; none is a file the feedback verifier judges, so no live feedback episode; &#96;release.mjs&#96;, &#96;harness-prune.mjs&#96; and &#96;plan-failures.mjs&#96; are declared sources of machinery suites, so &#96;npm test -- --review&#96; runs before handoff.
+- Authority: [docs/work-orders/WO-237-a-closed-order-keeps-its-journals.md](WO-237-a-closed-order-keeps-its-journals.md)
 
 ### WO-238
 
@@ -60,23 +143,6 @@ None.
 - Track: machinery
 - Cost: adds &#96;scripts/lib/document-kinds.mjs&#96; (new): the kind of every tracked Markdown and JSON document under the configured document roots and the root Markdown files, &#96;standing&#96;, &#96;record&#96; or &#96;generated&#96;, derived by path class (evidence, verifications, final reviews, refutations, releases, decisions and dated pass documents are records; marked generated pages are generated; the rest standing) with an override list in &#96;docs/control/documents.json&#96; (new), and the reader binding of each standing document from the reader entry points (the root instruction file's Start here, every generated role root's and skill's &#96;Read:&#96; lines, product 07's cold-start read order, the kit README's First steps) and the links that reach it from other standing documents. &#96;scripts/lib/document-census.mjs&#96; (new): the sessions that read each document over the last N releases, counted from the observed &#96;Read&#96;, &#96;Edit&#96;, &#96;Write&#96; and &#96;Bash&#96; rows of the session journals under &#96;docs/control/local/harness/&#96; (Claude and Copilot hooks; Codex unobserved and labeled so), written to &#96;docs/control/local/document-census.json&#96;. &#96;npm run plan -- documents&#96; in &#96;scripts/refute-plan.mjs&#96;: standing documents with no reader binding, standing documents unread over the window, records a reader entry point names, and the red tags carried from the previous pass, paged at 8 KB with &#96;next&#96;; &#96;plan start&#96; prints the report and carries the red tags into the skeleton. In &#96;scripts/docs-check.mjs&#96;: a reader entry point names only standing documents; a standing document has a reader binding; a red tag older than one pass without a disposition is reported; the byte-ceiling check and &#96;docs/control/doc-ceilings.json&#96; retired. In &#96;packages/skeleton/src/loadouts/entropy-reducer.ts&#96;: a fifth lens brief, &#96;documents-and-readers&#96; (which standing document carries history instead of state; which document has no reader; which record a session reads at start), files &#96;docs/&#96;, &#96;README.md&#96;, &#96;CLAUDE.md&#96;. In &#96;scripts/lib/entropy-review.mjs&#96; and &#96;scripts/entropy.mjs&#96;: a &#96;deliveredBy&#96; field (&#96;workOrderId&#96;, &#96;release&#96;, &#96;recordedAt&#96;) on a filed packet, written by &#96;dispose&#96; when a packet is routed to an order and by &#96;release.mjs close&#96; when the carrying order closes; the twelve filed packets backfilled from the history page. In &#96;scripts/work-orders.mjs&#96; (677): the index card drops the Cost paragraph; the order file keeps the field. In &#96;scripts/kit/&#96;: &#96;repository-profile.template.md&#96; loses &#96;**Checked:**&#96; for &#96;**Current at:** &lt;commit&gt;&#96; and one rule line (the profile states the repository as it is and never its history); &#96;workstream.template.md&#96; states that the rules section holds rules and the member orders hold the history; &#96;README.client.md&#96; is cut to what an instance's front page needs (what this instance is, how to start, where the kit's documents are), the kit's explanation moving to the kit's own &#96;docs/&#96;; &#96;CLAUDE.template.md&#96; keeps its floor and gains one sentence naming the three kinds. In &#96;scripts/lib/harness-instruction.mjs&#96;: the residue as one line per profile naming its rule ids with the shared reason (WO-233-D076). &#96;docs/planning/passes/&#96; (new): every dated pass document (&#96;docs/planning/*-20NN-NN-NN.md&#96;, the entropy review documents, the dated dispositions) moved by &#96;git mv&#96; with every link rewritten, the ledger's Record links included; &#96;docs/planning/README.md&#96; (new, standing): the planning entry points. The map's catalog placed above a record divider with the dated candidate sections below it, their anchors unchanged (the register's keys). Product 07 split by reader on the census and the citations: the sections roles and skills cite stay as the roles' source; the operator's procedures (resume phrases, recovery controls, the planning and release routes) become &#96;docs/product/operator-reference.md&#96; (new, standing); dated accounts no section's reader needs move to &#96;docs/planning/passes/execution-guide-record.md&#96; (a record); every dated bracket citation that stays becomes a link to its record or is dropped where the order's decisions already hold it. In &#96;packages/skeleton/src/loadouts/contributor.ts&#96;: the shared rule's standing-document clause extended with the kinds and the census (WO-235 carries the clause), and the reviewer's checklist item (a changed standing document's diff replaces; a dated account added under a standing heading returns to repair). Cases in &#96;scripts/test-docs-check.mjs&#96;, &#96;scripts/test-harness.mjs&#96;, &#96;scripts/test-entropy-review.mjs&#96;, &#96;scripts/test-work-orders.sh&#96;, &#96;scripts/test-launchpad-export.mjs&#96;, &#96;scripts/test-launchpad-update.mjs&#96;, &#96;scripts/test-plan-refutation.mjs&#96; and &#96;scripts/test-process-debt.mjs&#96;. Removes: document byte ceilings as the document check's judgment; the Cost paragraph from every index card; the &#96;Checked:&#96; history field; 51 dated pass documents from the planning root; the per-harness residue lines from every instance's root instruction file; the appearance of twelve un-acted proposals; the dated bracket citations and the record paragraphs from product 07 (measured and recorded before and after). Wall-clock: the census over this checkout's journals (243 files at filing) measured in step 2 and recorded; &#96;plan start&#96; grows by that read. Context bytes: this file; every role root grows by the extended clause and the reviewer item, recorded before and after; product 07 falls by the records moved out of it, recorded. Commands: &#96;npm run plan -- documents&#96; (new). Tokens: unknown until run. Steps: 14. Re-mints: &#96;contributor.ts&#96;, &#96;entropy-reducer.ts&#96; and &#96;harness-instruction.mjs&#96; are registered evidence sources, re-minted deterministically, and none is a file the feedback verifier judges, so no live feedback episode; &#96;docs-check.mjs&#96;, &#96;work-orders.mjs&#96;, &#96;refute-plan.mjs&#96; and &#96;meta.mjs&#96; are declared sources of machinery suites, so &#96;npm test -- --review&#96; runs before handoff; the role oracle is re-minted.
 - Authority: [docs/work-orders/WO-238-a-document-says-what-is-so.md](WO-238-a-document-says-what-is-so.md)
-
-### WO-237
-
-[WO-237 — A closed order keeps its journals: release close moves the worktree's session journals, session state and gate index into main's retained lane for the order under a &#96;closed-journal&#96; retention class the prune judges, and planning's failure counts and the usage readback read them by order (version assigned at activation)](WO-237-a-closed-order-keeps-its-journals.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-233: satisfied-by-close (met) — the owner records, the retention classes, the prune at release close and the close record this order extends; WO-178: satisfied-by-close (met) — plan start and plan failures counting local closes, denials and interventions from the journals; WO-139: satisfied-by-close (met) — the session journal and the usage readback this order lets read from a retained lane.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer xhigh.
-- Track: machinery
-- Cost: adds &#96;closed-journal&#96; to &#96;DEFAULT_RETENTION&#96; in &#96;packages/skeleton/src/temporary-root-records.mjs&#96; and the seed to &#96;docs/control/budgets.json&#96; and &#96;scripts/kit/budgets.template.json&#96;, the move in the close's worktree removal (&#96;scripts/release.mjs&#96; around 2290 to 2330 with &#96;scripts/lib/worktree-removal.mjs&#96;), the &#96;journals&#96; field of the cleanup row and &#96;release-close.json&#96;, the retained-lane read in &#96;scripts/lib/plan-failures.mjs&#96; and in the usage readback (&#96;scripts/harness.mjs usage&#96; with &#96;packages/skeleton/src/usage-observation.mjs&#96;), cases in &#96;scripts/test-release.sh&#96;, &#96;scripts/test-temporary-roots.mjs&#96;, &#96;scripts/test-plan-refutation.mjs&#96;, &#96;scripts/test-harness.mjs&#96; and &#96;scripts/test-instance-history.mjs&#96;, and sentences in product 07 and the kit README. Removes: the loss, at every release close, of the order's hook judgments, host denials, dispatch rows, operator-message rows and gate index (the fork's executor could not read the earlier target orders' journals on 2026-10-28; &#96;plan failures&#96; counts denials and interventions from the current checkout's journals only, so a closed order contributes none). Wall-clock: one directory move per close (milliseconds; WO-192's worktree holds four journals of 368 KB; main's 242 journals of two months are 63 MB; the gate captures that make a harness directory large keep their own classes and do not move). Context bytes: this file. Commands: none new; &#96;harness prune&#96; reports the class. Tokens: unknown until run. Steps: 8. Re-mints: &#96;temporary-root-records.mjs&#96; and &#96;usage-observation.mjs&#96; are runtime sources; the executor checks &#96;scripts/lib/evidence-sources.mjs&#96; at activation and re-mints deterministically any edition they stale; none is a file the feedback verifier judges, so no live feedback episode; &#96;release.mjs&#96;, &#96;harness-prune.mjs&#96; and &#96;plan-failures.mjs&#96; are declared sources of machinery suites, so &#96;npm test -- --review&#96; runs before handoff.
-- Authority: [docs/work-orders/WO-237-a-closed-order-keeps-its-journals.md](WO-237-a-closed-order-keeps-its-journals.md)
 
 ### WO-192
 
@@ -131,7 +197,7 @@ None.
 
 ### WO-193
 
-[WO-193 — Capability requests: an instance asks core for a capability in one standard way, answered through either update route, with a planning intake of labelled issues, a typed &#96;UPSTREAM.md&#96; answered list and a deployment-record template; the private predecessor map is WO-228's (version assigned at activation)](WO-193-instance-capability-requests.md)
+[WO-193 — Capability requests: an instance asks core for a capability in one standard way, answered through either update route, with a planning intake of labelled issues, a typed &#96;UPSTREAM.md&#96; answered list and a deployment-record template (version assigned at activation)](WO-193-instance-capability-requests.md)
 
 - State: draft.
 - Application target: unassigned.
@@ -233,23 +299,6 @@ None.
 - Cost: phase 1 only: adds the runbook's recorded-posture row and post-correction paragraph as dated observations with a drift rule, forward-pointing Amendments entries in ADR-0003 and ADR-0004, the readback observations and the decisions file with the operator-witnessed run record (typed, &#96;unknown&#96; where no run exists) and one gate row per harness. The baseline and final approval-surface matrices, transcripts, synthetic fixture, invocation fixes, observed-behaviour section and verifier reproduction are phases 2 and 3, the planning map's boarded candidate (step 1). Removes nothing; the boundary crossings a baseline would find stay unmeasured until a host channel reports approval requests. Re-mints: none planned; a fix to a registered evidence source (among them &#96;scripts/build.mjs&#96;, &#96;scripts/lib/helpers.mjs&#96;, &#96;git.mjs&#96; and &#96;paths.mjs&#96;) would owe a deterministic re-mint of each edition it stales, and a fix to a file the feedback verifier judges one live feedback self-host episode, which the executor runs on a configuration the operator's 2026-09-28 direction accepts; the baseline decides whether either happens. The witnessed run is a live session of unmeasured cost; the fresh sessions per harness and the verifier's reproduction belong to the boarded phases. Commands: none added; phase 1 runs the existing &#96;npm run discover -- harness &lt;name&gt;&#96; readback (step 4). Steps: phase 1 is documents and readback (steps 1 to 5); the fresh sessions and the verifier's reproduction belong to the scope step 1 boards, and the witnessed run is a typed record, &#96;unknown&#96; where no run exists (criterion 15); criteria 3 to 11, 13 and 14 are marked out of scope in place. Wall-clock, tokens and context bytes are unknown until run.
 - Authority: [docs/work-orders/WO-014-approval-burden-contract.md](WO-014-approval-burden-contract.md)
 
-### WO-228
-
-[WO-228 — The private predecessor map: an instance keeps, at a configured instance-owned path, rows that say what its earlier generations did, where each lives, what in the instance now carries it and how faithfully, reads one summary of what is still missing, and turns a missing row into a generic request through WO-193's route; core ships the command, the row schema, a public synthetic seed and the fixtures, and never a row about a real predecessor (version assigned at activation)](WO-228-private-predecessor-map.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; blocked on WO-193.
-- References: WO-193: planning-deferral (unmet) until WO-193 dated 2026-10-21 — the predecessor map calls WO-193's draftRequest and runs under its requests.route floor; the operator activates it from the work machine after WO-193 closes; WO-207: reference-only (non-blocking) — the build pin decides how a unit or support carrier is looked up in the emitted manifest's origin; whichever runs second reads the other as landed; WO-074: satisfied-by-close (met) — the kit manifest and file set the parity command joins; WO-076: satisfied-by-close (met) — the instance-owned files and emitted build a row's carrier is checked against.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer high.
-- Track: delivery
-- Cost: adds &#96;npm run parity -- init&#124;add&#124;check&#124;report&#124;request&#96; (&#96;scripts/parity.mjs&#96;, new), the suite &#96;parity&#96; (&#96;scripts/test-parity.mjs&#96;, new), a seed JSON file under &#96;scripts/kit/&#96;, export and update fixture cases in &#96;scripts/test-launchpad.mjs&#96;, the &#96;package.json&#96; entry and the product write-backs step 7 names. Removes the absence of any place where an instance records what its predecessors did and whether its build does it yet, so "at least as capable" becomes a count the instance can read, and removes the predecessor half of WO-193, whose remaining half (the request route) no longer waits for a step the operator can only take on the work machine. Re-mints: &#96;package.json&#96; is a common source of the evidence inventories (&#96;scripts/lib/evidence-sources.mjs&#96;), so each edition whose check the entry stales is re-minted deterministically, the feedback edition by carry (&#96;package.json&#96; is not in &#96;FEEDBACK_SOURCE_PATHS&#96;); no live feedback episode. Declared machinery sources change (&#96;package.json&#96;, &#96;scripts/test-runner.mjs&#96;), so &#96;npm test -- --review&#96; runs before handoff. Wall-clock and tokens: unknown until run. Context bytes: this file, about 17,000. Steps: 8.
-- Authority: [docs/work-orders/WO-228-private-predecessor-map.md](WO-228-private-predecessor-map.md)
-
 [WO-014]: WO-014-approval-burden-contract.md
 [WO-083]: WO-083-real-run-launchpad-instance.md
 [WO-088]: WO-088-phrase-table-single-source.md
@@ -259,8 +308,9 @@ None.
 [WO-192]: WO-192-router-drives-an-order.md
 [WO-193]: WO-193-instance-capability-requests.md
 [WO-207]: WO-207-update-rollback.md
-[WO-228]: WO-228-private-predecessor-map.md
-[WO-235]: WO-235-no-artifact-shaped-by-its-predecessor.md
 [WO-237]: WO-237-a-closed-order-keeps-its-journals.md
 [WO-238]: WO-238-a-document-says-what-is-so.md
-[WO-239]: WO-239-release-close-prepares-before-it-loads-and-runs-once.md
+[WO-240]: WO-240-node-24-and-26.md
+[WO-241]: WO-241-readable-feature-configuration.md
+[WO-242]: WO-242-assisted-change-review.md
+[WO-243]: WO-243-target-order-gate-scope.md
