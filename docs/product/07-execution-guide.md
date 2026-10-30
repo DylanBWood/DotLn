@@ -2782,13 +2782,15 @@ usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-
   intervention counts. Exact transcript authorship takes precedence; unmatched
   prompts and queue-operation enqueues without a command mode remain
   unattributed. It uses the prompt boundary's time until an earlier transcript
-  timestamp is observed, which can shorten
-  the recorded terminal elapsed time. The same scoped parser handles both
-  sources and retains only hashed task joins, status and time. A lexical estimate marker attached to a number,
+  timestamp is observed, which can shorten the recorded terminal elapsed time.
+  The same scoped parser handles both sources and retains only hashed task
+  joins, status and time. A lexical estimate marker attached to a number,
   duration or clock time in final assistant text is journaled with the observed
-  quantity when unambiguous, otherwise `unmeasured`; quotes and fenced code are
-  exempt. Its correction is delivered once at the next boundary. This holds no
-  turn, refuses no action and causes no Stop re-entry. Codex has no Stop hook:
+  quantity when unambiguous, otherwise `unmeasured`; quotes, fenced code and
+  dotted version numbers such as 2.1.312 are exempt
+  ([WO-235-D060](../evidence/WO-235/decisions.md#wo-235-d060)). Its correction
+  is delivered once at the next boundary. This holds no turn, refuses no action
+  and causes no Stop re-entry. Codex has no Stop hook:
   lifecycle and briefing output run the same scan over already available final
   messages and their handoff text; a later final answer waits for the next
   boundary. The journal counts typed `correction:` events and hedges by order,

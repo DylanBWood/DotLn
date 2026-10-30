@@ -132,8 +132,15 @@ test("lexical scanner excludes quotes/code and leaves factual or unknown quantit
     "~~~\nroughly 10 minutes ago\n~~~",
     "`roughly 10 minutes ago`",
     "I think this works. 10 tests passed.",
+    "Your direction about older versions: nothing served 2.1.312 or 2.1.308",
+    "The release around v0.103.0 is about skeleton 0.73.0",
   ])
     assert.deepEqual(scanHedges(text, facts), [], text);
+  assert.equal(
+    scanHedges("The review took about 2.5 minutes on 2.1.312", facts)[0]
+      .quantity,
+    "2.5 minutes",
+  );
   for (const marker of [
     "roughly",
     "about",
