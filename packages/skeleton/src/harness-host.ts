@@ -83,6 +83,7 @@ import {
 } from "@dotln/compiler";
 import { harnessAuthorization } from "./reactor.js";
 import { personalFeedback } from "./loadouts/feedback.js";
+import { qualityPassGuidance } from "./document-quality.js";
 import {
   HarnessCommandRefused,
   LIVE_GATE_READ_LIST,
@@ -1264,6 +1265,7 @@ const operatorPrefixes: Readonly<Record<string, string>> = {
   "operator override:": "override",
   "scope expand:": "scope expansion",
   "conversation only:": "other step",
+  "quality pass:": "direction",
 };
 const observationPhase = (session: HarnessSession): string =>
   session.intent === "resume: fix"
@@ -5859,6 +5861,14 @@ async function evaluateExistingHarnessHook(
     observeTypedCorrection(root, observationScope(), input.prompt ?? "");
     additionalContext = [
       additionalContext,
+      // A quality pass is requested by the prompt's own first content line,
+      // the line every dispatch prefix is read from. A task notification or
+      // another agent's report opens with its envelope there, so it never
+      // receives the document-editing guidance.
+      input.hook_event_name === "UserPromptSubmit" &&
+      harnessPromptLine(input.prompt).text.startsWith("quality pass:")
+        ? qualityPassGuidance
+        : undefined,
       observationBoundary(root, observationScope(), {
         ...(input.prompt ? { prompt: input.prompt } : {}),
         ...(input.transcript_path

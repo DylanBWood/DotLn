@@ -364,7 +364,7 @@ export const dispatchFingerprint = (row) => hash(row.dispatch);
 export const validDispatch = (value) => {
   if (typeof value !== "string") return false;
   const match =
-    /^(?:planning|ideation|resume|scope expand|conversation only|analysis|operator override):([^\r\n\u2028\u2029]*)$/.exec(
+    /^(?:planning|ideation|resume|scope expand|conversation only|quality pass|analysis|operator override):([^\r\n\u2028\u2029]*)$/.exec(
       value,
     );
   return Boolean(

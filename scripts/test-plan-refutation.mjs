@@ -6515,6 +6515,24 @@ else {
       },
     );
     await check(
+      "planning start removes its prepared skeleton when branch creation fails",
+      async () => {
+        const repo = makeRepo(parent, "planning-start-failure");
+        runGit(repo, ["branch", "-M", "main"]);
+        const date = new Date().toISOString().slice(0, 10);
+        const branch = `planning/${date}-collision`;
+        const document = `docs/planning/collision-${date}.md`;
+        runGit(repo, ["branch", branch]);
+        await assert.rejects(
+          plan(["start", "collision"], repo),
+          /already exists/,
+        );
+        assert.equal(runGit(repo, ["symbolic-ref", "--short", "HEAD"]), "main");
+        assert.equal(existsSync(join(repo, document)), false);
+        assert.equal(runGit(repo, ["status", "--porcelain"]), "");
+      },
+    );
+    await check(
       "WO-126 planning start requires clean main and full scope retains every judgment",
       async () => {
         const repo = makeRepo(parent, "planning-start");
@@ -6524,6 +6542,20 @@ else {
         commit(repo, "fixture input");
         const started = await plan(["start", "fixture"], repo);
         assert.match(started.branch, /^planning\/\d{4}-\d{2}-\d{2}-fixture$/);
+        const skeleton = read(repo, started.document);
+        for (const heading of [
+          "Dispatch and capture",
+          "Readings",
+          "Orders filed and amended",
+          "Register",
+          "NoOps",
+          "Sequence",
+          "Write-backs and ceilings",
+          "Process cost",
+          "Validation",
+        ])
+          assert.ok(skeleton.includes(`## ${heading}\n`));
+        commit(repo, "file planning skeleton");
         await assert.rejects(plan(["start", "second"], repo), /clean main/);
         const prompt = await plan(
           ["refute", "--direct", "--scope", "full"],
@@ -7075,6 +7107,7 @@ else {
         const repo = failureRepo(parent, "failures-start");
         const started = await plan(["start", "failures"], repo);
         assert.deepEqual(Object.keys(started), [
+          "document",
           "branch",
           "phase",
           "authority",
@@ -7083,6 +7116,11 @@ else {
           "conditions",
           "followups",
         ]);
+        assert.match(
+          started.document,
+          /^docs\/planning\/failures-\d{4}-\d{2}-\d{2}\.md$/u,
+        );
+        assert.ok(existsSync(join(repo, started.document)));
         assert.equal(started.readerScores.readerDue, false);
         assert.match(started.readerScores.unavailable, /reader-profiles\.json/);
         assert.equal(started.conditions.command, "npm run plan -- conditions");

@@ -1,0 +1,431 @@
+{
+  "schemaVersion": 1,
+  "question": "Can writing guidance collect only PR bodies while keeping the same comparison candidates?",
+  "axis": "history collection work",
+  "durationMs": 939.16225,
+  "arms": [
+    {
+      "arm": "all-classes",
+      "durationMs": 790.523459,
+      "classes": {
+        "workOrder": 25,
+        "prBody": 25,
+        "verification": 32,
+        "finalReview": 25,
+        "planningDocument": 40
+      },
+      "prBodies": [
+        {
+          "class": "prBody",
+          "path": "docs/final-reviews/WO-118/PR.md",
+          "bytes": 12411,
+          "workOrder": "WO-118",
+          "at": "2026-10-13T15:09:54.434Z",
+          "passed": true
+        },
+        {
+          "class": "prBody",
+          "path": "docs/final-reviews/WO-215/PR.md",
+          "bytes": 13572,
+          "workOrder": "WO-215",
+          "at": "2026-10-14T04:40:00.945Z",
+          "passed": true
+        },
+        {
+          "class": "prBody",
+          "path": "docs/final-reviews/WO-210/PR.md",
+          "bytes": 20786,
+          "workOrder": "WO-210",
+          "at": "2026-10-15T13:37:17.990Z",
+          "passed": true
+        },
+        {
+          "class": "prBody",
+          "path": "docs/final-reviews/WO-213/PR.md",
+          "bytes": 21663,
+          "workOrder": "WO-213",
+          "at": "2026-10-17T17:44:47.384Z",
+          "passed": true
+        },
+        {
+          "class": "prBody",
+          "path": "docs/final-reviews/WO-216/PR.md",
+          "bytes": 12366,
+          "workOrder": "WO-216",
+          "at": "2026-10-18T15:23:19.818Z",
+          "passed": true
+        },
+        {
+          "class": "prBody",
+          "path": "docs/final-reviews/WO-221/PR.md",
+          "bytes": 14239,
+          "workOrder": "WO-221",
+          "at": "2026-10-19T13:06:19.549Z",
+          "passed": true
+        },
+        {
+          "class": "prBody",
+          "path": "docs/final-reviews/WO-222/PR.md",
+          "bytes": 6535,
+          "workOrder": "WO-222",
+          "at": "2026-10-19T21:52:54.375Z",
+          "passed": true
+        },
+        {
+          "class": "prBody",
+          "path": "docs/final-reviews/WO-218/PR.md",
+          "bytes": 8328,
+          "workOrder": "WO-218",
+          "at": "2026-10-20T18:13:49.773Z",
+          "passed": true
+        },
+        {
+          "class": "prBody",
+          "path": "docs/final-reviews/WO-223/PR.md",
+          "bytes": 6145,
+          "workOrder": "WO-223",
+          "at": "2026-10-21T01:35:56.368Z",
+          "passed": true
+        },
+        {
+          "class": "prBody",
+          "path": "docs/final-reviews/WO-217/PR.md",
+          "bytes": 8804,
+          "workOrder": "WO-217",
+          "at": "2026-10-21T22:21:14.760Z",
+          "passed": true
+        },
+        {
+          "class": "prBody",
+          "path": "docs/final-reviews/WO-226/PR.md",
+          "bytes": 7492,
+          "workOrder": "WO-226",
+          "at": "2026-10-22T11:50:10.021Z",
+          "passed": true
+        },
+        {
+          "class": "prBody",
+          "path": "docs/final-reviews/WO-227/PR.md",
+          "bytes": 9040,
+          "workOrder": "WO-227",
+          "at": "2026-10-23T01:27:50.847Z",
+          "passed": true
+        },
+        {
+          "class": "prBody",
+          "path": "docs/final-reviews/WO-225/PR.md",
+          "bytes": 7613,
+          "workOrder": "WO-225",
+          "at": "2026-10-23T04:27:29.880Z",
+          "passed": true
+        },
+        {
+          "class": "prBody",
+          "path": "docs/final-reviews/WO-229/PR.md",
+          "bytes": 9425,
+          "workOrder": "WO-229",
+          "at": "2026-10-23T13:44:33.150Z",
+          "passed": true
+        },
+        {
+          "class": "prBody",
+          "path": "docs/final-reviews/WO-219/PR.md",
+          "bytes": 11453,
+          "workOrder": "WO-219",
+          "at": "2026-10-23T23:45:46.509Z",
+          "passed": true
+        },
+        {
+          "class": "prBody",
+          "path": "docs/final-reviews/WO-220/PR.md",
+          "bytes": 11270,
+          "workOrder": "WO-220",
+          "at": "2026-10-24T13:32:56.082Z",
+          "passed": true
+        },
+        {
+          "class": "prBody",
+          "path": "docs/final-reviews/WO-080/PR.md",
+          "bytes": 9455,
+          "workOrder": "WO-080",
+          "at": "2026-10-24T17:24:54.803Z",
+          "passed": true
+        },
+        {
+          "class": "prBody",
+          "path": "docs/final-reviews/WO-230/PR.md",
+          "bytes": 9086,
+          "workOrder": "WO-230",
+          "at": "2026-10-24T21:20:42.663Z",
+          "passed": true
+        },
+        {
+          "class": "prBody",
+          "path": "docs/final-reviews/WO-224/PR.md",
+          "bytes": 10329,
+          "workOrder": "WO-224",
+          "at": "2026-10-24T23:42:23.092Z",
+          "passed": true
+        },
+        {
+          "class": "prBody",
+          "path": "docs/final-reviews/WO-231/PR.md",
+          "bytes": 8145,
+          "workOrder": "WO-231",
+          "at": "2026-10-25T03:33:20.701Z",
+          "passed": true
+        },
+        {
+          "class": "prBody",
+          "path": "docs/final-reviews/WO-232/PR.md",
+          "bytes": 10644,
+          "workOrder": "WO-232",
+          "at": "2026-10-25T16:45:43.014Z",
+          "passed": true
+        },
+        {
+          "class": "prBody",
+          "path": "docs/final-reviews/WO-204/PR.md",
+          "bytes": 13035,
+          "workOrder": "WO-204",
+          "at": "2026-10-25T20:31:09.329Z",
+          "passed": true
+        },
+        {
+          "class": "prBody",
+          "path": "docs/final-reviews/WO-233/PR.md",
+          "bytes": 10949,
+          "workOrder": "WO-233",
+          "at": "2026-10-28T03:52:56.497Z",
+          "passed": true
+        },
+        {
+          "class": "prBody",
+          "path": "docs/final-reviews/WO-236/PR.md",
+          "bytes": 8139,
+          "workOrder": "WO-236",
+          "at": "2026-10-28T18:26:27.575Z",
+          "passed": true
+        },
+        {
+          "class": "prBody",
+          "path": "docs/final-reviews/WO-234/PR.md",
+          "bytes": 11012,
+          "workOrder": "WO-234",
+          "at": "2026-10-29T02:04:07.174Z",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "arm": "requested-class",
+      "durationMs": 148.13429199999996,
+      "classes": {
+        "prBody": 25
+      },
+      "prBodies": [
+        {
+          "class": "prBody",
+          "path": "docs/final-reviews/WO-118/PR.md",
+          "bytes": 12411,
+          "workOrder": "WO-118",
+          "at": "2026-10-13T15:09:54.434Z",
+          "passed": true
+        },
+        {
+          "class": "prBody",
+          "path": "docs/final-reviews/WO-215/PR.md",
+          "bytes": 13572,
+          "workOrder": "WO-215",
+          "at": "2026-10-14T04:40:00.945Z",
+          "passed": true
+        },
+        {
+          "class": "prBody",
+          "path": "docs/final-reviews/WO-210/PR.md",
+          "bytes": 20786,
+          "workOrder": "WO-210",
+          "at": "2026-10-15T13:37:17.990Z",
+          "passed": true
+        },
+        {
+          "class": "prBody",
+          "path": "docs/final-reviews/WO-213/PR.md",
+          "bytes": 21663,
+          "workOrder": "WO-213",
+          "at": "2026-10-17T17:44:47.384Z",
+          "passed": true
+        },
+        {
+          "class": "prBody",
+          "path": "docs/final-reviews/WO-216/PR.md",
+          "bytes": 12366,
+          "workOrder": "WO-216",
+          "at": "2026-10-18T15:23:19.818Z",
+          "passed": true
+        },
+        {
+          "class": "prBody",
+          "path": "docs/final-reviews/WO-221/PR.md",
+          "bytes": 14239,
+          "workOrder": "WO-221",
+          "at": "2026-10-19T13:06:19.549Z",
+          "passed": true
+        },
+        {
+          "class": "prBody",
+          "path": "docs/final-reviews/WO-222/PR.md",
+          "bytes": 6535,
+          "workOrder": "WO-222",
+          "at": "2026-10-19T21:52:54.375Z",
+          "passed": true
+        },
+        {
+          "class": "prBody",
+          "path": "docs/final-reviews/WO-218/PR.md",
+          "bytes": 8328,
+          "workOrder": "WO-218",
+          "at": "2026-10-20T18:13:49.773Z",
+          "passed": true
+        },
+        {
+          "class": "prBody",
+          "path": "docs/final-reviews/WO-223/PR.md",
+          "bytes": 6145,
+          "workOrder": "WO-223",
+          "at": "2026-10-21T01:35:56.368Z",
+          "passed": true
+        },
+        {
+          "class": "prBody",
+          "path": "docs/final-reviews/WO-217/PR.md",
+          "bytes": 8804,
+          "workOrder": "WO-217",
+          "at": "2026-10-21T22:21:14.760Z",
+          "passed": true
+        },
+        {
+          "class": "prBody",
+          "path": "docs/final-reviews/WO-226/PR.md",
+          "bytes": 7492,
+          "workOrder": "WO-226",
+          "at": "2026-10-22T11:50:10.021Z",
+          "passed": true
+        },
+        {
+          "class": "prBody",
+          "path": "docs/final-reviews/WO-227/PR.md",
+          "bytes": 9040,
+          "workOrder": "WO-227",
+          "at": "2026-10-23T01:27:50.847Z",
+          "passed": true
+        },
+        {
+          "class": "prBody",
+          "path": "docs/final-reviews/WO-225/PR.md",
+          "bytes": 7613,
+          "workOrder": "WO-225",
+          "at": "2026-10-23T04:27:29.880Z",
+          "passed": true
+        },
+        {
+          "class": "prBody",
+          "path": "docs/final-reviews/WO-229/PR.md",
+          "bytes": 9425,
+          "workOrder": "WO-229",
+          "at": "2026-10-23T13:44:33.150Z",
+          "passed": true
+        },
+        {
+          "class": "prBody",
+          "path": "docs/final-reviews/WO-219/PR.md",
+          "bytes": 11453,
+          "workOrder": "WO-219",
+          "at": "2026-10-23T23:45:46.509Z",
+          "passed": true
+        },
+        {
+          "class": "prBody",
+          "path": "docs/final-reviews/WO-220/PR.md",
+          "bytes": 11270,
+          "workOrder": "WO-220",
+          "at": "2026-10-24T13:32:56.082Z",
+          "passed": true
+        },
+        {
+          "class": "prBody",
+          "path": "docs/final-reviews/WO-080/PR.md",
+          "bytes": 9455,
+          "workOrder": "WO-080",
+          "at": "2026-10-24T17:24:54.803Z",
+          "passed": true
+        },
+        {
+          "class": "prBody",
+          "path": "docs/final-reviews/WO-230/PR.md",
+          "bytes": 9086,
+          "workOrder": "WO-230",
+          "at": "2026-10-24T21:20:42.663Z",
+          "passed": true
+        },
+        {
+          "class": "prBody",
+          "path": "docs/final-reviews/WO-224/PR.md",
+          "bytes": 10329,
+          "workOrder": "WO-224",
+          "at": "2026-10-24T23:42:23.092Z",
+          "passed": true
+        },
+        {
+          "class": "prBody",
+          "path": "docs/final-reviews/WO-231/PR.md",
+          "bytes": 8145,
+          "workOrder": "WO-231",
+          "at": "2026-10-25T03:33:20.701Z",
+          "passed": true
+        },
+        {
+          "class": "prBody",
+          "path": "docs/final-reviews/WO-232/PR.md",
+          "bytes": 10644,
+          "workOrder": "WO-232",
+          "at": "2026-10-25T16:45:43.014Z",
+          "passed": true
+        },
+        {
+          "class": "prBody",
+          "path": "docs/final-reviews/WO-204/PR.md",
+          "bytes": 13035,
+          "workOrder": "WO-204",
+          "at": "2026-10-25T20:31:09.329Z",
+          "passed": true
+        },
+        {
+          "class": "prBody",
+          "path": "docs/final-reviews/WO-233/PR.md",
+          "bytes": 10949,
+          "workOrder": "WO-233",
+          "at": "2026-10-28T03:52:56.497Z",
+          "passed": true
+        },
+        {
+          "class": "prBody",
+          "path": "docs/final-reviews/WO-236/PR.md",
+          "bytes": 8139,
+          "workOrder": "WO-236",
+          "at": "2026-10-28T18:26:27.575Z",
+          "passed": true
+        },
+        {
+          "class": "prBody",
+          "path": "docs/final-reviews/WO-234/PR.md",
+          "bytes": 11012,
+          "workOrder": "WO-234",
+          "at": "2026-10-29T02:04:07.174Z",
+          "passed": true
+        }
+      ]
+    }
+  ],
+  "equivalent": true
+}

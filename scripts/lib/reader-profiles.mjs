@@ -162,7 +162,103 @@ const guidance = {
     expressive: "Use vivid, specific language while keeping claims precise.",
   },
 };
-export function profileGuidance(surface, root = findLaunchpad()) {
+// Each surface names the product sections that state its rules and the
+// functions that judge or render a draft, with what each one does, so the
+// writer can apply the rules and test the text against them. Sections resolve
+// under the repository's configured product root; the reader suite resolves
+// every named section and function.
+const section = (file, heading) => Object.freeze({ file, heading });
+const rule = (path, name, does) => Object.freeze({ path, name, does });
+const reviewerWriting = [
+  section("08-publication-compiler.md", "PRs and commits"),
+  section("07-execution-guide.md", "Discipline"),
+];
+const attribution = rule(
+  "packages/compiler/src/attribution.mjs",
+  "hasAiAttribution",
+  "refuses AI attribution at publish and in the commit-msg hook",
+);
+const contract = (sections, rules) =>
+  Object.freeze({
+    sections: Object.freeze(sections),
+    rules: Object.freeze(rules),
+  });
+export const surfaceContracts = Object.freeze({
+  prTitle: contract(reviewerWriting, [
+    attribution,
+    rule(
+      "scripts/lib/outward-lint.mjs",
+      "lintOutwardArtifact",
+      "judges a target repository's title shape, type and length",
+    ),
+  ]),
+  prBody: contract(reviewerWriting, [
+    rule(
+      "scripts/lib/github-body.mjs",
+      "pullRequestBodyShapeFailures",
+      "requires a heading first, prose before the meter block and the meter block last",
+    ),
+    rule(
+      "scripts/lib/github-body.mjs",
+      "githubBodyProfileFailures",
+      "requires one physical line per prose paragraph and, when published, no relative link",
+    ),
+    attribution,
+  ]),
+  commitSubject: contract(reviewerWriting, [
+    attribution,
+    rule(
+      "scripts/lib/outward-lint.mjs",
+      "lintOutwardArtifact",
+      "judges a target repository's subject shape, type, length and blank line",
+    ),
+  ]),
+  releaseNotes: contract(
+    [section("08-publication-compiler.md", "Release-note edition")],
+    [
+      rule(
+        "scripts/lib/release-notes.mjs",
+        "parseReleaseNotes",
+        "requires the five sections",
+      ),
+    ],
+  ),
+  releasePage: contract(
+    [section("08-publication-compiler.md", "Release-note edition")],
+    [
+      rule(
+        "scripts/release.mjs",
+        "releaseEdition",
+        "renders the page from the reviewed notes at release close and refuses a relative link",
+      ),
+    ],
+  ),
+});
+const contractLine = (surface, root) => {
+  const { sections, rules } = surfaceContracts[surface];
+  const where = sections
+    .map(
+      ({ file, heading }) =>
+        `${docRelative(root, "product", file)} §${heading}`,
+    )
+    .join(" and ");
+  const how = rules
+    .map(({ path, name, does }) => `${name} in ${path} ${does}`)
+    .join("; ");
+  return `Contract: ${where}; ${how}. Derive shape from this contract and its rules; a prior instance is evidence, never a pattern.`;
+};
+const surfaceReaders = {
+  prTitle: "a reviewer scanning pending changes",
+  prBody: "a reviewer deciding whether to accept the change",
+  commitSubject: "a maintainer scanning repository history",
+  releaseNotes: "a user assessing a release before adoption",
+  releasePage: "a user finding a published release and its evidence",
+};
+export function profileGuidance(
+  surface,
+  root = findLaunchpad(),
+  { strictExamples = true } = {},
+) {
   requireSurface(surface);
   // Any entry at the path is a declaration, a dangling link included: the
   // malformed route then reports it instead of a silent balanced default.
@@ -173,39 +269,36 @@ export function profileGuidance(surface, root = findLaunchpad()) {
     ? readReaderProfiles(root).surfaces[surface]
     : balancedProfile;
   const examplesRoot = docRelative(root, "publication", "examples");
-  const examplesDeclared = documentEntry(root, examplesRoot);
-  if (examplesDeclared) readDocumentDirectory(root, examplesRoot);
-  const examples = examplesDeclared
-    ? variants.map((variant) => readExample(root, surface, variant))
-    : [];
-  // Ties prefer the default, so an equally near choice remains predictable.
-  const priority = ["balanced", "reader", "record"];
-  examples.sort((a, b) => {
-    const distance = (example) =>
-      Object.keys(dimensions).filter(
-        (key) => example.metadata.profile[key] !== profile[key],
-      ).length;
-    return (
-      distance(a) - distance(b) ||
-      priority.indexOf(a.metadata.variant) -
-        priority.indexOf(b.metadata.variant)
-    );
-  });
+  let exampleDiagnostic;
+  try {
+    if (documentEntry(root, examplesRoot)) {
+      readDocumentDirectory(root, examplesRoot);
+      for (const variant of variants) readExample(root, surface, variant);
+    }
+  } catch (error) {
+    if (strictExamples) throw error;
+    // Examples do not supply the guidance. Their diagnostic must not hide
+    // a valid contract, profile or reader description during publication.
+    exampleDiagnostic = `Reader examples (${surface}) unavailable: ${error.message}`;
+  }
   return [
+    contractLine(surface, root),
+    `Document kind: record. Reader: ${surfaceReaders[surface]}.`,
     `Reader profile (${surface}): ${Object.values(profile).join(" / ")}.`,
     ...(!declared
       ? ["Profile source: balanced default; no reader profile declared."]
       : []),
     ...Object.keys(dimensions).map((key) => guidance[key][profile[key]]),
     "Preserve facts, limits, required sections and the attribution rule; this guidance neither refuses nor rewrites text.",
-    ...(examples.length ? [`Nearest example: ${examples[0].path}`] : []),
+    "Preserve required content. Useful information helps the intended reader understand the subject, answer questions, decide or act, verify claims, or recover reasoning. Retain context, evidence, examples and alternatives that serve those needs regardless of length; size and structural passes are not quality scores.",
+    ...(exampleDiagnostic ? [exampleDiagnostic] : []),
   ].join("\n");
 }
 // An exported launchpad without DotLn's editorial files keeps its existing
 // writing flow; a malformed local profile is visible without blocking a publish.
 export function writingGuidance(surface, root = findLaunchpad()) {
   try {
-    return profileGuidance(surface, root);
+    return profileGuidance(surface, root, { strictExamples: false });
   } catch (error) {
     return `Reader profile (${surface}) unavailable: ${error.message}`;
   }

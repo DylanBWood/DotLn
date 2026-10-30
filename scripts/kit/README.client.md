@@ -288,7 +288,8 @@ The same planning commands run here using this instance's records. Commit the
 export and install its pinned dependencies first. On clean `main`, run
 `npm run plan -- start first-pass`; it creates the planning branch and reads
 the current follow-up feed. Draft this instance's orders and sequence, then
-record its dated planning pass in `docs/lineage/idea-ledger.md`.
+record its dated planning pass in `docs/lineage/idea-ledger.md`. `plan start`
+also writes the pass's planning document with its standard section headings.
 
 - `npm run plan -- followups` pages the register; `--export <file>` exports it;
   `--apply <batch.json>` applies dispositions against the revision read.
@@ -891,6 +892,30 @@ still decide command admission; the kit does not change account settings.
 An orphan without an observed end is retained on preview. Applying prune
 records the first proven-dead observation and starts its full retention window;
 it cannot be deleted by that same plan merely because it was created long ago.
+
+## Document quality
+
+Artifacts follow their declared contract and check, never the preceding
+instance's shape. Standing documents describe current state and link dated
+records. Writing guidance identifies the contract, meaning the document sections
+and functions that judge each surface, then the kind and reader. Preserve
+required content and the context, evidence, examples and alternatives that help
+that reader understand, answer, decide, act, verify or recover reasoning.
+Artifact size is no quality score and no example is selected by its length.
+
+Use `quality pass: <target>` in the current session to improve a document file,
+file list, folder, described set, or specific passage. For example,
+`quality pass: the opening paragraph of README.md` limits editing to that
+passage while allowing wider reading. The assistant resolves and announces the
+scope, asks only about material target or reader ambiguity, preserves useful
+content and settled structure, and leaves sound passages unchanged. It edits
+generated documents through their sources and preserves immutable records.
+Existing document checks still apply; it reports changes and unresolved facts,
+then continues the original task. The command adds no lifecycle event or gate
+and retains writer isolation, live-gate protection and publication controls.
+Every generated role carries this guidance. Claude's prompt hook also adds it
+when the prompt's own first content line opens with the command, so a prose
+mention, a task notification or another agent's report does not invoke it.
 
 ## License
 

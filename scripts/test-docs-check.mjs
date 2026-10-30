@@ -721,6 +721,7 @@ test("dispatch fingerprints exempt only existing bytes, and new dispatches obey 
     "resume",
     "scope expand",
     "conversation only",
+    "quality pass",
     "analysis",
     "operator override",
   ])

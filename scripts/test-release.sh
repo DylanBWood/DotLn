@@ -746,7 +746,7 @@ grep -Fxq '# WO-099 — fixture (v0.2.0)' "$main/docs/work-orders/WO-099-fixture
 rm -rf "$main/docs/control/local" "$main/docs/evidence/WO-099"
 prepared="$(release_command prepare --local)"
 grep -Fq 'Reader profile (releaseNotes):' <<<"$prepared"
-grep -Fq 'Nearest example: docs/publication/examples/releaseNotes/' <<<"$prepared"
+grep -Fq 'Document kind: record. Reader: a user assessing a release before adoption' <<<"$prepared"
 grep -Fxq 'Retimed WO-099: v0.2.0 → v0.2.1 above the observed release baseline v0.2.0.' <<<"$prepared"
 # The collision is the order's decision; no product document changes (WO-086).
 grep -Fxq 'Recorded WO-099-D001 in docs/evidence/WO-099/decisions.md.' <<<"$prepared"
@@ -762,7 +762,9 @@ cmp "$fixture/refs-before" "$fixture/refs-after"
 for written in docs/work-orders/WO-099-fixture.md README.md docs/evidence/WO-099/decisions.md; do
   grep -Fxq "  $written" <<<"$prepared"
 done
-if grep -Fq 'docs/product/' <<<"$prepared"; then exit 1; fi
+# The writing guidance names the product sections that state the notes' rules;
+# no other line of the output may name a product document.
+if grep -Fq 'docs/product/' <<<"$(grep -v '^Contract: ' <<<"$prepared")"; then exit 1; fi
 prepared_again="$(release_command prepare --local)"
 grep -Fq 'no files changed' <<<"$prepared_again"
 # An unchanged version can still change the process meter (WO-160).
@@ -2198,7 +2200,7 @@ export DOTLN_ONE_GATE_LOG="$fixture/one-gate.jsonl"
 PATH="$bin:$PATH" DOTLN_GH_LOG="$gh_log" DOTLN_GH_STATE="$gh_state" DOTLN_GH_ORIGIN="$origin" "$node_bin" "$subject/scripts/worktree.mjs" publish WO-099 --title 'Fixture one-gate lifecycle' --body-file docs/final-reviews/WO-099/PR.md >"$fixture/publish.log" || { cat "$fixture/publish.log"; exit 1; }
 grep -Fq 'Reader profile (prTitle):' "$fixture/publish.log"
 grep -Fq 'Reader profile (prBody):' "$fixture/publish.log"
-grep -Fq 'Nearest example: docs/publication/examples/prTitle/' "$fixture/publish.log"
+grep -Fq 'Document kind: record. Reader: a reviewer scanning pending changes' "$fixture/publish.log"
 printf 'Main-only documentation after review.\n' >"$main/docs/merge-note.md"
 git -C "$main" add docs/merge-note.md
 git -C "$main" -c maintenance.auto=false commit -m 'Synthetic main-only document' >/dev/null

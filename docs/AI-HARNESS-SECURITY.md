@@ -297,6 +297,20 @@ host-registry-admitted authority grants and the effective envelope, with
 sources in the manifest. It resolves symlinks; unlinking judges the removed
 entry. It is not confinement of an arbitrary program's effects.
 
+The `quality pass:` document command leaves these six refusals unchanged. Its
+guidance is in every generated role. When the prompt's own first content line,
+the line dispatch prefixes are read from, opens with the command, the prompt
+hook also adds it to the assistant's `additionalContext`, never to the
+operator's terminal notice; an active operator control such as `analysis:`
+takes precedence and supplies only its own context. The hook consults no
+earlier prompt or transcript record. A prose mention cannot invoke it, and
+neither can a task notification or another agent's report, which opens with
+its envelope. The command authorizes the requested document edits while
+preserving immutable records, writer isolation, live-gate protection, host
+permissions and publication controls, and creates no lifecycle transition or
+command-specific gate. [Decision](evidence/WO-235/decisions.md#wo-235-d043);
+[delivery rule](evidence/WO-235/decisions.md#wo-235-d063).
+
 The live-gate read list admits quoted `<` or `>` inside a word, listed Git
 revision suffixes, literal input redirection and output redirection to exactly
 `/dev/null`; descriptor duplication such as `2>&1` opens no file. A listed Git

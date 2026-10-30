@@ -373,6 +373,7 @@ export function harnessInstallation(options = {}) {
     "packages/skeleton/dist/src/source-change-state.js",
     "packages/skeleton/dist/src/version.js",
     "packages/skeleton/dist/src/harness-command.js",
+    "packages/skeleton/dist/src/document-quality.js",
     "packages/skeleton/dist/src/gate-evidence.mjs",
     "packages/skeleton/dist/src/gate-deadlines.mjs",
     "packages/skeleton/dist/src/runtime-inputs.mjs",

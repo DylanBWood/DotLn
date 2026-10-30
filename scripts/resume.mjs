@@ -1257,7 +1257,7 @@ const preflightBriefing = (state) => {
       "utf8",
     ),
   );
-  return `\nHandoff evidence: the structural row, ${names.length ? names.map((name) => `suite:${name}`).join(", ") : "no declared --only suites"}, and the document row at the current code identity. Consume the recorded rows; probe with npm test -- --only <suite>.`;
+  return `\nHandoff evidence: the structural row and ${names.length ? names.map((name) => `suite:${name}`).join(", ") : "no declared --only suites"} at the current code identity; the document row for the exact candidate tree. Consume the recorded rows; probe with npm test -- --only <suite>.`;
 };
 // The order's own known-issues text is quoted as written, outside the rewrite.
 const verificationBriefing = (state, reportPath) =>

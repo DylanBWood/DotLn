@@ -250,12 +250,23 @@ title and body, commit subject, release notes and Release page. Each chooses an
 audience, density, identifier treatment, machine-detail treatment and voice.
 `npm run reader -- preview prTitle` shows the three examples; substitute
 `prBody`, `commitSubject`, `releaseNotes` or `releasePage` for another surface.
-`profile` prints the committed guidance and nearest example. Without an operator
+`profile` opens with the surface's contract: the document sections that state
+its rules and the functions that judge or render a draft, so the writer can test
+the text against them ([WO-235-D056](../evidence/WO-235/decisions.md#wo-235-d056)).
+It then names the document kind and reader and asks for useful, complete
+information. It does not select an example or rank artifacts by size.
+Examples illustrate choices and preserve their facts and limits; they are not
+templates for later artifacts. Without an operator
 choice, each surface uses the balanced profile. A planning pass changes the
 choices after previewing them. Publish prints title/body guidance beside the
 subject series, and release preparation prints release-note guidance. Profiles
 change presentation; facts, limits, required sections and attribution remain
 governed here. The dated corrections below remain the history behind this rule.
+
+The explicit `profile` and `preview` commands retain their malformed-example
+diagnostics. Publication guidance retains a valid contract, profile and reader
+description when an optional example is broken, and appends the example
+diagnostic; that unrelated file cannot erase the writing guidance.
 
 `npm run reader -- score` supplies one fresh reader with up to ten unscored
 releases' immutable Release text, asking what changed, whether to act, what is

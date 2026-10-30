@@ -1585,12 +1585,16 @@ for (const vector of ["target-files", "target-directories", "judge-only"])
         const fakeGit = `#!${process.execPath}
 import {readFileSync,writeFileSync} from 'node:fs';
 import {spawnSync} from 'node:child_process';
+function main(){
 const args=process.argv.slice(2),cwd=args[args.indexOf('-C')+1],vector=${JSON.stringify(vector)},target=${JSON.stringify(f.target)},clone=${JSON.stringify(f.clone)};
 let overflow=cwd===target&&args.includes('ls-files')&&(vector==='target-directories'?args.includes('--directory'):vector==='target-files'&&args.includes('--ignored')&&!args.includes('--directory'));
-if(vector==='judge-only'&&cwd===clone&&args.includes('ls-files')&&args.includes('--others')) {process.stdout.write('dist\\0');process.exit(0);}
+if(vector==='judge-only'&&cwd===clone&&args.includes('ls-files')&&args.includes('--others')) {process.stdout.write('dist\\0');return;}
 if(vector==='judge-only'&&cwd===clone&&args.includes('ls-tree')&&args.includes('--name-only')) {let n=0;try{n=Number(readFileSync(${JSON.stringify(counter)},'utf8'));}catch{}writeFileSync(${JSON.stringify(counter)},String(++n));overflow=n===2;}
-if(overflow){for(let n=0;n<19000;n++)process.stdout.write('dist/'+('a'.repeat(1000))+'/'+n+'\\0');process.exit(0);}
-const result=spawnSync(${JSON.stringify(realGit)},args,{stdio:'inherit'});process.exit(result.status??1);
+// Natural exit lets piped output drain before the parent judges its size.
+if(overflow){for(let n=0;n<19000;n++)process.stdout.write('dist/'+('a'.repeat(1000))+'/'+n+'\\0');return;}
+const result=spawnSync(${JSON.stringify(realGit)},args,{stdio:'inherit'});process.exitCode=result.status??1;
+}
+main();
 `;
         writeFileSync(join(bin, "git"), fakeGit, { mode: 0o755 });
         const refused = f.call(

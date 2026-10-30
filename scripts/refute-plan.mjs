@@ -1,19 +1,25 @@
 #!/usr/bin/env node
+import {
+  planningDocumentPath,
+  planningSkeleton,
+} from "./lib/planning-document.mjs";
 import { json as prettyJson } from "./lib/helpers.mjs";
 import { docPath, docRelative, findLaunchpad } from "./lib/config.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 
 import {
   existsSync,
+  closeSync,
   lstatSync,
   mkdirSync,
+  openSync,
   readFileSync,
   renameSync,
   rmSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
-import { dirname, relative, resolve, sep } from "node:path";
+import { dirname, join, relative, resolve, sep } from "node:path";
 
 import { buildPlanSubject } from "./lib/plan-subject.mjs";
 import {
@@ -412,8 +418,29 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
       await import("./lib/temporary-prune-summary.mjs");
     console.log(await temporaryPruneSummary(root));
     const branch = `planning/${new Date().toISOString().slice(0, 10)}-${rest[0]}`;
-    runGit(root, ["switch", "-c", branch]);
+    const document = planningDocumentPath(root, branch);
+    if (existsSync(join(root, document)))
+      throw new Error(`Planning document already exists: ${document}`);
+    const destination = join(root, document);
+    const skeleton = planningSkeleton(rest[0], branch.slice(9, 19));
+    mkdirSync(dirname(destination), { recursive: true });
+    // Prepare the document before changing branches. Failed creation leaves
+    // main selected; a failed switch removes only this invocation's new file.
+    const descriptor = openSync(destination, "wx");
+    try {
+      try {
+        writeFileSync(descriptor, skeleton);
+      } finally {
+        closeSync(descriptor);
+      }
+      runGit(root, ["switch", "-c", branch]);
+    } catch (error) {
+      if (runGit(root, ["symbolic-ref", "--short", "HEAD"]) === "main")
+        rmSync(destination);
+      throw error;
+    }
     return {
+      document,
       branch,
       phase: "planning",
       authority: "document-only planning dispatch",

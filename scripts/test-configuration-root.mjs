@@ -66,6 +66,35 @@ const temporary = (prefix, run) => {
   }
 };
 
+test("evidence registration validates declarations at a root outside docs", async () => {
+  const { registrationFindings } = await import("./check-registrations.mjs");
+  temporary("evidence-registration", (root) => {
+    runGit(root, ["init", "-q", "-b", "main"], fixtureGitOptions);
+    excludeFixtureOwnership(root);
+    declared({
+      root,
+      body: { version: 1, roots: { evidence: "records/evidence" } },
+    });
+    const path = "records/evidence/WO-999/observations.jsonl";
+    write(root, path, JSON.stringify({ index: 1 }) + "\n");
+    assert.match(
+      registrationFindings(root).findings.join("\n"),
+      /unregistered JSONL/,
+    );
+    write(
+      root,
+      "records/evidence/WO-999/jsonl.json",
+      JSON.stringify({
+        schemaVersion: 1,
+        nonEventPaths: {
+          "observations.jsonl": "Fixture observations, not event envelopes.",
+        },
+      }),
+    );
+    assert.deepEqual(registrationFindings(root).findings, []);
+  });
+});
+
 const fixtureGitOptions = {
   maxBuffer: 1024 * 1024,
   onFailure: (result, args) =>

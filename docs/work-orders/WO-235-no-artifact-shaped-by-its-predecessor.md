@@ -1,50 +1,11 @@
-# WO-235 — No artifact is shaped by its predecessor and no operator direction is dropped: every generated role derives each artifact from its contract and the check that judges it, the meter compares each measured artifact with the best comparable passing instance, every operator message in a dispatch becomes a typed direction-ledger entry that completion and the planning receipt refuse to leave unanswered, and a correction in any register freezes scope before the role continues (version assigned at activation)
+# WO-235 — Derive useful artifacts from their contracts and add a document quality pass (v0.103.0)
 
-**Model:** any capable model. State the model and effort actually run
-(07-execution-guide.md §Model-specific notes).
+**Model:** any capable model. State the model and effort actually run (product 07 §Model-specific notes).
 **Effort:** executor xhigh; verifier xhigh; reviewer xhigh.
 **Track:** machinery
-**Release classification:** minor. One shared role rule with its oracle
-re-mint, one typed record per dispatch with its completion and receipt
-checks, two meter columns, one change to the writing guidance, and a
-planning-document skeleton written by `plan start`; no new operator
-phrase. Assigned at activation under the standing opt-out default.
-**Cost:** adds the direction ledger (`docs/evidence/WO-NNN/directions.jsonl`
-for an order; a marker block in a pass's planning document) with its reader
-in `scripts/lib/direction-ledger.mjs` (new), the message index and digest
-the prompt hook records in `packages/skeleton/src/harness-host.ts`, the
-refusals in `scripts/resume.mjs`'s completion commands and in
-`scripts/lib/plan-receipts.mjs`, `bestComparableBytes` and its ratio in
-`scripts/lib/meta.mjs` with the advisory in `scripts/refute-plan.mjs` and
-the completion commands, the best-comparable line in
-`scripts/lib/reader-profiles.mjs` `writingGuidance`, the skeleton in
-`scripts/refute-plan.mjs` `start`, the shared sentence, with its standing-document clause, in
-`packages/skeleton/src/loadouts/contributor.ts` with its oracle re-mint, the
-Stop hook's refusal to end a turn with an operator message unanswered in
-`packages/skeleton/src/harness-host.ts` (amendment D001), cases in
-`scripts/test-harness.mjs`, `scripts/test-plan-refutation.mjs`,
-`scripts/test-control-segments.mjs`, `scripts/test-process-debt.mjs` and
-`scripts/test-publication*.mjs`, and sentences in products 05 and 07, the
-security document and the kit README. Removes: the pattern the filing pass
-observed in itself and in the record (fifteen of forty-nine planning
-documents share one inherited section skeleton no contract names;
-pull-request bodies grew from 1,707 bytes at WO-202 to 17,605 at WO-210,
-fell to 1,920 at WO-215 after a correction and grew again to 11,604 at
-WO-221 and 8,594 at WO-232), the "Nearest example" the writing guidance
-offers as a pattern, and the nine of thirteen operator messages in the
-current window the record files as `unclassified` with no disposition, and
-the reply-per-message pattern of the filing pass's own session (four
-messages in eleven seconds answered one at a time; amendment D001).
-Wall-clock: one record write per operator message, one read at
-completion (milliseconds). Context bytes: this file; every role's cold
-start grows by the shared sentence of step 7, measured and recorded before
-and after. Commands: none new for the operator. Tokens: unknown until run.
-Steps: 12. Re-mints: `harness-host.ts` and `contributor.ts` are registered
-evidence sources, so the editions they stale are re-minted
-deterministically; neither is a file the feedback verifier judges, so no
-live feedback episode; `meta.mjs`, `plan-receipts.mjs` and
-`reader-profiles.mjs` are declared sources of machinery suites, so `npm
-test -- --review` runs before handoff; the role oracle is re-minted.
+**Release classification:** minor. Contract and reader guidance, a planning skeleton with product 07's section headings, and the `quality pass:` document command.
+**Cost:** the planning skeleton, contract and reader guidance, generated roles and the `quality pass:` command. This order adds nothing for operator messages: no reply reminder, role checklist, message routing, ledger, gate or Stop condition. Re-mint source-bound evidence and the role oracle while preserving material decisions and immutable reports. Remove the abandoned direction checks and the document-identity exclusions introduced for them. Measure the generated roots before and after.
+
 **Nomination provenance:** the operator's corrections during the 2026-10-26
 pass (the pass's capture in ignored intake, SHA-256
 `6652d1057db77797fcba54da8d1998adb821528b42649a2d7d9a9c425bebbc72`, items 2
@@ -74,13 +35,13 @@ no stop condition; the Korean Air association is the operator's own
 reading of a public book, preserved as product 05 already preserves it,
 and this order transfers directness and urgency mechanics, no aviation or
 cultural claim.
-**Depends on:** WO-130 (closed: the phrase records its own dispatch, the
-hook record the ledger indexes), WO-226 (closed, v0.90.0: the first-line
-prefix reading, which the message index extends), WO-187 (closed, v0.67.1:
+**Depends on:** WO-130 (closed: the phrase records its own dispatch and the
+prompt hook supplies assistant context), WO-226 (closed, v0.90.0: the first-line
+prefix reading the quality pass follows), WO-187 (closed, v0.67.1:
 the generated agent definitions and role roots the shared sentence enters),
-WO-158 (closed: the completion and off-ramp routes whose refusal shape the
-ledger check follows), WO-227 (closed, v0.91.0: the pull-request body
-rules and the outward lint the best-comparable advisory stands beside).
+WO-158 (closed: the completion and off-ramp routes retain their existing
+validation), WO-227 (closed, v0.91.0: the pull-request body
+rules and outward lint named by the contract-first writing guidance).
 WO-088 is reference-only: it moves pass registration out of the ledger
 later; the skeleton this order writes is adjusted there.
 
@@ -89,12 +50,12 @@ later; the skeleton this order writes is adjusted there.
   {
     "workOrderId": "WO-130",
     "relation": "satisfied-by-close",
-    "reason": "the dispatch record the prompt hook appends, which the direction ledger indexes by message"
+    "reason": "the dispatch record and the prompt hook's assistant context that carries the quality pass guidance"
   },
   {
     "workOrderId": "WO-226",
     "relation": "satisfied-by-close",
-    "reason": "the first-line prefix reading of an operator message, extended with an index and digest per message"
+    "reason": "the first-line prefix reading that quality pass delivery follows"
   },
   {
     "workOrderId": "WO-187",
@@ -104,12 +65,12 @@ later; the skeleton this order writes is adjusted there.
   {
     "workOrderId": "WO-158",
     "relation": "satisfied-by-close",
-    "reason": "the completion routes whose refusal shape the unanswered-direction refusal follows"
+    "reason": "the completion routes retain their existing validation"
   },
   {
     "workOrderId": "WO-227",
     "relation": "satisfied-by-close",
-    "reason": "the pull-request body rules and outward lint beside which the best-comparable advisory stands"
+    "reason": "the pull-request body rules and outward lint named by contract-first writing guidance"
   },
   {
     "workOrderId": "WO-088",
@@ -119,87 +80,33 @@ later; the skeleton this order writes is adjusted there.
 ]
 <!-- dotln-dependencies:end -->
 
-**Cites (read these sections):** product 05 §Communication — mitigated
-speech (145), the Mode entry paragraph (668 to 674), the trap table (353,
-356); product 07 §Goal-aligned decisions (the lens table; "Accuracy takes
-priority over agreement"), §Operator-opened planning pass (Standard
-artifacts; the planning screens), §Operator resume phrases (the dispatch
-record), §Discipline; `packages/skeleton/src/harness-host.ts` (the prompt
-hook's record at 1250 to 1251: `prefixLine`, `class: prefix ?
-operatorPrefixes[prefix] : "unclassified"`); `scripts/lib/plan-failures.mjs`
-(the intervention classes and counts at 672 to 790 and 925 to 937);
-`scripts/lib/meta.mjs` (`prBodyBytes` at 1919; `directions.byKind` at 922);
-`scripts/lib/reader-profiles.mjs` (`surfaces` 15 to 21, `writingGuidance`
-206 and the "Nearest example" line just above it); `scripts/lib/github-body.mjs`
-(`pullRequestBodyShapeFailures` 1416); `packages/skeleton/src/loadouts/contributor.ts`
-(`targetRoles` 553; the reviewer's title sentence at 185, "sized by its
-content and never by the previous title"); `scripts/refute-plan.mjs`
-(`start`, `receipt`); `scripts/lib/plan-receipts.mjs`; `scripts/lib/plan-subject.mjs`
-(the pass headings at 739 to 747); `scripts/docs-check.mjs` (the attributed
-paragraphs of reports and planning documents at 610 to 640;
-`captureCitation` 448); the idea ledger entry at 9280; the compiled
-`fail-conservative-correction` and `goal-alignment` supports in the
-generated roles.
+**Authorized removal (2026-10-29):** during the repair of VER-004 the operator
+directed that everything this order adds for operator messages be removed,
+because its implementation failed, and clarified that the removal covers only
+what this order adds, not DotLn's existing machinery.
+[WO-235-D063](../evidence/WO-235/decisions.md#wo-235-d063) records the
+authorization and its scope. It supersedes the operator-message parts of the
+earlier amendments: D001's turn-end refusal and ledger, which D035 had already
+replaced, and the private reply checklist and reminder of D035 and D036. The
+prompt router, journal sources and intervention count, the completions,
+planning start and receipt, and Claude Stop stay as on `main`. The provenance
+items above that concern operator messages (items 9 and 10, the north-star
+idea and product 05's Mode entry) are no longer this order's. Decisions,
+evidence and filed reports remain the record of what was built and withdrawn.
 
-**Objective:** Two duties become checks, and one standard replaces the
-latest example.
+**Cites (read these sections):** product 05 §Candidate — all eight system traps as a design lens; product 07 §Goal-aligned decisions, §Operator resume phrases, §Operator-opened planning pass, §Discipline and §Model-specific notes; `packages/skeleton/src/harness-host.ts` session additional context and prompt observation; `packages/skeleton/src/loadouts/contributor.ts` shared role procedures; `packages/skeleton/src/document-quality.ts` quality pass guidance; `scripts/lib/reader-profiles.mjs` writing guidance; `scripts/lib/github-body.mjs` pull-request body shape; `scripts/refute-plan.mjs` start and `scripts/lib/planning-document.mjs` skeleton; `scripts/docs-check.mjs` record screens; `scripts/lib/handoff-ledger.mjs` document-row consumer; VER-002 F5, VER-004 F1, D039, D043 and D063.
 
-- **Shape from the contract, not the predecessor.** Every generated role
-  carries the rule: an artifact's shape comes from its contract and the
-  check that judges it; a previous instance is evidence of what happened,
-  never the pattern; when the contract is silent on a shape, say so in the
-  record and keep the artifact to what the contract names. `plan start`
-  writes the pass document's skeleton from product 07's artifact list, so a
-  pass has no reason to open the previous one for its shape. The rule has a
-  standing-document clause: a standing document (a product document, the
-  sequence, the map's catalog, a workstream, a repository profile, an
-  instance's operator record) holds the current state for its reader; a
-  change replaces the sentence that is now wrong and links the record, and
-  the dated account of what happened goes to the record (the order's
-  decisions, the pass's document), never under a standing heading (product
-  07 §Operator-opened planning pass, item 7; the operator's direction of
-  2026-10-28, with the fork's operator record and repository profile as the
-  observed instances).
-- **The standard is the best comparable, disclosed.** For each measured
-  artifact class (pull-request body, order file, planning document,
-  verification and final-review reports) the meter records the smallest
-  passing instance of the same class over the last twenty closes as
-  `bestComparableBytes` with the instance named and the ratio; completion,
-  `plan start` and the planning receipt print the advisory ("8,594 bytes;
-  best comparable passing 1,746, WO-222; 4.9 times; state the changed
-  condition or shorten"); the writing guidance names the best comparable
-  instead of the nearest example. No byte cap is set: ceilings are
-  planning's, and the operator's direction of 2026-09-14 stands.
-- **Every operator message is answered.** The prompt hook records each
-  operator message in the dispatch with an index and a content digest; the
-  role writes one direction-ledger entry per message, a typed record
-  (`index`, `digest`, `event`, `aim`, `disposition`, `record`) whose
-  `event` is the role's recorded judgment from the north-star set
-  (`OperatorCorrectionReceived`, `OperatorReportsRepeatedFailure`,
-  `OperatorRejectsUnsupportedAssumption`, `OperatorReportsRegression`,
-  `OperatorReorder`, `OperatorDirection`, `OperatorAnswer`); completion
-  (`implementation-ready`, `repair-complete`, `verification-result`,
-  `final-review-result`) and `plan receipt` refuse while a recorded message
-  has no entry, naming it. A later message adds to the earlier aim unless
-  its entry records a withdrawal; the dispatch's aim stays first unless an
-  `OperatorReorder` entry says otherwise.
-- **A turn ends only with every message answered.** Under Claude the Stop
-  hook refuses to end a turn while the session journal holds an operator
-  message (never a host task notification) newer than the last
-  direction-ledger entry of the dispatch, naming the unanswered indexes, so
-  a burst of messages is answered once, after its last, and a message that
-  arrives mid-turn cannot be dropped; `operator override:` suspends it as it
-  does the other refusals; under Codex and Copilot the rule is role text
-  (amendment D001, the operator's direction of 2026-10-27).
-- **A correction is heard at its urgency.** An entry whose event is a
-  correction, a repeated-failure report or a rejected assumption triggers
-  the compiled fail-conservative freeze whether or not the message carried
-  a typed prefix: no scope expansion, no destructive effect, the aim stated
-  in one line, the correction acted on before the role continues, the
-  dispatch aim resumed in the operator's priority. A raised register is
-  read as urgency on the same direction, never as new scope and never as a
-  mood; the classification is the role's judgment, recorded, with the
-  register as at most a weak feature (the ledger's rule).
+**Usefulness correction (2026-10-29):** the operator explicitly rejects size as the goal and reiterates that useful information is preferable regardless of how large it is. [WO-235-D039](../evidence/WO-235/decisions.md#wo-235-d039) removes the planner-selected smallest-passing comparison and its prompts. The original measurements and receipts below are historical observations, not a size target or evidence that small artifacts are better.
+
+**Authorized expansion (2026-10-29):** [WO-235-D043](../evidence/WO-235/decisions.md#wo-235-d043) records the operator's addition of `quality pass: <target>` for document work in the current session. Accept a file, file list, folder, described set or specific passage; resolve and announce the edit boundary, preserve the active task and existing controls, and add no lifecycle event or command-specific gate. The restart paused implementation, and the subsequent `resume: fix` continues it.
+
+**Objective:**
+
+- Derive each artifact's shape from its contract and judging check. A predecessor is evidence, never the template. Standing documents state current behavior; dated accounts belong in decisions or planning records.
+- Judge usefulness and completeness against the contract and reader task. Information is useful when it helps that reader understand, answer, decide, act, verify or recover reasoning; preserve the context, evidence, examples and alternatives needed for those purposes regardless of size. Remove byte-minimum rankings, best-comparable byte ratios and instructions to shorten to match another artifact; size is no quality score.
+- Keep document evidence on the exact candidate tree: a document row covers the records as they stand, so a later report, decision or index edit cannot inherit an earlier pass.
+- Offer `quality pass: <target>` as a current-session document-editing command applying the same usefulness and passage-maintenance rules, including a no-change outcome for sound material.
+- Add nothing for operator messages. The order's earlier answer-coverage work is removed, and the prompt router, operator-message journal, completions, planning receipt and Stop keep `main`'s behavior.
 
 **Observed gap (dated 2026-10-26 at `main` `939af628`):**
 
@@ -227,260 +134,55 @@ latest example.
 - Order files: WO-217 42,813 bytes, WO-218 49,062, WO-219 64,529, WO-220
   26,066, WO-221 40,538, WO-226 34,669, WO-232 26,239, WO-231 17,083; no
   reading compares an order with the best comparable one of its track.
-- Operator messages are classified by prefix only: `class: prefix ?
-  operatorPrefixes[prefix] : "unclassified"` (`harness-host.ts` 1251); in
-  the window since receipt 055, `plan failures` counts thirteen
-  interventions, nine `unclassified`, four `direction`, ten unattributed;
-  no completion check requires a recorded message to be answered; the
-  compiled fail-conservative freeze fires on a typed correction only. The
-  north-star idea (ledger 9280) names the typed events and forbids the
-  profanity trigger; product 05 (668 to 674) forbids inferring a mode from
-  register and admits an intense message as a directive about posture.
-  Neither is implemented as a record or a check.
-- The filing pass also answered a burst in pieces: the operator sent four
-  messages between 00:19:13Z and 00:19:24Z and a fifth at 00:19:29Z after
-  the session had answered the message of 00:19:02Z alone, and the four
-  messages before them were each answered individually; the Stop hook
-  prints advisories and refuses nothing about messages (`harness-host.ts`
-  5689), and the host starts a reply per message when the role is idle, so
-  only a refusal to end the turn can hold a burst together (amendment D001).
-- The filing pass did this too: the operator's messages 2 to 6 displaced the
-  dispatch's aim for several minutes of work until message 7 restored it
-  (the capture's hook times 22:38Z to 22:46Z), the recency failure the
-  operator named in item 9.
 
 **Design (scope discipline):**
 
-- **A record, then a check; role text last.** The ledger entry is a typed
-  record the role writes; completion and the receipt refuse on a missing
-  entry; the rule in the roles tells the role what the check will refuse.
-  Rejected: role text alone (axis: rule beating; the reviewer's title
-  sentence shows a local sentence patches one surface and leaves the body).
-  Rejected: a hook that classifies untyped messages (axis: the planning
-  screen refuses a deterministic reading of natural language; the hook
-  records index and digest, the role records the judgment).
-- **Best comparable, not a cap.** The meter names the smallest passing
-  instance of the class and the ratio; the advisory asks for the changed
-  condition or a shorter artifact; nothing refuses on bytes. Rejected: a
-  byte ceiling on bodies, orders or documents (axis: the operator's
-  2026-09-14 direction that artificial caps yield to needed rules, and the
-  2026-10-07 rule that ceilings are planning's). Rejected: the latest
-  instance as the comparison (axis: the trap itself).
-- **The skeleton from the contract.** `plan start` writes
-  `docs/planning/<slug>-<date>.md` with the headings product 07's artifact
-  list implies (dispatch and capture, direction ledger, readings, orders
-  filed and amended, register, NoOps, sequence, write-backs and ceilings,
-  process cost, validation) and the direction-ledger marker; the pass fills
-  it. Rejected: generating the whole document (axis: the pass's judgments
-  are its content; the skeleton removes the reason to copy, nothing more).
-- **Batching is a refusal, not a habit.** The turn-end refusal is the
-  ledger check at turn granularity: the journal's newest operator message
-  index against the ledger's newest answered index. Rejected: a waiting
-  period in the role before replying (axis: the host starts a turn per
-  message when the role is idle; a habit cannot hold it). Rejected:
-  refusing every stop until the operator says the exchange is done (axis: a
-  lockout; the refusal names only unanswered messages).
-- **Urgency is heard without inferring mood.** The freeze is keyed to the
-  recorded event, and the event is the role's judgment of the message's
-  content; the register is at most a weak feature, as the ledger says, and
-  the record states the judgment so a wrong one is correctable. Rejected: a
-  profanity or capitalization trigger (axis: the ledger's own rejection and
-  product 05's Mode entry rule). Rejected: a separate communication-mode
-  state machine (axis: product 05 requires explicit mode entry; out of this
-  order's scope).
-- **Codex and Copilot.** The prompt hook is Claude's; under Codex the
-  lifecycle dispatch records phrases only and messages are unobserved, so
-  the ledger is role text there and the refusal applies to observed
-  messages; the security document says so.
-- **Live-run surfaces at the base.** The prompt hook record: exists (1250).
-  The completion refusals of WO-158: exist. `writingGuidance`: exists.
-  `prBodyBytes`: exists (meta 1919). The ledger, the index and digest, the
-  comparison and the skeleton: absent.
+- Keep writing guidance focused on the contract, kind and reader, with no selected predecessor or size ranking. Write the planning skeleton with the section headings product 07's planning section lists, keeping `scripts/lib/planning-document.mjs` and that paragraph in step.
+- Keep the ordinary exact-tree document-row requirement: public records receive the existing document screens, and no projection hides a record or source from its identity.
+- A leading `quality pass:` supplies shared document-editing guidance through generated roles and Claude assistant context. Claude's hook reads the command only from the prompt's own first content line, the line every dispatch prefix is read from, and consults no earlier prompt or transcript record; a task notification or another agent's report opens with its envelope there and never receives it. An active operator control such as `analysis:` takes precedence, as it does for all session context. Resolve targets from the request and repository; clarify only material target or reader ambiguity. Read broadly as needed but edit only the announced target, correct generated documents through their sources, preserve immutable records and existing authority controls, then continue the original task. Ordinary prose mentions are not command invocations.
+- Remove what this order added for operator messages and restore `main` where it had replaced `main`: the reply reminder, the role checklist sentence, the prompt router with its host sources and intervention rule, and their fixtures and standing text. Keep the order's decisions, evidence and filed reports as history.
 
-**Execution plan (the executor follows these steps in order; observed at `939af628`, 2026-10-26):**
+**Execution plan:**
 
-1. `packages/skeleton/src/harness-host.ts` (the prompt-hook record at 1250):
-   each operator message in a dispatch gets `messageIndex` and `digest`
-   (SHA-256 of the message) in the session journal beside `prefixLine` and
-   `class`. Check: `npm test -- --only harness-fixtures`.
-2. `scripts/lib/direction-ledger.mjs` (new): the entry shape, the event set,
-   `readDirectionLedger(root, order | planningDocument)`,
-   `unansweredMessages(journal, ledger)`; the marker block for a planning
-   document. Check: `npm test -- --only harness`.
-3. `scripts/resume.mjs`: `implementation-ready`, `repair-complete`,
-   `verification-result` and `final-review-result` refuse while a recorded
-   message of the dispatch has no entry, naming the index and digest; the
-   refusal admits a Codex session whose journal records no messages. Check:
-   the control-segment cases in `scripts/test-control-segments.mjs`; `npm
-   test -- --only checkpoint`.
-4. `scripts/lib/plan-receipts.mjs`: `plan receipt` refuses while the pass's
-   document lacks an entry for a recorded message; `scripts/refute-plan.mjs`
-   `start` writes the skeleton with the marker. Check: `npm test -- --only
-   plan-refutation`.
-5. `scripts/lib/meta.mjs`: `bestComparableBytes`, `bestComparableOrder` and
-   `bestComparableRatio` for the five classes over the last twenty closes
-   (passing instances only: a merged pull request's body, a closed order's
-   file, a pass with an addressed receipt, a passing report); the cost
-   table carries them; the completion commands and `plan start` print the
-   advisory. Check: `npm test -- --only meta`; `npm test -- --only
-   process-debt`.
-6. `scripts/lib/reader-profiles.mjs` `writingGuidance`: the contract first,
-   then "Best comparable: <path> (<bytes>)", the "Nearest example" line
-   removed, and the surface's document kind and reader named (standing,
-   record or generated; who reads it and when). Check: `npm test -- --only publication-fixtures`; `npm test --
-   --only github-body`.
-7. `packages/skeleton/src/loadouts/contributor.ts`: the shared sentence in
-   `targetRoles` (553): the shape rule and its standing-document clause,
-   the ledger duty, the correction freeze on a recorded correction event,
-   the priority rule and the register rule. Then `npm run build && node scripts/harness.mjs emit`; the
-   role oracle fixture `packages/skeleton/fixtures/wo235-role-baseline.json`
-   with the chain intact; the decisions record each root's cold-start bytes
-   before and after. Check: `npm run harness -- check`; `npm test -- --only
-   harness`; `npm test -- --only process-debt`.
-8. `docs/AI-HARNESS-SECURITY.md` §DotLn hook boundary — WO-144, 2026-09-19:
-   the message index and digest the hook records, and that the five
-   refusals are unchanged. Check: `npm run publication:check`.
-9. Write-backs: product 07 §Operator resume phrases (the ledger beside the
-   dispatch record), §Operator-opened planning pass (the skeleton; the
-   receipt's refusal; the advisory), §Discipline (the shape rule and the
-   best comparable); product 05 §Communication — mitigated speech (the
-   inbound reading: the typed events as the record, the register a weak
-   feature; one paragraph); `scripts/kit/README.client.md`;
-   `docs/evidence/WO-235/decisions.md`; `npm run meta`; `node
-   scripts/lineage.mjs index --check`; `node scripts/check-publication.mjs
-   --print-locks`; `npm run publication:check`.
-10. The order's own ledger: `docs/evidence/WO-235/directions.jsonl` records
-    every operator message of its own execution, so the check judges its
-    executor first.
-11. `packages/skeleton/src/harness-host.ts`, the Stop judgment (the site at
-    5689): compare the journal's newest operator message index (source not
-    `host-task-notification`) with the dispatch's newest ledger entry; refuse
-    the stop naming the unanswered indexes; admit when the ledger is current
-    and under `operator override:`; the executor reads the host's Stop-hook
-    page for the blocking form and records it in the decisions. Check: `npm
-    test -- --only harness-fixtures` (three messages recorded and two
-    answered: the stop is refused naming the third; the third's entry
-    written: admitted; a host notification never counts; the paired control
-    at the base admits the stop, both arms' exit codes in
-    `docs/evidence/WO-235/controls.json`).
-12. Handoff: finish source edits; `npm run format` and `npm run sync`; start
-    one `npm test -- --review` in the background, never under the bounded
-    wrapper, and await it with `node scripts/harness.mjs evidence --wait`;
-    after it passes, complete `docs/evidence/WO-235/handoff.md`; `npm run
-    test:docs` once after the last document edit; then `npm run resume --
-    implementation-ready <flags>` (product 07 §Discipline).
+1. Remove the reply-checklist reminder from the prompt hook and the operator-message sentence from the shared role procedures. Restore `main`'s prompt router, journal path and Stop journal reading in `harness-host.ts` and `main`'s `plan-failures.mjs`.
+2. Deliver `quality pass:` guidance from the prompt's own first content line alone. Keep fixtures for the five target forms, blank-line and fenced leads, prose and quoted mentions and envelope notices, and add the reversed history VER-004 F1 names: notices carrying the command behind their envelope after an operator's delivered command, idle and mid-turn, plus an active operator control's precedence.
+3. Remove the answer-state, legacy-ledger, direction-snapshot and host-source fixtures, and the completion parity fixture built for answer state with its base pin; keep the skeleton, size-advisory and document-row fixtures without operator-message state.
+4. Keep `plan start`'s skeleton of product 07's section headings without size advisories or pass-binding requirements, and keep historical receipt reading compatible.
+5. Keep exact-tree document-row matching, including a case where a later decision or report edit invalidates the previous document row; retain source and platform-document protection.
+6. Keep the removal of size-comparison history, byte-minimum meter columns and completion/start/receipt advisories, with contract/kind/reader-first writing guidance.
+7. Regenerate both installed role trees, runtime and evidence; chain the new role oracle to the previous one with cause and measured root bytes. Trace changed source through its fixture, manifest and generated consumers.
+8. Update product 05, product 07, security, architecture and kit guidance to the built mechanism; record D063 and the execution amendment, return the operator-message follow-ups to planning, refresh indexes and resolve planning checks within authority.
+9. Complete three fresh independent criteria, design and consistency reviews, resolve findings, integrate main if needed, then format and sync.
+10. Run one complete `npm test -- --review` in the background and await it through the evidence helper. Complete the handoff, have the consistency reviewer check final write-backs, run `npm run test:docs` after the last document edit, and record `repair-complete` with the actual actor flags.
 
-**Deliverables:** the message index and digest; the ledger module, its
-marker and the refusals at completion and receipt; the skeleton; the three
-meter columns and their advisory; the writing guidance's best comparable;
-the shared role sentence and the re-minted oracle; the write-backs.
+**Deliverables:** contract and reader writing guidance without size ranking; a planning skeleton with product 07's section headings; exact-tree document coverage; the bounded `quality pass:` command with first-content-line delivery; removal of this order's operator-message work with `main`'s router, journal and Stop restored; regenerated evidence, role oracle and write-backs.
 
 **Acceptance criteria (all required)**
 
-1. Each operator message of a Claude dispatch is recorded with
-   `messageIndex` and `digest` in the session journal; a fixture with three
-   messages, one typed and two untyped, records all three.
-2. A direction-ledger entry has the typed shape and event set of the
-   Objective; `readDirectionLedger` reads an order's `directions.jsonl` and
-   a planning document's marker block; `unansweredMessages` names every
-   recorded message without an entry.
-3. `implementation-ready`, `repair-complete`, `verification-result` and
-   `final-review-result` refuse while a recorded message has no entry,
-   naming its index and digest, and admit when every message has one; a
-   Codex session with no recorded messages is admitted; the paired control
-   at the base admits the same completion, both arms' exit codes in
-   `docs/evidence/WO-235/controls.json`.
-4. `plan receipt` refuses while the pass's document lacks an entry for a
-   recorded message; `plan start` writes the skeleton with the marker and
-   the headings of the Design; a pass that fills it passes the receipt.
-5. The meter records `bestComparableBytes`, the instance and the ratio for
-   the five classes over the last twenty closes, passing instances only;
-   the cost table carries them; the completion commands and `plan start`
-   print the advisory with the instance named; a fixture record with the
-   `prBodyBytes` series of the Observed gap names WO-222 as the best
-   comparable at WO-232.
-6. `writingGuidance` for every surface names the contract first and the
-   best comparable instance, names the surface's kind and reader, and no
-   longer names a nearest example.
-7. Every generated role root states the shape rule and its
-   standing-document clause, the ledger duty, the correction freeze on a
-   recorded correction event, the priority rule and the register rule; the role oracle pins the roots with its chain intact;
-   the decisions record each root's cold-start bytes before and after.
-8. The executor's own `docs/evidence/WO-235/directions.jsonl` holds one
-   entry per operator message of its execution, each with its event, aim
-   and disposition.
-9. Under Claude the Stop hook refuses to end a turn while the journal holds
-   an operator message newer than the dispatch's last ledger entry, naming
-   the unanswered indexes; it admits when every message has an entry and
-   under `operator override:`; a host task notification never counts; the
-   paired control at the base admits the stop, both arms' exit codes in
-   `docs/evidence/WO-235/controls.json`; the security document states the
-   refusal beside the five tool-call refusals it leaves unchanged.
-10. Products 05 and 07, the security document and the kit README state the
-   mechanism as built (steps 8 and 9); `npm run publication:check`, `npm
-   test -- --review` and `npm run test:docs` green; `git diff --check`
-   clean; no new dependency.
+1. Claude's prompt hook adds no answer-coverage reminder for any prompt. Against base `3db7571f`, `packages/skeleton/src/harness-host.ts` differs only by the quality pass guidance import, the `quality pass:` journal class and its first-content-line delivery, and `scripts/lib/plan-failures.mjs` is unchanged, so `main`'s prompt router, journal sources and intervention count stand.
+2. No generated role carries an operator-message rule this order added: the private checklist, whole-batch reconciliation, host-notification, earlier-aims, correction-freeze and register sentences are absent from both role trees, and no file-backed checklist, per-message ledger or answer block exists.
+3. `implementation-ready`, `repair-complete`, `verification-result` and `final-review-result` keep base behavior: `scripts/resume.mjs`, which implements them, differs from base only by the evidence-briefing sentence.
+4. `plan start` writes the planning document skeleton with the section headings product 07's planning section lists, kept in `scripts/lib/planning-document.mjs`; it prepares the skeleton before switching branches and removes it if branch creation fails. The receipt validator is base's.
+5. The proposed size-ranking machinery and its meter columns are absent. Planning start and receipt emit no smallest-is-best advisory or instruction to shorten to a historical minimum, and the completion commands are base's (criterion 3), which never emitted one. Existing byte measurements remain resource observations, not artifact-quality judgments.
+6. `writingGuidance` for every surface names the contract first, then the kind and reader, and calls for useful, complete information. It selects no nearest or smallest example; changing example lengths does not change the guidance or remove useful context.
+7. Both generated role trees preserve the artifact shape, usefulness and standing-document rules, including integrating edits into coherent paragraphs or sections while retaining useful structure and content, with no sentence-count target. A chained oracle pins the roots; the decisions record measured before/after bytes and expected-data provenance.
+8. This order adds no operator-message mechanism: no public message record, answer command, transcript audit, approval, wait, persistent answer state or duplicate chat log, and no fixture or standing document of this order describes one. Nothing new enters product or document identity.
+9. Claude Stop's admission and refusal are base's: the finish handling in `harness-host.ts` is unchanged from `3db7571f`, the generated `finish.mjs` differs only by its runtime pins, and the dotted-version hedge exemption (D060) is the only difference in what Stop journals. Security guidance states the quality pass boundary beside the unchanged tool-call refusals.
+10. Products 05 and 07, security, architecture and kit README describe the built mechanism. Document evidence covers the actual records, including edits after a prior pass. `npm run publication:check`, `npm test -- --review` and `npm run test:docs` pass; `git diff --check` is clean; no new dependency.
+11. `quality pass: <target>` is available in every generated role and Claude assistant context, with examples for a file, list, folder, described set and passage. It resolves and announces the target, handles material ambiguity, preserves useful content and sound passages, and applies existing checks before reporting and continuing the original task. Claude's hook supplies the guidance only when the prompt's own first content line begins with the command and consults no earlier prompt or transcript record, so a task notification or another agent's report, which opens with its envelope, never receives it, whatever the session's history; words that open with the command are read as it, queued or not, since the hook infers no sender; an active operator control takes precedence. Fixtures cover the leading-prefix forms, ordinary prose and envelope notices, including notices after an operator's delivered command, idle and mid-turn, and operator-control precedence; no lifecycle transition; and unchanged protected-record, writer, gate and publication boundaries. Semantic document quality is a review judgment, not an automated score.
 
-**Preflight:** `npm test -- --only harness-fixtures` for step 1; `npm test
--- --only harness` for steps 2 and 7; `npm test -- --only checkpoint` for
-step 3; `npm test -- --only plan-refutation` for step 4; `npm test -- --only
-meta` and `npm test -- --only process-debt` for steps 5 and 7; `npm test --
---only publication-fixtures` and `npm test -- --only github-body` for step
-6; `npm test -- --only configuration-root` for every script step; `npm run
-test:docs` when a document changes; each under `node scripts/harness.mjs
-bounded --`; then one `npm test -- --review` (07-execution-guide.md
-§Preflight before the full gate).
+**Preflight:** `harness-fixtures`, `harness`, `resume`, `plan-refutation`, `meta`, `process-debt`, `publication-fixtures`, `github-body`, `configuration-root` and `runner-fixtures` in the complete review selection. Focused runs only reproduce an observed failure under `node scripts/harness.mjs bounded --`. `npm run test:docs` follows the last document edit.
 
-**Evidence gate:** the cases and controls of criteria 1 to 8; the
-deterministic re-mints of the editions `harness-host.ts` and
-`contributor.ts` stale; the re-minted role oracle; `npm test -- --review`
-before `implementation-ready`, final review reusing the passing complete
-row at the integrated code identity when one exists.
+**Evidence gate:** existing product and document validation only. The quality pass fixtures prove placement and the absence of workflow effects, not semantic document quality. Re-mint affected editions deterministically, then consume the passing complete row and final document row at handoff.
 
-**Write-back duty:** as listed in step 9 and criterion 10, and the security
-document's statement of the turn-end refusal (criterion 9).
+**Write-back duty:** the standing surfaces and evidence named in steps 7–10. Immutable reports and material decisions remain.
 
 **Known issues and carry-ins:**
-- Amendment D001 (2026-10-27; the operator's direction in ignored capture
-  SHA-256
-  `6baae3cbbd738603fad5a6e38caa1753302561399b42cdf9ffa4aecb50806d93`;
-  bound by `amend-order` against receipt 056): step 11 and criterion 9, the
-  turn-end refusal (reopen: a refusal names a message the operator did not
-  send, a burst is answered in pieces after the rule lands, or the host's
-  Stop hook stops admitting a blocking decision).
-- The event classification is the role's recorded judgment, not a check's;
-  a wrong event is corrected by a later entry naming the first (reopen: a
-  pass finds a correction event recorded as a plain direction after the
-  operator repeated it).
-- Under Codex and Copilot the ledger is role text for unobserved messages
-  (reopen: Codex exposes operator messages to a hook or a lifecycle record).
-- WO-088 later moves pass registration out of the idea ledger and holds
-  order files to a contract check; the skeleton of step 4 is adjusted
-  there, and WO-088's order-contract check is the mechanical half of the
-  shape rule for order files (reopen: WO-088 is amended or withdrawn).
-- The trap table of product 05 names the drift (353) as a candidate
-  application; this order's write-back records the observed instance beside
-  it in one sentence, not a new candidate heading (reopen: the document
-  check refuses the sentence as a new shape).
-- The filing pass's own direction ledger (its planning document) is the
-  first instance of the record, written by hand before this order lands.
-- Carry-ins from WO-236, the operator's follow-ups of 2026-10-28, taken by
-  the 2026-10-28 document-contract pass: D016 (FUP-19862c74280a148e), an
-  expected-data update (the role oracle, a projection fixture) names its
-  cause and provenance in the decisions and the reviewer checks the fixture
-  diff against it; D017 (FUP-4e4a73be7b53eb45) and D018
-  (FUP-c42e96567d1dee6f), the consistency review traces a changed contract
-  through its consumers with file-level evidence, as a duty in the shared
-  role text this order re-mints, never a session-only checklist; D020
-  (FUP-d1b15b1b3e4dc761), answered by the ledger, the freeze and the
-  turn-end refusal (reopen: a review finds an expected-data update without
-  a cause, or a consumer the brief named is missed after the rule lands).
-- The standing-document clause (the operator's direction of 2026-10-28,
-  item 4.c): WO-238 adds the derived kinds, the reader binding, the read
-  census and the checks; this order carries the rule into every role
-  (reopen: WO-238 is withdrawn, in which case the clause stands alone).
 
-**Non-goals:** a byte cap on any artifact; a communication-mode state
-machine or a voice selector; refusing reads of prior documents; a
-classifier of operator messages in the hooks; WO-088's order-contract check
-and pass-registration move; the bounds of WO-234; the residue of WO-233.
+- VER-002 F5 requires restoration of document coverage. VER-002 F6 to F8, VER-003 F1 and VER-004 F1 concern the removed operator-message work; the removal withdraws their subject rather than repairing it. Of VER-004 F1's quality pass part, notices that open with an envelope never receive the guidance, whatever came before them; its expectation that un-enveloped words queued with the command's bytes receive none is withdrawn with the sender inference, because the hook reads only the prompt's own first line and, under `main`'s router, a queue entry without a command mode has unknown authorship (D063; `scripts/test-harness.mjs` pins both).
+- `main`'s prompt router returns with its known attribution gap: on Claude Code 2.1.312 a host task notification whose queue entry carries no command mode journals unattributed and counts as an operator intervention, WO-219-D042's reopening condition that VER-003 observed. D063's follow-up, FUP-8331693069c2747d, returns it to planning with the other follow-ups that rest on the removed work, including D059's observed-facts follow-up and WO-236-D020's prompt-answer action, which this order no longer carries.
+- WO-088 later moves pass registration from the idea ledger; adjust the skeleton's source lookup then.
+- WO-236's expected-data and consistency-review carry-ins remain: name oracle provenance and trace contracts through source, fixtures, manifests and installed guidance.
+- WO-238's derived document kinds and reader binding remain separate; this order carries the standing-document rule.
+
+**Non-goals:** artifact-size ranking or usefulness inferred from byte count; any operator-message mechanism, including answer coverage, reply reminders, message routing or classification beyond `main`'s; changes to DotLn's existing operator-message machinery; a byte cap; a communication-mode state machine or message classifier; refusing prior-document reads; WO-088's registration move; WO-234's bounds; WO-233's residue.

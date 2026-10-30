@@ -50,6 +50,7 @@ export function registrationFindings(root = findLaunchpad()) {
       "--exclude-standard",
       "--",
       docRelative(root, "docs"),
+      docRelative(root, "evidence"),
     ],
     { encoding: "utf8", maxBuffer: 64 * 1024 * 1024 },
   )

@@ -841,6 +841,7 @@ test("WO-170 operator directions equal a hand count of committed decisions and o
       operatorOverride: 1,
       analysis: 0,
       conversationOnly: 0,
+      qualityPass: 0,
       operatorLabel: 0,
       ...lifecycleSteps(),
       OperatorOverrideRecorded: 0,
@@ -902,6 +903,7 @@ test("WO-170 operator directions equal a hand count of committed decisions and o
       operatorOverride: 0,
       analysis: 0,
       conversationOnly: 0,
+      qualityPass: 0,
       operatorLabel: 5,
       ...lifecycleSteps(),
       OperatorOverrideRecorded: 0,
@@ -1253,6 +1255,7 @@ test("WO-172 the direction reader names the operator step a dispatch records, an
     ["Executor correction during the operator's resume: next dispatch", "none"],
     ["resume: next", "none"],
     ["scope expand: add the export", "scope-expansion"],
+    ["quality pass: improve the recovery docs", "direction"],
     ["operator override: recover the checkpoint", "override"],
   ])
     assert.equal(operatorStep(dispatch), step, dispatch);
@@ -1272,6 +1275,7 @@ test("WO-172 the direction reader names the operator step a dispatch records, an
       "Operator resume: next, with approval of the bounded repair",
       "Operator resume: fix; operator correction during the repair",
       "scope expand: add the export",
+      "quality pass: improve the recovery docs",
     ].map((dispatch) => ({ dispatch })),
     [],
   );
@@ -1280,6 +1284,7 @@ test("WO-172 the direction reader names the operator step a dispatch records, an
     operatorOverride: 0,
     analysis: 0,
     conversationOnly: 0,
+    qualityPass: 1,
     operatorLabel: 1,
     ...lifecycleSteps({
       resumeCorrection: 1,
@@ -1293,7 +1298,7 @@ test("WO-172 the direction reader names the operator step a dispatch records, an
     RecordCorrected: 0,
     CriterionWaived: 0,
   });
-  assert.equal(directions.total, 9);
+  assert.equal(directions.total, 10);
   assert.deepEqual(OPERATOR_STEPS, [
     "correction",
     "direction",
@@ -6680,16 +6685,20 @@ test("WO-145 optional economy support preserves historical snapshots through the
   // Publication guidance and conditional reader scoring preserve the prior role oracle and all its history.
   // WO-221's release-close deletion sentence preserves WO-216's snapshot.
   // The combined oracle preserves both independently reviewed role histories.
+  // Removing a shared sentence follows the same route as adding one.
   const baseline = JSON.parse(
     readFileSync(
       join(
         source,
-        "packages/skeleton/fixtures/wo234-integration-role-baseline.json",
+        "packages/skeleton/fixtures/wo235-removal-role-baseline.json",
       ),
       "utf8",
     ),
   );
-  assert.equal(baseline.historicalBaseline, "wo236-role-baseline.json");
+  assert.equal(
+    baseline.historicalBaseline,
+    "wo235-quality-pass-role-baseline.json",
+  );
   assert.equal(baseline.upstreamBaseline, "wo185-role-baseline.json");
   const chains = [
     baseline,
@@ -11205,7 +11214,7 @@ test("WO-140 the briefing names the session and the exact usage command the usag
       if (role === "verifier") {
         assert.match(
           skill,
-          /Consume the executor's structural, Preflight suite and document rows when their code identity matches the subject/,
+          /Consume the executor's structural and Preflight rows at the subject's code identity, and its document row for the exact candidate tree/,
         );
         assert.match(
           skill,
