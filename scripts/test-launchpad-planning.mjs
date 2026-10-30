@@ -2026,11 +2026,11 @@ test("an instance exported at v0.81.0 takes this release by its README's procedu
     for (const path of firstOrderRecords)
       assert.equal(lgit(fork, ["ls-files", "--", path]), "", path);
     // A fork-local edit to a seed the refresh rewrites survives recovery.
+    const recoveryNote = "\nRecovery fixture work.\n";
     write(
       fork,
       "README.md",
-      readFileSync(join(fork, "README.md"), "utf8") +
-        "\nRecovery fixture work.\n",
+      readFileSync(join(fork, "README.md"), "utf8") + recoveryNote,
     );
     // v0.81.0's README had the fork generate its indexes on main with its own
     // scripts, which leaves the lineage index untracked there.
@@ -2301,7 +2301,34 @@ test("an instance exported at v0.81.0 takes this release by its README's procedu
     lgit(fork, ["merge-base", "--is-ancestor", "upstream/main", "main"]);
     const recovered = join(scratch, "fork-wo001");
     lgit(fork, ["worktree", "add", "-q", "-b", "wo-001", recovered, "main"]);
-    lgit(fork, ["-C", recovered, "stash", "apply", stash]);
+    const applied = exec(recovered, "git", ["stash", "apply", stash]);
+    if (applied.status !== 0) {
+      // Both the upstream guidance and the saved local work can append to
+      // the README. Follow the documented conflict inspection, preserving
+      // the complete updated seed and the exact saved local addition.
+      assert.equal(applied.status, 1, applied.stderr);
+      assert.equal(
+        lgit(recovered, ["diff", "--name-only", "--diff-filter=U"]),
+        "README.md",
+      );
+      const readmeAt = (revision) =>
+        ok(
+          exec(recovered, "git", ["show", `${revision}:README.md`]),
+          `README at ${revision}`,
+        ).stdout;
+      assert.equal(readmeAt(stash), readmeAt(`${stash}^1`) + recoveryNote);
+      assert.match(
+        readFileSync(join(recovered, "README.md"), "utf8"),
+        /^<<<<<<< Updated upstream$/mu,
+      );
+      const resolvedReadme = readmeAt("HEAD") + recoveryNote;
+      write(recovered, "README.md", resolvedReadme);
+      lgit(recovered, ["add", "README.md"]);
+      assert.equal(
+        readFileSync(join(recovered, "README.md"), "utf8"),
+        resolvedReadme,
+      );
+    }
     // The applied stash leaves the update's committed lineage index intact.
     assert.equal(
       readFileSync(join(recovered, "docs/lineage/README.md"), "utf8"),
