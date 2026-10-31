@@ -1,0 +1,241 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-25T21:28:35.297Z",
+  "input": "drive: WO-999",
+  "entrypoint": "generated router's canonical driver",
+  "host": "2.1.310 (Claude Code)",
+  "phase": "active",
+  "stop": {
+    "reason": "incomplete-bound",
+    "next": "Two workers ended without recording completion in this phase; inspect the failure."
+  },
+  "limits": {
+    "subagentCap": 20,
+    "drivenSessionCeiling": 80,
+    "tokens": null,
+    "costUsd": null
+  },
+  "routerUsage": {
+    "totalTokens": null,
+    "costUsd": null,
+    "source": "host-router-counter-unavailable"
+  },
+  "budget": {
+    "count": 2,
+    "cap": 80,
+    "remaining": 78,
+    "countKind": "exact-observed",
+    "unresolvedAdmissions": 0,
+    "unlinkedChildren": 0,
+    "uncountedRemainder": "unknown",
+    "source": "shared-hook-counter"
+  },
+  "workers": [
+    {
+      "phase": "active",
+      "action": "next",
+      "exitCode": 143,
+      "error": false,
+      "timedOut": true,
+      "costUsd": null,
+      "usage": null,
+      "hookEvents": [
+        "hook_started",
+        "hook_response"
+      ],
+      "refusalCodes": [
+        "DOTLN_TARGET_REFUSED",
+        "DOTLN_TARGET_RUNTIME_REFUSED",
+        "DOTLN_PACKAGE_PUBLISH_REFUSED"
+      ],
+      "toolCalls": [
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Read",
+        "Read",
+        "Bash",
+        "Read",
+        "Read",
+        "Read",
+        "Bash",
+        "Read",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Read",
+        "Read",
+        "Read",
+        "Read",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Read",
+        "Read",
+        "Read",
+        "Read",
+        "Bash",
+        "Read",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Read",
+        "Bash",
+        "Read",
+        "Bash",
+        "Write",
+        "Write",
+        "Edit",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Read",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Grep"
+      ],
+      "model": "claude-opus-5-5",
+      "effort": "xhigh",
+      "effortSource": "hook-input",
+      "startedAt": "2026-10-25T21:22:37.303Z",
+      "finishedAt": "2026-10-25T21:26:37.474Z",
+      "cwd": "target-worktree",
+      "hooks": {
+        "hookCalls": 175,
+        "refusedCalls": 13,
+        "effort": [
+          "xhigh"
+        ],
+        "source": "target-hook-journal"
+      },
+      "selectedEffort": "xhigh",
+      "subagents": {
+        "count": null,
+        "cap": 20,
+        "remaining": null,
+        "countKind": "unknown",
+        "unresolvedAdmissions": null,
+        "unlinkedChildren": null,
+        "uncountedRemainder": "unknown",
+        "reason": "counter missing",
+        "source": "phase-local-hook-counter"
+      }
+    },
+    {
+      "phase": "active",
+      "action": "next",
+      "exitCode": 0,
+      "error": false,
+      "timedOut": false,
+      "costUsd": 0.34752879999999997,
+      "usage": {
+        "input_tokens": 24,
+        "cache_creation_input_tokens": 13261,
+        "cache_read_input_tokens": 258324,
+        "output_tokens": 9484,
+        "output_tokens_details": {
+          "thinking_tokens": 6196
+        },
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 13261,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "global",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 4606,
+            "cache_read_input_tokens": 30244,
+            "cache_creation_input_tokens": 609,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 609
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard",
+        "fallback_credit": null
+      },
+      "hookEvents": [
+        "hook_started",
+        "hook_response"
+      ],
+      "refusalCodes": [
+        "DOTLN_TARGET_REFUSED",
+        "DOTLN_TARGET_RUNTIME_REFUSED"
+      ],
+      "toolCalls": [
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Read",
+        "Bash",
+        "Bash",
+        "Read",
+        "Read",
+        "Bash",
+        "Read",
+        "Read",
+        "Read",
+        "Read",
+        "Read",
+        "Read",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Glob"
+      ],
+      "model": "claude-opus-5-5",
+      "effort": "xhigh",
+      "effortSource": "hook-input",
+      "startedAt": "2026-10-25T21:26:37.886Z",
+      "finishedAt": "2026-10-25T21:28:34.899Z",
+      "cwd": "target-worktree",
+      "hooks": {
+        "hookCalls": 58,
+        "refusedCalls": 9,
+        "effort": [
+          "xhigh"
+        ],
+        "source": "target-hook-journal"
+      },
+      "selectedEffort": "xhigh",
+      "subagents": {
+        "count": null,
+        "cap": 20,
+        "remaining": null,
+        "countKind": "unknown",
+        "unresolvedAdmissions": null,
+        "unlinkedChildren": null,
+        "uncountedRemainder": "unknown",
+        "reason": "counter missing",
+        "source": "phase-local-hook-counter"
+      }
+    }
+  ],
+  "completions": [],
+  "publicationExercised": false,
+  "rawTranscriptsRetained": false
+}

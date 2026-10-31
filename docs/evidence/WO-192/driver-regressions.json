@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "scope": "deterministic driver and gate-registration checks; no native model sessions",
+  "fullDriver": {
+    "command": "node --test scripts/test-drive.mjs",
+    "observedAt": "2026-10-26T18:13:41.961Z",
+    "executed": true,
+    "exitCode": 0,
+    "tests": 94,
+    "passed": 94,
+    "failed": 0,
+    "skipped": 0,
+    "durationMs": 32935.200708,
+    "source": "wo192-full-driver-reproduction-3.log: Node test summary and bounded result"
+  },
+  "registration": {
+    "suite": "harness-fixtures",
+    "file": "scripts/test-drive.mjs",
+    "fileConcurrency": 1,
+    "executed": true,
+    "exitCode": 0,
+    "observedCases": [
+      "router chooses one action for every phase and requires both target and launchpad merges",
+      "router stop table covers controls, operator disposition, refusals, repair bounds and exhausted budgets"
+    ],
+    "source": "wo192-driver-registration-reproduction-2.log: regression executes the suite's registered command with the runner's environment and requires both passing case outputs"
+  },
+  "commandInventory": {
+    "observedAt": "2026-10-26T18:33:10.644Z",
+    "executed": true,
+    "exitCode": 0,
+    "tests": 2,
+    "passed": 2,
+    "failed": 0,
+    "durationMs": 258.697416,
+    "coverage": [
+      "historical command inventory maps the harness entry to its exact current two-file command",
+      "the registered harness command executes both driver route tables"
+    ],
+    "source": "wo192-command-inventory-reproduction.log"
+  },
+  "lifecycleStatus": {
+    "command": "node scripts/harness.mjs bounded -- bash scripts/test-resume.sh",
+    "observedAt": "2026-10-26T19:21:54.995Z",
+    "executed": true,
+    "exitCode": 0,
+    "durationMs": 126131,
+    "coverage": [
+      "the entire lifecycle fixture reports resume tests passed",
+      "exact active missing-worktree route and event count",
+      "exact closed awaiting-merge route and event count",
+      "the same closed route with drifted projection and unchanged canonical bytes"
+    ],
+    "source": "wo192-lifecycle-route-reproduction.log"
+  },
+  "declarations": {
+    "command": "node scripts/structural-checks.mjs declarations",
+    "exitCode": 0,
+    "source": "wo192-driver-declarations.log"
+  },
+  "pairedGitHooks": {
+    "executed": true,
+    "exitCode": 0,
+    "coverage": [
+      "reviewer add and commit in both physical roots and an alias",
+      "executor and foreign-root refusal",
+      "generic classifier still refuses cwd overrides",
+      "compound, redirect, expansion and other-operation refusal",
+      "writer-isolation and no-attribution hooks",
+      "attribution rejection and relative commit-message files resolved from the selected Git destination"
+    ],
+    "source": "wo192-paired-git-hooks.log; repeated in the passing full driver run"
+  }
+}

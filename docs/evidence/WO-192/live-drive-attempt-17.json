@@ -1,0 +1,268 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-26T00:05:16.412Z",
+  "input": "drive: WO-999",
+  "entrypoint": "generated router's canonical driver",
+  "host": "codex-cli 0.164.0",
+  "phase": "active",
+  "routers": [
+    {
+      "exitCode": null,
+      "error": true,
+      "timedOut": true,
+      "workerEnded": true,
+      "costUsd": null,
+      "usage": null,
+      "hookEvents": [],
+      "refusalCodes": [],
+      "toolCalls": [
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution"
+      ],
+      "model": null,
+      "sessionId": "identity-1",
+      "startedAt": "2026-10-25T23:51:20.227Z",
+      "finishedAt": "2026-10-26T00:05:16.157Z",
+      "selectedPolicy": {
+        "sandbox": "workspace-write",
+        "approval": "automatic-review",
+        "networkAccess": "enabled-for-native-workers",
+        "source": "launch-arguments"
+      },
+      "isolation": {
+        "schemaVersion": 1,
+        "home": "sha256:e0d75226744adbefe463948462bdc7770f3bd6ee37cf77d41a0ac417d2dd531e",
+        "authentication": "symlink",
+        "userConfig": {
+          "before": "sha256:6202960ee18605675f85f66f649d13f9e250c7b6b5793cb85d85eba09408500e",
+          "after": "sha256:6202960ee18605675f85f66f649d13f9e250c7b6b5793cb85d85eba09408500e"
+        },
+        "trustTable": {
+          "before": "sha256:f73fb2e2e4e5ce05288c6b5b2f7ddf948959c83bd8216603da58f3a08bb2d3a9",
+          "after": "sha256:f73fb2e2e4e5ce05288c6b5b2f7ddf948959c83bd8216603da58f3a08bb2d3a9"
+        },
+        "isolatedTrustEntries": 1,
+        "homeRemoved": true
+      },
+      "selectedModel": "gpt-6.1-sol",
+      "selectedEffort": "max",
+      "role": "router",
+      "cwd": "main"
+    }
+  ],
+  "stop": {
+    "reason": "incomplete-bound",
+    "next": "Two workers ended without recording completion in this phase; inspect the failure."
+  },
+  "limits": {
+    "subagentCap": 20,
+    "drivenSessionCeiling": 80,
+    "tokens": null,
+    "costUsd": null
+  },
+  "routerUsage": {
+    "totalTokens": null,
+    "costUsd": null,
+    "source": "native-router-result-stream",
+    "scope": "router sessions only"
+  },
+  "budget": {
+    "count": 2,
+    "cap": 80,
+    "remaining": 78,
+    "countKind": "minimum-observed",
+    "unresolvedAdmissions": 0,
+    "unlinkedChildren": 0,
+    "uncountedRemainder": "unknown",
+    "source": "native-stream-minimum-and-router-admissions",
+    "unknownRemainder": true
+  },
+  "workers": [
+    {
+      "phase": "active",
+      "action": "next",
+      "exitCode": null,
+      "error": true,
+      "timedOut": true,
+      "workerEnded": true,
+      "costUsd": null,
+      "usage": null,
+      "hookEvents": [],
+      "refusalCodes": [],
+      "toolCalls": [
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "file_change",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "file_change",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "file_change",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "file_change",
+        "command_execution",
+        "command_execution",
+        "file_change",
+        "command_execution",
+        "file_change",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "file_change"
+      ],
+      "entryResults": [
+        {
+          "status": "completed",
+          "exitCode": 0,
+          "output": "{\"role\":\"executor\",\"workOrder\":\"WO-999\",\"writerRoots\":2,\"source\":\"native-codex-phase-entry\"}\n"
+        }
+      ],
+      "model": null,
+      "sessionId": "identity-2",
+      "startedAt": "2026-10-25T23:52:04.575Z",
+      "finishedAt": "2026-10-26T00:05:01.153Z",
+      "selectedPolicy": {
+        "sandbox": "workspace-write",
+        "approval": "automatic-review",
+        "networkAccess": "default",
+        "source": "launch-arguments"
+      },
+      "isolation": {
+        "schemaVersion": 1,
+        "home": "sha256:c9ca49d9d8de5dbf72eb8dfb53fb48943fea615abfb08bc2b0d4904b8bf7e78c",
+        "authentication": "symlink",
+        "userConfig": {
+          "before": "sha256:9e70942f631ecc557dfea4f868817ceb027b60fd4b3df05b75dd01ab2cf9fa73",
+          "after": "sha256:9e70942f631ecc557dfea4f868817ceb027b60fd4b3df05b75dd01ab2cf9fa73"
+        },
+        "trustTable": {
+          "before": "sha256:9e70942f631ecc557dfea4f868817ceb027b60fd4b3df05b75dd01ab2cf9fa73",
+          "after": "sha256:9e70942f631ecc557dfea4f868817ceb027b60fd4b3df05b75dd01ab2cf9fa73"
+        },
+        "isolatedTrustEntries": 1,
+        "homeRemoved": true
+      },
+      "cwd": "target-worktree",
+      "workerId": "identity-3",
+      "resumed": false,
+      "hooks": {
+        "hookCalls": null,
+        "source": "codex-unhooked-role-text"
+      },
+      "effort": null,
+      "effortSource": "not-exposed-by-native-json-stream",
+      "subagents": {
+        "count": 0,
+        "countKind": "minimum-observed",
+        "unknownRemainder": true,
+        "source": "native-collab-events"
+      },
+      "selectedModel": "gpt-6.1-sol",
+      "selectedEffort": "max",
+      "host": "codex"
+    },
+    {
+      "phase": "active",
+      "action": "next",
+      "exitCode": null,
+      "error": true,
+      "timedOut": true,
+      "workerEnded": true,
+      "costUsd": null,
+      "usage": null,
+      "hookEvents": [],
+      "refusalCodes": [],
+      "toolCalls": [],
+      "model": null,
+      "startedAt": "2026-10-26T00:05:01.833Z",
+      "finishedAt": "2026-10-26T00:05:01.862Z",
+      "selectedPolicy": {
+        "sandbox": "workspace-write",
+        "approval": "automatic-review",
+        "networkAccess": "default",
+        "source": "launch-arguments"
+      },
+      "isolation": {
+        "schemaVersion": 1,
+        "home": "sha256:b855e55392ea60d2a6896d0e235481c95b8b6e9a91664b37b7096e31f1432548",
+        "authentication": "symlink",
+        "userConfig": {
+          "before": "sha256:9e70942f631ecc557dfea4f868817ceb027b60fd4b3df05b75dd01ab2cf9fa73",
+          "after": "sha256:9e70942f631ecc557dfea4f868817ceb027b60fd4b3df05b75dd01ab2cf9fa73"
+        },
+        "trustTable": {
+          "before": "sha256:9e70942f631ecc557dfea4f868817ceb027b60fd4b3df05b75dd01ab2cf9fa73",
+          "after": "sha256:9e70942f631ecc557dfea4f868817ceb027b60fd4b3df05b75dd01ab2cf9fa73"
+        },
+        "isolatedTrustEntries": null,
+        "homeRemoved": true
+      },
+      "cwd": "target-worktree",
+      "workerId": "identity-4",
+      "resumed": false,
+      "hooks": {
+        "hookCalls": null,
+        "source": "codex-unhooked-role-text"
+      },
+      "effort": null,
+      "effortSource": "not-exposed-by-native-json-stream",
+      "subagents": {
+        "count": 0,
+        "countKind": "minimum-observed",
+        "unknownRemainder": true,
+        "source": "native-collab-events"
+      },
+      "selectedModel": "gpt-6.1-sol",
+      "selectedEffort": "max",
+      "host": "codex"
+    }
+  ],
+  "completions": [],
+  "publicationExercised": false,
+  "rawTranscriptsRetained": false,
+  "outcome": "failed",
+  "failedStage": "drive",
+  "cause": "live episode must reach a real passing final review\n\n'active' !== 'closed'\n",
+  "cleanup": {
+    "workersEnded": true,
+    "outcome": "removed"
+  }
+}

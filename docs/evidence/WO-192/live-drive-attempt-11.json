@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-25T22:34:44.756Z",
+  "stage": "register-target",
+  "outcome": "failed",
+  "cause": "error: invalid work-order authority path for WO-999: undefined/work-orders/WO-999-fixture.md\n\n\n1 !== 0\n",
+  "driveEntered": false
+}

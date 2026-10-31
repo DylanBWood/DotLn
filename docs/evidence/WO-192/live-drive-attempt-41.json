@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-26T15:12:19.091Z",
+  "qualificationScope": "native-router-and-release-close; earlier phases coordinator-seeded",
+  "qualificationSandbox": {
+    "enabled": false,
+    "source": "operator-authorized-fixture-local-settings",
+    "permissionPolicy": "fixture-declared-tools"
+  },
+  "qualificationLauncherPermission": {
+    "source": "inherited-host-policy"
+  },
+  "qualificationPermissionReview": {
+    "mode": "default",
+    "source": "operator-authorized-fixture-local-settings",
+    "toolAllowance": "native-launcher-declared-tools"
+  },
+  "stage": "coordinator-seed",
+  "outcome": "failed",
+  "cause": "Advisory: attestation recorded as supplied; human not-applicable effort unknown has no matching discovery observation.\nerror: Receipt cost lines refused:\ndocs/verifications/WO-999/VER-001.md: cost line records neither the entry and handoff counters with their source nor one cause code (hooks-fallback, no-session, harness-no-readback)\nUse `**Process cost:** entry <total> tokens; handoff <total> tokens; source <source>` or `**Process cost:** unknown; cause <hooks-fallback|no-session|harness-no-readback>`.\n\n\n1 !== 0\n",
+  "driveEntered": false,
+  "routers": [],
+  "workers": [],
+  "routerUsage": {
+    "totalTokens": 0,
+    "costUsd": 0,
+    "source": "native-router-result-stream",
+    "scope": "router sessions only"
+  },
+  "driverObservations": [
+    {
+      "stage": "coordinator-seed",
+      "point": "before-final-cleanup",
+      "observedAt": "2026-10-26T15:12:19.092Z",
+      "state": null
+    },
+    {
+      "stage": "coordinator-seed",
+      "point": "after-final-stop",
+      "observedAt": "2026-10-26T15:12:19.092Z",
+      "state": null
+    }
+  ],
+  "cleanup": {
+    "workersEnded": true,
+    "outcome": "removed"
+  }
+}

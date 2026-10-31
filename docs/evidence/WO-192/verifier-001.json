@@ -1,0 +1,938 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-192",
+  "verification": "VER-001",
+  "subject": {
+    "head": "03b66a26020f51dbb6588e390c114c7ab951d4f2",
+    "codeIdentity": "8aead38946e0f352e51aee65104cc3fc8996b8dbeaa0e34c8df0b72c1ba746d6"
+  },
+  "completeReview": {
+    "checkId": "npm test",
+    "codeIdentity": "8aead38946e0f352e51aee65104cc3fc8996b8dbeaa0e34c8df0b72c1ba746d6",
+    "treeHash": "9d4d5924768e6f3c89d57cd0e6b6fa5ad745f0b7",
+    "recordedAt": "2026-10-31T07:04:06.449Z",
+    "evidenceRef": "host-gate:8aead38946e0f352e51aee65104cc3fc8996b8dbeaa0e34c8df0b72c1ba746d6:npm test",
+    "gateSelection": "review",
+    "executionMode": "composed",
+    "identityUnchanged": true,
+    "buildOutputUnchanged": true,
+    "freshSuites": 36,
+    "reusedSuites": 79,
+    "requiredSuites": [
+      "build",
+      "format",
+      "configuration-root",
+      "registrations",
+      "declarations",
+      "generated",
+      "host",
+      "release-preparation",
+      "github-body",
+      "outward-lint",
+      "target-publish",
+      "target-worktree",
+      "vertical",
+      "license-fixtures",
+      "publication-fixtures",
+      "backup-intake",
+      "resume",
+      "launchpad",
+      "workstream-pilot",
+      "instance-history",
+      "beacon-portability",
+      "checkpoint",
+      "worktree",
+      "worktree-integration",
+      "release",
+      "work-orders-fixtures",
+      "siblings-fixtures",
+      "kernel",
+      "compiler",
+      "skeleton",
+      "console",
+      "browser-evidence",
+      "adjacent-queue",
+      "derived-orders",
+      "portfolio",
+      "codex-continuation",
+      "authority-grants",
+      "fixture-temp-root",
+      "launchpad-planning",
+      "harness-probe",
+      "harness-fixtures",
+      "harness-context",
+      "plan-refutation",
+      "runner-fixtures",
+      "sync-fixtures",
+      "process-debt"
+    ],
+    "unrunSuites": [],
+    "stale": [],
+    "durationMs": 1321702,
+    "exitCode": 0,
+    "executed": true
+  },
+  "declaredPreflightCoverage": {
+    "productSuitesInCompleteRow": [
+      "harness-probe",
+      "harness-fixtures",
+      "process-debt",
+      "launchpad",
+      "skeleton",
+      "resume"
+    ],
+    "suitesOwnedByDocumentGate": [
+      "harness",
+      "authority-evidence",
+      "artifact-evidence",
+      "verification-evidence",
+      "feedback-evidence",
+      "harness-evidence"
+    ],
+    "classificationSource": "scripts/test-runner.mjs classifySuite"
+  },
+  "format": {
+    "command": [
+      "node",
+      "scripts/harness.mjs",
+      "bounded",
+      "--",
+      "npm",
+      "run",
+      "format:check"
+    ],
+    "name": "bounded-probe",
+    "durationMs": 8227,
+    "slowestCases": [
+      {
+        "name": "bounded-probe",
+        "durationMs": 8227,
+        "exitCode": 0,
+        "granularity": "task"
+      }
+    ],
+    "peakFootprintBytes": 493672976,
+    "peakRssBytes": 565903360,
+    "memoryBudgetBytes": 3221225472,
+    "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+    "droppedOutputBytes": 0,
+    "startedAt": "2026-10-31T09:27:15.429Z",
+    "finishedAt": "2026-10-31T09:27:23.656Z",
+    "exitCode": 0,
+    "executed": true
+  },
+  "independentProbes": {
+    "sourceSha256": "0ad60f12cfb3722f67736c670d821f1184aba4956b715c701fb077e17dcb8789",
+    "source": "import assert from 'node:assert/strict';\nimport { readFileSync, writeFileSync, mkdirSync } from 'node:fs';\nimport { fileURLToPath, pathToFileURL } from 'node:url';\nimport { join, dirname } from 'node:path';\nconst root = process.cwd();\nconst scratch = dirname(fileURLToPath(import.meta.url));\nconst load = p => import(pathToFileURL(join(root,p)));\nconst { routeOrder } = await load('scripts/lib/drive-route.mjs');\nconst { driveLoop, phaseTimeLimit, workerEnvironment, phaseDefinition } = await load('scripts/lib/drive-session.mjs');\nconst { streamObservation } = await load('scripts/lib/drive-stream.mjs');\nconst { readBudgets } = await load('scripts/lib/process-budget.mjs');\nconst { withoutDrivenContext } = await load('scripts/lib/suite-evidence.mjs');\nconst budget = await load('packages/skeleton/dist/src/subagent-budget.js');\nconst results = [];\nconst check = async (name, body) => {\n  try { await body(); results.push({name, result:'pass'}); }\n  catch (e) { results.push({name,result:'fail',error:e.message}); }\n};\nawait check('route cross-product: every phase has one action or an actionable stop', () => {\n  const phases = ['none','active','ready-to-verify','verifying','needs-fix','repairing','verified','final-review','closed','withdrawn'];\n  const variations = [{}, {operatorMode:'analysis'}, {operatorMode:'override'}, {refused:'synthetic-refusal'}, {exhausted:true}, {merged:true,targetMerged:true}, {released:true}];\n  for (const phase of phases) for (const facts of variations) {\n    const r = routeOrder({phase,repositoryId:'target'}, [], facts);\n    assert.notEqual(Boolean(r.action), Boolean(r.stop), `${phase} ${JSON.stringify(facts)}`);\n    if(r.action) { assert.ok(r.role); assert.ok(r.phrase.startsWith('resume: ')); }\n    else { assert.ok(r.stop.reason); assert.ok(r.stop.next.trim()); }\n  }\n  for (const facts of [{merged:true}, {targetMerged:true}, {}]) assert.equal(routeOrder({phase:'closed',repositoryId:'target'}, [], facts).stop.reason,'awaiting-merge');\n});\nawait check('history windows: reactivation, off-ramp acknowledgement and action-specific incomplete bounds', () => {\n  const old = Array.from({length:3},()=>({type:'VerificationCompleted',verdict:'fail'}));\n  assert.equal(routeOrder({phase:'needs-fix'},old).stop.reason,'verification-bound');\n  assert.equal(routeOrder({phase:'needs-fix'},[...old,{type:'WorkOrderActivated'}]).action,'fix');\n  assert.equal(routeOrder({phase:'verifying'},[],{incomplete:{next:2,fix:2}}).action,'verify');\n  assert.equal(routeOrder({phase:'closed'},[],{merged:true,incomplete:{'release-close':2}}).stop.reason,'incomplete-bound');\n  const events=[{type:'CriterionWaived'}];\n  assert.equal(routeOrder({phase:'verified'},events,{attentionSince:0}).stop.reason,'off-ramp');\n  assert.equal(routeOrder({phase:'verified'},events,{attentionSince:1}).action,'final-review');\n});\nawait check('independent driver sequence includes one failed verification and its repair, then stops for merge', async () => {\n  let phase='active', n=0, verifications=0;\n  const actions=[];\n  const record={attempts:[],incomplete:{},factsAt:0};\n  const status=()=>({phase,route:{...routeOrder({phase}),eventCount:n}});\n  const out=await driveLoop({status,record,launch:async r=>{\n    actions.push(r.action); n++;\n    if(r.action==='next'||r.action==='fix') phase='ready-to-verify';\n    if(r.action==='verify') phase=++verifications===1?'needs-fix':'verified';\n    if(r.action==='final-review') phase='closed';\n    return {exitCode:0};\n  }});\n  assert.deepEqual(actions,['next','verify','fix','verify','final-review']);\n  assert.equal(out.stop.reason,'awaiting-merge');\n  assert.equal(out.attempts.length,5);\n  assert.equal(out.incomplete.verify,0);\n});\nawait check('native stream: declined commands stop, malformed rows do not erase valid usage, operands stay private', () => {\n  let stops=0;\n  const s=streamObservation({protocol:'codex',launchpad:root,stop:()=>stops++});\n  s.inspect('{broken'); s.inspect('null');\n  s.inspect(JSON.stringify({type:'thread.started',thread_id:'synthetic-thread'}));\n  s.inspect(JSON.stringify({type:'item.completed',item:{type:'command_execution',command:'node /synthetic/private/release.mjs close WO-999 --publish',status:'declined',aggregated_output:''}}));\n  s.inspect(JSON.stringify({type:'turn.completed',usage:{input_tokens:9,output_tokens:3}}));\n  assert.equal(s.facts.cause,'native-permission-refused'); assert.ok(s.facts.refused); assert.equal(stops,1);\n  assert.equal(s.facts.usage.input_tokens,9);\n  assert.ok(!JSON.stringify(s.observed()).includes('/synthetic/private'));\n});\nawait check('independent budget: duplicate admissions are idempotent, refused admissions charge nothing, another spawner retains its allowance', () => {\n  const f=join(scratch,'counter-independent'); const directory=join(f,'state');\n  mkdirSync(join(f,'docs/control'),{recursive:true});\n  writeFileSync(join(f,'docs/control/budgets.json'),JSON.stringify({subagentCap:2}));\n  assert.equal(budget.initializeSubagentCounter(directory,'independent'),null);\n  const admit=(id,spawner)=>budget.admitSubagentTool(f,directory,{session_id:'independent',tool_use_id:id,tool_name:'Agent'},true,{cap:3,spawnerCap:1,spawner});\n  assert.equal(admit('a','alpha').refusal,undefined);\n  assert.equal(admit('a','alpha').refusal,undefined);\n  assert.ok(admit('a-denied','alpha').refusal);\n  assert.equal(admit('b','beta').refusal,undefined);\n  assert.equal(admit('router','router').refusal,undefined);\n  assert.ok(admit('c-denied','gamma').refusal);\n  assert.equal(budget.subagentUsage(f,directory,'independent').count,3);\n});\nawait check('legacy budgets: absent router keys stay unset', () => {\n  const f=join(scratch,'legacy-budgets'); mkdirSync(join(f,'docs/control'),{recursive:true});\n  const value=JSON.parse(readFileSync(join(root,'docs/control/budgets.json'),'utf8'));\n  delete value.dispatches.router; delete value.limits.coldStartBytes.router;\n  writeFileSync(join(f,'docs/control/budgets.json'),JSON.stringify(value));\n  const read=readBudgets(f);\n  assert.equal(read.dispatches.router.tokens,null); assert.equal(read.dispatches.router.costUsd,null);\n  assert.equal(read.dispatches.router.wallClockMs,null); assert.equal(read.limits.coldStartBytes.router,null);\n});\nawait check('worker identity and driven context do not reach suite environments; deadline admission is exact', () => {\n  const env={CODEX_THREAD_ID:'parent',CLAUDE_CODE_SESSION_ID:'parent',CLAUDE_EFFORT:'max',DOTLN_DRIVEN_WORKER:'context',DOTLN_DRIVE_DEADLINE_AT:'2000',DOTLN_DRIVE_PARENT_PID:'111',CUSTOM:'retained'};\n  const child=workerEnvironment(env);\n  for(const key of ['CODEX_THREAD_ID','CLAUDE_CODE_SESSION_ID','CLAUDE_EFFORT','DOTLN_DRIVEN_WORKER']) assert.equal(child[key],undefined);\n  const suite=withoutDrivenContext(env);\n  for(const key of ['DOTLN_DRIVEN_WORKER','DOTLN_DRIVE_DEADLINE_AT','DOTLN_DRIVE_PARENT_PID']) assert.equal(suite[key],undefined);\n  assert.equal(suite.CUSTOM,'retained');\n  assert.equal(phaseTimeLimit(null,null,'2000',2000),0);\n  assert.equal(phaseTimeLimit(1000,500,'2200',2000),200);\n});\nawait check('both generated verifier definitions keep actual worker pins and the independent verifier effort',async()=>{\n  for(const host of ['claude','codex']) {\n    const phase=await phaseDefinition(root,'verifier',host);\n    assert.equal(phase.definition.model,host==='claude'?'claude-opus-5-5':'gpt-6.1-sol');\n    assert.equal(phase.definition.effort,'xhigh');\n    assert.ok(phase.definition.prompt.includes('immutable VER report') || phase.definition.prompt.includes('immutable report'));\n    assert.ok(phase.helpers['dotln-worker']);\n  }\n});\nconst summary={subject:'WO-192',observedAt:new Date().toISOString(),groups:results,passed:results.filter(r=>r.result==='pass').length,failed:results.filter(r=>r.result==='fail').length};\nwriteFileSync(join(scratch,'independent-probes.json'),JSON.stringify(summary,null,2)+'\\n');\nconsole.log(JSON.stringify(summary,null,2));\nprocess.exitCode=summary.failed?1:0;\n",
+    "result": {
+      "subject": "WO-192",
+      "observedAt": "2026-10-31T09:29:48.759Z",
+      "groups": [
+        {
+          "name": "route cross-product: every phase has one action or an actionable stop",
+          "result": "pass"
+        },
+        {
+          "name": "history windows: reactivation, off-ramp acknowledgement and action-specific incomplete bounds",
+          "result": "pass"
+        },
+        {
+          "name": "independent driver sequence includes one failed verification and its repair, then stops for merge",
+          "result": "pass"
+        },
+        {
+          "name": "native stream: declined commands stop, malformed rows do not erase valid usage, operands stay private",
+          "result": "pass"
+        },
+        {
+          "name": "independent budget: duplicate admissions are idempotent, refused admissions charge nothing, another spawner retains its allowance",
+          "result": "pass"
+        },
+        {
+          "name": "legacy budgets: absent router keys stay unset",
+          "result": "pass"
+        },
+        {
+          "name": "worker identity and driven context do not reach suite environments; deadline admission is exact",
+          "result": "pass"
+        },
+        {
+          "name": "both generated verifier definitions keep actual worker pins and the independent verifier effort",
+          "result": "pass"
+        }
+      ],
+      "passed": 8,
+      "failed": 0
+    },
+    "run": {
+      "name": "bounded-probe",
+      "durationMs": 312,
+      "slowestCases": [
+        {
+          "name": "bounded-probe",
+          "durationMs": 312,
+          "exitCode": 0,
+          "granularity": "task"
+        }
+      ],
+      "peakFootprintBytes": 40210920,
+      "peakRssBytes": 90390528,
+      "memoryBudgetBytes": 3221225472,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+      "droppedOutputBytes": 0,
+      "startedAt": "2026-10-31T09:29:48.456Z",
+      "finishedAt": "2026-10-31T09:29:48.768Z",
+      "exitCode": 0,
+      "executed": true
+    }
+  },
+  "fixtureProbes": {
+    "command": [
+      "node",
+      "scripts/harness.mjs",
+      "bounded",
+      "--",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "--test-name-pattern=router dispatch is metadata|worker identities do not share|helper agent works inside|lifecycle worker.*reservation ends|target roots derive|an order reads as merged|drive facts describe|a hosted merge reaches|driven target permissions",
+      "scripts/test-harness.mjs",
+      "scripts/test-drive.mjs"
+    ],
+    "passed": 9,
+    "failed": 0,
+    "run": {
+      "name": "bounded-probe",
+      "durationMs": 38080,
+      "slowestCases": [
+        {
+          "name": "bounded-probe",
+          "durationMs": 38080,
+          "exitCode": 0,
+          "granularity": "task"
+        }
+      ],
+      "peakFootprintBytes": 137068984,
+      "peakRssBytes": 276938752,
+      "memoryBudgetBytes": 3221225472,
+      "footprintSource": "proc_pid_rusage.ri_phys_footprint",
+      "droppedOutputBytes": 0,
+      "startedAt": "2026-10-31T09:30:03.479Z",
+      "finishedAt": "2026-10-31T09:30:41.560Z",
+      "exitCode": 0,
+      "executed": true
+    }
+  },
+  "liveEvidence": [
+    {
+      "source": "docs/evidence/WO-192/live-drive-attempt-39.json",
+      "host": "2.1.310 (Claude Code)",
+      "typedInput": "drive: WO-999",
+      "qualificationScope": null,
+      "nativeLifecycle": true,
+      "consumedGates": [
+        {
+          "type": "ImplementationReady",
+          "verdict": null,
+          "targetSelection": "review",
+          "targetGate": "target-gate:identity-5",
+          "documentGate": "host-gate:65c3d2f50b3a87b11ce1bd81fad67e48b1c1849fc0cde559c165e3bd33cbc6f5:npm run test:docs",
+          "documentExitCode": 0
+        },
+        {
+          "type": "VerificationCompleted",
+          "verdict": "pass",
+          "targetSelection": "review",
+          "targetGate": "target-gate:identity-6",
+          "documentGate": "host-gate:65c3d2f50b3a87b11ce1bd81fad67e48b1c1849fc0cde559c165e3bd33cbc6f5:npm run test:docs",
+          "documentExitCode": 0
+        },
+        {
+          "type": "FinalReviewCompleted",
+          "verdict": "pass",
+          "targetSelection": "review",
+          "targetGate": "target-gate:identity-7",
+          "documentGate": "host-gate:65c3d2f50b3a87b11ce1bd81fad67e48b1c1849fc0cde559c165e3bd33cbc6f5:npm run test:docs",
+          "documentExitCode": 0
+        }
+      ],
+      "roles": [
+        {
+          "action": "next",
+          "cwd": "target-worktree",
+          "exitCode": 1,
+          "cause": "native-provider-unavailable",
+          "selectedModel": "claude-opus-5-5",
+          "selectedEffort": "xhigh",
+          "readbackModel": "claude-opus-5-5",
+          "readbackEffort": null,
+          "hooksSource": "target-hook-journal",
+          "subagents": {
+            "count": null,
+            "cap": 20,
+            "remaining": null,
+            "countKind": "unknown",
+            "unresolvedAdmissions": null,
+            "unlinkedChildren": null,
+            "uncountedRemainder": "unknown",
+            "reason": "counter missing",
+            "source": "phase-local-hook-counter"
+          },
+          "usageAvailable": true
+        },
+        {
+          "action": "next",
+          "cwd": "target-worktree",
+          "exitCode": 0,
+          "cause": null,
+          "selectedModel": "claude-opus-5-5",
+          "selectedEffort": "xhigh",
+          "readbackModel": "claude-opus-5-5",
+          "readbackEffort": "xhigh",
+          "hooksSource": "target-hook-journal",
+          "subagents": {
+            "count": 2,
+            "cap": 20,
+            "remaining": 18,
+            "countKind": "minimum-observed",
+            "unresolvedAdmissions": 2,
+            "unlinkedChildren": 2,
+            "uncountedRemainder": "unknown",
+            "source": "phase-local-hook-counter"
+          },
+          "usageAvailable": true
+        },
+        {
+          "action": "verify",
+          "cwd": "target-worktree",
+          "exitCode": 0,
+          "cause": null,
+          "selectedModel": "claude-opus-5-5",
+          "selectedEffort": "xhigh",
+          "readbackModel": "claude-opus-5-5",
+          "readbackEffort": "xhigh",
+          "hooksSource": "target-hook-journal",
+          "subagents": {
+            "count": 0,
+            "cap": 20,
+            "remaining": 20,
+            "countKind": "exact-observed",
+            "unresolvedAdmissions": 0,
+            "unlinkedChildren": 0,
+            "uncountedRemainder": "unknown",
+            "source": "phase-local-hook-counter"
+          },
+          "usageAvailable": true
+        },
+        {
+          "action": "final-review",
+          "cwd": "target-worktree",
+          "exitCode": 0,
+          "cause": null,
+          "selectedModel": "claude-opus-5-5",
+          "selectedEffort": "xhigh",
+          "readbackModel": "claude-opus-5-5",
+          "readbackEffort": "xhigh",
+          "hooksSource": "target-hook-journal",
+          "subagents": {
+            "count": 0,
+            "cap": 20,
+            "remaining": 20,
+            "countKind": "exact-observed",
+            "unresolvedAdmissions": 0,
+            "unlinkedChildren": 0,
+            "uncountedRemainder": "unknown",
+            "source": "phase-local-hook-counter"
+          },
+          "usageAvailable": true
+        }
+      ],
+      "routerUsage": {
+        "totalTokens": 56959,
+        "costUsd": 0.2585714,
+        "source": "native-router-result-stream",
+        "scope": "router sessions only"
+      },
+      "stop": {
+        "reason": "awaiting-merge",
+        "next": "The operator merges the reviewed pull request(s), then types the same drive phrase again."
+      },
+      "close": null,
+      "codeIdentity": null
+    },
+    {
+      "source": "docs/evidence/WO-192/live-drive-attempt-44.json",
+      "host": "2.1.310 (Claude Code)",
+      "typedInput": "drive: WO-999",
+      "qualificationScope": "native-router-and-release-close; earlier phases coordinator-seeded",
+      "nativeLifecycle": false,
+      "consumedGates": [],
+      "roles": [
+        {
+          "action": "release-close",
+          "cwd": "main",
+          "exitCode": 0,
+          "cause": null,
+          "selectedModel": "claude-opus-5-5",
+          "selectedEffort": "xhigh",
+          "readbackModel": "claude-opus-5-5",
+          "readbackEffort": "xhigh",
+          "hooksSource": "project-hook-journal",
+          "subagents": {
+            "count": 0,
+            "cap": 20,
+            "remaining": 20,
+            "countKind": "exact-observed",
+            "unresolvedAdmissions": 0,
+            "unlinkedChildren": 0,
+            "uncountedRemainder": "unknown",
+            "source": "phase-local-hook-counter"
+          },
+          "usageAvailable": true
+        }
+      ],
+      "routerUsage": {
+        "totalTokens": 81702,
+        "costUsd": 0.3076768,
+        "source": "native-router-result-stream",
+        "scope": "router sessions only"
+      },
+      "stop": {
+        "reason": "released",
+        "next": "The local release attribution or no-release close is recorded."
+      },
+      "close": {
+        "publication": "no-release",
+        "cleanup": "clean",
+        "targetCleanup": "removed"
+      },
+      "codeIdentity": null
+    },
+    {
+      "source": "docs/evidence/WO-192/live-drive-attempt-45.json",
+      "host": "codex-cli 0.164.0",
+      "typedInput": "drive: WO-999",
+      "qualificationScope": "native-full-lifecycle",
+      "nativeLifecycle": true,
+      "consumedGates": [
+        {
+          "type": "ImplementationReady",
+          "verdict": null,
+          "targetSelection": "review",
+          "targetGate": "target-gate:identity-8",
+          "documentGate": "host-gate:bece88dae7ca63e7156fd4a7cdc886e9ee090209226984b070121ab909e575ed:npm run test:docs",
+          "documentExitCode": 0
+        },
+        {
+          "type": "VerificationCompleted",
+          "verdict": "pass",
+          "targetSelection": "review",
+          "targetGate": "target-gate:identity-8",
+          "documentGate": "host-gate:bece88dae7ca63e7156fd4a7cdc886e9ee090209226984b070121ab909e575ed:npm run test:docs",
+          "documentExitCode": 0
+        },
+        {
+          "type": "FinalReviewCompleted",
+          "verdict": "pass",
+          "targetSelection": "review",
+          "targetGate": "target-gate:identity-8",
+          "documentGate": "host-gate:bece88dae7ca63e7156fd4a7cdc886e9ee090209226984b070121ab909e575ed:npm run test:docs",
+          "documentExitCode": 0
+        }
+      ],
+      "roles": [
+        {
+          "action": "next",
+          "cwd": "target-worktree",
+          "exitCode": 0,
+          "cause": null,
+          "selectedModel": "gpt-6.1-sol",
+          "selectedEffort": "max",
+          "readbackModel": null,
+          "readbackEffort": null,
+          "hooksSource": "codex-unhooked-role-text",
+          "subagents": {
+            "count": 0,
+            "countKind": "minimum-observed",
+            "unknownRemainder": true,
+            "source": "native-collab-events"
+          },
+          "usageAvailable": true
+        },
+        {
+          "action": "verify",
+          "cwd": "target-worktree",
+          "exitCode": 0,
+          "cause": null,
+          "selectedModel": "gpt-6.1-sol",
+          "selectedEffort": "max",
+          "readbackModel": null,
+          "readbackEffort": null,
+          "hooksSource": "codex-unhooked-role-text",
+          "subagents": {
+            "count": 0,
+            "countKind": "minimum-observed",
+            "unknownRemainder": true,
+            "source": "native-collab-events"
+          },
+          "usageAvailable": true
+        },
+        {
+          "action": "final-review",
+          "cwd": "target-worktree",
+          "exitCode": 0,
+          "cause": null,
+          "selectedModel": "gpt-6.1-sol",
+          "selectedEffort": "max",
+          "readbackModel": null,
+          "readbackEffort": null,
+          "hooksSource": "codex-unhooked-role-text",
+          "subagents": {
+            "count": 0,
+            "countKind": "minimum-observed",
+            "unknownRemainder": true,
+            "source": "native-collab-events"
+          },
+          "usageAvailable": true
+        },
+        {
+          "action": "release-close",
+          "cwd": "main",
+          "exitCode": 0,
+          "cause": null,
+          "selectedModel": "gpt-6.1-sol",
+          "selectedEffort": "max",
+          "readbackModel": null,
+          "readbackEffort": null,
+          "hooksSource": "codex-unhooked-role-text",
+          "subagents": {
+            "count": 0,
+            "countKind": "minimum-observed",
+            "unknownRemainder": true,
+            "source": "native-collab-events"
+          },
+          "usageAvailable": true
+        }
+      ],
+      "routerUsage": {
+        "totalTokens": 2590627,
+        "costUsd": null,
+        "source": "native-router-result-stream",
+        "scope": "router sessions only"
+      },
+      "stop": {
+        "reason": "released",
+        "next": "The local release attribution or no-release close is recorded."
+      },
+      "close": {
+        "publication": "no-release",
+        "cleanup": "clean",
+        "targetCleanup": "removed"
+      },
+      "codeIdentity": null
+    },
+    {
+      "source": "docs/evidence/WO-192/live-drive-attempt-48.json",
+      "host": "2.1.314 (Claude Code)",
+      "typedInput": "drive: WO-999",
+      "qualificationScope": "native-full-lifecycle",
+      "nativeLifecycle": true,
+      "consumedGates": [
+        {
+          "type": "ImplementationReady",
+          "verdict": null,
+          "targetSelection": "review",
+          "targetGate": "target-gate:identity-4",
+          "documentGate": "host-gate:0dd7ce85199caa62ca8f44e6357a78bff2a4764c49b1b838fb4b0660ef7d2c54:npm run test:docs",
+          "documentExitCode": 0
+        },
+        {
+          "type": "VerificationCompleted",
+          "verdict": "pass",
+          "targetSelection": "review",
+          "targetGate": "target-gate:identity-5",
+          "documentGate": "host-gate:0dd7ce85199caa62ca8f44e6357a78bff2a4764c49b1b838fb4b0660ef7d2c54:npm run test:docs",
+          "documentExitCode": 0
+        },
+        {
+          "type": "FinalReviewCompleted",
+          "verdict": "pass",
+          "targetSelection": "review",
+          "targetGate": "target-gate:identity-5",
+          "documentGate": "host-gate:0dd7ce85199caa62ca8f44e6357a78bff2a4764c49b1b838fb4b0660ef7d2c54:npm run test:docs",
+          "documentExitCode": 0
+        }
+      ],
+      "roles": [
+        {
+          "action": "next",
+          "cwd": "target-worktree",
+          "exitCode": 0,
+          "cause": null,
+          "selectedModel": "claude-opus-5-5",
+          "selectedEffort": "xhigh",
+          "readbackModel": "claude-opus-5-5",
+          "readbackEffort": "xhigh",
+          "hooksSource": "target-hook-journal",
+          "subagents": {
+            "count": 15,
+            "cap": 20,
+            "remaining": 5,
+            "countKind": "minimum-observed",
+            "unresolvedAdmissions": 15,
+            "unlinkedChildren": 15,
+            "uncountedRemainder": "unknown",
+            "source": "phase-local-hook-counter"
+          },
+          "usageAvailable": true
+        },
+        {
+          "action": "verify",
+          "cwd": "target-worktree",
+          "exitCode": 0,
+          "cause": null,
+          "selectedModel": "claude-opus-5-5",
+          "selectedEffort": "xhigh",
+          "readbackModel": "claude-opus-5-5",
+          "readbackEffort": "xhigh",
+          "hooksSource": "target-hook-journal",
+          "subagents": {
+            "count": 0,
+            "cap": 20,
+            "remaining": 20,
+            "countKind": "exact-observed",
+            "unresolvedAdmissions": 0,
+            "unlinkedChildren": 0,
+            "uncountedRemainder": "unknown",
+            "source": "phase-local-hook-counter"
+          },
+          "usageAvailable": true
+        },
+        {
+          "action": "final-review",
+          "cwd": "target-worktree",
+          "exitCode": 0,
+          "cause": null,
+          "selectedModel": "claude-opus-5-5",
+          "selectedEffort": "xhigh",
+          "readbackModel": "claude-opus-5-5",
+          "readbackEffort": "xhigh",
+          "hooksSource": "target-hook-journal",
+          "subagents": {
+            "count": 0,
+            "cap": 20,
+            "remaining": 20,
+            "countKind": "exact-observed",
+            "unresolvedAdmissions": 0,
+            "unlinkedChildren": 0,
+            "uncountedRemainder": "unknown",
+            "source": "phase-local-hook-counter"
+          },
+          "usageAvailable": true
+        },
+        {
+          "action": "release-close",
+          "cwd": "main",
+          "exitCode": 0,
+          "cause": null,
+          "selectedModel": "claude-opus-5-5",
+          "selectedEffort": "xhigh",
+          "readbackModel": "claude-opus-5-5",
+          "readbackEffort": "xhigh",
+          "hooksSource": "project-hook-journal",
+          "subagents": {
+            "count": 0,
+            "cap": 20,
+            "remaining": 20,
+            "countKind": "exact-observed",
+            "unresolvedAdmissions": 0,
+            "unlinkedChildren": 0,
+            "uncountedRemainder": "unknown",
+            "source": "phase-local-hook-counter"
+          },
+          "usageAvailable": true
+        }
+      ],
+      "routerUsage": {
+        "totalTokens": 115360,
+        "costUsd": 0.873352,
+        "source": "native-router-result-stream",
+        "scope": "router sessions only"
+      },
+      "stop": {
+        "reason": "released",
+        "next": "The local release attribution or no-release close is recorded."
+      },
+      "close": {
+        "publication": "no-release",
+        "cleanup": "clean",
+        "targetCleanup": "removed"
+      },
+      "codeIdentity": null
+    },
+    {
+      "source": "docs/evidence/WO-192/live-drive-attempt-49.json",
+      "host": "codex-cli 0.166.0",
+      "typedInput": "drive: WO-999",
+      "qualificationScope": "native-full-lifecycle",
+      "nativeLifecycle": true,
+      "consumedGates": [
+        {
+          "type": "ImplementationReady",
+          "verdict": null,
+          "targetSelection": "review",
+          "targetGate": "target-gate:identity-8",
+          "documentGate": "host-gate:ec9b9b97d87ec09bc4b0d8f0d5264147a21c4d459dca0b473836003dee922999:npm run test:docs",
+          "documentExitCode": 0
+        },
+        {
+          "type": "VerificationCompleted",
+          "verdict": "pass",
+          "targetSelection": "review",
+          "targetGate": "target-gate:identity-9",
+          "documentGate": "host-gate:ec9b9b97d87ec09bc4b0d8f0d5264147a21c4d459dca0b473836003dee922999:npm run test:docs",
+          "documentExitCode": 0
+        },
+        {
+          "type": "FinalReviewCompleted",
+          "verdict": "pass",
+          "targetSelection": "review",
+          "targetGate": "target-gate:identity-10",
+          "documentGate": "host-gate:ec9b9b97d87ec09bc4b0d8f0d5264147a21c4d459dca0b473836003dee922999:npm run test:docs",
+          "documentExitCode": 0
+        }
+      ],
+      "roles": [
+        {
+          "action": "next",
+          "cwd": "target-worktree",
+          "exitCode": 0,
+          "cause": null,
+          "selectedModel": "gpt-6.1-sol",
+          "selectedEffort": "max",
+          "readbackModel": null,
+          "readbackEffort": null,
+          "hooksSource": "codex-unhooked-role-text",
+          "subagents": {
+            "count": 0,
+            "countKind": "minimum-observed",
+            "unknownRemainder": true,
+            "source": "native-collab-events"
+          },
+          "usageAvailable": true
+        },
+        {
+          "action": "verify",
+          "cwd": "target-worktree",
+          "exitCode": 0,
+          "cause": null,
+          "selectedModel": "gpt-6.1-sol",
+          "selectedEffort": "xhigh",
+          "readbackModel": null,
+          "readbackEffort": null,
+          "hooksSource": "codex-unhooked-role-text",
+          "subagents": {
+            "count": 0,
+            "countKind": "minimum-observed",
+            "unknownRemainder": true,
+            "source": "native-collab-events"
+          },
+          "usageAvailable": true
+        },
+        {
+          "action": "final-review",
+          "cwd": "target-worktree",
+          "exitCode": 0,
+          "cause": null,
+          "selectedModel": "gpt-6.1-sol",
+          "selectedEffort": "max",
+          "readbackModel": null,
+          "readbackEffort": null,
+          "hooksSource": "codex-unhooked-role-text",
+          "subagents": {
+            "count": 0,
+            "countKind": "minimum-observed",
+            "unknownRemainder": true,
+            "source": "native-collab-events"
+          },
+          "usageAvailable": true
+        },
+        {
+          "action": "release-close",
+          "cwd": "main",
+          "exitCode": null,
+          "cause": "native-permission-refused",
+          "selectedModel": "gpt-6.1-sol",
+          "selectedEffort": "max",
+          "readbackModel": null,
+          "readbackEffort": null,
+          "hooksSource": "codex-unhooked-role-text",
+          "subagents": {
+            "count": 0,
+            "countKind": "minimum-observed",
+            "unknownRemainder": true,
+            "source": "native-collab-events"
+          },
+          "usageAvailable": false
+        }
+      ],
+      "routerUsage": {
+        "totalTokens": 2702237,
+        "costUsd": null,
+        "source": "native-router-result-stream",
+        "scope": "router sessions only"
+      },
+      "stop": {
+        "reason": "dispatch-refused",
+        "next": "The native host denied a phase command; stop without another attempt until the host admission condition is resolved."
+      },
+      "close": null,
+      "codeIdentity": null
+    },
+    {
+      "source": "docs/evidence/WO-192/live-drive-attempt-50.json",
+      "host": "codex-cli 0.166.0",
+      "typedInput": "drive: WO-999",
+      "qualificationScope": "native-router-and-release-close; earlier phases coordinator-seeded",
+      "nativeLifecycle": false,
+      "consumedGates": [],
+      "roles": [
+        {
+          "action": "release-close",
+          "cwd": "main",
+          "exitCode": null,
+          "cause": "native-permission-refused",
+          "selectedModel": "gpt-6.1-sol",
+          "selectedEffort": "max",
+          "readbackModel": null,
+          "readbackEffort": null,
+          "hooksSource": "codex-unhooked-role-text",
+          "subagents": {
+            "count": 0,
+            "countKind": "minimum-observed",
+            "unknownRemainder": true,
+            "source": "native-collab-events"
+          },
+          "usageAvailable": false
+        }
+      ],
+      "routerUsage": {
+        "totalTokens": 196873,
+        "costUsd": null,
+        "source": "native-router-result-stream",
+        "scope": "router sessions only"
+      },
+      "stop": {
+        "reason": "dispatch-refused",
+        "next": "The native host denied a phase command; stop without another attempt until the host admission condition is resolved."
+      },
+      "close": null,
+      "codeIdentity": null
+    },
+    {
+      "source": "docs/evidence/WO-192/live-drive-attempt-51.json",
+      "host": "2.1.314 (Claude Code)",
+      "typedInput": "drive: WO-999",
+      "qualificationScope": "native-router-and-release-close; earlier phases coordinator-seeded",
+      "nativeLifecycle": false,
+      "consumedGates": [],
+      "roles": [
+        {
+          "action": "release-close",
+          "cwd": "main",
+          "exitCode": 0,
+          "cause": null,
+          "selectedModel": "claude-opus-5-5",
+          "selectedEffort": "xhigh",
+          "readbackModel": "claude-opus-5-5",
+          "readbackEffort": "xhigh",
+          "hooksSource": "project-hook-journal",
+          "subagents": {
+            "count": 0,
+            "cap": 20,
+            "remaining": 20,
+            "countKind": "exact-observed",
+            "unresolvedAdmissions": 0,
+            "unlinkedChildren": 0,
+            "uncountedRemainder": "unknown",
+            "source": "phase-local-hook-counter"
+          },
+          "usageAvailable": true
+        }
+      ],
+      "routerUsage": {
+        "totalTokens": 101728,
+        "costUsd": 0.23620980000000003,
+        "source": "native-router-result-stream",
+        "scope": "router sessions only"
+      },
+      "stop": {
+        "reason": "released",
+        "next": "The local release attribution or no-release close is recorded."
+      },
+      "close": {
+        "publication": "no-release",
+        "cleanup": "clean",
+        "targetCleanup": "removed"
+      },
+      "codeIdentity": null
+    }
+  ],
+  "reviewerReportsRead": [
+    {
+      "role": "consistency",
+      "source": "latest same-project executor SubagentHandback",
+      "completedAt": "2026-10-31T05:50:34.652Z",
+      "reportSha256": "e3855665b356aef4811e5dea2f77a00f52c2ad25750b77cb14236e092ca448e7"
+    },
+    {
+      "role": "design-improver",
+      "source": "latest same-project executor SubagentHandback",
+      "completedAt": "2026-10-31T05:42:12.851Z",
+      "reportSha256": "c7a7aacd22e57f9aa398e6f588801c2ea29464460da85f54611aa654639a309b"
+    },
+    {
+      "role": "criteria-adversary",
+      "source": "latest same-project executor SubagentHandback",
+      "completedAt": "2026-10-31T05:46:23.017Z",
+      "reportSha256": "3f246e2596cb8ffbff3307ea95a9bba439926752f81e1cb40053cc3113746fb5"
+    }
+  ],
+  "dependencies": {
+    "packageEntriesAdded": [],
+    "packageEntriesRemoved": [],
+    "changedEntries": [
+      {
+        "package": "packages/compiler",
+        "fields": [
+          "version"
+        ]
+      },
+      {
+        "package": "packages/console",
+        "fields": [
+          "dependencies"
+        ]
+      },
+      {
+        "package": "packages/skeleton",
+        "fields": [
+          "dependencies",
+          "version"
+        ]
+      }
+    ],
+    "newExternalDependencies": []
+  },
+  "waiver": {
+    "criterion": "17",
+    "ordinal": 6,
+    "decision": "WO-192-D104",
+    "immediateFollowup": "FUP-5b7b2e27a0e6b01a"
+  },
+  "limits": [
+    "No new native host qualification was launched. Historical live receipts have no code identity.",
+    "Codex hook parity, effective effort and unobserved descendant coverage are not inferred.",
+    "The instrument under verification supplied the canonical lifecycle and gate bookkeeping for this verification. Direct bounded observations and source review support the judgment independently."
+  ]
+}

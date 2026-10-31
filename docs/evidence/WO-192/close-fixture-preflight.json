@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-26T15:24:00.924Z",
+  "input": "coordinator setup",
+  "entrypoint": "canonical release close --dry-run",
+  "qualificationTimeoutMs": 4500000,
+  "qualificationScope": "deterministic-close-fixture-preflight; no native sessions",
+  "qualificationSandbox": {
+    "enabled": false,
+    "source": "operator-authorized-fixture-local-settings",
+    "permissionPolicy": "fixture-declared-tools"
+  },
+  "qualificationLauncherPermission": {
+    "source": "inherited-host-policy"
+  },
+  "qualificationPermissionReview": {
+    "mode": "default",
+    "source": "operator-authorized-fixture-local-settings",
+    "toolAllowance": "native-launcher-declared-tools"
+  },
+  "host": "2.1.310 (Claude Code)",
+  "phase": "closed",
+  "routers": [],
+  "stop": null,
+  "limits": null,
+  "routerUsage": {
+    "totalTokens": 0,
+    "costUsd": 0,
+    "source": "native-router-result-stream",
+    "scope": "router sessions only"
+  },
+  "budget": null,
+  "workers": [],
+  "completions": [],
+  "coordinatorSeed": {
+    "phase": "closed",
+    "native": false
+  },
+  "publicationExercised": false,
+  "rawTranscriptsRetained": false,
+  "fixturePolicyRestoration": {
+    "count": 2,
+    "source": "coordinator-owned settings after phase workers ended"
+  },
+  "closePreflight": {
+    "exitCode": 0,
+    "targetCleanup": "would-remove",
+    "cleanup": "clean",
+    "blockers": 0
+  },
+  "driverObservations": [
+    {
+      "stage": "release-close",
+      "point": "before-final-cleanup",
+      "observedAt": "2026-10-26T15:24:02.614Z",
+      "state": null
+    },
+    {
+      "stage": "release-close",
+      "point": "after-final-stop",
+      "observedAt": "2026-10-26T15:24:02.615Z",
+      "state": null
+    }
+  ],
+  "cleanup": {
+    "workersEnded": true,
+    "outcome": "removed"
+  }
+}

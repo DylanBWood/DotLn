@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-26T05:09:41.092Z",
+  "probe": "native Codex declarations in an installed target launchpad",
+  "selectedModel": "gpt-6.1-sol",
+  "selectedEffort": "max",
+  "exitCode": 0,
+  "cause": null,
+  "workerEnded": true,
+  "observation": {
+    "node": "v26.9.0",
+    "requireModule": true,
+    "recognizedExecFlags": [],
+    "environmentHasRequireDisable": false
+  },
+  "commandResults": [
+    {
+      "kind": "unclassified-shell",
+      "status": "failed",
+      "exitCode": 1,
+      "shape": [
+        [
+          "node",
+          "<operand>",
+          "<operand>",
+          "<operand>"
+        ]
+      ]
+    }
+  ],
+  "usage": {
+    "input_tokens": 27120,
+    "cached_input_tokens": 23296,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 192,
+    "reasoning_output_tokens": 62
+  },
+  "costUsd": null,
+  "isolation": {
+    "schemaVersion": 1,
+    "home": "sha256:30bec2593a739509123cc340084ebf21c994365bf91c66618cb05a070c191939",
+    "authentication": "symlink",
+    "userConfig": {
+      "before": "sha256:6202960ee18605675f85f66f649d13f9e250c7b6b5793cb85d85eba09408500e",
+      "after": "sha256:6202960ee18605675f85f66f649d13f9e250c7b6b5793cb85d85eba09408500e"
+    },
+    "trustTable": {
+      "before": "sha256:f73fb2e2e4e5ce05288c6b5b2f7ddf948959c83bd8216603da58f3a08bb2d3a9",
+      "after": "sha256:f73fb2e2e4e5ce05288c6b5b2f7ddf948959c83bd8216603da58f3a08bb2d3a9"
+    },
+    "isolatedTrustEntries": 1,
+    "homeRemoved": true
+  },
+  "cleanup": "removed"
+}

@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-26T14:33:07.167Z",
+  "nativeAttempt": "live-drive-attempt-39.json",
+  "host": "claude",
+  "role": "reviewer",
+  "source": "read-only inspection of the synthetic paired launchpad integration receipt during the native reviewer",
+  "integration": {
+    "workOrder": "WO-999",
+    "complete": true,
+    "phase": "final-review",
+    "stage": "applied",
+    "pendingCount": 0
+  },
+  "canonicalFinalReviewClaimed": false
+}

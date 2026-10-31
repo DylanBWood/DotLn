@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-26T03:52:36.625Z",
+  "nodeVersion": "v26.9.0",
+  "cause": "default-cpSync-resolves-relative-symlink-against-source",
+  "observations": [
+    {
+      "verbatimSymlinks": false,
+      "linkIsAbsolute": true,
+      "targetPreserved": false,
+      "resolvesInsideDestination": false
+    },
+    {
+      "verbatimSymlinks": true,
+      "linkIsAbsolute": false,
+      "targetPreserved": true,
+      "resolvesInsideDestination": true
+    }
+  ],
+  "liveObservation": {
+    "attempt": 28,
+    "targetGatePassed": true,
+    "documentGateFailure": "AGENTS.md: document is not a readable regular file (OUTSIDE_ROOT)",
+    "mainAndOrderLinksResolvedOutsideCheckout": true,
+    "phaseCompletionRecorded": false,
+    "cancellation": "owner-requested-after-fixture-defect-observed",
+    "workersEnded": true,
+    "fixtureRemoved": true
+  },
+  "cleanup": "removed"
+}

@@ -1,0 +1,3952 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-26T13:47:33.196Z",
+  "input": "drive: WO-999",
+  "entrypoint": "generated router's canonical driver",
+  "qualificationTimeoutMs": 4500000,
+  "qualificationSandbox": {
+    "enabled": false,
+    "source": "operator-authorized-fixture-local-settings",
+    "permissionPolicy": "fixture-declared-tools"
+  },
+  "qualificationLauncherPermission": {
+    "source": "inherited-host-policy"
+  },
+  "qualificationPermissionReview": {
+    "mode": "default",
+    "source": "operator-authorized-fixture-local-settings",
+    "toolAllowance": "native-launcher-declared-tools"
+  },
+  "host": "2.1.310 (Claude Code)",
+  "phase": "final-review",
+  "routers": [
+    {
+      "exitCode": 0,
+      "exitSignal": null,
+      "error": false,
+      "timedOut": false,
+      "timeoutMs": 4496128,
+      "workerStarted": true,
+      "workerEnded": true,
+      "costUsd": 0.33639800000000003,
+      "usage": {
+        "input_tokens": 4,
+        "cache_creation_input_tokens": 5273,
+        "cache_read_input_tokens": 49498,
+        "output_tokens": 2533,
+        "output_tokens_details": {
+          "thinking_tokens": 1237
+        },
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 5273,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "global",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 2027,
+            "cache_read_input_tokens": 25184,
+            "cache_creation_input_tokens": 4403,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 4403
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard",
+        "fallback_credit": null
+      },
+      "hookEvents": [
+        "hook_started",
+        "hook_response"
+      ],
+      "refusalCodes": [],
+      "toolCalls": [
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Read",
+        "Bash",
+        "Bash"
+      ],
+      "commandResults": [
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "pwd",
+              "-P"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "git",
+              "rev-parse",
+              "--show-toplevel"
+            ]
+          ]
+        },
+        {
+          "kind": "harness",
+          "status": "failed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "harness.mjs",
+              "usage",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "drive.mjs",
+              "status",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "driver-launch",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "drive.mjs",
+              "status",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "harness",
+          "status": "failed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "harness.mjs",
+              "usage",
+              "<operand>"
+            ]
+          ]
+        }
+      ],
+      "boundaryResults": [],
+      "nativeDiagnostics": [],
+      "model": "claude-opus-5-5",
+      "nativeReadback": {
+        "effort": null,
+        "permissionMode": "default"
+      },
+      "startedAt": "2026-10-26T12:58:00.810Z",
+      "finishedAt": "2026-10-26T13:47:32.988Z",
+      "selectedPolicy": {
+        "sandbox": "inherited-host-policy",
+        "networkAccess": "native-api-context7-and-public-github-domains",
+        "nativeLauncher": "generated-skill-command-subject-to-host-permissions",
+        "webTools": false,
+        "sessionPersistence": "disabled",
+        "source": "launch-arguments"
+      },
+      "selectedModel": "claude-opus-5-5",
+      "selectedEffort": "xhigh",
+      "role": "router",
+      "cwd": "main"
+    }
+  ],
+  "stop": {
+    "reason": "incomplete-bound",
+    "next": "Two workers ended without recording completion in this phase; inspect the failure."
+  },
+  "limits": {
+    "subagentCap": 20,
+    "drivenSessionCeiling": 80,
+    "drivenPhaseTimeoutMs": null,
+    "tokens": null,
+    "costUsd": 20,
+    "costScope": "phase-workers"
+  },
+  "routerUsage": {
+    "totalTokens": 57308,
+    "costUsd": 0.33639800000000003,
+    "source": "native-router-result-stream",
+    "scope": "router sessions only"
+  },
+  "budget": {
+    "count": 6,
+    "cap": 80,
+    "remaining": 74,
+    "countKind": "minimum-observed",
+    "unresolvedAdmissions": 2,
+    "unlinkedChildren": 2,
+    "uncountedRemainder": "unknown",
+    "source": "shared-hook-counter"
+  },
+  "workers": [
+    {
+      "phase": "active",
+      "action": "next",
+      "exitCode": 0,
+      "exitSignal": null,
+      "error": false,
+      "timedOut": false,
+      "timeoutMs": 4462423,
+      "workerStarted": true,
+      "workerEnded": true,
+      "costUsd": 6.027635899999999,
+      "usage": {
+        "input_tokens": 170,
+        "cache_creation_input_tokens": 237373,
+        "cache_read_input_tokens": 9834915,
+        "output_tokens": 54651,
+        "output_tokens_details": {
+          "thinking_tokens": 22757
+        },
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 237373,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "global",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 1417,
+            "cache_read_input_tokens": 236032,
+            "cache_creation_input_tokens": 1341,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1341
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard",
+        "fallback_credit": null
+      },
+      "hookEvents": [
+        "hook_started",
+        "hook_response"
+      ],
+      "refusalCodes": [
+        "DOTLN_TARGET_REFUSED"
+      ],
+      "toolCalls": [
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Grep",
+        "Bash",
+        "Read",
+        "Bash",
+        "Read",
+        "Bash",
+        "Bash",
+        "Glob",
+        "Grep",
+        "Read",
+        "Read",
+        "Grep",
+        "Read",
+        "Read",
+        "Bash",
+        "Grep",
+        "Read",
+        "Grep",
+        "Grep",
+        "Grep",
+        "Glob",
+        "Read",
+        "Read",
+        "Bash",
+        "Read",
+        "Read",
+        "Grep",
+        "Grep",
+        "Grep",
+        "Grep",
+        "Glob",
+        "Read",
+        "Glob",
+        "Grep",
+        "Read",
+        "Grep",
+        "Grep",
+        "Grep",
+        "Read",
+        "Bash",
+        "WebFetch",
+        "Bash",
+        "WebFetch",
+        "Bash",
+        "Bash",
+        "Grep",
+        "Write",
+        "Write",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Write",
+        "Bash",
+        "Agent",
+        "Read",
+        "Read",
+        "Read",
+        "Agent",
+        "Bash",
+        "Read",
+        "Read",
+        "Read",
+        "Read",
+        "Grep",
+        "Glob",
+        "Grep",
+        "Grep",
+        "Grep",
+        "Grep",
+        "Grep",
+        "Grep",
+        "Grep",
+        "Glob",
+        "WebFetch",
+        "WebFetch",
+        "WebFetch",
+        "WebFetch",
+        "WebFetch",
+        "WebFetch",
+        "WebFetch",
+        "WebFetch",
+        "WebFetch",
+        "WebFetch",
+        "WebFetch",
+        "WebFetch",
+        "WebFetch",
+        "WebFetch",
+        "Write",
+        "Edit",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Read",
+        "Grep",
+        "Read",
+        "Grep",
+        "Grep",
+        "Glob",
+        "Grep",
+        "Grep",
+        "Grep",
+        "Grep",
+        "Grep",
+        "Read",
+        "Bash",
+        "Grep",
+        "Bash",
+        "Write",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Read",
+        "Glob",
+        "Read",
+        "Read",
+        "Grep",
+        "Grep",
+        "Edit",
+        "Edit",
+        "Edit",
+        "Edit",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Read",
+        "Read",
+        "Read",
+        "Bash",
+        "Bash"
+      ],
+      "commandResults": [
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "pwd",
+              "-P"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "git",
+              "rev-parse",
+              "--show-toplevel"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "printenv",
+              "DOTLN_LAUNCHPAD"
+            ]
+          ]
+        },
+        {
+          "kind": "lifecycle",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "lifecycle",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "git",
+              "<operand>",
+              "status",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "lifecycle",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "failed",
+          "exitCode": null,
+          "shape": [
+            [
+              "git",
+              "<operand>",
+              "ls-files"
+            ]
+          ],
+          "diagnosticSignals": [
+            "target-opaque"
+          ]
+        },
+        {
+          "kind": "harness",
+          "status": "failed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "harness.mjs",
+              "usage"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "failed",
+          "exitCode": null,
+          "shape": [
+            [
+              "printenv",
+              "<operand>"
+            ]
+          ],
+          "diagnosticSignals": [
+            "target-opaque"
+          ]
+        },
+        {
+          "kind": "context7-library",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "public-web",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "context7-docs",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "public-web",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "github-search",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "github-read",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "git",
+              "<operand>",
+              "diff"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "failed",
+          "exitCode": null,
+          "shape": [
+            [
+              "<operand>",
+              "<operand>"
+            ],
+            [
+              "<operand>",
+              "<operand>"
+            ],
+            [
+              "<operand>",
+              "<operand>"
+            ],
+            [
+              "<operand>",
+              "<operand>"
+            ]
+          ],
+          "diagnosticSignals": [
+            "target-opaque"
+          ]
+        },
+        {
+          "kind": "public-web",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "public-web",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "public-web",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "public-web",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "public-web",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "public-web",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "public-web",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "public-web",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "public-web",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "public-web",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "public-web",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "public-web",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "public-web",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "public-web",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "target-gate",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "harness",
+          "status": "failed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "harness.mjs",
+              "evidence",
+              "--wait"
+            ]
+          ]
+        },
+        {
+          "kind": "harness",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "printenv",
+              "CLAUDE_EFFORT"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "failed",
+          "exitCode": null,
+          "shape": [
+            [
+              "<operand>",
+              "node",
+              "<operand>",
+              "<operand>"
+            ]
+          ],
+          "diagnosticSignals": [
+            "target-opaque"
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "harness",
+          "status": "failed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "harness.mjs",
+              "evidence",
+              "--wait"
+            ]
+          ]
+        },
+        {
+          "kind": "harness",
+          "status": "failed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "harness.mjs",
+              "evidence",
+              "--wait",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "harness",
+          "status": "failed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "harness.mjs",
+              "evidence",
+              "--wait",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "git",
+              "<operand>",
+              "status"
+            ]
+          ]
+        },
+        {
+          "kind": "lifecycle",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "lifecycle",
+          "status": "completed",
+          "exitCode": null
+        }
+      ],
+      "boundaryResults": [
+        {
+          "kind": "target-permission",
+          "category": "opaque-shell"
+        },
+        {
+          "kind": "target-permission",
+          "category": "opaque-shell"
+        },
+        {
+          "kind": "target-permission",
+          "category": "opaque-shell"
+        },
+        {
+          "kind": "target-permission",
+          "category": "opaque-shell"
+        },
+        {
+          "kind": "target-permission",
+          "category": "compiled-feedback"
+        },
+        {
+          "kind": "target-permission",
+          "category": "opaque-shell"
+        },
+        {
+          "kind": "target-permission",
+          "category": "opaque-shell"
+        },
+        {
+          "kind": "target-permission",
+          "category": "effect-authority"
+        },
+        {
+          "kind": "target-permission",
+          "category": "effect-authority"
+        },
+        {
+          "kind": "target-permission",
+          "category": "opaque-shell"
+        },
+        {
+          "kind": "target-permission",
+          "category": "opaque-shell"
+        }
+      ],
+      "nativeDiagnostics": [],
+      "model": "claude-opus-5-5",
+      "nativeReadback": {
+        "effort": null,
+        "permissionMode": "default"
+      },
+      "startedAt": "2026-10-26T12:58:19.515Z",
+      "finishedAt": "2026-10-26T13:16:28.344Z",
+      "selectedPolicy": {
+        "sandbox": "inherited-host-policy",
+        "networkAccess": "native-api-context7-and-public-github-domains",
+        "nativeLauncher": "own-host-sandbox",
+        "webTools": true,
+        "sessionPersistence": "disabled",
+        "source": "launch-arguments"
+      },
+      "cwd": "target-worktree",
+      "workerId": "identity-1",
+      "resumed": false,
+      "hooks": {
+        "hookCalls": 331,
+        "refusedCalls": 4,
+        "effort": [
+          "xhigh"
+        ],
+        "source": "target-hook-journal",
+        "subagents": {
+          "count": 2,
+          "cap": 20,
+          "remaining": 18,
+          "countKind": "minimum-observed",
+          "unresolvedAdmissions": 2,
+          "unlinkedChildren": 2,
+          "uncountedRemainder": "unknown"
+        }
+      },
+      "effort": "xhigh",
+      "effortSource": "hook-input",
+      "subagents": {
+        "count": 2,
+        "cap": 20,
+        "remaining": 18,
+        "countKind": "minimum-observed",
+        "unresolvedAdmissions": 2,
+        "unlinkedChildren": 2,
+        "uncountedRemainder": "unknown",
+        "source": "phase-local-hook-counter"
+      },
+      "selectedModel": "claude-opus-5-5",
+      "selectedEffort": "xhigh",
+      "host": "claude"
+    },
+    {
+      "phase": "ready-to-verify",
+      "action": "verify",
+      "exitCode": 0,
+      "exitSignal": null,
+      "error": false,
+      "timedOut": false,
+      "timeoutMs": 3373087,
+      "workerStarted": true,
+      "workerEnded": true,
+      "costUsd": 3.5017133999999994,
+      "usage": {
+        "input_tokens": 128,
+        "cache_creation_input_tokens": 171665,
+        "cache_read_input_tokens": 6643491,
+        "output_tokens": 39009,
+        "output_tokens_details": {
+          "thinking_tokens": 12656
+        },
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 171665,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "global",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 1045,
+            "cache_read_input_tokens": 177619,
+            "cache_creation_input_tokens": 1729,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1729
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard",
+        "fallback_credit": null
+      },
+      "hookEvents": [
+        "hook_started",
+        "hook_response"
+      ],
+      "refusalCodes": [
+        "DOTLN_TARGET_REFUSED"
+      ],
+      "toolCalls": [
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Read",
+        "Read",
+        "Bash",
+        "Bash",
+        "Read",
+        "Glob",
+        "Read",
+        "Read",
+        "Bash",
+        "Grep",
+        "Bash",
+        "Glob",
+        "Bash",
+        "Grep",
+        "Grep",
+        "Read",
+        "Glob",
+        "Read",
+        "Bash",
+        "Bash",
+        "Grep",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Glob",
+        "Grep",
+        "Read",
+        "Read",
+        "Grep",
+        "Bash",
+        "Grep",
+        "WebFetch",
+        "Bash",
+        "WebFetch",
+        "WebFetch",
+        "WebFetch",
+        "Bash",
+        "Write",
+        "Write",
+        "Write",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Grep",
+        "Grep",
+        "Grep",
+        "Grep",
+        "Read",
+        "Read",
+        "Edit",
+        "Read",
+        "Grep",
+        "Grep",
+        "Read",
+        "Bash",
+        "Bash",
+        "Grep",
+        "Write",
+        "Edit",
+        "Edit",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Read",
+        "Edit",
+        "Edit",
+        "Grep",
+        "Bash",
+        "Bash",
+        "Read",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Grep"
+      ],
+      "commandResults": [
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "pwd",
+              "-P"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "git",
+              "rev-parse",
+              "--show-toplevel"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "printenv",
+              "DOTLN_LAUNCHPAD"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "printenv",
+              "CLAUDE_EFFORT"
+            ]
+          ]
+        },
+        {
+          "kind": "lifecycle",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "lifecycle",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "lifecycle",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "git",
+              "<operand>",
+              "status",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "git",
+              "<operand>",
+              "diff"
+            ]
+          ]
+        },
+        {
+          "kind": "harness",
+          "status": "failed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "harness.mjs",
+              "scratch"
+            ]
+          ]
+        },
+        {
+          "kind": "harness",
+          "status": "failed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "harness.mjs",
+              "writer",
+              "--show"
+            ]
+          ],
+          "diagnosticSignals": [
+            "target-opaque"
+          ]
+        },
+        {
+          "kind": "harness",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "failed",
+          "exitCode": null,
+          "shape": [
+            [
+              "git",
+              "<operand>",
+              "<operand>",
+              "<operand>",
+              "--name-only",
+              "<operand>"
+            ]
+          ],
+          "diagnosticSignals": [
+            "target-opaque"
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "git",
+              "<operand>",
+              "log",
+              "--oneline",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "cat",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "<operand>",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "git",
+              "<operand>",
+              "show",
+              "<operand>",
+              "--stat"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "cat",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "failed",
+          "exitCode": null,
+          "shape": [
+            [
+              "<operand>",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ]
+          ],
+          "diagnosticSignals": [
+            "target-opaque"
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "<operand>",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "cat",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "target-gate",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "public-web",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "github-read",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "public-web",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "public-web",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "public-web",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "context7-docs",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "harness",
+          "status": "failed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "harness.mjs",
+              "bounded",
+              "--",
+              "node",
+              "<operand>",
+              "<operand>"
+            ]
+          ],
+          "diagnosticSignals": [
+            "target-opaque"
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "ls",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "ls",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "failed",
+          "exitCode": null,
+          "shape": [
+            [
+              "printenv",
+              "<operand>"
+            ]
+          ],
+          "diagnosticSignals": [
+            "target-opaque"
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "failed",
+          "exitCode": null,
+          "shape": [
+            [
+              "<operand>",
+              "node",
+              "<operand>",
+              "<operand>"
+            ]
+          ],
+          "diagnosticSignals": [
+            "target-opaque"
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "failed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "lifecycle",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "lifecycle",
+          "status": "completed",
+          "exitCode": null
+        }
+      ],
+      "boundaryResults": [
+        {
+          "kind": "target-permission",
+          "category": "opaque-shell"
+        },
+        {
+          "kind": "target-permission",
+          "category": "opaque-shell"
+        },
+        {
+          "kind": "target-permission",
+          "category": "opaque-shell"
+        },
+        {
+          "kind": "target-permission",
+          "category": "opaque-shell"
+        },
+        {
+          "kind": "target-permission",
+          "category": "opaque-shell"
+        },
+        {
+          "kind": "target-permission",
+          "category": "opaque-shell"
+        },
+        {
+          "kind": "target-permission",
+          "category": "effect-authority"
+        },
+        {
+          "kind": "target-permission",
+          "category": "effect-authority"
+        },
+        {
+          "kind": "target-permission",
+          "category": "effect-authority"
+        },
+        {
+          "kind": "target-permission",
+          "category": "effect-authority"
+        },
+        {
+          "kind": "target-permission",
+          "category": "effect-authority"
+        },
+        {
+          "kind": "target-permission",
+          "category": "effect-authority"
+        },
+        {
+          "kind": "target-permission",
+          "category": "opaque-shell"
+        },
+        {
+          "kind": "target-permission",
+          "category": "opaque-shell"
+        },
+        {
+          "kind": "target-permission",
+          "category": "opaque-shell"
+        },
+        {
+          "kind": "target-permission",
+          "category": "opaque-shell"
+        },
+        {
+          "kind": "target-permission",
+          "category": "opaque-shell"
+        },
+        {
+          "kind": "target-permission",
+          "category": "opaque-shell"
+        }
+      ],
+      "nativeDiagnostics": [],
+      "model": "claude-opus-5-5",
+      "nativeReadback": {
+        "effort": null,
+        "permissionMode": "default"
+      },
+      "startedAt": "2026-10-26T13:16:28.851Z",
+      "finishedAt": "2026-10-26T13:25:09.789Z",
+      "selectedPolicy": {
+        "sandbox": "inherited-host-policy",
+        "networkAccess": "native-api-context7-and-public-github-domains",
+        "nativeLauncher": "own-host-sandbox",
+        "webTools": true,
+        "sessionPersistence": "disabled",
+        "source": "launch-arguments"
+      },
+      "cwd": "target-worktree",
+      "workerId": "identity-2",
+      "resumed": false,
+      "hooks": {
+        "hookCalls": 256,
+        "refusedCalls": 9,
+        "effort": [
+          "xhigh"
+        ],
+        "source": "target-hook-journal",
+        "subagents": {
+          "count": 0,
+          "cap": 20,
+          "remaining": 20,
+          "countKind": "exact-observed",
+          "unresolvedAdmissions": 0,
+          "unlinkedChildren": 0,
+          "uncountedRemainder": "unknown"
+        }
+      },
+      "effort": "xhigh",
+      "effortSource": "hook-input",
+      "subagents": {
+        "count": 0,
+        "cap": 20,
+        "remaining": 20,
+        "countKind": "exact-observed",
+        "unresolvedAdmissions": 0,
+        "unlinkedChildren": 0,
+        "uncountedRemainder": "unknown",
+        "source": "phase-local-hook-counter"
+      },
+      "selectedModel": "claude-opus-5-5",
+      "selectedEffort": "xhigh",
+      "host": "claude"
+    },
+    {
+      "phase": "verified",
+      "action": "final-review",
+      "exitCode": 0,
+      "exitSignal": null,
+      "error": false,
+      "timedOut": false,
+      "timeoutMs": 2851651,
+      "workerStarted": true,
+      "workerEnded": true,
+      "costUsd": 5.746127999999999,
+      "usage": {
+        "input_tokens": 210,
+        "cache_creation_input_tokens": 215318,
+        "cache_read_input_tokens": 12547592,
+        "output_tokens": 74982,
+        "output_tokens_details": {
+          "thinking_tokens": 36415
+        },
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 215318,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "global",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 1872,
+            "cache_read_input_tokens": 222315,
+            "cache_creation_input_tokens": 686,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 686
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard",
+        "fallback_credit": null
+      },
+      "hookEvents": [
+        "hook_started",
+        "hook_response"
+      ],
+      "refusalCodes": [
+        "DOTLN_TARGET_REFUSED"
+      ],
+      "toolCalls": [
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Read",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Grep",
+        "Bash",
+        "Read",
+        "Read",
+        "Bash",
+        "Bash",
+        "Glob",
+        "Read",
+        "Bash",
+        "Read",
+        "Read",
+        "Bash",
+        "Bash",
+        "Glob",
+        "Grep",
+        "Bash",
+        "Bash",
+        "Grep",
+        "Grep",
+        "Read",
+        "Grep",
+        "Bash",
+        "Read",
+        "Grep",
+        "Read",
+        "Grep",
+        "Grep",
+        "Grep",
+        "Grep",
+        "Grep",
+        "Read",
+        "Read",
+        "Bash",
+        "Grep",
+        "Read",
+        "Read",
+        "Grep",
+        "Grep",
+        "Read",
+        "Grep",
+        "Read",
+        "Glob",
+        "Grep",
+        "Read",
+        "Grep",
+        "Grep",
+        "Read",
+        "Bash",
+        "WebFetch",
+        "WebFetch",
+        "WebFetch",
+        "Edit",
+        "Edit",
+        "Edit",
+        "Read",
+        "Bash",
+        "Bash",
+        "Grep",
+        "Glob",
+        "Read",
+        "Read",
+        "Glob",
+        "Bash",
+        "Glob",
+        "Grep",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Grep",
+        "Read",
+        "Grep",
+        "Glob",
+        "Read",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Grep",
+        "Grep",
+        "Read",
+        "Grep",
+        "Read",
+        "Bash",
+        "Grep",
+        "Bash",
+        "Grep",
+        "Read",
+        "Bash",
+        "Grep",
+        "Read",
+        "Edit",
+        "Bash",
+        "Write",
+        "Bash",
+        "Write",
+        "Write",
+        "Edit",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Edit",
+        "Edit",
+        "Edit",
+        "Edit",
+        "Edit",
+        "Bash",
+        "Bash",
+        "Read",
+        "Read",
+        "Read",
+        "Read",
+        "Bash",
+        "Read",
+        "Bash",
+        "Read",
+        "Grep",
+        "Glob",
+        "Glob",
+        "Grep",
+        "Grep",
+        "Grep",
+        "Grep",
+        "Edit",
+        "Edit",
+        "Edit",
+        "Edit",
+        "Edit",
+        "Edit",
+        "Bash",
+        "Bash",
+        "Read",
+        "Read",
+        "Read",
+        "Bash",
+        "Bash"
+      ],
+      "commandResults": [
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "pwd",
+              "-P"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "git",
+              "rev-parse",
+              "--show-toplevel"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "printenv",
+              "DOTLN_LAUNCHPAD"
+            ]
+          ]
+        },
+        {
+          "kind": "lifecycle",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "lifecycle",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "harness",
+          "status": "failed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "harness.mjs",
+              "usage"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "git",
+              "<operand>",
+              "status",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "failed",
+          "exitCode": null,
+          "shape": [
+            [
+              "printenv",
+              "<operand>"
+            ]
+          ],
+          "diagnosticSignals": [
+            "target-opaque"
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "printenv",
+              "CLAUDE_EFFORT"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "git",
+              "<operand>",
+              "diff",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "ls",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "harness",
+          "status": "failed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "harness.mjs",
+              "writer",
+              "--show"
+            ]
+          ],
+          "diagnosticSignals": [
+            "target-opaque"
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "ls",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "harness",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "git",
+              "<operand>",
+              "log",
+              "--oneline",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "failed",
+          "exitCode": null,
+          "shape": [
+            [
+              "git",
+              "<operand>",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ]
+          ],
+          "diagnosticSignals": [
+            "target-opaque"
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "git",
+              "<operand>",
+              "log",
+              "--oneline",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "git",
+              "<operand>",
+              "show",
+              "--stat",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "failed",
+          "exitCode": null,
+          "shape": [
+            [
+              "<operand>",
+              "<operand>",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ]
+          ],
+          "diagnosticSignals": [
+            "target-opaque"
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "failed",
+          "exitCode": null,
+          "shape": [
+            [
+              "<operand>",
+              "node",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ]
+          ],
+          "diagnosticSignals": [
+            "target-opaque"
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "failed",
+          "exitCode": null,
+          "shape": [
+            [
+              "git",
+              "<operand>",
+              "<operand>",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ]
+          ],
+          "diagnosticSignals": [
+            "target-opaque"
+          ]
+        },
+        {
+          "kind": "public-web",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "public-web",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "public-web",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "git",
+              "<operand>",
+              "diff",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "cat",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "failed",
+          "exitCode": null,
+          "shape": [
+            [
+              "git",
+              "-C",
+              "<operand>",
+              "<operand>",
+              "worktree",
+              "list"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "git",
+              "<operand>",
+              "--",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "git",
+              "<operand>",
+              "diff",
+              "<operand>",
+              "--stat"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "git",
+              "<operand>",
+              "status",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "git",
+              "<operand>",
+              "diff",
+              "<operand>",
+              "--",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "git",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "target-gate",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "harness",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "failed",
+          "exitCode": null,
+          "shape": [
+            [
+              "<operand>",
+              "<operand>"
+            ]
+          ],
+          "diagnosticSignals": [
+            "target-opaque"
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "failed",
+          "exitCode": null,
+          "shape": [
+            [
+              "git",
+              "<operand>",
+              "<operand>",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ]
+          ],
+          "diagnosticSignals": [
+            "target-opaque"
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "failed",
+          "exitCode": null,
+          "shape": [
+            [
+              "<operand>",
+              "node",
+              "<operand>",
+              "<operand>"
+            ]
+          ],
+          "diagnosticSignals": [
+            "target-opaque"
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "failed",
+          "exitCode": null,
+          "shape": [
+            [
+              "<operand>",
+              "node",
+              "<operand>",
+              "<operand>"
+            ]
+          ],
+          "diagnosticSignals": [
+            "target-opaque"
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "lifecycle",
+          "status": "failed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "resume.mjs",
+              "<operand>",
+              "<operand>",
+              "<operand>",
+              "<operand>",
+              "<operand>",
+              "<operand>",
+              "<operand>",
+              "<operand>",
+              "<operand>",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "lifecycle",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "harness",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "git",
+              "<operand>",
+              "status",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        }
+      ],
+      "boundaryResults": [
+        {
+          "kind": "target-permission",
+          "category": "opaque-shell"
+        },
+        {
+          "kind": "target-permission",
+          "category": "opaque-shell"
+        },
+        {
+          "kind": "target-permission",
+          "category": "opaque-shell"
+        },
+        {
+          "kind": "target-permission",
+          "category": "opaque-shell"
+        },
+        {
+          "kind": "target-permission",
+          "category": "opaque-shell"
+        },
+        {
+          "kind": "target-permission",
+          "category": "opaque-shell"
+        },
+        {
+          "kind": "target-permission",
+          "category": "opaque-shell"
+        },
+        {
+          "kind": "target-permission",
+          "category": "opaque-shell"
+        },
+        {
+          "kind": "target-permission",
+          "category": "opaque-shell"
+        },
+        {
+          "kind": "target-permission",
+          "category": "opaque-shell"
+        },
+        {
+          "kind": "target-permission",
+          "category": "opaque-shell"
+        },
+        {
+          "kind": "target-permission",
+          "category": "opaque-shell"
+        },
+        {
+          "kind": "target-permission",
+          "category": "unclassified"
+        },
+        {
+          "kind": "target-permission",
+          "category": "unclassified"
+        },
+        {
+          "kind": "target-permission",
+          "category": "unclassified"
+        },
+        {
+          "kind": "target-permission",
+          "category": "effect-authority"
+        },
+        {
+          "kind": "target-permission",
+          "category": "effect-authority"
+        },
+        {
+          "kind": "target-permission",
+          "category": "opaque-shell"
+        },
+        {
+          "kind": "target-permission",
+          "category": "opaque-shell"
+        },
+        {
+          "kind": "target-permission",
+          "category": "opaque-shell"
+        },
+        {
+          "kind": "target-permission",
+          "category": "opaque-shell"
+        },
+        {
+          "kind": "target-permission",
+          "category": "opaque-shell"
+        },
+        {
+          "kind": "target-permission",
+          "category": "opaque-shell"
+        },
+        {
+          "kind": "target-permission",
+          "category": "opaque-shell"
+        },
+        {
+          "kind": "target-permission",
+          "category": "opaque-shell"
+        }
+      ],
+      "nativeDiagnostics": [],
+      "model": "claude-opus-5-5",
+      "nativeReadback": {
+        "effort": null,
+        "permissionMode": "default"
+      },
+      "startedAt": "2026-10-26T13:25:10.287Z",
+      "finishedAt": "2026-10-26T13:41:30.821Z",
+      "selectedPolicy": {
+        "sandbox": "inherited-host-policy",
+        "networkAccess": "native-api-context7-and-public-github-domains",
+        "nativeLauncher": "own-host-sandbox",
+        "webTools": true,
+        "sessionPersistence": "disabled",
+        "source": "launch-arguments"
+      },
+      "cwd": "target-worktree",
+      "workerId": "identity-3",
+      "resumed": false,
+      "hooks": {
+        "hookCalls": 454,
+        "refusedCalls": 13,
+        "effort": [
+          "xhigh"
+        ],
+        "source": "target-hook-journal",
+        "subagents": {
+          "count": 0,
+          "cap": 20,
+          "remaining": 20,
+          "countKind": "exact-observed",
+          "unresolvedAdmissions": 0,
+          "unlinkedChildren": 0,
+          "uncountedRemainder": "unknown"
+        }
+      },
+      "effort": "xhigh",
+      "effortSource": "hook-input",
+      "subagents": {
+        "count": 0,
+        "cap": 20,
+        "remaining": 20,
+        "countKind": "exact-observed",
+        "unresolvedAdmissions": 0,
+        "unlinkedChildren": 0,
+        "uncountedRemainder": "unknown",
+        "source": "phase-local-hook-counter"
+      },
+      "selectedModel": "claude-opus-5-5",
+      "selectedEffort": "xhigh",
+      "host": "claude"
+    },
+    {
+      "phase": "final-review",
+      "action": "final-review",
+      "exitCode": 0,
+      "exitSignal": null,
+      "error": false,
+      "timedOut": false,
+      "timeoutMs": 1870626,
+      "workerStarted": true,
+      "workerEnded": true,
+      "costUsd": 1.8223808,
+      "usage": {
+        "input_tokens": 76,
+        "cache_creation_input_tokens": 94971,
+        "cache_read_input_tokens": 2615244,
+        "output_tokens": 26963,
+        "output_tokens_details": {
+          "thinking_tokens": 13452
+        },
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 94971,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "global",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 1318,
+            "cache_read_input_tokens": 112540,
+            "cache_creation_input_tokens": 599,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 599
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard",
+        "fallback_credit": null
+      },
+      "hookEvents": [
+        "hook_started",
+        "hook_response"
+      ],
+      "refusalCodes": [
+        "DOTLN_TARGET_REFUSED"
+      ],
+      "toolCalls": [
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Glob",
+        "Glob",
+        "Read",
+        "Bash",
+        "Bash",
+        "Read",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Glob",
+        "Read",
+        "Read",
+        "Read",
+        "Read",
+        "Glob",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Grep",
+        "Glob",
+        "Read",
+        "Grep",
+        "Read",
+        "Read",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Read",
+        "Read",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Read",
+        "Read",
+        "Grep",
+        "Bash",
+        "Grep",
+        "Grep",
+        "Grep",
+        "Grep",
+        "Read",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Grep",
+        "Read",
+        "Edit",
+        "Edit",
+        "Edit",
+        "Edit",
+        "Edit",
+        "Edit",
+        "Edit",
+        "Edit",
+        "Edit",
+        "Bash",
+        "Read",
+        "Edit",
+        "Bash",
+        "Bash"
+      ],
+      "commandResults": [
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "pwd",
+              "-P"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "git",
+              "rev-parse",
+              "--show-toplevel"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "printenv",
+              "DOTLN_LAUNCHPAD"
+            ]
+          ]
+        },
+        {
+          "kind": "lifecycle",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "lifecycle",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "git",
+              "<operand>",
+              "status",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "git",
+              "<operand>",
+              "log",
+              "--oneline",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "git",
+              "<operand>",
+              "diff",
+              "<operand>",
+              "--stat"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "git",
+              "<operand>",
+              "show",
+              "--stat",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "failed",
+          "exitCode": null,
+          "shape": [
+            [
+              "git",
+              "<operand>",
+              "rev-parse",
+              "<operand>"
+            ]
+          ],
+          "diagnosticSignals": [
+            "target-opaque"
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "failed",
+          "exitCode": null,
+          "shape": [
+            [
+              "git",
+              "-C",
+              "<operand>",
+              "<operand>",
+              "status",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "failed",
+          "exitCode": null,
+          "shape": [
+            [
+              "git",
+              "<operand>",
+              "worktree",
+              "list"
+            ]
+          ],
+          "diagnosticSignals": [
+            "target-opaque"
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "printenv",
+              "CLAUDE_EFFORT"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "ls",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "ls",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "ls",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "failed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "<operand>",
+              "<operand>"
+            ]
+          ],
+          "diagnosticSignals": [
+            "target-opaque"
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "git",
+              "<operand>",
+              "diff",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "cat",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "git",
+              "<operand>",
+              "log",
+              "--oneline",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "git",
+              "<operand>",
+              "diff",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "failed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ]
+          ],
+          "diagnosticSignals": [
+            "target-opaque"
+          ]
+        },
+        {
+          "kind": "harness",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "lifecycle",
+          "status": "failed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "resume.mjs",
+              "<operand>",
+              "<operand>",
+              "<operand>",
+              "<operand>",
+              "<operand>",
+              "<operand>",
+              "<operand>",
+              "<operand>",
+              "<operand>",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "lifecycle",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "document-gate",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "harness",
+          "status": "completed",
+          "exitCode": null
+        }
+      ],
+      "boundaryResults": [
+        {
+          "kind": "target-permission",
+          "category": "opaque-shell"
+        },
+        {
+          "kind": "target-permission",
+          "category": "opaque-shell"
+        },
+        {
+          "kind": "target-permission",
+          "category": "unclassified"
+        },
+        {
+          "kind": "target-permission",
+          "category": "unclassified"
+        },
+        {
+          "kind": "target-permission",
+          "category": "unclassified"
+        },
+        {
+          "kind": "target-permission",
+          "category": "opaque-shell"
+        },
+        {
+          "kind": "target-permission",
+          "category": "opaque-shell"
+        },
+        {
+          "kind": "target-permission",
+          "category": "opaque-shell"
+        },
+        {
+          "kind": "target-permission",
+          "category": "opaque-shell"
+        },
+        {
+          "kind": "target-permission",
+          "category": "effect-authority"
+        },
+        {
+          "kind": "target-permission",
+          "category": "effect-authority"
+        },
+        {
+          "kind": "target-permission",
+          "category": "opaque-shell"
+        },
+        {
+          "kind": "target-permission",
+          "category": "opaque-shell"
+        }
+      ],
+      "nativeDiagnostics": [],
+      "model": "claude-opus-5-5",
+      "nativeReadback": {
+        "effort": null,
+        "permissionMode": "default"
+      },
+      "startedAt": "2026-10-26T13:41:31.312Z",
+      "finishedAt": "2026-10-26T13:47:05.338Z",
+      "selectedPolicy": {
+        "sandbox": "inherited-host-policy",
+        "networkAccess": "native-api-context7-and-public-github-domains",
+        "nativeLauncher": "own-host-sandbox",
+        "webTools": true,
+        "sessionPersistence": "disabled",
+        "source": "launch-arguments"
+      },
+      "cwd": "target-worktree",
+      "workerId": "identity-4",
+      "resumed": false,
+      "hooks": {
+        "hookCalls": 205,
+        "refusedCalls": 7,
+        "effort": [
+          "xhigh"
+        ],
+        "source": "target-hook-journal",
+        "subagents": {
+          "count": 0,
+          "cap": 20,
+          "remaining": 20,
+          "countKind": "exact-observed",
+          "unresolvedAdmissions": 0,
+          "unlinkedChildren": 0,
+          "uncountedRemainder": "unknown"
+        }
+      },
+      "effort": "xhigh",
+      "effortSource": "hook-input",
+      "subagents": {
+        "count": 0,
+        "cap": 20,
+        "remaining": 20,
+        "countKind": "exact-observed",
+        "unresolvedAdmissions": 0,
+        "unlinkedChildren": 0,
+        "uncountedRemainder": "unknown",
+        "source": "phase-local-hook-counter"
+      },
+      "selectedModel": "claude-opus-5-5",
+      "selectedEffort": "xhigh",
+      "host": "claude"
+    }
+  ],
+  "completions": [
+    {
+      "type": "ImplementationReady",
+      "actor": {
+        "harness": "claude-code",
+        "harnessVersion": "unknown",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh",
+        "source": "claude-session-readback"
+      },
+      "targetGate": {
+        "repositoryId": "target",
+        "commit": "6ef653630494d90db06451d78926d80a4b0371cc",
+        "treeHash": "f7cde3e1957f8e9c39ee60063d7f3132a27f42fe",
+        "selection": "review",
+        "names": [
+          "test"
+        ],
+        "durationMs": 44,
+        "evidenceRef": "target-gate:identity-5",
+        "recordedAt": "2026-10-26T13:11:47.618Z"
+      },
+      "documentGate": {
+        "evidenceRefs": [
+          "host-gate:701a74dcfb0e2ea31613437544c0ce496cd589d36f9312e6ff76c0c422261502:npm run test:docs"
+        ],
+        "checkId": "npm run test:docs",
+        "treeHash": "44367be4349afd25dd98316b008f5ed95371bee1",
+        "codeIdentity": "701a74dcfb0e2ea31613437544c0ce496cd589d36f9312e6ff76c0c422261502",
+        "instanceInputDigest": "sha256:0f094b3bcf29dfb2e4e5f5cfb546c2b3fefb480de5b7a79991ef5f4e1e54487b",
+        "durationMs": 15068,
+        "evidenceRef": "host-gate:701a74dcfb0e2ea31613437544c0ce496cd589d36f9312e6ff76c0c422261502:npm run test:docs",
+        "recordedAt": "2026-10-26T13:15:50.131Z",
+        "executed": true,
+        "exitCode": 0
+      }
+    },
+    {
+      "type": "VerificationCompleted",
+      "verdict": "pass",
+      "actor": {
+        "harness": "claude-code",
+        "harnessVersion": "unknown",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh",
+        "source": "claude-session-readback",
+        "accountLabel": "not-applicable"
+      },
+      "targetGate": {
+        "repositoryId": "target",
+        "commit": "6ef653630494d90db06451d78926d80a4b0371cc",
+        "treeHash": "f7cde3e1957f8e9c39ee60063d7f3132a27f42fe",
+        "selection": "review",
+        "names": [
+          "test"
+        ],
+        "durationMs": 46,
+        "evidenceRef": "target-gate:identity-6",
+        "recordedAt": "2026-10-26T13:18:38.693Z"
+      },
+      "documentGate": {
+        "evidenceRefs": [
+          "host-gate:701a74dcfb0e2ea31613437544c0ce496cd589d36f9312e6ff76c0c422261502:npm run test:docs"
+        ],
+        "checkId": "npm run test:docs",
+        "treeHash": "0812bd2081e4ad290a7fb4628c4a7426877f19eb",
+        "codeIdentity": "701a74dcfb0e2ea31613437544c0ce496cd589d36f9312e6ff76c0c422261502",
+        "instanceInputDigest": "sha256:0f094b3bcf29dfb2e4e5f5cfb546c2b3fefb480de5b7a79991ef5f4e1e54487b",
+        "durationMs": 14824,
+        "evidenceRef": "host-gate:701a74dcfb0e2ea31613437544c0ce496cd589d36f9312e6ff76c0c422261502:npm run test:docs",
+        "recordedAt": "2026-10-26T13:24:37.361Z",
+        "executed": true,
+        "exitCode": 0
+      }
+    }
+  ],
+  "publicationExercised": false,
+  "rawTranscriptsRetained": false,
+  "outcome": "failed",
+  "failedStage": "drive",
+  "cause": "live episode must reach a real passing final review\n+ actual - expected\n\n+ 'final-review'\n- 'closed'\n",
+  "driverObservations": [
+    {
+      "stage": "drive",
+      "point": "router-ended",
+      "observedAt": "2026-10-26T13:47:32.988Z",
+      "state": {
+        "recordedRunning": false,
+        "observedDriverAlive": false,
+        "completedAttempts": 4,
+        "stop": {
+          "reason": "incomplete-bound",
+          "next": "Two workers ended without recording completion in this phase; inspect the failure."
+        },
+        "incomplete": {
+          "next": 0,
+          "verify": 0,
+          "final-review": 2
+        },
+        "refused": false,
+        "currentWorker": {
+          "id": "identity-4",
+          "sessionId": null,
+          "role": "reviewer",
+          "action": "final-review",
+          "timeoutMs": 1870626,
+          "recordedRunning": false,
+          "observedAlive": false,
+          "lastCommand": {
+            "kind": "harness",
+            "status": "completed",
+            "exitCode": null
+          },
+          "commandFailures": [
+            {
+              "kind": "unclassified-shell",
+              "status": "failed",
+              "exitCode": null,
+              "shape": [
+                [
+                  "git",
+                  "<operand>",
+                  "rev-parse",
+                  "<operand>"
+                ]
+              ],
+              "diagnosticSignals": [
+                "target-opaque"
+              ]
+            },
+            {
+              "kind": "unclassified-shell",
+              "status": "failed",
+              "exitCode": null,
+              "shape": [
+                [
+                  "git",
+                  "-C",
+                  "<operand>",
+                  "<operand>",
+                  "status",
+                  "<operand>",
+                  "<operand>"
+                ]
+              ]
+            },
+            {
+              "kind": "unclassified-shell",
+              "status": "failed",
+              "exitCode": null,
+              "shape": [
+                [
+                  "git",
+                  "<operand>",
+                  "worktree",
+                  "list"
+                ]
+              ],
+              "diagnosticSignals": [
+                "target-opaque"
+              ]
+            },
+            {
+              "kind": "unclassified-shell",
+              "status": "failed",
+              "exitCode": null,
+              "shape": [
+                [
+                  "node",
+                  "<operand>",
+                  "<operand>"
+                ]
+              ],
+              "diagnosticSignals": [
+                "target-opaque"
+              ]
+            },
+            {
+              "kind": "unclassified-shell",
+              "status": "failed",
+              "exitCode": null,
+              "shape": [
+                [
+                  "node",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>"
+                ]
+              ],
+              "diagnosticSignals": [
+                "target-opaque"
+              ]
+            },
+            {
+              "kind": "lifecycle",
+              "status": "failed",
+              "exitCode": null,
+              "shape": [
+                [
+                  "node",
+                  "resume.mjs",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>"
+                ]
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "stage": "drive",
+      "point": "router-cleanup-ended",
+      "observedAt": "2026-10-26T13:47:32.989Z",
+      "state": {
+        "recordedRunning": false,
+        "observedDriverAlive": false,
+        "completedAttempts": 4,
+        "stop": {
+          "reason": "incomplete-bound",
+          "next": "Two workers ended without recording completion in this phase; inspect the failure."
+        },
+        "incomplete": {
+          "next": 0,
+          "verify": 0,
+          "final-review": 2
+        },
+        "refused": false,
+        "currentWorker": {
+          "id": "identity-4",
+          "sessionId": null,
+          "role": "reviewer",
+          "action": "final-review",
+          "timeoutMs": 1870626,
+          "recordedRunning": false,
+          "observedAlive": false,
+          "lastCommand": {
+            "kind": "harness",
+            "status": "completed",
+            "exitCode": null
+          },
+          "commandFailures": [
+            {
+              "kind": "unclassified-shell",
+              "status": "failed",
+              "exitCode": null,
+              "shape": [
+                [
+                  "git",
+                  "<operand>",
+                  "rev-parse",
+                  "<operand>"
+                ]
+              ],
+              "diagnosticSignals": [
+                "target-opaque"
+              ]
+            },
+            {
+              "kind": "unclassified-shell",
+              "status": "failed",
+              "exitCode": null,
+              "shape": [
+                [
+                  "git",
+                  "-C",
+                  "<operand>",
+                  "<operand>",
+                  "status",
+                  "<operand>",
+                  "<operand>"
+                ]
+              ]
+            },
+            {
+              "kind": "unclassified-shell",
+              "status": "failed",
+              "exitCode": null,
+              "shape": [
+                [
+                  "git",
+                  "<operand>",
+                  "worktree",
+                  "list"
+                ]
+              ],
+              "diagnosticSignals": [
+                "target-opaque"
+              ]
+            },
+            {
+              "kind": "unclassified-shell",
+              "status": "failed",
+              "exitCode": null,
+              "shape": [
+                [
+                  "node",
+                  "<operand>",
+                  "<operand>"
+                ]
+              ],
+              "diagnosticSignals": [
+                "target-opaque"
+              ]
+            },
+            {
+              "kind": "unclassified-shell",
+              "status": "failed",
+              "exitCode": null,
+              "shape": [
+                [
+                  "node",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>"
+                ]
+              ],
+              "diagnosticSignals": [
+                "target-opaque"
+              ]
+            },
+            {
+              "kind": "lifecycle",
+              "status": "failed",
+              "exitCode": null,
+              "shape": [
+                [
+                  "node",
+                  "resume.mjs",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>"
+                ]
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "stage": "drive",
+      "point": "before-final-cleanup",
+      "observedAt": "2026-10-26T13:47:33.219Z",
+      "state": {
+        "recordedRunning": false,
+        "observedDriverAlive": false,
+        "completedAttempts": 4,
+        "stop": {
+          "reason": "incomplete-bound",
+          "next": "Two workers ended without recording completion in this phase; inspect the failure."
+        },
+        "incomplete": {
+          "next": 0,
+          "verify": 0,
+          "final-review": 2
+        },
+        "refused": false,
+        "currentWorker": {
+          "id": "identity-4",
+          "sessionId": null,
+          "role": "reviewer",
+          "action": "final-review",
+          "timeoutMs": 1870626,
+          "recordedRunning": false,
+          "observedAlive": false,
+          "lastCommand": {
+            "kind": "harness",
+            "status": "completed",
+            "exitCode": null
+          },
+          "commandFailures": [
+            {
+              "kind": "unclassified-shell",
+              "status": "failed",
+              "exitCode": null,
+              "shape": [
+                [
+                  "git",
+                  "<operand>",
+                  "rev-parse",
+                  "<operand>"
+                ]
+              ],
+              "diagnosticSignals": [
+                "target-opaque"
+              ]
+            },
+            {
+              "kind": "unclassified-shell",
+              "status": "failed",
+              "exitCode": null,
+              "shape": [
+                [
+                  "git",
+                  "-C",
+                  "<operand>",
+                  "<operand>",
+                  "status",
+                  "<operand>",
+                  "<operand>"
+                ]
+              ]
+            },
+            {
+              "kind": "unclassified-shell",
+              "status": "failed",
+              "exitCode": null,
+              "shape": [
+                [
+                  "git",
+                  "<operand>",
+                  "worktree",
+                  "list"
+                ]
+              ],
+              "diagnosticSignals": [
+                "target-opaque"
+              ]
+            },
+            {
+              "kind": "unclassified-shell",
+              "status": "failed",
+              "exitCode": null,
+              "shape": [
+                [
+                  "node",
+                  "<operand>",
+                  "<operand>"
+                ]
+              ],
+              "diagnosticSignals": [
+                "target-opaque"
+              ]
+            },
+            {
+              "kind": "unclassified-shell",
+              "status": "failed",
+              "exitCode": null,
+              "shape": [
+                [
+                  "node",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>"
+                ]
+              ],
+              "diagnosticSignals": [
+                "target-opaque"
+              ]
+            },
+            {
+              "kind": "lifecycle",
+              "status": "failed",
+              "exitCode": null,
+              "shape": [
+                [
+                  "node",
+                  "resume.mjs",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>"
+                ]
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "stage": "drive",
+      "point": "after-final-stop",
+      "observedAt": "2026-10-26T13:47:33.220Z",
+      "state": {
+        "recordedRunning": false,
+        "observedDriverAlive": false,
+        "completedAttempts": 4,
+        "stop": {
+          "reason": "incomplete-bound",
+          "next": "Two workers ended without recording completion in this phase; inspect the failure."
+        },
+        "incomplete": {
+          "next": 0,
+          "verify": 0,
+          "final-review": 2
+        },
+        "refused": false,
+        "currentWorker": {
+          "id": "identity-4",
+          "sessionId": null,
+          "role": "reviewer",
+          "action": "final-review",
+          "timeoutMs": 1870626,
+          "recordedRunning": false,
+          "observedAlive": false,
+          "lastCommand": {
+            "kind": "harness",
+            "status": "completed",
+            "exitCode": null
+          },
+          "commandFailures": [
+            {
+              "kind": "unclassified-shell",
+              "status": "failed",
+              "exitCode": null,
+              "shape": [
+                [
+                  "git",
+                  "<operand>",
+                  "rev-parse",
+                  "<operand>"
+                ]
+              ],
+              "diagnosticSignals": [
+                "target-opaque"
+              ]
+            },
+            {
+              "kind": "unclassified-shell",
+              "status": "failed",
+              "exitCode": null,
+              "shape": [
+                [
+                  "git",
+                  "-C",
+                  "<operand>",
+                  "<operand>",
+                  "status",
+                  "<operand>",
+                  "<operand>"
+                ]
+              ]
+            },
+            {
+              "kind": "unclassified-shell",
+              "status": "failed",
+              "exitCode": null,
+              "shape": [
+                [
+                  "git",
+                  "<operand>",
+                  "worktree",
+                  "list"
+                ]
+              ],
+              "diagnosticSignals": [
+                "target-opaque"
+              ]
+            },
+            {
+              "kind": "unclassified-shell",
+              "status": "failed",
+              "exitCode": null,
+              "shape": [
+                [
+                  "node",
+                  "<operand>",
+                  "<operand>"
+                ]
+              ],
+              "diagnosticSignals": [
+                "target-opaque"
+              ]
+            },
+            {
+              "kind": "unclassified-shell",
+              "status": "failed",
+              "exitCode": null,
+              "shape": [
+                [
+                  "node",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>"
+                ]
+              ],
+              "diagnosticSignals": [
+                "target-opaque"
+              ]
+            },
+            {
+              "kind": "lifecycle",
+              "status": "failed",
+              "exitCode": null,
+              "shape": [
+                [
+                  "node",
+                  "resume.mjs",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>"
+                ]
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "cleanup": {
+    "workersEnded": true,
+    "outcome": "removed"
+  }
+}

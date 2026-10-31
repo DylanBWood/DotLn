@@ -10946,6 +10946,20 @@
           "title": "Candidate — DotLn-owned authority with minimal native harness restrictions",
           "summary": "## Candidate — DotLn-owned authority with minimal native harness restrictions Operator direction during WO-119 (2026-09-16): reach an operating mode as soon as evidence supports it in which native Claude and Codex harness sandboxes can be disabled and Claude's settings have nearly empty allow/deny lists. The source of permissions, security and authority is the equipped DotLn supports, build and role. The operator clarified the assurance requirement: faithful runtime enforcement plus adversarial tests, including attempts to bypass the declared authority. See the [ideation receipt](../evidence/WO-119/ideation-authority.md). This candidate asks planning to identify the earliest justified route ",
           "missing": false
+        },
+        {
+          "hash": "c541da1b5c75ba80cb8122270e2bb31390ab9e4df8fcc1ccd36771d089ee2b05",
+          "ref": "docs/product/03-architecture.md#candidate--dotln-owned-authority-with-minimal-native-harness-restrictions",
+          "title": "Candidate — DotLn-owned authority with minimal native harness restrictions",
+          "summary": "## Candidate — DotLn-owned authority with minimal native harness restrictions Operator direction during WO-119 (2026-09-16): reach an operating mode as soon as evidence supports it in which native Claude and Codex harness sandboxes can be disabled and Claude's settings have nearly empty allow/deny lists. The source of permissions, security and authority is the equipped DotLn supports, build and role. The operator clarified the assurance requirement: faithful runtime enforcement plus adversarial tests, including attempts to bypass the declared authority. See the [ideation receipt](../evidence/WO-119/ideation-authority.md). This candidate asks planning to identify the earliest justified route ",
+          "missing": false
+        },
+        {
+          "hash": "7a89ce0d76462f3c1881fc5f91aacb78b8d882d808fff1c91bd33b5e117b68dc",
+          "ref": "docs/product/03-architecture.md#candidate--dotln-owned-authority-with-minimal-native-harness-restrictions",
+          "title": "Candidate — DotLn-owned authority with minimal native harness restrictions",
+          "summary": "## Candidate — DotLn-owned authority with minimal native harness restrictions Operator direction during WO-119 (2026-09-16): reach an operating mode as soon as evidence supports it in which native Claude and Codex harness sandboxes can be disabled and Claude's settings have nearly empty allow/deny lists. The source of permissions, security and authority is the equipped DotLn supports, build and role. The operator clarified the assurance requirement: faithful runtime enforcement plus adversarial tests, including attempts to bypass the declared authority. See the [ideation receipt](../evidence/WO-119/ideation-authority.md). This candidate asks planning to identify the earliest justified route ",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -44087,6 +44101,38 @@
           "reopenWhen": "The next planning pass evaluates instruction-byte optimization, or another role edit changes the measured overrun.",
           "targets": [],
           "at": "2026-10-29T01:47:39.720Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "targets": [],
+          "reason": "WO-192-D088: its condition occurred. This order's router, target-order and per-spawner duties change the measured roots on the integrated tree: the executor reads 37,659 within the accepted 40,194, the reviewer 35,262 within the 39,358 WO-192-D088 accepted, the verifier 32,492 within 35,221, release-close 23,006 within 26,410, the planner 23,814 within 24,576 and the router 15,346 within 16,384. No instruction was cut; the optimization stays owed.",
+          "reopenWhen": "The next planning pass evaluates instruction-byte optimization, or another role edit changes the measured overrun.",
+          "at": "2026-10-30T19:46:36.764Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-192-D088, with figures refreshed for criterion 17's role text: this order's router, target-order and per-spawner duties change the measured roots on the integrated tree. The executor reads 37,901 within the accepted 40,194, the reviewer 35,504 within the accepted 39,600, the verifier 32,734 within 35,221, release-close 23,006 within 26,410, the planner 23,814 within 24,576 and the router 15,346 within 16,384. No instruction was cut; the optimization stays owed.",
+          "reopenWhen": "The next planning pass evaluates instruction-byte optimization, or another role edit changes the measured overrun.",
+          "targets": [],
+          "at": "2026-10-30T23:20:19.819Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-192-D088, with figures refreshed for criterion 17's role text: this order's router, target-order and per-spawner duties change the measured roots on the integrated tree. The executor reads 37,901 within the accepted 40,194, the reviewer 35,504 within the accepted 39,600, the verifier 32,734 within 35,221, release-close 23,006 within 26,410, the planner 23,814 within 24,576 and the router 14,992 within 16,384. No instruction was cut; the optimization stays owed.",
+          "reopenWhen": "The next planning pass evaluates instruction-byte optimization, or another role edit changes the measured overrun.",
+          "targets": [],
+          "at": "2026-10-31T00:37:36.955Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-192-D088, with figures refreshed for criterion 17's role text: this order's router, target-order and per-spawner duties change the measured roots on the integrated tree. The executor reads 37,901 within the accepted 40,194, the reviewer 35,504 within the accepted 39,600, the verifier 32,734 within 35,221, release-close 23,006 within 26,410, the planner 23,814 within 24,576 and the router 15,014 within 16,384. No instruction was cut; the optimization stays owed.",
+          "reopenWhen": "The next planning pass evaluates instruction-byte optimization, or another role edit changes the measured overrun.",
+          "targets": [],
+          "at": "2026-10-31T02:10:00.340Z"
         }
       ]
     },
@@ -44159,6 +44205,14 @@
           "reopenWhen": "A role grows past its pin without the oracle changing, or a ceiling breach appears in meta --check with no decision boarding it; or the next order touching scripts/test-gate-followups.mjs or re-minting the role oracle.",
           "targets": [],
           "at": "2026-10-29T01:47:39.936Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "targets": [],
+          "reason": "WO-192-D088: its condition occurred, because WO-192 touches scripts/test-gate-followups.mjs and mints wo192-integration-role-baseline.json with wo239-integration as its historical parent and wo192-role-baseline as its branch parent. The test keeps its chain walk, and the router, which has no earlier measurement, keeps its own ceiling check.",
+          "reopenWhen": "A role grows past its pin without the oracle changing, or a ceiling breach appears in meta --check with no decision boarding it; or the next order touching scripts/test-gate-followups.mjs or re-minting the role oracle.",
+          "at": "2026-10-30T19:46:39.233Z"
         }
       ]
     },
@@ -44640,6 +44694,22 @@
           "reopenWhen": "A shorter equivalent instruction set is demonstrated, or another required rule changes the overrun.",
           "targets": [],
           "at": "2026-10-25T21:19:44.442Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-192-D088: its condition occurred, because this order's router, target-order and per-spawner duties changed the measured overrun on the integrated tree: the executor reads 37,659 against the nominal 29,246 and within the accepted 40,194; the reviewer reads 35,262 against the nominal 28,884 and within the 39,358 accepted by WO-192-D088 under the standing route. The bounded comparison that would show a shorter equivalent instruction set is still owed; no instruction was cut.",
+          "reopenWhen": "A bounded comparison demonstrates a shorter equivalent instruction set, or another required rule changes the measured overrun.",
+          "targets": [],
+          "at": "2026-10-30T18:50:55.073Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-192-D088, with figures refreshed for criterion 17's role text: this order's router, target-order and per-spawner duties changed the measured overrun on the integrated tree. The executor reads 37,901 against the nominal 29,246 and within the accepted 40,194; the reviewer reads 35,504 against the nominal 28,884 and within the 39,600 accepted under the standing route. The bounded comparison that would show a shorter equivalent instruction set is still owed; no instruction was cut.",
+          "reopenWhen": "A bounded comparison demonstrates a shorter equivalent instruction set, or another required rule changes the measured overrun.",
+          "targets": [],
+          "at": "2026-10-30T23:20:17.352Z"
         }
       ]
     },
@@ -49941,6 +50011,385 @@
           "ref": "docs/evidence/WO-192/decisions.md#wo-192-d083--name-the-churn-reductions-and-the-host-memory-refusal-the-retention-follow-up-must-address",
           "title": "WO-192-D083: Cut the file churn of a complete review and make it visible: reuse a warm export fixture and link or clone cached node_modules instead of a fresh npm ci per run; write…",
           "summary": "{ \"id\": \"WO-192-D083\", \"date\": \"2026-10-26\", \"dispatch\": \"resume: next; the complete review started at 2026-10-26T21:43:30Z was refused by host memory, and the operator asked where the named reductions were recorded\", \"decision\": \"Record the concrete file-churn reductions the operator was told about so the planning follow-up carries them as deliverables, together with the two new measurements: a complete review refused by DotLn's own host-memory check, and read-only fixture directories that a prune must make writable before removal.\", \"operatorAuthorization\": \"The operator pointed out that the reductions described in chat appeared in no recorded follow-up and asked for them to be recorded.\",",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0dc30eb3790e3563",
+      "key": "decision:docs/evidence/WO-192/decisions.md#wo-192-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c0ad2b4134ce657a08fa35bbb6c3c8fe9852742a3fd7997fa6df417f625e05b7",
+          "ref": "docs/evidence/WO-192/decisions.md#wo-192-d003--keep-target-procedures-and-role-history-explicit",
+          "title": "WO-192-D003: Add a target-order override in executor, verifier and reviewer procedures while preserving their self-order steps. Target gates establish target claims; the launchpad document gate…",
+          "summary": "{ \"id\": \"WO-192-D003\", \"date\": \"2026-10-25\", \"dispatch\": \"resume: next\", \"decision\": \"Add a target-order override in executor, verifier and reviewer procedures while preserving their self-order steps. Target gates establish target claims; the launchpad document gate checks lifecycle records. The reviewer commits the target before the passing result, then records and publishes both branches. Preserve the historical role oracle chain and the unchanged ceilings; board the measured executor and reviewer overruns on the existing optimization row.\", \"evidence\": [ \"packages/skeleton/fixtures/wo192-role-baseline.json\", \"docs/product/07-execution-guide.md: current cold-start route replaces the retire",
+          "missing": false
+        },
+        {
+          "hash": "18cea29238d4b4095d5034de9c822147e0393e4b2e312edcf0b1894ab9f895a1",
+          "ref": "docs/evidence/WO-192/decisions.md#wo-192-d003--keep-target-procedures-and-role-history-explicit",
+          "title": "WO-192-D003: Add a target-order override in executor, verifier and reviewer procedures while preserving their self-order steps. Target gates establish target claims; the launchpad document gate…",
+          "summary": "{ \"id\": \"WO-192-D003\", \"date\": \"2026-10-25\", \"dispatch\": \"resume: next\", \"decision\": \"Add a target-order override in executor, verifier and reviewer procedures while preserving their self-order steps. Target gates establish target claims; the launchpad document gate checks lifecycle records. The reviewer commits the target before the passing result, then records and publishes both branches. Preserve the historical role oracle chain and the unchanged ceilings; board the measured executor and reviewer overruns on the existing optimization row.\", \"evidence\": [ \"packages/skeleton/fixtures/wo192-role-baseline.json\", \"docs/product/07-execution-guide.md: current cold-start route replaces the retire",
+          "missing": false
+        },
+        {
+          "hash": "12d93f88faef3d5832ddeb4252d2dd80f83491169929c8ad0689463d2c4cc70e",
+          "ref": "docs/evidence/WO-192/decisions.md#wo-192-d003--keep-target-procedures-and-role-history-explicit",
+          "title": "WO-192-D003: Add a target-order override in executor, verifier and reviewer procedures while preserving their self-order steps. Target gates establish target claims; the launchpad document gate…",
+          "summary": "{ \"id\": \"WO-192-D003\", \"date\": \"2026-10-25\", \"dispatch\": \"resume: next\", \"decision\": \"Add a target-order override in executor, verifier and reviewer procedures while preserving their self-order steps. Target gates establish target claims; the launchpad document gate checks lifecycle records. The reviewer commits the target before the passing result, then records and publishes both branches. Preserve the historical role oracle chain and the unchanged ceilings; board the measured executor and reviewer overruns on the existing optimization row.\", \"evidence\": [ \"packages/skeleton/fixtures/wo192-role-baseline.json\", \"docs/product/07-execution-guide.md: current cold-start route replaces the retire",
+          "missing": false
+        },
+        {
+          "hash": "2828cf2a582d153569e26e5dc8ddf32b1f94672929c9ac65cec750cd5ebb75bd",
+          "ref": "docs/evidence/WO-192/decisions.md#wo-192-d003--keep-target-procedures-and-role-history-explicit",
+          "title": "WO-192-D003: Add a target-order override in executor, verifier and reviewer procedures while preserving their self-order steps. Target gates establish target claims; the launchpad document gate…",
+          "summary": "{ \"id\": \"WO-192-D003\", \"date\": \"2026-10-25\", \"dispatch\": \"resume: next\", \"decision\": \"Add a target-order override in executor, verifier and reviewer procedures while preserving their self-order steps. Target gates establish target claims; the launchpad document gate checks lifecycle records. The reviewer commits the target before the passing result, then records and publishes both branches. Preserve the historical role oracle chain and the unchanged ceilings; board the measured executor and reviewer overruns on the existing optimization row.\", \"evidence\": [ \"packages/skeleton/fixtures/wo192-role-baseline.json\", \"docs/product/07-execution-guide.md: current cold-start route replaces the retire",
+          "missing": false
+        },
+        {
+          "hash": "93d6c67e8739aaaed51e2a8116f24994d61ddebec35777bea08276798d681710",
+          "ref": "docs/evidence/WO-192/decisions.md#wo-192-d003--keep-target-procedures-and-role-history-explicit",
+          "title": "WO-192-D003: Add a target-order override in executor, verifier and reviewer procedures while preserving their self-order steps. Target gates establish target claims; the launchpad document gate…",
+          "summary": "{ \"id\": \"WO-192-D003\", \"date\": \"2026-10-25\", \"dispatch\": \"resume: next\", \"decision\": \"Add a target-order override in executor, verifier and reviewer procedures while preserving their self-order steps. Target gates establish target claims; the launchpad document gate checks lifecycle records. The reviewer commits the target before the passing result, then records and publishes both branches. Preserve the historical role oracle chain and the unchanged ceilings; board the measured executor and reviewer overruns on the existing optimization row.\", \"evidence\": [ \"packages/skeleton/fixtures/wo192-role-baseline.json\", \"docs/product/07-execution-guide.md: current cold-start route replaces the retire",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-192-D088 reopened WO-192-D003's rejection of accepting an overrun: WO-233, WO-234 and WO-235 recorded acceptances of measured bytes plus one 4096-byte step under product 07's standing route, so this order follows that route. FUP-e08668268dea62b1 still owns the shorter-instruction comparison.",
+          "reopenWhen": "Product 07 retires the standing cold-start route.",
+          "targets": [],
+          "at": "2026-10-30T19:41:12.933Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-681bfa0467ccd9be",
+      "key": "decision:docs/evidence/WO-170/decisions.md#wo-170-d002",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "f544598a2b1872c1d0570b8f17ed93f61dc0316ada07181ecff84d9d70fa2829",
+          "ref": "docs/evidence/WO-170/decisions.md#wo-170-d002--the-snapshot-is-the-orders-own-row-bounded-written-where-its-journals-are",
+          "title": "WO-170-D002: release prepare writes docs/evidence/WO-NNN/meta.json beside the meter block, from the same collection, only when the checkout holds a session journal of the order; otherwise it writes…",
+          "summary": "{ \"id\": \"WO-170-D002\", \"date\": \"2026-09-27\", \"dispatch\": \"resume: next\", \"decision\": \"release prepare writes docs/evidence/WO-NNN/meta.json beside the meter block, from the same collection, only when the checkout holds a session journal of the order; otherwise it writes no snapshot and prints 'Meter snapshot not written: this checkout holds no session journal of WO-NNN.' The file holds the order's own row: its metrics, its corrections with their source, its operator directions, its usage totals by role, its dispatch rows with their observed values (an absent value reads unavailable), and its declared supports; no other order, no deltas, no usage rows, no cold-start profiles and no document s",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-dfde4050da06d43b",
+      "key": "decision:docs/evidence/WO-192/decisions.md#wo-192-d091",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "0c4b819b84ce055572259aa06491b148f442c91a418de524f81995afbb7434c5",
+          "ref": "docs/evidence/WO-192/decisions.md#wo-192-d091--finish-from-the-written-procedure-and-carry-the-recovery-to-planning",
+          "title": "WO-192-D091: Build the recovery in docs/evidence/WO-192/process-recovery-2026-10-30.md into DotLn's machinery. Evaluate: complete-run admission that reads whether all three reviewers finished on the…",
+          "summary": "{ \"id\": \"WO-192-D091\", \"date\": \"2026-10-30\", \"dispatch\": \"resume: next; operator stop and challenge of the session's direction\", \"decision\": \"Stop the reactive sequence and finish from the written procedure: complete the repairs and write-backs, restart all three existing reviewers on the current diff and resolve their findings, pass declarations and test:docs, run one live drive on Claude and one on Codex on that code, record the results, run one complete gate, then hand off. This puts the live runs before the complete gate and undoes the session's own reordering of 22:13Z: the gate has to judge the final code, and the reviewers and quick checks are the filter paid runs need. Keep both live",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "The operator directed that this recovery be noted now and built into DotLn's machinery later. It changes gate admission, briefings and role text across orders, so it needs a planning pass rather than this order. docs/evidence/WO-192/process-recovery-2026-10-30.md holds the record and the candidates.",
+          "reopenWhen": "The next planning pass that reads the follow-up register disposes it, or the same sequence failure recurs on another order first.",
+          "targets": [],
+          "at": "2026-10-30T23:18:12.063Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-dd1ac63cf4883d5f",
+      "key": "decision:docs/evidence/WO-192/decisions.md#wo-192-d095",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "449e33b5dda28a252d604dfbb39970d032f7423aaf39f09845740ccc0d502b44",
+          "ref": "docs/evidence/WO-192/decisions.md#wo-192-d095--board-what-the-second-review-round-left-for-planning",
+          "title": "WO-192-D095: Decide three rules the WO-192 second review surfaced. Whether scripts a host spawns to reach an authority decision, such as scripts/lib/order-worktree-grants.mjs and scripts/resume.mjs,…",
+          "summary": "{ \"id\": \"WO-192-D095\", \"date\": \"2026-10-31\", \"dispatch\": \"resume: next; findings recorded rather than repaired in the second review round\", \"decision\": \"Record three findings instead of repairing them here, because each needs a rule rather than a fix. Spawned helpers are not evidence sources: scripts/lib/order-worktree-grants.mjs and its imports decide a grant yet stale no edition, and scripts/resume.mjs is spawned and unregistered the same way, so registering three files would make the rule less consistent, not more. Product 07's cold-start route says no acceptance is recorded, while WO-233, WO-234, WO-235 and this order recorded acceptances citing a standing route it does not contain. Laun",
+          "missing": false
+        },
+        {
+          "hash": "b009f99066ef63989c49dcf2eca05c10a72dd68fc8746da6dfa747666b9029ff",
+          "ref": "docs/evidence/WO-192/decisions.md#wo-192-d095--board-what-the-second-review-round-left-for-planning",
+          "title": "WO-192-D095: Decide three rules the WO-192 second review surfaced. Whether scripts a host spawns to reach an authority decision, such as scripts/lib/order-worktree-grants.mjs and scripts/resume.mjs,…",
+          "summary": "{ \"id\": \"WO-192-D095\", \"date\": \"2026-10-31\", \"dispatch\": \"resume: next; findings recorded rather than repaired in the second review round\", \"decision\": \"Record three findings instead of repairing them here, because each needs a rule rather than a fix. Spawned helpers are not evidence sources: scripts/lib/order-worktree-grants.mjs and its imports decide a grant yet stale no edition, and scripts/resume.mjs is spawned and unregistered the same way, so registering three files would make the rule less consistent, not more. Product 07's cold-start route says no acceptance is recorded, while WO-233, WO-234, WO-235 and this order recorded acceptances citing a standing route it does not contain. Laun",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-192-D095: each item needs a rule across orders rather than a repair in this one. The planning pass that reads the register decides them.",
+          "reopenWhen": "A planning pass disposes it, or a change to one of those helpers ships with evidence that did not notice it.",
+          "targets": [],
+          "at": "2026-10-31T00:37:34.331Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-192-D095: each item needs a rule across orders rather than a repair in this one. The planning pass that reads the register decides them.",
+          "reopenWhen": "A planning pass disposes it, or a change to one of those helpers ships with evidence that did not notice it.",
+          "targets": [],
+          "at": "2026-10-31T02:45:54.350Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-eca9ed46e4b2a4d9",
+      "key": "decision:docs/evidence/WO-192/decisions.md#wo-192-d094",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "d9f51488a1fc8f707a1658cf7cb28c545ab5b173724e1091b4f68e18656afdef",
+          "ref": "docs/evidence/WO-192/decisions.md#wo-192-d094--repair-what-the-second-review-round-found",
+          "title": "WO-192-D094: Repair the findings of all three reviewers before any live run, each boundary with a regression that failed first. A router spawn now needs a known phrase and the type it names, and a…",
+          "summary": "{ \"id\": \"WO-192-D094\", \"date\": \"2026-10-31\", \"dispatch\": \"resume: next; the three reviewers restarted on the current diff, as D091 requires\", \"decision\": \"Repair the findings of all three reviewers before any live run, each boundary with a regression that failed first. A router spawn now needs a known phrase and the type it names, and a router's shell is a short list instead of a guess at what writes. A driven worker's helper is read-only in the launchpad's lane as well as the target's, judged by the live gate's own read list. One table, drivenCommandEffect, says what each launchpad command does from a target worktree: the hook admits by it, the worker's note names it, reads stay open to hel",
+          "missing": false
+        },
+        {
+          "hash": "8f2a289ec33c7c88955326717481d66a0f7ede192a86cb87f12a26cba224c899",
+          "ref": "docs/evidence/WO-192/decisions.md#wo-192-d094--repair-what-the-second-review-round-found",
+          "title": "WO-192-D094: Repair the findings of all three reviewers before any live run, each boundary with a regression that failed first. A router spawn now needs a known phrase and the type it names, and a…",
+          "summary": "{ \"id\": \"WO-192-D094\", \"date\": \"2026-10-31\", \"dispatch\": \"resume: next; the three reviewers restarted on the current diff, as D091 requires\", \"decision\": \"Repair the findings of all three reviewers before any live run, each boundary with a regression that failed first. A router spawn now needs a known phrase and the type it names, and a router's shell is a short list instead of a guess at what writes. A driven worker's helper is read-only in the launchpad's lane as well as the target's, judged by the live gate's own read list. One table, drivenCommandEffect, says what each launchpad command does from a target worktree: the hook admits by it, the worker's note names it, reads stay open to hel",
+          "missing": false
+        },
+        {
+          "hash": "b5f0dda2b48eae915526cc1e772a0598d0dc9b901af91e947ad9bd29cffc44a8",
+          "ref": "docs/evidence/WO-192/decisions.md#wo-192-d094--repair-what-the-second-review-round-found",
+          "title": "WO-192-D094: Repair the findings of all three reviewers before any live run, each boundary with a regression that failed first. A router spawn now needs a known phrase and the type it names, and a…",
+          "summary": "{ \"id\": \"WO-192-D094\", \"date\": \"2026-10-31\", \"dispatch\": \"resume: next; the three reviewers restarted on the current diff, as D091 requires\", \"decision\": \"Repair the findings of all three reviewers before any live run, each boundary with a regression that failed first. A router spawn now needs a known phrase and the type it names, and a router's shell is a short list instead of a guess at what writes. A driven worker's helper is read-only in the launchpad's lane as well as the target's, judged by the live gate's own read list. One table, drivenCommandEffect, says what each launchpad command does from a target worktree: the hook admits by it, the worker's note names it, reads stay open to hel",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-192-D097 corrected the two statements a recheck refuted and repaired what they described.",
+          "reopenWhen": "A later check refutes the corrected statements.",
+          "targets": [],
+          "at": "2026-10-31T02:45:46.848Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-192-D097 corrected the statements a recheck refuted, and WO-192-D101 completed its usage repair.",
+          "reopenWhen": "A later check refutes the corrected statements.",
+          "targets": [],
+          "at": "2026-10-31T05:38:13.797Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-904a5db8486b6d49",
+      "key": "decision:docs/evidence/WO-192/decisions.md#wo-192-d097",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "0ae55528b706583b71a9ef7462450bdd9894450501d3199651f387ef25b7436b",
+          "ref": "docs/evidence/WO-192/decisions.md#wo-192-d097--repair-the-third-review-round-and-correct-d094",
+          "title": "WO-192-D097: Repair the third round's findings before any live run, and correct D094. Its statement that every launchpad write waits for a live gate was untrue for reader score --record, which writes…",
+          "summary": "{ \"id\": \"WO-192-D097\", \"date\": \"2026-10-31\", \"dispatch\": \"resume: next; the three reviewers' recheck of the second round's repairs\", \"decision\": \"Repair the third round's findings before any live run, and correct D094. Its statement that every launchpad write waits for a live gate was untrue for reader score --record, which writes a tracked file; the table now calls that form a write. Its statement that a helper is read-only in the launchpad's lane was untrue for plan start, resume next and resume release-close, which reached a helper through repository-mode metadata; the read test now rests on one shared definition, the live gate's list, and a helper's refusal names what does work. A router",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-192-D098 answered its fetch limit and its unrecorded changes.",
+          "reopenWhen": "A whole-history fetch outlasts its limit.",
+          "targets": [],
+          "at": "2026-10-31T02:45:49.500Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-f102d4dccf61e85b",
+      "key": "decision:docs/evidence/WO-192/decisions.md#wo-192-d098",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "808bba5d4c47f36be91fa4d46f983b03e78976e86a17f8abb20216c1e0417c60",
+          "ref": "docs/evidence/WO-192/decisions.md#wo-192-d098--read-a-merge-from-what-reached-the-base",
+          "title": "WO-192-D098: A merge now means the branch is an ancestor of the remote base and the order's passing final report reached that base, and a target merge means its branch left its base and reached the…",
+          "summary": "{ \"id\": \"WO-192-D098\", \"date\": \"2026-10-31\", \"dispatch\": \"resume: next; the three reviewers' narrow recheck of the third batch\", \"decision\": \"A merge now means the branch is an ancestor of the remote base and the order's passing final report reached that base, and a target merge means its branch left its base and reached the remote one. Ancestry alone was true of a branch with no commits, so a worker that died between recording its pass and committing left an order reading as merged with nothing published. Repair the recheck's other findings, and record what D097 left out: it also removed the begin and observe rows, which no hooked target path uses, and re-minted the router.\", \"operatorAutho",
+          "missing": false
+        },
+        {
+          "hash": "50c70d1150742a90dfebc7bda6ec0a0cb1cd56b4c7b8c24ee433804bce6812ee",
+          "ref": "docs/evidence/WO-192/decisions.md#wo-192-d098--read-a-merge-from-what-reached-the-base",
+          "title": "WO-192-D098: A merge now means the branch is an ancestor of the remote base and the order's passing final report reached that base, and a target merge means its branch left its base and reached the…",
+          "summary": "{ \"id\": \"WO-192-D098\", \"date\": \"2026-10-31\", \"dispatch\": \"resume: next; the three reviewers' narrow recheck of the third batch\", \"decision\": \"A merge now means the branch is an ancestor of the remote base and the order's passing final report reached that base, and a target merge means its branch left its base and reached the remote one. Ancestry alone was true of a branch with no commits, so a worker that died between recording its pass and committing left an order reading as merged with nothing published. Repair the recheck's other findings, and record what D097 left out: it also removed the begin and observe rows, which no hooked target path uses, and re-minted the router.\", \"operatorAutho",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-192-D099 replaced its report test; the empty-branch repair stands on the order's own record at the base.",
+          "reopenWhen": "A merged order's record can legitimately stay off the base.",
+          "targets": [],
+          "at": "2026-10-31T02:45:51.927Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-b5211779c719d804",
+      "key": "decision:docs/evidence/WO-192/decisions.md#wo-192-d099",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "f8f4ceb28d3479ab6e3dc16f2888747c59af37251f29fa174977dbe4a60a2c5f",
+          "ref": "docs/evidence/WO-192/decisions.md#wo-192-d099--read-a-merge-by-closes-own-rule",
+          "title": "WO-192-D099: Make the target publication fixture unable to reach a real host: publicationSetup in scripts/lib/target-worktree-fixture.mjs sets a clone's origin to a real GitHub URL while only f.env…",
+          "summary": "{ \"id\": \"WO-192-D099\", \"date\": \"2026-10-31\", \"dispatch\": \"resume: next; all three reviewers' recheck of D098\", \"decision\": \"Replace D098's report test with close's own rule: an order is merged when its branch is an ancestor of origin/main and its pass is in the control state on origin/main. D098 asked whether the final report reached the base, and target-records moves that report into the target, so every real target order would have stopped at awaiting-merge for good. Close's rule answers both the empty branch and the moved report, and the drive and close can no longer disagree. This reading supersedes the merge formula in the order's step 8 and known issues; criterion 2 and criterion 17 st",
+          "missing": false
+        },
+        {
+          "hash": "7f6c84eb8e08b6e4ed979b13e28437b8c67b022219d78abaed435424304e85ca",
+          "ref": "docs/evidence/WO-192/decisions.md#wo-192-d099--read-a-merge-by-closes-own-rule",
+          "title": "WO-192-D099: Make the target publication fixture unable to reach a real host: publicationSetup in scripts/lib/target-worktree-fixture.mjs sets a clone's origin to a real GitHub URL while only f.env…",
+          "summary": "{ \"id\": \"WO-192-D099\", \"date\": \"2026-10-31\", \"dispatch\": \"resume: next; all three reviewers' recheck of D098\", \"decision\": \"Replace D098's report test with the questions close asks: an order is merged when its branch is an ancestor of origin/main and its pass is in its own control record on origin/main. D098 asked whether the final report reached the base, and target-records moves that report into the target, so every real target order would have stopped at awaiting-merge for good. This answers both the empty branch and the moved report. It reads only the order's own record, so a later order's newer event types cannot stop an older worktree reading a merge that happened. This reading superse",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-192-D099: making the publication fixture unable to reach a real host touches fixtures many suites share, and the squash-merge policy is a rule across orders, so a planning pass decides both.",
+          "reopenWhen": "A planning pass disposes it, or a probe or test reaches a real host first.",
+          "targets": [],
+          "at": "2026-10-31T02:33:14.156Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-192-D099: making the publication fixture unable to reach a real host touches fixtures many suites share, and the squash-merge policy is a rule across orders, so a planning pass decides both.",
+          "reopenWhen": "A planning pass disposes it, or a probe or test reaches a real host first.",
+          "targets": [],
+          "at": "2026-10-31T05:38:16.243Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-6fc6c71d838b7368",
+      "key": "decision:docs/evidence/WO-192/decisions.md#wo-192-d100",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "d1b8a71c0664747879f13123d29424e81d82d9904c8564357416ec3f794eccd2",
+          "ref": "docs/evidence/WO-192/decisions.md#wo-192-d100--keep-the-host-readers-cause-and-board-its-one-failure",
+          "title": "WO-192-D100: Decide whether a failed diagnostic read should end a host lane wait. scripts/lib/host-lanes.mjs aborts the wait when the heartbeat's readHolders throws, so one failed read in a…",
+          "summary": "{ \"id\": \"WO-192-D100\", \"date\": \"2026-10-31\", \"dispatch\": \"resume: next; one failed case in the focused runner-fixtures run\", \"decision\": \"Keep the cause in the host process reader's error and board the failure for planning. runner-fixtures failed once and passed on an immediate rerun, in a file this order had not changed. The session first called this a timeout under load, which was an inference: the reader's catch discarded the reason, so the cause is unknown. A heartbeat failure ending a lane wait is deliberate code, so whether a missed diagnostic should end a wait is a design question rather than a repair here.\", \"operatorAuthorization\": \"The executor's Adjacent Repair support admits a bo",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-192-D100: whether a failed diagnostic read should end a host lane wait is a design question, and the cause is still unknown; the reader now keeps it.",
+          "reopenWhen": "It recurs in a complete gate, or a planning pass disposes it.",
+          "targets": [],
+          "at": "2026-10-31T03:14:07.689Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-0d7e98297efa0b60",
+      "key": "decision:docs/evidence/WO-192/decisions.md#wo-192-d102",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "456c9f438b8acc9b8df64476ccc498048eb2a947da7f849617cff457acb46c25",
+          "ref": "docs/evidence/WO-192/decisions.md#wo-192-d102--treat-codexs-refusal-of-release-close-as-a-host-boundary",
+          "title": "WO-192-D102: Decide how a driven Codex order finishes on CLI 0.166.0 and later, where automatic review declined release close --publish. Find the review's reason by keeping the Codex session log for…",
+          "summary": "{ \"id\": \"WO-192-D102\", \"date\": \"2026-10-31\", \"dispatch\": \"resume: next; live attempts 48 to 51 on Claude Code 2.1.314 and Codex CLI 0.166.0\", \"decision\": \"Record the live results and treat Codex's refusal of release close as a host boundary, not a defect to work around. Claude completed all five roles. Codex completed router, executor, verifier and final review, and its automatic review declined the close. Stop rerunning that phase, keep the driver's typed stop, and judge criterion 17 at handoff with this boundary stated, so a reader does not take Codex's close as passed. Criterion 14 admits an observed boundary and attempt 45 still holds its completed close on CLI 0.164.0.\", \"operatorAuthor",
+          "missing": false
+        },
+        {
+          "hash": "f62d0b894ead50dfb7884895bba1f67eca79e829cf1ef6c98e203054f6518d60",
+          "ref": "docs/evidence/WO-192/decisions.md#wo-192-d102--stop-rerunning-codexs-refused-close-and-leave-criterion-17-open",
+          "title": "WO-192-D102: Decide how a driven Codex order finishes on CLI 0.166.0 and later, where release close --publish was declined for an unknown reason. Find the reason by keeping the Codex session log for…",
+          "summary": "{ \"id\": \"WO-192-D102\", \"date\": \"2026-10-31\", \"dispatch\": \"resume: next; live attempts 48 to 51 on Claude Code 2.1.314 and Codex CLI 0.166.0, and the reviewers' judgment of that record\", \"decision\": \"Stop rerunning Codex's release close, keep the driver's typed stop, and leave criterion 17's last clause unmet for that close. Claude completed all five roles across attempts 48 and 51. Codex completed router, executor, verifier and final review, and its close was declined for a reason nobody has seen, so this is an unexplained refusal rather than a shown host decision. Criterion 14 admits an observed boundary and attempt 45 still holds a completed close on CLI 0.164.0, but criterion 17 has no su",
+          "missing": false
+        },
+        {
+          "hash": "07dd7b2a70f5cc51ffbeba7f0da5c188b342cb5c2366cd7bb2ee3af0191ef2de",
+          "ref": "docs/evidence/WO-192/decisions.md#wo-192-d102--stop-rerunning-codexs-refused-close-and-leave-criterion-17-open",
+          "title": "WO-192-D102: Decide how a driven Codex order finishes on CLI 0.166.0 and later, where release close --publish was declined for an unknown reason. Find the reason by keeping the Codex session log for…",
+          "summary": "{ \"id\": \"WO-192-D102\", \"date\": \"2026-10-31\", \"dispatch\": \"resume: next; live attempts 48 to 51 on Claude Code 2.1.314 and Codex CLI 0.166.0, and the reviewers' judgment of that record\", \"decision\": \"Stop rerunning Codex's release close, keep the driver's typed stop, and leave criterion 17's last clause unmet for that close. Claude completed all five roles across attempts 48 and 51. Codex completed router, executor, verifier and final review, and its close was declined for a reason nobody has seen, so this is an unexplained refusal rather than a shown host decision. Criterion 14 admits an observed boundary and attempt 45 still holds a completed close on CLI 0.164.0, but criterion 17 has no su",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-192-D102: how a driven Codex order finishes when automatic review declines release close is the operator's choice, and it needs the review's reason, which this order could not retain.",
+          "reopenWhen": "A Codex version admits the close, or the operator chooses how a driven Codex order finishes.",
+          "targets": [],
+          "at": "2026-10-31T05:38:18.699Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-192-D102: how a driven Codex order finishes when its release close is declined is the operator's choice, and it needs the reason, which this order could not retain.",
+          "reopenWhen": "A Codex version admits the close, or the operator chooses how a driven Codex order finishes.",
+          "targets": [],
+          "at": "2026-10-31T05:52:23.879Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-17ea51254e5a7256",
+      "key": "decision:docs/evidence/WO-192/decisions.md#wo-192-d103",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "4ee6e5aaa478cd116e77c89f91e71c21147b3a855a23bd070a278a78c7e760b0",
+          "ref": "docs/evidence/WO-192/decisions.md#wo-192-d103--rerun-the-complete-gate-the-macs-sleep-ended-with-no-code-change",
+          "title": "WO-192-D103: Make a complete gate hold off system sleep and say so when sleep happens anyway. A suite's limit in scripts/test-runner.mjs is a setTimeout that counted time asleep, so a suite with a…",
+          "summary": "{ \"id\": \"WO-192-D103\", \"date\": \"2026-10-31\", \"dispatch\": \"resume: next; the complete gate started at 2026-10-31T05:57:22Z\", \"decision\": \"Treat that gate's failure as the Mac sleeping, change no code and rerun the same gate with a sleep assertion held for its whole length. The reviewers stay as they finished: the role restarts them after a new set of code changes, including a repair after a failed gate, and this failure produced neither. A suite limit that counts time asleep, and a session that keeps the Mac awake only during a turn, are boarded for planning.\", \"operatorAuthorization\": \"The plan the operator accepted ends with one complete gate, the role follows a failed gate with a fresh com",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-192-D103: how a gate should behave across system sleep needs a choice for each platform and a choice about whether slept time counts, and this run does not need it.",
+          "reopenWhen": "A gate sleeps while an assertion is held, or the runner comes to hold its own assertion.",
+          "targets": [],
+          "at": "2026-10-31T06:39:26.940Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-5b7b2e27a0e6b01a",
+      "key": "decision:docs/evidence/WO-192/decisions.md#wo-192-d104",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "cf7075ec0d31f6b37a425b27222b31bf655061f84cdbb7b8c5ba1af6c6920f45",
+          "ref": "docs/evidence/WO-192/decisions.md#wo-192-d104--waive-criterion-17-and-require-immediate-follow-up",
+          "title": "WO-192-D104: IMMEDIATE follow-up required by the operator: diagnose and repair the Codex driven release-close refusal documented in WO-192-D102. Preserve the declined phase session log and reason…",
+          "summary": "{ \"id\": \"WO-192-D104\", \"date\": \"2026-10-31\", \"dispatch\": \"resume: verify; operator waiver of criterion 17 with an immediate follow-up\", \"decision\": \"Record the operator-authorized waiver of criterion 17 at control ordinal 6 and continue independent verification. Criterion 17 remains unmet, waived by 6; the waiver is not evidence of repair. Give its remaining work immediate follow-up priority, rather than treating the unexplained Codex close refusal or the unrepaired review findings as an accepted permanent limitation.\", \"evidence\": [ \"CriterionWaived ordinal 6 in docs/control/orders/WO-192.jsonl\", \"Ignored operator capture docs/intake/WO-192-criterion-17-waiver-2026-10-31.txt; sha256:2aee1c8",
           "missing": false
         }
       ],

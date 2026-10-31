@@ -1,10 +1,10 @@
 # Work orders
 
-**Now:** [WO-192] — active.
+**Now:** between work orders.
 
 ## Proposed order
 
-- [ ] [WO-192] — A router drives an order through its lifecycle · **active**
+- [x] [WO-192] — A router drives an order through its lifecycle · **final-reviewed**
 - [ ] [WO-240] — Node 24 beside Node 26, and the private-clone recipe · **queued**
 - [ ] [WO-237] — A closed order keeps its journals, and a temporary root survives a reboot · **queued**
 - [ ] [WO-238] — A document says what is so · **queued**
@@ -39,22 +39,7 @@ None.
 
 ## Active
 
-### WO-192
-
-[WO-192 — One session drives an order through its whole lifecycle: a router that only routes starts a fresh worker for each phase and hands it nothing but the phrase, for the launchpad's own orders and for a registered target's, whose phase workers run in the target worktree under WO-049's bundle (v0.104.0)](WO-192-router-drives-an-order.md)
-
-- State: active.
-- Application target: v0.104.0.
-- Dependencies: typed; dependency-ready.
-- References: WO-072: hard (met) — the target worktree lifecycle whose worktree a target order's phase workers run in and whose local registry resolves the worktree grant; WO-210: hard (met) — a driven target order's publication runs WO-210's command from its worktree, and the role text names WO-210's target gate, documentation root and records action; WO-187: hard (met) — the generated agent definition with a pinned model and effort, extended here to one per lifecycle role; WO-139: satisfied-by-close (met) — the sub-agent counter this order keys by spawning worker; WO-135: satisfied-by-close (met) — the writer reservation this order keys by session and agent; WO-130: satisfied-by-close (met) — phrase dispatch and the briefing a worker receives; WO-158: satisfied-by-close (met) — the off-ramps and recovery controls the router stops for.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor max; verifier xhigh; reviewer xhigh.
-- Track: delivery
-- Cost: before-numbers, filed by the &#91;2026-10-24 pass&#93;(../planning/intake-mining-run-routing-2026-10-24.md) (§11) from the 165 per-order control segments at &#96;main&#96; &#96;49d8c4c3&#96;, so the drive's effect can be read against them: 6.25 implied operator phrases per order over the record and 6.94 since 2026-10-08; a hand-gap share of 30.5% of within-order wall clock over the record and 33.2% since 2026-10-08; median wait from implementation ready to verification requested 3.6 minutes over the record and 17.8 since 2026-10-08; reproducible at any time from the committed segments by the method that section states. Adds a &#96;router&#96; role and the phrase &#96;drive: WO-NNN&#96; to the Contributor build (&#96;packages/skeleton/src/loadouts/contributor.ts&#96;), one generated agent definition per lifecycle role (executor, verifier, reviewer, release-close) at the pinned model and effort, from the generator and check rule WO-187 adds for spawned workers (&#96;packages/compiler/src/harness.ts&#96;), a session record, role and writer reservation keyed by session and agent (&#96;packages/skeleton/src/harness-host.ts&#96;), a sub-agent count kept per spawning worker (&#96;packages/skeleton/src/subagent-budget.ts&#96;), a refusal of any router spawn whose prompt is not a lifecycle phrase, a worktree root grant for the worker whose order owns that worktree, and a &#96;route&#96; reading of the canonical status (&#96;scripts/resume.mjs&#96;), and, in &#96;contributor.ts&#96; (step 9), the target-order branch of the executor, verifier and reviewer procedures and (step 6) the shared fan-out sentence. Removes: the operator typing one phrase per phase into a separate terminal and carrying each handoff by hand (at least four sessions for an order that passes first time: execute, verify, final review and release close; more for each repair), and, on a host that meters only the main thread, the main thread's share of the phase work, which relocates into workers and is counted there rather than removed (receipt 039); and, for a target order, the launchpad &#96;npm test&#96; the role text still names, which WO-210's claims no longer accept for that order. The router's own context holds statuses, not work. Re-mints: &#96;harness-host.ts&#96;, &#96;subagent-budget.ts&#96;, &#96;harness.ts&#96; and &#96;contributor.ts&#96; are registered evidence sources, so the editions they stale are re-minted deterministically; none is a file the feedback verifier judges, so no live feedback episode; all are declared machinery sources, so &#96;npm test -- --review&#96; runs before handoff. One live driven order is paid in worker tokens (criterion 9). Cold-start bytes: a new root for the router; every role's cold start grows by step 3's &#96;CLAUDE.md&#96; line and by step 6's fan-out sentence; the executor, verifier and reviewer roots also grow by step 9's text (corrected by the 2026-10-21 pass). Commands: one operator phrase, &#96;drive: WO-NNN&#96;, and the probe mode &#96;--agent-identity&#96; of &#96;scripts/harness-probe.mjs&#96; (step 1); the four existing phrases stay. Steps: the operator's per-phase phrases and handoffs become one phrase per drive and one after the merge; a target order's roles run the target gate in place of &#96;npm test&#96; and its reviewer runs the records action (step 9). Wall-clock, tokens and context bytes are unknown until run.
-- Authority: [docs/work-orders/WO-192-router-drives-an-order.md](WO-192-router-drives-an-order.md)
+None.
 
 ## Open
 
@@ -134,8 +119,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-241, WO-192.
-- References: WO-241: hard (unmet) — the features section and the plan-first registry row the mode reads; WO-236: satisfied-by-close (met) — the executor's target-worktree grant under which the three documents are written into a target; WO-158: satisfied-by-close (met) — the typed event, capture and actor-flag shape plan-approved follows; WO-192: planning-deferral (unmet) until WO-192 dated 2026-10-30 — the router must stop at PlanProposed and resume at PlanApproved; the step is written against WO-192 as filed and finished once it merges.
+- Dependencies: typed; blocked on WO-241.
+- References: WO-241: hard (unmet) — the features section and the plan-first registry row the mode reads; WO-236: satisfied-by-close (met) — the executor's target-worktree grant under which the three documents are written into a target; WO-158: satisfied-by-close (met) — the typed event, capture and actor-flag shape plan-approved follows; WO-192: planning-deferral (met) until WO-192 dated 2026-10-30 — the router must stop at PlanProposed and resume at PlanApproved; the step is written against WO-192 as filed and finished once it merges.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
