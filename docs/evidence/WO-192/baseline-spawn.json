@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "baseline": "08845c71",
+  "observedAt": "2026-10-25T21:57:52.526Z",
+  "probe": "router invalid-prompt refusal",
+  "prompt": "resume: next WO-999",
+  "expected": "DOTLN_ROUTER_SPAWN_REFUSED",
+  "observed": "admitted-without-router-refusal",
+  "criterionAssertionPassed": false,
+  "expectedBaselineFailure": true,
+  "routerSelected": false
+}

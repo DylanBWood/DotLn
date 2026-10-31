@@ -86,7 +86,11 @@ import {
   createReleaseFixtureContext,
   releaseCases,
 } from "./lib/release-fixtures.mjs";
-import { completeCoverage, suiteEnvironment } from "./lib/suite-evidence.mjs";
+import {
+  completeCoverage,
+  suiteEnvironment,
+  withoutDrivenContext,
+} from "./lib/suite-evidence.mjs";
 import {
   CONFINED_PARTIAL_CHECK,
   OUTSIDE_CONFINEMENT,
@@ -240,6 +244,12 @@ export const machinerySources = {
     "scripts/fixtures/copilot-probe-hook.mjs",
     "scripts/lib/subagent-probe.mjs",
     "scripts/fixtures/subagent-probe-hook.mjs",
+    "scripts/lib/agent-identity-probe.mjs",
+    "scripts/lib/target-worktree-fixture.mjs",
+    "scripts/test-target-publication-fixture.mjs",
+    "scripts/test-beacon-fixture.mjs",
+    "scripts/test-target-worktree.fixture-inputs.json",
+    "scripts/fixtures/agent-identity-probe-hook.mjs",
     "scripts/lib/authority-probe.mjs",
     "scripts/fixtures/authority-effect.mjs",
     "scripts/test-authority-probe.mjs",
@@ -293,6 +303,27 @@ export const machinerySources = {
     "packages/skeleton/src/gate-evidence.mjs",
     "packages/skeleton/src/runtime-inputs.mjs",
     "scripts/test-harness.mjs",
+    "scripts/test-drive.mjs",
+    "scripts/drive.mjs",
+    "scripts/fixtures/drive-live.mjs",
+    "scripts/lib/drive-diagnostics.mjs",
+    "scripts/lib/drive-evidence.mjs",
+    "scripts/lib/drive-process.mjs",
+    "scripts/lib/drive-prompts.mjs",
+    "scripts/lib/drive-route.mjs",
+    "scripts/lib/github-repository.mjs",
+    "scripts/lib/drive-session.mjs",
+    "scripts/lib/drive-stream.mjs",
+    "scripts/lib/drive-transport.mjs",
+    "scripts/lib/drive-worker.mjs",
+    "scripts/lib/host-resources.mjs",
+    "scripts/lib/process-budget.mjs",
+    "scripts/lib/release-tags.mjs",
+    "scripts/lib/order-worktree-grants.mjs",
+    "scripts/lib/order-worktrees.mjs",
+    "scripts/lib/target-worktree-fixture.mjs",
+    "scripts/lib/target-worktrees.mjs",
+    "scripts/lib/helpers.mjs",
     "scripts/test-runner.mjs",
     "scripts/lib/harness-prune.mjs",
     // Prune usage retention follows preservation's collision names (WO-171).
@@ -371,6 +402,8 @@ export const machinerySources = {
   ],
   "harness-evidence": recordedSources["harness"],
   "plan-refutation": [
+    "scripts/docs-check.mjs",
+    "scripts/lib/front-page-scope.mjs",
     "scripts/lib/planning-document.mjs",
     "scripts/lib/gate-evidence.mjs",
     "scripts/lib/gate-reuse.mjs",
@@ -593,6 +626,8 @@ export const machinerySources = {
     "packages/skeleton/fixtures/wo185-role-baseline.json",
     "packages/skeleton/fixtures/wo216-role-baseline.json",
     "packages/skeleton/fixtures/wo221-role-baseline.json",
+    "packages/skeleton/fixtures/wo192-role-baseline.json",
+    "packages/skeleton/fixtures/wo192-integration-role-baseline.json",
     "packages/skeleton/fixtures/wo217-role-efficiency-baseline.json",
     "scripts/test-helper-reuse.mjs",
     "scripts/lib/helpers.mjs",
@@ -701,7 +736,7 @@ const protection = {
   "authority-evidence":
     "authority evidence reproduces the registered boundary claims",
   "harness-fixtures":
-    "writer, gate, planning, agent-budget and outside-write refusals preserve their boundaries",
+    "driven routing and writer, gate, planning, agent-budget and outside-write refusals preserve their boundaries",
   harness: "installed hooks and role text match the generated harness bundle",
   "harness-context":
     "role read contracts resolve and remain within cold-start bounds",
@@ -1148,7 +1183,18 @@ export const suites = [
   {
     ...shell("resume", "scripts/test-resume.sh"),
     kit: "core-only: core legacy lifecycle and timing observations WO-030",
+    args: ["--fixtures-only"],
+    preflight: true,
+    protects:
+      "synthetic lifecycle transitions pass before product suites start",
+  },
+  {
+    ...shell("resume-docs", "scripts/test-resume.sh"),
+    kit: "core-only: core legacy lifecycle and timing observations WO-030",
+    args: ["--documents-only"],
     document: true,
+    protects:
+      "recorded legacy lifecycle and timing observations retain their bytes and meaning",
   },
   nodeTests("launchpad", "scripts/test-launchpad-update.mjs", {
     args: [
@@ -1410,6 +1456,8 @@ export const suites = [
     preflight: true,
   }),
   nodeTests("harness-fixtures", "scripts/test-harness.mjs", {
+    args: ["scripts/test-drive.mjs"],
+    fileConcurrency: 1,
     kit: "core-only: Entropy Reducer baseline history and package sources",
     group: "hook-heavy",
     exclusive: true,
@@ -1643,7 +1691,7 @@ export function executeSuite(
       capacity: recordedHostLaneCapacity(hostDirectory),
     });
   let env = row.probe
-    ? { ...(row.executionEnvironment ?? process.env) }
+    ? withoutDrivenContext(row.executionEnvironment ?? process.env)
     : suiteEnvironment(
         row.executionEnvironment ?? process.env,
         row.gateContext,

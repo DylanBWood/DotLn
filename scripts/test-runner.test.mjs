@@ -29,6 +29,10 @@ import { dirname, isAbsolute, join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { measurementGateForRun } from "./measure-gates.mjs";
 import {
+  suiteEnvironment,
+  withoutDrivenContext,
+} from "./lib/suite-evidence.mjs";
+import {
   suites,
   STRUCTURAL_TASKS,
   validateSuites,
@@ -81,6 +85,50 @@ import { sampleFileEventDaemon } from "./lib/host-resources.mjs";
 
 const root = resolve(import.meta.dirname, "..");
 const barrier = { name: "build", command: ["build"], build: true };
+test("a driven worker's context never reaches a suite's environment", () => {
+  const names = [
+    "DOTLN_DRIVEN_WORKER",
+    "DOTLN_DRIVE_DEADLINE_AT",
+    "DOTLN_DRIVE_PARENT_PID",
+  ];
+  const env = suiteEnvironment({
+    PATH: process.env.PATH,
+    ...Object.fromEntries(names.map((name) => [name, "from the worker"])),
+  });
+  for (const name of names) assert.equal(env[name], undefined, name);
+  assert.equal(env.DOTLN_GATE_CHILD, "1");
+  // A bounded probe keeps its session's environment, but not this context.
+  const probe = withoutDrivenContext({
+    PATH: "fixture-path",
+    ...Object.fromEntries(names.map((name) => [name, "from the worker"])),
+  });
+  assert.deepEqual(probe, { PATH: "fixture-path" });
+});
+
+test("the registered harness suite executes the driver route tables", () => {
+  const row = suites.find((item) => item.name === "harness-fixtures");
+  const result = spawnSync(
+    row.command[0],
+    [
+      "--test-name-pattern=router chooses one action|router stop table",
+      ...row.command.slice(1),
+      ...(row.args ?? []),
+    ],
+    {
+      cwd: root,
+      env: suiteEnvironment(),
+      encoding: "utf8",
+      timeout: 60_000,
+    },
+  );
+  assert.equal(result.status, 0, result.stderr || result.stdout);
+  for (const name of [
+    "router chooses one action for every phase and requires both target and launchpad merges",
+    "router stop table covers controls, operator disposition, refusals, repair bounds and exhausted budgets",
+  ])
+    assert.match(result.stdout, new RegExp(`ok \\d+ - ${name}`));
+});
+
 test("target runner claims do not change self-order handoff or verification claims", async (t) => {
   const repo = createFixtureRoot(join(tmpdir(), "dotln-self-claims-"));
   t.after(() => rmSync(repo, { recursive: true, force: true }));
@@ -575,6 +623,8 @@ test("bounded command uses the requested cwd and deadline with launchpad budgets
   const lines = [];
   const result = await boundedCommand(
     [
+      "--timeout-seconds",
+      "1",
       "--",
       process.execPath,
       "-e",
@@ -583,7 +633,6 @@ test("bounded command uses the requested cwd and deadline with launchpad budgets
     root,
     {
       cwd: directory,
-      timeoutMs: 500,
       report: (line) => lines.push(line),
       output: () => {},
     },
@@ -594,7 +643,20 @@ test("bounded command uses the requested cwd and deadline with launchpad budgets
   );
   assert.notEqual(result.exitCode, 0);
   assert.ok(result.durationMs < 5000);
-  assert.ok(lines.some((line) => line.startsWith("bounded-start ")));
+  const started = JSON.parse(
+    lines
+      .find((line) => line.startsWith("bounded-start "))
+      .slice("bounded-start ".length),
+  );
+  assert.equal(started.deadlineMs, 1000);
+  for (const value of ["0", "-1", "1.5", "21601", "NaN"])
+    await assert.rejects(
+      boundedCommand(
+        ["--timeout-seconds", value, "--", process.execPath, "-e", "0"],
+        root,
+      ),
+      /probe timeout must be/,
+    );
 });
 test("kit defaults separate runtime integrity from documents and explicit platform diagnostics", async (t) => {
   const repo = createFixtureRoot(join(tmpdir(), "dotln-kit-list-"));
@@ -707,6 +769,10 @@ test("instance runtime digests reject aliases before selection and frame arbitra
     ".claude/settings.json",
     ".claude/agents/dotln-worker.md",
     ".claude/agents/dotln-worker-fable.md",
+    ".claude/agents/dotln-executor.md",
+    ".claude/agents/dotln-verifier.md",
+    ".claude/agents/dotln-reviewer.md",
+    ".claude/agents/dotln-release-close.md",
     ".agents/skills/dotln-executor/SKILL.md",
     ".codex/hooks/continuation.mjs",
     "CLAUDE.md",
@@ -722,6 +788,10 @@ test("instance runtime digests reject aliases before selection and frame arbitra
         ".claude/settings.json",
         ".claude/agents/dotln-worker.md",
         ".claude/agents/dotln-worker-fable.md",
+        ".claude/agents/dotln-executor.md",
+        ".claude/agents/dotln-verifier.md",
+        ".claude/agents/dotln-reviewer.md",
+        ".claude/agents/dotln-release-close.md",
         ".agents/skills/dotln-executor/SKILL.md",
         ".codex/hooks/continuation.mjs",
         "CLAUDE.md",
@@ -734,6 +804,10 @@ test("instance runtime digests reject aliases before selection and frame arbitra
     ".claude/settings.json",
     ".claude/agents/dotln-worker.md",
     ".claude/agents/dotln-worker-fable.md",
+    ".claude/agents/dotln-executor.md",
+    ".claude/agents/dotln-verifier.md",
+    ".claude/agents/dotln-reviewer.md",
+    ".claude/agents/dotln-release-close.md",
     ".agents/skills/dotln-executor/SKILL.md",
     ".codex/hooks/continuation.mjs",
     "CLAUDE.md",
@@ -2032,6 +2106,10 @@ test("full inventory retains every command in the previous package test chain", 
     }
     const normalized = command
       .replace(
+        /^bash scripts\/test-resume\.sh$/,
+        "bash scripts/test-resume.sh --fixtures-only",
+      )
+      .replace(
         "npm run test:mutation --silent",
         "node --test corpus/mutation/wo108-selftest.test.mjs",
       )
@@ -2042,6 +2120,10 @@ test("full inventory retains every command in the previous package test chain", 
       .replace(
         /^node scripts\/test-plan-refutation\.mjs$/,
         "node scripts/test-plan-refutation.mjs --fixtures-only",
+      )
+      .replace(
+        /^node --test scripts\/test-harness\.mjs$/,
+        "node --test scripts/test-harness.mjs scripts/test-drive.mjs",
       )
       .replace(/^node (scripts\/test-github-body\.mjs)$/, "node --test $1");
     assert.ok(
@@ -2218,15 +2300,21 @@ test("package tests and fixtures wait for preflights and never start after a fai
         };
       },
     });
-    for (const name of ["skeleton", "console", "resume"]) {
+    // The lifecycle fixtures are themselves a preflight: they run beside the
+    // index check, never behind it, and the package suites wait for both.
+    assert.equal(rows.find((row) => row.name === "resume").executed, true);
+    for (const name of ["skeleton", "console"]) {
       if (indexExit) {
         assert.ok(!events.includes(`start:${name}`));
         assert.equal(rows.find((row) => row.name === name).executed, false);
         assert.ok(rows.some((row) => row.exitCode !== 0));
       } else
-        assert.ok(
-          events.indexOf("end:index") < events.indexOf(`start:${name}`),
-        );
+        for (const preflight of ["index", "resume"])
+          assert.ok(
+            events.indexOf(`end:${preflight}`) <
+              events.indexOf(`start:${name}`),
+            `${name} waits for ${preflight}`,
+          );
     }
   }
 });
@@ -7796,7 +7884,7 @@ test("WO-186 excluded license pins fail their document-routed check and outward 
   assert.ok(pins(licenseSurfaceRules(repo)).some((row) => !row.pass));
   for (const name of [
     "license-surfaces",
-    "resume",
+    "resume-docs",
     "resident-bind",
     "local-runner-double",
     "artifact-corpus",
@@ -8393,6 +8481,50 @@ test("format preflight stops plain and review before product tasks, and stays fr
   }
 });
 
+test("lifecycle fixtures use the product preflight while historical record comparisons stay in the document gate", async (t) => {
+  const lifecycle = suites.find((row) => row.name === "resume");
+  const documents = suites.find((row) => row.name === "resume-docs");
+  assert.equal(lifecycle.product, true);
+  assert.equal(lifecycle.preflight, true);
+  assert.equal(lifecycle.document, false);
+  assert.deepEqual(lifecycle.args, ["--fixtures-only"]);
+  assert.equal(documents.document, true);
+  assert.equal(documents.product, false);
+  assert.deepEqual(documents.args, ["--documents-only"]);
+  for (const flag of ["--review", "--full"]) {
+    const { repo, table, observed } = taskReuseFixture(t);
+    const inventory = table.map((row) =>
+      row.name === "beta"
+        ? { ...row, name: "resume", preflight: lifecycle.preflight }
+        : row,
+    );
+    writeFileSync(join(repo, "fail-beta"), "fail\n");
+    const failed = await runGate([flag, "--serial", "--keep-going"], repo, {
+      table: inventory,
+    });
+    assert.equal(failed.exitCode, 1);
+    assert.deepEqual(observed(), ["build", "beta"]);
+    assert.equal(
+      failed.taskTimeline.find((row) => row.name === "alpha").executed,
+      false,
+    );
+    rmSync(join(repo, "fail-beta"));
+    const passed = await runGate([flag, "--serial"], repo, {
+      table: inventory,
+    });
+    assert.equal(passed.exitCode, 0);
+    const before = observed().length;
+    mkdirSync(join(repo, "docs"), { recursive: true });
+    writeFileSync(join(repo, "docs/report.md"), "Final report text.\n");
+    const reused = await runGate([flag, "--serial"], repo, {
+      table: inventory,
+    });
+    assert.equal(reused.codeIdentity, passed.codeIdentity);
+    assert.equal(reused.exitCode, 0);
+    assert.deepEqual(observed().slice(before), []);
+  }
+});
+
 test("review composition retains source rows and reruns a task whose latest single-suite execution failed", async (t) => {
   const { repo, table, observed } = taskReuseFixture(t);
   writeFileSync(join(repo, "scripts/format.mjs"), "export {};\n");
@@ -8936,7 +9068,7 @@ test("launchpad files retain all 37 cases and run at most two independent deadli
   const baseline = JSON.parse(
     readFileSync(join(root, "scripts/fixtures/launchpad-cases.json"), "utf8"),
   );
-  assert.equal(names.length, 37);
+  assert.equal(names.length, baseline.length);
   assert.deepEqual(names.sort(), baseline.sort());
   for (const task of tasks) {
     assert.equal(task.timeoutMs, 900_000);
@@ -9779,7 +9911,7 @@ test("target-worktree file tasks keep all declared cases and two independent dea
       "utf8",
     ),
   );
-  assert.equal(declarations.length, 70);
+  assert.equal(declarations.length, expected.declarations.length);
   assert.deepEqual(declarations.sort(), expected.declarations.sort());
   const names = [];
   for (const task of tasks) {
@@ -9801,8 +9933,8 @@ test("target-worktree file tasks keep all declared cases and two independent dea
     );
     names.push(...collected.registeredNames);
   }
-  assert.equal(names.length, 101);
-  assert.equal(new Set(names).size, 101);
+  assert.equal(names.length, expected.names.length);
+  assert.equal(new Set(names).size, names.length);
   assert.deepEqual(names.sort(), expected.names.sort());
   let active = 0,
     peak = 0;

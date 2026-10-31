@@ -910,7 +910,7 @@ target, with no root baked into the manifest. Missing, unreadable, ambiguous
 or differently bound registration withholds this grant and names the cause;
 the other grants and refusals keep their judgments.
 
-All six contributor roles declare system temporary work, the operator's
+The six contributor roles that write declare system temporary work, the operator's
 selected DotLn scratch convention, `<system-temp>/dotln/<session-key>/scratch`,
 and the host-printed scratchpad grant.
 The host temporary root comes from `os.tmpdir()`; it is not every directory

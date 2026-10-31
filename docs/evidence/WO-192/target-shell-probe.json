@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "source": "bounded native target-shell probes",
+  "observedAt": "2026-10-26T01:40:26.614Z",
+  "selectedModel": "claude-opus-5-5",
+  "selectedEffort": "xhigh",
+  "arms": [
+    {
+      "boundary": "direct-target",
+      "exitCode": 0,
+      "observedCommand": "pwd -P",
+      "commandStatus": "completed",
+      "boundaryRefusals": []
+    },
+    {
+      "boundary": "nested-parent",
+      "exitCode": 1,
+      "cause": "native-provider-safeguard",
+      "toolCalls": [],
+      "childResult": null
+    }
+  ],
+  "earlierNestedObservation": {
+    "exitCode": 1,
+    "cause": "unknown",
+    "childResult": null
+  },
+  "qualification": "direct target tool only; nested shell unqualified",
+  "rawTranscriptsRetained": false,
+  "usage": "unknown; this bounded diagnostic retained only boundary facts"
+}

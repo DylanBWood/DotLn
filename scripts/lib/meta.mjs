@@ -1021,7 +1021,8 @@ const unavailableCorrections = () => ({
 
 // The order's own meter row, bounded, written where its journals are (WO-170).
 // A dispatch row keeps its observed values; an absent one reads unavailable.
-export const SNAPSHOT_BYTES = 8192;
+// The bound holds the heaviest row of all seven roles, 8211 bytes when set.
+export const SNAPSHOT_BYTES = 9216;
 /** Indented to the row's fields; a dispatch row, a role's totals or a unit
  * map stays on one line, so the bound holds more than whitespace. */
 export function snapshotText(value) {

@@ -30,8 +30,83 @@ import {
   shape,
 } from "./lib/writing-worker-probe.mjs";
 import { subagentProbe } from "./lib/subagent-probe.mjs";
+import {
+  agentIdentityProbe,
+  identityRows,
+} from "./lib/agent-identity-probe.mjs";
+import { observe as observeIdentity } from "./fixtures/agent-identity-probe-hook.mjs";
 
 const repository = resolve(import.meta.dirname, "..");
+
+test("agent identity probe refuses unrequested live work and does not infer unobserved capabilities", async (t) => {
+  const before = process.env.DOTLN_LIVE_HARNESS;
+  delete process.env.DOTLN_LIVE_HARNESS;
+  t.after(() => {
+    if (before !== undefined) process.env.DOTLN_LIVE_HARNESS = before;
+  });
+  await assert.rejects(agentIdentityProbe([]), /explicit live/);
+  assert.ok(
+    Object.values(identityRows([])).every((row) => row.status === "untestable"),
+  );
+  const rows = [
+    {
+      event: "PreToolUse",
+      agent: "identity-2",
+      type: "dotln-worker",
+      effort: "xhigh",
+      source: "parent",
+      cwd: "launchpad",
+      tool: "Read",
+    },
+  ];
+  assert.equal(identityRows(rows).childIdentity.status, "observed");
+  assert.equal(identityRows(rows).targetHooks.status, "absent");
+  assert.equal(identityRows(rows).nestedSpawner.status, "absent");
+});
+
+test("agent identity probe reduces identities and limits nested admissions and late writes", (t) => {
+  const base = createFixtureRoot(join(tmpdir(), "dotln-identity-fixture-"));
+  t.after(() => rmSync(base, { recursive: true, force: true }));
+  write(base, "key", "synthetic-key");
+  write(
+    base,
+    "probe.json",
+    JSON.stringify({
+      root: base,
+      target: join(base, "target"),
+      late: join(base, "late"),
+    }),
+  );
+  const input = {
+    session_id: "private-session",
+    cwd: base,
+    hook_event_name: "PreToolUse",
+    tool_name: "Agent",
+    tool_input: { subagent_type: "dotln-worker" },
+  };
+  assert.deepEqual(observeIdentity(input, base, "parent"), {});
+  assert.equal(
+    observeIdentity(input, base, "parent").hookSpecificOutput
+      .permissionDecision,
+    "deny",
+  );
+  assert.deepEqual(
+    observeIdentity({ ...input, agent_id: "private-child" }, base, "parent"),
+    {},
+  );
+  assert.equal(
+    observeIdentity(
+      { ...input, agent_id: "private-grandchild" },
+      base,
+      "parent",
+    ).hookSpecificOutput.permissionDecision,
+    "deny",
+  );
+  assert.doesNotMatch(
+    readFileSync(join(base, "events.jsonl"), "utf8"),
+    /private-session|private-child|private-grandchild/,
+  );
+});
 
 test("T1 emitted minimum and maximum match every receipt field's host validation", async () => {
   const { taskSchema, validateAnswer } =

@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-25T23:29:53.677Z",
+  "host": "codex-cli 0.164.0",
+  "model": "gpt-6.1-sol",
+  "effort": "max",
+  "source": "bounded native CLI comparisons; explicit launch selection",
+  "arms": [
+    {
+      "arm": "outside-tool-sandbox",
+      "rootExitCode": 0,
+      "childExitCode": null,
+      "childError": null,
+      "rootUsage": {
+        "input_tokens": 14887,
+        "cached_input_tokens": 12288,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 5,
+        "reasoning_output_tokens": 0
+      }
+    },
+    {
+      "arm": "inside-tool-sandbox",
+      "rootExitCode": 0,
+      "childExitCode": 1,
+      "childError": "workspace-routing-discovery-failed",
+      "rootUsage": {
+        "input_tokens": 76593,
+        "cached_input_tokens": 69760,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 354,
+        "reasoning_output_tokens": 82
+      }
+    },
+    {
+      "arm": "inside-workspace-sandbox-with-network",
+      "rootExitCode": 0,
+      "childExitCode": 0,
+      "childError": null,
+      "rootUsage": {
+        "input_tokens": 30177,
+        "cached_input_tokens": 24576,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 340,
+        "reasoning_output_tokens": 188
+      }
+    }
+  ],
+  "conclusion": "A child call failed inside the default workspace tool sandbox and succeeded with outbound network enabled in that sandbox. Filesystem sandbox and automatic approval review remained enabled.",
+  "rawTranscriptsRetained": false
+}

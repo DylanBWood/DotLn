@@ -289,6 +289,7 @@ test("WO-042 AC5/6 Contributor projection and grant bundle carry the enforced en
       (effect) => !effect.startsWith("outside.write:"),
     ),
     "outside.write:host-scratchpad (grant contributor.outside-temporary; operator)",
+    "outside.write:order-worktree (grant contributor.outside-temporary; operator)",
     "outside.write:session-scratch (grant contributor.outside-temporary; operator)",
     "outside.write:system-temp (grant contributor.outside-temporary; operator)",
     "outside.write:target-worktree (grant contributor.target-worktree; operator)",

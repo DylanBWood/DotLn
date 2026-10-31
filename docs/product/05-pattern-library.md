@@ -1092,6 +1092,11 @@ the broader fresh-session and ablation question above remains open. Source:
 
 ### Orchestration and quality policies
 
+The `drive: WO-NNN` router is the first host binding of these policies: canonical
+status chooses one fresh phase worker, its recorded worktree and exact lifecycle
+phrase, with a per-spawner cap and a shared driven-session ceiling
+([WO-192](../evidence/WO-192/decisions.md)).
+
 Ordinary harness options are equipment choices as well. The operator's
 same-session examples adopt these separate responsibilities:
 

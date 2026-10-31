@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 1,
+  "subject": "Launch arguments across the restructure of the driver's transport, session and prompts (criterion 17)",
+  "observedAt": "2026-10-30T19:35:00Z",
+  "method": "A fake host binary recorded the complete argv of one launch for each host, role and worktree shape, with a fixed worker identifier and fixed definitions path, before the restructure and again after each of its stages. Each cell here is the SHA-256 of that cell's argv and selected policy as JSON. The raw captures hold machine paths and stay out of the repository.",
+  "cells": {
+    "claude/router/launchpad": {
+      "before": "7efc6cfb37378dc862485aabed4f9c8e08a264408c3a3dab01c70f88ca874c9a",
+      "after": "7efc6cfb37378dc862485aabed4f9c8e08a264408c3a3dab01c70f88ca874c9a"
+    },
+    "claude/executor/launchpad": {
+      "before": "b5ee32ae6cf4e9ce7166d17bd3d2610be82b1074ef11556f441b39e0cfb5f10a",
+      "after": "b5ee32ae6cf4e9ce7166d17bd3d2610be82b1074ef11556f441b39e0cfb5f10a"
+    },
+    "claude/executor/target": {
+      "before": "163c858dc31860cb0d1a39414e944a8d9c8af99624507be4823da19b988c0c1d",
+      "after": "163c858dc31860cb0d1a39414e944a8d9c8af99624507be4823da19b988c0c1d"
+    },
+    "claude/verifier/launchpad": {
+      "before": "e650a061565cf289d0a841b27e25c6d42516eaf22d418506f36976825989e341",
+      "after": "e650a061565cf289d0a841b27e25c6d42516eaf22d418506f36976825989e341"
+    },
+    "claude/verifier/target": {
+      "before": "4e49e54973d552f7b68e0a219c1417fb91dbcf0f36997d39d365dc674813d52d",
+      "after": "4e49e54973d552f7b68e0a219c1417fb91dbcf0f36997d39d365dc674813d52d"
+    },
+    "claude/reviewer/launchpad": {
+      "before": "a314e85f7a6e28b919c0df9bb874daf92726261889e3c5d810ec5291ef67b43e",
+      "after": "a314e85f7a6e28b919c0df9bb874daf92726261889e3c5d810ec5291ef67b43e"
+    },
+    "claude/reviewer/target": {
+      "before": "eebea0c80145432c0e30da4b6688093ccd66937781d0b112c9c3e4ce4bfbf651",
+      "after": "eebea0c80145432c0e30da4b6688093ccd66937781d0b112c9c3e4ce4bfbf651"
+    },
+    "claude/release-close/launchpad": {
+      "before": "c9b79145f7cf46db9cf47c2ace4a4291753481cc35cd0169ab016b520d997a25",
+      "after": "c9b79145f7cf46db9cf47c2ace4a4291753481cc35cd0169ab016b520d997a25"
+    },
+    "claude/release-close/target": {
+      "before": "bb48de1f4317db6b1983640dc8996a8b09c36ebf8024aa74859b21a92d6e1e65",
+      "after": "bb48de1f4317db6b1983640dc8996a8b09c36ebf8024aa74859b21a92d6e1e65"
+    },
+    "codex/router/launchpad": {
+      "before": "0a93ab7aff3f19e35a015f503b89fdb1c77ef6a317d6e001b112bb955e9c7d25",
+      "after": "0a93ab7aff3f19e35a015f503b89fdb1c77ef6a317d6e001b112bb955e9c7d25"
+    },
+    "codex/executor/launchpad": {
+      "before": "0ed12595dcff5bb3789ab6deda518b4d14827caa156c9b73c1ba3aa543eb62ee",
+      "after": "0ed12595dcff5bb3789ab6deda518b4d14827caa156c9b73c1ba3aa543eb62ee"
+    },
+    "codex/executor/target": {
+      "before": "0ed12595dcff5bb3789ab6deda518b4d14827caa156c9b73c1ba3aa543eb62ee",
+      "after": "0ed12595dcff5bb3789ab6deda518b4d14827caa156c9b73c1ba3aa543eb62ee"
+    },
+    "codex/verifier/launchpad": {
+      "before": "62356666bb974a943a7c821b5e9bfe552716cfde09c3cecb7f8ba2770ed9811a",
+      "after": "62356666bb974a943a7c821b5e9bfe552716cfde09c3cecb7f8ba2770ed9811a"
+    },
+    "codex/verifier/target": {
+      "before": "62356666bb974a943a7c821b5e9bfe552716cfde09c3cecb7f8ba2770ed9811a",
+      "after": "62356666bb974a943a7c821b5e9bfe552716cfde09c3cecb7f8ba2770ed9811a"
+    },
+    "codex/reviewer/launchpad": {
+      "before": "17e2e764365ef2a3bcd3bc1ccb97c73ec6dc298431d9e84a237a2d7c9a5ae877",
+      "after": "17e2e764365ef2a3bcd3bc1ccb97c73ec6dc298431d9e84a237a2d7c9a5ae877"
+    },
+    "codex/reviewer/target": {
+      "before": "17e2e764365ef2a3bcd3bc1ccb97c73ec6dc298431d9e84a237a2d7c9a5ae877",
+      "after": "17e2e764365ef2a3bcd3bc1ccb97c73ec6dc298431d9e84a237a2d7c9a5ae877"
+    },
+    "codex/release-close/launchpad": {
+      "before": "789c07a8d5138a1c6453be272b0d1edf04694caa77a2a0180a36178fa05d78d7",
+      "after": "789c07a8d5138a1c6453be272b0d1edf04694caa77a2a0180a36178fa05d78d7"
+    },
+    "codex/release-close/target": {
+      "before": "789c07a8d5138a1c6453be272b0d1edf04694caa77a2a0180a36178fa05d78d7",
+      "after": "789c07a8d5138a1c6453be272b0d1edf04694caa77a2a0180a36178fa05d78d7"
+    }
+  },
+  "cellCount": 18,
+  "identical": true,
+  "note": "This proves the restructure changed no launch argument. Later role-text and worker-note changes change the prompts on purpose and are recorded as decisions."
+}

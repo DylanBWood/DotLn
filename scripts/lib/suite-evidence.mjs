@@ -1,5 +1,15 @@
 import { delimiter } from "node:path";
 
+// A driven worker's context belongs to that worker: a process that inherited it
+// would judge its fixtures as driven and charge their spawns to the live drive.
+export function withoutDrivenContext(env) {
+  const clean = { ...env };
+  delete clean.DOTLN_DRIVEN_WORKER;
+  delete clean.DOTLN_DRIVE_DEADLINE_AT;
+  delete clean.DOTLN_DRIVE_PARENT_PID;
+  return clean;
+}
+
 export function suiteEnvironment(env = process.env, gateContext) {
   // Offline fixture execution omits proxy credentials and unrelated session
   // metadata. Scheduler context names only the current load and diagnostics.
@@ -25,7 +35,7 @@ export function suiteEnvironment(env = process.env, gateContext) {
     "PATHEXT",
   ]);
   const child = Object.fromEntries(
-    Object.entries(env).filter(
+    Object.entries(withoutDrivenContext(env)).filter(
       ([name]) =>
         (names.has(name) ||
           /^(?:LC_|NODE_|npm_config_|NPM_CONFIG_|DOTLN_|GIT_|XDG_)/.test(

@@ -120,7 +120,7 @@ export function gateInstanceInputDigest(root) {
         path
           .split("/")
           .some((part) => !part || part === "." || part === "..") ||
-        !/^(?:CLAUDE\.md|\.claude\/(?:hooks\/[^\n]+|agents\/dotln-worker(?:-fable)?\.md|settings\.json|skills\/dotln-[^/]+\/[^\n]+)|\.agents\/skills\/dotln-[^/]+\/[^\n]+|\.codex\/(?:config\.toml|hooks\.json|hooks\/[^\n]+))$/u.test(
+        !/^(?:CLAUDE\.md|\.claude\/(?:hooks\/[^\n]+|agents\/dotln-(?:worker(?:-fable)?|executor|verifier|reviewer|release-close)\.md|settings\.json|skills\/dotln-[^/]+\/[^\n]+)|\.agents\/skills\/dotln-[^/]+\/[^\n]+|\.codex\/(?:config\.toml|hooks\.json|hooks\/[^\n]+))$/u.test(
           path,
         )
       )

@@ -23,7 +23,12 @@ export interface SpawnInput {
 }
 interface Counter {
   schemaVersion: 1;
-  direct: { invocation: string; childrenBefore: number; agent?: string }[];
+  direct: {
+    invocation: string;
+    childrenBefore: number;
+    agent?: string;
+    spawner?: string;
+  }[];
   children: string[];
   workflows: string[];
 }
@@ -89,7 +94,8 @@ function readCounter(path: string): Counter {
         Number.isSafeInteger(v.childrenBefore) &&
         v.childrenBefore >= 0 &&
         v.childrenBefore <= value.children?.length &&
-        (v.agent === undefined || id(v.agent)),
+        (v.agent === undefined || id(v.agent)) &&
+        (v.spawner === undefined || id(v.spawner)),
     ) ||
     !Array.isArray(value.children) ||
     !value.children.every(id) ||
@@ -243,10 +249,15 @@ export function admitSubagentTool(
   directory: string,
   input: SpawnInput,
   spawn: boolean,
+  options: {
+    cap?: number | null;
+    spawnerCap?: number | null;
+    spawner?: string;
+  } = {},
 ): { refusal?: string; advisory?: string; usage: SubagentObservation } {
   let cap: number | null = null;
   try {
-    cap = readSubagentCap(root);
+    cap = options.cap === undefined ? readSubagentCap(root) : options.cap;
     return transaction(directory, input.session_id, (p) => {
       const counter = readCounter(p.counter);
       const refuse = () => {
@@ -256,8 +267,12 @@ export function admitSubagentTool(
           usage: observation(counter, cap),
         };
       };
+      const spawner = options.spawner ? hash(options.spawner) : undefined;
       const fits = (candidate: Counter) =>
-        cap === null || observation(candidate, cap).count! <= cap;
+        (cap === null || observation(candidate, cap).count! <= cap) &&
+        (options.spawnerCap == null ||
+          candidate.direct.filter((row) => row.spawner === spawner).length <=
+            options.spawnerCap);
       if (input.agent_id) {
         const id = hash(input.agent_id);
         if (!counter.children.includes(id)) {
@@ -296,13 +311,18 @@ export function admitSubagentTool(
               ...counter,
               direct: [
                 ...counter.direct,
-                { invocation, childrenBefore: counter.children.length },
+                {
+                  invocation,
+                  childrenBefore: counter.children.length,
+                  ...(spawner ? { spawner } : {}),
+                },
               ],
             };
             if (!fits(candidate)) return refuse();
             counter.direct.push({
               invocation,
               childrenBefore: counter.children.length,
+              ...(spawner ? { spawner } : {}),
             });
           }
         }
@@ -323,6 +343,117 @@ export function admitSubagentTool(
       usage: unknown(cap, reason),
     };
   }
+}
+
+export interface DrivenWorkerContext {
+  schemaVersion: 1;
+  root: string;
+  directory: string;
+  session: string;
+  worker: string;
+  role: string;
+  workOrder: string;
+  cap: number | null;
+  ceiling: number | null;
+}
+export function drivenWorkerContext(): DrivenWorkerContext | null {
+  const file = process.env.DOTLN_DRIVEN_WORKER;
+  if (!file) return null;
+  const value = JSON.parse(readFileSync(file, "utf8"));
+  const limit = (number: unknown) =>
+    number === null ||
+    (Number.isSafeInteger(number) && (number as number) >= 0);
+  if (
+    value?.schemaVersion !== 1 ||
+    !["root", "directory", "session", "worker", "role", "workOrder"].every(
+      (key) => typeof value[key] === "string" && value[key],
+    ) ||
+    !/^WO-\d{3}$/.test(value.workOrder) ||
+    !limit(value.cap) ||
+    !limit(value.ceiling)
+  )
+    throw new Error("invalid driven-worker context");
+  return value;
+}
+
+export function drivenSubagentUsage(worker?: string) {
+  const context = drivenWorkerContext();
+  if (!context) return null;
+  try {
+    const counter = readCounter(
+      paths(context.directory, context.session).counter,
+    );
+    return {
+      ...observation(counter, context.ceiling),
+      perSpawnerCap: context.cap,
+      spawnsByWorker: counter.direct.filter(
+        (row) => row.spawner === hash(worker ?? context.worker),
+      ).length,
+      source: "shared-hook-counter",
+    };
+  } catch (error) {
+    return {
+      ...unknown(context.ceiling, cause(error)),
+      perSpawnerCap: context.cap,
+      spawnsByWorker: null,
+      source: "shared-hook-counter-unavailable",
+    };
+  }
+}
+
+// Separate root sessions keep their local counters. Their hooks also reserve
+// against this one shared counter, so moving phase work cannot reset a drive.
+export function admitDrivenTool(input: SpawnInput, spawn: boolean) {
+  const context = drivenWorkerContext();
+  if (!context) return undefined;
+  const mapped = {
+    ...input,
+    session_id: context.session,
+    agent_id: input.agent_id
+      ? `${context.worker}:${input.agent_id}`
+      : context.worker,
+    ...(input.tool_use_id
+      ? { tool_use_id: `${context.worker}:${input.tool_use_id}` }
+      : {}),
+    ...(typeof input.tool_input?.resume === "string"
+      ? {
+          tool_input: {
+            ...input.tool_input,
+            resume: `${context.worker}:${input.tool_input.resume}`,
+          },
+        }
+      : {}),
+  };
+  const result = admitSubagentTool(
+    context.root,
+    context.directory,
+    mapped,
+    spawn,
+    { cap: context.ceiling, spawnerCap: context.cap, spawner: mapped.agent_id },
+  );
+  return result.refusal
+    ? {
+        ...result,
+        refusal: `DOTLN_DRIVEN_BUDGET_REFUSED: spawner cap ${context.cap}, drivenSessionCeiling ${context.ceiling}; ${result.refusal}`,
+      }
+    : result;
+}
+export function linkDrivenResult(input: SpawnInput): void {
+  const context = drivenWorkerContext();
+  if (
+    !context ||
+    !input.tool_use_id ||
+    typeof input.tool_response?.agentId !== "string"
+  )
+    return;
+  linkSubagentResult(context.directory, {
+    ...input,
+    session_id: context.session,
+    tool_use_id: `${context.worker}:${input.tool_use_id}`,
+    tool_response: {
+      agentId: `${context.worker}:${input.tool_response.agentId}`,
+    },
+  });
 }
 /** PostToolUse's observed join is exact; it never guesses from arrival order. */
 export function linkSubagentResult(directory: string, input: SpawnInput): void {

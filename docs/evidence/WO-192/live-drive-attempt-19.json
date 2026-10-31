@@ -1,0 +1,267 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-26T00:32:50.029Z",
+  "input": "drive: WO-999",
+  "entrypoint": "generated router's canonical driver",
+  "host": "2.1.310 (Claude Code)",
+  "phase": "active",
+  "routers": [
+    {
+      "exitCode": 0,
+      "error": false,
+      "timedOut": false,
+      "workerEnded": true,
+      "costUsd": 0.23944999999999997,
+      "usage": {
+        "input_tokens": 4,
+        "cache_creation_input_tokens": 3150,
+        "cache_read_input_tokens": 53586,
+        "output_tokens": 1404,
+        "output_tokens_details": {
+          "thinking_tokens": 448
+        },
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 3150,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "global",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 1113,
+            "cache_read_input_tokens": 27191,
+            "cache_creation_input_tokens": 2354,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 2354
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard",
+        "fallback_credit": null
+      },
+      "hookEvents": [
+        "hook_started",
+        "hook_response"
+      ],
+      "refusalCodes": [],
+      "toolCalls": [
+        "Bash",
+        "Bash",
+        "Bash",
+        "Read",
+        "Read",
+        "Bash"
+      ],
+      "commandResults": [
+        {
+          "kind": "harness",
+          "status": "failed",
+          "exitCode": null
+        },
+        {
+          "kind": "harness",
+          "status": "failed",
+          "exitCode": null
+        }
+      ],
+      "model": "claude-opus-5-5",
+      "startedAt": "2026-10-26T00:26:10.085Z",
+      "finishedAt": "2026-10-26T00:32:49.814Z",
+      "selectedModel": "claude-opus-5-5",
+      "selectedEffort": "xhigh",
+      "role": "router",
+      "cwd": "main"
+    }
+  ],
+  "stop": {
+    "reason": "incomplete-bound",
+    "next": "Two workers ended without recording completion in this phase; inspect the failure."
+  },
+  "limits": {
+    "subagentCap": 20,
+    "drivenSessionCeiling": 80,
+    "tokens": null,
+    "costUsd": 20
+  },
+  "routerUsage": {
+    "totalTokens": 58144,
+    "costUsd": 0.23944999999999997,
+    "source": "native-router-result-stream",
+    "scope": "router sessions only"
+  },
+  "budget": {
+    "count": 2,
+    "cap": 80,
+    "remaining": 78,
+    "countKind": "exact-observed",
+    "unresolvedAdmissions": 0,
+    "unlinkedChildren": 0,
+    "uncountedRemainder": "unknown",
+    "source": "shared-hook-counter"
+  },
+  "workers": [
+    {
+      "phase": "active",
+      "action": "next",
+      "exitCode": 1,
+      "error": true,
+      "timedOut": false,
+      "workerEnded": true,
+      "costUsd": 0,
+      "usage": {
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "input_tokens": 0,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "output_tokens": 0,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 0,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "",
+        "iterations": [],
+        "speed": "standard",
+        "fallback_credit": null
+      },
+      "hookEvents": [],
+      "refusalCodes": [],
+      "toolCalls": [],
+      "commandResults": [],
+      "model": "claude-opus-5-5",
+      "startedAt": "2026-10-26T00:26:29.877Z",
+      "finishedAt": "2026-10-26T00:29:22.992Z",
+      "cwd": "target-worktree",
+      "workerId": "identity-1",
+      "resumed": false,
+      "hooks": {
+        "hookCalls": 0,
+        "refusedCalls": 0,
+        "effort": [],
+        "source": "target-hook-journal",
+        "subagents": {
+          "count": null,
+          "cap": 20,
+          "remaining": null,
+          "countKind": "unknown",
+          "unresolvedAdmissions": null,
+          "unlinkedChildren": null,
+          "uncountedRemainder": "unknown",
+          "reason": "counter missing"
+        }
+      },
+      "effort": null,
+      "effortSource": "unknown",
+      "subagents": {
+        "count": null,
+        "cap": 20,
+        "remaining": null,
+        "countKind": "unknown",
+        "unresolvedAdmissions": null,
+        "unlinkedChildren": null,
+        "uncountedRemainder": "unknown",
+        "reason": "counter missing",
+        "source": "phase-local-hook-counter"
+      },
+      "selectedModel": "claude-opus-5-5",
+      "selectedEffort": "xhigh",
+      "host": "claude"
+    },
+    {
+      "phase": "active",
+      "action": "next",
+      "exitCode": 1,
+      "error": true,
+      "timedOut": false,
+      "workerEnded": true,
+      "costUsd": 0,
+      "usage": {
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "input_tokens": 0,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "output_tokens": 0,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 0,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "",
+        "iterations": [],
+        "speed": "standard",
+        "fallback_credit": null
+      },
+      "hookEvents": [],
+      "refusalCodes": [],
+      "toolCalls": [],
+      "commandResults": [],
+      "model": "claude-opus-5-5",
+      "startedAt": "2026-10-26T00:29:23.521Z",
+      "finishedAt": "2026-10-26T00:32:27.255Z",
+      "cwd": "target-worktree",
+      "workerId": "identity-2",
+      "resumed": false,
+      "hooks": {
+        "hookCalls": 0,
+        "refusedCalls": 0,
+        "effort": [],
+        "source": "target-hook-journal",
+        "subagents": {
+          "count": null,
+          "cap": 20,
+          "remaining": null,
+          "countKind": "unknown",
+          "unresolvedAdmissions": null,
+          "unlinkedChildren": null,
+          "uncountedRemainder": "unknown",
+          "reason": "counter missing"
+        }
+      },
+      "effort": null,
+      "effortSource": "unknown",
+      "subagents": {
+        "count": null,
+        "cap": 20,
+        "remaining": null,
+        "countKind": "unknown",
+        "unresolvedAdmissions": null,
+        "unlinkedChildren": null,
+        "uncountedRemainder": "unknown",
+        "reason": "counter missing",
+        "source": "phase-local-hook-counter"
+      },
+      "selectedModel": "claude-opus-5-5",
+      "selectedEffort": "xhigh",
+      "host": "claude"
+    }
+  ],
+  "completions": [],
+  "publicationExercised": false,
+  "rawTranscriptsRetained": false,
+  "outcome": "failed",
+  "failedStage": "drive",
+  "cause": "live episode must reach a real passing final review\n\n'active' !== 'closed'\n",
+  "cleanup": {
+    "workersEnded": true,
+    "outcome": "removed"
+  }
+}

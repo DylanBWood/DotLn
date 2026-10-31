@@ -72,6 +72,7 @@ import {
   measureColdStarts,
   readBudgets,
   requireBudgets,
+  dispatchKinds,
 } from "./lib/process-budget.mjs";
 import {
   collectMeta,
@@ -1514,16 +1515,9 @@ test("WO-170 the order's snapshot is its own bounded row, written only where its
     },
   );
   assert.equal(existsSync(join(root, path)), false);
-  // The heaviest row the meter can hold: six roles with every per-role value
+  // The heaviest row the meter can hold: every role with every per-role value
   // observed and two dozen named correction units across three phases.
-  const roles = [
-    "executor",
-    "verifier",
-    "reviewer",
-    "release-close",
-    "planner",
-    "refuter",
-  ];
+  const roles = dispatchKinds;
   const rows = [];
   for (const role of roles) {
     rows.push({ workOrder, role, event: "SessionStart" });
@@ -1578,7 +1572,7 @@ test("WO-170 the order's snapshot is its own bounded row, written only where its
   assert.deepEqual(own.corrections, row.corrections);
   assert.deepEqual(own.directions, row.directions);
   assert.equal(own.metrics.operatorCorrections, 24);
-  assert.equal(own.metrics.guardRefusals, 6);
+  assert.equal(own.metrics.guardRefusals, roles.length);
   assert.deepEqual(Object.keys(own.usageByRole), roles);
   assert.equal(own.usageByRole.refuter.source, undefined);
   assert.deepEqual(
@@ -2190,6 +2184,33 @@ test("WO-146 credit-only and incomplete-token logs remain recordable without inv
     assert.equal(observation.usage.totalTokens, null);
     assert.equal(observation.usage.costUsd, null);
   }
+});
+
+test("every dispatch kind records usage, and an unknown one is refused", (t) => {
+  const root = repo(t);
+  const observation = {
+    ...usageRow("WO-999", "router", "2026-09-27T00:00:00.000Z", 1).observation,
+    source: "unavailable",
+  };
+  for (const role of dispatchKinds)
+    assert.doesNotThrow(
+      () =>
+        recordUsageObservation(root, {
+          workOrder: "WO-999",
+          role,
+          observation,
+        }),
+      role,
+    );
+  assert.throws(
+    () =>
+      recordUsageObservation(root, {
+        workOrder: "WO-999",
+        role: "invented",
+        observation,
+      }),
+    /dispatch kind/,
+  );
 });
 
 test("WO-210 discovery recognizes each effort control and records only advertised values", (t) => {
@@ -6218,6 +6239,32 @@ test("budgets keep unselected caps unset and cold-start measurement ignores prod
     ])
       write(root, `${profile}/skills/dotln-${role}/SKILL.md`, "Brief rule\n");
   const budgets = readBudgets(root);
+  assert.equal(budgets.drivenPhaseTimeoutMs, null);
+  const budgetFile = "docs/control/budgets.json";
+  const legacy = structuredClone(budgets);
+  delete legacy.drivenPhaseTimeoutMs;
+  write(root, budgetFile, JSON.stringify(legacy));
+  assert.equal(readBudgets(root).drivenPhaseTimeoutMs, undefined);
+  for (const value of [1, 2700000, 2147483647]) {
+    write(
+      root,
+      budgetFile,
+      JSON.stringify({ ...budgets, drivenPhaseTimeoutMs: value }),
+    );
+    assert.equal(readBudgets(root).drivenPhaseTimeoutMs, value);
+  }
+  for (const value of [0, -1, 1.5, "900000", 2147483648]) {
+    write(
+      root,
+      budgetFile,
+      JSON.stringify({ ...budgets, drivenPhaseTimeoutMs: value }),
+    );
+    assert.throws(
+      () => readBudgets(root),
+      /Invalid budget: drivenPhaseTimeoutMs/,
+    );
+  }
+  write(root, budgetFile, JSON.stringify(budgets));
   assert.equal(
     budgetVerdict(budgets, "executor.tokens", 999999999, null),
     "unset",
@@ -6697,10 +6744,13 @@ test("WO-145 optional economy support preserves historical snapshots through the
   // The combined oracle preserves both independently reviewed role histories.
   // Removing a shared sentence follows the same route as adding one.
   const fixtures = join(source, "packages/skeleton/fixtures");
-  const current = "wo239-integration-role-baseline.json";
+  const current = "wo192-integration-role-baseline.json";
   const baseline = JSON.parse(readFileSync(join(fixtures, current), "utf8"));
-  assert.equal(baseline.historicalBaseline, "wo235-removal-role-baseline.json");
-  assert.equal(baseline.branchBaseline, "wo239-role-baseline.json");
+  assert.equal(
+    baseline.historicalBaseline,
+    "wo239-integration-role-baseline.json",
+  );
+  assert.equal(baseline.branchBaseline, "wo192-role-baseline.json");
   assert.equal(baseline.upstreamBaseline, "wo185-role-baseline.json");
   // Follow every recorded parent, not only the historical line: an integrated
   // oracle has two parents, and either parent may carry its own branch
@@ -6750,13 +6800,21 @@ test("WO-145 optional economy support preserves historical snapshots through the
   assert.equal(roles.length, Object.keys(baseline.roles).length);
   assert.equal(roles.length, Object.keys(baseline.optOutRoles).length);
   for (const file of roles) {
-    const released = execGit(["show", `${historical.release}:${file.path}`], {
-      cwd: source,
-    });
-    assert.equal(
-      createHash("sha256").update(released).digest("hex"),
-      historical.roles[file.path],
-    );
+    if (file.path.includes("dotln-router/"))
+      assert.equal(
+        historical.roles[file.path],
+        undefined,
+        "router is a newly introduced role",
+      );
+    else {
+      const released = execGit(["show", `${historical.release}:${file.path}`], {
+        cwd: source,
+      });
+      assert.equal(
+        createHash("sha256").update(released).digest("hex"),
+        historical.roles[file.path],
+      );
+    }
     assert.equal(
       createHash("sha256").update(file.contents).digest("hex"),
       baseline.roles[file.path],

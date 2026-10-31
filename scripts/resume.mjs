@@ -9,6 +9,7 @@ import {
   requireRedispatchBound,
 } from "./lib/dispatch-bound.mjs";
 import { isMainModule } from "./lib/paths.mjs";
+import { routeOrder, routeFacts } from "./lib/drive-route.mjs";
 import {
   existsSync,
   mkdirSync,
@@ -863,7 +864,7 @@ const renderOffRamps = (state) =>
     .map((line) => `${line}\n`)
     .join("");
 
-const projectOrder = (state, events) => {
+const projectOrder = (state, events, routeContext) => {
   return {
     workOrder: state.workOrderId ?? null,
     workOrderPath: state.workOrderPath ?? null,
@@ -875,6 +876,14 @@ const projectOrder = (state, events) => {
       : {}),
     ...(state.provenance ? { provenance: state.provenance } : {}),
     phase: state.phase,
+    route: {
+      ...routeOrder(
+        state,
+        events,
+        routeFacts(repoRoot, state, events, routeContext),
+      ),
+      eventCount: events.length,
+    },
     latestVerification: state.latestVerificationId ?? null,
     verificationPath:
       reportLocation(state, state.latestVerificationPath, "verification") ??
@@ -928,7 +937,12 @@ const projectOrder = (state, events) => {
   };
 };
 
-export const statusProjection = (input, workOrder, dependencies = null) => {
+export const statusProjection = (
+  input,
+  workOrder,
+  dependencies = null,
+  routeContext = {},
+) => {
   const control = Array.isArray(input)
     ? controlFromSources(
         new Map([
@@ -945,7 +959,7 @@ export const statusProjection = (input, workOrder, dependencies = null) => {
   });
   const state = control.orders.get(id)?.state ?? fold([]);
   return {
-    ...projectOrder(state, eventsForOrder(control, id)),
+    ...projectOrder(state, eventsForOrder(control, id), routeContext),
     dependencies,
     orders: [...control.orders].map(([order, row]) => ({
       workOrder: order,
@@ -1235,7 +1249,7 @@ const targetBriefing = (state, review = false) => {
   const location = entry
     ? join(entry.target, repository.documentationRoot)
     : `${state.repositoryId}/${repository.documentationRoot} (target worktree not registered)`;
-  return `\nRepo-native authority includes ${location} and the registered profile. Target gate claims stand on ${review ? targetGateCommand(repoRoot, state.workOrderId, "review") : `${targetGateCommand(repoRoot, state.workOrderId, "plain")} [--review]`}; the instance document gate, which a criterion names as npm run test:docs, runs as ${launchpadInvocation(repoRoot, "test-runner")} --document. This target order records no release; release prepare returns that outcome without assigning a version.${review ? ` Commit the reviewed target change on wo-${state.workOrderId.slice(3)} before final-review-result pass; run npm run resume -- target-records <actor flags> after the pass, then commit the instance records. Publish the target with npm run worktree -- publish ${state.workOrderId} --target-worktree --branch <type>/<slug> --title <title> --body-file <path>, and publish the instance records with npm run worktree -- publish ${state.workOrderId} --title <title> --body-file <path>.` : ""}`;
+  return `\nRepo-native authority includes ${location} and the registered profile. Target gate claims stand on ${review ? targetGateCommand(repoRoot, state.workOrderId, "review") : `${targetGateCommand(repoRoot, state.workOrderId, "plain")} [--review]`}; the instance document gate, which a criterion names as npm run test:docs, runs as ${launchpadInvocation(repoRoot, "test-runner")} --document. This target order records no release; release prepare returns that outcome without assigning a version.${review ? ` Integrate the paired launchpad records with npm run worktree -- integrate ${state.workOrderId}, directly from this target root; this does not merge the target branch. Commit the reviewed target change on wo-${state.workOrderId.slice(3)} before final-review-result pass; run npm run resume -- target-records <actor flags> after the pass, then commit the instance records. Publish the target with npm run worktree -- publish ${state.workOrderId} --target-worktree --branch <type>/<slug> --title <title> --body-file <path>, and publish the instance records with npm run worktree -- publish ${state.workOrderId} --title <title> --body-file <path>.` : ""}`;
 };
 const executionBriefing = (state) => {
   const declaration = activeWorkOrderDeclaration(state);
@@ -1421,6 +1435,7 @@ const run = async (argv) => {
         // One fold returns the per-order form's objects for every order, in
         // id order; the release set dependency edges read is read once.
         let releases;
+        const routeContext = {};
         const releaseSet = () => (releases ??= dependencyReleaseSet(repoRoot));
         statuses = [...control.locations.keys()].sort().map((id) => {
           const order = control.orders.get(
@@ -1430,6 +1445,7 @@ const run = async (argv) => {
             control,
             id,
             readDependencies(repoRoot, order, control, releaseSet),
+            routeContext,
           );
         });
         message = JSON.stringify(statuses);
@@ -1891,6 +1907,7 @@ const run = async (argv) => {
       break;
     }
     case "target-records": {
+      await reserveCodexDispatch();
       requirePhase(state, orderEvents, "closed");
       const actor = completionActor(action, args, state, "reviewer");
       const { commitTargetRecords, removeMovedTargetRecords } =

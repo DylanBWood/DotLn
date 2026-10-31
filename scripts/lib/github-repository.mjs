@@ -254,7 +254,7 @@ function withPublishLane(run) {
       });
       if (result.status !== 0)
         throw publishRefusal(
-          `git ${args[0]} failed in the publish lane: ${String(result.stderr ?? "").trim()}`,
+          `git ${args[0]} failed in the publish lane: ${String(result.stderr ?? "").trim() || result.error?.message || `ended by ${result.signal}`}`,
         );
       return result.stdout.trim();
     };
@@ -265,15 +265,23 @@ function withPublishLane(run) {
 }
 /** Fetch through a host-owned lane, then import its bundle without consulting
  * the clone's transport configuration or moving any branch in the clone. */
-export function fetchRemoteBranch(repo, url, branch, { beforeImport } = {}) {
+export function fetchRemoteBranch(
+  repo,
+  url,
+  branch,
+  { beforeImport, timeoutMs } = {},
+) {
   return withPublishLane((inLane) => {
-    inLane([
-      "fetch",
-      "--quiet",
-      "--no-tags",
-      url,
-      `refs/heads/${branch}:refs/heads/fetched`,
-    ]);
+    inLane(
+      [
+        "fetch",
+        "--quiet",
+        "--no-tags",
+        url,
+        `refs/heads/${branch}:refs/heads/fetched`,
+      ],
+      timeoutMs ? { timeout: timeoutMs } : {},
+    );
     const commit = inLane(["rev-parse", "refs/heads/fetched^{commit}"]);
     // A caller can judge the fetched history before any object or reference
     // is written to its checkout. The lane is removed on refusal as well.
@@ -287,6 +295,20 @@ export function fetchRemoteBranch(repo, url, branch, { beforeImport } = {}) {
       rmSync(scratch, { recursive: true, force: true });
     }
     return commit;
+  });
+}
+/** The commit a remote branch names, or null without one, read through the
+ * lane, which costs no objects when the commit is already held. */
+export function remoteBranchCommit(url, branch, { timeoutMs } = {}) {
+  return withPublishLane((inLane) => {
+    const ref = `refs/heads/${branch}`;
+    const row = inLane(
+      ["ls-remote", "--heads", url, ref],
+      timeoutMs ? { timeout: timeoutMs } : {},
+    )
+      .split("\n")
+      .find((line) => line.endsWith(`\t${ref}`));
+    return row ? row.split("\t")[0] : null;
   });
 }
 /** The commit a remote tag names, peeled, or null when the tag is absent;

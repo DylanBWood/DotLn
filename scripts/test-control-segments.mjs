@@ -32,6 +32,8 @@ import {
 } from "./lib/control-store.mjs";
 import { statusProjection } from "./resume.mjs";
 import { recoverControlTimes } from "./lib/control-time.mjs";
+const selection = process.argv[3] ?? "--all";
+assert.ok(["--all", "--fixtures-only", "--documents-only"].includes(selection));
 await test("WO-210 target review subjects bind exactly to the activation", () => {
   const activation = {
     type: "WorkOrderActivated",
@@ -214,6 +216,10 @@ await test("dispatch acceptance fold validates the metric, ceiling, phase and ca
 });
 
 await test("test-control-segments", async (t) => {
+  const fixtureTest =
+    selection === "--documents-only" ? async () => {} : t.test.bind(t);
+  const documentTest =
+    selection === "--fixtures-only" ? async () => {} : t.test.bind(t);
   let scriptRoot,
     root,
     repo,
@@ -328,7 +334,7 @@ await test("test-control-segments", async (t) => {
       assert.equal(folded.orders.get("WO-902").state.phase, "active");
     },
   );
-  await t.test(
+  await fixtureTest(
     "activation owns storage: legacy appends remain legacy; new orders never span segments",
     () => {
       write(LEGACY_CONTROL_PATH, lines([activation("WO-900")]));
@@ -367,7 +373,7 @@ await test("test-control-segments", async (t) => {
         }
     },
   );
-  await t.test(
+  await fixtureTest(
     "disposable control basenames are skipped; every other stray refuses",
     () => {
       const before = [...readControl(repo).sources];
@@ -385,7 +391,7 @@ await test("test-control-segments", async (t) => {
       rmSync(join(repo, "docs/control/orders/stray.txt"));
     },
   );
-  await t.test(
+  await fixtureTest(
     "malformed actor labels and failed checkpoint reads name their ordinal",
     () => {
       assert.throws(
@@ -416,7 +422,7 @@ await test("test-control-segments", async (t) => {
       );
     },
   );
-  await t.test(
+  await fixtureTest(
     "corrupt segments: path and ordinal reported; all observed commands preserve every control byte",
     () => {
       original = readFileSync(join(repo, orderSegmentPath("WO-901")), "utf8");
@@ -517,7 +523,7 @@ await test("test-control-segments", async (t) => {
       );
     },
   );
-  await t.test(
+  await fixtureTest(
     "per-segment byte-prefix proof: sibling additions pass; deletions and equivalent-JSON rewrites refuse",
     () => {
       before = readControl(repo);
@@ -569,7 +575,7 @@ await test("test-control-segments", async (t) => {
       }
     },
   );
-  await t.test(
+  await fixtureTest(
     "named-order reactivation retains its segment while a sibling is open; active reactivation refuses",
     () => {
       legacyBeforeReactivation = readFileSync(join(repo, LEGACY_CONTROL_PATH));
@@ -639,7 +645,7 @@ await test("test-control-segments", async (t) => {
       );
     },
   );
-  await t.test(
+  await fixtureTest(
     "WO-164 status --all --json returns every order's per-order object and appends nothing",
     () => {
       const authority = "docs/work-orders/WO-903-fixture.md";
@@ -710,7 +716,7 @@ await test("test-control-segments", async (t) => {
       assert.deepEqual(controlBytes(), before);
     },
   );
-  await t.test(
+  await documentTest(
     "legacy comparison: observed events, unchanged bytes and v0.6.0 per-order states",
     () => {
       // The expected JSON was captured with v0.6.0's fold, including WO-030's
@@ -745,7 +751,7 @@ await test("test-control-segments", async (t) => {
       );
     },
   );
-  await t.test(
+  await documentTest(
     "legacy times: byte-identical observation, observed named local refs, original global ordinals and source labels",
     () => {
       // Portable reproduction of the captured local-ref observation: the Git stub

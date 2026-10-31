@@ -217,7 +217,8 @@ export type OutsideWriteGrant = {
         | "session-scratch"
         | "host-scratchpad"
         | "main-intake"
-        | "target-worktree";
+        | "target-worktree"
+        | "order-worktree";
     }
   | { readonly kind: "operator-root"; readonly root: string }
 );
@@ -274,6 +275,24 @@ export interface HarnessWorker {
   readonly model: string;
   readonly effort: "low" | "medium" | "high" | "xhigh" | "max";
   readonly optIn?: boolean;
+  readonly description?: string;
+  readonly skills?: readonly string[];
+  readonly body?: string;
+}
+/** The generated Markdown and print-session transport consume one worker contract. */
+export function workerSpecification(worker: HarnessWorker) {
+  return {
+    name: worker.name,
+    description:
+      worker.description ??
+      "Performs the assigned DotLn adversarial review, refutation or research with the operator's pinned model and effort.",
+    model: worker.model,
+    effort: worker.effort,
+    skills: worker.skills ?? [],
+    prompt:
+      worker.body ??
+      "Perform only the parent's assigned review, refutation or research. The parent owns repository writes; return findings with evidence and improvements, never edit the subject or spawn descendants unless explicitly assigned. Read only the assigned inputs. Preserve the Clean Room floor. Report model and effort only from host readback; a configured pin is not effective-session evidence.",
+  };
 }
 /** Separate target input. It never extends or changes the loadout-v1 preimage. */
 export interface HarnessProgram {
@@ -352,6 +371,7 @@ export function assertOutsideWriteGrants(
           "session-scratch",
           "host-scratchpad",
           "main-intake",
+          "order-worktree",
           "operator-root",
           "target-worktree",
         ].includes(grant.kind) &&
@@ -368,6 +388,23 @@ export function assertOutsideWriteGrants(
 /** Exact effects keep the existing envelope's GRANTS projection authoritative. */
 export const outsideWriteEffect = (grant: OutsideWriteGrant): string =>
   `outside.write:${grant.kind}${grant.kind === "operator-root" ? `:${encodeURIComponent(grant.root).replaceAll("*", "%2A")}` : ""}`;
+
+// A role with no grant has nothing further to explain.
+function outsideWriteLine(
+  role: string,
+  grants: readonly { readonly kind: string; readonly root?: string }[],
+): string {
+  const names = grants
+    .map((grant) =>
+      grant.kind === "operator-root"
+        ? `${grant.kind} ${grant.root}`
+        : grant.kind,
+    )
+    .join(", ");
+  return names
+    ? `Outside-write grants for ${role}: ${names}; system-temp is os.tmpdir(); host-scratchpad is only the scratchpad Claude Code prints for this session; use the DotLn scratch path printed at role dispatch (Codex: node scripts/harness.mjs scratch). Native scratch and /tmp need a separate grant when outside system-temp. Sources are in the manifest. Literal /dev/null redirects discard output; other device mutations need grants.`
+    : `Outside-write grants for ${role}: none.`;
+}
 
 function outsideWriteGrantsFor(
   program: HarnessProgram,
@@ -701,6 +738,7 @@ export function lowerToHarness(
       profile,
       semantic,
       targetHash,
+      outsideWriteGrants,
     );
   const files: HarnessFile[] = [];
   const residue: HarnessResidue[] = [];
@@ -717,7 +755,11 @@ export function lowerToHarness(
       });
   }
   const hookPaths = new Map<
-    HarnessEvent | "SessionStart" | "PermissionDenied" | "PostToolUseFailure",
+    | HarnessEvent
+    | "SessionStart"
+    | "PermissionDenied"
+    | "PostToolUseFailure"
+    | "SubagentStop",
     string[]
   >();
   const hookRoot = ".claude/hooks";
@@ -735,7 +777,8 @@ export function lowerToHarness(
   };
   const hook = (
     name: string,
-    event: HarnessEvent | "PermissionDenied" | "PostToolUseFailure",
+    event:
+      HarnessEvent | "PermissionDenied" | "PostToolUseFailure" | "SubagentStop",
     config: unknown,
     names: readonly string[],
     rung: number,
@@ -921,6 +964,16 @@ process.stdout.write(JSON.stringify(response)); }`;
       permissions.map((facet) => facet.facetId),
       1,
     );
+  // The host reports a spawned agent's end only here, and a lifecycle worker's
+  // writer reservation has no other release.
+  if (profile.events.PreToolUse.available)
+    hook(
+      "agent-finished",
+      "SubagentStop",
+      { kind: "agent-finished" },
+      permissions.map((facet) => facet.facetId),
+      1,
+    );
   if (profile.events.PreToolUse.available)
     hook(
       "write-observer",
@@ -1020,19 +1073,37 @@ process.stdout.write(JSON.stringify(response)); }`;
       ["low", "medium", "high", "xhigh", "max"].includes(worker.effort),
       "worker effort",
     );
+    ensure(
+      worker.description === undefined || verificationLine(worker.description),
+      "worker description",
+    );
+    ensure(
+      worker.body === undefined || verificationLine(worker.body),
+      "worker body",
+    );
+    ensure(
+      (worker.skills ?? []).every((skill) =>
+        program.roles.some((role) => skill === `dotln-${role.name}`),
+      ),
+      "worker skills name generated roles",
+    );
+    const specification = workerSpecification(worker);
     emit(
       `.claude/agents/${worker.name}.md`,
       [
         "---",
         `name: ${worker.name}`,
-        "description: Performs the assigned DotLn adversarial review, refutation or research with the operator's pinned model and effort.",
+        `description: ${specification.description}`,
         `model: ${worker.model}`,
         `effort: ${worker.effort}`,
+        ...(worker.skills?.length
+          ? [`skills: ${JSON.stringify(worker.skills)}`]
+          : []),
         "---",
         "",
         `<!-- Origin: ${canonicalStringify(origin(program.roles.map((role) => role.facetId)))} -->`,
         "",
-        "Perform only the parent's assigned review, refutation or research. The parent owns repository writes; return findings with evidence and improvements, never edit the subject or spawn descendants unless explicitly assigned. Read only the assigned inputs. Preserve the Clean Room floor. Report model and effort only from host readback; a configured pin is not effective-session evidence.",
+        specification.prompt,
         ...(worker.optIn
           ? [
               "",
@@ -1079,16 +1150,10 @@ process.stdout.write(JSON.stringify(response)); }`;
         line === "Rules:" ? ["", line, ""] : [line],
       ),
       "",
-      `Outside-write grants for ${role.name}: ${
-        outsideWriteGrants
-          .find((row) => row.role === role.name)!
-          .grants.map((grant) =>
-            grant.kind === "operator-root"
-              ? `${grant.kind} ${grant.root}`
-              : grant.kind,
-          )
-          .join(", ") || "none"
-      }; system-temp is os.tmpdir(); host-scratchpad is only the scratchpad Claude Code prints for this session; use the DotLn scratch path printed at role dispatch (Codex: node scripts/harness.mjs scratch). Native scratch and /tmp need a separate grant when outside system-temp. Sources are in the manifest. Literal /dev/null redirects discard output; other device mutations need grants.`,
+      outsideWriteLine(
+        role.name,
+        outsideWriteGrants.find((row) => row.role === role.name)!.grants,
+      ),
       "",
       "",
       ...units.map((unit) => `${unit.unitId}: ${unit.desiredBehavior}`),
@@ -1289,7 +1354,7 @@ export function mergeHarnessFragments(
       ),
     ),
   ];
-  return `${HARNESS_START}\nRead[executor]: \`@skills/dotln-executor/SKILL.md\` — next, fix, status, times.\nRead[verifier]: \`@skills/dotln-verifier/SKILL.md\` — verify.\nRead[reviewer]: \`@skills/dotln-reviewer/SKILL.md\` — final review.\nRead[release-close]: \`@skills/dotln-release-close/SKILL.md\` — release close.\nRead[planner]: \`@skills/dotln-planner/SKILL.md\` — planning or ideation.\nCapabilities and residue: .claude/harness-manifest.json; planning: refute[ full] selects dotln-refuter.\n${HARNESS_BOUNDARIES}\n${lines.join("\n")}${lines.length ? "\n" : ""}${HARNESS_END}\n`;
+  return `${HARNESS_START}\nRead[executor]: \`@skills/dotln-executor/SKILL.md\` — next, fix, status, times.\nRead[verifier]: \`@skills/dotln-verifier/SKILL.md\` — verify.\nRead[reviewer]: \`@skills/dotln-reviewer/SKILL.md\` — final review.\nRead[release-close]: \`@skills/dotln-release-close/SKILL.md\` — release close.\nRead[planner]: \`@skills/dotln-planner/SKILL.md\` — planning or ideation.\nCapabilities and residue: .claude/harness-manifest.json; planning: refute[ full] selects dotln-refuter; drive: WO-NNN selects dotln-router.\n${HARNESS_BOUNDARIES}\n${lines.join("\n")}${lines.length ? "\n" : ""}${HARNESS_END}\n`;
 }
 
 /** Reduced worker projection. Contributor generation above remains independent. */
@@ -1300,6 +1365,7 @@ function lowerTargetWorker(
   profile: HarnessProfile,
   semantic: string,
   targetHash: string,
+  outsideWriteGrants: readonly RoleOutsideWriteGrants[],
 ): HarnessBundle {
   const { importRoot, ...runtime } = profile.runtime;
   const publicProfile = { ...profile, runtime };
@@ -1350,7 +1416,7 @@ function lowerTargetWorker(
       1,
     );
     const configs = [
-      { name: "permissions", kind: "permission", envelope },
+      { name: "permissions", kind: "permission", envelope, outsideWriteGrants },
       ...units.map((unit) => ({
         name: unit.unitId,
         kind: "feedback",
@@ -1434,6 +1500,7 @@ ${HARNESS_END}
       compilerPackageVersion: COMPILER_PACKAGE_VERSION,
       feedbackPolicyHash: feedback.policyHash,
       grants: program.loadout.grants ?? [],
+      outsideWriteGrants,
       authorityGrantRegistryHash:
         program.loadout.trace.authorityGrants?.registryHash ?? null,
       profile: publicProfile,

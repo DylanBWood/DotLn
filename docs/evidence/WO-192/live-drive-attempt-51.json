@@ -1,0 +1,922 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-31T05:32:59.779Z",
+  "input": "drive: WO-999",
+  "entrypoint": "generated router's canonical driver",
+  "qualificationTimeoutMs": 9000000,
+  "qualificationScope": "native-router-and-release-close; earlier phases coordinator-seeded",
+  "qualificationSandbox": {
+    "enabled": false,
+    "source": "operator-authorized-fixture-local-settings",
+    "permissionPolicy": "fixture-declared-tools"
+  },
+  "qualificationLauncherPermission": {
+    "source": "operator-approved-fixture-command",
+    "rule": "Bash(node scripts/drive.mjs WO-999)"
+  },
+  "qualificationPermissionReview": {
+    "mode": "default",
+    "source": "operator-authorized-fixture-local-settings",
+    "toolAllowance": "native-launcher-declared-tools"
+  },
+  "host": "2.1.314 (Claude Code)",
+  "phase": "closed",
+  "routers": [
+    {
+      "exitCode": 0,
+      "exitSignal": null,
+      "error": false,
+      "timedOut": false,
+      "timeoutMs": 8993295,
+      "workerStarted": true,
+      "workerEnded": true,
+      "costUsd": 0.23620980000000003,
+      "usage": {
+        "input_tokens": 8,
+        "cache_creation_input_tokens": 20609,
+        "cache_read_input_tokens": 78329,
+        "output_tokens": 2782,
+        "output_tokens_details": {
+          "thinking_tokens": 1270
+        },
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 20609,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "global",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 1578,
+            "cache_read_input_tokens": 25450,
+            "cache_creation_input_tokens": 2042,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 2042
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard",
+        "fallback_credit": null
+      },
+      "hookEvents": [
+        "hook_started",
+        "hook_response"
+      ],
+      "refusalCodes": [],
+      "toolCalls": [
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash"
+      ],
+      "commandResults": [
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "pwd",
+              "-P"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "git",
+              "rev-parse",
+              "--show-toplevel"
+            ]
+          ]
+        },
+        {
+          "kind": "harness",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "drive.mjs",
+              "status",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "driver-launch",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "drive.mjs",
+              "status",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "harness",
+          "status": "completed",
+          "exitCode": null
+        }
+      ],
+      "boundaryResults": [],
+      "nativeDiagnostics": [],
+      "model": "claude-opus-5-5",
+      "nativeReadback": {
+        "effort": null,
+        "permissionMode": "default"
+      },
+      "startedAt": "2026-10-31T05:33:00.128Z",
+      "finishedAt": "2026-10-31T05:35:56.923Z",
+      "selectedPolicy": {
+        "sandbox": "inherited-host-policy",
+        "networkAccess": "native-api-context7-and-public-github-domains",
+        "nativeLauncher": "generated-skill-command-subject-to-host-permissions",
+        "webTools": false,
+        "sessionPersistence": "disabled",
+        "source": "launch-arguments"
+      },
+      "selectedModel": "claude-opus-5-5",
+      "selectedEffort": "xhigh",
+      "role": "router",
+      "cwd": "main"
+    }
+  ],
+  "stop": {
+    "reason": "released",
+    "next": "The local release attribution or no-release close is recorded."
+  },
+  "limits": {
+    "subagentCap": 20,
+    "drivenSessionCeiling": 80,
+    "drivenPhaseTimeoutMs": null,
+    "tokens": null,
+    "costUsd": 60,
+    "costScope": "phase-workers"
+  },
+  "routerUsage": {
+    "totalTokens": 101728,
+    "costUsd": 0.23620980000000003,
+    "source": "native-router-result-stream",
+    "scope": "router sessions only"
+  },
+  "budget": {
+    "count": 1,
+    "cap": 80,
+    "remaining": 79,
+    "countKind": "exact-observed",
+    "unresolvedAdmissions": 0,
+    "unlinkedChildren": 0,
+    "uncountedRemainder": "unknown",
+    "source": "shared-hook-counter"
+  },
+  "workers": [
+    {
+      "phase": "closed",
+      "action": "release-close",
+      "exitCode": 0,
+      "exitSignal": null,
+      "error": false,
+      "timedOut": false,
+      "timeoutMs": 8968346,
+      "workerStarted": true,
+      "workerEnded": true,
+      "costUsd": 0.9121298,
+      "usage": {
+        "input_tokens": 30,
+        "cache_creation_input_tokens": 60333,
+        "cache_read_input_tokens": 670529,
+        "output_tokens": 14762,
+        "output_tokens_details": {
+          "thinking_tokens": 6943
+        },
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 60333,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "global",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 1817,
+            "cache_read_input_tokens": 67228,
+            "cache_creation_input_tokens": 836,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 836
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard",
+        "fallback_credit": null
+      },
+      "hookEvents": [
+        "hook_started",
+        "hook_response"
+      ],
+      "refusalCodes": [],
+      "toolCalls": [
+        "Bash",
+        "Bash",
+        "Bash",
+        "Read",
+        "Grep",
+        "Glob",
+        "Bash",
+        "Bash",
+        "Read",
+        "Read",
+        "Grep",
+        "Bash",
+        "Read",
+        "Read",
+        "Read",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Read",
+        "Read",
+        "Bash",
+        "Grep",
+        "Grep",
+        "Bash",
+        "Read",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Grep",
+        "Read",
+        "Read",
+        "Read",
+        "Bash",
+        "Bash",
+        "Grep",
+        "Read"
+      ],
+      "commandResults": [
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "pwd",
+              "-P"
+            ],
+            [
+              "git",
+              "<operand>",
+              "rev-parse",
+              "--show-toplevel"
+            ],
+            [
+              "git",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ],
+            [
+              "printenv",
+              "DOTLN_LAUNCHPAD"
+            ],
+            [
+              "echo",
+              "<operand>"
+            ],
+            [
+              "printenv",
+              "CLAUDE_EFFORT"
+            ]
+          ]
+        },
+        {
+          "kind": "harness",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "lifecycle",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "git",
+              "<operand>",
+              "worktree",
+              "list",
+              "--porcelain"
+            ],
+            [
+              "git",
+              "<operand>",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ],
+            [
+              "git",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ],
+            [
+              "git",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ],
+            [
+              "git",
+              "<operand>",
+              "status",
+              "<operand>",
+              "<operand>"
+            ],
+            [
+              "git",
+              "<operand>",
+              "log",
+              "--oneline",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "lifecycle",
+          "status": "failed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "resume.mjs",
+              "briefing",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "<operand>"
+            ],
+            [
+              "ls",
+              "<operand>",
+              "<operand>"
+            ],
+            [
+              "git",
+              "<operand>",
+              "-C",
+              "<operand>",
+              "status",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ],
+            [
+              "git",
+              "<operand>",
+              "<operand>",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ],
+            [
+              "echo",
+              "<operand>"
+            ],
+            [
+              "git",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "<operand>"
+            ],
+            [
+              "git",
+              "<operand>",
+              "-C",
+              "<operand>",
+              "worktree",
+              "list",
+              "--porcelain"
+            ],
+            [
+              "git",
+              "<operand>",
+              "-C",
+              "<operand>",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ],
+            [
+              "git",
+              "<operand>",
+              "-C",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ],
+            [
+              "git",
+              "<operand>",
+              "-C",
+              "<operand>",
+              "status",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ],
+            [
+              "git",
+              "<operand>",
+              "-C",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "<operand>",
+              "<operand>",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": null
+        },
+        {
+          "kind": "lifecycle",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "<operand>",
+              "<operand>"
+            ],
+            [
+              "ls",
+              "<operand>",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ],
+            [
+              "ls",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "lifecycle",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "node",
+              "<operand>",
+              "<operand>"
+            ],
+            [
+              "git",
+              "<operand>",
+              "log",
+              "--oneline",
+              "<operand>",
+              "--",
+              "<operand>"
+            ],
+            [
+              "git",
+              "<operand>",
+              "ls-files",
+              "<operand>",
+              "<operand>"
+            ],
+            [
+              "git",
+              "<operand>",
+              "status",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ],
+            [
+              "head",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": null,
+          "shape": [
+            [
+              "sed",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ],
+            [
+              "<operand>",
+              "<operand>"
+            ],
+            [
+              "echo",
+              "<operand>"
+            ],
+            [
+              "grep",
+              "<operand>",
+              "<operand>",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ],
+            [
+              "head",
+              "<operand>"
+            ],
+            [
+              "echo",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "harness",
+          "status": "completed",
+          "exitCode": null
+        },
+        {
+          "kind": "harness",
+          "status": "completed",
+          "exitCode": null
+        }
+      ],
+      "boundaryResults": [],
+      "nativeDiagnostics": [],
+      "model": "claude-opus-5-5",
+      "nativeReadback": {
+        "effort": null,
+        "permissionMode": "default"
+      },
+      "startedAt": "2026-10-31T05:33:10.077Z",
+      "finishedAt": "2026-10-31T05:35:38.132Z",
+      "selectedPolicy": {
+        "sandbox": "inherited-host-policy",
+        "networkAccess": "native-api-context7-and-public-github-domains",
+        "nativeLauncher": "own-host-sandbox",
+        "webTools": true,
+        "sessionPersistence": "disabled",
+        "source": "launch-arguments"
+      },
+      "cwd": "main",
+      "workerId": "identity-1",
+      "hooks": {
+        "hookCalls": 299,
+        "refusedCalls": 0,
+        "effort": [
+          "xhigh"
+        ],
+        "source": "project-hook-journal",
+        "subagents": {
+          "count": 0,
+          "cap": 20,
+          "remaining": 20,
+          "countKind": "exact-observed",
+          "unresolvedAdmissions": 0,
+          "unlinkedChildren": 0,
+          "uncountedRemainder": "unknown"
+        }
+      },
+      "effort": "xhigh",
+      "effortSource": "hook-input",
+      "subagents": {
+        "count": 0,
+        "cap": 20,
+        "remaining": 20,
+        "countKind": "exact-observed",
+        "unresolvedAdmissions": 0,
+        "unlinkedChildren": 0,
+        "uncountedRemainder": "unknown",
+        "source": "phase-local-hook-counter"
+      },
+      "selectedModel": "claude-opus-5-5",
+      "selectedEffort": "xhigh",
+      "host": "claude"
+    }
+  ],
+  "completions": [],
+  "coordinatorSeed": {
+    "phase": "closed",
+    "native": false
+  },
+  "publicationExercised": false,
+  "rawTranscriptsRetained": false,
+  "fixturePolicyRestoration": {
+    "count": 2,
+    "source": "coordinator-owned settings after phase workers ended"
+  },
+  "releaseClose": {
+    "publication": {
+      "requested": true,
+      "outcome": "no-release",
+      "tag": null,
+      "tagOutcome": null,
+      "release": null,
+      "refusal": null,
+      "target": {
+        "repositoryId": "target",
+        "policy": "no-release",
+        "outcome": "no-release",
+        "tag": null,
+        "release": null
+      }
+    },
+    "cleanup": "clean",
+    "targetCleanup": "removed",
+    "blockers": []
+  },
+  "writerConflict": null,
+  "driverObservations": [
+    {
+      "stage": "release-close",
+      "point": "router-ended",
+      "observedAt": "2026-10-31T05:35:56.923Z",
+      "state": {
+        "recordedRunning": false,
+        "observedDriverAlive": false,
+        "completedAttempts": 1,
+        "stop": {
+          "reason": "released",
+          "next": "The local release attribution or no-release close is recorded."
+        },
+        "incomplete": {
+          "release-close": 0
+        },
+        "refused": false,
+        "writerConflict": null,
+        "currentWorker": {
+          "id": "identity-1",
+          "sessionId": null,
+          "role": "release-close",
+          "action": "release-close",
+          "timeoutMs": 8968346,
+          "recordedRunning": false,
+          "observedAlive": false,
+          "lastCommand": {
+            "kind": "harness",
+            "status": "completed",
+            "exitCode": null
+          },
+          "commandFailures": [
+            {
+              "kind": "lifecycle",
+              "status": "failed",
+              "exitCode": null,
+              "shape": [
+                [
+                  "node",
+                  "resume.mjs",
+                  "briefing",
+                  "<operand>",
+                  "<operand>"
+                ]
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "stage": "release-close",
+      "point": "router-cleanup-ended",
+      "observedAt": "2026-10-31T05:35:56.923Z",
+      "state": {
+        "recordedRunning": false,
+        "observedDriverAlive": false,
+        "completedAttempts": 1,
+        "stop": {
+          "reason": "released",
+          "next": "The local release attribution or no-release close is recorded."
+        },
+        "incomplete": {
+          "release-close": 0
+        },
+        "refused": false,
+        "writerConflict": null,
+        "currentWorker": {
+          "id": "identity-1",
+          "sessionId": null,
+          "role": "release-close",
+          "action": "release-close",
+          "timeoutMs": 8968346,
+          "recordedRunning": false,
+          "observedAlive": false,
+          "lastCommand": {
+            "kind": "harness",
+            "status": "completed",
+            "exitCode": null
+          },
+          "commandFailures": [
+            {
+              "kind": "lifecycle",
+              "status": "failed",
+              "exitCode": null,
+              "shape": [
+                [
+                  "node",
+                  "resume.mjs",
+                  "briefing",
+                  "<operand>",
+                  "<operand>"
+                ]
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "stage": "release-close",
+      "point": "before-final-cleanup",
+      "observedAt": "2026-10-31T05:35:56.939Z",
+      "state": {
+        "recordedRunning": false,
+        "observedDriverAlive": false,
+        "completedAttempts": 1,
+        "stop": {
+          "reason": "released",
+          "next": "The local release attribution or no-release close is recorded."
+        },
+        "incomplete": {
+          "release-close": 0
+        },
+        "refused": false,
+        "writerConflict": null,
+        "currentWorker": {
+          "id": "identity-1",
+          "sessionId": null,
+          "role": "release-close",
+          "action": "release-close",
+          "timeoutMs": 8968346,
+          "recordedRunning": false,
+          "observedAlive": false,
+          "lastCommand": {
+            "kind": "harness",
+            "status": "completed",
+            "exitCode": null
+          },
+          "commandFailures": [
+            {
+              "kind": "lifecycle",
+              "status": "failed",
+              "exitCode": null,
+              "shape": [
+                [
+                  "node",
+                  "resume.mjs",
+                  "briefing",
+                  "<operand>",
+                  "<operand>"
+                ]
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "stage": "release-close",
+      "point": "after-final-stop",
+      "observedAt": "2026-10-31T05:35:56.940Z",
+      "state": {
+        "recordedRunning": false,
+        "observedDriverAlive": false,
+        "completedAttempts": 1,
+        "stop": {
+          "reason": "released",
+          "next": "The local release attribution or no-release close is recorded."
+        },
+        "incomplete": {
+          "release-close": 0
+        },
+        "refused": false,
+        "writerConflict": null,
+        "currentWorker": {
+          "id": "identity-1",
+          "sessionId": null,
+          "role": "release-close",
+          "action": "release-close",
+          "timeoutMs": 8968346,
+          "recordedRunning": false,
+          "observedAlive": false,
+          "lastCommand": {
+            "kind": "harness",
+            "status": "completed",
+            "exitCode": null
+          },
+          "commandFailures": [
+            {
+              "kind": "lifecycle",
+              "status": "failed",
+              "exitCode": null,
+              "shape": [
+                [
+                  "node",
+                  "resume.mjs",
+                  "briefing",
+                  "<operand>",
+                  "<operand>"
+                ]
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "cleanup": {
+    "workersEnded": true,
+    "outcome": "removed"
+  }
+}

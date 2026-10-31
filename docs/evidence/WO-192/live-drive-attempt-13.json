@@ -1,0 +1,196 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-25T23:22:53.906Z",
+  "input": "drive: WO-999",
+  "entrypoint": "generated router's canonical driver",
+  "host": "codex-cli 0.164.0",
+  "phase": "active",
+  "routers": [
+    {
+      "exitCode": 0,
+      "error": false,
+      "timedOut": false,
+      "workerEnded": true,
+      "costUsd": null,
+      "usage": {
+        "input_tokens": 175174,
+        "cached_input_tokens": 163328,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 3001,
+        "reasoning_output_tokens": 2028
+      },
+      "hookEvents": [],
+      "refusalCodes": [],
+      "toolCalls": [
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution"
+      ],
+      "model": null,
+      "sessionId": "identity-1",
+      "startedAt": "2026-10-25T23:21:01.122Z",
+      "finishedAt": "2026-10-25T23:22:53.647Z",
+      "isolation": {
+        "schemaVersion": 1,
+        "home": "sha256:d0311e2d0d62b52a04cbf94c1f5c75b16ca665a42732dfaaa30ac4097b3f257f",
+        "authentication": "symlink",
+        "userConfig": {
+          "before": "sha256:6202960ee18605675f85f66f649d13f9e250c7b6b5793cb85d85eba09408500e",
+          "after": "sha256:6202960ee18605675f85f66f649d13f9e250c7b6b5793cb85d85eba09408500e"
+        },
+        "trustTable": {
+          "before": "sha256:f73fb2e2e4e5ce05288c6b5b2f7ddf948959c83bd8216603da58f3a08bb2d3a9",
+          "after": "sha256:f73fb2e2e4e5ce05288c6b5b2f7ddf948959c83bd8216603da58f3a08bb2d3a9"
+        },
+        "isolatedTrustEntries": 1,
+        "homeRemoved": true
+      },
+      "selectedModel": "gpt-6.1-sol",
+      "selectedEffort": "max",
+      "role": "router",
+      "cwd": "main"
+    }
+  ],
+  "stop": {
+    "reason": "incomplete-bound",
+    "next": "Two workers ended without recording completion in this phase; inspect the failure."
+  },
+  "limits": {
+    "subagentCap": 20,
+    "drivenSessionCeiling": 80,
+    "tokens": null,
+    "costUsd": null
+  },
+  "routerUsage": {
+    "totalTokens": 178175,
+    "costUsd": null,
+    "source": "native-router-result-stream",
+    "scope": "router sessions only"
+  },
+  "budget": {
+    "count": 2,
+    "cap": 80,
+    "remaining": 78,
+    "countKind": "minimum-observed",
+    "unresolvedAdmissions": 0,
+    "unlinkedChildren": 0,
+    "uncountedRemainder": "unknown",
+    "source": "native-stream-minimum-and-router-admissions",
+    "unknownRemainder": true
+  },
+  "workers": [
+    {
+      "phase": "active",
+      "action": "next",
+      "exitCode": 1,
+      "error": true,
+      "timedOut": false,
+      "workerEnded": true,
+      "costUsd": null,
+      "usage": null,
+      "hookEvents": [],
+      "refusalCodes": [],
+      "toolCalls": [],
+      "model": null,
+      "sessionId": "identity-2",
+      "startedAt": "2026-10-25T23:21:40.656Z",
+      "finishedAt": "2026-10-25T23:21:59.298Z",
+      "isolation": {
+        "schemaVersion": 1,
+        "home": "sha256:3a95887c3a2a37ccced451734bb6b6ea6c11d12823706cf66e27b3b346f9c0ab",
+        "authentication": "symlink",
+        "userConfig": {
+          "before": "sha256:cff26a6098288d439792bd66048aa6a61342a0a9919148e3f29658d1dbcdb89e",
+          "after": "sha256:cff26a6098288d439792bd66048aa6a61342a0a9919148e3f29658d1dbcdb89e"
+        },
+        "trustTable": {
+          "before": "sha256:cff26a6098288d439792bd66048aa6a61342a0a9919148e3f29658d1dbcdb89e",
+          "after": "sha256:cff26a6098288d439792bd66048aa6a61342a0a9919148e3f29658d1dbcdb89e"
+        },
+        "isolatedTrustEntries": 1,
+        "homeRemoved": true
+      },
+      "cwd": "target-worktree",
+      "hooks": {
+        "hookCalls": null,
+        "source": "codex-unhooked-role-text"
+      },
+      "effort": null,
+      "effortSource": "not-exposed-by-native-json-stream",
+      "subagents": {
+        "count": 0,
+        "countKind": "minimum-observed",
+        "unknownRemainder": true,
+        "source": "native-collab-events"
+      },
+      "selectedModel": "gpt-6.1-sol",
+      "selectedEffort": "max",
+      "host": "codex"
+    },
+    {
+      "phase": "active",
+      "action": "next",
+      "exitCode": 1,
+      "error": true,
+      "timedOut": false,
+      "workerEnded": true,
+      "costUsd": null,
+      "usage": null,
+      "hookEvents": [],
+      "refusalCodes": [],
+      "toolCalls": [],
+      "model": null,
+      "sessionId": "identity-3",
+      "startedAt": "2026-10-25T23:21:59.820Z",
+      "finishedAt": "2026-10-25T23:22:18.487Z",
+      "isolation": {
+        "schemaVersion": 1,
+        "home": "sha256:a55703c907f9afb304ff9f017e53b594bf18c6f6ab02a3bc43799b648d63b659",
+        "authentication": "symlink",
+        "userConfig": {
+          "before": "sha256:cff26a6098288d439792bd66048aa6a61342a0a9919148e3f29658d1dbcdb89e",
+          "after": "sha256:cff26a6098288d439792bd66048aa6a61342a0a9919148e3f29658d1dbcdb89e"
+        },
+        "trustTable": {
+          "before": "sha256:cff26a6098288d439792bd66048aa6a61342a0a9919148e3f29658d1dbcdb89e",
+          "after": "sha256:cff26a6098288d439792bd66048aa6a61342a0a9919148e3f29658d1dbcdb89e"
+        },
+        "isolatedTrustEntries": 1,
+        "homeRemoved": true
+      },
+      "cwd": "target-worktree",
+      "hooks": {
+        "hookCalls": null,
+        "source": "codex-unhooked-role-text"
+      },
+      "effort": null,
+      "effortSource": "not-exposed-by-native-json-stream",
+      "subagents": {
+        "count": 0,
+        "countKind": "minimum-observed",
+        "unknownRemainder": true,
+        "source": "native-collab-events"
+      },
+      "selectedModel": "gpt-6.1-sol",
+      "selectedEffort": "max",
+      "host": "codex"
+    }
+  ],
+  "completions": [],
+  "publicationExercised": false,
+  "rawTranscriptsRetained": false,
+  "outcome": "failed",
+  "failedStage": "drive",
+  "cause": "live episode must reach a real passing final review\n\n'active' !== 'closed'\n",
+  "cleanup": {
+    "workersEnded": true,
+    "outcome": "removed"
+  }
+}

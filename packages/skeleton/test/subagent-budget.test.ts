@@ -10,6 +10,9 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
   admitSubagentTool,
+  admitDrivenTool,
+  linkDrivenResult,
+  drivenSubagentUsage,
   initializeSubagentCounter,
   linkSubagentResult,
   subagentUsage,
@@ -53,6 +56,26 @@ function fixture(t: TestContext, cap: number | null = 3) {
     usage: () => subagentUsage(root, directory, "root"),
   };
 }
+
+test("a driven session keeps each spawning worker's cap and one ceiling for their total", (t) => {
+  const f = fixture(t, 2);
+  const admit = (id: string, spawner: string) =>
+    admitSubagentTool(
+      f.root,
+      f.directory,
+      { session_id: "root", tool_use_id: id, tool_name: "Agent" },
+      true,
+      { cap: 5, spawnerCap: 2, spawner },
+    );
+  assert.equal(admit("a1", "worker-a").refusal, undefined);
+  assert.equal(admit("a2", "worker-a").refusal, undefined);
+  assert.ok(admit("a3", "worker-a").refusal);
+  assert.equal(admit("b1", "worker-b").refusal, undefined);
+  assert.equal(admit("b2", "worker-b").refusal, undefined);
+  assert.equal(admit("phase", "router").refusal, undefined);
+  assert.ok(admit("phase2", "router").refusal);
+  assert.equal(f.usage().count, 5);
+});
 
 test("WO-139 third admission succeeds; fourth and exhausted Workflow refuse; duplicate hooks and sessions remain independent", (t) => {
   const f = fixture(t);
@@ -270,4 +293,84 @@ test("WO-142 B5 missing tool identity is unknown and known resumed agents are no
   );
   assert.match(unknown.refusal!, /count 1, cap 1/);
   assert.equal(f.usage().count, 1);
+});
+
+test("driven context attributes repeated tool ids, nested spawners and result joins across phase sessions", (t) => {
+  const f = fixture(t, 2);
+  const previous = process.env.DOTLN_DRIVEN_WORKER;
+  t.after(() => {
+    if (previous === undefined) delete process.env.DOTLN_DRIVEN_WORKER;
+    else process.env.DOTLN_DRIVEN_WORKER = previous;
+  });
+  const context = join(f.directory, "context.json");
+  process.env.DOTLN_DRIVEN_WORKER = context;
+  const select = (worker: string) =>
+    writeFileSync(
+      context,
+      JSON.stringify({
+        schemaVersion: 1,
+        root: f.root,
+        directory: f.directory,
+        session: "root",
+        worker,
+        role: "executor",
+        workOrder: "WO-999",
+        cap: 2,
+        ceiling: 6,
+      }),
+    );
+  for (const worker of ["phase-a", "phase-b"]) {
+    assert.equal(
+      admitSubagentTool(
+        f.root,
+        f.directory,
+        { session_id: "root", tool_use_id: worker, tool_name: "Agent" },
+        true,
+        { cap: 6, spawnerCap: 2, spawner: "router" },
+      ).refusal,
+      undefined,
+    );
+    linkSubagentResult(f.directory, {
+      session_id: "root",
+      tool_use_id: worker,
+      tool_response: { agentId: worker },
+    });
+  }
+  const call = (id: string, agent_id?: string, spawn = true) =>
+    admitDrivenTool(
+      {
+        session_id: "native-phase",
+        tool_use_id: id,
+        tool_name: spawn ? "Agent" : "Read",
+        ...(agent_id ? { agent_id } : {}),
+      },
+      spawn,
+    )!;
+  select("phase-a");
+  assert.equal(call("same-id").refusal, undefined);
+  linkDrivenResult({
+    session_id: "native-phase",
+    tool_use_id: "same-id",
+    tool_response: { agentId: "child" },
+  });
+  assert.equal(call("second").refusal, undefined);
+  assert.ok(call("third").refusal);
+  select("phase-b");
+  assert.equal(call("same-id").refusal, undefined);
+  linkDrivenResult({
+    session_id: "native-phase",
+    tool_use_id: "same-id",
+    tool_response: { agentId: "child" },
+  });
+  select("phase-a");
+  assert.equal(call("read-child", "child", false).refusal, undefined);
+  assert.equal(call("nested", "child").refusal, undefined);
+  assert.equal(drivenSubagentUsage()?.count, 6);
+  assert.equal(drivenSubagentUsage()?.spawnsByWorker, 2);
+  select("phase-b");
+  assert.match(call("second").refusal!, /DOTLN_DRIVEN_BUDGET_REFUSED/);
+  assert.equal(
+    call("unjoined-read", "unjoined", false).usage.countKind,
+    "minimum-observed",
+  );
 });

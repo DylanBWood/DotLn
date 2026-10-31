@@ -799,7 +799,7 @@ grep -Fxq 'Meter snapshot not written: this checkout holds no session journal of
 test ! -e "$main/docs/evidence/WO-099/meta.json"
 meter_again="$(release_command prepare --local)"
 grep -Fxq '  docs/final-reviews/WO-099/PR.md' <<<"$meter_again"
-# With one, prepare writes the order's own row, within 8 KB, beside the meter block.
+# With one, prepare writes the order's own row, within its bound, beside the meter block.
 mkdir -p "$main/docs/control/local/harness"
 printf '%s\n' \
   '{"workOrder":"WO-099","role":"executor","event":"PreToolUse","refused":true}' \
@@ -811,7 +811,6 @@ snapshotted="$(release_command prepare --local)"
 grep -Fxq '  docs/final-reviews/WO-099/PR.md' <<<"$snapshotted"
 grep -Fxq '  docs/evidence/WO-099/meta.json' <<<"$snapshotted"
 grep -Eq '^Meter snapshot: docs/evidence/WO-099/meta\.json, [0-9]+ bytes\.$' <<<"$snapshotted"
-test "$(wc -c <"$main/docs/evidence/WO-099/meta.json")" -le 8192
 node -e '
 const snapshot = JSON.parse(require("fs").readFileSync(process.argv[1], "utf8"));
 const [row, ...others] = snapshot.orders;

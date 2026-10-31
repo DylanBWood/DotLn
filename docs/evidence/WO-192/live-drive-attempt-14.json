@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-25T23:34:56.128Z",
+  "stage": "drive",
+  "outcome": "failed",
+  "cause": "native router must enter the canonical driver",
+  "driveEntered": true,
+  "routers": [
+    {
+      "exitCode": 2,
+      "error": true,
+      "timedOut": false,
+      "workerEnded": true,
+      "costUsd": null,
+      "usage": null,
+      "hookEvents": [],
+      "refusalCodes": [],
+      "toolCalls": [],
+      "model": null,
+      "startedAt": "2026-10-25T23:34:56.090Z",
+      "finishedAt": "2026-10-25T23:34:56.126Z",
+      "selectedPolicy": {
+        "sandbox": "workspace-write",
+        "approval": "automatic-review",
+        "networkAccess": "enabled-for-native-workers",
+        "source": "launch-arguments"
+      },
+      "isolation": {
+        "schemaVersion": 1,
+        "home": "sha256:f9fe12a9ee30e49a472870ed8133f0e5e8279c43cb469ec600c17f3ec9af1b11",
+        "authentication": "symlink",
+        "userConfig": {
+          "before": "sha256:6202960ee18605675f85f66f649d13f9e250c7b6b5793cb85d85eba09408500e",
+          "after": "sha256:6202960ee18605675f85f66f649d13f9e250c7b6b5793cb85d85eba09408500e"
+        },
+        "trustTable": {
+          "before": "sha256:f73fb2e2e4e5ce05288c6b5b2f7ddf948959c83bd8216603da58f3a08bb2d3a9",
+          "after": "sha256:f73fb2e2e4e5ce05288c6b5b2f7ddf948959c83bd8216603da58f3a08bb2d3a9"
+        },
+        "isolatedTrustEntries": null,
+        "homeRemoved": true
+      },
+      "selectedModel": "gpt-6.1-sol",
+      "selectedEffort": "max",
+      "role": "router",
+      "cwd": "main"
+    }
+  ],
+  "workers": [],
+  "cleanup": {
+    "workersEnded": true,
+    "outcome": "removed"
+  }
+}
