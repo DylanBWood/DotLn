@@ -18,7 +18,8 @@ export default async function* caseReporter(source) {
       entryFile: data.entryFile
         ? relative(process.cwd(), data.entryFile)
         : file,
-      testId: data.testId,
+      // Node 24 names no test identity, so a case's source position stands in.
+      testId: data.testId ?? `${data.line}:${data.column}`,
       ...(event.type === "test:dequeue"
         ? {}
         : {

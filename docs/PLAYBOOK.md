@@ -232,7 +232,9 @@ edit. The verifier and final reviewer consume that evidence at the unchanged
 identity; source changes require a complete run at the new identity.
 `--review` includes machinery suites only when their declared sources changed
 and composes the latest passing task results at the unchanged code identity,
-with their source rows retained. `--again` forces every task fresh. Formatting
+with their source rows retained. `--again` forces every task fresh, and a run
+that judges one Node line uses it, because reuse compares code identity and
+never the runtime that ran a task. Formatting
 runs freshly before the build and other tasks, including when product results
 can be reused.
 `npm run test:machinery` runs that inventory on demand; document-sensitive checks

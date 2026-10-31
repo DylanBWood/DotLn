@@ -4161,7 +4161,6 @@ for (const mode of ["runner", "evidence", "entry"])
             scripts: {
               "format:check": "node hold-gate.mjs checks",
               test: "node hold-gate.mjs checks",
-              build: "node hold-gate.mjs build",
               harness: packageScripts.harness,
             },
           }),
@@ -4194,6 +4193,12 @@ while (!existsSync("${local}/" + stage + ".go")) {
             root,
             "scripts/harness.mjs",
             'process.argv[2] = "checks"; await import("../hold-gate.mjs");\n',
+          );
+          // The entry builds from the running Node, not through npm.
+          write(
+            root,
+            "scripts/build.mjs",
+            'process.argv[2] = "build"; await import("../hold-gate.mjs");\n',
           );
         }
         const program =

@@ -388,6 +388,9 @@ test("WO-074 criterion 1: an offline npm ci against the exported lockfile succee
   );
   assert.deepEqual(kitPackage.scripts, corePackage.scripts);
   assert.deepEqual(kitPackage.devDependencies, corePackage.devDependencies);
+  // The export's host check and npm read the range core declares.
+  assert.equal(kitPackage.engines.node, corePackage.engines.node);
+  assert.equal(lock.packages[""].engines.node, corePackage.engines.node);
   assert.equal(kitPackage.private, true);
   assert.equal(kitPackage.license, "Apache-2.0");
   assert.deepEqual(
@@ -405,6 +408,19 @@ test("WO-074 criterion 1: an offline npm ci against the exported lockfile succee
   for (const name of workspaces) {
     assert.ok(lock.packages[`packages/${name}`], `packages/${name} entry`);
     assert.equal(lock.packages[`node_modules/@dotln/${name}`]?.link, true);
+    // Every exported manifest and its lock entry carry core's range.
+    assert.equal(
+      JSON.parse(
+        readFileSync(join(kit, `packages/${name}/package.json`), "utf8"),
+      ).engines.node,
+      corePackage.engines.node,
+      name,
+    );
+    assert.equal(
+      lock.packages[`packages/${name}`].engines.node,
+      corePackage.engines.node,
+      name,
+    );
   }
   assert.ok(
     !Object.keys(lock.packages).some((key) =>

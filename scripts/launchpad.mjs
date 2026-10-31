@@ -165,6 +165,7 @@ export const EMIT_CLOSURE = Object.freeze([
   "scripts/lib/harness-instruction.mjs",
   "scripts/lib/harness.mjs",
   "scripts/lib/helpers.mjs",
+  "scripts/lib/node-engines.mjs",
   "scripts/lib/paths.mjs",
   "scripts/lib/process-budget.mjs",
   "scripts/lib/release-tags.mjs",

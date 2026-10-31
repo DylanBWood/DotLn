@@ -2,6 +2,7 @@
 import { dispatchBoundResult } from "./lib/dispatch-bound.mjs";
 import { formatDuration } from "./lib/duration.mjs";
 import { findLaunchpad } from "./lib/config.mjs";
+import { judgeRunningNode } from "./lib/node-engines.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 import { unownedTemporaryRootSites } from "./lib/temporary-root-declarations.mjs";
 import {
@@ -27,8 +28,11 @@ export function checkHost(
     requiredPeakBytes = largestTaskPeakRss(),
     fileEvents = sampleFileEventDaemon(),
     standing,
+    nodeVersion,
+    packageRoot,
   } = {},
 ) {
+  const runtime = judgeRunningNode(nodeVersion, packageRoot);
   const underBudget = limits.taskBytes < requiredPeakBytes;
   const minimumGateShare =
     Math.ceil(
@@ -42,12 +46,16 @@ export function checkHost(
     return { ...dispatchBoundResult(standing), sample, fileEvents };
   return {
     exitCode:
-      ["warning", "critical"].includes(sample.level) || underBudget ? 1 : 0,
+      !runtime.admitted ||
+      ["warning", "critical"].includes(sample.level) ||
+      underBudget
+        ? 1
+        : 0,
     sample,
     fileEvents,
     taskBudgetBytes: limits.taskBytes,
     requiredPeakBytes,
-    output: `Host memory: ${sample.level}; pressure=${sample.pressure}; swapBytes=${sample.swapBytes}; physicalBytes=${sample.physicalBytes}; source=${sample.source}\nPer-lane memory budget ${limits.taskBytes} bytes ${underBudget ? "is below" : "covers"} measured task peak RSS ${requiredPeakBytes} bytes (${limits.hostLanes} host lanes)${remedy}`,
+    output: `${runtime.message}\nHost memory: ${sample.level}; pressure=${sample.pressure}; swapBytes=${sample.swapBytes}; physicalBytes=${sample.physicalBytes}; source=${sample.source}\nPer-lane memory budget ${limits.taskBytes} bytes ${underBudget ? "is below" : "covers"} measured task peak RSS ${requiredPeakBytes} bytes (${limits.hostLanes} host lanes)${remedy}`,
   };
 }
 

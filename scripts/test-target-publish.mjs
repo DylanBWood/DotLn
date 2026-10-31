@@ -859,6 +859,22 @@ const scenarioCopyOptions = {
   verbatimSymlinks: true,
 };
 
+// Node 24's cpSync applies the umask to what it creates where Node 26 keeps each
+// mode, so each entry's mode is restored here, deepest first so that a tightened
+// directory cannot block its children.
+function copyScenarioTree(from, to) {
+  cpSync(from, to, scenarioCopyOptions);
+  const restore = (source, target) => {
+    const info = lstatSync(source);
+    if (info.isSymbolicLink()) return;
+    if (info.isDirectory())
+      for (const name of readdirSync(source))
+        restore(join(source, name), join(target, name));
+    chmodSync(target, info.mode & 0o777);
+  };
+  restore(from, to);
+}
+
 function scenarioTreeDigest(root, requireIdle = false) {
   const hash = createHash("sha256");
   const rootInfo = lstatSync(root);
@@ -1025,7 +1041,7 @@ async function scenario(
         join(tmpdir(), "dotln-scenario-seed-"),
       );
       seed.snapshot = join(seed.backupRoot, "snapshot");
-      cpSync(seed.subject.root, seed.snapshot, scenarioCopyOptions);
+      copyScenarioTree(seed.subject.root, seed.snapshot);
       assert.equal(scenarioTreeDigest(seed.snapshot, true), seed.digest);
       seed.building = false;
     } else {
@@ -1033,7 +1049,7 @@ async function scenario(
       releaseScenarioHarness(seed.subject.root);
       assert.equal(scenarioTreeDigest(seed.snapshot, true), seed.digest);
       disposeRepairFixture(seed.subject.root);
-      cpSync(seed.snapshot, seed.subject.root, scenarioCopyOptions);
+      copyScenarioTree(seed.snapshot, seed.subject.root);
       assert.equal(scenarioTreeDigest(seed.subject.root, true), seed.digest);
     }
     state.root = seed.subject.root;

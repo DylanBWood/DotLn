@@ -17,6 +17,7 @@ import {
   harnessInstallation,
 } from "./lib/harness.mjs";
 import { findLaunchpad } from "./lib/config.mjs";
+import { judgeRunningNode } from "./lib/node-engines.mjs";
 import {
   activeGateRuns,
   beginGateRun,
@@ -38,6 +39,13 @@ import {
   observeHarnessDelivery,
   measureHarnessUsage,
 } from "../packages/skeleton/dist/src/harness-host.js";
+
+// Emit stays open on any Node, because bootstrap runs it. Check and evidence
+// can report a pass, so they refuse a Node these scripts do not declare.
+function requireDeclaredNode() {
+  const runtime = judgeRunningNode();
+  if (!runtime.admitted) throw new Error(runtime.message);
+}
 
 async function optionalCurrentSession(root, sessionId) {
   try {
@@ -281,6 +289,7 @@ try {
         throw new Error(
           "harness evidence accepts no override other than --fail",
         );
+      requireDeclaredNode();
       // Its records live under the root it judges. A target worktree is not a
       // launchpad, and a record left there would move the target's gate identity.
       const launchpad = process.env.DOTLN_LAUNCHPAD;
@@ -331,6 +340,7 @@ try {
       }
     } else {
       if (!["emit", "check", "remove"].includes(action)) throw new Error(usage);
+      if (action === "check") requireDeclaredNode();
       const options = {};
       for (let index = 0; index < args.length; index += 2) {
         if (
