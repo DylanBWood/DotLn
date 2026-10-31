@@ -4,7 +4,7 @@
 
 ## Proposed order
 
-- [ ] [WO-240] — Node 24 beside Node 26, and the private-clone recipe · **queued**
+- [x] [WO-240] — Node 24 beside Node 26, and the private-clone recipe · **final-reviewed**
 - [ ] [WO-247] — A driven Codex order finishes · **queued**
 - [ ] [WO-237] — A closed order keeps its journals, and a temporary root survives a reboot · **queued**
 - [ ] [WO-245] — The kit's guide is a kit file and the front page is the instance's · **queued**
@@ -45,24 +45,6 @@ None.
 None.
 
 ## Open
-
-### WO-240
-
-[WO-240 — Node 24 beside Node 26: the launchpad and every export run on Node 24.15 and later in the 24 line and on Node 26, the engines field says exactly that in every package, the gate's host check refuses a runtime outside the range, one complete gate run under Node 24.15.0 is recorded, and the kit README states the runtimes and the private-clone recipe (version assigned at activation)](WO-240-node-24-beside-node-26.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-226: satisfied-by-close (met) — the export's bootstrap and harness check the recipe runs; WO-075: satisfied-by-close (met) — the export generates its package.json from core's, so the engines range travels with the kit.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer high.
-- Track: machinery
-- Cost: adds, in &#96;package.json&#96; and the six &#96;packages/*/package.json&#96;, the engines range &#96;^24.15.0 &#124;&#124; ^26.0.0&#96; in place of &#96;&gt;=26.0.0 &lt;27&#96;; in &#96;scripts/structural-checks.mjs&#96; &#96;checkHost&#96;, one comparison of &#96;process.version&#96; against the root engines range that refuses outside it, naming the range and the running version, with its fixture in the suite that declares &#96;scripts/structural-checks.mjs&#96; (&#96;declarations&#96; or &#96;generated&#96;, as &#96;npm test -- --list --review&#96; names them at activation) and a case in the &#96;launchpad&#96; suite that an export's &#96;package.json&#96; carries the root range; one recorded complete gate run under Node 24.15.0 (&#96;docs/evidence/WO-240/node24-gate.json&#96;: the Node version, the gate row, the exit code, the command); the fixes that run finds, if any; two sentences in &#96;README.md&#96; under the &#96;**Front page:**&#96; field (the Node line, and the founding lesson at line 86 restated without naming an earlier system, the operator's item 3.a of 2026-10-30, which the planning pass could not apply on its branch because the front page changes only through an order); two passages in &#96;scripts/kit/README.client.md&#96; §First steps (the supported runtimes; the private-clone recipe). Removes: the state where the only runtime any gate has ever run under is the one on the operator's machine, where nothing compares the running Node to the engines field, and where an instance on a Node 24 host is told by &#96;npm ci&#96; that it is unsupported while every script runs. Wall-clock: one extra complete gate run under Node 24.15.0 (the complete run's recent median is 24.9 minutes; WO-239's VER-001 run took 33 min 21 s), plus &#96;fnm install 24.15.0&#96; and one &#96;npm ci&#96; under it (minutes). Recurring cost: the host check adds one semver comparison to every gate start; the executor records &#96;checkHost&#96;'s duration from the gate's task rows before and after. Context bytes: this file, about 16,000. Commands: no new command. Tokens: unknown until run. Steps: 8. Re-mints: &#96;package.json&#96; is a common source of the evidence inventories (&#96;scripts/lib/evidence-sources.mjs&#96;), so each edition whose check the engines change stales is re-minted deterministically, the feedback edition by carry (&#96;package.json&#96; is not in &#96;FEEDBACK_SOURCE_PATHS&#96;); no live feedback episode. &#96;package.json&#96; and &#96;scripts/structural-checks.mjs&#96; are declared machinery sources, so &#96;npm test -- --review&#96; runs before handoff.
-- Inherited ledger duty: discharge with this order's decisions file when recorded and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
-- Authority: [docs/work-orders/WO-240-node-24-beside-node-26.md](WO-240-node-24-beside-node-26.md)
 
 ### WO-247
 

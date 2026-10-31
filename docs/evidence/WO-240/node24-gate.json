@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-240",
+  "subject": "One complete gate under Node 24.15.0, with the document and machinery gates beside it, at the code identity of the handoff.",
+  "node": {
+    "version": "v24.15.0",
+    "executable": "<user-home>/.local/share/fnm/node-versions/v24.15.0/installation/bin/node",
+    "npm": "11.12.1",
+    "nodesOnPath": 1,
+    "readBack": "The complete gate's log printed process.version, process.execPath and which -a node from its environment before the gate started; the document and machinery gates ran straight after it in the same PATH, without their own read-back.",
+    "removedFromPath": [
+      "the fnm shell directory holding v26.9.0",
+      "the nvm directory holding v22.2.0"
+    ]
+  },
+  "preparation": [
+    "fnm exec --using 24.15.0 npm ci",
+    "fnm exec --using 24.15.0 npm run build"
+  ],
+  "command": "fnm exec --using 24.15.0 env PATH=<24.15.0 bin>:<PATH without the fnm shell and nvm directories> npm test -- --review --again",
+  "whyAgain": "Rows record no runtime and reuse compares code identity alone, so without --again a run at a passed identity would execute only the structural tasks. WO-240-D010.",
+  "completeGate": {
+    "checkId": "npm test",
+    "evidenceRef": "host-gate:9acc6fd280ba357f29217218918d45b57160e56da41611a72ddaf4c1f778e419:npm test",
+    "codeIdentity": "9acc6fd280ba357f29217218918d45b57160e56da41611a72ddaf4c1f778e419",
+    "treeHash": "b0c9ac9704be795737578651c6541d12e47b9d41",
+    "startedAt": "2026-10-31T20:37:43.293Z",
+    "recordedAt": "2026-10-31T21:13:50.497Z",
+    "durationMs": 2167204,
+    "exitCode": 0,
+    "executionMode": "forced-fresh",
+    "freshSuites": 112,
+    "reusedSuites": 0,
+    "requiredSuites": 43,
+    "unrunSuites": 0,
+    "hostTaskDurationMs": 91
+  },
+  "documentGate": {
+    "command": "the same environment, npm run test:docs",
+    "checkId": "npm run test:docs",
+    "evidenceRef": "host-gate:9acc6fd280ba357f29217218918d45b57160e56da41611a72ddaf4c1f778e419:npm run test:docs",
+    "codeIdentity": "9acc6fd280ba357f29217218918d45b57160e56da41611a72ddaf4c1f778e419",
+    "treeHash": "b0c9ac9704be795737578651c6541d12e47b9d41",
+    "startedAt": "2026-10-31T21:13:53.095Z",
+    "recordedAt": "2026-10-31T21:15:40.583Z",
+    "durationMs": 107488,
+    "exitCode": 0,
+    "executionMode": "fresh",
+    "freshSuites": 27,
+    "reusedSuites": 0,
+    "requiredSuites": 27,
+    "unrunSuites": 0,
+    "hostTaskDurationMs": 92
+  },
+  "machineryGate": {
+    "command": "the same environment, npm run test:machinery",
+    "checkId": "npm run test:machinery",
+    "evidenceRef": "host-gate:9acc6fd280ba357f29217218918d45b57160e56da41611a72ddaf4c1f778e419:npm run test:machinery",
+    "codeIdentity": "9acc6fd280ba357f29217218918d45b57160e56da41611a72ddaf4c1f778e419",
+    "treeHash": "b0c9ac9704be795737578651c6541d12e47b9d41",
+    "startedAt": "2026-10-31T21:15:41.622Z",
+    "recordedAt": "2026-10-31T21:29:06.116Z",
+    "durationMs": 804494,
+    "exitCode": 0,
+    "executionMode": "fresh",
+    "freshSuites": 19,
+    "reusedSuites": 0,
+    "requiredSuites": 19,
+    "unrunSuites": 0,
+    "hostTaskDurationMs": 88
+  },
+  "whyDocumentAndMachinery": "The review selection omits suites a launchpad still runs; kernel-docs failed on this line where the complete gate could not see it. WO-240-D016.",
+  "compared": {
+    "WO-239 VER-001 complete gate under Node 26": {
+      "durationMs": 2000806,
+      "freshSuites": 113,
+      "reusedSuites": 0
+    }
+  },
+  "firstRun": {
+    "note": "The first complete run failed four of 43 suites before the repairs in WO-240-D011.",
+    "codeIdentity": "97d6ae9401821dfa59fdabb413bed1b75370c66dfbb703dbfcde93f73a5b1463",
+    "durationMs": 2249001,
+    "exitCode": 1,
+    "failed": [
+      "launchpad",
+      "process-debt",
+      "runner-fixtures",
+      "target-publish"
+    ]
+  },
+  "limits": [
+    "Rows record no runtime, so which Node ran a row rests on this file and the captured logs.",
+    "gh repo create and live worker episodes were not exercised under this runtime; the feedback episode of WO-240-D008 ran under Node 26.",
+    "Only 24.15.0 ran on the 24 line; 24.16 to 24.22 are admitted by the range and untested."
+  ]
+}
