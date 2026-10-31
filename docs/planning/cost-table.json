@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "subjectSourceHash": "sha256:8a60965f2496bf83ad08b86a97ddb923e3f3882d9d90c258f750fdffcbd8cb97",
+  "subjectSourceHash": "sha256:f96e816fe0fc9938eb59b13bc4b0b9b71385c0cfac916791d2aa58b8fc437bd6",
   "acceptances": [
     {
       "date": "2026-10-28",
@@ -171,102 +171,102 @@
       "reason": "WO-192's router, target-order and per-spawner duties raise reviewer from 33944 to 35504 bytes on the integrated tree, above the effective 34596. Under product 07's standing route preserve these reviewed duties and accept measured bytes plus 4096; reassess on the next addition. Decision: docs/evidence/WO-192/decisions.md#wo-192-d088."
     }
   ],
-  "observedAt": "2026-10-31T16:13:59.305Z",
-  "subjectRevision": "30119b4d442e0733c082396c0efce7707842a95e",
+  "observedAt": "2026-10-31T16:33:39.650Z",
+  "subjectRevision": "b1be4a0ab06336131459d4a5a8646d5688e10bf2",
   "rows": [
     {
       "workOrder": "WO-240",
-      "observedAt": "2026-10-31T16:13:59.305Z",
+      "observedAt": "2026-10-31T16:33:39.650Z",
       "metrics": null
     },
     {
       "workOrder": "WO-247",
-      "observedAt": "2026-10-31T16:13:59.305Z",
+      "observedAt": "2026-10-31T16:33:39.650Z",
       "metrics": null
     },
     {
       "workOrder": "WO-237",
-      "observedAt": "2026-10-31T16:13:59.305Z",
+      "observedAt": "2026-10-31T16:33:39.650Z",
       "metrics": null
     },
     {
       "workOrder": "WO-245",
-      "observedAt": "2026-10-31T16:13:59.305Z",
+      "observedAt": "2026-10-31T16:33:39.650Z",
       "metrics": null
     },
     {
       "workOrder": "WO-248",
-      "observedAt": "2026-10-31T16:13:59.305Z",
+      "observedAt": "2026-10-31T16:33:39.650Z",
       "metrics": null
     },
     {
       "workOrder": "WO-238",
-      "observedAt": "2026-10-31T16:13:59.305Z",
+      "observedAt": "2026-10-31T16:33:39.650Z",
       "metrics": null
     },
     {
       "workOrder": "WO-241",
-      "observedAt": "2026-10-31T16:13:59.305Z",
+      "observedAt": "2026-10-31T16:33:39.650Z",
       "metrics": null
     },
     {
       "workOrder": "WO-242",
-      "observedAt": "2026-10-31T16:13:59.305Z",
+      "observedAt": "2026-10-31T16:33:39.650Z",
       "metrics": null
     },
     {
       "workOrder": "WO-243",
-      "observedAt": "2026-10-31T16:13:59.305Z",
+      "observedAt": "2026-10-31T16:33:39.650Z",
       "metrics": null
     },
     {
       "workOrder": "WO-244",
-      "observedAt": "2026-10-31T16:13:59.305Z",
+      "observedAt": "2026-10-31T16:33:39.650Z",
       "metrics": null
     },
     {
       "workOrder": "WO-246",
-      "observedAt": "2026-10-31T16:13:59.305Z",
+      "observedAt": "2026-10-31T16:33:39.650Z",
       "metrics": null
     },
     {
       "workOrder": "WO-083",
-      "observedAt": "2026-10-31T16:13:59.305Z",
+      "observedAt": "2026-10-31T16:33:39.650Z",
       "metrics": null
     },
     {
       "workOrder": "WO-207",
-      "observedAt": "2026-10-31T16:13:59.305Z",
+      "observedAt": "2026-10-31T16:33:39.650Z",
       "metrics": null
     },
     {
       "workOrder": "WO-193",
-      "observedAt": "2026-10-31T16:13:59.305Z",
+      "observedAt": "2026-10-31T16:33:39.650Z",
       "metrics": null
     },
     {
       "workOrder": "WO-183",
-      "observedAt": "2026-10-31T16:13:59.305Z",
+      "observedAt": "2026-10-31T16:33:39.650Z",
       "metrics": null
     },
     {
       "workOrder": "WO-088",
-      "observedAt": "2026-10-31T16:13:59.305Z",
+      "observedAt": "2026-10-31T16:33:39.650Z",
       "metrics": null
     },
     {
       "workOrder": "WO-091",
-      "observedAt": "2026-10-31T16:13:59.305Z",
+      "observedAt": "2026-10-31T16:33:39.650Z",
       "metrics": null
     },
     {
       "workOrder": "WO-096",
-      "observedAt": "2026-10-31T16:13:59.305Z",
+      "observedAt": "2026-10-31T16:33:39.650Z",
       "metrics": null
     },
     {
       "workOrder": "WO-014",
-      "observedAt": "2026-10-31T16:13:59.305Z",
+      "observedAt": "2026-10-31T16:33:39.650Z",
       "metrics": null
     }
   ],
@@ -828,7 +828,7 @@
       "reopenCandidate": false,
       "planningCaptures": [
         {
-          "pass": "planning-4149427dd8e1c03f",
+          "pass": "planning-03d7c0f510c9a398",
           "date": "2026-10-31",
           "captures": 1
         },
