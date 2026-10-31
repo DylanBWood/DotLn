@@ -5035,10 +5035,14 @@ test("harness evidence --fail records only the diff check the failing verdict re
       scripts: {
         harness: JSON.parse(readFileSync(join(source, "package.json"), "utf8"))
           .scripts.harness,
-        build: "node .runtime/check.mjs",
         test: "node .runtime/check.mjs",
       },
     }),
+  );
+  write(
+    root,
+    "scripts/build.mjs",
+    'process.env.npm_lifecycle_event = "build"; await import("../.runtime/check.mjs");\n',
   );
   write(
     root,

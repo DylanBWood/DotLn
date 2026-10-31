@@ -24,7 +24,9 @@ try {
           ["scripts/lib/release-kit-runtime.mjs", process.cwd()],
           { stdio: "inherit" },
         )
-      : spawnSync("npm", ["run", "build", "--silent"], { stdio: "inherit" });
+      : spawnSync(process.execPath, ["scripts/build.mjs"], {
+          stdio: "inherit",
+        });
   }
   if (build.status !== 0) process.exitCode = build.status ?? 1;
   else {

@@ -49251,6 +49251,14 @@
             "WO-240"
           ],
           "at": "2026-10-30T15:50:47.920Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by WO-240's final review: WO-240-D009 removed scripts/lib/off-ramps.mjs from commonSources in scripts/lib/evidence-sources.mjs in the same re-mint the order owed, with npm test -- --only evidence-sources and npm run evidence:artifact -- --check green at the handoff identity and the artifact-edition and generated-artifact checks green again at final review. [WO-240 final review (docs/final-reviews/WO-240/FINAL-001.md)]",
+          "reopenWhen": "A registered source imports scripts/lib/off-ramps.mjs again.",
+          "targets": [],
+          "at": "2026-10-31T22:44:29.709Z"
         }
       ]
     },
@@ -51064,6 +51072,43 @@
           "at": "2026-10-31T16:02:17.094Z"
         }
       ]
+    },
+    {
+      "id": "FUP-3457a1c859fb51d8",
+      "key": "decision:docs/evidence/WO-240/decisions.md#wo-240-d010",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "9c841bccfa9da8b3320d8417a346ab2e6c730ba02bff70d578d1f7677533911d",
+          "ref": "docs/evidence/WO-240/decisions.md#wo-240-d010--a-recorded-run-forces-every-task-fresh-and-can-reach-one-node-only",
+          "title": "WO-240-D010: Gate reuse crosses Node lines: a core npm test under one line can carry passes executed under the other, because rows record no runtime. Judge a runtime field or a reuse key when a…",
+          "summary": "{ \"id\": \"WO-240-D010\", \"date\": \"2026-10-31\", \"dispatch\": \"resume: next; step 4\", \"decision\": \"Each recorded complete run passes --again and starts with a PATH holding exactly one node. The order's command omits --again, but coveringTaskResults composes passes by code identity alone and rows carry no runtime, so a plain npm test -- --review at an identity already passed under the other line runs only the structural tasks under the second line and still reports a pass. The order's non-goal excludes a per-row runtime field, so the guard is the invocation, and the row's reusedSuites 0 shows it held. fnm exec prepends the selected runtime but leaves 26.9.0 and 22.2.0 reachable behind it, so the P",
+          "missing": false
+        },
+        {
+          "hash": "1230dfe50d23e5c90f3f7b45e0d9a7047f1bac868c2bd761db29442810dfef2d",
+          "ref": "docs/evidence/WO-240/decisions.md#wo-240-d010--a-recorded-run-forces-every-task-fresh-and-can-reach-one-node-only",
+          "title": "WO-240-D010: Gate reuse crosses Node lines: a core npm test under one line can carry passes executed under the other, because rows record no runtime. Judge a runtime field or a reuse key when a…",
+          "summary": "{ \"id\": \"WO-240-D010\", \"date\": \"2026-10-31\", \"dispatch\": \"resume: next; step 4\", \"decision\": \"Each recorded complete run passes --again and starts with a PATH holding exactly one node. The order's command omits --again, but coveringTaskResults composes passes by code identity alone and rows carry no runtime, so a plain npm test -- --review at an identity already passed under the other line runs only the structural tasks under the second line and still reports a pass. The order's non-goal excludes a per-row runtime field, so the guard is the invocation, and the row's reusedSuites 0 shows it held. fnm exec prepends the selected runtime but leaves 26.9.0 and 22.2.0 reachable behind it, so the P",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-23eb1282f814be14",
+      "key": "decision:docs/evidence/WO-240/decisions.md#wo-240-d012",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "3f3cadb6f2480bf0c73df14ccebf9e2e17615ee96a3dbe158b2d76d4d23d16cb",
+          "ref": "docs/evidence/WO-240/decisions.md#wo-240-d012--the-heartbeat-names-running-cases-on-node-26-only",
+          "title": "WO-240-D012: On Node 24 the gate heartbeat cannot name a running test case, because Node publishes no test tracing channel at 24.15. Add a fallback if an instance on Node 24 needs to diagnose a hung…",
+          "summary": "{ \"id\": \"WO-240-D012\", \"date\": \"2026-10-31\", \"dispatch\": \"resume: next; step 4\", \"decision\": \"Keep case naming as a capability of the runtimes that publish tracing:node.test:start and end. At 24.15 the preload loads and marks nothing, and the heartbeat prints no case marker from <task> yet with the last report, which is true. The fixture asserts naming on Node 26 and that fallback when no case was named.\", \"evidence\": [ \"scripts/lib/case-marker.mjs reads only those channels, and its own comments state that a missing marker leaves the heartbeat without a name while results stand.\", \"The runner's verdicts, durations and slowestCases come from reporter events and TAP, which work on both lines; ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

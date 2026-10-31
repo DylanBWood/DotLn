@@ -3,6 +3,8 @@
 // node:test queues a case's start and calls the body without yielding, so a
 // synchronous case ends before its start is delivered. This module appends
 // each case's start and end itself, synchronously, from Node's tracing channel.
+// Node 24.15 publishes no such channel: this module loads and marks nothing, so
+// the heartbeat reports the last output and every result still stands.
 import { subscribe } from "node:diagnostics_channel";
 import { openSync, writeSync } from "node:fs";
 import { isMainThread } from "node:worker_threads";

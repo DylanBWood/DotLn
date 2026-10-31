@@ -107,6 +107,7 @@ import {
 } from "./lib/generated-artifacts.mjs";
 export { STRUCTURAL_TASKS };
 import { findLaunchpad } from "./lib/config.mjs";
+import { judgeRunningNode } from "./lib/node-engines.mjs";
 import {
   productReadEnvironment,
   productReadObservations,
@@ -261,6 +262,7 @@ export const machinerySources = {
     "packages/skeleton/src/worker-transport.ts",
   ],
   "harness-fixtures": [
+    "scripts/build.mjs",
     "scripts/lib/planning-document.mjs",
     "scripts/lib/off-ramps.mjs",
     "scripts/test-dispatch-bound.mjs",
@@ -356,6 +358,7 @@ export const machinerySources = {
     "packages/skeleton/src/loadouts/",
   ],
   harness: [
+    "scripts/lib/node-engines.mjs",
     "scripts/lib/host-lanes.mjs",
     "scripts/lib/bounded-command.mjs",
     "scripts/lib/dispatch-bound.mjs",
@@ -509,6 +512,7 @@ export const machinerySources = {
     "scripts/lib/document-gate-stubs.mjs",
     "scripts/lib/document-failures.mjs",
     "scripts/lib/evidence-jsonl.mjs",
+    "scripts/lib/node-engines.mjs",
     "scripts/check-registrations.mjs",
     "scripts/test-gate-deadlines.mjs",
     "scripts/test-release-fixtures.mjs",
@@ -759,7 +763,7 @@ const protection = {
   declarations: "declared suite and copied fixture inputs cover direct imports",
   generated:
     "generated records and installed harness bytes are current before suites start",
-  host: "host memory pressure admits suites only at a normal pressure level",
+  host: "suites start only on a Node inside the package.json engines range and at a normal host memory pressure level",
   "sync-fixtures":
     "regeneration follows dependencies, preserves manual authority and changes no current artifact",
   "runner-fixtures":
@@ -2307,6 +2311,7 @@ export async function scheduleSuites(
     reused = new Map(),
     keepGoing = false,
     lightTasks = lightSuiteNames(),
+    structuralOrder = STRUCTURAL_TASKS,
   } = {},
 ) {
   validateSuites(table);
@@ -2513,7 +2518,7 @@ export async function scheduleSuites(
     .filter((row) => row.structural || (row.name === "format" && row.preflight))
     .sort(
       (a, b) =>
-        STRUCTURAL_TASKS.indexOf(a.name) - STRUCTURAL_TASKS.indexOf(b.name),
+        structuralOrder.indexOf(a.name) - structuralOrder.indexOf(b.name),
     );
   for (const row of structural) {
     onActiveChange([row.name]);
@@ -3184,13 +3189,20 @@ async function runGateChecks(
   }
   const judgeDispatchBound =
     !only && !document && !machinery && !confinedPartial;
+  // A runtime outside the declared range fails on whatever it meets first:
+  // Node 22.2.0 stops at the declarations task and never reaches the host
+  // task. The host task's refusal names the cause, so it leads, and no other
+  // task nor the stale-runtime build runs on that runtime. Inside the range it
+  // stays last: the dispatch bound counts a selection only after host
+  // admission, so an earlier structural failure is not charged as a run.
+  const outsideRange = !judgeRunningNode(process.version, repo).admitted;
   // Compile once when needed: a stale runtime is rebuilt before the reuse
   // lookup and the subject capture, so an ordinary package edit reaches the
   // suites instead of a refusal to run npm run sync first. The compiled
   // output lies outside the code identity. A stale installed harness is
   // reported, never installed here: live hooks change only through the
   // explicit sync step.
-  if (!confinedPartial)
+  if (!confinedPartial && !outsideRange)
     for (const { exitCode } of compileStaleRuntime(repo))
       console.log(
         `compiled the stale runtime before the subject was captured${exitCode ? ` (the build exited ${exitCode}; the structural check judges it)` : ""}`,
@@ -3529,6 +3541,9 @@ async function runGateChecks(
       },
       reused,
       keepGoing,
+      structuralOrder: outsideRange
+        ? ["host", ...STRUCTURAL_TASKS.filter((name) => name !== "host")]
+        : STRUCTURAL_TASKS,
       onActiveChange(names) {
         writeFileSync(`${peerFile}.tmp`, JSON.stringify({ tasks: names }));
         renameSync(`${peerFile}.tmp`, peerFile);
@@ -4022,6 +4037,10 @@ if (isMainModule(import.meta.url)) {
   try {
     process.exitCode = (await runGate()).exitCode;
   } catch (error) {
+    // A Node far below the range can throw during gate startup, before any
+    // task, so the host task cannot name the cause; this handler does.
+    const runtime = judgeRunningNode();
+    if (!runtime.admitted) console.error(runtime.message);
     console.error(error.message);
     process.exitCode = 1;
   }

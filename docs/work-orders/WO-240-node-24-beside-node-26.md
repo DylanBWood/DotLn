@@ -1,4 +1,4 @@
-# WO-240 — Node 24 beside Node 26: the launchpad and every export run on Node 24.15 and later in the 24 line and on Node 26, the engines field says exactly that in every package, the gate's host check refuses a runtime outside the range, one complete gate run under Node 24.15.0 is recorded, and the kit README states the runtimes and the private-clone recipe (version assigned at activation)
+# WO-240 — Node 24 beside Node 26: the launchpad and every export run on Node 24.15 and later in the 24 line and on Node 26, the engines field says exactly that in every package, the gate's host check refuses a runtime outside the range, one complete gate run under Node 24.15.0 is recorded, and the kit README states the runtimes and the private-clone recipe (v0.105.0)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

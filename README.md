@@ -42,7 +42,7 @@ sentences are running code and which are still a promise.
 
 ## Try it
 
-With Node 26, two commands install the workspace and run the first proof:
+With Node 24.15 or later in the 24 line, or Node 26, two commands install the workspace and run the first proof:
 
 ```bash
 npm install
@@ -62,7 +62,7 @@ files a draft work order from one sentence. The
 ## What runs today
 
 <!-- DOTLN-RELEASE-BEGIN -->
-This source prepares DotLn `v0.104.0`.
+This source prepares DotLn `v0.105.0`.
 <!-- DOTLN-RELEASE-END -->
 
 <!-- dotln-what-runs:start -->

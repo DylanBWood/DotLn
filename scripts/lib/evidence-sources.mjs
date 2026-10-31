@@ -6,7 +6,6 @@ import { join, posix } from "node:path";
 // Generated harness output and selected edition output are deliberately absent.
 // Package indexes load their complete export graphs; these are explicit files.
 const commonSources = [
-  "scripts/lib/off-ramps.mjs",
   // The harness host loads the shared dispatch reader by its installed root.
   "packages/skeleton/src/duration.mjs",
   "packages/skeleton/src/test-selection.mjs",

@@ -1,0 +1,279 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-240",
+  "verification": "VER-001",
+  "recordedAt": "2026-10-31T22:21:37.672Z",
+  "subject": {
+    "codeIdentity": "9acc6fd280ba357f29217218918d45b57160e56da41611a72ddaf4c1f778e419",
+    "implementationChangedByVerifier": false
+  },
+  "completeGates": [
+    {
+      "checkId": "npm test",
+      "recordedAt": "2026-10-31T21:13:50.497Z",
+      "startedAt": "2026-10-31T20:37:43.293Z",
+      "treeHash": "b0c9ac9704be795737578651c6541d12e47b9d41",
+      "codeIdentity": "9acc6fd280ba357f29217218918d45b57160e56da41611a72ddaf4c1f778e419",
+      "exitCode": 0,
+      "durationMs": 2167204,
+      "executionMode": "forced-fresh",
+      "freshSuites": 112,
+      "reusedSuites": 0,
+      "evidenceRef": "host-gate:9acc6fd280ba357f29217218918d45b57160e56da41611a72ddaf4c1f778e419:npm test",
+      "host": [
+        {
+          "durationMs": 91,
+          "exitCode": 0
+        }
+      ],
+      "caseCount": 43,
+      "runtime": "v24.15.0",
+      "runtimeAttribution": "executor node24-gate.json and handoff.md; gate rows do not store runtime",
+      "requiredSuiteCount": 43,
+      "unrunSuiteCount": 0
+    },
+    {
+      "checkId": "npm test",
+      "recordedAt": "2026-10-31T22:03:50.953Z",
+      "startedAt": "2026-10-31T21:30:05.985Z",
+      "treeHash": "27e4a4bc14f0bc80cbabc827dccb5a2898a5c159",
+      "codeIdentity": "9acc6fd280ba357f29217218918d45b57160e56da41611a72ddaf4c1f778e419",
+      "exitCode": 0,
+      "durationMs": 2024968,
+      "executionMode": "forced-fresh",
+      "freshSuites": 112,
+      "reusedSuites": 0,
+      "evidenceRef": "host-gate:9acc6fd280ba357f29217218918d45b57160e56da41611a72ddaf4c1f778e419:npm test",
+      "host": [
+        {
+          "durationMs": 96,
+          "exitCode": 0
+        }
+      ],
+      "caseCount": 43,
+      "runtime": "v26.9.0",
+      "runtimeAttribution": "executor node24-gate.json and handoff.md; gate rows do not store runtime",
+      "requiredSuiteCount": 43,
+      "unrunSuiteCount": 0
+    }
+  ],
+  "independent": {
+    "manifestAndLockCount": 7,
+    "lockfileChangedOnlyEngines": true,
+    "hostVersionMatrix": [
+      {
+        "version": "22.2.0",
+        "admitted": false
+      },
+      {
+        "version": "24.14.0",
+        "admitted": false
+      },
+      {
+        "version": "25.9.0",
+        "admitted": false
+      },
+      {
+        "version": "27.0.0",
+        "admitted": false
+      },
+      {
+        "version": "v24.15.0-rc.1",
+        "admitted": false
+      },
+      {
+        "version": "unreadable",
+        "admitted": false
+      },
+      {
+        "version": "24.15.0",
+        "admitted": true
+      },
+      {
+        "version": "24.22.2",
+        "admitted": true
+      },
+      {
+        "version": "26.9.0",
+        "admitted": true
+      },
+      {
+        "version": "24.14.999",
+        "admitted": false
+      },
+      {
+        "version": "24.15.1",
+        "admitted": true
+      },
+      {
+        "version": "26.0.0",
+        "admitted": true
+      },
+      {
+        "version": "v26.10.0-nightly",
+        "admitted": false
+      }
+    ],
+    "additionalVersionCases": 135,
+    "rangeVariations": [
+      "different minor and patch floor",
+      "custom package root",
+      "malformed package JSON",
+      "null document",
+      "dangling range alternative"
+    ],
+    "liveForeignCwdHosts": [
+      {
+        "version": "v24.15.0",
+        "exitCode": 0
+      },
+      {
+        "version": "v26.9.0",
+        "exitCode": 0
+      }
+    ],
+    "decoyLookup": "selected process.execPath",
+    "readmeWhatRunsBlockUnchanged": true,
+    "nodeVersionPinUnchanged": true,
+    "kitRangePropagation": "root and lockroot preserve current or changed range",
+    "completeTaskTimelinesChecked": 2,
+    "executedPassingTasksPerCompleteRun": 112,
+    "generatedHooksOnlySnapshotChanges": true,
+    "generatedHookCount": 16,
+    "manifestChangedLeafCount": 51,
+    "manifestChangedLeafKinds": [
+      "snapshot",
+      "hash"
+    ]
+  },
+  "hostCost": {
+    "beforeRows": [
+      {
+        "recordedAt": "2026-10-31T17:14:42.749Z",
+        "checkId": "structural",
+        "durationMs": 95
+      },
+      {
+        "recordedAt": "2026-10-31T17:15:20.191Z",
+        "checkId": "structural",
+        "durationMs": 98
+      },
+      {
+        "recordedAt": "2026-10-31T17:15:57.921Z",
+        "checkId": "structural",
+        "durationMs": 111
+      }
+    ],
+    "afterRows": [
+      {
+        "runtime": "v24.15.0",
+        "recordedAt": "2026-10-31T21:13:50.497Z",
+        "durationMs": 91
+      },
+      {
+        "runtime": "v26.9.0",
+        "recordedAt": "2026-10-31T22:03:50.953Z",
+        "durationMs": 96
+      }
+    ]
+  },
+  "probes": [
+    {
+      "name": "implementation-format",
+      "runtime": "v26.9.0",
+      "command": "npm run format:check",
+      "exitCode": 0,
+      "startedAt": "2026-10-31T22:16:40.250Z",
+      "finishedAt": "2026-10-31T22:16:48.584Z",
+      "durationMs": 8334
+    },
+    {
+      "name": "runtime-fixtures",
+      "runtime": "v26.9.0",
+      "command": "node --test --test-name-pattern='engines reader|every package and lock entry|host structural check|a Node outside the range|runner failure before any task|harness judges its own|harness check refuses|gate child that finds' scripts/test-runner.test.mjs",
+      "exitCode": 0,
+      "startedAt": "2026-10-31T22:16:59.237Z",
+      "finishedAt": "2026-10-31T22:17:01.096Z",
+      "durationMs": 1859
+    },
+    {
+      "name": "runtime-fixtures",
+      "runtime": "v24.15.0",
+      "command": "node --test --test-name-pattern='engines reader|every package and lock entry|host structural check|a Node outside the range|runner failure before any task|harness judges its own|harness check refuses|gate child that finds' scripts/test-runner.test.mjs",
+      "exitCode": 0,
+      "startedAt": "2026-10-31T22:17:13.791Z",
+      "finishedAt": "2026-10-31T22:17:15.716Z",
+      "durationMs": 1925
+    },
+    {
+      "name": "artifact-edition",
+      "runtime": "v26.9.0",
+      "command": "npm run evidence:artifact -- --check",
+      "exitCode": 0,
+      "startedAt": "2026-10-31T22:17:38.160Z",
+      "finishedAt": "2026-10-31T22:17:38.484Z",
+      "durationMs": 324
+    },
+    {
+      "name": "publication",
+      "runtime": "v26.9.0",
+      "command": "npm run publication:check",
+      "exitCode": 0,
+      "startedAt": "2026-10-31T22:17:59.957Z",
+      "finishedAt": "2026-10-31T22:18:00.192Z",
+      "durationMs": 235
+    },
+    {
+      "name": "generated-artifacts",
+      "runtime": "v26.9.0",
+      "command": "node scripts/structural-checks.mjs generated",
+      "exitCode": 0,
+      "startedAt": "2026-10-31T22:18:09.839Z",
+      "finishedAt": "2026-10-31T22:18:29.646Z",
+      "durationMs": 19806
+    },
+    {
+      "name": "history-roundtrip-sequential",
+      "runtime": "v24.15.0",
+      "command": "node --test --test-name-pattern='committed EventEnvelope streams' packages/kernel/dist/test/store-history.test.js",
+      "exitCode": 0,
+      "startedAt": "2026-10-31T22:18:40.845Z",
+      "finishedAt": "2026-10-31T22:18:41.543Z",
+      "durationMs": 698
+    },
+    {
+      "name": "export-manifests-and-offline-install",
+      "runtime": "v24.15.0",
+      "command": "node --test --test-name-pattern='an offline npm ci against the exported lockfile succeeds' scripts/test-launchpad-export.mjs",
+      "exitCode": 0,
+      "startedAt": "2026-10-31T22:18:53.021Z",
+      "finishedAt": "2026-10-31T22:18:57.650Z",
+      "durationMs": 4629
+    }
+  ],
+  "workerReview": {
+    "source": "docs/evidence/WO-240/reviews.md",
+    "roles": [
+      "criteria-adversary",
+      "design-improver",
+      "consistency-reviewer"
+    ],
+    "newVerificationWorkers": 0
+  },
+  "usage": {
+    "entryTotalTokens": 53159,
+    "handoffTotalTokens": 3138880,
+    "source": "codex-transcript-counter",
+    "scope": "dispatch",
+    "cutoff": "2026-10-31T22:19:17.223Z",
+    "costUsd": null,
+    "hardDollarCap": "unenforced"
+  },
+  "processCorrection": "WO-240-D021",
+  "limits": [
+    "The full gates were consumed from the unchanged subject, not rerun by this verifier.",
+    "Raw executor runtime-readback logs were not found in the bounded scan of system-temp DotLn session scratch log names; runtime attribution rests on the executor records. Actual Node 24.15.0 and Node 26.9.0 ran independent focused probes.",
+    "Only Node 24.15.0 was exercised on the 24 line; later patches, real gh repo creation, and live worker episodes under Node 24 were not exercised here.",
+    "The final exact-tree Node 26 document gate runs after these records are frozen; completion consumes that row without a report-only rewrite."
+  ]
+}

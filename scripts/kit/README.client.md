@@ -80,6 +80,42 @@ runtime produces the same bytes; `check` detects drift against both.
 
 ## First steps
 
+This kit runs on Node 24.15 or later in the 24 line, or on Node 26:
+`engines.node` in `package.json` reads `^24.15.0 || ^26.0.0`. `node
+scripts/harness.mjs check`, `harness evidence` and every `npm test` selection
+refuse another runtime, naming the range and the version they read; in a
+selection the `host` task then runs first and nothing else runs. `node
+scripts/bootstrap.mjs` is unaffected, and a target gate runs the target's own
+declared checks without judging Node. These checks read only
+`^major.minor.patch` alternatives, so an edited `package.json` that an update
+left with another form of range is refused by name until it reads in this form.
+The kit exports no `.node-version`, so an instance that wants a version manager
+to select a runtime pins its own.
+
+To start a private repository from this starter, clone it with no tags and
+keep it as the `upstream` remote that §Taking upstream updates uses:
+
+```sh
+gh repo create <org>/<name> --private
+git clone --no-tags <starter url> <name>
+cd <name>
+git remote rename origin upstream
+git config remote.upstream.tagOpt --no-tags
+git remote add origin <private url>
+git push -u origin main
+node scripts/bootstrap.mjs
+node scripts/harness.mjs check
+```
+
+`git clone --no-tags --branch main <starter url> <name>` makes the initial
+branch explicit and works the same way. The `git config` line is redundant after
+`--no-tags`, which the rename carries into `upstream`; it stays because it is
+the line §Taking upstream updates gives an existing clone. The clone already
+holds the starter's commit, so step 1 below does not apply, and the last two
+lines do steps 2 and 3. `harness check` then passes and reports `local-terms
+list: unavailable`: the recipe does not replace step 4's local-terms list or
+step 7's `npm run meta`, so the numbered steps continue from step 4.
+
 The gate runner needs host access beyond the checkout: the shared Git metadata
 for linked worktrees, sibling worktree destinations, the ignored local control
 and `.runtime/` directories, and its private host coordination directory. On
@@ -427,7 +463,8 @@ values in the order's decisions before release preparation.
 After the first steps above, `npm test`, `npm run test:docs` and
 `npm test -- --review` run inside this instance without package source. Each
 selection first runs the six structural checks: formatting, configuration,
-registrations, declarations, generated artifacts and host memory pressure.
+registrations, declarations, generated artifacts and the host's Node runtime
+and memory pressure.
 The generated check includes the runtime manifest, active pinned snapshot
 and harness bundle;
 `npm run sync` repairs stale derived artifacts. Then `kit-verify` runs instead

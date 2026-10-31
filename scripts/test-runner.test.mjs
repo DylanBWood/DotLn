@@ -25,9 +25,14 @@ import {
   symlinkSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
-import { dirname, isAbsolute, join, resolve } from "node:path";
+import { delimiter, dirname, isAbsolute, join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { measurementGateForRun } from "./measure-gates.mjs";
+import {
+  declaredNodeRange,
+  judgeNodeRuntime,
+  judgeRunningNode,
+} from "./lib/node-engines.mjs";
 import {
   suiteEnvironment,
   withoutDrivenContext,
@@ -103,6 +108,51 @@ test("a driven worker's context never reaches a suite's environment", () => {
     ...Object.fromEntries(names.map((name) => [name, "from the worker"])),
   });
   assert.deepEqual(probe, { PATH: "fixture-path" });
+});
+
+test("a gate child that finds node or npm by name runs on the selected runtime", (t) => {
+  const decoy = createFixtureRoot(join(tmpdir(), "dotln-runtime-decoy-"));
+  t.after(() => rmSync(decoy, { recursive: true, force: true }));
+  for (const name of ["node", "npm"]) {
+    writeFileSync(join(decoy, name), "#!/bin/sh\necho decoy\n");
+    chmodSync(join(decoy, name), 0o755);
+  }
+  const env = suiteEnvironment({
+    PATH: [decoy, "/usr/bin", "/bin"].join(delimiter),
+  });
+  // A shell line, a shebang and npm's own lookup all resolve the same way.
+  assert.equal(
+    spawnSync("sh", ["-c", "command -v node"], {
+      env,
+      encoding: "utf8",
+    }).stdout.trim(),
+    join(dirname(process.execPath), "node"),
+  );
+  assert.equal(
+    spawnSync("/usr/bin/env", ["node", "-p", "process.version"], {
+      env,
+      encoding: "utf8",
+    }).stdout.trim(),
+    process.version,
+  );
+  assert.notEqual(
+    spawnSync("sh", ["-c", "command -v npm"], {
+      env,
+      encoding: "utf8",
+    }).stdout.trim(),
+    join(decoy, "npm"),
+  );
+  // The running directory appears once, ahead of an inherited occurrence.
+  const repeated = suiteEnvironment({
+    PATH: ["fixture-bin", dirname(process.execPath), "fixture-bin"].join(
+      delimiter,
+    ),
+  });
+  assert.deepEqual(repeated.PATH.split(delimiter), [
+    dirname(process.execPath),
+    "fixture-bin",
+  ]);
+  assert.equal(suiteEnvironment({}).PATH, dirname(process.execPath));
 });
 
 test("the registered harness suite executes the driver route tables", () => {
@@ -7427,7 +7477,13 @@ stop.abort();
     join(repo, "scripts/spellings.mjs"),
     `import fs from "node:fs";
 ${settle}const report = "docs/evidence/WO-999/report.md";
-fs.readdirSync(new TextEncoder().encode("."), { recursive: true });
+// Node 24 refuses a recursive listing of a byte path after the guard saw it,
+// and each later spelling must still be judged.
+try {
+  fs.readdirSync(new TextEncoder().encode("."), { recursive: true });
+} catch (error) {
+  if (error.code !== "ERR_INVALID_ARG_TYPE") throw error;
+}
 const { href, protocol, hostname, pathname } = new URL(report, "file://" + process.cwd() + "/");
 fs.readFileSync({ href, protocol, hostname, pathname });
 fs.closeSync(fs.openSync(report, null));
@@ -7707,7 +7763,11 @@ test("peer sync", () => {
 });
 `,
   );
+  // Node publishes the test tracing channels these markers read on its 26
+  // line and not at 24.15, where a case cannot be named while it runs.
+  const namesCases = Number(process.versions.node.split(".")[0]) >= 26;
   const beats = [];
+  const heard = [];
   const measured = await executeSuite(
     {
       name: "heartbeat",
@@ -7722,6 +7782,7 @@ test("peer sync", () => {
     repo,
     900_000,
     ({ message }) => {
+      heard.push(message);
       if (!/^running cases?: /u.test(message)) return;
       const at = Date.now();
       for (const [, name] of message.matchAll(
@@ -7746,18 +7807,27 @@ test("peer sync", () => {
   // an async one, a subtest and its open parent, a case after one that left
   // fs.writeFileSync mocked, a case that outlived a worker thread, five
   // long-named cases open at once, and a case in another file's process.
-  for (const name of [
-    "sync one",
-    "outer",
-    "inner sync",
-    "after the mock",
-    "outlives its worker",
-    ...["group", "first", "second", "third", "fourth"].map(long),
-    "peer sync",
-  ])
+  if (namesCases)
+    for (const name of [
+      "sync one",
+      "outer",
+      "inner sync",
+      "after the mock",
+      "outlives its worker",
+      ...["group", "first", "second", "third", "fourth"].map(long),
+      "peer sync",
+    ])
+      assert.ok(
+        beats.some((beat) => beat.name === shown(name)),
+        `${name} was never named: ${JSON.stringify(beats)}`,
+      );
+  // Without the channels the heartbeat says so and reports the last output.
+  else if (!beats.length)
     assert.ok(
-      beats.some((beat) => beat.name === shown(name)),
-      `${name} was never named: ${JSON.stringify(beats)}`,
+      heard.some((message) =>
+        message.startsWith("no case marker from heartbeat yet; last report: "),
+      ),
+      heard.join("\n"),
     );
   // Whenever a case was named, its own body was running: no case is named
   // after it ended, the one whose end the mock would have swallowed included.
@@ -7817,10 +7887,13 @@ test("peer sync", () => {
     ({ message }) => orphaned.push(message),
   );
   assert.equal(died.exitCode, 1);
-  assert.ok(
-    orphaned.some((message) => /^running cases?: .*survivor \(/u.test(message)),
-    orphaned.join("\n"),
-  );
+  if (namesCases)
+    assert.ok(
+      orphaned.some((message) =>
+        /^running cases?: .*survivor \(/u.test(message),
+      ),
+      orphaned.join("\n"),
+    );
   assert.equal(
     orphaned.some((message) =>
       /^running cases?: .*dies inside \(/u.test(message),
@@ -8727,6 +8800,379 @@ test("host structural check refuses warning and critical samples and reports the
     assert.deepEqual(result.fileEvents, fileEvents);
     assert.match(result.output, /swapBytes=1234; physicalBytes=8192/);
   }
+});
+
+test("the engines reader admits the declared lines and names what it refuses", (t) => {
+  const range = "^24.15.0 || ^26.0.0";
+  for (const version of ["24.15.0", "24.22.2", "26.0.0", "26.9.0", "v26.9.0"]) {
+    const { admitted, message } = judgeNodeRuntime(version, range);
+    assert.equal(admitted, true, version);
+    assert.ok(message.includes(version) && message.includes(range), message);
+  }
+  for (const version of [
+    "22.2.0",
+    "24.14.9",
+    "25.9.0",
+    "26.0.0-rc.1",
+    "27.0.0",
+    "v24.15.0-rc.1",
+  ]) {
+    const { admitted, message } = judgeNodeRuntime(version, range);
+    assert.equal(admitted, false, version);
+    for (const part of [version, range, "node scripts/bootstrap.mjs"])
+      assert.ok(message.includes(part), message);
+  }
+  for (const version of [
+    "not-a-version",
+    "",
+    "24.15",
+    "24.15.0.1",
+    "24.015.0",
+  ]) {
+    const { admitted, message } = judgeNodeRuntime(version, range);
+    assert.equal(admitted, false, version);
+    assert.ok(message.includes(JSON.stringify(version)), message);
+  }
+  // The floor's minor and patch both place the start of the line.
+  for (const [version, admitted] of [
+    ["24.14.9", false],
+    ["24.15.2", false],
+    ["24.15.3", true],
+    ["24.16.0", true],
+  ])
+    assert.equal(
+      judgeNodeRuntime(version, "^24.15.3").admitted,
+      admitted,
+      version,
+    );
+  // A range outside the reader's grammar is refused by name, never half read.
+  for (const written of [
+    ">=26.0.0 <27",
+    "^0.2.3",
+    "^024.15.0",
+    "^24.015.0",
+    "^24.15.00",
+    "^24.15",
+    "24.15.0",
+    "^24.15.0 ||",
+    "",
+    7,
+  ]) {
+    const { admitted, message } = judgeNodeRuntime("26.9.0", written);
+    assert.equal(admitted, false, String(written));
+    assert.ok(message.includes(JSON.stringify(written)), message);
+  }
+  // npm reads an absent range as no constraint, and so does this reader.
+  assert.equal(judgeNodeRuntime("not-a-version", undefined).admitted, true);
+  const repo = createFixtureRoot(join(tmpdir(), "dotln-engines-range-"));
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
+  assert.equal(declaredNodeRange(repo), undefined);
+  // A file that cannot be read is no claim that nothing is declared, and the
+  // refusal says what is wrong with it.
+  const unreadable = () => {
+    assert.equal(declaredNodeRange(repo), null);
+    const { admitted, message } = judgeRunningNode("26.9.0", repo);
+    assert.equal(admitted, false);
+    assert.match(message, /package\.json could not be read/u);
+  };
+  writeFileSync(join(repo, "package.json"), "{");
+  unreadable();
+  writeFileSync(join(repo, "package.json"), "null");
+  unreadable();
+  rmSync(join(repo, "package.json"));
+  mkdirSync(join(repo, "package.json"));
+  unreadable();
+  rmSync(join(repo, "package.json"), { recursive: true });
+  writeFileSync(join(repo, "package.json"), "{}");
+  assert.equal(judgeRunningNode("26.9.0", repo).admitted, true);
+  // npm skips a byte-order mark, so the range behind one still counts.
+  writeFileSync(
+    join(repo, "package.json"),
+    '\uFEFF{"engines":{"node":"^99.0.0"}}',
+  );
+  assert.equal(declaredNodeRange(repo), "^99.0.0");
+  // A readable file with an empty field declares nothing, as npm reads it.
+  writeFileSync(join(repo, "package.json"), '{"engines":{"node":null}}');
+  assert.equal(declaredNodeRange(repo), undefined);
+  writeFileSync(join(repo, "package.json"), '{"engines":{"node":"^26.0.0"}}');
+  assert.equal(declaredNodeRange(repo), "^26.0.0");
+  assert.equal(judgeRunningNode("26.9.0", repo).admitted, true);
+  assert.equal(judgeRunningNode("24.15.0", repo).admitted, false);
+});
+
+test("every package and lock entry declares the root range", () => {
+  const read = (path) => JSON.parse(readFileSync(join(root, path), "utf8"));
+  const declared = read("package.json").engines.node;
+  const lock = read("package-lock.json");
+  assert.equal(lock.packages[""].engines.node, declared);
+  const packages = readdirSync(join(root, "packages")).filter((name) =>
+    existsSync(join(root, "packages", name, "package.json")),
+  );
+  assert.ok(packages.includes("browser-evidence"), packages.join(" "));
+  for (const name of packages) {
+    assert.equal(read(`packages/${name}/package.json`).engines.node, declared);
+    assert.equal(lock.packages[`packages/${name}`].engines.node, declared);
+  }
+});
+
+test("host structural check refuses a Node outside the root engines range and names both", async (t) => {
+  const { checkHost } = await import("./structural-checks.mjs");
+  const declared = JSON.parse(readFileSync(join(root, "package.json"), "utf8"))
+    .engines.node;
+  const sample = {
+    level: "normal",
+    pressure: 1,
+    swapBytes: 0,
+    physicalBytes: 2 ** 36,
+    source: "fixture",
+  };
+  const options = {
+    limits: { taskBytes: 2 ** 30, hostLanes: 8 },
+    requiredPeakBytes: 0,
+    fileEvents: {},
+  };
+  for (const nodeVersion of ["24.15.0", "24.22.2", "26.9.0"]) {
+    const result = checkHost(sample, { ...options, nodeVersion });
+    assert.equal(result.exitCode, 0, nodeVersion);
+    assert.ok(
+      result.output.includes(
+        `${nodeVersion} is inside package.json engines.node ${declared}`,
+      ),
+      result.output,
+    );
+  }
+  for (const nodeVersion of [
+    "22.2.0",
+    "24.14.0",
+    "25.9.0",
+    "27.0.0",
+    "v24.15.0-rc.1",
+  ]) {
+    const result = checkHost(sample, { ...options, nodeVersion });
+    assert.equal(result.exitCode, 1, nodeVersion);
+    assert.ok(
+      result.output.includes(
+        `${nodeVersion} is outside package.json engines.node ${declared}`,
+      ),
+      result.output,
+    );
+    assert.match(result.output, /node scripts\/bootstrap\.mjs is unaffected/u);
+    // A refused runtime still records the samples a host row carries.
+    assert.deepEqual(result.sample, sample);
+    assert.deepEqual(result.fileEvents, options.fileEvents);
+  }
+  const unparsable = checkHost(sample, {
+    ...options,
+    nodeVersion: "not-a-version",
+  });
+  assert.equal(unparsable.exitCode, 1);
+  assert.ok(unparsable.output.includes('"not-a-version"'), unparsable.output);
+  assert.ok(unparsable.output.includes(declared), unparsable.output);
+  // The range comes from the package file and nowhere else.
+  const narrow = createFixtureRoot(join(tmpdir(), "dotln-host-range-"));
+  t.after(() => rmSync(narrow, { recursive: true, force: true }));
+  writeFileSync(
+    join(narrow, "package.json"),
+    '{"engines":{"node":"^24.15.0"}}',
+  );
+  const narrowed = checkHost(sample, {
+    ...options,
+    nodeVersion: "26.9.0",
+    packageRoot: narrow,
+  });
+  assert.equal(narrowed.exitCode, 1);
+  assert.ok(
+    narrowed.output.includes(
+      "26.9.0 is outside package.json engines.node ^24.15.0",
+    ),
+    narrowed.output,
+  );
+});
+
+// The real host check, in the child the gate starts, reading a stubbed version.
+const stubbedNode = (version) =>
+  `data:text/javascript,Object.defineProperty(process,"version",{value:"${version}"})`;
+
+test("a Node outside the range makes the host task the gate's first and only task", async (t) => {
+  const repo = createFixtureRoot(join(tmpdir(), "dotln-runtime-gate-"));
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
+  const gitOptions = { exec: true, stdio: ["ignore", "pipe", "pipe"] };
+  runGit(repo, ["init", "-b", "main"], gitOptions);
+  excludeFixtureOwnership(repo);
+  writeFileSync(
+    join(repo, ".gitignore"),
+    "docs/control/local/\nran.txt\nbuilt.txt\n",
+  );
+  // Package sources with no build receipt make the runtime stale, so a gate
+  // compiles before its tasks unless the runtime has been refused.
+  mkdirSync(join(repo, "packages/skeleton/src"), { recursive: true });
+  mkdirSync(join(repo, "scripts"));
+  writeFileSync(join(repo, "packages/skeleton/package.json"), "{}\n");
+  writeFileSync(join(repo, "packages/skeleton/tsconfig.json"), "{}\n");
+  writeFileSync(join(repo, "packages/skeleton/src/index.mjs"), "\n");
+  writeFileSync(
+    join(repo, "scripts/build.mjs"),
+    'import { writeFileSync } from "node:fs";\nwriteFileSync("built.txt", "yes");\n',
+  );
+  const declare = (range) =>
+    writeFileSync(
+      join(repo, "package.json"),
+      JSON.stringify({ engines: { node: range } }),
+    );
+  declare("^1.0.0");
+  runGit(repo, ["add", "."], gitOptions);
+  runGit(
+    repo,
+    [
+      "-c",
+      "user.name=Fixture",
+      "-c",
+      "user.email=fixture@example.invalid",
+      "-c",
+      "commit.gpgsign=false",
+      "commit",
+      "-qm",
+      "fixture",
+    ],
+    gitOptions,
+  );
+  const table = (host) => [
+    {
+      name: "format",
+      command: [
+        process.execPath,
+        "-e",
+        'require("fs").writeFileSync("ran.txt","yes")',
+      ],
+      structural: true,
+      product: true,
+    },
+    { name: "host", command: host, structural: true, product: true },
+    {
+      name: "build",
+      command: [process.execPath, "-e", "0"],
+      build: true,
+      product: true,
+      outputs: [],
+    },
+    { name: "alpha", command: [process.execPath, "-e", "0"], product: true },
+  ];
+  const executed = (row) =>
+    row.cases.filter((task) => task.executed).map((task) => task.name);
+  const refused = await runGate(["--serial", "--again"], repo, {
+    table: table([
+      process.execPath,
+      "--import",
+      stubbedNode("v22.2.0"),
+      join(root, "scripts/structural-checks.mjs"),
+      "host",
+    ]),
+  });
+  assert.equal(refused.exitCode, 1);
+  assert.deepEqual(executed(refused), ["host"]);
+  assert.equal(existsSync(join(repo, "ran.txt")), false);
+  assert.equal(existsSync(join(repo, "built.txt")), false);
+  const host = refused.cases.find((task) => task.name === "host");
+  assert.match(
+    host.output,
+    /Node runtime v22\.2\.0 is outside package\.json engines\.node /u,
+  );
+  // Inside the range the stale runtime compiles and the declared order stands.
+  declare(`^${process.versions.node.split(".")[0]}.0.0`);
+  const admitted = await runGate(["--serial", "--again"], repo, {
+    table: table([process.execPath, "-e", "0"]),
+  });
+  assert.equal(admitted.exitCode, 0);
+  assert.equal(existsSync(join(repo, "built.txt")), true);
+  const task = (name) => admitted.cases.find((row) => row.name === name);
+  assert.ok(
+    Date.parse(task("format").finishedAt) <= Date.parse(task("host").startedAt),
+  );
+  assert.equal(existsSync(join(repo, "ran.txt")), true);
+});
+
+test("a runner failure before any task on a Node outside the range still names the range", () => {
+  // Listing opens no gate on this checkout, and an unknown suite fails it.
+  const failed = spawnSync(
+    process.execPath,
+    [
+      "--import",
+      stubbedNode("v20.10.0"),
+      "scripts/test-runner.mjs",
+      "--list",
+      "--only",
+      "no-such-suite",
+    ],
+    { cwd: root, encoding: "utf8" },
+  );
+  assert.equal(failed.status, 1);
+  assert.match(
+    failed.stderr,
+    /Node runtime v20\.10\.0 is outside package\.json engines\.node /u,
+  );
+  assert.match(failed.stderr, /Unknown suite: no-such-suite/u);
+  const inside = spawnSync(
+    process.execPath,
+    ["scripts/test-runner.mjs", "--list", "--only", "no-such-suite"],
+    { cwd: root, encoding: "utf8" },
+  );
+  assert.equal(inside.status, 1);
+  assert.doesNotMatch(inside.stderr, /Node runtime /u);
+});
+
+test("harness judges its own checkout's range from any directory, and refuses evidence as it refuses check", (t) => {
+  const target = createFixtureRoot(join(tmpdir(), "dotln-runtime-target-"));
+  t.after(() => rmSync(target, { recursive: true, force: true }));
+  runGit(target, ["init", "-q", "-b", "main"]);
+  excludeFixtureOwnership(target);
+  writeFileSync(join(target, "package.json"), '{"engines":{"node":">=18"}}');
+  const harness = join(root, "scripts/harness.mjs");
+  // Neither the directory nor a launchpad override chooses the range.
+  const foreign = spawnSync(
+    process.execPath,
+    [harness, "check", "--target", ".", "--runtime-root", root],
+    {
+      cwd: target,
+      encoding: "utf8",
+      env: { ...process.env, DOTLN_LAUNCHPAD: target },
+    },
+  );
+  assert.doesNotMatch(foreign.stderr, /engines\.node/u, foreign.stderr);
+  // Evidence can report a pass from a cached row, so it refuses too; the
+  // refusal names this checkout's range and a stop stays admitted.
+  const stubbed = (...args) =>
+    spawnSync(
+      process.execPath,
+      ["--import", stubbedNode("v22.2.0"), harness, ...args],
+      { cwd: target, encoding: "utf8" },
+    );
+  const evidence = stubbed("evidence");
+  assert.equal(evidence.status, 1);
+  assert.match(
+    evidence.stderr,
+    /Node runtime v22\.2\.0 is outside package\.json engines\.node \^/u,
+  );
+  const stop = stubbed("evidence", "--stop");
+  assert.equal(stop.status, 0, stop.stderr);
+});
+
+test("harness check refuses a Node outside the range while emit stays open for bootstrap", (t) => {
+  const run = (...args) =>
+    spawnSync(
+      process.execPath,
+      ["--import", stubbedNode("v22.2.0"), "scripts/harness.mjs", ...args],
+      { cwd: root, encoding: "utf8" },
+    );
+  const refused = run("check");
+  assert.equal(refused.status, 1);
+  assert.match(
+    refused.stderr,
+    /Node runtime v22\.2\.0 is outside package\.json engines\.node /u,
+  );
+  const out = createFixtureRoot(join(tmpdir(), "dotln-runtime-emit-"));
+  t.after(() => rmSync(out, { recursive: true, force: true }));
+  const emitted = run("emit", "--out", out);
+  assert.equal(emitted.status, 0, emitted.stderr);
 });
 
 test("fail-fast keeps running tasks, starts no later task, and keep-going restores scheduling", async () => {

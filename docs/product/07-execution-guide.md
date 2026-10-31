@@ -3628,7 +3628,9 @@ and generated evidence, including fixtures, manifests and installed guidance.
   main is checked against main’s latest execution at each later lookup;
   unresolvable main leaves the worktree’s own rows.
   `--again` always runs every selected task fresh; review selections may reuse
-  eligible passing tasks. Review selection diffs against the
+  eligible passing tasks. Reuse compares code identity and never the Node that
+  ran a task, so a run that judges one supported line passes `--again` and shows
+  no reused task on its row. Review selection diffs against the
   merge base, retaining the worktree’s changes when a sibling advances main.
   During a product gate, roles may write only the active order’s evidence,
   verification and final-review directories at the default document roots;
@@ -3690,8 +3692,8 @@ and generated evidence, including fixtures, manifests and installed guidance.
   evidence --stop` ends the session's own gate at its next boundary and records
   no passing check. Children retain owned process-group cancellation, finite
   deadlines and peer observations. `harness evidence` remains a convenience
-  for product and diff checks; `--fail` records only the diff check. It is not
-  a lifecycle prerequisite. Read authored outputs and validate generated
+  for product and diff checks; `--fail` records only the diff check. It refuses
+  a Node outside the range and is not a lifecycle prerequisite. Read authored outputs and validate generated
   outputs using their existing commands, without a new receipt ritual.
 
 - **Build publication.** Compile into staging with the existing Node
@@ -3838,7 +3840,10 @@ them across sessions; session cleanup cannot remove them.
 
 Every selection begins with six structural tasks, in order: `format`,
 `configuration-root`, `registrations`, `declarations`, `generated` and
-`host`. They finish before a build or selected suite starts. Declarations
+`host`. They finish before a build or selected suite starts. A Node outside
+the root `engines.node` range puts `host` first, and neither another task nor
+the stale-runtime build below then runs, because such a runtime fails on
+whatever it meets first and only `host` names the cause. Declarations
 check machinery inputs and declared copied-fixture closures.
 The temporary-root declaration check follows runtime imports and executable
 path literals into corpus and evidence fixtures, so their directory does not
@@ -3864,8 +3869,9 @@ main before bootstrap, and release-close recovery, `worktree finish` and
 omitted sources; bootstrap is the named manual recovery command (WO-226).
 Sync refuses a role oracle without its authorizing
 update, a feedback edition whose judged sources require a live episode,
-and manual baseline fingerprints. Host admission refuses measured warning
-or critical memory pressure and records its sampled values. For complete/plain
+and manual baseline fingerprints. Host admission refuses a Node outside the
+root `engines.node` range, naming both, and measured warning or critical
+memory pressure, and records its sampled values. For complete/plain
 and review selections it also refuses an exhausted dispatch wall-clock or
 complete-run bound; the stopped row records every exceeded metric, value, ceiling and
 owning dispatch. Failed and interrupted admitted complete selections consume a

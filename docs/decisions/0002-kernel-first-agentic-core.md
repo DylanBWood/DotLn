@@ -138,4 +138,10 @@ notes and tooling choices within the decided constraints.
   remain historical evidence; their “no new version” statement describes
   WO-011 only. [LEGAL](../LEGAL.md) records the updated dependency inventory.
 
+- 2026-10-31, WO-240 widens the runtime line of the 2026-09-19 amendment: every
+  package declares Node `^24.15.0 || ^26.0.0`. `.node-version` stays `26.9.0`,
+  and TypeScript `7.0.2` and `@types/node` `26.6.2` are unchanged.
+  [WO-240-D002](../evidence/WO-240/decisions.md#wo-240-d002--declare-both-node-lines-and-read-the-range-without-a-dependency)
+  records the range and its reader.
+
 - 2026-09-30, WO-057 browser-runtime observation: the future `packages/browser-evidence` workspace package named by WO-059 is the consumer of exactly pinned `playwright` `1.63.0`, outside the pure kernel and compiler; WO-059's design also leaves the skeleton's imports unchanged. The [host observation](../discovery/browser-runtime-2026-09-30.md) installed that version and Chromium headless shell `153.0.8010.12` (Playwright revision `1243`) in disposable scratch, launched under the unchanged discovery sandbox, produced equal screenshot hashes in two runs of one static fixture, observed no recorded browser process after parent SIGKILL, and launched from a clean launchd-origin process without the connected-server environment. Filtering-proxy installation remains unavailable. This applies the existing runtime-dependency posture and names a future consumer; no workspace dependency is added here. At implementation, record the pinned package and browser inventory in [LEGAL](../LEGAL.md#current-state); at the first built or bundled distribution, apply its existing `THIRD_PARTY_NOTICES` duty to the actual shipped materials, including browser and FFmpeg notices. Reobserve on a changed pin, host or confinement profile, screenshot variance, surviving child, or an available filtering proxy. [WO-057-D004](../evidence/WO-057/decisions.md#wo-057-d004--record-the-adapter-consumer-and-bounded-results) records the alternatives and limits.
