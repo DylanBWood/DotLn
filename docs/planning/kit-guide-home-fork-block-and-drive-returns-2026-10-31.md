@@ -488,8 +488,18 @@ model_reasoning_effort="max" -s read-only` with the briefs from the ignored
 lane, took 4 min 5 s (the design improver, 16:18:15Z), 4 min 33 s (the
 criteria adversary, 16:18:43Z) and 6 min 2 s (the consistency reviewer,
 16:20:13Z); their dollars are unobserved (Codex reports none to a
-non-interactive caller). The refuter's figures are appended in §Validation
-as observed.
+non-interactive caller). The refuter, one fresh `dotln-worker` (claude-opus-5-5 at xhigh by the
+pin; the worker took no host readback), was dispatched at 16:35:14Z and
+handed back at 16:45:04Z (9 min 50 s; 188,792 tokens by the host's task
+usage, 17 tool uses, all reads of the prompt file); the receipt helper
+measured dispatch to file at 15 min 8 s (908,243 ms), the difference being
+the statement's formatting repair by the same worker (one absolute path,
+4 s) and the parent's filing. The reviewed route's whole cost this pass:
+three Codex workers of 4 to 6 minutes in parallel, about 35 minutes of the
+parent's integration, and the refuter; the refuter's twenty-two known
+issues overlap the reviewers' fifteen findings in two places (the identity's
+source bytes; the two election homes), which is the first evidence the
+route's benefit measure can read.
 
 ## Validation
 
@@ -566,3 +576,26 @@ appended when observed.
 - The operator's fourth message, received while the reviews ran: WO-244,
   product 07, the ledger, the map and the sequence amended for the reviewed
   route; this document's dispatch table carries the row.
+- `npm run plan -- refute` at `d45f174e` (the integrated subject;
+  scope `pass`: WO-247, WO-245, WO-248, WO-238, WO-241, WO-242, WO-243,
+  WO-244, WO-246; ten carried identities); one fresh `dotln-worker`
+  returned `aligned-with-findings` for all nine orders, twenty-two known
+  issues, no observed failure, no vision contradiction and no hold. The
+  worker read the pretty-printed prompt file in pages (the one-line form is
+  too long for a paged read) and nothing else; its statement was repaired
+  once by the same worker for one private absolute path, which the receipt
+  screen refused, without rerolling the judgment.
+- `npm run plan -- receipt` filed
+  `docs/planning/refutations/2026-10-31-planning-03d7c0f510c9a398-061.md`
+  (worker type `dotln-worker`; judged, committed and workspace subjects
+  equal at `sha256:af496f6a…`; no advisory) and committed the pair.
+- Receipt 061's twenty-two known issues are recorded on the nine orders'
+  catalog rows with the planner's readings, for the activating passes and
+  the executors; the ones that cross orders (WO-238's product 07 split
+  against the later orders' write-backs; the README removal credited to
+  WO-245 alone; WO-247's election joining WO-241's registry; WO-242's router
+  stop against WO-247's changed router) are the next pass's sequence reading
+  as much as any order's.
+- `npm run meta`, `npm run format` and `npm run test:docs` after the
+  receipt: recorded below.
+- After the receipt: `npm run meta` green; `npm run format` changed nothing beyond this pass's edits; `npm run test:docs` read 27 passed and 0 failed in 0 h 2 min at the committed subject plus this record, which this commit carries; the branch is pushed and its `:memo:` pull request opened on the dispatch's authorization, never merged.
