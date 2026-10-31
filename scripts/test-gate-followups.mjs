@@ -63,6 +63,7 @@ test("bounded role wording preserves prior savings and records reviewed startup 
   // test-process-debt.mjs walks every recorded parent link of every oracle
   // and checks each recorded hash.
   const chain = [
+    "wo192-integration-role-baseline.json",
     "wo239-integration-role-baseline.json",
     "wo235-removal-role-baseline.json",
     "wo235-quality-pass-role-baseline.json",
@@ -157,17 +158,29 @@ test("bounded role wording preserves prior savings and records reviewed startup 
     files.get("CLAUDE.md").trimEnd(),
   );
   const profiles = [...files].filter(([file]) => file.endsWith("/SKILL.md"));
-  assert.equal(profiles.length, baseline.profiles.length);
+  assert.equal(
+    profiles.length,
+    baseline.profiles.length + 2,
+    "router is added in both installed roots",
+  );
   for (const [file, contents] of profiles) {
-    const previous = baseline.profiles.find((profile) => profile.path === file);
-    assert.ok(previous, `missing baseline: ${file}`);
     const bytes = Buffer.byteLength(instruction) + Buffer.byteLength(contents);
     const role = file.split("/")[2].slice("dotln-".length);
-    const measured = reviewed.profiles[role];
     const current = chain[0].startupCost.profiles[role];
+    assert.equal(bytes, current.bytes, `${file}: reviewed startup bytes`);
+    // The router has no earlier measurement to link to; its own ceiling
+    // bounds it from the first oracle that names it.
+    if (role === "router") {
+      assert.equal(current.beforeBytes, null);
+      assert.equal(current.growthBytes, null);
+      assert.ok(bytes <= budgets.limits.coldStartBytes.router);
+      continue;
+    }
+    const previous = baseline.profiles.find((profile) => profile.path === file);
+    assert.ok(previous, `missing baseline: ${file}`);
+    const measured = reviewed.profiles[role];
     const prior = priorCost.profiles[role];
     const original = historical.profiles[role];
-    assert.equal(bytes, current.bytes, `${file}: reviewed startup bytes`);
     for (const [later, earlier] of links)
       assert.equal(
         later.startupCost.profiles[role].beforeBytes,

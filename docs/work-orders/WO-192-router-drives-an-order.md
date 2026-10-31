@@ -1,9 +1,27 @@
-# WO-192 — One session drives an order through its whole lifecycle: a router that only routes starts a fresh worker for each phase and hands it nothing but the phrase, for the launchpad's own orders and for a registered target's, whose phase workers run in the target worktree under WO-049's bundle (version assigned at activation)
+# WO-192 — One session drives an order through its whole lifecycle: a router that only routes starts a fresh worker for each phase and hands it nothing but the phrase, for the launchpad's own orders and for a registered target's, whose phase workers run in the target worktree under WO-049's bundle (v0.104.0)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
 **Effort:** executor max; verifier xhigh; reviewer xhigh.
 **Track:** delivery
+**Front page:** README.md
+**Execution expansion (operator, 2026-10-26):** Repair the platform's validation
+order now, and revise README's What runs today and Why this exists passages as
+directed. WO-192-D073 records the README provenance; WO-192-D075 corrects the
+validation repair to preserve the existing gate architecture. Preserve the front-page shape and budget; admit this scope
+through the validated execution amendment rather than an unbound branch field.
+**Execution expansion (operator, 2026-10-30):** Repair in this order every
+defect and consistency finding the independent reviews of the integrated tree
+report, and restructure the driver, unless one honestly needs a planning pass;
+none does. WO-192-D089 records the authorization and criterion 17 the bounded scope.
+**Top-level subagent budget exception (operator, 2026-10-25):** All top-level
+phases of WO-192 (execution, verification, repair, final review and release
+close) have no fixed subagent admission cap; the earlier 50 and 100 allowances
+are superseded. Retain admission accounting. Automated runs used to qualify
+this feature and their own agents still obey their configured budgets,
+including the specified 20-agent per-spawner cap and driven-session ceiling.
+This is an order-only role-text exception, not a repository default change
+or an exception to other gates. Source: WO-192-D014 in this order's decisions.
 **Release classification:** minor. A new role and operator phrase, a
 lifecycle identity per spawned worker, a sub-agent budget per phase worker, generated agent definitions per role, and
 a target-order branch in the executor, verifier
@@ -340,7 +358,11 @@ instance, so the operator never opens a session in a target repository.
 - **Other harnesses.** Under Codex the router is role text over the
   spawn call's model and effort arguments, without the hook refusals,
   as the cap is today; under Copilot it is advisory. Both rows are
-  recorded as untested unless a probe runs.
+  recorded as untested unless a probe runs. The operator's 2026-10-25 execution
+  amendment requires live Codex and Claude qualification in every driven role
+  (criterion 14); Copilot remains untested. Separate Codex CLI sessions use the
+  generated role text and the Codex worker pins, with the host's own approval
+  boundary and explicit accounting where hooks are unavailable.
 - **Fallback if a probe row fails.** Each phase worker is a separate
   root session started through the existing print transport in the
   order's worktree, which needs no identity or counter change; what a
@@ -592,6 +614,49 @@ the write-backs below.
     criterion 9's phases run under them.
 13. `npm test -- --review` and `npm run test:docs` green;
     `git diff --check` clean; no new dependency.
+14. Operator-authorized execution expansion (2026-10-25, WO-192-D012):
+    both Codex and Claude run live as router, executor, verifier, reviewer
+    and release close in isolated fixtures. Each host's record identifies
+    the role, actual supplied model/effort and available host readback,
+    completion or observed boundary, usage and sub-agent counts with unknown
+    coverage stated. Both hosts complete the executor-to-final-review target
+    lifecycle with actual target and document gate evidence. Router and
+    release-close sessions exercise canonical routing and the registered
+    target's no-release close after locally observed synthetic merges;
+    no real project publication or merge is part of this qualification.
+15. Operator-corrected execution expansion (2026-10-26, WO-192-D075): fix
+    the late lifecycle-test failure without changing the existing product/
+    document gate architecture or reuse rules. Synthetic lifecycle fixtures
+    run as the existing product preflight and block later product suites on
+    failure, including with `--keep-going`. The two comparisons consuming
+    current control records and WO-030 evidence stay in the fresh document
+    gate. Keep default direct invocation's full coverage, final document
+    validation after reports, and existing target-order procedures. Regressions
+    cover both selections, product refusal/reuse, and unchanged review,
+    focused and installed-instance selection. No blanket document union.
+16. Operator-authorized README edits (2026-10-26, WO-192-D073): What runs today
+    contains the operator's supplied four sentences as two paragraphs; the
+    opening of Why this exists retains the operator's preferred babysitting
+    and bigger-prompt sentences, followed by an account of daily software
+    delivery, durable decisions, distinct phase responsibilities and continuity
+    across sessions. The front-page checker admits a leading declaration bound
+    by a validated current execution amendment for this order and path, while
+    retaining refusals of unbound branch fields, changed/withdrawn bindings and
+    front-page control or shape violations. Record direct-filing provenance.
+17. Operator-authorized review repairs (2026-10-30, WO-192-D089): the defects
+    reproduced by the independent reviews of the integrated tree are repaired
+    with regressions. A spawned agent that is not a lifecycle worker works inside
+    its spawner's session, so it holds no writer of its own and keeps the role's
+    grants, and a driven worker's helper stays read-only; `SubagentStop` releases
+    a lifecycle worker's reservation. The route judges a target merge at the
+    remote base a drive fetches, applies a repair bound only to repairs still to
+    come, keys the incomplete bound on the routed action and lets a recorded
+    transition clear stale drive facts. A driven worker's context reaches no
+    suite; a live launchpad gate binds the target lane's writes; the router
+    writes nothing and each phrase must name its agent type. The driver's
+    transport, session and prompts are restructured with launch arguments
+    byte-identical for both hosts, every role and both worktree shapes, and both
+    hosts drive live again on the final code.
 
 **Preflight:** `npm test -- --only harness-probe` for step 1,
 `npm test -- --only harness-fixtures` and `npm test -- --only harness` for

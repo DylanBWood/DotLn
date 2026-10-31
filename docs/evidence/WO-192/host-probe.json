@@ -1,0 +1,851 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-25T20:45:04.768Z",
+  "harness": "claude-code",
+  "version": "2.1.310 (Claude Code)",
+  "rootSelection": {
+    "model": "claude-opus-5-5",
+    "effort": "xhigh",
+    "source": "launch-selector"
+  },
+  "workerSelection": {
+    "model": "claude-opus-5-5",
+    "effort": "xhigh",
+    "source": "agent-definition"
+  },
+  "exitCode": 0,
+  "timedOut": false,
+  "tools": [
+    {
+      "name": "Agent",
+      "nested": false,
+      "inputFields": [
+        "description",
+        "subagent_type",
+        "run_in_background",
+        "prompt"
+      ]
+    },
+    {
+      "name": "Read",
+      "nested": true,
+      "inputFields": [
+        "file_path"
+      ]
+    },
+    {
+      "name": "Agent",
+      "nested": true,
+      "inputFields": [
+        "description",
+        "subagent_type",
+        "prompt"
+      ]
+    },
+    {
+      "name": "Read",
+      "nested": true,
+      "inputFields": [
+        "file_path"
+      ]
+    },
+    {
+      "name": "Write",
+      "nested": true,
+      "inputFields": [
+        "file_path",
+        "content"
+      ]
+    },
+    {
+      "name": "Read",
+      "nested": true,
+      "inputFields": [
+        "file_path"
+      ]
+    }
+  ],
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 19716,
+    "cache_read_input_tokens": 8320,
+    "output_tokens": 2499,
+    "output_tokens_details": {
+      "thinking_tokens": 1365
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 19716,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 410,
+        "cache_read_input_tokens": 8320,
+        "cache_creation_input_tokens": 3146,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 3146
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "costUsd": 0.40506220000000004,
+  "cwdUnsupported": true,
+  "error": false,
+  "rows": {
+    "childIdentity": {
+      "status": "observed",
+      "reason": "agent_id and agent_type on a child's tool call"
+    },
+    "childEffort": {
+      "status": "observed",
+      "reason": "effort.level on a child's tool call"
+    },
+    "nestedSpawner": {
+      "status": "observed",
+      "reason": "nested Agent admission names its calling worker"
+    },
+    "lateDirectory": {
+      "status": "observed",
+      "reason": "directory created by SubagentStart after spawn; declared synthetic write succeeded"
+    },
+    "pinnedEffort": {
+      "status": "observed",
+      "reason": "child tool hooks report the definition's xhigh pin; selection only, not effective inference effort"
+    },
+    "targetHooks": {
+      "status": "absent",
+      "reason": "target worker cwd and target bundle hook both observed; shell cd alone is not worker cwd"
+    }
+  },
+  "events": [
+    {
+      "source": "parent",
+      "event": "SessionStart",
+      "tool": null,
+      "fields": {
+        "session_id": "string",
+        "transcript_path": "string",
+        "cwd": "string",
+        "hook_event_name": "string",
+        "source": "string"
+      },
+      "session": "identity-1",
+      "agent": null,
+      "type": null,
+      "effort": null,
+      "cwd": "launchpad",
+      "invocation": null,
+      "denied": false
+    },
+    {
+      "source": "parent",
+      "event": "UserPromptSubmit",
+      "tool": null,
+      "fields": {
+        "session_id": "string",
+        "transcript_path": "string",
+        "cwd": "string",
+        "prompt_id": "string",
+        "permission_mode": "string",
+        "hook_event_name": "string",
+        "prompt": "string"
+      },
+      "session": "identity-1",
+      "agent": null,
+      "type": null,
+      "effort": null,
+      "cwd": "launchpad",
+      "invocation": null,
+      "denied": false
+    },
+    {
+      "source": "parent",
+      "event": "PreToolUse",
+      "tool": "Agent",
+      "fields": {
+        "session_id": "string",
+        "transcript_path": "string",
+        "cwd": "string",
+        "prompt_id": "string",
+        "permission_mode": "string",
+        "effort": {
+          "level": "string"
+        },
+        "hook_event_name": "string",
+        "tool_name": "string",
+        "tool_input": {
+          "description": "string",
+          "prompt": "string",
+          "subagent_type": "string",
+          "run_in_background": "boolean"
+        },
+        "tool_use_id": "string"
+      },
+      "session": "identity-1",
+      "agent": null,
+      "type": null,
+      "effort": "xhigh",
+      "cwd": "launchpad",
+      "invocation": "identity-2",
+      "denied": false
+    },
+    {
+      "source": "parent",
+      "event": "SubagentStart",
+      "tool": null,
+      "fields": {
+        "session_id": "string",
+        "transcript_path": "string",
+        "cwd": "string",
+        "prompt_id": "string",
+        "agent_id": "string",
+        "agent_type": "string",
+        "hook_event_name": "string"
+      },
+      "session": "identity-1",
+      "agent": "identity-3",
+      "type": "dotln-worker",
+      "effort": null,
+      "cwd": "launchpad",
+      "invocation": null,
+      "createdLateDirectory": true,
+      "denied": false
+    },
+    {
+      "source": "parent",
+      "event": "PreToolUse",
+      "tool": "Read",
+      "fields": {
+        "session_id": "string",
+        "transcript_path": "string",
+        "cwd": "string",
+        "prompt_id": "string",
+        "permission_mode": "string",
+        "agent_id": "string",
+        "agent_type": "string",
+        "effort": {
+          "level": "string"
+        },
+        "hook_event_name": "string",
+        "tool_name": "string",
+        "tool_input": {
+          "file_path": "string"
+        },
+        "tool_use_id": "string"
+      },
+      "session": "identity-1",
+      "agent": "identity-3",
+      "type": "dotln-worker",
+      "effort": "xhigh",
+      "cwd": "launchpad",
+      "invocation": "identity-4",
+      "denied": false
+    },
+    {
+      "source": "parent",
+      "event": "PostToolUse",
+      "tool": "Read",
+      "fields": {
+        "session_id": "string",
+        "transcript_path": "string",
+        "cwd": "string",
+        "prompt_id": "string",
+        "permission_mode": "string",
+        "agent_id": "string",
+        "agent_type": "string",
+        "effort": {
+          "level": "string"
+        },
+        "hook_event_name": "string",
+        "tool_name": "string",
+        "tool_input": {
+          "file_path": "string"
+        },
+        "tool_response": {
+          "type": "string",
+          "file": {
+            "filePath": "string",
+            "content": "string",
+            "numLines": "number",
+            "startLine": "number",
+            "totalLines": "number"
+          }
+        },
+        "tool_use_id": "string",
+        "duration_ms": "number"
+      },
+      "session": "identity-1",
+      "agent": "identity-3",
+      "type": "dotln-worker",
+      "effort": "xhigh",
+      "cwd": "launchpad",
+      "invocation": "identity-4",
+      "denied": false
+    },
+    {
+      "source": "parent",
+      "event": "PreToolUse",
+      "tool": "Agent",
+      "fields": {
+        "session_id": "string",
+        "transcript_path": "string",
+        "cwd": "string",
+        "prompt_id": "string",
+        "permission_mode": "string",
+        "agent_id": "string",
+        "agent_type": "string",
+        "effort": {
+          "level": "string"
+        },
+        "hook_event_name": "string",
+        "tool_name": "string",
+        "tool_input": {
+          "description": "string",
+          "prompt": "string",
+          "subagent_type": "string"
+        },
+        "tool_use_id": "string"
+      },
+      "session": "identity-1",
+      "agent": "identity-3",
+      "type": "dotln-worker",
+      "effort": "xhigh",
+      "cwd": "launchpad",
+      "invocation": "identity-5",
+      "denied": false
+    },
+    {
+      "source": "parent",
+      "event": "SubagentStart",
+      "tool": null,
+      "fields": {
+        "session_id": "string",
+        "transcript_path": "string",
+        "cwd": "string",
+        "prompt_id": "string",
+        "agent_id": "string",
+        "agent_type": "string",
+        "hook_event_name": "string"
+      },
+      "session": "identity-1",
+      "agent": "identity-6",
+      "type": "dotln-worker",
+      "effort": null,
+      "cwd": "launchpad",
+      "invocation": null,
+      "denied": false
+    },
+    {
+      "source": "parent",
+      "event": "PreToolUse",
+      "tool": "Read",
+      "fields": {
+        "session_id": "string",
+        "transcript_path": "string",
+        "cwd": "string",
+        "prompt_id": "string",
+        "permission_mode": "string",
+        "agent_id": "string",
+        "agent_type": "string",
+        "effort": {
+          "level": "string"
+        },
+        "hook_event_name": "string",
+        "tool_name": "string",
+        "tool_input": {
+          "file_path": "string"
+        },
+        "tool_use_id": "string"
+      },
+      "session": "identity-1",
+      "agent": "identity-6",
+      "type": "dotln-worker",
+      "effort": "xhigh",
+      "cwd": "launchpad",
+      "invocation": "identity-7",
+      "denied": false
+    },
+    {
+      "source": "parent",
+      "event": "PostToolUse",
+      "tool": "Read",
+      "fields": {
+        "session_id": "string",
+        "transcript_path": "string",
+        "cwd": "string",
+        "prompt_id": "string",
+        "permission_mode": "string",
+        "agent_id": "string",
+        "agent_type": "string",
+        "effort": {
+          "level": "string"
+        },
+        "hook_event_name": "string",
+        "tool_name": "string",
+        "tool_input": {
+          "file_path": "string"
+        },
+        "tool_response": {
+          "type": "string",
+          "file": {
+            "filePath": "string",
+            "content": "string",
+            "numLines": "number",
+            "startLine": "number",
+            "totalLines": "number"
+          }
+        },
+        "tool_use_id": "string",
+        "duration_ms": "number"
+      },
+      "session": "identity-1",
+      "agent": "identity-6",
+      "type": "dotln-worker",
+      "effort": "xhigh",
+      "cwd": "launchpad",
+      "invocation": "identity-7",
+      "denied": false
+    },
+    {
+      "source": "parent",
+      "event": "SubagentStop",
+      "tool": null,
+      "fields": {
+        "session_id": "string",
+        "transcript_path": "string",
+        "cwd": "string",
+        "prompt_id": "string",
+        "permission_mode": "string",
+        "agent_id": "string",
+        "agent_type": "string",
+        "effort": {
+          "level": "string"
+        },
+        "hook_event_name": "string",
+        "stop_hook_active": "boolean",
+        "agent_transcript_path": "string",
+        "last_assistant_message": "string",
+        "background_tasks": [],
+        "session_crons": []
+      },
+      "session": "identity-1",
+      "agent": "identity-6",
+      "type": "dotln-worker",
+      "effort": "xhigh",
+      "cwd": "launchpad",
+      "invocation": null,
+      "denied": false
+    },
+    {
+      "source": "parent",
+      "event": "PostToolUse",
+      "tool": "Agent",
+      "fields": {
+        "session_id": "string",
+        "transcript_path": "string",
+        "cwd": "string",
+        "prompt_id": "string",
+        "permission_mode": "string",
+        "agent_id": "string",
+        "agent_type": "string",
+        "effort": {
+          "level": "string"
+        },
+        "hook_event_name": "string",
+        "tool_name": "string",
+        "tool_input": {
+          "description": "string",
+          "prompt": "string",
+          "subagent_type": "string"
+        },
+        "tool_response": {
+          "status": "string",
+          "prompt": "string",
+          "agentId": "string",
+          "agentType": "string",
+          "harnessNoteCount": "number",
+          "harnessTailCount": "number",
+          "harnessSectionHash": "string",
+          "content": [
+            {
+              "type": "string",
+              "text": "string"
+            }
+          ],
+          "resolvedModel": "string",
+          "totalDurationMs": "number",
+          "totalTokens": "number",
+          "totalToolUseCount": "number",
+          "usage": {
+            "output_tokens_details": {
+              "thinking_tokens": "number"
+            },
+            "input_tokens": "number",
+            "cache_creation_input_tokens": "number",
+            "cache_read_input_tokens": "number",
+            "output_tokens": "number",
+            "server_tool_use": {
+              "web_search_requests": "number",
+              "web_fetch_requests": "number"
+            },
+            "service_tier": "string",
+            "cache_creation": {
+              "ephemeral_1h_input_tokens": "number",
+              "ephemeral_5m_input_tokens": "number"
+            },
+            "inference_geo": "string",
+            "iterations": [
+              {
+                "input_tokens": "number",
+                "output_tokens": "number",
+                "cache_read_input_tokens": "number",
+                "cache_creation_input_tokens": "number",
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": "number",
+                  "ephemeral_1h_input_tokens": "number"
+                },
+                "type": "string"
+              }
+            ],
+            "speed": "string",
+            "fallback_credit": "null"
+          },
+          "toolStats": {
+            "readCount": "number",
+            "searchCount": "number",
+            "bashCount": "number",
+            "editFileCount": "number",
+            "linesAdded": "number",
+            "linesRemoved": "number",
+            "otherToolCount": "number"
+          },
+          "canContinueAgent": "boolean"
+        },
+        "tool_use_id": "string",
+        "duration_ms": "number"
+      },
+      "session": "identity-1",
+      "agent": "identity-3",
+      "type": "dotln-worker",
+      "effort": "xhigh",
+      "cwd": "launchpad",
+      "invocation": "identity-5",
+      "denied": false
+    },
+    {
+      "source": "parent",
+      "event": "PreToolUse",
+      "tool": "Write",
+      "fields": {
+        "session_id": "string",
+        "transcript_path": "string",
+        "cwd": "string",
+        "prompt_id": "string",
+        "permission_mode": "string",
+        "agent_id": "string",
+        "agent_type": "string",
+        "effort": {
+          "level": "string"
+        },
+        "hook_event_name": "string",
+        "tool_name": "string",
+        "tool_input": {
+          "file_path": "string",
+          "content": "string"
+        },
+        "tool_use_id": "string"
+      },
+      "session": "identity-1",
+      "agent": "identity-3",
+      "type": "dotln-worker",
+      "effort": "xhigh",
+      "cwd": "launchpad",
+      "invocation": "identity-8",
+      "denied": false
+    },
+    {
+      "source": "parent",
+      "event": "PostToolUse",
+      "tool": "Write",
+      "fields": {
+        "session_id": "string",
+        "transcript_path": "string",
+        "cwd": "string",
+        "prompt_id": "string",
+        "permission_mode": "string",
+        "agent_id": "string",
+        "agent_type": "string",
+        "effort": {
+          "level": "string"
+        },
+        "hook_event_name": "string",
+        "tool_name": "string",
+        "tool_input": {
+          "file_path": "string",
+          "content": "string"
+        },
+        "tool_response": {
+          "type": "string",
+          "filePath": "string",
+          "content": "string",
+          "structuredPatch": [],
+          "originalFile": "null",
+          "userModified": "boolean"
+        },
+        "tool_use_id": "string",
+        "duration_ms": "number"
+      },
+      "session": "identity-1",
+      "agent": "identity-3",
+      "type": "dotln-worker",
+      "effort": "xhigh",
+      "cwd": "launchpad",
+      "invocation": "identity-8",
+      "denied": false
+    },
+    {
+      "source": "parent",
+      "event": "PreToolUse",
+      "tool": "Read",
+      "fields": {
+        "session_id": "string",
+        "transcript_path": "string",
+        "cwd": "string",
+        "prompt_id": "string",
+        "permission_mode": "string",
+        "agent_id": "string",
+        "agent_type": "string",
+        "effort": {
+          "level": "string"
+        },
+        "hook_event_name": "string",
+        "tool_name": "string",
+        "tool_input": {
+          "file_path": "string"
+        },
+        "tool_use_id": "string"
+      },
+      "session": "identity-1",
+      "agent": "identity-3",
+      "type": "dotln-worker",
+      "effort": "xhigh",
+      "cwd": "launchpad",
+      "invocation": "identity-9",
+      "denied": false
+    },
+    {
+      "source": "parent",
+      "event": "PostToolUse",
+      "tool": "Read",
+      "fields": {
+        "session_id": "string",
+        "transcript_path": "string",
+        "cwd": "string",
+        "prompt_id": "string",
+        "permission_mode": "string",
+        "agent_id": "string",
+        "agent_type": "string",
+        "effort": {
+          "level": "string"
+        },
+        "hook_event_name": "string",
+        "tool_name": "string",
+        "tool_input": {
+          "file_path": "string"
+        },
+        "tool_response": {
+          "type": "string",
+          "file": {
+            "filePath": "string",
+            "content": "string",
+            "numLines": "number",
+            "startLine": "number",
+            "totalLines": "number"
+          }
+        },
+        "tool_use_id": "string",
+        "duration_ms": "number"
+      },
+      "session": "identity-1",
+      "agent": "identity-3",
+      "type": "dotln-worker",
+      "effort": "xhigh",
+      "cwd": "launchpad",
+      "invocation": "identity-9",
+      "denied": false
+    },
+    {
+      "source": "parent",
+      "event": "SubagentStop",
+      "tool": null,
+      "fields": {
+        "session_id": "string",
+        "transcript_path": "string",
+        "cwd": "string",
+        "prompt_id": "string",
+        "permission_mode": "string",
+        "agent_id": "string",
+        "agent_type": "string",
+        "effort": {
+          "level": "string"
+        },
+        "hook_event_name": "string",
+        "stop_hook_active": "boolean",
+        "agent_transcript_path": "string",
+        "last_assistant_message": "string",
+        "background_tasks": [],
+        "session_crons": []
+      },
+      "session": "identity-1",
+      "agent": "identity-3",
+      "type": "dotln-worker",
+      "effort": "xhigh",
+      "cwd": "launchpad",
+      "invocation": null,
+      "denied": false
+    },
+    {
+      "source": "parent",
+      "event": "PostToolUse",
+      "tool": "Agent",
+      "fields": {
+        "session_id": "string",
+        "transcript_path": "string",
+        "cwd": "string",
+        "prompt_id": "string",
+        "permission_mode": "string",
+        "effort": {
+          "level": "string"
+        },
+        "hook_event_name": "string",
+        "tool_name": "string",
+        "tool_input": {
+          "description": "string",
+          "prompt": "string",
+          "subagent_type": "string",
+          "run_in_background": "boolean"
+        },
+        "tool_response": {
+          "status": "string",
+          "prompt": "string",
+          "agentId": "string",
+          "agentType": "string",
+          "harnessNoteCount": "number",
+          "harnessTailCount": "number",
+          "harnessSectionHash": "string",
+          "content": [
+            {
+              "type": "string",
+              "text": "string"
+            }
+          ],
+          "resolvedModel": "string",
+          "totalDurationMs": "number",
+          "totalTokens": "number",
+          "totalToolUseCount": "number",
+          "usage": {
+            "output_tokens_details": {
+              "thinking_tokens": "number"
+            },
+            "input_tokens": "number",
+            "cache_creation_input_tokens": "number",
+            "cache_read_input_tokens": "number",
+            "output_tokens": "number",
+            "server_tool_use": {
+              "web_search_requests": "number",
+              "web_fetch_requests": "number"
+            },
+            "service_tier": "string",
+            "cache_creation": {
+              "ephemeral_1h_input_tokens": "number",
+              "ephemeral_5m_input_tokens": "number"
+            },
+            "inference_geo": "string",
+            "iterations": [
+              {
+                "input_tokens": "number",
+                "output_tokens": "number",
+                "cache_read_input_tokens": "number",
+                "cache_creation_input_tokens": "number",
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": "number",
+                  "ephemeral_1h_input_tokens": "number"
+                },
+                "type": "string"
+              }
+            ],
+            "speed": "string",
+            "fallback_credit": "null"
+          },
+          "toolStats": {
+            "readCount": "number",
+            "searchCount": "number",
+            "bashCount": "number",
+            "editFileCount": "number",
+            "linesAdded": "number",
+            "linesRemoved": "number",
+            "otherToolCount": "number"
+          },
+          "canContinueAgent": "boolean"
+        },
+        "tool_use_id": "string",
+        "duration_ms": "number"
+      },
+      "session": "identity-1",
+      "agent": null,
+      "type": null,
+      "effort": "xhigh",
+      "cwd": "launchpad",
+      "invocation": "identity-2",
+      "denied": false
+    },
+    {
+      "source": "parent",
+      "event": "Stop",
+      "tool": null,
+      "fields": {
+        "session_id": "string",
+        "transcript_path": "string",
+        "cwd": "string",
+        "prompt_id": "string",
+        "permission_mode": "string",
+        "effort": {
+          "level": "string"
+        },
+        "hook_event_name": "string",
+        "stop_hook_active": "boolean",
+        "last_assistant_message": "string",
+        "background_tasks": [],
+        "session_crons": []
+      },
+      "session": "identity-1",
+      "agent": null,
+      "type": null,
+      "effort": "xhigh",
+      "cwd": "launchpad",
+      "invocation": null,
+      "denied": false
+    }
+  ],
+  "targetBundle": "WO-072 registered target fixture with emitted WO-049 hooks plus observation hook",
+  "selectedDesign": "separate-phase-sessions",
+  "otherHarnesses": {
+    "codex": "untested",
+    "copilot": "untested"
+  },
+  "rawTranscriptRetained": false,
+  "userSettingsWritten": false,
+  "maxBudgetUsd": 5,
+  "requestedAgents": 2
+}

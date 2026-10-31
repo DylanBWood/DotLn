@@ -308,7 +308,10 @@ function phaseZero(mode) {
   );
 }
 
-if (process.argv[2] === "--subagents") {
+if (process.argv[2] === "--agent-identity") {
+  const { agentIdentityProbe } = await import("./lib/agent-identity-probe.mjs");
+  await agentIdentityProbe(process.argv.slice(3));
+} else if (process.argv[2] === "--subagents") {
   const { subagentProbe } = await import("./lib/subagent-probe.mjs");
   await subagentProbe(process.argv.slice(3));
 } else if (process.argv[2] === "--authority") {

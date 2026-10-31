@@ -43,7 +43,13 @@ export function declaredCriteria(text) {
     } else if (!line.trim()) open = false;
     else if (open) items.at(-1).text += ` ${line.trim()}`;
   }
-  return items.length ? items : null;
+  // A planning pass can retain an explicitly retired item for provenance.
+  // Only its dated, affirmative retirement removes it from the judgment set.
+  const active = items.filter(
+    (item) =>
+      !/^Struck by the \d{4}-\d{2}-\d{2} pass and not judged:/u.test(item.text),
+  );
+  return items.length ? active : null;
 }
 
 /** Read only the Preflight field, including its wrapped continuation lines. */

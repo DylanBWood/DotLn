@@ -1,4 +1,4 @@
-import { basename } from "node:path";
+import { basename, isAbsolute, resolve } from "node:path";
 
 /** Classification could not establish an effect; generated hooks advise the host. */
 export class HarnessCommandRefused extends Error {}
@@ -26,6 +26,8 @@ export const harnessToolEffects = {
   Bash: "shell",
   Monitor: "shell",
   TaskOutput: "read",
+  // Claude's child completion returns its result to its parent without a file effect.
+  SubagentHandback: "read",
   // Ending a task this session started changes no repository byte and is the
   // session's own route out of a running gate; a stopped gate records nothing.
   KillShell: "stop",
@@ -1792,6 +1794,225 @@ export function shellWriteTargets(
   }
 }
 
+// Attribute a tool's status only to a single foreground command, including
+// one literal native shell wrapper. Control syntax can change that status.
+function directCommandSource(source: string): string | null {
+  for (let depth = 0; depth < 2; depth++) {
+    if (source.length > READ_LIMIT) return null;
+    const reading = readShellCommand(source.trim());
+    if (
+      reading.incomplete ||
+      reading.background ||
+      reading.unmatchedQuotes.length ||
+      reading.syntax.length ||
+      reading.syntaxFaults.length ||
+      reading.words.some((word) => word.position === "control")
+    )
+      return null;
+    const invocations = shellWords(source);
+    const invocation = invocations[0];
+    if (
+      invocations.length !== 1 ||
+      !invocation ||
+      invocation.stdin.length ||
+      invocation.pipeline.length
+    )
+      return null;
+    const words = [...invocation.words];
+    while (/^[A-Za-z_][A-Za-z0-9_]*=/.test(words[0]?.value ?? "")) {
+      const assignment = words.shift()!;
+      if (assignment.dynamic || assignment.expands || assignment.redirects)
+        return null;
+    }
+    if (!["sh", "bash", "zsh"].includes(basename(words[0]?.value ?? "")))
+      return source;
+    if (
+      depth !== 0 ||
+      words.length !== 3 ||
+      !["-c", "-lc"].includes(words[1]!.value) ||
+      words.some((word) => word.dynamic || word.expands || word.redirects)
+    )
+      return null;
+    source = words[2]!.value;
+  }
+  return null;
+}
+
+// These adapters have no repository-output option. npm may populate its host
+// cache, so this remains shell.run authority, not a declaration of no effects.
+export function drivenResearchCommandKind(
+  source: string,
+):
+  | "context7-library"
+  | "context7-docs"
+  | "github-search"
+  | "github-read"
+  | null {
+  let words: readonly string[];
+  try {
+    const direct = directCommandSource(source);
+    if (direct === null) return null;
+    source = direct;
+    const curl =
+      /^curl --disable --fail --silent --show-error --max-time 60 (["'])(https:\/\/api\.github\.com\/[^"'$`\\\r\n]*)\1$/.exec(
+        source.trim(),
+      );
+    if (curl) {
+      // A URL's question mark is literal only in this wholly quoted form;
+      // keep the general destination adapter's wildcard refusal unchanged.
+      words = [
+        "curl",
+        "--disable",
+        "--fail",
+        "--silent",
+        "--show-error",
+        "--max-time",
+        "60",
+        curl[2]!,
+      ];
+    } else {
+      const commands = shellWords(source);
+      if (commands.length !== 1 || commands[0]!.stdin.length) return null;
+      const scan = invocationRedirects(commands[0]!.words, true);
+      if (!scan || scan.redirects.length) return null;
+      words = scan.command;
+    }
+  } catch {
+    return null;
+  }
+  if (
+    words.length === 5 &&
+    words[0] === "npx" &&
+    words[1] === "ctx7@latest" &&
+    ["library", "docs"].includes(words[2]!) &&
+    words.slice(3).every((word) => word.length > 0 && !word.startsWith("-"))
+  )
+    return words[2] === "library" ? "context7-library" : "context7-docs";
+  if (words[0] === "curl") {
+    // No user curl configuration, credentials, redirects, output files or
+    // arbitrary endpoints: these two public GitHub GET shapes need no token.
+    if (
+      words.length !== 8 ||
+      /[{}\[\]]/.test(words[7] ?? "") ||
+      words.slice(1, 7).join(" ") !==
+        "--disable --fail --silent --show-error --max-time 60"
+    )
+      return null;
+    try {
+      const url = new URL(words[7]!);
+      if (
+        url.origin !== "https://api.github.com" ||
+        url.username ||
+        url.password ||
+        url.hash
+      )
+        return null;
+      if (
+        /^\/repos\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(url.pathname) &&
+        !url.search
+      )
+        return "github-read";
+      const params = [...url.searchParams];
+      if (
+        url.pathname === "/search/repositories" &&
+        params.length === 2 &&
+        params.some(([name, value]) => name === "q" && value.length > 0) &&
+        params.some(
+          ([name, value]) =>
+            name === "per_page" && /^(?:[1-9][0-9]?|100)$/.test(value),
+        )
+      )
+        return "github-search";
+    } catch {
+      /* Malformed URLs are not a research adapter. */
+    }
+    return null;
+  }
+  if (words[0] !== "gh") return null;
+  if (words[1] === "repo" && words[2] === "view")
+    return words.length === 4 &&
+      /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(words[3]!)
+      ? "github-read"
+      : null;
+  if (
+    words[1] !== "search" ||
+    words[2] !== "repos" ||
+    !words[3] ||
+    words[3].startsWith("-")
+  )
+    return null;
+  for (let index = 4; index < words.length; index += 2) {
+    const flag = words[index],
+      value = words[index + 1];
+    if (
+      !value ||
+      !(
+        (flag === "--limit" && /^[1-9][0-9]?$/.test(value)) ||
+        (flag === "--json" &&
+          /^(?:fullName|url|description)(?:,(?:fullName|url|description))*$/.test(
+            value,
+          )) ||
+        (flag === "--visibility" && value === "public")
+      )
+    )
+      return null;
+  }
+  return "github-search";
+}
+
+/** A tool result can attribute its exit to a dispatch only when the shell
+ * contains one literal invocation. Quoted source text and a compound line's
+ * aggregate failure cannot establish which helper ran or failed. */
+export function drivenLifecycleDispatch(
+  source: string,
+  launchpad: string,
+): string | null {
+  if (!isAbsolute(launchpad)) return null;
+  const actions = new Set(["next", "fix", "verify", "final-review"]);
+  try {
+    const direct = directCommandSource(source);
+    if (direct === null) return null;
+    source = direct;
+    const invocations = shellWords(source);
+    const invocation = invocations[0];
+    if (
+      invocations.length !== 1 ||
+      !invocation ||
+      invocation.stdin.length ||
+      invocation.pipeline.length
+    )
+      return null;
+    const scan = invocationRedirects(invocation.words, true);
+    if (!scan || scan.redirects.length) return null;
+    const words = [...scan.command];
+    while (/^[A-Za-z_][A-Za-z0-9_]*=/.test(words[0] ?? "")) words.shift();
+    const program = basename(words.shift() ?? "");
+    let action: string | undefined;
+    const helper = words[0] ?? "";
+    if (
+      program === "node" &&
+      isAbsolute(helper) &&
+      resolve(helper) === resolve(launchpad, "scripts/resume.mjs")
+    )
+      action = words[1];
+    else if (program === "npm") {
+      if (words.shift() !== "--prefix") return null;
+      const prefix = words.shift() ?? "";
+      if (!isAbsolute(prefix) || resolve(prefix) !== resolve(launchpad))
+        return null;
+      if (words.shift() !== "run") return null;
+      if (words[0] === "--silent") words.shift();
+      if (words.shift() !== "resume") return null;
+      if (words[0] === "--silent") words.shift();
+      if (words.shift() !== "--") return null;
+      action = words[0];
+    }
+    return action && actions.has(action) ? action : null;
+  } catch {
+    /* Opaque shell syntax supplies no dispatch attribution. */
+  }
+  return null;
+}
 /** WO-144: the shell, not the program, opens a redirect, so a literal redirect
  * is a known destination on any program. This accessor names only those; the
  * program's own effects stay opaque, and shellWriteTargets keeps its contract
@@ -1826,6 +2047,82 @@ export function shellRedirectTargets(
 }
 export function shellWritePaths(source: string): readonly string[] | null {
   return shellWriteTargets(source)?.map(({ path }) => path) ?? null;
+}
+
+/** Launchpad helpers a phase worker runs from a target worktree with their
+ * normal arguments. The hook admits these and the worker's note names them. */
+export const drivenHelperScripts = [
+  "sync",
+  "work-orders",
+  "meta",
+  "check-publication",
+  "adjacent-work",
+  "reader",
+] as const;
+
+const drivenPhaseActions: Readonly<Record<string, readonly string[]>> = {
+  executor: ["next", "fix", "implementation-ready", "repair-complete"],
+  verifier: ["verify", "verification-result"],
+  reviewer: ["final-review", "final-review-result", "target-records"],
+};
+
+/** What a launchpad script does when a phase worker or its helper runs it, or
+ * null when no driven lane admits the form. `read` changes no launchpad input. `write` does, so it waits for a live gate there. `gate` runs
+ * the target's own gate, which a launchpad gate does not hold up. */
+export function drivenCommandEffect(
+  script: string,
+  args: readonly string[],
+  { role, workOrder }: { readonly role: string; readonly workOrder: string },
+): "read" | "write" | "gate" | null {
+  const [action = "", next] = args;
+  switch (script) {
+    case "resume":
+      if (["status", "briefing", "times", "usage"].includes(action))
+        return "read";
+      return drivenPhaseActions[role]?.includes(action) ? "write" : null;
+    case "release":
+      return action === "prepare" &&
+        args.slice(1).every((word) => word === "--local")
+        ? "write"
+        : null;
+    case "target-gate":
+      return action === workOrder &&
+        args.slice(1).every((word) => word === "--review")
+        ? "gate"
+        : null;
+    case "test-runner":
+      return args.length === 1 && action === "--document" ? "write" : null;
+    case "refute-plan":
+      return args.length === 2 && action === "followups" && next === "--sync"
+        ? "write"
+        : null;
+    case "worktree":
+      return ["executor", "reviewer"].includes(role) &&
+        action === "integrate" &&
+        next === workOrder
+        ? "write"
+        : null;
+    case "harness":
+      if (["usage", "scratch", "delivered", "read-output"].includes(action))
+        return "read";
+      // The final evidence gate judges the launchpad; from a target only its
+      // read-only forms have a meaning.
+      return (action === "evidence" && next === "--wait") ||
+        (action === "writer" && next === "--show")
+        ? "read"
+        : null;
+    case "check-publication":
+      return "read";
+    case "reader":
+      // A score with options records it in a tracked file.
+      return action === "score" && args.length > 1 ? "write" : "read";
+    case "adjacent-work":
+      return action === "list" ? "read" : "write";
+    default:
+      return (drivenHelperScripts as readonly string[]).includes(script)
+        ? "write"
+        : null;
+  }
 }
 
 /** The fixed read-only list a live gate admits (WO-158 criterion 6). Adding a

@@ -1,0 +1,133 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-26T06:02:32.072Z",
+  "probe": "direct and nested native Codex lifecycle recording; not full phase qualification",
+  "requestPermission": true,
+  "arms": [
+    {
+      "nested": false,
+      "selectedModel": "gpt-6.1-sol",
+      "selectedEffort": "max",
+      "exitCode": 0,
+      "workerEnded": true,
+      "cause": null,
+      "commandResults": [
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": 0,
+          "shape": [
+            [
+              "node",
+              "<operand>"
+            ]
+          ]
+        }
+      ],
+      "boundaryResults": [],
+      "usage": {
+        "input_tokens": 27644,
+        "cached_input_tokens": 23552,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 280,
+        "reasoning_output_tokens": 93
+      },
+      "observation": {
+        "node": "v26.9.0",
+        "rows": [
+          {
+            "action": "next",
+            "exitCode": 0,
+            "signal": null,
+            "errorCode": null,
+            "diagnostic": null
+          },
+          {
+            "action": "implementation-ready",
+            "exitCode": 0,
+            "signal": null,
+            "errorCode": null,
+            "diagnostic": null
+          }
+        ]
+      },
+      "child": null,
+      "cleanup": "removed"
+    },
+    {
+      "nested": true,
+      "selectedModel": "gpt-6.1-sol",
+      "selectedEffort": "max",
+      "exitCode": 0,
+      "workerEnded": true,
+      "cause": null,
+      "commandResults": [
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": 0,
+          "shape": [
+            [
+              "node",
+              "<operand>"
+            ]
+          ]
+        }
+      ],
+      "boundaryResults": [],
+      "usage": {
+        "input_tokens": 59744,
+        "cached_input_tokens": 54272,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 421,
+        "reasoning_output_tokens": 80
+      },
+      "observation": {
+        "node": "v26.9.0",
+        "rows": [
+          {
+            "action": "next",
+            "exitCode": 0,
+            "signal": null,
+            "errorCode": null,
+            "diagnostic": null
+          },
+          {
+            "action": "implementation-ready",
+            "exitCode": 0,
+            "signal": null,
+            "errorCode": null,
+            "diagnostic": null
+          }
+        ]
+      },
+      "child": {
+        "exitCode": 0,
+        "workerEnded": true,
+        "cause": null,
+        "commandResults": [
+          {
+            "kind": "unclassified-shell",
+            "status": "completed",
+            "exitCode": 0,
+            "shape": [
+              [
+                "node",
+                "<operand>"
+              ]
+            ]
+          }
+        ],
+        "boundaryResults": [],
+        "usage": {
+          "input_tokens": 27587,
+          "cached_input_tokens": 23296,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 297,
+          "reasoning_output_tokens": 104
+        }
+      },
+      "cleanup": "removed"
+    }
+  ]
+}

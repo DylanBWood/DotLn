@@ -745,6 +745,7 @@ export function recordUsageObservation(root, row) {
       "release-close",
       "planner",
       "refuter",
+      "router",
     ].includes(row.role)
   )
     throw new Error(

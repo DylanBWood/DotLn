@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-26T04:55:57.507Z",
+  "attempt": "live-drive-attempt-31.json",
+  "host": "codex",
+  "outerRuntime": "v26.9.0",
+  "driverRuntimePathVersion": null,
+  "documentGate": {
+    "checkId": "npm run test:docs",
+    "exitCode": 1,
+    "executed": true,
+    "failedFirst": "declarations"
+  },
+  "targetGates": [
+    {
+      "checkId": "target:target:test",
+      "exitCode": 0,
+      "executed": true
+    },
+    {
+      "checkId": "target:target",
+      "exitCode": 0,
+      "executed": true
+    }
+  ],
+  "output": "declarations: failed\nrequire() of ES Module /private<synthetic-fixture>/launchpad-wo999/node_modules/typescript/dist/ast/index.js from /private<synthetic-fixture>/launchpad-wo999/scripts/lib/evidence-sources.mjs not supported.\nInstead change the require of index.js in /private<synthetic-fixture>/launchpad-wo999/scripts/lib/evidence-sources.mjs to a dynamic import() which is available in all CommonJS modules.\n"
+}

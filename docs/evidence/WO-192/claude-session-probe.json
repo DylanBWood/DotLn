@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "source": "bounded native CLI probe",
+  "observedAt": "2026-10-26T01:22:57.051Z",
+  "host": "claude",
+  "selectedModel": "claude-opus-5-5",
+  "selectedEffort": "xhigh",
+  "effectiveModelEffort": "unknown",
+  "scope": "direct native print session and resume compared with the same calls inside a sandboxed native parent whose API domains are allowed",
+  "arms": [
+    {
+      "boundary": "direct",
+      "firstExitCode": 0,
+      "resumeExitCode": 0
+    },
+    {
+      "boundary": "inside-router-equivalent-Bash-sandbox",
+      "parentExitCode": 0,
+      "firstExitCode": 0,
+      "resumeExitCode": 1,
+      "cause": "native-session-unavailable",
+      "diagnostic": "No conversation found with session ID (identity omitted)"
+    }
+  ],
+  "rawTranscriptsRetained": false,
+  "usage": "not retained by this bounded diagnostic; unknown"
+}

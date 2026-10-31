@@ -24,7 +24,10 @@ import {
   loadConfig,
 } from "./lib/config.mjs";
 import { runGit, runGitPathList } from "./lib/git.mjs";
-import { branchFrontPage } from "./lib/front-page-scope.mjs";
+import {
+  amendedFrontPageScope,
+  branchFrontPage,
+} from "./lib/front-page-scope.mjs";
 import {
   isMainModule,
   documentEntry,
@@ -1458,7 +1461,7 @@ export function frontPageShapeFindings(
     }
   return { failures, lines: section.lines, outside };
 }
-export function frontPageFindings(root) {
+export function frontPageFindings(root, amendment = null) {
   const failures = [],
     notices = [];
   let base = null;
@@ -1556,7 +1559,11 @@ export function frontPageFindings(root) {
       `${recordPath}: moves the front page from ${baseControl.page} to ${workingRecord.control.page}; the page moves only on ${FRONT_PAGE_BASE}, where planning moves it`,
     );
   const page = control.page;
-  const admitted = declares(governing);
+  const admitted =
+    declares(governing) ||
+    (amendment?.workOrderId === scope.workOrderId &&
+      amendment?.file === scope.file &&
+      (amendment?.files?.includes(page) ?? false));
   const rule = `the front page changes only through an order whose leading header carries \`**Front page:** ${page}\`, and a sentence the page should carry is proposed in the order's evidence README`;
   if (baseText !== null && workingText !== baseText && !declares(baseRecord))
     failures.push(
@@ -1645,7 +1652,10 @@ export function frontPageFindings(root) {
   return { failures, notices };
 }
 
-export function checkDocs(root, { ceilings, baseline, files, records } = {}) {
+export function checkDocs(
+  root,
+  { ceilings, baseline, files, records, frontPageAmendment = null } = {},
+) {
   // Carried operating documents retain upstream history and links. This
   // instance owns the ceilings and editorial baseline for its own documents.
   const manifestPath = join(root, "KIT-MANIFEST.json");
@@ -1815,7 +1825,7 @@ export function checkDocs(root, { ceilings, baseline, files, records } = {}) {
       notices.push(
         `STALE ${docRelative(root, "control", "doc-baseline.json")}: ${file} no longer holds ${list.length} baselined private-path line${list.length === 1 ? "" : "s"}; run node scripts/docs-check.mjs --write-home-path-baseline to shrink it`,
       );
-  const frontPage = frontPageFindings(root);
+  const frontPage = frontPageFindings(root, frontPageAmendment);
   failures.push(...frontPage.failures);
   notices.push(...frontPage.notices);
   const operatorWords = operatorWordAdvisories(
@@ -1850,7 +1860,9 @@ if (isMainModule(import.meta.url)) {
         `Wrote ${result.path}: ${result.lines} historical private-path lines in ${result.files} files; removed ${result.removed} stale fingerprints.`,
       );
     } else {
-      const result = checkDocs(root);
+      const result = checkDocs(root, {
+        frontPageAmendment: await amendedFrontPageScope(root),
+      });
       console.log("Document | Bytes | Exempt bytes | Ceiling | Headroom");
       for (const row of result.rows)
         console.log(

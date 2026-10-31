@@ -2,6 +2,7 @@ import { absoluteBodyLinks, relativeLinkFailures } from "./lib/github-body.mjs";
 import { readDecisions, writeDecisionsIndex } from "./lib/meta.mjs";
 import { syncFollowups } from "./lib/planning-followups.mjs";
 import { readTargetRecord } from "./lib/target-record-reader.mjs";
+import { checkLocalTerms } from "./lib/terms.mjs";
 import { checkDocs } from "./docs-check.mjs";
 import { cloneMapPath } from "./lib/target-worktrees.mjs";
 import test from "node:test";
@@ -36,6 +37,39 @@ import {
   publicationSetup,
   launchpadCommands,
 } from "./lib/target-worktree-fixture.mjs";
+
+test("publication setup applies listed-term refusals under a configured control root", () =>
+  withFixture(
+    (f) => {
+      publicationSetup(f);
+      assert.deepEqual(
+        checkLocalTerms(f.main, [{ name: "body.md", text: "Reviewed text." }]),
+        { status: "present", terms: 1 },
+      );
+      assert.throws(
+        () =>
+          checkLocalTerms(f.main, [
+            { name: "body.md", text: "Private Fixture Term" },
+          ]),
+        (error) => {
+          assert.match(error.message, /local-terms list present; refused/u);
+          assert.doesNotMatch(error.message, /Private Fixture Term/u);
+          return true;
+        },
+      );
+      assert.equal(git(f.main, "status", "--porcelain"), "");
+      assert.equal(
+        git(
+          f.main,
+          "ls-files",
+          "--",
+          `${f.config.roots.control}/local/terms.txt`,
+        ),
+        "",
+      );
+    },
+    { roots: { docs: "records", control: "records/coordination" } },
+  ));
 
 test("target records preserve reviewed reports, refuse changed inputs and publish only the bound records commit", () =>
   withFixture((f) => {

@@ -3,6 +3,25 @@
   "description": "Two-sided cases for the front page's What runs today guard, judged by frontPageFindings. A refuse row must draw a front-page failure (containing pattern, when given); an admit row must draw none. Each row is judged on its bytes and, unless formatted is false, after the Prettier formatter too (the repository does not format Markdown, so the bytes are what land). reason records why an expectation differs from the first reading of the case. Add the row for a newly found bypass or wrongly refused sentence before changing the check.",
   "rows": [
     {
+      "name": "operator describes daily software delivery",
+      "expect": "admit",
+      "line": "DotLn is a working, human-gated AI software-delivery operating system.",
+      "append": "## Why this exists\n\nWorking with AI agents drifts into babysitting: restating context, checking \"done\" claims that are not evidence, recovering stalled work. The usual fix is a bigger prompt.\n\nDotLn keeps that record in the repository. Planning produces bounded work orders; implementation, verification, repair, and review have distinct responsibilities; and recorded state connects those phases across fresh sessions and isolated worktrees.",
+      "source": "WO-192-D073 operator-authorized front-page rewrite"
+    },
+    {
+      "name": "operator describes substantial multi-phase development",
+      "expect": "admit",
+      "line": "Its operator can drive substantial multi-phase development through a handful of terminal state-transition commands while task-scoped workers implement, test, verify, repair, review, and close the work across fresh sessions and isolated repositories.",
+      "source": "WO-192-D073 operator-authored public draft"
+    },
+    {
+      "name": "operator names the current frontier",
+      "expect": "admit",
+      "replace": ["The kernel replays.\nThe skeleton runs.", "The current frontier is not basic feasibility.\nIt is automatic lifecycle routing, measured economics, distribution reliability, and transfer to operators who did not build the system."],
+      "source": "WO-192-D073 operator-authored public draft"
+    },
+    {
       "name": "template output tag hides sentences",
       "expect": "refuse",
       "line": "Capability runs. {{ Hidden one runs. Hidden two runs. }}",

@@ -20,7 +20,7 @@ import {
   utimesSync,
   writeFileSync,
 } from "node:fs";
-import { join, relative } from "node:path";
+import { dirname, join, relative } from "node:path";
 import { tmpdir } from "node:os";
 import {
   createFixtureRoot,
@@ -1087,6 +1087,27 @@ test("removing a fixture repository cannot reset its recorded null retention", (
     "default fixture coordination still ends with its gate",
   );
   removeTemporaryRoot(scratch);
+});
+
+test("a budget left in conflict by an integration still admits scratch under the default policy", (t) => {
+  const root = fixture(t),
+    repository = join(root, "conflicted-budget"),
+    budgets = join(repository, "docs/control/budgets.json");
+  mkdirSync(dirname(budgets), { recursive: true });
+  writeFileSync(
+    budgets,
+    '{\n<<<<<<< Updated upstream\n  "retention": {}\n=======\n  "drivenSessionCeiling": 80\n>>>>>>> Stashed changes\n}\n',
+  );
+  assert.equal(readRetention(repository)["session-scratch"], 24);
+  // Only unreadable text falls back: a budget that parses keeps its refusal.
+  writeFileSync(
+    budgets,
+    JSON.stringify({ retention: { "session-scratch": -1 } }),
+  );
+  assert.throws(
+    () => readRetention(repository),
+    /Invalid budget: retention\.session-scratch/,
+  );
 });
 
 test("application scratch cleans up at its own completion while fixture teardown waits for the gate", (t) => {

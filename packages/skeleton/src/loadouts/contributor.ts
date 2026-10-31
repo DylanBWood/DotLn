@@ -28,6 +28,12 @@ import { goalAlignment } from "./goal-alignment.js";
 import { HARNESS_HOST_VERSION } from "../version.js";
 
 const sharedSupports = [processCost, goalAlignment];
+export const contributorWorkerPins = {
+  claude: { model: "claude-opus-5-5", effort: "xhigh" },
+  codex: { model: "gpt-6.1-sol", effort: "max" },
+} as const;
+/** Independent verification runs at this effort on every host (product 07). */
+export const contributorVerifierEffort = "xhigh";
 /** Operator-authorized policy input; never inferred from a submitted support. */
 export const contributorOutsideAuthority: readonly AuthorityGrant[] = [
   {
@@ -38,6 +44,7 @@ export const contributorOutsideAuthority: readonly AuthorityGrant[] = [
       outsideWriteEffect({ kind: "system-temp", source: "WO-144-D001" }),
       outsideWriteEffect({ kind: "session-scratch", source: "WO-144-D001" }),
       outsideWriteEffect({ kind: "host-scratchpad", source: "WO-158-D010" }),
+      outsideWriteEffect({ kind: "order-worktree", source: "WO-192-D001" }),
     ],
     repo: "project",
     reason:
@@ -125,6 +132,27 @@ const costLine =
 const boardedDefect =
   "A defect met and not fixed must be recorded in docs/evidence/WO-NNN/decisions.md with a named follow-up in its structured decision JSON `followup` string (or a `reopens` object for an existing decision), and cited by the report; fix it within the boy-scout bound or board it up there, never leave it only as a report sentence.";
 export const contributorRoles: readonly HarnessRole[] = [
+  {
+    facetId: "contributor.router",
+    name: "router",
+    description:
+      "Drive one DotLn order through fresh phase sessions on drive: WO-NNN, stopping for the operator merge or a recorded limit.",
+    intents: ["drive:"],
+    feedbackHandlers: handlers,
+    procedure: [
+      "Resolve the physical cwd and Git root in main. The entire operator phrase must be drive: WO-NNN. It carries the authority of the lifecycle phrases it dispatches, including final review publication and, on re-entry after the operator merge, release close; never merge.",
+      operatorControls,
+      noGuessing,
+      "Read only canonical status through `node scripts/drive.mjs status WO-NNN`. The helper selects the order's registered worktree, so the status is that worktree's fold. Read no order, diff, report or worker transcript and edit no project file. A router holds no writer reservation.",
+      "Run `node scripts/drive.mjs WO-NNN` once. Its status route chooses at most one action, launches the generated phase worker with only the lifecycle phrase, waits, rereads status and repeats. Report each transition in one line; never relay worker output or judgments into the next worker. Every phase is a fresh actor with no inherited conversation.",
+      "For that single literal driver command, request the host's normal one-invocation outside-sandbox approval: in Claude use Bash dangerouslyDisableSandbox: true; in Codex use its normal tool approval request. This lets native phases initialize their own sandboxes and request their own command permissions. Add no cd, redirect or compound wrapper. Do not edit sandbox settings or persist an allow rule. If the host denies the request, stop; do not retry or choose another launcher. Each native phase keeps its sandbox and approval policy; this request grants no authority to override a host restriction.",
+      "The driver uses separate native CLI sessions in the order's worktree (the target worktree for a registered target), with preloaded role skills. Keep the selected host; --host claude|codex is an explicit selection, otherwise the native session selects it. Claude pins Opus 5.5 at xhigh with project and local hooks; Codex pins gpt-6.1-sol at max, and xhigh for an independent verifier, with its sandbox and role-text duties. Never substitute a host or claim Codex hook parity.",
+      "The router spawn boundary refuses any Agent prompt except an exact lifecycle phrase given to the agent type that phrase names, with DOTLN_ROUTER_SPAWN_REFUSED, and DOTLN_ROUTER_WRITE_REFUSED refuses any router edit and any shell command beyond the live gate's read list, its driver and its usage command. An order identifier belongs to the recorded working directory, never to the worker prompt. The check is only on the router's own spawns; a phase worker's spawns use its ordinary policy.",
+      "Stop for awaiting-merge, operator-finding, off-ramp, typed-correction, analysis, operator-override, dispatch-refused, three verification failures, two final-review failures, two incomplete endings in the same phase, or budget-exhausted. Report the route's next step. A dead writer requires the operator's `operator override:` phrase; never release a foreign reservation yourself.",
+      "Re-entry reads current status and gives an interrupted phase's same briefing to a fresh worker. Release close runs in main only after the launchpad and, for a target, its registered target base both contain the order branch. Status reads local refs; a drive of a closed order fetches both bases first, because a hosted merge reaches neither clone by itself. Finish only on a validated local release attribution or recorded no-release close.",
+      "Plan phase workers against subagentCap (default 20, null disables) and all attributable descendants against drivenSessionCeiling (default four times the cap). Each phase attempt is limited by its role's dispatch wall clock and the optional drivenPhaseTimeoutMs, whichever is shorter. Task and qualification deadlines still apply. The helper reports minimum observed counts and unknown remainder, worker usage and router usage separately. First driven orders are attended; unset token or dollar limits are not enforced limits. Budget exhaustion stops before another launch.",
+    ],
+  },
   {
     facetId: "contributor.executor",
     name: "executor",
@@ -258,35 +286,47 @@ export const contributorRoles: readonly HarnessRole[] = [
   },
 ].map((role) => ({
   ...role,
-  outsideWriteGrants: [
-    {
-      kind: "system-temp" as const,
-      source: "WO-144-D001: contributor temporary work",
-    },
-    {
-      kind: "session-scratch" as const,
-      source: "WO-144-D001: operator-selected DotLn session scratch",
-    },
-    {
-      kind: "host-scratchpad" as const,
-      source: "WO-158-D010: the scratchpad Claude Code prints for this session",
-    },
-    ...(role.facetId === "contributor.executor"
-      ? [
+  // A router writes nothing, so it holds no grant to write anywhere.
+  outsideWriteGrants:
+    role.name === "router"
+      ? []
+      : [
           {
-            kind: "target-worktree" as const,
-            source:
-              "WO-236-D001: the active order's registered target worktree",
+            kind: "order-worktree" as const,
+            source: "WO-192-D001: the active order's registered worktree roots",
           },
-        ]
-      : []),
-  ],
-  procedure: [
-    operatorControls,
-    sessionBoundaries,
-    ...sharedCorrections,
-    ...role.procedure,
-  ],
+          {
+            kind: "system-temp" as const,
+            source: "WO-144-D001: contributor temporary work",
+          },
+          {
+            kind: "session-scratch" as const,
+            source: "WO-144-D001: operator-selected DotLn session scratch",
+          },
+          {
+            kind: "host-scratchpad" as const,
+            source:
+              "WO-158-D010: the scratchpad Claude Code prints for this session",
+          },
+          ...(role.facetId === "contributor.executor"
+            ? [
+                {
+                  kind: "target-worktree" as const,
+                  source:
+                    "WO-236-D001: the active order's registered target worktree",
+                },
+              ]
+            : []),
+        ],
+  procedure:
+    role.name === "router"
+      ? role.procedure
+      : [
+          operatorControls,
+          sessionBoundaries,
+          ...sharedCorrections,
+          ...role.procedure,
+        ],
 }));
 
 export const contributorEnvelope: AuthorityEnvelope = {
@@ -574,6 +614,15 @@ const sessionCommands =
 const offRamps =
   "Off-ramps (WO-158): an operator-accepted unmet criterion is `npm run resume -- waive <criterion>` (never by the order's own executor) and a terminal failed, superseded or abandoned order is `withdraw`, both naming the operator's captured words; a wrong attestation, report path or checkpoint is `correct`, never a verdict or report bytes; override use is `override-record`, appended by Claude's hook at `operator override: off` and run from the printed command in Codex. Never edit a filed report, amend a criterion to pass or waive in prose.";
 const targetRoles: readonly HarnessRole[] = contributorRoles.map((role) => {
+  if (role.name === "router")
+    return {
+      ...role,
+      procedure: [
+        role.procedure[0]!,
+        sessionCommands,
+        ...role.procedure.slice(1),
+      ],
+    };
   const procedure =
     role.name === "release-close"
       ? [
@@ -610,7 +659,7 @@ const targetRoles: readonly HarnessRole[] = contributorRoles.map((role) => {
       "Dispatch bounds live in docs/control/budgets.json. Resolve local-median from each consumer's own completed phase history as max(4 times its median, 8 hours), using 8 hours without history; never export this repository's measured durations as consumer defaults. Read standing with `node scripts/harness.mjs usage <session>`. Infer authorization to proceed from the operator's ordinary language and context; require no exact phrase or command. Capture the actual words and context, record the needed extension yourself with `npm run resume -- accept-overrun` and your actual actor attestation, keep the writer and continue here. When the operator authorizes a run for as long as needed, record --ceiling unlimited for both wallClockMs and completeRuns before work begins, or at any later point; it lasts until this phase completes. Never require a session exit or manual operator script; diagnose and repair recovery-command failures here. Without authorization, admit diagnosis and focused reproductions but start no further complete gate, bounded probe or worker past an exhausted bound.",
       offRamps,
       "When an explicit operator scope expansion changes a judged order's text, record its authorization in that order's structured decisions and run `npm run plan -- amend-order WO-NNN WO-NNN-DNNN \"operator authorization and bounded scope\"`. This binds the approved bytes in the existing planning log; it neither grants scope nor discharges a refutation hold. Run the planning check and repair encountered failures within authority instead of repeatedly carrying an inherited failure into review.",
-      "Plan fan-out against the root session's remaining `docs/control/budgets.json` `subagentCap` budget (default 20; null disables) before the first spawn and state that plan in the response. Count descendants in the same plan. Batch review and refutation over groups of items: one agent judges several items, never one agent per item per pass. Check `harness usage <session>` for observed counts and unknown remainder; Codex has no spawn hook, so keep an explicit session count and apply this rule as role text. Reuse agents before spawning more; unknown coverage is not a fresh budget.",
+      "Plan fan-out against the spawning worker's remaining `docs/control/budgets.json` `subagentCap` budget (default 20; null disables), and in a driven session against its root-wide `drivenSessionCeiling` (default four times the cap) before the first spawn and state that plan in the response. Count a spawn against the worker making it and include all descendants in the driven total. Separate phase sessions retain their own counters; `harness usage <session>` reports the available local and driven counts. Count descendants in the same plan. Batch review and refutation over groups of items: one agent judges several items, never one agent per item per pass. Check `harness usage <session>` for observed counts and unknown remainder; Codex has no spawn hook, so keep an explicit session count and apply this rule as role text. Reuse agents before spawning more; unknown coverage is not a fresh budget.",
       "Without a session readback, keep the operator-selected model and effort with `--source operator-attested`; Claude Code roles read `CLAUDE_EFFORT` first. Use `unknown` only for a value nobody supplied. Codex briefings automatically report the active thread model, effort and CLI version, independently of token-counter availability. Never replace a supplied value with unknown or invent effective readback.",
       "After an authorized product-document edit, run `npm run publication:check`; this grants no editing authority to a read-only role.",
       ...procedure.slice(1),
@@ -619,6 +668,8 @@ const targetRoles: readonly HarnessRole[] = contributorRoles.map((role) => {
 });
 
 // Keep the execution sequence visible before the complete shared rules.
+const targetOrderProcedure =
+  "For a target order, read its declared documentation root in the target worktree as repo-native authority beside its profile, and make the order's product-document write-backs there. Translate launchpad commands to the qualified commands in the briefing, one per line: in a target worktree the guard refuses compound lines and what it cannot judge, including harness bounded and node -e, and session scratch is the one outside write beyond the order's worktrees. Record what that leaves untested. Run release prepare as the briefing says: it assigns no launchpad version and changes no file. Replace the self-order npm test checks above with `node scripts/target-gate.mjs WO-NNN` (add `--review` when the final criterion names the review gate); the target's gate rows, never a launchpad npm test row, support its claims. Run the launchpad's npm run test:docs beside the target gate. These target clauses take precedence over self-order paths and checks; self orders keep the sequence above.";
 const roleSteps: Readonly<Record<string, readonly string[]>> = {
   executor: [
     "Resolve cwd/Git root and canonical status; honor operator controls. For status/times, report the read-only command and stop; otherwise dispatch next/fix once.",
@@ -628,7 +679,7 @@ const roleSteps: Readonly<Record<string, readonly string[]>> = {
     "Remove scratch repositories, nested repositories outside intake that the tracked tree does not declare as submodules; never declare one. The close removes any left and records its head commit.",
     "Finish implementation or repair, decisions, indexes and other authored outputs before launching or restarting all three independent worker reviews; never use early scouting reviews. Resolve their findings and finish all three reviews before starting the complete run; do not restart them after it passes.",
     "Integrate main only at the lifecycle points named in product 07 §Independent workflows and integration, never during a live gate or on your own initiative inside a handoff. Before the complete run, integrate if main moved: run main's current `scripts/worktree.mjs integrate WO-NNN` against the registered worktree; active is admitted, a worktree not behind main takes in nothing. Resolve authored conflicts and use --continue. Then run `npm run format` and `npm run sync`; a gate compiles a stale runtime itself.",
-    "Start one complete run, `npm test -- --review`, in the background, never under the bounded probe wrapper. Await it with `node scripts/harness.mjs evidence --wait`. The runner schedules failed and newly changed suites first; older branch changes may follow exclusive work. A complete run composes nothing from `--only` rows, so a focused run reproduces one failure and never precedes it. While it runs, write nothing under the repository and start no agent; on failure finish the named repair and its write-backs, format, then restart all three existing reviewers on the changed code, resolve their findings and wait for all three to finish before starting a fresh complete run.",
+    "Start one complete run, `npm test -- --review`, in the background, never under the bounded probe wrapper. Synthetic lifecycle fixtures are a product preflight; their failure blocks later product suites. Historical record comparisons stay in the separate document gate. Await it with `node scripts/harness.mjs evidence --wait`. The runner schedules failed and newly changed suites first; older branch changes may follow exclusive work. A complete run composes nothing from `--only` rows, so a focused run reproduces one failure and never precedes it. While it runs, write nothing under the repository and start no agent; on failure finish the named repair and its write-backs, format, then restart all three existing reviewers on the changed code, resolve their findings and wait for all three to finish before starting a fresh complete run.",
     "After the complete run passes, complete the active order's handoff.md (criterion judgments with their evidence, review counts, attestation, usage) and read current outputs. Post-pass handoff write-backs are executor-owned; the three reviews are already complete.",
     "Run `npm run test:docs` once after the last document edit, until green; its row binds the exact candidate tree, including current authored records.",
     "Record `npm run resume -- implementation-ready <actor-flags>` or, for a repair, `npm run resume -- repair-complete <actor-flags>`; completion consumes the complete and document rows and runs no gate; read resulting projections without another write.",
@@ -662,6 +713,12 @@ const orderedRole = (role: HarnessRole): HarnessRole => {
         procedure: [
           ...steps.map((step, index) => `${index + 1}. ${step}`),
           "Rules:",
+          targetOrderProcedure,
+          ...(role.name === "reviewer"
+            ? [
+                "For a target order, commit the reviewed target change before recording final-review-result pass. Then run npm run resume -- target-records with the actor flags, commit the instance records, and run both the target-worktree publication and the records branch publication from the briefing. Never merge either pull request.",
+              ]
+            : []),
           ...role.procedure,
         ],
       }
@@ -915,7 +972,14 @@ export const contributorProgram = (
     contractVersion: "harness-v1",
     loadout,
     workers: [
-      { name: "dotln-worker", model: "claude-opus-5-5", effort: "xhigh" },
+      ...["executor", "verifier", "reviewer", "release-close"].map((role) => ({
+        name: `dotln-${role}`,
+        ...contributorWorkerPins.claude,
+        description: `Run the DotLn ${role} lifecycle phase from its exact resume phrase.`,
+        skills: [`dotln-${role}`],
+        body: "The entire input is the lifecycle phrase. In a target worktree, run printenv DOTLN_LAUNCHPAD to read the paired launchpad, then invoke node with that absolute launchpad scripts/resume.mjs path for status --json and the dispatch or briefing. Use git --no-pager for Git reads. The runtime checkout printed by a target hook is not the paired launchpad. Resolve the order from this worker's working directory and run its own dispatch, or the same briefing if already dispatched. Use the preloaded role skill; read its authorized inputs yourself. Keep your own writer and budget; record your own completion and actual host model/effort readback. Do not inherit another phase's conversation or forward judgments to a later phase.",
+      })),
+      { name: "dotln-worker", ...contributorWorkerPins.claude },
       {
         name: "dotln-worker-fable",
         model: "claude-fable-5-1",

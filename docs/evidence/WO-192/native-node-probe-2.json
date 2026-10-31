@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-26T05:01:16.572Z",
+  "probe": "native Codex runtime and TypeScript synchronous ESM load",
+  "selectedModel": "gpt-6.1-sol",
+  "selectedEffort": "max",
+  "exitCode": 0,
+  "cause": null,
+  "workerEnded": true,
+  "observation": {
+    "node": "v26.9.0",
+    "requireModule": true,
+    "loaded": true,
+    "code": null
+  },
+  "commandResults": [
+    {
+      "kind": "unclassified-shell",
+      "status": "completed",
+      "exitCode": 0,
+      "shape": [
+        [
+          "node",
+          "<operand>"
+        ]
+      ]
+    }
+  ],
+  "usage": {
+    "input_tokens": 25473,
+    "cached_input_tokens": 19712,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 142,
+    "reasoning_output_tokens": 34
+  },
+  "costUsd": null,
+  "isolation": {
+    "schemaVersion": 1,
+    "home": "sha256:4c890a2a2483f4e177d49101ad0c3577ebad260aa544324c9d73a7ecfda1d6d9",
+    "authentication": "symlink",
+    "userConfig": {
+      "before": "sha256:6202960ee18605675f85f66f649d13f9e250c7b6b5793cb85d85eba09408500e",
+      "after": "sha256:6202960ee18605675f85f66f649d13f9e250c7b6b5793cb85d85eba09408500e"
+    },
+    "trustTable": {
+      "before": "sha256:f73fb2e2e4e5ce05288c6b5b2f7ddf948959c83bd8216603da58f3a08bb2d3a9",
+      "after": "sha256:f73fb2e2e4e5ce05288c6b5b2f7ddf948959c83bd8216603da58f3a08bb2d3a9"
+    },
+    "isolatedTrustEntries": 1,
+    "homeRemoved": true
+  },
+  "cleanup": "removed"
+}

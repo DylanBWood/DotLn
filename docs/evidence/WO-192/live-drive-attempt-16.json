@@ -1,0 +1,251 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-25T23:47:07.707Z",
+  "input": "drive: WO-999",
+  "entrypoint": "generated router's canonical driver",
+  "host": "codex-cli 0.164.0",
+  "phase": "active",
+  "routers": [
+    {
+      "exitCode": 0,
+      "error": false,
+      "timedOut": false,
+      "workerEnded": true,
+      "costUsd": null,
+      "usage": {
+        "input_tokens": 286814,
+        "cached_input_tokens": 257792,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 3413,
+        "reasoning_output_tokens": 2149
+      },
+      "hookEvents": [],
+      "refusalCodes": [],
+      "toolCalls": [
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution"
+      ],
+      "model": null,
+      "sessionId": "identity-1",
+      "startedAt": "2026-10-25T23:44:43.148Z",
+      "finishedAt": "2026-10-25T23:47:07.468Z",
+      "selectedPolicy": {
+        "sandbox": "workspace-write",
+        "approval": "automatic-review",
+        "networkAccess": "enabled-for-native-workers",
+        "source": "launch-arguments"
+      },
+      "isolation": {
+        "schemaVersion": 1,
+        "home": "sha256:7d44c8f1324ed5ac001d66bc8749ff564b21a6f3d017e546bee0f4f62f70d5e2",
+        "authentication": "symlink",
+        "userConfig": {
+          "before": "sha256:6202960ee18605675f85f66f649d13f9e250c7b6b5793cb85d85eba09408500e",
+          "after": "sha256:6202960ee18605675f85f66f649d13f9e250c7b6b5793cb85d85eba09408500e"
+        },
+        "trustTable": {
+          "before": "sha256:f73fb2e2e4e5ce05288c6b5b2f7ddf948959c83bd8216603da58f3a08bb2d3a9",
+          "after": "sha256:f73fb2e2e4e5ce05288c6b5b2f7ddf948959c83bd8216603da58f3a08bb2d3a9"
+        },
+        "isolatedTrustEntries": 1,
+        "homeRemoved": true
+      },
+      "selectedModel": "gpt-6.1-sol",
+      "selectedEffort": "max",
+      "role": "router",
+      "cwd": "main"
+    }
+  ],
+  "stop": {
+    "reason": "incomplete-bound",
+    "next": "Two workers ended without recording completion in this phase; inspect the failure."
+  },
+  "limits": {
+    "subagentCap": 20,
+    "drivenSessionCeiling": 80,
+    "tokens": null,
+    "costUsd": null
+  },
+  "routerUsage": {
+    "totalTokens": 290227,
+    "costUsd": null,
+    "source": "native-router-result-stream",
+    "scope": "router sessions only"
+  },
+  "budget": {
+    "count": 2,
+    "cap": 80,
+    "remaining": 78,
+    "countKind": "minimum-observed",
+    "unresolvedAdmissions": 0,
+    "unlinkedChildren": 0,
+    "uncountedRemainder": "unknown",
+    "source": "native-stream-minimum-and-router-admissions",
+    "unknownRemainder": true
+  },
+  "workers": [
+    {
+      "phase": "active",
+      "action": "next",
+      "exitCode": 0,
+      "error": false,
+      "timedOut": false,
+      "workerEnded": true,
+      "costUsd": null,
+      "usage": {
+        "input_tokens": 62860,
+        "cached_input_tokens": 53888,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 694,
+        "reasoning_output_tokens": 373
+      },
+      "hookEvents": [],
+      "refusalCodes": [],
+      "toolCalls": [
+        "command_execution"
+      ],
+      "entryResults": [
+        {
+          "status": "failed",
+          "exitCode": 1,
+          "output": "Drive stopped: Canonical lifecycle observation unavailable\n"
+        }
+      ],
+      "model": null,
+      "sessionId": "identity-2",
+      "startedAt": "2026-10-25T23:45:32.859Z",
+      "finishedAt": "2026-10-25T23:46:06.548Z",
+      "selectedPolicy": {
+        "sandbox": "workspace-write",
+        "approval": "automatic-review",
+        "networkAccess": "default",
+        "source": "launch-arguments"
+      },
+      "isolation": {
+        "schemaVersion": 1,
+        "home": "sha256:f879275c235c8cbee9b6cabbb4bd7c06f38f67ede80284bcc1e2f04c547ba121",
+        "authentication": "symlink",
+        "userConfig": {
+          "before": "sha256:715442dd5961e9931ac1fd4297ea5c71a6dd37c179818b456cbaa1f2f52de588",
+          "after": "sha256:715442dd5961e9931ac1fd4297ea5c71a6dd37c179818b456cbaa1f2f52de588"
+        },
+        "trustTable": {
+          "before": "sha256:715442dd5961e9931ac1fd4297ea5c71a6dd37c179818b456cbaa1f2f52de588",
+          "after": "sha256:715442dd5961e9931ac1fd4297ea5c71a6dd37c179818b456cbaa1f2f52de588"
+        },
+        "isolatedTrustEntries": 1,
+        "homeRemoved": true
+      },
+      "cwd": "target-worktree",
+      "workerId": "identity-3",
+      "resumed": false,
+      "hooks": {
+        "hookCalls": null,
+        "source": "codex-unhooked-role-text"
+      },
+      "effort": null,
+      "effortSource": "not-exposed-by-native-json-stream",
+      "subagents": {
+        "count": 0,
+        "countKind": "minimum-observed",
+        "unknownRemainder": true,
+        "source": "native-collab-events"
+      },
+      "selectedModel": "gpt-6.1-sol",
+      "selectedEffort": "max",
+      "host": "codex"
+    },
+    {
+      "phase": "active",
+      "action": "next",
+      "exitCode": 0,
+      "error": false,
+      "timedOut": false,
+      "workerEnded": true,
+      "costUsd": null,
+      "usage": {
+        "input_tokens": 62802,
+        "cached_input_tokens": 53888,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 647,
+        "reasoning_output_tokens": 348
+      },
+      "hookEvents": [],
+      "refusalCodes": [],
+      "toolCalls": [
+        "command_execution"
+      ],
+      "entryResults": [
+        {
+          "status": "failed",
+          "exitCode": 1,
+          "output": "Drive stopped: Canonical lifecycle observation unavailable\n"
+        }
+      ],
+      "model": null,
+      "sessionId": "identity-4",
+      "startedAt": "2026-10-25T23:46:07.125Z",
+      "finishedAt": "2026-10-25T23:46:35.063Z",
+      "selectedPolicy": {
+        "sandbox": "workspace-write",
+        "approval": "automatic-review",
+        "networkAccess": "default",
+        "source": "launch-arguments"
+      },
+      "isolation": {
+        "schemaVersion": 1,
+        "home": "sha256:f6e446e08a74374e9ba1e80a89f5876372b3600f1fb1e0cc53617e6cc0733c3a",
+        "authentication": "symlink",
+        "userConfig": {
+          "before": "sha256:715442dd5961e9931ac1fd4297ea5c71a6dd37c179818b456cbaa1f2f52de588",
+          "after": "sha256:715442dd5961e9931ac1fd4297ea5c71a6dd37c179818b456cbaa1f2f52de588"
+        },
+        "trustTable": {
+          "before": "sha256:715442dd5961e9931ac1fd4297ea5c71a6dd37c179818b456cbaa1f2f52de588",
+          "after": "sha256:715442dd5961e9931ac1fd4297ea5c71a6dd37c179818b456cbaa1f2f52de588"
+        },
+        "isolatedTrustEntries": 1,
+        "homeRemoved": true
+      },
+      "cwd": "target-worktree",
+      "workerId": "identity-5",
+      "resumed": false,
+      "hooks": {
+        "hookCalls": null,
+        "source": "codex-unhooked-role-text"
+      },
+      "effort": null,
+      "effortSource": "not-exposed-by-native-json-stream",
+      "subagents": {
+        "count": 0,
+        "countKind": "minimum-observed",
+        "unknownRemainder": true,
+        "source": "native-collab-events"
+      },
+      "selectedModel": "gpt-6.1-sol",
+      "selectedEffort": "max",
+      "host": "codex"
+    }
+  ],
+  "completions": [],
+  "publicationExercised": false,
+  "rawTranscriptsRetained": false,
+  "outcome": "failed",
+  "failedStage": "drive",
+  "cause": "live episode must reach a real passing final review\n\n'active' !== 'closed'\n",
+  "cleanup": {
+    "workersEnded": true,
+    "outcome": "removed"
+  }
+}

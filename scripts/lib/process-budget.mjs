@@ -14,6 +14,7 @@ export const dispatchKinds = [
   "release-close",
   "planner",
   "refuter",
+  "router",
 ];
 export function readBudgets(root, { cutoff } = {}) {
   const path = docPath(root, "control", "budgets.json");
@@ -74,7 +75,30 @@ export function readBudgets(root, { cutoff } = {}) {
     (!Number.isSafeInteger(value.subagentCap) || value.subagentCap < 0)
   )
     throw new Error("Invalid budget: subagentCap");
+  if (
+    value.drivenSessionCeiling !== undefined &&
+    value.drivenSessionCeiling !== null &&
+    (!Number.isSafeInteger(value.drivenSessionCeiling) ||
+      value.drivenSessionCeiling < 0)
+  )
+    throw new Error("Invalid budget: drivenSessionCeiling");
+  if (
+    value.drivenPhaseTimeoutMs != null &&
+    (!Number.isSafeInteger(value.drivenPhaseTimeoutMs) ||
+      value.drivenPhaseTimeoutMs <= 0 ||
+      value.drivenPhaseTimeoutMs > 2147483647)
+  )
+    throw new Error("Invalid budget: drivenPhaseTimeoutMs");
   for (const role of dispatchKinds) {
+    // Budget seeds belong to the instance; updating a pre-router kit must
+    // not require rewriting its operator-owned budget document.
+    if (role === "router") {
+      value.dispatches ??= {};
+      value.dispatches.router ??= { tokens: null, costUsd: null };
+      value.limits ??= {};
+      value.limits.coldStartBytes ??= {};
+      value.limits.coldStartBytes.router ??= null;
+    }
     const dispatch = value.dispatches?.[role];
     for (const limits of [
       dispatch,

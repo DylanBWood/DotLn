@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-25T21:21:02.931Z",
+  "stage": "hook-health-driven",
+  "outcome": "failed",
+  "cause": "{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"DOTLN_TARGET_REFUSED: driven target worktree differs from its recorded roots\"}}",
+  "workerStarted": false
+}

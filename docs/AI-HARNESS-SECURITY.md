@@ -239,6 +239,39 @@ directory permission reset never follows a symbolic link. Release close's
 broader prune serializes with host lane admission and reports blockers for retry.
 It does not change the host memory admission policy or grant itself permissions.
 
+WO-192 adds router-only refusals: its own Agent call must carry exactly one
+lifecycle phrase, given to the agent type that phrase names, or
+`DOTLN_ROUTER_SPAWN_REFUSED` refuses it, including when it names no type; any
+write it attempts, and any shell command beyond the live gate's read list, its
+driver and its usage command, meets `DOTLN_ROUTER_WRITE_REFUSED`. A phase worker's review spawns keep their ordinary
+policy. A host denial of the canonical driver
+also stops that router attempt: the PermissionDenied hook latches a router-only
+tool refusal until a new operator drive phrase; native transport terminates a
+failed launcher. The generated skill requests the launch through the host's
+normal permission flow, without installing a sandbox exclusion. These conditional role boundaries do not
+add a seventh universal refusal to the shared floor. Only a lifecycle worker definition is an actor of its own: its session key combines
+the host session and agent identities, its role and selected effort observations
+stay separate, the writer view identifies it, and `SubagentStop` releases its
+reservation. Every other spawned agent helps its spawner and works inside that
+session, under its role, grants and writer, because a helper ends with nothing to
+release; a driven worker's helper is read-only in either worktree: it runs what a
+live gate admits and writes only its session scratch. The worktree writer, active
+gate and driven-session total remain shared boundaries, and a live launchpad gate
+protects its inputs from a target worktree's hooks as it does from its own,
+including from the launchpad commands those hooks admit. Separate phase
+sessions preserve these boundaries on the measured host, whose in-process target
+worker kept the parent's hooks ([probe](evidence/WO-192/host-probe.json)).
+
+The `order-worktree` grant resolves the recorded branch through Git's worktree
+registry and, for a registered target, its target and paired launchpad through the
+target registry. Physical directory identity preserves a legitimate alias and
+excludes another order. The manifest records the grant's source. Roots that
+cannot be resolved withhold this grant alone: the role's other grants are still
+judged, and the refusal names the cause. This is a
+known-destination grant, not arbitrary-process confinement. Shared admission
+counts charge the spawning worker and the driven total; unresolved joins remain
+reported minima and unobserved descendants remain unknown.
+
 WO-185 adds resource supervision outside the tool-call approval boundary.
 A probe outside a gate runs under `node scripts/harness.mjs bounded -- <command>`,
 one process at a time, with the ordinary host permission decision. Dispatch
@@ -298,7 +331,8 @@ sources in the manifest. It resolves symlinks; unlinking judges the removed
 entry. It is not confinement of an arbitrary program's effects.
 
 The `quality pass:` document command leaves these six refusals unchanged. Its
-guidance is in every generated role. When the prompt's own first content line,
+guidance is in every phase, planning and refutation role; the router edits no
+document and carries none. When the prompt's own first content line,
 the line dispatch prefixes are read from, opens with the command, the prompt
 hook also adds it to the assistant's `additionalContext`, never to the
 operator's terminal notice; an active operator control such as `analysis:`
@@ -357,7 +391,7 @@ Literal shell redirects to the `/dev/null` character device are discards,
 not outside file mutations. This grants no other device path or removal.
 Use the DotLn scratch path printed at Claude role dispatch or returned by
 `node scripts/harness.mjs scratch` in Codex; it creates the session directory
-before printing it. All six default roles also carry the host-printed
+before printing it. The six default roles that write also carry the host-printed
 scratchpad grant. Native scratch and `/tmp` require
 a separate grant when outside the host's `os.tmpdir()` root. The permission
 hook records one judgment per destination; the other pre-tool hooks still
@@ -370,11 +404,12 @@ minimum count; missing/unreadable counters admit with a named advisory.
 Stop and `harness usage` disclose the count/cap and unknown remainder. This is
 not a total creation cap: silent agents, unobserved paths and unresolved
 overlap remain open ([WO-139 evidence](evidence/WO-139/README.md)).
-All six default contributor roles grant the host `os.tmpdir()` root and DotLn
-session scratch below `<system-temp>/dotln/<session-key>/scratch` and the
-host-printed scratchpad; no role
+The six default contributor roles that write grant the host `os.tmpdir()` root,
+DotLn session scratch below `<system-temp>/dotln/<session-key>/scratch`, the
+host-printed scratchpad and `order-worktree`. The router writes nothing, so it
+holds no grant, and no role
 grants arbitrary home folders or main intake by default. The executor alone
-also declares the sixth kind, `target-worktree`, under
+also declares `target-worktree`, under
 `contributor.target-worktree`. At every judged outside write it resolves the
 session's dispatched order (or canonical selected order when unbound),
 requires canonical phase `active` or `repairing`, and reads exactly one row
@@ -391,7 +426,8 @@ and an operator-named absolute root are available declaration kinds, requiring
 explicit admitted authority. Missing active roles grant nothing. An opaque
 destination is journaled as unobserved. Unreadable grant configuration,
 unavailable grant roots and resolution errors admit with one advisory and a
-journaled cause, while the existing refusals remain effective. Existing runtime
+journaled cause, while the existing refusals remain effective; order and target
+roots that cannot be resolved withhold only their own grant instead. Existing runtime
 pin failures retain advisory delegation. A refusal already established in a
 multi-target command survives later path failure. In-project writes never use
 the outside-grant check. The existing `operator override:` route supports

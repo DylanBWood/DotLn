@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-26T05:19:24.010Z",
+  "probe": "nested native Codex declarations in an installed target launchpad",
+  "selectedModel": "gpt-6.1-sol",
+  "selectedEffort": "max",
+  "exitCode": 0,
+  "cause": null,
+  "workerEnded": true,
+  "observation": {
+    "node": "v26.9.0",
+    "requireModule": true,
+    "recognizedExecFlags": [],
+    "environmentHasRequireDisable": false
+  },
+  "child": {
+    "launcherRuntime": "v26.9.0",
+    "pinnedRuntimePath": false,
+    "configuredRuntimePath": true,
+    "exitCode": 0,
+    "cause": null,
+    "commandResults": [
+      {
+        "kind": "unclassified-shell",
+        "status": "completed",
+        "exitCode": 0,
+        "shape": [
+          [
+            "node",
+            "<operand>",
+            "<operand>"
+          ]
+        ]
+      }
+    ],
+    "usage": {
+      "input_tokens": 27163,
+      "cached_input_tokens": 23296,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 133,
+      "reasoning_output_tokens": 12
+    },
+    "workerEnded": true,
+    "isolation": {
+      "schemaVersion": 1,
+      "home": "sha256:0b122647ad82191f530d2c9c1c03dc8d8db12fce47e88ab4b2e552e674b66817",
+      "authentication": "symlink",
+      "userConfig": {
+        "before": "sha256:1da1a096b5736dc8462e8ed863781ecc9e1b1a40364f8596201c91646cd23a8e",
+        "after": "sha256:1da1a096b5736dc8462e8ed863781ecc9e1b1a40364f8596201c91646cd23a8e"
+      },
+      "trustTable": {
+        "before": "sha256:1da1a096b5736dc8462e8ed863781ecc9e1b1a40364f8596201c91646cd23a8e",
+        "after": "sha256:1da1a096b5736dc8462e8ed863781ecc9e1b1a40364f8596201c91646cd23a8e"
+      },
+      "isolatedTrustEntries": 1,
+      "homeRemoved": true
+    }
+  },
+  "commandResults": [
+    {
+      "kind": "unclassified-shell",
+      "status": "completed",
+      "exitCode": 0,
+      "shape": [
+        [
+          "node",
+          "<operand>"
+        ]
+      ]
+    }
+  ],
+  "usage": {
+    "input_tokens": 46930,
+    "cached_input_tokens": 40832,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 400,
+    "reasoning_output_tokens": 215
+  },
+  "costUsd": null,
+  "isolation": {
+    "schemaVersion": 1,
+    "home": "sha256:acbc5dbe4f2f3f472e3c9309996f82a2556d17c08c844a0fc10f3a1ebc6322a5",
+    "authentication": "symlink",
+    "userConfig": {
+      "before": "sha256:6202960ee18605675f85f66f649d13f9e250c7b6b5793cb85d85eba09408500e",
+      "after": "sha256:6202960ee18605675f85f66f649d13f9e250c7b6b5793cb85d85eba09408500e"
+    },
+    "trustTable": {
+      "before": "sha256:f73fb2e2e4e5ce05288c6b5b2f7ddf948959c83bd8216603da58f3a08bb2d3a9",
+      "after": "sha256:f73fb2e2e4e5ce05288c6b5b2f7ddf948959c83bd8216603da58f3a08bb2d3a9"
+    },
+    "isolatedTrustEntries": 1,
+    "homeRemoved": true
+  },
+  "cleanup": "removed"
+}

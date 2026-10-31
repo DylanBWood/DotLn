@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-25T21:42:09.579Z",
+  "stage": "drive",
+  "outcome": "failed",
+  "cause": "harness drift: pinned snapshot missing or changed (packages/compiler/dist/src/artifact-identity.js); run the build bootstrap",
+  "workerStarted": false,
+  "correction": "The drift check failed before the launcher; entering the drive stage did not start a worker."
+}

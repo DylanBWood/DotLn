@@ -42,7 +42,7 @@ const environment = {
   baseCommit: "0".repeat(40),
 };
 
-test("WO-133 every generated role preserves supplied actor values and checks edited product publications", () => {
+test("generated phase roles preserve actor values and publication checks while the router only routes", () => {
   const program = contributorProgram();
   for (const profile of contributorProfiles) {
     const target = {
@@ -67,8 +67,24 @@ test("WO-133 every generated role preserves supplied actor values and checks edi
     const roles = bundle.files.filter((file) =>
       file.path.endsWith("/SKILL.md"),
     );
-    assert.equal(roles.length, 6);
-    for (const role of roles) {
+    assert.equal(roles.length, 7);
+    const router = roles.find((role) =>
+      role.path.endsWith("dotln-router/SKILL.md"),
+    )!;
+    assert.match(router.contents, /Read only canonical status/);
+    assert.match(
+      router.contents,
+      /Read no order, diff, report or worker transcript/,
+    );
+    assert.match(router.contents, /edit no project file/);
+    assert.match(router.contents, /A router holds no writer reservation/);
+    assert.doesNotMatch(
+      router.contents,
+      /Read: `@work-order`|Completion flags:|npm run publication:check/,
+    );
+    const phaseRoles = roles.filter((role) => role !== router);
+    assert.equal(phaseRoles.length, 6);
+    for (const role of phaseRoles) {
       assert.match(
         role.contents,
         /Without a session readback, keep the operator-selected model and effort with `--source operator-attested`; Claude Code roles read `CLAUDE_EFFORT` first/,
@@ -119,8 +135,10 @@ test("WO-179 and WO-195 emitted roles carry their assigned corrections across su
         program.loadout.authorityEnvelope,
         target,
       );
-      const roles = bundle.files.filter((file) =>
-        file.path.endsWith("/SKILL.md"),
+      const roles = bundle.files.filter(
+        (file) =>
+          file.path.endsWith("/SKILL.md") &&
+          !file.path.endsWith("dotln-router/SKILL.md"),
       );
       assert.equal(roles.length, 6);
       for (const role of roles) {
@@ -746,7 +764,11 @@ test("WO-042 installed role projection takes each support from compiled equipmen
     "communication-observation",
     "communication-recommendation",
   ]) {
-    assert.ok(contributorProgram([id]).roles[0]!.procedure.includes(text(id)));
+    assert.ok(
+      contributorProgram([id])
+        .roles.find((role) => role.name === "executor")!
+        .procedure.includes(text(id)),
+    );
     assert.throws(
       () => contributorProgram([id, "communication-intent"]),
       /conflict/iu,
@@ -822,6 +844,14 @@ test("execution roles open with an ordered handoff and keep shared rules below i
     assert.equal(steps.length, run + 4, name);
     assert.match(steps.slice(run + 2).join("\n"), /runs no gate/, name);
     if (name === "executor") {
+      assert.match(
+        steps[run]!,
+        /Synthetic lifecycle fixtures are a product preflight/,
+      );
+      assert.match(
+        steps[run]!,
+        /Historical record comparisons stay in the separate document gate/,
+      );
       assert.match(steps[format]!, /npm run sync/);
       assert.match(steps[run]!, /`npm test -- --review`/);
       assert.match(steps[run]!, /failed and newly changed suites first/);

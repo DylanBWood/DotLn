@@ -1,0 +1,132 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-26T05:59:06.133Z",
+  "probe": "direct and nested native Codex lifecycle recording; not full phase qualification",
+  "arms": [
+    {
+      "nested": false,
+      "selectedModel": "gpt-6.1-sol",
+      "selectedEffort": "max",
+      "exitCode": 0,
+      "workerEnded": true,
+      "cause": null,
+      "commandResults": [
+        {
+          "kind": "unclassified-shell",
+          "status": "failed",
+          "exitCode": 1,
+          "shape": [
+            [
+              "node",
+              "<operand>"
+            ]
+          ]
+        }
+      ],
+      "boundaryResults": [],
+      "usage": {
+        "input_tokens": 29422,
+        "cached_input_tokens": 24448,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 179,
+        "reasoning_output_tokens": 49
+      },
+      "observation": {
+        "node": "v26.9.0",
+        "rows": [
+          {
+            "action": "next",
+            "exitCode": 0,
+            "signal": null,
+            "errorCode": null,
+            "diagnostic": null
+          },
+          {
+            "action": "implementation-ready",
+            "exitCode": 1,
+            "signal": null,
+            "errorCode": null,
+            "diagnostic": "Advisory: attestation recorded as supplied; codex-cli 0.164.0 effort max has no matching discovery observation.\nerror: git add --intent-to-add failed: error: unable to create temporary file: Operation not permitted\nfatal: cannot create an empty blob in the object database\n\n"
+          }
+        ]
+      },
+      "child": null,
+      "cleanup": "removed"
+    },
+    {
+      "nested": true,
+      "selectedModel": "gpt-6.1-sol",
+      "selectedEffort": "max",
+      "exitCode": 0,
+      "workerEnded": true,
+      "cause": null,
+      "commandResults": [
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": 0,
+          "shape": [
+            [
+              "node",
+              "<operand>"
+            ]
+          ]
+        }
+      ],
+      "boundaryResults": [],
+      "usage": {
+        "input_tokens": 55468,
+        "cached_input_tokens": 50944,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 284,
+        "reasoning_output_tokens": 58
+      },
+      "observation": {
+        "node": "v26.9.0",
+        "rows": [
+          {
+            "action": "next",
+            "exitCode": 0,
+            "signal": null,
+            "errorCode": null,
+            "diagnostic": null
+          },
+          {
+            "action": "implementation-ready",
+            "exitCode": 1,
+            "signal": null,
+            "errorCode": null,
+            "diagnostic": "Advisory: attestation recorded as supplied; codex-cli 0.164.0 effort max has no matching discovery observation.\nerror: git add --intent-to-add failed: error: unable to create temporary file: Operation not permitted\nfatal: cannot create an empty blob in the object database\n\n"
+          }
+        ]
+      },
+      "child": {
+        "exitCode": 0,
+        "workerEnded": true,
+        "cause": null,
+        "commandResults": [
+          {
+            "kind": "unclassified-shell",
+            "status": "failed",
+            "exitCode": 1,
+            "shape": [
+              [
+                "node",
+                "<operand>"
+              ]
+            ]
+          }
+        ],
+        "boundaryResults": [],
+        "usage": {
+          "input_tokens": 27503,
+          "cached_input_tokens": 23424,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 231,
+          "reasoning_output_tokens": 98
+        }
+      },
+      "cleanup": "removed"
+    }
+  ]
+}

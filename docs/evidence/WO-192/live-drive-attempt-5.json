@@ -1,0 +1,194 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-25T21:18:48.654Z",
+  "input": "drive: WO-999",
+  "entrypoint": "generated router's canonical driver",
+  "host": "2.1.310 (Claude Code)",
+  "phase": "active",
+  "stop": {
+    "reason": "incomplete-bound",
+    "next": "Two workers ended without recording completion in this phase; inspect the failure."
+  },
+  "limits": {
+    "subagentCap": 20,
+    "drivenSessionCeiling": 80,
+    "tokens": null,
+    "costUsd": null
+  },
+  "routerUsage": {
+    "totalTokens": null,
+    "costUsd": null,
+    "source": "host-router-counter-unavailable"
+  },
+  "budget": {
+    "count": 1,
+    "cap": 80,
+    "remaining": 79,
+    "countKind": "exact-observed",
+    "unresolvedAdmissions": 0,
+    "unlinkedChildren": 0,
+    "uncountedRemainder": "unknown",
+    "source": "shared-hook-counter"
+  },
+  "workers": [
+    {
+      "phase": "active",
+      "action": "next",
+      "exitCode": 0,
+      "error": false,
+      "timedOut": false,
+      "costUsd": 0.099433,
+      "usage": {
+        "input_tokens": 8,
+        "cache_creation_input_tokens": 5493,
+        "cache_read_input_tokens": 66885,
+        "output_tokens": 2104,
+        "output_tokens_details": {
+          "thinking_tokens": 755
+        },
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 5493,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "global",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 1441,
+            "cache_read_input_tokens": 18170,
+            "cache_creation_input_tokens": 496,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 496
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard",
+        "fallback_credit": null
+      },
+      "hookEvents": [
+        "hook_started",
+        "hook_response"
+      ],
+      "refusalCodes": [
+        "DOTLN_TARGET_REFUSED"
+      ],
+      "toolCalls": [
+        "Bash",
+        "Bash",
+        "Read",
+        "Read"
+      ],
+      "model": "claude-opus-5-5",
+      "effort": null,
+      "effortSource": "unknown",
+      "startedAt": "2026-10-25T21:18:05.425Z",
+      "finishedAt": "2026-10-25T21:18:35.751Z",
+      "cwd": "target-worktree",
+      "hooks": {
+        "hookCalls": 0,
+        "refusedCalls": 0,
+        "effort": [],
+        "source": "target-hook-journal"
+      },
+      "selectedEffort": "xhigh",
+      "subagents": {
+        "count": null,
+        "cap": 20,
+        "remaining": null,
+        "countKind": "unknown",
+        "unresolvedAdmissions": null,
+        "unlinkedChildren": null,
+        "uncountedRemainder": "unknown",
+        "reason": "counter missing",
+        "source": "phase-local-hook-counter"
+      }
+    },
+    {
+      "phase": "active",
+      "action": "next",
+      "exitCode": 0,
+      "error": false,
+      "timedOut": false,
+      "costUsd": 0.1439144,
+      "usage": {
+        "input_tokens": 6,
+        "cache_creation_input_tokens": 1981,
+        "cache_read_input_tokens": 59247,
+        "output_tokens": 838,
+        "output_tokens_details": {
+          "thinking_tokens": 64
+        },
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 1981,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "global",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 566,
+            "cache_read_input_tokens": 20425,
+            "cache_creation_input_tokens": 222,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 222
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard",
+        "fallback_credit": null
+      },
+      "hookEvents": [
+        "hook_started",
+        "hook_response"
+      ],
+      "refusalCodes": [
+        "DOTLN_TARGET_REFUSED"
+      ],
+      "toolCalls": [
+        "Bash",
+        "Read"
+      ],
+      "model": "claude-opus-5-5",
+      "effort": null,
+      "effortSource": "unknown",
+      "startedAt": "2026-10-25T21:18:36.156Z",
+      "finishedAt": "2026-10-25T21:18:48.248Z",
+      "cwd": "target-worktree",
+      "hooks": {
+        "hookCalls": 0,
+        "refusedCalls": 0,
+        "effort": [],
+        "source": "target-hook-journal"
+      },
+      "selectedEffort": "xhigh",
+      "subagents": {
+        "count": null,
+        "cap": 20,
+        "remaining": null,
+        "countKind": "unknown",
+        "unresolvedAdmissions": null,
+        "unlinkedChildren": null,
+        "uncountedRemainder": "unknown",
+        "reason": "counter missing",
+        "source": "phase-local-hook-counter"
+      }
+    }
+  ],
+  "completions": [],
+  "publicationExercised": false,
+  "rawTranscriptsRetained": false
+}

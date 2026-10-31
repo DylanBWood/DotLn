@@ -62,40 +62,39 @@ files a draft work order from one sentence. The
 ## What runs today
 
 <!-- DOTLN-RELEASE-BEGIN -->
-This source prepares DotLn `v0.103.1`.
+This source prepares DotLn `v0.104.0`.
 <!-- DOTLN-RELEASE-END -->
 
 <!-- dotln-what-runs:start -->
-Hand DotLn one sentence of intent and it files a draft work order; once you or a resident you have authorized admits it, the machinery, not your attention, carries the rules.
-The compiler turns that order's loadout into a program and an authority envelope that the kernel checks on every decision, so a worker that reaches for an effect it was never granted is refused, and the refusal is an event you can replay.
-A disposable worker on Claude Code or Codex does the work in its own worktree, passes the host's test and commits, and a blinded verifier that never saw the worker judges the change against the contract, sending it back to a fresh worker until the original contract passes or the repair budget runs out and a person decides.
-When the change is good, a publish step opens the pull request, waits for the automated reviewer and answers each comment with evidence; so far these runs are recorded scratch proofs on synthetic modules, and a browser adapter can add screenshot, network and console witnesses when the subject is a web page.
-While you are away, a resident host keeps the loop moving under a presence policy you set, and a mission check on a fixed cadence holds unattended dispatch whenever it finds the work off its contract or cannot tell.
-An exported starter completed a resident-owned scratch request through verified delivery and review repair, including writer replacement and resident restart; a fresh export also demonstrated live status.
-Everything above records its events in typed, versioned logs, so the actor board and the live console can show you the actors, builds and evidence in those logs, and the first proof, the Repo Gardener plus Seiri scenario, still replays from its own log today.
-This repository is built with the same roles: a work order merges after an independent verification and a final review, a release close follows, each step resumes from one phrase, and this page now changes only through such an order.
+DotLn is a working, human-gated AI software-delivery operating system.
+Its operator can drive substantial multi-phase development through a handful of terminal state-transition commands while task-scoped workers implement, test, verify, repair, review, and close the work across fresh sessions and isolated repositories.
 
-**Not yet built, and not claimed:** general source-writing worker profiles; composition beyond the Seiri subset; saved community builds; an interactive web or spatial console; SQLite persistence, hosted operation or a published package; the complete verified source-to-deliverable pipeline; portable starter export, a portfolio in the operator's own repositories and a measured absence payoff curve.
-The [goal review](/docs/planning/refutations/README.md) keeps the reopening observations, [CONTRIBUTING.md](/CONTRIBUTING.md) covers the toolchain and tests, and releases are on the [GitHub Releases page](https://github.com/DylanBWood/DotLn/releases).
+The current frontier is not basic feasibility.
+It is automatic lifecycle routing, measured economics, distribution reliability, and transfer to operators who did not build the system.
 <!-- dotln-what-runs:end -->
 
 ## Why this exists
 
 Working with AI agents drifts into babysitting: restating context, checking
 "done" claims that are not evidence, recovering stalled work. The usual fix is
-a bigger prompt. A predecessor system collapsed under roughly 140 rules loaded
-as prose; it brought **the whole stash into every map**. DotLn answers with
-**compiled** rules:
+a bigger prompt.
 
-- do not delete what you cannot prove is dead → a structural guard, not a plea;
-- show evidence before claiming success → a gate the model cannot talk past;
-- preserve the operator's intent across handoffs → a bounded work order, not a
-  transcript;
-- ask only when the decision is material → an interruption policy with six
-  named conditions, specified and not yet compiled;
-- make presence-conditioned changes explicit → a policy that may hold, shrink,
-  grow, peak, reset, or loop scope while naming which axis changed; the
-  current skeleton exercises one conservative return rule.
+DotLn grew out of daily software development with AI workers: planning changes,
+implementing them, checking the results, and carrying work across sessions.
+The hard part is keeping a substantial project coherent as its code,
+requirements, and decisions change. Each new session needs to know what is
+being built, why a decision was made, what has been tested, and what remains
+to be done.
+
+DotLn keeps that record in the repository. Planning produces bounded work
+orders; implementation, verification, repair, and review have distinct
+responsibilities; and recorded state connects those phases across fresh
+sessions and isolated worktrees. Evidence stays attached to the change it
+judges.
+
+The operator sets direction, decides tradeoffs, and controls approval and
+release boundaries. DotLn supplies the durable context and repeatable delivery
+process for ongoing development with AI workers.
 
 A session gets **a build, not a biography**: one active behavior, a few linked
 supports, a small safety layer and the exact task state. The reference loop:

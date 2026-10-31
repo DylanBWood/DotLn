@@ -1,0 +1,96 @@
+{
+  "workOrder": "WO-192",
+  "historicalBaseline": "wo204-role-baseline.json",
+  "historicalSha256": "dd72d079ba40dd2469cdbfffcac0103bcbd6a5fa6f4c437daf5c4c95ea0bd822",
+  "upstreamBaseline": "wo185-role-baseline.json",
+  "upstreamSha256": "f67e48b79873202b56c069902f2338d54b1fef42d3c9eb29706d3d2cd7a72ef9",
+  "method": "Pin the router, shared fan-out and target-order clauses in both installed roots and both economy settings. Preserve all historical snapshots byte-exact.",
+  "decision": "docs/evidence/WO-192/decisions.md#wo-192-d003--keep-target-procedures-and-role-history-explicit",
+  "roles": {
+    ".agents/skills/dotln-executor/SKILL.md": "0afdbdde46d8f720d4cc0487e5aa0a07d6a5c1f4448e5e1fa7edc3fce300cdf4",
+    ".agents/skills/dotln-planner/SKILL.md": "e388dba74f901a73e2957157c4a61d6ae4f5e982eb5b382697cea0207aa33ef0",
+    ".agents/skills/dotln-refuter/SKILL.md": "4e041040bf596de339eaf55579fc33b0f60b801ae995639ed333408decf43881",
+    ".agents/skills/dotln-release-close/SKILL.md": "7c66a755b63c72427fb872255c1bb0d59007d52175ad64fe02bfa3b14e4ee693",
+    ".agents/skills/dotln-reviewer/SKILL.md": "480a64a0275be949fe7d39ba570d9bb7eca5ebeedd8eeb5ac35e9cebb0186257",
+    ".agents/skills/dotln-router/SKILL.md": "3710f518fefa888fe75903f4a88e8cb46e3a97699ce724fd21ab2cf4e25cef5e",
+    ".agents/skills/dotln-verifier/SKILL.md": "54bf97b17d27fbb204612b9c65f4c85b0cea8a8881d50e7b26caf4cf234e59ba",
+    ".claude/skills/dotln-executor/SKILL.md": "0afdbdde46d8f720d4cc0487e5aa0a07d6a5c1f4448e5e1fa7edc3fce300cdf4",
+    ".claude/skills/dotln-planner/SKILL.md": "e388dba74f901a73e2957157c4a61d6ae4f5e982eb5b382697cea0207aa33ef0",
+    ".claude/skills/dotln-refuter/SKILL.md": "4e041040bf596de339eaf55579fc33b0f60b801ae995639ed333408decf43881",
+    ".claude/skills/dotln-release-close/SKILL.md": "7c66a755b63c72427fb872255c1bb0d59007d52175ad64fe02bfa3b14e4ee693",
+    ".claude/skills/dotln-reviewer/SKILL.md": "480a64a0275be949fe7d39ba570d9bb7eca5ebeedd8eeb5ac35e9cebb0186257",
+    ".claude/skills/dotln-router/SKILL.md": "3710f518fefa888fe75903f4a88e8cb46e3a97699ce724fd21ab2cf4e25cef5e",
+    ".claude/skills/dotln-verifier/SKILL.md": "54bf97b17d27fbb204612b9c65f4c85b0cea8a8881d50e7b26caf4cf234e59ba"
+  },
+  "optOutRoles": {
+    ".agents/skills/dotln-executor/SKILL.md": "0881ad778e601a06d175240dc5aea0f996e7b89e6af9a6046b293adaa7b8196c",
+    ".agents/skills/dotln-planner/SKILL.md": "f91fd4ad80b10c9bc7ae5b5b6edf7ecfdec159527cf65a69f25a275815ced1db",
+    ".agents/skills/dotln-refuter/SKILL.md": "4ddd9a99d11c1f2cff06b5f891e314085d0e35eb1dfe83aa2e28783c2fd93df3",
+    ".agents/skills/dotln-release-close/SKILL.md": "afc31840b0c0bfa968dec43004c2df6b894c6025249abdccbca89e7d8d682190",
+    ".agents/skills/dotln-reviewer/SKILL.md": "8b47069405ece19f11eae6b069dd78161dc9eba5895f418f218be3a06c02659d",
+    ".agents/skills/dotln-router/SKILL.md": "f4aadb8ffca70d5e31e79c753fb47c75167c21eacca5f91bf140908734401146",
+    ".agents/skills/dotln-verifier/SKILL.md": "145e2648719c961851155181ba9770753af1d1e16e4a107b138db898b9d0965b",
+    ".claude/skills/dotln-executor/SKILL.md": "0881ad778e601a06d175240dc5aea0f996e7b89e6af9a6046b293adaa7b8196c",
+    ".claude/skills/dotln-planner/SKILL.md": "f91fd4ad80b10c9bc7ae5b5b6edf7ecfdec159527cf65a69f25a275815ced1db",
+    ".claude/skills/dotln-refuter/SKILL.md": "4ddd9a99d11c1f2cff06b5f891e314085d0e35eb1dfe83aa2e28783c2fd93df3",
+    ".claude/skills/dotln-release-close/SKILL.md": "afc31840b0c0bfa968dec43004c2df6b894c6025249abdccbca89e7d8d682190",
+    ".claude/skills/dotln-reviewer/SKILL.md": "8b47069405ece19f11eae6b069dd78161dc9eba5895f418f218be3a06c02659d",
+    ".claude/skills/dotln-router/SKILL.md": "f4aadb8ffca70d5e31e79c753fb47c75167c21eacca5f91bf140908734401146",
+    ".claude/skills/dotln-verifier/SKILL.md": "145e2648719c961851155181ba9770753af1d1e16e4a107b138db898b9d0965b"
+  },
+  "startupCost": {
+    "decision": "WO-192-D078",
+    "profiles": {
+      "executor": {
+        "beforeBytes": 29827,
+        "bytes": 31108,
+        "ceiling": 29246,
+        "growthBytes": 1281,
+        "headroomBytes": -1862
+      },
+      "planner": {
+        "beforeBytes": 19256,
+        "bytes": 19626,
+        "ceiling": 24576,
+        "growthBytes": 370,
+        "headroomBytes": 4950
+      },
+      "refuter": {
+        "beforeBytes": 18070,
+        "bytes": 18440,
+        "ceiling": null,
+        "growthBytes": 370,
+        "headroomBytes": null
+      },
+      "release-close": {
+        "beforeBytes": 18347,
+        "bytes": 18717,
+        "ceiling": 21266,
+        "growthBytes": 370,
+        "headroomBytes": 2549
+      },
+      "reviewer": {
+        "beforeBytes": 29584,
+        "bytes": 31024,
+        "ceiling": 28884,
+        "growthBytes": 1440,
+        "headroomBytes": -2140
+      },
+      "router": {
+        "beforeBytes": null,
+        "bytes": 14592,
+        "ceiling": 16384,
+        "growthBytes": null,
+        "headroomBytes": 1792
+      },
+      "verifier": {
+        "beforeBytes": 27156,
+        "bytes": 28274,
+        "ceiling": 29831,
+        "growthBytes": 1118,
+        "headroomBytes": 1557
+      }
+    },
+    "followup": "FUP-e08668268dea62b1"
+  }
+}

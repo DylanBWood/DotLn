@@ -97,6 +97,8 @@ import {
   orderHostRules,
   removeOrderHostRules,
   targetWorktreeForOrder,
+  registeredOrder,
+  directoryIdentity,
   writeOrderHostRules,
   validateOrderHostRules,
 } from "./lib/target-worktrees.mjs";
@@ -726,8 +728,21 @@ const main = async () => {
   if (action === "integrate") {
     const { integrateWorktree } =
       await import("./lib/worktree-integration.mjs");
+    const cwd = directoryIdentity(process.cwd());
+    const targetOrder = registeredOrder(toolRoot, cwd);
+    let integrationRoot = cwd;
+    if (targetOrder) {
+      const entry = targetWorktreeForOrder(toolRoot, targetOrder);
+      if (targetOrder !== workOrderId || entry.target !== cwd)
+        throw new Error(
+          "integrate requires the selected order's registered target root",
+        );
+      // The paired launchpad owns lifecycle records and their integration.
+      // The target's reviewed commit remains bound to its declared base.
+      integrationRoot = entry.launchpad;
+    }
     const result = await integrateWorktree(
-      resolve(process.cwd()),
+      integrationRoot,
       workOrderId,
       actionArgs,
     );

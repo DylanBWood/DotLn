@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { dependencyHeader } from "./dependencies.mjs";
 import { workOrderAuthorityFiles } from "./paths.mjs";
+import { runGit } from "./git.mjs";
 
 // An order that may change the front page outside its generated blocks says
 // so in its leading header, on one line: `**Front page:** README.md`. The
@@ -89,4 +90,23 @@ export function branchFrontPage(
         ? `while ${workOrderId}'s leading header at the merge base declares no \`${LABEL}\` field; the header is read on main, so adding or fixing it on this branch changes nothing, and planning files it there`
         : `while ${workOrderId} declares \`${LABEL} ${files.join(", ")}\``,
   };
+}
+
+// An explicit execution amendment can admit page prose without granting
+// control-record edits. The plan gate checks the receipt, current decision,
+// order bytes and permitted appendices before this scope is returned.
+export async function amendedFrontPageScope(root) {
+  const branch = runGit(root, ["branch", "--show-current"]);
+  const scope = branchFrontPage(root, branch);
+  if (!scope.files) return null;
+  const { checkPlanGate } = await import("./plan-receipts.mjs");
+  const checked = await checkPlanGate(root);
+  return checked.continuation?.workspaceUpdates.some(
+    (row) =>
+      row.kind === "authorized-execution-amendment" &&
+      row.workOrderId === scope.workOrderId &&
+      row.path === scope.file,
+  )
+    ? scope
+    : null;
 }
