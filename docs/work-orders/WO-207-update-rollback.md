@@ -852,8 +852,10 @@ merge re-checked each source anchor):**
     revision's launchpad from a detached `.runtime/upstream-preview` worktree,
     as the plan prescribes, and the instance's own launchpad refuses the same
     manifest (`launchpad`).
-21. `scripts/kit/README.client.md`: §"## Taking upstream updates" (from
-    line 585 at `926b8234`; the executor re-reads it at the base) gains the
+21. The kit guide (`docs/KIT.md` once WO-245 merges, otherwise
+    `scripts/kit/README.client.md`): §"## Taking upstream updates" (from
+    line 585 of the README at `926b8234`; the executor re-reads it at the
+    base) gains the
     log, the retained copies (a fresh clone falls back to the pre-update
     commit), the update's fail-closed refusal, both rollback forms, the
     reversals, the listed actions, the refusals, the fork's merged-row

@@ -16,8 +16,8 @@ rewritten as the short seed (the release display name, one paragraph saying
 what the repository is and where the kit's guide is, the release block, one
 sentence inviting the owner to replace everything but the block; about 1 KB)
 with its SHA-256 pinned in `scripts/test-launchpad-export.mjs` (the
-`launchpad-docs` suite); in `scripts/lib/starter-seeds.mjs` (`planStarterSeeds`,
-109 to 200) the README rule: `README.md` is rewritten only while the starter's
+`launchpad-docs` suite); in `scripts/lib/starter-seeds.mjs` (`planStarterSeeds`, from
+109; the refusal at 206 to 209) the README rule: `README.md` is rewritten only while the starter's
 copy equals a prior exported rendering, a customized, missing or non-regular
 copy is reported `kept` with its reason and never refuses the refresh (the
 refusal "starter seed differs from prior export" lists the other seeds only),
@@ -106,8 +106,9 @@ README release block as the one claim `release prepare` writes).
 263 to 274; the kit document list at 247; `addSeed("README.md", …)` 1063; the
 `docs/README.md` seed 1088 to 1108; "instance seeds are written once" at 6);
 `scripts/lib/starter-seeds.mjs` (the eight seeds 20 to 36; `namedStarterSeed`
-46 to 52, the claim line's display name; `planStarterSeeds` 109 to 200, the
-proven-seed rule with its README special case and the refusal at 183 to 188);
+46 to 52, the claim line's display name; `planStarterSeeds` from 109: the
+proven-seed rule with its README special case at 183 to 188 and the refusal
+"starter seed differs from prior export" at 206 to 209);
 `scripts/lib/starter-refresh.mjs` (the seed plan 593 to 608; the seed writes
 725 to 754; `rewrittenSeeds` 884); `scripts/lib/release-preparation.mjs`
 (`releaseClaimLine` 25; the README read 137; the block requirement 170 to
@@ -227,7 +228,8 @@ even that may go.
    the seed rewrites every unedited starter copy once and is named in the
    changing order's decisions and its release's Read before upgrading).
    Check: `npm test -- --only launchpad-docs`.
-3. `scripts/lib/starter-seeds.mjs` `planStarterSeeds` (109 to 200): for
+3. `scripts/lib/starter-seeds.mjs` `planStarterSeeds` (from 109; the
+   refusal at 206 to 209): for
    `README.md` the proven-seed rewrite stays and the refusal goes: a
    customized, missing or non-regular copy is planned as `kept` with its
    reason and the refusal message lists the other seeds only;

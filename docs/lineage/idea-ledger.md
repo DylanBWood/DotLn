@@ -40,7 +40,7 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
-## 2026-10-31 — Planning pass: the kit's guide leaves the seeded README, the launchpad's own pull requests, WO-192's immediate follow-up and the pull-request table (WO-245 to WO-248; WO-237, WO-238, WO-242 and WO-207 amended); registration only; the record is the planning document
+## 2026-10-31 — Planning pass: the kit's guide leaves the seeded README, the launchpad's own pull requests, WO-192's immediate follow-up, the pull-request table and the reviewed planning route (WO-245 to WO-248; WO-237, WO-238, WO-241 to WO-244 and WO-207 amended); registration only; the record is the planning document
 
 Dispatch: `planning: standard planning pass +` with the operator's README
 item, the DotLn-Enterprise-Starter fork's block of its second pass of
@@ -60,6 +60,9 @@ the Codex close, code-bound live receipts, the ten items, the fixture
 origin, the sandbox election) and WO-248 (the pull-request table), amends
 WO-237, WO-238, WO-242 and WO-207, retires WO-192 from the sequence at
 v0.104.0, disposes WO-192's register rows, answers the fork's nine items,
+adds the reviewed planning route to WO-244 and product 07 on the
+operator's fourth message (SHA-256 `82dd33e4ea5ed1aa36e2bac3b6f785e8eb0270c6f4a48b22d9570bf5efa34293`), runs that route itself
+(three Codex reviewers, twenty findings integrated before the refutation),
 and records that `plan start` refused its entry on the start block's 1 KB
 bound (WO-237's carry-in). Record:
 [the planning document](../planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md).

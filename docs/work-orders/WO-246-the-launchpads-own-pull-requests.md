@@ -124,12 +124,15 @@ README, is known once WO-245 merges; step 7 names both).
 (`parseGitHubTarget` 49; `resolveGitHubPushTarget` 93; `executeGh` 107;
 `ensureGh` and `ensureGhFor` 116 to 140; `pushUrl` 144 to 172;
 `parsePullRequestUrl` 346); `scripts/lib/target-publish.mjs` (the lint call
-1205 to 1216; `gh pr create --draft --repo forge.selector` 1259 to 1272; `gh
-pr view --repo` 1281); `scripts/lib/outward-lint.mjs` 691 to 712;
+1205 to 1216; `gh pr create --draft --repo forge.selector` 1259 to 1272; the
+lookup after a failed create 1276 to 1307); `scripts/lib/outward-lint.mjs` 691 to 712;
 `scripts/outward-lint.mjs` 103 to 125 (the CLI kinds);
 `scripts/test-outward-lint.mjs` 120 to 146 ("gitmoji requires type" at
-134); `packages/skeleton/src/harness-host.ts` (the command judgment near
-5795 to 5830: a known-destination refusal survives a grant failure);
+134); `packages/skeleton/src/harness-host.ts` (the `gh pr` parse 1807 to 1811;
+raw `gh` withheld for a registered target 2027 to 2029; the command
+judgment near 5795 to 5830: a known-destination refusal survives a grant
+failure); the gh manual page for `gh repo set-default`
+(https://cli.github.com/manual/gh_repo_set-default, read 2026-10-31);
 `packages/skeleton/src/loadouts/contributor.ts` 270 (the planner's push and
 pull request); `scripts/kit/README.client.md` 748 to 760 (the update route:
 "pushes the branch to origin and opens a pull request against main") and
@@ -151,10 +154,13 @@ lint everywhere, so a fork needs no workflow to retitle.
 
 **Observed gap (dated 2026-10-31 at `main` `c27abd53`):**
 
-- No `gh` command is judged by the hook: `packages/skeleton/src/harness-host.ts`
-  names none (searched for `gh pr`, `gh issue`, `gh repo`); under
-  `scripts/lib/` the only `gh` string outside the GitHub helpers is
-  `harness-prune.mjs` 149.
+- The hook judges `gh` only for a registered target's publish: `gh pr
+  create`, `ready`, `edit` and `view` are parsed
+  (`packages/skeleton/src/harness-host.ts` 1807 to 1811) and raw `gh`
+  receives no registered-target admission (2027 to 2029); no judgment reads
+  the clone's remotes, so a `gh pr list`, `gh issue list` or `gh pr create`
+  for the launchpad's own branch in a fork clone is admitted by the hook and
+  resolved by `gh` to the parent.
 - The planner role says the pass "pushes that branch and opens its :memo:
   pull request" (`contributor.ts` 270), and the kit README's update route
   says the session "pushes the branch to origin and opens a pull request
@@ -185,7 +191,12 @@ lint everywhere, so a fork needs no workflow to retitle.
 - **One helper, two doors.** `publishLaunchpadBranch` does for the
   launchpad's own branch what the target publish does for a registered
   target: the repository is origin's push URL and nothing else, the lint
-  runs first, and the push and the `gh pr create --repo` call name it.
+  runs first, the push and the `gh pr create --repo` call name it, and a
+  failed create is followed by the target publish's lookup (`gh pr view
+  <branch> --repo`, 1276 to 1307): a pull request whose head, base and
+  branch match is adopted and its URL printed, so a retry after a failed
+  create repeats no push and opens no second pull request; otherwise the
+  helper refuses naming the retry.
   `plan publish` admits only a `planning/` branch with its planning document
   present; `update --publish` admits only a branch whose HEAD carries the
   merge the update preview planned (the `UPSTREAM.md` provenance of the
@@ -195,11 +206,19 @@ lint everywhere, so a fork needs no workflow to retitle.
   around them). Rejected: a draft pull request (axis: the planning and
   update pull requests are opened ready; the target publish's draft form
   serves a verified phase this route has no equivalent of).
-- **The refusal reads the clone, not the network.** The judgment reads the
-  checkout's Git configuration for the two remotes and the gh default (the
-  form gh documents, read at execution; a host that documents another form
-  costs no failed verification, since the criterion names the behavior),
-  compares the parsed repositories, and refuses only the silent case. `gh
+- **The refusal reads the clone, not the network.** The judgment extends
+  the hook's existing `gh pr` parse (1807) rather than adding a second
+  parser, reusing the parsed command facts WO-244's paired-pass refusal
+  introduces where it has landed; it reads the checkout's Git configuration
+  for the two remotes and whether a gh default repository is set (the
+  behavior gh's manual page for `gh repo set-default` documents, read
+  2026-10-31: the command "sets the default remote repository to use when
+  querying the GitHub API for the locally cloned repository", used for
+  "viewing and creating pull requests" and "viewing and creating issues";
+  `--view` reports it and `--unset` clears it; the page names no storage
+  key, so the criterion names what `--view` reports and the read is the
+  executor's at execution), compares the parsed repositories, and refuses
+  only the silent case. `gh
   repo set-default`, `gh auth`, `gh --version`, and a command naming
   `-R`/`--repo` or `GH_REPO` are admitted; a clone with one remote sees no
   change. Rejected: running `gh repo view` inside the hook (axis: a network
@@ -210,7 +229,11 @@ lint everywhere, so a fork needs no workflow to retitle.
 - **The lint admits what core writes.** A title is either `type(scope)?:
   subject`, optionally gitmoji-prefixed, or a gitmoji and a subject; a bare
   subject stays refused (`subject.shape`); the `commit` kind keeps the
-  conventional type. Rejected: an instance-declared title convention in
+  conventional type. The target publish lints its title as `commit` and as
+  `pr-title` today (`target-publish.mjs` 1205 to 1216), which would refuse a
+  title in core's form under the `commit` kind; it lints the title as
+  `pr-title` only, since the branch's commit subjects are linted as `commit`
+  by WO-231's reviewed-commit lint. Rejected: an instance-declared title convention in
   `dotln.config.json` (axis: both forms are core's own practice; a
   declaration would exist only to refuse one of them, which nobody asked
   for; reopen if an instance wants to refuse a form).
@@ -225,10 +248,18 @@ lint everywhere, so a fork needs no workflow to retitle.
    `scripts/test-outward-lint.mjs` 120 to 146: `✨ Handle input` and `:memo:
    Plan the pass` admitted as `pr-title` and refused as `commit`; `fix:
    handle input` and `:sparkles: feat: handle input` admitted for both;
-   `Handle input` refused for both. Check: `npm test -- --only outward-lint`;
-   `npm test -- --only target-publish`.
-2. `scripts/lib/launchpad-publish.mjs` (new): `publishLaunchpadBranch` and
-   its fixture helper with a local bare origin and the fake `gh`. Check:
+   `Handle input` refused for both; `scripts/lib/target-publish.mjs` 1205
+   to 1216: the title linted as `pr-title` only, with a regression in
+   `scripts/test-target-publish.mjs` for a title in core's form. Check: `npm
+   test -- --only outward-lint`; `npm test -- --only target-publish`.
+2. `scripts/lib/launchpad-publish.mjs` (new): `publishLaunchpadBranch`,
+   with the create-or-validate flow of the Design, and its fixture: a
+   GitHub-shaped origin on a host that cannot resolve
+   (`https://github.invalid/dotln-fixture/launchpad.git`, which
+   `parseGitHubTarget` accepts as any GitHub remote and no network can
+   reach), the fixture environment's URL rewrite to a local bare repository
+   carried by every Git call, and a fake `gh` on the path, as the target
+   publish's fixtures do. Check:
    `npm test -- --only plan-refutation` and `npm test -- --only launchpad`
    once steps 3 and 4 wire the doors.
 3. `scripts/refute-plan.mjs`: `plan publish --title <title> --body-file
@@ -237,8 +268,9 @@ lint everywhere, so a fork needs no workflow to retitle.
 4. `scripts/launchpad.mjs`: `update --publish --title <title> --body-file
    <path>` (refuses on `main`, with uncommitted changes, or before the merge
    is committed). Check: `npm test -- --only launchpad`.
-5. `packages/skeleton/src/harness-host.ts` (the command judgment): the
-   refusal, its admitted forms and the remedy in the message; the measured
+5. `packages/skeleton/src/harness-host.ts` (the `gh pr` parse at 1807 and
+   the command judgment): the refusal, its admitted forms and the remedy in
+   the message, as an extension of the existing parse; the measured
    cost per judged `gh` command before and after, recorded in the decisions;
    the fixture in `scripts/test-harness.mjs` with a two-remote clone. Check:
    `npm test -- --only harness-fixtures`; `npm test -- --only harness`.
@@ -273,20 +305,27 @@ role's sentence; the write-backs.
 1. The lint admits `✨ Handle input` and `:memo: Plan the pass` as `pr-title`
    and refuses both as `commit`; `fix: handle input` and `:sparkles: feat:
    handle input` stay admitted for both; `Handle input` stays refused; the
-   target publish's fixture passes a title in core's form.
-2. On a `planning/` branch in a fixture clone with a local bare origin and a
-   fake `gh`, `plan publish` lints the title and body, pushes the branch and
-   calls `gh pr create --repo <origin selector> --head <branch> --base
-   main`, printing the URL; on `main`, on a branch of another shape, with a
-   refused term in the body, or with AI attribution, it refuses before any
-   push; on an update branch `update --publish` does the same and refuses
-   before the merge is committed.
+   target publish lints its title as `pr-title` only and its fixture passes
+   a title in core's form while a branch commit without a type is still
+   refused by the reviewed-commit lint.
+2. On a `planning/` branch in a fixture clone whose origin is a
+   GitHub-shaped URL on an unresolvable host, rewritten to a local bare
+   repository by the fixture environment, with a fake `gh`, `plan publish`
+   passes the repository preflight unchanged, lints the title and body,
+   pushes the branch to the local bare repository only and calls `gh pr
+   create --repo <origin selector> --head <branch> --base main`, printing
+   the URL; after a failed create it adopts the existing pull request by
+   branch, head and base and repeats no push; on `main`, on a branch of
+   another shape, with a refused term in the body, or with AI attribution,
+   it refuses before any push; on an update branch `update --publish` does
+   the same and refuses before the merge is committed.
 3. In the harness fixture, a clone whose `origin` and `upstream` name
    different repositories refuses `gh pr list`, `gh pr create --title x`,
    `gh issue list` and `gh pr view 1`, naming `-R <origin selector>`; the
    same commands with `-R` or `--repo`, with `GH_REPO=` set in the command,
-   after the gh default is set in the form gh documents, and in a clone with
-   one remote are admitted; `gh repo set-default` is admitted; the judgment's
+   after `gh repo set-default` is run (as `gh repo set-default --view` then
+   reports), and in a clone with one remote are admitted; the target
+   publish's existing `gh pr` judgments keep their regressions; `gh repo set-default` is admitted; the judgment's
    duration is recorded.
 4. The emitted planner root names `npm run plan -- publish`; `harness check`
    passes and the planner root's bytes are recorded against its ceiling.

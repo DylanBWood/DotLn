@@ -53,6 +53,7 @@ Three operator messages arrived mid-turn and are captured with the dispatch:
 | 15:32:53.529Z | run the same three reviewer types the executor and fix roles use before the refuter, integrate their results at the pass's judgment, then the refuter as normal | an independent review of the planning subject before refutation | three reviewers (criteria adversary, design improver, consistency reviewer) launched after the subject was committed; their findings and what the pass did with each in §Validation |
 | 15:33:07.890Z | but use codex dotln workers | the reviewers run on the Codex host | the three reviewers ran as `codex exec` workers at the Codex pin (gpt-6.1-sol, `max`, read-only sandbox), the form the entropy review's `codex-cli-exec` transport uses, since `spawn_agent` is a Codex-host primitive this Claude session cannot call; the refuter stayed the default `dotln-worker` ("as normal"); reopen on the operator's word |
 | 15:39:25.063Z (`…-message-3.md`, SHA-256 `52d78604680f1938af0e1489cbb5dec00b496f54df7188dc2fe9c4adc4c838b7`) | the pull-request charts are broken, in the instance and in core (a screenshot of the fork's WO-025 pull-request table) | the generated process table in every pull-request body is unreadable | WO-248 filed |
+| 16:19:03.410Z (`…-message-4.md`, SHA-256 `82dd33e4ea5ed1aa36e2bac3b6f785e8eb0270c6f4a48b22d9570bf5efa34293`) | add this process as a possible planning route, within WO-244: the normal pass, the Codex pass then a blind Claude pass then a synthesis, or a normal Fable pass using the three Codex reviewers before the refutation | a third planning route, recorded where the routine lives | WO-244 amended (the `reviewed` label, `plan review` with canonical briefs, the role duties); product 07 §Paired passes and the synthesis pass states the three routes, with this pass as the reviewed route's first run |
 
 The operator's items:
 
@@ -273,7 +274,34 @@ D095's third rule; the rest are the map's candidates 3 to 10.
   the census shape, decided at activation).
 - **WO-207 — amended.** A note that the README seed's half of
   FUP-b44117f7b047e976 is WO-245's and the preview rule covers the other
-  seeded files.
+  seeded files; its kit-README step retargeted to the kit guide once WO-245
+  merges.
+- **WO-244 — amended** on the operator's fourth message: the `reviewed`
+  label and `passKind`, `plan review` (the executor's three reviewer types
+  as Codex workers with canonical briefs, after the commit and before the
+  refuter, a fake transport for the fixture), the planner's reviewed duties,
+  the Design's two rejected alternatives (the reviewers in place of the
+  refuter; a reviewed paired pass), and this pass's by-hand run as the
+  Observed gap's evidence.
+- **WO-241, WO-242 and WO-243 — amended** after the reviews: their
+  kit-README steps and criteria name the kit guide (`docs/KIT.md` once
+  WO-245 merges, otherwise the README template), as WO-246 already did;
+  WO-238 gains a planning-deferral edge to WO-245 for the same file.
+- **WO-245, WO-246, WO-247 and WO-248 — amended after the reviews** (the
+  fifteen distinct findings of §Validation): WO-245's refusal citation
+  corrected (206 to 209); WO-246's gap narrowed to the missing
+  fork-destination judgment beside the hook's existing `gh pr` parse, the
+  helper's create-or-validate flow after a failed create, the fixture's
+  GitHub-shaped identity on an unresolvable host, the target publish
+  linting its title as `pr-title` only, and the gh manual page cited;
+  WO-247's completion consumer named as `requireGateClaims`, the receipt's
+  source identity distinguished from the fixture trees, the sandbox election
+  resolved per host with selected and observed policy recorded, the
+  publication fixture's identity kept GitHub-shaped and unreachable, the
+  three reproduced defects given replayable controls, and criterion 6's six
+  items enumerated; WO-248's renderer taking the subject order from its two
+  callers and comparing with the latest closed order only, with the
+  two-open-orders and closed-subject cases.
 - **WO-192 — retired from the sequence** as closed; the history page is
   its record.
 
@@ -358,6 +386,10 @@ full. The ones the operator's items and WO-192's close raise directly:
   exec` workers at the Codex pin, the closest form this host can launch to
   the Codex `spawn_agent` the role text names. Useful on the operator's
   word for either.
+- **The reviewers' remark that WO-247 second is a priority assumption, not
+  a dependency.** Recorded as read: the Design improver found no technical
+  dependency imposing WO-240 first; the placement stays the pass's reading
+  of two operator priorities, and the operator's edit settles it.
 
 ## Sequence
 
@@ -390,12 +422,15 @@ the rules and the Focus are unchanged.
   WO-243, WO-244, WO-237, WO-238 and WO-207 rows; one dated rationale
   paragraph; the candidates section of 2026-10-31), the idea ledger's
   registration, `docs/control/doc-ceilings.json`.
+- Product 07 §Paired passes and the synthesis pass: the three planning
+  routes (the operator's fourth message), with this pass as the reviewed
+  route's first run and WO-244 as its carrier.
 - No product document states WO-192 as active; product 12's router sentence
   (187) already reads as built.
 
 Ceilings, reset to measured non-exempt bytes plus one tenth, citing this
-document (product 07's 9,303-byte rise since 2026-10-30 is WO-192's
-write-backs at v0.104.0 plus this pass's sentence):
+document (product 07's rise since 2026-10-30 is WO-192's write-backs at v0.104.0
+plus this pass's two paragraphs):
 
 | Document | Non-exempt bytes | Ceiling before this pass | Ceiling now |
 | --- | --- | --- | --- |
@@ -406,7 +441,7 @@ write-backs at v0.104.0 plus this pass's sentence):
 | 04-interfaces.md | 67351 | 74087 | 74087 |
 | 05-pattern-library.md | 137089 | 150495 | 150798 |
 | 06-roadmap.md | 42366 | 46309 | 46603 |
-| 07-execution-guide.md | 300556 | 320379 | 330612 |
+| 07-execution-guide.md | 301890 | 320379 | 332079 |
 | 08-publication-compiler.md | 27245 | 29970 | 29970 |
 | 09-audit-resilience-privacy.md | 53441 | 58786 | 58786 |
 | 10-ir-compatibility.md | 25787 | 28366 | 28366 |
@@ -447,9 +482,14 @@ operator asked for mid-turn ran as `codex exec` processes under the bounded
 wrapper, not as Agent-tool spawns, so they count as three external worker
 launches on the operator's direction and not against the cap; none other
 spawned. Usage at entry: unknown (`harness usage` refused: no active role).
-`plan conditions` ran 57.3 s at entry. The figures that follow the commit
-(the reviewers, the refuter, the receipt) are appended in §Validation as
-they are observed.
+`plan conditions` ran 57.3 s at entry. The three reviewers, launched at
+16:14:10Z to 16:14:11Z in parallel as `codex exec -m gpt-6.1-sol -c
+model_reasoning_effort="max" -s read-only` with the briefs from the ignored
+lane, took 4 min 5 s (the design improver, 16:18:15Z), 4 min 33 s (the
+criteria adversary, 16:18:43Z) and 6 min 2 s (the consistency reviewer,
+16:20:13Z); their dollars are unobserved (Codex reports none to a
+non-interactive caller). The refuter's figures are appended in §Validation
+as observed.
 
 ## Validation
 
@@ -493,3 +533,36 @@ appended when observed.
   and 2 failed in 0 h 2 min: the planning receipt and the cost table, which
   the commit and `npm run meta -- --plan-cost` supply, as the 2026-10-30
   pass's first run did.
+- The three reviewers (the operator's first and second mid-turn messages):
+  launched after the first commit (`30119b4d`; the subject at `858196d7`
+  with the cost table), each a `codex exec` worker at the Codex pin in a
+  read-only sandbox with a shared brief and its role's brief
+  (`docs/control/local/planning-2026-10-31/brief-*.md`), reports in
+  `review-criteria.md`, `review-design.md` and `review-consistency.md` of
+  the same lane. `self-review: found 20 (15 distinct); fixed 15; recorded
+  0`. The design improver's five: later orders still writing into the frozen
+  README seed (WO-241, WO-242; also WO-243, WO-207), the helper's
+  partial-success recovery (WO-246), the worker-tree identity against the
+  authoring checkout's (WO-247), the election's Codex interpretation
+  (WO-247), and the comparison's reference when several orders are open
+  (WO-248): all five taken. The criteria adversary's seven: a local-path
+  origin cannot pass `parseGitHubTarget` (high; WO-246 and WO-247 now keep a
+  GitHub-shaped identity on an unresolvable host), the renderer's subject
+  (WO-248), the completion consumer misnamed (`executor-readiness.mjs` has
+  no such check; `requireGateClaims` in `handoff-ledger.mjs` is the path),
+  the missing replayable controls for the three reproduced defects, the gh
+  page uncited, the gap sentence contradicted by the hook's existing `gh pr`
+  parse (1807; 2027 to 2029), and criterion 6's five-for-six: all seven
+  taken. The consistency reviewer's eight: four duplicates of the above,
+  the target publish linting one title as both `commit` and `pr-title`
+  (WO-246 now lints it as `pr-title` only), WO-238's missing edge to WO-245
+  (added), seven catalog placement phrases of open orders stale since
+  earlier passes (refreshed), and WO-245's refusal citation (183 to 188 is
+  the provenance check; the refusal is at 206 to 209; corrected). It also
+  confirmed the register batch, the digests, the ceilings table, the
+  dependency relations, the sequence agreement and the generated pages, and
+  named what it did not search (sibling repositories, host pages, the code
+  suites).
+- The operator's fourth message, received while the reviews ran: WO-244,
+  product 07, the ledger, the map and the sequence amended for the reviewed
+  route; this document's dispatch table carries the row.

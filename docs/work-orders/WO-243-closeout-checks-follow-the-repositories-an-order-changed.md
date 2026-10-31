@@ -206,8 +206,8 @@ a run or inventing a passing row.
 6. Write-backs: product 07 §Preflight before the full gate (the sentence
    becomes the built mechanism: the selection, its readers, the unknown
    case) and §Independent workflows and integration (the helper's two
-   lists); `scripts/kit/README.client.md` §What runs here, and what does
-   not (the selection and the working route for existing target-only
+   lists); the kit guide (`docs/KIT.md` once WO-245 merges, otherwise
+   `scripts/kit/README.client.md`) §What runs here, and what does not (the selection and the working route for existing target-only
    orders); `docs/evidence/WO-243/decisions.md` (the comparison-base
    readers; the measured closeout cost before and after for a target-only
    order and a mixed order); re-mint any edition `contributor.ts` stales;
@@ -245,7 +245,7 @@ write-backs and the measured cost.
    the decisions enumerate every reader of the comparison base with its
    kept or moved semantics, and record the measured closeout cost before
    and after for one target-only and one mixed fixture order.
-4. Product 07 and the kit README state the selection and its limits; the
+4. Product 07 and the kit guide state the selection and its limits; the
    executor root's cold-start measurement is recorded against its ceiling;
    any staled edition is re-minted; `npm run publication:check` is green.
 5. `npm test -- --review` and `npm run test:docs` green; `git diff --check`

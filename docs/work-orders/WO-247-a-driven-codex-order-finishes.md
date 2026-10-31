@@ -22,15 +22,22 @@ admitted re-entry, `--host claude` for release close only, recorded as
 diagnosis with the retained reason, the decider the host names and the
 repair the reason admits without bypassing the host; in
 `scripts/lib/drive-evidence.mjs` and the attempt receipt a `codeIdentity`
-per attempt (the launchpad tree hash and the target tree hash the phase
-workers ran on) and a `drivenStart` figure per launched role (the installed
-root's bytes plus the launch text of `scripts/lib/drive-prompts.mjs`,
-recorded and not bounded: WO-192-D095), with the completion check comparing
-a live receipt's identity to the handoff identity; a `drive` section in
-`scripts/lib/config.mjs` (`sandbox: "host" | "off"`, default `host`) read by
-the launcher where `DOTLN_LIVE_SANDBOX` is read today (`drive-live.mjs` 61
-and 86; `drive-worker.mjs` 142, 192, 206) and recorded in the receipt's
-`qualificationSandbox`; the ten criterion-17 items of WO-192's handoff (a
+per attempt: the authoring checkout's gate code identity (`gateCodeIdentity`,
+`packages/skeleton/src/gate-evidence.mjs` 914, which binds tracked source
+bytes and excludes reports and generated projections) at the export the
+fixture ran, beside the fixture trees' own hashes as provenance, and a
+`drivenStart` figure per launched role (the installed root's bytes plus the
+launch text of `scripts/lib/drive-prompts.mjs`, recorded and not bounded:
+WO-192-D095), with the completion check (`requireGateClaims` in
+`scripts/lib/handoff-ledger.mjs` 306, called from `scripts/resume.mjs` 1612
+and 1699) comparing a live receipt's source identity to the handoff
+identity; a `drive` section in
+`scripts/lib/config.mjs` (`sandbox: "host" | "off"`, default `host`)
+resolved per host through one adapter in `drive-worker.mjs` where
+`DOTLN_LIVE_SANDBOX` is read today (`drive-live.mjs` 61 and 86;
+`drive-worker.mjs` 142, 192, 206: Codex's selected policy is hard-coded
+`workspace-write`), with the selected election and the observed policy
+recorded separately in the receipt's `qualificationSandbox`; the ten criterion-17 items of WO-192's handoff (a
 hung remote's transport child survives the fetch limit, D098; a reactivated
 order inherits an earlier release or close receipt and routes as released,
 D099; `routeFacts` with no events skips the pass check and reads as merged,
@@ -40,10 +47,13 @@ operator's own Codex router having no session, D101 and D102; the worker
 note's "each helper's normal arguments" and a direct test of `harness
 begin`'s refusal path, D102), each with a regression; in
 `scripts/lib/target-worktree-fixture.mjs` (`publicationSetup` 356 to 390)
-and its bare Git helper an origin that cannot reach a real host (a local
-bare repository the fixture owns; the helper carrying `f.env`'s redirect,
-which is D099's cause; an assertion that no fixture remote names
-`github.com`); cases in `scripts/test-drive.mjs`, `scripts/test-harness.mjs`,
+and its bare Git helper an origin that cannot reach a real host: a
+GitHub-shaped URL on a host that cannot resolve (`https://github.invalid/…`,
+which `parseGitHubTarget` accepts as any GitHub remote, `scripts/lib/github-repository.mjs`
+49 to 97, so the production preflight runs unchanged), the fixture
+environment's URL rewrite to a local bare repository carried by every Git
+call including the bare helper (D099's cause), and an assertion that no
+fixture remote names a resolvable host; cases in `scripts/test-drive.mjs`, `scripts/test-harness.mjs`,
 `scripts/test-target-worktree-publish.mjs`, `scripts/test-target-worktree-close.mjs`,
 the configuration suite and `scripts/test-process-debt.mjs` (the
 driven-start figure beside the meter); one live lifecycle per host on the
@@ -137,6 +147,11 @@ scratch root; 660 to 672: the removal); `packages/skeleton/src/worker-transport.
 to 600); `scripts/release.mjs` (the close treats `--publish` as what
 completes a close even under no-release: WO-192-D102);
 `scripts/lib/target-worktree-fixture.mjs` (`publicationSetup` 356);
+`scripts/lib/github-repository.mjs` (`parseGitHubTarget` 49 to 97: the
+host and path forms the preflight accepts); `scripts/lib/handoff-ledger.mjs`
+(`requireGateClaims` 306) and `scripts/resume.mjs` (1612, 1699: where
+completion consumes gate claims); `packages/skeleton/src/gate-evidence.mjs`
+(`gateCodeIdentity` 914);
 `docs/evidence/WO-192/live-drive-attempt-49.json` and `-50.json` (the
 declined close: `stop.reason: dispatch-refused`), `-48.json` and `-51.json`
 (Claude); `docs/evidence/WO-192/handoff.md` §Criterion 17, §What the unmet
@@ -224,24 +239,45 @@ the receipts to show it.
   the receipt as `hostChange`; every phase before the close keeps the
   recorded host. Rejected: a silent host switch (axis: the recorded host is a
   fact of the receipt, and a change is the operator's step).
-- **Identity on the receipt, compared at completion.** Each attempt records
-  the launchpad and target tree hashes its workers ran on; a completion
-  whose criteria name a live run compares them with the handoff identity and
-  reports a mismatch as a failed claim naming both. Rejected: file times
-  (axis: what WO-192 had to use).
-- **The election lives in the configuration.** `drive.sandbox` in
-  `dotln.config.json` (schema 1 gains the section; unknown keys still
-  refuse), default `host` (the host's own setting); `off` writes
+- **Identity on the receipt, compared at completion.** The phase workers
+  run in fixture trees (`drive-live.mjs` 214 to 243 installs an exported kit
+  and rewrites its synthetic configuration), so a fixture tree's hash never
+  equals the authoring checkout's; each attempt records the authoring
+  checkout's gate code identity at the export it ran (`gateCodeIdentity`,
+  which the complete run already binds), beside the fixture trees' hashes as
+  provenance, and `requireGateClaims` compares that source identity with
+  the handoff identity when a criterion names a live run, reporting a
+  mismatch as a failed claim naming both. Rejected: file times (axis: what
+  WO-192 had to use). Rejected: whole-tree equality (axis: no fixture tree
+  equals the source tree; the identity to compare is the source's).
+- **The election lives in the configuration, resolved per host.**
+  `drive.sandbox` in `dotln.config.json` (schema 1 gains the section;
+  unknown keys still refuse), default `host` (the host's own setting); one
+  adapter maps the election per host: on Claude `off` writes
   `sandbox.enabled false` into the disposable settings as D057's exception
-  does today, and the receipt names what ran. Rejected: a Support (axis: a
+  does today; on Codex `off` passes the unsandboxed mode Codex's page
+  documents (today its receipt hard-codes `workspace-write`, `drive-worker.mjs`
+  192, and the shared launcher passes `--ignore-user-config`,
+  `worker-transport.ts` 351); a host without a supported form refuses before
+  launch naming the election; the receipt records the selected election and
+  the observed policy separately, for the router and every phase worker
+  alike (D057's consistency ask). Rejected: a Support (axis: a
   Support compiles authority into the bundle, while this is a host launch
   setting the operator owns per instance; WO-241's registry lists the key
   when it lands).
-- **The fixture cannot publish.** `publicationSetup` sets the fixture origin
-  to a local bare repository the fixture owns; the bare Git helper carries
-  `f.env`; the fixture asserts that no fixture remote names `github.com`.
-  Rejected: an `https://` URL on a credential-refusing host (axis: still a
-  network call).
+- **The fixture cannot publish.** The production preflight parses the
+  origin as a GitHub remote (`parseGitHubTarget` refuses a local path or a
+  `file:` URL), so the fixture keeps a GitHub-shaped identity and makes it
+  unreachable: a host under the reserved `.invalid` domain, which no
+  resolver answers, with the fixture environment's URL rewrite to the local
+  bare repository carried by every Git call the fixture makes, the bare
+  helper included, and an assertion that no fixture remote names a
+  resolvable host. A probe that drops the environment then fails at
+  resolution instead of reaching GitHub. Rejected: a local path or `file:`
+  origin (axis: the parser refuses it, so the preflight the fixture must
+  exercise would never run). Rejected: a URL on a real host that refuses
+  credentials (axis: still a network call, and the two probes of 2026-10-31
+  made exactly that call).
 - **Live-run surfaces at the base.** The driver, the live fixture, the
   receipts, the Codex argv and the route table: exist. The retained reason,
   the stop's next step, the host change for close, the identity, the
@@ -274,15 +310,22 @@ the receipts to show it.
    `scripts/lib/drive-route.mjs`: the stop's row. Check: `npm test -- --only
    harness-fixtures`.
 5. `scripts/lib/drive-evidence.mjs` and the receipt writer: `codeIdentity {
-   launchpadTree, targetTree }` per attempt and `drivenStart { role, bytes
-   }` per launched role; the completion check where a live-run claim is read
-   (`scripts/lib/executor-readiness.mjs`) compares identities and fails a
-   mismatch naming both; `scripts/test-process-debt.mjs` reads the
-   driven-start figure beside the meter. Check: `npm test -- --only
-   harness-fixtures`; `npm test -- --only process-debt`.
-6. `scripts/lib/config.mjs`: the `drive` section with `sandbox`;
-   `scripts/lib/drive-worker.mjs` (142, 192, 206) and
-   `scripts/fixtures/drive-live.mjs` (61, 86) read it in place of
+   source, fixtureTrees }` per attempt (the source is `gateCodeIdentity` of
+   the authoring checkout at the export) and `drivenStart { role, bytes }`
+   per launched role; `requireGateClaims` (`scripts/lib/handoff-ledger.mjs`
+   306, reached from `scripts/resume.mjs` 1612 at `implementation-ready`
+   and 1699) compares a live receipt's source identity with the handoff
+   identity when a criterion names a live run and fails a mismatch naming
+   both, with a CLI regression that rejects a mismatched receipt and admits
+   a matching one; `scripts/test-process-debt.mjs` reads the driven-start
+   figure beside the meter. Check: `npm test -- --only harness-fixtures`;
+   `npm test -- --only process-debt`; `npm test -- --only resume`.
+6. `scripts/lib/config.mjs`: the `drive` section with `sandbox`; one
+   adapter in `scripts/lib/drive-worker.mjs` (142, 192, 206) maps the
+   election per host (Claude: the disposable setting; Codex: the unsandboxed
+   mode its page documents, read at execution; an unsupported host refuses
+   before launch) and records selected and observed policy separately;
+   `scripts/fixtures/drive-live.mjs` (61, 86) reads the election in place of
    `DOTLN_LIVE_SANDBOX`, which stays as the fixture's override and is named
    in the receipt when set; `dotln.config.example.json` names the key. Check:
    `npm test -- --only configuration-root`; `npm test -- --only
@@ -295,14 +338,23 @@ the receipts to show it.
    8 noted in `docs/evidence/WO-247/decisions.md` (the order file is a closed
    record); the floor's grant sentence; an operator's own Codex router
    without a session, stated as a limit in product 07; the worker note's
-   argument sentence; a direct test of `harness begin`'s refusal path in
-   `scripts/test-harness.mjs`; each with its regression. Check: `npm test --
-   --only harness-fixtures`; `npm test -- --only harness`.
+   argument sentence; a direct test of    `harness begin`'s refusal path in
+   `scripts/test-harness.mjs`; each with its regression, and for the three
+   reproduced defects a replayable control: the case run with only that
+   defect's fix reverted, both arms' exit codes recorded in
+   `docs/evidence/WO-247/controls.json` (product 07's rule of the
+   2026-10-20 pass). Check: `npm test -- --only harness-fixtures`; `npm test
+   -- --only harness`.
 8. `scripts/lib/target-worktree-fixture.mjs` (`publicationSetup` 356 to 390)
-   and its bare Git helper: the local origin, `f.env` carried, the
-   no-`github.com` assertion; `scripts/test-target-worktree-publish.mjs`
-   and `scripts/test-target-worktree-close.mjs` pass against it. Check: `npm
-   test -- --only target-publish`; `npm test -- --only target-worktree`.
+   and its bare Git helper: the GitHub-shaped origin on an unresolvable
+   host, the environment's rewrite carried by every Git call including the
+   bare helper, the assertion that no fixture remote names a resolvable
+   host, and a case showing a push with the environment reaches the local
+   bare repository and one without it fails at resolution;
+   `scripts/test-target-worktree-publish.mjs` and
+   `scripts/test-target-worktree-close.mjs` pass against it with the
+   production preflight unchanged. Check: `npm test -- --only
+   target-publish`; `npm test -- --only target-worktree`.
 9. Requalification: one live lifecycle on each host on the final code with
    `codeIdentity` recorded (`scripts/fixtures/drive-live.mjs`; Claude under
    the election; Codex under the chosen finish), the receipts under
@@ -346,23 +398,36 @@ write-backs.
    the attended command and the admitted re-entry; re-entry with `--host
    claude` for release close completes the close and records `hostChange`;
    re-entry with another host for any other phase is refused as today.
-4. Every attempt receipt carries `codeIdentity` and `drivenStart` per role;
-   a completion whose live receipt identity differs from the handoff identity
-   fails the claim naming both; the process-debt suite reads the
+4. Every attempt receipt carries `codeIdentity` (the source identity and
+   the fixture trees) and `drivenStart` per role; `requireGateClaims`
+   fails a completion whose live receipt's source identity differs from
+   the handoff identity, naming both, and admits a matching one (the CLI
+   regression through `resume.mjs`); the process-debt suite reads the
    driven-start figure beside the cold-start metric without a ceiling.
 5. `dotln.config.json` admits `drive.sandbox` as `host` or `off` (default
    `host`; another value refuses naming the key); a routed Claude run under
-   `off` writes the disposable setting D057 describes and the receipt
-   records it; the example configuration and the kit guide name the key.
-6. The ten items are repaired with regressions: the transport child ends
-   with the fetch limit; `routeFacts` without events reads no merge; a
-   reactivated order with an earlier close receipt routes as active; the
-   five wording and record items are stated where named; `harness begin`'s
-   refusal path has a direct test.
-7. No fixture remote under `scripts/test-target-worktree-publish.mjs`,
-   `scripts/test-target-worktree-close.mjs` or `scripts/test-drive.mjs`
-   names `github.com`; the bare Git helper carries the fixture environment;
-   a probe's push in the fixture reaches the local bare repository only.
+   `off` writes the disposable setting D057 describes, a routed Codex run
+   under `off` launches in the unsandboxed mode Codex's page documents, a
+   host without a supported form refuses before launch naming the election,
+   and every receipt records the selected election and the observed policy
+   separately for the router and each phase worker; the example
+   configuration and the kit guide name the key.
+6. The ten items are repaired with regressions: the three reproduced
+   defects (the transport child ends with the fetch limit; `routeFacts`
+   without events reads no merge; a reactivated order with an earlier close
+   receipt routes as active), each with its replayable fixed-and-reverted
+   control and both exit codes in `docs/evidence/WO-247/controls.json`; the
+   six wording and record items stated where named (the lane error prefix,
+   the router's merge sentence, WO-192's superseded step 8, the floor's
+   grant sentence, an operator's own Codex router without a session, the
+   worker note's argument sentence); and a direct test of `harness begin`'s
+   refusal path.
+7. Every fixture origin under `scripts/test-target-worktree-publish.mjs`,
+   `scripts/test-target-worktree-close.mjs` and `scripts/test-drive.mjs` is
+   a GitHub-shaped URL on an unresolvable host that `parseGitHubTarget`
+   accepts; the bare Git helper carries the fixture environment; a push with
+   the environment reaches the local bare repository only and a push
+   without it fails at resolution; the production preflight is unchanged.
 8. One live lifecycle per host on the final code, with receipts whose
    `codeIdentity` equals the handoff identity, under `docs/evidence/WO-247/`;
    Codex either closes or stops at `awaiting-close` with the recorded
@@ -374,7 +439,7 @@ write-backs.
 
 **Preflight:** `npm test -- --only harness-fixtures` for steps 1, 3, 4, 5,
 6, 7 and 9; `npm test -- --only harness` for step 7; `npm test -- --only
-process-debt` for step 5; `npm test -- --only configuration-root` for step
+process-debt` and `npm test -- --only resume` for step 5; `npm test -- --only configuration-root` for step
 6; `npm test -- --only target-publish` and `npm test -- --only
 target-worktree` for step 8; `npm run test:docs` when a document changes;
 each under `node scripts/harness.mjs bounded --`; then one `npm test --
@@ -405,6 +470,9 @@ integrated code identity when one exists.
 - The live runs cost dollars as WO-192's did; the executor records each
   attempt's cost and the order's total in the decisions (reopen: the total
   exceeds WO-192's two final attempts, $38.12, by more than half).
+- The unsandboxed Codex form is read from Codex's page at execution; a
+  version that documents none is the refusing case of criterion 5, recorded
+  with the page and date (reopen: a Codex release changes the form).
 - The meta-watcher (WO-192-D023, FUP-02446577ce028d06) is not this order's:
   the stop with a next step is a route row, not a supervisor (reopen: the
   map's candidate).

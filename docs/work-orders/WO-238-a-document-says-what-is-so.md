@@ -119,7 +119,9 @@ reads), WO-227 (closed, v0.91.0: the kit README's outward rules), WO-224
 runs under). WO-237 is reference-only: once a closed order's journals move
 to the retained lane the census reads them there. WO-088 is reference-only:
 pass registration moves out of the ledger there, and the passes directory
-follows what it decides.
+follows what it decides. WO-245 (planning-deferral: step 9 edits the kit
+guide at `docs/KIT.md`, which WO-245 creates; until it merges the step's
+file is the seeded README's template).
 
 <!-- dotln-dependencies:start -->
 [
@@ -152,6 +154,13 @@ follows what it decides.
     "workOrderId": "WO-088",
     "relation": "reference-only",
     "reason": "pass registration leaves the idea ledger there; the passes directory follows that decision"
+  },
+  {
+    "workOrderId": "WO-245",
+    "relation": "planning-deferral",
+    "date": "2026-10-31",
+    "reason": "step 9 edits the kit guide at docs/KIT.md, which WO-245 creates from the seeded README",
+    "until": "WO-245"
   }
 ]
 <!-- dotln-dependencies:end -->

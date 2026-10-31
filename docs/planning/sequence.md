@@ -99,7 +99,10 @@ direction, 2026-10-30); no stream of work in this repository depends on it.
   fork's item 3 of 2026-10-30); ninth, small and a convenience for the fork.
 - WO-244: paired planning passes and the synthesis pass as a routine (the
   operator's direction of 2026-10-30): the dispatch labels, the blindness
-  refusals, the pair record and `plan synthesize`; tenth.
+  refusals, the pair record and `plan synthesize`, and the reviewed route
+  (the operator's fourth message of 2026-10-31): `plan review` running the
+  executor's three reviewer types as Codex workers before the refuter;
+  tenth.
 - WO-246: the launchpad's own pull requests opened by a helper on origin's
   repository, the title lint admitting core's own form, the `gh` refusal in
   a fork clone (the fork's items 6 and 9 of 2026-10-30); eleventh, after

@@ -36,7 +36,8 @@ launchpad and for a target order in the target's documentation root; in
 selection that screens `plan.md`, `proposal.md` and every passage the
 executor carries out of `conversation.md`; fixtures in
 `scripts/test-off-ramps.mjs` or its lifecycle sibling, `scripts/test-harness.mjs`
-and `scripts/test-outward-lint.mjs`; the kit README's §Plan-first mode;
+and `scripts/test-outward-lint.mjs`; the kit guide's §Plan-first mode
+(`docs/KIT.md` after WO-245);
 the `plan-first` registry row's `readBy` (WO-241). Removes: the state where
 the only ways to put a person between the order and the implementation are
 `analysis:` (a pause with no document) and a guided-operator order (the
@@ -379,7 +380,8 @@ With the election off nothing changes.
    leaves the order awaiting, and the router spawns the next executor worker
    only after `PlanApproved`; the fixture in `scripts/test-drive.mjs`. Check:
    `npm test -- --only harness-fixtures`.
-9. `scripts/kit/README.client.md` §Plan-first mode (new, after §First
+9. The kit guide (`docs/KIT.md` once WO-245 merges, otherwise
+   `scripts/kit/README.client.md`) §Plan-first mode (new, after §First
    steps): the election, the three documents and where they live, the two
    ways to answer, what is paraphrased and what is announced, the approval
    words and the event, the refusal while a proposal awaits. Check: `npm
@@ -462,7 +464,7 @@ selection; the router step; the README section and example; the write-backs.
    elapsed work and waiting and the counters available, and the verifier
    reads it as a novice's workflow and records usability limits; no claim
    of reduced burden rests on shorter documents.
-9. The kit README's §Plan-first mode and the example configuration state
+9. The kit guide's §Plan-first mode and the example configuration state
    the mode as built; product 07 and product 12 carry the write-backs of
    step 11; WO-241's registry row names its consumer; `npm run
    publication:check` is green.

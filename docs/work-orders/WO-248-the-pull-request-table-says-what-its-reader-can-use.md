@@ -120,11 +120,18 @@ the previous order is one sentence that names that order.
   `unknown`; durations are `N h M min`. Rejected: keeping blank cells with
   the footer count (axis: the operator's screenshot is the evidence the
   design's reader did not read the footer; the blank reads as nothing).
-- **The comparison is a sentence that names its reference.** One sentence
-  per metric with a previous-order figure, below the table: "Against WO-239,
+- **The comparison is a sentence that names its reference.** The renderer
+  takes the subject order (`renderMetaTable(meta, { workOrderId })`;
+  `release.mjs` 2081 and 4246 pass it, since release prepare knows its
+  order) and compares it with the latest closed order before it in the
+  collector's selection, naming that order and its state: "Against WO-239,
   the previous closed order: wall clock 112 h 38 min more; tokens
-  361,254,746 more." Rejected: a Δ column (axis: nine columns already wrap;
-  a delta without its reference is what misled the reader).
+  361,254,746 more." The collector's per-row delta (`orders[index - 1]`,
+  2104 to 2127) stays for the meter's text; the body never compares with an
+  open order. Rejected: a Δ column (axis: nine columns already wrap; a delta
+  without its reference is what misled the reader). Rejected: rendering
+  every open order (axis: with two orders open the body would show two
+  dispatch tables, and a closed order's regenerated body none).
 - **The six-order table leaves the body and stays in the meter.**
   `renderMeta` already prints every metric with its labelled delta for the
   planner; the pull request loses nothing a reviewer used. Rejected: keeping
@@ -136,22 +143,26 @@ the previous order is one sentence that names that order.
 
 **Execution plan (the executor follows these steps in order; observed at `c27abd53`, 2026-10-31):**
 
-1. `scripts/lib/meta.mjs` `renderMetaTable` (2299 to 2391): the eight-column
-   dispatch table for the active order, `unknown` cells, hours and minutes,
-   the comparison sentences; the Work table and the omission footer removed
-   from the returned block; `renderMeta` (2393) keeps its figures and prints
-   the new block in place of the old tables. Check: `npm test -- --only
-   process-debt`; `npm test -- --only meta`.
+1. `scripts/lib/meta.mjs` `renderMetaTable(meta, { workOrderId })` (2299
+   to 2391): the eight-column dispatch table for the subject order, `unknown`
+   cells, hours and minutes, the comparison sentences against the latest
+   closed order before the subject; the Work table and the omission footer
+   removed from the returned block; `renderMeta` (2393) keeps its figures
+   and prints the new block for the latest open order in place of the old
+   tables. Check: `npm test -- --only process-debt`; `npm test -- --only
+   meta`.
 2. `scripts/test-process-debt.mjs` 852 to 866 and 11124 to 11136: the pins
-   follow the new shape; a case renders the fixture body and asserts that
-   no cell is blank, no cell holds two values, every duration matches `\d+
-   h \d+ min`, and the comparison sentence names the previous order or is
-   absent when there is none. Check: `npm test -- --only process-debt`.
-3. `scripts/release.mjs` (2073; 4220 to 4230) and `scripts/lib/github-body.mjs`
-   (1371 to 1400): unchanged in contract; the stored-body fixture of the
-   `release` suite renders the new block last and the github-body-profile
-   check passes. Check: `npm test -- --only release`; `npm test -- --only
-   github-body`.
+   follow the new shape; cases render the fixture body and assert that no
+   cell is blank, no cell holds two values, every duration matches `\d+ h
+   \d+ min`, the comparison sentence names the previous closed order or is
+   absent when there is none, two open orders in the collection yield one
+   table for the named subject, and a closed subject's body regenerates
+   with its own rows. Check: `npm test -- --only process-debt`.
+3. `scripts/release.mjs` (2081 and 4246: the two callers pass the order's
+   id) and `scripts/lib/github-body.mjs` (1371 to 1400, unchanged): the
+   stored-body fixture of the `release` suite renders the new block last
+   for its order and the github-body-profile check passes. Check: `npm test
+   -- --only release`; `npm test -- --only github-body`.
 4. Write-backs: product 07 (the sentence that describes the meter block in
    a pull-request body, where it names the tables); `docs/evidence/WO-248/decisions.md`
    (the fork's and core's bodies before, the fixture body after);
@@ -172,19 +183,21 @@ write-backs.
 
 1. The fixture body renders one table with the header `| Dispatch | Wall
    clock | Tokens | USD | Commands | Steps | Bound stops | Bound acceptances
-   |`, one row per dispatch of the active order, no blank cell, no cell
-   holding two values, every duration as `N h M min`, and `unknown` where a
-   value is unobserved; no Work table and no omission footer are in the
-   block.
-2. Below the table, one sentence per metric with a previous-order figure
-   names that order and the difference in the metric's own unit; with no
-   previous order, no sentence.
+   |`, one row per dispatch of the subject order and none of any other
+   order, no blank cell, no cell holding two values, every duration as `N h
+   M min`, and `unknown` where a value is unobserved; no Work table and no
+   omission footer are in the block; with two orders open the body names one
+   subject, and a closed subject's regenerated body carries its own rows.
+2. Below the table, one sentence per metric with a figure from the latest
+   closed order before the subject names that order, its state and the
+   difference in the metric's own unit; with no closed order before it, no
+   sentence; an open order is never the comparison.
 3. `npm run meta` prints every metric with its labelled delta as before;
    the `meta` and `process-debt` suites pass at the new pins.
-4. The stored-body fixture of the `release` suite carries the new block as
-   its last block and the github-body-profile check passes; an existing
-   body's old block is replaced by `withMeterBlockLast` at the next release
-   prepare.
+4. The stored-body fixture of the `release` suite carries the new block for
+   its own order as its last block and the github-body-profile check
+   passes; an existing body's old block is replaced by `withMeterBlockLast`
+   at the next release prepare.
 5. Product 07 names the block's shape; `npm run publication:check` is
    green.
 6. `npm test -- --review` and `npm run test:docs` green; `git diff --check`
