@@ -15,7 +15,7 @@ features and `readFeatures(root)`), the `features` section in
 list|render|check`) with its `package.json` entry, the generated
 `docs/control/FEATURES.md` rendered by `render` and refreshed by `npm run
 meta`, a `features` block in `scripts/kit/dotln.config.example.json`, a
-§Features section in `scripts/kit/README.client.md`, the first two wired
+§Features section in the kit guide (`docs/KIT.md` after WO-245), the first two wired
 elections (`tinkerer-economy`, read by the executor supports' default, and
 `plan-first`, declared default off for WO-242 to consume), the
 `private-destination` row with its one consumer (the kit's
@@ -249,7 +249,8 @@ second file.
    today. Check: `npm test -- --only launchpad` (the export carries the
    example); `npm test -- --only harness` (the emitted floor with the
    election on and off).
-6. `scripts/kit/README.client.md` §Features (new, after §First steps item
+6. The kit guide (`docs/KIT.md` once WO-245 merges, otherwise
+   `scripts/kit/README.client.md`) §Features (new, after §First steps item
    5's configuration sentence): the file, the two entry forms, the
    command, the generated page and the not-electable list. Check: `npm
    test -- --only launchpad`; `npm run publication:check`.
@@ -315,7 +316,7 @@ write-backs and the measured render cost.
    still refuse a private term in a pull-request body fixture; with the key
    absent the paragraph is byte-identical to today's.
 5. The kit's example configuration shows the instance-scope rows and one
-   `{ on, note }` entry; an export carries it and `README.client.md`
+   `{ on, note }` entry; an export carries it and the kit guide's
    §Features; `npm run publication:check` is green.
 6. Product 07 §Where the control plane finds its documents names the
    section, the forms, the registry and the page; the decisions record the

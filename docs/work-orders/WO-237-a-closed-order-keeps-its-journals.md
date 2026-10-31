@@ -415,6 +415,27 @@ passing complete row at the integrated code identity when one exists.
   file of a directory the record already names (reopen: a re-stamp is
   observed on a directory whose inode changed, which this order's rule
   must refuse).
+- Carry-in (the 2026-10-31 pass, whose entry `plan start` refused):
+  `failuresAtStart` (`scripts/lib/plan-failures.mjs` 1245 to 1293) asserts
+  its block at or under 1,024 bytes of pretty-printed JSON after clipping
+  only its two string fields; the window since receipt 060 carried three
+  off-ramp kinds (`offRampEvents` with `CriterionWaived`,
+  `DispatchBoundAccepted` and `OperatorOverrideRecorded`), the block went
+  over the bound, and the branch stayed shut against WO-172's rule that a
+  count never keeps it shut (the pass opened its branch and wrote its
+  skeleton by hand, as the fork's pass of 2026-10-30 did under WO-088's
+  known issue). This order, which edits the same file for the retained
+  lanes, measures the block compact (or raises the bound to the measured
+  shape plus one half) and reports an overrun as one line in the block
+  instead of refusing, with a case in `scripts/test-plan-refutation.mjs`
+  (reopen: `plan start` refuses on the block again).
+- Carry-in (the fork's item 2 of 2026-10-30): an acceptance recorded with
+  `--ceiling unlimited` is stored as `ceiling: null` (`scripts/resume.mjs`
+  1946) and `plan failures` passes it through (`boundAcceptances`,
+  `plan-failures.mjs` 1087), so a reader has to know null means unlimited;
+  this order renders it as `unlimited` in the feed and the start block, with
+  a case in `scripts/test-plan-refutation.mjs` (reopen: a reader of the feed
+  still meets a null ceiling).
 
 **Non-goals:** keeping worktrees for any window; committing journals;
 changing the gate captures' classes or the prune's schedule; a new reader,

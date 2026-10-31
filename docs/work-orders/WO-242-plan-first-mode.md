@@ -36,7 +36,8 @@ launchpad and for a target order in the target's documentation root; in
 selection that screens `plan.md`, `proposal.md` and every passage the
 executor carries out of `conversation.md`; fixtures in
 `scripts/test-off-ramps.mjs` or its lifecycle sibling, `scripts/test-harness.mjs`
-and `scripts/test-outward-lint.mjs`; the kit README's §Plan-first mode;
+and `scripts/test-outward-lint.mjs`; the kit guide's §Plan-first mode
+(`docs/KIT.md` after WO-245);
 the `plan-first` registry row's `readBy` (WO-241). Removes: the state where
 the only ways to put a person between the order and the implementation are
 `analysis:` (a pause with no document) and a guided-operator order (the
@@ -80,10 +81,11 @@ executor never rewrites the operator's own lines in it.
 registry row this mode reads); WO-236 (closed: the executor's
 target-worktree grant, under which the three documents are written into a
 target); WO-158 (closed: the typed off-ramp events, captures and actor
-flags whose shape `plan-approved` follows); WO-192 (planning-deferral: the
+flags whose shape `plan-approved` follows); WO-192 (closed, v0.104.0: the
 router drives an order through its lifecycle, and in plan-first mode it must
-stop at `PlanProposed` and resume at `PlanApproved`; this order's router step
-is written against WO-192 as filed and finished when WO-192 has merged).
+stop at `PlanProposed` and resume at `PlanApproved`; its route table is
+`scripts/lib/drive-route.mjs` and its loop `scripts/lib/drive-session.mjs`,
+named by the 2026-10-31 pass after WO-192 merged).
 
 <!-- dotln-dependencies:start -->
 [
@@ -104,10 +106,8 @@ is written against WO-192 as filed and finished when WO-192 has merged).
   },
   {
     "workOrderId": "WO-192",
-    "relation": "planning-deferral",
-    "date": "2026-10-30",
-    "reason": "the router must stop at PlanProposed and resume at PlanApproved; the step is written against WO-192 as filed and finished once it merges",
-    "until": "WO-192"
+    "relation": "satisfied-by-close",
+    "reason": "the router that must stop at PlanProposed and resume at PlanApproved: its route table and loop, merged at v0.104.0"
   }
 ]
 <!-- dotln-dependencies:end -->
@@ -303,8 +303,8 @@ With the election off nothing changes.
   exact phrase).
 - **The router honors the wait.** WO-192's router, driving an order through
   its phases, stops after the executor's `PlanProposed` and resumes a fresh
-  executor worker at `PlanApproved`; written against WO-192 as filed and
-  finished once it merges. Rejected: leaving the router unaware (axis: the
+  executor worker at `PlanApproved`; WO-192 merged at v0.104.0, and step 8
+  names its route table and loop. Rejected: leaving the router unaware (axis: the
   router would spawn an implementing worker the hook then refuses, a loop
   the operator reads as a stuck order).
 - **Live-run surfaces at the base.** The lifecycle fold, the off-ramp
@@ -374,12 +374,14 @@ With the election off nothing changes.
    `conversationDigest`, `transformations: [{ at, from, to, surface }]`)
    validated by the plan-proposed command; `conversation.md` carries dated
    `###` headings naming the writer. Check: the command's fixture in step 2.
-8. WO-192's router (`scripts/lib/` as WO-192 lands it): a phase worker that
-   ends its turn after `PlanProposed` leaves the order awaiting; the router
-   spawns the next executor worker only after `PlanApproved`. Written
-   against WO-192 as filed; the file is known once WO-192 merges. Check:
-   WO-192's router suite as it lands.
-9. `scripts/kit/README.client.md` §Plan-first mode (new, after §First
+8. WO-192's router, merged at v0.104.0 (`scripts/lib/drive-route.mjs`:
+   `lifecycleRoutes` and `routeOrder`; `scripts/lib/drive-session.mjs`:
+   `driveLoop`): a phase worker that ends its turn after `PlanProposed`
+   leaves the order awaiting, and the router spawns the next executor worker
+   only after `PlanApproved`; the fixture in `scripts/test-drive.mjs`. Check:
+   `npm test -- --only harness-fixtures`.
+9. The kit guide (`docs/KIT.md` once WO-245 merges, otherwise
+   `scripts/kit/README.client.md`) §Plan-first mode (new, after §First
    steps): the election, the three documents and where they live, the two
    ways to answer, what is paraphrased and what is announced, the approval
    words and the event, the refusal while a proposal awaits. Check: `npm
@@ -451,11 +453,9 @@ selection; the router step; the README section and example; the write-backs.
 6. For a target order fixture the three documents resolve under the
    target's `documentationRoot` and move nothing at `target-records`; for a
    self order they resolve under the launchpad's evidence root.
-7. The router step is either landed against WO-192's merged router with its
-   fixture (a worker ending after `PlanProposed` is not followed by another
-   until `PlanApproved`) or recorded in the decisions as written against
-   WO-192 as filed with the file it will land in, when WO-192 has not
-   merged at this order's activation.
+7. The router step is landed against WO-192's merged router with its
+   fixture: a worker ending after `PlanProposed` is not followed by another
+   until `PlanApproved` (`npm test -- --only harness-fixtures`).
 8. One live plan-first conversation runs in the executor's session against
    a fixture target with a synthetic order and scripted operator turns
    (a question, a correction, an approval), through proposal, revision,
@@ -464,7 +464,7 @@ selection; the router step; the README section and example; the write-backs.
    elapsed work and waiting and the counters available, and the verifier
    reads it as a novice's workflow and records usability limits; no claim
    of reduced burden rests on shorter documents.
-9. The kit README's §Plan-first mode and the example configuration state
+9. The kit guide's §Plan-first mode and the example configuration state
    the mode as built; product 07 and product 12 carry the write-backs of
    step 11; WO-241's registry row names its consumer; `npm run
    publication:check` is green.

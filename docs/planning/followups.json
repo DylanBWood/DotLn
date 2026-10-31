@@ -11030,6 +11030,14 @@
           "reopenWhen": "R2, a live denial of the exact helper, or an outside write admitted without a grant",
           "targets": [],
           "at": "2026-10-30T15:50:47.242Z"
+        },
+        {
+          "sourceRevision": 17,
+          "status": "deferred",
+          "reason": "Re-read at its new source revision by the 2026-10-31 planning pass (docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md); nothing new beyond the fork's field evidence of 2026-10-30 (edit-tool writes judged by the hook, shell-program writes left to host permissions). Deferred again.",
+          "reopenWhen": "R2, a live denial of the exact helper, or an outside write admitted without a grant.",
+          "targets": [],
+          "at": "2026-10-31T16:02:14.172Z"
         }
       ]
     },
@@ -24385,6 +24393,14 @@
           "reopenWhen": "The plain gate's thirty-day median exceeds 600 s, a task's growth has a named cause in an order's decisions, or the operator names gate time as a goal.",
           "targets": [],
           "at": "2026-10-30T15:50:50.311Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by the 2026-10-31 planning pass (docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md) (the map's candidate 2): the plain gate's thirty-day median 491.4 s against 360, the target-worktree task 611.3 s against 189.8 and the skeleton task 482.6 s against 441.6 are unchanged since the 2026-10-30 reading; the complete run is paid once per order at final review and the two tasks' growth has no named cause.",
+          "reopenWhen": "The plain gate's thirty-day median exceeds 600 s, a task's growth has a named cause in an order's decisions, or the operator names gate time as a goal.",
+          "targets": [],
+          "at": "2026-10-31T16:02:16.194Z"
         }
       ]
     },
@@ -27345,6 +27361,14 @@
           "reopenWhen": "The document gate's fresh passing three-run median exceeds 120 s after WO-217, or an instrumented same-input comparison shows parsing on the critical path and a cache with complete invalidation wins the whole document gate.",
           "targets": [],
           "at": "2026-10-21T13:29:15.611Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "NoOp by the 2026-10-31 planning pass (docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md) (the map's candidate 1): plan conditions read the plan-check median at 8.004 s against 8 on 2026-10-31 under a load average of 2.3; a 4 ms overrun on one reading is noise against its own threshold, and WO-217-D037 declined the parse cache on the same standard.",
+          "reopenWhen": "Two consecutive passes read the plan-check median above 8 s, or one reads it above 9 s, or an instrumented same-input comparison shows parsing on the critical path.",
+          "targets": [],
+          "at": "2026-10-31T16:02:16.082Z"
         }
       ]
     },
@@ -29671,6 +29695,14 @@
           "reopenWhen": "the plain gate's thirty-day median passes 360 s, or a replay shows the median order's affected share below 60%",
           "targets": [],
           "at": "2026-10-30T17:15:37.804Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by the 2026-10-31 planning pass (docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md) with FUP-e96221b106cd136a's reading (the map's candidate 2).",
+          "reopenWhen": "The plain gate's thirty-day median exceeds 600 s, a task's growth has a named cause in an order's decisions, or the operator names gate time as a goal.",
+          "targets": [],
+          "at": "2026-10-31T16:02:16.420Z"
         }
       ]
     },
@@ -44978,6 +45010,14 @@
           "reopenWhen": "WO-192 is next amended or activated, or OD-013 (lanes above rung 5) and OD-049 (the resident as host) are answered",
           "targets": [],
           "at": "2026-10-24T04:18:38.164Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-10-31 planning pass (docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md) (the map's candidate 10) with its condition rewritten now that WO-192 closed: the folds (the shared process-definition table, the dead-letter channel, the close packet, the certification readback and veto window) wait for the next drive order after WO-247.",
+          "reopenWhen": "A drive order after WO-247 is filed, or OD-013 and OD-049 are answered.",
+          "targets": [],
+          "at": "2026-10-31T16:02:15.635Z"
         }
       ]
     },
@@ -45201,6 +45241,14 @@
           "reopenWhen": "The first issue is filed as an idea, WO-193 is next amended, or WO-207 activates.",
           "targets": [],
           "at": "2026-10-30T15:50:49.854Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Deferred again by the 2026-10-31 planning pass (docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md) (the map's candidate 13): gh issue list on 2026-10-31 shows no open issues; WO-207's seam (a configured source adapter read beside the issue list) stays the first-class route.",
+          "reopenWhen": "An open issue is read by a pass and needs a disposition the issue cannot hold, or WO-207 activates.",
+          "targets": [],
+          "at": "2026-10-31T16:02:16.754Z"
         }
       ]
     },
@@ -45379,6 +45427,14 @@
           "reopenWhen": "The plain-gate thirty-day median crosses 360 s (FUP-e96221b106cd136a), or two further fresh plain gates exceed six minutes.",
           "targets": [],
           "at": "2026-10-30T17:15:37.941Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by the 2026-10-31 planning pass (docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md) with FUP-e96221b106cd136a's reading (the map's candidate 2).",
+          "reopenWhen": "The plain gate's thirty-day median exceeds 600 s, a task's growth has a named cause in an order's decisions, or the operator names gate time as a goal.",
+          "targets": [],
+          "at": "2026-10-31T16:02:16.531Z"
         }
       ]
     },
@@ -45477,6 +45533,14 @@
           "reopenWhen": "The plain-gate thirty-day median crosses 360 s, or a change to the pilot or the runner moves the row's recorded wall-clock below the slowest structural task's, or WO-083 extends the pilot.",
           "targets": [],
           "at": "2026-10-30T17:15:38.080Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by the 2026-10-31 planning pass (docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md) with FUP-e96221b106cd136a's reading (the map's candidate 2).",
+          "reopenWhen": "The plain gate's thirty-day median exceeds 600 s, a task's growth has a named cause in an order's decisions, or the operator names gate time as a goal.",
+          "targets": [],
+          "at": "2026-10-31T16:02:16.643Z"
         }
       ]
     },
@@ -46398,6 +46462,16 @@
           "reopenWhen": "WO-192 closes, or a routed run is refused by host policy under the temporary fixture exception.",
           "targets": [],
           "at": "2026-10-26T23:11:07.043Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Its condition occurred (WO-192 closed at v0.104.0); allocated to WO-247 by the 2026-10-31 planning pass (docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md) with FUP-ec3d1b98b15afd49: the drive.sandbox election.",
+          "reopenWhen": "A routed run is refused by host policy under the fixture exception before WO-247 lands.",
+          "targets": [
+            "WO-247"
+          ],
+          "at": "2026-10-31T16:02:13.605Z"
         }
       ]
     },
@@ -46564,6 +46638,14 @@
           "reopenWhen": "WO-192 is withdrawn: the next pass files the fix from the worktree's diff.",
           "targets": [],
           "at": "2026-10-26T23:11:07.143Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-10-31 planning pass (docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md): WO-192 closed at v0.104.0 with D073 and D075 landed (the synthetic lifecycle fixtures as the product preflight; the record comparisons in the document gate; scripts/test-resume.sh --fixtures-only|--documents-only), so the fix is in main and nothing is re-filed.",
+          "reopenWhen": "A later order reorders document and lifecycle prerequisites after product work.",
+          "targets": [],
+          "at": "2026-10-31T16:02:15.746Z"
         }
       ]
     },
@@ -47512,6 +47594,14 @@
           "reopenWhen": "A bound stop lands in an attended session whose tool-active time is observed below its wall-clock bound, or a planning pass reads the boundStops block and most initial stops end in acceptances.",
           "targets": [],
           "at": "2026-10-30T15:50:50.198Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by the 2026-10-31 planning pass (docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md) (the map's candidate 14): the fork's item 2 of 2026-10-30 (WO-015's two acceptances at --ceiling unlimited, 5 h 31 min into an attended 9 h 24 min implementation, no stop) and WO-192's own acceptance of 2026-10-30 (wallClockMs unlimited, no stop) are both acceptances ahead of any stop; core's boundStops block shows no stop row yet.",
+          "reopenWhen": "A bound stop lands in an attended session whose tool-active time is observed below its wall-clock bound, or a planning pass reads the boundStops block and most initial stops end in acceptances.",
+          "targets": [],
+          "at": "2026-10-31T16:02:15.969Z"
         }
       ]
     },
@@ -47680,6 +47770,17 @@
             "WO-207"
           ],
           "at": "2026-10-30T15:50:49.968Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Re-allocated by the 2026-10-31 planning pass (docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md): the README half goes to WO-245 (the kit guide moves to docs/KIT.md and README.md becomes a seed the starter refresh never fights over), the other seeded files (budgets.template.json, gitignore.template, the CLAUDE.md block) stay WO-207's preview rule; the fork's items 1 and 7 of 2026-10-30 (README.md carried again by the v0.103.1 merge; WO-025 excludes the file) are the evidence.",
+          "reopenWhen": "WO-245 lands and a fork's merge still changes README.md without an instance edit, or a release carries another seed into a fork's merge with no instance action declared.",
+          "targets": [
+            "WO-245",
+            "WO-207"
+          ],
+          "at": "2026-10-31T16:02:15.857Z"
         }
       ]
     },
@@ -49377,6 +49478,14 @@
           "reopenWhen": "The plain gate's thirty-day median exceeds 600 s, a task's growth has a named cause in an order's decisions, or the operator names gate time as a goal.",
           "targets": [],
           "at": "2026-10-30T15:50:45.319Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by the 2026-10-31 planning pass (docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md) with FUP-e96221b106cd136a's reading (the map's candidate 2).",
+          "reopenWhen": "The plain gate's thirty-day median exceeds 600 s, a task's growth has a named cause in an order's decisions, or the operator names gate time as a goal.",
+          "targets": [],
+          "at": "2026-10-31T16:02:16.307Z"
         }
       ]
     },
@@ -49821,7 +49930,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-10-31 planning pass (docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md) (the map's candidate 16): the reopened row FUP-ea936acad1506e18 stays deferred with its own condition; this decision row carried no further action.",
+          "reopenWhen": "A snapshot cannot load a reachable module.",
+          "targets": [],
+          "at": "2026-10-31T16:02:15.189Z"
+        }
+      ]
     },
     {
       "id": "FUP-02446577ce028d06",
@@ -49859,6 +49977,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-10-26T19:12:23.837Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-10-31 planning pass (docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md) (the map's candidate 3): WO-247 gives a stuck drive a stop with a next step, a route row and not a supervisor; D023's three questions (observation, intervention authority, intervention evaluation) are recorded with the operator's request.",
+          "reopenWhen": "A drive records the same failed phase on three consecutive attempts without a stop, or the operator asks for the watcher.",
+          "targets": [],
+          "at": "2026-10-31T16:02:14.284Z"
         }
       ]
     },
@@ -49875,7 +50001,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-10-31 planning pass (docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md): the shared counter and per-spawner admission are implemented in WO-192 (v0.104.0; the fan-out sentence states 20 per spawner and 80 per driven run); the broader guarantee across every spawn path stays on FUP-67a3ccb3b295200e as D045 returned it.",
+          "reopenWhen": "A drive exceeds an observed cap, an attributable child escapes its spawner's count, or a new host exposes an exact join for the unknown remainder.",
+          "targets": [],
+          "at": "2026-10-31T16:02:14.394Z"
+        }
+      ]
     },
     {
       "id": "FUP-4a6335f0e2790723",
@@ -49897,7 +50032,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Settled by the 2026-10-31 planning pass (docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md): the enumerated failure signals are implemented in WO-192 (v0.104.0) and WO-247 extends the retained observation to a declined phase's event stream and item.",
+          "reopenWhen": "The bounded signals identify a concrete repair that no order carries.",
+          "targets": [],
+          "at": "2026-10-31T16:02:14.505Z"
+        }
+      ]
     },
     {
       "id": "FUP-d403b1c2a1193625",
@@ -49912,7 +50056,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-10-31 planning pass (docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md): D057's authorized sandbox exception reopened the Claude qualification and attempts 48 and 51 completed all five roles; WO-247 makes the exception an instance election.",
+          "reopenWhen": "The host's permission flow denies the canonical launcher again under the election WO-247 declares.",
+          "targets": [],
+          "at": "2026-10-31T16:02:14.619Z"
+        }
+      ]
     },
     {
       "id": "FUP-ec3d1b98b15afd49",
@@ -49935,6 +50088,16 @@
           "reopenWhen": "The next planning session considers routed-run host policy, or the temporary setting is insufficient or inconsistent across native roles.",
           "targets": [],
           "at": "2026-10-26T12:36:58.883Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-247 by the 2026-10-31 planning pass (docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md): the durable policy is an instance election, drive.sandbox in dotln.config.json (host or off, default host), read by the launcher in place of the fixture variable and recorded in the receipt; a Support was weighed and declined.",
+          "reopenWhen": "A routed run is refused by host policy under the fixture exception before WO-247 lands, or a second instance needs a policy per role.",
+          "targets": [
+            "WO-247"
+          ],
+          "at": "2026-10-31T16:02:13.490Z"
         }
       ]
     },
@@ -49977,7 +50140,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by WO-233 (v0.100.0), recorded by the 2026-10-31 planning pass (docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md): an integration drops its own stash at completion, session scratch is a retention class the prune judges, and the prune runs inside release close, session end and gate end; the launchpad's stash list is empty on 2026-10-31.",
+          "reopenWhen": "An integration stash survives its integration's completion, or session scratch accumulates past its class window.",
+          "targets": [],
+          "at": "2026-10-31T16:02:14.735Z"
+        }
+      ]
     },
     {
       "id": "FUP-d925bbf866d1d43c",
@@ -49999,7 +50171,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Settled by WO-233 (v0.100.0), recorded by the 2026-10-31 planning pass (docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md): the kit carries the prune kinds and the close-time prune, and the fork took v0.103.1 with them; D081's own evidence says both exported instances' prune knows the integration-stash kind.",
+          "reopenWhen": "An exported instance's prune report shows integration stashes after v0.100.0.",
+          "targets": [],
+          "at": "2026-10-31T16:02:14.849Z"
+        }
+      ]
     },
     {
       "id": "FUP-575e9e05f616d44c",
@@ -50014,7 +50195,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-10-31 planning pass (docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md) (the map's candidate 9): WO-233 took the warm export fixture, the churn metric, the fseventsd sample and the write-permission reset; the one item left is .metadata_never_index in the temporary dotln root and .runtime, and whether DotLn's churn is what grows fseventsd is unmeasured.",
+          "reopenWhen": "WO-233's fseventsd sample shows growth attributable to a gate, or a complete review is again refused by the host-memory check.",
+          "targets": [],
+          "at": "2026-10-31T16:02:14.964Z"
+        }
+      ]
     },
     {
       "id": "FUP-0dc30eb3790e3563",
@@ -50065,6 +50255,14 @@
           "reopenWhen": "Product 07 retires the standing cold-start route.",
           "targets": [],
           "at": "2026-10-30T19:41:12.933Z"
+        },
+        {
+          "sourceRevision": 5,
+          "status": "settled",
+          "reason": "Settled by the 2026-10-31 planning pass (docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md): product 07 §Discipline now says that WO-233, WO-234, WO-235 and WO-192 recorded acceptances citing the retired route, that they stay as records the meter reads as effective ceilings, and that no further acceptance is recorded; the route itself is unchanged.",
+          "reopenWhen": "A role root breaches its ceiling and an executor records an acceptance anyway.",
+          "targets": [],
+          "at": "2026-10-31T16:02:13.949Z"
         }
       ]
     },
@@ -50081,7 +50279,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-10-31 planning pass (docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md) (the map's candidate 16): the snapshot is implemented (docs/evidence/WO-192/meta.json written by release prepare where the order's journals are).",
+          "reopenWhen": "A pass needs a committed figure the snapshot lacks.",
+          "targets": [],
+          "at": "2026-10-31T16:02:15.077Z"
+        }
+      ]
     },
     {
       "id": "FUP-dfde4050da06d43b",
@@ -50104,6 +50311,14 @@
           "reopenWhen": "The next planning pass that reads the follow-up register disposes it, or the same sequence failure recurs on another order first.",
           "targets": [],
           "at": "2026-10-30T23:18:12.063Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-10-31 planning pass (docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md) (the map's candidate 4): candidates 3 and 8 of the recovery note are WO-247's (code identity on live receipts; a fixture that cannot publish); candidates 1, 2, 4, 5, 6 and 7 wait for a recurrence, on the operator's word that the recovery be built into the machinery later.",
+          "reopenWhen": "The same sequence failure recurs on another order (a complete run started before the reviewers restart, or a paid run on changing code), or the operator asks for one of the six by name.",
+          "targets": [],
+          "at": "2026-10-31T16:02:15.301Z"
         }
       ]
     },
@@ -50143,6 +50358,16 @@
           "reopenWhen": "A planning pass disposes it, or a change to one of those helpers ships with evidence that did not notice it.",
           "targets": [],
           "at": "2026-10-31T02:45:54.350Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "The three rules decided by the 2026-10-31 planning pass (docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md): (1) spawned helpers are not evidence sources, declined (the map's candidate 7); (2) product 07's cold-start route is the rule and the four acceptances recorded after 2026-10-05 stay as records the meter reads, stated in product 07 §Discipline (candidate 8); (3) the driven-start figure is recorded beside the cold-start metric and not bounded, allocated to WO-247 as a carry-in.",
+          "reopenWhen": "A driven start exceeds its installed ceiling by more than its launch text, or a change to a spawned helper ships with evidence that did not notice it.",
+          "targets": [
+            "WO-247"
+          ],
+          "at": "2026-10-31T16:02:13.833Z"
         }
       ]
     },
@@ -50189,6 +50414,14 @@
           "reopenWhen": "A later check refutes the corrected statements.",
           "targets": [],
           "at": "2026-10-31T05:38:13.797Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "settled",
+          "reason": "Settled by the 2026-10-31 planning pass (docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md): D097 corrected the refuted statements and D101 completed the usage repair; WO-192 closed at v0.104.0 with VER-001 and FINAL-001 passing on that record.",
+          "reopenWhen": "A later check refutes the corrected statements.",
+          "targets": [],
+          "at": "2026-10-31T16:02:14.061Z"
         }
       ]
     },
@@ -50283,6 +50516,16 @@
           "reopenWhen": "A planning pass disposes it, or a probe or test reaches a real host first.",
           "targets": [],
           "at": "2026-10-31T05:38:16.243Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Allocated to WO-247 by the 2026-10-31 planning pass (docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md): publicationSetup's origin becomes a local bare repository the fixture owns, the bare Git helper carries f.env, and the fixture asserts no remote names github.com; the squash-merge rule D099 also names stays as WO-192 recorded it (a merge commit, the kit README's rule).",
+          "reopenWhen": "A probe or test reaches a real host before WO-247 lands.",
+          "targets": [
+            "WO-247"
+          ],
+          "at": "2026-10-31T16:02:13.720Z"
         }
       ]
     },
@@ -50307,6 +50550,14 @@
           "reopenWhen": "It recurs in a complete gate, or a planning pass disposes it.",
           "targets": [],
           "at": "2026-10-31T03:14:07.689Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-10-31 planning pass (docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md) (the map's candidate 6): the reader keeps its cause now, and one occurrence that passed on rerun names none.",
+          "reopenWhen": "The failure recurs in a complete gate.",
+          "targets": [],
+          "at": "2026-10-31T16:02:15.413Z"
         }
       ]
     },
@@ -50353,6 +50604,16 @@
           "reopenWhen": "A Codex version admits the close, or the operator chooses how a driven Codex order finishes.",
           "targets": [],
           "at": "2026-10-31T05:52:23.879Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "allocated",
+          "reason": "Allocated to WO-247 by the 2026-10-31 planning pass (docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md): the three finishes D102 names are its design (the admitted repair, an awaiting-close stop naming the attended command, --host claude admitted on re-entry for release close only), with the reason retained first.",
+          "reopenWhen": "A Codex version admits the close before WO-247 activates, or the operator chooses a finish by a sequence edit or in words.",
+          "targets": [
+            "WO-247"
+          ],
+          "at": "2026-10-31T16:02:13.374Z"
         }
       ]
     },
@@ -50377,6 +50638,14 @@
           "reopenWhen": "A gate sleeps while an assertion is held, or the runner comes to hold its own assertion.",
           "targets": [],
           "at": "2026-10-31T06:39:26.940Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-10-31 planning pass (docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md) (the map's candidate 5): the rerun held an assertion by hand; one sleep on one gate.",
+          "reopenWhen": "A second gate fails on a sleep, or the runner comes to hold its own assertion for another reason.",
+          "targets": [],
+          "at": "2026-10-31T16:02:15.524Z"
         }
       ]
     },
@@ -50393,7 +50662,408 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-247 by the 2026-10-31 planning pass (docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md): the operator's waiver note of 2026-10-31 (an immediate follow-up; the Codex close refusal seems solvable) is the order's provenance; WO-247 retains the declined close's reason, diagnoses it, repairs what the reason admits without bypassing the host, gives the stop a next step, binds live receipts to code identity, repairs the ten criterion-17 items and requalifies both hosts on the final code. Placed second in the serial queue, behind the one-day order the operator's clone waits on.",
+          "reopenWhen": "WO-247 activates (its activating pass re-reads D104's list against the handoff), or a Codex drive closes on a later CLI before it.",
+          "targets": [
+            "WO-247"
+          ],
+          "at": "2026-10-31T16:02:13.260Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-dc1e113c7508b7b4",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-kit-guide-fork-block-and-drive-returns-pass-recorded-2026-10-31::079c2335ccf72d03242a12dad791fc68a2533c1c8b1fa32a3a91cf9dbd34f886",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "296a7417db3f496a2fcef4d1ec7c5f54ac32136e86d224bbafd01e1e25a7ca2e",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-kit-guide-fork-block-and-drive-returns-pass-recorded-2026-10-31",
+          "title": "An instance-declared pull-request title convention",
+          "summary": "11. **An instance-declared pull-request title convention** (the fork's item 9, first option). Declined: WO-246 admits both forms core itself uses, and a declaration would exist only to refuse one of them. Reopen when an instance wants to refuse a form.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined by the 2026-10-31 planning pass (docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md) (candidate 11): WO-246 admits both title forms core itself uses; a declaration would exist only to refuse one of them.",
+          "reopenWhen": "An instance wants to refuse one of the two title forms WO-246 admits.",
+          "targets": [],
+          "at": "2026-10-31T16:02:17.989Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-5441e98b756230da",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-kit-guide-fork-block-and-drive-returns-pass-recorded-2026-10-31::16e996e9a73462e0000880129f8de2d5090fffe4fa80ff5783608c5a1f668b5b",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "1a3f644800a81ce4557c686d55fbbfeddfbe3ac41b681bdf30b171659fd0bd84",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-kit-guide-fork-block-and-drive-returns-pass-recorded-2026-10-31",
+          "title": "The plan-check condition at its threshold",
+          "summary": "1. **The plan-check condition at its threshold** (FUP-fb8cbeabbddef397). `plan conditions` on 2026-10-31 read the median of three fresh plan checks at 8.004 s against 8, with the host's load average at 2.3 on sixteen CPUs. NoOp: a 4 ms overrun on one reading is noise against its own threshold, and WO-217-D037 declined the parse cache on the same evidence standard. Reopen when two consecutive passes read the median above 8 s, or one reads it above 9 s.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "NoOp recorded by the 2026-10-31 planning pass (docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md) on FUP-fb8cbeabbddef397 (candidate 1): a 4 ms overrun on one reading is noise.",
+          "reopenWhen": "Two consecutive passes read the plan-check median above 8 s, or one reads it above 9 s.",
+          "targets": [],
+          "at": "2026-10-31T16:02:16.866Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-cdc7ecfe682c3cb4",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-kit-guide-fork-block-and-drive-returns-pass-recorded-2026-10-31::52357c2d09cb981b5ac7929abdeeb888fe4848005f36f77421ad2880f8d82c30",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "6d32078ad20c245b1d6b483641b30f94a3368cf0129d07ff31840e9b636c74a6",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-kit-guide-fork-block-and-drive-returns-pass-recorded-2026-10-31",
+          "title": "The issue intake as a planning input",
+          "summary": "13. **The issue intake as a planning input** (FUP-75d361f43a699228). `gh issue list` on 2026-10-31: no open issues. Deferred again, naming WO-207's seam as before.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "duplicate",
+          "reason": "Duplicate of FUP-75d361f43a699228, which the 2026-10-31 planning pass (docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md) re-deferred (candidate 13).",
+          "reopenWhen": "FUP-75d361f43a699228's condition.",
+          "targets": [
+            "FUP-75d361f43a699228"
+          ],
+          "at": "2026-10-31T16:02:18.210Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-f96d679da48f3d84",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-kit-guide-fork-block-and-drive-returns-pass-recorded-2026-10-31::52cb451a7d031f666df8129458c2dab4d692f24ca9b9cfd68c373f6c5c632ff0",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "c9a6c4418e7d99ae61e56813371aae754404a8da4b67005dc95e6d48551bcd33",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-kit-guide-fork-block-and-drive-returns-pass-recorded-2026-10-31",
+          "title": "The attended acceptance ahead of a stop",
+          "summary": "14. **The attended acceptance ahead of a stop** (FUP-632348a91b2ae9d8; the fork's item 2 of 2026-10-30 and WO-192's acceptance of 2026-10-30, both `unlimited`, neither after a stop). Deferred again: core's `boundStops` block shows no stop; the first stop row is the reading. Reopen when a bound stop lands in an attended session whose tool-active time is observed below its wall-clock bound, or most initial stops end in acceptances.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "duplicate",
+          "reason": "Duplicate of FUP-632348a91b2ae9d8, which the 2026-10-31 planning pass (docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md) re-deferred (candidate 14).",
+          "reopenWhen": "FUP-632348a91b2ae9d8's condition.",
+          "targets": [
+            "FUP-632348a91b2ae9d8"
+          ],
+          "at": "2026-10-31T16:02:18.321Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-f1376b4ce25342bb",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-kit-guide-fork-block-and-drive-returns-pass-recorded-2026-10-31::71d4808fa1131f074de8094ff858041d77f419e9496e132c8072328f1ca0077b",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "fa1aa156ed62da803ae329f6376c2cf7073d54924d0918ca9318168554f60af6",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-kit-guide-fork-block-and-drive-returns-pass-recorded-2026-10-31",
+          "title": "The process-recovery candidates 1, 2, 4, 5, 6 and 7",
+          "summary": "4. **The process-recovery candidates 1, 2, 4, 5, 6 and 7** (WO-192-D091, FUP-dfde4050da06d43b; `docs/evidence/WO-192/process-recovery-2026-10-30.md` §What to build): complete-run admission that reads the reviewers, paid-run admission on green quick checks, the finish line in every briefing, a recovery phrase beside `analysis:`, requirement provenance, and derived pins. Candidates 3 and 8 are WO-247's (code identity on live receipts; a fixture that cannot publish). Deferred, on the operator's word that the recovery be built into the machinery later: the written procedure already says what the session did not do, and one occurrence on one order does not yet show which of the six pays. Reopen w",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-10-31 planning pass (docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md) (candidate 4) with the reading recorded on FUP-dfde4050da06d43b.",
+          "reopenWhen": "The same sequence failure recurs on another order, or the operator asks for one of the six by name.",
+          "targets": [],
+          "at": "2026-10-31T16:02:17.206Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-7ea60e8d0a8a4831",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-kit-guide-fork-block-and-drive-returns-pass-recorded-2026-10-31::7257edaf5234df44698b2993f78fe87de2415e818b466f0f88d4cf4c3b9c3202",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "f57af81329bfb8def356f95173108a05dd1d970d48dd712c0f1fcc7e1828895a",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-kit-guide-fork-block-and-drive-returns-pass-recorded-2026-10-31",
+          "title": "Spawned helpers as evidence sources",
+          "summary": "7. **Spawned helpers as evidence sources** (WO-192-D095, item 1, FUP-dd1ac63cf4883d5f). Declined: the editions bind the static import closure of registered sources and the hand-registered dynamic loads; a script a host spawns (`order-worktree-grants.mjs`, `resume.mjs`) is its own program covered by the machinery suites that declare it, and registering three such files would leave the rule less consistent, as D095 found. Reopen when a change to a spawned helper ships with evidence that did not notice it.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined by the 2026-10-31 planning pass (docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md) (candidate 7): the editions bind the static import closure of registered sources and the hand-registered dynamic loads; a script a host spawns is its own program covered by the machinery suites that declare it.",
+          "reopenWhen": "A change to a spawned helper ships with evidence that did not notice it.",
+          "targets": [],
+          "at": "2026-10-31T16:02:17.541Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-b55b237ef872b9fc",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-kit-guide-fork-block-and-drive-returns-pass-recorded-2026-10-31::7b8832c2c74c8851a49d930b62556e7e839d33faef4764474e16c2593192a886",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "77f260418b6b754b3fc2b74c09904295eede0d87f39dff3f28f835d2813dfeec",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-kit-guide-fork-block-and-drive-returns-pass-recorded-2026-10-31",
+          "title": "Gates that survive sleep",
+          "summary": "5. **Gates that survive sleep** (WO-192-D103, FUP-17ea51254e5a7256; process-recovery candidate 9). Deferred with D103's condition: the session's `caffeinate` lasts a turn and the role ends the turn to wait, so the Mac slept thirteen minutes into a complete gate and a suite limit counted the time asleep; the rerun held an assertion by hand. Reopen when a second gate fails on a sleep, or the runner comes to hold its own assertion for another reason.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-10-31 planning pass (docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md) (candidate 5) with the reading recorded on FUP-17ea51254e5a7256.",
+          "reopenWhen": "A second gate fails on a sleep, or the runner comes to hold its own assertion for another reason.",
+          "targets": [],
+          "at": "2026-10-31T16:02:17.318Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-dc31f381950a0b45",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-kit-guide-fork-block-and-drive-returns-pass-recorded-2026-10-31::8f64a421886a48d9a52a1b570a51aec8d18a1dd633b70fd4eff95ac321f54a06",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "17857acd796cc9c58d7e75165e2e3ffa7e64fe6fafa40981104c46302d606e81",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-kit-guide-fork-block-and-drive-returns-pass-recorded-2026-10-31",
+          "title": "The cold-gate rows",
+          "summary": "2. **The cold-gate rows** (FUP-e96221b106cd136a, FUP-7d7c75dfd2d1026c, FUP-77efd30be6cab5c1, FUP-7f35e50c5d698168, FUP-ed4da61921a5c255): the plain gate's thirty-day median 491.4 s against 360; the target-worktree task 611.3 s against 189.8; the skeleton task 482.6 s against 441.6; unchanged since the 2026-10-30 reading. Deferred again with that pass's reading: the complete run is paid once per order at final review and the two tasks' growth has no named cause. Reopen when the median exceeds 600 s, a task's growth has a named cause in an order's decisions, or the operator names gate time as a goal.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-10-31 planning pass (docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md) (candidate 2) with the reading recorded on FUP-e96221b106cd136a.",
+          "reopenWhen": "The plain gate's thirty-day median exceeds 600 s, a task's growth has a named cause in an order's decisions, or the operator names gate time as a goal.",
+          "targets": [],
+          "at": "2026-10-31T16:02:16.979Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-96169c1470b68728",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-kit-guide-fork-block-and-drive-returns-pass-recorded-2026-10-31::91e025fbb08564da05f7ec03639c3f38c59f2b5e99b89f5111b9e8c20b070a94",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "7b1909021b30317346024451edf2508b0b329820b90e0d60b3a22c58743b9b71",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-kit-guide-fork-block-and-drive-returns-pass-recorded-2026-10-31",
+          "title": "A failed diagnostic read ending a lane wait",
+          "summary": "6. **A failed diagnostic read ending a lane wait** (WO-192-D100, FUP-6fc6c71d838b7368). Deferred with D100's condition: the reader now keeps its cause, and one occurrence that passed on rerun names none yet. Reopen when it recurs in a complete gate.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-10-31 planning pass (docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md) (candidate 6) with the reading recorded on FUP-6fc6c71d838b7368.",
+          "reopenWhen": "The failure recurs in a complete gate.",
+          "targets": [],
+          "at": "2026-10-31T16:02:17.429Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-2fba42ccede44337",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-kit-guide-fork-block-and-drive-returns-pass-recorded-2026-10-31::a9bfce46b42d585efdac8f21799383f3f6dc8e8c67d1413e3742a2597786a5c0",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "0597b324e701c1da09f97d749ee9fae833c5fd8274f559cc18b5d68552155cd1",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-kit-guide-fork-block-and-drive-returns-pass-recorded-2026-10-31",
+          "title": "The Order Drive's folds",
+          "summary": "10. **The Order Drive's folds** (FUP-c713e7e97964d316: the shared process-definition table with the resident host, the dead-letter channel, the close packet, the certification readback and veto window). Deferred with its condition rewritten now that WO-192 closed: reopen when a drive order after WO-247 is filed, or OD-013 and OD-049 are answered.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-10-31 planning pass (docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md) (candidate 10) with the reading recorded on FUP-c713e7e97964d316.",
+          "reopenWhen": "A drive order after WO-247 is filed, or OD-013 and OD-049 are answered.",
+          "targets": [],
+          "at": "2026-10-31T16:02:17.878Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-27c2a67f93b5f596",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-kit-guide-fork-block-and-drive-returns-pass-recorded-2026-10-31::b22303742dd989865b4155f2d42911a08e11b8e0de72c6ff2bf9d5b130ebff00",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "a84650c1eb8f9695cfbccc2df46a5b5f4829e69fabc6796d0df81331d48411ab",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-kit-guide-fork-block-and-drive-returns-pass-recorded-2026-10-31",
+          "title": "The cold-start route against the recorded acceptances",
+          "summary": "8. **The cold-start route against the recorded acceptances** (WO-192-D095, item 2; FUP-0dc30eb3790e3563). Settled by one sentence in product 07 §Discipline: the four acceptances recorded after the 2026-10-05 direction stay as records, the meter reads a breach as an advisory and the latest acceptance as the effective ceiling, and no further acceptance is recorded. Reopen when a role root breaches its ceiling and an executor records an acceptance anyway.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-10-31 planning pass (docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md) (candidate 8): one sentence in product 07 §Discipline reconciles the route with the four recorded acceptances.",
+          "reopenWhen": "A role root breaches its ceiling and an executor records an acceptance anyway.",
+          "targets": [],
+          "at": "2026-10-31T16:02:17.654Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-a46f2cd3d159daa5",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-kit-guide-fork-block-and-drive-returns-pass-recorded-2026-10-31::dcc4f7f79421d30603b83f8869cf6aa3a04c00bfa010f9b284fda2c0df4ff138",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "56131cf98f593521c4254131c4ede68e58750ebda6db709b05c6674bfb48fb7f",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-kit-guide-fork-block-and-drive-returns-pass-recorded-2026-10-31",
+          "title": "The remaining churn item",
+          "summary": "9. **The remaining churn item** (WO-192-D083, FUP-575e9e05f616d44c): `.metadata_never_index` in the temporary dotln root and `.runtime` so Spotlight stops indexing fixture churn. WO-233 (v0.100.0) took the warm export fixture, the churn metric, the fseventsd sample and the write-permission reset. Deferred: whether DotLn's churn is what grows `fseventsd` is unmeasured. Reopen when WO-233's fseventsd sample shows growth attributable to a gate, or a complete review is again refused by the host-memory check.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-10-31 planning pass (docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md) (candidate 9) with the reading recorded on FUP-575e9e05f616d44c.",
+          "reopenWhen": "WO-233's fseventsd sample shows growth attributable to a gate, or a complete review is again refused by the host-memory check.",
+          "targets": [],
+          "at": "2026-10-31T16:02:17.767Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-3b192d8bc23d0773",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-kit-guide-fork-block-and-drive-returns-pass-recorded-2026-10-31::e48cc3e3684faede9ecca8a8283bbbf32d1cb23761d26dca506f1d492cb048ae",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "fc9065f71e09262e5bfead40bc6e8c9003431b7d6e26d4b19f2c89539b71f443",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-kit-guide-fork-block-and-drive-returns-pass-recorded-2026-10-31",
+          "title": "The live-gate refusal's read-only forms",
+          "summary": "12. **The live-gate refusal's read-only forms** (the fork's item 8). Recorded as evidence that the refusal and its message were sufficient; nothing to build. Reopen when an instance loses work to the refusal.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-10-31 planning pass (docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md) (candidate 12): the fork's item 8 of 2026-10-30 is recorded as evidence that the live-gate refusal and its message were sufficient; nothing to build.",
+          "reopenWhen": "An instance loses work to the live-gate refusal.",
+          "targets": [],
+          "at": "2026-10-31T16:02:18.100Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-d3ceb9bd4f9c48bc",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-kit-guide-fork-block-and-drive-returns-pass-recorded-2026-10-31::f02ca0d6d39035575eb2ff8362befa29a9a08cd61c6d71f8fe127d57697ae911",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "119b9f343ab5467bb6d7f46e574b3c975a924bf378c7417cc18d89972c1d9d55",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-kit-guide-fork-block-and-drive-returns-pass-recorded-2026-10-31",
+          "title": "Two old decision rows re-minted without a disposition",
+          "summary": "16. **Two old decision rows re-minted without a disposition** (FUP-c8770a693115bfa3, WO-187-D009, which reopened FUP-ea936acad1506e18 for the bundle shape; FUP-681bfa0467ccd9be, WO-170-D002, the meter snapshot written where the journals are). Settled: the bundle-shape row stays deferred with its own condition, and the snapshot is implemented (`docs/evidence/WO-192/meta.json`). Reopen on the rows' own conditions.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-10-31 planning pass (docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md) (candidate 16): FUP-c8770a693115bfa3 and FUP-681bfa0467ccd9be are disposed in the same batch.",
+          "reopenWhen": "The two rows' own conditions.",
+          "targets": [],
+          "at": "2026-10-31T16:02:18.547Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-26904aebad0fa9af",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-kit-guide-fork-block-and-drive-returns-pass-recorded-2026-10-31::f3fa60bee2f5f30a0f9bb37dd9d5e9c9d892e1dfb8f2589508e725c77d48761b",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "874cf4ec84541b683ef76b5c018adaf7f55985f8a36da3f92098bca9422f2a57",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-kit-guide-fork-block-and-drive-returns-pass-recorded-2026-10-31",
+          "title": "A planning document written by hand after plan start refuses",
+          "summary": "15. **A planning document written by hand after `plan start` refuses** (this pass; WO-088's known issue of 2026-10-30 for the mid-pass update case). Recorded on WO-088's row: the document written by hand to the current headings is admitted; the refusal's cause is WO-237's carry-in. Reopen when a kit check refuses such a document.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-088 by the 2026-10-31 planning pass (docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md) (candidate 15) as a known issue for its planning-document check: a document written by hand to the current headings after plan start refuses is admitted; the refusal's cause (the start block's bound) is WO-237's carry-in.",
+          "reopenWhen": "A kit check refuses a planning document written by hand to the current headings, or WO-088 activates.",
+          "targets": [
+            "WO-088"
+          ],
+          "at": "2026-10-31T16:02:18.435Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-c37140a5fcecf75d",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-kit-guide-fork-block-and-drive-returns-pass-recorded-2026-10-31::fa943e1edf4bff79613613c6a669c74b6b6b12193c3dee4af2d935958e77494d",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "5c740255f025856e5026454c165fb17f41a631b4514af48fd46ac63c63675eee",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-kit-guide-fork-block-and-drive-returns-pass-recorded-2026-10-31",
+          "title": "A meta-watcher for routed runs",
+          "summary": "3. **A meta-watcher for routed runs** (WO-192-D023, FUP-02446577ce028d06; the Flow Steward candidate). Deferred: WO-247 gives a stuck drive a stop with a next step, which is a route row and not a supervisor; the operator's request is recorded here with D023's three questions (observation, intervention authority, intervention evaluation). Reopen when a drive records the same failed phase on three consecutive attempts without a stop, or the operator asks for the watcher.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-10-31 planning pass (docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md) (candidate 3) with the reading recorded on FUP-02446577ce028d06.",
+          "reopenWhen": "A drive records the same failed phase on three consecutive attempts without a stop, or the operator asks for the watcher.",
+          "targets": [],
+          "at": "2026-10-31T16:02:17.094Z"
+        }
+      ]
     }
   ]
 }
