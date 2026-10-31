@@ -194,9 +194,9 @@ function readProcessTable(directory) {
         maxBuffer: 4 * 1024 * 1024,
       }),
     ).processes;
-  } catch {
+  } catch (error) {
     throw new Error(
-      "Host process reader unavailable; an ordinary gate prepares it",
+      `Host process reader unavailable; an ordinary gate prepares it (${error.code ?? error.status ?? "no cause"})`,
     );
   }
 }

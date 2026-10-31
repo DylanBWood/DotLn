@@ -16,6 +16,7 @@
 /corpus/manifests/**/*.json dotln-generated
 /packages/*/dist/** dotln-generated
 /packages/console/fixtures/** dotln-generated
+/.claude/agents/** dotln-generated dotln-check=suite:harness
 /.claude/hooks/** dotln-generated dotln-check=suite:harness
 /.claude/harness-manifest.json dotln-generated dotln-check=suite:harness
 /.claude/settings.json dotln-generated dotln-check=suite:harness

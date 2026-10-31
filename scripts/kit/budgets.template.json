@@ -49,6 +49,12 @@
       "costUsd": null,
       "wallClockMs": null,
       "completeRuns": null
+    },
+    "router": {
+      "tokens": null,
+      "costUsd": null,
+      "wallClockMs": null,
+      "completeRuns": null
     }
   },
   "limits": {
@@ -58,7 +64,8 @@
       "reviewer": null,
       "release-close": null,
       "planner": null,
-      "refuter": null
+      "refuter": null,
+      "router": 16384
     },
     "fastGateMs": null,
     "readCapBytes": 65536,
@@ -76,5 +83,7 @@
     "warm-fixture": 0,
     "legacy-backfill": 48,
     "coordination": null
-  }
+  },
+  "drivenSessionCeiling": 80,
+  "drivenPhaseTimeoutMs": null
 }

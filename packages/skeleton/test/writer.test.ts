@@ -70,6 +70,7 @@ test("WO-161 the bounded Contributor label retains the writer's authority limits
     "git.local",
     "lifecycle.run",
     "outside.write:host-scratchpad",
+    "outside.write:order-worktree",
     "outside.write:session-scratch",
     "outside.write:system-temp",
     "outside.write:target-worktree",

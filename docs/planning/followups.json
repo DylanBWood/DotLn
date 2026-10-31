@@ -12746,6 +12746,14 @@
             "WO-192"
           ],
           "at": "2026-10-11T01:26:26.093Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-192-D005: the bundle shape changed; retain the hand-managed pin list because full declared package inventory is captured and checked, with no observed missing module. Deriving the literal import closure remains runtime snapshot maintenance.",
+          "reopenWhen": "A snapshot cannot load a reachable module, or runtime snapshot maintenance evaluates deriving the import closure.",
+          "targets": [],
+          "at": "2026-10-25T21:19:44.538Z"
         }
       ]
     },
@@ -24586,6 +24594,14 @@
             "WO-192"
           ],
           "at": "2026-10-02T06:02:36.026Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-192-D045 returns the universal admission guarantee to the register. WO-192 implements its allocated per-spawner and observed driven-total accounting, but unobservable paths and unresolved overlaps still prevent a guaranteed pre-creation cap across every path. Source review and host-probe evidence do not establish that broader claim; the order's own executable qualification remains separate.",
+          "reopenWhen": "The host documents a pre-creation admission hook or total-cap setting covering the missing paths, or a session exceeds the cap on a path the current accounting reports as unobserved.",
+          "targets": [],
+          "at": "2026-10-26T05:33:37.411Z"
         }
       ]
     },
@@ -31715,6 +31731,14 @@
             "WO-192"
           ],
           "at": "2026-10-11T01:26:25.606Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-192-D005: phase pin and skill checks added; the digit pattern already agrees and renaming the retained general worker offers no authority improvement. The unmeasured planning failure count remains planning-owned.",
+          "reopenWhen": "Planning uses a failure count showing zero for an unmeasured order, or worker naming causes a concrete admission error.",
+          "targets": [],
+          "at": "2026-10-25T21:19:44.634Z"
         }
       ]
     },
@@ -44567,6 +44591,13 @@
           "title": "WO-219-D009: Optimize the executor and reviewer cold-start text without losing the decision ownership, review inputs, defensive approach, repair authority or output duties. Use WO-219 cold-start.json…",
           "summary": "{ \"id\": \"WO-219-D009\", \"date\": \"2026-10-23\", \"dispatch\": \"resume: next\", \"decision\": \"Preserve the authorized shared decision-ownership rules, reviewer input/defensive duties and verifier repair/output duties. Mint a new role oracle linked to the byte-exact WO-226 snapshot and its upstream history. Keep every cold-start ceiling unchanged and board measured overrun for optimization with equivalent usefulness; do not cut needed instructions, raise a ceiling, record an acceptance or ask the operator to decide a byte budget.\", \"evidence\": [ \"docs/evidence/WO-219/cold-start.json: measured installed CLAUDE.md plus each role skill before/after.\", \"packages/skeleton/fixtures/wo219-role-baseline.json",
           "missing": false
+        },
+        {
+          "hash": "5cd9890e13ad7879b41bc665a1b7d34b43ac227025e56ae5bf333daa2bca1acf",
+          "ref": "docs/evidence/WO-219/decisions.md#wo-219-d009--preserve-useful-rules-and-board-measured-cost",
+          "title": "WO-219-D009: Optimize the executor and reviewer cold-start text without losing the decision ownership, review inputs, defensive approach, repair authority or output duties. Use WO-219 cold-start.json…",
+          "summary": "{ \"id\": \"WO-219-D009\", \"date\": \"2026-10-23\", \"dispatch\": \"resume: next\", \"decision\": \"Preserve the authorized shared decision-ownership rules, reviewer input/defensive duties and verifier repair/output duties. Mint a new role oracle linked to the byte-exact WO-226 snapshot and its upstream history. Keep every cold-start ceiling unchanged and board measured overrun for optimization with equivalent usefulness; do not cut needed instructions, raise a ceiling, record an acceptance or ask the operator to decide a byte budget.\", \"evidence\": [ \"docs/evidence/WO-219/cold-start.json: measured installed CLAUDE.md plus each role skill before/after.\", \"packages/skeleton/fixtures/wo219-role-baseline.json",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -44601,6 +44632,14 @@
           "reopenWhen": "A bounded comparison demonstrates a shorter equivalent instruction set, or another required rule changes the measured overrun.",
           "targets": [],
           "at": "2026-10-29T01:47:39.828Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-192-D003 records executor 30945 against 29246 and reviewer 31024 against 28884 after required target and router duties; preserve rules and existing ceilings.",
+          "reopenWhen": "A shorter equivalent instruction set is demonstrated, or another required rule changes the overrun.",
+          "targets": [],
+          "at": "2026-10-25T21:19:44.442Z"
         }
       ]
     },
@@ -49698,6 +49737,214 @@
           "at": "2026-10-30T17:15:37.383Z"
         }
       ]
+    },
+    {
+      "id": "FUP-c8770a693115bfa3",
+      "key": "decision:docs/evidence/WO-187/decisions.md#wo-187-d009",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "056130dc1eebddff8e4f20fb3460b8e0a6801087fe70809f5cd5b2d0f640b9b2",
+          "ref": "docs/evidence/WO-187/decisions.md#wo-187-d009--reopen-the-bundle-shape-follow-up-and-preserve-unrelated-queued-work",
+          "title": "WO-187-D009: Reopen existing FUP-ea936acad1506e18 for planning because the new generated worker file changes the bundle's shape. Preserve the byte-overrun row open and prepare the two required close…",
+          "summary": "{ \"id\": \"WO-187-D009\", \"date\": \"2026-10-05\", \"dispatch\": \"resume: next; follow-up observation\", \"decision\": \"Reopen existing FUP-ea936acad1506e18 for planning because the new generated worker file changes the bundle's shape. Preserve the byte-overrun row open and prepare the two required close retargets; leave the other textual matches unchanged.\", \"evidence\": [ \"The canonical touching feed at revision 0ef65b80244964d313b8f8b9391961362282942b377f4880f3dd0f0da23b14cc returned 18 rows over three pages. All pages were read, and the pin-list row's full revisions/dispositions were read with --show.\", \"FUP-ea936acad1506e18 names a snapshot failing to load a reachable module or the next order chang",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-02446577ce028d06",
+      "key": "decision:docs/evidence/WO-192/decisions.md#wo-192-d023",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "53419e06b825c04c01ee91b927c0c3cff97ac1c1c279bd40c41d4888bfb93aee",
+          "ref": "docs/evidence/WO-192/decisions.md#wo-192-d023--plan-a-meta-watcher-for-routed-automated-runs",
+          "title": "WO-192-D023: Plan the routed-run meta-watcher requested in WO-192-D023: connect recurring-failure and no-progress detection to an explicit intervention mechanism, then evaluate operator and watcher…",
+          "summary": "{ \"id\": \"WO-192-D023\", \"date\": \"2026-10-25\", \"dispatch\": \"conversation only; operator-requested future planning note\", \"decision\": \"Bring a meta-watcher for routed automated runs into a future planning session. The existing Flow Steward is a related unimplemented candidate, not a delivered supervisor. Planning should distinguish observation, intervention authority and intervention evaluation: detect repeated failures or effort without progress across gates, phases and probes; define how the operator or watcher can pause, cancel, redirect or resume a run with recorded authority and preserved state; and assess whether operator-initiated and watcher-initiated interventions improve verified outc",
+          "missing": false
+        },
+        {
+          "hash": "97624c4ced1e282f9695842363d57bc4a7caf026a24f04a7f127862e18db4596",
+          "ref": "docs/evidence/WO-192/decisions.md#wo-192-d023--plan-a-meta-watcher-for-routed-automated-runs",
+          "title": "WO-192-D023: Plan the routed-run meta-watcher requested in WO-192-D023: connect recurring-failure and no-progress detection to an explicit intervention mechanism, then evaluate operator and watcher…",
+          "summary": "{ \"id\": \"WO-192-D023\", \"date\": \"2026-10-25\", \"dispatch\": \"resume: next; conversation-only capture of the requested future planning note\", \"decision\": \"Bring a meta-watcher for routed automated runs into a future planning session. The existing Flow Steward is a related unimplemented candidate, not a delivered supervisor. Planning should distinguish observation, intervention authority and intervention evaluation: detect repeated failures or effort without progress across gates, phases and probes; define how the operator or watcher can pause, cancel, redirect or resume a run with recorded authority and preserved state; and assess whether operator-initiated and watcher-initiated interventions im",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Operator-requested input for the next planning session: a routed-run meta-watcher that detects repeated failure or lack of progress, has an explicit intervention mechanism, and evaluates whether operator or watcher interventions help or hurt. WO-192-D023 records scope and links the related unimplemented Flow Steward candidate FUP-0104. This is future planning, not an expansion of the active implementation.",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-10-26T00:27:44.550Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "open",
+          "reason": "Preserve the operator-requested input for the next planning session after correcting D023's dispatch label. Its decision, authorization and scope are unchanged: plan a routed-run meta-watcher with failure and progress observation, explicit intervention authority, and evaluation of whether interventions help or hurt. The related Flow Steward remains an unimplemented candidate; this is not additional WO-192 implementation.",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-10-26T19:12:23.837Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-98725ecebbb7216b",
+      "key": "decision:docs/evidence/WO-192/decisions.md#wo-192-d004",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "d18af061d3ac260c9780bc72530b1048ed95487cfdb3022974ef20b7d99bfdba",
+          "ref": "docs/evidence/WO-192/decisions.md#wo-192-d004--preserve-observed-budget-limits-and-narrow-target-grants",
+          "title": "WO-192-D004: Charge each driven spawn to its calling worker and join phase sessions under one ignored shared counter. Default the total to four times the per-spawner cap; preserve null as disabled.…",
+          "summary": "{ \"id\": \"WO-192-D004\", \"date\": \"2026-10-25\", \"dispatch\": \"resume: next\", \"decision\": \"Charge each driven spawn to its calling worker and join phase sessions under one ignored shared counter. Default the total to four times the per-spawner cap; preserve null as disabled. Keep unresolved direct/child overlap a minimum and missing observations unknown. The order-worktree grant comes from branch and target registries using physical directory identity. The exact-phrase refusal belongs only to the router's own spawns, so the shared paragraph's five universal refusals remain accurate.\", \"evidence\": [ \"scripts/test-drive.mjs\", \"packages/skeleton/test/subagent-budget.test.ts\", \"scripts/test-harness.m",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-4a6335f0e2790723",
+      "key": "decision:docs/evidence/WO-192/decisions.md#wo-192-d040",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "aee0b51a6791e4bbd6b5660e3f8e4d256084697a7aebf5a6d6349423a66632aa",
+          "ref": "docs/evidence/WO-192/decisions.md#wo-192-d040--diagnose-failed-native-commands-before-changing-time-limits",
+          "title": "WO-192-D040: Keep the phase deadline and configured budgets while adding reduced failure observations to both native protocols. Failed classified commands now retain the same fixed-vocabulary command…",
+          "summary": "{ \"id\": \"WO-192-D040\", \"date\": \"2026-10-26\", \"dispatch\": \"resume: next; native Claude attempt 29\", \"decision\": \"Keep the phase deadline and configured budgets while adding reduced failure observations to both native protocols. Failed classified commands now retain the same fixed-vocabulary command shape as unclassified commands, including canonical harness subcommands. Record only enumerated diagnostic signals for known network, cache, session, permission and adapter messages. Keep the current worker's latest sixteen failed observations in ignored driver state so a following success does not erase the diagnostic before inspection; canonical status does not expose that history to the router. ",
+          "missing": false
+        },
+        {
+          "hash": "886059bd59e772d1c41eee48f51248b60284d89abbf2a6aa568f455a68729488",
+          "ref": "docs/evidence/WO-192/decisions.md#wo-192-d040--diagnose-failed-native-commands-before-changing-time-limits",
+          "title": "WO-192-D040: Keep the phase deadline and configured budgets while adding reduced failure observations to both native protocols. Failed classified commands now retain the same fixed-vocabulary command…",
+          "summary": "{ \"id\": \"WO-192-D040\", \"date\": \"2026-10-26\", \"dispatch\": \"resume: next; native Claude attempt 29\", \"decision\": \"Keep the phase deadline and configured budgets while adding reduced failure observations to both native protocols. Failed classified commands now retain the same fixed-vocabulary command shape as unclassified commands, including canonical harness subcommands. Record only enumerated diagnostic signals for known network, cache, session, permission and adapter messages. Keep the current worker's latest sixteen failed observations in ignored driver state so a following success does not erase the diagnostic before inspection; canonical status does not expose that history to the router. ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-d403b1c2a1193625",
+      "key": "decision:docs/evidence/WO-192/decisions.md#wo-192-d042",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "11cfad621ec70f46014a1aa64aed7959d85b4cd83fd9a52c4530c0b483624c47",
+          "ref": "docs/evidence/WO-192/decisions.md#wo-192-d042--stop-at-the-native-launch-permission-boundary",
+          "title": "WO-192-D042: Retain attempt 30 as a failed native-router qualification and stop Claude launch attempts at the observed host permission boundary. Do not retry that request or substitute a launcher.…",
+          "summary": "{ \"id\": \"WO-192-D042\", \"date\": \"2026-10-26\", \"dispatch\": \"resume: next; native Claude attempt 30\", \"decision\": \"Retain attempt 30 as a failed native-router qualification and stop Claude launch attempts at the observed host permission boundary. Do not retry that request or substitute a launcher. Continue independent Codex qualification within its existing host policy. The reduced record proves that the canonical launcher was refused and transport stopped; it does not identify the host's specific reason or establish whether automatic approval review made the decision. Claude lifecycle qualification remains outstanding until the host boundary is resolved through its normal permission flow.\", \"e",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-ec3d1b98b15afd49",
+      "key": "decision:docs/evidence/WO-192/decisions.md#wo-192-d057",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "30325aae6e2ac42be0396ce44afa2559b7ee6465f866722d65077ddf83bac5f1",
+          "ref": "docs/evidence/WO-192/decisions.md#wo-192-d057--apply-the-operators-sandbox-exception-to-isolated-qualification",
+          "title": "WO-192-D057: Plan explicit native sandbox-policy selection for routed runs. The operator intends unsandboxed environments; WO-192 exposed a mismatch between that expectation, inherited Claude…",
+          "summary": "{ \"id\": \"WO-192-D057\", \"date\": \"2026-10-26\", \"dispatch\": \"resume: next; explicit operator sandbox direction\", \"operatorAuthorization\": \"The operator explicitly requested disabling sandbox settings to unblock the runs and recording sandbox policy for a future planning session, explaining that their intended environments are unsandboxed.\", \"decision\": \"Permit an explicit DOTLN_LIVE_SANDBOX=off option for the isolated Claude qualification fixture. Write sandbox.enabled false only to ignored local settings in its synthetic main, order and target checkouts, preserving existing settings and normal permission checks. Apply it before launching any native role and record the selected policy in the re",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "The operator explicitly requested a future planning item for native sandbox policy. WO-192 applies only an opt-in exception in disposable Claude qualification checkouts; selecting a durable instance or Support contract belongs to planning.",
+          "reopenWhen": "The next planning session considers routed-run host policy, or the temporary setting is insufficient or inconsistent across native roles.",
+          "targets": [],
+          "at": "2026-10-26T12:36:58.883Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-cdb3ed9086345e76",
+      "key": "decision:docs/evidence/WO-192/decisions.md#wo-192-d072",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "ed00e03430be33c98f960d10295e6aaaaf594956309fd83a5d3e7cfba54f1d8f",
+          "ref": "docs/evidence/WO-192/decisions.md#wo-192-d072--close-source-sensitive-validation-before-the-next-complete-pass",
+          "title": "WO-192-D072: Repair DotLn validation sequencing so every executable check capable of requiring product or test-source changes runs before an expensive complete pass is treated as settled. Evaluate…",
+          "summary": "{ \"id\": \"WO-192-D072\", \"date\": \"2026-10-26\", \"dispatch\": \"resume: next; operator correction of repeated validation-order rework\", \"decision\": \"For the remaining WO-192 execution, first pass the complete lifecycle reproduction and the entire document gate, then freeze product and test source for the required complete review. Complete the handoff text afterward and rerun its document gate. Record the general sequencing defect for planning rather than expanding this implementation into a test-runner and generated-role redesign. Preserve all failed evidence and do not treat a passing code gate as readiness while another executable suite remains untested.\", \"operatorAuthorization\": \"The operator ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "The operator explicitly requires the platform validation-order correction in WO-192 now. D073 supersedes D072's deferral and binds criteria 15 and 16 through the recorded execution amendment.",
+          "reopenWhen": "WO-192 fails to enforce document and lifecycle prerequisites before product work, or its final report escapes document validation.",
+          "targets": [
+            "WO-192"
+          ],
+          "at": "2026-10-26T19:49:19.876Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-ca213b859ce6a36c",
+      "key": "decision:docs/evidence/WO-192/decisions.md#wo-192-d080",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "81b87ecd9c2cee2dfcc328df7e2cdf86bb197d49eaf04902c37d974d84b186fd",
+          "ref": "docs/evidence/WO-192/decisions.md#wo-192-d080--record-the-unbounded-retention-of-integration-stashes-and-session-scratch-as-a-follow-up",
+          "title": "WO-192-D080: Bound DotLn's retention: drop an integration stash once worktree integrate has consumed it or at release close, give session scratch a retention policy and a prune candidate kind, run…",
+          "summary": "{ \"id\": \"WO-192-D080\", \"date\": \"2026-10-26\", \"dispatch\": \"resume: next; operator question on host memory during this execution\", \"decision\": \"Record the retention defect for planning and defer the fix: every worktree integrate leaves a stash the harness never drops, every session leaves a scratch tree nothing prunes, and harness prune knows the stashes but is never run. Fix nothing here beyond this record and the queue entry.\", \"evidence\": [ \"node scripts/harness.mjs prune without --apply: 75 integration-stash candidates totalling 41.30 GB and 24 snapshot candidates totalling 0.11 GB; 24 snapshots retained as pinned\", \"The shared stash stack holds one entry per integrated order, about 0.55 t",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-d925bbf866d1d43c",
+      "key": "decision:docs/evidence/WO-192/decisions.md#wo-192-d081",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "26e75ef259772b12a4c411d9947c8c09fded2ee6a4f0dc4bf66a3f549f8789ec",
+          "ref": "docs/evidence/WO-192/decisions.md#wo-192-d081--hand-the-ordered-cleanup-to-the-operators-keystroke-and-extend-the-retention-follow-up-to-exported-instances",
+          "title": "WO-192-D081: Deliver the retention fix of FUP-ca213b859ce6a36c to exported instances as well: the integration-stash drop, the session-scratch retention and the prune run at release close must ship in…",
+          "summary": "{ \"id\": \"WO-192-D081\", \"date\": \"2026-10-26\", \"dispatch\": \"resume: next; operator orders the cleanup and names the forks\", \"decision\": \"Run the one-time cleanup the operator ordered as far as the host admits it, hand the remaining destructive commands to the operator to run in this session, and extend D080's retention follow-up so the permanent fix reaches exported instances through their update path, not only the launchpad.\", \"operatorAuthorization\": \"The operator ordered the stash prune and scratch removal without further confirmation and required the same for the forks.\", \"evidence\": [ \"node scripts/harness.mjs prune --apply was denied by the Claude Code auto-mode permission classifier as ",
+          "missing": false
+        },
+        {
+          "hash": "1935797729d74ddb55348d735f1bc8d66ebc29ab4f500dda6818fa99b6265ed6",
+          "ref": "docs/evidence/WO-192/decisions.md#wo-192-d081--hand-the-ordered-cleanup-to-the-operators-keystroke-and-extend-the-retention-follow-up-to-exported-instances",
+          "title": "WO-192-D081: Deliver the retention fix of FUP-ca213b859ce6a36c to exported instances as well: the integration-stash drop, the session-scratch retention and the prune run at release close must ship in…",
+          "summary": "{ \"id\": \"WO-192-D081\", \"date\": \"2026-10-26\", \"dispatch\": \"resume: next; operator orders the cleanup and names the forks\", \"decision\": \"Run the one-time cleanup the operator ordered as far as the host admits it, hand the remaining destructive commands to the operator to run in this session, and extend D080's retention follow-up so the permanent fix reaches exported instances through their update path, not only the launchpad.\", \"operatorAuthorization\": \"The operator ordered the stash prune and scratch removal without further confirmation and required the same for the forks.\", \"evidence\": [ \"node scripts/harness.mjs prune --apply was denied by the Claude Code auto-mode permission classifier as ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-575e9e05f616d44c",
+      "key": "decision:docs/evidence/WO-192/decisions.md#wo-192-d083",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e2984696d9751599f262d7ab2990ea745e2e0b8784a0ece6e3b2194b4b3c1b09",
+          "ref": "docs/evidence/WO-192/decisions.md#wo-192-d083--name-the-churn-reductions-and-the-host-memory-refusal-the-retention-follow-up-must-address",
+          "title": "WO-192-D083: Cut the file churn of a complete review and make it visible: reuse a warm export fixture and link or clone cached node_modules instead of a fresh npm ci per run; write…",
+          "summary": "{ \"id\": \"WO-192-D083\", \"date\": \"2026-10-26\", \"dispatch\": \"resume: next; the complete review started at 2026-10-26T21:43:30Z was refused by host memory, and the operator asked where the named reductions were recorded\", \"decision\": \"Record the concrete file-churn reductions the operator was told about so the planning follow-up carries them as deliverables, together with the two new measurements: a complete review refused by DotLn's own host-memory check, and read-only fixture directories that a prune must make writable before removal.\", \"operatorAuthorization\": \"The operator pointed out that the reductions described in chat appeared in no recorded follow-up and asked for them to be recorded.\",",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

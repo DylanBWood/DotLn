@@ -153,11 +153,18 @@ export function readRetention(repository) {
   )
     throw new Error("Invalid temporary-root control directory");
   const file = join(repository, control, "budgets.json");
-  return validateRetention(
-    existsSync(file)
-      ? JSON.parse(readFileSync(file, "utf8")).retention
-      : undefined,
-  );
+  let retention;
+  try {
+    if (existsSync(file))
+      retention = JSON.parse(readFileSync(file, "utf8")).retention;
+  } catch (error) {
+    // An integration can leave this file conflicted, and resolving that
+    // conflict itself needs scratch space. Retention only paces cleanup, so
+    // the default policy stands until the text parses; readBudgets still
+    // refuses the broken file at every gate.
+    if (!(error instanceof SyntaxError)) throw error;
+  }
+  return validateRetention(retention);
 }
 
 /** @param {string} [repository] @returns {ProcessIdentity[]|null} */

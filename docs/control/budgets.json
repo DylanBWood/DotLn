@@ -60,6 +60,12 @@
       "costUsd": null,
       "wallClockMs": null,
       "completeRuns": null
+    },
+    "router": {
+      "tokens": null,
+      "costUsd": null,
+      "wallClockMs": null,
+      "completeRuns": null
     }
   },
   "limits": {
@@ -69,7 +75,8 @@
       "reviewer": 28884,
       "release-close": 21266,
       "planner": 24576,
-      "refuter": null
+      "refuter": null,
+      "router": 16384
     },
     "fastGateMs": null,
     "readCapBytes": 65536,
@@ -237,6 +244,14 @@
       "dispatch": "executor",
       "ceiling": 40194,
       "reason": "WO-235's operator-authorized quality pass command raises executor from 34892 to 36098 bytes, above the effective 34953. Under product 07's standing route preserve the reviewed command and accept measured bytes plus 4096; reassess when another reviewed rule needs more. Decision: docs/evidence/WO-235/decisions.md#wo-235-d044."
+    },
+    {
+      "date": "2026-10-30",
+      "metric": "coldStartBytes.reviewer",
+      "scope": null,
+      "dispatch": "executor",
+      "ceiling": 39600,
+      "reason": "WO-192's router, target-order and per-spawner duties raise reviewer from 33944 to 35504 bytes on the integrated tree, above the effective 34596. Under product 07's standing route preserve these reviewed duties and accept measured bytes plus 4096; reassess on the next addition. Decision: docs/evidence/WO-192/decisions.md#wo-192-d088."
     }
   ],
   "unsetPolicy": "Collect observed usage first. The operator left token, dollar and PR-body ceilings unset; null is not zero and never triggers an invented cap.",
@@ -249,5 +264,7 @@
     "warm-fixture": 0,
     "legacy-backfill": 48,
     "coordination": null
-  }
+  },
+  "drivenSessionCeiling": 80,
+  "drivenPhaseTimeoutMs": null
 }

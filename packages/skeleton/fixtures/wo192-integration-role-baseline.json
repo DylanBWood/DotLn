@@ -1,0 +1,85 @@
+{
+  "workOrder": "WO-192",
+  "historicalBaseline": "wo239-integration-role-baseline.json",
+  "historicalSha256": "1ea097a5af4cdba9b35c44b79d12de116329e91aa69c51178e168120b8967580",
+  "upstreamBaseline": "wo185-role-baseline.json",
+  "upstreamSha256": "f67e48b79873202b56c069902f2338d54b1fef42d3c9eb29706d3d2cd7a72ef9",
+  "branchBaseline": "wo192-role-baseline.json",
+  "branchSha256": "8233d0c1bc573fff306ed027851be5a61dfeca4394e013cef29f7df97d2a75c5",
+  "method": "Pin the integrated role trees at both economy settings: main's contract-derived artifact, standing-document, quality-pass, dispatch-bound, target-write and three-reviewer duties together with this branch's router, target-order, per-spawner and lifecycle preflight duties; preserve both reviewed oracle chains byte-exact.",
+  "decision": "docs/evidence/WO-192/decisions.md#wo-192-d098",
+  "roles": {
+    ".agents/skills/dotln-executor/SKILL.md": "d6260fb42b31e993eb641e7119684aea668fee8f72555efe5c9263514a4893ee",
+    ".agents/skills/dotln-planner/SKILL.md": "8345f3f2688f75f2aaf46796e57d8d107aa3d876ea28e66318568aae8570ee9c",
+    ".agents/skills/dotln-refuter/SKILL.md": "81d53c1c4763eba652cdfa483e56fca1f0b8c4ca08d5e820e7e54db0890d0899",
+    ".agents/skills/dotln-release-close/SKILL.md": "439e61eae1877cfcd09ac7047c5231f8d096a3d042198c2ce82d48359e5f23aa",
+    ".agents/skills/dotln-reviewer/SKILL.md": "e2b2913e148f37521ae9edaafa4171c6e0f7c96d294e0d1762b8f85c84e9097c",
+    ".agents/skills/dotln-router/SKILL.md": "d893431df08164cc9bddbc6388b2ad6ebd4ae2cb6088c1789ff94d4a728fae14",
+    ".agents/skills/dotln-verifier/SKILL.md": "0b67cb60939ed598607d19529e2e3d9092b522a474052c01cf9f32bc7491107b",
+    ".claude/skills/dotln-executor/SKILL.md": "d6260fb42b31e993eb641e7119684aea668fee8f72555efe5c9263514a4893ee",
+    ".claude/skills/dotln-planner/SKILL.md": "8345f3f2688f75f2aaf46796e57d8d107aa3d876ea28e66318568aae8570ee9c",
+    ".claude/skills/dotln-refuter/SKILL.md": "81d53c1c4763eba652cdfa483e56fca1f0b8c4ca08d5e820e7e54db0890d0899",
+    ".claude/skills/dotln-release-close/SKILL.md": "439e61eae1877cfcd09ac7047c5231f8d096a3d042198c2ce82d48359e5f23aa",
+    ".claude/skills/dotln-reviewer/SKILL.md": "e2b2913e148f37521ae9edaafa4171c6e0f7c96d294e0d1762b8f85c84e9097c",
+    ".claude/skills/dotln-router/SKILL.md": "d893431df08164cc9bddbc6388b2ad6ebd4ae2cb6088c1789ff94d4a728fae14",
+    ".claude/skills/dotln-verifier/SKILL.md": "0b67cb60939ed598607d19529e2e3d9092b522a474052c01cf9f32bc7491107b"
+  },
+  "optOutRoles": {
+    ".agents/skills/dotln-executor/SKILL.md": "b5f5ab29ec3717cf6fc97b09291f51d5900b71fe327dca46d22239af70397ff7",
+    ".agents/skills/dotln-planner/SKILL.md": "7d9cb782ffaa64c719badea97b79ed6f15b95436942e3b3dc8deb324a0ac898c",
+    ".agents/skills/dotln-refuter/SKILL.md": "d9e3f48bf61cdc74a20bab7c5d41efd166881130ffea7857ba547b999425fa76",
+    ".agents/skills/dotln-release-close/SKILL.md": "14a12d83a8a5962c8155f246fbf95b2650ebb9f8ae53dd5344b5104c5c8d4982",
+    ".agents/skills/dotln-reviewer/SKILL.md": "5d1b83b864b9ee2e08dd0584c46bf722b3370061ef6a01439d6ce5781461cddf",
+    ".agents/skills/dotln-router/SKILL.md": "aceda1e92b95ee38efa10c3a25e64392a49cbe10cfbb7dab8eef3d31177ae120",
+    ".agents/skills/dotln-verifier/SKILL.md": "12c5e96acff65fb6a8b02da74c43fca3d7ec44c981fce9042a62d274767d3c3b",
+    ".claude/skills/dotln-executor/SKILL.md": "b5f5ab29ec3717cf6fc97b09291f51d5900b71fe327dca46d22239af70397ff7",
+    ".claude/skills/dotln-planner/SKILL.md": "7d9cb782ffaa64c719badea97b79ed6f15b95436942e3b3dc8deb324a0ac898c",
+    ".claude/skills/dotln-refuter/SKILL.md": "d9e3f48bf61cdc74a20bab7c5d41efd166881130ffea7857ba547b999425fa76",
+    ".claude/skills/dotln-release-close/SKILL.md": "14a12d83a8a5962c8155f246fbf95b2650ebb9f8ae53dd5344b5104c5c8d4982",
+    ".claude/skills/dotln-reviewer/SKILL.md": "5d1b83b864b9ee2e08dd0584c46bf722b3370061ef6a01439d6ce5781461cddf",
+    ".claude/skills/dotln-router/SKILL.md": "aceda1e92b95ee38efa10c3a25e64392a49cbe10cfbb7dab8eef3d31177ae120",
+    ".claude/skills/dotln-verifier/SKILL.md": "12c5e96acff65fb6a8b02da74c43fca3d7ec44c981fce9042a62d274767d3c3b"
+  },
+  "startupCost": {
+    "decision": "WO-192-D098",
+    "profiles": {
+      "executor": {
+        "beforeBytes": 36500,
+        "bytes": 37901,
+        "growthBytes": 1401
+      },
+      "planner": {
+        "beforeBytes": 23566,
+        "bytes": 23814,
+        "growthBytes": 248
+      },
+      "refuter": {
+        "beforeBytes": 22380,
+        "bytes": 22628,
+        "growthBytes": 248
+      },
+      "release-close": {
+        "beforeBytes": 22758,
+        "bytes": 23006,
+        "growthBytes": 248
+      },
+      "reviewer": {
+        "beforeBytes": 33944,
+        "bytes": 35504,
+        "growthBytes": 1560
+      },
+      "router": {
+        "beforeBytes": null,
+        "bytes": 15014,
+        "growthBytes": null,
+        "ceiling": 16384,
+        "headroomBytes": 1370
+      },
+      "verifier": {
+        "beforeBytes": 31496,
+        "bytes": 32734,
+        "growthBytes": 1238
+      }
+    }
+  }
+}

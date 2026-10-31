@@ -18,6 +18,7 @@ no skill carries phase state or grants authority.
 | Reviewer (`final review`)                            | `@skills/dotln-reviewer/SKILL.md`      | §Goal-aligned decisions; selected order and cited sections; complete subject and numbered verification sequence; `package.json`; 08 §PRs and commits; current review/PR/release-note outputs                                                   |
 | Release close                                        | `@skills/dotln-release-close/SKILL.md` | §Goal-aligned decisions; selected order and cited sections; canonical final review, PR body and release notes                                                                                                                                  |
 | Planner                                              | `@skills/dotln-planner/SKILL.md`       | §Goal-aligned decisions; sequence file; this guide's planning and ideation sections; addressed candidates and source lookups                                                                                                                   |
+| Router (`drive: WO-NNN`)                             | `@skills/dotln-router/SKILL.md`        | Canonical status through `node scripts/drive.mjs status WO-NNN` and nothing else: no order, diff, report or worker transcript |
 | Refuter                                              | `@skills/dotln-refuter/SKILL.md`       | §Goal-aligned decisions supplies purpose; the canonical prompt from `npm run plan -- refute --direct` is the sole subject evidence. No map, ledger or prior receipt is a subject preread.                                                      |
 
 The generated `Read:` and `Read[role]:` directives are binding throughout the
@@ -154,6 +155,101 @@ The operator's entire instruction to you may be a single phrase of the form
 `resume: <intent>`. That phrase **is** your dispatch. Do not ask for context and
 do not ask which work order: the durable control state answers both, and the
 operator is deliberately not repeating themselves.
+
+`drive: WO-NNN` selects the router in main and carries the authority of the
+lifecycle phrases it dispatches, including final-review publication and release
+close after the operator merges. It grants no merge authority. The router reads
+canonical status only, launches a fresh pinned phase worker in the recorded order
+worktree with exactly its lifecycle phrase, and reads status again when the worker
+ends. It reads no order, diff, report or worker narrative and holds no writer.
+The measured Claude host uses separate print sessions because in-process workers
+did not load the target worktree's hooks. Its target workers explicitly dispatch
+through the qualified launchpad command; target tool hooks do not supply a
+prompt-time lifecycle dispatch. A registered target runs in its target
+worktree and may write its paired launchpad records through the recorded grant.
+The driver uses the router's native host; `node scripts/drive.mjs WO-NNN --host
+claude` or `--host codex` selects it explicitly and re-entry keeps that selection.
+Codex phases use fresh isolated CLI sessions and their generated role text.
+Their tool environment places the launcher's Node directory first in PATH;
+setting only the native process environment did not preserve that runtime
+inside nested tool shells. Receipts report the launcher-selected version.
+Claude driven attempts also use fresh print sessions without persistence: the
+nested host comparison did not retain a resumable session after a successful
+exit. An interrupted phase receives the same phrase and canonical briefing in
+a fresh session. Codex
+role and writer entry are explicit, while tool boundaries and per-spawner
+budgets remain role text where hooks are absent. Its native collaboration
+stream contributes only the observed minimum. A configured dollar limit
+refuses Codex launch because that transport supplies no dollar counter.
+The Codex invocation enables outbound command network access for native workers
+and phase research; its filesystem sandbox and automatic approval review remain
+enabled. The Codex router requests one-invocation outside-sandbox approval for
+the literal driver command. Phase workers likewise request normal host approval
+for authorized Git-metadata writes, including lifecycle completion's
+intent-to-add check. Workspace-write protects the Git object database even
+inside an admitted repository. Host denial stops the request; no persistent
+allow rule is installed. Phase sessions also enable live web search. The router keeps web search
+disabled and its status-only duty. This is a coarse host network allowance, not
+an enforced read-only network filter; phase authority still limits effects.
+Claude invocations allow the documented native API/OAuth, npm registry, Context7
+and public GitHub domains through their inherited sandbox, retaining host deny
+rules. Claude's generated router skill requests the ordinary host permission
+flow for the single literal driver command using Bash's
+`dangerouslyDisableSandbox` parameter. This runs the admitted launcher outside
+the enclosing Bash sandbox, so each native phase can initialize its own host
+sandbox. The same skill governs operator sessions and the live fixture; no
+fixture-only command exclusion is installed. Host denial stops the router;
+the observed PermissionDenied hook refuses further tools until a new operator
+drive phrase, and native transport terminates a failed launcher immediately.
+No setting is changed to override a denial. Phase sessions expose
+WebSearch and WebFetch. A native proxy-tunnel
+refusal stops the drive before another worker is launched; it is a connection
+boundary, not a failed verification.
+
+Workers can use the optional Context7 CLI, public GitHub reads and task-relevant
+public web sources without inheriting unrelated MCP connections. Missing tools,
+quotas and host restrictions must be reported as observed limits. Installed tools
+and launch arguments alone do not establish successful retrieval. The isolated
+live fixture requires actual lookup results and citations alongside its target
+and document gates. Phase commands use an npm cache under the order's ignored
+control state, and Node honors the host-supplied proxy. A bounded curl adapter
+can search and retrieve public GitHub repositories without user configuration or
+credentials when gh is unavailable; API rate limits still apply. These per-invocation choices change no user configuration,
+grant no new publication or account-setting authority, and select no new Support.
+A reusable research Support remains a possible later composition of these
+capabilities (product 03's optional environment adapters).
+
+The route stops for the operator merge, an operator finding, an off-ramp or typed
+correction, analysis or override, refused dispatch, three verification failures,
+two final-review failures, two ended incomplete attempts in one phase, or an
+exhausted budget. A stop's facts describe the log the drive last saw, so a
+transition recorded since, by hand or otherwise, clears a stale refusal or incomplete
+count; a repair bound limits only the repairs still to come. Type the same phrase to
+re-enter: the phase receives its same briefing in a fresh session.
+Release close requires the launchpad merge and, for a target, the target branch's
+ancestry in its registered base branch on the remote, as close itself judges it.
+Status reads local refs; a drive of a closed order fetches both bases first, because a
+hosted merge reaches neither clone by itself and a failed fetch reads as not yet merged. A merge also needs the order's passing final review in its own control record on the base, as close asks of that base, since a branch with no commits of its own is trivially an ancestor. A target merge counts once its branch has reached the remote base, and the drive also requires that branch to have left its recorded base.
+On Codex CLI 0.166.0, which launches under automatic review, `release close WO-NNN --publish` was declined in every qualification run with no reason reported; the worker ends with `native-permission-refused`, the drive stops with `dispatch-refused` rather than retrying, and the cause is unknown
+([native qualification](../evidence/WO-192/native-qualification.md)).
+Per-spawner `subagentCap` and the shared `drivenSessionCeiling` bound observed
+admissions. Token and dollar limits remain unset by default; unavailable coverage
+is reported, never counted as savings. The optional instance budget
+`drivenPhaseTimeoutMs` sets a native phase attempt's duration in milliseconds
+(a positive integer up to 2,147,483,647). The role's dispatch wall clock also
+bounds every attempt, because a driven worker runs outside the gate, wrapper and
+journal that bound a role session; an accepted overrun moves it as it does there.
+A role with neither limit has no watchdog: required gates retain their own
+deadlines, and the owner can still cancel the run. A caller's explicit deadline can shorten this budget,
+never lengthen it; the run records both the configured and applied limits.
+Qualification fixtures have a separate finite episode deadline. When configured, `dispatches.router.costUsd`
+bounds accumulated phase-worker spending across attempts and re-entry; the run
+reports that scope explicitly. It excludes the outer router's own model spending,
+which is reported separately when available, so it is not a ceiling on the combined
+cost. An unknown worker cost prevents the next launch. A configured router token
+limit refuses dispatch while its counter is unavailable. Initial drives remain attended. Sources:
+[WO-192 decisions](../evidence/WO-192/decisions.md) and
+[host probe](../evidence/WO-192/host-probe.json).
 
 The resident's `console-commands-v1` loopback surface serves these same terminal actions, including the release-close publish helper; the terminal permission hook's classifier and decider judge each one under the resident's compiled envelope and the console refuses what they deny or cannot classify, its terminal parser and lifecycle guards still apply, and console-actor receipts record it (product 04 §Console parity contract v1).
 
@@ -2455,7 +2551,10 @@ planning pass, item 7). Record the affected surfaces
 and evidence in the existing work-order outcome or breakout receipt; do not
 create a new ceremony or rewrite unrelated historical artifacts. The front
 page, `README.md`, is edited only by an order whose leading header carries
-`**Front page:** README.md` on main, within the “What runs today” line budget
+`**Front page:** README.md` on main, or whose current order bytes and recorded
+operator decision carry that declaration through a validated execution
+amendment. Amendment authority admits page prose only; it cannot change the
+control record. Both routes retain the “What runs today” line budget
 that `docs/control/front-page.json` records on main: the section is named once
 among the headings, the page holds no raw HTML outside its marker lines and no
 receipt outside its generated blocks, and each counted line is one whole,
@@ -3325,9 +3424,11 @@ and generated evidence, including fixtures, manifests and installed guidance.
   bounded probe or worker launch past the dispatch bound without recorded
   contextual operator authorization. Root kinds are system
   temporary, DotLn session scratch, the host-printed scratchpad, main's ignored
-  intake, an operator-named absolute root and the registered target worktree;
-  the manifest names declaration and authority-grant sources. The six default
-  roles share the temporary, session-scratch and host-scratchpad grants.
+  intake, an operator-named absolute root, the order's recorded worktrees and
+  the registered target worktree; the manifest names declaration and
+  authority-grant sources. The six default roles that write share the temporary,
+  session-scratch, host-scratchpad and order-worktree grants; the router writes
+  nothing and holds none.
   The executor additionally declares the target-worktree grant, resolved from
   its current order's unique local registration and physical launchpad binding
   while the order is active or repairing.
@@ -3757,8 +3858,12 @@ bounded probe wrapper. If it fails and a repair changes code, finish the repair
 and its write-backs, format, then restart all three existing reviewers on the
 changed code, resolve their findings
 and wait for all three to finish before starting a fresh complete run.
-The complete run schedules first the suites whose
-latest execution failed, then those whose inputs changed after the newest
+Synthetic lifecycle tests belong to the product
+preflight: `resume --fixtures-only` must pass before later product suites,
+including with `--keep-going`. The separate `resume-docs` selection retains
+the two legacy comparisons that read current control and evidence records;
+those reads remain in the fresh document gate. The complete run schedules
+first the suites whose latest execution failed, then those whose inputs changed after the newest
 gate row, then the suites this branch changed, so a stale assertion fails
 within minutes rather than at the end of the run. A complete run composes
 nothing from `--only` rows: a focused pass of every Preflight suite followed
@@ -3789,7 +3894,9 @@ says what was tested, so under serial orders an integration that brought no
 change costs no second run. Only when that identity has no passing complete
 row does it start `npm test -- --review` in the background, never under the
 bounded probe wrapper (which applies a six-hour outer bound to a complete
-selection instead of its 900-second probe deadline),
+selection instead of its default 900-second probe deadline; an explicitly
+bounded live lifecycle probe can set `--timeout-seconds` from 1 to 21600
+without changing memory protection or the command's own deadlines),
 awaiting it with `node scripts/harness.mjs evidence --wait`. The FINAL
 report, PR.md and RELEASE-NOTES.md are written after it passes, since a
 review gate admits no record writes while it runs and a judgment is written
@@ -3936,7 +4043,9 @@ Codex `gpt-6.1-sol` at `max` or Claude Code `claude-opus-5-5` at `xhigh`.
 Claude workers use the generated `.claude/agents/dotln-worker.md` type:
 `model: claude-opus-5-5` and `effort: xhigh`. Launch Agent with
 `subagent_type: dotln-worker` and no per-call model override; its definition's
-effort overrides the root's effort. The host's [subagent documentation](https://code.claude.com/docs/en/sub-agents)
+effort overrides the root's effort. The generated lifecycle definitions
+(`dotln-executor`, `dotln-verifier`, `dotln-reviewer`, `dotln-release-close`)
+carry the same pins for the phase workers a router spawns. The host's [subagent documentation](https://code.claude.com/docs/en/sub-agents)
 documents both fields, per-call model precedence and `/tasks` model/effort
 readback (checked 2026-10-05). Codex workers use `spawn_agent` with
 `fork_turns: none`, `model: gpt-6.1-sol`, `reasoning_effort: max`; use the same

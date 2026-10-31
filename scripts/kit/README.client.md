@@ -508,6 +508,7 @@ reason, including with `--list`, and records no gate result.
 | `reader-fixtures` | core historical publication examples and their recorded comparison |
 | `release` | core TypeScript and release records |
 | `resume` | core legacy lifecycle and timing observations WO-030 |
+| `resume-docs` | core legacy lifecycle and timing observations WO-030 |
 | `runner-fixtures` | package sources, core build inventory and license pins |
 | `skeleton` | skeleton package source audits |
 | `skeleton-docs` | skeleton recorded product evidence and documentation |
@@ -863,8 +864,10 @@ and repair. Each consumer derives max(4 times its own completed phase median,
 8 h 0 min); without local history the bound is 8 h 0 min. History is cut off at
 the dispatch's original start. No source-repository timing sample is exported.
 Explicit numeric overrides and null retain their meanings; the complete-run
-default is three. Planner, refuter and release close stay unset. This instance
-owns its budgets.
+default is three. Planner, refuter, release close and router stay unset. A drive
+also reads `drivenSessionCeiling`, four times `subagentCap` by default, and the
+optional `drivenPhaseTimeoutMs`; null disables either. This instance owns its
+budgets.
 The gate host task, bounded wrapper and lifecycle redispatch refuse exhausted
 bounds. Claude's tool hook also refuses costly starts and worker launches,
 and its Stop hook prints standing. `node scripts/harness.mjs usage <session>`

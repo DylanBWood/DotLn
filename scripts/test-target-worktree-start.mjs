@@ -228,7 +228,7 @@ test("target gate runs selected commands with failures, deadlines and tree mutat
     assert.deepEqual(readFileSync(checksPath(f.orderRoot)), recorded);
   }));
 
-const printedCommands = [
+const postReviewCommands = [
   "scripts/resume.mjs target-records",
   "scripts/worktree.mjs publish",
   "scripts/worktree.mjs publish",
@@ -414,9 +414,14 @@ test("target briefings name a missing repository throughout dispatch and print l
       "scripts/resume.mjs waive",
       "scripts/refute-plan.mjs amend-order",
       documentGate,
-      ...printedCommands,
+      "scripts/worktree.mjs integrate",
+      ...postReviewCommands,
     ]);
-    const [, , gate, records, ...publications] = printed;
+    const [, , gate, , records, ...publications] = printed;
+    assert.match(
+      briefing,
+      /scripts\/worktree\.mjs' integrate WO-999, directly from this target root/u,
+    );
     // Run from the target worktree, each reaches the launchpad's own script:
     // the document gate reports what it reports from the launchpad itself,
     // the records action refuses the phase, and both publications refuse the
@@ -618,7 +623,7 @@ test("WO-210 target final review binds clean commits through both launchpad rout
       assert.match(output, /committed before this result/u);
       assert.deepEqual(
         launchpadCommands(f, output).map(({ command }) => command),
-        printedCommands,
+        postReviewCommands,
       );
       assert.match(output, /target-records <actor flags>, then commit/u);
       assert.match(output, /publish WO-999 --target-worktree --branch/u);

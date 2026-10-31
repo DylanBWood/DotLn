@@ -3,6 +3,12 @@ set -euo pipefail
 unset DOTLN_ACCOUNT_LABEL # Fixtures declare their own labels.
 unset CLAUDE_EFFORT # The host's selected effort is declared per fixture (WO-157 item 11).
 unset CODEX_THREAD_ID COPILOT_AGENT_SESSION_ID # Fixtures declare host identity explicitly.
+selection="${1:---all}"
+case "$selection" in
+  --all|--fixtures-only|--documents-only) ;;
+  *) printf 'usage: test-resume.sh [--fixtures-only|--documents-only]\n' >&2; exit 1 ;;
+esac
+test "$#" -le 1 || { printf 'too many resume fixture arguments\n' >&2; exit 1; }
 
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
 source "$script_dir/test-temp-root.sh"
@@ -12,6 +18,11 @@ test_root_prefix="dotln-resume-test"
 create_test_temp_root "$tmp_base" "$test_root_prefix"
 test_root="$test_temp_root_result"
 install_test_temp_root_traps "$tmp_base" "$test_root" "$test_root_prefix"
+if [[ "$selection" == --documents-only ]]; then
+  node "$script_dir/test-control-segments.mjs" "$test_root" "$selection"
+  printf 'resume document comparisons passed\n'
+  exit 0
+fi
 node "$script_dir/test-dependency-resume.mjs" "$test_root"
 node --test "$script_dir/test-retained-records.mjs"
 node "$script_dir/test-off-ramps.mjs" "$test_root"
@@ -66,6 +77,7 @@ const expected = [
   "workOrder",
   "workOrderPath",
   "phase",
+  "route",
   "latestVerification",
   "verificationPath",
   "latestVerdict",
@@ -215,7 +227,7 @@ node "$umbrella_repo/scripts/resume.mjs" activate WO-903 docs/work-orders/WO-903
 test -s "$umbrella_repo/docs/control/orders/WO-903.jsonl"
 activate_warning="$(node "$fixture_repo/scripts/resume.mjs" activate WO-099 docs/work-orders/WO-099-fixture.md 2>&1 >/dev/null)"
 assert_status_read_only
-assert_status_json '{"workOrder":"WO-099","workOrderPath":"docs/work-orders/WO-099-fixture.md","phase":"active","latestVerification":null,"verificationPath":null,"latestVerdict":null,"finalReview":null,"finalReviewPath":null,"latestAttestation":null,"effortDrift":[],"latestCheckpoint":{"unavailable":true},"legalNextActions":["next","implementation-ready"],"legalOffRamps":["accept-overrun","withdraw","correct","override-record"],"boundAcceptances":[],"waivedCriteria":[],"unmetCriteria":[],"withdrawal":null,"corrections":[],"overrideRecords":[]}'
+assert_status_json '{"workOrder":"WO-099","workOrderPath":"docs/work-orders/WO-099-fixture.md","phase":"active","route":{"action":null,"role":null,"phrase":null,"stop":{"reason":"dispatch-refused","next":"The selected order has no registered worktree; restore its worktree before driving. Main cannot select its phase implicitly."},"eventCount":1},"latestVerification":null,"verificationPath":null,"latestVerdict":null,"finalReview":null,"finalReviewPath":null,"latestAttestation":null,"effortDrift":[],"latestCheckpoint":{"unavailable":true},"legalNextActions":["next","implementation-ready"],"legalOffRamps":["accept-overrun","withdraw","correct","override-record"],"boundAcceptances":[],"waivedCriteria":[],"unmetCriteria":[],"withdrawal":null,"corrections":[],"overrideRecords":[]}'
 tail -n 1 "$active_log" | grep -Fq '"effortDeclarationValidated":true'
 grep -q 'warning: could not create recovery checkpoint.*not a valid object name HEAD' <<<"$activate_warning"
 grep -Fq 'Do not repeat this transition after it records' <<<"$activate_warning"
@@ -482,7 +494,7 @@ final_pass_output="$(node "$fixture_repo/scripts/resume.mjs" final-review-result
   --effort unknown \
   --source operator-attested 2>/dev/null)"
 assert_status_read_only
-assert_status_json '{"workOrder":"WO-099","workOrderPath":"docs/work-orders/WO-099-fixture.md","phase":"closed","latestVerification":"VER-004","verificationPath":"docs/verifications/WO-099/VER-004.md","latestVerdict":"pass","finalReview":"FINAL-003","finalReviewPath":"docs/final-reviews/WO-099/FINAL-003.md","latestAttestation":{"harness":"human","harnessVersion":"not-applicable","model":"human","effort":"unknown","source":"operator-attested"},"effortDrift":[{"effort":"xhigh"},{"effort":"custom-selector"},{"effort":"high"},{"effort":"custom-selector-2"},{"effort":"unknown"}],"latestCheckpoint":{"unavailable":true},"legalNextActions":["release-close","next","activate"],"legalOffRamps":["correct","override-record"],"boundAcceptances":[],"waivedCriteria":[],"unmetCriteria":[],"withdrawal":null,"corrections":[],"overrideRecords":[]}'
+assert_status_json '{"workOrder":"WO-099","workOrderPath":"docs/work-orders/WO-099-fixture.md","phase":"closed","route":{"action":null,"role":null,"phrase":null,"stop":{"reason":"awaiting-merge","next":"The operator merges the reviewed pull request(s), then types the same drive phrase again."},"eventCount":20},"latestVerification":"VER-004","verificationPath":"docs/verifications/WO-099/VER-004.md","latestVerdict":"pass","finalReview":"FINAL-003","finalReviewPath":"docs/final-reviews/WO-099/FINAL-003.md","latestAttestation":{"harness":"human","harnessVersion":"not-applicable","model":"human","effort":"unknown","source":"operator-attested"},"effortDrift":[{"effort":"xhigh"},{"effort":"custom-selector"},{"effort":"high"},{"effort":"custom-selector-2"},{"effort":"unknown"}],"latestCheckpoint":{"unavailable":true},"legalNextActions":["release-close","next","activate"],"legalOffRamps":["correct","override-record"],"boundAcceptances":[],"waivedCriteria":[],"unmetCriteria":[],"withdrawal":null,"corrections":[],"overrideRecords":[]}'
 grep -Fq 'npm run worktree -- publish WO-099 --title "<title>" --body-file <contained-reviewed-body-path>' <<<"$final_pass_output"
 grep -Fq 'Latest attestation: harness human; version not-applicable; model human; effort unknown; source operator-attested' "$fixture_repo/docs/control/current.md"
 if grep -Fq 'raw: unknown' "$fixture_repo/docs/control/current.md"; then printf 'error: canonical unknown was duplicated as a raw label\n' >&2; exit 1; fi
@@ -524,6 +536,16 @@ assert.deepStrictEqual(status, {
   workOrder: "WO-099",
   workOrderPath: "docs/work-orders/WO-099-fixture.md",
   phase: "closed",
+  route: {
+    action: null,
+    role: null,
+    phrase: null,
+    stop: {
+      reason: "awaiting-merge",
+      next: "The operator merges the reviewed pull request(s), then types the same drive phrase again.",
+    },
+    eventCount: 20,
+  },
   latestVerification: "VER-004",
   verificationPath: "docs/verifications/WO-099/VER-004.md",
   latestVerdict: "pass",
@@ -1066,6 +1088,6 @@ done
 git -C "$usage_repo" check-ignore docs/control/local/account-labels.md
 printf 'usage cmp: legacy and every original order segment unchanged; local mapping ignored\n'
 
-node "$script_dir/test-control-segments.mjs" "$test_root"
+node "$script_dir/test-control-segments.mjs" "$test_root" "$selection"
 printf 'beacons: every lifecycle transition matches phase/verdict/effort/time; status and next preserve inode/ctime/size/mtime\n'
 printf 'resume tests passed\n'

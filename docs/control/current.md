@@ -1,5 +1,22 @@
 # Current control state
 
+## WO-192
+
+- Work order: WO-192
+- Work-order path: docs/work-orders/WO-192-router-drives-an-order.md
+- Phase: active
+- Latest verification: none
+- Verification path: none
+- Latest verdict: none
+- Final review: none
+- Final-review path: none
+- Latest attestation: none
+- Effort drift: none
+- Latest recordedAt: 2026-10-25T20:40:11.731Z
+- Latest checkpoint: 46d2ea139646281f0873f6593ebfa6819b4d9f24 (restore: `git checkout refs/dotln/checkpoint/WO-192/1 -- .`)
+- Legal next actions: next, implementation-ready
+- Legal off-ramps: accept-overrun, withdraw, correct, override-record
+
 ## WO-239
 
 - Work order: WO-239

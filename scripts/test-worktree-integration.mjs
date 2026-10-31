@@ -36,6 +36,7 @@ import {
   integrationTestCommand,
   releaseLine,
 } from "./lib/worktree-integration.mjs";
+import { recordTargetWorktree } from "./lib/target-worktrees.mjs";
 
 // Per-case durations from the whole-suite run alone (WO-197), rounded up to
 // 0.1 s; each case checks twice its own measurement after fixture cleanup.
@@ -345,6 +346,16 @@ const generatedConflicts = (root, name) => {
       ),
     );
 };
+// Both sides edit one line, so the integration leaves the file conflicted.
+const conflictBudget = (root, name) =>
+  put(
+    root,
+    "docs/control/budgets.json",
+    text(root, "docs/control/budgets.json").replace(
+      /"unsetPolicy": "[^"]*"/,
+      `"unsetPolicy": "${name} policy"`,
+    ),
+  );
 const event = (workOrderId, type, extra = {}) =>
   JSON.stringify({
     schemaVersion: 1,
@@ -564,6 +575,7 @@ function fixture(
     generators = "real",
     kit = false,
     editions = true,
+    budgetConflict = false,
   } = {},
 ) {
   const temporary = realpathSync(
@@ -844,6 +856,7 @@ function fixture(
   put(main, "authored-fixture.md", "upstream intent\n");
   claim(main, "v9000.0.2");
   generatedConflicts(main, "upstream");
+  if (budgetConflict) conflictBudget(main, "upstream");
   put(main, "docs/lineage/decisions-index.md", "upstream projection\n");
   put(
     main,
@@ -881,6 +894,7 @@ function fixture(
   if (!reviewed) {
     claim(subject, "v9000.0.1");
     generatedConflicts(subject, "local");
+    if (budgetConflict) conflictBudget(subject, "local");
     if (authored) put(subject, "authored-fixture.md", "local intent\n");
     put(subject, "docs/lineage/decisions-index.md", "local projection\n");
     put(
@@ -980,6 +994,65 @@ test("instance integration verifies its installed runtime and needs no undeclare
     existsSync(join(f.subject, "docs/publication/software-engineer-toc.md")),
     false,
   );
+});
+
+test("target-cwd integration selects only its paired launchpad and preserves target bytes", (t) => {
+  const f = fixture(t, {
+    reviewed: true,
+    generators: "focused",
+    authored: false,
+    kit: true,
+    editions: false,
+  });
+  const target = join(f.temporary, "registered-target");
+  mkdirSync(target);
+  runGit(target, ["init", "-q", "-b", "wo-998"], fixtureGitOptions);
+  put(target, "source.txt", "target bytes stay unchanged\n");
+  runGit(target, ["add", "source.txt"], fixtureGitOptions);
+  runGit(target, ["commit", "-qm", "test: target base"], fixtureGitOptions);
+  recordTargetWorktree(f.subject, {
+    target,
+    launchpad: f.subject,
+    workOrderId: "WO-998",
+    repositoryId: "fixture",
+    branch: "wo-998",
+  });
+  const targetBefore = seedState(target);
+  const launchpadBefore = seedState(f.subject);
+  const invoke = (cwd, workOrder = "WO-998", selected = "") =>
+    spawnSync(
+      process.execPath,
+      [join(f.subject, "scripts/worktree.mjs"), "integrate", workOrder],
+      {
+        cwd,
+        encoding: "utf8",
+        env: {
+          ...process.env,
+          DOTLN_LAUNCHPAD: selected,
+          DOTLN_ACCOUNT_LABEL: "",
+        },
+      },
+    );
+  const wrongOrder = invoke(target, "WO-999");
+  assert.equal(wrongOrder.status, 1);
+  assert.match(wrongOrder.stderr, /selected order's registered target root/u);
+  mkdirSync(join(target, "nested"));
+  const nested = invoke(join(target, "nested"));
+  assert.equal(nested.status, 1);
+  assert.match(nested.stderr, /selected order's registered target root/u);
+  assert.deepEqual(seedState(f.subject), launchpadBefore);
+  const alias = join(f.temporary, "target-alias");
+  symlinkSync(target, alias);
+  const result = invoke(alias);
+  assert.equal(result.status, 0, result.stdout + result.stderr);
+  const receipt = JSON.parse(
+    text(f.subject, "docs/control/local/integration.json"),
+  );
+  assert.equal(receipt.complete, true);
+  assert.equal(receipt.workOrder, "WO-998");
+  assert.ok(!existsSync(join(target, "docs/control/local/integration.json")));
+  assert.deepEqual(seedState(target), targetBefore);
+  assert.equal(text(target, "source.txt"), "target bytes stay unchanged\n");
 });
 
 test("instance integration retains a pending refusal for a partially declared publication edition", (t) => {
@@ -1984,6 +2057,39 @@ test("WO-169 a pass whose generator fails keeps its checks and names the pending
   assert.equal(
     JSON.parse(text(f.subject, "docs/control/local/integration.json")).complete,
     false,
+  );
+});
+
+test("a conflicted budget reaches the actor as an authored conflict and the rest of the integration proceeds", (t) => {
+  const f = fixture(t, {
+    authored: false,
+    generators: "focused",
+    budgetConflict: true,
+  });
+  const path = "docs/control/budgets.json";
+  // No generator runs while the conflict remains.
+  const first = f.invokeStages([], []);
+  assert.equal(first.status, 1, first.stdout + first.stderr);
+  assert.match(
+    first.stdout,
+    /Authored conflicts: 'docs\/control\/budgets\.json'/,
+  );
+  // Resolving the masked edition needs scratch space, so it must not wait.
+  assert.doesNotMatch(
+    text(f.subject, "docs/publication/software-engineer-toc.md"),
+    /^<{7} /m,
+  );
+  put(
+    f.subject,
+    path,
+    text(f.subject, path).replace(/^<{7} .*\n(.*\n)={7}\n.*\n>{7} .*\n/m, "$1"),
+  );
+  runGit(f.subject, ["add", "--", path], fixtureGitOptions);
+  const continued = f.invoke("--continue");
+  assert.equal(continued.status, 0, continued.stdout + continued.stderr);
+  assert.equal(
+    JSON.parse(text(f.subject, path)).unsetPolicy,
+    "upstream policy",
   );
 });
 

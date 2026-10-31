@@ -6,6 +6,14 @@ until it's muscle memory; edit it when reality disagrees.
 
 ## Who does what
 
+`drive: WO-NNN` uses a router that reads canonical status and dispatches each
+phase in a fresh session at the recorded worktree. It does no implementation or
+review and forwards no worker narrative. Independence means each verifier and
+reviewer reads its own authorized evidence without the preceding conversation;
+the router's continued presence does not make those judgments one actor's.
+The operator still merges, then types the same phrase for release close. See
+[the dispatch contract](product/07-execution-guide.md#operator-resume-phrases--how-you-get-dispatched).
+
 | Actor                           | Effort source                                                                                                 | Use for                                                                                                         | Don't use for                                                                                                      |
 | ------------------------------- | ------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
 | **Fable 5**                     | planning assignment; the work order's `reviewer` declaration when closing                                     | Plan and refine work orders; perform the end-of-work-order blueprint/lineage check                              | Implementation or acceptance verification                                                                          |
@@ -16,8 +24,8 @@ until it's muscle memory; edit it when reality disagrees.
 | **Copilot CLI** (operator-selected model) | actual CLI-selected readback or operator attestation, separately from harness identity | Executor, fixer and fresh verifier qualified on CLI 1.0.86 / Claude Sonnet 5 / xhigh | Final review and release close: **untested**; keep those on a qualified harness |
 
 Copilot entry is bare `copilot` from the worktree root, with no required launch
-arguments. Its six role skills are the same generated bodies used by the other
-harnesses. The [dated control table](AI-HARNESS-SECURITY.md#copilot-control-table)
+arguments. Its seven role skills are the same generated bodies used by the other
+harnesses; the router among them is untested under Copilot. The [dated control table](AI-HARNESS-SECURITY.md#copilot-control-table)
 distinguishes observed hook guarantees from advisory and unsupported controls, and the
 [qualification record](evidence/WO-146/qualification.md) records the actual
 operator episodes. Cross-session memory can carry implementer context into a

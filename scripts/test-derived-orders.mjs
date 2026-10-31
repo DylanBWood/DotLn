@@ -880,3 +880,17 @@ test("WO-157 a corrupt allocation authority refuses only its own order", async (
       ),
     );
   }));
+
+test("criterion ledger excludes an explicit dated retirement while preserving active numbering", () => {
+  const criteria = declaredCriteria(`**Acceptance criteria (all required)**
+
+1. The struck input remains a required test.
+2. Struck by the 2026-10-21 pass and not judged: retained provenance.
+3. Active final gate.
+4. Struck by the 2026-10-21 pass: no explicit retirement from judgment.
+`);
+  assert.deepEqual(
+    criteria.map((row) => row.id),
+    ["1", "3", "4"],
+  );
+});

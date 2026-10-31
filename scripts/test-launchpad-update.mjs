@@ -1002,6 +1002,34 @@ test("export update preserves ownership, validates actions and keeps the exporte
   );
 
   await t.test(
+    "a pre-router budget seed survives update and still runs meta",
+    () => {
+      const target = instance("pre-router-budget");
+      const budgetFile = join(target, "docs/control/budgets.json");
+      const budgets = JSON.parse(readFileSync(budgetFile, "utf8"));
+      delete budgets.dispatches.router;
+      delete budgets.limits.coldStartBytes.router;
+      delete budgets.drivenSessionCeiling;
+      delete budgets.drivenPhaseTimeoutMs;
+      const previous = JSON.stringify(budgets, null, 2) + "\n";
+      writeFileSync(budgetFile, previous);
+      ok(runUpdate(target), "pre-router update");
+      assert.equal(readFileSync(budgetFile, "utf8"), previous);
+      ok(
+        run(process.execPath, ["scripts/harness.mjs", "emit"], {
+          cwd: target,
+        }),
+        "updated harness",
+      );
+      ok(
+        run(process.execPath, ["scripts/meta.mjs"], { cwd: target }),
+        "pre-router meta",
+      );
+      assert.equal(readFileSync(budgetFile, "utf8"), previous);
+    },
+  );
+
+  await t.test(
     "unmodified files update; edited and dropped edits keep prior hashes on repeated updates",
     () => {
       const target = instance("ownership");

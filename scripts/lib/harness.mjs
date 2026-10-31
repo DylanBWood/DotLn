@@ -1299,6 +1299,7 @@ function emitTargetUnlocked(context, options) {
     runtimeFiles: runtime.runtimeFiles,
     compilerPackageVersion: bundle.manifest.compilerPackageVersion,
     grants: bundle.manifest.grants,
+    outsideWriteGrants: bundle.manifest.outsideWriteGrants,
     authorityGrantRegistryHash: bundle.manifest.authorityGrantRegistryHash,
     envelope: program.loadout.authorityEnvelope,
   };

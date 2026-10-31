@@ -15,6 +15,7 @@ const releaseCloseCommand =
   ((main, order, mode = "--publish") =>
     `${shellQuote(process.execPath)} ${shellQuote(join(main, "scripts/release.mjs"))} close ${order} ${mode}`);
 import { materialCloseCommand } from "./lib/worktree-material.mjs";
+import { initializeSubagentCounter } from "../packages/skeleton/dist/src/subagent-budget.js";
 import { write, json, sha256Hex as sha256 } from "./lib/helpers.mjs";
 import "./test-fixture-temporary.mjs";
 import "./test-temporary-roots.mjs";
@@ -3276,11 +3277,14 @@ test("WO-146 three contributors share unique outputs while workers remain explic
     assert.equal(profile.skills.format, "agent-skills");
     delete profile.runtime.skeletonVersion;
     delete profile.skills.format;
+    profile.tools = { ...profile.tools };
+    assert.equal(profile.tools.SubagentHandback, "read");
+    delete profile.tools.SubagentHandback;
   }
   assert.equal(
     createHash("sha256").update(JSON.stringify(workers)).digest("hex"),
     "9f41bb7cb0176f0b8e73bd9fe760ef628259e69b4ebdbb28fa0a621bd4dba6fb",
-    "pre-profile worker bytes, excluding release labels and the explicitly asserted native skill format",
+    "pre-profile worker bytes, excluding release labels, native skill format and the separately asserted child return tool",
   );
   const installation = harnessInstallation();
   assert.equal(
@@ -3588,7 +3592,11 @@ test("WO-139 cap-module-only changes refresh the runtime and snapshot damage is 
       readFileSync(join(root, previous.snapshot, modulePath), "utf8"),
       original,
     );
-    assert.equal(checkHarness(root, options).files, 35);
+    // The check counts every emitted file and the manifest that lists them.
+    assert.equal(
+      checkHarness(root, options).files,
+      harnessInstallation(options).files.length + 1,
+    );
     assert.match(
       invoke(root, "finish", input(root, "Stop")).systemMessage,
       /^Subagents: 0\/21/,
@@ -5976,6 +5984,10 @@ test("WO-187 harness check covers the spawned-worker model and effort pins", () 
     for (const [name, model] of [
       ["dotln-worker", "claude-opus-5-5"],
       ["dotln-worker-fable", "claude-fable-5-1"],
+      ...["executor", "verifier", "reviewer", "release-close"].map((role) => [
+        `dotln-${role}`,
+        "claude-opus-5-5",
+      ]),
     ]) {
       const agent = join(root, `.claude/agents/${name}.md`);
       const original = readFileSync(agent, "utf8");
@@ -5983,16 +5995,36 @@ test("WO-187 harness check covers the spawned-worker model and effort pins", () 
       for (const [before, after] of [
         [`model: ${model}`, "model: inherit"],
         ["effort: xhigh", "effort: low"],
+        ...(name === "dotln-worker" || name === "dotln-worker-fable"
+          ? []
+          : [[`skills: ["${name}"]`, 'skills: ["wrong-skill"]']]),
       ]) {
         writeFileSync(agent, original.replace(before, after));
         assert.throws(
           () => checkHarness(root),
-          /harness drift: \.claude\/agents\/dotln-worker(?:-fable)?\.md/,
+          /harness drift: \.claude\/agents\/dotln-[a-z-]+\.md/,
         );
         writeFileSync(agent, original);
       }
     }
     checkHarness(root);
+    const installed = harnessInstallation();
+    for (const role of [
+      "executor",
+      "verifier",
+      "reviewer",
+      "release-close",
+      "planner",
+      "refuter",
+    ]) {
+      const text = installed.files.find(
+        (file) => file.path === `.claude/skills/dotln-${role}/SKILL.md`,
+      ).contents;
+      assert.ok(
+        text.includes("dotln-worker` (claude-opus-5-5, xhigh)"),
+        `${role} prose agrees with the generated general worker pin`,
+      );
+    }
   } finally {
     removeFixture(root, { recursive: true, force: true });
   }
@@ -7372,7 +7404,7 @@ test("WO-132 generated hooks delegate classification, attribution, scope and run
       }
       return result;
     };
-    for (const name of ["SubagentHandback", "SendMessage", "SomeNewTool"])
+    for (const name of ["SendMessage", "SomeNewTool"])
       delegated(
         "permissions",
         input(root, "PreToolUse", { tool_name: name, tool_input: {} }),
@@ -9633,6 +9665,68 @@ test("WO-144 generated hooks apply active-role grants to physical writes and rem
     );
     assert.equal(allowed(stale), true);
     assert.match(stale.systemMessage, /pins-differ/);
+  } finally {
+    removeFixture(root, { recursive: true });
+    removeFixture(outside, { recursive: true });
+  }
+});
+
+test("order roots that cannot be resolved withhold only their own grant and leave the outside-write guard on", () => {
+  const root = fixture();
+  const outside = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-order-roots-")),
+  );
+  const target = join(outside, "target");
+  const temporary = join(outside, "temporary");
+  mkdirSync(target);
+  mkdirSync(temporary);
+  const environment = { TMPDIR: temporary, TEMP: temporary, TMP: temporary };
+  const request = (path) =>
+    input(root, "PreToolUse", {
+      session_id: "order-roots",
+      tool_name: "Write",
+      tool_input: { file_path: path },
+    });
+  const call = (path) =>
+    invoke(root, "permissions", request(path), false, environment);
+  try {
+    write(
+      root,
+      "dotln.config.json",
+      json({ version: 1, roots: { control: "records/control" } }),
+    );
+    beginHarnessSession(root, "order-roots", "executor");
+    // The order-root lookup refuses a registry row naming another branch.
+    write(
+      root,
+      "records/control/local/target-worktrees.json",
+      json({
+        [target]: {
+          workOrderId: "WO-999",
+          launchpad: root,
+          target,
+          branch: "wo-998",
+        },
+      }),
+    );
+    assert.equal(allowed(call(join(temporary, "work.txt"))), true);
+    assert.equal(allowed(call(join(target, "new.txt"))), true);
+    const refused = call(join(outside, "elsewhere.txt"));
+    assert.equal(allowed(refused), false, JSON.stringify(refused));
+    assert.match(
+      refused.hookSpecificOutput.permissionDecisionReason,
+      /Granted root order-worktree grants nothing: recorded order worktree roots unavailable\./,
+    );
+    assert.deepEqual(
+      wo178Rows(root, "order-roots")
+        .filter((row) => row.outsideWrite)
+        .map((row) => [row.outsideWrite.status, row.outsideWrite.kind]),
+      [
+        ["granted", "system-temp"],
+        ["granted", "target-worktree"],
+        ["refused", undefined],
+      ],
+    );
   } finally {
     removeFixture(root, { recursive: true });
     removeFixture(outside, { recursive: true });
@@ -16473,5 +16567,525 @@ test("quality pass guidance is read from each prompt's own first content line: n
     assert.equal(readFileSync(events, "utf8"), before);
   } finally {
     rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("router dispatch is metadata only and its exact-phrase guard does not apply to a worker's spawns", () => {
+  const root = fixture();
+  try {
+    const log = join(root, "docs/control/orders/WO-999.jsonl");
+    const before = readFileSync(log);
+    const selected = invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", { prompt: "drive: WO-999" }),
+    );
+    assert.match(JSON.stringify(selected), /resolved role router/);
+    // A router's usage belongs to the order its phrase names, through the same
+    // path its usage command takes.
+    assert.doesNotThrow(() => measureHarnessUsage(root, "synthetic-session"));
+    beginHarnessSession(root, "codex-router", "router", false, "WO-999");
+    assert.doesNotThrow(() => measureHarnessUsage(root, "codex-router"));
+    assert.deepEqual(readFileSync(log), before);
+    assert.equal(harnessWriterView(root).reserved, false);
+    const agentCall = (prompt, agent_id) =>
+      invoke(
+        root,
+        "permissions",
+        input(root, "PreToolUse", {
+          tool_name: "Agent",
+          tool_use_id: `spawn-${prompt}-${agent_id ?? "root"}`,
+          tool_input: { prompt, subagent_type: "dotln-executor" },
+          ...(agent_id ? { agent_id } : {}),
+        }),
+      );
+    for (const command of [
+      "pwd -P",
+      "pwd -P && git rev-parse --show-toplevel",
+      "node scripts/drive.mjs WO-999",
+      `node '${root}/scripts/drive.mjs' WO-999 --host codex`,
+      "node scripts/drive.mjs status WO-999",
+      "node scripts/harness.mjs usage synthetic-session",
+    ]) {
+      assert.equal(
+        allowed(
+          invoke(
+            root,
+            "concurrent-work-requires-worktrees",
+            input(root, "PreToolUse", {
+              tool_name: "Bash",
+              tool_input: { command },
+            }),
+          ),
+        ),
+        true,
+      );
+      assert.equal(harnessWriterView(root).reserved, false);
+    }
+    for (const tool of [
+      {
+        tool_name: "Bash",
+        tool_input: { command: "node scripts/harness.mjs usage unknown" },
+      },
+      {
+        tool_name: "Bash",
+        tool_input: {
+          command: 'node scripts/harness.mjs usage "$CLAUDE_CODE_SESSION_ID"',
+        },
+      },
+      {
+        tool_name: "Write",
+        tool_input: { file_path: join(root, "router-write.txt"), content: "x" },
+      },
+    ]) {
+      const result = invoke(
+        root,
+        "concurrent-work-requires-worktrees",
+        input(root, "PreToolUse", tool),
+      );
+      assert.equal(allowed(result), true, JSON.stringify({ tool, result }));
+      if (tool.tool_input.command === "node scripts/harness.mjs usage unknown")
+        assert.match(result.systemMessage, /host permissions decide/);
+      assert.equal(harnessWriterView(root).reserved, false);
+    }
+    seedHarnessWriter(root, {
+      actorId: sha256("foreign-router-holder"),
+      worktree: root,
+    });
+    const holder = harnessWriterView(root);
+    assert.equal(
+      allowed(
+        invoke(
+          root,
+          "concurrent-work-requires-worktrees",
+          input(root, "PreToolUse", {
+            tool_name: "Write",
+            tool_input: {
+              file_path: join(root, "router-write.txt"),
+              content: "x",
+            },
+          }),
+        ),
+      ),
+      false,
+    );
+    assert.deepEqual(harnessWriterView(root), holder);
+    assert.match(
+      JSON.stringify(agentCall("resume: next WO-999")),
+      /DOTLN_ROUTER_SPAWN_REFUSED/,
+    );
+    assert.equal(allowed(agentCall("resume: next")), true);
+    // The phrase names its worker: the same words to another agent type are
+    // not a lifecycle dispatch.
+    assert.match(
+      JSON.stringify(agentCall("resume: verify")),
+      /DOTLN_ROUTER_SPAWN_REFUSED/,
+    );
+    assert.equal(
+      allowed(agentCall("Review this worker's assigned diff", "phase-worker")),
+      true,
+    );
+    // An omitted type is not the type a phrase names, and leaving it out must
+    // not turn a free prompt into a dispatch.
+    for (const [tool_name, tool_input] of [
+      ["Agent", { prompt: "Write the fix yourself" }],
+      ["Agent", { prompt: "resume: next WO-999" }],
+      ["Agent", { prompt: "resume: next" }],
+      ["Agent", { prompt: "resume: next", subagent_type: null }],
+      ["Agent", {}],
+      ["Task", {}],
+      ["Workflow", {}],
+    ])
+      assert.match(
+        JSON.stringify(
+          invoke(
+            root,
+            "permissions",
+            input(root, "PreToolUse", {
+              tool_name,
+              tool_use_id: `untyped-${tool_name}`,
+              tool_input,
+            }),
+          ),
+        ),
+        /DOTLN_ROUTER_SPAWN_REFUSED/,
+        JSON.stringify({ tool_name, tool_input }),
+      );
+    for (const tool of [
+      {
+        tool_name: "Write",
+        tool_input: { file_path: join(root, "router-edit.ts"), content: "x" },
+      },
+      ...[
+        "echo x > router-edit.ts",
+        "cp a b",
+        "mv a b",
+        "tee a",
+        "sed -i s/a/b/ a",
+        "git add -A",
+        "git commit -m x",
+        "git checkout -- a",
+        "git reset --hard",
+        "git push origin wo-999",
+        "npm run sync",
+        "npm run plan -- start router-fixture",
+        "node scripts/resume.mjs implementation-ready",
+        "node -e 0",
+      ].map((command) => ({ tool_name: "Bash", tool_input: { command } })),
+    ])
+      assert.match(
+        JSON.stringify(
+          invoke(root, "permissions", input(root, "PreToolUse", tool)),
+        ),
+        /DOTLN_ROUTER_WRITE_REFUSED/,
+        JSON.stringify(tool),
+      );
+    for (const command of [
+      "pwd -P",
+      "pwd -P && git rev-parse --show-toplevel",
+      "node scripts/drive.mjs WO-999",
+      `node '${root}/scripts/drive.mjs' WO-999 --host codex`,
+      "node scripts/drive.mjs status WO-999",
+      "node scripts/harness.mjs usage synthetic-session",
+      "node scripts/harness.mjs writer --show",
+      "ls",
+    ])
+      assert.equal(
+        allowed(
+          invoke(
+            root,
+            "permissions",
+            input(root, "PreToolUse", {
+              tool_name: "Bash",
+              tool_input: { command },
+            }),
+          ),
+        ),
+        true,
+        command,
+      );
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("a driven worker's helper stays read-only in the launchpad's own worktree", () => {
+  const root = fixture();
+  try {
+    const directory = join(root, "docs/control/local/drives/WO-999");
+    initializeSubagentCounter(directory, "drive-test");
+    const context = join(directory, "context.json");
+    writeFileSync(
+      context,
+      json({
+        schemaVersion: 1,
+        root,
+        directory,
+        session: "drive-test",
+        worker: "phase-test",
+        role: "executor",
+        workOrder: "WO-999",
+        cap: 20,
+        ceiling: 80,
+      }),
+    );
+    const call = (tool, agent = { agent_id: "read-only-reviewer" }) =>
+      invoke(
+        root,
+        "permissions",
+        input(root, "PreToolUse", { ...agent, ...tool }),
+        false,
+        { DOTLN_DRIVEN_WORKER: context },
+      );
+    const shell = (command) => ({
+      tool_name: "Bash",
+      tool_input: { command },
+    });
+    const childWrite = {
+      tool_name: "Write",
+      tool_input: { file_path: join(root, "child.txt"), content: "x" },
+    };
+    for (const tool of [
+      childWrite,
+      {
+        tool_name: "Edit",
+        tool_input: { file_path: join(root, "child.txt") },
+      },
+      shell("echo x > child.txt"),
+      shell("git add -A"),
+      shell("git commit -m x"),
+      shell("rm child.txt"),
+      shell("npm run sync"),
+      shell("node scripts/resume.mjs next"),
+      shell("node scripts/resume.mjs release-close"),
+      shell("npm run plan -- start adversary"),
+      shell("node scripts/refute-plan.mjs start adversary"),
+    ]) {
+      const refused = call(tool);
+      assert.equal(allowed(refused), false, JSON.stringify(tool));
+      // The refusal says what does work, so a paged read is not read as a write.
+      assert.match(
+        refused.hookSpecificOutput.permissionDecisionReason,
+        /helper agent writes.*git --no-pager diff/,
+      );
+    }
+    for (const tool of [
+      shell("ls"),
+      shell("cat README.md"),
+      shell("git --no-pager status --short"),
+      shell("node scripts/resume.mjs status --json"),
+      shell('npx ctx7@latest library "Node.js" "readFileSync utf8 encoding"'),
+      { tool_name: "Read", tool_input: { file_path: join(root, "README.md") } },
+    ])
+      assert.equal(allowed(call(tool)), true, JSON.stringify(tool));
+    // The rule is about helpers: the worker itself keeps its ordinary writes.
+    assert.equal(allowed(call(childWrite, {})), true);
+    assert.equal(
+      allowed(
+        call(childWrite, {
+          agent_id: "phase-worker",
+          agent_type: "dotln-executor",
+        }),
+      ),
+      true,
+    );
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("an operator router cannot retry or replace a host-denied driver before a new drive phrase", () => {
+  const root = fixture();
+  try {
+    const dispatch = () =>
+      invoke(
+        root,
+        "session",
+        input(root, "UserPromptSubmit", { prompt: "drive: WO-999" }),
+      );
+    dispatch();
+    invoke(
+      root,
+      "permission-denied",
+      input(root, "PermissionDenied", {
+        tool_name: "Bash",
+        tool_input: {
+          command: "node scripts/drive.mjs WO-999",
+          dangerouslyDisableSandbox: true,
+        },
+        reason: "private host denial",
+      }),
+    );
+    for (const command of [
+      "node scripts/drive.mjs WO-999",
+      "node alternative-launcher.mjs",
+    ]) {
+      const result = invoke(
+        root,
+        "permissions",
+        input(root, "PreToolUse", {
+          tool_name: "Bash",
+          tool_input: { command },
+        }),
+      );
+      assert.match(JSON.stringify(result), /DOTLN_ROUTER_LAUNCH_REFUSED/);
+      assert.doesNotMatch(JSON.stringify(result), /private host denial/);
+    }
+    dispatch();
+    assert.equal(
+      allowed(
+        invoke(
+          root,
+          "permissions",
+          input(root, "PreToolUse", {
+            tool_name: "Bash",
+            tool_input: {
+              command: "node scripts/drive.mjs WO-999",
+              dangerouslyDisableSandbox: true,
+            },
+          }),
+        ),
+      ),
+      true,
+    );
+    assert.equal(harnessWriterView(root).reserved, false);
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("worker identities do not share role state or a writer and the view names the holding agent", () => {
+  const root = fixture();
+  try {
+    const call = (agent, role) =>
+      input(root, "PreToolUse", {
+        agent_id: agent,
+        agent_type: `dotln-${role}`,
+        effort: { level: "xhigh" },
+        tool_name: "Write",
+        tool_input: {
+          file_path: join(root, "fixture.ts"),
+          content: "export const value = 2;\n",
+        },
+      });
+    invoke(root, "permissions", call("executor", "executor"));
+    assert.equal(
+      allowed(
+        invoke(
+          root,
+          "concurrent-work-requires-worktrees",
+          call("executor", "executor"),
+        ),
+      ),
+      true,
+    );
+    const owner = harnessWriterView(root);
+    assert.equal(owner.agentId, sha256("executor"));
+    invoke(root, "permissions", call("verifier", "verifier"));
+    assert.equal(
+      allowed(
+        invoke(
+          root,
+          "concurrent-work-requires-worktrees",
+          call("verifier", "verifier"),
+        ),
+      ),
+      false,
+    );
+    releaseHarnessWriter(root, {
+      ...call("executor", "executor"),
+      hook_event_name: "Stop",
+    });
+    assert.equal(
+      allowed(
+        invoke(
+          root,
+          "concurrent-work-requires-worktrees",
+          call("verifier", "verifier"),
+        ),
+      ),
+      true,
+    );
+    const records = ["executor", "verifier"].map((agent) =>
+      JSON.parse(
+        readFileSync(
+          join(
+            root,
+            "docs/control/local/harness",
+            `${sha256(JSON.stringify(["synthetic-session", agent]))}.json`,
+          ),
+          "utf8",
+        ),
+      ),
+    );
+    assert.deepEqual(
+      records.map((row) => row.role),
+      ["executor", "verifier"],
+    );
+    assert.deepEqual(
+      records.map((row) => row.selectedEffort),
+      [
+        { level: "xhigh", source: "hook-input" },
+        { level: "xhigh", source: "hook-input" },
+      ],
+    );
+    releaseHarnessWriter(root, {
+      ...call("verifier", "verifier"),
+      hook_event_name: "Stop",
+    });
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("a helper agent works inside its spawner's session: it strands no writer and keeps the role's grants", () => {
+  const root = fixture();
+  const outside = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-helper-grants-")),
+  );
+  const session = "helper-session";
+  const call = (tool_name, tool_input, helper) =>
+    input(root, "PreToolUse", {
+      session_id: session,
+      tool_name,
+      tool_input,
+      ...(helper ? { agent_id: helper, agent_type: "dotln-worker" } : {}),
+    });
+  const admitted = (payload) =>
+    allowed(invoke(root, "concurrent-work-requires-worktrees", payload));
+  const read = (helper) => call("Bash", { command: "git log -1" }, helper);
+  try {
+    beginHarnessSession(root, session, "executor");
+    const spawner = call("Bash", { command: "echo spawner" });
+    assert.equal(admitted(spawner), true);
+    const holder = harnessWriterView(root).actorId;
+    for (const helper of ["reader-1", "reader-2"])
+      assert.equal(admitted(read(helper)), true, helper);
+    // The host sends no event when a helper ends, so a helper that runs on
+    // past its spawner's turn must leave nothing the spawner cannot use.
+    invoke(root, "finish", input(root, "Stop", { session_id: session }));
+    assert.equal(harnessWriterView(root).reserved, false);
+    assert.equal(admitted(read("reader-1")), true);
+    const view = harnessWriterView(root);
+    assert.equal(view.actorId, holder);
+    assert.equal(view.agentId, undefined);
+    assert.equal(admitted(read("reader-2")), true);
+    assert.equal(admitted(spawner), true);
+    const scratch = (helper) =>
+      invoke(
+        root,
+        "permissions",
+        call(
+          "Write",
+          { file_path: join(outside, "scratch.txt"), content: "note\n" },
+          helper,
+        ),
+      );
+    assert.equal(allowed(scratch()), true);
+    assert.equal(allowed(scratch("reader-1")), true);
+    // A finishing helper leaves its spawner's reservation alone.
+    const before = harnessWriterView(root);
+    invoke(
+      root,
+      "agent-finished",
+      input(root, "SubagentStop", {
+        session_id: session,
+        agent_id: "reader-1",
+        agent_type: "dotln-worker",
+      }),
+    );
+    assert.deepEqual(harnessWriterView(root), before);
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+    removeFixture(outside, { recursive: true, force: true });
+  }
+});
+
+test("a lifecycle worker's reservation ends with the host's report of its end", () => {
+  const root = fixture();
+  const session = "worker-session";
+  const worker = {
+    session_id: session,
+    agent_id: "phase-worker",
+    agent_type: "dotln-executor",
+  };
+  const shell = (extra) =>
+    input(root, "PreToolUse", {
+      session_id: session,
+      tool_name: "Bash",
+      tool_input: { command: "echo work" },
+      ...extra,
+    });
+  const admitted = (extra) =>
+    allowed(invoke(root, "concurrent-work-requires-worktrees", shell(extra)));
+  try {
+    assert.equal(admitted(worker), true);
+    assert.equal(harnessWriterView(root).agentId, sha256("phase-worker"));
+    assert.equal(admitted(), false);
+    invoke(root, "agent-finished", input(root, "SubagentStop", worker));
+    assert.equal(harnessWriterView(root).reserved, false);
+    assert.equal(admitted(), true);
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
   }
 });

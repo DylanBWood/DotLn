@@ -15,6 +15,7 @@ import {
   readlinkSync,
   realpathSync,
   symlinkSync,
+  writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
@@ -31,6 +32,28 @@ import {
 import { createHash } from "node:crypto";
 
 const git = (root, ...args) => runGit(root, args);
+// Restore only settings still byte-for-byte owned by the fixture coordinator.
+export function restoreFixturePolicies(policies) {
+  for (const { file, applied } of policies) {
+    let current;
+    try {
+      if (lstatSync(file).isFile()) current = readFileSync(file, "utf8");
+    } catch {
+      /* Retain unreadable ownership. */
+    }
+    if (current !== applied) {
+      const error = new Error(
+        "Fixture settings changed after installation; retain the fixture for inspection.",
+      );
+      error.code = "FIXTURE_POLICY_CHANGED";
+      throw error;
+    }
+  }
+  for (const { file, previous } of policies) {
+    if (previous === null) rmSync(file);
+    else writeFileSync(file, previous);
+  }
+}
 const recordTreeSnapshot = (root) => {
   const rows = [];
   const visit = (prefix = "") => {
@@ -91,7 +114,10 @@ const profile = {
   expiresAt: Number.MAX_SAFE_INTEGER,
   revocationEventTypes: [],
 };
-const fixture = (base, { baseIgnore } = {}) => {
+const fixture = (
+  base,
+  { baseIgnore, roots = { docs: "records", control: "records/state" } } = {},
+) => {
   symlinkSync(join(TOOL_ROOT, "node_modules"), join(base, "node_modules"));
   const env = { ...process.env, DOTLN_FIXTURE_RUNTIME: TOOL_ROOT };
   for (const key of [
@@ -134,10 +160,10 @@ const fixture = (base, { baseIgnore } = {}) => {
   mkdirSync(parent);
   const orderRoot = join(base, "launchpad-wo999");
   const target = join(parent, "target-wo999");
-  const order = "records/work-orders/WO-999-fixture.md";
+  const order = `${roots.docs}/work-orders/WO-999-fixture.md`;
   const config = {
     version: 1,
-    roots: { docs: "records", control: "records/state" },
+    roots,
     classes: { fixture: { checks: [], supports: [] } },
     repositories: {
       target: {
@@ -165,7 +191,7 @@ const fixture = (base, { baseIgnore } = {}) => {
   write(main, "dotln.config.json", JSON.stringify(config));
   write(
     main,
-    "records/state/outward-vocabulary.json",
+    `${roots.control}/outward-vocabulary.json`,
     JSON.stringify(publicationVocabulary),
   );
   write(
@@ -176,7 +202,7 @@ const fixture = (base, { baseIgnore } = {}) => {
   write(
     main,
     ".gitignore",
-    "/records/state/local/\n/docs/control/local/\n.control-beacons/\ndist/\nnode_modules/\n.runtime/\n",
+    `/${roots.control}/local/\n/docs/control/local/\n.control-beacons/\ndist/\nnode_modules/\n.runtime/\n`,
   );
   write(main, "package.json", '{"private":true}\n');
   mkdirSync(join(main, "scripts"));
@@ -336,10 +362,14 @@ const publicationSetup = (f) => {
   write(f.main, "dotln.config.json", JSON.stringify(f.config));
   write(
     f.main,
-    "records/state/outward-vocabulary.json",
+    `${f.config.roots.control}/outward-vocabulary.json`,
     JSON.stringify(publicationVocabulary),
   );
-  write(f.main, "records/state/local/terms.txt", "Private Fixture Term\n");
+  write(
+    f.main,
+    `${f.config.roots.control}/local/terms.txt`,
+    "Private Fixture Term\n",
+  );
   write(
     f.main,
     "packages/skeleton/loadouts/grants.json",

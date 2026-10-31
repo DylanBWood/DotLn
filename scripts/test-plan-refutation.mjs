@@ -107,6 +107,8 @@ import {
 } from "./work-orders.mjs";
 import { projectDependencies } from "./lib/dependencies.mjs";
 import { LEGACY_COST_HEADER } from "./lib/legacy-cost.mjs";
+import { amendedFrontPageScope } from "./lib/front-page-scope.mjs";
+import { frontPageFindings } from "./docs-check.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const now = () => Date.parse("2030-01-02T12:00:00.000Z");
@@ -730,6 +732,7 @@ export async function fixtures() {
   try {
     await laneConditionFixtures();
     await movedAmendmentFixtures();
+    await frontPageAmendmentFixtures();
     await check(
       "WO-178 malformed decision errors name the record without parser excerpts",
       async () => {
@@ -7867,6 +7870,184 @@ export async function laneConditionFixtures() {
     ])
       assert.equal(results.get("alpha")[key], undefined);
   });
+}
+
+export async function frontPageAmendmentFixtures() {
+  const parent = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-front-page-amendment-")),
+  );
+  try {
+    await test("front-page prose admits only its current receipt-bound execution amendment and preserves main's controls", async () => {
+      const repo = makeRepo(parent, "launchpad");
+      runGit(repo, ["branch", "-M", "main"]);
+      const path = orderPath("WO-901");
+      const original = read(repo, path);
+      const controlPath = "docs/control/front-page.json";
+      const control = {
+        schemaVersion: 1,
+        page: "README.md",
+        generatedBlocks: [],
+        whatRunsToday: {
+          start: "<!-- dotln-what-runs:start -->",
+          end: "<!-- dotln-what-runs:end -->",
+          lineBudget: 1,
+        },
+      };
+      const page =
+        "# Page\n\n## What runs today\n\n<!-- dotln-what-runs:start -->\nThe project runs.\n<!-- dotln-what-runs:end -->\n";
+      write(repo, "README.md", page);
+      write(repo, controlPath, prettyJson(control));
+      commit(repo, "front-page baseline");
+      await writeDirectReceipt(repo);
+      commit(repo, "record reviewed plan");
+      runGit(repo, ["checkout", "-qb", "wo-901"]);
+      write(
+        repo,
+        "README.md",
+        page.replace("The project runs.", "The project delivers."),
+      );
+      const proseRefused = () =>
+        assert.match(
+          frontPageFindings(repo).failures.join("\n"),
+          /changed outside its generated blocks/,
+        );
+      proseRefused();
+      const approved = original.replace(
+        "**Model:**",
+        "**Front page:** README.md\n**Model:**",
+      );
+      write(repo, path, approved);
+      proseRefused();
+      await assert.rejects(amendedFrontPageScope(repo));
+      const decisionPath = "docs/evidence/WO-901/decisions.md";
+      const decision = {
+        id: "WO-901-D001",
+        date: "2030-01-02",
+        dispatch: "resume: next; operator-authorized front-page rewrite",
+        decision: "Apply the operator's prose through a bounded amendment.",
+        evidence: ["Operator supplied the public replacement."],
+        rejected: ["NoOp leaves the requested correction unfiled."],
+        reopenWhen: "The requested scope changes.",
+      };
+      const decisionText = `# Decisions\n\n\`\`\`json\n${JSON.stringify(decision)}\n\`\`\`\n`;
+      write(repo, decisionPath, decisionText);
+      await amendPlanOrder(repo, {
+        workOrderId: "WO-901",
+        decisionId: decision.id,
+        reason: "Operator authorizes the named prose.",
+        now: () => "2030-01-02T13:00:00.000Z",
+      });
+      const history = read(repo, OVERRIDES);
+      const findings = async () => {
+        const before = treeDigest(repo);
+        const result = frontPageFindings(
+          repo,
+          await amendedFrontPageScope(repo),
+        );
+        assert.equal(
+          treeDigest(repo),
+          before,
+          "authority lookup and prose check are read-only",
+        );
+        return result.failures.join("\n");
+      };
+      assert.equal(await findings(), "");
+      runGit(repo, ["branch", "-m", "wo-902"]);
+      assert.equal(
+        await amendedFrontPageScope(repo),
+        null,
+        "another order's amendment cannot authorize this branch",
+      );
+      proseRefused();
+      runGit(repo, ["branch", "-m", "wo-901"]);
+      write(
+        repo,
+        decisionPath,
+        decisionText.replace("bounded amendment", "different amendment"),
+      );
+      await assert.rejects(
+        amendedFrontPageScope(repo),
+        /decision binding differs/,
+      );
+      write(repo, decisionPath, decisionText);
+      for (const altered of [
+        approved.replace("useful shape", "different shape"),
+        approved + "\nUnbound authority outside the recorded amendment.\n",
+      ]) {
+        write(repo, path, altered);
+        await assert.rejects(amendedFrontPageScope(repo));
+      }
+      for (const malformed of [
+        approved.replace("**Model:**", "**Front page:** README.md\n**Model:**"),
+        original + "\n## Other prose\n\n**Front page:** README.md\n",
+      ]) {
+        write(repo, path, malformed);
+        assert.equal(await amendedFrontPageScope(repo), null);
+        proseRefused();
+      }
+      write(repo, path, approved);
+      write(
+        repo,
+        controlPath,
+        prettyJson({
+          ...control,
+          whatRunsToday: { ...control.whatRunsToday, lineBudget: 2 },
+        }),
+      );
+      write(
+        repo,
+        "README.md",
+        page.replace(
+          "The project runs.",
+          "The project delivers.\nAnother capability runs.",
+        ),
+      );
+      const expanded = await findings();
+      assert.match(
+        expanded,
+        /front-page.json: differs from its version at the merge base/,
+      );
+      assert.match(expanded, /holds 2 counted lines.*budget.*is 1/);
+      write(repo, controlPath, prettyJson({ ...control, page: "OTHER.md" }));
+      assert.match(await findings(), /moves the front page/);
+      write(repo, controlPath, prettyJson(control));
+      write(
+        repo,
+        "README.md",
+        page.replace(control.whatRunsToday.end, "<!-- moved-end -->"),
+      );
+      assert.notEqual(
+        await findings(),
+        "",
+        "an amendment cannot remove the governed marker",
+      );
+      write(
+        repo,
+        "README.md",
+        page.replace("The project runs.", "The project delivers."),
+      );
+      assert.equal(await findings(), "");
+      write(repo, path, original);
+      await withdrawPlanAmendment(repo, {
+        workOrderId: "WO-901",
+        ordinal: 1,
+        reason: "Restore the judged scope.",
+        now: () => "2030-01-02T14:00:00.000Z",
+      });
+      assert.equal(await amendedFrontPageScope(repo), null);
+      proseRefused();
+      write(repo, path, approved);
+      await assert.rejects(
+        amendedFrontPageScope(repo),
+        undefined,
+        "a withdrawn amendment cannot authorize restored branch bytes",
+      );
+      write(repo, OVERRIDES, history);
+      assert.equal(await findings(), "");
+    });
+  } finally {
+    rmSync(parent, { recursive: true, force: true });
+  }
 }
 
 export async function movedAmendmentFixtures({
