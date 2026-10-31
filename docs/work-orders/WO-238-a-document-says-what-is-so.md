@@ -47,10 +47,10 @@ the Cost paragraph; the order file keeps the field. In `scripts/kit/`:
 `repository-profile.template.md` loses `**Checked:**` for `**Current at:**
 <commit>` and one rule line (the profile states the repository as it is and
 never its history); `workstream.template.md` states that the rules section
-holds rules and the member orders hold the history; `README.client.md` is
-cut to what an instance's front page needs (what this instance is, how to
-start, where the kit's documents are), the kit's explanation moving to the
-kit's own `docs/`; `CLAUDE.template.md` keeps its floor and gains one
+holds rules and the member orders hold the history; the kit guide at
+`docs/KIT.md` (WO-245 moves it there from the seeded README, which stays the
+instance's) is cut where its sections hold history instead of state;
+`CLAUDE.template.md` keeps its floor and gains one
 sentence naming the three kinds. In `scripts/lib/harness-instruction.mjs`:
 the residue as one line per profile naming its rule ids with the shared
 reason (WO-233-D076). `docs/planning/passes/` (new): every dated pass
@@ -171,7 +171,8 @@ path); `packages/skeleton/src/harness-host.ts` 325 (`Read`, `Edit` and
 `scripts/lib/harness-instruction.mjs` (the instruction block and its
 residue lines); `scripts/lib/starter-seeds.mjs` 20 to 35 (the eight seeds);
 `scripts/kit/repository-profile.template.md`, `workstream.template.md`,
-`README.client.md` (57,675 bytes), `CLAUDE.template.md`;
+`docs/KIT.md` (the kit guide WO-245 moves out of the seeded README; 60,857
+bytes at v0.104.0), `CLAUDE.template.md`;
 `docs/control/doc-ceilings.json` (the policy paragraph); the filing pass's
 document §6 (the diagnosis, the measurements and the references).
 
@@ -224,9 +225,11 @@ so.
 - The reducer's four lens briefs ask about doctrine, authority, witnesses
   and repeated cost; none asks about documents, and six reviews produced
   no document finding.
-- `scripts/kit/README.client.md` is 57,675 bytes and seeds every
-  instance's front page; its headings are the kit's (Kit files and
-  instance files, Taking upstream updates, Owned cleanup and retention).
+- `scripts/kit/README.client.md` was 57,675 bytes at filing and 60,857 at
+  v0.104.0, seeding every instance's front page; WO-245 moves it to
+  `docs/KIT.md` as a kit file and seeds a short page instead; its headings
+  stay the kit's (Kit files and instance files, Taking upstream updates,
+  Owned cleanup and retention) and hold history this order cuts to state.
 
 **Design (scope discipline):**
 
@@ -301,12 +304,12 @@ so.
    index`. Check: `npm test -- --only work-orders-fixtures`; `npm run
    work-orders -- index --check`.
 9. `scripts/kit/repository-profile.template.md`, `workstream.template.md`,
-   `README.client.md`, `CLAUDE.template.md` and
+   `docs/KIT.md` (the kit guide, where WO-245 put it; the seeded `README.md`
+   is the instance's and is not edited), `CLAUDE.template.md` and
    `scripts/lib/harness-instruction.mjs`: the rewrites of the Cost line;
-   the kit's explanation moved from the instance README into the kit's own
-   `docs/` where the kit README's sections do not already hold it. Check:
-   `npm test -- --only launchpad-docs`; `npm test -- --only launchpad`;
-   `npm run harness -- check`.
+   the guide's sections that hold history instead of state cut to what is
+   so. Check: `npm test -- --only launchpad-docs`; `npm test -- --only
+   launchpad`; `npm run harness -- check`.
 10. `docs/planning/passes/`: `git mv` of every dated pass document and the
     dated dispositions; every link in the repository rewritten (`docs/`,
     `README.md`, the ledger's Record lines, the receipts' subject paths
@@ -457,6 +460,20 @@ the integrated code identity when one exists.
 - WO-235's `plan start` skeleton is extended, not replaced; if WO-235 has
   not landed when this order activates, this order writes the documents
   report into `plan start` without the skeleton and WO-235 adds it.
+- Carry-in (the fork's item 5 of 2026-10-30, carried by the 2026-10-31
+  pass): the fork's WO-025 and WO-026 run the `quality pass:` procedure
+  over a census of standing documents under an order's own authority and
+  record per document what changed, needed no change or stayed unresolved
+  (the fork's `docs/evidence/WO-025/census.md`). An order whose steps run
+  the procedure is within the command's intent: the command authorizes the
+  edits a session makes, and an order's criteria judge the same edits. The
+  per-document record is the order's evidence today; this order's census
+  (`document-census.mjs`, `plan documents`) decides at activation whether a
+  quality pass's outcome row (document, kind, outcome, unresolved facts,
+  order) joins the census shape so `plan documents` can show when a
+  standing document was last passed, reading the fork's `census.md` as the
+  first sample (reopen: the fork's WO-025 closes with its census, or a
+  second instance records one in another shape).
 
 **Non-goals:** deleting or rewriting any document's content in this order
 beyond the moves and the product 07 split; a word, byte or pattern check

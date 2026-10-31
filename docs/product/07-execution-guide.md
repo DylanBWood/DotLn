@@ -3313,7 +3313,13 @@ and generated evidence, including fixtures, manifests and installed guidance.
   2026-09-17 route (a 4 KB raise or a dated acceptance) is retired; the
   [WO-044 decision](../evidence/WO-044/decisions.md) (caps yield to needed
   rules) and the [2026-09-17 pass](../planning/vision-into-use-2026-09-17.md)
-  §10 record the acceptances made under it.
+  §10 record the acceptances made under it. WO-233, WO-234, WO-235 and
+  WO-192 recorded dated acceptances after that direction, each citing the
+  retired route as standing; they stay as records in `docs/control/budgets.json`,
+  the meter reads a breach as an advisory and the latest acceptance as a
+  role's effective ceiling (`scripts/lib/process-budget.mjs`), and no
+  further acceptance is recorded: a breach is boarded as this paragraph
+  says [WO-192-D095; the 2026-10-31 pass].
 
   WO-054 raises the executor ceiling to 24,576 bytes and release-close to
   16,384 bytes for the shared advisory-boundary and Codex continuation rule

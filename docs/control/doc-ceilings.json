@@ -5,98 +5,98 @@
     "00-vision.md": {
       "nonExemptBytesAtLanding": 28208,
       "ceiling": 31029,
-      "date": "2026-10-30",
-      "decision": "docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md#write-backs-and-ceilings"
+      "date": "2026-10-31",
+      "decision": "docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md#write-backs-and-ceilings"
     },
     "01-principles.md": {
       "nonExemptBytesAtLanding": 9462,
       "ceiling": 10409,
-      "date": "2026-10-30",
-      "decision": "docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md#write-backs-and-ceilings"
+      "date": "2026-10-31",
+      "decision": "docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md#write-backs-and-ceilings"
     },
     "02-domain-model.md": {
       "nonExemptBytesAtLanding": 150031,
       "ceiling": 165035,
-      "date": "2026-10-30",
-      "decision": "docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md#write-backs-and-ceilings"
+      "date": "2026-10-31",
+      "decision": "docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md#write-backs-and-ceilings"
     },
     "03-architecture.md": {
-      "nonExemptBytesAtLanding": 190387,
-      "ceiling": 209426,
-      "date": "2026-10-30",
-      "decision": "docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md#write-backs-and-ceilings"
+      "nonExemptBytesAtLanding": 190676,
+      "ceiling": 209744,
+      "date": "2026-10-31",
+      "decision": "docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md#write-backs-and-ceilings"
     },
     "04-interfaces.md": {
       "nonExemptBytesAtLanding": 67351,
       "ceiling": 74087,
-      "date": "2026-10-30",
-      "decision": "docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md#write-backs-and-ceilings"
+      "date": "2026-10-31",
+      "decision": "docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md#write-backs-and-ceilings"
     },
     "05-pattern-library.md": {
-      "nonExemptBytesAtLanding": 136813,
-      "ceiling": 150495,
-      "date": "2026-10-30",
-      "decision": "docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md#write-backs-and-ceilings"
+      "nonExemptBytesAtLanding": 137089,
+      "ceiling": 150798,
+      "date": "2026-10-31",
+      "decision": "docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md#write-backs-and-ceilings"
     },
     "06-roadmap.md": {
-      "nonExemptBytesAtLanding": 42099,
-      "ceiling": 46309,
-      "date": "2026-10-30",
-      "decision": "docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md#write-backs-and-ceilings"
+      "nonExemptBytesAtLanding": 42366,
+      "ceiling": 46603,
+      "date": "2026-10-31",
+      "decision": "docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md#write-backs-and-ceilings"
     },
     "07-execution-guide.md": {
-      "nonExemptBytesAtLanding": 291253,
-      "ceiling": 320379,
-      "date": "2026-10-30",
-      "decision": "docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md#write-backs-and-ceilings"
+      "nonExemptBytesAtLanding": 300556,
+      "ceiling": 330612,
+      "date": "2026-10-31",
+      "decision": "docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md#write-backs-and-ceilings"
     },
     "08-publication-compiler.md": {
       "nonExemptBytesAtLanding": 27245,
       "ceiling": 29970,
-      "date": "2026-10-30",
-      "decision": "docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md#write-backs-and-ceilings"
+      "date": "2026-10-31",
+      "decision": "docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md#write-backs-and-ceilings"
     },
     "09-audit-resilience-privacy.md": {
       "nonExemptBytesAtLanding": 53441,
       "ceiling": 58786,
-      "date": "2026-10-30",
-      "decision": "docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md#write-backs-and-ceilings"
+      "date": "2026-10-31",
+      "decision": "docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md#write-backs-and-ceilings"
     },
     "10-ir-compatibility.md": {
       "nonExemptBytesAtLanding": 25787,
       "ceiling": 28366,
-      "date": "2026-10-30",
-      "decision": "docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md#write-backs-and-ceilings"
+      "date": "2026-10-31",
+      "decision": "docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md#write-backs-and-ceilings"
     },
     "11-proteino.md": {
       "nonExemptBytesAtLanding": 2058,
       "ceiling": 2264,
-      "date": "2026-10-30",
-      "decision": "docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md#write-backs-and-ceilings"
+      "date": "2026-10-31",
+      "decision": "docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md#write-backs-and-ceilings"
     },
     "11-protino.md": {
       "nonExemptBytesAtLanding": 30626,
       "ceiling": 33689,
-      "date": "2026-10-30",
-      "decision": "docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md#write-backs-and-ceilings"
+      "date": "2026-10-31",
+      "decision": "docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md#write-backs-and-ceilings"
     },
     "12-workstream-application.md": {
       "nonExemptBytesAtLanding": 27401,
       "ceiling": 30142,
-      "date": "2026-10-30",
-      "decision": "docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md#write-backs-and-ceilings"
+      "date": "2026-10-31",
+      "decision": "docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md#write-backs-and-ceilings"
     },
     "13-uifa-roles.md": {
       "nonExemptBytesAtLanding": 27084,
       "ceiling": 29793,
-      "date": "2026-10-30",
-      "decision": "docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md#write-backs-and-ceilings"
+      "date": "2026-10-31",
+      "decision": "docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md#write-backs-and-ceilings"
     },
     "feature-configuration.md": {
-      "nonExemptBytesAtLanding": 5020,
-      "ceiling": 5522,
-      "date": "2026-10-30",
-      "decision": "docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md#write-backs-and-ceilings"
+      "nonExemptBytesAtLanding": 5068,
+      "ceiling": 5575,
+      "date": "2026-10-31",
+      "decision": "docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md#write-backs-and-ceilings"
     }
   }
 }

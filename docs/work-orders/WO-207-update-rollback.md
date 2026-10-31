@@ -1123,6 +1123,12 @@ feedback episode only after a `resident-state.ts` edit.
   writes the planner step into it, or the operator's fork holds such a
   script and asks for the seam sooner).
 
+- The README seed: WO-245 (the 2026-10-31 pass, on the operator's item 1)
+  moves the kit's guide to `docs/KIT.md` and makes `README.md` a seed the
+  starter refresh never fights over, so FUP-b44117f7b047e976's README half
+  is settled there; this order's preview rule covers the other seeded
+  files whose templates change (`budgets.template.json`,
+  `gitignore.template`, the `CLAUDE.md` block).
 - Retained copies live in the ignored local lane: a fresh clone has none
   and falls back to the pre-update commit, which the log holds only when
   the destination was committed at update time; the README says so.

@@ -224,7 +224,11 @@ first write. Instance seeds, the operating contract with its hand-written
 floor and generated blocks, the sanitized harness-security template, the
 client README, the pre-drafted first order, the proposed sequence and one
 README per seeded document root, are written once and never manifest-listed,
-so a later kit update replaces listed files and touches nothing else. Only
+so a later kit update replaces listed files and touches nothing else; WO-245
+moves the client README's guide into `docs/KIT.md`, a listed kit file, and
+leaves `README.md` a seed the starter refresh rewrites only while it still
+equals a prior rendering ([the 2026-10-31 pass](../planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md)).
+Only
 the local-terms list is the launchpad's (`DOTLN_LAUNCHPAD` or the ascent):
 the export runs that check over every exported text, the predicted bundle
 included, and prints its status, and a match, or a list present but empty,
