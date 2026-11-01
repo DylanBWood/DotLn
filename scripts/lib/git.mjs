@@ -48,6 +48,23 @@ export const redactPaths = (text, pairs) => {
 // Keep raw status/byte consumers and execFileSync diagnostics intact while
 // giving Git subprocess invocation one home. These preserve the supplied argv.
 export const spawnGit = (args, options) => spawnSync("git", args, options);
+/** A Git call under a time limit ends its transport helper with the limit:
+ * git leads its own process group, and the group is killed when the limit
+ * ends git (WO-192-D098). Without a limit the call keeps the caller's group
+ * and its terminal. */
+export const spawnGitLimited = (args, options = {}) => {
+  const result = spawnGit(args, {
+    ...options,
+    detached: Boolean(options.timeout),
+  });
+  if (result.error?.code === "ETIMEDOUT" && Number.isSafeInteger(result.pid))
+    try {
+      process.kill(-result.pid, "SIGKILL");
+    } catch {
+      /* The group already ended. */
+    }
+  return result;
+};
 export const execGit = (args, options) => execFileSync("git", args, options);
 
 export const runGit = (cwd, args, options = {}) => {

@@ -358,6 +358,10 @@ export interface CodexExecShape {
   readonly leading?: readonly string[];
   /** Everything after the shared flags, ending with the prompt or `-`. */
   readonly rest: readonly string[];
+  /** `false` keeps the episode's session files in its isolated home until
+   * the episode ends, so a declined driven phase can retain them before the
+   * home is removed (WO-247); every other episode stays ephemeral. */
+  readonly ephemeral?: boolean;
 }
 
 /** The one builder of a Codex `exec` argv. */
@@ -366,7 +370,9 @@ export function codexExecArgv(shape: CodexExecShape): string[] {
     ...(shape.approval === undefined ? [] : ["-a", shape.approval]),
     "exec",
     ...(shape.leading ?? []),
-    ...CODEX_EXEC_SHARED_FLAGS,
+    ...(shape.ephemeral === false
+      ? CODEX_EXEC_SHARED_FLAGS.filter((flag) => flag !== "--ephemeral")
+      : CODEX_EXEC_SHARED_FLAGS),
     ...shape.rest,
   ];
 }

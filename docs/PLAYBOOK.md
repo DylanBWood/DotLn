@@ -11,7 +11,14 @@ phase in a fresh session at the recorded worktree. It does no implementation or
 review and forwards no worker narrative. Independence means each verifier and
 reviewer reads its own authorized evidence without the preceding conversation;
 the router's continued presence does not make those judgments one actor's.
-The operator still merges, then types the same phrase for release close. See
+The operator still merges, then types the same phrase for release close. A
+drive finishes on a validated release attribution or a recorded no-release close,
+or stops saying why and what to type next: a close the host declines ends at
+`awaiting-close`, whose next step is `resume: release close` in main or, after a
+Codex decline, `node scripts/drive.mjs WO-NNN --host claude`, the one admitted
+host change. Every live receipt names the code identity it ran on, and the
+sandbox a routed run gets is this instance's `drive.sandbox` election (`host` or
+`off`). See
 [the dispatch contract](product/07-execution-guide.md#operator-resume-phrases--how-you-get-dispatched).
 
 | Actor                           | Effort source                                                                                                 | Use for                                                                                                         | Don't use for                                                                                                      |

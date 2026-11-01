@@ -168,7 +168,10 @@ through the qualified launchpad command; target tool hooks do not supply a
 prompt-time lifecycle dispatch. A registered target runs in its target
 worktree and may write its paired launchpad records through the recorded grant.
 The driver uses the router's native host; `node scripts/drive.mjs WO-NNN --host
-claude` or `--host codex` selects it explicitly and re-entry keeps that selection.
+claude` or `--host codex` selects it explicitly and re-entry keeps that selection,
+with one admitted change: after a Codex close the host declined, `--host claude`
+re-enters for release close only and the record names it as `hostChange`
+([WO-247-D004](../evidence/WO-247/decisions.md#wo-247-d004--a-declined-close-stops-at-awaiting-close-one-host-change-is-admitted)).
 Codex phases use fresh isolated CLI sessions and their generated role text.
 Their tool environment places the launcher's Node directory first in PATH;
 setting only the native process environment did not preserve that runtime
@@ -181,9 +184,25 @@ role and writer entry are explicit, while tool boundaries and per-spawner
 budgets remain role text where hooks are absent. Its native collaboration
 stream contributes only the observed minimum. A configured dollar limit
 refuses Codex launch because that transport supplies no dollar counter.
-The Codex invocation enables outbound command network access for native workers
-and phase research; its filesystem sandbox and automatic approval review remain
-enabled. The Codex router requests one-invocation outside-sandbox approval for
+The sandbox a routed run gets is the instance's election, `drive.sandbox` in
+`dotln.config.json`: `host` (the default) keeps each host's own policy, and
+`off` launches unsandboxed in the form each host documents, for every phase
+worker a drive launches and for the live fixture's own router; an operator's own
+router session keeps the policy it was started with, and a Codex phase under
+`off` is told it has no approval step to request. On Claude, `off` passes `sandbox.enabled false`
+through the launch's own `--settings`, which rank above the checkout's local
+settings. On Codex, `host` keeps automatic approval review under the
+workspace-write sandbox, and `off` passes `--sandbox danger-full-access`, which
+Codex cannot combine with automatic review, under `exec`'s headless default of
+no approvals; the sandboxing page calls that pairing full access. Any other
+value refuses before launch naming the key. Each receipt records the selected
+election and form and, apart from it, what the host applied: Codex names its
+resolved sandbox and approval policy in the phase's own session rollout, Claude's
+init row names its permission mode, and neither stream reports more
+([WO-247-D006](../evidence/WO-247/decisions.md#wo-247-d006--the-sandbox-election-and-the-launch-form-each-host-documents);
+the kit guide names the key). Under the default election the Codex invocation
+enables outbound command network access for native workers and phase research;
+its filesystem sandbox and automatic approval review remain enabled. The Codex router requests one-invocation outside-sandbox approval for
 the literal driver command. Phase workers likewise request normal host approval
 for authorized Git-metadata writes, including lifecycle completion's
 intent-to-add check. Workspace-write protects the Git object database even
@@ -230,8 +249,34 @@ Release close requires the launchpad merge and, for a target, the target branch'
 ancestry in its registered base branch on the remote, as close itself judges it.
 Status reads local refs; a drive of a closed order fetches both bases first, because a
 hosted merge reaches neither clone by itself and a failed fetch reads as not yet merged. A merge also needs the order's passing final review in its own control record on the base, as close asks of that base, since a branch with no commits of its own is trivially an ancestor. A target merge counts once its branch has reached the remote base, and the drive also requires that branch to have left its recorded base.
-On Codex CLI 0.166.0, which launches under automatic review, `release close WO-NNN --publish` was declined in every qualification run with no reason reported; the worker ends with `native-permission-refused`, the drive stops with `dispatch-refused` rather than retrying, and the cause is unknown
-([native qualification](../evidence/WO-192/native-qualification.md)).
+A close the host declines is not retried. The drive stops at `awaiting-close`
+and names the next step: type `resume: release close` in the launchpad's main
+checkout for the order or, after a Codex decline, re-enter with `--host claude`,
+the one admitted host change, for that activation's release close only; the
+driver refuses any other phase under it, a later activation drives on the host
+recorded before it, and a decline is carried only while it is the order's
+current fact. The drive record keeps the declined item in the enumerated
+vocabulary with the reason the host printed, its URLs, paths and queries masked,
+or that it printed none, and a declined or failed phase's raw stream, stderr and
+Codex session rollouts stay
+beside the record in ignored storage; the live fixture moves them to
+`docs/control/local/live-drive-reports/` before removing its trees
+([WO-247-D003](../evidence/WO-247/decisions.md#wo-247-d003--what-a-declined-phase-retains-and-where)).
+Every live receipt names the code it ran on: `codeIdentity.source` is the
+authoring checkout's gate code identity at the export the fixture installed,
+beside the fixture trees' own hashes as provenance, and each launched role's row
+carries `drivenStart`, the installed root's bytes plus the launch text, recorded
+and not bounded. A met criterion that names a live lifecycle or drive stands on
+its receipts: completion reads every receipt a met criterion cites, refuses such
+a criterion that cites none or whose receipt's source identity differs from the
+handoff identity, naming both, and records every cited receipt with whether it
+matches, so another criterion may cite a receipt from earlier code as evidence of
+what it recorded
+([WO-247-D005](../evidence/WO-247/decisions.md#wo-247-d005--live-receipts-name-the-code-they-ran-on-and-completion-compares-it)).
+How the Codex close of CLI 0.166.0 was declined, and what its reason admitted,
+is in [WO-247's diagnosis](../evidence/WO-247/codex-close-refusal.md) and
+§Model-specific notes; the earlier runs with no reason retained are in
+[WO-192's native qualification](../evidence/WO-192/native-qualification.md).
 Per-spawner `subagentCap` and the shared `drivenSessionCeiling` bound observed
 admissions. Token and dollar limits remain unset by default; unavailable coverage
 is reported, never counted as savings. The optional instance budget
@@ -790,7 +835,7 @@ run their gates and regenerate meta artifacts. With no mapping in those
 places, the refusal names all three and the required arrangement.
 
 `dotln.config.json` at the launchpad root declares schema `version: 1` and the
-optional sections `roots`, `classes`, `repositories`, `build`, `release`, `kit`, `derivedOrders`, `portfolios` (§Declaring a portfolio), `historicalWorkOrders` and `contributions`. **Its absence
+optional sections `roots`, `classes`, `repositories`, `build`, `release`, `kit`, `drive`, `derivedOrders`, `portfolios` (§Declaring a portfolio), `historicalWorkOrders` and `contributions`. **Its absence
 means today's layout, byte for byte**, with no pre-control historical order and no
 contributor sign-off exemption, so `status --json`, `current.md`, the generated
 index, `times`, `usage` and a release manifest derived over the real log are
@@ -4087,6 +4132,24 @@ Report the host's readback or that it reports none; a root's own selection
 does not decide the worker's. A script that regenerates a dated record keeps the
 model that record names and says so beside it; the attestation records what
 ran.
+
+**Codex CLI 0.166.0 and the driven close (WO-247, read 2026-11-01).** Under
+the default `drive.sandbox: host` election a Codex phase runs under automatic
+review (`--approve-for-me`): a separate reviewer agent judges each request to
+leave the sandbox from a compact transcript and the exact request, and prints
+its verdict on stderr while the `--json` stream shows the item as `declined`
+with no reason. It admitted every lifecycle command of the executor, verifier
+and reviewer and the release-close handoff command, and declined the close
+helper `release.mjs close WO-NNN --publish` because the launchpad's own handoff
+had told it the helper authorizes an annotated tag and a GitHub Release, which
+a no-release close does not do; the handoff now states each order's actual
+effect. The drive retains the declined item with the printed reason, stops at
+`awaiting-close` naming the attended close and the admitted `--host claude`
+re-entry, and never retries a declined launcher. An operator's own Codex drive
+session runs no `harness begin`, so its router usage stays unknown; only the
+live fixture's Codex router begins with its order (WO-192-D101). The diagnosis
+and the runs are in [WO-247's diagnosis](../evidence/WO-247/codex-close-refusal.md)
+and [native qualification](../evidence/WO-247/native-qualification.md).
 
 The opt-in Claude type `.claude/agents/dotln-worker-fable.md` selects
 `claude-fable-5-1` at `xhigh` only when the operator's `planning:` or

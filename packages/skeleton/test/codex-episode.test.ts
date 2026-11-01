@@ -97,6 +97,18 @@ test("WO-159 one builder owns the shared Codex exec flags", () => {
       "-",
     ],
   );
+  // A driven phase keeps its session files in the isolated home until the
+  // episode ends (WO-247); the other shared flag stays.
+  assert.deepEqual(codexExecArgv({ ephemeral: false, rest: ["-"] }), [
+    "exec",
+    "--ignore-user-config",
+    "-",
+  ]);
+  assert.deepEqual(codexExecArgv({ ephemeral: true, rest: ["-"] }), [
+    "exec",
+    ...CODEX_EXEC_SHARED_FLAGS,
+    "-",
+  ]);
 });
 
 test("WO-159 the trust-table projection keeps only [projects] lines", () => {

@@ -186,13 +186,21 @@ export function requireBudgets(rows) {
     );
 }
 
+/** The files the meter counts as one role's cold start under one skills root:
+ * the floor and the role's installed skill. */
+export const coldStartPaths = (skillsRoot, role) => [
+  "CLAUDE.md",
+  `${skillsRoot}/dotln-${role}/SKILL.md`,
+];
+
 export function measureColdStarts(root, previous) {
   const budgets = readBudgets(root);
   const roots = [".claude/skills", ".agents/skills"];
   const paths = [
-    "CLAUDE.md",
-    ...roots.flatMap((skillsRoot) =>
-      dispatchKinds.map((role) => `${skillsRoot}/dotln-${role}/SKILL.md`),
+    ...new Set(
+      roots.flatMap((skillsRoot) =>
+        dispatchKinds.flatMap((role) => coldStartPaths(skillsRoot, role)),
+      ),
     ),
   ];
   const history = coldStartHistory(root, {

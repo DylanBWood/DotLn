@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   chmodSync,
+  lstatSync,
   readdirSync,
   readFileSync,
   rmSync,
@@ -21,24 +22,41 @@ import {
 import { tmpdir } from "node:os";
 import { delimiter, dirname, join } from "node:path";
 import {
+  awaitingCloseStop,
   fetchMergedBases,
   lifecycleRoutes,
+  readDriveRecord,
+  releaseHoldsActivation,
   routeOrder,
   routeFacts,
 } from "./lib/drive-route.mjs";
-import { drivenHelperScripts } from "../packages/skeleton/dist/src/harness-command.js";
+import {
+  drivenCommandEffect,
+  drivenHelperScripts,
+} from "../packages/skeleton/dist/src/harness-command.js";
 import { docPath } from "./lib/config.mjs";
 import {
   commandShape,
   lifecycleRefusal,
   refusalFindings,
 } from "./lib/drive-diagnostics.mjs";
-import { nativeProfile, phaseWorkerNotes } from "./lib/drive-prompts.mjs";
-import { streamObservation } from "./lib/drive-stream.mjs";
+import {
+  nativeProfile,
+  phaseWorkerNotes,
+  targetLaneClause,
+  targetLaneForms,
+} from "./lib/drive-prompts.mjs";
+import {
+  printedRejection,
+  redactReason,
+  streamObservation,
+} from "./lib/drive-stream.mjs";
 import { beginGateRun } from "./lib/gate-evidence.mjs";
 import {
+  admittedHostChange,
   attemptTimeLimit,
   driveLoop,
+  recordedDrive,
   runDrive,
   phaseDefinition,
   nativePhaseEntry,
@@ -62,13 +80,19 @@ import {
 import { forgetTargetWorktree } from "./lib/target-worktrees.mjs";
 import { orderWorktreeGrants } from "./lib/order-worktree-grants.mjs";
 import { remoteBranchCommit } from "./lib/github-repository.mjs";
+import { originTags } from "./lib/release-tags.mjs";
 import { write } from "./lib/helpers.mjs";
 import {
+  SANDBOX_FORMS,
+  claudeLaunchArgs,
+  codexObservedPolicy,
   driveHost,
   launchRole,
   nativeLaunchDirectories,
+  retainCodexHome,
+  sandboxLaunchForm,
 } from "./lib/drive-worker.mjs";
-import { shellQuote } from "./lib/git.mjs";
+import { runGit, shellQuote } from "./lib/git.mjs";
 import { createFixtureRoot } from "./lib/temporary-roots.mjs";
 
 test("fixture policy restoration preserves changed settings without disclosing their contents", () => {
@@ -351,6 +375,7 @@ for (const expired of [true, false])
         env: { ...process.env, PATH: root },
         timeoutMs: 10000,
         deadlineAt,
+        sandbox: "host",
         beforeLaunch: () => {
           admissions++;
         },
@@ -372,6 +397,29 @@ for (const expired of [true, false])
         assert.equal(result.timedOut, false);
         assert.ok(result.timeoutMs > 0 && result.timeoutMs <= allowance - 150);
         assert.equal(applied, result.timeoutMs);
+        // Every launch records the election it ran under, what the host
+        // itself reported, and the bytes the worker started with.
+        assert.equal(result.selectedPolicy.sandboxElection, "host");
+        assert.equal(result.selectedPolicy.sandbox, "workspace-write");
+        assert.equal(result.selectedPolicy.reviewer, "auto-review");
+        assert.deepEqual(result.observedPolicy, {
+          sandbox: null,
+          approval: null,
+          reviewer: null,
+          sandboxSource: "codex-session-rollout-absent",
+          permissionMode: null,
+          permissionModeSource: "not-exposed-by-native-json-stream",
+        });
+        assert.equal(
+          result.selectedPolicy.gitMetadataWrites,
+          "one-command-host-permission-request",
+        );
+        assert.equal(result.drivenStart.role, "executor");
+        assert.equal(result.drivenStart.host, "codex");
+        assert.equal(result.drivenStart.installedBytes, null);
+        assert.equal(result.drivenStart.bytes, null);
+        assert.ok(result.drivenStart.launchTextBytes > 0);
+        assert.equal(result.retained, undefined);
       }
     } finally {
       rmSync(root, { recursive: true, force: true });
@@ -606,9 +654,83 @@ test("a router and a phase worker differ in one computed profile", () => {
   for (const row of [router, phase])
     assert.ok(row.codexInstructions.endsWith("ROLE TEXT"));
   assert.match(phaseWorkerNotes("/launchpad"), /Public documentation research/);
+  // The note names the forms the target lane admits, nothing broader: each
+  // listed form is one drivenCommandEffect admits for the roles it names,
+  // refuses for the others, and the note spells every one.
+  const note = phaseWorkerNotes("/launchpad");
   assert.match(
-    phaseWorkerNotes("/launchpad"),
-    /\/launchpad\/scripts\/harness\.mjs/,
+    note,
+    /the lane admits these forms: sync, work-orders, meta, check-publication, adjacent-work and reader with their ordinary arguments/,
+  );
+  assert.match(
+    note,
+    /worktree integrate WO-NNN, for the executor and the reviewer/,
+  );
+  assert.match(note, /Other forms are refused/);
+  assert.doesNotMatch(note, /normal arguments|no others/);
+  for (const { script, args, roles } of targetLaneForms) {
+    const filled = args.map((arg) => (arg === "WO-NNN" ? "WO-999" : arg));
+    for (const role of ["executor", "verifier", "reviewer"])
+      assert.equal(
+        drivenCommandEffect(script, filled, { role, workOrder: "WO-999" }) !==
+          null,
+        roles.includes(role),
+        `${role}: ${script} ${args.join(" ")}`,
+      );
+    assert.ok(note.includes(`scripts/${script}.mjs`), script);
+  }
+  // The forms clause is rendered from the table, so a row cannot go missing.
+  assert.ok(note.includes(targetLaneClause()));
+  assert.match(
+    targetLaneClause(),
+    /^sync, work-orders, meta, check-publication, adjacent-work and reader with their ordinary arguments; resume status, briefing, times and usage beside this role's own lifecycle actions; release prepare --local; worktree integrate WO-NNN, for the executor and the reviewer; /,
+  );
+  for (const [script, args] of [
+    ["release", ["close", "WO-999", "--publish"]],
+    ["release", ["prepare"]],
+    ["release", ["prepare", "--local", "--local"]],
+    ["worktree", ["start", "WO-999"]],
+    ["harness", ["evidence"]],
+    ["target-gate", ["WO-998"]],
+  ])
+    assert.equal(
+      drivenCommandEffect(script, args, {
+        role: "executor",
+        workOrder: "WO-999",
+      }),
+      null,
+      `${script} ${args.join(" ")}`,
+    );
+  assert.deepEqual(Object.keys(phase.launchText), ["codex", "claude"]);
+  assert.equal(phase.launchText.claude, phase.claudeAppendix);
+  assert.ok(phase.codexInstructions.startsWith(phase.launchText.codex));
+  assert.match(note, /\/launchpad\/scripts\/harness\.mjs/);
+  // A Codex phase under the host's policy requests each Git-metadata write;
+  // under full access there is no approval step to request.
+  assert.match(
+    phase.launchText.codex,
+    /request the host's normal one-invocation outside-sandbox approval/,
+  );
+  const unsandboxed = nativeProfile({
+    launchpad: "/launchpad",
+    role: "executor",
+    phrase: "resume: next",
+    cwd: "/launchpad",
+    worker: "worker",
+    definition,
+    sandbox: "off",
+  });
+  assert.match(
+    unsandboxed.launchText.codex,
+    /full access and no approval step: after the role's required command and source inspection, run each exact authorized lifecycle command or other Git-metadata write directly, once/,
+  );
+  assert.doesNotMatch(
+    unsandboxed.launchText.codex,
+    /approval for each|retain the native sandbox/,
+  );
+  assert.match(
+    unsandboxed.launchText.codex,
+    /stop without retrying or using an alternative command/,
   );
 });
 
@@ -1042,6 +1164,13 @@ test("an order reads as merged once its pass reaches the base, however its recor
       routeOrder(state, merged.events, merged.facts).action,
       "release-close",
     );
+    // Without the order's events there is no pass to find at the base, so the
+    // same bases read as not merged rather than merged by ancestry alone.
+    assert.equal(routeFacts(f.orderRoot, state, []).merged, false);
+    assert.equal(
+      routeOrder(state, [], routeFacts(f.orderRoot, state, [])).stop.reason,
+      "awaiting-merge",
+    );
   } finally {
     rmSync(base, { recursive: true, force: true });
   }
@@ -1068,17 +1197,73 @@ test("a target order whose branch never left its base has nothing to merge", () 
   }
 });
 
-test("a lane failure says why, including a remote that never answered", () => {
+test("a lane failure says why, including a remote that never answered, and the limit ends the transport child too", async () => {
   const prior = process.env.GIT_ALLOW_PROTOCOL;
   process.env.GIT_ALLOW_PROTOCOL = "ext";
+  const base = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-drive-lane-child-")),
+  );
   try {
     assert.throws(
       () => remoteBranchCommit("ext::sleep 1", "main", { timeoutMs: 200 }),
-      /publish lane: \S/,
+      /remote read refused: git ls-remote failed in the host read lane: \S/,
     );
+    // The remote helper git starts is its transport child. spawnSync's limit
+    // ends git alone; the lane ends the group git led (WO-192-D098).
+    const pidFile = join(base, "helper.pid");
+    const helper = join(base, "helper.sh");
+    writeFileSync(
+      helper,
+      `#!/bin/sh\necho $$ > ${shellQuote(pidFile)}\nexec sleep 30\n`,
+    );
+    chmodSync(helper, 0o755);
+    assert.throws(
+      () => remoteBranchCommit(`ext::${helper}`, "main", { timeoutMs: 1500 }),
+      /host read lane/,
+    );
+    assert.ok(existsSync(pidFile), "the transport child started");
+    const child = Number(readFileSync(pidFile, "utf8").trim());
+    // A child that outlives the limit is recorded as alive, then killed so
+    // the fixture can end. The pid is checked before any signal: 0 would name
+    // this process's own group.
+    const awaitEnded = async (pid, message) => {
+      assert.ok(
+        Number.isSafeInteger(pid) && pid > 1,
+        `${message}: the child wrote its pid`,
+      );
+      const alive = () => {
+        try {
+          process.kill(pid, 0);
+          return true;
+        } catch (error) {
+          return error.code !== "ESRCH";
+        }
+      };
+      const until = Date.now() + 2000;
+      while (alive() && Date.now() < until)
+        await new Promise((done) => setTimeout(done, 25));
+      const ended = !alive();
+      if (!ended) process.kill(pid, "SIGKILL");
+      assert.equal(ended, true, message);
+    };
+    await awaitEnded(child, "the transport child ended with the limit");
+    // The handoff's origin tag read is a time-limited Git call too: its limit
+    // ends the helper the same way (WO-247-D012).
+    const repo = join(base, "repo");
+    runGit(base, ["init", "--quiet", "--initial-branch=main", repo]);
+    runGit(repo, ["remote", "add", "origin", `ext::${helper}`]);
+    rmSync(pidFile, { force: true });
+    assert.throws(
+      () => originTags(repo, { timeoutMs: 1500 }),
+      /git ls-remote --tags origin failed/,
+    );
+    assert.ok(existsSync(pidFile), "the second transport child started");
+    const second = Number(readFileSync(pidFile, "utf8").trim());
+    await awaitEnded(second, "the handoff read's child ended too");
   } finally {
     if (prior === undefined) delete process.env.GIT_ALLOW_PROTOCOL;
     else process.env.GIT_ALLOW_PROTOCOL = prior;
+    rmSync(base, { recursive: true, force: true });
   }
 });
 
@@ -1199,7 +1384,26 @@ test("target roots derive from the registered order and survive an alias spellin
       workOrderId: "WO-999",
       repositoryId: "target",
     };
-    const before = routeFacts(f.orderRoot, state);
+    // The launchpad merge: the order's pass in its control record at the
+    // base, which a read with no events can no longer stand in for.
+    const pass = {
+      type: "FinalReviewCompleted",
+      workOrderId: "WO-999",
+      verdict: "pass",
+      recordedAt: "2026-10-31T00:00:00.000Z",
+    };
+    const log = join(f.main, "records/state/orders/WO-999.jsonl");
+    write(
+      f.main,
+      "records/state/orders/WO-999.jsonl",
+      (existsSync(log) ? readFileSync(log, "utf8") : "") +
+        `${JSON.stringify(pass)}\n`,
+    );
+    git(f.main, "add", "-A");
+    git(f.main, "commit", "-qm", "Record the pass at the base");
+    git(f.main, "update-ref", "refs/remotes/origin/main", "HEAD");
+    const events = [pass];
+    const before = routeFacts(f.orderRoot, state, events);
     assert.equal(before.targetMerged, false);
     const closeReceipt = (extra = {}) =>
       write(
@@ -1216,14 +1420,19 @@ test("target roots derive from the registered order and survive an alias spellin
       cleanup: { outcome: "not-attempted" },
       targetCleanup: { outcome: "retained" },
     });
-    assert.equal(routeFacts(f.orderRoot, state).released, false);
+    assert.equal(routeFacts(f.orderRoot, state, events).released, false);
     git(f.clone, "merge", "--no-ff", "-m", "Merge synthetic target", "wo-999");
     // A merge left in the clone is not one close can act on.
-    assert.equal(routeFacts(f.orderRoot, state).targetMerged, false);
+    assert.equal(routeFacts(f.orderRoot, state, events).targetMerged, false);
     git(f.clone, "push", "-q", "origin", "main");
     assert.equal(
-      routeOrder(state, [], routeFacts(f.orderRoot, state)).action,
+      routeOrder(state, events, routeFacts(f.orderRoot, state, events)).action,
       "release-close",
+    );
+    // The same bases read with no events have no pass to find there.
+    assert.equal(
+      routeOrder(state, [], routeFacts(f.orderRoot, state, [])).stop.reason,
+      "awaiting-merge",
     );
     closeReceipt({
       cleanup: { outcome: "blocked" },
@@ -1232,7 +1441,7 @@ test("target roots derive from the registered order and survive an alias spellin
     forgetTargetWorktree(f.main, f.target);
     forgetTargetWorktree(f.orderRoot, f.target);
     assert.equal(
-      routeOrder(state, [], routeFacts(f.orderRoot, state)).action,
+      routeOrder(state, events, routeFacts(f.orderRoot, state, events)).action,
       "release-close",
     );
     closeReceipt({
@@ -1240,12 +1449,42 @@ test("target roots derive from the registered order and survive an alias spellin
       targetCleanup: { outcome: "removed" },
       dryRun: true,
     });
-    assert.equal(routeFacts(f.orderRoot, state).released, false);
+    assert.equal(routeFacts(f.orderRoot, state, events).released, false);
     closeReceipt({
       cleanup: { outcome: "clean" },
       targetCleanup: { outcome: "removed" },
     });
-    assert.equal(routeFacts(f.orderRoot, state).released, true);
+    assert.equal(routeFacts(f.orderRoot, state, events).released, true);
+    // A reactivated order inherits the receipt of an earlier activation's
+    // close; only a receipt stamped with the current activation reads as
+    // released (WO-192-D099).
+    const activated = (recordedAt) => ({
+      type: "WorkOrderActivated",
+      workOrderId: "WO-999",
+      recordedAt,
+    });
+    const reactivated = [
+      activated("2026-10-01T00:00:00.000Z"),
+      { type: "FinalReviewCompleted", verdict: "pass" },
+      activated("2026-10-30T00:00:00.000Z"),
+    ];
+    assert.equal(routeFacts(f.orderRoot, state, reactivated).released, false);
+    closeReceipt({
+      cleanup: { outcome: "clean" },
+      targetCleanup: { outcome: "removed" },
+      activation: { recordedAt: "2026-10-01T00:00:00.000Z" },
+    });
+    assert.equal(routeFacts(f.orderRoot, state, reactivated).released, false);
+    closeReceipt({
+      cleanup: { outcome: "clean" },
+      targetCleanup: { outcome: "removed" },
+      activation: { recordedAt: "2026-10-30T00:00:00.000Z" },
+    });
+    assert.equal(routeFacts(f.orderRoot, state, reactivated).released, true);
+    closeReceipt({
+      cleanup: { outcome: "clean" },
+      targetCleanup: { outcome: "removed" },
+    });
     const removedState = { ...state, workOrderId: "WO-998" };
     const removedReceipt = (workOrderId, dryRun = false) =>
       write(
@@ -2675,11 +2914,15 @@ for (const protocol of ["claude", "codex"])
         ? [
             {
               type: "item.completed",
+              item: { type: "agent_message", text: "private narrative" },
+            },
+            {
+              type: "item.completed",
               item: {
                 type: "command_execution",
                 command: "node scripts/resume.mjs implementation-ready",
                 status: "declined",
-                aggregated_output: "private permission reason",
+                aggregated_output: "the host printed this reason",
               },
             },
           ]
@@ -2727,10 +2970,833 @@ for (const protocol of ["claude", "codex"])
       assert.equal(record.incomplete.next, undefined);
       assert.equal(existsSync(marker), false);
       assert.equal(JSON.stringify(result).includes("private"), false);
+      // The declined item is retained in the enumerated vocabulary with the
+      // reason the host printed, masked of URLs, paths and queries, or that it
+      // printed none (WO-247-D003).
+      const declined = record.attempts[0].declined;
+      if (protocol === "codex") {
+        assert.deepEqual(declined, {
+          kind: "lifecycle",
+          command: [["node", "resume.mjs", "implementation-ready"]],
+          status: "declined",
+          exitCode: null,
+          reason: "the host printed this reason",
+          reasonSource: "command_execution.aggregated_output",
+          reasonRedaction: "urls-paths-queries-masked",
+          sequence: 2,
+        });
+        assert.deepEqual(record.attempts[0].eventTail, [
+          { type: "item.completed", item: "agent_message" },
+          {
+            type: "item.completed",
+            item: "command_execution",
+            status: "declined",
+          },
+        ]);
+        assert.equal(record.attempts[0].eventRows, 2);
+      } else {
+        assert.equal(declined.status, "declined");
+        assert.equal(declined.reason, null);
+        assert.equal(declined.reasonSource, "none-printed");
+        assert.deepEqual(record.attempts[0].eventTail, [
+          { type: "system", subtype: "permission_denied" },
+          { type: "result" },
+        ]);
+      }
     } finally {
       rmSync(base, { recursive: true, force: true });
     }
   });
+
+// A synthetic native process that prints the given stream rows, then any
+// stderr text, and exits with the given code.
+const emitRows = (rows, { stderr = "", exitCode = 0 } = {}) => [
+  "-e",
+  `for (const row of ${JSON.stringify(rows)}) console.log(JSON.stringify(row)); if (${JSON.stringify(stderr)}) console.error(${JSON.stringify(stderr)}); process.exitCode = ${exitCode};`,
+];
+const declinedCloseRows = [
+  {
+    type: "item.completed",
+    item: {
+      type: "command_execution",
+      command:
+        "/usr/local/bin/node /launchpad/scripts/release.mjs close WO-999 --publish",
+      status: "declined",
+      aggregated_output: "",
+    },
+  },
+];
+// The host's automatic review prints its rejection on stderr, as Codex CLI
+// 0.166.0 did on 2026-11-01, while the stream item carries no reason.
+const rejectionLine =
+  'ERROR codex_core::tools::router: error=exec_command failed: CreateProcess { message: "Rejected(\\"This action was rejected due to unacceptable risk.\\\\nReason: the exact helper would publish.\\")" }';
+
+test("Codex's printed rejection is read from its last Rejected message, doubly escaped or plain", () => {
+  assert.equal(
+    printedRejection(rejectionLine),
+    "This action was rejected due to unacceptable risk.\nReason: the exact helper would publish.",
+  );
+  assert.equal(
+    printedRejection('Rejected("plain quoted reason")'),
+    "plain quoted reason",
+  );
+  assert.equal(
+    printedRejection('Rejected("an earlier one") and Rejected("the last one")'),
+    "the last one",
+  );
+  assert.equal(printedRejection("no rejection here"), null);
+  assert.equal(printedRejection(undefined), null);
+});
+
+test("a declined reason keeps no URL, path or query: each is masked before it reaches a receipt", () => {
+  assert.equal(
+    redactReason(
+      "The exact helper will push a tag/release; see https://example.invalid/x?q=secret-term and /Users/alice/Projects/private-repo/scripts/release.mjs, docs/README.md, ~/private/notes.txt and api.github.com/repos/owner/repo; v0.106.0 stays.",
+    ),
+    "The exact helper will push a <path>; see <url> and <path>, <path>, <path> and <url>; v0.106.0 stays.",
+  );
+  assert.equal(
+    redactReason("rejected ?q=secret-term&per_page=1 now"),
+    "rejected <query> now",
+  );
+  for (const [input, masked] of [
+    ["see file:///Users/alice/private-repo/notes.txt now", "see <url> now"],
+    [
+      "writes into docs/control/local/drives and scripts/release now",
+      "writes into <path> and <path> now",
+    ],
+    ["touches /private and ~/secrets now", "touches <path> and <path> now"],
+    ["under $HOME/private/notes now", "under <path> now"],
+    ["path /Users/alice/My Projects/secret-plan now", "path <path> <path> now"],
+    [
+      "WO-999 at v0.106.0 with --dry-run on 2026-11-01",
+      "WO-999 at v0.106.0 with --dry-run on 2026-11-01",
+    ],
+    ["home /Users/日本語/secret/plan.txt now", "home <path> now"],
+    ["home /Users/jöran/private-repo/notes.txt now", "home <path> now"],
+    ["drive C:\\Users\\alice\\secret\\plan.txt now", "drive <path> now"],
+    [
+      "drive C:\\Users\\alice\\My Documents\\secret-plan.txt now",
+      "drive <path> <path> now",
+    ],
+    ["share \\\\fileserver\\private-share\\plan.txt now", "share <path> now"],
+    ["under Documents\\alice\\plan.txt now", "under <path> now"],
+    ["asked ?名前=値 now", "asked <query> now"],
+    ["under $HOME/private/notes now", "under <path> now"],
+  ])
+    assert.equal(redactReason(input), masked, input);
+  assert.equal(
+    redactReason("Reason: the exact helper would publish."),
+    "Reason: the exact helper would publish.",
+  );
+});
+
+test("a declined release close stops at awaiting-close with the attended phrase and, after a Codex decline, the admitted host change", async () => {
+  const closedStatus = () => ({
+    phase: "closed",
+    route: {
+      ...routeOrder({ phase: "closed", workOrderId: "WO-999" }, [], {
+        merged: true,
+      }),
+      eventCount: 7,
+    },
+  });
+  const saved = [];
+  const record = {
+    workOrder: "WO-999",
+    host: "codex",
+    attempts: [],
+    incomplete: {},
+  };
+  const result = await driveLoop({
+    record,
+    saveRecord: (value) => saved.push(JSON.parse(JSON.stringify(value))),
+    status: closedStatus,
+    launch: () =>
+      launchPhase({
+        command: process.execPath,
+        protocol: "codex",
+        args: emitRows(declinedCloseRows, { stderr: rejectionLine }),
+        cwd: process.cwd(),
+        env: process.env,
+        timeoutMs: 5000,
+      }),
+  });
+  assert.equal(result.stop.reason, "awaiting-close");
+  assert.match(result.stop.next, /resume: release close for WO-999/);
+  assert.match(
+    result.stop.next,
+    /node scripts\/drive\.mjs WO-999 --host claude/,
+  );
+  assert.match(result.stop.next, /with the host's reason/);
+  assert.equal(record.refused, undefined, "a declined close is not a refusal");
+  assert.equal(record.factsAt, 7);
+  assert.equal(record.awaitingClose.host, "codex");
+  assert.deepEqual(record.awaitingClose.declined.command, [
+    ["<operand>", "release.mjs", "close", "<operand>", "--publish"],
+  ]);
+  assert.equal(record.awaitingClose.declined.reasonSource, "native-stderr");
+  assert.equal(
+    record.awaitingClose.declined.reason,
+    "This action was rejected due to unacceptable risk.\nReason: the exact helper would publish.",
+  );
+  assert.equal(
+    record.awaitingClose.declined.reasonRedaction,
+    "urls-paths-queries-masked",
+  );
+  assert.deepEqual(
+    record.attempts[0].nativeDiagnostics.find(
+      (row) => row.source === "stderr-tail",
+    ).signals,
+    ["auto-review-rejected"],
+  );
+  assert.equal(saved.length, 1);
+  // Status and the driver build the same row from the record, after release
+  // and before any refusal; a close attended since reads as released, and a
+  // reactivated order routes by its phase, not by a decline it no longer has.
+  const facts = { merged: true, awaitingClose: record.awaitingClose };
+  const status = routeOrder(
+    { phase: "closed", workOrderId: "WO-999" },
+    [],
+    facts,
+  );
+  assert.equal(status.stop.reason, "awaiting-close");
+  assert.equal(
+    status.stop.next,
+    awaitingCloseStop("WO-999", record.awaitingClose).stop.next,
+  );
+  assert.equal(
+    routeOrder({ phase: "closed" }, [], { ...facts, released: true }).stop
+      .reason,
+    "released",
+  );
+  assert.equal(
+    routeOrder({ phase: "active", workOrderId: "WO-999" }, [], facts).action,
+    "next",
+  );
+  // A same-host re-entry stops at the same row instead of retrying the close.
+  const again = await driveLoop({
+    record: { ...record, attempts: [] },
+    status: () => ({
+      phase: "closed",
+      route: routeOrder({ phase: "closed", workOrderId: "WO-999" }, [], facts),
+    }),
+    launch: () => assert.fail("a declined close is not retried"),
+  });
+  assert.equal(again.stop.reason, "awaiting-close");
+  // A reason with a path or a query reaches the record masked; the raw text
+  // stays only in the retained stderr.
+  const masked = {
+    workOrder: "WO-999",
+    host: "codex",
+    attempts: [],
+    incomplete: {},
+  };
+  await driveLoop({
+    record: masked,
+    status: closedStatus,
+    launch: () =>
+      launchPhase({
+        command: process.execPath,
+        protocol: "codex",
+        args: emitRows(declinedCloseRows, {
+          stderr:
+            'Rejected("The helper /Users/alice/Projects/private-repo/scripts/release.mjs would publish; see https://example.invalid/x?q=secret-term")',
+        }),
+        cwd: process.cwd(),
+        env: process.env,
+        timeoutMs: 5000,
+      }),
+  });
+  assert.equal(
+    masked.awaitingClose.declined.reason,
+    "The helper <path> would publish; see <url>",
+  );
+  assert.equal(JSON.stringify(masked).includes("alice"), false);
+  assert.equal(JSON.stringify(masked).includes("secret-term"), false);
+  // A close the Claude host declines stops at the same row, with no reason
+  // (its denial row carries prose the host already classified) and without
+  // the host change, which is admitted after a Codex decline alone.
+  const claudeRecord = {
+    workOrder: "WO-999",
+    host: "claude",
+    attempts: [],
+    incomplete: {},
+  };
+  const claudeStop = await driveLoop({
+    record: claudeRecord,
+    status: closedStatus,
+    launch: () =>
+      launchPhase({
+        command: process.execPath,
+        protocol: "claude",
+        args: emitRows([
+          {
+            type: "assistant",
+            message: {
+              content: [
+                {
+                  type: "tool_use",
+                  id: "close",
+                  name: "Bash",
+                  input: {
+                    command:
+                      "node /launchpad/scripts/release.mjs close WO-999 --publish",
+                  },
+                },
+              ],
+            },
+          },
+          {
+            type: "system",
+            subtype: "permission_denied",
+            tool_use_id: "close",
+            decision_reason_type: "classifier",
+          },
+        ]),
+        cwd: process.cwd(),
+        env: process.env,
+        timeoutMs: 5000,
+      }),
+  });
+  assert.equal(claudeStop.stop.reason, "awaiting-close");
+  assert.match(claudeStop.stop.next, /The claude host declined/);
+  assert.match(claudeStop.stop.next, /resume: release close for WO-999/);
+  assert.doesNotMatch(
+    claudeStop.stop.next,
+    /--host claude|admitted host change/,
+  );
+  assert.match(claudeStop.stop.next, /printed no reason/);
+  assert.equal(claudeRecord.awaitingClose.declined.reason, null);
+  assert.equal(
+    claudeRecord.awaitingClose.declined.reasonSource,
+    "none-printed",
+  );
+  assert.equal(claudeRecord.awaitingClose.declined.reasonRedaction, undefined);
+  // Any other declined phase keeps the dispatch-refused stop.
+  const other = await driveLoop({
+    record: { attempts: [], incomplete: {} },
+    status: () => ({ phase: "active", route: routeOrder({ phase: "active" }) }),
+    launch: () =>
+      launchPhase({
+        command: process.execPath,
+        protocol: "codex",
+        args: emitRows(declinedCloseRows),
+        cwd: process.cwd(),
+        env: process.env,
+        timeoutMs: 5000,
+      }),
+  });
+  assert.equal(other.stop.reason, "dispatch-refused");
+});
+
+test("re-entry admits one host change, Codex to Claude for a current declined close, and refuses every other", async () => {
+  const awaiting = { host: "codex", at: "2026-10-31T00:00:00.000Z" };
+  const old = { host: "codex", awaitingClose: awaiting, factsAt: 1 };
+  assert.equal(admittedHostChange(null, "claude", true), null);
+  assert.equal(admittedHostChange({ host: "codex" }, "codex", true), null);
+  const change = admittedHostChange(
+    old,
+    "claude",
+    true,
+    "2026-10-31T00:00:00.000Z",
+  );
+  assert.equal(change.from, "codex");
+  assert.equal(change.to, "claude");
+  assert.equal(change.phase, "release-close");
+  assert.equal(change.cause, "awaiting-close");
+  assert.equal(change.activation, "2026-10-31T00:00:00.000Z");
+  assert.throws(
+    () => admittedHostChange(old, "claude", true),
+    /needs the activation it belongs to; pass null when the log records none/,
+  );
+  assert.equal(admittedHostChange(old, "claude", true, null).activation, null);
+  const keeps = /^Error: Drive re-entry must keep its recorded host$/;
+  assert.throws(
+    () => admittedHostChange({ host: "codex" }, "claude", false),
+    keeps,
+  );
+  // The decline must be the order's current fact, which the driver judges
+  // once: a record stamped at an earlier log, or an order no longer closed,
+  // admits no change.
+  assert.throws(() => admittedHostChange(old, "claude", false), keeps);
+  // A close the Claude host declined admits no host change at all.
+  assert.throws(
+    () =>
+      admittedHostChange(
+        { host: "claude", awaitingClose: { host: "claude" }, factsAt: 1 },
+        "codex",
+        true,
+      ),
+    /must keep its recorded host; a close the Claude host declined is attended in the launchpad's main checkout with resume: release close$/,
+  );
+  // The change covers one activation's close: under a later activation the
+  // order drives on the host recorded before it and the ended change is
+  // dropped; a change without an activation stamp is kept.
+  const changedRecord = {
+    host: "claude",
+    hostChange: {
+      from: "codex",
+      to: "claude",
+      phase: "release-close",
+      activation: "2026-10-31T00:00:00.000Z",
+    },
+    awaitingClose: null,
+  };
+  assert.equal(
+    recordedDrive(changedRecord, "2026-10-31T00:00:00.000Z", "closed"),
+    changedRecord,
+  );
+  assert.deepEqual(
+    recordedDrive(changedRecord, "2026-11-02T00:00:00.000Z", "active"),
+    { host: "codex", hostChange: null, awaitingClose: null },
+  );
+  // A change without a stamp ends with the closed phase, so a reactivated
+  // order is driven on the earlier host instead of being refused by both.
+  const unstamped = {
+    ...changedRecord,
+    hostChange: { from: "codex", to: "claude", phase: "release-close" },
+  };
+  assert.equal(
+    recordedDrive(unstamped, "2026-11-02T00:00:00.000Z", "closed"),
+    unstamped,
+  );
+  assert.deepEqual(
+    recordedDrive(unstamped, "2026-11-02T00:00:00.000Z", "active"),
+    { host: "codex", hostChange: null, awaitingClose: null },
+  );
+  assert.equal(recordedDrive(null, "2026-10-31T00:00:00.000Z", "closed"), null);
+  // While the change stands, the driver launches the close and nothing else.
+  const refused = await driveLoop({
+    record: {
+      ...changedRecord,
+      workOrder: "WO-999",
+      attempts: [],
+      incomplete: {},
+    },
+    status: () => ({ phase: "active", route: routeOrder({ phase: "active" }) }),
+    launch: () => assert.fail("the host change admits release close alone"),
+  });
+  assert.equal(refused.stop.reason, "dispatch-refused");
+  assert.match(
+    refused.stop.next,
+    /covers release close only, and this order now routes to next; drive it on its recorded host, --host codex/,
+  );
+  // The driver records the change and clears the stop it answers, before the
+  // Claude close runs; a same-host re-entry keeps the stop.
+  const base = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-drive-host-change-")),
+  );
+  const previous = process.env.DOTLN_DRIVE_DEADLINE_AT;
+  try {
+    const f = fixture(base);
+    f.mapClone();
+    f.start();
+    closeOrder(f);
+    const eventCount = readFileSync(
+      docPath(f.orderRoot, "orders", "WO-999.jsonl"),
+      "utf8",
+    )
+      .split("\n")
+      .filter(Boolean).length;
+    const recordPath = join(f.main, "records/state/local/drives/WO-999.json");
+    const seed = (extra) =>
+      write(
+        f.main,
+        "records/state/local/drives/WO-999.json",
+        JSON.stringify({
+          schemaVersion: 1,
+          workOrder: "WO-999",
+          host: "codex",
+          attempts: [],
+          incomplete: {},
+          factsAt: eventCount,
+          ...extra,
+        }),
+      );
+    process.env.DOTLN_DRIVE_DEADLINE_AT = String(Date.now() - 1000);
+    seed({});
+    await assert.rejects(
+      runDrive(f.main, "WO-999", { host: "claude" }),
+      /must keep its recorded host/,
+    );
+    seed({ awaitingClose: awaiting });
+    const same = await runDrive(f.main, "WO-999", { host: "codex" });
+    assert.equal(same.host, "codex");
+    assert.deepEqual(same.awaitingClose, awaiting);
+    assert.equal(same.hostChange, null);
+    assert.equal(same.sandbox, "host");
+    // A decline stamped at an earlier log is not carried into the re-entry.
+    seed({ awaitingClose: awaiting, factsAt: eventCount - 1 });
+    const moved = await runDrive(f.main, "WO-999", { host: "codex" });
+    assert.equal(moved.awaitingClose, null);
+    seed({ awaitingClose: awaiting, factsAt: eventCount - 1 });
+    await assert.rejects(
+      runDrive(f.main, "WO-999", { host: "claude" }),
+      /must keep its recorded host/,
+    );
+    seed({ awaitingClose: awaiting });
+    const changed = await runDrive(f.main, "WO-999", { host: "claude" });
+    assert.equal(changed.host, "claude");
+    assert.equal(changed.awaitingClose, null);
+    assert.equal(changed.hostChange.from, "codex");
+    assert.equal(changed.hostChange.to, "claude");
+    assert.equal(changed.hostChange.phase, "release-close");
+    assert.equal(typeof changed.hostChange.activation, "string");
+    assert.equal(readDriveRecord(f.main, "WO-999").hostChange.to, "claude");
+    assert.ok(existsSync(recordPath));
+    // The admitted close completes on Claude and the record keeps the change.
+    let released = false;
+    const closed = await driveLoop({
+      record: { ...changed, attempts: [] },
+      status: () => ({
+        phase: "closed",
+        route: routeOrder({ phase: "closed", workOrderId: "WO-999" }, [], {
+          merged: true,
+          released,
+        }),
+      }),
+      launch: (route) => {
+        assert.equal(route.action, "release-close");
+        released = true;
+        return { exitCode: 0 };
+      },
+    });
+    assert.equal(closed.stop.reason, "released");
+    assert.equal(closed.hostChange.to, "claude");
+    assert.deepEqual(
+      drivenObservation(closed, () => false).hostChange,
+      closed.hostChange,
+    );
+  } finally {
+    if (previous === undefined) delete process.env.DOTLN_DRIVE_DEADLINE_AT;
+    else process.env.DOTLN_DRIVE_DEADLINE_AT = previous;
+    rmSync(base, { recursive: true, force: true });
+  }
+});
+
+test("a release from before a reactivation does not hold the current activation", () => {
+  const base = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-drive-release-activation-")),
+  );
+  try {
+    const f = fixture(base);
+    const log = "records/state/orders/WO-999.jsonl";
+    const row = (recordedAt) =>
+      `${JSON.stringify({ type: "WorkOrderActivated", workOrderId: "WO-999", recordedAt })}\n`;
+    write(f.main, log, row("2026-10-01T00:00:00.000Z"));
+    git(f.main, "add", "-A");
+    git(f.main, "commit", "-qm", "First activation");
+    git(f.main, "tag", "v0.0.1");
+    write(
+      f.main,
+      log,
+      row("2026-10-01T00:00:00.000Z") + row("2026-10-30T00:00:00.000Z"),
+    );
+    git(f.main, "add", "-A");
+    git(f.main, "commit", "-qm", "Reactivated");
+    git(f.main, "tag", "v0.0.2");
+    const first = { recordedAt: "2026-10-01T00:00:00.000Z" };
+    const second = { recordedAt: "2026-10-30T00:00:00.000Z" };
+    assert.equal(
+      releaseHoldsActivation(f.main, "v0.0.1", "WO-999", first),
+      true,
+    );
+    assert.equal(
+      releaseHoldsActivation(f.main, "v0.0.1", "WO-999", second),
+      false,
+    );
+    assert.equal(
+      releaseHoldsActivation(f.main, "v0.0.2", "WO-999", second),
+      true,
+    );
+    assert.equal(
+      releaseHoldsActivation(f.main, "v0.0.1", "WO-998", first),
+      false,
+    );
+  } finally {
+    rmSync(base, { recursive: true, force: true });
+  }
+});
+
+test("the phase capture keeps a declined or failed phase's raw stream and removes a clean one", async () => {
+  const base = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-drive-capture-")),
+  );
+  try {
+    const run = (rows, exitCode = 0) =>
+      launchPhase({
+        command: process.execPath,
+        protocol: "codex",
+        args: [
+          "-e",
+          `for (const row of ${JSON.stringify(rows)}) console.log(JSON.stringify(row)); console.error("stderr text"); process.exitCode = ${exitCode};`,
+        ],
+        cwd: process.cwd(),
+        env: process.env,
+        timeoutMs: 5000,
+        capture: { directory: join(base, "drives"), name: "phase" },
+      });
+    const clean = await run([{ type: "turn.completed", usage: {} }]);
+    assert.equal(clean.retained, null);
+    assert.equal(existsSync(join(base, "drives/phase.events.jsonl")), false);
+    assert.equal(existsSync(join(base, "drives/phase.stderr.txt")), false);
+    const declined = await run([
+      {
+        type: "item.completed",
+        item: {
+          type: "command_execution",
+          command: "node scripts/resume.mjs verify",
+          status: "declined",
+          aggregated_output: "",
+        },
+      },
+    ]);
+    assert.equal(declined.cause, "native-permission-refused");
+    assert.equal(
+      declined.retained.events,
+      join(base, "drives/phase.events.jsonl"),
+    );
+    assert.equal(
+      declined.retained.stderr,
+      join(base, "drives/phase.stderr.txt"),
+    );
+    assert.match(
+      readFileSync(declined.retained.events, "utf8"),
+      /"status":"declined"/,
+    );
+    assert.equal(
+      readFileSync(declined.retained.stderr, "utf8"),
+      "stderr text\n",
+    );
+    const failed = await run([{ type: "turn.completed", usage: {} }], 3);
+    assert.equal(failed.exitCode, 3);
+    assert.ok(failed.retained.events);
+    // Only the files the phase wrote are named: a declined phase that printed
+    // nothing on stderr retains its stream alone.
+    const quiet = await launchPhase({
+      command: process.execPath,
+      protocol: "codex",
+      args: emitRows(declinedCloseRows),
+      cwd: process.cwd(),
+      env: process.env,
+      timeoutMs: 5000,
+      capture: { directory: join(base, "drives"), name: "quiet" },
+    });
+    assert.equal(quiet.cause, "native-permission-refused");
+    assert.ok(quiet.retained.events);
+    assert.equal(quiet.retained.stderr, undefined);
+    assert.equal(quiet.retained.captureFailed, undefined);
+    // A capture that cannot be written leaves the phase to run and says so.
+    writeFileSync(join(base, "not-a-directory"), "");
+    const unwritable = await launchPhase({
+      command: process.execPath,
+      protocol: "codex",
+      args: emitRows(declinedCloseRows),
+      cwd: process.cwd(),
+      env: process.env,
+      timeoutMs: 5000,
+      capture: { directory: join(base, "not-a-directory"), name: "phase" },
+    });
+    assert.equal(unwritable.cause, "native-permission-refused");
+    assert.deepEqual(unwritable.retained, {
+      source: "native-stdout-and-stderr",
+      captureFailed: true,
+    });
+  } finally {
+    rmSync(base, { recursive: true, force: true });
+  }
+});
+
+test("the sandbox election maps to each host's documented launch form and refuses an undocumented one", () => {
+  assert.deepEqual(sandboxLaunchForm("codex", "host").argv, [
+    "--approve-for-me",
+    "-c",
+    "sandbox_workspace_write.network_access=true",
+  ]);
+  assert.deepEqual(sandboxLaunchForm("codex", "off").argv, [
+    "--sandbox",
+    "danger-full-access",
+  ]);
+  assert.equal(sandboxLaunchForm("codex", "off").selected.approval, "never");
+  // One table holds every documented pair, with what each form selects.
+  assert.deepEqual(Object.keys(SANDBOX_FORMS), ["codex", "claude"]);
+  for (const host of Object.keys(SANDBOX_FORMS))
+    assert.deepEqual(Object.keys(SANDBOX_FORMS[host]), ["host", "off"]);
+  assert.equal(
+    sandboxLaunchForm("codex", "host").selected.gitMetadataWrites,
+    "one-command-host-permission-request",
+  );
+  assert.equal(
+    sandboxLaunchForm("codex", "off").selected.gitMetadataWrites,
+    "no-approval-under-full-access",
+  );
+  assert.equal(
+    sandboxLaunchForm("claude", "host").selected.networkAccess,
+    "native-api-context7-and-public-github-domains",
+  );
+  assert.equal(
+    sandboxLaunchForm("claude", "off").selected.networkAccess,
+    "unrestricted-by-the-disabled-launch-sandbox",
+  );
+  assert.deepEqual(sandboxLaunchForm("claude", "host").settings, {});
+  assert.deepEqual(sandboxLaunchForm("claude", "off").settings, {
+    enabled: false,
+  });
+  for (const [host, election] of [
+    ["copilot", "off"],
+    ["claude", "danger-full-access"],
+    ["codex", "read-only"],
+    ["constructor", "off"],
+    ["codex", "__proto__"],
+    ["codex", "constructor"],
+  ])
+    assert.throws(
+      () => sandboxLaunchForm(host, election),
+      new RegExp(
+        `drive\\.sandbox "${election}" has no documented launch form on host "${host}"`,
+      ),
+    );
+  const definition = { model: "m", effort: "xhigh", prompt: "ROLE" };
+  const profile = nativeProfile({
+    launchpad: "/launchpad",
+    role: "executor",
+    phrase: "resume: next",
+    cwd: "/launchpad",
+    worker: "worker",
+    definition,
+  });
+  const settingsOf = (form) => {
+    const args = claudeLaunchArgs({
+      worker: "worker",
+      definitions: "/agents.json",
+      role: "executor",
+      directories: ["/launchpad"],
+      definition,
+      profile,
+      form,
+      dollarLimit: null,
+      phrase: "resume: next",
+    });
+    return JSON.parse(args[args.indexOf("--settings") + 1]);
+  };
+  assert.equal(
+    settingsOf(sandboxLaunchForm("claude", "host")).sandbox.enabled,
+    undefined,
+  );
+  assert.equal(
+    settingsOf(sandboxLaunchForm("claude", "off")).sandbox.enabled,
+    false,
+  );
+  assert.ok(
+    settingsOf(sandboxLaunchForm("claude", "off")).sandbox.network
+      .allowedDomains.length,
+  );
+});
+
+test("a declined Codex phase retains its home's session files alone, a failed copy keeps the result, and the observed policy reads the phase's own rollout", () => {
+  const base = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-drive-codex-home-")),
+  );
+  try {
+    const home = join(base, "home");
+    const session = "01a19467-4fb9-7bc0-b5a6-f2012aadefa3";
+    const rollout = `sessions/2026/10/31/rollout-2026-10-31T19-59-21-${session}.jsonl`;
+    write(home, "auth.json", '{"token":"private-token"}');
+    write(home, "config.toml", 'model = "m"\n');
+    write(home, "session_index.jsonl", '{"id":"x"}\n');
+    write(home, "shell_snapshots/snap.sh", "export PRIVATE=1\n");
+    write(
+      home,
+      rollout,
+      `${[
+        JSON.stringify({ type: "session_meta", payload: { id: session } }),
+        JSON.stringify({
+          type: "turn_context",
+          payload: {
+            approval_policy: "on-request",
+            approvals_reviewer: "auto_review",
+            sandbox_policy: { type: "workspace-write", network_access: true },
+          },
+        }),
+      ].join("\n")}\n`,
+    );
+    symlinkSync(join(home, "auth.json"), join(home, "sessions/auth-link.json"));
+    const capture = {
+      directory: join(base, "drives"),
+      name: "release-close-1",
+    };
+    const retained = retainCodexHome(home, capture);
+    assert.equal(retained.entries, 2);
+    assert.equal(retained.source, "isolated-codex-home-sessions");
+    assert.deepEqual(readdirSync(retained.path).sort(), [
+      "session_index.jsonl",
+      "sessions",
+    ]);
+    assert.match(
+      readFileSync(join(retained.path, rollout), "utf8"),
+      /workspace-write/,
+    );
+    // The link is copied as a link, never followed into the auth file.
+    assert.equal(
+      lstatSync(
+        join(retained.path, "sessions/auth-link.json"),
+      ).isSymbolicLink(),
+      true,
+    );
+    assert.equal(
+      JSON.stringify(readdirSync(retained.path, { recursive: true })).includes(
+        "auth.json",
+      ),
+      false,
+    );
+    assert.equal(retainCodexHome(join(base, "missing"), capture), null);
+    writeFileSync(join(base, "not-a-directory"), "");
+    assert.deepEqual(
+      retainCodexHome(home, {
+        directory: join(base, "not-a-directory"),
+        name: "x",
+      }),
+      {
+        path: null,
+        entries: 0,
+        source: "isolated-codex-home-sessions",
+        failed: "ENOTDIR",
+      },
+    );
+    assert.deepEqual(codexObservedPolicy(home, session), {
+      sandbox: "workspace-write",
+      approval: "on-request",
+      reviewer: "auto_review",
+      sandboxSource: "codex-session-turn-context",
+    });
+    assert.deepEqual(codexObservedPolicy(home, "another-session"), {
+      sandbox: null,
+      approval: null,
+      reviewer: null,
+      sandboxSource: "codex-session-rollout-absent",
+    });
+    assert.equal(
+      codexObservedPolicy(undefined, session).sandboxSource,
+      "codex-session-rollout-absent",
+    );
+  } finally {
+    rmSync(base, { recursive: true, force: true });
+  }
+});
+
+test("a command's shape names the close and its publish flag with the order masked", () => {
+  assert.deepEqual(
+    commandShape(
+      "/usr/local/bin/node /launchpad/scripts/release.mjs close WO-999 --publish",
+    ),
+    [["<operand>", "release.mjs", "close", "<operand>", "--publish"]],
+  );
+  assert.deepEqual(
+    commandShape("node /launchpad/scripts/worktree.mjs integrate WO-999"),
+    [["node", "worktree.mjs", "integrate", "<operand>"]],
+  );
+});
 
 test("a failed native worker entry stops after one launch", async () => {
   let launches = 0;
@@ -3148,6 +4214,8 @@ test("Codex tool environment selects launcher Node and finishes isolation after 
       export const codexExecArgv = ({rest}) => { writeFileSync(${JSON.stringify(captured)}, JSON.stringify(rest)); throw new Error("synthetic argument setup failure"); };
     `,
     );
+    // The election is the caller's to supply; a launch without it refuses
+    // before any host process starts.
     await assert.rejects(
       launchRole({
         host: "codex",
@@ -3155,6 +4223,18 @@ test("Codex tool environment selects launcher Node and finishes isolation after 
         role: "executor",
         definition: { model: "test", effort: "max", prompt: "" },
         env: { PATH: "/synthetic/other-tools" },
+      }),
+      /launchRole requires the drive's sandbox election, host or off/,
+    );
+    assert.equal(existsSync(marker), false);
+    await assert.rejects(
+      launchRole({
+        host: "codex",
+        launchpad: root,
+        role: "executor",
+        definition: { model: "test", effort: "max", prompt: "" },
+        env: { PATH: "/synthetic/other-tools" },
+        sandbox: "host",
       }),
       /synthetic argument setup failure/,
     );
@@ -3191,6 +4271,46 @@ test("Codex tool environment selects launcher Node and finishes isolation after 
     assert.match(
       instructions,
       /including when the shared skill spells npm run resume/,
+    );
+    // The election selects the documented form: automatic review under
+    // workspace-write by default, full access under off, never both.
+    assert.ok(args.includes("--approve-for-me"));
+    assert.ok(args.includes("sandbox_workspace_write.network_access=true"));
+    assert.ok(!args.includes("danger-full-access"));
+    await assert.rejects(
+      launchRole({
+        host: "codex",
+        launchpad: root,
+        role: "executor",
+        definition: { model: "test", effort: "max", prompt: "" },
+        phrase: "resume: next",
+        env: { PATH: "/synthetic/other-tools" },
+        sandbox: "off",
+      }),
+      /synthetic argument setup failure/,
+    );
+    const unsandboxed = JSON.parse(readFileSync(captured, "utf8"));
+    // The worker's text follows the election: no approval request under
+    // full access.
+    const unsandboxedInstructions = JSON.parse(
+      unsandboxed
+        .find((arg) => arg.startsWith("developer_instructions="))
+        .slice("developer_instructions=".length),
+    );
+    assert.match(unsandboxedInstructions, /full access and no approval step/);
+    assert.doesNotMatch(
+      unsandboxedInstructions,
+      /normal one-invocation outside-sandbox approval/,
+    );
+    assert.deepEqual(unsandboxed.slice(0, 2), [
+      "--sandbox",
+      "danger-full-access",
+    ]);
+    assert.ok(!unsandboxed.includes("--approve-for-me"));
+    assert.ok(
+      !unsandboxed.some(
+        (arg) => typeof arg === "string" && arg.includes("network_access"),
+      ),
     );
   } finally {
     rmSync(root, { recursive: true, force: true });

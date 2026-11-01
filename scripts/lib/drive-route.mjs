@@ -34,6 +34,16 @@ const stopped = (reason, next) => ({
   stop: { reason, next },
 });
 
+// A close the host declined is not retried. The stop names the attended
+// command and, after a Codex decline, the one admitted re-entry, a Claude
+// close; the driver and canonical status build the same row from the record
+// (WO-247-D004).
+export const awaitingCloseStop = (order, awaiting) =>
+  stopped(
+    "awaiting-close",
+    `The ${awaiting?.host ?? "native"} host declined the release close and a declined launcher is not retried. Attend it: in the launchpad's main checkout type resume: release close for ${order}${awaiting?.host === "codex" ? `; or re-enter with node scripts/drive.mjs ${order} --host claude, the one admitted host change, for release close only` : ""}. The drive record's awaitingClose holds the declined item${awaiting?.declined?.reason ? " with the host's reason" : ", for which the host printed no reason"}${awaiting?.retained ? " and the retained observation" : ""}.`,
+  );
+
 // A single route table serves both status and the driver. Observations are
 // explicit inputs, so a fixture never needs a live worker or a remote fetch.
 export function routeOrder(state, events = [], facts = {}) {
@@ -82,6 +92,11 @@ export function routeOrder(state, events = [], facts = {}) {
     return stopped(
       "released",
       "The local release attribution or no-release close is recorded.",
+    );
+  if (facts.awaitingClose && state.phase === "closed")
+    return awaitingCloseStop(
+      state.workOrderId ?? "WO-NNN",
+      facts.awaitingClose,
     );
   // A repair bound limits the repairs still to come, so an order carried past
   // one, by hand or otherwise, finishes normally.
@@ -176,29 +191,48 @@ const ancestor = (root, branch, base) =>
     stdio: "ignore",
     timeout: 10000,
   }).status === 0;
-// Whether the base holds this exact pass, read from the order's own record
-// alone. The order's worktree can be older than the base, so a later order's
-// newer events must not stop it reading a merge that happened.
-function passAtBase(main, order, passed) {
+// The order's control record as one revision holds it, or null when that
+// revision has no record of the order at all.
+function orderEventsAt(main, revision, order) {
   const segment = relative(main, docPath(main, "orders", `${order}.jsonl`));
-  const read = spawnGit(["show", `origin/main:${segment}`], {
+  const read = spawnGit(["show", `${revision}:${segment}`], {
     cwd: main,
     encoding: "utf8",
     maxBuffer: 16 * 1024 * 1024,
     timeout: 10000,
   });
   if (read.error) throw read.error;
-  // A base without this record has not received the order at all.
-  if (read.status !== 0) return false;
+  if (read.status !== 0) return null;
   return read.stdout
     .split("\n")
     .filter(Boolean)
-    .map((line) => JSON.parse(line))
-    .some(
+    .map((line) => JSON.parse(line));
+}
+
+// Whether the base holds this exact pass, read from the order's own record
+// alone, as close asks of it: the order's worktree can be older than the
+// base, so a later order's newer events must not stop it reading a merge that
+// happened, and a base without this record has not received the order at all.
+function passAtBase(main, order, passed) {
+  return (
+    orderEventsAt(main, "origin/main", order)?.some(
       (row) =>
         row.type === "FinalReviewCompleted" &&
         row.recordedAt === passed.recordedAt,
-    );
+    ) ?? false
+  );
+}
+
+// Whether a release tag's control record for the order holds the current
+// activation, read at the tag: a release from before a reactivation does not.
+export function releaseHoldsActivation(main, tag, order, activation) {
+  return (
+    orderEventsAt(main, tag, order)?.some(
+      (row) =>
+        row.type === "WorkOrderActivated" &&
+        row.recordedAt === activation.recordedAt,
+    ) ?? false
+  );
 }
 
 // A batched status read shares observations only for the life of that read.
@@ -221,6 +255,9 @@ export function routeFacts(root, state, events = [], context = {}) {
             incomplete: drive.incomplete,
             refused: drive.refused,
             exhausted: drive.exhausted,
+            ...(drive.awaitingClose
+              ? { awaitingClose: drive.awaitingClose }
+              : {}),
           }
         : {}),
       // An order never driven has no operator attention to wait on: a drive
@@ -278,16 +315,37 @@ export function routeFacts(root, state, events = [], context = {}) {
     const releaseCache = (context.releases ??= new Map());
     if (!releaseCache.has(trees.main))
       releaseCache.set(trees.main, localReleaseRecords(trees.main));
+    // A reactivated order inherits the receipt and the release that closed an
+    // earlier activation; only a close of this activation reads as released.
+    const activations = events.filter(
+      (row) => row.type === "WorkOrderActivated",
+    );
+    const activation = activations.at(-1);
+    const reactivated = activations.length > 1;
+    const thisActivation = (recordedAt) =>
+      !reactivated ||
+      (typeof recordedAt === "string" && recordedAt === activation.recordedAt);
     const noReleaseClose =
       close?.workOrderId === state.workOrderId &&
       close.dryRun !== true &&
-      close.publication?.outcome === "no-release";
+      close.publication?.outcome === "no-release" &&
+      thisActivation(close.activation?.recordedAt);
     const targetRemoved =
       noReleaseClose && close.targetCleanup?.outcome === "removed";
     facts.released =
       releaseCache
         .get(trees.main)
-        .some((row) => row.workOrders.includes(state.workOrderId)) ||
+        .some(
+          (row) =>
+            row.workOrders.includes(state.workOrderId) &&
+            (!reactivated ||
+              releaseHoldsActivation(
+                trees.main,
+                row.name,
+                state.workOrderId,
+                activation,
+              )),
+        ) ||
       (noReleaseClose &&
         close.cleanup?.outcome === "clean" &&
         (!state.repositoryId || targetRemoved));
@@ -299,9 +357,12 @@ export function routeFacts(root, state, events = [], context = {}) {
     const passed = events.findLast(
       (row) => row.type === "FinalReviewCompleted" && row.verdict === "pass",
     );
+    // Without the order's pass in hand there is nothing to find at the base:
+    // a closed order always has one, so a read with no events is not merged.
     facts.merged =
       (ancestor(trees.main, branch, "origin/main") &&
-        (!passed || passAtBase(trees.main, state.workOrderId, passed))) ||
+        passed !== undefined &&
+        passAtBase(trees.main, state.workOrderId, passed)) ||
       (noReleaseClose && close.cleanup?.branch?.outcome === "deleted");
     // Close judges the remote base and moves the local one afterward, so a
     // merge counts only once it is in the clone's remote-tracking branch, and

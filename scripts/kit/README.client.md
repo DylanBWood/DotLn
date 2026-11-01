@@ -250,6 +250,14 @@ operator sandbox settings.
    (named argv commands with timeouts and plain/review selections) and optional
    `documentationRoot` (default `docs`); a target order runs that gate and
    keeps its order, decisions and reports under that root's launchpad layout.
+   `drive.sandbox` elects the sandbox a routed run (`drive: WO-NNN`) gets on
+   either host: `host` (the default) keeps each host's own policy; `off`
+   launches unsandboxed in the form each host documents, `sandbox.enabled
+   false` through Claude's launch settings and `--sandbox danger-full-access`
+   with no approvals on Codex, for every phase worker the drive launches (an
+   operator's own router session keeps the policy it was started with).
+   Elect `off` only where this instance's environments are unsandboxed; each
+   receipt records the election and, apart from it, what the host applied.
 6. Tell this instance's own session: **Start WO-001 in its own worktree.**
    The session starts from clean `main` whose export/setup commit is on
    `origin/main`, with the pre-drafted order carrying first release `v0.1.0`:

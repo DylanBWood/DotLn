@@ -7,6 +7,11 @@ import {
 } from "./lib/temporary-roots.mjs";
 import * as gitCommands from "./lib/git.mjs";
 import { copyFixtureFiles } from "./lib/fixture-inputs.mjs";
+import {
+  releaseCloseHandoff,
+  releaseCloseKind,
+  selfCloseKind,
+} from "./lib/release-close-handoff.mjs";
 const { runGit, shellQuote } = gitCommands;
 // The compatibility spelling lets the new behavioral fixtures execute against
 // the named prior revision, where the exported builder does not exist yet.
@@ -9103,6 +9108,63 @@ test("WO-144 repair admits null discards and exposes scratch with single consist
   }
 });
 
+test("harness begin refuses an unknown role, a second begin and a malformed call through its CLI, and admits a router with its order", () => {
+  const root = fixture();
+  try {
+    const begin = (session, ...args) =>
+      spawnSync(process.execPath, ["scripts/harness.mjs", "begin", ...args], {
+        cwd: root,
+        env: { ...process.env, CODEX_THREAD_ID: session },
+        encoding: "utf8",
+      });
+    const refused = (result, pattern) => {
+      assert.notEqual(result.status, 0, result.stdout);
+      assert.match(result.stderr, pattern);
+      assert.equal(result.stdout.trim(), "");
+    };
+    // The refusal path: no role, an unknown role, an unknown flag, a router
+    // flag that is not an order, and a session that already began.
+    refused(begin("wo247-begin", "wo247-begin"), /usage: harness begin/);
+    refused(
+      begin("wo247-begin", "wo247-begin", "operator"),
+      /Invalid harness session/,
+    );
+    refused(
+      begin("wo247-begin", "wo247-begin", "executor", "--adopt-nothing"),
+      /usage: harness begin/,
+    );
+    refused(
+      begin("wo247-begin", "wo247-begin", "router", "WO-99"),
+      /usage: harness begin/,
+    );
+    refused(
+      begin("wo247-begin", "wo247-begin", "executor", "--adopt-file"),
+      /usage: harness begin/,
+    );
+    const first = begin("wo247-begin", "wo247-begin", "executor");
+    assert.equal(first.status, 0, first.stderr);
+    const begun = JSON.parse(first.stdout);
+    assert.match(begun.session, /^[0-9a-f]{64}$/);
+    assert.ok(begun.scratch.endsWith("/scratch"));
+    refused(
+      begin("wo247-begin", "wo247-begin", "executor"),
+      /Session already began; do not erase its observations/,
+    );
+    refused(
+      begin("wo247-begin", "wo247-begin", "verifier"),
+      /Session already began; do not erase its observations/,
+    );
+    // The success path a live Codex router takes: its order rides with it.
+    const router = begin("wo247-router", "wo247-router", "router", "WO-999");
+    assert.equal(router.status, 0, router.stderr);
+    assert.match(JSON.parse(router.stdout).session, /^[0-9a-f]{64}$/);
+    assert.doesNotThrow(() => measureHarnessUsage(root, "wo247-router"));
+    assert.equal(harnessWriterView(root).reserved, false);
+  } finally {
+    removeFixture(root, { recursive: true });
+  }
+});
+
 test("WO-168 a printed session scratch path exists at the dispatch, the Codex begin and harness scratch, and an obstructed path advises without blocking", () => {
   const root = fixture();
   const outside = realpathSync(
@@ -17092,5 +17154,132 @@ test("a lifecycle worker's reservation ends with the host's report of its end", 
     assert.equal(admitted(), true);
   } finally {
     removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("the release-close handoff states each close's actual effect, by kind", () => {
+  const self = releaseCloseHandoff({
+    kind: "self-release",
+    version: "v0.2.0",
+    latest: "v0.1.0",
+  });
+  assert.equal(
+    self.effect,
+    "This narrowly authorizes the annotated tag v0.2.0 and its matching GitHub Release, above the latest release v0.1.0 the remote holds; never push main.",
+  );
+  // One comparison serves the handoff and the close.
+  assert.equal(selfCloseKind("v0.2.0", "v0.1.0"), "self-release");
+  assert.equal(selfCloseKind("v0.1.0", "v0.2.0"), "self-no-release");
+  assert.equal(selfCloseKind("v0.1.0", "v0.1.0"), "self-existing-release");
+  assert.equal(selfCloseKind("v0.1.0", null), "self-release");
+  assert.equal(selfCloseKind(null, "v0.1.0"), "self-undecided");
+  const existing = releaseCloseHandoff({
+    kind: "self-existing-release",
+    version: "v0.1.0",
+    latest: "v0.1.0",
+  });
+  assert.match(
+    existing.effect,
+    /^This close publishes no new tag and no new GitHub Release: the remote already holds v0\.1\.0/,
+  );
+  assert.match(existing.egress, /the Release it reconciles/);
+  assert.match(self.egress, /the tag push and the Release/);
+  assert.match(
+    releaseCloseHandoff({ kind: "self-release", version: "v0.1.0" }).effect,
+    /the first release/,
+  );
+  const none = releaseCloseHandoff({
+    kind: "self-no-release",
+    version: "v0.1.0",
+    latest: "v0.2.0",
+  });
+  assert.match(
+    none.effect,
+    /^This close publishes no tag and no GitHub Release: the order's version v0\.1\.0 is below the latest release v0\.2\.0/,
+  );
+  assert.match(none.egress, /fetch and ls-remote only/);
+  assert.doesNotMatch(none.egress, /tag push/);
+  const undecided = releaseCloseHandoff({ kind: "self-undecided" });
+  assert.match(
+    undecided.effect,
+    /only when that version stands above the latest release the remote holds/,
+  );
+  const target = releaseCloseHandoff({ kind: "target-release" });
+  assert.match(target.effect, /the target's annotated tag/);
+  assert.match(target.egress, /the target's tag push and its Release/);
+  const quiet = releaseCloseHandoff({ kind: "target-no-release" });
+  assert.match(
+    quiet.effect,
+    /publishes no tag and no GitHub Release: the target's policy is no-release/,
+  );
+  assert.match(quiet.egress, /fetch and ls-remote only/);
+  for (const { effect, egress } of [
+    self,
+    none,
+    undecided,
+    existing,
+    target,
+    quiet,
+  ]) {
+    assert.match(effect, /never push main/);
+    assert.match(
+      egress,
+      /Run the printed --publish command once; --dry-run is optional when a prerequisite/,
+    );
+  }
+  assert.throws(
+    () => releaseCloseHandoff({ kind: "other" }),
+    /unknown release close kind/,
+  );
+  // The kind follows the order's heading and the local release tags, as the
+  // close compares them against the remote's; a reading that cannot settle it
+  // stays undecided, and a registered target follows its release policy.
+  const root = createFixtureRoot(join(tmpdir(), "dotln-close-kind-"));
+  try {
+    writeFileSync(join(root, "WO-099.md"), "# WO-099 — Fixture v0.2.0\n");
+    const state = { workOrderId: "WO-099", workOrderPath: "WO-099.md" };
+    assert.equal(releaseCloseKind(root, state).kind, "self-undecided");
+    runGit(root, ["init", "--quiet", "--initial-branch=main"]);
+    // Without an origin the remote's tags cannot be read: undecided.
+    assert.equal(releaseCloseKind(root, state).kind, "self-undecided");
+    const origin = join(root, "origin.git");
+    runGit(root, ["init", "--quiet", "--bare", origin]);
+    runGit(root, ["remote", "add", "origin", origin]);
+    assert.deepEqual(releaseCloseKind(root, state), {
+      kind: "self-release",
+      version: "v0.2.0",
+      latest: null,
+    });
+    // The remote's tags decide, as the close compares them: a tag the remote
+    // holds above the order's version makes the close a no-release one, and
+    // the order's own version on the remote makes it an existing release.
+    writeFileSync(join(root, "note.txt"), "note\n");
+    runGit(root, ["add", "note.txt"]);
+    runGit(root, [
+      "-c",
+      "user.name=Fixture",
+      "-c",
+      "user.email=fixture@example.invalid",
+      "commit",
+      "-qm",
+      "note",
+    ]);
+    runGit(root, ["tag", "v0.3.0"]);
+    runGit(root, ["push", "-q", "origin", "v0.3.0"]);
+    assert.deepEqual(releaseCloseKind(root, state), {
+      kind: "self-no-release",
+      version: "v0.2.0",
+      latest: "v0.3.0",
+    });
+    writeFileSync(join(root, "WO-099.md"), "# WO-099 — Fixture v0.3.0\n");
+    assert.equal(releaseCloseKind(root, state).kind, "self-existing-release");
+    writeFileSync(join(root, "WO-099.md"), "# WO-099 — Fixture\n");
+    assert.equal(releaseCloseKind(root, state).kind, "self-undecided");
+    assert.deepEqual(
+      releaseCloseKind(root, { ...state, repositoryId: "target" }),
+      { kind: "target-no-release" },
+    );
+  } finally {
+    rmSync(root, { recursive: true, force: true });
   }
 });

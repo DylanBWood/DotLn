@@ -105,6 +105,7 @@ const SECTION_KEYS = [
   "build",
   "release",
   "kit",
+  "drive",
   "derivedOrders",
   "portfolios",
   "contributions",
@@ -374,6 +375,25 @@ const validateRelease = (path, declared) => {
     release[key] = declared[key];
   }
   return release;
+};
+
+/** The sandbox a routed run gets on either host (WO-247): `host` keeps the
+ * host's own setting, `off` launches unsandboxed in the form each host
+ * documents. One instance elects it for every phase worker a drive launches;
+ * an operator's own router session keeps the policy it was started with. */
+export const DRIVE_SANDBOX_ELECTIONS = ["host", "off"];
+const validateDrive = (path, declared) => {
+  requireObject(path, declared, "drive");
+  requireKnownKeys(path, declared, ["sandbox"], "drive");
+  if (
+    declared.sandbox !== undefined &&
+    !DRIVE_SANDBOX_ELECTIONS.includes(declared.sandbox)
+  )
+    throw refuse(
+      path,
+      `drive.sandbox must be ${DRIVE_SANDBOX_ELECTIONS.map((election) => JSON.stringify(election)).join(" or ")}; found ${JSON.stringify(declared.sandbox)}`,
+    );
+  return { sandbox: declared.sandbox ?? "host" };
 };
 
 const validateKit = (path, declared) => {
@@ -988,6 +1008,10 @@ export const validateConfig = (path, source) => {
         ? validateRelease(path, {})
         : validateRelease(path, declared.release),
     kit: validateKit(path, declared.kit === undefined ? {} : declared.kit),
+    drive: validateDrive(
+      path,
+      declared.drive === undefined ? {} : declared.drive,
+    ),
     ...(declared.contributions === undefined
       ? {}
       : { contributions: validateContributions(path, declared.contributions) }),
@@ -1011,6 +1035,7 @@ const absentConfig = () => ({
   build: { loadout: null, profile: null, overlay: null },
   release: validateRelease(CONFIG_FILENAME, {}),
   kit: { applyInstanceActions: false },
+  drive: validateDrive(CONFIG_FILENAME, {}),
 });
 
 // One nonblocking descriptor per lookup keeps a launchpad that gains, loses or edits its

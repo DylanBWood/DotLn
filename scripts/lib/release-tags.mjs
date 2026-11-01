@@ -6,7 +6,7 @@ import {
 } from "./config.mjs";
 import { existsSync, readFileSync } from "node:fs";
 
-import { readGitObjects, runGit } from "./git.mjs";
+import { failureOf, readGitObjects, runGit, spawnGitLimited } from "./git.mjs";
 import { parseJson } from "./paths.mjs";
 
 export const semver = (value) => {
@@ -30,6 +30,45 @@ export const compareVersions = (left, right) => {
   for (let index = 0; index < 3; index += 1)
     if (a[index] !== b[index]) return a[index] - b[index];
   return 0;
+};
+/** The one strict version a work-order heading names, or null. */
+export const headingVersion = (heading) => {
+  const versions = strictVersionsIn(heading);
+  return versions.length === 1 && semver(versions[0]) ? versions[0] : null;
+};
+/** The latest semver-named tag among `tags`, a Map by name, or null. */
+export const latestTagVersion = (tags) =>
+  [...tags.keys()]
+    .filter((name) => semver(name))
+    .sort(compareVersions)
+    .at(-1) ?? null;
+/** The origin's tags as the checkout's own Git reads them: the comparison
+ * release close makes, and the one the handoff describes. */
+export const originTags = (root, { timeoutMs } = {}) => {
+  const read = spawnGitLimited(["-C", root, "ls-remote", "--tags", "origin"], {
+    encoding: "utf8",
+    maxBuffer: 16 * 1024 * 1024,
+    ...(timeoutMs ? { timeout: timeoutMs } : {}),
+  });
+  if (read.status !== 0)
+    throw new Error(
+      `git ls-remote --tags origin failed: ${failureOf(read, `ended by ${read.signal}`)}`,
+    );
+  const rows = read.stdout.trim();
+  const tags = new Map();
+  for (const row of rows.split("\n").filter(Boolean)) {
+    const [object, ref] = row.split(/\s+/);
+    const peeled = /\^\{\}$/.test(ref);
+    const name = ref.replace(/^refs\/tags\//, "").replace(/\^\{\}$/, "");
+    const prior = tags.get(name) ?? { name };
+    tags.set(
+      name,
+      peeled
+        ? { ...prior, target: object, annotated: true }
+        : { ...prior, object, target: prior.target ?? object },
+    );
+  }
+  return tags;
 };
 export const localTags = (root) => {
   const rows = runGit(root, [

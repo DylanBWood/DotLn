@@ -348,7 +348,7 @@ test("WO-221 a target close deletes declared disposable output, judges the base 
       assert.notEqual(taken.status, 0);
       assert.match(
         taken.stderr,
-        /target release tag v0\.1\.0 exists on github\.com\/dotln-fixture\/target at [0-9a-f]{40}, not the merged main/u,
+        /target release tag v0\.1\.0 exists on github\.invalid\/dotln-fixture\/target at [0-9a-f]{40}, not the merged main/u,
       );
       assert.ok(
         existsSync(f.target),
@@ -417,7 +417,7 @@ test("WO-221 a target close deletes declared disposable output, judges the base 
       const remote = join(f.base, "target.git");
       const merged = git(remote, "rev-parse", "main");
       const originConfig = readFileSync(f.env.GIT_CONFIG_GLOBAL, "utf8");
-      const foreignUrl = "https://github.com/dotln-fixture/another.git";
+      const foreignUrl = "https://github.invalid/dotln-fixture/another.git";
       writeFileSync(
         f.env.GIT_CONFIG_GLOBAL,
         `${originConfig}\n[url "${remote}"]\n\tinsteadOf = ${foreignUrl}\n`,
@@ -505,7 +505,7 @@ test("WO-221 a target close deletes declared disposable output, judges the base 
       );
       assert.equal(
         forgeState.releases["v0.1.0"].repo,
-        "github.com/dotln-fixture/target",
+        "github.invalid/dotln-fixture/target",
       );
       // The legacy body, byte for byte: the order has no objective paragraph.
       const legacyBody = `WO-999 — target lifecycle fixture\n\nNo objective paragraph was found in the work-order authority.\n\nClosed by WO-999; merged main at ${merged}.\n`;
@@ -531,7 +531,7 @@ test("WO-221 a target close deletes declared disposable output, judges the base 
         commit: merged,
         tagOutcome: "published",
         title: "Fixture Product v0.1.0",
-        origin: "github.com/dotln-fixture/target",
+        origin: "github.invalid/dotln-fixture/target",
         body: {
           source: "objective",
           digest: `sha256:${createHash("sha256").update(legacyBody).digest("hex")}`,
@@ -856,7 +856,7 @@ test("WO-227 criterion 7: the reviewed header refuses an absent or invalid notes
       /Target release target: published; tag v0\.1\.0; GitHub Release created/u,
     );
     const link = (path) =>
-      `https://github.com/dotln-fixture/target/blob/${merged}/${path}`;
+      `https://github.invalid/dotln-fixture/target/blob/${merged}/${path}`;
     const body = `## Release overview\n\n**WO-999 — target lifecycle fixture**\n\nThe fixture product gains a launchpad board.\n\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\nOne change, see [D001](${link("docs/evidence/WO-999/decisions.md")}#wo-999-d001).\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nSee [the order](${link("docs/work-orders/WO-999-fixture.md")}) and the plan.\n\nClosed by WO-999; merged main at ${merged}.\n`;
     assert.equal(r.releases()["v0.1.0"].body, body);
     assert.equal(digest, digestOf(body));
@@ -928,7 +928,7 @@ test("WO-227 criterion 7: only the bytes the renderer writes for a moved record 
     });
     const notesPath = "records/final-reviews/WO-999/RELEASE-NOTES.md";
     const at = (revision, path) =>
-      `https://github.com/dotln-fixture/target/blob/${revision}/${path}`;
+      `https://github.invalid/dotln-fixture/target/blob/${revision}/${path}`;
     const refused = (overview, pattern) => {
       r.amendMain(notesPath, notesText(overview), "docs: author a target link");
       const result = r.close("--publish");
@@ -1061,7 +1061,7 @@ test("WO-221 a registration without a release policy closes with no-release and 
     publicationSetup(f);
     const operatorRules = [
       "Bash(npm test)",
-      "Bash(gh pr view --repo github.com/dotln-fixture/target *)",
+      "Bash(gh pr view --repo github.invalid/dotln-fixture/target *)",
     ];
     f.config.repositories.target.hostRules = "literal";
     write(f.main, "dotln.config.json", JSON.stringify(f.config));

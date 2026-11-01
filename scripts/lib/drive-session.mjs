@@ -9,7 +9,8 @@ import {
 } from "node:fs";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
-import { docPath } from "./config.mjs";
+import { docPath, loadConfig } from "./config.mjs";
+import { latestActivationAt, readControl } from "./control-store.mjs";
 import {
   dispatchEvents,
   dispatchPhase,
@@ -17,6 +18,7 @@ import {
 } from "./dispatch-bound.mjs";
 import {
   attemptFinished,
+  awaitingCloseStop,
   fetchMergedBases,
   driveRecordPath,
   readDriveRecord,
@@ -234,6 +236,18 @@ export async function driveLoop({
         },
       };
     if (!route.action) return { ...record, stop: route.stop };
+    // The admitted host change covers release close alone (WO-247-D004).
+    if (
+      record.hostChange?.phase === "release-close" &&
+      route.action !== "release-close"
+    )
+      return {
+        ...record,
+        stop: {
+          reason: "dispatch-refused",
+          next: `The admitted host change covers release close only, and this order now routes to ${route.action}; drive it on its recorded host, --host ${record.hostChange.from}.`,
+        },
+      };
     const result = await launch(route, before);
     if (workerRan(result))
       record.attempts.push({
@@ -242,24 +256,37 @@ export async function driveLoop({
         ...result,
       });
     if (signal?.aborted) continue;
-    if (result.refused) {
-      // A worker can record its dispatch before it is refused, and a refusal
-      // stamped earlier than that log would read as stale. An unreadable status
-      // must not cost the refusal its report.
+    // A close the host declined is not retried: the drive stops naming the
+    // attended command and, after a Codex decline, the one admitted host
+    // change, and keeps the declined item with the reason the host gave. Any
+    // other refusal stops as before. A worker can record its dispatch before
+    // it is refused, and a stop stamped earlier than that log would read as
+    // stale; an unreadable status must not cost the stop its report.
+    const declinedClose = route.action === "release-close" && result.declined;
+    if (declinedClose || result.refused) {
       let settled = before;
       try {
         settled = await status();
       } catch {}
-      record.refused = result.refused;
       record.factsAt = settled.route.eventCount ?? record.factsAt;
-      saveRecord(record);
-      return {
-        ...record,
-        stop: {
+      let stop;
+      if (declinedClose) {
+        record.awaitingClose = {
+          host: record.host ?? null,
+          at: new Date().toISOString(),
+          declined: result.declined,
+          retained: result.retained ?? null,
+        };
+        stop = awaitingCloseStop(record.workOrder, record.awaitingClose).stop;
+      } else {
+        record.refused = result.refused;
+        stop = {
           reason: record.exhausted ? "budget-exhausted" : "dispatch-refused",
           next: result.refused,
-        },
-      };
+        };
+      }
+      saveRecord(record);
+      return { ...record, stop };
     }
     const after = await status();
     record.factsAt = after.route.eventCount ?? record.factsAt;
@@ -293,6 +320,65 @@ export function workerEnvironment(env = process.env) {
   ])
     delete clean[key];
   return clean;
+}
+
+// Re-entry keeps its recorded host. The one admitted change is Codex to
+// Claude for release close, while a close the Codex host declined is the
+// order's current fact (WO-247-D004): the order still closed and the record
+// stamped at the log canonical status reads, which the driver judges once as
+// declineCurrent. The record names the change as hostChange with the
+// activation it belongs to, and recordedDrive ends it with that activation.
+const keptHostRefusal = (old, declineCurrent) =>
+  new Error(
+    declineCurrent && old.host === "claude"
+      ? "Drive re-entry must keep its recorded host; a close the Claude host declined is attended in the launchpad's main checkout with resume: release close"
+      : "Drive re-entry must keep its recorded host",
+  );
+export function admittedHostChange(
+  old,
+  workerHost,
+  declineCurrent,
+  activationAt,
+) {
+  if (!old?.host || old.host === workerHost) return null;
+  if (old.host === "codex" && workerHost === "claude" && declineCurrent) {
+    // The stamp is what ends the change later; a caller with none says so.
+    if (activationAt === undefined)
+      throw new Error(
+        "an admitted host change needs the activation it belongs to; pass null when the log records none",
+      );
+    return {
+      from: old.host,
+      to: workerHost,
+      phase: "release-close",
+      cause: "awaiting-close",
+      activation: activationAt,
+      at: new Date().toISOString(),
+    };
+  }
+  throw keptHostRefusal(old, declineCurrent);
+}
+
+// The record a re-entry builds on: a host change admitted for one
+// activation's close ends with that activation. Under a later activation the
+// order drives on the host recorded before the change, and the ended change
+// is not carried. A change without an activation stamp is judged by the
+// phase instead: it ends once the order is no longer closed, so no record can
+// leave an order that neither host may drive.
+export function recordedDrive(old, activationAt, phase) {
+  const change = old?.hostChange;
+  if (change?.phase !== "release-close") return old;
+  const ended =
+    change.activation == null
+      ? phase !== "closed"
+      : change.activation !== activationAt;
+  if (!ended) return old;
+  return {
+    ...old,
+    host: old.hostChange.from,
+    hostChange: null,
+    awaitingClose: null,
+  };
 }
 
 // A worker recorded as running either still runs, so it must not gain a second
@@ -694,6 +780,9 @@ async function launchAttempt(drive, route, before) {
       deadlineAt,
       beforeLaunch: () => expired() ?? admitWorker(drive, worker),
       signal,
+      // The raw stream of a declined or failed phase stays beside the record.
+      capture: { directory, name: worker },
+      sandbox: drive.sandbox,
       ...observers,
     });
     if (result.cause === deadlineRefusal.cause) record.exhausted = true;
@@ -774,13 +863,22 @@ async function runDriveUnlocked(
   const workerHost = driveHost(selectedHost);
   const trees = resolveOrderWorktrees(root, order);
   const file = driveRecordPath(trees.main, order);
-  const old = readDriveRecord(trees.main, order);
-  if (old?.host && old.host !== workerHost)
-    throw new Error("Drive re-entry must keep its recorded host");
-  await recoverStaleWorker(old, trees);
+  const previous = readDriveRecord(trees.main, order);
+  // A re-entry on another host is refused before any effect, unless the
+  // record holds a decline or a host change that canonical status may admit.
+  if (
+    previous?.host &&
+    previous.host !== workerHost &&
+    !previous.awaitingClose &&
+    !previous.hostChange
+  )
+    throw keptHostRefusal(previous, false);
+  await recoverStaleWorker(previous, trees);
+  // The election is read once per drive and reaches every phase launch.
+  const sandbox = loadConfig(trees.launchpad).drive.sandbox;
   const budgets = readBudgets(trees.launchpad);
   const { cap, ceiling } = subagentLimits(budgets);
-  const session = old?.session ?? randomUUID();
+  const session = previous?.session ?? randomUUID();
   const directory = docPath(trees.main, "control", "local/drives", order);
   mkdirSync(directory, { recursive: true, mode: 0o700 });
   const budget = await import(
@@ -791,6 +889,23 @@ async function runDriveUnlocked(
   const initialized = budget.initializeSubagentCounter(directory, session);
   if (initialized) throw new Error(initialized);
   const initialStatus = driveStatus(root, order);
+  // The activation is read where canonical status reads it, the order's own
+  // launchpad; a target order's main may not hold the log yet.
+  const activationAt = latestActivationAt(readControl(trees.launchpad), order);
+  const old = recordedDrive(previous, activationAt, initialStatus.phase);
+  // Facts describe the log they saw; a transition since has moved past them,
+  // and a decline is current only while the order is still closed.
+  const factsCurrent = old?.factsAt === initialStatus.route.eventCount;
+  const declineCurrent =
+    Boolean(old?.awaitingClose) &&
+    factsCurrent &&
+    initialStatus.phase === "closed";
+  const hostChange = admittedHostChange(
+    old,
+    workerHost,
+    declineCurrent,
+    activationAt,
+  );
   // A released order has nothing left to learn from either remote. The fetch
   // can take minutes and cannot be cancelled, so it says so before it starts.
   const fetchesBases =
@@ -810,10 +925,9 @@ async function runDriveUnlocked(
     running: true,
     startedAt: old?.startedAt ?? new Date().toISOString(),
     attempts: old?.attempts ?? [],
-    // Counts describe the log they saw; a transition since has moved past them.
-    incomplete:
-      old?.factsAt === initialStatus.route.eventCount ? old.incomplete : {},
+    incomplete: factsCurrent ? old.incomplete : {},
     factsAt: initialStatus.route.eventCount,
+    sandbox,
     limits: {
       subagentCap: cap,
       drivenSessionCeiling: ceiling,
@@ -831,6 +945,11 @@ async function runDriveUnlocked(
     refused: null,
     writerConflict: null,
     exhausted: false,
+    // A declined close stays recorded while it is the order's current fact,
+    // until the admitted host change takes the close; a same-host re-entry
+    // stops at it again instead of retrying.
+    awaitingClose: hostChange || !declineCurrent ? null : old.awaitingClose,
+    hostChange: hostChange ?? old?.hostChange ?? null,
     attentionSince: initialStatus.route.eventCount ?? 0,
     // Causes stay in this ignored record: a remote's error can name its URL.
     ...(unreachable.length ? { fetchFailures: unreachable } : {}),
@@ -849,6 +968,7 @@ async function runDriveUnlocked(
     cap,
     ceiling,
     workerHost,
+    sandbox,
     signal,
     onTransition,
     maxWorkerUsd,

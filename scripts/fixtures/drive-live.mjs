@@ -13,7 +13,7 @@ import {
 } from "node:fs";
 import { randomUUID } from "node:crypto";
 import { tmpdir } from "node:os";
-import { basename, dirname, join, resolve } from "node:path";
+import { basename, dirname, join, relative, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { spawnSync } from "node:child_process";
 import { createScratchRoot } from "../lib/temporary-roots.mjs";
@@ -24,24 +24,36 @@ import {
   actorArgs,
   restoreFixturePolicies,
 } from "../lib/target-worktree-fixture.mjs";
-import { redactPaths } from "../lib/git.mjs";
+import { redactPaths, runGit } from "../lib/git.mjs";
 import {
   phaseDefinition,
   driveStatus,
   workerEnvironment,
   requestDriveStop,
 } from "../lib/drive-session.mjs";
-import { driveHost, launchRole } from "../lib/drive-worker.mjs";
+import {
+  driveHost,
+  launchRole,
+  sandboxLaunchForm,
+} from "../lib/drive-worker.mjs";
 import { readDriveRecord } from "../lib/drive-route.mjs";
 import { processRunning } from "../lib/drive-transport.mjs";
 import {
   drivenCompletions,
   drivenObservation,
+  receiptCodeIdentity,
   requireDrivenGates,
   requireDrivenResearch,
 } from "../lib/drive-evidence.mjs";
+import { gateCodeIdentity, gateTreeHash } from "../lib/gate-evidence.mjs";
 import { write, json } from "../lib/helpers.mjs";
-import { TOOL_ROOT, defaultRoots, docPath } from "../lib/config.mjs";
+import {
+  DRIVE_SANDBOX_ELECTIONS,
+  TOOL_ROOT,
+  defaultRoots,
+  docPath,
+  loadConfig,
+} from "../lib/config.mjs";
 
 assert.equal(
   process.env.DOTLN_LIVE_HARNESS,
@@ -58,7 +70,27 @@ assert.ok(
 const qualificationScope = releaseCloseOnly
   ? "native-router-and-release-close; earlier phases coordinator-seeded"
   : "native-full-lifecycle";
-const sandboxDisabled = process.env.DOTLN_LIVE_SANDBOX === "off";
+// The sandbox a routed run gets is the instance's election, drive.sandbox in
+// the authoring checkout's configuration; DOTLN_LIVE_SANDBOX stays the
+// fixture's override and is named in the receipt when set (WO-247).
+const electionOverride = process.env.DOTLN_LIVE_SANDBOX;
+assert.ok(
+  electionOverride === undefined ||
+    DRIVE_SANDBOX_ELECTIONS.includes(electionOverride),
+  "DOTLN_LIVE_SANDBOX selects host or off",
+);
+const election = electionOverride ?? loadConfig(TOOL_ROOT).drive.sandbox;
+// After a Codex close the host declined, the fixture may finish through the
+// one admitted host change, a Claude close; otherwise the episode ends at the
+// recorded awaiting-close stop.
+const closeHost =
+  process.env.DOTLN_LIVE_CLOSE_HOST === undefined
+    ? null
+    : driveHost(process.env.DOTLN_LIVE_CLOSE_HOST);
+assert.ok(
+  closeHost === null || (host === "codex" && closeHost === "claude"),
+  "the admitted close host change is codex to claude",
+);
 const declaredPermissions =
   process.env.DOTLN_LIVE_PERMISSION_MODE === "default";
 const qualificationPermissionReview = declaredPermissions
@@ -73,29 +105,34 @@ const driverRule = "Bash(node scripts/drive.mjs WO-999)";
 const qualificationLauncherPermission = allowDriver
   ? { source: "operator-approved-fixture-command", rule: driverRule }
   : { source: "inherited-host-policy" };
-const qualificationSandbox = sandboxDisabled
-  ? {
-      enabled: false,
-      source: "operator-authorized-fixture-local-settings",
-      permissionPolicy: declaredPermissions
-        ? "fixture-declared-tools"
-        : "inherited",
-    }
-  : { source: "inherited-host-policy" };
-assert.ok(
-  process.env.DOTLN_LIVE_SANDBOX === undefined ||
-    (sandboxDisabled && host === "claude"),
-  "the sandbox-off qualification option requires the Claude fixture",
-);
+// The selected election and the host form it maps to; what each worker
+// observed is recorded separately on its row.
+const qualificationSandbox = {
+  election,
+  electionSource:
+    electionOverride === undefined
+      ? "instance-configuration"
+      : "fixture-override",
+  selected: sandboxLaunchForm(host, election).selected,
+  permissionPolicy: declaredPermissions
+    ? "fixture-declared-tools"
+    : "inherited",
+};
+const writesLocalSettings = declaredPermissions || allowDriver;
+// The driver rule and the declared permission mode are Claude permission
+// settings, apart from the sandbox: they are admitted whenever a Claude router
+// runs in this episode, the Claude host's own or the Codex episode's Claude
+// close (WO-247-D012).
+const claudeRouter = host === "claude" || closeHost === "claude";
 assert.ok(
   process.env.DOTLN_LIVE_ALLOW_DRIVER === undefined ||
-    (allowDriver && sandboxDisabled && host === "claude"),
-  "the exact launcher grant requires the sandbox-off Claude fixture",
+    (allowDriver && claudeRouter),
+  "the exact launcher grant requires a Claude router in this episode",
 );
 assert.ok(
   process.env.DOTLN_LIVE_PERMISSION_MODE === undefined ||
-    (declaredPermissions && sandboxDisabled && host === "claude"),
-  "declared-tool permission mode requires the sandbox-off Claude fixture",
+    (declaredPermissions && claudeRouter),
+  "declared-tool permission mode requires a Claude router in this episode",
 );
 assert.ok(!existsSync(output), "retain prior live observations");
 // This fixture exports the same installed kit used by launchpad tests. Its
@@ -104,6 +141,15 @@ const exported = await import("../lib/launchpad-fixture.mjs");
 const base = realpathSync(
   createScratchRoot(join(tmpdir(), "dotln-drive-live-")),
 );
+// The code this episode ran on: the authoring checkout's gate code identity
+// at the export the fixture installs, compared with the handoff identity at
+// completion. The fixture trees' own hashes are provenance, never that identity.
+const sourceIdentity = {
+  codeIdentity: gateCodeIdentity(TOOL_ROOT),
+  head: runGit(TOOL_ROOT, ["rev-parse", "HEAD"]),
+  observedAt: new Date().toISOString(),
+};
+let fixtureTrees = null;
 const identities = new Map();
 const evidenceJson = (record) =>
   json(
@@ -195,7 +241,7 @@ async function stopAndObserve() {
 try {
   f = fixture(base, {
     roots: { docs: defaultRoots().docs, control: defaultRoots().control },
-    ...(sandboxDisabled
+    ...(writesLocalSettings
       ? { baseIgnore: "/.claude/settings.local.json\n" }
       : {}),
   });
@@ -234,6 +280,8 @@ try {
     ...kitConfig,
     classes: { ...kitConfig.classes, ...f.config.classes },
     repositories: f.config.repositories,
+    // The election reaches the router and every phase worker from here.
+    drive: { sandbox: election },
   };
   config.repositories.target.gate.commands.test.argv = [
     process.execPath,
@@ -281,32 +329,37 @@ try {
   stage = "register-target";
   f.mapClone();
   f.start();
-  if (sandboxDisabled)
+  fixtureTrees = {
+    main: gateTreeHash(f.main),
+    order: gateTreeHash(f.orderRoot),
+    target: gateTreeHash(f.target),
+  };
+  // The sandbox itself follows the election through each launch's settings;
+  // only the declared permission mode and the driver rule still need the
+  // disposable local settings (WO-192-D058 and WO-192-D059).
+  if (writesLocalSettings)
     for (const checkout of [f.main, f.orderRoot, f.target]) {
+      if (!(declaredPermissions || (allowDriver && checkout === f.main)))
+        continue;
       const file = join(checkout, ".claude/settings.local.json");
       const previous = existsSync(file) ? readFileSync(file, "utf8") : null;
       const settings = previous === null ? {} : JSON.parse(previous);
       const applied = json({
         ...settings,
-        sandbox: { ...settings.sandbox, enabled: false },
-        ...(declaredPermissions || (allowDriver && checkout === f.main)
-          ? {
-              permissions: {
-                ...settings.permissions,
-                ...(declaredPermissions ? { defaultMode: "default" } : {}),
-                ...(allowDriver && checkout === f.main
-                  ? {
-                      allow: [
-                        ...new Set([
-                          ...(settings.permissions?.allow ?? []),
-                          driverRule,
-                        ]),
-                      ],
-                    }
-                  : {}),
-              },
-            }
-          : {}),
+        permissions: {
+          ...settings.permissions,
+          ...(declaredPermissions ? { defaultMode: "default" } : {}),
+          ...(allowDriver && checkout === f.main
+            ? {
+                allow: [
+                  ...new Set([
+                    ...(settings.permissions?.allow ?? []),
+                    driverRule,
+                  ]),
+                ],
+              }
+            : {}),
+        },
       });
       write(checkout, ".claude/settings.local.json", applied);
       fixturePolicies.push({ checkout, file, previous, applied });
@@ -398,11 +451,11 @@ try {
     f.ok(f.resume(["final-review-result", "pass", ...actorArgs]));
   }
   stage = "drive";
-  const runRouter = async () => {
+  const runRouter = async (routerHost = host) => {
     const { name, definition, helpers } = await phaseDefinition(
       f.main,
       "router",
-      host,
+      routerHost,
     );
     const worker = randomUUID();
     const definitions = docPath(
@@ -414,12 +467,12 @@ try {
     const env = workerEnvironment({
       ...f.env,
       DOTLN_LAUNCHPAD: f.main,
-      DOTLN_DRIVE_HOST: host,
+      DOTLN_DRIVE_HOST: routerHost,
       DOTLN_DRIVE_DEADLINE_AT: String(deadline - 15000),
     });
-    if (host === "claude") env.CLAUDE_CODE_SESSION_ID = worker;
+    if (routerHost === "claude") env.CLAUDE_CODE_SESSION_ID = worker;
     const row = await launchRole({
-      host,
+      host: routerHost,
       launchpad: f.main,
       role: "router",
       definition,
@@ -429,12 +482,18 @@ try {
       cwd: f.main,
       env,
       deadlineAt: deadline,
+      sandbox: election,
+      capture: {
+        directory: docPath(f.main, "control", "local/drives/WO-999"),
+        name: `router-${routers.length + 1}`,
+      },
     });
     routers.push({
       ...row,
       selectedModel: definition.model,
       selectedEffort: definition.effort,
       role: "router",
+      host: routerHost,
       cwd: "main",
     });
     observeDrive("router-ended");
@@ -461,6 +520,7 @@ try {
     observedAt: new Date().toISOString(),
     input: "drive: WO-999",
     entrypoint: "generated router's canonical driver",
+    codeIdentity: receiptCodeIdentity({ source: sourceIdentity, fixtureTrees }),
     qualificationTimeoutMs,
     qualificationScope,
     qualificationSandbox,
@@ -533,7 +593,7 @@ try {
     git(checkout, "push", "-q", "origin", "main");
   }
   stage = "release-close";
-  const closed = await runRouter();
+  let closed = await runRouter();
   if (releaseCloseOnly) {
     assert.ok(
       closed.attempts.length > 0,
@@ -541,41 +601,68 @@ try {
     );
     assert.ok(closed.attempts.every((row) => row.action === "release-close"));
   }
-  const receipt = JSON.parse(
-    readFileSync(
-      docPath(f.main, "control", "local/retained/WO-999/release-close.json"),
-      "utf8",
-    ),
-  );
+  // A close the host declined ends the drive at awaiting-close with the
+  // declined item retained; the admitted host change finishes it only when the
+  // fixture was told to.
+  if (closed.stop?.reason === "awaiting-close" && closeHost) {
+    stage = "release-close-host-change";
+    closed = await runRouter(closeHost);
+  }
   Object.assign(record, {
     routers,
     workers: closed.attempts,
     stop: closed.stop,
     budget: closed.budget,
     routerUsage: routerUsage(routers),
-    releaseClose: {
-      publication: receipt.publication,
-      cleanup: receipt.cleanup?.outcome,
-      targetCleanup: receipt.targetCleanup?.outcome,
-      blockers: (receipt.blockers ?? []).map(({ action, reason }) => ({
-        action: ["completion", "publication", "finish"].includes(action)
-          ? action
-          : "unclassified",
-        category: /undeclared ignored material/.test(reason)
-          ? "undeclared-ignored-material"
-          : /operator-owned settings file/.test(reason)
-            ? "operator-settings"
-            : "unclassified",
-        fixtureSettings: String(reason).includes(".claude/settings.local.json"),
-      })),
-    },
+    awaitingClose: closed.awaitingClose ?? null,
+    hostChange: closed.hostChange ?? null,
   });
+  const awaiting = closed.stop?.reason === "awaiting-close";
+  if (awaiting)
+    assert.ok(
+      closed.awaitingClose?.declined,
+      "an awaiting-close stop retains the declined item",
+    );
+  const receipt = awaiting
+    ? null
+    : JSON.parse(
+        readFileSync(
+          docPath(
+            f.main,
+            "control",
+            "local/retained/WO-999/release-close.json",
+          ),
+          "utf8",
+        ),
+      );
+  record.releaseClose = awaiting
+    ? { outcome: "awaiting-close", declined: closed.awaitingClose.declined }
+    : {
+        publication: receipt.publication,
+        cleanup: receipt.cleanup?.outcome,
+        targetCleanup: receipt.targetCleanup?.outcome,
+        blockers: (receipt.blockers ?? []).map(({ action, reason }) => ({
+          action: ["completion", "publication", "finish"].includes(action)
+            ? action
+            : "unclassified",
+          category: /undeclared ignored material/.test(reason)
+            ? "undeclared-ignored-material"
+            : /operator-owned settings file/.test(reason)
+              ? "operator-settings"
+              : "unclassified",
+          fixtureSettings: String(reason).includes(
+            ".claude/settings.local.json",
+          ),
+        })),
+      };
   writeFileSync(output, evidenceJson(record));
-  assert.equal(receipt.publication?.outcome, "no-release");
-  assert.equal(receipt.targetCleanup?.outcome, "removed");
-  assert.equal(receipt.cleanup?.outcome, "clean");
-  assert.equal(git(f.main, "tag", "--list"), "");
-  assert.equal(git(f.clone, "tag", "--list"), "");
+  if (receipt) {
+    assert.equal(receipt.publication?.outcome, "no-release");
+    assert.equal(receipt.targetCleanup?.outcome, "removed");
+    assert.equal(receipt.cleanup?.outcome, "clean");
+    assert.equal(git(f.main, "tag", "--list"), "");
+    assert.equal(git(f.clone, "tag", "--list"), "");
+  }
   console.log(
     json({
       evidence: process.argv[2],
@@ -597,6 +684,10 @@ try {
       evidenceJson({
         schemaVersion: 1,
         observedAt: new Date().toISOString(),
+        codeIdentity: receiptCodeIdentity({
+          source: sourceIdentity,
+          fixtureTrees,
+        }),
         qualificationScope,
         qualificationSandbox,
         qualificationLauncherPermission,
@@ -645,20 +736,61 @@ try {
   }
   // A failed episode's reports are the only account of why it failed. They are
   // synthetic, so they outlive the fixture in ignored local storage.
+  const retainedRoot = join(
+    docPath(TOOL_ROOT, "control", "local/live-drive-reports"),
+    basename(output, ".json"),
+  );
   if (f)
     for (const records of ["verifications", "finalReviews"]) {
       const reports = docPath(f.orderRoot, records, "WO-999");
       if (existsSync(reports))
-        cpSync(
-          reports,
-          join(
-            docPath(TOOL_ROOT, "control", "local/live-drive-reports"),
-            basename(output, ".json"),
-            records,
-          ),
-          { recursive: true },
-        );
+        cpSync(reports, join(retainedRoot, records), { recursive: true });
     }
+  // A declined or failed phase's raw stream, stderr and Codex session files
+  // were kept beside the drive record; they move to the same ignored storage
+  // before the fixture is removed, named by action and attempt (WO-247).
+  // Each attempt and router row names what the transport kept for it; the
+  // copies follow those names, and the receipt's rows are repointed at them.
+  const retainedObservations = [];
+  const copies = new Map();
+  const RETAINED_SUFFIXES = {
+    events: ".events.jsonl",
+    stderr: ".stderr.txt",
+    codexHome: ".codex-home",
+  };
+  const retain = (row, action, attempt) => {
+    const kept = row?.retained;
+    if (!kept) return;
+    const files = [];
+    for (const [key, suffix] of Object.entries(RETAINED_SUFFIXES)) {
+      const source = key === "codexHome" ? kept.codexHome?.path : kept[key];
+      if (typeof source !== "string" || !existsSync(source)) continue;
+      const target = join(
+        retainedRoot,
+        "drives",
+        `${action}-${attempt}${suffix}`,
+      );
+      mkdirSync(dirname(target), { recursive: true });
+      cpSync(source, target, { recursive: true, verbatimSymlinks: true });
+      copies.set(basename(source), relative(TOOL_ROOT, target));
+      files.push(relative(TOOL_ROOT, target));
+    }
+    if (files.length) retainedObservations.push({ attempt, action, files });
+  };
+  (finalDrive?.attempts ?? []).forEach((attempt, index) =>
+    retain(attempt, attempt.action, index + 1),
+  );
+  routers.forEach((router, index) => retain(router, "router", index + 1));
+  const repoint = (row) => {
+    const kept = row?.retained;
+    if (!kept) return;
+    for (const key of ["events", "stderr"])
+      if (typeof kept[key] === "string")
+        kept[key] = copies.get(basename(kept[key])) ?? kept[key];
+    if (typeof kept.codexHome?.path === "string")
+      kept.codexHome.path =
+        copies.get(basename(kept.codexHome.path)) ?? kept.codexHome.path;
+  };
   let removed = stopped && !fixtureRetentionReason;
   if (stopped && !fixtureRetentionReason)
     for (const directory of [base, exported.scratch]) {
@@ -689,8 +821,16 @@ try {
       record.budget = finalDrive.budget;
       record.limits = finalDrive.limits;
       record.writerConflict = finalDrive.writerConflict ?? null;
+      // The decline row too: the written copy's identifiers were renamed,
+      // which the copies map does not know.
+      record.awaitingClose = finalDrive.awaitingClose ?? record.awaitingClose;
     }
     record.driverObservations = driverObservations;
+    record.rawTranscriptsRetained = retainedObservations.length > 0;
+    record.retainedObservations = retainedObservations;
+    for (const row of [...(record.workers ?? []), ...(record.routers ?? [])])
+      repoint(row);
+    repoint(record.awaitingClose);
     record.cleanup = {
       workersEnded: stopped,
       outcome: removed ? "removed" : "retained",

@@ -265,6 +265,7 @@ export const machinerySources = {
     "scripts/build.mjs",
     "scripts/lib/planning-document.mjs",
     "scripts/lib/off-ramps.mjs",
+    "scripts/lib/release-close-handoff.mjs",
     "scripts/test-dispatch-bound.mjs",
     "scripts/test-temporary-roots.mjs",
     "scripts/lib/temporary-prune.mjs",
@@ -540,6 +541,8 @@ export const machinerySources = {
   "process-debt": [
     "scripts/lib/plan-subject.mjs",
     "scripts/lib/planning-document.mjs",
+    // The driven-start figure beside the cold-start meter (WO-247).
+    "scripts/lib/drive-prompts.mjs",
     "scripts/test-gate-followups.mjs",
     "docs/control/budgets.json",
     "CLAUDE.md",
@@ -632,6 +635,7 @@ export const machinerySources = {
     "packages/skeleton/fixtures/wo221-role-baseline.json",
     "packages/skeleton/fixtures/wo192-role-baseline.json",
     "packages/skeleton/fixtures/wo192-integration-role-baseline.json",
+    "packages/skeleton/fixtures/wo247-role-baseline.json",
     "packages/skeleton/fixtures/wo217-role-efficiency-baseline.json",
     "scripts/test-helper-reuse.mjs",
     "scripts/lib/helpers.mjs",

@@ -11,6 +11,10 @@ import {
 import { isMainModule } from "./lib/paths.mjs";
 import { routeOrder, routeFacts } from "./lib/drive-route.mjs";
 import {
+  releaseCloseHandoff,
+  releaseCloseKind,
+} from "./lib/release-close-handoff.mjs";
+import {
   existsSync,
   mkdirSync,
   readFileSync,
@@ -1290,6 +1294,8 @@ const completionHandoff = (evidence, handoff, gates) => {
   if (gates.productGate) evidence.productGate = gates.productGate;
   if (gates.targetGate) evidence.targetGate = gates.targetGate;
   if (gates.documentGate) evidence.documentGate = gates.documentGate;
+  // The live receipts the met criteria cited, each at the handoff identity.
+  if (gates.liveReceipts) evidence.liveReceipts = gates.liveReceipts;
 };
 const recordedBriefings = {
   active: executionBriefing,
@@ -2536,11 +2542,15 @@ const run = async (argv) => {
       // Main's copy of the helper is the reviewed one once the order is merged,
       // and it survives the removal of the subject worktree the helper performs.
       const helper = releaseCloseCommand(mainPath, state.workOrderId);
-      const egress =
-        "The helper needs network egress to the GitHub host for fetch, ls-remote, the tag push and the Release: run it in an authorized session with egress and host approval. Run the printed --publish command once; --dry-run is optional when a prerequisite such as reachability or a foreign tag is in doubt.";
+      // The handoff states what this close does for this order. A host's
+      // reviewer judges the printed sentence, so a close that publishes
+      // nothing must not be described as publishing (WO-247-D007).
+      const { effect, egress } = releaseCloseHandoff(
+        releaseCloseKind(repoRoot, state),
+      );
       message = inMain
-        ? `After the operator merges the PR, run the reviewed helper from this main checkout: ${helper}. This narrowly authorizes the annotated tag and its matching GitHub Release; never push main. ${egress}`
-        : `After the operator merges the PR, start a session in the main checkout (${shellQuote(mainPath)}) and run npm run resume -- release-close --work-order ${state.workOrderId} to reserve its writer and obtain the reviewed helper. Run that helper in the same main session. This narrowly authorizes the annotated tag and its matching GitHub Release; never push main. ${egress}`;
+        ? `After the operator merges the PR, run the reviewed helper from this main checkout: ${helper}. ${effect} ${egress}`
+        : `After the operator merges the PR, start a session in the main checkout (${shellQuote(mainPath)}) and run npm run resume -- release-close --work-order ${state.workOrderId} to reserve its writer and obtain the reviewed helper. Run that helper in the same main session. ${effect} ${egress}`;
       break;
     }
     default:

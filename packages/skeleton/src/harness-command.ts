@@ -2081,8 +2081,9 @@ export function drivenCommandEffect(
         return "read";
       return drivenPhaseActions[role]?.includes(action) ? "write" : null;
     case "release":
-      return action === "prepare" &&
-        args.slice(1).every((word) => word === "--local")
+      // The local preparation alone; a preparation that reads origin tags is
+      // the launchpad's own command.
+      return action === "prepare" && args.length === 2 && next === "--local"
         ? "write"
         : null;
     case "target-gate":

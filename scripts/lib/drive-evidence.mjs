@@ -10,6 +10,10 @@ export function drivenObservation(record, isRunning) {
     incomplete: record.incomplete ?? {},
     refused: Boolean(record.refused),
     writerConflict: record.writerConflict ?? null,
+    // A declined close and the admitted host change, as the record keeps them
+    // (WO-247): the declined item's shape and printed reason, no narrative.
+    awaitingClose: record.awaitingClose ?? null,
+    hostChange: record.hostChange ?? null,
     currentWorker: worker
       ? {
           id: worker.id ?? null,
@@ -93,4 +97,25 @@ export function requireDrivenResearch(attempts) {
       throw new Error(
         `Native research qualification lacks a successful ${kind} observation`,
       );
+}
+
+/** The source identity a live receipt carries, compared at completion with the
+ * handoff identity: `source` is the authoring checkout's gate code identity at
+ * the export the fixture ran, and `fixtureTrees` are the fixture checkouts'
+ * own hashes, provenance that never equals the source's (WO-247). */
+export function receiptCodeIdentity({ source, fixtureTrees }) {
+  if (typeof source?.codeIdentity !== "string" || !source.codeIdentity)
+    throw new Error("a live receipt's source code identity must be recorded");
+  return {
+    schemaVersion: 1,
+    source: {
+      codeIdentity: source.codeIdentity,
+      head: source.head ?? null,
+      root: "authoring-checkout",
+      observedAt: source.observedAt,
+      method:
+        "gateCodeIdentity of the authoring checkout at the export the fixture ran: tracked and untracked source bytes, excluding documents, reports and generated projections",
+    },
+    fixtureTrees: fixtureTrees ?? null,
+  };
 }
