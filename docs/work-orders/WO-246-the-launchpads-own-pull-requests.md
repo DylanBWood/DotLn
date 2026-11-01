@@ -1,4 +1,4 @@
-# WO-246 — The launchpad's own pull requests are opened by a helper on origin's repository: `npm run plan -- publish` and `launchpad update --publish` lint, push and open the pull request where the target publish does; a pull-request title in the form core itself uses, a gitmoji and a subject with or without a conventional type, passes the lint; the hook refuses a `gh pr` or `gh issue` command that names no repository in a clone whose origin and upstream differ; and the kit guide names the rule (version assigned at activation)
+# WO-246 — The launchpad's own pull requests are opened by a helper on origin's repository: `npm run plan -- publish` and `launchpad update --publish` lint, push and open the pull request where the target publish does; a pull-request title in the form core itself uses, a gitmoji and a subject with or without a conventional type, passes the lint; the hook refuses a `gh pr` or `gh issue` command that names no repository in a clone whose origin and upstream differ; the kit guide names the rule; and `update --finish`, the target close and the target publish fetch a remote branch through a lane that borrows the checkout's objects and bounds the fetch (version assigned at activation)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
@@ -52,8 +52,21 @@ DotLn-Angular workflow that prepends a gitmoji for the type). Wall-clock:
 the refusal is one regular-expression match and one read of the checkout's
 Git configuration per judged `gh` command, measured before and after and
 recorded in the decisions; the helper replaces the push and the `gh` call
-the session made. Context bytes: this file, about 16,000. Commands: `plan
-publish` and `update --publish`, new. Tokens: unknown until run. Steps: 8.
+the session made; in `scripts/lib/github-repository.mjs` `fetchRemoteBranch`
+(282 to 318) an `alternates` option that lists the caller's object store in
+the lane repository's `objects/info/alternates`, so the lane downloads only
+the objects the checkout lacks and still writes nothing into the checkout
+before the bundle import, a `remoteBranchCommit` read first that skips the
+fetch when the checkout already holds the branch's commit, and a
+`timeoutMs` the three callers pass (`scripts/launchpad.mjs` 2144, `update
+--finish`; `scripts/lib/target-worktree-close.mjs` 461;
+`scripts/lib/target-publish.mjs` 847), a fetch past its bound refused by
+name with the checkout preserved and the by-hand finish printed (`git fetch
+origin main`, `git merge --ff-only origin/main`, `node
+scripts/bootstrap.mjs`), with cases in `scripts/test-launchpad-update.mjs`
+and in the suite that covers `github-repository.mjs` (the fork's item 7 of
+2026-11-01). Context bytes: this file, about 18,000. Commands: `plan
+publish` and `update --publish`, new. Tokens: unknown until run. Steps: 9.
 Re-mints: `harness-host.ts` and `contributor.ts` are runtime sources
 registered in `scripts/lib/evidence-sources.mjs` (187, 192, 287, 292, 360,
 365), so each edition they stale is re-minted deterministically; no
@@ -72,6 +85,19 @@ set-default` as the setting that closes the gap there today), and item 9
 with the fork's addendum 2 of 23:27Z (the operator's rule is a gitmoji and
 the subject for pull requests and conventional commits for commits; core's
 #255, #257 and #258 carry no type; the fork's C6, FUP-f85ede7a356345c5).
+The fork's item 7 of its first pass of 2026-11-01, carried in the
+operator's planning dispatch of 2026-11-01 (ignored capture
+`docs/intake/notes/planning-fork-blocks-close-residue-reviews-criteria-and-desktop-opt-in-2026-11-01.md`,
+SHA-256 `65b3db5f78aa7bdba95e94ce62e12015afbc144e058b5699767040e37b22d0a2`):
+(a) Claude Code's auto-mode classifier denied the fork's raw `git push -u
+origin chore/starter-update-v0.105.0` twice as an external system write
+and admitted the identical command on the third attempt, where the previous
+pass's identical push was admitted at once, so the helper is the admitted
+form as the target publish is; (b) `update --finish` fetched the whole fork
+(113 MB) into a scratch lane and stalled nineteen minutes at 98 MB with
+`index-pack` idle while `git ls-remote` answered in 0.3 s, and the fork's
+WO-020 close waited in the same kind of fetch; the by-hand finish served in
+under a minute. Amended in by the [2026-11-01 pass](../planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md).
 Filed by the
 [2026-10-31 pass](../planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md).
 Planner-synthesized. Opaque identifier, not a priority. Clean-room screen: no
@@ -185,6 +211,20 @@ lint everywhere, so a fork needs no workflow to retitle.
   meet the lint of that day (its addendum 2 of 2026-10-30 traces the drift);
   the operator's rule is a gitmoji and the subject for pull requests and
   conventional commits for commits.
+- `fetchRemoteBranch` (`github-repository.mjs` 282 to 318) fetches the
+  branch into a host-owned lane repository (`withReadLane`), imports it into
+  the caller through a bundle and removes the lane; the lane holds no
+  objects, so every call downloads the branch's whole history. `update
+  --finish` (`launchpad.mjs` 2144), the target close's base fetch
+  (`target-worktree-close.mjs` 461) and the target publish's fetch
+  (`target-publish.mjs` 847) call it, and only the drive route passes a
+  `timeoutMs`. The fork's finish of 2026-11-01 downloaded 113 MB and stalled
+  nineteen minutes at 98 MB; `remoteBranchCommit` (the `ls-remote` read
+  through the same lane) answered in 0.3 s.
+- Claude Code's auto-mode classifier denied the fork's raw `git push` twice
+  and admitted it the third time (the fork's item 7(a)); a push the hook
+  admits can still be denied by the host, and the helper's single admitted
+  form is what a host classifier learns.
 
 **Design (scope discipline):**
 
@@ -237,6 +277,20 @@ lint everywhere, so a fork needs no workflow to retitle.
   `dotln.config.json` (axis: both forms are core's own practice; a
   declaration would exist only to refuse one of them, which nobody asked
   for; reopen if an instance wants to refuse a form).
+- **The lane borrows the checkout's objects.** `fetchRemoteBranch` takes
+  `{ alternates, timeoutMs }`: the lane repository's
+  `objects/info/alternates` names the caller's object store, read-only, so
+  the fetch downloads only what the checkout lacks and the import still
+  goes through the bundle, writing nothing into the checkout's refs or
+  transport configuration (WO-205 and WO-206's boundary); the caller reads
+  `remoteBranchCommit` first and skips the fetch when it already holds that
+  commit; a fetch past `timeoutMs` is refused by name with the checkout
+  preserved and the by-hand finish printed. `update --finish`, the target
+  close and the target publish pass both. Rejected: a plain `git fetch
+  origin main` into the checkout (axis: the clone's transport configuration
+  and refs stay out of the kit's reach; WO-205 and WO-206). Rejected: a
+  bound alone (axis: a bound stops the stall and keeps the 113 MB download
+  on every finish).
 - **Live-run surfaces at the base.** `ensureGh`, `pushUrl`,
   `parsePullRequestUrl`, the lint and its CLI, the hook's judgment site and
   the target publish's fake `gh` fixture: exist. The helper, the two doors,
@@ -268,27 +322,37 @@ lint everywhere, so a fork needs no workflow to retitle.
 4. `scripts/launchpad.mjs`: `update --publish --title <title> --body-file
    <path>` (refuses on `main`, with uncommitted changes, or before the merge
    is committed). Check: `npm test -- --only launchpad`.
-5. `packages/skeleton/src/harness-host.ts` (the `gh pr` parse at 1807 and
+5. `scripts/lib/github-repository.mjs` (`fetchRemoteBranch` 282 to 318):
+   the `alternates` and `timeoutMs` options; `scripts/launchpad.mjs` 2144
+   (`update --finish`), `scripts/lib/target-worktree-close.mjs` 461 and
+   `scripts/lib/target-publish.mjs` 847 pass the checkout's object store
+   and a bound, read `remoteBranchCommit` first, and refuse a stall by name
+   with the by-hand finish printed; the fixture counts the objects the lane
+   fetched when the checkout already holds the commit (none) and stalls a
+   fixture fetch under a low bound. Check: `npm test -- --only launchpad`;
+   `npm test -- --only target-publish`.
+6. `packages/skeleton/src/harness-host.ts` (the `gh pr` parse at 1807 and
    the command judgment): the refusal, its admitted forms and the remedy in
    the message, as an extension of the existing parse; the measured
    cost per judged `gh` command before and after, recorded in the decisions;
    the fixture in `scripts/test-harness.mjs` with a two-remote clone. Check:
    `npm test -- --only harness-fixtures`; `npm test -- --only harness`.
-6. `packages/skeleton/src/loadouts/contributor.ts` 270: the planner pushes
+7. `packages/skeleton/src/loadouts/contributor.ts` 270: the planner pushes
    and opens through `npm run plan -- publish`; the other roots unchanged.
    Check: `npm test -- --only harness`; `npm test -- --only harness-context`
    (the planner root against its ceiling under the standing route).
-7. Write-backs: the kit guide (`docs/KIT.md` once WO-245 merges, otherwise
+8. Write-backs: the kit guide (`docs/KIT.md` once WO-245 merges, otherwise
    `scripts/kit/README.client.md`; which one is known at activation)
    §Taking upstream updates (the update route through `update --publish`;
    one sentence naming `-R <fork>` or `gh repo set-default` for any raw `gh`
-   a fork's session still spells) and §Planning in this instance (`plan
+   a fork's session still spells; the finish's bound and the by-hand
+   fallback it prints) and §Planning in this instance (`plan
    publish`); product 07 §Operator-opened planning pass (the two effects
    through the helper); `docs/evidence/WO-246/decisions.md` (the refusal's
    cost; the gh default's documented form with the page and date it was read
    from); re-mint any edition the runtime sources stale; `npm run meta`;
    `node scripts/lineage.mjs index --check`; `npm run publication:check`.
-8. Handoff: integrate `main` first when it has moved (WO-233's rule);
+9. Handoff: integrate `main` first when it has moved (WO-233's rule);
    finish source edits; `npm run format` and `npm run sync`; the three
    fresh independent reviewers the executor root requires; one `npm test
    -- --review` in the background awaited with `node scripts/harness.mjs
@@ -297,8 +361,9 @@ lint everywhere, so a fork needs no workflow to retitle.
    implementation-ready <flags>` (product 07 §Discipline).
 
 **Deliverables:** the lint admission with its cases; the helper and its two
-doors; the hook refusal with its fixture and measured cost; the planner
-role's sentence; the write-backs.
+doors; the borrowed-object fetch with its bound in the three callers; the
+hook refusal with its fixture and measured cost; the planner role's
+sentence; the write-backs.
 
 **Acceptance criteria (all required)**
 
@@ -329,26 +394,34 @@ role's sentence; the write-backs.
    duration is recorded.
 4. The emitted planner root names `npm run plan -- publish`; `harness check`
    passes and the planner root's bytes are recorded against its ceiling.
-5. The kit guide and product 07 state the helpers and the rule; `npm run
+5. `update --finish` on a fixture whose checkout already holds origin's
+   `main` completes with the lane fetching no objects (the lane names the
+   checkout's object store in `objects/info/alternates` and reads the
+   remote's commit first); with a low bound against a stalled fixture fetch
+   it refuses naming the bound and printing the by-hand finish, and the
+   checkout's refs, `HEAD` and tree are unchanged; the target close's base
+   fetch and the target publish's fetch pass the same options and their
+   existing cases pass.
+6. The kit guide and product 07 state the helpers and the rule; `npm run
    publication:check` is green.
-6. `npm test -- --review` and `npm run test:docs` green; `git diff --check`
+7. `npm test -- --review` and `npm run test:docs` green; `git diff --check`
    clean; no new dependency.
 
 **Preflight:** `npm test -- --only outward-lint` and `npm test -- --only
-target-publish` for step 1; `npm test -- --only plan-refutation` for steps
-2 and 3; `npm test -- --only launchpad` for steps 2 and 4; `npm test --
---only harness-fixtures` and `npm test -- --only harness` for step 5; `npm
-test -- --only harness` and `npm test -- --only harness-context` for step
-6; `npm run test:docs` when a document changes; each under `node
+target-publish` for steps 1 and 5; `npm test -- --only plan-refutation` for
+steps 2 and 3; `npm test -- --only launchpad` for steps 2, 4 and 5; `npm
+test -- --only harness-fixtures` and `npm test -- --only harness` for step
+6; `npm test -- --only harness` and `npm test -- --only harness-context`
+for step 7; `npm run test:docs` when a document changes; each under `node
 scripts/harness.mjs bounded --`; then one `npm test -- --review`
 (07-execution-guide.md §Preflight before the full gate).
 
-**Evidence gate:** the cases of criteria 1 to 4 and the deterministic
+**Evidence gate:** the cases of criteria 1 to 5 and the deterministic
 re-mints of any edition the runtime sources stale; `npm test -- --review`
 before `implementation-ready`, final review reusing the passing complete row
 at the integrated code identity when one exists.
 
-**Write-back duty:** as listed in step 7 and criterion 5.
+**Write-back duty:** as listed in step 8 and criterion 6.
 
 **Known issues and carry-ins:**
 
@@ -365,6 +438,15 @@ at the integrated code identity when one exists.
 - The fork's workflow and its C6 (FUP-f85ede7a356345c5) go when the release
   that carries this order lands; the fork decides (reopen: the fork reports
   the lint refusing a title in the operator's form after this release).
+- The alternates borrow the checkout's objects read-only; a checkout whose
+  object store is damaged can fail a lane fetch that a fresh lane would
+  survive, and the refusal names the object (reopen: a finish fails on a
+  borrowed object and succeeds with alternates off).
+- A host classifier outside the kit (Claude Code's auto mode) denied a raw
+  `git push` twice and admitted it the third time (the fork's item 7(a) of
+  2026-11-01); the helper is one command the classifier can learn, and
+  nothing in the kit changes what the host decides (reopen: the helper's
+  own push is denied by a host classifier).
 - The helper's pull-request body is the session's reviewed text; the Change
   table and target checks of the target publish do not apply to the
   launchpad's own branches (reopen: a planning or update pull request needs

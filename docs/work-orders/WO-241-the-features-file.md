@@ -195,7 +195,9 @@ second file.
   ordinary links is). This bullet adopts the other pass of 2026-10-30's
   destination-policy finding on the operator's direction.
 - **Not electable is said.** The registry's rendering ends with the fixed
-  list the file cannot change: the six refusals, the writer reservation,
+  list the file cannot change: the refusals (six on 2026-10-30; one more
+  each from WO-251 and WO-250, counted from the generated refusals
+  sentence), the writer reservation,
   the clean-room floor, with the sentence that they are the floor. Rejected:
   leaving them out (axis: the operator's question "what can we turn off"
   is answered by what cannot be as much as by what can).
@@ -213,7 +215,10 @@ second file.
    `release-component-versions`, `release-corpus`,
    `release-publication-check` reading their `release.*` keys and marked
    `unread`, `subagent-cap` reading `budgets.subagentCap`, `dispatch-bounds`
-   reading `budgets.dispatches`, each with scope, default, `what`,
+   reading `budgets.dispatches`, `desktop-control` reading
+   `features.desktop-control` with `readBy` `harness-host.ts`, WO-251's
+   election landed before this order, scope instance, default off, each with
+   scope, default, `what`,
    `readFrom`, `readBy`), the not-electable list, and `readFeatures(root)`;
    the first rows transcribe the table of `docs/product/feature-configuration.md`,
    the inventory the 2026-10-30 pass wrote, which then links the generated
@@ -221,7 +226,8 @@ second file.
    Check: a new case file the executor names in `scripts/test-runner.mjs`
    under the suite that declares `scripts/lib/config.mjs`
    (`configuration-root`), spelled in the Preflight line.
-2. `scripts/lib/config.mjs`: `SECTION_KEYS` gains `features`; a validator
+2. `scripts/lib/config.mjs`: `SECTION_KEYS` holds `features` since WO-251
+   with a one-id validation, which the registry absorbs here; a validator
    in `validateRelease`'s shape admits booleans or `{ on, note }` for known
    ids and refuses unknown ids naming the id and the list command; the
    defaults object gains `features: {}`. Check: `npm test -- --only
@@ -355,6 +361,12 @@ row at the integrated code identity when one exists.
 - The budgets file's `null` switches stay where they are and are listed by
   reference (reopen: the operator asks that bounds move into the features
   section).
+- WO-251 (second in the queue) adds the `features` section with its first
+  id, `desktop-control`, read by `harness-host.ts`; this order's registry
+  gains that row and absorbs the one-id validation, and the fixed
+  not-electable list counts the refusals from the generated refusals
+  sentence, which WO-251 and WO-250 each raise by one (reopen: WO-251 lands
+  with another key shape, or this order activates before it).
 - `plan-first` is declared here and consumed by WO-242; until WO-242 lands
   the row's `readBy` names the order and the election has no effect (reopen:
   WO-242 closes, which changes the row to its consuming module).

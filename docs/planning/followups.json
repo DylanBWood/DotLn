@@ -13376,6 +13376,14 @@
           "reopenWhen": "The operator authorizes a concrete retention policy preserving immutable references; a week adds more than 10 MB of tracked evidence; two consecutive orders each commit more than 1 MB of distinct evidence blobs that no criterion required; measured reading or storage harm occurs regardless of whether criteria required the evidence; or a supplied Codex thread resolves another session.",
           "targets": [],
           "at": "2026-10-21T03:21:46.025Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Condition fired and re-disposed by the 2026-11-01 planning pass (docs/planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md) (the map's candidate 17 of 2026-11-01): 10,638,005 bytes of tracked evidence added since Monday against 10,000,000, with three orders closed this week and WO-247's live-drive receipts 1,149,369 bytes under its evidence path against WO-237's 405,260; the two-consecutive-orders condition does not hold, and no retention policy is authorized.",
+          "reopenWhen": "The order-evidence condition holds for two consecutive orders, a week adds more than 20 MB, or the operator authorizes a retention policy preserving immutable references.",
+          "targets": [],
+          "at": "2026-11-01T23:31:53.305Z"
         }
       ]
     },
@@ -24612,6 +24620,13 @@
           "title": "Candidate — total subagent cap across every spawn path",
           "summary": "### Candidate — total subagent cap across every spawn path Operator direction, 2026-09-17: a session's total subagents need a hard, configurable cap (about twenty), because a top-level guideline of five fans out through per-item adversarial and refutation trees to more than a hundred. The harness documents no total cap, only a size guideline, a concurrency ceiling of sixteen and a per-workflow limit of a thousand; its hooks fire for the Agent and Workflow tools and inside subagents. WO-139 counts and refuses at the admission points the hook can see and counts descendants at their first attributable tool call, so an agent the harness creates before any hook fires is counted late or not at all",
           "missing": false
+        },
+        {
+          "hash": "6f2f9f3a450a38f4c90030801761915817487a707515aede7c4a7c6cb35ebf38",
+          "ref": "docs/planning/work-order-map.md#candidate--total-subagent-cap-across-every-spawn-path",
+          "title": "Candidate — total subagent cap across every spawn path",
+          "summary": "### Candidate — total subagent cap across every spawn path Operator direction, 2026-09-17: a session's total subagents need a hard, configurable cap (about twenty), because a top-level guideline of five fans out through per-item adversarial and refutation trees to more than a hundred. The harness documents no total cap, only a size guideline, a concurrency ceiling of sixteen and a per-workflow limit of a thousand; its hooks fire for the Agent and Workflow tools and inside subagents. WO-139 counts and refuses at the admission points the hook can see and counts descendants at their first attributable tool call, so an agent the harness creates before any hook fires is counted late or not at all",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -27369,6 +27384,14 @@
           "reopenWhen": "Two consecutive passes read the plan-check median above 8 s, or one reads it above 9 s, or an instrumented same-input comparison shows parsing on the critical path.",
           "targets": [],
           "at": "2026-10-31T16:02:16.082Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Condition fired and re-disposed by the 2026-11-01 planning pass (docs/planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md) (the map's candidate 16 of 2026-11-01): two consecutive passes read the plan-check median above 8 s (8.004 s on 2026-10-31, 8.082 s on 2026-11-01, load averages 2.3 and 2.66 on sixteen CPUs); both within one percent of the threshold on a loaded host, the check grown with the register (1,504 rows), no cause named; a one-cycle order for a hundred milliseconds declined again.",
+          "reopenWhen": "One reading of the plan-check median exceeds 9 s, or an instrumented same-input comparison shows parsing on the critical path.",
+          "targets": [],
+          "at": "2026-11-01T23:31:53.081Z"
         }
       ]
     },
@@ -46496,6 +46519,14 @@
             "WO-247"
           ],
           "at": "2026-10-31T16:02:13.605Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-11-01 planning pass (docs/planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md) with FUP-ec3d1b98b15afd49: the drive.sandbox election landed in WO-247 (v0.106.0).",
+          "reopenWhen": "A routed run is refused by host policy under the election after v0.106.0.",
+          "targets": [],
+          "at": "2026-11-01T23:31:52.630Z"
         }
       ]
     },
@@ -49316,6 +49347,14 @@
             "WO-237"
           ],
           "at": "2026-10-30T15:50:48.375Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Settled by the 2026-11-01 planning pass (docs/planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md): WO-237-D005 (v0.107.0) made plan start the home of the routine apply, and this pass's entry removed 1,870 expired roots of 14,877,252,605 bytes with 1,595 retained; the role's duty to run the prune itself is WO-252's sentence.",
+          "reopenWhen": "Expired roots accumulate past twice a class's retention window between planning passes.",
+          "targets": [],
+          "at": "2026-11-01T23:31:52.969Z"
         }
       ]
     },
@@ -50130,6 +50169,14 @@
             "WO-247"
           ],
           "at": "2026-10-31T16:02:13.490Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-11-01 planning pass (docs/planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md): WO-247 (v0.106.0) made the sandbox an instance election, drive.sandbox in dotln.config.json, read by the launcher and recorded in the receipt.",
+          "reopenWhen": "A routed run is refused by host policy under the election after v0.106.0.",
+          "targets": [],
+          "at": "2026-11-01T23:31:52.517Z"
         }
       ]
     },
@@ -50408,6 +50455,14 @@
             "WO-247"
           ],
           "at": "2026-10-31T16:02:13.833Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Settled by the 2026-11-01 planning pass (docs/planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md): the third rule (the driven-start figure recorded beside the cold-start metric and not bounded) landed in WO-247 (v0.106.0); rules one and two were settled by the 2026-10-31 pass.",
+          "reopenWhen": "A driven start exceeds its installed ceiling by more than its launch text.",
+          "targets": [],
+          "at": "2026-11-01T23:31:52.855Z"
         }
       ]
     },
@@ -50566,6 +50621,14 @@
             "WO-247"
           ],
           "at": "2026-10-31T16:02:13.720Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Settled by the 2026-11-01 planning pass (docs/planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md): WO-247 (v0.106.0) made the publication fixture's origin a GitHub-shaped URL on an unresolvable host rewritten to a local bare repository by every fixture Git call; its VER-001 criterion 7 passed the push-isolation case.",
+          "reopenWhen": "A probe or test reaches a real host after v0.106.0.",
+          "targets": [],
+          "at": "2026-11-01T23:31:52.743Z"
         }
       ]
     },
@@ -50654,6 +50717,14 @@
             "WO-247"
           ],
           "at": "2026-10-31T16:02:13.374Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "settled",
+          "reason": "Settled by the 2026-11-01 planning pass (docs/planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md): WO-247 (v0.106.0) built the finish D102 named: the admitted repair, the awaiting-close stop naming the attended command and --host claude on re-entry for release close only.",
+          "reopenWhen": "A driven Codex order ends without a stop or a close after v0.106.0.",
+          "targets": [],
+          "at": "2026-11-01T23:31:52.404Z"
         }
       ]
     },
@@ -50712,6 +50783,14 @@
             "WO-247"
           ],
           "at": "2026-10-31T16:02:13.260Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-11-01 planning pass (docs/planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md): WO-247 closed at v0.106.0 with the declined close's reason retained, the stop with a next step, code identity on live receipts and both hosts requalified; the fork's item 4 of 2026-11-01 adds that its attended Codex release closes under CLI 0.166.0 published DotLn-Angular v0.6.1 and v0.7.0, so the declines were in driven runs only.",
+          "reopenWhen": "A driven Codex close declines again after v0.106.0 without a retained reason.",
+          "targets": [],
+          "at": "2026-11-01T23:31:52.291Z"
         }
       ]
     },
@@ -50760,6 +50839,16 @@
           "reopenWhen": "Two consecutive passes read the plan-check median above 8 s, or one reads it above 9 s.",
           "targets": [],
           "at": "2026-10-31T16:02:16.866Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "duplicate",
+          "reason": "Duplicate of FUP-fb8cbeabbddef397, which the 2026-11-01 planning pass (docs/planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md) re-deferred after its condition fired.",
+          "reopenWhen": "FUP-fb8cbeabbddef397's condition.",
+          "targets": [
+            "FUP-fb8cbeabbddef397"
+          ],
+          "at": "2026-11-01T23:31:53.194Z"
         }
       ]
     },
@@ -51125,7 +51214,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-11-01 planning pass (docs/planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md) (the map's candidate 11 of 2026-11-01), bound to candidate 9's standing (the operator's items 12 and 13 of 2026-11-01 are recorded and not acted on): rows carry no runtime and one supported pair of lines does not need one yet.",
+          "reopenWhen": "A release breaks on one line after passing on the other, or the gate index gains a runtime field.",
+          "targets": [],
+          "at": "2026-11-01T23:31:51.371Z"
+        }
+      ]
     },
     {
       "id": "FUP-23eb1282f814be14",
@@ -51140,7 +51238,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-11-01 planning pass (docs/planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md) (the map's candidate 10 of 2026-11-01): case naming is a capability of the runtimes that publish the tracing channels, and no Node 24 host has needed a hung case named.",
+          "reopenWhen": "A Node 24 host needs a hung case named, or a later 24.x publishes the tracing channels.",
+          "targets": [],
+          "at": "2026-11-01T23:31:51.258Z"
+        }
+      ]
     },
     {
       "id": "FUP-19017ddcdf6cadb8",
@@ -51239,7 +51346,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 13,
+          "status": "allocated",
+          "reason": "Allocated to WO-250 by the 2026-11-01 planning pass (docs/planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md): the hook refuses a gate launched by a session carrying an agent_id (npm test in any form, test-runner.mjs, target-gate.mjs, test:docs) naming the bounded single-test form, a new floor refusal planning records in that order; a Codex worker's brief carries the same rule.",
+          "reopenWhen": "A review worker starts a gate after WO-250 lands, or a subagent needs a gate form the refusal does not name.",
+          "targets": [
+            "WO-250"
+          ],
+          "at": "2026-11-01T23:31:51.143Z"
+        }
+      ]
     },
     {
       "id": "FUP-f93ef1a6fc68b07e",
@@ -51261,7 +51379,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-11-01 planning pass (docs/planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md) (the map's candidate 12 of 2026-11-01): the verifier constructed the status, no native host emitted it, and the operator's direction of 2026-11-01 is that such findings take the follow-up funnel; WO-249 binds that funnel into the record.",
+          "reopenWhen": "A supported native event or a real host run produces non-enumerated status or subtype text, an actual receipt carries forbidden data, or planning adopts an explicit malformed-stream hardening requirement.",
+          "targets": [],
+          "at": "2026-11-01T23:31:52.177Z"
+        }
+      ]
     },
     {
       "id": "FUP-f8073a2c2a4e0600",
@@ -51276,7 +51403,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-249 by the 2026-11-01 planning pass (docs/planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md) as a boy-scout step in the same file: criterionJudgments lets only an unfenced heading end a criterion paragraph, with the regression WO-247-D015 names.",
+          "reopenWhen": "A real handoff loses its receipt citation after WO-249 lands.",
+          "targets": [
+            "WO-249"
+          ],
+          "at": "2026-11-01T23:31:52.063Z"
+        }
+      ]
     },
     {
       "id": "FUP-5456dbf776e0c75b",
@@ -51291,7 +51429,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-083 by the 2026-11-01 planning pass (docs/planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md) as a carry-in in its Known issues: at handoff the executor records the dollar cost of every live attempt, superseded included, and the total, and keeps superseded receipts until the final review reads them; WO-247's own total stays unknown.",
+          "reopenWhen": "A later order's live runs are superseded again without a retained receipt, or the operator asks for WO-247's total.",
+          "targets": [
+            "WO-083"
+          ],
+          "at": "2026-11-01T23:31:51.597Z"
+        }
+      ]
     },
     {
       "id": "FUP-e872a59769b9a97a",
@@ -51313,7 +51462,19 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-11-01 planning pass (docs/planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md): the fork's asks 3(a) to 3(e) and item 8 go to WO-252 (the disposable glob, the kit's residue moved or deleted, the role text's remedy without a writer in the target, the blocker class in plan failures, the removal step's children timings, the profile rows printed and not written); the launchpad's push helper is WO-246's already and its update --finish fetch now borrows the checkout's objects and bounds the fetch (WO-246, amended).",
+          "reopenWhen": "A fork close is refused for the kit's own residue after WO-252 lands, or a finish stalls past its bound after WO-246 lands.",
+          "targets": [
+            "WO-252",
+            "WO-246"
+          ],
+          "at": "2026-11-01T23:31:51.945Z"
+        }
+      ]
     },
     {
       "id": "FUP-a62cdc9ff882ac1a",
@@ -51363,7 +51524,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 6,
+          "status": "allocated",
+          "reason": "Allocated to WO-250 by the 2026-11-01 planning pass (docs/planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md): npm run worker -- review launches a review worker on Codex or Claude from any host with the canonical brief through the entropy review's transport, counts the launch against the cap and writes the report to the order's reviews lane; WO-244's plan review calls it.",
+          "reopenWhen": "A session writes its own Codex launcher after WO-250 lands, or a helper-launched worker reads nothing.",
+          "targets": [
+            "WO-250"
+          ],
+          "at": "2026-11-01T23:31:51.827Z"
+        }
+      ]
     },
     {
       "id": "FUP-134a3766852c8f77",
@@ -51378,7 +51550,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-252 by the 2026-11-01 planning pass (docs/planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md): the four interrupted-removal bookkeeping cases R1 to R4 that docs/evidence/WO-237/verification-recovery-probes.mjs reproduces are repaired in its step 5 with their regressions, preserving the token-and-inode refusal and every payload-retention boundary.",
+          "reopenWhen": "A reproduced recovery case deletes a payload that should be retained, or WO-252 activates and finds a case its probes no longer reproduce.",
+          "targets": [
+            "WO-252"
+          ],
+          "at": "2026-11-01T23:31:51.029Z"
+        }
+      ]
     },
     {
       "id": "FUP-a121c8dcc77a6dfd",
@@ -51393,7 +51576,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-250 by the 2026-11-01 planning pass (docs/planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md): every review's report, whatever its launch route, is written to the order's reviews lane under docs/control/local/reviews/WO-NNN/, which release close moves into main's retained lane for the order, so the verifier reads every round.",
+          "reopenWhen": "A verification cannot read a round's report from the lane after WO-250 lands.",
+          "targets": [
+            "WO-250"
+          ],
+          "at": "2026-11-01T23:31:51.711Z"
+        }
+      ]
     },
     {
       "id": "FUP-376d333e4dcd0518",
@@ -51408,7 +51602,471 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-252 by the 2026-11-01 planning pass (docs/planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md): a renumbered root whose owner repository no longer exists is judged by its marker's token with the record's inode and becomes a prune candidate (step 5), so no root is left that no kit route removes (WO-237's FINAL-001 F1).",
+          "reopenWhen": "A renumbered orphan root is still refused at every read after WO-252 lands, or the marker proof deletes a root whose inode differs.",
+          "targets": [
+            "WO-252"
+          ],
+          "at": "2026-11-01T23:31:51.485Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-758f92cef991b13c",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-fork-blocks-close-residue-reviews-criteria-and-desktop-opt-in-pass-recorded-2026-11-01::13db1a956cd76fc50124e229b7a6fb47726893a28286ef0af7ace228f7aa029b",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "6e64aeaf03882cd68b66eedbad6a153bbb334f9cf35e358c35ad0e3aae1a86d7",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-fork-blocks-close-residue-reviews-criteria-and-desktop-opt-in-pass-recorded-2026-11-01",
+          "title": "Codex CLI 0.166.0 and the kit's disabled-feature list",
+          "summary": "14. **Codex CLI 0.166.0 and the kit's disabled-feature list** (the fork's item 6 of 2026-11-01). Recorded on WO-250 and WO-244: the fork's launcher refused every tool call under a list written for 0.154.0; the kit's own argv leaves `code_mode_host`, `shell_tool` and `unified_exec` enabled (`worker-transport.ts` 903 and 1002), and WO-250 confirms it on 0.166.0 and updates `OBSERVED_CLI_VERSIONS`. Reopen when a kit-launched Codex worker reads nothing.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-11-01 planning pass (docs/planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md) (candidate 14): recorded on WO-250 and WO-244; the kit's argv leaves code_mode_host, shell_tool and unified_exec enabled, and WO-250 confirms on 0.166.0.",
+          "reopenWhen": "A kit-launched Codex worker reads nothing.",
+          "targets": [],
+          "at": "2026-11-01T23:31:54.870Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-1779445345f8dfb1",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-fork-blocks-close-residue-reviews-criteria-and-desktop-opt-in-pass-recorded-2026-11-01::2a67312655cbc32227a96d3d61050720e1211c0bac1a4b483724e8eb0dfa604e",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "b1a0d4cd5013383af122ce771e53c46fe07b369608a040286f9e37cce8e0236a",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-fork-blocks-close-residue-reviews-criteria-and-desktop-opt-in-pass-recorded-2026-11-01",
+          "title": "Reviewer reuse",
+          "summary": "6. **Reviewer reuse** (the operator's question who pushes it). Kept for rechecks only, with the tradeoff recorded in WO-250's Design: reuse saves the re-read and keeps the findings consistent; anchoring is accepted because a recheck asks whether the fix holds, and every re-task counts against the cap. Reopen when a recheck by the same worker misses a fix's regression that a fresh reader finds at verification.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-11-01 planning pass (docs/planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md) (candidate 6): reuse is kept for rechecks with its tradeoff recorded in WO-250's Design, and every re-task counts against the cap.",
+          "reopenWhen": "A recheck by the same worker misses a fix's regression that a fresh reader finds at verification.",
+          "targets": [],
+          "at": "2026-11-01T23:31:53.975Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-4c3f1b413068c5cb",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-fork-blocks-close-residue-reviews-criteria-and-desktop-opt-in-pass-recorded-2026-11-01::3e2f0b77b73eea15616aad90c32b8bb3c40a4665a9c521ddcbd30ee1c1ead617",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "148f37a3695b91d692d6a714de36b13e69e2e83dca00081c408793e61e2f9bf4",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-fork-blocks-close-residue-reviews-criteria-and-desktop-opt-in-pass-recorded-2026-11-01",
+          "title": "Unknown native statuses in the event tail",
+          "summary": "12. **Unknown native statuses in the event tail** (WO-247-D014, FUP-f93ef1a6fc68b07e; the operator's item 2 is the record of how it was routed). Deferred with its condition: a supported native event or a real host run produces non-enumerated text, or planning adopts an explicit malformed-stream requirement.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "duplicate",
+          "reason": "Duplicate of FUP-f93ef1a6fc68b07e (the 2026-11-01 planning pass (docs/planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md), candidate 12).",
+          "reopenWhen": "FUP-f93ef1a6fc68b07e's condition.",
+          "targets": [
+            "FUP-f93ef1a6fc68b07e"
+          ],
+          "at": "2026-11-01T23:31:54.645Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-024ef952b1317f14",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-fork-blocks-close-residue-reviews-criteria-and-desktop-opt-in-pass-recorded-2026-11-01::3f1673c34909dd51696dd0f48fc72b1300a379951dc964383e6b6c1a3cc632ca",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "b239d0a4b37e710fed31de0d6d4f3f1b157c4d42e635f9e2d7d0b70369074bf0",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-fork-blocks-close-residue-reviews-criteria-and-desktop-opt-in-pass-recorded-2026-11-01",
+          "title": "The symlink-escape refusal at a close",
+          "summary": "2. **The symlink-escape refusal at a close** (the operator's item 4; `scripts/lib/intake-reconciliation.mjs` 36). Settled: WO-237-D009 records the one occurrence's cause, two Codex launcher links under a retained live-drive home, which WO-247-D003 removed by restricting retained homes to `sessions/` and `session_index.jsonl`; the refusal keeps a preservation copy from following a link out of the checkout and stays; WO-252 records it. Reopen when a close is refused on a symlink that no retained home explains.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-11-01 planning pass (docs/planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md) (candidate 2): the one occurrence's cause left with WO-247-D003; the preservation refusal stays and WO-252 records it.",
+          "reopenWhen": "A close is refused on a symlink that no retained home explains.",
+          "targets": [],
+          "at": "2026-11-01T23:31:53.529Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-31d17d898fdd7224",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-fork-blocks-close-residue-reviews-criteria-and-desktop-opt-in-pass-recorded-2026-11-01::6fc2dd8a033abdac1f284358fa4cd8dabf0ecd9bb42e76c3384fdc9d36a776ad",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "6cfe716c71255318922dbca4efed45c770061dddb5de1b957d4e3ffb98fa8afe",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-fork-blocks-close-residue-reviews-criteria-and-desktop-opt-in-pass-recorded-2026-11-01",
+          "title": "The reviewed route for every planning pass",
+          "summary": "15. **The reviewed route for every planning pass** (the fork's question in its item 6). Declined: product 07 §Paired passes and the synthesis pass names three routes and the operator chooses the label; this pass ran its own three reviews as the planner's fan-out allows, and WO-244 makes the labelled route a command. Reopen on the operator's word.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined by the 2026-11-01 planning pass (docs/planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md) (candidate 15): the three routes of product 07 stand and the operator chooses the label.",
+          "reopenWhen": "The operator's word.",
+          "targets": [],
+          "at": "2026-11-01T23:31:54.986Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-a863abcc177ca2d3",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-fork-blocks-close-residue-reviews-criteria-and-desktop-opt-in-pass-recorded-2026-11-01::77708428f8f667c11bc89f94885c10e6e9fb242d88b2564fb76362cbf44a7c94",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "7dff0bf45ef610e3f91dd3d2881b28d38743312ac0e8070510e04cb710d35c3a",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-fork-blocks-close-residue-reviews-criteria-and-desktop-opt-in-pass-recorded-2026-11-01",
+          "title": "A mechanical reading of the operator's waiver words",
+          "summary": "7. **A mechanical reading of the operator's waiver words** (the fork's second block, item 3). Declined: natural-language reading; the briefing and the role text carry the rule in WO-249 and the operator's `retract` undoes a waiver recorded from the wrong words. Reopen when a second waiver is recorded from words that asked for none after WO-249 lands.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined by the 2026-11-01 planning pass (docs/planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md) (candidate 7): a mechanical reading of the operator's words is natural-language reading; WO-249's briefing and role text carry the rule and retract undoes a wrong waiver.",
+          "reopenWhen": "A second waiver is recorded from words that asked for none after WO-249 lands.",
+          "targets": [],
+          "at": "2026-11-01T23:31:54.086Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-80b58ee649621dc3",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-fork-blocks-close-residue-reviews-criteria-and-desktop-opt-in-pass-recorded-2026-11-01::779ddc25885d6fffdaa386959548ee2b679dae2a271a496afa957e64d940b98a",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "902961573b974e90b92994d69b746339758af2418d24badfcaeb8ee857ea62e2",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-fork-blocks-close-residue-reviews-criteria-and-desktop-opt-in-pass-recorded-2026-11-01",
+          "title": "The week's evidence growth",
+          "summary": "17. **The week's evidence growth** (FUP-8a4e201d861208ad and FUP-be1103fbfdd14653: 10,638,005 bytes added since Monday against 10,000,000). Deferred with the reading: three orders closed this week and WO-247's live-drive receipts alone are 1.1 MB under its evidence path, the order-evidence condition (1,149,369 bytes for WO-247 against 405,260 for WO-237) does not hold for two consecutive orders. Reopen when it holds for two consecutive orders, or a week adds more than 20 MB.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "duplicate",
+          "reason": "Duplicate of FUP-8a4e201d861208ad, re-deferred by the 2026-11-01 planning pass (docs/planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md) after its condition fired (candidate 17).",
+          "reopenWhen": "FUP-8a4e201d861208ad's condition.",
+          "targets": [
+            "FUP-8a4e201d861208ad"
+          ],
+          "at": "2026-11-01T23:31:55.218Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-d760c3be657d1923",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-fork-blocks-close-residue-reviews-criteria-and-desktop-opt-in-pass-recorded-2026-11-01::8f64a421886a48d9a52a1b570a51aec8d18a1dd633b70fd4eff95ac321f54a06",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "b9eab1054fd66d7c84309168a2d9c46335c34918ffce326874a2d857e8bf18ee",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-fork-blocks-close-residue-reviews-criteria-and-desktop-opt-in-pass-recorded-2026-11-01",
+          "title": "The cold-gate rows",
+          "summary": "18. **The cold-gate rows** (FUP-e96221b106cd136a, FUP-7d7c75dfd2d1026c, FUP-77efd30be6cab5c1, FUP-7f35e50c5d698168, FUP-ed4da61921a5c255, FUP-dc31f381950a0b45): the plain gate's thirty-day median 456.6 s against 360, the target-worktree task 611.3 s against 189.8, the skeleton task 538.4 s against 437.0. Deferred again with the 2026-10-31 reading; WO-252 names the target-worktree suite's duration before and after its cases. Reopen when the median exceeds 600 s, a task's growth has a named cause in an order's decisions, or the operator names gate time as a goal.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "duplicate",
+          "reason": "Duplicate of FUP-e96221b106cd136a, deferred with the 2026-10-31 reading (the 2026-11-01 planning pass (docs/planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md), candidate 18).",
+          "reopenWhen": "FUP-e96221b106cd136a's condition.",
+          "targets": [
+            "FUP-e96221b106cd136a"
+          ],
+          "at": "2026-11-01T23:31:55.330Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-9eb15176deb116cd",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-fork-blocks-close-residue-reviews-criteria-and-desktop-opt-in-pass-recorded-2026-11-01::b1ee401ad52d1cd0f232618b2b09c91e55b7a0835211cfb70adf3af1aeb7cdec",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "80f0fbd98a757195726a310ea94a1566fcf5ca01adee2926893a4f23e63aa1ef",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-fork-blocks-close-residue-reviews-criteria-and-desktop-opt-in-pass-recorded-2026-11-01",
+          "title": "The gate's reuse keyed on the whole tree",
+          "summary": "9. **The gate's reuse keyed on the whole tree** (the operator's items 12 and 13 of 2026-11-01; WO-240-D010's observation that `coveringTaskResults` composes passes by code identity alone). Recorded and not acted on, at the operator's word: \"i do not want acted on; i will just keep them so i can be on the record. that will be a problem for another day\", with the standing condition that only a solution the operator judges whole enters a future order. Reopen when the operator reopens it; no pass files an order for it before then.",
+          "missing": false
+        },
+        {
+          "hash": "5438c728c67e9fc58990188d37b887c67556a8e49870e0ef9481a906e4ced8b5",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-fork-blocks-close-residue-reviews-criteria-and-desktop-opt-in-pass-recorded-2026-11-01",
+          "title": "The gate's reuse keyed on the whole tree",
+          "summary": "9. **The gate's reuse keyed on the whole tree** (the operator's items 12 and 13 of 2026-11-01; WO-240-D010's observation that `coveringTaskResults` composes passes by code identity alone). Recorded and not acted on, at the operator's word (ignored capture SHA-256 `65b3db5f78aa7bdba95e94ce62e12015afbc144e058b5699767040e37b22d0a2`): \"i do not want acted on; i will just keep them so i can be on the record. that will be a problem for another day\", with the standing condition that only a solution the operator judges whole enters a future order. The planner's note for that day: the whole-tree key is a correctness choice (a pass is evidence only for the code it ran against), and the shape that keep",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-11-01 planning pass (docs/planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md) (candidate 9) at the operator's word: items 12 and 13 of 2026-11-01 are recorded and not acted on; only a solution the operator judges whole enters a future order.",
+          "reopenWhen": "The operator reopens it.",
+          "targets": [],
+          "at": "2026-11-01T23:31:54.310Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-ce11fe0173a5e938",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-fork-blocks-close-residue-reviews-criteria-and-desktop-opt-in-pass-recorded-2026-11-01::b496d2a289c5988152d60e6fd09a2ecc18bde4386f7fe40aea8ae6bbcd4bb7c1",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "7326bb4d20be138452ee32d80136ce5a18ea7905db4201e6ecfc5e73d6c9d185",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-fork-blocks-close-residue-reviews-criteria-and-desktop-opt-in-pass-recorded-2026-11-01",
+          "title": "A full-scope prune at every release close.",
+          "summary": "4. **A full-scope prune at every release close.** Declined: WO-237-D005 measured the all-scope census at 143 s, `plan start` applies it where that census is already paid for (today's entry removed 1,870 roots and 14.9 GB), and the fork already finds the close slow. Reopen when expired roots accumulate past twice a class's retention window between passes, or the census falls under ten seconds.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined by the 2026-11-01 planning pass (docs/planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md) (candidate 4): WO-237-D005 measured the all-scope census at 143 s and plan start applies it where it is already paid for; today's entry removed 1,870 roots.",
+          "reopenWhen": "Expired roots accumulate past twice a class's retention window between passes, or the census falls under ten seconds.",
+          "targets": [],
+          "at": "2026-11-01T23:31:53.752Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-1a64f259a5523e90",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-fork-blocks-close-residue-reviews-criteria-and-desktop-opt-in-pass-recorded-2026-11-01::c044abe99f7da75e299ef479d8436ac333fe86a69bf3382f01cb89aeaeaf2498",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "2ae41956b9ea80e877eaf025ef04bfc99c0879daecc4dfbbb0f3ecebe28a373e",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-fork-blocks-close-residue-reviews-criteria-and-desktop-opt-in-pass-recorded-2026-11-01",
+          "title": "A prune phrase or skill",
+          "summary": "3. **A prune phrase or skill** (the operator's item 5, the forms offered). Declined: a phrase the operator types is still the operator running the prune; WO-252 puts the sentence in every role that the session runs `harness prune --apply` itself under host permissions and hands no kit command to the operator, and product 07 §Operator recovery controls says so now. Reopen when the operator asks for the phrase after WO-252 lands, or a role is observed handing the command over again.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined by the 2026-11-01 planning pass (docs/planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md) (candidate 3): a phrase the operator types is still the operator running the prune; WO-252 and product 07 §Operator recovery controls make the session run harness prune --apply itself.",
+          "reopenWhen": "The operator asks for the phrase after WO-252 lands, or a role hands the command over again.",
+          "targets": [],
+          "at": "2026-11-01T23:31:53.641Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-102be277e1691db1",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-fork-blocks-close-residue-reviews-criteria-and-desktop-opt-in-pass-recorded-2026-11-01::c5744a23b31f4054ee421e21d32305ba5ea0a0082735e857bedfd8657e7bbd59",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "e0b6fcd67212d32e6f2056cb4890cf06bd6243f65d0129f2e2a3f12efd89b774",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-fork-blocks-close-residue-reviews-criteria-and-desktop-opt-in-pass-recorded-2026-11-01",
+          "title": "The plan-check condition, fired",
+          "summary": "16. **The plan-check condition, fired** (FUP-fb8cbeabbddef397; the 2026-10-31 candidate 1 said two consecutive passes above 8 s reopen it; 8.004 s on 2026-10-31 and 8.082 s on 2026-11-01, load averages 2.3 and 2.66 on sixteen CPUs). Weighed and deferred: both readings are within one percent of a threshold on a loaded host, the check has grown with the register (1,504 rows) and no cause is named; a one-cycle order to shave a hundred milliseconds is declined again. Reopen when one reading exceeds 9 s, or an instrumented same-input comparison shows parsing on the critical path.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "duplicate",
+          "reason": "Duplicate of FUP-fb8cbeabbddef397, re-deferred by the 2026-11-01 planning pass (docs/planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md) after its condition fired (candidate 16).",
+          "reopenWhen": "FUP-fb8cbeabbddef397's condition.",
+          "targets": [
+            "FUP-fb8cbeabbddef397"
+          ],
+          "at": "2026-11-01T23:31:55.104Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-1c0d2b73182be731",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-fork-blocks-close-residue-reviews-criteria-and-desktop-opt-in-pass-recorded-2026-11-01::f2b7f0d98ceb7cf1e19e571f69dfc4e37e4cde543130f4f84dda7e384d470bd5",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "e422e841be140a7f9155dd70a9b59c1ff723e0fe42e950f39a7dfef7e9e46990",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-fork-blocks-close-residue-reviews-criteria-and-desktop-opt-in-pass-recorded-2026-11-01",
+          "title": "Removing the independent reviews",
+          "summary": "5. **Removing the independent reviews** (the operator's \"if they aren't finding errors, remove them\"). Declined on the evidence: WO-237's rounds found 19, 13 and 4 distinct defects before the gate; the loop is the defect, and WO-250 bounds it and records each round's counts so the measure exists. Reopen when two consecutive orders' round-one reviews find no blocking finding, read from their `self-review:` lines.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined by the 2026-11-01 planning pass (docs/planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md) (candidate 5): WO-237's rounds found 19, 13 and 4 distinct defects before the gate; WO-250 bounds the loop and records per-round counts.",
+          "reopenWhen": "Two consecutive orders' round-one reviews find no blocking finding, read from their self-review lines.",
+          "targets": [],
+          "at": "2026-11-01T23:31:53.864Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-a7bec18a848a6692",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-fork-blocks-close-residue-reviews-criteria-and-desktop-opt-in-pass-recorded-2026-11-01::f7accb6fdf806e88ea4a84e737989d36f0e10cf46cecf9c79833bdea7d454e11",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "1506f1a77028b9946e96e62672c1816b456210565a9ce3bb81c76a4af6021181",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-fork-blocks-close-residue-reviews-criteria-and-desktop-opt-in-pass-recorded-2026-11-01",
+          "title": "The Node 24 heartbeat cannot name a running case",
+          "summary": "10. **The Node 24 heartbeat cannot name a running case** (WO-240-D012, FUP-23eb1282f814be14). Deferred with its condition: a Node 24 host needs a hung case named, or a later 24.x publishes the tracing channels.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "duplicate",
+          "reason": "Duplicate of FUP-23eb1282f814be14 (the 2026-11-01 planning pass (docs/planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md), candidate 10).",
+          "reopenWhen": "FUP-23eb1282f814be14's condition.",
+          "targets": [
+            "FUP-23eb1282f814be14"
+          ],
+          "at": "2026-11-01T23:31:54.421Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-a099df217c99afee",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-fork-blocks-close-residue-reviews-criteria-and-desktop-opt-in-pass-recorded-2026-11-01::f9e1136f1234b08ea26b2fa7756d54f39e06766f913c428afa04537bacb5b747",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "4ffd9e6e9f81c3ab7973b331c7bc4bb29a264e13b2bf8c1a14889eb0229afe3e",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-fork-blocks-close-residue-reviews-criteria-and-desktop-opt-in-pass-recorded-2026-11-01",
+          "title": "The criteria lint as a refusal.",
+          "summary": "8. **The criteria lint as a refusal.** Declined: a regular expression over prose is a screen; WO-249's lint advises and the planner decides. Reopen when a pass finds a criterion the lint flagged filed anyway and later recorded defective, twice.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined by the 2026-11-01 planning pass (docs/planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md) (candidate 8): the lint advises and the planner decides.",
+          "reopenWhen": "A pass finds a criterion the lint flagged filed anyway and later recorded defective, twice.",
+          "targets": [],
+          "at": "2026-11-01T23:31:54.199Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-eab3511f1df951fb",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-fork-blocks-close-residue-reviews-criteria-and-desktop-opt-in-pass-recorded-2026-11-01::fbbedf90fbd21d88e87d0f45b52ccaff73f07e3c59c408fe1c71eb1a9014623b",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "aa503984053109101eee0709884b115a72e39654e41c7524debb5c3aebd9249e",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-fork-blocks-close-residue-reviews-criteria-and-desktop-opt-in-pass-recorded-2026-11-01",
+          "title": "Gate reuse crosses Node lines",
+          "summary": "11. **Gate reuse crosses Node lines** (WO-240-D010, FUP-3457a1c859fb51d8). Deferred with its condition, and bound to candidate 9's standing: a release breaks on one line after passing on the other, or the gate index gains a runtime field.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "duplicate",
+          "reason": "Duplicate of FUP-3457a1c859fb51d8 (the 2026-11-01 planning pass (docs/planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md), candidate 11).",
+          "reopenWhen": "FUP-3457a1c859fb51d8's condition.",
+          "targets": [
+            "FUP-3457a1c859fb51d8"
+          ],
+          "at": "2026-11-01T23:31:54.532Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-330672c5bdc683fd",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-fork-blocks-close-residue-reviews-criteria-and-desktop-opt-in-pass-recorded-2026-11-01::fe669dbe1bf7009a1239505e69be7334b477b59e92ccdb98422d79cffdd8d1f8",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "2e28009eee884cac02aa162d1f8b88a49fd5d8e3c78d0a63b51fadbe641fce11",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-fork-blocks-close-residue-reviews-criteria-and-desktop-opt-in-pass-recorded-2026-11-01",
+          "title": "The close writing the instance's profile rows",
+          "summary": "1. **The close writing the instance's profile rows** (the fork's item 8 of 2026-11-01). Declined in WO-252's Design: a repository profile is an instance-owned standing document, and a generated block in it is a kit template change every instance's profile would need; the close's printed handoff names the published tag and the reviewed commit for the instance's pass to copy. Reopen when a second instance asks for the write, or the fork's pass records the copy as a cost.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined by the 2026-11-01 planning pass (docs/planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md) (candidate 1): a repository profile is an instance-owned standing document and a generated block in it is a kit template change every instance would need; WO-252 has the close's handoff print the tag and the reviewed commit.",
+          "reopenWhen": "A second instance asks for the write, or the fork's pass records the copy as a cost.",
+          "targets": [],
+          "at": "2026-11-01T23:31:53.418Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-b4350e066359020c",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-fork-blocks-close-residue-reviews-criteria-and-desktop-opt-in-pass-recorded-2026-11-01::fe682a2bb8904fe60e3b7ab824446de3cb424b966dfe2af311fb4a51dcb40f48",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "8228a4e1dabfa7f6f452e4c0ad1ad8246fe3d791e2b71552db8fc68339ee0c82",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-fork-blocks-close-residue-reviews-criteria-and-desktop-opt-in-pass-recorded-2026-11-01",
+          "title": "The dollar record of every live attempt",
+          "summary": "13. **The dollar record of every live attempt** (WO-247-D017, FUP-5456dbf776e0c75b). Allocated to WO-083 as a carry-in: the next order with live runs records each attempt's dollars, superseded ones included, and keeps superseded receipts until the final review reads them. Reopen when a later order's live runs are superseded again without a retained receipt.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "duplicate",
+          "reason": "Duplicate of FUP-5456dbf776e0c75b, allocated to WO-083 (the 2026-11-01 planning pass (docs/planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md), candidate 13).",
+          "reopenWhen": "FUP-5456dbf776e0c75b's condition.",
+          "targets": [
+            "FUP-5456dbf776e0c75b"
+          ],
+          "at": "2026-11-01T23:31:54.756Z"
+        }
+      ]
     }
   ]
 }

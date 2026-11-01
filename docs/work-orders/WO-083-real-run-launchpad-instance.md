@@ -705,6 +705,14 @@ the receipt records (criterion 1).
   order, so criterion 1's activation preflight names the starter-merge
   condition. Reopen when the run is activated with the instance on a starter
   release older than WO-204's or, for the router route, WO-192's.
+- WO-247-D017 (FUP-5456dbf776e0c75b), allocated by the 2026-11-01 pass: at
+  handoff the executor records the dollar cost of every live attempt the
+  run made, superseded attempts included, and the run's total in the
+  decisions, and keeps a superseded receipt's identity and usage rows in the
+  evidence directory or a dated ignored lane until the final review has
+  read them; WO-247's own total stayed unknown because two superseded
+  Claude lifecycles left no receipt (reopen: a later order's live runs are
+  superseded again without a retained receipt).
 
 **Non-goals:** the foundational Angular work the instance does before this
 order, the DotLn UI included (the instance's own planning passes' subject,
