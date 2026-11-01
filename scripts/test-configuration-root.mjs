@@ -1373,7 +1373,8 @@ await test("configuration root", async (t) => {
         // default-rooted writes left are the Git-ignored local harness lane
         // owned by packages/skeleton, which resolves its own paths until the
         // kit carries this loader (WO-069-D005; deferred by WO-070-D009 to
-        // FUP-a058e82c0bbd9b6d).
+        // FUP-a058e82c0bbd9b6d), and the Git-ignored runtime lane, where every
+        // temporary root's owner record and its Spotlight marker live (WO-233).
         const outside = documents(root).filter(
           (path) =>
             !path.startsWith("records/") &&
@@ -1407,6 +1408,7 @@ await test("configuration root", async (t) => {
       });
     },
   );
+            !path.startsWith(".runtime/") &&
 
   await t.test(
     "worktree start and finish use the configured roots",
