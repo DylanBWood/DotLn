@@ -1,0 +1,306 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-237",
+  "baselineCommit": "9139d91eb0b2b5cdcb683f750e48684b43fb95b6",
+  "method": "Each case runs under node scripts/harness.mjs bounded against this worktree's current implementation (the positive arm), then again with only the listed reversion applied to the listed source (the negative arm); the source bytes are snapshotted before and verified restored after, and the arms run serially. A demonstrated control is positive exit 0 and negative exit nonzero; the recorded observation is the line each arm printed about the lane after the close (c01), the strict comparison's refusal or the measured re-stamp (c02), or the negative arm's first failure (c03 to c06).",
+  "recordedAt": "2026-11-01T18:01:51.141Z",
+  "results": [
+    {
+      "id": "c01-journals-move-at-close",
+      "criterion": 2,
+      "defect": "Release close removes the worktree without moving its session journals into the retained lane, as at the base.",
+      "suite": "release",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--timeout-seconds",
+        "1200",
+        "--",
+        "bash",
+        "scripts/test-release.sh",
+        "--case",
+        "success"
+      ],
+      "reversion": [
+        {
+          "path": "scripts/worktree.mjs",
+          "old": "      removeScratch(subject, reconciliation);\n      retainJournals(mainPath, subject, workOrderId);\n",
+          "new": "      removeScratch(subject, reconciliation);\n"
+        }
+      ],
+      "mutatedFiles": [
+        {
+          "path": "scripts/worktree.mjs",
+          "before": "91a1f4dac118524eafe926302b233101c5ef5c7aeaf0f8baf9ae9a7d302b330f",
+          "after": "609b6041597cf8dff2112da826e37e262cc0599bca8f53e8c6173223b5b16ec5"
+        }
+      ],
+      "positive": {
+        "exitCode": 0,
+        "logSha256": "e5e16ad370e8a885e4ae0dda41c53a1240a1b6f562dd96b5353c8b517ea3e20c",
+        "startedAt": "2026-11-01T18:01:22.717Z",
+        "finishedAt": "2026-11-01T18:01:40.846Z",
+        "observation": "journal lane after close: ./.dotln-owner.json ./dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd.json ./dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd.jsonl ./sources.jsonl ./suite-success/fixture "
+      },
+      "negative": {
+        "exitCode": 2,
+        "logSha256": "e48f87e7b340ac4ab3ca2532548907904f4bd4a04797db0d2d5a2ad2111e402a",
+        "startedAt": "2026-11-01T18:01:40.846Z",
+        "finishedAt": "2026-11-01T18:01:46.980Z",
+        "observation": "journal lane after close: absent"
+      },
+      "demonstrated": true
+    },
+    {
+      "id": "c02-renumbered-device-judged-by-class",
+      "criterion": 8,
+      "defect": "The owner record's device number is compared strictly, so a root renumbered by a reboot is retained, as at the base.",
+      "suite": "harness-fixtures",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--timeout-seconds",
+        "1200",
+        "--",
+        "node",
+        "--test",
+        "--test-name-pattern",
+        "a renumbered device is re-stamped",
+        "scripts/test-temporary-roots.mjs"
+      ],
+      "reversion": [
+        {
+          "path": "packages/skeleton/src/temporary-root-records.mjs",
+          "old": "    !Number.isInteger(record.device) ||\n    info.ino !== record.inode\n",
+          "new": "    info.dev !== record.device ||\n    info.ino !== record.inode\n"
+        }
+      ],
+      "mutatedFiles": [
+        {
+          "path": "packages/skeleton/src/temporary-root-records.mjs",
+          "before": "c677bdf5b067a282aceee536400ca58fd5d93805f4c4932df4b6f3cfad8b5858",
+          "after": "dedaaaaa74a3289e023e48c4921659e1efbd4bc27181e20eb2c44faee07b549f"
+        }
+      ],
+      "positive": {
+        "exitCode": 0,
+        "logSha256": "8c8d6ca56032b2186ca234047e9f8e6bcd264782ed5aa3412af77331ed32938c",
+        "startedAt": "2026-11-01T18:01:46.981Z",
+        "finishedAt": "2026-11-01T18:01:47.263Z",
+        "observation": "renumbered judgment with re-stamp 1.8 ms"
+      },
+      "negative": {
+        "exitCode": 1,
+        "logSha256": "e723324bab52e8da18e462f98561f97695cb131292f9b2b0a49b730472eb6ddf",
+        "startedAt": "2026-11-01T18:01:47.264Z",
+        "finishedAt": "2026-11-01T18:01:47.546Z",
+        "observation": "Temporary owner record is invalid or the directory was replaced"
+      },
+      "demonstrated": true
+    },
+    {
+      "id": "c03-changed-inode-still-refused",
+      "criterion": 8,
+      "defect": "The identity check drops the inode, so a replaced directory carrying a copied marker is re-stamped and pruned after a device change.",
+      "suite": "harness-fixtures",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--timeout-seconds",
+        "1200",
+        "--",
+        "node",
+        "--test",
+        "--test-name-pattern",
+        "a renumbered device never admits",
+        "scripts/test-temporary-roots.mjs"
+      ],
+      "reversion": [
+        {
+          "path": "packages/skeleton/src/temporary-root-records.mjs",
+          "old": "    !Number.isInteger(record.device) ||\n    info.ino !== record.inode\n  )",
+          "new": "    !Number.isInteger(record.device)\n  )"
+        },
+        {
+          "path": "packages/skeleton/src/temporary-root-records.mjs",
+          "old": "  if (info.ino !== record.inode)\n    throw new Error(\"Temporary directory identity changed\");\n",
+          "new": ""
+        }
+      ],
+      "mutatedFiles": [
+        {
+          "path": "packages/skeleton/src/temporary-root-records.mjs",
+          "before": "c677bdf5b067a282aceee536400ca58fd5d93805f4c4932df4b6f3cfad8b5858",
+          "after": "6a259ad069e66ce1e395a726252e1680d1620705bb43bf501f8c1ca0c1c815c1"
+        }
+      ],
+      "positive": {
+        "exitCode": 0,
+        "logSha256": "143268ebe4033f536626d460f297a381d5244950f66b74b960f5d5c103709c7a",
+        "startedAt": "2026-11-01T18:01:47.547Z",
+        "finishedAt": "2026-11-01T18:01:47.962Z",
+        "observation": null
+      },
+      "negative": {
+        "exitCode": 1,
+        "logSha256": "403ebb286d2d8fe1bf19ee4880f0b77d797394bb4ad4af8a9ede86f512d2912e",
+        "startedAt": "2026-11-01T18:01:47.962Z",
+        "finishedAt": "2026-11-01T18:01:48.268Z",
+        "observation": "✖ failing tests:\n\ntest at scripts/test-temporary-roots.mjs:2307:1\n✖ a renumbered device never admits a replaced, foreign, live, protected or undeclared root (35.516042ms)\n  AssertionError [ERR_ASSERTION]: {\"candidate\":{\"kind\":\"temporary-root\",\"path\":\"roots/replaced-xpEbhk\",\"absolute\":\"/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-temporary-roots-test-hbh4NU/subject/roots/replaced-xpEbhk\",\"class\":\"gate-fixture\",\"ownerAlive\":false,\"ageMs\":215719308244,\"token\":\"f1904599-d881-4dd6-8548-4f1a5a66c815\",\"device\":16777234,\"inode\":875609881,\"bytes\":454,\"inventory\":[]}}"
+      },
+      "demonstrated": true
+    },
+    {
+      "id": "c04-order-lane-waits-for-its-journals",
+      "criterion": 3,
+      "defect": "The prune removes an order's whole retained lane once its release is published, taking a journal lane inside it before that lane's window.",
+      "suite": "harness-fixtures",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--timeout-seconds",
+        "1200",
+        "--",
+        "node",
+        "--test",
+        "--test-name-pattern",
+        "class window and keeps its parent lane",
+        "scripts/test-temporary-roots.mjs"
+      ],
+      "reversion": [
+        {
+          "path": "scripts/lib/harness-prune.mjs",
+          "old": "  if (owned)\n",
+          "new": "  if (owned && false)\n"
+        }
+      ],
+      "mutatedFiles": [
+        {
+          "path": "scripts/lib/harness-prune.mjs",
+          "before": "21cb17f8c576599a056d61517ee79f8c33fa6d8e127131db4397e5493bb19425",
+          "after": "c873333b4ce5fc8b95987b37db6213ac45383201af023b5ea51b39e66607f4d2"
+        }
+      ],
+      "positive": {
+        "exitCode": 0,
+        "logSha256": "ed72f7cf36e4d6f35b0288dd5c1245e3dc4d154e7ac12d543cbd7bbae211c81d",
+        "startedAt": "2026-11-01T18:01:48.268Z",
+        "finishedAt": "2026-11-01T18:01:48.829Z",
+        "observation": null
+      },
+      "negative": {
+        "exitCode": 1,
+        "logSha256": "cb1ea80705e4fa1bae539870f1bea87fb3319727511bec5b7a15e34723fcbf91",
+        "startedAt": "2026-11-01T18:01:48.830Z",
+        "finishedAt": "2026-11-01T18:01:49.353Z",
+        "observation": "✖ failing tests:\n\ntest at scripts/test-temporary-roots.mjs:2175:1\n✖ the prune judges a closed order's journal lane by its class window and keeps its parent lane (260.724417ms)\n  Error: Prune subject changed; retained docs/control/local/retained/WO-911/harness"
+      },
+      "demonstrated": true
+    },
+    {
+      "id": "c05-refused-removal-deletes-nothing",
+      "criterion": 8,
+      "defect": "The removal deletes by path, as at the base: nothing binds the deletion to the directory whose identity was checked, and a parent that refuses the removal refuses it only after the root's contents and owner record are gone.",
+      "suite": "harness-fixtures",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--timeout-seconds",
+        "1200",
+        "--",
+        "node",
+        "--test",
+        "--test-name-pattern",
+        "apply names what it removed when it stops partway",
+        "scripts/test-temporary-roots.mjs"
+      ],
+      "reversion": [
+        {
+          "path": "packages/skeleton/src/temporary-root-records.mjs",
+          "old": "  const registered = aside === path ? (registeredPathOf(record) ?? path) : path;\n  if (aside !== path) {\n    ledger(record, registered, \"moving\", { aside });\n    renameSync(path, aside);\n  } else accessSync(dirname(path), constants.W_OK | constants.X_OK);\n",
+          "new": "  const registered = path;\n"
+        },
+        {
+          "path": "packages/skeleton/src/temporary-root-records.mjs",
+          "old": "  const aside = temporaryRemovalAside(path, record.token);\n  // A root finished from its aside",
+          "new": "  const aside = path;\n  // A root finished from its aside"
+        }
+      ],
+      "mutatedFiles": [
+        {
+          "path": "packages/skeleton/src/temporary-root-records.mjs",
+          "before": "c677bdf5b067a282aceee536400ca58fd5d93805f4c4932df4b6f3cfad8b5858",
+          "after": "94b306544580b54f75fed2ee75e54641b6611c314db7379136e7aaf5bfca895d"
+        }
+      ],
+      "positive": {
+        "exitCode": 0,
+        "logSha256": "f9f46f1ca87f1054e03b104b5633f3923f749efb5a585d9ae77544b3b2ef5dfb",
+        "startedAt": "2026-11-01T18:01:49.353Z",
+        "finishedAt": "2026-11-01T18:01:49.832Z",
+        "observation": null
+      },
+      "negative": {
+        "exitCode": 1,
+        "logSha256": "a69d264ad9acb5bcbde503d0bf20d97898f6a647705e36f785af92893a45bdbb",
+        "startedAt": "2026-11-01T18:01:49.832Z",
+        "finishedAt": "2026-11-01T18:01:50.312Z",
+        "observation": "✖ failing tests:\n\ntest at scripts/test-temporary-roots.mjs:2757:1\n✖ plan start's apply names what it removed when it stops partway (211.720667ms)\n  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:"
+      },
+      "demonstrated": true
+    },
+    {
+      "id": "c06-retried-merge-reads-its-merge-records",
+      "criterion": 3,
+      "defect": "A retried merge consults no record of what this worktree's earlier attempt appended, so a source whose removal failed after its rows were appended appends them again.",
+      "suite": "harness-fixtures",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--timeout-seconds",
+        "1200",
+        "--",
+        "node",
+        "--test",
+        "--test-name-pattern",
+        "a retried merge counts a log once",
+        "scripts/test-temporary-roots.mjs"
+      ],
+      "reversion": [
+        {
+          "path": "scripts/lib/worktree-removal.mjs",
+          "old": "        const through = mergedThrough(log, current, incoming);\n",
+          "new": "        const through = 0;\n"
+        }
+      ],
+      "mutatedFiles": [
+        {
+          "path": "scripts/lib/worktree-removal.mjs",
+          "before": "91dc612d513a350bc2e547ee4eb9dde244379218354946e6baafe37533dd5a0c",
+          "after": "be44ee8a6a89c246b1c8a0c2e544d2663622de40ec843e4321a9bc6b208b0e50"
+        }
+      ],
+      "positive": {
+        "exitCode": 0,
+        "logSha256": "0346403f9fef4f68b8ace4f053d2075052dade086d4a3f994c23797ce1dca3a1",
+        "startedAt": "2026-11-01T18:01:50.313Z",
+        "finishedAt": "2026-11-01T18:01:50.803Z",
+        "observation": null
+      },
+      "negative": {
+        "exitCode": 1,
+        "logSha256": "16863f48c1e26d66c0af0aa614afbc843862fa75f188494d80530ded8057ce47",
+        "startedAt": "2026-11-01T18:01:50.803Z",
+        "finishedAt": "2026-11-01T18:01:51.141Z",
+        "observation": "✖ failing tests:\n\ntest at scripts/test-temporary-roots.mjs:2522:1\n✖ a retried merge counts a log once, and a lane's links never take a write outside it (53.656292ms)\n  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:"
+      },
+      "demonstrated": true
+    }
+  ]
+}

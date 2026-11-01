@@ -6,7 +6,7 @@
 
 - [x] [WO-240] — Node 24 beside Node 26, and the private-clone recipe · **final-reviewed**
 - [x] [WO-247] — A driven Codex order finishes · **final-reviewed**
-- [ ] [WO-237] — A closed order keeps its journals, and a temporary root survives a reboot · **queued**
+- [x] [WO-237] — A closed order keeps its journals, and a temporary root survives a reboot · **final-reviewed**
 - [ ] [WO-245] — The kit's guide is a kit file and the front page is the instance's · **queued**
 - [ ] [WO-248] — The pull-request table says what its reader can use · **queued**
 - [ ] [WO-238] — A document says what is so · **queued**
@@ -45,24 +45,6 @@ None.
 None.
 
 ## Open
-
-### WO-237
-
-[WO-237 — A closed order keeps its journals: release close moves the worktree's session journals, session state and gate index into main's retained lane for the order under a &#96;closed-journal&#96; retention class the prune judges, and planning's failure counts and the usage readback read them by order; and a temporary root whose volume was renumbered by a reboot is judged by its token and inode instead of refused (version assigned at activation)](WO-237-a-closed-order-keeps-its-journals.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-233: satisfied-by-close (met) — the owner records, the retention classes, the prune at release close and the close record this order extends; WO-178: satisfied-by-close (met) — plan start and plan failures counting local closes, denials and interventions from the journals; WO-139: satisfied-by-close (met) — the session journal and the usage readback this order lets read from a retained lane.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer xhigh.
-- Track: machinery
-- Cost: adds &#96;closed-journal&#96; to &#96;DEFAULT_RETENTION&#96; in &#96;packages/skeleton/src/temporary-root-records.mjs&#96; and the seed to &#96;docs/control/budgets.json&#96; and &#96;scripts/kit/budgets.template.json&#96;, the move in the close's worktree removal (&#96;scripts/release.mjs&#96; around 2290 to 2330 with &#96;scripts/lib/worktree-removal.mjs&#96;), the &#96;journals&#96; field of the cleanup row and &#96;release-close.json&#96;, the retained-lane read in &#96;scripts/lib/plan-failures.mjs&#96; and in the usage readback (&#96;scripts/harness.mjs usage&#96; with &#96;packages/skeleton/src/usage-observation.mjs&#96;), cases in &#96;scripts/test-release.sh&#96;, &#96;scripts/test-temporary-roots.mjs&#96;, &#96;scripts/test-plan-refutation.mjs&#96;, &#96;scripts/test-harness.mjs&#96; and &#96;scripts/test-instance-history.mjs&#96;, and sentences in product 07 and the kit README; and, from the operator's item 8 of 2026-10-30, the identity rule in &#96;readTemporaryOwner&#96; and &#96;writeTemporaryOwner&#96; (&#96;packages/skeleton/src/temporary-root-records.mjs&#96; 362 to 376), &#96;applyTemporaryCandidate&#96; (&#96;scripts/lib/temporary-prune.mjs&#96; 557) and the scratch-repository check of &#96;scripts/lib/starter-refresh.mjs&#96; (423): the token and the inode identify a root, a changed device number is re-stamped and ledgered as &#96;device-renumbered&#96;, with the fixture, its paired control and cases in &#96;scripts/test-temporary-roots.mjs&#96; and &#96;scripts/test-fixture-temp-root.sh&#96;. Removes the close's refusal of its own regenerable roots after a reboot (six build directories at WO-239's close on 2026-10-30), and the loss, at every release close, of the order's hook judgments, host denials, dispatch rows, operator-message rows and gate index (the fork's executor could not read the earlier target orders' journals on 2026-10-28; &#96;plan failures&#96; counts denials and interventions from the current checkout's journals only, so a closed order contributes none). Wall-clock: one directory move per close (milliseconds; WO-192's worktree holds four journals of 368 KB; main's 242 journals of two months are 63 MB; the gate captures that make a harness directory large keep their own classes and do not move). Context bytes: this file. Commands: none new; &#96;harness prune&#96; reports the class. Tokens: unknown until run. Steps: 8. Re-mints: &#96;temporary-root-records.mjs&#96; and &#96;usage-observation.mjs&#96; are runtime sources; the executor checks &#96;scripts/lib/evidence-sources.mjs&#96; at activation and re-mints deterministically any edition they stale; none is a file the feedback verifier judges, so no live feedback episode; &#96;release.mjs&#96;, &#96;harness-prune.mjs&#96; and &#96;plan-failures.mjs&#96; are declared sources of machinery suites, so &#96;npm test -- --review&#96; runs before handoff.
-- Inherited ledger duty: discharge with this order's decisions file when recorded and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
-- Authority: [docs/work-orders/WO-237-a-closed-order-keeps-its-journals.md](WO-237-a-closed-order-keeps-its-journals.md)
 
 ### WO-245
 

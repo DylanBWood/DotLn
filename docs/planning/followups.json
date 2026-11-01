@@ -50351,6 +50351,14 @@
           "reopenWhen": "The same sequence failure recurs on another order (a complete run started before the reviewers restart, or a paid run on changing code), or the operator asks for one of the six by name.",
           "targets": [],
           "at": "2026-10-31T16:02:15.301Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-237-D015 (FINAL-001): the condition recurred on WO-237. Its third complete run of 2026-11-01 started before the criteria adversary's third recheck had finished, on the operator's direction at 17:04Z; that recheck found five findings, two blocking, which were repaired after the run with another complete run, and the fourth run was stopped under the operator's override (WO-237-D011, WO-237-D012). The row stays deferred to planning with this second occurrence recorded; WO-237 fixes nothing of the recovery note's six candidates, since its scope is the journals and the identity rule.",
+          "reopenWhen": "The same sequence failure recurs on another order (a complete run started before the reviewers finish or restart, or a paid run on changing code), or the operator asks for one of the six by name.",
+          "targets": [],
+          "at": "2026-11-01T20:40:50.040Z"
         }
       ]
     },
@@ -51280,6 +51288,123 @@
           "ref": "docs/evidence/WO-247/decisions.md#wo-247-d017--final-review-the-live-runs-dollar-record-and-the-total-the-record-cannot-give",
           "title": "WO-247-D017: At handoff, record the dollar cost of every live attempt an order ran, superseded attempts included, and the order's total in its decisions, and keep a superseded receipt's identity and…",
           "summary": "{ \"id\": \"WO-247-D017\", \"date\": \"2026-11-01\", \"dispatch\": \"resume: final review\", \"decision\": \"Record the live runs' dollars where the committed receipts hold them and board the rest. The order's known issue asked the executor to record each attempt's cost and the order's total in the decisions, with a reopening at more than half above WO-192's two final attempts (38.12 USD, so 57.18 USD). The committed record holds one dollar figure: attempt 4, the Claude lifecycle on the final code, cost 31.63 USD, 30.72 for the phase workers (executor 22.52, verifier 3.61, reviewer 3.30, release close 1.30) and 0.91 for the two router sessions (0.54 and 0.36); attempts 1 to 3 ran on Codex, which reports no",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-e872a59769b9a97a",
+      "key": "decision:docs/evidence/WO-237/decisions.md#wo-237-d009",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "9d0129642e16595ebdb94ea85539d1706711994c39ee3f16b8a624c3733e49c7",
+          "ref": "docs/evidence/WO-237/decisions.md#wo-237-d009--the-forks-messages-of-2026-11-01-and-cores-last-close-message",
+          "title": "WO-237-D009: Plan the fork's release-close asks of 2026-11-01: a disposable declaration that matches nested package-manager caches at any depth in a target; a target close that owns or excludes the…",
+          "summary": "{ \"id\": \"WO-237-D009\", \"date\": \"2026-11-01\", \"dispatch\": \"operator message during resume: next on 2026-11-01: the fork's items 3, 4, 7 and 8 and core's last release close message, which this order 'might need to cover', with a planning pass likely to take them; then: 'it wasn't an actual blocker, that was just the message. it ended up figuring out a solution'\", \"decision\": \"Read as: cover what falls inside this order's close and journal surfaces and send the rest to planning; nothing in the messages changes this order's scope. The fork's item 3(b) is evidence that this order's known issue's reopening condition, a target bundle journaling into the target, has occurred: Codex release-close ses",
+          "missing": false
+        },
+        {
+          "hash": "a3a08ef11544f3460cfad9f4a9aba69d6cf22e360818b03ca332ba7b30270339",
+          "ref": "docs/evidence/WO-237/decisions.md#wo-237-d009--the-forks-messages-of-2026-11-01-and-cores-last-close-message",
+          "title": "WO-237-D009: Plan the fork's release-close asks of 2026-11-01: a disposable declaration that matches nested package-manager caches at any depth in a target; a target close that owns or excludes the…",
+          "summary": "{ \"id\": \"WO-237-D009\", \"date\": \"2026-11-01\", \"dispatch\": \"resume: next; the operator forwarded the fork's release-close items 3, 4, 7 and 8 and core's last close message for coverage, with planning to follow\", \"decision\": \"Read as: cover what falls inside this order's close and journal surfaces and send the rest to planning; nothing in the messages changes this order's scope. The fork's item 3(b) is evidence that this order's known issue's reopening condition, a target bundle journaling into the target, has occurred: Codex release-close sessions took a temporary writer in the target worktree and left docs/control/local/ journals and .runtime/.metadata_never_index there, which the target clos",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-a62cdc9ff882ac1a",
+      "key": "decision:docs/evidence/WO-237/decisions.md#wo-237-d011",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "8baf43ddd5ecfbcd02800ae8c7547ef745323caeace890d10d7c39cf43b0adac",
+          "ref": "docs/evidence/WO-237/decisions.md#wo-237-d011--the-independent-reviews-ran-on-codex-and-what-they-changed",
+          "title": "WO-237-D011: A kit route that launches a read-only Codex dotln-worker review from a Claude Code session, with the worker transport's isolated home and the generated worker definition, so an executor…",
+          "summary": "{ \"id\": \"WO-237-D011\", \"date\": \"2026-11-01\", \"dispatch\": \"operator messages during resume: next on 2026-11-01: 'use codex for the reviewers'; asked which route, since the kit offers none from a Claude session, 'fine do the ad hoc codex stuff'\", \"decision\": \"The three independent reviews (criteria adversary, design improver, consistency reviewer) ran on Codex, model gpt-6.1-sol at reasoning effort max, the role text's Codex pin, as read-only codex exec sessions launched from this Claude Code session by a launcher in the session's DotLn scratch. Like the kit's worker transport, it gave the sessions one isolated CODEX_HOME holding only a link to the operator's auth.json, a read-only sandbox, pr",
+          "missing": false
+        },
+        {
+          "hash": "4d1bfedb750d3f4135b4e4b7ac8497dc3f28c81d6e71f1b3822b911aa343e6ef",
+          "ref": "docs/evidence/WO-237/decisions.md#wo-237-d011--the-independent-reviews-ran-on-codex-and-what-they-changed",
+          "title": "WO-237-D011: A kit route that launches a read-only Codex dotln-worker review from a Claude Code session, with the worker transport's isolated home and the generated worker definition, so an executor…",
+          "summary": "{ \"id\": \"WO-237-D011\", \"date\": \"2026-11-01\", \"dispatch\": \"operator messages during resume: next on 2026-11-01: 'use codex for the reviewers'; asked which route, since the kit offers none from a Claude session, 'fine do the ad hoc codex stuff'\", \"decision\": \"The three independent reviews (criteria adversary, design improver, consistency reviewer) ran on Codex, model gpt-6.1-sol at reasoning effort max, the role text's Codex pin, as read-only codex exec sessions launched from this Claude Code session by a launcher in the session's DotLn scratch. Like the kit's worker transport, it gave the sessions one isolated CODEX_HOME holding only a link to the operator's auth.json, a read-only sandbox, pr",
+          "missing": false
+        },
+        {
+          "hash": "0e30c02bd2a8c5fa92b562676c791e396b6456da68cc2d9099fa3b8ea3703dba",
+          "ref": "docs/evidence/WO-237/decisions.md#wo-237-d011--the-independent-reviews-ran-on-codex-and-what-they-changed",
+          "title": "WO-237-D011: A kit route that launches a read-only Codex dotln-worker review from a Claude Code session, with the worker transport's isolated home and the generated worker definition, so an executor…",
+          "summary": "{ \"id\": \"WO-237-D011\", \"date\": \"2026-11-01\", \"dispatch\": \"operator messages during resume: next on 2026-11-01: 'use codex for the reviewers'; asked which route, since the kit offers none from a Claude session, 'fine do the ad hoc codex stuff'\", \"decision\": \"The three independent reviews (criteria adversary, design improver, consistency reviewer) ran on Codex, model gpt-6.1-sol at reasoning effort max, the role text's Codex pin, as read-only codex exec sessions launched from this Claude Code session by a launcher in the session's DotLn scratch. Like the kit's worker transport, it gave the sessions one isolated CODEX_HOME holding only a link to the operator's auth.json, a read-only sandbox, pr",
+          "missing": false
+        },
+        {
+          "hash": "725d53d905b7dc8717aa55d2453a7652703b7ac0a68a2d9e1a846646929345fe",
+          "ref": "docs/evidence/WO-237/decisions.md#wo-237-d011--the-independent-reviews-ran-on-codex-and-what-they-changed",
+          "title": "WO-237-D011: A kit route that launches a read-only Codex dotln-worker review from a Claude Code session, with the worker transport's isolated home and the generated worker definition, so an executor…",
+          "summary": "{ \"id\": \"WO-237-D011\", \"date\": \"2026-11-01\", \"dispatch\": \"operator messages during resume: next on 2026-11-01: 'use codex for the reviewers'; asked which route, since the kit offers none from a Claude session, 'fine do the ad hoc codex stuff'\", \"decision\": \"The three independent reviews (criteria adversary, design improver, consistency reviewer) ran on Codex, model gpt-6.1-sol at reasoning effort max, the role text's Codex pin, as read-only codex exec sessions launched from this Claude Code session by a launcher in the session's DotLn scratch. Like the kit's worker transport, it gave the sessions one isolated CODEX_HOME holding only a link to the operator's auth.json, a read-only sandbox, pr",
+          "missing": false
+        },
+        {
+          "hash": "3dd0d9632c5bc3fd76bb775659a7c3d26e054d4742b17864a827180c846c0af6",
+          "ref": "docs/evidence/WO-237/decisions.md#wo-237-d011--the-independent-reviews-ran-on-codex-and-what-they-changed",
+          "title": "WO-237-D011: A kit route that launches a read-only Codex dotln-worker review from a Claude Code session, with the worker transport's isolated home and the generated worker definition, so an executor…",
+          "summary": "{ \"id\": \"WO-237-D011\", \"date\": \"2026-11-01\", \"dispatch\": \"operator messages during resume: next on 2026-11-01: 'use codex for the reviewers'; asked which route, since the kit offers none from a Claude session, 'fine do the ad hoc codex stuff'\", \"decision\": \"The three independent reviews (criteria adversary, design improver, consistency reviewer) ran on Codex, model gpt-6.1-sol at reasoning effort max, the role text's Codex pin, as read-only codex exec sessions launched from this Claude Code session by a launcher in the session's DotLn scratch. Like the kit's worker transport, it gave the sessions one isolated CODEX_HOME holding only a link to the operator's auth.json, a read-only sandbox, pr",
+          "missing": false
+        },
+        {
+          "hash": "ccfb04bfd4f426e4e542a84da3617ec2c96669c351d2372c11df5b17fbef6fd1",
+          "ref": "docs/evidence/WO-237/decisions.md#wo-237-d011--the-independent-reviews-ran-on-codex-and-what-they-changed",
+          "title": "WO-237-D011: A kit route that launches a read-only Codex dotln-worker review from a Claude Code session, with the worker transport's isolated home and the generated worker definition, so an executor…",
+          "summary": "{ \"id\": \"WO-237-D011\", \"date\": \"2026-11-01\", \"dispatch\": \"resume: next; the operator directed Codex reviewers and, offered the routes, chose the ad hoc launcher\", \"decision\": \"The three independent reviews (criteria adversary, design improver, consistency reviewer) ran on Codex, model gpt-6.1-sol at reasoning effort max, the role text's Codex pin, as read-only codex exec sessions launched from this Claude Code session by a launcher in the session's DotLn scratch. Like the kit's worker transport, it gave the sessions one isolated CODEX_HOME holding only a link to the operator's auth.json, a read-only sandbox, project docs, web search, MCP servers and memories off, and kept each session so the",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-134a3766852c8f77",
+      "key": "decision:docs/evidence/WO-237/decisions.md#wo-237-d013",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "8f61c0ed4bf06dc219f047a23ce75d210e63fcaa218e2a00f293bf42c1d21504",
+          "ref": "docs/evidence/WO-237/decisions.md#wo-237-d013--verification-keeps-the-four-recovery-findings-as-follow-ups",
+          "title": "WO-237-D013: Repair the four retained-root recovery bookkeeping cases R1 to R4 reproduced by verification-recovery-probes.mjs: bind and hold a child whose own removal stopped inside a parent's aside;…",
+          "summary": "{ \"id\": \"WO-237-D013\", \"date\": \"2026-11-01\", \"dispatch\": \"resume: verify; independent criterion attacks and implementation review\", \"decision\": \"Judge the original nine criteria and consume the executor's passing complete review row at code identity 5a4b834539e42d6dbda4db3b86bfb352270b62ce5d3cc902bfec55e912bcf0c8. The independent matrix passes its nine variations, the seven journal/root cases and the usage, feed, fixture-close and updated-instance reproductions pass, and an exact archive of the baseline reproduces the absent journal lane and the strict device refusal. The four outstanding claims in reviews.md also reproduce: two stopped removals leave a nested child unbound and retire its se",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-a121c8dcc77a6dfd",
+      "key": "decision:docs/evidence/WO-237/decisions.md#wo-237-d014",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "3e480413fe5d5aaee05b9f588e3bb0029637c52c567b1c3ef967511d10a8957c",
+          "ref": "docs/evidence/WO-237/decisions.md#wo-237-d014--verification-capture-limits-and-missing-original-review-files",
+          "title": "WO-237-D014: Keep the full criteria-adversary, design-improver and consistency reports readable across implementation-ready and into verification, alongside their consolidated dispositions. Determine…",
+          "summary": "{ \"id\": \"WO-237-D014\", \"date\": \"2026-11-01\", \"dispatch\": \"resume: verify; evidence capture and readback\", \"decision\": \"Keep the verification's evidence limits explicit. Several initial status/diff reads exceeded their output budgets; subsequent status reads select the current order's fields, source reads are bounded by section, and generated hooks are checked by normalizing only the snapshot path. All sixteen changed hooks differ only by that snapshot path; the manifest's other metadata agrees after excluding its changed hashes and snapshot. The first exact-baseline setup exceeded the child-process archive capture buffer before extraction; stream the archive to scratch instead and rerun succ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-376d333e4dcd0518",
+      "key": "decision:docs/evidence/WO-237/decisions.md#wo-237-d015",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "686717b8ee2b0db4c86360487d91b141e7b03e4efa49cb57e381d05f2bbf2fd0",
+          "ref": "docs/evidence/WO-237/decisions.md#wo-237-d015--final-review-passes-at-the-handoff-identity-integration-takes-in-nothing-and-a-renumbered-root-whose-checkout-is-gone-stays-refused",
+          "title": "WO-237-D015: Decide and implement the second proof for a renumbered temporary root whose owner repository no longer exists, so a gate fixture or build root of a removed checkout that was created…",
+          "summary": "{ \"id\": \"WO-237-D015\", \"date\": \"2026-11-01\", \"dispatch\": \"resume: final review\", \"decision\": \"Pass WO-237 on all nine criteria at code identity 5a4b834539e42d6dbda4db3b86bfb352270b62ce5d3cc902bfec55e912bcf0c8, the identity the executor handed off and VER-001 judged, which the gate index reports unchanged at this review's entry; the passing complete review row recorded at 2026-11-01T19:33:17.213Z (45 suites, 115 fresh tasks, exit 0) is consumed, and no source byte is written here, so no fresh complete run is owed. Integration ran and took in nothing: HEAD, main and origin/main are one commit, 9139d91e, after a fetch, and no integration receipt, stash or draft decision was left. This review re",
           "missing": false
         }
       ],
