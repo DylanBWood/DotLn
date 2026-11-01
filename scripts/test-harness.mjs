@@ -16470,6 +16470,178 @@ test("usage retains its observation and host readback when standing is unavailab
   }
 });
 
+test("usage reads a closed order's session from its retained lane and names that lane", (t) => {
+  const root = fixture();
+  try {
+    const id = "retained-usage-session";
+    const key = sha256(id);
+    const lane = "docs/control/local/retained/WO-951/harness";
+    // Release close moved the session's state and journal here and recorded
+    // the worktree it came from, which no longer exists.
+    const removed = join(root, "removed-worktree");
+    write(
+      root,
+      `${lane}/${key}.json`,
+      JSON.stringify({
+        role: "executor",
+        workOrder: "WO-951",
+        startedAt: "2026-09-11T10:00:30Z",
+        startingEventCount: 0,
+        reads: [],
+      }),
+    );
+    write(
+      root,
+      `${lane}/${key}.jsonl`,
+      JSON.stringify({ event: "PreToolUse", allowed: true }) + "\n",
+    );
+    write(
+      root,
+      `${lane}/sources.jsonl`,
+      JSON.stringify({ worktree: removed, files: 2, bytes: 10 }) + "\n",
+    );
+    const counter = (timestamp, input, cached, output) => ({
+      type: "event_msg",
+      timestamp,
+      payload: {
+        type: "token_count",
+        info: {
+          total_token_usage: {
+            input_tokens: input,
+            cached_input_tokens: cached,
+            output_tokens: output,
+            total_tokens: input + output,
+          },
+        },
+      },
+    });
+    write(
+      root,
+      `.runtime/retained-codex/sessions/${id}.jsonl`,
+      [
+        {
+          type: "session_meta",
+          timestamp: "2026-09-11T10:00:00Z",
+          payload: { id, cwd: removed },
+        },
+        counter("2026-09-11T10:00:00Z", 100, 80, 10),
+        counter("2026-09-11T10:01:00Z", 500, 380, 30),
+      ]
+        .map((row) => JSON.stringify(row))
+        .join("\n") + "\n",
+    );
+    // A session named apart from the Codex thread it ran in keeps that
+    // thread's usage key in its state; its counters are found by that key.
+    const alias = "retained-usage-alias";
+    write(
+      root,
+      `${lane}/${sha256(alias)}.json`,
+      JSON.stringify({
+        role: "verifier",
+        workOrder: "WO-951",
+        startedAt: "2026-09-11T10:00:30Z",
+        usageSessionKey: sha256("retained-codex-thread"),
+        startingEventCount: 0,
+        reads: [],
+      }),
+    );
+    write(
+      root,
+      ".runtime/retained-codex/sessions/retained-codex-thread.jsonl",
+      [
+        {
+          type: "session_meta",
+          timestamp: "2026-09-11T10:00:00Z",
+          payload: { id: "retained-codex-thread", cwd: removed },
+        },
+        counter("2026-09-11T10:00:00Z", 100, 80, 10),
+        counter("2026-09-11T10:02:00Z", 300, 200, 20),
+      ]
+        .map((row) => JSON.stringify(row))
+        .join("\n") + "\n",
+    );
+    // A directory the reader cannot list adds nothing and stops nothing.
+    const locked = join(root, ".runtime/retained-codex/sessions/locked");
+    mkdirSync(locked);
+    chmodSync(locked, 0o000);
+    // Nor does a Copilot state directory it cannot enter.
+    const copilotState = join(root, ".runtime/retained-copilot/session-state");
+    mkdirSync(copilotState, { recursive: true });
+    chmodSync(copilotState, 0o000);
+    // Nor does an unrelated order's lane it cannot enter.
+    const unrelated = join(root, "docs/control/local/retained/WO-953");
+    mkdirSync(unrelated, { recursive: true });
+    chmodSync(unrelated, 0o000);
+    const usageRows = join(root, "docs/control/local/process/usage.jsonl");
+    const rowsBefore = existsSync(usageRows)
+      ? readFileSync(usageRows, "utf8")
+      : null;
+    // An unrelated Copilot session in the environment still reaches the lane.
+    const observe = (session = id) =>
+      spawnSync(process.execPath, ["scripts/harness.mjs", "usage", session], {
+        cwd: root,
+        encoding: "utf8",
+        env: {
+          ...process.env,
+          CODEX_HOME: join(root, ".runtime/retained-codex"),
+          CLAUDE_CONFIG_DIR: join(root, ".runtime/retained-claude"),
+          COPILOT_HOME: join(root, ".runtime/retained-copilot"),
+          CODEX_THREAD_ID: "",
+          COPILOT_AGENT_SESSION_ID: "unrelated-copilot-session",
+        },
+      });
+    const aliased = JSON.parse(observe(alias).stdout);
+    assert.equal(aliased.source, `retained-lane:${lane}`);
+    assert.equal(aliased.counterSource, "codex-transcript-counter");
+    assert.equal(aliased.usage.totalTokens, 210);
+    const run = observe();
+    chmodSync(locked, 0o700);
+    chmodSync(copilotState, 0o700);
+    chmodSync(unrelated, 0o700);
+    assert.equal(run.status, 0, run.stderr);
+    const observed = JSON.parse(run.stdout);
+    assert.equal(observed.source, `retained-lane:${lane}`);
+    assert.equal(observed.counterSource, "codex-transcript-counter");
+    assert.equal(observed.scope, "dispatch");
+    assert.equal(observed.usage.totalTokens, 420);
+    assert.deepEqual(observed.retained, {
+      workOrder: "WO-951",
+      lane,
+      role: "executor",
+      startedAt: "2026-09-11T10:00:30Z",
+    });
+    assert.equal(observed.dispatchStanding.state, "closed");
+    assert.equal(
+      observed.standing,
+      "dispatch standing: closed (WO-951; read from its retained lane)",
+    );
+    assert.ok("subagents" in observed);
+    // A closed dispatch's usage was recorded while it ran; reading it back
+    // records nothing.
+    assert.equal(
+      existsSync(usageRows) ? readFileSync(usageRows, "utf8") : null,
+      rowsBefore,
+    );
+    // Without a recorded source the lane still answers, with unknown cost.
+    rmSync(join(root, lane, "sources.jsonl"));
+    const unsourced = JSON.parse(observe().stdout);
+    assert.equal(unsourced.source, `retained-lane:${lane}`);
+    assert.equal(unsourced.counterSource, "unavailable");
+    assert.equal(unsourced.cause, "retained-session-source-unrecorded");
+    // A session whose state two lanes hold is ambiguous and refused.
+    write(
+      root,
+      `docs/control/local/retained/WO-952/harness/${key}.json`,
+      JSON.stringify({ role: "verifier" }),
+    );
+    const ambiguous = observe();
+    assert.notEqual(ambiguous.status, 0);
+    assert.match(ambiguous.stderr, /retained in 2 lanes \(WO-951, WO-952\)/);
+  } finally {
+    removeFixture(root, { recursive: true });
+  }
+});
+
 test("quality passes deliver the current-session document boundary only for a leading operator command", () => {
   const root = fixture();
   try {

@@ -173,6 +173,10 @@ import {
   observeTypedCorrection,
   scanMessage,
 } from "../packages/skeleton/dist/src/observed-facts.js";
+// plan start applies the owned-root prune. A fixture's prune stays within its
+// own repository, as the gate scopes its product children, so no run of this
+// suite, whatever scope it inherits, removes the host's temporary roots.
+process.env.DOTLN_PRUNE_SCOPE = "repository";
 const source = resolve(import.meta.dirname, "..");
 
 test("WO-141 meter counts journal events under their original order and phase", async (t) => {

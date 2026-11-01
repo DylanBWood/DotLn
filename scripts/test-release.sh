@@ -1785,6 +1785,13 @@ mkdir -p "$main/docs/control/local/harness" "$subject/docs/control/local/harness
 printf 'retained main terms\n' >"$main/docs/control/local/terms.txt"
 printf 'main cache\n' >"$main/docs/control/local/harness/fixture.json"
 printf 'subject cache\n' >"$subject/docs/control/local/harness/fixture.json"
+# What the order's sessions recorded, beside a capture that stays behind.
+journal_session="$(printf 'd%.0s' {1..64})"
+mkdir -p "$subject/docs/control/local/harness/suite-success" "$subject/docs/control/local/harness/runner"
+printf '{"typedEvent":"HostPermissionDenied","workOrder":"WO-099"}\n' >"$subject/docs/control/local/harness/$journal_session.jsonl"
+printf '{"role":"executor","workOrder":"WO-099"}\n' >"$subject/docs/control/local/harness/$journal_session.json"
+printf 'ok\n' >"$subject/docs/control/local/harness/suite-success/fixture"
+printf 'capture\n' >"$subject/docs/control/local/harness/runner/capture.log"
 printf 'main original\n' >"$main/docs/intake/collision.md"
 printf 'subject original\n' >"$subject/docs/intake/collision.md"
 printf 'subject new note\n' >"$subject/docs/intake/new.md"
@@ -1823,6 +1830,46 @@ if grep -Fq 'DOTLN-MANIFEST-BEGIN' "$gh_state/v0.2.1.body"; then printf 'error: 
 grep -Fq 'build' "$npm_log"
 if grep -q '^ci$\|^test$' "$npm_log"; then printf 'error: close ran an install or suite\n' >&2; exit 1; fi
 test ! -e "$subject"
+# The session journals outlived the worktree in main's retained lane, an
+# owned root of the closed-journal class; the capture fell with the worktree.
+journal_lane="$main/docs/control/local/retained/WO-099/harness"
+if [[ -d "$journal_lane" ]]; then
+  printf 'journal lane after close: %s\n' "$(cd "$journal_lane" && find . -type f | LC_ALL=C sort | tr '\n' ' ')"
+else
+  printf 'journal lane after close: absent\n'
+fi
+grep -Fxq '{"typedEvent":"HostPermissionDenied","workOrder":"WO-099"}' "$journal_lane/$journal_session.jsonl"
+grep -Fxq '{"role":"executor","workOrder":"WO-099"}' "$journal_lane/$journal_session.json"
+grep -Fxq 'ok' "$journal_lane/suite-success/fixture"
+test ! -e "$journal_lane/runner"
+test ! -e "$journal_lane/fixture.json"
+"$node_bin" - "$main/docs/control/local/retained/WO-099/release-close.json" "$journal_lane" <<'JS'
+const assert = require('node:assert/strict'), fs = require('node:fs'), path = require('node:path');
+const [file, lane] = process.argv.slice(2);
+const record = JSON.parse(fs.readFileSync(file, 'utf8'));
+const owner = JSON.parse(fs.readFileSync(path.join(lane, '.dotln-owner.json'), 'utf8'));
+assert.equal(owner.class, 'closed-journal');
+assert.equal(owner.owner.workOrder, 'WO-099');
+// The row counts exactly what the lane received.
+const files = [];
+const walk = (directory) => {
+  for (const entry of fs.readdirSync(directory, { withFileTypes: true }))
+    if (entry.isDirectory()) walk(path.join(directory, entry.name));
+    else if (!['.dotln-owner.json', 'sources.jsonl'].includes(entry.name)) files.push(path.join(directory, entry.name));
+};
+walk(lane);
+const row = record.cleanup.worktrees.find((item) => item.path === record.cleanup.subject.path);
+assert.equal(row.outcome, 'removed');
+assert.deepEqual(row.journals, {
+  lane: 'docs/control/local/retained/WO-099/harness',
+  files: files.length,
+  bytes: files.reduce((sum, file) => sum + fs.statSync(file).size, 0),
+  outcome: 'moved',
+});
+assert.deepEqual(record.cleanup.subject.journals, row.journals);
+JS
+# The fixture removes that owned root itself, as a gate's completion would.
+"$node_bin" "$script_dir/temporary-root.mjs" remove "$journal_lane"
 test "$(git -C "$main" branch --list wo-099)" = ""
 test "$(git -C "$main" status --porcelain)" = ""
 test "$(git -C "$main" rev-parse HEAD)" = "$(git -C "$main" rev-parse origin/main)"
@@ -1902,6 +1949,59 @@ for mutation in commit application component toolchain schema evidence cadence; 
   ' "$mutated" "$mutation"
   if PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" "$node_bin" "$main/scripts/release.mjs" validate "$mutated" >/dev/null 2>&1; then printf 'error: validator accepted %s mutation\n' "$mutation" >&2; exit 1; fi
 done
+}
+
+release_case_journal_failure() {
+make_repo journal_failure
+subject="$fixture/project-wo099"
+git -C "$main" worktree add "$subject" -b wo-099 >/dev/null
+commit_candidate "$subject" WO-099 v0.2.1
+git -C "$subject" push -u origin wo-099 >/dev/null 2>&1
+git clone -c maintenance.auto=false "$origin" "$fixture/integrator" >/dev/null 2>&1
+git -C "$fixture/integrator" config user.email test@example.invalid
+git -C "$fixture/integrator" config user.name "DotLn Release Integrator"
+git -C "$fixture/integrator" switch main >/dev/null 2>&1
+git -C "$fixture/integrator" merge --ff-only origin/wo-099 >/dev/null
+git -C "$fixture/integrator" push origin main >/dev/null 2>&1
+harness="$subject/docs/control/local/harness"
+mkdir -p "$harness"
+journal_session="$(printf 'f%.0s' {1..64})"
+printf '{"typedEvent":"HostPermissionDenied","workOrder":"WO-099"}\n' >"$harness/$journal_session.jsonl"
+# A permission denial: nothing can be moved out of the harness directory.
+record_restricted_release_beacon "$harness"
+chmod 0500 "$harness"
+touch "$npm_log" "$gh_log"
+failed_output="$(release_close WO-099 --publish 2>&1)" || true
+chmod 0700 "$harness"
+grep -Fq 'Published annotated v0.2.1' <<<"$failed_output"
+# The failed move is the close's cleanup blocker: the worktree and its
+# journal stay, the row says why and how to retry, and the release stands.
+test -d "$subject"
+grep -Fxq '{"typedEvent":"HostPermissionDenied","workOrder":"WO-099"}' "$harness/$journal_session.jsonl"
+"$node_bin" - "$main/docs/control/local/retained/WO-099/release-close.json" <<'JS'
+const assert = require('node:assert/strict'), fs = require('node:fs');
+const record = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
+assert.equal(record.cleanup.outcome, 'blocked');
+const row = record.cleanup.worktrees.find((item) => item.path === record.cleanup.subject.path);
+assert.equal(row.outcome, 'retained');
+assert.equal(row.journals.outcome, 'failed');
+assert.equal(row.journals.lane, 'docs/control/local/retained/WO-099/harness');
+assert.match(row.journals.error, /^Journal retention stopped at .+: EACCES; the worktree is retained and a retried close merges the rest$/);
+assert.match(row.journals.command, /close WO-099 --publish/);
+assert.ok(record.blockers.some((blocker) => blocker.action === 'finish' && /Journal retention stopped/.test(blocker.reason)));
+assert.ok(['published', 'already-published'].includes(record.publication.tagOutcome));
+JS
+test "$(grep -c '^release create v0.2.1 ' "$gh_log")" = 1
+retry_output="$(release_close WO-099 --publish)"
+grep -Fq 'v0.2.1 is already published' <<<"$retry_output"
+test ! -e "$subject"
+test "$(grep -c '^release create v0.2.1 ' "$gh_log")" = 1
+journal_lane="$main/docs/control/local/retained/WO-099/harness"
+grep -Fxq '{"typedEvent":"HostPermissionDenied","workOrder":"WO-099"}' "$journal_lane/$journal_session.jsonl"
+# The failed attempt created the lane; the retry merged into it.
+test "$(grep -c '"worktree"' "$journal_lane/sources.jsonl")" = 2
+"$node_bin" "$script_dir/temporary-root.mjs" remove "$journal_lane"
+printf 'release close kept the worktree when its journals could not move, and the retry merged them into the lane\n'
 }
 
 release_case_custom_identity() {

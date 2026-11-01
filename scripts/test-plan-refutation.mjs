@@ -13,6 +13,7 @@ import childProcess from "node:child_process";
 import { syncBuiltinESMExports } from "node:module";
 import { createHash } from "node:crypto";
 import {
+  chmodSync,
   existsSync,
   mkdirSync,
   readFileSync,
@@ -30,6 +31,7 @@ import { compilePlanRefuter } from "../packages/skeleton/dist/src/loadouts/plan-
 import {
   sinceEntropyReview,
   failuresAtStart,
+  fitStartBlock,
   operationalFailures,
   exportFailures,
 } from "./lib/plan-failures.mjs";
@@ -110,6 +112,10 @@ import { LEGACY_COST_HEADER } from "./lib/legacy-cost.mjs";
 import { amendedFrontPageScope } from "./lib/front-page-scope.mjs";
 import { frontPageFindings } from "./docs-check.mjs";
 
+// plan start applies the owned-root prune. A fixture's prune stays within its
+// own repository, as the gate scopes its product children, so no run of this
+// suite, whatever scope it inherits, removes the host's temporary roots.
+process.env.DOTLN_PRUNE_SCOPE = "repository";
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const now = () => Date.parse("2030-01-02T12:00:00.000Z");
 const actor = {
@@ -1049,7 +1055,7 @@ export async function fixtures() {
         assert.equal(before.failures.interventions.count, 3);
         assert.equal(before.failures.repeatedGateRuns, 1);
         assert.ok(before.failures.recentTracks.unknown > 0);
-        assert.ok(Buffer.byteLength(prettyJson(before.failures)) <= 1024);
+        assert.ok(Buffer.byteLength(JSON.stringify(before.failures)) <= 1024);
         // A Track header labels only its order; absent metadata stays unknown.
         const orderPath = "docs/work-orders/WO-802-fixture.md";
         write(repo, orderPath, "# WO-802 — Fixture\n\n**Track:** delivery\n");
@@ -1068,6 +1074,262 @@ export async function fixtures() {
         const damaged = await plan(["failures"], repo);
         assert.equal(damaged.localReleaseCloses.unreadable, 1);
         assert.doesNotMatch(JSON.stringify(damaged), /synthetic private/);
+      },
+    );
+    await check(
+      "WO-237 a closed order's retained journals count for that order, and the feed names the lanes and their window",
+      async () => {
+        const repo = failureRepo(parent, "retained-journals");
+        const time = "2030-01-03T10:00:00.000Z";
+        const denial = (extra) =>
+          JSON.stringify({
+            typedEvent: "HostPermissionDenied",
+            phase: "implementation",
+            recordedAt: time,
+            prompt: "synthetic private text",
+            ...extra,
+          }) + "\n";
+        write(
+          repo,
+          `docs/control/local/harness/${"a".repeat(64)}.jsonl`,
+          denial({ workOrder: "WO-802" }),
+        );
+        // Release close moved this closed order's journal into its lane; a
+        // row naming no order, or another one, still counts for the lane's.
+        write(
+          repo,
+          `docs/control/local/retained/WO-803/harness/${"b".repeat(64)}.jsonl`,
+          denial({}) + denial({ workOrder: "WO-899" }) + "not json\n",
+        );
+        write(
+          repo,
+          "docs/control/local/retained/WO-803/harness/.dotln-owner.json",
+          JSON.stringify({ createdAt: "2030-01-03T09:00:00.000Z" }) + "\n",
+        );
+        write(
+          repo,
+          "docs/control/local/retained/WO-804/harness/sources.jsonl",
+          "{}\n",
+        );
+        const view = operationalFailures(
+          repo,
+          { eventSegments: new Map(), orders: new Map() },
+          () => true,
+        );
+        assert.equal(view.localHostDenials.count, 3);
+        assert.deepEqual(view.localHostDenials.byOrder, {
+          "WO-802": 1,
+          "WO-803": 2,
+        });
+        assert.equal(view.localHostDenials.journals, 1);
+        assert.equal(view.localHostDenials.unreadable, 0);
+        assert.deepEqual(view.retainedJournals, {
+          lanes: 2,
+          files: 1,
+          unreadable: 1,
+          // Oldest first by creation; a lane without a readable marker first.
+          orders: ["WO-804", "WO-803"],
+          windowHours: 720,
+          oldestCreatedAt: "2030-01-03T09:00:00.000Z",
+        });
+        assert.doesNotMatch(
+          JSON.stringify(view),
+          /synthetic private|\/Users\//,
+        );
+        const page = await plan(["failures"], repo);
+        assert.equal(page.localHostDenials.count, 3);
+        assert.deepEqual(page.retainedJournals, view.retainedJournals);
+        assert.deepEqual(
+          exportFailures(repo).retainedJournals,
+          view.retainedJournals,
+        );
+        const start = failuresAtStart(repo);
+        assert.equal(start.localHostDenials, 3);
+        assert.deepEqual(start.retainedJournals, {
+          lanes: 2,
+          files: 1,
+          windowHours: 720,
+        });
+        assert.ok(Buffer.byteLength(JSON.stringify(start)) <= 1024);
+        // A lane that cannot be listed, or an order directory that cannot be
+        // entered, is counted unreadable; the rest count.
+        const locked = join(repo, "docs/control/local/retained/WO-805/harness");
+        mkdirSync(locked, { recursive: true });
+        const closed = join(repo, "docs/control/local/retained/WO-806");
+        mkdirSync(join(closed, "harness"), { recursive: true });
+        chmodSync(locked, 0o000);
+        chmodSync(closed, 0o000);
+        try {
+          const partial = operationalFailures(
+            repo,
+            { eventSegments: new Map(), orders: new Map() },
+            () => true,
+          );
+          assert.equal(partial.retainedJournals.unreadable, 3);
+          assert.equal(partial.localHostDenials.count, 3);
+        } finally {
+          chmodSync(locked, 0o700);
+          chmodSync(closed, 0o700);
+          for (const order of ["WO-805", "WO-806"])
+            rmSync(join(repo, `docs/control/local/retained/${order}`), {
+              recursive: true,
+            });
+        }
+        // A page names the sixteen most recently created lanes and counts the
+        // rest; the export names them all. WO-803's lane, the only one with a
+        // known creation time, is the newest whatever its number.
+        for (let index = 810; index < 830; index++)
+          mkdirSync(
+            join(repo, `docs/control/local/retained/WO-${index}/harness`),
+            { recursive: true },
+          );
+        const many = await plan(["failures"], repo);
+        assert.equal(many.retainedJournals.lanes, 22);
+        assert.equal(many.retainedJournals.orders.length, 16);
+        assert.equal(many.retainedJournals.ordersOmitted, 6);
+        assert.equal(many.retainedJournals.orders.at(-1), "WO-803");
+        assert.equal(many.retainedJournals.orders.at(-2), "WO-829");
+        assert.equal(exportFailures(repo).retainedJournals.orders.length, 22);
+        // The window is the operator's: a null key keeps lanes indefinitely.
+        write(
+          repo,
+          "docs/control/budgets.json",
+          JSON.stringify({ retention: { "closed-journal": null } }),
+        );
+        assert.equal(
+          operationalFailures(
+            repo,
+            { eventSegments: new Map(), orders: new Map() },
+            () => true,
+          ).retainedJournals.windowHours,
+          null,
+        );
+        // The synthetic owner record carries only a creation time; it leaves
+        // with the case, so the gate's cleanup never meets it as an invalid
+        // owner inside its fixture.
+        rmSync(
+          join(
+            repo,
+            "docs/control/local/retained/WO-803/harness/.dotln-owner.json",
+          ),
+        );
+      },
+    );
+    await check(
+      "WO-237 an unlimited acceptance reads as unlimited, and the start block's bound reports an overrun instead of refusing",
+      () => {
+        const repo = failureRepo(parent, "unlimited-acceptance");
+        const time = "2030-01-03T10:00:00.000Z";
+        const accepted = (metric, ceiling, ordinal) => ({
+          schemaVersion: 1,
+          type: "DispatchBoundAccepted",
+          workOrderId: "WO-805",
+          phase: "active",
+          metric,
+          ceiling,
+          ordinal,
+          recordedAt: time,
+        });
+        const view = operationalFailures(
+          repo,
+          {
+            eventSegments: new Map([
+              [
+                "WO-805",
+                [
+                  accepted("wallClockMs", null, 1),
+                  accepted("completeRuns", 4, 2),
+                ],
+              ],
+            ]),
+            orders: new Map(),
+          },
+          () => true,
+        );
+        assert.deepEqual(
+          view.boundStops.boundAcceptances.map(({ metric, ceiling }) => ({
+            metric,
+            ceiling,
+          })),
+          [
+            { metric: "wallClockMs", ceiling: "unlimited" },
+            { metric: "completeRuns", ceiling: 4 },
+          ],
+        );
+        // The window that refused the 2026-10-31 pass: three off-ramp kinds
+        // take the pretty-printed block past 1 KB, while its compact form,
+        // which the bound measures, fits.
+        const block = {
+          command: "npm run plan -- failures",
+          since: "2026-10-30T17:48:53.000Z",
+          items: 6,
+          counts: {
+            failedVerifications: 0,
+            failedFinalReviews: 0,
+            repairs: 0,
+            ordersMadeReady: 1,
+            failedFirstVerifications: 0,
+            corrections: 0,
+            offRamps: 3,
+            offRampEvents: {
+              CriterionWaived: 1,
+              DispatchBoundAccepted: 1,
+              OperatorOverrideRecorded: 1,
+            },
+            amendments: 2,
+            withdrawnAmendments: 1,
+            overriddenHolds: 0,
+          },
+          finalReviewEscapes:
+            "1/10 reviews; 9 orders; 0 unclassed; rate unknown (9 measured)",
+          localReleaseCloses: 8,
+          localHostDenials: 2,
+          interventions: { count: 2, unclassified: 1 },
+          longPhases: 1,
+          repeatedGateRuns: 14,
+          recentTracks: {
+            counted: 8,
+            delivery: 1,
+            machinery: 7,
+            evidence: 0,
+            unknown: 0,
+          },
+          retainedJournals: { lanes: 0, files: 0, windowHours: 720 },
+          localCoverage: "local; Codex dispatch-only; incomplete",
+          sinceEntropyReview: {
+            review: "REVIEW-004",
+            endedAt: "2026-10-01T00:00:00.000Z",
+            finalReviewPassedOrders: 40,
+          },
+        };
+        assert.ok(Buffer.byteLength(prettyJson(block)) > 1024);
+        const fitted = fitStartBlock(structuredClone(block));
+        assert.deepEqual(fitted, block);
+        // A block that overruns even compact keeps its command, window and
+        // item count, and says so on one line.
+        const overrun = fitStartBlock({
+          ...structuredClone(block),
+          counts: {
+            ...block.counts,
+            offRampEvents: Object.fromEntries(
+              Array.from({ length: 60 }, (_, index) => [
+                `SyntheticOffRamp${index}`,
+                index,
+              ]),
+            ),
+          },
+        });
+        assert.deepEqual(Object.keys(overrun), [
+          "command",
+          "since",
+          "items",
+          "overrun",
+        ]);
+        assert.match(
+          overrun.overrun,
+          /^the start block measured \d+ bytes against 1024; read its counts with npm run plan -- failures$/,
+        );
+        assert.ok(Buffer.byteLength(JSON.stringify(overrun)) <= 1024);
       },
     );
     await check(
@@ -6980,6 +7242,7 @@ else {
             "localShellDiagnostics",
             "localReleaseCloses",
             "localHostDenials",
+            "retainedJournals",
             "interventions",
             "boundStops",
             "longPhases",
@@ -7207,6 +7470,7 @@ else {
             evidence: 0,
             unknown: 3,
           },
+          retainedJournals: { lanes: 0, files: 0, windowHours: 720 },
           localCoverage: "local; Codex dispatch-only; incomplete",
           // Only WO-802 passed between review completion and filing; WO-803's
           // and WO-801's passes precede completion or carry no time.
@@ -7216,7 +7480,7 @@ else {
             finalReviewPassedOrders: 1,
           },
         });
-        assert.ok(Buffer.byteLength(prettyJson(started.failures)) <= 1024);
+        assert.ok(Buffer.byteLength(JSON.stringify(started.failures)) <= 1024);
         // Compare instants, excluding the exact endpoint and deduplicating
         // orders. An offset timestamp can sort before its earlier UTC bound.
         const passedAt = (workOrderId, recordedAt, verdict = "pass") => ({
@@ -7282,7 +7546,9 @@ else {
           unreadable.failures.sinceEntropyReview.finalReviewPassedOrders,
           1,
         );
-        assert.ok(Buffer.byteLength(prettyJson(unreadable.failures)) <= 1024);
+        assert.ok(
+          Buffer.byteLength(JSON.stringify(unreadable.failures)) <= 1024,
+        );
         // With no filed Entropy Reducer review the count is unknown.
         const unreviewed = failureRepo(parent, "failures-unreviewed", {
           review: false,
@@ -7317,7 +7583,7 @@ else {
             unavailable.branch,
           );
           assert.ok(
-            Buffer.byteLength(prettyJson(unavailable.failures)) <= 1024,
+            Buffer.byteLength(JSON.stringify(unavailable.failures)) <= 1024,
           );
         }
       },

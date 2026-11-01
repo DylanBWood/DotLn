@@ -1,4 +1,4 @@
-# WO-237 — A closed order keeps its journals: release close moves the worktree's session journals, session state and gate index into main's retained lane for the order under a `closed-journal` retention class the prune judges, and planning's failure counts and the usage readback read them by order; and a temporary root whose volume was renumbered by a reboot is judged by its token and inode instead of refused (version assigned at activation)
+# WO-237 — A closed order keeps its journals: release close moves the worktree's session journals, session state and gate index into main's retained lane for the order under a `closed-journal` retention class the prune judges, and planning's failure counts and the usage readback read them by order; and a temporary root whose volume was renumbered by a reboot is judged by its token and inode instead of refused (v0.107.0)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

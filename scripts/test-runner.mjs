@@ -173,6 +173,8 @@ export const machinerySources = {
     "scripts/lib/build-freshness.mjs",
   ],
   "launchpad-planning": [
+    // plan start applies the owned-root prune through this summary (WO-237).
+    "scripts/lib/temporary-prune-summary.mjs",
     "scripts/lib/planning-document.mjs",
     "packages/kernel/src/types.ts",
     "packages/compiler/src/harness.ts",
@@ -262,6 +264,10 @@ export const machinerySources = {
     "packages/skeleton/src/worker-transport.ts",
   ],
   "harness-fixtures": [
+    // The retained-usage readback the harness suite exercises (WO-237).
+    "scripts/lib/retained-session.mjs",
+    // The stopped-apply report its temporary-root cases exercise (WO-237).
+    "scripts/lib/temporary-prune-summary.mjs",
     "scripts/build.mjs",
     "scripts/lib/planning-document.mjs",
     "scripts/lib/off-ramps.mjs",
@@ -371,6 +377,8 @@ export const machinerySources = {
     "scripts/lib/target-worktrees.mjs",
     // Direct entry imports and literal first-party script inputs (WO-174).
     "packages/skeleton/src/usage-observation.mjs",
+    // A closed order's session read from its retained lane (WO-237).
+    "scripts/lib/retained-session.mjs",
     "scripts/lib/evidence-preparation.mjs",
     "scripts/lib/harness-prune.mjs",
     "scripts/lib/harness-runtime.mjs",
@@ -406,6 +414,8 @@ export const machinerySources = {
   ],
   "harness-evidence": recordedSources["harness"],
   "plan-refutation": [
+    // plan start applies the owned-root prune through this summary (WO-237).
+    "scripts/lib/temporary-prune-summary.mjs",
     "scripts/docs-check.mjs",
     "scripts/lib/front-page-scope.mjs",
     "scripts/lib/planning-document.mjs",
@@ -539,6 +549,8 @@ export const machinerySources = {
     "scripts/lib/target-worktree-fixture.mjs",
   ],
   "process-debt": [
+    // plan start applies the owned-root prune through this summary (WO-237).
+    "scripts/lib/temporary-prune-summary.mjs",
     "scripts/lib/plan-subject.mjs",
     "scripts/lib/planning-document.mjs",
     // The driven-start figure beside the cold-start meter (WO-247).

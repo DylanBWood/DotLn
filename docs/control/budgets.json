@@ -263,7 +263,8 @@
     "worker-capture": 1,
     "warm-fixture": 0,
     "legacy-backfill": 48,
-    "coordination": null
+    "coordination": null,
+    "closed-journal": 720
   },
   "drivenSessionCeiling": 80,
   "drivenPhaseTimeoutMs": null

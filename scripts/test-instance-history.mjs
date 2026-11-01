@@ -353,8 +353,35 @@ function exerciseIntegrationClose(instance, scratch, c) {
   c.commit(subject, "test: synthetic lifecycle close");
   c.git(instance, "merge", "--ff-only", "wo-005");
   c.git(instance, "push", "-q", "origin", "main");
+  // What the order's sessions recorded in its worktree, beside a gate capture
+  // that stays with the worktree.
+  const session = "e".repeat(64);
+  write(
+    subject,
+    `docs/control/local/harness/${session}.jsonl`,
+    '{"typedEvent":"HostPermissionDenied","workOrder":"WO-005"}\n',
+  );
+  write(
+    subject,
+    `docs/control/local/harness/${session}.json`,
+    '{"role":"executor","workOrder":"WO-005"}\n',
+  );
+  write(subject, "docs/control/local/harness/runner/capture.log", "capture\n");
   c.node(instance, "worktree", "finish", order);
   assert.equal(existsSync(subject), false);
+  // The updated instance's close kept those journals in its retained lane, an
+  // owned root of the closed-journal class at the kit's default window.
+  const lane = join(instance, "docs/control/local/retained", order, "harness");
+  assert.equal(
+    readFileSync(join(lane, `${session}.jsonl`), "utf8"),
+    '{"typedEvent":"HostPermissionDenied","workOrder":"WO-005"}\n',
+  );
+  assert.ok(existsSync(join(lane, `${session}.json`)));
+  assert.equal(existsSync(join(lane, "runner")), false);
+  const owner = json(lane, ".dotln-owner.json");
+  assert.equal(owner.class, "closed-journal");
+  assert.equal(owner.retentionHours, 720);
+  assert.equal(owner.owner.workOrder, order);
   const prune = JSON.parse(c.node(instance, "harness", "prune"));
   assert.deepEqual(
     prune.candidates.filter((row) =>
@@ -362,6 +389,17 @@ function exerciseIntegrationClose(instance, scratch, c) {
     ),
     [],
     "integration and close leave no stash or stale temporary root",
+  );
+  // The prune judges the lane as an owned root and keeps it: within its
+  // window, as the current session's own root when the close ran in it, or,
+  // inside a gate, as part of the gate's live fixture.
+  const judged = prune.retained.find(
+    (row) => row.path === `docs/control/local/retained/${order}/harness`,
+  );
+  assert.match(
+    judged?.reason ?? "",
+    /retention window has not passed|current session retains its temporary root|containing fixture gate is live/,
+    JSON.stringify(prune.retained.slice(0, 8)),
   );
   return {
     phase: "closed",

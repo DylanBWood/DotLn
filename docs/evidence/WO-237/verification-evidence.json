@@ -1,0 +1,461 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-237",
+  "verification": "VER-001",
+  "subjectCodeIdentity": "5a4b834539e42d6dbda4db3b86bfb352270b62ce5d3cc902bfec55e912bcf0c8",
+  "baselineCommit": "9139d91eb0b2b5cdcb683f750e48684b43fb95b6",
+  "recordedAt": "2026-11-01T19:55:03.102207+00:00",
+  "productGateConsumed": {
+    "checkId": "npm test",
+    "codeIdentity": "5a4b834539e42d6dbda4db3b86bfb352270b62ce5d3cc902bfec55e912bcf0c8",
+    "treeHash": "f0e87474ee3a71f1404e10eb1d9525ffc776c282",
+    "gateSelection": "review",
+    "recordedAt": "2026-11-01T19:33:17.213Z",
+    "exitCode": 0,
+    "executed": true,
+    "durationMs": 2184231,
+    "evidenceRef": "host-gate:5a4b834539e42d6dbda4db3b86bfb352270b62ce5d3cc902bfec55e912bcf0c8:npm test",
+    "requiredSuites": [
+      "build",
+      "format",
+      "configuration-root",
+      "registrations",
+      "declarations",
+      "generated",
+      "host",
+      "release-preparation",
+      "github-body",
+      "outward-lint",
+      "target-publish",
+      "target-worktree",
+      "vertical",
+      "license-fixtures",
+      "publication-fixtures",
+      "backup-intake",
+      "resume",
+      "launchpad",
+      "workstream-pilot",
+      "instance-history",
+      "beacon-portability",
+      "checkpoint",
+      "worktree",
+      "worktree-integration",
+      "release",
+      "work-orders-fixtures",
+      "siblings-fixtures",
+      "kernel",
+      "compiler",
+      "skeleton",
+      "console",
+      "browser-evidence",
+      "adjacent-queue",
+      "derived-orders",
+      "portfolio",
+      "codex-continuation",
+      "authority-grants",
+      "fixture-temp-root",
+      "launchpad-planning",
+      "evidence-sources",
+      "harness-fixtures",
+      "plan-refutation",
+      "runner-fixtures",
+      "sync-fixtures",
+      "process-debt"
+    ],
+    "identityUnchanged": true
+  },
+  "formatCheck": {
+    "command": "node scripts/harness.mjs bounded -- npm run format:check",
+    "exitCode": 0,
+    "observedAt": "2026-11-01T19:42:41.224Z"
+  },
+  "publicationCheck": {
+    "command": "node scripts/harness.mjs bounded -- npm run publication:check",
+    "exitCode": 0,
+    "observedAt": "2026-11-01T19:50:13.520Z"
+  },
+  "diffCheck": {
+    "command": "git diff --check",
+    "exitCode": 0,
+    "source": "executed verification tool result; no separate timestamp retained"
+  },
+  "probes": {
+    "schemaVersion": 1,
+    "workOrder": "WO-237",
+    "recordedAt": "2026-11-01T19:44:29.455Z",
+    "probeCount": 9,
+    "passed": 9,
+    "results": [
+      {
+        "name": "retention seeds, older budgets default, and explicit policies",
+        "criterion": 1,
+        "passed": true,
+        "observed": {
+          "defaultHours": 720,
+          "nullKeeps": true,
+          "zeroAccepted": true,
+          "invalidRejected": true
+        }
+      },
+      {
+        "name": "partial permission failure preserves every source byte and retry completes",
+        "criterion": [
+          2,
+          3
+        ],
+        "passed": true,
+        "observed": {
+          "files": 6,
+          "failedAfterMoves": 2,
+          "retryFiles": 4,
+          "capturePreserved": true,
+          "emptyRetry": "nothing"
+        }
+      },
+      {
+        "name": "cross-volume copy failure is recoverable after earlier files moved",
+        "criterion": 2,
+        "passed": true,
+        "observed": {
+          "failedCopy": 2,
+          "retryFiles": 2,
+          "allBytesPreserved": true,
+          "noPartial": true
+        }
+      },
+      {
+        "name": "Unicode and repeated log rows survive a failed unlink and interleaved source",
+        "criterion": 3,
+        "passed": true,
+        "observed": {
+          "rows": [
+            "base",
+            "\ud83d\ude00",
+            "repeat",
+            "repeat",
+            "other",
+            "tail"
+          ],
+          "duplicatesAdded": 0,
+          "sourceRemoved": true
+        }
+      },
+      {
+        "name": "class window and zero/null policies retain or remove only their fixture lanes",
+        "criterion": 3,
+        "passed": true,
+        "observed": {
+          "expired": "removed",
+          "young": "retention window has not passed",
+          "null": "class is retained indefinitely",
+          "zero": "removed"
+        }
+      },
+      {
+        "name": "retained denials obey the time window and lane attribution and sanitize private input",
+        "criterion": 4,
+        "passed": true,
+        "observed": {
+          "denials": 1,
+          "byOrder": {
+            "WO-975": 1
+          },
+          "malformedRows": 1,
+          "privateInputExcluded": true
+        }
+      },
+      {
+        "name": "retained usage finds exactly one synthetic transcript and refuses ambiguous lanes",
+        "criterion": 5,
+        "passed": true,
+        "observed": {
+          "order": "WO-976",
+          "counterSource": "codex-transcript-counter",
+          "totalTokens": 230,
+          "ambiguityRefused": true
+        }
+      },
+      {
+        "name": "a renumbered record is restamped once before a class-window removal",
+        "criterion": 8,
+        "passed": true,
+        "observed": {
+          "transitionRows": 1,
+          "currentDeviceStamped": true,
+          "removed": true
+        }
+      },
+      {
+        "name": "oversized start counts preserve the command and report an overrun without throwing",
+        "criterion": "carry-in",
+        "passed": true,
+        "observed": {
+          "keys": [
+            "command",
+            "since",
+            "items",
+            "overrun"
+          ],
+          "bounded": true
+        }
+      }
+    ]
+  },
+  "baseline": {
+    "schemaVersion": 1,
+    "baselineCommit": "9139d91eb0b2b5cdcb683f750e48684b43fb95b6",
+    "productSource": "exact git archive of baseline; current assertion-bearing release test only",
+    "buildExitCode": 0,
+    "releaseNegative": {
+      "exitCode": 2,
+      "observation": "journal lane after close: absent"
+    },
+    "deviceNegative": {
+      "refusal": "Temporary owner record is invalid or the directory was replaced",
+      "currentReadRestamps": true
+    },
+    "recordedAt": "2026-11-01T19:54:24.954Z"
+  },
+  "recoveryFindings": [
+    {
+      "name": "two stopped removals leave an unbound child and retire its segment",
+      "reproduced": true,
+      "observed": {
+        "childUnbound": true,
+        "childSegmentRetired": true,
+        "payloadRetained": true
+      }
+    },
+    {
+      "name": "a child removed from its parents aside is ledgered at its relocated path",
+      "reproduced": true,
+      "observed": {
+        "registeredPath": "parent/child",
+        "removalPath": "parent-aside/child",
+        "pathsDiffer": true,
+        "parentRetained": true
+      }
+    },
+    {
+      "name": "the final owner-marker removal window leaves an empty unmarked aside retained",
+      "reproduced": true,
+      "observed": {
+        "asideExists": true,
+        "reason": "unmarked root has no recognized disposable prefix and suffix"
+      }
+    },
+    {
+      "name": "a parent registered elsewhere does not hold its nested childs ledger segment",
+      "reproduced": true,
+      "observed": {
+        "childSegmentRetired": true,
+        "payloadRetained": true
+      }
+    }
+  ],
+  "executions": [
+    {
+      "label": "independent matrix",
+      "log": "probe-matrix.log",
+      "logSha256": "a2b36d7a821cfc3ef9063c09954125898dae348d6d1cc23fa1b467e1795011c8",
+      "exitCode": 0,
+      "executed": true,
+      "durationMs": 388,
+      "startedAt": "2026-11-01T19:44:29.076Z",
+      "finishedAt": "2026-11-01T19:44:29.464Z",
+      "droppedOutputBytes": 0
+    },
+    {
+      "label": "seven root and journal cases",
+      "log": "probe-roots.log",
+      "logSha256": "9c317624f5372e13d62591334bc9ad75df91b4f28bd1b28073448108d0e2a520",
+      "exitCode": 0,
+      "executed": true,
+      "durationMs": 831,
+      "startedAt": "2026-11-01T19:44:41.655Z",
+      "finishedAt": "2026-11-01T19:44:42.487Z",
+      "droppedOutputBytes": 0
+    },
+    {
+      "label": "retained usage CLI",
+      "log": "probe-usage.log",
+      "logSha256": "51a7fdc9d05fbc9ef276758366971a0b0e1497d4443234d12368d43ddc34b073",
+      "exitCode": 0,
+      "executed": true,
+      "durationMs": 1021,
+      "startedAt": "2026-11-01T19:44:47.411Z",
+      "finishedAt": "2026-11-01T19:44:48.432Z",
+      "droppedOutputBytes": 0
+    },
+    {
+      "label": "release close success",
+      "log": "probe-release-success.log",
+      "logSha256": "d883c65b96f0ec3ecb9ccce7cd24c2dad83e5a8790c8f4944a66e264972ae405",
+      "exitCode": 0,
+      "executed": true,
+      "durationMs": 16743,
+      "startedAt": "2026-11-01T19:45:09.930Z",
+      "finishedAt": "2026-11-01T19:45:26.673Z",
+      "droppedOutputBytes": 0
+    },
+    {
+      "label": "release close failure and retry",
+      "log": "probe-release-failure.log",
+      "logSha256": "3d518b6f45585832a9c705c5e44cab2e2c918bb73d8f710c28b4e66e4db91897",
+      "exitCode": 0,
+      "executed": true,
+      "durationMs": 5511,
+      "startedAt": "2026-11-01T19:45:30.790Z",
+      "finishedAt": "2026-11-01T19:45:36.301Z",
+      "droppedOutputBytes": 0
+    },
+    {
+      "label": "two retained feed and start-block cases",
+      "log": "probe-feed.log",
+      "logSha256": "005eceebfb5efc46197bc4352eb32a0ac87968c94a0297bea923b75b335f9492",
+      "exitCode": 0,
+      "executed": true,
+      "durationMs": 361,
+      "startedAt": "2026-11-01T19:46:18.138Z",
+      "finishedAt": "2026-11-01T19:46:18.500Z",
+      "droppedOutputBytes": 0
+    },
+    {
+      "label": "updated instance history",
+      "log": "probe-instance-history.log",
+      "logSha256": "c91166b7ee53d1c007fce74a2c8f93cea921c19188345d148d3cf5d9dbd56340",
+      "exitCode": 0,
+      "executed": true,
+      "durationMs": 41319,
+      "startedAt": "2026-11-01T19:46:21.768Z",
+      "finishedAt": "2026-11-01T19:47:03.087Z",
+      "droppedOutputBytes": 0
+    },
+    {
+      "label": "exact baseline controls",
+      "log": "probe-baseline-retry.log",
+      "logSha256": "1c628330dd0bfae74ca40eab19d434193b7adca7b496ec7f5d7853a5c6254dc1",
+      "exitCode": 0,
+      "executed": true,
+      "durationMs": 8018,
+      "startedAt": "2026-11-01T19:47:48.974Z",
+      "finishedAt": "2026-11-01T19:47:56.992Z",
+      "droppedOutputBytes": 0
+    },
+    {
+      "label": "four recorded recovery findings",
+      "log": "probe-recovery.log",
+      "logSha256": "caeabae7224ff03fd645e6cea216a39e49220763d72dcdd165bfa36414a9cc96",
+      "exitCode": 0,
+      "executed": true,
+      "durationMs": 141,
+      "startedAt": "2026-11-01T19:49:40.081Z",
+      "finishedAt": "2026-11-01T19:49:40.222Z",
+      "droppedOutputBytes": 0
+    },
+    {
+      "label": "durable baseline artifact",
+      "log": "probe-baseline-artifact.log",
+      "logSha256": "769c931618d00d695ecc57fdd892c67e73584cd62ef4a2e39343ab7a472e9b77",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "docs/evidence/WO-237/verification-baseline.mjs"
+      ],
+      "exitCode": 0,
+      "executed": true,
+      "durationMs": 8115,
+      "startedAt": "2026-11-01T19:54:16.846Z",
+      "finishedAt": "2026-11-01T19:54:24.961Z",
+      "droppedOutputBytes": 0
+    }
+  ],
+  "limits": [
+    "The exact-baseline release negative arm uses the current assertion-bearing test with all product source and built runtime from the baseline archive.",
+    "The executor retained reviews.md with all three reviewers dispositions; its original reports were not found in the executor session scratch. No claim here relies on a missing raw report.",
+    "No live publication, host-wide apply, physical reboot or physical full-disk condition was invoked; cross-volume and disk failures were injected in isolated fixtures.",
+    "The final document gate follows this record and is retained in the ignored harness check index; the completion event consumes its exact-tree row."
+  ],
+  "reproductionCommands": [
+    [
+      "node",
+      "scripts/harness.mjs",
+      "bounded",
+      "--",
+      "node",
+      "docs/evidence/WO-237/verification-probes.mjs"
+    ],
+    [
+      "node",
+      "scripts/harness.mjs",
+      "bounded",
+      "--",
+      "node",
+      "docs/evidence/WO-237/verification-recovery-probes.mjs"
+    ],
+    [
+      "node",
+      "scripts/harness.mjs",
+      "bounded",
+      "--",
+      "node",
+      "docs/evidence/WO-237/verification-baseline.mjs"
+    ],
+    [
+      "node",
+      "scripts/harness.mjs",
+      "bounded",
+      "--",
+      "node",
+      "--test",
+      "--test-name-pattern",
+      "closed order|cross-volume|class window|renumbered device|device transition|retried merge",
+      "scripts/test-temporary-roots.mjs"
+    ],
+    [
+      "node",
+      "scripts/harness.mjs",
+      "bounded",
+      "--",
+      "node",
+      "--test",
+      "--test-name-pattern",
+      "usage reads a closed order",
+      "scripts/test-harness.mjs"
+    ],
+    [
+      "node",
+      "scripts/harness.mjs",
+      "bounded",
+      "--",
+      "bash",
+      "scripts/test-release.sh",
+      "--case",
+      "success"
+    ],
+    [
+      "node",
+      "scripts/harness.mjs",
+      "bounded",
+      "--",
+      "bash",
+      "scripts/test-release.sh",
+      "--case",
+      "journal_failure"
+    ],
+    [
+      "node",
+      "scripts/harness.mjs",
+      "bounded",
+      "--",
+      "node",
+      "--test",
+      "--test-name-pattern",
+      "a kit update preserves and admits",
+      "scripts/test-instance-history.mjs"
+    ]
+  ]
+}

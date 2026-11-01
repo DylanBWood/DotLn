@@ -12,9 +12,11 @@ import {
 import { tmpdir } from "node:os";
 import { basename, dirname, join, relative, resolve, sep } from "node:path";
 import {
+  closedJournalEntry,
   ensureTemporaryRoot,
   finishTemporaryRoot,
   hasGateTemporaryLifetime,
+  TEMPORARY_OWNER_FILE,
   ownerAlive,
   nestedTemporaryRoots,
   readRetention,
@@ -23,7 +25,9 @@ import {
   removeTemporaryRoot,
   requireTemporaryDirectory,
   temporaryInventory,
+  temporaryLedgerContradiction,
   temporaryProcessTable,
+  temporaryRemovalAside,
   temporaryRetentionPassed,
   temporaryOutcomeRecord,
   writeTemporaryOwner,
@@ -58,6 +62,13 @@ const legacyRootName = (name) =>
 export const pruneScope = (options = {}) =>
   options.scope ?? process.env.DOTLN_PRUNE_SCOPE ?? "all";
 
+// A captured root that a stopped removal left aside is judged where its
+// token puts it.
+const resolveSaved = (saved) => {
+  const aside = temporaryRemovalAside(saved.path, saved.token);
+  return existsSync(aside) ? { ...saved, path: aside } : saved;
+};
+
 // A ledger can outlive its path, or disappear with the closing worktree. A
 // recorded root still belongs to its checkout only while the owner marker at
 // its path carries the recorded token and that checkout's physical path.
@@ -90,7 +101,9 @@ export function temporaryPrunePaths(root, options = {}) {
     scope === "close"
       ? [
           ...boundTemporaryRoots(root),
-          ...(options.ownedTemporaryRoots ?? []).filter(ownerBinds),
+          ...(options.ownedTemporaryRoots ?? [])
+            .map(resolveSaved)
+            .filter(ownerBinds),
         ].map((saved) => saved.path)
       : registeredTemporaryRoots(root).map((row) => row.path),
   );
@@ -111,6 +124,20 @@ export function temporaryPrunePaths(root, options = {}) {
           if (!/^[a-f0-9]{64}$/.test(session)) continue;
           const scratch = join(path, session, "scratch");
           if (directory(scratch)) paths.add(scratch);
+          // A removal stopped after it moved the scratch aside leaves it
+          // beside its place; the judgment decides what it is.
+          let entries = [];
+          try {
+            entries = readdirSync(join(path, session));
+          } catch {
+            entries = [];
+          }
+          for (const entry of entries)
+            if (
+              /^dotln-removing-[a-f0-9-]{36}$/.test(entry) &&
+              directory(join(path, session, entry))
+            )
+              paths.add(join(path, session, entry));
         }
     }
   }
@@ -295,6 +322,25 @@ export function judgeTemporaryRoot(root, path, options = {}, context = {}) {
       );
     }
     if (record?.class === "session-scratch") kind = "session-scratch";
+    // A marker is believed only as far as its owner's ledger registers it.
+    const contradiction = record && temporaryLedgerContradiction(path, record);
+    if (contradiction) return retain(contradiction, { class: record.class });
+    // A closed-journal root holds only what a close moves into it; anything
+    // else was put there by someone else and is not the prune's to remove.
+    if (record?.class === "closed-journal") {
+      const undeclared = readdirSync(path, { withFileTypes: true }).find(
+        (entry) =>
+          entry.name !== TEMPORARY_OWNER_FILE &&
+          !(entry.isDirectory()
+            ? closedJournalEntry(entry.name, true)
+            : entry.isFile() && closedJournalEntry(entry.name, false)),
+      );
+      if (undeclared)
+        return retain(
+          `closed-journal root holds an entry its class does not declare: ${undeclared.name}`,
+          { class: record.class },
+        );
+    }
     const fixture = containingFixtureRecord(path, record);
     const use = blockedByUse(path, record, context, fixture);
     if (use) return retain(use);
@@ -307,8 +353,11 @@ export function judgeTemporaryRoot(root, path, options = {}, context = {}) {
           "unmarked root has no recognized disposable prefix and suffix",
         );
       const retention = readRetention(root);
+      // An unmarked root may be any disposable class, so it waits for the
+      // longest of their windows. Coordination and closed journals are always
+      // marked and never named like an abandoned temporary root.
       const windows = Object.entries(retention)
-        .filter(([key]) => key !== "coordination")
+        .filter(([key]) => !["coordination", "closed-journal"].includes(key))
         .map(([, hours]) => hours);
       if (windows.includes(null))
         return retain(
@@ -553,14 +602,20 @@ export function applyTemporaryCandidate(root, row) {
   if (JSON.stringify(inventory) !== JSON.stringify(row.inventory))
     throw new Error("Nested ownership changed; retained");
   if (row.kind === "legacy-backfill") {
+    // As for owned roots, the inode says the directory judged is the one
+    // present; the device number is kept for diagnosis, since a renumbered
+    // volume does not replace a directory.
     const info = lstatSync(row.absolute);
-    if (info.dev !== row.device || info.ino !== row.inode)
+    if (info.ino !== row.inode)
       throw new Error("Legacy root identity changed; retained");
     ensureTemporaryRoot(row.absolute, {
       class: "gate-fixture",
       repository: root,
       adoptExisting: true,
     });
+    // The adopted token names where a stopped removal leaves the root, so a
+    // stopped apply reports it by its actual places.
+    row.token = readTemporaryOwner(row.absolute)?.token;
   }
   return removeTemporaryRoot(row.absolute, row.token);
 }
