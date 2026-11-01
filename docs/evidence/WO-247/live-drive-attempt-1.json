@@ -1,0 +1,1564 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-31T23:58:41.386Z",
+  "input": "drive: WO-999",
+  "entrypoint": "generated router's canonical driver",
+  "codeIdentity": {
+    "schemaVersion": 1,
+    "source": {
+      "codeIdentity": "baf33adde1db508cb555fdb5ce16d0604cdacf36889810f97d479213bb3d4590",
+      "head": "e66730ee4fd785362d2bd37c4d5157a94ec6188a",
+      "root": "authoring-checkout",
+      "observedAt": "2026-10-31T23:58:34.047Z",
+      "method": "gateCodeIdentity of the authoring checkout at the export the fixture ran: tracked and untracked source bytes, excluding documents, reports and generated projections"
+    },
+    "fixtureTrees": {
+      "main": "90638e9d0c2f6258405b01d4e05e75c3a2ca3530",
+      "order": "cf3bb167bbd2addfd92fe3bbf7034de5116f0bbb",
+      "target": "24154bb6973eff0b44a62cbc352d20ecb59d5ac8"
+    }
+  },
+  "qualificationTimeoutMs": 9000000,
+  "qualificationScope": "native-router-and-release-close; earlier phases coordinator-seeded",
+  "qualificationSandbox": {
+    "election": "host",
+    "electionSource": "instance-configuration",
+    "selected": {
+      "sandbox": "workspace-write",
+      "approval": "on-request",
+      "reviewer": "auto-review",
+      "networkAccess": "enabled-for-native-workers-and-phase-tools"
+    },
+    "permissionPolicy": "inherited"
+  },
+  "qualificationLauncherPermission": {
+    "source": "inherited-host-policy"
+  },
+  "qualificationPermissionReview": {
+    "source": "inherited-host-policy"
+  },
+  "host": "codex-cli 0.166.0",
+  "phase": "closed",
+  "routers": [
+    {
+      "exitCode": 0,
+      "exitSignal": null,
+      "error": false,
+      "retained": null,
+      "timedOut": false,
+      "timeoutMs": 8992281,
+      "workerStarted": true,
+      "workerEnded": true,
+      "costUsd": null,
+      "usage": {
+        "input_tokens": 203679,
+        "cached_input_tokens": 158208,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 3302,
+        "reasoning_output_tokens": 2182
+      },
+      "hookEvents": [],
+      "refusalCodes": [],
+      "toolCalls": [
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution"
+      ],
+      "commandResults": [
+        {
+          "kind": "harness",
+          "status": "completed",
+          "exitCode": 0
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": 0,
+          "shape": [
+            [
+              "pwd",
+              "-P"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": 0,
+          "shape": [
+            [
+              "git",
+              "rev-parse",
+              "--show-toplevel",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "harness",
+          "status": "completed",
+          "exitCode": 0
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": 0,
+          "shape": [
+            [
+              "node",
+              "drive.mjs",
+              "status",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "driver-launch",
+          "status": "completed",
+          "exitCode": 0
+        },
+        {
+          "kind": "harness",
+          "status": "completed",
+          "exitCode": 0
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": 0,
+          "shape": [
+            [
+              "node",
+              "drive.mjs",
+              "status",
+              "<operand>"
+            ]
+          ]
+        }
+      ],
+      "boundaryResults": [],
+      "nativeDiagnostics": [
+        {
+          "source": "stderr-tail",
+          "count": 1,
+          "provenance": "message-pattern",
+          "nonemptyMessages": 1,
+          "unclassifiedCount": 1,
+          "signals": []
+        }
+      ],
+      "model": null,
+      "nativeReadback": {
+        "effort": null,
+        "permissionMode": null
+      },
+      "sessionId": "identity-1",
+      "startedAt": "2026-10-31T23:58:41.766Z",
+      "finishedAt": "2026-11-01T00:01:10.249Z",
+      "selectedPolicy": {
+        "sandboxElection": "host",
+        "sandbox": "workspace-write",
+        "approval": "on-request",
+        "reviewer": "auto-review",
+        "networkAccess": "enabled-for-native-workers-and-phase-tools",
+        "nativeLauncher": "generated-skill-command-subject-to-host-permissions",
+        "gitMetadataWrites": "one-command-host-permission-request",
+        "webSearch": "disabled",
+        "nodeRuntime": {
+          "version": "v26.9.0",
+          "source": "launcher-selected-via-tool-environment"
+        },
+        "source": "launch-arguments"
+      },
+      "observedPolicy": {
+        "sandbox": null,
+        "sandboxSource": "not-exposed-by-native-stream",
+        "permissionMode": null,
+        "permissionModeSource": "not-exposed-by-native-json-stream"
+      },
+      "drivenStart": {
+        "role": "router",
+        "host": "codex",
+        "bytes": 15759,
+        "installedBytes": 15311,
+        "launchTextBytes": 448,
+        "method": "installed CLAUDE.md plus the host's installed role skill, as the cold-start meter counts them, plus the launch sentences of scripts/lib/drive-prompts.mjs; recorded, not bounded"
+      },
+      "isolation": {
+        "schemaVersion": 1,
+        "home": "sha256:bbddcc5176ca3cffc7b1b8b414c85da7c9490009fcfd4c9fd5b0d7f2ac154eeb",
+        "authentication": "symlink",
+        "userConfig": {
+          "before": "sha256:18040322d5c47e5336a594267069b377ebd87238b161a49dcbeebfb969cf1ace",
+          "after": "sha256:18040322d5c47e5336a594267069b377ebd87238b161a49dcbeebfb969cf1ace"
+        },
+        "trustTable": {
+          "before": "sha256:f73fb2e2e4e5ce05288c6b5b2f7ddf948959c83bd8216603da58f3a08bb2d3a9",
+          "after": "sha256:f73fb2e2e4e5ce05288c6b5b2f7ddf948959c83bd8216603da58f3a08bb2d3a9"
+        },
+        "isolatedTrustEntries": 1,
+        "homeRemoved": true
+      },
+      "selectedModel": "gpt-6.1-sol",
+      "selectedEffort": "max",
+      "role": "router",
+      "host": "codex",
+      "cwd": "main"
+    }
+  ],
+  "stop": {
+    "reason": "awaiting-close",
+    "next": "The codex host declined the release close and a declined launcher is not retried. Attend it: in the launchpad's main checkout type resume: release close for WO-999; or re-enter with node scripts/drive.mjs WO-999 --host claude, the one admitted host change, for release close only. The drive record's awaitingClose holds the declined item, for which the host printed no reason and the retained observation."
+  },
+  "limits": {
+    "subagentCap": 20,
+    "drivenSessionCeiling": 80,
+    "drivenPhaseTimeoutMs": null,
+    "tokens": null,
+    "costUsd": null,
+    "costScope": "phase-workers"
+  },
+  "routerUsage": {
+    "totalTokens": 206981,
+    "costUsd": null,
+    "source": "native-router-result-stream",
+    "scope": "router sessions only"
+  },
+  "budget": {
+    "count": 1,
+    "cap": 80,
+    "remaining": 79,
+    "countKind": "minimum-observed",
+    "unresolvedAdmissions": 0,
+    "unlinkedChildren": 0,
+    "uncountedRemainder": "unknown",
+    "source": "native-stream-minimum-and-router-admissions",
+    "unknownRemainder": true
+  },
+  "workers": [
+    {
+      "phase": "closed",
+      "action": "release-close",
+      "exitCode": null,
+      "exitSignal": "SIGTERM",
+      "error": true,
+      "retained": {
+        "events": "<synthetic-fixture>/launchpad/docs/control/local/drives/WO-999/identity-2.events.jsonl",
+        "stderr": "<synthetic-fixture>/launchpad/docs/control/local/drives/WO-999/identity-2.stderr.txt",
+        "source": "native-stdout-and-stderr",
+        "codexHome": {
+          "path": "<synthetic-fixture>/launchpad/docs/control/local/drives/WO-999/identity-2.codex-home",
+          "entries": 33,
+          "source": "isolated-codex-home"
+        }
+      },
+      "cause": "native-permission-refused",
+      "refused": "The native host denied a phase command; stop without another attempt until the host admission condition is resolved.",
+      "timedOut": false,
+      "timeoutMs": 8938111,
+      "workerStarted": true,
+      "workerEnded": true,
+      "costUsd": null,
+      "usage": null,
+      "hookEvents": [],
+      "refusalCodes": [],
+      "toolCalls": [
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution",
+        "command_execution"
+      ],
+      "commandResults": [
+        {
+          "kind": "worker-entry",
+          "status": "completed",
+          "exitCode": 0
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": 0,
+          "shape": [
+            [
+              "pwd",
+              "-P"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": 0,
+          "shape": [
+            [
+              "printenv",
+              "DOTLN_LAUNCHPAD"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": 0,
+          "shape": [
+            [
+              "cat",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": 0,
+          "shape": [
+            [
+              "git",
+              "<operand>",
+              "rev-parse",
+              "--show-toplevel"
+            ]
+          ]
+        },
+        {
+          "kind": "lifecycle",
+          "status": "completed",
+          "exitCode": 0
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": 0,
+          "shape": [
+            [
+              "cat",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "lifecycle",
+          "status": "completed",
+          "exitCode": 0
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": 0,
+          "shape": [
+            [
+              "git",
+              "<operand>",
+              "status",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "lifecycle",
+          "status": "failed",
+          "exitCode": 2,
+          "shape": [
+            [
+              "<operand>",
+              "<operand>",
+              "<operand>",
+              "drive.mjs",
+              "harness.mjs",
+              "resume.mjs",
+              "<operand>",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ]
+          ],
+          "diagnosticSignals": [
+            "session-unavailable"
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": 0,
+          "shape": [
+            [
+              "<operand>",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ],
+            [
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "lifecycle",
+          "status": "completed",
+          "exitCode": 0
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": 0,
+          "shape": [
+            [
+              "<operand>",
+              "<operand>",
+              "<operand>",
+              "<operand>",
+              "<operand>",
+              "release.mjs",
+              "worktree.mjs"
+            ],
+            [
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ],
+            [
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ],
+            [
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "harness",
+          "status": "completed",
+          "exitCode": 0
+        },
+        {
+          "kind": "harness",
+          "status": "completed",
+          "exitCode": 0
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": 0,
+          "shape": [
+            [
+              "sed",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ],
+            [
+              "sed",
+              "<operand>",
+              "<operand>",
+              "release.mjs"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": 0,
+          "shape": [
+            [
+              "<operand>",
+              "<operand>",
+              "<operand>",
+              "release.mjs",
+              "<operand>",
+              "<operand>"
+            ],
+            [
+              "tail",
+              "<operand>"
+            ],
+            [
+              "sed",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": 0,
+          "shape": [
+            [
+              "cat",
+              "<operand>",
+              "<operand>"
+            ],
+            [
+              "cat",
+              "<operand>"
+            ],
+            [
+              "cat",
+              "<operand>"
+            ],
+            [
+              "sed",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": 0,
+          "shape": [
+            [
+              "<operand>",
+              "<operand>",
+              "<operand>",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ],
+            [
+              "<operand>",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ],
+            [
+              "head",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "lifecycle",
+          "status": "completed",
+          "exitCode": 0
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": 0,
+          "shape": [
+            [
+              "sed",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ],
+            [
+              "sed",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ],
+            [
+              "sed",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "completed",
+          "exitCode": 0,
+          "shape": [
+            [
+              "git",
+              "<operand>",
+              "worktree",
+              "list",
+              "--porcelain"
+            ],
+            [
+              "sed",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ],
+            [
+              "<operand>",
+              "<operand>",
+              "<operand>",
+              "<operand>"
+            ]
+          ]
+        },
+        {
+          "kind": "lifecycle",
+          "status": "completed",
+          "exitCode": 0
+        },
+        {
+          "kind": "unclassified-shell",
+          "status": "declined",
+          "exitCode": null,
+          "shape": [
+            [
+              "<operand>",
+              "release.mjs",
+              "close",
+              "<operand>",
+              "--publish"
+            ]
+          ]
+        }
+      ],
+      "boundaryResults": [
+        {
+          "kind": "native-tool",
+          "category": "shell-path-missing",
+          "codes": [],
+          "operations": [],
+          "components": []
+        }
+      ],
+      "nativeDiagnostics": [
+        {
+          "source": "stderr-tail",
+          "count": 1,
+          "provenance": "message-pattern",
+          "nonemptyMessages": 1,
+          "unclassifiedCount": 1,
+          "signals": []
+        }
+      ],
+      "declined": {
+        "kind": "unclassified-shell",
+        "command": [
+          [
+            "<operand>",
+            "release.mjs",
+            "close",
+            "<operand>",
+            "--publish"
+          ]
+        ],
+        "status": "declined",
+        "exitCode": null,
+        "reason": null,
+        "reasonSource": "none-printed",
+        "sequence": 53
+      },
+      "eventTail": [
+        {
+          "type": "thread.started"
+        },
+        {
+          "type": "turn.started"
+        },
+        {
+          "type": "item.completed",
+          "item": "agent_message"
+        },
+        {
+          "type": "item.started",
+          "item": "command_execution",
+          "status": "in_progress"
+        },
+        {
+          "type": "item.completed",
+          "item": "command_execution",
+          "status": "completed",
+          "exitCode": 0
+        },
+        {
+          "type": "item.started",
+          "item": "command_execution",
+          "status": "in_progress"
+        },
+        {
+          "type": "item.completed",
+          "item": "command_execution",
+          "status": "completed",
+          "exitCode": 0
+        },
+        {
+          "type": "item.started",
+          "item": "command_execution",
+          "status": "in_progress"
+        },
+        {
+          "type": "item.started",
+          "item": "command_execution",
+          "status": "in_progress"
+        },
+        {
+          "type": "item.completed",
+          "item": "command_execution",
+          "status": "completed",
+          "exitCode": 0
+        },
+        {
+          "type": "item.completed",
+          "item": "command_execution",
+          "status": "completed",
+          "exitCode": 0
+        },
+        {
+          "type": "item.started",
+          "item": "command_execution",
+          "status": "in_progress"
+        },
+        {
+          "type": "item.completed",
+          "item": "command_execution",
+          "status": "completed",
+          "exitCode": 0
+        },
+        {
+          "type": "item.started",
+          "item": "command_execution",
+          "status": "in_progress"
+        },
+        {
+          "type": "item.completed",
+          "item": "command_execution",
+          "status": "completed",
+          "exitCode": 0
+        },
+        {
+          "type": "item.started",
+          "item": "command_execution",
+          "status": "in_progress"
+        },
+        {
+          "type": "item.completed",
+          "item": "command_execution",
+          "status": "completed",
+          "exitCode": 0
+        },
+        {
+          "type": "item.started",
+          "item": "command_execution",
+          "status": "in_progress"
+        },
+        {
+          "type": "item.completed",
+          "item": "command_execution",
+          "status": "completed",
+          "exitCode": 0
+        },
+        {
+          "type": "item.started",
+          "item": "command_execution",
+          "status": "in_progress"
+        },
+        {
+          "type": "item.completed",
+          "item": "command_execution",
+          "status": "completed",
+          "exitCode": 0
+        },
+        {
+          "type": "item.started",
+          "item": "command_execution",
+          "status": "in_progress"
+        },
+        {
+          "type": "item.completed",
+          "item": "command_execution",
+          "status": "failed",
+          "exitCode": 2
+        },
+        {
+          "type": "item.started",
+          "item": "command_execution",
+          "status": "in_progress"
+        },
+        {
+          "type": "item.completed",
+          "item": "command_execution",
+          "status": "completed",
+          "exitCode": 0
+        },
+        {
+          "type": "item.completed",
+          "item": "agent_message"
+        },
+        {
+          "type": "item.started",
+          "item": "command_execution",
+          "status": "in_progress"
+        },
+        {
+          "type": "item.completed",
+          "item": "command_execution",
+          "status": "completed",
+          "exitCode": 0
+        },
+        {
+          "type": "item.started",
+          "item": "command_execution",
+          "status": "in_progress"
+        },
+        {
+          "type": "item.completed",
+          "item": "command_execution",
+          "status": "completed",
+          "exitCode": 0
+        },
+        {
+          "type": "item.started",
+          "item": "command_execution",
+          "status": "in_progress"
+        },
+        {
+          "type": "item.completed",
+          "item": "command_execution",
+          "status": "completed",
+          "exitCode": 0
+        },
+        {
+          "type": "item.started",
+          "item": "command_execution",
+          "status": "in_progress"
+        },
+        {
+          "type": "item.completed",
+          "item": "command_execution",
+          "status": "completed",
+          "exitCode": 0
+        },
+        {
+          "type": "item.started",
+          "item": "command_execution",
+          "status": "in_progress"
+        },
+        {
+          "type": "item.completed",
+          "item": "command_execution",
+          "status": "completed",
+          "exitCode": 0
+        },
+        {
+          "type": "item.started",
+          "item": "command_execution",
+          "status": "in_progress"
+        },
+        {
+          "type": "item.started",
+          "item": "command_execution",
+          "status": "in_progress"
+        },
+        {
+          "type": "item.completed",
+          "item": "command_execution",
+          "status": "completed",
+          "exitCode": 0
+        },
+        {
+          "type": "item.completed",
+          "item": "command_execution",
+          "status": "completed",
+          "exitCode": 0
+        },
+        {
+          "type": "item.started",
+          "item": "command_execution",
+          "status": "in_progress"
+        },
+        {
+          "type": "item.completed",
+          "item": "command_execution",
+          "status": "completed",
+          "exitCode": 0
+        },
+        {
+          "type": "item.started",
+          "item": "command_execution",
+          "status": "in_progress"
+        },
+        {
+          "type": "item.completed",
+          "item": "command_execution",
+          "status": "completed",
+          "exitCode": 0
+        },
+        {
+          "type": "item.started",
+          "item": "command_execution",
+          "status": "in_progress"
+        },
+        {
+          "type": "item.completed",
+          "item": "command_execution",
+          "status": "completed",
+          "exitCode": 0
+        },
+        {
+          "type": "item.started",
+          "item": "command_execution",
+          "status": "in_progress"
+        },
+        {
+          "type": "item.completed",
+          "item": "command_execution",
+          "status": "completed",
+          "exitCode": 0
+        },
+        {
+          "type": "item.completed",
+          "item": "agent_message"
+        },
+        {
+          "type": "item.started",
+          "item": "command_execution",
+          "status": "in_progress"
+        },
+        {
+          "type": "item.completed",
+          "item": "command_execution",
+          "status": "completed",
+          "exitCode": 0
+        },
+        {
+          "type": "item.started",
+          "item": "command_execution",
+          "status": "in_progress"
+        },
+        {
+          "type": "item.completed",
+          "item": "command_execution",
+          "status": "declined"
+        }
+      ],
+      "eventRows": 53,
+      "model": null,
+      "nativeReadback": {
+        "effort": null,
+        "permissionMode": null
+      },
+      "sessionId": "identity-3",
+      "startedAt": "2026-10-31T23:59:20.936Z",
+      "finishedAt": "2026-11-01T00:00:43.075Z",
+      "selectedPolicy": {
+        "sandboxElection": "host",
+        "sandbox": "workspace-write",
+        "approval": "on-request",
+        "reviewer": "auto-review",
+        "networkAccess": "enabled-for-native-workers-and-phase-tools",
+        "nativeLauncher": "own-host-sandbox",
+        "gitMetadataWrites": "one-command-host-permission-request",
+        "webSearch": "live",
+        "nodeRuntime": {
+          "version": "v26.9.0",
+          "source": "launcher-selected-via-tool-environment"
+        },
+        "source": "launch-arguments"
+      },
+      "observedPolicy": {
+        "sandbox": null,
+        "sandboxSource": "not-exposed-by-native-stream",
+        "permissionMode": null,
+        "permissionModeSource": "not-exposed-by-native-json-stream"
+      },
+      "drivenStart": {
+        "role": "release-close",
+        "host": "codex",
+        "bytes": 26971,
+        "installedBytes": 22977,
+        "launchTextBytes": 3994,
+        "method": "installed CLAUDE.md plus the host's installed role skill, as the cold-start meter counts them, plus the launch sentences of scripts/lib/drive-prompts.mjs; recorded, not bounded"
+      },
+      "isolation": {
+        "schemaVersion": 1,
+        "home": "sha256:4ed502d83a5b0fe7b2b1188c0ea20cfde2ddc5796795308b3d7c821e120fdecd",
+        "authentication": "symlink",
+        "userConfig": {
+          "before": "sha256:103f226165c5a465ed311f3f3624f52245ff82b70657cbb440fe71c6a0375d8e",
+          "after": "sha256:103f226165c5a465ed311f3f3624f52245ff82b70657cbb440fe71c6a0375d8e"
+        },
+        "trustTable": {
+          "before": "sha256:103f226165c5a465ed311f3f3624f52245ff82b70657cbb440fe71c6a0375d8e",
+          "after": "sha256:103f226165c5a465ed311f3f3624f52245ff82b70657cbb440fe71c6a0375d8e"
+        },
+        "isolatedTrustEntries": 1,
+        "homeRemoved": true
+      },
+      "entry": {
+        "source": "native-phase-state",
+        "complete": true,
+        "roots": [
+          {
+            "entered": true,
+            "role": "release-close",
+            "workOrder": "WO-999"
+          }
+        ]
+      },
+      "cwd": "main",
+      "workerId": "identity-2",
+      "hooks": {
+        "hookCalls": null,
+        "source": "codex-unhooked-role-text"
+      },
+      "effort": null,
+      "effortSource": "not-exposed-by-native-json-stream",
+      "subagents": {
+        "count": 0,
+        "countKind": "minimum-observed",
+        "unknownRemainder": true,
+        "source": "native-collab-events"
+      },
+      "selectedModel": "gpt-6.1-sol",
+      "selectedEffort": "max",
+      "host": "codex"
+    }
+  ],
+  "completions": [],
+  "coordinatorSeed": {
+    "phase": "closed",
+    "native": false
+  },
+  "publicationExercised": false,
+  "rawTranscriptsRetained": true,
+  "fixturePolicyRestoration": {
+    "count": 0,
+    "source": "coordinator-owned settings after phase workers ended"
+  },
+  "awaitingClose": {
+    "host": "codex",
+    "at": "2026-11-01T00:00:43.503Z",
+    "declined": {
+      "kind": "unclassified-shell",
+      "command": [
+        [
+          "<operand>",
+          "release.mjs",
+          "close",
+          "<operand>",
+          "--publish"
+        ]
+      ],
+      "status": "declined",
+      "exitCode": null,
+      "reason": null,
+      "reasonSource": "none-printed",
+      "sequence": 53
+    },
+    "retained": {
+      "events": "<synthetic-fixture>/launchpad/docs/control/local/drives/WO-999/identity-2.events.jsonl",
+      "stderr": "<synthetic-fixture>/launchpad/docs/control/local/drives/WO-999/identity-2.stderr.txt",
+      "source": "native-stdout-and-stderr",
+      "codexHome": {
+        "path": "<synthetic-fixture>/launchpad/docs/control/local/drives/WO-999/identity-2.codex-home",
+        "entries": 33,
+        "source": "isolated-codex-home"
+      }
+    }
+  },
+  "hostChange": null,
+  "releaseClose": {
+    "outcome": "awaiting-close",
+    "declined": {
+      "kind": "unclassified-shell",
+      "command": [
+        [
+          "<operand>",
+          "release.mjs",
+          "close",
+          "<operand>",
+          "--publish"
+        ]
+      ],
+      "status": "declined",
+      "exitCode": null,
+      "reason": null,
+      "reasonSource": "none-printed",
+      "sequence": 53
+    }
+  },
+  "writerConflict": null,
+  "driverObservations": [
+    {
+      "stage": "release-close",
+      "point": "router-ended",
+      "observedAt": "2026-11-01T00:01:10.323Z",
+      "state": {
+        "recordedRunning": false,
+        "observedDriverAlive": false,
+        "completedAttempts": 1,
+        "stop": {
+          "reason": "awaiting-close",
+          "next": "The codex host declined the release close and a declined launcher is not retried. Attend it: in the launchpad's main checkout type resume: release close for WO-999; or re-enter with node scripts/drive.mjs WO-999 --host claude, the one admitted host change, for release close only. The drive record's awaitingClose holds the declined item, for which the host printed no reason and the retained observation."
+        },
+        "incomplete": {},
+        "refused": false,
+        "writerConflict": null,
+        "awaitingClose": {
+          "host": "codex",
+          "at": "2026-11-01T00:00:43.503Z",
+          "declined": {
+            "kind": "unclassified-shell",
+            "command": [
+              [
+                "<operand>",
+                "release.mjs",
+                "close",
+                "<operand>",
+                "--publish"
+              ]
+            ],
+            "status": "declined",
+            "exitCode": null,
+            "reason": null,
+            "reasonSource": "none-printed",
+            "sequence": 53
+          },
+          "retained": {
+            "events": "<synthetic-fixture>/launchpad/docs/control/local/drives/WO-999/identity-2.events.jsonl",
+            "stderr": "<synthetic-fixture>/launchpad/docs/control/local/drives/WO-999/identity-2.stderr.txt",
+            "source": "native-stdout-and-stderr",
+            "codexHome": {
+              "path": "<synthetic-fixture>/launchpad/docs/control/local/drives/WO-999/identity-2.codex-home",
+              "entries": 33,
+              "source": "isolated-codex-home"
+            }
+          }
+        },
+        "hostChange": null,
+        "currentWorker": {
+          "id": "identity-2",
+          "sessionId": "identity-3",
+          "role": "release-close",
+          "action": "release-close",
+          "timeoutMs": 8938111,
+          "recordedRunning": false,
+          "observedAlive": false,
+          "lastCommand": {
+            "kind": "unclassified-shell",
+            "status": "declined",
+            "exitCode": null,
+            "shape": [
+              [
+                "<operand>",
+                "release.mjs",
+                "close",
+                "<operand>",
+                "--publish"
+              ]
+            ]
+          },
+          "commandFailures": [
+            {
+              "kind": "lifecycle",
+              "status": "failed",
+              "exitCode": 2,
+              "shape": [
+                [
+                  "<operand>",
+                  "<operand>",
+                  "<operand>",
+                  "drive.mjs",
+                  "harness.mjs",
+                  "resume.mjs",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>"
+                ]
+              ],
+              "diagnosticSignals": [
+                "session-unavailable"
+              ]
+            },
+            {
+              "kind": "unclassified-shell",
+              "status": "declined",
+              "exitCode": null,
+              "shape": [
+                [
+                  "<operand>",
+                  "release.mjs",
+                  "close",
+                  "<operand>",
+                  "--publish"
+                ]
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "stage": "release-close",
+      "point": "router-cleanup-ended",
+      "observedAt": "2026-11-01T00:01:10.324Z",
+      "state": {
+        "recordedRunning": false,
+        "observedDriverAlive": false,
+        "completedAttempts": 1,
+        "stop": {
+          "reason": "awaiting-close",
+          "next": "The codex host declined the release close and a declined launcher is not retried. Attend it: in the launchpad's main checkout type resume: release close for WO-999; or re-enter with node scripts/drive.mjs WO-999 --host claude, the one admitted host change, for release close only. The drive record's awaitingClose holds the declined item, for which the host printed no reason and the retained observation."
+        },
+        "incomplete": {},
+        "refused": false,
+        "writerConflict": null,
+        "awaitingClose": {
+          "host": "codex",
+          "at": "2026-11-01T00:00:43.503Z",
+          "declined": {
+            "kind": "unclassified-shell",
+            "command": [
+              [
+                "<operand>",
+                "release.mjs",
+                "close",
+                "<operand>",
+                "--publish"
+              ]
+            ],
+            "status": "declined",
+            "exitCode": null,
+            "reason": null,
+            "reasonSource": "none-printed",
+            "sequence": 53
+          },
+          "retained": {
+            "events": "<synthetic-fixture>/launchpad/docs/control/local/drives/WO-999/identity-2.events.jsonl",
+            "stderr": "<synthetic-fixture>/launchpad/docs/control/local/drives/WO-999/identity-2.stderr.txt",
+            "source": "native-stdout-and-stderr",
+            "codexHome": {
+              "path": "<synthetic-fixture>/launchpad/docs/control/local/drives/WO-999/identity-2.codex-home",
+              "entries": 33,
+              "source": "isolated-codex-home"
+            }
+          }
+        },
+        "hostChange": null,
+        "currentWorker": {
+          "id": "identity-2",
+          "sessionId": "identity-3",
+          "role": "release-close",
+          "action": "release-close",
+          "timeoutMs": 8938111,
+          "recordedRunning": false,
+          "observedAlive": false,
+          "lastCommand": {
+            "kind": "unclassified-shell",
+            "status": "declined",
+            "exitCode": null,
+            "shape": [
+              [
+                "<operand>",
+                "release.mjs",
+                "close",
+                "<operand>",
+                "--publish"
+              ]
+            ]
+          },
+          "commandFailures": [
+            {
+              "kind": "lifecycle",
+              "status": "failed",
+              "exitCode": 2,
+              "shape": [
+                [
+                  "<operand>",
+                  "<operand>",
+                  "<operand>",
+                  "drive.mjs",
+                  "harness.mjs",
+                  "resume.mjs",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>"
+                ]
+              ],
+              "diagnosticSignals": [
+                "session-unavailable"
+              ]
+            },
+            {
+              "kind": "unclassified-shell",
+              "status": "declined",
+              "exitCode": null,
+              "shape": [
+                [
+                  "<operand>",
+                  "release.mjs",
+                  "close",
+                  "<operand>",
+                  "--publish"
+                ]
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "stage": "release-close",
+      "point": "before-final-cleanup",
+      "observedAt": "2026-11-01T00:01:10.325Z",
+      "state": {
+        "recordedRunning": false,
+        "observedDriverAlive": false,
+        "completedAttempts": 1,
+        "stop": {
+          "reason": "awaiting-close",
+          "next": "The codex host declined the release close and a declined launcher is not retried. Attend it: in the launchpad's main checkout type resume: release close for WO-999; or re-enter with node scripts/drive.mjs WO-999 --host claude, the one admitted host change, for release close only. The drive record's awaitingClose holds the declined item, for which the host printed no reason and the retained observation."
+        },
+        "incomplete": {},
+        "refused": false,
+        "writerConflict": null,
+        "awaitingClose": {
+          "host": "codex",
+          "at": "2026-11-01T00:00:43.503Z",
+          "declined": {
+            "kind": "unclassified-shell",
+            "command": [
+              [
+                "<operand>",
+                "release.mjs",
+                "close",
+                "<operand>",
+                "--publish"
+              ]
+            ],
+            "status": "declined",
+            "exitCode": null,
+            "reason": null,
+            "reasonSource": "none-printed",
+            "sequence": 53
+          },
+          "retained": {
+            "events": "<synthetic-fixture>/launchpad/docs/control/local/drives/WO-999/identity-2.events.jsonl",
+            "stderr": "<synthetic-fixture>/launchpad/docs/control/local/drives/WO-999/identity-2.stderr.txt",
+            "source": "native-stdout-and-stderr",
+            "codexHome": {
+              "path": "<synthetic-fixture>/launchpad/docs/control/local/drives/WO-999/identity-2.codex-home",
+              "entries": 33,
+              "source": "isolated-codex-home"
+            }
+          }
+        },
+        "hostChange": null,
+        "currentWorker": {
+          "id": "identity-2",
+          "sessionId": "identity-3",
+          "role": "release-close",
+          "action": "release-close",
+          "timeoutMs": 8938111,
+          "recordedRunning": false,
+          "observedAlive": false,
+          "lastCommand": {
+            "kind": "unclassified-shell",
+            "status": "declined",
+            "exitCode": null,
+            "shape": [
+              [
+                "<operand>",
+                "release.mjs",
+                "close",
+                "<operand>",
+                "--publish"
+              ]
+            ]
+          },
+          "commandFailures": [
+            {
+              "kind": "lifecycle",
+              "status": "failed",
+              "exitCode": 2,
+              "shape": [
+                [
+                  "<operand>",
+                  "<operand>",
+                  "<operand>",
+                  "drive.mjs",
+                  "harness.mjs",
+                  "resume.mjs",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>"
+                ]
+              ],
+              "diagnosticSignals": [
+                "session-unavailable"
+              ]
+            },
+            {
+              "kind": "unclassified-shell",
+              "status": "declined",
+              "exitCode": null,
+              "shape": [
+                [
+                  "<operand>",
+                  "release.mjs",
+                  "close",
+                  "<operand>",
+                  "--publish"
+                ]
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "stage": "release-close",
+      "point": "after-final-stop",
+      "observedAt": "2026-11-01T00:01:10.325Z",
+      "state": {
+        "recordedRunning": false,
+        "observedDriverAlive": false,
+        "completedAttempts": 1,
+        "stop": {
+          "reason": "awaiting-close",
+          "next": "The codex host declined the release close and a declined launcher is not retried. Attend it: in the launchpad's main checkout type resume: release close for WO-999; or re-enter with node scripts/drive.mjs WO-999 --host claude, the one admitted host change, for release close only. The drive record's awaitingClose holds the declined item, for which the host printed no reason and the retained observation."
+        },
+        "incomplete": {},
+        "refused": false,
+        "writerConflict": null,
+        "awaitingClose": {
+          "host": "codex",
+          "at": "2026-11-01T00:00:43.503Z",
+          "declined": {
+            "kind": "unclassified-shell",
+            "command": [
+              [
+                "<operand>",
+                "release.mjs",
+                "close",
+                "<operand>",
+                "--publish"
+              ]
+            ],
+            "status": "declined",
+            "exitCode": null,
+            "reason": null,
+            "reasonSource": "none-printed",
+            "sequence": 53
+          },
+          "retained": {
+            "events": "<synthetic-fixture>/launchpad/docs/control/local/drives/WO-999/identity-2.events.jsonl",
+            "stderr": "<synthetic-fixture>/launchpad/docs/control/local/drives/WO-999/identity-2.stderr.txt",
+            "source": "native-stdout-and-stderr",
+            "codexHome": {
+              "path": "<synthetic-fixture>/launchpad/docs/control/local/drives/WO-999/identity-2.codex-home",
+              "entries": 33,
+              "source": "isolated-codex-home"
+            }
+          }
+        },
+        "hostChange": null,
+        "currentWorker": {
+          "id": "identity-2",
+          "sessionId": "identity-3",
+          "role": "release-close",
+          "action": "release-close",
+          "timeoutMs": 8938111,
+          "recordedRunning": false,
+          "observedAlive": false,
+          "lastCommand": {
+            "kind": "unclassified-shell",
+            "status": "declined",
+            "exitCode": null,
+            "shape": [
+              [
+                "<operand>",
+                "release.mjs",
+                "close",
+                "<operand>",
+                "--publish"
+              ]
+            ]
+          },
+          "commandFailures": [
+            {
+              "kind": "lifecycle",
+              "status": "failed",
+              "exitCode": 2,
+              "shape": [
+                [
+                  "<operand>",
+                  "<operand>",
+                  "<operand>",
+                  "drive.mjs",
+                  "harness.mjs",
+                  "resume.mjs",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>",
+                  "<operand>"
+                ]
+              ],
+              "diagnosticSignals": [
+                "session-unavailable"
+              ]
+            },
+            {
+              "kind": "unclassified-shell",
+              "status": "declined",
+              "exitCode": null,
+              "shape": [
+                [
+                  "<operand>",
+                  "release.mjs",
+                  "close",
+                  "<operand>",
+                  "--publish"
+                ]
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "retainedObservations": [
+    {
+      "attempt": 1,
+      "action": "release-close",
+      "files": [
+        "docs/control/local/live-drive-reports/live-drive-attempt-1/drives/release-close-1.events.jsonl",
+        "docs/control/local/live-drive-reports/live-drive-attempt-1/drives/release-close-1.stderr.txt",
+        "docs/control/local/live-drive-reports/live-drive-attempt-1/drives/release-close-1.codex-home"
+      ]
+    }
+  ],
+  "cleanup": {
+    "workersEnded": true,
+    "outcome": "removed"
+  }
+}

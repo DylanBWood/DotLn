@@ -112,6 +112,29 @@ export function commandShape(source) {
     "DOTLN_LAUNCHPAD",
     "CLAUDE_EFFORT",
     "DOTLN_DRIVEN_WORKER",
+    // Lifecycle, close and helper subcommands, so a declined or failed
+    // launchpad command names what it was; its order and paths stay masked.
+    "implementation-ready",
+    "repair-complete",
+    "verification-result",
+    "final-review-result",
+    "target-records",
+    "release-close",
+    "close",
+    "prepare",
+    "integrate",
+    "index",
+    "apply",
+    "followups",
+    "--publish",
+    "--dry-run",
+    "--local",
+    "--review",
+    "--document",
+    "--sync",
+    "--work-order",
+    "--host",
+    "worker-entry",
   ]);
   try {
     return shellInvocations(shellBody(source))
@@ -122,7 +145,9 @@ export function commandShape(source) {
           .map((word) =>
             known.has(word)
               ? word
-              : /(?:^|\/)(?:resume|harness|drive|target-gate)\.mjs$/.test(word)
+              : /(?:^|\/)(?:resume|harness|drive|target-gate|release|worktree|refute-plan|test-runner)\.mjs$/.test(
+                    word,
+                  )
                 ? word.split("/").at(-1)
                 : "<operand>",
           ),
@@ -186,6 +211,12 @@ export function diagnosticSignals(value) {
     [
       "host-permission",
       /permission.*(?:denied|refused)|not allowed|not permitted/i,
+    ],
+    // Codex's automatic review prints its rejection on stderr; the receipt
+    // names the decider without the rationale's prose (WO-247).
+    [
+      "auto-review-rejected",
+      /rejected due to unacceptable risk|blocked by auto-review|guardian review/i,
     ],
     ["target-opaque", /target shell destinations unavailable/i],
     ["target-authority", /compiled authority does not permit/i],

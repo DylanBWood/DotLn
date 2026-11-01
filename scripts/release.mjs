@@ -94,6 +94,10 @@ import {
   ignoredLane,
 } from "./lib/paths.mjs";
 import { materialSummary } from "./lib/material-summary.mjs";
+import {
+  selfCloseKind,
+  targetReleasePolicy,
+} from "./lib/release-close-handoff.mjs";
 import { CONTROL_LOG_SCHEMA_VERSION, statusProjection } from "./resume.mjs";
 import {
   readControl,
@@ -101,6 +105,7 @@ import {
   controlFromSources,
   addedSegmentEvents,
   eventsForOrder,
+  latestActivationAt,
   latestClosedOrder,
   openOrders,
   branchWorkOrder,
@@ -130,8 +135,11 @@ import {
   writeReleaseHistory,
 } from "./lib/release-history.mjs";
 import {
+  headingVersion,
   humanLayerFromAnnotation,
+  latestTagVersion,
   manifestFromAnnotation,
+  originTags,
   releaseAnnotations,
 } from "./lib/release-tags.mjs";
 
@@ -619,6 +627,9 @@ const reportLocalMaterial = (root, listMaterial = false) => {
 // session without egress learns it first, not last (WO-044).
 const ensureOriginReachable = (root) => {
   const repository = resolveGitHubPushTarget(root);
+  // The attended close keeps its terminal here: a credential prompt must be
+  // answerable, so the probe is not detached and its helper may outlive the
+  // limit on a hang the operator sees (WO-247-D012).
   const probe = execute(
     "git",
     ["ls-remote", "--exit-code", "--heads", "origin", "main"],
@@ -630,31 +641,9 @@ const ensureOriginReachable = (root) => {
     );
   return repository;
 };
-const remoteTags = (root) => {
-  const rows = runGit(root, ["ls-remote", "--tags", "origin"]);
-  const tags = new Map();
-  for (const row of rows.split("\n").filter(Boolean)) {
-    const [object, ref] = row.split(/\s+/);
-    const peeled = /\^\{\}$/.test(ref);
-    const name = ref.replace(/^refs\/tags\//, "").replace(/\^\{\}$/, "");
-    const prior = tags.get(name) ?? { name };
-    tags.set(
-      name,
-      peeled
-        ? { ...prior, target: object, annotated: true }
-        : { ...prior, object, target: prior.target ?? object },
-    );
-  }
-  return tags;
-};
-const latestVersion = (...maps) => {
-  const versions = [
-    ...new Set(
-      maps.flatMap((map) => [...map.keys()]).filter((name) => semver(name)),
-    ),
-  ];
-  return versions.sort(compareVersions).at(-1);
-};
+const remoteTags = (root) => originTags(root);
+const latestVersion = (...maps) =>
+  latestTagVersion(new Map(maps.flatMap((map) => [...map]))) ?? undefined;
 // Worktrees share tag refs. A sibling's release is not this subject's baseline
 // until the subject integrates that history; publication still checks origin.
 const ancestralLocalTags = (root) => {
@@ -782,15 +771,15 @@ const readWorkOrderAuthority = (
   });
   const markdown = repositoryFile(root, state.workOrderPath, revision);
   const heading = markdown.split("\n", 1)[0];
-  const versions = strictVersionsIn(heading);
-  if (versioned && (versions.length !== 1 || !semver(versions[0])))
+  const version = headingVersion(heading);
+  if (versioned && version === null)
     throw new Error(
       `work-order heading must contain exactly one strict vX.Y.Z version: ${heading}`,
     );
   return {
     id: state.workOrderId,
     path: state.workOrderPath,
-    version: versioned ? versions[0] : undefined,
+    version: versioned ? version : undefined,
     title: heading.replace(/^#\s*/, ""),
     objective:
       paragraph(markdown, "Objective") ??
@@ -1391,6 +1380,19 @@ const changedReleaseNotesAt = (root, parent, commit) => {
     .sort((left, right) =>
       left.path < right.path ? -1 : left.path > right.path ? 1 : 0,
     );
+};
+// The order's latest activation in main's control log, as its close record
+// names it; an unreadable log records the cause, never a guess.
+const latestActivation = (root, workOrderId) => {
+  try {
+    const recordedAt = latestActivationAt(readControl(root), workOrderId);
+    return { recordedAt, source: "control-log-at-close" };
+  } catch (error) {
+    return {
+      recordedAt: null,
+      source: `control-log-unreadable: ${error.code ?? "parse"}`,
+    };
+  }
 };
 const passedFinalReview = (event) =>
   event?.type === "FinalReviewCompleted" &&
@@ -2974,7 +2976,7 @@ const prepareTargetRelease = async (
   const repository = loadConfig(root).repositories[state.repositoryId];
   const target = (record.publication.target = {
     repositoryId: state.repositoryId,
-    policy: repository?.release?.policy ?? "no-release",
+    policy: targetReleasePolicy(root, state.repositoryId),
     outcome: "no-release",
     tag: null,
     release: null,
@@ -3337,14 +3339,25 @@ const closePrerequisites = (root, workOrderId, parsed, record) => {
   const mainStatus = remaining.length
     ? `Main tracked files are clean; in-flight orders: ${remaining.join(", ")}.`
     : "Main tracked files are clean and between work orders.";
-  const context = { state, authority, local, remote, latest, head, mainStatus };
-  if (latest && compareVersions(authority.version, latest) < 0) return context;
+  // The branch this close takes, the comparison the handoff described.
+  const selfKind = selfCloseKind(authority.version, latest ?? null);
+  const context = {
+    state,
+    authority,
+    local,
+    remote,
+    latest,
+    head,
+    mainStatus,
+    selfKind,
+  };
+  if (selfKind === "self-no-release") return context;
   const blockingTag = nestedTagConflict(authority.version, local, remote);
   if (blockingTag)
     throw new Error(
       `release tag ${authority.version} is blocked by nested tag ${blockingTag}`,
     );
-  const existing = latest && compareVersions(authority.version, latest) === 0;
+  const existing = selfKind === "self-existing-release";
   if (existing) {
     const remoteTag = remote.get(authority.version);
     if (remoteTag?.annotated && remoteTag.target === head)
@@ -3386,15 +3399,14 @@ const close = async (root, workOrderId, parsed, record, context) => {
     mainStatus,
     repository,
     tagger,
+    selfKind,
   } = context;
   const { flags, material: overrides, confirmTerms } = parsed;
   const publish = flags.includes("--publish");
   const dryRun = flags.includes("--dry-run");
   if (state.repositoryId) {
     record.publication.outcome = "no-release";
-    const targetPolicy =
-      loadConfig(root).repositories[state.repositoryId]?.release?.policy ??
-      "no-release";
+    const targetPolicy = targetReleasePolicy(root, state.repositoryId);
     record.publication.target = {
       repositoryId: state.repositoryId,
       policy: targetPolicy,
@@ -3453,7 +3465,7 @@ const close = async (root, workOrderId, parsed, record, context) => {
     );
     return;
   }
-  if (latest && compareVersions(authority.version, latest) < 0) {
+  if (selfKind === "self-no-release") {
     record.publication.outcome = "no-release";
     if (!dryRun)
       refreshHarnessRuntime(
@@ -3474,7 +3486,7 @@ const close = async (root, workOrderId, parsed, record, context) => {
     );
     return;
   }
-  if (latest && compareVersions(authority.version, latest) === 0) {
+  if (selfKind === "self-existing-release") {
     if (!dryRun) assertReleaseRuntime(root);
     const inspectExisting = () =>
       ensureExistingRelease(
@@ -3975,6 +3987,9 @@ const main = async () => {
           schemaVersion: 1,
           workOrderId,
           startedAt: new Date().toISOString(),
+          // The activation this close belongs to: a later reactivation of the
+          // order does not inherit this receipt (WO-192-D099, WO-247).
+          activation: latestActivation(root, workOrderId),
           steps: releaseSteps(),
           dryRun: parsed.flags.includes("--dry-run"),
           listMaterial: parsed.flags.includes("--list-material"),

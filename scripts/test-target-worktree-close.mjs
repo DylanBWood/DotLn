@@ -990,7 +990,7 @@ test("target close refuses an unreadable, dirty or broken base and a dirty or br
     renameSync(origin, `${origin}.away`);
     refuseCloseBoth(
       f,
-      /target clone base main cannot close: fetch failed: target publish refused: git fetch failed in the publish lane: fatal: '<target origin>' does not appear to be a git repository.*; source retained\. Fix the fetch, then rerun /su,
+      /target clone base main cannot close: fetch failed: remote read refused: git fetch failed in the host read lane: fatal: '<target origin>' does not appear to be a git repository.*; source retained\. Fix the fetch, then rerun /su,
       before,
     );
     renameSync(`${origin}.away`, origin);

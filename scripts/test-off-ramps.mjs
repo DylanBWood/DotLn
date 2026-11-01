@@ -1,5 +1,10 @@
 import { copyFixtureFiles } from "./lib/fixture-inputs.mjs";
 import { spawnGit } from "./lib/git.mjs";
+import {
+  namesLiveRun,
+  requireLiveReceiptIdentity,
+} from "./lib/handoff-ledger.mjs";
+import { criterionJudgments } from "./lib/off-ramps.mjs";
 // Off-ramps: each route appends its typed event with the actor attestation,
 // refuses outside its legal phases with the legal list, and projects in
 // status --json and current.md; withdrawn is terminal (WO-158).
@@ -361,10 +366,186 @@ refuse(
   completeReadback,
   readbackEnv,
 );
+// A met criterion that cites a live receipt stands on the code that receipt
+// ran on: its source identity must equal the handoff identity, and a
+// criterion naming a live run must cite one (WO-247).
+const receiptPath = "docs/evidence/WO-099/live-drive-attempt-1.json";
+const receipt = (codeIdentity) =>
+  writeFileSync(
+    join(root, receiptPath),
+    JSON.stringify(
+      codeIdentity === undefined
+        ? { schemaVersion: 1, stop: { reason: "released" } }
+        : {
+            schemaVersion: 1,
+            codeIdentity: { source: { codeIdentity }, fixtureTrees: null },
+          },
+    ),
+  );
+const citing = [
+  "**Criterion 1:** met. The fixture holds; receipt [live-drive-attempt-1.json](live-drive-attempt-1.json).",
+  "**Criterion 2:** unmet. WO-099-D001: the fixture leaves criterion 2 to the operator.",
+];
+ledger(citing);
+refuse(
+  /criterion 1 cites live-drive-attempt-1\.json, which is not a contained regular file under docs\/evidence/,
+  completeReadback,
+  readbackEnv,
+);
+receipt(undefined);
+refuse(
+  /criterion 1 cites live-drive-attempt-1\.json, which records no codeIdentity\.source/,
+  completeReadback,
+  readbackEnv,
+);
+const { gateCodeIdentity: codeIdentityOf } =
+  await import("./lib/gate-evidence.mjs");
+const handoffIdentity = codeIdentityOf(root);
+// A criterion that names a live lifecycle stands on the identity its receipts
+// carry; a receipt another criterion cites is evidence of what it recorded.
+writeFileSync(
+  join(root, authority),
+  authorityText.replace("1. One.", "1. One live lifecycle per host."),
+);
+receipt("0".repeat(64));
+refuse(
+  new RegExp(
+    `criterion 1 cites live-drive-attempt-1\\.json, whose source code identity ${"0".repeat(64)} differs from the handoff identity ${handoffIdentity}`,
+  ),
+  completeReadback,
+  readbackEnv,
+);
+const recorded = await requireLiveReceiptIdentity(root, {
+  checked: true,
+  path: ledgerPath(),
+  declared: [
+    { id: "1", text: "One." },
+    { id: "2", text: "Two." },
+  ],
+  met: ["1"],
+  judgments: [
+    {
+      criterionId: "1",
+      met: true,
+      paragraph:
+        "**Criterion 1:** met. [live-drive-attempt-1.json](live-drive-attempt-1.json)",
+    },
+  ],
+});
+assert.deepEqual(recorded, [
+  {
+    criterionId: "1",
+    receipt: receiptPath,
+    codeIdentity: "0".repeat(64),
+    matchesHandoff: false,
+  },
+]);
+// A receipt cited in the judgment's following lines counts with it, a blank
+// line between them or not: the first receipt matches, and the second, in the
+// paragraph below, is still read.
+receipt(handoffIdentity);
 ledger([
-  "**Criterion 1:** met. The fixture holds.",
+  "**Criterion 1:** met. Claude [live-drive-attempt-1.json](live-drive-attempt-1.json) and Codex",
+  "",
+  "[live-drive-attempt-2.json](live-drive-attempt-2.json), the second host's run.",
   "**Criterion 2:** unmet. WO-099-D001: the fixture leaves criterion 2 to the operator.",
 ]);
+refuse(
+  /criterion 1 cites live-drive-attempt-2\.json, which is not a contained regular file under docs\/evidence/,
+  completeReadback,
+  readbackEnv,
+);
+// A receipt inside a fenced example counts for nothing: the criterion that
+// names a live lifecycle still cites none.
+writeFileSync(
+  join(root, authority),
+  authorityText.replace("1. One.", "1. One live lifecycle per host."),
+);
+ledger([
+  "**Criterion 1:** met. One.",
+  "```md",
+  "**Criterion 1:** met. [live-drive-attempt-9.json](live-drive-attempt-9.json)",
+  "```",
+  "**Criterion 2:** unmet. WO-099-D001: the fixture leaves criterion 2 to the operator.",
+]);
+refuse(
+  /criterion 1 recorded met names a live lifecycle or drive but cites no live-drive-attempt-N\.json receipt/,
+  completeReadback,
+  readbackEnv,
+);
+// Only a criterion naming a live lifecycle or drive owes a receipt: mechanism
+// wording and negations do not (WO-247-D005).
+assert.equal(
+  namesLiveRun("One live lifecycle per host on the final code."),
+  true,
+);
+assert.equal(namesLiveRun("A live drive on each host closes the order."), true);
+assert.equal(
+  namesLiveRun("the boundary held in the live run of criterion 8"),
+  false,
+);
+assert.equal(
+  namesLiveRun("the stub boundary holds with no live episode"),
+  false,
+);
+assert.equal(
+  namesLiveRun(
+    "requireGateClaims fails a completion whose live receipt's source identity differs",
+  ),
+  false,
+);
+assert.equal(namesLiveRun("no live drive is run for this criterion"), false);
+assert.equal(namesLiveRun("judged without a live lifecycle"), false);
+// A negated mention does not cancel a plain one elsewhere in the criterion.
+assert.equal(
+  namesLiveRun(
+    "One live lifecycle per host on the final code, and no live drive runs inside the gate.",
+  ),
+  true,
+);
+assert.equal(
+  namesLiveRun(
+    "A live drive on each host closes the order; the gate runs without a live drive.",
+  ),
+  true,
+);
+assert.deepEqual(
+  criterionJudgments(
+    "**Criterion 1:** met. A\nwrapped line\n\n**Criterion 2:** unmet. B\n```\n**Criterion 3:** met. fenced\n```",
+  ).map(({ criterionId, paragraph }) => [criterionId, paragraph]),
+  [
+    ["1", "**Criterion 1:** met. A\nwrapped line"],
+    ["2", "**Criterion 2:** unmet. B"],
+  ],
+);
+// A paragraph runs to the next judgment or heading, blank lines included.
+assert.deepEqual(
+  criterionJudgments(
+    "**Criterion 1:** met. A\n\nmore evidence\n\n## Reviews\n\n**Criterion 2:** unmet. B",
+  ).map(({ criterionId, paragraph }) => [criterionId, paragraph]),
+  [
+    ["1", "**Criterion 1:** met. A\n\nmore evidence"],
+    ["2", "**Criterion 2:** unmet. B"],
+  ],
+);
+// A criterion that names a live lifecycle must cite its receipt.
+writeFileSync(
+  join(root, authority),
+  authorityText.replace("2. Two.", "2. Two: one live lifecycle per host."),
+);
+ledger([
+  "**Criterion 1:** met. One.",
+  "**Criterion 2:** met. Two, with no receipt.",
+]);
+refuse(
+  /criterion 2 recorded met names a live lifecycle or drive but cites no live-drive-attempt-N\.json receipt/,
+  completeReadback,
+  readbackEnv,
+);
+writeFileSync(join(root, authority), authorityText);
+// A matching receipt is admitted and recorded with the completion.
+receipt(handoffIdentity);
+ledger(citing);
 // Criterion 2 without a waiver: a pass is refused and the verification fails.
 const readback = call(completeReadback, readbackEnv);
 assert.equal(readback.status, 0, readback.stderr);
@@ -374,6 +555,14 @@ assert.match(
 );
 const readbackOrdinal = events().length;
 assert.deepEqual(last().unmetCriteria, ["2"]);
+assert.deepEqual(last().evidence.liveReceipts, [
+  {
+    criterionId: "1",
+    receipt: receiptPath,
+    codeIdentity: handoffIdentity,
+    matchesHandoff: true,
+  },
+]);
 assert.deepEqual(status().unmetCriteria, [
   { criterionId: "2", ordinal: readbackOrdinal },
 ]);

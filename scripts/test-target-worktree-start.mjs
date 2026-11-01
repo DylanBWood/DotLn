@@ -1032,7 +1032,7 @@ test("host-rule rewrite requires a committed opt-in and preserves operator rules
 
     const operatorRules = [
       "Bash(npm test)",
-      "Bash(gh pr view --repo github.com/dotln-fixture/target *)",
+      "Bash(gh pr view --repo github.invalid/dotln-fixture/target *)",
     ];
     write(
       f.main,
@@ -1069,7 +1069,7 @@ test("host-rule rewrite requires a committed opt-in and preserves operator rules
       "remote",
       "set-url",
       "origin",
-      "https://github.com/dotln-fixture/another.git",
+      "https://github.invalid/dotln-fixture/another.git",
     );
     const reboundOrigin = rewrite();
     assert.notEqual(reboundOrigin.status, 0);
@@ -1263,7 +1263,7 @@ test("literal host rules keep main clean and preserve another in-flight order", 
     const expectedSecond = orderHostRules(
       f.main,
       secondEntry,
-      "github.com/dotln-fixture/target",
+      "github.invalid/dotln-fixture/target",
     ).claude;
     assert.equal(
       rules().filter((rule) => rule.includes("publish WO-999")).length,

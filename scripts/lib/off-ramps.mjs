@@ -203,7 +203,7 @@ export const criterionJudgments = (report) => {
   // CommonMark fences: a fence closes only on its own character, at least as
   // long, with nothing after it.
   let fence;
-  return report.split(/\r?\n/).flatMap((line) => {
+  const rows = report.split(/\r?\n/).map((line) => {
     const marker = /^ {0,3}(`{3,}|~{3,})(.*)$/u.exec(line);
     if (
       marker &&
@@ -211,7 +211,7 @@ export const criterionJudgments = (report) => {
       !(marker[1][0] === "`" && marker[2].includes("`"))
     ) {
       fence = marker[1];
-      return [];
+      return { line, fenced: true, match: null };
     }
     if (
       marker &&
@@ -221,18 +221,35 @@ export const criterionJudgments = (report) => {
       !marker[2].trim()
     ) {
       fence = undefined;
-      return [];
+      return { line, fenced: true, match: null };
     }
-    const match = fence ? null : criterionLine.exec(line);
-    return match
-      ? [
-          {
-            criterionId: match[1],
-            met: match[2].toLowerCase() === "met",
-            waivedBy: match[3] === undefined ? undefined : Number(match[3]),
-          },
-        ]
-      : [];
+    return {
+      line,
+      fenced: Boolean(fence),
+      match: fence ? null : criterionLine.exec(line),
+    };
+  });
+  return rows.flatMap((row, index) => {
+    if (!row.match) return [];
+    // The judgment's paragraph: its line and every line after it up to the
+    // next judgment or heading, fenced lines left out, so a receipt cited in
+    // a wrapped or following paragraph belongs to the judgment above it.
+    const paragraph = [row.line];
+    for (let next = index + 1; next < rows.length; next++) {
+      const following = rows[next];
+      if (following.match || /^ {0,3}#{1,6}\s/u.test(following.line)) break;
+      if (!following.fenced) paragraph.push(following.line);
+    }
+    while (paragraph.length > 1 && !paragraph.at(-1).trim()) paragraph.pop();
+    return [
+      {
+        criterionId: row.match[1],
+        met: row.match[2].toLowerCase() === "met",
+        waivedBy: row.match[3] === undefined ? undefined : Number(row.match[3]),
+        line: row.line,
+        paragraph: paragraph.join("\n"),
+      },
+    ];
   });
 };
 

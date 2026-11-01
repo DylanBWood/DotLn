@@ -6,5 +6,6 @@
   "derivedOrders": { "first": "WO-900", "last": "WO-999" },
   "repositories": {},
   "build": {},
-  "release": { "displayName": "DotLn-Enterprise-Starter" }
+  "release": { "displayName": "DotLn-Enterprise-Starter" },
+  "drive": { "sandbox": "host" }
 }

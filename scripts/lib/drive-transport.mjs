@@ -1,4 +1,6 @@
 import { fork } from "node:child_process";
+import { closeSync, mkdirSync, openSync, rmSync, writeSync } from "node:fs";
+import { join } from "node:path";
 import { streamObservation } from "./drive-stream.mjs";
 
 export { commandFailed, researchCommandKind } from "./drive-diagnostics.mjs";
@@ -50,6 +52,53 @@ export function processRunning(pid) {
   }
 }
 
+// The raw native stream and stderr of one phase, written beside the drive
+// record while it runs. A declined or failed phase keeps them for diagnosis;
+// a phase that ended normally removes them, so the ignored record holds no
+// narrative it has no use for (WO-247-D003). The retention names only the
+// files that were opened, and a capture that could not be written says so.
+function phaseCapture(capture) {
+  if (!capture?.directory || !capture.name) return null;
+  const paths = {
+    events: join(capture.directory, `${capture.name}.events.jsonl`),
+    stderr: join(capture.directory, `${capture.name}.stderr.txt`),
+  };
+  const descriptors = {};
+  let failed = false;
+  const write = (name, chunk) => {
+    try {
+      if (!descriptors[name]) {
+        mkdirSync(capture.directory, { recursive: true, mode: 0o700 });
+        descriptors[name] = openSync(paths[name], "w", 0o600);
+      }
+      writeSync(descriptors[name], chunk);
+    } catch {
+      // A capture that cannot be written leaves the phase to run.
+      failed = true;
+    }
+  };
+  return {
+    stdout: (chunk) => write("events", chunk),
+    stderr: (chunk) => write("stderr", chunk),
+    finish(keep) {
+      for (const descriptor of Object.values(descriptors))
+        try {
+          closeSync(descriptor);
+        } catch {}
+      const opened = Object.keys(descriptors);
+      if (!keep) {
+        for (const name of opened) rmSync(paths[name], { force: true });
+        return null;
+      }
+      return {
+        ...Object.fromEntries(opened.map((name) => [name, paths[name]])),
+        source: "native-stdout-and-stderr",
+        ...(failed ? { captureFailed: true } : {}),
+      };
+    },
+  };
+}
+
 // Supervise one native process. The stream observer reads what it says; this
 // owns only its lifetime: the fork, the clocks, and the stops.
 export async function launchPhase({
@@ -67,10 +116,12 @@ export async function launchPhase({
   command = "claude",
   launcherCommand = null,
   signal,
+  capture,
 }) {
   const started = Date.now();
   const appliedTimeoutMs = phaseTimeLimit(null, timeoutMs, deadlineAt, started);
   if (appliedTimeoutMs === 0) return { ...deadlineRefusal };
+  const captured = phaseCapture(capture);
   const phaseDeadlineAt =
     appliedTimeoutMs === null ? null : started + appliedTimeoutMs;
   const child = fork(new URL("./drive-process.mjs", import.meta.url), [], {
@@ -127,6 +178,7 @@ export async function launchPhase({
   const pending = [];
   const ended = new Promise((resolve) => {
     child.stdout.on("data", (chunk) => {
+      captured?.stdout(chunk);
       buffer += chunk;
       const lines = buffer.split("\n");
       buffer = lines.pop();
@@ -134,6 +186,7 @@ export async function launchPhase({
       else pending.push(...lines);
     });
     child.stderr.on("data", (chunk) => {
+      captured?.stderr(chunk);
       stderrDiagnostic = (stderrDiagnostic + chunk).slice(-8192);
       if (/cannot be used with/.test(stderrDiagnostic))
         facts.cause = "cli-argument-conflict";
@@ -217,12 +270,14 @@ export async function launchPhase({
       );
     if (setupFailure) throw setupFailure;
     if (buffer) inspect(buffer);
-    if (stderrDiagnostic)
-      observation.observeNativeDiagnostic("stderr-tail", stderrDiagnostic);
+    observation.observeStderrTail(stderrDiagnostic);
+    const error = facts.error || result.exitCode !== 0;
+    const retained = captured?.finish(error || Boolean(facts.refused)) ?? null;
     return {
       ...result,
       exitSignal: nativeSignal,
-      error: facts.error || result.exitCode !== 0,
+      error,
+      ...(captured ? { retained } : {}),
       ...(facts.cause ? { cause: facts.cause } : {}),
       ...(facts.refused ? { refused: facts.refused } : {}),
       timedOut,
@@ -241,6 +296,9 @@ export async function launchPhase({
       startedAt,
       finishedAt: new Date().toISOString(),
     };
+  } catch (error) {
+    captured?.finish(true);
+    throw error;
   } finally {
     clearTimeout(timer);
     clearTimeout(killTimer);

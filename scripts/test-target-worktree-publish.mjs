@@ -19,7 +19,7 @@ import {
 } from "node:fs";
 import { dirname, join } from "node:path";
 import { docPath } from "./lib/config.mjs";
-import { releaseCloseCommand, runGit } from "./lib/git.mjs";
+import { releaseCloseCommand, runGit, spawnGit } from "./lib/git.mjs";
 import { write } from "./lib/helpers.mjs";
 import { readControl } from "./lib/control-store.mjs";
 import { publicationGrant } from "./test-target-publication-fixture.mjs";
@@ -36,6 +36,8 @@ import {
   closeOrder,
   publicationSetup,
   launchpadCommands,
+  fixtureForgeUrl,
+  assertNoResolvableFixtureRemote,
 } from "./lib/target-worktree-fixture.mjs";
 
 test("publication setup applies listed-term refusals under a configured control root", () =>
@@ -70,6 +72,74 @@ test("publication setup applies listed-term refusals under a configured control 
     },
     { roots: { docs: "records", control: "records/coordination" } },
   ));
+
+test("a fixture push carries the fixture environment to the local bare repository only, and one without it fails at resolution", () =>
+  withFixture((f) => {
+    const forge = publicationSetup(f);
+    assert.equal(
+      git(f.clone, "remote", "get-url", "origin"),
+      fixtureForgeUrl(),
+    );
+    write(f.clone, "probe.txt", "probe\n");
+    git(f.clone, "add", "probe.txt");
+    git(f.clone, "-c", "maintenance.auto=false", "commit", "-qm", "probe");
+    const probe = git(f.clone, "rev-parse", "HEAD");
+    const bare = join(f.base, "target.git");
+    const forgeLog = () =>
+      existsSync(forge.log) ? readFileSync(forge.log, "utf8") : "";
+    const before = forgeLog();
+    git(f.clone, "push", "-q", "origin", "HEAD:refs/heads/probe");
+    assert.equal(runGit(bare, ["rev-parse", "refs/heads/probe"]), probe);
+    assert.equal(forgeLog(), before, "the forge adapter saw no call");
+    // Without the fixture environment the origin is the reserved host, which
+    // no resolver answers: the push fails before any object leaves (WO-247-D009).
+    const unreached = spawnGit(
+      ["-C", f.clone, "push", "-q", "origin", "HEAD:refs/heads/unreached"],
+      {
+        encoding: "utf8",
+        env: {
+          // No proxy may carry the request: the failure must be the resolver's.
+          ...Object.fromEntries(
+            Object.entries(process.env).filter(
+              ([key]) => !/^(?:https?|all|no)_proxy$/iu.test(key),
+            ),
+          ),
+          GIT_CONFIG_NOSYSTEM: "1",
+          GIT_CONFIG_GLOBAL: "/dev/null",
+          GIT_TERMINAL_PROMPT: "0",
+        },
+        timeout: 60000,
+      },
+    );
+    assert.notEqual(unreached.status, 0);
+    assert.match(unreached.stderr, /Could not resolve host: github\.invalid/u);
+    assert.equal(
+      runGit(
+        bare,
+        ["rev-parse", "--verify", "--quiet", "refs/heads/unreached"],
+        {
+          onFailure: () => "absent",
+        },
+      ),
+      "absent",
+    );
+    assert.equal(forgeLog(), before);
+    // A fixture remote on a resolvable host is refused before any test runs
+    // against it.
+    git(
+      f.clone,
+      "remote",
+      "set-url",
+      "origin",
+      "https://github.com/dotln-fixture/target.git",
+    );
+    assert.throws(
+      () => assertNoResolvableFixtureRemote(f),
+      /fixture remote https:\/\/github\.com\/dotln-fixture\/target\.git names a resolvable host/u,
+    );
+    git(f.clone, "remote", "set-url", "origin", fixtureForgeUrl());
+    assertNoResolvableFixtureRemote(f);
+  }));
 
 test("target records preserve reviewed reports, refuse changed inputs and publish only the bound records commit", () =>
   withFixture((f) => {
@@ -462,14 +532,14 @@ test("target records preserve reviewed reports, refuse changed inputs and publis
       "config",
       "--add",
       "remote.origin.pushurl",
-      "https://github.com/dotln-fixture/target.git",
+      "https://github.invalid/dotln-fixture/target.git",
     );
     git(
       f.target,
       "config",
       "--add",
       "remote.origin.pushurl",
-      "https://github.com/dotln-fixture/second.git",
+      "https://github.invalid/dotln-fixture/second.git",
     );
     noPublish(/one push URL/u);
     git(f.target, "config", "--unset-all", "remote.origin.pushurl");
@@ -538,7 +608,7 @@ test("target records preserve reviewed reports, refuse changed inputs and publis
       gitWrapperBytes = readFileSync(gitWrapper, "utf8");
     const wrongRemote = gitWrapperBytes.replace(
       "process.stdout.write(result.stdout); process.exit(result.status ?? 1);",
-      "process.stdout.write('https://github.com/dotln-fixture/other.git\\n'); process.exit(0);",
+      "process.stdout.write('https://github.invalid/dotln-fixture/other.git\\n'); process.exit(0);",
     );
     assert.notEqual(wrongRemote, gitWrapperBytes, "remote fault is installed");
     writeFileSync(gitWrapper, wrongRemote);
@@ -1481,7 +1551,7 @@ test("WO-221 the draft form at verified pushes the working tree under a draft pu
     );
     assert.match(
       drafted,
-      /Pushed draft feat\/reviewed-behavior at [0-9a-f]{40} and opened draft pull request #7 on github\.com\/dotln-fixture\/target; HEAD and the index are unchanged/u,
+      /Pushed draft feat\/reviewed-behavior at [0-9a-f]{40} and opened draft pull request #7 on github\.invalid\/dotln-fixture\/target; HEAD and the index are unchanged/u,
     );
     assert.equal(git(f.target, "rev-parse", "HEAD"), headBefore);
     assert.equal(git(f.target, "status", "--porcelain"), statusBefore);
@@ -1525,7 +1595,7 @@ test("WO-221 the draft form at verified pushes the working tree under a draft pu
           ...prior,
           payload: {
             ...prior.payload,
-            repositoryId: "github.com/dotln-fixture/another",
+            repositoryId: "github.invalid/dotln-fixture/another",
           },
         }).log,
       );
@@ -1558,7 +1628,7 @@ test("WO-221 the draft form at verified pushes the working tree under a draft pu
       f.target,
       "config",
       "remote.origin.url",
-      "https://github.com/dotln-fixture/another",
+      "https://github.invalid/dotln-fixture/another",
     );
     const wrongOrigin = f.worktree(...draftArgs);
     assert.notEqual(wrongOrigin.status, 0);
@@ -1716,7 +1786,7 @@ test("WO-221 the draft form at verified pushes the working tree under a draft pu
     );
     assert.match(
       published,
-      /over draft [0-9a-f]{40} and marked pull request #7 on github\.com\/dotln-fixture\/target ready/u,
+      /over draft [0-9a-f]{40} and marked pull request #7 on github\.invalid\/dotln-fixture\/target ready/u,
     );
     const reviewed = git(f.target, "rev-parse", "HEAD");
     assert.equal(
@@ -1973,7 +2043,7 @@ test("WO-227 criteria 2 to 4: a target publication checks private terms on kit p
     assert.match(published, /Review items confirmed: 3 matches under/u);
     assert.match(
       published,
-      /marked pull request #7 on github\.com\/dotln-fixture\/target ready/u,
+      /marked pull request #7 on github\.invalid\/dotln-fixture\/target ready/u,
     );
     const last = events().at(-1).payload;
     assert.equal(last.confirmation.confirmedDigest, reviewedDigest);
@@ -2441,7 +2511,7 @@ test("target draft retains its preparation across a redacted fetch failure and r
     assert.notEqual(failed.status, 0);
     assert.match(
       failed.stderr,
-      /fetch failed for origin base branch main on github\.com\/dotln-fixture\/target; prepared work retained/u,
+      /fetch failed for origin base branch main on github\.invalid\/dotln-fixture\/target; prepared work retained/u,
     );
     assert.ok(!failed.stderr.includes(f.base));
     assert.equal(existsSync(forge.log), false);
@@ -2562,7 +2632,7 @@ test("target final publish excludes earlier records, exempts fetched-base paths 
     assert.notEqual(failed.status, 0);
     assert.match(
       failed.stderr,
-      /fetch failed for origin base branch main on github\.com\/dotln-fixture\/target/u,
+      /fetch failed for origin base branch main on github\.invalid\/dotln-fixture\/target/u,
     );
     assert.ok(!failed.stderr.includes(f.base));
     assert.equal(existsSync(forge.log), false);

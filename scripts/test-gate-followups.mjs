@@ -63,6 +63,7 @@ test("bounded role wording preserves prior savings and records reviewed startup 
   // test-process-debt.mjs walks every recorded parent link of every oracle
   // and checks each recorded hash.
   const chain = [
+    "wo247-role-baseline.json",
     "wo192-integration-role-baseline.json",
     "wo239-integration-role-baseline.json",
     "wo235-removal-role-baseline.json",
@@ -168,11 +169,13 @@ test("bounded role wording preserves prior savings and records reviewed startup 
     const role = file.split("/")[2].slice("dotln-".length);
     const current = chain[0].startupCost.profiles[role];
     assert.equal(bytes, current.bytes, `${file}: reviewed startup bytes`);
-    // The router has no earlier measurement to link to; its own ceiling
-    // bounds it from the first oracle that names it.
+    // The router's first oracle had no earlier measurement to link to; each
+    // later oracle links to the preceding one that names it, and its own
+    // ceiling bounds it throughout.
     if (role === "router") {
-      assert.equal(current.beforeBytes, null);
-      assert.equal(current.growthBytes, null);
+      const earlier = chain[1].startupCost.profiles.router;
+      assert.equal(current.beforeBytes, earlier?.bytes ?? null);
+      assert.equal(current.growthBytes, earlier ? bytes - earlier.bytes : null);
       assert.ok(bytes <= budgets.limits.coldStartBytes.router);
       continue;
     }

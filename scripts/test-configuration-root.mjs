@@ -809,6 +809,30 @@ await test("configuration root", async (t) => {
       );
       refuses({ version: 1, build: { loadout: 1 } }, /build\.loadout/);
       refuses({ version: 1, build: { other: "x" } }, /unknown build key/);
+      // The sandbox election a routed run gets (WO-247): host or off, default
+      // host, nothing else, and no other drive key.
+      refuses(
+        { version: 1, drive: { sandbox: "danger-full-access" } },
+        /drive\.sandbox must be "host" or "off"; found "danger-full-access"/,
+      );
+      refuses(
+        { version: 1, drive: { sandbox: true } },
+        /drive\.sandbox must be/,
+      );
+      refuses({ version: 1, drive: { other: "x" } }, /unknown drive key/);
+      refuses({ version: 1, drive: [] }, /drive must be an object/);
+      for (const [declared, expected] of [
+        [{}, "host"],
+        [{ drive: {} }, "host"],
+        [{ drive: { sandbox: "host" } }, "host"],
+        [{ drive: { sandbox: "off" } }, "off"],
+      ]) {
+        writeFileSync(
+          join(root, CONFIG_FILENAME),
+          `${JSON.stringify({ version: 1, classes: { "fixture-class": { checks: [], supports: [] } }, ...declared })}\n`,
+        );
+        assert.deepEqual(loadConfig(root).drive, { sandbox: expected });
+      }
       refuses({ version: 1, release: { corpus: "yes" } }, /release\.corpus/);
       refuses({ version: 1, release: { other: true } }, /unknown release key/);
       for (const displayName of [
@@ -1373,7 +1397,8 @@ await test("configuration root", async (t) => {
         // default-rooted writes left are the Git-ignored local harness lane
         // owned by packages/skeleton, which resolves its own paths until the
         // kit carries this loader (WO-069-D005; deferred by WO-070-D009 to
-        // FUP-a058e82c0bbd9b6d).
+        // FUP-a058e82c0bbd9b6d), and the Git-ignored runtime lane, where every
+        // temporary root's owner record and its Spotlight marker live (WO-233).
         const outside = documents(root).filter(
           (path) =>
             !path.startsWith("records/") &&
@@ -1382,6 +1407,7 @@ await test("configuration root", async (t) => {
             path !== ".gitignore" &&
             !path.startsWith("target/") &&
             !path.startsWith(".control-beacons/") &&
+            !path.startsWith(".runtime/") &&
             !path.startsWith("docs/control/local/"),
         );
         assert.deepEqual(

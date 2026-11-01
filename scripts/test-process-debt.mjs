@@ -5991,6 +5991,74 @@ test("WO-155 cold-start trends share edition and acceptance evidence across the 
   assert.equal(shallow.cause, "acceptance-history-unavailable");
 });
 
+test("the driven-start figure is read beside the cold-start metric for every host and role, without a ceiling", async () => {
+  const { nativeProfile, drivenStartBytes } =
+    await import("./lib/drive-prompts.mjs");
+  const measured = measureColdStarts(source);
+  for (const host of ["claude", "codex"])
+    for (const role of [
+      "router",
+      "executor",
+      "verifier",
+      "reviewer",
+      "release-close",
+    ]) {
+      const installed = measured.profiles.find(
+        (profile) =>
+          profile.role === role &&
+          profile.skillsRoot ===
+            (host === "codex" ? ".agents/skills" : ".claude/skills"),
+      );
+      const profile = nativeProfile({
+        launchpad: source,
+        role,
+        phrase: role === "router" ? "drive: WO-999" : "resume: next",
+        cwd: source,
+        worker: "worker",
+        definition: { model: "m", effort: "xhigh", prompt: "ROLE" },
+      });
+      const figure = drivenStartBytes({
+        launchpad: source,
+        host,
+        role,
+        profile,
+      });
+      // The installed root is the meter's own measurement; the launch text is
+      // what the drive adds beyond it. Neither side is bounded here.
+      assert.equal(figure.installedBytes, installed.bytes, `${host} ${role}`);
+      assert.ok(figure.launchTextBytes > 0, `${host} ${role} launch text`);
+      assert.equal(
+        figure.bytes,
+        figure.installedBytes + figure.launchTextBytes,
+        `${host} ${role}`,
+      );
+      assert.equal(figure.role, role);
+      assert.equal(figure.host, host);
+      assert.equal(Object.hasOwn(figure, "ceiling"), false);
+      assert.match(figure.method, /recorded, not bounded/);
+      console.log(
+        `driven start ${host} ${role}: ${figure.bytes} bytes (installed ${figure.installedBytes}, launch text ${figure.launchTextBytes}); cold-start ceiling ${installed.ceiling ?? "unset"}`,
+      );
+    }
+  // A launch with no installed root records that as unknown, never zero.
+  const absent = drivenStartBytes({
+    launchpad: join(tmpdir(), "no-such-launchpad"),
+    host: "claude",
+    role: "executor",
+    profile: nativeProfile({
+      launchpad: "/launchpad",
+      role: "executor",
+      phrase: "resume: next",
+      cwd: "/launchpad",
+      worker: "worker",
+      definition: { model: "m", effort: "xhigh", prompt: "ROLE" },
+    }),
+  });
+  assert.equal(absent.installedBytes, null);
+  assert.equal(absent.bytes, null);
+  assert.ok(absent.launchTextBytes > 0);
+});
+
 test("WO-155 missing history and missing role files are explicit unknowns; check remains advisory", (t) => {
   const root = repo(t);
   const budgets = JSON.parse(
@@ -6748,11 +6816,13 @@ test("WO-145 optional economy support preserves historical snapshots through the
   // The combined oracle preserves both independently reviewed role histories.
   // Removing a shared sentence follows the same route as adding one.
   const fixtures = join(source, "packages/skeleton/fixtures");
-  const current = "wo192-integration-role-baseline.json";
+  // Two sentences, the router's finish and the floor's exact grant (WO-247),
+  // preserve the integrated oracle and both chains it carries.
+  const current = "wo247-role-baseline.json";
   const baseline = JSON.parse(readFileSync(join(fixtures, current), "utf8"));
   assert.equal(
     baseline.historicalBaseline,
-    "wo239-integration-role-baseline.json",
+    "wo192-integration-role-baseline.json",
   );
   assert.equal(baseline.branchBaseline, "wo192-role-baseline.json");
   assert.equal(baseline.upstreamBaseline, "wo185-role-baseline.json");
@@ -10007,7 +10077,9 @@ test("WO-132 generated release-close handoff and preview use the main writer res
   );
   assert.equal(printed.status, 0, printed.stderr);
   const handoff = printed.stdout.match(
-    /from this main checkout: (.+?)\. This narrowly/,
+    // The effect sentence follows the helper, in whichever kind the close
+    // takes for this fixture (WO-247-D007).
+    /from this main checkout: (.+?)\. This (?:narrowly|close)/,
   )[1];
   assert.doesNotMatch(handoff, /^cd /);
   const invoke = (name, event, extra = {}) => {

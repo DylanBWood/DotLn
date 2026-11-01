@@ -2,7 +2,7 @@ import {
   createScratchRoot,
   removeTemporaryPath as rmSync,
 } from "./temporary-roots.mjs";
-import { spawnGit, runGit, shellQuote } from "./git.mjs";
+import { spawnGit, spawnGitLimited, runGit, shellQuote } from "./git.mjs";
 import { createHash } from "node:crypto";
 import { writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -234,27 +234,39 @@ export function pushObservedCommit(
     ]);
   });
 }
-/** One host-created bare lane, as pushObservedCommit uses: only the
- * operator's global and system Git configuration apply inside it. */
-function withPublishLane(run) {
-  const lane = createScratchRoot(join(tmpdir(), "dotln-target-push-"));
+/** The two host-created bare lanes: only the operator's global and system Git
+ * configuration apply inside either. The publish lane is pushObservedCommit's;
+ * the read lane (fetch, ls-remote) names itself as one, because its failures
+ * reach drive records that publish nothing (WO-192-D099). */
+const PUBLISH_LANE = Object.freeze({
+  name: "publish lane",
+  prefix: "dotln-target-push-",
+  refusal: (reason) => publishRefusal(reason),
+});
+const READ_LANE = Object.freeze({
+  name: "host read lane",
+  prefix: "dotln-remote-read-",
+  refusal: (reason) => new Error(`remote read refused: ${reason}`),
+});
+function withHostLane(run, { name, prefix, refusal }) {
+  const lane = createScratchRoot(join(tmpdir(), prefix));
   try {
     const init = spawnGit(["init", "--quiet", "--bare", "--template=", lane], {
       encoding: "utf8",
     });
     if (init.status !== 0)
-      throw publishRefusal(
-        `git init failed for the publish lane: ${init.stderr}`,
-      );
+      throw refusal(`git init failed for the ${name}: ${init.stderr}`);
     const inLane = (args, options = {}) => {
-      const result = spawnGit(["-C", lane, ...HOST_GIT_READ, ...args], {
+      // A time-limited read ends its transport helper with the limit; an
+      // unlimited call, the publish push among them, keeps the caller's group.
+      const result = spawnGitLimited(["-C", lane, ...HOST_GIT_READ, ...args], {
         encoding: "utf8",
         maxBuffer: 16 * 1024 * 1024,
         ...options,
       });
       if (result.status !== 0)
-        throw publishRefusal(
-          `git ${args[0]} failed in the publish lane: ${String(result.stderr ?? "").trim() || result.error?.message || `ended by ${result.signal}`}`,
+        throw refusal(
+          `git ${args[0]} failed in the ${name}: ${String(result.stderr ?? "").trim() || result.error?.message || `ended by ${result.signal}`}`,
         );
       return result.stdout.trim();
     };
@@ -263,6 +275,8 @@ function withPublishLane(run) {
     rmSync(lane, { recursive: true, force: true });
   }
 }
+const withPublishLane = (run) => withHostLane(run, PUBLISH_LANE);
+const withReadLane = (run) => withHostLane(run, READ_LANE);
 /** Fetch through a host-owned lane, then import its bundle without consulting
  * the clone's transport configuration or moving any branch in the clone. */
 export function fetchRemoteBranch(
@@ -271,7 +285,7 @@ export function fetchRemoteBranch(
   branch,
   { beforeImport, timeoutMs } = {},
 ) {
-  return withPublishLane((inLane) => {
+  return withReadLane((inLane) => {
     inLane(
       [
         "fetch",
@@ -300,7 +314,7 @@ export function fetchRemoteBranch(
 /** The commit a remote branch names, or null without one, read through the
  * lane, which costs no objects when the commit is already held. */
 export function remoteBranchCommit(url, branch, { timeoutMs } = {}) {
-  return withPublishLane((inLane) => {
+  return withReadLane((inLane) => {
     const ref = `refs/heads/${branch}`;
     const row = inLane(
       ["ls-remote", "--heads", url, ref],
@@ -317,7 +331,7 @@ export function remoteBranchCommit(url, branch, { timeoutMs } = {}) {
  * tag's own object and `target` the commit it names (an annotated tag's
  * peeled row, or the object itself for a lightweight tag). */
 export function remoteTags(url) {
-  return withPublishLane((inLane) => {
+  return withReadLane((inLane) => {
     const tags = new Map();
     for (const row of inLane(["ls-remote", "--tags", url])
       .split("\n")

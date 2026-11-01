@@ -70,7 +70,8 @@
     "\"same-tree draft retry refreshes the body when the remote base advances without preparing another commit\"",
     "`target final review excludes merged subjects unless the fetched ref is absent: missingRef=${missingRef}`",
     "`target final review names the described range before its ${name} refusal`",
-    "\"document gate route comparison ignores measured churn but preserves outcomes\""
+    "\"document gate route comparison ignores measured churn but preserves outcomes\"",
+    "\"a fixture push carries the fixture environment to the local bare repository only, and one without it fails at resolution\""
   ],
   "names": [
     "target release preparation is a read-only no-release outcome",
@@ -174,6 +175,7 @@
     "target final review names the described range before its format refusal",
     "target final review names the described range before its identifier refusal",
     "target final review names the described range before its attribution refusal",
-    "document gate route comparison ignores measured churn but preserves outcomes"
+    "document gate route comparison ignores measured churn but preserves outcomes",
+    "a fixture push carries the fixture environment to the local bare repository only, and one without it fails at resolution"
   ]
 }

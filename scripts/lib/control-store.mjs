@@ -140,6 +140,13 @@ export const eventsForOrder = (
   );
 };
 
+/** The order's current activation, as its control record stamps it: the one
+ * stamp a close receipt and a drive's host change compare. */
+export const latestActivationAt = (control, id) =>
+  eventsForOrder(control, id).findLast(
+    (event) => event.type === "WorkOrderActivated",
+  )?.recordedAt ?? null;
+
 export const addedSegmentEvents = (before, after, context) => {
   for (const [path, source] of before.sources) {
     if (!after.sources.has(path) || !after.sources.get(path).startsWith(source))

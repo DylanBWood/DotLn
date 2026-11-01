@@ -31,7 +31,53 @@ import {
 } from "../test-target-publication-fixture.mjs";
 import { createHash } from "node:crypto";
 
-const git = (root, ...args) => runGit(root, args);
+// Every fixture's Git call carries that fixture's environment, so the URL
+// rewrite publicationSetup installs there reaches a direct push as it reaches
+// the kit's commands: a probe that calls git on a fixture checkout cannot leave
+// the machine (WO-192-D099). A checkout is matched to its fixture by base.
+const fixtureEnvironments = new Map();
+const fixtureEnvironmentOf = (root) => {
+  for (const [base, env] of fixtureEnvironments)
+    if (root === base || root.startsWith(`${base}/`)) return env;
+  return undefined;
+};
+const git = (root, ...args) => {
+  const env = fixtureEnvironmentOf(root);
+  return runGit(root, args, env ? { env } : {});
+};
+// The fixture's GitHub-shaped origin: a host under the reserved .invalid
+// domain, which no resolver answers, so the production preflight parses it as
+// a GitHub remote while nothing can reach it (WO-247).
+const FIXTURE_FORGE_HOST = "github.invalid";
+const fixtureForgeUrl = (repository = "target") =>
+  `https://${FIXTURE_FORGE_HOST}/dotln-fixture/${repository}.git`;
+// No fixture remote may name a host a resolver could answer; only the
+// reserved domain and local paths under the fixture base are admitted.
+const assertNoResolvableFixtureRemote = (f) => {
+  for (const root of [f.main, f.clone, f.target, f.orderRoot])
+    if (existsSync(join(root, ".git"))) {
+      const urls = runGit(root, ["remote", "get-url", "--all", "origin"], {
+        env: f.env,
+        onFailure: () => "",
+      });
+      for (const url of urls.split("\n").filter(Boolean)) {
+        let host = null;
+        try {
+          host = new URL(url).hostname;
+        } catch {
+          assert.ok(
+            url.startsWith(f.base),
+            `fixture remote ${url} is neither a local path under the fixture base nor a URL`,
+          );
+          continue;
+        }
+        assert.ok(
+          host.endsWith(".invalid"),
+          `fixture remote ${url} names a resolvable host`,
+        );
+      }
+    }
+};
 // Restore only settings still byte-for-byte owned by the fixture coordinator.
 export function restoreFixturePolicies(policies) {
   for (const { file, applied } of policies) {
@@ -138,6 +184,7 @@ const fixture = (
     git(root, "config", "user.name", "Fixture");
     return root;
   };
+  fixtureEnvironments.set(base, env);
   const clone = repository("target");
   write(clone, "source.txt", "declared base\n");
   if (baseIgnore) write(clone, ".gitignore", baseIgnore);
@@ -308,6 +355,7 @@ const withFixture = (run, options) => {
   try {
     return run(fixture(base, options));
   } finally {
+    fixtureEnvironments.delete(base);
     rmSync(base, { recursive: true, force: true });
   }
 };
@@ -385,11 +433,12 @@ const publicationSetup = (f) => {
     "test: declare publication policy",
   );
   git(f.main, "push", "-q", "origin", "main");
-  const url = "https://github.com/dotln-fixture/target.git";
+  const url = fixtureForgeUrl();
   const forge = installTargetPublicationFixture(f.base, f.env, [
     { url, origin: join(f.base, "target.git") },
   ]);
   git(f.clone, "remote", "set-url", "origin", url);
+  assertNoResolvableFixtureRemote(f);
   return forge;
 };
 
@@ -442,6 +491,9 @@ const launchpadCommands = (f, text) => {
 
 export {
   git,
+  FIXTURE_FORGE_HOST,
+  fixtureForgeUrl,
+  assertNoResolvableFixtureRemote,
   recordTreeSnapshot,
   actor,
   actorArgs,

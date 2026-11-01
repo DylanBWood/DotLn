@@ -10,6 +10,113 @@ import {
   refusalFindings,
 } from "./drive-diagnostics.mjs";
 
+// A declined phase keeps its last rows in this enumerated form, so the
+// receipt shows what the host did around the decline without its narrative.
+const EVENT_TAIL_ROWS = 64;
+const CODEX_ROW_TYPES = new Set([
+  "thread.started",
+  "turn.started",
+  "turn.completed",
+  "turn.failed",
+  "item.started",
+  "item.updated",
+  "item.completed",
+  "error",
+]);
+const CODEX_ITEM_TYPES = new Set([
+  "agent_message",
+  "reasoning",
+  "command_execution",
+  "file_change",
+  "mcp_tool_call",
+  "collab_tool_call",
+  "web_search",
+  "todo_list",
+  "error",
+]);
+const CLAUDE_ROW_TYPES = new Set(["system", "assistant", "user", "result"]);
+const enumerated = (set, value) =>
+  typeof value === "string" && set.has(value) ? value : "other";
+
+// A declined item keeps one shape whichever host reports it: the command's
+// shape, the reason the host printed with every URL, path and query masked
+// and capped, or that it printed none (WO-247-D003). The raw text stays in
+// the retained stderr, in ignored storage.
+const REASON_LIMIT = 4096;
+// In order: any scheme URL; a bare hostname with a path; a drive-letter path;
+// a backslash token (UNC or relative); any slash-bearing token (absolute,
+// home, variable or relative paths; a word such as either/or is masked too,
+// which loses nothing a diagnosis needs); then a query string.
+const REASON_MASKS = [
+  [/\b[a-z][a-z0-9+.-]*:\/\/[^\s"'<>)\]]+/giu, "<url>"],
+  [/\b(?:[\p{L}\p{N}_-]+\.)+\p{L}{2,}(?:\/[\p{L}\p{N}_.@$%+-]*)+/giu, "<url>"],
+  [/\b[A-Za-z]:\\(?:[^\s\\"'<>]+\\?)+/gu, "<path>"],
+  [
+    /(?<![\p{L}\p{N}_\\])(?:\\\\|[\p{L}\p{N}_.@$+-]+\\)[\p{L}\p{N}_.@$%+\\-]*/gu,
+    "<path>",
+  ],
+  [
+    /(?<![\p{L}\p{N}_/])(?:~|\$[\p{L}\p{N}_]+|[A-Za-z]:)?(?:\/[\p{L}\p{N}_.@$%+-]*)+/gu,
+    "<path>",
+  ],
+  [
+    /(?<![\p{L}\p{N}_/.])[\p{L}\p{N}_.@$+-]+(?:\/[\p{L}\p{N}_.@$%+-]*)+/gu,
+    "<path>",
+  ],
+  [
+    /\?[\p{L}\p{N}_%.+-]+=[^\s"'<>)\]&]*(?:&[\p{L}\p{N}_%.+-]+=[^\s"'<>)\]&]*)*/gu,
+    "<query>",
+  ],
+];
+export function redactReason(text) {
+  let reason = text;
+  for (const [pattern, mask] of REASON_MASKS)
+    reason = reason.replace(pattern, mask);
+  return reason;
+}
+export function declinedItem({
+  kind,
+  command,
+  reason = null,
+  reasonSource = "none-printed",
+  diagnosticSignals = [],
+  sequence,
+}) {
+  const printed =
+    typeof reason === "string" && reason.trim()
+      ? redactReason(reason.trim()).slice(0, REASON_LIMIT)
+      : null;
+  return {
+    kind: kind ?? null,
+    command: command ?? null,
+    status: "declined",
+    exitCode: null,
+    reason: printed,
+    reasonSource: printed ? reasonSource : "none-printed",
+    ...(printed ? { reasonRedaction: "urls-paths-queries-masked" } : {}),
+    ...(diagnosticSignals.length ? { diagnosticSignals } : {}),
+    sequence,
+  };
+}
+
+// Codex prints a rejected command's reason on stderr as a Rejected message
+// quoted inside its error, each layer escaped as a Rust string; the stream
+// item carries none (WO-247-D007). The quote may itself be escaped once more.
+const unescapeRust = (text) =>
+  text.replace(/\\(.)/gu, (_, escaped) =>
+    escaped === "n" ? "\n" : escaped === "t" ? "\t" : escaped,
+  );
+export function printedRejection(stderr) {
+  // The declined item is the phase's last command, so its rejection is the
+  // last one printed; an earlier failed process prints the same form.
+  const match = [
+    ...(stderr ?? "").matchAll(/Rejected\((\\?)"((?:[^"\\]|\\.)*?)\1"\)/gu),
+  ].at(-1);
+  if (!match) return null;
+  const once = unescapeRust(match[2]);
+  return match[1] ? unescapeRust(once) : once;
+}
+
 // Reduce a native host's stream to metering and protocol facts. Worker
 // narrative is never retained or fed to another phase. `facts` is shared with
 // the process supervisor, which records what only it can observe there too.
@@ -42,6 +149,16 @@ export function streamObservation({
     commandResults = [],
     boundaryResults = [],
     nativeDiagnostics = new Map();
+  // The rows around a decline, enumerated, and the declined item itself with
+  // the reason the host printed, or that it printed none (WO-247).
+  const eventTail = [];
+  let rowCount = 0;
+  let declined = null;
+  const observeRow = (row) => {
+    rowCount++;
+    eventTail.push(row);
+    if (eventTail.length > EVENT_TAIL_ROWS) eventTail.shift();
+  };
   const observeNativeDiagnostic = (source, value) => {
     const entry = nativeDiagnostics.get(source) ?? {
       count: 0,
@@ -69,11 +186,12 @@ export function streamObservation({
       "The native host did not admit or complete the canonical launcher; stop without retrying or changing launchers.";
     stop();
   };
-  const failPermission = () => {
+  const failPermission = (item) => {
     facts.error = true;
     facts.cause = "native-permission-refused";
     facts.refused =
       "The native host denied a phase command; stop without another attempt until the host admission condition is resolved.";
+    declined ??= declinedItem({ ...item, sequence: rowCount });
     stop();
   };
   const observeCommand = (observation) => {
@@ -150,7 +268,14 @@ export function streamObservation({
       });
     if (kind === "driver-launch" && item.exit_code !== 0)
       failLauncher(item.aggregated_output ?? "");
-    else if (kind && item.status === "declined") failPermission();
+    else if (kind && item.status === "declined")
+      failPermission({
+        kind,
+        command: commandShape(item.command ?? ""),
+        reason: item.aggregated_output,
+        reasonSource: "command_execution.aggregated_output",
+        diagnosticSignals: signals,
+      });
     if (
       [
         "command_execution",
@@ -172,6 +297,20 @@ export function streamObservation({
       codexSubagent(item);
   };
   const codexRow = (row) => {
+    observeRow({
+      type: enumerated(CODEX_ROW_TYPES, row.type),
+      ...(row.item
+        ? {
+            item: enumerated(CODEX_ITEM_TYPES, row.item.type),
+            ...(typeof row.item.status === "string"
+              ? { status: row.item.status.slice(0, 32) }
+              : {}),
+            ...(Number.isInteger(row.item.exit_code)
+              ? { exitCode: row.item.exit_code }
+              : {}),
+          }
+        : {}),
+    });
     if (row.type === "thread.started") {
       facts.sessionId = row.thread_id;
       try {
@@ -294,6 +433,12 @@ export function streamObservation({
         "The native worker's API connection was refused by its sandbox proxy; inspect the invocation's network allowance before re-entry.";
   };
   const claudeRow = (row) => {
+    observeRow({
+      type: enumerated(CLAUDE_ROW_TYPES, row.type),
+      ...(typeof row.subtype === "string"
+        ? { subtype: row.subtype.slice(0, 32) }
+        : {}),
+    });
     if (row.type === "system" && row.subtype?.startsWith("hook"))
       hookEvents.add(row.subtype);
     if (row.type === "system" && row.subtype === "permission_denied") {
@@ -306,7 +451,12 @@ export function streamObservation({
           ? row.decision_reason_type
           : "unknown",
       });
-      failPermission();
+      // Claude's denial row carries the host's reason prose, which its
+      // decision source already classifies; only the command shape is kept.
+      failPermission({
+        kind: commands.get(row.tool_use_id) ?? null,
+        command: shapes.get(row.tool_use_id) ?? null,
+      });
     }
     if (row.type === "system" && row.subtype === "hook_response")
       claudeHookResponse(row);
@@ -338,6 +488,21 @@ export function streamObservation({
   return {
     facts,
     observeNativeDiagnostic,
+    // The process's stderr tail, read once it ended: a diagnostic source like
+    // any other, and on Codex the one place the host prints the reason for an
+    // item its stream reported declined without one.
+    observeStderrTail(text) {
+      if (typeof text !== "string" || !text.trim()) return;
+      observeNativeDiagnostic("stderr-tail", text);
+      if (protocol !== "codex" || !declined || declined.reason !== null) return;
+      const printed = printedRejection(text);
+      if (printed === null) return;
+      declined = declinedItem({
+        ...declined,
+        reason: printed,
+        reasonSource: "native-stderr",
+      });
+    },
     inspect(line) {
       let row;
       try {
@@ -372,6 +537,9 @@ export function streamObservation({
         unclassifiedCount: entry.unclassifiedCount,
         signals: [...entry.signals],
       })),
+      ...(declined
+        ? { declined, eventTail: eventTail.slice(), eventRows: rowCount }
+        : {}),
     }),
   };
 }

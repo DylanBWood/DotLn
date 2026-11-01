@@ -1,4 +1,4 @@
-# WO-247 — A driven Codex order finishes: the declined close's reason is retained and diagnosed, the drive either closes on Codex or stops with a next step the operator can take, a live receipt names the code identity it ran on, the ten criterion-17 items WO-192 left are repaired, the publication fixture cannot reach a real host, the sandbox policy of a routed run is the instance's declared election, and both hosts requalify on the final code (version assigned at activation)
+# WO-247 — A driven Codex order finishes: the declined close's reason is retained and diagnosed, the drive either closes on Codex or stops with a next step the operator can take, a live receipt names the code identity it ran on, the ten criterion-17 items WO-192 left are repaired, the publication fixture cannot reach a real host, the sandbox policy of a routed run is the instance's declared election, and both hosts requalify on the final code (v0.106.0)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

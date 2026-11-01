@@ -1,0 +1,85 @@
+{
+  "workOrder": "WO-247",
+  "historicalBaseline": "wo192-integration-role-baseline.json",
+  "historicalSha256": "af2066b6d6e62f9b8a94d41275f294ead76533a9d86f2f146d08051dce760049",
+  "upstreamBaseline": "wo185-role-baseline.json",
+  "upstreamSha256": "f67e48b79873202b56c069902f2338d54b1fef42d3c9eb29706d3d2cd7a72ef9",
+  "branchBaseline": "wo192-role-baseline.json",
+  "branchSha256": "8233d0c1bc573fff306ed027851be5a61dfeca4394e013cef29f7df97d2a75c5",
+  "method": "Pin the role trees at both economy settings after WO-247's three sentences: the router's finish sentence states the merge as close judges it and the awaiting-close stop with the one admitted host change, the shared floor's grant sentence names the one grant whose unresolvable root withholds that grant alone, and the launch rule for review, refutation and research workers states that they probe with single tests under the bounded wrapper and start no test-runner gate (D012); preserve the integrated oracle and both chains it carries byte-exact.",
+  "decision": "docs/evidence/WO-247/decisions.md#wo-247-d001",
+  "roles": {
+    ".agents/skills/dotln-executor/SKILL.md": "e3ffab2b21bc30116b2e515f8d4f07e8ffc4d1f83e5e8ee6bec3a4dc0914567c",
+    ".agents/skills/dotln-planner/SKILL.md": "fac0a7a5149a94739d5ae085996d67a5c4b269850f12d3a6fee106bc1e06fcaf",
+    ".agents/skills/dotln-refuter/SKILL.md": "0f541fb76b9497011fba9b75d706594745be55c3aaaed560653c6293157a6004",
+    ".agents/skills/dotln-release-close/SKILL.md": "58987ec0a37ff5bad8d4efbdb068ee67fa3d138237a1b9bf3095ae91f78781f7",
+    ".agents/skills/dotln-reviewer/SKILL.md": "f0611785946f6059af55b4a2e5055258ea35c58942dbac80d8189ee6401980b9",
+    ".agents/skills/dotln-router/SKILL.md": "52071d95c0029cfe050ecaf71e01269ab448243521493e13f63833329d44d63d",
+    ".agents/skills/dotln-verifier/SKILL.md": "653c14ba5c576f63cf907fc570d5b5a37d0a654a5b6758702cdcb3a71a408bd1",
+    ".claude/skills/dotln-executor/SKILL.md": "e3ffab2b21bc30116b2e515f8d4f07e8ffc4d1f83e5e8ee6bec3a4dc0914567c",
+    ".claude/skills/dotln-planner/SKILL.md": "fac0a7a5149a94739d5ae085996d67a5c4b269850f12d3a6fee106bc1e06fcaf",
+    ".claude/skills/dotln-refuter/SKILL.md": "0f541fb76b9497011fba9b75d706594745be55c3aaaed560653c6293157a6004",
+    ".claude/skills/dotln-release-close/SKILL.md": "58987ec0a37ff5bad8d4efbdb068ee67fa3d138237a1b9bf3095ae91f78781f7",
+    ".claude/skills/dotln-reviewer/SKILL.md": "f0611785946f6059af55b4a2e5055258ea35c58942dbac80d8189ee6401980b9",
+    ".claude/skills/dotln-router/SKILL.md": "52071d95c0029cfe050ecaf71e01269ab448243521493e13f63833329d44d63d",
+    ".claude/skills/dotln-verifier/SKILL.md": "653c14ba5c576f63cf907fc570d5b5a37d0a654a5b6758702cdcb3a71a408bd1"
+  },
+  "optOutRoles": {
+    ".agents/skills/dotln-executor/SKILL.md": "c67432f8bbd357f1a2c1c6eacf0538fb2e0fb88107bb8ca3304ef0ff07317767",
+    ".agents/skills/dotln-planner/SKILL.md": "6c71709b64daaebabe23ca4bd691afd08312285a322a826d861a6ca095bfff62",
+    ".agents/skills/dotln-refuter/SKILL.md": "50a4da72a68d8602ad3727d662eda7773caf598aa02bf7f535c2fc2d905ad223",
+    ".agents/skills/dotln-release-close/SKILL.md": "c9c986ddb3f69a4d13bfbfefb6a4f9275316b30a0f1523e9790fbb7769699fef",
+    ".agents/skills/dotln-reviewer/SKILL.md": "2367044911f1ae19f77037573c2c8258c81d65cf23010878eed1d5641259beed",
+    ".agents/skills/dotln-router/SKILL.md": "ed911830d40c0ed3847a9a7d0a1d5fcd4e7d471ebc053dd4dbc6e45f39d36327",
+    ".agents/skills/dotln-verifier/SKILL.md": "f450dc55a338d44dbb912222e7cdfd625641d9cf48c8fd7277e64df674dd8714",
+    ".claude/skills/dotln-executor/SKILL.md": "c67432f8bbd357f1a2c1c6eacf0538fb2e0fb88107bb8ca3304ef0ff07317767",
+    ".claude/skills/dotln-planner/SKILL.md": "6c71709b64daaebabe23ca4bd691afd08312285a322a826d861a6ca095bfff62",
+    ".claude/skills/dotln-refuter/SKILL.md": "50a4da72a68d8602ad3727d662eda7773caf598aa02bf7f535c2fc2d905ad223",
+    ".claude/skills/dotln-release-close/SKILL.md": "c9c986ddb3f69a4d13bfbfefb6a4f9275316b30a0f1523e9790fbb7769699fef",
+    ".claude/skills/dotln-reviewer/SKILL.md": "2367044911f1ae19f77037573c2c8258c81d65cf23010878eed1d5641259beed",
+    ".claude/skills/dotln-router/SKILL.md": "ed911830d40c0ed3847a9a7d0a1d5fcd4e7d471ebc053dd4dbc6e45f39d36327",
+    ".claude/skills/dotln-verifier/SKILL.md": "f450dc55a338d44dbb912222e7cdfd625641d9cf48c8fd7277e64df674dd8714"
+  },
+  "startupCost": {
+    "decision": "WO-247-D001",
+    "profiles": {
+      "executor": {
+        "beforeBytes": 37901,
+        "bytes": 38400,
+        "growthBytes": 499
+      },
+      "planner": {
+        "beforeBytes": 23814,
+        "bytes": 24313,
+        "growthBytes": 499
+      },
+      "refuter": {
+        "beforeBytes": 22628,
+        "bytes": 23127,
+        "growthBytes": 499
+      },
+      "release-close": {
+        "beforeBytes": 23006,
+        "bytes": 23505,
+        "growthBytes": 499
+      },
+      "reviewer": {
+        "beforeBytes": 35504,
+        "bytes": 36003,
+        "growthBytes": 499
+      },
+      "router": {
+        "beforeBytes": 15014,
+        "bytes": 15418,
+        "growthBytes": 404,
+        "ceiling": 16384,
+        "headroomBytes": 966
+      },
+      "verifier": {
+        "beforeBytes": 32734,
+        "bytes": 33233,
+        "growthBytes": 499
+      }
+    }
+  }
+}
