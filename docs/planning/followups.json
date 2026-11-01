@@ -44165,6 +44165,14 @@
           "reopenWhen": "The next planning pass evaluates instruction-byte optimization, or another role edit changes the measured overrun.",
           "targets": [],
           "at": "2026-10-31T02:10:00.340Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-247-D016: its condition occurred. The three reviewed sentences of WO-247-D001 and WO-247-D012 (the router's finish sentence, the floor's exact grant sentence and the review workers' bounded-probe rule) grew every installed role root beyond its measured baseline, 499 bytes in each phase role and 404 in the router: the executor reads 38,400 against the nominal 29,246 and within the 40,194 accepted on 2026-10-29; the verifier 33,233 against the nominal 29,831 and within 35,221; the reviewer 36,003 against the nominal 28,884 and within the 39,600 accepted on 2026-10-30; release-close 23,505 against the nominal 21,266 and within 26,410; the planner 24,313 within 24,576; the router 15,418 within 16,384; the refuter 23,127 with no ceiling. No ceiling moved and no duty was cut; the optimization stays with the next planning pass that evaluates instruction-byte optimization.",
+          "reopenWhen": "The next planning pass evaluates instruction-byte optimization, or another role edit changes the measured overrun.",
+          "targets": [],
+          "at": "2026-11-01T09:05:04.461Z"
         }
       ]
     },
@@ -44245,6 +44253,14 @@
           "reason": "WO-192-D088: its condition occurred, because WO-192 touches scripts/test-gate-followups.mjs and mints wo192-integration-role-baseline.json with wo239-integration as its historical parent and wo192-role-baseline as its branch parent. The test keeps its chain walk, and the router, which has no earlier measurement, keeps its own ceiling check.",
           "reopenWhen": "A role grows past its pin without the oracle changing, or a ceiling breach appears in meta --check with no decision boarding it; or the next order touching scripts/test-gate-followups.mjs or re-minting the role oracle.",
           "at": "2026-10-30T19:46:39.233Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-247-D016: its condition occurred, because WO-247 touches scripts/test-gate-followups.mjs (the router now links to the preceding oracle that names it, WO-247-D001) and re-mints the role oracle as wo247-role-baseline.json over wo192-integration and wo192. The test keeps its chain walk, its effective-ceiling and acceptance checks and the historical 256-byte inequality on the earliest chained baseline; whether that inequality still carries meaning is not decided here, because the final review changes no test. Deferred to the next order that touches the file or re-mints the oracle.",
+          "reopenWhen": "A role grows past its pin without the oracle changing, or a ceiling breach appears in meta --check with no decision boarding it; or the next order touching scripts/test-gate-followups.mjs or re-minting the role oracle.",
+          "targets": [],
+          "at": "2026-11-01T09:05:04.693Z"
         }
       ]
     },
@@ -44742,6 +44758,14 @@
           "reopenWhen": "A bounded comparison demonstrates a shorter equivalent instruction set, or another required rule changes the measured overrun.",
           "targets": [],
           "at": "2026-10-30T23:20:17.352Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-247-D016: its condition occurred, because three required rules changed the measured overrun by 499 bytes in every phase role root and 404 in the router: the executor reads 38,400 against the nominal 29,246 and within the 40,194 accepted on 2026-10-29; the verifier 33,233 against the nominal 29,831 and within 35,221; the reviewer 36,003 against the nominal 28,884 and within the 39,600 accepted on 2026-10-30; release-close 23,505 against the nominal 21,266 and within 26,410; the planner 24,313 within 24,576; the router 15,418 within 16,384; the refuter 23,127 with no ceiling. The bounded comparison that would show a shorter equivalent instruction set is still owed; this review cut no instruction and raised no ceiling.",
+          "reopenWhen": "A bounded comparison demonstrates a shorter equivalent instruction set, or another required rule changes the measured overrun.",
+          "targets": [],
+          "at": "2026-11-01T09:05:04.578Z"
         }
       ]
     },
@@ -51105,6 +51129,157 @@
           "ref": "docs/evidence/WO-240/decisions.md#wo-240-d012--the-heartbeat-names-running-cases-on-node-26-only",
           "title": "WO-240-D012: On Node 24 the gate heartbeat cannot name a running test case, because Node publishes no test tracing channel at 24.15. Add a fallback if an instance on Node 24 needs to diagnose a hung…",
           "summary": "{ \"id\": \"WO-240-D012\", \"date\": \"2026-10-31\", \"dispatch\": \"resume: next; step 4\", \"decision\": \"Keep case naming as a capability of the runtimes that publish tracing:node.test:start and end. At 24.15 the preload loads and marks nothing, and the heartbeat prints no case marker from <task> yet with the last report, which is true. The fixture asserts naming on Node 26 and that fallback when no case was named.\", \"evidence\": [ \"scripts/lib/case-marker.mjs reads only those channels, and its own comments state that a missing marker leaves the heartbeat without a name while results stand.\", \"The runner's verdicts, durations and slowestCases come from reporter events and TAP, which work on both lines; ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-19017ddcdf6cadb8",
+      "key": "decision:docs/evidence/WO-247/decisions.md#wo-247-d012",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "50018d96ae856ad2ed06b13795439388aef342792988ab24cccaca59c6a6c9d6",
+          "ref": "docs/evidence/WO-247/decisions.md#wo-247-d012--three-reviews-their-repairs-and-a-probe-rule-every-review-worker-reads",
+          "title": "WO-247-D012: Refuse a test-runner gate launched by a review worker at the hook: a Claude or Codex review worker that starts npm test, test-runner.mjs, target-gate.mjs or test:docs holds the…",
+          "summary": "{ \"id\": \"WO-247-D012\", \"date\": \"2026-11-01\", \"dispatch\": \"resume: next; the three independent reviews before the complete run\", \"decision\": \"The design, criteria and consistency reviews (16, 16 and 9 findings) are resolved in code and records: a declined reason is masked of URLs, paths and queries before it reaches a record; the admitted host change holds only while a Codex decline is the order's current fact and covers that activation's release close alone, a Claude decline names the attended phrase alone, and a stale decline is not carried; live-receipt citations are read from a judgment's whole paragraph with fences honoured, and only a criterion naming a live lifecycle or drive owes a re",
+          "missing": false
+        },
+        {
+          "hash": "3ea85a62538f44aca4c12790247abedbdb28d63657edb931e67dfea6fc8da53d",
+          "ref": "docs/evidence/WO-247/decisions.md#wo-247-d012--three-reviews-their-repairs-and-a-probe-rule-every-review-worker-reads",
+          "title": "WO-247-D012: Refuse a test-runner gate launched by a review worker at the hook: a Claude or Codex review worker that starts npm test, test-runner.mjs, target-gate.mjs or test:docs holds the…",
+          "summary": "{ \"id\": \"WO-247-D012\", \"date\": \"2026-11-01\", \"dispatch\": \"resume: next; the three independent reviews before the complete run\", \"decision\": \"The design, criteria and consistency reviews (16, 16 and 9 findings) are resolved in code and records: a declined reason is masked of URLs, paths and queries before it reaches a record; the admitted host change holds only while a Codex decline is the order's current fact and covers that activation's release close alone, a Claude decline names the attended phrase alone, and a stale decline is not carried; live-receipt citations are read from a judgment's whole paragraph with fences honoured, and only a criterion naming a live lifecycle or drive owes a re",
+          "missing": false
+        },
+        {
+          "hash": "49dce7d4864dc1c285f012fa5ea90f7d7a679b4825a462b4390091d84a0e61e7",
+          "ref": "docs/evidence/WO-247/decisions.md#wo-247-d012--three-reviews-their-repairs-and-a-probe-rule-every-review-worker-reads",
+          "title": "WO-247-D012: Refuse a test-runner gate launched by a review worker at the hook: a Claude or Codex review worker that starts npm test, test-runner.mjs, target-gate.mjs or test:docs holds the…",
+          "summary": "{ \"id\": \"WO-247-D012\", \"date\": \"2026-11-01\", \"dispatch\": \"resume: next; the three independent reviews before the complete run\", \"decision\": \"The design, criteria and consistency reviews (16, 16 and 9 findings) are resolved in code and records: a declined reason is masked of URLs, paths and queries before it reaches a record; the admitted host change holds only while a Codex decline is the order's current fact and covers that activation's release close alone, a Claude decline names the attended phrase alone, and a stale decline is not carried; live-receipt citations are read from a judgment's whole paragraph with fences honoured, and only a criterion naming a live lifecycle or drive owes a re",
+          "missing": false
+        },
+        {
+          "hash": "2463c538239adac0c39f8455f95bf69d96e22d8496405f93eb8706e53e535988",
+          "ref": "docs/evidence/WO-247/decisions.md#wo-247-d012--three-reviews-their-repairs-and-a-probe-rule-every-review-worker-reads",
+          "title": "WO-247-D012: Refuse a test-runner gate launched by a review worker at the hook: a Claude or Codex review worker that starts npm test, test-runner.mjs, target-gate.mjs or test:docs holds the…",
+          "summary": "{ \"id\": \"WO-247-D012\", \"date\": \"2026-11-01\", \"dispatch\": \"resume: next; the three independent reviews before the complete run\", \"decision\": \"The design, criteria and consistency reviews (16, 16 and 9 findings) are resolved in code and records: a declined reason is masked of URLs, paths and queries before it reaches a record; the admitted host change holds only while a Codex decline is the order's current fact and covers that activation's release close alone, a Claude decline names the attended phrase alone, and a stale decline is not carried; live-receipt citations are read from a judgment's whole paragraph with fences honoured, and only a criterion naming a live lifecycle or drive owes a re",
+          "missing": false
+        },
+        {
+          "hash": "1ffb0f68a3a8df798318092ab4be25aa6fb233b281766eab6b658aa25b78298a",
+          "ref": "docs/evidence/WO-247/decisions.md#wo-247-d012--three-reviews-their-repairs-and-a-probe-rule-every-review-worker-reads",
+          "title": "WO-247-D012: Refuse a test-runner gate launched by a review worker at the hook: a Claude or Codex review worker that starts npm test, test-runner.mjs, target-gate.mjs or test:docs holds the…",
+          "summary": "{ \"id\": \"WO-247-D012\", \"date\": \"2026-11-01\", \"dispatch\": \"resume: next; the three independent reviews before the complete run\", \"decision\": \"The design, criteria and consistency reviews (16, 16 and 9 findings) are resolved in code and records: a declined reason is masked of URLs, paths and queries before it reaches a record; the admitted host change holds only while a Codex decline is the order's current fact and covers that activation's release close alone, a Claude decline names the attended phrase alone, and a stale decline is not carried; live-receipt citations are read from a judgment's whole paragraph with fences honoured, and only a criterion naming a live lifecycle or drive owes a re",
+          "missing": false
+        },
+        {
+          "hash": "79240384e8ad66672c752b6d31c3f2c8f8a524edb029ef4ebf06aed2e5e46d21",
+          "ref": "docs/evidence/WO-247/decisions.md#wo-247-d012--three-reviews-their-repairs-and-a-probe-rule-every-review-worker-reads",
+          "title": "WO-247-D012: Refuse a test-runner gate launched by a review worker at the hook: a Claude or Codex review worker that starts npm test, test-runner.mjs, target-gate.mjs or test:docs holds the…",
+          "summary": "{ \"id\": \"WO-247-D012\", \"date\": \"2026-11-01\", \"dispatch\": \"resume: next; the three independent reviews before the complete run\", \"decision\": \"The design, criteria and consistency reviews (16, 16 and 9 findings) are resolved in code and records: a declined reason is masked of URLs, paths and queries before it reaches a record; the admitted host change holds only while a Codex decline is the order's current fact and covers that activation's release close alone, a Claude decline names the attended phrase alone, and a stale decline is not carried; live-receipt citations are read from a judgment's whole paragraph with fences honoured, and only a criterion naming a live lifecycle or drive owes a re",
+          "missing": false
+        },
+        {
+          "hash": "d5d81964fea9737274e90a3d9b198a802a3ab4010f1cbcef56dfb3e92cee3b27",
+          "ref": "docs/evidence/WO-247/decisions.md#wo-247-d012--three-reviews-their-repairs-and-a-probe-rule-every-review-worker-reads",
+          "title": "WO-247-D012: Refuse a test-runner gate launched by a review worker at the hook: a Claude or Codex review worker that starts npm test, test-runner.mjs, target-gate.mjs or test:docs holds the…",
+          "summary": "{ \"id\": \"WO-247-D012\", \"date\": \"2026-11-01\", \"dispatch\": \"resume: next; the three independent reviews before the complete run\", \"decision\": \"The design, criteria and consistency reviews (16, 16 and 9 findings) are resolved in code and records: a declined reason is masked of URLs, paths and queries before it reaches a record; the admitted host change holds only while a Codex decline is the order's current fact and covers that activation's release close alone, a Claude decline names the attended phrase alone, and a stale decline is not carried; live-receipt citations are read from a judgment's whole paragraph with fences honoured, and only a criterion naming a live lifecycle or drive owes a re",
+          "missing": false
+        },
+        {
+          "hash": "c4173e39b72d4999edab620987b5318b3228e0a8513471033f14b35ab6e171e9",
+          "ref": "docs/evidence/WO-247/decisions.md#wo-247-d012--three-reviews-their-repairs-and-a-probe-rule-every-review-worker-reads",
+          "title": "WO-247-D012: Refuse a test-runner gate launched by a review worker at the hook: a Claude or Codex review worker that starts npm test, test-runner.mjs, target-gate.mjs or test:docs holds the…",
+          "summary": "{ \"id\": \"WO-247-D012\", \"date\": \"2026-11-01\", \"dispatch\": \"resume: next; the three independent reviews before the complete run\", \"decision\": \"The design, criteria and consistency reviews (16, 16 and 9 findings) are resolved in code and records: a declined reason is masked of URLs, paths and queries before it reaches a record; the admitted host change holds only while a Codex decline is the order's current fact and covers that activation's release close alone, a Claude decline names the attended phrase alone, and a stale decline is not carried; live-receipt citations are read from a judgment's whole paragraph with fences honoured, and only a criterion naming a live lifecycle or drive owes a re",
+          "missing": false
+        },
+        {
+          "hash": "8e56dd86655ad7384bb143a94577ad71915781c4ce75d36b358fa75db16581df",
+          "ref": "docs/evidence/WO-247/decisions.md#wo-247-d012--three-reviews-their-repairs-and-a-probe-rule-every-review-worker-reads",
+          "title": "WO-247-D012: Refuse a test-runner gate launched by a review worker at the hook: a Claude or Codex review worker that starts npm test, test-runner.mjs, target-gate.mjs or test:docs holds the…",
+          "summary": "{ \"id\": \"WO-247-D012\", \"date\": \"2026-11-01\", \"dispatch\": \"resume: next; the three independent reviews before the complete run\", \"decision\": \"The design, criteria and consistency reviews (16, 16 and 9 findings) are resolved in code and records: a declined reason is masked of URLs, paths and queries before it reaches a record; the admitted host change holds only while a Codex decline is the order's current fact and covers that activation's release close alone, a Claude decline names the attended phrase alone, and a stale decline is not carried; live-receipt citations are read from a judgment's whole paragraph with fences honoured, and only a criterion naming a live lifecycle or drive owes a re",
+          "missing": false
+        },
+        {
+          "hash": "463f4245248bd2a40c39a5d6e4cf5dead6577905a4449e2abfb3c12ae4bbbe49",
+          "ref": "docs/evidence/WO-247/decisions.md#wo-247-d012--three-reviews-their-repairs-and-a-probe-rule-every-review-worker-reads",
+          "title": "WO-247-D012: Refuse a test-runner gate launched by a review worker at the hook: a Claude or Codex review worker that starts npm test, test-runner.mjs, target-gate.mjs or test:docs holds the…",
+          "summary": "{ \"id\": \"WO-247-D012\", \"date\": \"2026-11-01\", \"dispatch\": \"resume: next; the three independent reviews before the complete run\", \"decision\": \"The design, criteria and consistency reviews (16, 16 and 9 findings) are resolved in code and records: a declined reason is masked of URLs, paths and queries before it reaches a record; the admitted host change holds only while a Codex decline is the order's current fact and covers that activation's release close alone, a Claude decline names the attended phrase alone, and a stale decline is not carried; live-receipt citations are read from a judgment's whole paragraph with fences honoured, and only a criterion naming a live lifecycle or drive owes a re",
+          "missing": false
+        },
+        {
+          "hash": "c3b4e01af8b3afcd400c913fe341b922c6f2f787bf5844dd9464c6fbbe12940a",
+          "ref": "docs/evidence/WO-247/decisions.md#wo-247-d012--three-reviews-their-repairs-and-a-probe-rule-every-review-worker-reads",
+          "title": "WO-247-D012: Refuse a test-runner gate launched by a review worker at the hook: a Claude or Codex review worker that starts npm test, test-runner.mjs, target-gate.mjs or test:docs holds the…",
+          "summary": "{ \"id\": \"WO-247-D012\", \"date\": \"2026-11-01\", \"dispatch\": \"resume: next; the three independent reviews before the complete run\", \"decision\": \"The design, criteria and consistency reviews (16, 16 and 9 findings) are resolved in code and records: a declined reason is masked of URLs, paths and queries before it reaches a record; the admitted host change holds only while a Codex decline is the order's current fact and covers that activation's release close alone, a Claude decline names the attended phrase alone, and a stale decline is not carried; live-receipt citations are read from a judgment's whole paragraph with fences honoured, and only a criterion naming a live lifecycle or drive owes a re",
+          "missing": false
+        },
+        {
+          "hash": "dfadfd88f033a0c5b62ccbcf1119fde78c01c471e2b791eaa3594d9025cc15d8",
+          "ref": "docs/evidence/WO-247/decisions.md#wo-247-d012--three-reviews-their-repairs-and-a-probe-rule-every-review-worker-reads",
+          "title": "WO-247-D012: Refuse a test-runner gate launched by a review worker at the hook: a Claude or Codex review worker that starts npm test, test-runner.mjs, target-gate.mjs or test:docs holds the…",
+          "summary": "{ \"id\": \"WO-247-D012\", \"date\": \"2026-11-01\", \"dispatch\": \"resume: next; the three independent reviews before the complete run\", \"decision\": \"The design, criteria and consistency reviews (16, 16 and 9 findings) are resolved in code and records: a declined reason is masked of URLs, paths and queries before it reaches a record; the admitted host change holds only while a Codex decline is the order's current fact and covers that activation's release close alone, a Claude decline names the attended phrase alone, and a stale decline is not carried; live-receipt citations are read from a judgment's whole paragraph with fences honoured, and only a criterion naming a live lifecycle or drive owes a re",
+          "missing": false
+        },
+        {
+          "hash": "52ea7ee28f7489546d2eb7ea7a7ea64a2ef4a6f65dda473c727fdc04499a53df",
+          "ref": "docs/evidence/WO-247/decisions.md#wo-247-d012--three-reviews-their-repairs-and-a-probe-rule-every-review-worker-reads",
+          "title": "WO-247-D012: Refuse a test-runner gate launched by a review worker at the hook: a Claude or Codex review worker that starts npm test, test-runner.mjs, target-gate.mjs or test:docs holds the…",
+          "summary": "{ \"id\": \"WO-247-D012\", \"date\": \"2026-11-01\", \"dispatch\": \"resume: next; the three independent reviews before the complete run\", \"decision\": \"The design, criteria and consistency reviews (16, 16 and 9 findings) are resolved in code and records: a declined reason is masked of URLs, paths and queries before it reaches a record; the admitted host change holds only while a Codex decline is the order's current fact and covers that activation's release close alone, a Claude decline names the attended phrase alone, and a stale decline is not carried; live-receipt citations are read from a judgment's whole paragraph with fences honoured, and only a criterion naming a live lifecycle or drive owes a re",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-f93ef1a6fc68b07e",
+      "key": "decision:docs/evidence/WO-247/decisions.md#wo-247-d014",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "7b743baf81a11fa12052ab5cd4e89a19e606908faaa0843f77e68270f2c584fa",
+          "ref": "docs/evidence/WO-247/decisions.md#wo-247-d014--verify-the-supported-lifecycle-board-the-synthetic-status-concern",
+          "title": "WO-247-D014: Defensive hardening: decide whether drive-stream.mjs should omit or enumerate unknown native item statuses and Claude subtype strings before storing eventTail. Preserve known native…",
+          "summary": "{ \"id\": \"WO-247-D014\", \"date\": \"2026-11-01\", \"dispatch\": \"resume: verify\", \"decision\": \"Pass the supported lifecycle criteria and record the unknown-status concern as a defensive-hardening follow-up. The verifier's synthetic file-change item supplied a status containing path and query text; eventTail copied it unchanged. The verifier did not reproduce Codex emitting that value, an actual retained-data failure, or a regression of a supported native event. That probe therefore does not establish an unmet criterion. The complete review row and the two full live lifecycles at the current code identity remain passing evidence. No waiver is needed or recorded.\", \"operatorAuthorization\": \"Paraphras",
+          "missing": false
+        },
+        {
+          "hash": "5ff1c49c68f81020166497f4bbc4e3d3cd0aa67b58b82d5f35a323b8464107ba",
+          "ref": "docs/evidence/WO-247/decisions.md#wo-247-d014--verify-the-supported-lifecycle-board-the-synthetic-status-concern",
+          "title": "WO-247-D014: Defensive hardening: decide whether drive-stream.mjs should omit or enumerate unknown native item statuses and Claude subtype strings before storing eventTail. Preserve known native…",
+          "summary": "{ \"id\": \"WO-247-D014\", \"date\": \"2026-11-01\", \"dispatch\": \"resume: verify\", \"decision\": \"Pass the supported lifecycle criteria and record the unknown-status concern as a defensive-hardening follow-up. The verifier's synthetic file-change item supplied a status containing path and query text; eventTail copied it unchanged. The verifier did not reproduce Codex emitting that value, an actual retained-data failure, or a regression of a supported native event. That probe therefore does not establish an unmet criterion. The complete review row and the two full live lifecycles at the current code identity remain passing evidence. No waiver is needed or recorded.\", \"operatorAuthorization\": \"Paraphras",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-f8073a2c2a4e0600",
+      "key": "decision:docs/evidence/WO-247/decisions.md#wo-247-d015",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "354f3a646c0a5a1f2e601c417525d30fe64f33734946800b4bfe7399c0903636",
+          "ref": "docs/evidence/WO-247/decisions.md#wo-247-d015--board-the-fenced-heading-receipt-parser-edge-case",
+          "title": "WO-247-D015: Fix criterionJudgments so only an unfenced heading ends a criterion paragraph. Add a regression with a heading inside a fenced example followed by a real live receipt citation; preserve…",
+          "summary": "{ \"id\": \"WO-247-D015\", \"date\": \"2026-11-01\", \"dispatch\": \"resume: verify\", \"decision\": \"Record the fenced-heading edge case as a follow-up. criterionJudgments marks fenced rows, but the paragraph loop tests a heading before excluding a fenced row. A heading inside an example therefore ends the paragraph and loses the real receipt citation after the fence. This does not fail the order's required matching and mismatching CLI cases, which pass, and no behavior that main previously supplied was shown to regress. The verifier changes no implementation.\", \"evidence\": [ \"node scripts/harness.mjs bounded -- node docs/evidence/WO-247/verifier-001-probes.mjs: P2 supplies a judgment, a fenced Markdown ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-5456dbf776e0c75b",
+      "key": "decision:docs/evidence/WO-247/decisions.md#wo-247-d017",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "d83131c4c2d8bb7cd3245184225b055f0e4274ba06cd429688a3e1f90bb66df8",
+          "ref": "docs/evidence/WO-247/decisions.md#wo-247-d017--final-review-the-live-runs-dollar-record-and-the-total-the-record-cannot-give",
+          "title": "WO-247-D017: At handoff, record the dollar cost of every live attempt an order ran, superseded attempts included, and the order's total in its decisions, and keep a superseded receipt's identity and…",
+          "summary": "{ \"id\": \"WO-247-D017\", \"date\": \"2026-11-01\", \"dispatch\": \"resume: final review\", \"decision\": \"Record the live runs' dollars where the committed receipts hold them and board the rest. The order's known issue asked the executor to record each attempt's cost and the order's total in the decisions, with a reopening at more than half above WO-192's two final attempts (38.12 USD, so 57.18 USD). The committed record holds one dollar figure: attempt 4, the Claude lifecycle on the final code, cost 31.63 USD, 30.72 for the phase workers (executor 22.52, verifier 3.61, reviewer 3.30, release close 1.30) and 0.91 for the two router sessions (0.54 and 0.36); attempts 1 to 3 ran on Codex, which reports no",
           "missing": false
         }
       ],

@@ -1,0 +1,150 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-247",
+  "baselineCommit": "e66730ee4fd785362d2bd37c4d5157a94ec6188a",
+  "method": "Each case runs under node scripts/harness.mjs bounded against this worktree's current implementation (the positive arm), then again with only the listed reversion applied to the listed source (the negative arm); the source bytes are snapshotted before and verified restored after, and the two arms run serially. A demonstrated verdict is positive exit 0 and negative exit nonzero; the recorded observation is the negative arm's first failing assertion as the test runner printed it.",
+  "recordedAt": "2026-11-01T03:43:27.200Z",
+  "results": [
+    {
+      "id": "c01-transport-child",
+      "defect": "A hung remote's transport child survives the fetch limit (WO-192-D098).",
+      "suite": "harness-fixtures",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "--test",
+        "--test-name-pattern",
+        "a lane failure says why",
+        "scripts/test-drive.mjs"
+      ],
+      "reversion": [
+        {
+          "path": "scripts/lib/git.mjs",
+          "old": "  const result = spawnGit(args, {\n    ...options,\n    detached: Boolean(options.timeout),\n  });\n  if (result.error?.code === \"ETIMEDOUT\" && Number.isSafeInteger(result.pid))\n    try {\n      process.kill(-result.pid, \"SIGKILL\");\n    } catch {\n      /* The group already ended. */\n    }\n  return result;",
+          "new": "  return spawnGit(args, options);"
+        }
+      ],
+      "mutatedFiles": [
+        {
+          "path": "scripts/lib/git.mjs",
+          "before": "bf6495212d0b19d8a8291ae4eddf5838378d6052da3763f54bd293d8d0637915",
+          "after": "253b56ee229088c4fceca1da2d825cc0c7ed54ed16168b44acfcfd6f8ef4c001"
+        }
+      ],
+      "positive": {
+        "exitCode": 0,
+        "seconds": null,
+        "logSha256": "62790a0d5c4f2104fe7ce2ed2eb4c5bb2e91a231d87615aa1226eb335f49ffbf",
+        "startedAt": "2026-11-01T03:43:04.583Z",
+        "finishedAt": "2026-11-01T03:43:08.135Z",
+        "observation": null
+      },
+      "negative": {
+        "exitCode": 1,
+        "seconds": null,
+        "logSha256": "df1d4b98327b58d5089768cec321b4e2b1669750b654647cec0bd911928047cb",
+        "startedAt": "2026-11-01T03:43:08.135Z",
+        "finishedAt": "2026-11-01T03:43:12.180Z",
+        "observation": "the transport child ended with the limit | false !== true @ scripts/test-drive.mjs:1200:1"
+      },
+      "verdict": "demonstrated"
+    },
+    {
+      "id": "c02-route-facts-no-events",
+      "defect": "routeFacts with no events skips the pass check and reads as merged (WO-192-D099).",
+      "suite": "harness-fixtures",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "--test",
+        "--test-name-pattern",
+        "an order reads as merged once its pass reaches the base",
+        "scripts/test-drive.mjs"
+      ],
+      "reversion": [
+        {
+          "path": "scripts/lib/drive-route.mjs",
+          "old": "      (ancestor(trees.main, branch, \"origin/main\") &&\n        passed !== undefined &&\n        passAtBase(trees.main, state.workOrderId, passed)) ||",
+          "new": "      (ancestor(trees.main, branch, \"origin/main\") &&\n        (!passed || passAtBase(trees.main, state.workOrderId, passed))) ||"
+        }
+      ],
+      "mutatedFiles": [
+        {
+          "path": "scripts/lib/drive-route.mjs",
+          "before": "b7273bf867da1ebc713c30750186e1a476e4d3612247c7264ccb8aba4ea884ae",
+          "after": "302ea395db7cc74d3b2bb5ee0196430a2ab0f0bb114d4a485f74f68ddb1b1ded"
+        }
+      ],
+      "positive": {
+        "exitCode": 0,
+        "seconds": null,
+        "logSha256": "dfea02e6c06ff1e4c486d4769ffe9e190c759d3a40b75bba800d9f06297a27e2",
+        "startedAt": "2026-11-01T03:43:12.182Z",
+        "finishedAt": "2026-11-01T03:43:16.744Z",
+        "observation": null
+      },
+      "negative": {
+        "exitCode": 1,
+        "seconds": null,
+        "logSha256": "24c1c6d4c31ad52ed9a7e6acad3b997f18f972863951c331fafd1ebc692c2cc0",
+        "startedAt": "2026-11-01T03:43:16.745Z",
+        "finishedAt": "2026-11-01T03:43:21.605Z",
+        "observation": "Expected values to be strictly equal: | true !== false @ scripts/test-drive.mjs:1105:1"
+      },
+      "verdict": "demonstrated"
+    },
+    {
+      "id": "c03-reactivated-close-receipt",
+      "defect": "A reactivated order inherits an earlier close receipt and routes as released (WO-192-D099).",
+      "suite": "harness-fixtures",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "--test",
+        "--test-name-pattern",
+        "target roots derive from the registered order",
+        "scripts/test-drive.mjs"
+      ],
+      "reversion": [
+        {
+          "path": "scripts/lib/drive-route.mjs",
+          "old": "      close.publication?.outcome === \"no-release\" &&\n      thisActivation(close.activation?.recordedAt);",
+          "new": "      close.publication?.outcome === \"no-release\";"
+        }
+      ],
+      "mutatedFiles": [
+        {
+          "path": "scripts/lib/drive-route.mjs",
+          "before": "b7273bf867da1ebc713c30750186e1a476e4d3612247c7264ccb8aba4ea884ae",
+          "after": "273ae4efce0e609778effbe246586390eff1b5c60cc73cd53c12c5d04bd3452d"
+        }
+      ],
+      "positive": {
+        "exitCode": 0,
+        "seconds": null,
+        "logSha256": "55296e3b5ade7389c2203ed3783fd1186f7b955ea35eb0f33e03a6e297deeca2",
+        "startedAt": "2026-11-01T03:43:21.606Z",
+        "finishedAt": "2026-11-01T03:43:24.392Z",
+        "observation": null
+      },
+      "negative": {
+        "exitCode": 1,
+        "seconds": null,
+        "logSha256": "59d0456c69ebacc4d32f1e032a4146cec4111ba95ab92a307761c45752401351",
+        "startedAt": "2026-11-01T03:43:24.392Z",
+        "finishedAt": "2026-11-01T03:43:27.194Z",
+        "observation": "Expected values to be strictly equal: | true !== false @ scripts/test-drive.mjs:1343:1"
+      },
+      "verdict": "demonstrated"
+    }
+  ]
+}

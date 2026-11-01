@@ -1,0 +1,618 @@
+{
+  "workOrder": "WO-247",
+  "report": "docs/verifications/WO-247/VER-001.md",
+  "dispatch": "resume: verify",
+  "status": "probes-complete-final-document-check-required",
+  "processCorrections": [
+    {
+      "date": "2026-11-01",
+      "error": "Initial status and combined repository reads exceeded output budgets and were truncated.",
+      "correction": "Reread canonical selected status without the all-orders projection; retain full diff in session scratch; use bounded source chunks and structured summaries.",
+      "disposition": "Read failures are not evidence of a product defect; missing portions must be reread before verdict."
+    },
+    {
+      "date": "2026-11-01",
+      "error": "The verifier announced a blocking classification from a synthetic out-of-vocabulary native status before establishing that this value is a valid native-protocol input required by criterion 1.",
+      "correction": "The complete review gate and both final-identity live lifecycles passed. No actual retained path or query from those runs was shown. Suspend the blocking classification while checking the native status contract and criterion scope.",
+      "disposition": "Resolved as follow-up after checking scope and the operator direction to board a synthetic case without a real behavior reproduction. No failed verdict was filed."
+    },
+    {
+      "date": "2026-11-01",
+      "error": "The direct off-ramps script invocation omitted its required owned fixture-root argument and exited at its startup assertion.",
+      "correction": "Read scripts/test-resume.sh and scripts/test-temp-root.sh, then rerun with their canonical root and cleanup setup.",
+      "disposition": "Corrected CLI probe passed; the startup failure is not a subject defect."
+    },
+    {
+      "date": "2026-11-01",
+      "error": "The controls audit initially looked for cases, but controls.json stores its arms under results.",
+      "correction": "Read the actual keys, correct the scratch audit and rerun it.",
+      "disposition": "All three positive/negative arm codes, source hashes and reversion anchors checked."
+    },
+    {
+      "date": "2026-11-01",
+      "error": "One exploratory shell search used unmatched zsh filename patterns.",
+      "correction": "Read the exact test-temp-root.sh source path selected by test-resume.sh.",
+      "disposition": "No file was changed by the failed search."
+    },
+    {
+      "date": "2026-11-01",
+      "error": "Worker transcript discovery initially projected a non-report record, and generated-check output unexpectedly embedded oversized nested logs.",
+      "correction": "Read only explicit SubagentHandback report prose for the three workers; judge the generated check from its sixteen CURRENT lines, empty stale list and exit 0.",
+      "disposition": "No transcript payload or nested audit output was copied into committed evidence; selected verification fields are recorded here."
+    }
+  ],
+  "probes": [
+    {
+      "id": "P1",
+      "contract": "Criterion 1: retained event stream uses an enumerated vocabulary without paths or queries.",
+      "inputVariation": "An item status outside the known status vocabulary before a declined close.",
+      "expected": "Unknown status is omitted or mapped to an enumerated value.",
+      "observed": [
+        {
+          "type": "item.completed",
+          "item": "file_change",
+          "status": "synthetic/opaque?q=canary"
+        },
+        {
+          "type": "item.completed",
+          "item": "command_execution",
+          "status": "declined"
+        }
+      ],
+      "passed": false,
+      "route": "follow-up",
+      "criterion": null,
+      "repairRule": "Restrict retained status fields to an explicit native-status vocabulary and map unknown values to an enumerated fallback before storing eventTail; cover unknown string values with a regression.",
+      "classificationBasis": "The input status was injected by the verifier, not observed from Codex. No current supported native event or real lifecycle was reproduced carrying such a value. This is a defensive-hardening candidate and does not establish an unmet acceptance criterion or a regression."
+    },
+    {
+      "id": "P2",
+      "contract": "WO-247-D005: receipt citations in the judgment paragraph count, fenced examples count for nothing.",
+      "inputVariation": "A heading inside a fenced example before the real receipt citation.",
+      "expected": "The real receipt citation after the fence remains in the judgment paragraph.",
+      "observed": "**Criterion 1:** met.",
+      "passed": false,
+      "route": "follow-up",
+      "criterion": null,
+      "repairRule": "Only an unfenced heading ends a criterion paragraph; add a fenced-heading case and keep the real citation that follows it."
+    }
+  ],
+  "limits": [
+    "Provider dollar cap unenforced: this transport exposes no hard dollar-cap control.",
+    "Actual session readback is gpt-6.1-sol at max, Codex CLI 0.166.0; order recommends xhigh. No model or effort setting was changed."
+  ],
+  "workers": {
+    "spawned": 0,
+    "reason": "Verifier owns the verdict and runs its own probes; no claim presently requires a worker."
+  },
+  "subjectCodeIdentity": "5a6f7b703f253fc3821167b27771454bde71e0deb43aaee6c67fe419e6a22b42",
+  "formatCheck": {
+    "exitCode": 0,
+    "command": "node scripts/harness.mjs bounded -- npm run format:check"
+  },
+  "operatorDirection": "Paraphrase: during verification the operator pointed to the passing complete gate and both successful live lifecycles, and directed that a synthetic concern without a real behavior reproduction be recorded as a follow-up.",
+  "productGate": {
+    "checkId": "npm test",
+    "treeHash": "11470276712b392b25d74e988f823c726330c98d",
+    "codeIdentity": "5a6f7b703f253fc3821167b27771454bde71e0deb43aaee6c67fe419e6a22b42",
+    "subject": "11470276712b392b25d74e988f823c726330c98d",
+    "durationMs": 2271587,
+    "exitCode": 0,
+    "executed": true,
+    "evidenceRef": "host-gate:5a6f7b703f253fc3821167b27771454bde71e0deb43aaee6c67fe419e6a22b42:npm test",
+    "recordedAt": "2026-11-01T06:49:53.087Z",
+    "executionMode": "fresh",
+    "gateSelection": "review",
+    "identityUnchanged": true,
+    "buildOutputUnchanged": true,
+    "freshSuites": 114,
+    "reusedSuites": 0,
+    "requiredSuites": [
+      "build",
+      "format",
+      "configuration-root",
+      "registrations",
+      "declarations",
+      "generated",
+      "host",
+      "release-preparation",
+      "github-body",
+      "outward-lint",
+      "target-publish",
+      "target-worktree",
+      "vertical",
+      "license-fixtures",
+      "publication-fixtures",
+      "backup-intake",
+      "resume",
+      "launchpad",
+      "workstream-pilot",
+      "instance-history",
+      "beacon-portability",
+      "checkpoint",
+      "worktree",
+      "worktree-integration",
+      "release",
+      "work-orders-fixtures",
+      "siblings-fixtures",
+      "kernel",
+      "compiler",
+      "skeleton",
+      "console",
+      "browser-evidence",
+      "adjacent-queue",
+      "derived-orders",
+      "portfolio",
+      "codex-continuation",
+      "authority-grants",
+      "launchpad-planning",
+      "harness-probe",
+      "harness-fixtures",
+      "harness-context",
+      "plan-refutation",
+      "runner-fixtures",
+      "sync-fixtures",
+      "process-debt"
+    ]
+  },
+  "missingProductSuites": [],
+  "controlChecks": [
+    {
+      "id": "c01-transport-child",
+      "positive": 0,
+      "negative": 1,
+      "reversions": [
+        {
+          "path": "scripts/lib/git.mjs",
+          "occurrences": 1
+        }
+      ],
+      "hashes": [
+        {
+          "path": "scripts/lib/git.mjs",
+          "matchesBefore": true
+        }
+      ],
+      "observation": "the transport child ended with the limit | false !== true @ scripts/test-drive.mjs:1200:1"
+    },
+    {
+      "id": "c02-route-facts-no-events",
+      "positive": 0,
+      "negative": 1,
+      "reversions": [
+        {
+          "path": "scripts/lib/drive-route.mjs",
+          "occurrences": 1
+        }
+      ],
+      "hashes": [
+        {
+          "path": "scripts/lib/drive-route.mjs",
+          "matchesBefore": true
+        }
+      ],
+      "observation": "Expected values to be strictly equal: | true !== false @ scripts/test-drive.mjs:1105:1"
+    },
+    {
+      "id": "c03-reactivated-close-receipt",
+      "positive": 0,
+      "negative": 1,
+      "reversions": [
+        {
+          "path": "scripts/lib/drive-route.mjs",
+          "occurrences": 1
+        }
+      ],
+      "hashes": [
+        {
+          "path": "scripts/lib/drive-route.mjs",
+          "matchesBefore": true
+        }
+      ],
+      "observation": "Expected values to be strictly equal: | true !== false @ scripts/test-drive.mjs:1343:1"
+    }
+  ],
+  "receiptChecks": [
+    {
+      "path": "docs/evidence/WO-247/live-drive-attempt-1.json",
+      "sourceCodeIdentity": "baf33adde1db508cb555fdb5ce16d0604cdacf36889810f97d479213bb3d4590",
+      "matchesCurrent": false,
+      "scope": "native-router-and-release-close; earlier phases coordinator-seeded",
+      "stop": "awaiting-close",
+      "allPhaseWorkersExitZero": false,
+      "allRoutersExitZero": true
+    },
+    {
+      "path": "docs/evidence/WO-247/live-drive-attempt-2.json",
+      "sourceCodeIdentity": "d9681c94c1f2cc9bae0d5898d36ab1e9269127fc092721a0f423803d53236210",
+      "matchesCurrent": false,
+      "scope": "native-router-and-release-close; earlier phases coordinator-seeded",
+      "stop": "released",
+      "allPhaseWorkersExitZero": true,
+      "allRoutersExitZero": true
+    },
+    {
+      "path": "docs/evidence/WO-247/live-drive-attempt-3.json",
+      "sourceCodeIdentity": "5a6f7b703f253fc3821167b27771454bde71e0deb43aaee6c67fe419e6a22b42",
+      "matchesCurrent": true,
+      "scope": "native-full-lifecycle",
+      "stop": "released",
+      "allPhaseWorkersExitZero": true,
+      "allRoutersExitZero": true
+    },
+    {
+      "path": "docs/evidence/WO-247/live-drive-attempt-4.json",
+      "sourceCodeIdentity": "5a6f7b703f253fc3821167b27771454bde71e0deb43aaee6c67fe419e6a22b42",
+      "matchesCurrent": true,
+      "scope": "native-full-lifecycle",
+      "stop": "released",
+      "allPhaseWorkersExitZero": true,
+      "allRoutersExitZero": true
+    }
+  ],
+  "selectedRegressionProbes": [
+    {
+      "name": "close-host-change",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "--test",
+        "--test-name-pattern",
+        "re-entry admits one host change",
+        "scripts/test-drive.mjs"
+      ],
+      "exitCode": 0,
+      "matched": true,
+      "startedAt": "2026-11-01T08:31:55.285144+00:00",
+      "finishedAt": "2026-11-01T08:32:00.545541+00:00"
+    },
+    {
+      "name": "capture",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "--test",
+        "--test-name-pattern",
+        "the phase capture keeps a declined or failed",
+        "scripts/test-drive.mjs"
+      ],
+      "exitCode": 0,
+      "matched": true,
+      "startedAt": "2026-11-01T08:32:00.545740+00:00",
+      "finishedAt": "2026-11-01T08:32:01.089058+00:00"
+    },
+    {
+      "name": "sandbox-forms",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "--test",
+        "--test-name-pattern",
+        "the sandbox election maps to each host",
+        "scripts/test-drive.mjs"
+      ],
+      "exitCode": 0,
+      "matched": true,
+      "startedAt": "2026-11-01T08:32:01.089253+00:00",
+      "finishedAt": "2026-11-01T08:32:01.351880+00:00"
+    },
+    {
+      "name": "retention-and-observation",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "--test",
+        "--test-name-pattern",
+        "a declined Codex phase retains its home's session files alone",
+        "scripts/test-drive.mjs"
+      ],
+      "exitCode": 0,
+      "matched": true,
+      "startedAt": "2026-11-01T08:32:01.352051+00:00",
+      "finishedAt": "2026-11-01T08:32:01.620464+00:00"
+    },
+    {
+      "name": "native-argv",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "--test",
+        "--test-name-pattern",
+        "Codex tool environment selects launcher Node",
+        "scripts/test-drive.mjs"
+      ],
+      "exitCode": 0,
+      "matched": true,
+      "startedAt": "2026-11-01T08:32:01.620692+00:00",
+      "finishedAt": "2026-11-01T08:32:01.899712+00:00"
+    },
+    {
+      "name": "hung-transport",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "--test",
+        "--test-name-pattern",
+        "a lane failure says why",
+        "scripts/test-drive.mjs"
+      ],
+      "exitCode": 0,
+      "matched": true,
+      "startedAt": "2026-11-01T08:32:01.899909+00:00",
+      "finishedAt": "2026-11-01T08:32:05.456681+00:00"
+    },
+    {
+      "name": "merge-without-events",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "--test",
+        "--test-name-pattern",
+        "an order reads as merged once its pass reaches the base",
+        "scripts/test-drive.mjs"
+      ],
+      "exitCode": 0,
+      "matched": true,
+      "startedAt": "2026-11-01T08:32:05.456973+00:00",
+      "finishedAt": "2026-11-01T08:32:09.980289+00:00"
+    },
+    {
+      "name": "reactivated-close",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "--test",
+        "--test-name-pattern",
+        "target roots derive from the registered order",
+        "scripts/test-drive.mjs"
+      ],
+      "exitCode": 0,
+      "matched": true,
+      "startedAt": "2026-11-01T08:32:09.980627+00:00",
+      "finishedAt": "2026-11-01T08:32:12.785674+00:00"
+    },
+    {
+      "name": "reactivated-release",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "--test",
+        "--test-name-pattern",
+        "a release from before a reactivation",
+        "scripts/test-drive.mjs"
+      ],
+      "exitCode": 0,
+      "matched": true,
+      "startedAt": "2026-11-01T08:32:12.785909+00:00",
+      "finishedAt": "2026-11-01T08:32:13.818568+00:00"
+    },
+    {
+      "name": "driven-start",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "--test",
+        "--test-name-pattern",
+        "the driven-start figure is read beside",
+        "scripts/test-process-debt.mjs"
+      ],
+      "exitCode": 0,
+      "matched": true,
+      "startedAt": "2026-11-01T08:32:13.818817+00:00",
+      "finishedAt": "2026-11-01T08:32:14.229974+00:00"
+    },
+    {
+      "name": "harness-begin",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "--test",
+        "--test-name-pattern",
+        "harness begin refuses an unknown role",
+        "scripts/test-harness.mjs"
+      ],
+      "exitCode": 0,
+      "matched": true,
+      "startedAt": "2026-11-01T08:32:14.230200+00:00",
+      "finishedAt": "2026-11-01T08:32:16.039318+00:00"
+    },
+    {
+      "name": "close-handoff",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "--test",
+        "--test-name-pattern",
+        "the release-close handoff states each close's actual effect",
+        "scripts/test-harness.mjs"
+      ],
+      "exitCode": 0,
+      "matched": true,
+      "startedAt": "2026-11-01T08:32:16.039653+00:00",
+      "finishedAt": "2026-11-01T08:32:16.578438+00:00"
+    },
+    {
+      "name": "fixture-isolation",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "--test",
+        "--test-name-pattern",
+        "a fixture push carries the fixture environment",
+        "scripts/test-target-worktree-publish.mjs"
+      ],
+      "exitCode": 0,
+      "matched": true,
+      "startedAt": "2026-11-01T08:32:16.578686+00:00",
+      "finishedAt": "2026-11-01T08:32:18.177660+00:00"
+    },
+    {
+      "name": "declined-close-stop",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "--test",
+        "--test-name-pattern",
+        "a declined release close stops at awaiting-close",
+        "scripts/test-drive.mjs"
+      ],
+      "exitCode": 0,
+      "matched": true
+    },
+    {
+      "name": "worker-note-forms",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "--test",
+        "--test-name-pattern",
+        "a router and a phase worker differ in one computed profile",
+        "scripts/test-drive.mjs"
+      ],
+      "exitCode": 0,
+      "matched": true
+    }
+  ],
+  "cliRegression": {
+    "suite": "scripts/test-off-ramps.mjs",
+    "exitCode": 0,
+    "fixtureSetup": "The create_test_temp_root and install_test_temp_root_traps functions from scripts/test-temp-root.sh, as scripts/test-resume.sh supplies them.",
+    "coverage": "Actual resume.mjs implementation-ready refuses absent, missing-identity and stale receipts; admits and records a matching receipt."
+  },
+  "generatedChecks": {
+    "command": "node scripts/harness.mjs bounded -- node scripts/structural-checks.mjs generated",
+    "exitCode": 0,
+    "currentArtifacts": 16,
+    "stale": []
+  },
+  "workerReports": [
+    {
+      "role": "criteria-adversary",
+      "reportsRead": 11,
+      "latestReportAt": "2026-11-01T06:10:54.896Z",
+      "source": "Executor worker SubagentHandback messages; selected report prose retained in verifier session scratch.",
+      "reportDigest": "1c6b802269734c4c97070c10293df5ad5111e4dea2289c2a7b0b01aa34a37831"
+    },
+    {
+      "role": "design-improver",
+      "reportsRead": 11,
+      "latestReportAt": "2026-11-01T06:10:50.577Z",
+      "source": "Executor worker SubagentHandback messages; selected report prose retained in verifier session scratch.",
+      "reportDigest": "05c4534d7267271c9553b5e661407e95909b8a688c97b552d942baa645a4598a"
+    },
+    {
+      "role": "consistency-reviewer",
+      "reportsRead": 11,
+      "latestReportAt": "2026-11-01T06:11:43.996Z",
+      "source": "Executor worker SubagentHandback messages; selected report prose retained in verifier session scratch.",
+      "reportDigest": "9eb3356341b274311349fd0c6fc9ef1d61b69146e759caa3277dc09c58f6d3c2"
+    }
+  ],
+  "diagnosisChecks": {
+    "retainedStderrExists": true,
+    "rejectionReasonMatchesDiagnosis": true,
+    "retainedObservationFilesExist": true
+  },
+  "sources": [
+    {
+      "url": "https://learn.chatgpt.com/docs/non-interactive-mode",
+      "readAt": "2026-11-01",
+      "supports": "Documented danger-full-access launch form and JSONL event examples."
+    },
+    {
+      "url": "https://learn.chatgpt.com/docs/cli/reference",
+      "readAt": "2026-11-01",
+      "supports": "approve-for-me uses workspace-write and conflicts with sandbox; ephemeral controls rollout retention."
+    },
+    {
+      "url": "https://learn.chatgpt.com/docs/sandboxing/auto-review",
+      "readAt": "2026-11-01",
+      "supports": "Separate reviewer and returned rationale; never approvals leave nothing for automatic review."
+    }
+  ],
+  "verdict": "pass",
+  "blockingFindings": [],
+  "authoredChecks": [
+    {
+      "name": "meta",
+      "command": [
+        "npm",
+        "run",
+        "meta"
+      ],
+      "exitCode": 0
+    },
+    {
+      "name": "publication",
+      "command": [
+        "npm",
+        "run",
+        "publication:check"
+      ],
+      "exitCode": 0
+    },
+    {
+      "name": "lineage",
+      "command": [
+        "node",
+        "scripts/lineage.mjs",
+        "index",
+        "--check"
+      ],
+      "exitCode": 0
+    }
+  ],
+  "processCost": {
+    "entryTotalTokens": 62624,
+    "handoffTotalTokens": 11877493,
+    "source": "codex-transcript-counter",
+    "scope": "dispatch",
+    "cutoff": "2026-11-01T08:40:04.618Z",
+    "costUsd": null
+  }
+}
