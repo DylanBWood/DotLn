@@ -2362,6 +2362,20 @@ const finishPublishedWorktreeOperation = async (
             if (row) row.preservationReceipt = proof.receipt;
             if (proof.subject === subjectPath)
               cleanup.subject.preservationReceipt = proof.receipt;
+          } else if (line.startsWith("Journal retention: ")) {
+            // Where the worktree's session journals went, or why they did
+            // not: a failed move keeps the worktree and names the retry.
+            const { subject: retained, ...journals } = JSON.parse(
+              line.slice("Journal retention: ".length),
+            );
+            if (journals.outcome === "failed")
+              journals.command = releaseCloseCommand(root, workOrderId);
+            const row = cleanup.worktrees.find(
+              (item) => item.path === retained,
+            );
+            if (row) row.journals = journals;
+            if (subjectPath && retained === resolve(subjectPath))
+              cleanup.subject.journals = journals;
           }
         if (finished.status !== 0)
           throw new Error(failureOf(finished, `${action} failed`));

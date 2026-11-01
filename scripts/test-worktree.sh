@@ -813,6 +813,11 @@ assert.equal(JSON.stringify(readGateChecks(root)).includes('passing-copy-output-
 assert.ok(ids.includes("fixture-closeout-0"), "subject gate evidence must survive teardown");
 assert.ok(ids.includes("fixture-closeout-1"), "main gate evidence must remain intact");
 NODE
+# The subject's gate index also outlived its worktree, in the order's journal
+# lane; the fixture removes that owned root itself, as a gate's completion
+# would, so a run outside a gate leaves nothing behind.
+grep -Fq 'fixture-closeout-0' "$main/docs/control/local/retained/WO-099/harness/checks.json"
+node "$script_dir/temporary-root.mjs" remove "$main/docs/control/local/retained/WO-099/harness"
 test "$(git -C "$main" branch --list wo-099)" = ""
 test -f "$main/result.txt"
 printf 'beacon cleanup: populated anchored projection directories removed; docs/intake/dist/x.md negative fixture preserved\n'

@@ -1,7 +1,10 @@
 import { createHash, randomUUID } from "node:crypto";
 import {
+  appendFileSync,
   chmodSync,
   closeSync,
+  constants,
+  copyFileSync,
   existsSync,
   lstatSync,
   linkSync,
@@ -12,16 +15,23 @@ import {
   readdirSync,
   readlinkSync,
   realpathSync,
+  renameSync,
   rmSync,
   writeFileSync,
 } from "node:fs";
-import { dirname, join, relative, resolve } from "node:path";
+import { basename, dirname, join, relative, resolve } from "node:path";
 import { docRelative } from "./config.mjs";
-import { parseWorktrees } from "./git.mjs";
+import { parseWorktrees, runGitPathList } from "./git.mjs";
 import { requireMaterialContainment } from "./worktree-material.mjs";
 import { activeGateRuns } from "./gate-evidence.mjs";
 import { prepareBeaconDisposal } from "./beacons.mjs";
 import { materialSummary } from "./material-summary.mjs";
+import {
+  closedJournalEntry,
+  ensureTemporaryRoot,
+  TEMPORARY_OWNER_FILE,
+} from "./temporary-roots.mjs";
+import { dispatchJournalDirectory } from "../../packages/skeleton/src/dispatch-journal.mjs";
 import {
   withWriterReservationLock,
   writerTeardownBlocker,
@@ -52,6 +62,311 @@ const receiptPath = (main, workOrder, subject) =>
     "control",
     `local/retained/${workOrder}/worktree-removal-${digest(Buffer.from(resolve(subject)))}.json`,
   );
+
+/** Where a closed order's session journals outlive its worktree, relative to
+ * main: an owned root of class closed-journal inside the order's retained lane.
+ * @param {string} main @param {string} workOrder */
+export const journalLane = (main, workOrder) =>
+  docRelative(main, "control", `local/retained/${workOrder}/harness`);
+
+// Publish whole bytes under a temporary name, so a stop never leaves a torn
+// journal at its canonical name.
+const replaceWhole = (file, bytes) => {
+  const partial = `${file}.partial-${randomUUID()}`;
+  try {
+    writeFileSync(partial, bytes, { flag: "wx", mode: 0o600 });
+    renameSync(partial, file);
+  } finally {
+    rmSync(partial, { force: true });
+  }
+};
+
+/** Before release close removes a worktree, what its sessions recorded moves
+ * into main's retained lane for the order: the session journals and other
+ * logs, the session states and their sidecars, the gate index, and the
+ * suite-success and deadline records, as listed by closedJournalEntry. Gate
+ * captures, targets, excludes, the writer, the started markers and every link
+ * stay and fall with the worktree or their own classes. The lane is an owned
+ * root of class closed-journal whose window the prune judges. An existing lane
+ * is merged, never replaced: a log gains the new rows, each append recorded in merges.jsonl so a retry
+ * makes it once, the gate index takes the
+ * union of its rows, an identical file is dropped, and a differing state keeps
+ * its earlier bytes beside the newer one under a content-addressed name. A
+ * rename across volumes falls back to copy then remove; any other failure
+ * stops with the worktree intact, so a retried close merges what remains.
+ * `rename` and `copyFile` are injectable so the failure paths can be exercised.
+ * @param {string} main @param {string} subject @param {string} workOrder
+ * @param {{dryRun?: boolean, rename?: typeof renameSync, copyFile?: typeof copyFileSync}} [options]
+ * @returns {{lane: string|null, files: number, bytes: number, outcome: "moved"|"nothing"|"would-move"}} */
+export function retainWorktreeJournals(
+  main,
+  subject,
+  workOrder,
+  { dryRun = false, rename = renameSync, copyFile = copyFileSync } = {},
+) {
+  main = realpathSync(main);
+  if (!/^WO-\d{3}$/.test(workOrder))
+    throw new Error("Journal retention requires a work order");
+  const lane = journalLane(main, workOrder);
+  requireMaterialContainment(main, lane);
+  const destination = join(main, lane);
+  const source = dispatchJournalDirectory(subject);
+  const sourceInfo = lstatSync(source, { throwIfNoEntry: false });
+  /** @type {Array<{from: string, to: string, size: number}>} */
+  const moves = [];
+  const plan = (from, to) => {
+    const info = lstatSync(from);
+    if (info.isDirectory() && !info.isSymbolicLink())
+      for (const name of readdirSync(from).sort())
+        plan(join(from, name), join(to, name));
+    else if (info.isFile()) moves.push({ from, to, size: info.size });
+  };
+  if (sourceInfo?.isDirectory() && !sourceInfo.isSymbolicLink())
+    for (const entry of readdirSync(source, { withFileTypes: true }))
+      if (
+        entry.name !== TEMPORARY_OWNER_FILE &&
+        (entry.isDirectory() || entry.isFile()) &&
+        closedJournalEntry(entry.name, entry.isDirectory())
+      )
+        plan(join(source, entry.name), join(destination, entry.name));
+  // A file the repository tracks is its content, not a session's record: a
+  // relocated configuration root can leave this fixed harness path unignored
+  // and committed, and moving it would leave the worktree modified.
+  if (moves.length) {
+    const tracked = new Set(
+      runGitPathList(subject, [
+        "ls-files",
+        "-z",
+        "--",
+        relative(subject, source),
+      ]),
+    );
+    if (tracked.size)
+      moves.splice(
+        0,
+        moves.length,
+        ...moves.filter((move) => !tracked.has(relative(subject, move.from))),
+      );
+  }
+  const counted = {
+    files: moves.length,
+    bytes: moves.reduce((sum, move) => sum + move.size, 0),
+  };
+  // Every write stays inside the lane: no destination or ancestor may be a
+  // link, an existing destination must be a regular file, and so must the
+  // lane's own source log. A preview refuses what the move would refuse.
+  const sources = join(destination, "sources.jsonl");
+  const merges = join(destination, "merges.jsonl");
+  const requireDestination = (path) => {
+    requireMaterialContainment(main, relative(main, path));
+    const info = lstatSync(path, { throwIfNoEntry: false });
+    if (info && !info.isFile())
+      throw new Error(
+        `Journal lane entry is not a regular file: ${relative(destination, path)}`,
+      );
+  };
+  if (moves.length)
+    for (const path of [sources, merges, ...moves.map((move) => move.to)])
+      requireDestination(path);
+  if (dryRun || !moves.length)
+    return {
+      lane: existsSync(destination) || (dryRun && moves.length) ? lane : null,
+      ...counted,
+      outcome: moves.length ? "would-move" : "nothing",
+    };
+  mkdirSync(dirname(destination), { recursive: true, mode: 0o700 });
+  ensureTemporaryRoot(destination, {
+    class: "closed-journal",
+    repository: main,
+    owner: { workOrder },
+  });
+  requireDestination(sources);
+  requireDestination(merges);
+  // The host keeps each session's transcript under the checkout it ran in,
+  // so the lane records where its journals came from before they move.
+  const origin = realpathSync(subject);
+  // A row goes on a line of its own, even after a torn last line.
+  const appendLine = (file, row) => {
+    let boundary = "";
+    const info = lstatSync(file, { throwIfNoEntry: false });
+    if (info?.size) {
+      const descriptor = openSync(file, "r");
+      try {
+        const last = Buffer.alloc(1);
+        readSync(descriptor, last, 0, 1, info.size - 1);
+        if (last[0] !== 0x0a) boundary = "\n";
+      } finally {
+        closeSync(descriptor);
+      }
+    }
+    appendFileSync(file, boundary + JSON.stringify(row) + "\n", {
+      mode: 0o600,
+    });
+  };
+  appendLine(sources, {
+    worktree: origin,
+    at: new Date().toISOString(),
+    ...counted,
+  });
+  // Each append into a log the lane already holds is recorded in merges.jsonl
+  // before it is published: the worktree, the log, where the appended bytes
+  // start, their length and digest, and how much of the source they bring the
+  // merge through, with that prefix's digest. A retry trusts its own row only
+  // while the log still holds those bytes there, no other worktree's append
+  // starts inside them, and the source still begins with that prefix. So an
+  // append that never published is made again, even if another worktree
+  // later appended the same bytes at that place, and one that did is never
+  // repeated, whatever other worktrees appended after it.
+  /** @type {Array<Record<string, any>>} */
+  const merged = [];
+  try {
+    for (const line of readFileSync(merges, "utf8").split("\n"))
+      try {
+        const row = JSON.parse(line);
+        if (row && typeof row === "object") merged.push(row);
+      } catch {
+        // A torn or foreign line proves nothing.
+      }
+  } catch (error) {
+    if (error.code !== "ENOENT") throw error;
+  }
+  /** @param {Record<string, any>} row @param {string} log */
+  const spans = (row, log) =>
+    row.log === log &&
+    [row.offset, row.length, row.through].every(Number.isSafeInteger) &&
+    row.offset >= 0 &&
+    row.length >= 0;
+  /** @param {string} log @param {Buffer} current @param {Buffer} incoming */
+  const mergedThrough = (log, current, incoming) => {
+    for (let index = merged.length - 1; index >= 0; index--) {
+      const row = merged[index];
+      if (row.worktree !== origin || !spans(row, log)) continue;
+      const { offset, length, through } = row;
+      if (through > incoming.length || offset + length > current.length)
+        continue;
+      // Another worktree's later append that starts inside these bytes shows
+      // this one never published them; an earlier one proves nothing.
+      if (
+        merged.some(
+          (other, later) =>
+            later > index &&
+            other.worktree !== origin &&
+            spans(other, log) &&
+            other.offset >= offset &&
+            other.offset < offset + length,
+        )
+      )
+        continue;
+      if (
+        digest(incoming.subarray(0, through)) === row.source &&
+        digest(current.subarray(offset, offset + length)) === row.span
+      )
+        return through;
+    }
+    return 0;
+  };
+  /** @param {string} log @param {number} offset @param {Buffer} bytes @param {Buffer} source */
+  const recordMerge = (log, offset, bytes, source) => {
+    const row = {
+      worktree: origin,
+      log,
+      offset,
+      length: bytes.length,
+      span: digest(bytes),
+      through: source.length,
+      source: digest(source),
+    };
+    appendLine(merges, row);
+    merged.push(row);
+  };
+  const relocate = (from, to) => {
+    try {
+      rename(from, to);
+    } catch (error) {
+      if (error.code !== "EXDEV") throw error;
+      // A rename cannot cross volumes: copy under a temporary name, publish
+      // the whole copy, then remove the source.
+      const partial = `${to}.partial-${randomUUID()}`;
+      try {
+        copyFile(from, partial, constants.COPYFILE_EXCL);
+        // A copied log is recorded as merged before it is published, so a
+        // source whose removal then fails is never appended twice.
+        if (to.endsWith(".jsonl")) {
+          const bytes = readFileSync(partial);
+          recordMerge(relative(destination, to), 0, bytes, bytes);
+        }
+        renameSync(partial, to);
+      } finally {
+        rmSync(partial, { force: true });
+      }
+      rmSync(from);
+    }
+  };
+  for (const { from, to } of moves)
+    try {
+      requireMaterialContainment(main, relative(main, to));
+      mkdirSync(dirname(to), { recursive: true, mode: 0o700 });
+      const existing = lstatSync(to, { throwIfNoEntry: false });
+      if (!existing) {
+        relocate(from, to);
+        continue;
+      }
+      if (!existing.isFile() || existing.isSymbolicLink())
+        throw new Error("the retained entry is not a regular file");
+      const incoming = readFileSync(from),
+        current = readFileSync(to);
+      if (to.endsWith(".jsonl")) {
+        // Only the source's bytes past what this worktree's earlier attempts
+        // merged are appended, so a retried close counts no row twice and
+        // drops none, even if the source has grown since; a log from another
+        // source is appended whole, even when its bytes equal the lane's.
+        const log = relative(destination, to);
+        const through = mergedThrough(log, current, incoming);
+        const rest = incoming.subarray(through);
+        if (rest.length) {
+          const separator = Buffer.from(
+            current.length && current.at(-1) !== 0x0a ? "\n" : "",
+          );
+          recordMerge(log, current.length + separator.length, rest, incoming);
+          replaceWhole(to, Buffer.concat([current, separator, rest]));
+        }
+        rmSync(from);
+      } else if (incoming.equals(current)) rmSync(from);
+      else {
+        let union = null;
+        if (basename(to) === "checks.json")
+          try {
+            const rows = [
+              ...JSON.parse(current.toString("utf8")),
+              ...JSON.parse(incoming.toString("utf8")),
+            ];
+            const seen = new Set();
+            union = rows.filter((row) => {
+              const key = JSON.stringify(row);
+              return !seen.has(key) && seen.add(key);
+            });
+          } catch {
+            union = null;
+          }
+        if (Array.isArray(union)) {
+          replaceWhole(to, JSON.stringify(union, null, 2) + "\n");
+          rmSync(from);
+        } else {
+          // The newer state takes the canonical name; the earlier bytes stay
+          // in the same lane under a name derived from them.
+          const prior = `${to}.prior-${digest(current).slice(0, 16)}`;
+          if (existsSync(prior)) rmSync(to);
+          else renameSync(to, prior);
+          relocate(from, to);
+        }
+      }
+    } catch (error) {
+      throw new Error(
+        `Journal retention stopped at ${relative(subject, from)}: ${error.code ?? error.message}; the worktree is retained and a retried close merges the rest`,
+      );
+    }
+  return { lane, ...counted, outcome: "moved" };
+}
 
 /** Discovery supplies candidates only; removal still verifies the full proof.
  * This lane survives a failed finish even if no close record was written. */

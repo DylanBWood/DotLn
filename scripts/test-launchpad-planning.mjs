@@ -33,6 +33,10 @@ import { markdownLinks } from "./docs-check.mjs";
 const repository = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const env = {
   ...process.env,
+  // plan start applies the owned-root prune; the export's prune stays within
+  // its own repository, as the gate scopes its product children, whatever
+  // scope this run inherits.
+  DOTLN_PRUNE_SCOPE: "repository",
   CODEX_THREAD_ID: "",
   COPILOT_AGENT_SESSION_ID: "",
   COPILOT_PROJECT_DIR: "",

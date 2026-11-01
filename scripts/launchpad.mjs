@@ -169,6 +169,7 @@ export const EMIT_CLOSURE = Object.freeze([
   "scripts/lib/paths.mjs",
   "scripts/lib/process-budget.mjs",
   "scripts/lib/release-tags.mjs",
+  "scripts/lib/retained-session.mjs",
   "scripts/lib/temporary-roots.mjs",
   "scripts/lib/terms.mjs",
   "scripts/lib/validation.mjs",

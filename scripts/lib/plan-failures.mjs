@@ -14,6 +14,7 @@ import {
 import { MANUAL_RECEIPTS, readOverrides } from "./plan-receipts.mjs";
 import { readEntropyControl, readReceipt } from "./entropy-review.mjs";
 import { checksPath, readGateChecks } from "./gate-evidence.mjs";
+import { readRetention, TEMPORARY_OWNER_FILE } from "./temporary-roots.mjs";
 import { bounded } from "./planning-followups.mjs";
 import { completedPhaseAttempts } from "./control-time.mjs";
 import { parseHeader } from "../work-orders.mjs";
@@ -747,6 +748,95 @@ const closeTiming = (timedCloses) => {
   };
 };
 
+/** The closed orders' journal lanes this reader covers. Release close moves an
+ * order's journals into docs/control/local/retained/<WO>/harness/ and the
+ * prune removes that lane after its class window, so one closed order's counts
+ * change once its lane is gone; the output names the lanes read, the window
+ * and the oldest lane's start. A lane's owner record is read as plain data,
+ * never through the identity check that may re-stamp it, because this command
+ * writes nothing. Absolute paths stay out of the output.
+ * @param {string} root @param {string} retained */
+function retainedJournalLanes(root, retained) {
+  const result = {
+    lanes: 0,
+    files: 0,
+    unreadable: 0,
+    orders: [],
+    windowHours: null,
+    oldestCreatedAt: null,
+    read: [],
+  };
+  try {
+    result.windowHours = readRetention(root)["closed-journal"];
+  } catch {
+    result.windowHours = "unknown";
+  }
+  if (!existsSync(retained)) return result;
+  const found = [];
+  for (const order of readdirSync(retained).sort()) {
+    if (!/^WO-\d{3}$/.test(order)) continue;
+    const directory = join(retained, order, "harness");
+    // An order directory this reader cannot inspect, or one pruned since it
+    // was listed, is counted unreadable; the other lanes still count.
+    let info;
+    try {
+      info = lstatSync(directory, { throwIfNoEntry: false });
+      if (info && !lstatSync(join(retained, order)).isDirectory()) info = null;
+    } catch {
+      result.unreadable++;
+      continue;
+    }
+    if (info === undefined) continue;
+    if (!info || !info.isDirectory() || info.isSymbolicLink()) {
+      result.unreadable++;
+      continue;
+    }
+    let createdAt = "unknown";
+    try {
+      createdAt = knownTime(
+        JSON.parse(readFileSync(join(directory, TEMPORARY_OWNER_FILE), "utf8"))
+          .createdAt,
+      );
+    } catch {
+      /* A lane without a readable marker still counts its journals. */
+    }
+    found.push({ directory, order, createdAt });
+  }
+  // Lanes are listed oldest first by creation, a lane whose creation time is
+  // unknown ordered as the oldest and ties by order, so a page's newest are
+  // the most recently closed orders whatever their numbers.
+  found.sort(
+    (a, b) =>
+      (a.createdAt === "unknown" ? "" : a.createdAt).localeCompare(
+        b.createdAt === "unknown" ? "" : b.createdAt,
+      ) || a.order.localeCompare(b.order),
+  );
+  for (const lane of found) {
+    result.lanes++;
+    result.orders.push(lane.order);
+    result.read.push({ directory: lane.directory, order: lane.order });
+    if (
+      lane.createdAt !== "unknown" &&
+      (!result.oldestCreatedAt || lane.createdAt < result.oldestCreatedAt)
+    )
+      result.oldestCreatedAt = lane.createdAt;
+  }
+  return result;
+}
+
+// A page names at most the sixteen most recently created lanes it read, so no
+// retention window can push its metadata past the page bound; the counts and
+// the export keep every lane.
+const PAGE_LANES = 16;
+const pageLanes = (lanes) =>
+  lanes.orders.length <= PAGE_LANES
+    ? lanes
+    : {
+        ...lanes,
+        orders: lanes.orders.slice(-PAGE_LANES),
+        ordersOmitted: lanes.orders.length - PAGE_LANES,
+      };
+
 /** Local observations are kept apart from immutable failed judgments. Page
  * metadata counts them; the export carries only these sanitized projections. */
 export function operationalFailures(root, control, includes) {
@@ -822,14 +912,31 @@ export function operationalFailures(root, control, includes) {
       }
     }
   let hostNotifications = 0;
-  const directory = dirname(checksPath(root));
-  if (existsSync(directory))
-    for (const name of readdirSync(directory).sort()) {
+  // This checkout's journals, then each closed order's journals that release
+  // close moved into its retained lane; a lane's rows count for its order.
+  const journalDirectories = [{ directory: dirname(checksPath(root)) }];
+  const retainedJournals = retainedJournalLanes(root, retained);
+  for (const lane of retainedJournals.read)
+    journalDirectories.push({ directory: lane.directory, order: lane.order });
+  for (const { directory, order: laneOrder } of journalDirectories) {
+    if (!existsSync(directory)) continue;
+    // A directory that cannot be listed, or a lane pruned since it was found,
+    // is counted as unreadable; the other journals still count.
+    let names;
+    try {
+      names = readdirSync(directory).sort();
+    } catch {
+      if (laneOrder) retainedJournals.unreadable++;
+      else unreadable.journals++;
+      continue;
+    }
+    for (const name of names) {
       if (!/^[a-f0-9]{64}\.jsonl$/.test(name)) continue;
       try {
         const file = join(directory, name);
         if (!lstatSync(file).isFile()) throw new Error();
-        journalRecords++;
+        if (laneOrder) retainedJournals.files++;
+        else journalRecords++;
         for (const line of readFileSync(file, "utf8")
           .split("\n")
           .filter(Boolean)) {
@@ -837,11 +944,12 @@ export function operationalFailures(root, control, includes) {
           try {
             row = JSON.parse(line);
           } catch {
-            unreadable.journals++;
+            if (laneOrder) retainedJournals.unreadable++;
+            else unreadable.journals++;
             continue;
           }
           const context = {
-            order: knownOrder(row.workOrder),
+            order: laneOrder ?? knownOrder(row.workOrder),
             phase: phases.has(row.phase) ? row.phase : "unknown",
             recordedAt: knownTime(row.recordedAt),
           };
@@ -888,11 +996,14 @@ export function operationalFailures(root, control, includes) {
           }
         }
       } catch {
-        unreadable.journals++;
+        if (laneOrder) retainedJournals.unreadable++;
+        else unreadable.journals++;
       }
     }
-  // Closed worktrees no longer carry their journals. Their filed meter row
-  // retains the same measurements without retaining operator capture text.
+  }
+  // A closed order's journals outlive its worktree only while its retained
+  // lane does. Its filed meter row keeps the same stops without operator
+  // capture text; a stop a journal row already counted is not counted again.
   for (const [order, entry] of control.orders) {
     if (entry.state.phase !== "closed") continue;
     const file = docPath(root, "evidence", order, "meta.json");
@@ -1053,6 +1164,7 @@ export function operationalFailures(root, control, includes) {
       journals: journalRecords,
       unreadable: unreadable.journals,
     },
+    retainedJournals: (({ read, ...lanes }) => lanes)(retainedJournals),
     interventions: {
       ...summary("intervention"),
       byClass: tally(interventions, "class", 14).by,
@@ -1084,9 +1196,15 @@ export function operationalFailures(root, control, includes) {
         return {
           source: "session journals and filed order snapshots",
           stops: activity.boundStops.stops.slice(0, 8),
+          // `--ceiling unlimited` is stored as null; the feed says so.
           boundAcceptances: activity.boundAcceptances
             .filter((entry) => includes({ recordedAt: entry.at }))
-            .slice(0, 8),
+            .slice(0, 8)
+            .map((entry) =>
+              entry.ceiling === null
+                ? { ...entry, ceiling: "unlimited" }
+                : entry,
+            ),
           afterStop: activity.afterStop.slice(0, 8),
           omittedStops: Math.max(0, activity.boundStops.count - 8),
         };
@@ -1167,6 +1285,7 @@ export function planningFailures(
         ([key]) => key !== "observations",
       ),
     ),
+    retainedJournals: pageLanes(chosen.operational.retainedJournals),
     items: chosen.items.length,
     rows: chosen.items.slice(offset, offset + ROWS_PER_PAGE),
     next: null,
@@ -1268,6 +1387,11 @@ export function failuresAtStart(root) {
       longPhases: chosen.operational.longPhases.count,
       repeatedGateRuns: chosen.operational.repeatedGateRuns.count,
       recentTracks: chosen.operational.recentTracks,
+      retainedJournals: {
+        lanes: chosen.operational.retainedJournals.lanes,
+        files: chosen.operational.retainedJournals.files,
+        windowHours: chosen.operational.retainedJournals.windowHours,
+      },
       localCoverage: "local; Codex dispatch-only; incomplete",
     });
   } catch (error) {
@@ -1278,17 +1402,32 @@ export function failuresAtStart(root) {
   } catch (error) {
     block.sinceEntropyReview = `unknown: ${oneLine(error.message)}`;
   }
-  // A reason is clipped so the block keeps its bound; the counts never are.
+  return fitStartBlock(block);
+}
+
+/** The start block's bound is measured on its compact JSON. Only the two reason
+ * strings are clipped; if the block still overruns, it keeps the command, its
+ * window and item count and says so on one line, because a count never keeps
+ * the planning branch shut (WO-172).
+ * @param {Record<string, unknown>} block @param {number} [bound] */
+export function fitStartBlock(block, bound = START_BYTES) {
+  const size = () => Buffer.byteLength(JSON.stringify(block));
   for (const key of ["unavailable", "sinceEntropyReview"])
     while (
-      Buffer.byteLength(encode(block)) > START_BYTES &&
+      size() > bound &&
       typeof block[key] === "string" &&
       block[key].length > 80
     )
       block[key] = `${block[key].slice(0, block[key].length - 40).trimEnd()}…`;
-  requireFailures(
-    Buffer.byteLength(encode(block)) <= START_BYTES,
-    "the plan start block exceeds 1 KB",
+  if (size() <= bound) return block;
+  const measured = size();
+  const kept = Object.fromEntries(
+    ["command", "since", "items"]
+      .filter((key) => key in block)
+      .map((key) => [key, block[key]]),
   );
-  return block;
+  for (const key of Object.keys(block)) delete block[key];
+  return Object.assign(block, kept, {
+    overrun: `the start block measured ${measured} bytes against ${bound}; read its counts with ${FAILURES_COMMAND}`,
+  });
 }

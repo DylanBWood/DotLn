@@ -1031,7 +1031,7 @@ test("export update preserves ownership, validates actions and keeps the exporte
 
   await t.test(
     "unmodified files update; edited and dropped edits keep prior hashes on repeated updates",
-    () => {
+    async () => {
       const target = instance("ownership");
       writeFileSync(join(target, modified), "local kit edit\n");
       writeFileSync(join(target, droppedModified), "local dropped edit\n");
@@ -1124,6 +1124,12 @@ test("export update preserves ownership, validates actions and keeps the exporte
         undefined,
         "instance-owned budgets need no record edit",
       );
+      // The updated kit's own runtime reads the closed-journal seed as a
+      // default where the instance's budgets file lacks the key.
+      const { readRetention } = await import(
+        pathToFileURL(join(older, "scripts/lib/temporary-roots.mjs")).href
+      );
+      assert.equal(readRetention(older)["closed-journal"], 720);
       t.diagnostic(result.stdout.trim());
     },
   );
@@ -2629,6 +2635,40 @@ const result=spawnSync(real,args,{stdio:'inherit'});process.exit(result.status??
   assert.equal(unsafePreview.outcome, "refused");
   assert.match(unsafePreview.reason, /scratch identity changed/);
   assert.ok(existsSync(owned.scratch));
+  // A reboot that renumbers the scratch's volume leaves its inode and its
+  // owner token as they were: the cleanup record and the scratch's own owner
+  // record carry the old device and are re-stamped, never refused. A preview
+  // re-stamps only the owner record.
+  const scratchMarker = join(owned.scratch, ".dotln-owner.json");
+  const renumber = () => {
+    writeFileSync(
+      cleanupRecord,
+      JSON.stringify({
+        ...JSON.parse(partialRecord),
+        device: owned.device + 1,
+      }),
+    );
+    const marker = JSON.parse(readFileSync(scratchMarker, "utf8"));
+    writeFileSync(
+      scratchMarker,
+      JSON.stringify({ ...marker, device: owned.device + 1 }) + "\n",
+    );
+  };
+  renumber();
+  const renumberedPreview = refresh(tag, head, true)[0];
+  assert.equal(
+    renumberedPreview.outcome,
+    "preview",
+    JSON.stringify(renumberedPreview),
+  );
+  assert.equal(
+    JSON.parse(readFileSync(cleanupRecord, "utf8")).device,
+    owned.device + 1,
+  );
+  assert.equal(
+    JSON.parse(readFileSync(scratchMarker, "utf8")).device,
+    owned.device,
+  );
   writeFileSync(cleanupRecord, partialRecord);
   const previewCleanup = refresh(tag, head, true)[0];
   assert.equal(previewCleanup.outcome, "preview");
@@ -2639,6 +2679,8 @@ const result=spawnSync(real,args,{stdio:'inherit'});process.exit(result.status??
   const retryTemp = join(root, "different-temporary-base");
   mkdirSync(retryTemp);
   fixtureEnv.TMPDIR = retryTemp;
+  // The recovery itself meets the renumbered device and finishes cleanup.
+  renumber();
   const recovered = measured("cleanup recovery", () => refresh(tag, head)[0]);
   fixtureEnv.TMPDIR = refreshTemp;
   assert.equal(recovered.outcome, "current", JSON.stringify(recovered));

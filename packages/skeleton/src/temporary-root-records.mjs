@@ -2,8 +2,10 @@
 // same records; a missing process observation always preserves the directory.
 import { createHash, randomUUID } from "node:crypto";
 import {
+  accessSync,
   appendFileSync,
   chmodSync,
+  constants,
   cpSync,
   existsSync,
   lstatSync,
@@ -14,22 +16,40 @@ import {
   realpathSync,
   renameSync,
   rmSync,
+  rmdirSync,
   writeFileSync,
 } from "node:fs";
 import { createRequire } from "node:module";
 import { AsyncLocalStorage } from "node:async_hooks";
 import { tmpdir } from "node:os";
-import { basename, dirname, isAbsolute, join, resolve, sep } from "node:path";
+import {
+  basename,
+  dirname,
+  isAbsolute,
+  join,
+  relative,
+  resolve,
+  sep,
+} from "node:path";
 import { fileURLToPath } from "node:url";
 
-/** @typedef {"gate-fixture"|"session-scratch"|"worker-capture"|"warm-fixture"|"coordination"} TemporaryClass */
-/** @typedef {{pid: number|null, birth: string|null, repository: string, gateId?: string, suite?: string, session?: string}} TemporaryOwner */
+/** @typedef {"gate-fixture"|"session-scratch"|"worker-capture"|"warm-fixture"|"coordination"|"closed-journal"} TemporaryClass */
+/** @typedef {{pid: number|null, birth: string|null, repository: string, gateId?: string, suite?: string, session?: string, workOrder?: string}} TemporaryOwner */
 /** @typedef {{schemaVersion: 1, token: string, class: TemporaryClass, owner: TemporaryOwner, createdAt: string, retentionHours: number|null, retentionOverride?: number|null, fixtureOwner?: {token: string, gateId: string, suite?: string}, device: number, inode: number, endedAt?: string, endSource?: "completion"|"owner-death-observation", outcome?: "passed"|"failed"|"abandoned", cacheKey?: string}} TemporaryRecord */
 /** @typedef {{class: TemporaryClass, owner?: Partial<TemporaryOwner>, repository?: string, retentionHours?: number|null, cacheKey?: string, adoptExisting?: boolean}} TemporaryOptions */
 /** @typedef {{pid: number, birth: string, ppid?: number, command?: string}} ProcessIdentity */
 /** @typedef {{files: number, bytes: number, directories: number}} Inventory */
 
 export const TEMPORARY_OWNER_FILE = ".dotln-owner.json";
+
+/** Where a removal moves a root before deleting it: beside it, so the rename
+ * stays on its volume, under a name its token derives. A root already there
+ * is its own place aside.
+ * @param {string} path @param {string} token */
+export const temporaryRemovalAside = (path, token) =>
+  basename(path) === `dotln-removing-${token}`
+    ? path
+    : join(dirname(path), `dotln-removing-${token}`);
 
 /** Call after initializing a synthetic Git repository. Keep cleanup metadata
  * out of its index without changing the fixture's tracked ignore rules.
@@ -71,7 +91,32 @@ export const DEFAULT_RETENTION = Object.freeze({
   "warm-fixture": 0,
   "legacy-backfill": 48,
   coordination: null,
+  // A closed order's session journals, states and gate index, kept in main's
+  // retained lane after release close removes its worktree.
+  "closed-journal": 720,
 });
+const TEMPORARY_CLASSES = [
+  "gate-fixture",
+  "session-scratch",
+  "worker-capture",
+  "warm-fixture",
+  "coordination",
+  "closed-journal",
+];
+
+/** The entries a closed-journal root may hold beside its owner record: the
+ * session journals and other append-only logs, the session states and their
+ * per-session sidecars, the gate index, the suite-success and deadline
+ * directories, and a superseded state kept when a retried close merged a newer
+ * one. Anything else is not the close's to remove.
+ * @param {string} name @param {boolean} directory */
+export const closedJournalEntry = (name, directory) =>
+  directory
+    ? ["suite-success", "deadlines"].includes(name)
+    : name.endsWith(".jsonl") ||
+      name === "checks.json" ||
+      /^[a-f0-9]{64}(?:\.[a-z][a-z-]*)?\.json$/u.test(name) ||
+      /\.prior-[a-f0-9]{16}$/u.test(name);
 /** @typedef {Record<keyof typeof DEFAULT_RETENTION, number|null>} Retention */
 const require = createRequire(import.meta.url);
 /** @type {AsyncLocalStorage<Partial<TemporaryOwner>>} */
@@ -125,6 +170,18 @@ export function validateRetention(input) {
   return { ...DEFAULT_RETENTION, .../** @type {Partial<Retention>} */ (value) };
 }
 
+/** Retention only paces cleanup. A budgets file written by a newer kit can name
+ * a class this runtime never creates, as a pinned hook snapshot meets after its
+ * worktree integrates main; this reader ignores such a key, while readBudgets
+ * still validates the whole file at every gate.
+ * @param {unknown} input */
+const knownRetention = (input) =>
+  input && typeof input === "object" && !Array.isArray(input)
+    ? Object.fromEntries(
+        Object.entries(input).filter(([key]) => key in DEFAULT_RETENTION),
+      )
+    : input;
+
 /** @param {string} repository */
 export function readRetention(repository) {
   // Product children receive the scheduler's policy, without reading its
@@ -135,7 +192,9 @@ export function readRetention(repository) {
     existsSync(repository) &&
     realpathSync(repository) === realpathSync(process.env.DOTLN_TEMP_REPOSITORY)
   )
-    return validateRetention(JSON.parse(process.env.DOTLN_TEMP_RETENTION));
+    return validateRetention(
+      knownRetention(JSON.parse(process.env.DOTLN_TEMP_RETENTION)),
+    );
   // This module also runs while the control plane is being loaded. Resolve
   // its one configured document path without synchronously importing that
   // partly initialized module graph.
@@ -164,7 +223,7 @@ export function readRetention(repository) {
     // refuses the broken file at every gate.
     if (!(error instanceof SyntaxError)) throw error;
   }
-  return validateRetention(retention);
+  return validateRetention(knownRetention(retention));
 }
 
 /** @param {string} [repository] @returns {ProcessIdentity[]|null} */
@@ -330,7 +389,13 @@ export function nestedTemporaryRoots(path) {
   return found;
 }
 
-/** @param {string} path @returns {TemporaryRecord|null} */
+/** A root is its token and its inode. The token in the marker inside the
+ * directory proves it is the one that was created, since fixture copies exclude
+ * the marker and seeds keep it out of Git, and the inode says it was not
+ * replaced on its volume. A volume's device number is assigned at mount and a
+ * reboot can renumber it, so a device that differs while the inode matches is
+ * re-stamped through writeTemporaryOwner, never refused for that alone.
+ * @param {string} path @returns {TemporaryRecord|null} */
 export function readTemporaryOwner(path) {
   const info = lstatSync(path, { throwIfNoEntry: false });
   if (!info || !info.isDirectory() || info.isSymbolicLink()) return null;
@@ -343,13 +408,7 @@ export function readTemporaryOwner(path) {
   if (
     record?.schemaVersion !== 1 ||
     !/^[a-f0-9-]{36}$/.test(record.token ?? "") ||
-    ![
-      "gate-fixture",
-      "session-scratch",
-      "worker-capture",
-      "warm-fixture",
-      "coordination",
-    ].includes(record.class) ||
+    !TEMPORARY_CLASSES.includes(record.class) ||
     !record.owner ||
     typeof record.owner.repository !== "string" ||
     !isAbsolute(record.owner.repository) ||
@@ -366,28 +425,146 @@ export function readTemporaryOwner(path) {
       record.retentionHours === null ||
       (Number.isFinite(record.retentionHours) && record.retentionHours >= 0)
     ) ||
-    info.dev !== record.device ||
+    !Number.isInteger(record.device) ||
     info.ino !== record.inode
   )
     throw new Error(
       "Temporary owner record is invalid or the directory was replaced",
     );
-  return record;
+  return info.dev === record.device
+    ? record
+    : writeTemporaryOwner(path, record);
 }
 
-/** @param {string} path @param {TemporaryRecord} record */
+/** Where a root inside a parent that a stopped removal left aside was
+ * registered: at the same place under the parent's registered path, read from
+ * the parent's own marker and ledger. Null when no such parent holds it.
+ * @param {string} path @returns {string|null} */
+function relocatedRegistration(path) {
+  for (let at = dirname(path); dirname(at) !== at; at = dirname(at)) {
+    const token = /^dotln-removing-([a-f0-9-]{36})$/u.exec(basename(at))?.[1];
+    if (!token) continue;
+    try {
+      const parent = JSON.parse(
+        readFileSync(join(at, TEMPORARY_OWNER_FILE), "utf8"),
+      );
+      if (parent?.token !== token) return null;
+      const first = readTemporarySegment(
+        join(temporaryLedgerPath(parent.owner.repository), `${token}.jsonl`),
+      )[0];
+      // The parent must be its own removal's aside, the directory its marker
+      // names; one moved anywhere else binds none of its nested roots.
+      return first?.token === token &&
+        typeof first.path === "string" &&
+        temporaryRemovalAside(first.path, token) === at &&
+        lstatSync(at).ino === parent.inode
+        ? join(first.path, relative(at, path))
+        : null;
+    } catch {
+      return null;
+    }
+  }
+  return null;
+}
+
+/** Whether the owner's ledger binds a root to its marker: the marker inside the
+ * directory carries the record's token, and the owner repository's ledger
+ * segment for that token registers this same path without a later removal.
+ * Returns the segment's rows when bound, or null.
+ * @param {string} path @param {TemporaryRecord} record */
+function ledgerBinding(path, record) {
+  const marker = join(path, TEMPORARY_OWNER_FILE);
+  const markerInfo = lstatSync(marker, { throwIfNoEntry: false });
+  let token;
+  try {
+    if (markerInfo?.isFile() && !markerInfo.isSymbolicLink())
+      token = JSON.parse(readFileSync(marker, "utf8")).token;
+  } catch {
+    token = undefined;
+  }
+  const repository = record.owner.repository;
+  const rows = existsSync(repository)
+    ? readTemporarySegment(
+        join(temporaryLedgerPath(repository), `${record.token}.jsonl`),
+      )
+    : [];
+  const registered = rows[0]?.path;
+  // A root a stopped removal left aside is bound where its token puts it.
+  const at =
+    typeof registered !== "string"
+      ? null
+      : basename(path) === `dotln-removing-${record.token}`
+        ? temporaryRemovalAside(registered, record.token)
+        : registered;
+  return token === record.token &&
+    rows[0]?.token === record.token &&
+    at !== null &&
+    ((existsSync(at) && realpathSync(at) === realpathSync(path)) ||
+      relocatedRegistration(path) === registered) &&
+    !rows.some(
+      (row) =>
+        row.path === registered && ["removed", "promoted"].includes(row.action),
+    )
+    ? rows
+    : null;
+}
+
+/** The ledger's word against a root's marker, for a judgment that may delete
+ * it. Where the owner repository exists, its ledger must register the
+ * marker's token at this path, so a record naming a repository that never
+ * registered it is refused; a root whose repository is gone, as after a closed
+ * worktree's removal, is judged by its marker alone.
+ * @param {string} path @param {TemporaryRecord} record @returns {string|null} */
+export function temporaryLedgerContradiction(path, record) {
+  if (!existsSync(record.owner.repository)) return null;
+  return ledgerBinding(path, record)
+    ? null
+    : "the owner's ledger does not register this root's token at this path";
+}
+
+/** Writes the record over the marker of the directory it names. The inode must
+ * still match. A differing device is a renumbered volume: it is re-stamped only
+ * under the ledger binding above and recorded on the root's ledger segment with
+ * both numbers. Returns the record as written.
+ * @param {string} path @param {TemporaryRecord} record @returns {TemporaryRecord} */
 export function writeTemporaryOwner(path, record) {
   requireTemporaryDirectory(path);
   const info = lstatSync(path);
-  if (info.dev !== record.device || info.ino !== record.inode)
+  if (info.ino !== record.inode)
     throw new Error("Temporary directory identity changed");
+  const renumbered = info.dev !== record.device;
+  const written = renumbered ? { ...record, device: info.dev } : record;
+  if (renumbered) {
+    const rows = ledgerBinding(path, record);
+    if (!rows)
+      throw new Error(
+        "Temporary root device changed and its owner's ledger does not register this token at this path; retained",
+      );
+    // The transition is ledgered before the marker changes, so a failed
+    // append leaves the old number to be re-stamped, and recorded, at the
+    // next read. A retry after a failed marker write finds the same pair as
+    // the latest transition and records nothing more; a later reboot that
+    // repeats an earlier pair is a new transition and is recorded.
+    const latest = [...rows]
+      .reverse()
+      .find((row) => row.action === "device-renumbered");
+    if (
+      latest?.recordedDevice !== record.device ||
+      latest?.observedDevice !== info.dev
+    )
+      ledger(written, path, "device-renumbered", {
+        recordedDevice: record.device,
+        observedDevice: info.dev,
+      });
+  }
   const file = join(path, TEMPORARY_OWNER_FILE);
   const partial = `${file}.${randomUUID()}.partial`;
-  writeFileSync(partial, JSON.stringify(record) + "\n", {
+  writeFileSync(partial, JSON.stringify(written) + "\n", {
     flag: "wx",
     mode: 0o600,
   });
   renameSync(partial, file);
+  return written;
 }
 
 /** Runtime scratch created inside a gate fixture belongs to that fixture's
@@ -596,13 +773,101 @@ export function removeTemporaryRoot(path, token) {
   const record = readTemporaryOwner(path);
   if (!record || (token !== undefined && token !== record.token))
     throw new Error("Temporary root ownership changed; retained");
-  makeTemporaryWritable(path);
-  const measured = temporaryInventory(path);
-  // Measure before deletion; a failed removal keeps its attempted inventory
-  // and never claims a successful deletion.
-  ledger(record, path, "removing", measured);
-  rmSync(path, { recursive: true, force: false });
-  ledger(record, path, "removed", measured);
+  return removeVerifiedTemporaryRoot(path, record);
+}
+
+/** The path a root's ledger registered, or null where its ledger is gone.
+ * @param {TemporaryRecord} record @returns {string|null} */
+const registeredPathOf = (record) => {
+  if (!existsSync(record.owner.repository)) return null;
+  try {
+    const first = readTemporarySegment(
+      join(
+        temporaryLedgerPath(record.owner.repository),
+        `${record.token}.jsonl`,
+      ),
+    )[0];
+    return first?.token === record.token && typeof first.path === "string"
+      ? first.path
+      : null;
+  } catch {
+    return null;
+  }
+};
+
+/** @param {string} path @returns {unknown} */
+const markerToken = (path) => {
+  try {
+    const marker = join(path, TEMPORARY_OWNER_FILE);
+    const info = lstatSync(marker);
+    return info.isFile() && !info.isSymbolicLink()
+      ? JSON.parse(readFileSync(marker, "utf8")).token
+      : null;
+  } catch {
+    return null;
+  }
+};
+
+/** The act of a removal whose identity was read as `record`. Whatever holds
+ * the path when the act starts is moved aside by one atomic rename, so what is
+ * deleted is never chosen by a path a replacement could take after the
+ * identity was read: the moved directory must carry the record's inode and its
+ * marker the record's token, or it goes back to its path while that is still
+ * free and nothing is deleted. A parent that refuses the rename refuses before
+ * anything changes; a root already aside shows the same before any of it is
+ * deleted. Nothing inside is touched before the root is verified: owned roots
+ * nested in it go with it, and one that a stop leaves in its aside is bound
+ * through its parent's registration (ledgerBinding). The place aside is
+ * recorded before the rename, so their segments wait for it
+ * (retireTemporaryLedger). Any failure after the rename
+ * puts the root back at its path, and its owner record goes last, so a removal
+ * that stops leaves a root its marker still names: at its path, or, stopped by
+ * the process ending, aside where its ledger finds it (registeredTemporaryRoots).
+ * @param {string} path @param {TemporaryRecord} record */
+export function removeVerifiedTemporaryRoot(path, record) {
+  const aside = temporaryRemovalAside(path, record.token);
+  // A root finished from its aside is recorded under the path its ledger
+  // registered, so that registration ends with it.
+  const registered = aside === path ? (registeredPathOf(record) ?? path) : path;
+  if (aside !== path) {
+    ledger(record, registered, "moving", { aside });
+    renameSync(path, aside);
+  } else accessSync(dirname(path), constants.W_OK | constants.X_OK);
+  const restore = () => {
+    if (aside === path || lstatSync(path, { throwIfNoEntry: false })) return;
+    try {
+      renameSync(aside, path);
+    } catch {
+      // It stays aside, named by its token, with its contents intact.
+    }
+  };
+  const info = lstatSync(aside);
+  if (
+    !info.isDirectory() ||
+    info.isSymbolicLink() ||
+    info.ino !== record.inode ||
+    markerToken(aside) !== record.token
+  ) {
+    restore();
+    throw new Error("Temporary root ownership changed; retained");
+  }
+  let measured;
+  try {
+    makeTemporaryWritable(aside);
+    measured = temporaryInventory(aside);
+    // Measure before deletion; a failed removal keeps its attempted
+    // inventory and never claims a successful deletion.
+    ledger(record, registered, "removing", { ...measured, aside });
+    for (const name of readdirSync(aside))
+      if (name !== TEMPORARY_OWNER_FILE)
+        rmSync(join(aside, name), { recursive: true, force: false });
+    rmSync(join(aside, TEMPORARY_OWNER_FILE));
+    rmdirSync(aside);
+  } catch (error) {
+    restore();
+    throw error;
+  }
+  ledger(record, registered, "removed", measured);
   return measured;
 }
 
@@ -676,6 +941,17 @@ const readTemporarySegment = (file) => {
   }
 };
 
+/** Only an observed absence retires a segment; a path this process cannot
+ * inspect may still hold its root.
+ * @param {string} path */
+const observedAbsent = (path) => {
+  try {
+    return !lstatSync(path, { throwIfNoEntry: false });
+  } catch {
+    return false;
+  }
+};
+
 /** Metrics are durable before a gate retires its completed segments. Other
  * cleanup retires only absent roots with a proven dead owner; live segments
  * are append-only and are never rewritten by a concurrent census.
@@ -684,11 +960,27 @@ export function retireTemporaryLedger(repository, gateId) {
   const directory = temporaryLedgerPath(repository);
   if (!existsSync(directory)) return;
   const table = temporaryProcessTable(repository);
-  for (const name of readdirSync(directory).filter((name) =>
-    /^[a-f0-9-]{36}\.jsonl$/.test(name),
-  )) {
-    const file = join(directory, name);
-    const rows = readTemporarySegment(file);
+  const segments = readdirSync(directory)
+    .filter((name) => /^[a-f0-9-]{36}\.jsonl$/.test(name))
+    .map((name) => {
+      const file = join(directory, name);
+      return { file, rows: readTemporarySegment(file) };
+    });
+  // A parent whose removal moved it aside and stopped still holds the roots
+  // nested in it; their segments wait while it is there.
+  const asides = segments.flatMap(({ rows }) => {
+    /** @type {Record<string, any> | null} */
+    let pending = null;
+    for (const row of rows)
+      if (
+        ["moving", "removing"].includes(row.action) &&
+        typeof row.aside === "string"
+      )
+        pending = row;
+      else if (["removed", "promoted"].includes(row.action)) pending = null;
+    return pending && !observedAbsent(pending.aside) ? [pending] : [];
+  });
+  for (const { file, rows } of segments) {
     const first = rows[0];
     if (!first || (gateId && first.owner?.gateId !== gateId)) continue;
     if (!gateId && first.owner?.gateId) continue; // Only the gate may retire unfinished metrics.
@@ -696,8 +988,16 @@ export function retireTemporaryLedger(repository, gateId) {
       (row) =>
         row.path === first.path && ["removed", "promoted"].includes(row.action),
     );
+    const held = asides.some(
+      (parent) =>
+        first.path.startsWith(parent.path + sep) &&
+        !observedAbsent(join(parent.aside, relative(parent.path, first.path))),
+    );
     if (
-      (!existsSync(first.path) || terminal) &&
+      !held &&
+      ((observedAbsent(first.path) &&
+        observedAbsent(temporaryRemovalAside(first.path, first.token))) ||
+        terminal) &&
       (first.owner?.pid === process.pid ||
         ownerAlive({ owner: first.owner }, table) === false)
     )
@@ -717,7 +1017,13 @@ export function registeredTemporaryRoots(repository) {
     )
       roots.delete(row.token);
   }
-  return [...roots.values()].filter((row) => existsSync(row.path));
+  // A root a stopped removal left aside is listed there, even when its path
+  // now holds another root.
+  return [...roots.values()].flatMap((row) => {
+    const aside = temporaryRemovalAside(row.path, row.token);
+    if (existsSync(aside)) return [{ ...row, path: aside }];
+    return existsSync(row.path) ? [row] : [];
+  });
 }
 
 /** File inventories count each deleted incarnation and remaining entries once;

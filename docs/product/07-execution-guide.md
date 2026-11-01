@@ -1057,9 +1057,11 @@ sentence nothing checks is a documented condition, not a gate
 ## Operator recovery controls
 
 Cleanup is owned by the workflow, not handed to the operator. `worktree start`
-creates the worktree without running a prune census. `plan start` and kit update
-preview print a read-only census by kind, class, count and candidate bytes.
-`harness prune --apply` remains the explicit recovery route, with fresh
+creates the worktree without running a prune census. `plan start` applies the
+owned-resource prune and prints its report by kind, class, count and bytes, or
+the read-only census while a gate holds the host lanes; kit update preview
+prints a read-only census. `harness prune --apply` remains the explicit
+recovery route, with fresh
 ownership checks under the host lane lock; a live
 gate is named and retained. A host denial is recorded and cleanup stays on the
 release close's retry path. No command changes host permissions to gain access.
@@ -1475,6 +1477,13 @@ Preconditions and inputs:
    same-order lifecycle event with its delay; use that data to judge whether an
    intervention helped. `plan start` counts local closes, denials, interventions,
    long phases, repeated gates and eight recent closes' tracks (WO-178).
+   Denials, interventions and stops include each closed order's journals while
+   its retained lane lasts, counted for that order; `retainedJournals` names the
+   lanes read, their window and the oldest lane's start, so one order's counts
+   change once its lane is pruned. The start block's 1 KB bound is measured on
+   compact JSON, and an overrun prints one line naming the command instead of
+   refusing the branch; an acceptance recorded with `--ceiling unlimited` reads
+   `unlimited` (WO-237).
    `plan start` counts numeric reopening conditions; `npm run plan -- conditions`
    lists them without refusing entry (`--slow` for gate timings, WO-175).
    Read the deferred register rows whose reopening condition opens with an
@@ -2074,11 +2083,39 @@ After worktree and branch cleanup, release close runs the owned-resource prune
 with close scope: the closing order's captured owned roots, main's retained
 lane and this checkout's registered temporary roots. It does not enumerate the
 system temporary directory's unrelated gate fixtures. An explicit
-`harness prune` and the read-only census `plan start` prints still walk them,
-but only `harness prune --apply` removes expired roots outside a close's scope.
+`harness prune` and `plan start` still walk them. `plan start` applies that
+prune, so expired roots outside every close's scope leave at the next planning
+pass; while a gate holds the host lanes it prints the read-only census instead.
+`harness prune --apply` removes them on demand.
 Kit update preview's census is limited to its repository, and session
 completion removes only its own scratch and dead captures
-([decision](../evidence/WO-239/decisions.md#wo-239-d020--resolve-the-integrated-reviews-and-state-the-global-walk-as-built)).
+([decision](../evidence/WO-239/decisions.md#wo-239-d020--resolve-the-integrated-reviews-and-state-the-global-walk-as-built),
+[home of the routine prune](../evidence/WO-237/decisions.md#wo-237-d005--plan-start-is-where-expired-roots-outside-every-close-leave)).
+
+Before release close removes an order's worktree, what its sessions recorded
+moves into main's retained lane for the order,
+`docs/control/local/retained/<WO>/harness/`: the session journals and other
+`*.jsonl` logs, the session `*.json` states with their per-session sidecars,
+the gate index `checks.json`, and `suite-success/` and `deadlines/`. Gate
+captures (`runner/`, `check-history/`, `check-output/`), `targets/`,
+`excludes/`, the writer, the started markers and every link stay and fall with
+the worktree or their own classes. The lane is ignored local material, never
+committed, and an owned root of class `closed-journal` whose window the operator
+owns in the budgets file's `retention` (seed 720 hours; `null` keeps; `0`
+removes at the next prune). The prune judges it as it judges every owned root,
+names its class in the report, and keeps the order's retained lane while it
+remains; the lane admits only the entries a close moves into it. The move runs
+under the writer lock after every other removal check, and the cleanup row and
+`release-close.json` record `journals: { lane, files, bytes, outcome }`. A
+rename across volumes copies and then removes; any other failure is the close's
+cleanup blocker: the worktree stays, the row records `journals.outcome: failed`
+with the error and the retry command, and the published release is untouched.
+A retried close merges into the existing lane: a log appends, the gate index
+takes the union of its rows, an identical file is dropped and a differing state
+keeps its earlier bytes beside the newer one. `plan failures` counts a closed
+order's denials, interventions and stops from its lane, and
+`harness usage <session>` reads a closed session there, naming the lane as its
+source ([decision](../evidence/WO-237/decisions.md#wo-237-d001--a-closed-orders-journals-move-into-its-retained-lane)).
 The close's dry run previews the same candidates within its scope. `release-close.json` retains
 `prune.candidates`, `removed`, `retained` and `blockers`. A refusal is a cleanup
 blocker with the same close retry command. Global apply shares the host lane
@@ -3847,9 +3884,26 @@ Within the same gate, a child's explicitly assigned suite keeps its own
 outcome at completion and later prune; a passed parent cannot shorten a failed
 child's diagnosis window.
 Ownership markers describe one physical directory: fixture copies exclude
-them, and fixture seeds keep them out of Git, clones and archives. An invalid
-nested marker retains its tree and fails cleanup rather than qualifying a
-passing row. Application scratch keeps
+them, and fixture seeds keep them out of Git, clones and archives. A root is
+the token in its marker and its inode, and the prune refuses a root whose
+owner keeps a ledger that does not register that token at that path. A device
+number assigned at mount can change across a reboot; when the inode matches
+and the owner's ledger registers that token at that path, the transition is
+ledgered as `device-renumbered` with both numbers and the marker re-stamped
+with the current number, so the root is judged by its class and window. A
+different inode, a token the ledger does not register there, or a record naming
+a repository that holds no such registration is still refused, and nothing is
+deleted. A removal deletes only the directory it verified: one rename moves
+the root aside within its parent, and only a moved directory carrying the
+record's inode and token is deleted. A replacement goes back to its path while
+that is free, and a parent that refuses the rename refuses before anything
+inside is deleted. Nothing inside a root is touched until it is verified:
+owned roots nested in it go with it, and the owner record is deleted last. A
+root that a stopped removal left aside as
+`dotln-removing-<token>` is listed there and finished by the next prune
+([decision](../evidence/WO-237/decisions.md#wo-237-d004--a-root-is-its-token-and-its-inode)).
+An invalid nested marker retains its tree and fails cleanup rather than
+qualifying a passing row. Application scratch keeps
 its explicit operation cleanup; the containing fixture provides fallback cleanup
 for leftovers. Root-token ledger segments are
 retired independently after their gate metrics are durable, so cleanup does
@@ -3870,10 +3924,16 @@ fresh offline `npm ci`. A cold cache adds one installation; a warm run adds none
 A changed hash makes the old cache eligible only after ownership checks.
 `docs/control/budgets.json` and the kit template seed retention hours: passed
 fixtures 0, failed fixtures 24, orphan session scratch 24, worker captures 1,
-legacy backfill 48, warm fixtures 0 after stale, coordination indefinite.
+legacy backfill 48, warm fixtures 0 after stale, coordination indefinite,
+closed orders' journals (`closed-journal`) 720.
 Each key admits `null` to preserve independently owned roots in that class.
+A runtime ignores a key its kit does not define, as a pinned hook snapshot
+meets after its worktree integrates a newer budgets file; the gate's budget
+validation still refuses it.
 When an orphan's actual end was not observed, apply records the first proven
-dead-owner observation and starts its full window then; preview writes nothing.
+dead-owner observation and starts its full window then; preview writes nothing,
+except that reading a root whose volume a reboot renumbered re-stamps that
+root's own owner record and ledger.
 Session completion explicitly tears down only its own scratch and dead captures
 after writer release and observed background work. An ordinary Claude Stop is
 a turn end: a live or unknown host keeps its scratch until the dispatch's

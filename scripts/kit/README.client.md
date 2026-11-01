@@ -706,7 +706,9 @@ The receipt filename is reserved only by the actual update, so its timestamp
 can differ from an earlier preview.
 
 A preview writes nothing to the destination, its pending manifest, core's
-sibling receipts or core's sibling registry. It is not a receipt and does not
+sibling receipts or core's sibling registry, except that its census re-stamps
+a temporary root whose volume a reboot renumbered, in that root's own owner
+record and ledger. It is not a receipt and does not
 advance the registry. The from-core form still builds core's pinned runtime
 to compute the incoming kit. Review the plan before running the update; run
 the preview again if either input changed.
@@ -873,10 +875,23 @@ the already-migrated state; keep the output with your review of the update.
 Release close prunes owned leftovers after its worktree cleanup, scoped to
 the closing order's captured roots, main's retained lane and this checkout's
 registered temporary roots. It does not walk unrelated system temporary roots.
-An explicit `harness prune` and the read-only census `plan start` prints still
-walk them, but only `harness prune --apply` removes expired roots outside a
-close's scope; the update preview's census is limited to this repository. The close
-receipt records candidates, removals, retentions and blockers. Its seven timed
+An explicit `harness prune` and `plan start` still walk them. `plan start`
+applies that prune, so expired roots outside every close's scope leave at the
+next planning pass; while a gate holds the host lanes it prints the read-only
+census instead, and `harness prune --apply` removes them on demand. The update
+preview's census is limited to this repository. The close
+receipt records candidates, removals, retentions and blockers.
+Before removing an order's worktree, the close moves what its sessions
+recorded, the session journals and other `*.jsonl` logs, session `*.json`
+states, the gate index `checks.json`, `suite-success/` and `deadlines/`, into
+`docs/control/local/retained/<WO>/harness/`. That lane is ignored local
+material, never committed, of the `closed-journal` class; gate captures,
+targets, excludes, the writer, started markers and links stay with the
+worktree. Its cleanup row records `journals: { lane, files, bytes, outcome }`.
+A failed move keeps the worktree as a cleanup blocker with the retry command,
+and a retried close merges into the lane. `plan failures` counts a closed
+order's rows from its lane, and `harness usage <session>` reads a closed
+session there. Its seven timed
 steps cover prerequisites, runtime, worktree removal, publication, starter
 refresh, prune and recording; `plan failures` reports the latest eight timed
 attempts' median total and slowest step. Retained-material output and removal
@@ -893,11 +908,17 @@ scratch and dead captures after writer release and background work ends. Live
 or uncertain owners and another worktree's lanes or writer remain protected.
 An ordinary Claude Stop ends a turn; scratch survives until the session or its
 dispatch has an observed end. Physical ownership markers are excluded from
-fixture copies and seed commits. Invalid nested metadata retains the tree and
+fixture copies and seed commits. A marker names its directory by token and
+inode: when a reboot renumbers a volume, a root whose owner's ledger registers
+that token at that path is re-stamped and ledgered as `device-renumbered`
+rather than refused. A removal first moves the root aside within its parent
+and deletes it only when the moved directory still carries that token and
+inode; one a stop left aside as `dotln-removing-<token>` is finished by the
+next prune. Invalid nested metadata retains the tree and
 reports a cleanup blocker.
 Global apply shares the host lane lock; no daemon or host-memory exception is
 installed. `worktree start` creates the worktree without running a prune census;
-`plan start` and update preview print the census.
+`plan start` applies the prune and update preview prints the census.
 Nested suite commands retain their outer gate's cleanup ownership across copied
 repositories. Creator teardown waits only for a gate that can read its ledger.
 
@@ -944,8 +965,11 @@ declared units.
 Read before upgrading: the optional `retention` object in
 `docs/control/budgets.json` takes hours for `gate-fixture-passed` (0),
 `gate-fixture-failed` (24), `session-scratch` (24), `worker-capture` (1),
-`warm-fixture` (0 after stale), `legacy-backfill` (48) and `coordination` (null).
+`warm-fixture` (0 after stale), `legacy-backfill` (48), `coordination` (null)
+and `closed-journal` (720, a closed order's journal lane; the window is this
+instance's to change, and 0 removes lanes at the next prune).
 Every key admits null, which preserves independently owned roots in that class.
+A runtime ignores a key its kit does not define; the gate still refuses it.
 Runtime directories inside gate fixtures share the fixture's lifetime; an
 explicit per-root null still protects nested material. Application scratch uses
 its own operation cleanup, with fixture ownership as the fallback for leftovers.

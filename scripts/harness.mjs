@@ -4,9 +4,15 @@ import {
   dispatchStanding,
   dispatchStandingLine,
 } from "./lib/dispatch-bound.mjs";
-import { mkdirSync, readFileSync, realpathSync } from "node:fs";
-import { resolve } from "node:path";
-import { usageObservation } from "../packages/skeleton/dist/src/usage-observation.mjs";
+import { existsSync, mkdirSync, readFileSync, realpathSync } from "node:fs";
+import { join, relative, resolve } from "node:path";
+import { dispatchJournalDirectory } from "../packages/skeleton/dist/src/dispatch-journal.mjs";
+import {
+  usageObservation,
+  usageSessionKey,
+} from "../packages/skeleton/dist/src/usage-observation.mjs";
+import { subagentUsage } from "../packages/skeleton/dist/src/subagent-budget.js";
+import { readRetainedSession } from "./lib/retained-session.mjs";
 import {
   emitHarness,
   checkHarness,
@@ -16,7 +22,7 @@ import {
   readBuildOverlay,
   harnessInstallation,
 } from "./lib/harness.mjs";
-import { findLaunchpad } from "./lib/config.mjs";
+import { docPath, findLaunchpad } from "./lib/config.mjs";
 import { judgeRunningNode } from "./lib/node-engines.mjs";
 import {
   activeGateRuns,
@@ -141,27 +147,64 @@ try {
   } else if (action === "usage") {
     if (args.length !== 1) throw new Error("usage: harness usage <session>");
     let observation;
-    try {
-      observation = measureHarnessUsage(root, args[0]);
-    } catch (error) {
-      if (error.message !== "Begin the harness session before measuring usage")
-        throw error;
-      process.stderr.write(
-        "DotLn advisory: process cost unknown; cause no-session.\n",
-      );
-      observation = { ...usageObservation([]), cause: "no-session" };
-    }
+    // A closed order's session: release close moved its journal and state
+    // into the order's retained lane. Without local state here the lane
+    // answers, named as the source while the counters keep their own.
+    const retained = existsSync(
+      join(dispatchJournalDirectory(root), `${usageSessionKey(args[0])}.json`),
+    )
+      ? null
+      : readRetainedSession(
+          docPath(root, "control", "local/retained"),
+          args[0],
+        );
+    if (retained) {
+      const lane = relative(root, retained.directory);
+      observation = {
+        ...retained.observation,
+        source: `retained-lane:${lane}`,
+        counterSource: retained.observation.source,
+        retained: {
+          workOrder: retained.order,
+          lane,
+          role: retained.role,
+          startedAt: retained.startedAt,
+        },
+        subagents: subagentUsage(
+          root,
+          retained.directory,
+          usageSessionKey(args[0]),
+          true,
+        ),
+      };
+    } else
+      try {
+        observation = measureHarnessUsage(root, args[0]);
+      } catch (error) {
+        if (
+          error.message !== "Begin the harness session before measuring usage"
+        )
+          throw error;
+        process.stderr.write(
+          "DotLn advisory: process cost unknown; cause no-session.\n",
+        );
+        observation = { ...usageObservation([]), cause: "no-session" };
+      }
     let standing, standingLine;
-    try {
-      standing = dispatchStanding(root, { session: args[0] });
-      standingLine = dispatchStandingLine(standing);
-    } catch (error) {
-      // Consumption evidence can be unreadable while usage remains observable.
-      // Keep the readback available without inventing a fresh or unset bound.
-      const cause = error instanceof Error ? error.message : String(error);
-      standing = { state: "unavailable", cause };
-      standingLine = `dispatch standing: unavailable (${cause})`;
-    }
+    if (retained) {
+      standing = { state: "closed", workOrder: retained.order };
+      standingLine = `dispatch standing: closed (${retained.order}; read from its retained lane)`;
+    } else
+      try {
+        standing = dispatchStanding(root, { session: args[0] });
+        standingLine = dispatchStandingLine(standing);
+      } catch (error) {
+        // Consumption evidence can be unreadable while usage remains observable.
+        // Keep the readback available without inventing a fresh or unset bound.
+        const cause = error instanceof Error ? error.message : String(error);
+        standing = { state: "unavailable", cause };
+        standingLine = `dispatch standing: unavailable (${cause})`;
+      }
     console.log(
       JSON.stringify({
         ...observation,

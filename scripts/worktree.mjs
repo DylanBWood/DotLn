@@ -67,8 +67,10 @@ import { carryPendingOverrides } from "./lib/pending-overrides.mjs";
 import { readControl } from "./lib/control-store.mjs";
 import { constellation, prepareBeaconDisposal } from "./lib/beacons.mjs";
 import {
+  journalLane,
   recordWorktreeRemoval,
   restoreOwnedDirectoryWrites,
+  retainWorktreeJournals,
 } from "./lib/worktree-removal.mjs";
 import { contributionSignoffRules } from "./lib/contributions.mjs";
 import {
@@ -313,6 +315,33 @@ const removePreservedWorktree = (
     throw error;
   }
 };
+// A closing worktree's session journals, states and gate index move into
+// main's retained lane after every other removal check and just before the
+// worktree goes. Each outcome prints one line that the release close copies
+// onto the worktree's cleanup row; a failed move keeps the worktree.
+const retainJournals = (
+  mainPath,
+  subject,
+  workOrderId,
+  { dryRun = false } = {},
+) => {
+  let result;
+  subject = realpathSync(subject);
+  try {
+    result = retainWorktreeJournals(mainPath, subject, workOrderId, {
+      dryRun,
+    });
+  } catch (error) {
+    process.stdout.write(
+      `Journal retention: ${JSON.stringify({ subject, lane: journalLane(mainPath, workOrderId), outcome: "failed", error: error.message })}\n`,
+    );
+    throw error;
+  }
+  process.stdout.write(
+    `Journal retention: ${JSON.stringify({ subject, ...result })}\n`,
+  );
+  return result;
+};
 // Derived worktrees: measurement siblings and temporary subjects that name the
 // closing order (WO-044). A detached derivative that is clean and idle has its
 // non-disposable control and intake material preserved like the subject's and
@@ -428,6 +457,7 @@ const reconcileDerivedWorktrees = (
           verifyPreservedMaterial(path, mainPath, preserved);
           refuseSubmoduleWorktree(path);
           removeScratch(path, preserved);
+          retainJournals(mainPath, path, workOrderId);
           const restoreBeaconPermissions = prepareBeaconDisposal(path);
           try {
             removePreservedWorktree(mainPath, path, locked, preserved);
@@ -440,7 +470,15 @@ const reconcileDerivedWorktrees = (
         lines.push(`Derived worktree ${path}: kept (${error.message})`);
         continue;
       }
-    }
+    } else
+      try {
+        retainJournals(mainPath, path, workOrderId, { dryRun: true });
+      } catch (error) {
+        // The preview printed the failed retention line; the close would
+        // keep this worktree, so the preview does too.
+        lines.push(`Derived worktree ${path}: kept (${error.message})`);
+        continue;
+      }
     lines.push(
       `Derived worktree ${path}: ${dryRun ? "would remove" : "removed"} (detached, clean, idle; ${receipt.files.length} preserved files, disposable material only)`,
     );
@@ -1411,8 +1449,10 @@ const main = async () => {
         overrideWorktree: subject,
       }))
         process.stdout.write(`${line}\n`);
+      // A preview whose journal retention fails fails as the close would.
+      retainJournals(mainPath, subject, workOrderId, { dryRun: true });
       process.stdout.write(
-        `Dry run: would fetch main, verify merge and closed state, preserve intake and retained control state, and remove merged ${branch}. No changes made.\n`,
+        `Dry run: would fetch main, verify merge and closed state, preserve intake and retained control state, move session journals into the retained lane, and remove merged ${branch}. No changes made.\n`,
       );
       return;
     }
@@ -1483,6 +1523,7 @@ const main = async () => {
       verifyPreservedMaterial(subject, mainPath, reconciliation);
       refuseSubmoduleWorktree(subject);
       removeScratch(subject, reconciliation);
+      retainJournals(mainPath, subject, workOrderId);
       const restoreBeaconPermissions = prepareBeaconDisposal(subject);
       try {
         removePreservedWorktree(mainPath, subject, locked, reconciliation);

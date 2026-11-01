@@ -1,5 +1,6 @@
 import {
   createScratchRoot,
+  readTemporaryOwner,
   removeTemporaryPath as rmSync,
 } from "./temporary-roots.mjs";
 import { spawnSync } from "node:child_process";
@@ -420,10 +421,24 @@ const removeOwnedCleanup = (
     stat &&
     (!stat.isDirectory() ||
       realpathSync(scratch) !== scratch ||
-      stat.dev !== device ||
       stat.ino !== inode)
   )
     throw new Error("refresh cleanup scratch identity changed");
+  // A reboot can renumber the volume under an unchanged scratch directory. Its
+  // owner record re-stamps the device as every owned root's does, proven by
+  // its token and its ledger, and this cleanup record follows; without that
+  // proof the scratch is refused as before.
+  if (stat && stat.dev !== device) {
+    let owner = null;
+    try {
+      owner = readTemporaryOwner(scratch);
+    } catch {
+      owner = null;
+    }
+    if (!owner || owner.inode !== inode || owner.device !== stat.dev)
+      throw new Error("refresh cleanup scratch identity changed");
+    if (!dryRun) saveCleanup(main, sibling, { ...record, device: stat.dev });
+  }
   const registeredTrees = parseWorktrees(checkout);
   const registered = registeredTrees.find((item) => item.worktree === worktree);
   // A commit can succeed before its resulting hash is journaled. The tree
@@ -515,7 +530,7 @@ const refreshOne = async ({ main, head, tag, dryRun }, sibling) => {
     if (dryRun && cleanupPending) {
       row.outcome = "preview";
       row.reason =
-        "would finish pending disposable refresh cleanup; preview writes nothing";
+        "would finish pending disposable refresh cleanup; preview writes nothing beyond re-stamping a renumbered scratch's own owner record and ledger";
       return row;
     }
     const mainHead = git(main, ["rev-parse", "HEAD"]);

@@ -58,6 +58,8 @@ import {
 import {
   makeTemporaryWritable,
   retireTemporaryLedger,
+  temporaryRemovalAside,
+  TEMPORARY_OWNER_FILE,
 } from "./temporary-roots.mjs";
 
 const json = (path) => readJsonFile(path, { rawErrors: true });
@@ -750,6 +752,22 @@ function judgeLane(context, order) {
         : null,
     { workOrder: order, release },
   );
+  // An owned root inside the lane, such as the closed order's journals, keeps
+  // its own class and window; the lane waits until that root is gone.
+  const owned = judged.candidate?.inventory.find(
+    (row) =>
+      !row.directory &&
+      (row.path === TEMPORARY_OWNER_FILE ||
+        row.path.endsWith(`/${TEMPORARY_OWNER_FILE}`)),
+  );
+  if (owned)
+    return {
+      retained: {
+        kind: "retained-lane",
+        path: label,
+        reason: `nested owned root retained: ${dirname(owned.path)}`,
+      },
+    };
   const usage =
     judged.candidate && usageRetention(root, order, judged.candidate.inventory);
   return usage
@@ -952,115 +970,160 @@ function pruneUnderLock(root, { apply = false, ...options } = {}) {
             "owner death first observed; retention window started";
       }
     }
-    for (const row of plan.candidates) {
-      let proofCreated = false;
-      let proofPath;
-      const fresh = recheckCandidate(plan, row, options);
-      if (
-        !fresh ||
-        fresh.release !== row.release ||
-        fresh.workOrder !== row.workOrder ||
-        JSON.stringify(fresh.inventory) !== JSON.stringify(row.inventory)
-      )
-        throw new Error(`Prune subject changed; retained ${row.path}`);
-      if (["retained-lane", "integration-stash"].includes(row.kind)) {
-        // Durable form of the existing preservation byte inventory, emitted
-        // only by this operator command and kept outside the removed lane.
-        const proof = prettyJson({
-          workOrder: row.workOrder,
-          release: row.release,
-          retainedControl: true,
-          ...(row.stash ? { stash: row.stash } : {}),
-          bytes: row.bytes,
-          files: row.inventory,
-        });
-        const proofBase =
-          row.kind === "integration-stash"
-            ? join(
-                plan.root,
-                docRelative(
-                  plan.root,
-                  "control",
-                  `local/retained/integration-stashes/${row.stash}`,
-                ),
-              )
-            : row.absolute;
-        proofPath = `${proofBase}.bytes-${digest(proof).slice(0, 16)}.json`;
-        safeChild(plan.root, proofPath);
-        mkdirSync(dirname(proofPath), { recursive: true, mode: 0o700 });
-        if (!existsSync(proofPath)) {
-          // Published whole by a link, so a stopped apply never leaves a
-          // partial proof that every later apply would refuse.
-          const partial = `${proofPath}.partial`;
-          rmSync(partial, { force: true });
-          writeFileSync(partial, proof, {
-            flag: "wx",
-            mode: 0o600,
-            flush: true,
-          });
-          try {
-            linkSync(partial, proofPath);
-            proofCreated = true;
-          } finally {
-            rmSync(partial, { force: true });
-          }
-        }
-        if (readFileSync(proofPath, "utf8") !== proof)
-          throw new Error(
-            `Preservation byte proof differs; retained ${row.path}`,
-          );
-        // A stop between the link and the partial's removal leaves the partial
-        // beside a whole proof; once the proof matches it is residue.
-        const leftover = `${proofPath}.partial`;
-        if (stat(leftover)?.isFile()) rmSync(leftover);
-        row.byteProof = relative(plan.root, proofPath);
-      }
-      if (row.kind === "integration-stash") {
-        let recoveryPath;
-        try {
-          const entries = integrationStashes(plan.root).filter(
-            (entry) =>
-              entry.stash === row.stash && entry.workOrder === row.workOrder,
-          );
-          if (entries.length !== 1)
-            throw new Error(`Stash identity changed; retained ${row.path}`);
-          recoveryPath = safeChild(plan.root, `${row.byteProof}.recovery.json`);
-          dropInventoriedStash(
-            plan.root,
-            row.stash,
-            entries[0].subject,
-            recoveryPath,
-          );
-        } catch (error) {
-          // A precondition refusal changed no stash. Keep prior proofs and any
-          // recovery snapshot, but remove a proof created for this failed try.
-          if (proofCreated && (!recoveryPath || !existsSync(recoveryPath)))
-            rmSync(proofPath);
-          throw error;
-        }
-        row.recoveryProof = relative(plan.root, recoveryPath);
-      } else if (
-        ["temporary-root", "session-scratch", "legacy-backfill"].includes(
-          row.kind,
+    const removedSoFar = [];
+    let current;
+    try {
+      for (const row of plan.candidates) {
+        current = row;
+        let proofCreated = false;
+        let proofPath;
+        const fresh = recheckCandidate(plan, row, options);
+        if (
+          !fresh ||
+          fresh.release !== row.release ||
+          fresh.workOrder !== row.workOrder ||
+          JSON.stringify(fresh.inventory) !== JSON.stringify(row.inventory)
         )
-      )
-        applyTemporaryCandidate(root, row);
-      else if (row.kind === "shell-claim") retireShellClaim(row);
-      else {
-        makeTemporaryWritable(row.absolute);
-        rmSync(row.absolute, { recursive: true });
+          throw new Error(`Prune subject changed; retained ${row.path}`);
+        if (["retained-lane", "integration-stash"].includes(row.kind)) {
+          // Durable form of the existing preservation byte inventory, emitted
+          // only by this operator command and kept outside the removed lane.
+          const proof = prettyJson({
+            workOrder: row.workOrder,
+            release: row.release,
+            retainedControl: true,
+            ...(row.stash ? { stash: row.stash } : {}),
+            bytes: row.bytes,
+            files: row.inventory,
+          });
+          const proofBase =
+            row.kind === "integration-stash"
+              ? join(
+                  plan.root,
+                  docRelative(
+                    plan.root,
+                    "control",
+                    `local/retained/integration-stashes/${row.stash}`,
+                  ),
+                )
+              : row.absolute;
+          proofPath = `${proofBase}.bytes-${digest(proof).slice(0, 16)}.json`;
+          safeChild(plan.root, proofPath);
+          mkdirSync(dirname(proofPath), { recursive: true, mode: 0o700 });
+          if (!existsSync(proofPath)) {
+            // Published whole by a link, so a stopped apply never leaves a
+            // partial proof that every later apply would refuse.
+            const partial = `${proofPath}.partial`;
+            rmSync(partial, { force: true });
+            writeFileSync(partial, proof, {
+              flag: "wx",
+              mode: 0o600,
+              flush: true,
+            });
+            try {
+              linkSync(partial, proofPath);
+              proofCreated = true;
+            } finally {
+              rmSync(partial, { force: true });
+            }
+          }
+          if (readFileSync(proofPath, "utf8") !== proof)
+            throw new Error(
+              `Preservation byte proof differs; retained ${row.path}`,
+            );
+          // A stop between the link and the partial's removal leaves the partial
+          // beside a whole proof; once the proof matches it is residue.
+          const leftover = `${proofPath}.partial`;
+          if (stat(leftover)?.isFile()) rmSync(leftover);
+          row.byteProof = relative(plan.root, proofPath);
+        }
+        if (row.kind === "integration-stash") {
+          let recoveryPath;
+          try {
+            const entries = integrationStashes(plan.root).filter(
+              (entry) =>
+                entry.stash === row.stash && entry.workOrder === row.workOrder,
+            );
+            if (entries.length !== 1)
+              throw new Error(`Stash identity changed; retained ${row.path}`);
+            recoveryPath = safeChild(
+              plan.root,
+              `${row.byteProof}.recovery.json`,
+            );
+            dropInventoriedStash(
+              plan.root,
+              row.stash,
+              entries[0].subject,
+              recoveryPath,
+            );
+          } catch (error) {
+            // A precondition refusal changed no stash. Keep prior proofs and any
+            // recovery snapshot, but remove a proof created for this failed try.
+            if (proofCreated && (!recoveryPath || !existsSync(recoveryPath)))
+              rmSync(proofPath);
+            throw error;
+          }
+          row.recoveryProof = relative(plan.root, recoveryPath);
+        } else if (
+          ["temporary-root", "session-scratch", "legacy-backfill"].includes(
+            row.kind,
+          )
+        )
+          applyTemporaryCandidate(root, row);
+        else if (row.kind === "shell-claim") retireShellClaim(row);
+        else {
+          makeTemporaryWritable(row.absolute);
+          rmSync(row.absolute, { recursive: true });
+        }
+        removedSoFar.push(row);
+        current = undefined;
       }
+      current = undefined;
+      retireTemporaryLedger(root);
+      const active = new Set(activeGateRuns(root).map((row) => row.runId));
+      for (const id of new Set(
+        readGateChecks(root)
+          .map((row) => row.temporaryGateId)
+          .filter(Boolean),
+      ))
+        if (!active.has(id)) retireTemporaryLedger(root, id);
+    } catch (error) {
+      // What was removed before a failure stays reported, including a root
+      // whose directory is gone although its bookkeeping then failed: the
+      // caller prints it beside the census of what remains. Only an observed
+      // absence counts, of the root and of the place its removal moves it; a
+      // path this process cannot inspect is not proof of a deletion.
+      const absent = (path) => {
+        try {
+          return !lstatSync(path, { throwIfNoEntry: false });
+        } catch {
+          return false;
+        }
+      };
+      if (
+        current?.absolute &&
+        absent(current.absolute) &&
+        (typeof current.token !== "string" ||
+          absent(temporaryRemovalAside(current.absolute, current.token)))
+      )
+        removedSoFar.push(current);
+      error.pruneRemoved = removedSoFar.map(
+        ({ absolute, inventory, ...row }) => row,
+      );
+      throw error;
     }
   }
-  if (apply) {
-    retireTemporaryLedger(root);
-    const active = new Set(activeGateRuns(root).map((row) => row.runId));
-    for (const id of new Set(
-      readGateChecks(root)
-        .map((row) => row.temporaryGateId)
-        .filter(Boolean),
-    ))
-      if (!active.has(id)) retireTemporaryLedger(root, id);
+  // Listed, not pruned here; the next Codex launch removes them (WO-159). A
+  // listing that cannot inspect an entry is reported as unavailable; it never
+  // replaces the result of a prune that already ran.
+  let staleHomes = [];
+  let staleHomesUnavailable;
+  try {
+    staleHomes = staleCodexEpisodeHomes(options.codexHomeRoot).map((path) =>
+      basename(path),
+    );
+  } catch (error) {
+    staleHomesUnavailable = error.message;
   }
   return {
     apply,
@@ -1073,10 +1136,10 @@ function pruneUnderLock(root, { apply = false, ...options } = {}) {
     retentionsStarted,
     census: pruneCensus(plan.candidates, plan.retained),
     blockers: [],
-    // Listed, not pruned here; the next Codex launch removes them (WO-159).
-    staleCodexEpisodeHomes: staleCodexEpisodeHomes(options.codexHomeRoot).map(
-      (path) => basename(path),
-    ),
+    staleCodexEpisodeHomes: staleHomes,
+    ...(staleHomesUnavailable === undefined
+      ? {}
+      : { staleCodexEpisodeHomesUnavailable: staleHomesUnavailable }),
   };
 }
 

@@ -11,16 +11,20 @@ import {
   closeSync,
   cpSync,
   existsSync,
+  lstatSync,
   mkdirSync,
   openSync,
   ftruncateSync,
+  readdirSync,
   readFileSync,
+  realpathSync,
+  renameSync,
   rmSync as removeDirectory,
   symlinkSync,
   utimesSync,
   writeFileSync,
 } from "node:fs";
-import { dirname, join, relative } from "node:path";
+import { basename, dirname, join, relative } from "node:path";
 import { tmpdir } from "node:os";
 import {
   createFixtureRoot,
@@ -34,9 +38,12 @@ import {
   writeTemporaryOwner,
   removeTemporaryPath,
   removeTemporaryRoot,
+  removeVerifiedTemporaryRoot,
+  temporaryRemovalAside,
   ownerAlive,
   readRetention,
   temporaryChurn,
+  registeredTemporaryRoots,
   temporaryLedger,
   temporaryInventory,
   retireTemporaryLedger,
@@ -44,14 +51,22 @@ import {
   withTemporaryOwner,
   pruneSessionTemporaryRoots,
   ensureTemporaryRoot,
+  validateRetention,
+  TEMPORARY_OWNER_FILE,
 } from "./lib/temporary-roots.mjs";
+import {
+  journalLane,
+  retainWorktreeJournals,
+} from "./lib/worktree-removal.mjs";
 import {
   applyTemporaryCandidate,
   judgeTemporaryRoot,
   finishGateTemporaryRoots,
   recordTemporaryGateResult,
+  temporaryPrunePaths,
 } from "./lib/temporary-prune.mjs";
 import { pruneHarness } from "./lib/harness-prune.mjs";
+import { temporaryPruneSummary } from "./lib/temporary-prune-summary.mjs";
 import { registerProcess } from "./lib/host-resources.mjs";
 import { acquireHostLanes, formatLaneWait } from "./lib/host-lanes.mjs";
 import { unownedTemporaryRootSites } from "./lib/temporary-root-declarations.mjs";
@@ -1720,6 +1735,31 @@ test("a parallel worktree's writer or lane protects even an expired root", (t) =
 test("retention seeds admit an older instance and reject invalid values", (t) => {
   const root = fixture(t);
   assert.equal(readRetention(root)["worker-capture"], 1);
+  // A closed order's journals are kept thirty days unless the budgets say so.
+  assert.equal(readRetention(root)["closed-journal"], 720);
+  for (const file of [
+    "docs/control/budgets.json",
+    "scripts/kit/budgets.template.json",
+  ])
+    assert.equal(
+      JSON.parse(readFileSync(new URL(`../${file}`, import.meta.url), "utf8"))
+        .retention["closed-journal"],
+      720,
+      `${file} seeds the closed-journal window`,
+    );
+  // A newer kit's class paces nothing in this runtime's reader, while the
+  // gate's budget validation still refuses a key it does not know.
+  mkdirSync(join(root, "docs/control"), { recursive: true });
+  writeFileSync(
+    join(root, "docs/control/budgets.json"),
+    JSON.stringify({ retention: { "future-class": 5, "worker-capture": 2 } }),
+  );
+  assert.equal(readRetention(root)["worker-capture"], 2);
+  assert.equal("future-class" in readRetention(root), false);
+  assert.throws(
+    () => validateRetention({ "future-class": 5 }),
+    /Invalid budget: retention.future-class/,
+  );
   mkdirSync(join(root, "docs/control"), { recursive: true });
   writeFileSync(
     join(root, "docs/control/budgets.json"),
@@ -1909,4 +1949,1087 @@ test("prune and gate admission name each other under the host lock", async (t) =
   } finally {
     await lane.release();
   }
+});
+
+// A closing worktree's harness directory, as release close meets it: session
+// journals, states and sidecars, the gate index, suite-success and deadline
+// records, beside the captures and markers that stay with the worktree.
+function closingWorktree(root, name) {
+  const worktree = join(root, name),
+    harness = join(worktree, "docs/control/local/harness");
+  mkdirSync(join(harness, "suite-success"), { recursive: true });
+  mkdirSync(join(harness, "deadlines/gate-1"), { recursive: true });
+  mkdirSync(join(harness, "runner/capture"), { recursive: true });
+  const session = "a".repeat(64);
+  for (const [path, text] of [
+    [`${session}.jsonl`, '{"typedEvent":"HostPermissionDenied"}\n'],
+    [`${session}.json`, '{"role":"executor"}\n'],
+    [`${session}.subagents.json`, '{"count":1}\n'],
+    ["writer-events.jsonl", '{"event":"released"}\n'],
+    ["checks.json", '[{"checkId":"npm test","n":1}]\n'],
+    ["suite-success/one", "ok\n"],
+    ["deadlines/gate-1/active.json", "{}\n"],
+    ["runner/capture/output.log", "captured\n"],
+    [`${session}.subagents.started`, "started\n"],
+    [`${session}.advisory`, "advisory\n"],
+    ["writer.json", "{}\n"],
+  ])
+    writeFileSync(join(harness, path), text);
+  symlinkSync(join(harness, "writer.json"), join(harness, "linked.jsonl"));
+  return { worktree, harness, session };
+}
+// The prune judges a lane's owner as ended once its close process is gone.
+function endedLane(lane, createdAt) {
+  const record = readTemporaryOwner(lane);
+  record.owner = {
+    ...record.owner,
+    pid: 2147483647,
+    birth: "1.0",
+    gateId: undefined,
+    suite: undefined,
+    session: undefined,
+  };
+  if (createdAt) record.createdAt = createdAt;
+  writeTemporaryOwner(lane, record);
+  return record;
+}
+
+test("a closed order's journals move into its retained lane and a retried close merges into it", (t) => {
+  const root = fixture(t);
+  runGit(root, ["init", "-q", "-b", "main"]);
+  const { worktree, harness, session } = closingWorktree(root, "closing");
+  const moved = retainWorktreeJournals(root, worktree, "WO-901");
+  const lane = join(root, journalLane(root, "WO-901"));
+  assert.equal(moved.lane, "docs/control/local/retained/WO-901/harness");
+  assert.equal(moved.outcome, "moved");
+  assert.equal(moved.files, 7);
+  assert.equal(readTemporaryOwner(lane).class, "closed-journal");
+  assert.equal(readTemporaryOwner(lane).owner.workOrder, "WO-901");
+  assert.equal(readTemporaryOwner(lane).retentionHours, 720);
+  assert.deepEqual(
+    readdirSync(lane).sort(),
+    [
+      TEMPORARY_OWNER_FILE,
+      `${session}.json`,
+      `${session}.jsonl`,
+      `${session}.subagents.json`,
+      "checks.json",
+      "deadlines",
+      "sources.jsonl",
+      "suite-success",
+      "writer-events.jsonl",
+    ].sort(),
+  );
+  // Captures, markers, the writer and every link stay with the worktree.
+  assert.deepEqual(
+    readdirSync(harness).sort(),
+    [
+      `${session}.advisory`,
+      `${session}.subagents.started`,
+      "deadlines",
+      "linked.jsonl",
+      "runner",
+      "suite-success",
+      "writer.json",
+    ].sort(),
+  );
+  assert.equal(
+    JSON.parse(readFileSync(join(lane, "sources.jsonl"), "utf8")).worktree,
+    realpathSync(worktree),
+  );
+  // A retried close finds the lane and merges: a log gains its new rows, the
+  // gate index takes the union, an identical record is dropped, and a newer
+  // state keeps its earlier bytes beside it.
+  const token = readTemporaryOwner(lane).token;
+  writeFileSync(join(harness, `${session}.jsonl`), '{"row":2}\n');
+  writeFileSync(join(harness, `${session}.json`), '{"role":"verifier"}\n');
+  writeFileSync(
+    join(harness, "checks.json"),
+    '[{"checkId":"npm test","n":1},{"checkId":"npm test","n":2}]\n',
+  );
+  writeFileSync(join(harness, "suite-success/one"), "ok\n");
+  writeFileSync(join(harness, `${"b".repeat(64)}.jsonl`), '{"row":1}\n');
+  const retried = retainWorktreeJournals(root, worktree, "WO-901");
+  assert.equal(retried.files, 5);
+  assert.equal(readTemporaryOwner(lane).token, token);
+  assert.equal(
+    readFileSync(join(lane, `${session}.jsonl`), "utf8"),
+    '{"typedEvent":"HostPermissionDenied"}\n{"row":2}\n',
+  );
+  assert.equal(
+    readFileSync(join(lane, `${session}.json`), "utf8"),
+    '{"role":"verifier"}\n',
+  );
+  const prior = readdirSync(lane).filter((name) => name.includes(".prior-"));
+  assert.equal(prior.length, 1);
+  assert.equal(
+    readFileSync(join(lane, prior[0]), "utf8"),
+    '{"role":"executor"}\n',
+  );
+  assert.deepEqual(JSON.parse(readFileSync(join(lane, "checks.json"))), [
+    { checkId: "npm test", n: 1 },
+    { checkId: "npm test", n: 2 },
+  ]);
+  assert.equal(existsSync(join(harness, "suite-success/one")), false);
+  assert.equal(
+    readFileSync(join(lane, "sources.jsonl"), "utf8").trim().split("\n").length,
+    2,
+  );
+  // A preview moves nothing, and nothing left to move records nothing.
+  writeFileSync(join(harness, `${"c".repeat(64)}.jsonl`), "{}\n");
+  assert.equal(
+    retainWorktreeJournals(root, worktree, "WO-901", { dryRun: true }).outcome,
+    "would-move",
+  );
+  assert.ok(existsSync(join(harness, `${"c".repeat(64)}.jsonl`)));
+  // A file the repository tracks is its content and stays where it is.
+  writeFileSync(join(harness, "tracked.jsonl"), "{}\n");
+  runGit(root, ["add", "-f", relative(root, join(harness, "tracked.jsonl"))]);
+  assert.equal(retainWorktreeJournals(root, worktree, "WO-901").files, 1);
+  assert.ok(existsSync(join(harness, "tracked.jsonl")));
+  assert.equal(existsSync(join(lane, "tracked.jsonl")), false);
+  assert.deepEqual(retainWorktreeJournals(root, join(root, "none"), "WO-904"), {
+    lane: null,
+    files: 0,
+    bytes: 0,
+    outcome: "nothing",
+  });
+});
+
+test("a cross-volume journal move copies, and any other failure keeps the worktree's journals", (t) => {
+  const root = fixture(t);
+  runGit(root, ["init", "-q", "-b", "main"]);
+  const exdev = (from, to) => {
+    if (from.includes("/docs/control/local/harness/"))
+      throw Object.assign(new Error("cross-device link"), { code: "EXDEV" });
+    return renameSync(from, to);
+  };
+  const across = closingWorktree(root, "across");
+  assert.equal(
+    retainWorktreeJournals(root, across.worktree, "WO-905", { rename: exdev })
+      .files,
+    7,
+  );
+  const acrossLane = join(root, journalLane(root, "WO-905"));
+  assert.equal(
+    readFileSync(join(acrossLane, `${across.session}.jsonl`), "utf8"),
+    '{"typedEvent":"HostPermissionDenied"}\n',
+  );
+  assert.equal(
+    existsSync(join(across.harness, `${across.session}.jsonl`)),
+    false,
+  );
+  for (const [label, rename, copyFile, code] of [
+    [
+      "a permission denial",
+      () => {
+        throw Object.assign(new Error("denied"), { code: "EACCES" });
+      },
+      undefined,
+      "EACCES",
+    ],
+    [
+      "a full disk during the cross-volume copy",
+      exdev,
+      () => {
+        throw Object.assign(new Error("no space"), { code: "ENOSPC" });
+      },
+      "ENOSPC",
+    ],
+  ]) {
+    const { worktree, harness, session } = closingWorktree(
+      root,
+      `failing-${code}`,
+    );
+    assert.throws(
+      () =>
+        retainWorktreeJournals(
+          root,
+          worktree,
+          `WO-90${code === "EACCES" ? 6 : 7}`,
+          {
+            rename,
+            ...(copyFile ? { copyFile } : {}),
+          },
+        ),
+      new RegExp(
+        `Journal retention stopped at .*: ${code}; the worktree is retained`,
+      ),
+      label,
+    );
+    // Nothing the worktree held is lost, since the first move already
+    // failed, and no partial copy is left in the lane.
+    for (const name of [`${session}.jsonl`, `${session}.json`, "checks.json"])
+      assert.ok(existsSync(join(harness, name)), `${label}: ${name}`);
+    const lane = join(
+      root,
+      journalLane(root, `WO-90${code === "EACCES" ? 6 : 7}`),
+    );
+    assert.deepEqual(
+      readdirSync(lane).filter((name) => name.includes(".partial-")),
+      [],
+    );
+  }
+});
+
+test("the prune judges a closed order's journal lane by its class window and keeps its parent lane", async (t) => {
+  const root = fixture(t);
+  runGit(root, ["init", "-q", "-b", "main"]);
+  const lanes = {};
+  for (const [order, createdAt] of [
+    ["WO-911", "2020-01-01T00:00:00.000Z"],
+    ["WO-912", null],
+    ["WO-913", "2020-01-01T00:00:00.000Z"],
+  ]) {
+    retainWorktreeJournals(root, closingWorktree(root, order).worktree, order);
+    lanes[order] = join(root, journalLane(root, order));
+    endedLane(lanes[order], createdAt);
+  }
+  // The undeclared-entry refusal holds the third lane until it is judged
+  // under a null window below.
+  writeFileSync(join(lanes["WO-913"], "notes.txt"), "operator note\n");
+  // Every order here has a published release, so only a lane's own owned
+  // root can keep it.
+  const options = {
+    scope: "repository",
+    hostDirectory: join(root, ".runtime/host"),
+    processes: [],
+    openPaths: [],
+    publishedRelease: () => "v9.9.9",
+  };
+  const report = await pruneHarness(root, { ...options, apply: true });
+  const row = (order) =>
+    [...report.removed, ...report.retained].find(
+      (entry) => entry.path === `docs/control/local/retained/${order}/harness`,
+    );
+  assert.equal(row("WO-911").class, "closed-journal");
+  assert.ok(report.removed.includes(row("WO-911")));
+  assert.equal(existsSync(lanes["WO-911"]), false);
+  assert.equal(row("WO-912").reason, "retention window has not passed");
+  assert.equal(row("WO-912").class, "closed-journal");
+  assert.ok(existsSync(lanes["WO-912"]));
+  assert.match(
+    row("WO-913").reason,
+    /closed-journal root holds an entry its class does not declare: notes\.txt/,
+  );
+  assert.ok(
+    report.census.some(
+      (entry) =>
+        entry.kind === "temporary-root" &&
+        entry.class === "closed-journal" &&
+        entry.candidates === 1 &&
+        entry.retained === 2,
+    ),
+  );
+  // The order's lane keeps its owned journal root's window, whatever else
+  // would let the lane go, and follows once that root is gone.
+  for (const order of ["WO-911", "WO-912", "WO-913"])
+    assert.equal(
+      report.retained.find(
+        (entry) => entry.path === `docs/control/local/retained/${order}`,
+      ).reason,
+      "nested owned root retained: harness",
+    );
+  const after = await pruneHarness(root, { ...options, apply: true });
+  assert.ok(
+    after.removed.some(
+      (entry) =>
+        entry.kind === "retained-lane" &&
+        entry.path === "docs/control/local/retained/WO-911",
+    ),
+  );
+  assert.equal(
+    existsSync(join(root, "docs/control/local/retained/WO-911")),
+    false,
+  );
+  assert.ok(existsSync(lanes["WO-912"]));
+  // A null window keeps an expired lane indefinitely.
+  removeDirectory(join(lanes["WO-913"], "notes.txt"));
+  mkdirSync(join(root, "docs/control"), { recursive: true });
+  writeFileSync(
+    join(root, "docs/control/budgets.json"),
+    JSON.stringify({ retention: { "closed-journal": null } }),
+  );
+  assert.equal(
+    judgeTemporaryRoot(root, lanes["WO-913"], {}, { processes: [] }).retained
+      .reason,
+    "class is retained indefinitely",
+  );
+});
+
+// A record written before a reboot carries the device number its volume had
+// then; only the marker is rewritten, so the directory keeps its inode.
+function renumber(path) {
+  const record = readTemporaryOwner(path);
+  writeFileSync(
+    join(path, TEMPORARY_OWNER_FILE),
+    JSON.stringify({ ...record, device: record.device + 1 }) + "\n",
+  );
+  return record;
+}
+const ledgerRows = (root, token) =>
+  temporaryLedger(root).filter((row) => row.token === token);
+
+test("a renumbered device is re-stamped and judged by its class and window like any root", (t) => {
+  const root = fixture(t),
+    path = expired(root, "renumbered-"),
+    { device, inode, token } = renumber(path);
+  const started = performance.now();
+  const judged = judgeTemporaryRoot(root, path, {}, { processes: [] });
+  const restampMs = performance.now() - started;
+  assert.ok(judged.candidate, JSON.stringify(judged));
+  const restamped = JSON.parse(
+    readFileSync(join(path, TEMPORARY_OWNER_FILE), "utf8"),
+  );
+  assert.equal(restamped.device, device);
+  assert.equal(restamped.inode, inode);
+  assert.deepEqual(
+    ledgerRows(root, token)
+      .filter((row) => row.action === "device-renumbered")
+      .map(({ recordedDevice, observedDevice }) => ({
+        recordedDevice,
+        observedDevice,
+      })),
+    [{ recordedDevice: device + 1, observedDevice: device }],
+  );
+  // A retried judgment finds the record current and writes nothing more.
+  assert.ok(judgeTemporaryRoot(root, path, {}, { processes: [] }).candidate);
+  assert.equal(
+    ledgerRows(root, token).filter((row) => row.action === "device-renumbered")
+      .length,
+    1,
+  );
+  applyTemporaryCandidate(root, judged.candidate);
+  assert.equal(existsSync(path), false);
+  t.diagnostic(`renumbered judgment with re-stamp ${restampMs.toFixed(1)} ms`);
+});
+
+test("a renumbered device never admits a replaced, foreign, live, protected or undeclared root", async (t) => {
+  const root = fixture(t);
+  runGit(root, ["init", "-q", "-b", "main"]);
+  const judge = (path, context = {}) =>
+    judgeTemporaryRoot(root, path, {}, { processes: [], ...context });
+  // Each refusal is read with the whole judgment in view, so a case that
+  // admitted its root fails naming what it judged.
+  const refused = (path, context) => {
+    const judgment = judge(path, context);
+    assert.ok(judgment?.retained, JSON.stringify(judgment));
+    return judgment.retained.reason;
+  };
+  const replace = (path) => {
+    const marker = readFileSync(join(path, TEMPORARY_OWNER_FILE));
+    renameSync(path, `${path}.original`);
+    mkdirSync(path);
+    writeFileSync(join(path, TEMPORARY_OWNER_FILE), marker);
+  };
+  // A different inode is a real replacement, device change or not.
+  const replaced = expired(root, "replaced-");
+  renumber(replaced);
+  replace(replaced);
+  assert.match(refused(replaced), /invalid or the directory was replaced/);
+  // A token the ledger does not register at this path.
+  const forged = expired(root, "forged-");
+  const forgedRecord = renumber(forged);
+  writeFileSync(
+    join(forged, TEMPORARY_OWNER_FILE),
+    JSON.stringify({
+      ...forgedRecord,
+      device: forgedRecord.device + 1,
+      token: randomUUID(),
+    }) + "\n",
+  );
+  assert.match(
+    refused(forged),
+    /ledger does not register this token at this path/,
+  );
+  // With an unchanged device too, a marker the ledger does not register at
+  // this path is not the root that was created.
+  const unbound = expired(root, "unbound-");
+  writeFileSync(
+    join(unbound, TEMPORARY_OWNER_FILE),
+    JSON.stringify({ ...readTemporaryOwner(unbound), token: randomUUID() }) +
+      "\n",
+  );
+  assert.match(
+    refused(unbound),
+    /owner's ledger does not register this root's token at this path/,
+  );
+  // A record naming a repository that holds no registration of it, with or
+  // without a device change.
+  const elsewhere = join(root, "elsewhere");
+  mkdirSync(elsewhere);
+  const claimed = expired(root, "claimed-");
+  writeFileSync(
+    join(claimed, TEMPORARY_OWNER_FILE),
+    JSON.stringify({
+      ...readTemporaryOwner(claimed),
+      owner: { ...readTemporaryOwner(claimed).owner, repository: elsewhere },
+    }) + "\n",
+  );
+  assert.match(
+    refused(claimed),
+    /owner's ledger does not register this root's token at this path/,
+  );
+  const foreign = expired(root, "foreign-");
+  const foreignRecord = renumber(foreign);
+  writeFileSync(
+    join(foreign, TEMPORARY_OWNER_FILE),
+    JSON.stringify({
+      ...foreignRecord,
+      device: foreignRecord.device + 1,
+      owner: { ...foreignRecord.owner, repository: elsewhere },
+    }) + "\n",
+  );
+  assert.match(
+    refused(foreign),
+    /ledger does not register this token at this path/,
+  );
+  // Live and unknown owners keep their roots after the re-stamp.
+  const live = expired(root, "live-", {
+    owner: { pid: process.pid, birth: "live" },
+  });
+  renumber(live);
+  assert.equal(
+    refused(live, { processes: [{ pid: process.pid, birth: "live" }] }),
+    "owner is live",
+  );
+  const unknown = expired(root, "unknown-", { owner: { pid: null } });
+  renumber(unknown);
+  assert.equal(refused(unknown), "owner identity is unavailable");
+  // A writer reserving the checkout protects every root within it.
+  const reserved = expired(root, "reserved-");
+  renumber(reserved);
+  const session = "renumbered-writer";
+  seedHarnessWriter(root, {
+    worktree: root,
+    actorId: createHash("sha256").update(session).digest("hex"),
+    reservedAt: new Date().toISOString(),
+    owner: { pid: process.pid, source: "parent" },
+  });
+  try {
+    assert.match(
+      refused(reserved, { worktrees: [{ worktree: root }] }),
+      /writer reservation/,
+    );
+  } finally {
+    releaseHarnessWriter(root, {
+      cwd: root,
+      session_id: session,
+      hook_event_name: "Stop",
+    });
+  }
+  // A replacement between the judgment and the removal is refused at apply.
+  const raced = expired(root, "raced-");
+  renumber(raced);
+  const plan = judge(raced);
+  assert.ok(plan.candidate);
+  replace(raced);
+  assert.throws(
+    () => applyTemporaryCandidate(root, plan.candidate),
+    /identity changed|replaced|ownership changed/,
+  );
+  // A replacement as late as the act itself, after the identity was read:
+  // the act moves whatever holds the path aside, finds another directory or a
+  // link there, puts it back and deletes nothing.
+  const late = expired(root, "late-");
+  renumber(late);
+  const lateRecord = readTemporaryOwner(late);
+  replace(late);
+  assert.throws(
+    () => removeVerifiedTemporaryRoot(late, lateRecord),
+    /ownership changed/,
+  );
+  const lateLink = expired(root, "late-link-");
+  renumber(lateLink);
+  const lateLinkRecord = readTemporaryOwner(lateLink);
+  // A registered root nested in it, reachable through the link, is not
+  // touched either.
+  const lateChild = expired(root, `${basename(lateLink)}/child-`);
+  writeFileSync(join(lateChild, "sentinel"), "kept\n");
+  renameSync(lateLink, `${lateLink}.original`);
+  symlinkSync(`${lateLink}.original`, lateLink);
+  assert.throws(
+    () => removeVerifiedTemporaryRoot(lateLink, lateLinkRecord),
+    /ownership changed/,
+  );
+  assert.ok(lstatSync(lateLink).isSymbolicLink());
+  assert.ok(
+    existsSync(join(`${lateLink}.original`, basename(lateChild), "sentinel")),
+  );
+  for (const [path, record] of [
+    [late, lateRecord],
+    [lateLink, lateLinkRecord],
+  ]) {
+    assert.ok(existsSync(join(path, TEMPORARY_OWNER_FILE)), path);
+    assert.ok(existsSync(join(`${path}.original`, TEMPORARY_OWNER_FILE)), path);
+    assert.equal(existsSync(temporaryRemovalAside(path, record.token)), false);
+  }
+  // A parent moved under its aside name anywhere but its own aside binds none
+  // of the roots nested in it, and nothing in it is deleted.
+  const misplaced = expired(root, "misplaced-");
+  const misplacedToken = readTemporaryOwner(misplaced).token;
+  const misplacedChild = expired(root, `${basename(misplaced)}/child-`);
+  writeFileSync(join(misplacedChild, "sentinel"), "kept\n");
+  const misplacedPlace = join(root, "roots", "misplaced-place");
+  mkdirSync(misplacedPlace);
+  const misplacedAt = join(misplacedPlace, `dotln-removing-${misplacedToken}`);
+  renameSync(misplaced, misplacedAt);
+  assert.match(
+    refused(join(misplacedAt, basename(misplacedChild))),
+    /ledger does not register/,
+  );
+  assert.ok(
+    existsSync(join(misplacedAt, basename(misplacedChild), "sentinel")),
+  );
+  // A link to a root is not that root.
+  const linked = expired(root, "linked-");
+  renumber(linked);
+  const link = join(root, "roots", "link-to-linked");
+  symlinkSync(linked, link);
+  assert.match(refused(link), /symbolic-link/);
+  // A closed-journal root holding an entry its class does not declare.
+  retainWorktreeJournals(
+    root,
+    closingWorktree(root, "undeclared").worktree,
+    "WO-921",
+  );
+  const lane = join(root, journalLane(root, "WO-921"));
+  endedLane(lane, "2020-01-01T00:00:00.000Z");
+  renumber(lane);
+  writeFileSync(join(lane, "notes.txt"), "operator note\n");
+  assert.match(refused(lane), /does not declare: notes\.txt/);
+  // Nothing was deleted, and a retried judgment says the same.
+  for (const path of [
+    replaced,
+    `${replaced}.original`,
+    forged,
+    unbound,
+    claimed,
+    foreign,
+    live,
+    unknown,
+    reserved,
+    raced,
+    `${raced}.original`,
+    linked,
+    lane,
+  ])
+    assert.ok(existsSync(path), path);
+  assert.match(refused(forged), /ledger does not register/);
+  assert.ok(lstatSync(link).isSymbolicLink());
+});
+
+test("a retried merge counts a log once, and a lane's links never take a write outside it", (t) => {
+  const root = fixture(t);
+  runGit(root, ["init", "-q", "-b", "main"]);
+  const session = "f".repeat(64);
+  const worktree = (name, rows) => {
+    const directory = join(root, name, "docs/control/local/harness");
+    mkdirSync(directory, { recursive: true });
+    writeFileSync(join(directory, `${session}.jsonl`), rows);
+    return { worktree: join(root, name), directory };
+  };
+  retainWorktreeJournals(root, worktree("first", "A\n").worktree, "WO-931");
+  const lane = join(root, journalLane(root, "WO-931"));
+  // The merge publishes its rows, then cannot remove the source: the retry
+  // finds them already appended and only removes the source.
+  const second = worktree("second", "B\n");
+  chmodSync(second.directory, 0o500);
+  try {
+    assert.throws(
+      () => retainWorktreeJournals(root, second.worktree, "WO-931"),
+      /Journal retention stopped at .*: EACCES/,
+    );
+  } finally {
+    chmodSync(second.directory, 0o700);
+  }
+  assert.equal(readFileSync(join(lane, `${session}.jsonl`), "utf8"), "A\nB\n");
+  // The surviving source gained a row before the retry: only that row is new.
+  writeFileSync(join(second.directory, `${session}.jsonl`), "B\nC\n");
+  retainWorktreeJournals(root, second.worktree, "WO-931");
+  assert.equal(
+    readFileSync(join(lane, `${session}.jsonl`), "utf8"),
+    "A\nB\nC\n",
+  );
+  assert.equal(existsSync(join(second.directory, `${session}.jsonl`)), false);
+  // A source whose leading rows repeat is merged once: its earlier attempt's
+  // merge record says how much of it the lane already holds.
+  retainWorktreeJournals(root, worktree("base", "A\n").worktree, "WO-933");
+  const repeatedLane = join(root, journalLane(root, "WO-933"));
+  const repeated = worktree("repeated", "B\nB\n");
+  chmodSync(repeated.directory, 0o500);
+  try {
+    assert.throws(
+      () => retainWorktreeJournals(root, repeated.worktree, "WO-933"),
+      /Journal retention stopped at .*: EACCES/,
+    );
+  } finally {
+    chmodSync(repeated.directory, 0o700);
+  }
+  assert.equal(
+    readFileSync(join(repeatedLane, `${session}.jsonl`), "utf8"),
+    "A\nB\nB\n",
+  );
+  writeFileSync(join(repeated.directory, `${session}.jsonl`), "B\nB\nC\n");
+  retainWorktreeJournals(root, repeated.worktree, "WO-933");
+  assert.equal(
+    readFileSync(join(repeatedLane, `${session}.jsonl`), "utf8"),
+    "A\nB\nB\nC\n",
+  );
+  // Another worktree's append between two attempts of one source does not
+  // make the retry append that source's rows again.
+  retainWorktreeJournals(
+    root,
+    worktree("first-of-three", "A\n").worktree,
+    "WO-934",
+  );
+  const between = join(root, journalLane(root, "WO-934"));
+  const interrupted = worktree("interrupted", "B\n");
+  chmodSync(interrupted.directory, 0o500);
+  try {
+    assert.throws(
+      () => retainWorktreeJournals(root, interrupted.worktree, "WO-934"),
+      /Journal retention stopped at .*: EACCES/,
+    );
+  } finally {
+    chmodSync(interrupted.directory, 0o700);
+  }
+  retainWorktreeJournals(
+    root,
+    worktree("in-between", "D\n").worktree,
+    "WO-934",
+  );
+  retainWorktreeJournals(root, interrupted.worktree, "WO-934");
+  assert.equal(
+    readFileSync(join(between, `${session}.jsonl`), "utf8"),
+    "A\nB\nD\n",
+  );
+  // A first merge from another source keeps every row, even one that repeats
+  // the log's last.
+  retainWorktreeJournals(
+    root,
+    worktree("repeating", "D\nE\n").worktree,
+    "WO-934",
+  );
+  assert.equal(
+    readFileSync(join(between, `${session}.jsonl`), "utf8"),
+    "A\nB\nD\nD\nE\n",
+  );
+  // A log from another source whose bytes equal the lane's is still appended.
+  retainWorktreeJournals(root, worktree("alpha", "X\n").worktree, "WO-935");
+  const equal = join(root, journalLane(root, "WO-935"));
+  retainWorktreeJournals(root, worktree("beta", "X\n").worktree, "WO-935");
+  assert.equal(readFileSync(join(equal, `${session}.jsonl`), "utf8"), "X\nX\n");
+  // An attempt that never published is not proven by another worktree's
+  // later append of the same bytes at its place.
+  const sha = (text) => createHash("sha256").update(text).digest("hex");
+  const unpublished = worktree("unpublished", "Y\n");
+  writeFileSync(
+    join(equal, "merges.jsonl"),
+    JSON.stringify({
+      worktree: realpathSync(unpublished.worktree),
+      log: `${session}.jsonl`,
+      offset: 4,
+      length: 2,
+      span: sha("Y\n"),
+      through: 2,
+      source: sha("Y\n"),
+    }) + "\n",
+    { flag: "a" },
+  );
+  // The source that published there cannot remove its own log; after the
+  // unpublished one appends its rows, its retry still trusts its own record,
+  // which the earlier unpublished intent does not disprove.
+  const sameBytes = worktree("same-bytes", "Y\n");
+  chmodSync(sameBytes.directory, 0o500);
+  try {
+    assert.throws(
+      () => retainWorktreeJournals(root, sameBytes.worktree, "WO-935"),
+      /Journal retention stopped at .*: EACCES/,
+    );
+  } finally {
+    chmodSync(sameBytes.directory, 0o700);
+  }
+  retainWorktreeJournals(root, unpublished.worktree, "WO-935");
+  retainWorktreeJournals(root, sameBytes.worktree, "WO-935");
+  assert.equal(
+    readFileSync(join(equal, `${session}.jsonl`), "utf8"),
+    "X\nX\nY\nY\n",
+  );
+  // A torn last record does not swallow the next one: the retry after a
+  // failed source removal still reads it and appends nothing again.
+  writeFileSync(join(equal, "merges.jsonl"), '{"torn":', { flag: "a" });
+  const afterTorn = worktree("after-torn", "Z\n");
+  chmodSync(afterTorn.directory, 0o500);
+  try {
+    assert.throws(
+      () => retainWorktreeJournals(root, afterTorn.worktree, "WO-935"),
+      /Journal retention stopped at .*: EACCES/,
+    );
+  } finally {
+    chmodSync(afterTorn.directory, 0o700);
+  }
+  retainWorktreeJournals(root, afterTorn.worktree, "WO-935");
+  assert.equal(
+    readFileSync(join(equal, `${session}.jsonl`), "utf8"),
+    "X\nX\nY\nY\nZ\n",
+  );
+  // A link planted in a lane refuses the move and writes nothing past it.
+  const outside = join(root, "outside");
+  mkdirSync(outside);
+  const linkedLane = join(root, journalLane(root, "WO-932"));
+  retainWorktreeJournals(root, worktree("third", "C\n").worktree, "WO-932");
+  symlinkSync(outside, join(linkedLane, "suite-success"));
+  const fourth = worktree("fourth", "D\n");
+  mkdirSync(join(fourth.directory, "suite-success"));
+  writeFileSync(join(fourth.directory, "suite-success/marker"), "ok\n");
+  assert.throws(
+    () => retainWorktreeJournals(root, fourth.worktree, "WO-932"),
+    /refuses a symlink/,
+  );
+  assert.throws(
+    () =>
+      retainWorktreeJournals(root, fourth.worktree, "WO-932", { dryRun: true }),
+    /refuses a symlink/,
+  );
+  removeDirectory(join(linkedLane, "suite-success"));
+  removeDirectory(join(linkedLane, "sources.jsonl"));
+  symlinkSync(
+    join(outside, "sources.jsonl"),
+    join(linkedLane, "sources.jsonl"),
+  );
+  assert.throws(
+    () => retainWorktreeJournals(root, fourth.worktree, "WO-932"),
+    /refuses a symlink/,
+  );
+  removeDirectory(join(linkedLane, "sources.jsonl"));
+  assert.deepEqual(readdirSync(outside), []);
+  assert.ok(existsSync(join(fourth.directory, "suite-success/marker")));
+});
+
+test("a device transition is ledgered before the marker changes, and once", (t) => {
+  const root = fixture(t),
+    path = expired(root, "ledger-first-"),
+    { device, token } = renumber(path);
+  const segment = join(
+    root,
+    ".runtime/temporary-roots/roots",
+    `${token}.jsonl`,
+  );
+  chmodSync(segment, 0o400);
+  try {
+    assert.match(
+      judgeTemporaryRoot(root, path, {}, { processes: [] }).retained.reason,
+      /EACCES|permission denied/i,
+    );
+  } finally {
+    chmodSync(segment, 0o600);
+  }
+  // The failed append left the old number in place for the next read.
+  assert.equal(
+    JSON.parse(readFileSync(join(path, TEMPORARY_OWNER_FILE), "utf8")).device,
+    device + 1,
+  );
+  assert.ok(judgeTemporaryRoot(root, path, {}, { processes: [] }).candidate);
+  assert.equal(
+    ledgerRows(root, token).filter((row) => row.action === "device-renumbered")
+      .length,
+    1,
+  );
+  // Later reboots that renumber the volume again, even back to a pair seen
+  // before, are each recorded.
+  for (const stale of [device + 2, device + 1]) {
+    const record = readTemporaryOwner(path);
+    writeFileSync(
+      join(path, TEMPORARY_OWNER_FILE),
+      JSON.stringify({ ...record, device: stale }) + "\n",
+    );
+    readTemporaryOwner(path);
+  }
+  assert.deepEqual(
+    ledgerRows(root, token)
+      .filter((row) => row.action === "device-renumbered")
+      .map((row) => row.recordedDevice),
+    [device + 1, device + 2, device + 1],
+  );
+});
+
+test("plan start's apply names what it removed when it stops partway", async (t) => {
+  const root = fixture(t);
+  runGit(root, ["init", "-q", "-b", "main"]);
+  // The longer path is judged and removed first; the second cannot be,
+  // since its parent refuses the removal.
+  const removable = expired(root, "a-removable-root-with-a-much-longer-name-");
+  mkdirSync(join(root, "roots", "locked"));
+  const blocked = expired(root, "locked/b-");
+  chmodSync(join(root, "roots", "locked"), 0o500);
+  let report;
+  try {
+    report = await temporaryPruneSummary(root, {
+      apply: true,
+      scope: "repository",
+      hostDirectory: join(root, ".runtime/host"),
+      processes: [],
+      openPaths: [],
+    });
+  } finally {
+    chmodSync(join(root, "roots", "locked"), 0o700);
+  }
+  assert.match(report, /^Prune: apply stopped after 1 removed, \d+ bytes \(/);
+  assert.match(report, /what remains:\nPrune: \d+ candidates/);
+  assert.equal(existsSync(removable), false);
+  // The refused root keeps its contents and its owner record: a parent that
+  // refuses the removal refuses it before anything inside is deleted.
+  assert.ok(existsSync(join(blocked, TEMPORARY_OWNER_FILE)));
+  assert.equal(readTemporaryOwner(blocked).class, "gate-fixture");
+});
+
+test("a removal stopped after it moved its root aside is found there and finished", async (t) => {
+  const root = fixture(t);
+  runGit(root, ["init", "-q", "-b", "main"]);
+  const options = {
+    scope: "repository",
+    hostDirectory: join(root, ".runtime/host"),
+    processes: [],
+    openPaths: [],
+  };
+  const path = expired(root, "stopped-");
+  const { token } = readTemporaryOwner(path);
+  const aside = temporaryRemovalAside(path, token);
+  // The stop: the act moved the root aside and its deletion never ran.
+  renameSync(path, aside);
+  const census = await pruneHarness(root, options);
+  assert.deepEqual(
+    census.candidates.map((row) => row.path),
+    [relative(root, aside)],
+  );
+  const applied = await pruneHarness(root, { ...options, apply: true });
+  assert.equal(applied.removed.length, 1);
+  assert.equal(existsSync(aside), false);
+  assert.equal(existsSync(path), false);
+  // A path reused by a new root does not hide the earlier root left aside.
+  const reused = expired(root, "reused-");
+  const reusedToken = readTemporaryOwner(reused).token;
+  const reusedAside = temporaryRemovalAside(reused, reusedToken);
+  renameSync(reused, reusedAside);
+  ensureTemporaryRoot(reused, { class: "gate-fixture", repository: root });
+  const again = await pruneHarness(root, { ...options, apply: true });
+  assert.ok(
+    again.removed.some((row) => row.path === relative(root, reusedAside)),
+    JSON.stringify(again.removed),
+  );
+  assert.equal(existsSync(reusedAside), false);
+  assert.notEqual(readTemporaryOwner(reused).token, reusedToken);
+  // Finishing the aside ends the earlier registration; the new root keeps
+  // its own.
+  assert.equal(
+    registeredTemporaryRoots(root).some((row) => row.token === reusedToken),
+    false,
+  );
+  assert.equal(
+    existsSync(
+      join(root, ".runtime/temporary-roots/roots", `${reusedToken}.jsonl`),
+    ),
+    false,
+  );
+  // A captured root of a checkout that is gone, left aside by a stopped
+  // removal, is still found by a close.
+  const checkout = join(root, "closed-checkout");
+  mkdirSync(checkout);
+  const captured = expired(root, "captured-", { repository: checkout });
+  const capturedRecord = readTemporaryOwner(captured);
+  const capturedAside = temporaryRemovalAside(captured, capturedRecord.token);
+  renameSync(captured, capturedAside);
+  removeDirectory(checkout, { recursive: true });
+  assert.ok(
+    temporaryPrunePaths(root, {
+      scope: "close",
+      ownedTemporaryRoots: [
+        {
+          path: captured,
+          token: capturedRecord.token,
+          repository: capturedRecord.owner.repository,
+        },
+      ],
+    }).includes(capturedAside),
+  );
+  // A parent whose removal moved it aside and stopped is found there with
+  // the roots nested in it, which its registration binds; their segments
+  // wait for it.
+  const nest = expired(root, "nest-");
+  const nestToken = readTemporaryOwner(nest).token;
+  const nestChild = expired(root, `${basename(nest)}/child-`);
+  const nestChildSegment = join(
+    root,
+    ".runtime/temporary-roots/roots",
+    `${readTemporaryOwner(nestChild).token}.jsonl`,
+  );
+  const nestAside = temporaryRemovalAside(nest, nestToken);
+  writeFileSync(
+    join(root, ".runtime/temporary-roots/roots", `${nestToken}.jsonl`),
+    JSON.stringify({
+      action: "moving",
+      path: nest,
+      token: nestToken,
+      aside: nestAside,
+    }) + "\n",
+    { flag: "a" },
+  );
+  renameSync(nest, nestAside);
+  // The parent's path is reused, with a directory at the child's place.
+  const reusedChild = join(nest, basename(nestChild));
+  mkdirSync(reusedChild, { recursive: true });
+  retireTemporaryLedger(root);
+  assert.ok(existsSync(nestChildSegment));
+  const nested = await pruneHarness(root, { ...options, apply: true });
+  assert.ok(
+    nested.removed.some((row) => row.path === relative(root, nestAside)),
+    JSON.stringify(nested),
+  );
+  assert.equal(existsSync(nestAside), false);
+  assert.ok(existsSync(reusedChild));
+  // An aside whose parent refuses the removal keeps everything it holds.
+  mkdirSync(join(root, "roots", "refusing"));
+  const refusing = expired(root, "refusing/r-");
+  const refusingToken = readTemporaryOwner(refusing).token;
+  const refusingAside = temporaryRemovalAside(refusing, refusingToken);
+  renameSync(refusing, refusingAside);
+  chmodSync(join(root, "roots", "refusing"), 0o500);
+  try {
+    assert.throws(
+      () => removeTemporaryRoot(refusingAside, refusingToken),
+      /EACCES|EPERM/,
+    );
+  } finally {
+    chmodSync(join(root, "roots", "refusing"), 0o700);
+  }
+  assert.ok(existsSync(join(refusingAside, TEMPORARY_OWNER_FILE)));
+  // Owned roots nested inside go with their verified parent.
+  const parent = expired(root, "parent-");
+  const child = createTemporaryRoot(join(parent, "child-"), {
+    class: "gate-fixture",
+    repository: root,
+    owner: {
+      pid: 2147483647,
+      birth: "1.0",
+      gateId: undefined,
+      suite: undefined,
+    },
+  });
+  const childSegment = join(
+    root,
+    ".runtime/temporary-roots/roots",
+    `${readTemporaryOwner(child).token}.jsonl`,
+  );
+  assert.ok(existsSync(childSegment));
+  removeTemporaryRoot(parent);
+  assert.equal(existsSync(parent), false);
+  // The child went with its verified parent; retirement then ends its
+  // segment.
+  retireTemporaryLedger(root);
+  assert.equal(existsSync(childSegment), false);
+  // A session's scratch left aside beside its place is walked by the census
+  // even when no ledger registers it.
+  const base = join(root, "system-temporary");
+  const session = join(base, "dotln", "a".repeat(64));
+  const sessionAside = join(session, `dotln-removing-${randomUUID()}`);
+  mkdirSync(sessionAside, { recursive: true });
+  assert.ok(
+    temporaryPrunePaths(root, {
+      scope: "all",
+      temporaryBases: [base],
+    }).includes(sessionAside),
+  );
+  // A directory held aside that is not the root, as when a replacement could
+  // not be moved back, is retained with its contents.
+  const held = expired(root, "held-");
+  const heldRecord = readTemporaryOwner(held);
+  const heldAside = temporaryRemovalAside(held, heldRecord.token);
+  renameSync(held, `${held}.original`);
+  mkdirSync(heldAside);
+  writeFileSync(
+    join(heldAside, TEMPORARY_OWNER_FILE),
+    readFileSync(join(`${held}.original`, TEMPORARY_OWNER_FILE)),
+  );
+  const retained = await pruneHarness(root, { ...options, apply: true });
+  assert.match(
+    retained.retained.find((row) => row.path === relative(root, heldAside))
+      ?.reason ?? "",
+    /invalid or the directory was replaced/,
+  );
+  assert.ok(existsSync(join(heldAside, TEMPORARY_OWNER_FILE)));
+  assert.ok(existsSync(join(`${held}.original`, TEMPORARY_OWNER_FILE)));
+});
+
+test("a stale Codex home listing that cannot inspect an entry never replaces the prune's result", async (t) => {
+  const root = fixture(t);
+  runGit(root, ["init", "-q", "-b", "main"]);
+  const path = expired(root, "listed-");
+  const homes = join(root, "codex-homes");
+  mkdirSync(join(homes, "dotln-codex-home-2147483647-fixture"), {
+    recursive: true,
+  });
+  // Its names can be listed, but no entry can be inspected.
+  chmodSync(homes, 0o400);
+  let result;
+  try {
+    result = await pruneHarness(root, {
+      apply: true,
+      scope: "repository",
+      hostDirectory: join(root, ".runtime/host"),
+      processes: [],
+      openPaths: [],
+      codexHomeRoot: homes,
+    });
+  } finally {
+    chmodSync(homes, 0o700);
+  }
+  assert.equal(existsSync(path), false);
+  assert.equal(result.removed.length, 1);
+  assert.deepEqual(result.staleCodexEpisodeHomes, []);
+  assert.match(result.staleCodexEpisodeHomesUnavailable, /EACCES/);
+});
+
+test("a stopped apply keeps naming its removals when the census after it fails", async () => {
+  const calls = [];
+  const report = await temporaryPruneSummary("unused", {
+    apply: true,
+    pruneHarness: async (_root, options) => {
+      calls.push(options.apply);
+      if (options.apply)
+        throw Object.assign(new Error("parent refused"), {
+          pruneRemoved: [{ bytes: 7 }],
+        });
+      throw new Error("ledger unreadable");
+    },
+  });
+  assert.deepEqual(calls, [true, false]);
+  assert.equal(
+    report,
+    "Prune: apply stopped after 1 removed, 7 bytes (parent refused); what remains:\nPrune: census unavailable; material retained (ledger unreadable)",
+  );
+});
+
+test("a root removed before its bookkeeping failed is reported as removed", async (t) => {
+  const root = fixture(t);
+  runGit(root, ["init", "-q", "-b", "main"]);
+  const path = expired(root, "bookkeeping-");
+  // The ledger accepts rows, but its directory refuses the segment's
+  // retirement that follows the removal.
+  const segments = join(root, ".runtime/temporary-roots/roots");
+  chmodSync(segments, 0o500);
+  let report;
+  try {
+    report = await temporaryPruneSummary(root, {
+      apply: true,
+      scope: "repository",
+      hostDirectory: join(root, ".runtime/host"),
+      processes: [],
+      openPaths: [],
+    });
+  } finally {
+    chmodSync(segments, 0o700);
+  }
+  assert.equal(existsSync(path), false);
+  assert.match(report, /^Prune: apply stopped after 1 removed, \d+ bytes \(/);
 });

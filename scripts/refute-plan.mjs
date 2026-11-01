@@ -414,9 +414,11 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
     const { readerScoresAtStart } = await import("./lib/reader-profiles.mjs");
     const readerScores = readerScoresAtStart(root);
     const conditions = await conditionsAtStart(root);
+    // Routine removal of expired temporary roots outside every close's scope
+    // happens here, where the full census is already paid for.
     const { temporaryPruneSummary } =
       await import("./lib/temporary-prune-summary.mjs");
-    console.log(await temporaryPruneSummary(root));
+    console.log(await temporaryPruneSummary(root, { apply: true }));
     const branch = `planning/${new Date().toISOString().slice(0, 10)}-${rest[0]}`;
     const document = planningDocumentPath(root, branch);
     if (existsSync(join(root, document)))
