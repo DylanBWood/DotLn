@@ -52564,6 +52564,21 @@
           "at": "2026-11-02T21:28:02.414Z"
         }
       ]
+    },
+    {
+      "id": "FUP-225e0993974f3f4b",
+      "key": "decision:docs/evidence/WO-248/decisions.md#wo-248-d004",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "64049e50ee0e843f199656afda38d66d2696f5d26310bce95688886dcb5da25c",
+          "ref": "docs/evidence/WO-248/decisions.md#wo-248-d004",
+          "title": "WO-248-D004: In scripts/lib/meta.mjs renderMetaTable, render a dispatch-role row only when the subject's records show that role dispatched (a completed phase attempt, a usage observation, a journal…",
+          "summary": "{ \"id\": \"WO-248-D004\", \"date\": \"2026-11-02\", \"dispatch\": \"resume: verify\", \"decision\": \"Record the meter block's rows for dispatch roles with no observation of any kind as a follow-up; criterion 1 is met as the order defines its row unit.\", \"evidence\": [ \"verifier-001-probes.mjs P1 over the real selection (WO-247, WO-237, WO-245, WO-251, WO-249, WO-248): every body has seven role rows; release-close, planner, refuter and router render five unknown value cells in every closed order's body\", \"scripts/lib/process-budget.mjs dispatchKinds is a fixed seven-role list; scripts/lib/meta.mjs collectMeta maps every order's dispatches over it\", \"WO-248 Cost names 'a row per dispatch role'; D002 retains",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

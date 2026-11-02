@@ -415,8 +415,13 @@ test("WO-170 a closed order's snapshot stands for its journals, and with neither
     renderMeta(await collectMeta(root)),
     /^Operator directions per closed order \(committed decisions and control events\): WO-999 0\.$/m,
   );
-  const table = renderMetaTable(await collectMeta(root));
-  assert.match(table, /^\| WO-999 \|.*\|  \| 0 \| 0 \| 0 \|$/m);
+  const table = renderMetaTable(await collectMeta(root), {
+    workOrderId: "WO-999",
+  });
+  assert.match(
+    table,
+    /^\| WO-999\/release-close \|.*\| unknown \| unknown \| 0 \| 0 \|$/m,
+  );
   assert.ok(
     !table
       .split("\n")
@@ -860,13 +865,15 @@ test("WO-170 operator directions equal a hand count of committed decisions and o
   const none = meta.orders.find((row) => row.workOrder === "WO-998");
   assert.equal(none.metrics.operatorDirections, 0);
   assert.equal(none.directions.total, 0);
-  const table = renderMetaTable(meta);
+  const terminal = renderMeta(meta);
   assert.match(
-    table,
-    /\| Corrections \| Directions \| Bound stops \| Bound acceptances \|$/m,
+    terminal,
+    /WO-999 metrics \(value; previous-order delta\):[\s\S]*?\n  operatorDirections: 4; Δ /,
   );
-  assert.match(table, /^\| WO-999 \|.*\| 4(?: \(Δ [^)]*\))? \| 0 \| 0 \|$/m);
-  assert.match(table, /^\| WO-998 \|.*\| 0(?: \(Δ [^)]*\))? \|$/m);
+  assert.match(
+    terminal,
+    /WO-998 metrics \(value; previous-order delta\):[\s\S]*?\n  operatorDirections: 0; Δ /,
+  );
   assert.match(
     renderMeta(meta),
     /^WO-999 operator directions: 4; scopeExpand 2, operatorOverride 1, RecordCorrected 1; committed decision dispatches \(control prefixes, legacy operator labels and the operator step a lifecycle dispatch names\) and control events\.$/m,
@@ -11229,73 +11236,158 @@ test("process table names the observed cutoff and evidence sources", () => {
   assert.match(renderMetaTable({ orders: [] }), /Observation cutoff: unknown/);
 });
 
-test("the meter table leaves unavailable observations blank, drops an unobserved dispatch row and counts the omissions once", () => {
-  const metrics = {
-    elapsedMs: 10,
-    attempts: 1,
-    gateMs: null,
-    readObligationCount: 2,
-    readObligationBytes: 3,
-    tokens: null,
-    costUsd: null,
-    declaredPromptTokens: 4,
-    operatorCorrections: 0,
-    operatorDirections: 1,
+test("the subject meter has one value per cell and labelled closed-order comparisons", async () => {
+  const {
+    withMeterBlockLast,
+    assertPullRequestBodyShape,
+    assertGitHubBodyProfile,
+  } = await import("./lib/github-body.mjs");
+  const prior = {
+    workOrder: "WO-997",
+    phase: "closed",
+    metrics: {
+      elapsedMs: 7_260_000,
+      tokens: 1000,
+      costUsd: 0.25,
+      commandsRun: 10,
+      stepCount: 20,
+    },
+    boundStops: { count: 0 },
+    boundAcceptances: [],
+    dispatches: [{ role: "executor", observedTokens: 1000 }],
   };
-  const delta = {
-    ...Object.fromEntries(Object.keys(metrics).map((key) => [key, null])),
-    elapsedMs: 5,
-    readObligationCount: 1,
-  };
-  const keys = [
-    "wallClockMs",
-    "bytesReadIntoContext",
-    "commandsRun",
-    "observedTokens",
-    "stepCount",
-    "observedCostUsd",
-    "declaredPromptTokens",
-  ];
-  const dispatch = (role, value) => ({
-    role,
-    ...Object.fromEntries(keys.map((key) => [key, value])),
-    delta: Object.fromEntries(keys.map((key) => [key, value])),
-  });
-  const rendered = renderMetaTable({
-    observedAt: "2030-01-02T03:04:05.000Z",
-    orders: [
+  const subject = {
+    workOrder: "WO-999",
+    phase: "active",
+    metrics: {
+      elapsedMs: 3_600_000,
+      tokens: 2000,
+      costUsd: 0.5,
+      commandsRun: 7,
+      stepCount: 20,
+    },
+    boundStops: { count: 1 },
+    boundAcceptances: [{}],
+    dispatches: [
       {
-        workOrder: "WO-999",
-        phase: "implementing",
-        metrics,
-        delta,
-        dispatches: [dispatch("executor", 7), dispatch("verifier", null)],
+        role: "executor",
+        wallClockMs: 3_600_000,
+        observedTokens: 2000,
+        observedCostUsd: 0.5,
+        commandsRun: 7,
+        stepCount: 20,
+        declaredPromptTokens: 768,
+        boundStops: { count: 1 },
+        boundAcceptances: [{}],
+        delta: { wallClockMs: -3_660_000, observedTokens: 1000 },
+      },
+      {
+        role: "verifier",
+        wallClockMs: null,
+        observedTokens: null,
+        observedCostUsd: null,
+        commandsRun: null,
+        stepCount: null,
+      },
+      {
+        role: "reviewer",
+        wallClockMs: 0,
+        observedTokens: 0,
+        observedCostUsd: 0,
+        commandsRun: 0,
+        stepCount: 0,
+        boundStops: { count: 0 },
+        boundAcceptances: [],
       },
     ],
-  });
+  };
+  const meta = {
+    observedAt: "2030-01-02T03:04:05.000Z",
+    orders: [
+      { ...prior, workOrder: "WO-996" },
+      prior,
+      { ...prior, workOrder: "WO-998", phase: "active" },
+      subject,
+      { ...prior, workOrder: "WO-995" },
+    ],
+  };
+  const rendered = renderMetaTable(meta, { workOrderId: "WO-999" });
+  const body = withMeterBlockLast(
+    "# WO-999\n\nReviewed explanation.\n",
+    rendered,
+  );
+  assertPullRequestBodyShape(body, "fixture PR.md");
+  assertGitHubBodyProfile(body, "fixture PR.md");
   const rows = rendered.split("\n").filter((line) => line.startsWith("|"));
-  assert.ok(
-    rows.every((line) => !line.includes("unavailable")),
-    rendered,
+  assert.equal(
+    rows.length,
+    5,
+    "one header, one separator and every subject dispatch",
   );
-  assert.match(
-    rendered,
-    /^\| WO-999 \| 0 h 0 min \(Δ 0 h 0 min\) \/ 1 \|  \| 2 \(Δ 1\) \/ 3 \|  \/  \| 4 \| 0 \| 1 \|  \|  \|$/m,
+  assert.equal(
+    rows[0],
+    "| Dispatch | Wall clock | Tokens | USD | Commands | Steps | Bound stops | Bound acceptances |",
   );
-  assert.match(
-    rendered,
-    /^\| WO-999\/executor \| 0 h 0 min \(Δ 0 h 0 min\) \| 7 \(Δ 7\) \| 7 \(Δ 7\) \| 7 \(Δ 7\) \| 7 \(Δ 7\) \| 7 \(Δ 7\) \/ 7 \|  \|  \|$/m,
+  assert.equal(
+    rows[2],
+    "| WO-999/executor | 1 h 0 min | 2,000 | 0.5 | 7 | 20 | 1 | 1 |",
   );
-  assert.ok(!rendered.includes("WO-999/verifier"));
-  assert.match(
-    rendered,
-    /\| Corrections \| Directions \| Bound stops \| Bound acceptances \|$/m,
+  assert.equal(
+    rows[3],
+    "| WO-999/verifier | unknown | unknown | unknown | unknown | unknown | unknown | unknown |",
   );
-  // Three missing values, four missing deltas and the seven cells of the
-  // dropped dispatch row.
-  assert.match(
+  assert.equal(
+    rows[4],
+    "| WO-999/reviewer | 0 h 0 min | 0 | 0 | 0 | 0 | 0 | 0 |",
+  );
+  for (const row of rows.slice(2)) {
+    const cells = row
+      .split("|")
+      .slice(1, -1)
+      .map((value) => value.trim());
+    assert.equal(cells.length, 8);
+    assert.match(cells[0], /^WO-999\/(executor|verifier|reviewer)$/);
+    assert.match(cells[1], /^(unknown|\d+ h \d+ min)$/);
+    for (const value of cells.slice(2))
+      assert.match(value, /^(unknown|[\d,]+(?:\.\d+)?)$/);
+  }
+  assert.doesNotMatch(rendered, /\| Work \||omitted|Δ|declared prompt/);
+  const sentences = rendered
+    .split("\n")
+    .filter((line) => line.startsWith("Against "));
+  assert.deepEqual(
+    sentences,
+    [
+      "wall clock 1 h 1 min less",
+      "tokens 1,000 more",
+      "USD 0.25 more",
+      "commands 3 fewer",
+      "steps unchanged (0 difference)",
+      "bound stops 1 more",
+      "bound acceptances 1 more",
+    ].map((value) => `Against WO-997, the previous closed order: ${value}.`),
+  );
+  subject.phase = "closed";
+  assert.equal(
+    renderMetaTable(meta, { workOrderId: "WO-999" }),
     rendered,
-    /^18 unavailable observations omitted as blank cells or rows; unavailable is not zero; unset ceilings are not approvals of a future limit\.$/m,
+    "a closed subject keeps its own rows",
+  );
+  const noPrevious = renderMetaTable(
+    { orders: [meta.orders[2], subject] },
+    { workOrderId: "WO-999" },
+  );
+  assert.doesNotMatch(noPrevious, /Against /);
+  prior.metrics.tokens = null;
+  subject.metrics.costUsd = undefined;
+  const missing = renderMetaTable(meta, { workOrderId: "WO-999" });
+  assert.doesNotMatch(missing, /previous closed order: (tokens|USD)/);
+  assert.match(missing, /previous closed order: wall clock 1 h 1 min less/);
+  const absent = renderMetaTable(meta, { workOrderId: "WO-994" });
+  assert.doesNotMatch(
+    absent,
+    /\| WO-|Against /,
+    "an absent subject never borrows another order's rows",
   );
 });
 

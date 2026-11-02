@@ -828,7 +828,7 @@ const { guardRefusals, stopRefusals, operatorCorrections } = row.metrics;
 if (others.length || row.workOrder !== "WO-099" || guardRefusals !== 1 || stopRefusals !== 1 || operatorCorrections !== 1 || row.corrections.source !== "session-journal")
   throw new Error(`unexpected snapshot ${JSON.stringify(row.metrics)}`);
 ' "$main/docs/evidence/WO-099/meta.json"
-grep -Fq '| Corrections | Directions |' "$main/docs/final-reviews/WO-099/PR.md"
+grep -Fxq '| Dispatch | Wall clock | Tokens | USD | Commands | Steps | Bound stops | Bound acceptances |' "$main/docs/final-reviews/WO-099/PR.md"
 release_command check-surfaces --local >/dev/null
 # A placeholder heading is assigned from the latest tag and recorded (WO-086).
 printf '# WO-099 — fixture (version assigned at activation)\n\n**Release classification:** patch. Existing scope.\n\n**Objective:** Fixture retiming.\n' >"$main/docs/work-orders/WO-099-fixture.md"
@@ -851,6 +851,9 @@ printf '# WO-099 — fixture (v0.2.0)\n\n**Release classification:** patch. Exis
 printf '# Roadmap\n\n## Release boundary\n\nPreserve the existing boundary.\n' >"$main/docs/product/06-roadmap.md"
 printf '%s\n' '{"schemaVersion":1,"type":"WorkOrderActivated","workOrderId":"WO-099","workOrderPath":"docs/work-orders/WO-099-fixture.md"}' >"$main/docs/control/orders/WO-099.jsonl"
 cp "$script_dir/../docs/control/budgets.json" "$main/docs/control/budgets.json"
+# Another open order must never contribute rows to this order's stored body.
+printf '# WO-100 — other fixture\n' >"$main/docs/work-orders/WO-100-fixture.md"
+printf '%s\n' '{"schemaVersion":1,"type":"WorkOrderActivated","workOrderId":"WO-100","workOrderPath":"docs/work-orders/WO-100-fixture.md"}' >"$main/docs/control/orders/WO-100.jsonl"
 # A stored body whose meter block drifted between the heading and the prose.
 printf '# WO-099\n\n<!-- dotln-process-meter:start -->\n\nstale meter\n\n<!-- dotln-process-meter:end -->\n\nFirst reviewed paragraph.\n\nSecond reviewed paragraph.\n' >"$main/docs/final-reviews/WO-099/PR.md"
 moved="$(release_command prepare --local)"
@@ -863,6 +866,16 @@ assert.ok(block, "meter block present");
 assert.equal(body.slice(0, block.index), "# WO-099\n\nFirst reviewed paragraph.\n\nSecond reviewed paragraph.\n\n", "the prose keeps its bytes and precedes the block");
 assert.equal(body.slice(block.index + block[0].length), "\n", "the block is last");
 assert.doesNotMatch(body, /stale meter/u);
+assert.equal(body.split("\n").filter((line) => line.startsWith("| Dispatch |")).length, 1);
+assert.match(body, /^\| Dispatch \| Wall clock \| Tokens \| USD \| Commands \| Steps \| Bound stops \| Bound acceptances \|$/m);
+assert.match(body, /^\| WO-099\/executor \|/m);
+assert.doesNotMatch(body, /WO-100|\| Work \||omitted|Δ/);
+for (const row of body.split("\n").filter((line) => line.startsWith("| WO-"))) {
+  const cells = row.split("|").slice(1, -1).map((cell) => cell.trim());
+  assert.equal(cells.length, 8);
+  assert.match(cells[1], /^(unknown|\d+ h \d+ min)$/);
+  for (const cell of cells.slice(2)) assert.match(cell, /^(unknown|[\d,]+(?:\.\d+)?)$/);
+}
 JS
 "$node_bin" --input-type=module - "$main" <<'JS'
 import assert from 'node:assert/strict';
@@ -879,6 +892,8 @@ const body=await regeneratedPullRequestBody(root,'WO-099','HEAD');
 assert.match(body,/^# WO-099\n\nFirst reviewed paragraph\.\n\nSecond reviewed paragraph\.\n\n<!-- dotln-process-meter:start -->/u);
 assert.match(body,/<!-- dotln-process-meter:end -->\n$/u);
 assert.doesNotMatch(body,/old/u);
+assert.match(body,/^\| WO-099\/executor \|/m);
+assert.doesNotMatch(body,/WO-100|\| Work \||omitted|Δ/);
 writeFileSync(path, stored);
 JS
 # The shape check judges the current order's stored body at check-surfaces.

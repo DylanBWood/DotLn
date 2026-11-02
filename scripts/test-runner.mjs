@@ -603,6 +603,7 @@ export const machinerySources = {
     "scripts/harness.mjs",
     "scripts/lib/adjacent-queue.mjs",
     "scripts/lib/gate-evidence.mjs",
+    "scripts/lib/github-body.mjs",
     "scripts/lib/harness.mjs",
     "scripts/lib/plan-receipts.mjs",
     "scripts/lib/release-kit-runtime.mjs",
