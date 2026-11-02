@@ -29,6 +29,8 @@ import {
   absoluteBodyLinks,
   assertGitHubBodyProfile,
   assertPullRequestBodyShape,
+  criterionRecordRefusal,
+  criterionRecordsApply,
   withTemporaryBody,
 } from "./lib/github-body.mjs";
 import {
@@ -1277,6 +1279,16 @@ const main = async () => {
       );
     const control = readControl(subject, "HEAD");
     const state = control.orders.get(workOrderId)?.state;
+    // The operator merges by hand and reads the order's waived and defective
+    // criteria above the body's process table, so the body names exactly the
+    // lines release preparation writes for the committed record. The pass
+    // already refused stale lines while preparation could rewrite them, so a
+    // refusal here means the body changed after it (WO-249).
+    const recordProblem = criterionRecordRefusal(subject, body, state);
+    if (recordProblem)
+      throw new Error(
+        `${bodyFile}: ${recordProblem}\n${criterionRecordsApply(subject, state) ? "Restore the reviewed lines, commit" : "Commit"} the body and publish again.`,
+      );
     let gateBlock;
     if (state?.repositoryId) {
       if (!state.targetRecords)

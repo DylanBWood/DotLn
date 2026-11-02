@@ -68,6 +68,7 @@ import {
 import {
   checkPassReceipt,
   checkPlanGate,
+  openOrderCriteriaAdvisories,
   targetOrderPathAdvisories,
   OVERRIDES,
   overridePlanHold,
@@ -695,6 +696,7 @@ const failureCounts = (counts) => ({
   corrections: 0,
   offRamps: 0,
   offRampEvents: {},
+  defectClasses: {},
   amendments: 0,
   withdrawnAmendments: 0,
   overriddenHolds: 0,
@@ -713,6 +715,10 @@ const windowCounts = failureCounts({
   withdrawnAmendments: 1,
   overriddenHolds: 1,
 });
+// The plan start block carries the window's counts without the class
+// breakdown, which stays on the failures page (WO-249).
+const startBlockCounts = ({ defectClasses, ...counts }) => counts;
+const startCounts = startBlockCounts(windowCounts);
 // Every file under a checkout, ignored ones included, by path and bytes.
 const treeDigest = (repo) => {
   const hash = createHash("sha256");
@@ -6896,6 +6902,229 @@ else {
       },
     );
     await check(
+      "WO-249 plan failures counts a defect record, a retraction and a reopened handoff as off-ramps and each defect by class, within the plan start bound",
+      async () => {
+        const repo = join(parent, "failures-criteria");
+        mkdirSync(repo);
+        runGit(repo, ["init", "-q", "-b", "main"]);
+        excludeFixtureOwnership(repo);
+        write(repo, ".gitignore", "docs/intake/**\ndocs/control/local/**\n");
+        const day = "2030-02-01";
+        const captured = {
+          capture: "docs/intake/fixture-criteria.md",
+          captureHash: sha256("fixture criteria capture"),
+        };
+        write(
+          repo,
+          "docs/work-orders/WO-805-fixture.md",
+          "# WO-805 — fixture\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n\n**Acceptance criteria (all required)**\n\n1. One.\n2. Two.\n",
+        );
+        write(
+          repo,
+          "docs/control/orders/WO-805.jsonl",
+          lines([
+            {
+              type: "WorkOrderActivated",
+              workOrderId: "WO-805",
+              workOrderPath: "docs/work-orders/WO-805-fixture.md",
+              recordedAt: at(day, 0),
+            },
+            {
+              type: "ImplementationReady",
+              workOrderId: "WO-805",
+              recordedAt: at(day, 1),
+            },
+            {
+              type: "HandoffReopened",
+              workOrderId: "WO-805",
+              handoff: { ordinal: 2, type: "ImplementationReady" },
+              reason: "Fixture widening.",
+              ...captured,
+              actor: failureActor,
+              recordedAt: at(day, 2),
+            },
+            {
+              type: "ImplementationReady",
+              workOrderId: "WO-805",
+              recordedAt: at(day, 3),
+            },
+            {
+              type: "VerificationRequested",
+              workOrderId: "WO-805",
+              verificationId: "VER-001",
+              reportPath: "docs/verifications/WO-805/VER-001.md",
+              recordedAt: at(day, 4),
+            },
+            {
+              type: "CriterionDefectRecorded",
+              workOrderId: "WO-805",
+              criterionId: "1",
+              criterionHash: sha256("One."),
+              class: "bookkeeping",
+              evidence: "Its subject is a count.",
+              actor: failureActor,
+              recordedAt: at(day, 5),
+            },
+            {
+              type: "CriterionDefectRecorded",
+              workOrderId: "WO-805",
+              criterionId: "2",
+              criterionHash: sha256("Two."),
+              class: "later-phase",
+              evidence: "It reads HEAD before the final review commit.",
+              actor: failureActor,
+              recordedAt: at(day, 6),
+            },
+            {
+              type: "OffRampRetracted",
+              workOrderId: "WO-805",
+              subject: {
+                ordinal: 6,
+                type: "CriterionDefectRecorded",
+                criterionId: "1",
+              },
+              reason: "Fixture retraction.",
+              ...captured,
+              actor: failureActor,
+              recordedAt: at(day, 7),
+            },
+          ]),
+        );
+        commit(repo, "criteria record");
+        const page = await plan(["failures", "--all"], repo);
+        assert.equal(page.counts.record.offRamps, 4);
+        assert.deepEqual(page.counts.record.offRampEvents, {
+          OffRampRetracted: 1,
+          CriterionDefectRecorded: 2,
+          HandoffReopened: 1,
+        });
+        // The record the operator retracted stays an off-ramp but leaves the
+        // class counts planning reads.
+        assert.deepEqual(page.counts.record.defectClasses, {
+          "later-phase": 1,
+        });
+        assert.deepEqual(
+          page.rows
+            .filter((row) => row.kind === "off-ramp")
+            .map(({ event, criterion, class: kind, retracts, retracted }) => [
+              event,
+              criterion ?? null,
+              kind ?? null,
+              retracts ?? null,
+              retracted ?? false,
+            ]),
+          [
+            ["OffRampRetracted", "1", null, "CriterionDefectRecorded", false],
+            ["CriterionDefectRecorded", "2", "later-phase", null, false],
+            ["CriterionDefectRecorded", "1", "bookkeeping", null, true],
+            ["HandoffReopened", null, null, null, false],
+          ],
+        );
+        // The start block carries the counts by kind within its compact
+        // bound; the class breakdown stays on the failures page.
+        const start = failuresAtStart(repo);
+        assert.equal(start.overrun, undefined, JSON.stringify(start));
+        assert.ok(Buffer.byteLength(JSON.stringify(start)) <= 1024);
+        assert.equal(start.counts.defectClasses, undefined);
+        assert.equal(start.counts.offRampEvents.CriterionDefectRecorded, 2);
+        // The window that refused the 2026-10-31 pass, with every off-ramp
+        // kind recorded nine times, still fits; its five classes would not.
+        const kinds = [
+          "DispatchBoundAccepted",
+          "CriterionWaived",
+          "WorkOrderWithdrawn",
+          "RecordCorrected",
+          "OperatorOverrideRecorded",
+          "CriterionDefectRecorded",
+          "OffRampRetracted",
+          "HandoffReopened",
+        ];
+        const every = {
+          command: "npm run plan -- failures",
+          since: "2026-10-30T17:48:53.000Z",
+          items: 6,
+          counts: {
+            failedVerifications: 0,
+            failedFinalReviews: 0,
+            repairs: 0,
+            ordersMadeReady: 1,
+            failedFirstVerifications: 0,
+            corrections: 0,
+            offRamps: kinds.length * 9,
+            offRampEvents: Object.fromEntries(kinds.map((kind) => [kind, 9])),
+            amendments: 2,
+            withdrawnAmendments: 1,
+            overriddenHolds: 0,
+          },
+          finalReviewEscapes:
+            "1/10 reviews; 9 orders; 0 unclassed; rate unknown (9 measured)",
+          localReleaseCloses: 8,
+          localHostDenials: 2,
+          interventions: { count: 2, unclassified: 1 },
+          longPhases: 1,
+          repeatedGateRuns: 14,
+          recentTracks: {
+            counted: 8,
+            delivery: 1,
+            machinery: 7,
+            evidence: 0,
+            unknown: 0,
+          },
+          retainedJournals: { lanes: 0, files: 0, windowHours: 720 },
+          localCoverage: "local; Codex dispatch-only; incomplete",
+          sinceEntropyReview: {
+            review: "REVIEW-004",
+            endedAt: "2026-10-01T00:00:00.000Z",
+            finalReviewPassedOrders: 40,
+          },
+        };
+        assert.deepEqual(fitStartBlock(structuredClone(every)), every);
+        const classes = structuredClone(every);
+        classes.counts.defectClasses = Object.fromEntries(
+          [
+            "bookkeeping",
+            "later-phase",
+            "absent-input",
+            "host-behavior",
+            "contradiction",
+          ].map((name) => [name, 9]),
+        );
+        assert.ok(
+          Buffer.byteLength(JSON.stringify(classes)) > 1024,
+          "the class breakdown would take the block past its bound",
+        );
+        // The plan check screens the criteria of every active and open order
+        // the pass is about to file against, and refuses nothing.
+        write(
+          repo,
+          "docs/work-orders/WO-806-fixture.md",
+          "# WO-806 — fixture\n\n**Acceptance criteria (all required)**\n\n1. The handoff completes within 30 s.\n2. The status names the phase.\n",
+        );
+        assert.deepEqual(
+          openOrderCriteriaAdvisories(repo, [
+            {
+              id: "WO-806",
+              section: "Open",
+              authorityLink: "WO-806-fixture.md",
+            },
+            {
+              id: "WO-805",
+              section: "Active",
+              authorityLink: "WO-805-fixture.md",
+            },
+            {
+              id: "WO-806",
+              section: "Closed",
+              authorityLink: "WO-806-fixture.md",
+            },
+          ]),
+          [
+            'criteria advisory: WO-806 criterion 1: "30 s" (a figure with a unit)',
+          ],
+        );
+      },
+    );
+    await check(
       "WO-172 plan failures counts each kind of item in its window, lists an event without a time only under --all, and pages the record under the feed's bound",
       async () => {
         const repo = failureRepo(parent, "failures-record");
@@ -7455,7 +7684,7 @@ else {
           command: "npm run plan -- failures",
           since: "2030-01-02T12:00:00.000Z",
           items: 12,
-          counts: windowCounts,
+          counts: startCounts,
           finalReviewEscapes:
             "0/4 reviews; 3 orders; 0 unclassed; rate unknown (0 measured)",
           localReleaseCloses: 0,
@@ -7516,7 +7745,10 @@ else {
         const empty = await plan(["start", "empty"], repo);
         assert.equal(empty.failures.since, "2031-01-01T00:00:00.000Z");
         assert.equal(empty.failures.items, 0);
-        assert.deepEqual(empty.failures.counts, failureCounts({}));
+        assert.deepEqual(
+          empty.failures.counts,
+          startBlockCounts(failureCounts({})),
+        );
         // Counts that cannot be computed are one line; the branch opens.
         runGit(repo, ["switch", "-q", "main"]);
         writeFileSync(
@@ -7558,7 +7790,7 @@ else {
           review: null,
           finalReviewPassedOrders: "unknown",
         });
-        assert.deepEqual(none.failures.counts, windowCounts);
+        assert.deepEqual(none.failures.counts, startCounts);
         // A filed receipt without a usable completion time never falls back
         // to filing time or an older review; startup remains available.
         const receiptPath =

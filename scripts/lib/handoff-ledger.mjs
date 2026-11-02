@@ -25,7 +25,9 @@ const inlinePresentation = (line) =>
 /**
  * The numbered acceptance criteria an order's text declares, each with the
  * text of its item (wrapped lines included, up to a blank line), or null
- * when the text holds no such list to check against.
+ * when the text holds no such list to check against. The item's text, trimmed
+ * and its wrapped lines joined by one space, is what a defect record hashes,
+ * so a change to that joining rule invalidates every standing record.
  */
 export function declaredCriteria(text) {
   const start = text.search(

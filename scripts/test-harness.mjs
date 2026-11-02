@@ -784,7 +784,12 @@ test("foreground CLI dispatch binds the actual roleless hook session and preserv
     assert.equal(state("stale-verify").role, undefined);
     const report =
       '# Fixture report\n\n**Actor attestation:** {"harness":"codex-cli","harnessVersion":"fixture","model":"fixture","effort":"high","source":"self-reported"}\n\n**Process cost:** unknown; cause no-session\n';
-    write(root, "docs/verifications/WO-999/VER-001.md", report);
+    // A fail names its basis in its findings block (WO-249).
+    write(
+      root,
+      "docs/verifications/WO-999/VER-001.md",
+      `${report}\n<!-- dotln-findings:start -->\n[{"id": "F1", "route": "blocking", "class": "escape", "summary": "A fixture regression.", "basis": {"regression": "the fixture behavior main had"}, "reproduction": "docs/evidence/WO-999/regression.md"}]\n<!-- dotln-findings:end -->\n`,
+    );
     resume("verification-result", "fail", ...actor);
     bind("fix", "executor", "RepairCompleted");
     resume("repair-complete", ...actor);
@@ -983,7 +988,8 @@ test("WO-139 Codex executor and fix completion automatically release after the f
     write(
       root,
       "docs/verifications/WO-999/VER-001.md",
-      '# Fixture finding\n\n**Actor attestation:** {"harness":"codex-cli","harnessVersion":"fixture","model":"fixture","effort":"high","source":"self-reported"}\n\n**Process cost:** unknown; cause no-session\n',
+      // A fail names its basis in its findings block (WO-249).
+      '# Fixture finding\n\n**Actor attestation:** {"harness":"codex-cli","harnessVersion":"fixture","model":"fixture","effort":"high","source":"self-reported"}\n\n**Process cost:** unknown; cause no-session\n\n<!-- dotln-findings:start -->\n[{\"id\": \"F1\", \"route\": \"blocking\", \"class\": \"escape\", \"summary\": \"A fixture regression.\", \"basis\": {\"regression\": \"the fixture behavior main had\"}, \"reproduction\": \"docs/evidence/WO-999/regression.md\"}]\n<!-- dotln-findings:end -->\n',
     );
     pass("verification-result", "fail", ...actor);
     assert.equal(harnessWriterView(root).reserved, false);

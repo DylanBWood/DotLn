@@ -1,0 +1,598 @@
+{
+  "sourceRevision": "v0.16.0",
+  "historicalEvidence": [
+    {
+      "path": "docs/evidence/WO-042/authority.json",
+      "hash": "sha256:9913761f191d1296caca8be6cb1e6dd096684b41e7ba6ab2f1a6a3b33ad29636",
+      "unchanged": true
+    },
+    {
+      "path": "docs/evidence/WO-042/bundle-diff.json",
+      "hash": "sha256:597edafb738a1a3fc3334bf8c971b681b2a5b02dbbe774e0f204e1a0d718fd43",
+      "unchanged": true
+    },
+    {
+      "path": "docs/evidence/WO-042/artifact-identity/semantic-hash-inventory.json",
+      "hash": "sha256:db5ee14a066d7f08d0b2ecd4eb1738ab616da71636f2b7a26943f49a86824c0f",
+      "unchanged": true
+    },
+    {
+      "path": "docs/evidence/WO-042/artifact-identity/scenario.jsonl",
+      "hash": "sha256:a1e029360211a8c57d5541c4424d0b2a2719acd8bb04f7c982e05885dd6c2feb",
+      "unchanged": true
+    },
+    {
+      "path": "docs/evidence/WO-042/artifact-identity/audit.json",
+      "hash": "sha256:425f5f3d80607291234465087754d4dfbfeaddd80629bd8fba1541d140819acd",
+      "unchanged": true
+    },
+    {
+      "path": "docs/evidence/WO-042/artifact-identity/negative-transcripts.json",
+      "hash": "sha256:af0bc7acfbac7a901753ba70580b2ab9ebc6f4256c3abc9cadd90dfbf8e8a28c",
+      "unchanged": true
+    },
+    {
+      "path": "docs/evidence/WO-042/verification/events.jsonl",
+      "hash": "sha256:1db1f0482c43f7bad9aba701e1182924ffdc912885b5c3b87565f35ec5b5ec6a",
+      "unchanged": true
+    },
+    {
+      "path": "docs/evidence/WO-042/verification/matrix.json",
+      "hash": "sha256:23b6f816aaaad1c6850d35ebf1ef8f4ed8f5c5c948867403dbe650953cd058c7",
+      "unchanged": true
+    },
+    {
+      "path": "docs/evidence/WO-042/verification/stale-status.json",
+      "hash": "sha256:454839ec5926c78da6bf677da5ed8b0f97afb1df040202f0d47381e7d3177ed1",
+      "unchanged": true
+    },
+    {
+      "path": "docs/evidence/WO-042/verification/stale-status.txt",
+      "hash": "sha256:67ee575a14fdad6979fe0b5b2a419a0ff55a03e89294cd238db2093d81a38231",
+      "unchanged": true
+    }
+  ],
+  "generatedSurfaces": 42,
+  "files": [
+    {
+      "path": ".agents/skills/dotln-executor/SKILL.md",
+      "change": "changed",
+      "before": "sha256:0ccd050c472284df4ebc8d93c2314b41ed18ed2127abe8d04345484c5ca67bfe",
+      "after": "sha256:a5048f44588ffeb30ba95925dc28c9e547151556b143848e222c3a3990d692b1"
+    },
+    {
+      "path": ".agents/skills/dotln-planner/SKILL.md",
+      "change": "changed",
+      "before": "sha256:c3ce28c88b59f7293757777ec15e1aad74e7b2ef9927b1eda7b1d5242c6815f5",
+      "after": "sha256:28618a29030294f26281871fdeb69061f5dda0ce7d370ed41acb1737352d741e"
+    },
+    {
+      "path": ".agents/skills/dotln-refuter/SKILL.md",
+      "change": "added",
+      "before": null,
+      "after": "sha256:a82e9e7dcec5298ce31fc18860cc20eb79de3c5202f3cb7df58256af79c1c0e9"
+    },
+    {
+      "path": ".agents/skills/dotln-release-close/SKILL.md",
+      "change": "changed",
+      "before": "sha256:cfd5402f17517d6a2dba8481f91981ef631e70d9e800f0ec23ceeb90304ed1ef",
+      "after": "sha256:255cea12a504923014eb2472dde81fc1b5b7bebb24e1251b63441775193b24b3"
+    },
+    {
+      "path": ".agents/skills/dotln-reviewer/SKILL.md",
+      "change": "changed",
+      "before": "sha256:f1bc3fbc5b11230b9fd2b2de62cfc7befc2949692e91ef358543ee0c23bf0dfe",
+      "after": "sha256:be96d77a6de753a033ccceef8ba0f6cb7862dad534879187e9667e416e589a43"
+    },
+    {
+      "path": ".agents/skills/dotln-router/SKILL.md",
+      "change": "added",
+      "before": null,
+      "after": "sha256:ef6678e30d73a55992b5db24fb9ff221b25a59ece3986795905af4dadf8e8668"
+    },
+    {
+      "path": ".agents/skills/dotln-verifier/SKILL.md",
+      "change": "changed",
+      "before": "sha256:bbc52866dc1877e029ea73df81549e895c35b971c8b06b037f02b72b83ccdddc",
+      "after": "sha256:03618b0b5e7f3da5ce3d3f9f182338d09e27feb33f8cef4430f301cbf86a9497"
+    },
+    {
+      "path": ".claude/agents/dotln-executor.md",
+      "change": "added",
+      "before": null,
+      "after": "sha256:28749825af91c25fb8cc0568e105437fbe35db8956fc359071b6917665430860"
+    },
+    {
+      "path": ".claude/agents/dotln-release-close.md",
+      "change": "added",
+      "before": null,
+      "after": "sha256:a87af1b0b1a47061c5cac756c605e66304dceb12a89c3589c57815616b0438c0"
+    },
+    {
+      "path": ".claude/agents/dotln-reviewer.md",
+      "change": "added",
+      "before": null,
+      "after": "sha256:47ff0690f7422d514dd1e5cd3e6098893e50d0f963b5afbdd2e0522cd4f4f515"
+    },
+    {
+      "path": ".claude/agents/dotln-verifier.md",
+      "change": "added",
+      "before": null,
+      "after": "sha256:66119f5b6e95f718ad1aa72c90468072fbbe2d9a433f54b752374292ae56f08e"
+    },
+    {
+      "path": ".claude/agents/dotln-worker-fable.md",
+      "change": "added",
+      "before": null,
+      "after": "sha256:9e2b704baff8bfcee8cf1d8b114a550da0f206c3ab18a520c1e8daac51b91d31"
+    },
+    {
+      "path": ".claude/agents/dotln-worker.md",
+      "change": "added",
+      "before": null,
+      "after": "sha256:8f0afda79d4541dda2e113381d1eb812bb7bacf9f6882a352694bdde7179dc31"
+    },
+    {
+      "path": ".claude/harness-manifest.json",
+      "change": "changed",
+      "before": "sha256:ffe3c8d16eda25d7b95b0aef93ed9a8cdc3a45f1a7b91d8bfa2540ab2acb7ce6",
+      "after": "sha256:c3cfc0f4096ebaae92805100f5187cb18b69dd14450f2f7b75dd54522296b00b"
+    },
+    {
+      "path": ".claude/hooks/agent-finished.mjs",
+      "change": "added",
+      "before": null,
+      "after": "sha256:8916eaca042a43a81717c19a6009f06d79ea125f7a494426d30c11e6aa4d38e8"
+    },
+    {
+      "path": ".claude/hooks/commit-msg.mjs",
+      "change": "changed",
+      "before": "sha256:81833397574af1de4b51fe82002538a9321b8008a8df3a42f8ff81fbb3cc1636",
+      "after": "sha256:36d386d5b3c8b43e6e158fd8dcb99e6ef040cfd932ecfe4c1af9a9a7d4a36f51"
+    },
+    {
+      "path": ".claude/hooks/concurrent-work-requires-worktrees.mjs",
+      "change": "changed",
+      "before": "sha256:b4643070bc39090dfc63b5cec3c9b995a83fd30f3b63612654f08f9f4b21a0a4",
+      "after": "sha256:5719423be3065af0d0a4da06628adb7e70483fea0c71a1b26b139e21be30275d"
+    },
+    {
+      "path": ".claude/hooks/failure-observer.mjs",
+      "change": "added",
+      "before": null,
+      "after": "sha256:b0b674b58f8323b12827c5b9a270f5e2ea7435ebdc45c9da6a31d0f5191b841d"
+    },
+    {
+      "path": ".claude/hooks/finish.mjs",
+      "change": "changed",
+      "before": "sha256:507ad4ff88df3ee473536e007ba4cad10a588e192e85624aaf161602b582cbab",
+      "after": "sha256:b76a059510f77efb5fa2de5d1165b16a7ebd04db3cc48223dcb19988ebef4c2b"
+    },
+    {
+      "path": ".claude/hooks/no-attribution.mjs",
+      "change": "changed",
+      "before": "sha256:48e4d90766522947cffe037ec545df1842e9032f649f6bfc30cd51ae7af342a0",
+      "after": "sha256:cacc6cf9cdad8a9880ac6405f4491a6e4f6dcdabbaf2c7dde69d656e12c6e664"
+    },
+    {
+      "path": ".claude/hooks/no-lint-type-disables-as-fixes.mjs",
+      "change": "changed",
+      "before": "sha256:bf5242b06217fc0ccee134c910196eb992e80af92ab1c2374f153161789389ec",
+      "after": "sha256:0ef6f4f88c8a2fb1de006a0209b531a5848cc3d73bc41a7f3f13b456bccc991a"
+    },
+    {
+      "path": ".claude/hooks/no-partial-completion.mjs",
+      "change": "removed",
+      "before": "sha256:d3dc9ba41d8a010d4ed29250341b3ad4e682609f72e0a96781dd8b256ef83f72",
+      "after": null
+    },
+    {
+      "path": ".claude/hooks/permission-denied.mjs",
+      "change": "added",
+      "before": null,
+      "after": "sha256:77d5a4fab512ca5447a6eaa335d6e7a0ad7fdd38ed12086d2afb5988125bc4ab"
+    },
+    {
+      "path": ".claude/hooks/permissions.mjs",
+      "change": "changed",
+      "before": "sha256:025b2f4d5ea813f2ec071d5227cc22deb6c617279a02ff797fd6376215fe8177",
+      "after": "sha256:6264a0546e4736f824104e22d21eaaa4b8a38260f8c2afca5e8af8341df414a9"
+    },
+    {
+      "path": ".claude/hooks/presence-posttooluse.mjs",
+      "change": "added",
+      "before": null,
+      "after": "sha256:4baad9cfa89c6d1ff8bb948c15b897d8d7a466fa47ab7f395e3fedbf8bf6276c"
+    },
+    {
+      "path": ".claude/hooks/presence-pretooluse.mjs",
+      "change": "added",
+      "before": null,
+      "after": "sha256:a4a802652b84d384b7aea4d2a05d1f57aa451c17eaaa612031ad99c23f74342a"
+    },
+    {
+      "path": ".claude/hooks/presence-stop.mjs",
+      "change": "added",
+      "before": null,
+      "after": "sha256:80ca2e2ad88e8a08549c05b1dce31f141cebee774903fea786759f7ab2f1f426"
+    },
+    {
+      "path": ".claude/hooks/presence-userpromptsubmit.mjs",
+      "change": "added",
+      "before": null,
+      "after": "sha256:6d18a7b9f373a44358aecd2caf789be4a73f13a7ce1363eb81a3bf07a473f5b7"
+    },
+    {
+      "path": ".claude/hooks/read-observer.mjs",
+      "change": "changed",
+      "before": "sha256:597c4b0e946b7376eece05fa9ad42ab16bb03a5b2672dd8014a51f2e516da3db",
+      "after": "sha256:1dd2acfd33172a36010edda69258993803560dedf2ebc0f40584c6d1944a65d6"
+    },
+    {
+      "path": ".claude/hooks/read-your-own-output.mjs",
+      "change": "removed",
+      "before": "sha256:281cb61ab498d6535d2762ab13a1a9d739c5e281f7ddb90c482e98351962558f",
+      "after": null
+    },
+    {
+      "path": ".claude/hooks/session.mjs",
+      "change": "changed",
+      "before": "sha256:1dca42f7938197193cdce1ff245926e103a7e1ff97f984255b52b883ec433d9a",
+      "after": "sha256:0d88f7aeacd657928582c2b83df29526d33d731e0ba07ebc20b72f87ca926060"
+    },
+    {
+      "path": ".claude/hooks/verify-app-before-done.mjs",
+      "change": "removed",
+      "before": "sha256:b9e33795c5022af5cc6c9305920bc90d3717def8b3545b5fb56f48ac8ce423d3",
+      "after": null
+    },
+    {
+      "path": ".claude/hooks/write-observer.mjs",
+      "change": "added",
+      "before": null,
+      "after": "sha256:527e951369b12856f6633f475418ce1672faaae0532b998321ad29dc6439ec04"
+    },
+    {
+      "path": ".claude/settings.json",
+      "change": "changed",
+      "before": "sha256:734ef402c8da7ac27547e673005a7f9f314c9af9c7599757467ea3e41a73b1c0",
+      "after": "sha256:181edebb11d4428de8bdbfa9ee1ddbc97dae4e256684a84990ab280ed3478081"
+    },
+    {
+      "path": ".claude/skills/dotln-executor/SKILL.md",
+      "change": "changed",
+      "before": "sha256:7022395edf278f7a0e3c6ccf9a74f9a6d13551ab31afd6a03ee0615350b1e173",
+      "after": "sha256:a5048f44588ffeb30ba95925dc28c9e547151556b143848e222c3a3990d692b1"
+    },
+    {
+      "path": ".claude/skills/dotln-planner/SKILL.md",
+      "change": "changed",
+      "before": "sha256:7546dc8e4925f5e8d7f5b37e6ae69911f3fb2b5ffd807f6dc90e7e4f07834dcd",
+      "after": "sha256:28618a29030294f26281871fdeb69061f5dda0ce7d370ed41acb1737352d741e"
+    },
+    {
+      "path": ".claude/skills/dotln-refuter/SKILL.md",
+      "change": "added",
+      "before": null,
+      "after": "sha256:a82e9e7dcec5298ce31fc18860cc20eb79de3c5202f3cb7df58256af79c1c0e9"
+    },
+    {
+      "path": ".claude/skills/dotln-release-close/SKILL.md",
+      "change": "changed",
+      "before": "sha256:9b3cb4923bc2f0f89726cd948a4f0ed478fcd553b8a0825ac16eff9dfa87d29e",
+      "after": "sha256:255cea12a504923014eb2472dde81fc1b5b7bebb24e1251b63441775193b24b3"
+    },
+    {
+      "path": ".claude/skills/dotln-reviewer/SKILL.md",
+      "change": "changed",
+      "before": "sha256:8e284d04794f9f595238d85c15b8e015a17be3ddd2b87f217fc3a616f69ccee5",
+      "after": "sha256:be96d77a6de753a033ccceef8ba0f6cb7862dad534879187e9667e416e589a43"
+    },
+    {
+      "path": ".claude/skills/dotln-router/SKILL.md",
+      "change": "added",
+      "before": null,
+      "after": "sha256:ef6678e30d73a55992b5db24fb9ff221b25a59ece3986795905af4dadf8e8668"
+    },
+    {
+      "path": ".claude/skills/dotln-verifier/SKILL.md",
+      "change": "changed",
+      "before": "sha256:c49b9e6c020fa3aeb3932caf3bb8fc868a1144f5f0701a051719a464fb7f201e",
+      "after": "sha256:03618b0b5e7f3da5ce3d3f9f182338d09e27feb33f8cef4430f301cbf86a9497"
+    },
+    {
+      "path": ".codex/config.toml",
+      "change": "added",
+      "before": null,
+      "after": "sha256:fc1e5fe1a12f023b0cfd1811ce4e39ca4a2ee06973effc8398f58ccf35a25131"
+    },
+    {
+      "path": ".codex/hooks.json",
+      "change": "added",
+      "before": null,
+      "after": "sha256:224ad305aa1324f6c4fbf80cc52184a646292a4fc176963248432f255cf1b1a5"
+    },
+    {
+      "path": ".codex/hooks/continuation.mjs",
+      "change": "added",
+      "before": null,
+      "after": "sha256:d556119df32f24c41b968aa0f1e48ca06c04ae4c8d14dc352d0e4a2d725dbaa5"
+    },
+    {
+      "path": "CLAUDE.md",
+      "change": "changed",
+      "before": "sha256:c35c21eb282cede1f6782d9bbc93e996e9b3dc0537b7f637159af074abcdf579",
+      "after": "sha256:4dfd46930efcdb69dd167f9e6d466f2fcbf62c22a85622d3774ea6ff9f82e081"
+    }
+  ],
+  "comparison": "v0.16.0 to WO-249 revision 002 unequipped build; current support-only projection compared separately",
+  "supportEquipment": {
+    "supportIds": [
+      "adjacent-repair",
+      "decision-receipts",
+      "follow-up-queue",
+      "operator-check-in",
+      "communication-intent",
+      "tinkerer-economy"
+    ],
+    "savedHash": "fnv1a64:21808c5d186f7f73",
+    "equippedHash": "fnv1a64:809ede7b112f1d42",
+    "authorityUnchanged": true,
+    "hostBehaviorUnchanged": true,
+    "otherRoleProceduresUnchanged": true,
+    "files": [
+      {
+        "path": ".agents/skills/dotln-executor/SKILL.md",
+        "change": "declared executor support fragments, repair modifier and build identity",
+        "before": "sha256:a5048f44588ffeb30ba95925dc28c9e547151556b143848e222c3a3990d692b1",
+        "after": "sha256:e7c61e0f5a6b7b25c2a98c6d6f3e03eb85b70c68350db851b62a8c07f496c241"
+      },
+      {
+        "path": ".agents/skills/dotln-planner/SKILL.md",
+        "change": "support origins and derived build/file identities only",
+        "before": "sha256:28618a29030294f26281871fdeb69061f5dda0ce7d370ed41acb1737352d741e",
+        "after": "sha256:ac75d5709bacd232259929838c434163efe5b37a409b921c3ecefddeb0199087"
+      },
+      {
+        "path": ".agents/skills/dotln-refuter/SKILL.md",
+        "change": "support origins and derived build/file identities only",
+        "before": "sha256:a82e9e7dcec5298ce31fc18860cc20eb79de3c5202f3cb7df58256af79c1c0e9",
+        "after": "sha256:f4faff38f888b557bb5bb26b20005f559bd7864658b2320453aaa0313e2d52d5"
+      },
+      {
+        "path": ".agents/skills/dotln-release-close/SKILL.md",
+        "change": "support origins and derived build/file identities only",
+        "before": "sha256:255cea12a504923014eb2472dde81fc1b5b7bebb24e1251b63441775193b24b3",
+        "after": "sha256:c7787af48f053beb19c964ab98d13e372c50e4be67834001eb9f2289ca324c94"
+      },
+      {
+        "path": ".agents/skills/dotln-reviewer/SKILL.md",
+        "change": "support origins and derived build/file identities only",
+        "before": "sha256:be96d77a6de753a033ccceef8ba0f6cb7862dad534879187e9667e416e589a43",
+        "after": "sha256:f6538537341d95324700a4eb06d424a83b3eec5f968489334e4c99a541263d52"
+      },
+      {
+        "path": ".agents/skills/dotln-router/SKILL.md",
+        "change": "support origins and derived build/file identities only",
+        "before": "sha256:ef6678e30d73a55992b5db24fb9ff221b25a59ece3986795905af4dadf8e8668",
+        "after": "sha256:3394ed6e0e64974e999f51f50ceabf3809a1a135527d1b6c57fc9ecf2ae65293"
+      },
+      {
+        "path": ".agents/skills/dotln-verifier/SKILL.md",
+        "change": "support origins and derived build/file identities only",
+        "before": "sha256:03618b0b5e7f3da5ce3d3f9f182338d09e27feb33f8cef4430f301cbf86a9497",
+        "after": "sha256:7ecc680851faf6ee4bb35dacb1074e824e3a2e934eb8c40803762bf6897d22a8"
+      },
+      {
+        "path": ".claude/agents/dotln-executor.md",
+        "change": "support origins and derived build/file identities only",
+        "before": "sha256:28749825af91c25fb8cc0568e105437fbe35db8956fc359071b6917665430860",
+        "after": "sha256:b90a72f1d599b11178f251c63b9173ef0855ac9556a816ba7d719fec8663ae1c"
+      },
+      {
+        "path": ".claude/agents/dotln-release-close.md",
+        "change": "support origins and derived build/file identities only",
+        "before": "sha256:a87af1b0b1a47061c5cac756c605e66304dceb12a89c3589c57815616b0438c0",
+        "after": "sha256:861c9c3b9b2096383e8c8deddda178e108fc1fc0908399eba6b2fcf161ea4eb6"
+      },
+      {
+        "path": ".claude/agents/dotln-reviewer.md",
+        "change": "support origins and derived build/file identities only",
+        "before": "sha256:47ff0690f7422d514dd1e5cd3e6098893e50d0f963b5afbdd2e0522cd4f4f515",
+        "after": "sha256:6a85b797c642d00fd4ded1515b5ab371ee15c7621eb305e5bd74d81cf6cf0bf4"
+      },
+      {
+        "path": ".claude/agents/dotln-verifier.md",
+        "change": "support origins and derived build/file identities only",
+        "before": "sha256:66119f5b6e95f718ad1aa72c90468072fbbe2d9a433f54b752374292ae56f08e",
+        "after": "sha256:0e0ac5e157e1aa5330cacb2f32adbc5f8cffbb3f2ec5d90924ae1b22d721fbcb"
+      },
+      {
+        "path": ".claude/agents/dotln-worker-fable.md",
+        "change": "support origins and derived build/file identities only",
+        "before": "sha256:9e2b704baff8bfcee8cf1d8b114a550da0f206c3ab18a520c1e8daac51b91d31",
+        "after": "sha256:079d55aca9cd37f77db59b92ede0332a35eecf8158485f9e6c1bb2f65439508e"
+      },
+      {
+        "path": ".claude/agents/dotln-worker.md",
+        "change": "support origins and derived build/file identities only",
+        "before": "sha256:8f0afda79d4541dda2e113381d1eb812bb7bacf9f6882a352694bdde7179dc31",
+        "after": "sha256:93d8cc4351fbc40fad74c3af553d0162a54d6b6566df576aea1ff4af740512a0"
+      },
+      {
+        "path": ".claude/harness-manifest.json",
+        "change": "support origins and derived build/file identities only",
+        "before": "sha256:c3cfc0f4096ebaae92805100f5187cb18b69dd14450f2f7b75dd54522296b00b",
+        "after": "sha256:2b28f06c7ca4b5a7738f0faadcf2d5683c0951434c91df0f2be2660e4983d98a"
+      },
+      {
+        "path": ".claude/hooks/agent-finished.mjs",
+        "change": "support origins and derived build/file identities only",
+        "before": "sha256:8916eaca042a43a81717c19a6009f06d79ea125f7a494426d30c11e6aa4d38e8",
+        "after": "sha256:2efbbb6e4a4ed72dbdd0c004867a8b49ced699994be7f84f94d9fe9a28a6a159"
+      },
+      {
+        "path": ".claude/hooks/commit-msg.mjs",
+        "change": "support origins and derived build/file identities only",
+        "before": "sha256:36d386d5b3c8b43e6e158fd8dcb99e6ef040cfd932ecfe4c1af9a9a7d4a36f51",
+        "after": "sha256:3d0801b1853c476697431ec3b5372962d989246fda2b191d3b20426afae1d8d5"
+      },
+      {
+        "path": ".claude/hooks/concurrent-work-requires-worktrees.mjs",
+        "change": "support origins and derived build/file identities only",
+        "before": "sha256:5719423be3065af0d0a4da06628adb7e70483fea0c71a1b26b139e21be30275d",
+        "after": "sha256:99f1c9aa8fe97ebbb2ed17fd2da395ea61860fe945626e3c992dbd0ab6c5c518"
+      },
+      {
+        "path": ".claude/hooks/failure-observer.mjs",
+        "change": "support origins and derived build/file identities only",
+        "before": "sha256:b0b674b58f8323b12827c5b9a270f5e2ea7435ebdc45c9da6a31d0f5191b841d",
+        "after": "sha256:88ea0c726f42bc2c7d27fd7c0e28ab4d58ac23634e991d8299d0c58c9335572c"
+      },
+      {
+        "path": ".claude/hooks/finish.mjs",
+        "change": "support origins and derived build/file identities only",
+        "before": "sha256:b76a059510f77efb5fa2de5d1165b16a7ebd04db3cc48223dcb19988ebef4c2b",
+        "after": "sha256:efa218d907e2802d75dce19c8a871f570a0c3088c7b0da9bdf528722356049c4"
+      },
+      {
+        "path": ".claude/hooks/no-attribution.mjs",
+        "change": "support origins and derived build/file identities only",
+        "before": "sha256:cacc6cf9cdad8a9880ac6405f4491a6e4f6dcdabbaf2c7dde69d656e12c6e664",
+        "after": "sha256:98ac70b392e3c8c53f090341a890de2efd5b7fd65c021b08b3de2fc862517cdf"
+      },
+      {
+        "path": ".claude/hooks/no-lint-type-disables-as-fixes.mjs",
+        "change": "support origins and derived build/file identities only",
+        "before": "sha256:0ef6f4f88c8a2fb1de006a0209b531a5848cc3d73bc41a7f3f13b456bccc991a",
+        "after": "sha256:483f545db8bd11ada6c1684b870fc14a16192b3686c6b288ca082ad15450c6c8"
+      },
+      {
+        "path": ".claude/hooks/permission-denied.mjs",
+        "change": "support origins and derived build/file identities only",
+        "before": "sha256:77d5a4fab512ca5447a6eaa335d6e7a0ad7fdd38ed12086d2afb5988125bc4ab",
+        "after": "sha256:0211880e43614a9401e08f405bec32e8787cc9bc46969310e6c783ce98bc0891"
+      },
+      {
+        "path": ".claude/hooks/permissions.mjs",
+        "change": "support origins and derived build/file identities only",
+        "before": "sha256:6264a0546e4736f824104e22d21eaaa4b8a38260f8c2afca5e8af8341df414a9",
+        "after": "sha256:cb610cd8fdfd1f400bba84cc74f8e8d11ec98476250aa15ae94bfcb2115fb777"
+      },
+      {
+        "path": ".claude/hooks/presence-posttooluse.mjs",
+        "change": "support origins and derived build/file identities only",
+        "before": "sha256:4baad9cfa89c6d1ff8bb948c15b897d8d7a466fa47ab7f395e3fedbf8bf6276c",
+        "after": "sha256:90f19d165c86777c3f89a7de08da9dabd150097999103cd9bcda7f0ccf4fc9bb"
+      },
+      {
+        "path": ".claude/hooks/presence-pretooluse.mjs",
+        "change": "support origins and derived build/file identities only",
+        "before": "sha256:a4a802652b84d384b7aea4d2a05d1f57aa451c17eaaa612031ad99c23f74342a",
+        "after": "sha256:8196780032bd3ebc0cc09904f43590ba5e40a7cf245cdfbab9e7dd6869033624"
+      },
+      {
+        "path": ".claude/hooks/presence-stop.mjs",
+        "change": "support origins and derived build/file identities only",
+        "before": "sha256:80ca2e2ad88e8a08549c05b1dce31f141cebee774903fea786759f7ab2f1f426",
+        "after": "sha256:f7426fca8b7c6e72d928a5075cff45ce2c96a0dcbafc87e4df1f2cb1ca35bd7a"
+      },
+      {
+        "path": ".claude/hooks/presence-userpromptsubmit.mjs",
+        "change": "support origins and derived build/file identities only",
+        "before": "sha256:6d18a7b9f373a44358aecd2caf789be4a73f13a7ce1363eb81a3bf07a473f5b7",
+        "after": "sha256:1510f6c01c9e6f166c0f261a3613de54a36f2f8061bd061f26089df53d17f1d6"
+      },
+      {
+        "path": ".claude/hooks/read-observer.mjs",
+        "change": "support origins and derived build/file identities only",
+        "before": "sha256:1dd2acfd33172a36010edda69258993803560dedf2ebc0f40584c6d1944a65d6",
+        "after": "sha256:d237d7a4e6d8918bc2f7632c25c38d2ef301a746bc0a986192d259b422ceb425"
+      },
+      {
+        "path": ".claude/hooks/session.mjs",
+        "change": "support origins and derived build/file identities only",
+        "before": "sha256:0d88f7aeacd657928582c2b83df29526d33d731e0ba07ebc20b72f87ca926060",
+        "after": "sha256:52558417c710cc9d75507142e5e52ce9711e560886f9f6b48bb707831aa8f418"
+      },
+      {
+        "path": ".claude/hooks/write-observer.mjs",
+        "change": "support origins and derived build/file identities only",
+        "before": "sha256:527e951369b12856f6633f475418ce1672faaae0532b998321ad29dc6439ec04",
+        "after": "sha256:530a2991ae627dc8682e445060f0d9a31f314c98e83c93fb28536bf5d156644d"
+      },
+      {
+        "path": ".claude/settings.json",
+        "change": "byte-identical",
+        "before": "sha256:181edebb11d4428de8bdbfa9ee1ddbc97dae4e256684a84990ab280ed3478081",
+        "after": "sha256:181edebb11d4428de8bdbfa9ee1ddbc97dae4e256684a84990ab280ed3478081"
+      },
+      {
+        "path": ".claude/skills/dotln-executor/SKILL.md",
+        "change": "declared executor support fragments, repair modifier and build identity",
+        "before": "sha256:a5048f44588ffeb30ba95925dc28c9e547151556b143848e222c3a3990d692b1",
+        "after": "sha256:e7c61e0f5a6b7b25c2a98c6d6f3e03eb85b70c68350db851b62a8c07f496c241"
+      },
+      {
+        "path": ".claude/skills/dotln-planner/SKILL.md",
+        "change": "support origins and derived build/file identities only",
+        "before": "sha256:28618a29030294f26281871fdeb69061f5dda0ce7d370ed41acb1737352d741e",
+        "after": "sha256:ac75d5709bacd232259929838c434163efe5b37a409b921c3ecefddeb0199087"
+      },
+      {
+        "path": ".claude/skills/dotln-refuter/SKILL.md",
+        "change": "support origins and derived build/file identities only",
+        "before": "sha256:a82e9e7dcec5298ce31fc18860cc20eb79de3c5202f3cb7df58256af79c1c0e9",
+        "after": "sha256:f4faff38f888b557bb5bb26b20005f559bd7864658b2320453aaa0313e2d52d5"
+      },
+      {
+        "path": ".claude/skills/dotln-release-close/SKILL.md",
+        "change": "support origins and derived build/file identities only",
+        "before": "sha256:255cea12a504923014eb2472dde81fc1b5b7bebb24e1251b63441775193b24b3",
+        "after": "sha256:c7787af48f053beb19c964ab98d13e372c50e4be67834001eb9f2289ca324c94"
+      },
+      {
+        "path": ".claude/skills/dotln-reviewer/SKILL.md",
+        "change": "support origins and derived build/file identities only",
+        "before": "sha256:be96d77a6de753a033ccceef8ba0f6cb7862dad534879187e9667e416e589a43",
+        "after": "sha256:f6538537341d95324700a4eb06d424a83b3eec5f968489334e4c99a541263d52"
+      },
+      {
+        "path": ".claude/skills/dotln-router/SKILL.md",
+        "change": "support origins and derived build/file identities only",
+        "before": "sha256:ef6678e30d73a55992b5db24fb9ff221b25a59ece3986795905af4dadf8e8668",
+        "after": "sha256:3394ed6e0e64974e999f51f50ceabf3809a1a135527d1b6c57fc9ecf2ae65293"
+      },
+      {
+        "path": ".claude/skills/dotln-verifier/SKILL.md",
+        "change": "support origins and derived build/file identities only",
+        "before": "sha256:03618b0b5e7f3da5ce3d3f9f182338d09e27feb33f8cef4430f301cbf86a9497",
+        "after": "sha256:7ecc680851faf6ee4bb35dacb1074e824e3a2e934eb8c40803762bf6897d22a8"
+      },
+      {
+        "path": ".codex/config.toml",
+        "change": "byte-identical",
+        "before": "sha256:fc1e5fe1a12f023b0cfd1811ce4e39ca4a2ee06973effc8398f58ccf35a25131",
+        "after": "sha256:fc1e5fe1a12f023b0cfd1811ce4e39ca4a2ee06973effc8398f58ccf35a25131"
+      },
+      {
+        "path": ".codex/hooks.json",
+        "change": "byte-identical",
+        "before": "sha256:224ad305aa1324f6c4fbf80cc52184a646292a4fc176963248432f255cf1b1a5",
+        "after": "sha256:224ad305aa1324f6c4fbf80cc52184a646292a4fc176963248432f255cf1b1a5"
+      },
+      {
+        "path": ".codex/hooks/continuation.mjs",
+        "change": "support origins and derived build/file identities only",
+        "before": "sha256:d556119df32f24c41b968aa0f1e48ca06c04ae4c8d14dc352d0e4a2d725dbaa5",
+        "after": "sha256:0defec2a539baeabe743f157e8b84ce4f8bd796e3e70ede8745879ecb130f8f8"
+      },
+      {
+        "path": "CLAUDE.md",
+        "change": "byte-identical",
+        "before": "sha256:4dfd46930efcdb69dd167f9e6d466f2fcbf62c22a85622d3774ea6ff9f82e081",
+        "after": "sha256:4dfd46930efcdb69dd167f9e6d466f2fcbf62c22a85622d3774ea6ff9f82e081"
+      }
+    ]
+  }
+}

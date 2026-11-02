@@ -34,6 +34,11 @@ const OFF_RAMPS = new Set([
   "WorkOrderWithdrawn",
   "RecordCorrected",
   "OperatorOverrideRecorded",
+  // A criterion recorded defective, a retracted record and a reopened
+  // handoff (WO-249); defects are also counted by class.
+  "CriterionDefectRecorded",
+  "OffRampRetracted",
+  "HandoffReopened",
 ]);
 const KIND_ORDER = [
   "failed-judgment",
@@ -141,6 +146,13 @@ export function failureRecord(root) {
     const ready = new Set(),
       verified = new Set(),
       judged = new Map();
+    // The defect records the operator retracted, by the ordinal a retraction
+    // names in this segment (WO-249).
+    const retractedOrdinals = new Set(
+      events
+        .filter((event) => event?.type === "OffRampRetracted")
+        .map((event) => event.subject?.ordinal),
+    );
     for (const [index, event] of events.entries()) {
       const order = event.workOrderId,
         recordedAt = event.recordedAt ?? "unknown";
@@ -215,12 +227,24 @@ export function failureRecord(root) {
         });
       else if (OFF_RAMPS.has(event.type)) {
         const subject = events[(event.subject?.ordinal ?? 0) - 1];
+        const criterion = event.criterionId ?? event.subject?.criterionId;
         items.push({
           kind: "off-ramp",
           event: event.type,
           order,
-          ...(typeof event.criterionId === "string"
-            ? { criterion: event.criterionId }
+          ...(typeof criterion === "string" ? { criterion } : {}),
+          ...(event.type === "CriterionDefectRecorded" &&
+          typeof event.class === "string"
+            ? {
+                class: event.class,
+                ...(retractedOrdinals.has(index + 1)
+                  ? { retracted: true }
+                  : {}),
+              }
+            : {}),
+          ...(event.type === "OffRampRetracted" &&
+          typeof event.subject?.type === "string"
+            ? { retracts: event.subject.type }
             : {}),
           ...(event.type === "RecordCorrected" && subject
             ? {
@@ -464,8 +488,18 @@ export function failureWindow(
 export function failureCounts(items, facts) {
   const count = (predicate) => items.filter(predicate).length;
   const offRampEvents = {};
-  for (const item of items.filter((row) => row.kind === "off-ramp"))
+  // What planning reads to stop writing a class: each defect record by class,
+  // leaving out a record the operator retracted as wrong.
+  const defectClasses = {};
+  for (const item of items.filter((row) => row.kind === "off-ramp")) {
     offRampEvents[item.event] = (offRampEvents[item.event] ?? 0) + 1;
+    if (
+      item.event === "CriterionDefectRecorded" &&
+      item.class &&
+      !item.retracted
+    )
+      defectClasses[item.class] = (defectClasses[item.class] ?? 0) + 1;
+  }
   return {
     failedVerifications: count(
       (row) => row.kind === "failed-judgment" && row.phase === "verification",
@@ -481,6 +515,7 @@ export function failureCounts(items, facts) {
     corrections: count((row) => row.kind === "correction"),
     offRamps: count((row) => row.kind === "off-ramp"),
     offRampEvents,
+    defectClasses,
     amendments: count((row) => row.event === "PlanExecutionAmended"),
     withdrawnAmendments: count(
       (row) => row.event === "PlanExecutionAmendmentWithdrawn",
@@ -1376,7 +1411,9 @@ export function failuresAtStart(root) {
     Object.assign(block, {
       since: chosen.view.public.since,
       items: chosen.items.length,
-      counts: chosen.counts.window,
+      // The counts by defect class stay on the failures page, so the block
+      // keeps its bound with every off-ramp kind recorded.
+      counts: (({ defectClasses, ...counts }) => counts)(chosen.counts.window),
       finalReviewEscapes: `${recent.escapes}/${recent.reviews} reviews; ${recent.orders} orders; ${recent.unclassed} unclassed${recent.measured === recent.reviews ? "" : `; rate unknown (${recent.measured} measured)`}`,
       localReleaseCloses: chosen.operational.localReleaseCloses.count,
       localHostDenials: chosen.operational.localHostDenials.count,

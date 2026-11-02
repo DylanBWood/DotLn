@@ -1,0 +1,81 @@
+{
+  "workOrder": "WO-249",
+  "historicalBaseline": "wo247-role-baseline.json",
+  "historicalSha256": "9b6fae40e9579c25396ce025aa398fb16d7c5ba9a54841eea43189d74db1af6e",
+  "method": "Pin the role trees at both economy settings after WO-249's role text: the off-ramps sentence names defect, retract and reopen-handoff and the words rule; the shared routine-questions sentence says an executor records a criterion of the five defect classes unmet with its class named and asks the operator nothing; the verifier's funnel sentence, findings block and defective line form; the reviewer's findings-block basis and defective line forms; and the planner's screen of the five classes with the criteria advisory lint; preserve the WO-247 oracle and every chain it carries byte-exact.",
+  "decision": "docs/evidence/WO-249/decisions.md#wo-249-d002",
+  "roles": {
+    ".agents/skills/dotln-executor/SKILL.md": "90379c3ee347da75c5587e1e6f0ef74cc7fb2daeadd63779ae3165d4d271be1d",
+    ".agents/skills/dotln-planner/SKILL.md": "4374127c47cc9e70da5d27978fae0987686a6e567d247a08f08c7611762d3f15",
+    ".agents/skills/dotln-refuter/SKILL.md": "6fd16dea21b3e5d6b076db8bd109961f99d6b10c8d3a19d1e196608ae82c69a0",
+    ".agents/skills/dotln-release-close/SKILL.md": "7d34accd81e5d454ed8c9a417bae032da4dce08169c023a736f310a96416587a",
+    ".agents/skills/dotln-reviewer/SKILL.md": "9b55c96ebdbe1c0455dea494fc1911a60b6edf72fb718a42770e0ca78d72bb6a",
+    ".agents/skills/dotln-router/SKILL.md": "52071d95c0029cfe050ecaf71e01269ab448243521493e13f63833329d44d63d",
+    ".agents/skills/dotln-verifier/SKILL.md": "e4d3d12a7dd00d7cb55c3b7be78c4d8d552e892dae13bb9b14131a40d6f2372e",
+    ".claude/skills/dotln-executor/SKILL.md": "90379c3ee347da75c5587e1e6f0ef74cc7fb2daeadd63779ae3165d4d271be1d",
+    ".claude/skills/dotln-planner/SKILL.md": "4374127c47cc9e70da5d27978fae0987686a6e567d247a08f08c7611762d3f15",
+    ".claude/skills/dotln-refuter/SKILL.md": "6fd16dea21b3e5d6b076db8bd109961f99d6b10c8d3a19d1e196608ae82c69a0",
+    ".claude/skills/dotln-release-close/SKILL.md": "7d34accd81e5d454ed8c9a417bae032da4dce08169c023a736f310a96416587a",
+    ".claude/skills/dotln-reviewer/SKILL.md": "9b55c96ebdbe1c0455dea494fc1911a60b6edf72fb718a42770e0ca78d72bb6a",
+    ".claude/skills/dotln-router/SKILL.md": "52071d95c0029cfe050ecaf71e01269ab448243521493e13f63833329d44d63d",
+    ".claude/skills/dotln-verifier/SKILL.md": "e4d3d12a7dd00d7cb55c3b7be78c4d8d552e892dae13bb9b14131a40d6f2372e"
+  },
+  "optOutRoles": {
+    ".agents/skills/dotln-executor/SKILL.md": "23a287984107bf48ab7cbcef6884b42849d8daa728899d55235039fd42dadad4",
+    ".agents/skills/dotln-planner/SKILL.md": "c8560d10159a8654e59f9aa4abd34c0fed5ffb0812429c2b99f5413267611a7d",
+    ".agents/skills/dotln-refuter/SKILL.md": "55703775287c50f2f4b58e70cf0ce5a79692b96193fede34081dca727f6546f6",
+    ".agents/skills/dotln-release-close/SKILL.md": "e7b11afc79e0749d0d2b0c3766b6baaa4b772fc0269a550f93ada345e7da9522",
+    ".agents/skills/dotln-reviewer/SKILL.md": "c8a676bce198f68eebc2cdaed87ad111fc4fb62c05e48155bf57ca1bbd3d87f4",
+    ".agents/skills/dotln-router/SKILL.md": "ed911830d40c0ed3847a9a7d0a1d5fcd4e7d471ebc053dd4dbc6e45f39d36327",
+    ".agents/skills/dotln-verifier/SKILL.md": "7bc6ff37b3fff4b98d19d6ba2bf93ccae97028aac7d014c23f7b343a740de4ea",
+    ".claude/skills/dotln-executor/SKILL.md": "23a287984107bf48ab7cbcef6884b42849d8daa728899d55235039fd42dadad4",
+    ".claude/skills/dotln-planner/SKILL.md": "c8560d10159a8654e59f9aa4abd34c0fed5ffb0812429c2b99f5413267611a7d",
+    ".claude/skills/dotln-refuter/SKILL.md": "55703775287c50f2f4b58e70cf0ce5a79692b96193fede34081dca727f6546f6",
+    ".claude/skills/dotln-release-close/SKILL.md": "e7b11afc79e0749d0d2b0c3766b6baaa4b772fc0269a550f93ada345e7da9522",
+    ".claude/skills/dotln-reviewer/SKILL.md": "c8a676bce198f68eebc2cdaed87ad111fc4fb62c05e48155bf57ca1bbd3d87f4",
+    ".claude/skills/dotln-router/SKILL.md": "ed911830d40c0ed3847a9a7d0a1d5fcd4e7d471ebc053dd4dbc6e45f39d36327",
+    ".claude/skills/dotln-verifier/SKILL.md": "7bc6ff37b3fff4b98d19d6ba2bf93ccae97028aac7d014c23f7b343a740de4ea"
+  },
+  "startupCost": {
+    "decision": "WO-249-D002",
+    "profiles": {
+      "executor": {
+        "beforeBytes": 38400,
+        "bytes": 38964,
+        "growthBytes": 564
+      },
+      "planner": {
+        "beforeBytes": 24313,
+        "bytes": 25540,
+        "growthBytes": 1227
+      },
+      "refuter": {
+        "beforeBytes": 23127,
+        "bytes": 23691,
+        "growthBytes": 564
+      },
+      "release-close": {
+        "beforeBytes": 23505,
+        "bytes": 24069,
+        "growthBytes": 564
+      },
+      "reviewer": {
+        "beforeBytes": 36003,
+        "bytes": 37010,
+        "growthBytes": 1007
+      },
+      "router": {
+        "beforeBytes": 15418,
+        "bytes": 15418,
+        "growthBytes": 0,
+        "ceiling": 16384,
+        "headroomBytes": 966
+      },
+      "verifier": {
+        "beforeBytes": 33233,
+        "bytes": 34538,
+        "growthBytes": 1305
+      }
+    }
+  }
+}

@@ -238,7 +238,9 @@ grant no new publication or account-setting authority, and select no new Support
 A reusable research Support remains a possible later composition of these
 capabilities (product 03's optional environment adapters).
 
-The route stops for the operator merge, an operator finding, an off-ramp or typed
+The route stops for the operator merge, an operator finding, an operator's
+recorded direction (a waiver, retraction, reopened handoff, override record or
+withdrawal; a defect record or a bound acceptance does not stop it) or typed
 correction, analysis or override, refused dispatch, three verification failures,
 two final-review failures, two ended incomplete attempts in one phase, or an
 exhausted budget. A stop's facts describe the log the drive last saw, so a
@@ -423,7 +425,10 @@ table includes the shared goal card and the refuter's separate subject boundary.
    | `resume: verify`        | `npm run resume -- verify`                                                                                                                                                                                                 | verify, writing the exact `VER-NNN` path it allocates                                                                                                                                                                                                                    |
    | `resume: final review`  | `npm run resume -- final-review`                                                                                                                                                                                           | review into the allocated `FINAL-NNN`; on pass, record it, commit the reviewed state, push only the WO branch, and open its PR                                                                                                                                           |
    | `resume: release close` | in a main-checkout session, dispatch `npm run resume -- release-close --work-order WO-NNN`, then run its printed `node <main>/scripts/release.mjs close WO-NNN --publish` helper there (`worktree publish` prints it too); a subject dispatch prints this route; use main's copy after subject removal | update main, consume reviewer gate, publish validated tag and Release, attempt cleanup, refresh each declared export sibling through its recorded checkout with one fast-forward commit to that sibling's main carrying core's tag name and the sibling's Release, and write `docs/control/local/retained/WO-NNN/release-close.json`; for a registered target order, fetch and fast-forward the clone's base, delete declared disposable output, remove the order's literal host rules, and tag and release the target only under `release.policy: declared`; rerun from updated main if Release creation fails or a starter refresh refuses |
-   | the operator accepts criterion N unmet (words captured) | `npm run resume -- waive N --reason <text> --capture <intake file> --capture-hash sha256:<digest> <actor-flags>` from the operator's terminal, a verifier or a reviewer session (WO-158) | the report records `**Criterion N:** unmet, waived by <ordinal>`; the order's executor never records a waiver; a waiver is recorded only from the operator's words asking for that criterion's waiver, never from words that call a criterion wrong or authorize a commit or a pull request (the fork's WO-021, where a Codex verifier recorded one from such words and the segment was repaired by hand; the 2026-11-01 pass); WO-249 adds `retract` for a waiver recorded wrongly, `defect` for a criterion no candidate can meet and `reopen-handoff` for an order the operator widened after its handoff |
+   | the operator accepts criterion N unmet (words captured) | `npm run resume -- waive N --reason <text> --capture <intake file> --capture-hash sha256:<digest> <actor-flags>` from the operator's terminal, a verifier or a reviewer session (WO-158) | the report records `**Criterion N:** unmet, waived by <ordinal>`; the order's executor never records a waiver; a waiver is recorded only from the operator's words asking for that criterion's waiver, never from words that call a criterion wrong or authorize a commit or a pull request (the fork's WO-021, where a Codex verifier recorded one from such words and the segment was repaired by hand; the 2026-11-01 pass); `retract` undoes a waiver recorded without them (WO-249) |
+   | a criterion no candidate can meet as written (the verifier or the final reviewer judges it) | `npm run resume -- defect N --class bookkeeping\|later-phase\|absent-input\|host-behavior\|contradiction --evidence <text> <actor-flags>` in `verifying` or `final-review` (WO-249) | the report records `**Criterion N:** unmet, defective (<class>) by <ordinal>` with its own evidence and the order goes on; the final review carries the same line, a fail whose blocking finding names N disputes it and a `met` line stands over it; the order's executor never records one, and a launchpad order's pull-request body names it for the operator |
+   | the operator retracts a waiver or a defect record (words captured) | `npm run resume -- retract <ordinal> --reason <text> --capture <intake file> --capture-hash sha256:<digest> <actor-flags>` in `verifying`, `verified`, `needs-fix`, `final-review` or `closed` (WO-249) | the record no longer stands and a line citing it is refused; in `closed` with the pull request unmerged the order returns to `needs-fix` and release close refuses until a repair, a verification and a final review follow; after the merge it is recorded from main and changes no phase; after release close it is refused |
+   | the operator widened the order after its handoff (words captured) | `npm run resume -- reopen-handoff --reason <text> --capture <intake file> --capture-hash sha256:<digest> <actor-flags>` in `ready-to-verify` (WO-249) | the order returns to `active` or `repairing`, the phase its handoff left, with no unmet criteria; the next `implementation-ready` or `repair-complete` writes a fresh ledger |
    | the operator withdraws the order (words captured) | `npm run resume -- withdraw --disposition failed\|superseded\|abandoned --reason <text> --capture <intake file> --capture-hash sha256:<digest> <actor-flags>` (WO-158) | stop: `withdrawn` is terminal, and only `npm run resume -- activate` of a changed revision with a new dated `**Reactivation (YYYY-MM-DD):**` note leaves it |
    | a recorded attestation, report path or checkpoint is wrong, or a recorded passing final review carries no product gate | `npm run resume -- correct <ordinal\|report-path> --set <field>=<value> --reason <text> <actor-flags>` (WO-158); `--set productGate=<evidenceRef>` binds a complete passing `npm test` row whose code identity is the one the pass recorded in its checkpoint and still the working tree's, once, and is the only correction legal in `closed` (WO-115) | never correct a verdict or edit a filed report; a wrong verdict takes a later report; a changed subject takes a fresh final review; publication and release close read the bound gate from the committed correction |
    | `operator override: off` | nothing in Claude, whose hook appends `OperatorOverrideRecorded`; otherwise the printed `npm run resume -- override-record ...` command (WO-158) | record what the override changed in the order's decisions |
@@ -1104,13 +1109,15 @@ by the routes below [[off-ramps pass](../planning/off-ramps-5s-entropy-2026-09-2
 general helper is a preserved requirement, not a claim of implemented recovery
 for every corrupt repository. Source and review duties: [WO-131 ideation receipt](../evidence/WO-131/ideation.md).
 
-Each of the five routes below is a `resume` command that appends its typed
+Each of the eight routes below is a `resume` command that appends its typed
 event with the actor attestation and a recovery checkpoint (except the closed-order
-pending route below), refuses outside its legal phases with
+pending routes below), refuses outside its legal phases with
 those phases and the lifecycle's legal commands, and projects in `status --json`
 (`legalOffRamps`, `waivedCriteria`, `withdrawal`, `corrections`,
-`overrideRecords`, `boundAcceptances`), `current.md` and the work-order index
-[[WO-158](../work-orders/WO-158-lifecycle-off-ramps.md), 2026-09-25]. The
+`overrideRecords`, `boundAcceptances`, `defectiveCriteria`,
+`retractedOffRamps`, `reopenedHandoffs`), `current.md` and the work-order index
+[[WO-158](../work-orders/WO-158-lifecycle-off-ramps.md), 2026-09-25;
+[WO-249](../work-orders/WO-249-criteria-judge-the-product.md), 2026-11-02]. The
 fold validates each event's shape; the route judges its legality.
 
 - `npm run resume -- accept-overrun <wallClockMs|completeRuns> --ceiling <value|unlimited> --reason <text> --capture <path> --capture-hash sha256:<digest> <actor-flags>`
@@ -1192,8 +1199,106 @@ fold validates each event's shape; the route judges its legality.
   fails a criterion: a report judges it on a
   `**Criterion <id>:** unmet, waived by <ordinal>` line, and
   `verification-result` and `final-review-result` refuse a pass over an
-  unwaived `**Criterion <id>:** unmet` line, a waiver the log lacks, and an
-  `unmet` line that omits the waiver the log holds.
+  `**Criterion <id>:** unmet` line with neither a waiver nor a defect
+  record, a waiver the log lacks or a retraction undid, and an `unmet` line
+  that omits the waiver the log holds. A waiver is recorded only from the
+  operator's words asking for that criterion's waiver, and a criterion holds
+  one record, so a criterion recorded defective takes no waiver until
+  `retract` undoes that record (WO-249).
+- `defect <criterion> --class <class> --evidence <text> <actor-flags>`
+  appends `CriterionDefectRecorded` in `verifying` or `final-review`: the
+  verifier's or the final reviewer's record that a criterion no candidate can
+  meet as written is defective in one of five closed classes, the screens of
+  §Operator-opened planning pass. `bookkeeping`: its subject is a count,
+  ceiling, cost, duration or token figure rather than a behavior.
+  `later-phase`: it asks for a judgment the kit makes at final review or
+  release close, or reads `HEAD` or a commit range before the final review's
+  commit. `absent-input`: the data it reads does not exist at the base and no
+  step creates it. `host-behavior`: it needs a behavior of a host, service or
+  operator account the order cannot produce and names no fallback.
+  `contradiction`: it cannot hold together with another criterion or a
+  non-goal. The event carries the class, the evidence and the SHA-256 of the
+  criterion's text as the order's numbered list declares it, so an amended
+  criterion takes a fresh record, which replaces the earlier one; a record for
+  the same text is refused, and so is one for text whose record the operator
+  retracted, until the criterion is amended. A waived criterion takes no
+  defect record. The order's executor is refused by the waiver's
+  rule: it records the criterion unmet with its class named for the verifier
+  and asks the operator nothing. The record neither passes nor fails a
+  criterion: a report judges it on a
+  `**Criterion <id>:** unmet, defective (<class>) by <ordinal>` line whose
+  paragraph states the judge's own evidence; the report's header fields
+  (`**Actor attestation:**`, `**Actor:**`, `**Process cost:**`,
+  `**Verdict:**`, `**Subject:**`, in any case, as a list item or a
+  quotation, with the colon inside or outside the emphasis) are not evidence,
+  and a summary line stands on the evidence of a detailed line that judges the
+  criterion the same way. A pass must judge
+  every standing record of a criterion the order still declares, on that line
+  or a `met` line, which stands over it; a criterion a planning pass struck is
+  judged by no report. The
+  line is refused when the log holds no standing record at that ordinal, its
+  class differs, a retraction undid it, its paragraph is empty, or the
+  criterion's current text no longer hashes to it. A plain `unmet` line over a
+  standing record is refused except in a fail whose blocking finding's basis
+  names the criterion: a judge who finds it judgeable disputes the record in
+  the report, and the repair follows. No operator confirmation precedes the
+  order going on: for a launchpad order in a repository with a process meter,
+  `release prepare` writes one line per defective or waived criterion above
+  the stored pull-request body's process table, which the operator, who
+  merges every pull request by hand, reads before the merge. A record made
+  after preparation would leave the lines stale, and preparation refuses once
+  the order closes, so `final-review-result pass` refuses a stored body whose
+  lines differ from the record while preparation can still rewrite them, and
+  `worktree publish` refuses one changed after the pass; a target order's or
+  an unmetered repository's body names none. `plan failures` counts the
+  records by class, leaving out a record
+  the operator retracted, while the plan start block carries the off-ramp
+  counts by kind and leaves the class breakdown to `plan failures`.
+- `retract <ordinal> --reason <text> --capture <path> --capture-hash sha256:<digest> <actor-flags>`
+  appends `OffRampRetracted` in `verifying`, `verified`, `needs-fix`,
+  `final-review` or `closed` for a standing `CriterionWaived` or
+  `CriterionDefectRecorded` ordinal of the current activation; another
+  event kind, an earlier activation's record, a record already retracted or
+  replaced, and the order's executor are refused. The capture holds the
+  operator's words. In an open phase the retraction changes no phase, and a
+  report judges the criterion without the record. In `closed` it reads the
+  pull request's merge state as release close does, after fetching origin's
+  main: merged means the order's branch is an ancestor of `origin/main` and
+  `origin/main`'s record holds its passing final review, and for a target
+  order that its target branch is merged too. Unmerged, it is recorded in the
+  order's worktree, which a run from main names, and returns the order to
+  `needs-fix` with
+  the retraction as its failure source (`retraction-<ordinal>`, whose capture
+  the repair briefing names), and release close refuses an order whose
+  retraction is newer than its latest passing final review, read from the
+  merged record and from the order's registered worktree, where the record
+  stays when a branch merges without its repair, and judged against
+  `origin/main`'s latest pass, so a repair that passed in the worktree
+  answers it only once merged: a repair, a fresh verification and a fresh
+  final review precede the merge and the close. Merged, the
+  branch cannot be repaired in place: the command runs from main, where the
+  record waits in the ignored pending lane with closed-order override
+  records until the next `worktree start` carries it into the reviewed
+  record; it changes no phase and leaves the follow-up to a planning pass,
+  which reads it in `plan failures`. A second pending retraction of the same
+  record is refused, and so is one a worktree start already carried into a
+  registered worktree's record, until that branch merges, or one the order's
+  own worktree recorded before a merge that left it unrepaired, which the
+  repair there answers, or, once that repair has passed, merging its branch. A
+  fetch that fails
+  refuses, because an
+  unseen merge cannot be told from an open pull request, and a released
+  order (its release close recorded or its tag published) takes no
+  retraction.
+- `reopen-handoff --reason <text> --capture <path> --capture-hash sha256:<digest> <actor-flags>`
+  appends `HandoffReopened` in `ready-to-verify`, where no verification of
+  the handoff has been requested, and returns the order to the phase its
+  handoff left: `active` after `implementation-ready`, `repairing` after
+  `repair-complete`. It clears the recorded unmet criteria, the next
+  completion writes a fresh ledger, and that phase's timing restarts at the
+  reopening. It is the operator's act through a capture, as a waiver is: the
+  operator widened the order after its handoff, and the stale ledger is not
+  edited in place.
 - `withdraw --disposition failed|superseded|abandoned --reason <text> --capture <path> --capture-hash sha256:<digest> <actor-flags>`
   appends `WorkOrderWithdrawn` from any phase but `closed` and `withdrawn`
   (from `none` only for an allocated order) and records the authority's
@@ -1893,11 +1998,23 @@ creates it (WO-197's criterion 1 read per-case timing that began on
 2026-10-05); a criterion that depends on a host, a service or an operator
 account names its fallback evidence (WO-192's criterion 17); and the
 criteria are read against each other and the non-goals for a pair that
-cannot both hold. These are the five classes by which WO-249 lets a
-verifier record a criterion defective (bookkeeping, later-phase,
-absent-input, host-behavior, contradiction), and its `index --check` lint
-advises on their shapes; `plan failures` counts the records, and a pass
-that reads one re-reads this list. A release's Read before
+cannot both hold. These are the five classes by which a verifier or a final
+reviewer records a criterion defective with `npm run resume -- defect`
+(bookkeeping, later-phase, absent-input, host-behavior, contradiction).
+`npm run work-orders -- index --check` prints `criteria advisory: WO-NNN
+criterion N: <what matched>` for each criterion of an active or open order
+whose wording often marks
+one: a number followed by a unit (`s`, `ms`, `min`, `h`, `bytes`, `KB`,
+`MB`, `GB`, `tokens`, `USD`, `%`) or a dollar amount (`$5`), a median,
+ceiling, budget or cap beside a figure, `HEAD`, `git log`, a `..` or `...` revision range, or the phrases
+"after the review gate", "at release close" and "after the final review".
+It refuses nothing, because a figure can rightly name a record and a
+regular expression over prose is a screen, not a judgment: the planner reads
+each line before filing. `plan check` returns the same lines as its
+`criteriaAdvisories`, and `npm run test:docs` relays them from its passing
+`index` task, as it relays `ADVISORY` lines. `plan failures` counts the
+records by class, and a
+pass that reads one re-reads this list [WO-249]. A release's Read before
 upgrading is also screened: it asks an instance to read, never to edit a
 closed record by hand. A new or tightened kit check must admit records the
 previous release admitted, or the release is held; the `instance-history`
@@ -2789,15 +2906,33 @@ follow-up: WO-247's verifier announced that an injected status string would
 block criterion 1 before any supported input reproduced it, corrected the
 classification before filing and boarded the hardening (D014), and the
 operator's direction of 2026-11-01 is that more findings take that funnel
-and fewer block. A criterion no candidate can meet because of how it was
-written is not a failure of the product: WO-249 gives the verifier `resume
-defect` with the five classes of §Operator-opened planning pass, the final
-reviewer's confirmation on the same line and the operator's `retract`, and
-makes a `fail` name an unmet criterion or a blocking finding with its
-basis. Until it lands, the verifier records such a criterion unmet with its
-class named in the report, the operator's waiver is the only route past it,
-and no role records a waiver from words that did not ask for one
-[[the 2026-11-01 pass](../planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md)].
+and fewer block. A finding against the clean-room floor or an authority or
+credential boundary blocks whatever criterion it misses, as the floor's own
+refusals do. A criterion no candidate can meet because of how it was
+written is not a failure of the product: the verifier records it with
+`npm run resume -- defect` in one of the five classes of §Operator-opened
+planning pass and judges it `unmet, defective (<class>) by <ordinal>` with
+its evidence; the final reviewer confirms it on the same line with its own
+evidence, or, finding it judgeable, fails with a blocking finding whose basis
+names it; and the operator retracts a wrong record (§Operator recovery
+controls). No role records a waiver from words that did not ask for one
+[[the 2026-11-01 pass](../planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md);
+[WO-249](../work-orders/WO-249-criteria-judge-the-product.md)].
+
+A fail names what it failed on. `verification-result fail` and
+`final-review-result fail` refuse a report whose findings block is absent
+or unreadable, naming the block, and one whose criterion lines are all met,
+waived or defective while its block lists no `blocking` entry ("a fail
+names an unmet criterion or a blocking finding"). A verification report
+lists its findings in the block a final review uses (below). A blocking
+entry also carries `"basis": {"criterion": "<id>"}` or
+`{"regression": "<the behavior main had>"}` and a `"reproduction"` path to
+a file under the order's evidence directory; an entry without them prints
+one advisory for the report and records, and so does a basis naming a
+criterion the order does not declare or the report judges met. A pass keeps the block advisory:
+a passing verification without a readable block prints the advisory and
+records, as a passing final review does. A findings block also ends a
+judgment's paragraph, so it is never read as a defective line's evidence.
 
 For a design defect in the declared surfaces, the verifier names the repair
 rule itself; it is blocking only when a criterion is unmet or a regression
@@ -2925,7 +3060,9 @@ advisory naming the cause: a report without exactly one block (any other line
 whose only letters are a marker's name is a second copy, an example
 included), a block that is not a JSON array, an entry with a bad or repeated
 id, an unlisted route or no one-line summary, or a failed review whose block
-lists no blocking finding. The result records in every case. `plan failures` shows per-order counts (its export includes every
+lists no blocking finding. A passing result records in every case; a failed
+one is refused without a readable block, or with neither an unmet line nor a
+blocking entry (above). `plan failures` shows per-order counts (its export includes every
 order); `plan start` gives escapes per final review across all attempts of
 the ten most recently reviewed orders. Historical events without counts are
 unmeasured, so the rate is unknown until every review in that window is
@@ -3182,7 +3319,7 @@ and generated evidence, including fixtures, manifests and installed guidance.
   indefinitely for approval. The current queue is observed with
   `npm run adjacent -- list`; its chat and channel observations are actor-attested.
   Equipped duties run at entry, including the initial Intent to Act announcement.
-  Settle routine version, waiver-route, live-episode, regeneration and reinstall questions within existing authority. Every phase owns its decision, including no-op or deferred: record the evidence, tradeoffs and reopening condition instead of asking the operator to arbitrate implementation or change criteria [WO-219-D003, 2026-10-23].
+  Settle routine version, waiver-route, live-episode, regeneration and reinstall questions within existing authority. Every phase owns its decision, including no-op or deferred: record the evidence, tradeoffs and reopening condition instead of asking the operator to arbitrate implementation or change criteria [WO-219-D003, 2026-10-23]. An unmet criterion of one of the five defect classes is recorded unmet in the handoff ledger with its class named for the verifier, who records the defect; nothing is asked of the operator [WO-249].
   Ordinary `next`/`fix` projects installed equipment and queue state without
   requiring a named-support prompt. Completion advises about queued/running items;
   complete them or record an explicit disposition, with a public FUP for deferrals.

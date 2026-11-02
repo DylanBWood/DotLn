@@ -226,12 +226,12 @@ for (let n = 0; n < 4; n++)
       `docs/planning/refutations/2030-01-01-planning-shape-${String(n).padStart(3, "0")}.json`,
     ),
   );
-const report = (file, findings = "") =>
+const report = (file, findings = "", judged = "**Criterion 1:** met. Read.") =>
   write(
     file,
     // The report ends with one newline: the lifecycle whitespace check reads
     // an untracked report too, and a blank line at its end refuses.
-    `# Fixture\n\n**Actor attestation:** ${JSON.stringify(actor)}\n\n**Process cost:** unknown; cause no-session\n\n**Criterion 1:** met. Read.\n${findings ? `\n${findings}\n` : ""}`,
+    `# Fixture\n\n**Actor attestation:** ${JSON.stringify(actor)}\n\n**Process cost:** unknown; cause no-session\n\n${judged}\n${findings ? `\n${findings}\n` : ""}`,
   );
 // The findings block: two marker lines around a JSON array. `entry` omits a
 // class given as undefined, and `block` takes entries or the raw text between
@@ -251,6 +251,8 @@ const FORMAT =
   'a `<!-- dotln-findings:start -->` line, a JSON array of {"id": "F1", "route": "blocking|follow-up|operator", "class": "escape|integration|new-scope", "summary": "<one line>"} entries ([] for none) and a `<!-- dotln-findings:end -->` line';
 const UNMEASURED = (cause) =>
   `${cause}; its finding counts are recorded as unmeasured. A report lists its findings in one block: ${FORMAT}.`;
+const NO_BLOCKING_FAIL =
+  "the failed review's findings block lists no blocking finding";
 // Finding-shaped prose never counts, with a block or without: the canonical
 // line of the earlier reader and the eight shapes VER-004 recorded.
 const prose = [
@@ -270,13 +272,30 @@ const events = (order = "WO-187") =>
     .split("\n")
     .map(JSON.parse);
 // One advisory names what a result's count holds, and the result records.
-const recorded = (result, path, advisory, counts, verdict, order) => {
+const recorded = (
+  result,
+  path,
+  advisory,
+  counts,
+  verdict,
+  order,
+  basis = null,
+) => {
   const line = `${path}: ${advisory} The final-review result records all the same.`;
+  // A blocking finding without its basis and reproduction advises once more
+  // for the report, beside its count (WO-249).
   assert.equal(
     result.stderr.split(`${path}: `).length - 1,
-    advisory ? 1 : 0,
+    (advisory ? 1 : 0) + (basis ? 1 : 0),
     result.stderr,
   );
+  if (basis)
+    assert.ok(
+      result.stderr.includes(
+        `Advisory: ${path}: ${basis}; the result records all the same\n`,
+      ),
+      result.stderr,
+    );
   if (advisory) assert.ok(result.stderr.includes(`Advisory: ${line}\n`));
   const event = events(order).at(-1);
   assert.equal(event.type, "FinalReviewCompleted");
@@ -284,9 +303,27 @@ const recorded = (result, path, advisory, counts, verdict, order) => {
   assert.deepEqual(event.findingCounts, counts);
   assert.deepEqual(
     event.evidence.advisories.filter((text) => text.startsWith(`${path}: `)),
-    advisory ? [line] : [],
+    [
+      ...(advisory ? [line] : []),
+      ...(basis ? [`${path}: ${basis}; the result records all the same`] : []),
+    ],
   );
 };
+// A result the lifecycle refuses appends nothing and names its reason.
+const refusedResult = (args, pattern, order = "WO-187") => {
+  const before = events(order).length;
+  const result = spawnSync(
+    process.execPath,
+    [join(root, "scripts/resume.mjs"), ...args],
+    { cwd: root, env, encoding: "utf8" },
+  );
+  assert.notEqual(result.status, 0, `refusal expected: ${args.join(" ")}`);
+  assert.match(result.stderr, pattern);
+  assert.equal(events(order).length, before, "a refusal appends nothing");
+};
+// The basis advisory a blocking finding without one prints (WO-249).
+const NO_BASIS = (id, order = "WO-187") =>
+  `blocking finding ${id} has no basis ("basis": {"criterion": "<id>"} or {"regression": "<the behavior main had>"} and a "reproduction" path) and no reproduction path under docs/evidence/${order}/`;
 report("docs/verifications/WO-187/VER-001.md");
 call(["verification-result", "pass", ...flags]);
 call(["final-review"]);
@@ -306,6 +343,8 @@ recorded(
   "blocking findings F4, F5 have no class or one outside escape, integration, new-scope; counted as unclassed.",
   { escape: 1, integration: 1, "new-scope": 1, unclassed: 2 },
   "fail",
+  "WO-187",
+  ["F1", "F4", "F5"].map((id) => NO_BASIS(id)).join("; "),
 );
 call(["fix"]);
 write(ledger, "**Criterion 1:** met. Read.\n");
@@ -318,13 +357,24 @@ call(["verify"]);
 report("docs/verifications/WO-187/VER-002.md");
 call(["verification-result", "pass", ...flags]);
 call(["final-review"]);
-// A failed review that writes its findings only as prose is unmeasured, never
-// a measured zero or a count of the lines a reader happened to recognise.
+// A failed review that writes its findings only as prose is refused naming
+// the block, so it never leaves its basis out (WO-249). One that fails on its
+// unmet criterion with no blocking entry is unmeasured, never a measured zero
+// or a count of the lines a reader happened to recognise.
 report("docs/final-reviews/WO-187/FINAL-002.md", prose);
+refusedResult(
+  ["final-review-result", "fail", ...flags],
+  /a fail names its basis in the findings block, and the report has no findings block/,
+);
+report(
+  "docs/final-reviews/WO-187/FINAL-002.md",
+  `${prose}\n\n${block([])}`,
+  "**Criterion 1:** unmet. The review fails on it.",
+);
 recorded(
   call(["final-review-result", "fail", ...flags]),
   "docs/final-reviews/WO-187/FINAL-002.md",
-  UNMEASURED("the report has no findings block"),
+  UNMEASURED(NO_BLOCKING_FAIL),
   undefined,
   "fail",
 );
@@ -1222,12 +1272,21 @@ for (const [text, advised] of [
     text,
   );
 }
-// The real lifecycle records every block outcome without refusing a result,
-// from the nested docs directory and from the root: [order, verdict, the
-// report's findings, the advisory, the recorded counts].
-for (const [n, verdict, findings, advisory, counts] of [
+// The real lifecycle records every passing review's block outcome, from the
+// nested docs directory and from the root; a failed review needs a readable
+// block and an unmet line or a blocking entry, or it is refused (WO-249):
+// [order, verdict, the report's findings, the advisory, the recorded counts,
+// the refusal or the basis advisory].
+for (const [n, verdict, findings, advisory, counts, outcome] of [
   ["811", "pass", block([]), null, zero],
-  ["812", "fail", block([]), UNMEASURED(NO_BLOCKING)],
+  [
+    "812",
+    "fail",
+    block([]),
+    null,
+    undefined,
+    { refused: /a fail names an unmet criterion or a blocking finding/ },
+  ],
   [
     "813",
     "pass",
@@ -1238,7 +1297,12 @@ for (const [n, verdict, findings, advisory, counts] of [
     "814",
     "fail",
     block("[{'id': 'F1'}]"),
-    UNMEASURED("the findings block is not valid JSON"),
+    null,
+    undefined,
+    {
+      refused:
+        /a fail names its basis in the findings block, and the findings block is not valid JSON/,
+    },
   ],
   [
     "815",
@@ -1249,7 +1313,7 @@ for (const [n, verdict, findings, advisory, counts] of [
     ]),
     UNMEASURED(ENTRY(2, "repeats id F1", entry("F1", "follow-up", "escape"))),
   ],
-  // A partly valid failed block records no count, never the valid part's.
+  // A partly valid failed block is no basis, never the valid part's.
   [
     "816",
     "fail",
@@ -1257,7 +1321,12 @@ for (const [n, verdict, findings, advisory, counts] of [
       entry("F1", "blocking", "escape"),
       entry("R1", "blocking", "escape"),
     ]),
-    UNMEASURED(ENTRY(2, NEEDS_ID, entry("R1", "blocking", "escape"))),
+    null,
+    undefined,
+    {
+      refused:
+        /a fail names its basis in the findings block, and entry 2 of the findings block needs an id F<n>/,
+    },
   ],
   [
     "817",
@@ -1269,11 +1338,19 @@ for (const [n, verdict, findings, advisory, counts] of [
     ]),
     "blocking finding F3 and findings F1, F2 have no class or one outside escape, integration, new-scope; counted as unclassed.",
     { ...zero, unclassed: 3 },
+    { basis: NO_BASIS("F3", "WO-817") },
   ],
   ["818", "pass", prose, UNMEASURED("the report has no findings block")],
   // A failed review that declares only a follow-up, its blocking finding in
-  // prose, records no count.
-  ["819", "fail", `${prose}\n\n${real}`, UNMEASURED(NO_BLOCKING)],
+  // prose, names no basis.
+  [
+    "819",
+    "fail",
+    `${prose}\n\n${real}`,
+    null,
+    undefined,
+    { refused: /a fail names an unmet criterion or a blocking finding/ },
+  ],
 ]) {
   const workOrderId = `WO-${n}`;
   const workOrderPath = `docs/work-orders/${workOrderId}-block.md`;
@@ -1304,6 +1381,14 @@ for (const [n, verdict, findings, advisory, counts] of [
   selectedCall(["verification-result", "pass", ...flags]);
   selectedCall(["final-review"]);
   report(reportPath, findings);
+  if (outcome?.refused) {
+    refusedResult(
+      ["final-review-result", verdict, ...flags, "--work-order", workOrderId],
+      outcome.refused,
+      workOrderId,
+    );
+    continue;
+  }
   recorded(
     selectedCall(["final-review-result", verdict, ...flags]),
     reportPath,
@@ -1311,6 +1396,7 @@ for (const [n, verdict, findings, advisory, counts] of [
     counts,
     verdict,
     workOrderId,
+    outcome?.basis ?? null,
   );
 }
 console.log(

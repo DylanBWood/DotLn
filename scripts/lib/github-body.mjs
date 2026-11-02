@@ -2,7 +2,8 @@ import {
   createScratchRoot,
   removeTemporaryPath as rmSync,
 } from "./temporary-roots.mjs";
-import { writeFileSync } from "node:fs";
+import { existsSync, writeFileSync } from "node:fs";
+import { docPath } from "./config.mjs";
 import { tmpdir } from "node:os";
 import { join, posix } from "node:path";
 import { createHash } from "node:crypto";
@@ -1379,24 +1380,107 @@ const METER_BLOCK = new RegExp(
 );
 const GATE_BLOCK =
   /<!-- dotln-product-gate:start -->[\s\S]*?<!-- dotln-product-gate:end -->/u;
+/** The marker lines around the order's waived and defective criteria, which
+ * release prepare writes above the meter table (WO-249). */
+export const CRITERION_RECORD_MARKERS = Object.freeze({
+  begin: "<!-- dotln-criterion-records:start -->",
+  end: "<!-- dotln-criterion-records:end -->",
+});
+const RECORD_BLOCK = new RegExp(
+  `${CRITERION_RECORD_MARKERS.begin}[\\s\\S]*?${CRITERION_RECORD_MARKERS.end}`,
+  "u",
+);
+/** One line per defective or waived criterion of the order, in record order,
+ * naming the criterion, the class or the waiver and the ordinal. The operator
+ * merges every pull request by hand, so these lines are the operator's
+ * checkpoint on records two roles made without them. */
+export const criterionRecordLines = ({
+  workOrderId,
+  waivedCriteria = [],
+  defectiveCriteria = [],
+} = {}) => {
+  const retract = (ordinal) =>
+    `npm run resume -- retract ${ordinal}${workOrderId ? ` --work-order ${workOrderId}` : ""}`;
+  return [
+    ...defectiveCriteria.map((record) => ({
+      ordinal: record.ordinal,
+      line: `- Criterion ${record.criterionId}: defective (${record.class}) by ordinal ${record.ordinal}; ${retract(record.ordinal)} in the order's worktree undoes a wrong record before the merge.`,
+    })),
+    ...waivedCriteria.map((waiver) => ({
+      ordinal: waiver.ordinal,
+      line: `- Criterion ${waiver.criterionId}: waived by ordinal ${waiver.ordinal}; ${retract(waiver.ordinal)} in the order's worktree undoes a waiver the operator's words did not ask for.`,
+    })),
+  ]
+    .sort((a, b) => a.ordinal - b.ordinal)
+    .map(({ line }) => line);
+};
+/** Why a body's criterion-record lines disagree with the lines the order's
+ * record gives, or null. Publication refuses a body whose lines are missing,
+ * stale or no longer held, so the operator never merges on an old reading. */
+export const criterionRecordProblem = (body, records) => {
+  const found = RECORD_BLOCK.exec(body);
+  const lines = found
+    ? found[0].split(/\r?\n/u).filter((line) => line.startsWith("- "))
+    : [];
+  if (lines.join("\n") === records.join("\n")) return null;
+  return records.length
+    ? `the body's criterion lines do not match the ${records.length} waived or defective ${records.length === 1 ? "criterion" : "criteria"} the order's record holds`
+    : "the body names criterion records the order's record no longer holds";
+};
+/** Whether the repository keeps a process meter, whose table the stored
+ * pull-request body carries (docs/control/budgets.json). */
+export const processMetered = (root) =>
+  existsSync(docPath(root, "control", "budgets.json"));
+/** Whether release preparation writes the order's criterion-record lines:
+ * for a launchpad order in a repository with a process meter, above whose
+ * table they stand. A target order's or an unmetered repository's body
+ * names none. Preparation, the regenerated body, the pass and publication
+ * all read this one rule. */
+export const criterionRecordsApply = (root, state) =>
+  Boolean(state) && !state.repositoryId && processMetered(root);
+/** The lines release preparation writes for the order, none where they do
+ * not apply. */
+export const expectedCriterionRecordLines = (root, state) =>
+  criterionRecordsApply(root, state) ? criterionRecordLines(state) : [];
+/** Why a stored body's criterion-record lines differ from the lines release
+ * preparation writes for the order, or null. */
+export const criterionRecordRefusal = (root, body, state) => {
+  const applies = criterionRecordsApply(root, state);
+  const records = applies ? criterionRecordLines(state) : [];
+  const problem = criterionRecordProblem(body, records);
+  if (!problem) return null;
+  if (!applies)
+    return "the body names criterion-record lines, which release preparation writes only for a launchpad order in a repository with a process meter; remove them";
+  return `${problem}; release preparation writes these lines above the process table:\n${records.length ? records.join("\n") : "(none)"}`;
+};
+// The source with one block lifted from wherever it stood, the blank lines
+// around its old place collapsed to one.
+const liftBlock = (source, pattern) => {
+  const found = pattern.exec(source);
+  if (!found) return source;
+  const before = source.slice(0, found.index).replace(/\n*$/u, "");
+  const after = source
+    .slice(found.index + found[0].length)
+    .replace(/^\n*/u, "");
+  return before && after ? `${before}\n\n${after}` : before || after;
+};
 /** The stored body with the meter table as its last block: an existing block
  * is lifted from wherever it stood, the blank lines around its old place
- * collapse to one, and the block follows the last prose paragraph. No other
- * byte changes. */
-export const withMeterBlockLast = (source, table) => {
+ * collapse to one, and the block follows the last prose paragraph. The
+ * criterion-record lines, when there are any, stand directly above it; with
+ * none, their block is removed. Release preparation owns both blocks, so a
+ * caller passes the order's records every time. No other byte changes. */
+export const withMeterBlockLast = (source, table, records = []) => {
   const block = `${METER_MARKERS.begin}\n${table}\n${METER_MARKERS.end}`;
-  const meter = METER_BLOCK.exec(source);
-  let rest = source;
-  if (meter) {
-    const before = source.slice(0, meter.index).replace(/\n*$/u, "");
-    const after = source
-      .slice(meter.index + meter[0].length)
-      .replace(/^\n*/u, "");
-    rest = before && after ? `${before}\n\n${after}` : before || after;
-  }
+  const rest = liftBlock(liftBlock(source, METER_BLOCK), RECORD_BLOCK);
+  // Blank lines keep the list its own block: a marker line right after an
+  // item would read as that item's soft-wrapped continuation.
+  const recordBlock = records.length
+    ? `${CRITERION_RECORD_MARKERS.begin}\n\n${records.join("\n")}\n\n${CRITERION_RECORD_MARKERS.end}\n\n`
+    : "";
   // Only line endings are normalized before the block; a prose line's
   // trailing spaces are its own (a Markdown hard break).
-  return `${rest.replace(/\n+$/u, "")}\n\n${block}\n`;
+  return `${rest.replace(/\n+$/u, "")}\n\n${recordBlock}${block}\n`;
 };
 // Use the same Markdown tree as the link checks: comments, headings, tables
 // and code blocks are not paragraphs. Lists and quotations can contain prose;
@@ -1434,7 +1518,11 @@ export const pullRequestBodyShapeFailures = (
   if (!meter) return failures;
   const before = markdown.slice(0, meter.index);
   const beforeLines = before.split(/\r\n|\n|\r/u);
-  const prose = parsedNodes(before, ["root"]).some(hasProseParagraph);
+  // The criterion-record lines are release prepare's, never the reviewer's
+  // prose, so they do not stand in for it.
+  const prose = parsedNodes(before.replace(RECORD_BLOCK, ""), ["root"]).some(
+    hasProseParagraph,
+  );
   if (!prose)
     failures.push({
       kind: "shape",

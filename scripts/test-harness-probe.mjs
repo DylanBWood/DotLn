@@ -550,6 +550,25 @@ test("WO-146 operator qualification uses real fixture transitions, fresh identit
           step === 1
             ? "WO-146 planted fixture defect: fixture/add.mjs fails at import."
             : "Fixture assertions pass.",
+          // A failed verification names its basis in its findings block
+          // (WO-249): here the planted defect, a regression main lacked.
+          ...(step === 1
+            ? [
+                "",
+                "<!-- dotln-findings:start -->",
+                JSON.stringify([
+                  {
+                    id: "F1",
+                    route: "blocking",
+                    class: "escape",
+                    summary: "fixture/add.mjs fails at import.",
+                    basis: { regression: "fixture/add.mjs imported on main" },
+                    reproduction: "docs/evidence/WO-999/fixture-add.md",
+                  },
+                ]),
+                "<!-- dotln-findings:end -->",
+              ]
+            : []),
           "",
         ].join("\n"),
       );

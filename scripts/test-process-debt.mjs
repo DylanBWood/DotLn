@@ -852,6 +852,8 @@ test("WO-170 operator directions equal a hand count of committed decisions and o
       OperatorOverrideRecorded: 0,
       RecordCorrected: 1,
       CriterionWaived: 0,
+      OffRampRetracted: 0,
+      HandoffReopened: 0,
     },
     source: directionSource,
   });
@@ -901,7 +903,15 @@ test("WO-170 operator directions equal a hand count of committed decisions and o
         "planning: fixture",
         "operatorless: fixture",
       ].map((dispatch) => ({ dispatch })),
-      [{ type: "CriterionWaived" }, { type: "WorkOrderWithdrawn" }],
+      [
+        { type: "CriterionWaived" },
+        { type: "WorkOrderWithdrawn" },
+        // The operator's retraction and reopened handoff are directions; a
+        // defect record is a role's judgment and none (WO-249).
+        { type: "OffRampRetracted" },
+        { type: "HandoffReopened" },
+        { type: "CriterionDefectRecorded" },
+      ],
     ).byKind,
     {
       scopeExpand: 0,
@@ -914,6 +924,8 @@ test("WO-170 operator directions equal a hand count of committed decisions and o
       OperatorOverrideRecorded: 0,
       RecordCorrected: 0,
       CriterionWaived: 1,
+      OffRampRetracted: 1,
+      HandoffReopened: 1,
     },
   );
   // Intake captures are counted per ledger planning pass, never per order.
@@ -1302,6 +1314,8 @@ test("WO-172 the direction reader names the operator step a dispatch records, an
     OperatorOverrideRecorded: 0,
     RecordCorrected: 0,
     CriterionWaived: 0,
+    OffRampRetracted: 0,
+    HandoffReopened: 0,
   });
   assert.equal(directions.total, 10);
   assert.deepEqual(OPERATOR_STEPS, [
@@ -6820,13 +6834,22 @@ test("WO-145 optional economy support preserves historical snapshots through the
   // The combined oracle preserves both independently reviewed role histories.
   // Removing a shared sentence follows the same route as adding one.
   const fixtures = join(source, "packages/skeleton/fixtures");
-  // The desktop and browser boundary preserves the preceding role tree and
-  // all integrated history through its immutable parent.
-  const current = "wo251-role-baseline.json";
+  // The integration of WO-249's criteria rules with WO-251's desktop and
+  // browser boundary pins the combined role trees through a two-parent
+  // oracle: WO-251's oracle, main's at integration, is its historical parent
+  // and WO-249's its branch parent, and both preserve WO-247's oracle, which
+  // carries the integrated oracle and both chains below it.
+  const current = "wo249-integration-role-baseline.json";
   const baseline = JSON.parse(readFileSync(join(fixtures, current), "utf8"));
-  assert.equal(baseline.historicalBaseline, "wo247-role-baseline.json");
+  assert.equal(baseline.historicalBaseline, "wo251-role-baseline.json");
+  assert.equal(baseline.branchBaseline, "wo249-role-baseline.json");
+  assert.equal(baseline.upstreamBaseline, "wo247-role-baseline.json");
+  for (const name of [baseline.historicalBaseline, baseline.branchBaseline]) {
+    const parent = JSON.parse(readFileSync(join(fixtures, name), "utf8"));
+    assert.equal(parent.historicalBaseline, "wo247-role-baseline.json", name);
+  }
   const previous = JSON.parse(
-    readFileSync(join(fixtures, baseline.historicalBaseline), "utf8"),
+    readFileSync(join(fixtures, baseline.upstreamBaseline), "utf8"),
   );
   assert.equal(
     previous.historicalBaseline,
@@ -6992,6 +7015,35 @@ test("WO-145 optional economy support preserves historical snapshots through the
       );
       assert.notEqual(optedOut.contents, file.contents, file.path);
     }
+  }
+  // The criteria rules each role reads (WO-249): every non-router role names
+  // the three off-ramps and the words rule; the verifier carries the funnel,
+  // the reviewer the defective line forms and the planner the five-class
+  // screen and its lint.
+  const sentences = {
+    shared: [
+      "`retract <ordinal>` undoes a waiver or defect record and `reopen-handoff` returns a handoff the operator widened to its phase",
+      "records an unmet criterion only from the operator's words asking for that criterion's waiver",
+      "An executor records an unmet criterion of the five defect classes unmet with its class named for the verifier and asks the operator nothing.",
+    ],
+    verifier: [
+      "an input you constructed outside the supported vocabulary is a follow-up, never a block",
+      "a recorded defect `unmet, defective (<class>) by <ordinal>` with your evidence",
+    ],
+    reviewer: [
+      "`unmet, defective (<class>) by <ordinal>` with your own evidence for the class",
+      'a blocking entry also carrying `"basis": {"criterion": "<id>"}`',
+    ],
+    planner: [
+      "Screen every acceptance criterion before filing against the five defect classes",
+      "prints a `criteria advisory` line",
+    ],
+  };
+  for (const file of roles) {
+    const role = file.path.split("/")[2].slice("dotln-".length);
+    if (role === "router") continue;
+    for (const sentence of [...sentences.shared, ...(sentences[role] ?? [])])
+      assert.ok(file.contents.includes(sentence), `${file.path}: ${sentence}`);
   }
   for (const [index, bundle] of on.bundles.entries()) {
     const manifest = bundle.manifest;

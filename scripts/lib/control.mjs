@@ -13,9 +13,69 @@ export const CONTROL_LOG_SCHEMA_VERSION = 1;
 /** The code a failed allocation validation carries (WO-157 item 14). */
 export const ALLOCATION_REFUSED = "DOTLN_ALLOCATION_REFUSED";
 
-// Off-ramps (WO-158). Each is a typed event with its own `resume` route; the
-// fold validates their shape here and `resume` judges their legality.
+// Off-ramps (WO-158). Each is a typed event with its own `resume` route. The
+// fold validates their shape here, and the records a retraction or a reopened
+// handoff names: the record must still stand, the handoff must be the one the
+// order waits on in ready-to-verify, and a retraction names the pull
+// request's merge state in closed and only there. `resume` judges the rest of
+// their legality, the phases included.
 export const WITHDRAWAL_DISPOSITIONS = ["failed", "superseded", "abandoned"];
+// The closed set of ways a criterion can be written so that no candidate can
+// meet it (WO-249). A count by class is what planning reads, so a class is
+// one of these names and never free text.
+export const DEFECT_CLASSES = [
+  "bookkeeping",
+  "later-phase",
+  "absent-input",
+  "host-behavior",
+  "contradiction",
+];
+// The two records a retraction can undo, each with the state projection that
+// lists the ones still standing.
+export const RETRACTABLE_RECORDS = {
+  CriterionWaived: "waivedCriteria",
+  CriterionDefectRecorded: "defectiveCriteria",
+};
+// The completions whose handoff the operator can reopen, each with the phase
+// its handoff left.
+export const REOPENABLE_HANDOFFS = {
+  ImplementationReady: "active",
+  RepairCompleted: "repairing",
+};
+// The failure-source id of a retraction that returns a closed order to repair.
+export const retractionSourceId = (ordinal) => `retraction-${ordinal}`;
+/** The retraction release close refuses: in the order's current activation,
+ * one newer than its latest passing final review, other than a retraction
+ * recorded after the merge, which only records. `events` are one order's
+ * events in append order, as eventsForOrder returns them. `passedIn` is the
+ * record whose passing final review answers a retraction, `events` itself by
+ * default: release close reads the order's worktree record against the merged
+ * record it extends, so a repair that passed in the worktree but was never
+ * merged answers nothing. Positions are compared across the two arrays, which
+ * holds because the worktree's record extends the merged one event for event
+ * up to where they diverge. Events main gains after the merge, such as
+ * carried records, follow the merged pass and never move it; a pass reaches
+ * main only through the order's branch, which carries every retraction
+ * recorded before it. */
+export const unrepairedRetraction = (events, { passedIn = events } = {}) => {
+  const activation = events.findLastIndex(
+    (event) => event.type === "WorkOrderActivated",
+  );
+  const passed = Math.max(
+    activation,
+    passedIn.findLastIndex(
+      (event) =>
+        event?.type === "FinalReviewCompleted" && event.verdict === "pass",
+    ),
+  );
+  const retracted = events.findLastIndex(
+    (event, index) =>
+      index > activation &&
+      event.type === "OffRampRetracted" &&
+      event.pullRequest !== "merged",
+  );
+  return retracted > passed ? events[retracted] : undefined;
+};
 export const CORRECTABLE_ATTESTATION_FIELDS = [
   "model",
   "effort",
@@ -78,11 +138,17 @@ const offRampEvent = (event, at) => {
     throw new Error(`invalid ${event.type} ${detail} at line ${at}`);
   };
   if (!completeActor(event.actor)) refuse("actor attestation");
-  if (!offRampText(event.reason)) refuse("reason");
+  // A defect record states the evidence for its class where the other
+  // off-ramps state a reason.
+  if (event.type === "CriterionDefectRecorded") {
+    if (!offRampText(event.evidence)) refuse("evidence");
+  } else if (!offRampText(event.reason)) refuse("reason");
   const capture = () => {
     if (!offRampText(event.capture) || !SHA256_DIGEST.test(event.captureHash))
       refuse("operator capture");
   };
+  const earlierOrdinal = (ordinal) =>
+    Number.isSafeInteger(ordinal) && ordinal >= 1 && ordinal < at;
   switch (event.type) {
     case "DispatchBoundAccepted":
       if (
@@ -102,6 +168,34 @@ const offRampEvent = (event, at) => {
       break;
     case "CriterionWaived":
       if (!CRITERION_ID.test(event.criterionId ?? "")) refuse("criterionId");
+      capture();
+      break;
+    case "CriterionDefectRecorded":
+      if (!CRITERION_ID.test(event.criterionId ?? "")) refuse("criterionId");
+      if (!SHA256_DIGEST.test(event.criterionHash ?? ""))
+        refuse("criterionHash");
+      if (!DEFECT_CLASSES.includes(event.class)) refuse("class");
+      break;
+    case "OffRampRetracted":
+      if (
+        !earlierOrdinal(event.subject?.ordinal) ||
+        !Object.hasOwn(RETRACTABLE_RECORDS, event.subject.type ?? "") ||
+        !CRITERION_ID.test(event.subject.criterionId ?? "")
+      )
+        refuse("subject");
+      if (
+        event.pullRequest !== undefined &&
+        !["unmerged", "merged"].includes(event.pullRequest)
+      )
+        refuse("pullRequest");
+      capture();
+      break;
+    case "HandoffReopened":
+      if (
+        !earlierOrdinal(event.handoff?.ordinal) ||
+        !Object.hasOwn(REOPENABLE_HANDOFFS, event.handoff.type ?? "")
+      )
+        refuse("handoff");
       capture();
       break;
     case "WorkOrderWithdrawn":
@@ -192,6 +286,22 @@ export const parseControlEvents = (source) =>
       }
     });
 
+// The off-ramp projections stay undefined until their event appears, so folds
+// of histories without off-ramps keep their recorded shape (WO-158); an
+// activation starts them over. unmetCriteria holds the criteria the latest
+// executor completion recorded unmet (WO-173).
+const offRampProjections = () => ({
+  boundAcceptances: undefined,
+  waivedCriteria: undefined,
+  withdrawal: undefined,
+  corrections: undefined,
+  overrideRecords: undefined,
+  unmetCriteria: undefined,
+  defectiveCriteria: undefined,
+  retractedOffRamps: undefined,
+  reopenedHandoffs: undefined,
+});
+
 const emptyState = () => ({
   workOrderId: undefined,
   workOrderPath: undefined,
@@ -211,15 +321,7 @@ const emptyState = () => ({
   latestAttestation: undefined,
   effortPairs: [],
   effortDeclarationValidated: false,
-  // The off-ramp projections stay undefined until their event appears, so
-  // folds of histories without off-ramps keep their recorded shape (WO-158).
-  boundAcceptances: undefined,
-  waivedCriteria: undefined,
-  withdrawal: undefined,
-  corrections: undefined,
-  overrideRecords: undefined,
-  // The criteria the latest executor completion recorded unmet (WO-173).
-  unmetCriteria: undefined,
+  ...offRampProjections(),
 });
 
 const effortPair = (actor) => ({
@@ -323,12 +425,7 @@ const scanControl = (events, visit) => {
           latestAttestation: undefined,
           effortPairs: [],
           effortDeclarationValidated: event.effortDeclarationValidated === true,
-          boundAcceptances: undefined,
-          waivedCriteria: undefined,
-          withdrawal: undefined,
-          corrections: undefined,
-          overrideRecords: undefined,
-          unmetCriteria: undefined,
+          ...offRampProjections(),
         });
         attested.set(event.workOrderId, []);
         break;
@@ -478,8 +575,9 @@ const scanControl = (events, visit) => {
         );
         break;
       }
-      // None of these changes the phase except the withdrawal, and
-      // none is an attested completion of the order's own work (WO-158).
+      // None of these is an attested completion of the order's own work
+      // (WO-158). Only three change the phase: a withdrawal, a retraction in
+      // closed before the merge and a reopened handoff (WO-249).
       case "DispatchBoundAccepted":
         offRampEvent(event, index + 1);
         state.boundAcceptances = [
@@ -508,6 +606,103 @@ const scanControl = (events, visit) => {
           },
         ];
         break;
+      case "CriterionDefectRecorded":
+        offRampEvent(event, index + 1);
+        // One record stands per criterion: a record for a criterion's amended
+        // text replaces the one its earlier text carried.
+        state.defectiveCriteria = [
+          ...(state.defectiveCriteria ?? []).filter(
+            (row) => row.criterionId !== event.criterionId,
+          ),
+          {
+            criterionId: event.criterionId,
+            criterionHash: event.criterionHash,
+            class: event.class,
+            evidence: event.evidence,
+            ordinal: index + 1,
+            recordedAt: event.recordedAt,
+          },
+        ];
+        break;
+      case "OffRampRetracted": {
+        offRampEvent(event, index + 1);
+        const { ordinal, type, criterionId } = event.subject;
+        const list = RETRACTABLE_RECORDS[type];
+        const subject = events[ordinal - 1];
+        // Only a record that still stands in this activation is retracted:
+        // not one an earlier activation, a later record or a retraction left.
+        if (
+          subject?.workOrderId !== event.workOrderId ||
+          subject.type !== type ||
+          subject.criterionId !== criterionId ||
+          !(state[list] ?? []).some((row) => row.ordinal === ordinal)
+        )
+          throw new Error(
+            `invalid OffRampRetracted subject ordinal at line ${index + 1}: expected a standing ${type} of criterion ${criterionId} in the current activation`,
+          );
+        // In closed the event says whether the pull request was merged; in an
+        // open phase it says nothing, because nothing can have merged.
+        if ((state.phase === "closed") !== (event.pullRequest !== undefined))
+          throw new Error(
+            `invalid OffRampRetracted pullRequest at line ${index + 1}: a retraction names the pull request's merge state in closed and only there`,
+          );
+        state[list] = state[list].filter((row) => row.ordinal !== ordinal);
+        state.retractedOffRamps = [
+          ...(state.retractedOffRamps ?? []),
+          {
+            ordinal: index + 1,
+            subject: { ordinal, type, criterionId },
+            reason: event.reason,
+            captureHash: event.captureHash,
+            ...(event.pullRequest ? { pullRequest: event.pullRequest } : {}),
+            recordedAt: event.recordedAt,
+          },
+        ];
+        // A closed order whose pull request is unmerged returns to repair with
+        // the retraction, whose capture holds the operator's words, as the
+        // failure it answers; after the merge the retraction only records.
+        if (event.pullRequest === "unmerged")
+          Object.assign(state, {
+            phase: "needs-fix",
+            failureSourceId: retractionSourceId(index + 1),
+            failureSourcePath: event.capture,
+          });
+        break;
+      }
+      case "HandoffReopened": {
+        offRampEvent(event, index + 1);
+        const { ordinal, type } = event.handoff;
+        const latest = events.findLastIndex(
+          (row, at) =>
+            at < index &&
+            row?.workOrderId === event.workOrderId &&
+            Object.hasOwn(REOPENABLE_HANDOFFS, row.type ?? ""),
+        );
+        // Only the handoff the order is waiting on is reopened, before any
+        // verification of it was requested.
+        if (
+          state.phase !== "ready-to-verify" ||
+          latest + 1 !== ordinal ||
+          events[latest].type !== type
+        )
+          throw new Error(
+            `invalid HandoffReopened at line ${index + 1}: expected the ${type} at ordinal ${ordinal} to be the handoff ${event.workOrderId} waits on in ready-to-verify`,
+          );
+        state.phase = REOPENABLE_HANDOFFS[type];
+        // The next completion writes a fresh ledger.
+        state.unmetCriteria = undefined;
+        state.reopenedHandoffs = [
+          ...(state.reopenedHandoffs ?? []),
+          {
+            ordinal: index + 1,
+            handoff: { ordinal, type },
+            reason: event.reason,
+            captureHash: event.captureHash,
+            recordedAt: event.recordedAt,
+          },
+        ];
+        break;
+      }
       case "WorkOrderWithdrawn":
         offRampEvent(event, index + 1);
         Object.assign(state, {

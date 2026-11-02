@@ -100,7 +100,8 @@ const reportPath = join(root, "docs/verifications/WO-179/VER-001.md");
 mkdirSync(dirname(reportPath), { recursive: true });
 writeFileSync(
   reportPath,
-  `# fixture\n\n**Actor attestation:** ${JSON.stringify(actor)}\n\n**Process cost:** unknown; cause no-session\n\n**Criterion 1:** met. npm test passed.\n**Criterion 2:** met. npm run test:docs passed.\n**Criterion 3:** met. Read.\n`,
+  // Its blocking finding is the basis a fail over met criteria names (WO-249).
+  `# fixture\n\n**Actor attestation:** ${JSON.stringify(actor)}\n\n**Process cost:** unknown; cause no-session\n\n**Criterion 1:** met. npm test passed.\n**Criterion 2:** met. npm run test:docs passed.\n**Criterion 3:** met. Read.\n\n<!-- dotln-findings:start -->\n[{"id": "F1", "route": "blocking", "class": "escape", "summary": "A fixture regression beside met gate claims.", "basis": {"regression": "the fixture behavior main had"}, "reproduction": "docs/evidence/WO-179/regression.md"}]\n<!-- dotln-findings:end -->\n`,
 );
 const log = join(root, "docs/control/orders/WO-179.jsonl");
 const before = readFileSync(log);
@@ -251,16 +252,32 @@ const gateRow = (checkId, names, extra = {}) => {
     ...extra,
   };
 };
-const report = (where, judgments) => {
+const report = (where, judgments, findings = []) => {
   mkdirSync(dirname(where), { recursive: true });
   writeFileSync(
     where,
-    `# Fixture\n\n**Actor attestation:** ${JSON.stringify(actor)}\n\n**Process cost:** unknown; cause no-session\n\n${judgments}\n\n<!-- dotln-findings:start -->\n[]\n<!-- dotln-findings:end -->\n`,
+    `# Fixture\n\n**Actor attestation:** ${JSON.stringify(actor)}\n\n**Process cost:** unknown; cause no-session\n\n${judgments}\n\n<!-- dotln-findings:start -->\n${JSON.stringify(findings)}\n<!-- dotln-findings:end -->\n`,
   );
 };
+// A fail names what it failed on (WO-249): a failed verdict whose criteria are
+// all met carries a blocking finding as its basis, beside its met gate claims.
+const blocked = (order) => [
+  {
+    id: "F1",
+    route: "blocking",
+    class: "escape",
+    summary: "A fixture regression beside met gate claims.",
+    basis: { regression: "the fixture behavior main had" },
+    reproduction: `docs/evidence/${order}/regression.md`,
+  },
+];
 const judged =
   "**Criterion 1:** met. Current gate rows.\n**Criterion 2:** met. Current document row.\n**Criterion 3:** met. Read.";
-report(join(root, "docs/final-reviews/WO-179/FINAL-001.md"), judged);
+report(
+  join(root, "docs/final-reviews/WO-179/FINAL-001.md"),
+  judged,
+  blocked("WO-179"),
+);
 const reviewBefore = readFileSync(log);
 const refuseReview = () => {
   const run = call(["final-review-result", "pass", ...flags]);
@@ -476,7 +493,11 @@ pass(["implementation-ready", ...flags]);
 assertFocusedEvent("ImplementationReady");
 const focusedBriefing = pass(["verify"]).stdout;
 assert.match(focusedBriefing, /suite:alpha, suite:beta/u);
-report(join(root, "docs/verifications/WO-216/VER-001.md"), judged);
+report(
+  join(root, "docs/verifications/WO-216/VER-001.md"),
+  judged,
+  blocked("WO-216"),
+);
 for (const name of ["structural", "alpha", "beta", "document"]) {
   const checks = join(root, "docs/control/local/harness/checks.json");
   const checkId = focusedRows.get(name).checkId;

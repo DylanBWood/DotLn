@@ -38,7 +38,12 @@ export function* completedPhaseAttempts(events) {
       orders.set(event.workOrderId, new Map());
     const starts = orders.get(event.workOrderId) ?? new Map();
     orders.set(event.workOrderId, starts);
-    const start = phaseStarts.get(event.type);
+    // A reopened handoff starts the phase its handoff left again, so the
+    // completion that follows it is timed from the reopening.
+    const start =
+      event.type === "HandoffReopened"
+        ? phaseEnds.get(event.handoff?.type)
+        : phaseStarts.get(event.type);
     if (start) starts.set(start, event.recordedAt);
     const end = phaseEnds.get(event.type);
     if (end) {

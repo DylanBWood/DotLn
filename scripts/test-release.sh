@@ -895,6 +895,129 @@ grep -Fq 'PASS github-body-profile: observed docs/final-reviews/WO-099/PR.md' <<
 printf 'release prepare keeps the meter block last and check-surfaces judges the stored body shape of the current order only\n'
 }
 
+release_case_criterion_records() {
+make_repo criterion_records
+"$node_bin" "$script_dir/test-reader-fixture.mjs" "$main"
+git -C "$main" switch -c wo-099 >/dev/null 2>&1
+mkdir -p "$main/docs/control/orders" "$main/docs/product" "$main/docs/final-reviews/WO-099"
+printf '# WO-099 — fixture (v0.2.0)\n\n**Release classification:** patch. Existing scope.\n\n**Objective:** Fixture criterion records.\n\n**Acceptance criteria (all required)**\n\n1. One.\n2. Two.\n3. Three.\n' >"$main/docs/work-orders/WO-099-fixture.md"
+printf '# Roadmap\n\n## Release boundary\n\nPreserve the existing boundary.\n' >"$main/docs/product/06-roadmap.md"
+local actor='{"harness":"human","harnessVersion":"not-applicable","model":"human","effort":"unknown","source":"operator-attested"}'
+local digest
+digest="sha256:$(printf 'a%.0s' {1..64})"
+# One waived and one defective criterion of the order, at ordinals 4 and 5.
+printf '%s\n' \
+  '{"schemaVersion":1,"type":"WorkOrderActivated","workOrderId":"WO-099","workOrderPath":"docs/work-orders/WO-099-fixture.md"}' \
+  '{"schemaVersion":1,"type":"ImplementationReady","workOrderId":"WO-099"}' \
+  '{"schemaVersion":1,"type":"VerificationRequested","workOrderId":"WO-099","verificationId":"VER-001","reportPath":"docs/verifications/WO-099/VER-001.md"}' \
+  "{\"schemaVersion\":1,\"type\":\"CriterionWaived\",\"workOrderId\":\"WO-099\",\"criterionId\":\"2\",\"reason\":\"Fixture waiver.\",\"capture\":\"docs/intake/waiver.md\",\"captureHash\":\"$digest\",\"actor\":$actor}" \
+  "{\"schemaVersion\":1,\"type\":\"CriterionDefectRecorded\",\"workOrderId\":\"WO-099\",\"criterionId\":\"3\",\"criterionHash\":\"$digest\",\"class\":\"bookkeeping\",\"evidence\":\"Its subject is a count.\",\"actor\":$actor}" \
+  >"$main/docs/control/orders/WO-099.jsonl"
+cp "$script_dir/../docs/control/budgets.json" "$main/docs/control/budgets.json"
+printf '# WO-099\n\nReviewed paragraph.\n' >"$main/docs/final-reviews/WO-099/PR.md"
+local prepared
+prepared="$(release_command prepare --local)"
+grep -Fxq '  docs/final-reviews/WO-099/PR.md' <<<"$prepared"
+"$node_bin" - "$main/docs/final-reviews/WO-099/PR.md" <<'JS'
+const assert = require("node:assert/strict"), fs = require("node:fs");
+const body = fs.readFileSync(process.argv[2], "utf8");
+const records = body.indexOf("<!-- dotln-criterion-records:start -->");
+const meter = body.indexOf("<!-- dotln-process-meter:start -->");
+assert.ok(records > 0 && records < meter, "the records stand above the process table");
+assert.ok(body.indexOf("Reviewed paragraph.") < records, "the reviewer's prose stays first");
+const lines = body.slice(records, meter).split("\n").filter((line) => line.startsWith("- "));
+assert.deepEqual(lines, [
+  "- Criterion 2: waived by ordinal 4; npm run resume -- retract 4 --work-order WO-099 in the order's worktree undoes a waiver the operator's words did not ask for.",
+  "- Criterion 3: defective (bookkeeping) by ordinal 5; npm run resume -- retract 5 --work-order WO-099 in the order's worktree undoes a wrong record before the merge.",
+]);
+JS
+# The pass and the publication read the prepared lines as release
+# preparation wrote them, from the record as the fold holds it.
+"$node_bin" --input-type=module - "$main" <<'JS'
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+import { pathToFileURL } from "node:url";
+const [root] = process.argv.slice(2);
+const load = (path) => import(pathToFileURL(join(root, path)).href);
+const { criterionRecordRefusal } = await load("scripts/lib/github-body.mjs");
+const { readControl } = await load("scripts/lib/control-store.mjs");
+const state = readControl(root).orders.get("WO-099").state;
+const body = readFileSync(join(root, "docs/final-reviews/WO-099/PR.md"), "utf8");
+assert.equal(criterionRecordRefusal(root, body, state), null);
+JS
+# The github-body-profile check passes over the stored body.
+release_command check-surfaces --local >/dev/null
+printf 'release preparation names each waived and defective criterion above the process table, the pass and publication read the same lines, and the body keeps its profile\n'
+}
+
+release_case_unrepaired_retraction() {
+make_repo unrepaired_retraction
+commit_candidate "$main" WO-099 v0.2.1
+local log="$main/docs/control/resume.jsonl"
+local actor='{"harness":"human","harnessVersion":"not-applicable","model":"human","effort":"unknown","source":"operator-attested"}'
+local digest waiver output
+digest="sha256:$(printf 'a%.0s' {1..64})"
+printf '%s\n' "{\"schemaVersion\":1,\"type\":\"CriterionWaived\",\"workOrderId\":\"WO-099\",\"criterionId\":\"2\",\"reason\":\"Fixture waiver.\",\"capture\":\"docs/intake/waiver.md\",\"captureHash\":\"$digest\",\"actor\":$actor}" >>"$log"
+waiver="$(wc -l <"$log" | tr -d ' ')"
+# The operator retracted the waiver before the merge, and the merged record
+# holds no repair after it: the close refuses and publishes nothing.
+printf '%s\n' "{\"schemaVersion\":1,\"type\":\"OffRampRetracted\",\"workOrderId\":\"WO-099\",\"subject\":{\"ordinal\":$waiver,\"type\":\"CriterionWaived\",\"criterionId\":\"2\"},\"reason\":\"Fixture retraction.\",\"capture\":\"docs/intake/retraction.md\",\"captureHash\":\"$digest\",\"pullRequest\":\"unmerged\",\"actor\":$actor}" >>"$log"
+git -C "$main" add docs/control
+git -C "$main" -c maintenance.auto=false commit -qm 'WO-099 retraction before its repair'
+git -C "$main" push origin main >/dev/null 2>&1
+if output="$(release_close WO-099 --publish 2>&1)"; then printf 'error: release close published over an unrepaired retraction\n' >&2; exit 1; fi
+if ! grep -Fq "release close refused: WO-099's retraction of ordinal $waiver (the CriterionWaived of criterion 2) is newer than its latest passing final review" <<<"$output"; then
+  printf 'error: release close did not name the unrepaired retraction:\n%s\n' "$output" >&2
+  exit 1
+fi
+assert_no_candidate_tag "$main" "$origin"
+printf 'release close refuses an order whose retraction is newer than its latest passing final review\n'
+}
+
+release_case_worktree_retraction() {
+make_repo worktree_retraction
+commit_candidate "$main" WO-099 v0.2.1
+git -C "$main" push origin main >/dev/null 2>&1
+local work="$fixture/project-wo-099"
+git -C "$main" worktree add -q -b wo-099 "$work" main
+local log="$work/docs/control/resume.jsonl"
+local actor='{"harness":"human","harnessVersion":"not-applicable","model":"human","effort":"unknown","source":"operator-attested"}'
+local digest waiver output identity
+digest="sha256:$(printf 'a%.0s' {1..64})"
+printf '%s\n' "{\"schemaVersion\":1,\"type\":\"CriterionWaived\",\"workOrderId\":\"WO-099\",\"criterionId\":\"2\",\"reason\":\"Fixture waiver.\",\"capture\":\"docs/intake/waiver.md\",\"captureHash\":\"$digest\",\"actor\":$actor}" >>"$log"
+waiver="$(wc -l <"$log" | tr -d ' ')"
+# The operator retracted the waiver in the order's worktree, and the branch
+# merged without its repair: main's record never held the retraction, so the
+# close reads it where it was recorded and publishes nothing.
+printf '%s\n' "{\"schemaVersion\":1,\"type\":\"OffRampRetracted\",\"workOrderId\":\"WO-099\",\"subject\":{\"ordinal\":$waiver,\"type\":\"CriterionWaived\",\"criterionId\":\"2\"},\"reason\":\"Fixture retraction.\",\"capture\":\"docs/intake/retraction.md\",\"captureHash\":\"$digest\",\"pullRequest\":\"unmerged\",\"actor\":$actor}" >>"$log"
+identity="$(cd "$work" && pwd -P)"
+if output="$(release_close WO-099 --publish 2>&1)"; then printf 'error: release close published over a retraction its worktree holds\n' >&2; exit 1; fi
+if ! grep -Fq "release close refused: WO-099's retraction of ordinal $waiver (the CriterionWaived of criterion 2), recorded in its worktree $identity, is newer than its latest passing final review" <<<"$output"; then
+  printf 'error: release close did not name the worktree retraction:\n%s\n' "$output" >&2
+  exit 1
+fi
+# The repair then passes in the worktree, but the branch is never merged
+# again: origin/main's pass is still the one the retraction is newer than, so
+# the close still refuses and publishes nothing.
+local retraction
+retraction="$(wc -l <"$log" | tr -d ' ')"
+printf '%s\n' \
+  "{\"schemaVersion\":1,\"type\":\"RepairRequested\",\"workOrderId\":\"WO-099\",\"sourceFindingId\":\"retraction-$retraction\",\"sourceReportPath\":\"docs/intake/retraction.md\"}" \
+  "{\"schemaVersion\":1,\"type\":\"RepairCompleted\",\"workOrderId\":\"WO-099\",\"sourceVerificationId\":\"retraction-$retraction\"}" \
+  '{"schemaVersion":1,"type":"VerificationRequested","workOrderId":"WO-099","verificationId":"VER-002","reportPath":"docs/verifications/WO-099/VER-002.md"}' \
+  '{"schemaVersion":1,"type":"VerificationCompleted","workOrderId":"WO-099","verificationId":"VER-002","reportPath":"docs/verifications/WO-099/VER-002.md","verdict":"pass"}' \
+  '{"schemaVersion":1,"type":"FinalReviewRequested","workOrderId":"WO-099","finalReviewId":"FINAL-002","reportPath":"docs/final-reviews/WO-099/FINAL-002.md"}' \
+  '{"schemaVersion":1,"type":"FinalReviewCompleted","workOrderId":"WO-099","finalReviewId":"FINAL-002","reportPath":"docs/final-reviews/WO-099/FINAL-002.md","verdict":"pass"}' >>"$log"
+if output="$(release_close WO-099 --publish 2>&1)"; then printf 'error: release close published over a repair origin/main never received\n' >&2; exit 1; fi
+if ! grep -Fq "release close refused: WO-099's retraction of ordinal $waiver (the CriterionWaived of criterion 2), recorded in its worktree $identity, is newer than its latest passing final review on origin/main" <<<"$output"; then
+  printf 'error: release close did not refuse the unmerged repair:\n%s\n' "$output" >&2
+  exit 1
+fi
+assert_no_candidate_tag "$main" "$origin"
+printf 'release close refuses an order whose worktree holds a retraction newer than its latest passing final review on origin/main, repaired there or not\n'
+}
+
 release_case_license_surfaces() {
 make_repo license_surfaces
 commit_candidate "$main" WO-099 v0.2.1

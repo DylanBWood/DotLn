@@ -3,7 +3,10 @@ import { formatDuration } from "./lib/duration.mjs";
 import { firstDifferingLine } from "./lib/validation.mjs";
 import { spawnSync } from "node:child_process";
 import { pathToFileURL } from "node:url";
-import { readPreflightSuites } from "./lib/handoff-ledger.mjs";
+import {
+  declaredCriteria,
+  readPreflightSuites,
+} from "./lib/handoff-ledger.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 import {
   defaultDocRelative,
@@ -850,6 +853,21 @@ const offRampLines = (state) => [
         `- Waived criteria: ${cell(state.waivedCriteria.map((waiver) => `${waiver.criterionId} by ordinal ${waiver.ordinal}`).join(", "))}.`,
       ]
     : []),
+  ...(state?.defectiveCriteria?.length
+    ? [
+        `- Defective criteria: ${cell(state.defectiveCriteria.map((record) => `${record.criterionId} (${record.class}) by ordinal ${record.ordinal}`).join(", "))}.`,
+      ]
+    : []),
+  ...(state?.retractedOffRamps?.length
+    ? [
+        `- Retracted off-ramps: ${cell(state.retractedOffRamps.map((row) => `ordinal ${row.ordinal} retracts ordinal ${row.subject.ordinal} (criterion ${row.subject.criterionId})`).join("; "))}.`,
+      ]
+    : []),
+  ...(state?.reopenedHandoffs?.length
+    ? [
+        `- Reopened handoffs: ${cell(state.reopenedHandoffs.map((row) => `ordinal ${row.ordinal} reopens ordinal ${row.handoff.ordinal}`).join(", "))}.`,
+      ]
+    : []),
   ...(state?.corrections?.length
     ? [
         `- Record corrections: ${cell(state.corrections.map((correction) => `ordinal ${correction.ordinal} corrects ordinal ${correction.subject.ordinal} (${Object.keys(correction.fields).join(", ")})`).join("; "))}.`,
@@ -966,6 +984,70 @@ export const checkPartition = ({ rows }, pages) => {
       `the generated pages do not partition the orders: ${failures.join("; ")}`,
     );
 };
+
+// The criteria screen (WO-249): wording that often marks a criterion no
+// candidate can meet as written. Its subject is a count, ceiling, cost,
+// duration or token figure rather than a behavior; or it reads HEAD or a
+// commit range, or asks for a judgment of a later phase, before the final
+// review's commit. A regular expression over prose is a screen and never a
+// judgment, so a match advises the planner and nothing is refused.
+// A figure: digits with their thousands or decimals, outside an identifier
+// (an order or decision id, a version); a range's second figure (the 5 of
+// 2-5) counts.
+const FIGURE = String.raw`(?<![\p{L}\p{N}_.])(?<![\p{L}_]-)\d+(?:[.,]\d+)*`;
+const SCREENED_WORDS = String.raw`(?:median|ceiling|budget|cap)s?`;
+// A date or a time names when, never a figure the criterion measures.
+const withoutDates = (text) =>
+  text.replace(/\b\d{4}-\d{2}-\d{2}(?:T[\d:.]+Z?)?\b/gu, "a date");
+// Each screen: its name, its pattern and the text it reads. The later-phase
+// phrases are read without emphasis or code marks, which can split them.
+const CRITERIA_SCREENS = [
+  [
+    "a figure with a unit",
+    new RegExp(
+      String.raw`(?:\$${FIGURE}|${FIGURE}\s?(?:ms|s|min|h|bytes|KB|MB|GB|tokens|USD|%))(?![\p{L}\p{N}_])`,
+      "gu",
+    ),
+    withoutDates,
+  ],
+  [
+    "a median, ceiling, budget or cap beside a figure",
+    new RegExp(
+      String.raw`${FIGURE}[^\d\n]{0,20}?\b${SCREENED_WORDS}\b|\b${SCREENED_WORDS}\b[^\d\n]{0,20}?${FIGURE}`,
+      "giu",
+    ),
+    withoutDates,
+  ],
+  ["HEAD", /\bHEAD\b/gu],
+  ["git log", /\bgit(?:\s+-{1,2}[\w-]+(?:=\S+)?)*\s+log\b/gu],
+  [
+    "a revision range",
+    /(?<![\w.])[\w^~/$-]*[\w}]\.{2,3}(?:[$\w][\w^~/$-]*|(?=`))/gu,
+  ],
+  [
+    "a later-phase judgment",
+    /\b(?:after the review gate|at release close|after the final review)\b/giu,
+    (text) => text.replace(/[*_`]/gu, ""),
+  ],
+];
+/** One advisory per open-order criterion whose text a screen matches. */
+export function criteriaAdvisories(id, orderText) {
+  return (declaredCriteria(orderText) ?? []).flatMap(
+    ({ id: criterion, text }) => {
+      const matched = CRITERIA_SCREENS.flatMap(
+        ([name, pattern, read = (value) => value]) =>
+          [...read(text).matchAll(pattern)].map(
+            (match) => `"${match[0]}" (${name})`,
+          ),
+      );
+      return matched.length
+        ? [
+            `criteria advisory: ${id} criterion ${criterion}: ${matched.join("; ")}`,
+          ]
+        : [];
+    },
+  );
+}
 
 // Resolve the checkout's own declarations once. A source-only control-plane
 // fixture without Preflight tokens needs no runner or compiled runtime.
@@ -1104,6 +1186,15 @@ export const main = (args = process.argv.slice(2), root = toolRoot) => {
       process.stdout.write(
         `NEWER local release evidence: ${newer.map(({ name }) => name).join(", ")}; additional manifests are not validated by --check; run npm run work-orders -- index to refresh the tag observation\n`,
       );
+    // The criteria screen reads every open order and refuses nothing.
+    for (const row of index.rows.filter((row) =>
+      INDEX_SECTIONS.includes(row.section),
+    ))
+      for (const line of criteriaAdvisories(
+        row.id,
+        readContained(root, row.path),
+      ))
+        process.stdout.write(`${line}\n`);
     for (const page of Object.values(pages))
       process.stdout.write(`PASS ${page.path} is current\n`);
   } else {

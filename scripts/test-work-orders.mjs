@@ -39,6 +39,7 @@ import {
   checkSequenceCoverage,
   checkSequenceTopology,
   checkPreflightSuites,
+  criteriaAdvisories,
   parseHeader,
   parseSequence,
   readIndex,
@@ -2122,6 +2123,174 @@ await check(
 
 cli(repo, ["index", "--check"]);
 process.stdout.write("PASS work-order index fixtures\n");
+
+// The criteria screen (WO-249): index --check prints one advisory per open
+// order criterion whose wording often marks a defect, and refuses nothing.
+await check(
+  "WO-249 index --check advises once per matched criterion of an open order, none for a clean order, and exits 0",
+  () => {
+    const lint = makeRepo("criteria lint");
+    const order = (id, criteria) =>
+      write(
+        lint,
+        authorityPath(id),
+        `${header(id, "(version assigned at activation)")}\n**Acceptance criteria (all required)**\n\n${criteria.map((text, index) => `${index + 1}. ${text}`).join("\n")}\n`,
+      );
+    // One criterion per pattern, in the screen's order.
+    const matching = [
+      "The handoff completes within 30 s.",
+      "The meter stays under its ceiling of 40,194.",
+      "The checkout's `HEAD` names the reviewed commit.",
+      "`git log` lists the change.",
+      "The diff `main..wo-999` holds only the order's files.",
+      "The release is judged after the review gate.",
+      // The other phrases, one split by emphasis; the three-dot range; and
+      // the units the figure screen names.
+      "The record stands at release close.",
+      "The record is judged *after the final* review.",
+      "The diff `origin/main...wo-999` holds the order's files.",
+      "The block stays within 8 KB, 512 bytes, 3 MB or 1 GB.",
+      "The probe takes 40 ms, 10 min or 2 h.",
+      "The run spends 1,200 tokens, $5, 4 USD or 75%.",
+      // Shapes the first screens missed: a range's second figure, a figure
+      // beside punctuation, git options before log and open or variable ranges.
+      "Between 2-5 s per case.",
+      "Runs in 10-20ms each.",
+      "A budget: 20 subagents.",
+      "It stays within its ceiling (40,194).",
+      "`git --no-pager log` lists it.",
+      "The diff `main..` holds it.",
+      "The range $base..$head holds it.",
+    ];
+    order("WO-901", matching);
+    order("WO-902", [
+      "The status names the order's phase.",
+      "A refusal names its reason and appends nothing.",
+      // Identifiers, versions, decision ids and dates are not figures.
+      "Order WO-163 ships in v0.107.0 under D015 on 2026-11-02, and its report cites 2026-11-02T10:00:00.000Z.",
+    ]);
+    write(
+      lint,
+      planningPath,
+      sequenceSource([
+        ["WO-901", "lint fixture"],
+        ["WO-902", "clean fixture"],
+      ]),
+    );
+    cli(lint, ["index"]);
+    const output = cli(lint, ["index", "--check"]);
+    const advisories = output
+      .split("\n")
+      .filter((line) => line.startsWith("criteria advisory: "));
+    assert.deepEqual(advisories, [
+      'criteria advisory: WO-901 criterion 1: "30 s" (a figure with a unit)',
+      'criteria advisory: WO-901 criterion 2: "ceiling of 40,194" (a median, ceiling, budget or cap beside a figure)',
+      'criteria advisory: WO-901 criterion 3: "HEAD" (HEAD)',
+      'criteria advisory: WO-901 criterion 4: "git log" (git log)',
+      'criteria advisory: WO-901 criterion 5: "main..wo-999" (a revision range)',
+      'criteria advisory: WO-901 criterion 6: "after the review gate" (a later-phase judgment)',
+      'criteria advisory: WO-901 criterion 7: "at release close" (a later-phase judgment)',
+      'criteria advisory: WO-901 criterion 8: "after the final review" (a later-phase judgment)',
+      'criteria advisory: WO-901 criterion 9: "origin/main...wo-999" (a revision range)',
+      'criteria advisory: WO-901 criterion 10: "8 KB" (a figure with a unit); "512 bytes" (a figure with a unit); "3 MB" (a figure with a unit); "1 GB" (a figure with a unit)',
+      'criteria advisory: WO-901 criterion 11: "40 ms" (a figure with a unit); "10 min" (a figure with a unit); "2 h" (a figure with a unit)',
+      'criteria advisory: WO-901 criterion 12: "1,200 tokens" (a figure with a unit); "$5" (a figure with a unit); "4 USD" (a figure with a unit); "75%" (a figure with a unit)',
+      'criteria advisory: WO-901 criterion 13: "5 s" (a figure with a unit)',
+      'criteria advisory: WO-901 criterion 14: "20ms" (a figure with a unit)',
+      'criteria advisory: WO-901 criterion 15: "budget: 20" (a median, ceiling, budget or cap beside a figure)',
+      'criteria advisory: WO-901 criterion 16: "ceiling (40,194" (a median, ceiling, budget or cap beside a figure)',
+      'criteria advisory: WO-901 criterion 17: "git --no-pager log" (git log)',
+      'criteria advisory: WO-901 criterion 18: "main.." (a revision range)',
+      'criteria advisory: WO-901 criterion 19: "$base..$head" (a revision range)',
+    ]);
+    assert.match(output, /^PASS docs\/work-orders\/README\.md is current$/m);
+    assert.deepEqual(
+      criteriaAdvisories(
+        "WO-902",
+        readFileSync(join(lint, authorityPath("WO-902")), "utf8"),
+      ),
+      [],
+    );
+    // A closed order's criteria are history, not this screen's subject.
+    writeLog(lint, completed("WO-901"));
+    cli(lint, ["index"]);
+    assert.doesNotMatch(cli(lint, ["index", "--check"]), /criteria advisory/);
+    // The card names a defect record, a retraction and a reopened handoff.
+    const captured = {
+      capture: "docs/intake/notes/operator.md",
+      captureHash: `sha256:${"a".repeat(64)}`,
+      actor: {
+        harness: "human",
+        harnessVersion: "not-applicable",
+        model: "human",
+        effort: "unknown",
+        source: "operator-attested",
+      },
+    };
+    writeLog(lint, [
+      ...completed("WO-901"),
+      activation("WO-902"),
+      { type: "ImplementationReady", workOrderId: "WO-902" },
+      {
+        type: "HandoffReopened",
+        workOrderId: "WO-902",
+        handoff: { ordinal: 8, type: "ImplementationReady" },
+        reason: "the operator widened the order",
+        ...captured,
+      },
+      { type: "ImplementationReady", workOrderId: "WO-902" },
+      {
+        type: "VerificationRequested",
+        workOrderId: "WO-902",
+        verificationId: "VER-001",
+        reportPath: "docs/verifications/WO-902/VER-001.md",
+      },
+      {
+        type: "CriterionDefectRecorded",
+        workOrderId: "WO-902",
+        criterionId: "1",
+        criterionHash: `sha256:${"b".repeat(64)}`,
+        class: "bookkeeping",
+        evidence: "Its subject is a count.",
+        actor: captured.actor,
+      },
+      {
+        type: "CriterionWaived",
+        workOrderId: "WO-902",
+        criterionId: "2",
+        reason: "accepted deviation",
+        ...captured,
+      },
+      {
+        type: "OffRampRetracted",
+        workOrderId: "WO-902",
+        subject: { ordinal: 13, type: "CriterionWaived", criterionId: "2" },
+        reason: "the operator asked for no waiver",
+        ...captured,
+      },
+    ]);
+    const card = renderIndex(readIndex(lint, []))
+      .split("### WO-902\n")[1]
+      .split(/\n### /u)[0];
+    assert.match(
+      card,
+      /^- Defective criteria: 1 \(bookkeeping\) by ordinal 12\.$/mu,
+    );
+    assert.match(
+      card,
+      /^- Retracted off-ramps: ordinal 14 retracts ordinal 13 \(criterion 2\)\.$/mu,
+    );
+    assert.match(
+      card,
+      /^- Reopened handoffs: ordinal 9 reopens ordinal 8\.$/mu,
+    );
+    assert.doesNotMatch(
+      card,
+      /Waived criteria/u,
+      "the retracted waiver no longer stands",
+    );
+  },
+);
 
 test("WO-142 binary Git failures retain diagnostics and identify missing batch objects", () => {
   assert.equal(

@@ -52246,6 +52246,57 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-4798f1b5f5a74ed1",
+      "key": "decision:docs/evidence/WO-249/decisions.md#wo-249-d017",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c656461d71343e5319f2149c8fae5e0bc45ee4a3bac7ca36756c858ea68faa3d",
+          "ref": "docs/evidence/WO-249/decisions.md#wo-249-d017--the-review-round-three-independent-reviews-and-what-each-finding-became",
+          "title": "WO-249-D017: appendTransition in scripts/resume.mjs writes an event before folding it, so when a command's pre-check is looser than the fold the segment takes an event it then cannot read and the…",
+          "summary": "{ \"id\": \"WO-249-D017\", \"date\": \"2026-11-02\", \"dispatch\": \"resume: next; executor procedure step 6, the three independent worker reviews\", \"decision\": \"Three dotln-worker reviews judged the finished implementation: a criteria adversary (14 findings and 5 untested paths), a design improver (13 ranked improvements and 11 follow-ups) and a consistency review (11 items). Fixed: adversary 1 to 11 and 13 (D005, D006, D007, D009, D012, D013, D014), each with its regression test, and its five untested paths, now tested; design 1 to 9 and 11 to 13 (design 7 in part: one orderSegment helper gives defect, retract, reopen-handoff and correct the order's segment while each keeps its own activation check; ",
+          "missing": false
+        },
+        {
+          "hash": "b8b93eda648e0c225d8ab4b159b6405c0e3a2f80c2a8e66046559d3458489d28",
+          "ref": "docs/evidence/WO-249/decisions.md#wo-249-d017--the-review-round-three-independent-reviews-and-what-each-finding-became",
+          "title": "WO-249-D017: appendTransition in scripts/resume.mjs writes an event before folding it, so when a command's pre-check is looser than the fold the segment takes an event it then cannot read and the…",
+          "summary": "{ \"id\": \"WO-249-D017\", \"date\": \"2026-11-02\", \"dispatch\": \"resume: next; executor procedure step 6, the three independent worker reviews\", \"decision\": \"Three dotln-worker reviews judged the finished implementation: a criteria adversary (14 findings and 5 untested paths), a design improver (13 ranked improvements and 11 follow-ups) and a consistency review (11 items). Fixed: adversary 1 to 11 and 13 (D005, D006, D007, D009, D012, D013, D014), each with its regression test, and its five untested paths, now tested; design 1 to 9 and 11 to 13 (design 7 in part: one orderSegment helper gives defect, retract, reopen-handoff and correct the order's segment while each keeps its own activation check; ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-a9efc000150d7e9f",
+      "key": "decision:docs/evidence/WO-249/decisions.md#wo-249-d012",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "9a9dfe9e1cddd844d7714f059dc14582f8abbd2c9c963b6e55b0bf2e494d9a82",
+          "ref": "docs/evidence/WO-249/decisions.md#wo-249-d012--the-pull-request-body-names-each-defective-or-waived-criterion-above-the-process-table",
+          "title": "WO-249-D012: A target order's publications name no criterion-record lines, because release prepare writes nothing for a target order, and an instance without docs/control/budgets.json has no process…",
+          "summary": "{ \"id\": \"WO-249-D012\", \"date\": \"2026-11-02\", \"dispatch\": \"resume: next; step 4, release prepare and github-body\", \"decision\": \"scripts/lib/github-body.mjs writes one line per defective or waived criterion, in record order, between `<!-- dotln-criterion-records:start -->` and `<!-- dotln-criterion-records:end -->` directly above the process-meter block; release prepare passes the order's records, and a body with no records loses a stale block. Blank lines keep the list its own block, because the github-body-profile check read the end marker after the last item as a soft-wrapped continuation; the body-shape check leaves the block out of its prose-before-meter test, since the lines are release ",
+          "missing": false
+        },
+        {
+          "hash": "f11444e7b990275f9dcacc1be0364ddedbe2782fb3e328328a509ee0f24626e4",
+          "ref": "docs/evidence/WO-249/decisions.md#wo-249-d012--the-pull-request-body-names-each-defective-or-waived-criterion-above-the-process-table",
+          "title": "WO-249-D012: A target order's publications name no criterion-record lines, because release prepare writes nothing for a target order, and an instance without docs/control/budgets.json has no process…",
+          "summary": "{ \"id\": \"WO-249-D012\", \"date\": \"2026-11-02\", \"dispatch\": \"resume: next; step 4, release prepare and github-body\", \"decision\": \"scripts/lib/github-body.mjs writes one line per defective or waived criterion, in record order, between `<!-- dotln-criterion-records:start -->` and `<!-- dotln-criterion-records:end -->` directly above the process-meter block; release prepare passes the order's records, and a body with no records loses a stale block. Blank lines keep the list its own block, because the github-body-profile check read the end marker after the last item as a soft-wrapped continuation; the body-shape check leaves the block out of its prose-before-meter test, since the lines are release ",
+          "missing": false
+        },
+        {
+          "hash": "b0f6480ec1ff69fbfe7bf4dd337e86bd5813a0624497ee5bbe0ff82cd9df6ce0",
+          "ref": "docs/evidence/WO-249/decisions.md#wo-249-d012--the-pull-request-body-names-each-defective-or-waived-criterion-above-the-process-table",
+          "title": "WO-249-D012: A target order's publications name no criterion-record lines, because release prepare writes nothing for a target order, and an instance without docs/control/budgets.json has no process…",
+          "summary": "{ \"id\": \"WO-249-D012\", \"date\": \"2026-11-02\", \"dispatch\": \"resume: next; step 4, release prepare and github-body\", \"decision\": \"scripts/lib/github-body.mjs writes one line per defective or waived criterion, in record order, between `<!-- dotln-criterion-records:start -->` and `<!-- dotln-criterion-records:end -->` directly above the process-meter block; release prepare passes the order's records, and a body with no records loses a stale block. Blank lines keep the list its own block, because the github-body-profile check read the end marker after the last item as a soft-wrapped continuation; the body-shape check leaves the block out of its prose-before-meter test, since the lines are release ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }
