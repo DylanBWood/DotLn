@@ -4,7 +4,7 @@
 
 ## Proposed order
 
-- [ ] [WO-245] — The kit's guide is a kit file and the front page is the instance's · **queued**
+- [x] [WO-245] — The kit's guide is a kit file and the front page is the instance's · **final-reviewed**
 - [ ] [WO-251] — Desktop control is opt-in · **queued**
 - [ ] [WO-249] — Criteria judge the product · **queued**
 - [ ] [WO-250] — Reviews converge and every worker counts · **queued**
@@ -46,23 +46,6 @@ None.
 None.
 
 ## Open
-
-### WO-245
-
-[WO-245 — The kit's guide is a kit file and the front page is the instance's: the launchpad guide moves from the seeded README into &#96;docs/KIT.md&#96;, a manifest-listed kit file every update carries; the root &#96;README.md&#96; is seeded once as a short instance page that the starter refresh rewrites only while it still equals a prior exported rendering and never refuses on; the seed template is frozen by a pinned digest; and a launchpad's release prepare and close admit a front page without the release block (version assigned at activation)](WO-245-the-kit-guide-is-a-kit-file.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-215: satisfied-by-close (met) — the starter refresh and its seed plan this order changes; WO-077: satisfied-by-close (met) — seeds as instance files the update never touches, which README.md stays; WO-203: satisfied-by-close (met) — the update preview and its report of seeds and instance actions; WO-086: satisfied-by-close (met) — the README release block as the one claim release prepare writes, made optional in a kit root.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer high.
-- Track: delivery
-- Cost: adds &#96;docs/KIT.md&#96; (new, kit-owned): the text of &#96;scripts/kit/README.client.md&#96; with its opening rewritten for a reader who arrives from the instance's own front page and its &#96;This source prepares&#96; block removed, about 60 KB, listed in the kit's document list beside &#96;docs/PLAYBOOK.md&#96; (&#96;scripts/launchpad.mjs&#96; 247); &#96;scripts/kit/README.client.md&#96; rewritten as the short seed (the release display name, one paragraph saying what the repository is and where the kit's guide is, the release block, one sentence inviting the owner to replace everything but the block; about 1 KB) with its SHA-256 pinned in &#96;scripts/test-launchpad-export.mjs&#96; (the &#96;launchpad-docs&#96; suite); in &#96;scripts/lib/starter-seeds.mjs&#96; (&#96;planStarterSeeds&#96;, from 109; the refusal at 206 to 209) the README rule: &#96;README.md&#96; is rewritten only while the starter's copy equals a prior exported rendering, a customized, missing or non-regular copy is reported &#96;kept&#96; with its reason and never refuses the refresh (the refusal "starter seed differs from prior export" lists the other seeds only), and &#96;scripts/lib/starter-refresh.mjs&#96; (593 to 608, 884) carries &#96;keptSeeds&#96; on the result row; in &#96;scripts/lib/release-preparation.mjs&#96; (137 to 220) and &#96;scripts/release.mjs&#96; (880 to 925) a kit root (&#96;isKitRoot&#96;, 869) whose &#96;README.md&#96; carries no release markers is admitted: &#96;release prepare&#96; writes no claim and records &#96;not carried&#96; in the decision it writes, and the close's release-block check passes as &#96;not carried&#96;, while markers present keep every rule and core keeps its requirement; the &#96;docs/README.md&#96; seed (&#96;scripts/launchpad.mjs&#96; 1088 to 1108) names &#96;docs/KIT.md&#96;; cases in &#96;scripts/test-launchpad-export.mjs&#96; (the manifest lists &#96;docs/KIT.md&#96;; the seed's digest; the seed carries the block), &#96;scripts/test-launchpad-update.mjs&#96; (2316 to 2345: the refresh rewrites a starter README equal to the long guide once, keeps a hand-edited one and reports it, keeps a missing one, refuses nothing on its account and publishes its kit files), &#96;scripts/test-release-preparation.mjs&#96; and &#96;scripts/test-release.sh&#96; (a kit root without the block; one marker still refuses), &#96;scripts/test-instance-history.mjs&#96; (an updated instance keeps its replaced README and prepares a release); product 03 §Platform and instance boundary; &#96;docs/KIT.md&#96; §Kit files and instance files and §Taking upstream updates. Removes: the state where every instance's front page is the kit's 60,857-byte guide, where a starter refresh rewrites it at each release whose template changed and a fork's merge carries it (v0.103.0 and v0.103.1 both did), where an instance that edits it forks the file from every later update or meets a merge conflict, and where a launchpad's release prepare refuses a front page without the block. Wall-clock: the export writes one more kit file (milliseconds); the refresh's README judgment is the proven-seed walk it makes today; no gate step gains work. Context bytes: this file, about 18,000; an instance's front page falls from 60,857 bytes to about 1,000, and the guide is read on demand. Commands: none new. Tokens: unknown until run. Steps: 9. Re-mints: none of &#96;scripts/launchpad.mjs&#96;, &#96;scripts/lib/starter-seeds.mjs&#96;, &#96;scripts/lib/starter-refresh.mjs&#96;, &#96;scripts/release.mjs&#96; and &#96;scripts/lib/release-preparation.mjs&#96; is a registered evidence source (&#96;scripts/lib/evidence-sources.mjs&#96;), so no edition is staled and no live feedback episode is owed; &#96;scripts/launchpad.mjs&#96;, &#96;scripts/release.mjs&#96; and &#96;scripts/lib/release-preparation.mjs&#96; are declared machinery sources (&#96;scripts/test-runner.mjs&#96; 159, 160, 186), so &#96;npm test -- --review&#96; runs before handoff.
-- Authority: [docs/work-orders/WO-245-the-kit-guide-is-a-kit-file.md](WO-245-the-kit-guide-is-a-kit-file.md)
 
 ### WO-251
 
@@ -158,8 +141,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-245.
-- References: WO-235: satisfied-by-close (met) — the shared role rule's standing-document clause, the plan start skeleton and the writing guidance this order extends; WO-233: satisfied-by-close (met) — the session journals and the retained lane the read census reads; WO-227: satisfied-by-close (met) — the kit README's outward rules the rewritten template keeps; WO-224: satisfied-by-close (met) — the reducer's registered-target route the fifth lens brief runs under; WO-237: reference-only (non-blocking) — closed orders' journals move to the retained lane there; the census reads them where they are; WO-088: reference-only (non-blocking) — pass registration leaves the idea ledger there; the passes directory follows that decision; WO-245: planning-deferral (unmet) until WO-245 dated 2026-10-31 — step 9 edits the kit guide at docs/KIT.md, which WO-245 creates from the seeded README.
+- Dependencies: typed; dependency-ready.
+- References: WO-235: satisfied-by-close (met) — the shared role rule's standing-document clause, the plan start skeleton and the writing guidance this order extends; WO-233: satisfied-by-close (met) — the session journals and the retained lane the read census reads; WO-227: satisfied-by-close (met) — the kit README's outward rules the rewritten template keeps; WO-224: satisfied-by-close (met) — the reducer's registered-target route the fifth lens brief runs under; WO-237: reference-only (non-blocking) — closed orders' journals move to the retained lane there; the census reads them where they are; WO-088: reference-only (non-blocking) — pass registration leaves the idea ledger there; the passes directory follows that decision; WO-245: planning-deferral (met) until WO-245 dated 2026-10-31 — step 9 edits the kit guide at docs/KIT.md, which WO-245 creates from the seeded README.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -243,8 +226,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-245.
-- References: WO-218: satisfied-by-close (met) — the gitmoji admission before the conventional type that this order widens for pull-request titles; WO-221: satisfied-by-close (met) — ensureGhFor and the push-URL binding the helper proves the repository with; WO-157: satisfied-by-close (met) — pushUrl and the host-created push the helper reuses; WO-135: satisfied-by-close (met) — the hook's command judgment the gh refusal joins; WO-144: satisfied-by-close (met) — the known-destination refusals that survive grant failures, beside which the gh refusal sits; WO-245: planning-deferral (unmet) until WO-245 dated 2026-10-31 — the kit guide's file this order writes into is docs/KIT.md once WO-245 merges, otherwise the kit README; step 8 names both.
+- Dependencies: typed; dependency-ready.
+- References: WO-218: satisfied-by-close (met) — the gitmoji admission before the conventional type that this order widens for pull-request titles; WO-221: satisfied-by-close (met) — ensureGhFor and the push-URL binding the helper proves the repository with; WO-157: satisfied-by-close (met) — pushUrl and the host-created push the helper reuses; WO-135: satisfied-by-close (met) — the hook's command judgment the gh refusal joins; WO-144: satisfied-by-close (met) — the known-destination refusals that survive grant failures, beside which the gh refusal sits; WO-245: planning-deferral (met) until WO-245 dated 2026-10-31 — the kit guide's file this order writes into is docs/KIT.md once WO-245 merges, otherwise the kit README; step 8 names both.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.

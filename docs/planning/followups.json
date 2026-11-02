@@ -52106,6 +52106,83 @@
           "at": "2026-11-01T23:31:54.756Z"
         }
       ]
+    },
+    {
+      "id": "FUP-912adb42a652b75f",
+      "key": "decision:docs/evidence/WO-245/decisions.md#wo-245-d005",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "8223536f7bddde154e379c8d3168457f0856c89906076062634bb584393078c3",
+          "ref": "docs/evidence/WO-245/decisions.md#wo-245-d005",
+          "title": "WO-245-D005: Bind guide-sensitive validation to current documentation bytes: declare executable document inputs in the shared product identity/reuse contract or move their consumers to exact-tree…",
+          "summary": "{ \"id\": \"WO-245-D005\", \"date\": \"2026-11-02\", \"dispatch\": \"resume: next\", \"decision\": \"Declare docs/KIT.md in the launchpad suite and launchpad-planning machinery selectors; defer the wider documentation-byte reuse boundary to planning.\", \"evidence\": [ \"Consistency review C1: the former scripts/kit/README.client.md matched both selectors; docs/KIT.md did not. scripts/test-runner.mjs now names the moved input in both places.\", \"Consistency review C2: packages/skeleton/src/gate-evidence.mjs excludes docs from gateCodeIdentity and gateInstanceInputDigest returns undefined in core. scripts/lib/gate-reuse.mjs filters product rows by code identity, not candidate tree. Adding selectors does not guar",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-245-D005: current acceptance has a fresh complete run; shared document-sensitive evidence reuse needs separate package and evidence-contract scope.",
+          "reopenWhen": "Planning scopes documentation-sensitive evidence reuse, or a guide-only edit would otherwise claim a cached product pass.",
+          "targets": [],
+          "at": "2026-11-02T01:31:23.308Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Correction: the prior disposition prematurely said current acceptance has a fresh complete run. Local checks hold only the stopped run recorded in WO-245-D004. WO-245 must be judged by a fresh complete review run and exact-tree document gate; shared documentation-sensitive reuse remains separate scope.",
+          "reopenWhen": "Planning scopes documentation-sensitive evidence reuse, or a guide-only edit would otherwise claim a cached product pass.",
+          "targets": [],
+          "at": "2026-11-02T01:31:50.313Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-3c371de4deb7c876",
+      "key": "decision:docs/evidence/WO-245/decisions.md#wo-245-d010",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "3fd13538c13da75438814dd1b6caf330a8d2cd726e9a7b82123287f543513353",
+          "ref": "docs/evidence/WO-245/decisions.md#wo-245-d010",
+          "title": "WO-245-D010: Make release prepare's no-observed-tag remedy follow the page: name only the heading when a kit root's README carries no release markers, keep naming the README claim where the block is…",
+          "summary": "{ \"id\": \"WO-245-D010\", \"date\": \"2026-11-02\", \"dispatch\": \"resume: verify\", \"decision\": \"Board, not block: in a kit root whose README carries no release markers, release prepare's no-observed-tag refusal still tells the owner to assign the heading and README claim by hand, although that page carries no claim.\", \"evidence\": [ \"scripts/lib/release-preparation.mjs raises 'release prepare cannot assign a target without an observed release tag; assign the heading and README claim by hand' unconditionally, after computing carriesClaim.\", \"Verifier probe: a synthetic kit root (KIT-MANIFEST.json, no package source) whose README is '# Our project', with the activation placeholder heading and no observ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-8bf500303e6adfce",
+      "key": "decision:docs/evidence/WO-245/decisions.md#wo-245-d011",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "09eb52e91ff726f1d555c8a3a535f44759b865df18db942f3d5fa2a9900fe89f",
+          "ref": "docs/evidence/WO-245/decisions.md#wo-245-d011",
+          "title": "WO-245-D011: Print kept starter seeds with their reasons in the release close summary beside published seeds, for the real close and the dry-run preview, and assert both in the summary case of…",
+          "summary": "{ \"id\": \"WO-245-D011\", \"date\": \"2026-11-02\", \"dispatch\": \"resume: verify\", \"decision\": \"Board, not block: the release close's printed starter-refresh line names published seeds but not the new keptSeeds, so a close that keeps a customized, missing or non-regular starter README instead of migrating it prints nothing about the page.\", \"evidence\": [ \"scripts/release.mjs releaseCloseSummary prints '; seeds published: …' from rewrittenSeeds and '; seeds would change: …' from seedChanges; it reads no keptSeeds.\", \"Verifier probe: releaseCloseSummary over a refreshed row whose keptSeeds holds README.md as customized prints 'Starter refresh DotLn-Enterprise-Starter: refreshed; …; tag v0.108.0: creat",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-1116ba845c557862",
+      "key": "decision:docs/evidence/WO-245/decisions.md#wo-245-d013",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "88ee82714180b03ca19b5aee64f13a8e737864bb06cb9b49877859b27be1edf5",
+          "ref": "docs/evidence/WO-245/decisions.md#wo-245-d013",
+          "title": "WO-245-D013: Make product 07 §Workflow closeout and releases' records-branch sentence state the release block as built: a target order's records branch is versionless and, where its README carries…",
+          "summary": "{ \"id\": \"WO-245-D013\", \"date\": \"2026-11-02\", \"dispatch\": \"resume: final review\", \"decision\": \"FINAL-001 passes WO-245 at the unchanged code identity 9a97631541d0aa1b294fad7bf3ca87b1afc1baf3eda9699e269f5f86fdc4d49e: all seven criteria are met. Nothing is integrated, because main, origin/main and HEAD read a6665a24 and the integrate helper took in nothing. The reviewer changes no source, so completion consumes the executor's passing complete review row at this identity (recorded 2026-11-02T02:59:52.607Z: 42 suites, 112 fresh tasks, none reused) and the document row recorded after this review's last document edit; the two kit-root release-preparation cases were replayed under the bounded wrappe",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }
