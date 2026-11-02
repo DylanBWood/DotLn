@@ -508,6 +508,7 @@ const refreshOne = async ({ main, head, tag, dryRun }, sibling) => {
     reason: null,
     actions: [],
     rewrittenSeeds: [],
+    keptSeeds: [],
     timings: {},
     finderMetadata: [],
   };
@@ -605,7 +606,7 @@ const refreshOne = async ({ main, head, tag, dryRun }, sibling) => {
           );
       }
     }
-    const seedPlan = prior
+    const { rewrites: seedPlan, kept } = prior
       ? planStarterSeeds({
           main,
           head,
@@ -613,7 +614,8 @@ const refreshOne = async ({ main, head, tag, dryRun }, sibling) => {
           remote,
           updatesKit: prior.commit !== head,
         })
-      : [];
+      : { rewrites: [], kept: [] };
+    row.keptSeeds = kept;
     if (dryRun) {
       row.seedChanges = seedPlan.map(({ path }) => path);
       row.siblingTag = { tag, outcome: "preview" };

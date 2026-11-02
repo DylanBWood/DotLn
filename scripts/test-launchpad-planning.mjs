@@ -131,6 +131,7 @@ const copyCoreSource = (source) => {
     "docs/product/07-execution-guide.md",
     "docs/product/08-publication-compiler.md",
     "docs/PLAYBOOK.md",
+    "docs/KIT.md",
     "docs/publication/implementation-overlay-template.md",
     "docs/releases/tag-manifest.template.json",
     "docs/LEGAL.md",
@@ -1462,15 +1463,11 @@ test("planning and release-close reads run in a fresh exported instance", async 
       "--committed",
       "WO-001",
     ]);
-    assert.notEqual(missingMarker.status, 0);
-    for (const text of [
-      "<!-- DOTLN-RELEASE-BEGIN -->",
-      "This source prepares DotLn-Enterprise-Starter `v0.1.0`.",
-      "<!-- DOTLN-RELEASE-END -->",
-    ])
-      assert.ok(
-        `${missingMarker.stdout}${missingMarker.stderr}`.includes(text),
-      );
+    assert.equal(missingMarker.status, 0, missingMarker.stderr);
+    assert.match(
+      missingMarker.stdout,
+      /PASS release-block: not carried \(kit root without markers\)/u,
+    );
     write(kit, "README.md", readme);
     write(
       kit,
@@ -1863,26 +1860,26 @@ test("planning and release-close reads run in a fresh exported instance", async 
 // scripts and compiled runtime; only this checkout's dependencies are shared.
 const v0810 = "3b5e29e4d36956b680ac1339aeeca887947e7987";
 
-// The commands in the README's fenced block after the named sentence, split
+// The commands in the kit guide's fenced block after the named sentence, split
 // into words; the block holds only literal, unquoted words.
 const documentedCommands = (readme, sentence) => {
   const from = readme.indexOf(sentence);
-  assert.notEqual(from, -1, `README names: ${sentence}`);
+  assert.notEqual(from, -1, `Kit guide names: ${sentence}`);
   const block = /```sh\n([^`]*)```/u.exec(readme.slice(from));
-  assert.ok(block, `README block after: ${sentence}`);
+  assert.ok(block, `Kit guide block after: ${sentence}`);
   return block[1]
     .trim()
     .split("\n")
     .map((line) => line.trim().split(/\s+/u));
 };
 
-test("an instance exported at v0.81.0 takes this release by its README's procedure", () => {
+test("an instance exported at v0.81.0 takes this release by the kit guide's procedure", () => {
   const scratch = realpathSync(
     createFixtureRoot(join(tmpdir(), "dotln-legacy-update-")),
   );
   // This case's forge double never reaches the other case's environment.
   const local = { ...env };
-  // The README runs these commands from a standalone shell. Archived code
+  // The kit guide runs these commands from a standalone shell. Archived code
   // cannot parse this release's wider scheduler declaration; retain its
   // finite standalone deadlines and the inherited host reservation.
   for (const key of [
@@ -2097,7 +2094,7 @@ test("an instance exported at v0.81.0 takes this release by its README's procedu
       "the refreshed starter carries the current workstream convention",
     );
     // A new fork of the refreshed starter still lacks the lineage index a
-    // fresh export seeds; its README's first step generates that index
+    // fresh export seeds; its kit guide's first step generates that index
     // before the first document gate, whose check names the remedy.
     const newFork = join(scratch, "new-fork");
     lgit(scratch, [
@@ -2109,7 +2106,7 @@ test("an instance exported at v0.81.0 takes this release by its README's procedu
       newFork,
     ]);
     assert.ok(
-      readFileSync(join(newFork, "README.md"), "utf8")
+      readFileSync(join(newFork, "docs/KIT.md"), "utf8")
         .replace(/\s+/gu, " ")
         .includes(
           "If `docs/lineage/README.md` is absent, as in a fork of a starter exported by an older release even after a starter refresh, run `node scripts/lineage.mjs index` and commit the generated index with the fork's setup commit",
@@ -2137,7 +2134,7 @@ test("an instance exported at v0.81.0 takes this release by its README's procedu
     );
 
     // v0.81.0's own reader refuses the kit path this release adds, so the
-    // README previews with the incoming revision's launchpad instead.
+    // kit guide previews with the incoming revision's launchpad instead.
     lgit(fork, ["fetch", "-q", "upstream"]);
     const own = exec(fork, process.execPath, [
       "scripts/launchpad.mjs",
@@ -2150,8 +2147,8 @@ test("an instance exported at v0.81.0 takes this release by its README's procedu
       own.stderr,
       /^error: malformed prior manifest entry in upstream\/main:KIT-MANIFEST\.json: \S+$/mu,
     );
-    const readme = lgit(fork, ["show", "upstream/main:README.md"]);
-    const prose = readme.replace(/\s+/gu, " ");
+    const guide = lgit(fork, ["show", "upstream/main:docs/KIT.md"]);
+    const prose = guide.replace(/\s+/gu, " ");
     const recovery = prose.slice(
       prose.indexOf("The session in `main` first stops competing writers"),
       prose.indexOf("The operator then opens a session in `wo-001`"),
@@ -2179,10 +2176,10 @@ test("an instance exported at v0.81.0 takes this release by its README's procedu
       !prose.includes("bootstrap generates it if an older instance lacks it"),
     );
     assert.ok(!prose.includes("Two READMEs are generated rather than seeded"));
-    // The phrase itself points an older session at this README.
+    // The phrase itself points an older session at the current kit guide.
     assert.ok(
       prose.includes(
-        "recover WO-001 into its own worktree by the refreshed starter's README",
+        "recover WO-001 into its own worktree by the refreshed starter's kit guide",
       ),
     );
     // The steps below follow the recovery and update pull request paragraphs.
@@ -2200,7 +2197,7 @@ test("an instance exported at v0.81.0 takes this release by its README's procedu
     const status = lgit(fork, ["status", "--porcelain=v1"]);
     let preview;
     for (const [program, ...args] of documentedCommands(
-      readme,
+      guide,
       "Inside an instance, its own session takes a starter update",
     )) {
       assert.ok(["git", "node"].includes(program), program);
@@ -2227,7 +2224,7 @@ test("an instance exported at v0.81.0 takes this release by its README's procedu
     assert.equal(lgit(fork, ["worktree", "list", "--porcelain"]), worktrees);
     assert.equal(lgit(fork, ["status", "--porcelain=v1"]), status);
 
-    // As the README directs, the session deletes the untracked generated
+    // As the kit guide directs, the session deletes the untracked generated
     // lineage index before the stash: the update branch commits that path,
     // and a stash holding it could not be applied over the committed copy.
     assert.match(

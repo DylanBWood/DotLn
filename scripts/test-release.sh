@@ -626,6 +626,15 @@ printf '\nHistorical example outside the release block: `v9.9.9`.\n' >>"$main/RE
 release_command check-surfaces >/dev/null
 printf '# No release block\n' >"$main/README.md"
 assert_surface_failure 'observed 0 begin marker(s), 0 end marker(s)'
+# Close uses this same surface judgment, in both working and committed kit roots.
+printf '{}\n' >"$main/KIT-MANIFEST.json"
+release_command check-surfaces | grep -Fq 'PASS release-block: not carried (kit root without markers)'
+git -C "$main" add README.md KIT-MANIFEST.json
+git -C "$main" -c maintenance.auto=false commit -qm 'test: kit front page without markers'
+release_command check-surfaces --committed WO-099 | grep -Fq 'PASS release-block: not carried (kit root without markers)'
+printf '%s\n' '<!-- DOTLN-RELEASE-BEGIN -->' >"$main/README.md"
+assert_surface_failure 'observed 1 begin marker(s), 0 end marker(s)'
+# Both markers, malformed markers and prose still retain their ordinary refusals.
 printf '%s\n' \
   '<!-- DOTLN-RELEASE-END -->' \
   'This source prepares DotLn `v0.2.1`.' \
@@ -660,6 +669,7 @@ printf '%s\n' \
   'This source prepares DotLn `v0.2.1`, and now also compiles tables.' \
   '<!-- DOTLN-RELEASE-END -->' >"$main/README.md"
 assert_surface_failure 'observed line "This source prepares DotLn `v0.2.1`, and now also compiles tables."; expected exactly the generated line "This source prepares DotLn `v0.2.1`."'
+rm "$main/KIT-MANIFEST.json"
 write_release_block "$main" v0.2.1
 printf '# WO-099 — malformed fixture target, v0.2.1-beta\n\n**Objective:** Reject a non-strict target.\n\n**Non-goals:** No distribution.\n' >"$main/docs/work-orders/WO-099-fixture.md"
 if malformed_authority="$(release_command check-surfaces 2>&1)"; then

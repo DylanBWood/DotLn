@@ -1,4 +1,4 @@
-# WO-245 — The kit's guide is a kit file and the front page is the instance's: the launchpad guide moves from the seeded README into `docs/KIT.md`, a manifest-listed kit file every update carries; the root `README.md` is seeded once as a short instance page that the starter refresh rewrites only while it still equals a prior exported rendering and never refuses on; the seed template is frozen by a pinned digest; and a launchpad's release prepare and close admit a front page without the release block (version assigned at activation)
+# WO-245 — The kit's guide is a kit file and the front page is the instance's: the launchpad guide moves from the seeded README into `docs/KIT.md`, a manifest-listed kit file every update carries; the root `README.md` is seeded once as a short instance page that the starter refresh rewrites only while it still equals a prior exported rendering and never refuses on; the seed template is frozen by a pinned digest; and a launchpad's release prepare and close admit a front page without the release block (v0.108.0)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

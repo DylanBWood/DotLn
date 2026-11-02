@@ -902,13 +902,14 @@ const releaseBlockRule = (
     .map((line, index) => (line === endMarker ? index : -1))
     .filter((index) => index >= 0);
   if (begins.length !== 1 || ends.length !== 1 || begins[0] >= ends[0]) {
-    const remedy =
-      begins.length === 0 && ends.length === 0 && isKitRoot(root, revision)
-        ? `; on the next order's dispatch follow the refreshed starter README's update-pull-request procedure first, then record the repair in the order's decisions. Only if that update leaves the block absent, add exactly these three lines once: ${JSON.stringify(beginMarker)}, ${JSON.stringify(releaseClaimLine(expected ?? "v0.1.0", displayName))}, ${JSON.stringify(endMarker)}`
-        : "";
+    if (begins.length === 0 && ends.length === 0 && isKitRoot(root, revision))
+      return {
+        pass: true,
+        line: "PASS release-block: not carried (kit root without markers)",
+      };
     return {
       pass: false,
-      line: `FAIL release-block: observed ${begins.length} begin marker(s), ${ends.length} end marker(s), order ${begins[0] < ends[0] ? "begin-before-end" : "invalid"}; expected exactly one ordered block containing exactly the generated version line for ${expectation} ${context}${remedy}`,
+      line: `FAIL release-block: observed ${begins.length} begin marker(s), ${ends.length} end marker(s), order ${begins[0] < ends[0] ? "begin-before-end" : "invalid"}; expected exactly one ordered block containing exactly the generated version line for ${expectation} ${context}`,
     };
   }
   // Between the markers stands the one line release preparation writes and

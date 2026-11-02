@@ -188,6 +188,7 @@ export const machinerySources = {
     "scripts/worktree.mjs",
     "scripts/launchpad.mjs",
     "scripts/kit/",
+    "docs/KIT.md",
     "scripts/refute-plan.mjs",
     "scripts/lib/planning-followups.mjs",
     "scripts/lib/planning-conditions.mjs",
@@ -1230,6 +1231,7 @@ export const suites = [
       "scripts/lib/launchpad-fixture.mjs",
       "scripts/launchpad.mjs",
       "scripts/kit/",
+      "docs/KIT.md",
     ],
     kit: "core-only: package TypeScript and build configuration needed to export",
     // Each file owns two host slots, including its nested kit gates.

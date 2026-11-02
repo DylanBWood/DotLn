@@ -272,6 +272,7 @@ for (const path of [
   "docs/product/07-execution-guide.md",
   "docs/product/08-publication-compiler.md",
   "docs/PLAYBOOK.md",
+  "docs/KIT.md",
   "docs/publication/implementation-overlay-template.md",
   // Not a kit file: an upstream pointer the export names and does not carry.
   "docs/LEGAL.md",

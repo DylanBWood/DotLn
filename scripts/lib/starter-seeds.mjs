@@ -137,7 +137,7 @@ export function planStarterSeeds({
         regularFile,
       });
   }
-  if (!pending.length) return [];
+  if (!pending.length) return { rewrites: [], kept: [] };
   const history = git(checkout, [
     "log",
     "--format=%H",
@@ -200,6 +200,7 @@ export function planStarterSeeds({
   // refresh. A known older exported copy still advances to the incoming seed.
   const refused = pending.filter(
     (item) =>
+      item.path !== "README.md" &&
       !proven.has(item.path) &&
       latestTemplates.get(item.path) !== item.templateBytes,
   );
@@ -248,7 +249,20 @@ export function planStarterSeeds({
       `starter seed unusable by the refresh's own verification: ${unusable.map((item) => item.reason).join(", ")}; no seed replaced or pushed. ${remedies[0].toUpperCase()}${remedies.slice(1)} in a reviewed starter change, then retry refresh`,
     );
   }
-  return pending
-    .filter((item) => proven.has(item.path))
-    .sort((left, right) => left.path.localeCompare(right.path));
+  return {
+    rewrites: pending
+      .filter((item) => proven.has(item.path))
+      .sort((left, right) => left.path.localeCompare(right.path)),
+    kept: pending
+      .filter((item) => item.path === "README.md" && !proven.has(item.path))
+      .map((item) => ({
+        path: item.path,
+        reason:
+          item.mode === null
+            ? "missing"
+            : !item.regularFile
+              ? "not a regular seed file (expected mode 100644)"
+              : "customized; differs from proven prior exports",
+      })),
+  };
 }

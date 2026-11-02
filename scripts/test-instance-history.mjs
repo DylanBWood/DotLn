@@ -163,10 +163,14 @@ export function exerciseHistory({ prepareSource } = {}) {
     ).find((row) => row.type === "WorkOrderActivated");
     assert.notEqual(activation.baseCommit, c.git(target, "rev-parse", "main"));
     c.git(target, "merge-base", "--is-ancestor", activation.baseCommit, "main");
+    const instancePage =
+      "# Our instance\n\nOur own introduction, without a release claim.\n";
+    write(instance, "README.md", instancePage);
     const protectedPaths = c
       .git(
         instance,
         "ls-files",
+        "README.md",
         "docs/control/orders",
         "docs/control/plan-refutations.jsonl",
         "docs/work-orders/WO-*",
@@ -291,14 +295,6 @@ function exerciseIntegrationClose(instance, scratch, c) {
     "# WO-005 — Synthetic cleanup (v9000.0.1)\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n**Release classification:** patch. Fixture only.\n\n**Objective:** Preserve the synthetic cleanup history.\n\n**Acceptance criteria (all required)**\n\n1. Preserve the synthetic cleanup history.\n\n**Non-goals:** Live publication.\n",
   );
   const readme = readFileSync(join(instance, "README.md"), "utf8");
-  write(
-    instance,
-    "README.md",
-    readme.replace(
-      /<!-- DOTLN-RELEASE-BEGIN -->[\s\S]*?<!-- DOTLN-RELEASE-END -->/u,
-      "<!-- DOTLN-RELEASE-BEGIN -->\nThis source prepares DotLn `v9000.0.1`.\n<!-- DOTLN-RELEASE-END -->",
-    ),
-  );
   c.commit(instance, "test: synthetic integration authority");
   const origin = join(scratch, "cleanup-origin.git");
   c.git(scratch, "clone", "--bare", "-q", instance, origin);
@@ -313,6 +309,12 @@ function exerciseIntegrationClose(instance, scratch, c) {
     "SyntheticForbiddenHistoryTerm\n",
   );
   c.node(subject, "resume", "activate", order, workOrderPath);
+  c.node(subject, "release", "prepare", "--local");
+  assert.equal(readFileSync(join(subject, "README.md"), "utf8"), readme);
+  assert.match(
+    c.node(subject, "release", "check-surfaces", "--local"),
+    /PASS release-block: not carried \(kit root without markers\)/u,
+  );
   write(instance, "synthetic-main.txt", "New main bytes.\n");
   c.commit(instance, "test: advance main before integration");
   const before = c.git(instance, "stash", "list", "--format=%H");
