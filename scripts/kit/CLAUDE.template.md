@@ -1,12 +1,11 @@
 # Launchpad
 
-This file is the operating contract every session in this repository reads;
-`AGENTS.md` is a symlink to it. The hand-written floor below is instance-owned:
-edit it here; an upstream kit update changes it only through explicitly
-opted-in instance actions. The marked blocks
-at the end are generated: the kit block by the export (its provenance) and the
-harness block by `node scripts/harness.mjs emit`, which `harness check`
-verifies.
+Every session reads this contract; `AGENTS.md` symlinks here. The instance owns
+the hand-written floor: edit it here; kit updates change it only through
+explicitly opted-in instance actions.
+
+Export generates the kit provenance block below; `node scripts/harness.mjs emit`
+generates the harness block, which `harness check` verifies.
 
 ## Clean Room — locked floor
 
@@ -30,9 +29,9 @@ and its terms are never printed.
 
 ## Start here
 
-Whole `resume:` phrases select their skill through canonical status
-(`npm run resume -- status --json` is the record). `@skills`: `.claude/skills`
-in Claude, `.agents/skills` in Codex. `AGENTS.md` symlinks here.
+Whole `resume:` phrases select skills through canonical status
+(`npm run resume -- status --json`). `@skills`: `.claude/skills` in Claude,
+`.agents/skills` in Codex.
 
 Expand skill read/review selectors from order/report paths. Read cited sections;
 name new inputs. A session that cannot load skills runs the
@@ -44,8 +43,15 @@ harness failures. Preserve work; invent no dispatch or pass. Exit: either prefix
 plus `off`. Codex: `node scripts/operator-control.mjs analysis|override|off|status`.
 Host permissions apply.
 
+Verify in a session-launched browser: structured state, then DOM and
+accessibility tree via the Playwright MCP snapshot, then network/event data,
+then a screenshot read as an image; or use project browser tests. Desktop
+control and the operator's own browser sessions require
+`features.desktop-control` in `dotln.config.json` (off by default) and the
+operator's explicit request in this session.
+
 <!-- dotln-kit:start -->
 Kit provenance (commit, tag, remote): UPSTREAM.md. Kit files and their hashes: KIT-MANIFEST.json. How to start: README.md.
-The control plane finds its documents through dotln.config.json at this root; its absence means the default layout under docs/ (dotln.config.example.json shows it).
-This export carries the compiled runtime under packages/<name>/dist/ (hashed in KIT-MANIFEST.json) and the Contributor harness bundle its own emit wrote from it; node scripts/harness.mjs check verifies the pinned runtime snapshot and every generated surface. The hooks import an ignored snapshot under .runtime/harness/: a fresh clone runs node scripts/bootstrap.mjs once (npm ci, then the emit that installs it); until then each hook reports snapshot-missing once per session and host permissions alone decide.
+Document roots: dotln.config.json, default docs/; see dotln.config.example.json.
+The export carries the compiled runtime in packages/<name>/dist/ (KIT-MANIFEST.json hashes) and its emitted Contributor harness bundle. node scripts/harness.mjs check verifies every generated surface and pinned runtime snapshot. Hooks import .runtime/harness/ (ignored). Fresh clones run node scripts/bootstrap.mjs once: npm ci, then emit installs the snapshot. Until then, hooks report snapshot-missing once per session; host permissions decide.
 <!-- dotln-kit:end -->

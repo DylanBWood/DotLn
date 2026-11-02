@@ -6820,16 +6820,20 @@ test("WO-145 optional economy support preserves historical snapshots through the
   // The combined oracle preserves both independently reviewed role histories.
   // Removing a shared sentence follows the same route as adding one.
   const fixtures = join(source, "packages/skeleton/fixtures");
-  // Two sentences, the router's finish and the floor's exact grant (WO-247),
-  // preserve the integrated oracle and both chains it carries.
-  const current = "wo247-role-baseline.json";
+  // The desktop and browser boundary preserves the preceding role tree and
+  // all integrated history through its immutable parent.
+  const current = "wo251-role-baseline.json";
   const baseline = JSON.parse(readFileSync(join(fixtures, current), "utf8"));
+  assert.equal(baseline.historicalBaseline, "wo247-role-baseline.json");
+  const previous = JSON.parse(
+    readFileSync(join(fixtures, baseline.historicalBaseline), "utf8"),
+  );
   assert.equal(
-    baseline.historicalBaseline,
+    previous.historicalBaseline,
     "wo192-integration-role-baseline.json",
   );
-  assert.equal(baseline.branchBaseline, "wo192-role-baseline.json");
-  assert.equal(baseline.upstreamBaseline, "wo185-role-baseline.json");
+  assert.equal(previous.branchBaseline, "wo192-role-baseline.json");
+  assert.equal(previous.upstreamBaseline, "wo185-role-baseline.json");
   // Follow every recorded parent, not only the historical line: an integrated
   // oracle has two parents, and either parent may carry its own branch
   // history. Every recorded digest must still match, and no oracle may drop

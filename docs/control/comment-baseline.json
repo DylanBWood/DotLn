@@ -6,8 +6,7 @@
   "admitted": {},
   "lines": {
     "packages/compiler/src/harness.ts": {
-      "fbf0b12e172cac886200592c662696051d528c52d07ebbbf4fd96e2640701a3e": 1,
-      "d4c925b83b7c1b758b75f73fc34e2d2f3ad9b504c9cbf2a0d84ec8ef1e18726c": 1
+      "fbf0b12e172cac886200592c662696051d528c52d07ebbbf4fd96e2640701a3e": 1
     },
     "packages/compiler/src/story-contract.ts": {
       "edd517c0555f80c509fc32d63f271fa720c892444634d04d60c2921ea156ab88": 1

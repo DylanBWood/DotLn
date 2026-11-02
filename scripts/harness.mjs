@@ -22,7 +22,7 @@ import {
   readBuildOverlay,
   harnessInstallation,
 } from "./lib/harness.mjs";
-import { docPath, findLaunchpad } from "./lib/config.mjs";
+import { docPath, findLaunchpad, readFeatures } from "./lib/config.mjs";
 import { judgeRunningNode } from "./lib/node-engines.mjs";
 import {
   activeGateRuns,
@@ -419,6 +419,7 @@ try {
         const out = resolve(root, options.out ?? ".");
         options.termsRoot = root;
         options.overlay = readBuildOverlay(findLaunchpad());
+        options.features = readFeatures(findLaunchpad());
         options.instructionFloor = readFileSync(
           resolve(root, "CLAUDE.md"),
           "utf8",

@@ -7,5 +7,6 @@
   "repositories": {},
   "build": {},
   "release": { "displayName": "DotLn-Enterprise-Starter" },
-  "drive": { "sandbox": "host" }
+  "drive": { "sandbox": "host" },
+  "features": { "desktop-control": false }
 }

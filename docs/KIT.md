@@ -468,6 +468,23 @@ values in the order's decisions before release preparation.
 
 ## What runs here, and what does not
 
+Desktop control and the operator's own browser sessions are off by default.
+The hook and emitted `.claude/settings.json` deny their named tools unless
+`dotln.config.json` elects `"features": { "desktop-control": true }`; the
+operator must also explicitly request their use in the current session.
+An election may instead be `{ "on": true, "note": "the operator's reason" }`.
+After changing the election, run `node scripts/harness.mjs emit` to update
+the host settings; `node scripts/harness.mjs check` detects a mismatch.
+The hook reads the current election on each desktop-tool judgment. In Codex,
+tool calls are unhooked, so the generated role text carries the same rule.
+
+Verify a web surface in a browser the session launches, using structured
+state, then the DOM and accessibility tree through the Playwright MCP's
+snapshot, then network and event data, then a screenshot read as an image,
+or use the project's own browser tests. Claude in Chrome and the desktop
+app's browser pane use the operator's sessions and need the desktop election.
+Playwright is optional; this rule installs no browser or MCP server.
+
 After the first steps above, `npm test`, `npm run test:docs` and
 `npm test -- --review` run inside this instance without package source. Each
 selection first runs the six structural checks: formatting, configuration,

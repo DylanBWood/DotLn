@@ -11,7 +11,23 @@
       "Bash(npm publish *)",
       "Bash(scp *)",
       "Bash(sftp *)",
-      "Bash(ssh *)"
+      "Bash(ssh *)",
+      "Skill(anthropic-skills:built-in-browser *)",
+      "Skill(anthropic-skills:built-in-browser)",
+      "Skill(anthropic-skills:chrome-browser *)",
+      "Skill(anthropic-skills:chrome-browser)",
+      "Skill(anthropic-skills:computer-use *)",
+      "Skill(anthropic-skills:computer-use)",
+      "Skill(claude-in-chrome *)",
+      "Skill(claude-in-chrome)",
+      "enable__mcp__claude-in-chrome*",
+      "enable__mcp__remote-devices__Claude_Browser*",
+      "enable__mcp__remote-devices__computer*",
+      "mcp__Claude_Browser__*",
+      "mcp__claude-in-chrome__*",
+      "mcp__computer-use__*",
+      "mcp__remote-devices__Claude_Browser__*",
+      "mcp__remote-devices__computer_*"
     ]
   },
   "hooks": {

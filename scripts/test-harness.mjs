@@ -1678,6 +1678,301 @@ const allowed = (result) =>
   result.decision !== "block" &&
   result.hookSpecificOutput?.permissionDecision !== "deny";
 
+test("desktop control refuses by default and reads the live election with one advisory", async () => {
+  const root = fixture();
+  try {
+    const run = await fixtureHook(root, "permissions");
+    const tools = [
+      "mcp__computer-use__screenshot",
+      "mcp__remote-devices__computer_click",
+      "enable__mcp__remote-devices__computer",
+      "mcp__claude-in-chrome__navigate",
+      "mcp__Claude_Browser__click",
+      "mcp__remote-devices__Claude_Browser__navigate",
+      "enable__mcp__claude-in-chrome",
+      "enable__mcp__remote-devices__Claude_Browser",
+    ].map((tool_name) => ({ tool_name, tool_input: {} }));
+    tools.push(
+      ...[
+        "anthropic-skills:computer-use",
+        "anthropic-skills:chrome-browser",
+        "anthropic-skills:built-in-browser",
+        "claude-in-chrome",
+      ].map((skill) => ({
+        tool_name: "Skill",
+        tool_input: { skill, args: "verify" },
+      })),
+    );
+    const off = (result) => {
+      assert.equal(allowed(result), false, JSON.stringify(result));
+      const reason = result.hookSpecificOutput.permissionDecisionReason;
+      assert.match(reason, /DOTLN_DESKTOP_CONTROL_REFUSED/);
+      assert.match(reason, /features.desktop-control/);
+      assert.match(reason, /Playwright/);
+      assert.match(reason, /operator must explicitly request/);
+    };
+    for (const tool of tools) off(await run(input(root, "PreToolUse", tool)));
+    off(invoke(root, "permissions", input(root, "PreToolUse", tools[0])));
+    const elect = (value) =>
+      write(
+        root,
+        "dotln.config.json",
+        json({ version: 1, features: { "desktop-control": value } }),
+      );
+    elect(true);
+    const first = invoke(
+      root,
+      "permissions",
+      input(root, "PreToolUse", tools[0]),
+    );
+    assert.equal(allowed(first), true);
+    assert.match(first.systemMessage, /features.desktop-control is on/);
+    assert.match(first.systemMessage, /explicit request in this session/);
+    for (const tool of tools) {
+      const result = await run(input(root, "PreToolUse", tool));
+      assert.equal(allowed(result), true);
+      assert.equal(result.systemMessage, undefined);
+    }
+    elect(false);
+    off(await run(input(root, "PreToolUse", tools[0])));
+    elect({ on: true, note: "Requested verification" });
+    assert.equal(allowed(await run(input(root, "PreToolUse", tools[0]))), true);
+    elect({ on: false, note: "Disabled again" });
+    off(await run(input(root, "PreToolUse", tools[0])));
+    elect({ on: "true" });
+    const invalid = await run(input(root, "PreToolUse", tools[0]));
+    off(invalid);
+    assert.match(
+      invalid.hookSpecificOutput.permissionDecisionReason,
+      /election could not be read/,
+    );
+    assert.match(
+      invalid.hookSpecificOutput.permissionDecisionReason,
+      /features.desktop-control.on must be a boolean/,
+    );
+    for (const election of [false, true]) {
+      elect(election);
+      const result = await run(
+        input(root, "PreToolUse", {
+          session_id: `playwright-${election}`,
+          tool_name: "mcp__playwright__browser_snapshot",
+          tool_input: {},
+        }),
+      );
+      assert.equal(allowed(result), true);
+      assert.match(
+        result.systemMessage,
+        /Unclassified effectful tool: mcp__playwright__browser_snapshot/,
+      );
+      const skill = await run(
+        input(root, "PreToolUse", {
+          tool_name: "Skill",
+          tool_input: { skill: "project:verify" },
+        }),
+      );
+      assert.equal(allowed(skill), true);
+      assert.equal(skill.systemMessage, undefined);
+    }
+  } finally {
+    removeFixture(root, { recursive: true });
+  }
+});
+
+test("desktop control live refusal survives moved cwd and unavailable observation", () => {
+  const root = fixture();
+  const outside = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-desktop-moved-")),
+  );
+  try {
+    const elect = (on) =>
+      write(
+        root,
+        "dotln.config.json",
+        json({
+          version: 1,
+          features: { "desktop-control": on },
+        }),
+      );
+    elect(true);
+    emitHarness(root);
+    assert.ok(
+      !JSON.parse(
+        readFileSync(join(root, ".claude/settings.json"), "utf8"),
+      ).permissions.deny.includes("mcp__computer-use__*"),
+    );
+    elect(false);
+    const nested = join(root, "docs/nested");
+    mkdirSync(nested, { recursive: true });
+    const refused = (extra) => {
+      const result = invoke(
+        root,
+        "permissions",
+        input(root, "PreToolUse", {
+          tool_name: "mcp__computer-use__screenshot",
+          tool_input: {},
+          ...extra,
+        }),
+      );
+      assert.equal(allowed(result), false, JSON.stringify(result));
+      assert.match(
+        result.hookSpecificOutput.permissionDecisionReason,
+        /DOTLN_DESKTOP_CONTROL_REFUSED/,
+      );
+    };
+    for (const cwd of [root, nested, outside]) refused({ cwd });
+    const session = "desktop-observation-unavailable";
+    const journal = join(
+      root,
+      "docs/control/local/harness",
+      `${sha256(session)}.jsonl`,
+    );
+    write(root, "observation-sink.jsonl", "");
+    symlinkSync(join(root, "observation-sink.jsonl"), journal);
+    refused({ session_id: session });
+    assert.equal(
+      readFileSync(join(root, "observation-sink.jsonl"), "utf8"),
+      "",
+    );
+  } finally {
+    removeFixture(root, { recursive: true });
+    removeFixture(outside, { recursive: true });
+  }
+});
+
+test("elected desktop control preserves descendant and router refusals", () => {
+  const root = fixture();
+  try {
+    write(
+      root,
+      "dotln.config.json",
+      json({
+        version: 1,
+        features: { "desktop-control": true },
+      }),
+    );
+    write(root, "docs/control/budgets.json", json({ subagentCap: 0 }));
+    beginHarnessSession(root, "desktop-parent", "executor");
+    const desktop = {
+      tool_name: "mcp__computer-use__screenshot",
+      tool_input: {},
+    };
+    const child = invoke(
+      root,
+      "permissions",
+      input(root, "PreToolUse", {
+        ...desktop,
+        session_id: "desktop-parent",
+        agent_id: "desktop-child",
+      }),
+    );
+    assert.equal(allowed(child), false);
+    assert.match(child.hookSpecificOutput.permissionDecisionReason, /subagent/);
+    invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", { prompt: "drive: WO-999" }),
+    );
+    invoke(
+      root,
+      "permission-denied",
+      input(root, "PermissionDenied", {
+        tool_name: "Bash",
+        tool_input: { command: "node scripts/drive.mjs WO-999" },
+        reason: "fixture driver denial",
+      }),
+    );
+    const router = invoke(
+      root,
+      "permissions",
+      input(root, "PreToolUse", desktop),
+    );
+    assert.equal(allowed(router), false);
+    assert.match(
+      router.hookSpecificOutput.permissionDecisionReason,
+      /DOTLN_ROUTER_LAUNCH_REFUSED/,
+    );
+  } finally {
+    removeFixture(root, { recursive: true });
+  }
+});
+
+test("desktop control emit and check follow configuration and every role carries the rule", () => {
+  const root = fixture();
+  try {
+    const cli = (action) =>
+      spawnSync(process.execPath, ["scripts/harness.mjs", action], {
+        cwd: root,
+        env: { ...process.env, DOTLN_LAUNCHPAD: "" },
+        encoding: "utf8",
+      });
+    const check = (ok) => {
+      const result = cli("check");
+      assert.equal(result.status, ok ? 0 : 1, result.stdout + result.stderr);
+      if (!ok) assert.match(result.stderr, /harness drift/);
+    };
+    const denies = () =>
+      JSON.parse(readFileSync(join(root, ".claude/settings.json"), "utf8"))
+        .permissions.deny;
+    // The copied CLI owns its smaller runtime inventory, unlike the parent's
+    // fixture emitter; establish the bundle through that same CLI first.
+    const initialEmit = cli("emit");
+    assert.equal(
+      initialEmit.status,
+      0,
+      initialEmit.stdout + initialEmit.stderr,
+    );
+    check(true);
+    const initial = denies();
+    for (const election of [
+      true,
+      { on: false, note: "Use project tests" },
+      { on: true },
+    ]) {
+      write(
+        root,
+        "dotln.config.json",
+        json({ version: 1, features: { "desktop-control": election } }),
+      );
+      check(false);
+      const emitted = cli("emit");
+      assert.equal(emitted.status, 0, emitted.stdout + emitted.stderr);
+      check(true);
+      if (election === true || election.on === true) {
+        assert.ok(
+          !denies().some((rule) =>
+            /computer|Claude_Browser|claude-in-chrome|chrome-browser|built-in-browser/.test(
+              rule,
+            ),
+          ),
+        );
+      } else assert.deepEqual(denies(), initial);
+    }
+    for (const file of harnessInstallation().files.filter((file) =>
+      file.path.endsWith("SKILL.md"),
+    )) {
+      const text = readFileSync(join(root, file.path), "utf8");
+      assert.match(
+        text,
+        /Browser verification uses a browser the session launches:/,
+        file.path,
+      );
+      assert.match(
+        text,
+        /DOM and accessibility tree through the Playwright MCP snapshot/,
+        file.path,
+      );
+      assert.match(text, /screenshot and read it as an image/, file.path);
+      assert.match(
+        text,
+        /features.desktop-control \(off by default\).*explicitly requests.*this session/,
+        file.path,
+      );
+    }
+  } finally {
+    removeFixture(root, { recursive: true });
+  }
+});
+
 // Decision matrices reuse the real pinned runtime; generated-process checks
 // separately cover stdin, stdout, loading and process ownership. Use the full
 // entry point so protocol decoding and advisory/error handling remain real.
@@ -3278,6 +3573,16 @@ test("WO-146 three contributors share unique outputs while workers remain explic
     ["claude-code", "codex-cli"],
   );
   const workers = structuredClone(targetWorkerProfiles);
+  const desktopTools = [
+    "mcp__computer-use__*",
+    "mcp__remote-devices__computer_*",
+    "enable__mcp__remote-devices__computer*",
+    "mcp__claude-in-chrome__*",
+    "mcp__Claude_Browser__*",
+    "mcp__remote-devices__Claude_Browser__*",
+    "enable__mcp__claude-in-chrome*",
+    "enable__mcp__remote-devices__Claude_Browser*",
+  ];
   for (const profile of workers) {
     assert.equal(profile.skills.format, "agent-skills");
     delete profile.runtime.skeletonVersion;
@@ -3285,11 +3590,18 @@ test("WO-146 three contributors share unique outputs while workers remain explic
     profile.tools = { ...profile.tools };
     assert.equal(profile.tools.SubagentHandback, "read");
     delete profile.tools.SubagentHandback;
+    assert.deepEqual(
+      Object.entries(profile.tools).filter(
+        ([, effect]) => effect === "desktop",
+      ),
+      desktopTools.map((name) => [name, "desktop"]),
+    );
+    for (const name of desktopTools) delete profile.tools[name];
   }
   assert.equal(
     createHash("sha256").update(JSON.stringify(workers)).digest("hex"),
     "9f41bb7cb0176f0b8e73bd9fe760ef628259e69b4ebdbb28fa0a621bd4dba6fb",
-    "pre-profile worker bytes, excluding release labels, native skill format and the separately asserted child return tool",
+    "pre-profile worker bytes, excluding release labels, native skill format and the separately asserted child return and desktop tools",
   );
   const installation = harnessInstallation();
   assert.equal(

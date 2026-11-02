@@ -175,7 +175,7 @@ export interface HarnessProfile {
   readonly tools?: Readonly<
     Record<
       string,
-      "read" | "write" | "shell" | "spawn" | "stop" | "interaction"
+      "read" | "write" | "shell" | "spawn" | "stop" | "interaction" | "desktop"
     >
   >;
   readonly events: Readonly<Record<HarnessEvent, HarnessObservation>>;
@@ -301,10 +301,39 @@ export interface HarnessProgram {
   readonly roles: readonly HarnessRole[];
   readonly facets: readonly HarnessFacet[];
   readonly correctionToken: string | null;
+  /** Instance election, supplied by the emitter; the compiler reads no files. */
+  readonly desktopControl?: boolean;
   /** Compatibility for programs declaring one default worker. */
   readonly worker?: HarnessWorker;
   readonly workers?: readonly HarnessWorker[];
 }
+
+/** Host tool namespaces that act in the operator's desktop or signed-in browser.
+ * The hook and host settings share this inventory; unrelated MCP tools keep
+ * their existing classification. */
+export const desktopControlToolPrefixes = [
+  "mcp__computer-use__",
+  "mcp__remote-devices__computer_",
+  "enable__mcp__remote-devices__computer",
+  "mcp__claude-in-chrome__",
+  "mcp__Claude_Browser__",
+  "mcp__remote-devices__Claude_Browser__",
+  "enable__mcp__claude-in-chrome",
+  "enable__mcp__remote-devices__Claude_Browser",
+] as const;
+export const desktopControlSkills = [
+  "anthropic-skills:computer-use",
+  "anthropic-skills:chrome-browser",
+  "anthropic-skills:built-in-browser",
+  "claude-in-chrome",
+] as const;
+export const desktopControlDenyRules = [
+  ...desktopControlToolPrefixes.map((prefix) => `${prefix}*`),
+  ...desktopControlSkills.flatMap((skill) => [
+    `Skill(${skill})`,
+    `Skill(${skill} *)`,
+  ]),
+];
 export interface HarnessOrigin {
   readonly ids: readonly string[];
   readonly loadoutId: string;
@@ -1193,6 +1222,7 @@ process.stdout.write(JSON.stringify(response)); }`;
         .filter((matcher) => envelope.deniedEffects.includes(matcher.effect))
         .map((matcher) => matcher.deny),
     );
+    if (program.desktopControl !== true) deny.push(...desktopControlDenyRules);
     const settings = {
       $schema: "https://json.schemastore.org/claude-code-settings.json",
       autoMemoryEnabled: false,
@@ -1335,9 +1365,51 @@ export function verifyHarnessBundle(bundle: HarnessBundle): boolean {
   );
 }
 
-/** WO-144 adds declared outside-write roots to the existing four refusals. */
-const HARNESS_BOUNDARIES =
-  "DotLn has six refusals (WO-135, WO-139, WO-144, WO-234): it reserves one writer per worktree on any branch, including main; refuses writes to gate inputs or the success record during a live gate, admitting only the active order's own evidence, verification and final-review directories at the default document roots during a product gate; on planning/ branches refuses repository writes outside docs/ and root Markdown; refuses observable subagent admissions beyond docs/control/budgets.json subagentCap (default 20; null disables); refuses known outside-project write destinations without a containing root granted by the active role or equipped support; and refuses a complete gate, bounded probe or worker launch past the dispatch bound, naming analysis: and the operator's accept-overrun route. Product tasks fail on observed reads of the admitted record paths; document and mixed review gates retain the full refusal. Literal redirects are judged on any program; expansions such as $PWD and a program's own effects remain unobserved under host permissions; grant failures admit with one advisory and preserve the other refusals, except an unresolvable order-worktree root, which withholds that grant alone. Descendants count at their first attributable tool call; unresolved direct/child overlap is a reported minimum, and unobserved agents remain unknown. Inspect the writer with node scripts/harness.mjs writer --show; stop this session's gate with node scripts/harness.mjs evidence --stop; use operator override: for authorized recovery. Claude hooks enforce these six refusals at observed boundaries; under Codex a lifecycle dispatch reserves the writer and refuses a foreign holder, the gate, bounded wrapper and lifecycle enforce dispatch bounds in process; the other duties and grants are role text because Codex tool calls are unhooked. Copilot reuses the Claude registration: scripted denials hold with allow-all; missing tool-call and child identity leave subagent accounting advisory; WO-146 evidence records interactive qualification. Other tool and completion judgments are advisory and host permissions decide. The separate Codex compaction adapter restores an owned unfinished task and permits one continuation after premature stopping; it never dispatches a role or changes writer ownership.";
+/** Each enforced class owns one row, so the count and provenance follow it. */
+export const HARNESS_REFUSALS = [
+  {
+    id: "writer",
+    source: "WO-135",
+    clause: "reserves one writer per worktree on any branch, including main",
+  },
+  {
+    id: "gate",
+    source: "WO-135",
+    clause:
+      "refuses writes to gate inputs or the success record during a live gate, admitting only the active order's own evidence, verification and final-review directories at the default document roots during a product gate",
+  },
+  {
+    id: "planning",
+    source: "WO-135",
+    clause:
+      "on planning/ branches refuses repository writes outside docs/ and root Markdown",
+  },
+  {
+    id: "subagents",
+    source: "WO-139",
+    clause:
+      "refuses observable subagent admissions beyond docs/control/budgets.json subagentCap (default 20; null disables)",
+  },
+  {
+    id: "outside-write",
+    source: "WO-144",
+    clause:
+      "refuses known outside-project write destinations without a containing root granted by the active role or equipped support",
+  },
+  {
+    id: "dispatch-bound",
+    source: "WO-234",
+    clause:
+      "refuses a complete gate, bounded probe or worker launch past the dispatch bound, naming analysis: and the operator's accept-overrun route",
+  },
+  {
+    id: "desktop-control",
+    source: "WO-251",
+    clause:
+      "refuses desktop control and the operator's own browser sessions unless dotln.config.json elects features.desktop-control; an election still requires the operator's explicit request in the session, and browser verification uses the Playwright MCP in a browser the session launches or the project's browser tests",
+  },
+] as const;
+const HARNESS_BOUNDARIES = `DotLn has ${HARNESS_REFUSALS.length} refusals (${[...new Set(HARNESS_REFUSALS.map((row) => row.source))].join(", ")}): it ${HARNESS_REFUSALS.map((row) => row.clause).join("; ")}. Product tasks fail on observed reads of the admitted record paths; document and mixed review gates retain the full refusal. Literal redirects are judged on any program; expansions such as $PWD and a program's own effects remain unobserved under host permissions; grant failures admit with one advisory and preserve the other refusals, except an unresolvable order-worktree root, which withholds that grant alone. Descendants count at their first attributable tool call; unresolved direct/child overlap is a reported minimum, and unobserved agents remain unknown. Inspect the writer with node scripts/harness.mjs writer --show; stop this session's gate with node scripts/harness.mjs evidence --stop; use operator override: for authorized recovery. Claude hooks enforce these ${HARNESS_REFUSALS.length} refusals at observed boundaries; under Codex a lifecycle dispatch reserves the writer and refuses a foreign holder, the gate, bounded wrapper and lifecycle enforce dispatch bounds in process; the other duties and grants are role text because Codex tool calls are unhooked. Copilot reuses the Claude registration: scripted denials hold with allow-all; missing tool-call and child identity leave subagent accounting advisory; WO-146 evidence records interactive qualification. Other tool and completion judgments are advisory and host permissions decide. The separate Codex compaction adapter restores an owned unfinished task and permits one continuation after premature stopping; it never dispatches a role or changes writer ownership.`;
 
 /** The shared instruction symlink contains all profile-qualified residue. */
 export function mergeHarnessFragments(

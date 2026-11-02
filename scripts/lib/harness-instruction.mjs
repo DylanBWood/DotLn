@@ -27,6 +27,9 @@ const compiledFloorText = [
   "Expand skill read/review selectors from order/report paths. Read cited sections;\nname new inputs.\n",
   "The marked blocks\nat the end are generated: the kit block by the export (its provenance) and the\nharness block by `node scripts/harness.mjs emit`, which `harness check`\nverifies.",
   "This export carries the compiled runtime under packages/<name>/dist/ (hashed in KIT-MANIFEST.json) and the Contributor harness bundle its own emit wrote from it; node scripts/harness.mjs check verifies the pinned runtime snapshot and every generated surface. The hooks import an ignored snapshot under .runtime/harness/: a fresh clone runs node scripts/bootstrap.mjs once (npm ci, then the emit that installs it); until then each hook reports snapshot-missing once per session and host permissions alone decide.\n",
+  "Whole `resume:` phrases select skills through canonical status\n(`npm run resume -- status --json`). `@skills`: `.claude/skills` in Claude,\n`.agents/skills` in Codex.\n",
+  "Export generates the kit provenance block below; `node scripts/harness.mjs emit`\ngenerates the harness block, which `harness check` verifies.",
+  "The export carries the compiled runtime in packages/<name>/dist/ (KIT-MANIFEST.json hashes) and its emitted Contributor harness bundle. node scripts/harness.mjs check verifies every generated surface and pinned runtime snapshot. Hooks import .runtime/harness/ (ignored). Fresh clones run node scripts/bootstrap.mjs once: npm ci, then emit installs the snapshot. Until then, hooks report snapshot-missing once per session; host permissions decide.\n",
 ];
 /** Remove only known standing references to the harness surfaces a disabled
  * build removes. The clean-room floor and custom operator instructions stay. */

@@ -106,6 +106,7 @@ const SECTION_KEYS = [
   "release",
   "kit",
   "drive",
+  "features",
   "derivedOrders",
   "portfolios",
   "contributions",
@@ -405,6 +406,24 @@ const validateKit = (path, declared) => {
   )
     throw refuse(path, "kit.applyInstanceActions must be a boolean");
   return { applyInstanceActions: declared.applyInstanceActions ?? false };
+};
+
+const validateFeatures = (path, declared) => {
+  requireObject(path, declared, "features");
+  requireKnownKeys(path, declared, ["desktop-control"], "features");
+  return Object.fromEntries(
+    Object.entries(declared).map(([id, value]) => {
+      if (typeof value === "boolean") return [id, value];
+      const label = `features.${id}`;
+      requireObject(path, value, label);
+      requireKnownKeys(path, value, ["on", "note"], label);
+      if (typeof value.on !== "boolean")
+        throw refuse(path, `${label}.on must be a boolean`);
+      if (value.note !== undefined && typeof value.note !== "string")
+        throw refuse(path, `${label}.note must be a string`);
+      return [id, { ...value }];
+    }),
+  );
 };
 
 // Regenerable output a close deletes: relative normalized POSIX paths inside
@@ -1012,6 +1031,10 @@ export const validateConfig = (path, source) => {
       path,
       declared.drive === undefined ? {} : declared.drive,
     ),
+    features: validateFeatures(
+      path,
+      declared.features === undefined ? {} : declared.features,
+    ),
     ...(declared.contributions === undefined
       ? {}
       : { contributions: validateContributions(path, declared.contributions) }),
@@ -1036,6 +1059,7 @@ const absentConfig = () => ({
   release: validateRelease(CONFIG_FILENAME, {}),
   kit: { applyInstanceActions: false },
   drive: validateDrive(CONFIG_FILENAME, {}),
+  features: {},
 });
 
 // One nonblocking descriptor per lookup keeps a launchpad that gains, loses or edits its
@@ -1078,6 +1102,12 @@ export const loadConfig = (root) => {
   } finally {
     closeSync(fd);
   }
+};
+
+/** Resolve the instance election; a reason documents it without granting it. */
+export const readFeatures = (root) => {
+  const value = loadConfig(root).features["desktop-control"];
+  return { "desktop-control": value === true || value?.on === true };
 };
 
 const ascend = (from) => {

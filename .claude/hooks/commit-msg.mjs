@@ -1,19 +1,19 @@
 // Origin: {"ids":["no-attribution"],"loadoutId":"contributor","semanticHash":"fnv1a64:f294438e4b870c21"}
-const { runCommitMessageHook } = await import("../../.runtime/harness/10d4f5b87a5ae14e/packages/skeleton/dist/src/harness-host.js");
-const { feedbackBoundary } = await import("../../.runtime/harness/10d4f5b87a5ae14e/packages/skeleton/dist/src/feedback-boundary.js");
+const { runCommitMessageHook } = await import("../../.runtime/harness/b94829894f304e0a/packages/skeleton/dist/src/harness-host.js");
+const { feedbackBoundary } = await import("../../.runtime/harness/b94829894f304e0a/packages/skeleton/dist/src/feedback-boundary.js");
 await runCommitMessageHook({
-  "compilerPackageVersion": "0.35.0",
+  "compilerPackageVersion": "0.36.0",
   "runtime": {
-    "skeletonVersion": "0.40.0",
+    "skeletonVersion": "0.41.0",
     "boundaryContract": "feedback-v1",
     "files": [
       {
         "path": "packages/compiler/dist/src/artifact-identity.js",
-        "hash": "fnv1a64:b34816a71109bbe3"
+        "hash": "fnv1a64:5b0f84c166a94560"
       },
       {
         "path": "packages/compiler/dist/src/harness.js",
-        "hash": "fnv1a64:1f8d06eeb0af1863"
+        "hash": "fnv1a64:d9bfbb629c277242"
       },
       {
         "path": "packages/compiler/dist/src/codex-continuation.mjs",
@@ -37,7 +37,7 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/harness-host.js",
-        "hash": "fnv1a64:936721a182ca134c"
+        "hash": "fnv1a64:c6ad1964bfcff985"
       },
       {
         "path": "packages/skeleton/dist/src/subagent-budget.js",
@@ -61,11 +61,11 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/version.js",
-        "hash": "fnv1a64:8a5db843d46bcabb"
+        "hash": "fnv1a64:bc261f169da61296"
       },
       {
         "path": "packages/skeleton/dist/src/harness-command.js",
-        "hash": "fnv1a64:7af5820d11a1a9b2"
+        "hash": "fnv1a64:71a9569fbda89570"
       },
       {
         "path": "packages/skeleton/dist/src/document-quality.js",
@@ -176,11 +176,11 @@ await runCommitMessageHook({
         "hash": "fnv1a64:5ad495017c40b9b2"
       }
     ],
-    "snapshot": ".runtime/harness/10d4f5b87a5ae14e"
+    "snapshot": ".runtime/harness/b94829894f304e0a"
   },
   "policy": {
     "contractVersion": "feedback-v1",
-    "compilerPackageVersion": "0.35.0",
+    "compilerPackageVersion": "0.36.0",
     "units": [
       {
         "unitId": "no-attribution",
@@ -233,6 +233,6 @@ await runCommitMessageHook({
         "enforcement": "hard"
       }
     ],
-    "policyHash": "fnv1a64:0856bd38a7460521"
+    "policyHash": "fnv1a64:4b2aeee86f43826c"
   }
 }, feedbackBoundary);

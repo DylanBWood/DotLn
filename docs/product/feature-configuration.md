@@ -20,15 +20,16 @@ bound or keep.
 | Release surfaces | `release.readmeBlock`, `componentVersions`, `corpus`, `publicationCheck` | Declared toggles for the release's surfaces | declared; read by nothing yet, listed so the page tells the truth |
 | Kit instance actions | `kit.applyInstanceActions`; the update | Lets an update perform the kit's declared instance actions | instance choice; implemented |
 | Drive sandbox election | `drive.sandbox` in `dotln.config.json`; each phase launch of a drive and the live fixture's router | `host` keeps each host's own policy; `off` launches unsandboxed in the form each host documents | instance election; implemented (WO-247) |
+| Desktop control | `features.desktop-control` in `dotln.config.json`; the permission hook and harness emitter | Off by default; admits the named desktop and operator-browser tools only when elected, still requiring the operator's explicit request in the session; browser verification uses Playwright in a session-launched browser or project tests | instance election; implemented ([WO-251 decision](../evidence/WO-251/decisions.md#wo-251-d001)) |
 | Subagent cap and dispatch bounds | `subagentCap`, `drivenSessionCeiling`, `drivenPhaseTimeoutMs` and `dispatches.*` in `budgets.json`; the hooks, the gate and the lifecycle | Bounds the agents a session may spawn and how long a dispatch may run; `null` lifts a bound | instance budget; implemented |
 | Retention windows | `retention.*` in `budgets.json`; the prune | How long each class of owned temporary root is kept; `null` keeps | instance budget; implemented |
 | Runtime | the `engines` field of every package; `harness check`, `harness evidence` and the gate's `host` task | Admits Node 24.15 or later in the 24 line and Node 26, and refuses any other Node by name | compatibility, not a toggle; implemented |
-| Named feature elections | a `features` section in `dotln.config.json`, a boolean or `{ on, note }` per feature; a registry in the kit; a generated `docs/control/FEATURES.md` | One place for the elections above and the new ones, each with its scope (core, instance or both), default and reader | WO-241 planned; the generated page then carries an instance's effective values and this page links it |
+| Named feature elections | the `features` section in `dotln.config.json`, a boolean or `{ on, note }` per feature; currently `desktop-control` is the one accepted id | The section holds the election and optional reason; WO-241 adds the registry, other feature ids and generated `docs/control/FEATURES.md` with each feature's scope, default and reader | section implemented (WO-251); registry and generated page planned (WO-241) |
 | Private destination | `features.private-destination` | Admits ordinary project links of the instance's own organisation inside that instance; credentials stay excluded and publications still refuse private terms | WO-241 planned; core's floor is not electable |
 | Plan-first mode | `features.plan-first` | A plan, a conversation and a proposal before anything is implemented, and the operator's approval before it is | WO-242 planned; direct execution stays the default |
 | An instance's own planning inputs | a script the instance owns, run on the operator's word; later a `source` adapter under WO-207's extension root | Gathers a tracker's items for the instance's own planning session | available by hand today; the adapter route is WO-207's |
 
-What is not electable: the six refusals, the writer reservation and the
+What is not electable: the six other refusal classes, the writer reservation and the
 clean-room floor ([product 07 §Operator recovery controls](07-execution-guide.md#operator-recovery-controls);
 `CLAUDE.md` §Clean Room). A switch for them does not exist and this page
 will not list one.

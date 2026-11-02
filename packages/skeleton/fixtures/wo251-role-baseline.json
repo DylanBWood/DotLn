@@ -1,0 +1,80 @@
+{
+  "workOrder": "WO-251",
+  "historicalBaseline": "wo247-role-baseline.json",
+  "historicalSha256": "9b6fae40e9579c25396ce025aa398fb16d7c5ba9a54841eea43189d74db1af6e",
+  "method": "Pin each role in both economy settings after the shared browser-verification rule and derived desktop-control refusal row; retain all prior role oracles through the unchanged WO-247 parent.",
+  "decision": "docs/evidence/WO-251/decisions.md#wo-251-d007",
+  "roles": {
+    ".agents/skills/dotln-executor/SKILL.md": "9d58705cebf69b05911ad2b694d1971c209f6d4a9bbd21305bf1b0c12c62d1a0",
+    ".agents/skills/dotln-planner/SKILL.md": "a8cd66b773c76b59f77e8e9b208e97a0b5fce284462430b91912e382e60d6159",
+    ".agents/skills/dotln-refuter/SKILL.md": "d1c69e8a36b6e29c677fd51df2fad8f069bdc722697cec8d67057489e96a66a9",
+    ".agents/skills/dotln-release-close/SKILL.md": "30e4009fc7da2320de5bcb1049dc175147b953b2ab3721957ee5271a6accc33c",
+    ".agents/skills/dotln-reviewer/SKILL.md": "df7753692dfd9698c55180b26924ea63cd3af69ccc1cc17a767dabf8046e762b",
+    ".agents/skills/dotln-router/SKILL.md": "e53bcfa457dc994df5233b1d984f16d5d2f05e19e225def179117a5db280f275",
+    ".agents/skills/dotln-verifier/SKILL.md": "8d6ce0e47ff651b10e1013819d4416fc8217991c78af5a61b9293351fbe76729",
+    ".claude/skills/dotln-executor/SKILL.md": "9d58705cebf69b05911ad2b694d1971c209f6d4a9bbd21305bf1b0c12c62d1a0",
+    ".claude/skills/dotln-planner/SKILL.md": "a8cd66b773c76b59f77e8e9b208e97a0b5fce284462430b91912e382e60d6159",
+    ".claude/skills/dotln-refuter/SKILL.md": "d1c69e8a36b6e29c677fd51df2fad8f069bdc722697cec8d67057489e96a66a9",
+    ".claude/skills/dotln-release-close/SKILL.md": "30e4009fc7da2320de5bcb1049dc175147b953b2ab3721957ee5271a6accc33c",
+    ".claude/skills/dotln-reviewer/SKILL.md": "df7753692dfd9698c55180b26924ea63cd3af69ccc1cc17a767dabf8046e762b",
+    ".claude/skills/dotln-router/SKILL.md": "e53bcfa457dc994df5233b1d984f16d5d2f05e19e225def179117a5db280f275",
+    ".claude/skills/dotln-verifier/SKILL.md": "8d6ce0e47ff651b10e1013819d4416fc8217991c78af5a61b9293351fbe76729"
+  },
+  "optOutRoles": {
+    ".agents/skills/dotln-executor/SKILL.md": "ca6928c153f9b69f5953da41aac6dc4abcf19152804c90b9c1f6e323c00150ce",
+    ".agents/skills/dotln-planner/SKILL.md": "3f03031c6bb0638a18cd46652f1214ddfdea81731e0bfcfbb68ed8f81f0e0349",
+    ".agents/skills/dotln-refuter/SKILL.md": "ab5f271a3b6d8419f2dece09338f624ea7684fc7a3a78bc18860581137b45292",
+    ".agents/skills/dotln-release-close/SKILL.md": "4896133786277b6d6f6635cb753e4879303f587b6d3204c41bf04a357f11c5fa",
+    ".agents/skills/dotln-reviewer/SKILL.md": "9e58ce40055dccfc3c9cb7782b5267b1bf901092ded4002cbc8df46e28b81a80",
+    ".agents/skills/dotln-router/SKILL.md": "68e74aae075d51ad187eb09050188c022a525f908a3ac395b8b5edefca7c523f",
+    ".agents/skills/dotln-verifier/SKILL.md": "ec0ab44ffc29fba0689f4ce222b8ad6f84e5db2548b700b6cacded0686ce655d",
+    ".claude/skills/dotln-executor/SKILL.md": "ca6928c153f9b69f5953da41aac6dc4abcf19152804c90b9c1f6e323c00150ce",
+    ".claude/skills/dotln-planner/SKILL.md": "3f03031c6bb0638a18cd46652f1214ddfdea81731e0bfcfbb68ed8f81f0e0349",
+    ".claude/skills/dotln-refuter/SKILL.md": "ab5f271a3b6d8419f2dece09338f624ea7684fc7a3a78bc18860581137b45292",
+    ".claude/skills/dotln-release-close/SKILL.md": "4896133786277b6d6f6635cb753e4879303f587b6d3204c41bf04a357f11c5fa",
+    ".claude/skills/dotln-reviewer/SKILL.md": "9e58ce40055dccfc3c9cb7782b5267b1bf901092ded4002cbc8df46e28b81a80",
+    ".claude/skills/dotln-router/SKILL.md": "68e74aae075d51ad187eb09050188c022a525f908a3ac395b8b5edefca7c523f",
+    ".claude/skills/dotln-verifier/SKILL.md": "ec0ab44ffc29fba0689f4ce222b8ad6f84e5db2548b700b6cacded0686ce655d"
+  },
+  "startupCost": {
+    "decision": "WO-251-D007",
+    "profiles": {
+      "executor": {
+        "beforeBytes": 38400,
+        "bytes": 39309,
+        "growthBytes": 909
+      },
+      "planner": {
+        "beforeBytes": 24313,
+        "bytes": 25222,
+        "growthBytes": 909,
+        "followup": "FUP-ac86ee429dee2947"
+      },
+      "refuter": {
+        "beforeBytes": 23127,
+        "bytes": 24036,
+        "growthBytes": 909
+      },
+      "release-close": {
+        "beforeBytes": 23505,
+        "bytes": 24414,
+        "growthBytes": 909
+      },
+      "reviewer": {
+        "beforeBytes": 36003,
+        "bytes": 36912,
+        "growthBytes": 909
+      },
+      "router": {
+        "beforeBytes": 15418,
+        "bytes": 16327,
+        "growthBytes": 909
+      },
+      "verifier": {
+        "beforeBytes": 33233,
+        "bytes": 34142,
+        "growthBytes": 909
+      }
+    }
+  }
+}
