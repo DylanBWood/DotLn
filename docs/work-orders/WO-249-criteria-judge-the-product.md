@@ -87,7 +87,9 @@ verifier's blocking sentences (188 and 190) gain the funnel (a blocking
 finding names the criterion it fails and the supported input that
 reproduces it, or the behavior `main` had and the probe that shows the
 change broke it; an input the verifier constructed outside the supported
-vocabulary is a follow-up, never a block); the executor's routine-questions
+vocabulary is a follow-up, never a block, while a finding against the
+clean-room floor or an authority or credential boundary blocks whatever
+criterion it misses, as the floor's own refusals do); the executor's routine-questions
 sentence (85) gains that an unmet criterion of one of the five classes is
 recorded unmet with the class named for the verifier, and nothing is asked
 of the operator; the planner's text gains the five classes as the screen
@@ -510,9 +512,11 @@ at the integrated code identity when one exists.
   read it (reopen: a defect record is retracted by the operator, or a
   planning pass finds a recorded class that does not fit its definition).
 - The lint reads criteria text with regular expressions and will match a
-  criterion that rightly names a record's figure; it advises and the
-  planner reads it (reopen: a pass finds the advisory noise exceeds its
-  signal and names the pattern).
+  criterion that rightly names a record's figure or an unchanged state:
+  its `HEAD` pattern already matches WO-246's criterion 5 ("the checkout's
+  refs, `HEAD` and tree are unchanged"), a legitimate end-state assertion;
+  it advises and the planner reads it (reopen: a pass finds the advisory
+  noise exceeds its signal and names the pattern).
 - The five waivers in core's record and the fork's two stay as recorded;
   nothing rewrites them (reopen: the operator asks for a retraction of one).
 - The role roots are near their ceilings (executor 38,400 of 40,194 on

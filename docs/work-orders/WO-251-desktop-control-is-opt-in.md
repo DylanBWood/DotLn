@@ -276,7 +276,9 @@ kit template, example and guide; the write-backs.
 1. In the harness fixture with no `features` section, a PreToolUse input
    naming `mcp__computer-use__screenshot`, `mcp__remote-devices__computer_click`,
    `enable__mcp__remote-devices__computer`, `mcp__claude-in-chrome__navigate`,
-   `mcp__Claude_Browser__click`, `enable__mcp__claude-in-chrome`, or `Skill`
+   `mcp__Claude_Browser__click`, `mcp__remote-devices__Claude_Browser__navigate`,
+   `enable__mcp__claude-in-chrome`, `enable__mcp__remote-devices__Claude_Browser`,
+   or `Skill`
    with `anthropic-skills:computer-use`, `anthropic-skills:chrome-browser`,
    `anthropic-skills:built-in-browser` or `claude-in-chrome` is refused with
    `DOTLN_DESKTOP_CONTROL_REFUSED`, the message naming

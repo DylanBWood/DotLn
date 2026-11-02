@@ -31,7 +31,9 @@ changed orders and the lane `docs/control/local/reviews/planning-<date>/`;
 the report written to the order's ignored reviews lane,
 `docs/control/local/reviews/WO-NNN/round-<N>-<kind>.md`
 with a `.json` beside it in a closed findings shape (`id`, `severity`
-`blocking|should-fix|note`, `summary`, `file`, `line`, `criterion`), and
+`blocking|should-fix|note`, `summary`, `file`, `line`, and a `basis`,
+`{criterion}` or `{regression}`, the shape WO-249's blocking entries
+carry, so a verifier reads one vocabulary), and
 one line printed, `review: <kind> round <N> found <N> (<B> blocking);
 <elapsed>`, or that the worker returned no report; a `WorkerLaunched` row
 in the session journal (session, order, kind, host, CLI version, round,
@@ -498,6 +500,11 @@ at the integrated code identity when one exists.
   executor writes the worker's returned text into the lane under the round
   and kind name (reopen: a verification finds a round's report missing
   from the lane).
+- The gate refusal reaches a worker the hook saw spawned; the helper's
+  `claude-cli-print` reviewer is a separate session with no spawn record,
+  so the brief's probe sentence and its read-only `Bash` are what keep it
+  from a gate, as for a Codex worker (reopen: a helper-launched Claude
+  review session's journal shows a gate command).
 - One ladder cycle spends at least seven uses (three round-one workers, up
   to three rechecks, one combined) against a default cap of 20 that counted
   agents before this order; the executor records the uses each of this

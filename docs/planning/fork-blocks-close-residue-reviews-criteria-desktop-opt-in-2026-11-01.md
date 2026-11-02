@@ -719,8 +719,22 @@ appended when observed.
   criterion 8 names a fixture behavior; WO-249's FINAL line carries the
   reviewer's own evidence and criterion 1 names the five classes; WO-244's
   refusal set gains `git log --all` and the other ref readers; WO-246
-  states a ten-minute default bound. The remaining known issues are
-  recorded on the catalog rows after the second receipt.
+  states a ten-minute default bound. The second refuter (dispatched on
+  `c6a21820`, 10 min 54 s, 198,385 tokens, 13 tool uses) also returned
+  `aligned-with-findings` for all six with twenty-five known issues and no
+  hold, and found that the WO-252 corrections had not all landed: an edit
+  batch skipped on one mismatched anchor had left its Cost and steps saying
+  "the rest of the lane deleted" against its criterion 2, so that judgment
+  was kept in the lane too (`refute-result-2.json`, `refute-statement-2.txt`)
+  and not filed; the skipped edits were applied with the second judgment's
+  textual points (the ledger deleted only once its roots are gone, a
+  `base-fetch` blocker class, the glob floor's literal-part rule, the
+  remote-devices browser pane in WO-251's fixture, the clean-room and
+  authority exception to the verifier's funnel, one findings vocabulary
+  across review reports and VER entries, the unread-remote advisory and
+  the refusal rows for WO-246 and WO-244), and a third refuter was
+  dispatched on the corrected subject. Its known issues are recorded on
+  the catalog rows after its receipt.
 - The two tightenings after the operator's mid-turn question of 23:36Z,
   which asked whether the criteria order or any other update would hurt the
   operator (paraphrased; the words are in this session's transcript): WO-249

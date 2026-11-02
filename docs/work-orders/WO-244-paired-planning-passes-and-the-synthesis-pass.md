@@ -386,6 +386,13 @@ row at the integrated code identity when one exists.
   helper takes and confirms on 0.166.0, while this order's fixture uses the
   fake transport (reopen: `plan review` on a real host returns no report
   from every worker).
+- A host label always means a paired pass, so a single pass the operator
+  wants on a named host runs unlabelled; and the paired refusal covers
+  every fetch, so a paired pass that needs current `main` takes `operator
+  override:` for that one read (reopen: an override is recorded in a
+  labelled pass that had no partner, or to fetch `origin main` inside a
+  paired pass). Once WO-251 renders the refusals sentence from a list, this
+  order adds its paired-pass refusal's row.
 - The closing comment on the losing pull request is the one outward effect
   this order adds; it carries no attribution and names only the synthesis
   pass and the base pull request (reopen: the operator wants the losing

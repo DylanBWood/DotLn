@@ -56,7 +56,7 @@ the session made; in `scripts/lib/github-repository.mjs` `fetchRemoteBranch`
 (282 to 318) an `alternates` option that lists the caller's object store in
 the lane repository's `objects/info/alternates`, so the lane downloads only
 the objects the checkout lacks and still writes nothing into the checkout
-before the bundle import, a `remoteBranchCommit` read first that skips the
+before the bundle import, a `remoteBranchCommit` read first, under the same bound, that skips the
 fetch when the checkout already holds the branch's commit, and a
 `timeoutMs` the three callers pass (`scripts/launchpad.mjs` 2144, `update
 --finish`; `scripts/lib/target-worktree-close.mjs` 461;
@@ -443,6 +443,12 @@ at the integrated code identity when one exists.
 - The fork's workflow and its C6 (FUP-f85ede7a356345c5) go when the release
   that carries this order lands; the fork decides (reopen: the fork reports
   the lint refusing a title in the operator's form after this release).
+- When the clone's remotes or the gh default cannot be read, the refusal
+  admits with one advisory, today's behavior, rather than refusing (reopen:
+  a fork session reaches the parent after such an advisory).
+- Once WO-251 renders the refusals sentence from a list, this order adds
+  its `gh` refusal's row to that list, as WO-244 adds its paired-pass
+  refusal's (reopen: the emitted sentence omits a refusal the hook emits).
 - The alternates borrow the checkout's objects read-only; a checkout whose
   object store is damaged can fail a lane fetch that a fresh lane would
   survive, and the refusal names the object (reopen: a finish fails on a
