@@ -3625,6 +3625,21 @@ and generated evidence, including fixtures, manifests and installed guidance.
   when available, never substituted from another session or invented as zero.
   Counters and final timings stay in ignored local observations and the
   response; reports may cite them without causing a product-gate rerun.
+  A pull-request body's final meter block carries one table for that order,
+  with a row per dispatch role and eight columns: dispatch, wall clock,
+  tokens, USD, commands, steps, bound stops and bound acceptances. Each cell
+  holds one value; missing observations say `unknown`, and durations use
+  `N h M min`. Below it, each comparable metric has one sentence naming the
+  latest closed order before the subject in the collector's selection and
+  the difference between their order totals, in that metric's unit. An open
+  order is never the reference; no available closed predecessor means no
+  comparison. The six-order Work table, per-cell deltas and omission footer
+  are absent from the body. `npm run meta` retains all collected metrics and
+  labelled previous-order deltas in its terminal text, with a dispatch table
+  for the latest open order. Release preparation replaces an existing meter
+  block for its named subject; regenerating a closed subject uses its own
+  rows when it is in the collector's selection.
+  [Decision](../evidence/WO-248/decisions.md#wo-248-d002).
   Usage, meta and console actor projections apply canonical `RecordCorrected`
   fields while retaining the original events and correction evidence. A
   per-order meter snapshot records the path and SHA-256 of each retained usage

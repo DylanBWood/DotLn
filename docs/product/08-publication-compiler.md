@@ -315,10 +315,14 @@ session trailer or a session URL; the publish helper refuses one
 coauthors and ordinary subject text are unaffected. The generated Claude
 settings contain the declared attribution block; `harness check` detects its
 absence. The same matcher screens committed PR title and body before the first
-push. `release prepare` supplies the current meter table in the reviewed PR
-body; it reports previous-order deltas without inventing limits, leaves an
-unavailable observation as a blank cell or an omitted dispatch row, and says
-in one line how many it omitted. The stored body has a shape (WO-227): its
+push. `release prepare` supplies the current meter block in the reviewed PR
+body: one table for the order under review with a row per dispatch role and
+one value per cell, `unknown` where an observation is missing, durations in
+hours and minutes, and below the table one sentence per comparable metric
+that names the latest closed order before the subject
+([WO-248-D002](../evidence/WO-248/decisions.md#wo-248-d002); the execution
+guide's [discipline rule](07-execution-guide.md#discipline) states the
+shape). The stored body has a shape (WO-227): its
 first non-blank line is the level-one heading, prose follows, and the meter
 block is the last block. Prose means a Markdown paragraph with visible text,
 including a list-item or quoted paragraph; comments, code blocks, headings,

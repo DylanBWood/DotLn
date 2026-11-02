@@ -1,4 +1,4 @@
-# WO-248 — The pull-request process table says what its reader can use: one table for the order under review, one value per cell, `unknown` spelled out, durations in hours and minutes, the previous-order comparison as one labelled sentence instead of a delta in every cell, and the six-order table and its blank cells out of the body (version assigned at activation)
+# WO-248 — The pull-request process table says what its reader can use: one table for the order under review, one value per cell, `unknown` spelled out, durations in hours and minutes, the previous-order comparison as one labelled sentence instead of a delta in every cell, and the six-order table and its blank cells out of the body (v0.111.1)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

@@ -2136,7 +2136,7 @@ export async function regeneratedPullRequestBody(root, workOrderId, revision) {
   const source = readFileSync(join(root, path), "utf8");
   const body = withMeterBlockLast(
     source,
-    renderMetaTable(await collectMeta(root)),
+    renderMetaTable(await collectMeta(root), { workOrderId }),
     expectedCriterionRecordLines(root, recordedCriteria(root, workOrderId)),
   );
   let repository = null;
@@ -4349,7 +4349,7 @@ const main = async () => {
         const source = readFileSync(path, "utf8");
         const next = withMeterBlockLast(
           source,
-          renderMetaTable(meta),
+          renderMetaTable(meta, { workOrderId: state.workOrderId }),
           expectedCriterionRecordLines(toolRoot, state),
         );
         if (next !== source) {

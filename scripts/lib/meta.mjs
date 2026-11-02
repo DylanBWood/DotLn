@@ -2298,102 +2298,61 @@ const display = (value) =>
     : typeof value === "number"
       ? Number(value.toFixed(3)).toLocaleString("en-US")
       : String(value);
-// An unavailable observation is a blank cell, never the word; a dispatch row
-// with nothing observed is left out; one line says how many were omitted.
 const unobserved = (value) => value === null || value === undefined;
-export function renderMetaTable(meta) {
-  let omitted = 0;
-  const cell = (value, delta) => {
-    if (unobserved(value)) {
-      omitted += 1;
-      return "";
-    }
-    if (unobserved(delta)) {
-      omitted += 1;
-      return display(value);
-    }
-    return `${display(value)} (Δ ${display(delta)})`;
-  };
-  const plain = (value) => {
-    if (unobserved(value)) {
-      omitted += 1;
-      return "";
-    }
-    return display(value);
-  };
-  const durationCell = (value, delta) => {
-    if (unobserved(value)) {
-      omitted++;
-      return "";
-    }
-    return `${formatDuration(value)}${unobserved(delta) ? "" : ` (Δ ${formatDuration(delta)})`}`;
-  };
-  const d = (row, key) =>
-    ["elapsedMs", "gateMs"].includes(key)
-      ? durationCell(row.metrics[key], row.delta[key])
-      : cell(row.metrics[key], row.delta[key]);
-  const orderKeys = [
-    "elapsedMs",
-    "attempts",
-    "gateMs",
-    "readObligationCount",
-    "readObligationBytes",
-    "tokens",
-    "costUsd",
-    "declaredPromptTokens",
-    "operatorCorrections",
-    "operatorDirections",
-  ];
-  const orders = meta.orders.flatMap((row) => {
-    if (orderKeys.every((key) => unobserved(row.metrics[key]))) {
-      omitted += orderKeys.length;
-      return [];
-    }
-    return [
-      `| ${row.workOrder} | ${d(row, "elapsedMs")} / ${plain(row.metrics.attempts)} | ${d(row, "gateMs")} | ${d(row, "readObligationCount")} / ${d(row, "readObligationBytes")} | ${d(row, "tokens")} / ${d(row, "costUsd")} | ${d(row, "declaredPromptTokens")} | ${d(row, "operatorCorrections")} | ${d(row, "operatorDirections")} | ${plain(row.boundStops?.count)} | ${plain(row.boundAcceptances?.length)} |`,
-    ];
+export function renderMetaTable(meta, { workOrderId } = {}) {
+  const index = meta.orders.findIndex((row) => row.workOrder === workOrderId);
+  const order = meta.orders[index];
+  // Collector deltas can refer to another open order. The body compares only
+  // with the latest closed predecessor in the collector's ordered selection.
+  const previous = meta.orders
+    .slice(0, Math.max(0, index))
+    .findLast((row) => row.phase === "closed");
+  const cell = (value, duration = false) =>
+    unobserved(value)
+      ? "unknown"
+      : duration
+        ? formatDuration(value)
+        : display(value);
+  const dispatches = (order?.dispatches ?? []).map(
+    (row) =>
+      `| ${order.workOrder}/${row.role} | ${cell(row.wallClockMs, true)} | ${cell(row.observedTokens)} | ${cell(row.observedCostUsd)} | ${cell(row.commandsRun)} | ${cell(row.stepCount)} | ${cell(row.boundStops?.count)} | ${cell(row.boundAcceptances?.length)} |`,
+  );
+  const totals = (row) => ({
+    "wall clock": row.metrics?.elapsedMs,
+    tokens: row.metrics?.tokens,
+    USD: row.metrics?.costUsd,
+    commands: row.metrics?.commandsRun,
+    steps: row.metrics?.stepCount,
+    "bound stops": row.boundStops?.count,
+    "bound acceptances": row.boundAcceptances?.length,
   });
-  const observed = [
-    "wallClockMs",
-    "bytesReadIntoContext",
-    "commandsRun",
-    "observedTokens",
-    "stepCount",
-    "observedCostUsd",
-    "declaredPromptTokens",
-  ];
-  const dispatches = meta.orders
-    .filter((row) => !["closed", "withdrawn"].includes(row.phase))
-    .flatMap((order) =>
-      order.dispatches.flatMap((row) => {
-        if (observed.every((key) => unobserved(row[key]))) {
-          omitted += observed.length;
-          return [];
-        }
-        const pair = (key) =>
-          key === "wallClockMs"
-            ? durationCell(row[key], row.delta?.[key])
-            : cell(row[key], row.delta?.[key]);
-        return [
-          `| ${order.workOrder}/${row.role} | ${pair("wallClockMs")} | ${pair("bytesReadIntoContext")} | ${pair("commandsRun")} | ${pair("observedTokens")} | ${pair("stepCount")} | ${pair("observedCostUsd")} / ${plain(row.declaredPromptTokens)} | ${plain(row.boundStops?.count)} | ${plain(row.boundAcceptances?.length)} |`,
-        ];
-      }),
-    );
+  const before = previous ? totals(previous) : {};
+  const comparisons = Object.entries(order ? totals(order) : {}).flatMap(
+    ([label, value]) => {
+      const difference = delta(value, before[label]);
+      if (difference === null) return [];
+      const amount = cell(Math.abs(difference), label === "wall clock");
+      const direction =
+        difference < 0
+          ? ["wall clock", "USD"].includes(label)
+            ? "less"
+            : "fewer"
+          : "more";
+      return [
+        `Against ${previous.workOrder}, the previous closed order: ${label} ${difference === 0 ? `unchanged (${amount} difference)` : `${amount} ${direction}`}.`,
+        "",
+      ];
+    },
+  );
   return [
     "",
     `Observation cutoff: ${meta.observedAt ?? "unknown"}; source: canonical control events and the recorded gate, usage and harness observations collected by npm run meta.`,
     "",
-    "| Work | Phase / attempts | Gate | Read files / bytes | Observed tokens / USD | Declared prompt tokens | Corrections | Directions | Bound stops | Bound acceptances |",
-    "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
-    ...orders,
-    "",
-    "| Dispatch | Wall (Δ) | Context bytes (Δ) | Commands (Δ) | Tokens (Δ) | Steps (Δ) | USD (Δ) / declared prompt tokens | Bound stops | Bound acceptances |",
-    "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
+    "| Dispatch | Wall clock | Tokens | USD | Commands | Steps | Bound stops | Bound acceptances |",
+    "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
     ...dispatches,
     "",
-    `${omitted} unavailable observations omitted as blank cells or rows; unavailable is not zero; unset ceilings are not approvals of a future limit.`,
-    // A blank line closes the prose so a marker after it is no soft wrap.
-    "",
+    ...comparisons,
   ].join("\n");
 }
 export function renderMeta(meta) {
@@ -2431,7 +2390,11 @@ export function renderMeta(meta) {
     ),
   ]);
   return [
-    renderMetaTable(meta),
+    renderMetaTable(meta, {
+      workOrderId: meta.orders.findLast(
+        (row) => !["closed", "withdrawn"].includes(row.phase),
+      )?.workOrder,
+    }),
     "",
     ...metricRows,
     "",
