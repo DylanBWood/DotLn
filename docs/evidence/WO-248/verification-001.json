@@ -1,0 +1,70 @@
+{
+  "verification": "VER-001",
+  "workOrder": "WO-248",
+  "subject": {
+    "base": "91a730ac706a1933ebe9fb2c826455d8adffb4dc",
+    "codeIdentity": "f6b51efe3c2ea29f7ed9c8e6d022f3845319bd6066143ecdfb5e5e46b2055250",
+    "note": "Uncommitted candidate in the WO-248 worktree; the identity was recomputed with gateCodeIdentity at verification and equals the executor's complete row."
+  },
+  "consumedRows": [
+    {
+      "checkId": "npm test",
+      "gateSelection": "review",
+      "exitCode": 0,
+      "executed": true,
+      "codeIdentity": "f6b51efe3c2ea29f7ed9c8e6d022f3845319bd6066143ecdfb5e5e46b2055250",
+      "recordedAt": "2026-11-02T20:47:21.481Z",
+      "coverage": "43 required suites, 116 fresh tasks, no unrun suite; includes process-debt, generated/meta, release (release:case:meter_shape) and github-body",
+      "source": "readGateChecks at the current code identity; validation.json is the executor's projection"
+    }
+  ],
+  "probes": {
+    "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-248/verifier-001-probes.mjs <root> [<main-src>]",
+    "mainSource": "git archive main scripts/lib packages/skeleton/src package.json, extracted into session scratch at main 91a730ac",
+    "P1-real-corpus": {
+      "selection": [
+        "WO-247:closed",
+        "WO-237:closed",
+        "WO-245:closed",
+        "WO-251:closed",
+        "WO-249:closed",
+        "WO-248:verifying"
+      ],
+      "result": "Every selected order rendered as its own subject: one eight-column header, seven rows each naming only that order, every duration N h M min, every other cell one figure or unknown, no Work table, omission footer or delta. Each comparison sentence names the latest closed order before the subject; WO-247, first in the selection, has none. No Tokens cell equals a declared prompt-token figure. Each wrapped body passes assertPullRequestBodyShape and assertGitHubBodyProfile.",
+      "problems": 0,
+      "unobservedRoleRows": "Every order renders four or five role rows whose five value cells are all unknown: release-close, planner, refuter and router in every closed order, plus reviewer for WO-248 before its final review. Recorded as follow-up F1 (WO-248-D004)."
+    },
+    "P2-constructed-edges": {
+      "subMinute": "Against WO-001, the previous closed order: wall clock 0 h 1 min less.",
+      "subMill": "Against WO-001, the previous closed order: USD 0 more.",
+      "subjectUnknown": "no tokens sentence when the subject's figure is unknown and the predecessor's is known",
+      "openBetween": "an open order between the closed predecessor and the subject is skipped",
+      "subjectFirst": "no sentence when no closed order precedes the subject",
+      "absentSubject": "an order absent from the selection renders the header and no rows or sentences",
+      "judgment": "Sub-minute and sub-thousandth differences round through formatDuration and the existing display precision; no wrong reference or second value per cell."
+    },
+    "P3-stored-bodies": {
+      "WO-249": "stored body carried the old Work table; regeneratedPullRequestBody(root, 'WO-249', 'HEAD') replaced it with seven WO-249 rows and six sentences against WO-251, block last, profile passes",
+      "WO-251": "stored body carried the old Work table; regenerated with seven WO-251 rows and six sentences against WO-245, block last, profile passes",
+      "writes": "none; git status unchanged after the probe"
+    },
+    "P4-terminal": {
+      "restEqualToMain": true,
+      "restBytes": 416877,
+      "labelledDeltaSections": 6,
+      "judgment": "For the same collected meta, everything renderMeta prints after the table block is byte-identical to main's renderMeta; only the leading block changed."
+    }
+  },
+  "checks": {
+    "formatCheck": "npm run format:check exit 0 on the implementation before the verifier's files existed; the probe file was then formatted at its own path only",
+    "publicationCheck": "npm run publication:check exit 0: 256/256 product headings indexed; both publication TOCs current",
+    "diffCheck": "git diff --check exit 0",
+    "dependencies": "package.json, package-lock.json and packages/*/package.json unchanged"
+  },
+  "limits": [
+    "No live GitHub rendering or viewport judgment; the order bounds cell contents, not pixels.",
+    "The fork's WO-025 screenshot is not in this checkout; core #258 was not re-read with gh by the verifier, whose before-state rests on the executor's D002 and main's renderer source.",
+    "The release, process-debt, meta and github-body suites were not rerun; the complete review row at the unchanged code identity covers them.",
+    "The executor's three worker reports are retained only as summaries in self-review.md; raw Codex worker transcripts were not available to read."
+  ]
+}

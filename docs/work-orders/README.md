@@ -8,7 +8,7 @@
 - [x] [WO-251] — Desktop control is opt-in · **final-reviewed**
 - [x] [WO-249] — Criteria judge the product · **final-reviewed**
 - [x] [WO-250] — Reviews converge and every worker counts · **final-reviewed**
-- [ ] [WO-248] — The pull-request table says what its reader can use · **queued**
+- [x] [WO-248] — The pull-request table says what its reader can use · **final-reviewed**
 - [ ] [WO-252] — Release close owns what the kit wrote · **queued**
 - [ ] [WO-238] — A document says what is so · **queued**
 - [ ] [WO-241] — The features file · **queued**
@@ -46,23 +46,6 @@ None.
 None.
 
 ## Open
-
-### WO-248
-
-[WO-248 — The pull-request process table says what its reader can use: one table for the order under review, one value per cell, &#96;unknown&#96; spelled out, durations in hours and minutes, the previous-order comparison as one labelled sentence instead of a delta in every cell, and the six-order table and its blank cells out of the body (version assigned at activation)](WO-248-the-pull-request-table-says-what-its-reader-can-use.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-170: satisfied-by-close (met) — the meter snapshot and block release prepare writes, whose rendering this order changes; WO-086: satisfied-by-close (met) — the stored pull-request body with the meter block last, which withMeterBlockLast keeps; WO-234: satisfied-by-close (met) — the bound stops and acceptances per dispatch the table lists.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer high.
-- Track: machinery
-- Cost: adds, in &#96;scripts/lib/meta.mjs&#96; &#96;renderMetaTable&#96; (2299 to 2391), one table for the pull request's order: a row per dispatch role with eight columns (dispatch, wall clock, tokens, USD, commands, steps, bound stops, bound acceptances), each cell one value, an unobserved value spelled &#96;unknown&#96;, durations as &#96;N h M min&#96;, and below the table one sentence per metric that has a previous-order figure ("Against WO-NNN, the previous closed order: …"), so the comparison is labelled where it is read; the Work table (the last five closed orders beside the active one, &#96;closed.slice(-5)&#96; at 1587) and the "N unavailable observations omitted as blank cells" line leave the body, and the terminal output of &#96;npm run meta&#96; (&#96;renderMeta&#96;, 2393 onward, which already lists every metric with its labelled delta) keeps the figures; the pins in &#96;scripts/test-process-debt.mjs&#96; (the header regexes at 860 and 11131; the row shapes at 11124 to 11136) follow; a case that renders the fixture body and asserts no cell holds two values, no cell is blank, and the comparison sentence names the previous order. Removes: the body table a reader cannot use (the fork's WO-025 pull request and core's #258: a nine-column table whose cells wrap one word per line, deltas against an unnamed previous order reading as negative hours, blank cells where a value is unknown, a combined USD-and-declared-prompt-tokens cell reading "/ 768", and six orders listed for a pull request about one). Wall-clock: the renderer is the same pass over the same collected meta; no gate step gains work. Context bytes: this file, about 9,000. Commands: none new. Tokens: unknown until run. Steps: 5. Re-mints: &#96;scripts/lib/meta.mjs&#96; is not a registered evidence source (&#96;scripts/lib/evidence-sources.mjs&#96;), so no edition is staled and no live feedback episode is owed; it is read by &#96;plan-failures.mjs&#96; (&#96;scripts/test-runner.mjs&#96; 428) and is a declared machinery source through the &#96;meta&#96; and &#96;process-debt&#96; suites, so &#96;npm test -- --review&#96; runs before handoff.
-- Authority: [docs/work-orders/WO-248-the-pull-request-table-says-what-its-reader-can-use.md](WO-248-the-pull-request-table-says-what-its-reader-can-use.md)
 
 ### WO-252
 
