@@ -1,4 +1,4 @@
-# WO-251 — Desktop control is opt-in: the hook and the emitted host settings refuse the desktop-control tools unless `dotln.config.json` elects `features.desktop-control`, browser verification is the Playwright MCP's snapshot, screenshot and image read, and every role's text says so (version assigned at activation)
+# WO-251 — Desktop control is opt-in: the hook and the emitted host settings refuse the desktop-control tools unless `dotln.config.json` elects `features.desktop-control`, browser verification is the Playwright MCP's snapshot, screenshot and image read, and every role's text says so (v0.109.0)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

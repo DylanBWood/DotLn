@@ -27,6 +27,7 @@ import {
   docRelative,
   findLaunchpad,
   loadConfig,
+  readFeatures,
 } from "./config.mjs";
 import {
   cpSync,
@@ -348,7 +349,12 @@ export function harnessInstallation(options = {}) {
   for (const id of value?.equip ?? []) switches[id] = true;
   let program;
   try {
-    program = options.program ?? contributorConfiguredProgram(switches, value);
+    program =
+      options.program ??
+      contributorConfiguredProgram(switches, {
+        ...value,
+        desktopControl: options.features?.["desktop-control"] === true,
+      });
   } catch (error) {
     if (overlay) throw overlayError(overlay.path, error.message);
     throw error;
@@ -509,7 +515,10 @@ const walkOwned = (root) => {
 export function emitHarness(
   root,
   options = {},
-  installation = harnessInstallation(options),
+  installation = harnessInstallation({
+    ...options,
+    features: options.features ?? readFeatures(root),
+  }),
 ) {
   root = realpathSync(root);
   const writes = installation.files.map((file) => ({
@@ -886,7 +895,10 @@ export function preserveHarnessRuntime(
 }
 export function checkHarness(root, options = {}) {
   root = realpathSync(root);
-  const expected = harnessInstallation(options);
+  const expected = harnessInstallation({
+    ...options,
+    features: options.features ?? readFeatures(root),
+  });
   if (expected.manifest.build === "none") {
     const floor = contained(root, "CLAUDE.md");
     const text = existsSync(floor) ? readFileSync(floor, "utf8") : "";

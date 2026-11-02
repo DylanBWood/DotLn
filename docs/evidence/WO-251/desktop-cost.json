@@ -1,0 +1,142 @@
+{
+  "schemaVersion": 1,
+  "before": {
+    "measuredAt": "2026-11-02T01:51:05.970Z",
+    "node": "v26.9.0",
+    "scope": "permissionEffect only; excludes process startup, runtime pin checks, configuration IO, journaling and host execution",
+    "samples": [
+      {
+        "tool": "Read",
+        "outcome": "repo.read",
+        "iterations": 50000,
+        "batches": 7,
+        "medianBatchMs": 0.9444999999999979,
+        "medianNsPerCall": 18.889999999999958
+      },
+      {
+        "tool": "mcp__computer-use__screenshot",
+        "outcome": "unclassified",
+        "iterations": 50000,
+        "batches": 7,
+        "medianBatchMs": 95.54899999999998,
+        "medianNsPerCall": 1910.9799999999998
+      },
+      {
+        "tool": "mcp__playwright__browser_snapshot",
+        "outcome": "unclassified",
+        "iterations": 50000,
+        "batches": 7,
+        "medianBatchMs": 92.13170800000012,
+        "medianNsPerCall": 1842.6341600000023
+      }
+    ]
+  },
+  "after": {
+    "measuredAt": "2026-11-02T01:56:29.580Z",
+    "node": "v26.9.0",
+    "scope": "permissionEffect only; excludes process startup, runtime pin checks, configuration IO, journaling and host execution",
+    "samples": [
+      {
+        "tool": "Read",
+        "outcome": "repo.read",
+        "iterations": 50000,
+        "batches": 7,
+        "medianBatchMs": 1.3377089999999967,
+        "medianNsPerCall": 26.754179999999934
+      },
+      {
+        "tool": "mcp__computer-use__screenshot",
+        "outcome": "desktop.control",
+        "iterations": 50000,
+        "batches": 7,
+        "medianBatchMs": 2.7417080000000027,
+        "medianNsPerCall": 54.834160000000054
+      },
+      {
+        "tool": "mcp__playwright__browser_snapshot",
+        "outcome": "unclassified",
+        "iterations": 50000,
+        "batches": 7,
+        "medianBatchMs": 96.75625000000002,
+        "medianNsPerCall": 1935.1250000000007
+      }
+    ]
+  },
+  "comparison": {
+    "measuredAt": "2026-11-02T01:56:35.256Z",
+    "node": "v26.9.0",
+    "wallMs": 133.688083,
+    "inputNames": [
+      "Read",
+      "Bash",
+      "Skill",
+      "mcp__playwright__browser_snapshot",
+      "mcp__computer-use__",
+      "mcp__computer-use__click",
+      "mcp__computer-use_!",
+      "xmcp__computer-use__",
+      "mcp__remote-devices__computer_",
+      "mcp__remote-devices__computer_click",
+      "mcp__remote-devices__computer!",
+      "xmcp__remote-devices__computer_",
+      "enable__mcp__remote-devices__computer",
+      "enable__mcp__remote-devices__computerclick",
+      "enable__mcp__remote-devices__compute!",
+      "xenable__mcp__remote-devices__computer",
+      "mcp__claude-in-chrome__",
+      "mcp__claude-in-chrome__click",
+      "mcp__claude-in-chrome_!",
+      "xmcp__claude-in-chrome__",
+      "mcp__Claude_Browser__",
+      "mcp__Claude_Browser__click",
+      "mcp__Claude_Browser_!",
+      "xmcp__Claude_Browser__",
+      "mcp__remote-devices__Claude_Browser__",
+      "mcp__remote-devices__Claude_Browser__click",
+      "mcp__remote-devices__Claude_Browser_!",
+      "xmcp__remote-devices__Claude_Browser__",
+      "enable__mcp__claude-in-chrome",
+      "enable__mcp__claude-in-chromeclick",
+      "enable__mcp__claude-in-chrom!",
+      "xenable__mcp__claude-in-chrome",
+      "enable__mcp__remote-devices__Claude_Browser",
+      "enable__mcp__remote-devices__Claude_Browserclick",
+      "enable__mcp__remote-devices__Claude_Browse!",
+      "xenable__mcp__remote-devices__Claude_Browser"
+    ],
+    "arms": [
+      {
+        "name": "prefix-array",
+        "iterations": 200000,
+        "samplesMs": [
+          14.090374999999995,
+          14.400082999999995,
+          14.413666000000006,
+          14.47475,
+          15.219750000000005,
+          15.304917000000003,
+          15.641459000000001
+        ],
+        "medianNsPerCall": 72.37375,
+        "matched": 631104
+      },
+      {
+        "name": "compiled-regexp",
+        "iterations": 200000,
+        "samplesMs": [
+          3.218459000000024,
+          3.302792000000011,
+          3.3087500000000034,
+          3.3446659999999895,
+          3.417584000000005,
+          4.35775000000001,
+          4.461999999999989
+        ],
+        "medianNsPerCall": 16.723329999999947,
+        "matched": 631104
+      }
+    ],
+    "equivalence": "all named positive and near-miss cases agree",
+    "scope": "in-process prefix matching only; not aggregate session or hook-process latency"
+  }
+}

@@ -90,6 +90,7 @@ import {
   drivenResearchCommandKind,
   LIVE_GATE_READ_LIST,
   harnessToolEffects,
+  isDesktopControlTool,
   invocationEffects,
   liveGateReads,
   patchWriteTargets,
@@ -580,7 +581,7 @@ interface HookConfig {
   readonly tools?: Readonly<
     Record<
       string,
-      "read" | "write" | "shell" | "spawn" | "stop" | "interaction"
+      "read" | "write" | "shell" | "spawn" | "stop" | "interaction" | "desktop"
     >
   >;
 }
@@ -4856,6 +4857,37 @@ function feedbackRefusalReason(
     ". Read all ranges of each file. For oversized lines, run node scripts/harness.mjs read-output <path> --offset 0 --length 8192 and continue at nextOffset until totalBytes."
   );
 }
+function desktopControlResponse(
+  event: HostHookEvent,
+  input: HarnessInput,
+  root: string,
+): Record<string, unknown> | null {
+  if (!isDesktopControlTool(input.tool_name ?? "", input.tool_input))
+    return null;
+  let on = false;
+  let unavailable: string | undefined;
+  try {
+    const { readFeatures } = createRequire(import.meta.url)(
+      join(root, "scripts/lib/config.mjs"),
+    ) as { readFeatures: (root: string) => { "desktop-control": boolean } };
+    on = readFeatures(root)["desktop-control"];
+  } catch (error) {
+    // An unreadable election cannot establish the opt-in.
+    unavailable = (error instanceof Error ? error.message : "unknown failure")
+      .replace(/[\u0000-\u001f\u007f]+/g, " ")
+      .slice(0, 240);
+  }
+  const reason = on
+    ? "features.desktop-control is on; desktop control still requires the operator's explicit request in this session. For browser verification use the Playwright MCP in a browser the session launches, or the project's browser tests."
+    : `DOTLN_DESKTOP_CONTROL_REFUSED: desktop control and the operator's own browser sessions require features.desktop-control in dotln.config.json${unavailable !== undefined ? ` (the election could not be read: ${unavailable})` : " (off by default)"}; even when on, the operator must explicitly request their use in this session. Use the Playwright MCP in a browser the session launches: inspect its DOM/accessibility snapshot, then take and read a screenshot as an image, or use the project's browser tests.`;
+  try {
+    record(root, input, { effect: "desktop.control", desktopControl: { on } });
+  } catch {
+    // Optional observation cannot change the election's verdict.
+  }
+  return on ? protocolAdvisory(reason) : protocolRefusal(event, reason);
+}
+
 export function permissionEffect(
   input: HarnessInput,
   root: string,
@@ -4863,6 +4895,8 @@ export function permissionEffect(
   outsideEffect?: string,
 ): string {
   const args = input.tool_input ?? {};
+  if (isDesktopControlTool(input.tool_name ?? "", args))
+    return "desktop.control";
   const path =
     typeof args.file_path === "string"
       ? args.file_path
@@ -5767,6 +5801,15 @@ export async function evaluateHarnessHook(
   assertHarnessRuntime(config, root);
   if (input.hook_event_name !== config.event || !input.session_id)
     throw new Error("Hook input contract mismatch");
+  const desktop =
+    config.kind === "permission"
+      ? desktopControlResponse(config.event, input, root)
+      : null;
+  if (
+    (desktop?.hookSpecificOutput as { permissionDecision?: string } | undefined)
+      ?.permissionDecision === "deny"
+  )
+    return desktop!;
   let outside: Record<string, unknown> | null = null;
   let outsideEffect: string | undefined;
   try {
@@ -5798,10 +5841,11 @@ export async function evaluateHarnessHook(
   const outsideDenied =
     (outside?.hookSpecificOutput as { permissionDecision?: string } | undefined)
       ?.permissionDecision === "deny";
-  // Away from the root only the outside-write judgment is made. The root-bound
-  // refusals keep their stand-down and its advisory (WO-144-D007 follow-up).
+  // Desktop elections and outside destinations belong to the installed
+  // instance even after cwd moves; the other root-bound checks stand down.
   if (moved !== undefined) {
     if (outsideDenied) return outside!;
+    if (desktop) return desktop;
     throw moved;
   }
   // Grant failure must not skip any existing refusal. Conversely an observer
@@ -5814,6 +5858,7 @@ export async function evaluateHarnessHook(
       root,
       boundary,
       outsideEffect,
+      desktop,
     );
   } catch (error) {
     if (outsideDenied) return outside!;
@@ -5833,6 +5878,7 @@ async function evaluateExistingHarnessHook(
   root: string,
   boundary: typeof feedbackBoundary,
   outsideEffect?: string,
+  desktop: Record<string, unknown> | null = null,
 ): Promise<Record<string, unknown>> {
   if (
     config.event === "SessionStart" &&
@@ -6498,6 +6544,7 @@ async function evaluateExistingHarnessHook(
       return target.response;
     }
     if (target?.advisory) record(root, input, { advisory: target.advisory });
+    if (desktop) return desktop;
     const effect = permissionEffect(input, root, config.tools, outsideEffect);
     const decision = harnessAuthorization(
       session.correction

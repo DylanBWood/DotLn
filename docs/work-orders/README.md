@@ -5,7 +5,7 @@
 ## Proposed order
 
 - [x] [WO-245] — The kit's guide is a kit file and the front page is the instance's · **final-reviewed**
-- [ ] [WO-251] — Desktop control is opt-in · **queued**
+- [x] [WO-251] — Desktop control is opt-in · **final-reviewed**
 - [ ] [WO-249] — Criteria judge the product · **queued**
 - [ ] [WO-250] — Reviews converge and every worker counts · **queued**
 - [ ] [WO-248] — The pull-request table says what its reader can use · **queued**
@@ -46,23 +46,6 @@ None.
 None.
 
 ## Open
-
-### WO-251
-
-[WO-251 — Desktop control is opt-in: the hook and the emitted host settings refuse the desktop-control tools unless &#96;dotln.config.json&#96; elects &#96;features.desktop-control&#96;, browser verification is the Playwright MCP's snapshot, screenshot and image read, and every role's text says so (version assigned at activation)](WO-251-desktop-control-is-opt-in.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-144: satisfied-by-close (met) — the refusal shape and the emitted deny entries a hook refusal is paired with; WO-218: satisfied-by-close (met) — the configuration file and its section validation the features key joins; WO-234: satisfied-by-close (met) — the generated refusals sentence that counts the floor's refusals.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer high.
-- Track: machinery
-- Cost: adds, in &#96;scripts/lib/config.mjs&#96; (&#96;SECTION_KEYS&#96;, 100 to 113), the &#96;features&#96; section with one known id, &#96;desktop-control&#96;, as &#96;true&#96;, &#96;false&#96; or &#96;{ "on": boolean, "note": "&lt;the operator's reason&gt;" }&#96; (the shape WO-241's Design fixes for every feature), an unknown id refused by name, absence meaning off; in &#96;packages/skeleton/src/harness-command.ts&#96; (&#96;harnessToolEffects&#96;, 10 to 55) a &#96;desktop&#96; effect for the tool names a host gives desktop control: names starting &#96;mcp__computer-use__&#96;, &#96;mcp__remote-devices__computer_&#96; or &#96;enable__mcp__remote-devices__computer&#96;, the operator's own browser sessions (&#96;mcp__claude-in-chrome__&#96;, &#96;mcp__Claude_Browser__&#96;, &#96;mcp__remote-devices__Claude_Browser__&#96;, &#96;enable__mcp__claude-in-chrome&#96;, &#96;enable__mcp__remote-devices__Claude_Browser&#96;), and the &#96;Skill&#96; tool invoked with &#96;anthropic-skills:computer-use&#96;, &#96;anthropic-skills:chrome-browser&#96;, &#96;anthropic-skills:built-in-browser&#96; or &#96;claude-in-chrome&#96;; in &#96;packages/skeleton/src/harness-host.ts&#96; (the permission judgment near &#96;permissionEffect&#96;, 4862 onward, where an unclassified tool today raises a classification advisory and host permissions decide) the refusal &#96;DOTLN_DESKTOP_CONTROL_REFUSED&#96; for a &#96;desktop&#96; tool while the election is off, naming the key, the Playwright route and that the operator's word in the session is still needed when the election is on, and one advisory when the election is on and the tool is admitted; in &#96;packages/compiler/src/harness.ts&#96; (the emitted settings' &#96;permissions.deny&#96;, 1190 to 1197, derived from the envelope's denied effects) the same servers as &#96;deny&#96; entries in the form the host's permission rules admit while the election is off, so Claude Code's own permission layer refuses before the hook runs, and their absence when it is on, with the election read by &#96;harness emit&#96; from &#96;dotln.config.json&#96; and passed through the instance overlay it already carries (&#96;scripts/harness.mjs&#96; 271 and 310 to 321) to the compiler, which reads no configuration itself; the refusals sentence (&#96;HARNESS_BOUNDARIES&#96;, 1339) rendered from a list of refusal rows so its count follows the list, this order adding its row; in &#96;packages/skeleton/src/loadouts/contributor.ts&#96; one shared sentence every role reads: browser verification of a web surface follows product 03's perception hierarchy (structured state, then the DOM and accessibility tree, which the Playwright MCP's snapshot gives, then network and event data, then a screenshot read as an image) through a browser the session launches, or the project's own browser test tooling; desktop control (the operator's screen, clicks and typing outside a browser the session launched) and the operator's own browser sessions (Claude in Chrome, the desktop app's browser pane, which act with the operator's sign-ins) are refused unless the instance elects &#96;features.desktop-control&#96; and the operator's words in the session ask for it; in &#96;scripts/kit/CLAUDE.template.md&#96; and &#96;scripts/kit/dotln.config.example.json&#96; the key with its default and the sentence; cases in &#96;scripts/test-harness.mjs&#96; (the &#96;harness-fixtures&#96; and &#96;harness&#96; suites' file: refused off, admitted on with the advisory, the Skill form, the browser forms; the roots carry the sentence; &#96;harness check&#96;), &#96;scripts/test-configuration-root.mjs&#96; (the section's validation) and the compiler package's tests (&#96;packages/compiler/test/&#96;, the &#96;compiler&#96; suite: the deny entries present off and absent on; the sentence's count following its list). Removes: the state where nothing in the kit says how a session verifies a browser surface or forbids taking over the operator's desktop, so a session chose native desktop control without asking (the operator's item 10 of 2026-11-01), where the hook classifies every MCP tool as unclassified and advisory (host permissions decide), where product 03 names the perception hierarchy and the optional Playwright adapter without a boundary for desktop control, and where the Codex worker transport disables &#96;computer_use&#96; and &#96;browser_use&#96; for workers (&#96;worker-transport.ts&#96; 314 to 337) while a Codex session or any Claude session has no such rule. Wall-clock: one name match per judged tool call, measured before and after. Context bytes: this file, about 11,000; each role root grows by one sentence, measured against its ceiling under the standing route. Commands: none new. Tokens: unknown until run. Steps: 7. Re-mints: &#96;harness-host.ts&#96;, &#96;harness-command.ts&#96; and &#96;contributor.ts&#96; are runtime sources the executor checks against &#96;scripts/lib/evidence-sources.mjs&#96; at activation and re-mints deterministically where an edition is staled; no feedback-judged source changes, so no live feedback episode; &#96;harness-host.ts&#96; and &#96;contributor.ts&#96; are declared machinery sources, so &#96;npm test -- --review&#96; runs before handoff.
-- Authority: [docs/work-orders/WO-251-desktop-control-is-opt-in.md](WO-251-desktop-control-is-opt-in.md)
 
 ### WO-249
 
@@ -158,8 +141,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-251.
-- References: WO-069: satisfied-by-close (met) — the configuration loader and its positive validation the features section extends; WO-251: planning-deferral (unmet) until WO-251 dated 2026-11-01 — the features section and its first id, desktop-control, land before this order; step 2 absorbs its one-id validation; WO-150: satisfied-by-close (met) — the Tinkerer economy default and opt-out this order reads through the features section; WO-218: satisfied-by-close (met) — core's own dotln.config.json, the file the section is added to.
+- Dependencies: typed; dependency-ready.
+- References: WO-069: satisfied-by-close (met) — the configuration loader and its positive validation the features section extends; WO-251: planning-deferral (met) until WO-251 dated 2026-11-01 — the features section and its first id, desktop-control, land before this order; step 2 absorbs its one-id validation; WO-150: satisfied-by-close (met) — the Tinkerer economy default and opt-out this order reads through the features section; WO-218: satisfied-by-close (met) — core's own dotln.config.json, the file the section is added to.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.

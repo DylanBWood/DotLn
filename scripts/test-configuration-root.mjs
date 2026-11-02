@@ -39,6 +39,7 @@ import {
   docRelative,
   findLaunchpad,
   loadConfig,
+  readFeatures,
   rootPattern,
   targetDocRelative,
   validReleaseDisplayName,
@@ -191,6 +192,64 @@ test("publication declarations under a configured root require both editions", (
       rmSync(join(root, file));
     }
   }));
+
+test("desktop-control feature elections validate without granting a default", () => {
+  temporary("config-features", (root) => {
+    assert.deepEqual(loadConfig(root).features, {});
+    assert.deepEqual(readFeatures(root), { "desktop-control": false });
+    declared({ root, body: { version: 1 } });
+    assert.deepEqual(readFeatures(root), { "desktop-control": false });
+    for (const value of [
+      true,
+      false,
+      { on: true, note: "Requested browser work" },
+      { on: false },
+      { on: false, note: "" },
+    ]) {
+      declared({
+        root,
+        body: { version: 1, features: { "desktop-control": value } },
+      });
+      assert.deepEqual(loadConfig(root).features["desktop-control"], value);
+      assert.equal(
+        readFeatures(root)["desktop-control"],
+        value === true || value.on === true,
+      );
+    }
+    for (const [features, message] of [
+      [null, /features must be an object/],
+      [[], /features must be an object/],
+      [{ "desktop-controls": true }, /unknown features key "desktop-controls"/],
+      [
+        { "desktop-control": "true" },
+        /features.desktop-control must be an object/,
+      ],
+      [
+        { "desktop-control": null },
+        /features.desktop-control must be an object/,
+      ],
+      [
+        { "desktop-control": { note: "No election" } },
+        /features.desktop-control.on must be a boolean/,
+      ],
+      [
+        { "desktop-control": { on: "true" } },
+        /features.desktop-control.on must be a boolean/,
+      ],
+      [
+        { "desktop-control": { on: true, note: 1 } },
+        /features.desktop-control.note must be a string/,
+      ],
+      [
+        { "desktop-control": { on: true, extra: true } },
+        /unknown features.desktop-control key "extra"/,
+      ],
+    ]) {
+      declared({ root, body: { version: 1, features } });
+      assert.throws(() => loadConfig(root), message);
+    }
+  });
+});
 
 await test("configuration root", async (t) => {
   await t.test(

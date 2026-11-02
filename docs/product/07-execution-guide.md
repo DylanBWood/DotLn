@@ -3585,7 +3585,7 @@ and generated evidence, including fixtures, manifests and installed guidance.
   and the close consume; release close is the post-merge publish of the tag
   and Release and runs no suite; attested harness, version, model and effort
   are logged as given and never refuse, and `ultra` means `xhigh` with
-  subagents; DotLn has six hook refusals (WO-135, WO-139, WO-144 and WO-234): a second writer in a
+  subagents; DotLn has seven hook refusals (WO-135, WO-139, WO-144, WO-234 and WO-251): a second writer in a
   worktree; a write during the live gate; a classified repository write
   outside `docs/` and root Markdown on a `planning/` branch; an observable
   subagent admission exceeding `docs/control/budgets.json` `subagentCap`
@@ -3593,17 +3593,30 @@ and generated evidence, including fixtures, manifests and installed guidance.
   without a containing root declared by its active role or equipped support
   and admitted through the compiled authority envelope; and a complete gate,
   bounded probe or worker launch past the dispatch bound without recorded
-  contextual operator authorization. WO-251 adds the refusal of the
-  desktop-control tools and of the operator's own browser sessions (Claude
-  in Chrome, the desktop app's browser pane) unless `dotln.config.json`
-  elects `features.desktop-control`, paired with the same servers in the
-  emitted `permissions.deny`, and WO-250 the refusal of a gate launched by a review
-  worker and the counting of re-tasks and kit-launched workers as uses;
-  until they land, browser verification of a web surface is the Playwright
-  MCP's accessibility snapshot, screenshot and image read, desktop control
-  is never used without the instance's election and the operator's words in
-  the session, and a review worker probes with single tests under the
-  bounded wrapper and starts no gate [[the 2026-11-01 pass](../planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md),
+  contextual operator authorization; and desktop-control tools or the
+  operator's own browser sessions (Claude in Chrome, the desktop app's
+  browser pane) without the instance's `features.desktop-control` election.
+  That election is off by default. `true`, `false` and `{ "on": boolean,
+  "note": "the operator's reason" }` are accepted in `dotln.config.json`;
+  unknown feature ids refuse by name. An election makes these tools
+  admissible, but the operator must still explicitly request their use in
+  the session. The permission hook reads the election at judgment time;
+  `harness emit` writes the matching server, enable-tool and Skill deny
+  rules into `.claude/settings.json`, and `harness check` detects stale
+  settings. Re-emit after changing the election. Codex tool calls are
+  unhooked and follow the same rule through the role text. The generated
+  refusal count follows its list of classes
+  ([WO-251 decision](../evidence/WO-251/decisions.md#wo-251-d001)).
+
+  Verify a web surface through a browser the session launches or the
+  project's browser tests. Follow product 03's perception hierarchy:
+  structured state, then the DOM and accessibility tree through the
+  Playwright MCP snapshot, then network and event data, then a screenshot
+  read as an image. This does not require installing Playwright. WO-250
+  remains the planned refusal of a gate launched by a review worker and the
+  counting of re-tasks and kit-launched workers as uses; meanwhile a review
+  worker probes with single tests under the bounded wrapper and starts no
+  gate [[the 2026-11-01 pass](../planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md),
   the operator's items 6.b and 10 of that day]. Root kinds are system
   temporary, DotLn session scratch, the host-printed scratchpad, main's ignored
   intake, an operator-named absolute root, the order's recorded worktrees and
