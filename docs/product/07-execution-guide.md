@@ -1066,9 +1066,11 @@ ownership checks under the host lane lock; a live
 gate is named and retained. A host denial is recorded and cleanup stays on the
 release close's retry path. No command changes host permissions to gain access.
 A role that needs expired or retained roots removed runs `harness prune
---apply` itself under host permissions and records the receipt; it never
-hands the command to the operator (the operator's item 5 of 2026-11-01;
-WO-252 carries the sentence into every role).
+--apply` itself under host permissions and records the receipt; it hands
+the printed command to the operator only after a recorded host denial of
+it, the fallback the release-close text keeps for its publish (the
+operator's item 5 of 2026-11-01; WO-252 carries the sentence into every
+role).
 
 `analysis:` interrupts the current routine and opens operator-directed diagnosis.
 The agent explains the observed state, constraints and next options, and awaits
@@ -3592,9 +3594,10 @@ and generated evidence, including fixtures, manifests and installed guidance.
   and admitted through the compiled authority envelope; and a complete gate,
   bounded probe or worker launch past the dispatch bound without recorded
   contextual operator authorization. WO-251 adds the refusal of the
-  desktop-control tools unless `dotln.config.json` elects
-  `features.desktop-control`, paired with the same patterns in the emitted
-  `permissions.deny`, and WO-250 the refusal of a gate launched by a review
+  desktop-control tools and of the operator's own browser sessions (Claude
+  in Chrome, the desktop app's browser pane) unless `dotln.config.json`
+  elects `features.desktop-control`, paired with the same servers in the
+  emitted `permissions.deny`, and WO-250 the refusal of a gate launched by a review
   worker and the counting of re-tasks and kit-launched workers as uses;
   until they land, browser verification of a web surface is the Playwright
   MCP's accessibility snapshot, screenshot and image read, desktop control

@@ -107,7 +107,7 @@ type, the lint this order widens); WO-221 (closed: `ensureGhFor` and the
 push-URL binding); WO-157 (closed: `pushUrl` and the host-created push);
 WO-135 and WO-144 (closed: the hook's command judgment this refusal joins);
 WO-245 (planning-deferral: the guide's file, `docs/KIT.md` or the kit
-README, is known once WO-245 merges; step 7 names both).
+README, is known once WO-245 merges; step 8 names both).
 
 <!-- dotln-dependencies:start -->
 [
@@ -140,7 +140,7 @@ README, is known once WO-245 merges; step 7 names both).
     "workOrderId": "WO-245",
     "relation": "planning-deferral",
     "date": "2026-10-31",
-    "reason": "the kit guide's file this order writes into is docs/KIT.md once WO-245 merges, otherwise the kit README; step 7 names both",
+    "reason": "the kit guide's file this order writes into is docs/KIT.md once WO-245 merges, otherwise the kit README; step 8 names both",
     "until": "WO-245"
   }
 ]
@@ -330,7 +330,8 @@ lint everywhere, so a fork needs no workflow to retitle.
    with the by-hand finish printed; the fixture counts the objects the lane
    fetched when the checkout already holds the commit (none) and stalls a
    fixture fetch under a low bound. Check: `npm test -- --only launchpad`;
-   `npm test -- --only target-publish`.
+   `npm test -- --only target-publish`; `npm test -- --only
+   target-worktree`.
 6. `packages/skeleton/src/harness-host.ts` (the `gh pr` parse at 1807 and
    the command judgment): the refusal, its admitted forms and the remedy in
    the message, as an extension of the existing parse; the measured
@@ -408,8 +409,9 @@ sentence; the write-backs.
    clean; no new dependency.
 
 **Preflight:** `npm test -- --only outward-lint` and `npm test -- --only
-target-publish` for steps 1 and 5; `npm test -- --only plan-refutation` for
-steps 2 and 3; `npm test -- --only launchpad` for steps 2, 4 and 5; `npm
+target-publish` and `npm test -- --only target-worktree` for steps 1 and 5
+(the latter for step 5); `npm test -- --only plan-refutation` for steps 2
+and 3; `npm test -- --only launchpad` for steps 2, 4 and 5; `npm
 test -- --only harness-fixtures` and `npm test -- --only harness` for step
 6; `npm test -- --only harness` and `npm test -- --only harness-context`
 for step 7; `npm run test:docs` when a document changes; each under `node

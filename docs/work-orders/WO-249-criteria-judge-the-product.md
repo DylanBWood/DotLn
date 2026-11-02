@@ -16,7 +16,13 @@ reviewer and refused to the order's own executor as `waive` is (2048 to
 text's SHA-256, one of five classes and the evidence; `retract <ordinal>
 --reason <text> --capture <path> --capture-hash sha256:<digest>
 <actor-flags>`, appending `OffRampRetracted` for a `CriterionWaived` or
-`CriterionDefectRecorded` ordinal of the current activation; and
+`CriterionDefectRecorded` ordinal of the current activation, legal in
+`verifying`, `verified`, `needs-fix`, `final-review` and `closed` before
+release close, and in `closed` returning the order to `needs-fix` with the
+retraction as its failure source, so a retracted record is repaired,
+re-verified and re-reviewed before the pull request is merged or the close
+runs (`scripts/release.mjs`'s prerequisites refuse an order whose
+retraction is newer than its latest passing final review); and
 `reopen-handoff --reason <text> --capture <path> --capture-hash
 sha256:<digest> <actor-flags>`, appending `HandoffReopened` from
 `ready-to-verify` and returning the order to the phase its handoff left
@@ -28,11 +34,21 @@ state they project (`defectiveCriteria`, `retractedOffRamps`, the cleared
 `**Criterion <id>:** unmet, defective (<class>) by <ordinal>` beside the
 waived form (195 to 200), admitted by `judgeCriterionLines` (262 to 301)
 when the event exists at that ordinal with that class, the criterion's
-current text hashes to the record and no retraction names the ordinal, and
-one new refusal in the same function: a `fail` verdict whose report judges
+current text hashes to the record and no retraction names the ordinal; a
+`met` line over a standing record admitted, as a `met` line over a waiver
+is today, so a repaired criterion never deadlocks on an old record; a line
+citing a record whose criterion text no longer hashes to it refused, with a
+fresh `defect` admitted for the amended text; a `fail` verdict's `unmet`
+line with a blocking finding naming the criterion admitted while a record
+stands, so a reviewer or verifier who finds the criterion judgeable
+disagrees in the record and the repair follows; and two new refusals in
+the same function: a `fail` verdict whose report judges
 every criterion met, waived or defective and whose findings block has no
 `blocking` entry is refused ("a fail names an unmet criterion or a blocking
-finding"); a `blocking` entry of the findings block carries a `basis`
+finding"), and a `fail` whose findings block is absent or unreadable is
+refused naming the block, so a verifier cannot skip the basis by leaving
+the block out, while a `pass` keeps the block advisory as WO-187 left it; a
+`blocking` entry of the findings block carries a `basis`
 (`{"criterion": "<id>"}` or `{"regression": "<the behavior main had>"}`)
 and a `reproduction` path under the order's evidence directory, checked
 when the block is readable and advised otherwise, as the block is today
@@ -162,7 +178,7 @@ fenced-heading defect D015 boarded and the follow-up correction D014).
 1237 to 1246; `waive` 2025 to 2071 with the executor refusal at 2048 to
 2054 and the message at 2070; `withdraw` 2073; `correct` 2114 onward with
 `CORRECTABLE_FIELDS` and the verdict refusal); `scripts/lib/off-ramps.mjs`
-(`criterionLineForms` 195 to 200; `criterionJudgments` 225 to 258, the
+(`criterionLineForms` 195 to 200; `criterionJudgments` 202 to 254, the
 heading test at 240 before the fence test at 241; `judgeCriterionLines` 262
 to 301; `requireCriterionLines` 303); `scripts/lib/control.mjs`
 (`CriterionWaived` validation 103 to 106; `ImplementationReady` 335 to 337;
@@ -171,9 +187,10 @@ to 301; `requireCriterionLines` 303); `scripts/lib/control.mjs`
 `scripts/lib/drive-route.mjs` 75; `scripts/lib/meta.mjs` 804;
 `packages/skeleton/src/loadouts/contributor.ts` (85, 188, 190, 200, 218,
 224, 229, 615); `scripts/work-orders.mjs` (`index --check` and the criteria
-each order declares); product 07 §Discipline (off-ramps; the operator
-delegates decisions to each phase), §Verification review and attack (the
-three routes; WO-112's seven verifications), §Operator-opened planning pass
+each order declares); product 07 §Operator resume phrases (the off-ramps table, 423 to 426),
+§Operator recovery controls (the off-ramps, 1105 onward), §Verification
+review and attack (the three routes; the operator delegates decisions to
+each phase; WO-112's seven verifications), §Operator-opened planning pass
 (the screens before filing, including this pass's five classes);
 `docs/control/orders/WO-163.jsonl`, `WO-173.jsonl`, `WO-197.jsonl` and
 `WO-192.jsonl` (the five `CriterionWaived` rows and their reasons);
@@ -261,17 +278,31 @@ did not open.
   The verifier records the defect during `verifying`; the final reviewer's
   report carries the same line or the review fails (a reviewer who finds
   the criterion judgeable and unmet fails the review with a blocking
-  finding, and the repair follows). The pull-request body names every
-  defective or waived criterion above its process table, so the operator,
-  who merges by hand, reads the record before the merge and retracts it
-  with `retract` when two roles were wrong; `plan failures` counts it for
-  the planner. The risk this design accepts and bounds is two independent
+  finding, and the repair follows; the record admits that `unmet` line
+  while the defect stands, and admits a `met` line over it, so neither the
+  disagreement nor a later repair deadlocks). The pull-request body names
+  every defective or waived criterion above its process table, so the
+  operator, who merges by hand, reads the record before the merge and
+  retracts it with `retract` when two roles were wrong; `plan failures`
+  counts it for the planner. The risk this design accepts and bounds is two independent
   roles agreeing on a wrong class: the body line and the retraction are the
   operator's answer, the count by class the planner's. Rejected: a second event for
   the reviewer's confirmation (axis: the FINAL report's line is already the
   reviewer's judgment, checked against the record as the VER line is).
   Rejected: the operator's confirmation before the order goes on (axis: the
   operator's item 7; unattended progress is the point).
+- **A retraction has a route back.** `retract` is legal from `verifying`
+  through `closed` before release close; in `closed`, where the final
+  review's pass has left the order (`control.mjs` 425) and the pull
+  request is open, it returns the order to `needs-fix` with the retraction
+  as the failure source, and release close refuses an order whose
+  retraction is newer than its latest passing final review, so the
+  operator's merge-time reading has a consequence the lifecycle carries:
+  the repair, a fresh verification and a fresh final review precede the
+  merge. Rejected: a retraction that only annotates (axis: a record the
+  lifecycle ignores is a sentence in a report). Rejected: a retraction
+  after release close (axis: the release is published; the planner files
+  the follow-up from the count).
 - **A waiver is words that ask for it.** The briefing and the role text
   say so; the record form is unchanged; `retract` undoes one recorded
   without them. Rejected: the hook or the command judging the capture's
@@ -305,10 +336,12 @@ did not open.
    criterionHash, class, evidence, actor; validated beside `CriterionWaived`
    at 103 to 106), `OffRampRetracted` (ordinal of a `CriterionWaived` or
    `CriterionDefectRecorded` row of the current activation, reason,
-   captureHash, actor) and `HandoffReopened` (reason, captureHash, actor;
-   legal from `ready-to-verify` only); the state projects
-   `defectiveCriteria`, `retractedOffRamps` and, after a reopen, the phase
-   the handoff left with `unmetCriteria` cleared. Check: `npm test -- --only
+   captureHash, actor; legal from `verifying` through `closed` before
+   release close, and in `closed` projecting `needs-fix` with the
+   retraction as `failureSourceId`) and `HandoffReopened` (reason,
+   captureHash, actor; legal from `ready-to-verify` only); the state
+   projects `defectiveCriteria`, `retractedOffRamps` and, after a reopen,
+   the phase the handoff left with `unmetCriteria` cleared. Check: `npm test -- --only
    resume`.
 2. `scripts/resume.mjs`: the three commands with the `waive` actor rule
    (2048 to 2054) for `defect` and `retract`, the capture flags for
@@ -317,9 +350,12 @@ did not open.
    states. Check: `npm test -- --only resume`.
 3. `scripts/lib/off-ramps.mjs`: the defective line form beside the waived
    one (195 to 200); `judgeCriterionLines` admits it against the record and
-   the criterion hash, refuses a line citing a retracted ordinal, and
-   refuses a `fail` with every criterion met, waived or defective and no
-   `blocking` finding; the `blocking` entry's `basis` and `reproduction`
+   the criterion hash, admits a `met` line over a standing record and a
+   `fail` verdict's `unmet` line with a blocking finding naming the
+   criterion, refuses a line citing a retracted ordinal or a record whose
+   criterion text no longer hashes to it, refuses a `fail` with every
+   criterion met, waived or defective and no `blocking` finding, and refuses
+   a `fail` whose findings block is absent or unreadable; the `blocking` entry's `basis` and `reproduction`
    read when the block parses; the fenced-heading repair (240 to 241, only
    an unfenced heading ends a paragraph). Check: `npm test -- --only resume`.
 4. `scripts/lib/plan-failures.mjs` (`OFF_RAMPS`, `offRampEvents` by class
@@ -327,7 +363,9 @@ did not open.
    (804): the three events known where `CriterionWaived` is;
    `scripts/release.mjs` and `scripts/lib/github-body.mjs`: the stored body
    carries one line per defective or waived criterion above the process
-   table, and the github-body-profile check admits it. Check: `npm test --
+   table, the github-body-profile check admits it, and the close's
+   prerequisites refuse an order whose retraction is newer than its latest
+   passing final review. Check: `npm test --
    --only process-debt`; `npm test -- --only harness-fixtures`; `npm test
    -- --only release`; `npm test -- --only github-body`.
 5. `scripts/work-orders.mjs` (`index --check`): the criteria lint as the
@@ -348,8 +386,10 @@ did not open.
    blocking finding is refused, the executor's `defect` is refused, and a
    fenced heading no longer ends a paragraph. Check: `npm test -- --only
    resume`.
-8. Write-backs: product 07 §Discipline (the off-ramps paragraph: the three
-   commands, the words rule, the five classes), §Verification review and
+8. Write-backs: product 07 §Operator resume phrases (the off-ramps
+   table: the three commands, the words rule) and §Operator recovery
+   controls (the off-ramps paragraph: the five classes, the retraction's
+   route back), §Verification review and
    attack (the defective route; the fail names what it failed on; the
    constructed-input rule) and §Operator-opened planning pass (the lint
    named beside the screens); the kit guide (`docs/KIT.md` once WO-245
@@ -380,17 +420,24 @@ and role text; the write-backs.
    `CriterionDefectRecorded` with the criterion's text hash, `status
    --json` lists it under `defectiveCriteria`, a VER report judging
    `**Criterion 3:** unmet, defective (bookkeeping) by <ordinal>` records
-   `verification-result pass`, and the same command from the order's
-   executor, with a class outside the five, or for a criterion whose text
-   has changed since the record, is refused naming the reason.
-2. A FINAL report that omits the defective line for a recorded defect is
-   refused at `final-review-result pass`; one that carries it passes.
+   `verification-result pass`; the same command from the order's executor
+   or with a class outside the five is refused naming the reason; a report
+   line citing a record whose criterion text no longer hashes to it is
+   refused, and a fresh `defect` for the amended text is admitted.
+2. A FINAL `pass` whose report omits the defective line for a recorded
+   defect is refused; one that carries it passes; a FINAL `fail` judging the
+   criterion `unmet` with a blocking finding naming it is admitted while
+   the record stands; a `met` line for the criterion is admitted over the
+   standing record.
 3. `npm run resume -- retract <ordinal> --reason <text> --capture <path>
    --capture-hash sha256:<digest> <flags>` appends `OffRampRetracted` for a
    `CriterionWaived` or `CriterionDefectRecorded` ordinal, `status --json`
    no longer lists the criterion as waived or defective, and a report line
    citing the retracted ordinal is refused; an ordinal of another event
-   kind or another activation is refused.
+   kind or another activation is refused; from `closed` before release
+   close the retraction returns the order to `needs-fix` with the
+   retraction as the failure source, and `release.mjs close` refuses while
+   it stands unrepaired.
 4. From `ready-to-verify` with no verification requested since the
    handoff, `npm run resume -- reopen-handoff --reason <text> --capture
    <path> --capture-hash sha256:<digest> <flags>` appends `HandoffReopened`,
@@ -401,7 +448,9 @@ and role text; the write-backs.
    met, waived or defective and whose findings block lists no `blocking`
    entry is refused; the same report with one `blocking` entry carrying a
    `basis` and a `reproduction` path is admitted; a `blocking` entry without
-   them prints the advisory and records.
+   them prints the advisory and records; a `fail` whose findings block is
+   absent or unreadable is refused naming the block, and a `pass` with the
+   same block prints the advisory as today.
 6. `criterionJudgments` returns the receipt citation after a fenced example
    containing a heading, and the existing wrapped-line, blank-line and
    fenced-example cases pass.
@@ -416,9 +465,8 @@ and role text; the write-backs.
    line per matched criterion of the fixture order that matches each
    pattern and none for the clean order, and exits 0 on both.
 9. The emitted executor, verifier, reviewer and planner roots carry the
-   sentences the Cost names; `harness check` passes; each root's bytes are
-   recorded against its ceiling under the standing route; the unmet
-   briefing prints the three routes and the words rule.
+   sentences the Cost names; `harness check` passes; the unmet briefing
+   prints the three routes and the words rule.
 10. Product 07 and the kit guide state the commands, the classes, the
     words rule, the fail rule and the lint as built; `npm run
     publication:check` is green.

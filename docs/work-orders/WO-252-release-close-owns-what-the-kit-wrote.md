@@ -13,19 +13,29 @@ entry that may carry `**/` (any number of path segments) and `*` (within
 one segment), matched by segments in `underDisposable` (122) and
 enumerated from the ignored-file listing in `disposableRows` (214),
 `inspectDisposable` (222) and `deleteDisposable` (181), which today walk a
-declared root by path; the kit's own residue in a target judged before the
+declared root by path, and an entry whose last segment is a wildcard or
+that has no literal segment (`*`, `**`, `**/*`) refused by the
+registration's validation (`scripts/lib/config.mjs` 413 to 438, which today
+refuses only absolute paths and the `.`, `..` and `.git` segments), so no
+declaration names every ignored file; the kit's own residue in a target judged before the
 undeclared-material refusal (the judgment at 741 to 795): the target's
 `<documentationRoot>/control/local/**` (the journals a Codex release-close
 session left when it took a temporary writer there; WO-237's known issue,
 whose reopening condition the fork's item 3(b) met) moved into main's
 retained lane for the order as the launchpad's journals are
 (`retainWorktreeJournals`, `scripts/lib/worktree-removal.mjs` 85 to 130),
-the writer and the rest of the lane deleted, and the kit's own entries
-under `.runtime/` (`.runtime/.metadata_never_index` from `markUnindexed`,
-`packages/skeleton/src/temporary-root-records.mjs` 312, and the harness
-snapshot under `.runtime/harness/` the bundle installed) deleted, with any
-other entry under `.runtime/` left to the undeclared-material judgment as
-today and `closeClean` (91) excluding the kit's own marker from its "not
+a released writer directory (one the writer protocol proves released: no
+`writer.json` and an empty `writer/`, `packages/skeleton/src/writer-teardown.mjs`
+105 to 124; a held writer still stops the close as `writer-held` before any
+deletion, as the close does today at 697 to 709) and the rest of the lane
+deleted, and the kit's own entries under `.runtime/` deleted
+(`.runtime/.metadata_never_index` from `markUnindexed`,
+`packages/skeleton/src/temporary-root-records.mjs` 312; the harness
+snapshot under `.runtime/harness/` the bundle installed; the temporary-root
+ledger `.runtime/temporary-roots/`, `temporaryLedgerPath` at 331 to 332,
+after the close has pruned the roots it registers), with any other entry
+under `.runtime/` left to the undeclared-material judgment as today and
+`closeClean` (91) excluding the kit's own marker and ledger from its "not
 clean" judgment, so the close never refuses what the kit wrote and never
 deletes what it did not; in `scripts/release.mjs`
 and `scripts/lib/release-steps.mjs` a `blocker` field on the close record
@@ -33,20 +43,28 @@ and `scripts/lib/release-steps.mjs` a `blocker` field on the close record
 (`undeclared-ignored-material`, `not-clean`, `writer-held`,
 `preservation-refused`, `declared-root-unreadable`, `host-denied`,
 `foreign-tag`, `starter-refresh`, `publication`, `other`) written when a
-close stops, and the `worktree-removal` step's time split into named
-children (`disposable-deletion` with files and bytes, `finder-metadata`,
-`journal-retention`, `git-worktree-remove`, `branch-delete`,
-`preservation`) under `withReleaseStep`'s existing nesting; in
+close stops, and on the `worktree-removal` row a `children` array
+(`base-fetch`, the fetch of `target-worktree-close.mjs` 461 that runs inside
+the step; `disposable-deletion` with files and bytes; `finder-metadata`;
+`journal-retention`; `git-worktree-remove`; `branch-delete`;
+`preservation`; each with its `durationMs`) and a `totalMs` that sums the
+row's own `durationMs` and its children's, since `withReleaseStep`
+(`release-steps.mjs` 20 to 37) subtracts nested time from the parent and
+refuses a name outside its seven, so the children are rows on the step and
+not steps; in
 `scripts/lib/plan-failures.mjs` (`localReleaseCloses`, 1154) `blockers:
-{ byClass, byOrder, repeated }` with `repeated` naming a class seen on
-three or more consecutive attempts, printed by `plan start` as `close
-blocker repeated: <class> ×N`; in `packages/skeleton/src/loadouts/contributor.ts`
+{ byClass, byOrder, repeated }` with `repeated` naming a class that
+stopped the closes of three or more distinct orders within the retained
+window, a successful close between them not resetting it (the fork's
+pattern: each order refused once, then closed by hand), printed by `plan
+start` as `close blocker repeated: <class> across N orders`; in `packages/skeleton/src/loadouts/contributor.ts`
 the release-close sentence (101) saying that undeclared regenerable output
 is removed from the launchpad session by the target's path and never by a
-session or writer in the target, and one common sentence that no role hands
-`harness prune --apply` or any kit command to the operator, since the role
-runs it under host permissions and records the receipt (the operator's item
-5); in `packages/skeleton/src/temporary-root-records.mjs` the second proof
+session or writer in the target, and one common sentence that a role runs `harness
+prune --apply` itself under host permissions and records the receipt,
+handing the printed command to the operator only after a recorded host
+denial of that exact command, the fallback the release-close text already
+keeps for its publish (the operator's item 5); in `packages/skeleton/src/temporary-root-records.mjs` the second proof
 for a renumbered root whose owner repository no longer exists
 (`readTemporaryOwner` 399, `ledgerBinding` 475, `writeTemporaryOwner` 530:
 a marker inside the directory carrying the record's token with the record's
@@ -233,7 +251,9 @@ and no role hands the operator a prune to run.
   matches from the ignored-file listing it already holds and deletes,
   inspects and counts those paths, so `**/node_modules` is one entry for a
   whole workspace. A symlinked component under a match is still refused, as
-  under a declared root today. Rejected: a built-in default that deletes
+  under a declared root today. An entry whose last segment is a wildcard or
+  that has no literal segment (`*`, `**`, `**/*`) is refused at
+  registration, so no declaration can name every ignored file. Rejected: a built-in default that deletes
   nested `node_modules` everywhere (axis: an undeclared deletion is what
   the close exists to refuse; the kit guide shows the one-line declaration
   and a class may carry it for every registration). Rejected: a regular
@@ -241,9 +261,13 @@ and no role hands the operator a prune to run.
 - **The kit knows its own residue, and only that.** The target's control
   lane and the kit's entries under `.runtime/` are the kit's writes; the
   close moves the journals to main's lane for the order, as it already does
-  for the launchpad worktree, and deletes the writer, the lane's remainder,
-  the marker and the installed snapshot before judging what remains, so the
-  undeclared-material refusal names only what an operator or build left. A
+  for the launchpad worktree, and deletes a released writer directory (one
+  the writer protocol proves released; a held one still stops the close as
+  `writer-held`, since WO-236's one-writer rule and the teardown's
+  no-holder proof stand), the lane's remainder, the marker, the installed
+  snapshot and the temporary-root ledger after pruning the roots it
+  registers, before judging what remains, so the undeclared-material
+  refusal names only what an operator or build left. A
   file under `.runtime/` the kit did not write is judged as any other
   ignored path, so a target that keeps its own `.runtime/` loses nothing to
   the close. Rejected: deleting `.runtime/**` wholesale (axis: the
@@ -258,16 +282,20 @@ and no role hands the operator a prune to run.
   target is what left the journals. Rejected: a close that tolerates a
   live target writer (axis: WO-236's one-writer rule).
 - **A blocker has a class; a step has children.** The record's `blocker`
-  is one of a closed list and `plan failures` counts it; the removal step
-  is divided by `withReleaseStep`'s existing nesting, so the parent row
-  keeps its total and the children show the split. Rejected: parsing the
+  is one of a closed list and `plan failures` counts it; the removal row
+  carries its children as rows on the step with a `totalMs` beside its own
+  time, because `withReleaseStep` subtracts nested time from the parent and
+  admits only its seven names, so the parent's figure and the children's
+  both stay true. Rejected: parsing the
   message text for a class (axis: natural-language reading; the class is
   assigned where the refusal is raised).
 - **The prune is the role's.** One common sentence; the routine homes
   stay as WO-237-D005 left them (`plan start` applies the full-scope prune
   at a cost it already pays; release close prunes its own scope; the
-  explicit command is the session's recovery route). Rejected: the full
-  census at every close (axis: WO-237-D005 measured 143 s for the all-scope
+  explicit command is the session's recovery route), and the role hands the
+  printed command to the operator only after a recorded host denial of it,
+  the fallback the release-close text keeps for its publish. Rejected: the
+  full census at every close (axis: WO-237-D005 measured 143 s for the all-scope
   census against a close the fork already finds slow). Rejected: a new
   phrase or skill for the prune (axis: the operator's item 5 offers it, and
   a phrase the operator types is still the operator doing it; the role runs
@@ -295,23 +323,29 @@ and no role hands the operator a prune to run.
    and `*` by segments; `disposableRows`, `inspectDisposable` and
    `deleteDisposable` take the matched paths from the ignored listing, with
    the symlink and access checks kept per matched directory; the
-   registration's `disposable` validation admits the two forms. Check: `npm
-   test -- --only target-worktree`.
+   registration's `disposable` validation (`scripts/lib/config.mjs` 413 to
+   438) admits the two forms and refuses an entry whose last segment is a
+   wildcard or that has no literal segment. Check: `npm test -- --only
+   target-worktree`; `npm test -- --only configuration-root`.
 2. `scripts/lib/target-worktree-close.mjs` (700 to 800) with
    `scripts/lib/worktree-removal.mjs`: the kit's residue judged first; the
    target's journals moved by `retainWorktreeJournals` into main's lane for
-   the order; the writer, the rest of the lane, the marker and the installed
-   snapshot deleted, every other `.runtime/` entry left to the judgment;
-   `closeClean` (91) excludes the kit's marker; the record names what moved
+   the order; a released writer directory, the rest of the lane, the marker,
+   the installed snapshot and the temporary-root ledger deleted after the
+   close prunes the ledger's roots, a held writer refused as `writer-held`
+   before any deletion, every other `.runtime/` entry left to the judgment;
+   `closeClean` (91) excludes the kit's marker and ledger; the record names what moved
    and what was deleted. Check: `npm test -- --only target-worktree`; `bash
    scripts/test-release.sh --case success` under the bounded wrapper.
-3. `scripts/lib/release-steps.mjs` and `scripts/release.mjs`: the children
-   of `worktree-removal` and the `blocker` field with its closed list,
-   assigned where each refusal is raised. Check: `npm test -- --only
+3. `scripts/lib/release-steps.mjs` and `scripts/release.mjs`: the `children`
+   rows and `totalMs` on the `worktree-removal` step (the base fetch of
+   `target-worktree-close.mjs` 461 among them) and the `blocker` field with
+   its closed list, assigned where each refusal is raised. Check: `npm test -- --only
    release`.
 4. `scripts/lib/plan-failures.mjs` (`localReleaseCloses`): `blockers` with
-   `byClass`, `byOrder` and `repeated`; `plan start` prints the repeated
-   line within the block's compact bound. Check: `npm test -- --only
+   `byClass`, `byOrder` and `repeated` (a class that stopped the closes of
+   three or more distinct orders, a success between them not resetting it);
+   `plan start` prints the repeated line. Check: `npm test -- --only
    process-debt`.
 5. `packages/skeleton/src/temporary-root-records.mjs`: the orphan's marker
    proof in `readTemporaryOwner` and `writeTemporaryOwner`; the four
@@ -319,8 +353,9 @@ and no role hands the operator a prune to run.
    its regression in `scripts/test-temporary-roots.mjs` or
    `scripts/test-fixture-temp-root.sh`; the token-and-inode refusal and
    every payload-retention boundary preserved. Check: `npm test -- --only
-   fixture-temp-root`; `node scripts/harness.mjs bounded -- node
-   docs/evidence/WO-237/verification-recovery-probes.mjs`.
+   fixture-temp-root`; `npm test -- --only harness-fixtures` (the suite that
+   runs `scripts/test-temporary-roots.mjs`); `node scripts/harness.mjs
+   bounded -- node docs/evidence/WO-237/verification-recovery-probes.mjs`.
 6. `packages/skeleton/src/loadouts/contributor.ts`: the release-close
    sentence (101) and the common prune sentence; `npm run sync`; each root
    measured against its ceiling under the standing route. Check: `npm test
@@ -365,23 +400,29 @@ repairs; the two sentences; the kit guide and product 07.
    attempt, the record listing the three under that entry with their file
    counts; a registration declaring `libs/*/dist` deletes `libs/a/dist` and
    leaves `libs/a/src/dist`; a symlinked component under a match refuses as
-   a declared root does today.
+   a declared root does today; a registration declaring `*`, `**`, `**/*`
+   or `libs/**` is refused at registration naming the floor.
 2. A target holding `<documentationRoot>/control/local/harness/` journals,
-   a writer file and `.runtime/.metadata_never_index`, none declared,
-   closes on the first attempt: the journals are in main's retained lane
-   for the order beside the launchpad worktree's, the writer, the lane's
-   remainder, the marker and the installed snapshot are gone, and the
-   record names each; an operator note, a stray `.env` and a file under
-   `.runtime/` the kit did not write are still refused as undeclared.
+   a released writer directory, the temporary-root ledger and
+   `.runtime/.metadata_never_index`, none declared, closes on the first
+   attempt: the journals are in main's retained lane for the order beside
+   the launchpad worktree's, the released writer, the lane's remainder, the
+   ledger, the marker and the installed snapshot are gone, and the record
+   names each; a held writer (`writer.json` or a non-empty `writer/`) stops
+   the close as `writer-held` before any deletion; an operator note, a stray
+   `.env` and a file under `.runtime/` the kit did not write are still
+   refused as undeclared.
 3. A close that stops records `blocker.class` from the closed list with
-   its step and message; the `worktree-removal` row keeps its total while
-   its children rows name `disposable-deletion` (files, bytes),
+   its step and message; the `worktree-removal` row carries `children` rows
+   named `base-fetch`, `disposable-deletion` (files, bytes),
    `finder-metadata`, `journal-retention`, `git-worktree-remove`,
-   `branch-delete` and `preservation` with durations that sum to it within
-   the nesting rule.
+   `branch-delete` and `preservation`, each with `durationMs`, and a
+   `totalMs` equal to the row's own `durationMs` plus its children's, while
+   the seven step names and `withReleaseStep`'s nesting are unchanged.
 4. `npm run plan -- failures` prints `blockers` by class and by order and
-   names a class seen on three consecutive attempts as repeated; the `plan
-   start` block carries the repeated line within its compact bound.
+   names as repeated a class that stopped the closes of three distinct
+   orders with a successful close between two of them; `plan start` prints
+   the repeated line.
 5. A temporary root whose owner repository no longer exists and whose
    marker carries the record's token with the record's inode is a prune
    candidate after a device renumbering and is removed by `harness prune
@@ -390,9 +431,9 @@ repairs; the two sentences; the kit guide and product 07.
    payload-retention assertions.
 6. The emitted release-close root says a removal of undeclared output
    takes no session or writer in the target, every root says the session
-   runs `harness prune --apply` itself and hands no kit command to the
-   operator, `harness check` passes, and each root's bytes are recorded
-   against its ceiling under the standing route.
+   runs `harness prune --apply` itself and hands the printed command to the
+   operator only after a recorded host denial of it, and `harness check`
+   passes.
 7. The kit guide and product 07 state the glob forms, the kit's residue,
    the blocker classes, the children timings and the prune rule as built;
    `npm run publication:check` is green.
@@ -402,8 +443,10 @@ repairs; the two sentences; the kit guide and product 07.
    clean; no new dependency.
 
 **Preflight:** `npm test -- --only target-worktree` for steps 1, 2 and 10;
-`npm test -- --only release` for steps 2 and 3; `npm test -- --only
-process-debt` for step 4; `npm test -- --only fixture-temp-root` for step 5;
+`npm test -- --only configuration-root` for step 1; `npm test -- --only
+release` for steps 2 and 3; `npm test -- --only process-debt` for step 4;
+`npm test -- --only fixture-temp-root` and `npm test -- --only
+harness-fixtures` for step 5;
 `npm test -- --only harness` and `npm test -- --only harness-context` for
 step 6; `npm test -- --only launchpad` for step 7; `npm run test:docs` when
 a document changes; each under `node scripts/harness.mjs bounded --`; then

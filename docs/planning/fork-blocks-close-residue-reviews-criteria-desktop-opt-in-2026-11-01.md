@@ -338,9 +338,15 @@ candidates), none with a fired condition; left as they are.
   while on; the same patterns in the emitted `permissions.deny` while off;
   one sentence in every role (Playwright MCP snapshot, screenshot and image
   read; desktop control needs the election and the operator's words); the
-  kit template, example and guide. Rejected: an election that admits use
-  without words, a per-order header, the hook alone, the deny entries
-  alone, a key outside `features`, a Codex `config.toml` the kit writes.
+  kit template, example and guide; the operator's own browser sessions
+  (Claude in Chrome, the desktop app's browser pane) under the same
+  election, by the planner's reading that acting in the operator's
+  signed-in browser is the takeover the item names; the refusals sentence
+  rendered from a list so no order hand-edits its count. Rejected: an
+  election that admits use without words, a per-order header, the hook
+  alone, the deny entries alone, a key outside `features`, a Codex
+  `config.toml` the kit writes, a second election for the operator's
+  browser.
 - **WO-252 — Release close owns what the kit wrote** (new; machinery;
   minor; sixth). `**/` and `*` in a disposable entry, matched by segments
   on the ignored listing; the target's control-lane journals moved into
@@ -383,7 +389,13 @@ candidates), none with a fired condition; left as they are.
 `followups --sync` minted eighteen rows from the map's candidates section
 of 2026-11-01 (revision `ed220af0…` to `d4047ad0…`); `--apply` took
 thirty-nine dispositions in one batch at `d4047ad0…`, leaving `bdad328d…`.
-The dispositions:
+The pass's later edits to two candidates (the planner's note on the gate's
+reuse key; the subagent-cap candidate's reassessment) moved their sources,
+so the consistency reviewer found two rows at `needs-review` and the
+committed revision at `cd6f922b…`; a second batch of three at that revision
+re-disposed them and corrected candidate 14's reason (the kit's default
+worker argv disables the three Codex features; only the entropy review's
+form keeps them), leaving `1e530c38…`. The dispositions:
 
 | Rows | Disposition |
 | --- | --- |
@@ -397,6 +409,7 @@ The dispositions:
 | FUP-024ef952b1317f14 (candidate 2), FUP-1779445345f8dfb1 (candidate 6), FUP-758f92cef991b13c (candidate 14) | settled |
 | FUP-330672c5bdc683fd (1), FUP-1a64f259a5523e90 (3), FUP-ce11fe0173a5e938 (4), FUP-1c0d2b73182be731 (5), FUP-a863abcc177ca2d3 (7), FUP-a099df217c99afee (8), FUP-31d17d898fdd7224 (15) | declined |
 | FUP-5441e98b756230da and FUP-102be277e1691db1 (of FUP-fb8cbeabbddef397), FUP-80b58ee649621dc3 (of FUP-8a4e201d861208ad), FUP-a7bec18a848a6692 (of FUP-23eb1282f814be14), FUP-eab3511f1df951fb (of FUP-3457a1c859fb51d8), FUP-4c3f1b413068c5cb (of FUP-f93ef1a6fc68b07e), FUP-b4350e066359020c (of FUP-5456dbf776e0c75b), FUP-d760c3be657d1923 (of FUP-e96221b106cd136a) | duplicates |
+| FUP-9eb15176deb116cd (candidate 9, with the planner's note), FUP-67a3ccb3b295200e (the subagent-cap candidate, reassessed), FUP-758f92cef991b13c (candidate 14, the corrected reason) | the second batch at `cd6f922b…`: deferred, deferred, settled |
 
 `followups --touching` over the retired orders and the new and amended
 ones was run before and after the batch; its rows are in §Validation.
@@ -566,11 +579,15 @@ Two items of core's own for your next pass to read: WO-251 (second in core's que
 Model and effort: Fable 5.1 at max, operator-selected (CLAUDE_EFFORT=max;
 the /model line of the session, ignored capture SHA-256
 65b3db5f78aa7bdba95e94ce62e12015afbc144e058b5699767040e37b22d0a2); ultracode on for the session. Subagents: budget 20
-(`docs/control/budgets.json` `subagentCap`); plan four: the three reviewers
-(criteria adversary, design improver, consistency reviewer) as Claude
-`dotln-worker` agents over the committed subject, and the refuter
-(`dotln-worker`, claude-opus-5-5 at xhigh; the dispatch names no fable
-worker), each launched once with no re-task planned; none other spawned.
+(`docs/control/budgets.json` `subagentCap`); planned four and spawned five: the three reviewers (criteria adversary, design
+improver, consistency reviewer) as Claude `dotln-worker` agents through one
+Workflow call over the committed subject (10 min 57 s together; 575,347
+tokens and 277 tool uses by the host's usage; all three returned), one
+`claude-code-guide` agent that read the host's permissions documentation
+for the deny-rule forms WO-251's emitted settings depend on (17 min 36 s;
+150,737 tokens; 34 tool uses), and the refuter (`dotln-worker`,
+claude-opus-5-5 at xhigh; the dispatch names no fable worker), each
+launched once with no re-task.
 Usage at entry: unknown (`harness usage` refused: no active role). `plan
 start` took about seven minutes (the prune's 1,870 removals; the census
 and the conditions' 53.8 s inside it); `plan conditions` ran 57.98 s. The
@@ -621,6 +638,61 @@ appended when observed.
   93 operator-word advisories across the planning record, of which this
   pass's own attributed phrases were given their capture digest before the
   commit.
+- The three independent reviews, launched after the first commit
+  (`f5e5652e`) as Claude `dotln-worker` agents with the shared and role
+  briefs of the lane (`docs/control/local/planning-2026-11-01/brief-*.md`):
+  `self-review: found 32 (28 distinct, with four remarks taken); fixed 32;
+  recorded 0`. The criteria adversary's twelve: a target writer deleted
+  without proof of release (high; the close now deletes only a released
+  writer and a held one stops it), the removal step's children against
+  `withReleaseStep`'s subtraction (high; children rows and a `totalMs`),
+  the temporary-root ledger missing from the kit's residue, the refusal
+  count hand-written two ways (the sentence is now rendered from its list),
+  the reviews lane outside `retainWorktreeJournals`' one source (a second
+  source), WO-251's gap contradicted by product 03's perception hierarchy
+  and `packages/browser-evidence` (restated; the role sentence follows
+  03), a reviewer's disagreement with a defect record unadmitted and a
+  repaired criterion deadlocked on it (both admitted), c1's hash logic (the
+  line, not the command, is refused), c5 already met at `main` (a control
+  added), the helper's argv unchecked where the default worker argv
+  disables the three Codex features and gives the Claude print worker no
+  tools (a criterion and `--dry-run`), bookkeeping-shaped byte clauses in
+  this pass's own criteria (moved to the steps), and wrong paths and line
+  ranges (corrected). The design improver's ten and three remarks: the
+  glob's missing floor (an entry with no literal segment is refused), the
+  merge-time checkpoint without a route back (`retract` legal through
+  `closed`, returning the order to `needs-fix`, and release close refusing
+  while it stands), the fail refusal undefined for an absent block (now
+  refused), the repeated-blocker definition missing the fork's pattern
+  (three distinct orders, successes between not resetting), the prune
+  sentence removing the host-denial fallback (kept), WO-244's edges and
+  fallback against WO-250's placement (hard edges; the order-less
+  `--subject planning` form added to WO-250), a Bash-launched helper unable
+  to charge the session's cap (the hook counts the Bash command), the
+  compiler reading no configuration (the emit passes the election), the
+  operator's own browser sessions undecided (placed under the same
+  election), and the hand-written refusal count. The consistency
+  reviewer's ten and one remark: two register rows at `needs-review` and
+  the revision drifted (the second batch), WO-238's placement phrase,
+  the ladder cited under §Discipline when its paragraph sits under
+  §Verification review and attack (corrected throughout, the paste-ready
+  block included), the missing `scripts/test-harness-fixtures.mjs` and
+  `scripts/test-compiler.mjs`, WO-244's step 7 calling the helper without
+  an order, WO-246's stale "step 7", WO-251's "seventh", WO-241's claimed
+  edge (added), WO-249's row files, and WO-246's step 5 without the
+  `target-worktree` suite. The reviewers confirmed the sequence agreement
+  across the block, bullets, map and roadmap, the capture digest, the
+  ceilings table, the first batch's thirty-nine dispositions and the
+  generated pages, and named what they did not search (the fork's records,
+  the kit files outside `docs/`, the host's documentation, the suites they
+  did not run).
+- The host's permissions documentation, read by the `claude-code-guide`
+  agent on 2026-11-02 for WO-251: `mcp__<server>__*` and the bare
+  `mcp__<server>` deny every tool of a server, `mcp__<server>__<tool>` one
+  tool, deny rules accept glob patterns in the tool-name position, a project
+  deny overrides a user-level allow, and the desktop computer-use server is
+  named `computer-use`; the cloud-session tool names are not documented
+  (WO-251's known issue stands).
 - The two tightenings after the operator's mid-turn question of 23:36Z,
   which asked whether the criteria order or any other update would hurt the
   operator (paraphrased; the words are in this session's transcript): WO-249

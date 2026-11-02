@@ -62,6 +62,13 @@ and `contributions`, the file this section joins).
     "reason": "the configuration loader and its positive validation the features section extends"
   },
   {
+    "workOrderId": "WO-251",
+    "relation": "planning-deferral",
+    "date": "2026-11-01",
+    "reason": "the features section and its first id, desktop-control, land before this order; step 2 absorbs its one-id validation",
+    "until": "WO-251"
+  },
+  {
     "workOrderId": "WO-150",
     "relation": "satisfied-by-close",
     "reason": "the Tinkerer economy default and opt-out this order reads through the features section"

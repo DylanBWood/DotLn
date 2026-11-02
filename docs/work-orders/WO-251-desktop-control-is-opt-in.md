@@ -17,7 +17,12 @@ name, absence meaning off; in `packages/skeleton/src/harness-command.ts`
 (`harnessToolEffects`, 10 to 55) a `desktop` effect for the tool names a
 host gives desktop control: names starting `mcp__computer-use__`,
 `mcp__remote-devices__computer_` or `enable__mcp__remote-devices__computer`,
-and the `Skill` tool invoked with `anthropic-skills:computer-use`; in
+the operator's own browser sessions (`mcp__claude-in-chrome__`,
+`mcp__Claude_Browser__`, `mcp__remote-devices__Claude_Browser__`,
+`enable__mcp__claude-in-chrome`, `enable__mcp__remote-devices__Claude_Browser`),
+and the `Skill` tool invoked with `anthropic-skills:computer-use`,
+`anthropic-skills:chrome-browser`, `anthropic-skills:built-in-browser` or
+`claude-in-chrome`; in
 `packages/skeleton/src/harness-host.ts` (the permission judgment near
 `permissionEffect`, 4862 onward, where an unclassified tool today raises a
 classification advisory and host permissions decide) the refusal
@@ -26,32 +31,42 @@ off, naming the key, the Playwright route and that the operator's word in
 the session is still needed when the election is on, and one advisory when
 the election is on and the tool is admitted; in
 `packages/compiler/src/harness.ts` (the emitted settings' `permissions.deny`,
-1190 to 1197, derived from the envelope's denied effects) the same tool
-patterns as `deny` entries while the election is off, so Claude Code's own
-permission layer refuses before the hook runs, and their absence when it
-is on; in `packages/skeleton/src/loadouts/contributor.ts` one shared
-sentence every role reads: browser verification of a web surface is the
-Playwright MCP's accessibility snapshot, screenshot and image read, or the
-project's own browser test tooling; desktop control (screenshots of the
-desktop, clicks, typing outside a browser the session drives) is refused
-unless the instance elects `features.desktop-control` and the operator's
-words in the session ask for it; in `scripts/kit/CLAUDE.template.md` and
+1190 to 1197, derived from the envelope's denied effects) the same servers
+as `deny` entries in the form the host's permission rules admit while the
+election is off, so Claude Code's own permission layer refuses before the
+hook runs, and their absence when it is on, with the election read by
+`harness emit` from `dotln.config.json` and passed through the instance
+overlay it already carries (`scripts/harness.mjs` 271 and 310 to 321) to
+the compiler, which reads no configuration itself; the refusals sentence
+(`HARNESS_BOUNDARIES`, 1339) rendered from a list of refusal rows so its
+count follows the list, this order adding its row; in `packages/skeleton/src/loadouts/contributor.ts` one shared
+sentence every role reads: browser verification of a web surface follows
+product 03's perception hierarchy (structured state, then the DOM and
+accessibility tree, which the Playwright MCP's snapshot gives, then network
+and event data, then a screenshot read as an image) through a browser the
+session launches, or the project's own browser test tooling; desktop
+control (the operator's screen, clicks and typing outside a browser the
+session launched) and the operator's own browser sessions (Claude in
+Chrome, the desktop app's browser pane, which act with the operator's
+sign-ins) are refused unless the instance elects `features.desktop-control`
+and the operator's words in the session ask for it; in `scripts/kit/CLAUDE.template.md` and
 `scripts/kit/dotln.config.example.json` the key with its default and the
-sentence; the generated refusals sentence (`packages/compiler/src/harness.ts`
-1340) counting seven refusals and naming this one; cases in
-`scripts/test-harness-fixtures.mjs` (refused off, admitted on with the
-advisory, the Skill form), `scripts/test-configuration-root.mjs` (the
-section's validation), `scripts/test-compiler.mjs` or the compiler suite's
-settings case (the deny entries present off and absent on) and
-`scripts/test-harness.mjs` (the roots carry the sentence; `harness check`).
+sentence; cases in `scripts/test-harness.mjs` (the `harness-fixtures` and `harness`
+suites' file: refused off, admitted on with the advisory, the Skill form,
+the browser forms; the roots carry the sentence; `harness check`),
+`scripts/test-configuration-root.mjs` (the section's validation) and the
+compiler package's tests (`packages/compiler/test/`, the `compiler` suite:
+the deny entries present off and absent on; the sentence's count following
+its list).
 Removes: the state where nothing in the kit says how a session verifies a
 browser surface or forbids taking over the operator's desktop, so a
 session chose native desktop control without asking (the operator's item
 10 of 2026-11-01), where the hook classifies every MCP tool as unclassified
-and advisory (host permissions decide), and where the Codex worker
-transport disables `computer_use` and `browser_use` for workers
-(`worker-transport.ts` 314 to 337) while a Codex session or any Claude
-session has no such rule. Wall-clock: one name match per judged tool call,
+and advisory (host permissions decide), where product 03 names the
+perception hierarchy and the optional Playwright adapter without a boundary
+for desktop control, and where the Codex worker transport disables
+`computer_use` and `browser_use` for workers (`worker-transport.ts` 314 to
+337) while a Codex session or any Claude session has no such rule. Wall-clock: one name match per judged tool call,
 measured before and after. Context bytes: this file, about 11,000; each
 role root grows by one sentence, measured against its ceiling under the
 standing route. Commands: none new. Tokens: unknown until run. Steps: 7.
@@ -124,13 +139,18 @@ host lets the kit enforce it and written where it cannot.
 
 **Observed gap (dated 2026-11-01 at `main` `64286ff8`, v0.107.0):**
 
-- No product document, role text or kit template mentions browsers,
-  Playwright, screenshots or desktop control as a verification route or a
-  boundary: a search of `docs/product/`, `.claude/skills/`, `CLAUDE.md` and
-  `scripts/kit/CLAUDE.template.md` on 2026-11-01 finds product 07's line
-  3621 ("desktop activation is not established", about a resident's wake)
-  and product 05's line 1144 (a browser algorithm, about the Entropy
-  Reducer) and nothing else.
+- Product 03 names Playwright and Context7 as optional environment
+  adapters (275), a Screenshot-Verification support that renders inactive
+  without a browser (1159) and the perception hierarchy, structured state
+  before the semantic DOM and accessibility tree before network and event
+  data before a screenshot before OCR (1752 to 1753), and
+  `packages/browser-evidence` holds the standalone browser scenarios; none
+  of them states a boundary for desktop control or the operator's own
+  browser sessions, and no role text, `CLAUDE.md` or kit template carries
+  the hierarchy or a refusal (a search of `.claude/skills/`, `CLAUDE.md`
+  and `scripts/kit/CLAUDE.template.md` on 2026-11-01 finds none; product
+  07's line 3621 is about a resident's wake and product 05's line 1144
+  about the Entropy Reducer).
 - The hook's tool inventory (`harnessToolEffects`) names no MCP tool; a
   tool it does not know raises `Unclassified effectful tool`, which the
   hook's catch reports as a classification advisory, so host permissions
@@ -140,9 +160,12 @@ host lets the kit enforce it and written where it cannot.
   `in_app_browser` for the workers it launches (`codexDisabled`), the one
   place the kit says anything about desktop control; a Codex session the
   operator opens and every Claude session have no such rule.
-- `dotln.config.json` has no `features` section (WO-241 files it, seventh in
+- `dotln.config.json` has no `features` section (WO-241 files it, eighth in
   the queue); the kit's example configuration shows `roots`,
   `derivedOrders`, `repositories`, `build`, `release` and `drive`.
+- The generated refusals sentence is a hand-written constant
+  (`HARNESS_BOUNDARIES`, `packages/compiler/src/harness.ts` 1339) that
+  counts six, so every refusal added edits a number by hand.
 
 **Design (scope discipline):**
 
@@ -156,9 +179,30 @@ host lets the kit enforce it and written where it cannot.
 - **Two layers where the host has two.** Claude Code's `permissions.deny`
   refuses the tool before any hook runs and survives a hook failure; the
   hook's refusal names the key and the route, which a bare host denial
-  cannot. Both are emitted from the same election by `harness emit`, so
-  `harness check` finds a settings file that disagrees with the
-  configuration. Rejected: the hook alone (axis: a hook that cannot run
+  cannot. Both are emitted from the same election by `harness emit`, which
+  reads `dotln.config.json` and passes the instance overlay to the compiler
+  (the compiler reads no configuration), so `harness check` finds a
+  settings file that disagrees with the configuration. The deny entries
+  take the forms the host's permissions page documents on 2026-11-02:
+  `mcp__<server>__*` or the bare `mcp__<server>` for every tool of a server
+  and `mcp__<server>__<tool>` for one, with deny rules accepting glob
+  patterns in the tool-name position and a project deny overriding a
+  user-level allow (the executor rereads that page at activation and
+  records the form), and the hook matches the tool-name prefixes.
+- **The operator's own browser is the operator's desktop.** Claude in
+  Chrome and the desktop app's browser pane act in the operator's signed-in
+  browser sessions; a session that drives them acts as the operator in the
+  operator's accounts, which is the takeover the operator's item 10 names.
+  They fall under the same election; a browser the session launches itself
+  (the Playwright MCP, the project's browser tests) is the admitted route.
+  Rejected: a second election for the operator's browser (axis: one
+  question, whether a session may act as the operator on the operator's
+  machine, has one answer).
+- **The count follows the list.** The refusals sentence is rendered from
+  the list of refusal rows, so this order and WO-250 each add a row and
+  nobody edits a number. Rejected: editing the constant (axis: two orders in
+  one queue would each hand-write a count that depends on which lands
+  first). Rejected: the hook alone (axis: a hook that cannot run
   leaves host permissions deciding, which is the gap). Rejected: the deny
   entries alone (axis: a denial without a reason sends the session looking
   for another route; the fork's session apologized and chose Playwright
@@ -192,11 +236,15 @@ host lets the kit enforce it and written where it cannot.
    the refusal while the election is off and the advisory while it is on,
    read from the configuration at judgment time; the refusal's duration
    recorded. Check: `npm test -- --only harness-fixtures`.
-3. `packages/compiler/src/harness.ts`: the `permissions.deny` entries for
-   the tool patterns emitted while the election is off and omitted while
-   on; the refusals sentence (1340) counts seven and names this one;
-   `harness check` compares the emitted settings with the configuration.
-   Check: `npm test -- --only compiler`; `npm test -- --only harness`.
+3. `scripts/harness.mjs` (the emit's instance overlay, 271 and 310 to 321)
+   and `packages/compiler/src/harness.ts`: the election read from
+   `dotln.config.json` by the emit and passed to the compiler; the
+   `permissions.deny` entries for the servers emitted while the election is
+   off and omitted while on, in the form the host's permission rules admit;
+   the refusals sentence (1339) rendered from a list of refusal rows with
+   this order's row added; `harness check` compares the emitted settings
+   with the configuration. Check: `npm test -- --only compiler`; `npm test
+   -- --only harness`.
 4. `packages/skeleton/src/loadouts/contributor.ts`: the shared sentence in
    the common block every role reads; `npm run sync`; each root measured
    against its ceiling under the standing route. Check: `npm test -- --only
@@ -227,8 +275,10 @@ kit template, example and guide; the write-backs.
 
 1. In the harness fixture with no `features` section, a PreToolUse input
    naming `mcp__computer-use__screenshot`, `mcp__remote-devices__computer_click`,
-   `enable__mcp__remote-devices__computer` or `Skill` with
-   `anthropic-skills:computer-use` is refused with
+   `enable__mcp__remote-devices__computer`, `mcp__claude-in-chrome__navigate`,
+   `mcp__Claude_Browser__click`, `enable__mcp__claude-in-chrome`, or `Skill`
+   with `anthropic-skills:computer-use`, `anthropic-skills:chrome-browser`,
+   `anthropic-skills:built-in-browser` or `claude-in-chrome` is refused with
    `DOTLN_DESKTOP_CONTROL_REFUSED`, the message naming
    `features.desktop-control` and the Playwright route; with
    `features.desktop-control: true` the same inputs are admitted with one
@@ -237,14 +287,15 @@ kit template, example and guide; the write-backs.
 2. `dotln.config.json` with `features.desktop-control` as `true`, `false` or
    `{ "on": true, "note": "..." }` loads; an unknown feature id is refused
    naming the id; an absent section reads as off.
-3. The emitted `.claude/settings.json` carries the three tool patterns in
-   `permissions.deny` while the election is off and none of them while it
-   is on; `harness check` reports a settings file whose entries disagree
-   with the configuration.
+3. The emitted `.claude/settings.json` carries the deny entries for the
+   desktop-control and operator-browser servers, in the form the host's
+   permission rules admit, while the election is off and none of them
+   while it is on, with the election read from `dotln.config.json` by
+   `harness emit`; `harness check` reports a settings file whose entries
+   disagree with the configuration.
 4. Every emitted role root carries the shared sentence; the generated
-   refusals sentence counts seven and names desktop control; `harness
-   check` passes; each root's bytes are recorded against its ceiling under
-   the standing route.
+   refusals sentence is rendered from its list, names desktop control and
+   counts one more than at activation; `harness check` passes.
 5. The kit template, the example configuration and the kit guide carry the
    key, its default and the route; product 07 states the refusal and the
    route; `npm run publication:check` is green.
@@ -279,14 +330,21 @@ at the integrated code identity when one exists.
   there, and the worker transport's disabled features cover its workers
   (reopen: a Codex session uses desktop control, which no record of a
   Claude hook could have refused).
-- WO-241 (seventh in the queue) adds the registry; until it lands this order's
+- WO-241 (eighth in the queue) adds the registry; until it lands this order's
   one-id validation is the `features` section (reopen: WO-241 activates and
   finds the section shaped otherwise).
+- The operator's own browser sessions (Claude in Chrome, the desktop app's
+  browser pane) are placed under the same election by the planner's
+  reading of the operator's item 10, which named computer takeover; the
+  operator may want them admitted separately (reopen: the operator asks
+  for a browser session the session did not launch without electing
+  desktop control).
 
 **Non-goals:** requiring the Playwright MCP to be installed; a browser the
 kit launches; changing the Codex worker transport's disabled features;
 host settings outside the emitted repository settings; the features
-registry and its generated page (WO-241).
+registry and its generated page (WO-241); a second election for the
+operator's own browser.
 
 **Operator-review assumptions:** that `features.desktop-control` is the
 right key and that off is the only default; that both the host's deny

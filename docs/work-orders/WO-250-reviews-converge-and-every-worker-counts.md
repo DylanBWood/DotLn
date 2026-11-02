@@ -11,7 +11,8 @@ is still admitted. Assigned at activation under the standing opt-out
 default.
 **Cost:** adds `scripts/worker.mjs` (new command, `npm run worker -- review
 --kind criteria|design|consistency|combined --host codex|claude [--order
-WO-NNN] [--since <tree>] [--round N] [--recheck <report>]`) and
+WO-NNN | --subject planning] [--since <tree>] [--round N] [--recheck
+<report>] [--dry-run]`) and
 `scripts/lib/review-worker.mjs` (new): the brief rendered from the three
 reviewer definitions in `packages/skeleton/src/loadouts/contributor.ts`
 (172 to 174), the order's text, `git diff --stat` against `--since` (the
@@ -24,49 +25,67 @@ transport the entropy review already has (`scripts/lib/entropy-review.mjs`
 `codexExecArgv`, `packages/skeleton/src/worker-transport.ts` 368, with the
 isolated Codex home, read-only sandbox and the pin gpt-6.1-sol at `max`;
 the `claude-cli-print` form at claude-opus-5-5 `xhigh`), the launch shared
-with the entropy review through one module rather than copied; the report
-written to the order's ignored reviews lane, `docs/control/local/reviews/WO-NNN/round-<N>-<kind>.md`
+with the entropy review through one module rather than copied; for a planning subject (`--subject planning`, on a `planning/` branch with
+no order) the brief rendered from the branch's planning document and
+changed orders and the lane `docs/control/local/reviews/planning-<date>/`;
+the report written to the order's ignored reviews lane,
+`docs/control/local/reviews/WO-NNN/round-<N>-<kind>.md`
 with a `.json` beside it in a closed findings shape (`id`, `severity`
 `blocking|should-fix|note`, `summary`, `file`, `line`, `criterion`), and
 one line printed, `review: <kind> round <N> found <N> (<B> blocking);
 <elapsed>`, or that the worker returned no report; a `WorkerLaunched` row
 in the session journal (session, order, kind, host, CLI version, round,
-started, ended, tokens where the host reports them); a fake transport for
-the fixture as the entropy review's; in `packages/skeleton/src/subagent-budget.ts`
+started, ended, tokens where the host reports them); the helper's Codex
+argv keeping `code_mode_host`, `shell_tool` and `unified_exec` enabled as
+the entropy review's form does (the filter at 903 and 1002), where the
+default worker argv (805 to 810) disables all of `codexDisabled`, and its
+Claude print argv passing the read tools (`Read`, `Grep`, `Glob` and a
+read-only `Bash`) where the default worker passes `--tools ""` (743 to
+744), since a reviewer over files must read them, with `--dry-run` printing
+the argv it would launch; a fake transport for the fixture as the entropy
+review's; in `packages/skeleton/src/subagent-budget.ts`
 (`admitSubagentTool`, 247 to 346) the counter counting uses: a launch
 (today's direct and workflow admissions), a re-task (a `SendMessage` or an
 `Agent` call with `resume` to a known agent, which today is admitted
-uncounted at 318 to 333) and a kit-launched worker (the helper calls the
-same admission with its launch id before launching and refuses past the
-cap with the same message), with `harness usage` printing `workers:
+uncounted at 318 to 333) and a kit-launched worker (in a hooked Claude session the hook counts the
+`npm run worker -- review` Bash command itself as a launch, since the
+helper's child process has no session identity to charge; under Codex,
+where `CODEX_THREAD_ID` names the session and no hook fires, the helper
+calls the same admission before launching; both refuse past the cap with
+the same message), with `harness usage` printing `workers:
 launched N (claude A, codex B), re-tasked M, cap C, remaining R` and the
 countKind as today; in `packages/skeleton/src/harness-command.ts`
 (`harnessToolEffects`, 10 to 55) `SendMessage` classed as a re-task that
 the admission counts; in `packages/skeleton/src/harness-host.ts` (the
-command judgment, where WO-247-D012 left it) the seventh refusal,
+command judgment, where WO-247-D012 left it) a new floor refusal,
 `DOTLN_WORKER_GATE_REFUSED`: a session carrying an `agent_id` (a subagent of
 this session) that runs `npm test` in any form, `node scripts/test-runner.mjs`,
 `node scripts/target-gate.mjs`, `npm run test:docs` or `npm run test:full`
 is refused naming the bounded single-test form; the helper's brief carries
 the same rule for a Codex worker, whose calls are unhooked; in
-`scripts/lib/worktree-removal.mjs` (`closedJournalEntry`, read at 129) the
-reviews lane among what release close moves into main's retained lane for
-the order, so the reports outlive the worktree; in
+`scripts/lib/worktree-removal.mjs` (`retainWorktreeJournals`, 85 to 131,
+which today reads one source, the harness directory
+`dispatchJournalDirectory`, through the `closedJournalEntry` name filter of
+`packages/skeleton/src/temporary-root-records.mjs` 113 to 119) a second
+source, the order's reviews lane, moved into the same retained lane under
+`reviews/`, with the closed-journal class's declared entries extended, so
+the reports outlive the worktree; in
 `scripts/lib/handoff-ledger.mjs` (the `self-review:` line, 21 and 259) the
 line's optional trailing fields `rounds <R>; unreviewed <M> lines
 (<reason>)`, advisory as the line is; in
 `packages/skeleton/src/loadouts/contributor.ts` the executor's review
 paragraphs (172 to 174) and the complete-run sentence (682) rewritten as
-the ladder in §Design, the launch sentence (83) naming the helper as the
-route to a Codex review worker from a Claude session and the counting rule,
-the fan-out sentence (662) counting re-tasks and kit launches, and the
-planner's reviewed route (WO-244) calling the helper; the generated
-refusals sentence (`packages/compiler/src/harness.ts` 1340) counting the
-new refusal; product 07 §Discipline (2797 to 2840), §Preflight before the
+the ladder in §Design, the launch sentence (83) naming
+the helper as the route to a Codex review worker from a Claude session and
+the counting rule, and the fan-out sentence (662) counting re-tasks and
+kit launches (WO-244, which lands after this order, writes the planner's
+`plan review` as the helper's caller); the generated
+refusals sentence (`packages/compiler/src/harness.ts` 1339) gaining this
+refusal's row, its count following the list WO-251 makes it; product 07 §Discipline (2797 to 2840), §Preflight before the
 full gate (3990 to 4000) and the kit guide stated as built; cases in
-`scripts/test-harness-fixtures.mjs` (the refusal; a re-task counted; a kit
-launch counted and refused past the cap), `scripts/test-harness.mjs` (the
-roots), `scripts/test-plan-refutation.mjs` (the helper over a fixture
+`scripts/test-harness.mjs` (the `harness-fixtures` suite's file, with
+`scripts/test-drive.mjs`: the refusal; a re-task counted; a kit launch
+counted and refused past the cap; the roots), `scripts/test-plan-refutation.mjs` (the helper over a fixture
 order with the fake transport: three reports named by round and kind, the
 printed counts, a recheck reading its prior report, a missing report
 reported) and `scripts/test-release.sh` (the reviews lane retained at
@@ -79,7 +98,7 @@ kit command launches a Codex dotln-worker from a Claude session"; the fork's
 2026-11-01 pass and the 2026-10-31 planning pass each wrote their own);
 reviewer launches that the cap never saw (the 2026-10-31 pass counted its
 three `codex exec` workers "not against the cap"; a resumed agent is
-admitted uncounted); review workers that run gates and hold the live-gate
+admitted uncounted, `subagent-budget.ts` 301 to 308); review workers that run gates and hold the live-gate
 refusal against the executor for minutes (WO-247-D012: 142, 20 and 438
 seconds); and review reports that vanish before verification
 (WO-237-D014: the originals were in a session scratch that no longer
@@ -90,7 +109,8 @@ this file, about 24,000; the executor root grows by the ladder and shrinks
 by the restart sentences, measured against its ceiling under the standing
 route. Commands: `npm run worker -- review`, new. Tokens: unknown until
 run. Steps: 11. Re-mints: `harness-host.ts`, `harness-command.ts`,
-`subagent-budget.ts`, `worker-transport.ts` and `contributor.ts` are
+`subagent-budget.ts`, `worker-transport.ts`, `temporary-root-records.mjs`
+and `contributor.ts` are
 runtime sources the executor checks against `scripts/lib/evidence-sources.mjs`
 at activation and re-mints deterministically where an edition is staled;
 no feedback-judged source changes, so no live feedback episode;
@@ -166,20 +186,22 @@ the reviews lane joins).
 reviewers and the restart sentence; 662 the fan-out sentence; 682 the
 complete-run sentence); `packages/skeleton/src/subagent-budget.ts`
 (`SpawnInput` 16 to 23; `readSubagentCap` 55; `admitSubagentTool` 247 to
-346, the resumed-agent branch 318 to 333; `subagentUsage` 223);
+346, the resumed-agent branch 301 to 308; `subagentUsage` 223);
 `packages/skeleton/src/harness-command.ts` (`harnessToolEffects` 10 to 55);
 `packages/skeleton/src/harness-host.ts` (the spawn admission 6369 to 6453:
 `admitSubagentTool` at 6443, the live-gate advisory on spawn at 6450);
 `packages/skeleton/src/worker-transport.ts` (`codexDisabled` 314 to 337 and
 its filter at 903 and 1002, which leaves `shell_tool`, `unified_exec` and
-`code_mode_host` enabled; `codexExecArgv` 368; `OBSERVED_CLI_VERSIONS` 658
-to 661, codex 0.154.0, against 0.166.0 observed on the operator's host on
-2026-11-01); `scripts/lib/entropy-review.mjs` (`TRANSPORT_DEFAULTS` 647 to
+`code_mode_host` enabled; `codexExecArgv` 368; the default worker argv 735 to 750 and 798 to 815,
+which passes `--tools ""` to Claude and every `codexDisabled` feature to
+Codex; `OBSERVED_CLI_VERSIONS` 658 to 661, codex 0.154.0, against 0.166.0
+observed on the operator's host on 2026-11-01); `scripts/lib/entropy-review.mjs` (`TRANSPORT_DEFAULTS` 647 to
 660; the transport selection 1181 to 1183); `scripts/lib/handoff-ledger.mjs`
 (21, 259); `scripts/lib/worktree-removal.mjs` (`retainWorktreeJournals` and
-`closedJournalEntry`, 85 to 130); `packages/compiler/src/harness.ts` 1340;
-product 07 §Discipline (2797 to 2840) and §Preflight before the full gate
-(3990 to 4000); `docs/evidence/WO-237/decisions.md#wo-237-d011`,
+`closedJournalEntry`, 85 to 130); `packages/compiler/src/harness.ts` 1339 (`HARNESS_BOUNDARIES`, a
+hand-written sentence that counts six); product 07 §Verification review
+and attack (the reviewers paragraph, 2797 to 2840) and §Discipline's
+§Preflight before the full gate (3990 to 4000); `docs/evidence/WO-237/decisions.md#wo-237-d011`,
 `#wo-237-d014`; `docs/evidence/WO-247/decisions.md#wo-247-d012`; the map's
 candidate "total subagent cap across every spawn path".
 
@@ -195,8 +217,8 @@ starts a gate.
 
 - The executor's text says "after any new set of code changes, restart all
   three existing reviewers on the current diff and finish their rechecks
-  before the next complete run" (contributor.ts 174; product 07 2829 to
-  2831) and gives no end. WO-237 ran four recheck rounds (19, 13, 4 and 12
+  before the next complete run" (contributor.ts 174; product 07
+  §Verification review and attack, 2829 to 2831) and gives no end. WO-237 ran four recheck rounds (19, 13, 4 and 12
   distinct findings) and a fifth from one reviewer, with the operator
   writing at 17:04Z to stop and run the gates (D011); its executor also
   asked the operator whether to lift a token-spend criterion the fork's
@@ -209,9 +231,11 @@ starts a gate.
   an ignored lane; the entropy review has had the transport since WO-151.
 - The subagent counter counts direct `Agent` and `Workflow` admissions and
   children at their first attributable call (WO-139, WO-192); a resumed
-  agent is admitted uncounted (`subagent-budget.ts` 318 to 333), `SendMessage`
+  agent is admitted uncounted (`subagent-budget.ts` 301 to 308), `SendMessage`
   is not in the tool inventory, and a `codex exec` worker launched from
-  `Bash` is a shell command the counter never sees. The 2026-10-31 pass
+  `Bash` is a shell command the counter never sees; the counter is keyed by
+  the hook's `session_id`, which a child process the session launches does
+  not carry. The 2026-10-31 pass
   recorded its three reviewers as "not against the cap".
 - WO-247's consistency reviewer ran `npm test -- --only resume`, `compiler`
   and `skeleton` (142, 20 and 438 seconds), each holding the live-gate
@@ -263,20 +287,26 @@ starts a gate.
   where the verifier and the close can find it, and counts the launch. In a
   Claude session the `Agent` tool with `dotln-worker` stays the ordinary
   route and is counted by the hook; the helper is the route to a Codex
-  worker from Claude, to a Claude print worker from Codex, and for the
-  planner's reviewed route (WO-244's `plan review` calls it). Rejected: a
-  Codex `spawn_agent` from Claude (axis: it is Codex's own primitive).
+  worker from Claude, to a Claude print worker from Codex, and for a
+  planning subject through `--subject planning` (WO-244's `plan review`,
+  which lands after this order, is that caller). The helper's argv keeps
+  the Codex worker's tools enabled and gives the Claude print worker its
+  read tools, since a reviewer over files reads them and the default worker
+  argv, built for an inlined subject, gives neither. Rejected: a Codex
+  `spawn_agent` from Claude (axis: it is Codex's own primitive).
   Rejected: a new transport (axis: the entropy review's two are the pin).
 - **Every use counts, on every path.** Launches, re-tasks and kit launches
-  are uses; the cap compares uses. Codex sessions are unhooked, so the
-  helper is the counter there and the role text keeps the explicit count,
-  as today. Rejected: counting kit launches separately from the cap (axis:
+  are uses; the cap compares uses. In a Claude session the hook counts the
+  helper's Bash command as the launch, because the helper's child process
+  has no session identity to charge; under Codex, unhooked, the helper is
+  the counter and the role text keeps the explicit count, as today. Rejected: counting kit launches separately from the cap (axis:
   the operator's item 6.b; a cap that one path escapes is a suggestion).
 - **A review worker never starts a gate.** The hook refuses the gate forms
   from a subagent by literal command (a program's own effects stay
   unobserved, as every hook refusal); the brief carries the rule for a
-  Codex worker. A new refusal of the floor, the eighth with WO-251's, which
-  planning records here.
+  Codex worker. A new refusal of the floor, which planning records here;
+  the generated sentence counts it from its list, one more than at
+  activation.
   Rejected: leaving it to the brief alone (axis: WO-247-D012's operator
   direction: every session, not one brief).
 - **Reports live with the order.** The reviews lane in the worktree,
@@ -298,24 +328,31 @@ starts a gate.
    and the helper import, with the entropy review's own cases unchanged.
    Check: `npm test -- --only plan-refutation`.
 2. `scripts/lib/review-worker.mjs` (new) and `scripts/worker.mjs` (new):
-   the brief rendered from `contributor.ts` 172 to 174 and the order; the
-   `--since`, `--round` and `--recheck` inputs; the report and its `.json`
-   in the reviews lane; the printed line; the `WorkerLaunched` journal row;
-   the admission through the subagent counter before launch. Check: `npm
+   the brief rendered from `contributor.ts` 172 to 174 and the order, or
+   from the planning document and changed orders under `--subject planning`;
+   the `--since`, `--round`, `--recheck` and `--dry-run` inputs; the Codex
+   argv with the three features enabled and the Claude argv with the read
+   tools; the report and its `.json` in the reviews lane (the order's, or
+   `planning-<date>/`); the printed line; the `WorkerLaunched` journal row;
+   under Codex the admission through the subagent counter before launch. Check: `npm
    test -- --only plan-refutation`.
 3. `packages/skeleton/src/subagent-budget.ts`: uses (launches, re-tasks,
    kit launches) with the cap compared to uses; `subagentUsage` and
    `subagentSummary` report launches by host, re-tasks and the remainder;
    `packages/skeleton/src/harness-command.ts`: `SendMessage` as a re-task;
    `packages/skeleton/src/harness-host.ts`: the re-task admission beside the
-   spawn admission (6443). Check: `npm test -- --only harness-fixtures`.
+   spawn admission (6443) and the `npm run worker -- review` Bash command
+   admitted and counted as a launch by literal command. Check: `npm test --
+   --only harness-fixtures`.
 4. `packages/skeleton/src/harness-host.ts`: `DOTLN_WORKER_GATE_REFUSED` for
    a session with `agent_id` running a gate form; `packages/compiler/src/harness.ts`
-   (1340): the refusals sentence counts it; the refusal's measured cost
-   recorded. Check: `npm test -- --only harness-fixtures`; `npm test --
+   (1339): this refusal's row in the list the sentence is rendered from; the
+   refusal's measured cost recorded. Check: `npm test -- --only harness-fixtures`; `npm test --
    --only harness`.
-5. `scripts/lib/worktree-removal.mjs` (`closedJournalEntry`): the reviews
-   lane moves into main's retained lane at close. Check: `bash
+5. `scripts/lib/worktree-removal.mjs` (`retainWorktreeJournals`) and
+   `packages/skeleton/src/temporary-root-records.mjs` (the closed-journal
+   class's declared entries, 113 to 119): the order's reviews lane as a
+   second source moved into main's retained lane under `reviews/` at close. Check: `bash
    scripts/test-release.sh --case success` under the bounded wrapper; `npm
    test -- --only release`.
 6. `scripts/lib/handoff-ledger.mjs` (21, 259): the optional trailing fields
@@ -323,16 +360,15 @@ starts a gate.
 7. `packages/skeleton/src/loadouts/contributor.ts`: the ladder in place of
    172 to 174 and 682's restart sentence, the launch sentence (83) naming
    the helper and the counting rule, the fan-out sentence (662) counting
-   re-tasks and kit launches, the reviewed route's `plan review` calling the
-   helper; `npm run sync`; each root measured against its ceiling under the
+   re-tasks and kit launches; `npm run sync`; each root measured against its ceiling under the
    standing route. Check: `npm test -- --only harness`; `npm test -- --only
    harness-context`.
-8. `scripts/test-plan-refutation.mjs`, `scripts/test-harness-fixtures.mjs`,
-   `scripts/test-harness.mjs`: the cases the Cost names. Check: the same
-   suites.
-9. Write-backs: product 07 §Discipline (2797 to 2840: the ladder, the
-   reuse tradeoff, the counting), §Preflight before the full gate (3990 to
-   4000: a repair's ladder) and the refusals paragraph (seven); the kit
+8. `scripts/test-plan-refutation.mjs` and `scripts/test-harness.mjs`: the
+   cases the Cost names. Check: the same suites.
+9. Write-backs: product 07 §Verification review and attack (the reviewers
+   paragraph, 2797 to 2840: the ladder, the reuse tradeoff, the counting),
+   §Discipline's §Preflight before the full gate (3990 to 4000: a repair's
+   ladder) and the refusals paragraph (this refusal's row); the kit
    guide (`docs/KIT.md` once WO-245 merges, otherwise
    `scripts/kit/README.client.md`) §What runs here, and what does not (the
    command, the refusal, the counting); `docs/evidence/WO-250/decisions.md`
@@ -366,12 +402,20 @@ write-backs.
    prints `review: criteria round 1 found N (B blocking); <elapsed>`,
    appends a `WorkerLaunched` journal row and counts one use; `--kind
    combined --round 3 --recheck <report>` renders the three briefs and the
-   prior findings into one brief; a worker that returns no report is
-   reported as such; a launch past the cap is refused with the cap's
-   message before any process starts.
-2. In the harness fixture, a `SendMessage` to a known agent and an `Agent`
-   call resuming one each count one use; `harness usage` prints launches by
-   host, re-tasks and the remainder; the twenty-first use is refused.
+   prior findings into one brief; `--subject planning` on a planning-branch
+   fixture writes `docs/control/local/reviews/planning-<date>/round-1-criteria.md`
+   from the branch's planning document and changed orders; a worker that
+   returns no report is reported as such; under the fixture's Codex session
+   identity a launch past the cap is refused with the cap's message before
+   any process starts; `--dry-run` prints a Codex argv with no `--disable`
+   for `code_mode_host`, `shell_tool` or `unified_exec` and a Claude argv
+   naming `Read`, `Grep`, `Glob` and `Bash`; one real launch of each form on
+   the executing host returns a report that cites a file it read, recorded
+   in the decisions, or the host's refusal or absence is recorded.
+2. In the harness fixture, a `SendMessage` to a known agent, an `Agent`
+   call resuming one and a Bash command `npm run worker -- review …` each
+   count one use; `harness usage` prints launches by host, re-tasks and the
+   remainder; the twenty-first use is refused.
 3. In the harness fixture, a PreToolUse input carrying an `agent_id` whose
    command is `npm test`, `npm test -- --only resume`, `node
    scripts/test-runner.mjs --review`, `node scripts/target-gate.mjs` or
@@ -383,13 +427,15 @@ write-backs.
    into main's retained lane for the order beside the journals.
 5. A handoff line `self-review: found 19; fixed 18; recorded 1; rounds 3;
    unreviewed 12 lines (comments and a test name)` passes the handoff
-   check; the line without the trailing fields passes as today.
+   check; the line without the trailing fields passes as today; a malformed
+   trailing field (`rounds x; garbage`) prints the advisory, which the
+   current regex (`handoff-ledger.mjs` 21, no end anchor) does not.
 6. The emitted executor root carries the ladder, the admission rule, the
    skip rule, the fifty-line repair rule, the counting rule and the helper
    as the Codex route, and no longer the sentence restarting all three
-   reviewers after any change; the generated refusals sentence counts the
-   worker gate refusal (eight with WO-251's, which lands before this order); `harness check` passes; each root's
-   bytes are recorded against its ceiling under the standing route.
+   reviewers after any change; the generated refusals sentence names the
+   worker gate refusal and counts one more than it did at activation;
+   `harness check` passes.
 7. Product 07 and the kit guide state the ladder, the command, the counting
    and the refusal as built; `npm run publication:check` is green.
 8. This order's decisions record its own rounds under the ladder, with at
@@ -422,11 +468,13 @@ at the integrated code identity when one exists.
   (reopen: each on its own condition).
 - The fork's item 6 of 2026-11-01: under a disabled-feature list written
   against Codex CLI 0.154.0, Codex CLI 0.166.0 answered every tool call
-  with "code-mode host is disabled". The kit's own argv leaves
-  `code_mode_host`, `shell_tool` and `unified_exec` enabled
-  (`worker-transport.ts` 903 and 1002), so a kit-launched worker should
-  read; the executor confirms on 0.166.0 and records the disabled list the
-  helper passes (reopen: a helper-launched Codex worker reads nothing).
+  with "code-mode host is disabled". The kit's default worker argv (805 to
+  810) disables every `codexDisabled` feature, the three among them, and
+  only the entropy review's form keeps them (903 and 1002), which is the
+  shape the fork's launcher most likely inherited; the helper takes the
+  entropy form, and the executor confirms on 0.166.0 and records the
+  disabled list it passes (reopen: a helper-launched Codex worker reads
+  nothing).
 - The fifty-line threshold for a repair is the planner's figure, not a
   measurement; the executor records the repair diffs this order and the
   next two meet, and a pass re-reads it (reopen: two repairs under fifty

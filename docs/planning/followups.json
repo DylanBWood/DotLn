@@ -24647,6 +24647,14 @@
           "reopenWhen": "The host documents a pre-creation admission hook or total-cap setting covering the missing paths, or a session exceeds the cap on a path the current accounting reports as unobserved.",
           "targets": [],
           "at": "2026-10-26T05:33:37.411Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Re-disposed at its current source by the 2026-11-01 planning pass (docs/planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md) after the 2026-11-01 reassessment: WO-250 counts every launch, every re-task and every kit-launched worker as a use against the cap (the hook counting the helper's Bash command in a Claude session, the helper counting under Codex) and refuses a review worker's gate launch; the pre-creation guarantee for an agent a host makes before any hook fires stays open with the same condition.",
+          "reopenWhen": "The harness documents a pre-creation admission hook or a total-cap setting, or a session exceeds the cap on a path WO-250 does not count.",
+          "targets": [],
+          "at": "2026-11-02T00:15:26.925Z"
         }
       ]
     },
@@ -51636,6 +51644,14 @@
           "reopenWhen": "A kit-launched Codex worker reads nothing.",
           "targets": [],
           "at": "2026-11-01T23:31:54.870Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-11-01 planning pass (docs/planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md) (candidate 14), with the reason corrected after the pass's three reviews: the kit's default worker argv disables every codexDisabled feature (worker-transport.ts 805 to 810), code_mode_host, shell_tool and unified_exec among them, and only the entropy review's form keeps them (903 and 1002); WO-250's helper takes the entropy form, gives a Claude print worker its read tools, confirms on Codex CLI 0.166.0 and updates OBSERVED_CLI_VERSIONS; WO-244's fixture uses the fake transport.",
+          "reopenWhen": "A kit-launched Codex worker reads nothing after WO-250 lands.",
+          "targets": [],
+          "at": "2026-11-02T00:15:27.042Z"
         }
       ]
     },
@@ -51841,6 +51857,14 @@
           "reopenWhen": "The operator reopens it.",
           "targets": [],
           "at": "2026-11-01T23:31:54.310Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Re-disposed at its current source by the 2026-11-01 planning pass (docs/planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md) after the candidate gained the planner's note (the per-suite identity from each suite's declared source closure as the shape a real solution would take): still recorded and not acted on at the operator's word; only a solution the operator judges whole enters a future order.",
+          "reopenWhen": "The operator reopens it.",
+          "targets": [],
+          "at": "2026-11-02T00:15:26.809Z"
         }
       ]
     },
