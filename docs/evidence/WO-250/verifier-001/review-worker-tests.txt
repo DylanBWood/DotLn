@@ -1,0 +1,23 @@
+bounded-start {"budgetBytes":3221225472,"physicalBytes":51539607552,"deadlineMs":900000}
+PROGRESS [bounded-probe] started
+✔ a criteria review on Codex writes its report pair, prints its counts, journals the launch and counts one use (155.49725ms)
+✔ a recheck reads its prior report, and the combined last round carries the three briefs and the prior findings (241.870291ms)
+✔ a planning subject reviews the branch's planning document and changed orders into the day's planning lane (156.153209ms)
+✔ a worker that returns no report is reported as such and writes nothing (101.572208ms)
+✔ under a Codex session a launch past the cap is refused with the cap's message before any process starts (145.68ms)
+✔ a round needs what its brief states, a repair writes its own lane and no report is overwritten (269.718584ms)
+✔ a failed complete run starts a repair whose ladder writes its own lane (162.718625ms)
+✔ an Agent worker's returned text is recorded as the same record, which a fresh worker can recheck (180.479666ms)
+✔ the checkout witness compares contents, and a planning recheck still finds the branch's documents (298.587833ms)
+✔ the transports' pins are the role text's worker pins (0.245ms)
+✔ a long transcript costs a bounded tail, never the run, and Codex's final message is read from its own file (142.350708ms)
+✔ a dry run prints the Codex argv with its tool features on and the Claude argv with its read tools (131.468041ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2144.602167
+bounded-result {"name":"bounded-probe","durationMs":2193,"slowestCases":[{"name":"bounded-probe","durationMs":2193,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":61939368,"peakRssBytes":162316288,"memoryBudgetBytes":3221225472,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-11-02T20:51:59.515Z","finishedAt":"2026-11-02T20:52:01.708Z","exitCode":0,"executed":true}

@@ -1,0 +1,9 @@
+bounded-start {"budgetBytes":3221225472,"physicalBytes":51539607552,"deadlineMs":900000}
+PROGRESS [bounded-probe] started
+
+> format:check
+> prettier --check . --ignore-unknown
+
+Checking formatting...
+All matched files use Prettier code style!
+bounded-result {"name":"bounded-probe","durationMs":8776,"slowestCases":[{"name":"bounded-probe","durationMs":8776,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":416596808,"peakRssBytes":493912064,"memoryBudgetBytes":3221225472,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-11-02T20:51:34.167Z","finishedAt":"2026-11-02T20:51:42.943Z","exitCode":0,"executed":true}

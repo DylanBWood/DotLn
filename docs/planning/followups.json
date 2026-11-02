@@ -19514,6 +19514,14 @@
           "reopenWhen": "An order pays a live feedback episode and touches two of the five protocol files.",
           "targets": [],
           "at": "2026-09-28T03:29:45.383Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-250-D020 (FINAL-001): its condition occurred in substance, because WO-250 paid a live feedback episode (WO-250-D012), edited packages/skeleton/src/verification-protocol.ts and added packages/skeleton/src/change-review-protocol.ts, a sixth protocol file carrying its own refuse, check, invalid, object, exact and nonEmpty helpers, so the repeated group gained one copy. Consolidating the group is a shared-module change across feedback-judged sources that owes a live episode of its own, so it stays with planning.",
+          "reopenWhen": "A planning pass allocates the validator kit, or another order pays a live feedback episode and adds or edits a protocol file carrying the repeated group.",
+          "targets": [],
+          "at": "2026-11-02T21:28:02.298Z"
         }
       ]
     },
@@ -44220,6 +44228,14 @@
           "reopenWhen": "The next planning pass evaluates instruction-byte optimization, or another role edit changes the measured overrun.",
           "targets": [],
           "at": "2026-11-02T15:13:28.086Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-250-D020 (FINAL-001): its condition occurred, because the review ladder, the counting rule and the change review helper's route changed every installed role root: measured by the gate-followups rule the executor reads 41,685 bytes against its effective 40,194, the verifier 36,409 against 35,221, the planner 27,362 against 24,576, the reviewer 38,832 within 39,600, release-close 25,891 within 26,410, the refuter 25,513 with no ceiling and the router 16,379 within 16,384; WO-250-D007 boards the three overruns as FUP-2c6f5a9f24ed56e1 under product 07's one route, no ceiling moved and no acceptance was recorded.",
+          "reopenWhen": "The next planning pass evaluates instruction-byte optimization, or another role edit changes the measured overrun.",
+          "targets": [],
+          "at": "2026-11-02T21:28:01.819Z"
         }
       ]
     },
@@ -44324,6 +44340,14 @@
           "reopenWhen": "A role grows past its pin without the oracle changing, or a ceiling breach appears in meta --check with no decision boarding it; or the next order touching scripts/test-gate-followups.mjs or re-minting the role oracle.",
           "targets": [],
           "at": "2026-11-02T15:13:28.318Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-250-D020 (FINAL-001): its condition occurred, because this order re-mints the role oracle as wo250-role-baseline.json over the WO-249 integration oracle and the chain list in scripts/test-gate-followups.mjs now selects it; the test keeps its chain walk, its effective-ceiling and acceptance checks and the historical inequality, which this order changes no further. The executor, verifier and planner overruns are boarded by WO-250-D007 as FUP-2c6f5a9f24ed56e1.",
+          "reopenWhen": "A role grows past its pin without the oracle changing, or a ceiling breach appears in meta --check with no decision boarding it; or the next order touching scripts/test-gate-followups.mjs or re-minting the role oracle.",
+          "targets": [],
+          "at": "2026-11-02T21:28:02.060Z"
         }
       ]
     },
@@ -44845,6 +44869,14 @@
           "reopenWhen": "A bounded comparison demonstrates a shorter equivalent instruction set, or another required rule changes the measured overrun.",
           "targets": [],
           "at": "2026-11-02T15:13:28.202Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-250-D020 (FINAL-001): its condition occurred, because required rules (the ladder, the counting rule and the helper route) changed the measured overrun in every installed role root: measured by the gate-followups rule the executor reads 41,685 bytes against its effective 40,194, the verifier 36,409 against 35,221, the planner 27,362 against 24,576, the reviewer 38,832 within 39,600, release-close 25,891 within 26,410, the refuter 25,513 with no ceiling and the router 16,379 within 16,384; WO-250-D007 boards the three overruns as FUP-2c6f5a9f24ed56e1 under product 07's one route, no ceiling moved and no acceptance was recorded.",
+          "reopenWhen": "A bounded comparison demonstrates a shorter equivalent instruction set, or another required rule changes the measured overrun.",
+          "targets": [],
+          "at": "2026-11-02T21:28:01.940Z"
         }
       ]
     },
@@ -52343,6 +52375,193 @@
           "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the verifier and planner cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
           "targets": [],
           "at": "2026-11-02T15:13:27.970Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-250-D020 (FINAL-001): its condition occurred, because another reviewed rule changed the measured overrun: measured by the gate-followups rule the executor reads 41,685 bytes against its effective 40,194, the verifier 36,409 against 35,221, the planner 27,362 against 24,576, the reviewer 38,832 within 39,600, release-close 25,891 within 26,410, the refuter 25,513 with no ceiling and the router 16,379 within 16,384; WO-250-D007 boards the three overruns as FUP-2c6f5a9f24ed56e1 under product 07's one route, no ceiling moved and no acceptance was recorded. WO-249-D025's figures stand as the integrated tree's measurement before this order.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the verifier and planner cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
+          "targets": [],
+          "at": "2026-11-02T21:28:02.179Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-2ce66cf6a0602982",
+      "key": "decision:docs/evidence/WO-250/decisions.md#wo-250-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "4333431e5545fbfb9698e3751b1ff92c3b2fa309dbb3362cecf40d192d73199f",
+          "ref": "docs/evidence/WO-250/decisions.md#wo-250-d003--every-use-counts-launches-by-host-re-tasks-and-kit-launches",
+          "title": "WO-250-D003: Count the other kit commands that launch a worker by their literal words: npm run plan -- refute --transport claude-cli-print|codex-cli-exec and npm run entropy -- review|refute…",
+          "summary": "{ \"id\": \"WO-250-D003\", \"date\": \"2026-11-02\", \"dispatch\": \"resume: next; step 3, the counter\", \"decision\": \"The subagent counter counts uses and compares them with subagentCap. A launch is a direct spawn, an observed child or a kit-launched worker; a re-task is an Agent call resuming a known agent (admitted uncounted before) or a SendMessage, classed as a new tool effect, retask, in harness-command.ts and admitted beside the spawn admission; a kit launch is the literal helper command in a Bash call, npm run worker -- review or node scripts/worker.mjs review without --dry-run counting one and npm run plan -- review or node scripts/refute-plan.mjs review counting three, on the host --host names",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-250-D003: this order counts the kit launches its Cost names, the change review helper and the planner's review; the planning refuter's and the entropy review's --transport launches are outside that scope and stay uncounted until an order adds their rows.",
+          "reopenWhen": "A session exceeds the cap on a path this order does not count, or a planning pass allocates the remaining kit launch paths.",
+          "targets": [],
+          "at": "2026-11-02T17:10:39.468Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-2c6f5a9f24ed56e1",
+      "key": "decision:docs/evidence/WO-250/decisions.md#wo-250-d007",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "b1d11b4709392df03a3afb27282c5953977901ab63c73a783277899787de0067",
+          "ref": "docs/evidence/WO-250/decisions.md#wo-250-d007--the-ladder-in-the-role-text-a-new-role-oracle-and-the-boarded-overruns",
+          "title": "WO-250-D007: Optimize the executor's, the verifier's and the planner's installed cold starts with equivalent usefulness. With the review ladder, the counting rule and the change review helper's route…",
+          "summary": "{ \"id\": \"WO-250-D007\", \"date\": \"2026-11-02\", \"dispatch\": \"resume: next; step 7, the role text\", \"decision\": \"The executor's review paragraphs become the ladder: round 1, three fresh dotln-worker reviewers over the whole diff against the merge base with nonoverlapping briefs; round 2, each reviewer whose findings were fixed rechecks those fixes on the current diff and nothing else, resumed where the host keeps it or as a fresh worker given its prior report, under the admission rule (a new finding is admitted only when it breaks an acceptance criterion or a behavior main had, and any other is recorded in the handoff, not fixed); round 3, only when round 2's fixes changed code again, one combin",
+          "missing": false
+        },
+        {
+          "hash": "b1d11b4709392df03a3afb27282c5953977901ab63c73a783277899787de0067",
+          "ref": "docs/evidence/WO-250/decisions.md#wo-250-d007",
+          "title": "WO-250-D007: Optimize the executor's, the verifier's and the planner's installed cold starts with equivalent usefulness. With the review ladder, the counting rule and the change review helper's route…",
+          "summary": "{ \"id\": \"WO-250-D007\", \"date\": \"2026-11-02\", \"dispatch\": \"resume: next; step 7, the role text\", \"decision\": \"The executor's review paragraphs become the ladder: round 1, three fresh dotln-worker reviewers over the whole diff against the merge base with nonoverlapping briefs; round 2, each reviewer whose findings were fixed rechecks those fixes on the current diff and nothing else, resumed where the host keeps it or as a fresh worker given its prior report, under the admission rule (a new finding is admitted only when it breaks an acceptance criterion or a behavior main had, and any other is recorded in the handoff, not fixed); round 3, only when round 2's fixes changed code again, one combin",
+          "missing": false
+        },
+        {
+          "hash": "a16a8550dd9c5fb70d7aa2499937407be6e118547bc400d5ef865fe87329b4f5",
+          "ref": "docs/evidence/WO-250/decisions.md#wo-250-d007",
+          "title": "WO-250-D007: Optimize the executor's, the verifier's and the planner's installed cold starts with equivalent usefulness. With the review ladder, the counting rule and the change review helper's route…",
+          "summary": "{ \"id\": \"WO-250-D007\", \"date\": \"2026-11-02\", \"dispatch\": \"resume: next; step 7, the role text\", \"decision\": \"The executor's review paragraphs become the ladder: round 1, three fresh dotln-worker reviewers over the whole diff against the merge base with nonoverlapping briefs; round 2, each reviewer whose findings were fixed rechecks those fixes on the current diff and nothing else, resumed where the host keeps it or as a fresh worker given its prior report, under the admission rule (a new finding is admitted only when it breaks an acceptance criterion or a behavior main had, and any other is recorded in the handoff, not fixed); round 3, only when round 2's fixes changed code again, one combin",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-250-D007: the review ladder, the counting rule and the change review helper's route are reviewed duties that stay whole under product 07's one route for cold-start ceilings; the executor reads 41,546 bytes against its effective 40,194, the verifier 36,354 against 35,221 and the planner 27,307 against 24,576, measured by the gate-followups rule, with no ceiling raised, no acceptance recorded and no duty cut; the optimization with equivalent usefulness belongs to a planning allocation.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the executor, verifier and planner cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
+          "targets": [],
+          "at": "2026-11-02T17:10:39.346Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "deferred",
+          "reason": "WO-250-D007: the review ladder, the counting rule and the change review helper's route are reviewed duties that stay whole under product 07's one route for cold-start ceilings; after the first round's fixes the executor reads 41,685 bytes against its effective 40,194, the verifier 36,409 against 35,221 and the planner 27,362 against 24,576, measured by the gate-followups rule, with no ceiling raised, no acceptance recorded and no duty cut; the optimization with equivalent usefulness belongs to a planning allocation.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the executor, verifier and planner cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
+          "targets": [],
+          "at": "2026-11-02T18:04:26.073Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-6dfaa29e3f0ba4fd",
+      "key": "decision:docs/evidence/WO-250/decisions.md#wo-250-d010",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c5425d51642c1995233bcec2bef156009f24aa809bd3b191f1fd0af04c678c16",
+          "ref": "docs/evidence/WO-250/decisions.md#wo-250-d010--the-change-reviews-budget-and-limits-become-instance-configuration-later",
+          "title": "WO-250-D010: Make the change review's budget and limits instance configuration: read budgetMinutes (30), budgetToolCalls (120), the hard timeout (60 minutes), the Claude print form's dollar cap (USD…",
+          "summary": "{ \"id\": \"WO-250-D010\", \"date\": \"2026-11-02\", \"dispatch\": \"resume: next; an operator note during the review ladder\", \"decision\": \"The change review's budget and limits stay constants in packages/skeleton/src/change-review-protocol.ts for this order (CHANGE_REVIEW_LIMITS: a budget of 30 minutes and 120 tool calls the worker keeps itself within, the 60-minute hard timeout, the USD 20 cap of the Claude print form and the 8,000,000-byte transcript tail), and a follow-up records that they become instance configuration in dotln.config.json in a later configuration pass, with these values as the defaults. This order neither adds the setting nor binds the pass that will; WO-241, the queued features f",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-250-D010: the operator placed the change review's budget and limits in a later DotLn configuration pass; WO-241, the queued features file, is one candidate and none is bound.",
+          "reopenWhen": "A configuration pass takes up worker limits, or an operator needs a different change review budget for one instance.",
+          "targets": [],
+          "at": "2026-11-02T17:44:51.582Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-afd02097847e2751",
+      "key": "decision:docs/evidence/WO-250/decisions.md#wo-250-d011",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "f4ed67b45d5d1495a13e25d772ae8f4f28df4140c9455b9d1ab8b29a03b6e886",
+          "ref": "docs/evidence/WO-250/decisions.md#wo-250-d011--this-orders-own-reviews-under-the-ladder-the-first-observation-of-the-rule",
+          "title": "WO-250-D011: Read the entropy review's token count from the field a usage observation carries: scripts/lib/entropy-review.mjs costFrom reads usage?.totals?.totalTokens and usage?.totals?.costUsd, but…",
+          "summary": "{ \"id\": \"WO-250-D011\", \"date\": \"2026-11-02\", \"dispatch\": \"resume: next; step 10, this order's reviews by the ladder\", \"decision\": \"The reviews ran as the ladder: three rounds, then the executor's judgment. Round 1 put one reviewer of each kind over the whole diff against the merge base 91a730ac: the criteria adversary through the helper on Codex, the design improver through the helper on Claude print, and the consistency reviewer as a dotln-worker Agent, whose returned text was recorded in the lane. It found 28 findings (5 blocking): 22 were fixed and 6 recorded. Round 2 rechecked the fixes: the design and criteria reviewers as fresh helper workers given their round-1 reports, and the consis",
+          "missing": false
+        },
+        {
+          "hash": "b3b02662505a1607228fa06289bf97ca4958396315f1999c54c5d537c330283e",
+          "ref": "docs/evidence/WO-250/decisions.md#wo-250-d011--this-orders-own-reviews-under-the-ladder-the-first-observation-of-the-rule",
+          "title": "WO-250-D011: Read the entropy review's token count from the field a usage observation carries: scripts/lib/entropy-review.mjs costFrom reads usage?.totals?.totalTokens and usage?.totals?.costUsd, but…",
+          "summary": "{ \"id\": \"WO-250-D011\", \"date\": \"2026-11-02\", \"dispatch\": \"resume: next; step 10, this order's reviews by the ladder\", \"decision\": \"The reviews ran as the ladder: three rounds, then the executor's judgment. Round 1 put one reviewer of each kind over the whole diff against the merge base 91a730ac: the criteria adversary through the helper on Codex, the design improver through the helper on Claude print, and the consistency reviewer as a dotln-worker Agent, whose returned text was recorded in the lane. It found 28 findings (5 blocking): 20 were fixed in full, 3 in part with the rest recorded, and 5 were recorded unfixed. Round 2 rechecked the fixes: the design and criteria reviewers as fresh he",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Settled in WO-250 by WO-250-D011's adjacent repair: scripts/lib/entropy-review.mjs costFrom now reads a usage observation's counters under usage, and a test-entropy-review.mjs case checks the stated count from a decoded Claude result envelope; the decision no longer names a follow-up, and the filed receipts keep their bytes.",
+          "reopenWhen": "A launched entropy review or refutation receipt again states tokens unknown beside a named usage source.",
+          "targets": [],
+          "at": "2026-11-02T18:45:59.618Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-60ea250ef102cc46",
+      "key": "decision:docs/evidence/WO-250/decisions.md#wo-250-d015",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "08323f548c16e267cf54a2d5d3ac0a4ed23f813257b294a7d56e577f011e61f6",
+          "ref": "docs/evidence/WO-250/decisions.md#wo-250-d015",
+          "title": "WO-250-D015: Preserve Agent prose reports that contain JSON examples in scripts/lib/review-worker.mjs recordAgentReview. Distinguish a claimed change-review result from incidental valid JSON in prose…",
+          "summary": "{ \"id\": \"WO-250-D015\", \"date\": \"2026-11-02\", \"dispatch\": \"resume: verify; VER-001 independent report-recorder probe\", \"decision\": \"Record a nonblocking correctness finding in the new Agent report recorder. A prose report containing a fenced JSON example such as {\\\"value\\\":2} is treated as a structured change-review return, then rejected with invalid-result: change review result shape. Preserve the implementation during read-only verification and route the repair to a follow-up: the original acceptance criteria do not require the additional record subcommand, and main had no record subcommand to regress.\", \"evidence\": [ \"docs/evidence/WO-250/verifier-001/probes.mjs, observe Agent prose record",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-2bcb656e4fc1e7f6",
+      "key": "decision:docs/evidence/WO-250/decisions.md#wo-250-d016",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "ea9033726b666b3abbd2f9e064e80dd5077fc251e878d639e6d5defe43ae70a7",
+          "ref": "docs/evidence/WO-250/decisions.md#wo-250-d016",
+          "title": "WO-250-D016: Resolve the concrete review-provenance remainder of WO-250-D011 design F4, F9 and F11: share the journal append/key contract with the lifecycle hook so a helper launched inside a phase…",
+          "summary": "{ \"id\": \"WO-250-D016\", \"date\": \"2026-11-02\", \"dispatch\": \"resume: verify; prior-review dispositions\", \"decision\": \"Carry the recorded design remainder from D011 without treating a preference as an unmet criterion. Rechecks and source inspection confirm the repair-cycle lane, fresh Codex counter, shared workerUse, content witness, current fixtures and Node data-option correction now hold. The retained provenance and metadata concerns below remain follow-ups; this verification adds their structured follow-up rather than leaving concrete defects only in a report or narrative disposition.\", \"evidence\": [ \"Every execution and repair report is readable in docs/control/local/reviews/WO-250, includi",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-9d3a966d2dedca36",
+      "key": "decision:docs/evidence/WO-250/decisions.md#wo-250-d018",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "75b1f6a264ebe42e24349037306c0e756467266866c39fd3e008c96fd077449d",
+          "ref": "docs/evidence/WO-250/decisions.md#wo-250-d018",
+          "title": "WO-250-D018: Correct the seven-use estimate in docs/product/07-execution-guide.md and its originating WO-250 known issue through the authorized documentation route: all three initial reviews, all…",
+          "summary": "{ \"id\": \"WO-250-D018\", \"date\": \"2026-11-02\", \"dispatch\": \"resume: verify; review-use estimate checked against the skip rule\", \"decision\": \"Board a nonblocking documentation clarification: product 07 says one ladder spends at least seven uses, but the stated skip rules allow a clean round one to finish with three. This wording repeats the order's known-issue estimate. The implemented one-use accounting, the guide's ladder, command and refusal rules, and all original acceptance checks still hold; do not turn the inaccurate secondary estimate into a new acceptance requirement or edit product text during read-only verification.\", \"evidence\": [ \"docs/product/07-execution-guide.md, Verification re",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-250-D019 (FINAL-001): the final review corrected product 07 §Verification review and attack: a full ladder spends seven uses, a skipped round spends fewer so three clean round-one reviews end the ladder at three uses, and a worker that returns no report costs its use and a retry. The order's known-issue line keeps the planner's estimate at filing, which a pass re-reads; a judged order's text is not edited in review.",
+          "reopenWhen": "The guide's use estimate is revised again, or a later planning pass calibrates review costs from completed cycles.",
+          "targets": [],
+          "at": "2026-11-02T21:28:02.414Z"
         }
       ]
     }

@@ -1,0 +1,4 @@
+bounded-start {"budgetBytes":3221225472,"physicalBytes":51539607552,"deadlineMs":900000}
+PROGRESS [bounded-probe] started
+harness check: 42 generated surfaces; local-terms list: present
+bounded-result {"name":"bounded-probe","durationMs":270,"slowestCases":[{"name":"bounded-probe","durationMs":270,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":40325824,"peakRssBytes":88965120,"memoryBudgetBytes":3221225472,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-11-02T20:55:22.741Z","finishedAt":"2026-11-02T20:55:23.011Z","exitCode":0,"executed":true}

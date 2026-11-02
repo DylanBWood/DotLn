@@ -1,0 +1,55 @@
+{
+  "freshSession": {
+    "count": 1,
+    "journalRows": 1,
+    "indexUnchanged": true
+  },
+  "combined": {
+    "priorFindingIds": [
+      "criteria.1.F1",
+      "design.1.F1"
+    ],
+    "rechecks": 2
+  },
+  "zeroCap": {
+    "refusedBeforeTransport": true,
+    "count": 0
+  },
+  "counter": {
+    "workers": "workers: launched 18 (claude 2, codex 16), re-tasked 2, cap 20, remaining 0",
+    "batchRefusedAt": 19,
+    "repeatChargedOnce": true
+  },
+  "gateClassification": {
+    "declaredRefusals": 10,
+    "phaseAndSessionPreserved": true,
+    "boundedPatternPreserved": true
+  },
+  "handoff": {
+    "validForms": 2,
+    "malformedAdvisory": true
+  },
+  "agentProse": {
+    "recorded": false,
+    "error": "invalid-result: change review result shape",
+    "input": "## Review\n\nRead src/value.mjs. Example data:\n```json\n{\"value\":2}\n```\nNo criterion defect found.\n"
+  },
+  "retention": {
+    "movedFiles": 4,
+    "repairRetained": true,
+    "earlierPreserved": true,
+    "retry": "nothing"
+  },
+  "shortLadder": {
+    "roundOneReviews": 3,
+    "findings": 0,
+    "uses": 3,
+    "skippedLaterRounds": "Inference from the role rule: no fixed findings require a recheck, and no round-two code fix requires a combined review."
+  },
+  "provenance": {
+    "initial": "independent-observations.json",
+    "correctedRetention": "retention-observations.json",
+    "focusedCleanRound": "probe-observations.json",
+    "portableBundle": "portable-probes.txt: eight passing cases after the retention setup correction"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "retention": {
+    "movedFiles": 4,
+    "repairRetained": true,
+    "earlierPreserved": true,
+    "retry": "nothing"
+  }
+}
