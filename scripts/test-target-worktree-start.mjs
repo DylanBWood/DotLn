@@ -43,6 +43,10 @@ import {
   launchpadCommands,
 } from "./lib/target-worktree-fixture.mjs";
 
+// A failed review names its basis in its findings block (WO-249).
+const failBasis =
+  '\n<!-- dotln-findings:start -->\n[{"id": "F1", "route": "blocking", "class": "escape", "summary": "A fixture regression.", "basis": {"regression": "the fixture behavior main had"}, "reproduction": "docs/evidence/WO-999/regression.md"}]\n<!-- dotln-findings:end -->\n';
+
 test("target start gives sign-off guidance only without a declared operator author", () => {
   for (const declared of [false, true])
     withFixture((f) => {
@@ -380,17 +384,26 @@ test("target briefings name a missing repository throughout dispatch and print l
     // printed and answer from the launchpad's own scripts.
     const verification = launchpadCommands(f, f.ok(f.resume(["briefing"])));
     assert.deepEqual(names(verification), [
+      "scripts/resume.mjs defect",
       "scripts/resume.mjs waive",
       "scripts/refute-plan.mjs amend-order",
       documentGate,
     ]);
-    const waive = verification[0].run();
+    // The defect route's class placeholder names no class, so it answers
+    // from the launchpad's own script and records nothing.
+    const defect = verification[0].run();
+    assert.notEqual(defect.status, 0);
+    assert.match(
+      defect.stderr,
+      /defect refused: printed is not a defect class/u,
+    );
+    const waive = verification[1].run();
     assert.notEqual(waive.status, 0);
     assert.match(
       waive.stderr,
       /waive requires --capture <path> naming an ignored capture under records\/intake\//u,
     );
-    const amend = verification[1].run();
+    const amend = verification[2].run();
     assert.notEqual(amend.status, 0);
     assert.match(amend.stderr, /usage: plan amend-order <WO-NNN>/u);
     const report = `# Fixture\n\n**Actor attestation:** ${JSON.stringify(actor)}\n\n**Process cost:** unknown; cause no-session\n`;
@@ -411,13 +424,14 @@ test("target briefings name a missing repository throughout dispatch and print l
     );
     const printed = launchpadCommands(f, briefing);
     assert.deepEqual(names(printed), [
+      "scripts/resume.mjs defect",
       "scripts/resume.mjs waive",
       "scripts/refute-plan.mjs amend-order",
       documentGate,
       "scripts/worktree.mjs integrate",
       ...postReviewCommands,
     ]);
-    const [, , gate, , records, ...publications] = printed;
+    const [, , , gate, , records, ...publications] = printed;
     assert.match(
       briefing,
       /scripts\/worktree\.mjs' integrate WO-999, directly from this target root/u,
@@ -455,7 +469,11 @@ test("target briefings name a missing repository throughout dispatch and print l
       /cannot perform action in phase final-review; run: DOTLN_LAUNCHPAD='[^']*' node '[^']*\/scripts\/resume\.mjs' final-review-result pass\|fail /u,
     );
     assert.doesNotMatch(hint.stderr, /npm run resume --/u);
-    write(f.orderRoot, "records/final-reviews/WO-999/FINAL-001.md", report);
+    write(
+      f.orderRoot,
+      "records/final-reviews/WO-999/FINAL-001.md",
+      `${report}${failBasis}`,
+    );
     f.ok(f.resume(["final-review-result", "fail", ...actorArgs]));
     missing(["fix"], "repairing");
     const repair = launchpadCommands(f, f.ok(f.resume(["briefing"])));
@@ -673,6 +691,11 @@ test("WO-210 a failed target final review records no target subject", () =>
       f.target,
       "untracked.txt",
       "Failing review retains uncommitted work.\n",
+    );
+    write(
+      f.orderRoot,
+      "records/final-reviews/WO-999/FINAL-001.md",
+      `# Final fixture\n\n**Actor attestation:** ${JSON.stringify(actor)}\n\n**Process cost:** unknown; cause no-session\n${failBasis}`,
     );
     f.ok(f.resume(["final-review-result", "fail", ...actorArgs]));
     const event = readFileSync(

@@ -1,0 +1,266 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-249",
+  "report": "docs/verifications/WO-249/VER-001.md",
+  "recordedAt": "2026-11-02T14:46:40.057Z",
+  "subject": {
+    "head": "1464dc1a2a74118c3bd9a9cd280feae3dfda451e",
+    "codeIdentity": "ee5ba51e09fb2b2962ed80bfed1fa39a196f420ffdf0a98ab09b37e9dfdff58e",
+    "treeHashAtObservation": "09a0e3f46ef8f27dbba1d7c494441b2841ff2ee0",
+    "kind": "uncommitted candidate"
+  },
+  "product": {
+    "checkId": "npm test",
+    "codeIdentity": "ee5ba51e09fb2b2962ed80bfed1fa39a196f420ffdf0a98ab09b37e9dfdff58e",
+    "treeHash": "224535085e29123f767d0e6f72f147de8f334828",
+    "gateSelection": "review",
+    "exitCode": 0,
+    "executed": true,
+    "recordedAt": "2026-11-02T13:47:37.841Z",
+    "evidenceRef": "host-gate:ee5ba51e09fb2b2962ed80bfed1fa39a196f420ffdf0a98ab09b37e9dfdff58e:npm test",
+    "durationMs": 2497231,
+    "requiredSuiteCount": 44,
+    "requiredSuites": [
+      "build",
+      "format",
+      "configuration-root",
+      "registrations",
+      "declarations",
+      "generated",
+      "host",
+      "release-preparation",
+      "github-body",
+      "outward-lint",
+      "target-publish",
+      "target-worktree",
+      "vertical",
+      "license-fixtures",
+      "publication-fixtures",
+      "backup-intake",
+      "resume",
+      "launchpad",
+      "workstream-pilot",
+      "instance-history",
+      "beacon-portability",
+      "checkpoint",
+      "worktree",
+      "worktree-integration",
+      "release",
+      "work-orders-fixtures",
+      "siblings-fixtures",
+      "kernel",
+      "compiler",
+      "skeleton",
+      "console",
+      "browser-evidence",
+      "adjacent-queue",
+      "derived-orders",
+      "portfolio",
+      "codex-continuation",
+      "authority-grants",
+      "launchpad-planning",
+      "harness-probe",
+      "harness-fixtures",
+      "plan-refutation",
+      "runner-fixtures",
+      "sync-fixtures",
+      "process-debt"
+    ],
+    "taskCount": 117,
+    "stands": true,
+    "unrunSuites": [],
+    "sharedRefs": {
+      "start": {
+        "originMain": "1464dc1a2a74118c3bd9a9cd280feae3dfda451e",
+        "main": "1464dc1a2a74118c3bd9a9cd280feae3dfda451e",
+        "tags": {
+          "count": 196,
+          "newest": "v0.108.0"
+        },
+        "dotlnRefs": 2180
+      },
+      "end": {
+        "originMain": "1464dc1a2a74118c3bd9a9cd280feae3dfda451e",
+        "main": "1464dc1a2a74118c3bd9a9cd280feae3dfda451e",
+        "tags": {
+          "count": 196,
+          "newest": "v0.108.0"
+        },
+        "dotlnRefs": 2183
+      }
+    }
+  },
+  "focused": {
+    "checkId": "suite:resume",
+    "codeIdentity": "ee5ba51e09fb2b2962ed80bfed1fa39a196f420ffdf0a98ab09b37e9dfdff58e",
+    "treeHash": "e6b339f3c0b2141d020baa4f83d2f92fba9ad4b6",
+    "gateSelection": "single",
+    "exitCode": 0,
+    "executed": true,
+    "recordedAt": "2026-11-02T14:41:32.693Z",
+    "evidenceRef": "host-gate:ee5ba51e09fb2b2962ed80bfed1fa39a196f420ffdf0a98ab09b37e9dfdff58e:resume",
+    "durationMs": 175450,
+    "requiredSuiteCount": 8,
+    "requiredSuites": [
+      "build",
+      "format",
+      "configuration-root",
+      "registrations",
+      "declarations",
+      "generated",
+      "host",
+      "resume"
+    ],
+    "taskCount": 8,
+    "stands": true,
+    "unrunSuites": [],
+    "sharedRefs": {
+      "start": {
+        "originMain": "1464dc1a2a74118c3bd9a9cd280feae3dfda451e",
+        "main": "1464dc1a2a74118c3bd9a9cd280feae3dfda451e",
+        "tags": {
+          "count": 196,
+          "newest": "v0.108.0"
+        },
+        "dotlnRefs": 2186
+      },
+      "end": {
+        "originMain": "cd4b80589d2fa371611baae4e3814391ffc0e256",
+        "main": "cd4b80589d2fa371611baae4e3814391ffc0e256",
+        "tags": {
+          "count": 197,
+          "newest": "v0.109.0"
+        },
+        "dotlnRefs": 2186
+      }
+    }
+  },
+  "probes": {
+    "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-249/verifier-001-probes.mjs",
+    "exitCode": 0,
+    "recordedAt": "2026-11-02T14:44:08.887Z",
+    "cases": [
+      {
+        "id": "P1 five classes, reflow hash, stale and retracted report records",
+        "outcome": "pass"
+      },
+      {
+        "id": "P2 fail consistency and advisory basis handling",
+        "outcome": "pass"
+      },
+      {
+        "id": "P3 fenced headings preserve post-example receipt across CommonMark fences",
+        "outcome": "pass"
+      },
+      {
+        "id": "P4 lint all units, ranges, multiple matches and clean prose",
+        "outcome": "pass"
+      },
+      {
+        "id": "P5 merge and unrepaired retraction decisions",
+        "outcome": "pass"
+      },
+      {
+        "id": "P6 CLI all five defect classes and executor refusal",
+        "outcome": "pass"
+      },
+      {
+        "id": "P7 criterion records render in order, stale comparisons and target exception",
+        "outcome": "pass"
+      },
+      {
+        "id": "P8 planning counts actual CLI events and omits a retracted class",
+        "outcome": "pass"
+      }
+    ],
+    "commandCount": 21,
+    "refusals": [
+      {
+        "action": "defect",
+        "exitCode": 1,
+        "diagnostic": "Advisory: attestation recorded as supplied; codex-cli fixture effort xhigh has no matching discovery observation.\nerror: defect refused: this session is WO-901's executor, and the executor cannot record its own order's criterion defective. It records the criterion unmet with the class named; the verifier or the reviewer records the defect."
+      },
+      {
+        "action": "defect",
+        "exitCode": 1,
+        "diagnostic": "Advisory: attestation recorded as supplied; codex-cli fixture effort xhigh has no matching discovery observation.\nerror: defect refused: unknown is not a defect class; a criterion is recorded defective as one of bookkeeping, later-phase, absent-input, host-behavior, contradiction"
+      }
+    ]
+  },
+  "checks": [
+    {
+      "command": "node scripts/harness.mjs bounded -- npm run format:check",
+      "exitCode": 0,
+      "result": "All matched files use Prettier code style."
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- bash scripts/test-release.sh --case worktree_retraction",
+      "exitCode": 0,
+      "result": "Release close refused the worktree retraction before and after an unmerged repair passed."
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- bash scripts/test-release.sh --case criterion_records",
+      "exitCode": 0,
+      "result": "Prepared record lines precede the process table and the body profile passes."
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node scripts/harness.mjs check",
+      "exitCode": 0,
+      "result": "42 generated surfaces current."
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- npm run publication:check",
+      "exitCode": 0,
+      "result": "256 product headings indexed; both publication TOCs current."
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- npm run work-orders -- index --check",
+      "exitCode": 0,
+      "result": "Three advisory lines: WO-238 criterion 3 (8 KB), WO-244 criterion 3 (git log), WO-246 criterion 5 (HEAD); open index and history current."
+    },
+    {
+      "command": "git diff HEAD --check",
+      "exitCode": 0
+    }
+  ],
+  "review": {
+    "scope": "All authored production changes, relevant changed tests and fixture consumers; generated surfaces checked by harness check and current-identity structural/gate rows.",
+    "lenses": [
+      "correctness and tests",
+      "design and coupling",
+      "operator flow",
+      "authority and private data",
+      "maintainer in six months",
+      "platform fit"
+    ],
+    "workerReports": {
+      "source": "Local SubagentHandback streams of the three workers named by WO-249-D017 through D021",
+      "roles": [
+        "criteria adversary",
+        "design improver",
+        "consistency reviewer"
+      ],
+      "roundsRead": 6,
+      "reportCount": 18
+    },
+    "newFindings": [],
+    "existingFollowups": [
+      "FUP-4798f1b5f5a74ed1",
+      "FUP-a9efc000150d7e9f"
+    ],
+    "newWorkers": 0
+  },
+  "limits": [
+    "No live forge operation or squash-merge behavior exercised. Local bare origins and fixtures support merge/refusal claims.",
+    "No end-to-end target-order closed retraction or release-close fixture with a removed target worktree; the shared merge rule and launchpad-worktree read were reviewed.",
+    "The waive/retract stale-body hints and launchpad publish refusal have source/helper coverage; no new complete publish flow was run.",
+    "Natural-language evidence ownership and waiver intent remain role judgments, as the design declares.",
+    "The lifecycle under verification also allocated and will record VER-001; raw event reads and independent probes disclose that overlap."
+  ],
+  "process": {
+    "decision": "docs/evidence/WO-249/decisions.md#wo-249-d023--independent-verification-scope-and-read-correction",
+    "monitorAdvisory": "During the focused gate the original-parent unique-identity signal was unavailable; other signals remained active.",
+    "liveGatesAtObservation": 0,
+    "dollarCap": "unenforced; transport exposes no hard dollar-cap control"
+  }
+}

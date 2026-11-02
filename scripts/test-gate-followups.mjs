@@ -64,6 +64,7 @@ test("bounded role wording preserves prior savings and records reviewed startup 
   // test-process-debt.mjs walks every recorded parent link of every oracle
   // and checks each recorded hash.
   const chain = [
+    "wo249-integration-role-baseline.json",
     "wo251-role-baseline.json",
     "wo247-role-baseline.json",
     "wo192-integration-role-baseline.json",

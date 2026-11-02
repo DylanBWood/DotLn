@@ -44,7 +44,11 @@ import {
   matchesExecutionAmendment,
 } from "./plan-continuation.mjs";
 import { markdownHeadings, readDecisions } from "./meta.mjs";
-import { checkSequenceTopology, readIndex } from "../work-orders.mjs";
+import {
+  checkSequenceTopology,
+  criteriaAdvisories,
+  readIndex,
+} from "../work-orders.mjs";
 
 // Default-layout names for peers and fixtures; the reader and writer below
 // resolve the same evidence under a launchpad's configured roots.
@@ -1717,10 +1721,26 @@ export function targetOrderPathAdvisories(root, rows) {
   return advisories;
 }
 
+/** The criteria screen over every open order, which the pass reads before it
+ * files (WO-249); it refuses nothing. */
+export const openOrderCriteriaAdvisories = (root, rows) =>
+  rows
+    .filter((row) => ["Active", "Open"].includes(row.section))
+    .flatMap((row) =>
+      criteriaAdvisories(
+        row.id,
+        readFileSync(
+          join(root, `${docRelative(root, "workOrders")}/${row.authorityLink}`),
+          "utf8",
+        ),
+      ),
+    );
+
 export async function checkPlanGate(root) {
   const index = readIndex(root, []);
   checkSequenceTopology(index);
   const advisories = targetOrderPathAdvisories(root, index.rows);
+  const criteria = openOrderCriteriaAdvisories(root, index.rows);
   const localTerms = checkLocalTerms(root, []).status;
   const receipts = await readReceipts(root);
   const overrides = readOverrides(root);
@@ -1812,6 +1832,7 @@ export async function checkPlanGate(root) {
       enforcement: "pending introduction commit",
       localTerms,
       advisories,
+      criteriaAdvisories: criteria,
     };
   let continuation = null;
   if (passes.length) {
@@ -1878,5 +1899,6 @@ export async function checkPlanGate(root) {
     localTerms,
     continuation,
     advisories,
+    criteriaAdvisories: criteria,
   };
 }

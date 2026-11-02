@@ -94,6 +94,9 @@ const expected = [
   "withdrawal",
   "corrections",
   "overrideRecords",
+  "defectiveCriteria",
+  "retractedOffRamps",
+  "reopenedHandoffs",
   "recordedAt",
   "elapsed",
   "orders",
@@ -227,7 +230,7 @@ node "$umbrella_repo/scripts/resume.mjs" activate WO-903 docs/work-orders/WO-903
 test -s "$umbrella_repo/docs/control/orders/WO-903.jsonl"
 activate_warning="$(node "$fixture_repo/scripts/resume.mjs" activate WO-099 docs/work-orders/WO-099-fixture.md 2>&1 >/dev/null)"
 assert_status_read_only
-assert_status_json '{"workOrder":"WO-099","workOrderPath":"docs/work-orders/WO-099-fixture.md","phase":"active","route":{"action":null,"role":null,"phrase":null,"stop":{"reason":"dispatch-refused","next":"The selected order has no registered worktree; restore its worktree before driving. Main cannot select its phase implicitly."},"eventCount":1},"latestVerification":null,"verificationPath":null,"latestVerdict":null,"finalReview":null,"finalReviewPath":null,"latestAttestation":null,"effortDrift":[],"latestCheckpoint":{"unavailable":true},"legalNextActions":["next","implementation-ready"],"legalOffRamps":["accept-overrun","withdraw","correct","override-record"],"boundAcceptances":[],"waivedCriteria":[],"unmetCriteria":[],"withdrawal":null,"corrections":[],"overrideRecords":[]}'
+assert_status_json '{"workOrder":"WO-099","workOrderPath":"docs/work-orders/WO-099-fixture.md","phase":"active","route":{"action":null,"role":null,"phrase":null,"stop":{"reason":"dispatch-refused","next":"The selected order has no registered worktree; restore its worktree before driving. Main cannot select its phase implicitly."},"eventCount":1},"latestVerification":null,"verificationPath":null,"latestVerdict":null,"finalReview":null,"finalReviewPath":null,"latestAttestation":null,"effortDrift":[],"latestCheckpoint":{"unavailable":true},"legalNextActions":["next","implementation-ready"],"legalOffRamps":["accept-overrun","withdraw","correct","override-record"],"boundAcceptances":[],"waivedCriteria":[],"unmetCriteria":[],"withdrawal":null,"corrections":[],"overrideRecords":[],"defectiveCriteria":[],"retractedOffRamps":[],"reopenedHandoffs":[]}'
 tail -n 1 "$active_log" | grep -Fq '"effortDeclarationValidated":true'
 grep -q 'warning: could not create recovery checkpoint.*not a valid object name HEAD' <<<"$activate_warning"
 grep -Fq 'Do not repeat this transition after it records' <<<"$activate_warning"
@@ -379,7 +382,11 @@ printf '%s\n' \
   '# fail' \
   '' \
   '**Process cost:** unknown; cause no-session' \
-  '**Actor attestation:** {"harness":"codex-cli","harnessVersion":"fixture-2","model":"fixture.model/beta","effort":"custom-selector","source":"self-reported"}' >"$fixture_repo/docs/verifications/WO-099/VER-002.md"
+  '**Actor attestation:** {"harness":"codex-cli","harnessVersion":"fixture-2","model":"fixture.model/beta","effort":"custom-selector","source":"self-reported"}' \
+  '' \
+  '<!-- dotln-findings:start -->' \
+  '[{"id": "F1", "route": "blocking", "class": "escape", "summary": "A fixture regression.", "basis": {"regression": "the fixture behavior main had"}, "reproduction": "docs/evidence/WO-099/regression.md"}]' \
+  '<!-- dotln-findings:end -->' >"$fixture_repo/docs/verifications/WO-099/VER-002.md"
 assert_refusal 'verification report actor header does not match the completion actor' verification-result fail \
   --harness codex-cli --harness-version fixture-2 --model fixture.model/beta --effort xhigh --source self-reported
 run_with_actor verification-result custom-selector fail
@@ -435,7 +442,11 @@ printf '%s\n' \
   '# failed final' \
   '' \
   '**Process cost:** unknown; cause no-session' \
-  '**Actor attestation:** {"harness":"codex-cli","harnessVersion":"fixture-2","model":"fixture.model/beta","effort":"xhigh","source":"self-reported"}' >"$fixture_repo/docs/final-reviews/WO-099/FINAL-002.md"
+  '**Actor attestation:** {"harness":"codex-cli","harnessVersion":"fixture-2","model":"fixture.model/beta","effort":"xhigh","source":"self-reported"}' \
+  '' \
+  '<!-- dotln-findings:start -->' \
+  '[{"id": "F1", "route": "blocking", "class": "escape", "summary": "A fixture regression.", "basis": {"regression": "the fixture behavior main had"}, "reproduction": "docs/evidence/WO-099/regression.md"}]' \
+  '<!-- dotln-findings:end -->' >"$fixture_repo/docs/final-reviews/WO-099/FINAL-002.md"
 assert_refusal 'usage: resume final-review-result pass|fail' final-review-result fail
 run_with_actor final-review-result xhigh fail
 node "$fixture_repo/scripts/resume.mjs" fix 2>/dev/null | grep -q 'FINAL-002.md'
@@ -494,7 +505,7 @@ final_pass_output="$(node "$fixture_repo/scripts/resume.mjs" final-review-result
   --effort unknown \
   --source operator-attested 2>/dev/null)"
 assert_status_read_only
-assert_status_json '{"workOrder":"WO-099","workOrderPath":"docs/work-orders/WO-099-fixture.md","phase":"closed","route":{"action":null,"role":null,"phrase":null,"stop":{"reason":"awaiting-merge","next":"The operator merges the reviewed pull request(s), then types the same drive phrase again."},"eventCount":20},"latestVerification":"VER-004","verificationPath":"docs/verifications/WO-099/VER-004.md","latestVerdict":"pass","finalReview":"FINAL-003","finalReviewPath":"docs/final-reviews/WO-099/FINAL-003.md","latestAttestation":{"harness":"human","harnessVersion":"not-applicable","model":"human","effort":"unknown","source":"operator-attested"},"effortDrift":[{"effort":"xhigh"},{"effort":"custom-selector"},{"effort":"high"},{"effort":"custom-selector-2"},{"effort":"unknown"}],"latestCheckpoint":{"unavailable":true},"legalNextActions":["release-close","next","activate"],"legalOffRamps":["correct","override-record"],"boundAcceptances":[],"waivedCriteria":[],"unmetCriteria":[],"withdrawal":null,"corrections":[],"overrideRecords":[]}'
+assert_status_json '{"workOrder":"WO-099","workOrderPath":"docs/work-orders/WO-099-fixture.md","phase":"closed","route":{"action":null,"role":null,"phrase":null,"stop":{"reason":"awaiting-merge","next":"The operator merges the reviewed pull request(s), then types the same drive phrase again."},"eventCount":20},"latestVerification":"VER-004","verificationPath":"docs/verifications/WO-099/VER-004.md","latestVerdict":"pass","finalReview":"FINAL-003","finalReviewPath":"docs/final-reviews/WO-099/FINAL-003.md","latestAttestation":{"harness":"human","harnessVersion":"not-applicable","model":"human","effort":"unknown","source":"operator-attested"},"effortDrift":[{"effort":"xhigh"},{"effort":"custom-selector"},{"effort":"high"},{"effort":"custom-selector-2"},{"effort":"unknown"}],"latestCheckpoint":{"unavailable":true},"legalNextActions":["release-close","next","activate"],"legalOffRamps":["correct","override-record","retract"],"boundAcceptances":[],"waivedCriteria":[],"unmetCriteria":[],"withdrawal":null,"corrections":[],"overrideRecords":[],"defectiveCriteria":[],"retractedOffRamps":[],"reopenedHandoffs":[]}'
 grep -Fq 'npm run worktree -- publish WO-099 --title "<title>" --body-file <contained-reviewed-body-path>' <<<"$final_pass_output"
 grep -Fq 'Latest attestation: harness human; version not-applicable; model human; effort unknown; source operator-attested' "$fixture_repo/docs/control/current.md"
 if grep -Fq 'raw: unknown' "$fixture_repo/docs/control/current.md"; then printf 'error: canonical unknown was duplicated as a raw label\n' >&2; exit 1; fi
@@ -561,13 +572,16 @@ assert.deepStrictEqual(status, {
   ],
   latestCheckpoint: { unavailable: true },
   legalNextActions: ["release-close", "next", "activate"],
-  legalOffRamps: ["correct", "override-record"],
+  legalOffRamps: ["correct", "override-record", "retract"],
   boundAcceptances: [],
   waivedCriteria: [],
   unmetCriteria: [],
   withdrawal: null,
   corrections: [],
   overrideRecords: [],
+  defectiveCriteria: [],
+  retractedOffRamps: [],
+  reopenedHandoffs: [],
 });
 NODE
 cmp "$test_root/current.drifted" "$fixture_repo/docs/control/current.md"
@@ -747,7 +761,8 @@ for (const body of ["", "\n**Process cost:** unknown\n", "\n- **Process cost:** 
   await assert.rejects(() => call(["verification-result", "fail", ...actorArgs]), /Receipt cost lines refused:\ndocs\/verifications\/WO-087\/VER-001\.md: cost line /);
   assert.deepEqual(readFileSync(log), beforeRefusal, "a refused cost line appends no event");
 }
-writeFileSync(bareUnknown, `# fixture\n\n**Actor attestation:** ${JSON.stringify(actor)}\n\n- **Process cost:** entry 120,412 tokens; handoff 388,019 tokens; source claude-transcript-message-usage\n`);
+// A fail names its basis in its findings block (WO-249).
+writeFileSync(bareUnknown, `# fixture\n\n**Actor attestation:** ${JSON.stringify(actor)}\n\n- **Process cost:** entry 120,412 tokens; handoff 388,019 tokens; source claude-transcript-message-usage\n\n<!-- dotln-findings:start -->\n[{"id": "F1", "route": "blocking", "class": "escape", "summary": "A fixture regression.", "basis": {"regression": "the fixture behavior main had"}, "reproduction": "docs/evidence/WO-087/regression.md"}]\n<!-- dotln-findings:end -->\n`);
 await call(["verification-result", "fail", ...actorArgs]);
 await call(["fix"]);
 await call(["repair-complete", ...actorArgs]);
@@ -1048,7 +1063,8 @@ const report = async (field, attestation) => {
   const status = JSON.parse(await selectedCall(["status", "--json"]));
   const file = join(root, status[field]);
   fs.mkdirSync(join(file, ".."), { recursive: true });
-  fs.writeFileSync(file, `# Fixture\n\n**Actor attestation:** ${JSON.stringify(attestation)}\n\n**Process cost:** unknown; cause no-session\n`);
+  // A fail names its basis in its findings block (WO-249).
+  fs.writeFileSync(file, `# Fixture\n\n**Actor attestation:** ${JSON.stringify(attestation)}\n\n**Process cost:** unknown; cause no-session\n\n<!-- dotln-findings:start -->\n[{"id": "F1", "route": "blocking", "class": "escape", "summary": "A fixture regression.", "basis": {"regression": "the fixture behavior main had"}, "reproduction": "docs/evidence/${id}/regression.md"}]\n<!-- dotln-findings:end -->\n`);
 };
 await report("verificationPath", actor);
 const beforeReport = snapshot();

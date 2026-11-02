@@ -1,4 +1,4 @@
-# WO-249 — Criteria judge the product: a verifier records a criterion that no candidate can meet as defective by class and the order goes on without a waiver, a waiver is the operator's words asking for it and can be retracted, a handoff the operator widened can be reopened, a failing verification names the criterion or the regression it failed on, and planning lints criteria for the five defect classes (version assigned at activation)
+# WO-249 — Criteria judge the product: a verifier records a criterion that no candidate can meet as defective by class and the order goes on without a waiver, a waiver is the operator's words asking for it and can be retracted, a handoff the operator widened can be reopened, a failing verification names the criterion or the regression it failed on, and planning lints criteria for the five defect classes (v0.110.0)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

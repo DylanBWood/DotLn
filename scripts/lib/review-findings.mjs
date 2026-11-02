@@ -1,7 +1,10 @@
-// A final-review report declares its findings once, as a JSON array between two
-// marker lines (the pattern of dependencies.mjs). `final-review-result` reads
-// only that block: no prose line is ever counted. Counts are recorded with the
-// immutable result; planning consumes the event, never reinterprets the report.
+import { posix } from "node:path";
+import { CRITERION_ID } from "./control.mjs";
+// A verification or final-review report declares its findings once, as a JSON
+// array between two marker lines (the pattern of dependencies.mjs). The result
+// commands read only that block: no prose line is ever counted. A fail's
+// blocking entries are its basis; a final review's counts are recorded with the
+// immutable result, and planning consumes the event, never the report.
 const classes = ["escape", "integration", "new-scope"];
 const findingClasses = [...classes, "unclassed"];
 const routes = ["blocking", "follow-up", "operator"];
@@ -13,6 +16,8 @@ const findingsFormat = `a \`${START}\` line, a JSON array of {"id": "F1", "route
 // behind a quote or list marker, in other case or spacing, or alone in inline
 // code is a marker too. A sentence that mentions a marker holds other letters.
 const MARKER = /^[^\p{L}]*dotln-findings:(start|end)[^\p{L}]*$/iu;
+/** Whether a line is one of the block's marker lines, by the rule above. */
+export const isFindingsMarker = (line) => MARKER.test(line);
 const ID = /^F[1-9]\d*$/u;
 // A writer may fence the array. No line of a JSON array is a fence line, so
 // dropping one never changes what a valid array says; a fence line that also
@@ -28,23 +33,16 @@ const show = (entry) => {
 };
 
 /**
- * The findings a report's block declares. Every outcome is decided by the
- * block alone:
- * - no marker line, more than one start or end marker line, an end before its
- *   start, invalid JSON, a value that is not an array, or an entry that is
- *   not an object with an `id` `F<n>` (n from 1, no leading zero) no other
- *   entry has, a listed `route` and a one-line `summary`: `measured` is false
- *   and `cause` names the first such problem;
- * - a failed review whose block lists no blocking finding: unmeasured, since
- *   a review fails on one;
- * - otherwise `counts` holds one count per entry, by its `class`; an entry
- *   whose class is absent or outside the three classes counts as `unclassed`
- *   and is listed in `unclassed` with whether its route is blocking.
- * A second copy of a marker line, an example included, makes the report
- * unmeasured rather than half read.
+ * The report's findings block as written: `readable` with its `entries`, or
+ * not readable with a `cause` naming the first problem. A block is readable
+ * when the report has exactly one start and one end marker line, in that
+ * order, around a JSON array whose every entry is an object with an `id`
+ * `F<n>` (n from 1, no leading zero) no other entry has, a listed `route` and
+ * a one-line `summary`. A second copy of a marker line, an example included,
+ * makes the block unreadable rather than half read.
  */
-export function reviewFindings(text, { verdict } = {}) {
-  const unmeasured = (cause) => ({ measured: false, cause });
+export function readFindingsBlock(text) {
+  const unreadable = (cause) => ({ readable: false, cause });
   const lines = text.split(/\r\n?|\n/u);
   const at = (kind) =>
     lines.flatMap((line, index) =>
@@ -53,13 +51,13 @@ export function reviewFindings(text, { verdict } = {}) {
   const starts = at("start");
   const ends = at("end");
   if (!starts.length && !ends.length)
-    return unmeasured("the report has no findings block");
+    return unreadable("the report has no findings block");
   if (starts.length !== 1 || ends.length !== 1 || starts[0] > ends[0]) {
     const on = (found) =>
       found.length
         ? `line${found.length === 1 ? "" : "s"} ${found.join(", ")}`
         : "no line";
-    return unmeasured(
+    return unreadable(
       `the report needs one findings block, and has a start marker on ${on(starts)} and an end marker on ${on(ends)}`,
     );
   }
@@ -72,14 +70,14 @@ export function reviewFindings(text, { verdict } = {}) {
         .join("\n"),
     );
   } catch {
-    return unmeasured("the findings block is not valid JSON");
+    return unreadable("the findings block is not valid JSON");
   }
   if (!Array.isArray(entries))
-    return unmeasured("the findings block is not a JSON array");
+    return unreadable("the findings block is not a JSON array");
   const seen = new Set();
   for (const [index, entry] of entries.entries()) {
     const invalid = (problem) =>
-      unmeasured(
+      unreadable(
         `entry ${index + 1} of the findings block ${problem}: ${show(entry)}`,
       );
     if (!entry || typeof entry !== "object" || Array.isArray(entry))
@@ -92,6 +90,23 @@ export function reviewFindings(text, { verdict } = {}) {
       return invalid(`needs a route ${routes.join(", ")}`);
     if (!oneLine(entry.summary)) return invalid("needs a one-line summary");
   }
+  return { readable: true, entries };
+}
+
+/**
+ * The findings a report's block declares, decided by the block alone:
+ * - an unreadable block (above): `measured` is false and `cause` names why;
+ * - a failed review whose block lists no blocking finding: unmeasured, since
+ *   a review fails on one;
+ * - otherwise `counts` holds one count per entry, by its `class`; an entry
+ *   whose class is absent or outside the three classes counts as `unclassed`
+ *   and is listed in `unclassed` with whether its route is blocking.
+ */
+export function reviewFindings(text, { verdict } = {}) {
+  const unmeasured = (cause) => ({ measured: false, cause });
+  const block = readFindingsBlock(text);
+  if (!block.readable) return unmeasured(block.cause);
+  const { entries } = block;
   if (
     verdict === "fail" &&
     !entries.some((entry) => entry.route === "blocking")
@@ -129,6 +144,86 @@ export function findingsAdvisory(findings) {
     )
     .join(" and ");
   return `${named} ${findings.unclassed.length === 1 ? "has" : "have"} no class or one outside ${classes.join(", ")}; counted as unclassed.`;
+}
+
+/** The block's form as an advisory states it, for a report that has none. */
+export const findingsBlockFormat = findingsFormat;
+/** What a blocking entry adds to the block's form. */
+export const BASIS_FORMS =
+  '"basis": {"criterion": "<id>"} or {"regression": "<the behavior main had>"} and a "reproduction" path';
+
+/**
+ * A blocking entry's basis as the one rule reads it: `{criterion}` naming a
+ * criterion id (a number is read as its digits), `{regression}` naming the
+ * behavior main had, or null when the entry gives neither exactly. Both the
+ * fail's judgment and the advisories below read a basis only through this.
+ */
+export function blockingBasis(entry) {
+  const basis = entry?.basis;
+  if (basis === null || typeof basis !== "object" || Array.isArray(basis))
+    return null;
+  const keys = Object.keys(basis);
+  if (keys.length !== 1) return null;
+  if (keys[0] === "criterion") {
+    const id =
+      Number.isSafeInteger(basis.criterion) && basis.criterion > 0
+        ? String(basis.criterion)
+        : basis.criterion;
+    return typeof id === "string" && CRITERION_ID.test(id)
+      ? { criterion: id }
+      : null;
+  }
+  if (keys[0] === "regression" && oneLine(basis.regression))
+    return { regression: basis.regression };
+  return null;
+}
+
+/**
+ * A blocking finding names its basis, the criterion it fails or the behavior
+ * main had that the change broke, and its reproduction, a file under the
+ * order's evidence directory. A missing or malformed basis advises and never
+ * refuses: only a fail's agreement with its own lines is refused. `declared`
+ * is the order's criterion ids, or null when they cannot be read; `met` is
+ * the criteria the same report judges met, which a basis contradicts. A
+ * report's problems make one advisory, or none.
+ */
+export function blockingBasisAdvisories(
+  entries,
+  { declared = null, met = [], evidenceRoot, exists = () => true },
+) {
+  const advisories = [];
+  for (const entry of entries) {
+    if (entry.route !== "blocking") continue;
+    const problems = [];
+    const basis = blockingBasis(entry);
+    if (!basis) problems.push(`no basis (${BASIS_FORMS})`);
+    else if (basis.criterion !== undefined) {
+      if (declared !== null && !declared.includes(basis.criterion))
+        problems.push(
+          `a basis criterion ${basis.criterion} the order does not declare`,
+        );
+      else if (met.includes(basis.criterion))
+        problems.push(
+          `a basis criterion ${basis.criterion} the report judges met`,
+        );
+    }
+    const path = entry.reproduction;
+    if (
+      typeof path !== "string" ||
+      posix.normalize(path) !== path ||
+      !path.startsWith(`${evidenceRoot}/`)
+    )
+      problems.push(`no reproduction path under ${evidenceRoot}/`);
+    else if (!exists(path))
+      problems.push(`a reproduction ${path} that is not a file`);
+    if (problems.length)
+      advisories.push(
+        `blocking finding ${entry.id} has ${problems.join(" and ")}`,
+      );
+  }
+  return advisories.length
+    ? [`${advisories.join("; ")}; the result records all the same`]
+    : [];
 }
 
 export const measuredFindingCounts = (event) =>

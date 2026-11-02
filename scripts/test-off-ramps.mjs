@@ -14,6 +14,7 @@ import {
   cpSync,
   existsSync,
   mkdirSync,
+  readdirSync,
   readFileSync,
   realpathSync,
   rmSync,
@@ -139,16 +140,26 @@ const readbackFlags = [
   "claude-session-readback",
 ];
 // Criterion 1: each route's legal phases, independent of the route table.
+// Three more are legal (WO-249): a defect record while a role judges the
+// order, a retraction wherever a judgment may still read a record, and a
+// reopened handoff before any verification of it.
 const legalIn = {
   none: [],
   active: ["accept-overrun", "withdraw", "correct", "override-record"],
-  "ready-to-verify": ["withdraw", "correct", "override-record"],
+  "ready-to-verify": [
+    "withdraw",
+    "correct",
+    "override-record",
+    "reopen-handoff",
+  ],
   verifying: [
     "accept-overrun",
     "waive",
     "withdraw",
     "correct",
     "override-record",
+    "defect",
+    "retract",
   ],
   "needs-fix": [
     "accept-overrun",
@@ -156,6 +167,7 @@ const legalIn = {
     "withdraw",
     "correct",
     "override-record",
+    "retract",
   ],
   repairing: [
     "accept-overrun",
@@ -164,17 +176,20 @@ const legalIn = {
     "correct",
     "override-record",
   ],
-  verified: ["waive", "withdraw", "correct", "override-record"],
+  verified: ["waive", "withdraw", "correct", "override-record", "retract"],
   "final-review": [
     "accept-overrun",
     "waive",
     "withdraw",
     "correct",
     "override-record",
+    "defect",
+    "retract",
   ],
   // A correction changes no phase; a closed order's recorded pass may still
-  // need its product gate bound before publication (WO-115 D026).
-  closed: ["correct", "override-record"],
+  // need its product gate bound before publication (WO-115 D026), and a
+  // record the operator reads in the pull request may still be retracted.
+  closed: ["correct", "override-record", "retract"],
   withdrawn: [],
 };
 const matrix = (id = "WO-099") => {
@@ -186,6 +201,9 @@ const matrix = (id = "WO-099") => {
     "withdraw",
     "correct",
     "override-record",
+    "defect",
+    "retract",
+    "reopen-handoff",
   ])
     if (!legalIn[phase].includes(route))
       refuse(new RegExp(`${route} is not legal in phase ${phase}`), [
@@ -215,7 +233,9 @@ const waiverCapture = capture(
   "waiver",
   "Operator: accept criterion 2 unmet for this fixture.\n",
 );
-const report = (path, lines) => {
+// A report lists its findings once (WO-187), so a fail has a basis to read
+// (WO-249); `findings: null` writes a report without the block.
+const report = (path, lines, { findings = [] } = {}) => {
   mkdirSync(join(root, dirname(path)), { recursive: true });
   writeFileSync(
     join(root, path),
@@ -226,10 +246,19 @@ const report = (path, lines) => {
       "**Process cost:** unknown; cause no-session",
       "",
       ...lines,
+      ...(findings === null ? [] : findingsBlock(findings)),
       "",
     ].join("\n"),
   );
 };
+// A report's findings block: the marker lines around a JSON array (WO-187),
+// which a fail reads for its basis (WO-249).
+const findingsBlock = (entries) => [
+  "",
+  "<!-- dotln-findings:start -->",
+  JSON.stringify(entries),
+  "<!-- dotln-findings:end -->",
+];
 const hash = (path) =>
   createHash("sha256")
     .update(readFileSync(join(root, path)))
@@ -319,7 +348,7 @@ const ledger = (lines, id = "WO-099") => {
 const literal = (value) =>
   new RegExp(value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
 const criterionForms =
-  "`**Criterion <id>:** met`, `**Criterion <id>:** unmet` or `**Criterion <id>:** unmet, waived by <ordinal>`";
+  "`**Criterion <id>:** met`, `**Criterion <id>:** unmet`, `**Criterion <id>:** unmet, waived by <ordinal>` or `**Criterion <id>:** unmet, defective (<class>) by <ordinal>`";
 const ledgerRefusal = (detail, id = "WO-099") =>
   literal(
     `error: ${ledgerPath(id)}: ${detail}. Before handoff the executor judges each declared criterion (1, 2) on one line, met followed by its evidence or unmet followed by the decision that says why (criterion lines: ${criterionForms}).`,
@@ -591,8 +620,10 @@ const repairSentence =
   "A repair closes the class the finding names: state the rule the repaired code holds and add a case the report did not quote.";
 const ledgerSentence = (id, before) =>
   ` Before ${before}, judge each acceptance criterion on one line of docs/evidence/${id}/handoff.md: \`**Criterion <id>:** met\` with its evidence or \`unmet\` with why; a met criterion naming npm test or npm run test:docs stands on that gate's passing row.`;
-const routes = (id) =>
-  `\nThe executor recorded criterion 2 unmet in docs/evidence/${id}/handoff.md. A waiver this session records from the operator's capture (npm run resume -- waive 2 --reason <text> --capture <path> --capture-hash sha256:<digest> <actor flags> --work-order ${id}) or an authorized amendment (npm run plan -- amend-order) spares the cycle; without either the criterion is judged as it stands.`;
+// The three routes and the words rule (WO-249): a defect record is the
+// judging role's own, and a waiver or an amendment needs the operator's words.
+const routes = (id, criterion = "2") =>
+  `\nThe executor recorded criterion ${criterion} unmet in docs/evidence/${id}/handoff.md. Three routes spare the cycle. A criterion no candidate can meet as written (bookkeeping, later-phase, absent-input, host-behavior, contradiction) is recorded defective with its evidence (npm run resume -- defect ${criterion} --class <class> --evidence <text> <actor flags> --work-order ${id}) and judged \`unmet, defective (<class>) by <ordinal>\`. A waiver is recorded only from the operator's words asking for that criterion's waiver (npm run resume -- waive ${criterion} --reason <text> --capture <path> --capture-hash sha256:<digest> <actor flags> --work-order ${id}), and an amendment needs the operator's words changing the criterion (npm run plan -- amend-order); words that call a criterion wrong or authorize a commit or a pull request ask for neither. Without a route the criterion is judged as it stands.`;
 const bytes = (value) => Buffer.byteLength(value);
 for (const [name, growth] of Object.entries({
   next: bytes(ledgerSentence("WO-099", "that command")),
@@ -624,9 +655,19 @@ refuse(
 );
 report(first, ["**Criterion 1:** met.", "**Criterion 2:** unmet."]);
 refuse(
-  /a pass cannot record criterion 2 unmet without a waiver; record fail, or the operator records one with npm run resume -- waive 2/,
+  /a pass cannot record criterion 2 unmet without a waiver or a defect record; record fail, record it defective with npm run resume -- defect 2 when its text puts it in one of the five classes, or record the operator's waiver with npm run resume -- waive 2 only from the operator's words asking for it/,
   ["verification-result", "pass", ...agentFlags],
 );
+// A fail names its basis in a readable findings block (WO-249); the unmet
+// line is that basis here.
+report(first, ["**Criterion 1:** met.", "**Criterion 2:** unmet."], {
+  findings: null,
+});
+refuse(
+  /a fail names its basis in the findings block, and the report has no findings block/,
+  ["verification-result", "fail", ...agentFlags],
+);
+report(first, ["**Criterion 1:** met.", "**Criterion 2:** unmet."]);
 pass(["verification-result", "fail", ...agentFlags]);
 assert.equal(matrix(), "needs-fix");
 
@@ -1877,7 +1918,7 @@ on("WO-103")(["verification-result", "pass", ...agentFlags]);
 const finalBriefing103 = on("WO-103")(["final-review"]);
 assert.ok(
   finalBriefing103.includes(
-    `${finalReviewSentences}\nThe executor recorded criteria 1, 2, 3 unmet in docs/evidence/WO-103/handoff.md. A waiver this session records from the operator's capture (npm run resume -- waive <criterion> --reason <text> --capture <path> --capture-hash sha256:<digest> <actor flags> --work-order WO-103) or an authorized amendment (npm run plan -- amend-order) spares the cycle; without either the criterion is judged as it stands.\n`,
+    `${finalReviewSentences}\nThe executor recorded criteria 1, 2, 3 unmet in docs/evidence/WO-103/handoff.md. Three routes spare the cycle. A criterion no candidate can meet as written (bookkeeping, later-phase, absent-input, host-behavior, contradiction) is recorded defective with its evidence (npm run resume -- defect <criterion> --class <class> --evidence <text> <actor flags> --work-order WO-103) and judged \`unmet, defective (<class>) by <ordinal>\`. A waiver is recorded only from the operator's words asking for that criterion's waiver (npm run resume -- waive <criterion> --reason <text> --capture <path> --capture-hash sha256:<digest> <actor flags> --work-order WO-103), and an amendment needs the operator's words changing the criterion (npm run plan -- amend-order); words that call a criterion wrong or authorize a commit or a pull request ask for neither. Without a route the criterion is judged as it stands.\n`,
   ),
   finalBriefing103,
 );
@@ -2581,4 +2622,1222 @@ process.stdout.write("off-ramp fixtures passed\n");
     ...captureFlags,
     ...agentFlags,
   ]);
+}
+
+// Criteria judge the product (WO-249). A criterion no candidate can meet as
+// written is recorded defective by class by the verifier or the reviewer and
+// never the executor; a report line citing the record is judged against it
+// and against the criterion's current text; a retraction undoes a waiver or a
+// defect record; a reopened handoff returns the order to the phase it left;
+// and a fail names the criterion or the finding it failed on.
+const criteriaSession = (name, role, id) => {
+  const directory = join(root, "docs/control/local/harness");
+  mkdirSync(directory, { recursive: true });
+  writeFileSync(
+    join(directory, `${createHash("sha256").update(name).digest("hex")}.json`),
+    JSON.stringify({
+      role,
+      workOrder: id,
+      startedAt: "2026-01-01T00:00:00.000Z",
+    }),
+  );
+  return { CLAUDE_CODE_SESSION_ID: name };
+};
+const criteriaOrder = (id, third) => {
+  const path = `docs/work-orders/${id}-criteria.md`;
+  const write = (text) =>
+    writeFileSync(
+      join(root, path),
+      `# ${id} — criteria fixture\n\n**Model:** any capable model.\n**Effort:** executor any; verifier any; reviewer any.\n\n**Objective:** fixture.\n\n**Acceptance criteria (all required)**\n\n1. One.\n2. Two.\n3. ${text}\n`,
+    );
+  write(third);
+  pass(["activate", id, path, "--work-order", id]);
+  return write;
+};
+const criteriaHandoff = (
+  id,
+  act,
+  third = "unmet. Bookkeeping: its subject is a byte count.",
+) => {
+  ledger(
+    [
+      "**Criterion 1:** met. One holds.",
+      "**Criterion 2:** met. Two holds.",
+      `**Criterion 3:** ${third}`,
+    ],
+    id,
+  );
+  return act;
+};
+const withAdvisory = (id, args, env) => {
+  const run = call([...args, "--work-order", id], env);
+  assert.equal(run.status, 0, `${args.join(" ")}: ${run.stderr}`);
+  return run;
+};
+{
+  const id = "WO-120";
+  const third = "The briefing grows by at most 400 bytes.";
+  const amend = criteriaOrder(id, third);
+  const act = on(id);
+  const executorSession = criteriaSession("criteria-executor", "executor", id);
+  const verifierSession = criteriaSession("criteria-verifier", "verifier", id);
+  const reviewerSession = criteriaSession("criteria-reviewer", "reviewer", id);
+  criteriaHandoff(id, act);
+  act(["implementation-ready", ...agentFlags]);
+  const handoffOrdinal = events(id).length;
+
+  // Criterion 4: a reopened handoff returns to the phase the handoff left,
+  // clears the recorded unmet criteria, and the next completion records a
+  // fresh ledger timed from the reopening.
+  const reopenCapture = capture(
+    "reopen-handoff",
+    "Operator: I widened WO-120 after its handoff; reopen it.\n",
+  );
+  const reopen = [
+    "reopen-handoff",
+    "--reason",
+    "the operator widened the order after its handoff",
+    ...reopenCapture,
+    ...operator,
+  ];
+  assert.match(
+    act(reopen),
+    /the ImplementationReady handoff at ordinal \d+ is reopened, and the order returns to active with its unmet criteria cleared/,
+  );
+  assert.equal(events(id).at(-1).type, "HandoffReopened");
+  assert.deepEqual(events(id).at(-1).handoff, {
+    ordinal: handoffOrdinal,
+    type: "ImplementationReady",
+  });
+  assert.equal(status(id).phase, "active");
+  assert.deepEqual(status(id).unmetCriteria, []);
+  assert.deepEqual(
+    status(id).reopenedHandoffs.map(({ ordinal }) => ordinal),
+    [events(id).length],
+  );
+  assert.match(
+    current(),
+    /- Reopened handoffs: ordinal \d+ reopens ordinal \d+ \(ImplementationReady\)/,
+  );
+  refuseOn(id, /reopen-handoff is not legal in phase active/, reopen);
+  criteriaHandoff(id, act, "unmet. Bookkeeping: still a byte count.");
+  act(["implementation-ready", ...agentFlags]);
+  assert.deepEqual(events(id).at(-1).unmetCriteria, ["3"]);
+  assert.deepEqual(status(id).unmetCriteria, [
+    { criterionId: "3", ordinal: events(id).length },
+  ]);
+  assert.equal(
+    typeof status(id).elapsed.implementation,
+    "number",
+    "the reopened attempt is timed from its reopening",
+  );
+
+  // The unmet briefing prints the three routes and the words rule.
+  const verifyBriefing = act(["verify"]);
+  assert.ok(verifyBriefing.includes(routes(id, "3")), verifyBriefing);
+  refuseOn(id, /reopen-handoff is not legal in phase verifying/, reopen);
+
+  // Criterion 1: the executor is refused, and so are a class outside the five
+  // and a criterion the order does not declare.
+  const evidence =
+    "The criterion's subject is the briefing's byte growth, a count rather than a behavior of the product.";
+  const defect = (criterion = "3", kind = "bookkeeping") => [
+    "defect",
+    criterion,
+    "--class",
+    kind,
+    "--evidence",
+    evidence,
+    ...agentFlags,
+  ];
+  refuseOn(
+    id,
+    /defect refused: this session is WO-120's executor, and the executor cannot record its own order's criterion defective/,
+    defect(),
+    executorSession,
+  );
+  refuseOn(
+    id,
+    /defect refused: arithmetic is not a defect class; a criterion is recorded defective as one of bookkeeping, later-phase, absent-input, host-behavior, contradiction/,
+    defect("3", "arithmetic"),
+    verifierSession,
+  );
+  refuseOn(
+    id,
+    /defect refused: docs\/work-orders\/WO-120-criteria\.md declares acceptance criteria 1, 2, 3, not 9/,
+    defect("9"),
+    verifierSession,
+  );
+  assert.match(
+    act(defect(), verifierSession),
+    /Recorded CriterionDefectRecorded for WO-120 criterion 3 \(bookkeeping\) at ordinal \d+\./,
+  );
+  const first = events(id).length;
+  const record = events(id).at(-1);
+  assert.equal(record.type, "CriterionDefectRecorded");
+  assert.equal(record.criterionId, "3");
+  assert.equal(record.class, "bookkeeping");
+  assert.equal(record.evidence, evidence);
+  assert.equal(
+    record.criterionHash,
+    `sha256:${createHash("sha256").update(third).digest("hex")}`,
+  );
+  assert.equal(record.recordingSession.role, "verifier");
+  assert.deepEqual(
+    status(id).defectiveCriteria.map(
+      ({ criterionId, class: kind, ordinal }) => ({
+        criterionId,
+        kind,
+        ordinal,
+      }),
+    ),
+    [{ criterionId: "3", kind: "bookkeeping", ordinal: first }],
+  );
+  assert.equal(
+    status(id).phase,
+    "verifying",
+    "a defect record changes no phase",
+  );
+  assert.match(
+    current(),
+    new RegExp(`- Defective criteria: 3 \\(bookkeeping, ordinal ${first}\\)`),
+  );
+  refuseOn(
+    id,
+    new RegExp(
+      `criterion 3 of WO-120 is already recorded defective \\(bookkeeping\\) by ordinal ${first} for its current text`,
+    ),
+    defect(),
+    verifierSession,
+  );
+  refuseOn(
+    id,
+    new RegExp(
+      `waive refused: criterion 3 of WO-120 is recorded defective \\(bookkeeping\\) by ordinal ${first}; npm run resume -- retract ${first} undoes that record first`,
+    ),
+    ["waive", "3", "--reason", "accepted", ...waiverCapture, ...operator],
+    verifierSession,
+  );
+
+  // Criterion 3, in an open phase: a retraction undoes the record, a line
+  // citing the retracted ordinal is refused, and the record can be made again.
+  const retractCapture = capture(
+    "retract",
+    "Operator: that defect record of WO-120 criterion 3 is wrong; retract it.\n",
+  );
+  const retract = (ordinal) => [
+    "retract",
+    String(ordinal),
+    "--reason",
+    "the operator judged the record wrong",
+    ...retractCapture,
+    ...operator,
+  ];
+  const ver = `docs/verifications/${id}/VER-001.md`;
+  const defective = (ordinal, rest = ` ${evidence}`, kind = "bookkeeping") =>
+    `**Criterion 3:** unmet, defective (${kind}) by ${ordinal}.${rest}`;
+  refuseOn(
+    id,
+    /retract refused: this session is WO-120's executor, and the executor cannot retract a record of its own order's criterion/,
+    retract(first),
+    executorSession,
+  );
+  refuseOn(
+    id,
+    new RegExp(
+      `retract refused: ordinal ${first - 1} is VerificationRequested; a retraction undoes a CriterionWaived or a CriterionDefectRecorded record`,
+    ),
+    retract(first - 1),
+    verifierSession,
+  );
+  assert.match(
+    act(retract(first), verifierSession),
+    new RegExp(
+      `Recorded OffRampRetracted for WO-120 at ordinal ${first + 1}: ordinal ${first}'s CriterionDefectRecorded of criterion 3 is retracted, and no phase changed\\.`,
+    ),
+  );
+  assert.equal(status(id).phase, "verifying");
+  assert.deepEqual(status(id).defectiveCriteria, []);
+  assert.deepEqual(
+    status(id).retractedOffRamps.map(({ ordinal, subject }) => [
+      ordinal,
+      subject,
+    ]),
+    [
+      [
+        first + 1,
+        { ordinal: first, type: "CriterionDefectRecorded", criterionId: "3" },
+      ],
+    ],
+  );
+  assert.equal(events(id).at(-1).recordingSession.role, "verifier");
+  assert.match(
+    current(),
+    new RegExp(
+      `- Retracted off-ramps: ordinal ${first + 1} retracts ordinal ${first} \\(CriterionDefectRecorded, criterion 3\\)`,
+    ),
+  );
+  refuseOn(
+    id,
+    new RegExp(
+      `retract refused: ordinal ${first} no longer stands; ordinal ${first + 1} retracted it`,
+    ),
+    retract(first),
+    verifierSession,
+  );
+  report(ver, [
+    ...["**Criterion 1:** met.", "**Criterion 2:** met."],
+    defective(first),
+  ]);
+  refuseOn(
+    id,
+    new RegExp(
+      `criterion 3 names defect record ordinal ${first}, but ordinal ${first} was retracted by ordinal ${first + 1}`,
+    ),
+    ["verification-result", "pass", ...agentFlags],
+  );
+  // The operator's retraction stands for the text it judged: the same record
+  // for that text is refused, and the amended criterion admits a fresh one.
+  refuseOn(
+    id,
+    new RegExp(
+      `defect refused: ordinal ${first + 1} retracted ordinal ${first}, the record of criterion 3 for its current text, and the operator's retraction stands until the criterion's text is amended`,
+    ),
+    defect(),
+    verifierSession,
+  );
+  amend("The briefing grows by at most 512 bytes.");
+  act(defect(), verifierSession);
+  const recorded = events(id).length;
+
+  // The report line is judged against the record: its class, its ordinal,
+  // its paragraph and the criterion's current text.
+  const met = ["**Criterion 1:** met.", "**Criterion 2:** met."];
+  report(ver, [...met, defective(recorded, ` ${evidence}`, "later-phase")]);
+  refuseOn(
+    id,
+    new RegExp(
+      `criterion 3 names defect record ordinal ${recorded} as later-phase, but that record's class is bookkeeping`,
+    ),
+    ["verification-result", "pass", ...agentFlags],
+  );
+  report(ver, [...met, defective(recorded + 7)]);
+  refuseOn(
+    id,
+    new RegExp(
+      `criterion 3 names defect record ordinal ${recorded + 7}, but its standing CriterionDefectRecorded event is ordinal ${recorded}`,
+    ),
+    ["verification-result", "pass", ...agentFlags],
+  );
+  report(ver, [...met, defective(recorded, "")]);
+  refuseOn(
+    id,
+    new RegExp(
+      `criterion 3 names defect record ordinal ${recorded} with an empty paragraph`,
+    ),
+    ["verification-result", "pass", ...agentFlags],
+  );
+  // A report's header field in the paragraph is never the judge's evidence,
+  // in any case, as a list item or a quotation, with the colon inside or
+  // outside the emphasis.
+  for (const field of [
+    "**Verdict:** pass",
+    "1. **Verdict:** pass.",
+    "**Verdict**: pass.",
+    "> **Process Cost:** unknown",
+  ]) {
+    report(ver, [...met, defective(recorded, ""), field]);
+    refuseOn(
+      id,
+      new RegExp(
+        `criterion 3 names defect record ordinal ${recorded} with an empty paragraph`,
+      ),
+      ["verification-result", "pass", ...agentFlags],
+    );
+  }
+  report(ver, [...met, "**Criterion 3:** unmet."]);
+  refuseOn(
+    id,
+    new RegExp(
+      `criterion 3 is recorded defective \\(bookkeeping\\) by ordinal ${recorded}; record it as \`\\*\\*Criterion 3:\\*\\* unmet, defective \\(bookkeeping\\) by ${recorded}\``,
+    ),
+    ["verification-result", "pass", ...agentFlags],
+  );
+  // An amended criterion no longer hashes to its record; a fresh record for
+  // the amended text replaces it and is admitted.
+  amend("The briefing grows by at most 256 bytes.");
+  report(ver, [...met, defective(recorded)]);
+  refuseOn(
+    id,
+    new RegExp(
+      `criterion 3 names defect record ordinal ${recorded}, but criterion 3's text no longer hashes to that record, so the criterion was amended after it; a fresh npm run resume -- defect 3 records the amended text`,
+    ),
+    ["verification-result", "pass", ...agentFlags],
+  );
+  assert.match(
+    act(defect(), verifierSession),
+    new RegExp(
+      `at ordinal ${recorded + 1}, replacing ordinal ${recorded}, which the criterion's earlier text carried`,
+    ),
+  );
+  const amended = recorded + 1;
+  assert.deepEqual(
+    status(id).defectiveCriteria.map(({ ordinal }) => ordinal),
+    [amended],
+  );
+  report(ver, [...met, defective(recorded)]);
+  refuseOn(
+    id,
+    new RegExp(
+      `its standing CriterionDefectRecorded event is ordinal ${amended}`,
+    ),
+    ["verification-result", "pass", ...agentFlags],
+  );
+  // A pass with the defective line records, its summary line standing on the
+  // detailed line's evidence; a pass without a findings block advises as
+  // before and records all the same.
+  report(
+    ver,
+    [...met, defective(amended, ""), "", "## Detail", "", defective(amended)],
+    { findings: null },
+  );
+  const passed = withAdvisory(id, [
+    "verification-result",
+    "pass",
+    ...agentFlags,
+  ]);
+  assert.match(
+    passed.stderr,
+    /Advisory: docs\/verifications\/WO-120\/VER-001\.md: the report has no findings block; the verification result records all the same\./,
+  );
+  assert.equal(status(id).latestVerdict, "pass");
+
+  // Criterion 2: the final review confirms the record on the same line with
+  // its own evidence, or disputes it in a fail; a met line stands over it.
+  const finalBriefing = act(["final-review"]);
+  assert.doesNotMatch(
+    finalBriefing,
+    /The executor recorded/,
+    "a criterion the record holds defective needs no route",
+  );
+  const final = `docs/final-reviews/${id}/FINAL-001.md`;
+  report(final, met);
+  refuseOn(
+    id,
+    new RegExp(
+      `criterion 3 is recorded defective \\(bookkeeping\\) by ordinal ${amended} and this pass does not judge it`,
+    ),
+    ["final-review-result", "pass", ...agentFlags],
+  );
+  report(final, [...met, defective(amended, "")]);
+  refuseOn(
+    id,
+    new RegExp(
+      `criterion 3 names defect record ordinal ${amended} with an empty paragraph`,
+    ),
+    ["final-review-result", "pass", ...agentFlags],
+  );
+  report(final, [
+    ...met,
+    "**Criterion 3:** unmet. The reviewer finds it judgeable.",
+  ]);
+  refuseOn(
+    id,
+    /or, finding it judgeable, fail with a blocking finding whose basis names criterion 3/,
+    ["final-review-result", "fail", ...agentFlags],
+  );
+  const reproduction = `docs/evidence/${id}/final-001-criterion-3.md`;
+  mkdirSync(join(root, dirname(reproduction)), { recursive: true });
+  writeFileSync(join(root, reproduction), "The reviewer's reproduction.\n");
+  report(
+    final,
+    [...met, "**Criterion 3:** unmet. The reviewer finds it judgeable."],
+    {
+      findings: [
+        {
+          id: "F1",
+          route: "blocking",
+          class: "escape",
+          summary: "Criterion 3 names a behavior and is unmet.",
+          basis: { criterion: "3" },
+          reproduction,
+        },
+      ],
+    },
+  );
+  const disputed = withAdvisory(
+    id,
+    ["final-review-result", "fail", ...agentFlags],
+    reviewerSession,
+  );
+  assert.doesNotMatch(disputed.stderr, /blocking finding F1 has/);
+  assert.equal(status(id).phase, "needs-fix");
+  assert.deepEqual(
+    status(id).defectiveCriteria.map(({ ordinal }) => ordinal),
+    [amended],
+    "the record stands while a review disputes it",
+  );
+
+  // The repair answers the review; its reopened handoff returns to repairing.
+  act(["fix"]);
+  criteriaHandoff(id, act, "met. The byte growth is now a behavior.");
+  act(["repair-complete", ...agentFlags]);
+  const repairOrdinal = events(id).length;
+  assert.match(
+    act(reopen),
+    /the RepairCompleted handoff at ordinal \d+ is reopened, and the order returns to repairing/,
+  );
+  assert.deepEqual(events(id).at(-1).handoff, {
+    ordinal: repairOrdinal,
+    type: "RepairCompleted",
+  });
+  assert.equal(status(id).phase, "repairing");
+  criteriaHandoff(id, act, "met. The byte growth is now a behavior.");
+  act(["repair-complete", ...agentFlags]);
+  assert.deepEqual(events(id).at(-1).unmetCriteria, []);
+  act(["verify"]);
+  report(`docs/verifications/${id}/VER-002.md`, [
+    ...met,
+    "**Criterion 3:** met. It holds.",
+  ]);
+  act(["verification-result", "pass", ...agentFlags]);
+  act(["final-review"]);
+  report(`docs/final-reviews/${id}/FINAL-002.md`, [
+    ...met,
+    "**Criterion 3:** met. It holds.",
+  ]);
+  act(["final-review-result", "pass", ...agentFlags]);
+  assert.equal(status(id).phase, "closed", "a met line stands over the record");
+}
+
+// Criterion 5: a fail names an unmet criterion or a blocking finding, in a
+// readable findings block; a blocking entry's basis and reproduction advise.
+{
+  const id = "WO-121";
+  criteriaOrder(id, "Three.");
+  const act = on(id);
+  criteriaHandoff(id, act, "met. Three holds.");
+  act(["implementation-ready", ...agentFlags]);
+  act(["verify"]);
+  const ver = `docs/verifications/${id}/VER-001.md`;
+  const met = [
+    "**Criterion 1:** met.",
+    "**Criterion 2:** met.",
+    "**Criterion 3:** met.",
+  ];
+  report(ver, met);
+  refuseOn(
+    id,
+    /a fail names an unmet criterion or a blocking finding: every criterion line here is met, waived or defective, and the findings block lists no blocking entry/,
+    ["verification-result", "fail", ...agentFlags],
+  );
+  report(ver, met, { findings: null });
+  refuseOn(
+    id,
+    /a fail names its basis in the findings block, and the report has no findings block/,
+    ["verification-result", "fail", ...agentFlags],
+  );
+  writeFileSync(
+    join(root, ver),
+    `${readFileSync(join(root, ver), "utf8")}\n<!-- dotln-findings:start -->\n[{"id": "F1",\n<!-- dotln-findings:end -->\n`,
+  );
+  refuseOn(
+    id,
+    /a fail names its basis in the findings block, and the findings block is not valid JSON/,
+    ["verification-result", "fail", ...agentFlags],
+  );
+  const reproduction = `docs/evidence/${id}/ver-001-regression.md`;
+  mkdirSync(join(root, dirname(reproduction)), { recursive: true });
+  writeFileSync(
+    join(root, reproduction),
+    "The probe main passes and the change fails.\n",
+  );
+  report(ver, met, {
+    findings: [
+      {
+        id: "F1",
+        route: "blocking",
+        class: "escape",
+        summary: "The change broke the status read main had.",
+        basis: { regression: "status --json read the order on main" },
+        reproduction,
+      },
+    ],
+  });
+  const failed = withAdvisory(id, [
+    "verification-result",
+    "fail",
+    ...agentFlags,
+  ]);
+  assert.doesNotMatch(failed.stderr, /blocking finding F1 has/);
+  assert.equal(status(id).phase, "needs-fix");
+}
+{
+  const id = "WO-122";
+  criteriaOrder(id, "Three.");
+  const act = on(id);
+  criteriaHandoff(id, act, "met. Three holds.");
+  act(["implementation-ready", ...agentFlags]);
+  act(["verify"]);
+  report(
+    `docs/verifications/${id}/VER-001.md`,
+    ["**Criterion 1:** met.", "**Criterion 2:** met.", "**Criterion 3:** met."],
+    {
+      findings: [
+        {
+          id: "F1",
+          route: "blocking",
+          class: "escape",
+          summary: "A blocking finding with no basis.",
+        },
+        {
+          id: "F2",
+          route: "blocking",
+          class: "escape",
+          summary: "A basis naming an undeclared criterion.",
+          basis: { criterion: "9" },
+          reproduction: "docs/evidence/WO-122/absent.md",
+        },
+        {
+          id: "F3",
+          route: "blocking",
+          class: "escape",
+          summary: "A numeric basis naming a criterion the report judges met.",
+          basis: { criterion: 3 },
+          reproduction: "docs/evidence/WO-122/repro.md",
+        },
+      ],
+    },
+  );
+  mkdirSync(join(root, "docs/evidence/WO-122"), { recursive: true });
+  writeFileSync(join(root, "docs/evidence/WO-122/repro.md"), "Repro.\n");
+  const advised = withAdvisory(id, [
+    "verification-result",
+    "fail",
+    ...agentFlags,
+  ]);
+  assert.match(
+    advised.stderr,
+    /Advisory: docs\/verifications\/WO-122\/VER-001\.md: blocking finding F1 has no basis \("basis": \{"criterion": "<id>"\} or \{"regression": "<the behavior main had>"\} and a "reproduction" path\) and no reproduction path under docs\/evidence\/WO-122\/; blocking finding F2 has/,
+  );
+  assert.match(
+    advised.stderr,
+    /blocking finding F2 has a basis criterion 9 the order does not declare and a reproduction docs\/evidence\/WO-122\/absent\.md that is not a file; blocking finding F3 has a basis criterion 3 the report judges met; the result records all the same\n/,
+  );
+  assert.equal(status(id).phase, "needs-fix");
+  assert.ok(
+    events(id)
+      .at(-1)
+      .evidence.advisories.some((line) =>
+        line.includes("blocking finding F1 has no basis"),
+      ),
+    "the advisory rides on the recorded result",
+  );
+}
+
+// One record judges a criterion: a waiver refuses a defect record until the
+// operator's retraction undoes it, a record the amended text replaced no
+// longer stands to retract, and a criterion a planning pass struck is judged
+// by no report, so a pass carries no line for its standing record.
+{
+  const id = "WO-123";
+  const path = `docs/work-orders/${id}-criteria.md`;
+  const amend = criteriaOrder(id, "Three counts bytes.");
+  const act = on(id);
+  const verifierSession = criteriaSession(
+    "criteria-verifier-123",
+    "verifier",
+    id,
+  );
+  criteriaHandoff(id, act);
+  act(["implementation-ready", ...agentFlags]);
+  act(["verify"]);
+  act(
+    [
+      "waive",
+      "3",
+      "--reason",
+      "the operator accepts it unmet",
+      ...capture("waive-123", "Operator: accept WO-123 criterion 3 unmet.\n"),
+      ...operator,
+    ],
+    verifierSession,
+  );
+  const waiver = events(id).length;
+  const defect = [
+    "defect",
+    "3",
+    "--class",
+    "bookkeeping",
+    "--evidence",
+    "Criterion 3's subject is a byte count, not a behavior of the product.",
+    ...agentFlags,
+  ];
+  refuseOn(
+    id,
+    new RegExp(
+      `defect refused: criterion 3 of WO-123 is waived by ordinal ${waiver}, and one record judges a criterion`,
+    ),
+    defect,
+    verifierSession,
+  );
+  const retract = (ordinal) => [
+    "retract",
+    String(ordinal),
+    "--reason",
+    "the operator's words asked for no waiver",
+    ...capture(
+      "retract-123",
+      "Operator: I never asked to waive WO-123 criterion 3; retract it.\n",
+    ),
+    ...operator,
+  ];
+  assert.match(
+    act(retract(waiver), verifierSession),
+    new RegExp(
+      `Recorded OffRampRetracted for WO-123 at ordinal ${waiver + 1}: ordinal ${waiver}'s CriterionWaived of criterion 3 is retracted, and no phase changed\\.`,
+    ),
+  );
+  assert.deepEqual(status(id).waivedCriteria, []);
+  act(defect, verifierSession);
+  const replaced = events(id).length;
+  amend("Three counts bytes, amended.");
+  act(defect, verifierSession);
+  const standing = events(id).length;
+  refuseOn(
+    id,
+    new RegExp(
+      `retract refused: ordinal ${replaced} no longer stands; a later record of criterion 3 replaced it`,
+    ),
+    retract(replaced),
+    verifierSession,
+  );
+  writeFileSync(
+    join(root, path),
+    `# ${id} — criteria fixture\n\n**Model:** any capable model.\n**Effort:** executor any; verifier any; reviewer any.\n\n**Objective:** fixture.\n\n**Acceptance criteria (all required)**\n\n1. One.\n2. Two.\n`,
+  );
+  report(`docs/verifications/${id}/VER-001.md`, [
+    "**Criterion 1:** met.",
+    "**Criterion 2:** met.",
+  ]);
+  act(["verification-result", "pass", ...agentFlags]);
+  assert.equal(status(id).latestVerdict, "pass");
+  assert.deepEqual(
+    status(id).defectiveCriteria.map(({ ordinal }) => ordinal),
+    [standing],
+    "the struck criterion's record stands; no report judges it",
+  );
+}
+
+// Criterion 3, across activations: a record of an earlier activation is not
+// this activation's to retract.
+{
+  ledger(["**Criterion 1:** met. One.", "**Criterion 2:** met. Two."]);
+  on("WO-099")(["implementation-ready", ...agentFlags]);
+  on("WO-099")(["verify"]);
+  refuseOn(
+    "WO-099",
+    new RegExp(
+      `retract refused: ordinal ${waiverOrdinal} precedes WO-099's current activation at ordinal \\d+`,
+    ),
+    [
+      "retract",
+      String(waiverOrdinal),
+      "--reason",
+      "an earlier activation's waiver",
+      ...waiverCapture,
+      ...operator,
+    ],
+  );
+}
+
+// Criterion 6: a heading inside a fenced example does not end a judgment's
+// paragraph, so a citation after the fence still belongs to the judgment.
+{
+  const [judgment] = criterionJudgments(
+    [
+      "**Criterion 1:** met. The example below holds.",
+      "",
+      "```md",
+      "## A heading inside the example",
+      "```",
+      "",
+      "Receipt: docs/evidence/WO-247/live-drive-attempt-4.json.",
+      "",
+      "## The next section",
+      "",
+      "Not this judgment's.",
+    ].join("\n"),
+  );
+  assert.match(judgment.paragraph, /live-drive-attempt-4\.json/);
+  // The report's findings block ends a paragraph too: it is never read as
+  // the evidence a defective line carries.
+  const [beforeBlock] = criterionJudgments(
+    [
+      "**Criterion 3:** unmet, defective (bookkeeping) by 4.",
+      "",
+      "<!-- dotln-findings:start -->",
+      "[]",
+      "<!-- dotln-findings:end -->",
+    ].join("\n"),
+  );
+  assert.equal(beforeBlock.evidence, false);
+  // A plain "Subject:" line is the judge's evidence; the bold header field
+  // a report carries is not.
+  const evidenceOf = (line) =>
+    criterionJudgments(
+      `**Criterion 3:** unmet, defective (bookkeeping) by 4.\n${line}`,
+    )[0].evidence;
+  assert.equal(
+    evidenceOf("Subject: a byte count of the briefing, not a behavior."),
+    true,
+  );
+  assert.equal(evidenceOf("**Subject:** WO-249"), false);
+  assert.equal(beforeBlock.defectiveBy, 4);
+  assert.equal(beforeBlock.defectClass, "bookkeeping");
+  assert.doesNotMatch(
+    judgment.paragraph,
+    /A heading inside the example|Not this judgment's/,
+  );
+}
+
+// Criterion 3, in closed: the pull request's merge state, read as release
+// close reads it after fetching origin's main, decides the retraction's form.
+// Its own repository holds a main checkout, the order's worktree and origin.
+{
+  const id = "WO-124";
+  const main = join(parent, "closed-retraction");
+  const order = join(parent, "closed-retraction-wo-124");
+  const origin = join(parent, "closed-retraction-origin.git");
+  mkdirSync(join(main, "scripts"), { recursive: true });
+  copyFixtureFiles(
+    join(scripts, ".."),
+    main,
+    "scripts/test-off-ramps.fixture-inputs.json",
+  );
+  cpSync(join(scripts, "lib"), join(main, "scripts/lib"), { recursive: true });
+  installBeaconFixture(main);
+  const git = (cwd, ...args) => {
+    const run = spawnGit(["-C", cwd, ...args], {
+      env: baseEnv,
+      encoding: "utf8",
+    });
+    assert.equal(run.status, 0, `git ${args.join(" ")}: ${run.stderr}`);
+    return (run.stdout ?? "").trim();
+  };
+  assert.equal(spawnGit(["init", "-q", main]).status, 0);
+  cpSync(join(scripts, "../.gitignore"), join(main, ".gitignore"));
+  git(main, "checkout", "-q", "-B", "main");
+  git(main, "add", "-A");
+  git(main, "-c", "maintenance.auto=false", "commit", "-q", "-m", "fixture");
+  assert.equal(spawnGit(["init", "-q", "--bare", origin]).status, 0);
+  git(main, "remote", "add", "origin", origin);
+  git(main, "push", "-q", "origin", "main");
+  git(main, "worktree", "add", "-q", "-b", "wo-124", order, "main");
+  const run = (checkout, args, env = {}) =>
+    spawnSync(
+      process.execPath,
+      [join(checkout, "scripts/resume.mjs"), ...args, "--work-order", id],
+      { cwd: checkout, encoding: "utf8", env: { ...baseEnv, ...env } },
+    );
+  const ok = (checkout, args, env) => {
+    const result = run(checkout, args, env);
+    assert.equal(result.status, 0, `${args.join(" ")}: ${result.stderr}`);
+    return result.stdout;
+  };
+  const segment = (checkout) =>
+    readFileSync(join(checkout, `docs/control/orders/${id}.jsonl`), "utf8")
+      .trim()
+      .split("\n")
+      .map((line) => JSON.parse(line));
+  const state = (checkout) => JSON.parse(ok(checkout, ["status", "--json"]));
+  const write = (checkout, path, text) => {
+    mkdirSync(join(checkout, dirname(path)), { recursive: true });
+    writeFileSync(join(checkout, path), text);
+  };
+  const authority = `docs/work-orders/${id}-closed.md`;
+  write(
+    order,
+    authority,
+    `# ${id} — closed retraction fixture\n\n**Model:** any capable model.\n**Effort:** executor any; verifier any; reviewer any.\n\n**Objective:** fixture.\n\n**Acceptance criteria (all required)**\n\n1. One.\n2. Two.\n3. Three contradicts two.\n`,
+  );
+  // The repository meters, so release preparation writes the record lines
+  // the pass and the publication read.
+  write(
+    order,
+    "docs/control/budgets.json",
+    readFileSync(join(scripts, "kit/budgets.template.json"), "utf8"),
+  );
+  const verifier = (() => {
+    const name = "closed-retraction-verifier";
+    write(
+      order,
+      `docs/control/local/harness/${createHash("sha256").update(name).digest("hex")}.json`,
+      JSON.stringify({
+        role: "verifier",
+        workOrder: id,
+        startedAt: "2026-01-01T00:00:00.000Z",
+      }),
+    );
+    return { CLAUDE_CODE_SESSION_ID: name };
+  })();
+  const reportIn = (path, lines) =>
+    write(
+      order,
+      path,
+      [
+        "# Report",
+        "",
+        `**Actor attestation:** ${JSON.stringify(agent)}`,
+        "**Process cost:** unknown; cause no-session",
+        "",
+        ...lines,
+        ...findingsBlock([]),
+        "",
+      ].join("\n"),
+    );
+  const met = ["**Criterion 1:** met.", "**Criterion 2:** met."];
+  // One pass through the lifecycle to closed, criterion 3 recorded
+  // defective (contradiction) by the verifier and confirmed by the review.
+  const close = (round) => {
+    write(
+      order,
+      `docs/evidence/${id}/handoff.md`,
+      `# Handoff\n\n**Criterion 1:** met. One.\n**Criterion 2:** met. Two.\n**Criterion 3:** unmet. Contradiction: it cannot hold with criterion 2.\n`,
+    );
+    ok(order, [
+      round === 1 ? "implementation-ready" : "repair-complete",
+      ...agentFlags,
+    ]);
+    ok(order, ["verify"]);
+    const recordedDefect = ok(
+      order,
+      [
+        "defect",
+        "3",
+        "--class",
+        "contradiction",
+        "--evidence",
+        "Criterion 3 cannot hold with criterion 2 as written.",
+        ...agentFlags,
+      ],
+      verifier,
+    );
+    // Round 1 has no stored body yet; round 2's record leaves it stale.
+    assert.equal(
+      recordedDefect.includes(
+        "The stored pull-request body's criterion lines are now stale: npm run release -- prepare --local rewrites them before the final review's pass.",
+      ),
+      round === 2,
+      recordedDefect,
+    );
+    const ordinal = segment(order).length;
+    const line = `**Criterion 3:** unmet, defective (contradiction) by ${ordinal}. It cannot hold with criterion 2.`;
+    reportIn(`docs/verifications/${id}/VER-00${round}.md`, [...met, line]);
+    ok(order, ["verification-result", "pass", ...agentFlags]);
+    ok(order, ["final-review"]);
+    reportIn(`docs/final-reviews/${id}/FINAL-00${round}.md`, [
+      ...met,
+      `**Criterion 3:** unmet, defective (contradiction) by ${ordinal}. The review confirms the contradiction.`,
+    ]);
+    // The stored body names the record for the operator; the pass refuses
+    // stale lines while release preparation can still rewrite them.
+    const body = `docs/final-reviews/${id}/PR.md`;
+    const recordLine = `- Criterion 3: defective (contradiction) by ordinal ${ordinal}; npm run resume -- retract ${ordinal} --work-order ${id} in the order's worktree undoes a wrong record before the merge.`;
+    if (round === 1) {
+      write(order, body, `# ${id}\n\nReviewed.\n`);
+      const length = segment(order).length;
+      const stale = run(order, ["final-review-result", "pass", ...agentFlags]);
+      assert.notEqual(stale.status, 0);
+      assert.ok(
+        stale.stderr.includes(
+          `final-review-result pass refused: ${body}: the body's criterion lines do not match the 1 waived or defective criterion the order's record holds; release preparation writes these lines above the process table:\n${recordLine}\n`,
+        ),
+        stale.stderr,
+      );
+      assert.equal(segment(order).length, length, "a refusal appends nothing");
+    }
+    write(
+      order,
+      body,
+      `# ${id}\n\nReviewed.\n\n<!-- dotln-criterion-records:start -->\n\n${recordLine}\n\n<!-- dotln-criterion-records:end -->\n`,
+    );
+    if (round === 2) {
+      // Without a process meter preparation writes no lines, so the pass
+      // names their removal instead of preparation.
+      const budgets = join(order, "docs/control/budgets.json");
+      const budgetBytes = readFileSync(budgets);
+      rmSync(budgets);
+      const unmetered = run(order, [
+        "final-review-result",
+        "pass",
+        ...agentFlags,
+      ]);
+      writeFileSync(budgets, budgetBytes);
+      assert.notEqual(unmetered.status, 0);
+      assert.ok(
+        unmetered.stderr.includes(
+          `final-review-result pass refused: ${body}: the body names criterion-record lines, which release preparation writes only for a launchpad order in a repository with a process meter; remove them\nThen npm run test:docs runs again before the pass is recorded.`,
+        ),
+        unmetered.stderr,
+      );
+    }
+    ok(order, ["final-review-result", "pass", ...agentFlags]);
+    assert.equal(state(order).phase, "closed");
+    return ordinal;
+  };
+  ok(order, ["activate", id, authority]);
+  const firstRecord = close(1);
+  const words =
+    "Operator: that record of WO-124 criterion 3 is wrong; retract it before I merge.\n";
+  const captureFile = "docs/intake/notes/closed-retraction.md";
+  write(order, captureFile, words);
+  const retract = (ordinal) => [
+    "retract",
+    String(ordinal),
+    "--reason",
+    "the operator read the pull-request body and judged the record wrong",
+    "--capture",
+    captureFile,
+    "--capture-hash",
+    `sha256:${createHash("sha256").update(words).digest("hex")}`,
+    ...operator,
+  ];
+  // A merge state that cannot be read records nothing.
+  const originUrl = git(main, "remote", "get-url", "origin");
+  git(main, "remote", "set-url", "origin", join(parent, "missing-origin.git"));
+  const unread = segment(order).length;
+  const blind = run(order, retract(firstRecord));
+  assert.notEqual(blind.status, 0);
+  assert.match(
+    blind.stderr,
+    /retract cannot read whether WO-124's pull request is merged \(the launchpad fetch failed: [^)]+\); nothing was recorded/,
+  );
+  assert.equal(segment(order).length, unread);
+  git(main, "remote", "set-url", "origin", originUrl);
+  // Unmerged, from main: main holds the reviewed record, but the order's
+  // branch has moved past origin's main, so the retraction returns the order
+  // to repair in its own worktree, which the refusal names.
+  git(order, "add", "-A");
+  git(
+    order,
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-q",
+    "-m",
+    `${id} reviewed once`,
+  );
+  git(order, "push", "-q", "origin", "HEAD:main");
+  git(main, "pull", "-q", "--ff-only", "origin", "main");
+  write(order, "notes/after-review.md", "A commit origin's main lacks.\n");
+  git(order, "add", "-A");
+  git(order, "-c", "maintenance.auto=false", "commit", "-q", "-m", "after");
+  write(main, captureFile, words);
+  const mainSegment = readFileSync(
+    join(main, `docs/control/orders/${id}.jsonl`),
+  );
+  const fromMain = run(main, retract(firstRecord));
+  assert.notEqual(fromMain.status, 0);
+  assert.ok(
+    fromMain.stderr.includes(
+      `WO-124's pull request is unmerged, so its retraction returns the order to repair in its own worktree; nothing was written. Run the same command in ${realpathSync(order)}.`,
+    ),
+    fromMain.stderr,
+  );
+  assert.deepEqual(
+    readFileSync(join(main, `docs/control/orders/${id}.jsonl`)),
+    mainSegment,
+  );
+  // Unmerged: the order returns to needs-fix with the retraction as its
+  // failure source, and release close refuses while it stands unrepaired.
+  assert.match(
+    ok(order, retract(firstRecord)),
+    /The pull request is unmerged, so the order returns to needs-fix with the retraction as its failure source/,
+  );
+  const retraction = segment(order).at(-1);
+  const retractionOrdinal = segment(order).length;
+  assert.equal(retraction.type, "OffRampRetracted");
+  assert.equal(retraction.pullRequest, "unmerged");
+  assert.match(
+    readFileSync(join(order, "docs/control/current.md"), "utf8"),
+    new RegExp(
+      `- Retracted off-ramps: ordinal ${retractionOrdinal} retracts ordinal ${firstRecord} \\(CriterionDefectRecorded, criterion 3; pull request unmerged\\)`,
+    ),
+  );
+  // The branch then merges without its repair: main's record holds the
+  // reviewed pass and the retraction stays in the order's worktree, so a
+  // retraction from main is refused, naming the repair there.
+  git(order, "push", "-q", "origin", "HEAD:main");
+  git(main, "pull", "-q", "--ff-only", "origin", "main");
+  const unrepaired = run(main, retract(firstRecord));
+  assert.notEqual(unrepaired.status, 0);
+  assert.ok(
+    unrepaired.stderr.includes(
+      `ordinal ${firstRecord} of WO-124 is already retracted in its worktree ${realpathSync(order)}, recorded there before a merge that left it unrepaired; the repair, a fresh verification and a fresh final review in that worktree answer it, as release close demands`,
+    ),
+    unrepaired.stderr,
+  );
+  const mainLane = join(main, "docs/control/local/pending-overrides");
+  assert.ok(!existsSync(mainLane) || readdirSync(mainLane).length === 0);
+  let projected = state(order);
+  assert.equal(projected.phase, "needs-fix");
+  assert.deepEqual(projected.defectiveCriteria, []);
+  assert.deepEqual(projected.legalNextActions, ["fix"]);
+  const { unrepairedRetraction } = await import(
+    pathToFileURL(join(order, "scripts/lib/control.mjs"))
+  );
+  assert.equal(
+    unrepairedRetraction(segment(order))?.subject.ordinal,
+    firstRecord,
+  );
+  const repair = ok(order, ["fix"]);
+  assert.ok(
+    repair.includes(
+      `using ${captureFile}, the operator's words retracting ordinal ${firstRecord} (the CriterionDefectRecorded of criterion 3, now judged without it)`,
+    ),
+    repair,
+  );
+  assert.equal(
+    segment(order).at(-1).sourceFindingId,
+    `retraction-${retractionOrdinal}`,
+  );
+  // The operator's retraction stands for the text it judged, so the repair
+  // amends criterion 3 before the verifier records it defective again.
+  write(
+    order,
+    authority,
+    `# ${id} — closed retraction fixture\n\n**Model:** any capable model.\n**Effort:** executor any; verifier any; reviewer any.\n\n**Objective:** fixture.\n\n**Acceptance criteria (all required)**\n\n1. One.\n2. Two.\n3. Three, amended, still contradicts two.\n`,
+  );
+  const secondRecord = close(2);
+  // Repaired there but not yet merged: only merging that branch remains.
+  const repairedOnly = run(main, retract(firstRecord));
+  assert.notEqual(repairedOnly.status, 0);
+  assert.ok(
+    repairedOnly.stderr.includes(
+      `ordinal ${firstRecord} of WO-124 is already retracted in its worktree ${realpathSync(order)}, recorded there before a merge that left it unrepaired; its repair has passed there since, and merging that branch answers it`,
+    ),
+    repairedOnly.stderr,
+  );
+  assert.equal(
+    unrepairedRetraction(segment(order)),
+    undefined,
+    "the repair, verification and review answer it",
+  );
+  // Merged: from the order's worktree nothing is written; from main the
+  // record waits in main's pending lane and the order stays closed.
+  git(order, "add", "-A");
+  git(
+    order,
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-q",
+    "-m",
+    `${id} reviewed`,
+  );
+  git(order, "push", "-q", "origin", "HEAD:main");
+  git(main, "pull", "-q", "--ff-only", "origin", "main");
+  const before = readFileSync(join(order, `docs/control/orders/${id}.jsonl`));
+  const refused = run(order, retract(secondRecord));
+  assert.notEqual(refused.status, 0);
+  assert.match(
+    refused.stderr,
+    /WO-124's pull request is merged, so its retraction is recorded from main; nothing was written\./,
+  );
+  assert.deepEqual(
+    readFileSync(join(order, `docs/control/orders/${id}.jsonl`)),
+    before,
+  );
+  write(main, captureFile, words);
+  assert.match(
+    ok(main, retract(secondRecord)),
+    new RegExp(
+      `^Recorded pending OffRampRetracted for WO-124 \\(ordinal ${secondRecord}'s CriterionDefectRecorded of criterion 3\\) in docs/control/local/pending-overrides/WO-124-[0-9a-f-]{36}\\.json; the next worktree start carries it into the reviewed record\\. The pull request is merged, so the branch cannot be repaired in place and the order stays closed: a planning pass files the follow-up from the record, where npm run plan -- failures counts the retraction\\.$`,
+      "m",
+    ),
+  );
+  const lane = join(main, "docs/control/local/pending-overrides");
+  const [pendingName, ...others] = readdirSync(lane);
+  assert.deepEqual(others, []);
+  const pending = JSON.parse(readFileSync(join(lane, pendingName), "utf8"));
+  assert.equal(pending.type, "OffRampRetracted");
+  assert.equal(pending.pullRequest, "merged");
+  assert.deepEqual(pending.subject, {
+    ordinal: secondRecord,
+    type: "CriterionDefectRecorded",
+    criterionId: "3",
+  });
+  assert.equal(
+    state(main).phase,
+    "closed",
+    "a merged order's retraction changes no phase",
+  );
+  // A second retraction of the same record waits on nothing: the lane's
+  // first record already carries it, so main refuses the duplicate.
+  const duplicate = run(main, retract(secondRecord));
+  assert.notEqual(duplicate.status, 0);
+  assert.ok(
+    duplicate.stderr.includes(
+      `ordinal ${secondRecord} of WO-124 is already retracted by the pending record ${pendingName}; the next worktree start carries it`,
+    ),
+    duplicate.stderr,
+  );
+  assert.deepEqual(readdirSync(lane), [pendingName]);
+  // A released order takes no retraction: its close is recorded.
+  write(
+    main,
+    `docs/control/local/retained/${id}/release-close.json`,
+    JSON.stringify({
+      workOrderId: id,
+      dryRun: false,
+      publication: { outcome: "no-release" },
+      cleanup: { outcome: "clean" },
+    }),
+  );
+  const released = run(main, retract(secondRecord));
+  assert.notEqual(released.status, 0);
+  assert.match(
+    released.stderr,
+    /retract refused: WO-124 is released, and a retraction after release close records nothing/,
+  );
+  assert.deepEqual(readdirSync(lane), [pendingName]);
+  // The next worktree start carries the record into the reviewed record; a
+  // start that copied it once and kept its source file carries it again
+  // without folding the retraction twice.
+  const { carryPendingOverrides } = await import(
+    pathToFileURL(join(main, "scripts/lib/pending-overrides.mjs"))
+  );
+  const pendingBytes = readFileSync(join(lane, pendingName), "utf8");
+  const carryAdvisories = [];
+  const carry = () =>
+    carryPendingOverrides(main, order, () => {}, {
+      advisory: (line) => carryAdvisories.push(line),
+    });
+  assert.deepEqual(carry(), [id]);
+  assert.equal(segment(order).at(-1).type, "OffRampRetracted");
+  const carried = segment(order).length;
+  writeFileSync(join(lane, pendingName), pendingBytes);
+  assert.deepEqual(carry(), [id]);
+  assert.deepEqual(carryAdvisories, []);
+  assert.equal(
+    segment(order).length,
+    carried,
+    "the held event is not appended twice",
+  );
+  assert.deepEqual(readdirSync(lane), []);
+  // Carried out of the lane, the retraction is in the order's worktree until
+  // that branch merges, where main's record and lane show neither; a second
+  // one from main is refused, naming the worktree that holds the first.
+  rmSync(join(main, `docs/control/local/retained/${id}/release-close.json`));
+  const again = run(main, retract(secondRecord));
+  assert.notEqual(again.status, 0);
+  assert.ok(
+    again.stderr.includes(
+      `ordinal ${secondRecord} of WO-124 is already retracted in the worktree ${realpathSync(order)}, which a worktree start carried it into; main's record holds it once that branch merges`,
+    ),
+    again.stderr,
+  );
+  assert.deepEqual(readdirSync(lane), []);
+  console.log("closed retractions read the merge as release close does");
 }

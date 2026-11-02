@@ -49,9 +49,6 @@
       "3a9d705a78763cb7facbeb33c36b94ab3ff0e824a6a3a1feb839da13840e45e7": 1,
       "076ed96840fdcad4f5250d1eb8702f2565a1cf8a583f108e14c81947a4ba7f29": 1
     },
-    "packages/skeleton/src/loadouts/contributor.ts": {
-      "d1b7fd7f1b2ac05671be65bc4dc9eda552a7f014476f3a7f9a726e384f89a857": 1
-    },
     "packages/skeleton/src/portfolio-actor.ts": {
       "50436501278c754648f513690421e99d2fef9c0ba2a340883e786699c7fc0690": 1,
       "7b6ed98775fde76a7e72716a4360067279c24c69cf8a842a9769822d0eaf4b43": 1,

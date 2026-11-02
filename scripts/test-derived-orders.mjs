@@ -238,11 +238,12 @@ test("compiled order materializes, activates and shares index, status and lifecy
       effort: "xhigh",
       source: "fixture",
     };
-    const report = (path) =>
+    // A failed receipt names its basis in its findings block (WO-249).
+    const report = (path, verdict = "pass") =>
       write(
         root,
         path,
-        `# Synthetic lifecycle receipt\n\n**Actor attestation:** ${JSON.stringify(actor)}\n\n**Process cost:** unknown; cause no-session\n`,
+        `# Synthetic lifecycle receipt\n\n**Actor attestation:** ${JSON.stringify(actor)}\n\n**Process cost:** unknown; cause no-session\n${verdict === "fail" ? `\n<!-- dotln-findings:start -->\n${JSON.stringify([{ id: "F1", route: "blocking", class: "escape", summary: "A fixture regression.", basis: { regression: "the fixture behavior main had" }, reproduction: `docs/evidence/${result.workOrderId}/regression.md` }])}\n<!-- dotln-findings:end -->\n` : ""}`,
       );
     for (const verdict of ["fail", "pass"]) {
       run(root, "scripts/resume.mjs", [
@@ -253,6 +254,7 @@ test("compiled order materializes, activates and shares index, status and lifecy
       report(
         readControl(root).orders.get(result.workOrderId).state
           .latestVerificationPath,
+        verdict,
       );
       run(root, "scripts/resume.mjs", [
         "verification-result",

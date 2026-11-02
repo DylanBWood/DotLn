@@ -470,6 +470,7 @@ const launchpadCommands = (f, text) => {
       .replaceAll("<type>/<slug>", "fix/printed")
       .replace(/"?<title>"?/gu, "printed")
       .replaceAll("<text>", "printed")
+      .replaceAll("<class>", "printed")
       .replaceAll("sha256:<digest>", `sha256:${"0".repeat(64)}`)
       .replace(/<[a-z-]*path>/gu, "reviewed-body.md")
       .replaceAll("<request.json>", join(f.base, "queue-request.json"));

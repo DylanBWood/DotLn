@@ -44,6 +44,13 @@ export const awaitingCloseStop = (order, awaiting) =>
     `The ${awaiting?.host ?? "native"} host declined the release close and a declined launcher is not retried. Attend it: in the launchpad's main checkout type resume: release close for ${order}${awaiting?.host === "codex" ? `; or re-enter with node scripts/drive.mjs ${order} --host claude, the one admitted host change, for release close only` : ""}. The drive record's awaitingClose holds the declined item${awaiting?.declined?.reason ? " with the host's reason" : ", for which the host printed no reason"}${awaiting?.retained ? " and the retained observation" : ""}.`,
   );
 
+/** Whether a closed order is merged as release close judges it: the
+ * launchpad branch and its pass have reached origin's main, and for a target
+ * order the target branch has reached its base too. The drive and a
+ * retraction in closed read this one rule. */
+export const orderMerged = (state, facts) =>
+  Boolean(facts.merged) && (!state.repositoryId || Boolean(facts.targetMerged));
+
 // A single route table serves both status and the driver. Observations are
 // explicit inputs, so a fixture never needs a live worker or a remote fetch.
 export function routeOrder(state, events = [], facts = {}) {
@@ -67,6 +74,9 @@ export function routeOrder(state, events = [], facts = {}) {
       "off-ramp",
       "The order is withdrawn; a reviewed reactivation is required.",
     );
+  // The operator's recorded directions stop a drive. A defect record is the
+  // verifier's or reviewer's judgment, not a direction: the order goes on
+  // past it, and the pull-request body names it before the merge.
   const attention = events
     .slice(facts.attentionSince ?? 0)
     .findLast((row) =>
@@ -75,6 +85,8 @@ export function routeOrder(state, events = [], facts = {}) {
         "CriterionWaived",
         "OperatorOverrideRecorded",
         "WorkOrderWithdrawn",
+        "OffRampRetracted",
+        "HandoffReopened",
       ].includes(row.type),
     );
   if (attention)
@@ -133,10 +145,7 @@ export function routeOrder(state, events = [], facts = {}) {
       "budget-exhausted",
       "The declared drive budget is exhausted; stop and report spent against the configured keys.",
     );
-  if (
-    state.phase === "closed" &&
-    (!facts.merged || (state.repositoryId && !facts.targetMerged))
-  )
+  if (state.phase === "closed" && !orderMerged(state, facts))
     return stopped(
       "awaiting-merge",
       "The operator merges the reviewed pull request(s), then types the same drive phrase again.",
@@ -274,12 +283,17 @@ export function routeFacts(root, state, events = [], context = {}) {
     };
     // The canonical projection exposes only a disposition bit from the bound
     // report; the router never receives report prose or another actor's case.
+    // The bound report is the failure source's own: a retraction that
+    // returned the order to repair is no report, so an earlier cycle's
+    // failing report never speaks for it.
     if (state.phase === "needs-fix") {
       const failure = events.findLast(
         (row) =>
           ["VerificationCompleted", "FinalReviewCompleted"].includes(
             row.type,
-          ) && row.verdict === "fail",
+          ) &&
+          row.verdict === "fail" &&
+          (row.verificationId ?? row.finalReviewId) === state.failureSourceId,
       );
       if (failure?.reportPath && failure.reportHash) {
         const bytes = readFileSync(join(root, failure.reportPath));

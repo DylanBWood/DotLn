@@ -239,14 +239,18 @@ git -C "$lifecycle_repo" -c maintenance.auto=false commit -qm initial
 printf 'uncommitted recovery sentinel\n' >"$lifecycle_repo/recovery-sentinel.txt"
 actor_flags=(--harness human --harness-version not-applicable --model human --effort unknown --source operator-attested)
 lifecycle() { node "$lifecycle_repo/scripts/resume.mjs" "$@" >/dev/null; }
+# A failed report names its basis in its findings block (WO-249).
 report() {
   mkdir -p "$(dirname "$lifecycle_repo/$1")"
   printf '# Fixture report\n\n**Actor attestation:** {"harness":"human","harnessVersion":"not-applicable","model":"human","effort":"unknown","source":"operator-attested"}\n\n**Process cost:** unknown; cause no-session\n' >"$lifecycle_repo/$1"
+  if [[ "${2:-}" == fail ]]; then
+    printf '\n<!-- dotln-findings:start -->\n[{"id": "F1", "route": "blocking", "class": "escape", "summary": "A fixture regression.", "basis": {"regression": "the fixture behavior main had"}, "reproduction": "docs/evidence/WO-097/regression.md"}]\n<!-- dotln-findings:end -->\n' >>"$lifecycle_repo/$1"
+  fi
 }
 lifecycle activate WO-097 docs/work-orders/WO-097-fixture.md
 lifecycle implementation-ready "${actor_flags[@]}"
 lifecycle verify
-report docs/verifications/WO-097/VER-001.md
+report docs/verifications/WO-097/VER-001.md fail
 lifecycle verification-result fail "${actor_flags[@]}"
 lifecycle fix
 lifecycle repair-complete "${actor_flags[@]}"
@@ -254,7 +258,7 @@ lifecycle verify
 report docs/verifications/WO-097/VER-002.md
 lifecycle verification-result pass "${actor_flags[@]}"
 lifecycle final-review
-report docs/final-reviews/WO-097/FINAL-001.md
+report docs/final-reviews/WO-097/FINAL-001.md fail
 lifecycle final-review-result fail "${actor_flags[@]}"
 lifecycle fix
 lifecycle repair-complete "${actor_flags[@]}"

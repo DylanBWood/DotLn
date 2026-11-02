@@ -1764,6 +1764,25 @@ test("planning and release-close reads run in a fresh exported instance", async 
     assert.equal(existsSync(forge.log), false);
     rmSync(join(kit, "docs/evidence/WO-002/decisions.md"));
     commit(kit, "docs: retain target record links");
+    // The body names exactly the criterion-record lines release preparation
+    // writes, so the operator never merges on a stale reading; for a target
+    // order it writes none, so a body naming one is refused (WO-249).
+    const reviewedBody = readFileSync(join(kit, "publication-body.md"), "utf8");
+    write(
+      kit,
+      "publication-body.md",
+      `${reviewedBody}\n<!-- dotln-criterion-records:start -->\n\n- Criterion 3: defective (bookkeeping) by ordinal 9; npm run resume -- retract 9 --work-order WO-002 in the order's worktree undoes a wrong record before the merge.\n\n<!-- dotln-criterion-records:end -->\n`,
+    );
+    commit(kit, "test: name a record the control lacks");
+    const staleRecords = selfPublish();
+    assert.notEqual(staleRecords.status, 0);
+    assert.match(
+      staleRecords.stderr,
+      /publication-body\.md: the body names criterion-record lines, which release preparation writes only for a launchpad order in a repository with a process meter; remove them\nCommit the body and publish again\./u,
+    );
+    assert.equal(existsSync(forge.log), false);
+    write(kit, "publication-body.md", reviewedBody);
+    commit(kit, "docs: restore reviewed body");
     const targetPublication = ok(
       publicationRun(kitMain, process.execPath, [
         "scripts/worktree.mjs",

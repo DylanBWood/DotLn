@@ -653,6 +653,8 @@ export const machinerySources = {
     "packages/skeleton/fixtures/wo192-integration-role-baseline.json",
     "packages/skeleton/fixtures/wo247-role-baseline.json",
     "packages/skeleton/fixtures/wo251-role-baseline.json",
+    "packages/skeleton/fixtures/wo249-role-baseline.json",
+    "packages/skeleton/fixtures/wo249-integration-role-baseline.json",
     "packages/skeleton/fixtures/wo217-role-efficiency-baseline.json",
     "scripts/test-helper-reuse.mjs",
     "scripts/lib/helpers.mjs",
@@ -3686,11 +3688,12 @@ async function runGateChecks(
         console.log(
           `${!row.executed ? "SKIP" : row.exitCode === 0 ? "PASS" : "FAIL"} ${row.name} ${formatDuration(row.durationMs)}`,
         );
-        // Successful checks still deliver their explicit diagnostics.
+        // Successful checks still deliver their explicit diagnostics, the
+        // criteria screen's advisories among them (WO-249).
         for (const line of (row.output ?? "").trimEnd().split("\n"))
           if (
             row.exitCode !== 0 ||
-            /^(?:ADVISORY|NEWER)\b/u.test(line) ||
+            /^(?:(?:ADVISORY|NEWER)\b|criteria advisory: )/u.test(line) ||
             (row.name === "kit-verify" && line.startsWith("kit: "))
           )
             console.log(`  [${row.name}] ${line}`);

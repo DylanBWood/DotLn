@@ -1,6 +1,13 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { mkdirSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import {
+  createFixtureRoot,
+  removeTemporaryPath as rmSync,
+} from "./lib/temporary-roots.mjs";
 import {
   absoluteBodyLinks,
   assertGitHubBodyProfile,
@@ -15,6 +22,12 @@ import {
   targetChangeSection,
   targetGateSection,
   withMeterBlockLast,
+  criterionRecordLines,
+  criterionRecordProblem,
+  criterionRecordRefusal,
+  criterionRecordsApply,
+  expectedCriterionRecordLines,
+  CRITERION_RECORD_MARKERS,
 } from "./lib/github-body.mjs";
 import { readinessFixture } from "./fixtures/target-publish/readiness.mjs";
 
@@ -1420,6 +1433,105 @@ await test("WO-227 criterion 6: the meter block moves after the last prose parag
     ),
     `# WO-999\n\nLine one  \nline two.  \n\n${begin}\ntable\n${end}\n`,
   );
+});
+
+await test("WO-249 criterion 7: one line per defective or waived criterion stands above the meter, and the body keeps its shape and profile", () => {
+  const begin = "<!-- dotln-process-meter:start -->";
+  const end = "<!-- dotln-process-meter:end -->";
+  const records = criterionRecordLines({
+    workOrderId: "WO-999",
+    waivedCriteria: [{ criterionId: "2", ordinal: 7 }],
+    defectiveCriteria: [{ criterionId: "3", class: "bookkeeping", ordinal: 5 }],
+  });
+  assert.deepEqual(records, [
+    "- Criterion 3: defective (bookkeeping) by ordinal 5; npm run resume -- retract 5 --work-order WO-999 in the order's worktree undoes a wrong record before the merge.",
+    "- Criterion 2: waived by ordinal 7; npm run resume -- retract 7 --work-order WO-999 in the order's worktree undoes a waiver the operator's words did not ask for.",
+  ]);
+  const block = [
+    CRITERION_RECORD_MARKERS.begin,
+    "",
+    ...records,
+    "",
+    CRITERION_RECORD_MARKERS.end,
+  ].join("\n");
+  const table = "| Work | Phase |\n| --- | --- |\n| WO-999 | final-review |";
+  const body = withMeterBlockLast("# WO-999\n\nProse.\n", table, records);
+  assert.equal(
+    body,
+    `# WO-999\n\nProse.\n\n${block}\n\n${begin}\n${table}\n${end}\n`,
+  );
+  // A rerun replaces the lines in place, and none removes the block.
+  assert.equal(withMeterBlockLast(body, table, records), body);
+  assert.equal(
+    withMeterBlockLast(body, table),
+    `# WO-999\n\nProse.\n\n${begin}\n${table}\n${end}\n`,
+  );
+  assert.deepEqual(pullRequestBodyShapeFailures(body), []);
+  assert.deepEqual(githubBodyProfileFailures(body), []);
+  // The lines are release preparation's, never the reviewer's prose.
+  assert.deepEqual(
+    pullRequestBodyShapeFailures(
+      withMeterBlockLast("# WO-999\n", table, records),
+    ).map(({ rule }) => rule),
+    ["prose-before-meter"],
+  );
+  // Publication reads the stored body against the record: lines that match
+  // pass, and missing, stale or no longer held lines are refused.
+  assert.equal(criterionRecordProblem(body, records), null);
+  assert.equal(criterionRecordProblem("# WO-999\n\nProse.\n", []), null);
+  assert.equal(
+    criterionRecordProblem("# WO-999\n\nProse.\n", records),
+    "the body's criterion lines do not match the 2 waived or defective criteria the order's record holds",
+  );
+  assert.equal(
+    criterionRecordProblem(body, records.slice(1)),
+    "the body's criterion lines do not match the 1 waived or defective criterion the order's record holds",
+  );
+  assert.equal(
+    criterionRecordProblem(body, []),
+    "the body names criterion records the order's record no longer holds",
+  );
+  // The pass and publication read one rule: release preparation writes the
+  // lines for a launchpad order in a metered repository, and a target
+  // order's or an unmetered repository's body names none.
+  const launchpad = {
+    workOrderId: "WO-999",
+    waivedCriteria: [{ criterionId: "2", ordinal: 7 }],
+    defectiveCriteria: [{ criterionId: "3", class: "bookkeeping", ordinal: 5 }],
+  };
+  const metered = createFixtureRoot(join(tmpdir(), "dotln-records-metered-"));
+  const unmetered = createFixtureRoot(
+    join(tmpdir(), "dotln-records-unmetered-"),
+  );
+  try {
+    mkdirSync(join(metered, "docs/control"), { recursive: true });
+    writeFileSync(join(metered, "docs/control/budgets.json"), "{}\n");
+    assert.equal(criterionRecordsApply(metered, launchpad), true);
+    assert.deepEqual(expectedCriterionRecordLines(metered, launchpad), records);
+    assert.equal(criterionRecordRefusal(metered, body, launchpad), null);
+    assert.equal(
+      criterionRecordRefusal(metered, "# WO-999\n\nProse.\n", launchpad),
+      `the body's criterion lines do not match the 2 waived or defective criteria the order's record holds; release preparation writes these lines above the process table:\n${records.join("\n")}`,
+    );
+    for (const [root, state] of [
+      [metered, { ...launchpad, repositoryId: "target" }],
+      [unmetered, launchpad],
+    ]) {
+      assert.equal(criterionRecordsApply(root, state), false);
+      assert.deepEqual(expectedCriterionRecordLines(root, state), []);
+      assert.equal(
+        criterionRecordRefusal(root, "# WO-999\n\nProse.\n", state),
+        null,
+      );
+      assert.equal(
+        criterionRecordRefusal(root, body, state),
+        "the body names criterion-record lines, which release preparation writes only for a launchpad order in a repository with a process meter; remove them",
+      );
+    }
+  } finally {
+    rmSync(metered, { recursive: true, force: true });
+    rmSync(unmetered, { recursive: true, force: true });
+  }
 });
 
 await test("WO-227 criterion 7: a link map writes a moved record's target path absolute to the target and every other relative link as its text", () => {

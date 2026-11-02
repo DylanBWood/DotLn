@@ -9,7 +9,12 @@ import {
   requireRedispatchBound,
 } from "./lib/dispatch-bound.mjs";
 import { isMainModule } from "./lib/paths.mjs";
-import { routeOrder, routeFacts } from "./lib/drive-route.mjs";
+import {
+  fetchMergedBases,
+  orderMerged,
+  routeOrder,
+  routeFacts,
+} from "./lib/drive-route.mjs";
 import {
   releaseCloseHandoff,
   releaseCloseKind,
@@ -104,6 +109,10 @@ import {
   loadConfig,
 } from "./lib/config.mjs";
 import {
+  criterionRecordRefusal,
+  criterionRecordsApply,
+} from "./lib/github-body.mjs";
+import {
   parseDerivedProvenance,
   allocationSections,
   checkGeneratedSections,
@@ -125,19 +134,25 @@ import {
   CORRECTABLE_FIELDS,
   CRITERION_ID,
   DEFAULT_CONTROL_PATHS,
+  DEFECT_CLASSES,
+  REOPENABLE_HANDOFFS,
+  RETRACTABLE_RECORDS,
   WITHDRAWAL_DISPOSITIONS,
   controlPaths,
   fold,
   parseControlEvents,
+  retractionSourceId,
 } from "./lib/control.mjs";
 import {
   captureTiming,
+  criterionTextHash,
   executorOf,
   recordingSession,
   requireCriterionLines,
   requireOperatorCapture,
   sha256Bytes,
 } from "./lib/off-ramps.mjs";
+import { findingsBlockFormat } from "./lib/review-findings.mjs";
 import {
   readControl,
   controlFromSources,
@@ -295,7 +310,8 @@ const liveActions = (state, events) => [
 ];
 
 // Off-ramps sit beside the lifecycle's next actions: each records a typed
-// event in the phases listed and changes no phase except `withdraw` (WO-158).
+// event in the phases listed and changes no phase except `withdraw` (WO-158),
+// a retraction in closed before the merge and a reopened handoff (WO-249).
 const openPhases = [
   "active",
   "ready-to-verify",
@@ -321,6 +337,14 @@ export const OFF_RAMP_PHASES = {
   // missing product gate is discovered by publication, after `closed`.
   correct: [...openPhases, "closed"],
   "override-record": [...openPhases, "closed"],
+  // A defect record is the verifier's or the reviewer's judgment, made while
+  // that role judges the order (WO-249).
+  defect: ["verifying", "final-review"],
+  // A retraction undoes a waiver or defect record wherever a judgment may
+  // still read it; in closed it reads the pull request's merge state.
+  retract: ["verifying", "verified", "needs-fix", "final-review", "closed"],
+  // Only a handoff no verification has been requested for is reopened.
+  "reopen-handoff": ["ready-to-verify"],
 };
 const legalOffRamps = (state) =>
   state.workOrderId
@@ -338,6 +362,9 @@ const offRampPositional = {
   withdraw: `--disposition ${WITHDRAWAL_DISPOSITIONS.join("|")} --reason <text> ${captureUsage}`,
   correct: `<ordinal|report-path> --set <field>=<value> [--set <field>=<value>] --reason <text>`,
   "override-record": `--bypassed <item[,item]> --effects <item[,item]> --reason <text> [${captureUsage}]`,
+  defect: `<criterion> --class ${DEFECT_CLASSES.join("|")} --evidence <text>`,
+  retract: `<ordinal> --reason <text> ${captureUsage}`,
+  "reopen-handoff": `--reason <text> ${captureUsage}`,
 };
 
 const commandFor = (action, workOrderId) => {
@@ -844,6 +871,12 @@ const renderOffRamps = (state) =>
       `- Withdrawal: ${state.withdrawal.disposition} at ordinal ${state.withdrawal.ordinal} — ${state.withdrawal.reason}`,
     state.waivedCriteria?.length &&
       `- Waived criteria: ${state.waivedCriteria.map((waiver) => `${waiver.criterionId} (ordinal ${waiver.ordinal})`).join(", ")}`,
+    state.defectiveCriteria?.length &&
+      `- Defective criteria: ${state.defectiveCriteria.map((record) => `${record.criterionId} (${record.class}, ordinal ${record.ordinal})`).join(", ")}`,
+    state.retractedOffRamps?.length &&
+      `- Retracted off-ramps: ${state.retractedOffRamps.map((row) => `ordinal ${row.ordinal} retracts ordinal ${row.subject.ordinal} (${row.subject.type}, criterion ${row.subject.criterionId}${row.pullRequest ? `; pull request ${row.pullRequest}` : ""})`).join(", ")}`,
+    state.reopenedHandoffs?.length &&
+      `- Reopened handoffs: ${state.reopenedHandoffs.map((row) => `ordinal ${row.ordinal} reopens ordinal ${row.handoff.ordinal} (${row.handoff.type})`).join(", ")}`,
     // What the executor's handoff ledger recorded unmet (WO-173).
     state.unmetCriteria?.length &&
       `- Unmet criteria: ${state.unmetCriteria.map((row) => row.criterionId).join(", ")} (recorded unmet by the executor at ordinal ${state.unmetCriteria[0].ordinal})`,
@@ -938,6 +971,9 @@ const projectOrder = (state, events, routeContext) => {
     withdrawal: state.withdrawal ?? null,
     corrections: state.corrections ?? [],
     overrideRecords: state.overrideRecords ?? [],
+    defectiveCriteria: state.defectiveCriteria ?? [],
+    retractedOffRamps: state.retractedOffRamps ?? [],
+    reopenedHandoffs: state.reopenedHandoffs ?? [],
   };
 };
 
@@ -1180,15 +1216,97 @@ const requireReactivation = (state, workOrderPath) => {
     );
 };
 
-// The numbered acceptance criteria an order declares, or null when its
-// authority has no such list to check against.
-const declaredCriteria = (state) =>
+// The order's own control segment and its events, numbered as the fold
+// numbers them.
+const orderSegment = (control, state) => {
+  const segment = control.locations.get(state.workOrderId);
+  return { segment, events: control.eventSegments.get(segment) ?? [] };
+};
+// A waiver, defect record or retraction made after release preparation
+// leaves the stored pull-request body's criterion lines stale; the pass
+// refuses them, so the record's message says so before the document gate.
+const storedBodyPath = (state) =>
+  docRelative(repoRoot, "finalReviews", `${state.workOrderId}/PR.md`);
+const storedBodyHint = (state) =>
+  existsSync(join(repoRoot, storedBodyPath(state))) &&
+  criterionRecordsApply(repoRoot, state)
+    ? " The stored pull-request body's criterion lines are now stale: npm run release -- prepare --local rewrites them before the final review's pass."
+    : "";
+// The order's own executor judges its own work, so it never records a waiver,
+// a defect or a retraction for its criteria (WO-158 criterion 2, WO-249). The
+// commands check it once the phase admits them and their arguments and actor
+// flags parse, before anything they judge about the record.
+const ownExecutorRefusals = {
+  waive:
+    "the executor cannot record a waiver of its own order's criterion. The operator's words are recorded from the operator's terminal, a verifier or a reviewer session.",
+  defect:
+    "the executor cannot record its own order's criterion defective. It records the criterion unmet with the class named; the verifier or the reviewer records the defect.",
+  retract:
+    "the executor cannot retract a record of its own order's criterion. The operator's words are recorded from the operator's terminal, a verifier or a reviewer session.",
+};
+const refuseOwnExecutor = (state, action) => {
+  const executor = executorOf(repoRoot, state.workOrderId);
+  if (executor)
+    throw new Error(
+      `${action} refused: ${executor}, and ${ownExecutorRefusals[action]}`,
+    );
+};
+
+// Whether a closed order's pull request is merged, read as release close reads
+// it: after fetching origin's main, the order's branch is an ancestor of
+// origin/main and origin/main's record holds its passing final review. A
+// released order takes no retraction, because its release is published and
+// planning files the follow-up from the record. A read that cannot decide
+// refuses, since an unseen merge cannot be told from an open pull request.
+const closedPullRequest = (state, events) => {
+  const unreadable = (cause) =>
+    new Error(
+      `retract cannot read whether ${state.workOrderId}'s pull request is merged (${cause}); nothing was recorded`,
+    );
+  let failed;
+  try {
+    failed = fetchMergedBases(repoRoot, state.workOrderId);
+  } catch (error) {
+    throw unreadable(error instanceof Error ? error.message : String(error));
+  }
+  if (failed.length)
+    throw unreadable(
+      failed
+        .map(({ label, cause }) => `the ${label} fetch failed: ${cause}`)
+        .join("; "),
+    );
+  const facts = routeFacts(repoRoot, state, events);
+  if (facts.unavailable) throw unreadable(facts.unavailable);
+  if (facts.released)
+    throw new Error(
+      `retract refused: ${state.workOrderId} is released, and a retraction after release close records nothing; a planning pass files the follow-up from the record (npm run plan -- failures)`,
+    );
+  return {
+    pullRequest: orderMerged(state, facts) ? "merged" : "unmerged",
+    worktree: facts.launchpad,
+  };
+};
+
+// The numbered acceptance criteria an order declares, each with its text, or
+// null when its authority has no such list to check against.
+const declaredCriterionList = (state) =>
   declaredCriteriaOf(
     readFileSync(
       workOrderAuthorityPath(repoRoot, state.workOrderId, state.workOrderPath),
       "utf8",
     ),
-  )?.map((criterion) => criterion.id) ?? null;
+  );
+const declaredCriteria = (state) =>
+  declaredCriterionList(state)?.map((criterion) => criterion.id) ?? null;
+// A report is judged against the criteria as they read now, so a defect
+// record of amended text is refused; an unreadable authority reads as none.
+const reportCriteria = (state) => {
+  try {
+    return declaredCriterionList(state);
+  } catch {
+    return null;
+  }
+};
 
 /**
  * The briefing each dispatch prints. `briefing` projects the recorded
@@ -1198,8 +1316,8 @@ const declaredCriteria = (state) =>
  */
 // WO-173: the handoff ledger the executor writes before either completion,
 // the three sentences the failure record of 2026-09-28 asked for, and the
-// disclosure of what the executor recorded unmet, with the two routes that
-// spare the cycle.
+// disclosure of what the executor recorded unmet, with the routes that spare
+// the cycle (a defect record, a waiver and an amendment since WO-249).
 const ledgerBriefing = (state, before) =>
   ` Before ${before}, judge each acceptance criterion on one line of ${handoffLedgerPath(repoRoot, state.workOrderId)}: \`**Criterion <id>:** met\` with its evidence or \`unmet\` with why; a met criterion naming npm test or npm run test:docs stands on that gate's passing row.`;
 const repairSentence =
@@ -1233,16 +1351,22 @@ const briefingCommands = (state, text) =>
           : form,
       )
     : text;
-// A criterion the record already waives needs neither route.
+// The verifier and the final reviewer read this. A criterion the record
+// already waives or records defective needs no route. Of the three routes the
+// defect record is the reading role's own judgment, while a waiver and an
+// amendment each need the operator's words (WO-249).
 const unmetBriefing = (state) => {
-  const waived = new Set(
-    (state.waivedCriteria ?? []).map((row) => row.criterionId),
+  const recorded = new Set(
+    [...(state.waivedCriteria ?? []), ...(state.defectiveCriteria ?? [])].map(
+      (row) => row.criterionId,
+    ),
   );
   const ids = (state.unmetCriteria ?? [])
     .map((row) => row.criterionId)
-    .filter((id) => !waived.has(id));
+    .filter((id) => !recorded.has(id));
   if (!ids.length) return "";
-  return `\nThe executor recorded ${ids.length === 1 ? "criterion" : "criteria"} ${ids.join(", ")} unmet in ${handoffLedgerPath(repoRoot, state.workOrderId)}. A waiver this session records from the operator's capture (npm run resume -- waive ${ids.length === 1 ? ids[0] : "<criterion>"} --reason <text> ${captureUsage} <actor flags> --work-order ${state.workOrderId}) or an authorized amendment (npm run plan -- amend-order) spares the cycle; without either the criterion is judged as it stands.`;
+  const criterion = ids.length === 1 ? ids[0] : "<criterion>";
+  return `\nThe executor recorded ${ids.length === 1 ? "criterion" : "criteria"} ${ids.join(", ")} unmet in ${handoffLedgerPath(repoRoot, state.workOrderId)}. Three routes spare the cycle. A criterion no candidate can meet as written (${DEFECT_CLASSES.join(", ")}) is recorded defective with its evidence (npm run resume -- defect ${criterion} --class <class> --evidence <text> <actor flags> --work-order ${state.workOrderId}) and judged \`unmet, defective (<class>) by <ordinal>\`. A waiver is recorded only from the operator's words asking for that criterion's waiver (npm run resume -- waive ${criterion} --reason <text> ${captureUsage} <actor flags> --work-order ${state.workOrderId}), and an amendment needs the operator's words changing the criterion (npm run plan -- amend-order); words that call a criterion wrong or authorize a commit or a pull request ask for neither. Without a route the criterion is judged as it stands.`;
 };
 const targetBriefing = (state, review = false) => {
   if (!state.repositoryId) return "";
@@ -1262,10 +1386,21 @@ const executionBriefing = (state) => {
     `Execute ${state.workOrderPath}.\n${declaration.modelSource}\n${declaration.effortSource}${declaration.experimentSource ? `\n${declaration.experimentSource}` : ""}\nRead that authority and only its cited blueprint sections; when its deliverable and evidence exist, run ${commandFor("implementation-ready", state.workOrderId)}.${ledgerBriefing(state, "that command")}${executorEntryBriefing(repoRoot, state.workOrderId, { experiment: Boolean(declaration.experimentSource) })}${targetBriefing(state)}`,
   );
 };
+// A retraction that returned a closed order to repair is its failure source:
+// its capture holds the operator's words, and the criterion it names is judged
+// again without the retracted record.
+const repairSource = (state) => {
+  const retraction = state.retractedOffRamps?.find(
+    (row) => retractionSourceId(row.ordinal) === state.failureSourceId,
+  );
+  return retraction
+    ? `${state.failureSourcePath}, the operator's words retracting ordinal ${retraction.subject.ordinal} (the ${retraction.subject.type} of criterion ${retraction.subject.criterionId}, now judged without it)`
+    : state.failureSourcePath;
+};
 const repairBriefing = (state) =>
   briefingCommands(
     state,
-    `Repair ${state.workOrderPath} using ${state.failureSourcePath}; read both artifacts. ${repairSentence}${ledgerBriefing(state, "repair-complete")}${executorEntryBriefing(repoRoot, state.workOrderId)}${targetBriefing(state)}`,
+    `Repair ${state.workOrderPath} using ${repairSource(state)}; read both artifacts. ${repairSentence}${ledgerBriefing(state, "repair-complete")}${executorEntryBriefing(repoRoot, state.workOrderId)}${targetBriefing(state)}`,
   );
 const preflightBriefing = (state) => {
   if (state.repositoryId) return "";
@@ -1285,6 +1420,13 @@ const finalReviewBriefing = (state, reportPath) =>
     state,
     `Final-review ${state.workOrderPath}, the complete verification sequence, and ideation receipt; write ${reportPath}. ${costLineBriefing}\n${defectBoundarySentence} ${offRampSentence} ${operatorMessageSentence} ${gateClaimSentence}${unmetBriefing(state)}${targetBriefing(state, true)}`,
   );
+// A result's own advisories print once and ride on its evidence.
+const recordAdvisories = (evidence, lines) => {
+  for (const line of lines) {
+    console.warn(`Advisory: ${line}`);
+    evidence.advisories.push(line);
+  }
+};
 // The advisories and rows the handoff produced ride on the completion's
 // evidence, beside the diff check's.
 const completionHandoff = (evidence, handoff, gates) => {
@@ -1685,11 +1827,12 @@ const run = async (argv) => {
         "verification",
       );
       requireReceiptCostLine(repoRoot, state.latestVerificationPath);
-      requireCriterionLines(
+      const judged = requireCriterionLines(
         repoRoot,
         state.latestVerificationPath,
         state,
         verdict,
+        { criteria: reportCriteria(state) },
       );
       const claims = readReportGateClaims(
         repoRoot,
@@ -1707,6 +1850,15 @@ const run = async (argv) => {
         gateIndexError,
       });
       completionHandoff(evidence, claims, gates);
+      // A fail's block is required above; a pass's stays advisory.
+      recordAdvisories(evidence, [
+        ...judged.advisories,
+        ...(judged.findings.readable
+          ? []
+          : [
+              `${state.latestVerificationPath}: ${judged.findings.cause}; the verification result records all the same. A report lists its findings in one block: ${findingsBlockFormat}.`,
+            ]),
+      ]);
       appendTransition(action, {
         type: "VerificationCompleted",
         ...(evidence ? { evidence } : {}),
@@ -1844,7 +1996,30 @@ const run = async (argv) => {
         "final-review",
       );
       requireReceiptCostLine(repoRoot, state.finalReviewPath);
-      requireCriterionLines(repoRoot, state.finalReviewPath, state, verdict);
+      const judged = requireCriterionLines(
+        repoRoot,
+        state.finalReviewPath,
+        state,
+        verdict,
+        { criteria: reportCriteria(state) },
+      );
+      // The stored pull-request body names the waived and defective criteria
+      // the operator reads before merging. A record made after release
+      // preparation would leave it stale, and preparation refuses once the
+      // order closes, so the pass refuses it while preparation can still
+      // rewrite the lines (WO-249).
+      const storedBody = join(repoRoot, storedBodyPath(state));
+      if (verdict === "pass" && existsSync(storedBody)) {
+        const problem = criterionRecordRefusal(
+          repoRoot,
+          readFileSync(storedBody, "utf8"),
+          state,
+        );
+        if (problem)
+          throw new Error(
+            `final-review-result pass refused: ${storedBodyPath(state)}: ${problem}\n${criterionRecordsApply(repoRoot, state) ? "While the order is in final-review, npm run release -- prepare --local rewrites the lines; npm run test:docs then runs again" : "Then npm run test:docs runs again"} before the pass is recorded.`,
+          );
+      }
       const findings = reviewFindings(
         readFileSync(join(repoRoot, state.finalReviewPath), "utf8"),
         { verdict },
@@ -1884,11 +2059,14 @@ const run = async (argv) => {
       // complete count records none, never a lower one; either way one
       // advisory says so and the result records.
       const advisory = findingsAdvisory(findings);
-      if (advisory) {
-        const line = `${state.finalReviewPath}: ${advisory} The final-review result records all the same.`;
-        console.warn(`Advisory: ${line}`);
-        evidence.advisories.push(line);
-      }
+      recordAdvisories(evidence, [
+        ...(advisory
+          ? [
+              `${state.finalReviewPath}: ${advisory} The final-review result records all the same.`,
+            ]
+          : []),
+        ...judged.advisories,
+      ]);
       appendTransition(action, {
         type: "FinalReviewCompleted",
         ...(targetSubject ? { targetSubject } : {}),
@@ -2033,6 +2211,7 @@ const run = async (argv) => {
         "--capture-hash": "one",
       });
       const actor = routeActor(action, actorArgs);
+      refuseOwnExecutor(state, action);
       const declared = declaredCriteria(state);
       if (declared && !declared.includes(criterionId))
         throw new Error(
@@ -2045,12 +2224,14 @@ const run = async (argv) => {
         throw new Error(
           `criterion ${criterionId} of ${state.workOrderId} is already waived by ordinal ${prior.ordinal}`,
         );
-      // A waiver is the operator's act on an order's standard; the session
-      // that executes the order never records one for it (WO-158 criterion 2).
-      const executor = executorOf(repoRoot, state.workOrderId);
-      if (executor)
+      // One record judges a criterion: a defect record is retracted before
+      // the operator's waiver replaces it.
+      const defective = state.defectiveCriteria?.find(
+        (record) => record.criterionId === criterionId,
+      );
+      if (defective)
         throw new Error(
-          `waive refused: ${executor}, and the executor cannot record a waiver of its own order's criterion. The operator's words are recorded from the operator's terminal, a verifier or a reviewer session.`,
+          `waive refused: criterion ${criterionId} of ${state.workOrderId} is recorded defective (${defective.class}) by ordinal ${defective.ordinal}; npm run resume -- retract ${defective.ordinal} undoes that record first`,
         );
       const session = recordingSession(repoRoot);
       const { capture, captureHash } = routeCapture(action, values);
@@ -2067,7 +2248,222 @@ const run = async (argv) => {
         },
         actor,
       });
-      message = `Recorded CriterionWaived for ${state.workOrderId} criterion ${criterionId} at ordinal ${ordinal}. The waiver neither passes nor fails the criterion: a report judging it records \`**Criterion ${criterionId}:** unmet, waived by ${ordinal}\`.`;
+      message = `Recorded CriterionWaived for ${state.workOrderId} criterion ${criterionId} at ordinal ${ordinal}. The waiver neither passes nor fails the criterion: a report judging it records \`**Criterion ${criterionId}:** unmet, waived by ${ordinal}\`.${storedBodyHint(state)}`;
+      break;
+    }
+    case "defect": {
+      requireOffRamp(state, orderEvents, action);
+      const [criterionId, ...rest] = args;
+      if (!CRITERION_ID.test(criterionId ?? ""))
+        throw new Error(`usage: ${commandFor(action)}`);
+      const { values, actorArgs } = routeArgs(action, rest, {
+        "--class": "one",
+        "--evidence": "one",
+      });
+      const actor = routeActor(action, actorArgs);
+      refuseOwnExecutor(state, action);
+      const defectClass = values.get("--class");
+      if (!DEFECT_CLASSES.includes(defectClass))
+        throw new Error(
+          `defect refused: ${defectClass} is not a defect class; a criterion is recorded defective as one of ${DEFECT_CLASSES.join(", ")}`,
+        );
+      const criteria = declaredCriterionList(state);
+      const criterion = criteria?.find((row) => row.id === criterionId);
+      if (!criterion)
+        throw new Error(
+          criteria
+            ? `defect refused: ${state.workOrderPath} declares acceptance criteria ${criteria.map((row) => row.id).join(", ")}, not ${criterionId}`
+            : `defect refused: ${state.workOrderPath} declares no numbered acceptance criteria whose text a record could bind`,
+        );
+      const waiver = state.waivedCriteria?.find(
+        (row) => row.criterionId === criterionId,
+      );
+      if (waiver)
+        throw new Error(
+          `defect refused: criterion ${criterionId} of ${state.workOrderId} is waived by ordinal ${waiver.ordinal}, and one record judges a criterion`,
+        );
+      // The record binds the criterion's current text: an amended criterion
+      // takes a fresh record, and the same text keeps the one it has.
+      const criterionHash = criterionTextHash(criterion.text);
+      const standing = state.defectiveCriteria?.find(
+        (row) => row.criterionId === criterionId,
+      );
+      if (standing?.criterionHash === criterionHash)
+        throw new Error(
+          `criterion ${criterionId} of ${state.workOrderId} is already recorded defective (${standing.class}) by ordinal ${standing.ordinal} for its current text`,
+        );
+      // The operator's retraction stands for the text it was recorded
+      // against: the same text takes no fresh record, an amended one does.
+      const { events: segmentEvents } = orderSegment(control, state);
+      const overruled = state.retractedOffRamps?.find(
+        (row) =>
+          row.subject.type === "CriterionDefectRecorded" &&
+          row.subject.criterionId === criterionId &&
+          segmentEvents[row.subject.ordinal - 1]?.criterionHash ===
+            criterionHash,
+      );
+      if (overruled)
+        throw new Error(
+          `defect refused: ordinal ${overruled.ordinal} retracted ordinal ${overruled.subject.ordinal}, the record of criterion ${criterionId} for its current text, and the operator's retraction stands until the criterion's text is amended`,
+        );
+      const session = recordingSession(repoRoot);
+      const { ordinal } = appendTransition(action, {
+        type: "CriterionDefectRecorded",
+        workOrderId: state.workOrderId,
+        criterionId,
+        criterionHash,
+        class: defectClass,
+        evidence: values.get("--evidence"),
+        recordingSession: { role: session.role },
+        actor,
+      });
+      message = `Recorded CriterionDefectRecorded for ${state.workOrderId} criterion ${criterionId} (${defectClass}) at ordinal ${ordinal}${standing ? `, replacing ordinal ${standing.ordinal}, which the criterion's earlier text carried` : ""}. The record neither passes nor fails the criterion: a report judging it records \`**Criterion ${criterionId}:** unmet, defective (${defectClass}) by ${ordinal}\` with its own evidence, the final review carries the same line, and a launchpad order's pull-request body names it for the operator, who retracts a wrong record with npm run resume -- retract ${ordinal}.${storedBodyHint(state)}`;
+      break;
+    }
+    case "retract": {
+      requireOffRamp(state, orderEvents, action);
+      const [subjectArg, ...rest] = args;
+      if (!/^[1-9]\d*$/u.test(subjectArg ?? ""))
+        throw new Error(`usage: ${commandFor(action)}`);
+      const { values, actorArgs } = routeArgs(action, rest, {
+        "--reason": "one",
+        "--capture": "one",
+        "--capture-hash": "one",
+      });
+      const actor = routeActor(action, actorArgs);
+      refuseOwnExecutor(state, action);
+      const ordinal = Number(subjectArg);
+      const { segment, events: segmentEvents } = orderSegment(control, state);
+      const subject = segmentEvents[ordinal - 1];
+      if (subject?.workOrderId !== state.workOrderId)
+        throw new Error(
+          `retract refused: ordinal ${ordinal} is not an event of ${state.workOrderId} in ${segment}`,
+        );
+      if (!Object.hasOwn(RETRACTABLE_RECORDS, subject.type ?? ""))
+        throw new Error(
+          `retract refused: ordinal ${ordinal} is ${subject.type}; a retraction undoes ${Object.keys(
+            RETRACTABLE_RECORDS,
+          )
+            .map((type) => `a ${type}`)
+            .join(" or ")} record`,
+        );
+      const activation = segmentEvents.findLastIndex(
+        (event) =>
+          event?.workOrderId === state.workOrderId &&
+          event.type === "WorkOrderActivated",
+      );
+      if (ordinal <= activation + 1)
+        throw new Error(
+          `retract refused: ordinal ${ordinal} precedes ${state.workOrderId}'s current activation at ordinal ${activation + 1}`,
+        );
+      const standing = (state[RETRACTABLE_RECORDS[subject.type]] ?? []).some(
+        (row) => row.ordinal === ordinal,
+      );
+      if (!standing) {
+        const prior = state.retractedOffRamps?.find(
+          (row) => row.subject.ordinal === ordinal,
+        );
+        throw new Error(
+          `retract refused: ordinal ${ordinal} no longer stands; ${prior ? `ordinal ${prior.ordinal} retracted it` : `a later record of criterion ${subject.criterionId} replaced it`}`,
+        );
+      }
+      const session = recordingSession(repoRoot);
+      const { capture, captureHash } = routeCapture(action, values);
+      const event = {
+        type: "OffRampRetracted",
+        workOrderId: state.workOrderId,
+        subject: {
+          ordinal,
+          type: subject.type,
+          criterionId: subject.criterionId,
+        },
+        reason: values.get("--reason"),
+        capture,
+        captureHash,
+        recordingSession: {
+          role: session.role,
+          capture: captureTiming(repoRoot, capture, session),
+        },
+        actor,
+      };
+      const named = `ordinal ${ordinal}'s ${subject.type} of criterion ${subject.criterionId}`;
+      if (state.phase === "closed") {
+        const merge = closedPullRequest(state, orderEvents);
+        event.pullRequest = merge.pullRequest;
+        const mainPath = mainWorktree(repoRoot);
+        const inMain =
+          directoryIdentity(repoRoot) === directoryIdentity(mainPath);
+        if (event.pullRequest === "merged") {
+          // A merged branch cannot be repaired in place. The record waits in
+          // main's pending lane, which the next worktree start carries into
+          // the reviewed record, as a closed order's override record does.
+          if (!inMain) {
+            const rerun = `cd ${shellQuote(mainPath)} && node scripts/resume.mjs ${[
+              action,
+              ...args,
+              "--work-order",
+              state.workOrderId,
+            ]
+              .map(shellQuote)
+              .join(" ")}`;
+            throw new Error(
+              `${state.workOrderId}'s pull request is merged, so its retraction is recorded from main; nothing was written. Ensure ${shellQuote(capture)} exists at its ignored intake path in main with the same hash, then run from main: ${rerun}`,
+            );
+          }
+          const pending = recordPendingOverride(repoRoot, event);
+          process.stdout.write(
+            `Recorded pending OffRampRetracted for ${state.workOrderId} (${named}) in ${pending}; the next worktree start carries it into the reviewed record. The pull request is merged, so the branch cannot be repaired in place and the order stays closed: a planning pass files the follow-up from the record, where npm run plan -- failures counts the retraction.\n`,
+          );
+          return;
+        }
+        if (inMain)
+          throw new Error(
+            `${state.workOrderId}'s pull request is unmerged, so its retraction returns the order to repair in its own worktree; nothing was written. Run the same command ${merge.worktree && directoryIdentity(merge.worktree) !== directoryIdentity(mainPath) ? `in ${merge.worktree}` : "in the order's worktree"}.`,
+          );
+      }
+      const { ordinal: recorded } = appendTransition(action, event);
+      message =
+        event.pullRequest === "unmerged"
+          ? `Recorded OffRampRetracted for ${state.workOrderId} at ordinal ${recorded}: ${named} is retracted. The pull request is unmerged, so the order returns to needs-fix with the retraction as its failure source: a repair, a fresh verification and a fresh final review precede the merge, and release close refuses while the retraction stands unrepaired. Run resume: fix.`
+          : `Recorded OffRampRetracted for ${state.workOrderId} at ordinal ${recorded}: ${named} is retracted, and no phase changed. A report judging criterion ${subject.criterionId} now judges it without that record.${storedBodyHint(state)}`;
+      break;
+    }
+    case "reopen-handoff": {
+      requireOffRamp(state, orderEvents, action);
+      const { values, actorArgs } = routeArgs(action, args, {
+        "--reason": "one",
+        "--capture": "one",
+        "--capture-hash": "one",
+      });
+      const actor = routeActor(action, actorArgs);
+      const { events: segmentEvents } = orderSegment(control, state);
+      const index = segmentEvents.findLastIndex(
+        (event) =>
+          event?.workOrderId === state.workOrderId &&
+          Object.hasOwn(REOPENABLE_HANDOFFS, event.type ?? ""),
+      );
+      if (index < 0)
+        throw new Error(
+          `reopen-handoff refused: ${state.workOrderId} records no implementation-ready or repair-complete handoff to reopen`,
+        );
+      const handoff = segmentEvents[index];
+      const { capture, captureHash } = routeCapture(action, values);
+      const session = recordingSession(repoRoot);
+      const { ordinal } = appendTransition(action, {
+        type: "HandoffReopened",
+        workOrderId: state.workOrderId,
+        handoff: { ordinal: index + 1, type: handoff.type },
+        reason: values.get("--reason"),
+        capture,
+        captureHash,
+        recordingSession: {
+          role: session.role,
+          capture: captureTiming(repoRoot, capture, session),
+        },
+        actor,
+      });
+      const phase = REOPENABLE_HANDOFFS[handoff.type];
+      message = `Recorded HandoffReopened for ${state.workOrderId} at ordinal ${ordinal}: the ${handoff.type} handoff at ordinal ${index + 1} is reopened, and the order returns to ${phase} with its unmet criteria cleared. The next ${phase === "active" ? "implementation-ready" : "repair-complete"} writes a fresh ledger; ${phase === "active" ? "resume: next" : "resume: fix"} continues the work.`;
       break;
     }
     case "withdraw": {
@@ -2158,8 +2554,7 @@ const run = async (argv) => {
           "correct refused: in closed a correction binds only a product gate (--set productGate=<evidenceRef>); attestations, report paths and checkpoints are corrected before the order closes",
         );
       const actor = routeActor(action, actorArgs);
-      const segment = control.locations.get(state.workOrderId);
-      const segmentEvents = control.eventSegments.get(segment) ?? [];
+      const { segment, events: segmentEvents } = orderSegment(control, state);
       const own = (event) => event?.workOrderId === state.workOrderId;
       let ordinal;
       if (/^[1-9]\d*$/u.test(subjectArg)) {

@@ -354,7 +354,12 @@ also writes the pass's planning document with its standard section headings.
   refutation belong to the operator's instance; the export fixture exercises
   only `review --transport fake` and its receipt, never a live model.
 - Refresh `npm run work-orders -- index` and `node scripts/lineage.mjs index`;
-  their `--check` forms check the projections. Run `node scripts/docs-check.mjs`,
+  their `--check` forms check the projections. `index --check` also prints
+  `criteria advisory: WO-NNN criterion N: <what matched>` for each active or
+  open order's criterion whose wording often marks one of the five defect classes
+  (bookkeeping, later-phase, absent-input, host-behavior, contradiction); it
+  refuses nothing, and the planner screens each criterion against the classes
+  before filing. Run `node scripts/docs-check.mjs`,
   `npm run publication:check`, `npm run reader -- check` and
   `npm run test:docs` before handing off the planning pass.
 - Release-close reads can be inspected with `npm run release -- check-surfaces
@@ -994,6 +999,29 @@ projected by `status --json`. The meter and `plan failures` show stops,
 acceptances and the next same-order event with its delay. Operator-facing
 durations use hours and minutes; numeric flags and machine records keep their
 declared units.
+
+A criterion no candidate can meet as written is recorded by the verifier or
+the final reviewer, never the order's executor, with
+`npm run resume -- defect <criterion> --class <class> --evidence <text>
+<actor-flags>` in one of the five classes, and judged
+`**Criterion <id>:** unmet, defective (<class>) by <ordinal>` with the
+judge's evidence; the order goes on without a waiver, and `release prepare`
+names each defective or waived criterion above a launchpad order's stored
+pull-request body's process table for the operator to read before merging,
+and the final review's pass refuses lines a later record left stale; a
+target order's publications carry no such lines yet, so read its record
+with `npm run resume -- status`. A waiver
+(`npm run resume -- waive`) is recorded only from the operator's words
+asking for that criterion's waiver. From the operator's captured words,
+`npm run resume -- retract <ordinal> --reason <text> --capture <path>
+--capture-hash sha256:<digest> <actor-flags>` undoes a waiver or defect
+record, returning a closed order whose pull request is unmerged to repair,
+and `npm run resume -- reopen-handoff` returns a handoff the operator
+widened to its phase. A failed verification or final review needs a
+readable findings block (`[]` when empty) and names what it failed on: a
+plain `**Criterion <id>:** unmet` line, or a blocking entry in the block
+with its `basis` and `reproduction`; an entry without them prints one
+advisory and records, and a fail with no readable block is refused.
 
 Read before upgrading: the optional `retention` object in
 `docs/control/budgets.json` takes hours for `gate-fixture-passed` (0),

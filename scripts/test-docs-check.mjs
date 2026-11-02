@@ -1438,7 +1438,7 @@ test("document gate forwards explicit success diagnostics and preserves full fai
   for (const exitCode of [0, 1]) {
     f.write(
       "scripts/notice.mjs",
-      `console.log("ordinary detail");\nconsole.log("ADVISORY fixture notice");\nconsole.log("NEWER fixture history");\nprocess.exitCode = ${exitCode};\n`,
+      `console.log("ordinary detail");\nconsole.log("ADVISORY fixture notice");\nconsole.log("NEWER fixture history");\nconsole.log("criteria advisory: WO-999 criterion 1: fixture");\nprocess.exitCode = ${exitCode};\n`,
     );
     const lines = [];
     const saved = console.log;
@@ -1457,6 +1457,7 @@ test("document gate forwards explicit success diagnostics and preserves full fai
       for (const diagnostic of [
         "ADVISORY fixture notice",
         "NEWER fixture history",
+        "criteria advisory: WO-999 criterion 1: fixture",
       ])
         assert.equal(
           lines.filter((line) => line.endsWith(diagnostic)).length,

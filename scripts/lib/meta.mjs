@@ -798,10 +798,15 @@ const directionPrefixes = [
   ["conversation only:", "conversationOnly"],
   ["quality pass:", "qualityPass"],
 ];
+// A retraction and a reopened handoff are the operator's acts through a
+// capture, as a waiver is; a defect record is a role's judgment and no
+// direction (WO-249).
 const directionEvents = [
   "OperatorOverrideRecorded",
   "RecordCorrected",
   "CriterionWaived",
+  "OffRampRetracted",
+  "HandoffReopened",
 ];
 
 // The operator step a dispatch names, as WO-172's hand classification reads

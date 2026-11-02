@@ -326,7 +326,17 @@ tables, definitions and images alone do not satisfy it.
 `release prepare` and the regenerated body move an
 existing block there; `worktree publish` and `check-surfaces` refuse the
 current order's stored body that breaks it, and the published body admits
-the product-gate block after the meter. The check is structural, never
+the product-gate block after the meter. When a launchpad order holds a
+waived or defective criterion, `release prepare` and the regenerated body
+write one line per record between `<!-- dotln-criterion-records:start -->`
+and `<!-- dotln-criterion-records:end -->` directly above the meter block,
+each naming the `resume -- retract` command that undoes a wrong record before
+the merge; a target order's body names none. Those lines are release
+preparation's and never satisfy the prose rule; `final-review-result pass`
+refuses a stored body whose lines differ from the record, while preparation
+can still rewrite them, and `worktree publish` refuses one changed after the
+pass ([WO-249](../work-orders/WO-249-criteria-judge-the-product.md)
+criterion 7). The check is structural, never
 editorial, and judges no historical body; the balanced `prBody` example
 predates the meter block and stays a historical sample. A target
 publication's words are reviewed, not banned: the public `reviewTerms` and

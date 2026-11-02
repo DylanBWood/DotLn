@@ -64,6 +64,8 @@ import {
   relativeLinkFailures,
   assertGitHubBodyProfile,
   assertPullRequestBodyShape,
+  expectedCriterionRecordLines,
+  processMetered,
   labelledParts,
   withMeterBlockLast,
   withTemporaryBody,
@@ -99,6 +101,8 @@ import {
   targetReleasePolicy,
 } from "./lib/release-close-handoff.mjs";
 import { CONTROL_LOG_SCHEMA_VERSION, statusProjection } from "./resume.mjs";
+import { unrepairedRetraction } from "./lib/control.mjs";
+import { resolveOrderWorktrees } from "./lib/order-worktrees.mjs";
 import {
   readControl,
   readControls,
@@ -119,6 +123,7 @@ import {
 import { withHostLock } from "./lib/host-resources.mjs";
 import { releaseListCache } from "./lib/release-list-cache.mjs";
 import {
+  directoryIdentity,
   recordedRepositoryClone,
   targetRecordSources,
   targetWorktreeForOrder,
@@ -706,6 +711,15 @@ const controlState = (projection, source) => {
     )
   )
     throw new Error(`cannot read control state: invalid ${source}`);
+  // The waived and defective criteria the pull-request body names (WO-249).
+  const records = (rows) =>
+    Array.isArray(rows)
+      ? rows.map(({ criterionId, ordinal, class: kind }) => ({
+          criterionId,
+          ordinal,
+          ...(kind ? { class: kind } : {}),
+        }))
+      : [];
   return {
     workOrderId: projection.workOrder ?? undefined,
     workOrderPath: projection.workOrderPath ?? undefined,
@@ -716,6 +730,8 @@ const controlState = (projection, source) => {
           baseCommit: projection.baseCommit,
         }
       : {}),
+    waivedCriteria: records(projection.waivedCriteria),
+    defectiveCriteria: records(projection.defectiveCriteria),
   };
 };
 const parseControlState = (root, workOrderId) => {
@@ -2073,6 +2089,45 @@ export function regeneratedReleaseText(root, tag) {
     sourceRevision = previous;
   }
 }
+// The order's waived and defective criteria as the working tree's record holds
+// them, like the meter's collection; none when the record does not know the
+// order, while a record that cannot be read refuses.
+const recordedCriteria = (root, workOrderId) => {
+  const control = readControl(root);
+  if (!control.orders.has(workOrderId)) return {};
+  return controlState(
+    statusProjection(control, workOrderId),
+    "control segments",
+  );
+};
+// The unrepaired retraction the order's registered worktree records, when the
+// worktree is present and is not this checkout.
+// Its passing final review must be the merged record's: a repair that passed
+// in the worktree but was never merged answers the retraction nowhere the
+// close publishes from. A registry or record that cannot be read refuses.
+const worktreeRetraction = (root, workOrderId, merged) => {
+  let trees;
+  try {
+    trees = resolveOrderWorktrees(root, workOrderId, { allowNoMain: true });
+  } catch (error) {
+    throw new Error(
+      `release close cannot read ${workOrderId}'s registered worktree to judge its retractions: ${error.message}`,
+    );
+  }
+  // Only the launchpad worktree holds the order's record, so it is read
+  // even when a target order's target worktree is gone.
+  if (trees.launchpad === directoryIdentity(root)) return undefined;
+  let events;
+  try {
+    events = eventsForOrder(readControl(trees.launchpad), workOrderId);
+  } catch (error) {
+    throw new Error(
+      `release close cannot read ${workOrderId}'s record in its worktree ${trees.launchpad}: ${error.message}`,
+    );
+  }
+  const retraction = unrepairedRetraction(events, { passedIn: merged });
+  return retraction ? { retraction, worktree: trees.launchpad } : undefined;
+};
 /** A stored pull-request body with its meter block rendered from the current
  * collection and its links written absolute at the given revision. */
 export async function regeneratedPullRequestBody(root, workOrderId, revision) {
@@ -2082,6 +2137,7 @@ export async function regeneratedPullRequestBody(root, workOrderId, revision) {
   const body = withMeterBlockLast(
     source,
     renderMetaTable(await collectMeta(root)),
+    expectedCriterionRecordLines(root, recordedCriteria(root, workOrderId)),
   );
   let repository = null;
   try {
@@ -3301,6 +3357,24 @@ const closePrerequisites = (root, workOrderId, parsed, record) => {
     throw new Error(
       `merged control state is for ${state.workOrderId ?? "none"}, not ${workOrderId}`,
     );
+  // The operator's merge-time retraction has a consequence the lifecycle
+  // carries: its repair, verification and final review precede the close. A
+  // retraction before the merge is recorded in the order's worktree, which a
+  // branch merged without its repair leaves behind, so the close reads that
+  // record as well as the merged one.
+  const mergedEvents = eventsForOrder(
+    readControl(root, sourceRevision),
+    workOrderId,
+  );
+  const merged = unrepairedRetraction(mergedEvents);
+  const recorded = merged
+    ? undefined
+    : worktreeRetraction(root, workOrderId, mergedEvents);
+  const retraction = merged ?? recorded?.retraction;
+  if (retraction)
+    throw new Error(
+      `release close refused: ${workOrderId}'s retraction of ordinal ${retraction.subject.ordinal} (the ${retraction.subject.type} of criterion ${retraction.subject.criterionId})${recorded ? `, recorded in its worktree ${recorded.worktree},` : ""} is newer than its latest passing final review on origin/main; a repair, a fresh verification and a fresh final review, merged, precede the close`,
+    );
   if (state.repositoryId) {
     if (state.phase !== "closed")
       throw new Error(
@@ -4249,7 +4323,7 @@ const main = async () => {
     );
     // The meter reads every decisions record; read it before any edit, so an
     // unreadable record refuses with nothing written (WO-086).
-    const metering = existsSync(docPath(toolRoot, "control", "budgets.json"));
+    const metering = processMetered(toolRoot);
     const meterModule = metering ? await import("./lib/meta.mjs") : undefined;
     const meta = metering ? await meterModule.collectMeta(toolRoot) : undefined;
     const ancillary = [];
@@ -4273,7 +4347,11 @@ const main = async () => {
       // of the PR draft. A meter snapshot never manufactures review prose.
       if (existsSync(path)) {
         const source = readFileSync(path, "utf8");
-        const next = withMeterBlockLast(source, renderMetaTable(meta));
+        const next = withMeterBlockLast(
+          source,
+          renderMetaTable(meta),
+          expectedCriterionRecordLines(toolRoot, state),
+        );
         if (next !== source) {
           writeFileSync(path, next);
           ancillary.push(path);

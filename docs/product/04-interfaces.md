@@ -269,8 +269,8 @@ and `resident.bind-portfolio` selects one already declared. `dotln.audit`
 serves a store's audit projections (product 09); the fixture-only skeleton
 `--audit` is not a runtime audit projection. Other terminal commands fall
 outside the categories this contract names: the resume role results and
-off-ramps (`implementation-ready`, `verification-result`, `repair-complete`, `final-review-result`, `waive`,
-`withdraw`, `correct`, `override-record`), `briefing` and `usage`, `worktree
+off-ramps (`implementation-ready`, `verification-result`, `repair-complete`, `final-review-result`, `accept-overrun`, `waive`,
+`defect`, `retract`, `reopen-handoff`, `withdraw`, `correct`, `override-record`), `briefing` and `usage`, `worktree
 constellation`, `resident-bind WO-NNN` and `--check`, `dotln resident`,
 `demo`, `verify-demo`, `feedback-audit` and `handoff`, and `console board`.
 The board and runtime status are available to a browser through the two

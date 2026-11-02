@@ -44212,6 +44212,14 @@
           "reopenWhen": "The next planning pass evaluates instruction-byte optimization, or another role edit changes the measured overrun.",
           "targets": [],
           "at": "2026-11-02T14:27:05.473Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-249-D026: its condition occurred, because this order's criteria rules (564 bytes in each phase role, 1,007 in the reviewer, 1,227 in the planner and 1,305 in the verifier) over WO-251's browser-verification rule, integrated here, changed every installed role root: the executor reads 39,873 against the nominal 29,246 and within the accepted 40,194; the verifier 35,447 against 29,831 and above the accepted 35,221, a breach of 226 that WO-249-D025 boards as FUP-8dd0eb609946b9d1; the reviewer 37,919 against 28,884 and within 39,600; release-close 24,978 against 21,266 and within 26,410; the planner 26,449 against 24,576, a breach of 1,873 boarded by the same row beside WO-251's FUP-ac86ee429dee2947 for its first 646; the router 16,327 within 16,384; the refuter 24,600 with no ceiling. No ceiling moved, the dated planner acceptance WO-249-D002 recorded under the retired route was withdrawn, and no duty was cut; the optimization stays with the next planning pass that evaluates instruction-byte optimization.",
+          "reopenWhen": "The next planning pass evaluates instruction-byte optimization, or another role edit changes the measured overrun.",
+          "targets": [],
+          "at": "2026-11-02T15:13:28.086Z"
         }
       ]
     },
@@ -44308,6 +44316,14 @@
           "reopenWhen": "A role grows past its pin without the oracle changing, or a ceiling breach appears in meta --check with no decision boarding it; or the next order touching scripts/test-gate-followups.mjs or re-minting the role oracle.",
           "targets": [],
           "at": "2026-11-02T14:27:05.709Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-249-D026: its condition occurred, because this order re-mints the role oracle as wo249-role-baseline.json over wo247 and its final-review integration mints wo249-integration-role-baseline.json over wo251 and wo249, which the chain list in scripts/test-gate-followups.mjs now selects. The test keeps its chain walk, its effective-ceiling and acceptance checks and the historical 256-byte inequality on the earliest chained baseline; whether that inequality still carries meaning is not decided here, because the final review changes no test beyond the chain list. Deferred to the next order that touches the file or re-mints the oracle.",
+          "reopenWhen": "A role grows past its pin without the oracle changing, or a ceiling breach appears in meta --check with no decision boarding it; or the next order touching scripts/test-gate-followups.mjs or re-minting the role oracle.",
+          "targets": [],
+          "at": "2026-11-02T15:13:28.318Z"
         }
       ]
     },
@@ -44821,6 +44837,14 @@
           "reopenWhen": "A bounded comparison demonstrates a shorter equivalent instruction set, or another required rule changes the measured overrun.",
           "targets": [],
           "at": "2026-11-02T14:27:05.592Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-249-D026: its condition occurred, because required rules changed the measured overrun in every installed role root, this order's criteria rules over WO-251's browser-verification rule: the executor reads 39,873 against the nominal 29,246 and within the accepted 40,194; the verifier 35,447 against 29,831 and above the accepted 35,221, a breach of 226 that WO-249-D025 boards as FUP-8dd0eb609946b9d1; the reviewer 37,919 against 28,884 and within 39,600; release-close 24,978 against 21,266 and within 26,410; the planner 26,449 against 24,576, a breach of 1,873 boarded by the same row beside WO-251's FUP-ac86ee429dee2947 for its first 646; the router 16,327 within 16,384; the refuter 24,600 with no ceiling. No ceiling moved, the dated planner acceptance WO-249-D002 recorded under the retired route was withdrawn, and no duty was cut. The bounded comparison that would show a shorter equivalent instruction set is still owed; this review cut no instruction and raised no ceiling.",
+          "reopenWhen": "A bounded comparison demonstrates a shorter equivalent instruction set, or another required rule changes the measured overrun.",
+          "targets": [],
+          "at": "2026-11-02T15:13:28.202Z"
         }
       ]
     },
@@ -52246,6 +52270,81 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-4798f1b5f5a74ed1",
+      "key": "decision:docs/evidence/WO-249/decisions.md#wo-249-d017",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c656461d71343e5319f2149c8fae5e0bc45ee4a3bac7ca36756c858ea68faa3d",
+          "ref": "docs/evidence/WO-249/decisions.md#wo-249-d017--the-review-round-three-independent-reviews-and-what-each-finding-became",
+          "title": "WO-249-D017: appendTransition in scripts/resume.mjs writes an event before folding it, so when a command's pre-check is looser than the fold the segment takes an event it then cannot read and the…",
+          "summary": "{ \"id\": \"WO-249-D017\", \"date\": \"2026-11-02\", \"dispatch\": \"resume: next; executor procedure step 6, the three independent worker reviews\", \"decision\": \"Three dotln-worker reviews judged the finished implementation: a criteria adversary (14 findings and 5 untested paths), a design improver (13 ranked improvements and 11 follow-ups) and a consistency review (11 items). Fixed: adversary 1 to 11 and 13 (D005, D006, D007, D009, D012, D013, D014), each with its regression test, and its five untested paths, now tested; design 1 to 9 and 11 to 13 (design 7 in part: one orderSegment helper gives defect, retract, reopen-handoff and correct the order's segment while each keeps its own activation check; ",
+          "missing": false
+        },
+        {
+          "hash": "b8b93eda648e0c225d8ab4b159b6405c0e3a2f80c2a8e66046559d3458489d28",
+          "ref": "docs/evidence/WO-249/decisions.md#wo-249-d017--the-review-round-three-independent-reviews-and-what-each-finding-became",
+          "title": "WO-249-D017: appendTransition in scripts/resume.mjs writes an event before folding it, so when a command's pre-check is looser than the fold the segment takes an event it then cannot read and the…",
+          "summary": "{ \"id\": \"WO-249-D017\", \"date\": \"2026-11-02\", \"dispatch\": \"resume: next; executor procedure step 6, the three independent worker reviews\", \"decision\": \"Three dotln-worker reviews judged the finished implementation: a criteria adversary (14 findings and 5 untested paths), a design improver (13 ranked improvements and 11 follow-ups) and a consistency review (11 items). Fixed: adversary 1 to 11 and 13 (D005, D006, D007, D009, D012, D013, D014), each with its regression test, and its five untested paths, now tested; design 1 to 9 and 11 to 13 (design 7 in part: one orderSegment helper gives defect, retract, reopen-handoff and correct the order's segment while each keeps its own activation check; ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-a9efc000150d7e9f",
+      "key": "decision:docs/evidence/WO-249/decisions.md#wo-249-d012",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "9a9dfe9e1cddd844d7714f059dc14582f8abbd2c9c963b6e55b0bf2e494d9a82",
+          "ref": "docs/evidence/WO-249/decisions.md#wo-249-d012--the-pull-request-body-names-each-defective-or-waived-criterion-above-the-process-table",
+          "title": "WO-249-D012: A target order's publications name no criterion-record lines, because release prepare writes nothing for a target order, and an instance without docs/control/budgets.json has no process…",
+          "summary": "{ \"id\": \"WO-249-D012\", \"date\": \"2026-11-02\", \"dispatch\": \"resume: next; step 4, release prepare and github-body\", \"decision\": \"scripts/lib/github-body.mjs writes one line per defective or waived criterion, in record order, between `<!-- dotln-criterion-records:start -->` and `<!-- dotln-criterion-records:end -->` directly above the process-meter block; release prepare passes the order's records, and a body with no records loses a stale block. Blank lines keep the list its own block, because the github-body-profile check read the end marker after the last item as a soft-wrapped continuation; the body-shape check leaves the block out of its prose-before-meter test, since the lines are release ",
+          "missing": false
+        },
+        {
+          "hash": "f11444e7b990275f9dcacc1be0364ddedbe2782fb3e328328a509ee0f24626e4",
+          "ref": "docs/evidence/WO-249/decisions.md#wo-249-d012--the-pull-request-body-names-each-defective-or-waived-criterion-above-the-process-table",
+          "title": "WO-249-D012: A target order's publications name no criterion-record lines, because release prepare writes nothing for a target order, and an instance without docs/control/budgets.json has no process…",
+          "summary": "{ \"id\": \"WO-249-D012\", \"date\": \"2026-11-02\", \"dispatch\": \"resume: next; step 4, release prepare and github-body\", \"decision\": \"scripts/lib/github-body.mjs writes one line per defective or waived criterion, in record order, between `<!-- dotln-criterion-records:start -->` and `<!-- dotln-criterion-records:end -->` directly above the process-meter block; release prepare passes the order's records, and a body with no records loses a stale block. Blank lines keep the list its own block, because the github-body-profile check read the end marker after the last item as a soft-wrapped continuation; the body-shape check leaves the block out of its prose-before-meter test, since the lines are release ",
+          "missing": false
+        },
+        {
+          "hash": "b0f6480ec1ff69fbfe7bf4dd337e86bd5813a0624497ee5bbe0ff82cd9df6ce0",
+          "ref": "docs/evidence/WO-249/decisions.md#wo-249-d012--the-pull-request-body-names-each-defective-or-waived-criterion-above-the-process-table",
+          "title": "WO-249-D012: A target order's publications name no criterion-record lines, because release prepare writes nothing for a target order, and an instance without docs/control/budgets.json has no process…",
+          "summary": "{ \"id\": \"WO-249-D012\", \"date\": \"2026-11-02\", \"dispatch\": \"resume: next; step 4, release prepare and github-body\", \"decision\": \"scripts/lib/github-body.mjs writes one line per defective or waived criterion, in record order, between `<!-- dotln-criterion-records:start -->` and `<!-- dotln-criterion-records:end -->` directly above the process-meter block; release prepare passes the order's records, and a body with no records loses a stale block. Blank lines keep the list its own block, because the github-body-profile check read the end marker after the last item as a soft-wrapped continuation; the body-shape check leaves the block out of its prose-before-meter test, since the lines are release ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-8dd0eb609946b9d1",
+      "key": "decision:docs/evidence/WO-249/decisions.md#wo-249-d025",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "b6052690e58f38f342f946723d4cd873af4c98fd34c8c7b302a89c81eeb40874",
+          "ref": "docs/evidence/WO-249/decisions.md#wo-249-d025",
+          "title": "WO-249-D025: Optimize the verifier's and the planner's installed cold starts with equivalent usefulness. On the integrated tree the verifier measures 35,447 bytes against its effective 35,221…",
+          "summary": "{ \"id\": \"WO-249-D025\", \"date\": \"2026-11-02\", \"dispatch\": \"resume: final review; worktree integrate WO-249\", \"decision\": \"Main moved to cd4b8058 (WO-251 merged, #265, released as v0.109.0) after VER-001, so final review integrated it with worktree integrate. The four authored conflicts are one collision: WO-249 and WO-251 each minted a role oracle over WO-247's, and the integrated role trees carry both orders' sentences, so neither oracle pins them. The resolution mints packages/skeleton/fixtures/wo249-integration-role-baseline.json as the two-parent oracle, as WO-192-D098 did at its integration: WO-251's oracle, main's at integration, is its historical parent, WO-249's its branch parent and ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-249-D026: the integrated tree's cold-start overruns are measured and boarded by WO-249-D025 under product 07's one route: the executor reads 39,873 against the nominal 29,246 and within the accepted 40,194; the verifier 35,447 against 29,831 and above the accepted 35,221, a breach of 226 that WO-249-D025 boards as FUP-8dd0eb609946b9d1; the reviewer 37,919 against 28,884 and within 39,600; release-close 24,978 against 21,266 and within 26,410; the planner 26,449 against 24,576, a breach of 1,873 boarded by the same row beside WO-251's FUP-ac86ee429dee2947 for its first 646; the router 16,327 within 16,384; the refuter 24,600 with no ceiling. No ceiling moved, the dated planner acceptance WO-249-D002 recorded under the retired route was withdrawn, and no duty was cut; the optimization with equivalent usefulness belongs to a planning allocation.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the verifier and planner cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
+          "targets": [],
+          "at": "2026-11-02T15:13:27.970Z"
+        }
+      ]
     }
   ]
 }

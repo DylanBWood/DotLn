@@ -519,6 +519,9 @@ test("router stop table covers controls, operator disposition, refusals, repair 
     [{}, [{ type: "RecordCorrected" }], "typed-correction"],
     [{}, [{ type: "CriterionWaived" }], "off-ramp"],
     [{}, [{ type: "OperatorOverrideRecorded" }], "off-ramp"],
+    // The operator's retraction and reopened handoff stop a drive (WO-249).
+    [{}, [{ type: "OffRampRetracted" }], "off-ramp"],
+    [{}, [{ type: "HandoffReopened" }], "off-ramp"],
     [
       {},
       Array.from({ length: 3 }, () => ({
@@ -550,6 +553,13 @@ test("router stop table covers controls, operator disposition, refusals, repair 
       { type: "WorkOrderActivated" },
     ]).action,
     "next",
+  );
+  // A defect record is the verifier's or reviewer's judgment, not the
+  // operator's direction: the drive goes on past it (WO-249).
+  assert.equal(
+    routeOrder({ phase: "verified" }, [{ type: "CriterionDefectRecorded" }])
+      .action,
+    "final-review",
   );
 });
 
@@ -4613,3 +4623,52 @@ for (const [cause, diagnostic] of [
     assert.equal(result.attempts[0].cause, cause);
     assert.equal(JSON.stringify(result).includes("private"), false);
   });
+
+test("a repair a retraction opened reads no earlier cycle's failing report", () => {
+  const base = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-drive-retraction-")),
+  );
+  try {
+    const f = fixture(base);
+    f.mapClone();
+    f.start();
+    // An earlier cycle's failing report holds an operator-route finding.
+    const reportPath = "records/verifications/WO-999/VER-001.md";
+    const bytes =
+      '# Verification\n\n<!-- dotln-findings:start -->\n[{"id": "F1", "route": "operator", "summary": "A choice only the operator makes."}]\n<!-- dotln-findings:end -->\n';
+    write(f.orderRoot, reportPath, bytes);
+    const failed = {
+      type: "VerificationCompleted",
+      workOrderId: "WO-999",
+      verificationId: "VER-001",
+      reportPath,
+      reportHash: `sha256:${createHash("sha256").update(bytes).digest("hex")}`,
+      verdict: "fail",
+    };
+    const facts = (failureSourceId) =>
+      routeFacts(
+        f.orderRoot,
+        {
+          phase: "needs-fix",
+          workOrderId: "WO-999",
+          repositoryId: "target",
+          failureSourceId,
+        },
+        [failed],
+      );
+    assert.equal(facts("VER-001").operatorFinding, true);
+    // A retraction that returned the order to repair is no report, so the
+    // earlier report's finding does not stop the drive (WO-249).
+    assert.equal(facts("retraction-12").operatorFinding, undefined);
+    assert.equal(
+      routeOrder(
+        { phase: "needs-fix", failureSourceId: "retraction-12" },
+        [failed],
+        facts("retraction-12"),
+      ).action,
+      "fix",
+    );
+  } finally {
+    rmSync(base, { recursive: true, force: true });
+  }
+});
