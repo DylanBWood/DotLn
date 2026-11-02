@@ -2857,9 +2857,10 @@ three duties in order; choose relevant lenses and state why in the report.
    holds the same contract, what a maintainer will not understand in six
    months, and whether it fits repository principles and the platform lens
    in §Goal-aligned decisions. Propose improvements with concrete evidence.
-3. **Read the three worker reports and reproduce.** Read the current
-   execution or repair's criteria-adversary, design-improver and consistency
-   reports (below), together with the executor's dispositions. Reproduce the
+3. **Read the worker reports and reproduce.** Read the current execution or
+   repair's criteria-adversary, design-improver and consistency reports and
+   every later round's (below), in `docs/control/local/reviews/WO-NNN/`,
+   together with the executor's dispositions. Reproduce the
    claims your verdict rests on. Spawn a fresh `dotln-worker` only to reproduce one named
    claim you cannot run yourself, with only the order and diff. Never
    delegate the verdict [2026-10-07 pass; the operator's direction of
@@ -2974,10 +2975,11 @@ are read separately when the order names them.
 | Authority and private data | Do effects stay authorized and public data stay separate from private inputs? | Hosts, writes, transport and publication |
 | Maintainer in six months | Can the next maintainer explain the rule and change it safely? | Every nontrivial implementation |
 
-Every execution and fix requires three fresh independent `dotln-worker` agents
-before its complete validation run. Launch or restart them only after
-implementation or repair and its write-backs are complete, never as early
-scouts. Give each the current order and diff, with distinct briefs.
+Every execution and fix runs its independent reviews as a ladder with an end,
+before its complete validation run and only after implementation or repair
+and its write-backs are complete, never as early scouts. Round one is three
+fresh independent `dotln-worker` reviewers over the whole diff against the
+merge base, each given the current order and diff with a distinct brief.
 The criteria adversary seeks concrete
 counterexamples, failed acceptance criteria and missing regression tests;
 design cleanup is outside its brief. The design improver seeks simpler
@@ -3001,43 +3003,105 @@ replacing incidental prose coupling with semantic assertions. Report concrete
 producer/consumer pairs, their disposition and unsearched boundaries.
 It does not duplicate criterion attacks or design review.
 An issue discovered in another reviewer's brief is transferred,
-not reviewed twice. The executor fixes or records every distinct finding and writes a line in
-`handoff.md` that starts `self-review: found N; fixed N; recorded N`, then
-names all three workers and their reports. The executor's own separate pass is not
-a substitute for an independent worker. Return changes that materially
-affect a finding to its reviewer. Reviews belong to the execution or repair
-run; ordinary edits do not expire them or require new reviewers. After any new
-set of code changes, restart all three existing reviewers on the current diff
-and finish their rechecks before the next complete run. This includes repairs
-after a failed gate; reuse the same workers within the execution or repair. All three
-reviewers must finish before the complete run starts; resolve their findings
-and return material changes for recheck before that run. Do not restart them
-after a successful complete run. The restart rule has an end [[the 2026-11-01 pass](../planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md),
-the operator's items 6 and 6.a of that day; WO-250 carries it into the role
-text, and until it lands the executor reads this sentence over the restart
-sentence]: round one is the three reviewers over the whole diff; round two
-is each reviewer whose findings were fixed rechecking those fixes and
-nothing else, a new finding admitted only when it breaks a criterion or a
-behavior `main` had and otherwise recorded; round three, when round two's
-fixes changed code again, is one combined worker carrying the three briefs
-over the delta since round two's reviewed tree; after it no reviewer runs
-in that execution or repair, the executor judges the remaining delta, and
-the `self-review:` line names the rounds and the unreviewed lines with the
-reason. A round whose preceding fixes touch only comments, documentation,
-formatting, test names or regenerated files is skipped and the line says
-so; a repair under fifty changed source lines starts at round three. A
-recheck may resume the same worker, and every launch and re-task counts
-against `subagentCap`, on Codex by the session's own count. WO-237 ran
-four recheck rounds (19, 13, 4 and 12 distinct findings) and a fifth from
-one reviewer before the operator stopped it; the rounds found defects, and
-the loop, not the review, is what this ends. The executor owns the final handoff and
-write-backs before the document check. A list
-marker, balanced inline emphasis or code wrappers may decorate the line;
-case and a parenthetical worker label are tolerated. The three integer counts
-remain required. The advisory checks line shape only; a summary line does
-not prove a review occurred. Both completion commands retain the
-existing advisory when the summary is absent; the mandatory review is the
-executor's duty. No additional receipt or hash check is required.
+not reviewed twice. The executor fixes or records every distinct finding.
+Round two is the recheck: each reviewer whose findings were fixed rechecks
+those fixes on the current diff and nothing else, and a new finding is
+admitted only when it breaks an acceptance criterion or a behavior `main`
+had, the verifier's own standard; any other new finding is recorded in the
+handoff, not fixed. Round three, the last, runs only when round two's fixes
+changed code again: one combined worker carrying the three briefs reads the
+delta since round two's reviewed tree under the same rule. After it no
+reviewer runs in that execution or repair; the executor judges the remaining
+delta. A round whose preceding fixes touch only comments, documentation,
+formatting, test names or regenerated files is skipped, and the handoff line
+says so. A repair after a failed complete run takes the same ladder over its
+own diff, and a repair diff under fifty changed source lines starts at round
+three; that threshold is the planner's figure, and the executor records the
+repair diffs that meet it so a later pass can re-read it. The ladder
+finishes before the complete run and no reviewer runs after it passes; the
+executor's own pass and an earlier run's reviewers cannot stand in for a
+round. The admission rule is what ends the ladder: WO-237 ran four recheck
+rounds (19, 13, 4 and 12 distinct findings) and a fifth from one reviewer
+before the operator stopped it, because each recheck opened new fronts; the
+rounds found defects, and the loop, not the review, was the defect
+[[the 2026-11-01 pass](../planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md),
+the operator's items 6 and 6.a of that day;
+[WO-250](../work-orders/WO-250-reviews-converge-and-every-worker-counts.md)].
+
+A recheck resumes the same worker where the host keeps it (Claude's
+`SendMessage`), because that worker holds the diff and its own findings and
+the recheck's question is whether each fix holds, not a new search; where the
+host cannot, a fresh worker reads the prior report. Reuse saves the re-read
+and keeps the findings' wording consistent; the anchoring it brings is
+accepted for that question. Either way the re-task counts one use against
+`subagentCap`, as every launch does: in a Claude session the hook counts each
+`Agent` launch, each re-task (a `SendMessage` or an `Agent` call resuming a
+known agent) and each kit launch by its literal command, and under Codex,
+whose tool calls are unhooked, the helper counts its own launch and the role
+text keeps the explicit count. `node scripts/harness.mjs usage <session>`
+prints `workers: launched N (claude A, codex B), re-tasked M, cap C,
+remaining R`. A full ladder spends seven uses (three round-one workers, three
+rechecks and one combined worker) against a default cap of 20; a skipped round
+spends fewer, so three clean round-one reviews end the ladder at three uses,
+and a worker that returns no report costs its use and a retry; `subagentCap`
+in `docs/control/budgets.json` is the operator's knob.
+
+`npm run worker -- review --kind criteria|design|consistency|combined --host
+codex|claude [--order WO-NNN | --subject planning] [--since <tree>] [--round
+N] [--recheck <report>]... [--dry-run]` launches one review worker with the
+canonical brief: the generated `dotln-worker` definition with its probe
+rule, the reviewer brief this section and the role text state (all three for
+`combined`), the round's admission rule, the order's text (or, with
+`--subject planning` on a `planning/` branch, the branch's changed planning
+documents and orders), the diff stat between the base (the merge base with
+`main` for round one, the last reviewed tree for a recheck) and the working
+tree written as a Git tree, and for a recheck the earlier findings to confirm
+or refute, named by kind and round. It is the route to a Codex worker from a
+Claude session, a Claude print worker from Codex, and a planning subject; in a
+Claude session the `Agent` tool with `dotln-worker` stays the ordinary route.
+It launches through the transports the entropy review uses: Codex at
+`gpt-6.1-sol` and `max` under a read-only sandbox with its tool features on,
+and Claude print at `claude-opus-5-5` and `xhigh` with `Read`, `Grep`, `Glob`
+and a pre-approved list of read commands, every other call denied and the
+project's own instructions and hooks off. The brief gives the worker a budget
+(about 30 minutes and 120 tool calls) to watch and stay within, returning the
+findings it has and naming what it did not reach as it nears either, because a
+worker stopped at a hard limit (60 minutes) returns nothing; the transcript is
+never a limit, since Codex's event stream echoes every command it ran, so the
+final message has its own file and only the stream's tail is kept for its usage
+counters. A round needs what its brief states: a recheck names its report with
+`--recheck`, and the combined round names an earlier report or its base with
+`--since`. It writes
+`docs/control/local/reviews/WO-NNN/round-<N>-<kind>.md` (a repair's under
+`repair-<n>/`, and never over an existing report) and a `.json` beside
+it in the closed findings shape (`id`, `severity` `blocking|should-fix|note`,
+`summary`, `file`, `line` and a `basis` of `{criterion}` or `{regression}`,
+the vocabulary a verifier's blocking entry carries, or null), prints
+`review: <kind> round <N> found <N> (<B> blocking); <elapsed>` or that the
+worker returned no report, and appends a `WorkerLaunched` row to the
+session's journal. The executor records an `Agent` worker's returned text in
+the same lane under the round and kind name with `npm run worker -- record
+--kind <kind> --round <N> --from <file>`, which binds it with the same
+validator and writes the same record, so the verifier reads every round and a
+fresh worker can recheck it whatever the launch route; release close moves the lane into the
+order's retained lane under `reviews/`, beside its journals. The reports are
+the executor's working record; the consolidated account and the handoff line
+are the committed one.
+
+The executor writes a line in `handoff.md` that starts `self-review: found N;
+fixed N; recorded N`, optionally followed by `; rounds R` (with a
+parenthetical note such as a skipped round) and `; unreviewed M lines
+(<reason>)`, and names every round's workers and reports. Reviews belong to
+the execution or repair run; ordinary edits do not expire them or require new
+reviewers. The executor owns the final handoff and write-backs before the
+document check. A list marker, balanced inline emphasis or code wrappers may
+decorate the line; case and a parenthetical worker label are tolerated, and
+prose may follow after a space, but a `;` after the counts must open one of
+the two fields. The three integer counts remain required. The advisory checks
+line shape only; a summary line does not prove a review occurred. Both
+completion commands retain the existing advisory when the summary is absent
+or malformed; the mandatory review is the executor's duty. No additional
+receipt or hash check is required.
 
 Final review is acceptance: the criteria, the integration and the release
 surfaces. A finding outside the criteria that breaks no behavior `main` had
@@ -3722,11 +3786,19 @@ and generated evidence, including fixtures, manifests and installed guidance.
   and the close consume; release close is the post-merge publish of the tag
   and Release and runs no suite; attested harness, version, model and effort
   are logged as given and never refuse, and `ultra` means `xhigh` with
-  subagents; DotLn has seven hook refusals (WO-135, WO-139, WO-144, WO-234 and WO-251): a second writer in a
+  subagents; DotLn has eight hook refusals (WO-135, WO-139, WO-144, WO-234,
+  WO-251 and WO-250): a second writer in a
   worktree; a write during the live gate; a classified repository write
   outside `docs/` and root Markdown on a `planning/` branch; an observable
-  subagent admission exceeding `docs/control/budgets.json` `subagentCap`
-  (default 20, `null` disables); and a known outside-project write destination
+  worker use exceeding `docs/control/budgets.json` `subagentCap`
+  (default 20, `null` disables), where a use is a launch, a re-task (a
+  `SendMessage` or an `Agent` call resuming a known agent) or a worker a kit
+  command launches (§Verification review and attack); a test-runner gate
+  (`npm test` in any form, `test-runner.mjs`, `target-gate.mjs`, `test:docs`,
+  `test:full`, including inside the bounded wrapper) started by an agent the
+  host names `dotln-worker` or `dotln-worker-fable`, refused with
+  `DOTLN_WORKER_GATE_REFUSED` naming the bounded single-test form, while a
+  lifecycle phase agent and the session itself keep their gates; and a known outside-project write destination
   without a containing root declared by its active role or equipped support
   and admitted through the compiled authority envelope; and a complete gate,
   bounded probe or worker launch past the dispatch bound without recorded
@@ -3749,12 +3821,14 @@ and generated evidence, including fixtures, manifests and installed guidance.
   project's browser tests. Follow product 03's perception hierarchy:
   structured state, then the DOM and accessibility tree through the
   Playwright MCP snapshot, then network and event data, then a screenshot
-  read as an image. This does not require installing Playwright. WO-250
-  remains the planned refusal of a gate launched by a review worker and the
-  counting of re-tasks and kit-launched workers as uses; meanwhile a review
+  read as an image. This does not require installing Playwright. A review
   worker probes with single tests under the bounded wrapper and starts no
-  gate [[the 2026-11-01 pass](../planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md),
-  the operator's items 6.b and 10 of that day]. Root kinds are system
+  gate: the hook refuses one from a spawned `dotln-worker`, and the brief of
+  a Codex worker or a helper-launched Claude print worker, which no hook
+  sees, carries the rule
+  ([WO-250 decision](../evidence/WO-250/decisions.md#wo-250-d004--a-review-workers-gate-is-refused-by-the-agent-type-the-host-names-on-its-call);
+  [the 2026-11-01 pass](../planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md),
+  the operator's items 6.b and 10 of that day). Root kinds are system
   temporary, DotLn session scratch, the host-printed scratchpad, main's ignored
   intake, an operator-named absolute root, the order's recorded worktrees and
   the registered target worktree; the manifest names declaration and
@@ -3786,9 +3860,12 @@ and generated evidence, including fixtures, manifests and installed guidance.
   writes do not consult this grant. `operator override:` remains recovery.
   Order-named roots do not automatically become grants. Workflow admission needs a remaining unit;
   the workflow call consumes none, and attributable children count at their
-  first tool call. Missing/unreadable counters admit with a cause-specific
-  advisory. Stop and `harness usage` report observed count, cap and unknown
-  remainder; unresolved direct/child overlap is labeled a minimum. Plan the
+  first tool call. A re-task and each worker a kit command launches count
+  one use each, charged once per tool call; a counter written before uses
+  were counted keeps its counts. Missing/unreadable counters admit with a
+  cause-specific advisory. Stop and `harness usage` report observed uses by
+  kind and host, the cap and the unknown remainder; unresolved direct/child
+  overlap is labeled a minimum. Plan the
   whole fan-out against the root's remaining budget before the first spawn,
   state it in the response, and batch review/refutation over item groups:
   one agent judges several items, never one agent per item per pass. A Codex
@@ -4216,9 +4293,10 @@ as `npm test -- --only <suite>`, the spelling the handoff reads. The
 executor and each repair finish formatting and regeneration, then start one
 complete run, `npm test -- --review`, in the background and never under the
 bounded probe wrapper. If it fails and a repair changes code, finish the repair
-and its write-backs, format, then restart all three existing reviewers on the
-changed code, resolve their findings
-and wait for all three to finish before starting a fresh complete run.
+and its write-backs, format, then take the repair's diff through the review
+ladder of §Verification review and attack (round three alone when the diff is
+under fifty changed source lines) and finish it before starting a fresh
+complete run.
 Synthetic lifecycle tests belong to the product
 preflight: `resume --fixtures-only` must pass before later product suites,
 including with `--keep-going`. The separate `resume-docs` selection retains
@@ -4410,7 +4488,11 @@ carry the same pins for the phase workers a router spawns. The host's [subagent 
 documents both fields, per-call model precedence and `/tasks` model/effort
 readback (checked 2026-10-05). Codex workers use `spawn_agent` with
 `fork_turns: none`, `model: gpt-6.1-sol`, `reasoning_effort: max`; use the same
-pin for adversaries, reviewers, refuters and research. Generated-definition
+pin for adversaries, reviewers, refuters and research. A review worker on the
+other host launches through `npm run worker -- review --host codex|claude`
+(§Verification review and attack) at these pins, and its `WorkerLaunched`
+journal row records the pinned model and effort with their source and the
+host's own readback where its CLI prints one. Generated-definition
 and call arguments are launch selections, never proof of effective effort.
 Report the host's readback or that it reports none; a root's own selection
 does not decide the worker's. A script that regenerates a dated record keeps the

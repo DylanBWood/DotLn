@@ -1,0 +1,12 @@
+bounded-start {"budgetBytes":3221225472,"physicalBytes":51539607552,"deadlineMs":900000}
+PROGRESS [bounded-probe] started
+
+> publication:check
+> node scripts/check-publication.mjs
+
+PASS index coverage: 256/256 product headings indexed
+PASS dual-voice links: 3 identical claim links per voice
+CURRENT everyday-ai-user-toc.md: 29 linked source sections match
+CURRENT software-engineer-toc.md: 45 linked source sections match
+PASS publication bootstrap checks
+bounded-result {"name":"bounded-probe","durationMs":243,"slowestCases":[{"name":"bounded-probe","durationMs":243,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":29528000,"peakRssBytes":107446272,"memoryBudgetBytes":3221225472,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-11-02T20:55:26.461Z","finishedAt":"2026-11-02T20:55:26.704Z","exitCode":0,"executed":true}

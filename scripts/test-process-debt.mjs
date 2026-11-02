@@ -6834,22 +6834,34 @@ test("WO-145 optional economy support preserves historical snapshots through the
   // The combined oracle preserves both independently reviewed role histories.
   // Removing a shared sentence follows the same route as adding one.
   const fixtures = join(source, "packages/skeleton/fixtures");
-  // The integration of WO-249's criteria rules with WO-251's desktop and
-  // browser boundary pins the combined role trees through a two-parent
-  // oracle: WO-251's oracle, main's at integration, is its historical parent
-  // and WO-249's its branch parent, and both preserve WO-247's oracle, which
-  // carries the integrated oracle and both chains below it.
-  const current = "wo249-integration-role-baseline.json";
+  // The review ladder, the counting of every worker use and the worker gate
+  // rule (WO-250) re-pin the role trees over the WO-249 integration oracle. That
+  // oracle pins the combined trees of WO-249's criteria rules and WO-251's
+  // desktop and browser boundary through two parents: WO-251's oracle, main's
+  // at integration, as its historical parent and WO-249's as its branch
+  // parent, and both preserve WO-247's oracle, which carries the integrated
+  // oracle and both chains below it.
+  const current = "wo250-role-baseline.json";
   const baseline = JSON.parse(readFileSync(join(fixtures, current), "utf8"));
-  assert.equal(baseline.historicalBaseline, "wo251-role-baseline.json");
-  assert.equal(baseline.branchBaseline, "wo249-role-baseline.json");
-  assert.equal(baseline.upstreamBaseline, "wo247-role-baseline.json");
-  for (const name of [baseline.historicalBaseline, baseline.branchBaseline]) {
+  assert.equal(
+    baseline.historicalBaseline,
+    "wo249-integration-role-baseline.json",
+  );
+  const integration = JSON.parse(
+    readFileSync(join(fixtures, baseline.historicalBaseline), "utf8"),
+  );
+  assert.equal(integration.historicalBaseline, "wo251-role-baseline.json");
+  assert.equal(integration.branchBaseline, "wo249-role-baseline.json");
+  assert.equal(integration.upstreamBaseline, "wo247-role-baseline.json");
+  for (const name of [
+    integration.historicalBaseline,
+    integration.branchBaseline,
+  ]) {
     const parent = JSON.parse(readFileSync(join(fixtures, name), "utf8"));
     assert.equal(parent.historicalBaseline, "wo247-role-baseline.json", name);
   }
   const previous = JSON.parse(
-    readFileSync(join(fixtures, baseline.upstreamBaseline), "utf8"),
+    readFileSync(join(fixtures, integration.upstreamBaseline), "utf8"),
   );
   assert.equal(
     previous.historicalBaseline,
@@ -6951,27 +6963,40 @@ test("WO-145 optional economy support preserves historical snapshots through the
       `${file.path} must not imply an approval path in full-access mode`,
     );
     if (file.path.endsWith("dotln-executor/SKILL.md")) {
-      assert.match(
+      // The reviews are a ladder with an end (WO-250): three reviewers over
+      // the whole diff, a recheck of the fixes alone under the admission
+      // rule, one combined last look, then the executor's own judgment; and
+      // every launch, re-task and kit launch counts against the cap.
+      for (const rule of [
+        /Round 1: three fresh independent `dotln-worker` reviewers over the whole diff against the merge base/,
+        /Round 2, the recheck: each reviewer whose findings were fixed rechecks those fixes on the current diff and nothing else/,
+        /a new finding is admitted only when it breaks an acceptance criterion or a behavior `main` had, and any other new finding is recorded in the handoff, not fixed/,
+        /Round 3, the last: only when round 2's fixes changed code again, one combined worker carrying the three briefs/,
+        /After round 3 no reviewer runs in this execution or repair: you judge the remaining delta/,
+        /Skip a round, and say so, when the fixes before it touch only comments, documentation, formatting, test names or regenerated files/,
+        /starting at round 3 when that diff is under fifty changed source lines/,
+        /`npm run worker -- review --kind criteria\|design\|consistency\|combined --host codex\|claude/,
+        /Every launch, re-task \(a `SendMessage` or a resumed agent\) and kit launch counts one use against subagentCap/,
+        /`self-review: found N; fixed N; recorded N; rounds R; unreviewed M lines \(<reason>\)`/,
+      ])
+        assert.match(file.contents, rule);
+      assert.doesNotMatch(
         file.contents,
-        /All three reviewers must finish before that run starts and must not be restarted after it passes/,
-      );
-      assert.match(
-        file.contents,
-        /After any new set of code changes, restart all three existing reviewers on the current diff and finish their rechecks before the next complete run/,
+        /restart all three existing reviewers|restart all three independent/,
       );
       const completeRunStep = file.contents
         .split("\n")
         .find((line) => /^\d+\. Start one complete run,/.test(line));
       assert.match(
         completeRunStep,
-        /on failure finish.*repair and its write-backs.*format.*restart all three existing reviewers.*wait for all three to finish.*fresh complete run/,
+        /on failure finish.*repair and its write-backs.*format.*review ladder and finish it before starting a fresh complete run/,
       );
       const reviewStep = file.contents
         .split("\n")
         .find((line) => /^\d+\. Finish implementation or repair,/.test(line));
       assert.match(
         reviewStep,
-        /authored outputs before launching or restarting all three.*never use early scouting reviews/,
+        /authored outputs before the review ladder's first round; never use early scouting reviews/,
       );
       assert.doesNotMatch(
         file.contents,

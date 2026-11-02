@@ -1,0 +1,12 @@
+bounded-start {"budgetBytes":3221225472,"physicalBytes":51539607552,"deadlineMs":900000}
+PROGRESS [bounded-probe] started
+✔ three clean round-one reviews use three admissions (230.726334ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 332.300792
+bounded-result {"name":"bounded-probe","durationMs":381,"slowestCases":[{"name":"bounded-probe","durationMs":381,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":49781480,"peakRssBytes":140951552,"memoryBudgetBytes":3221225472,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-11-02T20:59:57.269Z","finishedAt":"2026-11-02T20:59:57.650Z","exitCode":0,"executed":true}

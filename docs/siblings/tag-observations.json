@@ -5,6 +5,10 @@
       "tag": "v0.97.0",
       "nearest": "v0.97.0"
     },
+    "1464dc1a2a74118c3bd9a9cd280feae3dfda451e": {
+      "tag": "v0.108.0",
+      "nearest": "v0.108.0"
+    },
     "22ce7799cce61db93f5852069dacf2409373adbd": {
       "tag": "v0.101.0",
       "nearest": "v0.101.0"
@@ -77,6 +81,10 @@
       "tag": "v0.106.0",
       "nearest": "v0.106.0"
     },
+    "91a730ac706a1933ebe9fb2c826455d8adffb4dc": {
+      "tag": "v0.110.0",
+      "nearest": "v0.110.0"
+    },
     "926b82344d10cf6406828b3e6a0a56e236fe1d9f": {
       "tag": "v0.89.0",
       "nearest": "v0.89.0"
@@ -100,6 +108,10 @@
     "c670e6288ecb221ef2416cef06f920006866bc5d": {
       "tag": "v0.93.0",
       "nearest": "v0.93.0"
+    },
+    "cd4b80589d2fa371611baae4e3814391ffc0e256": {
+      "tag": "v0.109.0",
+      "nearest": "v0.109.0"
     },
     "e1dd599769c03dfcea9d3147ce552aaaed2735bf": {
       "tag": "v0.91.0",

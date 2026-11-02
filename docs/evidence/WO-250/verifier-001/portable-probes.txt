@@ -1,0 +1,20 @@
+bounded-start {"budgetBytes":3221225472,"physicalBytes":51539607552,"deadlineMs":900000}
+PROGRESS [bounded-probe] started
+review: criteria round 1 found 0 (0 blocking); 0 h 0 min
+✔ fresh Codex session initializes its own counter and the CLI dispatcher preserves the real index (121.301708ms)
+✔ combined recheck keeps repeated finding ids from different reviewer kinds distinct (217.890791ms)
+✔ zero cap refuses before attempting to decode an invalid fake transport result (87.062292ms)
+✔ one known agent, two kinds of retask and a batched launch obey idempotency and the cap atomically (53.743833ms)
+✔ declared gate forms are classified for both review types while phase workers and bounded probes keep their route (1.131833ms)
+✔ handoff parser retains legacy and new forms, and advises on malformed tails (48.279125ms)
+✔ retention moves execution and nested repair report pairs, preserves an earlier lane and is repeatable (101.412042ms)
+✔ observe Agent prose recording with an embedded JSON example (54.819458ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 833.643583
+bounded-result {"name":"bounded-probe","durationMs":880,"slowestCases":[{"name":"bounded-probe","durationMs":880,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":50486088,"peakRssBytes":142000128,"memoryBudgetBytes":3221225472,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-11-02T20:58:00.438Z","finishedAt":"2026-11-02T20:58:01.318Z","exitCode":0,"executed":true}

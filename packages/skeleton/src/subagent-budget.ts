@@ -21,6 +21,14 @@ export interface SpawnInput {
   readonly tool_input?: Record<string, unknown>;
   readonly tool_response?: Record<string, unknown>;
 }
+/** The hosts a kit-launched worker runs on; `unattributed` is a launch whose
+ * command names no host. */
+export const KIT_HOSTS = ["claude", "codex", "unattributed"] as const;
+export type KitHost = (typeof KIT_HOSTS)[number];
+/** A counter counts uses: a launch (a direct spawn, an observed child or a
+ * kit-launched worker), a re-task of a known agent, and each kit launch. The
+ * re-task and kit rows are optional so a counter written before they existed
+ * keeps its counts. */
 interface Counter {
   schemaVersion: 1;
   direct: {
@@ -31,6 +39,13 @@ interface Counter {
   }[];
   children: string[];
   workflows: string[];
+  retasks?: { invocation: string; spawner?: string }[];
+  kits?: {
+    invocation: string;
+    host: KitHost;
+    uses: number;
+    spawner?: string;
+  }[];
 }
 export interface SubagentObservation {
   count: number | null;
@@ -40,7 +55,18 @@ export interface SubagentObservation {
   unresolvedAdmissions: number | null;
   unlinkedChildren: number | null;
   uncountedRemainder: "unknown";
+  /** Launches by host: agents the hooks saw are Claude's; kit launches name
+   * their host. Re-tasks are counted apart, and count = launched + re-tasked. */
+  launched?: number | null;
+  launchedByHost?: Readonly<Record<KitHost, number>> | null;
+  retasked?: number | null;
   reason?: string;
+}
+/** What a non-spawn tool call uses: a re-task of a known agent, or a kit
+ * command that launches `uses` workers on `host`. */
+export interface UseAdmission {
+  readonly retask?: boolean;
+  readonly kit?: { readonly uses: number; readonly host: KitHost };
 }
 const hash = (value: string) =>
   createHash("sha256").update(value).digest("hex");
@@ -103,7 +129,34 @@ function readCounter(path: string): Counter {
     !value.workflows.every(id) ||
     new Set(value.direct.map((v: Counter["direct"][number]) => v.invocation))
       .size !== value.direct.length ||
-    new Set(value.children).size !== value.children.length
+    new Set(value.children).size !== value.children.length ||
+    (value.retasks !== undefined &&
+      (!Array.isArray(value.retasks) ||
+        !value.retasks.every(
+          (v: NonNullable<Counter["retasks"]>[number]) =>
+            v && id(v.invocation) && (v.spawner === undefined || id(v.spawner)),
+        ) ||
+        new Set(
+          value.retasks.map(
+            (v: NonNullable<Counter["retasks"]>[number]) => v.invocation,
+          ),
+        ).size !== value.retasks.length)) ||
+    (value.kits !== undefined &&
+      (!Array.isArray(value.kits) ||
+        !value.kits.every(
+          (v: NonNullable<Counter["kits"]>[number]) =>
+            v &&
+            id(v.invocation) &&
+            (KIT_HOSTS as readonly string[]).includes(v.host) &&
+            Number.isSafeInteger(v.uses) &&
+            v.uses >= 1 &&
+            (v.spawner === undefined || id(v.spawner)),
+        ) ||
+        new Set(
+          value.kits.map(
+            (v: NonNullable<Counter["kits"]>[number]) => v.invocation,
+          ),
+        ).size !== value.kits.length))
   )
     throw new Error("counter unreadable (invalid shape)");
   return value;
@@ -197,7 +250,20 @@ function observation(
       overlap++;
     }
   }
-  const count = linked.size + unresolved.length + unlinked.length - overlap;
+  const agents = linked.size + unresolved.length + unlinked.length - overlap;
+  const kits = (host: KitHost) =>
+    (counter.kits ?? [])
+      .filter((row) => row.host === host)
+      .reduce((sum, row) => sum + row.uses, 0);
+  const launchedByHost = {
+    claude: agents + kits("claude"),
+    codex: kits("codex"),
+    unattributed: kits("unattributed"),
+  };
+  const launched =
+    launchedByHost.claude + launchedByHost.codex + launchedByHost.unattributed;
+  const retasked = (counter.retasks ?? []).length;
+  const count = launched + retasked;
   return {
     count,
     cap,
@@ -206,6 +272,9 @@ function observation(
     unresolvedAdmissions: unresolved.length,
     unlinkedChildren: unlinked.length,
     uncountedRemainder: "unknown",
+    launched,
+    launchedByHost,
+    retasked,
   };
 }
 function unknown(cap: number | null, reason: string): SubagentObservation {
@@ -217,8 +286,23 @@ function unknown(cap: number | null, reason: string): SubagentObservation {
     unresolvedAdmissions: null,
     unlinkedChildren: null,
     uncountedRemainder: "unknown",
+    launched: null,
+    launchedByHost: null,
+    retasked: null,
     reason,
   };
+}
+const capLabel = (row: SubagentObservation) =>
+  row.cap ??
+  (/^(budgets|invalid)/.test(row.reason ?? "") ? "unknown" : "disabled");
+/** One line for `harness usage`: every use the counter saw, by kind and host,
+ * against the cap. */
+export function workersLine(row: SubagentObservation): string {
+  if (row.count === null)
+    return `workers: unknown${row.reason ? ` (${row.reason})` : ""}; cap ${capLabel(row)}`;
+  const minimum = row.countKind === "minimum-observed" ? "at least " : "";
+  const hosts = row.launchedByHost;
+  return `workers: launched ${minimum}${row.launched ?? row.count} (claude ${hosts?.claude ?? "unknown"}, codex ${hosts?.codex ?? "unknown"}${hosts?.unattributed ? `, unattributed ${hosts.unattributed}` : ""}), re-tasked ${row.retasked ?? 0}, cap ${capLabel(row)}, remaining ${row.remaining ?? (row.cap === null ? "unlimited" : "unknown")}`;
 }
 export function subagentUsage(
   root: string,
@@ -242,7 +326,12 @@ export function subagentUsage(
   }
 }
 export function subagentSummary(row: SubagentObservation): string {
-  return `Subagents: ${row.countKind === "minimum-observed" ? "at least " : ""}${row.count ?? "unknown"}/${row.cap ?? (/^(budgets|invalid)/.test(row.reason ?? "") ? "unknown" : "disabled")}; key docs/control/budgets.json subagentCap; uncounted remainder unknown (agents without attributable hooks; unresolved direct/child overlap ${row.unresolvedAdmissions ?? "unknown"}/${row.unlinkedChildren ?? "unknown"})${row.reason ? `; ${row.reason}` : ""}.`;
+  const hosts = row.launchedByHost;
+  const breakdown =
+    row.count === null || !hosts
+      ? ""
+      : ` uses (launched ${row.launched}: claude ${hosts.claude}, codex ${hosts.codex}${hosts.unattributed ? `, unattributed ${hosts.unattributed}` : ""}; re-tasked ${row.retasked ?? 0})`;
+  return `Subagents: ${row.countKind === "minimum-observed" ? "at least " : ""}${row.count ?? "unknown"}/${capLabel(row)}${breakdown}; key docs/control/budgets.json subagentCap; uncounted remainder unknown (agents without attributable hooks; unresolved direct/child overlap ${row.unresolvedAdmissions ?? "unknown"}/${row.unlinkedChildren ?? "unknown"})${row.reason ? `; ${row.reason}` : ""}.`;
 }
 export function admitSubagentTool(
   root: string,
@@ -253,7 +342,7 @@ export function admitSubagentTool(
     cap?: number | null;
     spawnerCap?: number | null;
     spawner?: string;
-  } = {},
+  } & UseAdmission = {},
 ): { refusal?: string; advisory?: string; usage: SubagentObservation } {
   let cap: number | null = null;
   try {
@@ -263,16 +352,45 @@ export function admitSubagentTool(
       const refuse = () => {
         save(p.counter, counter);
         return {
-          refusal: `DOTLN_SUBAGENT_CAP_REFUSED: count ${observation(counter, cap).countKind === "minimum-observed" ? "at least " : ""}${observation(counter, cap).count}, cap ${cap}; docs/control/budgets.json subagentCap would be exceeded. Batch remaining work in existing agents.`,
+          refusal: `DOTLN_SUBAGENT_CAP_REFUSED: count ${observation(counter, cap).countKind === "minimum-observed" ? "at least " : ""}${observation(counter, cap).count}, cap ${cap}; docs/control/budgets.json subagentCap would be exceeded. Every launch, re-task and kit launch counts one use; batch the remaining work into fewer uses.`,
           usage: observation(counter, cap),
         };
       };
       const spawner = options.spawner ? hash(options.spawner) : undefined;
+      // A driven spawner's own uses: its spawns, its re-tasks and its kit
+      // launches, so no path lets one phase worker pass its cap.
+      const spawnerUses = (candidate: Counter) =>
+        candidate.direct.filter((row) => row.spawner === spawner).length +
+        (candidate.retasks ?? []).filter((row) => row.spawner === spawner)
+          .length +
+        (candidate.kits ?? [])
+          .filter((row) => row.spawner === spawner)
+          .reduce((sum, row) => sum + row.uses, 0);
       const fits = (candidate: Counter) =>
         (cap === null || observation(candidate, cap).count! <= cap) &&
         (options.spawnerCap == null ||
-          candidate.direct.filter((row) => row.spawner === spawner).length <=
-            options.spawnerCap);
+          spawnerUses(candidate) <= options.spawnerCap);
+      const unattributed = (what: string) => {
+        save(p.counter, counter);
+        return {
+          advisory: `DotLn advisory: subagent counter cannot attribute ${what}: tool_use_id missing; admitted, uncounted remainder unknown.`,
+          usage: observation(counter, cap),
+        };
+      };
+      // A re-task hands an existing agent more work. It is charged once per
+      // tool call, so a repeated hook for the same call costs nothing.
+      const retask = (invocation: string) => {
+        if ((counter.retasks ?? []).some((v) => v.invocation === invocation))
+          return true;
+        const row = { invocation, ...(spawner ? { spawner } : {}) };
+        const candidate = {
+          ...counter,
+          retasks: [...(counter.retasks ?? []), row],
+        };
+        if (!fits(candidate)) return false;
+        counter.retasks = candidate.retasks;
+        return true;
+      };
       if (input.agent_id) {
         const id = hash(input.agent_id);
         if (!counter.children.includes(id)) {
@@ -282,14 +400,7 @@ export function admitSubagentTool(
         }
       }
       if (spawn) {
-        if (!input.tool_use_id) {
-          save(p.counter, counter);
-          return {
-            advisory:
-              "DotLn advisory: subagent counter cannot attribute spawn: tool_use_id missing; admitted, uncounted remainder unknown.",
-            usage: observation(counter, cap),
-          };
-        }
+        if (!input.tool_use_id) return unattributed("spawn");
         const invocation = hash(input.tool_use_id);
         if (input.tool_name === "Workflow") {
           if (!counter.workflows.includes(invocation)) {
@@ -306,7 +417,9 @@ export function admitSubagentTool(
             resumed &&
             (counter.children.includes(resumed) ||
               counter.direct.some((v) => v.agent === resumed));
-          if (!known) {
+          if (known) {
+            if (!retask(invocation)) return refuse();
+          } else {
             const candidate = {
               ...counter,
               direct: [
@@ -325,6 +438,28 @@ export function admitSubagentTool(
               ...(spawner ? { spawner } : {}),
             });
           }
+        }
+      }
+      if (options.retask) {
+        if (!input.tool_use_id) return unattributed("re-task");
+        if (!retask(hash(input.tool_use_id))) return refuse();
+      }
+      if (options.kit) {
+        if (!input.tool_use_id) return unattributed("kit launch");
+        const invocation = hash(input.tool_use_id);
+        if (!(counter.kits ?? []).some((v) => v.invocation === invocation)) {
+          const row = {
+            invocation,
+            host: options.kit.host,
+            uses: options.kit.uses,
+            ...(spawner ? { spawner } : {}),
+          };
+          const candidate = {
+            ...counter,
+            kits: [...(counter.kits ?? []), row],
+          };
+          if (!fits(candidate)) return refuse();
+          counter.kits = candidate.kits;
         }
       }
       save(p.counter, counter);
@@ -403,7 +538,11 @@ export function drivenSubagentUsage(worker?: string) {
 
 // Separate root sessions keep their local counters. Their hooks also reserve
 // against this one shared counter, so moving phase work cannot reset a drive.
-export function admitDrivenTool(input: SpawnInput, spawn: boolean) {
+export function admitDrivenTool(
+  input: SpawnInput,
+  spawn: boolean,
+  use: UseAdmission = {},
+) {
   const context = drivenWorkerContext();
   if (!context) return undefined;
   const mapped = {
@@ -429,7 +568,12 @@ export function admitDrivenTool(input: SpawnInput, spawn: boolean) {
     context.directory,
     mapped,
     spawn,
-    { cap: context.ceiling, spawnerCap: context.cap, spawner: mapped.agent_id },
+    {
+      cap: context.ceiling,
+      spawnerCap: context.cap,
+      spawner: mapped.agent_id,
+      ...use,
+    },
   );
   return result.refusal
     ? {

@@ -129,6 +129,16 @@ export function retainWorktreeJournals(
         closedJournalEntry(entry.name, entry.isDirectory())
       )
         plan(join(source, entry.name), join(destination, entry.name));
+  // The order's change review reports go beside its journals, under
+  // `reviews/`, so the verifier's and a later reader's copy outlives the
+  // worktree with the sessions that wrote them.
+  const reviews = join(
+    subject,
+    docRelative(subject, "control", `local/reviews/${workOrder}`),
+  );
+  const reviewsInfo = lstatSync(reviews, { throwIfNoEntry: false });
+  if (reviewsInfo?.isDirectory() && !reviewsInfo.isSymbolicLink())
+    plan(reviews, join(destination, "reviews"));
   // A file the repository tracks is its content, not a session's record: a
   // relocated configuration root can leave this fixed harness path unignored
   // and committed, and moving it would leave the worktree modified.
@@ -139,6 +149,7 @@ export function retainWorktreeJournals(
         "-z",
         "--",
         relative(subject, source),
+        relative(subject, reviews),
       ]),
     );
     if (tracked.size)

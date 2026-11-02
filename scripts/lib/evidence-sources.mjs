@@ -94,6 +94,7 @@ const commonSources = [
   "packages/skeleton/src/entropy-review-protocol.ts",
   "packages/skeleton/src/mission-check-protocol.ts",
   "packages/skeleton/src/vertical-judgment-protocol.ts",
+  "packages/skeleton/src/change-review-protocol.ts",
   // Runtime siblings the registered hosts and protocols import (WO-157).
   "packages/skeleton/src/artifact-identity.ts",
   "packages/skeleton/src/beacon-perception.ts",

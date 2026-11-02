@@ -282,6 +282,8 @@ export function refusalFindings(value) {
     "DOTLN_ROUTER_WRITE_REFUSED",
     "DOTLN_SUBAGENT_CAP_REFUSED",
     "DOTLN_PACKAGE_PUBLISH_REFUSED",
+    "DOTLN_DESKTOP_CONTROL_REFUSED",
+    "DOTLN_WORKER_GATE_REFUSED",
   ]);
   const codes = new Set(
     (diagnostic?.match(/\bDOTLN_[A-Z_]+\b/g) ?? []).filter((code) =>

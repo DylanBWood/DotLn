@@ -1,0 +1,8 @@
+{
+  "shortLadder": {
+    "roundOneReviews": 3,
+    "findings": 0,
+    "uses": 3,
+    "skippedLaterRounds": "Inference from the role rule: no fixed findings require a recheck, and no round-two code fix requires a combined review."
+  }
+}

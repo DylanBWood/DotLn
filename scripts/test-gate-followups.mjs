@@ -58,12 +58,14 @@ test("bounded role wording preserves prior savings and records reviewed startup 
     fs.readFileSync(join(sourceRoot, "docs/control/budgets.json"), "utf8"),
   );
   // The role oracles minted since the preceding integrated oracle, newest
-  // first: the integration that combined both branches' role text, then the
-  // upstream oracles it took in. Each names the next as its historical
-  // baseline and starts its startup bytes at the next one's measurement;
+  // first: the review ladder's re-pin, the integration that combined both
+  // branches' role text, then the upstream oracles it took in. Each names the
+  // next as its historical baseline and starts its startup bytes at the next
+  // one's measurement;
   // test-process-debt.mjs walks every recorded parent link of every oracle
   // and checks each recorded hash.
   const chain = [
+    "wo250-role-baseline.json",
     "wo249-integration-role-baseline.json",
     "wo251-role-baseline.json",
     "wo247-role-baseline.json",

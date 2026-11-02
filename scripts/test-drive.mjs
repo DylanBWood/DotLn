@@ -888,6 +888,15 @@ test("refusal readback keeps the bound and router codes and drops unknown ones",
     "DOTLN_DISPATCH_BOUND",
     "DOTLN_ROUTER_WRITE_REFUSED",
   ]);
+  // A review worker's refused gate and a refused desktop tool read back too.
+  assert.deepEqual(
+    [
+      ...refusalFindings(
+        "DOTLN_WORKER_GATE_REFUSED: a review worker never starts a gate; DOTLN_DESKTOP_CONTROL_REFUSED: off",
+      ).codes,
+    ].sort(),
+    ["DOTLN_DESKTOP_CONTROL_REFUSED", "DOTLN_WORKER_GATE_REFUSED"],
+  );
 });
 
 test("a refused attempt stamps the log its worker left, so the refusal is not read as stale", async () => {

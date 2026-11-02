@@ -44,6 +44,13 @@ import {
   type EntropyRefutationRequest,
   type EntropyReviewRequest,
 } from "./entropy-review-protocol.js";
+import {
+  CHANGE_REVIEW_LAST_MESSAGE,
+  CHANGE_REVIEW_LIMITS,
+  CHANGE_REVIEW_SHELL,
+  isChangeReviewRequest,
+  type ChangeReviewRequest,
+} from "./change-review-protocol.js";
 import { decodeUsageSource, usageObservation } from "./usage-observation.mjs";
 import {
   WorkerFailure,
@@ -99,6 +106,11 @@ export interface WorkerLaunch {
   readonly timeoutMs: number;
   /** The launch environment; the Codex launcher supplies an isolated home. */
   readonly env?: NodeJS.ProcessEnv;
+  /** Keep only this many trailing stdout bytes instead of stopping the worker
+   * past the 1,000,000-byte default. A worker's event stream is its transcript,
+   * not its deliverable: the final message and the usage counters come last,
+   * so a long transcript costs memory up to this bound and never the run. */
+  readonly stdoutTailBytes?: number;
 }
 export interface ProcessResult {
   readonly stdout: string;
@@ -115,6 +127,22 @@ export interface RunningProcess {
 }
 export type ProcessRunner = (launch: WorkerLaunch) => RunningProcess;
 
+/** The kept end of a stream: at most `limit` bytes, starting at a line
+ * boundary when its beginning was dropped, so a JSONL reader sees whole
+ * events only. */
+function stdoutTail(
+  chunks: readonly Buffer[],
+  limit: number,
+  dropped: boolean,
+): string {
+  const bytes = Buffer.concat(chunks);
+  const end =
+    bytes.length > limit ? bytes.subarray(bytes.length - limit) : bytes;
+  if (!dropped && end.length === bytes.length) return end.toString("utf8");
+  const newline = end.indexOf(0x0a);
+  return newline === -1 ? "" : end.subarray(newline + 1).toString("utf8");
+}
+
 /** No shell interpolation; raw harness output is private, bounded and discarded. */
 export const runWorkerProcess: ProcessRunner = (launch) => {
   const observation = startDeadline(
@@ -123,7 +151,13 @@ export const runWorkerProcess: ProcessRunner = (launch) => {
   );
   const capture = createWorkerCapture(join(tmpdir(), "dotln-worker-output-"));
   const file = join(capture, "stdout");
-  const fd = openSync(file, "wx", 0o600);
+  // A bounded tail reads stdout through a pipe and keeps its end; every other
+  // launch writes stdout to the capture file and stops past its limit.
+  const tail = launch.stdoutTailBytes;
+  const fd = tail === undefined ? openSync(file, "wx", 0o600) : undefined;
+  const kept: Buffer[] = [];
+  let keptBytes = 0;
+  let dropped = false;
   const grouped =
     process.platform !== "win32" &&
     Boolean(launch.resident || launch.ownProcessGroup);
@@ -136,7 +170,7 @@ export const runWorkerProcess: ProcessRunner = (launch) => {
       cwd: launch.cwd,
       stdio: [
         "pipe",
-        fd,
+        fd ?? "pipe",
         "pipe",
         ...(launch.launchGate ? ["pipe" as const] : []),
       ],
@@ -197,14 +231,24 @@ export const runWorkerProcess: ProcessRunner = (launch) => {
       kill();
     }, launch.timeoutMs);
     const bound = setInterval(() => {
-      if (fstatSync(fd).size > 1_000_000) {
-        failure = new WorkerFailure("output-limit");
+      if (fd !== undefined && fstatSync(fd).size > 1_000_000) {
+        failure = new WorkerFailure("output-limit", "stdout");
         kill();
       }
     }, 100);
+    if (tail !== undefined)
+      child.stdout!.on("data", (chunk: Buffer) => {
+        kept.push(chunk);
+        keptBytes += chunk.length;
+        // Drop whole leading chunks while the rest still covers the tail.
+        while (kept.length > 1 && keptBytes - kept[0]!.length >= tail) {
+          keptBytes -= kept.shift()!.length;
+          dropped = true;
+        }
+      });
     child.stderr!.on("data", (chunk: Buffer) => {
       if (stderr.length + chunk.length > 64_000) {
-        failure = new WorkerFailure("output-limit");
+        failure = new WorkerFailure("output-limit", "stderr");
         kill();
       } else stderr += chunk.toString("utf8");
     });
@@ -231,18 +275,21 @@ export const runWorkerProcess: ProcessRunner = (launch) => {
       if (escalation) clearTimeout(escalation);
       clearInterval(bound);
       try {
-        if (fstatSync(fd).size > 1_000_000)
-          failure = new WorkerFailure("output-limit");
+        if (fd !== undefined && fstatSync(fd).size > 1_000_000)
+          failure = new WorkerFailure("output-limit", "stdout");
         if (failure || writerSignal || (signal && writerExit === undefined))
           reject(failure ?? new WorkerFailure("interrupted"));
         else
           resolve({
-            stdout: readFileSync(file, "utf8"),
+            stdout:
+              fd === undefined
+                ? stdoutTail(kept, tail!, dropped)
+                : readFileSync(file, "utf8"),
             stderr,
             exitCode: writerExit ?? exitCode,
           });
       } finally {
-        closeSync(fd);
+        if (fd !== undefined) closeSync(fd);
         rmSync(capture, { recursive: true });
       }
     });
@@ -336,6 +383,11 @@ const codexDisabled = [
   "shell_tool",
   "unified_exec",
 ];
+/** The features a Codex worker's own tools run on. With any of them disabled,
+ * Codex CLI 0.166.0 answers every tool call with "code-mode host is disabled"
+ * (WO-122's live row found the same for the code-mode host), so every shape
+ * whose worker runs commands keeps all three. */
+const codexToolFeatures = ["shell_tool", "unified_exec", "code_mode_host"];
 
 /* ------------------------------------------------------------------------ */
 /* The Codex launcher (WO-159). Every DotLn-launched Codex worker, verifier  */
@@ -656,7 +708,7 @@ export function startCodexEpisode(
 
 export const OBSERVED_CLI_VERSIONS = {
   claude: "2.1.270",
-  codex: "0.154.0",
+  codex: "0.166.0",
 } as const;
 
 /** Version comparisons produce observations, never launch refusals. */
@@ -702,6 +754,8 @@ export function canonicalWorkerArgs(
     throw new WorkerFailure("profile-refused");
   if (isEntropyRequest(request))
     return entropyArgs(name, request, schemaPath, selection.effort);
+  if (isChangeReviewRequest(request))
+    return changeReviewArgs(name, request, schemaPath, selection.effort);
   if (isWriterRequest(request)) {
     try {
       validateSourceChangeEnvironment(
@@ -898,10 +952,99 @@ function entropyArgs(
       "-c",
       'shell_environment_policy.inherit="none"',
       ...codexDisabled
-        .filter(
-          (feature) =>
-            !["shell_tool", "unified_exec", "code_mode_host"].includes(feature),
-        )
+        .filter((feature) => !codexToolFeatures.includes(feature))
+        .flatMap((feature) => ["--disable", feature]),
+      ...(effort === "unknown"
+        ? []
+        : ["-c", `model_reasoning_effort=${JSON.stringify(effort)}`]),
+      "-",
+    ],
+  });
+}
+
+/** The kit's review worker reads the checkout it reviews, so unlike the
+ * default inspection worker, whose subject is inlined, it gets the file tools
+ * and a shell. Claude confines the file tools to the checkout with
+ * `--restricted` and pre-approves only the listed read commands; every other
+ * call is denied without a prompt, and the project's own instructions and
+ * hooks stay off so they cannot steer a review of that project. Codex runs
+ * under its read-only sandbox with the tool features on and the core
+ * environment variables, so its shell finds git and node; nothing else of
+ * the caller's environment reaches it. */
+function changeReviewArgs(
+  name: Exclude<WorkerTransportName, "fake" | "local-model-http">,
+  request: ChangeReviewRequest,
+  schemaPath: string,
+  effort: string,
+): readonly string[] {
+  const tools = [...request.profile.modelTools];
+  if (name === "claude-cli-print")
+    return [
+      "--print",
+      "--model",
+      request.model,
+      ...(effort === "unknown" ? [] : ["--effort", effort]),
+      "--output-format",
+      "json",
+      "--json-schema",
+      JSON.stringify(transportResultSchema(request)),
+      "--no-session-persistence",
+      "--safe-mode",
+      "--restricted",
+      "--settings",
+      '{"autoMemoryEnabled":false}',
+      "--disable-slash-commands",
+      "--strict-mcp-config",
+      "--mcp-config",
+      '{"mcpServers":{}}',
+      "--no-chrome",
+      "--tools",
+      tools.join(","),
+      "--allowedTools",
+      [
+        ...tools.filter((tool) => tool !== "Bash"),
+        ...(tools.includes("Bash")
+          ? CHANGE_REVIEW_SHELL.map((command) => `Bash(${command}:*)`)
+          : []),
+      ].join(","),
+      "--permission-prompts",
+      "none",
+      "--max-budget-usd",
+      CHANGE_REVIEW_LIMITS.maxBudgetUsd,
+    ];
+  return codexExecArgv({
+    approval: "never",
+    rest: [
+      "--sandbox",
+      "read-only",
+      "--strict-config",
+      "--model",
+      request.model,
+      "--cd",
+      request.cwd,
+      "--json",
+      "--output-schema",
+      schemaPath,
+      // The deliverable gets its own channel: the event stream on stdout is
+      // the transcript, kept only as a bounded tail for its usage counters.
+      "--output-last-message",
+      join(request.capture, CHANGE_REVIEW_LAST_MESSAGE),
+      "-c",
+      'approval_policy="never"',
+      "-c",
+      'web_search="disabled"',
+      "-c",
+      "project_doc_max_bytes=0",
+      "-c",
+      "mcp_servers={}",
+      "-c",
+      "memories.use_memories=false",
+      "-c",
+      "memories.generate_memories=false",
+      "-c",
+      'shell_environment_policy.inherit="core"',
+      ...codexDisabled
+        .filter((feature) => !codexToolFeatures.includes(feature))
         .flatMap((feature) => ["--disable", feature]),
       ...(effort === "unknown"
         ? []
@@ -997,10 +1140,7 @@ function sourceChangeArgs(
       // X-W1 needs native tools. WO-122's live row also requires the stable
       // code-mode host: disabling it leaves model-exposed tools unable to run.
       ...codexDisabled
-        .filter(
-          (feature) =>
-            !["shell_tool", "unified_exec", "code_mode_host"].includes(feature),
-        )
+        .filter((feature) => !codexToolFeatures.includes(feature))
         .flatMap((feature) => ["--disable", feature]),
       ...(effort === "unknown"
         ? []
@@ -1214,6 +1354,20 @@ function decodeWriterResult(
   }
 }
 
+/** The final message Codex wrote with --output-last-message, or undefined
+ * when it wrote none. */
+function lastMessageFile(capture: string): string | undefined {
+  try {
+    const text = readFileSync(
+      join(capture, CHANGE_REVIEW_LAST_MESSAGE),
+      "utf8",
+    );
+    return text.trim() ? text : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 function decodeResult<R extends TransportRequest>(
   name: WorkerTransportName,
   output: ProcessResult,
@@ -1221,8 +1375,9 @@ function decodeResult<R extends TransportRequest>(
   before?: string,
 ): TransportResultFor<R> {
   // The entropy capture lane sits outside the frozen copy so a retained
-  // return never counts as a scratch delta.
-  if (isEntropyRequest(request)) {
+  // return never counts as a scratch delta; a review worker's sits outside
+  // the checkout it reviews for the same reason.
+  if (isEntropyRequest(request) || isChangeReviewRequest(request)) {
     mkdirSync(request.capture, { recursive: true, mode: 0o700 });
     writeFileSync(join(request.capture, "wire.jsonl"), output.stdout, {
       mode: 0o600,
@@ -1303,7 +1458,7 @@ function decodeResult<R extends TransportRequest>(
             mode: 0o600,
           });
       }
-      if (isEntropyRequest(request)) {
+      if (isEntropyRequest(request) || isChangeReviewRequest(request)) {
         writeFileSync(
           join(request.capture, "result.json"),
           JSON.stringify(result.structured_output ?? null) + "\n",
@@ -1338,7 +1493,13 @@ function decodeResult<R extends TransportRequest>(
       (event) =>
         event.type === "item.completed" && event.item?.type === "agent_message",
     );
-    const text = messages.at(-1)?.item?.text;
+    // A change review's final message has its own file, so it holds whatever
+    // the stream's kept tail lost; the stream's last message stands in when
+    // the file is absent.
+    const text =
+      (isChangeReviewRequest(request)
+        ? lastMessageFile(request.capture)
+        : undefined) ?? messages.at(-1)?.item?.text;
     if (typeof text !== "string")
       throw new WorkerFailure("invalid-result", "final-message-absent");
     parsePhase = "final-message-json";
@@ -1346,7 +1507,7 @@ function decodeResult<R extends TransportRequest>(
       writeFileSync(join(request.cwd, "result.json"), text, { mode: 0o600 });
       writeFileSync(join(request.cwd, "statement.txt"), text, { mode: 0o600 });
     }
-    if (isEntropyRequest(request)) {
+    if (isEntropyRequest(request) || isChangeReviewRequest(request)) {
       writeFileSync(join(request.capture, "result.json"), text, {
         mode: 0o600,
       });
@@ -1446,23 +1607,28 @@ abstract class CliWorkOrderTransport implements WorkOrderTransport {
         cwd: request.cwd,
         input: transportPrompt(request, this.name),
         ...(isWriterRequest(request) ? { ownProcessGroup: true } : {}),
+        ...(isChangeReviewRequest(request)
+          ? { stdoutTailBytes: CHANGE_REVIEW_LIMITS.transcriptTailBytes }
+          : {}),
         ...(options?.launchGate ? { launchGate: options.launchGate } : {}),
         env: isWriterRequest(request)
           ? sourceWriterEnvironment(request.cwd, episode?.env ?? launchEnv)
           : (episode?.env ?? launchEnv),
-        timeoutMs: isEntropyReviewRequest(request)
-          ? ENTROPY_REVIEW_LIMITS.timeoutMs
-          : isEntropyRefutationRequest(request)
-            ? ENTROPY_REFUTATION_LIMITS.timeoutMs
-            : isMissionCheckRequest(request)
-              ? MISSION_CHECK_LIMITS.timeoutMs
-              : isPlanRequest(request)
-                ? PLAN_REFUTATION_LIMITS.timeoutMs
-                : isVerticalJudgmentRequest(request)
-                  ? VERTICAL_JUDGMENT_LIMITS.timeoutMs
-                  : "feedback" in request && request.feedback
-                    ? FEEDBACK_VERIFIER_LIMITS.timeoutMs
-                    : WORKER_TIMEOUT_MS,
+        timeoutMs: isChangeReviewRequest(request)
+          ? CHANGE_REVIEW_LIMITS.timeoutMs
+          : isEntropyReviewRequest(request)
+            ? ENTROPY_REVIEW_LIMITS.timeoutMs
+            : isEntropyRefutationRequest(request)
+              ? ENTROPY_REFUTATION_LIMITS.timeoutMs
+              : isMissionCheckRequest(request)
+                ? MISSION_CHECK_LIMITS.timeoutMs
+                : isPlanRequest(request)
+                  ? PLAN_REFUTATION_LIMITS.timeoutMs
+                  : isVerticalJudgmentRequest(request)
+                    ? VERTICAL_JUDGMENT_LIMITS.timeoutMs
+                    : "feedback" in request && request.feedback
+                      ? FEEDBACK_VERIFIER_LIMITS.timeoutMs
+                      : WORKER_TIMEOUT_MS,
       });
       const receipt = process.accepted.then(() => ({
         commandId: request.command.commandId,

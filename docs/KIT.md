@@ -490,6 +490,40 @@ or use the project's own browser tests. Claude in Chrome and the desktop
 app's browser pane use the operator's sessions and need the desktop election.
 Playwright is optional; this rule installs no browser or MCP server.
 
+`npm run worker -- review --kind criteria|design|consistency|combined --host
+codex|claude` launches one review worker on the named host with the canonical
+brief (the generated worker definition, the reviewer brief from the role text,
+the order and its diff, and for `--recheck <report>` the earlier findings) and
+writes its report and a `.json` record to
+`docs/control/local/reviews/WO-NNN/round-<N>-<kind>.md` (a repair's under
+`repair-<n>/`, and never over an existing report); `--subject planning`
+on a `planning/` branch reviews that branch's planning documents and orders
+into `planning-<date>/`, and `--dry-run` prints the command line it would run.
+`npm run worker -- record --kind <kind> --round <N> --from <file>` writes an
+`Agent` worker's returned text to the same lane as the same record.
+The worker is told a budget of about 30 minutes and 120 tool calls and returns
+what it has as it nears either, well before the hard limits stop it. An
+execution's or repair's reviews run as a ladder with an end: round 1 is three
+reviewers over the whole diff; round 2 is each reviewer whose findings were
+fixed rechecking those fixes alone, a new finding admitted only when it breaks
+an acceptance criterion or a behavior `main` had; round 3, only when round 2's
+fixes changed code, is one combined worker over the remaining delta; then no
+reviewer runs, the executor judges what is left, and the handoff's
+`self-review:` line records the rounds and the unreviewed lines. A round whose
+fixes touch only comments, documentation, formatting, test names or
+regenerated files is skipped, and a repair under fifty changed source lines
+starts at round 3.
+It is the route to a Codex reviewer from a Claude session and to a Claude print
+reviewer from Codex, and needs that CLI installed and signed in. Every worker
+use counts against `subagentCap` in `docs/control/budgets.json`: in Claude the
+hook counts each launch, each re-task (a `SendMessage` or a resumed agent) and
+each kit launch by its literal command (`npm run plan -- review` counts
+three), and under Codex the helper counts its own launch;
+`node scripts/harness.mjs usage <session>` prints the counts by host. A
+spawned `dotln-worker` that starts a test-runner gate is refused with
+`DOTLN_WORKER_GATE_REFUSED`; a review worker probes one test with
+`node scripts/harness.mjs bounded -- node --test --test-name-pattern <name> <suite file>`.
+
 After the first steps above, `npm test`, `npm run test:docs` and
 `npm test -- --review` run inside this instance without package source. Each
 selection first runs the six structural checks: formatting, configuration,

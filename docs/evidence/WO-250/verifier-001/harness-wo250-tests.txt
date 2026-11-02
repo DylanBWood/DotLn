@@ -1,0 +1,27 @@
+bounded-start {"budgetBytes":3221225472,"physicalBytes":51539607552,"deadlineMs":900000}
+PROGRESS [bounded-probe] started
+DotLn advisory: process-cost counters unavailable; recorded unknown.
+DotLn advisory: process-cost counters unavailable; recorded unknown.
+DotLn advisory: process-cost counters unavailable; recorded unknown.
+DotLn advisory: process-cost counters unavailable; recorded unknown.
+DotLn advisory: process-cost counters unavailable; recorded unknown.
+DotLn advisory: process-cost counters unavailable; recorded unknown.
+DotLn advisory: process-cost counters unavailable; recorded unknown.
+DotLn advisory: process-cost counters unavailable; recorded unknown.
+DotLn advisory: process-cost counters unavailable; recorded unknown.
+DotLn advisory: process-cost counters unavailable; recorded unknown.
+DotLn advisory: process-cost counters unavailable; recorded unknown.
+DotLn advisory: process-cost counters unavailable; recorded unknown.
+DotLn advisory: process-cost counters unavailable; recorded unknown.
+✔ WO-250 every use counts: a message, a resumed agent and a helper launch one each, a plan review three, a dry run none; usage reads them by host and the twenty-first is refused (3448.232042ms)
+✔ WO-250 a review or refutation worker's gate is refused naming the bounded single-test form; a phase agent and the session keep their gates (3837.980625ms)
+✔ WO-250 a gate or a kit launch is found by its script's path whatever Node options stand before it (1.333667ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7423.393208
+bounded-result {"name":"bounded-probe","durationMs":7471,"slowestCases":[{"name":"bounded-probe","durationMs":7471,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":131759488,"peakRssBytes":266584064,"memoryBudgetBytes":3221225472,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-11-02T20:53:43.012Z","finishedAt":"2026-11-02T20:53:50.484Z","exitCode":0,"executed":true}

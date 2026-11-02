@@ -1,0 +1,47 @@
+{
+  "codeIdentity": "46b342fee5ad221d1e9f6e4919f730c445eac30938ca71488864a9a4371738a3",
+  "treeHash": "4ac59e14d34b9522878647ba17c28c2f79b00d13",
+  "checks": [
+    {
+      "name": "npm test",
+      "codeIdentity": "46b342fee5ad221d1e9f6e4919f730c445eac30938ca71488864a9a4371738a3",
+      "treeHash": "4f55c98a8a37ffd7d1255aed7ab7f8c53f6dd7c9",
+      "recordedAt": "2026-11-02T20:09:44.567Z",
+      "exitCode": 0,
+      "executed": true,
+      "selection": "review",
+      "partial": null,
+      "requiredSuites": 47,
+      "passing": true,
+      "stands": true
+    },
+    {
+      "name": "structural",
+      "codeIdentity": "46b342fee5ad221d1e9f6e4919f730c445eac30938ca71488864a9a4371738a3",
+      "treeHash": "8611ed5d8e1a7cd79a439c01326bc4bfd800bef3",
+      "recordedAt": "2026-11-02T20:48:24.822Z",
+      "exitCode": 0,
+      "executed": true,
+      "selection": "structural",
+      "partial": null,
+      "requiredSuites": 6,
+      "passing": true,
+      "stands": true
+    },
+    {
+      "name": "npm run test:docs",
+      "codeIdentity": "46b342fee5ad221d1e9f6e4919f730c445eac30938ca71488864a9a4371738a3",
+      "treeHash": "8611ed5d8e1a7cd79a439c01326bc4bfd800bef3",
+      "recordedAt": "2026-11-02T20:48:35.612Z",
+      "exitCode": 0,
+      "executed": true,
+      "selection": "document",
+      "partial": null,
+      "requiredSuites": 27,
+      "passing": true,
+      "stands": true
+    }
+  ],
+  "coverageSource": "static-audit.json: five explicit product tasks and the generated structural harness artifact",
+  "documentLimit": "The entry document row judged an earlier candidate tree. A new document row is required after the final authored records."
+}

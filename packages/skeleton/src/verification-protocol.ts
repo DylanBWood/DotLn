@@ -67,6 +67,15 @@ import {
   type MissionCheckRequest,
 } from "./mission-check-protocol.js";
 import {
+  isChangeReviewRequest,
+  changeReviewPrompt,
+  changeReviewResultSchema,
+  validateChangeReviewRequest,
+  validateChangeReviewResult,
+  type ChangeReviewRequest,
+  type ChangeReviewResult,
+} from "./change-review-protocol.js";
+import {
   isWriterRequest,
   parseStoredWriterResult,
   validateWriterRequest,
@@ -442,7 +451,8 @@ export type TransportRequest =
   | MissionCheckRequest
   | EntropyReviewRequest
   | EntropyRefutationRequest
-  | VerticalJudgmentRequest;
+  | VerticalJudgmentRequest
+  | ChangeReviewRequest;
 export type TransportResult =
   | WorkerResult
   | WriterResult
@@ -451,23 +461,26 @@ export type TransportResult =
   | MissionCheckObserved
   | ReviewerOutput
   | EntropyRefutationResult
-  | VerticalJudgmentResult;
+  | VerticalJudgmentResult
+  | ChangeReviewResult;
 export type TransportResultFor<R extends TransportRequest> =
-  R extends VerticalJudgmentRequest
-    ? VerticalJudgmentResult
-    : R extends EntropyReviewRequest
-      ? ReviewerOutput
-      : R extends EntropyRefutationRequest
-        ? EntropyRefutationResult
-        : R extends MissionCheckRequest
-          ? MissionCheckObserved
-          : R extends PlanRefutationRequest
-            ? PlanRefutationResult
-            : R extends EvidenceWorkerRequest
-              ? EvidenceWorkerResult
-              : R extends WriterRequest
-                ? WriterResult
-                : WorkerResult;
+  R extends ChangeReviewRequest
+    ? ChangeReviewResult
+    : R extends VerticalJudgmentRequest
+      ? VerticalJudgmentResult
+      : R extends EntropyReviewRequest
+        ? ReviewerOutput
+        : R extends EntropyRefutationRequest
+          ? EntropyRefutationResult
+          : R extends MissionCheckRequest
+            ? MissionCheckObserved
+            : R extends PlanRefutationRequest
+              ? PlanRefutationResult
+              : R extends EvidenceWorkerRequest
+                ? EvidenceWorkerResult
+                : R extends WriterRequest
+                  ? WriterResult
+                  : WorkerResult;
 
 export const isPlanRequest = (
   request: TransportRequest,
@@ -1082,6 +1095,8 @@ function verificationReviewNotice(
 }
 
 export function validateTransportRequest(request: TransportRequest): void {
+  if (isChangeReviewRequest(request))
+    return validateChangeReviewRequest(request);
   if (isVerticalJudgmentRequest(request))
     return validateVerticalJudgmentRequest(request);
   if (isEntropyReviewRequest(request))
@@ -1146,6 +1161,7 @@ export function validateTransportRequest(request: TransportRequest): void {
   }
 }
 export function transportResultSchema(request: TransportRequest): object {
+  if (isChangeReviewRequest(request)) return changeReviewResultSchema();
   if (isVerticalJudgmentRequest(request))
     return verticalJudgmentResultSchema(request);
   if (isEntropyReviewRequest(request)) return entropyReviewResultSchema();
@@ -1164,30 +1180,33 @@ export function parseTransportResult<R extends TransportRequest>(
   request: R,
 ): TransportResultFor<R> {
   return (
-    isVerticalJudgmentRequest(request)
-      ? validateVerticalJudgmentResult(value, request)
-      : isEntropyReviewRequest(request)
-        ? validateReviewerOutput(value, {
-            workOrderId: request.workOrder.workOrderId,
-            episodeId: request.episodeId,
-          })
-        : isEntropyRefutationRequest(request)
-          ? validateEntropyRefutationResult(value, request)
-          : isMissionCheckRequest(request)
-            ? validateMissionCheckResult(value, request.subject)
-            : isWriterRequest(request)
-              ? parseStoredWriterResult(value, request)
-              : isPlanRequest(request)
-                ? validatePlanResult(value, request.subject)
-                : isEvidenceRequest(request)
-                  ? parseEvidenceResult(value, request)
-                  : parseWorkerResult(value, request)
+    isChangeReviewRequest(request)
+      ? validateChangeReviewResult(value, request)
+      : isVerticalJudgmentRequest(request)
+        ? validateVerticalJudgmentResult(value, request)
+        : isEntropyReviewRequest(request)
+          ? validateReviewerOutput(value, {
+              workOrderId: request.workOrder.workOrderId,
+              episodeId: request.episodeId,
+            })
+          : isEntropyRefutationRequest(request)
+            ? validateEntropyRefutationResult(value, request)
+            : isMissionCheckRequest(request)
+              ? validateMissionCheckResult(value, request.subject)
+              : isWriterRequest(request)
+                ? parseStoredWriterResult(value, request)
+                : isPlanRequest(request)
+                  ? validatePlanResult(value, request.subject)
+                  : isEvidenceRequest(request)
+                    ? parseEvidenceResult(value, request)
+                    : parseWorkerResult(value, request)
   ) as TransportResultFor<R>;
 }
 export function transportPrompt(
   request: TransportRequest,
   harness?: WorkerTransportName,
 ): string {
+  if (isChangeReviewRequest(request)) return changeReviewPrompt(request);
   if (isVerticalJudgmentRequest(request))
     return verticalJudgmentPrompt(request);
   if (isEntropyReviewRequest(request)) return entropyReviewPrompt(request);

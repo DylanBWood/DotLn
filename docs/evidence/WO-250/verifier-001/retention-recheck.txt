@@ -1,0 +1,12 @@
+bounded-start {"budgetBytes":3221225472,"physicalBytes":51539607552,"deadlineMs":900000}
+PROGRESS [bounded-probe] started
+✔ retention moves execution and nested repair report pairs, preserves an earlier lane and is repeatable (102.589375ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 206.027916
+bounded-result {"name":"bounded-probe","durationMs":253,"slowestCases":[{"name":"bounded-probe","durationMs":253,"exitCode":0,"granularity":"task"}],"peakFootprintBytes":49715896,"peakRssBytes":140869632,"memoryBudgetBytes":3221225472,"footprintSource":"proc_pid_rusage.ri_phys_footprint","droppedOutputBytes":0,"startedAt":"2026-11-02T20:53:38.158Z","finishedAt":"2026-11-02T20:53:38.411Z","exitCode":0,"executed":true}

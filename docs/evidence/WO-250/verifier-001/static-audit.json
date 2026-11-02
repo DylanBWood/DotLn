@@ -1,0 +1,125 @@
+{
+  "baselineRefusals": 7,
+  "currentRefusals": 8,
+  "dependencyKeys": {
+    "package.json": "unchanged dependency names",
+    "packages/compiler/package.json": "unchanged dependency names",
+    "packages/skeleton/package.json": "unchanged dependency names",
+    "packages/console/package.json": "unchanged dependency names"
+  },
+  "lockPackageEntriesUnchanged": true,
+  "newSuppressionDirectives": [],
+  "codeIdentity": "46b342fee5ad221d1e9f6e4919f730c445eac30938ca71488864a9a4371738a3",
+  "complete": {
+    "recordedAt": "2026-11-02T20:09:44.567Z",
+    "treeHash": "4f55c98a8a37ffd7d1255aed7ab7f8c53f6dd7c9",
+    "evidenceRef": "host-gate:46b342fee5ad221d1e9f6e4919f730c445eac30938ca71488864a9a4371738a3:npm test",
+    "requiredSuites": [
+      "build",
+      "format",
+      "configuration-root",
+      "registrations",
+      "declarations",
+      "generated",
+      "host",
+      "release-preparation",
+      "github-body",
+      "outward-lint",
+      "target-publish",
+      "target-worktree",
+      "vertical",
+      "license-fixtures",
+      "publication-fixtures",
+      "backup-intake",
+      "resume",
+      "launchpad",
+      "workstream-pilot",
+      "instance-history",
+      "beacon-portability",
+      "checkpoint",
+      "worktree",
+      "worktree-integration",
+      "release",
+      "work-orders-fixtures",
+      "siblings-fixtures",
+      "kernel",
+      "compiler",
+      "skeleton",
+      "console",
+      "browser-evidence",
+      "adjacent-queue",
+      "derived-orders",
+      "portfolio",
+      "codex-continuation",
+      "authority-grants",
+      "fixture-temp-root",
+      "launchpad-planning",
+      "evidence-sources",
+      "harness-probe",
+      "harness-fixtures",
+      "harness-context",
+      "plan-refutation",
+      "runner-fixtures",
+      "sync-fixtures",
+      "process-debt"
+    ],
+    "exitCode": 0,
+    "stands": true
+  },
+  "coverage": [
+    {
+      "name": "plan-refutation",
+      "declared": true,
+      "task": {
+        "exitCode": 0,
+        "executed": true,
+        "reused": false
+      }
+    },
+    {
+      "name": "harness-fixtures",
+      "declared": true,
+      "task": {
+        "exitCode": 0,
+        "executed": true,
+        "reused": false
+      }
+    },
+    {
+      "name": "harness",
+      "declared": true,
+      "task": {
+        "exitCode": 0,
+        "executed": true,
+        "reused": false
+      }
+    },
+    {
+      "name": "harness-context",
+      "declared": true,
+      "task": {
+        "exitCode": 0,
+        "executed": true,
+        "reused": false
+      }
+    },
+    {
+      "name": "release",
+      "declared": true,
+      "task": {
+        "exitCode": 0,
+        "executed": true,
+        "reused": false
+      }
+    },
+    {
+      "name": "process-debt",
+      "declared": true,
+      "task": {
+        "exitCode": 0,
+        "executed": true,
+        "reused": false
+      }
+    }
+  ]
+}

@@ -107,12 +107,13 @@ const TEMPORARY_CLASSES = [
 /** The entries a closed-journal root may hold beside its owner record: the
  * session journals and other append-only logs, the session states and their
  * per-session sidecars, the gate index, the suite-success and deadline
- * directories, and a superseded state kept when a retried close merged a newer
- * one. Anything else is not the close's to remove.
+ * directories, the order's change review reports, and a superseded state kept
+ * when a retried close merged a newer one. Anything else is not the close's
+ * to remove.
  * @param {string} name @param {boolean} directory */
 export const closedJournalEntry = (name, directory) =>
   directory
-    ? ["suite-success", "deadlines"].includes(name)
+    ? ["suite-success", "deadlines", "reviews"].includes(name)
     : name.endsWith(".jsonl") ||
       name === "checks.json" ||
       /^[a-f0-9]{64}(?:\.[a-z][a-z-]*)?\.json$/u.test(name) ||

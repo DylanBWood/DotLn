@@ -119,7 +119,7 @@ const call = (args, cwd = root) => {
 };
 const ledger = "docs/evidence/WO-187/handoff.md";
 const SELF_REVIEW_ADVISORY = (path) =>
-  `${path} lacks a self-review: line; summarize this run's three independent reviews as \`self-review: found <n>; fixed <n>; recorded <n>\` and cite all three workers' reports.`;
+  `${path} lacks a self-review: line; summarize this run's review ladder as \`self-review: found <n>; fixed <n>; recorded <n>\`, optionally followed by \`; rounds <n>; unreviewed <n> lines (<reason>)\`, and cite every round's reports.`;
 write(ledger, "**Criterion 1:** met. Read.\n");
 call(["activate", "WO-187", "docs/work-orders/WO-187-fixture.md"]);
 const missing = call(["implementation-ready", ...flags]);
@@ -1261,6 +1261,24 @@ for (const [text, advised] of [
   ["self-review: fixed 1; found 1; recorded 0", true],
   ["self-review: found 1;\nfixed 1; recorded 0", true],
   ["self-review: none ran.", true],
+  // The review ladder's optional trailing fields: the rounds run and the
+  // lines no reviewer read, with the reason. A `;` after the counts must
+  // start one of them; prose after a space stays outside the form.
+  [
+    "self-review: found 19; fixed 18; recorded 1; rounds 3; unreviewed 12 lines (comments and a test name)",
+    false,
+  ],
+  ["self-review: found 4; fixed 4; recorded 0; rounds 2", false],
+  [
+    "self-review: found 4; fixed 4; recorded 0; rounds 2 (round 3 skipped: documentation only)",
+    false,
+  ],
+  ["self-review: found 4; fixed 4; recorded 0; unreviewed 0 lines", false],
+  ["self-review: found 4; fixed 4; recorded 0 — rounds in reviews.md", false],
+  ["self-review: found 19; fixed 18; recorded 1; rounds x; garbage", true],
+  ["self-review: found 4; fixed 4; recorded 0; rounds 3; garbage", true],
+  ["self-review: found 4; fixed 4; recorded 0; unreviewed 3 lines", true],
+  ["self-review: found 4; fixed 4; recorded 0;", true],
 ]) {
   write(ledger, `**Criterion 1:** met. Read.\n${text}\n`);
   assert.deepEqual(

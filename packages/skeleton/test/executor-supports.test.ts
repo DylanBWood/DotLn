@@ -872,11 +872,11 @@ test("execution roles open with an ordered handoff and keep shared rules below i
       );
       assert.match(
         steps[format - 1]!,
-        /Finish implementation or repair,.*authored outputs before launching or restarting all three/,
+        /Finish implementation or repair,.*authored outputs before the review ladder's first round; never use early scouting reviews/,
       );
       assert.match(
         steps[run]!,
-        /on failure finish.*repair and its write-backs.*restart all three existing reviewers.*wait for all three to finish/,
+        /on failure finish.*repair and its write-backs.*format.*review ladder and finish it before starting a fresh complete run/,
       );
     } else if (name === "verifier") {
       assert.match(steps[run]!, /npm test -- --only <suite>/);
@@ -907,12 +907,16 @@ test("execution roles open with an ordered handoff and keep shared rules below i
     .procedure.join("\n");
   assert.match(
     executor,
-    /Every execution and fix requires three fresh independent `dotln-worker` agents/,
+    /Every execution and fix runs its independent reviews as a ladder with an end/,
+  );
+  assert.match(
+    executor,
+    /Round 1: three fresh independent `dotln-worker` reviewers over the whole diff/,
   );
   assert.match(executor, /nonoverlapping briefs/);
   assert.match(
     executor,
-    /Launch or restart them only after implementation or repair and its write-backs are complete, never as early scouts/,
+    /only after implementation or repair and its write-backs are complete, never as early scouts/,
   );
   assert.match(
     executor,
@@ -931,7 +935,7 @@ test("execution roles open with an ordered handoff and keep shared rules below i
     /test dependencies, fixture inputs\/manifests\/pins, generated test baselines and evidence-source declarations/,
   );
   const consistencyBrief = executor.match(
-    /The consistency reviewer[\s\S]+?(?=Transfer findings)/,
+    /The consistency reviewer[\s\S]+?(?=Fix or record every finding)/,
   )?.[0];
   assert.ok(consistencyBrief);
   assert.match(
@@ -961,7 +965,7 @@ test("execution roles open with an ordered handoff and keep shared rules below i
     .procedure.join("\n");
   assert.match(
     verifier,
-    /your own probes and the executor's three worker reports/,
+    /your own probes and the executor's review reports, every round's in `docs\/control\/local\/reviews\/WO-NNN\/`/,
   );
   assert.match(verifier, /Spawn a worker only to reproduce one named claim/);
   assert.match(
