@@ -17,12 +17,16 @@ text's SHA-256, one of five classes and the evidence; `retract <ordinal>
 --reason <text> --capture <path> --capture-hash sha256:<digest>
 <actor-flags>`, appending `OffRampRetracted` for a `CriterionWaived` or
 `CriterionDefectRecorded` ordinal of the current activation, legal in
-`verifying`, `verified`, `needs-fix`, `final-review` and `closed` before
-release close, and in `closed` returning the order to `needs-fix` with the
-retraction as its failure source, so a retracted record is repaired,
-re-verified and re-reviewed before the pull request is merged or the close
-runs (`scripts/release.mjs`'s prerequisites refuse an order whose
-retraction is newer than its latest passing final review); and
+`verifying`, `verified`, `needs-fix`, `final-review` and `closed` while the
+order's pull request is unmerged (the state the close already reads), and
+in `closed` returning the order to `needs-fix` with the retraction as its
+failure source, so a retracted record is repaired, re-verified and
+re-reviewed before the pull request is merged or the close runs
+(`scripts/release.mjs`'s prerequisites refuse an order whose retraction is
+newer than its latest passing final review); after the merge a retraction
+records the event and the operator's words, returns nothing to `needs-fix`,
+since a merged branch cannot be repaired in place, and names the planner's
+follow-up route in its message; and
 `reopen-handoff --reason <text> --capture <path> --capture-hash
 sha256:<digest> <actor-flags>`, appending `HandoffReopened` from
 `ready-to-verify` and returning the order to the phase its handoff left
@@ -365,7 +369,8 @@ did not open.
    carries one line per defective or waived criterion above the process
    table, the github-body-profile check admits it, and the close's
    prerequisites refuse an order whose retraction is newer than its latest
-   passing final review. Check: `npm test --
+   passing final review; `resume retract` reads the pull request's merge
+   state as the close does and takes the record-only form after the merge. Check: `npm test --
    --only process-debt`; `npm test -- --only harness-fixtures`; `npm test
    -- --only release`; `npm test -- --only github-body`.
 5. `scripts/work-orders.mjs` (`index --check`): the criteria lint as the
@@ -416,7 +421,9 @@ and role text; the write-backs.
 **Acceptance criteria (all required)**
 
 1. In the `resume` fixture, a verifier's `npm run resume -- defect 3
-   --class bookkeeping --evidence <text> <flags>` appends
+   --class bookkeeping --evidence <text> <flags>` (the classes being
+   `bookkeeping`, `later-phase`, `absent-input`, `host-behavior` and
+   `contradiction`) appends
    `CriterionDefectRecorded` with the criterion's text hash, `status
    --json` lists it under `defectiveCriteria`, a VER report judging
    `**Criterion 3:** unmet, defective (bookkeeping) by <ordinal>` records
@@ -425,7 +432,9 @@ and role text; the write-backs.
    line citing a record whose criterion text no longer hashes to it is
    refused, and a fresh `defect` for the amended text is admitted.
 2. A FINAL `pass` whose report omits the defective line for a recorded
-   defect is refused; one that carries it passes; a FINAL `fail` judging the
+   defect, or carries it with an empty paragraph under it, is refused; one
+   that carries it with a paragraph naming the reviewer's own evidence for
+   the class passes; a FINAL `fail` judging the
    criterion `unmet` with a blocking finding naming it is admitted while
    the record stands; a `met` line for the criterion is admitted over the
    standing record.
@@ -434,10 +443,12 @@ and role text; the write-backs.
    `CriterionWaived` or `CriterionDefectRecorded` ordinal, `status --json`
    no longer lists the criterion as waived or defective, and a report line
    citing the retracted ordinal is refused; an ordinal of another event
-   kind or another activation is refused; from `closed` before release
-   close the retraction returns the order to `needs-fix` with the
+   kind or another activation is refused; from `closed` with the pull
+   request unmerged the retraction returns the order to `needs-fix` with the
    retraction as the failure source, and `release.mjs close` refuses while
-   it stands unrepaired.
+   it stands unrepaired; from `closed` with the pull request merged the
+   retraction records, names the planner's follow-up route and changes no
+   phase.
 4. From `ready-to-verify` with no verification requested since the
    handoff, `npm run resume -- reopen-handoff --reason <text> --capture
    <path> --capture-hash sha256:<digest> <flags>` appends `HandoffReopened`,

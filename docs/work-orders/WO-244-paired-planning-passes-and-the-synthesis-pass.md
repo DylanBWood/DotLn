@@ -19,9 +19,10 @@ WO-226 records) the labels `gpt`, `fable` and `reviewed` and the phrase
 naming the other host stops the pass and says so), the blindness duties and
 the synthesis duties; in the hook's command judgment, one refusal active
 while the session's dispatch is a paired pass: a command that lists
-branches or pull requests (`git branch -a`, `git branch -r`, `gh pr list`,
-`gh pr view`, `gh pr diff`), fetches, or names a `planning/` ref other than
-the session's own branch, refused naming `planning: synth pass` and
+branches, refs or pull requests (`git branch -a`, `git branch -r`, `git log
+--all`, `git for-each-ref`, `git show-ref`, `git ls-remote`, `gh pr list`,
+`gh pr view`, `gh pr diff`, `gh api`), fetches, or names a `planning/` ref
+other than the session's own branch, refused naming `planning: synth pass` and
 `operator override:`; in `scripts/refute-plan.mjs`, `plan start` writing
 the pair record (the date, the label, the branch) into the planning
 document's dispatch section and the ignored local lane, and `plan

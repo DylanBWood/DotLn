@@ -60,7 +60,9 @@ before the bundle import, a `remoteBranchCommit` read first that skips the
 fetch when the checkout already holds the branch's commit, and a
 `timeoutMs` the three callers pass (`scripts/launchpad.mjs` 2144, `update
 --finish`; `scripts/lib/target-worktree-close.mjs` 461;
-`scripts/lib/target-publish.mjs` 847), a fetch past its bound refused by
+`scripts/lib/target-publish.mjs` 847; the bound defaults to ten minutes,
+half the fork's nineteen-minute stall and above every recorded fetch, and
+`--fetch-timeout <seconds>` overrides it), a fetch past its bound refused by
 name with the checkout preserved and the by-hand finish printed (`git fetch
 origin main`, `git merge --ff-only origin/main`, `node
 scripts/bootstrap.mjs`), with cases in `scripts/test-launchpad-update.mjs`
@@ -398,9 +400,10 @@ sentence; the write-backs.
 5. `update --finish` on a fixture whose checkout already holds origin's
    `main` completes with the lane fetching no objects (the lane names the
    checkout's object store in `objects/info/alternates` and reads the
-   remote's commit first); with a low bound against a stalled fixture fetch
-   it refuses naming the bound and printing the by-hand finish, and the
-   checkout's refs, `HEAD` and tree are unchanged; the target close's base
+   remote's commit first); the default bound is ten minutes and
+   `--fetch-timeout` overrides it; with a low bound against a stalled
+   fixture fetch it refuses naming the bound and printing the by-hand
+   finish, and the checkout's refs, `HEAD` and tree are unchanged; the target close's base
    fetch and the target publish's fetch pass the same options and their
    existing cases pass.
 6. The kit guide and product 07 state the helpers and the rule; `npm run

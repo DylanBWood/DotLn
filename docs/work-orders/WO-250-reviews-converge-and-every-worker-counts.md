@@ -35,7 +35,10 @@ with a `.json` beside it in a closed findings shape (`id`, `severity`
 one line printed, `review: <kind> round <N> found <N> (<B> blocking);
 <elapsed>`, or that the worker returned no report; a `WorkerLaunched` row
 in the session journal (session, order, kind, host, CLI version, round,
-started, ended, tokens where the host reports them); the helper's Codex
+started, ended, tokens where the host reports them, the model and effort
+pinned on the command line and, where the CLI prints one, the host's
+readback, each with its source as the entropy review's attestation records
+it); the helper's Codex
 argv keeping `code_mode_host`, `shell_tool` and `unified_exec` enabled as
 the entropy review's form does (the filter at 903 and 1002), where the
 default worker argv (805 to 810) disables all of `codexDisabled`, and its
@@ -48,21 +51,29 @@ review's; in `packages/skeleton/src/subagent-budget.ts`
 (today's direct and workflow admissions), a re-task (a `SendMessage` or an
 `Agent` call with `resume` to a known agent, which today is admitted
 uncounted at 318 to 333) and a kit-launched worker (in a hooked Claude session the hook counts the
-`npm run worker -- review` Bash command itself as a launch, since the
-helper's child process has no session identity to charge; under Codex,
-where `CODEX_THREAD_ID` names the session and no hook fires, the helper
-calls the same admission before launching; both refuse past the cap with
-the same message), with `harness usage` printing `workers:
+literal helper invocation in a Bash command, `npm run worker -- review` or
+`node scripts/worker.mjs review` without `--dry-run`, as one launch, and
+`npm run plan -- review` or `node scripts/refute-plan.mjs review` as three,
+since the helper's child process has no session identity to charge; under
+Codex, where `CODEX_THREAD_ID` names the session and no hook fires, the
+helper calls the same admission before launching; both refuse past the cap
+with the same message), with `harness usage` printing `workers:
 launched N (claude A, codex B), re-tasked M, cap C, remaining R` and the
 countKind as today; in `packages/skeleton/src/harness-command.ts`
 (`harnessToolEffects`, 10 to 55) `SendMessage` classed as a re-task that
 the admission counts; in `packages/skeleton/src/harness-host.ts` (the
 command judgment, where WO-247-D012 left it) a new floor refusal,
-`DOTLN_WORKER_GATE_REFUSED`: a session carrying an `agent_id` (a subagent of
-this session) that runs `npm test` in any form, `node scripts/test-runner.mjs`,
+`DOTLN_WORKER_GATE_REFUSED`: a session whose `agent_id` was spawned as a
+review or refutation worker (the `dotln-worker` and `dotln-worker-fable`
+agent types, recorded at the spawn admission from the `Agent` call's
+`subagent_type`) that runs `npm test` in any form, `node scripts/test-runner.mjs`,
 `node scripts/target-gate.mjs`, `npm run test:docs` or `npm run test:full`
-is refused naming the bounded single-test form; the helper's brief carries
-the same rule for a Codex worker, whose calls are unhooked; in
+is refused naming the bounded single-test form, while a lifecycle role
+agent (`dotln-executor`, `dotln-verifier`, `dotln-reviewer`,
+`dotln-release-close`, a router's phase worker) keeps its gates, since a
+driven phase worker also carries an `agent_id`; the helper's brief carries
+the same rule for a Codex worker, whose calls are unhooked, and the helper's
+own `claude-cli-print` launch passes the worker definition's probe sentence; in
 `scripts/lib/worktree-removal.mjs` (`retainWorktreeJournals`, 85 to 131,
 which today reads one source, the harness directory
 `dispatchJournalDirectory`, through the `closedJournalEntry` name filter of
@@ -413,16 +424,20 @@ write-backs.
    the executing host returns a report that cites a file it read, recorded
    in the decisions, or the host's refusal or absence is recorded.
 2. In the harness fixture, a `SendMessage` to a known agent, an `Agent`
-   call resuming one and a Bash command `npm run worker -- review …` each
-   count one use; `harness usage` prints launches by host, re-tasks and the
-   remainder; the twenty-first use is refused.
-3. In the harness fixture, a PreToolUse input carrying an `agent_id` whose
-   command is `npm test`, `npm test -- --only resume`, `node
-   scripts/test-runner.mjs --review`, `node scripts/target-gate.mjs` or
-   `npm run test:docs` is refused with `DOTLN_WORKER_GATE_REFUSED` naming
-   the bounded single-test form; the same commands without an `agent_id`
-   are judged as today; `node scripts/harness.mjs bounded -- node --test
-   --test-name-pattern x scripts/test-x.mjs` from the subagent is admitted.
+   call resuming one and a Bash command `npm run worker -- review …` or
+   `node scripts/worker.mjs review …` each count one use, `npm run plan --
+   review` counts three, and `npm run worker -- review … --dry-run` counts
+   none; `harness usage` prints launches by host, re-tasks and the remainder;
+   the twenty-first use is refused.
+3. In the harness fixture, a PreToolUse input from an agent spawned as
+   `dotln-worker` or `dotln-worker-fable` whose command is `npm test`, `npm
+   test -- --only resume`, `node scripts/test-runner.mjs --review`, `node
+   scripts/target-gate.mjs` or `npm run test:docs` is refused with
+   `DOTLN_WORKER_GATE_REFUSED` naming the bounded single-test form; the same
+   commands from an agent spawned as `dotln-executor` (a driven phase
+   worker) and from the session itself are judged as today; `node
+   scripts/harness.mjs bounded -- node --test --test-name-pattern x
+   scripts/test-x.mjs` from the review worker is admitted.
 4. The release fixture's close moves `docs/control/local/reviews/WO-NNN/`
    into main's retained lane for the order beside the journals.
 5. A handoff line `self-review: found 19; fixed 18; recorded 1; rounds 3;
@@ -483,6 +498,12 @@ at the integrated code identity when one exists.
   executor writes the worker's returned text into the lane under the round
   and kind name (reopen: a verification finds a round's report missing
   from the lane).
+- One ladder cycle spends at least seven uses (three round-one workers, up
+  to three rechecks, one combined) against a default cap of 20 that counted
+  agents before this order; the executor records the uses each of this
+  order's cycles took, and the operator's knob is `subagentCap` in
+  `docs/control/budgets.json` (reopen: an order is refused at the cap while
+  using no more distinct agents than a comparable earlier order).
 - The map's candidate "total subagent cap across every spawn path" asks
   for admission before creation on every path; this order counts the paths
   the kit launches or the hook sees and leaves the guarantee for agents a

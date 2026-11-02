@@ -405,10 +405,12 @@ repairs; the two sentences; the kit guide and product 07.
 2. A target holding `<documentationRoot>/control/local/harness/` journals,
    a released writer directory, the temporary-root ledger and
    `.runtime/.metadata_never_index`, none declared, closes on the first
-   attempt: the journals are in main's retained lane for the order beside
-   the launchpad worktree's, the released writer, the lane's remainder, the
-   ledger, the marker and the installed snapshot are gone, and the record
-   names each; a held writer (`writer.json` or a non-empty `writer/`) stops
+   attempt: the journals and a `reviews/` lane the fixture plants are in
+   main's retained lane for the order beside the launchpad worktree's, the
+   released writer, the ledger, the marker and the installed snapshot are
+   gone, a note the fixture plants elsewhere in the lane is refused as
+   undeclared and nothing else in the lane is deleted, and the record names
+   each; a held writer (`writer.json` or a non-empty `writer/`) stops
    the close as `writer-held` before any deletion; an operator note, a stray
    `.env` and a file under `.runtime/` the kit did not write are still
    refused as undeclared.

@@ -395,7 +395,9 @@ so the consistency reviewer found two rows at `needs-review` and the
 committed revision at `cd6f922b…`; a second batch of three at that revision
 re-disposed them and corrected candidate 14's reason (the kit's default
 worker argv disables the three Codex features; only the entropy review's
-form keeps them), leaving `1e530c38…`. The dispositions:
+form keeps them), leaving `1e530c38…`; a third batch of one at `26332462…`, after
+candidate 14's text was corrected on the reviewers' finding, re-disposed
+FUP-758f92cef991b13c at its new source, leaving `a9f5d931…`. The dispositions:
 
 | Rows | Disposition |
 | --- | --- |
@@ -693,6 +695,32 @@ appended when observed.
   deny overrides a user-level allow, and the desktop computer-use server is
   named `computer-use`; the cloud-session tool names are not documented
   (WO-251's known issue stands).
+- `npm run plan -- refute` at `0522fe86` (scope `pass`: WO-251, WO-249,
+  WO-250, WO-252, WO-244, WO-246): one fresh `dotln-worker` returned
+  `aligned-with-findings` for all six orders, twenty-five known issues, no
+  observed failure, no vision contradiction and no hold (11 min 16 s;
+  198,813 tokens; 15 tool uses, all reads of the pretty-printed prompt in
+  pages). Four of its known issues were defects in the order text that
+  would have bitten at implementation, so the judgment was not filed as the
+  receipt (it is kept in the lane as `refute-result-1.json` and
+  `refute-statement-1.txt`), the orders were corrected, and a fresh refuter
+  was dispatched on the corrected subject, recorded below: WO-250's gate
+  refusal keyed on `agent_id` would have refused a driven lifecycle phase
+  worker's own complete run (now keyed on the review-worker agent types);
+  WO-252's deletion of "the rest of the lane" would have destroyed a
+  target's retained reviews lane (now every retained lane moves and any
+  other lane file is judged, never deleted); WO-252's `totalMs` as own time
+  plus children double-counted rows inside the step (now the children
+  partition the row's duration); and WO-249's retraction in `closed` had no
+  answer for a merged pull request (now record-only after the merge, naming
+  the planner's route). Taken with them: WO-250's counting covers `plan
+  review` and excludes `--dry-run`, its journal row records the pin and the
+  host's readback, and its cap collision is a known issue; WO-252's
+  criterion 8 names a fixture behavior; WO-249's FINAL line carries the
+  reviewer's own evidence and criterion 1 names the five classes; WO-244's
+  refusal set gains `git log --all` and the other ref readers; WO-246
+  states a ten-minute default bound. The remaining known issues are
+  recorded on the catalog rows after the second receipt.
 - The two tightenings after the operator's mid-turn question of 23:36Z,
   which asked whether the criteria order or any other update would hurt the
   operator (paraphrased; the words are in this session's transcript): WO-249

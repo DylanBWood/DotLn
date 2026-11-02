@@ -51634,6 +51634,13 @@
           "title": "Codex CLI 0.166.0 and the kit's disabled-feature list",
           "summary": "14. **Codex CLI 0.166.0 and the kit's disabled-feature list** (the fork's item 6 of 2026-11-01). Recorded on WO-250 and WO-244: the fork's launcher refused every tool call under a list written for 0.154.0; the kit's own argv leaves `code_mode_host`, `shell_tool` and `unified_exec` enabled (`worker-transport.ts` 903 and 1002), and WO-250 confirms it on 0.166.0 and updates `OBSERVED_CLI_VERSIONS`. Reopen when a kit-launched Codex worker reads nothing.",
           "missing": false
+        },
+        {
+          "hash": "b5f13f5e6cb5c4d0da49a7d815dd196185be27dab78f86795c37b3dc7e69d10d",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-fork-blocks-close-residue-reviews-criteria-and-desktop-opt-in-pass-recorded-2026-11-01",
+          "title": "Codex CLI 0.166.0 and the kit's disabled-feature list",
+          "summary": "14. **Codex CLI 0.166.0 and the kit's disabled-feature list** (the fork's item 6 of 2026-11-01). Recorded on WO-250 and WO-244: the fork's launcher refused every tool call under a list written for 0.154.0; the kit's default worker argv disables every `codexDisabled` feature (`worker-transport.ts` 805 to 810), the three among them, and only the entropy review's form keeps them (903 and 1002), which WO-250's helper takes and confirms on 0.166.0 while updating `OBSERVED_CLI_VERSIONS`. Reopen when a kit-launched Codex worker reads nothing.",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -51652,6 +51659,14 @@
           "reopenWhen": "A kit-launched Codex worker reads nothing after WO-250 lands.",
           "targets": [],
           "at": "2026-11-02T00:15:27.042Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Settled by the 2026-11-01 planning pass (docs/planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md) (candidate 14), with the reason corrected after the pass's three reviews: the kit's default worker argv disables every codexDisabled feature (worker-transport.ts 805 to 810), code_mode_host, shell_tool and unified_exec among them, and only the entropy review's form keeps them (903 and 1002); WO-250's helper takes the entropy form, gives a Claude print worker its read tools, confirms on Codex CLI 0.166.0 and updates OBSERVED_CLI_VERSIONS; WO-244's fixture uses the fake transport. Re-disposed at the candidate text corrected after the pass's reviews (the third batch of the 2026-11-01 pass).",
+          "reopenWhen": "A kit-launched Codex worker reads nothing after WO-250 lands.",
+          "targets": [],
+          "at": "2026-11-02T00:39:40.485Z"
         }
       ]
     },
