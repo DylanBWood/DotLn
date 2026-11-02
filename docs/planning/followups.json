@@ -44204,6 +44204,14 @@
           "reopenWhen": "The next planning pass evaluates instruction-byte optimization, or another role edit changes the measured overrun.",
           "targets": [],
           "at": "2026-11-01T09:05:04.461Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-251-D019: its condition occurred. The shared browser-verification sentence and the derived desktop-control refusal row grew every installed role root by 909 bytes: the executor reads 39,309 against the nominal 29,246 and within the accepted 40,194; the verifier 34,142 against 29,831 and within 35,221; the reviewer 36,912 against 28,884 and within 39,600; release-close 24,414 against 21,266 and within 26,410; the planner 25,222 against 24,576, a breach of 646 that WO-251-D007 boards as FUP-ac86ee429dee2947; the router 16,327 within 16,384; the refuter 24,036 with no ceiling. No ceiling moved and no duty was cut; the optimization stays with the next planning pass that evaluates instruction-byte optimization.",
+          "reopenWhen": "The next planning pass evaluates instruction-byte optimization, or another role edit changes the measured overrun.",
+          "targets": [],
+          "at": "2026-11-02T14:27:05.473Z"
         }
       ]
     },
@@ -44292,6 +44300,14 @@
           "reopenWhen": "A role grows past its pin without the oracle changing, or a ceiling breach appears in meta --check with no decision boarding it; or the next order touching scripts/test-gate-followups.mjs or re-minting the role oracle.",
           "targets": [],
           "at": "2026-11-01T09:05:04.693Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-251-D019: its condition occurred, because WO-251 touches scripts/test-gate-followups.mjs (WO-251-D011 replaced the current-role headroom assertion with the breach-to-follow-up rule) and re-mints the role oracle as wo251-role-baseline.json over wo247. The test keeps its chain walk, its effective-ceiling and acceptance checks and the historical 256-byte inequality on the earliest chained baseline; whether that inequality still carries meaning is not decided here, because the final review changes no test. Deferred to the next order that touches the file or re-mints the oracle.",
+          "reopenWhen": "A role grows past its pin without the oracle changing, or a ceiling breach appears in meta --check with no decision boarding it; or the next order touching scripts/test-gate-followups.mjs or re-minting the role oracle.",
+          "targets": [],
+          "at": "2026-11-02T14:27:05.709Z"
         }
       ]
     },
@@ -44797,6 +44813,14 @@
           "reopenWhen": "A bounded comparison demonstrates a shorter equivalent instruction set, or another required rule changes the measured overrun.",
           "targets": [],
           "at": "2026-11-01T09:05:04.578Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-251-D019: its condition occurred, because one required rule changed the measured overrun by 909 bytes in every installed role root: the executor reads 39,309 against the nominal 29,246 and within the accepted 40,194; the verifier 34,142 against 29,831 and within 35,221; the reviewer 36,912 against 28,884 and within 39,600; release-close 24,414 against 21,266 and within 26,410; the planner 25,222 against 24,576 in breach by 646 (FUP-ac86ee429dee2947); the router 16,327 within 16,384; the refuter 24,036 with no ceiling. The bounded comparison that would show a shorter equivalent instruction set is still owed; this review cut no instruction and raised no ceiling.",
+          "reopenWhen": "A bounded comparison demonstrates a shorter equivalent instruction set, or another required rule changes the measured overrun.",
+          "targets": [],
+          "at": "2026-11-02T14:27:05.592Z"
         }
       ]
     },
@@ -52179,6 +52203,45 @@
           "ref": "docs/evidence/WO-245/decisions.md#wo-245-d013",
           "title": "WO-245-D013: Make product 07 §Workflow closeout and releases' records-branch sentence state the release block as built: a target order's records branch is versionless and, where its README carries…",
           "summary": "{ \"id\": \"WO-245-D013\", \"date\": \"2026-11-02\", \"dispatch\": \"resume: final review\", \"decision\": \"FINAL-001 passes WO-245 at the unchanged code identity 9a97631541d0aa1b294fad7bf3ca87b1afc1baf3eda9699e269f5f86fdc4d49e: all seven criteria are met. Nothing is integrated, because main, origin/main and HEAD read a6665a24 and the integrate helper took in nothing. The reviewer changes no source, so completion consumes the executor's passing complete review row at this identity (recorded 2026-11-02T02:59:52.607Z: 42 suites, 112 fresh tasks, none reused) and the document row recorded after this review's last document edit; the two kit-root release-preparation cases were replayed under the bounded wrappe",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-ac86ee429dee2947",
+      "key": "decision:docs/evidence/WO-251/decisions.md#wo-251-d007",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "ef39ceb659753d6d8c3de55fe004aa6e2ac62fd757d3b5544cb3cb86d1b62915",
+          "ref": "docs/evidence/WO-251/decisions.md#wo-251-d007",
+          "title": "WO-251-D007: Optimize the planner's installed cold start with equivalent usefulness: WO-251 measures 25222 bytes against the unchanged 24576-byte ceiling, a 646-byte breach. Inspect shared guidance…",
+          "summary": "{ \"id\": \"WO-251-D007\", \"date\": \"2026-11-02\", \"dispatch\": \"resume: next\", \"decision\": \"Preserve all role duties, mint a linked WO-251 role oracle and record the planner's 646-byte cold-start breach as an optimization follow-up with equivalent usefulness, keeping every ceiling unchanged.\", \"evidence\": [ \"docs/product/07-execution-guide.md: Discipline, current cold-start route under the operator's 2026-10-05 direction; the 2026-09-17 acceptance route is retired\", \"scripts/lib/process-budget.mjs measureColdStarts: installed activation roots\", \"harnessInstallation plus composeHarnessInstruction: projected current roots\", \"scripts/test-process-debt.mjs role oracle walk and scripts/test-gate-follow",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "The current policy requires preserving the needed boundary and boarding equivalent-usefulness optimization; broader planner restructuring exceeds this bounded desktop-control change.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing planner cold start below the unchanged ceiling.",
+          "targets": [],
+          "at": "2026-11-02T02:03:52.638Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-4763c82de6324631",
+      "key": "decision:docs/evidence/WO-251/decisions.md#wo-251-d017",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "05d9d0789732c7ffc83288fe50f0ef4c73e9e198816390005781f92c38d52173",
+          "ref": "docs/evidence/WO-251/decisions.md#wo-251-d017",
+          "title": "WO-251-D017: Make the hook and the host deny the same names for each listed desktop skill. Emit Skill(skill:<name>) beside the exact and argument rules. Have isDesktopControlTool classify every name…",
+          "summary": "{ \"id\": \"WO-251-D017\", \"date\": \"2026-11-02\", \"dispatch\": \"resume: verify\", \"decision\": \"Board the difference in skill names between the hook and the host rules as a follow-up. Both layers refuse the declared skill selections; alias, display-name and plugin-form invocations fall outside criterion 1's list.\", \"evidence\": [ \"docs/verifications/WO-251/VER-001.md: hook probe of Skill selections inside and outside the declared list under an absent configuration, a configuration without features and a false election\", \"https://code.claude.com/docs/en/skills, Restrict Claude's skill access, read through Context7 on 2026-11-02: Skill(anthropic-skills:<name>) also blocks that skill when Claude Desktop",
           "missing": false
         }
       ],
