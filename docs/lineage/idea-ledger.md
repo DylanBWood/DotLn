@@ -40,6 +40,33 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
+## 2026-11-01 — Planning pass: the fork's two blocks of 2026-11-01, release close owning what the kit wrote, reviews that converge and count, criteria that judge the product with the off-ramps the operator can reverse, and desktop control as an opt-in (WO-249 to WO-252; WO-244, WO-246, WO-241 and WO-083 amended); registration only; the record is the planning document
+
+Dispatch: `planning: standard planning pass +` with fourteen items: the
+DotLn-Enterprise-Starter fork's two blocks of 2026-11-01 (eight and three
+items, on starter v0.105.0), the operator's observations on WO-247's
+verifier, the release close's symlink message, the prune handed to the
+operator, the reviewers' loop and their accounting, waived criteria, the
+work instance's first steps and a session that took over the desktop, and
+two items the operator recorded without asking for action, sent at
+2026-11-01T22:35:46.415Z (hook time) in Claude Code 2.1.316 (Fable 5.1 at
+max, operator-selected), captured verbatim in
+`docs/intake/notes/planning-fork-blocks-close-residue-reviews-criteria-and-desktop-opt-in-2026-11-01.md`
+(SHA-256 `65b3db5f78aa7bdba95e94ce62e12015afbc144e058b5699767040e37b22d0a2`).
+The pass files WO-249 (criteria judge the product: the defect record, the
+retraction, the reopened handoff, the fail that names its cause, the
+criteria lint), WO-250 (reviews converge and every worker counts: the
+ladder, the review helper on either host, the counted re-tasks and kit
+launches, the worker gate refusal), WO-251 (desktop control is opt-in) and
+WO-252 (release close owns what the kit wrote: the disposable glob, the
+kit's residue, the blocker class and the removal's timings, the orphan
+root, the prune as the role's), amends WO-244, WO-246, WO-241 and WO-083,
+retires WO-240 (v0.105.0), WO-247 (v0.106.0) and WO-237 (v0.107.0) from the
+sequence, disposes the eleven untriaged rows and the rows the three closes
+settled, answers the fork's eleven items, and records the operator's items
+12 and 13 as not acted on at the operator's word. Record:
+[the planning document](../planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md).
+
 ## 2026-10-31 — Planning pass: the kit's guide leaves the seeded README, the launchpad's own pull requests, WO-192's immediate follow-up, the pull-request table and the reviewed planning route (WO-245 to WO-248; WO-237, WO-238, WO-241 to WO-244 and WO-207 amended); registration only; the record is the planning document
 
 Dispatch: `planning: standard planning pass +` with the operator's README

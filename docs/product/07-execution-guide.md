@@ -423,7 +423,7 @@ table includes the shared goal card and the refuter's separate subject boundary.
    | `resume: verify`        | `npm run resume -- verify`                                                                                                                                                                                                 | verify, writing the exact `VER-NNN` path it allocates                                                                                                                                                                                                                    |
    | `resume: final review`  | `npm run resume -- final-review`                                                                                                                                                                                           | review into the allocated `FINAL-NNN`; on pass, record it, commit the reviewed state, push only the WO branch, and open its PR                                                                                                                                           |
    | `resume: release close` | in a main-checkout session, dispatch `npm run resume -- release-close --work-order WO-NNN`, then run its printed `node <main>/scripts/release.mjs close WO-NNN --publish` helper there (`worktree publish` prints it too); a subject dispatch prints this route; use main's copy after subject removal | update main, consume reviewer gate, publish validated tag and Release, attempt cleanup, refresh each declared export sibling through its recorded checkout with one fast-forward commit to that sibling's main carrying core's tag name and the sibling's Release, and write `docs/control/local/retained/WO-NNN/release-close.json`; for a registered target order, fetch and fast-forward the clone's base, delete declared disposable output, remove the order's literal host rules, and tag and release the target only under `release.policy: declared`; rerun from updated main if Release creation fails or a starter refresh refuses |
-   | the operator accepts criterion N unmet (words captured) | `npm run resume -- waive N --reason <text> --capture <intake file> --capture-hash sha256:<digest> <actor-flags>` from the operator's terminal, a verifier or a reviewer session (WO-158) | the report records `**Criterion N:** unmet, waived by <ordinal>`; the order's executor never records a waiver |
+   | the operator accepts criterion N unmet (words captured) | `npm run resume -- waive N --reason <text> --capture <intake file> --capture-hash sha256:<digest> <actor-flags>` from the operator's terminal, a verifier or a reviewer session (WO-158) | the report records `**Criterion N:** unmet, waived by <ordinal>`; the order's executor never records a waiver; a waiver is recorded only from the operator's words asking for that criterion's waiver, never from words that call a criterion wrong or authorize a commit or a pull request (the fork's WO-021, where a Codex verifier recorded one from such words and the segment was repaired by hand; the 2026-11-01 pass); WO-249 adds `retract` for a waiver recorded wrongly, `defect` for a criterion no candidate can meet and `reopen-handoff` for an order the operator widened after its handoff |
    | the operator withdraws the order (words captured) | `npm run resume -- withdraw --disposition failed\|superseded\|abandoned --reason <text> --capture <intake file> --capture-hash sha256:<digest> <actor-flags>` (WO-158) | stop: `withdrawn` is terminal, and only `npm run resume -- activate` of a changed revision with a new dated `**Reactivation (YYYY-MM-DD):**` note leaves it |
    | a recorded attestation, report path or checkpoint is wrong, or a recorded passing final review carries no product gate | `npm run resume -- correct <ordinal\|report-path> --set <field>=<value> --reason <text> <actor-flags>` (WO-158); `--set productGate=<evidenceRef>` binds a complete passing `npm test` row whose code identity is the one the pass recorded in its checkpoint and still the working tree's, once, and is the only correction legal in `closed` (WO-115) | never correct a verdict or edit a filed report; a wrong verdict takes a later report; a changed subject takes a fresh final review; publication and release close read the bound gate from the committed correction |
    | `operator override: off` | nothing in Claude, whose hook appends `OperatorOverrideRecorded`; otherwise the printed `npm run resume -- override-record ...` command (WO-158) | record what the override changed in the order's decisions |
@@ -1065,6 +1065,12 @@ recovery route, with fresh
 ownership checks under the host lane lock; a live
 gate is named and retained. A host denial is recorded and cleanup stays on the
 release close's retry path. No command changes host permissions to gain access.
+A role that needs expired or retained roots removed runs `harness prune
+--apply` itself under host permissions and records the receipt; it hands
+the printed command to the operator only after a recorded host denial of
+it, the fallback the release-close text keeps for its publish (the
+operator's item 5 of 2026-11-01; WO-252 carries the sentence into every
+role).
 
 `analysis:` interrupts the current routine and opens operator-directed diagnosis.
 The agent explains the observed state, constraints and next options, and awaits
@@ -1870,7 +1876,28 @@ before and after, in its Cost line and its decisions, from a close's step
 timings or `plan conditions`; a cost that is not measured is `unknown`,
 never assumed cheap ([the 2026-10-28
 pass](../planning/document-contract-and-release-close-2026-10-28.md);
-WO-236-D025). A release's Read before
+WO-236-D025). Five more [[the 2026-11-01 pass](../planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md),
+the operator's item 7 of that day]: a criterion states a behavior
+observable on the uncommitted candidate by a named command; a count, a
+ceiling, a cost, a duration or a token figure is a Cost line or a decisions
+record and never a criterion's subject (WO-173's criterion 5 and WO-197's
+criterion 2 were waived on a byte figure and a timing ceiling; the fork's
+WO-022 carried a token-spend stop its executor asked the operator to lift);
+a judgment the kit makes at a later phase, the final review's clean subject
+or the release close's clean and undeclared-material judgments, stays with
+that phase, and a clause that reads `HEAD` or a commit range for the
+order's own changes before the final review's commit checks nothing (the
+fork's WO-021 criterion 9 failed its VER-001 on 129 uncommitted paths); a
+criterion that reads data names where it exists at the base or which step
+creates it (WO-197's criterion 1 read per-case timing that began on
+2026-10-05); a criterion that depends on a host, a service or an operator
+account names its fallback evidence (WO-192's criterion 17); and the
+criteria are read against each other and the non-goals for a pair that
+cannot both hold. These are the five classes by which WO-249 lets a
+verifier record a criterion defective (bookkeeping, later-phase,
+absent-input, host-behavior, contradiction), and its `index --check` lint
+advises on their shapes; `plan failures` counts the records, and a pass
+that reads one re-reads this list. A release's Read before
 upgrading is also screened: it asks an instance to read, never to edit a
 closed record by hand. A new or tightened kit check must admit records the
 previous release admitted, or the release is held; the `instance-history`
@@ -2754,6 +2781,24 @@ next repair, if one happens, fixes boarded follow-ups in the declared
 surfaces within the Boy Scout bound. The verifier writes evidence and its
 immutable report, never the implementation it judges.
 
+A blocking finding names the criterion it fails and the supported input
+that reproduces it, or the behavior `main` had and the probe that shows
+the change broke it. An input the verifier constructed outside the
+supported vocabulary, a hardening wish or a design preference is a
+follow-up: WO-247's verifier announced that an injected status string would
+block criterion 1 before any supported input reproduced it, corrected the
+classification before filing and boarded the hardening (D014), and the
+operator's direction of 2026-11-01 is that more findings take that funnel
+and fewer block. A criterion no candidate can meet because of how it was
+written is not a failure of the product: WO-249 gives the verifier `resume
+defect` with the five classes of §Operator-opened planning pass, the final
+reviewer's confirmation on the same line and the operator's `retract`, and
+makes a `fail` name an unmet criterion or a blocking finding with its
+basis. Until it lands, the verifier records such a criterion unmet with its
+class named in the report, the operator's waiver is the only route past it,
+and no role records a waiver from words that did not ask for one
+[[the 2026-11-01 pass](../planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md)].
+
 For a design defect in the declared surfaces, the verifier names the repair
 rule itself; it is blocking only when a criterion is unmet or a regression
 is reproduced. Reviewers and verifiers judge confinement and security
@@ -2832,7 +2877,25 @@ and finish their rechecks before the next complete run. This includes repairs
 after a failed gate; reuse the same workers within the execution or repair. All three
 reviewers must finish before the complete run starts; resolve their findings
 and return material changes for recheck before that run. Do not restart them
-after a successful complete run. The executor owns the final handoff and
+after a successful complete run. The restart rule has an end [[the 2026-11-01 pass](../planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md),
+the operator's items 6 and 6.a of that day; WO-250 carries it into the role
+text, and until it lands the executor reads this sentence over the restart
+sentence]: round one is the three reviewers over the whole diff; round two
+is each reviewer whose findings were fixed rechecking those fixes and
+nothing else, a new finding admitted only when it breaks a criterion or a
+behavior `main` had and otherwise recorded; round three, when round two's
+fixes changed code again, is one combined worker carrying the three briefs
+over the delta since round two's reviewed tree; after it no reviewer runs
+in that execution or repair, the executor judges the remaining delta, and
+the `self-review:` line names the rounds and the unreviewed lines with the
+reason. A round whose preceding fixes touch only comments, documentation,
+formatting, test names or regenerated files is skipped and the line says
+so; a repair under fifty changed source lines starts at round three. A
+recheck may resume the same worker, and every launch and re-task counts
+against `subagentCap`, on Codex by the session's own count. WO-237 ran
+four recheck rounds (19, 13, 4 and 12 distinct findings) and a fifth from
+one reviewer before the operator stopped it; the rounds found defects, and
+the loop, not the review, is what this ends. The executor owns the final handoff and
 write-backs before the document check. A list
 marker, balanced inline emphasis or code wrappers may decorate the line;
 case and a parenthetical worker label are tolerated. The three integer counts
@@ -3530,7 +3593,18 @@ and generated evidence, including fixtures, manifests and installed guidance.
   without a containing root declared by its active role or equipped support
   and admitted through the compiled authority envelope; and a complete gate,
   bounded probe or worker launch past the dispatch bound without recorded
-  contextual operator authorization. Root kinds are system
+  contextual operator authorization. WO-251 adds the refusal of the
+  desktop-control tools and of the operator's own browser sessions (Claude
+  in Chrome, the desktop app's browser pane) unless `dotln.config.json`
+  elects `features.desktop-control`, paired with the same servers in the
+  emitted `permissions.deny`, and WO-250 the refusal of a gate launched by a review
+  worker and the counting of re-tasks and kit-launched workers as uses;
+  until they land, browser verification of a web surface is the Playwright
+  MCP's accessibility snapshot, screenshot and image read, desktop control
+  is never used without the instance's election and the operator's words in
+  the session, and a review worker probes with single tests under the
+  bounded wrapper and starts no gate [[the 2026-11-01 pass](../planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md),
+  the operator's items 6.b and 10 of that day]. Root kinds are system
   temporary, DotLn session scratch, the host-printed scratchpad, main's ignored
   intake, an operator-named absolute root, the order's recorded worktrees and
   the registered target worktree; the manifest names declaration and

@@ -19,9 +19,10 @@ WO-226 records) the labels `gpt`, `fable` and `reviewed` and the phrase
 naming the other host stops the pass and says so), the blindness duties and
 the synthesis duties; in the hook's command judgment, one refusal active
 while the session's dispatch is a paired pass: a command that lists
-branches or pull requests (`git branch -a`, `git branch -r`, `gh pr list`,
-`gh pr view`, `gh pr diff`), fetches, or names a `planning/` ref other than
-the session's own branch, refused naming `planning: synth pass` and
+branches, refs or pull requests (`git branch -a`, `git branch -r`, `git log
+--all`, `git for-each-ref`, `git show-ref`, `git ls-remote`, `gh pr list`,
+`gh pr view`, `gh pr diff`, `gh api`), fetches, or names a `planning/` ref
+other than the session's own branch, refused naming `planning: synth pass` and
 `operator override:`; in `scripts/refute-plan.mjs`, `plan start` writing
 the pair record (the date, the label, the branch) into the planning
 document's dispatch section and the ignored local lane, and `plan
@@ -34,7 +35,9 @@ as `packages/skeleton/src/loadouts/contributor.ts` defines them for the
 executor) as Codex workers at the Codex pin through the `codex exec` form
 the entropy review's `codex-cli-exec` transport uses
 (`scripts/lib/entropy-review.mjs` 654; `codexExecArgv`,
-`packages/skeleton/src/worker-transport.ts` 364), read-only against the
+`packages/skeleton/src/worker-transport.ts` 364), through WO-250's `npm run
+worker -- review --subject planning` for each kind (WO-250 lands before
+this order), read-only against the
 committed subject, with canonical briefs rendered from the role text and
 the subject's changed files, the three reports written to the ignored lane
 and `review: <kind> found N` printed per reviewer with its elapsed time; the
@@ -85,7 +88,9 @@ Opaque identifier, not a priority. Clean-room screen: no stop condition.
 dispatch reading this order extends with labels); WO-139 (closed: the
 session journal's dispatch row the `passKind` and `hostLabel` join);
 WO-041 (closed: the refutation receipt the synthesis pass files on the
-base).
+base); WO-250 (the review helper `plan review` calls, with its planning
+lane and argv, lands before this order); WO-249 (the five defect classes
+the criteria adversary's planning brief carries land before this order).
 
 <!-- dotln-dependencies:start -->
 [
@@ -103,6 +108,16 @@ base).
     "workOrderId": "WO-041",
     "relation": "satisfied-by-close",
     "reason": "the receipt helper the synthesis pass files its new receipt with"
+  },
+  {
+    "workOrderId": "WO-250",
+    "relation": "satisfied-by-close",
+    "reason": "the review helper, its planning lane and its argv that plan review calls"
+  },
+  {
+    "workOrderId": "WO-249",
+    "relation": "satisfied-by-close",
+    "reason": "the five defect classes the criteria adversary's planning brief carries"
   }
 ]
 <!-- dotln-dependencies:end -->
@@ -256,14 +271,20 @@ request with a comment that says where its ideas went.
    receipt already stands (the continuing-work gate reads the newer
    receipt). Check: `npm test -- --only plan-refutation`.
 7. `scripts/refute-plan.mjs` (`review`): refuses a workspace that differs
-   from the committed subject; renders the three canonical briefs from the
-   role text's three reviewer definitions and the subject's changed files
-   (`git diff main...HEAD --stat`); launches the three Codex workers through
-   the entropy review's `codex exec` form, read-only, in parallel; writes
-   each report to `docs/control/local/plan/review-<date>-<kind>.md` and
-   prints `review: <kind> found N` with the worker's elapsed time, or that
-   the worker returned no report; a fake transport for the fixture as the
-   entropy review's. Check: `npm test -- --only plan-refutation`.
+   from the committed subject; for each of the three kinds calls WO-250's
+   helper (`npm run worker -- review --kind <kind> --host codex --subject
+   planning --since main`: the canonical brief rendered from the role
+   text's three reviewer definitions, the branch's planning document and
+   its changed orders, the report in the helper's planning lane
+   `docs/control/local/reviews/planning-<date>/`, the `WorkerLaunched` row
+   and the counted use) in parallel; the criteria adversary's planning
+   brief appends the criterion screens of product 07 §Operator-opened
+   planning pass, WO-249's five defect classes among them, so a reviewer of
+   orders never proposes a bookkeeping or later-phase clause (the fork's WO-021 criterion 9, which failed its
+   VER-001 on 129 uncommitted paths, came from a criteria adversary's
+   finding); prints `review: <kind> found N` with each worker's elapsed
+   time, or that a worker returned no report; the fake transport serves the
+   fixture. Check: `npm test -- --only plan-refutation`.
 8. Write-backs: product 07 §Paired passes and the synthesis pass (stated as
    built: the labels, the refusal and its exits, the pair record, the
    helpers, the closing comment, the reviewed route); the kit guide (`docs/KIT.md` once WO-245 merges, otherwise
@@ -352,7 +373,26 @@ row at the integrated code identity when one exists.
   primitive; their reports are the pass's self-review and not receipts, and
   the refutation receipt stays the pass's immutable record (reopen: the
   operator wants the reviews filed as receipts, or a pass runs the route
-  without a Codex binary on the host).
+  without a Codex binary on the host). The launch is WO-250's helper, which
+  counts each worker against the cap and lands before this order; the
+  2026-10-31 pass and the fork's first pass of 2026-11-01 each ran the route
+  with a launcher of their own in an ignored lane, the form this order
+  replaces (reopen: a pass runs the route with a launcher outside the kit
+  after this order lands).
+- The fork's item 6 of 2026-11-01: under a disabled-feature list written
+  for Codex CLI 0.154.0, CLI 0.166.0 answered every tool call with "code-mode
+  host is disabled"; the kit's default worker argv disables the three
+  features and only the entropy review's form keeps them, which WO-250's
+  helper takes and confirms on 0.166.0, while this order's fixture uses the
+  fake transport (reopen: `plan review` on a real host returns no report
+  from every worker).
+- A host label always means a paired pass, so a single pass the operator
+  wants on a named host runs unlabelled; and the paired refusal covers
+  every fetch, so a paired pass that needs current `main` takes `operator
+  override:` for that one read (reopen: an override is recorded in a
+  labelled pass that had no partner, or to fetch `origin main` inside a
+  paired pass). Once WO-251 renders the refusals sentence from a list, this
+  order adds its paired-pass refusal's row.
 - The closing comment on the losing pull request is the one outward effect
   this order adds; it carries no attribution and names only the synthesis
   pass and the base pull request (reopen: the operator wants the losing
