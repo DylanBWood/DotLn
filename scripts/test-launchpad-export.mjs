@@ -86,6 +86,56 @@ import {
   root,
 } from "./lib/launchpad-fixture.mjs";
 
+test("[document] the kit owns its complete guide and the front page is a pinned instance seed", () => {
+  const guide = readFileSync(join(kit, "docs/KIT.md"), "utf8");
+  assert.equal(
+    manifestOf(kit).files.find(({ path }) => path === "docs/KIT.md")?.sha256,
+    sha256(guide),
+  );
+  assert.deepEqual(
+    [...guide.matchAll(/^## (.+)$/gm)].map((match) => match[1]),
+    [
+      "First steps",
+      "Planning in this instance",
+      "Releases in this instance",
+      "What runs here, and what does not",
+      "Attestations",
+      "Kit files and instance files",
+      "Taking upstream updates",
+      "Opting in to instance actions",
+      "Owned cleanup and retention",
+      "Document quality",
+      "License",
+    ],
+  );
+  assert.doesNotMatch(guide, /DOTLN-RELEASE-(?:BEGIN|END)/u);
+  // Changing this seed rewrites each unedited starter copy once. Name that
+  // migration in the changing order's decisions and release's Read before upgrading.
+  assert.equal(
+    sha256(readFileSync(join(repository, "scripts/kit/README.client.md"))),
+    "0f96422ceaf8e572acb8ad3a1a52d431b248460e0c10d17116817be6d54766c3",
+  );
+  const seed = readFileSync(join(kit, "README.md"), "utf8");
+  assert.equal(
+    seed,
+    readFileSync(join(kit, "scripts/kit/README.client.md"), "utf8"),
+  );
+  assert.match(seed, /^# DotLn-Enterprise-Starter$/m);
+  assert.match(seed, /\[kit guide\]\(docs\/KIT\.md\)/u);
+  assert.equal(
+    seed
+      .split("<!-- DOTLN-RELEASE-BEGIN -->")[1]
+      .split("<!-- DOTLN-RELEASE-END -->")[0]
+      .trim(),
+    "This source prepares DotLn-Enterprise-Starter `v0.1.0`.",
+  );
+  assert.ok(!manifestOf(kit).files.some(({ path }) => path === "README.md"));
+  assert.match(
+    readFileSync(join(kit, "docs/README.md"), "utf8"),
+    /`docs\/KIT\.md`/u,
+  );
+});
+
 test("WO-074 criterion 1: a destination that is not an empty directory is refused before any write", () => {
   const occupied = join(scratch, "occupied");
   mkdirSync(occupied);
@@ -244,6 +294,7 @@ test("WO-074 criterion 1: the scripts are byte-identical to UPSTREAM.md's commit
     "docs/product/07-execution-guide.md",
     "docs/product/08-publication-compiler.md",
     "docs/PLAYBOOK.md",
+    "docs/KIT.md",
     "docs/publication/implementation-overlay-template.md",
     "package.json",
     "package-lock.json",
@@ -884,21 +935,21 @@ test("the exported instance checks runtime, coordination records and explicit di
   } finally {
     rmSync(record, { force: true });
   }
-  const readme = readFileSync(join(destination, "README.md"), "utf8")
+  const guide = readFileSync(join(destination, "docs/KIT.md"), "utf8")
     .split("## What runs here, and what does not")[1]
     .split("## Attestations")[0];
   for (const row of suites.filter((row) => row.kit))
     assert.ok(
-      readme.includes(
+      guide.includes(
         `| \`${row.name}\` | ${row.kit.slice("core-only: ".length)} |`,
       ),
-      `README omission: ${row.name}`,
+      `Kit guide omission: ${row.name}`,
     );
   for (const { command, listedSuites } of observed) {
     const declared = `- \`${command}\`: ${listedSuites.map((name) => `\`${name}\``).join(", ")}.`;
     assert.ok(
-      readme.includes(declared),
-      `README selection differs: ${command}`,
+      guide.includes(declared),
+      `Kit guide selection differs: ${command}`,
     );
   }
   const unavailableSelections = [];
@@ -1303,10 +1354,10 @@ test("WO-074 criteria 1, 2 and 5: without package source the export activates it
       accountLabel: undefined,
     },
   );
-  const readme = readFileSync(join(kit, "README.md"), "utf8");
-  assert.match(readme, /a fresh fork has none/u);
-  assert.match(readme, /has no matching discovery observation/u);
-  assert.match(readme, /until this instance records its own discovery/u);
+  const guide = readFileSync(join(kit, "docs/KIT.md"), "utf8");
+  assert.match(guide, /a fresh fork has none/u);
+  assert.match(guide, /has no matching discovery observation/u);
+  assert.match(guide, /until this instance records its own discovery/u);
   // A discovery record that lacks the attested version still advises; one
   // that holds it, observed with the effort, does not.
   mkdirSync(join(kit, "docs/discovery"), { recursive: true });
@@ -1470,15 +1521,31 @@ test("WO-074 criterion 3: the local-terms check runs over every exported text an
       /local-terms list line 1: a mode marker with no term/u,
     );
     assert.ok(!existsSync(malformedTarget), "a refused export writes nothing");
-    // A match: refused by file and line, the term never printed.
-    writeFileSync(termsPath, "attestations\n");
-    const matchTarget = join(scratch, "kit-match");
-    const matched = runExport(matchTarget);
-    assert.equal(matched.status, 1);
-    assert.match(matched.stderr, /local-terms list present; refused \[/u);
-    assert.match(matched.stderr, /"file":"README\.md","line":\d+/u);
-    assert.doesNotMatch(matched.stderr + matched.stdout, /attestations/u);
-    assert.ok(!existsSync(matchTarget), "a refused export writes nothing");
+    // Both kit guidance and the instance seed are screened. Report the file
+    // and line of a match without printing the term or writing the export.
+    for (const [name, term, location, redaction] of [
+      [
+        "guide",
+        "Attestations",
+        /"file":"docs\/KIT\.md","line":\d+/u,
+        /attestations/iu,
+      ],
+      [
+        "seed",
+        "This source prepares",
+        /"file":"README\.md","line":\d+/u,
+        /this\s*source\s*prepares/iu,
+      ],
+    ]) {
+      writeFileSync(termsPath, `${term}\n`);
+      const matchTarget = join(scratch, `kit-match-${name}`);
+      const matched = runExport(matchTarget);
+      assert.equal(matched.status, 1);
+      assert.match(matched.stderr, /local-terms list present; refused \[/u);
+      assert.match(matched.stderr, location);
+      assert.doesNotMatch(matched.stderr + matched.stdout, redaction);
+      assert.ok(!existsSync(matchTarget), "a refused export writes nothing");
+    }
     // A term in the emitted role skills is refused before any write too, and
     // the refusal names a bundle path: the bundle is screened at the bytes
     // the export's emit reproduces.
@@ -1970,7 +2037,7 @@ test("WO-075 design: a fresh clone of the committed export lacks the ignored sna
     /Cannot find package '@dotln\/|ERR_MODULE_NOT_FOUND/u,
   );
   linkWarmInstall(clone);
-  // The README's order, commit then install, leaves the tree clean: the bin
+  // The kit guide's order, commit then install, leaves the tree clean: the bin
   // target npm makes executable was written executable by the export.
   assert.equal(git(clone, ["status", "--porcelain"]).stdout, "");
   const before = harness(clone, "check");
@@ -2269,24 +2336,19 @@ test("WO-226 a fast-forwarded export restores its selected runtime for recovery,
           .map((line) => ({ path, line })),
       );
     assert.deepEqual([...new Set(buildAdvice.map((row) => row.path))].sort(), [
-      "scripts/kit/README.client.md",
       "scripts/lib/harness-runtime.mjs",
       "scripts/release.mjs",
       "scripts/resume.mjs",
     ]);
     for (const row of buildAdvice.filter(
-      (row) =>
-        ![
-          "scripts/kit/README.client.md",
-          "scripts/lib/harness-runtime.mjs",
-        ].includes(row.path),
+      (row) => row.path !== "scripts/lib/harness-runtime.mjs",
     ))
       assert.match(
         row.line,
         /isKit(?:Root|Worktree).*node scripts\/bootstrap\.mjs.*npm run build/,
       );
     assert.match(
-      readFileSync(join(destination, "scripts/kit/README.client.md"), "utf8"),
+      readFileSync(join(destination, "docs/KIT.md"), "utf8"),
       /npm run build[\s\S]*carried runtime is the build; nothing to compile[\s\S]*writes nothing/u,
     );
     assert.match(

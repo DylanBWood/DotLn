@@ -247,6 +247,7 @@ export const KIT_FILES = Object.freeze({
   // export resolves every installed Read directive.
   documents: Object.freeze([
     ["docs", "PLAYBOOK.md"],
+    ["docs", "KIT.md"],
     ["product", "07-execution-guide.md"],
     ["product", "08-publication-compiler.md"],
     ["publication", "implementation-overlay-template.md"],
@@ -1095,7 +1096,7 @@ export async function prepareKit({
       "The document roots of this launchpad use the default layout; its instance-owned",
       "`dotln.config.json` can override them. Each root's README states its convention; `UPSTREAM.md` at the",
       "repository root names the kit's commit and the upstream documents the kit",
-      "points to.",
+      `points to. \`${defaultDocRelative("docs", "KIT.md")}\` is the kit's guide to first steps, planning, releases and updates.`,
       "",
       ...Object.keys(SEEDED_ROOTS).map(
         (key) => `- \`${defaultDocRelative(key)}/\``,

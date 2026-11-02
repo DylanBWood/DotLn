@@ -305,7 +305,7 @@ test("historical starter floors retain provenance through navigation migration",
     "-qam",
     "migrate navigation and update floor",
   ]);
-  const plans = planStarterSeeds({
+  const { rewrites: plans } = planStarterSeeds({
     main,
     head: "HEAD",
     checkout,

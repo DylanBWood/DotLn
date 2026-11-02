@@ -208,7 +208,7 @@ then hashed in the manifest, so the kit's scripts, the `resume` and
 with no package source and no npm publication; a `package.json` with core's
 script names and exactly pinned development dependencies, a lockfile pruned to
 them and the workspaces `KIT_WORKSPACES` names (the Beacon workspace and
-each runtime package), the execution guide, the publication compiler
+each runtime package), the kit guide at `docs/KIT.md`, the execution guide, the publication compiler
 and the operator playbook whole, the implementation-overlay template,
 `docs/releases/tag-manifest.template.json`, the kit templates, `LICENSE`, `LICENSE-docs` and `NOTICE` (or `LICENSE-PENDING.md`
 under `--license none`); an instance's `docs/LEGAL.md` pins are judged only
@@ -222,12 +222,21 @@ path, as core's do, and whose every surface but the operating contract is
 manifest-listed at the bytes core's compiled packages predicted before the
 first write. Instance seeds, the operating contract with its hand-written
 floor and generated blocks, the sanitized harness-security template, the
-client README, the pre-drafted first order, the proposed sequence and one
-README per seeded document root, are written once and never manifest-listed,
-so a later kit update replaces listed files and touches nothing else; WO-245
-moves the client README's guide into `docs/KIT.md`, a listed kit file, and
-leaves `README.md` a seed the starter refresh rewrites only while it still
-equals a prior rendering ([the 2026-10-31 pass](../planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md)).
+short instance `README.md`, the pre-drafted first order, the proposed sequence
+and one README per seeded document root, are written once and never
+manifest-listed. A kit update replaces listed files and touches nothing else.
+The complete kit guide lives at `docs/KIT.md`, a manifest-listed kit file.
+The starter refresh rewrites its `README.md` only while it equals a proven
+prior exported rendering; it keeps a customized, missing or non-regular copy,
+reports the reason in `keptSeeds`, and refuses nothing on that page's account.
+Other seeds retain their refresh refusals. The short README seed has a pinned
+digest: a deliberate change names the one rewrite of unedited starter copies
+in its decisions and release's Read before upgrading. A fork that edited its
+README before the guide migration may meet one Git merge conflict; it keeps
+its own page. In a kit root the README release block is optional: absent
+markers mean no claim is written and the release check reports `not carried`;
+any markers present retain all validation, and core still requires its block
+([decision](../evidence/WO-245/decisions.md#wo-245-d002)).
 Only
 the local-terms list is the launchpad's (`DOTLN_LAUNCHPAD` or the ascent):
 the export runs that check over every exported text, the predicted bundle
@@ -270,7 +279,7 @@ distinguishing unchanged kit paths and reporting incompatible manual actions
 individually; it can be rolled back to the prior kit state (WO-207), and takes a channel:
 machinery with the build pinned at the prior compiled definitions, both
 together, or the build alone (WO-207); editing a kit file inside an instance
-is choosing the true-fork path, which the client README states.
+is choosing the true-fork path, which the kit guide states.
 
 Playwright and Context7 are optional environment adapters. The operator reports
 adding MCP access and Context7 integrations for the two local coding harnesses;

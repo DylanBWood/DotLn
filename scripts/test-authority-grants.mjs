@@ -48,7 +48,7 @@ const root = fileURLToPath(new URL("../", import.meta.url));
 
 /** What the committed registry may hold. Core adds no personal authority. An
  * exported instance commits the operator grant its registration order writes
- * (README § First steps, step 4), and every committed grant must still come
+ * (docs/KIT.md § First steps, step 4), and every committed grant must still come
  * from the operator or a registered repository. Returns the offending ids. */
 const committedGrantViolations = (checkout) =>
   normalizeAuthorityGrants(

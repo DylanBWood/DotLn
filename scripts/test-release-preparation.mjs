@@ -363,6 +363,58 @@ test("a placeholder heading is assigned the next version and its decision keeps 
   }
 });
 
+test("a kit front page without markers stays untouched through assignment, retiming and a no-op", (t) => {
+  const f = fixture({ target: null, phase: "active" });
+  t.after(f.dispose);
+  writeFileSync(join(f.root, "KIT-MANIFEST.json"), "{}\n");
+  const page =
+    "# Our project\n\nOur introduction, with historical v0.1.0 text.\n";
+  writeFileSync(join(f.root, "README.md"), page);
+  for (const [latest, target] of [
+    ["v0.13.2", "v0.13.3"],
+    ["v0.13.3", "v0.13.4"],
+  ]) {
+    const plan = f.plan(latest);
+    assert.equal(plan.target, target);
+    assert.ok(
+      !plan.edits.some(({ path }) => path === join(f.root, "README.md")),
+    );
+    applyReleasePreparation(plan);
+    assert.equal(readFileSync(join(f.root, "README.md"), "utf8"), page);
+    assert.match(
+      readFileSync(join(f.root, f.state.workOrderPath), "utf8").split("\n")[0],
+      new RegExp(target.replaceAll(".", "\\.")),
+    );
+    const decision = decisionsIn(
+      readFileSync(join(f.root, decisionsPath), "utf8"),
+    ).at(-1);
+    assert.equal(decision.readmeClaim, "not carried");
+    assert.match(decision.decision, /README claim not carried/);
+    assert.deepEqual(f.plan(latest).edits, []);
+  }
+  // A manifest in a source checkout does not waive core's block requirement.
+  writeFileSync(join(f.root, "packages/skeleton/tsconfig.json"), "{}\n");
+  assert.throws(() => f.plan(), /one exact ordered README release block/);
+});
+
+test("kit roots retain every release-marker refusal", (t) => {
+  const f = fixture();
+  t.after(f.dispose);
+  writeFileSync(join(f.root, "KIT-MANIFEST.json"), "{}\n");
+  for (const page of [
+    "<!-- DOTLN-RELEASE-BEGIN -->\n",
+    "<!-- DOTLN-RELEASE-END -->\n",
+    "<!-- DOTLN-RELEASE-BEGIN --> \n",
+    generatedReadme("v0.13.2") + generatedReadme("v0.13.2"),
+    readmeWith("This source prepares DotLn `v0.13.2`.\nOwner prose."),
+  ]) {
+    writeFileSync(join(f.root, "README.md"), page);
+    const before = f.snapshot();
+    assert.throws(() => f.plan(), /README release block/);
+    assert.deepEqual(f.snapshot(), before);
+  }
+});
+
 test("the release block becomes the one generated line, and prose beside or below the claim refuses before any write", () => {
   for (const block of [
     "This source prepares `v0.13.2`.\nA sentence an order appended.",

@@ -1,4 +1,5 @@
 import { docRelative, loadConfig, validReleaseDisplayName } from "./config.mjs";
+import { isKitRoot } from "../../packages/skeleton/src/runtime-inputs.mjs";
 import {
   lstatSync,
   mkdirSync,
@@ -171,48 +172,51 @@ export function planReleasePreparation(
   const markers = lines.filter((line) =>
     /DOTLN-RELEASE-(?:BEGIN|END)/.test(line),
   );
-  if (markers.length !== 2 || markers[0] !== begin || markers[1] !== end)
-    throw new Error(
-      "release prepare requires one exact ordered README release block",
-    );
+  const carriesClaim = markers.length > 0 || !isKitRoot(root);
   const start = lines.indexOf(begin) + 1;
   const finish = lines.indexOf(end);
-  const blockLines = lines.slice(start, finish).filter((line) => line.trim());
-  const block = blockLines.join("\n");
-  const claims = strictVersionsIn(block);
-  if (
-    claims.length !== 1 ||
-    (!unassigned && !repairClaim && claims[0] !== previous)
-  )
-    throw new Error(
-      unassigned
-        ? "release prepare requires one README version claim to replace"
-        : "release prepare requires one README version matching the work-order target",
-    );
+  if (carriesClaim) {
+    if (markers.length !== 2 || markers[0] !== begin || markers[1] !== end)
+      throw new Error(
+        "release prepare requires one exact ordered README release block",
+      );
+    const blockLines = lines.slice(start, finish).filter((line) => line.trim());
+    const block = blockLines.join("\n");
+    const claims = strictVersionsIn(block);
+    if (
+      claims.length !== 1 ||
+      (!unassigned && !repairClaim && claims[0] !== previous)
+    )
+      throw new Error(
+        unassigned
+          ? "release prepare requires one README version claim to replace"
+          : "release prepare requires one README version matching the work-order target",
+      );
+    // The block is this command's to write and holds nothing but the claim: a
+    // second line, or words beside the claim on its line, is someone's prose,
+    // which must move out before a retime rather than vanish under one. The two
+    // older spellings of the claim are admitted so an unretimed page still
+    // prepares; the write below always produces the current spelling.
+    const claimForms = [
+      releaseClaimLine(claims[0]),
+      `This source prepares \`${claims[0]}\`.`,
+      `This source is DotLn \`${claims[0]}\`.`,
+    ];
+    const priorName = /^This source prepares (.+) `v\d+\.\d+\.\d+`\.$/u.exec(
+      blockLines[0]?.trim() ?? "",
+    )?.[1];
+    if (
+      blockLines.length !== 1 ||
+      (!claimForms.includes(blockLines[0].trim()) &&
+        !validReleaseDisplayName(priorName))
+    )
+      throw new Error(
+        "release prepare requires the README release block to hold only its version line; move other text out of the block",
+      );
+  }
   if (unassigned && !latest)
     throw new Error(
       "release prepare cannot assign a target without an observed release tag; assign the heading and README claim by hand",
-    );
-  // The block is this command's to write and holds nothing but the claim: a
-  // second line, or words beside the claim on its line, is someone's prose,
-  // which must move out before a retime rather than vanish under one. The two
-  // older spellings of the claim are admitted so an unretimed page still
-  // prepares; the write below always produces the current spelling.
-  const claimForms = [
-    releaseClaimLine(claims[0]),
-    `This source prepares \`${claims[0]}\`.`,
-    `This source is DotLn \`${claims[0]}\`.`,
-  ];
-  const priorName = /^This source prepares (.+) `v\d+\.\d+\.\d+`\.$/u.exec(
-    blockLines[0]?.trim() ?? "",
-  )?.[1];
-  if (
-    blockLines.length !== 1 ||
-    (!claimForms.includes(blockLines[0].trim()) &&
-      !validReleaseDisplayName(priorName))
-  )
-    throw new Error(
-      "release prepare requires the README release block to hold only its version line; move other text out of the block",
     );
   // The order's decisions record holds any assignment or collision this
   // command records (WO-086). It is refused while conflicted in every mode,
@@ -268,11 +272,13 @@ export function planReleasePreparation(
   // as the one generated line when a hand or an older spelling left anything
   // else there, so every admitted input ends in the same bytes.
   if (!unassigned && (!latest || compareVersions(previous, latest) > 0)) {
-    const generated = lines.toSpliced(
-      start,
-      finish - start,
-      releaseClaimLine(previous, loadConfig(root).release.displayName),
-    );
+    const generated = carriesClaim
+      ? lines.toSpliced(
+          start,
+          finish - start,
+          releaseClaimLine(previous, loadConfig(root).release.displayName),
+        )
+      : lines;
     const after = generated.join("\n");
     return {
       previous,
@@ -305,17 +311,21 @@ export function planReleasePreparation(
     : heading.replace(boundary(previous), target);
   // Whatever spacing or wording surrounded the claim, the block is rewritten
   // as the one generated line.
-  lines.splice(
-    start,
-    finish - start,
-    releaseClaimLine(target, loadConfig(root).release.displayName),
-  );
+  if (carriesClaim)
+    lines.splice(
+      start,
+      finish - start,
+      releaseClaimLine(target, loadConfig(root).release.displayName),
+    );
+  const claimDestination = carriesClaim
+    ? "the heading and the README version claim"
+    : "the heading; README claim not carried";
 
   // The one record of an assignment or a collision: a decision in the
   // order's evidence, never a product-document or README paragraph.
   const reason = unassigned
     ? {
-        decision: `Assign application target ${target}, the next ${classification} above the observed release baseline ${latest}, to the heading and the README version claim.`,
+        decision: `Assign application target ${target}, the next ${classification} above the observed release baseline ${latest}, to ${claimDestination}.`,
         evidence: [
           `release baseline ${latest} (${observation})`,
           `${classification} classification declared in ${state.workOrderPath}`,
@@ -331,7 +341,7 @@ export function planReleasePreparation(
           "The observed baseline or the classification changes before publication; a later collision is recorded as its own decision.",
       }
     : {
-        decision: `Retime unpublished application target ${previous} to ${target}, the next ${classification} above the observed release baseline ${latest}, in the heading and the README version claim. Scope, acceptance, component versions and published tags are unchanged.`,
+        decision: `Retime unpublished application target ${previous} to ${target}, the next ${classification} above the observed release baseline ${latest}, in ${claimDestination}. Scope, acceptance, component versions and published tags are unchanged.`,
         evidence: [
           `release baseline ${latest} (${observation})`,
           `superseded target ${previous}`,
@@ -357,6 +367,7 @@ export function planReleasePreparation(
             date,
             dispatch: `resume: ${dispatches[state.phase]}; release prepare`,
             ...reason,
+            ...(!carriesClaim ? { readmeClaim: "not carried" } : {}),
           },
         );
   const edits = [
@@ -365,7 +376,9 @@ export function planReleasePreparation(
       before: authority,
       after: newHeading + authority.slice(heading.length),
     },
-    { path: paths[1], before: readme, after: lines.join("\n") },
+    ...(carriesClaim
+      ? [{ path: paths[1], before: readme, after: lines.join("\n") }]
+      : []),
   ];
   if (decision)
     edits.push({ path: decisionsFile, before: recorded, after: decision.text });
