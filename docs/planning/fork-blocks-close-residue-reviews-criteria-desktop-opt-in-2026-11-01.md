@@ -592,9 +592,14 @@ claude-opus-5-5 at xhigh; the dispatch names no fable worker), each
 launched once with no re-task.
 Usage at entry: unknown (`harness usage` refused: no active role). `plan
 start` took about seven minutes (the prune's 1,870 removals; the census
-and the conditions' 53.8 s inside it); `plan conditions` ran 57.98 s. The
-reviewers' and the refuter's timings and the host's task usage are recorded
-in §Validation as observed.
+and the conditions' 53.8 s inside it); `plan conditions` ran 57.98 s. Three
+refuters ran, not one: 11 min 16 s, 10 min 54 s and 12 min 59 s (198,813,
+198,385 and 212,340 tokens by the host's usage; 15, 13 and 14 tool uses),
+about 35 minutes and 610,000 tokens, of which the first two bought the
+repair of order defects before filing and the third was the receipt;
+spawned in all: seven of the twenty the cap allows (three reviewers, one
+documentation check, three refuters). The reviewers' timings are in
+§Validation.
 
 ## Validation
 
@@ -733,8 +738,35 @@ appended when observed.
   authority exception to the verifier's funnel, one findings vocabulary
   across review reports and VER entries, the unread-remote advisory and
   the refusal rows for WO-246 and WO-244), and a third refuter was
-  dispatched on the corrected subject. Its known issues are recorded on
-  the catalog rows after its receipt.
+  dispatched on the corrected subject. The third refuter (dispatched on
+  `65a64f40`, 12 min 59 s, 212,340 tokens, 14 tool uses) returned
+  `aligned-with-findings` for all six with thirty known issues and no hold.
+  One of them was this pass breaking its own new screen: WO-250's criterion
+  6 and WO-251's criterion 4 judge the refusals sentence by a count relative
+  to activation, a bookkeeping shape. The pass was about to correct the two
+  clauses and dispatch a fourth refuter when the operator asked what was
+  happening, having never seen this many refuter runs; the planner's
+  answer, recorded here: the first two reruns repaired defects that would
+  have broken implementation (a refusal that would have stopped a driven
+  phase worker's gate; a deletion of a target's retained reviews; a skipped
+  edit batch leaving WO-252 contradicting its own criterion), the third was
+  a loop of the kind WO-250 ends, and the refuter's rule already says later
+  concerns are known issues on the record. So the third judgment is the
+  pass's receipt, the two count clauses are known issues on the catalog
+  rows read as the row's presence under the serial order, and no fourth
+  refuter ran.
+- `npm run plan -- receipt` filed
+  `docs/planning/refutations/2026-11-02-planning-ef8570011ad28e17-062.md`
+  (worker type `dotln-worker`; judged, committed and workspace subjects
+  equal at `sha256:f52b04af…`; no advisory) and committed the pair; the
+  thirty known issues are recorded on the six orders' catalog rows with the
+  planner's readings, for the activating passes and the executors.
+- After the receipt: `npm run meta` green (the trap meter's one reopen
+  candidate as read in §Readings); `npm run sync` and `npm run format`
+  changed nothing beyond this pass's edits; `npm run test:docs` read 27
+  passed and 0 failed in 0 h 2 min at the committed subject plus this record,
+  which this commit carries; the branch is pushed and its `:memo:` pull
+  request opened on the dispatch's authorization, never merged.
 - The two tightenings after the operator's mid-turn question of 23:36Z,
   which asked whether the criteria order or any other update would hurt the
   operator (paraphrased; the words are in this session's transcript): WO-249
