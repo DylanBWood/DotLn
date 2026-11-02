@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "subjectSourceHash": "sha256:d232ae52e2906b1485e933c8969368994e431a78fdbb2dbe2596d28e5c8aff39",
+  "subjectSourceHash": "sha256:c7300cdffcb5a2168a7fc639855780290129d2071965f4862346f0b9ff765aa2",
   "acceptances": [
     {
       "date": "2026-10-28",
@@ -171,107 +171,107 @@
       "reason": "WO-192's router, target-order and per-spawner duties raise reviewer from 33944 to 35504 bytes on the integrated tree, above the effective 34596. Under product 07's standing route preserve these reviewed duties and accept measured bytes plus 4096; reassess on the next addition. Decision: docs/evidence/WO-192/decisions.md#wo-192-d088."
     }
   ],
-  "observedAt": "2026-11-02T00:40:42.054Z",
-  "subjectRevision": "151d405edf722bdcabe7f51c68bc63b4e3547132",
+  "observedAt": "2026-11-02T00:55:26.954Z",
+  "subjectRevision": "7538d10035798260488cac6f90bc958a1d32c0f4",
   "rows": [
     {
       "workOrder": "WO-245",
-      "observedAt": "2026-11-02T00:40:42.054Z",
+      "observedAt": "2026-11-02T00:55:26.954Z",
       "metrics": null
     },
     {
       "workOrder": "WO-251",
-      "observedAt": "2026-11-02T00:40:42.054Z",
+      "observedAt": "2026-11-02T00:55:26.954Z",
       "metrics": null
     },
     {
       "workOrder": "WO-249",
-      "observedAt": "2026-11-02T00:40:42.054Z",
+      "observedAt": "2026-11-02T00:55:26.954Z",
       "metrics": null
     },
     {
       "workOrder": "WO-250",
-      "observedAt": "2026-11-02T00:40:42.054Z",
+      "observedAt": "2026-11-02T00:55:26.954Z",
       "metrics": null
     },
     {
       "workOrder": "WO-248",
-      "observedAt": "2026-11-02T00:40:42.054Z",
+      "observedAt": "2026-11-02T00:55:26.954Z",
       "metrics": null
     },
     {
       "workOrder": "WO-252",
-      "observedAt": "2026-11-02T00:40:42.054Z",
+      "observedAt": "2026-11-02T00:55:26.954Z",
       "metrics": null
     },
     {
       "workOrder": "WO-238",
-      "observedAt": "2026-11-02T00:40:42.054Z",
+      "observedAt": "2026-11-02T00:55:26.954Z",
       "metrics": null
     },
     {
       "workOrder": "WO-241",
-      "observedAt": "2026-11-02T00:40:42.054Z",
+      "observedAt": "2026-11-02T00:55:26.954Z",
       "metrics": null
     },
     {
       "workOrder": "WO-242",
-      "observedAt": "2026-11-02T00:40:42.054Z",
+      "observedAt": "2026-11-02T00:55:26.954Z",
       "metrics": null
     },
     {
       "workOrder": "WO-243",
-      "observedAt": "2026-11-02T00:40:42.054Z",
+      "observedAt": "2026-11-02T00:55:26.954Z",
       "metrics": null
     },
     {
       "workOrder": "WO-244",
-      "observedAt": "2026-11-02T00:40:42.054Z",
+      "observedAt": "2026-11-02T00:55:26.954Z",
       "metrics": null
     },
     {
       "workOrder": "WO-246",
-      "observedAt": "2026-11-02T00:40:42.054Z",
+      "observedAt": "2026-11-02T00:55:26.954Z",
       "metrics": null
     },
     {
       "workOrder": "WO-083",
-      "observedAt": "2026-11-02T00:40:42.054Z",
+      "observedAt": "2026-11-02T00:55:26.954Z",
       "metrics": null
     },
     {
       "workOrder": "WO-207",
-      "observedAt": "2026-11-02T00:40:42.054Z",
+      "observedAt": "2026-11-02T00:55:26.954Z",
       "metrics": null
     },
     {
       "workOrder": "WO-193",
-      "observedAt": "2026-11-02T00:40:42.054Z",
+      "observedAt": "2026-11-02T00:55:26.954Z",
       "metrics": null
     },
     {
       "workOrder": "WO-183",
-      "observedAt": "2026-11-02T00:40:42.054Z",
+      "observedAt": "2026-11-02T00:55:26.954Z",
       "metrics": null
     },
     {
       "workOrder": "WO-088",
-      "observedAt": "2026-11-02T00:40:42.054Z",
+      "observedAt": "2026-11-02T00:55:26.954Z",
       "metrics": null
     },
     {
       "workOrder": "WO-091",
-      "observedAt": "2026-11-02T00:40:42.054Z",
+      "observedAt": "2026-11-02T00:55:26.954Z",
       "metrics": null
     },
     {
       "workOrder": "WO-096",
-      "observedAt": "2026-11-02T00:40:42.054Z",
+      "observedAt": "2026-11-02T00:55:26.954Z",
       "metrics": null
     },
     {
       "workOrder": "WO-014",
-      "observedAt": "2026-11-02T00:40:42.054Z",
+      "observedAt": "2026-11-02T00:55:26.954Z",
       "metrics": null
     }
   ],
