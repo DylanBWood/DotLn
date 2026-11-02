@@ -5,8 +5,11 @@ import {
   readDispatchJournals,
 } from "./dispatch-journal.mjs";
 import {
+  boundedCommand,
   completeTestSelection,
   diagnosticTestSelection,
+  gateInvocation,
+  nodeScriptArgs,
   npmScriptArgs,
 } from "./test-selection.mjs";
 import { formatDuration } from "./duration.mjs";
@@ -143,6 +146,8 @@ import {
   subagentSummary,
   subagentUsage,
   type DrivenWorkerContext,
+  type KitHost,
+  type UseAdmission,
 } from "./subagent-budget.js";
 import {
   observationBoundary,
@@ -411,6 +416,104 @@ function startsBoundedWork(input: HarnessInput, spawn: boolean): boolean {
   }
 }
 
+/** The agent types a session spawns for review, refutation or research. */
+const REVIEW_WORKER_TYPES = ["dotln-worker", "dotln-worker-fable"];
+
+/** The gate a review or refutation worker's shell command would start, by
+ * its literal words, or null. The host names the agent's type on each of its
+ * tool calls; a lifecycle phase agent (dotln-executor and the other phase
+ * definitions) keeps its gates, and so does the session itself. What a
+ * program starts by itself stays unobserved, as for every hook refusal. */
+export function reviewWorkerGate(
+  input: HarnessInput,
+  tools: HookConfig["tools"] = harnessToolEffects,
+): string | null {
+  if (
+    !input.agent_id ||
+    !REVIEW_WORKER_TYPES.includes(input.agent_type ?? "") ||
+    tools?.[input.tool_name ?? ""] !== "shell"
+  )
+    return null;
+  const command = input.tool_input?.command ?? input.tool_input?.cmd;
+  if (typeof command !== "string") return null;
+  try {
+    return (
+      executableShellInvocations(command)
+        .find((words) => gateInvocation(words))
+        ?.join(" ") ?? null
+    );
+  } catch {
+    // An unreadable command is judged by the other guards, which refuse what
+    // they cannot classify.
+    return null;
+  }
+}
+const workerGateRefusal = (gate: string) =>
+  `DOTLN_WORKER_GATE_REFUSED: a review or refutation worker never starts a test-runner gate (${gate}); probe one test with node scripts/harness.mjs bounded -- node --test --test-name-pattern <name> <suite file>. A gate holds the worktree's live-gate refusal against the session that launched you for its whole run, and that session owns the gate.`;
+
+/** The workers a kit command launches, by its literal words: the change
+ * review helper (`npm run worker -- review`, `node scripts/worker.mjs
+ * review`) launches one and the planner's review (`npm run plan -- review`,
+ * `node scripts/refute-plan.mjs review`) three, on the host `--host` names;
+ * a `--dry-run` launches none. The helper's own process carries no session
+ * identity a hook could charge, so the hook charges its command. */
+export function kitWorkerLaunch(
+  command: string,
+): { readonly uses: number; readonly host: KitHost } | null {
+  let invocations: string[][];
+  try {
+    invocations = executableShellInvocations(command);
+  } catch {
+    return null;
+  }
+  let uses = 0;
+  let host: KitHost | null = null;
+  for (const written of invocations) {
+    // A launch inside the bounded probe wrapper is the same launch.
+    let words: readonly string[] = written;
+    for (
+      let inner = boundedCommand(words);
+      inner;
+      inner = boundedCommand(words)
+    )
+      words = inner;
+    const script = (name: string, file: RegExp) =>
+      npmScriptArgs(words, name) ?? nodeScriptArgs(words, file);
+    for (const [args, count] of [
+      [script("worker", /(?:^|\/)scripts\/worker\.mjs$/u), 1],
+      [script("plan", /(?:^|\/)scripts\/refute-plan\.mjs$/u), 3],
+    ] as const) {
+      const rest = args?.[0] === "--" ? args.slice(1) : args;
+      if (!rest || rest[0] !== "review" || rest.includes("--dry-run")) continue;
+      const named = rest[rest.indexOf("--host") + 1];
+      const launched: KitHost =
+        rest.includes("--host") && (named === "claude" || named === "codex")
+          ? named
+          : "unattributed";
+      uses += count;
+      host = host === null || host === launched ? launched : "unattributed";
+    }
+  }
+  return uses && host ? { uses, host } : null;
+}
+
+/** What a tool call uses beyond a spawn: a re-task of an agent, or the
+ * workers a kit command launches. Both permission paths and the live-gate
+ * advisory read it from here, so they agree on what counts. */
+export function workerUse(
+  input: HarnessInput,
+  tools: HookConfig["tools"] = harnessToolEffects,
+): UseAdmission {
+  const effect = tools?.[input.tool_name ?? ""];
+  if (effect === "retask") return { retask: true };
+  const command = input.tool_input?.command ?? input.tool_input?.cmd;
+  const kit =
+    effect === "shell" && typeof command === "string"
+      ? kitWorkerLaunch(command)
+      : null;
+  return kit ? { kit } : {};
+}
+
 /** A dispatch gets its own budget anchor while session observations retain
  * their original lifetime. Repeating an unfinished phase cannot reset it. */
 export function bindDispatchBound(
@@ -581,7 +684,14 @@ interface HookConfig {
   readonly tools?: Readonly<
     Record<
       string,
-      "read" | "write" | "shell" | "spawn" | "stop" | "interaction" | "desktop"
+      | "read"
+      | "write"
+      | "shell"
+      | "spawn"
+      | "retask"
+      | "stop"
+      | "interaction"
+      | "desktop"
     >
   >;
 }
@@ -4930,6 +5040,9 @@ export function permissionEffect(
       );
     return "repo.read";
   }
+  // A message to an existing agent reads and writes nothing itself; the
+  // agent's own tool calls pass these same guards.
+  if (tool === "retask") return "repo.read";
   // Ending a task this session started is the session's own process control:
   // it writes no repository byte, and a gate ended this way records completed tasks as stopped, supplying no pass.
   if (tool === "stop") return "shell.run";
@@ -6441,6 +6554,14 @@ async function evaluateExistingHarnessHook(
           "DOTLN_ROUTER_WRITE_REFUSED: a router edits nothing and runs only reads, its driver and its usage command; its phase workers make every change.",
         );
     }
+    // A review or refutation worker probes with single tests: a gate it
+    // started would hold the worktree's live-gate refusal against the session
+    // that launched it for the gate's whole run.
+    const workerGate = reviewWorkerGate(input, config.tools);
+    if (workerGate) {
+      record(root, input, { workerGateRefused: workerGate });
+      return protocolRefusal(config.event, workerGateRefusal(workerGate));
+    }
     // A driven worker's helper reviews beside it; only the worker changes the
     // order's worktrees. Its one write is its own session scratch.
     const drivenLane = drivenHelper(input) ? drivenWorkerContext() : null;
@@ -6463,8 +6584,12 @@ async function evaluateExistingHarnessHook(
           `DOTLN_HARNESS_REFUSED: ${drivenHelperWrites}`,
         );
     }
+    // Every use counts: a launch, a re-task of an agent and each worker a
+    // kit command launches.
+    const use = workerUse(input, config.tools);
+    const startsWorker = spawn || Boolean(use.retask || use.kit);
     let boundAdvisory: string | undefined;
-    if (startsBoundedWork(input, spawn)) {
+    if (startsBoundedWork(input, startsWorker)) {
       try {
         const { dispatchStanding, dispatchBoundMessage, recordBoundStop } =
           await dispatchBounds(root);
@@ -6486,17 +6611,23 @@ async function evaluateExistingHarnessHook(
       }
     }
     const admission =
-      spawn || input.agent_id
-        ? admitSubagentTool(root, harnessStateDirectory(root), input, spawn)
+      startsWorker || input.agent_id
+        ? admitSubagentTool(
+            root,
+            harnessStateDirectory(root),
+            input,
+            spawn,
+            use,
+          )
         : undefined;
     if (admission?.refusal)
       return protocolRefusal(config.event, admission.refusal);
-    // Charged last, so a spawn refused above costs the drive nothing.
-    const driven = admitDrivenTool(input, spawn);
+    // Charged last, so a use refused above costs the drive nothing.
+    const driven = admitDrivenTool(input, spawn, use);
     if (driven?.refusal) return protocolRefusal(config.event, driven.refusal);
-    const liveGates = spawn ? activeGateRuns(root) : [];
+    const liveGates = startsWorker ? activeGateRuns(root) : [];
     const gateAdvisory = liveGates.length
-      ? `DotLn advisory: spawn admitted during live gate ${liveGates.map((run) => `${run.runId} (${run.kind ?? "unknown"})`).join(", ")}; probes under node, npm and harness bounded will be refused until it ends.`
+      ? `DotLn advisory: ${spawn ? "spawn" : use.retask ? "re-task" : "kit launch"} admitted during live gate ${liveGates.map((run) => `${run.runId} (${run.kind ?? "unknown"})`).join(", ")}; probes under node, npm and harness bounded will be refused until it ends.`
       : undefined;
     if (gateAdvisory) record(root, input, { advisory: gateAdvisory });
     const spawnAdvisory = [admission?.advisory, gateAdvisory, boundAdvisory]
@@ -7545,7 +7676,10 @@ export async function runTargetHarnessHook(
           if (config.kind === "permission") {
             if (!config.envelope)
               throw new Error("compiled target authority missing");
+            const workerGate = reviewWorkerGate(input, config.tools);
+            if (workerGate) throw new Error(workerGateRefusal(workerGate));
             const driven = drivenWorkerContext();
+            const use = workerUse(input, config.tools);
             if (driven) {
               initializeSubagentCounter(
                 harnessStateDirectory(root),
@@ -7556,12 +7690,13 @@ export async function runTargetHarnessHook(
                 harnessStateDirectory(root),
                 input,
                 config.tools?.[input.tool_name ?? ""] === "spawn",
-                { cap: null },
+                { cap: null, ...use },
               );
             }
             const drivenAdmission = admitDrivenTool(
               input,
               config.tools?.[input.tool_name ?? ""] === "spawn",
+              use,
             );
             if (drivenAdmission?.refusal)
               throw new Error(drivenAdmission.refusal);
@@ -7773,7 +7908,7 @@ export async function runTargetHarnessHook(
                 reservePairedWriter();
               for (const path of paths) protect(path);
             } else if (
-              (tool === "spawn" && !driven) ||
+              ((tool === "spawn" || tool === "retask") && !driven) ||
               tool === "interaction"
             ) {
               throw new Error(

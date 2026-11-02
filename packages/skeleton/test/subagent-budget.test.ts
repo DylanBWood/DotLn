@@ -17,6 +17,7 @@ import {
   linkSubagentResult,
   subagentUsage,
   subagentSummary,
+  workersLine,
 } from "../src/subagent-budget.js";
 
 function fixture(t: TestContext, cap: number | null = 3) {
@@ -247,8 +248,8 @@ test("WO-139 concurrent independent admissions serialize at caps one and three",
   }
 });
 
-test("WO-142 B5 missing tool identity is unknown and known resumed agents are not recharged", (t) => {
-  const f = fixture(t, 1);
+test("WO-142 B5 missing tool identity is unknown; WO-250 a resumed known agent counts one re-task", (t) => {
+  const f = fixture(t, 2);
   const missing = admitSubagentTool(
     f.root,
     f.directory,
@@ -267,32 +268,151 @@ test("WO-142 B5 missing tool identity is unknown and known resumed agents are no
     tool_use_id: "original",
     tool_response: { agentId: "known-agent" },
   });
-  const resumed = admitSubagentTool(
-    f.root,
-    f.directory,
-    {
-      session_id: "root",
-      tool_name: "Agent",
-      tool_use_id: "resume-one",
-      tool_input: { resume: "known-agent" },
-    },
-    true,
-  );
+  const resume = (id: string, agent: string) =>
+    admitSubagentTool(
+      f.root,
+      f.directory,
+      {
+        session_id: "root",
+        tool_name: "Agent",
+        tool_use_id: id,
+        tool_input: { resume: agent },
+      },
+      true,
+    );
+  const resumed = resume("resume-one", "known-agent");
   assert.equal(resumed.refusal, undefined);
-  assert.equal(resumed.usage.count, 1);
-  const unknown = admitSubagentTool(
-    f.root,
-    f.directory,
-    {
-      session_id: "root",
-      tool_name: "Agent",
-      tool_use_id: "resume-unknown",
-      tool_input: { resume: "unknown-agent" },
-    },
-    true,
+  assert.equal(resumed.usage.count, 2);
+  assert.equal(resumed.usage.retasked, 1);
+  assert.equal(resumed.usage.launched, 1);
+  assert.equal(
+    resume("resume-one", "known-agent").usage.count,
+    2,
+    "a repeated hook for the same call charges nothing",
   );
-  assert.match(unknown.refusal!, /count 1, cap 1/);
+  assert.match(resume("resume-two", "known-agent").refusal!, /count 2, cap 2/);
+  assert.match(
+    resume("resume-unknown", "unknown-agent").refusal!,
+    /count 2, cap 2/,
+  );
+  assert.equal(f.usage().count, 2);
+});
+
+test("WO-250 a message re-task and each kit launch count as uses, by host, against the cap", (t) => {
+  const f = fixture(t, 20);
+  const use = (id: string, options: Parameters<typeof admitSubagentTool>[4]) =>
+    admitSubagentTool(
+      f.root,
+      f.directory,
+      { session_id: "root", tool_use_id: id, tool_name: "Bash" },
+      false,
+      options,
+    );
+  assert.equal(f.admit("agent").refusal, undefined);
+  assert.equal(
+    admitSubagentTool(
+      f.root,
+      f.directory,
+      { session_id: "root", tool_use_id: "message", tool_name: "SendMessage" },
+      false,
+      { retask: true },
+    ).usage.retasked,
+    1,
+  );
+  assert.equal(
+    use("codex", { kit: { uses: 1, host: "codex" } }).refusal,
+    undefined,
+  );
+  assert.equal(
+    use("claude", { kit: { uses: 1, host: "claude" } }).refusal,
+    undefined,
+  );
+  assert.equal(
+    use("plan", { kit: { uses: 3, host: "unattributed" } }).refusal,
+    undefined,
+  );
+  assert.equal(
+    use("plan", { kit: { uses: 3, host: "unattributed" } }).usage.count,
+    7,
+    "a repeated hook for the same command charges nothing",
+  );
+  const usage = f.usage();
+  assert.equal(usage.count, 7);
+  assert.equal(usage.launched, 6);
+  assert.equal(usage.retasked, 1);
+  assert.deepEqual(usage.launchedByHost, {
+    claude: 2,
+    codex: 1,
+    unattributed: 3,
+  });
+  assert.equal(
+    workersLine(usage),
+    "workers: launched 6 (claude 2, codex 1, unattributed 3), re-tasked 1, cap 20, remaining 13",
+  );
+  assert.match(
+    subagentSummary(usage),
+    /^Subagents: 7\/20 uses \(launched 6: claude 2, codex 1, unattributed 3; re-tasked 1\)/,
+  );
+  for (let index = 7; index < 20; index++)
+    assert.equal(
+      use(`fill-${index}`, { kit: { uses: 1, host: "codex" } }).refusal,
+      undefined,
+    );
+  assert.match(
+    use("twenty-first", { kit: { uses: 1, host: "codex" } }).refusal!,
+    /^DOTLN_SUBAGENT_CAP_REFUSED: count 20, cap 20;/,
+  );
+  assert.match(
+    admitSubagentTool(
+      f.root,
+      f.directory,
+      { session_id: "root", tool_use_id: "late", tool_name: "SendMessage" },
+      false,
+      { retask: true },
+    ).refusal!,
+    /count 20, cap 20/,
+  );
+  assert.equal(f.usage().count, 20);
+  assert.match(
+    use("unattributed-message", {}).usage.countKind,
+    /exact-observed/,
+    "a shell call that launches nothing uses nothing",
+  );
+  assert.match(
+    admitSubagentTool(
+      f.root,
+      f.directory,
+      { session_id: "root", tool_name: "SendMessage" },
+      false,
+      { retask: true },
+    ).advisory!,
+    /cannot attribute re-task: tool_use_id missing/,
+  );
+});
+
+test("WO-250 a counter written before re-tasks and kit launches keeps its counts", (t) => {
+  const f = fixture(t, 3);
+  f.admit("one");
+  const file = join(
+    f.directory,
+    readdirSync(f.directory).find((name) => name.endsWith(".subagents.json"))!,
+  );
+  const stored = JSON.parse(readFileSync(file, "utf8"));
+  assert.equal(stored.retasks, undefined);
+  assert.equal(stored.kits, undefined);
   assert.equal(f.usage().count, 1);
+  assert.equal(f.usage().retasked, 0);
+  writeFileSync(
+    file,
+    JSON.stringify({
+      ...stored,
+      kits: [{ invocation: "x", host: "codex", uses: 1 }],
+    }),
+  );
+  assert.match(
+    String(f.usage().reason),
+    /counter unreadable \(invalid shape\)/,
+  );
 });
 
 test("driven context attributes repeated tool ids, nested spawners and result joins across phase sessions", (t) => {
@@ -373,4 +493,69 @@ test("driven context attributes repeated tool ids, nested spawners and result jo
     call("unjoined-read", "unjoined", false).usage.countKind,
     "minimum-observed",
   );
+});
+
+test("WO-250 a driven worker's re-tasks and kit launches count against its own cap and the driven ceiling", (t) => {
+  const f = fixture(t, 2);
+  const previous = process.env.DOTLN_DRIVEN_WORKER;
+  t.after(() => {
+    if (previous === undefined) delete process.env.DOTLN_DRIVEN_WORKER;
+    else process.env.DOTLN_DRIVEN_WORKER = previous;
+  });
+  const context = join(f.directory, "context.json");
+  process.env.DOTLN_DRIVEN_WORKER = context;
+  writeFileSync(
+    context,
+    JSON.stringify({
+      schemaVersion: 1,
+      root: f.root,
+      directory: f.directory,
+      session: "root",
+      worker: "phase-a",
+      role: "executor",
+      workOrder: "WO-999",
+      cap: 2,
+      ceiling: 3,
+    }),
+  );
+  // The router's own spawn of the phase worker, joined to its agent, so the
+  // worker's calls do not count it a second time as an unlinked child.
+  admitSubagentTool(
+    f.root,
+    f.directory,
+    { session_id: "root", tool_use_id: "phase-a", tool_name: "Agent" },
+    true,
+    { cap: 3, spawnerCap: 2, spawner: "router" },
+  );
+  linkSubagentResult(f.directory, {
+    session_id: "root",
+    tool_use_id: "phase-a",
+    tool_response: { agentId: "phase-a" },
+  });
+  const use = (
+    id: string,
+    options: { retask?: true; kit?: { uses: number; host: "codex" } },
+  ) =>
+    admitDrivenTool(
+      { session_id: "native-phase", tool_use_id: id, tool_name: "Bash" },
+      false,
+      options,
+    )!;
+  assert.equal(
+    use("kit", { kit: { uses: 1, host: "codex" } }).refusal,
+    undefined,
+  );
+  assert.equal(use("message", { retask: true }).refusal, undefined);
+  assert.match(
+    use("over-spawner", { kit: { uses: 1, host: "codex" } }).refusal!,
+    /^DOTLN_DRIVEN_BUDGET_REFUSED: spawner cap 2, drivenSessionCeiling 3;/,
+  );
+  const usage = drivenSubagentUsage();
+  assert.equal(
+    usage?.count,
+    3,
+    "the phase worker, its kit launch and its re-task",
+  );
+  assert.equal(usage?.retasked, 1);
+  assert.equal(usage?.launchedByHost?.codex, 1);
 });

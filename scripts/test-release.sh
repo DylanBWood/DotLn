@@ -1925,6 +1925,10 @@ printf '{"typedEvent":"HostPermissionDenied","workOrder":"WO-099"}\n' >"$subject
 printf '{"role":"executor","workOrder":"WO-099"}\n' >"$subject/docs/control/local/harness/$journal_session.json"
 printf 'ok\n' >"$subject/docs/control/local/harness/suite-success/fixture"
 printf 'capture\n' >"$subject/docs/control/local/harness/runner/capture.log"
+# The order's change review reports, which the close keeps beside its journals.
+mkdir -p "$subject/docs/control/local/reviews/WO-099"
+printf '# Change review: criteria, round 1, WO-099\n' >"$subject/docs/control/local/reviews/WO-099/round-1-criteria.md"
+printf '{"schemaVersion":1,"kind":"change-review-report"}\n' >"$subject/docs/control/local/reviews/WO-099/round-1-criteria.json"
 printf 'main original\n' >"$main/docs/intake/collision.md"
 printf 'subject original\n' >"$subject/docs/intake/collision.md"
 printf 'subject new note\n' >"$subject/docs/intake/new.md"
@@ -1974,6 +1978,8 @@ fi
 grep -Fxq '{"typedEvent":"HostPermissionDenied","workOrder":"WO-099"}' "$journal_lane/$journal_session.jsonl"
 grep -Fxq '{"role":"executor","workOrder":"WO-099"}' "$journal_lane/$journal_session.json"
 grep -Fxq 'ok' "$journal_lane/suite-success/fixture"
+grep -Fxq '# Change review: criteria, round 1, WO-099' "$journal_lane/reviews/round-1-criteria.md"
+grep -Fxq '{"schemaVersion":1,"kind":"change-review-report"}' "$journal_lane/reviews/round-1-criteria.json"
 test ! -e "$journal_lane/runner"
 test ! -e "$journal_lane/fixture.json"
 "$node_bin" - "$main/docs/control/local/retained/WO-099/release-close.json" "$journal_lane" <<'JS'

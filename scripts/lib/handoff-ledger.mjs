@@ -17,8 +17,12 @@ import { criterionJudgments, criterionLineForms } from "./off-ramps.mjs";
 
 // Presentation wrappers and an optional worker name do not change the three
 // counts. Quotes, prose prefixes and incomplete counts remain outside the form.
+// The review ladder's two optional fields follow the counts: the rounds run,
+// with an optional note such as a skipped round, and the lines no reviewer
+// read, with the reason (none needed when there are none). Prose may follow
+// after a space, but a `;` there must start one of those fields.
 const SELF_REVIEW =
-  /^(?:(?:[-*+]|\d{1,9}[.)])[ \t]+)?self-review(?: \([^()\r\n]{1,100}\))?: found \d+; fixed \d+; recorded \d+(?!\w)/iu;
+  /^(?:(?:[-*+]|\d{1,9}[.)])[ \t]+)?self-review(?: \([^()\r\n]{1,100}\))?: found \d+; fixed \d+; recorded \d+(?:; rounds \d+(?: \([^()\r\n]{1,200}\))?)?(?:; unreviewed (?:0 lines?(?: \([^()\r\n]{1,200}\))?|\d+ lines? \([^()\r\n]{1,200}\)))?(?![\w;])/iu;
 const inlinePresentation = (line) =>
   line.replace(/(\*\*|__|`|\*|_)(?=\S)(.+?\S|\S)\1/gu, "$2");
 
@@ -258,7 +262,7 @@ export function readHandoffLedger(root, state) {
     .some((line) => SELF_REVIEW.test(inlinePresentation(line)))
     ? []
     : [
-        `${path} lacks a self-review: line; summarize this run's three independent reviews as \`self-review: found <n>; fixed <n>; recorded <n>\` and cite all three workers' reports.`,
+        `${path} lacks a self-review: line; summarize this run's review ladder as \`self-review: found <n>; fixed <n>; recorded <n>\`, optionally followed by \`; rounds <n>; unreviewed <n> lines (<reason>)\`, and cite every round's reports.`,
       ];
   const declared = readDeclaredCriteria(root, state);
   if (!declared)

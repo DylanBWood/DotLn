@@ -46,6 +46,15 @@ import {
   recordedRepositoryClone,
 } from "./target-worktrees.mjs";
 import { validateAccountLabel } from "./control-actor.mjs";
+import {
+  TRANSPORT_DEFAULTS,
+  launchWorker,
+  readWire,
+} from "./worker-launch.mjs";
+
+// The transports' pinned defaults live with the shared launch; this module
+// keeps exporting them for its existing importers.
+export { TRANSPORT_DEFAULTS };
 
 /**
  * The dispatch host for the compiled Entropy Reducer. It owns what the loadout
@@ -645,20 +654,6 @@ export function discardDispatch(root, kind) {
 
 // ------------------------------------------------------------ the attestation
 
-export const TRANSPORT_DEFAULTS = {
-  "claude-cli-print": {
-    model: "claude-opus-5-5",
-    effort: "xhigh",
-    harness: "claude-code",
-  },
-  "codex-cli-exec": {
-    model: "gpt-6.1-sol",
-    effort: "max",
-    harness: "codex-cli",
-  },
-  fake: { model: "fixture", effort: "max", harness: "other:fixture" },
-};
-
 /**
  * A fact, not a claim. The launched route records what the host put on the
  * command line; the background route records a session attestation whose
@@ -1084,8 +1079,9 @@ export function readReceipt(root, receiptId) {
  * cannot. No dispatch meter column is added for the reviewer. */
 export function costFrom(usage, durationMs, wire) {
   const seconds = Math.round(durationMs / 1000);
-  const tokens = usage?.totals?.totalTokens ?? null;
-  const costUsd = wire?.costUsd ?? usage?.totals?.costUsd ?? null;
+  // A usage observation carries its counters under `usage`.
+  const tokens = usage?.usage?.totalTokens ?? null;
+  const costUsd = wire?.costUsd ?? usage?.usage?.costUsd ?? null;
   const turns = wire?.turns ?? null;
   // Never write `unknown` beside a counter that was observed. The WO-140
   // cause code names what the harness did not expose; anything it did expose
@@ -1108,81 +1104,44 @@ export function costFrom(usage, durationMs, wire) {
   };
 }
 
-/** Claude's terminal result carries the denial count, turn count and list
- * cost the cost line and the confinement block report. Codex exposes none of
- * them, so both stay `unobserved` there rather than being invented. */
-function readWire(capture, transport) {
-  const path = join(capture, "wire.jsonl");
-  if (transport !== "claude-cli-print" || !existsSync(path)) return null;
-  try {
-    const wire = JSON.parse(readFileSync(path, "utf8"));
-    return {
-      turns: typeof wire.num_turns === "number" ? wire.num_turns : null,
-      costUsd:
-        typeof wire.total_cost_usd === "number" ? wire.total_cost_usd : null,
-      permissionDenials: Array.isArray(wire.permission_denials)
-        ? wire.permission_denials.length
-        : "unobserved",
-      deniedTools: Array.isArray(wire.permission_denials)
-        ? wire.permission_denials.map(
-            (denial) => denial?.tool_name ?? "unknown",
-          )
-        : [],
-      subtype: typeof wire.subtype === "string" ? wire.subtype : null,
-    };
-  } catch {
-    return null;
-  }
-}
-
 // ----------------------------------------------------------------- dispatching
 
-const transportFor = async (name, onUsage) => {
-  if (name === "fake") {
-    const {
-      FakeEntropyTransport,
-      cannedReviewerOutput,
-      cannedRefutationResult,
-    } = await skeleton("entropy-review-fake");
-    const { entropyReviewPrompt, entropyRefutationPrompt } = await skeleton(
-      "entropy-review-protocol",
-    );
-    const witness = (request) => {
-      const root = request.temporaryDirectory;
-      if (root) {
-        writeFileSync(
-          join(root, "worker-environment.json"),
-          prettyJson({
-            kind: request.kind,
-            requestedTemporaryDirectory: root,
-            temporaryDirectory: request.temporaryDirectory,
-            outputInstructions: JSON.parse(
-              request.kind === "entropy-review"
-                ? entropyReviewPrompt(request)
-                : entropyRefutationPrompt(request),
-            ).outputInstructions,
-          }),
-        );
-      }
-    };
-    return new FakeEntropyTransport(
-      (request) => {
-        witness(request);
-        return cannedReviewerOutput(request);
-      },
-      (request) => {
-        witness(request);
-        return cannedRefutationResult(request);
-      },
-    );
-  }
-  const { ClaudeCliPrintWorkOrderTransport, CodexCliExecWorkOrderTransport } =
-    await skeleton("worker-transport");
-  if (name === "claude-cli-print")
-    return new ClaudeCliPrintWorkOrderTransport(undefined, undefined, onUsage);
-  if (name === "codex-cli-exec")
-    return new CodexCliExecWorkOrderTransport(undefined, undefined, onUsage);
-  throw new Error(`unknown entropy transport ${name}`);
+/** The entropy fixture's double: canned returns, and a witness of the
+ * environment and output instructions each episode was given. */
+const fakeEntropyTransport = async () => {
+  const { FakeEntropyTransport, cannedReviewerOutput, cannedRefutationResult } =
+    await skeleton("entropy-review-fake");
+  const { entropyReviewPrompt, entropyRefutationPrompt } = await skeleton(
+    "entropy-review-protocol",
+  );
+  const witness = (request) => {
+    const root = request.temporaryDirectory;
+    if (root) {
+      writeFileSync(
+        join(root, "worker-environment.json"),
+        prettyJson({
+          kind: request.kind,
+          requestedTemporaryDirectory: root,
+          temporaryDirectory: request.temporaryDirectory,
+          outputInstructions: JSON.parse(
+            request.kind === "entropy-review"
+              ? entropyReviewPrompt(request)
+              : entropyRefutationPrompt(request),
+          ).outputInstructions,
+        }),
+      );
+    }
+  };
+  return new FakeEntropyTransport(
+    (request) => {
+      witness(request);
+      return cannedReviewerOutput(request);
+    },
+    (request) => {
+      witness(request);
+      return cannedRefutationResult(request);
+    },
+  );
 };
 
 const retentionLane = (root) => {
@@ -1195,35 +1154,14 @@ const retentionLane = (root) => {
  * receipt step. A rejected return is retained under the local control lane
  * with its statement, as the planning refutation host retains its own. */
 async function runEpisode(root, request, pending, role) {
-  const { recordUsageObservation } =
-    await import("../../packages/skeleton/src/usage-observation.mjs");
-  const startedAt = new Date().toISOString();
-  let usage = null;
-  const transport = await transportFor(pending.transport, (observation) => {
-    usage = observation;
-    try {
-      recordUsageObservation(root, {
-        workOrder: null,
-        role,
-        dispatch: pending.episodeId,
-        startedAt,
-        durationMs: Date.now() - Date.parse(startedAt),
-        observation,
-      });
-    } catch {
-      /* usage recording is advisory and never fails an episode */
-    }
-  });
-  const dispatch = transport.dispatch(request, Date.now);
   try {
-    const accepted = await dispatch.receipt;
-    check(
-      accepted.commandId === request.command.commandId &&
-        accepted.transport === transport.name,
-      "entropy transport returned another command's receipt",
-    );
-    const returned = await dispatch.completed;
-    const endedAt = new Date().toISOString();
+    const { returned, ...episode } = await launchWorker(root, request, {
+      transport: pending.transport,
+      role,
+      dispatch: pending.episodeId,
+      fake: fakeEntropyTransport,
+      label: "entropy",
+    });
     mkdirSync(request.capture, { recursive: true, mode: 0o700 });
     const resultPath = join(request.capture, "result.json");
     if (!existsSync(resultPath))
@@ -1234,22 +1172,16 @@ async function runEpisode(root, request, pending, role) {
     if (!existsSync(statementPath))
       writeFileSync(
         statementPath,
-        `Transport ${transport.name} returned this result for episode ${request.episodeId}; the host validation follows.\n`,
+        `Transport ${episode.transport} returned this result for episode ${request.episodeId}; the host validation follows.\n`,
         { mode: 0o600 },
       );
     return {
-      transport: transport.name,
-      harnessVersion: transport.harnessVersion,
-      startedAt,
-      endedAt,
-      durationMs: Date.parse(endedAt) - Date.parse(startedAt),
-      usage,
-      wire: readWire(request.capture, transport.name),
+      ...episode,
+      wire: readWire(request.capture, episode.transport),
       resultPath,
       statementPath,
     };
   } catch (error) {
-    dispatch.kill();
     let retained = null;
     try {
       retained = createScratchRoot(join(retentionLane(root), "rejected-"));

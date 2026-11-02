@@ -1,4 +1,4 @@
-# WO-250 — Reviews converge and every worker counts: the three independent reviews run once over the diff, recheck only what they found, end in one combined recheck and then in the executor's own judgment; a review worker on Codex or Claude launches from any host through one kit command with a canonical brief and a report the verifier can read; every worker launch and re-task on every path counts against the subagent cap; and no review worker starts a gate (version assigned at activation)
+# WO-250 — Reviews converge and every worker counts: the three independent reviews run once over the diff, recheck only what they found, end in one combined recheck and then in the executor's own judgment; a review worker on Codex or Claude launches from any host through one kit command with a canonical brief and a report the verifier can read; every worker launch and re-task on every path counts against the subagent cap; and no review worker starts a gate (v0.111.0)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

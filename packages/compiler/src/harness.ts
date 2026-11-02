@@ -175,7 +175,14 @@ export interface HarnessProfile {
   readonly tools?: Readonly<
     Record<
       string,
-      "read" | "write" | "shell" | "spawn" | "stop" | "interaction" | "desktop"
+      | "read"
+      | "write"
+      | "shell"
+      | "spawn"
+      | "retask"
+      | "stop"
+      | "interaction"
+      | "desktop"
     >
   >;
   readonly events: Readonly<Record<HarnessEvent, HarnessObservation>>;
@@ -1407,6 +1414,15 @@ export const HARNESS_REFUSALS = [
     source: "WO-251",
     clause:
       "refuses desktop control and the operator's own browser sessions unless dotln.config.json elects features.desktop-control; an election still requires the operator's explicit request in the session, and browser verification uses the Playwright MCP in a browser the session launches or the project's browser tests",
+  },
+  // Every role root carries this sentence, and the router's root sits at its
+  // byte ceiling, so the row names the refusal and the role text and product
+  // 07 carry its forms: a gate a dotln-worker or dotln-worker-fable agent
+  // starts, refused naming the bounded single-test probe.
+  {
+    id: "worker-gate",
+    source: "WO-250",
+    clause: "refuses a review worker's test-runner gate",
   },
 ] as const;
 const HARNESS_BOUNDARIES = `DotLn has ${HARNESS_REFUSALS.length} refusals (${[...new Set(HARNESS_REFUSALS.map((row) => row.source))].join(", ")}): it ${HARNESS_REFUSALS.map((row) => row.clause).join("; ")}. Product tasks fail on observed reads of the admitted record paths; document and mixed review gates retain the full refusal. Literal redirects are judged on any program; expansions such as $PWD and a program's own effects remain unobserved under host permissions; grant failures admit with one advisory and preserve the other refusals, except an unresolvable order-worktree root, which withholds that grant alone. Descendants count at their first attributable tool call; unresolved direct/child overlap is a reported minimum, and unobserved agents remain unknown. Inspect the writer with node scripts/harness.mjs writer --show; stop this session's gate with node scripts/harness.mjs evidence --stop; use operator override: for authorized recovery. Claude hooks enforce these ${HARNESS_REFUSALS.length} refusals at observed boundaries; under Codex a lifecycle dispatch reserves the writer and refuses a foreign holder, the gate, bounded wrapper and lifecycle enforce dispatch bounds in process; the other duties and grants are role text because Codex tool calls are unhooked. Copilot reuses the Claude registration: scripted denials hold with allow-all; missing tool-call and child identity leave subagent accounting advisory; WO-146 evidence records interactive qualification. Other tool and completion judgments are advisory and host permissions decide. The separate Codex compaction adapter restores an owned unfinished task and permits one continuation after premature stopping; it never dispatches a role or changes writer ownership.`;

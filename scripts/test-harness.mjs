@@ -117,6 +117,8 @@ import {
   SHELL_DIAGNOSTICS,
   recordCodexDispatch,
   recordOperatorMessage,
+  kitWorkerLaunch,
+  reviewWorkerGate,
 } from "../packages/skeleton/dist/src/harness-host.js";
 import { operatorControl } from "../packages/compiler/src/operator-control.mjs";
 import {
@@ -3596,6 +3598,9 @@ test("WO-146 three contributors share unique outputs while workers remain explic
     profile.tools = { ...profile.tools };
     assert.equal(profile.tools.SubagentHandback, "read");
     delete profile.tools.SubagentHandback;
+    // A message to an agent is a re-task, one use against the subagent cap.
+    assert.equal(profile.tools.SendMessage, "retask");
+    delete profile.tools.SendMessage;
     assert.deepEqual(
       Object.entries(profile.tools).filter(
         ([, effect]) => effect === "desktop",
@@ -3607,7 +3612,7 @@ test("WO-146 three contributors share unique outputs while workers remain explic
   assert.equal(
     createHash("sha256").update(JSON.stringify(workers)).digest("hex"),
     "9f41bb7cb0176f0b8e73bd9fe760ef628259e69b4ebdbb28fa0a621bd4dba6fb",
-    "pre-profile worker bytes, excluding release labels, native skill format and the separately asserted child return and desktop tools",
+    "pre-profile worker bytes, excluding release labels, native skill format and the separately asserted child return, re-task and desktop tools",
   );
   const installation = harnessInstallation();
   assert.equal(
@@ -3887,6 +3892,260 @@ test("WO-139 generated permission, observer, Stop and usage share the root subag
   } finally {
     removeFixture(root, { recursive: true, force: true });
   }
+});
+
+test("WO-250 every use counts: a message, a resumed agent and a helper launch one each, a plan review three, a dry run none; usage reads them by host and the twenty-first is refused", () => {
+  const root = fixture();
+  try {
+    beginHarnessSession(root, "synthetic-session", "executor");
+    const pre = (id, tool_name, tool_input) =>
+      input(root, "PreToolUse", { tool_name, tool_use_id: id, tool_input });
+    const admit = (payload) => invoke(root, "permissions", payload);
+    const uses = () => measureHarnessUsage(root, "synthetic-session").subagents;
+    const spawn = pre("spawn", "Agent", {
+      subagent_type: "dotln-worker",
+      prompt: "Review the diff.",
+    });
+    assert.equal(allowed(admit(spawn)), true);
+    invoke(
+      root,
+      "read-observer",
+      input(root, "PostToolUse", {
+        tool_name: "Agent",
+        tool_use_id: "spawn",
+        tool_input: spawn.tool_input,
+        tool_response: { agentId: "reviewer-1" },
+      }),
+    );
+    assert.equal(uses().count, 1);
+    // Handing the same reviewer more work is a re-task, by message or resume.
+    const message = pre("message", "SendMessage", {
+      to: "reviewer-1",
+      message: "Recheck your findings.",
+    });
+    assert.equal(allowed(admit(message)), true);
+    assert.equal(allowed(admit(message)), true);
+    assert.equal(uses().retasked, 1, "a repeated hook charges once");
+    assert.equal(
+      allowed(
+        admit(
+          pre("resume", "Agent", {
+            resume: "reviewer-1",
+            prompt: "Recheck your findings.",
+          }),
+        ),
+      ),
+      true,
+    );
+    assert.equal(uses().retasked, 2);
+    // A kit command is charged by its literal words, before its process runs.
+    for (const [id, command, count] of [
+      ["worker", "npm run worker -- review --kind criteria --host codex", 4],
+      [
+        "node-worker",
+        "node scripts/worker.mjs review --kind design --host claude",
+        5,
+      ],
+      [
+        "dry",
+        "npm run worker -- review --kind criteria --host codex --dry-run",
+        5,
+      ],
+      ["plan", "npm run plan -- review", 8],
+      ["node-plan", "node scripts/refute-plan.mjs review --host codex", 11],
+      // The same launch inside the bounded wrapper, or past Node's options.
+      [
+        "wrapped",
+        "node scripts/harness.mjs bounded -- npm run worker -- review --kind criteria --host codex",
+        12,
+      ],
+      [
+        "node-option",
+        "node --no-warnings scripts/worker.mjs review --kind design --host claude",
+        13,
+      ],
+    ]) {
+      admit(pre(id, "Bash", { command, description: "fixture" }));
+      assert.equal(uses().count, count, command);
+    }
+    const row = uses();
+    assert.equal(row.launched, 11);
+    assert.equal(row.retasked, 2);
+    assert.deepEqual(row.launchedByHost, {
+      claude: 3,
+      codex: 5,
+      unattributed: 3,
+    });
+    const usage = spawnSync(
+      process.execPath,
+      ["scripts/harness.mjs", "usage", "synthetic-session"],
+      {
+        cwd: root,
+        encoding: "utf8",
+        env: { ...process.env, CODEX_THREAD_ID: "" },
+      },
+    );
+    assert.equal(usage.status, 0, usage.stderr);
+    assert.equal(
+      JSON.parse(usage.stdout).workers,
+      "workers: launched 11 (claude 3, codex 5, unattributed 3), re-tasked 2, cap 20, remaining 7",
+    );
+    for (let index = 14; index <= 20; index++)
+      assert.equal(
+        allowed(
+          admit(
+            pre(`fill-${index}`, "Bash", {
+              command: "npm run worker -- review --kind design --host codex",
+            }),
+          ),
+        ),
+        true,
+        `use ${index}`,
+      );
+    assert.equal(uses().count, 20);
+    for (const refused of [
+      pre("twenty-first", "Bash", {
+        command: "npm run worker -- review --kind consistency --host claude",
+      }),
+      pre("twenty-first-wrapped", "Bash", {
+        command:
+          "node scripts/harness.mjs bounded -- npm run worker -- review --kind consistency --host codex",
+      }),
+      pre("late-message", "SendMessage", { to: "reviewer-1", message: "Go." }),
+      pre("late-spawn", "Agent", { prompt: "One more." }),
+    ])
+      assert.match(
+        admit(refused).hookSpecificOutput.permissionDecisionReason,
+        /^DOTLN_SUBAGENT_CAP_REFUSED: count 20, cap 20;/,
+        refused.tool_name,
+      );
+    assert.equal(uses().count, 20);
+    assert.match(
+      invoke(root, "finish", input(root, "Stop")).systemMessage,
+      /Subagents: 20\/20 uses \(launched 18: claude 3, codex 12, unattributed 3; re-tasked 2\)/,
+    );
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-250 a review or refutation worker's gate is refused naming the bounded single-test form; a phase agent and the session keep their gates", () => {
+  const root = fixture();
+  try {
+    beginHarnessSession(root, "synthetic-session", "executor");
+    let call = 0;
+    const shell = (command, agent = {}) =>
+      input(root, "PreToolUse", {
+        tool_name: "Bash",
+        tool_use_id: `gate-${++call}`,
+        tool_input: { command, description: "fixture" },
+        ...agent,
+      });
+    const reason = (payload) =>
+      String(
+        invoke(root, "permissions", payload).hookSpecificOutput
+          ?.permissionDecisionReason ?? "",
+      );
+    const gates = [
+      "npm test",
+      "npm test -- --only resume",
+      "node scripts/test-runner.mjs --review",
+      "node scripts/target-gate.mjs",
+      "npm run test:docs",
+      "npm run test:full",
+      "node scripts/harness.mjs bounded -- npm test -- --only resume",
+    ];
+    // Node's own options before the script change nothing for a review worker.
+    const optionGates = [
+      "node --no-warnings scripts/test-runner.mjs --review",
+      "node -- scripts/target-gate.mjs",
+      "node --require ./x.cjs scripts/test-runner.mjs",
+    ];
+    for (const type of ["dotln-worker", "dotln-worker-fable"])
+      for (const command of [...gates, ...optionGates])
+        assert.match(
+          reason(shell(command, { agent_id: `${type}-1`, agent_type: type })),
+          /^DOTLN_WORKER_GATE_REFUSED: .*node scripts\/harness\.mjs bounded -- node --test --test-name-pattern <name> <suite file>/,
+          `${type}: ${command}`,
+        );
+    const probe = shell(
+      "node scripts/harness.mjs bounded -- node --test --test-name-pattern x scripts/test-x.mjs",
+      { agent_id: "dotln-worker-1", agent_type: "dotln-worker" },
+    );
+    assert.equal(allowed(invoke(root, "permissions", probe)), true);
+    // The session itself and a driven phase agent keep their gates: the same
+    // commands meet exactly the judgment they met before this refusal.
+    for (const agent of [
+      {},
+      { agent_id: "phase-1", agent_type: "dotln-executor" },
+    ])
+      for (const command of gates)
+        assert.equal(
+          allowed(invoke(root, "permissions", shell(command, agent))),
+          true,
+          `${agent.agent_type ?? "session"}: ${command}`,
+        );
+    const journal = readFileSync(
+      join(
+        root,
+        "docs/control/local/harness",
+        `${sha256("synthetic-session")}.jsonl`,
+      ),
+      "utf8",
+    );
+    assert.match(journal, /"workerGateRefused":"npm test"/);
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-250 a gate or a kit launch is found by its script's path whatever Node options stand before it", () => {
+  const worker = { agent_id: "dotln-worker-1", agent_type: "dotln-worker" };
+  const shell = (command) => ({
+    hook_event_name: "PreToolUse",
+    cwd: "/",
+    session_id: "s",
+    tool_name: "Bash",
+    tool_input: { command },
+    ...worker,
+  });
+  // An option whose value is a separate word, an option that loads the
+  // runner as a module, the wrapper around either, and `--` before it.
+  for (const command of [
+    "node --redirect-warnings /tmp/wo250-warnings.log scripts/test-runner.mjs --review",
+    "node --require scripts/test-runner.mjs -e 0",
+    "node --stack-size 4000 -- scripts/target-gate.mjs WO-250",
+    "node scripts/harness.mjs bounded -- node --redirect-warnings x scripts/test-runner.mjs",
+  ])
+    assert.ok(reviewWorkerGate(shell(command)), command);
+  // A single test stays a probe even when its pattern or its warnings file
+  // names a gate script: Node runs neither value.
+  for (const command of [
+    "node scripts/harness.mjs bounded -- node --test --test-name-pattern x scripts/test-x.mjs",
+    "node scripts/harness.mjs bounded -- node --test --test-name-pattern scripts/test-runner.mjs scripts/test-harness.mjs",
+    "node --redirect-warnings scripts/test-runner.mjs scripts/check-publication.mjs",
+    "node --redirect-warnings x scripts/check-publication.mjs",
+  ])
+    assert.equal(reviewWorkerGate(shell(command)), null, command);
+  assert.deepEqual(
+    kitWorkerLaunch(
+      "node --redirect-warnings /tmp/x.log scripts/worker.mjs review --kind design --host claude",
+    ),
+    { uses: 1, host: "claude" },
+  );
+  assert.deepEqual(
+    kitWorkerLaunch(
+      "npm run harness -- bounded -- node --stack-size 4000 scripts/refute-plan.mjs review --host codex",
+    ),
+    { uses: 3, host: "codex" },
+  );
+  assert.equal(
+    kitWorkerLaunch(
+      "node --redirect-warnings x scripts/worker.mjs record --kind design --from f",
+    ),
+    null,
+    "recording a returned report launches nothing",
+  );
 });
 
 test("WO-139 cap-module-only changes refresh the runtime and snapshot damage is detected", () => {
@@ -7732,7 +7991,9 @@ test("WO-132 generated hooks delegate classification, attribution, scope and run
       }
       return result;
     };
-    for (const name of ["SendMessage", "SomeNewTool"])
+    // Tools the inventory does not class are delegated to host permissions;
+    // SendMessage is classed now, as a re-task the counter admits.
+    for (const name of ["CronCreate", "SomeNewTool"])
       delegated(
         "permissions",
         input(root, "PreToolUse", { tool_name: name, tool_input: {} }),

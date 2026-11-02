@@ -48,6 +48,9 @@ export const harnessToolEffects = {
   // touches no repository byte, and each subagent's own tool calls pass these
   // same guards.
   Workflow: "spawn",
+  // A message to an agent gives it more work: a re-task, which touches no
+  // repository byte itself and counts one use against the subagent cap.
+  SendMessage: "retask",
   Skill: "interaction",
   TodoWrite: "interaction",
   AskUserQuestion: "interaction",

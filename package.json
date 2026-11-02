@@ -30,6 +30,7 @@
     "license-surfaces": "node scripts/license-surfaces.mjs",
     "plan": "node scripts/refute-plan.mjs",
     "entropy": "node scripts/entropy.mjs",
+    "worker": "node scripts/worker.mjs",
     "console": "npm run build --silent && node packages/console/dist/src/cli.js",
     "test:console": "npm run build --silent && node --test packages/console/dist/test/*.test.js",
     "evidence:console": "npm run build --silent && node scripts/console-fixtures.mjs",

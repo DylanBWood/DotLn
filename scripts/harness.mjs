@@ -11,7 +11,10 @@ import {
   usageObservation,
   usageSessionKey,
 } from "../packages/skeleton/dist/src/usage-observation.mjs";
-import { subagentUsage } from "../packages/skeleton/dist/src/subagent-budget.js";
+import {
+  subagentUsage,
+  workersLine,
+} from "../packages/skeleton/dist/src/subagent-budget.js";
 import { readRetainedSession } from "./lib/retained-session.mjs";
 import {
   emitHarness,
@@ -208,6 +211,9 @@ try {
     console.log(
       JSON.stringify({
         ...observation,
+        ...(observation.subagents
+          ? { workers: workersLine(observation.subagents) }
+          : {}),
         dispatchStanding: standing,
         standing: standingLine,
         ...(process.env.CODEX_THREAD_ID || process.env.COPILOT_AGENT_SESSION_ID

@@ -8161,6 +8161,10 @@ if (isMainModule(import.meta.url)) {
       // suite.
       const { entropyFixtures } = await import("./test-entropy-review.mjs");
       await entropyFixtures();
+      // The change review helper launches through the same shared worker
+      // launch as the entropy review, so it is judged beside it.
+      const { reviewWorkerFixtures } = await import("./test-review-worker.mjs");
+      await reviewWorkerFixtures();
     }
     if (!process.argv.includes("--fixtures-only"))
       process.stdout.write(

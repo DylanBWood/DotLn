@@ -308,17 +308,21 @@ resolves one per-user root independent of the environment. The seven earlier
 WO-185 test/probe rows are preserved in an ignored archive outside the real-work
 incident count (D012).
 
-DotLn's generated hooks refuse six conditions (WO-135, WO-139, WO-144 and WO-234): a second live writer
+DotLn's generated hooks refuse eight conditions (WO-135, WO-139, WO-144,
+WO-234, WO-251 and WO-250): a second live writer
 in the same worktree; a write to gate inputs or the success record during a live
 gate, where a product gate admits only the active order's evidence,
 verification and final-review directories
 at the default document roots and document and mixed review gates keep the
 full refusal; a classified repository write outside `docs/` and root Markdown
-on a `planning/` branch; an observable subagent admission beyond
-`docs/control/budgets.json` `subagentCap` (default 20; `null` disables); and a
-known write destination outside the project without a containing grant from
-the active role or an equipped support; and a complete gate, bounded probe or
-worker launch at an exhausted dispatch wall-clock or complete-run bound.
+on a `planning/` branch; an observable worker use (a launch, a re-task or a
+kit launch) beyond `docs/control/budgets.json` `subagentCap` (default 20;
+`null` disables); a known write destination outside the project without a
+containing grant from the active role or an equipped support; a complete
+gate, bounded probe or worker launch at an exhausted dispatch wall-clock or
+complete-run bound; desktop control and the operator's own browser sessions
+without the instance's `features.desktop-control` election; and a test-runner
+gate started by a `dotln-worker` review or refutation worker.
 The bound refusal reports the standing in hours and minutes and names
 `analysis:` and the operator-captured `resume accept-overrun` extension. Reads,
 listing and focused reproductions remain admitted, and `operator override:`

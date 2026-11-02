@@ -26,8 +26,13 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import {
+  decodeUsageSource,
+  usageObservation,
+} from "../packages/skeleton/src/usage-observation.mjs";
+import {
   buildAttestation,
   checkEntropyReceipts,
+  costFrom,
   controlLog,
   currentDispatch,
   entropyScratchLane,
@@ -2569,6 +2574,49 @@ export async function entropyFixtures() {
         repo,
       );
       assert.equal(bound.receiptId, "REFUTATION-002");
+    });
+
+    await test("a launched episode's cost line states the token count its usage observation carries", () => {
+      // The observation a Claude print transport hands over, decoded from a
+      // result envelope the way the transport decodes its stdout.
+      const observation = usageObservation(
+        decodeUsageSource(
+          JSON.stringify({
+            type: "result",
+            usage: {
+              input_tokens: 10,
+              output_tokens: 20,
+              cache_read_input_tokens: 30,
+              cache_creation_input_tokens: 40,
+            },
+            total_cost_usd: 0.5,
+          }),
+        ),
+      );
+      assert.equal(observation.source, "claude-result-envelope");
+      const tokens = observation.usage.totalTokens;
+      assert.ok(Number.isSafeInteger(tokens) && tokens > 0, String(tokens));
+      const cost = costFrom(observation, 12_400, { turns: 3 });
+      assert.equal(cost.tokens, tokens);
+      assert.equal(cost.costUsd, 0.5);
+      assert.equal(
+        cost.line,
+        `${tokens} tokens; source claude-result-envelope; observed episode wall clock 12 s, 3 turns, USD 0.5`,
+      );
+      // The wire's own cost still wins over the observation's.
+      assert.equal(
+        costFrom(observation, 1000, { costUsd: 0.25 }).costUsd,
+        0.25,
+      );
+      // Without counters the cause code stays, naming any source it had.
+      assert.equal(
+        costFrom(null, 1000, undefined).line,
+        "tokens unknown; cause harness-no-readback; observed episode wall clock 1 s",
+      );
+      assert.equal(
+        costFrom(usageObservation([]), 1000, undefined).line,
+        "tokens unknown; cause harness-no-readback; observed episode wall clock 1 s; source unavailable",
+      );
     });
   } finally {
     delete process.env.DOTLN_ENTROPY_FIXTURE;

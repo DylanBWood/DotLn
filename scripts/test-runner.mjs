@@ -195,6 +195,8 @@ export const machinerySources = {
     "scripts/lib/plan-",
     "scripts/entropy.mjs",
     "scripts/lib/entropy-review.mjs",
+    // The entropy review launches through the shared worker launch (WO-250).
+    "scripts/lib/worker-launch.mjs",
     "scripts/meta.mjs",
     "scripts/lib/meta.mjs",
     "scripts/docs-check.mjs",
@@ -390,6 +392,8 @@ export const machinerySources = {
     "packages/skeleton/src/resident-store.ts",
     "scripts/harness.mjs",
     "packages/skeleton/src/harness-host.ts",
+    // Every generated hook embeds its tool map (WO-250).
+    "packages/skeleton/src/harness-command.ts",
     "packages/skeleton/src/version.ts",
     "packages/skeleton/src/subagent-budget.ts",
     "packages/skeleton/src/gate-evidence.mjs",
@@ -452,6 +456,27 @@ export const machinerySources = {
     "scripts/test-entropy-review.mjs",
     "scripts/entropy.mjs",
     "scripts/lib/entropy-review.mjs",
+    // The shared worker launch and the change review helper it serves, with
+    // the run-time modules its fixtures load and pin: the reviewer briefs and
+    // pins, the worker definition, the counter, the protocol the fake
+    // validates with, the session and journal readers and the duration format
+    // (WO-250).
+    "scripts/lib/worker-launch.mjs",
+    "scripts/lib/review-worker.mjs",
+    "scripts/lib/review-worker-fake.mjs",
+    "scripts/lib/checkpoint.mjs",
+    "scripts/worker.mjs",
+    "scripts/test-review-worker.mjs",
+    "packages/skeleton/src/change-review-protocol.ts",
+    "packages/skeleton/src/loadouts/contributor.ts",
+    "packages/compiler/src/harness.ts",
+    "packages/skeleton/src/subagent-budget.ts",
+    "packages/skeleton/src/verification-protocol.ts",
+    "packages/skeleton/src/worker-protocol.ts",
+    "scripts/lib/dispatch-bound.mjs",
+    "scripts/lib/duration.mjs",
+    "packages/skeleton/src/dispatch-journal.mjs",
+    "packages/skeleton/src/usage-observation.mjs",
   ],
   "runner-fixtures": [
     "scripts/lib/temporary-prune.mjs",
@@ -655,6 +680,7 @@ export const machinerySources = {
     "packages/skeleton/fixtures/wo251-role-baseline.json",
     "packages/skeleton/fixtures/wo249-role-baseline.json",
     "packages/skeleton/fixtures/wo249-integration-role-baseline.json",
+    "packages/skeleton/fixtures/wo250-role-baseline.json",
     "packages/skeleton/fixtures/wo217-role-efficiency-baseline.json",
     "scripts/test-helper-reuse.mjs",
     "scripts/lib/helpers.mjs",
