@@ -1,0 +1,326 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-252",
+  "verification": "VER-002",
+  "selection": "Verdict-relevant assertions, diagnostics and bounded exit metadata; full captures remain in session scratch.",
+  "subjectCodeIdentity": "99cd0d5daa8afccf03a6332035244660e4fe77bbd3a5d1bac81e83d72ad34b6d",
+  "consumedProductGate": {
+    "checkId": "npm test",
+    "codeIdentity": "99cd0d5daa8afccf03a6332035244660e4fe77bbd3a5d1bac81e83d72ad34b6d",
+    "treeHash": "08f9480d961d5445b391683a65ede455854d6dd0",
+    "recordedAt": "2026-11-03T04:16:24.505Z",
+    "startedAt": "2026-11-03T03:37:01.801Z",
+    "gateSelection": "review",
+    "exitCode": 0,
+    "executed": true,
+    "durationMs": 2362704,
+    "requiredSuites": [
+      "build",
+      "format",
+      "configuration-root",
+      "registrations",
+      "declarations",
+      "generated",
+      "host",
+      "release-preparation",
+      "github-body",
+      "outward-lint",
+      "target-publish",
+      "target-worktree",
+      "vertical",
+      "license-fixtures",
+      "publication-fixtures",
+      "backup-intake",
+      "resume",
+      "launchpad",
+      "workstream-pilot",
+      "instance-history",
+      "beacon-portability",
+      "checkpoint",
+      "worktree",
+      "worktree-integration",
+      "release",
+      "work-orders-fixtures",
+      "siblings-fixtures",
+      "kernel",
+      "compiler",
+      "skeleton",
+      "console",
+      "browser-evidence",
+      "adjacent-queue",
+      "derived-orders",
+      "portfolio",
+      "codex-continuation",
+      "authority-grants",
+      "fixture-temp-root",
+      "launchpad-planning",
+      "harness-fixtures",
+      "harness-context",
+      "plan-refutation",
+      "runner-fixtures",
+      "sync-fixtures",
+      "process-debt"
+    ],
+    "freshSuites": 118,
+    "reusedSuites": 0,
+    "unrunSuites": []
+  },
+  "consumedProductGateStands": true,
+  "probes": [
+    {
+      "capture": "ver002-existing-probes.log",
+      "execution": {
+        "startedAt": "2026-11-03T05:45:13.941Z",
+        "finishedAt": "2026-11-03T05:45:26.303Z",
+        "durationMs": 12361,
+        "exitCode": 0,
+        "executed": true,
+        "droppedOutputBytes": 0
+      },
+      "assertions": [
+        "✔ VER-001 glob depth, literal punctuation, Unicode and shortest-root controls (0.560916ms)",
+        "✔ VER-001 every emitted role root communicates the required prune ownership and denial fallback (69.720208ms)",
+        "✔ VER-001 a complete production-emitted current snapshot closes on the first attempt (6033.445583ms)",
+        "✔ VER-001 a production-emitted snapshot retained across a runtime update is owned residue (6136.527667ms)",
+        "ℹ tests 4",
+        "ℹ pass 4",
+        "ℹ fail 0"
+      ],
+      "diagnostics": [
+        {
+          "roots": 14,
+          "missing": []
+        },
+        {
+          "outcome": "removed",
+          "blocker": null,
+          "snapshotFiles": 542,
+          "deleted": [
+            {
+              "kind": "harness snapshot",
+              "files": 549
+            }
+          ]
+        },
+        {
+          "status": 0,
+          "outcome": "removed",
+          "earlierSnapshotRetained": false,
+          "currentSnapshotRetained": false
+        }
+      ]
+    },
+    {
+      "capture": "ver002-target-close.log",
+      "execution": {
+        "startedAt": "2026-11-03T05:45:54.778Z",
+        "finishedAt": "2026-11-03T05:46:53.965Z",
+        "durationMs": 59187,
+        "exitCode": 0,
+        "executed": true,
+        "droppedOutputBytes": 0
+      },
+      "assertions": [
+        "✔ WO-252 a fork-shaped target closes on its first attempt: sixteen nested caches under one glob, the kit's residue moved or deleted, no blocker, timed children and the printed handoff (5822.35375ms)",
+        "✔ WO-252 one **/node_modules entry closes nested Vite and Vitest caches and the root's cache on the first attempt, listing each under that entry (5586.772167ms)",
+        "✔ WO-252 a one-segment glob takes only its depth, and a glob match through a link still refuses as a declared root does (6825.450666ms)",
+        "✔ WO-252 a target close refuses what the kit did not write and stops on a held writer before deleting anything (8035.865334ms)",
+        "✔ WO-252 the kit's snapshot cleanup removes only its listed files, so a tracked file beside them survives (11271.791292ms)",
+        "✔ WO-252 a foreign file at a snapshot's record path under a declared root is deleted as declared output, and the kit's snapshot goes with it (5834.041833ms)",
+        "✔ WO-252 snapshots earlier runtimes installed are the kit's residue too, proven by the record a changed pinned list left or, before records, by their own package files, while a file the kit did not write in one is still refused (10837.433083ms)",
+        "✔ WO-252 a nested repository under declared output counts each file its removal took before it stopped (4859.930625ms)",
+        "ℹ tests 8",
+        "ℹ pass 8",
+        "ℹ fail 0"
+      ],
+      "diagnostics": []
+    },
+    {
+      "capture": "ver002-harness-probes.log",
+      "execution": {
+        "startedAt": "2026-11-03T05:48:11.978Z",
+        "finishedAt": "2026-11-03T05:48:18.380Z",
+        "durationMs": 6402,
+        "exitCode": 0,
+        "executed": true,
+        "droppedOutputBytes": 0
+      },
+      "assertions": [
+        "✔ WO-252 every emitted role root gives the prune to the session that needs it and the operator its command only after a recorded host denial, the router running none, and release close removes undeclared output from the launchpad session (66.972416ms)",
+        "✔ WO-252 a snapshot carries the input its name hashes, so a later runtime proves it by content, and one installed without it proves itself only by its own package files (1093.081417ms)",
+        "✔ router dispatch is metadata only and its exact-phrase guard does not apply to a worker's spawns (5056.20075ms)",
+        "ℹ tests 3",
+        "ℹ pass 3",
+        "ℹ fail 0"
+      ],
+      "diagnostics": []
+    },
+    {
+      "capture": "ver002-final-independent-probes.log",
+      "execution": {
+        "startedAt": "2026-11-03T05:48:54.437Z",
+        "finishedAt": "2026-11-03T05:49:06.724Z",
+        "durationMs": 12287,
+        "exitCode": 1,
+        "executed": true,
+        "droppedOutputBytes": 0
+      },
+      "assertions": [
+        "✖ VER-002 a pre-record installer with its historical pinned list leaves owned residue that closes after update (5094.0465ms)",
+        "✖ VER-002 a stopped target removal preserves an expired root's ordinary prune eligibility (7065.142375ms)",
+        "ℹ tests 2",
+        "ℹ pass 0",
+        "ℹ fail 2",
+        "✖ failing tests:"
+      ],
+      "diagnostics": [
+        {
+          "legacyRevision": "dc447da848e4a14c2c61e48ff91ba969351c6040",
+          "previousPins": 41,
+          "currentPins": 42,
+          "addedPins": [
+            "packages/skeleton/dist/src/document-quality.js"
+          ],
+          "previousHasRecord": false,
+          "closeStatus": 1,
+          "outcome": "retained",
+          "blockerClass": "undeclared-ignored-material",
+          "blockerStep": "worktree-removal",
+          "namesLegacySnapshot": true,
+          "previousRetained": true,
+          "currentRetained": true
+        },
+        {
+          "baseline": {
+            "closeStatus": 1,
+            "ledgerRetained": true,
+            "pruneCandidate": true
+          },
+          "beforeCandidate": true,
+          "targetRetained": true,
+          "ledgerRetained": false,
+          "registeredRootCaptured": true,
+          "afterCandidate": false,
+          "afterReason": "the owner's ledger does not register this root's token at this path",
+          "blockerClass": "other",
+          "blockerStep": "worktree-removal"
+        }
+      ]
+    },
+    {
+      "capture": "ver002-process-debt.log",
+      "execution": {
+        "startedAt": "2026-11-03T05:49:20.664Z",
+        "finishedAt": "2026-11-03T05:49:21.255Z",
+        "durationMs": 591,
+        "exitCode": 0,
+        "executed": true,
+        "droppedOutputBytes": 0
+      },
+      "assertions": [
+        "✔ WO-252 plan failures counts stopped closes by blocker class and plan start prints a class repeated across three orders (226.059ms)",
+        "✔ WO-252 plan start prints every repeated close blocker class even when the start block must drop them to fit its bound (194.939542ms)",
+        "ℹ tests 2",
+        "ℹ pass 2",
+        "ℹ fail 0"
+      ],
+      "diagnostics": []
+    },
+    {
+      "capture": "ver002-temporary-roots.log",
+      "execution": {
+        "startedAt": "2026-11-03T05:49:30.791Z",
+        "finishedAt": "2026-11-03T05:49:31.708Z",
+        "durationMs": 917,
+        "exitCode": 0,
+        "executed": true,
+        "droppedOutputBytes": 0
+      },
+      "assertions": [
+        "✔ a renumbered device is re-stamped and judged by its class and window like any root (21.710667ms)",
+        "✔ a renumbered device never admits a replaced, foreign, live, protected or undeclared root (130.613709ms)",
+        "✔ a device transition is ledgered before the marker changes, and once (10.242708ms)",
+        "✔ a renumbered root whose owner repository is gone is proven by its marker and removed by prune apply (203.706625ms)",
+        "✔ a child whose own removal stopped inside its parent's aside stays bound and held until a prune finishes both (179.747417ms)",
+        "✔ a child finished from its parent's aside ends its own registration (25.695042ms)",
+        "✔ an empty unmarked aside a stopped removal left is removed, and a non-empty one keeps its payload (173.851125ms)",
+        "✔ a nested registration in another repository's ledger waits while its parent sits aside (46.277084ms)",
+        "ℹ tests 8",
+        "ℹ pass 8",
+        "ℹ fail 0"
+      ],
+      "diagnostics": []
+    },
+    {
+      "capture": "ver002-release-derived.log",
+      "execution": {
+        "startedAt": "2026-11-03T05:49:38.695Z",
+        "finishedAt": "2026-11-03T05:49:42.982Z",
+        "durationMs": 4287,
+        "exitCode": 0,
+        "executed": true,
+        "droppedOutputBytes": 0
+      },
+      "assertions": [],
+      "diagnostics": []
+    },
+    {
+      "capture": "ver002-config.log",
+      "execution": {
+        "startedAt": "2026-11-03T05:50:28.857Z",
+        "finishedAt": "2026-11-03T05:50:34.619Z",
+        "durationMs": 5762,
+        "exitCode": 0,
+        "executed": true,
+        "droppedOutputBytes": 0
+      },
+      "assertions": [
+        "✔ configuration root (5638.75125ms)",
+        "ℹ tests 18",
+        "ℹ pass 18",
+        "ℹ fail 0"
+      ],
+      "diagnostics": []
+    },
+    {
+      "capture": "ver002-harness-check.log",
+      "execution": {
+        "startedAt": "2026-11-03T05:53:19.449Z",
+        "finishedAt": "2026-11-03T05:53:19.690Z",
+        "durationMs": 241,
+        "exitCode": 0,
+        "executed": true,
+        "droppedOutputBytes": 0
+      },
+      "assertions": [
+        "harness check: 42 generated surfaces; local-terms list: present"
+      ],
+      "diagnostics": []
+    },
+    {
+      "capture": "ver002-publication.log",
+      "execution": {
+        "startedAt": "2026-11-03T05:53:21.767Z",
+        "finishedAt": "2026-11-03T05:53:22.010Z",
+        "durationMs": 243,
+        "exitCode": 0,
+        "executed": true,
+        "droppedOutputBytes": 0
+      },
+      "assertions": [
+        "PASS index coverage: 256/256 product headings indexed",
+        "PASS dual-voice links: 3 identical claim links per voice",
+        "CURRENT everyday-ai-user-toc.md: 29 linked source sections match",
+        "CURRENT software-engineer-toc.md: 45 linked source sections match",
+        "PASS publication bootstrap checks"
+      ],
+      "diagnostics": []
+    }
+  ],
+  "limits": [
+    "Historical-installer probe runs byte-exact old harness source with copied current fixture package payload, not a complete historical release build.",
+    "Baseline close-helper control changes only that helper in the same local fixture.",
+    "The stopped-removal probe unlocks and closes successfully in cleanup; it establishes loss of ordinary prune while the checkout survives, not data loss.",
+    "Final format and document-gate outcomes remain in the gate records and ignored captures; completion consumes the exact-candidate document row."
+  ]
+}

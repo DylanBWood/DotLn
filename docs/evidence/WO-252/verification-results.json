@@ -1,0 +1,254 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-252",
+  "verification": "VER-001",
+  "recordedAt": "2026-11-03T01:27:05.243Z",
+  "codeIdentity": "eca05d352fd2c90cd322749640cd65606995e23bd77eaa588562d32fc0cd90be",
+  "completeReview": [
+    {
+      "checkId": "npm test",
+      "treeHash": "5ca2c3c346a7bf3e919b0630109da13f72094423",
+      "codeIdentity": "eca05d352fd2c90cd322749640cd65606995e23bd77eaa588562d32fc0cd90be",
+      "gateSelection": "review",
+      "exitCode": 0,
+      "recordedAt": "2026-11-03T00:55:58.273Z",
+      "stands": true
+    }
+  ],
+  "probes": [
+    {
+      "capture": "target-close-tests.log",
+      "exitCode": 0,
+      "executed": true,
+      "durationMs": 40325,
+      "startedAt": "2026-11-03T01:11:37.551Z",
+      "finishedAt": "2026-11-03T01:12:17.876Z",
+      "testResults": [
+        "✔ WO-252 a fork-shaped target closes on its first attempt: sixteen nested caches under one glob, the kit's residue moved or deleted, no blocker, timed children and the printed handoff (6294.647209ms)",
+        "✔ WO-252 one **/node_modules entry closes nested Vite and Vitest caches and the root's cache on the first attempt, listing each under that entry (6376.0185ms)",
+        "✔ WO-252 a one-segment glob takes only its depth, and a glob match through a link still refuses as a declared root does (7349.231417ms)",
+        "✔ WO-252 a target close refuses what the kit did not write and stops on a held writer before deleting anything (8554.994667ms)",
+        "✔ WO-252 the kit's snapshot cleanup removes only its listed files, so a tracked file beside them survives (6324.058208ms)",
+        "✔ WO-252 a nested repository under declared output counts each file its removal took before it stopped (5302.306208ms)",
+        "ℹ tests 6",
+        "ℹ pass 6",
+        "ℹ fail 0"
+      ]
+    },
+    {
+      "capture": "independent-probes.log",
+      "exitCode": 1,
+      "executed": true,
+      "durationMs": 11676,
+      "startedAt": "2026-11-03T01:14:26.179Z",
+      "finishedAt": "2026-11-03T01:14:37.855Z",
+      "testResults": [
+        "✔ VER-001 glob depth, literal punctuation, Unicode and shortest-root controls (0.530834ms)",
+        "✔ VER-001 a complete production-emitted current snapshot closes on the first attempt (6426.469042ms)",
+        "ℹ {\"outcome\":\"removed\",\"blocker\":null,\"snapshotFiles\":542,\"deleted\":[{\"kind\":\"harness snapshot\",\"files\":548}]}",
+        "✖ VER-001 a production-emitted snapshot retained across a runtime update is owned residue (5127.518834ms)",
+        "ℹ {\"status\":1,\"outcome\":\"retained\",\"blockerClass\":\"undeclared-ignored-material\",\"blockerStep\":\"worktree-removal\",\"namesEarlierSnapshot\":true,\"earlierSnapshotRetained\":true,\"currentSnapshotRetained\":true}",
+        "ℹ tests 3",
+        "ℹ pass 2",
+        "ℹ fail 1",
+        "✖ VER-001 a production-emitted snapshot retained across a runtime update is owned residue (5127.518834ms)"
+      ]
+    },
+    {
+      "capture": "temporary-root-tests.log",
+      "exitCode": 0,
+      "executed": true,
+      "durationMs": 934,
+      "startedAt": "2026-11-03T01:15:16.908Z",
+      "finishedAt": "2026-11-03T01:15:17.842Z",
+      "testResults": [
+        "✔ a renumbered device is re-stamped and judged by its class and window like any root (20.885458ms)",
+        "✔ a renumbered device never admits a replaced, foreign, live, protected or undeclared root (132.559709ms)",
+        "✔ a device transition is ledgered before the marker changes, and once (12.07475ms)",
+        "✔ a renumbered root whose owner repository is gone is proven by its marker and removed by prune apply (190.707916ms)",
+        "✔ a child whose own removal stopped inside its parent's aside stays bound and held until a prune finishes both (189.815958ms)",
+        "✔ a child finished from its parent's aside ends its own registration (29.311833ms)",
+        "✔ an empty unmarked aside a stopped removal left is removed, and a non-empty one keeps its payload (182.042584ms)",
+        "✔ a nested registration in another repository's ledger waits while its parent sits aside (47.51025ms)",
+        "ℹ tests 8",
+        "ℹ pass 8",
+        "ℹ fail 0"
+      ]
+    },
+    {
+      "capture": "recovery-probes.log",
+      "exitCode": 1,
+      "executed": true,
+      "durationMs": 154,
+      "startedAt": "2026-11-03T01:15:56.828Z",
+      "finishedAt": "2026-11-03T01:15:56.982Z",
+      "testResults": [],
+      "recoveryResults": [
+        {
+          "name": "two stopped removals leave an unbound child and retire its segment",
+          "reproduced": false
+        },
+        {
+          "name": "a child removed from its parents aside is ledgered at its relocated path",
+          "reproduced": false
+        },
+        {
+          "name": "the final owner-marker removal window leaves an empty unmarked aside retained",
+          "reproduced": false
+        },
+        {
+          "name": "a parent registered elsewhere does not hold its nested childs ledger segment",
+          "reproduced": false
+        }
+      ],
+      "interpretation": "The legacy WO-237 probe asserts the old defects. All four report reproduced false and exit 1 because the defects no longer reproduce; the eight passing temporary-root regressions establish the intended payload-retention behavior."
+    },
+    {
+      "capture": "role-root-probe.log",
+      "exitCode": 1,
+      "executed": true,
+      "durationMs": 181,
+      "startedAt": "2026-11-03T01:16:18.956Z",
+      "finishedAt": "2026-11-03T01:16:19.137Z",
+      "testResults": [
+        "✖ VER-001 every emitted role root communicates the required prune ownership and denial fallback (67.726625ms)",
+        "ℹ {\"roots\":14,\"missing\":[\".agents/skills/dotln-router/SKILL.md\",\".claude/skills/dotln-router/SKILL.md\"]}",
+        "ℹ tests 1",
+        "ℹ pass 0",
+        "ℹ fail 1",
+        "✖ VER-001 every emitted role root communicates the required prune ownership and denial fallback (67.726625ms)"
+      ]
+    },
+    {
+      "capture": "process-debt-tests.log",
+      "exitCode": 0,
+      "executed": true,
+      "durationMs": 590,
+      "startedAt": "2026-11-03T01:16:33.474Z",
+      "finishedAt": "2026-11-03T01:16:34.064Z",
+      "testResults": [
+        "✔ WO-252 plan failures counts stopped closes by blocker class and plan start prints a class repeated across three orders (226.070458ms)",
+        "✔ WO-252 plan start prints every repeated close blocker class even when the start block must drop them to fit its bound (193.277208ms)",
+        "ℹ tests 2",
+        "ℹ pass 2",
+        "ℹ fail 0"
+      ]
+    },
+    {
+      "capture": "target-release-test.log",
+      "exitCode": 0,
+      "executed": true,
+      "durationMs": 26412,
+      "startedAt": "2026-11-03T01:16:42.923Z",
+      "finishedAt": "2026-11-03T01:17:09.335Z",
+      "testResults": [
+        "✔ WO-221 a target close deletes declared disposable output, judges the base by the fetched tree, refuses a stray .env with the registration remedy and publishes a declared target release (26301.828375ms)",
+        "ℹ tests 1",
+        "ℹ pass 1",
+        "ℹ fail 0"
+      ]
+    },
+    {
+      "capture": "configuration-root-tests.log",
+      "exitCode": 0,
+      "executed": true,
+      "durationMs": 6752,
+      "startedAt": "2026-11-03T01:17:17.829Z",
+      "finishedAt": "2026-11-03T01:17:24.581Z",
+      "testResults": [
+        "✔ evidence registration validates declarations at a root outside docs (99.257583ms)",
+        "✔ publication declarations under a configured root require both editions (520.862708ms)",
+        "✔ desktop-control feature elections validate without granting a default (3.620375ms)",
+        "✔ configuration root (5691.094375ms)",
+        "✔ registration hosts and target release names refuse invalid instance data at load (3.33775ms)",
+        "✔ instance contribution identity controls sign-off independently of Git identity (98.466667ms)",
+        "✔ historical order configuration admits no history and rejects malformed history (2.073459ms)",
+        "✔ the public WO-111 seed emits a registration with a declared scratch class (209.755125ms)",
+        "ℹ tests 25",
+        "ℹ pass 25",
+        "ℹ fail 0"
+      ]
+    },
+    {
+      "capture": "release-success.log",
+      "exitCode": 0,
+      "executed": true,
+      "durationMs": 19035,
+      "startedAt": "2026-11-03T01:17:45.054Z",
+      "finishedAt": "2026-11-03T01:18:04.089Z",
+      "testResults": []
+    },
+    {
+      "capture": "release-journal-failure.log",
+      "exitCode": 0,
+      "executed": true,
+      "durationMs": 6284,
+      "startedAt": "2026-11-03T01:19:56.691Z",
+      "finishedAt": "2026-11-03T01:20:02.975Z",
+      "testResults": []
+    },
+    {
+      "capture": "harness.log",
+      "exitCode": 0,
+      "executed": true,
+      "durationMs": 262,
+      "startedAt": "2026-11-03T01:20:58.217Z",
+      "finishedAt": "2026-11-03T01:20:58.479Z",
+      "testResults": []
+    },
+    {
+      "capture": "publication.log",
+      "exitCode": 0,
+      "executed": true,
+      "durationMs": 293,
+      "startedAt": "2026-11-03T01:20:58.663Z",
+      "finishedAt": "2026-11-03T01:20:58.956Z",
+      "testResults": []
+    },
+    {
+      "capture": "generated.log",
+      "exitCode": 0,
+      "executed": true,
+      "durationMs": 22537,
+      "startedAt": "2026-11-03T01:20:59.152Z",
+      "finishedAt": "2026-11-03T01:21:21.689Z",
+      "testResults": [],
+      "structural": {
+        "exitCode": 0,
+        "stale": [],
+        "caseExitCodes": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "capture": "format-check.log",
+      "exitCode": 0,
+      "executed": true,
+      "durationMs": 8674,
+      "startedAt": "2026-11-03T01:24:50.591Z",
+      "finishedAt": "2026-11-03T01:24:59.265Z",
+      "testResults": []
+    }
+  ],
+  "limits": [
+    "Raw captures remain in ignored session scratch. This record selects verdict-relevant test names, diagnostic objects and bounded completion fields; it does not embed nested gate output.",
+    "The independent three-test snapshot run preceded the addition of the all-role test; the latter was then run independently against the same implementation.",
+    "No external remote was used by the fixture publication tests. No verification worker was launched."
+  ]
+}
