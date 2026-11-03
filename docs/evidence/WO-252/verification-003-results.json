@@ -1,0 +1,412 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-252",
+  "verification": "VER-003",
+  "recordedAt": "2026-11-03T15:49:30.714779+00:00",
+  "codeIdentity": "dfbf687b51a680dc5836c1b20c7d0567ff7de143f1287d30006838d2b7b24d26",
+  "completeReview": {
+    "checkId": "npm test",
+    "treeHash": "e0e8afa01e49a7aca7114214c2b0dffbe85a6dcc",
+    "codeIdentity": "dfbf687b51a680dc5836c1b20c7d0567ff7de143f1287d30006838d2b7b24d26",
+    "exitCode": 0,
+    "executed": true,
+    "recordedAt": "2026-11-03T14:58:32.380Z",
+    "durationMs": 2513457,
+    "requiredSuites": [
+      "build",
+      "format",
+      "configuration-root",
+      "registrations",
+      "declarations",
+      "generated",
+      "host",
+      "release-preparation",
+      "github-body",
+      "outward-lint",
+      "target-publish",
+      "target-worktree",
+      "vertical",
+      "license-fixtures",
+      "publication-fixtures",
+      "backup-intake",
+      "resume",
+      "launchpad",
+      "workstream-pilot",
+      "instance-history",
+      "beacon-portability",
+      "checkpoint",
+      "worktree",
+      "worktree-integration",
+      "release",
+      "work-orders-fixtures",
+      "siblings-fixtures",
+      "kernel",
+      "compiler",
+      "skeleton",
+      "console",
+      "browser-evidence",
+      "adjacent-queue",
+      "derived-orders",
+      "portfolio",
+      "codex-continuation",
+      "authority-grants",
+      "fixture-temp-root",
+      "launchpad-planning",
+      "harness-fixtures",
+      "harness-context",
+      "plan-refutation",
+      "runner-fixtures",
+      "sync-fixtures",
+      "process-debt"
+    ],
+    "missingSuites": [],
+    "stands": true,
+    "evidenceRef": "host-gate:dfbf687b51a680dc5836c1b20c7d0567ff7de143f1287d30006838d2b7b24d26:npm test",
+    "taskCount": 118
+  },
+  "checks": [
+    {
+      "name": "format",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "npm",
+        "run",
+        "format:check"
+      ],
+      "exitCode": 0,
+      "durationMs": 9418,
+      "recordedAt": "2026-11-03T15:43:14.569260+00:00",
+      "selectedOutput": [
+        "All matched files use Prettier code style!"
+      ],
+      "rawCapture": {
+        "sha256": "3a6fd24c8e0470476fe331dc8e1b3adfeae4ba7b78789a5bcd6592a62596b050",
+        "bytes": 667,
+        "storage": "ignored session scratch"
+      }
+    },
+    {
+      "name": "ver001",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "--test",
+        "docs/evidence/WO-252/verification-probes.mjs"
+      ],
+      "exitCode": 0,
+      "durationMs": 13866,
+      "recordedAt": "2026-11-03T15:43:28.436355+00:00",
+      "selectedOutput": [
+        "\u2139 {\"roots\":14,\"missing\":[]}",
+        "\u2139 {\"outcome\":\"removed\",\"blocker\":null,\"snapshotFiles\":542,\"deleted\":[{\"kind\":\"harness snapshot\",\"files\":549}]}",
+        "\u2139 {\"status\":0,\"outcome\":\"removed\",\"earlierSnapshotRetained\":false,\"currentSnapshotRetained\":false}",
+        "\u2139 tests 4",
+        "\u2139 pass 4",
+        "\u2139 fail 0",
+        "\u2139 cancelled 0",
+        "\u2139 skipped 0",
+        "\u2139 duration_ms 13643.733084"
+      ],
+      "rawCapture": {
+        "sha256": "d1bc03722a48b741b9fd9c3bafa62e85f215057e58d4b564a25555995de394c8",
+        "bytes": 1326,
+        "storage": "ignored session scratch"
+      }
+    },
+    {
+      "name": "ver002",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "--test",
+        "docs/evidence/WO-252/verification-002-probes.mjs"
+      ],
+      "exitCode": 0,
+      "durationMs": 14787,
+      "recordedAt": "2026-11-03T15:43:43.223874+00:00",
+      "selectedOutput": [
+        "\u2139 {\"legacyRevision\":\"dc447da848e4a14c2c61e48ff91ba969351c6040\",\"previousPins\":41,\"currentPins\":42,\"addedPins\":[\"packages/skeleton/dist/src/document-quality.js\"],\"previousHasRecord\":false,\"closeStatus\":0,\"outcome\":\"removed\",\"namesLegacySnapshot\":false,\"previousRetained\":false,\"currentRetained\":false}",
+        "\u2139 {\"baseline\":{\"closeStatus\":1,\"ledgerRetained\":true,\"pruneCandidate\":true},\"beforeCandidate\":true,\"targetRetained\":true,\"ledgerRetained\":true,\"registeredRootCaptured\":true,\"afterCandidate\":true,\"blockerClass\":\"other\",\"blockerStep\":\"worktree-removal\"}",
+        "\u2139 tests 2",
+        "\u2139 pass 2",
+        "\u2139 fail 0",
+        "\u2139 cancelled 0",
+        "\u2139 skipped 0",
+        "\u2139 duration_ms 14573.026209"
+      ],
+      "rawCapture": {
+        "sha256": "a0ea25dbe12de2ab38b4da42085e5425f21c8b88f12035b163c48ce282d0bcb4",
+        "bytes": 1459,
+        "storage": "ignored session scratch"
+      }
+    },
+    {
+      "name": "target-close",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "--test",
+        "--test-name-pattern=WO-252",
+        "scripts/test-target-worktree-close.mjs"
+      ],
+      "exitCode": 0,
+      "durationMs": 97768,
+      "recordedAt": "2026-11-03T15:45:20.993068+00:00",
+      "selectedOutput": [
+        "\u2139 worktree-removal 1769.8 ms: base-fetch 232.9, disposable-deletion 5.0, finder-metadata 4.8, journal-retention 16.8, git-worktree-remove 73.1, branch-delete 19.9, preservation 104.4",
+        "\u2139 tests 13",
+        "\u2139 pass 13",
+        "\u2139 fail 0",
+        "\u2139 cancelled 0",
+        "\u2139 skipped 0",
+        "\u2139 duration_ms 97564.051"
+      ],
+      "rawCapture": {
+        "sha256": "b7aab549e26624ccfbad1d342481381ca203a6f1cbdbea3f341bb1834644d881",
+        "bytes": 3668,
+        "storage": "ignored session scratch"
+      }
+    },
+    {
+      "name": "repeated-close",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "--test",
+        "docs/evidence/WO-252/verification-003-probes.mjs"
+      ],
+      "exitCode": 0,
+      "durationMs": 7581,
+      "recordedAt": "2026-11-03T15:46:09.592957+00:00",
+      "selectedOutput": [
+        "\u2139 {\"observations\":[{\"attempt\":1,\"ledgerOutcome\":\"restored\",\"registrations\":2,\"prunableRoots\":2,\"retainedJournalRows\":1},{\"attempt\":2,\"ledgerOutcome\":\"restored\",\"registrations\":2,\"prunableRoots\":2,\"retainedJournalRows\":2}],\"finalOutcome\":\"removed\"}",
+        "\u2139 tests 1",
+        "\u2139 pass 1",
+        "\u2139 fail 0",
+        "\u2139 cancelled 0",
+        "\u2139 skipped 0",
+        "\u2139 duration_ms 7380.312125"
+      ],
+      "rawCapture": {
+        "sha256": "bc3842131df7c6eea0f0b7a1e778b5c4555521a3aa1a923d38cbdf68b074477b",
+        "bytes": 1036,
+        "storage": "ignored session scratch"
+      }
+    },
+    {
+      "name": "history",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "--test",
+        "docs/evidence/WO-252/repair-3-release-history-probes.mjs"
+      ],
+      "exitCode": 0,
+      "durationMs": 947,
+      "recordedAt": "2026-11-03T15:46:10.540434+00:00",
+      "selectedOutput": [
+        "\u2139 {\"releases\":33,\"lists\":[{\"pins\":41,\"first\":\"v0.83.0\",\"last\":\"v0.102.0\",\"releases\":22},{\"pins\":42,\"first\":\"v0.103.0\",\"last\":\"v0.111.1\",\"releases\":11}],\"before\":\"v0.82.0\"}",
+        "\u2139 [{\"release\":\"v0.82.0\",\"snapshot\":\".runtime/harness/66c6c6533cb89d27\",\"pins\":40,\"proven\":false},{\"release\":\"v0.83.0\",\"snapshot\":\".runtime/harness/0a48e0c107b2ae79\",\"pins\":41,\"proven\":true},{\"release\":\"v0.111.1\",\"snapshot\":\".runtime/harness/853a83916c508be6\",\"pins\":42,\"proven\":true}]",
+        "\u2139 tests 2",
+        "\u2139 pass 2",
+        "\u2139 fail 0",
+        "\u2139 cancelled 0",
+        "\u2139 skipped 0",
+        "\u2139 duration_ms 746.312416"
+      ],
+      "rawCapture": {
+        "sha256": "da746b32a802ade4af2ef11d572ab1d5ae26a82409f9eac412456042e3a8a4cb",
+        "bytes": 1502,
+        "storage": "ignored session scratch"
+      }
+    },
+    {
+      "name": "harness-cases",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "--test",
+        "--test-name-pattern=WO-252|router dispatch is metadata only",
+        "scripts/test-harness.mjs"
+      ],
+      "exitCode": 0,
+      "durationMs": 6953,
+      "recordedAt": "2026-11-03T15:46:17.493717+00:00",
+      "selectedOutput": [
+        "\u2139 tests 4",
+        "\u2139 pass 4",
+        "\u2139 fail 0",
+        "\u2139 cancelled 0",
+        "\u2139 skipped 0",
+        "\u2139 duration_ms 6750.605167"
+      ],
+      "rawCapture": {
+        "sha256": "ecb61e1fc1207c6790757b7fe07b524715b7b6e5283729d4fe70c2cf4a542ecf",
+        "bytes": 1557,
+        "storage": "ignored session scratch"
+      }
+    },
+    {
+      "name": "configuration",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "--test",
+        "--test-name-pattern=^configuration root$",
+        "scripts/test-configuration-root.mjs"
+      ],
+      "exitCode": 0,
+      "durationMs": 6141,
+      "recordedAt": "2026-11-03T15:46:23.634808+00:00",
+      "selectedOutput": [
+        "\u2139 tests 18",
+        "\u2139 pass 18",
+        "\u2139 fail 0",
+        "\u2139 cancelled 0",
+        "\u2139 skipped 0",
+        "\u2139 duration_ms 5936.407875"
+      ],
+      "rawCapture": {
+        "sha256": "fd3f34a49db4ecd499a043ebb55c8a86b35950a15c13dfdcd87026f1502ea9c8",
+        "bytes": 2108,
+        "storage": "ignored session scratch"
+      }
+    },
+    {
+      "name": "process-debt",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "--test",
+        "--test-name-pattern=WO-252",
+        "scripts/test-process-debt.mjs"
+      ],
+      "exitCode": 0,
+      "durationMs": 777,
+      "recordedAt": "2026-11-03T15:46:24.411954+00:00",
+      "selectedOutput": [
+        "\u2139 tests 2",
+        "\u2139 pass 2",
+        "\u2139 fail 0",
+        "\u2139 cancelled 0",
+        "\u2139 skipped 0",
+        "\u2139 duration_ms 572.125875"
+      ],
+      "rawCapture": {
+        "sha256": "2099ae0ba671dfdcf2a84a5bdfbdf05c86336f4aec72cc22ad8e20a8908aa586",
+        "bytes": 931,
+        "storage": "ignored session scratch"
+      }
+    },
+    {
+      "name": "temporary-roots",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "--test",
+        "--test-name-pattern=renumbered|a child whose own removal|a child finished|an empty unmarked aside|a nested registration in another repository|a removal stopped after it moved",
+        "scripts/test-temporary-roots.mjs"
+      ],
+      "exitCode": 0,
+      "durationMs": 1471,
+      "recordedAt": "2026-11-03T15:46:25.883340+00:00",
+      "selectedOutput": [
+        "\u2139 tests 8",
+        "\u2139 pass 8",
+        "\u2139 fail 0",
+        "\u2139 cancelled 0",
+        "\u2139 skipped 0",
+        "\u2139 duration_ms 1267.361958"
+      ],
+      "rawCapture": {
+        "sha256": "8a5e26cac5ea3328101f92df5674c7f71a6a805ea6b88d22adc840e0e69c1ce8",
+        "bytes": 1562,
+        "storage": "ignored session scratch"
+      }
+    },
+    {
+      "name": "harness-check",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "node",
+        "scripts/harness.mjs",
+        "check"
+      ],
+      "exitCode": 0,
+      "durationMs": 423,
+      "recordedAt": "2026-11-03T15:46:26.306148+00:00",
+      "selectedOutput": [
+        "harness check: 42 generated surfaces; local-terms list: present"
+      ],
+      "rawCapture": {
+        "sha256": "536178e9527a2a30327296d29635e9ea5ce37b5cb022cea1d3ae95a624e3d3da",
+        "bytes": 606,
+        "storage": "ignored session scratch"
+      }
+    },
+    {
+      "name": "publication",
+      "command": [
+        "node",
+        "scripts/harness.mjs",
+        "bounded",
+        "--",
+        "npm",
+        "run",
+        "publication:check"
+      ],
+      "exitCode": 0,
+      "durationMs": 400,
+      "recordedAt": "2026-11-03T15:46:26.706451+00:00",
+      "selectedOutput": [
+        "PASS index coverage: 256/256 product headings indexed",
+        "PASS dual-voice links: 3 identical claim links per voice",
+        "PASS publication bootstrap checks"
+      ],
+      "rawCapture": {
+        "sha256": "03aeba78476e4c517b518e0d5cede63c1021877a17e9d924d6c5a749e2a8dae4",
+        "bytes": 877,
+        "storage": "ignored session scratch"
+      }
+    }
+  ],
+  "limits": [
+    "The complete review gate is consumed at the unchanged code identity, not rerun. The document gate follows the last report/evidence edit and its exact-candidate row is consumed by the result transition.",
+    "No external publication or desktop/browser operation was performed; target close probes use local-only repositories.",
+    "Historical survey checks all 33 release lists from v0.83.0 to v0.111.1; installer executions cover the three releases in the committed small-runtime fixture, not full historical builds.",
+    "Pre-v0.83.0 snapshot names do not bind their full package inventory and remain refused as recorded in D026. Process termination inside Git removal and a failed ledger write-back are not exercised, as recorded in D027."
+  ]
+}

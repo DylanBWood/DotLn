@@ -7,7 +7,17 @@ import { boundTemporaryRoots } from "./lib/temporary-prune.mjs";
 import { formatPruneReport } from "./lib/temporary-prune-summary.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 import { buildFreshness } from "./lib/build-freshness.mjs";
-import { releaseSteps, withReleaseStep } from "./lib/release-steps.mjs";
+import {
+  addRemovalChild,
+  blockerClassOf,
+  closeBlocker,
+  currentReleaseStep,
+  isRemovalChild,
+  releaseSteps,
+  timeRemovalChild,
+  withBlockerClass,
+  withReleaseStep,
+} from "./lib/release-steps.mjs";
 import {
   hasPackageSources,
   isKitRoot as isKitWorktree,
@@ -98,6 +108,7 @@ import {
 import { materialSummary } from "./lib/material-summary.mjs";
 import {
   selfCloseKind,
+  targetCloseHandoffLines,
   targetReleasePolicy,
 } from "./lib/release-close-handoff.mjs";
 import { CONTROL_LOG_SCHEMA_VERSION, statusProjection } from "./resume.mjs";
@@ -513,20 +524,34 @@ export function releaseCloseSummary(record) {
   }
   if (record.targetCleanup) {
     const cleanup = record.targetCleanup;
+    // A pattern's row counts its files across the roots it matched.
+    const named = (row) =>
+      `${row.path} (${row.files}${row.matches ? ` in ${row.matches.length} ${row.matches.length === 1 ? "match" : "matches"}` : ""})`;
     const deleted = [
-      ...(cleanup.disposable?.target?.map(
-        (row) => `${row.path} (${row.files})`,
-      ) ?? []),
+      ...(cleanup.disposable?.target?.map(named) ?? []),
       ...(cleanup.baseDisposablePolicy !== "judge-only"
-        ? (cleanup.disposable?.base?.map(
-            (row) => `base ${row.path} (${row.files})`,
-          ) ?? [])
+        ? (cleanup.disposable?.base?.map((row) => `base ${named(row)}`) ?? [])
         : []),
     ];
+    const residue = cleanup.residue;
+    const kit = residue
+      ? [
+          ...(residue.journals?.files
+            ? [
+                `${residue.journals.files} journal ${residue.journals.files === 1 ? "file" : "files"} ${residue.journals.outcome === "moved" ? "moved" : "to move"} to ${residue.journals.lane}`,
+              ]
+            : []),
+          ...(residue.deleted ?? []).map(
+            (row) =>
+              `${row.kind} ${row.path} ${row.outcome === "deleted" ? "deleted" : "to delete"}`,
+          ),
+        ]
+      : [];
     lines.push(
-      `Target worktree ${cleanup.path}; branch ${cleanup.branch}: ${cleanup.outcome}; base disposable policy ${cleanup.baseDisposablePolicy ?? "delete"}${cleanup.baseDisposablePolicy === "judge-only" ? " (base output retained)" : ""}${deleted.length ? `; disposable output ${record.dryRun ? "would be deleted" : cleanup.outcome === "removed" ? "deleted" : "planned for deletion"}: ${deleted.join(", ")}` : ""}${cleanup.baseCheckoutWrites === null ? "; advisory: gate base-checkout writes unavailable" : cleanup.baseCheckoutWrites?.length ? `; advisory: gate commands wrote into the base checkout: ${cleanup.baseCheckoutWrites.join(", ")}` : ""}.`,
+      `Target worktree ${cleanup.path}; branch ${cleanup.branch}: ${cleanup.outcome}; base disposable policy ${cleanup.baseDisposablePolicy ?? "delete"}${cleanup.baseDisposablePolicy === "judge-only" ? " (base output retained)" : ""}${deleted.length ? `; disposable output ${record.dryRun ? "would be deleted" : cleanup.outcome === "removed" ? "deleted" : "planned for deletion"}: ${deleted.join(", ")}` : ""}${kit.length ? `; the kit's residue: ${kit.join(", ")}` : ""}${cleanup.baseCheckoutWrites === null ? "; advisory: gate base-checkout writes unavailable" : cleanup.baseCheckoutWrites?.length ? `; advisory: gate commands wrote into the base checkout: ${cleanup.baseCheckoutWrites.join(", ")}` : ""}.`,
     );
   }
+  lines.push(...targetCloseHandoffLines(record));
   for (const row of record.cleanup.worktrees)
     lines.push(`Worktree ${row.path}: ${row.outcome}.`);
   for (const row of record.removals ?? [])
@@ -548,6 +573,10 @@ export function releaseCloseSummary(record) {
         `Operator disposable disposition: ${blocker.disposableCommand}`,
       );
   }
+  if (record.blocker)
+    lines.push(
+      `Close stopped: ${record.blocker.class}${record.blocker.step ? ` in step ${record.blocker.step}` : ""}.`,
+    );
   if (publication.outcome === "prepared")
     lines.push(`Publish: ${record.retryCommand}`);
   lines.push(`Full report: ${record.reportPath}`);
@@ -641,7 +670,8 @@ const ensureOriginReachable = (root) => {
     { cwd: root, timeout: 60_000 },
   );
   if (probe.status !== 0)
-    throw new Error(
+    throw closeBlocker(
+      "host-denied",
       `release close needs network egress to ${repository.host} (git fetch, git ls-remote, the tag push and the GitHub Release); origin is unreachable from this session: ${failureOf(probe, "git ls-remote failed")}. Run the authorized close from a session with egress; host approval governs any outside-sandbox execution.`,
     );
   return repository;
@@ -2151,7 +2181,8 @@ const ensureExistingRelease = (root, tag, head, local, remote, workOrderId) => {
   const localTag = local.get(tag);
   const remoteTag = remote.get(tag);
   if (!remoteTag)
-    throw new Error(
+    throw closeBlocker(
+      "foreign-tag",
       `${tag} exists only locally; inspect it and publish or remove it manually`,
     );
   if (
@@ -2166,7 +2197,8 @@ const ensureExistingRelease = (root, tag, head, local, remote, workOrderId) => {
       head,
     ]).status !== 0
   )
-    throw new Error(
+    throw closeBlocker(
+      "foreign-tag",
       `${tag} already exists remotely for a different or non-annotated object`,
     );
   if (
@@ -2175,7 +2207,10 @@ const ensureExistingRelease = (root, tag, head, local, remote, workOrderId) => {
       localTag.target !== remoteTag.target ||
       localTag.object !== remoteTag.object)
   )
-    throw new Error(`${tag} differs between local and origin`);
+    throw closeBlocker(
+      "foreign-tag",
+      `${tag} differs between local and origin`,
+    );
   if (!localTag)
     runGit(root, ["fetch", "origin", `refs/tags/${tag}:refs/tags/${tag}`]);
   const previousRevision = sourceRevision;
@@ -2189,11 +2224,15 @@ const ensureExistingRelease = (root, tag, head, local, remote, workOrderId) => {
       manifest.workOrder.id !== workOrderId ||
       manifest.release.commit !== remoteTag.target
     )
-      throw new Error(`${tag} belongs to another order or commit`);
+      throw closeBlocker(
+        "foreign-tag",
+        `${tag} belongs to another order or commit`,
+      );
     const expected = tagMessage(root, manifest);
     const actual = tagAnnotation(root, tag);
     if (actual !== expected)
-      throw new Error(
+      throw closeBlocker(
+        "foreign-tag",
         `${tag} annotation differs from its generated manifest and notes`,
       );
     return { manifest, humanLayer: releaseEdition(root, manifest) };
@@ -2205,7 +2244,8 @@ const publishedTag = (name, local, remote) => {
   const remoteTag = remote.get(name);
   const localTag = local.get(name);
   if (!remoteTag?.annotated)
-    throw new Error(
+    throw closeBlocker(
+      "foreign-tag",
       `latest published version ${name} is absent or is not an annotated origin tag`,
     );
   if (
@@ -2214,15 +2254,20 @@ const publishedTag = (name, local, remote) => {
       localTag.object !== remoteTag.object ||
       localTag.target !== remoteTag.target)
   )
-    throw new Error(`${name} differs between local and origin`);
+    throw closeBlocker(
+      "foreign-tag",
+      `${name} differs between local and origin`,
+    );
   return remoteTag;
 };
 const updateMain = (root, listMaterial = false) => {
-  ensureTrackedClean(root);
+  withBlockerClass("not-clean", () => ensureTrackedClean(root));
   reportLocalMaterial(root, listMaterial);
   if (runGit(root, ["symbolic-ref", "--short", "HEAD"]) !== "main")
     throw new Error("release close must run from the main branch checkout");
-  runGit(root, ["fetch", "origin", "main"]);
+  withBlockerClass("base-fetch", () =>
+    runGit(root, ["fetch", "origin", "main"]),
+  );
   runGit(root, ["merge", "--ff-only", "origin/main"]);
   if (
     runGit(root, ["rev-parse", "HEAD"]) !==
@@ -2330,6 +2375,10 @@ const finishPublishedWorktreeOperation = async (
       [])
       for (const saved of attempt.ownedTemporaryRoots ?? [])
         owned.set(saved.path, saved);
+    // A target close in this attempt has already captured the roots its
+    // target's ledger registered, before deleting that ledger.
+    for (const saved of record?.ownedTemporaryRoots ?? [])
+      owned.set(saved.path, saved);
     for (const checkout of new Set([
       ...before.map((row) => row.worktree),
       ...retainedPaths,
@@ -2380,6 +2429,9 @@ const finishPublishedWorktreeOperation = async (
         );
     }
     const outputs = [];
+    // Each kept derived worktree's blocker class, as the finish or settle
+    // process assigned it where that worktree's refusal was raised.
+    const derivedClasses = new Map();
     const actions = subject?.worktree ? ["finish", "settle"] : ["settle"];
     for (const action of actions) {
       try {
@@ -2400,8 +2452,40 @@ const finishPublishedWorktreeOperation = async (
         );
         outputs.push(finished.stdout ?? "");
         if (finished.stdout) writeOutput(finished.stdout);
+        // The class the finish or settle process gave its refusal, where
+        // that refusal was raised.
+        let refusalClass = null;
         for (const line of (finished.stdout ?? "").split("\n"))
-          if (line.startsWith("Scratch removal: ")) {
+          if (line.startsWith("Removal timings: ")) {
+            // What the child spent on each part of this step, measured there.
+            let timings = {};
+            try {
+              timings = JSON.parse(line.slice("Removal timings: ".length));
+            } catch {
+              timings = {};
+            }
+            for (const [name, durationMs] of Object.entries(timings ?? {}))
+              if (isRemovalChild(name))
+                addRemovalChild(record, name, Number(durationMs));
+          } else if (line.startsWith("Close blocker class: "))
+            refusalClass = blockerClassOf(
+              line.slice("Close blocker class: ".length).trim(),
+            );
+          else if (line.startsWith("Derived worktree blocker: ")) {
+            let derived = null;
+            try {
+              derived = JSON.parse(
+                line.slice("Derived worktree blocker: ".length),
+              );
+            } catch {
+              derived = null;
+            }
+            if (typeof derived?.path === "string")
+              derivedClasses.set(
+                resolve(derived.path),
+                blockerClassOf(derived.class),
+              );
+          } else if (line.startsWith("Scratch removal: ")) {
             const removal = JSON.parse(line.slice("Scratch removal: ".length));
             const previous = record?.removals.find(
               (row) =>
@@ -2435,7 +2519,10 @@ const finishPublishedWorktreeOperation = async (
               cleanup.subject.journals = journals;
           }
         if (finished.status !== 0)
-          throw new Error(failureOf(finished, `${action} failed`));
+          throw closeBlocker(
+            refusalClass ?? "other",
+            failureOf(finished, `${action} failed`),
+          );
       } catch (error) {
         const command = releaseCloseCommand(root, workOrderId);
         cleanup.outcome = "blocked";
@@ -2446,6 +2533,8 @@ const finishPublishedWorktreeOperation = async (
             : {}),
           reason: error.message,
           command,
+          class: blockerClassOf(error.blockerClass),
+          step: currentReleaseStep(record),
         });
         writeOutput(
           `Advisory: ${dryRun ? "prospective" : "published release"} cleanup blocker: ${error.message}\n`,
@@ -2458,11 +2547,13 @@ const finishPublishedWorktreeOperation = async (
     for (const row of cleanup.worktrees) {
       if (!after.has(row.path) && existsSync(row.path)) {
         try {
-          row.preservationReceipt = removeUnregisteredWorktree(
-            root,
-            row.path,
-            workOrderId,
-            { dryRun },
+          row.preservationReceipt = timeRemovalChild(
+            record,
+            "preservation",
+            () =>
+              removeUnregisteredWorktree(root, row.path, workOrderId, {
+                dryRun,
+              }),
           );
           if (dryRun)
             outputs.push(`Derived worktree ${row.path}: would remove`);
@@ -2478,6 +2569,8 @@ const finishPublishedWorktreeOperation = async (
             path: row.path,
             reason: `Leftover directory retained: ${row.path}: ${error.message}`,
             command: releaseCloseCommand(root, workOrderId),
+            class: blockerClassOf(error.blockerClass),
+            step: currentReleaseStep(record),
           });
         }
       }
@@ -2533,6 +2626,8 @@ const finishPublishedWorktreeOperation = async (
             reason: reason.join("\n"),
             command: releaseCloseCommand(root, workOrderId),
             ...(operator ? { operator } : {}),
+            class: derivedClasses.get(resolve(row.path)) ?? "other",
+            step: currentReleaseStep(record),
           };
           row.blockers.push(blocker);
           record?.blockers.push(blocker);
@@ -2543,6 +2638,8 @@ const finishPublishedWorktreeOperation = async (
             path: row.path,
             reason: `Worktree retained: ${row.path}: ${row.inventoryError ?? "cleanup did not remove this path"}`,
             command: releaseCloseCommand(root, workOrderId),
+            class: "other",
+            step: currentReleaseStep(record),
           };
           row.blockers.push(blocker);
           record?.blockers.push(blocker);
@@ -2620,7 +2717,9 @@ const finishPublishedWorktreeOperation = async (
         if (dryRun) cleanup.branch.outcome = "would-delete";
         else {
           if (runGit(root, ["branch", "--list", branch]))
-            removeMergedBranch(root, branch);
+            timeRemovalChild(record, "branch-delete", () =>
+              removeMergedBranch(root, branch),
+            );
           cleanup.branch.outcome = "deleted";
         }
       } catch (error) {
@@ -2628,6 +2727,8 @@ const finishPublishedWorktreeOperation = async (
           action: "branch",
           reason: error.message,
           command: releaseCloseCommand(root, workOrderId),
+          class: blockerClassOf(error.blockerClass),
+          step: currentReleaseStep(record),
         });
       }
     }
@@ -2648,6 +2749,8 @@ const finishPublishedWorktreeOperation = async (
         action: "prune",
         reason: error.message,
         command: releaseCloseCommand(root, workOrderId),
+        class: blockerClassOf(error.blockerClass),
+        step: error.releaseStep ?? currentReleaseStep(record),
       };
       if (record)
         record.prune = {
@@ -2672,6 +2775,8 @@ const finishPublishedWorktreeOperation = async (
       action: "cleanup",
       reason: error.message,
       command: releaseCloseCommand(root, workOrderId),
+      class: blockerClassOf(error.blockerClass),
+      step: error.releaseStep ?? currentReleaseStep(record),
     });
     writeOutput(
       `Advisory: ${dryRun ? "prospective" : "published release"} cleanup blocker: ${error.message}\n`,
@@ -2906,6 +3011,8 @@ const refreshPublishedStartersOperation = async (
       action: "starter-refresh",
       reason: `${row.sibling}: ${row.reason}`,
       command: releaseCloseCommand(root, workOrderId),
+      class: "starter-refresh",
+      step: currentReleaseStep(record),
     });
     process.exitCode = 1;
   }
@@ -3051,6 +3158,7 @@ const prepareTargetRelease = async (
     outcome: "no-release",
     tag: null,
     release: null,
+    reviewedCommit: record.publication.target?.reviewedCommit ?? null,
   });
   if (target.policy !== "declared") return;
   const classification = targetReleaseClassification(root, state, revision);
@@ -3154,7 +3262,8 @@ const prepareTargetRelease = async (
     title: `${repository.release.displayName ?? state.repositoryId} ${tag}`,
   });
   if (existing && existing !== tagged)
-    throw new Error(
+    throw closeBlocker(
+      "foreign-tag",
       `target release tag ${tag} exists on ${forge.selector} at ${existing}, not the ${earlier?.tag ? "recorded release commit" : `merged ${repository.baseBranch}`} ${tagged}; source retained`,
     );
   const authority = readWorkOrderAuthority(root, state, revision, {
@@ -3329,7 +3438,9 @@ const closePrerequisites = (root, workOrderId, parsed, record) => {
     targetWorktreeForOrder(root, workOrderId) ||
     readControl(root).orders.get(workOrderId)?.state.repositoryId;
   const reachable = targetOrder
-    ? (runGit(root, ["ls-remote", "--exit-code", "--heads", "origin", "main"]),
+    ? (withBlockerClass("host-denied", () =>
+        runGit(root, ["ls-remote", "--exit-code", "--heads", "origin", "main"]),
+      ),
       { host: "origin" })
     : ensureOriginReachable(root);
   if (dryRun)
@@ -3337,9 +3448,11 @@ const closePrerequisites = (root, workOrderId, parsed, record) => {
       `Origin reachable: ${reachable.host} (git ls-remote)${targetOrder ? "." : "; publication also needs gh authentication there."}\n`,
     );
   if (dryRun) {
-    ensureTrackedClean(root);
+    withBlockerClass("not-clean", () => ensureTrackedClean(root));
     reportLocalMaterial(root, flags.includes("--list-material"));
-    runGit(root, ["fetch", "origin", "main"]);
+    withBlockerClass("base-fetch", () =>
+      runGit(root, ["fetch", "origin", "main"]),
+    );
     sourceRevision = runGit(root, ["rev-parse", "origin/main"]);
     const ancestor = execute("git", [
       "-C",
@@ -3419,6 +3532,8 @@ const closePrerequisites = (root, workOrderId, parsed, record) => {
           .filter((line) => line.startsWith("FAIL "))
           .join("; ") || "Release surface validation failed",
       command: releaseCloseCommand(root, workOrderId),
+      class: "publication",
+      step: currentReleaseStep(record),
     });
     process.exitCode = 1;
     return undefined;
@@ -3496,12 +3611,24 @@ const close = async (root, workOrderId, parsed, record, context) => {
   if (state.repositoryId) {
     record.publication.outcome = "no-release";
     const targetPolicy = targetReleasePolicy(root, state.repositoryId);
+    // The commit the final review judged, which the close's handoff names
+    // beside the published tag for the instance's own records. The status
+    // projection omits it; the order's folded control state keeps it.
+    let reviewedCommit = null;
+    try {
+      reviewedCommit =
+        readControl(root, sourceRevision).orders.get(workOrderId)?.state
+          .targetSubject?.commit ?? null;
+    } catch {
+      reviewedCommit = null;
+    }
     record.publication.target = {
       repositoryId: state.repositoryId,
       policy: targetPolicy,
       outcome: targetPolicy === "declared" ? "not-attempted" : "no-release",
       tag: null,
       release: null,
+      reviewedCommit,
     };
     if (targetPolicy === "declared")
       record.publication.outcome = "not-attempted";
@@ -3537,7 +3664,7 @@ const close = async (root, workOrderId, parsed, record, context) => {
       }
       // The target branch is proven merged by the close; a declared target
       // release tags that merged base and creates the target's Release.
-      publishRelease?.();
+      withBlockerClass("publication", () => publishRelease?.());
       await finishPublishedWorktree(
         root,
         workOrderId,
@@ -3608,12 +3735,14 @@ const close = async (root, workOrderId, parsed, record, context) => {
       return;
     }
     const projection = publish
-      ? ensureGitHubRelease(
-          root,
-          repository,
-          authority.version,
-          projectedReleaseBody(authority.version, existing.humanLayer),
-          releaseTitle(authority.version, existing.humanLayer),
+      ? withBlockerClass("publication", () =>
+          ensureGitHubRelease(
+            root,
+            repository,
+            authority.version,
+            projectedReleaseBody(authority.version, existing.humanLayer),
+            releaseTitle(authority.version, existing.humanLayer),
+          ),
         )
       : undefined;
     record.publication.outcome = "already-published";
@@ -3685,20 +3814,24 @@ const close = async (root, workOrderId, parsed, record, context) => {
     );
     return;
   }
-  const tagObject = publishTag(
-    root,
-    authority.version,
-    head,
-    message,
-    tagger,
-    record.publication,
+  const tagObject = withBlockerClass("publication", () =>
+    publishTag(
+      root,
+      authority.version,
+      head,
+      message,
+      tagger,
+      record.publication,
+    ),
   );
-  const projection = ensureGitHubRelease(
-    root,
-    repository,
-    authority.version,
-    projectedReleaseBody(authority.version, humanLayer),
-    releaseTitle(authority.version, humanLayer),
+  const projection = withBlockerClass("publication", () =>
+    ensureGitHubRelease(
+      root,
+      repository,
+      authority.version,
+      projectedReleaseBody(authority.version, humanLayer),
+      releaseTitle(authority.version, humanLayer),
+    ),
   );
   record.publication.outcome = "published";
   record.publication.release = projection;
@@ -4106,6 +4239,9 @@ const main = async () => {
           removals: [],
           overrides: parsed.material,
           blockers: [],
+          // What stopped this attempt, when one stopped: its class from the
+          // closed list, the release step that raised it and its message.
+          blocker: null,
           previousAttempts: [],
           recordAdvisories: [],
           retryCommand: releaseCloseCommand(root, workOrderId),
@@ -4195,13 +4331,32 @@ const main = async () => {
           return result;
         } catch (error) {
           const published = settlePublication(record, error.message);
+          // The refusal that stopped this attempt, classed where it was raised.
+          record.blocker = {
+            class: blockerClassOf(error?.blockerClass),
+            step: error?.releaseStep ?? null,
+            message: error.message,
+          };
           record.blockers.push({
             action: published ? "completion" : "publication",
             reason: error.message,
             command: releaseCloseCommand(root, workOrderId),
+            class: record.blocker.class,
+            step: record.blocker.step,
           });
           throw error;
         } finally {
+          // An attempt that ends with an unresolved blocker stopped there; the
+          // first such blocker is the attempt's.
+          if (!record.blocker) {
+            const first = record.blockers.find((row) => !row.resolved);
+            if (first)
+              record.blocker = {
+                class: blockerClassOf(first.class),
+                step: first.step ?? null,
+                message: first.reason,
+              };
+          }
           await withReleaseStep(record, "record", async () => {
             record.recordedAt = new Date().toISOString();
             try {

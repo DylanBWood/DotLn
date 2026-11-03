@@ -570,6 +570,8 @@ git -C "$subject/vendor/node_modules/kept-repo" init -q
 printf 'kept nested content\n' >"$subject/vendor/node_modules/kept-repo/file.txt"
 if finish_output="$(finish_worktree WO-099 2>&1)"; then printf 'error: ignored secret was deleted\n' >&2; exit 1; fi
 grep -Fq '(1 entry; only scratch repositories are removed)' <<<"$finish_output"
+# The preview pass's refusal carries its class to the release close.
+grep -Fxq 'Close blocker class: undeclared-ignored-material' <<<"$finish_output"
 grep -Fq '.env: other lane: ignored file; move it outside the checkout or delete it from an operator terminal' <<<"$finish_output"
 grep -Fq '"vendor/node_modules/kept-repo": nested repository disposable; removed with the worktree' <<<"$finish_output"
 grep -Fq 'Scratch removal: {"worktree":' <<<"$finish_output"
@@ -787,11 +789,26 @@ if git -C "$main" worktree list --porcelain | grep -Fq "$derived_gone"; then pri
 git -C "$main" worktree list --porcelain | grep -Fq "$derived_dirty"
 git -C "$main" worktree remove --force "$derived_dirty" >/dev/null
 printf 'derived worktrees settled: pruned, preserved and removed, or kept with a blocker\n'
-# The same settlement runs on its own after the subject is already gone.
+# The same settlement runs on its own after the subject is already gone. A
+# session journal in the derivative moves to main's lane, and settle times
+# that move and the preservation as the finish of the order's own worktree
+# does, for the close record's worktree-removal children.
 git -C "$main" worktree add --detach "$test_root/project-wo099-measure-009" >/dev/null 2>&1
+derived_session=dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+mkdir -p "$test_root/project-wo099-measure-009/docs/control/local/harness"
+printf '%s\n' '{"typedEvent":"OperatorMessageObserved","workOrder":"WO-099"}' >"$test_root/project-wo099-measure-009/docs/control/local/harness/$derived_session.jsonl"
 settle_output="$(cd "$main" && node "$main/scripts/worktree.mjs" settle WO-099)"
 grep -Fq "Derived worktree $test_root/project-wo099-measure-009: removed" <<<"$settle_output"
 test ! -e "$test_root/project-wo099-measure-009"
+test -f "$main/docs/control/local/retained/WO-099/harness/$derived_session.jsonl"
+node - "$(grep -F 'Removal timings: ' <<<"$settle_output" | sed 's/^Removal timings: //')" <<'JS'
+const timings = JSON.parse(process.argv[2] || "{}");
+for (const name of ["journal-retention", "preservation", "git-worktree-remove"])
+  if (!(timings[name] > 0)) {
+    console.error(`error: settle did not time ${name}: ${process.argv[2]}`);
+    process.exit(1);
+  }
+JS
 test "$(cd "$main" && node "$main/scripts/worktree.mjs" settle WO-099)" = 'No derived worktrees for WO-099.'
 printf 'settle removed a derived worktree with no subject present\n'
 cmp "$test_root/retained-expected.bin" "$main/docs/control/local/retained/WO-099/adjacent-work.jsonl"

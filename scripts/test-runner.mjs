@@ -158,6 +158,9 @@ const shell = (name, file) => ({
 export const machinerySources = {
   "sync-fixtures": [
     "scripts/release.mjs",
+    // The close's step names, blocker classes and removal children, which
+    // release.mjs, worktree.mjs and plan failures import.
+    "scripts/lib/release-steps.mjs",
     "scripts/lib/release-preparation.mjs",
     "scripts/check-role-oracle.mjs",
     "scripts/test-process-debt.mjs",
@@ -186,6 +189,7 @@ export const machinerySources = {
     "scripts/target-gate.mjs",
     "scripts/test-target-publication-fixture.mjs",
     "scripts/worktree.mjs",
+    "scripts/lib/release-steps.mjs",
     "scripts/launchpad.mjs",
     "scripts/kit/",
     "docs/KIT.md",
@@ -315,6 +319,9 @@ export const machinerySources = {
     "packages/skeleton/src/gate-evidence.mjs",
     "packages/skeleton/src/runtime-inputs.mjs",
     "scripts/test-harness.mjs",
+    // The snapshot names releases before records gave, read by the harness
+    // suite's snapshot proof regression (WO-252).
+    "scripts/fixtures/wo252-pre-record-snapshots.json",
     "scripts/test-drive.mjs",
     "scripts/drive.mjs",
     "scripts/fixtures/drive-live.mjs",
@@ -342,6 +349,7 @@ export const machinerySources = {
     "scripts/lib/intake-reconciliation.mjs",
     "scripts/lib/worktree-material.mjs",
     "scripts/lib/worktree-removal.mjs",
+    "scripts/lib/release-steps.mjs",
     "scripts/lib/git.mjs",
     // The observer's journal-read failure case rewrites the control store's
     // reader in its fixture copy.
@@ -421,6 +429,9 @@ export const machinerySources = {
   ],
   "harness-evidence": recordedSources["harness"],
   "plan-refutation": [
+    // Plan failures, which the refutation fixtures import, reads the close's
+    // blocker classes and step names from here.
+    "scripts/lib/release-steps.mjs",
     // plan start applies the owned-root prune through this summary (WO-237).
     "scripts/lib/temporary-prune-summary.mjs",
     "scripts/docs-check.mjs",
@@ -559,6 +570,7 @@ export const machinerySources = {
     "scripts/test-reader-fixture.mjs",
     "scripts/test-close-admission.mjs",
     "scripts/lib/worktree-removal.mjs",
+    "scripts/lib/release-steps.mjs",
     "packages/skeleton/src/writer-teardown.mjs",
     "scripts/lib/suite-evidence.mjs",
     "scripts/lib/release-fixtures.mjs",
@@ -619,6 +631,7 @@ export const machinerySources = {
     "scripts/lib/intake-reconciliation.mjs",
     "scripts/lib/worktree-material.mjs",
     "scripts/lib/worktree-removal.mjs",
+    "scripts/lib/release-steps.mjs",
     "scripts/lib/git.mjs",
     "packages/skeleton/src/writer-teardown.mjs",
     "scripts/lib/evidence-preparation.mjs",
@@ -682,6 +695,8 @@ export const machinerySources = {
     "packages/skeleton/fixtures/wo249-role-baseline.json",
     "packages/skeleton/fixtures/wo249-integration-role-baseline.json",
     "packages/skeleton/fixtures/wo250-role-baseline.json",
+    "packages/skeleton/fixtures/wo252-role-baseline.json",
+    "packages/skeleton/fixtures/wo252-repair-role-baseline.json",
     "packages/skeleton/fixtures/wo217-role-efficiency-baseline.json",
     "scripts/test-helper-reuse.mjs",
     "scripts/lib/helpers.mjs",

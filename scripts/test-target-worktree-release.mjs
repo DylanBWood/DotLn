@@ -151,6 +151,8 @@ test("WO-221 a target close deletes declared disposable output, judges the base 
         "feat: ignore build output",
       );
       closeOrder(f);
+      // The commit the final review judged, which the close's handoff names.
+      const reviewed = git(f.target, "rev-parse", "HEAD");
       // The gate recorded what its commands wrote into the clone's base checkout.
       const rowsFor = (name) =>
         readGateChecks(f.orderRoot).filter(
@@ -350,6 +352,24 @@ test("WO-221 a target close deletes declared disposable output, judges the base 
         taken.stderr,
         /target release tag v0\.1\.0 exists on github\.invalid\/dotln-fixture\/target at [0-9a-f]{40}, not the merged main/u,
       );
+      // The conflict is the class the launchpad's own tag conflicts take.
+      const takenRecord = JSON.parse(
+        readFileSync(
+          docPath(
+            f.main,
+            "control",
+            "local/retained/WO-999/release-close.json",
+          ),
+          "utf8",
+        ),
+      );
+      assert.equal(takenRecord.blocker.class, "foreign-tag");
+      assert.equal(takenRecord.blocker.step, "publication");
+      // A stopped close hands back no tag or reviewed commit.
+      assert.doesNotMatch(
+        taken.stdout,
+        /^Target target (published tag|reviewed commit):/mu,
+      );
       assert.ok(
         existsSync(f.target),
         "release preconditions precede target deletion",
@@ -413,6 +433,16 @@ test("WO-221 a target close deletes declared disposable output, judges the base 
         /Target release target: partially-published/u,
       );
       assert.match(interrupted.stdout, /blocker \(publication\)/u);
+      // The tag is pushed but the close stopped, so it hands back neither
+      // the tag nor the reviewed commit until the attempt that completes.
+      assert.doesNotMatch(
+        interrupted.stdout,
+        /^Target target (published tag|reviewed commit):/mu,
+      );
+      assert.match(
+        interrupted.stdout,
+        /^Close stopped: publication in step /mu,
+      );
       writeFileSync(ghFile, ghOriginal);
       const remote = join(f.base, "target.git");
       const merged = git(remote, "rev-parse", "main");
@@ -480,6 +510,18 @@ test("WO-221 a target close deletes declared disposable output, judges the base 
         published,
         /Target release target: published; tag v0\.1\.0; GitHub Release created/u,
       );
+      // The handoff names the published tag and the reviewed commit, the
+      // values an instance records in its own profile.
+      assert.ok(
+        published.split("\n").includes("Target target published tag: v0.1.0."),
+        published,
+      );
+      assert.ok(
+        published
+          .split("\n")
+          .includes(`Target target reviewed commit: ${reviewed}.`),
+        published,
+      );
       assert.equal(existsSync(f.target), false);
       assert.equal(existsSync(join(f.clone, ".angular")), false);
       assert.equal(git(f.clone, "for-each-ref", "refs/dotln/draft"), "");
@@ -538,6 +580,7 @@ test("WO-221 a target close deletes declared disposable output, judges the base 
           review: null,
           confirmation: null,
         },
+        reviewedCommit: reviewed,
       });
       assert.deepEqual(record.targetCleanup.disposable, {
         target: [

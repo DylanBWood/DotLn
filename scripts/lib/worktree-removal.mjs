@@ -19,7 +19,15 @@ import {
   rmSync,
   writeFileSync,
 } from "node:fs";
-import { basename, dirname, join, relative, resolve } from "node:path";
+import {
+  basename,
+  dirname,
+  isAbsolute,
+  join,
+  relative,
+  resolve,
+  sep,
+} from "node:path";
 import { docRelative } from "./config.mjs";
 import { parseWorktrees, runGitPathList } from "./git.mjs";
 import { requireMaterialContainment } from "./worktree-material.mjs";
@@ -31,6 +39,7 @@ import {
   ensureTemporaryRoot,
   TEMPORARY_OWNER_FILE,
 } from "./temporary-roots.mjs";
+import { closeBlocker, withBlockerClass } from "./release-steps.mjs";
 import { dispatchJournalDirectory } from "../../packages/skeleton/src/dispatch-journal.mjs";
 import {
   withWriterReservationLock,
@@ -104,14 +113,60 @@ export function retainWorktreeJournals(
   workOrder,
   { dryRun = false, rename = renameSync, copyFile = copyFileSync } = {},
 ) {
-  main = realpathSync(main);
+  // Every refusal here, a preview's included, is a preservation refusal, so
+  // a close records the same class whichever caller stopped.
+  return withBlockerClass("preservation-refused", () => {
+    main = realpathSync(main);
+    const { lane, destination, moves } = planJournalMoves(
+      main,
+      subject,
+      workOrder,
+    );
+    return moveJournals(main, subject, workOrder, lane, destination, moves, {
+      dryRun,
+      rename,
+      copyFile,
+    });
+  });
+}
+
+/** The worktree-relative files a close would move into main's retained lane
+ * for the order: the same plan retainWorktreeJournals carries out.
+ * @param {string} main @param {string} subject @param {string} workOrder
+ * @returns {string[]} */
+export function journalMoveSources(main, subject, workOrder) {
+  return withBlockerClass("preservation-refused", () =>
+    planJournalMoves(realpathSync(main), subject, workOrder).moves.map((move) =>
+      relative(subject, move.from),
+    ),
+  );
+}
+
+// Whether `path` is a directory inside `subject` that is reached through real
+// directories alone. A lane behind a link, such as a tracked link to a
+// directory elsewhere, holds what lies wherever the link points, which is
+// not the worktree's to move.
+const directoryWithin = (subject, path) => {
+  const inside = relative(subject, path);
+  if (!inside || inside.startsWith("..") || isAbsolute(inside)) return false;
+  let at = subject;
+  for (const segment of inside.split(sep)) {
+    at = join(at, segment);
+    const info = lstatSync(at, { throwIfNoEntry: false });
+    if (!info?.isDirectory() || info.isSymbolicLink()) return false;
+  }
+  return true;
+};
+
+// What a worktree's sessions recorded and the order's change reviews, less
+// any file the repository tracks, each with its place in the lane.
+function planJournalMoves(main, subject, workOrder) {
   if (!/^WO-\d{3}$/.test(workOrder))
     throw new Error("Journal retention requires a work order");
   const lane = journalLane(main, workOrder);
   requireMaterialContainment(main, lane);
   const destination = join(main, lane);
   const source = dispatchJournalDirectory(subject);
-  const sourceInfo = lstatSync(source, { throwIfNoEntry: false });
   /** @type {Array<{from: string, to: string, size: number}>} */
   const moves = [];
   const plan = (from, to) => {
@@ -121,7 +176,7 @@ export function retainWorktreeJournals(
         plan(join(from, name), join(to, name));
     else if (info.isFile()) moves.push({ from, to, size: info.size });
   };
-  if (sourceInfo?.isDirectory() && !sourceInfo.isSymbolicLink())
+  if (directoryWithin(subject, source))
     for (const entry of readdirSync(source, { withFileTypes: true }))
       if (
         entry.name !== TEMPORARY_OWNER_FILE &&
@@ -136,8 +191,7 @@ export function retainWorktreeJournals(
     subject,
     docRelative(subject, "control", `local/reviews/${workOrder}`),
   );
-  const reviewsInfo = lstatSync(reviews, { throwIfNoEntry: false });
-  if (reviewsInfo?.isDirectory() && !reviewsInfo.isSymbolicLink())
+  if (directoryWithin(subject, reviews))
     plan(reviews, join(destination, "reviews"));
   // A file the repository tracks is its content, not a session's record: a
   // relocated configuration root can leave this fixed harness path unignored
@@ -159,6 +213,18 @@ export function retainWorktreeJournals(
         ...moves.filter((move) => !tracked.has(relative(subject, move.from))),
       );
   }
+  return { lane, destination, moves };
+}
+
+function moveJournals(
+  main,
+  subject,
+  workOrder,
+  lane,
+  destination,
+  moves,
+  { dryRun, rename, copyFile },
+) {
   const counted = {
     files: moves.length,
     bytes: moves.reduce((sum, move) => sum + move.size, 0),
@@ -665,10 +731,12 @@ export function removeUnregisteredWorktree(
       if (parseWorktrees(main).some((row) => resolve(row.worktree) === subject))
         throw new Error(`Subject is still a registered worktree: ${subject}`);
       const writer = writerTeardownBlocker(subject);
-      if (writer) throw new Error(writer);
+      if (writer) throw closeBlocker("writer-held", writer);
       if (activeGateRuns(subject).length)
         throw new Error("active gate; leftover directory retained");
-      const receipt = verifyWorktreeRemoval(main, subject, workOrder);
+      const receipt = withBlockerClass("preservation-refused", () =>
+        verifyWorktreeRemoval(main, subject, workOrder),
+      );
       if (!dryRun) {
         const restoreBeaconPermissions = prepareBeaconDisposal(subject);
         try {

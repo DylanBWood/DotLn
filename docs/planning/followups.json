@@ -44236,6 +44236,14 @@
           "reopenWhen": "The next planning pass evaluates instruction-byte optimization, or another role edit changes the measured overrun.",
           "targets": [],
           "at": "2026-11-02T21:28:01.819Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-252-D033 (FINAL-001): its condition occurred, because the common prune sentence, the release-close root's glob, residue and remedy clause and the router's prune sentence changed every installed role root: measured by the gate-followups rule the executor reads 41,987 bytes against its effective 40,194, the verifier 36,711 against 35,221, the planner 27,664 against 24,576, release-close 26,590 against 26,410 and the router 16,634 against 16,384, with the reviewer and refuter within their bounds; WO-252-D020 boards the five overruns as FUP-9d8c66a3ce8654f6 under product 07's one route, no ceiling moved and no acceptance was recorded.",
+          "reopenWhen": "The next planning pass evaluates instruction-byte optimization, or another role edit changes the measured overrun.",
+          "targets": [],
+          "at": "2026-11-03T16:08:45.875Z"
         }
       ]
     },
@@ -44348,6 +44356,14 @@
           "reopenWhen": "A role grows past its pin without the oracle changing, or a ceiling breach appears in meta --check with no decision boarding it; or the next order touching scripts/test-gate-followups.mjs or re-minting the role oracle.",
           "targets": [],
           "at": "2026-11-02T21:28:02.060Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-252-D033 (FINAL-001): its condition occurred, because this order re-mints the role oracle twice, as wo252-role-baseline.json over WO-250's and wo252-repair-role-baseline.json over that, and edits scripts/test-gate-followups.mjs so that a router breach is judged by the same boarded-follow-up route as every other root instead of a hard limit; the chain walk, the effective-ceiling and acceptance checks and the historical inequality are kept. The five overruns are boarded by WO-252-D020 as FUP-9d8c66a3ce8654f6.",
+          "reopenWhen": "A role grows past its pin without the oracle changing, or a ceiling breach appears in meta --check with no decision boarding it; or the next order touching scripts/test-gate-followups.mjs or re-minting the role oracle.",
+          "targets": [],
+          "at": "2026-11-03T16:08:46.124Z"
         }
       ]
     },
@@ -52383,6 +52399,14 @@
           "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the verifier and planner cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
           "targets": [],
           "at": "2026-11-02T21:28:02.179Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-252-D033 (FINAL-001): its condition occurred, because another reviewed rule changed the measured overrun: measured by the gate-followups rule the executor reads 41,987 bytes against its effective 40,194, the verifier 36,711 against 35,221, the planner 27,664 against 24,576, release-close 26,590 against 26,410 and the router 16,634 against 16,384; WO-252-D020 boards the five overruns as FUP-9d8c66a3ce8654f6 under product 07's one route, no ceiling moved and no acceptance was recorded. WO-249-D025's and WO-250-D020's figures stand as the earlier trees' measurements.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the verifier and planner cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
+          "targets": [],
+          "at": "2026-11-03T16:08:46.001Z"
         }
       ]
     },
@@ -52453,6 +52477,16 @@
           "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the executor, verifier and planner cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
           "targets": [],
           "at": "2026-11-02T18:04:26.073Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "duplicate",
+          "reason": "WO-252-D009: the condition occurred, another reviewed rule changed the measured overrun; the executor's, verifier's and planner's optimization now continues in FUP-f94a7707660da133 with release-close beside them.",
+          "reopenWhen": "FUP-f94a7707660da133 is declined or settled without reducing these three roots.",
+          "targets": [
+            "FUP-f94a7707660da133"
+          ],
+          "at": "2026-11-02T22:50:56.290Z"
         }
       ]
     },
@@ -52575,6 +52609,284 @@
           "ref": "docs/evidence/WO-248/decisions.md#wo-248-d004",
           "title": "WO-248-D004: In scripts/lib/meta.mjs renderMetaTable, render a dispatch-role row only when the subject's records show that role dispatched (a completed phase attempt, a usage observation, a journal…",
           "summary": "{ \"id\": \"WO-248-D004\", \"date\": \"2026-11-02\", \"dispatch\": \"resume: verify\", \"decision\": \"Record the meter block's rows for dispatch roles with no observation of any kind as a follow-up; criterion 1 is met as the order defines its row unit.\", \"evidence\": [ \"verifier-001-probes.mjs P1 over the real selection (WO-247, WO-237, WO-245, WO-251, WO-249, WO-248): every body has seven role rows; release-close, planner, refuter and router render five unknown value cells in every closed order's body\", \"scripts/lib/process-budget.mjs dispatchKinds is a fixed seven-role list; scripts/lib/meta.mjs collectMeta maps every order's dispatches over it\", \"WO-248 Cost names 'a row per dispatch role'; D002 retains",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-f94a7707660da133",
+      "key": "decision:docs/evidence/WO-252/decisions.md#wo-252-d009",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "3c719dd8d3bb36fbdb245198099fbb5601eeeb05b5cd4ad1fa3c131e2da79265",
+          "ref": "docs/evidence/WO-252/decisions.md#wo-252-d009",
+          "title": "WO-252-D009: Optimize the installed cold starts of the executor, verifier, planner and release-close roots with equivalent usefulness. With the review ladder, the counting rule, the change review…",
+          "summary": "{ \"id\": \"WO-252-D009\", \"date\": \"2026-11-02\", \"dispatch\": \"resume: next; step 6, the role text\", \"decision\": \"Every role but the router gains one sentence among the shared corrections: when expired or retained temporary roots need removing, the session runs node scripts/harness.mjs prune --apply itself under host permissions and records its receipt, handing the operator the printed command only after a recorded host denial of that exact command, the fallback release close keeps for its publish. The router writes nothing and runs no prune, so it carries no shared correction. The release-close sentence on disposable output gains the two glob forms with the last-segment floor, the close moving o",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-252-D009: the common prune sentence and the release-close root's glob, residue and remedy clause are reviewed duties that stay whole under product 07's one route for cold-start ceilings; the executor reads 41,987 bytes against its effective 40,194, the verifier 36,711 against 35,221, the planner 27,664 against 24,576 and release-close 26,590 against 26,410, measured by the gate-followups rule, with no ceiling raised, no acceptance recorded and no duty cut; the optimization with equivalent usefulness belongs to a planning allocation.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the executor, verifier, planner and release-close cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
+          "targets": [],
+          "at": "2026-11-02T22:50:56.154Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "duplicate",
+          "reason": "WO-252-D020: the condition occurred, another reviewed rule changed the measured overrun; the executor's, verifier's, planner's and release-close's optimization now continues in FUP-9d8c66a3ce8654f6 with the router beside them.",
+          "reopenWhen": "FUP-9d8c66a3ce8654f6 is declined or settled without reducing these four roots.",
+          "targets": [
+            "FUP-9d8c66a3ce8654f6"
+          ],
+          "at": "2026-11-03T01:59:04.360Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-6606e739a1ae8678",
+      "key": "decision:docs/evidence/WO-252/decisions.md#wo-252-d013",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "ebe63f318eacbc0c113934664d098aa35bb33e887bfdd238e81aabdb1aa808e3",
+          "ref": "docs/evidence/WO-252/decisions.md#wo-252-d013",
+          "title": "WO-252-D013: Run release close's post-removal prune from main's runtime when the helper runs from the subject worktree it removes (the bootstrap path), so a bootstrap close records no prune blocker…",
+          "summary": "{ \"id\": \"WO-252-D013\", \"date\": \"2026-11-02\", \"dispatch\": \"resume: next; step 3, the record fields, adjacent defect\", \"decision\": \"Record and board a defect the blocker field exposed, with its observed limit. When release close runs the subject's own helper from main, the bootstrap path test-release.sh's success case takes, the close-scope prune that follows the worktree removal imports scripts/lib/harness-prune.mjs, which in turn loads packages/skeleton/dist/src/harness-host.js, from the worktree the finish has just removed, so that attempt records a prune blocker (class other, step worktree-removal, 'Cannot find module …') and its cleanup reads blocked; a retry through main's helper prunes ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-252-D013: running the post-removal prune from main runtime when the close helper runs from the worktree it removes is more than a bounded change in this order; a retry through main helper completes the close meanwhile.",
+          "reopenWhen": "A bootstrap close prune blocker is the only blocker left on a published release that nobody retries, or a planning allocation takes it.",
+          "targets": [],
+          "at": "2026-11-02T23:05:36.634Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-40c684232c707187",
+      "key": "decision:docs/evidence/WO-252/decisions.md#wo-252-d016",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "472997910820a37935ed1611f8ee3eb9e5d9b8ed3aa55e510645b645c3b71814",
+          "ref": "docs/evidence/WO-252/decisions.md#wo-252-d016",
+          "title": "WO-252-D016: WO-252 repair F1: preserve verifiable installed-snapshot ownership across runtime updates, remove legitimate earlier snapshots at target close, retain the foreign-file and…",
+          "summary": "{ \"id\": \"WO-252-D016\", \"date\": \"2026-11-03\", \"dispatch\": \"resume: verify; criterion 2\", \"decision\": \"Record VER-001 F1 as blocking criterion 2. A complete snapshot produced by preserveHarnessRuntime closes on the first attempt when it is the current runtime snapshot. A second fixture uses the same production installer before and after a package-version update, with both complete snapshots left in the target and the serving runtime restored to its current bytes. The close refuses the earlier kit-produced snapshot as undeclared-ignored-material at worktree-removal and retains both snapshots. verifiedSnapshots computes only the current inventories of the serving runtime and main; it holds no pr",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-252-D019 repaired VER-001 F1 in this order's fix: a target close proves a harness snapshot by content whichever runtime installed it, through the record its installer now writes or, before records, its own package files with a serving runtime's pinned list, and keeps refusing foreign, edited and tracked files; the runtime-update probe passes.",
+          "reopenWhen": "The next verification of WO-252 reproduces a target close refusing a snapshot the kit installed, or deleting a file the kit did not write.",
+          "targets": [],
+          "at": "2026-11-03T01:59:04.508Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-f64a48b767db8642",
+      "key": "decision:docs/evidence/WO-252/decisions.md#wo-252-d017",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "21b51eea435fa96fcad0444acfc445f0491a1141e7c4a9dd9f39c1d5f7f129db",
+          "ref": "docs/evidence/WO-252/decisions.md#wo-252-d017",
+          "title": "WO-252-D017: WO-252 repair F2: communicate cleanup ownership and the exact-host-denial fallback in both emitted router roots, scoped to the authorized phase session, and extend the regression to…",
+          "summary": "{ \"id\": \"WO-252-D017\", \"date\": \"2026-11-03\", \"dispatch\": \"resume: verify; criterion 6\", \"decision\": \"Record VER-001 F2 as blocking the all-roots clause of criterion 6. The emitted set has fourteen role roots: the twelve ordinary phase roots carry the prune-ownership sentence and recorded-host-denial fallback, while the Codex and Claude router roots contain neither. D009 and the new regression deliberately exempt the router, but the filed criterion says every root and no operator amendment or waiver narrows it. Keep the router read-only: a repair can make its guide explain that the delegated, authorized phase session owns the prune and may hand the command to the operator only after the exact",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-252-D020 repaired VER-001 F2 in this order's fix: both router roots now say the phase session the router launches runs the prune itself and hands the operator the command only after a recorded host denial of it, the router's boundary still refuses the prune, and the all-roots probe passes.",
+          "reopenWhen": "The next verification of WO-252 finds an emitted root without the prune rule, or a router that runs or is told to run the prune.",
+          "targets": [],
+          "at": "2026-11-03T01:59:04.672Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-9d8c66a3ce8654f6",
+      "key": "decision:docs/evidence/WO-252/decisions.md#wo-252-d020",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e5d6fa0172475e80c820e2339730cacfb717c899b76078f357f10006e3133ae1",
+          "ref": "docs/evidence/WO-252/decisions.md#wo-252-d020",
+          "title": "WO-252-D020: Optimize the installed cold starts of the executor, verifier, planner, release-close and router roots with equivalent usefulness. With the review ladder, the counting rule, the change…",
+          "summary": "{ \"id\": \"WO-252-D020\", \"date\": \"2026-11-03\", \"dispatch\": \"resume: fix; VER-001 F2, criterion 6\", \"decision\": \"Every emitted root now states the prune rule, the router's included, and the router stays read-only. The router gains one sentence: it runs no prune, and the phase session it launches runs node scripts/harness.mjs prune --apply itself under host permissions and records its receipt, handing the operator the printed command only after a recorded host denial of that exact command. This reverses D009's exclusion of the router (VER-001 F2: criterion 6 says every root). The router's boundary is unchanged: DOTLN_ROUTER_WRITE_REFUSED still refuses the prune command in a router session, which",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-252-D020: the common prune sentence, the release-close root's glob, residue and remedy clause and the router's prune sentence are reviewed duties that stay whole under product 07's one route for cold-start ceilings; the executor reads 41,987 bytes against its effective 40,194, the verifier 36,711 against 35,221, the planner 27,664 against 24,576, release-close 26,590 against 26,410 and the router 16,634 against 16,384, measured by the gate-followups rule, with no ceiling raised, no acceptance recorded and no duty cut; the optimization with equivalent usefulness belongs to a planning allocation.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the executor, verifier, planner, release-close and router cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
+          "targets": [],
+          "at": "2026-11-03T01:59:04.196Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-e5ec1010d050239b",
+      "key": "decision:docs/evidence/WO-252/decisions.md#wo-252-d024",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c3cb0baca7b7071d3eab9c768743cc1c3d4ba565687d194c89971b803c97489d",
+          "ref": "docs/evidence/WO-252/decisions.md#wo-252-d024",
+          "title": "WO-252-D024: WO-252 VER-002 F1: complete earlier-snapshot compatibility for record-less snapshots whose historical pinned list differs from current serving runtimes; preserve or recover verifiable…",
+          "summary": "{ \"id\": \"WO-252-D024\", \"date\": \"2026-11-03\", \"dispatch\": \"resume: verify; VER-002 criterion 2\", \"decision\": \"Keep VER-001 F1 open for a genuine pre-record snapshot whose historical pinned list differs from the current one. The original reproduction now passes because it uses the repaired installer; the additional independent probe runs the unmodified production harness module from dc447da848e4a14c2c61e48ff91ba969351c6040 in the local target fixture. That module's own harnessInstallation and preserveHarnessRuntime emit a snapshot with 41 pinned files and no ownership record. The current installer has 42 pins, adding document-quality.js. With both snapshots present, close exits 1 as undeclared",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-252-D026 repaired VER-002 F1 in this order's second fix: a snapshot installed before records is proven by its own package files with the pinned file list its release used, which the kit keeps for every release from v0.83.0 to v0.111.1, so a target close removes it whichever list the serving runtime pins, while foreign, edited and tracked files stay refused or kept and a stopped deletion stays provable; the historical-installer probe passes. A snapshot from a release before v0.83.0, named by its pinned files alone, stays refused.",
+          "reopenWhen": "The next verification of WO-252 reproduces a target close refusing a snapshot a release from v0.83.0 installed, or deleting a file the kit did not write.",
+          "targets": [],
+          "at": "2026-11-03T13:34:28.377Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-cfed59c2e48409b8",
+      "key": "decision:docs/evidence/WO-252/decisions.md#wo-252-d025",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "cd1c2952c2b6ff30cb3697259bbf9b12466bdf44c9ccbea1a6486f085b75963e",
+          "ref": "docs/evidence/WO-252/decisions.md#wo-252-d025",
+          "title": "WO-252-D025: WO-252 VER-002 F2: preserve or restore valid temporary-root ownership when target removal stops after residue cleanup, so a root that was eligible for ordinary prune remains eligible…",
+          "summary": "{ \"id\": \"WO-252-D025\", \"date\": \"2026-11-03\", \"dispatch\": \"resume: verify; VER-002 baseline regression and D022 reopening\", \"decision\": \"Route the ledger-lifetime issue as a blocking reproduced regression, rather than treating the Cost-versus-first-attempt wording dispute alone as a blocker. A valid expired root with a dead owner is a prune candidate before close. With the target worktree locked through Git's ordinary worktree lock, the exact baseline target-close helper from b9e843b6978e057d6794b9d0a76af557e9547ba0 refuses the close and preserves its ledger, so ordinary prune eligibility remains. After restoring the repaired helper in the same local fixture, close deletes the ledger and then",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-252-D027 repaired VER-002 F2 in this order's second fix: the target close deletes the temporary-root ledger last, immediately before Git removes the worktree, and writes each segment back as it was when that removal stops while the target stands, so a root that was prunable before the attempt stays prunable; the existing-owner ledger check is unchanged and a successful close still deletes the ledger on its first attempt. The stopped-removal probe passes.",
+          "reopenWhen": "The next verification of WO-252 reproduces a surviving target refusing a root its ledger registered before a stopped close, or a successful close waiting for retained scratch.",
+          "targets": [],
+          "at": "2026-11-03T13:34:28.501Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-b50961a9b107dc85",
+      "key": "decision:docs/evidence/WO-252/decisions.md#wo-252-d019",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "8469695d4b968c5b41acbd454612a1d63b0d99c8be2e863c3e4ac5a334e75479",
+          "ref": "docs/evidence/WO-252/decisions.md#wo-252-d019",
+          "title": "WO-252-D019: A target close proves a harness snapshot by its content, whichever runtime installed it, and never by its directory name. The rule the repaired close holds: a file under…",
+          "summary": "{ \"id\": \"WO-252-D019\", \"date\": \"2026-11-03\", \"dispatch\": \"resume: fix; VER-001 F1, criterion 2\", \"decision\": \"A target close proves a harness snapshot by its content, whichever runtime installed it, and never by its directory name. The rule the repaired close holds: a file under .runtime/harness/<name>/ is the kit's only when a name input whose digest is <name> lists it with the same size and SHA-256, or the same package link, and every directory above it is a real directory. The name input is the serving runtime's own, as before; or the record the installer wrote into the snapshot, .dotln-snapshot.json, the canonical { files, inventory } whose fnv1a64 is the name; or, for a snapshot install",
+          "missing": false
+        },
+        {
+          "hash": "2089b6630b3961d5adb94eee21eac6c188a274386386a4d281e3f3c1ee3621fc",
+          "ref": "docs/evidence/WO-252/decisions.md#wo-252-d019",
+          "title": "WO-252-D019: A target close proves a harness snapshot by its content, whichever runtime installed it, and never by its directory name. The rule the repaired close holds: a file under…",
+          "summary": "{ \"id\": \"WO-252-D019\", \"date\": \"2026-11-03\", \"dispatch\": \"resume: fix; VER-001 F1, criterion 2\", \"decision\": \"A target close proves a harness snapshot by its content, whichever runtime installed it, and never by its directory name. The rule the repaired close holds: a file under .runtime/harness/<name>/ is the kit's only when a name input whose digest is <name> lists it with the same size and SHA-256, or the same package link, and every directory above it is a real directory. The name input is the serving runtime's own, as before; or the record the installer wrote into the snapshot, .dotln-snapshot.json, the canonical { files, inventory } whose fnv1a64 is the name; or, for a snapshot install",
+          "missing": false
+        },
+        {
+          "hash": "33723afdc540bf3316c1879508870ee0000f07efef5a84a348925205e4daef19",
+          "ref": "docs/evidence/WO-252/decisions.md#wo-252-d019",
+          "title": "WO-252-D019: A target close proves a harness snapshot by its content, whichever runtime installed it, and never by its directory name. The rule the repaired close holds: a file under…",
+          "summary": "{ \"id\": \"WO-252-D019\", \"date\": \"2026-11-03\", \"dispatch\": \"resume: fix; VER-001 F1, criterion 2\", \"decision\": \"A target close proves a harness snapshot by its content, whichever runtime installed it, and never by its directory name. The rule the repaired close holds: a file under .runtime/harness/<name>/ is the kit's only when a name input whose digest is <name> lists it with the same size and SHA-256, or the same package link, and every directory above it is a real directory. The name input is the serving runtime's own, as before; or the record the installer wrote into the snapshot, .dotln-snapshot.json, the canonical { files, inventory } whose fnv1a64 is the name; or, for a snapshot install",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-252-D026 reopened D019 and closed its limit for every snapshot whose name covers its packages: a snapshot that a release from v0.83.0 to v0.111.1 installed before records is proven by its own package files with the pinned list its release used, which the kit keeps, and a declared file at its record path gives way to the record so a stopped deletion stays provable. A snapshot from a release before v0.83.0, named by its pinned files alone, stays refused, D026's recorded limit.",
+          "reopenWhen": "A target close is refused for a snapshot a release from v0.83.0 installed, or a snapshot from a release before v0.83.0 is observed in a target.",
+          "targets": [],
+          "at": "2026-11-03T14:08:55.182Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "settled",
+          "reason": "WO-252-D026 reopened D019 and closed its limit for every snapshot whose name covers its packages: a snapshot that a release from v0.83.0 to v0.111.1 installed before records is proven by its own package files with the pinned list its release used, which the kit keeps, and a declared file at its record path gives way to the record so a stopped deletion stays provable. A snapshot from a release before v0.83.0, named by its pinned files alone, stays refused, D026's recorded limit.",
+          "reopenWhen": "A target close is refused for a snapshot a release from v0.83.0 installed, or a snapshot from a release before v0.83.0 is observed in a target.",
+          "targets": [],
+          "at": "2026-11-03T15:04:03.866Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-971c54891d587f3d",
+      "key": "decision:docs/evidence/WO-252/decisions.md#wo-252-d022",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "0dc866defc8575ba30fc89dbd87119a48c244057e46be4c5fd8f2875283799ac",
+          "ref": "docs/evidence/WO-252/decisions.md#wo-252-d022",
+          "title": "WO-252-D022: Record, and do not change, the round's criteria F1: the target close deletes its temporary-root ledger while roots it registers may remain, carrying them in the close record's…",
+          "summary": "{ \"id\": \"WO-252-D022\", \"date\": \"2026-11-03\", \"dispatch\": \"resume: fix; the repair's first review round, criterion 2\", \"decision\": \"Record, and do not change, the round's criteria F1: the target close deletes its temporary-root ledger while roots it registers may remain, carrying them in the close record's ownedTemporaryRoots instead of keeping the ledger and stopping with a blocker that names the root, as the order's Cost text and execution plan put it. D005 made and recorded that deviation. Criterion 2 requires a close holding the ledger, none of it declared, to close on its first attempt with the ledger gone. The fork-shaped close's ledger registers the session's own scratch, which keeps a",
+          "missing": false
+        },
+        {
+          "hash": "9182937da1900c33d9f41327c628158f9764c3cd4cfd499659ed11e3e4b33cca",
+          "ref": "docs/evidence/WO-252/decisions.md#wo-252-d022",
+          "title": "WO-252-D022: Record, and do not change, the round's criteria F1: the target close deletes its temporary-root ledger while roots it registers may remain, carrying them in the close record's…",
+          "summary": "{ \"id\": \"WO-252-D022\", \"date\": \"2026-11-03\", \"dispatch\": \"resume: fix; the repair's first review round, criterion 2\", \"decision\": \"Record, and do not change, the round's criteria F1: the target close deletes its temporary-root ledger while roots it registers may remain, carrying them in the close record's ownedTemporaryRoots instead of keeping the ledger and stopping with a blocker that names the root, as the order's Cost text and execution plan put it. D005 made and recorded that deviation. Criterion 2 requires a close holding the ledger, none of it declared, to close on its first attempt with the ledger gone. The fork-shaped close's ledger registers the session's own scratch, which keeps a",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-252-D027 reopened D022 and repaired the stopped case: the target close deletes the temporary-root ledger last, immediately before Git removes the worktree, and writes each segment back when that removal stops while the target stands, so a root registered before the attempt stays as prunable as it was; a successful close still deletes the ledger on its first attempt. A close killed inside Git's removal is D027's recorded limit.",
+          "reopenWhen": "A target that survives a stopped removal refuses a root its ledger registered before the attempt.",
+          "targets": [],
+          "at": "2026-11-03T14:08:55.312Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-252-D027 reopened D022 and repaired the stopped case: the target close deletes the temporary-root ledger last, immediately before Git removes the worktree, and writes each segment back when that removal stops while the target stands, so a root registered before the attempt stays as prunable as it was; a successful close still deletes the ledger on its first attempt. A close killed inside Git's removal is D027's recorded limit.",
+          "reopenWhen": "A target that survives a stopped removal refuses a root its ledger registered before the attempt.",
+          "targets": [],
+          "at": "2026-11-03T15:04:04.010Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-e2951c129de462ce",
+      "key": "decision:docs/evidence/WO-252/decisions.md#wo-252-d034",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "52b739add34715ef1adc00d4dc4ea4a4bcb503c3645fae558bb94fee9c99c03e",
+          "ref": "docs/evidence/WO-252/decisions.md#wo-252-d034",
+          "title": "WO-252-D034: Make the disposable floor bound what a declaration reaches and not only its form: refuse at registration a last segment whose literal part is only punctuation, such as . or ., or judge…",
+          "summary": "{ \"id\": \"WO-252-D034\", \"date\": \"2026-11-03\", \"dispatch\": \"resume: final review; FINAL-001\", \"decision\": \"Board the one defect this review found as a follow-up, not a repair: the registration floor bounds a disposable pattern's form and not the material it reaches. validateDisposablePaths refuses only a last segment with no literal part, so `**/*.*` is admitted, and segmentMatches lets `*` match a leading dot, so that one entry matches `.env`, an operator note, a writer record and the `.runtime` directory itself as roots; a close under such a declaration deletes them as declared output instead of refusing them as undeclared. Criterion 1 is met as written (the four refused forms and the admitt",
           "missing": false
         }
       ],

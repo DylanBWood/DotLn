@@ -1,0 +1,85 @@
+{
+  "workOrder": "WO-252",
+  "historicalBaseline": "wo250-role-baseline.json",
+  "historicalSha256": "ade7e36e8feb4f58cb75eca4ddd80340af06ce2c67703ac0514a2aad99a0450a",
+  "method": "Pin each role in both economy settings after every role but the router gained the shared sentence that a session runs node scripts/harness.mjs prune --apply itself under host permissions and hands the operator the printed command only after a recorded host denial of it, and the release-close disposable-output sentence gained the two glob forms with the last-segment floor, the kit residue the close moves or deletes in a target and the remedy that takes no session or writer in the target; retain all prior role oracles through the unchanged WO-250 parent.",
+  "decision": "docs/evidence/WO-252/decisions.md#wo-252-d009",
+  "startupCost": {
+    "decision": "WO-252-D009",
+    "profiles": {
+      "executor": {
+        "beforeBytes": 41685,
+        "bytes": 41987,
+        "growthBytes": 302,
+        "followup": "FUP-f94a7707660da133"
+      },
+      "planner": {
+        "beforeBytes": 27362,
+        "bytes": 27664,
+        "growthBytes": 302,
+        "followup": "FUP-f94a7707660da133"
+      },
+      "refuter": {
+        "beforeBytes": 25513,
+        "bytes": 25815,
+        "growthBytes": 302
+      },
+      "release-close": {
+        "beforeBytes": 25891,
+        "bytes": 26590,
+        "growthBytes": 699,
+        "followup": "FUP-f94a7707660da133"
+      },
+      "reviewer": {
+        "beforeBytes": 38832,
+        "bytes": 39134,
+        "growthBytes": 302
+      },
+      "router": {
+        "beforeBytes": 16379,
+        "bytes": 16379,
+        "growthBytes": 0,
+        "ceiling": 16384,
+        "headroomBytes": 5
+      },
+      "verifier": {
+        "beforeBytes": 36409,
+        "bytes": 36711,
+        "growthBytes": 302,
+        "followup": "FUP-f94a7707660da133"
+      }
+    }
+  },
+  "roles": {
+    ".agents/skills/dotln-executor/SKILL.md": "fe9eb84719aa40ff96a84512fce169ddeca254739f8dc93b8daa6ce5d790f90d",
+    ".agents/skills/dotln-planner/SKILL.md": "7508402edc12dac406739cb9060f6b9763bfd9356d4c5d2ba7df373301361102",
+    ".agents/skills/dotln-refuter/SKILL.md": "2ac90249ca1a10e41823409af9aa1e5cbb01d071299330d4abc72b2ad25a3ae2",
+    ".agents/skills/dotln-release-close/SKILL.md": "c59c5376fc8d25a444aed5b8062a166bfc45c23ce07c4ce5751d0edeeb1044cd",
+    ".agents/skills/dotln-reviewer/SKILL.md": "bbf1164cb2249b76f05c30ce3f0a2b6a93b43b01314cd619d44c0c3d487e8dda",
+    ".agents/skills/dotln-router/SKILL.md": "e53bcfa457dc994df5233b1d984f16d5d2f05e19e225def179117a5db280f275",
+    ".agents/skills/dotln-verifier/SKILL.md": "ab2dba0ea4d8d7fd777db622c78912f323a5869614357999f84897840a17b077",
+    ".claude/skills/dotln-executor/SKILL.md": "fe9eb84719aa40ff96a84512fce169ddeca254739f8dc93b8daa6ce5d790f90d",
+    ".claude/skills/dotln-planner/SKILL.md": "7508402edc12dac406739cb9060f6b9763bfd9356d4c5d2ba7df373301361102",
+    ".claude/skills/dotln-refuter/SKILL.md": "2ac90249ca1a10e41823409af9aa1e5cbb01d071299330d4abc72b2ad25a3ae2",
+    ".claude/skills/dotln-release-close/SKILL.md": "c59c5376fc8d25a444aed5b8062a166bfc45c23ce07c4ce5751d0edeeb1044cd",
+    ".claude/skills/dotln-reviewer/SKILL.md": "bbf1164cb2249b76f05c30ce3f0a2b6a93b43b01314cd619d44c0c3d487e8dda",
+    ".claude/skills/dotln-router/SKILL.md": "e53bcfa457dc994df5233b1d984f16d5d2f05e19e225def179117a5db280f275",
+    ".claude/skills/dotln-verifier/SKILL.md": "ab2dba0ea4d8d7fd777db622c78912f323a5869614357999f84897840a17b077"
+  },
+  "optOutRoles": {
+    ".agents/skills/dotln-executor/SKILL.md": "d32043f298409cc494fe2b691a8233cb789830a520a0ea41e59388332cbd39f9",
+    ".agents/skills/dotln-planner/SKILL.md": "40c5ed6ac5849b10b9d1ca7231859ed914f4e60b7e6e67acac8734f59e39e8d0",
+    ".agents/skills/dotln-refuter/SKILL.md": "2b020cc4be8c2272f6dd7979f11e3f82fff4b165ab312e510e31ff8efb772af9",
+    ".agents/skills/dotln-release-close/SKILL.md": "bfb4e4524b80d807eb2dbfdd9136f33b45a752daa1604622ffd6bad26b13ad2d",
+    ".agents/skills/dotln-reviewer/SKILL.md": "6d68d13e699a4d66b109920f8496dcbffa12d79d1f971a0ecee32c067da005f0",
+    ".agents/skills/dotln-router/SKILL.md": "68e74aae075d51ad187eb09050188c022a525f908a3ac395b8b5edefca7c523f",
+    ".agents/skills/dotln-verifier/SKILL.md": "a5f01c8d9ba04ecd2cfd821b45a428fd3445a6e261853024849efe9b9fc4b9d8",
+    ".claude/skills/dotln-executor/SKILL.md": "d32043f298409cc494fe2b691a8233cb789830a520a0ea41e59388332cbd39f9",
+    ".claude/skills/dotln-planner/SKILL.md": "40c5ed6ac5849b10b9d1ca7231859ed914f4e60b7e6e67acac8734f59e39e8d0",
+    ".claude/skills/dotln-refuter/SKILL.md": "2b020cc4be8c2272f6dd7979f11e3f82fff4b165ab312e510e31ff8efb772af9",
+    ".claude/skills/dotln-release-close/SKILL.md": "bfb4e4524b80d807eb2dbfdd9136f33b45a752daa1604622ffd6bad26b13ad2d",
+    ".claude/skills/dotln-reviewer/SKILL.md": "6d68d13e699a4d66b109920f8496dcbffa12d79d1f971a0ecee32c067da005f0",
+    ".claude/skills/dotln-router/SKILL.md": "68e74aae075d51ad187eb09050188c022a525f908a3ac395b8b5edefca7c523f",
+    ".claude/skills/dotln-verifier/SKILL.md": "a5f01c8d9ba04ecd2cfd821b45a428fd3445a6e261853024849efe9b9fc4b9d8"
+  }
+}

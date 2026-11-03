@@ -744,8 +744,192 @@ export function runtimePackageInventoryFromFiles(files) {
   return sortedRuntimeInventory([...entries.values()]);
 }
 
+// A snapshot's name is the digest of its name input: the pinned runtime file
+// list and the package inventory. The installer writes that input into each
+// snapshot it creates, as this record, so a later runtime can still prove the
+// snapshot's files by content once the serving runtime has moved on. Its
+// leading dot keeps it out of the inventory, the snapshot check and the gate
+// digest, which pass over host metadata; an existing snapshot is never
+// rewritten to add one.
+export const RUNTIME_SNAPSHOT_RECORD = ".dotln-snapshot.json";
+// A record is about a hundred kilobytes; a larger file under its name is not
+// read whole and proves nothing.
+const RUNTIME_SNAPSHOT_RECORD_LIMIT = 8 * 1024 * 1024;
+const runtimeSnapshotInput = (files, inventory) =>
+  canonicalStringify({ files, inventory });
 export const runtimeSnapshotPath = (files, inventory) =>
-  `.runtime/harness/${fnv1a64(canonicalStringify({ files, inventory }))}`;
+  `.runtime/harness/${fnv1a64(runtimeSnapshotInput(files, inventory))}`;
+
+/** What the installer writes into the snapshot `files` and `inventory` name,
+ * by path inside it: each package file's size and SHA-256, each package
+ * link's target, and the record carrying that name input, marked `record`
+ * and carrying its text, so a snapshot proven without one can be given it. */
+export function runtimeSnapshotContent(files, inventory) {
+  const text = runtimeSnapshotInput(files, inventory);
+  const record = Buffer.from(text);
+  const content = new Map([
+    [
+      RUNTIME_SNAPSHOT_RECORD,
+      {
+        kind: "file",
+        bytes: record.length,
+        sha256: targetDigest(record),
+        record: true,
+        text,
+      },
+    ],
+  ]);
+  for (const entry of inventory)
+    if (entry.kind === "file")
+      content.set(entry.path, {
+        kind: "file",
+        bytes: entry.bytes,
+        sha256: entry.sha256,
+      });
+    else if (/^packages\/[^/]+$/u.test(entry.path)) {
+      const name = entry.path.slice("packages/".length);
+      content.set(`node_modules/@dotln/${name}`, {
+        kind: "link",
+        target: `../../packages/${name}`,
+      });
+    }
+  return content;
+}
+
+// The pinned file lists, in order, of the releases that named a snapshot by
+// its pinned list and package inventory but wrote no record into it:
+// v0.103.0 to v0.111.1 pinned this list, and v0.83.0 to v0.102.0 the same
+// list without packages/skeleton/dist/src/document-quality.js. A snapshot one
+// of them installed is proven by its own files with its release's list,
+// whichever list the serving runtime pins now. These lists are history, never
+// the runtime's own pins, and they never grow: every later release writes the
+// record. A release before v0.83.0 named a snapshot by its pinned files alone,
+// a digest that covers none of its other package files, so no list proves one.
+const PRE_RECORD_LIST = Object.freeze([
+  "packages/compiler/dist/src/artifact-identity.js",
+  "packages/compiler/dist/src/harness.js",
+  "packages/compiler/dist/src/codex-continuation.mjs",
+  "packages/compiler/dist/src/feedback.js",
+  "packages/compiler/dist/src/attribution.mjs",
+  "packages/skeleton/dist/src/feedback-boundary.js",
+  "packages/skeleton/dist/src/feedback-source-comments.js",
+  "packages/skeleton/dist/src/harness-host.js",
+  "packages/skeleton/dist/src/subagent-budget.js",
+  "packages/skeleton/dist/src/observed-facts.js",
+  "packages/skeleton/dist/src/correction-observation.mjs",
+  "packages/skeleton/dist/src/source-change-command.js",
+  "packages/skeleton/dist/src/source-change-state.js",
+  "packages/skeleton/dist/src/version.js",
+  "packages/skeleton/dist/src/harness-command.js",
+  "packages/skeleton/dist/src/document-quality.js",
+  "packages/skeleton/dist/src/gate-evidence.mjs",
+  "packages/skeleton/dist/src/gate-deadlines.mjs",
+  "packages/skeleton/dist/src/runtime-inputs.mjs",
+  "packages/skeleton/dist/src/usage-observation.mjs",
+  "packages/skeleton/dist/src/writer-teardown.mjs",
+  "packages/skeleton/dist/src/reactor.js",
+  "packages/skeleton/dist/src/repair.js",
+  "packages/skeleton/dist/src/resident-state.js",
+  "packages/skeleton/dist/src/presence-signals.js",
+  "packages/skeleton/dist/src/presence-heartbeat.js",
+  "packages/skeleton/dist/src/resident-store.js",
+  "packages/skeleton/dist/src/worker-store.js",
+  "packages/skeleton/dist/src/verification-protocol.js",
+  "packages/skeleton/dist/src/plan-refutation-protocol.js",
+  "packages/skeleton/dist/src/worker-protocol.js",
+  "packages/skeleton/dist/src/presence-machine.js",
+  "packages/skeleton/dist/src/actor-catalog.js",
+  "packages/skeleton/dist/src/actor-contract.js",
+  "packages/skeleton/dist/src/cli-actor-contract.js",
+  "packages/skeleton/dist/src/handoff-contract.js",
+  "packages/skeleton/dist/src/work-candidate.js",
+  "packages/skeleton/dist/src/script-episode.js",
+  "packages/skeleton/dist/src/discovery-sandbox.js",
+  "packages/skeleton/dist/src/discovery-actor.js",
+  "packages/skeleton/dist/src/discovery-cli.js",
+  "packages/skeleton/dist/src/discovery.js",
+]);
+export const PRE_RECORD_RUNTIME_FILE_LISTS = Object.freeze([
+  Object.freeze(
+    PRE_RECORD_LIST.filter(
+      (path) => path !== "packages/skeleton/dist/src/document-quality.js",
+    ),
+  ),
+  PRE_RECORD_LIST,
+]);
+
+/** The name input that proves the snapshot directory `snapshot` (a
+ * `.runtime/harness/<name>` path) under `root` by content, whichever runtime
+ * installed it, or null. The record its installer wrote proves it when the
+ * record's bytes hash to the directory's name. A snapshot installed before the
+ * installer wrote records proves itself when the inventory of its own package
+ * files, with a pinned file list hashed from its own files, reproduces that
+ * name: one of `runtimeFileLists` (those of the runtimes serving the root) or
+ * one a release before records pinned (PRE_RECORD_RUNTIME_FILE_LISTS). A
+ * directory's name alone proves nothing, and neither does one reached through
+ * a link. Which files the input lists is a separate judgment: a file in the
+ * directory that the input does not list, or lists with other bytes, is not
+ * the kit's. */
+export function provenRuntimeSnapshot(root, snapshot, runtimeFileLists = []) {
+  const name = /^\.runtime\/harness\/([a-f0-9]{16})$/u.exec(snapshot)?.[1];
+  if (!name) return null;
+  let directory = root;
+  for (const part of snapshot.split("/")) {
+    directory = join(directory, part);
+    const info = lstatSync(directory, { throwIfNoEntry: false });
+    if (!info?.isDirectory() || info.isSymbolicLink()) return null;
+  }
+  const record = join(directory, RUNTIME_SNAPSHOT_RECORD);
+  const info = lstatSync(record, { throwIfNoEntry: false });
+  if (info?.isFile() && info.size <= RUNTIME_SNAPSHOT_RECORD_LIMIT)
+    try {
+      const text = readFileSync(record, "utf8");
+      const input = fnv1a64(text) === name ? JSON.parse(text) : null;
+      if (Array.isArray(input?.files) && Array.isArray(input?.inventory))
+        return { files: input.files, inventory: input.inventory };
+    } catch {
+      // An unreadable or malformed record proves nothing; the content may.
+    }
+  let inventory;
+  try {
+    inventory = runtimePackageInventory(directory);
+  } catch {
+    return null;
+  }
+  const packageFiles = new Set(
+    inventory
+      .filter((entry) => entry.kind === "file")
+      .map((entry) => entry.path),
+  );
+  // Each distinct list once, the serving runtimes' first; each pinned file's
+  // digest is read from this snapshot once.
+  const lists = new Map();
+  for (const paths of [
+    ...runtimeFileLists.map((list) => list.map((file) => file.path)),
+    ...PRE_RECORD_RUNTIME_FILE_LISTS,
+  ])
+    if (!lists.has(JSON.stringify(paths)))
+      lists.set(JSON.stringify(paths), paths);
+  const digests = new Map();
+  const pinnedHash = (path) => {
+    if (!digests.has(path))
+      digests.set(path, hash(readFileSync(join(directory, path), "utf8")));
+    return digests.get(path);
+  };
+  for (const paths of lists.values()) {
+    // A list naming a file this snapshot's packages lack did not install it.
+    if (!paths.every((path) => packageFiles.has(path))) continue;
+    let files;
+    try {
+      files = paths.map((path) => ({ path, hash: pinnedHash(path) }));
+    } catch {
+      return null;
+    }
+    if (runtimeSnapshotPath(files, inventory) === snapshot)
+      return { files, inventory };
+  }
+  return null;
+}
 
 // A snapshot that no longer matches is replaced, never repaired in place; the
 // refusal says so and names the directory, which is inside the worktree.
@@ -880,6 +1064,12 @@ export function preserveHarnessRuntime(
       }
     }
     promoteTemporaryRoot(staging);
+    // The snapshot's name input travels with it, so a later runtime can
+    // prove its files once this runtime is replaced; checking passes over it.
+    writeFileSync(
+      join(staging, RUNTIME_SNAPSHOT_RECORD),
+      runtimeSnapshotInput(installation.runtimeFiles, inventory),
+    );
     // A staging tree that disagrees is removed below; the remedy names the
     // snapshot it was meant to become.
     checkRuntimeSnapshot(

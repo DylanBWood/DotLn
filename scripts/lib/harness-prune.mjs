@@ -144,6 +144,15 @@ function safeChild(root, path) {
 
 // A listing at its limit may be truncated; a release missing from it retains.
 const RELEASE_LISTING_LIMIT = 10000;
+// The candidate kinds the temporary-root judgment produces, each removed and
+// re-judged through it: owned roots, session scratch, legacy roots and the
+// empty remains of a removal stopped before its last rmdir.
+const TEMPORARY_KINDS = [
+  "temporary-root",
+  "session-scratch",
+  "legacy-backfill",
+  "removal-remains",
+];
 
 function publicationListings(root) {
   const repository = resolveGitHubPushTarget(root);
@@ -898,9 +907,7 @@ export function planHarnessPrune(root, options = {}) {
       !candidates.some(
         (parent) =>
           parent !== row &&
-          ["temporary-root", "session-scratch", "legacy-backfill"].includes(
-            parent.kind,
-          ) &&
+          TEMPORARY_KINDS.includes(parent.kind) &&
           parent.absolute &&
           row.absolute.startsWith(parent.absolute + sep),
       ),
@@ -929,9 +936,7 @@ function recheckCandidate(plan, row, options) {
     judged = judgeShellClaim(context, basename(row.absolute));
   else if (row.kind === "retained-lane")
     judged = judgeLane(context, row.workOrder);
-  else if (
-    ["temporary-root", "session-scratch", "legacy-backfill"].includes(row.kind)
-  )
+  else if (TEMPORARY_KINDS.includes(row.kind))
     judged = judgeTemporaryRoot(plan.root, row.absolute, options, context);
   else {
     const entry = integrationStashes(plan.root).find(
@@ -1064,11 +1069,7 @@ function pruneUnderLock(root, { apply = false, ...options } = {}) {
             throw error;
           }
           row.recoveryProof = relative(plan.root, recoveryPath);
-        } else if (
-          ["temporary-root", "session-scratch", "legacy-backfill"].includes(
-            row.kind,
-          )
-        )
+        } else if (TEMPORARY_KINDS.includes(row.kind))
           applyTemporaryCandidate(root, row);
         else if (row.kind === "shell-claim") retireShellClaim(row);
         else {
