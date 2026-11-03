@@ -1,0 +1,16 @@
+{
+  "command": "node scripts/harness.mjs bounded -- /usr/bin/time -p npm run meta",
+  "before": {
+    "wallMs": 4520,
+    "userMs": 3960,
+    "systemMs": 1020
+  },
+  "after": {
+    "wallMs": 4710,
+    "userMs": 4040,
+    "systemMs": 1090
+  },
+  "samplesPerArm": 1,
+  "wallDifferenceMs": 190,
+  "limitations": "One whole-command sample per arm; concurrent host work, growing records and output delivery are uncontrolled. The difference is not attributable solely to rendering."
+}
