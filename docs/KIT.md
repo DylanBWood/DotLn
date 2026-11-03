@@ -235,7 +235,13 @@ operator sandbox settings.
    Declare the class's or registration's `disposable` paths for the
    regenerable build output the close deletes, never moves to scratch, and
    `baseDisposablePolicy: "judge-only"` when the base checkout must retain that
-   output while keeping its material checks (the default is `"delete"`). Use
+   output while keeping its material checks (the default is `"delete"`). A
+   path may use `**` as a whole segment for any number of segments and `*`
+   within one segment, and its last segment keeps a literal part, so one
+   class line covers a whole workspace: an Nx class with Vitest declares
+   `"disposable": ["**/node_modules", "**/.vite", "**/.vitest"]` once for
+   every project's caches, while `*`, `**`, `**/*` and `libs/**` are refused
+   at registration (see [Owned cleanup and retention](#owned-cleanup-and-retention)). Use
    `release: { "policy": "declared", "displayName": "My product" }` with the
    order's `**Target release classification:**` header for a tagged target
    release. The optional name defaults to the registration id and changes the
@@ -950,7 +956,12 @@ registered temporary roots. It does not walk unrelated system temporary roots.
 An explicit `harness prune` and `plan start` still walk them. `plan start`
 applies that prune, so expired roots outside every close's scope leave at the
 next planning pass; while a gate holds the host lanes it prints the read-only
-census instead, and `harness prune --apply` removes them on demand. The update
+census instead, and `harness prune --apply` removes them on demand. A session
+that needs expired or retained roots removed runs `node scripts/harness.mjs
+prune --apply` itself under host permissions and records its receipt; it
+hands the printed command to the operator only after a recorded host denial
+of that exact command. The router, which writes nothing, runs no prune: the
+phase session it launches does, under the same rule. The update
 preview's census is limited to this repository. The close
 receipt records candidates, removals, retentions and blockers.
 Before removing an order's worktree, the close moves what its sessions
@@ -963,10 +974,45 @@ worktree. Its cleanup row records `journals: { lane, files, bytes, outcome }`.
 A failed move keeps the worktree as a cleanup blocker with the retry command,
 and a retried close merges into the lane. `plan failures` counts a closed
 order's rows from its lane, and `harness usage <session>` reads a closed
-session there. Its seven timed
-steps cover prerequisites, runtime, worktree removal, publication, starter
-refresh, prune and recording; `plan failures` reports the latest eight timed
-attempts' median total and slowest step. Retained-material output and removal
+session there. A registered target's close also owns what the kit wrote in
+the target: what a session there recorded in `docs/control/local/harness/` and
+the order's change reviews move into the same lane, beside the launchpad
+worktree's; a writer directory the writer protocol proves released, the
+`.runtime/.metadata_never_index` marker, the files of a
+`.runtime/harness/<hash>` snapshot the kit installed, and the temporary-root
+ledger are deleted, the roots that ledger registers carried in the close
+record for the close's prune. The ledger goes last, just before Git removes
+the worktree, and is written back as it was if that removal stops, so a root
+it registers stays prunable while the target stands. A lane or writer
+directory reached through a link, such as a tracked link to a directory
+elsewhere, is not the target's and stays where the link points. A snapshot counts as the
+kit's by its content, whichever runtime installed it, never by its name: each
+file must match what the launchpad's current runtime would install, or the
+record `.dotln-snapshot.json` every installer now writes into a new snapshot,
+or, for one installed before records, the snapshot's own package files with
+the file list its release pinned, which the kit keeps for v0.83.0 to
+v0.111.1. A snapshot from a release before v0.83.0 is refused as undeclared,
+since its name covers only its pinned files. A held writer
+stops the close before anything is moved or deleted, and any other file
+there, such as an operator note or a stray `.env`, is judged as undeclared
+material as before; the target cleanup row's `residue` names what moved and
+what was deleted. Remove undeclared output from this launchpad session by the
+target's path, never through a session or writer in the target. Its seven
+timed steps cover prerequisites, runtime, worktree removal, publication,
+starter refresh, prune and recording. The worktree-removal row's `children`
+say what that step spent its own time on, within its duration: `base-fetch`,
+`disposable-deletion` with its files and bytes, `finder-metadata`,
+`journal-retention`, `git-worktree-remove`, `branch-delete` and
+`preservation`. A close that stops records `blocker: { class, step, message
+}`, classed where the refusal is raised as `undeclared-ignored-material`,
+`not-clean`, `writer-held`, `preservation-refused`,
+`declared-root-unreadable`, `host-denied`, `base-fetch`, `foreign-tag`,
+`starter-refresh`, `publication` or `other`, and its summary names the class.
+`plan failures` reports the latest eight timed attempts' median total and
+slowest step, and its `blockers` count stopped closes by class and by order;
+a class that stopped three or more orders' closes in the window is printed
+by `plan start` as `close blocker repeated: <class> across N orders`.
+Retained-material output and removal
 receipts use counts by class and digests. `--list-material` supplies paths
 outside the admitted close commands, so host permissions decide it;
 digest-bound inventory sidecars preserve the full removal proof for retries. A blocker
@@ -983,10 +1029,16 @@ dispatch has an observed end. Physical ownership markers are excluded from
 fixture copies and seed commits. A marker names its directory by token and
 inode: when a reboot renumbers a volume, a root whose owner's ledger registers
 that token at that path is re-stamped and ledgered as `device-renumbered`
-rather than refused. A removal first moves the root aside within its parent
+rather than refused, and a root whose owner repository is gone, as after a
+close removed its checkout, is re-stamped on its marker's word, that token
+with that inode, and judged by its class and window. A removal first moves the root aside within its parent
 and deletes it only when the moved directory still carries that token and
 inode; one a stop left aside as `dotln-removing-<token>` is finished by the
-next prune. Invalid nested metadata retains the tree and
+next prune, a root found inside its parent's aside is bound through the
+parent and its registration ends with it, and the empty directory a stop
+between deleting the owner record and the directory leaves is removed with
+`rmdir`. A registration nested in a parent that sits aside waits while the
+parent is there, whichever repository's ledger recorded that move. Invalid nested metadata retains the tree and
 reports a cleanup blocker.
 Global apply shares the host lane lock; no daemon or host-memory exception is
 installed. `worktree start` creates the worktree without running a prune census;

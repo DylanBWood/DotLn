@@ -1316,6 +1316,24 @@ test -f "$main/docs/control/local/harness/writer.json"
 grep -Fq "Derived worktree $derived_clean: removed" <<<"$derived_output"
 grep -Fq "Derived worktree $derived_dirty: kept (uncommitted changes)" <<<"$derived_output"
 grep -Fq 'below latest release v0.2.0' <<<"$derived_output"
+# The dirty derivative's blocker keeps the class settle raised it with, in its
+# row and as the stopped attempt's blocker, so the feed counts it as dirt.
+"$node_bin" - "$main/docs/control/local/retained/WO-099/release-close.json" "$derived_dirty" <<'JS'
+const assert = require("node:assert/strict"), fs = require("node:fs");
+const record = JSON.parse(fs.readFileSync(process.argv[2], "utf8"));
+const dirty = fs.realpathSync(process.argv[3]);
+const kept = record.blockers.filter(
+  (blocker) =>
+    blocker.action === "settle" &&
+    typeof blocker.path === "string" &&
+    fs.existsSync(blocker.path) &&
+    fs.realpathSync(blocker.path) === dirty,
+);
+assert.ok(kept.length, JSON.stringify(record.blockers));
+for (const blocker of kept) assert.equal(blocker.class, "not-clean");
+assert.equal(record.blocker.class, "not-clean");
+assert.equal(record.blocker.step, "worktree-removal");
+JS
 test ! -e "$derived_clean"
 test -f "$derived_dirty/notes.txt"
 git -C "$main" worktree remove --force "$derived_dirty" >/dev/null
@@ -2021,6 +2039,17 @@ assert.deepEqual(row.journals, {
   outcome: 'moved',
 });
 assert.deepEqual(record.cleanup.subject.journals, row.journals);
+// The worktree-removal row says what the step spent its own time on, within
+// that time.
+assert.deepEqual(record.steps.map((step) => step.name), ['prerequisites', 'runtime', 'worktree-removal', 'publication', 'starter-refresh', 'prune', 'record']);
+const removal = record.steps.find((step) => step.name === 'worktree-removal');
+assert.deepEqual(removal.children.map((child) => child.name), ['base-fetch', 'disposable-deletion', 'finder-metadata', 'journal-retention', 'git-worktree-remove', 'branch-delete', 'preservation']);
+assert.ok(removal.children.every((child) => Number.isFinite(child.durationMs) && child.durationMs >= 0));
+assert.ok(removal.children.reduce((sum, child) => sum + child.durationMs, 0) <= removal.durationMs, JSON.stringify(removal));
+for (const name of ['base-fetch', 'journal-retention', 'git-worktree-remove', 'preservation'])
+  assert.ok(removal.children.find((child) => child.name === name).durationMs > 0, name);
+const deletion = removal.children.find((child) => child.name === 'disposable-deletion');
+assert.ok(Number.isSafeInteger(deletion.files) && Number.isSafeInteger(deletion.bytes));
 JS
 # The fixture removes that owned root itself, as a gate's completion would.
 "$node_bin" "$script_dir/temporary-root.mjs" remove "$journal_lane"
@@ -2039,6 +2068,11 @@ case "$main/node_modules" in "$test_root"/*/node_modules) rm -rf -- "$main/node_
 rerun_builds_before="$(grep -c '^build$' "$npm_log")"
 rerun_output="$(release_close WO-099 --publish)"
 grep -Fq 'v0.2.1 is already published' <<<"$rerun_output"
+# Main's helper completes the retry, so that attempt records no blocker.
+"$node_bin" -e '
+  const record = JSON.parse(require("node:fs").readFileSync(process.argv[1], "utf8"));
+  if (record.blocker !== null) throw new Error(`retry blocker: ${JSON.stringify(record.blocker)}`);
+' "$main/docs/control/local/retained/WO-099/release-close.json"
 test "$(git -C "$main" rev-parse v0.2.1^{tag})" = "$published_object"
 test "$(grep -c '^release create v0.2.1 ' "$gh_log")" = 1
 test "$(grep -c '^build$' "$npm_log")" = "$rerun_builds_before"
@@ -2144,6 +2178,11 @@ assert.match(row.journals.error, /^Journal retention stopped at .+: EACCES; the 
 assert.match(row.journals.command, /close WO-099 --publish/);
 assert.ok(record.blockers.some((blocker) => blocker.action === 'finish' && /Journal retention stopped/.test(blocker.reason)));
 assert.ok(['published', 'already-published'].includes(record.publication.tagOutcome));
+// The stopped attempt's blocker carries the class the finish gave it where the
+// move failed, the step it ran in and its message.
+assert.equal(record.blocker.class, 'preservation-refused');
+assert.equal(record.blocker.step, 'worktree-removal');
+assert.match(record.blocker.message, /Journal retention stopped at .+: EACCES/);
 JS
 test "$(grep -c '^release create v0.2.1 ' "$gh_log")" = 1
 retry_output="$(release_close WO-099 --publish)"
@@ -2508,6 +2547,8 @@ if foreign="$(release_close_summary WO-100 --publish 2>&1)"; then
   printf 'foreign release tag accepted\n' >&2; return 1
 fi
 grep -Fq 'v0.2.1 belongs to another order or commit' <<<"$foreign"
+# The summary names the stopped close's class, assigned where it was refused.
+grep -Fxq 'Close stopped: foreign-tag in step publication.' <<<"$foreign"
 test "$(git --git-dir="$origin" rev-parse 'v0.2.1^{tag}')" = "$published_tag"
 test "$(grep -c '^release create v0.2.1 ' "$gh_log")" = 1
 }

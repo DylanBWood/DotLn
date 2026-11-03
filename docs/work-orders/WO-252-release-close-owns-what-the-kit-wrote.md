@@ -1,4 +1,4 @@
-# WO-252 — Release close owns what the kit wrote: a disposable declaration matches at any depth, a target close moves or deletes the kit's own residue instead of refusing it, no removal takes a writer in the target, the close record classes its blocker and times what the worktree removal spent, `plan failures` shows a repeated blocker class, a renumbered root whose checkout is gone is judged by its marker and the interrupted-removal cases are repaired, and no role hands a prune to the operator (version assigned at activation)
+# WO-252 — Release close owns what the kit wrote: a disposable declaration matches at any depth, a target close moves or deletes the kit's own residue instead of refusing it, no removal takes a writer in the target, the close record classes its blocker and times what the worktree removal spent, `plan failures` shows a repeated blocker class, a renumbered root whose checkout is gone is judged by its marker and the interrupted-removal cases are repaired, and no role hands a prune to the operator (v0.112.0)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

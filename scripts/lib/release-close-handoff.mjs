@@ -65,6 +65,37 @@ export function releaseCloseKind(
   return { kind: selfCloseKind(version, latest), version, latest };
 }
 
+/** What a target close hands back for the instance's own records, as two
+ * printed lines: the tag the close published, or why there is none, and the
+ * target commit the final review judged. They are printed only when the
+ * attempt completed with the target worktree removed, or a dry run would
+ * remove it; a stopped close, even one whose tag is already pushed, hands back
+ * nothing until the attempt that completes. The instance's profile stays its
+ * own to write; the close names the values and writes no profile.
+ * @param {Record<string, any>} record @returns {string[]} */
+export function targetCloseHandoffLines(record) {
+  const target = record?.publication?.target;
+  if (
+    !target?.repositoryId ||
+    record.blocker ||
+    !["removed", "would-remove"].includes(record.targetCleanup?.outcome)
+  )
+    return [];
+  const published = ["published", "current", "already-published"].includes(
+    target.outcome,
+  );
+  const tag =
+    published && target.tag
+      ? target.tag
+      : target.policy === "declared"
+        ? `none (${target.outcome}${target.tag ? `; ${target.tag}` : ""})`
+        : "none (no-release policy)";
+  return [
+    `Target ${target.repositoryId} published tag: ${tag}.`,
+    `Target ${target.repositoryId} reviewed commit: ${target.reviewedCommit ?? "unknown"}.`,
+  ];
+}
+
 const ONCE_WITH_TAG =
   "Run the printed --publish command once; --dry-run is optional when a prerequisite such as reachability or a foreign tag is in doubt.";
 const ONCE =

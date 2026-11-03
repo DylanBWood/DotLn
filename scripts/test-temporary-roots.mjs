@@ -39,6 +39,7 @@ import {
   removeTemporaryPath,
   removeTemporaryRoot,
   removeVerifiedTemporaryRoot,
+  temporaryLedgerContradiction,
   temporaryRemovalAside,
   ownerAlive,
   readRetention,
@@ -2959,6 +2960,223 @@ test("a removal stopped after it moved its root aside is found there and finishe
   );
   assert.ok(existsSync(join(heldAside, TEMPORARY_OWNER_FILE)));
   assert.ok(existsSync(join(`${held}.original`, TEMPORARY_OWNER_FILE)));
+});
+
+// A root's ledger segment, in its owner repository.
+const segmentOf = (repository, token) =>
+  join(repository, ".runtime/temporary-roots/roots", `${token}.jsonl`);
+// A removal that stopped right after moving its root aside: the move is in the
+// owner's ledger and the rename happened, and nothing more. The ledger row
+// names the path the removal was given, as the stop recorded it before
+// removals ledgered a relocated root under its registration.
+const stopAfterMove = (path, record) => {
+  const aside = temporaryRemovalAside(path, record.token);
+  writeFileSync(
+    segmentOf(record.owner.repository, record.token),
+    JSON.stringify({ action: "moving", path, token: record.token, aside }) +
+      "\n",
+    { flag: "a" },
+  );
+  renameSync(path, aside);
+  return aside;
+};
+const pruneOptions = (root) => ({
+  scope: "repository",
+  temporaryBases: [join(root, "roots")],
+  hostDirectory: join(root, ".runtime/host"),
+  processes: [],
+  openPaths: [],
+  holders: [],
+  sessionId: "recovery-fixture-prune",
+});
+
+test("a renumbered root whose owner repository is gone is proven by its marker and removed by prune apply", async (t) => {
+  const root = fixture(t);
+  runGit(root, ["init", "-q", "-b", "main"]);
+  const checkout = join(root, "closed-checkout");
+  mkdirSync(checkout);
+  const orphan = expired(root, "dotln-orphan-", { repository: checkout });
+  const replaced = expired(root, "dotln-replaced-", { repository: checkout });
+  writeFileSync(join(orphan, "payload"), "regenerable\n");
+  // The closed checkout goes with its ledger, as a release close removes it.
+  removeDirectory(checkout, { recursive: true });
+  // The reboot: the volume's device number changes; the directory, its inode
+  // and the token in its marker do not.
+  const { device, inode, token } = renumber(orphan);
+  // A directory that took a root's place carries a copy of its marker and
+  // another inode; it is refused whatever its device says.
+  const copied = readFileSync(join(replaced, TEMPORARY_OWNER_FILE), "utf8");
+  removeDirectory(replaced, { recursive: true });
+  mkdirSync(replaced);
+  writeFileSync(join(replaced, "payload"), "retained\n");
+  writeFileSync(
+    join(replaced, TEMPORARY_OWNER_FILE),
+    JSON.stringify({ ...JSON.parse(copied), device: device + 1 }) + "\n",
+  );
+  const options = pruneOptions(root);
+  const census = await pruneHarness(root, options);
+  assert.ok(
+    census.candidates.some((row) => row.path === relative(root, orphan)),
+    JSON.stringify(census),
+  );
+  const restamped = JSON.parse(
+    readFileSync(join(orphan, TEMPORARY_OWNER_FILE), "utf8"),
+  );
+  assert.equal(restamped.device, device);
+  assert.equal(restamped.inode, inode);
+  assert.equal(restamped.token, token);
+  assert.match(
+    census.retained.find((row) => row.path === relative(root, replaced))
+      ?.reason ?? "",
+    /invalid or the directory was replaced/,
+  );
+  const applied = await pruneHarness(root, { ...options, apply: true });
+  assert.ok(
+    applied.removed.some((row) => row.path === relative(root, orphan)),
+    JSON.stringify(applied),
+  );
+  assert.equal(existsSync(orphan), false);
+  assert.equal(readFileSync(join(replaced, "payload"), "utf8"), "retained\n");
+  removeDirectory(replaced, { recursive: true });
+});
+
+test("a child whose own removal stopped inside its parent's aside stays bound and held until a prune finishes both", async (t) => {
+  const root = fixture(t);
+  runGit(root, ["init", "-q", "-b", "main"]);
+  const parent = expired(root, "parent-");
+  const parentRecord = readTemporaryOwner(parent);
+  const child = expired(root, `${basename(parent)}/child-`);
+  const childRecord = readTemporaryOwner(child);
+  writeFileSync(join(child, "payload"), "retained\n");
+  // Two stops: the parent's removal moved it aside, then the child's own
+  // removal, given the place the child was found, moved it aside in there.
+  const parentAside = stopAfterMove(parent, parentRecord);
+  const childAside = stopAfterMove(
+    join(parentAside, basename(child)),
+    childRecord,
+  );
+  assert.equal(
+    temporaryLedgerContradiction(childAside, readTemporaryOwner(childAside)),
+    null,
+  );
+  retireTemporaryLedger(root);
+  assert.ok(existsSync(segmentOf(root, childRecord.token)));
+  assert.equal(readFileSync(join(childAside, "payload"), "utf8"), "retained\n");
+  const applied = await pruneHarness(root, {
+    ...pruneOptions(root),
+    apply: true,
+  });
+  assert.ok(
+    applied.removed.some((row) => row.path === relative(root, parentAside)),
+    JSON.stringify(applied),
+  );
+  assert.equal(existsSync(parentAside), false);
+  retireTemporaryLedger(root);
+  assert.equal(existsSync(segmentOf(root, childRecord.token)), false);
+});
+
+test("a child finished from its parent's aside ends its own registration", (t) => {
+  const root = fixture(t);
+  runGit(root, ["init", "-q", "-b", "main"]);
+  const parent = expired(root, "parent-");
+  const parentRecord = readTemporaryOwner(parent);
+  writeFileSync(join(parent, "payload"), "retained\n");
+  const child = expired(root, `${basename(parent)}/child-`);
+  const childRecord = readTemporaryOwner(child);
+  const parentAside = stopAfterMove(parent, parentRecord);
+  removeTemporaryRoot(join(parentAside, basename(child)), childRecord.token);
+  // The removal is recorded under the child's registration, so the
+  // registration ends and its segment leaves with it.
+  assert.equal(
+    registeredTemporaryRoots(root).some(
+      (row) => row.token === childRecord.token,
+    ),
+    false,
+  );
+  assert.equal(existsSync(segmentOf(root, childRecord.token)), false);
+  assert.equal(
+    readFileSync(join(parentAside, "payload"), "utf8"),
+    "retained\n",
+  );
+  assert.ok(
+    registeredTemporaryRoots(root).some(
+      (row) => row.token === parentRecord.token && row.path === parentAside,
+    ),
+  );
+});
+
+test("an empty unmarked aside a stopped removal left is removed, and a non-empty one keeps its payload", async (t) => {
+  const root = fixture(t);
+  runGit(root, ["init", "-q", "-b", "main"]);
+  const judge = (path) =>
+    judgeTemporaryRoot(
+      root,
+      path,
+      {},
+      { processes: [], holders: [], worktrees: [], openPaths: [] },
+    );
+  // The stop between deleting the owner record and the directory.
+  const remains = expired(root, "remains-");
+  const remainsRecord = readTemporaryOwner(remains);
+  const remainsAside = stopAfterMove(remains, remainsRecord);
+  removeDirectory(join(remainsAside, TEMPORARY_OWNER_FILE));
+  // An unmarked aside that still holds something is not those remains.
+  const kept = expired(root, "kept-");
+  const keptAside = stopAfterMove(kept, readTemporaryOwner(kept));
+  writeFileSync(join(keptAside, "payload"), "retained\n");
+  removeDirectory(join(keptAside, TEMPORARY_OWNER_FILE));
+  assert.equal(judge(remainsAside)?.candidate?.kind, "removal-remains");
+  assert.match(judge(keptAside)?.retained?.reason ?? "", /unmarked root/);
+  const applied = await pruneHarness(root, {
+    ...pruneOptions(root),
+    apply: true,
+  });
+  assert.ok(
+    applied.removed.some((row) => row.path === relative(root, remainsAside)),
+    JSON.stringify(applied),
+  );
+  assert.equal(existsSync(remainsAside), false);
+  assert.equal(
+    registeredTemporaryRoots(root).some(
+      (row) => row.token === remainsRecord.token,
+    ),
+    false,
+  );
+  assert.equal(readFileSync(join(keptAside, "payload"), "utf8"), "retained\n");
+  removeDirectory(keptAside, { recursive: true });
+});
+
+test("a nested registration in another repository's ledger waits while its parent sits aside", (t) => {
+  const root = fixture(t);
+  runGit(root, ["init", "-q", "-b", "main"]);
+  const other = join(root, "other-owner");
+  mkdirSync(other);
+  runGit(other, ["init", "-q", "-b", "main"]);
+  const parent = expired(root, "parent-");
+  const parentRecord = readTemporaryOwner(parent);
+  const child = expired(root, `${basename(parent)}/child-`, {
+    repository: other,
+  });
+  const childRecord = readTemporaryOwner(child);
+  writeFileSync(join(child, "payload"), "retained\n");
+  // The parent's move is recorded in its own repository's ledger, which the
+  // child's repository never reads.
+  const parentAside = stopAfterMove(parent, parentRecord);
+  const moved = join(parentAside, basename(child));
+  retireTemporaryLedger(other);
+  assert.ok(existsSync(segmentOf(realpathSync(other), childRecord.token)));
+  assert.equal(readFileSync(join(moved, "payload"), "utf8"), "retained\n");
+  assert.equal(
+    temporaryLedgerContradiction(moved, readTemporaryOwner(moved)),
+    null,
+  );
+  // Once the parent and what it holds are gone, the segment retires.
+  removeTemporaryRoot(parentAside, parentRecord.token);
+  retireTemporaryLedger(other);
+  assert.equal(
+    existsSync(segmentOf(realpathSync(other), childRecord.token)),
+    false,
+  );
 });
 
 test("a stale Codex home listing that cannot inspect an entry never replaces the prune's result", async (t) => {

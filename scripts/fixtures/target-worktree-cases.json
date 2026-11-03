@@ -71,7 +71,20 @@
     "`target final review excludes merged subjects unless the fetched ref is absent: missingRef=${missingRef}`",
     "`target final review names the described range before its ${name} refusal`",
     "\"document gate route comparison ignores measured churn but preserves outcomes\"",
-    "\"a fixture push carries the fixture environment to the local bare repository only, and one without it fails at resolution\""
+    "\"a fixture push carries the fixture environment to the local bare repository only, and one without it fails at resolution\"",
+    "\"WO-252 a fork-shaped target closes on its first attempt: sixteen nested caches under one glob, the kit's residue moved or deleted, no blocker, timed children and the printed handoff\"",
+    "\"WO-252 one **/node_modules entry closes nested Vite and Vitest caches and the root's cache on the first attempt, listing each under that entry\"",
+    "\"WO-252 a one-segment glob takes only its depth, and a glob match through a link still refuses as a declared root does\"",
+    "\"WO-252 a target close refuses what the kit did not write and stops on a held writer before deleting anything\"",
+    "\"WO-252 the kit's snapshot cleanup removes only its listed files, so a tracked file beside them survives\"",
+    "\"WO-252 a foreign file at a snapshot's record path under a declared root is deleted as declared output, and the kit's snapshot goes with it\"",
+    "\"WO-252 snapshots earlier runtimes installed are the kit's residue too, proven by the record a changed pinned list left or, before records, by their own package files with the list their release pinned, while a file the kit did not write in one is still refused\"",
+    "\"WO-252 a target removal that Git stops leaves the temporary-root ledger as it was, so a root it registers stays prunable until a retry removes the target\"",
+    "\"WO-252 a declared-output deletion that stops leaves the temporary-root ledger untouched, so a root it registers stays prunable\"",
+    "\"WO-252 what a tracked link in the target reaches is not the close's to move or delete, so a journal lane behind it stays where the link points\"",
+    "\"WO-252 a declared file at a snapshot's record path gives way to the record before any of the snapshot goes, so a deletion that stops part way stays provable\"",
+    "\"WO-252 a journal move the lane refuses stops a target close as preservation-refused, in its preview as in the move\"",
+    "\"WO-252 a nested repository under declared output counts each file its removal took before it stopped\""
   ],
   "names": [
     "target release preparation is a read-only no-release outcome",
@@ -176,6 +189,19 @@
     "target final review names the described range before its identifier refusal",
     "target final review names the described range before its attribution refusal",
     "document gate route comparison ignores measured churn but preserves outcomes",
-    "a fixture push carries the fixture environment to the local bare repository only, and one without it fails at resolution"
+    "a fixture push carries the fixture environment to the local bare repository only, and one without it fails at resolution",
+    "WO-252 a fork-shaped target closes on its first attempt: sixteen nested caches under one glob, the kit's residue moved or deleted, no blocker, timed children and the printed handoff",
+    "WO-252 one **/node_modules entry closes nested Vite and Vitest caches and the root's cache on the first attempt, listing each under that entry",
+    "WO-252 a one-segment glob takes only its depth, and a glob match through a link still refuses as a declared root does",
+    "WO-252 a target close refuses what the kit did not write and stops on a held writer before deleting anything",
+    "WO-252 the kit's snapshot cleanup removes only its listed files, so a tracked file beside them survives",
+    "WO-252 a foreign file at a snapshot's record path under a declared root is deleted as declared output, and the kit's snapshot goes with it",
+    "WO-252 snapshots earlier runtimes installed are the kit's residue too, proven by the record a changed pinned list left or, before records, by their own package files with the list their release pinned, while a file the kit did not write in one is still refused",
+    "WO-252 a target removal that Git stops leaves the temporary-root ledger as it was, so a root it registers stays prunable until a retry removes the target",
+    "WO-252 a declared-output deletion that stops leaves the temporary-root ledger untouched, so a root it registers stays prunable",
+    "WO-252 what a tracked link in the target reaches is not the close's to move or delete, so a journal lane behind it stays where the link points",
+    "WO-252 a declared file at a snapshot's record path gives way to the record before any of the snapshot goes, so a deletion that stops part way stays provable",
+    "WO-252 a journal move the lane refuses stops a target close as preservation-refused, in its preview as in the move",
+    "WO-252 a nested repository under declared output counts each file its removal took before it stopped"
   ]
 }

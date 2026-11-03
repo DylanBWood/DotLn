@@ -1,7 +1,12 @@
 import {
   createFixtureRoot,
+  ensureTemporaryRoot,
+  readTemporaryOwner,
+  removeTemporaryRoot,
   removeTemporaryPath as rmSync,
+  writeTemporaryOwner,
 } from "./lib/temporary-roots.mjs";
+import { judgeTemporaryRoot } from "./lib/temporary-prune.mjs";
 import { spawnSync } from "node:child_process";
 import test from "node:test";
 import assert from "node:assert/strict";
@@ -29,7 +34,15 @@ import {
 } from "./lib/git.mjs";
 import { assertFinderMetadataTypes } from "./lib/finder-metadata.mjs";
 import { write } from "./lib/helpers.mjs";
-import { checkTargetHarness } from "./lib/harness.mjs";
+import {
+  checkTargetHarness,
+  harnessInstallation,
+  preserveHarnessRuntime,
+  PRE_RECORD_RUNTIME_FILE_LISTS,
+  RUNTIME_SNAPSHOT_RECORD,
+  runtimeSnapshotContent,
+  runtimeSnapshotPath,
+} from "./lib/harness.mjs";
 import { targetRegistryPath } from "./lib/target-worktrees.mjs";
 import { createHash } from "node:crypto";
 import { checksPath } from "./lib/gate-evidence.mjs";
@@ -1540,6 +1553,21 @@ for (const side of ["base", "target"])
             existsSync(join(root, "node_modules/c-after.txt")),
             "nothing after the failing entry is deleted",
           );
+          // The stopped attempt still records what its deletion removed and
+          // the time it took.
+          const removal = closeRecord(f).steps.find(
+            (step) => step.name === "worktree-removal",
+          );
+          const deletion = removal.children.find(
+            (child) => child.name === "disposable-deletion",
+          );
+          assert.equal(deletion.files, 1);
+          assert.equal(deletion.bytes, "regenerable output\n".length);
+          assert.ok(deletion.durationMs > 0);
+          assert.equal(
+            closeRecord(f).blocker.class,
+            "declared-root-unreadable",
+          );
         } finally {
           assert.equal(
             spawnSync("chflags", ["nouchg", locked], { encoding: "utf8" })
@@ -1620,3 +1648,1196 @@ main();
       },
       { baseIgnore: "dist\n" },
     ));
+
+// The close record of the fixture order, as main retains it.
+const closeRecord = (f) =>
+  JSON.parse(
+    readFileSync(
+      docPath(f.main, "control", "local/retained/WO-999/release-close.json"),
+      "utf8",
+    ),
+  );
+const declareDisposable = (f, disposable) => {
+  f.config.repositories.target.disposable = disposable;
+  write(f.main, "dotln.config.json", JSON.stringify(f.config));
+  git(f.main, "add", "-A");
+  git(
+    f.main,
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "test: declare disposable output",
+  );
+  git(f.main, "push", "-q", "origin", "main");
+  f.mapClone();
+  f.start();
+  mergedCloseFixture(f);
+};
+// The harness snapshot the launchpad runtime the target's hooks load
+// installs, as an emit run against the target writes it: the snapshot's
+// content-addressed name, and package files with that runtime's own bytes.
+const kitSnapshot = (f) => {
+  const registered = Object.values(
+    JSON.parse(readFileSync(targetRegistryPath(f.main), "utf8")),
+  ).find((row) => row.workOrderId === "WO-999");
+  return {
+    runtimeRoot: registered.runtimeRoot,
+    snapshot: harnessInstallation({ runtimeRoot: registered.runtimeRoot })
+      .runtimeSnapshot,
+  };
+};
+const plantSnapshotFile = (f, path = "packages/skeleton/package.json") => {
+  const { runtimeRoot, snapshot } = kitSnapshot(f);
+  write(
+    f.target,
+    `${snapshot}/${path}`,
+    readFileSync(join(runtimeRoot, path), "utf8"),
+  );
+  return snapshot;
+};
+// What a session run inside the target leaves of the kit's: its journal
+// lane, the order's change reviews, a released writer directory, the Spotlight
+// marker and a harness snapshot. The temporary-root ledger comes from a root
+// registered with the target as its repository, as session scratch is.
+const plantKitResidue = (f) => {
+  const session = "e".repeat(64);
+  write(
+    f.target,
+    `docs/control/local/harness/${session}.jsonl`,
+    '{"typedEvent":"OperatorMessageObserved","workOrder":"WO-999"}\n',
+  );
+  write(
+    f.target,
+    `docs/control/local/harness/${session}.json`,
+    '{"role":"release-close","workOrder":"WO-999"}\n',
+  );
+  write(
+    f.target,
+    "docs/control/local/reviews/WO-999/round-1-criteria.md",
+    "# Change review: criteria, round 1, WO-999\n",
+  );
+  mkdirSync(join(f.target, "docs/control/local/harness/writer"), {
+    recursive: true,
+  });
+  write(f.target, ".runtime/.metadata_never_index", "");
+  const snapshot = plantSnapshotFile(f);
+  const scratch = ensureTemporaryRoot(join(f.base, "dotln-target-session"), {
+    class: "session-scratch",
+    repository: f.target,
+  });
+  return { session, scratch, snapshot };
+};
+// The worktree-removal row's children: the seven named parts, each timed,
+// whose sum stays within the row's own duration.
+const assertRemovalChildren = (record) => {
+  const row = record.steps.find((step) => step.name === "worktree-removal");
+  assert.deepEqual(
+    record.steps.map((step) => step.name),
+    [
+      "prerequisites",
+      "runtime",
+      "worktree-removal",
+      "publication",
+      "starter-refresh",
+      "prune",
+      "record",
+    ],
+  );
+  assert.deepEqual(
+    row.children.map((child) => child.name),
+    [
+      "base-fetch",
+      "disposable-deletion",
+      "finder-metadata",
+      "journal-retention",
+      "git-worktree-remove",
+      "branch-delete",
+      "preservation",
+    ],
+  );
+  for (const child of row.children)
+    assert.ok(
+      Number.isFinite(child.durationMs) && child.durationMs >= 0,
+      child.name,
+    );
+  assert.ok(
+    row.children.reduce((sum, child) => sum + child.durationMs, 0) <=
+      row.durationMs,
+    JSON.stringify(row),
+  );
+  return Object.fromEntries(row.children.map((child) => [child.name, child]));
+};
+
+test("WO-252 a fork-shaped target closes on its first attempt: sixteen nested caches under one glob, the kit's residue moved or deleted, no blocker, timed children and the printed handoff", (t) =>
+  withFixture(
+    (f) => {
+      declareDisposable(f, ["**/node_modules"]);
+      const reviewed = git(f.target, "rev-parse", "HEAD");
+      for (let index = 0; index < 16; index++)
+        write(
+          f.target,
+          `libs/project-${index}/node_modules/${index % 2 ? ".vitest" : ".vite"}/results.json`,
+          "regenerable\n",
+        );
+      write(f.target, "node_modules/.cache/nx/state.json", "regenerable\n");
+      const { session, scratch, snapshot } = plantKitResidue(f);
+      try {
+        const closed = f.ok(f.close("--publish"));
+        assert.equal(existsSync(f.target), false);
+        // The handoff names what an instance's profile records.
+        assert.match(
+          closed,
+          /^Target target published tag: none \(no-release policy\)\.$/mu,
+        );
+        assert.ok(
+          closed
+            .split("\n")
+            .includes(`Target target reviewed commit: ${reviewed}.`),
+          closed,
+        );
+        const record = closeRecord(f);
+        assert.equal(record.blocker, null);
+        assert.deepEqual(
+          record.previousAttempts.filter((attempt) => attempt.blocker),
+          [],
+          "no earlier attempt stopped",
+        );
+        assert.equal(record.targetCleanup.outcome, "removed");
+        const [glob] = record.targetCleanup.disposable.target;
+        assert.equal(glob.path, "**/node_modules");
+        assert.equal(glob.files, 17);
+        assert.deepEqual(
+          glob.matches,
+          [
+            ...Array.from({ length: 16 }, (_, index) => ({
+              path: `libs/project-${index}/node_modules`,
+              files: 1,
+            })),
+            { path: "node_modules", files: 1 },
+          ].sort((a, b) => (a.path < b.path ? -1 : 1)),
+        );
+        const { residue } = record.targetCleanup;
+        assert.equal(residue.journals.outcome, "moved");
+        assert.equal(residue.journals.files, 3);
+        assert.deepEqual(
+          residue.deleted.map(({ path, kind, outcome }) => ({
+            path,
+            kind,
+            outcome,
+          })),
+          [
+            {
+              path: "docs/control/local/harness/writer",
+              kind: "released writer",
+              outcome: "deleted",
+            },
+            {
+              path: ".runtime/.metadata_never_index",
+              kind: "Spotlight marker",
+              outcome: "deleted",
+            },
+            {
+              path: snapshot,
+              kind: "harness snapshot",
+              outcome: "deleted",
+            },
+            {
+              path: ".runtime/temporary-roots/roots",
+              kind: "temporary-root ledger",
+              outcome: "deleted",
+            },
+          ],
+        );
+        assert.equal(residue.ledgerRoots, 1);
+        // The target's journals and reviews are in main's retained lane for
+        // the order, where the launchpad worktree's go.
+        const lane = docPath(
+          f.main,
+          "control",
+          "local/retained/WO-999/harness",
+        );
+        assert.equal(
+          readFileSync(join(lane, `${session}.jsonl`), "utf8"),
+          '{"typedEvent":"OperatorMessageObserved","workOrder":"WO-999"}\n',
+        );
+        assert.ok(existsSync(join(lane, `${session}.json`)));
+        assert.equal(
+          readFileSync(join(lane, "reviews/round-1-criteria.md"), "utf8"),
+          "# Change review: criteria, round 1, WO-999\n",
+        );
+        assert.ok(
+          readFileSync(join(lane, "sources.jsonl"), "utf8")
+            .split("\n")
+            .filter(Boolean)
+            .some((line) => JSON.parse(line).worktree === f.target),
+        );
+        // The root the target's ledger registered outlives that ledger in
+        // the close record, and the close's prune judged it.
+        assert.ok(
+          record.ownedTemporaryRoots.some((saved) => saved.path === scratch),
+        );
+        const children = assertRemovalChildren(record);
+        // What the step spent its time on, for the order's measurements.
+        const removal = record.steps.find(
+          (step) => step.name === "worktree-removal",
+        );
+        t.diagnostic(
+          `worktree-removal ${removal.durationMs.toFixed(1)} ms: ${Object.values(
+            children,
+          )
+            .map((child) => `${child.name} ${child.durationMs.toFixed(1)}`)
+            .join(", ")}`,
+        );
+        // The seventeen caches, then the marker, the snapshot's file and the
+        // ledger's segment; the released writer directory holds no file.
+        assert.equal(children["disposable-deletion"].files, 17 + 3);
+        assert.ok(children["disposable-deletion"].bytes > 0);
+        assert.ok(children["base-fetch"].durationMs > 0);
+        assert.ok(children["git-worktree-remove"].durationMs > 0);
+      } finally {
+        if (existsSync(scratch))
+          removeTemporaryRoot(scratch, readTemporaryOwner(scratch).token);
+      }
+    },
+    { baseIgnore: "node_modules\ndocs/control/local/\n" },
+  ));
+
+test("WO-252 one **/node_modules entry closes nested Vite and Vitest caches and the root's cache on the first attempt, listing each under that entry", () =>
+  withFixture(
+    (f) => {
+      declareDisposable(f, ["**/node_modules"]);
+      write(f.target, "libs/a/node_modules/.vite/deps/a.js", "cache\n");
+      write(f.target, "libs/a/node_modules/.vite/deps/b.js", "cache\n");
+      write(f.target, "libs/b/node_modules/.vitest/results.json", "{}\n");
+      write(f.target, "node_modules/.cache/nx/state.json", "{}\n");
+      write(f.target, "node_modules/.cache/nx/lock", "\n");
+      write(f.target, "node_modules/.cache/nx/terminal", "\n");
+      const closed = f.ok(f.close("--publish"));
+      assert.match(
+        closed,
+        /disposable output deleted: \*\*\/node_modules \(6 in 3 matches\)/u,
+      );
+      const record = closeRecord(f);
+      assert.equal(record.blocker, null);
+      assert.deepEqual(record.previousAttempts, []);
+      assert.deepEqual(record.targetCleanup.disposable.target, [
+        {
+          path: "**/node_modules",
+          files: 6,
+          matches: [
+            { path: "libs/a/node_modules", files: 2 },
+            { path: "libs/b/node_modules", files: 1 },
+            { path: "node_modules", files: 3 },
+          ],
+        },
+      ]);
+      assert.equal(existsSync(f.target), false);
+    },
+    { baseIgnore: "node_modules\n" },
+  ));
+
+test("WO-252 a one-segment glob takes only its depth, and a glob match through a link still refuses as a declared root does", () =>
+  withFixture(
+    (f) => {
+      declareDisposable(f, ["libs/*/dist", "**/node_modules"]);
+      write(f.target, "libs/a/dist/main.js", "built\n");
+      write(f.target, "libs/a/src/dist/main.js", "built\n");
+      const deeper = f.close("--publish");
+      assertCloseRefusal(
+        f,
+        deeper,
+        "--publish",
+        /target has undeclared ignored material; source retained: libs\/a\/src\/\. Declare it disposable/u,
+      );
+      assert.ok(existsSync(join(f.target, "libs/a/dist/main.js")));
+      assert.equal(closeRecord(f).blocker.class, "undeclared-ignored-material");
+      assert.equal(closeRecord(f).blocker.step, "worktree-removal");
+      // The launchpad session removes it by the target's path.
+      rmSync(join(f.target, "libs/a/src/dist"), { recursive: true });
+      mkdirSync(join(f.base, "outside-cache"));
+      write(f.base, "outside-cache/keep.txt", "outside\n");
+      mkdirSync(join(f.target, "libs/c"), { recursive: true });
+      symlinkSync(
+        join(f.base, "outside-cache"),
+        join(f.target, "libs/c/node_modules"),
+      );
+      const linked = f.close("--publish");
+      assertCloseRefusal(
+        f,
+        linked,
+        "--publish",
+        /declared root libs\/c\/node_modules \(matched by \*\*\/node_modules\) has a symlinked component/u,
+      );
+      assert.equal(closeRecord(f).blocker.class, "declared-root-unreadable");
+      assert.ok(existsSync(join(f.base, "outside-cache/keep.txt")));
+      assert.ok(existsSync(join(f.target, "libs/a/dist/main.js")));
+      rmSync(join(f.target, "libs/c/node_modules"));
+      f.ok(f.close("--publish"));
+      const record = closeRecord(f);
+      assert.equal(record.blocker, null);
+      assert.deepEqual(record.targetCleanup.disposable.target, [
+        {
+          path: "libs/*/dist",
+          files: 1,
+          matches: [{ path: "libs/a/dist", files: 1 }],
+        },
+      ]);
+      assert.deepEqual(
+        record.previousAttempts.map((attempt) => attempt.blocker?.class),
+        ["undeclared-ignored-material", "declared-root-unreadable"],
+      );
+      assert.ok(existsSync(join(f.base, "outside-cache/keep.txt")));
+    },
+    { baseIgnore: "dist/\nnode_modules\n" },
+  ));
+
+test("WO-252 a target close refuses what the kit did not write and stops on a held writer before deleting anything", () =>
+  withFixture(
+    (f) => {
+      declareDisposable(f, []);
+      const { session, scratch, snapshot } = plantKitResidue(f);
+      const residue = [
+        `docs/control/local/harness/${session}.jsonl`,
+        "docs/control/local/reviews/WO-999/round-1-criteria.md",
+        ".runtime/.metadata_never_index",
+        `${snapshot}/packages/skeleton/package.json`,
+      ];
+      const kept = () => {
+        for (const path of residue)
+          assert.ok(existsSync(join(f.target, path)), path);
+        assert.ok(
+          existsSync(join(f.target, "docs/control/local/harness/writer")),
+        );
+      };
+      try {
+        write(f.target, "docs/control/local/notes.txt", "operator note\n");
+        write(f.target, ".env", "KEY=value\n");
+        write(f.target, ".runtime/notes.txt", "not the kit's\n");
+        // Nothing in a snapshot's directory is the kit's unless the
+        // runtime's own package source lists it with those bytes, even where
+        // a launchpad holds the same file at the same path: a note beside
+        // the snapshot's packages or inside one, and a package file under a
+        // snapshot name no runtime computes, each mirrored into main, and an
+        // edited package file are all judged like any other path (the
+        // combined review's round 3 F1).
+        const packageBytes = readFileSync(
+          join(f.target, `${snapshot}/packages/skeleton/package.json`),
+          "utf8",
+        );
+        const mirrored = [
+          [`${snapshot}/operator-note.txt`, "not the kit's either\n"],
+          [`${snapshot}/packages/skeleton/operator-note.txt`, "nor this\n"],
+          [
+            ".runtime/harness/0123456789abcdef/packages/skeleton/package.json",
+            packageBytes,
+          ],
+        ];
+        for (const [path, contents] of mirrored)
+          for (const root of [f.main, f.target]) write(root, path, contents);
+        const edited = `${snapshot}/packages/compiler/package.json`;
+        write(f.target, edited, '{"name":"edited"}\n');
+        const foreign = [
+          ...mirrored.map(([path]) => path),
+          edited,
+          "docs/control/local/notes.txt",
+          ".env",
+          ".runtime/notes.txt",
+        ];
+        const escaped = (path) => path.replace(/[.*+?^${}()|[\]\\/]/gu, "\\$&");
+        for (const mode of ["--dry-run", "--publish"]) {
+          const refused = f.close(mode);
+          assertCloseRefusal(
+            f,
+            refused,
+            mode,
+            new RegExp(
+              `target has undeclared ignored material; source retained: ${[
+                ...foreign,
+              ]
+                .sort()
+                .map(escaped)
+                .join(
+                  ", ",
+                )}\\. Declare it disposable in the registration or remove it; regenerable build output is deleted at close`,
+              "u",
+            ),
+          );
+          kept();
+          for (const path of foreign)
+            assert.ok(existsSync(join(f.target, path)), path);
+        }
+        assert.equal(
+          closeRecord(f).blocker.class,
+          "undeclared-ignored-material",
+        );
+        for (const path of foreign) rmSync(join(f.target, path));
+        for (const [path] of mirrored) rmSync(join(f.main, path));
+        // A held writer, as a record or as a non-empty writer directory,
+        // stops the close before anything is moved or deleted.
+        write(f.target, "docs/control/local/harness/writer.json", "{}\n");
+        const legacy = f.close("--publish");
+        assertCloseRefusal(
+          f,
+          legacy,
+          "--publish",
+          /target worktree: writer reservation \(not proven released\); source retained/u,
+        );
+        assert.equal(closeRecord(f).blocker.class, "writer-held");
+        kept();
+        rmSync(join(f.target, "docs/control/local/harness/writer.json"));
+        write(
+          f.target,
+          "docs/control/local/harness/writer/holder.json",
+          "{}\n",
+        );
+        const held = f.close("--publish");
+        assertCloseRefusal(
+          f,
+          held,
+          "--publish",
+          /target worktree: writer reservation \(not proven released\); source retained/u,
+        );
+        assert.equal(closeRecord(f).blocker.class, "writer-held");
+        kept();
+        rmSync(join(f.target, "docs/control/local/harness/writer/holder.json"));
+        f.ok(f.close("--publish"));
+        const record = closeRecord(f);
+        assert.equal(record.blocker, null);
+        assert.equal(record.targetCleanup.residue.journals.outcome, "moved");
+        assert.equal(existsSync(f.target), false);
+      } finally {
+        if (existsSync(scratch))
+          removeTemporaryRoot(scratch, readTemporaryOwner(scratch).token);
+      }
+    },
+    { baseIgnore: "docs/control/local/\n.runtime/\n.env\n" },
+  ));
+
+// The reviewed target change, committed on the order's target branch, merged
+// into the target's base as a reviewer's merge would.
+const mergeTargetChange = (f) => {
+  const merger = join(f.base, "merger");
+  git(
+    f.base,
+    "-c",
+    "maintenance.auto=false",
+    "clone",
+    "-q",
+    join(f.base, "target.git"),
+    merger,
+  );
+  git(merger, "config", "user.email", "fixture@example.invalid");
+  git(merger, "config", "user.name", "Fixture");
+  git(merger, "fetch", "-q", f.clone, "wo-999");
+  git(
+    merger,
+    "merge",
+    "-q",
+    "--no-ff",
+    "-m",
+    "Merge target change",
+    "FETCH_HEAD",
+  );
+  git(merger, "push", "-q", "origin", "main");
+};
+
+test("WO-252 the kit's snapshot cleanup removes only its listed files, so a tracked file beside them survives", () => {
+  // The reviewed change tracks a file inside the harness snapshot's directory
+  // and one at its record's path: the record itself, which stays and keeps
+  // proving the snapshot, or a file the kit did not write, which stops the
+  // close before anything is deleted.
+  for (const mode of ["record", "foreign"])
+    withFixture(
+      (f) => {
+        f.mapClone();
+        f.start();
+        const { runtimeRoot, snapshot } = kitSnapshot(f);
+        const current = harnessInstallation({ runtimeRoot });
+        const recordText = runtimeSnapshotContent(
+          current.runtimeFiles,
+          current.runtimeInventory,
+        ).get(RUNTIME_SNAPSHOT_RECORD).text;
+        const tracked = `${snapshot}/keep.txt`;
+        const recordPath = `${snapshot}/${RUNTIME_SNAPSHOT_RECORD}`;
+        write(f.target, tracked, "tracked\n");
+        write(
+          f.target,
+          recordPath,
+          mode === "record" ? recordText : "not the record\n",
+        );
+        git(f.target, "add", "-f", tracked, recordPath);
+        git(
+          f.target,
+          "-c",
+          "maintenance.auto=false",
+          "commit",
+          "-qm",
+          "test: track files beside a snapshot",
+        );
+        mergedCloseFixture(f);
+        mergeTargetChange(f);
+        // A package file and a package link, as the emit installs them.
+        plantSnapshotFile(f);
+        mkdirSync(join(f.target, snapshot, "node_modules/@dotln"), {
+          recursive: true,
+        });
+        symlinkSync(
+          "../../packages/skeleton",
+          join(f.target, snapshot, "node_modules/@dotln/skeleton"),
+        );
+        if (mode === "foreign") {
+          const escaped = (text) =>
+            text.replace(/[.*+?^${}()|[\]\\/]/gu, "\\$&");
+          for (const closeMode of ["--dry-run", "--publish"])
+            assertCloseRefusal(
+              f,
+              f.close(closeMode),
+              closeMode,
+              new RegExp(
+                `the kit's harness snapshot ${escaped(snapshot)} holds ${escaped(recordPath)}, a file the kit did not write at its record's path`,
+                "u",
+              ),
+            );
+          assert.equal(
+            closeRecord(f).blocker.class,
+            "declared-root-unreadable",
+          );
+          assert.ok(
+            existsSync(
+              join(f.target, snapshot, "packages/skeleton/package.json"),
+            ),
+          );
+          assert.equal(
+            readlinkSync(
+              join(f.target, snapshot, "node_modules/@dotln/skeleton"),
+            ),
+            "../../packages/skeleton",
+          );
+          return;
+        }
+        f.ok(f.close("--publish"));
+        const record = closeRecord(f);
+        assert.equal(record.blocker, null);
+        assert.deepEqual(record.previousAttempts, []);
+        assert.deepEqual(
+          record.targetCleanup.residue.deleted.map(
+            ({ path, kind, files, outcome }) => ({
+              path,
+              kind,
+              files,
+              outcome,
+            }),
+          ),
+          [
+            {
+              path: snapshot,
+              kind: "harness snapshot",
+              files: 2,
+              outcome: "deleted",
+            },
+          ],
+        );
+        assert.equal(
+          git(join(f.base, "target.git"), "show", `main:${tracked}`),
+          "tracked",
+        );
+        assert.equal(
+          git(join(f.base, "target.git"), "show", `main:${recordPath}`),
+          recordText,
+        );
+      },
+      { baseIgnore: ".runtime/\n" },
+    );
+});
+
+test("WO-252 a foreign file at a snapshot's record path under a declared root is deleted as declared output, and the kit's snapshot goes with it", () =>
+  withFixture(
+    (f) => {
+      declareDisposable(f, [".runtime"]);
+      // A file the listing names at the record's path is judged like any
+      // other path: here the registration declares it disposable.
+      const snapshot = plantSnapshotFile(f);
+      const recordPath = `${snapshot}/${RUNTIME_SNAPSHOT_RECORD}`;
+      write(f.target, recordPath, "not the record\n");
+      f.ok(f.close("--publish"));
+      const record = closeRecord(f);
+      assert.equal(record.blocker, null);
+      assert.deepEqual(record.previousAttempts, []);
+      assert.deepEqual(
+        record.targetCleanup.residue.deleted
+          .filter((row) => row.kind === "harness snapshot")
+          .map(({ path, files }) => ({ path, files })),
+        [{ path: snapshot, files: 1 }],
+      );
+      assert.deepEqual(record.targetCleanup.disposable.target, [
+        { path: ".runtime", files: 1 },
+      ]);
+      assert.equal(existsSync(f.target), false);
+    },
+    { baseIgnore: ".runtime/\n" },
+  ));
+
+test("WO-252 snapshots earlier runtimes installed are the kit's residue too, proven by the record a changed pinned list left or, before records, by their own package files with the list their release pinned, while a file the kit did not write in one is still refused", () =>
+  withFixture(
+    (f) => {
+      declareDisposable(f, []);
+      const { runtimeRoot } = kitSnapshot(f);
+      // The serving runtime is this fixture's copy, never this checkout.
+      assert.ok(runtimeRoot.startsWith(`${f.base}/`));
+      const current = harnessInstallation({ runtimeRoot });
+      // A runtime whose pinned file list differed: only the record its
+      // installer wrote can prove that snapshot once the runtime is gone.
+      const changedList = {
+        runtimeFiles: current.runtimeFiles.slice(1),
+        runtimeInventory: current.runtimeInventory,
+        sourceRoot: runtimeRoot,
+      };
+      changedList.runtimeSnapshot = runtimeSnapshotPath(
+        changedList.runtimeFiles,
+        changedList.runtimeInventory,
+      );
+      preserveHarnessRuntime(f.target, changedList);
+      // The list v0.83.0 to v0.102.0 pinned, installed before records: the
+      // serving runtime pins another list, so only the list that release
+      // pinned proves the snapshot by its own package files.
+      const releaseList = {
+        runtimeFiles: PRE_RECORD_RUNTIME_FILE_LISTS[0].map((path) =>
+          current.runtimeFiles.find((file) => file.path === path),
+        ),
+        runtimeInventory: current.runtimeInventory,
+        sourceRoot: runtimeRoot,
+      };
+      releaseList.runtimeSnapshot = runtimeSnapshotPath(
+        releaseList.runtimeFiles,
+        releaseList.runtimeInventory,
+      );
+      assert.notDeepEqual(
+        releaseList.runtimeFiles.map((file) => file.path),
+        current.runtimeFiles.map((file) => file.path),
+      );
+      preserveHarnessRuntime(f.target, releaseList);
+      rmSync(
+        join(f.target, releaseList.runtimeSnapshot, RUNTIME_SNAPSHOT_RECORD),
+      );
+      // A runtime with the same list and another package version, installed
+      // before snapshots carried a record: its own package files prove it.
+      const manifest = join(runtimeRoot, "packages/skeleton/package.json");
+      const manifestBytes = readFileSync(manifest, "utf8");
+      let beforeRecords;
+      try {
+        writeFileSync(
+          manifest,
+          `${JSON.stringify({ ...JSON.parse(manifestBytes), version: "0.0.1" }, null, 2)}\n`,
+        );
+        beforeRecords = harnessInstallation({ runtimeRoot });
+        preserveHarnessRuntime(f.target, beforeRecords);
+      } finally {
+        writeFileSync(manifest, manifestBytes);
+      }
+      rmSync(
+        join(f.target, beforeRecords.runtimeSnapshot, RUNTIME_SNAPSHOT_RECORD),
+      );
+      preserveHarnessRuntime(f.target, current);
+      const snapshots = [changedList, releaseList, beforeRecords, current]
+        .map((installation) => installation.runtimeSnapshot)
+        .sort();
+      assert.equal(new Set(snapshots).size, 4);
+      const kept = () => {
+        for (const snapshot of snapshots)
+          assert.ok(existsSync(join(f.target, snapshot)), snapshot);
+      };
+      // A note inside a package of the snapshot its record proves is named on
+      // its own; nothing is deleted.
+      const note = `${changedList.runtimeSnapshot}/packages/skeleton/dist/notes.txt`;
+      write(f.target, note, "operator note\n");
+      assertCloseRefusal(
+        f,
+        f.close("--publish"),
+        "--publish",
+        new RegExp(
+          `target has undeclared ignored material; source retained: ${note.replace(/[.*+?^${}()|[\]\\/]/gu, "\\$&")}\\. Declare it disposable`,
+          "u",
+        ),
+      );
+      kept();
+      rmSync(join(f.target, note));
+      // A changed package byte leaves the snapshot installed before records
+      // unproven, so every file of it is refused and none is deleted, while
+      // the other three are never named.
+      const edited = join(
+        f.target,
+        beforeRecords.runtimeSnapshot,
+        "packages/skeleton/package.json",
+      );
+      const editedBytes = readFileSync(edited);
+      writeFileSync(edited, "{}\n");
+      const unproven = f.close("--publish");
+      assertCloseRefusal(
+        f,
+        unproven,
+        "--publish",
+        /target has undeclared ignored material; source retained: /u,
+      );
+      assert.ok(
+        unproven.stderr.includes(
+          `${beforeRecords.runtimeSnapshot}/packages/skeleton/package.json`,
+        ),
+        unproven.stderr.slice(0, 2000),
+      );
+      for (const proven of [changedList, releaseList, current])
+        assert.ok(
+          !unproven.stderr.includes(proven.runtimeSnapshot),
+          proven.runtimeSnapshot,
+        );
+      assert.equal(closeRecord(f).blocker.class, "undeclared-ignored-material");
+      kept();
+      writeFileSync(edited, editedBytes);
+      // A deletion that stops part way takes a snapshot's record last, and a
+      // snapshot proven without one is given it first, so the next attempt
+      // still proves what remains, whichever snapshot it stopped in. Each
+      // attempt stops in the first of those still unwritable.
+      const earlier = [beforeRecords, changedList, releaseList].map(
+        (installation) => installation.runtimeSnapshot,
+      );
+      const unwritable = (snapshot) =>
+        join(f.target, snapshot, "packages/skeleton/dist/src");
+      for (const snapshot of earlier) chmodSync(unwritable(snapshot), 0o555);
+      const stoppedIn = [];
+      try {
+        for (const attempt of [1, 2, 3]) {
+          const stopped = f.close("--publish");
+          assertCloseRefusal(
+            f,
+            stopped,
+            "--publish",
+            /the kit's harness snapshot \.runtime\/harness\/[a-f0-9]{16} could not be removed \(EACCES\)/u,
+          );
+          const halted =
+            /the kit's harness snapshot (\.runtime\/harness\/[a-f0-9]{16}) could not be removed/u.exec(
+              stopped.stderr,
+            )[1];
+          assert.equal(
+            closeRecord(f).blocker.class,
+            "declared-root-unreadable",
+            `attempt ${attempt}`,
+          );
+          assert.equal(
+            existsSync(
+              join(f.target, halted, "packages/compiler/package.json"),
+            ),
+            false,
+            `${halted}: the deletion stopped part way through it`,
+          );
+          assert.ok(
+            existsSync(join(f.target, halted, RUNTIME_SNAPSHOT_RECORD)),
+            `${halted}: its record survives`,
+          );
+          chmodSync(unwritable(halted), 0o755);
+          stoppedIn.push(halted);
+        }
+      } finally {
+        for (const snapshot of earlier)
+          if (existsSync(unwritable(snapshot)))
+            chmodSync(unwritable(snapshot), 0o755);
+      }
+      assert.deepEqual(stoppedIn.sort(), [...earlier].sort());
+      f.ok(f.close("--publish"));
+      const record = closeRecord(f);
+      assert.equal(record.blocker, null);
+      for (const snapshot of snapshots)
+        assert.equal(existsSync(join(f.target, snapshot)), false, snapshot);
+      assert.equal(existsSync(f.target), false);
+    },
+    { baseIgnore: ".runtime/\n" },
+  ));
+
+// A session's scratch registered with the target, its retention passed and
+// its owner gone, so a prune may remove it once the target's ledger binds it.
+const expiredTargetScratch = (f, name) => {
+  const path = ensureTemporaryRoot(join(f.base, name), {
+    class: "session-scratch",
+    repository: f.target,
+    retentionHours: 0,
+    owner: {
+      pid: 2147483647,
+      birth: "1.0",
+      session: "0".repeat(64),
+      gateId: undefined,
+      suite: undefined,
+    },
+  });
+  const owner = readTemporaryOwner(path);
+  delete owner.fixtureOwner;
+  owner.createdAt = "2020-01-01T00:00:00.000Z";
+  owner.endedAt = owner.createdAt;
+  writeTemporaryOwner(path, owner);
+  return {
+    path,
+    token: owner.token,
+    segment: join(
+      f.target,
+      ".runtime/temporary-roots/roots",
+      `${owner.token}.jsonl`,
+    ),
+  };
+};
+// Whether a prune judging from main may remove the root, with no process,
+// open path, live lane or gate in the way.
+const prunable = (f, path) =>
+  Boolean(
+    judgeTemporaryRoot(
+      f.main,
+      path,
+      {},
+      { processes: [], openPaths: [], holders: [], gateLive: false },
+    )?.candidate,
+  );
+const ledgerRows = (record) =>
+  record.targetCleanup.residue.deleted.filter(
+    (row) => row.kind === "temporary-root ledger",
+  );
+
+test("WO-252 a target removal that Git stops leaves the temporary-root ledger as it was, so a root it registers stays prunable until a retry removes the target", () =>
+  withFixture(
+    (f) => {
+      declareDisposable(f, []);
+      const scratch = expiredTargetScratch(f, "dotln-target-ledger-locked");
+      try {
+        const bytes = readFileSync(scratch.segment);
+        assert.ok(prunable(f, scratch.path), "prunable before the close");
+        const marker = existsSync(
+          join(f.target, ".runtime/.metadata_never_index"),
+        );
+        git(f.clone, "worktree", "lock", f.target);
+        let stopped;
+        try {
+          stopped = f.close("--publish");
+        } finally {
+          git(f.clone, "worktree", "unlock", f.target);
+        }
+        assert.notEqual(stopped.status, 0, stopped.stdout);
+        assert.ok(existsSync(f.target));
+        // The segment is back byte for byte, so the root is as prunable
+        // while the target stands as it was before the attempt.
+        assert.deepEqual(readFileSync(scratch.segment), bytes);
+        assert.ok(prunable(f, scratch.path), "prunable after the stop");
+        const record = closeRecord(f);
+        assert.equal(record.blocker.step, "worktree-removal");
+        assert.deepEqual(ledgerRows(record), [
+          {
+            path: ".runtime/temporary-roots/roots",
+            kind: "temporary-root ledger",
+            files: 1,
+            bytes: bytes.length,
+            outcome: "restored",
+          },
+        ]);
+        // What was written back is not counted as deleted.
+        assert.equal(
+          assertRemovalChildren(record)["disposable-deletion"].files,
+          marker ? 1 : 0,
+        );
+        assert.ok(
+          record.ownedTemporaryRoots.some(
+            (saved) => saved.path === scratch.path,
+          ),
+        );
+        // The retry removes the target, and the close's own prune then
+        // judges the carried root by its marker and removes it.
+        f.ok(f.close("--publish"));
+        assert.equal(existsSync(f.target), false);
+        const retried = closeRecord(f);
+        assert.equal(retried.blocker, null);
+        assert.deepEqual(
+          ledgerRows(retried).map((row) => row.outcome),
+          ["deleted"],
+        );
+        assert.ok(
+          retried.prune.removed.some((row) => row.path === scratch.path),
+          JSON.stringify(retried.prune.retained),
+        );
+        assert.equal(existsSync(scratch.path), false);
+      } finally {
+        if (existsSync(scratch.path))
+          removeTemporaryRoot(scratch.path, scratch.token);
+      }
+    },
+    { baseIgnore: ".runtime/\n" },
+  ));
+
+test("WO-252 a declared-output deletion that stops leaves the temporary-root ledger untouched, so a root it registers stays prunable", (t) => {
+  if (process.platform !== "darwin") {
+    t.skip("the filesystem immutable flag is unavailable on this platform");
+    return;
+  }
+  return withFixture(
+    (f) => {
+      declareDisposable(f, ["node_modules"]);
+      const scratch = expiredTargetScratch(f, "dotln-target-ledger-output");
+      const bytes = readFileSync(scratch.segment);
+      for (const name of ["a-first.txt", "b-immutable.txt"])
+        write(f.target, `node_modules/${name}`, "regenerable output\n");
+      const locked = join(f.target, "node_modules/b-immutable.txt");
+      const set = spawnSync("chflags", ["uchg", locked], { encoding: "utf8" });
+      if (
+        set.status !== 0 &&
+        /not supported|unsupported|ENOTSUP/iu.test(set.stderr ?? "")
+      ) {
+        t.skip("this filesystem does not support immutable flags");
+        return;
+      }
+      assert.equal(set.status, 0, set.stderr);
+      try {
+        assertCloseRefusal(
+          f,
+          f.close("--publish"),
+          "--publish",
+          /target worktree cannot close: disposable directory node_modules could not remove node_modules\/b-immutable\.txt/u,
+        );
+        // The ledger goes only immediately before Git's removal, so this
+        // stop never reached it.
+        assert.deepEqual(readFileSync(scratch.segment), bytes);
+        assert.deepEqual(ledgerRows(closeRecord(f)), []);
+        assert.ok(prunable(f, scratch.path));
+      } finally {
+        assert.equal(
+          spawnSync("chflags", ["nouchg", locked], { encoding: "utf8" }).status,
+          0,
+        );
+        if (existsSync(scratch.path))
+          removeTemporaryRoot(scratch.path, scratch.token);
+      }
+    },
+    { baseIgnore: "node_modules\n.runtime/\n" },
+  );
+});
+
+test("WO-252 what a tracked link in the target reaches is not the close's to move or delete, so a journal lane behind it stays where the link points", () =>
+  withFixture(
+    (f) => {
+      f.mapClone();
+      f.start();
+      // The reviewed change tracks docs/control as a link to a directory
+      // outside the target that holds what a session's lane would: a
+      // journal, an empty writer directory and a change review.
+      const outside = join(f.base, "outside-control");
+      const session = "e".repeat(64);
+      write(outside, `local/harness/${session}.jsonl`, "external journal\n");
+      write(
+        outside,
+        "local/reviews/WO-999/round-1-criteria.md",
+        "external review\n",
+      );
+      mkdirSync(join(outside, "local/harness/writer"), { recursive: true });
+      rmSync(join(f.target, "docs/control"), { recursive: true, force: true });
+      mkdirSync(join(f.target, "docs"), { recursive: true });
+      symlinkSync(outside, join(f.target, "docs/control"));
+      git(f.target, "add", "docs/control");
+      git(
+        f.target,
+        "-c",
+        "maintenance.auto=false",
+        "commit",
+        "-qm",
+        "test: track a linked control directory",
+      );
+      mergedCloseFixture(f);
+      mergeTargetChange(f);
+      f.ok(f.close("--publish"));
+      assert.equal(existsSync(f.target), false);
+      const record = closeRecord(f);
+      assert.equal(record.blocker, null);
+      assert.equal(record.targetCleanup.residue.journals.outcome, "nothing");
+      assert.deepEqual(record.targetCleanup.residue.deleted, []);
+      assert.equal(
+        readFileSync(join(outside, `local/harness/${session}.jsonl`), "utf8"),
+        "external journal\n",
+      );
+      assert.equal(
+        readFileSync(
+          join(outside, "local/reviews/WO-999/round-1-criteria.md"),
+          "utf8",
+        ),
+        "external review\n",
+      );
+      assert.ok(existsSync(join(outside, "local/harness/writer")));
+      assert.equal(
+        existsSync(
+          join(
+            docPath(f.main, "control", "local/retained/WO-999/harness"),
+            `${session}.jsonl`,
+          ),
+        ),
+        false,
+      );
+    },
+    { baseIgnore: ".runtime/\n" },
+  ));
+
+test("WO-252 a declared file at a snapshot's record path gives way to the record before any of the snapshot goes, so a deletion that stops part way stays provable", () =>
+  withFixture(
+    (f) => {
+      declareDisposable(f, ["**/.dotln-snapshot.json"]);
+      const { runtimeRoot } = kitSnapshot(f);
+      const current = harnessInstallation({ runtimeRoot });
+      // A snapshot of the list v0.83.0 to v0.102.0 pinned, installed before
+      // records: only its own package files prove it.
+      const release = {
+        runtimeFiles: PRE_RECORD_RUNTIME_FILE_LISTS[0].map((path) =>
+          current.runtimeFiles.find((file) => file.path === path),
+        ),
+        runtimeInventory: current.runtimeInventory,
+        sourceRoot: runtimeRoot,
+      };
+      release.runtimeSnapshot = runtimeSnapshotPath(
+        release.runtimeFiles,
+        release.runtimeInventory,
+      );
+      preserveHarnessRuntime(f.target, release);
+      const record = join(
+        f.target,
+        release.runtimeSnapshot,
+        RUNTIME_SNAPSHOT_RECORD,
+      );
+      // Declared output at the record's path, as a registration's pattern
+      // may name it.
+      writeFileSync(record, "not the record\n");
+      const unwritable = join(
+        f.target,
+        release.runtimeSnapshot,
+        "packages/skeleton/dist/src",
+      );
+      chmodSync(unwritable, 0o555);
+      try {
+        assertCloseRefusal(
+          f,
+          f.close("--publish"),
+          "--publish",
+          /the kit's harness snapshot \.runtime\/harness\/[a-f0-9]{16} could not be removed \(EACCES\)/u,
+        );
+        assert.equal(
+          readFileSync(record, "utf8"),
+          runtimeSnapshotContent(
+            release.runtimeFiles,
+            release.runtimeInventory,
+          ).get(RUNTIME_SNAPSHOT_RECORD).text,
+          "the record took the declared file's place before the deletion began",
+        );
+        assert.equal(
+          existsSync(
+            join(
+              f.target,
+              release.runtimeSnapshot,
+              "packages/compiler/package.json",
+            ),
+          ),
+          false,
+          "the deletion stopped part way",
+        );
+      } finally {
+        chmodSync(unwritable, 0o755);
+      }
+      f.ok(f.close("--publish"));
+      assert.equal(closeRecord(f).blocker, null);
+      assert.equal(existsSync(f.target), false);
+    },
+    { baseIgnore: ".runtime/\n" },
+  ));
+
+test("WO-252 a journal move the lane refuses stops a target close as preservation-refused, in its preview as in the move", () =>
+  withFixture(
+    (f) => {
+      declareDisposable(f, []);
+      const session = "e".repeat(64);
+      const journal = `docs/control/local/harness/${session}.jsonl`;
+      write(f.target, journal, '{"workOrder":"WO-999"}\n');
+      // A directory where main's lane keeps that journal.
+      mkdirSync(
+        join(
+          docPath(f.main, "control", "local/retained/WO-999/harness"),
+          `${session}.jsonl`,
+        ),
+        { recursive: true },
+      );
+      for (const mode of ["--dry-run", "--publish"]) {
+        const refused = f.close(mode);
+        assert.notEqual(refused.status, 0, mode);
+        assert.match(
+          refused.stderr,
+          /Journal lane entry is not a regular file/u,
+          mode,
+        );
+        assert.deepEqual(
+          {
+            class: closeRecord(f).blocker.class,
+            step: closeRecord(f).blocker.step,
+          },
+          { class: "preservation-refused", step: "worktree-removal" },
+          mode,
+        );
+        assert.equal(
+          readFileSync(join(f.target, journal), "utf8"),
+          '{"workOrder":"WO-999"}\n',
+        );
+      }
+    },
+    { baseIgnore: "docs/control/local/\n" },
+  ));
+
+test("WO-252 a nested repository under declared output counts each file its removal took before it stopped", (t) => {
+  if (process.platform !== "darwin") {
+    t.skip("the filesystem immutable flag is unavailable on this platform");
+    return;
+  }
+  return withFixture(
+    (f) => {
+      declareDisposable(f, ["node_modules"]);
+      // Git lists an ignored nested repository as one directory entry, which
+      // the close removes by walking it.
+      const repository = join(f.target, "node_modules/pkg");
+      mkdirSync(repository, { recursive: true });
+      git(repository, "init", "-q");
+      for (const name of ["a-first.txt", "b-immutable.txt", "c-after.txt"])
+        write(repository, name, "regenerable output\n");
+      const locked = join(repository, "b-immutable.txt");
+      const set = spawnSync("chflags", ["uchg", locked], { encoding: "utf8" });
+      if (
+        set.status !== 0 &&
+        /not supported|unsupported|ENOTSUP/iu.test(set.stderr ?? "")
+      ) {
+        t.skip("this filesystem does not support immutable flags");
+        return;
+      }
+      assert.equal(set.status, 0, set.stderr);
+      try {
+        const refused = f.close("--publish");
+        assertCloseRefusal(
+          f,
+          refused,
+          "--publish",
+          /target worktree cannot close: disposable directory node_modules could not remove node_modules\/pkg\//u,
+        );
+        assert.equal(existsSync(join(repository, "a-first.txt")), false);
+        assert.ok(existsSync(join(repository, "c-after.txt")));
+        const deletion = closeRecord(f)
+          .steps.find((step) => step.name === "worktree-removal")
+          .children.find((child) => child.name === "disposable-deletion");
+        // The nested repository's Git directory and its first file went
+        // before the immutable file stopped the walk, and each counted.
+        assert.ok(deletion.files >= 2, JSON.stringify(deletion));
+        assert.ok(
+          deletion.bytes >= "regenerable output\n".length,
+          JSON.stringify(deletion),
+        );
+        assert.ok(deletion.durationMs > 0);
+      } finally {
+        assert.equal(
+          spawnSync("chflags", ["nouchg", locked], { encoding: "utf8" }).status,
+          0,
+        );
+      }
+    },
+    { baseIgnore: "node_modules\n" },
+  );
+});

@@ -128,9 +128,13 @@ import {
   harnessInstallation,
   harnessInstructionBlock,
   composeHarnessInstruction,
+  PRE_RECORD_RUNTIME_FILE_LISTS,
   preserveHarnessRuntime,
+  provenRuntimeSnapshot,
   readBuildOverlay,
+  RUNTIME_SNAPSHOT_RECORD,
   runtimePackageInventory,
+  runtimeSnapshotContent,
   runtimeSnapshotPath,
 } from "./lib/harness.mjs";
 import { termsCheck } from "./terms.mjs";
@@ -1978,6 +1982,49 @@ test("desktop control emit and check follow configuration and every role carries
     }
   } finally {
     removeFixture(root, { recursive: true });
+  }
+});
+
+test("WO-252 every emitted role root gives the prune to the session that needs it and the operator its command only after a recorded host denial, the router running none, and release close removes undeclared output from the launchpad session", () => {
+  const roots = harnessInstallation().files.filter((file) =>
+    file.path.endsWith("/SKILL.md"),
+  );
+  for (const role of ["release-close", "router"])
+    for (const host of [".claude", ".agents"])
+      assert.ok(
+        roots.some(
+          (file) => file.path === `${host}/skills/dotln-${role}/SKILL.md`,
+        ),
+        `${host} ${role}`,
+      );
+  for (const file of roots) {
+    // Every root names the command and the one fallback; only a writing
+    // session runs it, so the read-only router names the phase session.
+    assert.match(
+      file.contents,
+      /`node scripts\/harness\.mjs prune --apply`[^\n]*only after a recorded host denial of that exact command/u,
+      file.path,
+    );
+    if (file.path.includes("/dotln-router/")) {
+      assert.match(
+        file.contents,
+        /The router runs no prune: the phase session it launches runs `node scripts\/harness\.mjs prune --apply` itself under host permissions and records its receipt, handing the operator the printed command only after a recorded host denial of that exact command\./u,
+        file.path,
+      );
+      assert.doesNotMatch(file.contents, /prune --apply` yourself/u, file.path);
+      continue;
+    }
+    assert.match(
+      file.contents,
+      /run `node scripts\/harness\.mjs prune --apply` yourself under host permissions and record its receipt; hand the operator the printed command only after a recorded host denial of that exact command/u,
+      file.path,
+    );
+    if (file.path.includes("/dotln-release-close/"))
+      assert.match(
+        file.contents,
+        /removed from this launchpad session by the target's path, never by a session or writer in the target/u,
+        file.path,
+      );
   }
 });
 
@@ -4476,6 +4523,242 @@ test("runtime snapshots identify all copied package bytes and restore only exact
     preserveHarnessRuntime(root, current);
     assert.deepEqual(runtimePackageInventory(snapshot), inventory);
     checkHarness(root, options);
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-252 a snapshot carries the input its name hashes, so a later runtime proves it by content, and one installed without it proves itself only by its own package files", () => {
+  const root = fixture();
+  const options = { runtimeRoot: root };
+  try {
+    emitHarness(root, options);
+    const installed = harnessInstallation(options);
+    const input = {
+      files: installed.runtimeFiles,
+      inventory: installed.runtimeInventory,
+    };
+    const snapshot = installed.runtimeSnapshot;
+    const record = join(root, snapshot, RUNTIME_SNAPSHOT_RECORD);
+    // The installer writes the record whose digest is the directory's name,
+    // and the inventory and the snapshot check pass over it.
+    const text = readFileSync(record, "utf8");
+    assert.equal(`.runtime/harness/${fnv1a64(text)}`, snapshot);
+    assert.deepEqual(provenRuntimeSnapshot(root, snapshot), input);
+    assert.deepEqual(
+      runtimePackageInventory(join(root, snapshot)),
+      installed.runtimeInventory,
+    );
+    checkHarness(root, options);
+    assert.deepEqual(
+      runtimeSnapshotContent(input.files, input.inventory).get(
+        RUNTIME_SNAPSHOT_RECORD,
+      ),
+      {
+        kind: "file",
+        bytes: Buffer.byteLength(text),
+        sha256: sha256(text),
+        record: true,
+        text,
+      },
+    );
+    // An existing snapshot is never rewritten to add a record; a fresh
+    // install writes it again.
+    rmSync(record);
+    preserveHarnessRuntime(root, installed);
+    assert.equal(existsSync(record), false);
+    // Without its record, a snapshot proves itself when its own package files
+    // reproduce its name with a pinned list: a serving runtime's, or one a
+    // release before records pinned, as this runtime's list is.
+    assert.deepEqual(provenRuntimeSnapshot(root, snapshot), input);
+    assert.deepEqual(
+      provenRuntimeSnapshot(root, snapshot, [installed.runtimeFiles]),
+      input,
+    );
+    // A changed package byte breaks that proof; a note beside the packages is
+    // not part of the inventory, and the close judges it on its own.
+    const manifest = join(root, snapshot, "packages/kernel/package.json");
+    const bytes = readFileSync(manifest);
+    writeFileSync(manifest, "{}\n");
+    assert.equal(
+      provenRuntimeSnapshot(root, snapshot, [installed.runtimeFiles]),
+      null,
+    );
+    writeFileSync(manifest, bytes);
+    write(root, `${snapshot}/operator-note.txt`, "not the kit's\n");
+    assert.deepEqual(
+      provenRuntimeSnapshot(root, snapshot, [installed.runtimeFiles]),
+      input,
+    );
+    rmSync(join(root, snapshot, "operator-note.txt"));
+    // A record copied under another name proves nothing, and neither do the
+    // packages beside it, whose name is another.
+    const renamed = ".runtime/harness/0123456789abcdef";
+    cpSync(join(root, snapshot), join(root, renamed), {
+      recursive: true,
+      verbatimSymlinks: true,
+    });
+    writeFileSync(join(root, renamed, RUNTIME_SNAPSHOT_RECORD), text);
+    assert.equal(
+      provenRuntimeSnapshot(root, renamed, [installed.runtimeFiles]),
+      null,
+    );
+    // A runtime whose pinned list no release before records pinned installs a
+    // snapshot that only its record proves once that runtime is gone, as a
+    // kit update leaves one behind, and a record edited in place, whose bytes
+    // no longer hash to its directory's name, proves nothing.
+    const earlier = {
+      runtimeFiles: installed.runtimeFiles.slice(1),
+      runtimeInventory: installed.runtimeInventory,
+      sourceRoot: root,
+    };
+    earlier.runtimeSnapshot = runtimeSnapshotPath(
+      earlier.runtimeFiles,
+      earlier.runtimeInventory,
+    );
+    preserveHarnessRuntime(root, earlier);
+    const earlierInput = {
+      files: earlier.runtimeFiles,
+      inventory: earlier.runtimeInventory,
+    };
+    assert.deepEqual(
+      provenRuntimeSnapshot(root, earlier.runtimeSnapshot, [
+        installed.runtimeFiles,
+      ]),
+      earlierInput,
+    );
+    const earlierRecord = join(
+      root,
+      earlier.runtimeSnapshot,
+      RUNTIME_SNAPSHOT_RECORD,
+    );
+    writeFileSync(
+      earlierRecord,
+      readFileSync(earlierRecord, "utf8").replace(/^\{/u, "{ "),
+    );
+    assert.equal(
+      provenRuntimeSnapshot(root, earlier.runtimeSnapshot, [
+        installed.runtimeFiles,
+      ]),
+      null,
+    );
+    rmSync(earlierRecord);
+    assert.equal(
+      provenRuntimeSnapshot(root, earlier.runtimeSnapshot, [
+        installed.runtimeFiles,
+      ]),
+      null,
+    );
+    // Its own list, served, proves it by its package files again.
+    assert.deepEqual(
+      provenRuntimeSnapshot(root, earlier.runtimeSnapshot, [
+        earlier.runtimeFiles,
+      ]),
+      earlierInput,
+    );
+    // A snapshot name reached through a link proves nothing.
+    rmSync(join(root, renamed), { recursive: true });
+    symlinkSync(join(root, snapshot), join(root, renamed));
+    assert.equal(
+      provenRuntimeSnapshot(root, renamed, [installed.runtimeFiles]),
+      null,
+    );
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+// The names releases before snapshot records gave a snapshot of one small
+// runtime, recorded from each release's own installer. The release-history
+// evidence probe of the order that keeps the lists reruns those installers
+// from history and compares; this regression reads only the fixture.
+const preRecordSnapshots = JSON.parse(
+  readFileSync(
+    join(sourceRoot, "scripts/fixtures/wo252-pre-record-snapshots.json"),
+    "utf8",
+  ),
+);
+
+test("WO-252 a snapshot a release before records installed proves itself by the list that release pinned, with no serving runtime's list, while one named by its pinned files alone does not", () => {
+  const root = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-harness-releases-")),
+  );
+  try {
+    const runtime = join(root, "runtime"),
+      target = join(root, "target");
+    for (const [path, text] of Object.entries(preRecordSnapshots.runtime))
+      write(runtime, path, text);
+    mkdirSync(target);
+    const inventory = runtimePackageInventory(runtime);
+    const pinned = (paths) =>
+      paths.map((path) => ({
+        path,
+        hash: `fnv1a64:${fnv1a64(preRecordSnapshots.runtime[path])}`,
+      }));
+    const named = preRecordSnapshots.releases.filter(
+      (row) => row.naming === "pinned list and package inventory",
+    );
+    // The kept lists are exactly the lists those releases pinned.
+    assert.deepEqual(
+      PRE_RECORD_RUNTIME_FILE_LISTS.map((list) => JSON.stringify(list)).sort(),
+      named.map((row) => JSON.stringify(row.pinned)).sort(),
+    );
+    for (const row of named) {
+      const files = pinned(row.pinned);
+      // Today's naming gives the name the release's own installer gave.
+      assert.equal(
+        runtimeSnapshotPath(files, inventory),
+        row.snapshot,
+        row.release,
+      );
+      preserveHarnessRuntime(target, {
+        runtimeFiles: files,
+        runtimeInventory: inventory,
+        sourceRoot: runtime,
+        runtimeSnapshot: row.snapshot,
+      });
+      // Installed before records, with no serving runtime's list at hand:
+      // its own package files prove it with the list its release pinned.
+      rmSync(join(target, row.snapshot, RUNTIME_SNAPSHOT_RECORD));
+      assert.deepEqual(
+        provenRuntimeSnapshot(target, row.snapshot),
+        { files, inventory },
+        row.release,
+      );
+    }
+    // A changed package byte leaves such a snapshot unproven.
+    const changed = join(
+      target,
+      named[0].snapshot,
+      "packages/compiler/package.json",
+    );
+    const bytes = readFileSync(changed);
+    writeFileSync(changed, "{}\n");
+    assert.equal(provenRuntimeSnapshot(target, named[0].snapshot), null);
+    writeFileSync(changed, bytes);
+    // A release that named a snapshot by its pinned files alone: that name
+    // hashes those files and nothing else, so no list proves its packages.
+    const before = preRecordSnapshots.releases.find(
+      (row) => row.naming === "pinned files",
+    );
+    assert.equal(
+      `.runtime/harness/${fnv1a64(JSON.stringify(pinned(before.pinned)))}`,
+      before.snapshot,
+    );
+    for (const [path, text] of Object.entries(preRecordSnapshots.runtime))
+      write(join(target, before.snapshot), path, text);
+    mkdirSync(join(target, before.snapshot, "node_modules/@dotln"), {
+      recursive: true,
+    });
+    for (const name of ["compiler", "skeleton"])
+      symlinkSync(
+        `../../packages/${name}`,
+        join(target, before.snapshot, "node_modules/@dotln", name),
+      );
+    assert.equal(
+      provenRuntimeSnapshot(target, before.snapshot, [pinned(before.pinned)]),
+      null,
+    );
   } finally {
     removeFixture(root, { recursive: true, force: true });
   }
@@ -17549,6 +17832,9 @@ test("router dispatch is metadata only and its exact-phrase guard does not apply
         "npm run plan -- start router-fixture",
         "node scripts/resume.mjs implementation-ready",
         "node -e 0",
+        // The router's text names the prune for the phase session it
+        // launches; the router itself still runs none.
+        "node scripts/harness.mjs prune --apply",
       ].map((command) => ({ tool_name: "Bash", tool_input: { command } })),
     ])
       assert.match(

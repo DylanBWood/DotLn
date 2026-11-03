@@ -106,6 +106,27 @@ import {
   writeOrderHostRules,
   validateOrderHostRules,
 } from "./lib/target-worktrees.mjs";
+import {
+  blockerClassOf,
+  closeBlocker,
+  isRemovalChild,
+  withBlockerClass,
+} from "./lib/release-steps.mjs";
+
+// What a finish or settle spends on each part of release close's
+// worktree-removal step. The parts never nest, and the total is printed once
+// as `Removal timings:` for the close record's step children.
+const removalTimings = {};
+const timed = (name, operation) => {
+  if (!isRemovalChild(name)) throw new Error(`Unknown removal part: ${name}`);
+  const started = performance.now();
+  try {
+    return operation();
+  } finally {
+    removalTimings[name] =
+      (removalTimings[name] ?? 0) + performance.now() - started;
+  }
+};
 
 /** The order's reviewed release notes at HEAD: present, a contained regular
  * file, parsed as the five-section edition and laid out for the forge. */
@@ -231,7 +252,8 @@ const ensureNoIgnoredMaterial = (
     .map((candidate) => describeIgnoredMaterial(path, candidate))
     .filter((entry) => !entry.disposable && !gateCache(entry));
   if (blockers.length > 0)
-    throw new Error(
+    throw closeBlocker(
+      "undeclared-ignored-material",
       `worktree contains ignored material and will not be removed (${blockers.length} ${blockers.length === 1 ? "entry" : "entries"}; only scratch repositories are removed):\n${blockers
         .map(
           (entry) =>
@@ -253,7 +275,9 @@ const ensureMaterialClean = (root, material, { leaving = true } = {}) => {
       )
       .map((row) => `${row.path}/`),
   );
-  if (!protectedUnits.size) return ensureClean(root);
+  // Every refusal here is a dirty tree, whichever pass of the finish asks.
+  if (!protectedUnits.size)
+    return withBlockerClass("not-clean", () => ensureClean(root));
   const tracked = runGit(root, [
     "status",
     "--porcelain",
@@ -266,7 +290,8 @@ const ensureMaterialClean = (root, material, { leaving = true } = {}) => {
     "--exclude-standard",
   ]).filter((path) => !protectedUnits.has(path));
   if (tracked || untracked.length)
-    throw new Error(
+    throw closeBlocker(
+      "not-clean",
       `working tree is not clean: ${root} (${tracked.split("\n")[0] || untracked[0]})`,
     );
 };
@@ -293,20 +318,31 @@ const removePreservedWorktree = (
     "--exclude-standard",
   ]);
   if (untracked.some((path) => !units.has(path)))
-    throw new Error("Unpreserved untracked material; source retained");
-  refuseSubmoduleWorktree(subject);
-  const receipt = recordWorktreeRemoval(mainPath, subject, reconciliation);
+    throw closeBlocker(
+      "preservation-refused",
+      "Unpreserved untracked material; source retained",
+    );
+  withBlockerClass("preservation-refused", () =>
+    refuseSubmoduleWorktree(subject),
+  );
+  const receipt = timed("preservation", () =>
+    withBlockerClass("preservation-refused", () =>
+      recordWorktreeRemoval(mainPath, subject, reconciliation),
+    ),
+  );
   process.stdout.write(
     `Worktree removal proof: ${JSON.stringify({ subject, receipt })}\n`,
   );
   const restoreWrites = restoreOwnedDirectoryWrites(subject);
   try {
-    runGit(mainPath, [
-      "worktree",
-      "remove",
-      ...(untracked.length ? ["--force"] : []),
-      subject,
-    ]);
+    timed("git-worktree-remove", () =>
+      runGit(mainPath, [
+        "worktree",
+        "remove",
+        ...(untracked.length ? ["--force"] : []),
+        subject,
+      ]),
+    );
     if (existsSync(subject))
       throw new Error(`Subject directory remains: ${subject}`);
   } catch (error) {
@@ -374,6 +410,14 @@ const reconcileDerivedWorktrees = (
 ) => {
   const suffix = workOrderId.slice(workOrderId.indexOf("-") + 1);
   const lines = [];
+  // A kept derivative's blocker class, assigned where its refusal is raised,
+  // goes on a line of its own after the kept line, where release close reads
+  // it for that worktree's blocker.
+  const keep = (path, line, blockerClass) =>
+    lines.push(
+      line,
+      `Derived worktree blocker: ${JSON.stringify({ path, class: blockerClassOf(blockerClass) })}`,
+    );
   let pruned = false;
   for (const item of parseWorktrees(mainPath)) {
     if (typeof item.worktree !== "string") continue;
@@ -395,71 +439,98 @@ const reconcileDerivedWorktrees = (
       );
       continue;
     }
+    // Each refusal with its class; the first one's class is the worktree's.
     const blockers = [];
+    const block = (reason, blockerClass) =>
+      blockers.push({ reason, blockerClass });
     const writerBlocker = writerTeardownBlocker(path);
-    if (writerBlocker) blockers.push(writerBlocker);
+    if (writerBlocker) block(writerBlocker, "writer-held");
     let material;
     try {
-      material = inventoryMaterial(path, { overrides, overrideWorktree });
+      material = withBlockerClass("preservation-refused", () =>
+        inventoryMaterial(path, { overrides, overrideWorktree }),
+      );
     } catch (error) {
-      lines.push(`Derived worktree ${path}: kept (${error.message})`);
+      keep(
+        path,
+        `Derived worktree ${path}: kept (${error.message})`,
+        error.blockerClass,
+      );
       continue;
     }
     try {
       ensureMaterialClean(path, material);
     } catch {
-      blockers.push("uncommitted changes");
+      block("uncommitted changes", "not-clean");
     }
-    if (activeGateRuns(path).length > 0) blockers.push("active gate run");
+    if (activeGateRuns(path).length > 0) block("active gate run", "other");
     let receipt = null;
     if (!blockers.length)
       try {
-        receipt = reconcileWorktreeMaterial(path, mainPath, workOrderId, {
-          dryRun: true,
-          material,
-        });
+        receipt = withBlockerClass("preservation-refused", () =>
+          reconcileWorktreeMaterial(path, mainPath, workOrderId, {
+            dryRun: true,
+            material,
+          }),
+        );
         ensureNoIgnoredMaterial(path, receipt);
       } catch (error) {
-        blockers.push(error.message);
+        block(error.message, error.blockerClass);
       }
     if (blockers.length) {
       // Dirt is the operator's to settle: nothing here commits, stashes or
       // discards their changes.
-      const operator = blockers.includes("uncommitted changes")
+      const reasons = blockers.map((row) => row.reason);
+      const operator = reasons.includes("uncommitted changes")
         ? `operator: commit, stash or discard the changes in ${shellQuote(path)} from an operator terminal, then `
         : "";
-      lines.push(
-        `Derived worktree ${path}: kept (${blockers.join("; ")}); ${operator}retry with node ${shellQuote(join(mainPath, "scripts/worktree.mjs"))} settle ${workOrderId}`,
+      keep(
+        path,
+        `Derived worktree ${path}: kept (${reasons.join("; ")}); ${operator}retry with node ${shellQuote(join(mainPath, "scripts/worktree.mjs"))} settle ${workOrderId}`,
+        blockers[0].blockerClass,
       );
       continue;
     }
     if (!dryRun) {
       try {
+        // The same classes and timed parts as the order's own worktree in
+        // finish, so a derivative's removal is attributed like it.
         withWriterReservationLock(path, () => {
           const writer = writerTeardownBlocker(path);
-          if (writer) throw new Error(writer);
+          if (writer) throw closeBlocker("writer-held", writer);
           // Inventoried again under the lock, so a repository that appeared
           // since the preview is removed with a record, never silently.
-          const locked = inventoryMaterial(path, {
-            overrides,
-            overrideWorktree,
-          });
+          const locked = withBlockerClass("preservation-refused", () =>
+            inventoryMaterial(path, {
+              overrides,
+              overrideWorktree,
+            }),
+          );
           ensureMaterialClean(path, locked);
           if (activeGateRuns(path).length) throw new Error("active gate run");
-          const preserved = reconcileWorktreeMaterial(
-            path,
-            mainPath,
-            workOrderId,
-            { material: locked },
+          const preserved = timed("preservation", () =>
+            withBlockerClass("preservation-refused", () =>
+              reconcileWorktreeMaterial(path, mainPath, workOrderId, {
+                material: locked,
+              }),
+            ),
           );
           process.stdout.write(
             renderIntakeReconciliation(preserved, { listMaterial }),
           );
           ensureNoIgnoredMaterial(path, preserved);
-          verifyPreservedMaterial(path, mainPath, preserved);
-          refuseSubmoduleWorktree(path);
-          removeScratch(path, preserved);
-          retainJournals(mainPath, path, workOrderId);
+          timed("preservation", () =>
+            withBlockerClass("preservation-refused", () => {
+              verifyPreservedMaterial(path, mainPath, preserved);
+              refuseSubmoduleWorktree(path);
+              removeScratch(path, preserved);
+            }),
+          );
+          timed("journal-retention", () =>
+            withBlockerClass("preservation-refused", () =>
+              retainJournals(mainPath, path, workOrderId),
+            ),
+          );
           const restoreBeaconPermissions = prepareBeaconDisposal(path);
           try {
             removePreservedWorktree(mainPath, path, locked, preserved);
@@ -469,16 +540,26 @@ const reconcileDerivedWorktrees = (
           }
         });
       } catch (error) {
-        lines.push(`Derived worktree ${path}: kept (${error.message})`);
+        keep(
+          path,
+          `Derived worktree ${path}: kept (${error.message})`,
+          error.blockerClass,
+        );
         continue;
       }
     } else
       try {
-        retainJournals(mainPath, path, workOrderId, { dryRun: true });
+        withBlockerClass("preservation-refused", () =>
+          retainJournals(mainPath, path, workOrderId, { dryRun: true }),
+        );
       } catch (error) {
         // The preview printed the failed retention line; the close would
         // keep this worktree, so the preview does too.
-        lines.push(`Derived worktree ${path}: kept (${error.message})`);
+        keep(
+          path,
+          `Derived worktree ${path}: kept (${error.message})`,
+          error.blockerClass,
+        );
         continue;
       }
     lines.push(
@@ -1435,10 +1516,12 @@ const main = async () => {
     const { activeGateRuns } = await import("./lib/gate-evidence.mjs");
     const writerTeardown =
       await import("../packages/skeleton/src/writer-teardown.mjs");
-    const preview = reconcileWorktreeMaterial(subject, mainPath, workOrderId, {
-      dryRun: true,
-      material,
-    });
+    const preview = withBlockerClass("preservation-refused", () =>
+      reconcileWorktreeMaterial(subject, mainPath, workOrderId, {
+        dryRun: true,
+        material,
+      }),
+    );
     process.stdout.write(
       renderIntakeReconciliation(preview, {
         listMaterial: flags.includes("--list-material"),
@@ -1468,7 +1551,11 @@ const main = async () => {
       );
       return;
     }
-    runGit(mainPath, ["fetch", "origin", "main"]);
+    timed("base-fetch", () =>
+      withBlockerClass("base-fetch", () =>
+        runGit(mainPath, ["fetch", "origin", "main"]),
+      ),
+    );
     runGit(mainPath, ["merge", "--ff-only", "origin/main"]);
     const merged = spawnGit([
       "-C",
@@ -1507,7 +1594,7 @@ const main = async () => {
       await import("./lib/gate-evidence.mjs");
     writerTeardown.withWriterReservationLock(subject, () => {
       const blocker = writerTeardown.writerTeardownBlocker(subject);
-      if (blocker) throw new Error(blocker);
+      if (blocker) throw closeBlocker("writer-held", blocker);
       // Inventoried again under the lock, so a repository that appeared since
       // the preview is removed with a record, never silently.
       const locked = inventoryMaterial(subject, {
@@ -1517,11 +1604,12 @@ const main = async () => {
       ensureMaterialClean(subject, locked);
       if (activeGateRuns(subject).length)
         throw new Error("active gate run; source retained");
-      const reconciliation = reconcileWorktreeMaterial(
-        subject,
-        mainPath,
-        workOrderId,
-        { material: locked },
+      const reconciliation = timed("preservation", () =>
+        withBlockerClass("preservation-refused", () =>
+          reconcileWorktreeMaterial(subject, mainPath, workOrderId, {
+            material: locked,
+          }),
+        ),
       );
       process.stdout.write(
         renderIntakeReconciliation(reconciliation, {
@@ -1532,10 +1620,18 @@ const main = async () => {
       if (checks.length)
         recordGateChecks(mainPath, checks, { sourceRoot: subject });
       ensureNoIgnoredMaterial(subject, reconciliation);
-      verifyPreservedMaterial(subject, mainPath, reconciliation);
-      refuseSubmoduleWorktree(subject);
-      removeScratch(subject, reconciliation);
-      retainJournals(mainPath, subject, workOrderId);
+      timed("preservation", () =>
+        withBlockerClass("preservation-refused", () => {
+          verifyPreservedMaterial(subject, mainPath, reconciliation);
+          refuseSubmoduleWorktree(subject);
+          removeScratch(subject, reconciliation);
+        }),
+      );
+      timed("journal-retention", () =>
+        withBlockerClass("preservation-refused", () =>
+          retainJournals(mainPath, subject, workOrderId),
+        ),
+      );
       const restoreBeaconPermissions = prepareBeaconDisposal(subject);
       try {
         removePreservedWorktree(mainPath, subject, locked, reconciliation);
@@ -1544,7 +1640,7 @@ const main = async () => {
         throw error;
       }
     });
-    removeMergedBranch(mainPath, branch);
+    timed("branch-delete", () => removeMergedBranch(mainPath, branch));
     for (const line of reconcileDerivedWorktrees(mainPath, workOrderId, {
       dryRun: false,
       listMaterial: flags.includes("--list-material"),
@@ -1609,8 +1705,17 @@ if (isMainModule(import.meta.url))
   try {
     await main();
   } catch (error) {
+    // The class a refusal took where it was raised reaches the release close
+    // that ran this command, which records it as its blocker's class.
+    if (error instanceof Error && typeof error.blockerClass === "string")
+      process.stdout.write(`Close blocker class: ${error.blockerClass}\n`);
     process.stderr.write(
       `error: ${error instanceof Error ? error.message : String(error)}\n`,
     );
     process.exitCode = 1;
+  } finally {
+    if (Object.keys(removalTimings).length)
+      process.stdout.write(
+        `Removal timings: ${JSON.stringify(removalTimings)}\n`,
+      );
   }

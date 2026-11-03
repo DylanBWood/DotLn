@@ -41,6 +41,7 @@ Resolve routine version, waiver-route, live-episode, regeneration and reinstall 
 Before acting on an operator message, state its aim in one line and act on the evidence-backed reading; record any consequential assumption and its reopening condition.
 Claims of cause, blockers, unreachable services or completion name their supporting command and output; partial searches name their boundary.
 Request needed authority here through the host permission flow; give the operator a command to run in your place only when the order or role names that fallback.
+When expired or retained temporary roots need removing, run `node scripts/harness.mjs prune --apply` yourself under host permissions and record its receipt; hand the operator the printed command only after a recorded host denial of that exact command, the fallback release close keeps for its publish.
 Operator commands must be copy-paste runnable with real paths and no placeholders; questions plainly state what they decide and why.
 For stale gate rows, run the gate at the current identity; never restore bytes to match a row or remove a reviewed fix to pass a check.
 Stop the background monitors you started before recording your result.

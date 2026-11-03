@@ -1,5 +1,22 @@
 # Current control state
 
+## WO-252
+
+- Work order: WO-252
+- Work-order path: docs/work-orders/WO-252-release-close-owns-what-the-kit-wrote.md
+- Phase: active
+- Latest verification: none
+- Verification path: none
+- Latest verdict: none
+- Final review: none
+- Final-review path: none
+- Latest attestation: none
+- Effort drift: none
+- Latest recordedAt: 2026-11-02T21:40:53.406Z
+- Latest checkpoint: 410b77cb66db4a3bd357f482c1a6d7f5661da2d6 (restore: `git checkout refs/dotln/checkpoint/WO-252/1 -- .`)
+- Legal next actions: next, implementation-ready
+- Legal off-ramps: accept-overrun, withdraw, correct, override-record
+
 ## WO-248
 
 - Work order: WO-248

@@ -100,6 +100,7 @@ const sharedCorrections = [
   "Before acting on an operator message, state its aim in one line and act on the evidence-backed reading; record any consequential assumption and its reopening condition.",
   "Claims of cause, blockers, unreachable services or completion name their supporting command and output; partial searches name their boundary.",
   "Request needed authority here through the host permission flow; give the operator a command to run in your place only when the order or role names that fallback.",
+  "When expired or retained temporary roots need removing, run `node scripts/harness.mjs prune --apply` yourself under host permissions and record its receipt; hand the operator the printed command only after a recorded host denial of that exact command, the fallback release close keeps for its publish.",
   "Operator commands must be copy-paste runnable with real paths and no placeholders; questions plainly state what they decide and why.",
   "For stale gate rows, run the gate at the current identity; never restore bytes to match a row or remove a reviewed fix to pass a check.",
   "Stop the background monitors you started before recording your result.",
@@ -112,7 +113,7 @@ const releaseCloseRemedy =
 // Preservation at a target close is for operator material, evidence and
 // intake; build output is regenerable (operator direction, 2026-10-18, WO-221).
 const disposableOutput =
-  "At a target close, preservation is for operator material, evidence and intake. Regenerable output under a path the class or registration declares disposable is deleted by the close, never moved to scratch or offered back; the registration may select baseDisposablePolicy judge-only to retain all base-checkout output after the same judgment, with delete as the default; the target worktree output is still deleted; an undeclared ignored path is declared disposable in the registration or removed, and a stray `.env` or operator note is neither.";
+  "At a target close, preservation is for operator material, evidence and intake. Regenerable output under a path the class or registration declares disposable is deleted by the close, never moved to scratch or offered back; a declared path may use `**` as a whole segment for any depth and `*` within one segment, its last segment keeping a literal part; the registration may select baseDisposablePolicy judge-only to retain all base-checkout output after the same judgment, with delete as the default; the target worktree output is still deleted; the close moves or deletes the kit's own residue in the target (session journals and reviews, a released writer, the `.runtime` marker, snapshot and temporary-root ledger); an undeclared ignored path is declared disposable in the registration or removed from this launchpad session by the target's path, never by a session or writer in the target, and a stray `.env` or operator note is neither.";
 // Every role in both harnesses carries this line (operator direction,
 // 2026-09-14, WO-044): a guess presented as a finding is a defect.
 const noGuessing =
@@ -160,6 +161,9 @@ export const contributorRoles: readonly HarnessRole[] = [
       operatorControls,
       noGuessing,
       "Read only canonical status through `node scripts/drive.mjs status WO-NNN`. The helper selects the order's registered worktree, so the status is that worktree's fold. Read no order, diff, report or worker transcript and edit no project file. A router holds no writer reservation.",
+      // The prune belongs to the session that needs it; the router, which
+      // writes nothing, names that owner and the operator's only fallback.
+      "The router runs no prune: the phase session it launches runs `node scripts/harness.mjs prune --apply` itself under host permissions and records its receipt, handing the operator the printed command only after a recorded host denial of that exact command.",
       "Run `node scripts/drive.mjs WO-NNN` once. Its status route chooses at most one action, launches the generated phase worker with only the lifecycle phrase, waits, rereads status and repeats. Report each transition in one line; never relay worker output or judgments into the next worker. Every phase is a fresh actor with no inherited conversation.",
       "For that single literal driver command, request the host's normal one-invocation outside-sandbox approval: in Claude use Bash dangerouslyDisableSandbox: true; in Codex use its normal tool approval request. This lets native phases initialize their own sandboxes and request their own command permissions. Add no cd, redirect or compound wrapper. Do not edit sandbox settings or persist an allow rule. If the host denies the request, stop; do not retry or choose another launcher. Each native phase keeps its sandbox and approval policy; this request grants no authority to override a host restriction.",
       "The driver uses separate native CLI sessions in the order's worktree (the target worktree for a registered target), with preloaded role skills. Keep the selected host; --host claude|codex is an explicit selection, otherwise the native session selects it. Claude pins Opus 5.5 at xhigh with project and local hooks; Codex pins gpt-6.1-sol at max, and xhigh for an independent verifier, with its sandbox and role-text duties. Never substitute a host or claim Codex hook parity.",

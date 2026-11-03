@@ -1073,9 +1073,12 @@ release close's retry path. No command changes host permissions to gain access.
 A role that needs expired or retained roots removed runs `harness prune
 --apply` itself under host permissions and records the receipt; it hands
 the printed command to the operator only after a recorded host denial of
-it, the fallback the release-close text keeps for its publish (the
-operator's item 5 of 2026-11-01; WO-252 carries the sentence into every
-role).
+it, the fallback the release-close text keeps for its publish. Every role
+root states that rule (the operator's item 5 of 2026-11-01;
+[decision](../evidence/WO-252/decisions.md#wo-252-d009)). The router, which
+writes nothing and whose boundary refuses the command, says instead that it
+runs no prune and that the phase session it launches runs it under the same
+rule ([decision](../evidence/WO-252/decisions.md#wo-252-d020)).
 
 `analysis:` interrupts the current routine and opens operator-directed diagnosis.
 The agent explains the observed state, constraints and next options, and awaits
@@ -2298,9 +2301,36 @@ worktree-removal, publication, starter-refresh, prune and record. Each row has
 `startedAt`, `finishedAt` and `durationMs`; a skipped step has null timestamps
 and zero duration. Durations exclude nested steps; repeated visits accumulate
 in one row. Prune includes session-end cleanup when the writer is released.
+The worktree-removal row also carries `children`, rows on that step and not
+steps: `base-fetch` (the target clone's base fetch and the finish's fetch of
+main), `disposable-deletion` with the `files` and `bytes` it deleted,
+`finder-metadata`, `journal-retention`, `git-worktree-remove`, `branch-delete`
+and `preservation`, each with its `durationMs`, timed in the close and
+reported by the finish and settle processes. Each is measured inside the
+step's own time and outside any nested step, so their sum stays within the
+row's `durationMs`, which still spans the step; the remainder is the
+judgments and listings between them. A close that stops records `blocker: {
+class, step, message }`, null when the attempt completes: the refusal that
+stopped it, or else its first unresolved blocker, with the innermost step
+that raised it. The class is assigned where the refusal is raised, never read
+from its message, from a closed list: `undeclared-ignored-material`,
+`not-clean`, `writer-held`, `preservation-refused`,
+`declared-root-unreadable`, `host-denied`, `base-fetch` (also the bounded fetch
+WO-246 adds), `foreign-tag`, `starter-refresh`, `publication` and `other`;
+the summary prints it ([decision](../evidence/WO-252/decisions.md#wo-252-d006)).
+A derived worktree the close keeps carries the class of the refusal that kept
+it, as the order's own worktree does, and its preservation and journal move
+are timed among the same children
+([decision](../evidence/WO-252/decisions.md#wo-252-d021)).
 `plan failures` reports the median total wall time and the slowest timed step
 over the latest eight attempts carrying timings; older records keep their
-ordinary counts without invented durations. A close is done when
+ordinary counts without invented durations. Its `localReleaseCloses.blockers`
+counts stopped attempts in the window `byClass` and `byOrder` and names as
+`repeated` a class that stopped the closes of three or more distinct orders,
+a successful close between them not resetting it; `plan start` prints each as
+`close blocker repeated: <class> across N orders`, and an attempt recorded
+before the field carries no class ([decision](../evidence/WO-252/decisions.md#wo-252-d007)).
+A close is done when
 the tag and Release exist, no worktree for the order appears in
 `git worktree list`, its directory is gone and `git branch --list wo-NNN` is
 empty, and no starter-refresh blocker remains. The lower-version no-release
@@ -2475,7 +2505,18 @@ manifest and bundle files before the exact
 retry command. It cannot report a clean close with that ownership residue.
 A class or registration declares `disposable` paths (relative and contained;
 the class's entries and the registration's compose into one sorted set and
-nothing removes a class entry). At close, every
+nothing removes a class entry). An entry may carry two wildcard forms: `**`
+as a whole segment matches any number of segments and `*` matches any
+characters within one segment. Its last segment keeps a literal part, the
+floor that keeps a declaration from naming every ignored file, so `*`, `**`,
+`**/*` and `libs/**` are refused at registration and `**/*.tsbuildinfo` is
+admitted. A listed path lies under an entry when a leading run of its
+segments matches the whole entry, and the shortest such run is the matched
+root, so `**/node_modules` is one line for a whole Nx workspace's nested
+caches. The close takes matches from the ignored listing it already holds and
+inspects and prunes each matched root as it does a declared path; a link on
+the way to a match refuses, naming the pattern that matched it
+([decision](../evidence/WO-252/decisions.md#wo-252-d004)). At close, every
 ignored path under a declared path is deleted from the target worktree before
 the ignored-material judgment, and the base checkout's untracked files are
 judged by the fetched base's `.gitignore` blobs, never the pre-merge working
@@ -2497,8 +2538,62 @@ collisions with fetched tracked paths; the default `"delete"` also deletes
 its declared output. Both policies delete the target worktree's declared output.
 Preview, receipt and role text name the policy. Regenerable output selected
 for deletion is deleted, never moved to scratch or offered back;
-preservation is for operator material, evidence and intake. The receipt lists
-the deleted roots with their file counts and repeats the gate's
+preservation is for operator material, evidence and intake. The kit's own
+writes in the target are judged before either refusal and are never refused:
+what a session recorded in the target's `docs/control/local/harness/`, the
+journals, states and gate index a launchpad worktree's lane takes, and the
+order's change reviews move into main's retained lane for the order beside
+the launchpad worktree's; a writer directory the writer protocol proves
+released, the `.runtime/.metadata_never_index` marker, the files of a
+`.runtime/harness/<hash>` snapshot the kit installed, and the temporary-root
+ledger's segments are deleted, the roots that ledger registers carried in
+the record's `ownedTemporaryRoots` for the close's prune, which then judges
+each by its marker once the target is gone. A lane or writer directory the
+close reaches through a link, such as a tracked link to a directory
+elsewhere, is not the target's: it is neither moved nor deleted and stays
+where the link points
+([decision](../evidence/WO-252/decisions.md#wo-252-d028)), and a refused
+journal move is `preservation-refused` in the preview as in the move
+([decision](../evidence/WO-252/decisions.md#wo-252-d029)). The ledger leaves
+only with the target: it is deleted last, immediately before Git removes the
+worktree, so
+a removal that stops earlier leaves it untouched, and when Git's removal
+stops while the target stands each segment is written back byte for byte
+and its residue row reads `restored`, so every root it registers stays as
+prunable as before the attempt
+([decision](../evidence/WO-252/decisions.md#wo-252-d027)). A snapshot is
+proven by its content, whichever runtime installed it, never by its
+directory name: each file must match, by size and digest or as the same
+package link, the name input whose digest is that name. That input is what
+the runtime the target's hooks load, or main's, would install now; or the
+record `.dotln-snapshot.json` that the installer writes into every snapshot
+it creates, which proves the snapshot when its bytes hash to the directory's
+name; or, for a snapshot installed before records, its own package files
+when they reproduce the name with a pinned file list: a serving runtime's,
+or the one its release pinned, which the kit keeps for every release from
+v0.83.0, the first to name a snapshot by its pinned list and package
+inventory, to v0.111.1, the last to write no record. The close writes the
+record into a snapshot it proved without one before deleting any of its
+files, and deletes every snapshot's record after its other files, so a
+deletion that stops part way leaves the rest provable on retry. A file the
+listing names at that path is judged like any other: undeclared, it is
+refused; declared, it is deleted first so the record can take its place. A
+file the listing does not name there, such as one the repository tracks,
+serves only when it is the record byte for byte; otherwise the close stops
+naming it before anything moves. A snapshot from a release before v0.83.0
+is still refused: its name hashes only its pinned files, so no digest the
+kit holds covers its other package files
+([decision](../evidence/WO-252/decisions.md#wo-252-d026)). A held writer
+stops the close before anything moves; any other file in those directories,
+an operator note or a stray `.env`, is judged like any other path, as is a
+snapshot file no proven input lists or one whose bytes differ, and a
+refusal's named directory never covers declared output or the kit's
+residue. Undeclared output is removed from the launchpad session by the
+target's path, never by a session or writer in the target
+([decision](../evidence/WO-252/decisions.md#wo-252-d005)). The receipt lists
+the deleted roots with their file counts, a pattern's row also listing each
+root it matched with its count, names in `residue` what moved and what was
+deleted, and repeats the gate's
 `baseCheckoutWrites` advisory, the untracked files a gate command left in the
 clone's base checkout; an unreadable advisory record is reported as unavailable
 and does not replace or block the checkout judgments. Under the registration's literal host-rule fallback the
@@ -4206,7 +4301,13 @@ owner keeps a ledger that does not register that token at that path. A device
 number assigned at mount can change across a reboot; when the inode matches
 and the owner's ledger registers that token at that path, the transition is
 ledgered as `device-renumbered` with both numbers and the marker re-stamped
-with the current number, so the root is judged by its class and window. A
+with the current number, so the root is judged by its class and window. Where
+the owner repository no longer exists, as after a close removed its checkout,
+no ledger remains to hold the root, and its second proof is its marker: the
+marker inside the directory carrying the record's token, with the record's
+inode, re-stamps the device, so `harness prune --apply` removes such a root
+after its window instead of refusing it at every read
+([decision](../evidence/WO-252/decisions.md#wo-252-d008)). A
 different inode, a token the ledger does not register there, or a record naming
 a repository that holds no such registration is still refused, and nothing is
 deleted. A removal deletes only the directory it verified: one rename moves
@@ -4218,6 +4319,15 @@ owned roots nested in it go with it, and the owner record is deleted last. A
 root that a stopped removal left aside as
 `dotln-removing-<token>` is listed there and finished by the next prune
 ([decision](../evidence/WO-237/decisions.md#wo-237-d004--a-root-is-its-token-and-its-inode)).
+A root found inside its parent's aside is bound through the parent's
+registration, also at its own aside there, and its removal is recorded under
+its own registration, which ends with it; a ledger segment waits while its
+root may sit in an aside, its own wherever the removal recorded it or an
+absent ancestor's, whichever repository's ledger recorded that move; and the
+empty directory a stop between deleting the owner record and the directory
+leaves under the token's aside name is removed with `rmdir`, which refuses
+anything that appears in it since, while an unmarked aside that still holds
+something keeps it ([decision](../evidence/WO-252/decisions.md#wo-252-d008)).
 An invalid nested marker retains its tree and fails cleanup rather than
 qualifying a passing row. Application scratch keeps
 its explicit operation cleanup; the containing fixture provides fallback cleanup

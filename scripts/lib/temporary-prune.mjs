@@ -22,8 +22,10 @@ import {
   readRetention,
   readTemporaryOwner,
   registeredTemporaryRoots,
+  removeTemporaryRemovalRemains,
   removeTemporaryRoot,
   requireTemporaryDirectory,
+  temporaryRemovalRemains,
   temporaryInventory,
   temporaryLedgerContradiction,
   temporaryProcessTable,
@@ -346,6 +348,27 @@ export function judgeTemporaryRoot(root, path, options = {}, context = {}) {
     if (use) return retain(use);
     const table = context.processes ?? temporaryProcessTable(root);
     const now = options.now ?? Date.now();
+    // A removal that stopped after deleting its owner record and before its
+    // directory leaves an empty directory under its token's aside name; with
+    // nothing in it to retain, it is removed with rmdir, which refuses
+    // anything that appears in it since.
+    if (!record && temporaryRemovalRemains(path)) {
+      const info = lstatSync(path);
+      return {
+        candidate: {
+          kind: "removal-remains",
+          path: label,
+          absolute: path,
+          class: "removal-remains",
+          ownerAlive: false,
+          ageMs: now - info.mtimeMs,
+          bytes: 0,
+          device: info.dev,
+          inode: info.ino,
+          inventory,
+        },
+      };
+    }
     if (!record) {
       kind = "legacy-backfill";
       if (!legacyRootName(basename(path)))
@@ -601,6 +624,10 @@ export function applyTemporaryCandidate(root, row) {
   inspect(row.absolute);
   if (JSON.stringify(inventory) !== JSON.stringify(row.inventory))
     throw new Error("Nested ownership changed; retained");
+  if (row.kind === "removal-remains") {
+    removeTemporaryRemovalRemains(row.absolute, row.inode, root);
+    return { files: 0, bytes: 0, directories: 1 };
+  }
   if (row.kind === "legacy-backfill") {
     // As for owned roots, the inode says the directory judged is the one
     // present; the device number is kept for diagnosis, since a renumbered

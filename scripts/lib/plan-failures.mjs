@@ -20,6 +20,7 @@ import { completedPhaseAttempts } from "./control-time.mjs";
 import { parseHeader } from "../work-orders.mjs";
 import { measuredFindingCounts } from "./review-findings.mjs";
 import { historicalDependencyIds } from "./dependencies.mjs";
+import { CLOSE_BLOCKER_CLASSES } from "./release-steps.mjs";
 
 // What failed since the pass before, folded from the public record:
 // the control logs, the planning control log and the structured decisions.
@@ -783,6 +784,34 @@ const closeTiming = (timedCloses) => {
   };
 };
 
+const closeBlockerClasses = new Set(CLOSE_BLOCKER_CLASSES);
+/** Stopped close attempts counted by their blocker's class and by order. A
+ * class is repeated once it has stopped the closes of three or more distinct
+ * orders in the window, whatever closed successfully between them, so one
+ * refusal each order met and an operator cleared by hand still shows. */
+const closeBlockers = (stopped) => {
+  const orders = tally(stopped, "order");
+  const ordersByClass = new Map();
+  for (const row of stopped) {
+    if (!ordersByClass.has(row.class)) ordersByClass.set(row.class, new Set());
+    ordersByClass.get(row.class).add(row.order);
+  }
+  return {
+    byClass: tally(stopped, "class", closeBlockerClasses.size).by,
+    byOrder: orders.by,
+    otherOrderRows: orders.other,
+    repeated: [...ordersByClass]
+      .filter(([, distinct]) => distinct.size >= 3)
+      .map(([name, distinct]) => ({ class: name, orders: distinct.size }))
+      .sort((a, b) => b.orders - a.orders || a.class.localeCompare(b.class)),
+  };
+};
+/** The line `plan start` prints for each repeated close blocker class. */
+export const repeatedCloseBlockerLines = (blockers) =>
+  (blockers?.repeated ?? []).map(
+    (row) => `close blocker repeated: ${row.class} across ${row.orders} orders`,
+  );
+
 /** The closed orders' journal lanes this reader covers. Release close moves an
  * order's journals into docs/control/local/retained/<WO>/harness/ and the
  * prune removes that lane after its class window, so one closed order's counts
@@ -877,6 +906,7 @@ const pageLanes = (lanes) =>
 export function operationalFailures(root, control, includes) {
   const rows = [],
     timedCloses = [],
+    stoppedCloses = [],
     unreadable = { closes: 0, journals: 0, gates: 0, snapshots: 0 };
   let closeRecords = 0,
     journalRecords = 0;
@@ -930,6 +960,18 @@ export function operationalFailures(root, control, includes) {
               recordedAt,
               totalMs,
               steps: attempt.steps,
+            });
+          // A stopped attempt's blocker class, as the close assigned it.
+          if (
+            typeof attempt.blocker?.class === "string" &&
+            includes({ recordedAt, order: name })
+          )
+            stoppedCloses.push({
+              order: name,
+              class: closeBlockerClasses.has(attempt.blocker.class)
+                ? attempt.blocker.class
+                : "other",
+              recordedAt,
             });
           if (attempt.blockers.length || !published)
             rows.push({
@@ -1193,6 +1235,7 @@ export function operationalFailures(root, control, includes) {
       dryRuns: closes.filter((row) => row.dryRun).length,
       noRelease: closes.filter((row) => row.noRelease).length,
       timing: closeTiming(timedCloses),
+      blockers: closeBlockers(stoppedCloses),
     },
     localHostDenials: {
       ...summary("host-denial"),
@@ -1397,8 +1440,13 @@ export function sinceEntropyReview(root, control = readControl(root)) {
 
 /** The `plan start` block: the default window's counts, the command and the
  * Entropy Reducer count, in at most 1 KB. It suggests and schedules nothing,
- * and a count that cannot be computed is one line saying why. */
-export function failuresAtStart(root) {
+ * and a count that cannot be computed is one line saying why. The lines naming
+ * a repeated close blocker class go to `onCloseBlockersRepeated` before the
+ * block is fitted to its bound, so the caller prints every one of them even
+ * when the block itself must drop them.
+ * @param {string} root
+ * @param {{onCloseBlockersRepeated?: (lines: string[]) => void}} [options] */
+export function failuresAtStart(root, { onCloseBlockersRepeated } = {}) {
   const block = { command: FAILURES_COMMAND };
   let control;
   try {
@@ -1416,6 +1464,14 @@ export function failuresAtStart(root) {
       counts: (({ defectClasses, ...counts }) => counts)(chosen.counts.window),
       finalReviewEscapes: `${recent.escapes}/${recent.reviews} reviews; ${recent.orders} orders; ${recent.unclassed} unclassed${recent.measured === recent.reviews ? "" : `; rate unknown (${recent.measured} measured)`}`,
       localReleaseCloses: chosen.operational.localReleaseCloses.count,
+      // Present only when a class has stopped three or more orders' closes.
+      ...(() => {
+        const repeated = repeatedCloseBlockerLines(
+          chosen.operational.localReleaseCloses.blockers,
+        );
+        onCloseBlockersRepeated?.(repeated);
+        return repeated.length ? { closeBlockersRepeated: repeated } : {};
+      })(),
       localHostDenials: chosen.operational.localHostDenials.count,
       interventions: {
         count: chosen.operational.interventions.count,

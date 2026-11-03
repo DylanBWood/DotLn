@@ -428,14 +428,19 @@ const validateFeatures = (path, declared) => {
 
 // Regenerable output a close deletes: relative normalized POSIX paths inside
 // the checkout, never absolute, never climbing out (WO-221). A class entry and
-// a registration entry compose; nothing removes a class entry.
+// a registration entry compose; nothing removes a class entry. An entry may
+// carry two wildcard forms: `**` as a whole segment, matching any number of
+// segments, and `*` within a segment, matching inside that one segment. Its
+// last segment keeps a literal part, the floor that keeps any declaration
+// from naming every ignored file, so `*`, `**`, `**/*` and `libs/**` refuse
+// and `**/*.tsbuildinfo` is admitted.
 const validateDisposablePaths = (path, value, label) => {
   if (value === undefined) return [];
   if (!Array.isArray(value) || !value.every(isText))
     throw refuse(path, `${label} must be an array of non-empty strings`);
   // A declared directory may carry a trailing slash; the path is the root.
   const entries = value.map((entry) => entry.replace(/\/+$/u, ""));
-  for (const entry of entries)
+  for (const entry of entries) {
     if (
       !entry ||
       entry.startsWith("/") ||
@@ -455,6 +460,18 @@ const validateDisposablePaths = (path, value, label) => {
         path,
         `${label} entries must be contained relative normalized POSIX paths: ${entry}`,
       );
+    const segments = entry.split("/");
+    if (segments.some((segment) => segment.includes("**") && segment !== "**"))
+      throw refuse(
+        path,
+        `${label} entries use ** only as a whole segment matching any number of segments: ${entry}`,
+      );
+    if (!segments.at(-1).replaceAll("*", ""))
+      throw refuse(
+        path,
+        `${label} entries must end in a segment with a literal part, the floor that keeps a declaration from naming every ignored file: ${entry}`,
+      );
+  }
   return [...new Set(entries)].sort();
 };
 

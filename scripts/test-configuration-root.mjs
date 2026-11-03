@@ -766,6 +766,37 @@ await test("configuration root", async (t) => {
         },
         /repositories\.target\.disposable must be an array/,
       );
+      // A declaration whose last segment is wholly a wildcard would name
+      // every ignored file below it; the floor refuses it at registration,
+      // and `**` is admitted only as a whole segment.
+      for (const entry of ["*", "**", "**/*", "libs/**", "libs/*/**"])
+        refuses(
+          {
+            version: 1,
+            repositories: {
+              target: registeredRepository({ disposable: [entry] }),
+            },
+          },
+          new RegExp(
+            `repositories\\.target\\.disposable entries must end in a segment with a literal part, the floor that keeps a declaration from naming every ignored file: ${escape(entry)}$`,
+          ),
+        );
+      for (const entry of ["libs/**dist", "**.tsbuildinfo"])
+        refuses(
+          {
+            version: 1,
+            classes: {
+              "fixture-class": {
+                checks: [],
+                supports: [],
+                disposable: [entry],
+              },
+            },
+          },
+          new RegExp(
+            `classes\\.fixture-class\\.disposable entries use \\*\\* only as a whole segment matching any number of segments: ${escape(entry)}$`,
+          ),
+        );
       refuses(
         {
           version: 1,
@@ -793,7 +824,14 @@ await test("configuration root", async (t) => {
           },
           repositories: {
             target: registeredRepository({
-              disposable: ["node_modules/", "dist", ".angular"],
+              disposable: [
+                "node_modules/",
+                "dist",
+                ".angular",
+                "**/node_modules/",
+                "**/*.tsbuildinfo",
+                "libs/*/dist",
+              ],
               release: { policy: "declared" },
               hostRules: "literal",
             }),
@@ -804,8 +842,11 @@ await test("configuration root", async (t) => {
       const declared = loadConfig(root);
       assert.deepEqual(declared.classes["fixture-class"].disposable, ["dist"]);
       assert.deepEqual(declared.repositories.target.disposable, [
+        "**/*.tsbuildinfo",
+        "**/node_modules",
         ".angular",
         "dist",
+        "libs/*/dist",
         "node_modules",
       ]);
       assert.deepEqual(declared.repositories.target.release, {

@@ -490,18 +490,20 @@ function ledgerBinding(path, record) {
       )
     : [];
   const registered = rows[0]?.path;
-  // A root a stopped removal left aside is bound where its token puts it.
+  // A root a stopped removal left aside is bound where its token puts it,
+  // also inside a parent that another stopped removal left aside.
+  const asideOfItself = basename(path) === `dotln-removing-${record.token}`;
   const at =
     typeof registered !== "string"
       ? null
-      : basename(path) === `dotln-removing-${record.token}`
+      : asideOfItself
         ? temporaryRemovalAside(registered, record.token)
         : registered;
   return token === record.token &&
     rows[0]?.token === record.token &&
     at !== null &&
     ((existsSync(at) && realpathSync(at) === realpathSync(path)) ||
-      relocatedRegistration(path) === registered) &&
+      relocatedRegistration(path) === at) &&
     !rows.some(
       (row) =>
         row.path === registered && ["removed", "promoted"].includes(row.action),
@@ -524,9 +526,13 @@ export function temporaryLedgerContradiction(path, record) {
 }
 
 /** Writes the record over the marker of the directory it names. The inode must
- * still match. A differing device is a renumbered volume: it is re-stamped only
- * under the ledger binding above and recorded on the root's ledger segment with
- * both numbers. Returns the record as written.
+ * still match. A differing device is a renumbered volume. Where the owner
+ * repository exists it is re-stamped only under the ledger binding above and
+ * recorded on the root's ledger segment with both numbers. Where the owner
+ * repository is gone, as after a closed worktree's removal, no ledger remains
+ * to hold it, and the second proof is the marker inside the directory: it
+ * must carry the record's token, beside the inode compared here, before the
+ * device is re-stamped. Returns the record as written.
  * @param {string} path @param {TemporaryRecord} record @returns {TemporaryRecord} */
 export function writeTemporaryOwner(path, record) {
   requireTemporaryDirectory(path);
@@ -535,7 +541,12 @@ export function writeTemporaryOwner(path, record) {
     throw new Error("Temporary directory identity changed");
   const renumbered = info.dev !== record.device;
   const written = renumbered ? { ...record, device: info.dev } : record;
-  if (renumbered) {
+  if (renumbered && !existsSync(record.owner.repository)) {
+    if (markerToken(path) !== record.token)
+      throw new Error(
+        "Temporary root device changed and its marker does not carry this record's token; retained",
+      );
+  } else if (renumbered) {
     const rows = ledgerBinding(path, record);
     if (!rows)
       throw new Error(
@@ -827,9 +838,16 @@ const markerToken = (path) => {
  * @param {string} path @param {TemporaryRecord} record */
 export function removeVerifiedTemporaryRoot(path, record) {
   const aside = temporaryRemovalAside(path, record.token);
-  // A root finished from its aside is recorded under the path its ledger
-  // registered, so that registration ends with it.
-  const registered = aside === path ? (registeredPathOf(record) ?? path) : path;
+  // A root finished from its aside, or from inside a parent another stopped
+  // removal left aside, is recorded under the path its ledger registered, so
+  // that registration ends with it.
+  const original = registeredPathOf(record);
+  const registered =
+    aside === path
+      ? (original ?? path)
+      : original !== null && relocatedRegistration(path) === original
+        ? original
+        : path;
   if (aside !== path) {
     ledger(record, registered, "moving", { aside });
     renameSync(path, aside);
@@ -870,6 +888,51 @@ export function removeVerifiedTemporaryRoot(path, record) {
   }
   ledger(record, registered, "removed", measured);
   return measured;
+}
+
+/** Whether a directory is what a removal leaves when it stops after deleting
+ * the owner record and before the directory itself: named for a token's aside
+ * and empty, so nothing in it remains to retain.
+ * @param {string} path */
+export function temporaryRemovalRemains(path) {
+  if (!/^dotln-removing-[a-f0-9-]{36}$/u.test(basename(path))) return false;
+  const info = lstatSync(path, { throwIfNoEntry: false });
+  return Boolean(
+    info?.isDirectory() && !info.isSymbolicLink() && !readdirSync(path).length,
+  );
+}
+
+/** Removes such remains with rmdir, which refuses anything that has since
+ * appeared inside, after checking the directory judged is the one present.
+ * Where the given repository's ledger registers that token, its registration
+ * ends here as removed.
+ * @param {string} path @param {number} inode @param {string} repository */
+export function removeTemporaryRemovalRemains(path, inode, repository) {
+  requireTemporaryDirectory(path);
+  const token = /^dotln-removing-([a-f0-9-]{36})$/u.exec(basename(path))?.[1];
+  if (!token || !temporaryRemovalRemains(path) || lstatSync(path).ino !== inode)
+    throw new Error("Removal remains changed; retained");
+  rmdirSync(path);
+  const first = existsSync(repository)
+    ? readTemporarySegment(
+        join(temporaryLedgerPath(repository), `${token}.jsonl`),
+      )[0]
+    : undefined;
+  if (
+    first?.token === token &&
+    typeof first.path === "string" &&
+    typeof first.owner?.repository === "string"
+  )
+    ledger(
+      /** @type {TemporaryRecord} */ ({
+        token,
+        class: first.class,
+        owner: first.owner,
+      }),
+      first.path,
+      "removed",
+      { files: 0, bytes: 0, directories: 1 },
+    );
 }
 
 /** fs.rmSync-compatible creator cleanup, with measurements for owned material.
@@ -953,9 +1016,78 @@ const observedAbsent = (path) => {
   }
 };
 
+/** The segment's latest place aside that no later removal ended: where a
+ * stopped removal moved its root, or null.
+ * @param {Array<Record<string, any>>} rows @returns {Record<string, any>|null} */
+const pendingAside = (rows) => {
+  /** @type {Record<string, any> | null} */
+  let pending = null;
+  for (const row of rows)
+    if (
+      ["moving", "removing"].includes(row.action) &&
+      typeof row.aside === "string"
+    )
+      pending = row;
+    else if (["removed", "promoted"].includes(row.action)) pending = null;
+  return pending;
+};
+
+/** Whether a root registered at `path` may still be present inside the place
+ * a stopped removal moved one of its absent ancestors to, whichever
+ * repository's ledger recorded that move: from the nearest ancestor that
+ * exists, each missing component is looked for both where it was and inside
+ * every removal aside beside it, and at the end the root is looked for at its
+ * own place and its token's aside. A directory that cannot be read counts as
+ * holding it, so only an observed absence lets its segment retire.
+ * @param {string} path @param {string} token */
+function heldByAncestorAside(path, token) {
+  let base = dirname(path);
+  while (dirname(base) !== base && observedAbsent(base)) base = dirname(base);
+  const components = relative(base, path).split(sep);
+  if (components.length < 2) return false;
+  /** @param {string} directory @param {number} index @returns {boolean} */
+  const search = (directory, index) => {
+    const name = components[index] ?? "";
+    if (index === components.length - 1)
+      return [name, `dotln-removing-${token}`].some(
+        (entry) => !observedAbsent(join(directory, entry)),
+      );
+    const next = join(directory, name);
+    /** @type {import("node:fs").Stats | undefined} */
+    let nextInfo;
+    try {
+      nextInfo = lstatSync(next, { throwIfNoEntry: false });
+    } catch {
+      return true;
+    }
+    if (
+      nextInfo?.isDirectory() &&
+      !nextInfo.isSymbolicLink() &&
+      search(next, index + 1)
+    )
+      return true;
+    /** @type {import("node:fs").Dirent[]} */
+    let entries;
+    try {
+      entries = readdirSync(directory, { withFileTypes: true });
+    } catch {
+      return true;
+    }
+    return entries.some(
+      (entry) =>
+        entry.isDirectory() &&
+        /^dotln-removing-[a-f0-9-]{36}$/u.test(entry.name) &&
+        search(join(directory, entry.name), index + 1),
+    );
+  };
+  return search(base, 0);
+}
+
 /** Metrics are durable before a gate retires its completed segments. Other
  * cleanup retires only absent roots with a proven dead owner; live segments
- * are append-only and are never rewritten by a concurrent census.
+ * are append-only and are never rewritten by a concurrent census. A segment
+ * waits while its root may still be held inside a removal aside: its own,
+ * wherever the removal recorded it, or an ancestor's.
  * @param {string} repository @param {string} [gateId] */
 export function retireTemporaryLedger(repository, gateId) {
   const directory = temporaryLedgerPath(repository);
@@ -970,15 +1102,7 @@ export function retireTemporaryLedger(repository, gateId) {
   // A parent whose removal moved it aside and stopped still holds the roots
   // nested in it; their segments wait while it is there.
   const asides = segments.flatMap(({ rows }) => {
-    /** @type {Record<string, any> | null} */
-    let pending = null;
-    for (const row of rows)
-      if (
-        ["moving", "removing"].includes(row.action) &&
-        typeof row.aside === "string"
-      )
-        pending = row;
-      else if (["removed", "promoted"].includes(row.action)) pending = null;
+    const pending = pendingAside(rows);
     return pending && !observedAbsent(pending.aside) ? [pending] : [];
   });
   for (const { file, rows } of segments) {
@@ -989,16 +1113,26 @@ export function retireTemporaryLedger(repository, gateId) {
       (row) =>
         row.path === first.path && ["removed", "promoted"].includes(row.action),
     );
-    const held = asides.some(
-      (parent) =>
-        first.path.startsWith(parent.path + sep) &&
-        !observedAbsent(join(parent.aside, relative(parent.path, first.path))),
-    );
+    const own = pendingAside(rows);
+    const absent =
+      observedAbsent(first.path) &&
+      observedAbsent(temporaryRemovalAside(first.path, first.token));
+    const held =
+      asides.some(
+        (parent) =>
+          first.path.startsWith(parent.path + sep) &&
+          [first.path, temporaryRemovalAside(first.path, first.token)].some(
+            (place) =>
+              !observedAbsent(join(parent.aside, relative(parent.path, place))),
+          ),
+      ) ||
+      // Its own removal stopped where it recorded the aside, as inside a
+      // parent's aside, or a parent's move this ledger never saw holds it.
+      (!terminal && own !== null && !observedAbsent(own.aside)) ||
+      (!terminal && absent && heldByAncestorAside(first.path, first.token));
     if (
       !held &&
-      ((observedAbsent(first.path) &&
-        observedAbsent(temporaryRemovalAside(first.path, first.token))) ||
-        terminal) &&
+      (absent || terminal) &&
       (first.owner?.pid === process.pid ||
         ownerAlive({ owner: first.owner }, table) === false)
     )

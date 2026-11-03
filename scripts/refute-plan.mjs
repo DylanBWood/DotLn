@@ -410,7 +410,14 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
     const followups = planningFollowups(root);
     // What failed since the latest planning receipt, read before the register;
     // a count that cannot be computed never keeps the branch shut (WO-172).
-    const failures = failuresAtStart(root);
+    // A close blocker class that has stopped three or more orders is printed
+    // as its own line, so a pass sees what repeats without opening the feed;
+    // the lines come before the block's bound can drop them.
+    const repeatedBlockers = [];
+    const failures = failuresAtStart(root, {
+      onCloseBlockersRepeated: (lines) => repeatedBlockers.push(...lines),
+    });
+    for (const line of repeatedBlockers) console.log(line);
     const { readerScoresAtStart } = await import("./lib/reader-profiles.mjs");
     const readerScores = readerScoresAtStart(root);
     const conditions = await conditionsAtStart(root);

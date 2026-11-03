@@ -6841,21 +6841,32 @@ test("WO-145 optional economy support preserves historical snapshots through the
   // The combined oracle preserves both independently reviewed role histories.
   // Removing a shared sentence follows the same route as adding one.
   const fixtures = join(source, "packages/skeleton/fixtures");
-  // The review ladder, the counting of every worker use and the worker gate
-  // rule (WO-250) re-pin the role trees over the WO-249 integration oracle. That
-  // oracle pins the combined trees of WO-249's criteria rules and WO-251's
-  // desktop and browser boundary through two parents: WO-251's oracle, main's
-  // at integration, as its historical parent and WO-249's as its branch
-  // parent, and both preserve WO-247's oracle, which carries the integrated
-  // oracle and both chains below it.
-  const current = "wo250-role-baseline.json";
+  // The router's prune sentence (WO-252's repair) re-pins the role trees over
+  // WO-252's first oracle, which the shared prune sentence and the
+  // release-close residue and glob clause re-pinned over WO-250's. The review
+  // ladder, the counting of every worker use and the worker gate rule
+  // (WO-250) re-pinned them over the WO-249 integration oracle. That oracle
+  // pins the combined trees of WO-249's criteria rules and WO-251's desktop
+  // and browser boundary through two parents: WO-251's oracle, main's at
+  // integration, as its historical parent and WO-249's as its branch parent,
+  // and both preserve WO-247's oracle, which carries the integrated oracle and
+  // both chains below it.
+  const current = "wo252-repair-role-baseline.json";
   const baseline = JSON.parse(readFileSync(join(fixtures, current), "utf8"));
+  assert.equal(baseline.historicalBaseline, "wo252-role-baseline.json");
+  const pruneSentence = JSON.parse(
+    readFileSync(join(fixtures, baseline.historicalBaseline), "utf8"),
+  );
+  assert.equal(pruneSentence.historicalBaseline, "wo250-role-baseline.json");
+  const ladder = JSON.parse(
+    readFileSync(join(fixtures, pruneSentence.historicalBaseline), "utf8"),
+  );
   assert.equal(
-    baseline.historicalBaseline,
+    ladder.historicalBaseline,
     "wo249-integration-role-baseline.json",
   );
   const integration = JSON.parse(
-    readFileSync(join(fixtures, baseline.historicalBaseline), "utf8"),
+    readFileSync(join(fixtures, ladder.historicalBaseline), "utf8"),
   );
   assert.equal(integration.historicalBaseline, "wo251-role-baseline.json");
   assert.equal(integration.branchBaseline, "wo249-role-baseline.json");
@@ -7716,6 +7727,172 @@ test("follow-up planning entry pages reach every pending record within the byte 
   assert.equal(started.followups.pending, 40);
   assert.ok(started.followups.next);
   assert.equal(started.authority, "document-only planning dispatch");
+});
+
+test("WO-252 plan failures counts stopped closes by blocker class and plan start prints a class repeated across three orders", async (t) => {
+  const root = repo(t);
+  // A close attempt as release close records it: stopped with its blocker,
+  // or completed with none.
+  const attempt = (order, recordedAt, blockerClass = null) => ({
+    schemaVersion: 1,
+    workOrderId: order,
+    startedAt: recordedAt,
+    recordedAt,
+    publication: { tagOutcome: blockerClass ? null : "published" },
+    blockers: blockerClass
+      ? [
+          {
+            action: "publication",
+            reason: `${order} refused`,
+            class: blockerClass,
+            step: "worktree-removal",
+          },
+        ]
+      : [],
+    blocker: blockerClass
+      ? {
+          class: blockerClass,
+          step: "worktree-removal",
+          message: `${order} refused`,
+        }
+      : null,
+  });
+  const retain = (order, attempts) => {
+    const current = attempts.at(-1);
+    write(
+      root,
+      `docs/control/local/retained/${order}/release-close.json`,
+      json({ ...current, previousAttempts: attempts.slice(0, -1) }),
+    );
+  };
+  // The fork's pattern: each order refused once for the same class and then
+  // closed by hand, with an order that closed on its first attempt between two
+  // of them, beside one order stopped by a held writer.
+  for (const [order, day, blockerClass] of [
+    ["WO-901", "01", "undeclared-ignored-material"],
+    ["WO-903", "03", "undeclared-ignored-material"],
+    ["WO-904", "04", "writer-held"],
+    ["WO-905", "05", "undeclared-ignored-material"],
+  ])
+    retain(order, [
+      attempt(order, `2030-01-${day}T00:00:00.000Z`, blockerClass),
+      attempt(order, `2030-01-${day}T00:10:00.000Z`),
+    ]);
+  retain("WO-902", [attempt("WO-902", "2030-01-02T00:00:00.000Z")]);
+  const page = await planMain(["failures", "--all"], root);
+  assert.deepEqual(page.localReleaseCloses.blockers, {
+    byClass: { "undeclared-ignored-material": 3, "writer-held": 1 },
+    byOrder: { "WO-901": 1, "WO-903": 1, "WO-904": 1, "WO-905": 1 },
+    otherOrderRows: 0,
+    repeated: [{ class: "undeclared-ignored-material", orders: 3 }],
+  });
+  // plan start needs a clean main; the retained records are ignored.
+  syncFollowups(root);
+  if (runGit(root, ["status", "--porcelain"], fixtureGitOptions)) {
+    runGit(root, ["add", "."], fixtureGitOptions);
+    runGit(
+      root,
+      ["-c", "maintenance.auto=false", "commit", "-qm", "fixture register"],
+      fixtureGitOptions,
+    );
+  }
+  runGit(root, ["branch", "-m", "main"], fixtureGitOptions);
+  const printed = [];
+  const log = console.log;
+  console.log = (...args) => printed.push(args.join(" "));
+  let started;
+  try {
+    started = await planMain(["start", "close-blockers"], root);
+  } finally {
+    console.log = log;
+  }
+  const line =
+    "close blocker repeated: undeclared-ignored-material across 3 orders";
+  assert.ok(printed.includes(line), printed.join("\n"));
+  assert.deepEqual(started.failures.closeBlockersRepeated, [line]);
+});
+
+test("WO-252 plan start prints every repeated close blocker class even when the start block must drop them to fit its bound", async (t) => {
+  const root = repo(t);
+  const classes = [
+    "undeclared-ignored-material",
+    "not-clean",
+    "writer-held",
+    "preservation-refused",
+    "declared-root-unreadable",
+    "host-denied",
+    "base-fetch",
+    "foreign-tag",
+    "starter-refresh",
+    "publication",
+    "other",
+  ];
+  // Three orders, each stopped once by every class before it closed.
+  for (const order of ["WO-911", "WO-912", "WO-913"]) {
+    const attempts = classes.map((blockerClass, index) => ({
+      schemaVersion: 1,
+      workOrderId: order,
+      startedAt: `2030-02-01T${String(index).padStart(2, "0")}:00:00.000Z`,
+      recordedAt: `2030-02-01T${String(index).padStart(2, "0")}:00:00.000Z`,
+      publication: { tagOutcome: null },
+      blockers: [
+        {
+          action: "publication",
+          reason: "refused",
+          class: blockerClass,
+          step: "publication",
+        },
+      ],
+      blocker: { class: blockerClass, step: "publication", message: "refused" },
+    }));
+    write(
+      root,
+      `docs/control/local/retained/${order}/release-close.json`,
+      json({
+        schemaVersion: 1,
+        workOrderId: order,
+        startedAt: "2030-02-01T12:00:00.000Z",
+        recordedAt: "2030-02-01T12:00:00.000Z",
+        publication: { tagOutcome: "published" },
+        blockers: [],
+        blocker: null,
+        previousAttempts: attempts,
+      }),
+    );
+  }
+  syncFollowups(root);
+  if (runGit(root, ["status", "--porcelain"], fixtureGitOptions)) {
+    runGit(root, ["add", "."], fixtureGitOptions);
+    runGit(
+      root,
+      ["-c", "maintenance.auto=false", "commit", "-qm", "fixture register"],
+      fixtureGitOptions,
+    );
+  }
+  runGit(root, ["branch", "-m", "main"], fixtureGitOptions);
+  const printed = [];
+  const log = console.log;
+  console.log = (...args) => printed.push(args.join(" "));
+  let started;
+  try {
+    started = await planMain(["start", "every-class"], root);
+  } finally {
+    console.log = log;
+  }
+  // The block overran its bound and kept only its command and window.
+  assert.equal(typeof started.failures.overrun, "string");
+  assert.equal(started.failures.closeBlockersRepeated, undefined);
+  assert.deepEqual(
+    printed
+      .filter((text) => text.startsWith("close blocker repeated: "))
+      .sort(),
+    classes
+      .map(
+        (blockerClass) =>
+          `close blocker repeated: ${blockerClass} across 3 orders`,
+      )
+      .sort(),
+  );
 });
 
 test("follow-up handoffs require a live public destination without copying local adjacent text", (t) => {
