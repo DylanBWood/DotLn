@@ -1,0 +1,32 @@
+{
+  "mappedRecord": {
+    "supportedInput": "A Start here Markdown link to a record through its declared document-moves entry",
+    "direct": {
+      "recordNames": 1,
+      "failures": [
+        "CLAUDE.md: entry point instruction-start-here names the record docs/planning/passes/history-2030-01-01.md; an entry point names standing documents only, so cite the record from a standing section a reader reaches by link"
+      ]
+    },
+    "mapped": {
+      "recordNames": 0,
+      "planRecordRows": 0,
+      "failures": [],
+      "linkFailures": []
+    },
+    "expected": "The direct and mapped destinations name the same record; both must report the entry-point record."
+  },
+  "census": {
+    "documents": {
+      "docs/planning/passes/history-2030-01-01.md": 2
+    },
+    "journals": {
+      "directories": 3,
+      "files": 3,
+      "inWindow": 3,
+      "observed": 2,
+      "unobserved": 1,
+      "unreadable": 0
+    },
+    "coverage": "unobserved: Codex tool calls are unhooked, so its sessions read nothing here and the counts are a lower bound"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "method": "Isolated synthetic gate-index fixture: one document row for an executor candidate, then one for its verifier report; no subject gate or real passing check is invented.",
+  "documentRowsPerHandoff": [
+    1,
+    1
+  ],
+  "firstAdvisories": [],
+  "secondAdvisories": [
+    "Handoff failure: 2 document-gate runs judged 2 trees at this code identity; records written into the order's own evidence after a passing document gate keep its row standing, so only a change outside that directory needs another run."
+  ],
+  "acceptedDocumentRow": "fixture:verifier-documents",
+  "expected": "One required document run in each distinct phase is not a repeated-run failure within one handoff."
+}

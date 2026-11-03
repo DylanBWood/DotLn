@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "probe": "reference-cases.mjs",
+  "observedAt": "2026-11-03T14:04Z",
+  "runs": [
+    {
+      "subject": "verified checkpoint refs/dotln/checkpoint/WO-238/5 (code identity 1adddfb5…)",
+      "results": {
+        "direct Start here link (the report's control)": "holds",
+        "mapped Start here link (the report's case)": "fails",
+        "mapped reference definition under another heading": "fails",
+        "mapped path quoted on a role Read line": "fails",
+        "moved standing page bound through its old path": "fails",
+        "moved page's link read from the directory it was written in": "fails",
+        "red tag raised at the old path, disposed at the new one": "fails",
+        "a moved path is never reused, and a read of it stays with the moved page": "fails"
+      }
+    },
+    {
+      "subject": "repair working tree",
+      "results": {
+        "direct Start here link (the report's control)": "holds",
+        "mapped Start here link (the report's case)": "holds",
+        "mapped reference definition under another heading": "holds",
+        "mapped path quoted on a role Read line": "holds",
+        "moved standing page bound through its old path": "holds",
+        "moved page's link read from the directory it was written in": "holds",
+        "red tag raised at the old path, disposed at the new one": "holds",
+        "a moved path is never reused, and a read of it stays with the moved page": "holds"
+      }
+    }
+  ]
+}
