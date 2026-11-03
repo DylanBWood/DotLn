@@ -2265,7 +2265,6 @@ test("moved decisions and reports resolve from the bound immutable target commit
     );
     mkdirSync(docPath(f.orderRoot, "product"), { recursive: true });
     const documents = checkDocs(f.orderRoot, {
-      ceilings: { schemaVersion: 1, documents: {} },
       baseline: { schemaVersion: 1, products: {}, dispatches: {}, links: [] },
       files: [],
       records: [],

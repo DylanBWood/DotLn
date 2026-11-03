@@ -37,6 +37,7 @@ import {
   parseGitHubTarget,
 } from "./lib/github-repository.mjs";
 import { bootstrapWorktree } from "./bootstrap.mjs";
+import { moveIndex, referencePath } from "./lib/document-moves.mjs";
 import { json, sha256Hex } from "./lib/helpers.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 import {
@@ -249,6 +250,8 @@ export const KIT_FILES = Object.freeze({
     ["docs", "PLAYBOOK.md"],
     ["docs", "KIT.md"],
     ["product", "07-execution-guide.md"],
+    // The execution guide's cold-start section names the operator reference.
+    ["product", "operator-reference.md"],
     ["product", "08-publication-compiler.md"],
     ["publication", "implementation-overlay-template.md"],
     ["releases", "tag-manifest.template.json"],
@@ -286,11 +289,11 @@ const SEEDED_ROOTS = Object.freeze({
   finalReviews:
     "Immutable numbered final-review reports, FINAL-NNN.md, with the PR and release-notes handoffs beside them, grouped by work order.",
   planning:
-    "Dated planning passes, sequence.md (the proposed order), the follow-up register and immutable refutation receipts under refutations/.",
+    "sequence.md (the proposed order), the follow-up register, each planning pass's dated record under passes/, which npm run plan -- start creates, and immutable refutation receipts under refutations/.",
   publication:
     "The implementation overlay template the kit carries, and this instance's audience outlines and status index once it compiles any publication.",
   product:
-    "The kit carries the execution guide (07-execution-guide.md) and the publication compiler (08-publication-compiler.md, which the reviewer skill cites) whole. This instance's product overlay lives here as an instance file; core's other product documents are upstream pointers in UPSTREAM.md.",
+    "The kit carries the execution guide (07-execution-guide.md), the operator reference it names (operator-reference.md) and the publication compiler (08-publication-compiler.md, which the reviewer skill cites) whole. This instance's product overlay lives here as an instance file; core's other product documents are upstream pointers in UPSTREAM.md.",
   discovery:
     "Machine-audit outputs of this instance. Until environment.json records the harness versions and effort selectors observed here (the first order's deliverable), every lifecycle attestation prints the discovery advisory.",
   decisions:
@@ -534,6 +537,23 @@ const upstreamDocument = (
     available.has(path) ||
     [...available].some((file) => file.startsWith(`${path}/`));
   const linked = new Map();
+  // A carried document keeps its bytes when a document it links moves, so
+  // its pointer names where that document lives at the exported commit, by
+  // the reference resolution the document check uses and the commit's map.
+  let moved = moveIndex(root, []);
+  try {
+    const moves = runGit(
+      root,
+      [
+        "show",
+        `${commit}:${docRelative(root, "control", "document-moves.json")}`,
+      ],
+      { onFailure: () => "" },
+    );
+    if (moves) moved = moveIndex(root, JSON.parse(moves).moves);
+  } catch {
+    // An unreadable map leaves each link as written.
+  }
   for (const [sourcePath, source] of sources) {
     if (
       !KIT_FILES.documents.some(
@@ -552,9 +572,7 @@ const upstreamDocument = (
         posix.join(posix.dirname(source.destination), linkPath),
       );
       if (availablePath(destination)) continue;
-      const original = posix.normalize(
-        posix.join(posix.dirname(sourcePath), linkPath),
-      );
+      const original = referencePath(moved, sourcePath, linkPath);
       linked.set(
         original,
         `referenced by \`${source.destination}\`; not carried in this instance`,
@@ -1133,10 +1151,6 @@ export async function prepareKit({
   addSeed(
     defaultDocRelative("planning", "followups.json"),
     json({ schemaVersion: 1, entries: [] }),
-  );
-  addSeed(
-    defaultDocRelative("control", "doc-ceilings.json"),
-    json({ schemaVersion: 1, documents: {} }),
   );
   addSeed(
     defaultDocRelative("control", "doc-baseline.json"),

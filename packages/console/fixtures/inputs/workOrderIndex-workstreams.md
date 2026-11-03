@@ -49,7 +49,6 @@ None.
 - Model: fixture
 - Effort: executor xhigh+; verifier xhigh+; reviewer any.
 - Track: unknown
-- Cost: unavailable
 - Authority: [docs/work-orders/WO-301-fixture.md](WO-301-fixture.md)
 
 ### WO-302
@@ -67,7 +66,6 @@ None.
 - Model: fixture
 - Effort: executor xhigh+; verifier xhigh+; reviewer any.
 - Track: unknown
-- Cost: unavailable
 - Authority: [docs/work-orders/WO-302-fixture.md](WO-302-fixture.md)
 
 ### WO-303
@@ -85,7 +83,6 @@ None.
 - Model: fixture
 - Effort: executor xhigh+; verifier xhigh+; reviewer any.
 - Track: unknown
-- Cost: unavailable
 - Authority: [docs/work-orders/WO-303-fixture.md](WO-303-fixture.md)
 
 [WO-301]: WO-301-fixture.md

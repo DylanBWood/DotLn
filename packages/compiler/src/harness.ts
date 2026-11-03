@@ -1427,21 +1427,33 @@ export const HARNESS_REFUSALS = [
 ] as const;
 const HARNESS_BOUNDARIES = `DotLn has ${HARNESS_REFUSALS.length} refusals (${[...new Set(HARNESS_REFUSALS.map((row) => row.source))].join(", ")}): it ${HARNESS_REFUSALS.map((row) => row.clause).join("; ")}. Product tasks fail on observed reads of the admitted record paths; document and mixed review gates retain the full refusal. Literal redirects are judged on any program; expansions such as $PWD and a program's own effects remain unobserved under host permissions; grant failures admit with one advisory and preserve the other refusals, except an unresolvable order-worktree root, which withholds that grant alone. Descendants count at their first attributable tool call; unresolved direct/child overlap is a reported minimum, and unobserved agents remain unknown. Inspect the writer with node scripts/harness.mjs writer --show; stop this session's gate with node scripts/harness.mjs evidence --stop; use operator override: for authorized recovery. Claude hooks enforce these ${HARNESS_REFUSALS.length} refusals at observed boundaries; under Codex a lifecycle dispatch reserves the writer and refuses a foreign holder, the gate, bounded wrapper and lifecycle enforce dispatch bounds in process; the other duties and grants are role text because Codex tool calls are unhooked. Copilot reuses the Claude registration: scripted denials hold with allow-all; missing tool-call and child identity leave subagent accounting advisory; WO-146 evidence records interactive qualification. Other tool and completion judgments are advisory and host permissions decide. The separate Codex compaction adapter restores an owned unfinished task and permits one continuation after premature stopping; it never dispatches a role or changes writer ownership.`;
 
-/** The shared instruction symlink contains all profile-qualified residue. */
+/** The shared instruction symlink carries every profile's residue on one line
+ * per profile. Rule ids that share a reason are named together before it, so
+ * a reason several rules share is printed once; the manifest keeps each item. */
 export function mergeHarnessFragments(
   bundles: readonly HarnessBundle[],
 ): string {
   ensure(bundles.length > 0, "profile manifest required");
-  const lines = [
-    ...new Set(
-      bundles.flatMap((bundle) =>
-        bundle.residue.items.map(
-          (item) =>
-            `${bundle.manifest.profile.profileId}: ${item.originId}: ${item.text ?? item.reason}`,
-        ),
-      ),
-    ),
-  ];
+  const profiles = new Map<string, Map<string, string[]>>();
+  for (const bundle of bundles) {
+    const profileId = bundle.manifest.profile.profileId;
+    const reasons = profiles.get(profileId) ?? new Map<string, string[]>();
+    profiles.set(profileId, reasons);
+    for (const item of bundle.residue.items) {
+      const reason = item.text ?? item.reason;
+      const ids = reasons.get(reason) ?? [];
+      if (!ids.includes(item.originId)) ids.push(item.originId);
+      reasons.set(reason, ids);
+    }
+  }
+  const lines = [...profiles]
+    .filter(([, reasons]) => reasons.size > 0)
+    .map(
+      ([profileId, reasons]) =>
+        `${profileId}: ${[...reasons]
+          .map(([reason, ids]) => `${ids.join(", ")}: ${reason}`)
+          .join(" ")}`,
+    );
   return `${HARNESS_START}\nRead[executor]: \`@skills/dotln-executor/SKILL.md\` — next, fix, status, times.\nRead[verifier]: \`@skills/dotln-verifier/SKILL.md\` — verify.\nRead[reviewer]: \`@skills/dotln-reviewer/SKILL.md\` — final review.\nRead[release-close]: \`@skills/dotln-release-close/SKILL.md\` — release close.\nRead[planner]: \`@skills/dotln-planner/SKILL.md\` — planning or ideation.\nCapabilities and residue: .claude/harness-manifest.json; planning: refute[ full] selects dotln-refuter; drive: WO-NNN selects dotln-router.\n${HARNESS_BOUNDARIES}\n${lines.join("\n")}${lines.length ? "\n" : ""}${HARNESS_END}\n`;
 }
 

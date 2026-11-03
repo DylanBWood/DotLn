@@ -1426,7 +1426,7 @@ review and its blinded refutation alike; ignored paths and file contents are not
 observed (WO-157). An accepted finding must have survived its
 blinded refutation, and promotion of a finding or packet to a work order
 remains a planning act. The
-[planning document](../planning/entropy-reducer-dispatch-2026-09-22.md)
+[planning document](../planning/passes/entropy-reducer-dispatch-2026-09-22.md)
 records the decision and its alternatives; the
 [operator guide](../instance/entropy-reducer/README.md) is the entry point.
 
@@ -2532,7 +2532,7 @@ Git.
 
 The current planning sequence is `docs/planning/sequence.md`, bounded at 8 KB.
 Dated map rationale older than the newest two revisions is retained byte for
-byte in `docs/planning/archive/work-order-map-2026-09-09.md`, with a link
+byte in `docs/planning/passes/work-order-map-2026-09-09.md`, with a link
 concordance. The map retains current rationale and navigation; the planner's
 startup input is the sequence rather than the archive or whole map. Closed
 entries leave the sequence at each planning pass (operator direction,

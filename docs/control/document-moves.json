@@ -1,0 +1,271 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Where each moved document lives now. Records keep their bytes, so a link written before a move still names the old path; the document check resolves it through this map, a moved document's own relative links resolve from the directory it was written in, and the read census counts a read of an old path for the new one.",
+  "moves": [
+    {
+      "from": "docs/planning/archive/work-order-map-2026-09-09.md",
+      "to": "docs/planning/passes/work-order-map-2026-09-09.md",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/closeout-followups-2026-09-22.md",
+      "to": "docs/planning/passes/closeout-followups-2026-09-22.md",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/copilot-cli-integration-2026-09-20.md",
+      "to": "docs/planning/passes/copilot-cli-integration-2026-09-20.md",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/critical-path-2026-09-08-dispositions.json",
+      "to": "docs/planning/passes/critical-path-2026-09-08-dispositions.json",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/critical-path-2026-09-08.json",
+      "to": "docs/planning/passes/critical-path-2026-09-08.json",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/critical-path-2026-09-08.md",
+      "to": "docs/planning/passes/critical-path-2026-09-08.md",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/document-contract-and-release-close-2026-10-28.md",
+      "to": "docs/planning/passes/document-contract-and-release-close-2026-10-28.md",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/entropy-reducer-dispatch-2026-09-22.md",
+      "to": "docs/planning/passes/entropy-reducer-dispatch-2026-09-22.md",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/entropy-review-002-2026-09-22.md",
+      "to": "docs/planning/passes/entropy-review-002-2026-09-22.md",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/entropy-review-004-2026-09-30.md",
+      "to": "docs/planning/passes/entropy-review-004-2026-09-30.md",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/entropy-review-005-2026-10-02.md",
+      "to": "docs/planning/passes/entropy-review-005-2026-10-02.md",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/entropy-review-006-2026-10-10.md",
+      "to": "docs/planning/passes/entropy-review-006-2026-10-10.md",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/entropy-review-007-2026-10-20.md",
+      "to": "docs/planning/passes/entropy-review-007-2026-10-20.md",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/failure-inventory-2026-09-28.md",
+      "to": "docs/planning/passes/failure-inventory-2026-09-28.md",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/failures-across-phases-2026-09-28.md",
+      "to": "docs/planning/passes/failures-across-phases-2026-09-28.md",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/fork-answers-and-entropy-targets-2026-10-20.md",
+      "to": "docs/planning/passes/fork-answers-and-entropy-targets-2026-10-20.md",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md",
+      "to": "docs/planning/passes/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/fork-notes-and-operator-questions-2026-10-21.md",
+      "to": "docs/planning/passes/fork-notes-and-operator-questions-2026-10-21.md",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/fork-observations-2026-10-18.md",
+      "to": "docs/planning/passes/fork-observations-2026-10-18.md",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/fork-requests-2026-10-19.md",
+      "to": "docs/planning/passes/fork-requests-2026-10-19.md",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/fork-returns-and-review-lint-2026-10-25.md",
+      "to": "docs/planning/passes/fork-returns-and-review-lint-2026-10-25.md",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/full-absence-curve-experiment-2026-09-24.md",
+      "to": "docs/planning/passes/full-absence-curve-experiment-2026-09-24.md",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/intake-mining-run-routing-2026-10-24.md",
+      "to": "docs/planning/passes/intake-mining-run-routing-2026-10-24.md",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md",
+      "to": "docs/planning/passes/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/machinery-reset-2026-10-07.md",
+      "to": "docs/planning/passes/machinery-reset-2026-10-07.md",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/machinery-stand-down-2026-09-15.md",
+      "to": "docs/planning/passes/machinery-stand-down-2026-09-15.md",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md",
+      "to": "docs/planning/passes/node24-features-config-plan-first-no-work-stream-2026-10-30.md",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/off-ramps-5s-entropy-2026-09-25.md",
+      "to": "docs/planning/passes/off-ramps-5s-entropy-2026-09-25.md",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/onesie-twosie-followup-drain-2026-09-27.md",
+      "to": "docs/planning/passes/onesie-twosie-followup-drain-2026-09-27.md",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/outstanding-cleanup-2026-09-19.md",
+      "to": "docs/planning/passes/outstanding-cleanup-2026-09-19.md",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/phase-two-plan-2026-09-06.md",
+      "to": "docs/planning/passes/phase-two-plan-2026-09-06.md",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/r1-replan-2026-09-16.md",
+      "to": "docs/planning/passes/r1-replan-2026-09-16.md",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/release-close-finishes-2026-10-03.md",
+      "to": "docs/planning/passes/release-close-finishes-2026-10-03.md",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/release-history-notes.md",
+      "to": "docs/planning/passes/release-history-notes.md",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/resident-binding-to-active-work-2026-09-20.md",
+      "to": "docs/planning/passes/resident-binding-to-active-work-2026-09-20.md",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/source-verification-2026-09-08.md",
+      "to": "docs/planning/passes/source-verification-2026-09-08.md",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/standard-pass-2026-09-21.md",
+      "to": "docs/planning/passes/standard-pass-2026-09-21.md",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/standard-pass-2026-09-25.md",
+      "to": "docs/planning/passes/standard-pass-2026-09-25.md",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/standard-pass-2026-09-30.md",
+      "to": "docs/planning/passes/standard-pass-2026-09-30.md",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/standard-pass-2026-10-02.md",
+      "to": "docs/planning/passes/standard-pass-2026-10-02.md",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/standard-pass-2026-10-11.md",
+      "to": "docs/planning/passes/standard-pass-2026-10-11.md",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/standard-pass-2026-10-13.md",
+      "to": "docs/planning/passes/standard-pass-2026-10-13.md",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/standard-pass-2026-10-17.md",
+      "to": "docs/planning/passes/standard-pass-2026-10-17.md",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/standard-pass-2026-10-19.md",
+      "to": "docs/planning/passes/standard-pass-2026-10-19.md",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/target-publish-base-2026-10-24.md",
+      "to": "docs/planning/passes/target-publish-base-2026-10-24.md",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/target-write-grant-and-fork-block-2026-10-28.md",
+      "to": "docs/planning/passes/target-write-grant-and-fork-block-2026-10-28.md",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/three-repository-route-2026-10-11.md",
+      "to": "docs/planning/passes/three-repository-route-2026-10-11.md",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/vision-into-use-2026-09-17.md",
+      "to": "docs/planning/passes/vision-into-use-2026-09-17.md",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/wo-123-integration-ceiling-2026-10-05.md",
+      "to": "docs/planning/passes/wo-123-integration-ceiling-2026-10-05.md",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/wo192-fixes-and-example-drift-2026-10-26.md",
+      "to": "docs/planning/passes/wo192-fixes-and-example-drift-2026-10-26.md",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/work-order-index-activation-2026-09-04.md",
+      "to": "docs/planning/passes/work-order-index-activation-2026-09-04.md",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/work-order-index-fixtures-2026-09-04.txt",
+      "to": "docs/planning/passes/work-order-index-fixtures-2026-09-04.txt",
+      "workOrder": "WO-238"
+    },
+    {
+      "from": "docs/planning/work-order-index-references-2026-09-04.txt",
+      "to": "docs/planning/passes/work-order-index-references-2026-09-04.txt",
+      "workOrder": "WO-238"
+    }
+  ]
+}

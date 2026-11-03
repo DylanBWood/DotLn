@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "kind": "authority-transcript-reference",
+  "source": {
+    "path": "docs/evidence/WO-238/authority/001/authority.json",
+    "blobHash": "4481b9f0823054b4c76f217e93b442fe423c0514",
+    "bytes": 50410
+  }
+}

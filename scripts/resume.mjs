@@ -94,6 +94,7 @@ import {
 } from "./lib/beacons.mjs";
 import {
   controlTimeProjection,
+  handoffStartedAt,
   recoverControlTimes,
   validateRecordedAt,
 } from "./lib/control-time.mjs";
@@ -1760,6 +1761,7 @@ const run = async (argv) => {
       const gates = await requireGateClaims(repoRoot, handoff, {
         state,
         gateIndexError,
+        handoffStart: handoffStartedAt(orderEvents),
       });
       completionHandoff(evidence, handoff, gates);
       appendTransition(action, {
@@ -1848,6 +1850,7 @@ const run = async (argv) => {
       const gates = await requireGateClaims(repoRoot, claims, {
         state,
         gateIndexError,
+        handoffStart: handoffStartedAt(orderEvents),
       });
       completionHandoff(evidence, claims, gates);
       // A fail's block is required above; a pass's stays advisory.
@@ -1910,6 +1913,7 @@ const run = async (argv) => {
       const gates = await requireGateClaims(repoRoot, handoff, {
         state,
         gateIndexError,
+        handoffStart: handoffStartedAt(orderEvents),
       });
       completionHandoff(evidence, handoff, gates);
       appendTransition(action, {

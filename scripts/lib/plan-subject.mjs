@@ -563,11 +563,18 @@ function buildGoalSubject(root, revision, { workspace }) {
             path.startsWith(`${purposePath}/`) ||
             purposePath.startsWith(`${path}/`),
         ));
+  // The critical path's pass document moved to the passes directory; a
+  // revision before the move still holds it at its earlier path. An instance
+  // that declares none keeps the earlier path in its unavailable line, whose
+  // bytes its committed receipts bind.
+  const criticalPathSource =
+    criticalPathCandidates(root).find(has) ??
+    criticalPathCandidates(root).at(-1);
   if (!workspace)
     committed.readMany(
       [
         docRelative(root, "product", "07-execution-guide.md"),
-        docRelative(root, "planning", "critical-path-2026-09-08.md"),
+        criticalPathSource,
         ...(purposePresent ? [purposePath] : []),
       ].filter(has),
     );
@@ -632,11 +639,6 @@ function buildGoalSubject(root, revision, { workspace }) {
       "\n",
     );
   }
-  const criticalPathSource = docRelative(
-    root,
-    "planning",
-    "critical-path-2026-09-08.md",
-  );
   const criticalPath =
     kit &&
     (workspace
@@ -734,6 +736,13 @@ export function goalEvidenceHash(standard, observations) {
     })),
   ]);
 }
+
+/** Where the critical-path pass document may be: its pass directory, then
+ * the planning root it stood in before WO-238 moved it. */
+export const criticalPathCandidates = (root) => [
+  docRelative(root, "planning", "passes", "critical-path-2026-09-08.md"),
+  docRelative(root, "planning", "critical-path-2026-09-08.md"),
+];
 
 export const planningPasses = (ledger) =>
   [...ledger.matchAll(/^## (.+)$/gm)]

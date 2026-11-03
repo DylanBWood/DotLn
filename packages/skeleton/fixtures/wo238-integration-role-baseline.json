@@ -1,0 +1,89 @@
+{
+  "workOrder": "WO-238",
+  "historicalBaseline": "wo252-repair-role-baseline.json",
+  "historicalSha256": "4e6868f275492b20d246d4dfcd35a4d3a0b0b3f0d18eb4cc5548092143c19852",
+  "upstreamBaseline": "wo250-role-baseline.json",
+  "upstreamSha256": "ade7e36e8feb4f58cb75eca4ddd80340af06ce2c67703ac0514a2aad99a0450a",
+  "branchBaseline": "wo238-role-baseline.json",
+  "branchSha256": "68a266721824f8e016011da9e86c3859fbc3714f12d6fa72fdda0e7b01b3e9f5",
+  "method": "Pin the integrated role trees at both economy settings: main's shared prune sentence, its release-close residue and glob clause and its router prune sentence (WO-252 and its repair) together with this branch's standing-document sentence naming the three kinds, the override file, the record and generated rules, the entry-point rule, the read census with its red tags and the final reviewer's judgment of a changed standing document, its evidence rule's document-row exception, its executor document-gate step and its one-line residue per profile (WO-238); preserve both reviewed oracle chains byte-exact through their unchanged WO-250 parent.",
+  "decision": "docs/evidence/WO-238/decisions.md#wo-238-d042",
+  "roles": {
+    ".agents/skills/dotln-executor/SKILL.md": "58b1f09f5c378dcfc495baf3f73559a4ea0ac4782431616c5fbc1d863b6903e2",
+    ".agents/skills/dotln-planner/SKILL.md": "1b001332d6e7592402a11a297e5e53f156496d19f9215e5beee692325228d950",
+    ".agents/skills/dotln-refuter/SKILL.md": "ee69dc5dcc55e8860f15c2ae6f1ec615308d2f08337d846fc2c011dc68413682",
+    ".agents/skills/dotln-release-close/SKILL.md": "f8afa9d2f03688c63a21816f36ffb640a3984754ac27035cb9bb92740e199a6c",
+    ".agents/skills/dotln-reviewer/SKILL.md": "ad3a2a55b66f2d91569a09d867621fb445b52d1d6a896ba042de4d4e690c339c",
+    ".agents/skills/dotln-router/SKILL.md": "91a57460ec71d3ae443c40149b517585094f55a6460ad3c61a2504400e2a37af",
+    ".agents/skills/dotln-verifier/SKILL.md": "2e4c2bb3a2f8221c1248e913191f4400b76e206d75cf9c0c3bf590a1a6fa4ad0",
+    ".claude/skills/dotln-executor/SKILL.md": "58b1f09f5c378dcfc495baf3f73559a4ea0ac4782431616c5fbc1d863b6903e2",
+    ".claude/skills/dotln-planner/SKILL.md": "1b001332d6e7592402a11a297e5e53f156496d19f9215e5beee692325228d950",
+    ".claude/skills/dotln-refuter/SKILL.md": "ee69dc5dcc55e8860f15c2ae6f1ec615308d2f08337d846fc2c011dc68413682",
+    ".claude/skills/dotln-release-close/SKILL.md": "f8afa9d2f03688c63a21816f36ffb640a3984754ac27035cb9bb92740e199a6c",
+    ".claude/skills/dotln-reviewer/SKILL.md": "ad3a2a55b66f2d91569a09d867621fb445b52d1d6a896ba042de4d4e690c339c",
+    ".claude/skills/dotln-router/SKILL.md": "91a57460ec71d3ae443c40149b517585094f55a6460ad3c61a2504400e2a37af",
+    ".claude/skills/dotln-verifier/SKILL.md": "2e4c2bb3a2f8221c1248e913191f4400b76e206d75cf9c0c3bf590a1a6fa4ad0"
+  },
+  "optOutRoles": {
+    ".agents/skills/dotln-executor/SKILL.md": "952d6e76582f58fa711a56ff7f39ee1bf4e444bd665856d833223c2e1e81a462",
+    ".agents/skills/dotln-planner/SKILL.md": "cd9ba3b7a5c2162256f838ca2492a037bac81f524c5d87192e3e71d60ee0283c",
+    ".agents/skills/dotln-refuter/SKILL.md": "8f40e92f84ded039a81ad100a22a29a174141cbc7947de1faeb3ba662ada9efe",
+    ".agents/skills/dotln-release-close/SKILL.md": "1fd3bd6102ed4fc1c94d78277087a26295acc7e24aee487c5bdfa37dffc7cd9f",
+    ".agents/skills/dotln-reviewer/SKILL.md": "4491c512278cb5214cc6c933900365d56d5f0cb60febb9a8b541ae823add487d",
+    ".agents/skills/dotln-router/SKILL.md": "ba946a0cc0ca416552ae3471a9aecdaa6b5bb91601ad276dbdda8f664ff03fdb",
+    ".agents/skills/dotln-verifier/SKILL.md": "3964379636fe86ac0997a0dfd362c20d4d5d0885d1f79b8c7875131b4876824e",
+    ".claude/skills/dotln-executor/SKILL.md": "952d6e76582f58fa711a56ff7f39ee1bf4e444bd665856d833223c2e1e81a462",
+    ".claude/skills/dotln-planner/SKILL.md": "cd9ba3b7a5c2162256f838ca2492a037bac81f524c5d87192e3e71d60ee0283c",
+    ".claude/skills/dotln-refuter/SKILL.md": "8f40e92f84ded039a81ad100a22a29a174141cbc7947de1faeb3ba662ada9efe",
+    ".claude/skills/dotln-release-close/SKILL.md": "1fd3bd6102ed4fc1c94d78277087a26295acc7e24aee487c5bdfa37dffc7cd9f",
+    ".claude/skills/dotln-reviewer/SKILL.md": "4491c512278cb5214cc6c933900365d56d5f0cb60febb9a8b541ae823add487d",
+    ".claude/skills/dotln-router/SKILL.md": "ba946a0cc0ca416552ae3471a9aecdaa6b5bb91601ad276dbdda8f664ff03fdb",
+    ".claude/skills/dotln-verifier/SKILL.md": "3964379636fe86ac0997a0dfd362c20d4d5d0885d1f79b8c7875131b4876824e"
+  },
+  "startupCost": {
+    "decision": "WO-238-D042",
+    "profiles": {
+      "executor": {
+        "beforeBytes": 41987,
+        "bytes": 42398,
+        "growthBytes": 411,
+        "followup": "FUP-916e24773df0b734"
+      },
+      "planner": {
+        "beforeBytes": 27664,
+        "bytes": 27798,
+        "growthBytes": 134,
+        "followup": "FUP-916e24773df0b734"
+      },
+      "refuter": {
+        "beforeBytes": 25815,
+        "bytes": 25949,
+        "growthBytes": 134
+      },
+      "release-close": {
+        "beforeBytes": 26590,
+        "bytes": 26724,
+        "growthBytes": 134,
+        "followup": "FUP-916e24773df0b734"
+      },
+      "reviewer": {
+        "beforeBytes": 39134,
+        "bytes": 39450,
+        "growthBytes": 316
+      },
+      "router": {
+        "beforeBytes": 16634,
+        "bytes": 16036,
+        "growthBytes": -598,
+        "ceiling": 16384,
+        "headroomBytes": 348
+      },
+      "verifier": {
+        "beforeBytes": 36711,
+        "bytes": 37027,
+        "growthBytes": 316,
+        "followup": "FUP-916e24773df0b734"
+      }
+    }
+  }
+}

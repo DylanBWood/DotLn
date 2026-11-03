@@ -70,5 +70,10 @@
       ],
       "urgencyRationale": "Every pending and future review and refutation episode carries this channel, and the receipts already claim the confinement is checked. Closing it before the next dispatch costs little."
     }
+  },
+  "deliveredBy": {
+    "workOrderId": "WO-219",
+    "release": "v0.94.0",
+    "recordedAt": "2026-10-23T23:52:23.000Z"
   }
 }

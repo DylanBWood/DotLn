@@ -69,5 +69,10 @@
       ],
       "urgencyRationale": "The executor is 164 bytes from its ceiling, so the next reviewed rule that touches the shared floor triggers another acceptance record; the trend is monotonic and the mechanism produces cost without information."
     }
+  },
+  "deliveredBy": {
+    "workOrderId": "WO-155",
+    "release": "v0.46.1",
+    "recordedAt": "2026-09-24T20:02:27.000Z"
   }
 }

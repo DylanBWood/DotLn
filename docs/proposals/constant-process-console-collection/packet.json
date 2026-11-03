@@ -72,5 +72,10 @@
       ],
       "urgencyRationale": "The recorded reopen condition has fired. The cost is paid on every document gate and board render, it grows daily, and the last time this path grew it broke full gates under load."
     }
+  },
+  "deliveredBy": {
+    "workOrderId": "WO-164",
+    "release": "v0.52.7",
+    "recordedAt": "2026-09-27T20:27:54.000Z"
   }
 }

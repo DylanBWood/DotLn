@@ -44244,6 +44244,14 @@
           "reopenWhen": "The next planning pass evaluates instruction-byte optimization, or another role edit changes the measured overrun.",
           "targets": [],
           "at": "2026-11-03T16:08:45.875Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-238-D043: the condition occurred, another role edit changed the measured overrun: this order's standing-document sentence, evidence rule and document-gate step over WO-252's prune, router and release-close clauses, integrated at WO-238's final review, changed every installed role root; measured by the gate-followups rule on the integrated tree the executor reads 42,398 bytes against its effective 40,194, the verifier 37,027 against 35,221, the planner 27,798 against 24,576, release-close 26,724 against 26,410, the reviewer 39,450 within 39,600, the router 16,036 within 16,384 and the refuter 25,949 with no ceiling; WO-238-D042 boards the four overruns as FUP-916e24773df0b734, no ceiling moved, no acceptance was recorded and no duty was cut; the optimization with equivalent usefulness belongs to a planning allocation.",
+          "reopenWhen": "The next planning pass evaluates instruction-byte optimization, or another role edit changes the measured overrun.",
+          "targets": [],
+          "at": "2026-11-03T17:46:50.359Z"
         }
       ]
     },
@@ -44364,6 +44372,14 @@
           "reopenWhen": "A role grows past its pin without the oracle changing, or a ceiling breach appears in meta --check with no decision boarding it; or the next order touching scripts/test-gate-followups.mjs or re-minting the role oracle.",
           "targets": [],
           "at": "2026-11-03T16:08:46.124Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-238-D043: the condition occurred, because WO-238 re-mints the role oracle as wo238-role-baseline.json and its final review's integration mints wo238-integration-role-baseline.json over WO-252's repair oracle and WO-238's, which the chain list in scripts/test-gate-followups.mjs now selects; the test keeps its chain walk, its ceiling and acceptance checks and the historical 256-byte inequality, which this review does not decide, because it changes no test beyond the chain list and the oracle walk's parent assertions.",
+          "reopenWhen": "A role grows past its pin without the oracle changing, or a ceiling breach appears in meta --check with no decision boarding it; or the next order touching scripts/test-gate-followups.mjs or re-minting the role oracle.",
+          "targets": [],
+          "at": "2026-11-03T17:46:50.731Z"
         }
       ]
     },
@@ -44893,6 +44909,14 @@
           "reopenWhen": "A bounded comparison demonstrates a shorter equivalent instruction set, or another required rule changes the measured overrun.",
           "targets": [],
           "at": "2026-11-02T21:28:01.940Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-238-D043: the condition occurred, another required rule changed the measured overrun at WO-238's final review; measured by the gate-followups rule on the integrated tree the executor reads 42,398 bytes against its effective 40,194, the verifier 37,027 against 35,221, the planner 27,798 against 24,576, release-close 26,724 against 26,410, the reviewer 39,450 within 39,600, the router 16,036 within 16,384 and the refuter 25,949 with no ceiling; WO-238-D042 boards the four overruns as FUP-916e24773df0b734, no ceiling moved, no acceptance was recorded and no duty was cut; a bounded comparison of a shorter equivalent instruction set belongs to a planning allocation.",
+          "reopenWhen": "A bounded comparison demonstrates a shorter equivalent instruction set, or another required rule changes the measured overrun.",
+          "targets": [],
+          "at": "2026-11-03T17:46:50.486Z"
         }
       ]
     },
@@ -52407,6 +52431,14 @@
           "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the verifier and planner cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
           "targets": [],
           "at": "2026-11-03T16:08:46.001Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-238-D043: the condition occurred, another reviewed rule changed the measured overrun at WO-238's final review; measured by the gate-followups rule on the integrated tree the executor reads 42,398 bytes against its effective 40,194, the verifier 37,027 against 35,221, the planner 27,798 against 24,576, release-close 26,724 against 26,410, the reviewer 39,450 within 39,600, the router 16,036 within 16,384 and the refuter 25,949 with no ceiling; WO-238-D042 boards the four overruns as FUP-916e24773df0b734, no ceiling moved, no acceptance was recorded and no duty was cut; the optimization with equivalent usefulness belongs to a planning allocation.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the verifier and planner cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
+          "targets": [],
+          "at": "2026-11-03T17:46:50.608Z"
         }
       ]
     },
@@ -52741,6 +52773,16 @@
           "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the executor, verifier, planner, release-close and router cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
           "targets": [],
           "at": "2026-11-03T01:59:04.196Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "duplicate",
+          "reason": "WO-238-D043: the condition occurred, another reviewed rule changed the measured overrun: WO-238's standing-document sentence, evidence rule, document-gate step and one-line residue, integrated at its final review; the executor's, verifier's, planner's and release-close's optimization continues in FUP-916e24773df0b734 with the integrated figures, and the router's overrun this row named no longer exists on the integrated tree, where the residue fold returns 598 bytes against the router sentence's 255 (16,036 within 16,384).",
+          "reopenWhen": "FUP-916e24773df0b734 is declined or settled without reducing these four roots, or the router root again exceeds 16,384 bytes.",
+          "targets": [
+            "FUP-916e24773df0b734"
+          ],
+          "at": "2026-11-03T17:46:50.970Z"
         }
       ]
     },
@@ -52891,6 +52933,203 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-7476689f757f6319",
+      "key": "decision:docs/evidence/WO-238/decisions.md#wo-238-d006",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "98fa1b146661b85683882f1d54cadb08280732f0e07783af7b5f36939c64f837",
+          "ref": "docs/evidence/WO-238/decisions.md#wo-238-d006--the-shared-rule-names-the-kinds-the-census-and-the-reviewers-judgment-the-role-oracle-is-re-minted",
+          "title": "WO-238-D006: Optimize the executor's, the verifier's and the planner's installed cold starts with equivalent usefulness. With the kinds, census and reviewer clause in the shared standing-document…",
+          "summary": "{ \"id\": \"WO-238-D006\", \"date\": \"2026-11-02\", \"dispatch\": \"resume: next; step 5, the role text and the role oracle\", \"decision\": \"The shared standing-document sentence in packages/skeleton/src/loadouts/contributor.ts now opens with the three kinds and the override file, and closes with the record and generated rules, the entry-point rule, the census and red tags of npm run plan -- documents, and the reviewer's item: the final reviewer judges each changed standing document's diff, a replacement passes and a dated account added under a standing heading returns to repair. The sentence is in the shared rules, so every role root that carries them states it: executor, verifier, reviewer, release-cl",
+          "missing": false
+        },
+        {
+          "hash": "98fa1b146661b85683882f1d54cadb08280732f0e07783af7b5f36939c64f837",
+          "ref": "docs/evidence/WO-238/decisions.md#wo-238-d006",
+          "title": "WO-238-D006: Optimize the executor's, the verifier's and the planner's installed cold starts with equivalent usefulness. With the kinds, census and reviewer clause in the shared standing-document…",
+          "summary": "{ \"id\": \"WO-238-D006\", \"date\": \"2026-11-02\", \"dispatch\": \"resume: next; step 5, the role text and the role oracle\", \"decision\": \"The shared standing-document sentence in packages/skeleton/src/loadouts/contributor.ts now opens with the three kinds and the override file, and closes with the record and generated rules, the entry-point rule, the census and red tags of npm run plan -- documents, and the reviewer's item: the final reviewer judges each changed standing document's diff, a replacement passes and a dated account added under a standing heading returns to repair. The sentence is in the shared rules, so every role root that carries them states it: executor, verifier, reviewer, release-cl",
+          "missing": false
+        },
+        {
+          "hash": "9a72755525ed5e69daddccb565655ef24a47a0222376a4042651bbb46d0b2b1b",
+          "ref": "docs/evidence/WO-238/decisions.md#wo-238-d006",
+          "title": "WO-238-D006: Optimize the executor's, the verifier's and the planner's installed cold starts with equivalent usefulness. With the kinds, census and reviewer clause in the shared standing-document…",
+          "summary": "{ \"id\": \"WO-238-D006\", \"date\": \"2026-11-02\", \"dispatch\": \"resume: next; step 5, the role text and the role oracle\", \"decision\": \"The shared standing-document sentence in packages/skeleton/src/loadouts/contributor.ts now opens with the three kinds and the override file, and closes with the record and generated rules, the entry-point rule, the census and red tags of npm run plan -- documents, and the reviewer's item: the final reviewer judges each changed standing document's diff, a replacement passes and a dated account added under a standing heading returns to repair. The sentence is in the shared rules, so every role root that carries them states it: executor, verifier, reviewer, release-cl",
+          "missing": false
+        },
+        {
+          "hash": "2ebe252017123201bb63bb6bc0043901fa00f2546c8e3026a13c418a01f6ecf0",
+          "ref": "docs/evidence/WO-238/decisions.md#wo-238-d006",
+          "title": "WO-238-D006: Optimize the executor's, the verifier's and the planner's installed cold starts with equivalent usefulness. With the kinds, census and reviewer clause in the shared standing-document…",
+          "summary": "{ \"id\": \"WO-238-D006\", \"date\": \"2026-11-02\", \"dispatch\": \"resume: next; step 5, the role text and the role oracle\", \"decision\": \"The shared standing-document sentence in packages/skeleton/src/loadouts/contributor.ts now opens with the three kinds and the override file, and closes with the record and generated rules, the entry-point rule, the census and red tags of npm run plan -- documents, and the reviewer's item: the final reviewer judges each changed standing document's diff, a replacement passes and a dated account added under a standing heading returns to repair. The sentence is in the shared rules, so every role root that carries them states it: executor, verifier, reviewer, release-cl",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-238-D006: the shared standing-document sentence names the kinds, the census and red tags and the reviewer judgment, and stays whole under product 07 one route for cold-start ceilings; with the residue fold the executor reads 41,819 bytes against its effective 40,194, the verifier 36,543 against 35,221 and the planner 27,496 against 24,576, measured by the gate-followups rule, with no ceiling raised, no acceptance recorded and no duty cut; the optimization with equivalent usefulness belongs to a planning allocation.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the executor, verifier and planner cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
+          "targets": [],
+          "at": "2026-11-02T23:13:05.733Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "deferred",
+          "reason": "WO-238-D006: the shared standing-document sentence and the evidence rule stay whole under product 07 one route for cold-start ceilings; with the residue fold the executor reads 41,981 bytes against its effective 40,194, the verifier 36,652 against 35,221 and the planner 27,496 against 24,576, measured by the gate-followups rule, with no ceiling raised, no acceptance recorded and no duty cut; the optimization with equivalent usefulness belongs to a planning allocation.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the executor, verifier and planner cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
+          "targets": [],
+          "at": "2026-11-03T00:42:55.164Z"
+        },
+        {
+          "sourceRevision": 4,
+          "status": "deferred",
+          "reason": "WO-238-D006: the shared standing-document sentence and the evidence rule, now naming the document row's recorded tree, stay whole under product 07 one route for cold-start ceilings; with the residue fold the executor reads 42,096 bytes against its effective 40,194, the verifier 36,725 against 35,221 and the planner 27,496 against 24,576, measured by node scripts/harness-context.mjs --check, with no ceiling raised, no acceptance recorded and no duty cut; the optimization with equivalent usefulness belongs to a planning allocation.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the executor, verifier and planner cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
+          "targets": [],
+          "at": "2026-11-03T01:11:25.230Z"
+        },
+        {
+          "sourceRevision": 4,
+          "status": "duplicate",
+          "reason": "WO-238-D043: the condition occurred, another reviewed rule changed the measured overrun: the integration of WO-252's prune, router and release-close clauses at WO-238's final review; the executor's, verifier's and planner's optimization continues in FUP-916e24773df0b734 with the integrated figures and release-close beside them.",
+          "reopenWhen": "FUP-916e24773df0b734 is declined or settled without reducing these three roots.",
+          "targets": [
+            "FUP-916e24773df0b734"
+          ],
+          "at": "2026-11-03T17:46:50.852Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-794a0b62f0b5c8a3",
+      "key": "decision:docs/evidence/WO-238/decisions.md#wo-238-d027",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "f216392451b47f75afda42c358cc5ca5c754f17cd83cc7e2e1c9b3afd2d5a779",
+          "ref": "docs/evidence/WO-238/decisions.md#wo-238-d027--mapped-references-must-have-one-meaning-for-entry-point-and-link-checks",
+          "title": "WO-238-D027: WO-238 repair F1: unify supported mapped-reference resolution for entryPointNames, readerBindings and linkFailures; prove that direct and old-path Start here references to the same moved…",
+          "summary": "{ \"id\": \"WO-238-D027\", \"date\": \"2026-11-03\", \"dispatch\": \"resume: verify; independent attack of criteria 3 and 4\", \"decision\": \"The verifier records F1 as blocking criteria 3 and 4 and routes the repair to the existing document-kinds and document-check surfaces. A valid move-map reference from Start here reaches a dated record according to linkFailures, but entryPointNames reports no record and plan documents omits it. Entry-point discovery, reader bindings and link validation must resolve a supported mapped reference to the same canonical document, preserving record bytes. The verifier changes no implementation.\", \"evidence\": [ \"docs/evidence/WO-238/verifier-001/document-attacks.mjs and doc",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled in WO-238's repair by WO-238-D031: one reference resolution (referencePath and currentPath in scripts/lib/document-moves.mjs) serves the link check, the entry points, the reader bindings, the red tags, the read census, plan documents, the export pointer and the seed read, so a Start here link, a reference definition or a Read line naming a moved record's old path names the record; scripts/test-docs-check.mjs and docs/evidence/WO-238/repair-001/ hold the direct and mapped cases, with record bytes unchanged.",
+          "reopenWhen": "WO-238's next verification or final review finds a reader that gives a mapped reference another meaning.",
+          "targets": [],
+          "at": "2026-11-03T13:27:52.870Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-def71642a873fb32",
+      "key": "decision:docs/evidence/WO-238/decisions.md#wo-238-d028",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "7c58199a0b8496fcd72d4fa67b804f67eb7517a20b608bd40c17334a0e3085bf",
+          "ref": "docs/evidence/WO-238/decisions.md#wo-238-d028--criterion-7-remains-a-repairable-delivery-completion-gap",
+          "title": "WO-238-D028: WO-238 repair F2: complete or require correct deliveredBy.release before successful close publication, preserving clean main and the reviewed release-preparation transaction; retain a…",
+          "summary": "{ \"id\": \"WO-238-D028\", \"date\": \"2026-11-03\", \"dispatch\": \"resume: verify; independent judgment of the executor's criterion-7 contradiction claim\", \"decision\": \"The verifier does not record criterion 7 defective. WO-238-D009 establishes that the current close flow avoids tracked writes on main, not that no implementation can hold clean main and the required delivered-packet outcome. The close handler executes after publication and only advises when release is null. Record F2 as blocking criterion 7; require delivery completion as part of the close contract, with unresolved metadata prevented from reaching successful publication. Requiring corrected preparation before publication is an in-scop",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled in WO-238's repair by WO-238-D032: release close judges every packet routed to the closing order before it publishes and refuses while one names another release, and routing writes the merged order's release, so the route run again from a planning branch of main completes the delivery; the release case routed_after_preparation drives the close flow on the late route, with main clean and release preparation unchanged.",
+          "reopenWhen": "WO-238's next verification or final review finds a close that succeeds with a routed packet naming another release, or a late route that no command can complete.",
+          "targets": [],
+          "at": "2026-11-03T13:27:53.022Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-7fc11a0214de82a9",
+      "key": "decision:docs/evidence/WO-238/decisions.md#wo-238-d030",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "2c5faf82b2bfd1516a38b7b2a9720e18e5e6c51f30778addde9a6153407cfe0b",
+          "ref": "docs/evidence/WO-238/decisions.md#wo-238-d030--count-repeated-document-runs-within-their-handoff",
+          "title": "WO-238-D030: WO-238 F3: scope the repeated-document-gate advisory to the current handoff or phase, retaining detection of avoidable repetition within it. Add an executor-to-verifier case with one…",
+          "summary": "{ \"id\": \"WO-238-D030\", \"date\": \"2026-11-03\", \"dispatch\": \"resume: verify; independent review of the document-gate repeat advisory\", \"decision\": \"Board F3 as a nonblocking follow-up. requireGateClaims counts every passing document tree since the product row, or all passing document trees when the claim is document-only, without a handoff or phase boundary. An isolated fixture with one executor document row and one verifier document row emits Handoff failure: 2 document-gate runs, although neither phase repeated a run. It still accepts the correct verifier row. This new advisory breaks no declared acceptance criterion and reproduces no lost main behavior, so it does not add a blocking judgment",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled in WO-238's repair by WO-238-D033: requireGateClaims counts repeated document-gate runs from the later of the complete run and the current handoff's start, so one required run per phase is no repetition and two trees within a handoff still are; scripts/test-runner.test.mjs holds the executor-to-verifier and same-handoff cases.",
+          "reopenWhen": "A real handoff labels another phase's required document run as repetition, or misses two trees within its own handoff.",
+          "targets": [],
+          "at": "2026-11-03T13:27:53.163Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-712bb6562937332a",
+      "key": "decision:docs/evidence/WO-238/decisions.md#wo-238-d036",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "1b8f2ee45ed4b997f2c70b0fe6118cb3392b6d78b415fc367b8555396d47ad79",
+          "ref": "docs/evidence/WO-238/decisions.md#wo-238-d036--moved-records-relative-links-resolve-through-the-map-not-in-a-markdown-viewer",
+          "title": "WO-238-D036: Decide whether moved records need links a Markdown viewer can follow without the move map: a stub at each old path, a rendered page of the map, or leaving the map as the route, weighing…",
+          "summary": "{ \"id\": \"WO-238-D036\", \"date\": \"2026-11-03\", \"dispatch\": \"resume: fix; round 1 design F1\", \"decision\": \"Recorded, not fixed in this repair. A moved record keeps its bytes, so its relative links were written from the directory it left: docs/planning/passes/document-contract-and-release-close-2026-10-28.md links sequence.md, which a Markdown viewer such as GitHub resolves under passes/, where no file is; work orders whose text the planning receipts bind, and the map's record sections, link records' old paths the same way. The document check, the bindings and the census follow those links through the map (WO-238-D031, WO-238-D035), and the planning README names the map for a reader who meets a ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-55580981022d6dd5",
+      "key": "decision:docs/evidence/WO-238/decisions.md#wo-238-d037",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "3486bb5e864b93165a0b0242901aff59f9b71ee9eee0e75e1c44ae1722dd9a3b",
+          "ref": "docs/evidence/WO-238/decisions.md#wo-238-d037--product-07s-goal-section-keeps-its-links-until-a-planning-pass",
+          "title": "WO-238-D037: When a planning pass next revises product 07's Goal-aligned decisions section, rewrite its critical-path and vision-into-use links to docs/planning/passes/ under that pass's refutation.",
+          "summary": "{ \"id\": \"WO-238-D037\", \"date\": \"2026-11-03\", \"dispatch\": \"resume: fix; round 1 consistency F1, probed after WO-238-D034\", \"kind\": \"correction\", \"misread\": \"WO-238-D034 read product 07's Goal-aligned decisions section as an ordinary standing section an executor rewrites, so it rewrote the critical-path and vision-into-use links there to passes/ and planted the old critical-path link in the export fixture.\", \"meant\": \"That section is the planning subject's goal standard: scripts/lib/plan-subject.mjs reads it whole, and plan continuation compares it byte for byte with the current planning receipt, so a change to it needs a planning pass whose refutation judges the new bytes.\", \"changed\": \"Both ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-916e24773df0b734",
+      "key": "decision:docs/evidence/WO-238/decisions.md#wo-238-d042",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "051e0aa2c0f2bcc17e84723c8d008c956c7f10d82aa7761320c7db9d45227f89",
+          "ref": "docs/evidence/WO-238/decisions.md#wo-238-d042",
+          "title": "WO-238-D042: Optimize the executor's, the verifier's, the planner's and release-close's installed cold starts with equivalent usefulness. On the integrated tree the executor measures 42,398 bytes…",
+          "summary": "{ \"id\": \"WO-238-D042\", \"date\": \"2026-11-03\", \"dispatch\": \"resume: final review; worktree integrate WO-238\", \"decision\": \"Main moved to 8793397e (WO-252 merged, #269, released as v0.112.0) after VER-002, so final review integrated it with worktree integrate. The four authored conflicts are one collision: WO-238 and WO-252 each minted a role oracle over WO-250's (WO-252 twice, its own and its repair's), and the integrated role trees carry both orders' sentences, so neither oracle pins them. The resolution mints packages/skeleton/fixtures/wo238-integration-role-baseline.json as the two-parent oracle, as WO-249-D025 did at its integration: WO-252's repair oracle, main's at integration, is its hi",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-238-D042: the integrated role trees carry WO-238's standing-document sentence, evidence rule and document-gate step beside WO-252's prune sentence, router sentence and release-close residue and glob clause, reviewed duties that stay whole under product 07's one route for cold-start ceilings; measured by the gate-followups rule on the integrated tree the executor reads 42,398 bytes against its effective 40,194, the verifier 37,027 against 35,221, the planner 27,798 against 24,576 and release-close 26,724 against 26,410, with no ceiling raised, no acceptance recorded and no duty cut; the optimization with equivalent usefulness belongs to a planning allocation.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the executor, verifier, planner and release-close cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
+          "targets": [],
+          "at": "2026-11-03T16:52:27.022Z"
+        }
+      ]
     }
   ]
 }

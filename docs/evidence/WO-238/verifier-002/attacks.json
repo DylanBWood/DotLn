@@ -1,0 +1,105 @@
+{
+  "observedAt": "2026-11-03T15:51:22.495Z",
+  "base": "b9e843b6978e057d6794b9d0a76af557e9547ba0",
+  "codeIdentity": "5813fed9602dd97c047875cd8441271c35b8ce2ca7a0864f10a32268d63ede2f",
+  "candidateTree": "f7a4f836918ba33bb2db7a794ac276c77015efae",
+  "probes": [
+    {
+      "probe": "record reference: direct",
+      "result": "pass"
+    },
+    {
+      "probe": "record reference: mapped",
+      "result": "pass"
+    },
+    {
+      "probe": "record reference: normalized",
+      "result": "pass"
+    },
+    {
+      "probe": "record reference: encoded",
+      "result": "pass"
+    },
+    {
+      "probe": "record reference: root-relative",
+      "result": "pass"
+    },
+    {
+      "probe": "record reference: file-relative",
+      "result": "pass"
+    },
+    {
+      "probe": "record reference: reference",
+      "result": "pass"
+    },
+    {
+      "probe": "record reference: quoted",
+      "result": "pass"
+    },
+    {
+      "probe": "whole-path and basename collisions",
+      "result": "pass"
+    },
+    {
+      "probe": "release boundary, retained duplicate, moved identity and unavailable window",
+      "result": "pass"
+    },
+    {
+      "probe": "stable pagination and nested working directory",
+      "result": "pass",
+      "rows": 161
+    }
+  ],
+  "corpus": {
+    "kinds": {
+      "standing": 339,
+      "record": 5246,
+      "generated": 15
+    },
+    "recordsNamed": [],
+    "unboundCount": 27,
+    "censusWindow": {
+      "releases": 5,
+      "since": "2026-11-01T22:28:01.000Z",
+      "after": "v0.107.0",
+      "tags": [
+        "v0.111.1",
+        "v0.111.0",
+        "v0.110.0",
+        "v0.109.0",
+        "v0.108.0"
+      ]
+    },
+    "censusJournals": {
+      "directories": 8,
+      "files": 282,
+      "inWindow": 26,
+      "observed": 13,
+      "unobserved": 13,
+      "unreadable": 0
+    },
+    "censusDurationMs": 356,
+    "movedRecordsUnchanged": 53,
+    "otherRemovedPaths": [
+      "docs/control/doc-ceilings.json"
+    ],
+    "unchangedExternalDependencies": 26,
+    "roleHashesMatched": 14,
+    "coldStartMeasurementsMatched": 14
+  },
+  "complete": {
+    "checkId": "npm test",
+    "recordedAt": "2026-11-03T15:37:45.532Z",
+    "codeIdentity": "5813fed9602dd97c047875cd8441271c35b8ce2ca7a0864f10a32268d63ede2f",
+    "treeHash": "374d01e4f87f72c63e7d92cded36157573f91595",
+    "exitCode": 0,
+    "requiredSuites": 45,
+    "passedCases": 45,
+    "gateSelection": "review",
+    "freshTasksRecorded": 119,
+    "reviewSelectionCovered": 45,
+    "plainSelectionCovered": 37,
+    "durationMs": 3088949,
+    "evidenceRef": "host-gate:5813fed9602dd97c047875cd8441271c35b8ce2ca7a0864f10a32268d63ede2f:npm test"
+  }
+}

@@ -32,6 +32,9 @@ import {
 import {
   buildAttestation,
   checkEntropyReceipts,
+  deliverRoutedPackets,
+  deliveredPackets,
+  filedPacketBytes,
   costFrom,
   controlLog,
   currentDispatch,
@@ -1065,6 +1068,285 @@ export async function entropyFixtures() {
       assert.equal(gate.status, "ok");
       assert.equal(gate.dispositions, 2);
       assert.equal(gate.packets, 1);
+
+      // Routing the filed packet to its carrying order writes deliveredBy;
+      // the filing hash still judges the packet as filed (WO-238).
+      const packetFile = join(
+        repo,
+        "docs/proposals/fixture-suggestion/packet.json",
+      );
+      const filedBytes = readFileSync(packetFile, "utf8");
+      await assert.rejects(
+        entropy(
+          ["dispose", "REVIEW-001", "fixture-suggestion", "route", "No order."],
+          repo,
+        ),
+        /--order WO-NNN/u,
+      );
+      await assert.rejects(
+        entropy(
+          [
+            "dispose",
+            "REVIEW-001",
+            "ER-F02",
+            "route",
+            "A finding.",
+            "--order",
+            "WO-901",
+          ],
+          repo,
+        ),
+        /only a proposal packet is routed to an order/u,
+      );
+      const routed = await entropy(
+        [
+          "dispose",
+          "REVIEW-001",
+          "fixture-suggestion",
+          "route",
+          "The order that carries it.",
+          "--order",
+          "WO-901",
+        ],
+        repo,
+      );
+      assert.deepEqual(routed.routed, {
+        path: "docs/proposals/fixture-suggestion/packet.json",
+        workOrderId: "WO-901",
+      });
+      const routedPacket = JSON.parse(readFileSync(packetFile, "utf8"));
+      assert.equal(routedPacket.deliveredBy.workOrderId, "WO-901");
+      assert.equal(routedPacket.deliveredBy.release, null);
+      assert.equal(
+        filedPacketBytes(readFileSync(packetFile, "utf8")),
+        filedBytes,
+      );
+      assert.equal(checkEntropyReceipts(repo).status, "ok");
+      // Release preparation of the carrying order names the release.
+      assert.deepEqual(deliverRoutedPackets(repo, "WO-902", "v0.9.0"), []);
+      assert.deepEqual(deliverRoutedPackets(repo, "WO-901", "v0.9.0"), [
+        "docs/proposals/fixture-suggestion/packet.json",
+      ]);
+      assert.equal(
+        JSON.parse(readFileSync(packetFile, "utf8")).deliveredBy.release,
+        "v0.9.0",
+      );
+      assert.deepEqual(deliveredPackets(repo, "WO-901"), [
+        {
+          path: "docs/proposals/fixture-suggestion/packet.json",
+          release: "v0.9.0",
+          receiptId: "REVIEW-001",
+          suggestionId: "fixture-suggestion",
+        },
+      ]);
+      assert.equal(checkEntropyReceipts(repo).status, "ok");
+      await assert.rejects(
+        entropy(
+          [
+            "dispose",
+            "REVIEW-001",
+            "fixture-suggestion",
+            "route",
+            "Again.",
+            "--order",
+            "WO-902",
+          ],
+          repo,
+        ),
+        /a shipped packet is not routed again/u,
+      );
+      // A packet another review filed under the same identifier is that
+      // review's: routing this review's packet never rewrites it.
+      const routedBytes = readFileSync(packetFile, "utf8");
+      writeFileSync(
+        packetFile,
+        routedBytes.replace(
+          '"sourceReceiptId": "REVIEW-001"',
+          '"sourceReceiptId": "REVIEW-009"',
+        ),
+      );
+      await assert.rejects(
+        entropy(
+          [
+            "dispose",
+            "REVIEW-001",
+            "fixture-suggestion",
+            "route",
+            "Other review.",
+            "--order",
+            "WO-903",
+          ],
+          repo,
+        ),
+        /holds the packet REVIEW-009 filed under fixture-suggestion, not this review's/u,
+      );
+      writeFileSync(packetFile, routedBytes);
+      // Release preparation judges every routed packet before it writes one.
+      const { routedPacketEdits, publishedRelease } =
+        await import("./lib/proposal-delivery.mjs");
+      const edits = routedPacketEdits(repo, "WO-901", "v0.9.1");
+      assert.deepEqual(
+        edits.map((edit) => edit.relative),
+        ["docs/proposals/fixture-suggestion/packet.json"],
+      );
+      assert.equal(
+        readFileSync(packetFile, "utf8"),
+        routedBytes,
+        "nothing written yet",
+      );
+      assert.equal(JSON.parse(edits[0].after).deliveredBy.release, "v0.9.1");
+      // An order that already published its release names it at routing.
+      runGit(
+        repo,
+        [
+          "-c",
+          "user.name=Fixture",
+          "-c",
+          "user.email=fixture@example.invalid",
+          "tag",
+          "-a",
+          "v0.4.0",
+          "-m",
+          `DotLn v0.4.0\n\nDOTLN-MANIFEST-BEGIN\n${JSON.stringify({ workOrder: { id: "WO-777" } })}\nDOTLN-MANIFEST-END\n`,
+        ],
+        fixtureGitOptions,
+      );
+      assert.equal(publishedRelease(repo, "WO-777"), "v0.4.0");
+      assert.equal(publishedRelease(repo, "WO-778"), null);
+      // A packet routed after its order's last release preparation names no
+      // release; the close's delivery rule refuses it and names the route
+      // command. Once the order's merge brings its passed final review into
+      // this checkout, routing it again names the version that preparation
+      // wrote in the order's heading, the release its close publishes.
+      const { carryingRelease, deliveryRules } =
+        await import("./lib/proposal-delivery.mjs");
+      const late = JSON.parse(routedBytes);
+      writeFileSync(
+        packetFile,
+        prettyJson({
+          ...late,
+          deliveredBy: {
+            ...late.deliveredBy,
+            workOrderId: "WO-904",
+            release: null,
+          },
+        }),
+      );
+      assert.equal(carryingRelease(repo, "WO-904"), null);
+      const refused = deliveryRules(repo, "WO-904", "v0.9.4");
+      assert.deepEqual(
+        refused.map((rule) => rule.pass),
+        [false],
+      );
+      assert.ok(
+        refused[0].line.startsWith(
+          "FAIL proposal-delivery docs/proposals/fixture-suggestion/packet.json: observed release none for WO-904; expected v0.9.4, the release this close publishes.",
+        ),
+      );
+      assert.ok(
+        refused[0].line.includes(
+          "npm run entropy -- dispose REVIEW-001 fixture-suggestion route 'Delivered by WO-904' --order WO-904, which writes v0.9.4",
+        ),
+      );
+      write(
+        repo,
+        "docs/work-orders/WO-904-fixture.md",
+        "# WO-904 — fixture order (v0.9.4)\n",
+      );
+      write(
+        repo,
+        "docs/control/resume.jsonl",
+        [
+          {
+            type: "WorkOrderActivated",
+            workOrderPath: "docs/work-orders/WO-904-fixture.md",
+          },
+          { type: "ImplementationReady" },
+          {
+            type: "VerificationRequested",
+            verificationId: "VER-001",
+            reportPath: "docs/verifications/WO-904/VER-001.md",
+          },
+          {
+            type: "VerificationCompleted",
+            verificationId: "VER-001",
+            reportPath: "docs/verifications/WO-904/VER-001.md",
+            verdict: "pass",
+          },
+          {
+            type: "FinalReviewRequested",
+            finalReviewId: "FINAL-001",
+            reportPath: "docs/final-reviews/WO-904/FINAL-001.md",
+          },
+          {
+            type: "FinalReviewCompleted",
+            finalReviewId: "FINAL-001",
+            reportPath: "docs/final-reviews/WO-904/FINAL-001.md",
+            verdict: "pass",
+          },
+        ]
+          .map((event) =>
+            JSON.stringify({
+              schemaVersion: 1,
+              workOrderId: "WO-904",
+              ...event,
+            }),
+          )
+          .join("\n") + "\n",
+      );
+      assert.equal(carryingRelease(repo, "WO-904"), "v0.9.4");
+      const routeAgain = [
+        "dispose",
+        "REVIEW-001",
+        "fixture-suggestion",
+        "route",
+        "Delivered by WO-904",
+        "--order",
+        "WO-904",
+      ];
+      // A route whose control events cannot be appended leaves the packet
+      // and the log as they were, so the same route runs again.
+      const unrouted = readFileSync(packetFile, "utf8");
+      const log = join(repo, "docs/control/entropy-reducer.jsonl");
+      const logged = readFileSync(log, "utf8");
+      chmodSync(log, 0o444);
+      try {
+        await assert.rejects(entropy(routeAgain, repo));
+      } finally {
+        chmodSync(log, 0o644);
+      }
+      assert.equal(readFileSync(packetFile, "utf8"), unrouted);
+      assert.equal(readFileSync(log, "utf8"), logged);
+      await entropy(routeAgain, repo);
+      assert.equal(
+        JSON.parse(readFileSync(packetFile, "utf8")).deliveredBy.release,
+        "v0.9.4",
+      );
+      assert.equal(
+        filedPacketBytes(readFileSync(packetFile, "utf8")),
+        filedBytes,
+      );
+      assert.deepEqual(
+        deliveryRules(repo, "WO-904", "v0.9.4").map((rule) => rule.pass),
+        [true],
+      );
+      assert.deepEqual(deliveryRules(repo, "WO-905", "v0.9.5"), []);
+      assert.equal(checkEntropyReceipts(repo).status, "ok");
+      writeFileSync(packetFile, routedBytes);
+
+      // A hand edit of the filed bytes still fails the chain.
+      writeFileSync(
+        packetFile,
+        readFileSync(packetFile, "utf8").replace(
+          "Synthetic fixture opportunity.",
+          "Edited.",
+        ),
+      );
+      assert.throws(
+        () => checkEntropyReceipts(repo),
+        /no longer matches the hash its event bound/u,
+      );
+      writeFileSync(packetFile, filedBytes);
     });
 
     await test("WO-175 fake review/refutation receive the requested temporary directory, inventory it and remove read-only trees", async () => {
@@ -2345,7 +2627,7 @@ export async function entropyFixtures() {
       );
       assert.equal(begun.route, "background");
       assert.equal(begun.prompt.concern, "accumulated startup context");
-      assert.equal(begun.prompt.lensBriefs.length, 4);
+      assert.equal(begun.prompt.lensBriefs.length, 5);
       assert.match(
         begun.prompt.residue,
         /Entropy Reducer — generated review residue/u,
@@ -2638,3 +2920,110 @@ if (isMainModule(import.meta.url)) {
     process.exitCode = 1;
   }
 }
+
+test("WO-238 the reducer compiles the documents-and-readers lens under every admitted route, and a fixture episode finds the standing document that carries a dated history", async (t) => {
+  const {
+    ENTROPY_REDUCER_ROUTES,
+    compileReviewerWorkOrder,
+    validateReviewerOutput,
+  } = await import("../packages/skeleton/dist/src/loadouts/entropy-reducer.js");
+  const { documentKinds } = await import("./lib/document-kinds.mjs");
+  const options = {
+    repo: "fixture",
+    baseCommit: "0".repeat(40),
+    episodeId: "episode-documents",
+    dispatchedAt: 0,
+    episodeEndsAt: 86_400_000,
+  };
+  for (const route of ENTROPY_REDUCER_ROUTES) {
+    const compiled = compileReviewerWorkOrder({ ...options, route });
+    const lens = compiled.lensBriefs.find(
+      (brief) => brief.lensId === "documents-and-readers",
+    );
+    assert.ok(lens, route);
+    assert.equal(compiled.lensBriefs.length, 5, route);
+    assert.ok(compiled.residue.includes("- [ ] documents-and-readers"), route);
+    for (const question of lens.questions)
+      assert.ok(compiled.residue.includes(question), route);
+  }
+  // A fixture repository: one standing page states what is so, another
+  // narrates what happened on dated days, and a record narrates as records do.
+  const root = createFixtureRoot(join(tmpdir(), "dotln-documents-lens-"));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  runGit(root, ["init", "-q"], fixtureGitOptions);
+  excludeFixtureOwnership(root);
+  const write = (path, text) => {
+    mkdirSync(dirname(join(root, path)), { recursive: true });
+    writeFileSync(join(root, path), text);
+  };
+  write("docs/product/clean.md", "# Clean\n\nThe gate runs every suite.\n");
+  write(
+    "docs/product/guide.md",
+    "# Guide\n\nThe gate runs every suite.\n\nOn 2030-01-02 the pass moved the gate to the runner; on 2030-01-03 a later pass moved it back and recorded why.\n",
+  );
+  write(
+    "docs/evidence/WO-001/README.md",
+    "# Evidence\n\nOn 2030-01-02 the executor measured the gate.\n",
+  );
+  const compiled = compileReviewerWorkOrder({ ...options, route: "fake" });
+  const lens = compiled.lensBriefs.find(
+    (brief) => brief.lensId === "documents-and-readers",
+  );
+  // A deterministic stand-in for the reviewer's judgment: it reads the lens's
+  // files, keeps standing documents and reports a paragraph that narrates
+  // dated events. The live reviewer judges the same question in prose.
+  const review = (request) => {
+    const brief = request.lensBriefs.find(
+      (row) => row.lensId === "documents-and-readers",
+    );
+    const kinds = documentKinds(root);
+    const findings = [...kinds]
+      .filter(
+        ([file, kind]) =>
+          kind.kind === "standing" &&
+          brief.files.some((scope) =>
+            scope.endsWith("/") ? file.startsWith(scope) : file === scope,
+          ) &&
+          readFileSync(join(root, file), "utf8")
+            .split(/\n\s*\n/u)
+            .some((paragraph) => /\b\d{4}-\d{2}-\d{2}\b/u.test(paragraph)),
+      )
+      .map(([file], index) => ({
+        findingId: `ER-D0${index + 1}`,
+        criterion:
+          "documents-and-readers: a standing document carries a dated history instead of the current state",
+        severity: "minor",
+        evidenceLabel: "by inspection",
+        observed: `${file} narrates what happened on dated days.`,
+        expected: `${file} states what is so and links the record of what happened.`,
+        reproduction: { kind: "inspection", steps: [`Read ${file}.`] },
+        evidenceRefs: [file],
+        surface: file,
+        altitude: 3,
+        standardization: { kind: "one-off" },
+      }));
+    return { ...cannedReviewerOutput(request), findings, proposalPackets: [] };
+  };
+  const request = {
+    kind: "entropy-review",
+    command: { commandId: "documents-lens" },
+    workOrder: compiled.workOrder,
+    episodeId: options.episodeId,
+    lensBriefs: compiled.lensBriefs,
+  };
+  const output = validateReviewerOutput(
+    await new FakeEntropyTransport(review).dispatch(request, () => 0).completed,
+    {
+      workOrderId: compiled.workOrder.workOrderId,
+      episodeId: options.episodeId,
+    },
+  );
+  assert.ok(lens.files.includes("docs/product/"));
+  assert.deepEqual(
+    output.findings.map((finding) => [
+      finding.criterion.split(":")[0],
+      finding.surface,
+    ]),
+    [["documents-and-readers", "docs/product/guide.md"]],
+  );
+});

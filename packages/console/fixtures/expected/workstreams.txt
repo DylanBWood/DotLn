@@ -58,7 +58,6 @@ WO-301 [indexed-order-fa175d4c85ec07c8]
   Model: fixture [evidence-1]
   Effort: executor xhigh+; verifier xhigh+; reviewer any. [evidence-1]
   Track: unknown [evidence-1]
-  Cost: unavailable [evidence-1]
   Authority: docs/work-orders/WO-301-fixture.md [evidence-1]
   -> Evidence: WO-301-fixture.md [evidence-2]
 
@@ -75,7 +74,6 @@ WO-302 [indexed-order-fa17604c85ec0ce1]
   Model: fixture [evidence-3]
   Effort: executor xhigh+; verifier xhigh+; reviewer any. [evidence-3]
   Track: unknown [evidence-3]
-  Cost: unavailable [evidence-3]
   Authority: docs/work-orders/WO-302-fixture.md [evidence-3]
   -> Evidence: WO-302-fixture.md [evidence-4]
 
@@ -92,7 +90,6 @@ WO-303 [indexed-order-fa175f4c85ec0b2e]
   Model: fixture [evidence-5]
   Effort: executor xhigh+; verifier xhigh+; reviewer any. [evidence-5]
   Track: unknown [evidence-5]
-  Cost: unavailable [evidence-5]
   Authority: docs/work-orders/WO-303-fixture.md [evidence-5]
   -> Evidence: WO-303-fixture.md [evidence-6]
 
@@ -196,11 +193,11 @@ EVIDENCE
 [evidence-2] docs/work-orders/README.md
   link:WO-301-fixture.md
 [evidence-3] docs/work-orders/README.md
-  line:55 (WO-302)
+  line:54 (WO-302)
 [evidence-4] docs/work-orders/README.md
   link:WO-302-fixture.md
 [evidence-5] docs/work-orders/README.md
-  line:73 (WO-303)
+  line:71 (WO-303)
 [evidence-6] docs/work-orders/README.md
   link:WO-303-fixture.md
 [evidence-7] docs/work-orders/README.md

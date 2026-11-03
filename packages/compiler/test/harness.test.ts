@@ -689,9 +689,11 @@ test("WO-132 both harness roles receive identical duties and the shared instruct
       .contents,
   );
   const merged = mergeHarnessFragments([availableBundle, noHooksBundle]);
+  // One residue line per profile names each reason once, after the ids that
+  // share it.
   assert.match(
     merged,
-    /fixture-codex: fixture-attribution: No project hook fired/,
+    /^fixture-codex: [^\n]*\bfixture-attribution(?:, [a-z-]+)*: No project hook fired/mu,
   );
   assert.match(merged, /one writer per worktree on any branch, including main/);
   assert.match(merged, /success record during a live gate/);
@@ -850,4 +852,47 @@ test("WO-049 target lowering is explicit, omits importRoot from metadata and emi
       }),
     /PreToolUse only/,
   );
+});
+
+test("the shared instruction carries one residue line per profile, naming once the rules that share a reason", () => {
+  const bundle = (
+    profileId: string,
+    items: readonly { originId: string; reason: string }[],
+  ) =>
+    ({
+      manifest: { profile: { profileId } },
+      residue: {
+        items: items.map((item) => ({ ...item, missingCapabilities: [] })),
+      },
+    }) as unknown as Parameters<typeof mergeHarnessFragments>[0][number];
+  const shared =
+    "No project hook fired; the role skill carries the remaining duty.";
+  const merged = mergeHarnessFragments([
+    bundle("fixture-claude", [
+      { originId: "clean-room", reason: "Provenance needs judgment." },
+    ]),
+    bundle("fixture-codex", [
+      { originId: "no-attribution", reason: shared },
+      { originId: "read-your-own-output", reason: shared },
+      { originId: "permissions", reason: "Pre-effect checks unavailable." },
+      { originId: "clean-room", reason: "Provenance needs judgment." },
+    ]),
+    bundle("fixture-quiet", []),
+  ]);
+  const lines = merged.split("\n");
+  assert.deepEqual(
+    lines.filter((line) => line.startsWith("fixture-codex: ")),
+    [
+      `fixture-codex: no-attribution, read-your-own-output: ${shared} permissions: Pre-effect checks unavailable. clean-room: Provenance needs judgment.`,
+    ],
+  );
+  assert.deepEqual(
+    lines.filter((line) => line.startsWith("fixture-claude: ")),
+    ["fixture-claude: clean-room: Provenance needs judgment."],
+  );
+  assert.equal(
+    lines.filter((line) => line.startsWith("fixture-quiet")).length,
+    0,
+  );
+  assert.equal(merged.split(shared).length - 1, 1);
 });

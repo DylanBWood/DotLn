@@ -232,16 +232,6 @@
                   ]
                 },
                 {
-                  "key": "Cost",
-                  "label": "Cost",
-                  "status": "known",
-                  "value": "unavailable",
-                  "explanation": null,
-                  "evidence": [
-                    "evidence-1"
-                  ]
-                },
-                {
                   "key": "Authority",
                   "label": "Authority",
                   "status": "known",
@@ -384,16 +374,6 @@
                   ]
                 },
                 {
-                  "key": "Cost",
-                  "label": "Cost",
-                  "status": "known",
-                  "value": "unavailable",
-                  "explanation": null,
-                  "evidence": [
-                    "evidence-3"
-                  ]
-                },
-                {
                   "key": "Authority",
                   "label": "Authority",
                   "status": "known",
@@ -530,16 +510,6 @@
                   "label": "Track",
                   "status": "known",
                   "value": "unknown",
-                  "explanation": null,
-                  "evidence": [
-                    "evidence-5"
-                  ]
-                },
-                {
-                  "key": "Cost",
-                  "label": "Cost",
-                  "status": "known",
-                  "value": "unavailable",
                   "explanation": null,
                   "evidence": [
                     "evidence-5"
@@ -1023,7 +993,7 @@
     {
       "id": "evidence-3",
       "source": "docs/work-orders/README.md",
-      "record": "line:55 (WO-302)"
+      "record": "line:54 (WO-302)"
     },
     {
       "id": "evidence-4",
@@ -1033,7 +1003,7 @@
     {
       "id": "evidence-5",
       "source": "docs/work-orders/README.md",
-      "record": "line:73 (WO-303)"
+      "record": "line:71 (WO-303)"
     },
     {
       "id": "evidence-6",

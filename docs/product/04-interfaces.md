@@ -600,7 +600,7 @@ disposable projections.
 **DotLn-Angular is one app with sub-apps, and the sandbox where ideas live
 first** (operator direction, 2026-10-24; planning dispatch and answers,
 ignored capture SHA-256 recorded in [the 2026-10-24 planning
-document](../planning/intake-mining-run-routing-2026-10-24.md) §1),
+document](../planning/passes/intake-mining-run-routing-2026-10-24.md) §1),
 synthesized: the repository is an Nx monorepo and ships a single app whose
 menu opens sub-apps, a 3D scene for authoring game AI with twenty soldiers
 and a toolbox of behaviours, a detailed view of DotLn's machinery, and

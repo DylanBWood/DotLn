@@ -510,7 +510,7 @@ experiment gets its vehicle).
 
 ## Release boundary
 
-The hand-kept release notes that stood here moved byte for byte to [the release-history notes](../planning/release-history-notes.md) (WO-086); the annotated tags are the record, and the table below is generated from them.
+The hand-kept release notes that stood here moved byte for byte to [the release-history notes](../planning/passes/release-history-notes.md) (WO-086); the annotated tags are the record, and the table below is generated from them.
 
 **Current contract (WO-132, 2026-09-15).** Lifecycle completions record their
 reports without requiring a product gate. The final reviewer runs

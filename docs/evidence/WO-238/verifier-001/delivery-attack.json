@@ -1,0 +1,22 @@
+{
+  "method": "Evaluate the exact post-publication delivery handler extracted from scripts/release.mjs; substitute only its import URL. The preceding publication is represented by record.publication.tag. No live publication or full close was run.",
+  "handlerSha256": "57a3c03a5e06b2b0cae85c1e0be008d327d99676cb3c474bfca5744918b1c679",
+  "preparationCanFillRelease": "v0.9.0",
+  "publishedTag": "v0.9.0",
+  "packetUnchanged": true,
+  "deliveredBy": {
+    "workOrderId": "WO-901",
+    "release": null,
+    "recordedAt": "2030-01-02T00:00:00.000Z"
+  },
+  "recordedDelivery": [
+    {
+      "path": "docs/proposals/late-route/packet.json",
+      "release": null
+    }
+  ],
+  "advisories": [
+    "docs/proposals/late-route/packet.json names release none for WO-901, which published v0.9.0: it was routed after the order's release preparation; route it again from its review with npm run entropy -- dispose <REVIEW-NNN> <packet-id> route '<reason>' --order WO-901, which names the published release"
+  ],
+  "expected": "A carrying order must not finish closing with its packet release still null."
+}

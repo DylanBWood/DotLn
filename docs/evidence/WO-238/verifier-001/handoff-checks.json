@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-238",
+  "verification": "VER-001",
+  "documentGate": {
+    "state": "passed",
+    "evidenceRefs": [
+      "host-gate:1adddfb582fa9f06a2e1ade12fef4497e5c4ad53e3b14dbcd3c1865d78e70385:npm run test:docs"
+    ],
+    "checkId": "npm run test:docs",
+    "treeHash": "1d9bcfc003f71dde989e26416dae03099ce9b1a2",
+    "codeIdentity": "1adddfb582fa9f06a2e1ade12fef4497e5c4ad53e3b14dbcd3c1865d78e70385",
+    "durationMs": 103088,
+    "evidenceRef": "host-gate:1adddfb582fa9f06a2e1ade12fef4497e5c4ad53e3b14dbcd3c1865d78e70385:npm run test:docs",
+    "recordedAt": "2026-11-03T06:03:18.408Z",
+    "executed": true,
+    "exitCode": 0,
+    "documentTreeHash": "5eabbb76a81d893b2926122eb0792dce2770ca15",
+    "documentTreeExcludes": "docs/evidence/WO-238",
+    "passed": 27,
+    "failed": 0,
+    "freshTasks": 27
+  },
+  "publicationCheck": {
+    "state": "passed",
+    "exitCode": 0,
+    "recordedAt": "2026-11-03T05:56:38.396Z",
+    "headingIndex": {
+      "matched": 256,
+      "total": 256
+    },
+    "editions": {
+      "everyday-ai-user-toc.md": 29,
+      "software-engineer-toc.md": 45
+    }
+  },
+  "diffCheck": {
+    "state": "passed",
+    "exitCode": 0
+  },
+  "productGate": {
+    "evidenceRefs": [
+      "host-gate:1adddfb582fa9f06a2e1ade12fef4497e5c4ad53e3b14dbcd3c1865d78e70385:npm test"
+    ],
+    "checkId": "npm test",
+    "treeHash": "afba1d9b0fd39f4bf11a2c19c2d0178ebd435437",
+    "codeIdentity": "1adddfb582fa9f06a2e1ade12fef4497e5c4ad53e3b14dbcd3c1865d78e70385",
+    "durationMs": 2363050,
+    "evidenceRef": "host-gate:1adddfb582fa9f06a2e1ade12fef4497e5c4ad53e3b14dbcd3c1865d78e70385:npm test",
+    "recordedAt": "2026-11-03T03:36:31.912Z",
+    "executed": true,
+    "exitCode": 0
+  },
+  "advisories": [
+    "Handoff failure: 2 document-gate runs judged 2 trees at this code identity after the complete run recorded 2026-11-03T03:36:31.912Z; records written into the order's own evidence after a passing document gate keep its row standing, so only a change outside that directory needs another run."
+  ],
+  "reportSha256": "4aef9cee68ffdb7882d643b4498c1035a65e99e93534996ce283bd9bff532ef9",
+  "checkedAt": "2026-11-03T06:04:09.043Z"
+}

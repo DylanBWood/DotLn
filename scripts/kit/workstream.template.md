@@ -2,9 +2,12 @@
 
 One document per outcome, `docs/workstreams/WS-NNN-<slug>.md`. A member order
 declares `**Workstream:** WS-NNN` in its leading metadata. The document
-carries the outcome, the acceptance contract, the member orders (each naming
-its repository and base), the dependency and compatibility plan and the
-delivery states; the JSON block between the markers mirrors the membership.
+carries the outcome, the acceptance contract, the rules every member follows,
+the member orders (each naming its repository and base), the dependency and
+compatibility plan and the delivery states; the JSON block between the markers
+mirrors the membership. It is a standing document: its rules section holds the
+rules as they stand, each linking the decision that set it, and the member
+orders and their decisions hold the history of how each rule arrived.
 The generated work-order index groups members and records repository, base,
 phase, verdict, integration, staleness and the observed target commit in its
 `dotln-workstreams` JSON line. The board reads that same record. Refresh it
@@ -45,6 +48,11 @@ the two-page index's one-card-per-order contract.
 **Outcome:** what is true when this workstream is delivered.
 **Acceptance contract:** how the outcome is judged, and by whom.
 **Delivery state:** proposed | active | delivered | abandoned
+
+## Rules
+
+Each rule every member follows, as the rule, with a link to the decision that
+set it. The history of how a rule arrived stays in that decision.
 
 ## Member orders
 

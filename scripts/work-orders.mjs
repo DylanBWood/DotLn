@@ -677,7 +677,6 @@ const renderCard = (row) => {
     `- Model: ${cell(row.model)}`,
     `- Effort: ${cell(row.effort)}`,
     `- Track: ${cell(row.track ?? "unknown")}`,
-    `- Cost: ${cell(row.cost)}`,
     ...(["WO-112", "WO-118"].includes(row.id)
       ? [
           "- Delivery: target publication requires `worktree publish WO-NNN --target <request> --require-deliverable-ready` (WO-182); record every absent item before retrying.",

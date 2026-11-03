@@ -38,6 +38,11 @@ Work each item yourself, in order, before synthesis. Preserve its scope, output 
   Questions: Which repeated operator or contributor cost should be standardized?; Where is accidental complexity exported to a later actor?.
   Output shape: criterion; severity; observed; expected; reproduction; evidenceRefs; surface. Word budget: 650. No-fix: true.
 
+- [ ] documents-and-readers
+  Files: docs/product/; docs/planning/; docs/workstreams/; docs/repositories/; README.md; CLAUDE.md.
+  Questions: Which standing document carries a dated history of what happened instead of the current state its reader needs?; Which document has no reader: no entry point names it, no standing page a reader reaches links to it and no session reads it?; Which record does a session read at start, through an entry point or a read list that should name a standing document?.
+  Output shape: criterion; severity; observed; expected; reproduction; evidenceRefs; surface. Word budget: 650. No-fix: true.
+
 ## Masks and failure guards
 
 - **Whiteface:** planning judgment and rule keeping. Guard against over-centralization: Treat authority as a boundary, never as proof that a judgment is correct.
@@ -57,7 +62,7 @@ Work each item yourself, in order, before synthesis. Preserve its scope, output 
 
 <!-- support:entropy-reducer.lens-checklist -->
 
-**Lens Checklist (`entropy-reducer.lens-checklist@1`).** Supports observe; requires capabilities none; conflicts with none. Adds work at most four read-only lenses serially with fixed briefs and word budgets; modifies none. Authority: none. Evidence: none. Emissions: work-order:lens-checklist.constraint@fnv1a64:42848932b687284f; evidence-schema:lens-checklist.lens-brief-schema@fnv1a64:9ace23af59804b2e; prompt-fragment:lens-checklist.residue@fnv1a64:a3a79c4522930c3c (Work the lens briefs as your own checklist, serially, and synthesize their evidence.). Claims: none. Cost: mechanism work-order, 38 prompt tokens, 4 lens-checklist-items-maximum, 0 extra episodes, resource multiplier 1. Determinism: preserved; composition: commutative. Inspection: restrict At most four no-fix, read-only lens checklist items.
+**Lens Checklist (`entropy-reducer.lens-checklist@2`).** Supports observe; requires capabilities none; conflicts with none. Adds work at most five read-only lenses serially with fixed briefs and word budgets; modifies none. Authority: none. Evidence: none. Emissions: work-order:lens-checklist.constraint@fnv1a64:c083e974b2eddb17; evidence-schema:lens-checklist.lens-brief-schema@fnv1a64:9ace23af59804b2e; prompt-fragment:lens-checklist.residue@fnv1a64:a3a79c4522930c3c (Work the lens briefs as your own checklist, serially, and synthesize their evidence.). Claims: none. Cost: mechanism work-order, 38 prompt tokens, 5 lens-checklist-items-maximum, 0 extra episodes, resource multiplier 1. Determinism: preserved; composition: commutative. Inspection: restrict At most five no-fix, read-only lens checklist items.
 
 <!-- support:entropy-reducer.mutation-drill -->
 

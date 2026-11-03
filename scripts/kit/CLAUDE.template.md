@@ -4,8 +4,8 @@ Every session reads this contract; `AGENTS.md` symlinks here. The instance owns
 the hand-written floor: edit it here; kit updates change it only through
 explicitly opted-in instance actions.
 
-Export generates the kit provenance block below; `node scripts/harness.mjs emit`
-generates the harness block, which `harness check` verifies.
+Export writes the kit block below; `node scripts/harness.mjs emit` writes the
+harness block.
 
 ## Clean Room — locked floor
 
@@ -36,6 +36,8 @@ Whole `resume:` phrases select skills through canonical status
 Expand skill read/review selectors from order/report paths. Read cited sections;
 name new inputs. A session that cannot load skills runs the
 `npm run resume -- <action>` commands itself.
+
+Documents are standing, record or generated.
 
 Always admit `analysis:` (pause for diagnosis or direction) and
 `operator override:` (suspend gates for authorized recovery), despite repo or

@@ -113,6 +113,7 @@ import {
 } from "./lib/release-close-handoff.mjs";
 import { CONTROL_LOG_SCHEMA_VERSION, statusProjection } from "./resume.mjs";
 import { unrepairedRetraction } from "./lib/control.mjs";
+import { deliveredPackets, deliveryRules } from "./lib/proposal-delivery.mjs";
 import { resolveOrderWorktrees } from "./lib/order-worktrees.mjs";
 import {
   readControl,
@@ -1179,6 +1180,12 @@ const checkSurfaces = (root, options = {}) => {
     ...workspacePinRules(root, revision),
     githubBodyRule(root, state, revision),
     ...licenseSurfaceRules(root, revision),
+    // Every proposal packet routed to the order names the release that
+    // carries it before anything publishes, so a close never succeeds with a
+    // packet routed after the order's last preparation still naming none.
+    ...(authority.version
+      ? deliveryRules(root, authority.id, authority.version, revision)
+      : []),
   ];
   if (!revision) {
     const untracked = runGitPathList(root, [
@@ -4324,6 +4331,19 @@ const main = async () => {
           const result = await withReleaseStep(record, "publication", () =>
             close(root, workOrderId, parsed, record, context),
           );
+          // The packets this order delivered, as the published commit carries
+          // them. The surface check refused the close before publication
+          // unless each names the release this close publishes, so the record
+          // states the delivery and judges nothing.
+          try {
+            record.deliveredPackets = deliveredPackets(
+              root,
+              workOrderId,
+              sourceRevision,
+            ).map(({ path, release }) => ({ path, release }));
+          } catch (error) {
+            recordAdvisory(error);
+          }
           // Releasing the writer runs the session-end prune, so its time
           // belongs to the prune row.
           if (!process.exitCode && record.cleanup.outcome !== "blocked")
@@ -4516,7 +4536,23 @@ const main = async () => {
     // Ancillary filesystem outputs must succeed before the target changes.
     // A failed output then leaves the original collision inputs for retry;
     // the plan's own writer restores any partial core edit (WO-086).
-    const written = [...applyReleasePreparation(plan), ...ancillary];
+    // A proposal packet routed to this order learns the release that carries
+    // it here, in the order's own change: release close publishes the tag
+    // and leaves main's tracked files as the merge left them. Its edits are
+    // judged before any write and restored with the rest on failure.
+    const { routedPacketEdits } = await import("./lib/proposal-delivery.mjs");
+    const packetEdits = routedPacketEdits(
+      toolRoot,
+      state.workOrderId,
+      plan.target,
+    ).map(({ path, before, after }) => ({ path, before, after }));
+    const written = [
+      ...applyReleasePreparation({
+        ...plan,
+        edits: [...plan.edits, ...packetEdits],
+      }),
+      ...ancillary,
+    ];
     const outcome =
       plan.target === plan.previous
         ? `${state.workOrderId} target ${plan.target} remains current.${plan.edits.length ? " The README release block is rewritten as its generated line." : ""}`

@@ -74,7 +74,7 @@ import {
 
 const toolRoot = findLaunchpad();
 const usage =
-  "plan subject | check | target-publish <repository-id> --base <commit> --from <directory> --branch docs/<slug> --title <title> --body-file <path> | conditions [--slow] | failures […] | refute [--direct] [--scope pass|full] | refute --transport claude-cli-print|codex-cli-exec|fake [--slug <label>] [--model <model>] [--effort <level>] [--dispositions <file>] [--evidence-only] | dispose <receipt-id> <hold-id> <reason> | amend-order <WO-NNN> <WO-NNN-DNNN> <operator-authorization reason> | amend-order <WO-NNN> --withdraw <row-ordinal> <reason> | override <receipt-id> <hold-id> <reason> --capture <ignored-intake-file> --capture-hash sha256:<digest> [actor-flags]";
+  "plan subject | check | documents [--cursor <revision>:<row>] | target-publish <repository-id> --base <commit> --from <directory> --branch docs/<slug> --title <title> --body-file <path> | conditions [--slow] | failures […] | refute [--direct] [--scope pass|full] | refute --transport claude-cli-print|codex-cli-exec|fake [--slug <label>] [--model <model>] [--effort <level>] [--dispositions <file>] [--evidence-only] | dispose <receipt-id> <hold-id> <reason> | amend-order <WO-NNN> <WO-NNN-DNNN> <operator-authorization reason> | amend-order <WO-NNN> --withdraw <row-ordinal> <reason> | override <receipt-id> <hold-id> <reason> --capture <ignored-intake-file> --capture-hash sha256:<digest> [actor-flags]";
 const followupsUsage =
   "usage: plan followups [--all] [--cursor <cursor>] | --sync | --show <FUP-id> | --apply <request.json or batch.json> | --touching [<path or WO-NNN>…] [--cursor <cursor>] | --touching --work-order <WO-NNN> [--cursor <cursor>] | --export <file> [--all]";
 const failuresUsage =
@@ -337,6 +337,12 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
       throw new Error(followupsUsage);
     return planningFollowups(root, { all, cursor: flags[1] ?? null });
   }
+  if (command === "documents") {
+    if (rest.length && !(rest.length === 2 && rest[0] === "--cursor"))
+      throw new Error("usage: plan documents [--cursor <revision>:<row>]");
+    const { documentsPage } = await import("./lib/plan-documents.mjs");
+    return documentsPage(root, { cursor: rest[1] ?? null });
+  }
   if (command === "conditions") {
     if (rest.length && !(rest.length === 1 && rest[0] === "--slow"))
       throw new Error("usage: plan conditions [--slow]");
@@ -421,6 +427,16 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
     const { readerScoresAtStart } = await import("./lib/reader-profiles.mjs");
     const readerScores = readerScoresAtStart(root);
     const conditions = await conditionsAtStart(root);
+    // The documents report and the red tags the new pass document carries.
+    const { documentRows, documentsPage, redTagsFor } =
+      await import("./lib/plan-documents.mjs");
+    const { documentReport } = await import("./lib/document-kinds.mjs");
+    const { documentCensus } = await import("./lib/document-census.mjs");
+    const documentInputs = {
+      report: documentReport(root),
+      census: documentCensus(root),
+    };
+    const documents = documentsPage(root, documentInputs);
     // Routine removal of expired temporary roots outside every close's scope
     // happens here, where the full census is already paid for.
     const { temporaryPruneSummary } =
@@ -431,7 +447,12 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
     if (existsSync(join(root, document)))
       throw new Error(`Planning document already exists: ${document}`);
     const destination = join(root, document);
-    const skeleton = planningSkeleton(rest[0], branch.slice(9, 19));
+    const skeleton = planningSkeleton(rest[0], branch.slice(9, 19), {
+      redTags: redTagsFor(root, document, {
+        rows: documentRows(root, documentInputs),
+        report: documentInputs.report,
+      }),
+    });
     mkdirSync(dirname(destination), { recursive: true });
     // Prepare the document before changing branches. Failed creation leaves
     // main selected; a failed switch removes only this invocation's new file.
@@ -456,6 +477,7 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
       failures,
       readerScores,
       conditions,
+      documents,
       followups,
     };
   }

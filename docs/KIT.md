@@ -376,8 +376,7 @@ also writes the pass's planning document with its standard section headings.
 
 Export writes these instance-owned seeds once; ordinary kit updates leave their bytes alone:
 `docs/planning/sequence.md`, `docs/planning/followups.json` (empty schema-1
-register), `docs/control/doc-ceilings.json` (no documents),
-`docs/control/doc-baseline.json` (empty editorial baseline),
+register), `docs/control/doc-baseline.json` (empty editorial baseline),
 `docs/control/budgets.json` (kit defaults, no acceptances), and
 `docs/lineage/idea-ledger.md` (header and status vocabulary only). None is
 manifest-listed. The initial lineage index is seeded; its command regenerates
@@ -398,7 +397,7 @@ operator's word; their control records and instance work are preserved.
 
 A fresh instance has no `docs/product/00-vision.md`,
 `docs/product/13-uifa-roles.md`, `docs/planning/capability-table.md` or
-`docs/planning/critical-path-2026-09-08.md`. The planning subject names absent
+`docs/planning/passes/critical-path-2026-09-08.md`. The planning subject names absent
 inputs as unavailable; it invents no product goals. Declaring one makes its
 normal format validation apply. The document check judges instance-owned
 product documents and links; carried operating documents retain their
@@ -691,7 +690,7 @@ under `corpus/`, and the three mutation self-test modules under
 bundle under `.claude/`, `.agents/` and `.codex/` (`.claude/harness-manifest.json`
 among them), `package.json`, `package-lock.json`, `dotln.config.example.json`,
 `UPSTREAM.md`, the license files, `docs/product/07-execution-guide.md`,
-`docs/product/08-publication-compiler.md`, `docs/PLAYBOOK.md`, this guide
+`docs/product/operator-reference.md`, `docs/product/08-publication-compiler.md`, `docs/PLAYBOOK.md`, this guide
 (`docs/KIT.md`) and
 `docs/publication/implementation-overlay-template.md`. A kit update replaces
 unmodified kit files; a re-emit regenerates the bundle from
@@ -744,17 +743,9 @@ here and the seeds it reads.
 
 The kit's guide is `docs/KIT.md`, a manifest-listed file carried by every kit
 update. The root `README.md` is an instance seed, outside the manifest: a kit
-update never replaces it. The starter refresh migrates a proven unedited
-README from the long guide to the short front page once. It preserves a
-customized, missing or non-regular README and reports why in `keptSeeds`.
-The short seed's digest is pinned in the export tests; a deliberate future
-seed change must name the one rewrite of unedited starter copies in its
-decisions and release's Read before upgrading.
-
-If your fork edited `README.md` before taking the release that moves this
-guide, Git may report one conflict against the starter's migration. Resolve
-it by keeping your instance's README. Later guide changes arrive in
-`docs/KIT.md`, leaving your front page alone. You may keep or remove the
+update never replaces it. The starter refresh replaces an unedited seed README
+with the current short front page and keeps a customized, missing or
+non-regular README, reporting why in `keptSeeds`. You may keep or remove the
 README release block as described in §Releases in this instance.
 
 A release close runs its printed `--publish` command once; `--dry-run` is
@@ -1109,7 +1100,7 @@ plain `**Criterion <id>:** unmet` line, or a blocking entry in the block
 with its `basis` and `reproduction`; an entry without them prints one
 advisory and records, and a fail with no readable block is refused.
 
-Read before upgrading: the optional `retention` object in
+The optional `retention` object in
 `docs/control/budgets.json` takes hours for `gate-fixture-passed` (0),
 `gate-fixture-failed` (24), `session-scratch` (24), `worker-capture` (1),
 `warm-fixture` (0 after stale), `legacy-backfill` (48), `coordination` (null)
@@ -1124,8 +1115,7 @@ A nested cache with recorded fixture ownership also ends with the fixture.
 Removing the owning repository does not pin an expired fixture; inaccessible
 or invalid observations still retain it. Independent caches and coordination
 keep their own protocols.
-An older instance without the block reads these defaults and keeps `npm run meta`; no historical
-control record or judgment needs editing. Exact helper spelling and host policy
+Without the block, these defaults apply. Exact helper spelling and host policy
 still decide command admission; the kit does not change account settings.
 An orphan without an observed end is retained on preview. Applying prune
 records the first proven-dead observation and starts its full retention window;
@@ -1133,9 +1123,33 @@ it cannot be deleted by that same plan merely because it was created long ago.
 
 ## Document quality
 
+Every committed document in this instance is one of three kinds, derived from
+its path. A standing document (a product document, the sequence, a workstream,
+a repository profile, the operator record, `CLAUDE.md`, a README) states what
+is so for its reader: a change replaces the sentence that became wrong and links
+the record behind it. A record (an order's decisions and evidence, a planning
+pass document under `docs/planning/passes/`, a verification, a final review, a
+refutation receipt, a release note) is dated, never rewritten and reached by
+link. A generated page (the work-order index, the follow-up register, the
+lineage index) changes only through its command. The kinds of the paths the
+kit's own commands write are built in: filed proposal packets, entropy
+receipts and the idea ledger are records, the follow-up feed and register and
+the planning cost table are generated, and the carried release manifest
+template is standing. Without a `docs/control/documents.json` of its own, the
+instance's reader entry points are `CLAUDE.md`'s Start here, the skills'
+`Read:` lines, the execution guide's cold-start order and §First steps; the instance
+adds that file to name other entry points or the documents whose kind their
+path does not say. `npm run test:docs` refuses an entry point that names a
+record and reports a standing document no entry point, link or program
+reaches. `npm run plan -- documents` adds the read census from this
+instance's session journals over the last five releases (a lower bound: Codex
+reads are unobserved); a standing document nobody reaches and nobody read is
+red-tagged by `plan start`, and the next planning pass removes it or folds it
+into another with a recorded disposition. Nothing removes a document by itself,
+and size never decides.
+
 Artifacts follow their declared contract and check, never the preceding
-instance's shape. Standing documents describe current state and link dated
-records. Writing guidance identifies the contract, meaning the document sections
+instance's shape. Writing guidance identifies the contract, meaning the document sections
 and functions that judge each surface, then the kind and reader. Preserve
 required content and the context, evidence, examples and alternatives that help
 that reader understand, answer, decide, act, verify or recover reasoning.

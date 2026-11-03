@@ -9,5 +9,5 @@ planning pass that moved it; its Git history holds the path it came from.
 
 | Document | Retired | By |
 | --- | --- | --- |
-| `WS-002-predecessor-track.md` | 2026-10-30 | the operator's direction of 2026-10-30, item 3, recorded in [the planning document](../planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md) |
+| `WS-002-predecessor-track.md` | 2026-10-30 | the operator's direction of 2026-10-30, item 3, recorded in [the planning document](../planning/passes/node24-features-config-plan-first-no-work-stream-2026-10-30.md) |
 | `WO-228-private-predecessor-map.md` | 2026-10-30 | the same direction; the order never activated and the lifecycle has no withdrawal for an order the log does not know |

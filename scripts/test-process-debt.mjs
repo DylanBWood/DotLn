@@ -6841,23 +6841,39 @@ test("WO-145 optional economy support preserves historical snapshots through the
   // The combined oracle preserves both independently reviewed role histories.
   // Removing a shared sentence follows the same route as adding one.
   const fixtures = join(source, "packages/skeleton/fixtures");
-  // The router's prune sentence (WO-252's repair) re-pins the role trees over
-  // WO-252's first oracle, which the shared prune sentence and the
-  // release-close residue and glob clause re-pinned over WO-250's. The review
-  // ladder, the counting of every worker use and the worker gate rule
-  // (WO-250) re-pinned them over the WO-249 integration oracle. That oracle
-  // pins the combined trees of WO-249's criteria rules and WO-251's desktop
-  // and browser boundary through two parents: WO-251's oracle, main's at
+  // The shared standing-document sentence's kinds, census and reviewer
+  // judgment and the one-line residue per profile (WO-238) were pinned over
+  // WO-250's oracle while, on main, the shared prune sentence and the
+  // release-close residue and glob clause (WO-252) re-pinned the trees over
+  // WO-250's and the router's prune sentence (WO-252's repair) over that. The
+  // integrated trees carry both orders' sentences, so the WO-238 integration
+  // oracle pins them through two parents: WO-252's repair oracle, main's at
+  // integration, as its historical parent and WO-238's as its branch parent,
+  // both reaching the unchanged WO-250 oracle. The review ladder, the
+  // counting of every worker use and the worker gate rule (WO-250) re-pinned
+  // the trees over the WO-249 integration oracle. That oracle pins the
+  // combined trees of WO-249's criteria rules and WO-251's desktop and
+  // browser boundary through two parents: WO-251's oracle, main's at
   // integration, as its historical parent and WO-249's as its branch parent,
   // and both preserve WO-247's oracle, which carries the integrated oracle and
   // both chains below it.
-  const current = "wo252-repair-role-baseline.json";
+  const current = "wo238-integration-role-baseline.json";
   const baseline = JSON.parse(readFileSync(join(fixtures, current), "utf8"));
-  assert.equal(baseline.historicalBaseline, "wo252-role-baseline.json");
-  const pruneSentence = JSON.parse(
+  assert.equal(baseline.historicalBaseline, "wo252-repair-role-baseline.json");
+  assert.equal(baseline.branchBaseline, "wo238-role-baseline.json");
+  assert.equal(baseline.upstreamBaseline, "wo250-role-baseline.json");
+  const routerPrune = JSON.parse(
     readFileSync(join(fixtures, baseline.historicalBaseline), "utf8"),
   );
+  assert.equal(routerPrune.historicalBaseline, "wo252-role-baseline.json");
+  const pruneSentence = JSON.parse(
+    readFileSync(join(fixtures, routerPrune.historicalBaseline), "utf8"),
+  );
   assert.equal(pruneSentence.historicalBaseline, "wo250-role-baseline.json");
+  const documentKinds = JSON.parse(
+    readFileSync(join(fixtures, baseline.branchBaseline), "utf8"),
+  );
+  assert.equal(documentKinds.historicalBaseline, "wo250-role-baseline.json");
   const ladder = JSON.parse(
     readFileSync(join(fixtures, pruneSentence.historicalBaseline), "utf8"),
   );

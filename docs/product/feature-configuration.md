@@ -38,7 +38,7 @@ This page states where things are; it is not evidence that a planned selector
 exists. WO-241 transcribes its rows into the registry, ties each new row to a
 real reader, and keeps old configurations' behavior; later orders add or
 retire rows together with their consumers and update this page.
-Source: [the planning pass of 2026-10-30](../planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md),
+Source: [the planning pass of 2026-10-30](../planning/passes/node24-features-config-plan-first-no-work-stream-2026-10-30.md),
 on the operator's items 2, 2.a and 2.b of that day and the operator's
 direction to take the best of the two passes of that day (the other pass
 wrote the first version of this inventory).

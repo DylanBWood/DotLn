@@ -1,19 +1,19 @@
 // Origin: {"ids":["no-attribution"],"loadoutId":"contributor","semanticHash":"fnv1a64:f294438e4b870c21"}
-const { runCommitMessageHook } = await import("../../.runtime/harness/c88cacc0f2b210cb/packages/skeleton/dist/src/harness-host.js");
-const { feedbackBoundary } = await import("../../.runtime/harness/c88cacc0f2b210cb/packages/skeleton/dist/src/feedback-boundary.js");
+const { runCommitMessageHook } = await import("../../.runtime/harness/e6201a90208a8765/packages/skeleton/dist/src/harness-host.js");
+const { feedbackBoundary } = await import("../../.runtime/harness/e6201a90208a8765/packages/skeleton/dist/src/feedback-boundary.js");
 await runCommitMessageHook({
-  "compilerPackageVersion": "0.37.0",
+  "compilerPackageVersion": "0.38.0",
   "runtime": {
     "skeletonVersion": "0.42.0",
     "boundaryContract": "feedback-v1",
     "files": [
       {
         "path": "packages/compiler/dist/src/artifact-identity.js",
-        "hash": "fnv1a64:d1bca767a05b3fb1"
+        "hash": "fnv1a64:71111eebd7ba1e6e"
       },
       {
         "path": "packages/compiler/dist/src/harness.js",
-        "hash": "fnv1a64:eefd0de49edcb35a"
+        "hash": "fnv1a64:6fd53732a8958c1d"
       },
       {
         "path": "packages/compiler/dist/src/codex-continuation.mjs",
@@ -73,7 +73,7 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/gate-evidence.mjs",
-        "hash": "fnv1a64:9282440e6712a89e"
+        "hash": "fnv1a64:960747f20cd2c4fe"
       },
       {
         "path": "packages/skeleton/dist/src/gate-deadlines.mjs",
@@ -176,11 +176,11 @@ await runCommitMessageHook({
         "hash": "fnv1a64:5ad495017c40b9b2"
       }
     ],
-    "snapshot": ".runtime/harness/c88cacc0f2b210cb"
+    "snapshot": ".runtime/harness/e6201a90208a8765"
   },
   "policy": {
     "contractVersion": "feedback-v1",
-    "compilerPackageVersion": "0.37.0",
+    "compilerPackageVersion": "0.38.0",
     "units": [
       {
         "unitId": "no-attribution",
@@ -233,6 +233,6 @@ await runCommitMessageHook({
         "enforcement": "hard"
       }
     ],
-    "policyHash": "fnv1a64:88239bf5ac50583b"
+    "policyHash": "fnv1a64:c871c6e02946d6be"
   }
 }, feedbackBoundary);

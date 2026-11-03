@@ -1,0 +1,144 @@
+{
+  "movedRecords": {
+    "count": 53,
+    "byteChanges": 0,
+    "otherRemovedPaths": [
+      "docs/control/doc-ceilings.json"
+    ]
+  },
+  "dependencies": {
+    "externalLockEntries": 26,
+    "unchanged": true
+  },
+  "oracle": {
+    "rolePins": 14,
+    "allMatch": true,
+    "parentMatches": true,
+    "coldStartRowsMatch": 14
+  },
+  "documents": {
+    "counts": {
+      "standing": 339,
+      "record": 5236,
+      "generated": 15
+    },
+    "recordsNamed": 0,
+    "unbound": 27,
+    "redTags": [
+      "README.md",
+      "docs/README.md",
+      "docs/discovery/local-inference.json",
+      "docs/evidence/README.md",
+      "docs/final-reviews/README.md",
+      "docs/lineage/remining/README.md",
+      "docs/product/10-ir-compatibility.md",
+      "docs/product/11-proteino.md",
+      "docs/publication/examples/commitSubject/balanced.md",
+      "docs/publication/examples/commitSubject/reader.md",
+      "docs/publication/examples/commitSubject/record.md",
+      "docs/publication/examples/prBody/balanced.md",
+      "docs/publication/examples/prBody/reader.md",
+      "docs/publication/examples/prBody/record.md",
+      "docs/publication/examples/prTitle/balanced.md",
+      "docs/publication/examples/prTitle/reader.md",
+      "docs/publication/examples/prTitle/record.md",
+      "docs/publication/examples/releaseNotes/balanced.md",
+      "docs/publication/examples/releaseNotes/reader.md",
+      "docs/publication/examples/releaseNotes/record.md",
+      "docs/publication/examples/releasePage/balanced.md",
+      "docs/publication/examples/releasePage/reader.md",
+      "docs/publication/examples/releasePage/record.md",
+      "docs/publication/staleness-demonstration.md",
+      "docs/retired/README.md",
+      "docs/work-orders/TEMPLATE.md",
+      "docs/work-orders/codex-downtime-series.md"
+    ],
+    "census": {
+      "window": {
+        "releases": 5,
+        "since": "2026-11-01T22:28:01.000Z",
+        "after": "v0.107.0",
+        "tags": [
+          "v0.111.1",
+          "v0.111.0",
+          "v0.110.0",
+          "v0.109.0",
+          "v0.108.0"
+        ]
+      },
+      "journals": {
+        "directories": 8,
+        "files": 280,
+        "inWindow": 24,
+        "observed": 12,
+        "unobserved": 12,
+        "unreadable": 0
+      },
+      "durationMs": 373,
+      "codex": "unobserved: Codex tool calls are unhooked, so its sessions read nothing here and the counts are a lower bound"
+    }
+  },
+  "followups": {
+    "total": 1540,
+    "missing": 18,
+    "pendingMissing": 0,
+    "newMissing": 0
+  },
+  "completeGate": {
+    "codeIdentity": "1adddfb582fa9f06a2e1ade12fef4497e5c4ad53e3b14dbcd3c1865d78e70385",
+    "recordedAt": "2026-11-03T03:36:31.912Z",
+    "gateSelection": "review",
+    "exitCode": 0,
+    "executed": true,
+    "durationMs": 2363050,
+    "taskCount": 118,
+    "failedTasks": [],
+    "requiredSuites": [
+      "build",
+      "format",
+      "configuration-root",
+      "registrations",
+      "declarations",
+      "generated",
+      "host",
+      "release-preparation",
+      "github-body",
+      "outward-lint",
+      "target-publish",
+      "target-worktree",
+      "vertical",
+      "license-fixtures",
+      "publication-fixtures",
+      "backup-intake",
+      "resume",
+      "launchpad",
+      "workstream-pilot",
+      "instance-history",
+      "beacon-portability",
+      "checkpoint",
+      "worktree",
+      "worktree-integration",
+      "release",
+      "work-orders-fixtures",
+      "siblings-fixtures",
+      "kernel",
+      "compiler",
+      "skeleton",
+      "console",
+      "browser-evidence",
+      "adjacent-queue",
+      "derived-orders",
+      "portfolio",
+      "codex-continuation",
+      "authority-grants",
+      "launchpad-planning",
+      "evidence-sources",
+      "harness-probe",
+      "harness-fixtures",
+      "plan-refutation",
+      "runner-fixtures",
+      "sync-fixtures",
+      "process-debt"
+    ]
+  }
+}

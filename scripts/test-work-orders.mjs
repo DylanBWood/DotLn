@@ -378,6 +378,10 @@ await check(
         "Authority",
       ])
         assert.ok(detail.includes(`- ${field}:`), field);
+    // The card leaves the order's Cost paragraph in the order file, where
+    // its reader is the planner (WO-238).
+    for (const page of [first, history])
+      assert.doesNotMatch(page, /^- Cost:/mu);
     assert.match(first, /model &#124; &lt;script&gt; &#91;link&#93;/);
     assert.match(
       history,
