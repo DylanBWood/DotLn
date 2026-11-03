@@ -6,7 +6,13 @@
   "derivedOrders": { "first": "WO-900", "last": "WO-999" },
   "repositories": {},
   "build": {},
+  "kit": { "applyInstanceActions": false },
   "release": { "displayName": "DotLn-Enterprise-Starter" },
   "drive": { "sandbox": "host" },
-  "features": { "desktop-control": false }
+  "features": {
+    "tinkerer-economy": { "on": true, "note": "Compare approaches when a useful fork appears." },
+    "plan-first": false,
+    "private-destination": false,
+    "desktop-control": false
+  }
 }

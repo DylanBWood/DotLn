@@ -149,6 +149,44 @@ test("sync regenerates in dependency order only when stale and its second run ch
   assert.deepEqual(snapshot(), before);
 });
 
+test("sync refreshes the harness before rendering its feature inventory", async (t) => {
+  const { root } = fixture(t);
+  const { emitHarness, checkHarness } = await import("./lib/harness.mjs");
+  const { writeFeatures } = await import("./features.mjs");
+  emitHarness(root, { instructionFloor: "# Fixture\n\nOwned floor.\n" });
+  const instruction = join(root, "CLAUDE.md");
+  const current = readFileSync(instruction, "utf8");
+  const older = current.replace(
+    /DotLn has \d+ refusals/u,
+    "DotLn has 0 refusals",
+  );
+  assert.notEqual(older, current);
+  writeFileSync(instruction, older);
+  const page = writeFeatures(root);
+  const artifacts = generatedArtifacts(root).filter((row) =>
+    ["harness", "meta"].includes(row.name),
+  );
+  const run = (command) => {
+    try {
+      if (command[1] === "scripts/harness.mjs")
+        (command[2] === "check" ? checkHarness : emitHarness)(root);
+      else if (command[1] === "scripts/meta.mjs")
+        writeFeatures(root, { check: command.includes("--check") });
+      return { exitCode: 0, output: "" };
+    } catch (error) {
+      return { exitCode: 1, output: error.message };
+    }
+  };
+  const result = await syncArtifacts(root, { artifacts, run });
+  assert.equal(result.exitCode, 0, JSON.stringify(result.rows));
+  checkHarness(root);
+  writeFeatures(root, { check: true });
+  const before = readFileSync(page, "utf8");
+  const repeated = await syncArtifacts(root, { artifacts, run });
+  assert.ok(repeated.rows.every((row) => row.action === "none"));
+  assert.equal(readFileSync(page, "utf8"), before);
+});
+
 test("sync refuses a timed-out check without running its writer", async (t) => {
   const { root, artifacts } = fixture(t);
   writeFileSync(join(root, "format"), "current\n");
@@ -199,6 +237,8 @@ test("sync classifies real stale reports for every regenerable artifact and refu
     ],
     meta: [
       "Decisions index is stale; run npm run meta",
+      "stale docs/control/FEATURES.md; run npm run features -- render",
+      "stale records/control/FEATURES.md; run npm run features -- render",
       "follow-ups: register is stale; run npm run meta or npm run plan -- followups --sync",
     ],
     lineage: [

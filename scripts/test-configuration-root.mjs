@@ -46,6 +46,7 @@ import {
 } from "./lib/config.mjs";
 
 import { isKitRoot } from "../packages/skeleton/src/runtime-inputs.mjs";
+import "./test-features.mjs";
 
 const scriptRoot = dirname(fileURLToPath(import.meta.url));
 const sourceRoot = join(scriptRoot, "..");
@@ -196,9 +197,9 @@ test("publication declarations under a configured root require both editions", (
 test("desktop-control feature elections validate without granting a default", () => {
   temporary("config-features", (root) => {
     assert.deepEqual(loadConfig(root).features, {});
-    assert.deepEqual(readFeatures(root), { "desktop-control": false });
+    assert.equal(readFeatures(root)["desktop-control"], false);
     declared({ root, body: { version: 1 } });
-    assert.deepEqual(readFeatures(root), { "desktop-control": false });
+    assert.equal(readFeatures(root)["desktop-control"], false);
     for (const value of [
       true,
       false,

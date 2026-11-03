@@ -437,6 +437,8 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
       census: documentCensus(root),
     };
     const documents = documentsPage(root, documentInputs);
+    const { featureAdvisories } = await import("./features.mjs");
+    const features = featureAdvisories(root);
     // Routine removal of expired temporary roots outside every close's scope
     // happens here, where the full census is already paid for.
     const { temporaryPruneSummary } =
@@ -478,6 +480,7 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
       readerScores,
       conditions,
       documents,
+      features,
       followups,
     };
   }

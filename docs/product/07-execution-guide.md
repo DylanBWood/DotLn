@@ -803,11 +803,28 @@ run their gates and regenerate meta artifacts. With no mapping in those
 places, the refusal names all three and the required arrangement.
 
 `dotln.config.json` at the launchpad root declares schema `version: 1` and the
-optional sections `roots`, `classes`, `repositories`, `build`, `release`, `kit`, `drive`, `derivedOrders`, `portfolios` (§Declaring a portfolio), `historicalWorkOrders` and `contributions`. **Its absence
+optional sections `roots`, `classes`, `repositories`, `build`, `release`, `kit`, `drive`, `features`, `derivedOrders`, `portfolios` (§Declaring a portfolio), `historicalWorkOrders` and `contributions`. **Its absence
 means today's layout, byte for byte**, with no pre-control historical order and no
 contributor sign-off exemption, so `status --json`, `current.md`, the generated
 index, `times`, `usage` and a release manifest derived over the real log are
-unchanged by its introduction. This repository ships the file with
+unchanged by its introduction. `features` accepts `"<id>": true|false` or
+`"<id>": { "on": boolean, "note": "operator reason" }`. The registry in
+`scripts/lib/features.mjs` defines each default, scope, meaning, election key
+and consumer. `npm run features -- list` shows the inventory (`--json` for
+data); `render` writes the effective table at `docs/control/FEATURES.md`
+under the configured control root, and `check` refuses stale output.
+`npm run meta` renders it and the document gate checks it. `npm run sync`
+refreshes the installed harness before rendering metadata, so the inventory
+uses the current refusal count after a kit update. Existing keys
+remain in place, with budget values attributed to the budgets file;
+unread release switches, saved build loadout/profile keys and the pending
+`plan-first` consumer are identified explicitly. The subagent-cap row follows
+its runtime reader at the default budget path even when the control root is
+relocated; other budget rows follow their configured-root readers. The refusal classes, writer reservation and clean-room floor
+remain fixed. The render cost measurement and compatibility decisions are
+recorded in [WO-241's decisions](../evidence/WO-241/decisions.md), including the
+whole-command measurements and their limits.
+This repository ships the file with
 `historicalWorkOrders` naming `WO-001` and `WO-002` and `contributions.operatorAuthor`
 naming the operator's public author identity, and no other section (WO-218); an
 exported instance declares its own pre-control ids and exemption or neither, because

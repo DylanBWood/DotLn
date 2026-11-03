@@ -1644,6 +1644,14 @@ test("WO-170 the order's snapshot is its own bounded row, written only where its
   );
   writeJournal(root, "later", rows.slice(0, 3));
   await quiet(["--write", path]);
+  const features = join(root, "docs/control/FEATURES.md");
+  assert.ok(existsSync(features), "meta renders the features inventory");
+  const { writeFeatures } = await import("./features.mjs");
+  writeFeatures(root, { check: true });
+  writeFileSync(features, "stale\n");
+  await assert.rejects(quiet(["--check"]), /stale docs\/control\/FEATURES.md/u);
+  await quiet([]);
+  writeFeatures(root, { check: true });
   const later = JSON.parse(readFileSync(join(root, path), "utf8"));
   assert.equal(later.orders[0].metrics.operatorCorrections, 0);
   assert.equal(later.orders.length, 1);

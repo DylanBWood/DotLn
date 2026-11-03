@@ -42,6 +42,7 @@
     "test:docs": "node scripts/test-runner.mjs --document",
     "discover": "node scripts/discover.mjs",
     "meta": "node scripts/meta.mjs",
+    "features": "node scripts/features.mjs",
     "reader": "node scripts/reader.mjs",
     "test:machinery": "node scripts/test-runner.mjs --machinery"
   },

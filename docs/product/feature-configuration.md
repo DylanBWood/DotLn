@@ -1,44 +1,48 @@
-# Feature configuration — where an instance's choices live, and which are still planned
+# Feature configuration — an instance's choices and their readers
 
-This page is for the operator of a launchpad or an exported instance who wants
-to know what can be turned on or off, where the switch is, what it does, and
-whether anything reads it yet. `dotln.config.json` at the launchpad root is the
-one configuration file; `scripts/lib/config.mjs` validates it, and an absent
-file means today's layout and defaults ([product 07 §Where the control plane
-finds its documents](07-execution-guide.md#where-the-control-plane-finds-its-documents)).
-An instance owns its configuration file and any build overlay it selects.
-Budgets and bounds live in `docs/control/budgets.json`, where `null` means no
-bound or keep.
+This page is for the operator of a launchpad or exported instance deciding
+what to turn on or off. `dotln.config.json` is the one configuration file;
+`scripts/lib/config.mjs` validates it. An absent file keeps the existing
+layout and defaults. The [generated inventory](../control/FEATURES.md) lists
+every registered election and selection with its scope, default, effective
+value, source, election key and consumer. Its single source is
+`scripts/lib/features.mjs`; later orders add a row there with its consumer
+and behavioral test. The [kit guide](../KIT.md#features) gives the entry
+forms and the commands to edit, render and check the choices.
 
-| Choice | Where it lives today, and who reads it | What it does | Kind and state |
-| --- | --- | --- | --- |
-| Document locations | `roots` in `dotln.config.json`; the configuration loader | Moves the document roots the control plane resolves | layout; implemented |
-| Build, profile and overlay | `build.loadout`, `build.profile`, `build.overlay`; `harness emit` and `check` | Selects the emitted build and profile and an instance-owned overlay | instance selection; implemented |
-| Optional supports | the overlay's `equip` and `unequip` over the Contributor's support ids | Equips or removes adjacent repair, decision receipts, the follow-up queue, operator check-in, the Tinkerer economy and the rest | instance preference; implemented, with conflicting communication supports refused |
-| No emitted build | the overlay's `build: none`; `harness emit` and `check` | Removes the generated surfaces and keeps the hand-written floor | instance choice; implemented; not a way to disable the floor |
-| Registered repositories and their checks | `repositories` and `classes`; the target gate runner and the documentation root | Names the targets an instance works on, their gates and their scoped authority | instance configuration; implemented; closeout selection follows in WO-243 |
-| Release surfaces | `release.readmeBlock`, `componentVersions`, `corpus`, `publicationCheck` | Declared toggles for the release's surfaces | declared; read by nothing yet, listed so the page tells the truth |
-| Kit instance actions | `kit.applyInstanceActions`; the update | Lets an update perform the kit's declared instance actions | instance choice; implemented |
-| Drive sandbox election | `drive.sandbox` in `dotln.config.json`; each phase launch of a drive and the live fixture's router | `host` keeps each host's own policy; `off` launches unsandboxed in the form each host documents | instance election; implemented (WO-247) |
-| Desktop control | `features.desktop-control` in `dotln.config.json`; the permission hook and harness emitter | Off by default; admits the named desktop and operator-browser tools only when elected, still requiring the operator's explicit request in the session; browser verification uses Playwright in a session-launched browser or project tests | instance election; implemented ([WO-251 decision](../evidence/WO-251/decisions.md#wo-251-d001)) |
-| Subagent cap and dispatch bounds | `subagentCap`, `drivenSessionCeiling`, `drivenPhaseTimeoutMs` and `dispatches.*` in `budgets.json`; the hooks, the gate and the lifecycle | Bounds the agents a session may spawn and how long a dispatch may run; `null` lifts a bound | instance budget; implemented |
-| Retention windows | `retention.*` in `budgets.json`; the prune | How long each class of owned temporary root is kept; `null` keeps | instance budget; implemented |
-| Runtime | the `engines` field of every package; `harness check`, `harness evidence` and the gate's `host` task | Admits Node 24.15 or later in the 24 line and Node 26, and refuses any other Node by name | compatibility, not a toggle; implemented |
-| Named feature elections | the `features` section in `dotln.config.json`, a boolean or `{ on, note }` per feature; currently `desktop-control` is the one accepted id | The section holds the election and optional reason; WO-241 adds the registry, other feature ids and generated `docs/control/FEATURES.md` with each feature's scope, default and reader | section implemented (WO-251); registry and generated page planned (WO-241) |
-| Private destination | `features.private-destination` | Admits ordinary project links of the instance's own organisation inside that instance; credentials stay excluded and publications still refuse private terms | WO-241 planned; core's floor is not electable |
-| Plan-first mode | `features.plan-first` | A plan, a conversation and a proposal before anything is implemented, and the operator's approval before it is | WO-242 planned; direct execution stays the default |
-| An instance's own planning inputs | a script the instance owns, run on the operator's word; later a `source` adapter under WO-207's extension root | Gathers a tracker's items for the instance's own planning session | available by hand today; the adapter route is WO-207's |
+The named `features` elections are Tinkerer economy (on by default),
+private-destination and desktop-control (off), and plan-first (off, reserved
+for WO-242). Private-destination admits only an exported instance owner's
+ordinary project links and identifiers inside that instance. Credentials
+remain excluded and publication screens still judge outward artifacts.
+Desktop control still requires an explicit operator request in the session.
+Plan-first has no effect until its consumer lands. Future-consumer declarations
+travel with the registry; copied and installed runtimes do not need core's
+work-order archive. A local record showing that a consumer closed without a
+registry update produces a planning advisory.
 
-What is not electable: the six other refusal classes, the writer reservation and the
-clean-room floor ([product 07 §Operator recovery controls](07-execution-guide.md#operator-recovery-controls);
-`CLAUDE.md` §Clean Room). A switch for them does not exist and this page
-will not list one.
+Existing choices stay at their addresses: build selections and overlays
+under `build`, the drive sandbox under `drive`, kit instance actions under
+`kit`, and release surface elections under `release`. The four release
+switches and the saved `build.loadout` and `build.profile` keys remain unread; the registry does not pretend that a declared key
+changes output. Budgets and retention remain in `docs/control/budgets.json`,
+where `null` removes a bound or retains a class. Their actual file source
+is shown in the generated page. The spawn-cap runtime still reads the default
+`docs/control/budgets.json` even when the control root is relocated; process
+bounds, driven limits and retention read the configured control root. The
+inventory reflects that distinction. An instance owns these files and its overlay;
+`scope: core` marks a core choice, not an instance obligation.
 
-This page states where things are; it is not evidence that a planned selector
-exists. WO-241 transcribes its rows into the registry, ties each new row to a
-real reader, and keeps old configurations' behavior; later orders add or
-retire rows together with their consumers and update this page.
-Source: [the planning pass of 2026-10-30](../planning/passes/node24-features-config-plan-first-no-work-stream-2026-10-30.md),
-on the operator's items 2, 2.a and 2.b of that day and the operator's
-direction to take the best of the two passes of that day (the other pass
-wrote the first version of this inventory).
+Some configuration is not a feature toggle. `roots` relocates the document
+layout; `repositories` and `classes` declare target repositories, checks and
+authority profiles. Runtime compatibility is the packages' `engines.node`
+contract. An instance can gather its own planning inputs with an owned script
+on the operator's word; a source adapter remains WO-207's work. These
+contracts stay in [product 07](07-execution-guide.md#where-the-control-plane-finds-its-documents).
+
+The generated harness contract's refusal classes, the single-writer
+reservation and the clean-room floor are not electable. A feature changes
+behavior under that floor; it cannot turn the floor off.
+
+Source: [the planning pass of 2026-10-30](../planning/passes/node24-features-config-plan-first-no-work-stream-2026-10-30.md)
+and [WO-241's implementation decisions](../evidence/WO-241/decisions.md).

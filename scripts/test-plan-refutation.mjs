@@ -7668,8 +7668,10 @@ else {
           "readerScores",
           "conditions",
           "documents",
+          "features",
           "followups",
         ]);
+        assert.deepEqual(started.features, []);
         assert.match(
           started.document,
           /^docs\/planning\/passes\/failures-\d{4}-\d{2}-\d{2}\.md$/u,

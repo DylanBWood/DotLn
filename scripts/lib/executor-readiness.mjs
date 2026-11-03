@@ -1,6 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { nextAdjacentItem, readAdjacentQueue } from "./adjacent-queue.mjs";
+import { readFeatures } from "./features.mjs";
 
 /** Project installed equipment, never infer chat delivery or defect recognition. */
 export function executorEntryBriefing(
@@ -13,7 +14,11 @@ export function executorEntryBriefing(
     ? (JSON.parse(readFileSync(path, "utf8")).origin?.ids ?? [])
     : [];
   const lines = [];
-  if (experiment && ids.includes("tinkerer-economy"))
+  if (
+    experiment &&
+    readFeatures(root)["tinkerer-economy"] &&
+    ids.includes("tinkerer-economy")
+  )
     lines.push(
       "Tinkerer — Economy is equipped for this declared experiment: run the bounded comparison and record both arms and their measured cost.",
     );

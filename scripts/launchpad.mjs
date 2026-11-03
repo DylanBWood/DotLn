@@ -151,6 +151,7 @@ export const BUILD_INPUTS = Object.freeze([
 // against the import graph.
 export const EMIT_CLOSURE = Object.freeze([
   "scripts/harness.mjs",
+  "scripts/lib/build-overlay.mjs",
   "scripts/lib/config.mjs",
   "scripts/lib/control-actor.mjs",
   "scripts/lib/control-store.mjs",
@@ -160,6 +161,7 @@ export const EMIT_CLOSURE = Object.freeze([
   "scripts/lib/derived-contract.mjs",
   "scripts/lib/dispatch-bound.mjs",
   "scripts/lib/duration.mjs",
+  "scripts/lib/features.mjs",
   "scripts/lib/gate-evidence.mjs",
   "scripts/lib/git.mjs",
   "scripts/lib/harness-context.mjs",
