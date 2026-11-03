@@ -61,5 +61,10 @@
       ],
       "urgencyRationale": "Low: it misdescribes each review and refutation episode but blocks nothing. It is cheapest to settle the next time the loadout is regenerated."
     }
+  },
+  "deliveredBy": {
+    "workOrderId": "WO-165",
+    "release": "v0.52.1",
+    "recordedAt": "2026-09-26T19:17:22.000Z"
   }
 }

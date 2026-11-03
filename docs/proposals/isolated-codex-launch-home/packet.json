@@ -74,5 +74,10 @@
       ],
       "urgencyRationale": "D011 blocks any further live Codex worker proof on this work, and the owner-repository portfolio after WO-111 needs live Codex workers on real repositories. Meanwhile, every live probe run can add another entry."
     }
+  },
+  "deliveredBy": {
+    "workOrderId": "WO-159",
+    "release": "v0.48.0",
+    "recordedAt": "2026-09-25T13:40:39.000Z"
   }
 }

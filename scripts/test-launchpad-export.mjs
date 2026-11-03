@@ -136,6 +136,111 @@ test("[document] the kit owns its complete guide and the front page is a pinned 
   );
 });
 
+// Reads core's seeds, instruction and first order to classify them, which a
+// product task may not read: the document gate runs this case (test-runner's
+// launchpad-docs row), the product gate skips it.
+test("[document] WO-238 criteria 1 and 9: an exported instance gives its seeds and first order core's kinds, and its seeds state where history and the kit's explanation live", async () => {
+  const { documentKind, documentKinds, readDocumentControl } =
+    await import("./lib/document-kinds.mjs");
+  const instance = documentKinds(kit);
+  // Core's counterparts are classified one path at a time: a product task
+  // reads no other order's records.
+  const coreKinds = readDocumentControl(repository).kinds;
+  const coreKind = (path) =>
+    documentKind(repository, path, { kinds: coreKinds }).kind;
+  // The eight seeds, by the instance path and the core document of the same
+  // role; .gitignore is a seed and no document.
+  for (const [seed, counterpart] of [
+    ["README.md", "README.md"],
+    ["CLAUDE.md", "CLAUDE.md"],
+    ["AI-HARNESS-SECURITY.md", "docs/AI-HARNESS-SECURITY.md"],
+    ["docs/workstreams/README.md", "docs/workstreams/README.md"],
+    ["docs/repositories/README.md", "docs/repositories/README.md"],
+    ["docs/control/budgets.json", "docs/control/budgets.json"],
+    [
+      "docs/work-orders/WO-001-environment-truth.md",
+      "docs/work-orders/WO-238-a-document-says-what-is-so.md",
+    ],
+  ]) {
+    assert.equal(instance.get(seed)?.kind, "standing", seed);
+    assert.equal(instance.get(seed).kind, coreKind(counterpart), seed);
+  }
+  assert.equal(instance.has(".gitignore"), false);
+  // The paths the kit's own commands write, and the manifest template it
+  // carries, hold core's kinds in the instance with the instance's own
+  // override list, which the export does not seed.
+  const instanceKinds = readDocumentControl(kit).kinds;
+  for (const path of [
+    "docs/releases/tag-manifest.template.json",
+    "docs/proposals/fixture-packet/packet.json",
+    "docs/instance/entropy-reducer/runs/REVIEW-001.md",
+    "docs/lineage/idea-ledger.md",
+    "docs/planning/followups.md",
+    "docs/planning/followups.json",
+    "docs/planning/cost-table.json",
+  ])
+    assert.equal(
+      documentKind(kit, path, { kinds: instanceKinds }).kind,
+      coreKind(path),
+      path,
+    );
+  assert.equal(
+    instance.get("docs/releases/tag-manifest.template.json")?.kind,
+    "standing",
+  );
+  const profile = readFileSync(
+    join(kit, "docs/repositories/README.md"),
+    "utf8",
+  );
+  assert.doesNotMatch(profile, /\*\*Checked:\*\*/u);
+  assert.match(profile, /^\*\*Current at:\*\* <commit>$/mu);
+  assert.match(profile, /never its history/u);
+  const workstream = readFileSync(
+    join(kit, "docs/workstreams/README.md"),
+    "utf8",
+  );
+  assert.match(workstream, /^## Rules$/mu);
+  assert.match(
+    workstream,
+    /member\s+orders and their decisions hold the history/u,
+  );
+  const instruction = readFileSync(join(kit, "CLAUDE.md"), "utf8");
+  const block = instruction.slice(
+    instruction.indexOf("<!-- dotln-harness:start -->"),
+    instruction.indexOf("<!-- dotln-harness:end -->"),
+  );
+  const residueProfiles = new Set(
+    block
+      .split("\n")
+      .map((line) => /^([a-z][a-z-]*-\d+\.\d+\.\d+): /u.exec(line)?.[1])
+      .filter(Boolean),
+  );
+  assert.ok(residueProfiles.size >= 2, "the block names residue profiles");
+  for (const id of residueProfiles)
+    assert.equal(
+      block.split("\n").filter((line) => line.startsWith(`${id}: `)).length,
+      1,
+      `${id} has one residue line`,
+    );
+  assert.match(
+    instruction,
+    /^Documents are standing, record or generated\.$/mu,
+  );
+  const readme = readFileSync(join(kit, "README.md"), "utf8");
+  assert.match(readme, /\[kit guide\]\(docs\/KIT\.md\)/u);
+  assert.match(readme, /launchpad instance/u);
+  const guide = readFileSync(join(kit, "docs/KIT.md"), "utf8");
+  for (const heading of [
+    "Kit files and instance files",
+    "Taking upstream updates",
+    "Owned cleanup and retention",
+  ]) {
+    assert.ok(!readme.includes(`\n## ${heading}\n`), heading);
+    assert.ok(guide.includes(`\n## ${heading}\n`), heading);
+  }
+  assert.ok(existsSync(join(kit, "docs/product/operator-reference.md")));
+});
+
 test("WO-074 criterion 1: a destination that is not an empty directory is refused before any write", () => {
   const occupied = join(scratch, "occupied");
   mkdirSync(occupied);
@@ -174,6 +279,25 @@ test(
   },
 );
 
+test("WO-238: a carried document's link to a moved record keeps its bytes and points upstream to where the record lives at the commit", () => {
+  const guide = readFileSync(
+    join(kit, "docs/product/07-execution-guide.md"),
+    "utf8",
+  );
+  assert.match(guide, /\]\(\.\.\/planning\/critical-path-2026-09-08\.md\)/u);
+  const upstream = readFileSync(join(kit, "UPSTREAM.md"), "utf8");
+  assert.ok(
+    upstream.includes(
+      `\`owner/launchpad@${commit.slice(0, 12)} docs/planning/passes/critical-path-2026-09-08.md\``,
+    ),
+    "the pointer names the moved record's path at the commit",
+  );
+  assert.doesNotMatch(
+    upstream,
+    / docs\/planning\/critical-path-2026-09-08\.md`/u,
+  );
+});
+
 test("WO-074 criterion 1: the scripts are byte-identical to UPSTREAM.md's commit, the manifest hashes verify, and the manifest lists every kit file and no seed", () => {
   assert.match(
     exported.stdout,
@@ -198,6 +322,12 @@ test("WO-074 criterion 1: the scripts are byte-identical to UPSTREAM.md's commit
     "the upstream pointer list names a core document the kit does not carry",
   );
   assert.ok(!existsSync(join(kit, "docs/LEGAL.md")));
+  // A link to a moved record points where the record lives at the commit.
+  const moved = new Map(
+    JSON.parse(
+      readFileSync(join(source, "docs/control/document-moves.json"), "utf8"),
+    ).moves.map((move) => [move.from, move.to]),
+  );
   for (const [key, ...parts] of KIT_FILES.documents) {
     const path = ["docs", ...(key === "docs" ? [] : [key]), ...parts].join("/");
     if (!path.endsWith(".md")) continue;
@@ -219,7 +349,9 @@ test("WO-074 criterion 1: the scripts are byte-identical to UPSTREAM.md's commit
       if (!existsSync(target)) {
         const relativeTarget = target.slice(kit.length + 1);
         assert.ok(
-          upstream.includes(` ${relativeTarget}\``),
+          upstream.includes(
+            ` ${moved.get(relativeTarget) ?? relativeTarget}\``,
+          ),
           `${path}: ${href} has a pinned upstream pointer`,
         );
       }
@@ -292,6 +424,7 @@ test("WO-074 criterion 1: the scripts are byte-identical to UPSTREAM.md's commit
     ".codex/config.toml",
     HARNESS_MANIFEST,
     "docs/product/07-execution-guide.md",
+    "docs/product/operator-reference.md",
     "docs/product/08-publication-compiler.md",
     "docs/PLAYBOOK.md",
     "docs/KIT.md",
@@ -325,7 +458,6 @@ test("WO-074 criterion 1: the scripts are byte-identical to UPSTREAM.md's commit
     "docs/control/README.md",
     "docs/control/budgets.json",
     "docs/control/doc-baseline.json",
-    "docs/control/doc-ceilings.json",
     "docs/decisions/README.md",
     "docs/discovery/README.md",
     "docs/evidence/README.md",

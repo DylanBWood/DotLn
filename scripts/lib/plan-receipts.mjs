@@ -19,6 +19,7 @@ import { join, posix } from "node:path";
 import {
   buildPlanSubject,
   committedReader,
+  criticalPathCandidates,
   prefetchCommittedSources,
   hashParts,
   carriedOrderHashMatches,
@@ -204,7 +205,7 @@ const subjectPrefetch = (root, subject) => ({
     ...(subject.goalReview
       ? [
           docRelative(root, "product", "07-execution-guide.md"),
-          docRelative(root, "planning", "critical-path-2026-09-08.md"),
+          ...criticalPathCandidates(root),
         ]
       : []),
   ],

@@ -75,5 +75,10 @@
       ],
       "urgencyRationale": "Growth is 83 MB per week at the current order cadence and the evidence class already exceeds half of the tracked bytes; each further order re-mints at least once, so the cost compounds with every close until the recorder changes."
     }
+  },
+  "deliveredBy": {
+    "workOrderId": "WO-154",
+    "release": "v0.46.0",
+    "recordedAt": "2026-09-24T18:51:14.000Z"
   }
 }

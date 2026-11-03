@@ -362,7 +362,7 @@ test("WO-023 AC1 assembles the full deferred Program and once cadence", () => {
   );
   const lenses = compiled.program.programs[1];
   assert.ok(lenses?.kind === "Sequence");
-  assert.equal(lenses.programs.length, 4);
+  assert.equal(lenses.programs.length, 5);
   assert.ok(
     lenses.programs.every(
       (program) =>
@@ -623,7 +623,7 @@ test("WO-165 rejects sparse lens and required-string arrays", () => {
 test("WO-165 rejects non-array iterables before applying the lens ceiling", () => {
   const iterable = new Set([
     ...entropyReducerLensBriefs,
-    { ...entropyReducerLensBriefs[0]!, lensId: "fifth-lens" },
+    { ...entropyReducerLensBriefs[0]!, lensId: "sixth-lens" },
   ]) as unknown as readonly LensBrief[];
   assert.throws(() => validateLensBriefs(iterable), /must be an array/u);
   assert.throws(
@@ -636,7 +636,7 @@ test("WO-165 rejects non-array iterables before applying the lens ceiling", () =
   );
 });
 
-test("WO-023 AC4 enforces every lens-brief field, no-fix, uniqueness, and the four-brief ceiling", () => {
+test("WO-023 AC4 enforces every lens-brief field, no-fix, uniqueness, and the five-brief ceiling", () => {
   const valid = entropyReducerLensBriefs[0]!;
   assert.deepEqual(validateLensBrief(valid), valid);
   assert.equal(lensBriefSchema.properties.files.items.minLength, 1);
@@ -667,15 +667,32 @@ test("WO-023 AC4 enforces every lens-brief field, no-fix, uniqueness, and the fo
     () =>
       validateLensBriefs([
         ...entropyReducerLensBriefs,
-        { ...valid, lensId: "fifth-lens" },
+        { ...valid, lensId: "sixth-lens" },
       ]),
-    /exceeds lens checklist limit 4/u,
+    /exceeds lens checklist limit 5/u,
   );
   assert.throws(
     () => validateLensBriefs([valid, valid]),
     /lens brief ids must be unique/u,
   );
-  assert.equal(compileReviewer().lensBriefs.length, 4);
+  assert.equal(compileReviewer().lensBriefs.length, 5);
+  // The fifth lens asks the document questions and stays inside admitted
+  // scopes: never the whole document base and never intake.
+  const documents = entropyReducerLensBriefs.find(
+    (brief) => brief.lensId === "documents-and-readers",
+  )!;
+  assert.ok(
+    documents.questions.some((question) => /dated history/u.test(question)),
+  );
+  assert.ok(
+    documents.questions.some((question) => /no reader/u.test(question)),
+  );
+  assert.ok(
+    documents.questions.some((question) =>
+      /record does a session read at start/u.test(question),
+    ),
+  );
+  assert.deepEqual(validateLensBrief(documents), documents);
   assert.ok(
     entropyReducerLensBriefs.every(
       (brief) =>

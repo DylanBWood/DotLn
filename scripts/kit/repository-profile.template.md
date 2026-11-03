@@ -1,15 +1,19 @@
 # Repository profiles
 
 A registered target repository (`dotln.config.json` → `repositories.<id>`) may
-declare one profile document here, `docs/repositories/<id>.md`, treated as
-repo-native authority. Once core's WO-073 lands, the role skill loads it on
-demand for the active order, never at cold start; this kit revision's scripts
-do not yet read it. Policy layers launchpad → class → repository: the more
-specific layer adds to and narrows the wider one, and a profile's conventions
-prevail over its class's where it states them. Keep a profile to what a session
-needs in order to act in that repository; name no credential, hostname or
-internal service. The convention is defined by core's WO-073; a later kit
-revision carries its final text and this file is replaced with it.
+declare one profile document through the registration's `profile` path,
+conventionally `docs/repositories/<id>.md`, treated as repo-native authority.
+Activation requires it to be a readable regular file inside the launchpad, and
+a role reads it on demand for an order on that repository, never at cold start.
+Policy layers launchpad → class → repository: the more specific layer adds to
+and narrows the wider one, and a profile's conventions prevail over its class's
+where it states them. Keep a profile to what a session needs in order to act in
+that repository; name no credential, hostname or internal service.
+
+A profile is a standing document: it states the repository as it is at the
+commit its `Current at:` field names. When the repository changes, replace the
+sentences that are now wrong and move `Current at:` forward; the history of how
+the repository got there lives in the orders and decisions that changed it.
 
 ## Template
 
@@ -18,7 +22,9 @@ revision carries its final text and this file is replaced with it.
 
 **Class:** <repository class>
 **Base branch:** <branch>
-**Checked:** <date or commit this profile was last checked against the repository>
+**Current at:** <commit>
+
+This profile states the repository as it is at that commit, never its history.
 
 ## Purpose and standards to emulate
 

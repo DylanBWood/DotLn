@@ -1,3 +1,4 @@
+import { moveIndex } from "./document-moves.mjs";
 import { json as encode } from "./helpers.mjs";
 import { defaultDocRelative, docRelative, rootPattern } from "./config.mjs";
 import {
@@ -223,8 +224,12 @@ export function collectFollowupSources(root) {
     ...markdownFiles(root, docRelative(root, "product")),
     ...markdownFiles(root, docRelative(root, "planning")),
   ];
-  for (const path of files) {
-    const body = readFileSync(safePath(root, path), "utf8");
+  // A moved document keeps its candidates' identities: the register names
+  // the path each was written at, and the move map says where it is now.
+  const moved = moveIndex(root).from;
+  for (const file of files) {
+    const path = moved.get(file) ?? file;
+    const body = readFileSync(safePath(root, file), "utf8");
     // Ignore fenced examples; a candidate must be a real Markdown heading.
     const visible = body.replace(
       /^(```|~~~)[^\n]*\n[\s\S]*?^\1[^\n]*$/gm,

@@ -66,5 +66,10 @@
       ],
       "urgencyRationale": "The review gate is the executable witness at implementation-ready and final review. Each order that adds a script widens the uncovered set, and first verifications already fail at about 40 to 50 per cent."
     }
+  },
+  "deliveredBy": {
+    "workOrderId": "WO-174",
+    "release": "v0.58.1",
+    "recordedAt": "2026-09-30T21:16:18.000Z"
   }
 }

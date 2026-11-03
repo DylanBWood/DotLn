@@ -187,7 +187,8 @@ const migratedEntropyGraph = {
   })),
   activeMechanics: priorEntropyGraph.activeMechanics.map((active) => ({
     ...active,
-    version: 3,
+    // Serial lenses made Seisō v3 (WO-165), and a fifth lens v4 (WO-238).
+    version: 4,
     tags: active.tags.filter((tag) => tag !== "delegate"),
     workOrder: {
       ...active.workOrder,
@@ -208,7 +209,7 @@ const migratedEntropyGraph = {
       ...active.inspection,
       grants: active.inspection.grants.map((grant) =>
         grant === "Delegate up to four read-only lenses"
-          ? "Work up to four read-only lens checklist items serially"
+          ? "Work up to five read-only lens checklist items serially"
           : grant,
       ),
     },
@@ -219,10 +220,11 @@ const migratedEntropyGraph = {
       : {
           ...support,
           supportFacetId: serialSupportId,
+          version: 2,
           name: "Lens Checklist",
           supportedTags: ["observe"],
           semanticsAdded: [
-            "work at most four read-only lenses serially with fixed briefs and word budgets",
+            "work at most five read-only lenses serially with fixed briefs and word budgets",
           ],
           authorityChanges: [],
           emissions: support.emissions.map((emission) => ({
@@ -234,7 +236,7 @@ const migratedEntropyGraph = {
             ...(emission.kind === "work-order"
               ? {
                   values: [
-                    "Work at most four read-only lenses serially as the reviewer; every checklist item declares files, questions, output shape, word budget, and no-fix",
+                    "Work at most five read-only lenses serially as the reviewer; every checklist item declares files, questions, output shape, word budget, and no-fix",
                   ],
                 }
               : {}),
@@ -246,11 +248,11 @@ const migratedEntropyGraph = {
           })),
           cost: {
             ...support.cost,
-            runtimeCost: { quantity: 4, unit: "lens-checklist-items-maximum" },
+            runtimeCost: { quantity: 5, unit: "lens-checklist-items-maximum" },
           },
           inspection: {
             restrictions: [
-              "At most four no-fix, read-only lens checklist items",
+              "At most five no-fix, read-only lens checklist items",
             ],
           },
         },
@@ -267,7 +269,7 @@ const migratedEntropyGraph = {
 assert.equal(
   canonicalStringify(entropyReducerLoadout(11000)),
   canonicalStringify(migratedEntropyGraph),
-  "WO-142 Shape-First, WO-100 reviewer pin and WO-165 serial route are the only authorized entropy migrations",
+  "WO-142 Shape-First, WO-100 reviewer pin, WO-165 serial route and WO-238's fifth lens are the only authorized entropy migrations",
 );
 assert.equal(
   canonicalStringify(JSON.parse(read(entropyFixturePath))),
@@ -505,7 +507,7 @@ const compatibility = Object.entries(results).map(([name, result]) => {
         constraints: priorWorkOrder.constraints.map((constraint) =>
           constraint ===
           "Delegate at most four read-only lenses; every brief declares files, questions, output shape, word budget, and no-fix"
-            ? "Work at most four read-only lenses serially as the reviewer; every checklist item declares files, questions, output shape, word budget, and no-fix"
+            ? "Work at most five read-only lenses serially as the reviewer; every checklist item declares files, questions, output shape, word budget, and no-fix"
             : constraint,
         ),
       },
@@ -531,9 +533,10 @@ const compatibility = Object.entries(results).map(([name, result]) => {
     const currentSeiso = definitions.find(
       (entry) => entry.componentId === seisoId,
     );
+    // Serial lenses made Seisō v3 (WO-165), and a fifth lens v4 (WO-238).
     assert.deepEqual(currentSeiso, {
       ...previousSeiso,
-      version: 3,
+      version: 4,
       definitionHash: currentSeiso.definitionHash,
     });
     assert.notEqual(currentSeiso.definitionHash, previousSeiso.definitionHash);
@@ -1118,5 +1121,5 @@ if (preserved)
     "Retained immutable authority evidence: behavior source is unchanged apart from component release labels.",
   );
 console.log(
-  `${mode === "--write" ? "Recorded" : "Verified"} two unchanged programs, the WO-132 plan-refuter, WO-142 Shape-First, WO-100 reviewer and WO-165 serial-route migrations, four widening rejections, nine runtime denials, admitted/reverted grants and ${comparisonPaths.length} bundle comparisons (including additions and removals).`,
+  `${mode === "--write" ? "Recorded" : "Verified"} two unchanged programs, the WO-132 plan-refuter, WO-142 Shape-First, WO-100 reviewer, WO-165 serial-route and WO-238 fifth-lens migrations, four widening rejections, nine runtime denials, admitted/reverted grants and ${comparisonPaths.length} bundle comparisons (including additions and removals).`,
 );

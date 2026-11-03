@@ -28,11 +28,28 @@ import {
   readFileSync,
   readdirSync,
   realpathSync,
+  unlinkSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve, sep } from "node:path";
 import { containedRegularFile } from "./paths.mjs";
+import {
+  deliveredPackets,
+  deliverRoutedPackets,
+  filedPacketBytes,
+  carryingRelease,
+  packetPath,
+  validDelivery,
+  writeDelivery,
+} from "./proposal-delivery.mjs";
+
+export {
+  deliveredPackets,
+  deliverRoutedPackets,
+  filedPacketBytes,
+  validDelivery,
+};
 import { committedReader, sha256, sha256Hex } from "./plan-subject.mjs";
 import { checkLocalTerms } from "./terms.mjs";
 import {
@@ -805,7 +822,9 @@ export function readEntropyControl(root) {
             validDigest(event.receiptHash) &&
             typeof event.findingId === "string" &&
             event.findingId.length > 0 &&
-            ["accept", "defer", "dismiss"].includes(event.disposition) &&
+            ["accept", "defer", "dismiss", "route"].includes(
+              event.disposition,
+            ) &&
             typeof event.reason === "string" &&
             event.reason.trim().length > 0,
           `invalid disposition event on line ${index + 1}`,
@@ -828,17 +847,39 @@ export function readEntropyControl(root) {
             typeof event.path === "string",
           `invalid packet event on line ${index + 1}`,
         );
+      else if (event.type === "EntropyPacketRouted")
+        check(
+          exact(event, [
+            "schemaVersion",
+            "type",
+            "recordedAt",
+            "receiptId",
+            "receiptHash",
+            "suggestionId",
+            "workOrderId",
+            "path",
+          ]) &&
+            validReceiptId(event.receiptId) &&
+            validDigest(event.receiptHash) &&
+            typeof event.suggestionId === "string" &&
+            /^WO-\d{3,}$/u.test(event.workOrderId) &&
+            typeof event.path === "string",
+          `invalid packet route event on line ${index + 1}`,
+        );
       else throw new Error(`unknown entropy control event ${event.type}`);
       return event;
     });
 }
 
-const appendControl = (root, event) => {
+// One write for every event of one act, so an act's events land together.
+const appendControl = (root, ...events) => {
   ensureDirectory(root, docRelative(root, "control"));
-  appendFileSync(join(root, controlLog(root)), `${JSON.stringify(event)}\n`, {
-    mode: 0o644,
-  });
-  return event;
+  appendFileSync(
+    join(root, controlLog(root)),
+    events.map((event) => `${JSON.stringify(event)}\n`).join(""),
+    { mode: 0o644 },
+  );
+  return events[0];
 };
 
 const paragraph = (value, limit) =>
@@ -2090,11 +2131,26 @@ function filePacket(root, reviewReceiptId, packet, reason, date) {
  */
 export async function disposeEntropyFinding(
   root,
-  { receiptId, id, disposition, reason, now = () => new Date().toISOString() },
+  {
+    receiptId,
+    id,
+    disposition,
+    reason,
+    workOrderId = null,
+    now = () => new Date().toISOString(),
+  },
 ) {
   check(
-    ["accept", "defer", "dismiss"].includes(disposition),
-    "disposition must be accept, defer or dismiss",
+    ["accept", "defer", "dismiss", "route"].includes(disposition),
+    "disposition must be accept, defer, dismiss or route",
+  );
+  check(
+    (disposition === "route") === (workOrderId !== null),
+    "route names its order with --order WO-NNN, and only route takes one",
+  );
+  check(
+    workOrderId === null || /^WO-\d{3,}$/u.test(workOrderId),
+    "--order names a work order, WO-NNN",
   );
   check(
     typeof reason === "string" && reason.trim().length > 0,
@@ -2132,31 +2188,93 @@ export async function disposeEntropyFinding(
       },
     ];
     let filed = null;
-    if (disposition === "accept") {
-      filed = filePacket(root, receiptId, packet, reason, recordedAt);
-      events.push({
-        schemaVersion: 1,
-        type: "EntropyPacketFiled",
-        recordedAt,
-        receiptId,
-        receiptHash: review.receiptHash,
-        suggestionId: id,
-        packetHash: filed.packetHash,
-        path: filed.path,
-      });
+    const path = packetPath(root, id);
+    // The packet's edits and their control events land together: when any
+    // step fails, the packet returns to the bytes it had, so the same
+    // disposal can run again instead of meeting a half-written route.
+    const packetFile = join(root, path);
+    const before = existsSync(packetFile)
+      ? readFileSync(packetFile, "utf8")
+      : null;
+    try {
+      // Routing files the packet first when no acceptance filed it yet.
+      if (
+        disposition === "accept" ||
+        (disposition === "route" && !existsSync(join(root, path)))
+      ) {
+        filed = filePacket(root, receiptId, packet, reason, recordedAt);
+        events.push({
+          schemaVersion: 1,
+          type: "EntropyPacketFiled",
+          recordedAt,
+          receiptId,
+          receiptHash: review.receiptHash,
+          suggestionId: id,
+          packetHash: filed.packetHash,
+          path: filed.path,
+        });
+      }
+      if (disposition === "route") {
+        const current = JSON.parse(readFileSync(join(root, path), "utf8"));
+        // A packet filed from another review under the same identifier is that
+        // review's packet; routing this review's packet never rewrites it.
+        check(
+          current.sourceReceiptId === receiptId &&
+            JSON.stringify(current.packet) === JSON.stringify(packet),
+          `${path} holds the packet ${current.sourceReceiptId} filed under ${id}, not this review's; route it from ${current.sourceReceiptId}`,
+        );
+        check(
+          !current.deliveredBy?.release,
+          `${id} was delivered by ${current.deliveredBy?.workOrderId} in ${current.deliveredBy?.release}; a shipped packet is not routed again`,
+        );
+        // An order whose release is published, or whose merge brought its
+        // passed final review into this checkout, names that release now, so a
+        // route after the order's last preparation completes before its close
+        // publishes; an order in flight gets it from its own release
+        // preparation.
+        writeDelivery(root, path, {
+          workOrderId,
+          release: carryingRelease(root, workOrderId),
+          recordedAt,
+        });
+        events.push({
+          schemaVersion: 1,
+          type: "EntropyPacketRouted",
+          recordedAt,
+          receiptId,
+          receiptHash: review.receiptHash,
+          suggestionId: id,
+          workOrderId,
+          path,
+        });
+      }
+      appendControl(root, ...events);
+    } catch (error) {
+      const now = existsSync(packetFile)
+        ? readFileSync(packetFile, "utf8")
+        : null;
+      if (now !== before) {
+        if (before === null) unlinkSync(packetFile);
+        else writeFileSync(packetFile, before, { mode: 0o644 });
+      }
+      throw error;
     }
-    for (const event of events) appendControl(root, event);
     return {
       receiptId,
       id,
       disposition,
       kind: "proposal-packet",
       ...(filed ? { filed: filed.path } : {}),
+      ...(disposition === "route" ? { routed: { path, workOrderId } } : {}),
       promotion:
         "Filing is not promotion; a work order still needs an operator-authorized planning act.",
     };
   }
   check(finding !== undefined, `${id} is not a finding in ${receiptId}`);
+  check(
+    disposition !== "route",
+    `${id} is a finding; an accepted finding becomes a register candidate, and only a proposal packet is routed to an order`,
+  );
   const refutation = latestRefutationFor(root, receiptId);
   const survival = !refutation
     ? "unrefuted"
@@ -2190,7 +2308,7 @@ export async function disposeEntropyFinding(
   let candidate = null;
   if (disposition === "accept")
     candidate = appendCandidate(root, review, finding, reason, date);
-  for (const event of events) appendControl(root, event);
+  appendControl(root, ...events);
   return {
     receiptId,
     id,
@@ -2608,9 +2726,15 @@ export function checkEntropyReceipts(root) {
         containedRegularFile(absolute, root),
         `filed packet ${event.path} is missing`,
       );
+      const text = readFileSync(absolute, "utf8");
       check(
-        sha256(readFileSync(absolute, "utf8")) === event.packetHash,
+        sha256(filedPacketBytes(text)) === event.packetHash,
         `filed packet ${event.path} no longer matches the hash its event bound`,
+      );
+      const { deliveredBy } = JSON.parse(text);
+      check(
+        deliveredBy === undefined || validDelivery(deliveredBy),
+        `filed packet ${event.path} has a malformed deliveredBy: it names a work order, a release or null, and when`,
       );
     }
   }

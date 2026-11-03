@@ -40,6 +40,8 @@ npm run entropy -- refutation-receipt <attempts.json>
 
 # 4. Decide, per surviving finding and per proposal packet.
 npm run entropy -- dispose REVIEW-NNN <id> accept|defer|dismiss '<reason>'
+# A proposal packet the planning pass gives to an order is routed to it.
+npm run entropy -- dispose REVIEW-NNN <packet-id> route '<reason>' --order WO-NNN
 
 # 5. Prove the chain and the immutability of every filed pair.
 npm run entropy -- check
@@ -50,6 +52,21 @@ review to work from, `finish-pending-dispatch` with the episode to file or
 discard, or `review` when no filed review is both refuted and undisposed and a
 fresh episode therefore earns its cost. `planning: entropy reducer` opens with
 it, so a pass never pays for a review whose predecessor nobody decided.
+
+A filed proposal packet records what shipped it in its last field,
+`deliveredBy` (`workOrderId`, `release`, `recordedAt`). `route` writes it,
+filing the packet first when no acceptance did: the release is the order's
+published release when it already has one, the version in the order's heading
+once the order's merge has brought its passed final review into the checkout
+that routes, and `null` while the order is in flight. That order's
+`npm run release -- prepare --local` then names the release it prepares, in
+the order's own change. Release close judges the routed packets with the other
+release surfaces before it publishes: a packet routed after the order's last
+preparation still names no release, so the close refuses, publishes nothing
+and names the route command that, run again on a planning branch of main,
+writes the release the close publishes. A finding cannot be routed, and a
+packet that names its release is not routed again. `entropy check` judges a
+packet's filing hash over its bytes without `deliveredBy`.
 
 `--concern '<hypothesis>'` names a specific worry for the review — accumulated
 startup context, fold cost, workflow handoffs, change fan-out. A concern is a
@@ -238,7 +255,7 @@ removed:
 2. Follow the compiled manual Program: census, bounded lenses, isolated probes,
    findings, and suggestions. Authorize each operation and thread the returned
    resource envelope. The 32-probe ceiling is a maximum, not required usage or blanket filesystem
-   permission. Work the at-most-four lens checklist items serially; the plan
+   permission. Work the at-most-five lens checklist items serially; the plan
    has no delegate grant or `Program.All`. A compiled plan does not launch
    models or enforce a shell sandbox.
 3. Validate the output using `validateReviewerOutput()` or

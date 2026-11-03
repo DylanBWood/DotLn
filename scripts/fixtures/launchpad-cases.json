@@ -36,5 +36,7 @@
   "seed preflight and runtime emit share dependency-free harness composition",
   "follow-up exports refuse reserved local names regardless of case",
   "WO-225 kit carries the console schemas and npm console uses the carried build without writes",
-  "[document] the kit owns its complete guide and the front page is a pinned instance seed"
+  "[document] the kit owns its complete guide and the front page is a pinned instance seed",
+  "[document] WO-238 criteria 1 and 9: an exported instance gives its seeds and first order core's kinds, and its seeds state where history and the kit's explanation live",
+  "WO-238: a carried document's link to a moved record keeps its bytes and points upstream to where the record lives at the commit"
 ]

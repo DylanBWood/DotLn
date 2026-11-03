@@ -44,27 +44,24 @@ import {
   historyStart,
   markerLine,
 } from "./lib/release-history.mjs";
-import { parsers } from "prettier/plugins/markdown.mjs";
+import {
+  markdownLinks,
+  markdownNodes as nodes,
+  parseMarkdown,
+} from "./lib/markdown-links.mjs";
+import { documentReport } from "./lib/document-kinds.mjs";
+import {
+  moveIndex,
+  referencePath,
+  reusedPaths,
+} from "./lib/document-moves.mjs";
+
+export { markdownLinks };
 
 const normalized = (value) => value.replace(/\s+/g, " ").trim();
 const inside = (root, path) =>
   path === root || path.startsWith(`${root}${sep}`);
 
-// The repository already pins Prettier. Its exported Markdown parser supplies
-// block boundaries, decoded destinations and reference identities; no second
-// Markdown grammar or new dependency is needed. The pinned parser is synchronous.
-function parseMarkdown(source) {
-  const ast = parsers.markdown.parse(source);
-  if (ast?.type !== "root" || !Array.isArray(ast.children))
-    throw new Error(
-      "Unsupported Markdown parser AST; check the pinned Prettier version",
-    );
-  return ast;
-}
-function* nodes(node) {
-  yield node;
-  for (const child of node.children ?? []) yield* nodes(child);
-}
 const start = (node) => node.position.start.offset;
 const end = (node) => node.position.end.offset;
 // The optional `code` and `image` mappers rewrite an inline code span's text
@@ -188,24 +185,6 @@ export function productContent(file, source) {
   };
 }
 
-export function markdownLinks(source) {
-  const ast = parseMarkdown(source),
-    definitions = new Map();
-  for (const node of nodes(ast))
-    if (node.type === "definition" && !definitions.has(node.identifier))
-      definitions.set(node.identifier, node.url);
-  const links = [];
-  for (const node of nodes(ast)) {
-    const href = ["link", "image"].includes(node.type)
-      ? node.url
-      : ["linkReference", "imageReference"].includes(node.type)
-        ? definitions.get(node.identifier)
-        : undefined;
-    if (href) links.push({ href, line: node.position.start.line });
-  }
-  return links;
-}
-
 function anchors(source) {
   const ast = parseMarkdown(source);
   const result = new Set(headingRecords(ast).map((row) => row.anchor));
@@ -281,13 +260,20 @@ function privateLinkText(href) {
     : href;
 }
 
-export function linkFailures(root, files = markdownFiles(root)) {
+/** `parsed` may hold links already read from a file, so the document kinds
+ * and this check parse each page once. */
+export function linkFailures(root, files = markdownFiles(root), parsed) {
   const failures = [],
     cache = new Map();
   const physicalRoot = realpathSync(root);
+  // A moved document keeps its bytes: the shared reference resolution reads
+  // its relative links from the directory it was written in, and a link to a
+  // moved document's old path reaches it through the map, as the kinds,
+  // reader bindings and entry points read the same link.
+  const moved = moveIndex(root);
   for (const file of files) {
-    const source = readListed(root, file);
-    for (const { href, line } of markdownLinks(source)) {
+    const found = parsed?.get(file) ?? markdownLinks(readListed(root, file));
+    for (const { href, line } of found) {
       if (/^[a-z][a-z0-9+.-]*:|^\/\//i.test(href)) continue;
       let pathname, fragment;
       try {
@@ -300,12 +286,10 @@ export function linkFailures(root, files = markdownFiles(root)) {
       }
       // Relative navigation is judged in the repository file's context,
       // including PR body sources. Publishing does not rewrite their links.
-      const target = pathname
-        ? resolve(
-            pathname.startsWith("/") ? root : dirname(join(root, file)),
-            pathname.replace(/^\//, ""),
-          )
-        : join(root, file);
+      const target = join(
+        root,
+        pathname ? referencePath(moved, file, pathname) : file,
+      );
       const fail = (reason) => failures.push({ file, href, line, reason });
       if (!inside(root, target)) {
         fail("destination escapes the repository");
@@ -1654,10 +1638,10 @@ export function frontPageFindings(root, amendment = null) {
 
 export function checkDocs(
   root,
-  { ceilings, baseline, files, records, frontPageAmendment = null } = {},
+  { baseline, files, records, frontPageAmendment = null } = {},
 ) {
   // Carried operating documents retain upstream history and links. This
-  // instance owns the ceilings and editorial baseline for its own documents.
+  // instance owns the editorial baseline for its own documents.
   const manifestPath = join(root, "KIT-MANIFEST.json");
   const kitFiles = existsSync(manifestPath)
     ? new Set(
@@ -1666,18 +1650,13 @@ export function checkDocs(
         ),
       )
     : null;
-  ceilings ??= readDocumentJson(
-    root,
-    docRelative(root, "control", "doc-ceilings.json"),
-  );
   baseline ??= readDocumentJson(
     root,
     docRelative(root, "control", "doc-baseline.json"),
   );
-  if (ceilings.schemaVersion !== 1 || baseline.schemaVersion !== 1)
+  if (baseline.schemaVersion !== 1)
     throw new Error("Unsupported document control schema");
   if (
-    !ceilings.documents ||
     !baseline.products ||
     !baseline.dispatches ||
     !Array.isArray(baseline.links)
@@ -1726,31 +1705,12 @@ export function checkDocs(
           `NEWER local release tags not in ${file}: ${history.newer.join(", ")}; the table stays valid for its recorded tags; run ${historyCommand} to add them`,
         );
     }
-    const entry = ceilings.documents[name];
-    if (!entry)
-      failures.push(
-        `${file}: missing ceiling; record non-exempt bytes plus two per cent with a dated decision`,
-      );
-    else if (
-      !Number.isSafeInteger(entry.ceiling) ||
-      entry.ceiling < 0 ||
-      !Number.isSafeInteger(entry.nonExemptBytesAtLanding) ||
-      entry.nonExemptBytesAtLanding < 0 ||
-      !/^\d{4}-\d{2}-\d{2}$/.test(entry.date ?? "") ||
-      typeof entry.decision !== "string" ||
-      !entry.decision.trim()
-    )
-      failures.push(`${file}: invalid ceiling metadata`);
-    else if (measured.bytes > entry.ceiling)
-      notices.push(
-        `ADVISORY ${file}: ${measured.bytes - entry.ceiling} bytes over ceiling; planning resets ceilings`,
-      );
+    // A document's size is not its usefulness: the bytes are reported for
+    // the reader and judge nothing.
     rows.push({
       document: file,
       bytes: measured.bytes,
       exemptBytes: measured.exemptBytes,
-      ceiling: entry?.ceiling ?? null,
-      headroom: entry ? entry.ceiling - measured.bytes : null,
     });
     const available = new Map();
     for (const shape of baseline.products[name] ?? [])
@@ -1765,11 +1725,33 @@ export function checkDocs(
         );
     }
   }
-  for (const name of Object.keys(ceilings.documents))
-    if (!products.includes(name))
-      failures.push(
-        `${docRelative(root, "product", name)}: ceiling names a missing product document`,
-      );
+  // Every committed document is standing, record or generated; an entry
+  // point names standing documents only, a standing document has a reader,
+  // and a red tag lives one planning pass before a disposition.
+  const documents = documentReport(root);
+  for (const row of documents.recordsNamed)
+    failures.push(
+      `${row.file}: entry point ${row.entryPoint} names the record ${row.path}; an entry point names standing documents only, so cite the record from a standing section a reader reaches by link`,
+    );
+  // A moved path is never reused: a file there would give every record link
+  // to the old path and every session read of it two documents.
+  for (const { from, to } of reusedPaths(root, moveIndex(root)))
+    failures.push(
+      `${from}: the move map lists this path as moved to ${to}; a moved path is never reused, so give the new document another path`,
+    );
+  const documentNotices = [];
+  for (const id of documents.missingEntryPoints)
+    documentNotices.push(
+      `NOTICE entry point ${id}: none of its files holds its heading or lines in this checkout`,
+    );
+  for (const file of documents.unbound)
+    documentNotices.push(
+      `UNBOUND ${file}: no entry point names it, no standing page a reader reaches links to it and no program reads it; a planning pass red-tags it when no session reads it either`,
+    );
+  for (const row of documents.staleRedTags)
+    failures.push(
+      `${row.pass}: red tag ${row.path}, tagged by ${row.since}, has no disposition${row.reason ? ` (${row.reason})` : ""}; a red tag lives one planning pass, and the next pass removes or folds the document and records why`,
+    );
   const decisions = readDecisions(root);
   for (const row of decisions) {
     if (baseline.dispatches[dispatchKey(row)] === dispatchFingerprint(row))
@@ -1790,6 +1772,7 @@ export function checkDocs(
   for (const failure of linkFailures(
     root,
     files.filter((file) => !kitFiles?.has(file)),
+    documents.bindings.links,
   )) {
     const key = `${failure.file}\0${failure.href}\0${failure.reason}`,
       count = exceptions.get(key) ?? 0;
@@ -1840,6 +1823,13 @@ export function checkDocs(
     historicalHomePaths,
     notices,
     operatorWords,
+    documents: {
+      counts: documents.counts,
+      recordsNamed: documents.recordsNamed,
+      unbound: documents.unbound,
+      staleRedTags: documents.staleRedTags,
+      notices: documentNotices,
+    },
   };
 }
 
@@ -1863,12 +1853,12 @@ if (isMainModule(import.meta.url)) {
       const result = checkDocs(root, {
         frontPageAmendment: await amendedFrontPageScope(root),
       });
-      console.log("Document | Bytes | Exempt bytes | Ceiling | Headroom");
-      for (const row of result.rows)
-        console.log(
-          `${row.document} | ${row.bytes} | ${row.exemptBytes} | ${row.ceiling ?? "missing"} | ${row.headroom ?? "unknown"}`,
-        );
-      for (const notice of result.notices) console.log(notice);
+      const { counts, unbound } = result.documents;
+      console.log(
+        `Documents: ${counts.standing} standing, ${counts.record} record, ${counts.generated} generated; ${unbound.length} standing without a reader binding`,
+      );
+      for (const notice of [...result.notices, ...result.documents.notices])
+        console.log(notice);
       for (const row of result.operatorWords.rows)
         console.log(
           row.wordClass === "attributed-speech"

@@ -20,7 +20,7 @@ const usage = [
   "entropy receipt <result.json> --statement <statement.txt>",
   "entropy refute <REVIEW-NNN> [--transport <name>] [--model <model>] [--effort <level>] [--source <source>] [--account-label <label>]",
   "entropy refutation-receipt <attempts.json> [--statement <statement.txt> (accepted, not recorded)]",
-  "entropy dispose <REVIEW-NNN> <id> accept|defer|dismiss '<reason>'",
+  "entropy dispose <REVIEW-NNN> <id> accept|defer|dismiss '<reason>' | dispose <REVIEW-NNN> <packet-id> route '<reason>' --order WO-NNN",
   "entropy subject [--repository <id> [<commit>] | --workstream WS-NNN | <commit>]",
   "entropy discard review|refutation",
   "entropy check",
@@ -125,12 +125,21 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
   }
 
   if (command === "dispose") {
-    const [receiptId, id, disposition, reason] = rest;
-    if (rest.length !== 4)
+    // Routing a proposal packet to the order that carries it records the
+    // order on the packet; release preparation adds the release.
+    const [receiptId, id, disposition, reason, ...flags] = rest;
+    const opt = options(flags, ["--order"]);
+    if (rest.length < 4 || (disposition === "route") !== "--order" in opt)
       throw new Error(
-        "usage: entropy dispose <REVIEW-NNN> <id> accept|defer|dismiss '<reason>'",
+        "usage: entropy dispose <REVIEW-NNN> <id> accept|defer|dismiss '<reason>' | dispose <REVIEW-NNN> <packet-id> route '<reason>' --order WO-NNN",
       );
-    return disposeEntropyFinding(root, { receiptId, id, disposition, reason });
+    return disposeEntropyFinding(root, {
+      receiptId,
+      id,
+      disposition,
+      reason,
+      workOrderId: opt["--order"] ?? null,
+    });
   }
 
   if (command === "discard") {

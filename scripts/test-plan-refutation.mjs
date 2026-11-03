@@ -6849,7 +6849,7 @@ else {
         runGit(repo, ["branch", "-M", "main"]);
         const date = new Date().toISOString().slice(0, 10);
         const branch = `planning/${date}-collision`;
-        const document = `docs/planning/collision-${date}.md`;
+        const document = `docs/planning/passes/collision-${date}.md`;
         runGit(repo, ["branch", branch]);
         await assert.rejects(
           plan(["start", "collision"], repo),
@@ -6878,7 +6878,8 @@ else {
           "Register",
           "NoOps",
           "Sequence",
-          "Write-backs and ceilings",
+          "Red tags",
+          "Write-backs",
           "Process cost",
           "Validation",
         ])
@@ -7666,12 +7667,16 @@ else {
           "failures",
           "readerScores",
           "conditions",
+          "documents",
           "followups",
         ]);
         assert.match(
           started.document,
-          /^docs\/planning\/failures-\d{4}-\d{2}-\d{2}\.md$/u,
+          /^docs\/planning\/passes\/failures-\d{4}-\d{2}-\d{2}\.md$/u,
         );
+        // The documents report is one bounded page, apart from the 1 KB
+        // start block above it.
+        assert.ok(Buffer.byteLength(JSON.stringify(started.documents)) <= 8192);
         assert.ok(existsSync(join(repo, started.document)));
         assert.equal(started.readerScores.readerDue, false);
         assert.match(started.readerScores.unavailable, /reader-profiles\.json/);
@@ -8718,3 +8723,240 @@ export async function movedAmendmentFixtures({
     rmSync(parent, { recursive: true, force: true });
   }
 }
+
+test("WO-238 the read census counts each document's sessions over the last N releases from the journals, labels Codex unobserved, and plan documents pages its rows at 8 KB with next", async () => {
+  const { documentCensus } = await import("./lib/document-census.mjs");
+  const { documentsPage, documentRows } =
+    await import("./lib/plan-documents.mjs");
+  const parent = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-document-census-")),
+  );
+  try {
+    const repo = makeRepo(parent, "census");
+    runGit(repo, ["branch", "-M", "main"]);
+    // Four releases, a day apart; the window of the last two starts at the
+    // release before them.
+    // Annotated DotLn release tags; a lightweight semver tag and a starter
+    // refresh tag carry version names and are not releases.
+    const tag = (name, message, date) =>
+      runGit(
+        repo,
+        [
+          "-c",
+          "user.name=Plan Fixture",
+          "-c",
+          "user.email=fixture@example.invalid",
+          "tag",
+          "-a",
+          name,
+          "-m",
+          message,
+        ],
+        { env: { ...process.env, GIT_COMMITTER_DATE: date } },
+      );
+    for (const [index, day] of ["03", "04", "05", "06"].entries()) {
+      write(repo, `release-${index}.txt`, `${index}\n`);
+      commit(repo, `release ${index}`, `2030-01-${day}T00:00:00Z`);
+      tag(
+        `v0.${index + 1}.0`,
+        `DotLn v0.${index + 1}.0`,
+        `2030-01-${day}T00:00:00Z`,
+      );
+    }
+    runGit(repo, ["tag", "v9.0.0"]);
+    tag(
+      "v9.1.0",
+      `Starter v9.1.0\n\nCore commit: ${runGit(repo, ["rev-parse", "HEAD"])}`,
+      "2030-01-06T12:00:00Z",
+    );
+    write(
+      repo,
+      "docs/control/budgets.json",
+      JSON.stringify({ documentCensus: { releases: 2 } }),
+    );
+    const journal = (directory, key, rows) =>
+      write(
+        repo,
+        `${directory}/${key.repeat(64)}.jsonl`,
+        rows.map((row) => JSON.stringify(row)).join("\n") + "\n",
+      );
+    const at = (day) => `2030-01-${day}T12:00:00Z`;
+    journal("docs/control/local/harness", "a", [
+      {
+        recordedAt: at("05"),
+        event: "PostToolUse",
+        tool: "Read",
+        reads: [{ path: "docs/product/00-vision.md" }],
+      },
+      {
+        recordedAt: at("05"),
+        event: "PostToolUse",
+        tool: "Bash",
+        reads: [],
+        byteReads: [{ path: "docs/planning/capability-table.md" }],
+      },
+      {
+        recordedAt: at("05"),
+        event: "PostToolUse",
+        tool: "Edit",
+        receipts: [{ path: "docs/product/00-vision.md" }],
+      },
+    ]);
+    journal("docs/control/local/harness", "b", [
+      {
+        recordedAt: at("06"),
+        event: "PostToolUse",
+        tool: "Read",
+        reads: [{ path: "docs/product/00-vision.md" }],
+      },
+      {
+        recordedAt: at("06"),
+        event: "PostToolUse",
+        tool: "Agent",
+        reads: [{ path: "docs/product/13-uifa-roles.md" }],
+      },
+    ]);
+    // A Codex session journals its dispatch and no tool call.
+    journal("docs/control/local/harness", "c", [
+      {
+        recordedAt: at("06"),
+        event: "UserPromptSubmit",
+        typedEvent: "OperatorMessageObserved",
+        source: "codex-dispatch-phrase",
+      },
+    ]);
+    // Before the window.
+    journal("docs/control/local/harness", "d", [
+      {
+        recordedAt: "2030-01-03T12:00:00Z",
+        event: "PostToolUse",
+        tool: "Read",
+        reads: [{ path: "docs/product/13-uifa-roles.md" }],
+      },
+    ]);
+    // A closed order's retained lane counts too.
+    journal("docs/control/local/retained/WO-900/harness", "e", [
+      {
+        recordedAt: at("06"),
+        event: "PostToolUse",
+        tool: "Write",
+        receipts: [{ path: "docs/planning/capability-table.md" }],
+      },
+    ]);
+    const census = documentCensus(repo);
+    assert.equal(census.window.releases, 2);
+    assert.equal(census.window.after, "v0.2.0");
+    assert.deepEqual(census.window.tags, ["v0.4.0", "v0.3.0"]);
+    assert.equal(census.documents["docs/product/00-vision.md"], 2);
+    assert.equal(census.documents["docs/planning/capability-table.md"], 2);
+    assert.equal(census.documents["docs/product/13-uifa-roles.md"], undefined);
+    assert.deepEqual(
+      [
+        census.journals.inWindow,
+        census.journals.observed,
+        census.journals.unobserved,
+      ],
+      [4, 3, 1],
+    );
+    assert.match(census.coverage.codex, /^unobserved: /);
+    assert.deepEqual(
+      JSON.parse(read(repo, "docs/control/local/document-census.json"))
+        .documents,
+      census.documents,
+    );
+    // Without a budgets entry the window is five releases: with four, every
+    // journal the checkout keeps.
+    write(repo, "docs/control/budgets.json", "{}\n");
+    const all = documentCensus(repo, { write: false });
+    assert.equal(all.window.releases, 5);
+    assert.equal(all.window.since, null);
+    assert.equal(all.documents["docs/product/13-uifa-roles.md"], 1);
+    // The report pages at 8 KB with a next command that continues it.
+    for (let index = 0; index < 120; index++)
+      write(
+        repo,
+        `docs/notes/${"long-unread-standing-document-name-".repeat(3)}${String(index).padStart(3, "0")}.md`,
+        "# Note\n",
+      );
+    const first = documentsPage(repo);
+    assert.ok(Buffer.byteLength(JSON.stringify(first)) <= 8192);
+    const cursor =
+      /^npm run plan -- documents --cursor ([a-f0-9]{64}:\d+)$/u.exec(
+        first.next,
+      )?.[1];
+    assert.ok(cursor, first.next);
+    assert.equal(Number(cursor.split(":")[1]), first.rows.length);
+    assert.equal(
+      first.census.codex,
+      "unobserved; the counts are a lower bound",
+    );
+    // A read between pages changes the census; the next page still reads the
+    // rows the first page saved, so no row shifts or drops.
+    journal("docs/control/local/harness", "f", [
+      {
+        recordedAt: at("06"),
+        event: "PostToolUse",
+        tool: "Read",
+        reads: [
+          { path: first.rows.find((row) => row.kind === "red-tag").path },
+        ],
+      },
+    ]);
+    const second = documentsPage(repo, { cursor });
+    assert.notDeepEqual(second.rows[0], first.rows[0]);
+    assert.deepEqual(second.counts, first.counts);
+    // A new first page saves new rows; the old cursor is refused.
+    documentsPage(repo);
+    assert.throws(
+      () => documentsPage(repo, { cursor }),
+      /stale page cursor; restart with npm run plan -- documents/u,
+    );
+    const rows = documentRows(repo);
+    assert.ok(
+      rows.some(
+        (row) => row.kind === "red-tag" && row.path.startsWith("docs/notes/"),
+      ),
+    );
+    assert.ok(rows.some((row) => row.kind === "unread"));
+    // A pass that tagged a document carries it into the next skeleton with
+    // the pass that first tagged it.
+    const tagged = rows.find((row) => row.kind === "red-tag").path;
+    const previous = "docs/planning/passes/earlier-2030-01-06.md";
+    write(
+      repo,
+      previous,
+      `# Earlier\n\n<!-- dotln-red-tags:start -->\n\n\`\`\`json\n${JSON.stringify({ after: null, tags: [{ path: tagged, since: previous, disposition: "" }] })}\n\`\`\`\n\n<!-- dotln-red-tags:end -->\n`,
+    );
+    commit(repo, "earlier pass and notes");
+    const started = await plan(["start", "documents"], repo);
+    assert.match(
+      started.document,
+      /^docs\/planning\/passes\/documents-\d{4}-\d{2}-\d{2}\.md$/,
+    );
+    assert.ok(Buffer.byteLength(JSON.stringify(started.documents)) <= 8192);
+    const skeleton = read(repo, started.document);
+    assert.ok(skeleton.includes("## Red tags\n"));
+    const block = JSON.parse(
+      skeleton.slice(
+        skeleton.indexOf("```json\n") + 8,
+        skeleton.indexOf("\n```\n"),
+      ),
+    );
+    assert.equal(block.after, previous);
+    assert.deepEqual(
+      block.tags.find((row) => row.path === tagged),
+      {
+        path: tagged,
+        since: previous,
+        disposition: "",
+      },
+    );
+    assert.ok(
+      block.tags.some(
+        (row) => row.path !== tagged && row.since === started.document,
+      ),
+    );
+  } finally {
+    rmSync(parent, { recursive: true, force: true });
+  }
+});

@@ -81,7 +81,7 @@
   "activeMechanics": [
     {
       "activeMechanicId": "seiso-shine",
-      "version": 3,
+      "version": 4,
       "name": "Seisō (Shine)",
       "tags": [
         "observe",
@@ -623,7 +623,7 @@
         "grants": [
           "Read repository evidence",
           "Run bounded scratch probes",
-          "Work up to four read-only lens checklist items serially",
+          "Work up to five read-only lens checklist items serially",
           "Emit a validated report"
         ],
         "restrictions": [
@@ -951,7 +951,7 @@
       }
     },
     {
-      "version": 1,
+      "version": 2,
       "requiredCapabilities": [],
       "semanticsModified": [],
       "authorityChanges": [],
@@ -967,7 +967,7 @@
         "observe"
       ],
       "semanticsAdded": [
-        "work at most four read-only lenses serially with fixed briefs and word budgets"
+        "work at most five read-only lenses serially with fixed briefs and word budgets"
       ],
       "emissions": [
         {
@@ -1031,7 +1031,7 @@
           "emissionId": "lens-checklist.constraint",
           "field": "constraints",
           "values": [
-            "Work at most four read-only lenses serially as the reviewer; every checklist item declares files, questions, output shape, word budget, and no-fix"
+            "Work at most five read-only lenses serially as the reviewer; every checklist item declares files, questions, output shape, word budget, and no-fix"
           ],
           "order": 20
         },
@@ -1045,14 +1045,14 @@
         "mechanismType": "work-order",
         "promptTokens": 38,
         "runtimeCost": {
-          "quantity": 4,
+          "quantity": 5,
           "unit": "lens-checklist-items-maximum"
         },
         "extraEpisodes": 0
       },
       "inspection": {
         "restrictions": [
-          "At most four no-fix, read-only lens checklist items"
+          "At most five no-fix, read-only lens checklist items"
         ]
       }
     },

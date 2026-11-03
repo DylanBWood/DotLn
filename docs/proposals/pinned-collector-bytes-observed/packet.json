@@ -71,5 +71,10 @@
       ],
       "urgencyRationale": "Low. No runtime path consumes the records today. The cost is that the first observed cost-loop baseline cannot be verified until re-derived, and the next collector or formatter edit repeats the drift silently."
     }
+  },
+  "deliveredBy": {
+    "workOrderId": "WO-200",
+    "release": "v0.76.1",
+    "recordedAt": "2026-10-12T04:46:30.000Z"
   }
 }

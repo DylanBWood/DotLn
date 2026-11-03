@@ -688,10 +688,17 @@ const objectHash = (type, bytes, algorithm) =>
  * directory is private source material, not a candidate Git entry; tracked
  * intake files and ordinary untracked source still participate. Git filters
  * are applied by hash-object; this never writes
- * the shared object database or the user's index.
+ * the shared object database or the user's index. `exclude` names directory
+ * prefixes left out: the document gate also records the tree without the
+ * active order's own evidence directory, so that order's later record writes
+ * do not stale the row its completion consumes.
  * @param {string} root
+ * @param {{exclude?: string[]}} [options]
  */
-export function gateTreeHash(root) {
+export function gateTreeHash(root, { exclude = [] } = {}) {
+  const prefixes = exclude.map((path) => `${path.replace(/\/+$/u, "")}/`);
+  const excluded = (/** @type {string} */ path) =>
+    prefixes.some((prefix) => path.startsWith(prefix));
   const algorithm = git(root, ["rev-parse", "--show-object-format"]).trim();
   const staged = git(root, ["ls-files", "--stage", "-z"])
     .split("\0")
@@ -758,6 +765,7 @@ export function gateTreeHash(root) {
   /** @type {Map<string, TreeEntry>} */
   const tree = new Map();
   for (const [path, indexedMode] of modes) {
+    if (excluded(path)) continue;
     const absolute = join(root, path);
     let stat;
     try {

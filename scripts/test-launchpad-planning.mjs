@@ -129,6 +129,7 @@ const copyCoreSource = (source) => {
     "NOTICE",
     ".gitignore",
     "docs/product/07-execution-guide.md",
+    "docs/product/operator-reference.md",
     "docs/product/08-publication-compiler.md",
     "docs/PLAYBOOK.md",
     "docs/KIT.md",
@@ -1179,6 +1180,26 @@ test("planning and release-close reads run in a fresh exported instance", async 
       ]),
       "starter baseline tag",
     );
+    // A proposal packet routed to the order learns its release when the
+    // order's release is prepared (WO-238); the probe removes it afterwards.
+    const routedPacket = "docs/proposals/fixture-route/packet.json";
+    write(
+      kit,
+      routedPacket,
+      JSON.stringify(
+        {
+          schemaVersion: 1,
+          kind: "FiledProductSuggestionPacket",
+          deliveredBy: {
+            workOrderId: "WO-001",
+            release: null,
+            recordedAt: "2030-01-02T00:00:00.000Z",
+          },
+        },
+        null,
+        2,
+      ) + "\n",
+    );
     ok(
       releaseObserve(["scripts/release.mjs", "prepare", "--local"]),
       "prepare release probe",
@@ -1188,6 +1209,13 @@ test("planning and release-close reads run in a fresh exported instance", async 
       /^# .+ \(v0\.1\.0\)$/mu,
       "a Starter provenance tag does not retime the instance release",
     );
+    const delivered = JSON.parse(
+      readFileSync(join(kit, routedPacket), "utf8"),
+    ).deliveredBy;
+    assert.equal(delivered.workOrderId, "WO-001");
+    assert.equal(delivered.release, "v0.1.0");
+    assert.notEqual(delivered.recordedAt, "2030-01-02T00:00:00.000Z");
+    rmSync(join(kit, "docs/proposals"), { recursive: true, force: true });
     releaseObserve(["scripts/release.mjs", "check-surfaces", "--local"]);
     assert.doesNotMatch(readFileSync(join(kit, "README.md"), "utf8"), /v99\./u);
     ok(
@@ -2103,6 +2131,7 @@ test("an instance exported at v0.81.0 takes this release by the kit guide's proc
       ".gitignore",
       "CLAUDE.md",
       "docs/control/budgets.json",
+      "docs/repositories/README.md",
       "docs/work-orders/WO-001-environment-truth.md",
       "docs/workstreams/README.md",
       "README.md",

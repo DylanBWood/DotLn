@@ -1,3 +1,4 @@
+import { currentPath, moveIndex } from "./document-moves.mjs";
 import { docRelative } from "./config.mjs";
 import {
   historicalDependencyIds,
@@ -77,7 +78,10 @@ export function dependencyMigration(root, judged, original, read) {
       return { source: after, migrated: false };
     if (!seed) {
       const bytes = original.read(seedPath);
-      refuse(read(seedPath) === bytes, "changed its reviewed seed");
+      // The seed's pass document moved to the passes directory; the reviewed
+      // bytes are compared where the map says the tree now keeps them.
+      const current = currentPath(moveIndex(root), seedPath);
+      refuse(read(current) === bytes, "changed its reviewed seed");
       seed = JSON.parse(bytes);
     }
     let reasons = true;

@@ -43,8 +43,10 @@ export function editionCopy(t, { workspace = false } = {}) {
     TOOL_ROOT,
     copy,
   ]);
+  // Without rename detection a moved file lists both its paths, so the copy
+  // drops the old one instead of keeping both.
   for (const path of [
-    ...paths("diff", "-z", "--name-only", "HEAD"),
+    ...paths("diff", "-z", "--name-only", "--no-renames", "HEAD"),
     ...paths("ls-files", "-z", "--others", "--exclude-standard"),
   ]) {
     const target = join(copy, path);

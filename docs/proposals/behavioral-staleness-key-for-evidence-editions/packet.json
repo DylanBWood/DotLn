@@ -70,5 +70,10 @@
       ],
       "urgencyRationale": "The rule fires on most orders at the current cadence, so each close adds a live episode and a megabyte of evidence; the cost is recurring and grows with the sequence, not with any single order."
     }
+  },
+  "deliveredBy": {
+    "workOrderId": "WO-154",
+    "release": "v0.46.0",
+    "recordedAt": "2026-09-24T18:51:14.000Z"
   }
 }

@@ -70,5 +70,10 @@
       ],
       "urgencyRationale": "Low. The count grows by about two to three rows a day, and every pass that reads it pays for hand classification. Deciding before the next standard pass avoids another overstated validation line."
     }
+  },
+  "deliveredBy": {
+    "workOrderId": "WO-219",
+    "release": "v0.94.0",
+    "recordedAt": "2026-10-23T23:52:23.000Z"
   }
 }

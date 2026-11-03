@@ -379,10 +379,29 @@ export async function requireDocumentRow(root, { instead } = {}) {
   const found = await coveringGateCheck(root, "npm run test:docs", []);
   const treeHash = gateTreeHash(root);
   const local = found.location === "worktree";
+  // A row stands for the exact tree, or for the tree without the active
+  // order's own evidence directory when the row recorded that binding: the
+  // decisions and handoff text a completion writes after its document gate
+  // do not send it back to the gate.
+  const lessEvidence = new Map();
   const row = local
-    ? found.candidates.findLast((candidate) => candidate.treeHash === treeHash)
+    ? found.candidates.findLast((candidate) => {
+        if (candidate.treeHash === treeHash) return true;
+        const excludes = candidate.documentTreeExcludes;
+        if (
+          typeof candidate.documentTreeHash !== "string" ||
+          typeof excludes !== "string"
+        )
+          return false;
+        if (!lessEvidence.has(excludes))
+          lessEvidence.set(
+            excludes,
+            gateTreeHash(root, { exclude: [excludes] }),
+          );
+        return candidate.documentTreeHash === lessEvidence.get(excludes);
+      })
     : undefined;
-  if (row) return { row };
+  if (row) return { row, candidates: found.candidates };
   const standing = local ? found.candidates.at(-1) : undefined;
   return {
     refusal: `Handoff document row missing or failed at the current code identity ${found.codeIdentity}; run npm run test:docs once after the last document edit, then complete again${instead ? `, or ${instead}` : ""}.${standing ? ` The newest standing row (${describeGateRow(standing)}) judged another tree: a document changed after it.` : found.location === "main" ? " Main's document row does not stand for this worktree." : ""}`,
@@ -414,6 +433,9 @@ export async function requireGateClaims(
     log = console,
     gateIndexError,
     state,
+    // When this handoff began; another phase's runs at the same code
+    // identity are not this handoff's repetitions.
+    handoffStart = null,
   } = {},
 ) {
   const advisories = [];
@@ -546,6 +568,30 @@ export async function requireGateClaims(
     }
     if (found.refusal) throw new Error(found.refusal);
     result.documentGate = gateFields(found.row);
+    // A record written into the order's own evidence after a passing document
+    // gate leaves that row standing, so a further document-gate run on a
+    // changed tree within this handoff, after its complete run, is a failure
+    // to report, never progress. An earlier phase's required run at the same
+    // code identity belongs to that phase's handoff.
+    const bounds = [
+      [result.productGate?.recordedAt, "after the complete run recorded"],
+      [handoffStart, "since this handoff began at"],
+    ].filter(([at]) => Number.isFinite(Date.parse(at ?? "")));
+    const [since, label] =
+      bounds.sort(([a], [b]) => Date.parse(b) - Date.parse(a))[0] ?? [];
+    const trees = new Set(
+      (found.candidates ?? [])
+        .filter(
+          (row) =>
+            since === undefined ||
+            Date.parse(row.recordedAt ?? "") >= Date.parse(since),
+        )
+        .map((row) => row.treeHash),
+    );
+    if (trees.size > 1)
+      advise(
+        `Handoff failure: ${trees.size} document-gate runs judged ${trees.size} trees at this code identity${since ? ` ${label} ${since}` : ""}; records written into the order's own evidence after a passing document gate keep its row standing, so only a change outside that directory needs another run.`,
+      );
     if (Array.isArray(result.productGate?.rows)) {
       result.productGate.rows.push(gateFields(found.row));
       result.productGate.evidenceRefs.push(found.row.evidenceRef);

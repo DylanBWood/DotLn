@@ -29,6 +29,14 @@ const phaseEnds = new Map([
   ["FinalReviewCompleted", "finalReview"],
 ]);
 
+/** When the current handoff began: the time of the order's latest phase
+ * start (activation, or a verification, repair or final-review request) or
+ * reopened handoff, or null when that event carries no time. */
+export const handoffStartedAt = (events) =>
+  events.findLast(
+    (event) => phaseStarts.has(event.type) || event.type === "HandoffReopened",
+  )?.recordedAt ?? null;
+
 // Shared pairing for latest-phase status and all-attempt usage. A completion
 // belongs to its completing actor; a missing endpoint never borrows a time.
 export function* completedPhaseAttempts(events) {

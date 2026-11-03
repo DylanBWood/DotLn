@@ -553,6 +553,161 @@ test("document completion requires the exact records judged, including reports a
   assert.ok((await requireDocumentRow(repo)).refusal);
 });
 
+test("WO-238 a document row bound to the tree without the active order's evidence stands after that order's later records, and only there", async (t) => {
+  const { requireDocumentRow } = await import("./lib/handoff-ledger.mjs");
+  const repo = createFixtureRoot(
+    join(tmpdir(), "dotln-document-less-evidence-"),
+  );
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
+  runGit(repo, ["init", "-q", "-b", "wo-999"]);
+  excludeFixtureOwnership(repo);
+  const write = (path, source) => {
+    mkdirSync(dirname(join(repo, path)), { recursive: true });
+    writeFileSync(join(repo, path), source);
+  };
+  write(".gitignore", "docs/control/local/\n");
+  write("source.mjs", "export const result = 1;\n");
+  for (const path of [
+    "docs/evidence/WO-999/decisions.md",
+    "docs/evidence/WO-999/handoff.md",
+    "docs/evidence/WO-998/decisions.md",
+    "docs/product/contract.md",
+  ])
+    write(path, "Original checked record\n");
+  const excludes = "docs/evidence/WO-999";
+  recordGateChecks(repo, [
+    {
+      checkId: "npm run test:docs",
+      codeIdentity: gateCodeIdentity(repo),
+      treeHash: gateTreeHash(repo),
+      documentTreeHash: gateTreeHash(repo, { exclude: [excludes] }),
+      documentTreeExcludes: excludes,
+      subject: "fixture",
+      executed: true,
+      exitCode: 0,
+      durationMs: 1,
+      requiredSuites: ["docs-check"],
+      evidenceRef: "fixture:document-less-evidence",
+      recordedAt: "2030-01-01T00:00:01Z",
+      cases: [
+        {
+          name: "docs-check",
+          executed: true,
+          exitCode: 0,
+          durationMs: 1,
+          finishedAt: "2030-01-01T00:00:00Z",
+        },
+      ],
+    },
+  ]);
+  // The order's own decisions and handoff, written after its document gate.
+  write("docs/evidence/WO-999/handoff.md", "**Criterion 1:** met\n");
+  write("docs/evidence/WO-999/self-review.md", "New record\n");
+  const standing = await requireDocumentRow(repo);
+  assert.equal(standing.row.evidenceRef, "fixture:document-less-evidence");
+  assert.equal(standing.candidates.length, 1);
+  // Another order's records, a standing document and source are judged as
+  // the exact tree.
+  for (const [path, original] of [
+    ["docs/evidence/WO-998/decisions.md", "Original checked record\n"],
+    ["docs/product/contract.md", "Original checked record\n"],
+    ["source.mjs", "export const result = 1;\n"],
+  ]) {
+    write(path, "Changed after the gate\n");
+    assert.ok((await requireDocumentRow(repo)).refusal, path);
+    write(path, original);
+  }
+  assert.equal(
+    (await requireDocumentRow(repo)).row.evidenceRef,
+    "fixture:document-less-evidence",
+  );
+});
+
+test("WO-238 the repeated document-gate advisory counts the runs of the current handoff only: one required run in each phase is no repetition, two trees in one handoff are", async (t) => {
+  const { requireGateClaims } = await import("./lib/handoff-ledger.mjs");
+  const { handoffStartedAt } = await import("./lib/control-time.mjs");
+  // The handoff begins at the order's latest phase start or reopening.
+  assert.equal(
+    handoffStartedAt([
+      { type: "WorkOrderActivated", recordedAt: "2030-01-01T00:00:00.000Z" },
+      { type: "ImplementationReady", recordedAt: "2030-01-01T00:00:30.000Z" },
+      { type: "VerificationRequested", recordedAt: "2030-01-01T00:01:00.000Z" },
+    ]),
+    "2030-01-01T00:01:00.000Z",
+  );
+  assert.equal(handoffStartedAt([{ type: "RepairRequested" }]), null);
+  const repo = createFixtureRoot(join(tmpdir(), "dotln-handoff-repeat-"));
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
+  runGit(repo, ["init", "-q", "-b", "wo-901"]);
+  excludeFixtureOwnership(repo);
+  const write = (path, source) => {
+    mkdirSync(dirname(join(repo, path)), { recursive: true });
+    writeFileSync(join(repo, path), source);
+  };
+  write(".gitignore", "docs/control/local/\n");
+  write("source.mjs", "export const unchanged = true;\n");
+  write("docs/evidence/WO-901/handoff.md", "Executor handoff\n");
+  const identity = gateCodeIdentity(repo);
+  const row = (name, at) => ({
+    checkId: "npm run test:docs",
+    codeIdentity: identity,
+    treeHash: gateTreeHash(repo),
+    subject: "fixture",
+    executed: true,
+    exitCode: 0,
+    durationMs: 1,
+    requiredSuites: ["docs-check"],
+    evidenceRef: `fixture:${name}`,
+    recordedAt: at,
+    cases: [
+      {
+        name: "docs-check",
+        executed: true,
+        exitCode: 0,
+        durationMs: 1,
+        finishedAt: at,
+      },
+    ],
+  });
+  const ledger = {
+    checked: true,
+    claims: { plain: [], review: [], document: ["13"] },
+  };
+  const claim = (phase, handoffStart) =>
+    requireGateClaims(repo, ledger, {
+      runner: join(root, "scripts/test-runner.mjs"),
+      state: { workOrderId: "WO-901", phase },
+      log: { warn() {} },
+      handoffStart,
+    });
+  // The executor's handoff runs the document gate once.
+  recordGateChecks(repo, [row("executor", "2030-01-01T00:00:01.000Z")]);
+  assert.deepEqual(
+    (await claim("active", "2030-01-01T00:00:00.000Z")).advisories,
+    [],
+  );
+  // The verifier's handoff adds its report and runs the gate once on it.
+  write("docs/verifications/WO-901/VER-001.md", "Verifier report\n");
+  assert.equal(gateCodeIdentity(repo), identity);
+  recordGateChecks(repo, [row("verifier", "2030-01-01T00:01:01.000Z")]);
+  const verified = await claim("verifying", "2030-01-01T00:01:00.000Z");
+  assert.equal(verified.documentGate.evidenceRef, "fixture:verifier");
+  assert.deepEqual(verified.advisories, []);
+  // Without a handoff bound the two phases' runs read as one handoff's two.
+  assert.match(
+    (await claim("verifying", null)).advisories.join("\n"),
+    /^Handoff failure: 2 document-gate runs judged 2 trees at this code identity;/mu,
+  );
+  // A second tree within the verifier's own handoff is a repetition.
+  write("docs/verifications/WO-901/VER-001.md", "Verifier report, edited\n");
+  recordGateChecks(repo, [row("verifier-again", "2030-01-01T00:02:01.000Z")]);
+  const repeated = await claim("verifying", "2030-01-01T00:01:00.000Z");
+  assert.equal(repeated.documentGate.evidenceRef, "fixture:verifier-again");
+  assert.deepEqual(repeated.advisories, [
+    "Handoff failure: 2 document-gate runs judged 2 trees at this code identity since this handoff began at 2030-01-01T00:01:00.000Z; records written into the order's own evidence after a passing document gate keep its row standing, so only a change outside that directory needs another run.",
+  ]);
+});
+
 test("document completion covers relocated records and configured record roots cannot hide source", async (t) => {
   const { requireDocumentRow } = await import("./lib/handoff-ledger.mjs");
   const repo = createFixtureRoot(join(tmpdir(), "dotln-document-roots-"));
@@ -2946,7 +3101,7 @@ test("WO-157 the document gate refuses an unregistered docs JSONL and an unstubb
       .split("\0")
       .filter(Boolean);
   for (const path of [
-    ...listed("diff", "-z", "--name-only", "HEAD"),
+    ...listed("diff", "-z", "--name-only", "--no-renames", "HEAD"),
     ...listed("ls-files", "-z", "--others", "--exclude-standard"),
   ])
     if (existsSync(join(root, path))) {

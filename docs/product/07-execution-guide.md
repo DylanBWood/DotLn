@@ -31,33 +31,26 @@ output bytes before completing. Any newly discovered required source expands
 the declared scope and its accounting. The ledger/intake remain scoped lookups.
 
 `node scripts/harness-context.mjs --check` measures the installed floor plus each
-role skill against the previous edition and its budget. Required task-document
-reads remain scoped by the directives above; editing a product document does
-not alter the cold-start comparison or require a new evidence edition. The
-historical [WO-039 measurement](../evidence/WO-039/harness-context.json) retains
-its original broader method.
-
-WO-155's measurement compares with the highest reachable local release tag
-(`vX.Y.Z`) and reports each role's bytes and delta beside its ceiling. The last
-acceptance comparison uses the first committed snapshot on the current
+role skill against the highest reachable local release tag (`vX.Y.Z`) and each
+role's budget, and reports each role's bytes and delta beside its ceiling. The
+last acceptance comparison uses the first committed snapshot on the current
 branch's first-parent history containing that role's latest global acceptance
-(date, then record order). Its source and measured bytes are recorded; the
-ceiling and numbers in historical reason prose are not byte measurements.
-Missing history or files produce an unavailable delta with a cause.
-`--check` refuses any unresolved `Read:`, never a budget advisory;
-no flag prints the measurement alone. `npm run meta` includes the same per-role rows
-in its drift signal. The [loading observations](../evidence/WO-155/skill-loading.json)
-found fresh Claude Explore and Copilot task workers without the floor in their initial context,
-so the full refusals paragraph remains in each skill under WO-155's fallback.
+(date, then record order); its source and measured bytes are recorded, and
+missing history or files produce an unavailable delta with a cause.
+`--check` refuses any unresolved `Read:`, never a budget advisory; no flag
+prints the measurement alone, and `npm run meta` includes the same per-role
+rows in its drift signal. Required task-document reads remain scoped by the
+directives above; editing a product document does not alter the cold-start
+comparison or require a new evidence edition. Every skill carries the full
+refusals paragraph, because fresh Claude Explore and Copilot task workers start
+without the floor in their initial context.
 
-This guide is the operating contract. Harness-specific observations (version,
-model and effort readback, host permission modes) live in
-`docs/AI-HARNESS-SECURITY.md` and the playbook, with a pointer where each
-left (WO-090, 2026-09-20). The [WO-090 measurement](../evidence/WO-090/README.md)
-by WO-039's method records that this guide enters the fixture's directed sets
-only through §Goal-aligned decisions; actual orders add their cited sections.
-Retiring that section's duplicated role procedure lowers every measured role's
-directed total; the harness-observation moves alone left those totals unchanged.
+This guide is the operating contract for every model session. Harness-specific
+observations (version, model and effort readback, host permission modes) live
+in `docs/AI-HARNESS-SECURITY.md` and the playbook. The guide enters a role's
+directed reads only through §Goal-aligned decisions and the sections an order
+cites; the operator's own procedures are in the
+[operator reference](operator-reference.md).
 
 ## Goal-aligned decisions
 
@@ -238,32 +231,11 @@ grant no new publication or account-setting authority, and select no new Support
 A reusable research Support remains a possible later composition of these
 capabilities (product 03's optional environment adapters).
 
-The route stops for the operator merge, an operator finding, an operator's
-recorded direction (a waiver, retraction, reopened handoff, override record or
-withdrawal; a defect record or a bound acceptance does not stop it) or typed
-correction, analysis or override, refused dispatch, three verification failures,
-two final-review failures, two ended incomplete attempts in one phase, or an
-exhausted budget. A stop's facts describe the log the drive last saw, so a
-transition recorded since, by hand or otherwise, clears a stale refusal or incomplete
-count; a repair bound limits only the repairs still to come. Type the same phrase to
-re-enter: the phase receives its same briefing in a fresh session.
-Release close requires the launchpad merge and, for a target, the target branch's
-ancestry in its registered base branch on the remote, as close itself judges it.
-Status reads local refs; a drive of a closed order fetches both bases first, because a
-hosted merge reaches neither clone by itself and a failed fetch reads as not yet merged. A merge also needs the order's passing final review in its own control record on the base, as close asks of that base, since a branch with no commits of its own is trivially an ancestor. A target merge counts once its branch has reached the remote base, and the drive also requires that branch to have left its recorded base.
-A close the host declines is not retried. The drive stops at `awaiting-close`
-and names the next step: type `resume: release close` in the launchpad's main
-checkout for the order or, after a Codex decline, re-enter with `--host claude`,
-the one admitted host change, for that activation's release close only; the
-driver refuses any other phase under it, a later activation drives on the host
-recorded before it, and a decline is carried only while it is the order's
-current fact. The drive record keeps the declined item in the enumerated
-vocabulary with the reason the host printed, its URLs, paths and queries masked,
-or that it printed none, and a declined or failed phase's raw stream, stderr and
-Codex session rollouts stay
-beside the record in ignored storage; the live fixture moves them to
-`docs/control/local/live-drive-reports/` before removing its trees
-([WO-247-D003](../evidence/WO-247/decisions.md#wo-247-d003--what-a-declined-phase-retains-and-where)).
+The drive stops for the operator merge, an operator finding or direction, a
+refused dispatch, repeated verification or final-review failures, incomplete
+attempts or an exhausted budget; what each stop asks of the operator, how to
+re-enter and what a declined close retains are in the
+[operator reference](operator-reference.md#driving-an-order).
 Every live receipt names the code it ran on: `codeIdentity.source` is the
 authoring checkout's gate code identity at the export the fixture installed,
 beside the fixture trees' own hashes as provenance, and each launched role's row
@@ -307,7 +279,7 @@ uses the same floor dispatch with its project skill. Keep `npm run harness --
 check` green after changing the Contributor source and regenerating the bundle.
 
 **The phrase records its own dispatch.** In Claude Code the generated
-session hook does not merely resolve the phrase [WO-130, 2026-09-13]. When
+session hook does not merely resolve the phrase [WO-130, 2026-09-13](../evidence/WO-130/decisions.md). When
 the canonical status lists the phrase's action (`next`, `fix`, `verify`,
 `final-review`) among the legal next actions, the hook runs that `resume`
 command itself, records the transition and delivers the command's briefing as
@@ -354,25 +326,16 @@ authority. A failed canonical read skips binding with one advisory and retains
 ordinary tool observations. Manual `harness begin` refuses every existing state
 path; only lifecycle-owned automatic entry may upgrade valid roleless state.
 
-**First-party session commands.** These prefixes are part of the supported
-command vocabulary alongside `resume:`, `planning:` and `ideation:`
-[WO-043, 2026-09-11]. They do not create lifecycle events:
-
-| Operator says                   | Meaning                                                                                                                                                                                                                                                                                                                   |
-| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `scope expand: <addition>`      | Authorize the stated addition to the current task. Preserve existing work and obligations, record the bounded scope expansion and its evidence/review duties, and continue under the existing effect boundaries. The prefix alone does not authorize publication, destructive effects or unrelated work.                  |
-| `conversation only: <question>` | Answer a side question briefly while continuing the active work order. The question changes no scope, phase or obligation, opens no ideation capture, and requires no repeat `resume:` instruction. Tools and changes already authorized by the work order continue. Only an explicit pause or stop interrupts that work. |
-| `quality pass: <target>`        | Improve the named documents, list, folder, described set or passage in the current session under §Discipline's usefulness and passage rules, then continue the active task. It authorizes only those document edits and changes no phase, gate or record protection.                                                      |
-
-Quoted examples of these prefixes are discussion, not a dispatch. A message
-actually prefixed `ideation:` still follows the ideation pipeline even when
-its subject is one of these commands. The contract is carried in the
-Contributor's generated instructions for both harnesses; this does not claim
-the separately deferred phrase-table generator in WO-088 is implemented.
-VER-002 F2–F4 corrected this placement on 2026-09-11: every generated role
-target carries the prefixes, including when optional supports are removed;
-the locked hand-written floor retains its original wording. The cold-start
-table includes the shared goal card and the refuter's separate subject boundary.
+**First-party session commands.** `scope expand:`, `conversation only:` and
+`quality pass:` belong to the supported command vocabulary beside `resume:`,
+`planning:` and `ideation:` and create no lifecycle event; what each one
+authorizes is in the [operator reference](operator-reference.md#session-commands),
+and every role's generated instructions carry the rule it applies, including
+when optional supports are removed. Quoted examples of these prefixes are
+discussion, not a dispatch. A message actually prefixed `ideation:` still
+follows the ideation pipeline even when its subject is one of these commands.
+The locked hand-written floor keeps its own wording; the cold-start table
+includes the shared goal card and the refuter's separate subject boundary.
 
 1. Run `npm run resume --silent -- status --json`. The JSON names the active work order
    and its authoritative path, the current phase, latest verification artifact
@@ -720,7 +683,7 @@ remains a separate consumer.
 ### Declaring a portfolio
 
 Unattended work is preauthorized by editing reviewed text, not by a phrase
-[WO-100, 2026-09-22]. Declare a portfolio under `portfolios` in the
+[WO-100, 2026-09-22](../evidence/WO-100/decisions.md). Declare a portfolio under `portfolios` in the
 launchpad's `dotln.config.json`, keyed by its id:
 
 ```json
@@ -794,7 +757,7 @@ surfaces and budget, and the grants. Discovery portfolios keep their shape.
 ### Where the control plane finds its documents
 
 Every command above resolves its document roots and its repository root
-through one loader, `scripts/lib/config.mjs` [WO-069, 2026-09-21].
+through one loader, `scripts/lib/config.mjs` [WO-069, 2026-09-21](../evidence/WO-069/decisions.md).
 Nothing else in `scripts/` holds a literal `docs/...` root or derives the
 repository from its own module URL, and `scripts/test-configuration-root.mjs`
 refuses both.
@@ -961,11 +924,11 @@ A worktree's gate judges only what its branch can see, records the shared refs i
 An earlier row with a missing or malformed snapshot, or a failed history lookup, supplies no comparison baseline; neither blocks recording the failed gate, and valid start/end snapshots still report movement during that run.
 A clean unresolved branch read records `absent` and participates in comparisons; a failed shared-ref read records `unreadable` rather than a partial count, withholds only its own field's comparison, and never changes the gate's result, row or summary.
 
-Each work order's implementation and verification progress independently of every other order's phase [[WO-041 breakout](../evidence/WO-041/ideation.md), 2026-09-07]. Do not require another lane to finish, verify, merge, or release before these transitions. A published dependency needed to implement a feature is still a real input dependency; paired-wave barriers and a verifier-reserve rule tied to the number of waiting orders are not. Actual available actors and one writer per worktree bound resource use. Two work orders run in parallel worktrees as a matter of course: the sequence is ordered in lane pairs whose orders name disjoint primary surfaces and share no hard edge [[R1 replan pass](../planning/r1-replan-2026-09-16.md), 2026-09-16]. The second lane is by preference an evidence-only or machinery order that touches surfaces the delivery order does not, so its integration has no release retime and no source merge; two operator-assisted orders never share a pair [[vision-into-use pass](../planning/vision-into-use-2026-09-17.md), 2026-09-17].
+Each work order's implementation and verification progress independently of every other order's phase [[WO-041 breakout](../evidence/WO-041/ideation.md), 2026-09-07]. Do not require another lane to finish, verify, merge, or release before these transitions. A published dependency needed to implement a feature is still a real input dependency; paired-wave barriers and a verifier-reserve rule tied to the number of waiting orders are not. Actual available actors and one writer per worktree bound resource use. Two work orders run in parallel worktrees as a matter of course: the sequence is ordered in lane pairs whose orders name disjoint primary surfaces and share no hard edge [[R1 replan pass](../planning/passes/r1-replan-2026-09-16.md), 2026-09-16]. The second lane is by preference an evidence-only or machinery order that touches surfaces the delivery order does not, so its integration has no release retime and no source merge; two operator-assisted orders never share a pair [[vision-into-use pass](../planning/passes/vision-into-use-2026-09-17.md), 2026-09-17].
 
 The operator voluntarily takes one order from final review through PR, merge, and release close before bringing another into final review. Preserve that discipline in handoffs; it is not an enforced cross-order transition gate. It leaves other orders free to implement and verify during that window. A gate for this final-review window is an open option, not authorized implementation. The integrating final-review session owns routine integration within its window, without requiring the operator to arrange earlier sibling phases.
 
-Verification judges its recorded subject. When upstream moves, the integrating actor owns the merge and an explicit assessment of which acceptance claims, if any, changed. Incorporating independently reviewed upstream work, regenerating projections, reconciling additive documentation or independent manifest fields, and retiming an unpublished release under its existing classification are permitted final-review integration work when they preserve behavior, contracts, authority, and acceptance. A new base, a sibling's publication, a text conflict, a changed whole-tree hash or a version collision alone is never a failed review, a finding, a repair or a new verification; a verifier who meets one records it as an observation for the reviewer [R1 replan pass, 2026-09-16]. Preserve every original report and source revision; the final report names both bases, resolved paths, carried-forward claims, and checks on the integrated result. It must not pretend an old verdict judged new bytes.
+Verification judges its recorded subject. When upstream moves, the integrating actor owns the merge and an explicit assessment of which acceptance claims, if any, changed. Incorporating independently reviewed upstream work, regenerating projections, reconciling additive documentation or independent manifest fields, and retiming an unpublished release under its existing classification are permitted final-review integration work when they preserve behavior, contracts, authority, and acceptance. A new base, a sibling's publication, a text conflict, a changed whole-tree hash or a version collision alone is never a failed review, a finding, a repair or a new verification; a verifier who meets one records it as an observation for the reviewer [R1 replan pass, 2026-09-16](../planning/passes/r1-replan-2026-09-16.md). Preserve every original report and source revision; the final report names both bases, resolved paths, carried-forward claims, and checks on the integrated result. It must not pretend an old verdict judged new bytes.
 
 Run the affected executable checks and release/publication preflights on the integrated tree. Feedback evidence uses its declared dependency projection, so workspace release versions and license labels do not demand another live audit. Source, executable configuration, dependency, contract, or acceptance changes still need evidence for the claims they affect. If an integration resolution requires new behavioral code, or a check reveals an actual acceptance defect, return that bounded finding through repair and fresh independent verification; unchanged claims are carried forward with their original evidence. A reviewer never writes a behavioral fix and certifies it. Integration bookkeeping alone must not create a new `VER-NNN`, a failed `FINAL-NNN`, or a repair event.
 
@@ -1052,12 +1015,12 @@ unpublished release under its recorded classification with a dated decision
 record (a version collision is bookkeeping); re-run the affected checks and
 the one product gate on the integrated tree; and record both bases and the
 carried-forward claims in the final report. A step this list does not name
-is the reopening observation for this rule [R1 replan pass, 2026-09-16].
+is the reopening observation for this rule [R1 replan pass, 2026-09-16](../planning/passes/r1-replan-2026-09-16.md).
 `npm run worktree -- integrate WO-NNN` runs the list's mechanical steps and
 prints the affected checks; the list remains its definition. A final review
 records a merge blocker only with the command and line that enforces it; a
 sentence nothing checks is a documented condition, not a gate
-[vision-into-use pass, 2026-09-17].
+[vision-into-use pass, 2026-09-17](../planning/passes/vision-into-use-2026-09-17.md).
 
 ## Operator recovery controls
 
@@ -1107,7 +1070,7 @@ evidence, record the operator's disposition and the old state, and expose which
 requirements were bypassed. An operator-authorized working state is distinct
 from measured passing verification. General lifecycle reconstruction and live
 process handling remain planning choices; the recovery event shape is closed
-by the routes below [[off-ramps pass](../planning/off-ramps-5s-entropy-2026-09-25.md)
+by the routes below [[off-ramps pass](../planning/passes/off-ramps-5s-entropy-2026-09-25.md)
 §3–§4, 2026-09-25]. The unconditional entry commands are WO-131 scope; this
 general helper is a preserved requirement, not a claim of implemented recovery
 for every corrupt repository. Source and review duties: [WO-131 ideation receipt](../evidence/WO-131/ideation.md).
@@ -1402,7 +1365,7 @@ inside the authorized ideation subject; surface a genuine new tension through
 the existing decision process.
 
 **Applying a correction.** A correction points at a category [operator
-definition, 2026-09-09]. Two failure modes: sweeping generalization, which
+definition, 2026-09-09](../lineage/idea-ledger.md). Two failure modes: sweeping generalization, which
 extrapolates beyond what the operator said into adjacent rules or file
 changes they never asked for; and over-literal interpretation, which strips
 the rule to its exact words and misses obvious members of the same category.
@@ -1430,7 +1393,7 @@ In ideation mode:
    worktree's capture is staging: the reviewed closeout helper copies it into
    main's ignored intake at removal (WO-044), so no session writes outside its
    worktree for a capture; name the pending reconciliation in the receipt
-   [2026-09-30 pass, WO-116 D014]. Intake is local-only and gitignored; preserve fragments, repetition,
+   [2026-09-30 pass, WO-116 D014](../evidence/WO-116/decisions.md#wo-116-d014--correction-a-capture-aimed-at-the-main-checkout). Intake is local-only and gitignored; preserve fragments, repetition,
    uncertainty, and contradictions.
 2. Apply the clean-room boundary before synthesis. If material resembles
    employer code, configuration, identifiers, proprietary API shapes, internal
@@ -1544,9 +1507,15 @@ blinded second worker. Either way it then disposes every surviving finding and
 proposal packet **in this same pass**. Accepted findings are this pass's
 candidates: they are weighed, sequenced or declined here — in the map, the
 sequence and the orders, each decline carrying its `NoOpIntent` record — not
-queued for a later pass to read. A finding half that a standing operator
+queued for a later pass to read. A proposal packet the pass gives to an order
+is routed to it with `npm run entropy -- dispose REVIEW-NNN <packet-id> route
+'<reason>' --order WO-NNN`, which writes the packet's `deliveredBy`; the
+order's release preparation names its release, and release close refuses to
+publish while a packet routed to the order names another, so a route that
+merged after the order's last preparation is routed again from a planning
+branch of main, which names the release the close publishes. A finding half that a standing operator
 direction reserves for the operator's own pass stays recorded against that
-direction rather than overruled [REVIEW-002 pass, 2026-09-22]; a cold-start
+direction rather than overruled [REVIEW-002 pass, 2026-09-22](../planning/passes/entropy-review-002-2026-09-22.md); a cold-start
 byte ceiling is no longer one (§Discipline's cold-start ceiling route). The generated
 `docs/planning/entropy-reviews/REVIEW-NNN.md` rows and the follow-up register
 are the durable record of what this pass decided; an item left undecided there
@@ -1568,13 +1537,8 @@ a completed set reports `complete`, and a later explicit review starts a new
 sequence. The same pinned reviewer, blinded refutation, immutable launchpad
 receipts and register disposition apply. Episode cost is paid once per
 repository: the REVIEW-002 observation above is about 993 s and USD 9.50
-for one episode, not the whole workstream. Consumptions: [[REVIEW-002 pass](../planning/entropy-review-002-2026-09-22.md),
-2026-09-22]; [[off-ramps pass](../planning/off-ramps-5s-entropy-2026-09-25.md)
-§9, 2026-09-25]; [[REVIEW-006 pass](../planning/entropy-review-006-2026-10-10.md),
-2026-10-10: one order from one finding, one product sentence from the other];
-[[REVIEW-007 pass](../planning/entropy-review-007-2026-10-20.md),
-2026-10-20: no new order, both findings to WO-219 as steps, one of them a
-guard on the review machinery itself].
+for one episode, not the whole workstream. Each pass that consumed a review is listed in the
+[execution-guide record](../planning/passes/execution-guide-record.md#entropy-reducer-consumptions).
 
 Preconditions and inputs:
 
@@ -1618,7 +1582,7 @@ Preconditions and inputs:
    condition, in the `NoOpIntent` shape, so a later pass sees what was weighed.
    A standard pass files an order only for a reopening condition that has
    occurred or an operator direction, and disposes every other row it reads
-   ([2026-09-27 pass](../planning/onesie-twosie-followup-drain-2026-09-27.md#13-the-operators-answer-decisions-made-under-delegation)). 
+   ([2026-09-27 pass](../planning/passes/onesie-twosie-followup-drain-2026-09-27.md#13-the-operators-answer-decisions-made-under-delegation)).
 4. `ideation:` entries in the same dispatch run the complete ideation pipeline
    first; their synthesis is planning input.
 5. An instance's observations and requests arrive as the pasted block its
@@ -1656,27 +1620,44 @@ Preconditions and inputs:
    its reopening condition, as it does a fork item; the idea ledger is
    drained into the operator's instance's UI, where an idea lives first as a
    toy, and is not fed new entries by this route.
-7. Every committed document is one of three kinds, and the pass writes to
-   each in its own way. A standing document (a product document, the
-   sequence, the map's catalog, a workstream, a repository profile, an
-   instance's operator record, a root instruction file) states what is so
-   for a named reader: a change replaces the sentence that is now wrong and
-   links the record, and no dated account of what happened is appended
-   under its headings. A record (an order's decisions and evidence, a
-   pass's own document, a verification, a final review, a receipt, a
-   release note) is dated and immutable, one per event, reached by link
-   and never named by a session-start read list. A generated document is
-   derived by a command and never edited by hand. An instance's operator
-   record is a standing document: it carries the operator's standing
-   directions, each as the rule with its date and capture digest, and
-   never an account of the day, the history of how a rule arrived or a
-   characterization of the operator; the pass's own document holds the
-   day. A document no reader entry point names and no session reads is
-   the pass's removal candidate, whatever its size; a document a role
-   reads at every dispatch stays, whatever its size. WO-238 adds the
-   derived kinds, the reader binding, the read census and the checks;
-   until it lands the rule is this paragraph and the reviewer's judgment
-   ([the 2026-10-28 pass](../planning/document-contract-and-release-close-2026-10-28.md)).
+7. Every committed document is one of three kinds, derived from its path by
+   [`document-kinds.mjs`](../../scripts/lib/document-kinds.mjs), whose kit
+   kinds fix the paths the kit's own commands write in every instance, with
+   the overrides in [`docs/control/documents.json`](../control/documents.json),
+   and the pass writes to each in its own way. A standing document (a product
+   document, the sequence, the map's catalog, a workstream, a repository
+   profile, an instance's operator record, a root instruction file, a README)
+   states what is so for a named reader: a change replaces the sentence that is
+   now wrong and links the record, and no dated account of what happened is
+   appended under its headings. A record (an order's decisions and evidence, a
+   pass's own document under [`docs/planning/passes/`](../planning/README.md),
+   a verification, a final review, a receipt, a release note) is dated and
+   immutable, one per event, reached by link and never named by a reader entry
+   point. A generated document is derived by a command and never edited by hand.
+   An instance's operator record is a standing document: it carries the
+   operator's standing directions, each as the rule with its date and capture
+   digest, and never an account of the day, the history of how a rule arrived
+   or a characterization of the operator; the pass's own document holds the
+   day. The reader entry points are the root instruction file's Start here, the
+   generated skills' and role roots' `Read:` lines, this guide's cold-start
+   read order and the kit guide's First steps; `npm run test:docs` refuses an
+   entry point that names a record and reports a standing document that no
+   entry point names, no standing or generated page a reader reaches links to
+   and no program reads. `npm run plan -- documents` adds the read census:
+   the sessions whose journals read each document over the last N releases (N
+   from `documentCensus.releases` in `docs/control/budgets.json`, five when
+   unset), a lower bound because Codex tool calls are unhooked. A standing
+   document that is unbound and unread is red-tagged: `plan start` writes it
+   into the new pass document's red-tag block, which names the pass whose
+   block it follows, so the order of passes is recorded rather than read from
+   dates or names. The pass after it removes the document or folds it into
+   another and writes the disposition there; a tag stays open across passes
+   until a block disposes of it, a removed document's included, and
+   `npm run test:docs` refuses a tag older than one pass without one. Nothing
+   removes a document by itself, and size never decides: a document a role reads
+   at every dispatch stays whatever its length
+   ([the 2026-10-28 pass](../planning/passes/document-contract-and-release-close-2026-10-28.md);
+   [WO-238](../evidence/WO-238/decisions.md#wo-238-d001--kinds-by-path-class-the-entry-points-and-a-reader-binding-that-counts-programs)).
 
 **`planning: refute` and `planning: refute full`.** These exact phrases load
 the dedicated refuter skill in either harness. The parent runs
@@ -1791,7 +1772,7 @@ planning pass missing a required receipt must still complete normal
 planning/refutation; never fabricate a pass merely to enable amendment.
 Do this during authorized execution rather than carrying an
 inherited failure through later reviews [WO-139-D002, the WO-053 amendment,
-2026-09-18]. An authorized status writeback to
+2026-09-18](../evidence/WO-139/decisions.md#wo-139-d002--clear-authorized-execution-amendments-through-planning-continuation). An authorized status writeback to
 product 00's The one-paragraph story can be bound in that decision's optional
 `executionWritebacks` array: one entry names `path`, `section`, `criterionId`,
 `criterionHash`, `sourceHash` and `acceptedHash`. The criterion hash is SHA-256
@@ -1806,7 +1787,7 @@ judged with its committed amendment log and decision bytes; a pending rebind
 or withdrawal does not rewrite that history. A current authorization can
 also approve committed bytes. The most specific matching approved source
 takes precedence over an older prefix. This is
-reported separately as `authorized-execution-writeback` [WO-118-D004 and D007, 2026-10-13]. If committed execution overwrote an existing capability row, restore the judged
+reported separately as `authorized-execution-writeback` [WO-118-D004 and D007, 2026-10-13](../evidence/WO-118/decisions.md#wo-118-d004--exact-authorized-status-writeback). If committed execution overwrote an existing capability row, restore the judged
 source and append the exact newer row as a dated reassessment. The continuing-work
 check reports a pending history repair before commit only when every changed HEAD
 line is a same-ID capability row preserved byte-for-byte in that appendix, with
@@ -1839,9 +1820,11 @@ earlier pass's document or order is evidence of what happened, never the
 pattern for the next one, and a shape this list does not name is left out or
 named as the pass's own choice.
 
-`plan start <slug>` writes a planning document with these section headings:
-dispatch and capture, readings, orders filed and amended, register, NoOps,
-sequence, write-backs and ceilings, process cost, and validation. The headings
+`plan start <slug>` writes the pass's document under `docs/planning/passes/`
+with these section headings: dispatch and capture, readings, orders filed and
+amended, register, red tags, NoOps, sequence, write-backs, process cost, and
+validation; it also prints the documents report of `npm run plan -- documents`
+and writes the red tags into the red-tags section. The headings
 live in [planning-document.mjs](../../scripts/lib/planning-document.mjs);
 change them together with this paragraph. Fill those sections with useful
 information for the pass; do not copy a predecessor's outline.
@@ -1856,7 +1839,7 @@ Standard artifacts, all doc-only:
   ideas; operator direction, 2026-10-13);
 - the sequence revision, from which closed entries leave at each pass (the
   Closed section of the generated index's history page is their record) [REVIEW-002 pass,
-  2026-09-22], and scoped map rationale, tracks, preflight, candidates,
+  2026-09-22](../planning/passes/entropy-review-002-2026-09-22.md), and scoped map rationale, tracks, preflight, candidates,
   catalog rows and provenance;
 - a blinded refutation receipt pair under `docs/planning/refutations/`,
   produced by `npm run plan -- refute` or the direct-session form, with all
@@ -1866,7 +1849,7 @@ Standard artifacts, all doc-only:
   three-role `Effort:` lines, a `Cost:` header naming additions and removals in
   wall-clock, context bytes, commands, tokens and steps, provenance, a dated
   observed gap, acceptance criteria whose last names both `npm test` and
-  `npm run test:docs` [off-ramps pass, 2026-09-25; WO-111 VER-001 B3],
+  `npm run test:docs` [off-ramps pass, 2026-09-25; WO-111 VER-001 B3](../planning/passes/off-ramps-5s-entropy-2026-09-25.md),
   a Preflight line spelling each single-suite check as
   `npm test -- --only <suite>` for its steps; these suites and the
   structural phase are the order's handoff gate (a target order keeps its
@@ -1904,21 +1887,15 @@ Standard artifacts, all doc-only:
 
 An acceptance criterion says what a write-back states and where, without a
 byte count; a figure in an order filed earlier is the planner's estimate, never
-a bound a role trims reviewed text to meet [2026-09-30 pass; WO-172 theme 14].
-Ceilings are planning's alone [operator direction, 2026-10-07]: every pass
-sets each product document's ceiling (`docs/control/doc-ceilings.json`) at
-its measured non-exempt bytes plus one tenth, citing its planning document;
-the document check reports an overrun as an advisory that the next pass reads
-(mechanical once WO-196 lands); no role trims reviewed text to a number and no
-review asks the operator to settle bytes. When the operator makes bytes a goal and boards an overrun,
-the entry may name an `advisoryDecision` in public evidence with a current
-unresolved registered follow-up; the check reports the exact overrun without
-raising its ceiling or exempting bytes. Remove that reference when the useful
-text fits. A duty an order owes beyond its criteria (a carry-in, a
+a bound a role trims reviewed text to meet [2026-09-30 pass; WO-172 theme 14](../evidence/WO-172/decisions.md).
+No byte ceiling judges a document: its size is not its usefulness, so no role
+trims reviewed text to a number and no review asks the operator to settle bytes
+([WO-238-D005](../evidence/WO-238/decisions.md#wo-238-d005--document-byte-ceilings-retire-role-cold-start-ceilings-stay)).
+The role cold-start ceilings in `docs/control/budgets.json` stay (§Discipline). A duty an order owes beyond its criteria (a carry-in, a
 boarded item it takes, a known issue an earlier receipt named) is written in
 that order under `Known issues and carry-ins`; a known issue from the pass's
 own receipt, which finds the order frozen, goes on its catalog row until a
-later pass amends the order [2026-10-02 pass].
+later pass amends the order [2026-10-02 pass](../planning/passes/standard-pass-2026-10-02.md).
 
 An order gives the executor every step the executor can perform (operator
 direction, 2026-09-28): none is marked operator-run or routed to the
@@ -1937,92 +1914,83 @@ new, in a directory that exists or an earlier step creates), the change, and
 the command that checks it; write-backs last, each with the section heading
 as it reads today; then the handoff sequence of §Discipline. A step that
 cannot be written until another order merges says so and names what will be
-known then. Two screens before filing [2026-10-07 pass]: an order that says
-no code ships is checked against every cited design for work assigned to it
-("a model episode in WO-NNN", "supplied by WO-NNN") and against every
-criterion that needs capability the tree lacks (WO-112 D018: planned as
-evidence-only, it needed four code repairs under override); and no criterion
-requires a deterministic reading of natural language or free-form Markdown,
-which includes counting its sentences (WO-189's criterion 5 cost three failed
-verifications on 2026-10-10 before a line count replaced the sentence count).
-A classification of wording is a persisted judgment supplied as input; a
-record inside a document is a marker block holding JSON or a typed field.
-WO-123 (criterion 5, four repairs) and WO-187 (criteria 2 and 4, four
-repairs) spent 39.9 hours between them before each reader was replaced by a
-structured input. Two more screens [2026-10-13 pass]: verification judges
-each criterion as written, so a scope decision recorded in a Design, a step
-or a known issue is written into every criterion it narrows, and no step
-contradicts a criterion (WO-118's VER-001 failed criterion 4, whose phases
-step 7 had moved onto receipts while the criterion still required the
-console to show them); and an order whose criteria need a live run names, at
-its base, each surface the run must show, write or traverse, and whether it
-exists and has been run (WO-118 needed three mid-run scope amendments for
-four such surfaces, and WO-083's publication step named a command that publishes only a
-source-change episode). One more [2026-10-19 pass]: a criterion names the
-behavior a host's configuration form must give (the admitted command, the
-removal at close) and cites the published host page it was read from; the
-form itself (a settings key, a marker, a rules file) is the executor's,
-read from that page at execution, so a host that documents a different
-form costs no failed verification (WO-221's criteria 2 and 3 fixed a
-marker and a `config.toml` form the hosts do not support; VER-001 failed
-them as written and D028's operator amendment replaced them). One more
-[2026-10-20 pass]: a criterion that settles a boarded row by a case that
-fails without the fix names the control, the case run with only that
-row's fix reverted and recorded with both arms' exit codes in a replayable
-file, as WO-218's repair recorded its 91 controls after VER-001 found three
-named cases passing at the base; a case that also passes at the base, or
-with the fix reverted, settles nothing. One more [2026-10-25 pass]: an order
-that changes which commit a lifecycle step computes from (a base, a merge
-base, a revision) names every reader of that field across `scripts/` and
-`packages/` in its Observed gap, each kept or moved with its reason (WO-230
-moved the publish's three reads to the described base and left
-`lintReviewedTargetCommits`, the fourth reader, on the activation base; the
-DotLn-Angular fork's WO-013 FINAL-002 was refused on two merged subjects the
-day the release landed, and WO-231 moves it). An order that adds recurring
-work to a gate, a hook, a prune or a close names that work's measured cost
-before and after, in its Cost line and its decisions, from a close's step
-timings or `plan conditions`; a cost that is not measured is `unknown`,
-never assumed cheap ([the 2026-10-28
-pass](../planning/document-contract-and-release-close-2026-10-28.md);
-WO-236-D025). Five more [[the 2026-11-01 pass](../planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md),
-the operator's item 7 of that day]: a criterion states a behavior
-observable on the uncommitted candidate by a named command; a count, a
-ceiling, a cost, a duration or a token figure is a Cost line or a decisions
-record and never a criterion's subject (WO-173's criterion 5 and WO-197's
-criterion 2 were waived on a byte figure and a timing ceiling; the fork's
-WO-022 carried a token-spend stop its executor asked the operator to lift);
-a judgment the kit makes at a later phase, the final review's clean subject
-or the release close's clean and undeclared-material judgments, stays with
-that phase, and a clause that reads `HEAD` or a commit range for the
-order's own changes before the final review's commit checks nothing (the
-fork's WO-021 criterion 9 failed its VER-001 on 129 uncommitted paths); a
-criterion that reads data names where it exists at the base or which step
-creates it (WO-197's criterion 1 read per-case timing that began on
-2026-10-05); a criterion that depends on a host, a service or an operator
-account names its fallback evidence (WO-192's criterion 17); and the
-criteria are read against each other and the non-goals for a pair that
-cannot both hold. These are the five classes by which a verifier or a final
-reviewer records a criterion defective with `npm run resume -- defect`
-(bookkeeping, later-phase, absent-input, host-behavior, contradiction).
+known then.
+
+Screens before filing, each with the record of the pass that set it (the
+failures behind each are in the
+[execution-guide record](../planning/passes/execution-guide-record.md#why-the-planning-screens-exist)):
+
+- An order that says no code ships is checked against every cited design for
+  work assigned to it ("a model episode in WO-NNN", "supplied by WO-NNN") and
+  against every criterion that needs capability the tree lacks
+  ([2026-10-07 pass](../planning/passes/machinery-reset-2026-10-07.md)).
+- No criterion requires a deterministic reading of natural language or
+  free-form Markdown, which includes counting its sentences; a classification
+  of wording is a persisted judgment supplied as input, and a record inside a
+  document is a marker block holding JSON or a typed field
+  ([2026-10-07 pass](../planning/passes/machinery-reset-2026-10-07.md)).
+- Verification judges each criterion as written, so a scope decision recorded
+  in a Design, a step or a known issue is written into every criterion it
+  narrows, and no step contradicts a criterion
+  ([2026-10-13 pass](../planning/passes/standard-pass-2026-10-13.md)).
+- An order whose criteria need a live run names, at its base, each surface the
+  run must show, write or traverse, and whether it exists and has been run
+  ([2026-10-13 pass](../planning/passes/standard-pass-2026-10-13.md)).
+- A criterion names the behavior a host's configuration form must give (the
+  admitted command, the removal at close) and cites the published host page it
+  was read from; the form itself (a settings key, a marker, a rules file) is
+  the executor's, read from that page at execution
+  ([2026-10-19 pass](../planning/passes/standard-pass-2026-10-19.md)).
+- A criterion that settles a boarded row by a case that fails without the fix
+  names the control, the case run with only that row's fix reverted and
+  recorded with both arms' exit codes in a replayable file; a case that also
+  passes at the base, or with the fix reverted, settles nothing
+  ([2026-10-20 pass](../planning/passes/entropy-review-007-2026-10-20.md)).
+- An order that changes which commit a lifecycle step computes from (a base, a
+  merge base, a revision) names every reader of that field across `scripts/`
+  and `packages/` in its Observed gap, each kept or moved with its reason
+  ([2026-10-25 pass](../planning/passes/fork-returns-and-review-lint-2026-10-25.md)).
+- An order that adds recurring work to a gate, a hook, a prune or a close names
+  that work's measured cost before and after, in its Cost line and its
+  decisions, from a close's step timings or `plan conditions`; a cost that is
+  not measured is `unknown`, never assumed cheap
+  ([the 2026-10-28 pass](../planning/passes/document-contract-and-release-close-2026-10-28.md);
+  WO-236-D025).
+- Five defect classes
+  ([the 2026-11-01 pass](../planning/passes/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md)):
+  a criterion states a behavior observable on the uncommitted candidate by a
+  named command, and a count, a ceiling, a cost, a duration or a token figure
+  is a Cost line or a decisions record, never a criterion's subject
+  (bookkeeping); a judgment the kit makes at a later phase, the final review's
+  clean subject or the release close's clean and undeclared-material
+  judgments, stays with that phase, and a clause that reads `HEAD` or a commit
+  range for the order's own changes before the final review's commit checks
+  nothing (later-phase); a criterion that reads data names where it exists at
+  the base or which step creates it (absent-input); a criterion that depends on
+  a host, a service or an operator account names its fallback evidence
+  (host-behavior); and the criteria are read against each other and the
+  non-goals for a pair that cannot both hold (contradiction). These are the
+  classes by which a verifier or a final reviewer records a criterion
+  defective with `npm run resume -- defect`.
+
 `npm run work-orders -- index --check` prints `criteria advisory: WO-NNN
 criterion N: <what matched>` for each criterion of an active or open order
-whose wording often marks
-one: a number followed by a unit (`s`, `ms`, `min`, `h`, `bytes`, `KB`,
-`MB`, `GB`, `tokens`, `USD`, `%`) or a dollar amount (`$5`), a median,
-ceiling, budget or cap beside a figure, `HEAD`, `git log`, a `..` or `...` revision range, or the phrases
-"after the review gate", "at release close" and "after the final review".
-It refuses nothing, because a figure can rightly name a record and a
-regular expression over prose is a screen, not a judgment: the planner reads
-each line before filing. `plan check` returns the same lines as its
-`criteriaAdvisories`, and `npm run test:docs` relays them from its passing
-`index` task, as it relays `ADVISORY` lines. `plan failures` counts the
-records by class, and a
-pass that reads one re-reads this list [WO-249]. A release's Read before
+whose wording often marks one of those classes: a number followed by a unit
+(`s`, `ms`, `min`, `h`, `bytes`, `KB`, `MB`, `GB`, `tokens`, `USD`, `%`)
+or a dollar amount (`$5`), a median, ceiling, budget or cap beside a figure,
+`HEAD`, `git log`, a `..` or `...` revision range, or the phrases "after the
+review gate", "at release close" and "after the final review". It refuses
+nothing, because a figure can rightly name a record and a regular expression
+over prose is a screen, not a judgment: the planner reads each line before
+filing. `plan check` returns the same lines as its `criteriaAdvisories`, and
+`npm run test:docs` relays them from its passing `index` task, as it relays
+`ADVISORY` lines. `plan failures` counts the defect records by class, and a
+pass that reads one re-reads this list (WO-249). A release's Read before
 upgrading is also screened: it asks an instance to read, never to edit a
 closed record by hand. A new or tightened kit check must admit records the
 previous release admitted, or the release is held; the `instance-history`
 suite checks that compatibility before release (WO-232). Order size
-[2026-10-13 pass, operator direction]: the 2026-09-08 cut (one seam and one outcome per order,
+[2026-10-13 pass, operator direction](../planning/passes/standard-pass-2026-10-13.md): the 2026-09-08 cut (one seam and one outcome per order,
 split again above four hours) was a correction for its time and no longer
 binds. The binding cost is now the full gate run and the fixed cycle every
 order pays (activation, verification, final review and release close). A
@@ -2071,7 +2039,7 @@ the counts in its document as `self-review: found N; fixed N; recorded N`,
 commits, and refutes the integrated subject; the reviewers are the pass's
 own self-review and never replace the refuter. The reviewed route's first
 run is the 2026-10-31 pass
-([the planning document](../planning/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md)):
+([the planning document](../planning/passes/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md)):
 three `codex exec` workers of 4 to 6 minutes each returned twenty findings,
 fifteen distinct, all integrated before the refutation. WO-244 carries the
 label (`planning: standard pass, reviewed`), the `plan review` helper with
@@ -2112,7 +2080,7 @@ subject with one fresh refuter and files the new receipt on the base branch,
 pushes, and closes the other pull request with a comment naming the
 synthesis; the losing branch is never merged and its receipt stays on it.
 The first run of this routine is the 2026-10-30 pass
-([the planning document](../planning/node24-features-config-plan-first-no-work-stream-2026-10-30.md)):
+([the planning document](../planning/passes/node24-features-config-plan-first-no-work-stream-2026-10-30.md)):
 the Codex pass opened #256, the Claude pass opened #257, and the synthesis
 ran in the Claude session on the operator's direction. WO-244 carries the
 machinery (the dispatch labels and host check, the blindness refusals, the
@@ -2196,7 +2164,7 @@ existing practice this section names.
    `probe:` or `evidence:` commands, or a probe script invoked by path with
    its exact command named in the order, never inside `npm test`; add an npm
    alias when a second order reuses the probe (planning decision 7,
-   [2026-09-19](../planning/outstanding-cleanup-2026-09-19.md#5-decisions-of-this-pass)). Deterministic
+   [2026-09-19](../planning/passes/outstanding-cleanup-2026-09-19.md#5-decisions-of-this-pass)). Deterministic
    adapter and protocol tests stay in the gate. A change to the transport,
    the tool or output protocol, the model artifact or quantization, the
    runtime's version, or authority behavior triggers live requalification,
@@ -2210,7 +2178,7 @@ packet and whether a speculative result was presented as settled.
 [WO-137](../work-orders/WO-137-local-runner-readiness.md) and
 [WO-138](../work-orders/WO-138-local-model-role-qualification.md) are the
 first orders written to this section; the
-[planning document](../planning/vision-into-use-2026-09-17.md) §5 records
+[planning document](../planning/passes/vision-into-use-2026-09-17.md) §5 records
 the alternatives declined. Reopen when an index consumer needs the outcome
 typed, or when a research order is cited as a capability.
 
@@ -2880,15 +2848,26 @@ publication links where the change reaches them. Use the diff and inbound
 references to bound the check. Write back by editing the sentence that is now
 wrong and citing the evidence; a dated paragraph appended under a product
 heading is a receipt and belongs in the order's evidence README, and a
-candidate belongs in the planning map (operator direction, 2026-09-25; WO-085
-binds `scripts/docs-check.mjs` in `npm run test:docs` to the byte ceilings
-in `docs/control/doc-ceilings.json`). The same rule holds for every
-standing document, not only a product document: the sequence, the map's
-catalog, a workstream, a repository profile and an instance's operator
-record state what is so for their readers and are replaced in place, and
-the dated account of what happened lives in a record, which is the order's
+candidate belongs in the planning map; `scripts/docs-check.mjs` in
+`npm run test:docs` refuses both shapes in a product document. The same rule
+holds for every standing document, not only a product document: the sequence,
+the map's catalog, a workstream, a repository profile and an instance's
+operator record state what is so for their readers and are replaced in place,
+and the dated account of what happened lives in a record, which is the order's
 decisions, the pass's document, a verification or a receipt (§Operator-opened
-planning pass, item 7). Record the affected surfaces
+planning pass, item 7, which also names the kinds, the reader entry points,
+the read census and the red tags). The final reviewer judges a changed
+standing document's diff: a replacement passes, and a dated account added
+under a standing heading returns to repair. A document that moves keeps its
+bytes, and [`docs/control/document-moves.json`](../control/document-moves.json)
+names where it went. Every reader of a reference gives it one meaning: the
+link check, the entry points, the reader bindings, the red tags, the read
+census and `plan documents` read a moved document's own links from the
+directory it was written in, and an old path the map lists names the document
+where it lives now. A moved path is never reused: the document check refuses a
+file at one, so an old path names one document whenever it was read or linked.
+The accounts of how this guide's own rules arrived are in
+the [execution-guide record](../planning/passes/execution-guide-record.md). Record the affected surfaces
 and evidence in the existing work-order outcome or breakout receipt; do not
 create a new ceremony or rewrite unrelated historical artifacts. The front
 page, `README.md`, is edited only by an order whose leading header carries
@@ -2959,7 +2938,7 @@ three duties in order; choose relevant lenses and state why in the report.
    claims your verdict rests on. Spawn a fresh `dotln-worker` only to reproduce one named
    claim you cannot run yourself, with only the order and diff. Never
    delegate the verdict [2026-10-07 pass; the operator's direction of
-   2026-10-02 as WO-187 D051 records it].
+   2026-10-02 as WO-187 D051 records it](../evidence/WO-187/decisions.md#wo-187-d051--ship-the-sub-agent-duties-as-filed-and-board-a-separate-improver-sub-agent-for-planning).
 
 The operator delegates decisions to each phase, including at blockers: make
 and explain the choice in the ADR or decision record, with evidence, tradeoffs
@@ -2985,11 +2964,11 @@ among them; or `operator` for a decision packet that names the choice only
 the operator can make, evidence, alternatives and consequence. The verdict
 is bound to the criteria: WO-112's VER-002 to VER-006 each met every
 criterion and failed on new in-surface defects, and the order closed by
-override after seven verifications [2026-10-07 pass]. Maintainability alone
+override after seven verifications [2026-10-07 pass](../planning/passes/machinery-reset-2026-10-07.md). Maintainability alone
 is a follow-up. The verifier routes a blocking finding with its repair rule
 on its own authority; `operator` is for a choice outside the order's
 criteria and declared surfaces, never a request to authorize a repair
-inside them [WO-187 D042, 2026-10-06; 2026-10-11 pass]. §Discipline's Adjacent Repair boundary still applies: the
+inside them [WO-187 D042, 2026-10-06; 2026-10-11 pass](../evidence/WO-187/decisions.md#wo-187-d042--ver-004-verifier-process-failures). §Discipline's Adjacent Repair boundary still applies: the
 next repair, if one happens, fixes boarded follow-ups in the declared
 surfaces within the Boy Scout bound. The verifier writes evidence and its
 immutable report, never the implementation it judges.
@@ -3012,7 +2991,7 @@ its evidence; the final reviewer confirms it on the same line with its own
 evidence, or, finding it judgeable, fails with a blocking finding whose basis
 names it; and the operator retracts a wrong record (§Operator recovery
 controls). No role records a waiver from words that did not ask for one
-[[the 2026-11-01 pass](../planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md);
+[[the 2026-11-01 pass](../planning/passes/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md);
 [WO-249](../work-orders/WO-249-criteria-judge-the-product.md)].
 
 A fail names what it failed on. `verification-result fail` and
@@ -3119,7 +3098,7 @@ round. The admission rule is what ends the ladder: WO-237 ran four recheck
 rounds (19, 13, 4 and 12 distinct findings) and a fifth from one reviewer
 before the operator stopped it, because each recheck opened new fronts; the
 rounds found defects, and the loop, not the review, was the defect
-[[the 2026-11-01 pass](../planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md),
+[[the 2026-11-01 pass](../planning/passes/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md),
 the operator's items 6 and 6.a of that day;
 [WO-250](../work-orders/WO-250-reviews-converge-and-every-worker-counts.md)].
 
@@ -3201,7 +3180,7 @@ receipt or hash check is required.
 Final review is acceptance: the criteria, the integration and the release
 surfaces. A finding outside the criteria that breaks no behavior `main` had
 is a follow-up by rule, never blocking; the class counts below still measure
-escapes [2026-10-07 pass].  Its report lists every finding once, in
+escapes [2026-10-07 pass](../planning/passes/machinery-reset-2026-10-07.md).  Its report lists every finding once, in
 one block: a `<!-- dotln-findings:start -->` line, a JSON array and a
 `<!-- dotln-findings:end -->` line. Each entry is
 `{"id": "F1", "route": "blocking", "class": "escape", "summary": "<one line>"}`:
@@ -3387,7 +3366,7 @@ and generated evidence, including fixtures, manifests and installed guidance.
   copy of a repository leaves out `.control-beacons` and guards per-file
   size: a Beacon group file is sparse and a recursive copy writes its
   logical size in full (two probe copies filled the host volume on
-  2026-10-06; WO-187 D053) [2026-10-11 pass]. The wrapper
+  2026-10-06; WO-187 D053) [2026-10-11 pass](../planning/passes/standard-pass-2026-10-11.md). The wrapper
   preserves argv, the caller's environment, working directory and ordinary exit
   status, with the existing 900-second deadline and bounded output tail; a
   memory-budget stop exits 125. On the measured
@@ -3461,7 +3440,7 @@ and generated evidence, including fixtures, manifests and installed guidance.
 - **Compose adjacent repair with decision evidence.** The executor/fixer
   equips [Adjacent Repair and Decision
   Receipts](05-pattern-library.md#executor-supports-adjacent-repair-and-decision-receipts)
-  independently [operator default, 2026-09-08]. Adjacent Repair prefers a bounded fix to an encountered bug;
+  independently [operator default, 2026-09-08](../lineage/idea-ledger.md). Adjacent Repair prefers a bounded fix to an encountered bug;
   neither pre-existing origin nor omission from the original assignment is by
   itself a reason to defer. A repairable defect in the order's declared surfaces stays in the order and may fail a criterion it breaks; outside both criteria and surfaces, board its reproduction. Decision Receipts records the chosen option,
   evidence, rationale, rejected options and reasons, plus the reversal condition
@@ -3478,19 +3457,19 @@ and generated evidence, including fixtures, manifests and installed guidance.
   indefinitely for approval. The current queue is observed with
   `npm run adjacent -- list`; its chat and channel observations are actor-attested.
   Equipped duties run at entry, including the initial Intent to Act announcement.
-  Settle routine version, waiver-route, live-episode, regeneration and reinstall questions within existing authority. Every phase owns its decision, including no-op or deferred: record the evidence, tradeoffs and reopening condition instead of asking the operator to arbitrate implementation or change criteria [WO-219-D003, 2026-10-23]. An unmet criterion of one of the five defect classes is recorded unmet in the handoff ledger with its class named for the verifier, who records the defect; nothing is asked of the operator [WO-249].
+  Settle routine version, waiver-route, live-episode, regeneration and reinstall questions within existing authority. Every phase owns its decision, including no-op or deferred: record the evidence, tradeoffs and reopening condition instead of asking the operator to arbitrate implementation or change criteria [WO-219-D003, 2026-10-23](../evidence/WO-219/decisions.md#wo-219-d003--own-decisions-in-every-phase). An unmet criterion of one of the five defect classes is recorded unmet in the handoff ledger with its class named for the verifier, who records the defect; nothing is asked of the operator [WO-249].
   Ordinary `next`/`fix` projects installed equipment and queue state without
   requiring a named-support prompt. Completion advises about queued/running items;
   complete them or record an explicit disposition, with a public FUP for deferrals.
 - **Release assignment is opt-out.** Prepare the classified next release and
   update its source claim unless the operator specifies no release
-  [operator default, 2026-09-04]. `npm run release -- prepare` completes a missing
+  [operator default, 2026-09-04](../planning/passes/work-order-index-activation-2026-09-04.md). `npm run release -- prepare` completes a missing
   activation target in the heading and README claim and records the base and
   classification in the order's decisions; do not repeatedly ask for routine
   release assignment. Retiming an existing target
   and publishing still follow their separate authority rules.
 - **Automate recurring procedure.** Prefer an existing executable helper for
-  a mechanical step [operator direction, 2026-09-04]. When authorized work
+  a mechanical step [operator direction, 2026-09-04](../planning/passes/work-order-index-activation-2026-09-04.md). When authorized work
   exposes a recurring manual sequence, projection, or handoff, move the smallest
   useful increment into a command, generator, fold, or guard and check its
   normal and consequential failure paths. Keep judgment at the point that
@@ -3593,7 +3572,7 @@ and generated evidence, including fixtures, manifests and installed guidance.
   rather than producing a plausible record.
 - **Decided means sourced, not frozen.** A decision record names the
   operator dispatch that made it and the condition that reopens it
-  [operator correction, 2026-09-09]. Do not relitigate a decision for lack of new
+  [operator correction, 2026-09-09](../lineage/idea-ledger.md). Do not relitigate a decision for lack of new
   material; reopen it when evidence the meter or a session records bears on
   that condition, or when the operator says so, and reopen it as a new
   decision record proposal, never an in-place edit. A rule that a decision
@@ -3649,7 +3628,7 @@ and generated evidence, including fixtures, manifests and installed guidance.
   of artifacts consumed outside the system (PRs to other repos, generated
   reports for third parties); whether a DotLn term reads as jargon in a
   target's context is the reviewer's judgment, never a ban on the English
-  word [operator correction, 2026-10-21; the Outward artifacts bullet].
+  word [operator correction, 2026-10-21; the Outward artifacts bullet](../planning/passes/fork-notes-and-operator-questions-2026-10-21.md).
 - **PR titles carry a relevant gitmoji shortcode.** Choose deliberately from
   the [full gitmoji catalog](https://gitmoji.dev/) for the current change's main
   purpose. Use its more specific choices where they fit; explore beyond the
@@ -3673,7 +3652,7 @@ and generated evidence, including fixtures, manifests and installed guidance.
   body, or release notes; the number of sections, checks, disclosures, or
   options; the amount of ceremony) caused by sizing each new instance against
   its immediate predecessor plus a margin instead of against its own content
-  and the governing standard [operator correction, 2026-09-07]. No single step looks
+  and the governing standard [operator correction, 2026-09-07](../lineage/idea-ledger.md). No single step looks
   wrong; the series does, and an operator correction only resets the level
   before the drift restarts. Merged PR titles show the shape: 5–10 words for
   the first sixteen, 98 by the twentieth after, 12 at the operator's first
@@ -3686,7 +3665,7 @@ and generated evidence, including fixtures, manifests and installed guidance.
   measured from the corrected instance. This binds every authored series:
   titles, commit subjects, PR bodies, release notes, verification and
   final-review reports, checklists, receipts, and replies to the operator.
-  The same holds for shape [operator correction, 2026-10-21]: an artifact in
+  The same holds for shape [operator correction, 2026-10-21](../planning/passes/fork-notes-and-operator-questions-2026-10-21.md): an artifact in
   a series takes its structure from a written standard, a template the
   tooling seeds or a check that judges the structure, and the previous
   instance is additional context, never the source; where no standard states
@@ -3700,7 +3679,7 @@ and generated evidence, including fixtures, manifests and installed guidance.
   pass; WO-227 makes the seed a template and the shape a check).
 - **A question is not a waiver.** An operator's question, confusion, or
   complaint about cost or time changes no obligation [operator correction,
-  2026-09-07]. Answer it in plain terms, then continue the work under the
+  2026-09-07](../lineage/idea-ledger.md). Answer it in plain terms, then continue the work under the
   standard already in force; only an explicit operator decision lowers a
   standard, drops a check, or narrows scope. Treating a question as permission
   to stop pursuing a green gate, skip a check, or accept a weaker result is the
@@ -3712,7 +3691,7 @@ and generated evidence, including fixtures, manifests and installed guidance.
   an explicit request to pause or stop
   [[WO-126-D019](../evidence/WO-126/decisions.md#wo-126-d019), 2026-09-10].
 - **Process budget.** Compare total work and waiting against the failure a
-  mechanism prevents [WO-132, 2026-09-15]. `npm run meta` prints each closed
+  mechanism prevents [WO-132, 2026-09-15](../evidence/WO-132/decisions.md). `npm run meta` prints each closed
   order's Cost promise beside available observed gate/usage rows and their
   cutoffs. Explicit measurable shortfalls are planning inputs; ambiguous or
   missing observations are unknown. No cost, duration, context or token
@@ -3788,14 +3767,14 @@ and generated evidence, including fixtures, manifests and installed guidance.
   byte count is put to the operator. `npm run meta` reports the verdict. The
   2026-09-17 route (a 4 KB raise or a dated acceptance) is retired; the
   [WO-044 decision](../evidence/WO-044/decisions.md) (caps yield to needed
-  rules) and the [2026-09-17 pass](../planning/vision-into-use-2026-09-17.md)
+  rules) and the [2026-09-17 pass](../planning/passes/vision-into-use-2026-09-17.md)
   §10 record the acceptances made under it. WO-233, WO-234, WO-235 and
   WO-192 recorded dated acceptances after that direction, each citing the
   retired route as standing; they stay as records in `docs/control/budgets.json`,
   the meter reads a breach as an advisory and the latest acceptance as a
   role's effective ceiling (`scripts/lib/process-budget.mjs`), and no
   further acceptance is recorded: a breach is boarded as this paragraph
-  says [WO-192-D095; the 2026-10-31 pass].
+  says [WO-192-D095; the 2026-10-31 pass](../evidence/WO-192/decisions.md#wo-192-d095--board-what-the-second-review-round-left-for-planning).
 
   WO-054 raises the executor ceiling to 24,576 bytes and release-close to
   16,384 bytes for the shared advisory-boundary and Codex continuation rule
@@ -3847,7 +3826,7 @@ and generated evidence, including fixtures, manifests and installed guidance.
   a quoted or escaped `=` remain literal. Opaque forms are refused beside a
   live gate and delegated to host permissions elsewhere.
   Beside that adapter a live gate admits a fixed read-only list
-  [WO-158, 2026-09-25], judged stage by stage across every pipeline and
+  [WO-158, 2026-09-25](../evidence/WO-158/decisions.md), judged stage by stage across every pipeline and
   command list: `cat`, `head`, `tail`, `wc`, `ls`, `grep`, `sed -n` with a
   script whose every command prints (numeric, `$` or `/regex/` addresses),
   `git --no-pager diff|log|show|status|stash list`, and, at the worktree root only,
@@ -3886,7 +3865,7 @@ and generated evidence, including fixtures, manifests and installed guidance.
 
 - **Machinery stand-down.** The lifecycle exists to carry the rules so the
   operator's attention does not; when it costs more attention than it saves,
-  it is the defect [machinery stand-down pass, 2026-09-15]. The operator's
+  it is the defect [machinery stand-down pass, 2026-09-15](../planning/passes/machinery-stand-down-2026-09-15.md). The operator's
   standard, recorded from the 2026-09-15 planning dispatch and implemented by
   [WO-132](../work-orders/WO-132-machinery-stand-down.md): a lifecycle
   transition records its report and never runs or requires a test gate; one
@@ -3937,7 +3916,7 @@ and generated evidence, including fixtures, manifests and installed guidance.
   a Codex worker or a helper-launched Claude print worker, which no hook
   sees, carries the rule
   ([WO-250 decision](../evidence/WO-250/decisions.md#wo-250-d004--a-review-workers-gate-is-refused-by-the-agent-type-the-host-names-on-its-call);
-  [the 2026-11-01 pass](../planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md),
+  [the 2026-11-01 pass](../planning/passes/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md),
   the operator's items 6.b and 10 of that day). Root kinds are system
   temporary, DotLn session scratch, the host-printed scratchpad, main's ignored
   intake, an operator-named absolute root, the order's recorded worktrees and
@@ -3990,7 +3969,7 @@ and generated evidence, including fixtures, manifests and installed guidance.
   recorded as one. A mechanism is added only with the removal it pays for,
   reconciled at closeout against the observed rows. WO-132 implements this contract; `operator override:` remains available for
   authorized recovery. The diagnosis of how four passes compounded the
-  problem is [the planning document](../planning/machinery-stand-down-2026-09-15.md).
+  problem is [the planning document](../planning/passes/machinery-stand-down-2026-09-15.md).
   WO-142 separates advisory identities within each session. Runtime messages
   share a key only within their own cause (`pins-differ`, `snapshot-missing`,
   or `runtime-unavailable`); subagent-budget messages share one key per cause
@@ -4003,7 +3982,7 @@ and generated evidence, including fixtures, manifests and installed guidance.
   ownership for pruning. Every invocation retains its journal row;
   PostToolUse observers emit no advisory; after a shell command the read
   observer may hand the agent what the shell said about it, as context only
-  [WO-172-D037, 2026-09-29]. If marker storage is unavailable,
+  [WO-172-D037, 2026-09-29](../evidence/WO-172/decisions.md#wo-172-d037--the-observer-answers-and-counts-what-the-shell-says-about-a-command). If marker storage is unavailable,
   the message remains visible. SessionStart reuses the session handler to compare
   built bytes and the pinned snapshot, without dispatching work. `resume` and
   `plan start` diagnose runtime drift without building. Release close and worktree
@@ -4016,7 +3995,7 @@ and generated evidence, including fixtures, manifests and installed guidance.
 - **Codex continuity after compaction.** The Codex contributor bundle uses
   `PostCompact` to record the turn and `SessionStart` with `source: compact`
   to restore its saved unfinished work order as developer context
-  [WO-054 scope expansion, 2026-09-18]. An old side question does not replace that task.
+  [WO-054 scope expansion, 2026-09-18](../evidence/WO-054/decisions.md). An old side question does not replace that task.
   A synchronous `Stop` hook can request one continuation for the compacted turn
   when the same root session still owns the writer and its recorded completion
   event remains outstanding. It does not dispatch, acquire/release ownership or
@@ -4089,7 +4068,7 @@ and generated evidence, including fixtures, manifests and installed guidance.
   Lifecycle transitions run the inline whitespace check and record their
   reports/attestations without read or usage prerequisites. The executor
   completions also read `docs/evidence/WO-NNN/handoff.md`, one line per
-  declared criterion in the report's forms [WO-173, 2026-09-28]: a criterion
+  declared criterion in the report's forms [WO-173, 2026-09-28](../evidence/WO-173/decisions.md): a criterion
   recorded met that names `npm run test:docs` consumes the latest passing
   document row for the exact candidate tree; one that names `npm test` or
   `npm test -- --review` consumes the structural and declared Preflight rows
@@ -4134,7 +4113,7 @@ and generated evidence, including fixtures, manifests and installed guidance.
   Document and mixed review gates retain the full write refusal.
 - **Host-confinement preflight.** `scripts/lib/host-confinement.mjs` detects
   a host restriction; it creates no sandbox [WO-140, 2026-09-19; renamed by
-  WO-161, 2026-09-25]. The operator's three CLI sessions currently run
+  WO-161, 2026-09-25](../evidence/WO-140/decisions.md). The operator's three CLI sessions currently run
   without a host sandbox; the detector reports `inForce: false` here. A suite
   declares
   `needs: outside-sandbox` only when an environmental cause means it cannot
@@ -4192,7 +4171,7 @@ and generated evidence, including fixtures, manifests and installed guidance.
 - **Build publication.** Compile into staging with the existing Node
   toolchain, replace each complete output file atomically, and finish the
   build barrier before dependent application commands run [operator decision,
-  2026-09-09].
+  2026-09-09](../lineage/idea-ledger.md).
   Ordinary `dist` can contain both generations during publication. Installed
   hooks use an immutable pinned runtime snapshot, published as a complete new
   directory, and remain callable while `dist` changes. Python is not a build
@@ -4441,7 +4420,13 @@ code identity, or the passing structural and focused rows there, together
 with the newest passing document row for the exact candidate tree, records
 their evidence references and runs no gate itself. Reports, decisions, indexes
 and all other public documents are part of that tree; editing them after the
-document run requires a current row. Product evidence retains its existing code
+document run requires a current row, except inside the order's own evidence
+directory: a document run on a `wo-NNN` branch also records the tree without
+that directory, so the decisions and handoff its completion requires, written
+after the run, keep the row standing; a row that does not record that tree
+binds the exact tree, and a further document run on a tree changed elsewhere
+after the complete run is reported as a handoff failure
+([WO-238-D015](../evidence/WO-238/decisions.md#wo-238-d015--a-document-row-stands-for-the-tree-without-the-orders-own-evidence)). Product evidence retains its existing code
 identity boundary; arbitrary configured record roots cannot exempt source.
 The verifier consumes the same rows and reproduces a finding with `--only`. A queued order's older
 instruction to follow Preflight with a complete run is read under this
@@ -4580,7 +4565,7 @@ timings do not establish that outcome. At the first of those closes
 eight failed, three passed), no late structural-class failure and 691 gate
 task minutes, under three operator scope expansions that changed the gate
 process mid-order (WO-221 D016 to D020); the
-[2026-10-19 pass](../planning/standard-pass-2026-10-19.md) §3 reads them,
+[2026-10-19 pass](../planning/passes/standard-pass-2026-10-19.md) §3 reads them,
 and WO-222 takes the capacity levers D019 measured.
 
 ## Model-specific notes

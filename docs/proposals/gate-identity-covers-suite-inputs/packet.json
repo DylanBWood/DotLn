@@ -69,5 +69,10 @@
       ],
       "urgencyRationale": "Reuse at this key is four days old (WO-173) and every order's write-back touches the excluded trees. The repair is cheapest before WO-123 and WO-118 compose more suites on the same rows."
     }
+  },
+  "deliveredBy": {
+    "workOrderId": "WO-174",
+    "release": "v0.58.1",
+    "recordedAt": "2026-09-30T21:16:18.000Z"
   }
 }

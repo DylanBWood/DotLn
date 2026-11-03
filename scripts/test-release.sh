@@ -1033,6 +1033,68 @@ assert_no_candidate_tag "$main" "$origin"
 printf 'release close refuses an order whose worktree holds a retraction newer than its latest passing final review on origin/main, repaired there or not\n'
 }
 
+release_case_routed_after_preparation() {
+make_repo routed_after_preparation
+commit_candidate "$main" WO-099 v0.2.1
+# A planning change routed a proposal packet to WO-099 after the order's last
+# release preparation and merged after the order, so main carries the packet
+# naming no release.
+local packet="docs/proposals/late-route/packet.json" output
+mkdir -p "$main/docs/proposals/late-route"
+printf '%s\n' '{' \
+  '  "schemaVersion": 1,' \
+  '  "kind": "FiledProductSuggestionPacket",' \
+  '  "sourceReceiptId": "REVIEW-001",' \
+  '  "packet": { "suggestion": { "suggestionId": "late-route" } },' \
+  '  "deliveredBy": { "workOrderId": "WO-099", "release": null, "recordedAt": "2030-01-02T00:00:00.000Z" }' \
+  '}' >"$main/$packet"
+git -C "$main" add docs/proposals
+git -C "$main" -c maintenance.auto=false commit -qm 'route a packet to WO-099 after its release preparation'
+git -C "$main" push origin main >/dev/null 2>&1
+touch "$gh_log"
+# The close refuses before it publishes anything: no tag, no GitHub Release.
+if output="$(release_close WO-099 --publish 2>&1)"; then printf 'error: release close published while a routed packet names no release\n' >&2; exit 1; fi
+grep -Fq "FAIL proposal-delivery $packet: observed release none for WO-099; expected v0.2.1, the release this close publishes." <<<"$output"
+grep -Fq "run npm run entropy -- dispose REVIEW-001 late-route route 'Delivered by WO-099' --order WO-099, which writes v0.2.1" <<<"$output"
+assert_no_candidate_tag "$main" "$origin"
+if grep -q '^release ' "$gh_log"; then printf 'error: gh release ran while a routed packet names no release\n' >&2; exit 1; fi
+test "$(git -C "$main" status --porcelain)" = ""
+# The route, run again from a checkout of main that holds the order's merge,
+# names the release the close publishes; that change merges and the close
+# completes with the packet naming its published release.
+"$node_bin" --input-type=module - "$main" "$packet" <<'JS'
+import assert from "node:assert/strict";
+import { pathToFileURL } from "node:url";
+const [root, packet] = process.argv.slice(2);
+const { carryingRelease, writeDelivery } = await import(
+  pathToFileURL(`${root}/scripts/lib/proposal-delivery.mjs`).href
+);
+const release = carryingRelease(root, "WO-099");
+assert.equal(release, "v0.2.1");
+writeDelivery(root, packet, {
+  workOrderId: "WO-099",
+  release,
+  recordedAt: "2030-01-03T00:00:00.000Z",
+});
+JS
+git -C "$main" add docs/proposals
+git -C "$main" -c maintenance.auto=false commit -qm 'route the packet again with the release that carries WO-099'
+git -C "$main" push origin main >/dev/null 2>&1
+output="$(release_close WO-099 --publish)"
+grep -Fq 'Published annotated v0.2.1' <<<"$output"
+test "$(grep -c '^release create v0.2.1 ' "$gh_log")" = 1
+"$node_bin" - "$main/$packet" "$main/docs/control/local/retained/WO-099/release-close.json" <<'JS'
+const assert = require("node:assert/strict"), fs = require("node:fs");
+const [packet, closeRecord] = process.argv.slice(2);
+assert.equal(JSON.parse(fs.readFileSync(packet, "utf8")).deliveredBy.release, "v0.2.1");
+const record = JSON.parse(fs.readFileSync(closeRecord, "utf8"));
+assert.equal(record.publication.tag, "v0.2.1");
+assert.deepEqual(record.deliveredPackets, [{ path: "docs/proposals/late-route/packet.json", release: "v0.2.1" }]);
+assert.deepEqual(record.recordAdvisories, []);
+JS
+printf 'release close refuses publication while a packet routed after the last preparation names no release, and publishes once the route names it\n'
+}
+
 release_case_license_surfaces() {
 make_repo license_surfaces
 commit_candidate "$main" WO-099 v0.2.1

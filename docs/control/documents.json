@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "purpose": "The reader entry points every session starts from, and the documents whose kind their path does not say. Every other document's kind is derived by scripts/lib/document-kinds.mjs: records by root, the planning passes directory and dated names; the paths the kit's own commands write (proposal packets, entropy receipts, the idea ledger, the follow-up feed and register, the planning cost table and the release manifest template) by its kit kinds; generated pages by their marker line; the rest standing.",
+  "entryPoints": [
+    {
+      "id": "instruction-start-here",
+      "files": [
+        "CLAUDE.md",
+        "AGENTS.md"
+      ],
+      "heading": "Start here"
+    },
+    {
+      "id": "role-read-lines",
+      "files": [
+        ".claude/skills/*/SKILL.md",
+        ".agents/skills/*/SKILL.md",
+        ".claude/agents/*.md"
+      ],
+      "lines": "^Read(?:\\[[a-z-]+\\])?:"
+    },
+    {
+      "id": "cold-start-read-order",
+      "files": [
+        "docs/product/07-execution-guide.md"
+      ],
+      "heading": "Read order for a cold start"
+    },
+    {
+      "id": "kit-first-steps",
+      "files": [
+        "docs/KIT.md"
+      ],
+      "heading": "First steps"
+    }
+  ],
+  "kinds": [
+    {
+      "path": "docs/lineage/remining/runs/",
+      "kind": "record",
+      "reason": "Each draw's atlas and coverage report are immutable after its close."
+    },
+    {
+      "path": "docs/retired/",
+      "kind": "record",
+      "reason": "Proposals the operator retired before activation, kept byte for byte."
+    },
+    {
+      "path": "docs/retired/README.md",
+      "kind": "standing",
+      "reason": "The page that says what the retired directory holds."
+    },
+    {
+      "path": "docs/evidence/current.json",
+      "kind": "standing",
+      "reason": "The evidence editions the gate selects today, changed in place by the order that mints one."
+    }
+  ]
+}

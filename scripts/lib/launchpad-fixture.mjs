@@ -270,12 +270,16 @@ for (const path of [
   "NOTICE",
   ".gitignore",
   "docs/product/07-execution-guide.md",
+  "docs/product/operator-reference.md",
   "docs/product/08-publication-compiler.md",
   "docs/PLAYBOOK.md",
   "docs/KIT.md",
   "docs/publication/implementation-overlay-template.md",
   // Not a kit file: an upstream pointer the export names and does not carry.
   "docs/LEGAL.md",
+  // The moves map: a carried document's link to a moved record points
+  // upstream to where that record lives at the exported commit.
+  "docs/control/document-moves.json",
   "docs/releases/tag-manifest.template.json",
 ])
   copy(path);

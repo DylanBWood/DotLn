@@ -19,15 +19,17 @@ docs/product/      the blueprint: vision, principles, domain model,
                    and the five UIFA human roles
 docs/publication/  audience/status index, audience outlines, shared sample,
                    implementation overlay template, and staleness proof
-docs/planning/     capability inventory, human recommendation/preflight map,
-                   dated planning-pass plans, and immutable blinded refutation
-                   receipts under refutations/ (npm run plan -- refute);
+docs/planning/     README.md — the planning entry points; capability inventory,
+                   human recommendation/preflight map, the dated planning-pass
+                   documents and retired planning records under passes/, and
+                   immutable blinded refutation receipts under refutations/
+                   (npm run plan -- refute);
                    sequence.md — the proposed order, the one input to the
                    index and the refutation subject;
                    followups.json — the follow-up register, followups.md how
                    to read it; cost-table.json — generated plan costs
                    entropy-reviews/ — generated accepted-finding rows per
-                   Entropy Reducer review; archive/ — retired planning snapshots
+                   Entropy Reducer review
 docs/lineage/      idea-ledger.md — append-only idea history;
                    README.md — generated section/line and lifecycle index;
                    decisions-index.md — generated per-order decision index;
@@ -48,8 +50,10 @@ docs/control/       legacy resume log, per-order segments, generated overview,
                     and the separate plan-refutations.jsonl override log;
                     entropy-reducer.jsonl — the Entropy Reducer review log;
                     budgets.json — caps, cold-start ceilings and acceptances;
-                    doc-ceilings.json and doc-baseline.json — the document
-                    gate's ceilings and activation baseline;
+                    documents.json — the reader entry points and the kinds
+                    their paths do not say; document-moves.json — where moved
+                    documents went; doc-baseline.json — the document gate's
+                    activation baseline;
                     outward-vocabulary.json — the outward lint's commit types
                     and review words (`reviewTerms`)
 docs/control/local/ ignored gate/session/usage observations, private terms and opaque account-label meanings
@@ -86,13 +90,17 @@ The [roadmap](product/06-roadmap.md) holds the release ladder, exit criteria and
 generated release history; its candidate and capability-policy sections live in
 the [planning map](planning/work-order-map.md#moved-from-the-roadmap-2026-09-30)
 with their slugs and register history preserved (WO-087).
-[Ceilings](control/doc-ceilings.json) count UTF-8 bytes, set by a planning pass
-from each document's size and its queued write-backs, excluding one registered
-generated block: the roadmap's release
-history between its `dotln-release-history` markers, whose rows the check
-compares with their recorded tags. Any other marker pair exempts nothing.
-A higher ceiling requires a cited planning
-decision. The [activation baseline](control/doc-baseline.json) identifies existing
+Every committed document is standing, record or generated, derived from its
+path with the overrides and the reader entry points in
+[`control/documents.json`](control/documents.json); the check refuses an entry
+point that names a record and a red tag a planning pass left undisposed, and
+reports a standing document no entry point, link or program reaches. No byte
+ceiling judges a document. The roadmap's release history between its
+`dotln-release-history` markers is the one registered generated block, whose
+rows the check compares with their recorded tags; any other marker pair exempts
+nothing. A moved document keeps its bytes, and
+[`control/document-moves.json`](control/document-moves.json) says where it
+went. The [activation baseline](control/doc-baseline.json) identifies existing
 receipt labels, candidate headings, decision dispatch fingerprints, historical
 broken links and historical private-path lines; it is not regenerated to admit new
 violations. A new or edited line naming an absolute home path fails in Markdown
@@ -344,4 +352,4 @@ One line per `.claude/` or CLAUDE.md change (see execution guide):
 - 2026-09-25: this index gains the rows the 5S inventory found missing
   (docs/proposals/, docs/planning/entropy-reviews/ and archive/,
   docs/lineage/remining/ and decisions-index.md). The off-ramps planning pass
-  records why in docs/planning/off-ramps-5s-entropy-2026-09-25.md §7.
+  records why in docs/planning/passes/off-ramps-5s-entropy-2026-09-25.md §7.

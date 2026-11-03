@@ -106,7 +106,8 @@ import {
   compileStaleRuntime,
 } from "./lib/generated-artifacts.mjs";
 export { STRUCTURAL_TASKS };
-import { findLaunchpad } from "./lib/config.mjs";
+import { docRelative, findLaunchpad } from "./lib/config.mjs";
+import { branchWorkOrder } from "./lib/control-store.mjs";
 import { judgeRunningNode } from "./lib/node-engines.mjs";
 import {
   productReadEnvironment,
@@ -162,6 +163,7 @@ export const machinerySources = {
     // release.mjs, worktree.mjs and plan failures import.
     "scripts/lib/release-steps.mjs",
     "scripts/lib/release-preparation.mjs",
+    "scripts/lib/proposal-delivery.mjs",
     "scripts/check-role-oracle.mjs",
     "scripts/test-process-debt.mjs",
     "scripts/test-runner.mjs",
@@ -179,6 +181,8 @@ export const machinerySources = {
     // plan start applies the owned-root prune through this summary (WO-237).
     "scripts/lib/temporary-prune-summary.mjs",
     "scripts/lib/planning-document.mjs",
+    // release prepare names a routed packet's release through this module.
+    "scripts/lib/proposal-delivery.mjs",
     "packages/kernel/src/types.ts",
     "packages/compiler/src/harness.ts",
     "packages/console/src/index.ts",
@@ -434,6 +438,13 @@ export const machinerySources = {
     "scripts/lib/release-steps.mjs",
     // plan start applies the owned-root prune through this summary (WO-237).
     "scripts/lib/temporary-prune-summary.mjs",
+    // plan start and plan documents read the document kinds, the moves and
+    // the session journals' census.
+    "scripts/lib/document-census.mjs",
+    "scripts/lib/document-kinds.mjs",
+    "scripts/lib/document-moves.mjs",
+    "scripts/lib/markdown-links.mjs",
+    "scripts/lib/proposal-delivery.mjs",
     "scripts/docs-check.mjs",
     "scripts/lib/front-page-scope.mjs",
     "scripts/lib/planning-document.mjs",
@@ -550,6 +561,9 @@ export const machinerySources = {
     "scripts/lib/case-marker.mjs",
     "scripts/lib/control-store.mjs",
     "scripts/lib/handoff-ledger.mjs",
+    // A completion bounds its repeated document runs by the handoff start
+    // this module reads from the order's events.
+    "scripts/lib/control-time.mjs",
     "scripts/lib/planning-conditions.mjs",
     "scripts/license-surfaces.mjs",
     "scripts/lib/host-confinement.mjs",
@@ -697,6 +711,8 @@ export const machinerySources = {
     "packages/skeleton/fixtures/wo250-role-baseline.json",
     "packages/skeleton/fixtures/wo252-role-baseline.json",
     "packages/skeleton/fixtures/wo252-repair-role-baseline.json",
+    "packages/skeleton/fixtures/wo238-role-baseline.json",
+    "packages/skeleton/fixtures/wo238-integration-role-baseline.json",
     "packages/skeleton/fixtures/wo217-role-efficiency-baseline.json",
     "scripts/test-helper-reuse.mjs",
     "scripts/lib/helpers.mjs",
@@ -3378,6 +3394,18 @@ async function runGateChecks(
   const treeHash = gateTreeHash(repo),
     codeIdentity = gateCodeIdentity(repo),
     started = Date.now();
+  // The document gate also binds the tree without the active order's own
+  // evidence directory, whose records its completion writes after this run;
+  // those writes then leave the row standing for the rest of the tree.
+  const documentOrder = document ? branchWorkOrder(repo) : undefined;
+  const documentTree = documentOrder
+    ? {
+        documentTreeHash: gateTreeHash(repo, {
+          exclude: [docRelative(repo, "evidence", documentOrder)],
+        }),
+        documentTreeExcludes: docRelative(repo, "evidence", documentOrder),
+      }
+    : {};
   // Preflight can take time. Results looked up before it belong to that
   // earlier identity, never to a newly captured gate subject.
   if (reused.size && reuseIdentity !== codeIdentity) {
@@ -3828,6 +3856,7 @@ async function runGateChecks(
       checkId,
       temporaryGateId,
       treeHash,
+      ...documentTree,
       codeIdentity,
       sharedRefs: { start: sharedRefsStart, end: readSharedRefs(repo) },
       ...(instanceInputDigest === undefined ? {} : { instanceInputDigest }),

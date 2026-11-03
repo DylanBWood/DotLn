@@ -121,7 +121,7 @@ because it reads every order's segment through the same fold.
 
 The 2026-09-05 horizon executed serially, so the paired wave this plan
 scheduled (WO-021 ∥ WO-029) never ran and none of the trial measurements were
-taken. The [phase-two plan](phase-two-plan-2026-09-06.md#wave-plan), as
+taken. The [phase-two plan](passes/phase-two-plan-2026-09-06.md#wave-plan), as
 redirected the same day, schedules the first measured wave as lane 0,
 WO-038 ∥ WO-041, with four product waves behind it, records the hand
 procedure for the lane whose sibling merges first, and files the rebase

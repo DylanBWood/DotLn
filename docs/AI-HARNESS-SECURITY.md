@@ -239,6 +239,15 @@ directory permission reset never follows a symbolic link. Release close's
 broader prune serializes with host lane admission and reports blockers for retry.
 It does not change the host memory admission policy or grant itself permissions.
 
+The read census behind `npm run plan -- documents` reads the session journals
+these hooks already write: this checkout's, the retained lanes of closed
+orders and, from a linked worktree, the registered main checkout's. It counts
+the documents each session's Read, Edit, Write and Bash rows and its
+instruction autoload name, and writes the counts to the ignored
+`docs/control/local/document-census.json`. It adds no hook, observation,
+permission or network effect; Codex tool calls stay unhooked, so a document read
+only under Codex counts as unread and the census is a lower bound.
+
 WO-192 adds router-only refusals: its own Agent call must carry exactly one
 lifecycle phrase, given to the agent type that phrase names, or
 `DOTLN_ROUTER_SPAWN_REFUSED` refuses it, including when it names no type; any
