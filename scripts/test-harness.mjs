@@ -1632,6 +1632,316 @@ const stopUnits = new Set([
   "no-partial-completion",
   "read-your-own-output",
 ]);
+
+test("feature elections change executor equipment while absent and default-on emit identical roots", () => {
+  const root = fixture();
+  try {
+    emitHarness(root);
+    const before = installedOverlayBytes(root);
+    write(
+      root,
+      "dotln.config.json",
+      json({ version: 1, features: { "tinkerer-economy": true } }),
+    );
+    emitHarness(root);
+    assert.deepEqual(installedOverlayBytes(root), before);
+    checkHarness(root);
+    write(
+      root,
+      "dotln.config.json",
+      json({ version: 1, features: { "tinkerer-economy": false } }),
+    );
+    emitHarness(root);
+    checkHarness(root);
+    const off = installedOverlayBytes(root);
+    for (const skills of [".agents", ".claude"]) {
+      const executor = `${skills}/skills/dotln-executor/SKILL.md`;
+      assert.doesNotMatch(off[executor], /Tinkerer — Economy:/u);
+      assert.ok(
+        Buffer.byteLength(off[executor]) < Buffer.byteLength(before[executor]),
+      );
+      for (const role of [
+        "executor",
+        "verifier",
+        "reviewer",
+        "release-close",
+        "planner",
+        "refuter",
+        "router",
+      ]) {
+        const path = `${skills}/skills/dotln-${role}/SKILL.md`;
+        // Removing optional equipment cannot increase a role's cold start.
+        assert.ok(
+          Buffer.byteLength(off[path]) <= Buffer.byteLength(before[path]),
+          path,
+        );
+      }
+    }
+    const manifest = JSON.parse(off[".claude/harness-manifest.json"]);
+    assert.ok(!manifest.origin.ids.includes("tinkerer-economy"));
+    assert.ok(manifest.origin.ids.includes("adjacent-repair"));
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("feature readers consume budgets and build overlays through changed fixture output", async () => {
+  const root = fixture();
+  try {
+    const { loadConfig } = await import("./lib/config.mjs");
+    const { featureRegistry, readFeatureInventory } =
+      await import("./lib/features.mjs");
+    const { readBudgets } = await import("./lib/process-budget.mjs");
+    const { effectiveDispatchLimits } =
+      await import("./lib/dispatch-bound.mjs");
+    const { readSubagentCap } =
+      await import("../packages/skeleton/dist/src/subagent-budget.js");
+    const { readRetention, DEFAULT_RETENTION } =
+      await import("../packages/skeleton/src/temporary-root-records.mjs");
+    const { sandboxLaunchForm } = await import("./lib/drive-worker.mjs");
+    const { attemptTimeLimit } = await import("./lib/drive-session.mjs");
+    const { readBuildOverlay } = await import("./lib/harness.mjs");
+    const defaults = JSON.parse(
+      readFileSync(
+        join(sourceRoot, "scripts/kit/budgets.template.json"),
+        "utf8",
+      ),
+    );
+    const budget = (changes) =>
+      write(
+        root,
+        "docs/control/budgets.json",
+        json({ ...defaults, ...changes }),
+      );
+    budget({});
+    assert.deepEqual(
+      featureRegistry.find((entry) => entry.id === "retention").default,
+      DEFAULT_RETENTION,
+    );
+    for (const [field, values, consume] of [
+      ["subagentCap", [2, null], () => readSubagentCap(root)],
+      [
+        "dispatches",
+        [
+          {
+            ...defaults.dispatches,
+            executor: { ...defaults.dispatches.executor, completeRuns: 2 },
+          },
+          {
+            ...defaults.dispatches,
+            executor: { ...defaults.dispatches.executor, completeRuns: 9 },
+          },
+        ],
+        () =>
+          effectiveDispatchLimits(readBudgets(root), "executor", "active", [])
+            .completeRuns,
+      ],
+      [
+        "drivenSessionCeiling",
+        [4, null],
+        () => readBudgets(root).drivenSessionCeiling,
+      ],
+      [
+        "drivenPhaseTimeoutMs",
+        [1000, 2000],
+        () => {
+          const budgets = readBudgets(root);
+          return attemptTimeLimit(
+            { limits: { drivenPhaseTimeoutMs: budgets.drivenPhaseTimeoutMs } },
+            budgets,
+            { role: "executor", phrase: "resume: next" },
+            [],
+          );
+        },
+      ],
+      [
+        "retention",
+        [{ "worker-capture": 1 }, { "worker-capture": null }],
+        () => readRetention(root)["worker-capture"],
+      ],
+    ]) {
+      const outputs = values.map((value) => {
+        budget({ [field]: value });
+        return consume();
+      });
+      assert.notDeepEqual(outputs[0], outputs[1], field);
+      const row = readFeatureInventory(root).find(
+        (entry) => entry.readFrom === `budgets.${field}`,
+      );
+      assert.ok(row, field);
+      assert.deepEqual(
+        row.value,
+        field === "retention"
+          ? { ...DEFAULT_RETENTION, ...values[1] }
+          : values[1],
+      );
+    }
+    const elect = (choice) =>
+      write(root, "dotln.config.json", json({ version: 1, ...choice }));
+    const launches = ["host", "off"].map((sandbox) => {
+      elect({ drive: { sandbox } });
+      return sandboxLaunchForm("codex", loadConfig(root).drive.sandbox);
+    });
+    assert.notDeepEqual(launches[0], launches[1]);
+    elect({});
+    assert.equal(readBuildOverlay(root), undefined);
+    write(root, "build/options.json", json({ version: 1, build: "none" }));
+    elect({ build: { overlay: "build/options.json" } });
+    assert.equal(
+      harnessInstallation({ overlay: readBuildOverlay(root) }).manifest.build,
+      "none",
+    );
+    elect({ roots: { control: "records/control" } });
+    write(
+      root,
+      "records/control/budgets.json",
+      json({ ...defaults, subagentCap: 1 }),
+    );
+    rmSync(join(root, "docs/control/budgets.json"));
+    const capRow = () =>
+      readFeatureInventory(root).find((entry) => entry.id === "subagent-cap");
+    assert.equal(capRow().value, readSubagentCap(root));
+    assert.equal(capRow().value, 20);
+    assert.equal(capRow().source, "default");
+    budget({ subagentCap: 3 });
+    assert.equal(capRow().value, readSubagentCap(root));
+    assert.equal(capRow().value, 3);
+    assert.equal(capRow().source, "docs/control/budgets.json");
+    // Other reader proofs execute in these suites: desktop-control hook admission
+    // above, both emitted elections here, and instance-action application in
+    // test-launchpad-update. Release and build selections and pending plan-first
+    // are deliberately not credited with readers.
+    assert.deepEqual(
+      featureRegistry
+        .filter((entry) => entry.readBy === "unread")
+        .map((entry) => entry.id),
+      [
+        "release-readme-block",
+        "release-component-versions",
+        "release-corpus",
+        "release-publication-check",
+        "build-loadout",
+        "build-profile",
+      ],
+    );
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("feature inventory marks configured build selections unread on the actual harness CLI", async () => {
+  const root = fixture();
+  try {
+    const { readFeatureInventory } = await import("./lib/features.mjs");
+    const emit = () => {
+      const result = spawnSync(
+        process.execPath,
+        ["scripts/harness.mjs", "emit"],
+        {
+          cwd: root,
+          env: { ...process.env, DOTLN_LAUNCHPAD: root },
+          encoding: "utf8",
+        },
+      );
+      assert.equal(result.status, 0, result.stderr);
+      return readFileSync(join(root, ".claude/harness-manifest.json"), "utf8");
+    };
+    const baseline = emit();
+    for (const [key, value] of [
+      ["profile", contributorProfiles[0].profileId],
+      ["loadout", "unknown-build"],
+    ]) {
+      write(
+        root,
+        "dotln.config.json",
+        json({ version: 1, build: { [key]: value } }),
+      );
+      assert.equal(emit(), baseline);
+      const row = readFeatureInventory(root).find(
+        (entry) => entry.id === `build-${key}`,
+      );
+      assert.equal(row.readBy, "unread");
+      assert.equal(row.value, value);
+    }
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("private-destination changes only the instance Secrets paragraph and preserves outward refusal", async () => {
+  const root = fixture();
+  try {
+    const template = readFileSync(
+      join(sourceRoot, "scripts/kit/CLAUDE.template.md"),
+      "utf8",
+    );
+    write(root, "CLAUDE.md", template);
+    write(root, "KIT-MANIFEST.json", json({ files: [] }));
+    emitHarness(root);
+    checkHarness(root);
+    const before = readFileSync(join(root, "CLAUDE.md"), "utf8");
+    const secrets = (text) =>
+      text.match(/## Secrets\n\n([\s\S]*?)(?=\n\n## )/u)[1];
+    assert.equal(secrets(before), secrets(template));
+    write(
+      root,
+      "dotln.config.json",
+      json({ version: 1, features: { "private-destination": true } }),
+    );
+    assert.throws(() => checkHarness(root), /private-destination Secrets/u);
+    emitHarness(root);
+    checkHarness(root);
+    const on = readFileSync(join(root, "CLAUDE.md"), "utf8");
+    assert.match(
+      secrets(on),
+      /ordinary project\nlinks.*admitted inside this instance's repository/su,
+    );
+    assert.match(
+      secrets(on),
+      /Never expose, copy, commit or print credentials/u,
+    );
+    assert.equal(
+      on.replace(secrets(on), "SECRETS"),
+      before.replace(secrets(before), "SECRETS"),
+    );
+    write(
+      root,
+      "docs/control/local/terms.txt",
+      "refuse: fixture-private-project\n",
+    );
+    write(
+      root,
+      "docs/control/outward-vocabulary.json",
+      json({ types: ["feat", "fix"], reviewTerms: [] }),
+    );
+    const { checkOutwardArtifact } = await import("./outward-lint.mjs");
+    const result = checkOutwardArtifact(root, {
+      kind: "pr-body",
+      text: "A link to fixture-private-project.",
+    });
+    assert.equal(result.checks.localTerms.status, "refused");
+    assert.ok(
+      result.findings.some(
+        (entry) => entry.rule === "vocabulary.local" && entry.mode === "refuse",
+      ),
+    );
+    write(root, "dotln.config.json", json({ version: 1 }));
+    emitHarness(root);
+    checkHarness(root);
+    assert.equal(readFileSync(join(root, "CLAUDE.md"), "utf8"), before);
+    // A core source declaration keeps its hand-written floor untouched.
+    write(root, "packages/skeleton/tsconfig.json", "{}\n");
+    write(
+      root,
+      "dotln.config.json",
+      json({ version: 1, features: { "private-destination": true } }),
+    );
+    emitHarness(root);
+    assert.equal(readFileSync(join(root, "CLAUDE.md"), "utf8"), before);
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
 const hookName = (name) => (stopUnits.has(name) ? "finish" : name);
 const configFor = (root, name) => {
   const config = JSON.parse(

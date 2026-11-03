@@ -11,7 +11,7 @@
 - [x] [WO-248] — The pull-request table says what its reader can use · **final-reviewed**
 - [x] [WO-252] — Release close owns what the kit wrote · **final-reviewed**
 - [x] [WO-238] — A document says what is so · **final-reviewed**
-- [ ] [WO-241] — The features file · **queued**
+- [x] [WO-241] — The features file · **final-reviewed**
 - [ ] [WO-242] — Plan-first mode · **queued**
 - [ ] [WO-243] — Closeout checks follow the repositories an order changed · **queued**
 - [ ] [WO-244] — Paired planning passes and the synthesis pass · **queued**
@@ -47,30 +47,14 @@ None.
 
 ## Open
 
-### WO-241
-
-[WO-241 — The features file: &#96;dotln.config.json&#96; gains a &#96;features&#96; section an operator reads and edits by feature name, a registry in the kit says what each feature is, whose it is (core, instance or both), its default and where it is read, a generated &#96;FEATURES.md&#96; renders the instance's elections as a table, and the first two elections are wired through it (version assigned at activation)](WO-241-the-features-file.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-069: satisfied-by-close (met) — the configuration loader and its positive validation the features section extends; WO-251: planning-deferral (met) until WO-251 dated 2026-11-01 — the features section and its first id, desktop-control, land before this order; step 2 absorbs its one-id validation; WO-150: satisfied-by-close (met) — the Tinkerer economy default and opt-out this order reads through the features section; WO-218: satisfied-by-close (met) — core's own dotln.config.json, the file the section is added to.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer xhigh.
-- Track: delivery
-- Authority: [docs/work-orders/WO-241-the-features-file.md](WO-241-the-features-file.md)
-
 ### WO-242
 
 [WO-242 — Plan-first mode: when an instance elects it, the executor writes a plan, a conversation and a proposal into the order's documentation root, records the proposal and stops; the operator answers in the terminal or in the conversation document; the executor paraphrases, screens and surfaces every transformation before it carries a word elsewhere, and implements only after the operator's approval is recorded as a typed event the hook enforces (version assigned at activation)](WO-242-plan-first-mode.md)
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-241.
-- References: WO-241: hard (unmet) — the features section and the plan-first registry row the mode reads; WO-236: satisfied-by-close (met) — the executor's target-worktree grant under which the three documents are written into a target; WO-158: satisfied-by-close (met) — the typed event, capture and actor-flag shape plan-approved follows; WO-192: satisfied-by-close (met) — the router that must stop at PlanProposed and resume at PlanApproved: its route table and loop, merged at v0.104.0.
+- Dependencies: typed; dependency-ready.
+- References: WO-241: hard (met) — the features section and the plan-first registry row the mode reads; WO-236: satisfied-by-close (met) — the executor's target-worktree grant under which the three documents are written into a target; WO-158: satisfied-by-close (met) — the typed event, capture and actor-flag shape plan-approved follows; WO-192: satisfied-by-close (met) — the router that must stop at PlanProposed and resume at PlanApproved: its route table and loop, merged at v0.104.0.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.

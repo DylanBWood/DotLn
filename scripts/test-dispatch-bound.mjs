@@ -322,12 +322,17 @@ test("configured lifecycle roots share the installed journal lane and preserve t
       roots: { control: "records/state", orders: "records/state/segments" },
     }),
   );
-  for (const name of ["config.mjs", "validation.mjs"])
-    write(
-      root,
-      `scripts/lib/${name}`,
-      readFileSync(join(source, "scripts/lib", name)),
-    );
+  for (const file of [
+    "scripts/lib/config.mjs",
+    "scripts/lib/features.mjs",
+    "scripts/lib/build-overlay.mjs",
+    "scripts/lib/validation.mjs",
+    "scripts/lib/paths.mjs",
+    "scripts/lib/git.mjs",
+    "scripts/lib/temporary-roots.mjs",
+    "packages/skeleton/src/temporary-root-records.mjs",
+  ])
+    write(root, file, readFileSync(join(source, file)));
   write(root, "records/state/budgets.json", JSON.stringify(budgets));
   write(
     root,

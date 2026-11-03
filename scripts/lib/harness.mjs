@@ -61,7 +61,14 @@ import {
 } from "../../packages/skeleton/dist/src/loadouts/contributor.js";
 import { personalFeedback } from "../../packages/skeleton/dist/src/loadouts/feedback.js";
 import { checkLocalTerms } from "./terms.mjs";
+import { renderInstanceSecrets } from "./features.mjs";
+import { isKitRoot } from "../../packages/skeleton/src/runtime-inputs.mjs";
 import { containedRegularFile } from "./paths.mjs";
+import {
+  decodeBuildOverlay as decodeOverlay,
+  readBuildOverlayFile,
+  overlayError,
+} from "./build-overlay.mjs";
 import {
   runtimeDirectoryNames,
   runtimeEntryName,
@@ -72,218 +79,18 @@ import {
 } from "../../packages/skeleton/src/runtime-inputs.mjs";
 
 const manifestPath = ".claude/harness-manifest.json";
-export const OVERLAY_KEYS = [
-  "version",
-  "build",
-  "identity",
-  "unequip",
-  "equip",
-  "narrow",
-  "grants",
-];
-const overlayError = (path, detail) =>
-  new Error(`invalid build overlay in ${path}: ${detail}`);
-
-/** Instance-owned data has a closed schema; it cannot replace kit code or the floor. */
+export { OVERLAY_KEYS } from "./build-overlay.mjs";
 export function decodeBuildOverlay(path, text) {
-  const fail = (detail) => {
-    throw overlayError(path, detail);
-  };
-  const object = (value, keys, label) => {
-    if (!value || typeof value !== "object" || Array.isArray(value))
-      fail(`${label} must be an object`);
-    for (const key of Object.keys(value))
-      if (!keys.includes(key)) fail(`unknown key ${label}.${key}`);
-  };
-  const string = (value, label) => {
-    if (
-      typeof value !== "string" ||
-      !value.trim() ||
-      /[\u0000-\u001f\u007f\u2028\u2029]/u.test(value)
-    )
-      fail(`${label} must be a non-empty string without control characters`);
-    if (/<!--\s*dotln-harness:(?:start|end)\s*-->/u.test(value))
-      fail(`${label} must not contain harness block markers`);
-  };
-  const integer = (value, label, min = 0) => {
-    if (!Number.isSafeInteger(value) || value < min)
-      fail(`${label} must be a safe integer >= ${min}`);
-  };
-  const strings = (value, label, pattern) => {
-    if (!Array.isArray(value)) fail(`${label} must be an array`);
-    for (const [index, entry] of value.entries()) {
-      string(entry, `${label}[${index}]`);
-      if (pattern && !pattern.test(entry))
-        fail(`${label}[${index}] has an invalid effect pattern`);
-    }
-    if (new Set(value).size !== value.length) fail(`${label} has duplicates`);
-  };
-  const exactEffect = /^[^\s*\u0000-\u001f\u007f]+$/u;
-  const effectPattern = /^[^\s*\u0000-\u001f\u007f]+\*?$/u;
-  let value;
-  try {
-    value = JSON.parse(text);
-  } catch {
-    fail("root must be JSON");
-  }
-  const screenMarkers = (node, key) => {
-    if (
-      typeof node === "string" &&
-      /<!--\s*dotln-harness:(?:start|end)\s*-->/u.test(node)
-    )
-      fail(`${key} must not contain harness block markers`);
-    if (node && typeof node === "object")
-      for (const [name, child] of Object.entries(node)) {
-        screenMarkers(name, `${key} property name`);
-        screenMarkers(child, `${key}.${name}`);
-      }
-  };
-  screenMarkers(value, "overlay");
-  object(value, OVERLAY_KEYS, "overlay");
-  if (value.version !== 1) fail("version must be 1");
-  if (
-    value.build !== undefined &&
-    !["contributor", "none"].includes(value.build)
-  )
-    fail('build must be "contributor" or "none"');
-  if (
-    value.build === "none" &&
-    Object.keys(value).some((key) => !["version", "build"].includes(key))
-  )
-    fail('build "none" accepts only version and build');
-  for (const key of ["equip", "unequip"]) {
-    if (value[key] === undefined) continue;
-    strings(value[key], key);
-    for (const id of value[key])
-      if (!contributorSupportIds.includes(id))
-        fail(`${key} names unknown support ${id}`);
-  }
-  if (value.equip?.some((id) => value.unequip?.includes(id)))
-    fail("equip and unequip must not name the same support");
-  if (value.identity !== undefined) {
-    object(
-      value.identity,
-      [
-        "identityId",
-        "version",
-        "name",
-        "dispositions",
-        "invariants",
-        "updateLaws",
-        "lineage",
-      ],
-      "identity",
-    );
-    for (const key of ["identityId", "name"])
-      string(value.identity[key], `identity.${key}`);
-    integer(value.identity.version, "identity.version", 1);
-    for (const key of ["dispositions", "invariants", "updateLaws", "lineage"])
-      strings(value.identity[key], `identity.${key}`);
-  }
-  if (value.narrow !== undefined) {
-    const narrow = value.narrow;
-    object(
-      narrow,
-      [
-        "allowedEffects",
-        "deniedEffects",
-        "resourceLimits",
-        "requiredEvidence",
-        "expiresAt",
-        "revocationEventTypes",
-        "revocationConditions",
-      ],
-      "narrow",
-    );
-    for (const key of [
-      "allowedEffects",
-      "deniedEffects",
-      "requiredEvidence",
-      "revocationEventTypes",
-    ])
-      if (narrow[key] !== undefined)
-        strings(
-          narrow[key],
-          `narrow.${key}`,
-          key.endsWith("Effects") ? effectPattern : undefined,
-        );
-    if (narrow.resourceLimits !== undefined) {
-      const limits = narrow.resourceLimits;
-      object(limits, Object.keys(limits ?? {}), "narrow.resourceLimits");
-      for (const [key, quantity] of Object.entries(limits)) {
-        string(key, "narrow.resourceLimits key");
-        integer(quantity, `narrow.resourceLimits.${key}`);
-      }
-    }
-    if (narrow.expiresAt !== undefined)
-      integer(narrow.expiresAt, "narrow.expiresAt");
-    if (narrow.revocationConditions !== undefined) {
-      if (!Array.isArray(narrow.revocationConditions))
-        fail("narrow.revocationConditions must be an array");
-      for (const [index, condition] of narrow.revocationConditions.entries()) {
-        const label = `narrow.revocationConditions[${index}]`;
-        object(condition, ["registryId", "version", "params"], label);
-        string(condition.registryId, `${label}.registryId`);
-        integer(condition.version, `${label}.version`, 1);
-        if (condition.params !== undefined)
-          object(
-            condition.params,
-            Object.keys(condition.params ?? {}),
-            `${label}.params`,
-          );
-      }
-    }
-  }
-  if (value.grants !== undefined) {
-    if (!Array.isArray(value.grants)) fail("grants must be an array");
-    const ids = new Set();
-    for (const [index, grant] of value.grants.entries()) {
-      const label = `grants[${index}]`;
-      object(
-        grant,
-        [
-          "grantId",
-          "version",
-          "grantedBy",
-          "effects",
-          "operations",
-          "repo",
-          "reason",
-        ],
-        label,
-      );
-      for (const key of ["grantId", "reason"])
-        string(grant[key], `${label}.${key}`);
-      integer(grant.version, `${label}.version`, 1);
-      if (!["operator", "host-policy"].includes(grant.grantedBy))
-        fail(`${label}.grantedBy must be operator or host-policy`);
-      if (grant.repo !== "project") fail(`${label}.repo must be project`);
-      strings(grant.effects, `${label}.effects`, exactEffect);
-      if (grant.operations !== undefined)
-        strings(grant.operations, `${label}.operations`, exactEffect);
-      if (ids.has(grant.grantId)) fail(`${label}.grantId must be unique`);
-      ids.add(grant.grantId);
-    }
-  }
-  return value;
+  return decodeOverlay(path, text, contributorSupportIds);
 }
-
 export function readBuildOverlay(launchpad) {
-  const path = loadConfig(launchpad).build.overlay;
-  if (path === null) return undefined;
-  const absolute = resolve(launchpad, path);
-  let text;
-  try {
-    if (!containedRegularFile(absolute, launchpad)) throw new Error();
-    text = readFileSync(absolute);
-  } catch {
-    throw overlayError(
-      path,
-      "build.overlay must name a readable regular file inside the launchpad",
-    );
-  }
-  decodeBuildOverlay(path, text.toString("utf8"));
-  return { path, bytes: text };
+  const result = readBuildOverlayFile(
+    launchpad,
+    loadConfig(launchpad).build.overlay,
+    contributorSupportIds,
+  );
+  if (!result) return undefined;
+  return { path: result.path, bytes: result.bytes };
 }
 const hash = (text) => `fnv1a64:${fnv1a64(text)}`;
 const allowed = (path) =>
@@ -347,6 +154,21 @@ export function harnessInstallation(options = {}) {
   const switches = { ...options.supports };
   for (const id of value?.unequip ?? []) switches[id] = false;
   for (const id of value?.equip ?? []) switches[id] = true;
+  // The old support/overlay route maps to the same election for this release.
+  // A conflict needs an edit, never silent precedence between two choices.
+  if (Object.hasOwn(switches, "tinkerer-economy")) {
+    if (
+      options.declaredFeatures?.["tinkerer-economy"] !== undefined &&
+      switches["tinkerer-economy"] !== options.features?.["tinkerer-economy"]
+    )
+      throw new Error(
+        "conflicting tinkerer-economy elections; use features.tinkerer-economy in dotln.config.json and remove the old support/overlay choice",
+      );
+    console.warn(
+      "Advisory: support/overlay tinkerer-economy is accepted for this kit release; use features.tinkerer-economy in dotln.config.json before the next release",
+    );
+  } else if (options.features?.["tinkerer-economy"] !== undefined)
+    switches["tinkerer-economy"] = options.features["tinkerer-economy"];
   let program;
   try {
     program =
@@ -518,6 +340,7 @@ export function emitHarness(
   installation = harnessInstallation({
     ...options,
     features: options.features ?? readFeatures(root),
+    declaredFeatures: loadConfig(root).features,
   }),
 ) {
   root = realpathSync(root);
@@ -542,7 +365,7 @@ export function emitHarness(
       originalFloor.includes(HARNESS_END))
       ? harnessInstructionBlock(originalFloor).trimEnd()
       : null;
-  const floor =
+  let floor =
     typeof originalFloor !== "string"
       ? originalFloor
       : priorBlock
@@ -552,6 +375,12 @@ export function emitHarness(
             .map(migrateHarnessFloor)
             .join(priorBlock)
         : migrateHarnessFloor(originalFloor);
+  if (isKitRoot(root) && typeof floor === "string")
+    floor = renderInstanceSecrets(
+      floor,
+      readFileSync(join(TOOL_ROOT, "scripts/kit/CLAUDE.template.md"), "utf8"),
+      (options.features ?? readFeatures(root))["private-destination"],
+    );
   if (installation.manifest.build === "none") {
     if (typeof floor !== "string" || !floor.trim())
       throw new Error(
@@ -1088,7 +917,21 @@ export function checkHarness(root, options = {}) {
   const expected = harnessInstallation({
     ...options,
     features: options.features ?? readFeatures(root),
+    declaredFeatures: loadConfig(root).features,
   });
+  if (isKitRoot(root)) {
+    const instruction = readFileSync(contained(root, "CLAUDE.md"), "utf8");
+    if (
+      renderInstanceSecrets(
+        instruction,
+        readFileSync(join(TOOL_ROOT, "scripts/kit/CLAUDE.template.md"), "utf8"),
+        (options.features ?? readFeatures(root))["private-destination"],
+      ) !== instruction
+    )
+      throw new Error(
+        "harness drift: private-destination Secrets paragraph; run node scripts/harness.mjs emit",
+      );
+  }
   if (expected.manifest.build === "none") {
     const floor = contained(root, "CLAUDE.md");
     const text = existsSync(floor) ? readFileSync(floor, "utf8") : "";

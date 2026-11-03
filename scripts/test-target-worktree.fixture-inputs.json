@@ -14,6 +14,11 @@
     "scripts/meta.mjs"
   ],
   "files": [
+    "scripts/features.mjs",
+    "scripts/launchpad.mjs",
+    "scripts/build.mjs",
+    "scripts/docs-check.mjs",
+    "scripts/lineage.mjs",
     "scripts/worktree.mjs",
     "scripts/resume.mjs",
     "scripts/release.mjs",
@@ -35,6 +40,9 @@
     "packages/kernel/dist",
     "packages/skeleton/dist",
     "packages/console/dist"
+  ],
+  "provided": [
+    "scripts/bootstrap.mjs"
   ],
   "includes": [
     "scripts/test-beacon-fixture.fixture-inputs.json"

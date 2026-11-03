@@ -1,0 +1,141 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-11-03T21:25:31.827Z",
+  "subject": "Real harness emission with the shipped kit floor and budget template, absent then tinkerer-economy off",
+  "checks": {
+    "absentHarness": "pass",
+    "offHarness": "pass",
+    "everyRoleMeasured": "pass",
+    "noRoleIncreased": "pass",
+    "allDeclaredInstanceCeilings": "pass",
+    "optionalSupportRemoved": "pass"
+  },
+  "rows": [
+    {
+      "role": "executor",
+      "skillsRoot": ".claude/skills",
+      "absentBytes": 42390,
+      "offBytes": 42114,
+      "instanceCeiling": null,
+      "instanceVerdict": "unset",
+      "coreCeilingComparison": "breach"
+    },
+    {
+      "role": "verifier",
+      "skillsRoot": ".claude/skills",
+      "absentBytes": 37019,
+      "offBytes": 37019,
+      "instanceCeiling": null,
+      "instanceVerdict": "unset",
+      "coreCeilingComparison": "breach"
+    },
+    {
+      "role": "reviewer",
+      "skillsRoot": ".claude/skills",
+      "absentBytes": 39442,
+      "offBytes": 39442,
+      "instanceCeiling": null,
+      "instanceVerdict": "unset",
+      "coreCeilingComparison": "accepted"
+    },
+    {
+      "role": "release-close",
+      "skillsRoot": ".claude/skills",
+      "absentBytes": 26716,
+      "offBytes": 26716,
+      "instanceCeiling": null,
+      "instanceVerdict": "unset",
+      "coreCeilingComparison": "breach"
+    },
+    {
+      "role": "planner",
+      "skillsRoot": ".claude/skills",
+      "absentBytes": 27790,
+      "offBytes": 27790,
+      "instanceCeiling": null,
+      "instanceVerdict": "unset",
+      "coreCeilingComparison": "breach"
+    },
+    {
+      "role": "refuter",
+      "skillsRoot": ".claude/skills",
+      "absentBytes": 25941,
+      "offBytes": 25941,
+      "instanceCeiling": null,
+      "instanceVerdict": "unset",
+      "coreCeilingComparison": "unset"
+    },
+    {
+      "role": "router",
+      "skillsRoot": ".claude/skills",
+      "absentBytes": 16028,
+      "offBytes": 16028,
+      "instanceCeiling": 16384,
+      "instanceVerdict": "within",
+      "coreCeilingComparison": "within"
+    },
+    {
+      "role": "executor",
+      "skillsRoot": ".agents/skills",
+      "absentBytes": 42390,
+      "offBytes": 42114,
+      "instanceCeiling": null,
+      "instanceVerdict": "unset",
+      "coreCeilingComparison": "breach"
+    },
+    {
+      "role": "verifier",
+      "skillsRoot": ".agents/skills",
+      "absentBytes": 37019,
+      "offBytes": 37019,
+      "instanceCeiling": null,
+      "instanceVerdict": "unset",
+      "coreCeilingComparison": "breach"
+    },
+    {
+      "role": "reviewer",
+      "skillsRoot": ".agents/skills",
+      "absentBytes": 39442,
+      "offBytes": 39442,
+      "instanceCeiling": null,
+      "instanceVerdict": "unset",
+      "coreCeilingComparison": "accepted"
+    },
+    {
+      "role": "release-close",
+      "skillsRoot": ".agents/skills",
+      "absentBytes": 26716,
+      "offBytes": 26716,
+      "instanceCeiling": null,
+      "instanceVerdict": "unset",
+      "coreCeilingComparison": "breach"
+    },
+    {
+      "role": "planner",
+      "skillsRoot": ".agents/skills",
+      "absentBytes": 27790,
+      "offBytes": 27790,
+      "instanceCeiling": null,
+      "instanceVerdict": "unset",
+      "coreCeilingComparison": "breach"
+    },
+    {
+      "role": "refuter",
+      "skillsRoot": ".agents/skills",
+      "absentBytes": 25941,
+      "offBytes": 25941,
+      "instanceCeiling": null,
+      "instanceVerdict": "unset",
+      "coreCeilingComparison": "unset"
+    },
+    {
+      "role": "router",
+      "skillsRoot": ".agents/skills",
+      "absentBytes": 16028,
+      "offBytes": 16028,
+      "instanceCeiling": 16384,
+      "instanceVerdict": "within",
+      "coreCeilingComparison": "within"
+    }
+  ]
+}

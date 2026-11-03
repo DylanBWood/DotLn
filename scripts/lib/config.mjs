@@ -13,6 +13,8 @@ import {
 } from "node:fs";
 import { dirname, join, posix, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { featureAliases, resolveFeatureId } from "./features.mjs";
+export { readFeatures } from "./features.mjs";
 
 export const CONFIG_FILENAME = "dotln.config.json";
 export const CONFIG_SCHEMA_VERSION = 1;
@@ -410,9 +412,29 @@ const validateKit = (path, declared) => {
 
 const validateFeatures = (path, declared) => {
   requireObject(path, declared, "features");
-  requireKnownKeys(path, declared, ["desktop-control"], "features");
+  const seen = new Set();
   return Object.fromEntries(
-    Object.entries(declared).map(([id, value]) => {
+    Object.entries(declared).map(([originalId, value]) => {
+      let id;
+      try {
+        id = resolveFeatureId(originalId, {
+          ...(Object.hasOwn(featureAliases, originalId)
+            ? {
+                release: JSON.parse(
+                  readFileSync(
+                    join(TOOL_ROOT, "packages/skeleton/package.json"),
+                    "utf8",
+                  ),
+                ).version,
+              }
+            : {}),
+        });
+      } catch (error) {
+        throw refuse(path, error.message);
+      }
+      if (seen.has(id))
+        throw refuse(path, `duplicate features.${id} through a renamed id`);
+      seen.add(id);
       if (typeof value === "boolean") return [id, value];
       const label = `features.${id}`;
       requireObject(path, value, label);
@@ -1119,12 +1141,6 @@ export const loadConfig = (root) => {
   } finally {
     closeSync(fd);
   }
-};
-
-/** Resolve the instance election; a reason documents it without granting it. */
-export const readFeatures = (root) => {
-  const value = loadConfig(root).features["desktop-control"];
-  return { "desktop-control": value === true || value?.on === true };
 };
 
 const ascend = (from) => {

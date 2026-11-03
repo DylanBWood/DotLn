@@ -248,8 +248,8 @@ operator sandbox settings.
    Release title and tag message, never the tag name or an existing Release; turn on the forge's
    delete-branch-on-merge setting for the target, since the kit deletes no
    remote branch.
-5. Copy `dotln.config.example.json` to `dotln.config.json` only when this
-   instance moves a document root; an absent file means the default layout
+5. Copy `dotln.config.example.json` to `dotln.config.json` when this
+   instance elects a feature or moves a document root; an absent file means the default layout
    under `docs/`. The example declares only the `docs` base, from which every
    other root derives; a root declared on its own stays where it is declared
    when the base moves. A registered repository declares its own `gate`
@@ -331,6 +331,64 @@ recorded phase without activating WO-001 again or repeating a completed
 verification. Release preparation and final review run in `wo-001`. Because
 `wo-001` starts from the fork's merged `main`, its pull request carries only
 WO-001's own commits.
+
+## Features
+
+`dotln.config.json` is this instance's configuration file. Its `features`
+section accepts named booleans or an election with your own reason:
+
+```json
+{
+  "version": 1,
+  "features": {
+    "tinkerer-economy": false,
+    "private-destination": { "on": true, "note": "This repository holds our own project records." }
+  }
+}
+```
+
+An absent section keeps the existing defaults: Tinkerer economy on,
+plan-first, private-destination and desktop-control off. `plan-first` is
+reserved for WO-242 and has no consumer yet. A misspelled name refuses with
+the valid names and `npm run features -- list`. Existing keys such as
+`kit.applyInstanceActions`, `release.*`, `build.*`, `drive.sandbox` and the
+budget keys stay where they are; putting their inventory ids in `features`
+refuses and names the key to edit.
+
+Run `npm run features -- list` for the table or add `--json` for structured
+values. `npm run features -- render` writes `docs/control/FEATURES.md`
+(under your configured control root); `npm run features -- check` refuses a
+stale page. `npm run meta` refreshes it, and the document gate checks it.
+Saved `build.loadout` and `build.profile` selections are unread; the harness
+CLI options remain separate. The subagent cap still reads the default
+`docs/control/budgets.json` if you relocate your control root; the table names
+that actual source, while process bounds and retention follow the relocation.
+
+The table comes from `scripts/lib/features.mjs`: each row names its scope,
+default, effective value, source, meaning, election key and consumer.
+`unread` means the switch has no effect; a queued order identifies a future
+consumer. Core rows describe core's choices, not a rule this instance must
+adopt. An order that closes without updating its reader produces a planning
+advisory, not a refusal of another order's gate.
+
+After changing an emitted election, run `node scripts/harness.mjs emit`
+and `node scripts/harness.mjs check`. Turning Tinkerer economy off removes
+its executor support. The old overlay `equip`/`unequip` choice remains
+accepted for this kit release with a migration advisory; move it to
+`features.tinkerer-economy` and remove that overlay entry. Conflicting
+choices refuse instead of silently choosing one.
+
+Private-destination changes only the exported instance's known §Secrets
+paragraph: it admits the owner's ordinary project links and identifiers
+inside that instance. A customized paragraph requires review before the
+election can be emitted. Turning the election off restores the default
+paragraph. Credentials stay excluded everywhere and outward artifacts
+still pass private-terms and publication screens. Core's locked floor is
+unchanged. Desktop-control still requires the operator's explicit request
+in the session after the instance elects it.
+
+The generated harness contract's refusal classes, the single-writer
+reservation and the clean-room floor are not electable. They are the floor.
 
 ## Planning in this instance
 

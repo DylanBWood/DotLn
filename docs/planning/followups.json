@@ -53130,6 +53130,96 @@
           "at": "2026-11-03T16:52:27.022Z"
         }
       ]
+    },
+    {
+      "id": "FUP-a0efaae1b9887fde",
+      "key": "decision:docs/evidence/WO-241/decisions.md#wo-241-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "448026ba529e62c60a8bb26d40265a4f39e2f167652b2068f8c2b0ef4e3251ee",
+          "ref": "docs/evidence/WO-241/decisions.md#wo-241-d003",
+          "title": "WO-241-D003: Unify the spawn-cap runtime's budget path with configured control roots, with relocated-root admission tests and the required skeleton compatibility release.",
+          "summary": "{ \"id\": \"WO-241-D003\", \"date\": \"2026-11-03\", \"dispatch\": \"resume: next; independent review corrections\", \"decision\": \"Correct the inventory to report actual consumers: saved build.loadout and build.profile are unread, and the subagent cap follows its runtime reader's default budget path. Preserve runtime compatibility. Share overlay structural validation and regular-file admission below the feature and harness readers, with compiler-owned support-id validation retained at harness emission. Rewrite only a complete recognized Secrets section.\", \"evidence\": [ \"The criteria review's actual harness CLI reproduction emitted identical manifests for a configured single profile and unknown loadout; t",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-1398fcdb63df23d2",
+      "key": "decision:docs/evidence/WO-241/decisions.md#wo-241-d004",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "4131a21f5028d81b951ff5e70325f4bdb3b672dc7eeac7fbcbd6da6bfd2d2c69",
+          "ref": "docs/evidence/WO-241/decisions.md#wo-241-d004",
+          "title": "WO-241-D004: Make worker record accept the actual Agent host/model/effort and reviewed subject with explicit provenance; cover Codex spawn_agent receipts and delayed recording without claiming…",
+          "summary": "{ \"id\": \"WO-241-D004\", \"date\": \"2026-11-03\", \"dispatch\": \"resume: next; review receipt inspection\", \"decision\": \"Retain the canonical local review reports and disclose the Agent recorder's metadata limitations. The actual workers were Codex spawn_agent gpt-6.1-sol at max, not the Claude defaults the helper labels. Round 1 reviewed the candidate before its four fixes; two returns were recorded after repair edits began, so their helper-generated reviewedTree is a recording-time snapshot, not the reviewed subject.\", \"evidence\": [ \"scripts/lib/review-worker.mjs recordAgentReview hardcodes host claude and TRANSPORT_DEFAULTS[claude-cli-print], and calls workingTree(root) at recording time\", \"The t",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-7680fe0513c31783",
+      "key": "decision:docs/evidence/WO-241/decisions.md#wo-241-d014",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "32c338b3822250c93dbbc7816f2e150f7572e09c74550484fa10ec7d0727d258",
+          "ref": "docs/evidence/WO-241/decisions.md#wo-241-d014",
+          "title": "WO-241-D014: Before the first feature rename ships, make readFeatureInventory resolve named elections through the loader's tombstones so the page, the list command and readFeatures agree for an old…",
+          "summary": "{ \"id\": \"WO-241-D014\", \"date\": \"2026-11-03\", \"dispatch\": \"resume: verify\", \"decision\": \"Keep the empty rename table as shipped and board two defects of the rename path for the first rename. During a rename's advisory release, readFeatureInventory reads the raw file under the successor id, so the generated page and the list command show the successor at its default while readFeatures applies the old id's value. The tombstone's one-release window is keyed on the skeleton package version, which can stay the same across kit releases.\", \"evidence\": [ \"verifier-001/rename-probe.mjs injects the tombstone old-economy to tinkerer-economy into copies of the candidate's loader. Accepted at the current ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-1b5cb21e12253f3e",
+      "key": "decision:docs/evidence/WO-241/decisions.md#wo-241-d015",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "d1d650690843828b6a9ccef1ea855c81e657c26ff9de85734240d6d0e70d27f8",
+          "ref": "docs/evidence/WO-241/decisions.md#wo-241-d015",
+          "title": "WO-241-D015: Make the driven-session-ceiling and driven-phase-timeout reader proofs observe scripts/lib/drive-session.mjs's own output (the drive record's limits), so that removing either read fails…",
+          "summary": "{ \"id\": \"WO-241-D015\", \"date\": \"2026-11-03\", \"dispatch\": \"resume: verify\", \"decision\": \"Board a test-precision gap. The reader proofs for driven-session-ceiling and driven-phase-timeout do not observe their named reader, scripts/lib/drive-session.mjs. The registry's claim is true today, but removing either read from drive-session.mjs would leave the toggle test green.\", \"evidence\": [ \"scripts/test-harness.mjs, test 'feature readers consume budgets and build overlays through changed fixture output', observes readBudgets(root).drivenSessionCeiling, which comes from scripts/lib/process-budget.mjs. For drivenPhaseTimeoutMs it builds the limits record by hand before calling attemptTimeLimit.\", \"s",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-3d64b267a45d2f34",
+      "key": "decision:docs/evidence/WO-241/decisions.md#wo-241-d016",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "2b90d239276649dd68980e209e57c040c74e364aa0346bf8f68b3036461be0d1",
+          "ref": "docs/evidence/WO-241/decisions.md#wo-241-d016",
+          "title": "WO-241-D016: Retire the legacy tinkerer-economy overlay route after this kit release: move the kit guide's overlay example to another support or to features.tinkerer-economy, print the migration…",
+          "summary": "{ \"id\": \"WO-241-D016\", \"date\": \"2026-11-03\", \"dispatch\": \"resume: verify\", \"decision\": \"Board the legacy Tinkerer overlay route's loose ends. Nothing retires the route after this kit release. The kit guide's own overlay example still uses it. Every emit prints its migration advisory twice, in two wordings.\", \"evidence\": [ \"docs/KIT.md's overlay example unequips tinkerer-economy and process-cost; the new Features section calls that overlay choice legacy and accepted for this kit release.\", \"verifier-001/instance-probe.mjs: an overlay that unequips tinkerer-economy emits with two advisories. One comes from readFeatures (overlay tinkerer-economy is accepted...) and one from harnessInstallation ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-b40bcf1b69c77008",
+      "key": "decision:docs/evidence/WO-241/decisions.md#wo-241-d017",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "dd2e65a4aa2102245b69a4a21b17969abb79cd24ecce6877eee16a498201cbde",
+          "ref": "docs/evidence/WO-241/decisions.md#wo-241-d017",
+          "title": "WO-241-D017: Break the scripts/lib/config.mjs, features.mjs and build-overlay.mjs import cycle: keep the registry and resolveFeatureId in a module that imports no configuration reader, and keep the…",
+          "summary": "{ \"id\": \"WO-241-D017\", \"date\": \"2026-11-03\", \"dispatch\": \"resume: verify\", \"decision\": \"Board an import cycle as a maintainability follow-up. scripts/lib/config.mjs imports scripts/lib/features.mjs, which imports config.mjs and scripts/lib/build-overlay.mjs, and build-overlay.mjs reaches config.mjs again through scripts/lib/paths.mjs. It works because no module reads another's exports while it is being evaluated.\", \"evidence\": [ \"Import lines: config.mjs imports featureAliases and resolveFeatureId from features.mjs and re-exports readFeatures. features.mjs imports docPath, docRelative, defaultDocRelative and loadConfig from config.mjs. build-overlay.mjs imports containedRegularFile from path",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

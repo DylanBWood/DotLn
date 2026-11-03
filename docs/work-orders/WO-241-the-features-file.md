@@ -1,4 +1,4 @@
-# WO-241 — The features file: `dotln.config.json` gains a `features` section an operator reads and edits by feature name, a registry in the kit says what each feature is, whose it is (core, instance or both), its default and where it is read, a generated `FEATURES.md` renders the instance's elections as a table, and the first two elections are wired through it (version assigned at activation)
+# WO-241 — The features file: `dotln.config.json` gains a `features` section an operator reads and edits by feature name, a registry in the kit says what each feature is, whose it is (core, instance or both), its default and where it is read, a generated `FEATURES.md` renders the instance's elections as a table, and the first two elections are wired through it (v0.114.0)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

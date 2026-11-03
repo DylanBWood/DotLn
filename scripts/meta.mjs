@@ -24,6 +24,7 @@ import {
 import { refreshExecutorIndex } from "./lib/executor-handoff.mjs";
 import { syncFollowups } from "./lib/planning-followups.mjs";
 import { checkReceiptCostLines } from "./lib/receipt-cost.mjs";
+import { featureAdvisories, writeFeatures } from "./features.mjs";
 
 const root = findLaunchpad();
 export async function metaMain(args = process.argv.slice(2), repo = root) {
@@ -95,6 +96,9 @@ export async function metaMain(args = process.argv.slice(2), repo = root) {
     });
   }
   if (options["--check"]) checkReceiptCostLines(repo);
+  for (const message of featureAdvisories(repo))
+    console.warn(`Advisory: ${message}`);
+  writeFeatures(repo, { check: Boolean(options["--check"]) });
   writeDecisionsIndex(repo, { check: Boolean(options["--check"]) });
   syncFollowups(repo, { check: Boolean(options["--check"]) });
   if (!options["--check"]) await refreshExecutorIndex(repo);

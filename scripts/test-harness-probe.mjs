@@ -477,6 +477,16 @@ test("WO-146 operator qualification uses real fixture transitions, fresh identit
   );
   t.after(() => rmSync(out, { recursive: true, force: true }));
   const { directory } = prepareCopilotQualification({ out, base: out });
+  assert.deepEqual(
+    readdirSync(join(directory, "docs/work-orders")).filter((name) =>
+      /^WO-\d{3}-/u.test(name),
+    ),
+    ["WO-999-fixture.md"],
+  );
+  assert.match(
+    readFileSync(join(directory, "docs/control/FEATURES.md"), "utf8"),
+    /\| plan-first \|[^\n]+\| WO-242 \|/u,
+  );
   assert.throws(
     () => prepareCopilotQualification({ out, base: out }),
     /preserve the existing/,

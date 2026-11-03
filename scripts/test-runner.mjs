@@ -158,6 +158,10 @@ const shell = (name, file) => ({
 // Machinery declarations select optional review checks by their own source paths.
 export const machinerySources = {
   "sync-fixtures": [
+    "scripts/features.mjs",
+    "scripts/harness.mjs",
+    "scripts/lib/harness.mjs",
+    "scripts/meta.mjs",
     "scripts/release.mjs",
     // The close's step names, blocker classes and removal children, which
     // release.mjs, worktree.mjs and plan failures import.
@@ -178,6 +182,9 @@ export const machinerySources = {
     "scripts/lib/build-freshness.mjs",
   ],
   "launchpad-planning": [
+    "scripts/features.mjs",
+    "scripts/lib/features.mjs",
+    "scripts/lib/build-overlay.mjs",
     // plan start applies the owned-root prune through this summary (WO-237).
     "scripts/lib/temporary-prune-summary.mjs",
     "scripts/lib/planning-document.mjs",
@@ -247,6 +254,10 @@ export const machinerySources = {
     "scripts/test-fixture-temp-root.sh",
   ],
   "harness-probe": [
+    "scripts/meta.mjs",
+    "scripts/features.mjs",
+    "scripts/lib/features.mjs",
+    "scripts/lib/build-overlay.mjs",
     "scripts/lib/planning-document.mjs",
     // Direct entry imports and literal first-party script inputs (WO-174).
     "packages/skeleton/src/discovery-sandbox.ts",
@@ -275,6 +286,12 @@ export const machinerySources = {
     "packages/skeleton/src/worker-transport.ts",
   ],
   "harness-fixtures": [
+    "scripts/features.mjs",
+    "scripts/lib/features.mjs",
+    "scripts/lib/build-overlay.mjs",
+    "scripts/outward-lint.mjs",
+    "scripts/lib/drive-worker.mjs",
+    "scripts/lib/drive-session.mjs",
     // The retained-usage readback the harness suite exercises (WO-237).
     "scripts/lib/retained-session.mjs",
     // The stopped-apply report its temporary-root cases exercise (WO-237).
@@ -436,6 +453,9 @@ export const machinerySources = {
     // Plan failures, which the refutation fixtures import, reads the close's
     // blocker classes and step names from here.
     "scripts/lib/release-steps.mjs",
+    "scripts/features.mjs",
+    "scripts/lib/features.mjs",
+    "scripts/lib/build-overlay.mjs",
     // plan start applies the owned-root prune through this summary (WO-237).
     "scripts/lib/temporary-prune-summary.mjs",
     // plan start and plan documents read the document kinds, the moves and
@@ -603,6 +623,9 @@ export const machinerySources = {
     "scripts/lib/target-worktree-fixture.mjs",
   ],
   "process-debt": [
+    "scripts/features.mjs",
+    "scripts/lib/features.mjs",
+    "scripts/lib/build-overlay.mjs",
     // plan start applies the owned-root prune through this summary (WO-237).
     "scripts/lib/temporary-prune-summary.mjs",
     "scripts/lib/plan-subject.mjs",
@@ -783,6 +806,9 @@ export const machinerySources = {
   "verification-evidence": recordedSources["verification"],
   "feedback-evidence": recordedSources["feedback"],
   meta: [
+    "scripts/features.mjs",
+    "scripts/lib/features.mjs",
+    "scripts/lib/build-overlay.mjs",
     // Direct entry imports and literal first-party script inputs (WO-174).
     "scripts/lib/executor-handoff.mjs",
     "scripts/lib/plan-subject.mjs",
@@ -1181,6 +1207,7 @@ export const suites = [
     instance: "document",
     timeoutMs: 30_000,
   },
+  // test-configuration-root imports test-features for the registry/schema cases.
   nodeTests("configuration-root", "scripts/test-configuration-root.mjs", {
     needsBuild: false,
     timeoutMs: 30_000,

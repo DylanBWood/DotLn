@@ -48,6 +48,8 @@ export function generatedArtifacts(root) {
               "Restore the compiled runtime from its verified kit export or update; this kit does not carry package sources to rebuild it.",
           }),
         ]),
+    // The feature inventory reads the refusal count from the installed harness.
+    artifact("harness", "scripts/harness.mjs", ["check"], ["emit"]),
     artifact("meta", "scripts/meta.mjs", ["--check"], []),
     artifact("lineage", "scripts/lineage.mjs", ["index", "--check"], ["index"]),
     artifact(
@@ -68,7 +70,6 @@ export function generatedArtifacts(root) {
       ["index", "--check"],
       ["index"],
     ),
-    artifact("harness", "scripts/harness.mjs", ["check"], ["emit"]),
     ...(core
       ? [
           {
@@ -185,7 +186,7 @@ function reportedStale(row, result) {
     return true;
   const patterns = {
     format: /^\[warn\] Code style issues found/m,
-    meta: /^(?:Decisions index is stale; run npm run meta|.*register is stale; run npm run meta or npm run plan -- followups --sync)$/m,
+    meta: /^(?:Decisions index is stale; run npm run meta|.*register is stale; run npm run meta or npm run plan -- followups --sync|stale [^\n]+\/FEATURES\.md; run npm run features -- render)$/m,
     lineage:
       /^(?:Stale|Missing) [^\n]+; run node scripts\/lineage\.mjs index$/m,
     index:

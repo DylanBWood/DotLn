@@ -96,6 +96,7 @@ test("[document] the kit owns its complete guide and the front page is a pinned 
     [...guide.matchAll(/^## (.+)$/gm)].map((match) => match[1]),
     [
       "First steps",
+      "Features",
       "Planning in this instance",
       "Releases in this instance",
       "What runs here, and what does not",
@@ -545,6 +546,24 @@ test("WO-074 criterion 1: the scripts are byte-identical to UPSTREAM.md's commit
     /This source prepares DotLn-Enterprise-Starter/u,
   );
   assert.deepEqual(config.roots, defaultRoots());
+  assert.deepEqual(config.features, {
+    "tinkerer-economy": {
+      on: true,
+      note: "Compare approaches when a useful fork appears.",
+    },
+    "plan-first": false,
+    "private-destination": false,
+    "desktop-control": false,
+  });
+  assert.match(
+    readFileSync(join(kit, "docs/KIT.md"), "utf8"),
+    /## Features\n/u,
+  );
+  assert.equal(
+    JSON.parse(readFileSync(join(kit, "package.json"), "utf8")).scripts
+      .features,
+    "node scripts/features.mjs",
+  );
   assert.deepEqual(config.derivedOrders, { first: "WO-900", last: "WO-999" });
   // A starter commits its runtime: the kit never ignores dist (WO-075).
   const ignore = readFileSync(join(kit, ".gitignore"), "utf8").split("\n");

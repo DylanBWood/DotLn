@@ -34,6 +34,8 @@
       "scripts/lib/git.mjs",
       "scripts/lib/validation.mjs",
       "scripts/lib/config.mjs",
+      "scripts/lib/features.mjs",
+      "scripts/lib/build-overlay.mjs",
       "scripts/lib/temporary-roots.mjs",
       "packages/skeleton/src/temporary-root-records.mjs",
       "scripts/temporary-root.mjs"
