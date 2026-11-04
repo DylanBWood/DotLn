@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import {
   createFixtureRoot,
-  removeTemporaryPath as rmSync,
+  removeTemporaryRoot,
 } from "./lib/temporary-roots.mjs";
 import { docRelative, findLaunchpad } from "./lib/config.mjs";
 import { isMainModule } from "./lib/paths.mjs";
@@ -149,7 +149,19 @@ const dryRunRules = (manifests) => {
       );
     });
   } finally {
-    rmSync(scratch, { recursive: true, force: true });
+    // The snapshot is this check's own working copy and holds nothing a
+    // failed suite's diagnosis reads, so it goes now, inside a gate too,
+    // rather than waiting for the gate's end as a fixture's teardown does.
+    // One that cannot go keeps its owner record for the suite's end or the
+    // next prune, and says so: unseen leftovers are how a host gathered
+    // 1,433 of them (WO-253-D003).
+    try {
+      removeTemporaryRoot(scratch);
+    } catch (error) {
+      process.stderr.write(
+        `Advisory: license-surfaces scratch ${scratch} kept under its owner record (${error.message})\n`,
+      );
+    }
   }
 };
 

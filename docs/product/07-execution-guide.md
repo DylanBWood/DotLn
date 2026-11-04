@@ -1051,12 +1051,14 @@ so in one message and ends its turn
 
 Cleanup is owned by the workflow, not handed to the operator. `worktree start`
 creates the worktree without running a prune census. `plan start` applies the
-owned-resource prune and prints its report by kind, class, count and bytes, or
-the read-only census while a gate holds the host lanes; kit update preview
-prints a read-only census. `harness prune --apply` remains the explicit
-recovery route, with fresh
-ownership checks under the host lane lock; a live
-gate is named and retained. A host denial is recorded and cleanup stays on the
+owned-resource prune as a bounded step under `prune.startBudgetMs` and prints
+its report by kind, class, count and bytes, or the read-only census while a
+gate holds the host lanes; a prune its budget stopped prints
+`removed N; remaining M; resume with node scripts/harness.mjs prune --apply`
+and the pass goes on. Kit update preview prints a read-only census.
+`harness prune --apply` remains the explicit recovery route and the resume of
+a bounded prune: it sets no budget and finishes what one left, with fresh
+ownership checks under the host lane lock; a live gate is named and retained. A host denial is recorded and cleanup stays on the
 release close's retry path. No command changes host permissions to gain access.
 A role that needs expired or retained roots removed runs `harness prune
 --apply` itself under host permissions and records the receipt; it hands
@@ -1852,7 +1854,11 @@ named as the pass's own choice.
 with these section headings: dispatch and capture, readings, orders filed and
 amended, register, red tags, NoOps, sequence, write-backs, process cost, and
 validation; it also prints the documents report of `npm run plan -- documents`
-and writes the red tags into the red-tags section. The headings
+and writes the red tags into the red-tags section. It prints one
+`<step>: <h> h <m> min` line as each startup step completes, for failures,
+reader scores, conditions, census, prune and branch, so a slow start says
+where its minutes went; its prune is the bounded step of §Workflow closeout
+and releases. The headings
 live in [planning-document.mjs](../../scripts/lib/planning-document.mjs);
 change them together with this paragraph. Fill those sections with useful
 information for the pass; do not copy a predecessor's outline.
@@ -2236,23 +2242,82 @@ steps assert that preparation held; they do not rebuild after imports have
 cached the old compiler. A preview retains its isolated runtime for the
 prospective revision.
 
-After worktree and branch cleanup, release close runs the owned-resource prune
-with close scope: the closing order's captured owned roots, main's retained
-lane and this checkout's registered temporary roots. It does not enumerate the
-system temporary directory's unrelated gate fixtures. An explicit
-`harness prune` and `plan start` still walk them. `plan start` applies that
-prune, so expired roots outside every close's scope leave at the next planning
-pass; while a gate holds the host lanes it prints the read-only census instead.
-`harness prune --apply` removes them on demand. That walk reads and hashes
-every regular file of every candidate root and reads the process table once
-per root, so on 2026-11-03 `plan start` spent 0 h 17 min removing 465 of
-5,988 roots and WO-241's close, published in 0 h 2 min, stopped in the prune
-on a restricted fixture directory; WO-253 removes a passed suite's roots when
-the suite ends, judges a kit-owned root by its record, bounds the routine
-prune and scopes the close's to the closed order's roots
-([the 2026-11-03 pass](../planning/passes/recurring-failures-and-queue-drain-2026-11-03.md)).
-Kit update preview's census is limited to its repository, and session
-completion removes only its own scratch and dead captures
+After worktree and branch cleanup, release close prunes only the closed
+order's own roots: those its worktree's ledger registered, which the close
+captures before it removes the worktree, and the order's integration stashes.
+This checkout's other registered roots, other orders' retained lanes and the
+system temporary directory are the host-wide remainder, which `plan start`
+prunes and `harness prune --apply` removes on demand; while a gate holds the
+host lanes `plan start` prints the read-only census instead. The close's
+summary prints `removed N; remaining M`; a `Prune scope:` line that counts the
+order's roots it removed, those their records keep and those left unjudged or
+unremoved, and names plan start's prune and `node scripts/harness.mjs prune
+--apply`, which finishes every remainder at once, host-wide and without a
+budget; and a `Close steps:` line with each step's active minutes. The
+record's `prune` step row carries `removed`, `remaining` and `stoppedAt`.
+
+The prune at `plan start` and at the close is a bounded step under
+`prune.startBudgetMs` in `docs/control/budgets.json`, 1,800,000 ms (0 h 30
+min) when unset and unbounded when null, so routine cleanup finishes in the
+run that starts it unless a backlog outlasts thirty minutes
+([decision](../evidence/WO-253/decisions.md#wo-253-d038--the-operator-keeps-the-budget-at-thirty-minutes-and-the-verifiers-edits-are-undone));
+a value the budgets reader refuses leaves the default, and the command prints
+an advisory saying why. The temporary roots go first.
+Their listing asks the budget once every 64 entries, so it always lists its
+first batch and never reads more than one batch past a spent budget; each root
+is then judged and, in an apply, removed on that judgment before the next is
+read, parents first, the first root having the smaller of the budget and one
+second even when the budget was spent before it. The snapshots, advisories,
+claims, caches, lanes and stashes follow with what the budget leaves, each
+asked about the budget before it is judged and before it is removed. Every
+walk, byte inventory and deletion of a candidate also asks it as it goes:
+before each directory it lists and each entry it reads or deletes, a planned
+snapshot's, cache's or lane's permission walk and deletion included, and
+before each tree listing and each batch of 32 objects of a stash's inventory,
+so one large root or stash cannot hold the step past it
+([decision](../evidence/WO-253/decisions.md#wo-253-d039--every-walk-and-deletion-of-a-planned-tree-asks-the-budget),
+[decision](../evidence/WO-253/decisions.md#wo-253-d041--round-1-the-stash-inventory-asks-the-budget-and-the-verifiers-dispatch-lines-are-corrected)).
+A shell claim's retirement and a stash's drop, each a few fixed steps that
+must finish together, are asked about once, before they start. An item cut short stays as `budget`,
+a root with its owner record, and the report names what was removed, how many
+items remain unjudged or unremoved, a preview's candidates among them, and
+where the budget stopped it. The command goes on. `harness prune --apply` sets
+no budget and finishes the remainder; a stopped prune resumes where it
+stopped, and the ledger's retirement waits for a prune that finishes, as that
+prune's closing bookkeeping, which the budget does not bound
+([decision](../evidence/WO-253/decisions.md#wo-253-d014--the-bounded-prune-judges-the-temporary-roots-first-and-its-listing-stays-inside-the-same-budget)).
+
+A prune reads the host process table once and passes it to every
+owner-liveness judgment. It reads a worktree's writer only for a root that
+worktree can protect, once for each second of judging, since a live writer's
+view lists the process table itself; the plan reads the checkout's writer once
+and each pre-delete check once more, advisories and shell claims check their
+owners one by one, and an apply's host-lane lease registers the prune's own
+process from one reading of its own. A kit-owned root of class
+`gate-fixture`, `warm-fixture`, `worker-capture` or `session-scratch` is judged
+on its owner record (token, inode, class, outcome, `endedAt` and retention)
+with no file read: only a root its record lets go is walked, for the owned
+roots nested in it, and its bytes are measured by the removal's own walk, so
+a preview counts it unmeasured. The byte inventory, the SHA-256 of every
+regular file, is kept for what the kit keeps a proof of: a `closed-journal`
+root past its window, whose proof the prune writes beside the order's lane,
+outside it, before the root goes, and a retained lane, stash, snapshot,
+advisory or cache the plan will delete. A root the plan retains, including one
+whose record is missing or malformed, is never read, and a lane it retains
+reads only its usage copies. Each removal names its proof in the report as
+`record`, `inventory`, `legacy` or `remains`, and the report counts the
+process tables, writer views and byte inventories it read. An entry inside a
+kit-owned root that its owner cannot read, a directory without owner read or
+search permission or a file without owner read, is granted `u+rwx` or `u+rw`
+by an apply: by the judgment's walk, which puts its grants back when it keeps
+the root, and by the removal's walk, after which a closed journal's proof is
+taken. An entry the owner cannot repair keeps its root with reason
+`restricted-entry` and the entry's path, an owner record its owner cannot read
+keeps its root by the record's path, and a journal whose bytes cannot be
+proven keeps its root with reason `byte proof unavailable`; none of these
+stops the prune or the close ([decisions](../evidence/WO-253/decisions.md)). Kit update preview's census is
+limited to its repository, and session completion removes only its own
+scratch and dead captures
 ([decision](../evidence/WO-239/decisions.md#wo-239-d020--resolve-the-integrated-reviews-and-state-the-global-walk-as-built),
 [home of the routine prune](../evidence/WO-237/decisions.md#wo-237-d005--plan-start-is-where-expired-roots-outside-every-close-leave)).
 
@@ -4317,10 +4382,17 @@ and generated evidence, including fixtures, manifests and installed guidance.
 
 The shared temporary-root helper marks every fixture with its class, process
 lifetime, repository, gate/suite or session identity, creation time and retention.
-After recording a terminal cleanup row, the runner removes roots of passing
-suites and tags failed suites for diagnosis. It publishes passing gate evidence
-only after cleanup succeeds. Whole fixture teardown waits for that outcome;
-the census includes every root carrying the gate identity. Nested suites keep
+As each suite ends, the runner removes the roots that suite registered under
+the gate when it passed, and records the count on the suite's row; a failed or
+stopped suite's roots are stamped `failed` and keep their 24-hour diagnosis
+window from that moment, so a gate stopped later leaves only the roots of the
+suites still running or failed. Inside a gate, a fixture's own teardown waits
+for its suite's outcome, not the gate's; a command's own scratch, such as the
+license check's npm dry-run snapshot, is removed as the command returns. After
+recording a terminal cleanup row, the gate's end finishes whatever a suite
+left, reports every root removed during the gate, and publishes passing gate
+evidence only after cleanup succeeds; the census includes every root carrying
+the gate identity. Nested suites keep
 the owning gate's repository and suite even when the
 nested command runs in a copied repository. A gate id alone does not defer
 explicit creator teardown to an unobserved ledger. Standalone captures
@@ -4358,8 +4430,10 @@ deleted. A removal deletes only the directory it verified: one rename moves
 the root aside within its parent, and only a moved directory carrying the
 record's inode and token is deleted. A replacement goes back to its path while
 that is free, and a parent that refuses the rename refuses before anything
-inside is deleted. Nothing inside a root is touched until it is verified:
-owned roots nested in it go with it, and the owner record is deleted last. A
+inside is deleted. Nothing inside a root is deleted until it is verified, and
+nothing is changed before then but the owner access an apply grants in order
+to look inside it, which its judgment puts back when it keeps the root: owned
+roots nested in it go with it, and the owner record is deleted last. A
 root that a stopped removal left aside as
 `dotln-removing-<token>` is listed there and finished by the next prune
 ([decision](../evidence/WO-237/decisions.md#wo-237-d004--a-root-is-its-token-and-its-inode)).

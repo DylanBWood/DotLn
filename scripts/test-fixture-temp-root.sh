@@ -478,8 +478,10 @@ exercise_suite_signal TERM 1 substituted
 exercise_suite_signal TERM 1 driver-failure
 exercise_suite_signal TERM 1 forced-kill
 
-# A close reads only the owned roots; explicit global prune still discovers
-# foreign gate fixtures. Count distinct owner-file reads, not just removals.
+# A close reads only the closing order's captured roots; this checkout's own
+# registered roots are the host-wide remainder that plan start's prune takes,
+# and explicit global prune still discovers foreign gate fixtures. Count
+# distinct owner-file reads, not just removals.
 "$node_bin" --input-type=module - "$test_root" "$script_dir" <<'JS'
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -533,7 +535,7 @@ syncBuiltinESMExports();
 try{
  const close=await pruneHarness(main,{...options,...boundOptions});
  const closeCount=seen.size;assert.equal(closeCount,0);
- assert.ok([...close.candidates,...close.retained].some(row=>row.path===own));
+ assert.ok(![...close.candidates,...close.retained].some(row=>row.path===own),'the close leaves the checkout\'s own roots to plan start');
  assert.ok([...close.candidates,...close.retained].some(row=>row.path===captured));
  assert.ok(![...close.candidates,...close.retained].some(row=>row.path===reused));
  fs.rmSync(captured,{recursive:true});ensureTemporaryRoot(captured,{class:'session-scratch',repository:foreign});
@@ -542,6 +544,100 @@ try{
  assert.equal(seen.size,1000);
  console.log('WO239 close-scope counts '+JSON.stringify({close:closeCount,all:seen.size}));
 }finally{fs.readFileSync=original;syncBuiltinESMExports();for(const dir of [...foreignRoots,own,reused,captured,viaLink])removeTemporaryRoot(dir,readTemporaryOwner(dir).token);}
+JS
+
+# One prune reads the host process table once for every liveness judgment,
+# however many roots it judges and removes: the prune's reader is counted, and
+# every other way to read a table (the host snapshot binary, a ps listing) is
+# counted as well. An apply's host-lane lease registers this process from a
+# reading of its own, the one other read.
+"$node_bin" --input-type=module - "$test_root" "$script_dir" <<'JS'
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import childProcess from 'node:child_process';
+import { basename, join } from 'node:path';
+import { syncBuiltinESMExports } from 'node:module';
+import { pathToFileURL } from 'node:url';
+const [container,scripts]=process.argv.slice(2);
+const {runGit}=await import(pathToFileURL(join(scripts,'lib/git.mjs')));
+const {createTemporaryRoot,readTemporaryOwner,writeTemporaryOwner}=await import(pathToFileURL(join(scripts,'lib/temporary-roots.mjs')));
+const {pruneHarness}=await import(pathToFileURL(join(scripts,'lib/harness-prune.mjs')));
+const repository=join(container,'one-snapshot');fs.mkdirSync(repository);runGit(repository,['init','-q','-b','main']);
+const base=join(repository,'roots');fs.mkdirSync(base);
+const roots=[];
+for(let index=0;index<10;index++){
+ const path=createTemporaryRoot(join(base,'dotln-one-snapshot-'),{class:'gate-fixture',repository,owner:{pid:2147483647,birth:'1.0',gateId:undefined,suite:undefined,session:undefined}});
+ const record=readTemporaryOwner(path);delete record.fixtureOwner;
+ record.createdAt='2020-01-01T00:00:00.000Z';record.endedAt=record.createdAt;writeTemporaryOwner(path,record);
+ fs.writeFileSync(join(path,'payload'),'fixture\n');roots.push(path);
+}
+const original={execFileSync:childProcess.execFileSync,spawnSync:childProcess.spawnSync};
+const other={snapshotBinary:0,ps:0};
+childProcess.execFileSync=function(file,...args){if(basename(String(file)).startsWith('host-footprint'))other.snapshotBinary+=1;return original.execFileSync.call(this,file,...args);};
+childProcess.spawnSync=function(command,...args){if(command==='ps')other.ps+=1;return original.spawnSync.call(this,command,...args);};
+syncBuiltinESMExports();
+let reads=0,report;
+try{
+ // The planted roots' owner is absent from the prune's table.
+ report=await pruneHarness(repository,{apply:true,scope:'repository',temporaryBases:[base],hostDirectory:join(repository,'.runtime/host'),openPaths:[],holders:[],sessionId:'one-snapshot-fixture',readProcesses:()=>{reads+=1;return [];}});
+}finally{Object.assign(childProcess,original);syncBuiltinESMExports();}
+assert.equal(reads,1,'one process table serves every liveness judgment of the prune');
+assert.deepEqual(other,{snapshotBinary:1,ps:0},'the lease registers this process; no judgment reads a table of its own');
+assert.equal(report.reads.snapshots,1);assert.equal(report.reads.byteInventories,0);
+assert.equal(report.removed.length,10);
+assert.ok(report.removed.every(row=>row.proof==='record'));
+for(const path of roots)assert.equal(fs.existsSync(path),false);
+console.log('WO253 one process table per prune '+JSON.stringify({roots:roots.length,reads,other}));
+JS
+
+# A reserved, live writer protects every root its worktree owns. Its view
+# lists the process table, so the prune reads it once for each second of
+# judging and once for the plan, never once per root. The case removes its
+# roots itself whatever happens: left in the suite's root, they would keep it
+# at the gate's end, and the writer beside them would keep them from a prune.
+"$node_bin" --input-type=module - "$test_root" "$script_dir" <<'JS'
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import childProcess from 'node:child_process';
+import { createHash } from 'node:crypto';
+import { join } from 'node:path';
+import { syncBuiltinESMExports } from 'node:module';
+import { pathToFileURL } from 'node:url';
+const [container,scripts]=process.argv.slice(2);
+const {runGit}=await import(pathToFileURL(join(scripts,'lib/git.mjs')));
+const {createTemporaryRoot,readTemporaryOwner,removeTemporaryRoot,writeTemporaryOwner}=await import(pathToFileURL(join(scripts,'lib/temporary-roots.mjs')));
+const {seedHarnessWriter}=await import(pathToFileURL(join(scripts,'../packages/skeleton/dist/src/harness-host.js')));
+const {pruneHarness}=await import(pathToFileURL(join(scripts,'lib/harness-prune.mjs')));
+fs.mkdirSync(join(container,'live-writer'));
+const repository=fs.realpathSync(join(container,'live-writer'));runGit(repository,['init','-q','-b','main']);
+seedHarnessWriter(repository,{worktree:repository,actorId:createHash('sha256').update('live-writer-fixture').digest('hex'),reservedAt:new Date().toISOString(),owner:{pid:process.pid,source:'parent'}});
+const base=join(repository,'roots');fs.mkdirSync(base);
+const roots=[];
+const original=childProcess.spawnSync;let ps=0;
+try{
+ for(let index=0;index<20;index++){
+  const path=createTemporaryRoot(join(base,'dotln-live-writer-'),{class:'gate-fixture',repository,owner:{pid:2147483647,birth:'1.0',gateId:undefined,suite:undefined,session:undefined}});
+  roots.push(path);
+  const record=readTemporaryOwner(path);delete record.fixtureOwner;
+  record.createdAt='2020-01-01T00:00:00.000Z';record.endedAt=record.createdAt;writeTemporaryOwner(path,record);
+ }
+ childProcess.spawnSync=function(command,...args){if(command==='ps')ps+=1;return original.call(this,command,...args);};
+ syncBuiltinESMExports();
+ let report;
+ try{
+  report=await pruneHarness(repository,{scope:'repository',temporaryBases:[base],hostDirectory:join(repository,'.runtime/host'),openPaths:[],holders:[],sessionId:'another-session',readProcesses:()=>[]});
+ }finally{childProcess.spawnSync=original;syncBuiltinESMExports();}
+ assert.equal(report.retained.filter(row=>row.reason==='writer reservation names this root or session').length,roots.length,JSON.stringify(report.retained));
+ assert.ok(ps>0&&ps<roots.length/2,`ps ${ps}`);
+ assert.ok(report.reads.writerViews<roots.length/2,JSON.stringify(report.reads));
+ for(const path of roots)assert.ok(fs.existsSync(path));
+ console.log('WO253 live writer read per second, not per root '+JSON.stringify({roots:roots.length,ps,reads:report.reads}));
+}finally{
+ // Every root whose record can be read goes, so a failure leaves none behind;
+ // a removal that fails never replaces the case's own failure.
+ for(const path of roots)try{const record=readTemporaryOwner(path);if(record)removeTemporaryRoot(path,record.token);}catch{}
+}
+for(const path of roots)assert.equal(fs.existsSync(path),false,'the case leaves no root of its own in the suite\'s root');
 JS
 
 printf 'fixture temp-root tests passed\n'

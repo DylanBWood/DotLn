@@ -736,6 +736,7 @@ export const machinerySources = {
     "packages/skeleton/fixtures/wo252-repair-role-baseline.json",
     "packages/skeleton/fixtures/wo238-role-baseline.json",
     "packages/skeleton/fixtures/wo238-integration-role-baseline.json",
+    "packages/skeleton/fixtures/wo253-role-baseline.json",
     "packages/skeleton/fixtures/wo217-role-efficiency-baseline.json",
     "scripts/test-helper-reuse.mjs",
     "scripts/lib/helpers.mjs",
@@ -3647,6 +3648,32 @@ async function runGateChecks(
     return stop.signal.aborted;
   };
   const poll = setInterval(stopping, 500);
+  // A suite's fixture roots leave as the suite ends, not when the gate does:
+  // a passed suite's are removed then, and a failed or stopped suite's keep
+  // their diagnosis window, which starts then. The gate's end judges every
+  // root of the gate again, so what a suite's end kept or could not judge is
+  // judged and recorded there, beside these removals. A suite-end cleanup
+  // that cannot run never fails the suite: it prints an advisory, and its
+  // roots wait for the gate's end.
+  const suiteRemovedRoots = [];
+  const finishSuiteRoots = (name, result, cwd) => {
+    try {
+      const finished = finishGateTemporaryRoots(
+        cwd,
+        temporaryGateId,
+        [result],
+        { suite: name, hostDirectory },
+      );
+      result.temporaryRootsRemoved = finished.removed.length;
+      suiteRemovedRoots.push(...finished.removed);
+    } catch (error) {
+      result.temporaryRootsRemoved = 0;
+      result.temporaryCleanupAdvisory = error.message;
+      console.log(
+        `ADVISORY [${name}] suite-end temporary-root cleanup unavailable (${error.message}); its roots wait for the gate's end`,
+      );
+    }
+  };
   try {
     const taskRows = await scheduleSuites(tasks, {
       repo,
@@ -3726,6 +3753,10 @@ async function runGateChecks(
                   ),
                 stop.signal,
               );
+        // The document barrier is a synthetic row that runs nothing, so it
+        // registers no root of its own.
+        if (row.name !== "document-barrier")
+          finishSuiteRoots(row.name, result, cwd);
         if (row.structural) {
           const line = result.output
             ?.split("\n")
@@ -4097,12 +4128,16 @@ async function runGateChecks(
       taskTimeline: taskRows.map(withoutOutput),
     });
     await withHostLock(hostDirectory, "lanes", () => {
-      check.temporaryCleanup = finishGateTemporaryRoots(
+      const finished = finishGateTemporaryRoots(
         repo,
         temporaryGateId,
         taskRows,
         { hostDirectory },
       );
+      check.temporaryCleanup = {
+        ...finished,
+        removed: [...suiteRemovedRoots, ...finished.removed],
+      };
       // Owned fixtures defer teardown until their suite's outcome is known.
       // Judge leftovers after that cleanup; anything still present remains
       // diagnosable and fails the gate, including an unowned fixture root.

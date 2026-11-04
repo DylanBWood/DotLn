@@ -266,6 +266,9 @@ export async function coveringTaskResults(root, checkId, tasks, codeIdentity) {
       laneWaitMs,
       gapMs,
       criticalPath,
+      // The source run's suite-end cleanup, not this run's.
+      temporaryRootsRemoved,
+      temporaryCleanupAdvisory,
       ...retained
     } = pass.result;
     results.set(task.name, {

@@ -52,7 +52,19 @@ export const releaseSteps = () =>
           })),
         }
       : {}),
+    // The closed order's roots the prune removed, how many it left within
+    // its budget, and where that budget stopped it; null until it runs.
+    ...(name === "prune"
+      ? { removed: null, remaining: null, stoppedAt: null }
+      : {}),
   }));
+
+/** Records a close's prune outcome on its `prune` step row. */
+export function recordPruneStep(record, { removed, remaining, stoppedAt }) {
+  const row = record?.steps?.find((step) => step.name === "prune");
+  if (!row) return;
+  Object.assign(row, { removed, remaining, stoppedAt });
+}
 
 /** Durations count active time, excluding nested steps. Repeated visits share
  * one row; its timestamps span the first start through the last finish. A

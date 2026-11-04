@@ -47,6 +47,7 @@ import {
   registeredTemporaryRoots,
   temporaryLedger,
   temporaryInventory,
+  temporaryProcessTable,
   retireTemporaryLedger,
   promoteTemporaryRoot,
   withTemporaryOwner,
@@ -61,13 +62,21 @@ import {
 } from "./lib/worktree-removal.mjs";
 import {
   applyTemporaryCandidate,
+  boundTemporaryRoots,
   judgeTemporaryRoot,
   finishGateTemporaryRoots,
+  listTemporaryRoots,
+  pruneBudget,
   recordTemporaryGateResult,
   temporaryPrunePaths,
 } from "./lib/temporary-prune.mjs";
 import { pruneHarness } from "./lib/harness-prune.mjs";
-import { temporaryPruneSummary } from "./lib/temporary-prune-summary.mjs";
+import {
+  formatPruneReport,
+  pruneStartBudget,
+  temporaryPruneSummary,
+} from "./lib/temporary-prune-summary.mjs";
+import { pruneStartBudgetKey } from "./lib/process-budget.mjs";
 import { registerProcess } from "./lib/host-resources.mjs";
 import { acquireHostLanes, formatLaneWait } from "./lib/host-lanes.mjs";
 import { unownedTemporaryRootSites } from "./lib/temporary-root-declarations.mjs";
@@ -931,6 +940,11 @@ test("ordinary prune ends expired fixture lifetimes across repository removal an
         const record = readTemporaryOwner(nested);
         record.owner.birth = null;
         writeTemporaryOwner(nested, record);
+        // The containing fixture's own owner has ended, so its record lets it
+        // go and only the cache nested in it, whose owner is unknown, keeps it.
+        const containing = readTemporaryOwner(parent);
+        containing.owner.pid = 2147483646;
+        writeTemporaryOwner(parent, containing);
       }
       if (scenario.protect === "malformed-gate") {
         const directory = join(
@@ -1028,7 +1042,10 @@ test("ordinary prune ends expired fixture lifetimes across repository removal an
           "malformed-gate": /Malformed active gate marker/,
           alias: /symbolic-link ancestor/,
           gate: /owning gate is live/,
-          "outer-gate": /containing fixture gate is live/,
+          // The containing fixture's record speaks before the roots nested
+          // in it: its own gate is the live one. The nested cache's judgment
+          // above names the same gate as its containing fixture's.
+          "outer-gate": /owning gate is live/,
           writer: /writer reservation/,
           lane: /live host lane/,
         }[scenario.protect];
@@ -2223,17 +2240,17 @@ test("the prune judges a closed order's journal lane by its class window and kee
     ),
   );
   // The order's lane keeps its owned journal root's window, whatever else
-  // would let the lane go, and follows once that root is gone.
-  for (const order of ["WO-911", "WO-912", "WO-913"])
+  // would let the lane go, and follows once that root is gone: the temporary
+  // roots are judged first, so in the same prune.
+  for (const order of ["WO-912", "WO-913"])
     assert.equal(
       report.retained.find(
         (entry) => entry.path === `docs/control/local/retained/${order}`,
       ).reason,
       "nested owned root retained: harness",
     );
-  const after = await pruneHarness(root, { ...options, apply: true });
   assert.ok(
-    after.removed.some(
+    report.removed.some(
       (entry) =>
         entry.kind === "retained-lane" &&
         entry.path === "docs/control/local/retained/WO-911",
@@ -2243,6 +2260,8 @@ test("the prune judges a closed order's journal lane by its class window and kee
     existsSync(join(root, "docs/control/local/retained/WO-911")),
     false,
   );
+  const after = await pruneHarness(root, { ...options, apply: true });
+  assert.ok(!after.removed.some((entry) => entry.kind === "retained-lane"));
   assert.ok(existsSync(lanes["WO-912"]));
   // A null window keeps an expired lane indefinitely.
   removeDirectory(join(lanes["WO-913"], "notes.txt"));
@@ -2758,11 +2777,12 @@ test("a device transition is ledgered before the marker changes, and once", (t) 
 test("plan start's apply names what it removed when it stops partway", async (t) => {
   const root = fixture(t);
   runGit(root, ["init", "-q", "-b", "main"]);
-  // The longer path is judged and removed first; the second cannot be,
-  // since its parent refuses the removal.
-  const removable = expired(root, "a-removable-root-with-a-much-longer-name-");
+  // The shorter path is judged and removed first, as parents come before
+  // what is nested in them; the second cannot be, since its parent refuses
+  // the removal.
+  const removable = expired(root, "a-");
   mkdirSync(join(root, "roots", "locked"));
-  const blocked = expired(root, "locked/b-");
+  const blocked = expired(root, "locked/b-with-a-much-longer-name-");
   chmodSync(join(root, "roots", "locked"), 0o500);
   let report;
   try {
@@ -3250,4 +3270,914 @@ test("a root removed before its bookkeeping failed is reported as removed", asyn
   }
   assert.equal(existsSync(path), false);
   assert.match(report, /^Prune: apply stopped after 1 removed, \d+ bytes \(/);
+});
+
+// A planted backlog written straight to disk, each root a marker, one small
+// file and its ledger segment, as createTemporaryRoot leaves them, without a
+// process-table reading per root. Every owner has ended and every window has
+// passed.
+function plantExpiredBacklog(root, base, count, prefix) {
+  const ledger = join(root, ".runtime/temporary-roots/roots");
+  mkdirSync(ledger, { recursive: true });
+  mkdirSync(base, { recursive: true });
+  const owner = {
+    pid: 2147483647,
+    birth: "1.0",
+    repository: realpathSync(root),
+  };
+  const paths = [];
+  for (let index = 0; index < count; index++) {
+    const path = join(base, `${prefix}${String(index).padStart(6, "0")}`);
+    mkdirSync(path);
+    const info = lstatSync(path);
+    const token = randomUUID();
+    writeFileSync(
+      join(path, TEMPORARY_OWNER_FILE),
+      JSON.stringify({
+        schemaVersion: 1,
+        token,
+        class: "gate-fixture",
+        owner,
+        createdAt: "2020-01-01T00:00:00.000Z",
+        endedAt: "2020-01-01T00:00:00.000Z",
+        endSource: "completion",
+        outcome: "passed",
+        retentionHours: 0,
+        device: info.dev,
+        inode: info.ino,
+      }) + "\n",
+    );
+    writeFileSync(join(path, "payload"), "fixture\n");
+    writeFileSync(
+      join(ledger, `${token}.jsonl`),
+      JSON.stringify({
+        action: "created",
+        path,
+        token,
+        class: "gate-fixture",
+        owner,
+        at: "2020-01-01T00:00:00.000Z",
+      }) + "\n",
+    );
+    paths.push(path);
+  }
+  return paths;
+}
+
+test("a kit-owned root goes on its record with its unreadable entries repaired, and only an expired closed-journal root is byte-inventoried", async (t) => {
+  const root = fixture(t);
+  runGit(root, ["init", "-q", "-b", "main"]);
+  // Expired kit-owned roots of every class the record proves.
+  const owned = {
+    fixture: expired(root, "dotln-owned-fixture-"),
+    scratch: expired(root, "dotln-owned-scratch-", {
+      class: "session-scratch",
+    }),
+    capture: expired(root, "dotln-owned-capture-", { class: "worker-capture" }),
+    warm: expired(root, "dotln-owned-warm-", {
+      class: "warm-fixture",
+      cacheKey: "stale",
+    }),
+    unreadable: expired(root, "dotln-owned-unreadable-"),
+    restricted: expired(root, "dotln-owned-restricted-"),
+  };
+  writeFileSync(join(owned.unreadable, "secret"), "unreadable\n");
+  chmodSync(join(owned.unreadable, "secret"), 0o000);
+  mkdirSync(join(owned.restricted, "locked/inner"), { recursive: true });
+  writeFileSync(join(owned.restricted, "locked/inner/file"), "inside\n");
+  chmodSync(join(owned.restricted, "locked"), 0o000);
+  // A root with no owner record and one whose record is malformed, each
+  // holding a file nobody may read: the prune reads neither.
+  const recordless = join(root, "roots", "dotln-recordless-abc123");
+  const malformed = join(root, "roots", "dotln-malformed-def456");
+  for (const path of [recordless, malformed]) {
+    mkdirSync(path);
+    writeFileSync(join(path, "secret"), "unreadable\n");
+    chmodSync(join(path, "secret"), 0o000);
+  }
+  writeFileSync(join(malformed, TEMPORARY_OWNER_FILE), "not a record\n");
+  t.after(() => {
+    for (const path of [recordless, malformed])
+      removeDirectory(path, { recursive: true, force: true });
+  });
+  // A closed order's journal root past its window, and one inside it.
+  const lanes = {};
+  for (const [order, createdAt] of [
+    ["WO-931", "2020-01-01T00:00:00.000Z"],
+    ["WO-932", null],
+  ]) {
+    retainWorktreeJournals(root, closingWorktree(root, order).worktree, order);
+    lanes[order] = join(root, journalLane(root, order));
+    endedLane(lanes[order], createdAt);
+  }
+  // A journal its owner cannot read is proven like any other.
+  writeFileSync(join(lanes["WO-931"], "sealed.jsonl"), "{}\n");
+  chmodSync(join(lanes["WO-931"], "sealed.jsonl"), 0o000);
+  const report = await pruneHarness(root, {
+    apply: true,
+    scope: "repository",
+    temporaryBases: [join(root, "roots")],
+    hostDirectory: join(root, ".runtime/host"),
+    processes: [],
+    openPaths: [],
+    currentWarmKey: "current",
+    publishedRelease: () => "v9.9.9",
+  });
+  const row = (path) =>
+    [...report.removed, ...report.retained].find(
+      (entry) => entry.path === relative(root, path),
+    );
+  for (const [name, path] of Object.entries(owned)) {
+    assert.equal(existsSync(path), false, name);
+    assert.ok(report.removed.includes(row(path)), name);
+    assert.equal(row(path).proof, "record", name);
+  }
+  assert.equal(row(recordless).reason, "legacy backfill window has not passed");
+  assert.match(row(malformed).reason, /JSON/);
+  for (const path of [recordless, malformed])
+    assert.equal(lstatSync(join(path, "secret")).mode & 0o777, 0, path);
+  // The expired journal root's bytes are proven before it goes, the
+  // mode-000 journal among them with the mode it had, and the proof is kept
+  // beside its order's lane, outside it; the one inside its window is not
+  // read, nor is its lane, which keeps its journal root's window. The expired
+  // one's lane follows it in the same prune, inventoried as every lane the
+  // plan deletes is, and the journal proof outlives it.
+  const journal = row(lanes["WO-931"]);
+  assert.equal(journal.proof, "inventory");
+  assert.ok(report.removed.includes(journal));
+  assert.equal(existsSync(lanes["WO-931"]), false);
+  assert.match(
+    journal.byteProof,
+    /^docs\/control\/local\/retained\/WO-931\.harness\.bytes-[a-f0-9]{16}\.json$/u,
+  );
+  const proof = JSON.parse(readFileSync(join(root, journal.byteProof), "utf8"));
+  assert.equal(proof.workOrder, "WO-931");
+  assert.ok(proof.files.some((file) => file.path === "checks.json"));
+  assert.equal(
+    proof.files.find((file) => file.path === "sealed.jsonl").mode,
+    0,
+  );
+  assert.equal(row(lanes["WO-932"]).reason, "retention window has not passed");
+  assert.equal(
+    report.retained.find(
+      (entry) => entry.path === "docs/control/local/retained/WO-932",
+    ).reason,
+    "nested owned root retained: harness",
+  );
+  assert.ok(
+    report.removed.some(
+      (entry) => entry.path === "docs/control/local/retained/WO-931",
+    ),
+  );
+  // The journal's proof, then its lane's inventory at the plan and again at
+  // the lane's pre-delete check.
+  assert.equal(report.reads.snapshots, 0);
+  assert.equal(report.reads.byteInventories, 3);
+});
+
+test("an entry its owner cannot make readable keeps its root by name and stops nothing", async (t) => {
+  const root = fixture(t);
+  runGit(root, ["init", "-q", "-b", "main"]);
+  // The fixture's own teardown removes this root, granting itself what the
+  // locked directory denies.
+  const restricted = expired(root, "dotln-unrepairable-");
+  mkdirSync(join(restricted, "locked"));
+  chmodSync(join(restricted, "locked"), 0o000);
+  const plain = expired(root, "dotln-plain-");
+  const options = {
+    scope: "repository",
+    hostDirectory: join(root, ".runtime/host"),
+    processes: [],
+    openPaths: [],
+  };
+  // A preview repairs nothing, and names the entry it cannot read.
+  const preview = await pruneHarness(root, options);
+  assert.equal(
+    preview.retained.find((entry) => entry.path === relative(root, restricted))
+      .reason,
+    `restricted-entry: ${join(restricted, "locked")}`,
+  );
+  assert.equal(lstatSync(join(restricted, "locked")).mode & 0o777, 0);
+  const report = await pruneHarness(root, {
+    ...options,
+    apply: true,
+    chmodEntry: () => {
+      throw Object.assign(new Error("operation not permitted"), {
+        code: "EPERM",
+      });
+    },
+  });
+  assert.equal(existsSync(plain), false);
+  assert.ok(existsSync(join(restricted, TEMPORARY_OWNER_FILE)));
+  assert.equal(
+    report.retained.find((entry) => entry.path === relative(root, restricted))
+      .reason,
+    `restricted-entry: ${join(restricted, "locked")}`,
+  );
+});
+
+test("a one-millisecond budget stops the prune with a partial report and the next run resumes it", async (t) => {
+  const root = fixture(t);
+  runGit(root, ["init", "-q", "-b", "main"]);
+  const paths = ["a-", "b-", "c-"].map((name) => expired(root, name));
+  // A root of many entries, judged first, whose removal the budget cuts.
+  const large = expired(root, "0-");
+  for (let index = 0; index < 400; index++)
+    mkdirSync(join(large, `entry-${index}/inner`), { recursive: true });
+  const options = {
+    scope: "repository",
+    hostDirectory: join(root, ".runtime/host"),
+    processes: [],
+    openPaths: [],
+  };
+  const stopped = await pruneHarness(root, {
+    ...options,
+    apply: true,
+    budgetMs: 1,
+  });
+  assert.ok(stopped.stoppedAt, JSON.stringify(stopped));
+  assert.equal(stopped.stoppedAt.path, relative(root, large));
+  assert.equal(stopped.remaining, 4);
+  assert.equal(
+    stopped.retained.find((entry) => entry.path === relative(root, large))
+      .reason,
+    "budget",
+  );
+  assert.ok(existsSync(join(large, TEMPORARY_OWNER_FILE)));
+  const summary = formatPruneReport(stopped);
+  assert.match(
+    summary,
+    new RegExp(
+      `removed ${stopped.removed.length}; remaining ${stopped.remaining}; resume with node scripts/harness\\.mjs prune --apply`,
+    ),
+  );
+  assert.match(summary, /Prune stopped at its budget of 0 h 0 min in /);
+  // Without a budget the prune finishes what the bounded one left.
+  const resumed = await pruneHarness(root, { ...options, apply: true });
+  assert.equal(resumed.stoppedAt, null);
+  assert.equal(resumed.remaining, 0);
+  for (const path of [large, ...paths]) assert.equal(existsSync(path), false);
+  assert.equal(stopped.removed.length + resumed.removed.length, 4);
+});
+
+test("a bounded prune over two thousand expired roots stops inside its budget on one table and no byte inventory, and a second run resumes", async (t) => {
+  const root = fixture(t);
+  runGit(root, ["init", "-q", "-b", "main"]);
+  const base = join(root, "backlog");
+  const paths = plantExpiredBacklog(root, base, 2000, "dotln-backlog-");
+  let tables = 0;
+  const options = {
+    scope: "repository",
+    temporaryBases: [base],
+    hostDirectory: join(root, ".runtime/host"),
+    openPaths: [],
+    holders: [],
+    sessionId: "backlog-fixture",
+    readProcesses: () => {
+      tables += 1;
+      return [];
+    },
+  };
+  const budgetMs = 400;
+  const first = await pruneHarness(root, {
+    ...options,
+    apply: true,
+    budgetMs,
+  });
+  assert.ok(first.stoppedAt, JSON.stringify(first.stoppedAt));
+  // The prune stopped at its budget, judging and removing as it went: what
+  // it found it removed, and it never judged the whole backlog first.
+  assert.ok(first.stoppedAt.afterMs < budgetMs + 250, first.stoppedAt.afterMs);
+  assert.ok(first.removed.length > 0);
+  assert.ok(first.candidates.length < 2000);
+  assert.equal(first.candidates.length, first.removed.length);
+  assert.equal(first.remaining, 2000 - first.removed.length);
+  assert.ok(first.removed.every((row) => row.proof === "record"));
+  assert.equal(first.reads.snapshots, 1);
+  assert.equal(first.reads.byteInventories, 0);
+  assert.equal(tables, 1);
+  const second = await pruneHarness(root, { ...options, apply: true });
+  assert.equal(second.stoppedAt, null);
+  assert.equal(first.removed.length + second.removed.length, 2000);
+  assert.equal(second.reads.snapshots, 1);
+  assert.equal(second.reads.byteInventories, 0);
+  // The owner's writer is read once for each second of judging, not per root.
+  assert.ok(
+    second.reads.writerViews < second.removed.length / 10,
+    JSON.stringify(second.reads),
+  );
+  assert.equal(tables, 2);
+  assert.ok(paths.every((path) => !existsSync(path)));
+});
+
+// A root this process owns and lives in, with no gate or session.
+function liveRoot(root, path) {
+  const made = createTemporaryRoot(path, {
+    class: "gate-fixture",
+    repository: root,
+    owner: { gateId: undefined, suite: undefined, session: undefined },
+  });
+  const record = readTemporaryOwner(made);
+  delete record.fixtureOwner;
+  writeTemporaryOwner(made, record);
+  return made;
+}
+
+test("an apply puts back what it granted to judge a root it then keeps", async (t) => {
+  const root = fixture(t);
+  runGit(root, ["init", "-q", "-b", "main"]);
+  // Two expired parents, each holding a live owner's root: one inside a
+  // directory nobody may list, one whose own directory nobody may search.
+  const listed = expired(root, "dotln-kept-locked-");
+  mkdirSync(join(listed, "locked"));
+  liveRoot(root, join(listed, "locked", "live-"));
+  const searched = expired(root, "dotln-kept-sealed-");
+  const sealed = liveRoot(root, join(searched, "live-"));
+  chmodSync(join(listed, "locked"), 0o000);
+  chmodSync(sealed, 0o000);
+  const report = await pruneHarness(root, {
+    apply: true,
+    scope: "repository",
+    hostDirectory: join(root, ".runtime/host"),
+    readProcesses: () => temporaryProcessTable(root),
+    openPaths: [],
+  });
+  const modes = [join(listed, "locked"), sealed].map(
+    (path) => lstatSync(path).mode & 0o777,
+  );
+  chmodSync(join(listed, "locked"), 0o700);
+  chmodSync(sealed, 0o700);
+  assert.deepEqual(modes, [0, 0]);
+  for (const parent of [listed, searched])
+    assert.match(
+      report.retained.find((entry) => entry.path === relative(root, parent))
+        .reason,
+      /^nested owned root retained: .+ \(owner is live\)$/u,
+    );
+  assert.equal(report.removed.length, 0);
+});
+
+test("a parent kept for a live nested root puts back what its judgment granted inside the nested roots it had let go", (t) => {
+  const root = fixture(t);
+  runGit(root, ["init", "-q", "-b", "main"]);
+  // Expired nested roots, each with a directory nobody may list, beside one
+  // live nested root: whichever the walk judges before the live one is let
+  // go, and its walk's grant must be put back when the live one keeps the
+  // parent. Eight of them make an earlier one all but certain in any listing
+  // order; the assertion holds in every order.
+  const parent = expired(root, "dotln-kept-parent-");
+  const lets = Array.from({ length: 8 }, (_, index) =>
+    expired(root, `${basename(parent)}/let-${index}-`),
+  );
+  for (const child of lets) mkdirSync(join(child, "locked"));
+  liveRoot(root, join(parent, "live-"));
+  // The fixture's teardown grants itself what the locked directories deny.
+  for (const child of lets) chmodSync(join(child, "locked"), 0o000);
+  const judged = judgeTemporaryRoot(
+    root,
+    parent,
+    {},
+    { processes: temporaryProcessTable(root), repair: true },
+  );
+  assert.match(
+    judged.retained?.reason ?? "",
+    /^nested owned root retained: live-.+ \(owner is live\)$/u,
+  );
+  assert.deepEqual(
+    lets.map((child) => lstatSync(join(child, "locked")).mode & 0o777),
+    lets.map(() => 0),
+  );
+});
+
+test("a prune judges the roots a kept parent queues once and counts none of them as remaining", async (t) => {
+  const root = fixture(t);
+  runGit(root, ["init", "-q", "-b", "main"]);
+  // A live root nested in an expired parent and registered in another
+  // repository's ledger, so the listing does not name it: the parent's walk
+  // finds it, the parent is kept for it, and it is queued and judged after.
+  const other = join(root, "other-repository");
+  mkdirSync(other);
+  runGit(other, ["init", "-q", "-b", "main"]);
+  const parent = expired(root, "dotln-queued-parent-");
+  const nested = createTemporaryRoot(join(parent, "live-"), {
+    class: "gate-fixture",
+    repository: other,
+    owner: { gateId: undefined, suite: undefined, session: undefined },
+  });
+  const record = readTemporaryOwner(nested);
+  delete record.fixtureOwner;
+  writeTemporaryOwner(nested, record);
+  const lone = expired(root, "dotln-queued-lone-");
+  const report = await pruneHarness(root, {
+    scope: "repository",
+    hostDirectory: join(root, ".runtime/host"),
+    readProcesses: () => temporaryProcessTable(root),
+    openPaths: [],
+  });
+  assert.equal(report.stoppedAt, null);
+  assert.match(
+    report.retained.find((entry) => entry.path === relative(root, parent))
+      ?.reason ?? "",
+    /^nested owned root retained: live-/u,
+  );
+  assert.ok(
+    report.retained.some((entry) => entry.path === relative(root, nested)),
+    JSON.stringify(report.retained),
+  );
+  assert.deepEqual(
+    report.candidates.map((entry) => entry.path),
+    [relative(root, lone)],
+  );
+  // Only the one candidate a preview leaves remains; the queued root was
+  // judged, not left.
+  assert.equal(report.remaining, 1);
+});
+
+test("a root whose owner record its owner cannot read is kept by that record's path and stops no close", async (t) => {
+  const root = fixture(t);
+  runGit(root, ["init", "-q", "-b", "main"]);
+  const sealed = expired(root, "dotln-sealed-record-");
+  const plain = expired(root, "dotln-plain-record-");
+  // The fixture's teardown grants itself what the sealed record denies.
+  chmodSync(join(sealed, TEMPORARY_OWNER_FILE), 0o000);
+  // The close captures both, the sealed one admitted unread.
+  const owned = boundTemporaryRoots(root);
+  assert.deepEqual(
+    owned.map((row) => row.path).sort(),
+    [plain, sealed].map((path) => realpathSync(path)).sort(),
+  );
+  const report = await pruneHarness(root, {
+    apply: true,
+    scope: "close",
+    ownedTemporaryRoots: owned,
+    hostDirectory: join(root, ".runtime/host"),
+    processes: [],
+    openPaths: [],
+  });
+  assert.equal(existsSync(plain), false);
+  assert.ok(existsSync(sealed));
+  assert.equal(
+    report.retained.find((entry) => entry.path === relative(root, sealed))
+      ?.reason,
+    `restricted-entry: ${join(realpathSync(sealed), TEMPORARY_OWNER_FILE)}`,
+  );
+});
+
+test("a planned candidate whose re-check the budget cuts short stops the apply there, kept as budget", async (t) => {
+  const root = fixture(t);
+  runGit(root, ["init", "-q", "-b", "main"]);
+  // A dead suite-success cache of fifty files: its plan inventory looks at
+  // the clock 51 times, and so does its pre-delete re-check.
+  const cache = join(root, ".git/dotln/suite-success");
+  mkdirSync(cache, { recursive: true });
+  for (let index = 0; index < 50; index++)
+    writeFileSync(join(cache, `row-${index}`), "passed\n");
+  const options = {
+    scope: "repository",
+    hostDirectory: join(root, ".runtime/host"),
+    processes: [],
+    openPaths: [],
+  };
+  // Each look advances this clock a millisecond: 80 looks see the plan
+  // through and stop the re-check partway.
+  let clock = 0;
+  const stopped = await pruneHarness(root, {
+    ...options,
+    apply: true,
+    budgetMs: 80,
+    budgetClock: () => clock++,
+  });
+  assert.deepEqual(
+    { step: stopped.stoppedAt?.step, path: stopped.stoppedAt?.path },
+    { step: "removal", path: "git-common/dotln/suite-success" },
+  );
+  assert.equal(
+    stopped.retained.find(
+      (entry) => entry.path === "git-common/dotln/suite-success",
+    )?.reason,
+    "budget",
+  );
+  assert.equal(stopped.remaining, 1);
+  assert.ok(existsSync(cache));
+  const resumed = await pruneHarness(root, { ...options, apply: true });
+  assert.equal(resumed.stoppedAt, null);
+  assert.equal(existsSync(cache), false);
+});
+
+// Every planned kind removed as a tree asks the budget before each entry of
+// its permission walk and of its deletion, not only before its re-check.
+test("a budget spent once a planned snapshot's re-check has passed stops its permission walk, kept as budget, and the next prune finishes it", async (t) => {
+  const root = fixture(t);
+  runGit(root, ["init", "-q", "-b", "main"]);
+  const snapshot = join(
+    realpathSync(root),
+    ".runtime/harness/0123456789abcdef",
+  );
+  mkdirSync(snapshot, { recursive: true });
+  for (let index = 0; index < 10; index++)
+    writeFileSync(join(snapshot, `entry-${index}`), "snapshot\n");
+  // A directory the walk would grant next if it did not ask the budget first.
+  const nested = join(snapshot, "nested");
+  mkdirSync(nested);
+  writeFileSync(join(nested, "entry"), "snapshot\n");
+  chmodSync(nested, 0o500);
+  const options = {
+    scope: "repository",
+    hostDirectory: join(root, ".runtime/host"),
+    processes: [],
+    openPaths: [],
+  };
+  // The clock stands still through the plan and the re-check, and passes the
+  // one-millisecond budget as the removal grants the snapshot's own directory.
+  let clock = 0;
+  const grants = [];
+  const stopped = await pruneHarness(root, {
+    ...options,
+    apply: true,
+    budgetMs: 1,
+    budgetClock: () => clock,
+    chmodEntry: (path, mode) => {
+      grants.push(path);
+      if (path === snapshot) clock = 2;
+      chmodSync(path, mode);
+    },
+  });
+  // The walk granted the snapshot's directory and stopped before the next.
+  assert.deepEqual(grants, [snapshot]);
+  assert.equal(lstatSync(nested).mode & 0o777, 0o500);
+  assert.deepEqual(
+    { step: stopped.stoppedAt?.step, path: stopped.stoppedAt?.path },
+    { step: "removal", path: ".runtime/harness/0123456789abcdef" },
+  );
+  assert.equal(
+    stopped.retained.find(
+      (entry) => entry.path === ".runtime/harness/0123456789abcdef",
+    )?.reason,
+    "budget",
+  );
+  assert.equal(stopped.removed.length, 0);
+  assert.equal(stopped.remaining, 1);
+  assert.equal(readdirSync(snapshot).length, 11);
+  const resumed = await pruneHarness(root, { ...options, apply: true });
+  assert.equal(resumed.stoppedAt, null);
+  assert.equal(resumed.remaining, 0);
+  assert.equal(existsSync(snapshot), false);
+});
+
+test("a budget spent partway through deleting a retained lane keeps it as budget beside the proof of every file, and the next prune finishes it", async (t) => {
+  const root = fixture(t);
+  runGit(root, ["init", "-q", "-b", "main"]);
+  const retained = join(realpathSync(root), "docs/control/local/retained");
+  const lane = join(retained, "WO-901");
+  const groups = 4;
+  const perGroup = 25;
+  for (let group = 0; group < groups; group++) {
+    mkdirSync(join(lane, `group-${group}`), { recursive: true });
+    for (let index = 0; index < perGroup; index++)
+      writeFileSync(join(lane, `group-${group}`, `row-${index}`), "receipt\n");
+  }
+  const files = () =>
+    readdirSync(lane, { recursive: true, withFileTypes: true }).filter(
+      (entry) => entry.isFile(),
+    ).length;
+  const proofs = () =>
+    readdirSync(retained).filter((name) => name.startsWith("WO-901.bytes-"));
+  const options = {
+    scope: "repository",
+    hostDirectory: join(root, ".runtime/host"),
+    processes: [],
+    openPaths: [],
+    publishedRelease: (order) => (order === "WO-901" ? "v1.0.0" : null),
+  };
+  // The clock stands still until the removal grants the lane's directory;
+  // from then each look advances it a millisecond. After that grant the
+  // permission walk asks once for each group and each file, and the deletion
+  // once for the lane and once for each group and each file, so the budget
+  // ends with half of the groups deleted.
+  const budgetMs = 1000;
+  const walkAsks = groups * (1 + perGroup);
+  const halfOfDeletion = 1 + (groups / 2) * (1 + perGroup);
+  let clock = 0;
+  let counting = false;
+  const stopped = await pruneHarness(root, {
+    ...options,
+    apply: true,
+    budgetMs,
+    budgetClock: () => (counting ? clock++ : clock),
+    chmodEntry: (path, mode) => {
+      if (path === lane && !counting) {
+        counting = true;
+        clock = budgetMs - walkAsks - halfOfDeletion;
+      }
+      chmodSync(path, mode);
+    },
+  });
+  assert.ok(counting, "the removal's permission walk began");
+  assert.deepEqual(
+    { step: stopped.stoppedAt?.step, path: stopped.stoppedAt?.path },
+    { step: "removal", path: "docs/control/local/retained/WO-901" },
+  );
+  assert.equal(
+    stopped.retained.find(
+      (entry) => entry.path === "docs/control/local/retained/WO-901",
+    )?.reason,
+    "budget",
+  );
+  assert.equal(stopped.remaining, 1);
+  const left = files();
+  assert.ok(left > 0 && left < groups * perGroup, String(left));
+  // The proof published before the deletion began names every file.
+  const [proof, ...others] = proofs();
+  assert.deepEqual(others, []);
+  const proven = JSON.parse(readFileSync(join(retained, proof), "utf8"));
+  assert.equal(
+    proven.files.filter((file) => !file.directory).length,
+    groups * perGroup,
+  );
+  const resumed = await pruneHarness(root, { ...options, apply: true });
+  assert.equal(resumed.stoppedAt, null);
+  assert.equal(resumed.remaining, 0);
+  assert.equal(existsSync(lane), false);
+  assert.ok(proofs().includes(proof));
+});
+
+test("a budget spent inside an integration stash's byte inventory stops the plan there, kept as budget, and the next prune drops it", async (t) => {
+  const root = fixture(t);
+  const git = (...args) =>
+    runGit(root, [
+      "-c",
+      "user.name=Fixture",
+      "-c",
+      "user.email=fixture@example.invalid",
+      "-c",
+      "commit.gpgsign=false",
+      "-c",
+      "maintenance.auto=false",
+      ...args,
+    ]);
+  git("init", "-q", "-b", "main");
+  excludeFixtureOwnership(root);
+  writeFileSync(join(root, "tracked.txt"), "base\n");
+  git("add", "tracked.txt");
+  git("commit", "-qm", "base");
+  writeFileSync(join(root, "tracked.txt"), "stashed\n");
+  git("stash", "push", "-q", "-m", "WO-901 integrate 2030-01-01");
+  const label = "stash@{0} On main: WO-901 integrate 2030-01-01";
+  const options = {
+    scope: "repository",
+    hostDirectory: join(root, ".runtime/host"),
+    processes: [],
+    openPaths: [],
+  };
+  // The stash's release is looked up just before its inventory: the clock
+  // passes the one-millisecond budget there, inside the judgment.
+  let clock = 0;
+  const stopped = await pruneHarness(root, {
+    ...options,
+    apply: true,
+    budgetMs: 1,
+    budgetClock: () => clock,
+    publishedRelease: (order) => {
+      clock = 2;
+      return order === "WO-901" ? "v1.0.0" : null;
+    },
+  });
+  assert.equal(clock, 2, "the stash's judgment began");
+  // Planned, the stash would stop the apply at its removal instead.
+  assert.deepEqual(
+    { step: stopped.stoppedAt?.step, path: stopped.stoppedAt?.path },
+    { step: "plan", path: label },
+  );
+  assert.equal(
+    stopped.retained.find((entry) => entry.path === label)?.reason,
+    "budget",
+  );
+  assert.ok(
+    !stopped.candidates.some((entry) => entry.kind === "integration-stash"),
+  );
+  assert.equal(stopped.remaining, 1);
+  assert.notEqual(git("stash", "list").trim(), "");
+  const resumed = await pruneHarness(root, {
+    ...options,
+    apply: true,
+    publishedRelease: (order) => (order === "WO-901" ? "v1.0.0" : null),
+  });
+  assert.equal(resumed.stoppedAt, null);
+  assert.equal(git("stash", "list").trim(), "");
+});
+
+test("a gate's end names a root it cannot list as a cleanup blocker instead of failing", (t) => {
+  const root = fixture(t);
+  let passed;
+  withTemporaryOwner(
+    { repository: root, gateId: "gate-locked", suite: "passed" },
+    () => {
+      passed = createFixtureRoot(join(root, "roots/locked-gate-"));
+    },
+  );
+  mkdirSync(join(passed, "locked"));
+  // The fixture's teardown grants itself what the locked directory denies.
+  chmodSync(join(passed, "locked"), 0o000);
+  const report = finishGateTemporaryRoots(
+    root,
+    "gate-locked",
+    [{ name: "passed", exitCode: 0 }],
+    { processes: [] },
+  );
+  assert.ok(
+    report.blockers.some(
+      (row) =>
+        row.path === passed &&
+        row.reason === `restricted-entry: ${join(passed, "locked")}`,
+    ),
+    JSON.stringify(report.blockers),
+  );
+  assert.ok(existsSync(passed));
+});
+
+test("a budget spent judging a nested root keeps its parent, the root being judged, as budget", async (t) => {
+  const root = fixture(t);
+  runGit(root, ["init", "-q", "-b", "main"]);
+  const parent = expired(root, "dotln-parent-");
+  const child = expired(root, `${basename(parent)}/child-`);
+  for (let index = 0; index < 100; index++)
+    mkdirSync(join(child, `d-${index}`));
+  // Each look advances this clock a millisecond: the parent's walk finds the
+  // child, and the child's walk of a hundred directories outlasts 30 looks.
+  let clock = 0;
+  const report = await pruneHarness(root, {
+    scope: "repository",
+    hostDirectory: join(root, ".runtime/host"),
+    processes: [],
+    openPaths: [],
+    budgetMs: 30,
+    budgetClock: () => clock++,
+  });
+  assert.equal(report.stoppedAt?.path, relative(root, parent));
+  assert.equal(
+    report.retained.find((entry) => entry.path === relative(root, parent))
+      ?.reason,
+    "budget",
+  );
+  assert.ok(
+    !report.retained.some((entry) => entry.path === relative(root, child)),
+  );
+  // The parent kept as budget and the child it holds, never judged alone.
+  assert.equal(report.remaining, 2);
+});
+
+test("a listing asks its budget once a batch, lists the first batch even when spent, and counts what it did not read", (t) => {
+  const root = fixture(t);
+  runGit(root, ["init", "-q", "-b", "main"]);
+  plantExpiredBacklog(root, join(root, "backlog"), 200, "dotln-listed-");
+  // Each look at this clock advances it a millisecond: the budget is spent at
+  // its first ask, which comes after the first batch of 64 segments.
+  let clock = 0;
+  const listing = listTemporaryRoots(root, {
+    scope: "repository",
+    budget: pruneBudget(1, () => clock++),
+  });
+  assert.equal(listing.paths.length, 64, JSON.stringify(listing.stoppedAt));
+  assert.equal(listing.unexamined, 136);
+  assert.match(
+    listing.stoppedAt,
+    /\.runtime\/temporary-roots\/roots\/[a-f0-9-]{36}\.jsonl$/u,
+  );
+  assert.equal(clock, 2);
+  assert.equal(
+    listTemporaryRoots(root, { scope: "repository" }).paths.length,
+    200,
+  );
+});
+
+test("a budget spent inside a deletion keeps that root at its path with its record, and the next prune finishes it", async (t) => {
+  const root = fixture(t);
+  runGit(root, ["init", "-q", "-b", "main"]);
+  const path = expired(root, "dotln-deleted-partway-");
+  for (let index = 0; index < 100; index++)
+    writeFileSync(join(path, `file-${index}`), "payload\n");
+  const options = {
+    scope: "repository",
+    hostDirectory: join(root, ".runtime/host"),
+    processes: [],
+    openPaths: [],
+  };
+  // Each look at this clock advances it a millisecond. The removal's walk
+  // looks once per entry before its deletions do, so 150 looks let the walk
+  // of 101 entries finish and stop the deletions partway.
+  let clock = 0;
+  const stopped = await pruneHarness(root, {
+    ...options,
+    apply: true,
+    budgetMs: 150,
+    budgetClock: () => clock++,
+  });
+  assert.equal(stopped.stoppedAt?.step, "removal", JSON.stringify(stopped));
+  assert.equal(stopped.stoppedAt.path, relative(root, path));
+  assert.equal(
+    stopped.retained.find((entry) => entry.path === relative(root, path))
+      .reason,
+    "budget",
+  );
+  assert.equal(stopped.removed.length, 0);
+  assert.equal(stopped.remaining, 1);
+  assert.ok(existsSync(join(path, TEMPORARY_OWNER_FILE)));
+  const left = readdirSync(path).filter((name) =>
+    name.startsWith("file-"),
+  ).length;
+  assert.ok(left > 0 && left < 100, String(left));
+  const resumed = await pruneHarness(root, { ...options, apply: true });
+  assert.equal(resumed.stoppedAt, null);
+  assert.equal(resumed.remaining, 0);
+  assert.equal(existsSync(path), false);
+});
+
+test("a preview counts the candidates no walk has measured as unmeasured and as remaining, and prints no resume", async (t) => {
+  const root = fixture(t);
+  runGit(root, ["init", "-q", "-b", "main"]);
+  const paths = ["a-", "b-"].map((name) => expired(root, name));
+  const preview = await pruneHarness(root, {
+    scope: "repository",
+    hostDirectory: join(root, ".runtime/host"),
+    processes: [],
+    openPaths: [],
+  });
+  assert.equal(preview.candidates.length, 2);
+  assert.equal(preview.unmeasured, 2);
+  assert.equal(preview.remaining, 2);
+  const text = formatPruneReport(preview);
+  assert.match(
+    text,
+    /^Prune: 2 candidates; 0 bytes \(2 unmeasured\); 0 removed; 0 retained$/mu,
+  );
+  assert.match(
+    text,
+    /^ {2}temporary-root\/gate-fixture: 2 candidates, 0 bytes \(2 unmeasured\), 0 retained$/mu,
+  );
+  assert.doesNotMatch(text, /remaining|resume/u);
+  for (const path of paths) assert.ok(existsSync(path));
+});
+
+test("the census after a failed bounded apply has what the budget leaves", async () => {
+  const budgets = [];
+  await temporaryPruneSummary("unused", {
+    apply: true,
+    budgetMs: 60_000,
+    pruneHarness: async (_root, options) => {
+      budgets.push(options.budgetMs);
+      if (!options.apply)
+        return {
+          candidates: [],
+          removed: [],
+          retained: [],
+          census: [],
+          bytes: 0,
+          unmeasured: 0,
+          remaining: 0,
+          stoppedAt: null,
+        };
+      await new Promise((resolve) => setTimeout(resolve, 20));
+      throw new Error("parent refused");
+    },
+  });
+  assert.equal(budgets[0], 60_000);
+  assert.ok(budgets[1] >= 0 && budgets[1] < 60_000 - 10, String(budgets[1]));
+});
+
+test("the routine prune's budget key is judged as the budgets reader judges it, and a refused value leaves the default with an advisory", (t) => {
+  const root = fixture(t);
+  const write = (value) => {
+    mkdirSync(join(root, "docs/control"), { recursive: true });
+    writeFileSync(
+      join(root, "docs/control/budgets.json"),
+      JSON.stringify(value),
+    );
+  };
+  // Unset, the routine prune has thirty minutes.
+  assert.deepEqual(pruneStartBudget(root), { budgetMs: 1_800_000 });
+  for (const [value, budgetMs] of [
+    [{}, 1_800_000],
+    [{ prune: {} }, 1_800_000],
+    [{ prune: { startBudgetMs: 5 } }, 5],
+    [{ prune: { startBudgetMs: null } }, null],
+  ]) {
+    write(value);
+    assert.deepEqual(pruneStartBudget(root), { budgetMs });
+  }
+  for (const value of [
+    { prune: null },
+    { prune: [] },
+    { prune: { startBudgetMs: -1 } },
+    { prune: { startBudgetMs: "5" } },
+  ]) {
+    write(value);
+    const read = pruneStartBudget(root);
+    assert.equal(read.budgetMs, 1_800_000);
+    assert.match(read.advisory, /Invalid budget: prune\.startBudgetMs/u);
+    assert.match(read.advisory, /the default of 0 h 30 min applies$/u);
+    assert.throws(
+      () => pruneStartBudgetKey(value),
+      /Invalid budget: prune\.startBudgetMs/u,
+    );
+  }
 });

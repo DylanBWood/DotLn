@@ -110,6 +110,10 @@ const defensiveReview =
   "Judge confinement and security-boundary findings against the recorded rule and recommend defensive repairs; do not work out circumvention paths. After one provider safeguard refusal, change approach instead of retrying the refused line of work.";
 const releaseCloseRemedy =
   "Run the printed --publish helper command once, exactly as printed, with no redirect, prefix, cd or pipe; use --dry-run only when a prerequisite such as egress or a foreign tag is in doubt. The close is done when the tag and Release exist, git worktree list shows no worktree for the order, its directory is gone, git branch --list wo-NNN is empty and no starter-refresh blocker remains. Diagnose and finish a cleanup blocker in this session; retry by re-running the same command, which re-checks an existing Release and never publishes twice. A retry validates the original immutable tag even after main advances; a foreign tag remains a blocker. Retry a host denial of the exact command once through the host permission flow before handing the operator the printed command for !. The close removes any scratch repository still present and records its path, head commit and whether a remote held it; intake and declared submodules stay, and an operator word through --material preserves a scratch repository; never force teardown.";
+// A release close removes only the closed order's own temporary roots, within
+// the routine prune's budget, and leaves the rest of the host to plan start.
+const closeOwnRoots =
+  "The close prunes only the closed order's own roots, those its worktree's ledger registered, within `prune.startBudgetMs`; a directory a test left unreadable is repaired or kept by name, never a blocker, and what remains, with every other root on the host, waits for the next plan start's bounded prune.";
 // Preservation at a target close is for operator material, evidence and
 // intake; build output is regenerable (operator direction, 2026-10-18, WO-221).
 const disposableOutput =
@@ -268,6 +272,7 @@ export const contributorRoles: readonly HarnessRole[] = [
       `The helper fast-forwards main, checks release surfaces, builds missing dist, consumes the committed reviewer npm test row by code identity, and publishes the annotated tag and Release. Where the launchpad declares an export sibling, it then refreshes its recorded checkout through a disposable worktree and pushes one fast-forward commit to that sibling’s main. It runs no suite, npm ci or CLI smoke. ${releaseCloseRemedy}`,
       "Publish only the validated tag/Release, the helper’s declared starter refresh with its sibling tag and Release, and a target release the registration declares; report no-release or remaining work. Never edit Releases, push core’s main or any other branch or repository, force-push, merge PRs, publish packages/binaries or change settings.",
       "A starter-refresh refusal is a blocker: report it, ask one focused question when its checkout is unrecorded or dirty, and never clean, reset or commit in the starter checkout.",
+      closeOwnRoots,
       disposableOutput,
     ],
   },
@@ -286,6 +291,7 @@ export const contributorRoles: readonly HarnessRole[] = [
       "Read: `docs/product/07-execution-guide.md#Operator-opened ideation mode`",
       "Read: `docs/planning/sequence.md`",
       "Open a planning branch with `npm run plan -- start <slug>` from clean main. Follow the selected section's source/capture instructions and source each decision with its reopening condition. Planning satisfies independent refutation; ideation follows its pipeline or explicit capture-only boundary. Run `npm run test:docs` (plan, index, publication and format only). Leave implementation, activation and releases to their authorized dispatches.",
+      "`plan start` prints each startup step's duration and runs the routine prune as a bounded step within `prune.startBudgetMs`: when it stops there it prints `removed N; remaining M` with the resume command and still opens the branch, and the remainder waits for the next plan start.",
       "Screen every acceptance criterion before filing against the five defect classes of product 07 §Operator-opened planning pass: bookkeeping (a count, ceiling, cost, duration or token figure as its subject), later-phase (a final-review or release-close judgment, or HEAD or a commit range before the final review's commit), absent-input (data the base lacks and no step creates), host-behavior (a host, service or account behavior the order cannot produce, with no fallback) and contradiction (with another criterion or a non-goal). `npm run work-orders -- index --check` prints a `criteria advisory` line for wording that often marks one; read each before filing.",
       "Use `npm run reader -- score` with one fresh pinned reader outside the repository and record its result only when plan start reports a changed profile with three unscored releases or the operator asks; record surface corrections only through `score --correction <surface> --capture-hash sha256:<digest>`.",
       "After committing the planning subject locally, load dotln-refuter for one independent goal review per pass. Before editing judged text, resolve its refutation hold or record the operator-authorized amendment; judgment reuse never authorizes a repair. Reuse the judgment only while its observed evidence and judged subject remain valid; for a new judgment dispatch one fresh background refuter with no inherited conversation. Use the canonical direct prompt and receipt helper; keep the parent as the sole repository writer. Do not launch an external refutation CLI unless the operator explicitly requests that transport.",
@@ -661,6 +667,7 @@ const targetRoles: readonly HarnessRole[] = contributorRoles.map((role) => {
           `Helper checks release prerequisites, reconciles intake and retains state/collisions in ignored retained/WO-NNN. Keep terms.txt and gate-evidence handoff. Where the launchpad declares an export sibling, the helper then refreshes its recorded checkout through a disposable worktree and pushes one fast-forward commit to that sibling’s main. \`--dry-run\` previews. ${releaseCloseRemedy}`,
           "Publish only that tag/Release, the helper’s declared starter refresh with its sibling tag and Release, and a target release the registration declares; report no-release/remaining work. No Release edits, pushes to core’s main or any other branch or repository, force-pushes, PR merges, package/binary publication or settings changes.",
           "A starter-refresh refusal is a blocker: report it, ask one focused question when its checkout is unrecorded or dirty, and never clean, reset or commit in the starter checkout.",
+          closeOwnRoots,
           disposableOutput,
         ]
       : role.procedure;

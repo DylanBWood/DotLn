@@ -24,6 +24,7 @@ Scope describes ownership: core rows describe core's release surfaces; instance 
 | driven-session-ceiling | both | 80 | 80 | docs/control/budgets.json | Bounds all descendant worker uses in a drive; null removes this bound. | budgets.drivenSessionCeiling | scripts/lib/drive-session.mjs |  |
 | driven-phase-timeout | both | null | null | docs/control/budgets.json | Optionally bounds a driven phase's host timeout; null sets no extra timeout. | budgets.drivenPhaseTimeoutMs | scripts/lib/drive-session.mjs |  |
 | retention | both | gate-fixture-passed: 0 h 0 min; gate-fixture-failed: 24 h 0 min; session-scratch: 24 h 0 min; worker-capture: 1 h 0 min; warm-fixture: 0 h 0 min; legacy-backfill: 48 h 0 min; coordination: keep; closed-journal: 720 h 0 min | gate-fixture-passed: 0 h 0 min; gate-fixture-failed: 24 h 0 min; session-scratch: 24 h 0 min; worker-capture: 1 h 0 min; warm-fixture: 0 h 0 min; legacy-backfill: 48 h 0 min; coordination: keep; closed-journal: 720 h 0 min | docs/control/budgets.json | Sets temporary-root retention by class; null keeps a class and an absent contract uses runtime defaults. | budgets.retention | packages/skeleton/src/temporary-root-records.mjs |  |
+| prune-start-budget | both | 0 h 30 min | 0 h 30 min | docs/control/budgets.json | Bounds the routine prune at plan start and release close; the prune stops there, says what remains and how to resume, and the command goes on. null removes the bound. | budgets.prune.startBudgetMs | scripts/lib/temporary-prune-summary.mjs |  |
 
 Not electable:
 
