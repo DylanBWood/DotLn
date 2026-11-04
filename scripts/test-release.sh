@@ -511,7 +511,9 @@ release_close() {
 seed_release_close_writer() {
   local directory="$main/docs/control/local/harness"
   mkdir -p "$directory"
-  printf '{"session":"fixture-close-session"}\n' >"$directory/writer.json"
+  # The stand-in runtime reads the session; a close with no runtime to reserve
+  # with reads the actor id the real reservation carries (WO-254).
+  printf '{"session":"fixture-close-session","actorId":"%s"}\n' "$(printf %s fixture-close-session | shasum -a 256 | cut -d' ' -f1)" >"$directory/writer.json"
   "$node_bin" --input-type=module - "$main" "$script_dir/.." <<'JS'
 import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -520,20 +522,38 @@ const [root, source] = process.argv.slice(2);
 const runtime = pathToFileURL(join(source, 'packages/skeleton/dist/src/harness-host.js')).href;
 writeFileSync(join(root, 'packages/skeleton/dist/src/harness-host.js'), `
 import { createHash } from "node:crypto";
-import { existsSync, readFileSync, rmSync } from "node:fs";
+import { appendFileSync, existsSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 export { harnessProcessAlive } from ${JSON.stringify(runtime)};
 const marker = (root) => join(root, "docs/control/local/harness/writer.json");
+const holder = (root) =>
+  existsSync(marker(root)) ? JSON.parse(readFileSync(marker(root), "utf8")).session : null;
 export const releaseHarnessWriter = (root, input) => {
-  const path = marker(root);
-  if (existsSync(path) && JSON.parse(readFileSync(path, "utf8")).session === input.session_id)
-    rmSync(path);
+  if (holder(root) === input.session_id) rmSync(marker(root));
 };
 export const harnessWriterView = (root) => {
-  const path = marker(root);
-  return existsSync(path)
-    ? { reserved: true, actorId: createHash("sha256").update(JSON.parse(readFileSync(path, "utf8")).session).digest("hex") }
+  const session = holder(root);
+  return session
+    ? { reserved: true, actorId: createHash("sha256").update(session).digest("hex") }
     : { reserved: false };
+};
+// A publishing retry reserves the writer again; a foreign holder refuses it.
+export const reserveCodexDispatchWriter = (root, sessionId) => {
+  const session = holder(root);
+  if (session && session !== sessionId)
+    throw new Error("the worktree is reserved by another session");
+  if (!session) writeFileSync(marker(root), JSON.stringify({ session: sessionId }) + "\\n");
+  return harnessWriterView(root);
+};
+// A stopped attempt lets this session's writer go and logs the stop.
+export const releaseStoppedDispatch = (root, sessionId, stop) => {
+  const held = holder(root) === sessionId;
+  if (held) rmSync(marker(root));
+  appendFileSync(
+    join(root, "docs/control/local/harness/stopped-dispatches.jsonl"),
+    JSON.stringify({ sessionId, ...stop, held }) + "\\n",
+  );
+  return { held, released: held };
 };
 `);
 JS
@@ -1211,6 +1231,37 @@ git -C "$fixture/integrator" add README.md
 git -C "$fixture/integrator" -c maintenance.auto=false commit --amend --no-edit >/dev/null
 git -C "$fixture/integrator" push origin main >/dev/null 2>&1
 test "$(git -C "$main" rev-parse HEAD)" != "$(git --git-dir="$origin" rev-parse refs/heads/main)"
+# A Codex retry after a stopped attempt reserves the writer before it moves
+# main: under a session that took main meanwhile it is refused with main's
+# head and built runtime untouched (WO-254, round 1).
+seed_release_close_writer
+printf '{"session":"fixture-foreign-session"}\n' >"$main/docs/control/local/harness/writer.json"
+foreign_head="$(git -C "$main" rev-parse HEAD)"
+foreign_runtime="$(shasum -a 256 "$main/packages/skeleton/dist/src/harness-host.js")"
+if foreign_output="$(CODEX_THREAD_ID=fixture-close-session release_close WO-099 --publish 2>&1)"; then
+  printf 'error: release close ran under a foreign writer\n' >&2
+  exit 1
+fi
+grep -Fq 'the worktree is reserved by another session' <<<"$foreign_output"
+test "$(git -C "$main" rev-parse HEAD)" = "$foreign_head"
+test "$(shasum -a 256 "$main/packages/skeleton/dist/src/harness-host.js")" = "$foreign_runtime"
+grep -Fq '"session":"fixture-foreign-session"' "$main/docs/control/local/harness/writer.json"
+test ! -e "$npm_log"
+# The same retry with no built runtime to reserve with: the reservation file
+# itself names another session, so the close refuses before it fetches,
+# fast-forwards or builds (WO-254, round 2).
+printf '{"session":"fixture-foreign-session","actorId":"%s"}\n' "$(printf %s fixture-foreign-session | shasum -a 256 | cut -d' ' -f1)" >"$main/docs/control/local/harness/writer.json"
+rm "$main/packages/skeleton/dist/src/harness-host.js"
+if foreign_unbuilt_output="$(CODEX_THREAD_ID=fixture-close-session release_close WO-099 --publish 2>&1)"; then
+  printf 'error: release close ran under a foreign writer without a runtime\n' >&2
+  exit 1
+fi
+grep -Fq "can reserve this session's writer, and the worktree holds a reservation that is not this session's; nothing was changed" <<<"$foreign_unbuilt_output"
+test "$(git -C "$main" rev-parse HEAD)" = "$foreign_head"
+test ! -e "$main/packages/skeleton/dist/src/harness-host.js"
+grep -Fq '"session":"fixture-foreign-session"' "$main/docs/control/local/harness/writer.json"
+test ! -e "$npm_log"
+rm -f "$main/docs/control/local/harness/stopped-dispatches.jsonl"
 seed_release_close_writer
 rm "$main/packages/skeleton/dist/src/harness-host.js"
 if unbuilt_output="$(CODEX_THREAD_ID=fixture-close-session release_close WO-099 --publish 2>&1)"; then
@@ -1218,6 +1269,7 @@ if unbuilt_output="$(CODEX_THREAD_ID=fixture-close-session release_close WO-099 
   exit 1
 fi
 grep -Fq 'FAIL release-block: observed v0.2.0; expected exactly one v0.2.1' <<<"$unbuilt_output"
+# Without a runtime the stop cannot be released, so the reservation stays.
 test -f "$main/docs/control/local/harness/writer.json"
 test ! -e "$npm_log"
 seed_release_close_writer
@@ -1225,7 +1277,11 @@ if close_surface_output="$(CODEX_THREAD_ID=fixture-close-session release_close W
   printf 'error: release close accepted a stale release block\n' >&2
   exit 1
 fi
-test -f "$main/docs/control/local/harness/writer.json"
+# A publishing attempt the surfaces stopped is a stopped dispatch: the Codex
+# session's writer goes with it and the stop is logged (WO-254).
+test ! -e "$main/docs/control/local/harness/writer.json"
+grep -Fq '"workOrder":"WO-099","command":"release close --publish"' "$main/docs/control/local/harness/stopped-dispatches.jsonl"
+grep -Fq '"held":true' "$main/docs/control/local/harness/stopped-dispatches.jsonl"
 test "$(git -C "$main" rev-parse HEAD)" = "$(git -C "$main" rev-parse origin/main)"
 test ! -e "$npm_log"
 assert_no_candidate_tag "$main" "$origin"
@@ -1248,6 +1304,7 @@ if [[ "$close_surface_normalized" != "$expected_close_output" ]]; then
   diff -u <(printf '%s\n' "$expected_close_output") <(printf '%s\n' "$close_surface_normalized") >&2
   exit 1
 fi
+seed_release_close_writer
 if listed_surface_output="$(CODEX_THREAD_ID=fixture-close-session release_close WO-099 --publish --list-material 2>&1)"; then
   printf 'error: listing material bypassed release-surface refusal\n' >&2; exit 1
 fi
@@ -1372,9 +1429,10 @@ grep -Fq "Derived worktree $derived_clean: would remove" <<<"$derived_preview"
 grep -Fq "Derived worktree $derived_dirty: kept (uncommitted changes); operator: commit, stash or discard the changes in '$derived_dirty' from an operator terminal, then retry with node" <<<"$derived_preview"
 test -d "$derived_clean"
 derived_output="$(CODEX_THREAD_ID=fixture-close-session release_close WO-099 --publish)"
-# A retained dirty derivative is a cleanup blocker, so the dispatch's writer
-# remains until a later retry observes completed cleanup.
-test -f "$main/docs/control/local/harness/writer.json"
+# A retained dirty derivative is a cleanup blocker: the attempt stopped, so
+# its Codex writer goes with it, and the later retry reserves it again before
+# it observes completed cleanup and releases it at completion (WO-254).
+test ! -e "$main/docs/control/local/harness/writer.json"
 grep -Fq "Derived worktree $derived_clean: removed" <<<"$derived_output"
 grep -Fq "Derived worktree $derived_dirty: kept (uncommitted changes)" <<<"$derived_output"
 grep -Fq 'below latest release v0.2.0' <<<"$derived_output"
@@ -3471,7 +3529,7 @@ JS
 import {registerHooks} from 'node:module';import {appendFileSync} from 'node:fs';
 let observed=false;
 registerHooks({load(url,context,nextLoad){
- if(!observed&&/\/packages\/[^/]+\/dist\//.test(url)){observed=true;appendFileSync(process.env.DOTLN_FIXTURE_LOAD_TRACE,JSON.stringify({event:'dist',pid:process.pid})+'\n');}
+ if(!observed&&/\/packages\/[^/]+\/dist\//.test(url)){observed=true;appendFileSync(process.env.DOTLN_FIXTURE_LOAD_TRACE,JSON.stringify({event:'dist',pid:process.pid,main:process.argv[1]??null})+'\n');}
  const loaded=nextLoad(url,context);
  if(url.endsWith('/scripts/build.mjs')&&process.argv[1]?.endsWith('/scripts/build.mjs'))
   return {...loaded,source:String(loaded.source)+"\nimport {appendFileSync as traceWrite} from 'node:fs';traceWrite(process.env.DOTLN_FIXTURE_LOAD_TRACE,JSON.stringify({event:'build-finished',pid:process.pid})+'\\n');\n"};
@@ -3489,7 +3547,8 @@ const record=JSON.parse(fs.readFileSync(p.join(process.argv[2],'docs/control/loc
 assert.equal(record.starterRefresh[0].outcome,'refreshed');assert.equal(record.blockers.length,0);
 const rows=fs.readFileSync(process.argv[3],'utf8').trim().split('\n').map(JSON.parse);
 const prepared=rows.findIndex(row=>row.event==='build-finished');assert.ok(prepared>=0,'a child prepared the stale runtime');
-const parentLoad=rows.findIndex(row=>row.event==='dist'&&row.pid!==rows[prepared].pid);assert.ok(parentLoad>prepared,'parent loads built code only after child preparation completes');
+// The close's own process, not the child that reserved its writer first.
+const parentLoad=rows.findIndex(row=>row.event==='dist'&&row.pid!==rows[prepared].pid&&/\/scripts\/release\.mjs$/.test(row.main??''));assert.ok(parentLoad>prepared,'parent loads built code only after child preparation completes');
 console.log('WO239 runtime loading '+JSON.stringify({childBuildBeforeParentImport:true,starterOutcome:record.starterRefresh[0].outcome}));
 JS
 }
@@ -3562,7 +3621,10 @@ release_case_starter_refresh() {
   grep -Fq 'Starter refresh starter-fixture: refused' <<<"$output"
   grep -Fq 'starter-refresh' <<<"$output"
   grep -Fq 'Retry:' <<<"$output"
-  test -f "$main/docs/control/local/harness/writer.json"
+  # The refused refresh stopped the close: its Codex writer went with it, and
+  # the summary says the retry reserves it again (WO-254).
+  test ! -e "$main/docs/control/local/harness/writer.json"
+  grep -Fq "Writer: this Codex session's reservation is released because the close stopped before completing" <<<"$output"
   local record="$main/docs/control/local/retained/WO-099/release-close.json"
   "$node_bin" - "$record" <<'JS'
 const assert=require('node:assert/strict'), fs=require('node:fs');const r=JSON.parse(fs.readFileSync(process.argv[2]));

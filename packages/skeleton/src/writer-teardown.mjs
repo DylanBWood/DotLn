@@ -1,3 +1,4 @@
+import { spawnSync } from "node:child_process";
 import { createHash, randomUUID } from "node:crypto";
 import {
   existsSync,
@@ -13,6 +14,27 @@ import {
   ensureTemporaryRoot,
   temporaryRepository,
 } from "./temporary-root-records.mjs";
+
+/** The process table's state column (`ps -o stat=` on macOS and Linux) opens
+ * with `Z` for a zombie: a process that has exited and waits only for its
+ * parent to collect its status. Signal zero still finds it, but it holds no
+ * file, runs nothing and can write nothing again, so a writer reservation it
+ * owns is stale however long its row lingers in the table.
+ * @param {unknown} state */
+export const zombieProcessState = (state) =>
+  typeof state === "string" && state.trimStart().startsWith("Z");
+
+/** One process's table state, or undefined when the table cannot say: an
+ * absent row or a refused `ps` is unknown, never dead.
+ * @param {number} pid */
+export function processTableState(pid) {
+  const result = spawnSync("ps", ["-o", "stat=", "-p", String(pid)], {
+    encoding: "utf8",
+    timeout: 5000,
+  });
+  const state = result.status === 0 ? result.stdout.trim() : "";
+  return state || undefined;
+}
 
 /** @param {string} root @param {string} [repository] */
 const transitionPaths = (root, repository = temporaryRepository()) => {

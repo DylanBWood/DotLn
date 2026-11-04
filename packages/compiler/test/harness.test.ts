@@ -174,12 +174,16 @@ test("desktop control host denials follow the supplied instance election", () =>
     "enable__mcp__remote-devices__Claude_Browser*",
     "Skill(anthropic-skills:computer-use)",
     "Skill(anthropic-skills:computer-use *)",
+    "Skill(skill:anthropic-skills:computer-use)",
     "Skill(anthropic-skills:chrome-browser)",
     "Skill(anthropic-skills:chrome-browser *)",
+    "Skill(skill:anthropic-skills:chrome-browser)",
     "Skill(anthropic-skills:built-in-browser)",
     "Skill(anthropic-skills:built-in-browser *)",
+    "Skill(skill:anthropic-skills:built-in-browser)",
     "Skill(claude-in-chrome)",
     "Skill(claude-in-chrome *)",
+    "Skill(skill:claude-in-chrome)",
   ];
   const denies = (election?: boolean): string[] =>
     JSON.parse(

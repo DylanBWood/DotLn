@@ -35,6 +35,29 @@ export const controlFromSources = (
   };
 };
 
+/** The control state with one more record at the end of its segment, folded
+ * before anything is written. A record the fold refuses throws here, so a
+ * writer that appends only after this call never leaves a segment that its
+ * next read cannot fold; the sources it was given are not changed. */
+export const foldWithRecord = (
+  control,
+  segment,
+  record,
+  storage = DEFAULT_CONTROL_PATHS,
+) => {
+  const before = control.sources.get(segment) ?? "";
+  return controlFromSources(
+    new Map([
+      ...control.sources,
+      [
+        segment,
+        `${before}${before && !before.endsWith("\n") ? "\n" : ""}${JSON.stringify(record)}\n`,
+      ],
+    ]),
+    storage,
+  );
+};
+
 const committedControlBlobs = (root, revision) => {
   const storage = controlPaths(root);
   const entries = runGit(

@@ -2129,6 +2129,8 @@ test("an instance exported at v0.81.0 takes this release by the kit guide's proc
     assert.equal(refreshRow.outcome, "refreshed", JSON.stringify(refreshRow));
     assert.deepEqual(refreshRow.rewrittenSeeds, [
       ".gitignore",
+      // Its operator record gains the sentence on standing rules (WO-254).
+      "AI-HARNESS-SECURITY.md",
       "CLAUDE.md",
       "docs/control/budgets.json",
       "docs/repositories/README.md",

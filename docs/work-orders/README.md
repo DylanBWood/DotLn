@@ -5,7 +5,7 @@
 ## Proposed order
 
 - [x] [WO-253] — Temporary roots leave with the gate that made them, and a prune is a bounded step · **final-reviewed**
-- [ ] [WO-254] — The hooks get out of the operator's way · **queued**
+- [x] [WO-254] — The hooks get out of the operator's way · **final-reviewed**
 - [ ] [WO-246] — The launchpad's own pull requests · **queued**
 - [ ] [WO-255] — Reviews find what the complete run finds · **queued**
 - [ ] [WO-257] — Instance returns of 2026-11-03 · **queued**
@@ -42,22 +42,6 @@ None.
 None.
 
 ## Open
-
-### WO-254
-
-[WO-254 — The hooks get out of the operator's way: a zombie is not a live writer, the recovery commands a refusal names are admitted from the refused session, a dispatch that stops releases its writer and a denied activation leaves no worktree, a question is answered and a remark is not a rule, the operator's standing instructions survive a Codex compaction, the three shell-classification advisories go quiet, and a session blocked on the operator says so once and ends its turn (version assigned at activation)](WO-254-the-hooks-get-out-of-the-operators-way.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-251: satisfied-by-close (met) — the hook refusal table and emitted settings this order adds the two admitted recovery commands to; WO-249: satisfied-by-close (met) — the rule that an off-ramp is recorded only from the operator's words asking for it, which this order extends to standing rules.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer xhigh.
-- Track: machinery
-- Authority: [docs/work-orders/WO-254-the-hooks-get-out-of-the-operators-way.md](WO-254-the-hooks-get-out-of-the-operators-way.md)
 
 ### WO-246
 

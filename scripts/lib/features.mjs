@@ -1,11 +1,5 @@
 import { existsSync, readFileSync } from "node:fs";
-import { join } from "node:path";
-import {
-  docPath,
-  docRelative,
-  defaultDocRelative,
-  loadConfig,
-} from "./config.mjs";
+import { docPath, docRelative, loadConfig } from "./config.mjs";
 import { readBuildOverlayFile } from "./build-overlay.mjs";
 
 const row = (id, scope, defaultValue, what, readFrom, readBy) =>
@@ -104,7 +98,7 @@ export const featureRegistry = Object.freeze([
     "subagent-cap",
     "both",
     20,
-    "Bounds worker uses per spawning session; null removes this bound. This runtime reader uses docs/control/budgets.json even when the control root is relocated.",
+    "Bounds worker uses per spawning session; null removes this bound. It is read from the configured control root, as the process readers are.",
     "budgets.subagentCap",
     "packages/skeleton/src/subagent-budget.ts",
   ),
@@ -248,23 +242,13 @@ export function readFeatureInventory(root) {
   const budgets = existsSync(budgetPath)
     ? JSON.parse(readFileSync(budgetPath, "utf8"))
     : {};
-  // The spawn reader still uses the default root, unlike the process readers.
-  const capSource = defaultDocRelative("control", "budgets.json");
-  const capPath = join(root, capSource);
-  const capBudget =
-    capPath === budgetPath
-      ? budgets
-      : existsSync(capPath)
-        ? JSON.parse(readFileSync(capPath, "utf8"))
-        : {};
   const legacy = legacyTinkerer(root, config);
   return featureRegistry.map((entry) => {
     const budget = entry.readFrom.startsWith("budgets.");
     const key = budget
       ? entry.readFrom.slice("budgets.".length)
       : entry.readFrom;
-    const sourceBudgets = entry.id === "subagent-cap" ? capBudget : budgets;
-    let value = at(budget ? sourceBudgets : declared, key);
+    let value = at(budget ? budgets : declared, key);
     const fromOverlay =
       entry.id === "tinkerer-economy" &&
       value === undefined &&
@@ -284,9 +268,7 @@ export function readFeatureInventory(root) {
         value === undefined
           ? "default"
           : budget
-            ? entry.id === "subagent-cap"
-              ? capSource
-              : docRelative(root, "control", "budgets.json")
+            ? docRelative(root, "control", "budgets.json")
             : "dotln.config.json",
       ...(named && value?.note !== undefined ? { note: value.note } : {}),
       ...(fromOverlay

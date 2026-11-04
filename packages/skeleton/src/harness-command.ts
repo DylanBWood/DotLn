@@ -1,11 +1,28 @@
 import { basename, isAbsolute, resolve } from "node:path";
 import {
+  desktopControlSkillNames,
   desktopControlSkills,
   desktopControlToolPrefixes,
 } from "@dotln/compiler";
 
 /** Classification could not establish an effect; generated hooks advise the host. */
 export class HarnessCommandRefused extends Error {}
+
+/** The three shell forms the classifier leaves to the host's permissions on
+ * nearly every compound call: control syntax, a dynamic substitution and a
+ * working-directory override. Each names no refusal, so a hook journals it
+ * and shows nothing; every other classification advisory is still shown. */
+export const SHELL_CONTROL_SYNTAX =
+  "Shell control syntax requires an explicit effect adapter";
+export const DYNAMIC_SHELL_SUBSTITUTION =
+  "Dynamic shell substitution requires an explicit effect adapter";
+export const SHELL_WORKING_DIRECTORY =
+  "Shell working-directory override needs a separately reviewed host adapter";
+export const HOST_DECIDED_CLASSIFICATIONS: ReadonlySet<string> = new Set([
+  SHELL_CONTROL_SYNTAX,
+  DYNAMIC_SHELL_SUBSTITUTION,
+  SHELL_WORKING_DIRECTORY,
+]);
 
 /** Effect inventory for the tools exposed by the observed harness profiles.
  * Unknown names are never presumed to be reads. Opaque shell/delegation routes
@@ -63,7 +80,8 @@ export const harnessToolEffects = {
   "collaboration.spawn_agent": "spawn",
 } as const;
 
-/** Prefix rules name host namespaces; Skill carries its selection in input. */
+/** Prefix rules name host namespaces; Skill carries its selection in input,
+ * judged under every name the host documents for a listed skill. */
 export function isDesktopControlTool(
   name: string,
   input: Readonly<Record<string, unknown>> = {},
@@ -71,7 +89,10 @@ export function isDesktopControlTool(
   return (
     desktopControlToolPrefixes.some((prefix) => name.startsWith(prefix)) ||
     (name === "Skill" &&
-      desktopControlSkills.some((skill) => input.skill === skill))
+      typeof input.skill === "string" &&
+      desktopControlSkills.some((skill) =>
+        desktopControlSkillNames(skill).includes(input.skill as string),
+      ))
   );
 }
 
@@ -151,9 +172,7 @@ function shellWords(source: string): ShellInvocation[] {
       !quoted &&
       /^(for|select|case|function)$/.test(word)
     ) {
-      throw new HarnessCommandRefused(
-        "Shell control syntax requires an explicit effect adapter",
-      );
+      throw new HarnessCommandRefused(SHELL_CONTROL_SYNTAX);
     } else current.push({ value: word, dynamic, quoted, expands, redirects });
     word = "";
     inWord = false;
@@ -201,9 +220,7 @@ function shellWords(source: string): ShellInvocation[] {
         continue;
       }
       if (char === "`" || (char === "$" && line[i + 1] === "("))
-        throw new HarnessCommandRefused(
-          "Dynamic shell substitution requires an explicit effect adapter",
-        );
+        throw new HarnessCommandRefused(DYNAMIC_SHELL_SUBSTITUTION);
       // zsh also expands `$=name`, `$^name`, `$~name` and `$+name`.
       if (char === "$" && /[A-Za-z0-9_{$'"@*#?!=^~+-]/.test(line[i + 1] ?? ""))
         dynamic = true;
@@ -2619,9 +2636,7 @@ function gitOperandIndex(args: readonly ShellWord[]): number {
     if (!value.startsWith("-") || value === "--")
       return value === "--" ? index + 1 : index;
     if (/^(?:-C|--git-dir(?:=|$)|--work-tree(?:=|$))/.test(value))
-      throw new HarnessCommandRefused(
-        "Shell working-directory override needs a separately reviewed host adapter",
-      );
+      throw new HarnessCommandRefused(SHELL_WORKING_DIRECTORY);
     const separate = ["-c", "--config-env"].includes(value);
     const config = separate
       ? requireLiteral(args[index + 1], "Git configuration")
@@ -2891,9 +2906,7 @@ export function invocationEffects(source: string): string[] {
     const [program, ...args] = words.map((word) => word.value);
     if (!program) return [];
     if (program === "cd")
-      throw new HarnessCommandRefused(
-        "Shell working-directory override needs a separately reviewed host adapter",
-      );
+      throw new HarnessCommandRefused(SHELL_WORKING_DIRECTORY);
     const denied = deniedInvocation(words);
     if (denied) return [denied];
     if (

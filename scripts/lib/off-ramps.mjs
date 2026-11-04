@@ -1,4 +1,8 @@
 import { dispatchJournalDirectory } from "../../packages/skeleton/src/dispatch-journal.mjs";
+import {
+  processTableState,
+  zombieProcessState,
+} from "../../packages/skeleton/src/writer-teardown.mjs";
 import { sha256Hex as digest } from "./helpers.mjs";
 // Off-ramps: the operator capture every operator act names, the recording
 // session's observed role, and the report convention that judges a waived or
@@ -138,14 +142,15 @@ export function recordingSession(root, env = process.env) {
   );
 }
 
-// A live owner, or one this user cannot signal, still holds its reservation.
+// A live owner, or one this user cannot signal, still holds its reservation;
+// a zombie, an exited process its parent has not reaped, holds nothing.
 const processAlive = (pid) => {
   try {
     process.kill(pid, 0);
-    return true;
   } catch (error) {
-    return error?.code === "EPERM";
+    if (error?.code !== "EPERM") return false;
   }
+  return !zombieProcessState(processTableState(pid));
 };
 
 /**

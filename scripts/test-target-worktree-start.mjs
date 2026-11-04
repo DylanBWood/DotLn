@@ -1383,6 +1383,91 @@ for (const cloneName of ["launchpad", "Launchpad"])
       assert.equal(existsSync(targetRegistryPath(f.main)), false);
     }));
 
+// The host refuses the activation's own spawn: the child never starts, so
+// only its spawn error says what happened.
+const deniedActivation = `import childProcess from "node:child_process";
+import { syncBuiltinESMExports } from "node:module";
+const original = childProcess.spawnSync;
+childProcess.spawnSync = function (command, args, ...rest) {
+  if (Array.isArray(args) && String(args[0] ?? "").endsWith("/scripts/resume.mjs") && args[1] === "activate")
+    return { pid: 0, output: null, stdout: null, stderr: null, status: null, signal: null, error: Object.assign(new Error(\`spawnSync \${command} EACCES\`), { code: "EACCES", errno: -13, syscall: \`spawnSync \${command}\`, path: command }) };
+  return original.call(this, command, args, ...rest);
+};
+syncBuiltinESMExports();
+`;
+
+for (const [label, denial, cause] of [
+  [
+    "its bootstrap reports on standard error",
+    () => ({ DOTLN_FIXTURE_BOOTSTRAP_DENY: "1" }),
+    /launchpad preparation failed: .*EACCES: permission denied/u,
+  ],
+  [
+    "its bootstrap reports on standard output",
+    () => ({ DOTLN_FIXTURE_BOOTSTRAP_DENY: "stdout" }),
+    /launchpad preparation failed: .*EACCES: permission denied/u,
+  ],
+  [
+    "the host refuses to spawn its activation",
+    (f) => {
+      const preload = join(f.base, "denied-activation.mjs");
+      writeFileSync(preload, deniedActivation);
+      return {
+        NODE_OPTIONS: `${f.env.NODE_OPTIONS ?? ""} --import=${preload}`.trim(),
+      };
+    },
+    /resume activation failed: EACCES spawnSync .* EACCES/u,
+  ],
+])
+  test(`WO-254 a target start the host denies after creating its worktrees leaves no worktree, branch or pending start and records the denial: ${label}`, () =>
+    withFixture((f) => {
+      f.mapClone();
+      const result = f.call(
+        f.main,
+        f.main,
+        "worktree",
+        ["start", "WO-999", f.order],
+        denial(f),
+      );
+      assert.notEqual(result.status, 0);
+      assert.match(
+        result.stderr,
+        /the host denied a step after .+ was created/u,
+      );
+      assert.match(result.stderr, cause);
+      assert.match(
+        result.stderr,
+        /The worktrees and their branches are removed\./u,
+      );
+      assert.doesNotMatch(result.stderr, /Target start is preserved/u);
+      assert.equal(existsSync(f.target), false);
+      assert.equal(existsSync(f.orderRoot), false);
+      for (const repo of [f.main, f.clone])
+        assert.equal(git(repo, "branch", "--list", "wo-999"), "");
+      assert.equal(readTargetStart(f.main, "WO-999"), undefined);
+      assert.equal(existsSync(targetRegistryPath(f.main)), false);
+      const row = readFileSync(
+        docPath(f.main, "control", "local/worktree-start-denials.jsonl"),
+        "utf8",
+      )
+        .trim()
+        .split("\n")
+        .map((line) => JSON.parse(line))
+        .at(-1);
+      assert.equal(row.workOrderId, "WO-999");
+      assert.deepEqual(
+        row.worktrees.map(({ worktree, removed }) => ({ worktree, removed })),
+        [
+          { worktree: f.target, removed: { worktree: true, branch: true } },
+          { worktree: f.orderRoot, removed: { worktree: true, branch: true } },
+        ],
+      );
+      assert.deepEqual(row.failures, []);
+      // Nothing is left, so the same start runs again from the beginning.
+      f.ok(f.worktree("start", "WO-999", f.order));
+      assert.ok(existsSync(f.target));
+    }));
+
 test("preparation retry resumes the recorded pair after bootstrap or harness failure", () => {
   for (const phase of ["bootstrap", "harness"])
     withFixture((f) => {

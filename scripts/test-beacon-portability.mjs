@@ -118,6 +118,8 @@ test("WO-070 copied control plane emits a decoded Beacon without TypeScript sour
     "gate-evidence.mjs",
     "runtime-inputs.mjs",
     "temporary-root-records.mjs",
+    // The off-ramps' liveness judgment reads a zombie's state here (WO-254).
+    "writer-teardown.mjs",
   ];
   for (const file of buildFree)
     cpSync(
