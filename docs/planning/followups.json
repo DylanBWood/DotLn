@@ -44267,6 +44267,14 @@
           "reopenWhen": "The next planning pass evaluates instruction-byte optimization, or another role edit changes the measured overrun.",
           "targets": [],
           "at": "2026-11-03T17:46:50.359Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-254-D051 (FINAL-001): its condition occurred, because WO-254's reviewed rules (the question's two pathways, the blocked-turn sentence and the corrected writer sentences, D013 and D032) changed the measured overrun again: every role root grew by 1,206 bytes and the router's by 948, and the executor, verifier, reviewer, release-close, planner and router roots stay over their unchanged ceilings. No ceiling was raised and no duty was cut; the optimization is boarded for the next planning pass under FUP-f86af3151b401757, the same work for every role, and the final review changed no role text.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
+          "targets": [],
+          "at": "2026-11-04T22:40:07.502Z"
         }
       ]
     },
@@ -44395,6 +44403,14 @@
           "reopenWhen": "A role grows past its pin without the oracle changing, or a ceiling breach appears in meta --check with no decision boarding it; or the next order touching scripts/test-gate-followups.mjs or re-minting the role oracle.",
           "targets": [],
           "at": "2026-11-03T17:46:50.731Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-254-D051 (FINAL-001): its condition occurred, because WO-254 re-mints the role oracle (packages/skeleton/fixtures/wo254-role-baseline.json, chained to wo253) and adds it to the chain in scripts/test-gate-followups.mjs (D013, D032). The test still asserts each oracle's recorded headroom and keeps the historical 256-byte inequality on the earliest chained baseline; the final review changed no test. Deferred to the next order that touches the file or re-mints the oracle, to decide whether the retained inequality still carries meaning (docs/evidence/WO-254/decisions.md#wo-254-d051--final-review-the-matched-follow-up-rows-whose-conditions-this-order-met).",
+          "reopenWhen": "A role grows past its pin without the oracle changing, or a ceiling breach appears in meta --check with no decision boarding it; or the next order touching scripts/test-gate-followups.mjs or re-minting the role oracle.",
+          "targets": [],
+          "at": "2026-11-04T22:40:07.381Z"
         }
       ]
     },
@@ -44419,6 +44435,14 @@
           "reopenWhen": "the next order that edits recordOperatorMessage in packages/skeleton/src/harness-host.ts or harnessPromptLine in packages/compiler/src/harness.ts, WO-220's activation (its executor may take it inside the Boy Scout bound), or a second pasted dispatch recorded prefix null",
           "targets": [],
           "at": "2026-10-24T04:18:37.556Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-254-D051 (FINAL-001): its condition occurred, because WO-254 edits recordOperatorMessage in packages/skeleton/src/harness-host.ts, which now reads its class from the compiler's operatorMessageClass (D009). The first-line rule and harnessPromptLine are unchanged: a pasted dispatch wrapped in the host's pasted-content element still records prefix null, since admitting that framing is outside WO-254's criteria and the final review changed no source. Deferred to the next order that edits harnessPromptLine (docs/evidence/WO-254/decisions.md#wo-254-d051--final-review-the-matched-follow-up-rows-whose-conditions-this-order-met).",
+          "reopenWhen": "The next order that edits harnessPromptLine in packages/compiler/src/harness.ts or the first-line rule, WO-220's activation, or a second pasted dispatch recorded prefix null.",
+          "targets": [],
+          "at": "2026-11-04T22:40:07.137Z"
         }
       ]
     },
@@ -44932,6 +44956,14 @@
           "reopenWhen": "A bounded comparison demonstrates a shorter equivalent instruction set, or another required rule changes the measured overrun.",
           "targets": [],
           "at": "2026-11-03T17:46:50.486Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-254-D051 (FINAL-001): its condition occurred, because WO-254's reviewed rules (the question's two pathways, the blocked-turn sentence and the corrected writer sentences, D013 and D032) changed the measured overrun again: every role root grew by 1,206 bytes and the router's by 948, and the executor and reviewer roots stay over their unchanged ceilings. No ceiling was raised and no duty was cut; the optimization is boarded for the next planning pass under FUP-f86af3151b401757, the same work for every role, and the final review changed no role text.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
+          "targets": [],
+          "at": "2026-11-04T22:40:07.983Z"
         }
       ]
     },
@@ -46916,6 +46948,14 @@
           "reopenWhen": "A pass dispatched with a trailing id runs the launchpad subject instead, or the next order editing the planner root activates.",
           "targets": [],
           "at": "2026-10-27T00:11:36.327Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-254-D051 (FINAL-001): its condition occurred, because WO-254 edits every role root, the planner's included (packages/skeleton/src/loadouts/contributor.ts, D013). The planner root's entropy sentence still names no selector: adding it after the passing complete run would re-mint the role oracle and the code identity for one sentence outside WO-254's criteria, so the final review left it. Deferred to the next order that edits the planner root's entropy sentence (docs/evidence/WO-254/decisions.md#wo-254-d051--final-review-the-matched-follow-up-rows-whose-conditions-this-order-met).",
+          "reopenWhen": "A pass dispatched with a trailing id runs the launchpad subject instead, or the next order editing the planner root's entropy sentence activates.",
+          "targets": [],
+          "at": "2026-11-04T22:40:07.260Z"
         }
       ]
     },
@@ -52544,6 +52584,14 @@
           "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the verifier and planner cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
           "targets": [],
           "at": "2026-11-03T17:46:50.608Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-254-D051 (FINAL-001): its condition occurred, because WO-254's reviewed rules (the question's two pathways, the blocked-turn sentence and the corrected writer sentences, D013 and D032) changed the measured overrun again: every role root grew by 1,206 bytes and the router's by 948, and the verifier and planner roots stay over their unchanged ceilings. No ceiling was raised and no duty was cut; the optimization is boarded for the next planning pass under FUP-f86af3151b401757, the same work for every role, and the final review changed no role text.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
+          "targets": [],
+          "at": "2026-11-04T22:40:07.743Z"
         }
       ]
     },
@@ -53305,6 +53353,14 @@
           "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the executor, verifier, planner and release-close cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
           "targets": [],
           "at": "2026-11-03T16:52:27.022Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-254-D051 (FINAL-001): its condition occurred, because WO-254's reviewed rules (the question's two pathways, the blocked-turn sentence and the corrected writer sentences, D013 and D032) changed the measured overrun again: every role root grew by 1,206 bytes and the router's by 948, and the executor, verifier, planner and release-close roots stay over their unchanged ceilings. No ceiling was raised and no duty was cut; the optimization is boarded for the next planning pass under FUP-f86af3151b401757, the same work for every role, and the final review changed no role text.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
+          "targets": [],
+          "at": "2026-11-04T22:40:07.863Z"
         }
       ]
     },
@@ -53676,6 +53732,14 @@
           "reopenWhen": "an activation finds its worktree path occupied",
           "targets": [],
           "at": "2026-11-04T00:23:36.998Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-254-D051 (FINAL-001): neither sibling worktree exists any more. On 2026-11-04 git worktree list in this checkout names only the main checkout and this order's worktree, and neither ../DotLn-wo242 nor ../DotLn-wo243 is on disk; wo242's cause, a denied activation that left its worktree behind, is fixed by WO-254's step 4 (D008, D031, D040), whose start now undoes itself and records the denial. WO-243's executor starts from a clear path (docs/evidence/WO-254/decisions.md#wo-254-d051--final-review-the-matched-follow-up-rows-whose-conditions-this-order-met).",
+          "reopenWhen": "An activation finds its worktree path occupied, or WO-243's activation needs the staged work those files held.",
+          "targets": [],
+          "at": "2026-11-04T22:40:07.013Z"
         }
       ]
     },
@@ -53780,6 +53844,14 @@
           "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the executor, verifier, planner and release-close cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
           "targets": [],
           "at": "2026-11-04T05:13:05.785Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-254-D051 (FINAL-001): its condition occurred, because WO-254's reviewed rules (the question's two pathways, the blocked-turn sentence and the corrected writer sentences, D013 and D032) changed the measured overrun again: every role root grew by 1,206 bytes and the router's by 948, and the executor, verifier, planner and release-close roots stay over their unchanged ceilings. No ceiling was raised and no duty was cut; the optimization is boarded for the next planning pass under FUP-f86af3151b401757, the same work for every role, and the final review changed no role text.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
+          "targets": [],
+          "at": "2026-11-04T22:40:07.623Z"
         }
       ]
     },
@@ -53845,6 +53917,83 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-f86af3151b401757",
+      "key": "decision:docs/evidence/WO-254/decisions.md#wo-254-d013",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "f49be95a5a3370e1904ee9bd03dc35640910d3f817356123af750ac21e8bf2c4",
+          "ref": "docs/evidence/WO-254/decisions.md#wo-254-d013--the-blocked-turn-sentence-and-the-role-roots-growth-every-reviewed-rule-stays-whole-and-the-overrun-is-boarded",
+          "title": "WO-254-D013: Optimize the role roots' cold-start bytes with equivalent usefulness: WO-254 added the question's two pathways and the blocked-turn sentence to every root (1,040 bytes, 782 for the…",
+          "summary": "{ \"id\": \"WO-254-D013\", \"date\": \"2026-11-04\", \"dispatch\": \"resume: next; step 9\", \"decision\": \"Add to every role root the one common sentence that a session blocked on what only the operator can clear states the block and the one line that clears it in a single message and ends its turn, beside D009's two pathways, and correct two sentences this order made false: the Codex writer sentence of every root (D007, D005) and the router's dead-writer sentence (D016). Every root grows by 1,040 bytes and the router's by 782: executor 42,398 to 43,438, verifier 37,027 to 38,067, reviewer 39,450 to 40,490, release-close 27,027 to 28,067, planner 28,078 to 29,118, refuter 25,949 to 26,989 and router 16,0",
+          "missing": false
+        },
+        {
+          "hash": "f49be95a5a3370e1904ee9bd03dc35640910d3f817356123af750ac21e8bf2c4",
+          "ref": "docs/evidence/WO-254/decisions.md#wo-254-d013",
+          "title": "WO-254-D013: Optimize the role roots' cold-start bytes with equivalent usefulness: WO-254 added the question's two pathways and the blocked-turn sentence to every root (1,040 bytes, 782 for the…",
+          "summary": "{ \"id\": \"WO-254-D013\", \"date\": \"2026-11-04\", \"dispatch\": \"resume: next; step 9\", \"decision\": \"Add to every role root the one common sentence that a session blocked on what only the operator can clear states the block and the one line that clears it in a single message and ends its turn, beside D009's two pathways, and correct two sentences this order made false: the Codex writer sentence of every root (D007, D005) and the router's dead-writer sentence (D016). Every root grows by 1,040 bytes and the router's by 782: executor 42,398 to 43,438, verifier 37,027 to 38,067, reviewer 39,450 to 40,490, release-close 27,027 to 28,067, planner 28,078 to 29,118, refuter 25,949 to 26,989 and router 16,0",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-254-D013: WO-254's question pathways and blocked-turn sentence stay whole under product 07's one route for cold-start ceilings; measured by the gate-followups rule on WO-254's tree the executor reads 43,438 bytes against its accepted 40,194, the verifier 38,067 against 35,221, the reviewer 40,490 against 39,600, release-close 28,067 against 26,410, the planner 29,118 against 24,576 and the router 16,818 against 16,384, with no ceiling raised, no acceptance recorded and no duty cut; the optimization with equivalent usefulness belongs to a planning allocation.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the executor, verifier, reviewer, release-close, planner and router cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
+          "targets": [],
+          "at": "2026-11-04T17:09:47.532Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-78158140c6ac12aa",
+      "key": "decision:docs/evidence/WO-254/decisions.md#wo-254-d045",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "d75fee139262897a8147b7502e6c7f024a2d8e9ac387b5db6d2acce5a213fb81",
+          "ref": "docs/evidence/WO-254/decisions.md#wo-254-d045--operator-direction-the-next-planning-pass-points-the-front-pages-try-it-section-at-the-public-starter",
+          "title": "WO-254-D045: Point the front page's Try it section (README.md) at the public starter, https://github.com/DylanBWood/DotLn-Enterprise-Starter, and recommend one of two routes to start from it: a…",
+          "summary": "{ \"id\": \"WO-254-D045\", \"date\": \"2026-11-04\", \"dispatch\": \"the operator's mid-turn message during this execution's first complete run, 2026-11-04\", \"decision\": \"Board a follow-up the operator directed the next planning pass to take up, outside this order's scope: the repository front page's Try it section links to the public starter, https://github.com/DylanBWood/DotLn-Enterprise-Starter, and recommends one of two routes to start from it, a public fork of the starter, or a private clone that keeps the starter as its upstream remote, the route the kit guide's First steps gives. This execution does not edit README.md: the front page is not in WO-254's scope, the direction names the planning pas",
+          "missing": false
+        },
+        {
+          "hash": "46ae4e0294266b996c3cb6e0ebc203555c3b5bf5cdf9a97a748be678d6aab842",
+          "ref": "docs/evidence/WO-254/decisions.md#wo-254-d045--operator-direction-the-next-planning-pass-points-the-front-pages-try-it-section-at-the-public-starter",
+          "title": "WO-254-D045: Point the front page's Try it section (README.md) at the public starter, https://github.com/DylanBWood/DotLn-Enterprise-Starter, and recommend one of two routes to start from it: a…",
+          "summary": "{ \"id\": \"WO-254-D045\", \"date\": \"2026-11-04\", \"dispatch\": \"resume: next; the operator's mid-turn direction during this execution's first complete run\", \"decision\": \"Board a follow-up the operator directed the next planning pass to take up, outside this order's scope: the repository front page's Try it section links to the public starter, https://github.com/DylanBWood/DotLn-Enterprise-Starter, and recommends one of two routes to start from it, a public fork of the starter, or a private clone that keeps the starter as its upstream remote, the route the kit guide's First steps gives. This execution does not edit README.md: the front page is not in WO-254's scope, the direction names the planning",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-fea8efc4a8e84a8f",
+      "key": "decision:docs/evidence/WO-254/decisions.md#wo-254-d049",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "a4c84c0605b8cc48e51943f376c39fd16993c77033dcc76179a04d32627a1740",
+          "ref": "docs/evidence/WO-254/decisions.md#wo-254-d049--verification-the-stop-samples-the-latest-compaction-broader-diagnostic-history-is-a-follow-up",
+          "title": "WO-254-D049: Clarify the compaction-probe documentation in product 07 and the kit guide: a Stop samples the first assistant reply after the latest compaction before that Stop. If separate diagnostic…",
+          "summary": "{ \"id\": \"WO-254-D049\", \"date\": \"2026-11-04\", \"dispatch\": \"resume: verify; the operator's mid-turn observation about the compaction sample\", \"decision\": \"Judge criterion 6 met on its stated capture, restoration and first-reply fixture, and record the broader diagnostic-history observation as a nonblocking follow-up. An independent source probe and the emitted hook both restore the operator message after two compactions in one turn, then journal only the first reply after the latest compaction at Stop. The earlier sample is not retained. The criterion's stated case passes and main had no such probe, so the observation establishes neither an unmet original criterion nor a regression. The operat",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-254-D050 (FINAL-001): the wording is corrected in this order. Product 07 §Model-specific notes and the kit guide's §Hooks now say that the first Stop after a compaction samples the first assistant reply after the latest compaction before that stop, and that an earlier compaction in the same turn has no separate sample, because each PostCompact replaces the saved record; the verifier's probe (docs/evidence/WO-254/ver-001-probes.mjs --generated) was rerun by the final review and reproduces that scope. No implementation changed; retaining a sample per compaction stays unrequested (docs/evidence/WO-254/decisions.md#wo-254-d050--final-review-the-probe-wording-says-which-compaction-a-stop-samples).",
+          "reopenWhen": "A later requirement needs a separate diagnostic sample for every compaction before a Stop, or a guide again describes a sample per compaction.",
+          "targets": [],
+          "at": "2026-11-04T22:40:06.886Z"
+        }
+      ]
     }
   ]
 }

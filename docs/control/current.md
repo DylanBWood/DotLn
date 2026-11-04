@@ -1,23 +1,22 @@
 # Current control state
 
-## WO-253
+## WO-254
 
-- Work order: WO-253
-- Work-order path: docs/work-orders/WO-253-temporary-roots-leave-with-the-gate-that-made-them.md
+- Work order: WO-254
+- Work-order path: docs/work-orders/WO-254-the-hooks-get-out-of-the-operators-way.md
 - Phase: closed
-- Latest verification: VER-002
-- Verification path: docs/verifications/WO-253/VER-002.md
+- Latest verification: VER-001
+- Verification path: docs/verifications/WO-254/VER-001.md
 - Latest verdict: pass
 - Final review: FINAL-001
-- Final-review path: docs/final-reviews/WO-253/FINAL-001.md
+- Final-review path: docs/final-reviews/WO-254/FINAL-001.md
 - Latest attestation: harness claude-code; version 2.1.318; model claude-fable-5-1; effort xhigh; source claude-session-readback; account not-applicable
 - Effort drift: max -> xhigh
-- Latest recordedAt: 2026-11-04T15:17:04.091Z
-- Elapsed implementation: 5 h 58 min
+- Latest recordedAt: 2026-11-04T22:55:25.113Z
+- Elapsed implementation: 6 h 23 min
 - Elapsed verification: 0 h 12 min
-- Elapsed repair: 2 h 14 min
-- Elapsed finalReview: 0 h 31 min
-- Latest checkpoint: 07d972a4778cc486bd8b97d4dd68ff1436514a69 (restore: `git checkout refs/dotln/checkpoint/WO-253/11 -- .`)
+- Elapsed finalReview: 0 h 36 min
+- Latest checkpoint: a8916a8bc4923710a3f687dd38c266b64ef01fcd (restore: `git checkout refs/dotln/checkpoint/WO-254/6 -- .`)
 - Legal next actions: release-close, next, activate
 - Legal off-ramps: correct, override-record, retract
 

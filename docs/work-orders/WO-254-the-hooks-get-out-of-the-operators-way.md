@@ -1,4 +1,4 @@
-# WO-254 — The hooks get out of the operator's way: a zombie is not a live writer, the recovery commands a refusal names are admitted from the refused session, a dispatch that stops releases its writer and a denied activation leaves no worktree, a question is answered and a remark is not a rule, the operator's standing instructions survive a Codex compaction, the three shell-classification advisories go quiet, and a session blocked on the operator says so once and ends its turn (version assigned at activation)
+# WO-254 — The hooks get out of the operator's way: a zombie is not a live writer, the recovery commands a refusal names are admitted from the refused session, a dispatch that stops releases its writer and a denied activation leaves no worktree, a question is answered and a remark is not a rule, the operator's standing instructions survive a Codex compaction, the three shell-classification advisories go quiet, and a session blocked on the operator says so once and ends its turn (v0.116.0)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
