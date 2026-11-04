@@ -40,6 +40,56 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
+## 2026-11-03 — Ideation: skills shipped to end users and a Rust rewrite (two operator ideas; synthesis, not capture)
+
+Dispatch: the `ideation:` entries 1 and 2 of the operator's planning
+dispatch of 2026-11-03 (ignored capture SHA-256
+`4c7e47a6548004d909128fdfcc346663fc419280b798d00abec73d7ffb180f83`),
+synthesized here under the clean-room screen (no employer material; the
+operator's own words rewritten).
+
+- **Skills for end users** `deferred` `operator-directed`
+  - The kit ships role skills for its own lifecycle; the idea is a second
+    kind of skill, shipped to an instance's operator and agents, that helps
+    them make their own customizations and new implementations (their own
+    skills, supports, configuration and roles) once the kit's own skills,
+    supports, configuration and roles have settled. Recorded as a map
+    candidate with the operator's own timing as its reopening condition:
+    useful when the active skills, roles and configuration stop changing
+    across two consecutive releases, or on the operator's word.
+- **A Rust rewrite** `rejected` `operator-directed`
+  - The question whether rewriting any or all of the stack in Rust would
+    gain efficiency. Weighed against this pass's measurements: the slow
+    paths of 2026-11-03 (a 17-minute `plan start`, a close blocked in the
+    prune) are algorithmic (hashing 20.8 GB of fixtures, one process-table
+    read per root, thousands of roots never removed by their makers), not
+    language-bound; WO-253 removes the work rather than speeding it.
+    Declined as a NoOp with its evidence in the map; useful when a measured
+    hot path stays CPU-bound in a profile after WO-253, or when a component
+    needs a runtime Node cannot give.
+
+## 2026-11-03 — Planning pass: recurring failures and the queue drain (WO-253, WO-254, WO-255 and WO-257; WO-246 amended); registration only; the record is the planning document
+
+Dispatch: `planning: standard planning pass +` with twenty-two items and
+two added in the session, sent at 2026-11-03T23:12:27.967Z (hook time) in
+Claude Code 2.1.317 (Fable 5.1 at max, operator-selected), captured
+verbatim in
+`docs/intake/planning-dispatch-2026-11-03-recurring-failures.md` (SHA-256
+`4c7e47a6548004d909128fdfcc346663fc419280b798d00abec73d7ffb180f83`) with
+the later mid-turn messages in
+`docs/intake/planning-dispatch-2026-11-03-recurring-failures-midturn-2.md`
+(SHA-256 `589662ab8d84e728340b6b22077bf72f4979d1e3a37821a00947b8c12b52326f`).
+The pass files WO-253 (temporary roots leave with the gate that made them
+and a prune is a bounded step), WO-254 (the hooks get out of the operator's
+way), WO-255 (reviews find what the complete run finds) and WO-257 (instance
+returns of 2026-11-03), reads the eighteen follow-ups its eight closes
+wrote and allocates twelve to those orders, amends WO-246 and moves it to third, retires WO-245, WO-251,
+WO-249, WO-250, WO-248, WO-252, WO-238 and WO-241 from the sequence as
+closed (v0.108.0 to v0.114.0), declares `README.md` a reader entry point,
+records the operator's four-option worker rule, and answers the fork's two
+blocks. Record:
+[the planning document](../planning/passes/recurring-failures-and-queue-drain-2026-11-03.md).
+
 ## 2026-11-01 — Planning pass: the fork's two blocks of 2026-11-01, release close owning what the kit wrote, reviews that converge and count, criteria that judge the product with the off-ramps the operator can reverse, and desktop control as an opt-in (WO-249 to WO-252; WO-244, WO-246, WO-241 and WO-083 amended); registration only; the record is the planning document
 
 Dispatch: `planning: standard planning pass +` with fourteen items: the

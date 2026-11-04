@@ -227,6 +227,21 @@ lint everywhere, so a fork needs no workflow to retitle.
   and admitted it the third time (the fork's item 7(a)); a push the hook
   admits can still be denied by the host, and the helper's single admitted
   form is what a host classifier learns.
+- On 2026-11-03 Claude Code 2.1.317's auto mode refused the fork's plain
+  `git push -u origin chore/starter-v0.113.0` four times (External System
+  Writes on a command that bundled commit, push and `gh pr create`;
+  Out-of-Place Publication; a server-side judgment with no reason;
+  Auto-Mode Bypass on the plain form), the fourth session with the refusal
+  (2026-10-18, 2026-10-21, 2026-11-01, 2026-11-03); the operator pushed by
+  hand (the fork's item 2 of its second block of 2026-11-03; the operator's
+  item 8 of the same day). The host's auto-mode configuration page (read
+  2026-11-03) says narrow `Bash` allow rules such as `Bash(npm test)` stay
+  in effect in auto mode and are resolved before the classifier runs, that
+  package-manager run commands and wildcarded interpreters are dropped on
+  entering auto mode, and that `autoMode.classifyAllShell` suspends every
+  allow rule; so an allow rule for the helper's `node` spelling is a form
+  the host admits without the classifier, and `npm run plan -- publish` is
+  not.
 
 **Design (scope discipline):**
 
@@ -293,6 +308,16 @@ lint everywhere, so a fork needs no workflow to retitle.
   and refs stay out of the kit's reach; WO-205 and WO-206). Rejected: a
   bound alone (axis: a bound stops the stall and keeps the 113 MB download
   on every finish).
+- **The admitted spelling is an allow rule.** The emitted
+  `.claude/settings.json` carries `permissions.allow` entries for the
+  helper's two node spellings, `Bash(node scripts/refute-plan.mjs publish *)`
+  and `Bash(node scripts/launchpad.mjs update --publish *)`, with the
+  behavior (resolved before the classifier) read from the host's auto-mode
+  page at execution and the rule's exact form the executor's; the planner
+  and the update route name the node spelling; the deny list is unchanged.
+  Rejected: an allow rule for `git push` (axis: the hook admits one form so
+  the host learns one; a raw push rule admits every push). Rejected: asking
+  the operator to add the rule (axis: the operator's item 8 of 2026-11-03).
 - **Live-run surfaces at the base.** `ensureGh`, `pushUrl`,
   `parsePullRequestUrl`, the lint and its CLI, the hook's judgment site and
   the target publish's fake `gh` fixture: exist. The helper, the two doors,
@@ -344,7 +369,13 @@ lint everywhere, so a fork needs no workflow to retitle.
    and opens through `npm run plan -- publish`; the other roots unchanged.
    Check: `npm test -- --only harness`; `npm test -- --only harness-context`
    (the planner root against its ceiling under the standing route).
-8. Write-backs: the kit guide (`docs/KIT.md` once WO-245 merges, otherwise
+8. `packages/compiler/src/harness.ts` (the emitted permissions, 971 to
+   980) and the emitted `.claude/settings.json`: the two allow entries for
+   the helper's node spellings, the host page and date recorded in the
+   decisions; the planner and update role text name the node spelling.
+   Check: `npm test -- --only harness` (the emitted settings fixture
+   asserting the two entries and the unchanged deny list).
+9. Write-backs: the kit guide (`docs/KIT.md` once WO-245 merges, otherwise
    `scripts/kit/README.client.md`; which one is known at activation)
    §Taking upstream updates (the update route through `update --publish`;
    one sentence naming `-R <fork>` or `gh repo set-default` for any raw `gh`
@@ -355,7 +386,7 @@ lint everywhere, so a fork needs no workflow to retitle.
    cost; the gh default's documented form with the page and date it was read
    from); re-mint any edition the runtime sources stale; `npm run meta`;
    `node scripts/lineage.mjs index --check`; `npm run publication:check`.
-9. Handoff: integrate `main` first when it has moved (WO-233's rule);
+10. Handoff: integrate `main` first when it has moved (WO-233's rule);
    finish source edits; `npm run format` and `npm run sync`; the three
    fresh independent reviewers the executor root requires; one `npm test
    -- --review` in the background awaited with `node scripts/harness.mjs
@@ -406,9 +437,15 @@ sentence; the write-backs.
    finish, and the checkout's refs, `HEAD` and tree are unchanged; the target close's base
    fetch and the target publish's fetch pass the same options and their
    existing cases pass.
-6. The kit guide and product 07 state the helpers and the rule; `npm run
+6. The emitted `.claude/settings.json` carries `permissions.allow` entries
+   for `Bash(node scripts/refute-plan.mjs publish *)` and `Bash(node
+   scripts/launchpad.mjs update --publish *)` and no entry for `git push`
+   or `gh`, the deny list unchanged, asserted on the emitted file; the
+   planner root names the node spelling; the decisions cite the host page
+   and the date the rule's behavior was read from.
+7. The kit guide and product 07 state the helpers and the rule; `npm run
    publication:check` is green.
-7. `npm test -- --review` and `npm run test:docs` green; `git diff --check`
+8. `npm test -- --review` and `npm run test:docs` green; `git diff --check`
    clean; no new dependency.
 
 **Preflight:** `npm test -- --only outward-lint` and `npm test -- --only
@@ -417,7 +454,8 @@ target-publish` and `npm test -- --only target-worktree` for steps 1 and 5
 and 3; `npm test -- --only launchpad` for steps 2, 4 and 5; `npm
 test -- --only harness-fixtures` and `npm test -- --only harness` for step
 6; `npm test -- --only harness` and `npm test -- --only harness-context`
-for step 7; `npm run test:docs` when a document changes; each under `node
+for step 7; `npm test -- --only harness` for step 8; `npm run test:docs`
+when a document changes; each under `node
 scripts/harness.mjs bounded --`; then one `npm test -- --review`
 (07-execution-guide.md §Preflight before the full gate).
 
@@ -426,7 +464,7 @@ re-mints of any edition the runtime sources stale; `npm test -- --review`
 before `implementation-ready`, final review reusing the passing complete row
 at the integrated code identity when one exists.
 
-**Write-back duty:** as listed in step 8 and criterion 6.
+**Write-back duty:** as listed in step 9 and criterion 7.
 
 **Known issues and carry-ins:**
 
@@ -455,9 +493,11 @@ at the integrated code identity when one exists.
   borrowed object and succeeds with alternates off).
 - A host classifier outside the kit (Claude Code's auto mode) denied a raw
   `git push` twice and admitted it the third time (the fork's item 7(a) of
-  2026-11-01); the helper is one command the classifier can learn, and
-  nothing in the kit changes what the host decides (reopen: the helper's
-  own push is denied by a host classifier).
+  2026-11-01) and four times on 2026-11-03; the allow rule of step 8 is
+  what the host's page says resolves before its classifier, and nothing in
+  the kit changes what the host decides when the operator sets
+  `autoMode.classifyAllShell` (reopen: the helper's own node spelling is
+  refused by a host classifier with the allow rule emitted).
 - The helper's pull-request body is the session's reviewed text; the Change
   table and target checks of the target publish do not apply to the
   launchpad's own branches (reopen: a planning or update pull request needs

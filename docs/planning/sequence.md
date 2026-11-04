@@ -57,71 +57,62 @@ direction, 2026-10-30); no stream of work in this repository depends on it.
 
 ## The order, serial
 
-- WO-245: the kit's guide becomes `docs/KIT.md`, a kit file, and the front
-  page is the instance's, seeded once and never fought over (the operator's
-  item 1 of 2026-10-31, ignored capture SHA-256 `be49aeb50d95aac99a5dace4ca1aa8b4aa8a719f9e1a947fe5884be00e838180`);
-  first, small, and the fork's quality pass waits on it.
-- WO-251: desktop control is opt-in: the hook and the emitted host settings
-  refuse the desktop-control tools unless `dotln.config.json` elects
-  `features.desktop-control`, and browser verification is the Playwright
-  MCP's snapshot, screenshot and image read (the operator's item 10 of
-  2026-11-01, ignored capture SHA-256
-  `65b3db5f78aa7bdba95e94ce62e12015afbc144e058b5699767040e37b22d0a2`: a
-  session took over the desktop without asking); second, one day, before the
-  operator's work instance starts.
-- WO-249: criteria judge the product: a verifier records a criterion no
-  candidate can meet as defective by class and the order goes on, a waiver is
-  the operator's words and can be retracted, a handoff can be reopened, a
-  fail names what it failed on, planning lints criteria for the five classes
-  (the operator's items 2 and 7 of 2026-11-01; the fork's second block of
-  2026-11-01); third, because it is what lets an order progress without the
-  operator at the laptop.
-- WO-250: reviews converge and every worker counts: the three reviews run
-  once, recheck what they found, end in one combined look and the executor's
-  judgment; a Codex review worker launches from any host through one kit
-  command; every launch and re-task counts against the cap; no review worker
-  starts a gate (the operator's items 6, 6.a and 6.b of 2026-11-01;
-  WO-237-D011, WO-247-D012, WO-237-D014); fourth, before the next order pays
-  another unbounded review loop.
-- WO-248: the pull-request process table says what its reader can use (the
-  operator's third message of 2026-10-31, ignored capture SHA-256
-  `52d78604680f1938af0e1489cbb5dec00b496f54df7188dc2fe9c4adc4c838b7`);
-  fifth, small and visible on every pull request in core and the instances.
-- WO-252: release close owns what the kit wrote: a disposable declaration
-  matches at any depth, a target close moves or deletes the kit's own
-  residue, the close record classes its blocker and times the removal, a
-  renumbered orphan root is removable, no role hands a prune to the operator
-  (the fork's item 3 of 2026-11-01 and WO-237-D009; the operator's items 4
-  and 5); sixth, because every Nx or Vitest target the fork registers meets
-  it at every close, with a by-hand route today.
-- WO-238: a document says what is so: the kinds contract, the reader
-  binding, the read census and red tags, the kit's templates, the planning
-  root and the execution guide; seventh, after WO-245 moved the kit guide it
-  edits.
-- WO-241: the features file: `dotln.config.json` says by name what an
-  instance elects, a registry says what each feature is and whose, a
-  generated page renders it; eighth, because plan-first reads it, and after
-  WO-251 whose one feature id it absorbs.
+- WO-253: temporary roots leave with the gate that made them and a prune
+  is a bounded step: a passed suite removes its own fixture roots, a
+  kit-owned expired root is removed on its record without reading its
+  bytes, one process-table read serves a prune, `plan start` and release
+  close run the prune as a bounded step with progress and a resume, a
+  restricted entry is repaired or retained and never a close blocker, and
+  both commands print where their minutes went (the operator's items 9,
+  19, 20, 21 and 22 of 2026-11-03, ignored capture SHA-256
+  `4c7e47a6548004d909128fdfcc346663fc419280b798d00abec73d7ffb180f83`; the
+  fork's item 3 of its first block of 2026-11-03); first, because every
+  session pays it: this pass's `plan start` took 0 h 17 min and WO-241's
+  close was blocked by it.
+- WO-254: the hooks get out of the operator's way: a zombie is not a live
+  writer, the recovery commands a refusal names are admitted from the
+  refused session, a stopped dispatch releases its writer, a denied
+  activation leaves no worktree, a question is answered and a remark is
+  not a rule, standing instructions survive a Codex compaction, the three
+  shell-classification advisories go quiet, and a blocked session says so
+  once and ends its turn (the operator's items 7, 10, 11, 14, 23 and 24 of
+  2026-11-03); second, because it is what made the operator run commands
+  by hand tonight.
+- WO-246: the launchpad's own pull requests opened by a helper, the
+  emitted allow rule for its node spelling so the host's auto mode admits
+  it, and the finish fetch that borrows the checkout's objects (the fork's
+  items of 2026-10-30, 2026-11-01 and 2026-11-03; the operator's item 8 of
+  2026-11-03: the fourth session whose push the host refused); third,
+  moved up from twelfth.
+- WO-255: reviews find what the complete run finds: the planning lane by
+  branch, a recheck that reads the whole change, the consistency review's
+  traced-consumers table, and the criteria adversary given the operator's
+  dispatch with a per-item answer (the operator's items 15, 16 and 17 of
+  2026-11-03; the fork's item 9); fourth, before the next order pays a
+  review round that finds nothing.
+- WO-257: instance returns of 2026-11-03: the pull-request sentence, no
+  pass takes a newer starter unless the operator asks in that session,
+  `README.md` as a default entry point, the Read before upgrading line,
+  the entropy receipt's paths and screens, the moved records' footer, the
+  continuation gate's optional product 00, the review worker's target
+  form, the index's executor ordinal, the bootstrap diagnostic and the
+  classification count (the operator's items 5, 12 and 13; the fork's two
+  blocks of 2026-11-03); fifth.
 - WO-242: plan-first mode: the plan, the conversation and the proposal
   before anything is implemented, the operator's approval as a typed event
-  the hook enforces; ninth; its router step lands against WO-192's merged
-  router.
+  the hook enforces; sixth; its router step lands against WO-192's
+  merged router.
 - WO-243: closeout checks follow the repositories an order changed, one
   selection read by the role text, the integrate helper and completion (the
-  fork's item 3 of 2026-10-30); tenth, small and a convenience for the fork.
+  fork's item 3 of 2026-10-30); seventh, small and a convenience for the
+  fork; the operator's staged work in `../DotLn-wo243` is adopted or
+  discarded at activation on the operator's word.
 - WO-244: paired planning passes and the synthesis pass as a routine (the
   operator's direction of 2026-10-30): the dispatch labels, the blindness
   refusals, the pair record and `plan synthesize`, and the reviewed route
   (the operator's fourth message of 2026-10-31): `plan review` running the
   executor's three reviewer types through WO-250's helper before the
-  refuter; eleventh, after WO-249 and WO-250 whose classes and helper it
-  carries.
-- WO-246: the launchpad's own pull requests opened by a helper on origin's
-  repository, the title lint admitting core's own form, the `gh` refusal in
-  a fork clone, and a finish fetch that borrows the checkout's objects (the
-  fork's items 6 and 9 of 2026-10-30 and item 7 of 2026-11-01); twelfth,
-  after WO-244 whose `gh` judgment it extends; a convenience with a working
-  route today (`gh repo set-default`; the by-hand finish).
+  refuter, with WO-255's capture flag for the criteria review; eighth.
 - WO-083: the real run from the operator's instance, after the router so
   the measured run is driven the way the operator will drive orders.
 - WO-207: an instance's kit updates: rollback, the extension point and the
@@ -136,18 +127,14 @@ direction, 2026-10-30); no stream of work in this repository depends on it.
   approval-burden baseline).
 
 <!-- dotln-work-order-sequence:start -->
-- WO-245 — The kit's guide is a kit file and the front page is the instance's
-- WO-251 — Desktop control is opt-in
-- WO-249 — Criteria judge the product
-- WO-250 — Reviews converge and every worker counts
-- WO-248 — The pull-request table says what its reader can use
-- WO-252 — Release close owns what the kit wrote
-- WO-238 — A document says what is so
-- WO-241 — The features file
+- WO-253 — Temporary roots leave with the gate that made them, and a prune is a bounded step
+- WO-254 — The hooks get out of the operator's way
+- WO-246 — The launchpad's own pull requests
+- WO-255 — Reviews find what the complete run finds
+- WO-257 — Instance returns of 2026-11-03
 - WO-242 — Plan-first mode
 - WO-243 — Closeout checks follow the repositories an order changed
 - WO-244 — Paired planning passes and the synthesis pass
-- WO-246 — The launchpad's own pull requests
 - WO-083 — The real run from the operator's instance
 - WO-207 — An instance's kit updates: rollback, extension point and build channel
 - WO-193 — An instance's capability requests to core
