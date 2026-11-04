@@ -23,9 +23,10 @@ the maker of the 1,433 `dotln-license-surfaces-*` roots this host held on
 `scripts/lib/harness-prune.mjs` a judgment of a kit-owned root
 (`gate-fixture`, `warm-fixture`, `worker-capture`, `session-scratch`) by its
 owner record (token, inode, class, outcome, `endedAt`) with no byte read,
-`pruneInventory`'s SHA-256 of every regular file (86 to 130) kept only for a
-retained lane (`closed-journal`) and for a root whose record is missing or
-malformed, which stays retained as today; in
+`pruneInventory`'s SHA-256 of every regular file (86 to 130) run only for a
+root the plan will delete whose class keeps the byte proof (a
+`closed-journal` lane past its retention), never for a root the plan
+retains, so a recordless or malformed root is retained without being read; in
 `packages/skeleton/src/temporary-root-records.mjs` and
 `scripts/lib/harness-prune.mjs` one process-table read per prune passed to
 every liveness judgment (`temporaryProcessTable` at 231 to 249 and
@@ -37,9 +38,10 @@ pid=,ppid=,lstart=,comm=` as the prune's child in six of six one-second
 samples at 23:45Z); in `scripts/lib/temporary-prune-summary.mjs` and
 `scripts/refute-plan.mjs` (`start`, 440 to 445) the routine prune as a
 bounded step: a wall budget from `docs/control/budgets.json`
-(`prune.startBudgetMs`, default 60,000) after which the prune stops between
-roots, prints `removed N; remaining M; next <root>` and the partial outcome,
-and the command goes on; `harness prune --apply` resumes from the remainder;
+(`prune.startBudgetMs`, default 60,000) checked between roots and inside an
+inventory or deletion, after which the prune stops (an inventory cut short
+retains its root with reason `budget`), prints `removed N; remaining M;
+next <root>` and the partial outcome, and the command goes on; `harness prune --apply` resumes from the remainder;
 in `scripts/release.mjs` (2743 to 2763 and 4347) the close's prune scoped to
 the closed order's own roots (its gate id, its worktree's session scratch)
 with the host-wide remainder left to `plan start`'s bounded step, and the
@@ -50,9 +52,10 @@ kit-owned root repaired by `chmod u+rwx` before removal, and when that
 fails the root retained with reason `restricted-entry` and the path, never
 thrown as a close blocker; and in `plan start` and the close a printed
 timing line per startup step (failures, reader scores, conditions, census,
-prune, branch) in hours and minutes. Removes: a `plan start` of 0 h 27 min
-on 2026-11-03 (23:30:04Z to 23:47:00Z, 1,015 s, of which the prune removed
-465 of 5,988 roots), the fork's `plan start` of 0 h 9 min in the prune
+prune, branch) in hours and minutes. Removes: a `plan start` of 0 h 17 min to its
+branch and skeleton on 2026-11-03 (23:30:04Z to 23:47:00Z, 1,015 s by the
+host's task observation; `ps` then showed the same process alive 0 h 25
+min after its start; the prune removed 465 of 5,988 roots), the fork's `plan start` of 0 h 9 min in the prune
 (its item 3 of 2026-11-03), a release close whose publication took 0 h 2
 min (WO-241, 22:41 to 22:43Z) and whose prune stopped on "cannot scan a
 restricted temporary test-fixture directory" and then ran 0 h 16 min
@@ -72,8 +75,10 @@ Steps: 10. Re-mints: `temporary-root-records.mjs` is a runtime source the
 executor checks against `scripts/lib/evidence-sources.mjs` at activation and
 re-mints deterministically where an edition is staled;
 `scripts/lib/temporary-prune.mjs` and `temporary-prune-summary.mjs` are
-registered sources with their own editions; no feedback-judged source
-changes, so no live feedback episode; `scripts/release.mjs`,
+not registered evidence sources (`scripts/lib/evidence-sources.mjs`
+excludes both and assigns their behavior to the harness, runner, planning,
+update and release fixtures: the consistency reviewer's F10 of
+2026-11-04); no feedback-judged source changes, so no live feedback episode; `scripts/release.mjs`,
 `scripts/test-runner.mjs` and `scripts/refute-plan.mjs` are declared
 machinery sources, so `npm test -- --review` runs before handoff.
 **Nomination provenance:** the operator's items 9, 19, 20, 21 and 22 of
@@ -147,7 +152,8 @@ command says what it removed, what remains and how to resume, and goes on.
 **Observed gap (dated 2026-11-03 at `main` `eb7c58ff6`, v0.114.0):**
 
 - `plan start recurring-failures-and-queue-drain` ran from 23:30:04Z to
-  23:47:00Z (1,015 s). Its single process held the host lock and spawned
+  23:47:00Z (1,015 s) by the host's task observation, and `ps` showed its
+  process alive 0 h 25 min after its start. Its single process held the host lock and spawned
   `ps -axo pid=,ppid=,lstart=,comm=` in six of six one-second samples at
   23:45Z; no other child ran. The temporary directory held 5,987 `dotln-*`
   roots at 23:38Z and 5,523 at 23:47Z: 465 removed in about 17 minutes of
@@ -211,9 +217,11 @@ command says what it removed, what remains and how to resume, and goes on.
   (axis: the prune's cost is the inventory, not its schedule).
 - **The record is the proof.** A root the kit wrote carries its owner
   record with the token and inode WO-237 bound; that record, its class and
-  its outcome decide removal. The byte inventory stays for a retained lane,
-  whose journals are the kit's evidence, and for a root whose record is
-  missing or malformed, which stays retained as today. Rejected: hashing a
+  its outcome decide removal. The byte inventory stays only for a lane the
+  plan will delete, whose journals are the kit's evidence; a root the plan
+  retains, including one whose record is missing or malformed, is never
+  read (the design improver's F3 of 2026-11-04: hashing what stays is
+  wasted work). Rejected: hashing a
   sample of files (axis: a partial proof proves nothing the record does
   not). Rejected: trusting the prefix (axis: WO-237's token-and-inode rule;
   a name is not ownership).
@@ -222,8 +230,10 @@ command says what it removed, what remains and how to resume, and goes on.
   today. Rejected: caching across prunes (axis: a stale table would retain
   a dead owner's root or remove a live one's).
 - **A bounded step, resumable, truthful.** The routine prune at `plan
-  start` runs under a wall budget, stops between roots, prints what it
-  removed and what remains with the resume command, and the pass goes on;
+  start` runs under a wall budget checked between roots and inside an
+  inventory or a deletion, so one large root cannot hold the pass past the
+  budget; it stops, prints what it removed and what remains with the resume
+  command, and the pass goes on;
   the close prunes the closed order's own roots and leaves the host-wide
   remainder to `plan start`. Rejected: moving the prune out of `plan start`
   entirely (axis: WO-237-D005 put the routine removal where the census is
@@ -268,8 +278,9 @@ command says what it removed, what remains and how to resume, and goes on.
    `gate-fixture`, `warm-fixture`, `worker-capture` or `session-scratch`
    with a readable record is judged and removed on the record (token,
    inode, class, outcome, `endedAt`, retention) with no file read;
-   `pruneInventory` is called only for a `closed-journal` lane and for a
-   root whose record is missing or malformed, which stays retained; the
+   `pruneInventory` is called only for a `closed-journal` lane the plan
+   will delete; a root the plan retains, including one whose record is
+   missing or malformed, is never read; the
    report says which proof each removal used. Check: `npm test -- --only
    harness-fixtures` with a case that plants a kit-owned root holding an
    unreadable file and asserts its removal, and one that plants a lane and
@@ -280,7 +291,8 @@ command says what it removed, what remains and how to resume, and goes on.
    Check: `npm test -- --only fixture-temp-root`; a case counts the
    snapshot reads across a prune of ten roots and asserts one.
 5. `scripts/lib/temporary-prune-summary.mjs` and `scripts/lib/harness-prune.mjs`:
-   the bounded form (`budgetMs`): the prune stops between roots once the
+   the bounded form (`budgetMs`): the prune stops between roots, or inside
+   an inventory or deletion with that root retained as `budget`, once the
    budget is spent, returns `removed`, `remaining`, `stoppedAt` and the
    next root, and `formatPruneReport` prints `removed N; remaining M; resume
    with node scripts/harness.mjs prune --apply`; `harness prune --apply`
@@ -336,14 +348,24 @@ guide and product 07.
    expired roots, one of them holding a file the owner cannot read and one
    holding a mode-000 directory, removes every planted root and its report
    names `record` as the proof for each; a planted root with no owner
-   record is retained with its reason; a planted `closed-journal` lane
-   inside its retention is retained and its report names the inventory.
+   record is retained with its reason and no file of it is read (asserted
+   by a planted unreadable file inside it); a planted `closed-journal` lane
+   past its retention is removed after the inventory and one inside its
+   retention is retained without an inventory.
 3. A prune over a planted set of ten kit-owned roots reads the host process
-   table once, asserted by the suite's counter on the snapshot reader.
+   table once, asserted by the suite's counter on the snapshot reader; a
+   routine prune over a planted backlog of two thousand expired kit-owned
+   roots, each holding one small file, under a budget the fixture sets,
+   stops inside the budget with the suite's counters reading zero byte
+   inventories and one snapshot, its discovery of candidates bounded by the
+   same budget, and a second run resumes from the remainder (the criteria
+   adversary's F7 of 2026-11-04: the recorded stall was host-wide work done
+   before any budget was checked).
 4. `npm run plan -- start <slug>` on a fixture checkout with a planted set
    of expired roots and `prune.startBudgetMs` set to one millisecond prints
    `removed N; remaining M; resume with node scripts/harness.mjs prune
-   --apply` with `M` above zero, creates the branch and the pass document,
+   --apply` with `M` above zero, retains as `budget` a planted large root whose
+   inventory the budget cuts short, creates the branch and the pass document,
    and prints one `<step>: <h> h <m> min` line for each of failures, reader
    scores, conditions, census, prune and branch; the same command with the
    budget unset removes every expired root of a three-root fixture.
@@ -356,8 +378,10 @@ guide and product 07.
    not stop the close.
 6. `npm test -- --only license-fixtures` under the bounded wrapper and
    `node scripts/harness.mjs bounded -- node scripts/license-surfaces.mjs`
-   each leave no `dotln-license-surfaces-*` root under the temporary
-   directory.
+   each leave no `dotln-license-surfaces-*` root registered under their own
+   gate id or process under the temporary directory, while a planted root
+   of that prefix retained from an earlier failed suite inside its
+   retention survives both (the criteria adversary's F8).
 7. The kit guide and product 07 state the suite-end removal, the record
    proof, the bounded routine prune with its budget key and resume, the
    close's scope and the timing lines as built; `npm run publication:check`

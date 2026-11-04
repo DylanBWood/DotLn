@@ -17,9 +17,10 @@ comparison) and `scripts/lib/off-ramps.mjs` (`processAlive`, 142 to 148:
 and `writer --release` needs no `--force`; in the writer-isolation refusal
 (`harness-host.ts` 1305 to 1327 and the message at 3381) the admission of
 the two commands the message names, `node scripts/harness.mjs writer
---show` from any session and `node scripts/harness.mjs writer --release
-[--force]` from a session whose dispatch was refused, judged by exact argv
-through the existing classifier (`scripts/harness.mjs` 242 to 247 already
+--show` from any session and `node scripts/harness.mjs writer --release`
+from a session whose dispatch was refused when the holder is dead or a
+zombie, judged by exact argv through the existing classifier, while
+`--force` against a live holder stays the operator's action as today (`scripts/harness.mjs` 242 to 247 already
 calls `--show` a bounded metadata read and `--release` an operator action);
 in the Codex lifecycle dispatch (the `codex-host` owner of
 `codexHostProcess`, 2627 to 2645) the writer released when the dispatched
@@ -33,20 +34,37 @@ removed by the same command with the denial recorded (the operator's
 `../DotLn-wo242` of 2026-11-03: a denied activation, a worktree left
 behind); in the prompt hook's message classification (`operatorPrefixes`,
 `harness-host.ts` 1414 to 1421: a class by prefix only) a `question` class
-for an unprefixed message that ends in a question mark or opens with an
-interrogative, carried on `OperatorMessageObserved` (1584) and injected as
-context: "Operator question: answer it in plain terms in your next message
-and continue the active work; it changes no obligation, pauses nothing and
-records no rule"; in `scripts/lib/planning-document.mjs` and `plan check`
+for an unprefixed message that ends in a question mark (an interrogative
+opening alone does not class it, since "Do not run the final gate until I
+approve." opens with one: the criteria adversary's F4 of 2026-11-04),
+carried on `OperatorMessageObserved` (1584) and injected as advisory
+context: "Operator question: answer it in plain terms in your
+next message and continue the active work; it changes no obligation and
+records no rule, unless the message itself asks to pause, stop or wait,
+which is an explicit request whatever its grammar"; in `scripts/lib/planning-document.mjs` and `plan check`
 a `Rules recorded` block in the pass document naming every standing rule
 the pass writes into a standing document from the operator's words, each
-with the message's class, its capture digest and the sentence, so a rule
-recorded from a `question` or an unclassed remark is refused by `plan
-check` and the operator reads every new rule in one place; in
+with the message's journal reference (the session key and the row's
+`recordedAt`), the class `plan check` reads from that row, its capture
+digest and the sentence, so a rule whose referenced row the journal classes
+as a `question`, or that names no row, is refused by `plan check` whatever
+label the planner wrote (the criteria adversary's F6: a label alone can be
+misapplied), and the operator reads every new rule in one place, and in the
+instance operator-record template the kit ships the sentence that a
+standing rule is recorded only from the operator's direction with its
+capture digest (moved here from WO-257 on the design improver's F5 of
+2026-11-04); in
 `packages/compiler/src/codex-continuation.mjs` (the `SessionStart` compact
-context at 194) the operator's standing instructions of the session (the
-`direction`-class messages the journal observed since the dispatch, such as
-"pause before the final gate") restored with the task, and a probe that
+context at 194) the operator's standing instructions of the session restored with the
+task: the Codex prompt hook that writes `OperatorMessageObserved` today
+(the session journal of 2026-11-03 shows those rows for a Codex session,
+with a digest and byte count and no text) also keeps the message's text,
+bounded as the override capture is (64 KiB), in the ignored session
+journal for every operator message since the dispatch with its class, and
+the compact `SessionStart` reads them back, so an unprefixed instruction
+such as "pause before the final gate" typed into a Codex session is
+captured and restored (the criteria adversary's F5 named the missing
+capture source), and a probe that
 records each post-compaction first assistant message against the saved
 task; in `packages/skeleton/src/harness-command.ts` (155, 205, 2623, 2895)
 the three advisories `Shell control syntax requires an explicit effect
@@ -200,9 +218,12 @@ a session is truly blocked on the operator, it says so once and yields.
   heartbeat (axis: a holder that writes nothing has no heartbeat to miss;
   the table already says it).
 - **The refusal's remedy is admitted where it is read.** The two commands
-  the message names run from the refused session, judged by exact argv;
-  `--release` without `--force` for a dead or zombie holder, `--force` as
-  today for a live one, each writing the writer-events row it writes today.
+  the message names run from the refused session, judged by exact argv:
+  `--show` always, and `--release` without `--force` for a holder the
+  table proves dead or a zombie, each writing the writer-events row it
+  writes today; `--force` against a live holder stays the operator's,
+  because a refusal proves contention and not abandonment (the design
+  improver's F1 of 2026-11-04).
   Rejected: admitting any `harness` subcommand under a foreign writer
   (axis: the one-writer rule; `--show` and `--release` are the recovery,
   nothing else is).
@@ -212,25 +233,30 @@ a session is truly blocked on the operator, it says so once and yields.
   releasing on idle time (axis: WO-237's retained reservations are not
   idle-timed; a stop is an event, not a duration). A denied activation
   removes what it created before the denial, recorded in the journal.
-- **A question is a class.** The hook classes an unprefixed message that
-  ends in `?` or opens with why, what, how, when, where, who, which, is,
-  are, do, does, did, can, could, should, would or will as `question` and
-  injects the one-sentence context; the role text keeps "A question is not
-  a waiver". Rejected: a semantic classifier (axis: WO-178's rule that the
+- **A question is a class, and the class is advisory.** The hook classes
+  an unprefixed message that ends in `?` as `question` (an interrogative
+  opening is not enough: "Do not …" and "Can you …?" are instructions) and
+  injects the one-sentence context with its exception: a message that asks to pause, stop or wait is an explicit
+  request whatever its grammar (the design improver's F2 of 2026-11-04);
+  the role text keeps "A question is not a waiver". Rejected: a semantic classifier (axis: WO-178's rule that the
   prefix table is control language, never a reading of prose; the
   question mark and the interrogative are form, not meaning). Codex
   message hooks are unobserved, so the class is the Claude hook's and the
   role text's; the Codex continuation carries the role text.
 - **A rule is written once, in the open.** A pass that records a standing
   rule from the operator's words writes it into the `Rules recorded` block
-  with the message's class and digest; `plan check` refuses a rule whose
-  message class is `question` or absent; the operator strikes a rule by
-  the same block. Rejected: refusing rules from mid-turn messages (axis:
+  with the message's journal reference and digest; `plan check` reads the
+  referenced row's class from the journal and refuses a rule whose row is
+  a `question` or missing, so the planner's label decides nothing; the
+  operator strikes a rule by the same block. Rejected: refusing rules from mid-turn messages (axis:
   the operator's mid-turn words of 2026-10-30 were direction; what failed
   was recording a remark without saying so).
-- **Standing instructions ride the compaction record.** The `PostCompact`
-  record carries the session's `direction`-class operator messages since
-  the dispatch; the compact `SessionStart` restores them with the task.
+- **Standing instructions ride the compaction record.** The prompt hook
+  keeps each operator message's bounded text with its class in the ignored
+  session journal; the `PostCompact` record names the session, and the
+  compact `SessionStart` restores every message since the dispatch with
+  the task, so an explicit request in question form is not dropped by its
+  grammar and an unprefixed instruction is not lost for want of a hook.
   Rejected: a Codex pause protocol (axis: WO-054's adapter deliberately
   parses no conversational stop language; the instruction is restored,
   not interpreted).
@@ -258,9 +284,10 @@ a session is truly blocked on the operator, it says so once and yields.
    table row in state `Z` and asserts dead.
 2. `packages/skeleton/src/harness-host.ts` (the refusal at 1305 to 1327 and
    `writerIsolationFacts` 4472): admit `node scripts/harness.mjs writer
-   --show` from any session and `node scripts/harness.mjs writer --release
-   [--force]` from a session the writer-isolation unit refused, by exact
-   argv; the refusal message names them as admitted. Check: `npm test --
+   --show` from any session and `node scripts/harness.mjs writer --release`
+   from a session the writer-isolation unit refused when the holder is dead
+   or a zombie, by exact argv; `--force` against a live holder is refused
+   as today; the refusal message names what is admitted. Check: `npm test --
    --only harness` (the fixture of `scripts/test-harness.mjs` 925 to 1217
    that plants a `codex-host` owner), asserting the two admissions and the
    refusal of a third command.
@@ -276,19 +303,24 @@ a session is truly blocked on the operator, it says so once and yields.
    record the denial. Check: `npm test -- --only worktree` with a planted
    denial.
 5. `packages/skeleton/src/harness-host.ts` (`operatorPrefixes` and the
-   `OperatorMessageObserved` row): the `question` class by the form above
-   and its injected sentence; the generated hook definition carries it.
+   `OperatorMessageObserved` row): the `question` class by the question
+   mark alone and its injected sentence with the pause, stop or wait
+   exception; the generated hook definition carries it.
    Check: `npm test -- --only harness` with the three forms and one
    prefixed message asserting its existing class.
 6. `scripts/lib/planning-document.mjs` and `scripts/refute-plan.mjs` (`plan
    check`): the `Rules recorded` block (a JSON array of `{rule, document,
-   section, messageClass, captureDigest}`), refused when a standing rule's
-   `messageClass` is `question` or absent; `plan start` writes the empty
-   block; product 07's planning section states it. Check: `npm test --
-   --only plan-refutation`.
-7. `packages/compiler/src/codex-continuation.mjs`: the `PostCompact` record
-   carries the session's `direction`-class operator messages since the
-   dispatch (text and digest); the compact `SessionStart` context restores
+   section, message: {sessionKey, recordedAt}, captureDigest}`), refused
+   when the referenced journal row is missing or its class is `question`; `plan start` writes the empty
+   block; product 07's planning section states it; the emitted instance
+   operator-record template carries the one sentence on rules. Check: `npm
+   test -- --only plan-refutation`; `npm test -- --only launchpad`.
+7. The Codex prompt hook (the `OperatorMessageObserved` writer) and
+   `packages/compiler/src/codex-continuation.mjs`: the hook keeps each
+   operator message's bounded text beside its class and digest in the
+   ignored session journal; the `PostCompact` record names the session
+   and the compact `SessionStart` restores every message since the
+   dispatch; the compact `SessionStart` context restores
    them after the task sentence; the probe records the first assistant
    message after each compaction against the saved task in the session
    journal. Check: `npm test -- --only codex-continuation`.
@@ -323,27 +355,37 @@ advisories; the sentence; product 07 and the kit guide.
    scripts/harness.mjs writer --show` and released by `writer --release`
    without `--force`; a planted live owner still refuses `--release` without
    `--force`.
-2. In the harness fixture under a planted foreign live writer, `node
-   scripts/harness.mjs writer --show` runs from the refused session and
-   `node scripts/harness.mjs writer --release --force` runs from it and
-   releases, while `git status` from the same session is still refused
-   with the message naming the two admitted commands.
+2. In the harness fixture under a planted foreign writer whose owner row is
+   in state `Z`, `node scripts/harness.mjs writer --show` runs from the
+   refused session and `node scripts/harness.mjs writer --release` runs
+   from it and releases; under a planted live foreign writer `--show` runs,
+   `--release --force` is refused from the refused session, and `git
+   status` is refused with the message naming what is admitted.
 3. In the resume fixture, a Codex-dispatched role command that exits
    without its completion event leaves `writer --show` reading released and
    a journal row naming the stop; a planted activation the host denies
    after the worktree's creation leaves no worktree and no branch and
    records the denial.
 4. The prompt hook records `class: question` on `OperatorMessageObserved`
-   for `why is the close slow?`, `How many roots are there` and `is this
-   done?`, injects the one-sentence context, and records `direction` for
-   `resume: next` and no class change for `fix the test`.
+   for `why is the close slow?` and `is this done?`, injects the
+   one-sentence context naming its pause, stop or wait exception, records
+   `direction` for `resume: next`, and records no `question` class for
+   `How many roots are there`, `Do not run the final gate until I
+   approve.` and `fix the test`; for `Can you pause before the final gate?`
+   it records `question` and the injected context names the exception.
 5. `npm run plan -- check` on a planning branch whose pass document's
-   `Rules recorded` block names a rule with `messageClass: question`
-   refuses naming the rule, and passes when the same rule carries
-   `direction` and a capture digest; `plan start` writes the empty block.
-6. In the Codex continuation fixture, a `PostCompact` record written after
-   two planted `direction` messages restores both in the compact
-   `SessionStart` context after the task sentence, and the probe's journal
+   `Rules recorded` block names a rule whose referenced journal row is a
+   `question` refuses naming the rule even when the block labels it
+   `direction`, refuses a rule naming no row, and passes when the
+   referenced row is `direction` and the capture digest matches; `plan start` writes the empty block;
+   the emitted instance operator-record template carries the sentence on
+   rules.
+6. In the Codex continuation fixture, an unprefixed operator instruction
+   ("pause before the final gate") and a question-form request ("could you
+   pause before the final gate?") typed into the fixture session are
+   captured by the prompt hook with their classes and text, and after a
+   `PostCompact` both are restored verbatim in the compact `SessionStart`
+   context after the task sentence, and the probe's journal
    row names the first assistant message after the compaction.
 7. The classification fixture shows no `systemMessage` for `cd /tmp && ls`,
    `echo $(date)` and `a; b` when host permissions decide, journal rows for

@@ -1,10 +1,10 @@
-# WO-257 — Instance returns of 2026-11-03: the pull-request body compares in one sentence, no pass takes a newer starter unless the operator asks in that session, README.md is a default reader entry point, a release's Read before upgrading names the index regeneration, the entropy receipt renders the frozen copy as `<tmp>/…` and screens its summary and its Markdown before filing, a target-subject receipt labels the launchpad witness, moved records keep working links, the continuation gate treats product 00 as optional, the review worker binds a target order, the index separates the executor's unmet ordinal from the later verdict, bootstrap diagnoses a missing target clone, and the target release classification counts every declaration (version assigned at activation)
+# WO-257 — Instance returns of 2026-11-03: the pull-request body compares in one sentence, no pass takes a newer starter unless the operator asks in that session, README.md is a default reader entry point, a release's Read before upgrading names the index regeneration, the entropy receipt renders the frozen copy as `<tmp>/…` and screens its summary and its Markdown before filing, a target-subject receipt labels the launchpad witness, moved records keep working links, the continuation gate treats product 00 as optional, the index separates the executor's unmet ordinal from the later verdict, bootstrap diagnoses a missing target clone, and the target release classification counts every declaration (version assigned at activation)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh; verifier xhigh; reviewer high.
 **Track:** machinery
-**Release classification:** minor. Twelve bounded kit fixes an instance
+**Release classification:** minor. Eleven bounded kit fixes an instance
 meets at its passes, receipts, updates and closes; one default entry
 point added; no registration key moves and no refusal widens. Assigned at
 activation under the standing opt-out default.
@@ -22,11 +22,7 @@ starter release unless the operator asks for it in that session, with
 `kit.applyInstanceActions` unchanged (the operator's items 12 and 13: the
 fork's passes of 2026-11-03 took v0.113.0 "under your standing rule" four
 minutes after its publication, and an entropy pass over a sibling target
-took an update too; the operator never gave that rule), and in the
-instance operator-record template the sentence that a standing rule is
-recorded only from the operator's direction with its capture digest
-(WO-254's `Rules recorded` block is core's; the template is the
-instance's); in `scripts/lib/document-kinds.mjs` (`defaultEntryPoints`, 44
+took an update too; the operator never gave that rule); in `scripts/lib/document-kinds.mjs` (`defaultEntryPoints`, 44
 to 72) `README.md` as the `front-page` default entry point, with a kit line
 of the form `How to start: <path>.` in the instruction file read as a link
 (the fork's item 4 of its second block: thirteen launchpad standing
@@ -60,15 +56,11 @@ nothing in the target has a line that says where it resolves (the fork's
 item 6: 322 such links; rewriting each link is rejected below); in
 `scripts/lib/plan-continuation.mjs` (`relocatedLinks`, 550 and 615) the
 product 00 read made optional as the subject builder's is (the fork's item
-10); in `scripts/lib/review-worker.mjs` (`resolveSubject`, 104 to 131) a
-`--target <id> --order WO-NNN` form that binds a registered target's order
-to the target's base and candidate trees, with the reviewer read-only in
-the target clone, the use counted and the report retained in the
-launchpad's lane (the fork's item 5 of its first block); in
+10); in
 `scripts/work-orders.mjs` (the index card's criterion status) the
 executor's unmet ordinal shown as "executor: unmet at handoff" beside the
-later verification and final-review verdict, never as the order's current
-state when a later verdict exists (the fork's ER-VER-01: seven closed
+later criterion-level judgment (met, waived or defective by class), never
+as the order's current state when a later judgment exists (the fork's ER-VER-01: seven closed
 passing orders showing an unmet criterion 1), and in the entropy
 inventory's receipt a sentence naming host coordination state outside its
 copy and TMPDIR inventories as unobserved (ER-RUN-03); in
@@ -82,18 +74,14 @@ WO-012-D008 / FUP-2232a29f1061494f). Removes: one sentence six times on a
 pull request; a pass that merges upstream when the operator did not ask;
 thirteen false red tags per instance pass; a failed document gate after an
 update; four historical fingerprints an instance had to declare; a
-reviewer that cannot bind a target order; a closed order that reads as
-unmet; a fresh clone that fails `plan check` with no diagnosis; a
+closed order that reads as unmet; a fresh clone that fails `plan check` with no diagnosis; a
 classification count that can be fooled. Wall-clock: each change is a
-render or a read the command already makes; the target-order review adds
-one clone read; measured in the decisions where a command's time changes.
+render or a read the command already makes; measured in the decisions where a command's time changes.
 Context bytes: this file, about 20,000; the instance planner root grows by
-one sentence, measured against its ceiling. Commands: none new (`--target`
-is a flag). Tokens: unknown until run. Steps: 14. Re-mints:
+one sentence, measured against its ceiling. Commands: none new. Tokens: unknown until run. Steps: 13. Re-mints:
 `document-kinds.mjs` and `contributor.ts` are runtime sources the executor
 checks at activation; `scripts/release.mjs`, `scripts/lib/meta.mjs`,
-`scripts/work-orders.mjs`, `scripts/lib/entropy-review.mjs` and
-`scripts/lib/review-worker.mjs` are declared machinery sources, so `npm
+`scripts/work-orders.mjs`, `scripts/lib/entropy-review.mjs` are declared machinery sources, so `npm
 test -- --review` runs before handoff; no feedback-judged source changes.
 **Nomination provenance:** the operator's items 5, 12 and 13 of the
 2026-11-03 planning dispatch; the DotLn-Enterprise-Starter fork's two
@@ -109,10 +97,9 @@ subject has one) allocated here. Filed by the
 Planner-synthesized. Opaque identifier, not a priority. Clean-room screen:
 no stop condition; the fork's blocks are the operator's own public
 instance's.
-**Depends on:** WO-248 (closed, v0.113.0: the pull-request table this
+**Depends on:** WO-248 (closed, v0.111.1: the pull-request table this
 order's sentence sits under); WO-238 (closed: the entry points and red
-tags this order adds a default to); WO-250 (closed: the review helper this
-order adds a target form to).
+tags this order adds a default to).
 
 <!-- dotln-dependencies:start -->
 [
@@ -125,11 +112,6 @@ order adds a target form to).
     "workOrderId": "WO-238",
     "relation": "satisfied-by-close",
     "reason": "the reader entry points and red tags this order adds a default entry point to"
-  },
-  {
-    "workOrderId": "WO-250",
-    "relation": "satisfied-by-close",
-    "reason": "the review helper this order gives a target-order form"
   }
 ]
 <!-- dotln-dependencies:end -->
@@ -142,8 +124,7 @@ order adds a target form to).
 (the frozen copy at 383 to 387; the confinement sentences 310 to 312;
 `fileReceipt` 1050 to 1075 and its callers at 1526 and 1916);
 `scripts/lib/target-records.mjs` (the private-path rule at 277);
-`scripts/lib/plan-continuation.mjs` 550 and 615; `scripts/lib/review-worker.mjs`
-(`resolveSubject` 104 to 131); `scripts/work-orders.mjs` (the index card's
+`scripts/lib/plan-continuation.mjs` 550 and 615; `scripts/work-orders.mjs` (the index card's
 criterion lines); `scripts/bootstrap.mjs`; `scripts/release.mjs`
 (`targetReleaseClassification` 3034 to 3050 and its use at 3171);
 `packages/skeleton/src/loadouts/contributor.ts` (the instance planner
@@ -154,8 +135,8 @@ fork's two blocks in the nomination capture; this pass's §Readings.
 the kit's behavior and not its edges: a pull request reads in one
 sentence, no pass merges upstream on its own, a front page is reached, an
 update says what to regenerate, a receipt files on the first try with no
-private path, a moved record says where its links resolve, a target order
-can be reviewed, a closed order reads as closed, a fresh clone says what
+private path, a moved record says where its links resolve, a closed order reads as
+closed, a fresh clone says what
 it lacks, and a malformed duplicate declaration is refused.
 
 **Observed gap (dated 2026-11-03 at `main` `eb7c58ff6`, v0.114.0):**
@@ -195,9 +176,6 @@ it lacks, and a malformed duplicate declaration is refused.
 - The fork's item 10: `relocatedLinks` (`plan-continuation.mjs` 550, 615)
   reads product 00 unconditionally; an export without it fails `plan
   check` between changing its orders and filing its receipt.
-- The fork's item 5 (first block): `review-worker.mjs` resolves the
-  launchpad order and builds its diff from the launchpad root; no target
-  mode.
 - The fork's item 6 (first block): seven closed passing orders display
   executor-unmet criterion 1; the index card projects the executor's
   ordinal as the current state.
@@ -240,10 +218,6 @@ it lacks, and a malformed duplicate declaration is refused.
 - **Optional stays optional.** `relocatedLinks` reads product 00 as the
   subject builder does. Rejected: requiring product 00 in an export (axis:
   the subject builder already made it optional).
-- **A target order is a subject.** `--target <id> --order WO-NNN` binds
-  the target's base and candidate; the reviewer is read-only in the clone;
-  the use counts; the report is the launchpad's. Rejected: a target-side
-  helper (axis: WO-250's one command for every host).
 - **History is history.** The executor's unmet ordinal is shown as the
   handoff's record beside the later verdict, never as the current state.
   Rejected: dropping the ordinal (axis: the record of what the executor
@@ -266,8 +240,7 @@ it lacks, and a malformed duplicate declaration is refused.
 2. `packages/skeleton/src/loadouts/contributor.ts` (the instance planner
    sentence) and the kit guide §Planning in this instance and §Updating:
    no pass runs `launchpad update` or takes a newer starter unless the
-   operator asks in that session; the operator-record template's sentence
-   on rules; `npm run sync`. Check: `npm test -- --only harness-context`;
+   operator asks in that session; `npm run sync`. Check: `npm test -- --only harness-context`;
    `npm test -- --only launchpad`.
 3. `scripts/lib/document-kinds.mjs` (`defaultEntryPoints`): `README.md`
    as `front-page`; the `How to start: <path>.` line read as a link; core's
@@ -290,31 +263,28 @@ it lacks, and a malformed duplicate declaration is refused.
 7. `scripts/lib/plan-continuation.mjs` (`relocatedLinks`): product 00
    optional. Check: `npm test -- --only plan-refutation` with a fixture
    lacking product 00.
-8. `scripts/lib/review-worker.mjs` (`resolveSubject`, the diff builder):
-   `--target <id> --order WO-NNN`. Check: `npm test -- --only
-   plan-refutation` with a target-worktree fixture.
-9. `scripts/work-orders.mjs` (the index card): the executor's unmet
+8. `scripts/work-orders.mjs` (the index card): the executor's unmet
    ordinal beside the later verdict. Check: `npm test -- --only
    work-orders-fixtures` with a closed
    passing order whose handoff left criterion 1 unmet.
-10. `scripts/bootstrap.mjs`: the missing-mapping diagnostic. Check: `npm
+9. `scripts/bootstrap.mjs`: the missing-mapping diagnostic. Check: `npm
     test -- --only launchpad` in a
     fixture clone with a registered target and no mapping.
-11. `scripts/release.mjs` (`targetReleaseClassification`): count every
+10. `scripts/release.mjs` (`targetReleaseClassification`): count every
     declaration first. Check: `npm test -- --only release` with a valid
     header plus a malformed duplicate refused.
-12. Write-backs: the kit guide (§Planning in this instance, §Updating,
-    §Entropy Reducer, §Reviews); product 07 §Operator-opened planning
+11. Write-backs: the kit guide (§Planning in this instance, §Updating,
+    §Entropy Reducer); product 07 §Operator-opened planning
     pass (the front page as an entry point; the no-update sentence) and
     §Workflow closeout and releases (the Read before upgrading line);
     `docs/evidence/WO-257/decisions.md`; `npm run meta`; `npm run
     publication:check`.
-13. The paste-ready block for the fork's next pass, written into the
+12. The paste-ready block for the fork's next pass, written into the
     decisions, naming each item's step.
-14. Handoff: the sequence of WO-253 step 10, with
+13. Handoff: the sequence of WO-253 step 10, with
     `docs/evidence/WO-257/handoff.md`.
 
-**Deliverables:** the twelve fixes; the kit guide and product 07; the
+**Deliverables:** the eleven fixes; the kit guide and product 07; the
 fork's block.
 
 **Acceptance criteria (all required)**
@@ -345,45 +315,43 @@ fork's block.
    commit and the record's path.
 7. `npm run plan -- check` on a fixture export without product 00 passes
    between an order change and the receipt.
-8. `npm run worker -- review --kind criteria --host claude --target <id>
-   --order WO-NNN --dry-run` in the target-worktree fixture prints a brief
-   whose diff is the target's base against its candidate, and the record
-   names the target and counts one use.
-9. The generated index for a closed passing fixture order whose handoff
-   left criterion 1 unmet shows the criterion as met by its verdict with
-   the executor's ordinal beside it.
-10. `node scripts/bootstrap.mjs` in a fixture clone with a registered
+8. The generated index for a closed passing fixture order whose handoff
+   left criterion 1 unmet shows the criterion by its later criterion-level
+   judgment, `met` when the verification met it, `unmet, waived` when a
+   waiver was recorded and `defective (<class>)` when a defect record was,
+   with the executor's ordinal beside each, so no accepted unmet history is
+   erased (the criteria adversary's F10 of 2026-11-04).
+9. `node scripts/bootstrap.mjs` in a fixture clone with a registered
     target and no clone mapping prints the diagnostic naming the
     registration command before any check fails.
-11. A target release with a valid classification header and a malformed
+10. A target release with a valid classification header and a malformed
     duplicate is refused naming both lines.
-12. The kit guide and product 07 state the fixes as built; `npm run
+11. The kit guide and product 07 state the fixes as built; `npm run
     publication:check` is green.
-13. `npm test -- --review` and `npm run test:docs` green; `git diff
+12. `npm test -- --review` and `npm run test:docs` green; `git diff
     --check` clean; no new dependency.
 
 **Preflight:** `npm test -- --only process-debt` for step 1; `npm test --
 --only harness-context` and `npm test -- --only launchpad` for step 2; `npm test -- --only
 docs-check-fixtures` for step 3; `npm test -- --only target-worktree` for
-step 6; `npm test -- --only work-orders-fixtures` for step 9; `npm test --
---only launchpad` for step 10; `npm test -- --only
-release` for steps 4 and 11; `npm test -- --only plan-refutation` for step
-5; `npm test -- --only plan-refutation` for step 7; `npm test -- --only
-plan-refutation` for step 8; `npm run test:docs` when a document changes;
+step 6; `npm test -- --only work-orders-fixtures` for step 8; `npm test --
+--only launchpad` for step 9; `npm test -- --only
+release` for steps 4 and 10; `npm test -- --only plan-refutation` for
+steps 5 and 7; `npm run test:docs` when a document changes;
 each under `node scripts/harness.mjs bounded --`; then one `npm test --
 --review` (07-execution-guide.md §Preflight before the full gate).
 
-**Evidence gate:** the fixtures of criteria 1 to 11; `npm test -- --review`
+**Evidence gate:** the fixtures of criteria 1 to 10; `npm test -- --review`
 before `implementation-ready`, final review reusing the passing complete
 row at the integrated code identity when one exists.
 
-**Write-back duty:** as listed in step 12 and criterion 12.
+**Write-back duty:** as listed in step 11 and criterion 11.
 
 **Known issues and carry-ins:**
 
 - WO-248-D004 (FUP-225e0993974f3f4b): taken in step 1 (reopen: a body
   renders a dispatch-role row for a subject with none).
-- WO-012-D008 (FUP-2232a29f1061494f): taken in step 11 (reopen: a
+- WO-012-D008 (FUP-2232a29f1061494f): taken in step 10 (reopen: a
   malformed duplicate passes).
 - The fork's item 4 of its first block (a shared launch-boundary meter
   honoring an order's declared token stop) is declined by this pass as a
@@ -394,11 +362,12 @@ row at the integrated code identity when one exists.
   a finish downloads what the checkout holds after WO-246).
 
 **Non-goals:** rewriting moved records' links; a feature election for
-updates before a pass; a baseline exemption for private paths; a
-target-side review helper; the launch-boundary meter.
+updates before a pass; a baseline exemption for private paths; the review
+helper's target form (WO-255's, moved there on the design improver's F5 of
+2026-11-04); the launch-boundary meter.
 
 **Operator-review assumptions:** that the operator wants no update before
 any pass in any instance (items 12 and 13 say so for the fork; the kit
 sentence applies to every instance); that a footer answers the fork's
-item 6; that the twelve fixes are one order because an instance meets
+item 6; that the eleven fixes are one order because an instance meets
 them together at every pass and close. Reopen on the operator's word.

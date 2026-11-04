@@ -67,7 +67,7 @@ direction, 2026-10-30); no stream of work in this repository depends on it.
   19, 20, 21 and 22 of 2026-11-03, ignored capture SHA-256
   `4c7e47a6548004d909128fdfcc346663fc419280b798d00abec73d7ffb180f83`; the
   fork's item 3 of its first block of 2026-11-03); first, because every
-  session pays it: this pass's `plan start` took 0 h 27 min and WO-241's
+  session pays it: this pass's `plan start` took 0 h 17 min and WO-241's
   close was blocked by it.
 - WO-254: the hooks get out of the operator's way: a zombie is not a live
   writer, the recovery commands a refusal names are admitted from the

@@ -2242,7 +2242,7 @@ prune, so expired roots outside every close's scope leave at the next planning
 pass; while a gate holds the host lanes it prints the read-only census instead.
 `harness prune --apply` removes them on demand. That walk reads and hashes
 every regular file of every candidate root and reads the process table once
-per root, so on 2026-11-03 `plan start` spent 0 h 27 min removing 465 of
+per root, so on 2026-11-03 `plan start` spent 0 h 17 min removing 465 of
 5,988 roots and WO-241's close, published in 0 h 2 min, stopped in the prune
 on a restricted fixture directory; WO-253 removes a passed suite's roots when
 the suite ends, judges a kit-owned root by its record, bounds the routine

@@ -94,7 +94,7 @@ None.
 
 ### WO-255
 
-[WO-255 — Reviews find what the complete run finds: the planning reviews lane is keyed by branch so two passes on one day each get their reviews, a recheck reads the whole change again instead of the repair alone, the consistency review carries a traced-consumers table the helper refuses to record without, and the criteria adversary on a planning subject receives the operator's dispatch and answers item by item (version assigned at activation)](WO-255-reviews-find-what-the-complete-run-finds.md)
+[WO-255 — Reviews find what the complete run finds: the planning reviews lane is keyed by branch so two passes on one day each get their reviews, a recheck reads the whole change again instead of the repair alone, the consistency review carries a traced-consumers table the helper refuses to record without, the criteria adversary on a planning subject receives the operator's dispatch and answers item by item, a registered target's order can be reviewed through the same helper, and every worker launch selects one of the operator's four model options with the harness defaults (version assigned at activation)](WO-255-reviews-find-what-the-complete-run-finds.md)
 
 - State: draft.
 - Application target: unassigned.
@@ -110,12 +110,12 @@ None.
 
 ### WO-257
 
-[WO-257 — Instance returns of 2026-11-03: the pull-request body compares in one sentence, no pass takes a newer starter unless the operator asks in that session, README.md is a default reader entry point, a release's Read before upgrading names the index regeneration, the entropy receipt renders the frozen copy as &#96;&lt;tmp&gt;/…&#96; and screens its summary and its Markdown before filing, a target-subject receipt labels the launchpad witness, moved records keep working links, the continuation gate treats product 00 as optional, the review worker binds a target order, the index separates the executor's unmet ordinal from the later verdict, bootstrap diagnoses a missing target clone, and the target release classification counts every declaration (version assigned at activation)](WO-257-instance-returns-of-2026-11-03.md)
+[WO-257 — Instance returns of 2026-11-03: the pull-request body compares in one sentence, no pass takes a newer starter unless the operator asks in that session, README.md is a default reader entry point, a release's Read before upgrading names the index regeneration, the entropy receipt renders the frozen copy as &#96;&lt;tmp&gt;/…&#96; and screens its summary and its Markdown before filing, a target-subject receipt labels the launchpad witness, moved records keep working links, the continuation gate treats product 00 as optional, the index separates the executor's unmet ordinal from the later verdict, bootstrap diagnoses a missing target clone, and the target release classification counts every declaration (version assigned at activation)](WO-257-instance-returns-of-2026-11-03.md)
 
 - State: draft.
 - Application target: unassigned.
 - Dependencies: typed; dependency-ready.
-- References: WO-248: satisfied-by-close (met) — the pull-request body table whose comparison sentence this order rewrites; WO-238: satisfied-by-close (met) — the reader entry points and red tags this order adds a default entry point to; WO-250: satisfied-by-close (met) — the review helper this order gives a target-order form.
+- References: WO-248: satisfied-by-close (met) — the pull-request body table whose comparison sentence this order rewrites; WO-238: satisfied-by-close (met) — the reader entry points and red tags this order adds a default entry point to.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.

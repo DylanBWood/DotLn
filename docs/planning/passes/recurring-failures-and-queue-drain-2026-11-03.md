@@ -70,7 +70,7 @@ named so the operator can strike them):
 | 3 | large reads by executor and fix agents, mainly on Codex | measured on Claude (no whole-file reads of large files in seven days); unknown on Codex; the map, item 6 | nothing filed |
 | 4 | drain the follow-up queue in one or two orders, or append rows to orders | WO-256: every pending row allocated, settled or declined; sixth | a declined row keeps its condition as the reopening condition |
 | 5 | the pull-request sentence repeated six times; was WO-248 worth it | WO-257 step 1: one sentence | keeping the comparison rather than removing it |
-| 6 | the fork's first block, nine items | 6.1 recorded; 6.2 → WO-246; 6.3 → WO-253; 6.4 declined (the map, item 3); 6.5 to 6.9 → WO-257; §Answers to the fork | declining 6.4 |
+| 6 | the fork's first block, nine items | 6.1 recorded; 6.2 → WO-246; 6.3 → WO-253; 6.4 declined (the map, item 3); 6.5 → WO-255; 6.6 to 6.9 → WO-257; §Answers to the fork | declining 6.4 |
 | 7 | Codex after compaction repeats, ignores standing orders or idles | WO-254: the compaction record restores the session's direction-class messages; a probe | the mechanism |
 | 8 | fork passes refuse to push; the operator runs the push by hand | WO-246 amended and moved to third: the emitted allow rule for the helper's node spelling, from the host's page | the allow-rule mechanism and the node spelling |
 | 9 | release close fails at every pass; orders meant to fix it closed without it working | §Readings: WO-252 and WO-239 were verified on fixtures of a few roots; WO-253's criteria are stated on a planted host of many | the root cause named (the prune's byte inventory) |
@@ -246,11 +246,11 @@ no output at the recovery threshold; `fetchRemoteBranch` without alternates)
 → WO-246, unchanged priority. 3 (a bounded startup cleanup with per-root
 progress) → WO-253 steps 5 and 6. 4 (a launch-boundary meter) → declined
 (the map, item 3). 5 (`review-worker.mjs` has no target-order mode) →
-WO-257 step 8. 6 (ER-VER-01 the executor-unmet projection; ER-RUN-03 the
-unobserved boundary) → WO-257 steps 5 and 9. 7 (a fresh clone fails
-`plan check` without the target-clone mapping) → WO-257 step 10. 8
-(`targetReleaseClassification` counts only recognized values;
-FUP-2232a29f1061494f) → WO-257 step 11. 9 (`fileReceipt` and the Markdown
+WO-255 step 5 (moved from WO-257 on the design improver's F5). 6 (ER-VER-01
+the executor-unmet projection; ER-RUN-03 the unobserved boundary) → WO-257
+steps 5 and 8. 7 (a fresh clone fails `plan check` without the
+target-clone mapping) → WO-257 step 9. 8 (`targetReleaseClassification`
+counts only recognized values; FUP-2232a29f1061494f) → WO-257 step 10. 9 (`fileReceipt` and the Markdown
 private-path rule; a correction route) → WO-257 step 5.
 
 Second block (v0.113.0 over dotln-angular): 1 (the stale index after the
@@ -293,11 +293,11 @@ them. WO-246's amendment and WO-254's sentence rest on these.
   third.
 - [WO-255](../../work-orders/WO-255-reviews-find-what-the-complete-run-finds.md):
   reviews find what the complete run finds. Items 15, 16, 17; the fork's
-  18.9; the four-option worker rule. Fourth. Two drafts were corrected on
+  18.9 and 6.5 (the target form); the four-option worker rule. Fourth. Two drafts were corrected on
   the operator's words before filing: the complete-gate order and the
   reviewer pin left (the map, items 4 and 8).
 - [WO-257](../../work-orders/WO-257-instance-returns-of-2026-11-03.md):
-  instance returns of 2026-11-03. Items 5, 12, 13; the fork's 6.5 to 6.9
+  instance returns of 2026-11-03. Items 5, 12, 13; the fork's 6.6 to 6.9
   and 18.1, 18.4 to 18.8, 18.10. Fifth.
 - [WO-256](../../work-orders/WO-256-the-follow-up-register-drains-to-zero.md):
   the follow-up register drains to zero. Item 4. Sixth.
@@ -320,13 +320,15 @@ lines are in §Validation.
 
 `followups --sync` after the map's candidates section of 2026-11-03;
 `--export`; one batch. The dispositions are in §Validation with the
-revisions. Allocated: FUP-1398fcdb63df23d2 (WO-241-D004),
-FUP-60ea250ef102cc46 (WO-250-D015) and FUP-2bcb656e4fc1e7f6 (WO-250-D016)
-to WO-255; FUP-225e0993974f3f4b (WO-248-D004) to WO-257 (FUP-2232a29f1061494f,
+revisions. Allocated: FUP-1398fcdb63df23d2 (WO-241-D004) and
+FUP-60ea250ef102cc46 (WO-250-D015) to WO-255 (FUP-2bcb656e4fc1e7f6,
+WO-250-D016, was allocated there first and returned to deferred with its
+remainder named on the consistency reviewer's F5); FUP-225e0993974f3f4b (WO-248-D004) to WO-257 (FUP-2232a29f1061494f,
 the fork's 6.8, is not pending: its earlier disposition stands and WO-257
 step 11 takes the fix); the candidates section's rows
-disposed as their items say (items 1, 3, 6, 7 and 9 deferred with their
-conditions; 2, 4, 5 and 8 declined; 10 allocated to WO-257). The other
+disposed as their items say (items 1, 6, 7 and 9 deferred with their
+conditions; 2, 3, 4, 5 and 8 declined, item 3 first deferred and corrected
+on the consistency reviewer's F7; 10 allocated to WO-257). The other
 fourteen untriaged rows of 2026-11-02 and 2026-11-03 (WO-238-D036 and
 D037, WO-241-D003, D014, D015, D016 and D017, WO-245-D010, D011 and D013,
 WO-249-D012 and D017, WO-251-D017, WO-252-D034) were listed and not read
@@ -559,12 +561,12 @@ One direction from the operator for your instance, in the operator's own words: 
 First block.
 1. Recorded; nothing asked.
 2. Recorded on WO-246 (now third in core's queue, amended): the finish fetch's alternates and already-held skip stay its step 5; your by-hand finish stands until then.
-3. Filed: WO-253 (first) runs plan start's routine prune as a bounded step under prune.startBudgetMs (default 60 s) that stops between roots, prints removed N; remaining M and the resume command, and goes on; harness prune --apply finishes the remainder; release close prunes the closed order's own roots only; a passed suite removes its own fixture roots at its end; a kit-owned root is removed on its record without reading its bytes. Core's own plan start of 2026-11-03 took 0 h 27 min in the same prune. Blocks nothing; your startup cost drops at the release that carries it.
+3. Filed: WO-253 (first) runs plan start's routine prune as a bounded step under prune.startBudgetMs (default 60 s) that stops between roots, prints removed N; remaining M and the resume command, and goes on; harness prune --apply finishes the remainder; release close prunes the closed order's own roots only; a passed suite removes its own fixture roots at its end; a kit-owned root is removed on its record without reading its bytes. Core's own plan start of 2026-11-03 took 0 h 17 min in the same prune. Blocks nothing; your startup cost drops at the release that carries it.
 4. Declined for now with its condition (core's map, 2026-11-03, item 3): core's counters are unknown on both hosts, so a meter would report unknown and treat nothing as zero, which your pair does by hand. Reopen when a second instance order overruns a declared stop or a host prints a counter a meter could read.
-5. Filed in WO-257 step 8: npm run worker -- review --target <id> --order WO-NNN binds the target's base and candidate, the reviewer is read-only in the clone, the use counts and the report is the launchpad's. A convenience; your native target-worker route stands.
-6. Filed in WO-257 steps 5 and 9: the index shows the executor's unmet ordinal beside the later verdict, never as the current state; the receipt names host coordination state outside the inventories as unobserved.
-7. Filed in WO-257 step 10: bootstrap prints the missing target-clone diagnostic with the registration command before any check fails.
-8. Filed in WO-257 step 11: targetReleaseClassification counts every declaration before validating the sole value; a valid header plus a malformed duplicate is refused naming both lines. Not a release blocker, as you said; FUP-2232a29f1061494f is allocated there.
+5. Filed in WO-255 step 5 (fourth): npm run worker -- review --target <id> --order WO-NNN binds the target's base and candidate, the reviewer is read-only in the clone, the use counts and the report is the launchpad's. A convenience; your native target-worker route stands.
+6. Filed in WO-257 steps 5 and 8: the index shows the executor's unmet ordinal beside the later verdict, never as the current state; the receipt names host coordination state outside the inventories as unobserved.
+7. Filed in WO-257 step 9: bootstrap prints the missing target-clone diagnostic with the registration command before any check fails.
+8. Filed in WO-257 step 10: targetReleaseClassification counts every declaration before validating the sole value; a valid header plus a malformed duplicate is refused naming both lines. Not a release blocker, as you said; FUP-2232a29f1061494f is allocated there.
 9. Filed in WO-257 step 5: fileReceipt applies the Markdown private-path screen before the pair is immutable, the worker's summary is screened by the rule target-records applies, and a rejected projection is re-rendered from the retained original with the pair's hashes rebound by the same command, recorded on the receipt.
 
 Second block.
@@ -595,10 +597,15 @@ xhigh, the Claude default; the dispatch named no fable worker), each
 launched once with no re-task; the three stub launches that captured the
 briefs returned no worker and are counted as helper uses in §Validation.
 Usage at entry and exit: unknown (`harness usage` refused: no active
-role). Wall-clock of the pass's commands: `plan start` 1,015 s; `plan
+role). Launches counted by hand: one `claude-code-guide` agent; six
+helper launches that returned no worker (the stub captures); three direct
+Codex launches that failed on stdin; three direct Codex launches that
+returned reports (0 h 6 min, 0 h 10 min and 0 h 12 min); one criteria
+recheck with the capture (§Validation); one refuter: fifteen uses against
+the cap of twenty, with no re-task. Wall-clock of the pass's commands: `plan start` 1,015 s; `plan
 conditions --slow` 305 s; the temporary-directory `du` over 120 s; the
 reviews and the refuter in §Validation. Against the NoOp of doing nothing:
-tonight's two failures (a 27-minute branch creation and a close blocked by
+tonight's two failures (a 17-minute branch creation and a close blocked by
 its own cleanup) recur at every pass and every close until WO-253 lands,
 and the writer refusal recurs whenever a Codex dispatch stops.
 
@@ -614,6 +621,100 @@ appended when observed.
   regenerated from 203 tags.
 - `docs/control/documents.json`: the `front-page` entry point added; `npm
   run plan -- documents` showed the 27 red-tagged paths reached.
-- `npm run work-orders -- index` and `index --check`: first run refused
-  four Preflight suite names that are not declared (`runner`,
-  `review-worker`, `entropy-review`); corrected to the declared suites.
+- `npm run work-orders -- index` and `index --check`: the first run refused
+  three Preflight suite names that are not declared (`runner`,
+  `review-worker`, `entropy-review`), read from `npm test -- --list
+  --review` and corrected to `runner-fixtures`, `plan-refutation` (whose
+  file imports the review-worker and entropy fixtures), `docs-check-fixtures`,
+  `target-worktree`, `work-orders-fixtures` and `launchpad`; the check then
+  passed with two pre-existing advisories read and left (WO-244 criterion 3
+  names `git log` as the command a case runs; WO-246 criterion 5 says the
+  checkout's `HEAD` is unchanged by a refused fetch).
+- `npm run plan -- followups --sync`: ten rows minted from the map's
+  candidates section (revision `63ec9cc0…` to `75da0f69…`); `--apply` from
+  `docs/control/local/followup-request.json` (the system temporary
+  directory was refused as a request path): fourteen dispositions in one
+  batch (five allocated, five deferred, four declined), leaving revision
+  `e48f5adb…`; pending 261 (247 deferred, 14 untriaged).
+- `npm run meta`: green; the trap meter's reopen candidate read in
+  §Readings and disposed in §NoOps.
+- `npm run format` and `npm run sync`: the publication edition regenerated
+  after the product edits; the lineage index regenerated after the
+  ledger's tags were corrected (`declined` is not a ledger status;
+  `rejected` is).
+- `npm run test:docs` at the committed subject: 25 passed, 2 failed, 0 h
+  2 min; the two (`plan` and `plan-refutation-current`) fail only on
+  "planning pass planning-909f847e03ddc56b needs a receipt", which the
+  refutation receipt supplies. A first run failed 23 tasks on one stale
+  generated artifact (the lineage index, after the ledger tag) and passed
+  after the correction.
+- `npm run plan -- check` at the committed subject: "needs a receipt", as
+  above.
+- The three reviews (the operator's item 15, for this pass): the helper's
+  `--host codex` pins `gpt-6.1-sol` and has no selector, so the canonical
+  brief of each kind was captured by running `npm run worker -- review
+  --kind <kind> --host codex --subject planning` with a stub `codex` on the
+  path that saved its stdin, argv and output schema and exited 3 (the
+  helper recorded "the worker returned no report (transport-failed:
+  exit-3)" for each; six such launches in all, three before the amended
+  commit and three after); each brief (230,446, 230,465 and 231,328 bytes,
+  holding the worker definition, the brief, the subject and its diff,
+  including this document's per-item table) was then given on stdin to
+  `codex -a never exec --ephemeral --ignore-user-config --sandbox read-only
+  --strict-config --model gpt-6-astra … -c model_reasoning_effort="max" -`
+  with the helper's own argv otherwise unchanged, from the scratchpad, as
+  the helper spawns it. A first direct launch under `node
+  scripts/harness.mjs bounded --` failed in under a second on "No prompt
+  provided via stdin" (the wrapper does not forward stdin); the second ran
+  without it. The helper's planning lane moved from `planning-2026-11-03`
+  to `planning-2026-11-04` at midnight UTC during the pass (§Readings).
+  Each returned report is recorded with `npm run worker -- record --kind
+  <kind> --from <file> --subject planning --round 1 --duration-ms <ms>`
+  in `docs/control/local/reviews/planning-2026-11-04/`.
+- The design improver (`gpt-6-astra` at `max`, 0 h 6 min, five findings,
+  none blocking): F1 a refused session must not force-release a live
+  writer (taken: only a dead or zombie holder is released from the refused
+  session; `--force` against a live one stays the operator's); F2 the
+  question class must not override an explicit request in question form
+  (taken: the class is advisory and names the pause, stop or wait
+  exception); F3 the prune budget must hold inside a large root's
+  inventory and a retained root must not be hashed (taken); F4 WO-256
+  still carried the withdrawn second-deferral rule (taken: removed); F5
+  the target-order review form and the instance template sentence belong
+  with their owning orders (taken: moved to WO-255 and WO-254).
+- The criteria adversary (`gpt-6-astra` at `max`, 0 h 10 min, twelve
+  findings, none blocking, with a per-item coverage table over the
+  twenty-four items): F1 WO-255 promised the four-option selector and had
+  no step for it (taken: step 6 and criterion 6); F2 and F3 as the
+  improver's F4 and F1 (already taken); F4 "Do not run the final gate
+  until I approve." opens with an interrogative (taken: the question mark
+  alone classes a message, with negative cases); F5 the compaction fix
+  named no capture source for an unprefixed Codex instruction (taken: the
+  prompt hook keeps each message's bounded text, and criterion 6 types the
+  instruction into the fixture); F6 a planner could mislabel a question as
+  direction (taken: the rules block references the journal row and `plan
+  check` reads the class from it); F7 WO-253's fixtures were tiny (taken:
+  a two-thousand-root regression with counters); F8 criterion 6 would
+  delete another run's retained root (taken: scoped to the invocation's
+  own roots); F9 `--touching` reads pending rows only (taken: the full
+  export); F10 a closed order may carry a waived or defective criterion
+  (taken: the index projects the criterion-level judgment); F11 a wrapped
+  undeclared suite name (taken); F12 the reviewer read the planner's table,
+  not the dispatch (recorded: the second round below carries the capture).
+- The consistency reviewer (`gpt-6-astra` at `max`, 0 h 12 min, ten
+  findings, none blocking, with its traced-consumers table): F1, F2, F3 and
+  F6 as above (already taken); F4 the record route must bind the tree the
+  worker reviewed (taken: `--tree` on `record`); F5 WO-250-D016's row was
+  allocated on a narrower promise than the decision (taken: WO-255 names
+  the remainder and the row returns to deferred, a second register batch);
+  F7 the launch-boundary meter read declined in prose and deferred in the
+  register (taken: declined, a second batch); F8 the pass's "0 h 27 min"
+  was the process's lifetime by `ps`, while the host observed 1,015 s to
+  the branch (taken: 0 h 17 min in six documents, the 25-minute lifetime
+  kept beside it); F9 WO-248 is v0.111.1, not v0.113.0 (taken); F10 two
+  prune files are not registered evidence sources (taken).
+- self-review: found 27; fixed 25; recorded 2 (the two notes F12 and the
+  design improver's F5 consolidation, both acted on and recorded here).
+- Second register batches at revisions after `e48f5adb…`:
+  FUP-b80b9dfabaed4936 declined; FUP-2bcb656e4fc1e7f6 deferred with the
+  remainder named; the feed then reads 261 pending.

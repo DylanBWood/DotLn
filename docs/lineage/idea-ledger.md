@@ -60,7 +60,7 @@ operator's own words rewritten).
 - **A Rust rewrite** `rejected` `operator-directed`
   - The question whether rewriting any or all of the stack in Rust would
     gain efficiency. Weighed against this pass's measurements: the slow
-    paths of 2026-11-03 (a 27-minute `plan start`, a close blocked in the
+    paths of 2026-11-03 (a 17-minute `plan start`, a close blocked in the
     prune) are algorithmic (hashing 20.8 GB of fixtures, one process-table
     read per root, thousands of roots never removed by their makers), not
     language-bound; WO-253 removes the work rather than speeding it.

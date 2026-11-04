@@ -52626,6 +52626,14 @@
             "WO-255"
           ],
           "at": "2026-11-04T00:23:35.932Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-255 step 4 takes the capture digest, the base and the answered report; the decision's remainder (attributable lifecycle journal keys, retention of reviewed Git trees, the shared helper and close lane derivation, tests for object pruning, nested repairs and midnight) is not allocated and stays here (the consistency reviewer's F5 of 2026-11-04; docs/planning/passes/recurring-failures-and-queue-drain-2026-11-03.md).",
+          "reopenWhen": "a planning pass allocates the remainder, or a review record cannot be traced to its lifecycle journal row or reviewed tree after WO-255",
+          "targets": [],
+          "at": "2026-11-04T00:50:52.861Z"
         }
       ]
     },
@@ -53432,6 +53440,14 @@
           "reopenWhen": "a second instance order overruns a declared stop, or a host prints a token counter a meter could read",
           "targets": [],
           "at": "2026-11-04T00:23:36.529Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined, as the map's candidate 3 and the fork answer say (the first disposition read deferred; the consistency reviewer's F7 of 2026-11-04 found the mismatch): core's counters are unknown on both hosts, so a meter would report unknown; the fork's pair checks readings by hand (docs/planning/passes/recurring-failures-and-queue-drain-2026-11-03.md).",
+          "reopenWhen": "a second instance order overruns a declared stop, or a host prints a token counter a meter could read",
+          "targets": [],
+          "at": "2026-11-04T00:48:33.928Z"
         }
       ]
     },

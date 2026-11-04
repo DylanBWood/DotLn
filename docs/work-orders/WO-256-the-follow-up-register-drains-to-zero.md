@@ -28,10 +28,10 @@ rule; `npm run plan -- followups --sync` run after the order's own
 decisions so the rows they mint are allocated to the orders they name
 before handoff; the map's candidates sections untouched (they are records
 below the line and the rows' sources; a disposition links, never rewrites);
-and in product 07 §Retained planning follow-ups one sentence: a pass that
-reads a pending row disposes it in that pass (allocate, settle, decline),
-and a row deferred twice is declined with its condition, so the register
-holds decisions and never a queue. Removes: a pending feed of 260 rows that
+and in product 07 §Retained planning follow-ups one sentence: after this
+order the register holds no pending row, and a pass that reads a pending
+row disposes it in that pass (allocate, settle, decline), the 2026-11-01
+rule restated. Removes: a pending feed of 260 rows that
 every `plan start` returns eight at a time (33 pages), whose rows the
 operator's item 4 asks to drain or append to the orders that own them;
 rows deferred since 2026-09-19 under conditions no order on the horizon
@@ -112,9 +112,11 @@ next planning pass reads a register of decisions instead of a queue.
   reading is bounded by its document. Rejected: one batch of 260 (axis:
   one invalid request writes nothing and names its index, and a 260-row
   retry costs the whole reading).
-- **The rule for the next pass.** A pass disposes what it reads; a row
-  deferred twice is declined. Rejected: refusing `plan start` on a pending
-  row (axis: a refusal at entry is item 21 again).
+- **The rule for the next pass.** A pass disposes what it reads (the
+  2026-11-01 rule); no second-deferral rule (the pass withdrew it before
+  filing, and the design improver's F4 of 2026-11-04 found it still in this
+  order's text). Rejected: refusing `plan start` on a pending row (axis: a
+  refusal at entry is item 21 again).
 - **Live-run surfaces at the base.** The register, the export, the apply
   batch, `--touching`, the orders' carry-in sections: exist. The
   dispositions and the sentence: absent.
@@ -160,9 +162,12 @@ decisions record.
    either a `reopenWhen` or an allocation target, read by `npm run plan --
    followups --show <id>` on three rows the verifier picks from each of the
    three dispositions.
-3. Every allocated row's carrying order names the FUP id in its `Known
-   issues and carry-ins`, checked by `npm run plan -- followups --touching
-   <WO-NNN>` for each carrying order listing only rows allocated to it.
+3. Every row this order allocated names its carrying order in the full
+   register (`npm run plan -- followups --export --all <file>`, which
+   writes every row, pending or not; `--touching` reads pending rows only
+   and is empty once criterion 1 holds), and each carrying order names the
+   FUP id in its `Known issues and carry-ins`, compared id by id by the
+   verifier from that export.
 4. Product 07 §Retained planning follow-ups states the rule as built;
    `npm run plan -- check` and `npm run work-orders -- index --check`
    green.
@@ -187,8 +192,8 @@ decisions; `npm run test:docs` at the candidate.
   was read and left deferred by the pass under its conditions; this order
   declines or allocates each (reopen: a condition fires).
 - The 2026-11-01 pass's rule that a pass disposes what it reads stands;
-  this order adds the second-deferral decline (reopen: a declined row's
-  condition fires and no pass notices).
+  this order adds no rule (reopen: a declined row's condition fires and no
+  pass notices).
 
 **Non-goals:** new orders for themes the rows raise; rewriting the map's
 records; a refusal at `plan start`.
