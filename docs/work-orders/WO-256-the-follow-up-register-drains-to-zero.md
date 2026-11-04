@@ -163,7 +163,7 @@ decisions record.
    followups --show <id>` on three rows the verifier picks from each of the
    three dispositions.
 3. Every row this order allocated names its carrying order in the full
-   register (`npm run plan -- followups --export --all <file>`, which
+   register (`npm run plan -- followups --export <file> --all`, which
    writes every row, pending or not; `--touching` reads pending rows only
    and is empty once criterion 1 holds), and each carrying order names the
    FUP id in its `Known issues and carry-ins`, compared id by id by the

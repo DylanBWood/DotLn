@@ -39,9 +39,9 @@ opening alone does not class it, since "Do not run the final gate until I
 approve." opens with one: the criteria adversary's F4 of 2026-11-04),
 carried on `OperatorMessageObserved` (1584) and injected as advisory
 context: "Operator question: answer it in plain terms in your
-next message and continue the active work; it changes no obligation and
-records no rule, unless the message itself asks to pause, stop or wait,
-which is an explicit request whatever its grammar"; in `scripts/lib/planning-document.mjs` and `plan check`
+next message and continue the active work; if it also asks for an action,
+including to pause, stop or wait, do that, since a request is explicit
+whatever its grammar; it records no rule"; in `scripts/lib/planning-document.mjs` and `plan check`
 a `Rules recorded` block in the pass document naming every standing rule
 the pass writes into a standing document from the operator's words, each
 with the message's journal reference (the session key and the row's
@@ -236,8 +236,10 @@ a session is truly blocked on the operator, it says so once and yields.
 - **A question is a class, and the class is advisory.** The hook classes
   an unprefixed message that ends in `?` as `question` (an interrogative
   opening is not enough: "Do not …" and "Can you …?" are instructions) and
-  injects the one-sentence context with its exception: a message that asks to pause, stop or wait is an explicit
-  request whatever its grammar (the design improver's F2 of 2026-11-04);
+  injects the one-sentence context with its exception: a message that asks for an action, pausing, stopping
+  and waiting among them, is an explicit request whatever its grammar (the
+  design improver's F2 and the criteria adversary's round-2 F1 of
+  2026-11-04);
   the role text keeps "A question is not a waiver". Rejected: a semantic classifier (axis: WO-178's rule that the
   prefix table is control language, never a reading of prose; the
   question mark and the interrogative are form, not meaning). Codex
@@ -304,7 +306,7 @@ a session is truly blocked on the operator, it says so once and yields.
    denial.
 5. `packages/skeleton/src/harness-host.ts` (`operatorPrefixes` and the
    `OperatorMessageObserved` row): the `question` class by the question
-   mark alone and its injected sentence with the pause, stop or wait
+   mark alone and its injected sentence with the action-request
    exception; the generated hook definition carries it.
    Check: `npm test -- --only harness` with the three forms and one
    prefixed message asserting its existing class.
@@ -368,11 +370,12 @@ advisories; the sentence; product 07 and the kit guide.
    records the denial.
 4. The prompt hook records `class: question` on `OperatorMessageObserved`
    for `why is the close slow?` and `is this done?`, injects the
-   one-sentence context naming its pause, stop or wait exception, records
+   one-sentence context naming its action-request exception, records
    `direction` for `resume: next`, and records no `question` class for
    `How many roots are there`, `Do not run the final gate until I
    approve.` and `fix the test`; for `Can you pause before the final gate?`
-   it records `question` and the injected context names the exception.
+   and `Can you add the missing regression test?` it records `question`
+   and the injected context names the action-request exception.
 5. `npm run plan -- check` on a planning branch whose pass document's
    `Rules recorded` block names a rule whose referenced journal row is a
    `question` refuses naming the rule even when the block labels it

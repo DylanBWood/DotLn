@@ -75,10 +75,10 @@ named so the operator can strike them):
 | 8 | fork passes refuse to push; the operator runs the push by hand | WO-246 amended and moved to third: the emitted allow rule for the helper's node spelling, from the host's page | the allow-rule mechanism and the node spelling |
 | 9 | release close fails at every pass; orders meant to fix it closed without it working | §Readings: WO-252 and WO-239 were verified on fixtures of a few roots; WO-253's criteria are stated on a planted host of many | the root cause named (the prune's byte inventory) |
 | 10 | a question gets an answer and changes nothing | WO-254: the `question` class with its injected sentence; product 07's rule stands | the form-based class |
-| 11 | a passing remark is not a universal rule | WO-254: the `Rules recorded` block `plan check` judges | the block |
+| 11 | a passing remark is not a universal rule; anti-oscillation is not adhered to | WO-254: the `Rules recorded` block, referencing the journal row whose class `plan check` reads; the anti-oscillation half is answered by this pass's own corrections (two drafts widened the operator's words into rules and were withdrawn on the operator's word) and by this table's inference column, which names every widening so the operator can strike it | the block |
 | 12 | no upstream merge at a fork planning pass unless asked | WO-257: the kit's sentence; the fork told to strike its rule | that the rule lives only in the fork's own record |
 | 13 | no instance update at an entropy pass over a sibling | the same fix as 12 | the same |
-| 14 | the errors logged every session | measured: 513, 434 and 336 rows of three classification advisories in fourteen days; WO-254 makes them journal-only | that those three are noise the operator wants gone |
+| 14 | the errors logged every session, here and in the instance | measured in core: 513, 434 and 336 rows of three classification advisories in fourteen days; measured in the instances (§Readings); WO-254 makes the three journal-only | that those three are noise the operator wants gone |
 | 15 | GPT 6 Astra at max for the three reviewers before refute; the adversary given the prompt and checking each point | done for this pass (§Validation); WO-255's `--capture` and the four-option selector | the record route used to launch the model the helper cannot pin |
 | 16 | review rounds persisting across passes | WO-255: the lane by branch; `--since` admits a fresh round 1 | none |
 | 17 | review rechecks that find nothing | WO-255: a recheck reads the whole change; a consistency report carries a traced-consumers table or is refused | the table requirement; the planner's complete-gate idea was declined on the operator's words (the map, item 4) |
@@ -223,7 +223,13 @@ SubagentHandback", 8 "Opaque program contains a denied invocation", 4
 "host permission denied the call", 1 "an operator override entered
 2026-10-22T19:03:51.672Z remains open in this worktree". The first three
 fire on nearly every `cd … && …` or `$(…)` call and end "host permissions
-decide"; WO-254 makes them journal rows. The 165 runtime-unavailable rows
+decide"; WO-254 makes them journal rows. The operator's private instance (`../DotLn-Instance`, fifty journals)
+shows the same shape over fourteen days: 511 working-directory, 320
+control-syntax and 201 substitution advisories, 272 "Hook and worktree
+roots" runtime-unavailable rows, 173 "snapshot-missing: run
+bootstrap" rows, 101 settings.user and 42 remote.unapproved refusals and
+96 "Path outside the worktree surface"; the starter fork's local clone
+keeps no journal lane. The 165 runtime-unavailable rows
 are sessions in worktrees without a built adapter; WO-254's step 4 (an
 activation that creates nothing the host then denies) and the bootstrap
 route of WO-257 step 10 are the nearest homes, and the count is recorded
@@ -715,6 +721,21 @@ appended when observed.
   prune files are not registered evidence sources (taken).
 - self-review: found 27; fixed 25; recorded 2 (the two notes F12 and the
   design improver's F5 consolidation, both acted on and recorded here).
+- The criteria adversary's round 2 (`gpt-6-astra` at `max`, 0 h 7 min),
+  launched the same way with the recheck brief the helper rendered for
+  `--round 2 --recheck round-1-criteria.md` and, appended to it, the two
+  ignored intake captures of the operator's dispatch with an instruction to
+  answer the per-item table from those words (the operator's item 15): ten
+  of the twelve round-1 findings held as repaired, two not: F4 still
+  neutralized an action request in question form ("Can you add the missing
+  regression test?"; taken: the injected sentence names any action request
+  as explicit, and criterion 4 adds the case) and F9's replacement named
+  the export flags in the wrong order (taken: `--export <file> --all`).
+  Its table over the twenty-four items and the mid-turn directions found
+  every item carried by the subject and named two gaps the pass then
+  filled: item 11's anti-oscillation half had no separate disposition (now
+  in the items table) and item 14's instance-log census was missing (now
+  in §Readings). Recorded as `round-2-criteria` in the lane.
 - Second register batches at revisions after `e48f5adb…`:
   FUP-b80b9dfabaed4936 declined; FUP-2bcb656e4fc1e7f6 deferred with the
   remainder named; the feed then reads 261 pending.
