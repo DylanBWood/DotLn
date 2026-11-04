@@ -3725,7 +3725,14 @@ and generated evidence, including fixtures, manifests and installed guidance.
   pass; WO-227 makes the seed a template and the shape a check).
 - **A question is not a waiver.** An operator's question, confusion, or
   complaint about cost or time changes no obligation [operator correction,
-  2026-09-07](../lineage/idea-ledger.md). Answer it in plain terms, then continue the work under the
+  2026-09-07](../lineage/idea-ledger.md). A question is a smell, and the
+  answer takes one of two pathways, with the evidence: why the current
+  course is right, or what the question changes in the reading and what
+  happens next; neither pathway stops the work, and a session that reads a
+  question as a request to stop has taken a third pathway that does not
+  exist [operator clarification, 2026-11-04, in
+  the 2026-11-03 pass](../planning/passes/recurring-failures-and-queue-drain-2026-11-03.md).
+  Answer it in plain terms, then continue the work under the
   standard already in force; only an explicit operator decision lowers a
   standard, drops a check, or narrows scope. Treating a question as permission
   to stop pursuing a green gate, skip a check, or accept a weaker result is the

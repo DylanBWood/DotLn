@@ -38,10 +38,15 @@ for an unprefixed message that ends in a question mark (an interrogative
 opening alone does not class it, since "Do not run the final gate until I
 approve." opens with one: the criteria adversary's F4 of 2026-11-04),
 carried on `OperatorMessageObserved` (1584) and injected as advisory
-context: "Operator question: answer it in plain terms in your
-next message and continue the active work; if it also asks for an action,
-including to pause, stop or wait, do that, since a request is explicit
-whatever its grammar; it records no rule"; in `scripts/lib/planning-document.mjs` and `plan check`
+context: "Operator question: read it as a smell. Your next message answers
+it one of two ways, with the evidence: why the current course is right, or
+what the question changes in your reading and what you will now do
+differently. Keep working either way; if the message also asks for an
+action, including to pause, stop or wait, do that, since a request is
+explicit whatever its grammar; it records no rule" (the operator's
+clarification of 2026-11-04, ignored capture SHA-256 `3f7ba4606f22f33601570f964d50d3aff6c3413294f2adea844c524f73b65e6c`: a confident
+colleague explains why the work is right, an unconfident one takes the
+smell as evidence, and neither stops on their own); in `scripts/lib/planning-document.mjs` and `plan check`
 a `Rules recorded` block in the pass document naming every standing rule
 the pass writes into a standing document from the operator's words, each
 with the message's journal reference (the session key and the row's
@@ -233,10 +238,16 @@ a session is truly blocked on the operator, it says so once and yields.
   releasing on idle time (axis: WO-237's retained reservations are not
   idle-timed; a stop is an event, not a duration). A denied activation
   removes what it created before the denial, recorded in the journal.
-- **A question is a class, and the class is advisory.** The hook classes
-  an unprefixed message that ends in `?` as `question` (an interrogative
-  opening is not enough: "Do not …" and "Can you …?" are instructions) and
-  injects the one-sentence context with its exception: a message that asks for an action, pausing, stopping
+- **A question is a smell, and the answer has two pathways.** The hook
+  classes an unprefixed message that ends in `?` as `question` (an
+  interrogative opening is not enough: "Do not …" and "Can you …?" are
+  instructions) and injects the context that names the two answers a
+  colleague gives to a smell, why the course is right with the evidence or
+  what the smell changes and what happens next, and that neither stops the
+  work; the role text carries the same two pathways for Codex, whose
+  prompts are unhooked. Rejected: "answer and continue" alone (axis: the
+  operator's words of 2026-11-04: the pathways must be clear, since today
+  a question is read as a request to stop). The exception: a message that asks for an action, pausing, stopping
   and waiting among them, is an explicit request whatever its grammar (the
   design improver's F2 and the criteria adversary's round-2 F1 of
   2026-11-04);
@@ -306,8 +317,10 @@ a session is truly blocked on the operator, it says so once and yields.
    denial.
 5. `packages/skeleton/src/harness-host.ts` (`operatorPrefixes` and the
    `OperatorMessageObserved` row): the `question` class by the question
-   mark alone and its injected sentence with the action-request
-   exception; the generated hook definition carries it.
+   mark alone and its injected context naming the two pathways and the
+   action-request exception; `packages/skeleton/src/loadouts/contributor.ts`
+   carries the two pathways in every role root for the Codex host; the
+   generated hook definition carries it.
    Check: `npm test -- --only harness` with the three forms and one
    prefixed message asserting its existing class.
 6. `scripts/lib/planning-document.mjs` and `scripts/refute-plan.mjs` (`plan
@@ -369,8 +382,11 @@ advisories; the sentence; product 07 and the kit guide.
    after the worktree's creation leaves no worktree and no branch and
    records the denial.
 4. The prompt hook records `class: question` on `OperatorMessageObserved`
-   for `why is the close slow?` and `is this done?`, injects the
-   one-sentence context naming its action-request exception, records
+   for `why is the close slow?` and `is this done?`, injects the context
+   naming the two pathways (why the course is right with the evidence, or
+   what the question changes and what happens next) and the action-request
+   exception, and every emitted role root carries the two pathways; it
+   records
    `direction` for `resume: next`, and records no `question` class for
    `How many roots are there`, `Do not run the final gate until I
    approve.` and `fix the test`; for `Can you pause before the final gate?`

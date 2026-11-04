@@ -24,7 +24,10 @@ this agent's turn. Captured verbatim in ignored intake
 `4c7e47a6548004d909128fdfcc346663fc419280b798d00abec73d7ffb180f83`; the
 later mid-turn messages, including the operator's four-option worker rule,
 in `docs/intake/planning-dispatch-2026-11-03-recurring-failures-midturn-2.md`,
-SHA-256 `589662ab8d84e728340b6b22077bf72f4979d1e3a37821a00947b8c12b52326f`.
+SHA-256 `589662ab8d84e728340b6b22077bf72f4979d1e3a37821a00947b8c12b52326f`,
+and the operator's clarification of item 10 of 2026-11-04 in
+`docs/intake/planning-dispatch-2026-11-03-recurring-failures-midturn-3.md`,
+SHA-256 `3f7ba4606f22f33601570f964d50d3aff6c3413294f2adea844c524f73b65e6c`.
 Branch: `planning/2026-11-03-recurring-failures-and-queue-drain` from clean
 `main` at `eb7c58ff6` (v0.114.0). No role was active (`harness usage`
 refused: "Token measurement requires an active role and dispatch start").
@@ -74,7 +77,7 @@ named so the operator can strike them):
 | 7 | Codex after compaction repeats, ignores standing orders or idles | WO-254: the compaction record restores the session's direction-class messages; a probe | the mechanism |
 | 8 | fork passes refuse to push; the operator runs the push by hand | WO-246 amended and moved to third: the emitted allow rule for the helper's node spelling, from the host's page | the allow-rule mechanism and the node spelling |
 | 9 | release close fails at every pass; orders meant to fix it closed without it working | §Readings: WO-252 and WO-239 were verified on fixtures of a few roots; WO-253's criteria are stated on a planted host of many | the root cause named (the prune's byte inventory) |
-| 10 | a question gets an answer and changes nothing | WO-254: the `question` class with its injected sentence; product 07's rule stands | the form-based class |
+| 10 | a question is a smell: the answer shows why the course is right, with evidence, or what the smell changes and what happens next; neither stops the work (the operator's clarification of 2026-11-04, ignored capture SHA-256 `3f7ba4606f22f33601570f964d50d3aff6c3413294f2adea844c524f73b65e6c`) | WO-254: the `question` class with its injected context naming the two pathways, and the role text carrying them for Codex; product 07 §Discipline states the pathways now | the form-based class |
 | 11 | a passing remark is not a universal rule; anti-oscillation is not adhered to | WO-254: the `Rules recorded` block, referencing the journal row whose class `plan check` reads; the anti-oscillation half is answered by this pass's own corrections (two drafts widened the operator's words into rules and were withdrawn on the operator's word) and by this table's inference column, which names every widening so the operator can strike it | the block |
 | 12 | no upstream merge at a fork planning pass unless asked | WO-257: the kit's sentence; the fork told to strike its rule | that the rule lives only in the fork's own record |
 | 13 | no instance update at an entropy pass over a sibling | the same fix as 12 | the same |
