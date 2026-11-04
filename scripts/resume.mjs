@@ -158,6 +158,7 @@ import {
   readControl,
   controlFromSources,
   eventsForOrder,
+  foldWithRecord,
   branchWorkOrder,
   latestClosedOrder,
   openOrders,
@@ -194,14 +195,18 @@ const codexDispatchRoles = {
 const readEvents = () =>
   [...readControl(repoRoot).eventSegments.values()].flat();
 
-const append = (event, segment) => {
-  const logPath = join(repoRoot, segment);
+const controlRecord = (event) => {
   const record = {
     schemaVersion: CONTROL_LOG_SCHEMA_VERSION,
     recordedAt: new Date().toISOString(),
     ...event,
   };
   validateRecordedAt(record, "at append");
+  return record;
+};
+
+const append = (record, segment) => {
+  const logPath = join(repoRoot, segment);
   mkdirSync(dirname(logPath), { recursive: true });
   const line = JSON.stringify(record);
   try {
@@ -441,10 +446,18 @@ const appendTransition = (action, event) => {
   const segment =
     control.locations.get(event.workOrderId) ??
     storage.segment(event.workOrderId);
-  const recorded = append(
-    { ...event, ...checkpoint(action, event.workOrderId) },
-    segment,
-  );
+  // The fold is the last check before any write: the segment is folded with
+  // the new line first, so an event a command's own checks admitted but the
+  // fold refuses is never written, and every later read folds what was
+  // recorded. It runs before the checkpoint too, which a refusal then never
+  // creates.
+  foldWithRecord(control, segment, controlRecord(event), storage);
+  const record = controlRecord({
+    ...event,
+    ...checkpoint(action, event.workOrderId),
+  });
+  foldWithRecord(control, segment, record, storage);
+  const recorded = append(record, segment);
   // The dispatch is recorded: its session owns the reservation from here.
   releaseRefusedDispatch = undefined;
   let ordinal;

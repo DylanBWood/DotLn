@@ -883,11 +883,18 @@ ordinary source writes on `main` or replace the lifecycle host's effect checks.
 
 Host receipts and writer reservations live in ignored `docs/control/local/harness`.
 They are host observations, not worker-result prose or OS isolation from a
-hostile same-user process. A session's reservation records its harness process
-and is released only after the compiled completion predicates allow Stop. A
-session that ends without that release leaves its reservation behind; the next
-write dispatch reclaims it only when the recorded owner is dead, logging the
-reclaim in the session journal and `writer-events.jsonl`. The reservation is a
+hostile same-user process. A session's reservation records its harness
+process. Claude's finish hook releases it at every Stop, recording whether the
+compiled completion predicates were met, and the session's next guarded call
+reserves it again. A Codex dispatch keeps it until its completion releases it
+or it stops first: a release close that ends before completing, or a turn that
+ends without a continuation, releases its own reservation and journals
+`dispatchStopped`, and the retried command or the next prompt reserves it
+again. A session that ends without a release leaves its reservation behind;
+the next write dispatch reclaims it only when the recorded owner is dead (no
+such process, a reused process id, or a zombie whose process-table state
+begins with `Z`), logging the reclaim in the session journal and
+`writer-events.jsonl`. The reservation is a
 `writer/` directory holding one nonce-named file. Recovery unlinks that exact
 name, removes the instance only while it is empty, and renames a prepared
 replacement only onto an absent or emptied slot, so two sessions reclaiming
@@ -896,9 +903,14 @@ the same dead holder admit exactly one writer and the loser records a
 pre-repair `writer.json` is migrated when it is the session's own and
 reclaimed when its owner is dead; it is never created. A live or unverifiable
 holder keeps the reservation and the refusal names it. `node scripts/harness.mjs
-writer --show` reports the holder without reserving; `writer --release [--force]`
-is for an operator terminal outside a governed session and refuses a live owner
-unless forced. The generated commit-message adapter
+writer --show` reports the holder without reserving, and the refused session
+may run it as that exact command with nothing beside it. `writer --release`
+releases a holder that is not alive and refuses a live owner unless `--force`;
+the refused session may run it the same way only when the process table proves
+the holder dead, and otherwise it is for an operator terminal outside a
+governed session
+([WO-254](../../docs/evidence/WO-254/decisions.md#wo-254-d006--the-refusals-own-remedy-runs-where-the-refusal-is-read-by-exact-argv)).
+The generated commit-message adapter
 is available for a reviewed Git-hook installation; this command does not edit
 Git configuration or install user/global hooks.
 

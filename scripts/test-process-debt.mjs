@@ -3821,9 +3821,11 @@ test("discovery uses a bounded observed probe and session warns once off the ver
     ),
     { value: "2.2.1", channel: "CLAUDE_CODE_EXECPATH" },
   );
+  // The planted table has the columns the harness asks ps for: pid, ppid,
+  // state, start time and the command last (WO-254).
   writeFileSync(
     join(pathBin, "ps"),
-    `#!/bin/sh\nprintf '%s\\n' '${process.pid} 1 Thu Sep 10 08:00:00 2026 2.1.266'\n`,
+    `#!/bin/sh\nprintf '%s\\n' '${process.pid} 1 S Thu Sep 10 08:00:00 2026 2.1.266'\n`,
     { mode: 0o700 },
   );
   const hookEnv = {
@@ -3986,7 +3988,7 @@ test("ancestor text mapping resolves an opaque process name once per session", a
   emitHarness(root);
   writeFileSync(
     join(bin, "ps"),
-    `#!/bin/sh\nprintf '%s\\n' '${process.pid} 1 Thu Sep 10 08:00:00 2026 claude'\n`,
+    `#!/bin/sh\nprintf '%s\\n' '${process.pid} 1 S Thu Sep 10 08:00:00 2026 claude'\n`,
     { mode: 0o700 },
   );
   const hookEnv = {
@@ -4980,9 +4982,16 @@ test("installed permission hook distinguishes classification advisories from run
   );
   const refused = invoke("echo $(git push)");
   assert.equal(refused.hookSpecificOutput?.permissionDecision, undefined);
-  assert.equal(
-    refused.systemMessage,
-    "DotLn advisory: command classification: Dynamic shell substitution requires an explicit effect adapter; host permissions decide.",
+  // A dynamic substitution is left to host permissions on nearly every
+  // compound call, so it is journaled and not shown (WO-254).
+  assert.equal(refused.systemMessage, undefined);
+  assert.deepEqual(
+    (({ advisory, shown }) => ({ advisory, shown }))(advisoryRows(root).at(-1)),
+    {
+      advisory:
+        "DotLn advisory: command classification: Dynamic shell substitution requires an explicit effect adapter; host permissions decide.",
+      shown: false,
+    },
   );
   assert.equal(invoke("git push").systemMessage, undefined);
   assert.equal(invoke("echo $(git push)").systemMessage, undefined);
@@ -4993,7 +5002,6 @@ test("installed permission hook distinguishes classification advisories from run
     "DotLn advisory: command classification: Dynamic or missing Git subcommand requires an explicit effect adapter; host permissions decide.",
     "DotLn advisory: command classification: Xargs substitution requires an explicit effect adapter; host permissions decide.",
     "DotLn advisory: command classification: Git alias configuration requires an explicit effect adapter; host permissions decide.",
-    "DotLn advisory: command classification: Dynamic shell substitution requires an explicit effect adapter; host permissions decide.",
   ]);
   assert.match(
     advisoryRows(root).at(-1).advisory,
@@ -6865,15 +6873,21 @@ test("WO-145 optional economy support preserves historical snapshots through the
   // integration, as its historical parent and WO-249's as its branch parent,
   // and both preserve WO-247's oracle, which carries the integrated oracle and
   // both chains below it. WO-253's release-close and planner prune sentences
-  // re-pin the trees over that WO-238 integration oracle.
-  const current = "wo253-role-baseline.json";
+  // re-pin the trees over that WO-238 integration oracle, and WO-254's
+  // question pathways, blocked-turn sentence and writer sentences re-pin
+  // them over WO-253's.
+  const current = "wo254-role-baseline.json";
   const baseline = JSON.parse(readFileSync(join(fixtures, current), "utf8"));
+  assert.equal(baseline.historicalBaseline, "wo253-role-baseline.json");
+  const closePrune = JSON.parse(
+    readFileSync(join(fixtures, baseline.historicalBaseline), "utf8"),
+  );
   assert.equal(
-    baseline.historicalBaseline,
+    closePrune.historicalBaseline,
     "wo238-integration-role-baseline.json",
   );
   const integrated = JSON.parse(
-    readFileSync(join(fixtures, baseline.historicalBaseline), "utf8"),
+    readFileSync(join(fixtures, closePrune.historicalBaseline), "utf8"),
   );
   assert.equal(
     integrated.historicalBaseline,

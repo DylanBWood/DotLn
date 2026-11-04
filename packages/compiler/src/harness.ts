@@ -49,6 +49,67 @@ export function harnessPromptLine(prompt: string | undefined): {
   return { text: (lines[index] ?? "").trim(), index };
 }
 
+/**
+ * The control-language class of one operator message, read from its form and
+ * never its meaning: a recognized prefix on the first content line decides
+ * it; otherwise a message that ends in a question mark is a `question`, and
+ * any other is `unclassified`. An interrogative opening alone ("Do not ...",
+ * "Can you ...") makes no question, and a question may still ask for an
+ * action. The function is self-contained so the generated Codex hook embeds
+ * it with the line reader it is given.
+ */
+export function operatorMessageClass(
+  prompt: string | undefined,
+  promptLine: typeof harnessPromptLine = harnessPromptLine,
+): { prefix: string | null; prefixLine: number | null; class: string } {
+  const prefixes: Record<string, string> = {
+    "resume:": "direction",
+    "planning:": "direction",
+    "ideation:": "ideation",
+    "analysis:": "question",
+    "operator override:": "override",
+    "scope expand:": "scope expansion",
+    "conversation only:": "other step",
+    "quality pass:": "direction",
+  };
+  const line = promptLine(prompt);
+  const prefix =
+    Object.keys(prefixes).find((candidate) =>
+      line.text.startsWith(candidate),
+    ) ?? null;
+  return prefix
+    ? { prefix, prefixLine: line.index, class: prefixes[prefix]! }
+    : {
+        prefix: null,
+        prefixLine: null,
+        class: /\?\s*$/u.test(prompt ?? "") ? "question" : "unclassified",
+      };
+}
+
+/**
+ * The journal's phase for a dispatched session: a repair dispatch is the
+ * repair phase, and otherwise each role names its own. Claude's hook and the
+ * generated Codex hook both use it, the latter by embedding this
+ * self-contained function, so their journal rows name a phase alike.
+ */
+export function harnessSessionPhase(session: {
+  readonly intent?: string | null;
+  readonly role?: string | null;
+}): string {
+  if (session.intent === "resume: fix") return "repair";
+  const phases: Record<string, string> = {
+    executor: "implementation",
+    verifier: "verification",
+    reviewer: "finalReview",
+  };
+  return phases[session.role ?? ""] ?? session.role ?? "unknown";
+}
+
+/** What the hook adds for an unprefixed question; the role text carries the
+ * same two pathways for hosts whose prompts are unhooked. */
+export const OPERATOR_QUESTION_CONTEXT =
+  "Operator question: read it as a smell. Your next message answers it one of two ways, with the evidence: why the current course is right, or what the question changes in your reading and what you will now do differently. Keep working either way; if the message also asks for an action, including to pause, stop or wait, do that, since a request is explicit whatever its grammar; it records no rule.";
+
 /** A dispatch may lead following direction after a semicolon or newline.
  * The worker opt-in is a selection, not part of the lifecycle action. */
 export function harnessPromptIntent(prompt: string | undefined): string {
@@ -334,11 +395,23 @@ export const desktopControlSkills = [
   "anthropic-skills:built-in-browser",
   "claude-in-chrome",
 ] as const;
+/** Each listed skill under every name the host documents for it: a skill
+ * synced from claude.ai as `anthropic-skills:<name>` also answers to its short
+ * `<name>` and to the `<name>:<name>` plugin form Claude Desktop delivers it
+ * as. The hook classifies all of them; the host's parameter rule below covers
+ * any alias or display name besides. */
+export function desktopControlSkillNames(skill: string): readonly string[] {
+  const synced = /^anthropic-skills:(.+)$/u.exec(skill)?.[1];
+  return synced ? [skill, synced, `${synced}:${synced}`] : [skill];
+}
 export const desktopControlDenyRules = [
   ...desktopControlToolPrefixes.map((prefix) => `${prefix}*`),
+  // The exact and argument forms name the skill as written; the parameter
+  // form denies it whichever of its names Claude calls it by.
   ...desktopControlSkills.flatMap((skill) => [
     `Skill(${skill})`,
     `Skill(${skill} *)`,
+    `Skill(skill:${skill})`,
   ]),
 ];
 export interface HarnessOrigin {
@@ -1272,7 +1345,7 @@ process.stdout.write(JSON.stringify(response)); }`;
         `const { text } = await import("node:stream/consumers");\n` +
         `try {\nconst source = await text(process.stdin);\n` +
         `if (Buffer.byteLength(source) > 1048576) throw new Error("oversized hook input");\n` +
-        `const output = await (${codexContinuation.toString()})(JSON.parse(source), ${operatorControl.toString()});\n` +
+        `const output = await (${codexContinuation.toString()})(JSON.parse(source), ${operatorControl.toString()}, (prompt) => (${operatorMessageClass.toString()})(prompt, ${harnessPromptLine.toString()}), undefined, ${harnessSessionPhase.toString()});\n` +
         `process.stdout.write(JSON.stringify(output));\n` +
         `} catch { process.stdout.write(JSON.stringify({systemMessage:"DotLn Codex continuation input unavailable; native stopping remains available."})); }\n`,
       names,
@@ -1425,7 +1498,7 @@ export const HARNESS_REFUSALS = [
     clause: "refuses a review worker's test-runner gate",
   },
 ] as const;
-const HARNESS_BOUNDARIES = `DotLn has ${HARNESS_REFUSALS.length} refusals (${[...new Set(HARNESS_REFUSALS.map((row) => row.source))].join(", ")}): it ${HARNESS_REFUSALS.map((row) => row.clause).join("; ")}. Product tasks fail on observed reads of the admitted record paths; document and mixed review gates retain the full refusal. Literal redirects are judged on any program; expansions such as $PWD and a program's own effects remain unobserved under host permissions; grant failures admit with one advisory and preserve the other refusals, except an unresolvable order-worktree root, which withholds that grant alone. Descendants count at their first attributable tool call; unresolved direct/child overlap is a reported minimum, and unobserved agents remain unknown. Inspect the writer with node scripts/harness.mjs writer --show; stop this session's gate with node scripts/harness.mjs evidence --stop; use operator override: for authorized recovery. Claude hooks enforce these ${HARNESS_REFUSALS.length} refusals at observed boundaries; under Codex a lifecycle dispatch reserves the writer and refuses a foreign holder, the gate, bounded wrapper and lifecycle enforce dispatch bounds in process; the other duties and grants are role text because Codex tool calls are unhooked. Copilot reuses the Claude registration: scripted denials hold with allow-all; missing tool-call and child identity leave subagent accounting advisory; WO-146 evidence records interactive qualification. Other tool and completion judgments are advisory and host permissions decide. The separate Codex compaction adapter restores an owned unfinished task and permits one continuation after premature stopping; it never dispatches a role or changes writer ownership.`;
+const HARNESS_BOUNDARIES = `DotLn has ${HARNESS_REFUSALS.length} refusals (${[...new Set(HARNESS_REFUSALS.map((row) => row.source))].join(", ")}): it ${HARNESS_REFUSALS.map((row) => row.clause).join("; ")}. Product tasks fail on observed reads of the admitted record paths; document and mixed review gates retain the full refusal. Literal redirects are judged on any program; expansions such as $PWD and a program's own effects remain unobserved under host permissions; grant failures admit with one advisory and preserve the other refusals, except an unresolvable order-worktree root, which withholds that grant alone. Descendants count at their first attributable tool call; unresolved direct/child overlap is a reported minimum, and unobserved agents remain unknown. Inspect the writer with node scripts/harness.mjs writer --show; stop this session's gate with node scripts/harness.mjs evidence --stop; use operator override: for authorized recovery. Claude hooks enforce these ${HARNESS_REFUSALS.length} refusals at observed boundaries; under Codex a lifecycle dispatch reserves the writer and refuses a foreign holder, the gate, bounded wrapper and lifecycle enforce dispatch bounds in process; the other duties and grants are role text because Codex tool calls are unhooked. Copilot reuses the Claude registration: scripted denials hold with allow-all; missing tool-call and child identity leave subagent accounting advisory; WO-146 evidence records interactive qualification. Other tool and completion judgments are advisory and host permissions decide. The separate Codex compaction adapter restores an owned unfinished task with the operator's messages since its dispatch and permits one continuation after premature stopping; it never dispatches a role, and it moves only this session's own reservation: a turn that stops releases it and the next prompt of an outstanding dispatch reserves it again.`;
 
 /** The shared instruction symlink carries every profile's residue on one line
  * per profile. Rule ids that share a reason are named together before it, so

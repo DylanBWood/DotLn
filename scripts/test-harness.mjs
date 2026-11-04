@@ -73,6 +73,7 @@ import {
   requireCompiled,
   outsideWriteEffect,
   fnv1a64,
+  OPERATOR_QUESTION_CONTEXT,
 } from "../packages/compiler/dist/src/index.js";
 import {
   contributorProgram,
@@ -138,7 +139,10 @@ import {
   runtimeSnapshotPath,
 } from "./lib/harness.mjs";
 import { termsCheck } from "./terms.mjs";
-import { executorWriterRelease } from "./lib/executor-handoff.mjs";
+import {
+  executorWriterRelease,
+  reserveCodexRoleCommandBeforeLoad,
+} from "./lib/executor-handoff.mjs";
 import {
   compareObservedReads,
   countReads,
@@ -1096,6 +1100,64 @@ syncBuiltinESMExports();
     assert.equal(harnessWriterView(root).reserved, false);
     pass("release-close");
     assert.equal(harnessWriterView(root).reserved, true);
+    // The close is the release-close role's whole command. A preview leaves
+    // the dispatch alone; a publishing attempt that stops before completing
+    // is a stopped dispatch, so the Codex session's writer is released and
+    // the stop journaled while its host process stays open.
+    for (const path of ["scripts/release.mjs", "scripts/license-surfaces.mjs"])
+      cpSync(join(sourceRoot, path), join(root, path));
+    const close = (mode) =>
+      spawnSync(
+        process.execPath,
+        ["scripts/release.mjs", "close", "WO-999", mode],
+        {
+          cwd: root,
+          encoding: "utf8",
+          env: { ...process.env, CODEX_THREAD_ID: sessionId },
+        },
+      );
+    close("--dry-run");
+    assert.equal(
+      harnessWriterView(root).reserved,
+      true,
+      "a preview leaves a live dispatch alone",
+    );
+    const stopped = close("--publish");
+    assert.notEqual(stopped.status, 0, "the fixture close cannot publish");
+    const view = spawnSync(
+      process.execPath,
+      ["scripts/harness.mjs", "writer", "--show"],
+      { cwd: root, encoding: "utf8" },
+    );
+    assert.equal(view.status, 0, view.stderr);
+    assert.equal(
+      JSON.parse(view.stdout).reserved,
+      false,
+      `writer --show reads released after the stop: ${stopped.stderr}`,
+    );
+    const stopRow = observations(root, input(root, "Stop")).find(
+      (row) => row.dispatchStopped,
+    );
+    assert.deepEqual(
+      (({ role, workOrder, command, writerHeld, writerReleased }) => ({
+        role,
+        workOrder,
+        command,
+        writerHeld,
+        writerReleased,
+      }))(stopRow?.dispatchStopped ?? {}),
+      {
+        role: "release-close",
+        workOrder: "WO-999",
+        command: "release close --publish",
+        writerHeld: true,
+        writerReleased: true,
+      },
+      "the session journal names the stop",
+    );
+    assert.match(stopped.stderr, /writer reservation is released/u);
+    pass("release-close");
+    assert.equal(harnessWriterView(root).reserved, true);
     const release = await executorWriterRelease(root, sessionId);
     release();
     assert.equal(
@@ -1155,6 +1217,43 @@ syncBuiltinESMExports();
       harnessWriterView(main).actorId,
       createHash("sha256").update(mainSession).digest("hex"),
     );
+    // In main the attempt itself begins and then stops on a blocker: the
+    // stop is the attempt's, with its step, and the writer goes with it.
+    const mainStop = spawnSync(
+      process.execPath,
+      ["scripts/release.mjs", "close", "WO-999", "--publish"],
+      {
+        cwd: main,
+        encoding: "utf8",
+        env: { ...process.env, CODEX_THREAD_ID: mainSession },
+      },
+    );
+    assert.notEqual(mainStop.status, 0);
+    assert.equal(
+      harnessWriterView(main).reserved,
+      false,
+      `the stopped attempt released main's writer: ${mainStop.stderr}`,
+    );
+    const attemptStop = observations(
+      main,
+      input(main, "Stop", { session_id: mainSession }),
+    ).find((row) => row.dispatchStopped)?.dispatchStopped;
+    assert.equal(attemptStop?.writerReleased, true);
+    assert.notEqual(
+      attemptStop?.step,
+      "entry",
+      "the attempt names its own step",
+    );
+    const redispatch = spawnSync(
+      process.execPath,
+      ["scripts/resume.mjs", "release-close", "--work-order", "WO-999"],
+      {
+        cwd: main,
+        encoding: "utf8",
+        env: { ...process.env, CODEX_THREAD_ID: mainSession },
+      },
+    );
+    assert.equal(redispatch.status, 0, redispatch.stderr);
     (await executorWriterRelease(main, mainSession))();
     assert.equal(harnessWriterView(main).reserved, false);
     assert.equal(harnessWriterView(root).reserved, false);
@@ -1171,6 +1270,82 @@ syncBuiltinESMExports();
       harnessWriterView(root),
       foreign,
       "missing session identity never guesses ownership",
+    );
+  } finally {
+    removeFixture(root, { recursive: true });
+  }
+});
+test("WO-254 a second Codex dispatch in one session awaits its own completion event, counted from its own dispatch", () => {
+  const root = fixture();
+  try {
+    const id = "codex-second-dispatch";
+    const key = createHash("sha256").update(id).digest("hex");
+    const state = () => {
+      const value = JSON.parse(
+        readFileSync(
+          join(root, `docs/control/local/harness/${key}.json`),
+          "utf8",
+        ),
+      );
+      return {
+        role: value.role,
+        intent: value.intent,
+        expectedEvent: value.expectedEvent,
+        startingEventCount: value.startingEventCount,
+      };
+    };
+    const phase = (value) =>
+      write(
+        root,
+        "docs/control/fixture-status.json",
+        json({ ...control, phase: value }),
+      );
+    const events = (...types) =>
+      write(
+        root,
+        "docs/control/orders/WO-999.jsonl",
+        types
+          .map((type) => JSON.stringify({ type, workOrderId: "WO-999" }))
+          .join("\n") + "\n",
+      );
+    phase("verifying");
+    events(
+      "WorkOrderActivated",
+      "ImplementationReady",
+      "VerificationRequested",
+    );
+    beginHarnessSession(root, id, "verifier");
+    recordCodexDispatch(root, id, "verify", "WO-999");
+    assert.deepEqual(state(), {
+      role: "verifier",
+      intent: "resume: verify",
+      expectedEvent: "VerificationCompleted",
+      startingEventCount: 3,
+    });
+    // The same Codex session then dispatches the repair (WO-253's verifier
+    // session did at 10:28Z): it now awaits RepairCompleted, from here.
+    phase("repairing");
+    events(
+      "WorkOrderActivated",
+      "ImplementationReady",
+      "VerificationRequested",
+      "VerificationCompleted",
+      "RepairRequested",
+    );
+    recordCodexDispatch(root, id, "fix", "WO-999");
+    assert.deepEqual(state(), {
+      role: "executor",
+      intent: "resume: fix",
+      expectedEvent: "RepairCompleted",
+      startingEventCount: 5,
+    });
+    phase("closed");
+    recordCodexDispatch(root, id, "release-close", "WO-999");
+    assert.equal(state().role, "release-close");
+    assert.equal(
+      state().expectedEvent,
+      undefined,
+      "a release close awaits no phase completion event",
     );
   } finally {
     removeFixture(root, { recursive: true });
@@ -1701,7 +1876,8 @@ test("feature readers consume budgets and build overlays through changed fixture
     const { DEFAULT_PRUNE_START_BUDGET_MS } =
       await import("./lib/temporary-prune-summary.mjs");
     const { sandboxLaunchForm } = await import("./lib/drive-worker.mjs");
-    const { attemptTimeLimit } = await import("./lib/drive-session.mjs");
+    const { attemptTimeLimit, driveLimits } =
+      await import("./lib/drive-session.mjs");
     const { readBuildOverlay } = await import("./lib/harness.mjs");
     const defaults = JSON.parse(
       readFileSync(
@@ -1745,10 +1921,12 @@ test("feature readers consume budgets and build overlays through changed fixture
           effectiveDispatchLimits(readBudgets(root), "executor", "active", [])
             .completeRuns,
       ],
+      // The two drive readers are observed through the drive record's own
+      // limits, so removing either read from drive-session.mjs fails here.
       [
         "drivenSessionCeiling",
         [4, null],
-        () => readBudgets(root).drivenSessionCeiling,
+        () => driveLimits(readBudgets(root)).drivenSessionCeiling,
       ],
       [
         "drivenPhaseTimeoutMs",
@@ -1756,7 +1934,7 @@ test("feature readers consume budgets and build overlays through changed fixture
         () => {
           const budgets = readBudgets(root);
           return attemptTimeLimit(
-            { limits: { drivenPhaseTimeoutMs: budgets.drivenPhaseTimeoutMs } },
+            { limits: driveLimits(budgets) },
             budgets,
             { role: "executor", phrase: "resume: next" },
             [],
@@ -1807,15 +1985,22 @@ test("feature readers consume budgets and build overlays through changed fixture
       json({ ...defaults, subagentCap: 1 }),
     );
     rmSync(join(root, "docs/control/budgets.json"));
+    // The spawn cap and its inventory row both read the relocated control
+    // root's budgets; a default-layout file beside it is not read.
     const capRow = () =>
       readFeatureInventory(root).find((entry) => entry.id === "subagent-cap");
     assert.equal(capRow().value, readSubagentCap(root));
-    assert.equal(capRow().value, 20);
-    assert.equal(capRow().source, "default");
-    budget({ subagentCap: 3 });
+    assert.equal(capRow().value, 1);
+    assert.equal(capRow().source, "records/control/budgets.json");
+    budget({ subagentCap: 7 });
+    write(
+      root,
+      "records/control/budgets.json",
+      json({ ...defaults, subagentCap: 3 }),
+    );
     assert.equal(capRow().value, readSubagentCap(root));
     assert.equal(capRow().value, 3);
-    assert.equal(capRow().source, "docs/control/budgets.json");
+    assert.equal(capRow().source, "records/control/budgets.json");
     // Other reader proofs execute in these suites: desktop-control hook admission
     // above, both emitted elections here, and instance-action application in
     // test-launchpad-update. Release and build selections and pending plan-first
@@ -2029,6 +2214,14 @@ test("desktop control refuses by default and reads the live election with one ad
         "anthropic-skills:chrome-browser",
         "anthropic-skills:built-in-browser",
         "claude-in-chrome",
+        // A synced skill's short name and the plugin form Claude Desktop
+        // delivers it as are the same skill (WO-254).
+        "computer-use",
+        "computer-use:computer-use",
+        "chrome-browser",
+        "chrome-browser:chrome-browser",
+        "built-in-browser",
+        "built-in-browser:built-in-browser",
       ].map((skill) => ({
         tool_name: "Skill",
         tool_input: { skill, args: "verify" },
@@ -2095,14 +2288,21 @@ test("desktop control refuses by default and reads the live election with one ad
         result.systemMessage,
         /Unclassified effectful tool: mcp__playwright__browser_snapshot/,
       );
-      const skill = await run(
-        input(root, "PreToolUse", {
-          tool_name: "Skill",
-          tool_input: { skill: "project:verify" },
-        }),
-      );
-      assert.equal(allowed(skill), true);
-      assert.equal(skill.systemMessage, undefined);
+      // Unrelated skills, near names included, stay unclassified.
+      for (const name of [
+        "project:verify",
+        "computer-use-notes",
+        "anthropic-skills:pdf",
+      ]) {
+        const skill = await run(
+          input(root, "PreToolUse", {
+            tool_name: "Skill",
+            tool_input: { skill: name },
+          }),
+        );
+        assert.equal(allowed(skill), true, name);
+        assert.equal(skill.systemMessage, undefined, name);
+      }
     }
   } finally {
     removeFixture(root, { recursive: true });
@@ -2637,6 +2837,166 @@ test("WO-178 prompt rows retain digest, prefix class and witnessed route, includ
     assert.equal(codex.routeSource, "dispatch-only");
     assert.equal(codex.digest, sha256("resume: fix"));
     assert.equal(codex.phase, "repair");
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-254 an unprefixed message ending in a question mark is a question with its two pathways injected, a request in question form keeps the action exception, and other messages keep their classes", () => {
+  const root = fixture();
+  try {
+    const contexts = new Map();
+    for (const prompt of [
+      "resume: next",
+      "why is the close slow?",
+      "is this done?",
+      "How many roots are there",
+      "Do not run the final gate until I approve.",
+      "fix the test",
+      "Can you pause before the final gate?",
+      "Can you add the missing regression test?",
+    ])
+      contexts.set(
+        prompt,
+        invoke(root, "session", input(root, "UserPromptSubmit", { prompt }))
+          .hookSpecificOutput?.additionalContext ?? "",
+      );
+    const rows = wo178Rows(root).filter(
+      (row) => row.typedEvent === "OperatorMessageObserved",
+    );
+    const classOf = (prompt) =>
+      rows.find((row) => row.digest === sha256(prompt))?.class;
+    assert.equal(classOf("resume: next"), "direction");
+    assert.ok(!contexts.get("resume: next").includes("Operator question:"));
+    for (const prompt of [
+      "why is the close slow?",
+      "is this done?",
+      "Can you pause before the final gate?",
+      "Can you add the missing regression test?",
+    ]) {
+      assert.equal(classOf(prompt), "question", prompt);
+      assert.ok(
+        contexts.get(prompt).includes(OPERATOR_QUESTION_CONTEXT),
+        `${prompt}: ${contexts.get(prompt)}`,
+      );
+    }
+    for (const prompt of [
+      "How many roots are there",
+      "Do not run the final gate until I approve.",
+      "fix the test",
+    ]) {
+      assert.equal(classOf(prompt), "unclassified", prompt);
+      assert.ok(!contexts.get(prompt).includes("Operator question:"), prompt);
+    }
+    // The injected context names both pathways, that neither stops the work,
+    // and the exception for a message that asks for an action.
+    for (const words of [
+      "why the current course is right",
+      "what the question changes in your reading and what you will now do differently",
+      "Keep working either way",
+      "if the message also asks for an action, including to pause, stop or wait, do that",
+      "it records no rule",
+    ])
+      assert.ok(OPERATOR_QUESTION_CONTEXT.includes(words), words);
+    assert.doesNotMatch(
+      JSON.stringify(rows),
+      /close slow|final gate|regression test/u,
+      "the journal keeps no message text",
+    );
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-254 every emitted role root carries the question's two pathways and the blocked-turn sentence", () => {
+  const roots = harnessInstallation().files.filter((file) =>
+    file.path.endsWith("/SKILL.md"),
+  );
+  for (const role of [
+    "executor",
+    "verifier",
+    "reviewer",
+    "planner",
+    "refuter",
+    "router",
+    "release-close",
+  ])
+    for (const host of [".claude", ".agents"])
+      assert.ok(
+        roots.some(
+          (file) => file.path === `${host}/skills/dotln-${role}/SKILL.md`,
+        ),
+        `${host} ${role}`,
+      );
+  for (const file of roots) {
+    const text = file.contents.replace(/\s+/gu, " ");
+    assert.ok(
+      text.includes(
+        "An operator message that ends in a question mark is a smell, never a stop or a rule: answer it in your next message one of two ways, with the evidence, why the current course is right or what the question changes in your reading and what you will now do differently, and keep working; a message that also asks for an action, pausing, stopping or waiting included, is a request whatever its grammar, so do it. A question is not a waiver.",
+      ),
+      `${file.path} carries the two pathways`,
+    );
+    assert.ok(
+      text.includes(
+        "When only the operator can clear what blocks this session, say so once: state the block and the one line that clears it in a single message, then end your turn, because the host holds a `!` command the operator types until the turn ends.",
+      ),
+      `${file.path} carries the blocked-turn sentence`,
+    );
+  }
+});
+
+test("WO-254 the three host-decided shell advisories are journaled without a systemMessage while a refused command's advisory is still shown", () => {
+  const root = fixture();
+  try {
+    invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", { prompt: "resume: next" }),
+    );
+    const command = (text, extra = {}) =>
+      input(root, "PreToolUse", {
+        tool_name: "Bash",
+        tool_input: { command: text },
+        ...extra,
+      });
+    const quiet = {
+      "cd /tmp && ls":
+        "DotLn advisory: command classification: Shell working-directory override needs a separately reviewed host adapter; host permissions decide.",
+      "echo $(date)":
+        "DotLn advisory: command classification: Dynamic shell substitution requires an explicit effect adapter; host permissions decide.",
+      "for x in 1; do echo $x; done":
+        "DotLn advisory: command classification: Shell control syntax requires an explicit effect adapter; host permissions decide.",
+    };
+    for (const [text, advisory] of Object.entries(quiet)) {
+      const before = observations(root, command(text)).length;
+      const response = invoke(root, "permissions", command(text));
+      assert.equal(response.systemMessage, undefined, text);
+      assert.equal(response.hookSpecificOutput?.permissionDecision, undefined);
+      const added = observations(root, command(text)).slice(before);
+      assert.ok(
+        added.some(
+          (row) =>
+            row.advisory === advisory &&
+            row.delegated === true &&
+            row.shown === false,
+        ),
+        `${text} is journaled: ${JSON.stringify(added)}`,
+      );
+    }
+    // A plain command list raises no classification advisory at all; its
+    // call is journaled like any other.
+    const before = observations(root, command("a; b")).length;
+    assert.equal(
+      invoke(root, "permissions", command("a; b")).systemMessage,
+      undefined,
+    );
+    assert.ok(observations(root, command("a; b")).length > before);
+    // A refused effect's advisory names the refusal and is still shown.
+    assert.equal(
+      invoke(root, "permissions", command("git push origin main"))
+        .systemMessage,
+      "DotLn advisory: compiled authority does not permit remote.unapproved; host permissions decide.",
+    );
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
@@ -8144,6 +8504,250 @@ test("WO-039 foreign writer reservations refuse while their owner lives, reclaim
   }
 });
 
+// A process that lives until it is killed and is then left a zombie: the shell
+// runs it in the background and execs a sleep that never reaps it, so after
+// `exit` its table row stays in state Z until `stop` ends that sleep.
+function zombieCandidate(directory) {
+  const file = join(directory, "zombie-candidate.pid");
+  const parent = spawn(
+    "sh",
+    ["-c", 'sleep 600 & echo $! > "$1"; exec sleep 600', "sh", file],
+    { stdio: "ignore", detached: true },
+  );
+  parent.unref();
+  const pause = () =>
+    Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 20);
+  const until = (ready, what) => {
+    const deadline = Date.now() + deadlineLimit(5000, 20_000);
+    while (!ready()) {
+      if (Date.now() > deadline) throw new Error(`zombie fixture: ${what}`);
+      pause();
+    }
+  };
+  until(
+    () => existsSync(file) && /^\d+\s*$/u.test(readFileSync(file, "utf8")),
+    "the background process did not start",
+  );
+  const pid = Number(readFileSync(file, "utf8").trim());
+  const column = (name) =>
+    spawnSync("ps", ["-o", `${name}=`, "-p", String(pid)], {
+      encoding: "utf8",
+    }).stdout.trim();
+  return {
+    pid,
+    startedAt: column("lstart"),
+    state: () => column("stat"),
+    exit() {
+      process.kill(pid, "SIGKILL");
+      until(() => column("stat").startsWith("Z"), "the process left no zombie");
+    },
+    stop() {
+      try {
+        process.kill(parent.pid, "SIGKILL");
+      } catch {
+        // Already gone.
+      }
+    },
+  };
+}
+
+test("WO-254 a close with no runtime that can reserve judges the runtime's own writer lane, whatever the configured roots, in both reservation layouts", () => {
+  const root = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-close-lane-")),
+  );
+  try {
+    // Relocated document roots move the control documents, never the lane
+    // the installed harness reserves in.
+    write(
+      root,
+      "dotln.config.json",
+      json({ version: 1, roots: { control: "records/control" } }),
+    );
+    const lane = join(root, "docs/control/local/harness");
+    const actor = (session) =>
+      createHash("sha256").update(session).digest("hex");
+    const check = () =>
+      reserveCodexRoleCommandBeforeLoad(root, "fixture-close-session");
+    assert.doesNotThrow(
+      check,
+      "no reservation: the close may build and reserve",
+    );
+    for (const file of [
+      join(lane, "writer", "fixture-instance.json"),
+      join(lane, "writer.json"),
+    ]) {
+      mkdirSync(dirname(file), { recursive: true });
+      writeFileSync(
+        file,
+        `${JSON.stringify({ actorId: actor("fixture-foreign-session") })}\n`,
+      );
+      assert.throws(
+        check,
+        /no built runtime in .* can reserve this session's writer, and the worktree holds a reservation that is not this session's; nothing was changed/u,
+        file,
+      );
+      writeFileSync(
+        file,
+        `${JSON.stringify({ actorId: actor("fixture-close-session") })}\n`,
+      );
+      assert.doesNotThrow(check, `this session's own reservation: ${file}`);
+      rmSync(file.endsWith("writer.json") ? file : dirname(file), {
+        recursive: true,
+        force: true,
+      });
+    }
+    // The configured control root's lane holds no reservation the runtime
+    // made, so it decides nothing.
+    write(
+      root,
+      "records/control/local/harness/writer.json",
+      `${JSON.stringify({ actorId: actor("fixture-foreign-session") })}\n`,
+    );
+    assert.doesNotThrow(check);
+  } finally {
+    removeFixture(root, { recursive: true });
+  }
+});
+
+test("WO-254 a zombie holder is dead: the refused session shows and releases it without force, and a live holder's release stays the operator's", () => {
+  const root = fixture();
+  const holder = zombieCandidate(root);
+  try {
+    invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", { prompt: "resume: next" }),
+    );
+    const lock = join(root, "docs/control/local/harness/writer");
+    const current = () => {
+      const [name] = readdirSync(lock);
+      return JSON.parse(readFileSync(join(lock, name), "utf8"));
+    };
+    const cli = (...args) =>
+      spawnSync(process.execPath, ["scripts/harness.mjs", "writer", ...args], {
+        cwd: root,
+        encoding: "utf8",
+      });
+    const command = (text) =>
+      input(root, "PreToolUse", {
+        tool_name: "Bash",
+        tool_input: { command: text },
+      });
+    const reason = (payload) =>
+      invoke(root, "concurrent-work-requires-worktrees", payload)
+        .hookSpecificOutput?.permissionDecisionReason ?? "";
+    const foreign = createHash("sha256")
+      .update("foreign-codex-close-session")
+      .digest("hex");
+    const owner = {
+      pid: holder.pid,
+      startedAt: holder.startedAt,
+      source: "codex-host",
+    };
+    assert.match(holder.startedAt, /^\S{3} \S{3} +\d+ \d\d:\d\d:\d\d \d{4}$/u);
+    seedHarnessWriter(root, {
+      actorId: foreign,
+      worktree: root,
+      owner,
+      reservedAt: "2026-11-03T22:41:38.745Z",
+    });
+
+    // While the holder lives, this session's ordinary work is refused with
+    // a message naming what it may still run, the view runs, and neither a
+    // release nor a forced release of a live holder is this session's.
+    assert.equal(harnessProcessAlive(owner), true);
+    parity(
+      root,
+      "concurrent-work-requires-worktrees",
+      command("git status"),
+      false,
+    );
+    const refused = reason(command("git status"));
+    assert.match(
+      refused,
+      /reserved by another session \(actor [0-9a-f]{12}; host process \d+ started .* is alive\)/u,
+    );
+    assert.ok(
+      refused.includes(
+        "This session may run node scripts/harness.mjs writer --show, as that exact command with no pipe, redirect or other command beside it",
+      ) &&
+        refused.includes(
+          "a live holder is released only by the operator, from an operator terminal: node scripts/harness.mjs writer --release --force",
+        ),
+      refused,
+    );
+    parity(
+      root,
+      "concurrent-work-requires-worktrees",
+      command("node scripts/harness.mjs writer --show"),
+      true,
+    );
+    for (const text of [
+      "node scripts/harness.mjs writer --release",
+      "node scripts/harness.mjs writer --release --force",
+      "node scripts/harness.mjs writer --show 2>&1 | head -40",
+    ])
+      parity(root, "concurrent-work-requires-worktrees", command(text), false);
+    const declined = cli("--release");
+    assert.equal(declined.status, 1);
+    assert.match(declined.stderr, /owner is alive/u);
+    assert.equal(current().actorId, foreign, "a live holder is never replaced");
+
+    // The holder exits and its parent never reaps it: signal zero still finds
+    // the pid, but the table's state column says Z, so it is dead.
+    holder.exit();
+    assert.match(holder.state(), /^Z/u);
+    assert.doesNotThrow(() => process.kill(holder.pid, 0));
+    assert.equal(harnessProcessAlive(owner), false);
+    const shown = cli("--show");
+    assert.equal(shown.status, 0, shown.stderr);
+    assert.deepEqual(
+      (({ reserved, actorId, alive }) => ({ reserved, actorId, alive }))(
+        JSON.parse(shown.stdout),
+      ),
+      { reserved: true, actorId: foreign, alive: false },
+      "the view judges the zombie's reservation stale",
+    );
+    for (const text of [
+      "node scripts/harness.mjs writer --show",
+      "node scripts/harness.mjs writer --release",
+    ])
+      parity(root, "concurrent-work-requires-worktrees", command(text), true);
+    assert.equal(
+      current().actorId,
+      foreign,
+      "admitting the release reclaims nothing: the command retires it",
+    );
+    const released = cli("--release");
+    assert.equal(released.status, 0, released.stderr);
+    assert.deepEqual(
+      (({ released, alive }) => ({ released, alive }))(
+        JSON.parse(released.stdout),
+      ),
+      { released: true, alive: false },
+    );
+    assert.equal(existsSync(lock), false);
+    assert.deepEqual(
+      (({ event, actorId, alive, forced }) => ({
+        event,
+        actorId,
+        alive,
+        forced,
+      }))(writerEvents(root).at(-1)),
+      {
+        event: "operator-released",
+        actorId: foreign,
+        alive: false,
+        forced: false,
+      },
+      "the release writes the writer-events row it writes today",
+    );
+  } finally {
+    holder.stop();
+    removeFixture(root, { recursive: true });
+  }
+});
+
 // Delays one real filesystem call on the observed reservation until a barrier
 // file appears; liveness, contents, host facts and the hook verdict are untouched.
 const interleavePreload = `import fs from "node:fs";
@@ -8585,7 +9189,16 @@ test("WO-132 generated hooks delegate classification, attribution, scope and run
           advisory,
         )?.[0] ??
         `advisory:${createHash("sha256").update(advisory).digest("hex")}`;
-      if (payload.hook_event_name === "PostToolUse" || seen.has(cause))
+      // A classification host permissions decide stays in the journal and
+      // out of the agent's context (WO-254); every other advisory shows once.
+      if (
+        /Shell control syntax|Dynamic shell substitution|Shell working-directory override/u.test(
+          advisory,
+        )
+      ) {
+        assert.equal(result.systemMessage, undefined);
+        assert.equal(rows.at(-1).shown, false);
+      } else if (payload.hook_event_name === "PostToolUse" || seen.has(cause))
         assert.equal(result.systemMessage, undefined);
       else {
         assert.equal(result.systemMessage, advisory);
@@ -13063,10 +13676,12 @@ test("WO-142 D1 snapshot package links are inventoried without traversal while u
 test("WO-142 repair B1 one advisory stays quiet across hook kinds", () => {
   const root = fixture();
   try {
+    // A here-string's advisory is still shown; the three classifications
+    // host permissions decide are journal-only since WO-254.
     const payload = input(root, "PreToolUse", {
       tool_name: "Bash",
       tool_use_id: "fixture-shared-call",
-      tool_input: { command: "echo $(printf fixture)" },
+      tool_input: { command: "cat <<< fixture" },
     });
     const first = invoke(root, "permissions", payload);
     assert.match(first.systemMessage, /DotLn advisory:/);

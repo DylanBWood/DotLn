@@ -16,6 +16,12 @@ authority to use it. Repository exploration stays inside the requested project
 unless the operator explicitly expands scope. Sandbox controls are a backstop
 for that judgment rule, not a replacement for it.
 
+A standing rule enters this record, or any standing document, only from the
+operator's direction: the planning pass that writes it names it in its Rules
+recorded block with the operator message's journal reference and capture
+digest, and `plan check` refuses a rule whose message was a question or that
+names no message.
+
 ## Harnesses in use
 
 | Harness  | Provider | Version checked | Roles using it | Sandbox and approval mode              |

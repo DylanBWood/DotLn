@@ -143,8 +143,10 @@ test("feature inventory reports legacy overlays, budgets, unread switches and es
   assert.equal(row("tinkerer-economy").value, false);
   assert.match(row("tinkerer-economy").note, /build\/options.json/u);
   assert.equal(readFeatures(root)["tinkerer-economy"], false);
-  assert.equal(row("subagent-cap").source, "default");
-  assert.equal(row("subagent-cap").value, 20);
+  // The cap is read from the configured control root's budgets, as the spawn
+  // guard reads it (WO-254, FUP-a0efaae1b9887fde); the ceiling is four times it.
+  assert.equal(row("subagent-cap").source, "records/control/budgets.json");
+  assert.equal(row("subagent-cap").value, 5);
   assert.equal(row("driven-session-ceiling").value, 20);
   assert.equal(row("retention").value["worker-capture"], null);
   assert.equal(row("retention").value["session-scratch"], 24);

@@ -14,16 +14,21 @@ import {
   loadConfig,
 } from "./lib/config.mjs";
 import {
+  appendFileSync,
+  chmodSync,
   copyFileSync,
   existsSync,
   lstatSync,
   mkdirSync,
+  readdirSync,
   readFileSync,
   realpathSync,
+  rmdirSync,
+  writeFileSync,
 } from "node:fs";
 import { basename, dirname, join, relative, resolve, sep } from "node:path";
 
-import { spawnSync } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import {
   absoluteBodyLinks,
@@ -65,7 +70,10 @@ import {
   isMainModule,
 } from "./lib/paths.mjs";
 import { statusProjection, refreshControlProjection } from "./resume.mjs";
-import { carryPendingOverrides } from "./lib/pending-overrides.mjs";
+import {
+  carryPendingOverrides,
+  pendingOverridesPath,
+} from "./lib/pending-overrides.mjs";
 import { readControl } from "./lib/control-store.mjs";
 import { constellation, prepareBeaconDisposal } from "./lib/beacons.mjs";
 import {
@@ -92,6 +100,7 @@ import { umbrellaRecord } from "./lib/dependencies.mjs";
 import {
   recordRepositoryClone,
   recordTargetWorktree,
+  forgetTargetWorktree,
   targetStartPlan,
   physicalDirectory,
   readTargetStart,
@@ -585,6 +594,207 @@ const carryLocalTerms = (mainPath, target) => {
   copyFileSync(source, destination);
   process.stdout.write(`Carried the local-terms list into ${target}.\n`);
 };
+// A refusal the host's sandbox or file permissions raise, in a thrown error
+// or in a child command's reported output.
+const hostDenial = (error) =>
+  /\b(?:EPERM|EACCES)\b|operation not permitted|permission denied/iu.test(
+    `${error?.code ?? ""} ${error?.message ?? error}`,
+  );
+
+// Before a start creates anything, the host must admit its writes where the
+// worktree will stand: an exclusive directory there is made and removed. A
+// sandbox or permission refusal stops the start with nothing created.
+const admitStartWrites = (target) => {
+  try {
+    mkdirSync(target);
+  } catch (error) {
+    if (!hostDenial(error)) throw error;
+    throw new Error(
+      `worktree start: the host does not admit writes at ${target} (${error.code ?? error.message}); nothing was created. Grant this one command write approval for ${dirname(target)} through the host's permission flow and rerun it.`,
+    );
+  }
+  rmdirSync(target);
+};
+
+// The records a self start moves out of main into its new worktree: pending
+// sibling receipts and pending post-close override records. A denied start
+// writes back any it moved before removing the worktree that holds them.
+const startCarriedRecords = (mainPath, siblingReceipts) => {
+  const lane = pendingOverridesPath(mainPath);
+  const overrides = existsSync(join(mainPath, lane))
+    ? readdirSync(join(mainPath, lane))
+        .filter((name) => /^WO-\d{3}-[0-9a-f-]{36}\.json$/u.test(name))
+        .map((name) => `${lane}/${name}`)
+    : [];
+  return [...siblingReceipts.map((row) => row.path), ...overrides].flatMap(
+    (path) => {
+      const file = join(mainPath, path);
+      return lstatSync(file, { throwIfNoEntry: false })?.isFile()
+        ? [{ path, bytes: readFileSync(file) }]
+        : [];
+    },
+  );
+};
+
+/**
+ * The host denied a step after this start created a worktree: restore the
+ * records it carried out of main, remove each worktree and branch this run
+ * created, and record the denial in main's ignored lane, so nothing the start
+ * made is left behind for the operator. Every step is attempted on its own
+ * and none can replace the denial: a step that fails is named in the result.
+ * A worktree is kept when a record it carried could not be put back, since
+ * removing it would lose that record.
+ */
+const undoDeniedStart = (
+  mainPath,
+  { worktrees, workOrderId, carried, cause },
+) => {
+  const failures = [];
+  const failed = (step, error) =>
+    failures.push(`${step}: ${String(error?.code ?? error?.message ?? error)}`);
+  const restored = [];
+  let recordsSafe = true;
+  for (const { path, bytes } of carried) {
+    try {
+      const file = join(mainPath, path);
+      if (existsSync(file)) continue;
+      mkdirSync(dirname(file), { recursive: true });
+      writeFileSync(file, bytes, { flag: "wx", mode: 0o600 });
+      restored.push(path);
+    } catch (error) {
+      recordsSafe = false;
+      failed(`restoring ${path}`, error);
+    }
+  }
+  const attempt = (root, args) => {
+    try {
+      runGit(root, args);
+    } catch (error) {
+      failed(`git ${args.slice(0, 2).join(" ")}`, error);
+    }
+  };
+  // This start made the tree, so its directories take back the owner's write
+  // permission a denied step left them without before Git removes them.
+  const writable = (path) => {
+    const info = lstatSync(path, { throwIfNoEntry: false });
+    if (!info?.isDirectory()) return;
+    try {
+      chmodSync(path, info.mode | 0o700);
+    } catch {
+      // Git's removal below names what this left.
+      return;
+    }
+    for (const name of readdirSync(path)) writable(join(path, name));
+  };
+  const outcomes = worktrees.map(
+    ({ root, worktree, branch, createdBranch }) => {
+      if (recordsSafe) {
+        try {
+          writable(worktree);
+        } catch (error) {
+          failed(`restoring write permission in ${worktree}`, error);
+        }
+        // A worktree whose add was itself denied may not exist to remove.
+        if (existsSync(worktree))
+          attempt(root, ["worktree", "remove", "--force", worktree]);
+        attempt(root, ["worktree", "prune"]);
+        try {
+          if (
+            createdBranch &&
+            runGit(root, ["branch", "--list", branch]) !== ""
+          )
+            attempt(root, ["branch", "-D", branch]);
+        } catch (error) {
+          failed(`listing ${branch}`, error);
+        }
+      } else
+        failures.push(
+          `kept ${worktree}: a record it carried is not back in main`,
+        );
+      let removed = { worktree: false, branch: false };
+      try {
+        removed = {
+          worktree:
+            !existsSync(worktree) &&
+            !parseWorktrees(root).some((row) => row.worktree === worktree),
+          branch:
+            !createdBranch || runGit(root, ["branch", "--list", branch]) === "",
+        };
+      } catch (error) {
+        failed(`inspecting ${worktree}`, error);
+      }
+      return { worktree, branch, removed, kept: !recordsSafe };
+    },
+  );
+  let lane = null;
+  let recorded = true;
+  try {
+    lane = docPath(mainPath, "control", "local/worktree-start-denials.jsonl");
+    mkdirSync(dirname(lane), { recursive: true, mode: 0o700 });
+    appendFileSync(
+      lane,
+      `${JSON.stringify({
+        at: new Date().toISOString(),
+        workOrderId,
+        worktree: outcomes[0]?.worktree ?? null,
+        branch: outcomes[0]?.branch ?? null,
+        removed: outcomes[0]?.removed ?? null,
+        worktrees: outcomes,
+        cause: String(cause).replace(/\s+/gu, " ").trim().slice(0, 600),
+        restored,
+        failures,
+      })}\n`,
+      { mode: 0o600 },
+    );
+  } catch (error) {
+    recorded = false;
+    failed("recording the denial", error);
+  }
+  return { outcomes, restored, lane, recorded, failures };
+};
+
+/** The refusal a denied start prints: what the host denied, what was undone,
+ * what was not, where it is recorded and the grant to request. */
+const deniedStartMessage = (mainPath, place, error, undone) => {
+  const kept = undone.outcomes.filter((outcome) => outcome.kept);
+  const left = undone.outcomes
+    .filter((outcome) => !outcome.kept)
+    .flatMap(({ worktree, branch, removed }) => [
+      ...(removed.worktree ? [] : [`the worktree ${worktree}`]),
+      ...(removed.branch ? [] : [`the branch ${branch}`]),
+    ]);
+  const plural = undone.outcomes.length > 1;
+  return [
+    `worktree start: the host denied a step after ${place} was created (${error.message}).`,
+    ...(kept.length
+      ? [
+          `${kept.map(({ worktree }) => worktree).join(" and ")} ${kept.length > 1 ? "are" : "is"} kept because a record it carried could not be put back in main; move that record back to main, then remove the worktree and its branch before retrying.`,
+        ]
+      : []),
+    left.length
+      ? `Removing ${left.join(" and ")} failed; remove ${left.length > 1 ? "them" : "it"} before retrying.`
+      : kept.length
+        ? null
+        : plural
+          ? "The worktrees and their branches are removed."
+          : "The worktree and its branch are removed.",
+    ...(undone.restored.length
+      ? [
+          `${undone.restored.length} carried record${undone.restored.length > 1 ? "s are" : " is"} back in main.`,
+        ]
+      : []),
+    ...(undone.failures.length
+      ? [`Not undone: ${undone.failures.join("; ")}.`]
+      : []),
+    undone.recorded
+      ? `The denial is recorded in ${relative(mainPath, undone.lane)}.`
+      : "The denial could not be recorded.",
+    "Grant this command the host's write approval and rerun it.",
+  ]
+    .filter(Boolean)
+    .join(" ");
+};
+
 const carrySiblingReceipts = async (mainPath, target, pending) => {
   if (!pending.length) return;
   const { carryPendingReceipts } = await import("./siblings.mjs");
@@ -655,24 +865,64 @@ export async function completeSelfStart(
         env: { ...process.env, DOTLN_LAUNCHPAD: target },
       },
     );
-    if (activated.status !== 0)
-      throw new Error(
-        `resume activation failed: ${(activated.stderr || activated.stdout).trim()}`,
-      );
+    if (activated.error || activated.status !== 0)
+      throw childFailure(activated, "resume activation");
     output = activated.stdout;
   } else if (state.phase !== "active" || state.workOrderPath !== workOrderPath)
     throw new Error("preserved start activation differs");
-  const bootstrap = join(target, "scripts/bootstrap.mjs");
-  if (existsSync(bootstrap)) {
-    const prepared = spawnSync(process.execPath, [bootstrap], {
-      cwd: target,
-      stdio: "inherit",
-      env: { ...process.env, DOTLN_LAUNCHPAD: target },
-    });
-    if (prepared.status !== 0) throw new Error("worktree preparation failed");
-  }
+  await runPreparation(target, "worktree preparation");
   return output;
 }
+
+// A child the host refused to start carries only its spawn error; one that
+// ran and failed carries its status and output. The thrown message keeps
+// both, so the start's denial judgment reads what the host said.
+const childFailure = (result, step) => {
+  const detail = [
+    result.error?.code,
+    result.error?.message,
+    String(result.stderr ?? "").slice(-4000),
+    String(result.stdout ?? "").slice(-4000),
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .replace(/\s+/gu, " ")
+    .trim();
+  return new Error(`${step} failed${detail ? `: ${detail}` : ""}`, {
+    cause: result.error,
+  });
+};
+
+// The bootstrap's output reaches the operator as it runs, and the last part
+// of each stream is also kept, so that a host denial it reports on either,
+// or a spawn the host refuses, reaches the start's denial judgment.
+const runPreparation = async (root, step) => {
+  const bootstrap = join(root, "scripts/bootstrap.mjs");
+  if (!existsSync(bootstrap)) return;
+  const kept = { stdout: "", stderr: "" };
+  const outcome = await new Promise((settle) => {
+    let child;
+    try {
+      child = spawn(process.execPath, [bootstrap], {
+        cwd: root,
+        stdio: ["inherit", "pipe", "pipe"],
+        env: { ...process.env, DOTLN_LAUNCHPAD: root },
+      });
+    } catch (error) {
+      settle({ status: null, error });
+      return;
+    }
+    for (const name of /** @type {const} */ (["stdout", "stderr"]))
+      child[name].on("data", (chunk) => {
+        process[name].write(chunk);
+        kept[name] = (kept[name] + chunk.toString("utf8")).slice(-4000);
+      });
+    child.on("error", (error) => settle({ status: null, error }));
+    child.on("close", (status, signal) => settle({ status, signal }));
+  });
+  if (outcome.error || outcome.status !== 0)
+    throw childFailure({ ...outcome, ...kept }, step);
+};
 
 // Executor sessions start in the launchpad, where lifecycle and role skills
 // live. Codex adds the target directory; Claude's executor grant resolves it
@@ -720,7 +970,14 @@ const signoffAdvisory = (root) => {
     );
 };
 
-const startTargetWorktree = async (mainPath, entry) => {
+// A host denial takes back what this run made, both worktrees and their
+// branches when it made them and the records it carried, and keeps what an
+// earlier attempt of a pending start made; a fresh start it fully undid
+// forgets its pending record, so nothing is left for the operator.
+const startTargetWorktree = async (mainPath, entry, { fresh = false } = {}) => {
+  const made = [];
+  let carried = [];
+  let registered = false;
   const {
     target,
     clone,
@@ -760,8 +1017,12 @@ const startTargetWorktree = async (mainPath, entry) => {
         throw new Error(
           "pending start branch differs from its base; source retained",
         );
+      made.push({ root, worktree: directory, branch, createdBranch: false });
       runGit(root, ["worktree", "add", directory, branch]);
-    } else runGit(root, ["worktree", "add", "-b", branch, directory, base]);
+    } else {
+      made.push({ root, worktree: directory, branch, createdBranch: true });
+      runGit(root, ["worktree", "add", "-b", branch, directory, base]);
+    }
   };
   try {
     if (
@@ -780,11 +1041,9 @@ const startTargetWorktree = async (mainPath, entry) => {
       createHash("sha256").update(source).digest("hex") !== entry.authorityHash
     )
       throw new Error("pending start authority differs; source retained");
-    await carrySiblingReceipts(
-      mainPath,
-      launchpad,
-      entry.siblingReceipts ?? capturePendingReceipts(mainPath),
-    );
+    const receipts = entry.siblingReceipts ?? capturePendingReceipts(mainPath);
+    carried = startCarriedRecords(mainPath, receipts);
+    await carrySiblingReceipts(mainPath, launchpad, receipts);
     carryLocalTerms(mainPath, launchpad);
     carryPendingOverrides(mainPath, launchpad, refreshControlProjection);
     const state = readControl(launchpad).orders.get(workOrderId)?.state;
@@ -803,10 +1062,8 @@ const startTargetWorktree = async (mainPath, entry) => {
           env: { ...process.env, DOTLN_LAUNCHPAD: launchpad },
         },
       );
-      if (activated.status !== 0)
-        throw new Error(
-          `resume activation failed: ${(activated.stderr || activated.stdout).trim()}`,
-        );
+      if (activated.error || activated.status !== 0)
+        throw childFailure(activated, "resume activation");
     } else if (
       state.phase !== "active" ||
       state.repositoryId !== entry.repositoryId ||
@@ -814,21 +1071,13 @@ const startTargetWorktree = async (mainPath, entry) => {
     ) {
       throw new Error("pending start activation differs; source retained");
     }
-    const bootstrap = join(launchpad, "scripts/bootstrap.mjs");
-    if (existsSync(bootstrap)) {
-      const prepared = spawnSync(process.execPath, [bootstrap], {
-        cwd: launchpad,
-        stdio: "inherit",
-        env: { ...process.env, DOTLN_LAUNCHPAD: launchpad },
-      });
-      if (prepared.status !== 0)
-        throw new Error("launchpad preparation failed");
-    }
+    await runPreparation(launchpad, "launchpad preparation");
     const { emitTargetHarness, checkTargetHarness } =
       await import("./lib/harness.mjs");
     const options = { runtimeRoot: mainPath };
     emitTargetHarness(target, options);
     checkTargetHarness(target, options);
+    registered = true;
     recordTargetWorktree(mainPath, entry);
     recordTargetWorktree(launchpad, entry);
     const repository = loadConfig(mainPath).repositories[entry.repositoryId];
@@ -838,6 +1087,42 @@ const startTargetWorktree = async (mainPath, entry) => {
       `Target worktree ${target} on ${branch}.\nAuthority profile: ${JSON.stringify(repository.authorityProfile)}\nTarget status: ${launchpadInvocation(launchpad, "resume")} status\nCreated ${launchpad} on ${branch}.\nActivated ${workOrderId}.\nPhase: active.\n${launchLines}Next (run manually):\n  cd ${shellQuote(launchpad)}\n  codex --add-dir ${shellQuote(target)}\n  enter: resume: next\n`,
     );
   } catch (error) {
+    if (hostDenial(error) && made.length) {
+      if (registered)
+        try {
+          forgetTargetWorktree(mainPath, target);
+        } catch {
+          // The registry entry then names a removed worktree; harness check reports it.
+        }
+      const undone = undoDeniedStart(mainPath, {
+        worktrees: made,
+        workOrderId,
+        carried,
+        cause: error.message,
+      });
+      if (
+        fresh &&
+        undone.outcomes.every(
+          ({ removed }) => removed.worktree && removed.branch,
+        )
+      )
+        try {
+          forgetTargetStart(mainPath, workOrderId);
+        } catch (forgetError) {
+          undone.failures.push(
+            `forgetting the pending start: ${forgetError.code ?? forgetError.message}`,
+          );
+        }
+      throw new Error(
+        deniedStartMessage(
+          mainPath,
+          made.map(({ worktree }) => worktree).join(" and "),
+          error,
+          undone,
+        ),
+        { cause: error },
+      );
+    }
     throw new Error(
       `${error.message}. Target start is preserved; correct the reported condition and retry from ${mainPath}: node ${shellQuote(join(mainPath, "scripts/worktree.mjs"))} start ${workOrderId} ${shellQuote(workOrderPath)}`,
     );
@@ -1170,6 +1455,7 @@ const main = async () => {
     // Re-read the authority after fast-forwarding, before either worktree exists.
     const targetPlan = readStartAuthority();
     const siblingReceipts = capturePendingReceipts(mainPath);
+    admitStartWrites(target);
     if (targetPlan) {
       if (
         loadConfig(mainPath).repositories[targetPlan.repositoryId]
@@ -1207,29 +1493,54 @@ const main = async () => {
           .digest("hex"),
       };
       recordTargetStart(mainPath, entry);
-      await startTargetWorktree(mainPath, entry);
+      await startTargetWorktree(mainPath, entry, { fresh: true });
       return;
     }
-    runGit(mainPath, ["worktree", "add", target, "-b", branch, "origin/main"]);
-    signoffAdvisory(target);
-    const base = runGit(target, ["rev-parse", "HEAD"]);
-    const authorityHash = createHash("sha256")
-      .update(readFileSync(join(target, workOrderPath)))
-      .digest("hex");
-    const bindings = [
-      mainPath,
-      target,
-      branch,
-      base,
-      workOrderId,
-      workOrderPath,
-      authorityHash,
-      siblingReceipts,
-    ];
+    // Everything from the worktree's creation on is undone when the host
+    // denies a step of it; any other failure keeps the recovery below.
+    const carried = startCarriedRecords(mainPath, siblingReceipts);
+    let bindings;
     let activatedOutput;
     try {
+      runGit(mainPath, [
+        "worktree",
+        "add",
+        target,
+        "-b",
+        branch,
+        "origin/main",
+      ]);
+      signoffAdvisory(target);
+      const base = runGit(target, ["rev-parse", "HEAD"]);
+      const authorityHash = createHash("sha256")
+        .update(readFileSync(join(target, workOrderPath)))
+        .digest("hex");
+      bindings = [
+        mainPath,
+        target,
+        branch,
+        base,
+        workOrderId,
+        workOrderPath,
+        authorityHash,
+        siblingReceipts,
+      ];
       activatedOutput = await completeSelfStart(...bindings);
     } catch (error) {
+      if (hostDenial(error)) {
+        const undone = undoDeniedStart(mainPath, {
+          worktrees: [
+            { root: mainPath, worktree: target, branch, createdBranch: true },
+          ],
+          workOrderId,
+          carried,
+          cause: error.message,
+        });
+        throw new Error(deniedStartMessage(mainPath, target, error, undone), {
+          cause: error,
+        });
+      }
+      if (!bindings) throw error;
       const program = `import {completeSelfStart} from ${JSON.stringify(pathToFileURL(join(mainPath, "scripts/worktree.mjs")).href)}; process.stdout.write(await completeSelfStart(...${JSON.stringify(bindings)})); console.log(${JSON.stringify(`Phase: active.\nNext: cd ${shellQuote(target)}; start codex and enter resume: next`)});`;
       throw new Error(
         `worktree created and preserved at ${target}; ${error.message}. Correct the reported condition and retry: node --input-type=module -e ${shellQuote(program)}`,

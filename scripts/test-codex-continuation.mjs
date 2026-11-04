@@ -20,7 +20,12 @@ import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 import { codexContinuation } from "../packages/compiler/src/codex-continuation.mjs";
 import { operatorControl } from "../packages/compiler/src/operator-control.mjs";
-import { lowerToHarness } from "../packages/compiler/dist/src/index.js";
+import {
+  harnessSessionPhase,
+  lowerToHarness,
+  operatorMessageClass,
+} from "../packages/compiler/dist/src/index.js";
+import * as harnessHost from "../packages/skeleton/dist/src/harness-host.js";
 import {
   contributorConfiguredProgram,
   contributorProfiles,
@@ -125,10 +130,15 @@ async function fixture(run) {
       `import fs from 'node:fs'; import assert from 'node:assert/strict'; assert.deepEqual(process.argv.slice(2),${JSON.stringify(args)}); console.log(JSON.stringify(JSON.parse(fs.readFileSync('fixture-state.json','utf8')).${field}));\n`,
     );
   const input = { cwd: root, session_id: sessionId, turn_id: "turn-1" };
-  const hook = (event, extra = {}) =>
+  // The generated entry passes the compiler's classifier; a fixture may pass
+  // the real harness runtime, which owns writer reservations.
+  const hook = (event, extra = {}, loadRuntime) =>
     codexContinuation(
       { ...input, hook_event_name: event, ...extra },
       operatorControl,
+      (prompt) => operatorMessageClass(prompt),
+      loadRuntime,
+      harnessSessionPhase,
     );
   const compact = async () => {
     await hook("PostCompact", { trigger: "auto" });
@@ -204,7 +214,13 @@ test("Codex compaction restores the owned task and continues once without dispat
 
 test("Codex conversation text does not control compaction recovery", async () => {
   await fixture(async ({ directory, hook, compact }) => {
-    const before = readdirSync(directory);
+    // The prompt hook journals what was said; it writes no continuation
+    // record or receipt and decides nothing.
+    const recovery = () =>
+      readdirSync(directory).filter((name) =>
+        /\.codex-(?:continuation|continued-|probe-)/u.test(name),
+      );
+    const before = recovery();
     for (const prompt of [
       "Stop, that's wrong",
       "no, stop",
@@ -217,11 +233,349 @@ test("Codex conversation text does not control compaction recovery", async () =>
       "conversation only: status",
     ]) {
       assert.deepEqual(await hook("UserPromptSubmit", { prompt }), {});
-      assert.deepEqual(readdirSync(directory), before);
+      assert.deepEqual(recovery(), before);
     }
     assert.ok((await compact()).hookSpecificOutput);
   });
 });
+
+const journalRows = (path) =>
+  readFileSync(path, "utf8").trim().split("\n").filter(Boolean).map(JSON.parse);
+
+test("WO-254 Codex operator instructions are captured with their form class and restored verbatim after a compaction, and the first reply is probed", async () =>
+  fixture(async ({ root, directory, key, hook, compact }) => {
+    const instruction = "pause before the final gate";
+    const request = "could you pause before the final gate?";
+    for (const prompt of [instruction, request])
+      assert.deepEqual(await hook("UserPromptSubmit", { prompt }), {});
+    const observed = journalRows(join(directory, `${key}.jsonl`)).filter(
+      (row) => row.typedEvent === "OperatorMessageObserved",
+    );
+    assert.deepEqual(
+      observed.map(({ source, class: kind, prefix, digest: sha, bytes }) => ({
+        source,
+        kind,
+        prefix,
+        sha,
+        bytes,
+      })),
+      [
+        {
+          source: "codex-prompt-hook",
+          kind: "unclassified",
+          prefix: null,
+          sha: digest(instruction),
+          bytes: Buffer.byteLength(instruction),
+        },
+        {
+          source: "codex-prompt-hook",
+          kind: "question",
+          prefix: null,
+          sha: digest(request),
+          bytes: Buffer.byteLength(request),
+        },
+      ],
+    );
+    assert.ok(
+      observed.every((row) => !JSON.stringify(row).includes("pause")),
+      "the metadata journal holds no message text",
+    );
+    assert.deepEqual(
+      journalRows(join(directory, `${key}.codex-messages.jsonl`)).map(
+        ({ kind, class: form, text }) => ({ kind, form, text }),
+      ),
+      [
+        { kind: "operator", form: "unclassified", text: instruction },
+        { kind: "operator", form: "question", text: request },
+      ],
+    );
+    const context = (await compact()).hookSpecificOutput.additionalContext;
+    const task = context.indexOf("is still outstanding.");
+    assert.ok(task > 0, context);
+    assert.ok(
+      context.indexOf(instruction) > task &&
+        context.indexOf(request) > context.indexOf(instruction),
+      `both messages follow the task sentence verbatim, oldest first: ${context}`,
+    );
+    assert.match(
+      context,
+      /\[1\] unclassified, .*:\npause before the final gate\n\[2\] question, .*:\ncould you pause before the final gate\?/u,
+    );
+    // The turn's transcript holds a reply before the compaction, then the
+    // first reply after it, tool work and a later final reply: the probe
+    // names the first after the compaction, not the stop's last message.
+    const reply = "Paused before the final gate; awaiting the operator.";
+    const final = "The final gate waits for the operator's word.";
+    const transcript = join(root, "fixture-transcript.jsonl");
+    const said = (at, text, phase) => ({
+      timestamp: at,
+      type: "response_item",
+      payload: {
+        type: "message",
+        role: "assistant",
+        content: [{ type: "output_text", text }],
+        phase,
+      },
+    });
+    writeFileSync(
+      transcript,
+      [
+        said(
+          "2030-01-02T10:00:00.000Z",
+          "a reply before the compaction",
+          "commentary",
+        ),
+        {
+          timestamp: "2030-01-02T10:00:01.000Z",
+          type: "compacted",
+          payload: { message: "" },
+        },
+        {
+          timestamp: "2030-01-02T10:00:02.000Z",
+          type: "response_item",
+          payload: { type: "reasoning", summary: [] },
+        },
+        said("2030-01-02T10:00:03.000Z", reply, "commentary"),
+        {
+          timestamp: "2030-01-02T10:00:04.000Z",
+          type: "response_item",
+          payload: { type: "function_call", name: "shell", arguments: "{}" },
+        },
+        said("2030-01-02T10:00:05.000Z", final, "final_answer"),
+      ]
+        .map((row) => JSON.stringify(row))
+        .join("\n") + "\n",
+    );
+    assert.equal(
+      (
+        await hook("Stop", {
+          stop_hook_active: false,
+          last_assistant_message: final,
+          transcript_path: transcript,
+        })
+      ).decision,
+      "block",
+    );
+    const probes = journalRows(join(directory, `${key}.jsonl`)).filter(
+      (row) => row.compactionProbe,
+    );
+    assert.equal(probes.length, 1);
+    assert.deepEqual(
+      {
+        sessionKey: probes[0].compactionProbe.sessionKey,
+        turnId: probes[0].compactionProbe.turnId,
+        task: probes[0].compactionProbe.task,
+        reply: probes[0].compactionProbe.firstAssistantMessage,
+      },
+      {
+        sessionKey: key,
+        turnId: "turn-1",
+        task: {
+          workOrder: "WO-999",
+          role: "executor",
+          expectedEvent: "ImplementationReady",
+        },
+        reply: {
+          source: "transcript",
+          phase: "commentary",
+          at: "2030-01-02T10:00:03.000Z",
+          digest: digest(reply),
+          bytes: Buffer.byteLength(reply),
+          excerpt: reply,
+        },
+      },
+      "the probe names the first reply after the compaction against the saved task",
+    );
+    await hook("Stop", {
+      stop_hook_active: true,
+      last_assistant_message: "a later reply",
+    });
+    assert.equal(
+      journalRows(join(directory, `${key}.jsonl`)).filter(
+        (row) => row.compactionProbe,
+      ).length,
+      1,
+      "only the first reply after the compaction is probed",
+    );
+  }));
+
+test("WO-254 every operator message since the dispatch is restored verbatim, however many and however long; a capture never splits a character; without a transcript the probe names the stop's message as such", async () =>
+  fixture(async ({ directory, key, hook, compact }) => {
+    const instruction = "pause before the final gate";
+    const request = "could you pause before the final gate?";
+    // Two long messages whose instructions sit in their tails, past half of
+    // 64 KiB, and many short ones after them.
+    const tailed = (letter, tail) =>
+      `${letter.repeat(40 * 1024 - Buffer.byteLength(tail))}${tail}`;
+    const long = [
+      tailed("x", "then rerun the release suite"),
+      tailed("y", "and keep the review reports"),
+    ];
+    const short = Array.from(
+      { length: 200 },
+      (_, index) =>
+        `ordinary message ${String(index).padStart(3, "0")} of the dispatch`,
+    );
+    for (const prompt of [instruction, request, ...long, ...short])
+      assert.deepEqual(await hook("UserPromptSubmit", { prompt }), {});
+    const context = (await compact()).hookSpecificOutput.additionalContext;
+    assert.match(
+      context,
+      /\[1\] unclassified, [^\n]*:\npause before the final gate\n/u,
+    );
+    assert.match(
+      context,
+      /\[2\] question, [^\n]*:\ncould you pause before the final gate\?\n/u,
+    );
+    for (const text of [...long, ...short])
+      assert.ok(context.includes(`:\n${text}`), "every message is whole");
+    assert.doesNotMatch(context, /cut here|for size/u);
+    assert.ok(
+      context.indexOf(short.at(-1)) > context.indexOf(long[1]),
+      "oldest first",
+    );
+    // A capture cut inside a two-byte character keeps only whole characters.
+    await hook("UserPromptSubmit", { prompt: `${"a".repeat(65535)}é` });
+    const captured = journalRows(
+      join(directory, `${key}.codex-messages.jsonl`),
+    ).at(-1);
+    assert.equal(captured.truncated, true);
+    assert.equal(captured.text, "a".repeat(65535));
+    await hook("Stop", {
+      stop_hook_active: false,
+      last_assistant_message: "the stop's own message",
+    });
+    const probe = journalRows(join(directory, `${key}.jsonl`)).find(
+      (row) => row.compactionProbe,
+    ).compactionProbe.firstAssistantMessage;
+    assert.deepEqual(
+      { source: probe.source, phase: probe.phase, at: probe.at },
+      { source: "stop-last-message", phase: null, at: null },
+    );
+  }));
+
+test("WO-254 a repair session's message is journaled in the repair phase, and a capture that cannot be written still reserves the writer", async () =>
+  fixture(
+    async ({ root, directory, key, session, writeSession, input, hook }) => {
+      session.intent = "resume: fix";
+      session.expectedEvent = "RepairCompleted";
+      writeSession();
+      // The capture's lane file is a directory here, so its append fails.
+      mkdirSync(join(directory, `${key}.codex-messages.jsonl`));
+      const reserved = [];
+      const runtime = async () => ({
+        reserveCodexDispatchWriter: (where, id) => reserved.push([where, id]),
+      });
+      assert.deepEqual(
+        await hook("UserPromptSubmit", { prompt: "keep going" }, runtime),
+        {},
+      );
+      const row = journalRows(join(directory, `${key}.jsonl`)).find(
+        (entry) => entry.typedEvent === "OperatorMessageObserved",
+      );
+      assert.equal(row.phase, "repair");
+      assert.equal(
+        harnessSessionPhase({ intent: "resume: fix", role: "executor" }),
+        "repair",
+      );
+      assert.deepEqual(reserved, [[root, input.session_id]]);
+    },
+  ));
+
+test("WO-254 a stopped Codex turn lets its writer go and the next prompt of its outstanding dispatch reserves it again, naming a foreign holder without refusing", async () =>
+  fixture(async ({ root, directory, key, hook }) => {
+    const runtime = async () => harnessHost;
+    const view = () => harnessHost.harnessWriterView(root);
+    const sessionId = `fixture-${root.split("/").at(-1)}`;
+    // A host that has delivered no prompt event keeps today's reservation.
+    harnessHost.seedHarnessWriter(root, {
+      actorId: key,
+      worktree: root,
+      owner: { source: "thread" },
+      reservedAt: "2026-11-04T10:28:47.334Z",
+    });
+    assert.deepEqual(
+      await hook("Stop", { stop_hook_active: false }, runtime),
+      {},
+    );
+    assert.equal(view().actorId, key, "no prompt hook observed, no release");
+    // Once the prompt hook is observed, a turn that stops releases and
+    // journals the stop; the next prompt reserves again.
+    await hook("UserPromptSubmit", { prompt: "continue" }, runtime);
+    assert.equal(view().actorId, key);
+    assert.deepEqual(
+      await hook("Stop", { stop_hook_active: false }, runtime),
+      {},
+    );
+    assert.equal(
+      view().reserved,
+      false,
+      "the stopped turn released its writer",
+    );
+    const stop = journalRows(join(directory, `${key}.jsonl`)).find(
+      (row) => row.dispatchStopped,
+    )?.dispatchStopped;
+    assert.deepEqual(
+      (({
+        role,
+        workOrder,
+        command,
+        writerHeld,
+        writerReleased,
+        dispatchOutstanding,
+      }) => ({
+        role,
+        workOrder,
+        command,
+        writerHeld,
+        writerReleased,
+        dispatchOutstanding,
+      }))(stop ?? {}),
+      {
+        role: "executor",
+        workOrder: "WO-999",
+        command: "turn",
+        writerHeld: true,
+        writerReleased: true,
+        dispatchOutstanding: true,
+      },
+    );
+    assert.deepEqual(
+      await hook("UserPromptSubmit", { prompt: "carry on" }, runtime),
+      {},
+    );
+    assert.deepEqual(
+      (({ reserved, actorId }) => ({ reserved, actorId }))(view()),
+      { reserved: true, actorId: key },
+      "the resumed turn of an outstanding dispatch holds its writer again",
+    );
+    // Another session took the worktree between turns: the prompt is
+    // admitted and told so; nothing is refused or replaced.
+    harnessHost.releaseHarnessWriter(root, {
+      cwd: root,
+      session_id: sessionId,
+      hook_event_name: "Stop",
+    });
+    const foreign = digest("another-claude-session");
+    harnessHost.seedHarnessWriter(root, {
+      actorId: foreign,
+      worktree: root,
+      owner: { pid: process.pid, source: "CLAUDE_PID" },
+      reservedAt: "2026-11-04T10:46:35.397Z",
+    });
+    const noted = await hook("UserPromptSubmit", { prompt: "go on" }, runtime);
+    assert.equal(noted.decision, undefined);
+    assert.match(
+      noted.hookSpecificOutput.additionalContext,
+      /does not hold this worktree's writer.*reserved by another session \(actor [0-9a-f]{12}; host process \d+/su,
+    );
+    assert.equal(view().actorId, foreign, "the foreign holder is untouched");
+    harnessHost.releaseHarnessWriter(root, {
+      cwd: root,
+      session_id: "another-claude-session",
+      hook_event_name: "Stop",
+    });
+  }));
 
 test("Codex wakes an unfinished work order after compaction and an old-message reply", async () =>
   fixture(async ({ root, input, hook, compact }) => {

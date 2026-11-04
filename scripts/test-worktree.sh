@@ -67,7 +67,7 @@ printf '{"name":"@dotln/kernel","version":"0.1.0"}\n' >"$main/packages/kernel/pa
 node "$script_dir/test-license-fixture.mjs" "$main"
 cp "$script_dir/../.gitignore" "$main/.gitignore"
 printf 'EXAMPLE=tracked\n' >"$main/.env.example"
-printf '%s\n' 'import {mkdirSync,writeFileSync} from "node:fs"; mkdirSync(".runtime",{recursive:true}); writeFileSync(".runtime/bootstrap-ready", "prepared before launch");' >"$main/scripts/bootstrap.mjs"
+printf '%s\n' 'import {mkdirSync,writeFileSync} from "node:fs"; if (process.env.DOTLN_FIXTURE_BOOTSTRAP_DENY) { process.stderr.write("EACCES: permission denied, mkdir .runtime\n"); process.exit(1); } mkdirSync(".runtime",{recursive:true}); writeFileSync(".runtime/bootstrap-ready", "prepared before launch");' >"$main/scripts/bootstrap.mjs"
 mkdir -p "$main/docs/siblings"
 printf '%s\n' '{"schemaVersion":1,"siblings":[{"id":"starter-fixture","purpose":"Fixture export","relation":{"kind":"export","coreCommit":null},"capabilityRows":[]}]}' >"$main/docs/siblings/siblings.json"
 printf '# WO-094 — prior closed fixture\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n' >"$main/docs/work-orders/WO-094-fixture.md"
@@ -106,6 +106,12 @@ printf '%s\n' \
   '  urls="$($real_git -C "$2" config --get-all remote.origin.pushurl || true)"' \
   '  if [[ -z "$urls" ]]; then urls="$($real_git -C "$2" config --get-all remote.origin.url)"; fi' \
   '  printf "%s\\n" "$urls"' \
+  '  exit 0' \
+  'fi' \
+  '# A planted host denial: the new worktree loses write permission on the named directory right after it is added.' \
+  'if [[ -n "${DOTLN_FIXTURE_READONLY_AFTER_ADD:-}" && "${3:-}" == "worktree" && "${4:-}" == "add" ]]; then' \
+  '  "$real_git" "${original_args[@]}"' \
+  '  if [[ -d "$DOTLN_FIXTURE_READONLY_AFTER_ADD" ]]; then chmod a-w "$DOTLN_FIXTURE_READONLY_AFTER_ADD"; fi' \
   '  exit 0' \
   'fi' \
   'exec "$real_git" "${original_args[@]}"' >"$test_root/bin/git"
@@ -904,5 +910,70 @@ grep -Fq 'WO-097 is not closed in merged control state' <<<"$reopened_output"
 test -d "$reopened_subject"
 test -n "$(git -C "$main" branch --list wo-097)"
 printf 'finish refused reopened merged order and preserved its closed subject\n'
+# A start the host denies after its worktree exists leaves no worktree and no
+# branch, puts the receipt it carried back in main and records the denial
+# (WO-254). The fixture's git takes write permission from the new worktree's
+# order-control directory right after the add, so the activation's own write
+# is refused by the file system as a sandbox refuses it.
+printf '# WO-091 — denied start fixture, v0.2.1\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n' >"$main/docs/work-orders/WO-091-fixture.md"
+git -C "$main" add docs/work-orders/WO-091-fixture.md
+git -C "$main" -c maintenance.auto=false commit -qm 'denied start fixture'
+git -C "$main" push origin main >/dev/null 2>&1
+denied_target="$test_root/project-wo091"
+denied_receipt="$pending_lane/2026-10-14T12-00-00-000Z.json"
+mkdir -p "$pending_lane"
+"$node_bin" - "$denied_receipt" "$(git -C "$main" rev-parse HEAD)" <<'JS'
+const fs=require('node:fs');fs.writeFileSync(process.argv[2],JSON.stringify({sibling:'starter-fixture',coreCommit:process.argv[3],manifestHash:`sha256:${'2'.repeat(64)}`,buildHash:'fnv1a64:1234567890abcdef',date:'2026-10-14T12:00:00.000Z'})+'\n');
+JS
+denied_receipt_bytes="$(cat "$denied_receipt")"
+if denied_output="$(PATH="$test_root/bin:$PATH" DOTLN_FIXTURE_READONLY_AFTER_ADD="$denied_target/docs/control/orders" node "$main/scripts/worktree.mjs" start WO-091 docs/work-orders/WO-091-fixture.md 2>&1)"; then
+  printf 'error: a denied activation reported success\n' >&2; exit 1
+fi
+grep -Fq "the host denied a step after $denied_target was created" <<<"$denied_output"
+grep -Fq 'The worktree and its branch are removed.' <<<"$denied_output"
+grep -Fq '1 carried record is back in main.' <<<"$denied_output"
+test ! -e "$denied_target"
+test -z "$(git -C "$main" branch --list wo-091)"
+if git -C "$main" worktree list --porcelain | grep -Fq "worktree $denied_target"; then
+  printf 'error: the denied worktree is still registered\n' >&2; exit 1
+fi
+test "$(cat "$denied_receipt")" = "$denied_receipt_bytes"
+"$node_bin" - "$main/docs/control/local/worktree-start-denials.jsonl" "$denied_target" <<'JS'
+const assert = require("node:assert/strict"), fs = require("node:fs");
+const row = fs.readFileSync(process.argv[2], "utf8").trim().split("\n").map(JSON.parse).at(-1);
+assert.equal(row.workOrderId, "WO-091");
+assert.equal(row.worktree, process.argv[3]);
+assert.equal(row.branch, "wo-091");
+assert.deepEqual(row.removed, { worktree: true, branch: true });
+assert.match(row.cause, /EACCES|permission denied/iu);
+assert.ok(row.restored.some((path) => path.endsWith("2026-10-14T12-00-00-000Z.json")), JSON.stringify(row));
+JS
+rm -f "$denied_receipt"
+printf 'a start the host denied after creating its worktree left no worktree or branch and recorded the denial\n'
+# A denial the bootstrap reports on its standard error is a host denial too:
+# the start keeps that output for its judgment and undoes itself (WO-254).
+printf '# WO-092 — denied bootstrap fixture, v0.2.1\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n' >"$main/docs/work-orders/WO-092-fixture.md"
+git -C "$main" add docs/work-orders/WO-092-fixture.md
+git -C "$main" -c maintenance.auto=false commit -qm 'denied bootstrap fixture'
+git -C "$main" push origin main >/dev/null 2>&1
+bootstrap_target="$test_root/project-wo092"
+if bootstrap_output="$(DOTLN_FIXTURE_BOOTSTRAP_DENY=1 node "$main/scripts/worktree.mjs" start WO-092 docs/work-orders/WO-092-fixture.md 2>&1)"; then
+  printf 'error: a denied bootstrap reported success\n' >&2; exit 1
+fi
+grep -Fq "the host denied a step after $bootstrap_target was created" <<<"$bootstrap_output"
+grep -Fq 'EACCES: permission denied, mkdir .runtime' <<<"$bootstrap_output"
+grep -Fq 'The worktree and its branch are removed.' <<<"$bootstrap_output"
+test ! -e "$bootstrap_target"
+test -z "$(git -C "$main" branch --list wo-092)"
+"$node_bin" - "$main/docs/control/local/worktree-start-denials.jsonl" "$bootstrap_target" <<'JS'
+const assert = require("node:assert/strict"), fs = require("node:fs");
+const row = fs.readFileSync(process.argv[2], "utf8").trim().split("\n").map(JSON.parse).at(-1);
+assert.equal(row.workOrderId, "WO-092");
+assert.equal(row.worktree, process.argv[3]);
+assert.deepEqual(row.removed, { worktree: true, branch: true });
+assert.deepEqual(row.failures, []);
+assert.match(row.cause, /worktree preparation failed: .*EACCES/u);
+JS
+printf 'a start whose bootstrap the host denied left no worktree or branch and recorded the denial\n'
 node "$script_dir/test-control-beacons.mjs" "$test_root"
 printf 'worktree tests passed\n'

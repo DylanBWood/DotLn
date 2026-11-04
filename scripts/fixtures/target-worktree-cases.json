@@ -84,7 +84,8 @@
     "\"WO-252 what a tracked link in the target reaches is not the close's to move or delete, so a journal lane behind it stays where the link points\"",
     "\"WO-252 a declared file at a snapshot's record path gives way to the record before any of the snapshot goes, so a deletion that stops part way stays provable\"",
     "\"WO-252 a journal move the lane refuses stops a target close as preservation-refused, in its preview as in the move\"",
-    "\"WO-252 a nested repository under declared output counts each file its removal took before it stopped\""
+    "\"WO-252 a nested repository under declared output counts each file its removal took before it stopped\"",
+    "`WO-254 a target start the host denies after creating its worktrees leaves no worktree, branch or pending start and records the denial: ${label}`"
   ],
   "names": [
     "target release preparation is a read-only no-release outcome",
@@ -202,6 +203,9 @@
     "WO-252 what a tracked link in the target reaches is not the close's to move or delete, so a journal lane behind it stays where the link points",
     "WO-252 a declared file at a snapshot's record path gives way to the record before any of the snapshot goes, so a deletion that stops part way stays provable",
     "WO-252 a journal move the lane refuses stops a target close as preservation-refused, in its preview as in the move",
-    "WO-252 a nested repository under declared output counts each file its removal took before it stopped"
+    "WO-252 a nested repository under declared output counts each file its removal took before it stopped",
+    "WO-254 a target start the host denies after creating its worktrees leaves no worktree, branch or pending start and records the denial: its bootstrap reports on standard error",
+    "WO-254 a target start the host denies after creating its worktrees leaves no worktree, branch or pending start and records the denial: its bootstrap reports on standard output",
+    "WO-254 a target start the host denies after creating its worktrees leaves no worktree, branch or pending start and records the denial: the host refuses to spawn its activation"
   ]
 }

@@ -137,6 +137,18 @@ test("[document] the kit owns its complete guide and the front page is a pinned 
   );
 });
 
+test("WO-254 criterion 5: the exported instance's operator record says a standing rule is recorded only from the operator's direction, with its capture digest", () => {
+  const record = readFileSync(join(kit, "AI-HARNESS-SECURITY.md"), "utf8")
+    .replace(/\s+/gu, " ")
+    .trim();
+  assert.ok(
+    record.includes(
+      "A standing rule enters this record, or any standing document, only from the operator's direction: the planning pass that writes it names it in its Rules recorded block with the operator message's journal reference and capture digest, and `plan check` refuses a rule whose message was a question or that names no message.",
+    ),
+    record,
+  );
+});
+
 // Reads core's seeds, instruction and first order to classify them, which a
 // product task may not read: the document gate runs this case (test-runner's
 // launchpad-docs row), the product gate skips it.

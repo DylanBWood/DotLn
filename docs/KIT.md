@@ -398,6 +398,14 @@ export and install its pinned dependencies first. On clean `main`, run
 the current follow-up feed. Draft this instance's orders and sequence, then
 record its dated planning pass in `docs/lineage/idea-ledger.md`. `plan start`
 also writes the pass's planning document with its standard section headings.
+Its `Rules recorded` section starts as an empty block: a pass that writes a
+standing rule from the operator's words into a standing document, this
+instance's operator record included, names the rule there with the
+document, the section, the message's journal reference and its capture
+digest. `npm run plan -- check` refuses a rule whose message the session
+journal lacks, one from the host's task notification, one from a message
+journaled as a question, a class the journal contradicts and a digest that is
+not the message's; the operator strikes a rule by removing its entry.
 
 - `npm run plan -- followups` pages the register; `--export <file>` exports it;
   `--apply <batch.json>` applies dispositions against the revision read.
@@ -719,6 +727,74 @@ review is run by this instance's operator rather than by any fixture.
 surfaces. The `docs/LEGAL.md` pin rule reports unavailable when that file is
 absent; a declared file must pass its normal validation. `UPSTREAM.md` names
 the core commit to inspect for the carried runtime.
+
+### Hooks
+
+The generated hooks enforce the harness contract's refusals where they can
+observe a call and journal what they see in the ignored
+`docs/control/local/harness/` lane. Codex tool calls are unhooked, so under
+Codex the lifecycle commands and the role text carry the same rules. What a
+refusal names, the session can run or say; nothing below asks the operator
+to run a kit command for a state the kit can judge.
+
+- **The writer reservation.** One session writes a worktree at a time. A
+  session refused by another's reservation may run
+  `node scripts/harness.mjs writer --show` to see the holder, and
+  `node scripts/harness.mjs writer --release` when the holder is dead, each
+  as that exact command with no pipe, redirect or other command beside it. A
+  live holder is released only from an operator terminal, with
+  `node scripts/harness.mjs writer --release --force`.
+- **A dead holder.** A holder is dead when its recorded host process no
+  longer exists, its process id now names a process started at another time,
+  or the process table shows it a zombie (a state beginning with `Z`). The
+  next write dispatch reclaims a dead holder's reservation itself and logs
+  the reclaim in `writer-events.jsonl`; a holder of unknown liveness is
+  released from an operator terminal without `--force`.
+- **The release at a stop.** Claude's finish hook releases the session's
+  reservation at every stop, and its next guarded call reserves it again. A
+  Codex session releases its own reservation and journals `dispatchStopped`
+  when a `release close --publish` attempt ends before it completes, and when
+  a turn ends without a continuation once its prompt hook has been observed;
+  the retried close reserves it again before it moves `main`, and with no
+  built runtime it refuses while another session's reservation is there; the
+  next prompt of a dispatch still awaiting its completion event reserves it
+  again, and a foreign holder at that prompt is named in its context.
+- **A denied activation.** When the host denies a step after
+  `worktree start` creates an order's worktree, or a registered target's
+  pair, whether a write, the spawn of its activation or a denial its
+  bootstrap reports on either output stream, the start puts back the records
+  it moved out of `main`, removes each worktree and branch it created, and
+  appends what it did, and any step it could not undo, to
+  `docs/control/local/worktree-start-denials.jsonl`. A worktree holding a
+  record it could not put back is kept, and a retry of a pending target start
+  keeps what its earlier attempt made. A start the host refuses before
+  anything is made says so and names the grant to request.
+- **A question.** An unprefixed operator message that ends in a question mark
+  is journaled with the class `question`, by its form alone. Claude's hook
+  adds a note to that turn: the next message answers it, with the evidence,
+  either why the current course is right or what the question changes and
+  what the session will now do differently, and the session keeps working;
+  an action the message also asks for, a pause included, is done. Under Codex
+  the role text carries the same two answers. A question records no rule
+  (§Planning in this instance, the `Rules recorded` block).
+- **Codex after compaction.** The Codex prompt hook keeps each operator
+  message of a dispatched session, cut at 64 KiB, in the session's
+  `<key>.codex-messages.jsonl` beside its journal. After a compaction the
+  restored context carries the unfinished task and then every one of those
+  messages since the dispatch began, verbatim and oldest first, each bounded
+  only when it was captured. The first stop after a compaction journals a
+  `compactionProbe` row naming the first assistant message after the latest
+  compaction before that stop, read from the turn's transcript, or the stop's
+  own last message labelled `stop-last-message`; an earlier compaction in the
+  same turn has no separate sample.
+- **Quiet advisories.** A shell command that uses control syntax, a dynamic
+  substitution or a working-directory change is judged by host permissions;
+  the hook journals that classification and shows no message. A refused
+  command's message is unchanged.
+- **A blocked turn.** When only the operator can clear what blocks a session,
+  every role's text says to state the block and the one line that clears it
+  in a single message and end the turn, since the host holds a `!` command
+  the operator types until the turn ends.
 
 ## Attestations
 

@@ -421,6 +421,22 @@ export function attemptTimeLimit(record, budgets, route, events, requested) {
   );
 }
 
+/** The limits a drive record carries, read from the launchpad's budgets once
+ * per drive: the spawn cap and the descendant ceiling, the phase timeout and
+ * the router's own token and dollar limits. The record stores exactly this,
+ * so a reader proof that observes it observes the drive's own reads. */
+export function driveLimits(budgets) {
+  const { cap, ceiling } = subagentLimits(budgets);
+  return {
+    subagentCap: cap,
+    drivenSessionCeiling: ceiling,
+    drivenPhaseTimeoutMs: budgets?.drivenPhaseTimeoutMs ?? null,
+    tokens: budgets?.dispatches.router.tokens ?? null,
+    costUsd: budgets?.dispatches.router.costUsd ?? null,
+    costScope: "phase-workers",
+  };
+}
+
 function subagentLimits(budgets) {
   const cap = budgets?.subagentCap === undefined ? 20 : budgets.subagentCap;
   const ceiling =
@@ -433,10 +449,13 @@ function subagentLimits(budgets) {
 }
 
 // A new worker holds nothing yet, so any holder in its worktrees is another.
+// A holder the process table proves exited, a zombie among them, is no
+// conflict: the phase worker's entry reclaims its stale reservation with a
+// record, so only a live or unknown holder stops the launch.
 function writerConflict(harness, { record, trees }, route) {
   for (const [checkout, runtime] of phaseRoots(route, trees)) {
     const holder = harness.phaseWriterView(checkout, runtime);
-    if (!holder.reserved) continue;
+    if (!holder.reserved || holder.alive === false) continue;
     const identities = [
       [
         "router",
@@ -712,7 +731,7 @@ async function launchAttempt(drive, route, before) {
     saveRecord();
     return {
       refused:
-        "The worktree has another writer. Inspect its reservation; a dead Codex owner requires the operator's operator override: recovery phrase.",
+        "The worktree has another writer whose owner is live or of unknown liveness. Inspect it with node scripts/harness.mjs writer --show; the operator releases a live holder from an operator terminal with node scripts/harness.mjs writer --release --force, and one of unknown liveness with node scripts/harness.mjs writer --release.",
     };
   }
   const unenforceable = unenforceableLimit(record, drive.maxWorkerUsd);
@@ -928,14 +947,7 @@ async function runDriveUnlocked(
     incomplete: factsCurrent ? old.incomplete : {},
     factsAt: initialStatus.route.eventCount,
     sandbox,
-    limits: {
-      subagentCap: cap,
-      drivenSessionCeiling: ceiling,
-      drivenPhaseTimeoutMs: budgets?.drivenPhaseTimeoutMs ?? null,
-      tokens: budgets?.dispatches.router.tokens ?? null,
-      costUsd: budgets?.dispatches.router.costUsd ?? null,
-      costScope: "phase-workers",
-    },
+    limits: driveLimits(budgets),
     routerUsage: {
       totalTokens: null,
       costUsd: null,

@@ -92,6 +92,11 @@ import { fold, parseControlEvents } from "./lib/control.mjs";
 import { runGit } from "./lib/git.mjs";
 import { isCorrection } from "./lib/meta.mjs";
 import { main as plan } from "./refute-plan.mjs";
+import {
+  checkRulesRecorded,
+  renderRulesRecordedBlock,
+  rulesRecordedBlock,
+} from "./lib/planning-document.mjs";
 import { publishedReleases, recordScores } from "./lib/reader-profiles.mjs";
 import {
   beginDirectRefutation,
@@ -7026,6 +7031,120 @@ else {
         );
         assert.deepEqual(scope.judgedOrderIds, ["WO-901", "WO-902"]);
         assert.deepEqual(scope.carried, []);
+      },
+    );
+    await check(
+      "WO-254 plan check refuses a standing rule recorded from a question or from no journal row whatever its label, and admits one from a direction row whose capture digest matches; plan start writes the empty block",
+      async () => {
+        const repo = makeRepo(parent, "rules-recorded");
+        runGit(repo, ["branch", "-M", "main"]);
+        const started = await plan(["start", "rules"], repo);
+        const skeleton = read(repo, started.document);
+        assert.ok(skeleton.includes("## Rules recorded\n"));
+        assert.deepEqual(rulesRecordedBlock(skeleton, started.document), []);
+        assert.ok(
+          skeleton.indexOf("## Rules recorded") >
+            skeleton.indexOf("## Red tags"),
+          "the red-tag block stays the pass document's first JSON block",
+        );
+        const sessionKey = "c".repeat(64);
+        const said = (words) =>
+          createHash("sha256").update(words).digest("hex");
+        const asked = "take a newer starter before every pass?";
+        const directed =
+          "planning: from now on take a newer starter before every pass";
+        write(
+          repo,
+          `docs/control/local/harness/${sessionKey}.jsonl`,
+          [
+            { at: "2030-01-02T10:00:00.000Z", words: asked, kind: "question" },
+            {
+              at: "2030-01-02T10:05:00.000Z",
+              words: directed,
+              kind: "direction",
+            },
+          ]
+            .map(({ at, words, kind }) =>
+              JSON.stringify({
+                recordedAt: at,
+                event: "UserPromptSubmit",
+                typedEvent: "OperatorMessageObserved",
+                source: "claude-prompt-hook",
+                route: "mid-turn",
+                attribution: "operator",
+                prefix: kind === "direction" ? "planning:" : null,
+                prefixLine: kind === "direction" ? 0 : null,
+                class: kind,
+                digest: said(words),
+                bytes: Buffer.byteLength(words),
+              }),
+            )
+            .join("\n") + "\n",
+        );
+        const recorded = (rules) =>
+          write(
+            repo,
+            started.document,
+            skeleton.replace(
+              renderRulesRecordedBlock(),
+              renderRulesRecordedBlock(rules),
+            ),
+          );
+        const rule = (recordedAt, words, extra = {}) => ({
+          rule: "Take a newer starter before every pass.",
+          document: "docs/product/07-execution-guide.md",
+          section: "Paired passes and the synthesis pass",
+          message: { sessionKey, recordedAt },
+          captureDigest: `sha256:${said(words)}`,
+          ...extra,
+        });
+        recorded([
+          rule("2030-01-02T10:00:00.000Z", asked, { class: "direction" }),
+        ]);
+        await assert.rejects(
+          plan(["check"], repo),
+          /the rule "Take a newer starter before every pass\." is recorded from an operator question .* whatever class the block labels it/u,
+        );
+        recorded([rule("2030-01-02T09:59:00.000Z", asked)]);
+        await assert.rejects(
+          plan(["check"], repo),
+          /the rule "Take a newer starter before every pass\." names no operator message in the session journal/u,
+        );
+        recorded([rule("2030-01-02T10:05:00.000Z", "other words")]);
+        await assert.rejects(
+          plan(["check"], repo),
+          /capture digest is not the digest of the message the journal names/u,
+        );
+        recorded([rule("2030-01-02T10:05:00.000Z", directed)]);
+        assert.deepEqual(checkRulesRecorded(repo), {
+          document: started.document,
+          rules: 1,
+        });
+        // The rules check runs first in plan check; this unreviewed fixture
+        // pass then stops at its receipt, past every rule.
+        await assert.rejects(
+          plan(["check"], repo),
+          (error) =>
+            /needs a receipt/u.test(error.message) &&
+            !/the rule/u.test(error.message),
+        );
+        // Committed and refuted, the pass passes plan check with its rule.
+        runGit(repo, ["add", "-A"]);
+        runGit(repo, [
+          "-c",
+          "maintenance.auto=false",
+          "commit",
+          "-qm",
+          "Record the rule",
+        ]);
+        await writeDirectReceipt(repo);
+        await plan(["check"], repo);
+        const checked = await checkPlanGate(repo);
+        assert.deepEqual(checked.rulesRecorded, {
+          document: started.document,
+          rules: 1,
+        });
+        assert.equal(checked.passes, 1);
       },
     );
     await check(

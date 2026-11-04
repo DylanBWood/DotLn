@@ -29,6 +29,7 @@ import {
   sha256,
 } from "./plan-subject.mjs";
 import { checkLocalTerms } from "./terms.mjs";
+import { checkRulesRecorded } from "./planning-document.mjs";
 import {
   matchLaunchpadIdentifiers,
   matchReviewTerms,
@@ -1740,6 +1741,8 @@ export const openOrderCriteriaAdvisories = (root, rows) =>
 export async function checkPlanGate(root) {
   const index = readIndex(root, []);
   checkSequenceTopology(index);
+  // The pass's standing rules each name an operator message the journal holds.
+  const rulesRecorded = checkRulesRecorded(root);
   const advisories = targetOrderPathAdvisories(root, index.rows);
   const criteria = openOrderCriteriaAdvisories(root, index.rows);
   const localTerms = checkLocalTerms(root, []).status;
@@ -1832,6 +1835,7 @@ export async function checkPlanGate(root) {
       passes: 0,
       enforcement: "pending introduction commit",
       localTerms,
+      rulesRecorded,
       advisories,
       criteriaAdvisories: criteria,
     };
@@ -1898,6 +1902,7 @@ export async function checkPlanGate(root) {
     passes: passes.length,
     enforcement,
     localTerms,
+    rulesRecorded,
     continuation,
     advisories,
     criteriaAdvisories: criteria,

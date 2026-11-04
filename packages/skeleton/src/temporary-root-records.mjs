@@ -183,22 +183,14 @@ const knownRetention = (input) =>
       )
     : input;
 
-/** @param {string} repository */
-export function readRetention(repository) {
-  // Product children receive the scheduler's policy, without reading its
-  // document inputs. A nested fixture repository still reads its own policy.
-  if (
-    process.env.DOTLN_TEMP_RETENTION &&
-    process.env.DOTLN_TEMP_REPOSITORY &&
-    existsSync(repository) &&
-    realpathSync(repository) === realpathSync(process.env.DOTLN_TEMP_REPOSITORY)
-  )
-    return validateRetention(
-      knownRetention(JSON.parse(process.env.DOTLN_TEMP_RETENTION)),
-    );
-  // This module also runs while the control plane is being loaded. Resolve
-  // its one configured document path without synchronously importing that
-  // partly initialized module graph.
+/** The repository's control directory, relative to it, as `dotln.config.json`
+ * places it: `roots.control`, else `roots.docs` with `/control`, else
+ * `docs/control`. This module also runs while the control plane is being
+ * loaded, so it resolves the one configured path itself instead of importing
+ * that partly initialized module graph; every runtime reader of the control
+ * budgets resolves through it.
+ * @param {string} repository */
+export function configuredControlDirectory(repository) {
   const configPath = join(repository, "dotln.config.json");
   const roots = existsSync(configPath)
     ? (JSON.parse(readFileSync(configPath, "utf8")).roots ?? {})
@@ -212,7 +204,27 @@ export function readRetention(repository) {
       .some((part) => !part || part === "." || part === "..")
   )
     throw new Error("Invalid temporary-root control directory");
-  const file = join(repository, control, "budgets.json");
+  return control;
+}
+
+/** @param {string} repository */
+export function readRetention(repository) {
+  // Product children receive the scheduler's policy, without reading its
+  // document inputs. A nested fixture repository still reads its own policy.
+  if (
+    process.env.DOTLN_TEMP_RETENTION &&
+    process.env.DOTLN_TEMP_REPOSITORY &&
+    existsSync(repository) &&
+    realpathSync(repository) === realpathSync(process.env.DOTLN_TEMP_REPOSITORY)
+  )
+    return validateRetention(
+      knownRetention(JSON.parse(process.env.DOTLN_TEMP_RETENTION)),
+    );
+  const file = join(
+    repository,
+    configuredControlDirectory(repository),
+    "budgets.json",
+  );
   let retention;
   try {
     if (existsSync(file))

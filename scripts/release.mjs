@@ -133,7 +133,12 @@ import {
   branchWorkOrder,
   selectWorkOrder,
 } from "./lib/control-store.mjs";
-import { executorWriterRelease } from "./lib/executor-handoff.mjs";
+import {
+  executorWriterRelease,
+  releaseStoppedCodexCommand,
+  reserveCodexRoleCommand,
+  reserveCodexRoleCommandBeforeLoad,
+} from "./lib/executor-handoff.mjs";
 import {
   removeUnregisteredWorktree,
   retainedWorktreeRemovalSubjects,
@@ -510,6 +515,10 @@ export function releaseCloseSummary(record) {
       `Starter refresh ${row.sibling}: ${row.outcome}; ${line(row.reason ?? `${row.before} -> ${row.after}`)}${row.outcome === "refreshed" ? `; ${row.before} -> ${row.after}` : ""}${row.rewrittenSeeds?.length ? `; seeds published: ${row.rewrittenSeeds.join(", ")}` : ""}${row.seedChanges?.length ? `; seeds would change: ${row.seedChanges.join(", ")}` : ""}${row.keptSeeds?.length ? `; seeds kept: ${row.keptSeeds.map((seed) => `${seed.path} (${line(seed.reason)})`).join(", ")}` : ""}${row.siblingTag ? `; tag ${row.siblingTag.tag}: ${row.siblingTag.outcome}; GitHub Release ${row.siblingRelease ?? "not verified"}${row.siblingReleaseTitle ? ` (${row.siblingReleaseTitle})` : ""}` : ""}.`,
     );
   lines.push(`Cleanup: ${record.cleanup.outcome}.`);
+  if (record.writerStop?.released)
+    lines.push(
+      "Writer: this Codex session's reservation is released because the close stopped before completing, and the stop is journaled; a retry of the same command reserves it again before it acts.",
+    );
   // Each step's active minutes, as plan start prints its own.
   if (record.steps?.length)
     lines.push(
@@ -4251,220 +4260,282 @@ const main = async () => {
         material: [],
       };
     }
-    const root = findMainWorktree(toolRoot);
-    return withHostLock(
-      docPath(root, "control", "local/release-close-locks"),
-      workOrderId,
-      async () => {
-        const recordPath = docRelative(
-          root,
-          "control",
-          `local/retained/${workOrderId}/release-close.json`,
-        );
-        let harness = null;
-        try {
-          harness =
-            (!process.env.CODEX_THREAD_ID &&
-            !process.env.COPILOT_AGENT_SESSION_ID
-              ? claudeSessionReport()
-              : null
-            )?.session ?? (await currentHarnessSessionReport(root)).session;
-        } catch {
-          // A command outside a known dispatch still records its unknown actor.
-        }
-        const record = {
-          schemaVersion: 1,
-          workOrderId,
-          startedAt: new Date().toISOString(),
-          // The activation this close belongs to: a later reactivation of the
-          // order does not inherit this receipt (WO-192-D099, WO-247).
-          activation: latestActivation(root, workOrderId),
-          steps: releaseSteps(),
-          dryRun: parsed.flags.includes("--dry-run"),
-          listMaterial: parsed.flags.includes("--list-material"),
-          dispatch: {
-            harness: harness?.harness ?? null,
-            session:
-              process.env.CODEX_THREAD_ID ||
-              process.env.COPILOT_AGENT_SESSION_ID ||
-              process.env.CLAUDE_CODE_SESSION_ID ||
-              process.env.CLAUDE_SESSION_ID ||
-              null,
-            source: harness?.source ?? "unknown",
-          },
-          publication: {
-            requested: parsed.flags.includes("--publish"),
-            outcome: "not-started",
-            tag: null,
-            tagOutcome: null,
-            release: null,
-            refusal: null,
-          },
-          cleanup: { outcome: "not-attempted", worktrees: [] },
-          starterRefresh: [],
-          material: [],
-          removals: [],
-          overrides: parsed.material,
-          blockers: [],
-          // What stopped this attempt, when one stopped: its class from the
-          // closed list, the release step that raised it and its message.
-          blocker: null,
-          previousAttempts: [],
-          recordAdvisories: [],
-          retryCommand: releaseCloseCommand(root, workOrderId),
-          reportPath: docRelative(
+    // A publishing run that fails before its attempt begins (no main
+    // checkout, a held close lock) is a stopped dispatch too; once the
+    // attempt begins, it settles the writer itself.
+    let attempted = false;
+    const publishing =
+      !parseError &&
+      parsed.flags.includes("--publish") &&
+      !parsed.flags.includes("--dry-run");
+    try {
+      const root = findMainWorktree(toolRoot);
+      return await withHostLock(
+        docPath(root, "control", "local/release-close-locks"),
+        workOrderId,
+        async () => {
+          attempted = true;
+          const recordPath = docRelative(
             root,
             "control",
-            `local/retained/${workOrderId}/release-close-${new Date().toISOString().replace(/[:.]/gu, "-")}.txt`,
-          ),
-        };
-        closeTranscript = [];
-        const recordAdvisory = (error) => {
-          const message = `Close record unavailable: ${String(error.message).replace(/\s+/gu, " ").trim()}`;
-          // The record is written twice; a failure the second write repeats
-          // is reported once.
-          if (record.recordAdvisories.includes(message)) return;
-          record.recordAdvisories.push(message);
-          process.stderr.write(`Advisory: ${message}\n`);
-        };
-        const writeCloseRecord = () => {
+            `local/retained/${workOrderId}/release-close.json`,
+          );
+          let harness = null;
           try {
-            requireMaterialContainment(root, recordPath);
-            const file = join(root, recordPath);
-            mkdirSync(dirname(file), { recursive: true, mode: 0o700 });
-            writeFileSync(file, `${JSON.stringify(record, null, 2)}\n`, {
-              mode: 0o600,
+            harness =
+              (!process.env.CODEX_THREAD_ID &&
+              !process.env.COPILOT_AGENT_SESSION_ID
+                ? claudeSessionReport()
+                : null
+              )?.session ?? (await currentHarnessSessionReport(root)).session;
+          } catch {
+            // A command outside a known dispatch still records its unknown actor.
+          }
+          const record = {
+            schemaVersion: 1,
+            workOrderId,
+            startedAt: new Date().toISOString(),
+            // The activation this close belongs to: a later reactivation of the
+            // order does not inherit this receipt (WO-192-D099, WO-247).
+            activation: latestActivation(root, workOrderId),
+            steps: releaseSteps(),
+            dryRun: parsed.flags.includes("--dry-run"),
+            listMaterial: parsed.flags.includes("--list-material"),
+            dispatch: {
+              harness: harness?.harness ?? null,
+              session:
+                process.env.CODEX_THREAD_ID ||
+                process.env.COPILOT_AGENT_SESSION_ID ||
+                process.env.CLAUDE_CODE_SESSION_ID ||
+                process.env.CLAUDE_SESSION_ID ||
+                null,
+              source: harness?.source ?? "unknown",
+            },
+            publication: {
+              requested: parsed.flags.includes("--publish"),
+              outcome: "not-started",
+              tag: null,
+              tagOutcome: null,
+              release: null,
+              refusal: null,
+            },
+            cleanup: { outcome: "not-attempted", worktrees: [] },
+            starterRefresh: [],
+            material: [],
+            removals: [],
+            overrides: parsed.material,
+            blockers: [],
+            // What stopped this attempt, when one stopped: its class from the
+            // closed list, the release step that raised it and its message.
+            blocker: null,
+            previousAttempts: [],
+            recordAdvisories: [],
+            retryCommand: releaseCloseCommand(root, workOrderId),
+            reportPath: docRelative(
+              root,
+              "control",
+              `local/retained/${workOrderId}/release-close-${new Date().toISOString().replace(/[:.]/gu, "-")}.txt`,
+            ),
+          };
+          closeTranscript = [];
+          const recordAdvisory = (error) => {
+            const message = `Close record unavailable: ${String(error.message).replace(/\s+/gu, " ").trim()}`;
+            // The record is written twice; a failure the second write repeats
+            // is reported once.
+            if (record.recordAdvisories.includes(message)) return;
+            record.recordAdvisories.push(message);
+            process.stderr.write(`Advisory: ${message}\n`);
+          };
+          const writeCloseRecord = () => {
+            try {
+              requireMaterialContainment(root, recordPath);
+              const file = join(root, recordPath);
+              mkdirSync(dirname(file), { recursive: true, mode: 0o700 });
+              writeFileSync(file, `${JSON.stringify(record, null, 2)}\n`, {
+                mode: 0o600,
+              });
+            } catch (error) {
+              recordAdvisory(error);
+            }
+          };
+          try {
+            const { recoveryAttempts, ...history } = readCloseHistory(
+              root,
+              workOrderId,
+            );
+            Object.assign(record, history);
+            Object.defineProperty(record, "recoveryAttempts", {
+              value: recoveryAttempts,
             });
           } catch (error) {
             recordAdvisory(error);
           }
-        };
-        try {
-          const { recoveryAttempts, ...history } = readCloseHistory(
-            root,
-            workOrderId,
-          );
-          Object.assign(record, history);
-          Object.defineProperty(record, "recoveryAttempts", {
-            value: recoveryAttempts,
-          });
-        } catch (error) {
-          recordAdvisory(error);
-        }
-        // A release-close dispatch keeps the writer through publication. Only a
-        // successful, non-preview close is its completion and releases that actor.
-        const completing =
-          !parseError &&
-          parsed.flags.includes("--publish") &&
-          !parsed.flags.includes("--dry-run");
-        let releaseWriter;
-        try {
-          if (parseError) throw parseError;
-          if (record.historyFailure) throw new Error(record.historyFailure);
-          const context = await withReleaseStep(record, "prerequisites", () =>
-            closePrerequisites(root, workOrderId, parsed, record),
-          );
-          if (!context) return;
-          await withReleaseStep(record, "runtime", () =>
-            prepareRuntimeBeforeLoad(root),
-          );
-          if (completing) {
-            const writerRoot = realpathSync(process.cwd());
-            try {
-              releaseWriter = await executorWriterRelease(writerRoot);
-            } catch (error) {
-              if (
-                !existsSync(
-                  join(
-                    writerRoot,
-                    "packages/skeleton/dist/src/harness-host.js",
-                  ),
-                )
-              )
-                throw new Error(
-                  `Release-close runtime is not built in ${writerRoot}; writer reservation retained. Run ${isKitWorktree(writerRoot) ? "node scripts/bootstrap.mjs" : "npm run build"} in the main checkout, then retry release close.`,
-                  { cause: error },
-                );
-              throw error;
-            }
-          }
-          const result = await withReleaseStep(record, "publication", () =>
-            close(root, workOrderId, parsed, record, context),
-          );
-          // The packets this order delivered, as the published commit carries
-          // them. The surface check refused the close before publication
-          // unless each names the release this close publishes, so the record
-          // states the delivery and judges nothing.
+          // A release-close dispatch keeps the writer through publication. Only a
+          // successful, non-preview close is its completion and releases that actor.
+          const completing =
+            !parseError &&
+            parsed.flags.includes("--publish") &&
+            !parsed.flags.includes("--dry-run");
+          const writerRoot = realpathSync(process.cwd());
+          let releaseWriter;
+          // A publishing attempt releases its writer once: at its completion,
+          // or as a stopped dispatch when it failed or blocked. A preview
+          // leaves the dispatch alone.
+          let completed = false;
           try {
-            record.deliveredPackets = deliveredPackets(
-              root,
-              workOrderId,
-              sourceRevision,
-            ).map(({ path, release }) => ({ path, release }));
-          } catch (error) {
-            recordAdvisory(error);
-          }
-          // Releasing the writer runs the session-end prune, so its time
-          // belongs to the prune row.
-          if (!process.exitCode && record.cleanup.outcome !== "blocked")
-            await withReleaseStep(record, "prune", () => releaseWriter?.());
-          return result;
-        } catch (error) {
-          const published = settlePublication(record, error.message);
-          // The refusal that stopped this attempt, classed where it was raised.
-          record.blocker = {
-            class: blockerClassOf(error?.blockerClass),
-            step: error?.releaseStep ?? null,
-            message: error.message,
-          };
-          record.blockers.push({
-            action: published ? "completion" : "publication",
-            reason: error.message,
-            command: releaseCloseCommand(root, workOrderId),
-            class: record.blocker.class,
-            step: record.blocker.step,
-          });
-          throw error;
-        } finally {
-          // An attempt that ends with an unresolved blocker stopped there; the
-          // first such blocker is the attempt's.
-          if (!record.blocker) {
-            const first = record.blockers.find((row) => !row.resolved);
-            if (first)
-              record.blocker = {
-                class: blockerClassOf(first.class),
-                step: first.step ?? null,
-                message: first.reason,
-              };
-          }
-          await withReleaseStep(record, "record", async () => {
-            record.recordedAt = new Date().toISOString();
+            if (parseError) throw parseError;
+            if (record.historyFailure) throw new Error(record.historyFailure);
+            // A Codex retry after a stopped attempt holds the writer again
+            // before its prerequisites fetch, fast-forward or rebuild main,
+            // so a session that took main meanwhile refuses it untouched. A
+            // close run elsewhere is refused by the prerequisites instead.
+            if (completing && writerRoot === realpathSync(root))
+              reserveCodexRoleCommandBeforeLoad(writerRoot);
+            const context = await withReleaseStep(record, "prerequisites", () =>
+              closePrerequisites(root, workOrderId, parsed, record),
+            );
+            if (!context) return;
+            await withReleaseStep(record, "runtime", () =>
+              prepareRuntimeBeforeLoad(root),
+            );
+            if (completing) {
+              // The prepared runtime holds the same reservation, or takes it
+              // where the checkout had no runtime to reserve with before.
+              await reserveCodexRoleCommand(writerRoot);
+              try {
+                releaseWriter = await executorWriterRelease(writerRoot);
+              } catch (error) {
+                if (
+                  !existsSync(
+                    join(
+                      writerRoot,
+                      "packages/skeleton/dist/src/harness-host.js",
+                    ),
+                  )
+                )
+                  throw new Error(
+                    `Release-close runtime is not built in ${writerRoot}; writer reservation retained. Run ${isKitWorktree(writerRoot) ? "node scripts/bootstrap.mjs" : "npm run build"} in the main checkout, then retry release close.`,
+                    { cause: error },
+                  );
+                throw error;
+              }
+            }
+            const result = await withReleaseStep(record, "publication", () =>
+              close(root, workOrderId, parsed, record, context),
+            );
+            // The packets this order delivered, as the published commit carries
+            // them. The surface check refused the close before publication
+            // unless each names the release this close publishes, so the record
+            // states the delivery and judges nothing.
             try {
-              requireMaterialContainment(root, record.reportPath);
-              mkdirSync(dirname(join(root, record.reportPath)), {
-                recursive: true,
-                mode: 0o700,
-              });
-              writeFileSync(
-                join(root, record.reportPath),
-                closeTranscript.join(""),
-                {
-                  mode: 0o600,
-                },
-              );
+              record.deliveredPackets = deliveredPackets(
+                root,
+                workOrderId,
+                sourceRevision,
+              ).map(({ path, release }) => ({ path, release }));
             } catch (error) {
               recordAdvisory(error);
             }
+            // Releasing the writer runs the session-end prune, so its time
+            // belongs to the prune row.
+            if (!process.exitCode && record.cleanup.outcome !== "blocked") {
+              await withReleaseStep(record, "prune", () => releaseWriter?.());
+              completed = true;
+            }
+            return result;
+          } catch (error) {
+            const published = settlePublication(record, error.message);
+            // The refusal that stopped this attempt, classed where it was raised.
+            record.blocker = {
+              class: blockerClassOf(error?.blockerClass),
+              step: error?.releaseStep ?? null,
+              message: error.message,
+            };
+            record.blockers.push({
+              action: published ? "completion" : "publication",
+              reason: error.message,
+              command: releaseCloseCommand(root, workOrderId),
+              class: record.blocker.class,
+              step: record.blocker.step,
+            });
+            throw error;
+          } finally {
+            // An attempt that ends with an unresolved blocker stopped there; the
+            // first such blocker is the attempt's.
+            if (!record.blocker) {
+              const first = record.blockers.find((row) => !row.resolved);
+              if (first)
+                record.blocker = {
+                  class: blockerClassOf(first.class),
+                  step: first.step ?? null,
+                  message: first.reason,
+                };
+            }
+            if (completing && !completed)
+              try {
+                const stopped = await releaseStoppedCodexCommand(writerRoot, {
+                  role: "release-close",
+                  workOrder: workOrderId,
+                  command: "release close --publish",
+                  step: record.blocker?.step ?? null,
+                  class: record.blocker?.class ?? null,
+                  record: recordPath,
+                });
+                if (stopped?.released) record.writerStop = { released: true };
+              } catch (error) {
+                recordAdvisory(error);
+              }
+            await withReleaseStep(record, "record", async () => {
+              record.recordedAt = new Date().toISOString();
+              try {
+                requireMaterialContainment(root, record.reportPath);
+                mkdirSync(dirname(join(root, record.reportPath)), {
+                  recursive: true,
+                  mode: 0o700,
+                });
+                writeFileSync(
+                  join(root, record.reportPath),
+                  closeTranscript.join(""),
+                  {
+                    mode: 0o600,
+                  },
+                );
+              } catch (error) {
+                recordAdvisory(error);
+              }
+              writeCloseRecord();
+            });
+            // Seal the completed timing row after the timed transcript/receipt write.
+            record.recordedAt = new Date().toISOString();
             writeCloseRecord();
-          });
-          // Seal the completed timing row after the timed transcript/receipt write.
-          record.recordedAt = new Date().toISOString();
-          writeCloseRecord();
-          process.stdout.write(releaseCloseSummary(record));
-          closeTranscript = null;
+            process.stdout.write(releaseCloseSummary(record));
+            closeTranscript = null;
+          }
+        },
+      );
+    } catch (error) {
+      if (publishing && !attempted)
+        try {
+          const stopped = await releaseStoppedCodexCommand(
+            realpathSync(process.cwd()),
+            {
+              role: "release-close",
+              workOrder: workOrderId,
+              command: "release close --publish",
+              step: "entry",
+              class: null,
+              record: null,
+            },
+          );
+          if (stopped?.released)
+            process.stderr.write(
+              `DotLn: the close stopped before it began, so this Codex session's writer reservation is released and the stop is journaled. Retry with the same command; it reserves the writer again before it acts.\n`,
+            );
+        } catch {
+          // The refusal below names the first failure; writer --show reports the rest.
         }
-      },
-    );
+      throw error;
+    }
   }
   if (action === "prepare") {
     if (

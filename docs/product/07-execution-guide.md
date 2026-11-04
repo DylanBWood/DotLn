@@ -1041,13 +1041,48 @@ sentence nothing checks is a documented condition, not a gate
 
 ## Operator recovery controls
 
-A writer reservation whose holder the host's process table lists as a zombie
-(`<defunct>`) is stale: the holder exited and nothing works under it. The
-hook's refusal names the two commands that inspect and release it, and until
-WO-254 admits them from the refused session, the operator runs
-`node scripts/harness.mjs writer --release --force` once and the session says
-so in one message and ends its turn
-([the 2026-11-03 pass, item 23](../planning/passes/recurring-failures-and-queue-drain-2026-11-03.md)).
+No session asks the operator to run a kit command for a writer state the kit
+can judge itself. A holder whose row in the process table is a zombie (state
+`Z`, `<defunct>`) is dead, as an exited one is: its reservation is stale,
+`writer --show` reads it `alive: false`, the next guarded call reclaims it with
+a record, and a drive treats it as no conflict, since the phase worker's entry
+reclaims it ([decision](../evidence/WO-254/decisions.md#wo-254-d005--a-zombie-is-dead-the-process-tables-state-column-decides),
+[drive](../evidence/WO-254/decisions.md#wo-254-d016--adjacent-a-drive-treats-a-dead-writer-as-no-conflict-and-stops-asking-for-operator-override)).
+The refusal's own remedy runs where the refusal is read: from the refused
+session, `node scripts/harness.mjs writer --show` runs, and
+`node scripts/harness.mjs writer --release` runs when the holder is dead or a
+zombie and retires its reservation without `--force`, each as that exact
+command with no pipe, redirect or other command beside it; forcing a live
+holder's release stays the operator's, from an operator terminal
+([decision](../evidence/WO-254/decisions.md#wo-254-d006--the-refusals-own-remedy-runs-where-the-refusal-is-read-by-exact-argv)).
+A dispatch that stops lets its writer go. A Codex release close whose
+publishing attempt stops before completing releases the session's reservation
+and journals the stop, and its retry reserves again before it fetches,
+fast-forwards or rebuilds main, so a session that took main meanwhile refuses
+it with main untouched; with no built runtime that can reserve, the
+reservation files decide, and any reservation that is not this session's
+refuses the retry the same way
+([decision](../evidence/WO-254/decisions.md#wo-254-d027--a-codex-close-retry-holds-its-writer-before-it-moves-main-round-1-c-f1-d-f1-k-f2),
+[round 2](../evidence/WO-254/decisions.md#wo-254-d039--a-close-retry-with-no-runtime-that-can-reserve-judges-the-reservation-files-before-main-moves-round-2-c-f1-d-f1-k-f1));
+a Codex turn that stops without asking to continue releases the session's
+reservation and the next prompt of its outstanding dispatch reserves it again,
+once the session's prompt hook is observed
+([decision](../evidence/WO-254/decisions.md#wo-254-d007--a-stopped-dispatch-lets-go-the-release-closes-command-and-a-stopped-codex-turn)).
+A worktree start the host denies leaves nothing behind: it probes that the
+host admits writes where the worktree will stand before creating anything,
+and a step denied after creation, including a denial the bootstrap reports
+on either output stream and a spawn of the activation the host refuses, is
+undone by the same command. It puts back the records it carried out of
+main, removes each worktree and branch it created, a registered target's
+pair included, and records the denial in
+`docs/control/local/worktree-start-denials.jsonl` with any step it could not
+undo; a worktree whose carried record could not be put back is kept, and a
+retry of a pending target start keeps what its earlier attempt made
+([decision](../evidence/WO-254/decisions.md#wo-254-d008--a-denied-activation-leaves-nothing-behind),
+[round 1](../evidence/WO-254/decisions.md#wo-254-d031--a-denied-start-undoes-itself-for-a-registered-target-too-sees-the-bootstraps-denial-and-its-undo-never-hides-the-denial-round-1-c-f2-c-f5-d-f3),
+[round 2](../evidence/WO-254/decisions.md#wo-254-d040--a-refused-activation-spawn-and-a-bootstraps-standard-output-reach-the-denial-judgment-the-undos-own-log-path-cannot-hide-the-denial-round-2-c-f2-c-f4-d-f2)).
+When only the operator can clear a block, the session states it and the one
+line that clears it in a single message and ends its turn (§Discipline).
 
 Cleanup is owned by the workflow, not handed to the operator. `worktree start`
 creates the worktree without running a prune census. `plan start` applies the
@@ -1665,7 +1700,18 @@ Preconditions and inputs:
    operator's standing directions, each as the rule with its date and capture
    digest, and never an account of the day, the history of how a rule arrived
    or a characterization of the operator; the pass's own document holds the
-   day. The reader entry points are the root instruction file's Start here, the
+   day. A standing rule enters that record, or any standing document, only
+   from an operator message the session journal holds: the pass names each
+   one in its document's `Rules recorded` block, which `plan start` writes
+   empty, as `{rule, document, section, message: {sessionKey, recordedAt},
+captureDigest}` with an optional `class`, and the plan check reads that
+   message's journal row and refuses a rule with no row, one from the host's
+   task notification, one from a message the hook classed a question, a
+   `class` the row contradicts and a digest that is not the message's. The
+   operator reads every new rule in one place and strikes one by removing its
+   entry
+   ([WO-254](../evidence/WO-254/decisions.md#wo-254-d010--a-rule-is-written-once-in-the-open-the-rules-recorded-block)).
+   The reader entry points are the root instruction file's Start here, the
    generated skills' and role roots' `Read:` lines, this guide's cold-start
    read order, the kit guide's First steps and, since the 2026-11-03 pass,
    the repository's front page `README.md`, declared in `documents.json`
@@ -3715,13 +3761,15 @@ and generated evidence, including fixtures, manifests and installed guidance.
   plan, build, bootstrap and publish on main under its writer reservation; verify `pwd` and repo root before any
   git operation. One writer per worktree is enforced by the generated hook's
   reservation, keyed by the session and its harness process. A session refused
-  for a foreign reservation runs `node scripts/harness.mjs writer --show` to
-  name the holder: a dead holder is reclaimed automatically at the next write
-  and two sessions racing for the same dead holder admit exactly one writer,
-  a live one must finish, and an operator releases a stuck one from a terminal
-  outside any governed session with `node scripts/harness.mjs writer --release`
-  (`--force` only for a live owner; a release acts only on the holder it
-  judged). The branch name is not a writer predicate. A second live writer still refuses;
+  for a foreign reservation runs `node scripts/harness.mjs writer --show`, as
+  that exact command, to name the holder: a dead holder, a zombie among them,
+  is reclaimed automatically at the next write and two sessions racing for the
+  same dead holder admit exactly one writer; the refused session may also run
+  `node scripts/harness.mjs writer --release`, which retires a dead holder's
+  reservation without force; a live one must finish, and only an operator
+  forces a live owner's release from a terminal (`--force`; a release acts
+  only on the holder it judged) (§Operator recovery controls). The branch name
+  is not a writer predicate. A second live writer still refuses;
   unclassified tools and command shapes delegate to host permissions.
 - **No new dependencies** without a one-paragraph note in the relevant decision
   record. The kernel stays framework-free, period.
@@ -3802,6 +3850,13 @@ and generated evidence, including fixtures, manifests and installed guidance.
   question as a request to stop has taken a third pathway that does not
   exist [operator clarification, 2026-11-04, in
   the 2026-11-03 pass](../planning/passes/recurring-failures-and-queue-drain-2026-11-03.md).
+  The prompt hook classes an unprefixed message that ends in a question mark
+  as `question` on its `OperatorMessageObserved` row, by form and never by
+  meaning, and adds the two pathways to the session's context; a message that
+  also asks for an action, pausing, stopping or waiting among them, is a
+  request whatever its grammar, and a question records no rule. Every role
+  root carries the same pathways for hosts whose prompts are unhooked
+  ([decision](../evidence/WO-254/decisions.md#wo-254-d009--a-question-is-a-smell-with-two-pathways-classed-by-form-and-never-by-meaning)).
   Answer it in plain terms, then continue the work under the
   standard already in force; only an explicit operator decision lowers a
   standard, drops a check, or narrows scope. Treating a question as permission
@@ -3818,8 +3873,9 @@ and generated evidence, including fixtures, manifests and installed guidance.
   single message and ends its turn, because the host holds a `!` command
   the operator types until the turn ends; reading on while the operator's
   command waits is the failure
-  [[the 2026-11-03 pass, item 24](../planning/passes/recurring-failures-and-queue-drain-2026-11-03.md)]. WO-254 carries the sentence
-  into every role root.
+  [[the 2026-11-03 pass, item 24](../planning/passes/recurring-failures-and-queue-drain-2026-11-03.md)]. Every role root carries the
+  sentence, and its growth is boarded under the cold-start route above
+  ([decision](../evidence/WO-254/decisions.md#wo-254-d013)).
 - **Process budget.** Compare total work and waiting against the failure a
   mechanism prevents [WO-132, 2026-09-15](../evidence/WO-132/decisions.md). `npm run meta` prints each closed
   order's Cost promise beside available observed gate/usage rows and their
@@ -4124,12 +4180,19 @@ and generated evidence, including fixtures, manifests and installed guidance.
   [WO-133 decisions](../evidence/WO-133/decisions.md).
 - **Codex continuity after compaction.** The Codex contributor bundle uses
   `PostCompact` to record the turn and `SessionStart` with `source: compact`
-  to restore its saved unfinished work order as developer context
+  to restore its saved unfinished work order, with the operator's messages
+  since its dispatch (§Model-specific notes), as developer context
   [WO-054 scope expansion, 2026-09-18](../evidence/WO-054/decisions.md). An old side question does not replace that task.
   A synchronous `Stop` hook can request one continuation for the compacted turn
   when the same root session still owns the writer and its recorded completion
-  event remains outstanding. It does not dispatch, acquire/release ownership or
-  start another worker. Duplicate/already-continued stops cannot loop. Explicit
+  event remains outstanding. It does not dispatch or start another worker, and
+  the only ownership it moves is this session's own: a turn that stops without
+  a continuation releases this session's reservation, once its prompt hook
+  has been observed, and the next prompt of a dispatch whose completion event
+  is outstanding reserves it again, naming a foreign holder in that prompt's
+  context instead of refusing it
+  ([WO-254](../evidence/WO-254/decisions.md#wo-254-d007--a-stopped-dispatch-lets-go-the-release-closes-command-and-a-stopped-codex-turn)).
+  Duplicate/already-continued stops cannot loop. Explicit
   recovery controls remain decisive; native interruption remains with the host,
   and missing state leaves native stopping available. The adapter does not parse
   conversational stop/resume language or maintain an extra pause protocol. The
@@ -4775,6 +4838,41 @@ session runs no `harness begin`, so its router usage stays unknown; only the
 live fixture's Codex router begins with its order (WO-192-D101). The diagnosis
 and the runs are in [WO-247's diagnosis](../evidence/WO-247/codex-close-refusal.md)
 and [native qualification](../evidence/WO-247/native-qualification.md).
+
+**Codex after compaction: the operator's messages are restored (WO-254).**
+After a compaction a Codex session can answer an old message, drop a request
+the operator made mid-dispatch, such as to pause before the final gate, or
+reply and go idle. The generated prompt hook therefore journals each operator
+message of a dispatched session as `OperatorMessageObserved` (source
+`codex-prompt-hook`) with its form class, digest and byte count, and keeps the
+text, cut at 64 KiB, in the session's ignored `<key>.codex-messages.jsonl`
+beside the journal rather than in it, so the journal's rows stay metadata.
+The compact `SessionStart` context restores, after the task sentence, every
+operator message since the dispatch began, verbatim and oldest first: each is
+bounded once, cut before a character that would not fit at 64 KiB when it is
+captured, and nothing cuts it again, so no instruction is lost to the others'
+number or length; the context grows with what the operator said in the
+dispatch
+([round 2](../evidence/WO-254/decisions.md#wo-254-d041--every-captured-message-is-restored-verbatim-with-no-cut-across-messages-round-2-c-f3)).
+The context says that a request among them still stands, that a question is
+answered and changes nothing by itself and that none is a new dispatch; the
+adapter interprets none of them. The first `Stop` after a compaction journals
+one `compactionProbe` row against the task the latest compaction before that
+stop saved, naming the first assistant message after that compaction, read
+from the turn's transcript, with its digest, byte count, phase, time and a
+240-byte excerpt; an earlier compaction in the same turn has no separate
+sample, since each `PostCompact` replaces the saved record; when the
+transcript cannot be read the stop's last message stands in, labelled
+`stop-last-message`
+([round 1](../evidence/WO-254/decisions.md#wo-254-d029--the-compaction-probe-names-the-first-reply-after-the-compaction-read-from-the-transcript-round-1-c-f4-k-f3),
+[final review](../evidence/WO-254/decisions.md#wo-254-d050--final-review-the-probe-wording-says-which-compaction-a-stop-samples)).
+A later reading can then judge whether the restored context was taken up. WO-054's native probe
+registered no prompt hook, so no native run has yet observed the prompt
+event's delivery; the capture, the restored messages and the turn release
+(§Discipline, Codex continuity after compaction) are proven by fixtures, and
+a session whose prompt hook never fires keeps its reservation until
+completion, as before
+([WO-254](../evidence/WO-254/decisions.md#wo-254-d011--the-operators-standing-instructions-ride-the-codex-compaction-record)).
 
 The opt-in Claude type `.claude/agents/dotln-worker-fable.md` selects
 `claude-fable-5-1` at `xhigh` only when the operator's `planning:` or

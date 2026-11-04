@@ -284,6 +284,64 @@ test("writer conflict stops before launch and retains only bounded ownership lab
   }
 });
 
+test("WO-254 a writer whose owner is dead is no conflict: the drive passes the writer check", async () => {
+  const base = realpathSync(
+    createFixtureRoot(join(tmpdir(), "dotln-drive-dead-writer-")),
+  );
+  const previous = process.env.DOTLN_DRIVE_DEADLINE_AT;
+  const now = Date.now;
+  const advance = Symbol.for("dotln.test.drive-dead-writer-clock");
+  try {
+    const f = fixture(base);
+    f.mapClone();
+    f.start();
+    // Seed through this checkout's runtime, so the fixture's own module first
+    // loads inside the drive, where its appended clock step runs.
+    const host = await import(
+      new URL("../packages/skeleton/dist/src/harness-host.js", import.meta.url)
+    );
+    const exited = spawnSync(process.execPath, ["-e", ""]);
+    host.seedHarnessWriter(f.orderRoot, {
+      actorId: createHash("sha256")
+        .update("stopped-codex-session")
+        .digest("hex"),
+      worktree: f.orderRoot,
+      owner: {
+        pid: exited.pid,
+        startedAt: "Thu Jan  1 00:00:00 1970",
+        source: "codex-host",
+      },
+    });
+    assert.equal(host.harnessWriterView(f.orderRoot).alive, false);
+    // The deadline passes only after the writer check, so the drive stops
+    // for its budget, not for a writer.
+    let clock = now();
+    Date.now = () => clock;
+    process.env.DOTLN_DRIVE_DEADLINE_AT = String(clock + 1000);
+    globalThis[advance] = () => {
+      clock += 2000;
+    };
+    const hostFile = join(
+      f.orderRoot,
+      "packages/skeleton/dist/src/harness-host.js",
+    );
+    writeFileSync(
+      hostFile,
+      readFileSync(hostFile, "utf8") +
+        `\n      globalThis[Symbol.for("dotln.test.drive-dead-writer-clock")]?.();\n`,
+    );
+    const result = await runDrive(f.main, "WO-999", { host: "codex" });
+    assert.equal(result.stop.reason, "budget-exhausted");
+    assert.equal(result.writerConflict ?? null, null);
+  } finally {
+    Date.now = now;
+    delete globalThis[advance];
+    if (previous === undefined) delete process.env.DOTLN_DRIVE_DEADLINE_AT;
+    else process.env.DOTLN_DRIVE_DEADLINE_AT = previous;
+    rmSync(base, { recursive: true, force: true });
+  }
+});
+
 test("a drive deadline crossed during host preparation admits no worker", async () => {
   const base = realpathSync(
     createFixtureRoot(join(tmpdir(), "dotln-drive-preparation-")),

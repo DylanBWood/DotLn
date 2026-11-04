@@ -28,6 +28,7 @@ import {
 import {
   addedSegmentEvents,
   controlFromSources,
+  foldWithRecord,
   readControl,
 } from "./lib/control-store.mjs";
 import { statusProjection } from "./resume.mjs";
@@ -168,6 +169,46 @@ await test("WO-210 target review subjects bind exactly to the activation", () =>
     state([activation, review, activation]).targetSubject,
     undefined,
   );
+});
+await test("WO-254 a record the fold refuses throws before any write and leaves the sources as they were; one it admits folds", () => {
+  const segment = orderSegmentPath("WO-999");
+  const activation = {
+    type: "WorkOrderActivated",
+    workOrderId: "WO-999",
+    workOrderPath: "docs/work-orders/WO-999.md",
+  };
+  const control = controlFromSources(
+    new Map([[segment, `${JSON.stringify(activation)}\n`]]),
+  );
+  const before = new Map(control.sources);
+  const accepted = {
+    type: "DispatchBoundAccepted",
+    workOrderId: "WO-999",
+    phase: "active",
+    metric: "completeRuns",
+    ceiling: 4,
+    reason: "fixture",
+    capture: "docs/intake/operator.md",
+    captureHash: `sha256:${"a".repeat(64)}`,
+    actor: {
+      harness: "human",
+      harnessVersion: "fixture",
+      model: "human",
+      effort: "unknown",
+      source: "operator-attested",
+    },
+  };
+  assert.throws(
+    () => foldWithRecord(control, segment, { ...accepted, metric: "tokens" }),
+    /invalid DispatchBoundAccepted/u,
+  );
+  assert.deepEqual(control.sources, before, "a refused record writes nothing");
+  const folded = foldWithRecord(control, segment, accepted);
+  assert.equal(
+    folded.orders.get("WO-999").state.boundAcceptances[0].ceiling,
+    4,
+  );
+  assert.deepEqual(control.sources, before, "the given sources are unchanged");
 });
 await test("dispatch acceptance fold validates the metric, ceiling, phase and capture", () => {
   const activation = {

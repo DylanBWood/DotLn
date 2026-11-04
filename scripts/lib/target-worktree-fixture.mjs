@@ -274,6 +274,13 @@ const fixture = (
     `import { cpSync, existsSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 if (process.env.DOTLN_FIXTURE_BOOTSTRAP_FAIL) process.exit(7);
+// A planted host denial, reported on standard error as a sandbox reports it.
+if (process.env.DOTLN_FIXTURE_BOOTSTRAP_DENY) {
+  const line = "EACCES: permission denied, mkdir 'packages/compiler'\\n";
+  if (process.env.DOTLN_FIXTURE_BOOTSTRAP_DENY === "stdout") process.stdout.write(line);
+  else process.stderr.write(line);
+  process.exit(1);
+}
 for (const name of ${JSON.stringify(runtimePackages)}) {
   const source = join(process.env.DOTLN_FIXTURE_RUNTIME, "packages", name);
   const dest = join(process.cwd(), "packages", name);
