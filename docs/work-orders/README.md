@@ -4,18 +4,15 @@
 
 ## Proposed order
 
-- [x] [WO-245] — The kit's guide is a kit file and the front page is the instance's · **final-reviewed**
-- [x] [WO-251] — Desktop control is opt-in · **final-reviewed**
-- [x] [WO-249] — Criteria judge the product · **final-reviewed**
-- [x] [WO-250] — Reviews converge and every worker counts · **final-reviewed**
-- [x] [WO-248] — The pull-request table says what its reader can use · **final-reviewed**
-- [x] [WO-252] — Release close owns what the kit wrote · **final-reviewed**
-- [x] [WO-238] — A document says what is so · **final-reviewed**
-- [x] [WO-241] — The features file · **final-reviewed**
+- [ ] [WO-253] — Temporary roots leave with the gate that made them, and a prune is a bounded step · **queued**
+- [ ] [WO-254] — The hooks get out of the operator's way · **queued**
+- [ ] [WO-246] — The launchpad's own pull requests · **queued**
+- [ ] [WO-255] — Reviews find what the complete run finds · **queued**
+- [ ] [WO-257] — Instance returns of 2026-11-03 · **queued**
+- [ ] [WO-256] — The follow-up register drains to zero · **queued**
 - [ ] [WO-242] — Plan-first mode · **queued**
 - [ ] [WO-243] — Closeout checks follow the repositories an order changed · **queued**
 - [ ] [WO-244] — Paired planning passes and the synthesis pass · **queued**
-- [ ] [WO-246] — The launchpad's own pull requests · **queued**
 - [ ] [WO-083] — The real run from the operator's instance · **queued**
 - [ ] [WO-207] — An instance's kit updates: rollback, extension point and build channel · **queued**
 - [ ] [WO-193] — An instance's capability requests to core · **queued**
@@ -46,6 +43,102 @@ None.
 None.
 
 ## Open
+
+### WO-253
+
+[WO-253 — Temporary roots leave with the gate that made them, and a prune is a bounded step: a passed suite's fixture roots are removed when the suite ends, a kit-owned expired root is removed on its marker without reading its bytes, one process-table read serves a whole prune, &#96;plan start&#96; and release close run the prune as a bounded step with per-root progress and a truthful partial outcome, a restricted entry inside a kit-owned root is repaired or retained and never a close blocker, and both commands print where their minutes went (version assigned at activation)](WO-253-temporary-roots-leave-with-the-gate-that-made-them.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; dependency-ready.
+- References: WO-252: satisfied-by-close (met) — the close record's blocker classes and the role's prune sentence this order keeps and scopes; WO-239: satisfied-by-close (met) — the release close's timed steps this order adds the prune row's fields to; WO-233: satisfied-by-close (met) — the retention classes and the owned-resource prune this order makes cheap.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer xhigh.
+- Track: machinery
+- Authority: [docs/work-orders/WO-253-temporary-roots-leave-with-the-gate-that-made-them.md](WO-253-temporary-roots-leave-with-the-gate-that-made-them.md)
+
+### WO-254
+
+[WO-254 — The hooks get out of the operator's way: a zombie is not a live writer, the recovery commands a refusal names are admitted from the refused session, a dispatch that stops releases its writer and a denied activation leaves no worktree, a question is answered and a remark is not a rule, the operator's standing instructions survive a Codex compaction, the three shell-classification advisories go quiet, and a session blocked on the operator says so once and ends its turn (version assigned at activation)](WO-254-the-hooks-get-out-of-the-operators-way.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; dependency-ready.
+- References: WO-251: satisfied-by-close (met) — the hook refusal table and emitted settings this order adds the two admitted recovery commands to; WO-249: satisfied-by-close (met) — the rule that an off-ramp is recorded only from the operator's words asking for it, which this order extends to standing rules.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer xhigh.
+- Track: machinery
+- Authority: [docs/work-orders/WO-254-the-hooks-get-out-of-the-operators-way.md](WO-254-the-hooks-get-out-of-the-operators-way.md)
+
+### WO-246
+
+[WO-246 — The launchpad's own pull requests are opened by a helper on origin's repository: &#96;npm run plan -- publish&#96; and &#96;launchpad update --publish&#96; lint, push and open the pull request where the target publish does; a pull-request title in the form core itself uses, a gitmoji and a subject with or without a conventional type, passes the lint; the hook refuses a &#96;gh pr&#96; or &#96;gh issue&#96; command that names no repository in a clone whose origin and upstream differ; the kit guide names the rule; and &#96;update --finish&#96;, the target close and the target publish fetch a remote branch through a lane that borrows the checkout's objects and bounds the fetch (version assigned at activation)](WO-246-the-launchpads-own-pull-requests.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; dependency-ready.
+- References: WO-218: satisfied-by-close (met) — the gitmoji admission before the conventional type that this order widens for pull-request titles; WO-221: satisfied-by-close (met) — ensureGhFor and the push-URL binding the helper proves the repository with; WO-157: satisfied-by-close (met) — pushUrl and the host-created push the helper reuses; WO-135: satisfied-by-close (met) — the hook's command judgment the gh refusal joins; WO-144: satisfied-by-close (met) — the known-destination refusals that survive grant failures, beside which the gh refusal sits; WO-245: planning-deferral (met) until WO-245 dated 2026-10-31 — the kit guide's file this order writes into is docs/KIT.md once WO-245 merges, otherwise the kit README; step 8 names both.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: machinery
+- Authority: [docs/work-orders/WO-246-the-launchpads-own-pull-requests.md](WO-246-the-launchpads-own-pull-requests.md)
+
+### WO-255
+
+[WO-255 — Reviews find what the complete run finds: the planning reviews lane is keyed by branch so two passes on one day each get their reviews, a recheck reads the whole change again instead of the repair alone, the consistency review carries a traced-consumers table the helper refuses to record without, and the criteria adversary on a planning subject receives the operator's dispatch and answers item by item (version assigned at activation)](WO-255-reviews-find-what-the-complete-run-finds.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; dependency-ready.
+- References: WO-250: satisfied-by-close (met) — the review helper, its ladder, its lane and its record command this order changes.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer xhigh.
+- Track: machinery
+- Authority: [docs/work-orders/WO-255-reviews-find-what-the-complete-run-finds.md](WO-255-reviews-find-what-the-complete-run-finds.md)
+
+### WO-257
+
+[WO-257 — Instance returns of 2026-11-03: the pull-request body compares in one sentence, no pass takes a newer starter unless the operator asks in that session, README.md is a default reader entry point, a release's Read before upgrading names the index regeneration, the entropy receipt renders the frozen copy as &#96;&lt;tmp&gt;/…&#96; and screens its summary and its Markdown before filing, a target-subject receipt labels the launchpad witness, moved records keep working links, the continuation gate treats product 00 as optional, the review worker binds a target order, the index separates the executor's unmet ordinal from the later verdict, bootstrap diagnoses a missing target clone, and the target release classification counts every declaration (version assigned at activation)](WO-257-instance-returns-of-2026-11-03.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; dependency-ready.
+- References: WO-248: satisfied-by-close (met) — the pull-request body table whose comparison sentence this order rewrites; WO-238: satisfied-by-close (met) — the reader entry points and red tags this order adds a default entry point to; WO-250: satisfied-by-close (met) — the review helper this order gives a target-order form.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: machinery
+- Authority: [docs/work-orders/WO-257-instance-returns-of-2026-11-03.md](WO-257-instance-returns-of-2026-11-03.md)
+
+### WO-256
+
+[WO-256 — The follow-up register drains to zero: every pending row is allocated to the open order that owns its files, settled against the record that already answers it, or declined with the reopening condition it already carries, in one batch per source document, so &#96;plan start&#96; returns no pending page and the register stays a record of what was decided (version assigned at activation)](WO-256-the-follow-up-register-drains-to-zero.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; dependency-ready.
+- References: none declared.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer high.
+- Track: evidence
+- Authority: [docs/work-orders/WO-256-the-follow-up-register-drains-to-zero.md](WO-256-the-follow-up-register-drains-to-zero.md)
 
 ### WO-242
 
@@ -94,22 +187,6 @@ None.
 - Effort: executor xhigh; verifier xhigh; reviewer high.
 - Track: machinery
 - Authority: [docs/work-orders/WO-244-paired-planning-passes-and-the-synthesis-pass.md](WO-244-paired-planning-passes-and-the-synthesis-pass.md)
-
-### WO-246
-
-[WO-246 — The launchpad's own pull requests are opened by a helper on origin's repository: &#96;npm run plan -- publish&#96; and &#96;launchpad update --publish&#96; lint, push and open the pull request where the target publish does; a pull-request title in the form core itself uses, a gitmoji and a subject with or without a conventional type, passes the lint; the hook refuses a &#96;gh pr&#96; or &#96;gh issue&#96; command that names no repository in a clone whose origin and upstream differ; the kit guide names the rule; and &#96;update --finish&#96;, the target close and the target publish fetch a remote branch through a lane that borrows the checkout's objects and bounds the fetch (version assigned at activation)](WO-246-the-launchpads-own-pull-requests.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-218: satisfied-by-close (met) — the gitmoji admission before the conventional type that this order widens for pull-request titles; WO-221: satisfied-by-close (met) — ensureGhFor and the push-URL binding the helper proves the repository with; WO-157: satisfied-by-close (met) — pushUrl and the host-created push the helper reuses; WO-135: satisfied-by-close (met) — the hook's command judgment the gh refusal joins; WO-144: satisfied-by-close (met) — the known-destination refusals that survive grant failures, beside which the gh refusal sits; WO-245: planning-deferral (met) until WO-245 dated 2026-10-31 — the kit guide's file this order writes into is docs/KIT.md once WO-245 merges, otherwise the kit README; step 8 names both.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer high.
-- Track: machinery
-- Authority: [docs/work-orders/WO-246-the-launchpads-own-pull-requests.md](WO-246-the-launchpads-own-pull-requests.md)
 
 ### WO-083
 
@@ -249,15 +326,12 @@ None.
 [WO-183]: WO-183-intent-declaration-and-the-stranger-test.md
 [WO-193]: WO-193-instance-capability-requests.md
 [WO-207]: WO-207-update-rollback.md
-[WO-238]: WO-238-a-document-says-what-is-so.md
-[WO-241]: WO-241-the-features-file.md
 [WO-242]: WO-242-plan-first-mode.md
 [WO-243]: WO-243-closeout-checks-follow-the-repositories-an-order-changed.md
 [WO-244]: WO-244-paired-planning-passes-and-the-synthesis-pass.md
-[WO-245]: WO-245-the-kit-guide-is-a-kit-file.md
 [WO-246]: WO-246-the-launchpads-own-pull-requests.md
-[WO-248]: WO-248-the-pull-request-table-says-what-its-reader-can-use.md
-[WO-249]: WO-249-criteria-judge-the-product.md
-[WO-250]: WO-250-reviews-converge-and-every-worker-counts.md
-[WO-251]: WO-251-desktop-control-is-opt-in.md
-[WO-252]: WO-252-release-close-owns-what-the-kit-wrote.md
+[WO-253]: WO-253-temporary-roots-leave-with-the-gate-that-made-them.md
+[WO-254]: WO-254-the-hooks-get-out-of-the-operators-way.md
+[WO-255]: WO-255-reviews-find-what-the-complete-run-finds.md
+[WO-256]: WO-256-the-follow-up-register-drains-to-zero.md
+[WO-257]: WO-257-instance-returns-of-2026-11-03.md

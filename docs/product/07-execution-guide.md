@@ -1041,6 +1041,14 @@ sentence nothing checks is a documented condition, not a gate
 
 ## Operator recovery controls
 
+A writer reservation whose holder the host's process table lists as a zombie
+(`<defunct>`) is stale: the holder exited and nothing works under it. The
+hook's refusal names the two commands that inspect and release it, and until
+WO-254 admits them from the refused session, the operator runs
+`node scripts/harness.mjs writer --release --force` once and the session says
+so in one message and ends its turn
+([the 2026-11-03 pass, item 23](../planning/passes/recurring-failures-and-queue-drain-2026-11-03.md)).
+
 Cleanup is owned by the workflow, not handed to the operator. `worktree start`
 creates the worktree without running a prune census. `plan start` applies the
 owned-resource prune and prints its report by kind, class, count and bytes, or
@@ -1657,7 +1665,10 @@ Preconditions and inputs:
    or a characterization of the operator; the pass's own document holds the
    day. The reader entry points are the root instruction file's Start here, the
    generated skills' and role roots' `Read:` lines, this guide's cold-start
-   read order and the kit guide's First steps; `npm run test:docs` refuses an
+   read order, the kit guide's First steps and, since the 2026-11-03 pass,
+   the repository's front page `README.md`, declared in `documents.json`
+   as `front-page` because every page it links was red-tagged as unreached
+   (WO-257 makes it a kit default); `npm run test:docs` refuses an
    entry point that names a record and reports a standing document that no
    entry point names, no standing or generated page a reader reaches links to
    and no program reads. `npm run plan -- documents` adds the read census:
@@ -2054,7 +2065,14 @@ design improver and the consistency reviewer, §Discipline) as Codex workers
 at the Codex pin, integrates their findings at the pass's judgment, records
 the counts in its document as `self-review: found N; fixed N; recorded N`,
 commits, and refutes the integrated subject; the reviewers are the pass's
-own self-review and never replace the refuter. The reviewed route's first
+own self-review and never replace the refuter. The criteria adversary of a
+planning subject reads the operator's dispatch and answers item by item
+where each was acted on or reviewed (the operator's item 15 of 2026-11-03);
+WO-255's `--capture` carries it, and until it lands the pass writes its
+per-item table into its own document so the subject carries it. The helper's
+planning lane is named by UTC date until WO-255 keys it by branch, so a pass
+that crosses midnight or a second pass on one day cannot run a fresh round 1
+through it ([the 2026-11-03 pass](../planning/passes/recurring-failures-and-queue-drain-2026-11-03.md)). The reviewed route's first
 run is the 2026-10-31 pass
 ([the planning document](../planning/passes/kit-guide-home-fork-block-and-drive-returns-2026-10-31.md)):
 three `codex exec` workers of 4 to 6 minutes each returned twenty findings,
@@ -2129,7 +2147,11 @@ the identifier is minted by the collector, run `npm run plan -- followups
 --sync` after recording the decision and before disposing the queue item onto
 it; WO-064 D011 and WO-152 D011 record the advisory that disposing first
 leaves. Neither the
-feed nor a disposition grants work-order activation authority.
+feed nor a disposition grants work-order activation authority. WO-256
+drains the 260 rows pending on 2026-11-03 to zero, each allocated to the
+open order that owns its files, settled against the record that answers it
+or declined with the condition it carries
+([the 2026-11-03 pass](../planning/passes/recurring-failures-and-queue-drain-2026-11-03.md)).
 
 ## Research and guided-operator work orders
 
@@ -2218,7 +2240,14 @@ system temporary directory's unrelated gate fixtures. An explicit
 `harness prune` and `plan start` still walk them. `plan start` applies that
 prune, so expired roots outside every close's scope leave at the next planning
 pass; while a gate holds the host lanes it prints the read-only census instead.
-`harness prune --apply` removes them on demand.
+`harness prune --apply` removes them on demand. That walk reads and hashes
+every regular file of every candidate root and reads the process table once
+per root, so on 2026-11-03 `plan start` spent 0 h 27 min removing 465 of
+5,988 roots and WO-241's close, published in 0 h 2 min, stopped in the prune
+on a restricted fixture directory; WO-253 removes a passed suite's roots when
+the suite ends, judges a kit-owned root by its record, bounds the routine
+prune and scopes the close's to the closed order's roots
+([the 2026-11-03 pass](../planning/passes/recurring-failures-and-queue-drain-2026-11-03.md)).
 Kit update preview's census is limited to its repository, and session
 completion removes only its own scratch and dead captures
 ([decision](../evidence/WO-239/decisions.md#wo-239-d020--resolve-the-integrated-reviews-and-state-the-global-walk-as-built),
@@ -3707,6 +3736,13 @@ and generated evidence, including fixtures, manifests and installed guidance.
   conversationally and continue the active implementation; pausing requires
   an explicit request to pause or stop
   [[WO-126-D019](../evidence/WO-126/decisions.md#wo-126-d019), 2026-09-10].
+- **Blocked means one message.** A session blocked on an action only the
+  operator can take states the block and the one line that clears it in a
+  single message and ends its turn, because the host holds a `!` command
+  the operator types until the turn ends; reading on while the operator's
+  command waits is the failure
+  [[the 2026-11-03 pass, item 24](../planning/passes/recurring-failures-and-queue-drain-2026-11-03.md)]. WO-254 carries the sentence
+  into every role root.
 - **Process budget.** Compare total work and waiting against the failure a
   mechanism prevents [WO-132, 2026-09-15](../evidence/WO-132/decisions.md). `npm run meta` prints each closed
   order's Cost promise beside available observed gate/usage rows and their
@@ -4603,9 +4639,19 @@ provider spend at USD 5 when the selected transport exposes a hard dollar-cap
 control. A recorded budget on a transport without that control is a limit
 declaration, not an enforced cap, and must be reported that way.
 
-Spawned agents run the operator's pinned models (direction of 2026-09-30): a
-worker, reviewer, refuter, live episode or probe that a session launches runs
-Codex `gpt-6.1-sol` at `max` or Claude Code `claude-opus-5-5` at `xhigh`.
+Spawned agents run the operator's pinned models (direction of 2026-09-30,
+restated 2026-11-03): a worker, reviewer, refuter, live episode or probe that a
+session launches has four options, Claude `claude-opus-5-5` at `xhigh`,
+Claude `claude-fable-5-1` at `xhigh`, Codex `gpt-6.1-sol` at `max` and
+Codex `gpt-6-astra` at `max`; the first and third are the defaults of their
+harnesses, and the Fable and Astra options run only when the operator asks
+(operator direction of 2026-11-03, ignored capture SHA-256
+`589662ab8d84e728340b6b22077bf72f4979d1e3a37821a00947b8c12b52326f`). Today the
+dispatch word `fable` selects the Claude option; the Codex Astra option has no
+kit selector, so a pass the operator asked to review on it captured the
+helper's brief and launched the model through the record route
+([the 2026-11-03 pass](../planning/passes/recurring-failures-and-queue-drain-2026-11-03.md)); WO-255 adds the selector to the review
+helper, the refuter and the generated worker types.
 Claude workers use the generated `.claude/agents/dotln-worker.md` type:
 `model: claude-opus-5-5` and `effort: xhigh`. Launch Agent with
 `subagent_type: dotln-worker` and no per-call model override; its definition's

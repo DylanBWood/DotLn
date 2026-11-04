@@ -32,6 +32,13 @@
         "docs/KIT.md"
       ],
       "heading": "First steps"
+    },
+    {
+      "id": "front-page",
+      "files": [
+        "README.md"
+      ],
+      "heading": "DotLn"
     }
   ],
   "kinds": [

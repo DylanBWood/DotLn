@@ -1,0 +1,199 @@
+# WO-256 — The follow-up register drains to zero: every pending row is allocated to the open order that owns its files, settled against the record that already answers it, or declined with the reopening condition it already carries, in one batch per source document, so `plan start` returns no pending page and the register stays a record of what was decided (version assigned at activation)
+
+**Model:** any capable model. State the model and effort actually run
+(07-execution-guide.md §Model-specific notes).
+**Effort:** executor xhigh; verifier xhigh; reviewer high.
+**Track:** evidence
+**Release classification:** patch. Document and register dispositions
+only; no command, hook or schema changes. Assigned at activation under the
+standing opt-out default.
+**Cost:** adds, through `npm run plan -- followups --apply <batch>` under
+the procedure of `docs/planning/followups.md` (the batch form: one
+`expectedRevision`, requests applied in order under one lock), the
+disposition of every pending row of the register at the order's base: 260
+rows on 2026-11-03 (242 `deferred`, 18 `untriaged`; 190 `candidate` rows
+whose sources are the map's candidates sections and the product documents'
+candidate headings, 70 `decision` rows whose sources are orders'
+decisions; 45 distinct source documents, 135 rows from
+`docs/planning/work-order-map.md` alone), each row allocated to an open
+order whose files or objective cover it (with the row appended to that
+order's `Known issues and carry-ins` as a carry-in naming the FUP id and
+its reopening condition, under the execution-amendment route of product 07
+§Operator-opened planning pass where the order is in a judged horizon),
+settled where a closed order's record already answers it (the record
+linked), or declined with the reopening condition the row already carries
+as its `reopenWhen` (a `NoOpIntent`: the decline is the record, the
+condition the way back); the 18 `untriaged` rows triaged first by the same
+rule; `npm run plan -- followups --sync` run after the order's own
+decisions so the rows they mint are allocated to the orders they name
+before handoff; the map's candidates sections untouched (they are records
+below the line and the rows' sources; a disposition links, never rewrites);
+and in product 07 §Retained planning follow-ups one sentence: a pass that
+reads a pending row disposes it in that pass (allocate, settle, decline),
+and a row deferred twice is declined with its condition, so the register
+holds decisions and never a queue. Removes: a pending feed of 260 rows that
+every `plan start` returns eight at a time (33 pages), whose rows the
+operator's item 4 asks to drain or append to the orders that own them;
+rows deferred since 2026-09-19 under conditions no order on the horizon
+will fire (FUP-0045, FUP-0053, FUP-0055, FUP-0056, FUP-0067, FUP-0068 on
+the first page of 2026-11-03). Wall-clock: one reading per row by the
+executor; the batch applies in seconds; measured before and after in the
+decisions by the register's counts. Context bytes: this file, about
+9,000; no role root changes. Commands: none new. Tokens: unknown until run
+(260 readings). Steps: 7. Re-mints: none (no runtime, machinery or
+feedback-judged source changes; `npm run test:docs` is the gate, with
+`npm test -- --only process-debt` for the register's own suite).
+**Nomination provenance:** the operator's item 4 of the 2026-11-03
+planning dispatch ("in 1-2 work orders, let's drain the follow up queue
+(or append them to relevant work orders)"), captured in ignored intake
+`docs/intake/planning-dispatch-2026-11-03-recurring-failures.md`, SHA-256
+`4c7e47a6548004d909128fdfcc346663fc419280b798d00abec73d7ffb180f83`; the
+operator's item 8 of 2026-11-01 (every decided follow-up into existing
+orders where possible). Filed by the
+[2026-11-03 pass](../planning/passes/recurring-failures-and-queue-drain-2026-11-03.md).
+Planner-synthesized. Opaque identifier, not a priority. Clean-room screen:
+no stop condition.
+**Depends on:** none (the register, the apply route and the orders exist
+at the base; the order runs after WO-253, WO-254 and WO-255 so their
+carry-ins are allocated against their final text).
+
+<!-- dotln-dependencies:start -->
+[]
+<!-- dotln-dependencies:end -->
+
+**Cites (read these sections):** `docs/planning/followups.md` (the apply
+request: `expectedRevision`, `id`, `sourceRevision`, `status`, `reason`,
+`reopenWhen`, `targets`; the batch; `--export`; `--touching`); product 07
+§Retained planning follow-ups and §Operator-opened planning pass
+(precondition 3: a decline is a `NoOpIntent` with its evidence and reversal
+condition; the execution-amendment route for a judged order's text);
+`docs/planning/work-order-map.md` §Records below this line (the candidates
+sections the rows cite); `npm run plan -- followups` of 2026-11-03 (260
+pending; the counts by status and kind in this pass's §Register); the
+export of 2026-11-03 under the system temporary directory, regenerated by
+the executor with `--export`.
+
+**Objective:** `npm run plan -- followups` reports no pending row, every
+disposition names its reopening condition or its carrying order, and the
+next planning pass reads a register of decisions instead of a queue.
+
+**Observed gap (dated 2026-11-03 at `main` `eb7c58ff6`, v0.114.0):**
+
+- `npm run plan -- followups`: total 1,562; duplicate 85, declined 168,
+  allocated 214, deferred 242, settled 835, untriaged 18; pending 260 over
+  33 pages of eight. The first page `plan start` returned held eight
+  `deferred` rows from the map's preserved candidates, six of them deferred
+  by the 2026-09-19 cleanup pass under conditions tied to orders not on the
+  horizon (WO-095, WO-117, the pattern workshop).
+- The 18 `untriaged` rows are decisions of WO-238, WO-241, WO-245, WO-248,
+  WO-249, WO-250, WO-251 and WO-252 minted at their closes (2026-11-02 and
+  2026-11-03); three of WO-241's and two of WO-250's name the review helper
+  or `worker record` and are allocated to WO-255 by this pass; the rest
+  wait for a reading.
+- The 2026-11-01 pass disposed 39 rows in one batch; the register's
+  procedure admits a batch of any length under one revision, so the drain
+  is one reading per row and one apply per source document.
+
+**Design (scope discipline):**
+
+- **Three dispositions, one rule.** A row whose files or objective an open
+  order owns is allocated there and appended to that order as a carry-in;
+  a row a closed order's record already answers is settled with the link;
+  every other row is declined with the condition it carries. Rejected:
+  deferring again (axis: a deferral is the queue the operator asked to
+  drain; the condition survives as the decline's reopening). Rejected: a
+  new order per theme (axis: the operator's item 4 names one or two
+  orders; the rows' value is in the orders that own their files).
+- **Sources stay.** The map's candidates sections and the decisions are
+  records; a disposition links to them. Rejected: deleting settled
+  candidates from the map (axis: records are never rewritten).
+- **One batch per source document.** The executor exports, reads a source
+  document's rows together, writes one batch and applies it, so a mistaken
+  reading is bounded by its document. Rejected: one batch of 260 (axis:
+  one invalid request writes nothing and names its index, and a 260-row
+  retry costs the whole reading).
+- **The rule for the next pass.** A pass disposes what it reads; a row
+  deferred twice is declined. Rejected: refusing `plan start` on a pending
+  row (axis: a refusal at entry is item 21 again).
+- **Live-run surfaces at the base.** The register, the export, the apply
+  batch, `--touching`, the orders' carry-in sections: exist. The
+  dispositions and the sentence: absent.
+
+**Execution plan (the executor follows these steps in order; observed at `eb7c58ff6`, 2026-11-03):**
+
+1. `npm run plan -- followups --export <file under the system temporary
+   directory>` at the order's base; group the rows by source document;
+   record the counts in `docs/evidence/WO-256/decisions.md`. Check: the
+   export's row count equals the feed's `pending`.
+2. The 18 `untriaged` rows: read each against the record it names and the
+   open orders' files; allocate, settle or decline; one batch. Check: `npm
+   run plan -- followups` shows `untriaged: 0`.
+3. The `decision` rows (70): the same reading, one batch per source order.
+   Check: the feed's `pending` falls by the batch's size after each apply.
+4. The `candidate` rows (190): the same reading, one batch per source
+   document, the map's sections last. Check: the feed's `pending` is 0.
+5. For every allocation, append the carry-in to the carrying order's
+   `Known issues and carry-ins` (FUP id, one line, the reopening
+   condition); for an order in a judged horizon, record the authorization
+   (the operator's item 4 and this order) in the carrying order's
+   structured decisions and run `npm run plan -- amend-order WO-NNN
+   WO-NNN-DNNN "carry-in from WO-256"`. Check: `npm run plan -- check`
+   green; `npm run work-orders -- index --check` green.
+6. Write-backs: product 07 §Retained planning follow-ups (the sentence);
+   `docs/evidence/WO-256/decisions.md` (the counts before and after; each
+   batch's revision; the rule); `npm run plan -- followups --sync` after
+   the decisions and the allocation of any row it mints; `npm run meta`.
+7. Handoff: `npm run format`; the independent reviews the executor root
+   requires; `npm run test:docs`; `npm test -- --only process-debt`;
+   `docs/evidence/WO-256/handoff.md`; `npm run resume --
+   implementation-ready <flags>` (product 07 §Discipline).
+
+**Deliverables:** the dispositions; the carry-ins; the sentence; the
+decisions record.
+
+**Acceptance criteria (all required)**
+
+1. `npm run plan -- followups` at the candidate reports `pending: 0` and
+   `untriaged: 0`, and `--sync` run after the order's own decisions mints
+   no row left unallocated.
+2. Every disposition the order wrote carries a non-empty `reason` and
+   either a `reopenWhen` or an allocation target, read by `npm run plan --
+   followups --show <id>` on three rows the verifier picks from each of the
+   three dispositions.
+3. Every allocated row's carrying order names the FUP id in its `Known
+   issues and carry-ins`, checked by `npm run plan -- followups --touching
+   <WO-NNN>` for each carrying order listing only rows allocated to it.
+4. Product 07 §Retained planning follow-ups states the rule as built;
+   `npm run plan -- check` and `npm run work-orders -- index --check`
+   green.
+5. `npm test -- --only process-debt` and `npm run test:docs` green; `git
+   diff --check` clean; no new dependency.
+
+**Preflight:** `npm run test:docs` after each batch; `npm test -- --only
+process-debt` for the register's suite; each under `node
+scripts/harness.mjs bounded --`; the complete gate is not owed by a
+document-only candidate unless final review finds the identity changed
+(07-execution-guide.md §Preflight before the full gate).
+
+**Evidence gate:** the feed's counts before and after each batch in the
+decisions; `npm run test:docs` at the candidate.
+
+**Write-back duty:** as listed in step 6 and criterion 4.
+
+**Known issues and carry-ins:**
+
+- The first page `plan start` returned on 2026-11-03 (FUP-0044, FUP-0045,
+  FUP-0053, FUP-0055, FUP-0056, FUP-005a8af5234cb3f3, FUP-0067, FUP-0068)
+  was read and left deferred by the pass under its conditions; this order
+  declines or allocates each (reopen: a condition fires).
+- The 2026-11-01 pass's rule that a pass disposes what it reads stands;
+  this order adds the second-deferral decline (reopen: a declined row's
+  condition fires and no pass notices).
+
+**Non-goals:** new orders for themes the rows raise; rewriting the map's
+records; a refusal at `plan start`.
+
+**Operator-review assumptions:** that a deferred row's condition is a good
+reopening condition for its decline (the operator's item 4 says drain or
+append); that two orders is the ceiling and one suffices. Reopen on the
+operator's word.
