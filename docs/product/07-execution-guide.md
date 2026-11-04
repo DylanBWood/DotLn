@@ -2524,10 +2524,12 @@ A class or registration declares `disposable` paths (relative and contained;
 the class's entries and the registration's compose into one sorted set and
 nothing removes a class entry). An entry may carry two wildcard forms: `**`
 as a whole segment matches any number of segments and `*` matches any
-characters within one segment. Its last segment keeps a literal part, the
-floor that keeps a declaration from naming every ignored file, so `*`, `**`,
-`**/*` and `libs/**` are refused at registration and `**/*.tsbuildinfo` is
-admitted. A listed path lies under an entry when a leading run of its
+characters within one segment. Its last segment keeps a literal part with a
+letter or digit, the floor that keeps a declaration from naming every ignored
+file, so `*`, `**`, `**/*` and `libs/**` are refused at registration, as are
+`*.*` and `.*`, whose `*` also matches a leading dot and so would name `.env`,
+an operator note or `.runtime` itself, and `**/*.tsbuildinfo` is admitted
+([decision](../evidence/WO-253/decisions.md)). A listed path lies under an entry when a leading run of its
 segments matches the whole entry, and the shortest such run is the matched
 root, so `**/node_modules` is one line for a whole Nx workspace's nested
 caches. The close takes matches from the ignored listing it already holds and

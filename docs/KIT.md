@@ -237,11 +237,11 @@ operator sandbox settings.
    `baseDisposablePolicy: "judge-only"` when the base checkout must retain that
    output while keeping its material checks (the default is `"delete"`). A
    path may use `**` as a whole segment for any number of segments and `*`
-   within one segment, and its last segment keeps a literal part, so one
-   class line covers a whole workspace: an Nx class with Vitest declares
-   `"disposable": ["**/node_modules", "**/.vite", "**/.vitest"]` once for
-   every project's caches, while `*`, `**`, `**/*` and `libs/**` are refused
-   at registration (see [Owned cleanup and retention](#owned-cleanup-and-retention)). Use
+   within one segment, and its last segment keeps a literal part with a letter
+   or digit, so one class line covers a whole workspace: an Nx class with
+   Vitest declares `"disposable": ["**/node_modules", "**/.vite", "**/.vitest"]`
+   once for every project's caches, while `*`, `**`, `**/*`, `libs/**`, `*.*`
+   and `.*` are refused at registration (see [Owned cleanup and retention](#owned-cleanup-and-retention)). Use
    `release: { "policy": "declared", "displayName": "My product" }` with the
    order's `**Target release classification:**` header for a tagged target
    release. The optional name defaults to the registration id and changes the
