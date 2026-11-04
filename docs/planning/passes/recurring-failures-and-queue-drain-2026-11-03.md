@@ -626,8 +626,9 @@ role). Launches counted by hand: one `claude-code-guide` agent; six
 helper launches that returned no worker (the stub captures); three direct
 Codex launches that failed on stdin; three direct Codex launches that
 returned reports (0 h 6 min, 0 h 10 min and 0 h 12 min); one criteria
-recheck with the capture (§Validation); one refuter: fifteen uses against
-the cap of twenty, with no re-task. Wall-clock of the pass's commands: `plan start` 1,015 s; `plan
+recheck with the capture (§Validation); three refuters launched, two
+stopped before returning and one returned: seventeen uses against the
+cap of twenty, with no re-task. Wall-clock of the pass's commands: `plan start` 1,015 s; `plan
 conditions --slow` 305 s; the temporary-directory `du` over 120 s; the
 reviews and the refuter in §Validation. Against the NoOp of doing nothing:
 tonight's two failures (a 17-minute branch creation and a close blocked by
@@ -768,3 +769,28 @@ appended when observed.
   deferred; WO-256 was removed from the tree and every reference repaired;
   `followups --sync` minted one row for the map's candidate 11 and it was
   declined with its condition; the feed reads 246 pending.
+- `npm run plan -- refute` at `cb02208c2` printed the canonical prompt
+  (166,294 bytes of subject; five orders judged). One fresh `dotln-worker`
+  (claude-opus-5-5 at xhigh, the Claude default; the dispatch named no
+  fable worker) judged it from the prompt file alone, reading no repository
+  file and running no gate: 0 h 14 min, 202,301 tokens and 22 tool uses by
+  the host's usage. Two earlier refuters were stopped by this session
+  before they returned, one at 0 h 12 min and one at 0 h 1 min, because the
+  operator's clarifications of items 10 and 4 changed the subject while
+  they ran; their judgments were not read. The worker's writes of its
+  result and statement to the scratchpad were refused by the outside-write
+  hook ("no granted root for role unknown": a spawned worker has no planner
+  grant), so it returned both inline and this session saved them under
+  `docs/control/local/planning-2026-11-03/`; the receipt helper then
+  refused the statement for an absolute scratchpad path (the screen the
+  fork's item 18.8 names), repaired to the `<tmp>/` placeholder without
+  touching the judgment.
+- `npm run plan -- receipt`: receipt `2026-11-04-planning-0813ea751d78a5a6-063`
+  filed and committed; judged, committed and workspace subjects
+  `sha256:86d8bf3b…`; `planVerdict: aligned-with-findings`, every order
+  `aligned-with-findings`, no holds, 23 known issues (WO-253 four, WO-254
+  five, WO-246 five, WO-255 six, WO-257 three), each written on the order's
+  catalog row with the planner's reading and its reopening observation for
+  the executor's decisions; the two pre-existing criteria advisories
+  relayed. The refuter's reading that no order names its critical-path
+  gate is right: each infers P (WO-083) and the rows now say so.
