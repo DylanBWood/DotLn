@@ -794,3 +794,15 @@ appended when observed.
   the executor's decisions; the two pre-existing criteria advisories
   relayed. The refuter's reading that no order names its critical-path
   gate is right: each infers P (WO-083) and the rows now say so.
+- `npm run test:docs` at `d7e5d9742`: 27 passed, 0 failed, 0 h 2 min.
+  `git push -u origin planning/2026-11-03-recurring-failures-and-queue-drain`
+  was admitted by the host on the first try; `gh pr create` opened #272.
+  Its title was first written to satisfy the kit's `pr-title` lint, which
+  runs the commit-message shape (a conventional type, 72 characters) on a
+  pull-request title; every merged pull request of this repository (#264 to
+  #271) is a gitmoji and a plain subject with no type, WO-246 already names
+  that lint's defect and carries the fix, and nothing gates `gh pr create`
+  on it for core's own branches. The operator asked where the title came
+  from; it was retitled in the repository's own form. The branch and this
+  document keep the `recurring-failures-and-queue-drain` slug fixed at
+  `plan start`, before the operator's reading of item 4.
