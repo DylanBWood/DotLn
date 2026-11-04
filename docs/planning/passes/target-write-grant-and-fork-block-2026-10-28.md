@@ -2,8 +2,8 @@
 
 ## The dispatch and its capture
 
-The operator opened `planning: issues from the fucking fork. HUGE FUCKING
-BLOCKER. …` at 2026-10-28T13:22:01Z in Claude Code (Fable 5.1 at max
+The operator opened a `planning:` dispatch naming the fork's issues as a
+huge blocker at 2026-10-28T13:22:01Z in Claude Code (Fable 5.1 at max
 effort, selected by the operator with `/model` before the dispatch) and
 sent two further messages during the pass, at 13:22:32Z and 13:22:42Z. The
 dispatch carried three things: the DotLn-Enterprise-Starter fork's blocker

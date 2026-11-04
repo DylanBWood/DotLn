@@ -28740,6 +28740,13 @@
           "title": "WO-059-D023: Accept the current missing-browser behavior under WO-059 operator-review assumption 2: unavailable witnesses, no passing evidence and a failing package suite that prints the cache-scoped ",
           "summary": "{ \"id\": \"WO-059-D023\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: fix; FINAL-001 D019\", \"decision\": \"Accept the current missing-browser behavior under WO-059 operator-review assumption 2: unavailable witnesses, no passing evidence and a failing package suite that prints the cache-scoped install command. Retain the per-worktree cache and the README's explicit setup step. Record Receipt 036's recurring setup cost and its reopening condition; do not silently skip browser checks or redesign the gate in this repair.\", \"evidence\": [ \"docs/planning/refutations/2026-09-30-planning-826842218eb333e2-036.md WO-059 criterion:6 known-issue and the work-order-map row assign this disposition to the executo",
           "missing": false
+        },
+        {
+          "hash": "60b6b9f8e18f61c3fce7a5d5f41b583ffbeeb714c5560ae9171faaa7b4c0c9ed",
+          "ref": "docs/evidence/WO-059/decisions.md#wo-059-d023--receipt-036-missing-browser-disposition",
+          "title": "WO-059-D023: Accept the current missing-browser behavior under WO-059 operator-review assumption 2: unavailable witnesses, no passing evidence and a failing package suite that prints the cache-scoped…",
+          "summary": "{ \"id\": \"WO-059-D023\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: fix; FINAL-001 D019\", \"decision\": \"Accept the current missing-browser behavior under WO-059 operator-review assumption 2: unavailable witnesses, no passing evidence and a failing package suite that prints the cache-scoped install command. Retain the per-worktree cache and the README's explicit setup step. Record Receipt 036's recurring setup cost and its reopening condition; do not silently skip browser checks or redesign the gate in this repair.\", \"evidence\": [ \"docs/planning/refutations/2026-09-30-planning-826842218eb333e2-036.md WO-059 criterion:6 known-issue and the work-order-map row assign this disposition to the executo",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -28750,6 +28757,14 @@
           "reopenWhen": "A worktree created through the canonical bootstrap reaches its first gate without a usable pinned browser, or a cache selection differs between preparation and the browser suite's launch.",
           "targets": [],
           "at": "2026-10-01T17:01:12.066Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Settled by WO-181's final review: WO-181-D008 reopened this decision under the operator's scope expansion, and WO-181 criterion 7 replaces the manual per-worktree browser setup it accepted. Bootstrap now installs the pinned Chromium headless shell during future-worktree creation, before the launch handoff; the missing-browser behavior this decision kept (unavailable witnesses and a failing suite) is unchanged. VER-001 and FINAL-001 judged the criterion met. [WO-181 final review (docs/final-reviews/WO-181/FINAL-001.md)] (source text rewritten as a synthesis on 2026-11-04 so that no operator words are quoted in a committed record; the disposition is unchanged.)",
+          "reopenWhen": "A worktree created through the canonical bootstrap reaches its first gate without a usable pinned browser, or a cache selection differs between preparation and the browser suite's launch.",
+          "targets": [],
+          "at": "2026-11-04T02:10:21.997Z"
         }
       ]
     },
@@ -51650,6 +51665,20 @@
           "title": "WO-237-D011: A kit route that launches a read-only Codex dotln-worker review from a Claude Code session, with the worker transport's isolated home and the generated worker definition, so an executor…",
           "summary": "{ \"id\": \"WO-237-D011\", \"date\": \"2026-11-01\", \"dispatch\": \"resume: next; the operator directed Codex reviewers and, offered the routes, chose the ad hoc launcher\", \"decision\": \"The three independent reviews (criteria adversary, design improver, consistency reviewer) ran on Codex, model gpt-6.1-sol at reasoning effort max, the role text's Codex pin, as read-only codex exec sessions launched from this Claude Code session by a launcher in the session's DotLn scratch. Like the kit's worker transport, it gave the sessions one isolated CODEX_HOME holding only a link to the operator's auth.json, a read-only sandbox, project docs, web search, MCP servers and memories off, and kept each session so the",
           "missing": false
+        },
+        {
+          "hash": "660484623a1bbfac0a1af80db55d74afa8104d98037d3cdf1550415f87ee7a01",
+          "ref": "docs/evidence/WO-237/decisions.md#wo-237-d011--the-independent-reviews-ran-on-codex-and-what-they-changed",
+          "title": "WO-237-D011: A kit route that launches a read-only Codex dotln-worker review from a Claude Code session, with the worker transport's isolated home and the generated worker definition, so an executor…",
+          "summary": "{ \"id\": \"WO-237-D011\", \"date\": \"2026-11-01\", \"dispatch\": \"resume: next; the operator directed Codex reviewers and, offered the routes, chose the ad hoc launcher\", \"decision\": \"The three independent reviews (criteria adversary, design improver, consistency reviewer) ran on Codex, model gpt-6.1-sol at reasoning effort max, the role text's Codex pin, as read-only codex exec sessions launched from this Claude Code session by a launcher in the session's DotLn scratch. Like the kit's worker transport, it gave the sessions one isolated CODEX_HOME holding only a link to the operator's auth.json, a read-only sandbox, project docs, web search, MCP servers and memories off, and kept each session so the",
+          "missing": false
+        },
+        {
+          "hash": "9ccf0ecfa911c1f991d9b0fd1f9371ebfc8bbb062485da8778ea578e14d70538",
+          "ref": "docs/evidence/WO-237/decisions.md#wo-237-d011--the-independent-reviews-ran-on-codex-and-what-they-changed",
+          "title": "WO-237-D011: A kit route that launches a read-only Codex dotln-worker review from a Claude Code session, with the worker transport's isolated home and the generated worker definition, so an executor…",
+          "summary": "{ \"id\": \"WO-237-D011\", \"date\": \"2026-11-01\", \"dispatch\": \"resume: next; the operator directed Codex reviewers and, offered the routes, chose the ad hoc launcher\", \"decision\": \"The three independent reviews (criteria adversary, design improver, consistency reviewer) ran on Codex, model gpt-6.1-sol at reasoning effort max, the role text's Codex pin, as read-only codex exec sessions launched from this Claude Code session by a launcher in the session's DotLn scratch. Like the kit's worker transport, it gave the sessions one isolated CODEX_HOME holding only a link to the operator's auth.json, a read-only sandbox, project docs, web search, MCP servers and memories off, and kept each session so the",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -51662,6 +51691,16 @@
             "WO-250"
           ],
           "at": "2026-11-01T23:31:51.827Z"
+        },
+        {
+          "sourceRevision": 8,
+          "status": "allocated",
+          "reason": "Allocated to WO-250 by the 2026-11-01 planning pass (docs/planning/fork-blocks-close-residue-reviews-criteria-desktop-opt-in-2026-11-01.md): npm run worker -- review launches a review worker on Codex or Claude from any host with the canonical brief through the entropy review's transport, counts the launch against the cap and writes the report to the order's reviews lane; WO-244's plan review calls it. (source text rewritten as a synthesis on 2026-11-04 so that no operator words are quoted in a committed record; the disposition is unchanged.)",
+          "reopenWhen": "A session writes its own Codex launcher after WO-250 lands, or a helper-launched worker reads nothing.",
+          "targets": [
+            "WO-250"
+          ],
+          "at": "2026-11-04T02:10:21.851Z"
         }
       ]
     },
@@ -53508,6 +53547,13 @@
           "title": "The complete gate run before the first review round, so reviewers read a real run",
           "summary": "4. **The complete gate run before the first review round, so reviewers read a real run** (the planner's own idea on the operator's item 17). Declined on the operator's words of 2026-11-03 (\"?????\" at the sentence): product 07 §Preflight before the full gate is the operator's standing rule on when the complete gate is paid; WO-255 makes the recheck read the whole change and requires the consistency reviewer's traced-consumers table instead. Useful only on the operator's word.",
           "missing": false
+        },
+        {
+          "hash": "0e644a58e5cddbb3a176f7ee49900cdf184618e822a641d691683a087c9a6487",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-recurring-failures-and-queue-drain-pass-recorded-2026-11-03",
+          "title": "The complete gate run before the first review round, so reviewers read a real run",
+          "summary": "4. **The complete gate run before the first review round, so reviewers read a real run** (the planner's own idea on the operator's item 17). Declined on the operator's challenge of that sentence on 2026-11-03: product 07 §Preflight before the full gate is the operator's standing rule on when the complete gate is paid; WO-255 makes the recheck read the whole change and requires the consistency reviewer's traced-consumers table instead. Useful only on the operator's word.",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -53518,6 +53564,14 @@
           "reopenWhen": "the operator's word",
           "targets": [],
           "at": "2026-11-04T00:23:36.647Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "declined",
+          "reason": "Declined on the operator's challenge of 2026-11-03: product 07 §Preflight before the full gate is the standing rule on when the complete gate is paid; WO-255 makes the recheck read the whole change instead; the map's candidates of 2026-11-03, item 4 (its source text rewritten as a synthesis on 2026-11-04; docs/planning/passes/recurring-failures-and-queue-drain-2026-11-03.md).",
+          "reopenWhen": "the operator's word",
+          "targets": [],
+          "at": "2026-11-04T02:04:02.343Z"
         }
       ]
     },

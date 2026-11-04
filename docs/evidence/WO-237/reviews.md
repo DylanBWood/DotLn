@@ -26,10 +26,10 @@ reported counts once. The removal window, between a root's last identity check
 and its deletion, was reported in each of the first three rounds until it was
 fixed, and it counts once, in the initial review.
 
-Two operator directions shaped the last rounds. At 17:04Z the operator wrote
-"ok make the changes then run the fucking gates stop fucking procrastinating".
-At 17:53Z the operator wrote "FIXES SHOULD ONLY BE RELATED TO THE FUCKING
-CRITERIA. WHAT IS ALL THIS OTHER BULLSHIT YOURE DOING". After that, only a
+Two operator directions shaped the last rounds. At 17:04Z the operator
+directed that the changes be made and the gates run without further delay.
+At 17:53Z the operator directed that fixes be related only to the
+acceptance criteria and nothing else (both synthesized). After that, only a
 finding that bears on an acceptance criterion was fixed. The fourth recheck's
 fixes were not rechecked again
 ([D011](decisions.md#wo-237-d011--the-independent-reviews-ran-on-codex-and-what-they-changed)).

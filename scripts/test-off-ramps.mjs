@@ -2554,7 +2554,7 @@ process.stdout.write("off-ramp fixtures passed\n");
     "operator authorizes the pending continuation from context",
     ...capture(
       "contextual-extension",
-      "The pending action is another complete review.\nOperator: fucking go.\n",
+      "The pending action is another complete review.\nOperator: go on.\n",
     ),
     ...agentFlags,
   ];

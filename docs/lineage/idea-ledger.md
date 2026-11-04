@@ -180,7 +180,7 @@ of WO-236, WO-234 and WO-233, and answers the fork's block. Record:
 
 ## 2026-10-28 — Planning pass: the fork's target-write blocker filed as WO-236 and placed first, the journal question answered on its corrected unit as WO-237, and the fork's two blocks answered; registration only; the record is the planning document
 
-Dispatch: `planning: issues from the fucking fork. HUGE FUCKING BLOCKER. …`,
+Dispatch: a `planning:` dispatch naming the fork's issues as a huge blocker,
 sent at 2026-10-28T13:22:01Z in Claude Code (Fable 5.1 at max,
 operator-selected), carrying the DotLn-Enterprise-Starter fork's blocker
 block, the operator's question on worktree retention and the fork's
@@ -194,7 +194,7 @@ Record: [the planning document](../planning/target-write-grant-and-fork-block-20
 
 ## 2026-10-26 — Planning pass: WO-192's proposed fixes made permanent (WO-233, WO-234) and the operator's corrections on example inheritance and dropped directions (WO-235); registration only; the record is the planning document
 
-Dispatch: `planning: FIX THE BULLSHIT FROM WO-192 …`, sent at
+Dispatch: a `planning:` dispatch to fix what WO-192 left, sent at
 2026-10-26T22:26:17Z in Claude Code (Fable 5.1 at max, operator-selected),
 with nine mid-turn operator messages between 22:38Z and 22:49Z, all captured
 verbatim in `docs/intake/notes/planning-wo192-fixes-and-example-drift-2026-10-26.md`
@@ -9440,7 +9440,7 @@ Low-signal images (recorded, no entry): 17ffd23b-3276-4ca9-a811-7f3e944c64de.png
 - **AuthorityEnvelope as structural type, not prose** `preserved` `recovered`
   - Autonomy is an authority envelope, not a personality trait, varying with task clarity, competence evidence, reversibility, blast radius, verification strength, operator presence, and resource pressure. Deserves a real type: allowedEffects/deniedEffects patterns, resourceLimits, requiredEvidence, expiresAt, revocationEvents. 'Operator away' must never gradually widen into broader authority — the North Star says this in prose; make it structural.
 - **Semantic correction events replace the profanity trigger** `preserved` `north-star`
-  - The v1 'contains fuck' trigger is a flawed event predicate because Dylan uses profanity casually, analytically, humorously, and under genuine frustration. Replace with typed semantic events (OperatorCorrectionReceived, OperatorReportsRegression, OperatorRejectsUnsupportedAssumption, OperatorReportsRepeatedFailure); profanity may serve as a weak classifier feature, never the semantic event itself. Linguistic force (six levels of mitigated speech) must never be conflated with technical authority.
+  - The v1 profanity-word trigger is a flawed event predicate because Dylan uses profanity casually, analytically, humorously, and under genuine frustration. Replace with typed semantic events (OperatorCorrectionReceived, OperatorReportsRegression, OperatorRejectsUnsupportedAssumption, OperatorReportsRepeatedFailure); profanity may serve as a weak classifier feature, never the semantic event itself. Linguistic force (six levels of mitigated speech) must never be conflated with technical authority.
 - **Fail-conservative correction reactor** `preserved` `recovered`
   - The reactor triggered by correction events only tightens behavior: freeze destructive authority, preserve current evidence, prohibit scope expansion, dispatch diagnosis separately, avoid apology theater, require an evidence-tied correction. Designed so a false positive makes the system MORE conservative rather than derailing it — a general design principle for reactive feedback triggers.
 - **Commedia roles as optional topology with leak protection** `preserved` `north-star`
@@ -9895,7 +9895,7 @@ Low-signal images (recorded, no entry): 17ffd23b-3276-4ca9-a811-7f3e944c64de.png
 
 ## Chat 004
 
-*Operator ask:* Dylan quoted a Seiri/Sort permission-and-cadence rule block applied to a "Repo Gardener" agent and had the flash that such constraint bundles read exactly like RPG armor — "how fucking sick of a UI would that be?" He asked to keep all the original business/leadership/Japanese terms but present them in an RPG manner, and reiterated that he wants state, behaviors, and events representable in an increasing number of different but isomorphically equivalent ways. He credits the inspiration to a Discord 20-year reunion with fellow Full Sail game design & development graduates.
+*Operator ask:* Dylan quoted a Seiri/Sort permission-and-cadence rule block applied to a "Repo Gardener" agent and had the flash that such constraint bundles read exactly like RPG armor, and that a UI built on that reading would be striking. He asked to keep all the original business/leadership/Japanese terms but present them in an RPG manner, and reiterated that he wants state, behaviors, and events representable in an increasing number of different but isomorphically equivalent ways. He credits the inspiration to a Discord 20-year reunion with fellow Full Sail game design & development graduates.
 
 - **Repo Gardener Seiri contract** `adopted` `north-star`
   - Dylan's quoted rule block: the Repo Gardener may inventory, classify stale/duplicate artifacts, run reference analysis, and produce deletion candidates; may NOT delete directly; must attach evidence to every candidate; activates only while the operator is absent, stops on return, re-evaluates every 20 minutes.
