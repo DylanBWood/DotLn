@@ -53758,6 +53758,93 @@
           "at": "2026-11-04T01:22:06.389Z"
         }
       ]
+    },
+    {
+      "id": "FUP-89b7b9f657765e83",
+      "key": "decision:docs/evidence/WO-253/decisions.md#wo-253-d013",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "b2f66c4c929acee8ad8778665025e66f2c6e4bda0ba4e21c474f81db895ae686",
+          "ref": "docs/evidence/WO-253/decisions.md#wo-253-d013",
+          "title": "WO-253-D013: Optimize the executor's, the verifier's, the planner's and release-close's installed cold starts with equivalent usefulness. On WO-253's tree the executor measures 42,398 bytes against…",
+          "summary": "{ \"id\": \"WO-253-D013\", \"date\": \"2026-11-04\", \"dispatch\": \"resume: next\", \"decision\": \"The two role sentences leave the remainder to the next plan start, and the four role roots over their ceilings are boarded under product 07's one cold-start route, correcting D012. The round-1 design review's F11 found that both sentences pointed the closing and planning sessions at `node scripts/harness.mjs prune --apply`, which sets no budget and runs host-wide, the run that held WO-241's close for 0 h 16 min; the release-close sentence (closeOwnRoots) now ends 'what remains, with every other root on the host, waits for the next plan start's bounded prune' and the planner sentence 'and the remainder waits",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-253-D013: WO-253's prune sentences stay whole under product 07's one route for cold-start ceilings; measured by the gate-followups rule on WO-253's tree the executor reads 42,398 bytes against its accepted 40,194, the verifier 37,027 against 35,221, the planner 28,078 against 24,576 and release-close 27,027 against 26,410, with no ceiling raised, no acceptance recorded and no duty cut; the optimization with equivalent usefulness belongs to a planning allocation.",
+          "reopenWhen": "A planning allocation can verify equivalent usefulness while reducing the executor, verifier, planner and release-close cold starts below their unchanged ceilings, or another reviewed rule changes the measured overrun.",
+          "targets": [],
+          "at": "2026-11-04T05:13:05.785Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-b99d7ad6940b7ebf",
+      "key": "decision:docs/evidence/WO-253/decisions.md#wo-253-d019",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "7e5f9d4a78acb48d4f611eec70225101e8dd48e004ac20f4b07bd07f88ee8807",
+          "ref": "docs/evidence/WO-253/decisions.md#wo-253-d019--the-disposable-floor-narrows-the-surface-a-judgment-of-the-matched-set-at-the-close-is-boarded",
+          "title": "WO-253-D019: Judge a target's disposable declarations by what they match at the close: before deleting anything, refuse as a blocker naming the declaration any match that includes .env, .runtime or a…",
+          "summary": "{ \"id\": \"WO-253-D019\", \"date\": \"2026-11-04\", \"dispatch\": \"resume: next\", \"decision\": \"D011's reopening condition is met as worded, and the judgment that would answer it is boarded rather than built here. The criteria review's F8 found that `*e*` and `*n*` pass the letter-or-digit floor and name `.env`, `.runtime` and `notes.md`: disposableMatchRoot gives `*e*` → `.env` = `.env`, `*e*` → `.runtime/x` = `.runtime` and `*n*` → `notes.md` = `notes.md`. No syntactic floor can refuse every such declaration, because a literal `.env` or `*.env` is a well-formed declaration that names it. The floor still meets FUP-e2951c129de462ce's own condition, that no punctuation-only last segment is admitted, an",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-253-D019: the letter-or-digit floor meets its own follow-up's condition, and a judgment of the matched set at a target's close is a second mechanism over that close's deletion, outside WO-253's steps; it belongs to a planning allocation.",
+          "reopenWhen": "A close deletes .env, .runtime or an operator's note through a disposable declaration, or a planning pass allocates the matched-set judgment.",
+          "targets": [],
+          "at": "2026-11-04T05:13:05.907Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-b1397fa85cbeba51",
+      "key": "decision:docs/evidence/WO-253/decisions.md#wo-253-d025",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "8cca9a0a9e216eea6a5715a2fb9579a0d91456a6ddf0e470804db5b7819bda8a",
+          "ref": "docs/evidence/WO-253/decisions.md#wo-253-d025--the-repairs-round-1-four-notes-fixed-the-rest-recorded",
+          "title": "WO-253-D025: Name, at a passed suite's end, a root of that suite kept for an owned root nested in it that carries no gate id or another gate's, so a fixture that plants such a root inside its suite's…",
+          "summary": "{ \"id\": \"WO-253-D025\", \"date\": \"2026-11-04\", \"dispatch\": \"resume: next\", \"decision\": \"The repair's round 1 returned nine notes, none blocking; four are fixed and the rest recorded. Fixed: the routine prune's docblock no longer says a file the budgets reader refuses leaves the default, since pruneStartBudget reads only the `prune.startBudgetMs` key and falls back for a file that does not parse or a key pruneStartBudgetKey refuses, the rest of the document being readBudgets' to judge (design F2, consistency F2); and the live-writer case in scripts/test-fixture-temp-root.sh now removes its roots in one finally that covers making them, the prune and the assertions, removing each root whose recor",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-253-D025: the repair restores the one leak the first complete run showed and its case now removes its roots whatever happens; a check that names such a root at its suite is a second mechanism over the runner and the shell helper, outside WO-253's steps, and belongs to a planning allocation.",
+          "reopenWhen": "A gate's end keeps a passed suite's root again, or a planning pass allocates the suite-end check.",
+          "targets": [],
+          "at": "2026-11-04T06:51:27.836Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-f7d10bd1d1d72b42",
+      "key": "decision:docs/evidence/WO-253/decisions.md#wo-253-d041",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "ae7dde1b0c07249739a6246d43e064b81110958d3ee9ef2213f21b9dbb9b6fd2",
+          "ref": "docs/evidence/WO-253/decisions.md#wo-253-d041--round-1-the-stash-inventory-asks-the-budget-and-the-verifiers-dispatch-lines-are-corrected",
+          "title": "WO-253-D041: Keep a planned candidate whose removal fails with EACCES, EPERM or a restricted entry as retained with its reason, and go on to the next candidate and the ledger's retirement, as the…",
+          "summary": "{ \"id\": \"WO-253-D041\", \"date\": \"2026-11-04\", \"dispatch\": \"resume: fix (VER-001 F1), review round 1 of repair 2\", \"decision\": \"Round 1 of this repair's ladder (repair-2/round-1-criteria.md, round-1-design.md, round-1-consistency.md, tree 71042073) found 16 findings, two of them blocking; 14 are fixed and 2 recorded. Fixed: (1) consistency F2, the same as design F1, blocking: a stash's byte inventory listed its trees and read every blob without asking the budget. stashInventory now asks it before each tree listing and each batch of 32 objects, and judgeStash keeps a stash it cut short as budget, so the plan stops there and counts it as remaining. This corrects D039's audit, which called stashe",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

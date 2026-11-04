@@ -1,4 +1,4 @@
-# WO-253 — Temporary roots leave with the gate that made them, and a prune is a bounded step: a passed suite's fixture roots are removed when the suite ends, a kit-owned expired root is removed on its marker without reading its bytes, one process-table read serves a whole prune, `plan start` and release close run the prune as a bounded step with per-root progress and a truthful partial outcome, a restricted entry inside a kit-owned root is repaired or retained and never a close blocker, and both commands print where their minutes went (version assigned at activation)
+# WO-253 — Temporary roots leave with the gate that made them, and a prune is a bounded step: a passed suite's fixture roots are removed when the suite ends, a kit-owned expired root is removed on its marker without reading its bytes, one process-table read serves a whole prune, `plan start` and release close run the prune as a bounded step with per-root progress and a truthful partial outcome, a restricted entry inside a kit-owned root is repaired or retained and never a close blocker, and both commands print where their minutes went (v0.115.0)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
@@ -38,7 +38,7 @@ pid=,ppid=,lstart=,comm=` as the prune's child in six of six one-second
 samples at 23:45Z); in `scripts/lib/temporary-prune-summary.mjs` and
 `scripts/refute-plan.mjs` (`start`, 440 to 445) the routine prune as a
 bounded step: a wall budget from `docs/control/budgets.json`
-(`prune.startBudgetMs`, default 60,000) checked between roots and inside an
+(`prune.startBudgetMs`, default 1,800,000, thirty minutes) checked between roots and inside an
 inventory or deletion, after which the prune stops (an inventory cut short
 retains its root with reason `budget`), prints `removed N; remaining M;
 next <root>` and the partial outcome, and the command goes on; `harness prune --apply` resumes from the remainder;
@@ -148,6 +148,14 @@ only failed suites' fixtures inside their retention and the lanes the kit
 retains on purpose; a kit-owned root is removed by its record, not by
 hashing its bytes; and when a prune cannot finish inside its budget, the
 command says what it removed, what remains and how to resume, and goes on.
+
+**Execution amendment (2026-11-04):** after VER-001 the operator kept the
+budget and set its default to thirty minutes in place of sixty seconds, so
+routine cleanup finishes in the run that starts it and only a backlog past
+thirty minutes stops with the partial report and the resume command.
+[D038](../evidence/WO-253/decisions.md#wo-253-d038--the-operator-keeps-the-budget-at-thirty-minutes-and-the-verifiers-edits-are-undone)
+records the operator's direction, its scope and the undoing of the verifier's
+earlier amendment. VER-001 remains the judgment of the order as it was filed.
 
 **Observed gap (dated 2026-11-03 at `main` `eb7c58ff6`, v0.114.0):**
 
@@ -297,7 +305,7 @@ command says what it removed, what remains and how to resume, and goes on.
    next root, and `formatPruneReport` prints `removed N; remaining M; resume
    with node scripts/harness.mjs prune --apply`; `harness prune --apply`
    without a budget finishes the remainder. `docs/control/budgets.json`
-   gains `prune.startBudgetMs` (default 60,000 when unset). Check: `npm
+   gains `prune.startBudgetMs` (default 1,800,000, thirty minutes, when unset). Check: `npm
    test -- --only harness-fixtures` with a one-millisecond budget over
    three expired roots asserting the partial report and the resume.
 6. `scripts/refute-plan.mjs` (`start`): the routine prune runs with the
@@ -440,8 +448,9 @@ conditions`; the sibling worktrees of unactivated orders.
 
 **Operator-review assumptions:** that a passed suite's fixtures have no
 value the moment the suite passes (the record keeps the suite's row; the
-gate index keeps the result); that sixty seconds is the right default
-budget for the routine prune at `plan start` and the operator will set
-another in `budgets.json` if not; that the close's prune scoped to the
+gate index keeps the result); that thirty minutes, which the operator set
+on 2026-11-04 in place of the planned sixty seconds, is the default budget
+for the routine prune at `plan start` and release close, with another set in
+`budgets.json` where an instance needs it; that the close's prune scoped to the
 closed order's roots is what "the close prunes its own scope" (WO-252's
 Design) meant. Reopen on the operator's word.
