@@ -139,8 +139,7 @@ roots that leave with the gate that made them and a prune that is a bounded
 step (WO-253), the hooks getting out of the operator's way (WO-254), the
 launchpad's own pull requests opened by a helper the host's auto mode admits
 (WO-246), reviews that find what the complete run finds (WO-255), the
-instance returns of 2026-11-03 (WO-257), the follow-up register drained to
-zero (WO-256), plan-first mode (WO-242), the closeout selection for target
+instance returns of 2026-11-03 (WO-257), plan-first mode (WO-242), the closeout selection for target
 orders (WO-243) and the paired and reviewed planning routes (WO-244)
 [operator directions, 2026-10-30, 2026-10-31, 2026-11-01 and 2026-11-03].
 The 2026-09-06 redirect superseded the first draft of this

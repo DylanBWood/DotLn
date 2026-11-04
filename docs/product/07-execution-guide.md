@@ -2147,10 +2147,13 @@ the identifier is minted by the collector, run `npm run plan -- followups
 --sync` after recording the decision and before disposing the queue item onto
 it; WO-064 D011 and WO-152 D011 record the advisory that disposing first
 leaves. Neither the
-feed nor a disposition grants work-order activation authority. WO-256
-drains the 260 rows pending on 2026-11-03 to zero, each allocated to the
-open order that owns its files, settled against the record that answers it
-or declined with the condition it carries
+feed nor a disposition grants work-order activation authority. A close
+that writes a follow-up instead of fixing in place hands it to the next
+planning pass, which reads each such row against its record and allocates
+it to the order that owns its file or declines it with its condition; the
+2026-11-03 pass read the eighteen its eight closes had written, allocated
+twelve to the orders it filed and declined three, and left the historical
+deferred rows as navigation under the rule above
 ([the 2026-11-03 pass](../planning/passes/recurring-failures-and-queue-drain-2026-11-03.md)).
 
 ## Research and guided-operator work orders

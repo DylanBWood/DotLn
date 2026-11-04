@@ -425,6 +425,15 @@ integrated code identity when one exists.
   stopped session's and this order does not touch them (reopen: an order's
   activation finds its worktree path occupied).
 
+- FUP-8bf500303e6adfce (WO-245-D011: Print kept starter seeds with their reasons in the release close summary beside published seeds, ): a follow-up a recent close wrote instead of
+  fixing in place, allocated here by the 2026-11-03 pass on the operator's
+  item 4; the executor takes it in the step that owns its file and records
+  the decision (reopen: the close summary omits kept seeds after WO-253).
+- FUP-e2951c129de462ce (WO-252-D034: Make the disposable floor bound what a declaration reaches and not only its form: refuse at regis): a follow-up a recent close wrote instead of
+  fixing in place, allocated here by the 2026-11-03 pass on the operator's
+  item 4; the executor takes it in the step that owns its file and records
+  the decision (reopen: a punctuation-only last segment is admitted after WO-253).
+
 **Non-goals:** a shorter retention for failed suites; a background prune;
 a change to WO-237's token-and-inode rule; the document-gate probe of `plan
 conditions`; the sibling worktrees of unactivated orders.

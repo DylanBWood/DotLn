@@ -9,7 +9,6 @@
 - [ ] [WO-246] — The launchpad's own pull requests · **queued**
 - [ ] [WO-255] — Reviews find what the complete run finds · **queued**
 - [ ] [WO-257] — Instance returns of 2026-11-03 · **queued**
-- [ ] [WO-256] — The follow-up register drains to zero · **queued**
 - [ ] [WO-242] — Plan-first mode · **queued**
 - [ ] [WO-243] — Closeout checks follow the repositories an order changed · **queued**
 - [ ] [WO-244] — Paired planning passes and the synthesis pass · **queued**
@@ -123,22 +122,6 @@ None.
 - Effort: executor xhigh; verifier xhigh; reviewer high.
 - Track: machinery
 - Authority: [docs/work-orders/WO-257-instance-returns-of-2026-11-03.md](WO-257-instance-returns-of-2026-11-03.md)
-
-### WO-256
-
-[WO-256 — The follow-up register drains to zero: every pending row is allocated to the open order that owns its files, settled against the record that already answers it, or declined with the reopening condition it already carries, in one batch per source document, so &#96;plan start&#96; returns no pending page and the register stays a record of what was decided (version assigned at activation)](WO-256-the-follow-up-register-drains-to-zero.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: none declared.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer high.
-- Track: evidence
-- Authority: [docs/work-orders/WO-256-the-follow-up-register-drains-to-zero.md](WO-256-the-follow-up-register-drains-to-zero.md)
 
 ### WO-242
 
@@ -333,5 +316,4 @@ None.
 [WO-253]: WO-253-temporary-roots-leave-with-the-gate-that-made-them.md
 [WO-254]: WO-254-the-hooks-get-out-of-the-operators-way.md
 [WO-255]: WO-255-reviews-find-what-the-complete-run-finds.md
-[WO-256]: WO-256-the-follow-up-register-drains-to-zero.md
 [WO-257]: WO-257-instance-returns-of-2026-11-03.md

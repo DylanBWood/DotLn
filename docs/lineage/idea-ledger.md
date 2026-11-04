@@ -68,7 +68,7 @@ operator's own words rewritten).
     hot path stays CPU-bound in a profile after WO-253, or when a component
     needs a runtime Node cannot give.
 
-## 2026-11-03 — Planning pass: recurring failures and the queue drain (WO-253 to WO-257; WO-246 amended); registration only; the record is the planning document
+## 2026-11-03 — Planning pass: recurring failures and the queue drain (WO-253, WO-254, WO-255 and WO-257; WO-246 amended); registration only; the record is the planning document
 
 Dispatch: `planning: standard planning pass +` with twenty-two items and
 two added in the session, sent at 2026-11-03T23:12:27.967Z (hook time) in
@@ -81,9 +81,9 @@ the later mid-turn messages in
 (SHA-256 `589662ab8d84e728340b6b22077bf72f4979d1e3a37821a00947b8c12b52326f`).
 The pass files WO-253 (temporary roots leave with the gate that made them
 and a prune is a bounded step), WO-254 (the hooks get out of the operator's
-way), WO-255 (reviews find what the complete run finds), WO-256 (the
-follow-up register drains to zero) and WO-257 (instance returns of
-2026-11-03), amends WO-246 and moves it to third, retires WO-245, WO-251,
+way), WO-255 (reviews find what the complete run finds) and WO-257 (instance
+returns of 2026-11-03), reads the eighteen follow-ups its eight closes
+wrote and allocates twelve to those orders, amends WO-246 and moves it to third, retires WO-245, WO-251,
 WO-249, WO-250, WO-248, WO-252, WO-238 and WO-241 from the sequence as
 closed (v0.108.0 to v0.114.0), declares `README.md` a reader entry point,
 records the operator's four-option worker rule, and answers the fork's two

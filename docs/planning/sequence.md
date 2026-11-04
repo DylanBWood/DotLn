@@ -98,17 +98,13 @@ direction, 2026-10-30); no stream of work in this repository depends on it.
   form, the index's executor ordinal, the bootstrap diagnostic and the
   classification count (the operator's items 5, 12 and 13; the fork's two
   blocks of 2026-11-03); fifth.
-- WO-256: the follow-up register drains to zero: every pending row
-  allocated, settled or declined with its condition (the operator's item
-  4 of 2026-11-03); sixth, after the orders above so their carry-ins are
-  allocated against final text.
 - WO-242: plan-first mode: the plan, the conversation and the proposal
   before anything is implemented, the operator's approval as a typed event
-  the hook enforces; seventh; its router step lands against WO-192's
+  the hook enforces; sixth; its router step lands against WO-192's
   merged router.
 - WO-243: closeout checks follow the repositories an order changed, one
   selection read by the role text, the integrate helper and completion (the
-  fork's item 3 of 2026-10-30); eighth, small and a convenience for the
+  fork's item 3 of 2026-10-30); seventh, small and a convenience for the
   fork; the operator's staged work in `../DotLn-wo243` is adopted or
   discarded at activation on the operator's word.
 - WO-244: paired planning passes and the synthesis pass as a routine (the
@@ -116,7 +112,7 @@ direction, 2026-10-30); no stream of work in this repository depends on it.
   refusals, the pair record and `plan synthesize`, and the reviewed route
   (the operator's fourth message of 2026-10-31): `plan review` running the
   executor's three reviewer types through WO-250's helper before the
-  refuter, with WO-255's capture flag for the criteria review; ninth.
+  refuter, with WO-255's capture flag for the criteria review; eighth.
 - WO-083: the real run from the operator's instance, after the router so
   the measured run is driven the way the operator will drive orders.
 - WO-207: an instance's kit updates: rollback, the extension point and the
@@ -136,7 +132,6 @@ direction, 2026-10-30); no stream of work in this repository depends on it.
 - WO-246 — The launchpad's own pull requests
 - WO-255 — Reviews find what the complete run finds
 - WO-257 — Instance returns of 2026-11-03
-- WO-256 — The follow-up register drains to zero
 - WO-242 — Plan-first mode
 - WO-243 — Closeout checks follow the repositories an order changed
 - WO-244 — Paired planning passes and the synthesis pass

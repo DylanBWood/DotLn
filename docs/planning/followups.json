@@ -52272,7 +52272,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-11-03 pass, reading the follow-ups the recent closes wrote instead of fixing in place (the operator's item 4): release prepare's README remedy for a kit root is an instance surface WO-257's release-notes step touches; WO-257 carries it as a carry-in (docs/planning/passes/recurring-failures-and-queue-drain-2026-11-03.md).",
+          "reopenWhen": "WO-257 closes without the remedy",
+          "targets": [
+            "WO-257"
+          ],
+          "at": "2026-11-04T01:20:03.464Z"
+        }
+      ]
     },
     {
       "id": "FUP-8bf500303e6adfce",
@@ -52287,7 +52298,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-11-03 pass, reading the follow-ups the recent closes wrote instead of fixing in place (the operator's item 4): the release close's printed summary is WO-253 step 7's; WO-253 carries it as a carry-in (docs/planning/passes/recurring-failures-and-queue-drain-2026-11-03.md).",
+          "reopenWhen": "the close summary omits kept seeds after WO-253",
+          "targets": [
+            "WO-253"
+          ],
+          "at": "2026-11-04T01:20:04.542Z"
+        }
+      ]
     },
     {
       "id": "FUP-1116ba845c557862",
@@ -52302,7 +52324,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-11-03 pass, reading the follow-ups the recent closes wrote instead of fixing in place (the operator's item 4): product 07's records-branch sentence for a target order is an instance surface WO-257's write-backs carry; WO-257 carries it as a carry-in (docs/planning/passes/recurring-failures-and-queue-drain-2026-11-03.md).",
+          "reopenWhen": "WO-257 closes without the sentence",
+          "targets": [
+            "WO-257"
+          ],
+          "at": "2026-11-04T01:20:03.342Z"
+        }
+      ]
     },
     {
       "id": "FUP-ac86ee429dee2947",
@@ -52341,7 +52374,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-11-03 pass, reading the follow-ups the recent closes wrote instead of fixing in place (the operator's item 4): the hook and the emitted settings are WO-254's files; WO-254 carries it as a carry-in (docs/planning/passes/recurring-failures-and-queue-drain-2026-11-03.md).",
+          "reopenWhen": "the hook and the host deny different names after WO-254",
+          "targets": [
+            "WO-254"
+          ],
+          "at": "2026-11-04T01:20:04.064Z"
+        }
+      ]
     },
     {
       "id": "FUP-4798f1b5f5a74ed1",
@@ -52363,7 +52407,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-11-03 pass, reading the follow-ups the recent closes wrote instead of fixing in place (the operator's item 4): scripts/resume.mjs is edited by WO-254 steps 3 and 4; WO-254 carries it as a carry-in (docs/planning/passes/recurring-failures-and-queue-drain-2026-11-03.md).",
+          "reopenWhen": "a segment takes an event it cannot read after WO-254",
+          "targets": [
+            "WO-254"
+          ],
+          "at": "2026-11-04T01:20:04.183Z"
+        }
+      ]
     },
     {
       "id": "FUP-a9efc000150d7e9f",
@@ -52392,7 +52447,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 3,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-11-03 pass, reading the follow-ups the recent closes wrote instead of fixing in place (the operator's item 4): a target order's publications and an instance without budgets.json are instance surfaces WO-257 owns; WO-257 carries it as a carry-in (docs/planning/passes/recurring-failures-and-queue-drain-2026-11-03.md).",
+          "reopenWhen": "a target order's publication names a criterion line after WO-257",
+          "targets": [
+            "WO-257"
+          ],
+          "at": "2026-11-04T01:20:03.826Z"
+        }
+      ]
     },
     {
       "id": "FUP-8dd0eb609946b9d1",
@@ -52973,7 +53039,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-11-03 pass, reading the follow-ups the recent closes wrote instead of fixing in place (the operator's item 4): the disposable floor is judged at the close WO-253 scopes; WO-253 carries it as a carry-in (docs/planning/passes/recurring-failures-and-queue-drain-2026-11-03.md).",
+          "reopenWhen": "a punctuation-only last segment is admitted after WO-253",
+          "targets": [
+            "WO-253"
+          ],
+          "at": "2026-11-04T01:20:04.661Z"
+        }
+      ]
     },
     {
       "id": "FUP-7476689f757f6319",
@@ -53131,7 +53208,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-11-03 pass, reading the follow-ups the recent closes wrote instead of fixing in place (the operator's item 4): WO-257 step 6 files a provenance footer on moved records, which is the decision this row asks for; WO-257 carries it as a carry-in (docs/planning/passes/recurring-failures-and-queue-drain-2026-11-03.md).",
+          "reopenWhen": "a moved record's reader still cannot find where its links resolve after WO-257",
+          "targets": [
+            "WO-257"
+          ],
+          "at": "2026-11-04T01:20:03.705Z"
+        }
+      ]
     },
     {
       "id": "FUP-55580981022d6dd5",
@@ -53146,7 +53234,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined by the 2026-11-03 pass, reading the follow-ups the recent closes wrote (the operator's item 4): a planning duty, not an order's: the next pass that revises product 07's Goal-aligned decisions section rewrites the links under its own refutation; the decision record stays (docs/planning/passes/recurring-failures-and-queue-drain-2026-11-03.md).",
+          "reopenWhen": "a planning pass revises product 07's Goal-aligned decisions section",
+          "targets": [],
+          "at": "2026-11-04T01:20:04.781Z"
+        }
+      ]
     },
     {
       "id": "FUP-916e24773df0b734",
@@ -53185,7 +53282,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-11-03 pass, reading the follow-ups the recent closes wrote instead of fixing in place (the operator's item 4): the spawn-cap runtime is hook territory WO-254 owns; WO-254 carries it as a carry-in (docs/planning/passes/recurring-failures-and-queue-drain-2026-11-03.md).",
+          "reopenWhen": "the spawn cap reads a budget path outside the configured control roots after WO-254",
+          "targets": [
+            "WO-254"
+          ],
+          "at": "2026-11-04T01:20:04.303Z"
+        }
+      ]
     },
     {
       "id": "FUP-1398fcdb63df23d2",
@@ -53226,7 +53334,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined by the 2026-11-03 pass, reading the follow-ups the recent closes wrote (the operator's item 4): no feature rename is filed, and the tombstone resolution is owed only before the first one ships; the decision record stays (docs/planning/passes/recurring-failures-and-queue-drain-2026-11-03.md).",
+          "reopenWhen": "the first feature rename ships",
+          "targets": [],
+          "at": "2026-11-04T01:20:04.900Z"
+        }
+      ]
     },
     {
       "id": "FUP-1b5cb21e12253f3e",
@@ -53241,7 +53358,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-11-03 pass, reading the follow-ups the recent closes wrote instead of fixing in place (the operator's item 4): the driven-session ceiling and phase timeout are dispatch-bound readers in the hook territory WO-254 owns; WO-254 carries it as a carry-in (docs/planning/passes/recurring-failures-and-queue-drain-2026-11-03.md).",
+          "reopenWhen": "removing either read still passes after WO-254",
+          "targets": [
+            "WO-254"
+          ],
+          "at": "2026-11-04T01:20:04.422Z"
+        }
+      ]
     },
     {
       "id": "FUP-3d64b267a45d2f34",
@@ -53256,7 +53384,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-11-03 pass, reading the follow-ups the recent closes wrote instead of fixing in place (the operator's item 4): the kit guide's overlay example and the migration print are instance surfaces WO-257's kit-guide write-backs carry; WO-257 carries it as a carry-in (docs/planning/passes/recurring-failures-and-queue-drain-2026-11-03.md).",
+          "reopenWhen": "WO-257 closes with the legacy route still documented",
+          "targets": [
+            "WO-257"
+          ],
+          "at": "2026-11-04T01:20:03.585Z"
+        }
+      ]
     },
     {
       "id": "FUP-b40bcf1b69c77008",
@@ -53271,7 +53410,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-11-03 pass, reading the follow-ups the recent closes wrote instead of fixing in place (the operator's item 4): the kit's own module structure (the config, features and build-overlay cycle) is kit hygiene WO-257's steps touch; WO-257 carries it as a carry-in (docs/planning/passes/recurring-failures-and-queue-drain-2026-11-03.md).",
+          "reopenWhen": "WO-257 closes with the cycle in place",
+          "targets": [
+            "WO-257"
+          ],
+          "at": "2026-11-04T01:20:03.945Z"
+        }
+      ]
     },
     {
       "id": "FUP-8e8b9324949a62ff",
@@ -53496,6 +53646,14 @@
           "reopenWhen": "a listed row's condition fires",
           "targets": [],
           "at": "2026-11-04T00:23:37.232Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined by the 2026-11-03 pass, reading the follow-ups the recent closes wrote (the operator's item 4): the register's first page of 2026-11-03 was read and left deferred: no condition fired, and the pass files no order for rows whose conditions have not fired; the decision record stays (docs/planning/passes/recurring-failures-and-queue-drain-2026-11-03.md).",
+          "reopenWhen": "a listed row's condition fires",
+          "targets": [],
+          "at": "2026-11-04T01:20:05.019Z"
         }
       ]
     },
@@ -53520,6 +53678,30 @@
           "reopenWhen": "a bounded probe over the Codex rollouts tallies file reads, or the operator sees a compaction tied to a named read",
           "targets": [],
           "at": "2026-11-04T00:23:36.881Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-6809817ad16f4b83",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-recurring-failures-and-queue-drain-pass-recorded-2026-11-03::236174a8a25fa02784bd0129dd24f00adc47a559781c743b8d1a779e11082892",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "04a7cedf68a4066ce16b90bd8290ee31e33161a1dad5893874e564e0fcadf7f5",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-recurring-failures-and-queue-drain-pass-recorded-2026-11-03",
+          "title": "A drain order for the register, and a batch declining every historical deferred row",
+          "summary": "11. **A drain order for the register, and a batch declining every historical deferred row** (the planner's two readings of the operator's item 4 before the operator's clarification of 2026-11-04). Withdrawn: the item was the eighteen follow-ups the eight recent closes wrote instead of fixing in place, which the pass read and disposed itself (twelve as carry-ins of WO-253, WO-254, WO-255 and WO-257, three declined, two deferred, one settled); WO-256 was drafted, reviewed and withdrawn before filing, and a batch declining the 246 historical deferred rows was refused on one malformed row and not retried, since those rows are navigation whose conditions have not fired. Useful when the operator a",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Withdrawn readings of the operator's item 4 (the map's candidates of 2026-11-03, item 11): the pass disposed the eight closes' follow-ups itself; the historical deferred rows stay as navigation (docs/planning/passes/recurring-failures-and-queue-drain-2026-11-03.md).",
+          "reopenWhen": "the operator asks for the historical rows to be drained, or a close's follow-ups go unread for two passes",
+          "targets": [],
+          "at": "2026-11-04T01:22:06.389Z"
         }
       ]
     }

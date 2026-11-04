@@ -71,7 +71,7 @@ named so the operator can strike them):
 | 1 | skills shipped to an instance's operator and agents, later | deferred candidate (the map, 2026-11-03, item 1); ledger entry | the reopening condition restates the operator's own timing |
 | 2 | would Rust gain efficiency | declined NoOp with the measurements (the map, item 2); ledger entry | the decline itself |
 | 3 | large reads by executor and fix agents, mainly on Codex | measured on Claude (no whole-file reads of large files in seven days); unknown on Codex; the map, item 6 | nothing filed |
-| 4 | drain the follow-up queue in one or two orders, or append rows to orders | WO-256: every pending row allocated, settled or declined; sixth | a declined row keeps its condition as the reopening condition |
+| 4 | the follow-ups the eight recent closes wrote instead of fixing in place must be addressed, with the ones needing work in one or two orders (the operator's clarification of 2026-11-04) | the eighteen rows read in this pass: twelve allocated as carry-ins of WO-253, WO-254, WO-255 and WO-257 (the work rides in the orders that own the files), three declined with conditions, two deferred and one settled; WO-256, a drain order drafted and reviewed, withdrawn before filing because the pass itself disposes rows; the 246 historical deferred rows left as navigation | the first draft read "drain the queue" as all 261 rows and filed an order for it |
 | 5 | the pull-request sentence repeated six times; was WO-248 worth it | WO-257 step 1: one sentence | keeping the comparison rather than removing it |
 | 6 | the fork's first block, nine items | 6.1 recorded; 6.2 → WO-246; 6.3 → WO-253; 6.4 declined (the map, item 3); 6.5 → WO-255; 6.6 to 6.9 → WO-257; §Answers to the fork | declining 6.4 |
 | 7 | Codex after compaction repeats, ignores standing orders or idles | WO-254: the compaction record restores the session's direction-class messages; a probe | the mechanism |
@@ -308,15 +308,16 @@ them. WO-246's amendment and WO-254's sentence rest on these.
 - [WO-257](../../work-orders/WO-257-instance-returns-of-2026-11-03.md):
   instance returns of 2026-11-03. Items 5, 12, 13; the fork's 6.6 to 6.9
   and 18.1, 18.4 to 18.8, 18.10. Fifth.
-- [WO-256](../../work-orders/WO-256-the-follow-up-register-drains-to-zero.md):
-  the follow-up register drains to zero. Item 4. Sixth.
+- WO-256 (the follow-up register drains to zero) was drafted, reviewed by
+  the three workers and withdrawn before filing when the operator asked
+  why the pass itself does not dispose the rows (it does; §Register); its
+  reviewed text is in the lane's reports, not in the tree.
 
 Each carries `Model:`, three-role `Effort:`, `Cost:` with additions and
 removals, a dated observed gap at `eb7c58ff6`, a Design with rejected
 alternatives and their axes, an execution plan naming a file and a check
 per step, criteria whose last names `npm test -- --review` and `npm run
-test:docs` (WO-256's names `npm test -- --only process-debt` and `npm run
-test:docs`, a document-only candidate), a Preflight line, non-goals and
+test:docs`, a Preflight line, non-goals and
 operator-review assumptions. The five defect classes were screened: no
 criterion's subject is a count or duration (the figures are in Cost lines
 and §Readings), none reads `HEAD` or a range, each names where its input
@@ -327,9 +328,25 @@ lines are in §Validation.
 
 ## Register
 
-`followups --sync` after the map's candidates section of 2026-11-03;
-`--export`; one batch. The dispositions are in §Validation with the
-revisions. Allocated: FUP-1398fcdb63df23d2 (WO-241-D004) and
+The operator's item 4, clarified on 2026-11-04: the eight recent closes
+(WO-245, WO-251, WO-249, WO-250, WO-248, WO-252, WO-238, WO-241) wrote
+eighteen follow-ups instead of fixing in place, and the pass is where they
+are addressed, with the ones needing work in one or two orders. Read
+against their decisions: twelve are allocated as carry-ins of the orders
+filed tonight that own their files (WO-257 six: WO-245-D013, WO-245-D010,
+WO-241-D016, WO-238-D036, WO-249-D012, WO-241-D017; WO-254 four:
+WO-251-D017, WO-249-D017, WO-241-D003, WO-241-D015; WO-253 two:
+WO-245-D011, WO-252-D034; WO-255 two: WO-241-D004, WO-250-D015), each
+written into that order's carry-ins with its reopening condition; three
+are declined with conditions (WO-238-D037, a planning duty; WO-241-D014,
+owed only before the first feature rename; WO-248-D004 was allocated to
+WO-257 earlier in the pass); WO-250-D016 is deferred with its remainder
+named (§Validation). A drain of all 261 pending rows was drafted as WO-256
+and as one batch, and both were withdrawn: the historical 246 deferred
+rows are navigation whose conditions have not fired, and the 2026-11-01
+rule (a pass disposes what it reads) governs them. `followups --sync`
+after the map's candidates section of 2026-11-03; `--export`; the batches
+and revisions are in §Validation. Allocated: FUP-1398fcdb63df23d2 (WO-241-D004) and
 FUP-60ea250ef102cc46 (WO-250-D015) to WO-255 (FUP-2bcb656e4fc1e7f6,
 WO-250-D016, was allocated there first and returned to deferred with its
 remainder named on the consistency reviewer's F5); FUP-225e0993974f3f4b (WO-248-D004) to WO-257 (FUP-2232a29f1061494f,
@@ -341,7 +358,7 @@ on the consistency reviewer's F7; 10 allocated to WO-257). The other
 fourteen untriaged rows of 2026-11-02 and 2026-11-03 (WO-238-D036 and
 D037, WO-241-D003, D014, D015, D016 and D017, WO-245-D010, D011 and D013,
 WO-249-D012 and D017, WO-251-D017, WO-252-D034) were listed and not read
-against their records; WO-256's step 2 reads each. The first page `plan
+against their decisions on the operator's clarification (§Register). The first page `plan
 start` returned (eight deferred rows) was read and left: no condition
 fired.
 
@@ -537,9 +554,8 @@ WO-245 (v0.108.0), WO-251 (v0.109.0), WO-249 (v0.110.0), WO-250
 (v0.111.0), WO-248 (v0.111.1), WO-252 (v0.112.0), WO-238 (v0.113.0) and
 WO-241 (v0.114.0) left the list as closed. WO-253 first (every session pays
 it); WO-254 second (what made the operator run commands tonight); WO-246
-third (the fourth refused push); WO-255 fourth; WO-257 fifth; WO-256 sixth
-(after the orders its carry-ins name); WO-242 seventh; WO-243 eighth;
-WO-244 ninth; then WO-083, WO-207, WO-193, WO-183, WO-088, WO-091, WO-096,
+third (the fourth refused push); WO-255 fourth; WO-257 fifth; WO-242
+sixth; WO-243 seventh; WO-244 eighth; then WO-083, WO-207, WO-193, WO-183, WO-088, WO-091, WO-096,
 WO-014. Serial order stays the operator's direction of 2026-10-13; the
 rules and the Focus are unchanged.
 
@@ -552,7 +568,7 @@ rules and the Focus are unchanged.
   defaults (operator direction of 2026-11-03), the Astra route this pass
   took, WO-255's selector. §Operator-opened planning pass: the criteria
   adversary reads the dispatch; the lane by UTC date until WO-255;
-  `README.md` as an entry point. §Retained planning follow-ups: WO-256.
+  `README.md` as an entry point. §Retained planning follow-ups: how a close's follow-ups are addressed.
 - Product 06: the rung after v0.114.0 names the nine open orders; the
   release table regenerated (203 tags; v0.108.0 to v0.114.0 added).
 - `docs/control/documents.json`: the `front-page` entry point.
@@ -563,7 +579,7 @@ rules and the Focus are unchanged.
 ## Answers to the fork (paste-ready)
 
 ```text
-Answers from core's planning pass of 2026-11-03 (docs/planning/passes/recurring-failures-and-queue-drain-2026-11-03.md) to the DotLn-Enterprise-Starter fork's two blocks of 2026-11-03 (starter v0.112.0 and v0.113.0). Read each against the record it names. Core's queue after this pass: WO-253, WO-254, WO-246, WO-255, WO-257, WO-256, WO-242, WO-243, WO-244, then the rest. Core closed WO-245 (v0.108.0), WO-251 (v0.109.0), WO-249 (v0.110.0), WO-250 (v0.111.0), WO-248 (v0.111.1), WO-252 (v0.112.0), WO-238 (v0.113.0) and WO-241 (v0.114.0) since its block of 2026-11-01.
+Answers from core's planning pass of 2026-11-03 (docs/planning/passes/recurring-failures-and-queue-drain-2026-11-03.md) to the DotLn-Enterprise-Starter fork's two blocks of 2026-11-03 (starter v0.112.0 and v0.113.0). Read each against the record it names. Core's queue after this pass: WO-253, WO-254, WO-246, WO-255, WO-257, WO-242, WO-243, WO-244, then the rest. Core closed WO-245 (v0.108.0), WO-251 (v0.109.0), WO-249 (v0.110.0), WO-250 (v0.111.0), WO-248 (v0.111.1), WO-252 (v0.112.0), WO-238 (v0.113.0) and WO-241 (v0.114.0) since its block of 2026-11-01.
 
 One direction from the operator for your instance, in the operator's own words: no planning or entropy pass takes a newer starter release or merges upstream unless the operator asks for it in that session. Your pass of 2026-11-03 took v0.113.0 "under your standing rule"; the operator says they never gave that rule and asks you to strike it from wherever your instance recorded it, and to say in your next block where it was recorded. WO-257 (fifth) writes the kit's sentence so no instance records it again.
 
@@ -742,3 +758,13 @@ appended when observed.
 - Second register batches at revisions after `e48f5adb…`:
   FUP-b80b9dfabaed4936 declined; FUP-2bcb656e4fc1e7f6 deferred with the
   remainder named; the feed then reads 261 pending.
+- The operator's clarification of item 4 (01:18Z): a batch declining all
+  261 pending rows had been built and was refused on its one `settled`
+  request with a null reopening condition (request index 170; nothing
+  written) and was not retried; a batch of fifteen at revision
+  `4e7617dc…` then disposed the eight closes' follow-ups (twelve
+  allocated to WO-257, WO-254 and WO-253 and written into their carry-ins;
+  three declined with conditions), leaving untriaged 0 and pending 246, all
+  deferred; WO-256 was removed from the tree and every reference repaired;
+  `followups --sync` minted one row for the map's candidate 11 and it was
+  declined with its condition; the feed reads 246 pending.

@@ -449,6 +449,23 @@ the integrated code identity when one exists.
   adopts or discards them at activation under the operator's word (reopen:
   the activation refuses the occupied path).
 
+- FUP-4763c82de6324631 (WO-251-D017: Make the hook and the host deny the same names for each listed desktop skill. Emit Skill(skill:<n): a follow-up a recent close wrote instead of
+  fixing in place, allocated here by the 2026-11-03 pass on the operator's
+  item 4; the executor takes it in the step that owns its file and records
+  the decision (reopen: the hook and the host deny different names after WO-254).
+- FUP-4798f1b5f5a74ed1 (WO-249-D017: appendTransition in scripts/resume.mjs writes an event before folding it, so when a command's pre): a follow-up a recent close wrote instead of
+  fixing in place, allocated here by the 2026-11-03 pass on the operator's
+  item 4; the executor takes it in the step that owns its file and records
+  the decision (reopen: a segment takes an event it cannot read after WO-254).
+- FUP-a0efaae1b9887fde (WO-241-D003: Unify the spawn-cap runtime's budget path with configured control roots, with relocated-root admi): a follow-up a recent close wrote instead of
+  fixing in place, allocated here by the 2026-11-03 pass on the operator's
+  item 4; the executor takes it in the step that owns its file and records
+  the decision (reopen: the spawn cap reads a budget path outside the configured control roots after WO-254).
+- FUP-1b5cb21e12253f3e (WO-241-D015: Make the driven-session-ceiling and driven-phase-timeout reader proofs observe scripts/lib/drive-): a follow-up a recent close wrote instead of
+  fixing in place, allocated here by the 2026-11-03 pass on the operator's
+  item 4; the executor takes it in the step that owns its file and records
+  the decision (reopen: removing either read still passes after WO-254).
+
 **Non-goals:** a semantic classifier of operator prose; a Codex pause
 protocol; removing the shell classification; widening any refusal; an
 agent-side runner for `!` commands.

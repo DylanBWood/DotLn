@@ -361,6 +361,31 @@ row at the integrated code identity when one exists.
   finish fetch's alternates and already-held skip) are WO-246's (reopen:
   a finish downloads what the checkout holds after WO-246).
 
+- FUP-1116ba845c557862 (WO-245-D013: Make product 07 §Workflow closeout and releases' records-branch sentence state the release block ): a follow-up a recent close wrote instead of
+  fixing in place, allocated here by the 2026-11-03 pass on the operator's
+  item 4; the executor takes it in the step that owns its file and records
+  the decision (reopen: WO-257 closes without the sentence).
+- FUP-3c371de4deb7c876 (WO-245-D010: Make release prepare's no-observed-tag remedy follow the page: name only the heading when a kit r): a follow-up a recent close wrote instead of
+  fixing in place, allocated here by the 2026-11-03 pass on the operator's
+  item 4; the executor takes it in the step that owns its file and records
+  the decision (reopen: WO-257 closes without the remedy).
+- FUP-3d64b267a45d2f34 (WO-241-D016: Retire the legacy tinkerer-economy overlay route after this kit release: move the kit guide's ove): a follow-up a recent close wrote instead of
+  fixing in place, allocated here by the 2026-11-03 pass on the operator's
+  item 4; the executor takes it in the step that owns its file and records
+  the decision (reopen: WO-257 closes with the legacy route still documented).
+- FUP-712bb6562937332a (WO-238-D036: Decide whether moved records need links a Markdown viewer can follow without the move map: a stub): a follow-up a recent close wrote instead of
+  fixing in place, allocated here by the 2026-11-03 pass on the operator's
+  item 4; the executor takes it in the step that owns its file and records
+  the decision (reopen: a moved record's reader still cannot find where its links resolve after WO-257).
+- FUP-a9efc000150d7e9f (WO-249-D012: A target order's publications name no criterion-record lines, because release prepare writes noth): a follow-up a recent close wrote instead of
+  fixing in place, allocated here by the 2026-11-03 pass on the operator's
+  item 4; the executor takes it in the step that owns its file and records
+  the decision (reopen: a target order's publication names a criterion line after WO-257).
+- FUP-b40bcf1b69c77008 (WO-241-D017: Break the scripts/lib/config.mjs, features.mjs and build-overlay.mjs import cycle: keep the regis): a follow-up a recent close wrote instead of
+  fixing in place, allocated here by the 2026-11-03 pass on the operator's
+  item 4; the executor takes it in the step that owns its file and records
+  the decision (reopen: WO-257 closes with the cycle in place).
+
 **Non-goals:** rewriting moved records' links; a feature election for
 updates before a pass; a baseline exemption for private paths; the review
 helper's target form (WO-255's, moved there on the design improver's F5 of
