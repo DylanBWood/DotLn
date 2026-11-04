@@ -806,3 +806,17 @@ appended when observed.
   from; it was retitled in the repository's own form. The branch and this
   document keep the `recurring-failures-and-queue-drain` slug fixed at
   `plan start`, before the operator's reading of item 4.
+- Correction (2026-11-04, on the operator's reading of #272): the filed
+  text of WO-254's Nomination provenance and the map's candidate 4 quoted
+  the operator's mid-turn messages verbatim. The clean-room floor admits
+  exact operator wording only for a public draft marked ready to file;
+  everything else is synthesized, and the verbatim words live only in
+  ignored intake. Both passages were rewritten as syntheses, the branch's
+  history was squashed and force-pushed so the public branch holds no
+  commit with the quotes (a forge may cache unreachable commits for a
+  time), the changed subject was judged again by a fresh refuter and the
+  earlier receipt stays as the record of the earlier subject. Older
+  committed records on `main` quote operator words the same way (WO-181's
+  and WO-237's decisions, WO-237's reviews, the 2026-10-28 pass, the idea
+  ledger's 2026-10-28 registration); they predate this pass and are the
+  operator's to keep or scrub.

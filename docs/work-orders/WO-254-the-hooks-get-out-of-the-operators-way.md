@@ -110,12 +110,13 @@ dispatch dimensions (WO-147 D010); `scripts/refute-plan.mjs` and
 `scripts/resume.mjs` are declared machinery sources, so `npm test --
 --review` runs before handoff.
 **Nomination provenance:** the operator's items 7, 10, 11, 12, 13, 14, 23
-and 24 of the 2026-11-03 planning dispatch and its mid-turn messages ("THERE
-IS NO OTHER PROCESS"; "ADD THAT AS ISSUE 23"; "WHY AM I HAVING TO MANUALLY
-INTERVENE TO TELL YOU TO RELEASE A NON EXISTENT LOCK"; "IF YOU WOULD SHUT
-THE FUCK UP THE COMMAND WOULD RUN"; "i got a deny on wo-242 when trying to
-create it so i dont know how its worktree has been created"), captured in
-ignored intake `docs/intake/planning-dispatch-2026-11-03-recurring-failures.md`,
+and 24 of the 2026-11-03 planning dispatch and its mid-turn messages (that
+no other session was working under the held writer and the lock should be
+ended; that the leftover Codex process be recorded as item 23; that a
+release the operator had to type by hand for a stale lock is the failure;
+that the typed command waited behind the agent's turn; that a denied
+activation of WO-242 left a worktree behind), synthesized here and captured
+verbatim only in ignored intake `docs/intake/planning-dispatch-2026-11-03-recurring-failures.md`,
 SHA-256 `4c7e47a6548004d909128fdfcc346663fc419280b798d00abec73d7ffb180f83`.
 Filed by the
 [2026-11-03 pass](../planning/passes/recurring-failures-and-queue-drain-2026-11-03.md).

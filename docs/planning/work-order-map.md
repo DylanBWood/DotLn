@@ -6614,8 +6614,7 @@ reopening condition. This section grants no activation authority.
    read.
 4. **The complete gate run before the first review round, so reviewers
    read a real run** (the planner's own idea on the operator's item 17).
-   Declined on the operator's words of 2026-11-03 ("?????" at the
-   sentence): product 07 §Preflight before the full gate is the operator's
+   Declined on the operator's challenge of that sentence on 2026-11-03: product 07 §Preflight before the full gate is the operator's
    standing rule on when the complete gate is paid; WO-255 makes the
    recheck read the whole change and requires the consistency reviewer's
    traced-consumers table instead. Useful only on the operator's word.

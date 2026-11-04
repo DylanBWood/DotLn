@@ -53508,6 +53508,13 @@
           "title": "The complete gate run before the first review round, so reviewers read a real run",
           "summary": "4. **The complete gate run before the first review round, so reviewers read a real run** (the planner's own idea on the operator's item 17). Declined on the operator's words of 2026-11-03 (\"?????\" at the sentence): product 07 §Preflight before the full gate is the operator's standing rule on when the complete gate is paid; WO-255 makes the recheck read the whole change and requires the consistency reviewer's traced-consumers table instead. Useful only on the operator's word.",
           "missing": false
+        },
+        {
+          "hash": "0e644a58e5cddbb3a176f7ee49900cdf184618e822a641d691683a087c9a6487",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-recurring-failures-and-queue-drain-pass-recorded-2026-11-03",
+          "title": "The complete gate run before the first review round, so reviewers read a real run",
+          "summary": "4. **The complete gate run before the first review round, so reviewers read a real run** (the planner's own idea on the operator's item 17). Declined on the operator's challenge of that sentence on 2026-11-03: product 07 §Preflight before the full gate is the operator's standing rule on when the complete gate is paid; WO-255 makes the recheck read the whole change and requires the consistency reviewer's traced-consumers table instead. Useful only on the operator's word.",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -53518,6 +53525,14 @@
           "reopenWhen": "the operator's word",
           "targets": [],
           "at": "2026-11-04T00:23:36.647Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "declined",
+          "reason": "Declined on the operator's challenge of 2026-11-03: product 07 §Preflight before the full gate is the standing rule on when the complete gate is paid; WO-255 makes the recheck read the whole change instead; the map's candidates of 2026-11-03, item 4 (its source text rewritten as a synthesis on 2026-11-04; docs/planning/passes/recurring-failures-and-queue-drain-2026-11-03.md).",
+          "reopenWhen": "the operator's word",
+          "targets": [],
+          "at": "2026-11-04T02:04:02.343Z"
         }
       ]
     },
