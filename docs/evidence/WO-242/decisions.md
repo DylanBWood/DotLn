@@ -6,7 +6,7 @@
 {
   "id": "WO-242-D001",
   "date": "2026-11-04",
-  "dispatch": "the operator's correction of 2026-11-04 on reading the merged #272: no operator words are quoted in a committed document",
+  "dispatch": "planning: standard planning pass + (the 2026-11-03 pass); the operator's correction of 2026-11-04 on reading the merged #272, that no operator words are quoted in a committed document",
   "decision": "Rewrite the one quoted operator remark in this order's Design (the private-repository links axis) as a synthesis; no other sentence of the order changes.",
   "evidence": [
     "The clean-room floor in CLAUDE.md: ordinary raw ideation is synthesized and rewritten; exact wording is admitted only for an operator-authored public draft marked ready to file.",
