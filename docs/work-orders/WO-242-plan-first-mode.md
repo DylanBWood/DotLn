@@ -291,8 +291,8 @@ With the election off nothing changes.
   paraphrased into `conversation.md` by the executor as the operator asked,
   with the words captured in ignored intake and their digest in the entry.
   Rejected: screening the conversation document in a private target (axis:
-  the operator's words: "this is a private repo so work links are
-  obviously fine").
+  the operator's direction that in a private repository the work's own
+  links are fine).
 - **Approval in ordinary words.** The operator says "go ahead", "approved",
   "looks good, build it" in the terminal or writes it in
   `conversation.md`; the executor infers authorization from ordinary

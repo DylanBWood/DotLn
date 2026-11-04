@@ -6,7 +6,7 @@
 {
   "id": "WO-235-D001",
   "date": "2026-10-27",
-  "dispatch": "planning: FIX THE BULLSHIT FROM WO-192 … (the 2026-10-26 pass, after receipt 056); operator-authorized amendment of the judged order",
+  "dispatch": "planning: (the operator's dispatch of 2026-10-26 to fix what WO-192 left; the 2026-10-26 pass, after receipt 056); operator-authorized amendment of the judged order",
   "decision": "Amend WO-235 so that, under Claude, the Stop hook refuses to end a turn while the session journal holds an operator message (never a host task notification) newer than the last direction-ledger entry of the dispatch, naming the unanswered message indexes; the reply that ends the turn answers all of them, so a burst of messages is answered once, after its last, and a message that arrives mid-turn cannot be dropped. `operator override:` suspends it as it does the other refusals. Under Codex and Copilot the rule is role text. The executor reads the host's Stop-hook page for the blocking form and records it.",
   "operatorAuthorization": "The operator directed on 2026-10-27 that when two or more messages arrive in a row the role must not answer each individually but wait for all of them, asked how this recurring issue gets fixed permanently, and then said the session's reply had tangible errors. Captured verbatim in ignored intake, SHA-256 6baae3cbbd738603fad5a6e38caa1753302561399b42cdf9ffa4aecb50806d93 (items 7 to 13).",
   "evidence": [

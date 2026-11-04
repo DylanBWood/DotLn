@@ -31,3 +31,27 @@
   "changed": "The Nomination provenance paragraph of this order, the map's candidate 4 of 2026-11-03 and the register row's retained text are syntheses; the pass document records the correction."
 }
 ```
+
+## WO-254-D002
+
+```json
+{
+  "id": "WO-254-D002",
+  "date": "2026-11-04",
+  "dispatch": "operator override: from 2026-11-04T02:13:34.355Z to 2026-11-04T02:14:13.899Z, during the clean-room correction after the 2026-11-03 pass",
+  "decision": "Under the operator's override, rewrite as syntheses the operator quotes held in three hash-bound decision records (WO-181-D008's authorization and constraint fields, WO-233-D001's and WO-235-D001's dispatch fields) and re-bind each by appending the kit's own PlanExecutionAmended event with the rewritten decision's hash, since plan amend-order refuses a closed order outside the judged horizon; the earlier events stay as history and the check validates the latest. Record the override here because no order was selected in the session.",
+  "evidence": [
+    "The operator's direction of 2026-11-04, repeated across several messages: no operator words are to remain quoted anywhere in the public repository, hash-bound records included.",
+    "npm run plan -- amend-order WO-233 WO-233-D001 and WO-235 WO-235-D001 on 2026-11-04: 'execution amendment requires an order in the current judged horizon and an authorization reason'.",
+    "scripts/lib/plan-receipts.mjs: validateAmendment checks the decision binding only for an event no later event re-bound ({ decision: !rebound }), so a later PlanExecutionAmended for the same receipt, order and decision supersedes the earlier binding.",
+    "The override's advisory at exit: OperatorOverrideRecorded was not appended because a live evidence gate (the resume suite this session ran) refused control writes; this decision is the record the advisory asks for.",
+    "Bypassed requirements: the hook's live-gate write refusal for the three decision edits made while the resume suite ran (docs/evidence is not that suite's input), and the records-immutability convention for three closed orders' decisions, on the clean-room floor's authority."
+  ],
+  "rejected": [
+    { "option": "Leave the three quoted phrases in place until a kit change admits re-binding a closed order", "reason": "The operator's direction is that the words leave the repository now; the floor outranks the convention." },
+    { "option": "Rewrite the control log's earlier events", "reason": "The control log is append-only; a later event re-binds without touching history." }
+  ],
+  "reopenWhen": "plan check or test:docs refuses a re-bound decision, or a kit release makes amend-order admit a closed order's clean-room correction so this route is retired.",
+  "kind": "override-record"
+}
+```

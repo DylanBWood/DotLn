@@ -2,7 +2,7 @@
 
 ## The dispatch and its capture
 
-The operator opened `planning: FIX THE BULLSHIT FROM WO-192 …` at
+The operator opened a `planning:` dispatch to fix what WO-192 left at
 2026-10-26T22:26:17Z in Claude Code (Fable 5.1 at max effort, selected by the
 operator with `/model` before the dispatch) and sent nine further messages
 during the pass, between 22:38Z and 22:49Z. All ten are captured verbatim in
