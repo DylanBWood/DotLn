@@ -1,0 +1,179 @@
+{
+  "recordedFor": "WO-253 supplemental real-runtime measurement",
+  "clock": "real performance.now; budgetClock omitted; no artificial delays",
+  "scope": "isolated disposable snapshot fixtures; no live host cleanup",
+  "timing": "totalMs includes prune admission and execution; setupMs and final fixture teardown are excluded; admittedMs begins immediately before pruneUnderLock, before its Git-root check and budget creation",
+  "results": [
+    {
+      "event": "result",
+      "recordedAt": "2026-11-04T10:21:33.268Z",
+      "clock": "real performance.now; no budgetClock supplied; no delays injected",
+      "count": 1000,
+      "directories": 2,
+      "logicalBytes": 128000,
+      "budgetMs": 60000,
+      "setupMs": 74.622708,
+      "totalMs": 469.0475829999999,
+      "admittedMs": 121.32279099999994,
+      "permissionStartMs": 81.61079099999995,
+      "permissionWalkMs": 2.9807500000000573,
+      "recursiveDeleteMs": 35.37175000000002,
+      "totalOverBudgetMs": 0,
+      "admittedOverBudgetMs": 0,
+      "removed": [
+        {
+          "kind": "snapshot",
+          "path": ".runtime/harness/0123456789abcdef"
+        }
+      ],
+      "remaining": 0,
+      "stoppedAt": null,
+      "retained": [],
+      "snapshotExists": false,
+      "reads": {
+        "snapshots": 1,
+        "byteInventories": 2,
+        "writerViews": 2
+      },
+      "sourceLog": "real-prune-default.log"
+    },
+    {
+      "event": "result",
+      "recordedAt": "2026-11-04T10:21:35.179Z",
+      "clock": "real performance.now; no budgetClock supplied; no delays injected",
+      "count": 10000,
+      "directories": 11,
+      "logicalBytes": 1280000,
+      "budgetMs": 60000,
+      "setupMs": 661.3564580000001,
+      "totalMs": 1246.340125,
+      "admittedMs": 947.205708,
+      "permissionStartMs": 477.8125829999999,
+      "permissionWalkMs": 30.365125000000262,
+      "recursiveDeleteMs": 438.17570899999964,
+      "totalOverBudgetMs": 0,
+      "admittedOverBudgetMs": 0,
+      "removed": [
+        {
+          "kind": "snapshot",
+          "path": ".runtime/harness/0123456789abcdef"
+        }
+      ],
+      "remaining": 0,
+      "stoppedAt": null,
+      "retained": [],
+      "snapshotExists": false,
+      "reads": {
+        "snapshots": 1,
+        "byteInventories": 2,
+        "writerViews": 2
+      },
+      "sourceLog": "real-prune-default.log"
+    },
+    {
+      "event": "result",
+      "recordedAt": "2026-11-04T10:21:52.854Z",
+      "clock": "real performance.now; no budgetClock supplied; no delays injected",
+      "count": 100000,
+      "directories": 101,
+      "logicalBytes": 12800000,
+      "budgetMs": 60000,
+      "setupMs": 6877.860625000001,
+      "totalMs": 10793.721042,
+      "admittedMs": 10501.998542,
+      "permissionStartMs": 5634.059125,
+      "permissionWalkMs": 276.47849999999926,
+      "recursiveDeleteMs": 4590.569875000001,
+      "totalOverBudgetMs": 0,
+      "admittedOverBudgetMs": 0,
+      "removed": [
+        {
+          "kind": "snapshot",
+          "path": ".runtime/harness/0123456789abcdef"
+        }
+      ],
+      "remaining": 0,
+      "stoppedAt": null,
+      "retained": [],
+      "snapshotExists": false,
+      "reads": {
+        "snapshots": 1,
+        "byteInventories": 2,
+        "writerViews": 2
+      },
+      "sourceLog": "real-prune-default.log"
+    },
+    {
+      "event": "result",
+      "recordedAt": "2026-11-04T10:25:15.413Z",
+      "clock": "real performance.now; no budgetClock supplied; no delays injected",
+      "count": 800000,
+      "directories": 801,
+      "symlinks": 0,
+      "logicalBytes": 102400000,
+      "budgetMs": 60000,
+      "setupMs": 56077.574875,
+      "totalMs": 60706.35062500001,
+      "admittedMs": 60028.66558300001,
+      "permissionStartMs": null,
+      "permissionWalkMs": null,
+      "recursiveDeleteMs": null,
+      "totalOverBudgetMs": 706.3506250000064,
+      "admittedOverBudgetMs": 28.665583000009065,
+      "removed": [],
+      "remaining": 1,
+      "stoppedAt": {
+        "step": "removal",
+        "path": ".runtime/harness/0123456789abcdef",
+        "afterMs": 60027
+      },
+      "retained": [
+        {
+          "kind": "snapshot",
+          "reason": "budget"
+        }
+      ],
+      "snapshotExists": true,
+      "reads": {
+        "snapshots": 1,
+        "byteInventories": 2,
+        "writerViews": 2
+      },
+      "sourceLog": "real-prune-large.log"
+    },
+    {
+      "event": "result",
+      "recordedAt": "2026-11-04T10:31:27.133Z",
+      "clock": "real performance.now; no budgetClock supplied; no delays injected",
+      "count": 800000,
+      "directories": 801,
+      "symlinks": 0,
+      "logicalBytes": 102400000,
+      "budgetMs": null,
+      "setupMs": 56319.960333999996,
+      "totalMs": 146633.435542,
+      "admittedMs": 145959.331292,
+      "permissionStartMs": 101784.07420899998,
+      "permissionWalkMs": 6327.211208000022,
+      "recursiveDeleteMs": 37846.46308299998,
+      "totalOverBudgetMs": null,
+      "admittedOverBudgetMs": null,
+      "removed": [
+        {
+          "kind": "snapshot",
+          "path": ".runtime/harness/0123456789abcdef"
+        }
+      ],
+      "remaining": 0,
+      "stoppedAt": null,
+      "retained": [],
+      "snapshotExists": false,
+      "reads": {
+        "snapshots": 1,
+        "byteInventories": 2,
+        "writerViews": 2
+      },
+      "sourceLog": "real-prune-completion.log"
+    }
+  ]
+}

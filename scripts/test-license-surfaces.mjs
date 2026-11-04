@@ -1,13 +1,18 @@
 import {
   excludeFixtureOwnership,
   createFixtureRoot,
+  readTemporaryOwner,
   removeTemporaryPath as rmSync,
+  withTemporaryOwner,
+  writeTemporaryOwner,
 } from "./lib/temporary-roots.mjs";
 import assert from "node:assert/strict";
+import { randomUUID } from "node:crypto";
 import { test } from "node:test";
 import {
   chmodSync,
   mkdirSync,
+  readdirSync,
   readFileSync,
   symlinkSync,
   writeFileSync,
@@ -120,6 +125,61 @@ const commit = (root, author, message) => {
   );
   return runGit(root, ["rev-parse", "HEAD"]);
 };
+
+test("the npm dry run removes its own scratch as it returns, inside a gate too, and leaves another run's retained root", (t) => {
+  // A private temporary directory, so this run's roots are the only ones
+  // counted beside the planted one.
+  const base = createFixtureRoot(join(tmpdir(), "dotln-license-scratch-base-"));
+  t.after(() => rmSync(base, { recursive: true, force: true }));
+  // A root of the dry run's prefix that an earlier failed suite of another
+  // gate left, inside its diagnosis window.
+  const planted = createFixtureRoot(join(base, "dotln-license-surfaces-"));
+  writeTemporaryOwner(planted, {
+    ...readTemporaryOwner(planted),
+    owner: {
+      ...readTemporaryOwner(planted).owner,
+      pid: 2147483647,
+      birth: "1.0",
+      gateId: randomUUID(),
+      suite: "license-fixtures",
+    },
+    outcome: "failed",
+    endedAt: new Date().toISOString(),
+    endSource: "completion",
+    retentionHours: 24,
+  });
+  const prior = process.env.TMPDIR;
+  process.env.TMPDIR = base;
+  // Inside a gate, a fixture's teardown waits for the gate; this owner makes
+  // that so here as well, whether or not a real gate runs this suite.
+  const gateId = randomUUID();
+  let rules;
+  try {
+    rules = withTemporaryOwner(
+      { repository: base, gateId, suite: "license-fixtures" },
+      () => withFixture((root) => licenseSurfaceRules(root)),
+    );
+  } finally {
+    if (prior === undefined) delete process.env.TMPDIR;
+    else process.env.TMPDIR = prior;
+  }
+  // The dry run ran, so it made and used its scratch.
+  assert.ok(rules.some(({ line }) => line.includes("npm publish --dry-run")));
+  const left = readdirSync(base)
+    .filter((name) => name.startsWith("dotln-license-surfaces-"))
+    .map((name) => join(base, name));
+  assert.deepEqual(left, [planted]);
+  // Nothing under this process or this gate's id remains, whether the gate
+  // deferred fixture teardown or not; the planted root keeps its record.
+  for (const path of left) {
+    const { owner } = readTemporaryOwner(path);
+    assert.notEqual(owner.pid, process.pid);
+    assert.notEqual(owner.gateId, gateId);
+    if (process.env.DOTLN_TEMP_GATE)
+      assert.notEqual(owner.gateId, process.env.DOTLN_TEMP_GATE);
+  }
+  assert.equal(readTemporaryOwner(planted).outcome, "failed");
+});
 
 test("real npm refuses every validated manifest before packing, despite ambient script suppression", () =>
   withFixture((root) => {

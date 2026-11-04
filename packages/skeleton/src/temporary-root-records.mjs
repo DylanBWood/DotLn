@@ -375,21 +375,101 @@ const registeredRootPath = (file) => {
   return JSON.parse(first).path;
 };
 
+/** What a walk over an owned root may be given. `budget` is called before
+ * each directory is listed or entry examined, and throws once a prune's time
+ * is spent. `repair` lets the walk grant the owner access to an entry the
+ * owner cannot read, through `chmod` (chmodSync unless a fixture makes it
+ * fail), and `repaired` collects each grant's path and former mode, so a
+ * caller that then keeps the root can put them back.
+ * @typedef {{budget?: (path: string) => void, repair?: boolean, chmod?: (path: string, mode: number) => void, repaired?: Array<{path: string, mode: number}>}} WalkOptions */
+
 /** Nearest nested owner boundaries, including invalid markers. A parent must
- * not erase a descendant's independent retention or live ownership.
- * @param {string} path @returns {string[]} */
-export function nestedTemporaryRoots(path) {
+ * not erase a descendant's independent retention or live ownership. A
+ * directory its owner cannot list stops the walk as a restricted entry,
+ * unless `repair` is set: the walk then grants the owner read, write and
+ * search on it and lists it.
+ * @param {string} path @param {WalkOptions} [options] @returns {string[]} */
+export function nestedTemporaryRoots(path, options = {}) {
+  options.budget?.(path);
   const found = [];
-  for (const entry of readdirSync(path, { withFileTypes: true })) {
+  for (const entry of readableEntries(path, options)) {
     if (!entry.isDirectory() || entry.isSymbolicLink()) continue;
     const child = join(path, entry.name);
-    if (lstatSync(join(child, TEMPORARY_OWNER_FILE), { throwIfNoEntry: false }))
-      found.push(child);
-    else found.push(...nestedTemporaryRoots(child));
+    if (ownerMarkerPresent(child, options)) found.push(child);
+    else found.push(...nestedTemporaryRoots(child, options));
   }
   return found;
 }
 
+/** Code of the refusal a walk or removal raises for an entry its owner
+ * cannot read and, where asked, could not repair. */
+export const RESTRICTED_ENTRY = "RESTRICTED_ENTRY";
+/** @param {string} path @param {unknown} cause */
+const restrictedEntry = (path, cause) =>
+  Object.assign(new Error(`restricted-entry: ${path}`, { cause }), {
+    code: RESTRICTED_ENTRY,
+    path,
+  });
+/** @param {unknown} error */
+const denied = (error) =>
+  ["EACCES", "EPERM"].includes(
+    /** @type {NodeJS.ErrnoException} */ (error)?.code ?? "",
+  );
+/** Grants the owner what reading and removing need: read, write and search on
+ * a directory, read and write on a file that lacks owner read. A link is
+ * never changed. A failed grant is a restricted entry naming its path.
+ * @param {string} path @param {import("node:fs").Stats} info
+ * @param {WalkOptions} options */
+function repairEntry(path, info, options) {
+  if (info.isSymbolicLink()) return;
+  const needed = info.isDirectory() ? 0o700 : 0o600;
+  if (info.isDirectory() ? (info.mode & 0o700) === 0o700 : info.mode & 0o400)
+    return;
+  try {
+    (options.chmod ?? chmodSync)(path, (info.mode & 0o777) | needed);
+  } catch (cause) {
+    throw restrictedEntry(path, cause);
+  }
+  options.repaired?.push({ path, mode: info.mode & 0o7777 });
+}
+/** Puts back the modes a walk granted, newest first. What can no longer be
+ * changed back, as an entry since removed, is left as it is.
+ * @param {Array<{path: string, mode: number}>} repaired */
+export function restoreTemporaryRepairs(repaired) {
+  for (const { path, mode } of [...repaired].reverse())
+    try {
+      chmodSync(path, mode);
+    } catch {
+      /* Gone or no longer ours to change. */
+    }
+  repaired.length = 0;
+}
+/** A directory's entries; a denied listing is repaired first when asked.
+ * @param {string} path @param {WalkOptions} options */
+function readableEntries(path, options) {
+  try {
+    return readdirSync(path, { withFileTypes: true });
+  } catch (error) {
+    if (!denied(error)) throw error;
+    if (!options.repair) throw restrictedEntry(path, error);
+    repairEntry(path, lstatSync(path), options);
+    return readdirSync(path, { withFileTypes: true });
+  }
+}
+/** Whether a directory holds an owner marker. A directory without owner
+ * search denies even that look, and is repaired first when asked.
+ * @param {string} directory @param {WalkOptions} options */
+function ownerMarkerPresent(directory, options) {
+  const marker = join(directory, TEMPORARY_OWNER_FILE);
+  try {
+    return Boolean(lstatSync(marker, { throwIfNoEntry: false }));
+  } catch (error) {
+    if (!denied(error)) throw error;
+    if (!options.repair) throw restrictedEntry(directory, error);
+    repairEntry(directory, lstatSync(directory), options);
+    return Boolean(lstatSync(marker, { throwIfNoEntry: false }));
+  }
+}
 /** A root is its token and its inode. The token in the marker inside the
  * directory proves it is the one that was created, since fixture copies exclude
  * the marker and seeds keep it out of Git, and the inode says it was not
@@ -750,14 +830,7 @@ export function temporaryInventory(path, excluded = new Set()) {
   const info = lstatSync(path, { throwIfNoEntry: false });
   if (!info) return { files: 0, bytes: 0, directories: 0 };
   if (!info.isDirectory() || info.isSymbolicLink())
-    return {
-      files: 1,
-      bytes:
-        info.isFile() && Number.isFinite(info.blocks)
-          ? Math.min(info.size, info.blocks * 512)
-          : info.size,
-      directories: 0,
-    };
+    return { files: 1, bytes: entryBytes(info), directories: 0 };
   const result = { files: 0, bytes: 0, directories: 1 };
   for (const name of readdirSync(path)) {
     const child = temporaryInventory(join(path, name), excluded);
@@ -768,24 +841,98 @@ export function temporaryInventory(path, excluded = new Set()) {
   return result;
 }
 
-/** Change directory permissions only, never a link target or file contents.
- * @param {string} path */
-export function makeTemporaryWritable(path) {
+/** Grants the owner read, write and search on every directory of a tree, never
+ * on a link target or a file. `budget`, when given, is asked before each
+ * entry, so a bounded removal can stop inside a large tree.
+ * @param {string} path @param {RemovalOptions} [options] */
+function makeTemporaryWritable(path, options = {}) {
+  options.budget?.(path);
   const info = lstatSync(path, { throwIfNoEntry: false });
   if (!info?.isDirectory() || info.isSymbolicLink()) return;
-  chmodSync(path, (info.mode & 0o777) | 0o700);
-  for (const name of readdirSync(path)) makeTemporaryWritable(join(path, name));
+  (options.chmod ?? chmodSync)(path, (info.mode & 0o777) | 0o700);
+  for (const name of readdirSync(path))
+    makeTemporaryWritable(join(path, name), options);
+}
+
+/** Removes a tree, or a single file, that its caller has already judged
+ * removable: each directory is made writable, then each entry is deleted.
+ * With a `budget`, both walks ask it before every entry, so a bounded removal
+ * stops inside the tree, leaving it partly deleted at its path for the
+ * caller's next run to judge and finish. Without one this is one recursive
+ * rmSync. Links are deleted, never followed.
+ * @param {string} path @param {RemovalOptions} [options] */
+export function removeTree(path, options = {}) {
+  makeTemporaryWritable(path, options);
+  deleteEntry(path, options);
 }
 
 /** Explicit creator teardown. The pruning judge performs its additional
  * liveness/retention checks before calling this identity-checked remover.
- * @param {string} path @param {string} [token] */
-export function removeTemporaryRoot(path, token) {
+ * @param {string} path @param {string} [token] @param {RemovalOptions} [options] */
+export function removeTemporaryRoot(path, token, options) {
   requireTemporaryDirectory(path);
   const record = readTemporaryOwner(path);
   if (!record || (token !== undefined && token !== record.token))
     throw new Error("Temporary root ownership changed; retained");
-  return removeVerifiedTemporaryRoot(path, record);
+  return removeVerifiedTemporaryRoot(path, record, options);
+}
+
+/** What a removal may be given by a prune: `budget`, called before each entry
+ * is examined or deleted, throws once the prune's time is spent; `chmod`
+ * replaces chmodSync wherever the removal grants the owner access (a
+ * temporary root's walk for an entry that lacks it, removeTree's walk for
+ * every directory), so a fixture can make a grant fail or see the walk reach
+ * a path.
+ * @typedef {{budget?: (path: string) => void, chmod?: (path: string, mode: number) => void}} RemovalOptions */
+
+/** The bytes an entry holds: a file's allocated bytes up to its size, so a
+ * sparse hole is not counted as written, and any other entry's size.
+ * @param {import("node:fs").Stats} info */
+const entryBytes = (info) =>
+  info.isFile() && Number.isFinite(info.blocks)
+    ? Math.min(info.size, info.blocks * 512)
+    : info.size;
+
+/** One walk before a removal, or before the byte proof of a root about to
+ * go: an entry its owner cannot read is granted what reading and deleting
+ * need, and every entry is counted as temporaryInventory counts it. Links are
+ * counted, never followed or changed.
+ * @param {string} path @param {RemovalOptions} [options] @returns {Inventory} */
+export function prepareTemporaryRemoval(path, options = {}) {
+  const walk = { ...options, repair: true };
+  options.budget?.(path);
+  const info = lstatSync(path);
+  if (!info.isDirectory() || info.isSymbolicLink()) {
+    if (info.isFile()) repairEntry(path, info, walk);
+    return { files: 1, bytes: entryBytes(info), directories: 0 };
+  }
+  repairEntry(path, info, walk);
+  const result = { files: 0, bytes: 0, directories: 1 };
+  for (const name of readdirSync(path)) {
+    const child = prepareTemporaryRemoval(join(path, name), options);
+    result.files += child.files;
+    result.bytes += child.bytes;
+    result.directories += child.directories;
+  }
+  return result;
+}
+
+/** Deletes one entry of a root being removed. Without a budget this is the
+ * recursive rmSync it always was; with one, each entry is deleted on its own
+ * after the budget allows it, so a prune can stop inside a large root.
+ * @param {string} path @param {RemovalOptions} options */
+function deleteEntry(path, options) {
+  if (!options.budget) {
+    rmSync(path, { recursive: true, force: false });
+    return;
+  }
+  options.budget(path);
+  const info = lstatSync(path);
+  if (info.isDirectory() && !info.isSymbolicLink()) {
+    for (const name of readdirSync(path))
+      deleteEntry(join(path, name), options);
+    rmdirSync(path);
+  } else rmSync(path, { force: false });
 }
 
 /** The path a root's ledger registered, or null where its ledger is gone.
@@ -835,8 +982,10 @@ const markerToken = (path) => {
  * puts the root back at its path, and its owner record goes last, so a removal
  * that stops leaves a root its marker still names: at its path, or, stopped by
  * the process ending, aside where its ledger finds it (registeredTemporaryRoots).
- * @param {string} path @param {TemporaryRecord} record */
-export function removeVerifiedTemporaryRoot(path, record) {
+ * So does a removal a prune's budget or an unrepairable entry stops: the
+ * entries already deleted stay deleted, and the next prune finishes the rest.
+ * @param {string} path @param {TemporaryRecord} record @param {RemovalOptions} [options] */
+export function removeVerifiedTemporaryRoot(path, record, options = {}) {
   const aside = temporaryRemovalAside(path, record.token);
   // A root finished from its aside, or from inside a parent another stopped
   // removal left aside, is recorded under the path its ledger registered, so
@@ -872,14 +1021,13 @@ export function removeVerifiedTemporaryRoot(path, record) {
   }
   let measured;
   try {
-    makeTemporaryWritable(aside);
-    measured = temporaryInventory(aside);
+    measured = prepareTemporaryRemoval(aside, options);
     // Measure before deletion; a failed removal keeps its attempted
     // inventory and never claims a successful deletion.
     ledger(record, registered, "removing", { ...measured, aside });
     for (const name of readdirSync(aside))
       if (name !== TEMPORARY_OWNER_FILE)
-        rmSync(join(aside, name), { recursive: true, force: false });
+        deleteEntry(join(aside, name), options);
     rmSync(join(aside, TEMPORARY_OWNER_FILE));
     rmdirSync(aside);
   } catch (error) {
@@ -1087,12 +1235,20 @@ function heldByAncestorAside(path, token) {
  * cleanup retires only absent roots with a proven dead owner; live segments
  * are append-only and are never rewritten by a concurrent census. A segment
  * waits while its root may still be held inside a removal aside: its own,
- * wherever the removal recorded it, or an ancestor's.
- * @param {string} repository @param {string} [gateId] */
-export function retireTemporaryLedger(repository, gateId) {
+ * wherever the removal recorded it, or an ancestor's. A caller that already
+ * holds a process table passes it, so one observation serves a whole prune
+ * (null is an unavailable table, which proves no owner dead); `gateIds`
+ * retires several finished gates' segments in one reading of the ledger.
+ * @param {string} repository @param {string} [gateId]
+ * @param {{table?: ProcessIdentity[]|null, gateIds?: Set<string>}} [options] */
+export function retireTemporaryLedger(repository, gateId, options = {}) {
   const directory = temporaryLedgerPath(repository);
   if (!existsSync(directory)) return;
-  const table = temporaryProcessTable(repository);
+  const table =
+    options.table === undefined
+      ? temporaryProcessTable(repository)
+      : options.table;
+  const gates = options.gateIds ?? (gateId ? new Set([gateId]) : null);
   const segments = readdirSync(directory)
     .filter((name) => /^[a-f0-9-]{36}\.jsonl$/.test(name))
     .map((name) => {
@@ -1107,8 +1263,10 @@ export function retireTemporaryLedger(repository, gateId) {
   });
   for (const { file, rows } of segments) {
     const first = rows[0];
-    if (!first || (gateId && first.owner?.gateId !== gateId)) continue;
-    if (!gateId && first.owner?.gateId) continue; // Only the gate may retire unfinished metrics.
+    if (!first) continue;
+    // Only the gate, or a caller naming it as finished, may retire its
+    // unfinished metrics.
+    if (gates ? !gates.has(first.owner?.gateId) : first.owner?.gateId) continue;
     const terminal = rows.some(
       (row) =>
         row.path === first.path && ["removed", "promoted"].includes(row.action),
@@ -1140,24 +1298,48 @@ export function retireTemporaryLedger(repository, gateId) {
   }
 }
 
+/** The ledger segment files of a repository, one per token. A prune reads
+ * them one at a time, so its budget can stop the listing between two.
+ * @param {string} repository @returns {string[]} */
+export function temporaryLedgerSegments(repository) {
+  const directory = temporaryLedgerPath(repository);
+  if (!existsSync(directory)) return [];
+  return readdirSync(directory)
+    .filter((name) => /^[a-f0-9-]{36}\.jsonl$/.test(name))
+    .map((name) => join(directory, name));
+}
+
+/** The root one segment still registers, or null: its creation not followed
+ * by a removal or promotion of that path, at its path or, where a stopped
+ * removal left it, aside. A segment holds one token's rows.
+ * @param {string} file @returns {Record<string, any>|null} */
+export function registeredTemporaryRootOf(file) {
+  /** @type {Record<string, any>|null} */
+  let row = null;
+  for (const entry of readTemporarySegment(file)) {
+    if (entry.action === "created") row = entry;
+    if (
+      row !== null &&
+      ["removed", "promoted"].includes(entry.action) &&
+      row.token === entry.token &&
+      row.path === entry.path
+    )
+      row = null;
+  }
+  if (!row) return null;
+  // A root a stopped removal left aside is listed there, even when its path
+  // now holds another root.
+  const aside = temporaryRemovalAside(row.path, row.token);
+  if (existsSync(aside)) return { ...row, path: aside };
+  return existsSync(row.path) ? row : null;
+}
+
 /** Current root registrations, not individual file deletions.
  * @param {string} repository */
 export function registeredTemporaryRoots(repository) {
-  const roots = new Map();
-  for (const row of temporaryLedger(repository)) {
-    if (row.action === "created") roots.set(row.token, row);
-    if (
-      ["removed", "promoted"].includes(row.action) &&
-      roots.get(row.token)?.path === row.path
-    )
-      roots.delete(row.token);
-  }
-  // A root a stopped removal left aside is listed there, even when its path
-  // now holds another root.
-  return [...roots.values()].flatMap((row) => {
-    const aside = temporaryRemovalAside(row.path, row.token);
-    if (existsSync(aside)) return [{ ...row, path: aside }];
-    return existsSync(row.path) ? [row] : [];
+  return temporaryLedgerSegments(repository).flatMap((file) => {
+    const row = registeredTemporaryRootOf(file);
+    return row ? [row] : [];
   });
 }
 
@@ -1339,7 +1521,7 @@ export function pruneSessionTemporaryRoots(
       });
     }
   }
-  retireTemporaryLedger(repository);
+  retireTemporaryLedger(repository, undefined, { table });
   return { removed, retained, blockers };
 }
 

@@ -6864,14 +6864,25 @@ test("WO-145 optional economy support preserves historical snapshots through the
   // browser boundary through two parents: WO-251's oracle, main's at
   // integration, as its historical parent and WO-249's as its branch parent,
   // and both preserve WO-247's oracle, which carries the integrated oracle and
-  // both chains below it.
-  const current = "wo238-integration-role-baseline.json";
+  // both chains below it. WO-253's release-close and planner prune sentences
+  // re-pin the trees over that WO-238 integration oracle.
+  const current = "wo253-role-baseline.json";
   const baseline = JSON.parse(readFileSync(join(fixtures, current), "utf8"));
-  assert.equal(baseline.historicalBaseline, "wo252-repair-role-baseline.json");
-  assert.equal(baseline.branchBaseline, "wo238-role-baseline.json");
-  assert.equal(baseline.upstreamBaseline, "wo250-role-baseline.json");
-  const routerPrune = JSON.parse(
+  assert.equal(
+    baseline.historicalBaseline,
+    "wo238-integration-role-baseline.json",
+  );
+  const integrated = JSON.parse(
     readFileSync(join(fixtures, baseline.historicalBaseline), "utf8"),
+  );
+  assert.equal(
+    integrated.historicalBaseline,
+    "wo252-repair-role-baseline.json",
+  );
+  assert.equal(integrated.branchBaseline, "wo238-role-baseline.json");
+  assert.equal(integrated.upstreamBaseline, "wo250-role-baseline.json");
+  const routerPrune = JSON.parse(
+    readFileSync(join(fixtures, integrated.historicalBaseline), "utf8"),
   );
   assert.equal(routerPrune.historicalBaseline, "wo252-role-baseline.json");
   const pruneSentence = JSON.parse(
@@ -6879,7 +6890,7 @@ test("WO-145 optional economy support preserves historical snapshots through the
   );
   assert.equal(pruneSentence.historicalBaseline, "wo250-role-baseline.json");
   const documentKinds = JSON.parse(
-    readFileSync(join(fixtures, baseline.branchBaseline), "utf8"),
+    readFileSync(join(fixtures, integrated.branchBaseline), "utf8"),
   );
   assert.equal(documentKinds.historicalBaseline, "wo250-role-baseline.json");
   const ladder = JSON.parse(

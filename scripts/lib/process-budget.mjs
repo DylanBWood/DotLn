@@ -16,6 +16,30 @@ export const dispatchKinds = [
   "refuter",
   "router",
 ];
+/** The `prune.startBudgetMs` key of a parsed budgets document: undefined when
+ * unset, null for no bound, otherwise a non-negative number of milliseconds.
+ * Anything else throws `Invalid budget: prune.startBudgetMs`; readBudgets
+ * refuses the document with it, and the routine prune's reader
+ * (temporary-prune-summary.mjs) falls back to its default with it.
+ * @param {any} budgets @returns {number|null|undefined} */
+export function pruneStartBudgetKey(budgets) {
+  const prune = budgets?.prune;
+  if (prune === undefined) return undefined;
+  const value = prune?.startBudgetMs;
+  if (
+    !prune ||
+    typeof prune !== "object" ||
+    Array.isArray(prune) ||
+    !(
+      value === undefined ||
+      value === null ||
+      (Number.isFinite(value) && value >= 0)
+    )
+  )
+    throw new Error("Invalid budget: prune.startBudgetMs");
+  return value;
+}
+
 export function readBudgets(root, { cutoff } = {}) {
   const path = docPath(root, "control", "budgets.json");
   if (!existsSync(path)) return null;
@@ -89,6 +113,10 @@ export function readBudgets(root, { cutoff } = {}) {
       value.drivenPhaseTimeoutMs > 2147483647)
   )
     throw new Error("Invalid budget: drivenPhaseTimeoutMs");
+  // The routine prune's wall budget at plan start and release close; unset is
+  // its 1,800,000 ms (30 minute) default and null removes the bound. Plan start and the close
+  // judge the key by the same rule and fall back to the default.
+  pruneStartBudgetKey(value);
   for (const role of dispatchKinds) {
     // Budget seeds belong to the instance; updating a pre-router kit must
     // not require rewriting its operator-owned budget document.

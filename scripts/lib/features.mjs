@@ -149,6 +149,14 @@ export const featureRegistry = Object.freeze([
     "budgets.retention",
     "packages/skeleton/src/temporary-root-records.mjs",
   ),
+  row(
+    "prune-start-budget",
+    "both",
+    1800000,
+    "Bounds the routine prune at plan start and release close; the prune stops there, says what remains and how to resume, and the command goes on. null removes the bound.",
+    "budgets.prune.startBudgetMs",
+    "scripts/lib/temporary-prune-summary.mjs",
+  ),
 ]);
 
 /** A rename ships with { successor, release }; in the following kit release

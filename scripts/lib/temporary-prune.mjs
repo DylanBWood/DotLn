@@ -21,12 +21,15 @@ import {
   nestedTemporaryRoots,
   readRetention,
   readTemporaryOwner,
+  registeredTemporaryRootOf,
   registeredTemporaryRoots,
   removeTemporaryRemovalRemains,
   removeTemporaryRoot,
   requireTemporaryDirectory,
+  restoreTemporaryRepairs,
+  RESTRICTED_ENTRY,
+  temporaryLedgerSegments,
   temporaryRemovalRemains,
-  temporaryInventory,
   temporaryLedgerContradiction,
   temporaryProcessTable,
   temporaryRemovalAside,
@@ -64,6 +67,54 @@ const legacyRootName = (name) =>
 export const pruneScope = (options = {}) =>
   options.scope ?? process.env.DOTLN_PRUNE_SCOPE ?? "all";
 
+/** Code of the refusal a spent prune budget raises inside a walk or removal. */
+export const PRUNE_BUDGET = "PRUNE_BUDGET";
+/** The progress floor of a bounded prune: its first root always has the
+ * smaller of this and the budget, even when the budget was spent before it. */
+export const PRUNE_PROGRESS_FLOOR_MS = 1000;
+/** How many entries a prune's listing reads between two asks of its budget:
+ * it always lists the first batch, and never reads more than one batch past
+ * a spent budget. */
+export const PRUNE_LISTING_BATCH = 64;
+
+/** A wall budget for one prune: the returned check throws, with code
+ * PRUNE_BUDGET and the path it was asked about, once `budgetMs` has passed
+ * since the budget was made; `spent()` says whether it has, and `bounded`
+ * whether there is a budget at all. `withFloor()` returns the same check
+ * extended, if need be, to the smaller of the budget and one second from now,
+ * so the first root has that long whatever came before it. Without a budget
+ * the check never throws.
+ * @param {number|null|undefined} budgetMs @param {() => number} [now] */
+export function pruneBudget(budgetMs, now = () => performance.now()) {
+  const bounded = typeof budgetMs === "number" && Number.isFinite(budgetMs);
+  const make = (deadline) => {
+    const spent = () => now() >= deadline;
+    const check = (path) => {
+      if (spent())
+        throw Object.assign(new Error(`prune budget spent at ${path}`), {
+          code: PRUNE_BUDGET,
+          path,
+        });
+    };
+    return Object.assign(check, {
+      spent,
+      bounded,
+      budgetMs: bounded ? budgetMs : null,
+      withFloor: () =>
+        bounded
+          ? make(
+              Math.max(
+                deadline,
+                now() +
+                  Math.min(Math.max(0, budgetMs), PRUNE_PROGRESS_FLOOR_MS),
+              ),
+            )
+          : check,
+    });
+  };
+  return make(bounded ? now() + Math.max(0, budgetMs) : Infinity);
+}
+
 // A captured root that a stopped removal left aside is judged where its
 // token puts it.
 const resolveSaved = (saved) => {
@@ -73,12 +124,20 @@ const resolveSaved = (saved) => {
 
 // A ledger can outlive its path, or disappear with the closing worktree. A
 // recorded root still belongs to its checkout only while the owner marker at
-// its path carries the recorded token and that checkout's physical path.
+// its path carries the recorded token and that checkout's physical path. A
+// marker its owner cannot read proves nothing either way; the root is admitted,
+// and its judgment keeps it as a restricted entry, never stopping a close.
 const ownerBinds = (saved) => {
-  const owner = readTemporaryOwner(saved.path);
-  return (
-    owner?.token === saved.token && owner.owner.repository === saved.repository
-  );
+  try {
+    const owner = readTemporaryOwner(saved.path);
+    return (
+      owner?.token === saved.token &&
+      owner.owner.repository === saved.repository
+    );
+  } catch (error) {
+    if (["EACCES", "EPERM"].includes(error?.code)) return true;
+    throw error;
+  }
 };
 
 /** The roots a checkout's ledger registers that their owner markers still
@@ -97,18 +156,59 @@ export function boundTemporaryRoots(checkout) {
     .filter(ownerBinds);
 }
 
-export function temporaryPrunePaths(root, options = {}) {
+/** The roots a prune judges: a close's captured roots, or this checkout's
+ * registered roots, the `dotln-*` entries and session scratch in the system
+ * temporary directory and the warm fixtures, each listed once. `options.budget`,
+ * when given, is asked once every PRUNE_LISTING_BATCH entries read: a listing
+ * it stops returns what it found, how many entries it did not examine, each
+ * unread ledger segment or directory entry counted as one root, and the first
+ * of them as `stoppedAt`.
+ * @param {string} root @param {Record<string, any>} [options]
+ * @returns {{paths: string[], unexamined: number, stoppedAt: string|null}} */
+export function listTemporaryRoots(root, options = {}) {
   const scope = pruneScope(options);
-  const paths = new Set(
-    scope === "close"
-      ? [
-          ...boundTemporaryRoots(root),
-          ...(options.ownedTemporaryRoots ?? [])
-            .map(resolveSaved)
-            .filter(ownerBinds),
-        ].map((saved) => saved.path)
-      : registeredTemporaryRoots(root).map((row) => row.path),
-  );
+  const paths = new Set();
+  let unexamined = 0;
+  let examined = 0;
+  let stoppedAt = null;
+  const visit = (entries, each, pathOf) => {
+    for (let index = 0; index < entries.length; index++) {
+      if (
+        stoppedAt === null &&
+        examined > 0 &&
+        examined % PRUNE_LISTING_BATCH === 0 &&
+        options.budget?.spent()
+      )
+        stoppedAt = pathOf(entries[index]);
+      if (stoppedAt !== null) {
+        unexamined += entries.length - index;
+        return;
+      }
+      examined += 1;
+      each(entries[index]);
+    }
+  };
+  // A close prunes only the closed order's own roots, which it captured from
+  // its worktree's ledger before removing the worktree; this checkout's other
+  // roots are the host-wide remainder that plan start's prune takes.
+  if (scope === "close")
+    visit(
+      options.ownedTemporaryRoots ?? [],
+      (saved) => {
+        const resolved = resolveSaved(saved);
+        if (ownerBinds(resolved)) paths.add(resolved.path);
+      },
+      (saved) => saved.path,
+    );
+  else
+    visit(
+      temporaryLedgerSegments(root),
+      (file) => {
+        const row = registeredTemporaryRootOf(file);
+        if (row) paths.add(row.path);
+      },
+      (file) => file,
+    );
   const bases =
     scope === "close"
       ? []
@@ -117,38 +217,60 @@ export function temporaryPrunePaths(root, options = {}) {
   for (const base of bases) {
     requireTemporaryDirectory(base);
     if (!directory(base)) continue;
-    for (const name of readdirSync(base)) {
-      const path = join(base, name);
-      if (!directory(path)) continue;
-      if (name.startsWith("dotln-")) paths.add(path);
-      if (name === "dotln")
-        for (const session of readdirSync(path)) {
-          if (!/^[a-f0-9]{64}$/.test(session)) continue;
-          const scratch = join(path, session, "scratch");
-          if (directory(scratch)) paths.add(scratch);
-          // A removal stopped after it moved the scratch aside leaves it
-          // beside its place; the judgment decides what it is.
-          let entries = [];
-          try {
-            entries = readdirSync(join(path, session));
-          } catch {
-            entries = [];
+    // The listing's own entry types say which names are directories, so
+    // thousands of roots cost one listing, not one lstat each; the judgment
+    // checks each root's directory and ancestors again before it acts.
+    visit(
+      readdirSync(base, { withFileTypes: true }),
+      (entry) => {
+        const { name } = entry;
+        if (!entry.isDirectory() || entry.isSymbolicLink()) return;
+        const path = join(base, name);
+        if (name.startsWith("dotln-")) paths.add(path);
+        if (name === "dotln")
+          for (const session of readdirSync(path)) {
+            if (!/^[a-f0-9]{64}$/.test(session)) continue;
+            const scratch = join(path, session, "scratch");
+            if (directory(scratch)) paths.add(scratch);
+            // A removal stopped after it moved the scratch aside leaves it
+            // beside its place; the judgment decides what it is.
+            let entries = [];
+            try {
+              entries = readdirSync(join(path, session));
+            } catch {
+              entries = [];
+            }
+            for (const entry of entries)
+              if (
+                /^dotln-removing-[a-f0-9-]{36}$/.test(entry) &&
+                directory(join(path, session, entry))
+              )
+                paths.add(join(path, session, entry));
           }
-          for (const entry of entries)
-            if (
-              /^dotln-removing-[a-f0-9-]{36}$/.test(entry) &&
-              directory(join(path, session, entry))
-            )
-              paths.add(join(path, session, entry));
-        }
-    }
+      },
+      (entry) => join(base, entry.name),
+    );
   }
   // Warm fixtures have one hash directory beneath their family directory.
   const warm = join(root, ".runtime/fixtures/launchpad");
   if (directory(warm))
-    for (const key of readdirSync(warm))
-      if (/^[a-f0-9]{64}$/.test(key) && directory(join(warm, key)))
-        paths.add(join(warm, key));
+    visit(
+      readdirSync(warm),
+      (key) => {
+        if (/^[a-f0-9]{64}$/.test(key) && directory(join(warm, key)))
+          paths.add(join(warm, key));
+      },
+      (key) => join(warm, key),
+    );
+  return { paths: [...paths], unexamined, stoppedAt };
+}
+
+/** Every root a prune could judge, with every owned root nested in each,
+ * longest path first. Fixtures and diagnostics read it; a prune itself lists
+ * with listTemporaryRoots and walks a root only once its record lets it go.
+ * @param {string} root @param {Record<string, any>} [options] */
+export function temporaryPrunePaths(root, options = {}) {
+  const paths = new Set(listTemporaryRoots(root, options).paths);
   const includeDescendants = (path) => {
     for (const child of nestedTemporaryRoots(path)) {
       if (paths.has(child)) continue;
@@ -193,14 +315,59 @@ function repositoryGateRuns(repository) {
   }
 }
 
-function terminalGateResult(repository, gateId) {
+// A context may carry `gateChecks`, a map a whole prune shares: a gate index
+// can run to tens of megabytes, and a prune judging thousands of one
+// repository's roots reads it once. A gate's terminal row never changes once
+// written, and no gate starts while a prune holds the host lanes.
+function terminalGateResult(repository, gateId, context = {}) {
   const terminal = temporaryGateResultPath(repository, gateId);
+  let rows = context.gateChecks?.get(repository);
+  if (!rows) {
+    rows = readGateChecks(repository);
+    context.gateChecks?.set(repository, rows);
+  }
   return (
-    readGateChecks(repository).findLast(
-      (row) => row.temporaryGateId === gateId,
-    ) ??
+    rows.findLast((row) => row.temporaryGateId === gateId) ??
     (existsSync(terminal) ? JSON.parse(readFileSync(terminal, "utf8")) : null)
   );
+}
+
+// One writer view per worktree for each context, and only for a worktree that
+// can protect the root being judged. A live writer's view lists the process
+// table, so reading every worktree's view for every root once cost a process
+// listing per root; a prune counts the views it reads.
+function writerViewOf(context, worktree) {
+  context.writerViews ??= new Map();
+  if (!context.writerViews.has(worktree)) {
+    if (context.reads) context.reads.writerViews += 1;
+    let view;
+    try {
+      view = { view: harnessWriterView(worktree) };
+    } catch (error) {
+      view = { error };
+    }
+    context.writerViews.set(worktree, view);
+  }
+  const { view, error } = context.writerViews.get(worktree);
+  if (error) throw error;
+  return view;
+}
+
+// A context's live-gate readings per repository, read once per context.
+function gateRunsOf(context, repository) {
+  context.gateRuns ??= new Map();
+  if (!context.gateRuns.has(repository)) {
+    let rows;
+    try {
+      rows = { rows: repositoryGateRuns(repository) };
+    } catch (error) {
+      rows = { error };
+    }
+    context.gateRuns.set(repository, rows);
+  }
+  const { rows, error } = context.gateRuns.get(repository);
+  if (error) throw error;
+  return rows;
 }
 
 // A directly assigned suite owns its outcome within this gate. An inner
@@ -231,7 +398,7 @@ function blockedByUse(
   if (
     fixture &&
     context.finishingGate?.id !== fixture.record.owner.gateId &&
-    repositoryGateRuns(fixture.record.owner.repository).some(
+    gateRunsOf(context, fixture.record.owner.repository).some(
       (row) => row.runId === fixture.record.owner.gateId,
     )
   )
@@ -243,19 +410,29 @@ function blockedByUse(
   )
     trees.push({ worktree: record.owner.repository });
   for (const tree of trees) {
+    const worktree = resolve(tree.worktree);
+    // A writer protects a root only when the root holds its worktree, the
+    // root's owner is that worktree, or the root names a session, which any
+    // writer might hold; no other worktree's writer is read for this root.
+    if (
+      !within(path, worktree) &&
+      record?.owner.repository !== worktree &&
+      !record?.owner.session
+    )
+      continue;
     if (!existsSync(tree.worktree)) continue;
-    if (context.finishingGate?.repository === resolve(tree.worktree)) continue;
+    if (context.finishingGate?.repository === worktree) continue;
     let writer;
     try {
-      writer = harnessWriterView(tree.worktree);
+      writer = writerViewOf(context, tree.worktree);
     } catch {
       return "writer observation unavailable";
     }
     if (
       writer.reserved &&
       (!context.finishingGate || writer.alive !== false) &&
-      (within(path, resolve(tree.worktree)) ||
-        record?.owner.repository === resolve(tree.worktree) ||
+      (within(path, worktree) ||
+        record?.owner.repository === worktree ||
         (record?.owner.session && record.owner.session === writer.actorId))
     )
       return "writer reservation names this root or session";
@@ -278,7 +455,7 @@ function blockedByUse(
     record?.owner.gateId &&
     context.finishingGate?.id !== record.owner.gateId
   ) {
-    const active = repositoryGateRuns(record.owner.repository);
+    const active = gateRunsOf(context, record.owner.repository);
     if (
       active.some(
         (row) =>
@@ -291,7 +468,35 @@ function blockedByUse(
   return null;
 }
 
-export function judgeTemporaryRoot(root, path, options = {}, context = {}) {
+/** Judges one root by what its owner record says, reading nothing else of it:
+ * its class, token and inode, its ledger registration, its owner's liveness
+ * and its outcome and retention window. Only a root the record already lets go
+ * is walked, for the owned roots nested in it, each of which must be removable
+ * too; the walk lists directories and reads no file. A retained root is never
+ * walked. The returned candidate names its proof: `record`, or `inventory` for
+ * a closed-journal root, whose journals the kit keeps a byte proof of before
+ * they go; an unmarked root is judged by the legacy rule, and the empty
+ * remains of a stopped removal by being empty.
+ *
+ * The context may carry `processes`, the prune's one process table;
+ * `budget`, which throws once the prune's time is spent, so the walk stops
+ * inside a large root and the root is retained as `budget`; and `repair`,
+ * which an apply sets so that an entry its owner cannot list is made listable
+ * instead of retaining the root as a restricted entry, with `chmod` replacing
+ * the grant for a fixture. A root the judgment then keeps gets the modes the
+ * walk changed put back, so a kept root ends as it was found. `grants` is the
+ * list a parent's judgment shares with the roots nested in it, so a parent it
+ * keeps also puts back what it granted inside a nested root it let go.
+ * @param {string} root @param {string} path @param {Record<string, any>} [options]
+ * @param {Record<string, any>} [context]
+ * @param {Array<{path: string, mode: number}>} [grants] */
+export function judgeTemporaryRoot(
+  root,
+  path,
+  options = {},
+  context = {},
+  grants = [],
+) {
   const label = relative(root, path).startsWith("..")
     ? path
     : relative(root, path);
@@ -300,18 +505,52 @@ export function judgeTemporaryRoot(root, path, options = {}, context = {}) {
   const retain = (reason, extra = {}) => ({
     retained: { kind, path: label, reason, ...extra },
   });
-  try {
-    requireTemporaryDirectory(path);
-    if (!directory(path)) return null;
-    record = readTemporaryOwner(path);
-    const descendants = nestedTemporaryRoots(path);
+  // The owned roots nested in a root about to be let go: each must be
+  // removable too, and their identities are checked again at removal. A
+  // retained one names every nested root the walk found, so the prune can
+  // judge each on its own; a budget spent judging one keeps this root, the
+  // one being judged, as `budget`.
+  const nestedInventory = () => {
+    const repaired = grants;
+    let nested;
+    try {
+      nested = nestedTemporaryRoots(path, {
+        budget: context.budget,
+        repair: context.repair,
+        chmod: context.chmod,
+        repaired,
+      });
+    } catch (error) {
+      restoreTemporaryRepairs(repaired);
+      throw error;
+    }
     const inventory = [];
-    for (const child of descendants) {
-      const childJudgment = judgeTemporaryRoot(root, child, options, context);
-      if (!childJudgment?.candidate)
-        return retain(
-          `nested owned root retained: ${relative(path, child)} (${childJudgment?.retained?.reason ?? "ownership unavailable"})`,
-        );
+    for (const child of nested) {
+      const childJudgment = judgeTemporaryRoot(
+        root,
+        child,
+        options,
+        context,
+        repaired,
+      );
+      if (childJudgment?.retained?.budget) {
+        restoreTemporaryRepairs(repaired);
+        return {
+          retained: retain("budget", {
+            budget: true,
+            ...(record ? { class: record.class } : {}),
+          }),
+        };
+      }
+      if (!childJudgment?.candidate) {
+        restoreTemporaryRepairs(repaired);
+        return {
+          retained: retain(
+            `nested owned root retained: ${relative(path, child)} (${childJudgment?.retained?.reason ?? "ownership unavailable"})`,
+            { nested },
+          ),
+        };
+      }
       const childRow = childJudgment.candidate;
       inventory.push(
         {
@@ -323,6 +562,12 @@ export function judgeTemporaryRoot(root, path, options = {}, context = {}) {
         ...childRow.inventory,
       );
     }
+    return { inventory };
+  };
+  try {
+    requireTemporaryDirectory(path);
+    if (!directory(path)) return null;
+    record = readTemporaryOwner(path);
     if (record?.class === "session-scratch") kind = "session-scratch";
     // A marker is believed only as far as its owner's ledger registers it.
     const contradiction = record && temporaryLedgerContradiction(path, record);
@@ -346,7 +591,12 @@ export function judgeTemporaryRoot(root, path, options = {}, context = {}) {
     const fixture = containingFixtureRecord(path, record);
     const use = blockedByUse(path, record, context, fixture);
     if (use) return retain(use);
-    const table = context.processes ?? temporaryProcessTable(root);
+    // A prune passes its one table; null is an unavailable one, never read
+    // again for each root.
+    const table =
+      context.processes !== undefined
+        ? context.processes
+        : temporaryProcessTable(root);
     const now = options.now ?? Date.now();
     // A removal that stopped after deleting its owner record and before its
     // directory leaves an empty directory under its token's aside name; with
@@ -360,12 +610,13 @@ export function judgeTemporaryRoot(root, path, options = {}, context = {}) {
           path: label,
           absolute: path,
           class: "removal-remains",
+          proof: "remains",
           ownerAlive: false,
           ageMs: now - info.mtimeMs,
           bytes: 0,
           device: info.dev,
           inode: info.ino,
-          inventory,
+          inventory: [],
         },
       };
     }
@@ -406,18 +657,22 @@ export function judgeTemporaryRoot(root, path, options = {}, context = {}) {
         return retain("legacy open-path observation unavailable");
       if (context.openPaths.some((open) => within(path, open)))
         return retain("a live process has material open in this root");
+      const nested = nestedInventory();
+      if (!nested.inventory) return nested.retained;
       return {
         candidate: {
           kind,
           path: label,
           absolute: path,
           class: "legacy-backfill",
+          proof: "legacy",
           ownerAlive: false,
           ageMs: now - info.mtimeMs,
-          bytes: temporaryInventory(path).bytes,
+          // Measured when it is removed, by the walk the removal makes anyway.
+          bytes: null,
           device: info.dev,
           inode: info.ino,
-          inventory,
+          inventory: nested.inventory,
         },
       };
     }
@@ -425,6 +680,7 @@ export function judgeTemporaryRoot(root, path, options = {}, context = {}) {
       ? terminalGateResult(
           fixture.record.owner.repository,
           fixture.record.owner.gateId,
+          context,
         )
       : null;
     const fixtureAlive = fixture ? ownerAlive(fixture.record, table) : null;
@@ -491,7 +747,11 @@ export function judgeTemporaryRoot(root, path, options = {}, context = {}) {
       const lifetime = fixture?.record ?? record;
       const row = fixture
         ? fixtureTerminal
-        : terminalGateResult(lifetime.owner.repository, lifetime.owner.gateId);
+        : terminalGateResult(
+            lifetime.owner.repository,
+            lifetime.owner.gateId,
+            context,
+          );
       if (row)
         judged = temporaryOutcomeRecord(
           record,
@@ -552,20 +812,41 @@ export function judgeTemporaryRoot(root, path, options = {}, context = {}) {
           : "retention window has not passed",
         detail,
       );
+    const nested = nestedInventory();
+    if (!nested.inventory) return nested.retained;
     return {
       candidate: {
         kind,
         path: label,
         absolute: path,
         ...detail,
+        proof: record.class === "closed-journal" ? "inventory" : "record",
+        ...(record.owner.workOrder
+          ? { workOrder: record.owner.workOrder }
+          : {}),
         token: record.token,
         device: record.device,
         inode: record.inode,
-        bytes: temporaryInventory(path).bytes,
-        inventory,
+        // Measured when it is removed, by the walk the removal makes anyway.
+        bytes: null,
+        inventory: nested.inventory,
       },
     };
   } catch (error) {
+    // A prune's spent budget retains the root as `budget`, and the prune
+    // stops with it; an entry of the root its owner cannot list or read, the
+    // owner record itself included, retains it by that entry's path, and any
+    // other refusal, such as a ledger that refuses a write, by its message.
+    if (error?.code === PRUNE_BUDGET)
+      return retain("budget", {
+        budget: true,
+        ...(record ? { class: record.class } : {}),
+      });
+    if (
+      ["EACCES", "EPERM"].includes(error?.code) &&
+      within(path, error.path ?? path)
+    )
+      return retain(`restricted-entry: ${error.path ?? path}`);
     return retain(error.message);
   }
 }
@@ -606,10 +887,23 @@ export function observeTemporaryOwnerEnd(root, observation, options, context) {
   return { path: observation.path, endedAt };
 }
 
-export function applyTemporaryCandidate(root, row) {
+/** Removes a judged candidate after checking that its nested owners are the
+ * ones judged. `options` carries a bounded prune's budget to the walk and the
+ * removal, and `chmod`, a fixture's replacement for the grant of access to an
+ * entry the owner cannot read; the walk and the removal grant that access.
+ * @param {string} root @param {Record<string, any>} row
+ * @param {{budget?: (path: string) => void, chmod?: (path: string, mode: number) => void}} [options] */
+export function applyTemporaryCandidate(root, row, options = {}) {
   const inventory = [];
+  const removal = {
+    ...(options.budget ? { budget: options.budget } : {}),
+    ...(options.chmod ? { chmod: options.chmod } : {}),
+  };
   const inspect = (path) => {
-    for (const child of nestedTemporaryRoots(path)) {
+    for (const child of nestedTemporaryRoots(path, {
+      ...removal,
+      repair: true,
+    })) {
       const owner = readTemporaryOwner(child);
       if (!owner) throw new Error("Nested owner disappeared; retained");
       inventory.push({
@@ -644,7 +938,7 @@ export function applyTemporaryCandidate(root, row) {
     // stopped apply reports it by its actual places.
     row.token = readTemporaryOwner(row.absolute)?.token;
   }
-  return removeTemporaryRoot(row.absolute, row.token);
+  return removeTemporaryRoot(row.absolute, row.token, removal);
 }
 
 export function pruneCensus(candidates, retained) {
@@ -661,9 +955,13 @@ export function pruneCensus(candidates, retained) {
         candidates: 0,
         retained: 0,
         bytes: 0,
+        unmeasured: 0,
       };
       item[disposition]++;
-      if (disposition === "candidates") item.bytes += row.bytes ?? 0;
+      // A root judged on its record is measured only by its removal.
+      if (disposition === "candidates")
+        if (row.bytes === null || row.bytes === undefined) item.unmeasured++;
+        else item.bytes += row.bytes;
       kinds.set(key, item);
     }
   return [...kinds.values()];
@@ -688,9 +986,23 @@ export function removeTemporaryGateResult(root, id) {
 
 /** The gate has already durably recorded its result. Creator teardown may
  * remove the runner's own marker root; other live/unknown processes retain.
+ * With `options.suite`, only the roots that suite registered under this gate
+ * are finished, by the runner as the suite ends: a passed suite's leave then,
+ * a failed suite's take their diagnosis window from that moment, and the
+ * gate's end finishes whatever remains. The process table is read once, and
+ * only when some root needs an owner's liveness.
  */
 export function finishGateTemporaryRoots(root, gateId, tasks, options = {}) {
-  const table = options.processes ?? temporaryProcessTable(root);
+  // An unavailable table is null and is not read again.
+  let table = options.processes;
+  let tableRead = table !== undefined;
+  const processTable = () => {
+    if (!tableRead) {
+      table = temporaryProcessTable(root);
+      tableRead = true;
+    }
+    return table;
+  };
   const removed = [],
     retained = [],
     blockers = [];
@@ -720,13 +1032,24 @@ export function finishGateTemporaryRoots(root, gateId, tasks, options = {}) {
       .filter(
         (row) =>
           row.owner?.gateId === gateId &&
+          (options.suite === undefined || row.owner.suite === options.suite) &&
           (!options.rootPaths ||
             options.rootPaths.some((path) => within(path, row.path))),
       )
       .map((row) => [row.path, row]),
   );
   const includeDescendants = (path) => {
-    for (const child of nestedTemporaryRoots(path)) {
+    // A directory a test left unlistable hides what is nested in it; the
+    // root it is in stays, named as a cleanup blocker, never thrown past the
+    // gate's record.
+    let children;
+    try {
+      children = nestedTemporaryRoots(path);
+    } catch (error) {
+      blockers.push({ path, reason: error.message });
+      return;
+    }
+    for (const child of children) {
       try {
         const owner = readTemporaryOwner(child);
         if (
@@ -792,7 +1115,7 @@ export function finishGateTemporaryRoots(root, gateId, tasks, options = {}) {
           containingFixture
             ? (readTemporaryOwner(containingFixture.path) ?? record)
             : record;
-        const alive = ownerAlive(lifetimeOwner, table);
+        const alive = ownerAlive(lifetimeOwner, processTable());
         const creatorMayFinish =
           record.class !== "worker-capture" &&
           lifetimeOwner.owner.pid === process.pid;

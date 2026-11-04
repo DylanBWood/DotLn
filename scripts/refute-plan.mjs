@@ -4,6 +4,7 @@ import {
   planningSkeleton,
 } from "./lib/planning-document.mjs";
 import { json as prettyJson } from "./lib/helpers.mjs";
+import { formatDuration } from "./lib/duration.mjs";
 import { docPath, docRelative, findLaunchpad } from "./lib/config.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 
@@ -414,63 +415,94 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
     )
       throw new Error("plan start requires clean main");
     const followups = planningFollowups(root);
+    // Each startup step prints how long it took as it completes, so a slow
+    // start says where its minutes went without a session narrating it.
+    const timed = async (step, operation) => {
+      const started = performance.now();
+      try {
+        return await operation();
+      } finally {
+        console.log(`${step}: ${formatDuration(performance.now() - started)}`);
+      }
+    };
     // What failed since the latest planning receipt, read before the register;
     // a count that cannot be computed never keeps the branch shut (WO-172).
     // A close blocker class that has stopped three or more orders is printed
     // as its own line, so a pass sees what repeats without opening the feed;
     // the lines come before the block's bound can drop them.
-    const repeatedBlockers = [];
-    const failures = failuresAtStart(root, {
-      onCloseBlockersRepeated: (lines) => repeatedBlockers.push(...lines),
+    const failures = await timed("failures", () => {
+      const repeatedBlockers = [];
+      const failures = failuresAtStart(root, {
+        onCloseBlockersRepeated: (lines) => repeatedBlockers.push(...lines),
+      });
+      for (const line of repeatedBlockers) console.log(line);
+      return failures;
     });
-    for (const line of repeatedBlockers) console.log(line);
-    const { readerScoresAtStart } = await import("./lib/reader-profiles.mjs");
-    const readerScores = readerScoresAtStart(root);
-    const conditions = await conditionsAtStart(root);
+    const readerScores = await timed("reader scores", async () => {
+      const { readerScoresAtStart } = await import("./lib/reader-profiles.mjs");
+      return readerScoresAtStart(root);
+    });
+    const conditions = await timed("conditions", () => conditionsAtStart(root));
     // The documents report and the red tags the new pass document carries.
     const { documentRows, documentsPage, redTagsFor } =
       await import("./lib/plan-documents.mjs");
-    const { documentReport } = await import("./lib/document-kinds.mjs");
-    const { documentCensus } = await import("./lib/document-census.mjs");
-    const documentInputs = {
-      report: documentReport(root),
-      census: documentCensus(root),
-    };
-    const documents = documentsPage(root, documentInputs);
-    const { featureAdvisories } = await import("./features.mjs");
-    const features = featureAdvisories(root);
+    const { documentInputs, documents, features } = await timed(
+      "census",
+      async () => {
+        const { documentReport } = await import("./lib/document-kinds.mjs");
+        const { documentCensus } = await import("./lib/document-census.mjs");
+        const documentInputs = {
+          report: documentReport(root),
+          census: documentCensus(root),
+        };
+        const { featureAdvisories } = await import("./features.mjs");
+        return {
+          documentInputs,
+          documents: documentsPage(root, documentInputs),
+          features: featureAdvisories(root),
+        };
+      },
+    );
     // Routine removal of expired temporary roots outside every close's scope
-    // happens here, where the full census is already paid for.
-    const { temporaryPruneSummary } =
-      await import("./lib/temporary-prune-summary.mjs");
-    console.log(await temporaryPruneSummary(root, { apply: true }));
+    // happens here, where the full census is already paid for, as a bounded
+    // step: it stops at prune.startBudgetMs, says what it removed and what
+    // remains with the resume command, and the pass goes on.
+    await timed("prune", async () => {
+      const { pruneStartBudget, temporaryPruneSummary } =
+        await import("./lib/temporary-prune-summary.mjs");
+      const { budgetMs, advisory } = pruneStartBudget(root);
+      if (advisory) console.log(`Advisory: ${advisory}`);
+      console.log(await temporaryPruneSummary(root, { apply: true, budgetMs }));
+    });
     const branch = `planning/${new Date().toISOString().slice(0, 10)}-${rest[0]}`;
     const document = planningDocumentPath(root, branch);
-    if (existsSync(join(root, document)))
-      throw new Error(`Planning document already exists: ${document}`);
-    const destination = join(root, document);
-    const skeleton = planningSkeleton(rest[0], branch.slice(9, 19), {
-      redTags: redTagsFor(root, document, {
-        rows: documentRows(root, documentInputs),
-        report: documentInputs.report,
-      }),
-    });
-    mkdirSync(dirname(destination), { recursive: true });
-    // Prepare the document before changing branches. Failed creation leaves
-    // main selected; a failed switch removes only this invocation's new file.
-    const descriptor = openSync(destination, "wx");
-    try {
+    await timed("branch", () => {
+      if (existsSync(join(root, document)))
+        throw new Error(`Planning document already exists: ${document}`);
+      const destination = join(root, document);
+      const skeleton = planningSkeleton(rest[0], branch.slice(9, 19), {
+        redTags: redTagsFor(root, document, {
+          rows: documentRows(root, documentInputs),
+          report: documentInputs.report,
+        }),
+      });
+      mkdirSync(dirname(destination), { recursive: true });
+      // Prepare the document before changing branches. Failed creation leaves
+      // main selected; a failed switch removes only this invocation's new file.
+      const descriptor = openSync(destination, "wx");
       try {
-        writeFileSync(descriptor, skeleton);
-      } finally {
-        closeSync(descriptor);
+        try {
+          writeFileSync(descriptor, skeleton);
+        } finally {
+          closeSync(descriptor);
+        }
+        runGit(root, ["switch", "-c", branch]);
+      } catch (error) {
+        if (runGit(root, ["symbolic-ref", "--short", "HEAD"]) === "main")
+          rmSync(destination);
+        throw error;
       }
-      runGit(root, ["switch", "-c", branch]);
-    } catch (error) {
-      if (runGit(root, ["symbolic-ref", "--short", "HEAD"]) === "main")
-        rmSync(destination);
-      throw error;
-    }
+    });
     return {
       document,
       branch,

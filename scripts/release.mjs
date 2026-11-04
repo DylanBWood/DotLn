@@ -4,8 +4,13 @@ import {
   removeTemporaryPath as rmSync,
 } from "./lib/temporary-roots.mjs";
 import { boundTemporaryRoots } from "./lib/temporary-prune.mjs";
-import { formatPruneReport } from "./lib/temporary-prune-summary.mjs";
+import {
+  formatPruneReport,
+  PRUNE_RESUME_COMMAND,
+  pruneStartBudget,
+} from "./lib/temporary-prune-summary.mjs";
 import { isMainModule } from "./lib/paths.mjs";
+import { formatDuration } from "./lib/duration.mjs";
 import { buildFreshness } from "./lib/build-freshness.mjs";
 import {
   addRemovalChild,
@@ -13,6 +18,7 @@ import {
   closeBlocker,
   currentReleaseStep,
   isRemovalChild,
+  recordPruneStep,
   releaseSteps,
   timeRemovalChild,
   withBlockerClass,
@@ -501,10 +507,32 @@ export function releaseCloseSummary(record) {
         lines.push(line(textLine));
   for (const row of record.starterRefresh ?? [])
     lines.push(
-      `Starter refresh ${row.sibling}: ${row.outcome}; ${line(row.reason ?? `${row.before} -> ${row.after}`)}${row.outcome === "refreshed" ? `; ${row.before} -> ${row.after}` : ""}${row.rewrittenSeeds?.length ? `; seeds published: ${row.rewrittenSeeds.join(", ")}` : ""}${row.seedChanges?.length ? `; seeds would change: ${row.seedChanges.join(", ")}` : ""}${row.siblingTag ? `; tag ${row.siblingTag.tag}: ${row.siblingTag.outcome}; GitHub Release ${row.siblingRelease ?? "not verified"}${row.siblingReleaseTitle ? ` (${row.siblingReleaseTitle})` : ""}` : ""}.`,
+      `Starter refresh ${row.sibling}: ${row.outcome}; ${line(row.reason ?? `${row.before} -> ${row.after}`)}${row.outcome === "refreshed" ? `; ${row.before} -> ${row.after}` : ""}${row.rewrittenSeeds?.length ? `; seeds published: ${row.rewrittenSeeds.join(", ")}` : ""}${row.seedChanges?.length ? `; seeds would change: ${row.seedChanges.join(", ")}` : ""}${row.keptSeeds?.length ? `; seeds kept: ${row.keptSeeds.map((seed) => `${seed.path} (${line(seed.reason)})`).join(", ")}` : ""}${row.siblingTag ? `; tag ${row.siblingTag.tag}: ${row.siblingTag.outcome}; GitHub Release ${row.siblingRelease ?? "not verified"}${row.siblingReleaseTitle ? ` (${row.siblingReleaseTitle})` : ""}` : ""}.`,
     );
   lines.push(`Cleanup: ${record.cleanup.outcome}.`);
-  if (record.prune) lines.push(formatPruneReport(record.prune));
+  // Each step's active minutes, as plan start prints its own.
+  if (record.steps?.length)
+    lines.push(
+      `Close steps: ${record.steps.map((row) => `${row.name} ${formatDuration(row.durationMs)}`).join(", ")}.`,
+    );
+  if (record.prune) {
+    if (record.prune.budgetAdvisory)
+      lines.push(`Advisory: ${line(record.prune.budgetAdvisory)}`);
+    lines.push(formatPruneReport(record.prune));
+    // The close removes only the closed order's roots: what it removed, what
+    // their records keep, and what its budget left unjudged or unremoved.
+    // Every other root on the host is the next plan start's bounded prune's;
+    // the resume command finishes all of it at once, without a budget.
+    const remaining = Number.isInteger(record.prune.remaining)
+      ? record.prune.remaining
+      : "an unknown number";
+    const kept = (record.prune.retained ?? []).filter(
+      (row) => row.reason !== "budget",
+    ).length;
+    lines.push(
+      `Prune scope: ${record.workOrderId}'s own roots: ${record.prune.removed?.length ?? 0} removed, ${kept} kept by their records, ${remaining} unjudged or unremoved. Roots outside it are left to plan start's bounded prune; ${PRUNE_RESUME_COMMAND} finishes every remainder now, host-wide and without a budget.`,
+    );
+  }
   if (publication.target?.policy === "declared")
     lines.push(
       `Target release ${publication.target.repositoryId}: ${publication.target.outcome}; tag ${publication.target.tag ?? "unknown"}; GitHub Release ${publication.target.release ?? (record.dryRun ? "would create" : "not verified")}${publication.target.title ? `; title ${publication.target.title}` : ""}.`,
@@ -2307,6 +2335,16 @@ const finishPublishedWorktreeOperation = async (
 ) => {
   const cleanup = { outcome: "clean", worktrees: [] };
   if (record) record.cleanup = cleanup;
+  // The prune runs after the worktree is removed, and this helper may have
+  // been loaded from that worktree. Its module is loaded now, while its files
+  // are there, so the prune's import is served from the module cache; a load
+  // that fails is the prune's blocker, as it was when the prune loaded it.
+  let pruneModule;
+  try {
+    pruneModule = await import("./lib/harness-prune.mjs");
+  } catch (error) {
+    pruneModule = { loadError: error };
+  }
   try {
     const branch = `wo-${workOrderId.slice(3)}`;
     const registered = parseWorktrees(root);
@@ -2739,17 +2777,30 @@ const finishPublishedWorktreeOperation = async (
         });
       }
     }
+    // The closed order's own roots, under the routine prune's budget; the
+    // host-wide remainder is plan start's. A budget the file cannot supply
+    // leaves the default, and the close says so.
+    const { budgetMs, advisory } = pruneStartBudget(root);
+    if (advisory) writeOutput(`Advisory: ${advisory}\n`);
+    const budgetAdvisory = advisory ? { budgetAdvisory: advisory } : {};
     try {
-      const { pruneHarness } = await import("./lib/harness-prune.mjs");
+      if (pruneModule.loadError) throw pruneModule.loadError;
+      const { pruneHarness } = pruneModule;
       const prune = await withReleaseStep(record, "prune", () =>
         pruneHarness(root, {
           apply: !dryRun,
           scope: "close",
           ownedTemporaryRoots: record?.ownedTemporaryRoots ?? [],
           preserveOrders: [workOrderId],
+          budgetMs,
         }),
       );
-      if (record) record.prune = prune;
+      if (record) record.prune = { ...prune, ...budgetAdvisory };
+      recordPruneStep(record, {
+        removed: prune.removed.length,
+        remaining: prune.remaining,
+        stoppedAt: prune.stoppedAt,
+      });
       writeOutput(`${formatPruneReport(prune)}\n`);
     } catch (error) {
       const blocker = {
@@ -2759,15 +2810,24 @@ const finishPublishedWorktreeOperation = async (
         class: blockerClassOf(error.blockerClass),
         step: error.releaseStep ?? currentReleaseStep(record),
       };
+      // What the prune removed before it failed stays recorded.
       if (record)
         record.prune = {
           candidates: [],
-          removed: [],
+          removed: Array.isArray(error.pruneRemoved) ? error.pruneRemoved : [],
           retained: [],
           bytes: 0,
           census: [],
           blockers: [blocker],
+          ...budgetAdvisory,
         };
+      recordPruneStep(record, {
+        removed: Array.isArray(error.pruneRemoved)
+          ? error.pruneRemoved.length
+          : 0,
+        remaining: null,
+        stoppedAt: null,
+      });
       record?.blockers.push(blocker);
     }
     cleanup.outcome =

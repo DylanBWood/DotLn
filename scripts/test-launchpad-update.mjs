@@ -2480,6 +2480,14 @@ process.exit(64);
                   : "not a regular seed file (expected mode 100644)",
           },
         ]);
+        // The close's summary names the kept seed and why, in the preview
+        // and the real close alike, beside any it published.
+        assert.ok(
+          printed(row).includes(
+            `; seeds kept: README.md (${row.keptSeeds[0].reason})`,
+          ),
+          printed(row),
+        );
         assert.ok(!row.rewrittenSeeds.includes("README.md"));
         assert.equal(
           git(checkout, ["ls-tree", "HEAD", "--", "README.md"]).stdout,

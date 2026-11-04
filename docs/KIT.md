@@ -237,11 +237,11 @@ operator sandbox settings.
    `baseDisposablePolicy: "judge-only"` when the base checkout must retain that
    output while keeping its material checks (the default is `"delete"`). A
    path may use `**` as a whole segment for any number of segments and `*`
-   within one segment, and its last segment keeps a literal part, so one
-   class line covers a whole workspace: an Nx class with Vitest declares
-   `"disposable": ["**/node_modules", "**/.vite", "**/.vitest"]` once for
-   every project's caches, while `*`, `**`, `**/*` and `libs/**` are refused
-   at registration (see [Owned cleanup and retention](#owned-cleanup-and-retention)). Use
+   within one segment, and its last segment keeps a literal part with a letter
+   or digit, so one class line covers a whole workspace: an Nx class with
+   Vitest declares `"disposable": ["**/node_modules", "**/.vite", "**/.vitest"]`
+   once for every project's caches, while `*`, `**`, `**/*`, `libs/**`, `*.*`
+   and `.*` are refused at registration (see [Owned cleanup and retention](#owned-cleanup-and-retention)). Use
    `release: { "policy": "declared", "displayName": "My product" }` with the
    order's `**Target release classification:**` header for a tagged target
    release. The optional name defaults to the registration id and changes the
@@ -445,7 +445,9 @@ Release close refreshes the declared starter's template seeds as well as its
 kit files. A replaced seed must still match a proven prior export. For
 `README.md`, a customized, missing or non-regular copy is kept with its reason
 in `keptSeeds` and never refuses the refresh; a proven older rendering is
-rewritten and listed in `rewrittenSeeds`. Other changed templates still
+rewritten and listed in `rewrittenSeeds`. The close's summary line names both,
+as `seeds published:` and `seeds kept: README.md (<reason>)`, in the preview
+and the real close alike. Other changed templates still
 refuse a customized seed by path before any push. Unchanged templates leave
 customized copies intact; an unusable `CLAUDE.md` or `.gitignore` refuses with
 its remedy before any write. Preserve those customizations and restore the
@@ -1000,12 +1002,43 @@ the already-migrated state; keep the output with your review of the update.
 ## Owned cleanup and retention
 
 Release close prunes owned leftovers after its worktree cleanup, scoped to
-the closing order's captured roots, main's retained lane and this checkout's
-registered temporary roots. It does not walk unrelated system temporary roots.
-An explicit `harness prune` and `plan start` still walk them. `plan start`
-applies that prune, so expired roots outside every close's scope leave at the
-next planning pass; while a gate holds the host lanes it prints the read-only
-census instead, and `harness prune --apply` removes them on demand. A session
+the closing order's own roots: those its worktree's ledger registered and its
+integration stashes. This checkout's other registered roots, other orders'
+retained lanes and the system temporary directory are the host-wide remainder.
+`plan start` prunes them, so expired roots outside every close's scope leave
+at the next planning pass; while a gate holds the host lanes it prints the
+read-only census instead, and `harness prune --apply` removes them on demand.
+Both prunes are bounded steps under `prune.startBudgetMs` in
+`docs/control/budgets.json`, 1,800,000 ms (0 h 30 min) when unset and
+unbounded when null, so routine cleanup finishes in the run that starts it
+unless a backlog outlasts thirty minutes.
+The temporary roots go first, listed in batches of 64 entries between asks of
+the budget and judged one at a time; the snapshots, advisories, claims,
+caches, lanes and stashes follow with what the budget leaves. Every walk, byte
+inventory and deletion of a candidate asks the budget as it goes: before each
+directory it lists and each entry it reads or deletes, a planned snapshot's,
+cache's or lane's permission walk and deletion included, and before each tree
+listing and each batch of 32 objects of a stash's inventory. A shell claim's
+retirement and a stash's drop, each a few fixed steps that must finish
+together, are asked about once, before they start. The ledger's
+retirement after a prune that was not stopped is the prune's closing
+bookkeeping and is not bounded.
+An item cut short is kept as `budget`, and an apply the budget stopped prints
+`removed N; remaining M; resume with node scripts/harness.mjs prune --apply`
+and goes on.
+`harness prune --apply` sets no budget and finishes the remainder. A kit-owned
+root is judged and removed on its owner record, with no file read, and the
+report names each removal's proof; only an expired `closed-journal` root, whose proof is kept
+beside its order's lane, and a retained lane, stash, snapshot, advisory or
+cache the plan deletes are byte-inventoried first. One process-table reading
+serves every temporary root's owner-liveness judgment, and a worktree's writer
+is read at most once a second; the plan's own writer read, each pre-delete
+check's, the advisories' and shell claims' owner checks, one by one, and an
+apply's lane lease, for its own registration, read the table again. An entry inside a kit-owned root that its owner
+cannot read is repaired before removal, and what a judgment granted to look
+inside a root it keeps is put back; an entry that cannot be repaired keeps its
+root as `restricted-entry` with its path, as an unreadable owner record does,
+and none of these stops a prune or a close. A session
 that needs expired or retained roots removed runs `node scripts/harness.mjs
 prune --apply` itself under host permissions and records its receipt; it
 hands the printed command to the operator only after a recorded host denial
@@ -1065,9 +1098,11 @@ Retained-material output and removal
 receipts use counts by class and digests. `--list-material` supplies paths
 outside the admitted close commands, so host permissions decide it;
 digest-bound inventory sidecars preserve the full removal proof for retries. A blocker
-keeps the same close retry command. Gate completion removes passing fixtures
-and retains failed ones for diagnosis, including standalone captures and scratch
-owned by those suites. Every gate-owned root is accounted for; live workers,
+keeps the same close retry command. A suite's end removes the fixtures that
+suite registered under the gate when it passed and retains a failed or stopped
+suite's for its diagnosis window, which starts then, including standalone
+captures and scratch owned by those suites; the gate's end finishes what a
+suite left. Every gate-owned root is accounted for; live workers,
 null retention, reusable caches and independent coordination remain protected.
 Repeating completion does not restart the diagnosis window.
 Session completion removes only its own

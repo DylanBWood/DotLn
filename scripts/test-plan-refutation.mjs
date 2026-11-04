@@ -2,7 +2,10 @@
 import {
   excludeFixtureOwnership,
   createFixtureRoot,
+  createTemporaryRoot,
+  readTemporaryOwner,
   removeTemporaryPath as rmSync,
+  writeTemporaryOwner,
 } from "./lib/temporary-roots.mjs";
 import { write, json as prettyJson } from "./lib/helpers.mjs";
 import { isMainModule } from "./lib/paths.mjs";
@@ -6858,6 +6861,129 @@ else {
         assert.equal(runGit(repo, ["symbolic-ref", "--short", "HEAD"]), "main");
         assert.equal(existsSync(join(repo, document)), false);
         assert.equal(runGit(repo, ["status", "--porcelain"]), "");
+      },
+    );
+    await check(
+      "WO-253 plan start runs its prune as a bounded step that says what remains and how to resume, times each step and still opens its branch",
+      async () => {
+        // Expired roots this checkout's ledger registers, outside it: the
+        // fixture prune is scoped to them. The ledger itself is ignored.
+        const plantExpired = (repo, base, names) =>
+          names.map((name) => {
+            mkdirSync(base, { recursive: true });
+            const path = createTemporaryRoot(join(base, name), {
+              class: "gate-fixture",
+              repository: repo,
+              owner: {
+                pid: 2147483647,
+                birth: "1.0",
+                gateId: undefined,
+                suite: undefined,
+                session: undefined,
+              },
+            });
+            const record = readTemporaryOwner(path);
+            delete record.fixtureOwner;
+            record.createdAt = "2020-01-01T00:00:00.000Z";
+            record.endedAt = record.createdAt;
+            writeTemporaryOwner(path, record);
+            writeFileSync(join(path, "payload"), "fixture\n");
+            return path;
+          });
+        const startRepo = (name, budget) => {
+          const repo = makeRepo(parent, name);
+          runGit(repo, ["branch", "-M", "main"]);
+          fs.appendFileSync(join(repo, ".git/info/exclude"), ".runtime/\n");
+          if (budget !== undefined) {
+            write(
+              repo,
+              "docs/control/budgets.json",
+              JSON.stringify({ prune: { startBudgetMs: budget } }),
+            );
+            commit(repo, "routine prune budget");
+          }
+          return repo;
+        };
+        const printed = async (args, repo) => {
+          const lines = [];
+          const log = console.log;
+          console.log = (...values) => lines.push(values.join(" "));
+          try {
+            return { result: await plan(args, repo), text: lines.join("\n") };
+          } finally {
+            console.log = log;
+          }
+        };
+        // A one-millisecond budget: the large root, judged first, is cut
+        // short inside its walk or removal and kept as budget; the pass goes on.
+        const bounded = startRepo("planning-start-bounded", 1);
+        const base = join(parent, "planning-start-bounded-roots");
+        const [large, ...small] = plantExpired(bounded, base, [
+          "dotln-bounded-0-",
+          "dotln-bounded-a-",
+          "dotln-bounded-b-",
+          "dotln-bounded-c-",
+        ]);
+        for (let index = 0; index < 400; index++)
+          mkdirSync(join(large, `entry-${index}/inner`), { recursive: true });
+        const { result, text } = await printed(["start", "bounded"], bounded);
+        const outcome =
+          /^Prune: removed (\d+); remaining (\d+); resume with node scripts\/harness\.mjs prune --apply$/mu.exec(
+            text,
+          );
+        assert.ok(outcome, text);
+        assert.ok(Number(outcome[2]) > 0, text);
+        assert.match(
+          text,
+          new RegExp(
+            `^Prune stopped at its budget of 0 h 0 min in [a-z]+ at ${large.replaceAll(/[.*+?^${}()|[\]\\]/gu, "\\$&")}$`,
+            "mu",
+          ),
+        );
+        // The large root is the one root judged, kept as budget; the three
+        // small ones remain unjudged.
+        assert.match(
+          text,
+          /^ {2}temporary-root\/gate-fixture: 0 candidates, 0 bytes, 1 retained$/mu,
+        );
+        assert.equal(Number(outcome[2]), 4, text);
+        assert.ok(existsSync(join(large, ".dotln-owner.json")));
+        for (const step of [
+          "failures",
+          "reader scores",
+          "conditions",
+          "census",
+          "prune",
+          "branch",
+        ])
+          assert.equal(
+            text
+              .split("\n")
+              .filter((line) =>
+                new RegExp(`^${step}: \\d+ h \\d+ min$`, "u").test(line),
+              ).length,
+            1,
+            `${step} timing line\n${text}`,
+          );
+        assert.match(result.branch, /^planning\/\d{4}-\d{2}-\d{2}-bounded$/);
+        assert.ok(existsSync(join(bounded, result.document)));
+        assert.equal(
+          runGit(bounded, ["symbolic-ref", "--short", "HEAD"]),
+          result.branch,
+        );
+        // With the budget unset, every expired root of a three-root fixture
+        // goes, and nothing remains.
+        const unbounded = startRepo("planning-start-unbounded");
+        const three = plantExpired(
+          unbounded,
+          join(parent, "planning-start-unbounded-roots"),
+          ["dotln-unbounded-a-", "dotln-unbounded-b-", "dotln-unbounded-c-"],
+        );
+        const complete = await printed(["start", "unbounded"], unbounded);
+        assert.match(complete.text, /^Prune: removed 3; remaining 0$/mu);
+        for (const path of three) assert.equal(existsSync(path), false);
+        for (const path of [large, ...small])
+          if (existsSync(path)) rmSync(path, { recursive: true, force: true });
       },
     );
     await check(

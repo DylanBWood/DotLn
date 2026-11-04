@@ -769,8 +769,21 @@ await test("configuration root", async (t) => {
       );
       // A declaration whose last segment is wholly a wildcard would name
       // every ignored file below it; the floor refuses it at registration,
-      // and `**` is admitted only as a whole segment.
-      for (const entry of ["*", "**", "**/*", "libs/**", "libs/*/**"])
+      // and `**` is admitted only as a whole segment. So does one whose
+      // literal part is only punctuation: `*` matches a leading dot, so
+      // `*.*` would name `.env`, an operator note and `.runtime` itself.
+      for (const entry of [
+        "*",
+        "**",
+        "**/*",
+        "libs/**",
+        "libs/*/**",
+        "*.*",
+        "**/*.*",
+        ".*",
+        "*-*",
+        "libs/*_*",
+      ])
         refuses(
           {
             version: 1,
@@ -779,7 +792,7 @@ await test("configuration root", async (t) => {
             },
           },
           new RegExp(
-            `repositories\\.target\\.disposable entries must end in a segment with a literal part, the floor that keeps a declaration from naming every ignored file: ${escape(entry)}$`,
+            `repositories\\.target\\.disposable entries must end in a segment whose literal part holds a letter or digit, the floor that keeps a declaration from naming every ignored file: ${escape(entry)}$`,
           ),
         );
       for (const entry of ["libs/**dist", "**.tsbuildinfo"])

@@ -4890,6 +4890,78 @@ test("gate judges abandoned host-confinement roots after owned fixture cleanup",
   assert.equal(recorded.abandonedRoots, undefined);
 });
 
+test("a passed suite's fixture roots leave as the suite ends and a failed suite's stay with their outcome", async (t) => {
+  const { repo, table, observed } = taskReuseFixture(t);
+  const helper = pathToFileURL(
+    join(root, "scripts/lib/temporary-roots.mjs"),
+  ).href;
+  // Alpha plants two roots under its own suite and leaves them to the runner.
+  writeFileSync(
+    join(repo, "scripts/alpha.mjs"),
+    `
+      import { createFixtureRoot } from ${JSON.stringify(helper)};
+      import { appendFileSync, mkdirSync, writeFileSync } from "node:fs";
+      import { tmpdir } from "node:os";
+      import { join } from "node:path";
+      appendFileSync("observed.jsonl", "alpha\\n");
+      const roots = [1, 2].map(() => createFixtureRoot(join(tmpdir(), "dotln-suite-end-passed-")));
+      mkdirSync(".runtime", { recursive: true });
+      writeFileSync(".runtime/passed-roots.json", JSON.stringify(roots));
+    `,
+  );
+  // Beta, which fails, looks for alpha's roots as it starts, then plants one.
+  writeFileSync(
+    join(repo, "scripts/beta.mjs"),
+    `
+      import { createFixtureRoot } from ${JSON.stringify(helper)};
+      import { appendFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+      import { tmpdir } from "node:os";
+      import { join } from "node:path";
+      appendFileSync("observed.jsonl", "beta\\n");
+      const passed = existsSync(".runtime/passed-roots.json")
+        ? JSON.parse(readFileSync(".runtime/passed-roots.json", "utf8"))
+        : [];
+      const failed = createFixtureRoot(join(tmpdir(), "dotln-suite-end-failed-"));
+      mkdirSync(".runtime", { recursive: true });
+      writeFileSync(".runtime/failed-root.json", JSON.stringify({ failed, seen: passed.map((path) => existsSync(path)) }));
+      process.exit(1);
+    `,
+  );
+  const { row } = await captureGate(["--serial", "--keep-going"], repo, {
+    table,
+  });
+  const passed = JSON.parse(
+    readFileSync(join(repo, ".runtime/passed-roots.json"), "utf8"),
+  );
+  const { failed, seen } = JSON.parse(
+    readFileSync(join(repo, ".runtime/failed-root.json"), "utf8"),
+  );
+  t.after(() => {
+    for (const path of [...passed, failed])
+      rmSync(path, { recursive: true, force: true });
+  });
+  assert.equal(row.exitCode, 1);
+  assert.deepEqual(
+    observed().filter((name) => ["alpha", "beta"].includes(name)),
+    ["alpha", "beta"],
+  );
+  // Alpha's roots were gone when beta started: the runner removed them as
+  // alpha ended, not at the gate's end.
+  assert.deepEqual(seen, [false, false]);
+  for (const path of passed) assert.equal(existsSync(path), false, path);
+  assert.ok(
+    passed.every((path) => row.temporaryCleanup.removed.includes(path)),
+  );
+  // The failed suite's root stays for diagnosis, its outcome recorded.
+  assert.equal(existsSync(failed), true);
+  assert.equal(readTemporaryOwner(failed).outcome, "failed");
+  assert.equal(readTemporaryOwner(failed).owner.suite, "beta");
+  const timeline = (name) =>
+    row.taskTimeline.find((entry) => entry.name === name);
+  assert.equal(timeline("alpha").temporaryRootsRemoved, 2);
+  assert.equal(timeline("beta").temporaryRootsRemoved, 0);
+});
+
 test("the macOS daemon sample requests an untruncated command and reads its resident bytes", () => {
   const firstColumn = "/System/Library/  18272\n";
   const lastColumn =

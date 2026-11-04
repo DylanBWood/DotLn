@@ -453,9 +453,12 @@ const validateFeatures = (path, declared) => {
 // a registration entry compose; nothing removes a class entry. An entry may
 // carry two wildcard forms: `**` as a whole segment, matching any number of
 // segments, and `*` within a segment, matching inside that one segment. Its
-// last segment keeps a literal part, the floor that keeps any declaration
-// from naming every ignored file, so `*`, `**`, `**/*` and `libs/**` refuse
-// and `**/*.tsbuildinfo` is admitted.
+// last segment keeps a literal part with a letter or digit, the floor that
+// keeps any declaration from naming every ignored file: `*`, `**`, `**/*`
+// and `libs/**` refuse, and so do `*.*` and `.*`, whose literal part is only
+// punctuation and whose `*` also matches a leading dot, so they would name
+// `.env`, an operator note or `.runtime` itself; `**/*.tsbuildinfo` is
+// admitted.
 const validateDisposablePaths = (path, value, label) => {
   if (value === undefined) return [];
   if (!Array.isArray(value) || !value.every(isText))
@@ -488,10 +491,10 @@ const validateDisposablePaths = (path, value, label) => {
         path,
         `${label} entries use ** only as a whole segment matching any number of segments: ${entry}`,
       );
-    if (!segments.at(-1).replaceAll("*", ""))
+    if (!/[\p{L}\p{N}]/u.test(segments.at(-1).replaceAll("*", "")))
       throw refuse(
         path,
-        `${label} entries must end in a segment with a literal part, the floor that keeps a declaration from naming every ignored file: ${entry}`,
+        `${label} entries must end in a segment whose literal part holds a letter or digit, the floor that keeps a declaration from naming every ignored file: ${entry}`,
       );
   }
   return [...new Set(entries)].sort();

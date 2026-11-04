@@ -3010,6 +3010,40 @@ if [[ "${1:-}" == close_real_writer ]]; then
   git -C "$main" -c user.name=Fixture -c user.email=fixture@example.invalid -c maintenance.auto=false commit --allow-empty -qm 'Unrelated later main commit'
   git -C "$main" push -q origin main
 fi
+# Expired roots the closed order's gate left, registered in its worktree's
+# ledger, one holding a directory nobody may list, and expired roots of
+# another gate in main's ledger: the close removes the order's and leaves the
+# others to plan start (WO-253). Only the default variant plants them.
+if [[ -z "${1:-}" ]]; then
+mkdir -p "$fixture/planted-roots"
+"$node_bin" --input-type=module - "$subject" "$main" "$fixture/planted-roots" >"$fixture/planted-roots.json" <<'JS'
+import fs from 'node:fs';
+import { join } from 'node:path';
+import { randomUUID } from 'node:crypto';
+const [subject, main] = process.argv.slice(2, 4);
+const base = fs.realpathSync(process.argv[4]);
+const plant = (repository, gateId, name) => {
+  const path = join(base, name);
+  fs.mkdirSync(path);
+  const info = fs.lstatSync(path);
+  const token = randomUUID();
+  const owner = { pid: 2147483647, birth: '1.0', gateId, suite: 'fixture-suite', repository: fs.realpathSync(repository) };
+  fs.writeFileSync(join(path, '.dotln-owner.json'), JSON.stringify({ schemaVersion: 1, token, class: 'gate-fixture', owner, createdAt: '2020-01-01T00:00:00.000Z', endedAt: '2020-01-01T00:00:00.000Z', endSource: 'completion', outcome: 'passed', retentionHours: 0, device: info.dev, inode: info.ino }) + '\n');
+  fs.writeFileSync(join(path, 'payload'), 'fixture\n');
+  const ledger = join(repository, '.runtime/temporary-roots/roots');
+  fs.mkdirSync(ledger, { recursive: true });
+  fs.writeFileSync(join(ledger, `${token}.jsonl`), JSON.stringify({ action: 'created', path, token, class: 'gate-fixture', owner, at: '2020-01-01T00:00:00.000Z' }) + '\n');
+  return path;
+};
+const orderGate = randomUUID(), otherGate = randomUUID();
+const order = [plant(subject, orderGate, 'dotln-order-root-a'), plant(subject, orderGate, 'dotln-order-root-b')];
+fs.mkdirSync(join(order[1], 'locked/inner'), { recursive: true });
+fs.writeFileSync(join(order[1], 'locked/inner/file'), 'inside\n');
+fs.chmodSync(join(order[1], 'locked'), 0o000);
+const other = [plant(main, otherGate, 'dotln-other-root-a'), plant(main, otherGate, 'dotln-other-root-b')];
+console.log(JSON.stringify({ order, other }));
+JS
+fi
 output="$(release_close_summary WO-099 --publish --material .runtime/kept=preserve)"
 if [[ "${1:-}" == close_real_writer ]]; then
   test ! -d "$main/docs/control/local/harness/writer"
@@ -3042,6 +3076,35 @@ assert.match(full,/Worktree removal proof:/);
 for(const text of process.argv.slice(4)) {assert.match(text,/Full report:/);assert.ok(Buffer.byteLength(text)<16384);}
 console.log('WO-195 summary bytes publish='+Buffer.byteLength(process.argv[4])+' dry-run='+Buffer.byteLength(process.argv[5]));
 JS
+if [[ -z "${1:-}" ]]; then
+# The close pruned the order's own roots, the restricted one included, left
+# the other gate's, and recorded and printed what it removed and what remains.
+"$node_bin" - "$record" "$fixture/planted-roots.json" <<'JS'
+const assert = require('node:assert/strict'), fs = require('node:fs');
+const [file, planted] = process.argv.slice(2);
+const record = JSON.parse(fs.readFileSync(file, 'utf8'));
+const { order, other } = JSON.parse(fs.readFileSync(planted, 'utf8'));
+const report = JSON.stringify({ owned: record.ownedTemporaryRoots, prune: record.prune });
+for (const path of order) assert.equal(fs.existsSync(path), false, `${path}\n${report}`);
+for (const path of other) assert.ok(fs.existsSync(path), path);
+const removed = record.prune.removed.filter((row) => order.includes(row.path));
+assert.equal(removed.length, 2, report);
+assert.ok(removed.every((row) => row.proof === 'record'));
+assert.ok(![...record.prune.removed, ...record.prune.retained].some((row) => other.includes(row.path)));
+const step = record.steps.find((row) => row.name === 'prune');
+assert.equal(step.removed, record.prune.removed.length);
+assert.equal(step.remaining, 0);
+assert.equal(step.stoppedAt, null);
+assert.deepEqual(record.blockers.filter((row) => !row.resolved), []);
+assert.equal(record.blocker, null);
+JS
+grep -Eq '^Prune: removed [0-9]+; remaining 0$' <<<"$output"
+grep -Eq "^Prune scope: WO-099's own roots: [0-9]+ removed, [0-9]+ kept by their records, 0 unjudged or unremoved\. Roots outside it are left to plan start's bounded prune; node scripts/harness\.mjs prune --apply finishes every remainder now, host-wide and without a budget\.\$" <<<"$output"
+grep -Eq '^Close steps: prerequisites [0-9]+ h [0-9]+ min, runtime [0-9]+ h [0-9]+ min, worktree-removal [0-9]+ h [0-9]+ min, publication [0-9]+ h [0-9]+ min, starter-refresh [0-9]+ h [0-9]+ min, prune [0-9]+ h [0-9]+ min, record [0-9]+ h [0-9]+ min\.$' <<<"$output"
+for planted_root in $("$node_bin" -e 'process.stdout.write(JSON.parse(require("node:fs").readFileSync(process.argv[1],"utf8")).other.join("\n"))' "$fixture/planted-roots.json"); do
+  "$node_bin" "$script_dir/temporary-root.mjs" remove "$planted_root"
+done
+fi
 if [[ "${1:-}" == close_compact ]]; then
   "$node_bin" - "$record" "$main" <<'JS'
 const assert=require('node:assert/strict'),fs=require('node:fs'),p=require('node:path');const record=JSON.parse(fs.readFileSync(process.argv[2]));const main=process.argv[3];

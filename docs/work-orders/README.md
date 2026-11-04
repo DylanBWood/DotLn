@@ -4,7 +4,7 @@
 
 ## Proposed order
 
-- [ ] [WO-253] — Temporary roots leave with the gate that made them, and a prune is a bounded step · **queued**
+- [x] [WO-253] — Temporary roots leave with the gate that made them, and a prune is a bounded step · **final-reviewed**
 - [ ] [WO-254] — The hooks get out of the operator's way · **queued**
 - [ ] [WO-246] — The launchpad's own pull requests · **queued**
 - [ ] [WO-255] — Reviews find what the complete run finds · **queued**
@@ -42,22 +42,6 @@ None.
 None.
 
 ## Open
-
-### WO-253
-
-[WO-253 — Temporary roots leave with the gate that made them, and a prune is a bounded step: a passed suite's fixture roots are removed when the suite ends, a kit-owned expired root is removed on its marker without reading its bytes, one process-table read serves a whole prune, &#96;plan start&#96; and release close run the prune as a bounded step with per-root progress and a truthful partial outcome, a restricted entry inside a kit-owned root is repaired or retained and never a close blocker, and both commands print where their minutes went (version assigned at activation)](WO-253-temporary-roots-leave-with-the-gate-that-made-them.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-252: satisfied-by-close (met) — the close record's blocker classes and the role's prune sentence this order keeps and scopes; WO-239: satisfied-by-close (met) — the release close's timed steps this order adds the prune row's fields to; WO-233: satisfied-by-close (met) — the retention classes and the owned-resource prune this order makes cheap.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer xhigh.
-- Track: machinery
-- Authority: [docs/work-orders/WO-253-temporary-roots-leave-with-the-gate-that-made-them.md](WO-253-temporary-roots-leave-with-the-gate-that-made-them.md)
 
 ### WO-254
 

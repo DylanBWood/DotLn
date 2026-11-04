@@ -1698,6 +1698,8 @@ test("feature readers consume budgets and build overlays through changed fixture
       await import("../packages/skeleton/dist/src/subagent-budget.js");
     const { readRetention, DEFAULT_RETENTION } =
       await import("../packages/skeleton/src/temporary-root-records.mjs");
+    const { DEFAULT_PRUNE_START_BUDGET_MS } =
+      await import("./lib/temporary-prune-summary.mjs");
     const { sandboxLaunchForm } = await import("./lib/drive-worker.mjs");
     const { attemptTimeLimit } = await import("./lib/drive-session.mjs");
     const { readBuildOverlay } = await import("./lib/harness.mjs");
@@ -1717,6 +1719,13 @@ test("feature readers consume budgets and build overlays through changed fixture
     assert.deepEqual(
       featureRegistry.find((entry) => entry.id === "retention").default,
       DEFAULT_RETENTION,
+    );
+    // The feature list prints the routine prune's default from the registry;
+    // the prune runs on the reader's own constant, so the two must agree.
+    assert.equal(
+      featureRegistry.find((entry) => entry.id === "prune-start-budget")
+        .default,
+      DEFAULT_PRUNE_START_BUDGET_MS,
     );
     for (const [field, values, consume] of [
       ["subagentCap", [2, null], () => readSubagentCap(root)],

@@ -30,7 +30,8 @@ const display = (id, value) => {
           `${key}: ${hours === null ? "keep" : formatDuration(hours * 3600000)}`,
       )
       .join("; ");
-  if (id === "driven-phase-timeout") return formatDuration(value);
+  if (id === "driven-phase-timeout" || id === "prune-start-budget")
+    return formatDuration(value);
   if (id === "dispatch-bounds")
     return Object.entries(value)
       .map(([role, limits]) => {
