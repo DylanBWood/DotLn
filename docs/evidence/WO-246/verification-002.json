@@ -1,0 +1,376 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-246",
+  "verification": "VER-002",
+  "date": "2026-11-05",
+  "subject": {
+    "codeIdentity": "45cb66bd2092a9b7732c244e148c09f6f8e68006fef6d298df3dddb0178973c2",
+    "found": true,
+    "checkId": "npm test",
+    "recordedAt": "2026-11-05T12:37:20.449Z",
+    "exitCode": 0,
+    "executed": true,
+    "gateSelection": "review",
+    "durationMs": 2298933,
+    "identityUnchanged": true,
+    "buildOutputUnchanged": true,
+    "requiredSuites": [
+      "build",
+      "format",
+      "configuration-root",
+      "registrations",
+      "declarations",
+      "generated",
+      "host",
+      "release-preparation",
+      "github-body",
+      "outward-lint",
+      "target-publish",
+      "target-worktree",
+      "vertical",
+      "license-fixtures",
+      "publication-fixtures",
+      "backup-intake",
+      "resume",
+      "launchpad",
+      "workstream-pilot",
+      "instance-history",
+      "beacon-portability",
+      "checkpoint",
+      "worktree",
+      "worktree-integration",
+      "release",
+      "work-orders-fixtures",
+      "siblings-fixtures",
+      "kernel",
+      "compiler",
+      "skeleton",
+      "console",
+      "browser-evidence",
+      "adjacent-queue",
+      "derived-orders",
+      "portfolio",
+      "codex-continuation",
+      "authority-grants",
+      "launchpad-planning",
+      "harness-probe",
+      "harness-fixtures",
+      "plan-refutation",
+      "runner-fixtures",
+      "sync-fixtures",
+      "process-debt"
+    ],
+    "unrunSuites": [],
+    "caseCount": 44,
+    "caseFailures": [],
+    "evidenceRef": "host-gate:45cb66bd2092a9b7732c244e148c09f6f8e68006fef6d298df3dddb0178973c2:npm test"
+  },
+  "actor": {
+    "harness": "codex-cli",
+    "harnessVersion": "0.166.0",
+    "model": "gpt-6-astra",
+    "effort": "max",
+    "source": "codex-session-readback"
+  },
+  "runs": [
+    {
+      "name": "prior-probes",
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-246/verification-001-probes.mjs",
+      "exitCode": 0,
+      "executed": true,
+      "durationMs": 2329,
+      "startedAt": "2026-11-05T13:46:10.798Z",
+      "finishedAt": "2026-11-05T13:46:13.127Z",
+      "droppedOutputBytes": 0,
+      "logSha256": "13387fb3770de22cd01f361ca4813086d1fd87992d1a8534ae45c136332b15e7"
+    },
+    {
+      "name": "focused",
+      "command": "node scripts/harness.mjs bounded -- node --test --test-concurrency=1 --test-name-pattern='WO-246|WO-226 update finish|a borrowing lane|WO-011 exact attribution' scripts/test-harness.mjs scripts/test-plan-refutation.mjs scripts/test-launchpad-update.mjs scripts/test-drive.mjs packages/compiler/dist/test/feedback.test.js",
+      "exitCode": 0,
+      "executed": true,
+      "durationMs": 68920,
+      "startedAt": "2026-11-05T13:47:04.163Z",
+      "finishedAt": "2026-11-05T13:48:13.083Z",
+      "droppedOutputBytes": 0,
+      "logSha256": "06868920a01dc15cedeaa62ede7e9e4e5c2b5226457dfd936e51ec9ae702aa48"
+    },
+    {
+      "name": "independent",
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-246/verification-002-probes.mjs",
+      "exitCode": 0,
+      "executed": true,
+      "durationMs": 5387,
+      "startedAt": "2026-11-05T13:49:13.057Z",
+      "finishedAt": "2026-11-05T13:49:18.444Z",
+      "droppedOutputBytes": 0,
+      "logSha256": "33568726b8c0aee9f010ec21585db236836edc5df0037fc72fe1d95b42adf0d3"
+    },
+    {
+      "name": "format",
+      "command": "node scripts/harness.mjs bounded -- npm run format:check",
+      "exitCode": 0,
+      "executed": true,
+      "durationMs": 9304,
+      "startedAt": "2026-11-05T13:49:55.589Z",
+      "finishedAt": "2026-11-05T13:50:04.894Z",
+      "droppedOutputBytes": 0,
+      "logSha256": "f6cba912ed96f27a55e6a2ba46cc6bc81dfe2f81b67c08ea7d1879b9db420a54"
+    },
+    {
+      "name": "context",
+      "command": "node scripts/harness.mjs bounded -- node scripts/harness-context.mjs --check",
+      "exitCode": 0,
+      "executed": true,
+      "durationMs": 166,
+      "startedAt": "2026-11-05T13:51:39.272Z",
+      "finishedAt": "2026-11-05T13:51:39.438Z",
+      "droppedOutputBytes": 0,
+      "logSha256": "cd4687eebe8e5853a3914bf1a7db406ef8e4d8b619fdfc705040acfa5f2571b3"
+    },
+    {
+      "name": "feedback",
+      "command": "node scripts/harness.mjs bounded -- node scripts/feedback-evidence.mjs --check",
+      "exitCode": 0,
+      "executed": true,
+      "durationMs": 2441,
+      "startedAt": "2026-11-05T13:51:39.613Z",
+      "finishedAt": "2026-11-05T13:51:42.055Z",
+      "droppedOutputBytes": 0,
+      "logSha256": "bd59c2e603e376d5e0e0d0132316bda8f3af60a53f69da93258c65936404d903"
+    },
+    {
+      "name": "publication",
+      "command": "node scripts/harness.mjs bounded -- npm run publication:check",
+      "exitCode": 0,
+      "executed": true,
+      "durationMs": 238,
+      "startedAt": "2026-11-05T13:52:50.211Z",
+      "finishedAt": "2026-11-05T13:52:50.449Z",
+      "droppedOutputBytes": 0,
+      "logSha256": "43824245e647101a9ffb10cb916b79acc690829baa126df8accb11ba7034724d"
+    }
+  ],
+  "previousReproduction": {
+    "schemaVersion": 1,
+    "workOrder": "WO-246",
+    "verification": "VER-001",
+    "observations": [
+      {
+        "name": "commit lint is unchanged across a varied corpus",
+        "result": "pass",
+        "comparisons": 1920,
+        "admittedTitles": 5,
+        "refusedTitles": 4
+      },
+      {
+        "name": "planning publication from a nested directory and spaced path",
+        "result": "pass",
+        "customDocumentRoot": true,
+        "nestedCwd": true,
+        "spacedPaths": true,
+        "repeatedFlagRefused": true,
+        "pushesIncludingRetry": 1,
+        "forge": "local bare repository and gh double"
+      },
+      {
+        "name": "borrowed-object fetch works in a linked worktree",
+        "result": "pass",
+        "heldFetchSkipped": true,
+        "newHistoryImported": true,
+        "vetoPreservedObjectsAndRefs": true,
+        "linkedObjectStoreMatched": true,
+        "timeoutMs": 600000
+      },
+      {
+        "name": "cross-host repository matrix",
+        "result": "pass",
+        "origin": "github.enterprise.invalid/verification/project",
+        "upstream": "github.com/verification/project",
+        "rows": [
+          {
+            "command": "gh pr list",
+            "expected": "refuse",
+            "observed": "refuse"
+          },
+          {
+            "command": "gh pr create --title x",
+            "expected": "refuse",
+            "observed": "refuse"
+          },
+          {
+            "command": "gh issue list",
+            "expected": "refuse",
+            "observed": "refuse"
+          },
+          {
+            "command": "gh pr view 1",
+            "expected": "refuse",
+            "observed": "refuse"
+          }
+        ],
+        "ordinaryDifferentRepositoryControlRefused": true,
+        "sameRepositoryControlAdmitted": true,
+        "explicitRepositoryControlAdmitted": true,
+        "networkCommandsRun": 0
+      },
+      {
+        "name": "repository identity keeps its host when owner and name coincide",
+        "result": "pass",
+        "compared": 4
+      }
+    ],
+    "passed": true
+  },
+  "focused": {
+    "tests": 7,
+    "passed": 7,
+    "failed": 0,
+    "cases": [
+      "WO-011 exact attribution predicate permits subjects and human coauthors but catches AI trailer variants",
+      "a borrowing lane fetches only what the checkout lacks, imports only that and names its bound",
+      "WO-246 the emitted settings allow the two publish helpers by their node spelling and nothing else, the deny list unchanged",
+      "WO-246 a fork's clone refuses a gh pull-request or issue command that names no repository, naming origin, and admits every form that names one",
+      "WO-226 update finish fast-forwards clean main and preserves every refused checkout",
+      "WO-246 update --publish opens the update branch's pull request on origin's repository once the merge, the re-emit and the lineage index are committed",
+      "WO-246 plan publish lints, pushes to origin's repository only and opens the pull request there, adopts it after a failed create and refuses before any push"
+    ]
+  },
+  "independent": {
+    "schemaVersion": 1,
+    "workOrder": "WO-246",
+    "verification": "VER-002",
+    "observations": [
+      {
+        "name": "canonical repository identities and selector controls",
+        "result": "pass",
+        "pairs": 12,
+        "judgments": 84,
+        "pinnedRuntime": true,
+        "remoteCommandsExecuted": 0
+      },
+      {
+        "name": "attribution normalization and emitted commit-message hook",
+        "result": "pass",
+        "comparisons": 162,
+        "hookCases": 5,
+        "repositoryCommitsCreated": 0
+      },
+      {
+        "name": "slow read and stalled fetch share a deadline and preserve checkout",
+        "result": "pass",
+        "timeoutMs": 3000,
+        "readDelayMs": 2000,
+        "elapsedMs": 3016,
+        "unchanged": true
+      }
+    ],
+    "passed": true
+  },
+  "plannerRoots": [
+    {
+      "skillsRoot": ".claude/skills",
+      "bytes": 29643,
+      "ceiling": 24576,
+      "delta": 359,
+      "verdict": "breach"
+    },
+    {
+      "skillsRoot": ".agents/skills",
+      "bytes": 29643,
+      "ceiling": 24576,
+      "delta": 359,
+      "verdict": "breach"
+    }
+  ],
+  "harnessCheck": {
+    "command": "node scripts/harness.mjs bounded -- node scripts/harness.mjs check",
+    "exitCode": 0,
+    "surfaces": 42,
+    "localTerms": "present",
+    "finishedAt": "2026-11-05T13:51:08.654Z"
+  },
+  "feedbackCheck": {
+    "edition": "docs/evidence/WO-246/feedback-002",
+    "currentSource": true,
+    "passingRegressions": 10,
+    "removalFailures": 10
+  },
+  "dependencyCheck": {
+    "source": "git diff HEAD -- package.json package-lock.json packages/compiler/package.json packages/skeleton/package.json packages/console/package.json",
+    "newDependencies": [],
+    "changes": "internal package versions and pins only"
+  },
+  "diffCheck": {
+    "command": "git diff --check",
+    "exitCode": 0
+  },
+  "processCorrections": [
+    {
+      "failure": "Initial status and several repository reads were not sufficiently bounded and tool output was truncated.",
+      "disposition": "The selected order and needed sections were reread in smaller selections; no verdict depends on the truncated portions."
+    },
+    {
+      "failure": "The first gate-row projection omitted a guessed results field but spread the remaining row, which actually contains nested cases and cleanup logs, producing oversized output.",
+      "disposition": "Replaced the spread with an explicit field allowlist, retained the complete row in session scratch, and read the compact current-identity proof. The correct row has 44 successful cases and no unrun suite."
+    },
+    {
+      "failure": "Two exploratory searches named absent gate-index.mjs and host-gate.mjs files.",
+      "disposition": "Followed the real imports to scripts/lib/gate-evidence.mjs and packages/skeleton/src/gate-evidence.mjs; neither failed search is test evidence."
+    },
+    {
+      "failure": "A targeted web lookup of the permissions page returned an internal fetch error after the page initially opened.",
+      "disposition": "No new literal-wildcard or live classifier claim is drawn from that lookup. The current auto-mode page supports only the general rule; exact live helper behavior remains untested."
+    },
+    {
+      "failure": "npm run meta returned an oversized metrics report and its terminal output was truncated.",
+      "disposition": "The command exited 0 and the generated D028 index row was read directly. No metric from the truncated report supports the verdict; final usage is read from the dedicated session command."
+    },
+    {
+      "failure": "The continuation repeated an overlarge status projection and aggregate source read; two exploratory unquoted globs named no file and zsh refused the searches. An evidence-update guard initially expected a trailing slash absent from the recorded exclusion and stopped before writing.",
+      "disposition": "The allocated report, briefing, exact lifecycle transition and document-row binding were read in bounded selections. Searches were corrected to known filenames; the row was selected through requireDocumentRow with an explicit field list, and the guard was corrected to the observed path. No judgment depends on missing or truncated output."
+    }
+  ],
+  "usage": {
+    "entry": {
+      "totalTokens": 55994,
+      "source": "codex-transcript-counter",
+      "scope": "dispatch",
+      "cutoff": "2026-11-05T13:45:01.027Z"
+    },
+    "handoff": {
+      "totalTokens": 4851427,
+      "cachedInputTokens": 4674560,
+      "source": "codex-transcript-counter",
+      "scope": "dispatch",
+      "cutoff": "2026-11-05T13:53:06.608Z",
+      "costUsd": null
+    },
+    "workerLaunches": 0
+  },
+  "limits": [
+    "No real forge publication or account setting changed.",
+    "No live host-classifier or Linux run.",
+    "The harness under review also bounded probes, recorded usage and manages lifecycle.",
+    "Known shell parsing, remote ranking, alias publication and provenance limits remain as D013, D016 and D024-D027 record."
+  ],
+  "documentGate": {
+    "evidenceRefs": [
+      "host-gate:45cb66bd2092a9b7732c244e148c09f6f8e68006fef6d298df3dddb0178973c2:npm run test:docs"
+    ],
+    "checkId": "npm run test:docs",
+    "treeHash": "9dc0b42857d766d323ce16a83c39db050a988cd6",
+    "codeIdentity": "45cb66bd2092a9b7732c244e148c09f6f8e68006fef6d298df3dddb0178973c2",
+    "durationMs": 116200,
+    "evidenceRef": "host-gate:45cb66bd2092a9b7732c244e148c09f6f8e68006fef6d298df3dddb0178973c2:npm run test:docs",
+    "recordedAt": "2026-11-05T13:58:42.186Z",
+    "executed": true,
+    "exitCode": 0,
+    "documentTreeHash": "8f0228ebbdd96f7ac6faa09b13cac4b0bd7b8b32",
+    "documentTreeExcludes": "docs/evidence/WO-246",
+    "caseCount": 27,
+    "caseFailures": [],
+    "checkedAt": "2026-11-05T14:00:47.777Z",
+    "note": "The passing document row judged the final VER-002 report. Its recorded exclusion of this order's evidence directory permits the result to be added here without repeating the gate."
+  }
+}
